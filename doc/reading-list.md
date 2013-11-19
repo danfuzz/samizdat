@@ -81,6 +81,9 @@ design and implementation of *Samizdat*.
 * Syntax across languages (a survey) &mdash;
   <http://rigaux.org/language-study/syntax-across-languages.html>
 
+* Thinking out loud about RSP &mdash;
+  <http://samskivert.com/blog/2013/11/thinking-aloud-rsp/>
+
 * Tradeoffs in Metaprogramming &mdash;
   <http://arxiv.org/abs/cs/0512065>
 

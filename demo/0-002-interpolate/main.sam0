@@ -6,10 +6,6 @@
 # List / argument interpolation demo
 #
 
-
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 

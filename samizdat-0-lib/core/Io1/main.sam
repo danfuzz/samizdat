@@ -82,8 +82,8 @@ def parOnePath = {/
     { <> Peg::stringFromTokenList(chars) }
 /};
 
-# Parses a flattened path list (e.g. the format for `MODULE_PATHS`) into
-# a list of strings (for further parsing).
+# Parses a flattened path list (e.g. the format for a Posix-style `PATH`
+# variable) into a list of strings (for further parsing).
 def parPathList = {/
     ":"*
     first = parOnePath

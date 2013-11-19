@@ -6,10 +6,6 @@
 # Box demo
 #
 
-
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
 def Box = moduleUse({name: ["core", "Box"]});
 def Io0 = moduleUse({name: ["core", "Io0"]});
 

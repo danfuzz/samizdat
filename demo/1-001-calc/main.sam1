@@ -6,10 +6,6 @@
 # Calculator Demo
 #
 
-
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
 def Box = moduleUse({name: ["core", "Box"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
@@ -182,5 +178,5 @@ fn main(args*) {
     Peg::apply(evalExpressions, exprString);
 };
 
-def args = ifIs { <> ne(ARGS, []) } { <> ARGS} { <> ["100+7*2"] };
+def args = ifIs { <> ne(ARGUMENTS, []) } { <> ARGUMENTS} { <> ["100+7*2"] };
 <> main(args*)

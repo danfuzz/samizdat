@@ -9,8 +9,6 @@
 # (very large) map literal corresponding to its contents.
 #
 
-SELF_PATH, ARGS* ->
-
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
@@ -47,7 +45,7 @@ def parCodePoint = {/
     )+
 
     {
-        def value = doReduce1(digits, 0)
+        def value = Generator::doReduce1(digits, 0)
             { digit, result <> result * 16 + digit };
         <> toString(value);
     }
@@ -101,8 +99,8 @@ def parFile = {/
     { <> cat(lines*) }
 /};
 
-def inPath = [butLast(SELF_PATH)*, "entity-map.txt"];
-def outPath = [butLast(SELF_PATH)*, "entityMap.sam0"];
+def inPath = [Collection::butLast(PATH)*, "entity-map.txt"];
+def outPath = [Collection::butLast(PATH)*, "entityMap.sam"];
 Io1::note("Processing file: \%q(inPath)");
 
 def text = Io1::readFileUtf8(inPath);
@@ -115,7 +113,7 @@ def resultLines = (mapping in result ->
     <> ",\n    \%q(keyOf(mapping)): \%q(valueOf(mapping))"
 );
 
-def resultText = slice(cat(resultLines*), 2);
+def resultText = Collection::slice(cat(resultLines*), 2);
 
 def outText = "\
     # Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).

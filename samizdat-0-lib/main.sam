@@ -143,13 +143,6 @@ fn makeCoreLibrary() {
     # beyond what's supposed to be in the real core library.
     def finalContext = loadAllLibraries(PRIMITIVE_CONTEXT);
 
-    # The `Module` module needs to be told where to find modules.
-    def Module = finalContext::moduleUse({name: ["core", "Module"]});
-    def moduleDirs = ifValue { <> finalContext::ENVIRONMENT::MODULE_PATH }
-        { path <> cat(LIBRARY_FLAT_DIR, ":", path) }
-        { <> LIBRARY_FLAT_DIR };
-    Module::initModule(moduleDirs);
-
     # The module `core::Globals` is the "sanitized" core library context.
     <> finalContext::moduleUse({name: ["core", "Globals"]});
 };

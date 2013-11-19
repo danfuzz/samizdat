@@ -16,18 +16,13 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 # Private Definitions
 #
 
-# Box for the parsed list of module paths.
-def theModulePathsBox = Box::makePromise();
-
-# Box containing a set-like map of fully-qualified names representing
-# modules in the middle of being loaded.
-def thePendingBox = Box::makeCell({});
-
-# Finds the directory for the named module, by iterating over
-# `MODULE_PATHS_LIST`, looking for a `module.sam` file. Either returns
+# Finds the directory for the named module, by iterating over the given
+# `modulePaths`, looking for a `module.sam` file. Either returns
 # the directory path or dies with an error.
-fn findModuleDirectory(fqName) {
-    Generator::filterPump(Box::fetch(theModulePathsBox))
+fn findModuleDirectory(searchInfo, modulePaths) {
+    def fqName = searchInfo::name;
+
+    Generator::filterPump(modulePaths)
         { onePath ->
             def fullPath = [onePath*, fqName*];
             ifIs { <> Io1::fileExists([fullPath*, "module.sam"]) }
@@ -45,45 +40,35 @@ fn findModuleDirectory(fqName) {
 #
 
 # Documented in spec.
-fn initModule(moduleDirs) {
-    def pathsList = Io1::pathListFromFlat(moduleDirs);
-    Box::store(theModulePathsBox, pathsList)
-};
-
-# Documented in spec.
-fn moduleUse(searchInfo) {
+fn moduleUse(searchInfo, modulePaths?) {
     def fqName = searchInfo::name;
 
     ifValue { <> Module0::moduleGet(searchInfo) }
         { modu -> return modu };
 
-    def pendings = Box::fetch(thePendingBox);
-    ifIs { <> get(pendings, fqName) }
+    def paths = ifValueOr { <> modulePaths* }
         {
             Io1::die(cat(
-                "Dependency loop with modules: ",
-                Format::source(Collection::keyList(pendings))))
+                "Module not already loaded, and no `modulePaths` specified: ",
+                Module0::stringFromModuleName(fqName)))
         };
-
-    # Indicate that the module is in the process of being loaded.
-    Box::store(thePendingBox, Collection::put(pendings, fqName, null));
 
     def baseContext = Module0::getGlobals(
         Module0::moduleGet({name: ["core", "Globals"]}));
-    def moduleDir = findModuleDirectory(fqName);
+    def moduleDir = findModuleDirectory(searchInfo, paths);
 
     def result = Module0::load(baseContext, moduleDir);
     def info = Module0::getInfo(result);
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, info::name) }
-        { Io1::die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
+        {
+            Io1::die(cat(
+                "Module name mismatch: ",
+                Module0::stringFromModuleName(fqName)))
+        };
 
     Module0::moduleDef(result);
-
-    # Indicate that the module load is no longer in-process.
-    Box::update(thePendingBox,
-        { pendings <> Collection::del(pendings, fqName) });
 
     <> result
 };
@@ -94,11 +79,11 @@ fn moduleUse(searchInfo) {
     getExports:           Module0::getExports,
     getGlobals:           Module0::getGlobals,
     getInfo:              Module0::getInfo,
+    load:                 Module0::load,
     moduleDef:            Module0::moduleDef,
     moduleGet:            Module0::moduleGet,
     stringFromModuleName: Module0::stringFromModuleName,
 
     # Defined here.
-    initModule: initModule,
     moduleUse:  moduleUse
 }

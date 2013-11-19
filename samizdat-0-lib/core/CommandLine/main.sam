@@ -7,6 +7,7 @@
 #
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
+def Module = moduleUse({name: ["core", "Module"]});
 
 
 #
@@ -82,10 +83,40 @@ fn parseArgs(args) {
     # Make a unified string with each argument "\0"-terminated.
     def argFilter = Generator::makeFilterGenerator(args)
         { arg <> cat(arg, "\0") };
-    def argString = cat(argFilter*);
+    def argString = cat("", argFilter*);
 
     # Use the peg grammar above to split the arguments back apart.
     <> Peg::apply(parArguments, argString)
+};
+
+# Runs a module-form command-line. In this case, a named directory is
+# loaded as a module. It is expected to export a `main()` function, which
+# is called with the Posix-style command-line arguments.
+fn runModule(globals, modulePath, args) {
+    def loaded = Module::load(globals, modulePath);
+
+    <> ifValue { <> loaded::main }
+        { main <> main(modulePath, args*) }
+        { Io1::die("No `main` exported from primary module.") }
+};
+
+# Runs a simple-file-form command-line. In this case, the indicated file
+# is read as a top-level program, and evaluated, passing it no arguments.
+# Its environment includes `PATH` and `ARGUMENTS` variables indicating
+# the path to the file and the command-line arguments, respectively.
+fn runFile(globals, langLayer, filePath, args) {
+    def programText = Io1::readFileUtf8(filePath);
+    def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
+    def parsedProgram = langModule::parseProgram(programText);
+
+    def fullGlobals = {
+        globals*,
+        ARGUMENTS: args,
+        PATH:      filePath
+    };
+
+    def evalled = langModule::eval(fullGlobals, parsedProgram);
+    <> evalled()
 };
 
 
@@ -105,15 +136,19 @@ fn runCommandLine(rawArgs*) {
     def args = ifValueOr { <> Collection::butFirst(argWords) }
         { <> [] };
 
-    def programText = Io1::readFileUtf8(filePath);
+    # Set up `globals` to be the default globals, with the addition of
+    # an `arguments` binding for the command-line arguments.
+    def globals = {
+        (Module::getExports(moduleUse({name: ["core", "Globals"]})))*,
+        arguments: args
+    };
 
-    def globals = moduleUse({name: ["core", "Globals"]});
-    def langLayer = ifValueOr { <> options::layer } { <> "2" };
-    def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
-    def parsedProgram = langModule::parseProgram(programText);
-    def evalled = langModule::eval(globals, parsedProgram);
-
-    <> evalled(filePath, args*)
+    <> ifIs { <> Io1::fileExists([filePath*, "module.sam"]) }
+        { <> runModule(globals, filePath, args) }
+        {
+            def langLayer = ifValueOr { <> options::layer } { <> "2" };
+            <> runFile(globals, langLayer, filePath, args)
+        }
 };
 
 <> {

@@ -2,10 +2,6 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
-
 #
 # Main Test
 #
@@ -15,6 +11,8 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 # A locally-defined binary module.
 def Test = moduleUse({name: ["app", "Test"]});
 
-Io1::note(Format::source(Test::TEST));
+fn main(.*) {
+    Io1::note(Format::source(Test::TEST))
+};
 
-<> 0
+<> {main: main}
