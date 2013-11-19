@@ -23,7 +23,7 @@ def MANIFEST = [
 
     # Layer 0: Basic module system. Listed first so it can be used
     # by everything else.
-    "Module.sam",
+    "Module0.sam",
 
     # Layer 0: Constant value definitions and simple functions, directly
     # added to the global library context.
