@@ -35,7 +35,7 @@ fn flattenPath(name) {
 # structured path).
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
-    def localModulesPath = [directory*, "modules"];
+    def localModulePath = [directory*, "modules"];
 
     # A box for the final load context, to enable the necessary self-reference.
     def ctxBox = Box_makePromise();
@@ -94,9 +94,12 @@ fn makeModuleContext(baseCtx, directory) {
         <> result
     };
 
-    fn innerModuleUse(searchInfo) {
-        # TODO: Use localModulesPath here...
-        <> baseCtx::moduleUse(searchInfo);
+    fn innerModuleUse(searchInfo, modulePaths?) {
+        def fullPaths = ifValue { <> modulePaths* }
+            { <> [modulePaths*, localModulePath] }
+            { <> [localModulePath] };
+
+        <> baseCtx::moduleUse(searchInfo, fullPaths)
     };
 
     # If the `module` file exists, it must evaluate to a map. If not,
@@ -300,8 +303,9 @@ fn moduleGet(searchInfo) {
 # Documented in spec.
 #
 # **Note:** This is the early-bootstrap version of this function, which
-# requires a module to be pre-defined.
-fn moduleUse(searchInfo) {
+# requires modules to be pre-defined (that is, `modulePaths` is not
+# consulted).
+fn moduleUse(searchInfo, modulePaths?) {
     <> ifValueOr { <> moduleGet(searchInfo) }
         {
             Io0_die(cat("Module not found: ",

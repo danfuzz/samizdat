@@ -81,7 +81,7 @@ One-time initialization of the module system. Needs to be passed a
 colon-separated list of flat (slash-separated) paths to be searched
 when trying to find a module.
 
-#### `moduleUse(searchInfo) <> module`
+#### `moduleUse(searchInfo, modulePaths?) <> module`
 
 Gets a module, as if by `moduleGet`, if it has already been defined; or
 attempts to load it from storage if it has *not* already been defined.
@@ -89,6 +89,10 @@ attempts to load it from storage if it has *not* already been defined.
 The `searchInfo` map indicates the required information about the module.
 The `name` binding of `searchInfo` is required and should be a list-of-strings
 representing the fully-qualified module name.
+
+The `modulePaths`, if specified, must be a list of structured paths, to be
+searched (in index order) for a matching module definition. These take
+precedence over other module paths that might also be searched.
 
 This will fail with a terminal error if the module isn't defined and
 cannot be loaded.

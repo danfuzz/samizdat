@@ -23,11 +23,13 @@ def theModulePathsBox = Box::makePromise();
 # modules in the middle of being loaded.
 def thePendingBox = Box::makeCell({});
 
-# Finds the directory for the named module, by iterating over
-# `MODULE_PATHS_LIST`, looking for a `module.sam` file. Either returns
+# Finds the directory for the named module, by iterating over the given
+# `modulePaths`, looking for a `module.sam` file. Either returns
 # the directory path or dies with an error.
-fn findModuleDirectory(fqName) {
-    Generator::filterPump(Box::fetch(theModulePathsBox))
+fn findModuleDirectory(searchInfo, modulePaths) {
+    def fqName = searchInfo::name;
+
+    Generator::filterPump(modulePaths)
         { onePath ->
             def fullPath = [onePath*, fqName*];
             ifIs { <> Io1::fileExists([fullPath*, "module.sam"]) }
@@ -51,11 +53,18 @@ fn initModule(moduleDirs) {
 };
 
 # Documented in spec.
-fn moduleUse(searchInfo) {
+fn moduleUse(searchInfo, modulePaths?) {
     def fqName = searchInfo::name;
 
     ifValue { <> Module0::moduleGet(searchInfo) }
         { modu -> return modu };
+
+    def paths = ifValueOr { <> modulePaths* }
+        {
+            Io1::die(cat(
+                "Module not already loaded, and no `modulePaths` specified: ",
+                Module0::stringFromModuleName(fqName)))
+        };
 
     def pendings = Box::fetch(thePendingBox);
     ifIs { <> get(pendings, fqName) }
@@ -70,14 +79,18 @@ fn moduleUse(searchInfo) {
 
     def baseContext = Module0::getGlobals(
         Module0::moduleGet({name: ["core", "Globals"]}));
-    def moduleDir = findModuleDirectory(fqName);
+    def moduleDir = findModuleDirectory(searchInfo, paths);
 
     def result = Module0::load(baseContext, moduleDir);
     def info = Module0::getInfo(result);
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, info::name) }
-        { Io1::die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
+        {
+            Io1::die(cat(
+                "Module name mismatch: ",
+                Module0::stringFromModuleName(fqName)))
+        };
 
     Module0::moduleDef(result);
 

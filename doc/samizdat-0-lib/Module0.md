@@ -70,7 +70,7 @@ representing the fully-qualified module name.
 
 TODO: Right now, only the `name` in the `searchInfo` is checked.
 
-#### `moduleUse(searchInfo)` <> module
+#### `moduleUse(searchInfo, modulePaths?)` <> module
 
 See the module `core::Module` for the full description.
 
