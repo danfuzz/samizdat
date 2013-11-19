@@ -35,11 +35,12 @@ fn flattenPath(name) {
 # structured path).
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
+    def localModulesPath = [directory*, "modules"];
 
     # A box for the final load context, to enable the necessary self-reference.
     def ctxBox = Box_makePromise();
 
-    # A box for all the loaded submodules.
+    # A box for all the loaded submodule files.
     def subsBox = Box_makeCell({});
 
     fn submoduleFileName(name, extension?) {
@@ -93,6 +94,11 @@ fn makeModuleContext(baseCtx, directory) {
         <> result
     };
 
+    fn innerModuleUse(searchInfo) {
+        # TODO: Use localModulesPath here...
+        <> baseCtx::moduleUse(searchInfo);
+    };
+
     # If the `module` file exists, it must evaluate to a map. If not,
     # create a minimal "anonymous" module definition. In either case, add
     # an extra binding for the path to the module.
@@ -102,7 +108,7 @@ fn makeModuleContext(baseCtx, directory) {
                 { moduleText ->
                     <> Lang0_eval(baseCtx, Lang0_parseExpression(moduleText))
                 }
-                { <> {name: [], version: "1.0.0"} }
+                { <> {name: [], version: "0"} }
         )*,
         path: directory
     };
@@ -121,6 +127,7 @@ fn makeModuleContext(baseCtx, directory) {
     def fullCtx = {
         baseCtx*,
         moduleInfo:     moduleInfo,
+        moduleUse:      innerModuleUse,
         submoduleEval:  languageModule::eval,
         submoduleUse:   submoduleUse,
         submoduleParse: languageModule::parseProgram,
