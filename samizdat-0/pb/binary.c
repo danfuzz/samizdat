@@ -84,6 +84,6 @@ zvalue pbEvalBinary(zvalue context, zvalue flatPath) {
     return evalLibrary(libHandle, context);
 
     // Note: We intentionally do not `dlclose` the library, on the assumption
-    // that whatever it returns either directly or indirectly references
-    // stuff in the library.
+    // that whatever `evalLibrary` returns either directly or indirectly
+    // references stuff in the library.
 }
