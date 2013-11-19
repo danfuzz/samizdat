@@ -6,11 +6,6 @@
 # Throwaway demo of module mechanism
 #
 
-
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
-
 #
 # Main Tests
 #
@@ -26,7 +21,9 @@ def Stuff2 = moduleUse({name: ["app", "Stuff"]});
 ifIs { <> ne(Stuff, Stuff2) }
     { Io1::die("Different modules!") };
 
-Io1::note(Format::source(Stuff::STUFF));
-Io1::note(Format::source(Stuff::SUBSTUFF));
+fn main(.*) {
+    Io1::note(Format::source(Stuff::STUFF));
+    Io1::note(Format::source(Stuff::SUBSTUFF));
+};
 
-<> 0
+<> {main: main}

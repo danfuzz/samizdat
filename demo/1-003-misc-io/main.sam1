@@ -6,10 +6,6 @@
 # Demo / scratch code
 #
 
-
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
@@ -19,7 +15,7 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 
 # Demo of reading a sibling file through a sandboxed reader.
 fn sibling() {
-    def reader = Io1::sandboxedReader(Collection::butLast(SELF_PATH));
+    def reader = Io1::sandboxedReader(Collection::butLast(PATH));
     def text = reader(["sibling.txt"]);
     Io1::note(text);
 };
@@ -32,7 +28,7 @@ fn fileExists() {
             { Io1::note(cat("Does not exist: ", Format::source(path))) }
     };
 
-    def base = Collection::butLast(SELF_PATH);
+    def base = Collection::butLast(PATH);
     tryFile([base*, "sibling.txt"]);
     tryFile([base*, "non-sibling.txt"]);
 };
