@@ -94,6 +94,7 @@ fn moduleUse(searchInfo) {
     getExports:           Module0::getExports,
     getGlobals:           Module0::getGlobals,
     getInfo:              Module0::getInfo,
+    load:                 Module0::load,
     moduleDef:            Module0::moduleDef,
     moduleGet:            Module0::moduleGet,
     stringFromModuleName: Module0::stringFromModuleName,
