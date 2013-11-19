@@ -16,10 +16,6 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 # Private Definitions
 #
 
-# Box containing a set-like map of fully-qualified names representing
-# modules in the middle of being loaded.
-def thePendingBox = Box::makeCell({});
-
 # Finds the directory for the named module, by iterating over the given
 # `modulePaths`, looking for a `module.sam` file. Either returns
 # the directory path or dies with an error.
@@ -57,17 +53,6 @@ fn moduleUse(searchInfo, modulePaths?) {
                 Module0::stringFromModuleName(fqName)))
         };
 
-    def pendings = Box::fetch(thePendingBox);
-    ifIs { <> get(pendings, fqName) }
-        {
-            Io1::die(cat(
-                "Dependency loop with modules: ",
-                Format::source(Collection::keyList(pendings))))
-        };
-
-    # Indicate that the module is in the process of being loaded.
-    Box::store(thePendingBox, Collection::put(pendings, fqName, null));
-
     def baseContext = Module0::getGlobals(
         Module0::moduleGet({name: ["core", "Globals"]}));
     def moduleDir = findModuleDirectory(searchInfo, paths);
@@ -84,10 +69,6 @@ fn moduleUse(searchInfo, modulePaths?) {
         };
 
     Module0::moduleDef(result);
-
-    # Indicate that the module load is no longer in-process.
-    Box::update(thePendingBox,
-        { pendings <> Collection::del(pendings, fqName) });
 
     <> result
 };

@@ -16,6 +16,7 @@
 def theModulesBox = Box_makeCell({});
 
 # Box containing a map from full directory paths to corresponding modules.
+# If a module is in the middle of loading, then its path maps to "loading".
 def thePathsBox = Box_makeCell({});
 
 # Flattens an absolute path to a simple name.
@@ -262,25 +263,41 @@ fn getGlobals(modu) {
 };
 
 # Documented in spec.
-fn load(baseCtx, directory) {
-    def ctx = makeModuleContext(baseCtx, directory);
+fn load(baseCtx, fqPath) {
+    def paths = Box_fetch(thePathsBox);
+    ifValue { <> get(paths, fqPath) }
+        { already ->
+            # Either the module is already loaded, or it's currently in
+            # the middle of being loaded. Figure out which, and respond
+            # accordingly.
+            ifIs { <> eq(already, "loading") }
+                {
+                    Io0_die(cat("Module load loop detected: ",
+                        flattenPath(fqPath)))
+                };
+            return already;
+        };
 
-    # This generally evaluates to a map.
+    Box_store(thePathsBox, Collection_put(paths, fqPath, "loading"));
+
+    def ctx = makeModuleContext(baseCtx, fqPath);
+
+    # This is supposed to evaluate to a map.
     def exports = ctx::submoduleUse("main");
 
     # Combine `moduleInfo` and `exports` to form the final module value.
-    <> @[Module: {info: ctx::moduleInfo, exports: exports}];
+    def result = @[Module: {info: ctx::moduleInfo, exports: exports}];
+
+    # Update the loaded module map. Note that we re-fetch the value, since
+    # it may have been altered by other loads while this load was in progress.
+    Box_store(thePathsBox,
+        Collection_put(Box_fetch(thePathsBox), fqPath, result));
+
+    <> result
 };
 
 # Documented in spec.
 fn moduleDef(modu) {
-    def paths = Box_fetch(thePathsBox);
-    def path = getInfo(modu)::path;
-    ifIs { <> get(paths, path) }
-        { Io0_die(cat("Cannot redefine module: ", flattenPath(path))) };
-
-    Box_store(thePathsBox, Collection_put(paths, path, modu));
-
     def mods = Box_fetch(theModulesBox);
     def name = nameOf(modu);
     ifIs { <> get(mods, name) }

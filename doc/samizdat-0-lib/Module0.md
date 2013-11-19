@@ -44,9 +44,11 @@ mapping of names to values.
 Loads a module from the directory named by the given fully-qualified path
 (list of directory names), using the given `globals` for global bindings.
 
+If the given `fqPath` has already been loaded as a module, then this
+returns the previous result of loading.
+
 This loads the code and returns the constructed module, but it does *not*
-cause the module to be findable via `moduleGet`. It also does *not* check to
-see if the module has already been loaded.
+cause the module to be findable via `moduleGet`.
 
 This is the "raw" version of module loading, which takes a few shortcuts
 compared to the full module-loading semantics. It is not intended to be
