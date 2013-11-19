@@ -63,8 +63,8 @@ def MANIFEST = [
 
     # Layer 1: Modules.
     ["core", "Io1"],
-    ["core", "CommandLine"],
     ["core", "Module"],
+    ["core", "CommandLine"],
 
     # Layer 2: Language implementation.
     ["core", "Lang2"],
