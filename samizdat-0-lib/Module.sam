@@ -252,11 +252,11 @@ fn getGlobals(modu) {
 };
 
 # Documented in spec.
-fn load(baseCtx, directory, mainName?) {
+fn load(baseCtx, directory) {
     def ctx = makeModuleContext(baseCtx, directory);
 
     # This generally evaluates to a map.
-    def exports = ctx::submoduleUse(ifValueOr { <> mainName* } { <> "main" });
+    def exports = ctx::submoduleUse("main");
 
     # Combine `moduleInfo` and `exports` to form the final module value.
     <> @[Module: {info: ctx::moduleInfo, exports: exports}];

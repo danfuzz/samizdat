@@ -39,12 +39,10 @@ as a mapping of names to values.
 Gets a map of the metainformation about the given module, as a
 mapping of names to values.
 
-#### `load(globals, fqPath, mainName?) <> module`
+#### `load(globals, fqPath) <> module`
 
 Loads a module from the directory named by the given fully-qualified path
 (list of directory names), using the given `globals` for global bindings.
-If `mainName` is supplied, uses that as the name of the main file to load;
-if not, it defaults to `"main.sam"`.
 
 This loads the code and returns the constructed module, but it does *not*
 cause the module to be findable via `moduleGet`. It also does *not* check to
