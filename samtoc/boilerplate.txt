@@ -1,0 +1,46 @@
+/*
+ * GENERATED CODE!
+ * GENERATED CODE!
+ * GENERATED CODE!
+ *
+ * This code *may* be derived from a copyrighted source. Proceed with
+ * caution!
+ */
+
+#include "type/List.h"
+#include "type/Map.h"
+#include "type/String.h"
+#include "util.h"
+
+static zvalue lookup(zvalue context, const char *name) {
+    return collGet(context, stringFromUtf8(-1, name));
+}
+
+zvalue eval(zvalue context) {
+    zvalue moduleUse = lookup(context, "moduleUse");
+
+    zvalue langModuleName[2] = {
+        stringFromUtf8(-1, "core"),
+        stringFromUtf8(-1, "Lang2")
+    };
+
+    zvalue langModuleSpec =
+        collPut(
+            EMPTY_MAP,
+            stringFromUtf8(-1, "name"),
+            listFromArray(2, langModuleName));
+
+    zvalue langModule = FUN_CALL(moduleUse, langModuleSpec);
+    zvalue parseProgram = lookup(langModule, "parseProgram");
+    zvalue evalFn = lookup(langModule, "eval");
+
+    zvalue progStr = stringFromUtf8(-1,
+        REPLACE-THIS
+    );
+
+    zvalue progTree = FUN_CALL(parseProgram, progStr);
+    zvalue evalResult = FUN_CALL(evalFn, context, progTree);
+    zvalue result = FUN_CALL(evalResult);
+
+    return result;
+}

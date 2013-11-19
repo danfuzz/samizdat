@@ -4,6 +4,25 @@
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
+def boilerplateFile = submoduleRead("boilerplate.txt");
+
+fn applyBoilerplate(replacement) {
+    def parBoilerplateChar = {/
+        "REPLACE-THIS"
+        { <> "\%q(replacement)" }
+    |
+        ch = .
+        { <> typeOf(ch) }
+    /};
+
+    def parBoilerplate = {/
+        parBoilerplateChar*
+    /};
+
+    def chars = Peg::apply(parBoilerplate, boilerplateFile);
+    <> cat(chars*)
+};
+
 fn main(selfPath, args*) {
     Io1::note("\
         Starting: \%q(selfPath)
@@ -21,7 +40,8 @@ fn main(selfPath, args*) {
     def sourceText = Io1::readFileUtf8(sourcePath);
 
     # TODO!
-    Io1::writeFileUtf8(targetPath, sourceText)
+    def outputText = applyBoilerplate(sourceText);
+    Io1::writeFileUtf8(targetPath, outputText)
 };
 
 <> {main: main}
