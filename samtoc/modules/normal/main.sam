@@ -1,0 +1,14 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
+fn compile(sourceFile, targetFile) {
+    def sourcePath = Io1::pathFromFlat(sourceFile);
+    def targetPath = Io1::pathFromFlat(targetFile);
+
+    Io1::writeFileUtf8(targetPath, "TODO\n")
+};
+
+<> {compile: compile}
