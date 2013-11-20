@@ -42,6 +42,7 @@ def parKeyValue = {/
 def parFlag = {/
     "--"
     flag = parWord
+    { <> ne(flag, "") } # Reject plain `--`.
     { <> {(flag): true} }
 /};
 
