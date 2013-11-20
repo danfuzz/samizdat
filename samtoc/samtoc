@@ -39,4 +39,22 @@ unset newProg
 # Main script
 #
 
-"${baseDir}/samizdat-0/samizdat-0" "${progDir}" "$@"
+CC=cc
+
+# Note: The GNU equivalent to `-dynamiclib` seems to be `-shared`, and
+# the equivalent to `-undefined dynamic_lookup` seems to be `-Ur`.
+COMPILE_LIB=(
+    "${CC[@]}"
+        -dynamiclib -undefined dynamic_lookup
+        -I"${baseDir}/../samizdat-0/include"
+)
+
+sourceFile="$1"
+outputFile="$2"
+intermedFile="${outputFile}.c"
+
+"${baseDir}/samizdat-0/samizdat-0" "${progDir}" \
+    "${sourceFile}" "${intermedFile}" \
+|| exit 1
+
+"${COMPILE_LIB[@]}" -o "${outputFile}" "${intermedFile}"
