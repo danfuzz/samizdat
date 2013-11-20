@@ -35,7 +35,6 @@ unset prog
 unset newProg
 
 
-
 #
 # Argument parsing
 #
