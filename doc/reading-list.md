@@ -78,6 +78,9 @@ design and implementation of *Samizdat*.
 * Shunting-yard algorithm (operator-precedence parsing) &mdash;
   <http://en.wikipedia.org/wiki/Shunting-yard_algorithm>
 
+* Subtext language &mdash;
+  <http://www.subtext-lang.org/>
+
 * Syntax across languages (a survey) &mdash;
   <http://rigaux.org/language-study/syntax-across-languages.html>
 
