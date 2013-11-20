@@ -42,6 +42,7 @@ def parKeyValue = {/
 def parFlag = {/
     "--"
     flag = parWord
+    { <> ne(flag, "") } # Reject plain `--`.
     { <> {(flag): true} }
 /};
 
@@ -77,17 +78,6 @@ def parArguments = {/
         <> {options: options, args: args}
     }
 /};
-
-# Simple command-line argument parser.
-fn parseArgs(args) {
-    # Make a unified string with each argument "\0"-terminated.
-    def argFilter = Generator::makeFilterGenerator(args)
-        { arg <> cat(arg, "\0") };
-    def argString = cat("", argFilter*);
-
-    # Use the peg grammar above to split the arguments back apart.
-    <> Peg::apply(parArguments, argString)
-};
 
 # Runs a module-form command-line. In this case, a named directory is
 # loaded as a module. It is expected to export a `main()` function, which
@@ -125,6 +115,17 @@ fn runFile(globals, langLayer, filePath, args) {
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn parseArgs(args) {
+    # Make a unified string with each argument "\0"-terminated.
+    def argFilter = Generator::makeFilterGenerator(args)
+        { arg <> cat(arg, "\0") };
+    def argString = cat("", argFilter*);
+
+    # Use the peg grammar above to split the arguments back apart.
+    <> Peg::apply(parArguments, argString)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn runCommandLine(rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
     def options = parsedArgs::options;
@@ -152,5 +153,6 @@ fn runCommandLine(rawArgs*) {
 };
 
 <> {
+    parseArgs:      parseArgs,
     runCommandLine: runCommandLine
 }
