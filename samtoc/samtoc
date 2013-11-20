@@ -36,8 +36,77 @@ unset newProg
 
 
 #
+# Argument parsing
+#
+
+# Output file name.
+outputFile='-'
+
+# Whether to compile to binary.
+fullCompile='yes'
+
+# Additional arguments passed to the program.
+moreArgs=()
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName} [--output=<path>] [--c-code] [--mode=<mode>]"
+        echo "    <source-path>"
+        exit
+    elif [[ ${opt} == '--c-code' ]]; then
+        fullCompile='no'
+    elif [[ ${opt} =~ ^--mode=(.*) ]]; then
+        moreArgs+=("${opt}")
+    elif [[ ${opt} =~ ^--output=(.*) ]]; then
+        outputFile="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+if (( $# == 0 )); then
+    echo 'Missing source file name.' 1>&2
+    exit 1
+elif (( $# > 1 )); then
+    echo 'Too many arguments.' 1>&2
+    exit 1
+fi
+
+sourceFile="$1"
+shift
+
+if [[ ${outputFile} == '-' || ${outputFile} == '/dev/stdout' ]]; then
+    outputFile='/dev/stdout'
+    fullCompile='no'
+fi
+
+
+#
 # Main script
 #
+
+if [[ ${fullCompile} == yes ]]; then
+    generatedFile="${outputFile}.c"
+else
+    generatedFile="${outputFile}"
+fi
+
+"${baseDir}/samizdat-0/samizdat-0" "${progDir}" \
+    "${moreArgs[@]}" --output="${generatedFile}" -- "${sourceFile}" \
+|| exit 1
+
+if [[ ${fullCompile} == no ]]; then
+    exit
+fi
 
 CC=cc
 
@@ -49,12 +118,4 @@ COMPILE_LIB=(
         -I"${baseDir}/../samizdat-0/include"
 )
 
-sourceFile="$1"
-outputFile="$2"
-intermedFile="${outputFile}.c"
-
-"${baseDir}/samizdat-0/samizdat-0" "${progDir}" \
-    "${sourceFile}" "${intermedFile}" \
-|| exit 1
-
-"${COMPILE_LIB[@]}" -o "${outputFile}" "${intermedFile}"
+"${COMPILE_LIB[@]}" -o "${outputFile}" "${generatedFile}"

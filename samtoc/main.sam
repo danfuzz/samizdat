@@ -2,46 +2,25 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+def CommandLine = moduleUse({name: ["core", "CommandLine"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
-def boilerplateFile = submoduleRead("boilerplate.txt");
-
-fn applyBoilerplate(replacement) {
-    def parBoilerplateChar = {/
-        "REPLACE-THIS"
-        { <> "\%q(replacement)" }
-    |
-        ch = .
-        { <> typeOf(ch) }
-    /};
-
-    def parBoilerplate = {/
-        parBoilerplateChar*
-    /};
-
-    def chars = Peg::apply(parBoilerplate, boilerplateFile);
-    <> cat(chars*)
-};
-
-fn main(selfPath, args*) {
+fn main(selfPath, rawArgs*) {
     Io1::note("\
         Starting: \%q(selfPath)
-        Args:     \%q(args)\n");
+        Raw args: \%q(rawArgs)\n");
 
-    def sourceFile = args[0];
-    def targetFile = args[1];
+    def args = CommandLine::parseArgs(rawArgs);
 
-    Io1::note("\
-        Source: \%q(sourceFile)
-        Target: \%q(targetFile)\n");
+    Io1::note("Args:     \%q(args)\n");
 
-    def sourcePath = Io1::pathFromFlat(sourceFile);
-    def targetPath = Io1::pathFromFlat(targetFile);
-    def sourceText = Io1::readFileUtf8(sourcePath);
+    def sourceFile = args::args[0];
+    def targetFile = args::options::output;
+    def modeName = args::options::mode | "fake";
 
-    # TODO!
-    def outputText = applyBoilerplate(sourceText);
-    Io1::writeFileUtf8(targetPath, outputText)
+    def modeModule = moduleUse({name: [modeName]});
+
+    modeModule::compile(sourceFile, targetFile);
 };
 
 <> {main: main}
