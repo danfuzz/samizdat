@@ -79,7 +79,10 @@ fn makeModuleContext(baseCtx, directory) {
 
         def binName = submoduleFileName(name, "samb");
         ifIs { <> Io0_flatFileExists(binName) }
-            { return Lang0_evalBinary(ctx, binName) };
+            {
+                def func = Lang0_evalBinary(ctx, binName);
+                return func()
+            };
 
         Io0_die(cat("Missing module file: ", regularName));
     };
