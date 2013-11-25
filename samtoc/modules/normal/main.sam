@@ -2,8 +2,13 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+def Template = moduleUse({name: ["Template"]});
+
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
+
+def templateText = submoduleRead("boilerplate.txt");
+
 
 # Accessor for `closure` and `fnDef` nodes.
 fn getFormals(node) {
@@ -58,7 +63,16 @@ fn compile(sourcePath, targetPath) {
         <> "\%q(s)\n\n"
     ];
 
-    Io1::writeFileUtf8(targetPath, "TODO\n\n\(statements)\n")
+    def replacements = {
+        minArgs: 0,
+        maxArgs: 0,
+        name:    Collection::last(sourcePath),
+        body:    "\%Q(statements)"
+    };
+
+    def outputText = Template::apply(templateText, replacements);
+
+    Io1::writeFileUtf8(targetPath, outputText)
 };
 
 <> {compile: compile}
