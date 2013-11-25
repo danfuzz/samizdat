@@ -4,10 +4,7 @@
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
-fn compile(sourceFile, targetFile) {
-    def sourcePath = Io1::pathFromFlat(sourceFile);
-    def targetPath = Io1::pathFromFlat(targetFile);
-
+fn compile(sourcePath, targetPath) {
     Io1::writeFileUtf8(targetPath, "TODO\n")
 };
 

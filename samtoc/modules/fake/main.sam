@@ -23,15 +23,12 @@ fn applyBoilerplate(replacement) {
     <> cat(chars*)
 };
 
-fn compile(sourceFile, targetFile) {
+fn compile(sourcePath, targetPath) {
     Io1::note("\
-        Source: \%q(sourceFile)
-        Target: \%q(targetFile)\n");
+        Source: \%q(sourcePath)
+        Target: \%q(targetPath)\n");
 
-    def sourcePath = Io1::pathFromFlat(sourceFile);
-    def targetPath = Io1::pathFromFlat(targetFile);
     def sourceText = Io1::readFileUtf8(sourcePath);
-
     def outputText = applyBoilerplate(sourceText);
     Io1::writeFileUtf8(targetPath, outputText)
 };
