@@ -7,7 +7,7 @@ def Template = moduleUse({name: ["Template"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
-def templateText = submoduleRead("boilerplate.txt");
+def templateText = submoduleRead("template.txt");
 
 
 # Accessor for `closure` and `fnDef` nodes.

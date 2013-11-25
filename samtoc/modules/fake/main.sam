@@ -4,7 +4,7 @@
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
-def boilerplateFile = submoduleRead("boilerplate.txt");
+def templateText = submoduleRead("template.txt");
 
 fn applyBoilerplate(replacement) {
     def parBoilerplateChar = {/
@@ -19,7 +19,7 @@ fn applyBoilerplate(replacement) {
         parBoilerplateChar*
     /};
 
-    def chars = Peg::apply(parBoilerplate, boilerplateFile);
+    def chars = Peg::apply(parBoilerplate, templateText);
     <> cat(chars*)
 };
 
