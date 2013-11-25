@@ -3,8 +3,12 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
+def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
 fn compile(sourcePath, targetPath) {
+    def sourceText = Io1::readFileUtf8(sourcePath);
+    def tree = Lang2::parseProgram(sourceText);
+
     Io1::writeFileUtf8(targetPath, "TODO\n")
 };
 
