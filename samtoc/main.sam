@@ -18,9 +18,16 @@ fn main(selfPath, rawArgs*) {
     def targetFile = args::options::output;
     def modeName = args::options::mode | "fake";
 
+    def sourcePath = Io1::pathFromFlat(sourceFile);
+    def targetPath = Io1::pathFromFlat(targetFile);
     def modeModule = moduleUse({name: [modeName]});
 
-    modeModule::compile(sourceFile, targetFile);
+    Io1::note("\
+        Source:   \%q(sourcePath)
+        Target:   \%q(targetPath)
+        Compiler: \%q(modeName)\n");
+
+    modeModule::compile(sourcePath, targetPath);
 };
 
 <> {main: main}

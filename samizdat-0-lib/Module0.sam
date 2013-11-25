@@ -36,7 +36,6 @@ fn flattenPath(name) {
 # structured path).
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
-    def localModulePath = [directory*, "modules"];
 
     # A box for the final load context, to enable the necessary self-reference.
     def ctxBox = Box_makePromise();
@@ -79,7 +78,10 @@ fn makeModuleContext(baseCtx, directory) {
 
         def binName = submoduleFileName(name, "samb");
         ifIs { <> Io0_flatFileExists(binName) }
-            { return Lang0_evalBinary(ctx, binName) };
+            {
+                def func = Lang0_evalBinary(ctx, binName);
+                return func()
+            };
 
         Io0_die(cat("Missing module file: ", regularName));
     };
@@ -93,14 +95,6 @@ fn makeModuleContext(baseCtx, directory) {
 
         Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
         <> result
-    };
-
-    fn innerModuleUse(searchInfo, modulePaths?) {
-        def fullPaths = ifValue { <> modulePaths* }
-            { <> [modulePaths*, localModulePath] }
-            { <> [localModulePath] };
-
-        <> baseCtx::moduleUse(searchInfo, fullPaths)
     };
 
     # If the `module` file exists, it must evaluate to a map. If not,
@@ -131,7 +125,6 @@ fn makeModuleContext(baseCtx, directory) {
     def fullCtx = {
         baseCtx*,
         moduleInfo:     moduleInfo,
-        moduleUse:      innerModuleUse,
         submoduleEval:  languageModule::eval,
         submoduleUse:   submoduleUse,
         submoduleParse: languageModule::parseProgram,
@@ -311,10 +304,14 @@ fn moduleDef(modu) {
 
 # Documented in spec.
 fn moduleGet(searchInfo) {
-    # TODO: Currently ignores everything about `searchInfo` other than the name.
-    def name = searchInfo::name;
+    # TODO: Currently ignores everything about `searchInfo` other than the name
+    # and path.
 
-    <> get(Box_fetch(theModulesBox), name)
+    ifValue { <> searchInfo::path }
+        { path -> return get(Box_fetch(thePathsBox), path) };
+
+    ifValue { <> searchInfo::name }
+        { name -> return get(Box_fetch(theModulesBox), name) };
 };
 
 # Documented in spec.

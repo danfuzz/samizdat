@@ -82,8 +82,8 @@ def parArguments = {/
 # Runs a module-form command-line. In this case, a named directory is
 # loaded as a module. It is expected to export a `main()` function, which
 # is called with the Posix-style command-line arguments.
-fn runModule(globals, modulePath, args) {
-    def loaded = Module::load(globals, modulePath);
+fn runModule(modulePath, args) {
+    def loaded = Module::moduleUse({path: modulePath});
 
     <> ifValue { <> loaded::main }
         { main <> main(modulePath, args*) }
@@ -94,18 +94,18 @@ fn runModule(globals, modulePath, args) {
 # is read as a top-level program, and evaluated, passing it no arguments.
 # Its environment includes `PATH` and `ARGUMENTS` variables indicating
 # the path to the file and the command-line arguments, respectively.
-fn runFile(globals, langLayer, filePath, args) {
+fn runFile(langLayer, filePath, args) {
     def programText = Io1::readFileUtf8(filePath);
     def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
     def parsedProgram = langModule::parseProgram(programText);
 
-    def fullGlobals = {
-        globals*,
+    def globals = {
+        (Module::getExports(moduleUse({name: ["core", "Globals"]})))*,
         ARGUMENTS: args,
         PATH:      filePath
     };
 
-    def evalled = langModule::eval(fullGlobals, parsedProgram);
+    def evalled = langModule::eval(globals, parsedProgram);
     <> evalled()
 };
 
@@ -137,18 +137,11 @@ fn runCommandLine(rawArgs*) {
     def args = ifValueOr { <> Collection::butFirst(argWords) }
         { <> [] };
 
-    # Set up `globals` to be the default globals, with the addition of
-    # an `arguments` binding for the command-line arguments.
-    def globals = {
-        (Module::getExports(moduleUse({name: ["core", "Globals"]})))*,
-        arguments: args
-    };
-
     <> ifIs { <> Io1::fileExists([filePath*, "module.sam"]) }
-        { <> runModule(globals, filePath, args) }
+        { <> runModule(filePath, args) }
         {
             def langLayer = ifValueOr { <> options::layer } { <> "2" };
-            <> runFile(globals, langLayer, filePath, args)
+            <> runFile(langLayer, filePath, args)
         }
 };
 

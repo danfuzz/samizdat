@@ -2,37 +2,17 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+def Template = moduleUse({name: ["Template"]});
+def templateText = submoduleRead("template.txt");
+
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
-def boilerplateFile = submoduleRead("boilerplate.txt");
+fn compile(sourcePath, targetPath) {
+    def replacements = {
+        source: Io1::readFileUtf8(sourcePath)
+    };
 
-fn applyBoilerplate(replacement) {
-    def parBoilerplateChar = {/
-        "REPLACE-THIS"
-        { <> "\%q(replacement)" }
-    |
-        ch = .
-        { <> typeOf(ch) }
-    /};
-
-    def parBoilerplate = {/
-        parBoilerplateChar*
-    /};
-
-    def chars = Peg::apply(parBoilerplate, boilerplateFile);
-    <> cat(chars*)
-};
-
-fn compile(sourceFile, targetFile) {
-    Io1::note("\
-        Source: \%q(sourceFile)
-        Target: \%q(targetFile)\n");
-
-    def sourcePath = Io1::pathFromFlat(sourceFile);
-    def targetPath = Io1::pathFromFlat(targetFile);
-    def sourceText = Io1::readFileUtf8(sourcePath);
-
-    def outputText = applyBoilerplate(sourceText);
+    def outputText = Template::apply(templateText, replacements);
     Io1::writeFileUtf8(targetPath, outputText)
 };
 

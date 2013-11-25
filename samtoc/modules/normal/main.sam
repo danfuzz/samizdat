@@ -2,13 +2,76 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+def Template = moduleUse({name: ["Template"]});
+def templateText = submoduleRead("template.txt");
+
 def Io1 = moduleUse({name: ["core", "Io1"]});
+def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
-fn compile(sourceFile, targetFile) {
-    def sourcePath = Io1::pathFromFlat(sourceFile);
-    def targetPath = Io1::pathFromFlat(targetFile);
 
-    Io1::writeFileUtf8(targetPath, "TODO\n")
+# Accessor for `closure` and `fnDef` nodes.
+fn getFormals(node) {
+    <> dataOf(node)::formals
+};
+
+# Accessor for `fnDef` nodes.
+fn getName(node) {
+    <> dataOf(node)::name
+};
+
+# Accessor for `closure` and `fnDef` nodes.
+fn getStatements(node) {
+    <> dataOf(node)::statements
+};
+
+# Accessor for `closure` and `fnDef` nodes.
+fn getYieldDef(node) {
+    <> dataOf(node)::yieldDef
+};
+
+# Accessor for `closure` and `fnDef` nodes.
+fn getYield(node) {
+    <> dataOf(node)::yield
+};
+
+fn compile(sourcePath, targetPath) {
+    def sourceText = Io1::readFileUtf8(sourcePath);
+    def tree = Lang2::parseProgram(sourceText);
+
+    # Note: The node resulting from parsing a program must be of
+    # type `closure`.
+
+    # Reject closures that define any `formals`. TODO: Remove this restriction.
+    if (tree.getFormals() != []) {
+        Io1::die("Program must not define formals.");
+    };
+
+    # Reject closures that have a `yieldDef`. TODO: Remove this restriction.
+    if (tree.getYieldDef()) {
+        Io1::die("Program must not have a yield definition.");
+    };
+
+    # Reject closures that do not have a `yield`. TODO: Remove this
+    # restriction.
+    if (!tree.getYield()) {
+        Io1::die("Program must yield a value.");
+    };
+
+    # TODO: Something real here.
+    def statements = [s in tree.getStatements() ->
+        <> "\%q(s)\n\n"
+    ];
+
+    def replacements = {
+        minArgs: 0,
+        maxArgs: 0,
+        name:    Collection::last(sourcePath),
+        body:    "\%Q(statements)"
+    };
+
+    def outputText = Template::apply(templateText, replacements);
+
+    Io1::writeFileUtf8(targetPath, outputText)
 };
 
 <> {compile: compile}

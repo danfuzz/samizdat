@@ -35,7 +35,7 @@ zvalue eval(zvalue context) {
     zvalue evalFn = lookup(langModule, "eval");
 
     zvalue progStr = stringFromUtf8(-1,
-        REPLACE-THIS
+        \%q(source)
     );
 
     zvalue progTree = FUN_CALL(parseProgram, progStr);

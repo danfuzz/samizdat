@@ -1,0 +1,37 @@
+/*
+ * GENERATED CODE!
+ * GENERATED CODE!
+ * GENERATED CODE!
+ *
+ * This code *may* be derived from a copyrighted source. Proceed with
+ * caution!
+ */
+
+#include "type/Builtin.h"
+#include "type/String.h"
+#include "type/Value.h"
+
+static zvalue GLOBALS = NULL;
+static zvalue EVAL_RESULT = NULL;
+
+static zvalue topFunctionBody(zint argCount, zvalue *args) {
+\(body)
+}
+
+zvalue eval(zvalue context) {
+    if (GLOBALS == NULL) {
+        GLOBALS = context;
+    } else if (!valEq(GLOBALS, context))
+        die("Cannot re-eval with different global context.");
+    }
+
+    if (EVAL_RESULT == NULL) {
+        EVAL_RESULT = makeBuiltin(
+            \(minArgs),
+            \(maxArgs),
+            topFunctionBody,
+            stringFromUtf8(-1, \%q(name));
+    }
+
+    return EVAL_RESULT;
+}
