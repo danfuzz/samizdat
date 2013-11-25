@@ -3,11 +3,10 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def Template = moduleUse({name: ["Template"]});
+def templateText = submoduleRead("template.txt");
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
-
-def templateText = submoduleRead("template.txt");
 
 
 # Accessor for `closure` and `fnDef` nodes.
