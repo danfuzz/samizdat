@@ -22,6 +22,11 @@ fn main(selfPath, rawArgs*) {
     def targetPath = Io1::pathFromFlat(targetFile);
     def modeModule = moduleUse({name: [modeName]});
 
+    Io1::note("\
+        Source:   \%q(sourcePath)
+        Target:   \%q(targetPath)
+        Compiler: \%q(modeName)\n");
+
     modeModule::compile(sourcePath, targetPath);
 };
 
