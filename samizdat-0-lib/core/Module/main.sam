@@ -18,20 +18,48 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 
 # Finds the directory for the named module, by iterating over the given
 # `modulePaths`, looking for a `module.sam` file. Either returns
-# the directory path or dies with an error.
+# the tail of `modulePaths` that starts with the module path where the
+# module was found, or dies with an error.
 fn findModuleDirectory(searchInfo, modulePaths) {
     def fqName = searchInfo::name;
 
-    Generator::filterPump(modulePaths)
-        { onePath ->
-            def fullPath = [onePath*, fqName*];
-            ifIs { <> Io1::fileExists([fullPath*, "module.sam"]) }
-                { return fullPath }
-        };
+    loopReduce(modulePaths) { paths ->
+        ifIs { <> eq(paths, []) }
+            {
+                Io1::die(cat(
+                "Module not found: ",
+                Module0::stringFromModuleName(fqName)))
+            };
 
-    Io1::die(cat(
-        "Module not found: ",
-        Module0::stringFromModuleName(fqName)))
+        def moduleFile = [Collection::first(paths)*, fqName*, "module.sam"];
+        ifIs { <> Io1::fileExists(moduleFile) }
+            { return paths };
+
+        <> [Collection::butFirst(paths)]
+    };
+};
+
+# Loads a module at the given path, using the given module paths for
+# subsequent module lookups.
+fn loadPath(moduleDir, modulePaths) {
+    def baseContext = Module0::getGlobals(
+        Module0::moduleGet({name: ["core", "Globals"]}));
+
+    # This `moduleUse` is bound in the load context.
+    fn innerModuleUse(searchInfo, optPaths?) {
+        def fullPaths = ifValue { <> optPaths* }
+            { paths <> [paths*, modulePaths*] }
+            { <> modulePaths };
+
+        <> moduleUse(searchInfo, fullPaths)
+    };
+
+    def fullContext = { baseContext*, moduleUse: innerModuleUse };
+    def result = Module0::load(fullContext, moduleDir);
+
+    Module0::moduleDef(result);
+
+    <> result
 };
 
 
@@ -41,23 +69,31 @@ fn findModuleDirectory(searchInfo, modulePaths) {
 
 # Documented in spec.
 fn moduleUse(searchInfo, modulePaths?) {
-    def fqName = searchInfo::name;
-
     ifValue { <> Module0::moduleGet(searchInfo) }
         { modu -> return modu };
 
-    def paths = ifValueOr { <> modulePaths* }
+    def paths = ifValueOr { <> modulePaths* } { <> [] };
+
+    ifValue { <> searchInfo::path }
+        { path ->
+            # The module is being specified as an explicit path. This
+            # means that the path per se should be loaded, and it should
+            # include its own `modules` at the head of the paths list.
+            return loadPath(path, [[path*, "modules"], paths*])
+        };
+
+    def fqName = searchInfo::name;
+
+    ifIs { <> eq(paths, []) }
         {
             Io1::die(cat(
                 "Module not already loaded, and no `modulePaths` specified: ",
                 Module0::stringFromModuleName(fqName)))
         };
 
-    def baseContext = Module0::getGlobals(
-        Module0::moduleGet({name: ["core", "Globals"]}));
-    def moduleDir = findModuleDirectory(searchInfo, paths);
-
-    def result = Module0::load(baseContext, moduleDir);
+    def remainingPaths = findModuleDirectory(searchInfo, paths);
+    def moduleDir = [Collection::first(remainingPaths)*, fqName*];
+    def result = loadPath(moduleDir, remainingPaths);
     def info = Module0::getInfo(result);
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
@@ -67,8 +103,6 @@ fn moduleUse(searchInfo, modulePaths?) {
                 "Module name mismatch: ",
                 Module0::stringFromModuleName(fqName)))
         };
-
-    Module0::moduleDef(result);
 
     <> result
 };
