@@ -1,0 +1,58 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+def parSubstitution = {/
+    format = (
+        "%"
+        chars = [! "("]+
+        { <> Peg::stringFromTokenList(chars) }
+    |
+        { <> "s" }
+    )
+
+    "("
+    name = [! ")"]+
+    ")"
+
+    {
+        <> {format: format, name: Peg::stringFromTokenList(name)}
+    }
+/};
+
+def parItem = {/
+    "\\"
+    (
+        parSubstitution
+    |
+        "\\"
+        { <> "\\" }
+    |
+        ch = .
+        { Io1::die("Invalid escape sequence: \%q(cat("\\", typeOf(ch)))") }
+    )
+|
+    chars = [! "\\"]+
+    { <> Peg::stringFromTokenList(chars) }
+/};
+
+def parTemplate = {/
+    parItem*
+/};
+
+fn apply(templateString, defs) {
+    def items = Peg::apply(parTemplate, templateString);
+
+    def texts = [ item in items ->
+        <> if (isString(item)) {
+            <> item
+        } else {
+            Format::formatterFor(item::format)(defs[item::name])
+        }
+    ];
+
+    <> cat("", texts*)
+};
+
+<> {apply: apply}
