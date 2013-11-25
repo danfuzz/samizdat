@@ -105,7 +105,7 @@ fn runFile(langLayer, filePath, args) {
         PATH:      filePath
     };
 
-    def evalled = langModule::eval(fullGlobals, parsedProgram);
+    def evalled = langModule::eval(globals, parsedProgram);
     <> evalled()
 };
 
