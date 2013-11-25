@@ -55,7 +55,7 @@ fn compile(sourcePath, targetPath) {
 
     # TODO: Something real here.
     def statements = [s in tree.getStatements() ->
-        <> "\%q(s)\n"
+        <> "\%q(s)\n\n"
     ];
 
     Io1::writeFileUtf8(targetPath, "TODO\n\n\(statements)\n")
