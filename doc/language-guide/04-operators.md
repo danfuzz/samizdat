@@ -422,11 +422,14 @@ a void `y` won't improperly cause `z` to be evaluated.
 
 Within an expression (as opposed to in a variable declaration), `=`
 indicates assignment. `lvalue` is an expression that must be a valid
-assignment target.
+value reference (assignment target).
 
-In general, the `lvalue` is evaluated before the `expression`. Beyond that,
-the specific meaning of an assignment expression depends on the kind of
-lvalue; see those for more details.
+In general, the `lvalue` is evaluated before the `expression`, and the
+result of the overall expression is the same as the evaluated result
+of `expression`. `expression` must not evaluate to void.
+
+Beyond that, the specific meaning of an assignment expression depends on
+what sort of reference `lvalue` is; see those for more details.
 
 **Note:** Currently, the only valid kind of lvalue is a getter/setter
 expression (see which).
