@@ -27,7 +27,7 @@ If the function call returns void, then the expression's result is also void.
 
 If an argument evaluates to void, then this causes an immmediate error
 (terminating the runtime), *unless* that argument is prefixed with the
-`&` operator (see `Void contagion`, below). In the latter case, the function
+`&` operator (see "Void contagion", below). In the latter case, the function
 isn't called, and the expression yields void.
 
 In order to make it convenient to define control-structure-like functions,
