@@ -162,7 +162,9 @@ def parProgramDeclarations = Peg::makeMainChoice(
         Peg::makeChoice(
             Peg::makeToken("->"),
             Peg::makeLookaheadSuccess(Peg::makeToken("<>"))),
-        Peg::makeCode { yieldDef, formals, . <> {formals: formals, yieldDef*} }),
+        Peg::makeCode { yieldDef, formals, . ->
+            <> {formals: formals, yieldDef*}
+        }),
     Peg::makeResult({formals: []}));
 
 # Documented in Samizdat Layer 0 spec.
@@ -335,7 +337,8 @@ def parListItem = Peg::makeMainChoice(
         parIdentifierString,
         Peg::makeToken(":"),
         Peg::makeCode { ., . ->
-            Io0::die("Mapping syntax not valid as a list item or call argument.")
+            Io0::die(
+                "Mapping syntax not valid as a list item or call argument.")
         }),
     Peg::makeSequence(
         Peg::makeToken("&"),
@@ -370,7 +373,8 @@ def parDeriv = Peg::makeMainSequence(
         Peg::makeMainSequence(
             Peg::makeToken("["),
             Peg::makeChoice(parIdentifierString, parTerm),
-            Peg::makeOpt(Peg::makeSequence(Peg::makeToken(":"), parExpression)),
+            Peg::makeOpt(
+                Peg::makeSequence(Peg::makeToken(":"), parExpression)),
             Peg::makeToken("]"),
             Peg::makeCode { ., type, value, . <> [type, value*] }),
         Peg::makeMainSequence(
@@ -582,7 +586,10 @@ def parParserSetString = Peg::makeMainSequence(
                             &eq(Collection::sizeOf(startChar),
                                 Collection::sizeOf(endChar)))
                     }
-                    { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
+                    {
+                        <> cat(Range::makeInclusiveRange(
+                            startChar, 1, endChar)*)
+                    }
             }),
         Peg::makeCode { s <> dataOf(s) }));
 

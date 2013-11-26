@@ -3,10 +3,12 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Collection protocol. This is just a re-export from the primitive core library.
+# Collection protocol. This is just a re-export from the primitive core
+# library.
 #
 # **Note:** `cat` and `get` are special in that they are kept in the global
-# environment as well as becoming part of this module. See the spec for details.
+# environment as well as becoming part of this module. See the spec for
+# details.
 
 <> {
     cat:     cat,

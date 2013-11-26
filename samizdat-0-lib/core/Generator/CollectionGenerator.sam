@@ -41,7 +41,8 @@ fn CollectionGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(Generator::nextValue, "CollectionGenerator", CollectionGenerator_nextValue);
+genericBind(Generator::nextValue, "CollectionGenerator",
+    CollectionGenerator_nextValue);
 
 # `nextValue` binding for the core collection types.
 fn Collection_nextValue(coll, box) {
