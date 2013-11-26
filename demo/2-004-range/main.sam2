@@ -20,7 +20,8 @@ fn msg(generator) {
 
 # Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
-    def values = Generator::makeFilterGenerator(generator, 1..10) { v, . <> v };
+    def values = Generator::makeFilterGenerator(generator, 1..10)
+        { v, . <> v };
     Io1::note("Got: \%q([values*])")
 };
 
