@@ -6,7 +6,7 @@ Expression Operators
 
 Samizdat provides many of the same operators found throughout the C family,
 as well as a few new ones. In Samizdat, all infix operators are
-left-associative, that is 'x op y op z' is equivalent to `(x op y) op z`.
+left-associative, that is `x op y op z` is equivalent to `(x op y) op z`.
 
 The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
