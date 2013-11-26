@@ -39,7 +39,9 @@ static PbHeader liveHead = {
     .type = NULL
 };
 
-/** List head for the list of all doomed values. Double-linked circular list. */
+/**
+ * List head for the list of all doomed values. Double-linked circular list.
+ */
 static PbHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,

@@ -225,7 +225,8 @@ bool typeIsDerived(zvalue typeOrName) {
 
 /* Documented in header. */
 bool typeSecretIs(zvalue typeOrName, zvalue secret) {
-    zvalue typeSecret = isType(typeOrName) ? getInfo(typeOrName)->secret : NULL;
+    zvalue typeSecret =
+        isType(typeOrName) ? getInfo(typeOrName)->secret : NULL;
     return valEq(typeSecret, secret);
 }
 
