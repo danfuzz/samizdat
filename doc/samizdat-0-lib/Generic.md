@@ -17,8 +17,9 @@ Calls `totOrder`.
 
 #### `totEq(generic1, generic2) <> generic | void`
 
-Performs an identity comparison. Two generics are only equal if they are
-truly the same box.
+Performs an identity comparison. As generics have identity, no two
+generics are ever equal, so this only yields a value if the two arguments
+refer to the same generic.
 
 #### `totOrder(generic1, generic2) <> int`
 
