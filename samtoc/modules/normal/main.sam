@@ -4,6 +4,7 @@
 
 def Template = moduleUse({name: ["Template"]});
 def templateText = submoduleRead("template.txt");
+def collectLiterals = submoduleUse("collectLiterals");
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});

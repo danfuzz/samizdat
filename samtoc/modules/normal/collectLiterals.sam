@@ -1,0 +1,61 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+# `lits(node, resultBox)`, implements one layer of literal collection.
+def lits = makeRegularGeneric("lits", 2, 2);
+
+fn call_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "call", call_lits);
+
+fn closure_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "closure", closure_lits);
+
+fn expression_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "expression", expression_lits);
+
+fn fnDef_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "fnDef", fnDef_lits);
+
+fn interpolate_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "interpolate", interpolate_lits);
+
+fn literal_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "literal", literal_lits);
+
+fn varDef_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "varDef", varDef_lits);
+
+fn varRef_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "varRef", varRef_lits);
+
+fn voidable_lits(node, resultBox) {
+    # TODO
+};
+genericBind(lits, "voidable", voidable_lits);
+
+# Collects all literal nodes at or under the given one into a map
+# from literal value to index (zero-based).
+fn collectLiterals(node) {
+    def resultBox = Box::makeCell({});
+    lits(node, resultBox);
+    <> Box::fetch(resultBox)
+};
+
+<> collectLiterals
