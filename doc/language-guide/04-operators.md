@@ -12,7 +12,7 @@ The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
 
-### Postfix Operators (Precedence 8, highest / tightest)
+### Postfix Operators (Precedence 9, highest / tightest)
 
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
@@ -53,26 +53,36 @@ expression evaluates to an appropriate value.
 
 The expression to apply (before the open parenthesis) must be non-void.
 
-#### Function-target binding &mdash; `targetExpr.funcExpr`
+#### Getter/setter function application &mdash; `targetExpr.identifier` `targetExpr.identifier = expression`
 
-The dot infix syntax is used to create a function which binds a first
-argument to another function. `targetExpr.funcExpr` is approximately the same
-as `{ args* <> funcExpr(targetExpr, args*) }`, except that the expressions
-are evaluated only once when the dot expression is evaluated, and there is
-no name shadowing.
+Dot infix syntax as an expression (without explicit function application) is
+used to call a "getter" or "setter" style function. As a getter invocation,
+the function is passed `targetExpr` as its sole argument. As a setter, the
+function is passed `targetExpr` and `expression` (in that order).
 
-`funcExpr` is commonly the simple identifier name of a generic function.
+Getter and setter functions are constructed from the indicated `identifier`
+by prepending `"get-"` or `"set-"`.
 
-A typical usage looks like `def method = x.foo; ... method(y, z)`. More
-typically, a message is applied more directly using the related application
-syntax (immediately below).
+For example, the two lines in each pair here are equivalent to each other:
 
-#### Method-like function application &mdash; `targetExpr.funcExpr(arg, arg, ...)`
+```
+someCall(onSomething).zorch
+\"get-zorch"(someCall(onSomething))
 
-This combines function-target binding with function application and is
-semantically equivalent to calling the result of a function-target binding
-expression with the indicated arguments. That is, `x.foo(bar, baz)` is
-equivalent to `(x.foo)(bar, baz)`.
+blort.spaz = foo + 10
+\"set-spaz"(blort, foo + 10)
+```
+
+**Note:** The `=` operator in the setter syntax is the assignment operator,
+described below.
+
+**Note:** See immediately below for the method-like function application
+syntax.
+
+#### Method-like function application &mdash; `targetExpr.identifier(arg, arg, ...)`
+
+This is a variant of the function calling syntax, and is equivalent to
+`identifier(targetExpr, arg, arg, ...)`.
 
 This is the preferred syntax to use for applying a method or method-like
 function to a target.
@@ -169,7 +179,7 @@ used to take a flag value and incorporate it into a logical
 expression (such as might be the expression checked in an `if` statement).
 
 
-### Prefix Operators (Precedence 7)
+### Prefix Operators (Precedence 8)
 
 Prefix operators are higher in precedence than infix operators, but lower
 in precedence than postfix operators.
@@ -211,7 +221,7 @@ expression results in an int, and results in the bitwise complement of
 the inner expression's result.
 
 
-### Range Operators (Precedence 6)
+### Range Operators (Precedence 7)
 
 The range operators are used to build generators of ranges of values
 of ints or characters (the latter in the form of single-element strings).
@@ -257,7 +267,7 @@ This is equivalent to `Range::makeOpenRange(first, 1)`.
 This is equivalent to `Range::makeOpenRange(first, increment)`.
 
 
-### Multiplicative Infix Operators (Precedence 5)
+### Multiplicative Infix Operators (Precedence 6)
 
 #### Multiplication &mdash; `expression * expression`
 
@@ -303,7 +313,7 @@ If the second expression results in a negative number, this instead becomes
 a left shift.
 
 
-### Additive Infix Operators (Precedence 4)
+### Additive Infix Operators (Precedence 5)
 
 #### Addition &mdash; `expression + expression`
 
@@ -331,7 +341,7 @@ This asserts that both expressions result in ints, and results in the
 bitwise xor of the two numbers.
 
 
-### Comparison Infix Operators (Precedence 3)
+### Comparison Infix Operators (Precedence 4)
 
 Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
 `(x < y) & (y <= z)` with the additional guarantee that `y` is only
@@ -378,7 +388,7 @@ or `totOrder`. See the definition of those functions for more details.
 ints and floating point numbers.
 
 
-### Value/Void Logical-And Operator (Precedence 2) &mdash; `expression & expression`
+### Value/Void Logical-And Operator (Precedence 3) &mdash; `expression & expression`
 
 This is short-circuit logical-and (conjunction). When evaluating this
 operator, the first (left-hand) expression is evaluated. If that results
@@ -392,7 +402,7 @@ expression in parentheses, and prefixing it with a def-assignment, e.g.
 `(name := expression) & somethingWith(name)`.
 
 
-### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression | expression`
+### Value/Void Logical-Or Operator (Precedence 2) &mdash; `expression | expression`
 
 This is a short-circuit logical-or (disjunction). When evaluating this
 operator, the first (left-hand) expression is evaluated. If that results
@@ -406,3 +416,17 @@ is obviated in Samizdat by this and the logical-and operator.
 as long as `y` is never void. If `y` can legitimately be void, then the
 slightly longer form `(x & y? | z?)*` is an equivalent that ensures that
 a void `y` won't improperly cause `z` to be evaluated.
+
+
+#### Assignment (Precedence 1) &mdash; `lvalue = expression`
+
+Within an expression (as opposed to in a variable declaration), `=`
+indicates assignment. `lvalue` is an expression that must be a valid
+assignment target.
+
+In general, the `lvalue` is evaluated before the `expression`. Beyond that,
+the specific meaning of an assignment expression depends on the kind of
+lvalue; see those for more details.
+
+**Note:** Currently, the only valid kind of lvalue is a getter/setter
+expression (see which).
