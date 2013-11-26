@@ -63,6 +63,11 @@ fn compile(sourcePath, targetPath) {
         <> "\%q(s)\n\n"
     ];
 
+    def literals = collectLiterals(tree);
+    for (lit in literals) {
+        Io1::note("=== \%q(lit)")
+    };
+
     def replacements = {
         minArgs: 0,
         maxArgs: 0,
