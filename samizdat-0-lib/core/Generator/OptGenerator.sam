@@ -39,7 +39,11 @@ fn OptGenerator_nextValue(gen, box) {
             Box::store(box, [Box::fetch(innerBox)]);
             <> @[OptGenerator: nextGen]
         }
-        { <> Generator::nextValue(ValueGenerator::makeValueGenerator([]), box) }
+        {
+            <> Generator::nextValue(
+                ValueGenerator::makeValueGenerator([]),
+                box)
+        }
 };
 genericBind(Generator::nextValue, "OptGenerator", OptGenerator_nextValue);
 

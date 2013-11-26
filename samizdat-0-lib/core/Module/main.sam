@@ -96,7 +96,8 @@ fn moduleUse(searchInfo, modulePaths?) {
     def result = loadPath(moduleDir, remainingPaths);
     def info = Module0::getInfo(result);
 
-    # TODO: Currently ignores everything about `searchInfo` other than the name.
+    # TODO: Currently ignores everything about `searchInfo` other than
+    # the name.
     ifIs { <> ne(fqName, info::name) }
         {
             Io1::die(cat(

@@ -276,7 +276,8 @@ fn implProcessStringParts(parts) {
         Collection::butFirst(parts),
         [Collection::first(parts)])
         { part, result ->
-            <> ifValue { <> [&isString(Collection::last(result)), &isString(part)] }
+            <> ifValue
+                { <> [&isString(Collection::last(result)), &isString(part)] }
                 { newLast <> [Collection::butLast(result)*, cat(newLast*)] }
                 { <> [result*, part] };
         };

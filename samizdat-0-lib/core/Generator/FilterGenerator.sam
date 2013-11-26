@@ -43,7 +43,9 @@ fn FilterGenerator_nextValue(gen, box) {
                     { value ->
                         Box::store(box, value);
                         return @[FilterGenerator:
-                            Collection::put(payload, "generator", nextGenerator)]
+                            Collection::put(payload, "generator",
+                                nextGenerator)
+                        ]
                     }
                     {
                         # The filter discarded the value. Iterate!
@@ -56,7 +58,8 @@ fn FilterGenerator_nextValue(gen, box) {
         return
     }
 };
-genericBind(Generator::nextValue, "FilterGenerator", FilterGenerator_nextValue);
+genericBind(Generator::nextValue, "FilterGenerator",
+    FilterGenerator_nextValue);
 
 <> {
     makeFilterGenerator: makeFilterGenerator

@@ -47,7 +47,9 @@ fn SerialGenerator_nextValue(gen, box) {
                 }
                 {
                     # First generator was voided.
-                    <> Generator::nextValue(makeSerialGenerator(moreGens*), box)
+                    <> Generator::nextValue(
+                        makeSerialGenerator(moreGens*),
+                        box)
                 }
         }
         {

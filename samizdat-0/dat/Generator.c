@@ -184,9 +184,9 @@ MOD_INIT(Generator) {
     METH_BIND(Value,  collect);
 
     METH_BIND(Value,  filter);
-    genericBindPrim(GFN_filter,    TYPE_List,   Collection_filter, "List.filter");
-    genericBindPrim(GFN_filter,    TYPE_Map,    Collection_filter, "Map.filter");
-    genericBindPrim(GFN_filter,    TYPE_String, Collection_filter, "String.filter");
+    genericBindPrim(GFN_filter, TYPE_List,   Collection_filter, "List.filter");
+    genericBindPrim(GFN_filter, TYPE_Map,    Collection_filter, "Map.filter");
+    genericBindPrim(GFN_filter, TYPE_String, Collection_filter, "String.filter");
 }
 
 /* Documented in header. */

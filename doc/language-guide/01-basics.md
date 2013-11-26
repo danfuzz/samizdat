@@ -6,7 +6,8 @@ The Basics
 
 Samizdat is a functional-forward (but not purely functional) programming
 language, meant to be familiar to those steeped in the traditions of the
-[C programming language](https://en.wikipedia.org/wiki/C_%28programming_language%29)
+[C programming
+language](https://en.wikipedia.org/wiki/C_%28programming_language%29)
 family, including C per se, [C++](https://en.wikipedia.org/wiki/C%2B%2B),
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
 and [JavaScript](https://en.wikipedia.org/wiki/JavaScript).
@@ -29,8 +30,8 @@ end of the line it appears on. To be considered a comment, in addition one
 of the following must be the case:
 
 * It is the final character on its line (or in the file).
-* It is followed by one of the characters `#` `!` or <code>&nbsp;</code> (another number
-  sign, an exclamation mark, or a space).
+* It is followed by one of the characters `#` `!` or <code>&nbsp;</code>
+  (another number sign, an exclamation mark, or a space).
 
 ```
 #

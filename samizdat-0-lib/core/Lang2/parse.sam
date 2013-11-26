@@ -141,7 +141,8 @@ def UNARY_OPERATORS = {
     "[]":  makeVarRef("get")
 };
 
-# For binary operators, map of token types to function name variable references.
+# For binary operators, map of token types to function name variable
+# references.
 def BINARY_OPERATORS = {
     "+":    makeModNameRef("Number", "add"),
     "-":    makeModNameRef("Number", "sub"),
@@ -976,7 +977,9 @@ def parInterpolatedString = {/
 
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
-                        { Io1::die("Invalid syntax in string interpolation.") };
+                        {
+                            Io1::die("Invalid syntax in string interpolation.")
+                        };
 
                     <> makeCall(formatter,
                         makeInterpolate(makeOptValueExpression(call)))
@@ -1200,7 +1203,9 @@ def implPostfixOperator = {/
     # ```
     # target.funcExpr(arg, ...)
     # =>
-    # { target, func, args* <> func(target, args*) }(target, funcExpr, arg, ...)
+    # { target, func, args* ->
+    #     <> func(target, args*)
+    # }(target, funcExpr, arg, ...)
     # ```
     #
     # ```
@@ -1437,13 +1442,15 @@ def parLogicAndExpression = {/
         # Compound `&` expression (three or more clauses).
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = Generator::filterAll(most) { clause <> clause::formal };
-            def testThunks = Generator::filterAll(most, Range::makeOpenRange(0, 1))
-                { clause, index ->
-                    def test = clause::test;
-                    <> closureWithFormals(makeThunk(test),
-                        Collection::slice(formals, 0, index)*)
-                };
+            def formals =
+                Generator::filterAll(most) { clause <> clause::formal };
+            def testThunks =
+                Generator::filterAll(most, Range::makeOpenRange(0, 1))
+                    { clause, index ->
+                        def test = clause::test;
+                        <> closureWithFormals(makeThunk(test),
+                            Collection::slice(formals, 0, index)*)
+                    };
 
             # Construct the overall `ifValues` call.
             <> makeCallName("ifValues",
@@ -1548,13 +1555,15 @@ def parMultiTest = {/
         # General case.
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = Generator::filterAll(clauses) { clause <> clause::formal };
-            def testThunks = Generator::filterAll(clauses, Range::makeOpenRange(0, 1))
-                { clause, index ->
-                    def test = clause::test;
-                    <> closureWithFormals(makeThunk(test),
-                        Collection::slice(formals, 0, index)*)
-                };
+            def formals =
+                Generator::filterAll(clauses) { clause <> clause::formal };
+            def testThunks =
+                Generator::filterAll(clauses, Range::makeOpenRange(0, 1))
+                    { clause, index ->
+                        def test = clause::test;
+                        <> closureWithFormals(makeThunk(test),
+                            Collection::slice(formals, 0, index)*)
+                    };
 
             # Result function which constructs the overall `ifValues` call.
             <> { thenThunk, elseThunk? ->
@@ -1633,11 +1642,12 @@ def parIfExpression = {/
         # in a single-element list, so that they can be slotted directly into
         # place as the third argument to an enclosing `if*` by saying `result*`
         # (which also handles the case of a missing final `else`).
-        def reduction = Generator::doReduce1(clauses, optElse) { clause, optResult ->
-            def maker = clause::maker;
-            def then = clause::then;
-            <> [makeThunk(maker(then, optResult*))]
-        };
+        def reduction = Generator::doReduce1(clauses, optElse)
+            { clause, optResult ->
+                def maker = clause::maker;
+                def then = clause::then;
+                <> [makeThunk(maker(then, optResult*))]
+            };
 
         # Unwrap the single-element `reduction` result list;
         def mainThunk = reduction*;

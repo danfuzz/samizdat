@@ -384,7 +384,8 @@ METH_IMPL(Map, put) {
         zmapping *resultElems = getInfo(result)->elems;
 
         utilCpy(zmapping, resultElems, elems, index);
-        utilCpy(zmapping, &resultElems[index+1], &elems[index], (size - index));
+        utilCpy(zmapping, &resultElems[index+1], &elems[index],
+            (size - index));
     }
 
     zmapping *elem = &getInfo(result)->elems[index];
