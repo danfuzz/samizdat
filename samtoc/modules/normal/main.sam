@@ -4,6 +4,7 @@
 
 def Template = moduleUse({name: ["Template"]});
 def templateText = submoduleRead("template.txt");
+def collectLiterals = submoduleUse("collectLiterals");
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
@@ -61,6 +62,11 @@ fn compile(sourcePath, targetPath) {
     def statements = [s in tree.getStatements() ->
         <> "\%q(s)\n\n"
     ];
+
+    def literals = collectLiterals(tree);
+    for (lit in literals) {
+        Io1::note("=== \%q(lit)")
+    };
 
     def replacements = {
         minArgs: 0,
