@@ -7,7 +7,6 @@
 #
 
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Io0 = moduleUse({name: ["core", "Io0"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 

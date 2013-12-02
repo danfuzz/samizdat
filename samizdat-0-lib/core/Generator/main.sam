@@ -6,7 +6,6 @@
 # Generator functions
 #
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 def CollectionGenerator = submoduleUse("CollectionGenerator");

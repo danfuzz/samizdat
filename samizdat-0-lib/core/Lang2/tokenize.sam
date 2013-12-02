@@ -6,7 +6,6 @@
 # Samizdat Layer 2 Tokenizer
 #
 
-def Box = moduleUse({name: ["core", "Box"]});
 def FunctionForwarder = moduleUse({name: ["core", "FunctionForwarder"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 

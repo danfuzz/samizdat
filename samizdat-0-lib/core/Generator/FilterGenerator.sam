@@ -8,7 +8,6 @@
 # Payload is a map `[filterFunction: function, generator: subGen]`.
 # `subGen` is expected to produce lists of arguments to apply.
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 def ParaGenerator = submoduleUse("ParaGenerator");

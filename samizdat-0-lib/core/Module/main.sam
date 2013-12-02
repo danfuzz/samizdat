@@ -6,7 +6,6 @@
 # Module functions
 #
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang0 = moduleUse({name: ["core", "Lang0"]});
 def Module0 = moduleUse({name: ["core", "Module0"]});

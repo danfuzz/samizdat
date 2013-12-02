@@ -7,7 +7,6 @@
 #
 # Payload is `[collection: coll, index: int]`.
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 

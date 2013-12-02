@@ -6,8 +6,6 @@
 # PEG (Parsing Expression Grammar) support
 #
 
-def Box = moduleUse({name: ["core", "Box"]});
-
 
 #
 # Type Definitions
