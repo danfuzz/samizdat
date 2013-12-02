@@ -6,7 +6,6 @@
 # Calculator Demo
 #
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 

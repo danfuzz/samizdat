@@ -6,7 +6,6 @@
 # Samizdat Layer 2 Tree Parser
 #
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 def Lang0 = moduleUse({name: ["core", "Lang0"]});
@@ -1135,20 +1134,9 @@ def implPrefixOperator = {/
 /};
 Box::store(parPrefixOperator, implPrefixOperator);
 
-# Tree for the closure part of `target.func` syntax expansion.
-# This expression is constant across all translations, and it's most easily
-# constructed by using the built-in parser.
-def TARGET_BIND_CLOSURE = Lang0::parseProgram(
-    "target, func <> { args* <> func(target, args*) }");
-
-# Tree for the closure part of `target.func(arg, ...)` syntax expansion,
-# similar to the above.
-def TARGET_CALL_CLOSURE = Lang0::parseProgram(
-    "target, func, args* <> func(target, args*)");
-
 # Parses a unary postfix operator. This yields a function (per se) to call
-# in order to construct a node that represents the appropriate ultimate
-# function call.
+# in order to construct a node that represents the appropriate operator
+# application, function call, or the like.
 def implPostfixOperator = {/
     actuals = parActualsList
     { <> { node <> makeCall(node, actuals*) } }
@@ -1189,58 +1177,48 @@ def implPostfixOperator = {/
         { <> { node <> makeCall((UNARY_OPERATORS::"[]"), node, exprs*) } }
     )
 |
-    # This translates as something like the following. Note that the
-    # second translation has to use a closure to keep the order of evaluation
-    # be target-then-function. The third translation is for the common case
-    # of `func` being a simple identifier.
+    # This translates as something like the following:
     #
     # ```
-    # target.func
+    # target.name(arg, ...)
     # =>
-    # { target, func <> { args* <> func(target, args*) } }(target, func)
+    # name(target, arg, ...)
     # ```
     #
     # ```
-    # target.funcExpr(arg, ...)
+    # target.name = expression
     # =>
-    # { target, func, args* ->
-    #     <> func(target, args*)
-    # }(target, funcExpr, arg, ...)
+    # \"set-name"(target, expression)
     # ```
     #
     # ```
-    # target.funcName(arg, ...)
+    # target.name
     # =>
-    # funcName(target, arg, ...)
+    # \"get-name"(target)
     # ```
     @"."
-    funcExpr = parTerm
+    name = parIdentifierString
 
     (
-        # `target.func(arg, ...)`
+        # `target.name(arg, ...)`
         actuals = parActualsList
         {
-            <> ifIs { eq(typeOf(funcExpr), "varRef") }
-                {
-                    # `funcExpr` is a simple variable reference, so there's
-                    # no need to reorder using a closure.
-                    <> { node ->
-                        <> makeCall(funcExpr, node, actuals*)
-                    }
-                }
-                {
-                    <> { node ->
-                        <> makeCall(TARGET_CALL_CLOSURE,
-                            node, funcExpr, actuals*)
-                    }
-                }
+            def funcRef = makeVarRef(dataOf(name));
+            <> { node <> makeCall(funcRef, node, actuals*) }
         }
     |
-        # `target.func`
+        # `target.name = expression`
+        @"="
+        expr = parExpression
         {
-            <> { node ->
-                <> makeCall(TARGET_BIND_CLOSURE, node, funcExpr)
-            }
+            def setterRef = makeVarRef(cat("set-", dataOf(name)));
+            <> { node <> makeCall(setterRef, node, expr) }
+        }
+    |
+        # `target.name`
+        {
+            def getterRef = makeVarRef(cat("get-", dataOf(name)));
+            <> { node <> makeCall(getterRef, node) }
         }
     )
 /};

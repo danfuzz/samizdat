@@ -7,7 +7,6 @@
 #
 # Payload is `[subGens*]`, a list of sub-generators.
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 def ListWrapGenerator = submoduleUse("ListWrapGenerator");

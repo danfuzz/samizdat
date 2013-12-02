@@ -26,23 +26,25 @@ fn msg(value) {
 def sizeOf = Collection::sizeOf;
 def nth = Collection::nth;
 
-Io1::note("\nBasic syntax");
+Io1::note("\nMethod call syntax");
 msg([1, 2].sizeOf());
 msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
 msg("".cat("Awesome", "tastic!"));
 
-Io1::note("\nExpression syntax for name");
-def funcList = [nth, perEq];
-msg(["zero", "one", "two"].(Collection::first(funcList))(1));
+Io1::note("\nGetter syntax");
+def \"get-size" = Collection::sizeOf;
+msg([1, 2, 3].size);
 
-Io1::note("\nGetting bound methods");
-def method1 = [1, 2, 3].sizeOf;
-msg(method1());
+def \"get-value" = Box::fetch;
+def cell = Box::makeCell(100);
+msg(cell.value);
 
-def method2 = [4, 5, 6].(Collection::last(funcList));
-msg(method2([4, 5, 6]));
-msg(method2([9])?);
+Io1::note("\nSetter syntax");
+def \"set-value" = Box::store;
+msg(cell.value = 987);
+cell.value = 654;
+msg(cell.value);
 
 <> 0

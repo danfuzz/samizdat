@@ -6,7 +6,6 @@
 # `nullGenerator` Value and Type
 #
 
-def Box = moduleUse({name: ["core", "Box"]});
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
