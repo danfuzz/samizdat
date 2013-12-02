@@ -16,8 +16,6 @@ def getValue      = Lang0Node::getValue;
 def getYield      = Lang0Node::getYield;
 def getYieldDef   = Lang0Node::getYieldDef;
 
-def Box = moduleUse({name: ["core", "Box"]});
-
 # `lits(node, resultBox)`, implements one layer of literal collection.
 def lits = makeRegularGeneric("lits", 2, 2);
 
