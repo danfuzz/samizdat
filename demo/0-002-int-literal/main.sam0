@@ -1,0 +1,29 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Int literal demo
+#
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+#
+# Helper Definitions
+#
+
+fn msg(string) {
+    Io0::note(cat("Got: ", Format::source(string)))
+};
+
+
+#
+# Main Tests
+#
+
+msg(0);
+msg(-9);
+msg(20);
+
+<> 0

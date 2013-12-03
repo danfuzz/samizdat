@@ -1,0 +1,49 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Derived value literal demo, *Layer 2* specific
+#
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+#
+# Helper Definitions
+#
+
+fn msg(string) {
+    Io0::note(cat("Got: ", Format::source(string)))
+};
+
+
+#
+# Main Tests
+#
+
+# These all refer to the same value.
+msg(@["Null"]);
+msg(@"Null");
+msg(@Null);
+msg(null);
+
+# This is not the same as the above, as the type is `null`, not `"Null"`.
+msg(@[(null)]);
+
+# These both refer to the same value.
+msg(@[potion: "blort"]);
+msg(@["potion": "blort"]);
+
+msg(false);
+msg(true);
+
+msg(@blort);
+msg(@"%fizmo%");
+msg(@["^zorch^": ["scorch"]]);
+
+# Keywords can be used as types.
+msg(@def);
+msg(@[fn]);
+
+<> 0
