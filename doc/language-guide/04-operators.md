@@ -53,7 +53,7 @@ expression evaluates to an appropriate value.
 
 The expression to apply (before the open parenthesis) must be non-void.
 
-#### Getter/setter function application &mdash; `targetExpr.identifier` `targetExpr.identifier = expression`
+#### Getter/setter function application &mdash; `targetExpr.identifier` `targetExpr.identifier := expression`
 
 Dot infix syntax as an expression (without explicit function application) is
 used to call a "getter" or "setter" style function. As a getter invocation,
@@ -73,7 +73,7 @@ blort.spaz = foo + 10
 \"set-spaz"(blort, foo + 10)
 ```
 
-**Note:** The `=` operator in the setter syntax is the assignment operator,
+**Note:** The `:=` operator in the setter syntax is the assignment operator,
 described below.
 
 **Note:** See immediately below for the method-like function application
@@ -399,7 +399,9 @@ void) becomes the result of the outer expression.
 The value of the left-hand side can be referred to on the right-hand side
 by adding a name binding on the left. Do this by enclosing the left-hand
 expression in parentheses, and prefixing it with a def-assignment, e.g.
-`(name := expression) & somethingWith(name)`.
+`(def name = expression) & somethingWith(name)`. Expression-internal variable
+binding is *only* allowed on the left-hand side of an `&` expression; in
+any other expression context it is a syntax error.
 
 
 ### Value/Void Logical-Or Operator (Precedence 2) &mdash; `expression | expression`
@@ -418,11 +420,10 @@ slightly longer form `(x & y? | z?)*` is an equivalent that ensures that
 a void `y` won't improperly cause `z` to be evaluated.
 
 
-#### Assignment (Precedence 1) &mdash; `lvalue = expression`
+#### Assignment (Precedence 1) &mdash; `lvalue := expression`
 
-Within an expression (as opposed to in a variable declaration), `=`
-indicates assignment. `lvalue` is an expression that must be a valid
-value reference (assignment target).
+The `:=` operator indicates assignment. `lvalue` is an expression that must
+be a valid value reference (assignment target).
 
 In general, the `lvalue` is evaluated before the `expression`, and the
 result of the overall expression is the same as the evaluated result
