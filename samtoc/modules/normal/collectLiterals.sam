@@ -38,7 +38,7 @@ genericBind(lits, "expression", expression_lits);
 
 fn fnDef_lits(node, resultBox) {
     for (n in getStatements(node)) { lits(n, resultBox) };
-    (y := getYield(node))
+    (def y = getYield(node))
         & lits(y, resultBox);
 };
 genericBind(lits, "fnDef", fnDef_lits);

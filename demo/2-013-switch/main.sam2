@@ -43,7 +43,7 @@ fn elser(item?) {
 };
 
 fn namer(value) {
-    <> switch (x := value) {
+    <> switch (def x = value) {
         1|2|3:   { <> Number::mul(x, 10)   }
         4|5|6:   { <> Number::mul(x, 100)  }
         default: { <> Number::mul(x, 1000) }

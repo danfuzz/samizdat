@@ -160,9 +160,9 @@ msg(((1 == 1) & (1 == 2) & (3 == 3))??);
 msg(((1 == 2) & (2 == 2) & (3 == 3))??);
 msg(((1 == 1) & (2 == 2) & (3 == 4))??);
 
-msg((x := 1) & -x);
-msg((foo := 1) & (bar := -foo) & Number::add(-foo, bar));
-msg((blort := "th") & (1 == 1) & (fizmo := "ree") & cat(blort, fizmo));
+msg((def x = 1) & -x);
+msg((def foo = 1) & (def bar = -foo) & Number::add(-foo, bar));
+msg((def blort = "th") & (1 == 1) & (def fizmo = "ree") & cat(blort, fizmo));
 
 Io1::note("\nLogic 2");
 msg(10 | true);
