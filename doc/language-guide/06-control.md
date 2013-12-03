@@ -33,15 +33,13 @@ opName (x == 10) ...
 When the result of a test expression is of use &mdash; that is, when it is
 more than just a simple logical expression &mdash; its result can be
 bound to a variable which is then available in the associated consequent
-clause. To do that, add a `name := ` define-assignment prefix to the test
-expression. The define-assignment token is `:=` and not just `=` in order
-to make it stand out more when intermixed in an expression with other
-tokens that also use equal signs (such as `==`).
+clause. To do that, add a `def name =` define-assignment prefix to the test
+expression.
 
 For example:
 
 ```
-opName (varName := someCalculation()) {
+opName (def varName = someCalculation()) {
     ... varName ...
 }
 ```
@@ -61,7 +59,7 @@ pass.
 For example:
 
 ```
-opName (varName1 := someExpression1, varName2 := someExpression2) {
+opName (def varName1 = someExpression1, def varName2 = someExpression2) {
     ... varName1 ... varName2 ...
 }
 ```
