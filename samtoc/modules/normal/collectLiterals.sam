@@ -6,50 +6,50 @@ def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
 # TODO: Ought to be able to do something like:
 #     use Lang0Node *;
-def getActuals    = Lang0Node::getActuals;
-def getExpression = Lang0Node::getExpression;
-def getFormals    = Lang0Node::getFormals;
-def getFunction   = Lang0Node::getFunction;
-def getName       = Lang0Node::getName;
-def getStatements = Lang0Node::getStatements;
-def getValue      = Lang0Node::getValue;
-def getYield      = Lang0Node::getYield;
-def getYieldDef   = Lang0Node::getYieldDef;
+def \"get-actuals"    = Lang0Node::\"get-actuals";
+def \"get-expression" = Lang0Node::\"get-expression";
+def \"get-formals"    = Lang0Node::\"get-formals";
+def \"get-function"   = Lang0Node::\"get-function";
+def \"get-name"       = Lang0Node::\"get-name";
+def \"get-statements" = Lang0Node::\"get-statements";
+def \"get-value"      = Lang0Node::\"get-value";
+def \"get-yield"      = Lang0Node::\"get-yield";
+def \"get-yieldDef"   = Lang0Node::\"get-yieldDef";
 
 # `lits(node, resultBox)`, implements one layer of literal collection.
 def lits = makeRegularGeneric("lits", 2, 2);
 
 fn call_lits(node, resultBox) {
-    lits(getFunction(node), resultBox);
-    for (n in getActuals(node)) { lits(n, resultBox) };
+    lits(node.function, resultBox);
+    for (n in node.actuals) { lits(n, resultBox) };
 };
 genericBind(lits, "call", call_lits);
 
 fn closure_lits(node, resultBox) {
-    for (n in getStatements(node)) { lits(n, resultBox) };
-    lits(getYield(node), resultBox);
+    for (n in node.statements) { lits(n, resultBox) };
+    lits(node.yield, resultBox);
 };
 genericBind(lits, "closure", closure_lits);
 
 fn expression_lits(node, resultBox) {
-    lits(getExpression(node), resultBox);
+    lits(node.expression, resultBox);
 };
 genericBind(lits, "expression", expression_lits);
 
 fn fnDef_lits(node, resultBox) {
-    for (n in getStatements(node)) { lits(n, resultBox) };
-    (def y = getYield(node))
+    for (n in node.statements) { lits(n, resultBox) };
+    (def y = node.yield)
         & lits(y, resultBox);
 };
 genericBind(lits, "fnDef", fnDef_lits);
 
 fn interpolate_lits(node, resultBox) {
-    lits(getExpression(node), resultBox);
+    lits(node.expression, resultBox);
 };
 genericBind(lits, "interpolate", interpolate_lits);
 
 fn literal_lits(node, resultBox) {
-    def value = getValue(node);
+    def value = node.value;
     def result = Box::fetch(resultBox);
 
     if (!result[value]) {
@@ -59,7 +59,7 @@ fn literal_lits(node, resultBox) {
 genericBind(lits, "literal", literal_lits);
 
 fn varDef_lits(node, resultBox) {
-    lits(getValue(node), resultBox);
+    lits(node.value, resultBox);
 };
 genericBind(lits, "varDef", varDef_lits);
 
@@ -69,7 +69,7 @@ fn varRef_lits(node, resultBox) {
 genericBind(lits, "varRef", varRef_lits);
 
 fn voidable_lits(node, resultBox) {
-    lits(getExpression(node), resultBox);
+    lits(node.expression, resultBox);
 };
 genericBind(lits, "voidable", voidable_lits);
 

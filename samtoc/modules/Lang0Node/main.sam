@@ -7,64 +7,64 @@
 #
 
 # Accessor for `call` nodes.
-fn getActuals(node) {
+fn \"get-actuals"(node) {
     <> dataOf(node)::actuals
 };
 
 # Accessor for `expression`, `interpolate`, and `voidable` nodes.
-fn getExpression(node) {
+fn \"get-expression"(node) {
     <> dataOf(node)
 };
 
 # Accessor for `closure` and `fnDef` nodes.
-fn getFormals(node) {
+fn \"get-formals"(node) {
     <> dataOf(node)::formals
 };
 
 # Accessor for `call` nodes.
-fn getFunction(node) {
+fn \"get-function"(node) {
     <> dataOf(node)::function
 };
 
 # Accessor for `fnDef`, `varDef`, and `varRef` nodes.
-def getName = makeRegularGeneric("getName", 1, 1);
+def \"get-name" = makeRegularGeneric("get-name", 1, 1);
 fn fnDef_getName(node) { <> dataOf(node)::name };
-genericBind(getName, "fnDef", fnDef_getName);
+genericBind(\"get-name", "fnDef", fnDef_getName);
 fn varDef_getName(node) { <> dataOf(node)::name };
-genericBind(getName, "varDef", varDef_getName);
+genericBind(\"get-name", "varDef", varDef_getName);
 fn varRef_getName(node) { <> dataOf(node) };
-genericBind(getName, "varRef", varRef_getName);
+genericBind(\"get-name", "varRef", varRef_getName);
 
 # Accessor for `closure` and `fnDef` nodes.
-fn getStatements(node) {
+fn \"get-statements"(node) {
     <> dataOf(node)::statements
 };
 
 # Accessor for `literal` and `varDef` nodes.
-def getValue = makeRegularGeneric("getValue", 1, 1);
+def \"get-value" = makeRegularGeneric("getValue", 1, 1);
 fn literal_getValue(node) { <> dataOf(node) };
-genericBind(getValue, "literal", literal_getValue);
+genericBind(\"get-value", "literal", literal_getValue);
 fn varDef_getValue(node) { <> dataOf(node)::value };
-genericBind(getValue, "varDef", varDef_getValue);
+genericBind(\"get-value", "varDef", varDef_getValue);
 
 # Accessor for `closure` and `fnDef` nodes.
-fn getYield(node) {
+fn \"get-yield"(node) {
     <> dataOf(node)::yield
 };
 
 # Accessor for `closure` and `fnDef` nodes.
-fn getYieldDef(node) {
+fn \"get-yieldDef"(node) {
     <> dataOf(node)::yieldDef
 };
 
 <> {
-    getActuals:    getActuals,
-    getExpression: getExpression,
-    getFormals:    getFormals,
-    getFunction:   getFunction,
-    getName:       getName,
-    getStatements: getStatements,
-    getValue:      getValue,
-    getYield:      getYield,
-    getYieldDef:   getYieldDef
+    \"get-actuals":    \"get-actuals",
+    \"get-expression": \"get-expression",
+    \"get-formals":    \"get-formals",
+    \"get-function":   \"get-function",
+    \"get-name":       \"get-name",
+    \"get-statements": \"get-statements",
+    \"get-value":      \"get-value",
+    \"get-yield":      \"get-yield",
+    \"get-yieldDef":   \"get-yieldDef"
 }
