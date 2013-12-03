@@ -127,82 +127,6 @@ fn closureWithYieldDef(closure, name) {
     <> @[closure: {(dataOf(closure))*, yieldDef: name}]
 };
 
-# A no-argument yield-void thunk.
-def YIELD_VOID_THUNK = @[closure: {formals: [], statements: []}];
-
-# A single-argument yield-void function.
-def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
-
-# For unary operators, map of token types to function name variable references.
-def UNARY_OPERATORS = {
-    "-":   makeModNameRef("Number", "neg"),
-    "!!!": makeModNameRef("Bitwise", "not"),
-    "[]":  makeVarRef("get")
-};
-
-# For binary operators, map of token types to function name variable
-# references.
-def BINARY_OPERATORS = {
-    "+":    makeModNameRef("Number", "add"),
-    "-":    makeModNameRef("Number", "sub"),
-    "*":    makeModNameRef("Number", "mul"),
-    "/":    makeModNameRef("Number", "div"),
-    "%":    makeModNameRef("Number", "mod"),
-    "//":   makeModNameRef("Number", "divEu"),
-    "%%":   makeModNameRef("Number", "modEu"),
-    "==":   makeVarRef("perEq"),
-    "!=":   makeVarRef("perNe"),
-    "<":    makeVarRef("perLt"),
-    ">":    makeVarRef("perGt"),
-    "<=":   makeVarRef("perLe"),
-    ">=":   makeVarRef("perGe"),
-    "&&&":  makeModNameRef("Bitwise", "and"),
-    "|||":  makeModNameRef("Bitwise", "or"),
-    "^^^":  makeModNameRef("Bitwise", "xor"),
-    "<<<":  makeModNameRef("Bitwise", "shl"),
-    ">>>":  makeModNameRef("Bitwise", "shr"),
-    "\\==": makeVarRef("eq"),
-    "\\!=": makeVarRef("ne"),
-    "\\<":  makeVarRef("lt"),
-    "\\>":  makeVarRef("gt"),
-    "\\<=": makeVarRef("le"),
-    "\\>=": makeVarRef("ge"),
-    "..":   makeModNameRef("Range", "makeInclusiveRange"),
-    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
-    "..+":  makeModNameRef("Range", "makeOpenRange")
-};
-
-# Helper for parsing binary operator expressions, which puts together
-# a sequence of function calls. `voidable`, if passed as `true`, indicates
-# that the inner calls should be made voidable.
-fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
-    ifIs { <> eq(opExList, []) }
-        {
-            # Don't bother with the rest if there are no ops to apply.
-            # This avoids having to special-case the voidable stuff.
-            return firstEx
-        };
-
-    def voidable = ifValueOr { <> optVoidable* } { <> false };
-
-    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
-        def op = Collection::first(opEx);
-        def ex = Collection::last(opEx);
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
-        def call = makeCall(resolvedOp, result, ex);
-
-        <> ifIs { <> eq(voidable, true) }
-            { <> @[voidable: call] }
-            { <> call }
-    };
-
-    # For an inner-voidable expression, unwrap the outermost layer of
-    # voidability.
-    <> ifIs { <> eq(voidable, true) }
-        { <> dataOf(result) }
-        { <> result }
-};
-
 
 #
 # *Layer 0* Rules
@@ -923,11 +847,87 @@ Box::store(parChoicePex, implChoicePex);
 # Layer 2 Definitions and Rules
 #
 
+# A no-argument yield-void thunk.
+def YIELD_VOID_THUNK = @[closure: {formals: [], statements: []}];
+
+# A single-argument yield-void function.
+def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
+
 # Prefix identifiers (identifiers which can be followed by another identifier,
 # yielding a compound identifier "phrase").
 def IDENTIFIER_PREFIXES = {
     get: "get",
     set: "set"
+};
+
+# For unary operators, map of token types to function name variable references.
+def UNARY_OPERATORS = {
+    "-":   makeModNameRef("Number", "neg"),
+    "!!!": makeModNameRef("Bitwise", "not"),
+    "[]":  makeVarRef("get")
+};
+
+# For binary operators, map of token types to function name variable
+# references.
+def BINARY_OPERATORS = {
+    "+":    makeModNameRef("Number", "add"),
+    "-":    makeModNameRef("Number", "sub"),
+    "*":    makeModNameRef("Number", "mul"),
+    "/":    makeModNameRef("Number", "div"),
+    "%":    makeModNameRef("Number", "mod"),
+    "//":   makeModNameRef("Number", "divEu"),
+    "%%":   makeModNameRef("Number", "modEu"),
+    "==":   makeVarRef("perEq"),
+    "!=":   makeVarRef("perNe"),
+    "<":    makeVarRef("perLt"),
+    ">":    makeVarRef("perGt"),
+    "<=":   makeVarRef("perLe"),
+    ">=":   makeVarRef("perGe"),
+    "&&&":  makeModNameRef("Bitwise", "and"),
+    "|||":  makeModNameRef("Bitwise", "or"),
+    "^^^":  makeModNameRef("Bitwise", "xor"),
+    "<<<":  makeModNameRef("Bitwise", "shl"),
+    ">>>":  makeModNameRef("Bitwise", "shr"),
+    "\\==": makeVarRef("eq"),
+    "\\!=": makeVarRef("ne"),
+    "\\<":  makeVarRef("lt"),
+    "\\>":  makeVarRef("gt"),
+    "\\<=": makeVarRef("le"),
+    "\\>=": makeVarRef("ge"),
+    "..":   makeModNameRef("Range", "makeInclusiveRange"),
+    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
+    "..+":  makeModNameRef("Range", "makeOpenRange")
+};
+
+# Helper for parsing binary operator expressions, which puts together
+# a sequence of function calls. `voidable`, if passed as `true`, indicates
+# that the inner calls should be made voidable.
+fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
+    ifIs { <> eq(opExList, []) }
+        {
+            # Don't bother with the rest if there are no ops to apply.
+            # This avoids having to special-case the voidable stuff.
+            return firstEx
+        };
+
+    def voidable = ifValueOr { <> optVoidable* } { <> false };
+
+    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
+        def op = Collection::first(opEx);
+        def ex = Collection::last(opEx);
+        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
+        def call = makeCall(resolvedOp, result, ex);
+
+        <> ifIs { <> eq(voidable, true) }
+            { <> @[voidable: call] }
+            { <> call }
+    };
+
+    # For an inner-voidable expression, unwrap the outermost layer of
+    # voidability.
+    <> ifIs { <> eq(voidable, true) }
+        { <> dataOf(result) }
+        { <> result }
 };
 
 # Parses a *Layer 2* `identifier`.
