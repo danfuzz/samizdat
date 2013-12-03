@@ -563,9 +563,10 @@ def implExpression = {/
 Box::store(parExpression, implExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
-# This rule is totally rewritten at that layer.
 def parStatement = {/
     parVarDef | parFnDef | parExpression
+#|
+    # Note: *Layer 2* adds additional rules here.
 /};
 
 # Note: There are additional nonlocal exit rules in *Layer 2* and beyond.

@@ -100,6 +100,8 @@ fn makeCallNonlocalExit(name, optExpression?) {
 # Forward declarations required for layer 2.
 def parIdentifier2 = ParseForwarder::make();
 def parKey2 = ParseForwarder::make();
+def parNonlocalExit2 = ParseForwarder::make();
+def parStatement2 = ParseForwarder::make();
 def parTerm2 = ParseForwarder::make();
 
 # Forward declaration required for integrating layer 1 definitions.
@@ -550,11 +552,19 @@ def implUnaryExpression = {/
 /};
 Box::store(parUnaryExpression, implUnaryExpression);
 
-# `expression` from layer 0 is omitted here (it's forwarded earlier), and
-# `statement` and `nonlocalExit` are replaced with forwarded functions here.
-# These are all subsumed by more featureful layer 2 definitions, below.
-def parStatement = ParseForwarder::make();
-def parNonlocalExit = ParseForwarder::make();
+# `expression` from layer 0 is omitted here (it's forwarded earlier).
+
+# Note: There are additional expression rules in *Layer 2* and beyond.
+def parStatement = {/
+    parVarDef | parFnDef | parExpression
+|
+    # Note: *Layer 2* adds additional rules here.
+    parStatement2
+/};
+
+# Note: There are additional nonlocal exit rules in *Layer 2* and beyond.
+# This rule still exists but has several additions.
+def parNonlocalExit = parNonlocalExit2;
 
 # Parses a local yield / return.
 def parYield = {/
@@ -1123,7 +1133,7 @@ Box::store(parTerm2, implTerm2);
 # have the dual properties of (a) necessarily being at the end of a code
 # block, and (b) being represented as a function call in the underlying
 # function representation of code blocks.
-def implNonlocalExit = {/
+def implNonlocalExit2 = {/
     name = (
         @"<"
         n = parVarRef
@@ -1148,7 +1158,7 @@ def implNonlocalExit = {/
 
     { <> makeCallNonlocalExit(name, value*) }
 /};
-Box::store(parNonlocalExit, implNonlocalExit);
+Box::store(parNonlocalExit2, implNonlocalExit2);
 
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
@@ -2026,10 +2036,11 @@ def implExpression = {/
 Box::store(parExpression, implExpression);
 
 # Parses a statement.
-def implStatement = {/
-    parVarDef | parFnDef | parExpression
+def implStatement2 = {/
+    # TODO: Perhaps there will be more statement variants.
+    !() # Always fail, for now.
 /};
-Box::store(parStatement, implStatement);
+Box::store(parStatement2, implStatement2);
 
 
 #
