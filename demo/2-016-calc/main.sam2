@@ -57,7 +57,7 @@ fn applyShuntingYard(initialValue, opValues) {
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
             { <next> ops, values ->
-                if (  (lastOp := Collection::last(ops))
+                if (  (def lastOp = Collection::last(ops))
                     & (lastOp::precedence >= precedence)) {
                     <next> applyTop(ops, values)
                 };

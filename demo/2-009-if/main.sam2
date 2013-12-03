@@ -106,75 +106,75 @@ def blort2 = if <out> (1 \== 2) {
 
 Io1::note(blort2);
 
-if (x := returnBlort()) {
+if (def x = returnBlort()) {
     Io1::note(x)
 };
 
-if (x := returnBlort()) {
+if (def x = returnBlort()) {
     Io1::note(x)
 } else {
     Io1::note("Um?!")
 };
 
-if (x := returnVoid()) {
+if (def x = returnVoid()) {
     Io1::note("Um?!")
 } else {
     Io1::note("The expected void.")
 };
 
-if (x := returnVoid()) {
+if (def x = returnVoid()) {
     Io1::note("Um?!")
-} else if (y := returnFrotz()) {
+} else if (def y = returnFrotz()) {
     Io1::note(y)
-} else if (x := returnIgram()) {
+} else if (def x = returnIgram()) {
     Io1::note(x)
 };
 
-if (x := returnVoid()) {
+if (def x = returnVoid()) {
     Io1::note("Um?!")
-} else if (y := returnBlort()) {
+} else if (def y = returnBlort()) {
     Io1::note(y)
-} else if (y := returnFrotz()) {
+} else if (def y = returnFrotz()) {
     Io1::note(y)
-} else if (x := returnIgram()) {
+} else if (def x = returnIgram()) {
     Io1::note(x)
 };
 
-if (x := returnVoid()) {
+if (def x = returnVoid()) {
     Io1::note("Um?!")
-} else if (y := returnVoid()) {
+} else if (def y = returnVoid()) {
     Io1::note("Um?!")
-} else if (x := returnIgram()) {
+} else if (def x = returnIgram()) {
     Io1::note(x)
 } else {
     Io1::note("Um?!")
 };
 
-if (x := "fr", y := "otz") {
+if (def x = "fr", def y = "otz") {
     Io1::note(cat(x, y))
 } else {
     Io1::note("Um?")
 };
 
-if (x := "x", y := returnVoid()) {
+if (def x = "x", def y = returnVoid()) {
     Io1::note("Um?!")
 } else {
     Io1::note("Yes.")
 };
 
-if (x := returnVoid(), y := "y") {
+if (def x = returnVoid(), def y = "y") {
     Io1::note("Um?!")
 } else {
     Io1::note("Yes.")
 };
 
-if (x := "fr", "stuff", y := "ot", z := "z") {
+if (def x = "fr", "stuff", def y = "ot", def z = "z") {
     Io1::note(cat(x, y, z))
 };
 
-if (x := returnVoid()) {
+if (def x = returnVoid()) {
     Io1::note("Um?!")
-} else if (x := "fi", "stuff", y := "zm", z := "o") {
+} else if (def x = "fi", "stuff", def y = "zm", def z = "o") {
     Io1::note(cat(x, y, z))
 };
 
