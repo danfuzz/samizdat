@@ -69,6 +69,12 @@ fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
 # Returns an optional-value expression. This wraps `node` as
 # `optValue { <> node }`.
 fn makeOptValueExpression(node) {
@@ -101,6 +107,8 @@ fn makeCallNonlocalExit(name, optExpression?) {
 def parIdentifier2 = ParseForwarder::make();
 def parKey2 = ParseForwarder::make();
 def parNonlocalExit2 = ParseForwarder::make();
+def parPostfixOperator2 = ParseForwarder::make();
+def parPrefixOperator2 = ParseForwarder::make();
 def parStatement2 = ParseForwarder::make();
 def parTerm2 = ParseForwarder::make();
 
@@ -529,17 +537,34 @@ def parActualsList = {/
     parClosure+
 /};
 
-# `prefixOperator` and `postfixOperator` from layer 0 are replaced with
-# forwarded functions here. These are subsumed by more featureful layer 2
-# definitions, below.
-def parPrefixOperator = ParseForwarder::make();
-def parPostfixOperator = ParseForwarder::make();
+# Parses a unary postfix operator. This yields a function (per se) to call
+# in order to construct a node that represents the appropriate ultimate
+# function call.
+def parPostfixOperator = {/
+    actuals = parActualsList
+    { <> { node <> makeCall(node, actuals*) } }
+|
+    # This is sorta-kinda a binary operator, but in terms of precedence it
+    # fits better here.
+    @"::"
+    key = parIdentifierString
+    { <> { node <> makeGetExpression(node, key) } }
+|
+    # The lookahead failure here is to make the grammar prefer `*` to be
+    # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
+    # but higher layers augment its meaning.)
+    @"*" !parExpression
+    { <> { node <> makeInterpolate(node) } }
+|
+    # Note: *Layer 2* adds additional rules here.
+    parPostfixOperator2
+/};
 
 # Parses a unary expression. This is a term, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def implUnaryExpression = {/
-    prefixes = parPrefixOperator*
+    prefixes = parPrefixOperator2*
     base = parTerm
     postfixes = parPostfixOperator*
 
@@ -812,12 +837,6 @@ Box::store(parChoicePex, implChoicePex);
 fn makeCallNameThunks(name, actuals*) {
     def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeCallName(name, thunks*)
-};
-
-# Returns a collection access (`get`) expression. This is a `call` node
-# of two arguments (a collection node and a key node).
-fn makeGetExpression(collArg, keyArg) {
-    <> makeCallName("get", collArg, keyArg)
 };
 
 # Returns a collection access expression, with a `varRef` to the collection
@@ -1162,7 +1181,7 @@ Box::store(parNonlocalExit2, implNonlocalExit2);
 
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
-def implPrefixOperator = {/
+def implPrefixOperator2 = {/
     operator = [@"-" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, typeOf(operator));
@@ -1174,26 +1193,12 @@ def implPrefixOperator = {/
     @"!"
     { <> { node <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
 /};
-Box::store(parPrefixOperator, implPrefixOperator);
+Box::store(parPrefixOperator2, implPrefixOperator2);
 
-# Parses a unary postfix operator. This yields a function (per se) to call
-# in order to construct a node that represents the appropriate operator
-# application, function call, or the like.
-def implPostfixOperator = {/
-    actuals = parActualsList
-    { <> { node <> makeCall(node, actuals*) } }
-|
-    # This is sorta-kinda a binary operator, but in terms of precedence it
-    # fits better here.
-    @"::"
-    key = parIdentifierString
-    { <> { node <> makeGetExpression(node, key) } }
-|
-    # The lookahead failure here is to make the grammar prefer `*` to be
-    # treated as a binary op.
-    @"*" !parExpression
-    { <> { node <> makeInterpolate(node) } }
-|
+# *Layer 2* additions to unary postfix operator parsing. This yields a
+# function (per se) to call in order to construct a node that represents the
+# appropriate operator application, function call, or the like.
+def implPostfixOperator2 = {/
     @"?"
     { <> { node <> makeOptValueExpression(node) } }
 |
@@ -1264,7 +1269,7 @@ def implPostfixOperator = {/
         }
     )
 /};
-Box::store(parPostfixOperator, implPostfixOperator);
+Box::store(parPostfixOperator2, implPostfixOperator2);
 
 # Parses a range expression.
 def parRangeExpression = {/
