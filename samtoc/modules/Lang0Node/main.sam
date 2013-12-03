@@ -7,64 +7,64 @@
 #
 
 # Accessor for `call` nodes.
-fn \"get-actuals"(node) {
+fn get actuals(node) {
     <> dataOf(node)::actuals
 };
 
 # Accessor for `expression`, `interpolate`, and `voidable` nodes.
-fn \"get-expression"(node) {
+fn get expression(node) {
     <> dataOf(node)
 };
 
 # Accessor for `closure` and `fnDef` nodes.
-fn \"get-formals"(node) {
+fn get formals(node) {
     <> dataOf(node)::formals
 };
 
 # Accessor for `call` nodes.
-fn \"get-function"(node) {
+fn get function(node) {
     <> dataOf(node)::function
 };
 
 # Accessor for `fnDef`, `varDef`, and `varRef` nodes.
-def \"get-name" = makeRegularGeneric("get-name", 1, 1);
-fn fnDef_getName(node) { <> dataOf(node)::name };
-genericBind(\"get-name", "fnDef", fnDef_getName);
-fn varDef_getName(node) { <> dataOf(node)::name };
-genericBind(\"get-name", "varDef", varDef_getName);
-fn varRef_getName(node) { <> dataOf(node) };
-genericBind(\"get-name", "varRef", varRef_getName);
+def get name = makeRegularGeneric("get-name", 1, 1);
+fn fnDef_get_name(node) { <> dataOf(node)::name };
+genericBind(get name, "fnDef", fnDef_get_name);
+fn varDef_get_name(node) { <> dataOf(node)::name };
+genericBind(get name, "varDef", varDef_get_name);
+fn varRef_get_name(node) { <> dataOf(node) };
+genericBind(get name, "varRef", varRef_get_name);
 
 # Accessor for `closure` and `fnDef` nodes.
-fn \"get-statements"(node) {
+fn get statements(node) {
     <> dataOf(node)::statements
 };
 
 # Accessor for `literal` and `varDef` nodes.
-def \"get-value" = makeRegularGeneric("getValue", 1, 1);
-fn literal_getValue(node) { <> dataOf(node) };
-genericBind(\"get-value", "literal", literal_getValue);
-fn varDef_getValue(node) { <> dataOf(node)::value };
-genericBind(\"get-value", "varDef", varDef_getValue);
+def get value = makeRegularGeneric("get-value", 1, 1);
+fn literal_get_value(node) { <> dataOf(node) };
+genericBind(get value, "literal", literal_get_value);
+fn varDef_get_value(node) { <> dataOf(node)::value };
+genericBind(get value, "varDef", varDef_get_value);
 
 # Accessor for `closure` and `fnDef` nodes.
-fn \"get-yield"(node) {
+fn get yield(node) {
     <> dataOf(node)::yield
 };
 
 # Accessor for `closure` and `fnDef` nodes.
-fn \"get-yieldDef"(node) {
+fn get yieldDef(node) {
     <> dataOf(node)::yieldDef
 };
 
 <> {
-    \"get-actuals":    \"get-actuals",
-    \"get-expression": \"get-expression",
-    \"get-formals":    \"get-formals",
-    \"get-function":   \"get-function",
-    \"get-name":       \"get-name",
-    \"get-statements": \"get-statements",
-    \"get-value":      \"get-value",
-    \"get-yield":      \"get-yield",
-    \"get-yieldDef":   \"get-yieldDef"
+    get actuals:    get actuals,
+    get expression: get expression,
+    get formals:    get formals,
+    get function:   get function,
+    get name:       get name,
+    get statements: get statements,
+    get value:      get value,
+    get yield:      get yield,
+    get yieldDef:   get yieldDef
 }
