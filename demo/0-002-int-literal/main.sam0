@@ -25,5 +25,7 @@ fn msg(string) {
 msg(0);
 msg(-9);
 msg(20);
+msg(98765);
+msg(-12345);
 
 <> 0

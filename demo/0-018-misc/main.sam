@@ -66,25 +66,6 @@ fn main(selfPath, name?, rest*) {
     process(Collection::keyList([@a, @b, @c]));
     process(Collection::keyList("abcde"));
     process(Collection::keyList({a: "apple", b: "butter"}));
-    process({});
-    process({1: 2});
-    process({1: 2, 888: 1});
-    process({fizmo: "omzif", igram: "margi", blort: "trolb"});
-    process({"#stuff": "muff", ["x", "y"]: "zee"});
-    process(@["Null"]);
-    process(@"Null");
-    process(@Null);
-    process(null);
-    process(false);
-    process(true);
-    process(@blort);
-    process(@"%fizmo%");
-    process(@[potion: "blort"]);
-    process(@["^zorch^": ["scorch"]]);
-    process(@def); # Demos that keywords can be used as token types.
-    process(@[fn]); # Ditto.
-    process({def: "defined", fn: "done"}); # Likewise, for map keys.
-    process(@[(null)]);
     process(makeUniqlet());
     process(blort);
     process(cat);

@@ -27,6 +27,8 @@ Io1::note("Layer 0...");
 msg(0);
 msg(-9);
 msg(20);
+msg(98765);
+msg(-12345);
 
 Io1::note("\nLayer 2...");
 
