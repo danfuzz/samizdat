@@ -213,6 +213,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 
 # Forward declaration required for layer 2.
 def parTerm2 = ParseForwarder::make();
+def parIdentifier2 = ParseForwarder::make();
 
 # Forward declarations.
 def parProgramBody = ParseForwarder::make();
@@ -224,9 +225,7 @@ def parUnaryExpression = ParseForwarder::make();
 def parParser = ParseForwarder::make();
 
 # Parses an identifier. **Note:** This is nontrivial in layer 2.
-def parIdentifier = {/
-    @identifier
-/};
+def parIdentifier = parIdentifier2;
 
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
@@ -923,6 +922,27 @@ Box::store(parChoicePex, implChoicePex);
 #
 # Layer 2 Definitions and Rules
 #
+
+# Prefix identifiers (identifiers which can be followed by another identifier,
+# yielding a compound identifier "phrase").
+def IDENTIFIER_PREFIXES = {
+    get: "get",
+    set: "set"
+};
+
+# Parses a *Layer 2* `identifier`.
+def implIdentifier2 = {/
+    ident = @identifier
+
+    (
+        prefix = { <> get(IDENTIFIER_PREFIXES, dataOf(ident)) }
+        suffix = @identifier
+        { <> @[identifier: cat(prefix, "-", dataOf(suffix))] }
+    |
+        { <> ident }
+    )
+/};
+Box::store(parIdentifier2, implIdentifier2);
 
 # Helper for string interpolation: Parses the two kinds of interpolation,
 # yielding an appropriate expression node if syntactically valid, including
