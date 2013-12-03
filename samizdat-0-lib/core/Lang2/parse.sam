@@ -89,44 +89,6 @@ fn makeCallNonlocalExit(name, optExpression?) {
         { <> makeCallName("nonlocalExit", name) }
 };
 
-# Returns a `call` node that names a function as a `varRef` and passes
-# "thunked" versions of each of the given actual arguments.
-fn makeCallNameThunks(name, actuals*) {
-    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
-    <> makeCallName(name, thunks*)
-};
-
-# Returns a collection access (`get`) expression. This is a `call` node
-# of two arguments (a collection node and a key node).
-fn makeGetExpression(collArg, keyArg) {
-    <> makeCallName("get", collArg, keyArg)
-};
-
-# Returns a collection access expression, with a `varRef` to the collection
-# and a literal string to look up.
-fn makeModNameRef(modVar, name) {
-    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
-};
-
-# Returns a `call` node that names a function as a `varRef` to a module
-# and a literal name to look up in that module.
-fn makeCallModName(modVar, funcName, actuals*) {
-    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
-};
-
-# Returns a `closure` node like the one given, except with the `formals`
-# binding replaced with the given arguments. Each of the `formals`
-# must be a formal argument map as described in the execution tree spec.
-fn closureWithFormals(closure, formals*) {
-    <> @[closure: {(dataOf(closure))*, formals: formals}]
-};
-
-# Returns a `closure` node like the one given, except with `yieldDef`
-# bound to the indicated name.
-fn closureWithYieldDef(closure, name) {
-    <> @[closure: {(dataOf(closure))*, yieldDef: name}]
-};
-
 
 #
 # *Layer 0* Rules
@@ -135,7 +97,7 @@ fn closureWithYieldDef(closure, name) {
 # with comments indicating the "hooks" for higher layers.
 #
 
-# Forward declaration required for layer 2.
+# Forward declarations required for layer 2.
 def parTerm2 = ParseForwarder::make();
 def parIdentifier2 = ParseForwarder::make();
 
@@ -846,6 +808,44 @@ Box::store(parChoicePex, implChoicePex);
 #
 # Layer 2 Definitions and Rules
 #
+
+# Returns a `call` node that names a function as a `varRef` and passes
+# "thunked" versions of each of the given actual arguments.
+fn makeCallNameThunks(name, actuals*) {
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    <> makeCallName(name, thunks*)
+};
+
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
+# Returns a collection access expression, with a `varRef` to the collection
+# and a literal string to look up.
+fn makeModNameRef(modVar, name) {
+    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
+};
+
+# Returns a `call` node that names a function as a `varRef` to a module
+# and a literal name to look up in that module.
+fn makeCallModName(modVar, funcName, actuals*) {
+    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
+};
+
+# Returns a `closure` node like the one given, except with the `formals`
+# binding replaced with the given arguments. Each of the `formals`
+# must be a formal argument map as described in the execution tree spec.
+fn closureWithFormals(closure, formals*) {
+    <> @[closure: {(dataOf(closure))*, formals: formals}]
+};
+
+# Returns a `closure` node like the one given, except with `yieldDef`
+# bound to the indicated name.
+fn closureWithYieldDef(closure, name) {
+    <> @[closure: {(dataOf(closure))*, yieldDef: name}]
+};
 
 # A no-argument yield-void thunk.
 def YIELD_VOID_THUNK = @[closure: {formals: [], statements: []}];
