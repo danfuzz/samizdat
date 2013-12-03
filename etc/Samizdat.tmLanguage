@@ -451,6 +451,12 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>variable.other.dot-access</string>
+					<key>match</key>
+					<string>\.[_a-zA-Z][_a-zA-Z0-9]*</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>variable.parameter</string>
 					<key>match</key>
 					<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
@@ -525,7 +531,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([_a-zA-Z0-9]*)\b(?= *[\({])</string>
+					<string>([_a-zA-Z][_a-zA-Z0-9]*)\b(?= *[\({])</string>
 				</dict>
 				<dict>
 					<key>captures</key>
