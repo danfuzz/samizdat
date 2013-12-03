@@ -17,13 +17,19 @@ fn msg(v) {
     Io1::note("Got: \%q(v)")
 };
 
+
 #
 # Main Tests
 #
 
+Io1::note("Layer 0...");
+
 msg(0);
 msg(-9);
 msg(20);
+
+Io1::note("\nLayer 2...");
+
 msg(1_234_452);
 msg(0x1234abcd);            # Decimal 305441741.
 msg(-0x_ABCDEF);            # Decimal -11259375.

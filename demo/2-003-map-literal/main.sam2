@@ -17,10 +17,10 @@ fn msg(v) {
     Io1::note("Got: \%q(v)")
 };
 
+
 #
 # Main Tests
 #
-
 
 Io1::note("Layer 0...");
 
@@ -33,6 +33,7 @@ msg({"#stuff": "muff", ["x", "y"]: "zee"});
 msg({def: "defined", do: "done"}); # Keywords should be "stringified".
 msg({true: 10, (true): 20}); # First key is a string, second is a boolean.
 msg({["f", "u", "z"]*: "muffins"});
+
 
 Io1::note("\nLayer 2...");
 
