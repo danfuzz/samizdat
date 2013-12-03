@@ -101,7 +101,6 @@ def parParser = makeParseForwarder();
 # Forward declarations.
 def parProgramBody = makeParseForwarder();
 def parExpression = makeParseForwarder();
-def parVoidableExpression = makeParseForwarder();
 
 # Parses an identifier. **Note:** This is nontrivial in layer 2.
 def parIdentifier = {/
@@ -361,38 +360,6 @@ def parIdentifierString = {/
     }
 /};
 
-# Parses a possibly-voidable expression.
-def implVoidableExpression = {/
-    @"&"
-    ex = parExpression
-    { <> @[voidable: ex] }
-|
-    parExpression
-/};
-Box::store(parVoidableExpression, implVoidableExpression);
-
-# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
-# of contents.
-def parUnadornedList = {/
-    one = parVoidableExpression
-    rest = (@"," parVoidableExpression)*
-    { <> [one, rest*] }
-|
-    { <> [] }
-/};
-
-# Parses a list literal.
-def parList = {/
-    @"["
-    expressions = parUnadornedList
-    @"]"
-    {
-        <> ifIs { <> eq(expressions, []) }
-            { <> makeLiteral([]) }
-            { <> makeCallName("makeList", expressions*) }
-    }
-/};
-
 # Parses an empty map literal.
 def parEmptyMap = {/
     @"{" @"}"
@@ -441,6 +408,47 @@ def parMap = {/
     rest = (@"," parMapping)*
     @"}"
     { <> makeCallName("cat", one, rest*) }
+/};
+
+# Parses a list item or function call argument. This handles all of:
+#
+# * accepting general expressions
+# * accepting voidable-prefixed expressions
+# * rejecting expressions that look like `key:value` mappings. This is
+#   effectively "reserved syntax" (for future expansion); rejecting this
+#   here means that `x:y` won't be mistaken for other valid syntax.
+def parListItem = {/
+    parIdentifierString
+    @":"
+    { Io1::die("Mapping syntax not valid as a list item or call argument.") }
+|
+    @"&"
+    ex = parUnaryExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+
+# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
+# of contents.
+def parUnadornedList = {/
+    one = parListItem
+    rest = (@"," parListItem)*
+    { <> [one, rest*] }
+|
+    { <> [] }
+/};
+
+# Parses a list literal.
+def parList = {/
+    @"["
+    expressions = parUnadornedList
+    @"]"
+    {
+        <> ifIs { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> makeCallName("makeList", expressions*) }
+    }
 /};
 
 # Parses a literal in derived value form.
@@ -542,18 +550,6 @@ def parUnaryExpression = {/
 
     { <> Generator::doReduce1(postfixes, base) { op, result <> op(result) } }
 /};
-
-# Parses a possibly-voidable expression. This is done rather than including
-# `&` as a prefix operator, since it is valid in more limited contexts than
-# general expressions.
-def implVoidableExpression = {/
-    @"&"
-    ex = parUnaryExpression
-    { <> @[voidable: ex] }
-|
-    parExpression
-/};
-Box::store(parVoidableExpression, implVoidableExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
