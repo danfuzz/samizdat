@@ -98,8 +98,9 @@ fn makeCallNonlocalExit(name, optExpression?) {
 #
 
 # Forward declarations required for layer 2.
-def parTerm2 = ParseForwarder::make();
 def parIdentifier2 = ParseForwarder::make();
+def parKey2 = ParseForwarder::make();
+def parTerm2 = ParseForwarder::make();
 
 # Forward declarations.
 def parProgramBody = ParseForwarder::make();
@@ -390,20 +391,7 @@ def parKeyTerm = {/
 /};
 
 # Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
-def parKey = {/
-    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
-    firstKey = parKeyTerm
-    moreKeys = (@"|" parKeyTerm)*
-
-    {
-        <> ifIs { <> eq(moreKeys, []) }
-            { <> firstKey }
-            {
-                <> makeInterpolate(
-                    makeCallName("makeList", firstKey, moreKeys*))
-            }
-    }
-/};
+def parKey = parKey2;
 
 # Parses a mapping (element of a map).
 def parMapping = {/
@@ -943,6 +931,23 @@ def implIdentifier2 = {/
     )
 /};
 Box::store(parIdentifier2, implIdentifier2);
+
+# Parses a *Layer 2* map key.
+def implKey2 = {/
+    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
+    firstKey = parKeyTerm
+    moreKeys = (@"|" parKeyTerm)*
+
+    {
+        <> ifIs { <> eq(moreKeys, []) }
+            { <> firstKey }
+            {
+                <> makeInterpolate(
+                    makeCallName("makeList", firstKey, moreKeys*))
+            }
+    }
+/};
+Box::store(parKey2, implKey2);
 
 # Helper for string interpolation: Parses the two kinds of interpolation,
 # yielding an appropriate expression node if syntactically valid, including
