@@ -102,14 +102,14 @@ def parIdentifier2 = ParseForwarder::make();
 def parKey2 = ParseForwarder::make();
 def parTerm2 = ParseForwarder::make();
 
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = ParseForwarder::make();
+
 # Forward declarations.
 def parProgramBody = ParseForwarder::make();
 def parTerm = ParseForwarder::make();
 def parExpression = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
-
-# Forward declaration required for integrating layer 1 definitions.
-def parParser = ParseForwarder::make();
 
 # Parses an identifier. **Note:** This is nontrivial in layer 2.
 def parIdentifier = parIdentifier2;

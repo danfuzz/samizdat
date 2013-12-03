@@ -95,13 +95,13 @@ fn makeCallNonlocalExit(name, optExpression?) {
 # with comments indicating the "hooks" for higher layers.
 #
 
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = makeParseForwarder();
+
 # Forward declarations.
 def parProgramBody = makeParseForwarder();
 def parExpression = makeParseForwarder();
 def parVoidableExpression = makeParseForwarder();
-
-# Forward declaration required for integrating layer 1 definitions.
-def parParser = makeParseForwarder();
 
 # Parses an identifier. **Note:** This is nontrivial in layer 2.
 def parIdentifier = {/
