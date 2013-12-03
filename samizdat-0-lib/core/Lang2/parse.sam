@@ -69,6 +69,12 @@ fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
 # Returns an optional-value expression. This wraps `node` as
 # `optValue { <> node }`.
 fn makeOptValueExpression(node) {
@@ -89,120 +95,6 @@ fn makeCallNonlocalExit(name, optExpression?) {
         { <> makeCallName("nonlocalExit", name) }
 };
 
-# Returns a `call` node that names a function as a `varRef` and passes
-# "thunked" versions of each of the given actual arguments.
-fn makeCallNameThunks(name, actuals*) {
-    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
-    <> makeCallName(name, thunks*)
-};
-
-# Returns a collection access (`get`) expression. This is a `call` node
-# of two arguments (a collection node and a key node).
-fn makeGetExpression(collArg, keyArg) {
-    <> makeCallName("get", collArg, keyArg)
-};
-
-# Returns a collection access expression, with a `varRef` to the collection
-# and a literal string to look up.
-fn makeModNameRef(modVar, name) {
-    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
-};
-
-# Returns a `call` node that names a function as a `varRef` to a module
-# and a literal name to look up in that module.
-fn makeCallModName(modVar, funcName, actuals*) {
-    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
-};
-
-# Returns a `closure` node like the one given, except with the `formals`
-# binding replaced with the given arguments. Each of the `formals`
-# must be a formal argument map as described in the execution tree spec.
-fn closureWithFormals(closure, formals*) {
-    <> @[closure: {(dataOf(closure))*, formals: formals}]
-};
-
-# Returns a `closure` node like the one given, except with `yieldDef`
-# bound to the indicated name.
-fn closureWithYieldDef(closure, name) {
-    <> @[closure: {(dataOf(closure))*, yieldDef: name}]
-};
-
-# A no-argument yield-void thunk.
-def YIELD_VOID_THUNK = @[closure: {formals: [], statements: []}];
-
-# A single-argument yield-void function.
-def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
-
-# For unary operators, map of token types to function name variable references.
-def UNARY_OPERATORS = {
-    "-":   makeModNameRef("Number", "neg"),
-    "!!!": makeModNameRef("Bitwise", "not"),
-    "[]":  makeVarRef("get")
-};
-
-# For binary operators, map of token types to function name variable
-# references.
-def BINARY_OPERATORS = {
-    "+":    makeModNameRef("Number", "add"),
-    "-":    makeModNameRef("Number", "sub"),
-    "*":    makeModNameRef("Number", "mul"),
-    "/":    makeModNameRef("Number", "div"),
-    "%":    makeModNameRef("Number", "mod"),
-    "//":   makeModNameRef("Number", "divEu"),
-    "%%":   makeModNameRef("Number", "modEu"),
-    "==":   makeVarRef("perEq"),
-    "!=":   makeVarRef("perNe"),
-    "<":    makeVarRef("perLt"),
-    ">":    makeVarRef("perGt"),
-    "<=":   makeVarRef("perLe"),
-    ">=":   makeVarRef("perGe"),
-    "&&&":  makeModNameRef("Bitwise", "and"),
-    "|||":  makeModNameRef("Bitwise", "or"),
-    "^^^":  makeModNameRef("Bitwise", "xor"),
-    "<<<":  makeModNameRef("Bitwise", "shl"),
-    ">>>":  makeModNameRef("Bitwise", "shr"),
-    "\\==": makeVarRef("eq"),
-    "\\!=": makeVarRef("ne"),
-    "\\<":  makeVarRef("lt"),
-    "\\>":  makeVarRef("gt"),
-    "\\<=": makeVarRef("le"),
-    "\\>=": makeVarRef("ge"),
-    "..":   makeModNameRef("Range", "makeInclusiveRange"),
-    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
-    "..+":  makeModNameRef("Range", "makeOpenRange")
-};
-
-# Helper for parsing binary operator expressions, which puts together
-# a sequence of function calls. `voidable`, if passed as `true`, indicates
-# that the inner calls should be made voidable.
-fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
-    ifIs { <> eq(opExList, []) }
-        {
-            # Don't bother with the rest if there are no ops to apply.
-            # This avoids having to special-case the voidable stuff.
-            return firstEx
-        };
-
-    def voidable = ifValueOr { <> optVoidable* } { <> false };
-
-    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
-        def op = Collection::first(opEx);
-        def ex = Collection::last(opEx);
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
-        def call = makeCall(resolvedOp, result, ex);
-
-        <> ifIs { <> eq(voidable, true) }
-            { <> @[voidable: call] }
-            { <> call }
-    };
-
-    # For an inner-voidable expression, unwrap the outermost layer of
-    # voidability.
-    <> ifIs { <> eq(voidable, true) }
-        { <> dataOf(result) }
-        { <> result }
-};
-
 
 #
 # *Layer 0* Rules
@@ -211,8 +103,17 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 # with comments indicating the "hooks" for higher layers.
 #
 
-# Forward declaration required for layer 2.
+# Forward declarations required for layer 2.
+def parIdentifier2 = ParseForwarder::make();
+def parKey2 = ParseForwarder::make();
+def parNonlocalExit2 = ParseForwarder::make();
+def parPostfixOperator2 = ParseForwarder::make();
+def parPrefixOperator2 = ParseForwarder::make();
+def parStatement2 = ParseForwarder::make();
 def parTerm2 = ParseForwarder::make();
+
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = ParseForwarder::make();
 
 # Forward declarations.
 def parProgramBody = ParseForwarder::make();
@@ -220,13 +121,13 @@ def parTerm = ParseForwarder::make();
 def parExpression = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
 
-# Forward declaration required for integrating layer 1 definitions.
-def parParser = ParseForwarder::make();
+# Parses an identifier. **Note:** This is nontrivial in layer 2.
+def parIdentifier = parIdentifier2;
 
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
-    name = @identifier
+    name = parIdentifier
     @">"
     { <> dataOf(name) }
 /};
@@ -243,7 +144,7 @@ def parOptYieldDef = {/
 # Parses a formal argument decalaration.
 def parFormal = {/
     name = (
-        n = @identifier
+        n = parIdentifier
         { <> {name: dataOf(n)} }
     |
         @"." { <> {} }
@@ -366,7 +267,7 @@ def parFnCommon = {/
     )?
 
     name = (
-        n = @identifier
+        n = parIdentifier
         { <> {name: dataOf(n)} }
     |
         { <> {} }
@@ -459,8 +360,10 @@ def parString = {/
 # Parses an identifier, identifier-like keyword, or string literal,
 # returning a string literal in all cases.
 def parIdentifierString = {/
-    s = [@identifier @string]
-    { <> makeLiteral(dataOf(s)) }
+    parString
+|
+    ident = parIdentifier
+    { <> makeLiteral(dataOf(ident)) }
 |
     token = .
     {
@@ -498,20 +401,7 @@ def parKeyTerm = {/
 /};
 
 # Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
-def parKey = {/
-    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
-    firstKey = parKeyTerm
-    moreKeys = (@"|" parKeyTerm)*
-
-    {
-        <> ifIs { <> eq(moreKeys, []) }
-            { <> firstKey }
-            {
-                <> makeInterpolate(
-                    makeCallName("makeList", firstKey, moreKeys*))
-            }
-    }
-/};
+def parKey = parKey2;
 
 # Parses a mapping (element of a map).
 def parMapping = {/
@@ -598,14 +488,14 @@ def parDeriv = {/
 
 # Parses a variable reference.
 def parVarRef = {/
-    name = @identifier
+    name = parIdentifier
     { <> makeVarRef(dataOf(name)) }
 /};
 
 # Parses a variable definition.
 def parVarDef = {/
     @def
-    name = @identifier
+    name = parIdentifier
     @"="
     ex = parExpression
     { <> makeVarDef(dataOf(name), ex) }
@@ -647,17 +537,34 @@ def parActualsList = {/
     parClosure+
 /};
 
-# `prefixOperator` and `postfixOperator` from layer 0 are replaced with
-# forwarded functions here. These are subsumed by more featureful layer 2
-# definitions, below.
-def parPrefixOperator = ParseForwarder::make();
-def parPostfixOperator = ParseForwarder::make();
+# Parses a unary postfix operator. This yields a function (per se) to call
+# in order to construct a node that represents the appropriate ultimate
+# function call.
+def parPostfixOperator = {/
+    actuals = parActualsList
+    { <> { node <> makeCall(node, actuals*) } }
+|
+    # This is sorta-kinda a binary operator, but in terms of precedence it
+    # fits better here.
+    @"::"
+    key = parIdentifierString
+    { <> { node <> makeGetExpression(node, key) } }
+|
+    # The lookahead failure here is to make the grammar prefer `*` to be
+    # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
+    # but higher layers augment its meaning.)
+    @"*" !parExpression
+    { <> { node <> makeInterpolate(node) } }
+|
+    # Note: *Layer 2* adds additional rules here.
+    parPostfixOperator2
+/};
 
 # Parses a unary expression. This is a term, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def implUnaryExpression = {/
-    prefixes = parPrefixOperator*
+    prefixes = parPrefixOperator2*
     base = parTerm
     postfixes = parPostfixOperator*
 
@@ -670,11 +577,19 @@ def implUnaryExpression = {/
 /};
 Box::store(parUnaryExpression, implUnaryExpression);
 
-# `expression` from layer 0 is omitted here (it's forwarded earlier), and
-# `statement` and `nonlocalExit` are replaced with forwarded functions here.
-# These are all subsumed by more featureful layer 2 definitions, below.
-def parStatement = ParseForwarder::make();
-def parNonlocalExit = ParseForwarder::make();
+# `expression` from layer 0 is omitted here (it's forwarded earlier).
+
+# Note: There are additional expression rules in *Layer 2* and beyond.
+def parStatement = {/
+    parVarDef | parFnDef | parExpression
+|
+    # Note: *Layer 2* adds additional rules here.
+    parStatement2
+/};
+
+# Note: There are additional nonlocal exit rules in *Layer 2* and beyond.
+# This rule still exists but has several additions.
+def parNonlocalExit = parNonlocalExit2;
 
 # Parses a local yield / return.
 def parYield = {/
@@ -888,7 +803,7 @@ def parLookaheadPex = {/
 # Parses a name (or not) parsing expression.
 def parNamePex = {/
     (
-        name = @identifier
+        name = parIdentifier
         @"="
         pex = parLookaheadPex
         { <> @[varDef: {name: dataOf(name), value: pex}] }
@@ -916,6 +831,152 @@ Box::store(parChoicePex, implChoicePex);
 #
 # Layer 2 Definitions and Rules
 #
+
+# Returns a `call` node that names a function as a `varRef` and passes
+# "thunked" versions of each of the given actual arguments.
+fn makeCallNameThunks(name, actuals*) {
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    <> makeCallName(name, thunks*)
+};
+
+# Returns a collection access expression, with a `varRef` to the collection
+# and a literal string to look up.
+fn makeModNameRef(modVar, name) {
+    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
+};
+
+# Returns a `call` node that names a function as a `varRef` to a module
+# and a literal name to look up in that module.
+fn makeCallModName(modVar, funcName, actuals*) {
+    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
+};
+
+# Returns a `closure` node like the one given, except with the `formals`
+# binding replaced with the given arguments. Each of the `formals`
+# must be a formal argument map as described in the execution tree spec.
+fn closureWithFormals(closure, formals*) {
+    <> @[closure: {(dataOf(closure))*, formals: formals}]
+};
+
+# Returns a `closure` node like the one given, except with `yieldDef`
+# bound to the indicated name.
+fn closureWithYieldDef(closure, name) {
+    <> @[closure: {(dataOf(closure))*, yieldDef: name}]
+};
+
+# A no-argument yield-void thunk.
+def YIELD_VOID_THUNK = @[closure: {formals: [], statements: []}];
+
+# A single-argument yield-void function.
+def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
+
+# Prefix identifiers (identifiers which can be followed by another identifier,
+# yielding a compound identifier "phrase").
+def IDENTIFIER_PREFIXES = {
+    get: "get",
+    set: "set"
+};
+
+# For unary operators, map of token types to function name variable references.
+def UNARY_OPERATORS = {
+    "-":   makeModNameRef("Number", "neg"),
+    "!!!": makeModNameRef("Bitwise", "not"),
+    "[]":  makeVarRef("get")
+};
+
+# For binary operators, map of token types to function name variable
+# references.
+def BINARY_OPERATORS = {
+    "+":    makeModNameRef("Number", "add"),
+    "-":    makeModNameRef("Number", "sub"),
+    "*":    makeModNameRef("Number", "mul"),
+    "/":    makeModNameRef("Number", "div"),
+    "%":    makeModNameRef("Number", "mod"),
+    "//":   makeModNameRef("Number", "divEu"),
+    "%%":   makeModNameRef("Number", "modEu"),
+    "==":   makeVarRef("perEq"),
+    "!=":   makeVarRef("perNe"),
+    "<":    makeVarRef("perLt"),
+    ">":    makeVarRef("perGt"),
+    "<=":   makeVarRef("perLe"),
+    ">=":   makeVarRef("perGe"),
+    "&&&":  makeModNameRef("Bitwise", "and"),
+    "|||":  makeModNameRef("Bitwise", "or"),
+    "^^^":  makeModNameRef("Bitwise", "xor"),
+    "<<<":  makeModNameRef("Bitwise", "shl"),
+    ">>>":  makeModNameRef("Bitwise", "shr"),
+    "\\==": makeVarRef("eq"),
+    "\\!=": makeVarRef("ne"),
+    "\\<":  makeVarRef("lt"),
+    "\\>":  makeVarRef("gt"),
+    "\\<=": makeVarRef("le"),
+    "\\>=": makeVarRef("ge"),
+    "..":   makeModNameRef("Range", "makeInclusiveRange"),
+    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
+    "..+":  makeModNameRef("Range", "makeOpenRange")
+};
+
+# Helper for parsing binary operator expressions, which puts together
+# a sequence of function calls. `voidable`, if passed as `true`, indicates
+# that the inner calls should be made voidable.
+fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
+    ifIs { <> eq(opExList, []) }
+        {
+            # Don't bother with the rest if there are no ops to apply.
+            # This avoids having to special-case the voidable stuff.
+            return firstEx
+        };
+
+    def voidable = ifValueOr { <> optVoidable* } { <> false };
+
+    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
+        def op = Collection::first(opEx);
+        def ex = Collection::last(opEx);
+        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
+        def call = makeCall(resolvedOp, result, ex);
+
+        <> ifIs { <> eq(voidable, true) }
+            { <> @[voidable: call] }
+            { <> call }
+    };
+
+    # For an inner-voidable expression, unwrap the outermost layer of
+    # voidability.
+    <> ifIs { <> eq(voidable, true) }
+        { <> dataOf(result) }
+        { <> result }
+};
+
+# Parses a *Layer 2* `identifier`.
+def implIdentifier2 = {/
+    ident = @identifier
+
+    (
+        prefix = { <> get(IDENTIFIER_PREFIXES, dataOf(ident)) }
+        suffix = @identifier
+        { <> @[identifier: cat(prefix, "-", dataOf(suffix))] }
+    |
+        { <> ident }
+    )
+/};
+Box::store(parIdentifier2, implIdentifier2);
+
+# Parses a *Layer 2* map key.
+def implKey2 = {/
+    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
+    firstKey = parKeyTerm
+    moreKeys = (@"|" parKeyTerm)*
+
+    {
+        <> ifIs { <> eq(moreKeys, []) }
+            { <> firstKey }
+            {
+                <> makeInterpolate(
+                    makeCallName("makeList", firstKey, moreKeys*))
+            }
+    }
+/};
+Box::store(parKey2, implKey2);
 
 # Helper for string interpolation: Parses the two kinds of interpolation,
 # yielding an appropriate expression node if syntactically valid, including
@@ -995,7 +1056,7 @@ def parInterpolatedString = {/
 # a formal argument declaration.
 def parGeneratorDef = {/
     formal = (
-        name = @identifier
+        name = parIdentifier
         { <> {name: dataOf(name)} }
     |
         "."
@@ -1091,7 +1152,7 @@ Box::store(parTerm2, implTerm2);
 # have the dual properties of (a) necessarily being at the end of a code
 # block, and (b) being represented as a function call in the underlying
 # function representation of code blocks.
-def implNonlocalExit = {/
+def implNonlocalExit2 = {/
     name = (
         @"<"
         n = parVarRef
@@ -1116,11 +1177,11 @@ def implNonlocalExit = {/
 
     { <> makeCallNonlocalExit(name, value*) }
 /};
-Box::store(parNonlocalExit, implNonlocalExit);
+Box::store(parNonlocalExit2, implNonlocalExit2);
 
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
-def implPrefixOperator = {/
+def implPrefixOperator2 = {/
     operator = [@"-" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, typeOf(operator));
@@ -1132,26 +1193,12 @@ def implPrefixOperator = {/
     @"!"
     { <> { node <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
 /};
-Box::store(parPrefixOperator, implPrefixOperator);
+Box::store(parPrefixOperator2, implPrefixOperator2);
 
-# Parses a unary postfix operator. This yields a function (per se) to call
-# in order to construct a node that represents the appropriate operator
-# application, function call, or the like.
-def implPostfixOperator = {/
-    actuals = parActualsList
-    { <> { node <> makeCall(node, actuals*) } }
-|
-    # This is sorta-kinda a binary operator, but in terms of precedence it
-    # fits better here.
-    @"::"
-    key = parIdentifierString
-    { <> { node <> makeGetExpression(node, key) } }
-|
-    # The lookahead failure here is to make the grammar prefer `*` to be
-    # treated as a binary op.
-    @"*" !parExpression
-    { <> { node <> makeInterpolate(node) } }
-|
+# *Layer 2* additions to unary postfix operator parsing. This yields a
+# function (per se) to call in order to construct a node that represents the
+# appropriate operator application, function call, or the like.
+def implPostfixOperator2 = {/
     @"?"
     { <> { node <> makeOptValueExpression(node) } }
 |
@@ -1222,7 +1269,7 @@ def implPostfixOperator = {/
         }
     )
 /};
-Box::store(parPostfixOperator, implPostfixOperator);
+Box::store(parPostfixOperator2, implPostfixOperator2);
 
 # Parses a range expression.
 def parRangeExpression = {/
@@ -1315,7 +1362,7 @@ def parCompareExpression = {/
 def parTestClause = {/
     formal = (
         @def
-        name = @identifier
+        name = parIdentifier
         @"="
         { <> {name: dataOf(name)} }
     |
@@ -1994,10 +2041,11 @@ def implExpression = {/
 Box::store(parExpression, implExpression);
 
 # Parses a statement.
-def implStatement = {/
-    parVarDef | parFnDef | parExpression
+def implStatement2 = {/
+    # TODO: Perhaps there will be more statement variants.
+    !() # Always fail, for now.
 /};
-Box::store(parStatement, implStatement);
+Box::store(parStatement2, implStatement2);
 
 
 #

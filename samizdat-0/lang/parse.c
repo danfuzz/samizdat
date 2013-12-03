@@ -350,11 +350,16 @@ DEF_PARSE(expression);
 DEF_PARSE(unaryExpression);
 
 /* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(identifier) {
+    return MATCH(identifier);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
-    zvalue identifier = MATCH_OR_REJECT(identifier);
+    zvalue identifier = PARSE_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_GT);
 
     return dataOf(identifier);
@@ -388,7 +393,7 @@ DEF_PARSE(formal1) {
 DEF_PARSE(formal) {
     MARK();
 
-    zvalue name = MATCH(identifier);
+    zvalue name = PARSE(identifier);
 
     if (name != NULL) {
         name = dataOf(name);
@@ -503,7 +508,7 @@ DEF_PARSE(fnCommon1) {
  * wrapping.
  */
 DEF_PARSE(fnCommon2) {
-    zvalue n = MATCH(identifier);
+    zvalue n = PARSE(identifier);
 
     if (n == NULL) {
         return EMPTY_MAP;
@@ -602,7 +607,7 @@ DEF_PARSE(identifierString) {
     zvalue result = NULL;
 
     if (result == NULL) { result = MATCH(string); }
-    if (result == NULL) { result = MATCH(identifier); }
+    if (result == NULL) { result = PARSE(identifier); }
     if (result == NULL) { result = MATCH(def); }
     if (result == NULL) { result = MATCH(fn); }
     if (result == NULL) { result = MATCH(return); }
@@ -799,7 +804,7 @@ DEF_PARSE(deriv) {
 DEF_PARSE(varRef) {
     MARK();
 
-    zvalue identifier = MATCH_OR_REJECT(identifier);
+    zvalue identifier = PARSE_OR_REJECT(identifier);
 
     return makeVarRef(dataOf(identifier));
 }
@@ -809,7 +814,7 @@ DEF_PARSE(varDef) {
     MARK();
 
     MATCH_OR_REJECT(def);
-    zvalue identifier = MATCH_OR_REJECT(identifier);
+    zvalue identifier = PARSE_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
 

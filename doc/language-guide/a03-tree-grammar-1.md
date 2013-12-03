@@ -95,18 +95,22 @@ fn makeCallNonlocalExit(name, optExpression?) {
 # with comments indicating the "hooks" for higher layers.
 #
 
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = makeParseForwarder();
+
 # Forward declarations.
 def parProgramBody = makeParseForwarder();
 def parExpression = makeParseForwarder();
-def parVoidableExpression = makeParseForwarder();
 
-# Forward declaration required for integrating layer 1 definitions.
-def parParser = makeParseForwarder();
+# Parses an identifier. **Note:** This is nontrivial in layer 2.
+def parIdentifier = {/
+    @identifier
+/};
 
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
-    name = @identifier
+    name = parIdentifier
     @">"
     { <> dataOf(name) }
 /};
@@ -123,7 +127,7 @@ def parOptYieldDef = {/
 # Parses a formal argument decalaration.
 def parFormal = {/
     name = (
-        n = @identifier
+        n = parIdentifier
         { <> {name: dataOf(n)} }
     |
         @"." { <> {} }
@@ -246,7 +250,7 @@ def parFnCommon = {/
     )?
 
     name = (
-        n = @identifier
+        n = parIdentifier
         { <> {name: dataOf(n)} }
     |
         { <> {} }
@@ -339,8 +343,10 @@ def parString = {/
 # Parses an identifier, identifier-like keyword, or string literal,
 # returning a string literal in all cases.
 def parIdentifierString = {/
-    s = [@identifier @string]
-    { <> makeLiteral(dataOf(s)) }
+    parString
+|
+    ident = parIdentifier
+    { <> makeLiteral(dataOf(ident)) }
 |
     token = .
     {
@@ -351,38 +357,6 @@ def parIdentifierString = {/
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
-    }
-/};
-
-# Parses a possibly-voidable expression.
-def implVoidableExpression = {/
-    @"&"
-    ex = parExpression
-    { <> @[voidable: ex] }
-|
-    parExpression
-/};
-Box::store(parVoidableExpression, implVoidableExpression);
-
-# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
-# of contents.
-def parUnadornedList = {/
-    one = parVoidableExpression
-    rest = (@"," parVoidableExpression)*
-    { <> [one, rest*] }
-|
-    { <> [] }
-/};
-
-# Parses a list literal.
-def parList = {/
-    @"["
-    expressions = parUnadornedList
-    @"]"
-    {
-        <> ifIs { <> eq(expressions, []) }
-            { <> makeLiteral([]) }
-            { <> makeCallName("makeList", expressions*) }
     }
 /};
 
@@ -436,6 +410,47 @@ def parMap = {/
     { <> makeCallName("cat", one, rest*) }
 /};
 
+# Parses a list item or function call argument. This handles all of:
+#
+# * accepting general expressions
+# * accepting voidable-prefixed expressions
+# * rejecting expressions that look like `key:value` mappings. This is
+#   effectively "reserved syntax" (for future expansion); rejecting this
+#   here means that `x:y` won't be mistaken for other valid syntax.
+def parListItem = {/
+    parIdentifierString
+    @":"
+    { Io1::die("Mapping syntax not valid as a list item or call argument.") }
+|
+    @"&"
+    ex = parUnaryExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+
+# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
+# of contents.
+def parUnadornedList = {/
+    one = parListItem
+    rest = (@"," parListItem)*
+    { <> [one, rest*] }
+|
+    { <> [] }
+/};
+
+# Parses a list literal.
+def parList = {/
+    @"["
+    expressions = parUnadornedList
+    @"]"
+    {
+        <> ifIs { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> makeCallName("makeList", expressions*) }
+    }
+/};
+
 # Parses a literal in derived value form.
 def parDeriv = {/
     @"@"
@@ -456,14 +471,14 @@ def parDeriv = {/
 
 # Parses a variable reference.
 def parVarRef = {/
-    name = @identifier
+    name = parIdentifier
     { <> makeVarRef(dataOf(name)) }
 /};
 
 # Parses a variable definition.
 def parVarDef = {/
     @def
-    name = @identifier
+    name = parIdentifier
     @"="
     ex = parExpression
     { <> makeVarDef(dataOf(name), ex) }
@@ -487,7 +502,7 @@ def parTerm = {/
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
     # that *Layer 1* can only be "activated" with that one specific token.
     &@"{/" parParser
-#|
+# |
     # Note: There are additional term rules in *Samizdat Layer 2*.
 /};
 
@@ -521,7 +536,7 @@ def parPostfixOperator = {/
     # but higher layers augment its meaning.)
     @"*" !parExpression
     { <> { node <> makeInterpolate(node) } }
-#|
+# |
     # Note: *Layer 2* adds additional rules here.
 /};
 
@@ -536,18 +551,6 @@ def parUnaryExpression = {/
     { <> Generator::doReduce1(postfixes, base) { op, result <> op(result) } }
 /};
 
-# Parses a possibly-voidable expression. This is done rather than including
-# `&` as a prefix operator, since it is valid in more limited contexts than
-# general expressions.
-def implVoidableExpression = {/
-    @"&"
-    ex = parUnaryExpression
-    { <> @[voidable: ex] }
-|
-    parExpression
-/};
-Box::store(parVoidableExpression, implVoidableExpression);
-
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
 def implExpression = {/
@@ -556,9 +559,10 @@ def implExpression = {/
 Box::store(parExpression, implExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
-# This rule is totally rewritten at that layer.
 def parStatement = {/
     parVarDef | parFnDef | parExpression
+# |
+    # Note: *Layer 2* adds additional rules here.
 /};
 
 # Note: There are additional nonlocal exit rules in *Layer 2* and beyond.
@@ -790,7 +794,7 @@ def parLookaheadPex = {/
 # Parses a name (or not) parsing expression.
 def parNamePex = {/
     (
-        name = @identifier
+        name = parIdentifier
         @"="
         pex = parLookaheadPex
         { <> @[varDef: {name: dataOf(name), value: pex}] }

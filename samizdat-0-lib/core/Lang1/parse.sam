@@ -106,19 +106,23 @@ fn makeCallNonlocalExit(name, optExpression?) {
 # Samizdat Layer 0 definitions
 #
 
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = ParseForwarder::make();
+
 # Forward declarations.
 def parProgramBody = ParseForwarder::make();
 def parTerm = ParseForwarder::make();
 def parExpression = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
 
-# Forward declaration required for integrating layer 1 definitions.
-def parParser = ParseForwarder::make();
+# Documented in Samizdat Layer 0 spec.
+def parIdentifier = Peg::makeMainSequence(
+    Peg::makeToken("identifier"));
 
 # Documented in Samizdat Layer 0 spec.
 def parYieldDef = Peg::makeMainSequence(
     Peg::makeToken("<"),
-    Peg::makeToken("identifier"),
+    parIdentifier,
     Peg::makeToken(">"),
     Peg::makeCode { ., name, . <> dataOf(name) });
 
@@ -133,7 +137,7 @@ def parOptYieldDef = Peg::makeMainChoice(
 def parFormal = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
-            Peg::makeToken("identifier"),
+            parIdentifier,
             Peg::makeCode { n <> {name: dataOf(n)} }),
         Peg::makeSequence(
             Peg::makeToken("."),
@@ -207,7 +211,7 @@ def parFnCommon = Peg::makeMainSequence(
             Peg::makeCode { ., y <> makeVarDef(y, makeVarRef("return")) })),
     Peg::makeChoice(
         Peg::makeSequence(
-            Peg::makeToken("identifier"),
+            parIdentifier,
             Peg::makeCode { ., ., n <> {name: dataOf(n)} }),
         Peg::makeResult({})),
     Peg::makeToken("("),
@@ -268,9 +272,10 @@ def parString = Peg::makeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def parIdentifierString = Peg::makeMainChoice(
+    parString,
     Peg::makeSequence(
-        Peg::makeTokenSet("identifier", "string"),
-        Peg::makeCode { s <> makeLiteral(dataOf(s)) }),
+        parIdentifier,
+        Peg::makeCode { ident <> makeLiteral(dataOf(ident)) }),
     Peg::makeSequence(
         Peg::any,
         Peg::makeCode { token ->
@@ -383,13 +388,13 @@ def parDeriv = Peg::makeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def parVarRef = Peg::makeMainSequence(
-    Peg::makeToken("identifier"),
+    parIdentifier,
     Peg::makeCode { name <> makeVarRef(dataOf(name)) });
 
 # Documented in Samizdat Layer 0 spec.
 def parVarDef = Peg::makeMainSequence(
     Peg::makeToken("def"),
-    Peg::makeToken("identifier"),
+    parIdentifier,
     Peg::makeToken("="),
     parExpression,
     Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) });
@@ -650,7 +655,7 @@ def parLookaheadPex = Peg::makeMainChoice(
 
 def parNamePex = Peg::makeMainChoice(
     Peg::makeSequence(
-        Peg::makeToken("identifier"),
+        parIdentifier,
         Peg::makeToken("="),
         parLookaheadPex,
         Peg::makeCode { name, ., pex ->
