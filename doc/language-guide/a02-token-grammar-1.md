@@ -73,7 +73,7 @@ def tokWhitespace = {/
         |
             !.
         )
-    #|
+    # |
         # Note: Layer 2 introduces additional definitions here.
     )+
 /};
@@ -90,12 +90,12 @@ def tokPunctuation = {/
 
     (
         # *Layer 2* introduces additional definitions here.
-    #|
+    # |
         "->" | "::" | ".." | "<>"
     |
         # These are only needed in *Layer 1*.
         "{/" | "/}"
-    #|
+    # |
         # *Layer 2* introduces additional definitions here.
     |
         # Single-character punctuation / operator.
@@ -144,7 +144,7 @@ def tokStringPart = {/
         "t"  { <> "\t" } |
         "0"  { <> "\0" }
     )
-#|
+# |
     # *Layer 2* introduces additional definitions here.
 /};
 

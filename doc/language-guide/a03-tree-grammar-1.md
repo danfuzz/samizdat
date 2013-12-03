@@ -502,7 +502,7 @@ def parTerm = {/
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
     # that *Layer 1* can only be "activated" with that one specific token.
     &@"{/" parParser
-#|
+# |
     # Note: There are additional term rules in *Samizdat Layer 2*.
 /};
 
@@ -536,7 +536,7 @@ def parPostfixOperator = {/
     # but higher layers augment its meaning.)
     @"*" !parExpression
     { <> { node <> makeInterpolate(node) } }
-#|
+# |
     # Note: *Layer 2* adds additional rules here.
 /};
 
@@ -561,7 +561,7 @@ Box::store(parExpression, implExpression);
 # Note: There are additional expression rules in *Layer 2* and beyond.
 def parStatement = {/
     parVarDef | parFnDef | parExpression
-#|
+# |
     # Note: *Layer 2* adds additional rules here.
 /};
 
