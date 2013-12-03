@@ -72,6 +72,10 @@ character (either lower- or upper-case) or initial underscore (`_`),
 followed by zero or more other ASCII alphabetic characters, underscores, or
 ASCII decimal digits.
 
+There are a couple special two-word variable name forms. In particular,
+a variable name can be prefixed with `get` or `set`, which results in
+a variable named `get-name` or `set-name` respectively.
+
 As an escape hatch to name variables more arbitrarily, a variable name
 can also be represented as an initial backslash (`\`) followed by a
 double-quoted string literal. See the [Data](02-data.md) section for
