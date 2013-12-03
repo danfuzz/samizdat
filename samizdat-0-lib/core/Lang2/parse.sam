@@ -1314,8 +1314,9 @@ def parCompareExpression = {/
 # parsed, `formal` is bound to `{}`.
 def parTestClause = {/
     formal = (
+        @def
         name = @identifier
-        @":="
+        @"="
         { <> {name: dataOf(name)} }
     |
         { <> {} }
@@ -1365,13 +1366,13 @@ def parLogicAndClause = {/
 # ```
 #
 # ```
-# (var1 := expr1) & expr2
+# (def var1 = expr1) & expr2
 # =>
 # ifValue { <> expr1 } { var1 <> expr2 }
 # ```
 #
 # ```
-# (var1 := expr1) & expr2 & (var3 := expr3) & expr4
+# (def var1 = expr1) & expr2 & (def var3 = expr3) & expr4
 # =>
 # ifValues(
 #     makeList(
@@ -1487,7 +1488,7 @@ def parLogicOrExpression = {/
 # ```
 #
 # ```
-# (name := boundExpr)
+# (def name = boundExpr)
 # =>
 # ifValue { <> boundExpr }
 #     { name -> ... then ... }
@@ -1495,7 +1496,7 @@ def parLogicOrExpression = {/
 # ```
 #
 # ```
-# (name1 := expr1, unboundExpr, name3 := expr3)
+# (def name1 = expr1, unboundExpr, def name3 = expr3)
 # =>
 # ifValues(
 #     makeList(
@@ -1557,11 +1558,11 @@ def parMultiTest = {/
 # Parses an if expression. The translation is along the lines of:
 #
 # ```
-# if <out> (name1 := expr1) {
+# if <out> (def name1 = expr1) {
 #     thenStat1
 # } else if (expr2) {
 #     thenStat2
-# } else if (name3 := expr3, name4 := expr4) {
+# } else if (def name3 = expr3, def name4 = expr4) {
 #     thenStat34
 # } else {
 #     elseStat
@@ -1659,7 +1660,7 @@ def parOptBreakDef = {/
 # Parses a while expression. The translation is along these lines:
 #
 # ```
-# while <out> (name1 := test1) { <next> -> stat1; stat2 }
+# while <out> (def name = test) { <next> -> stat1; stat2 }
 # ```
 # =>
 # ```
@@ -1844,7 +1845,7 @@ def SWITCH_DISPATCH_CLOSURE = Lang0::parseProgram("
 # Parses a switch expression. The translation is along these lines:
 #
 # ```
-# switch <out> (name := test) {
+# switch <out> (def name = test) {
 #     ex1: { stat1a; stat1b }
 #     ex2: { stat2a; stat2b }
 #     default: { statDefault }
