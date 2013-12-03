@@ -43,8 +43,8 @@ msg(cell.value);
 
 Io1::note("\nSetter syntax");
 def \"set-value" = Box::store;
-msg(cell.value = 987);
-cell.value = 654;
+msg(cell.value := 987);
+cell.value := 654;
 msg(cell.value);
 
 <> 0
