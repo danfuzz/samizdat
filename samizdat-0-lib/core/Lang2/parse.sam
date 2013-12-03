@@ -1186,7 +1186,7 @@ def implPostfixOperator = {/
     # ```
     #
     # ```
-    # target.name = expression
+    # target.name := expression
     # =>
     # \"set-name"(target, expression)
     # ```
@@ -1207,8 +1207,8 @@ def implPostfixOperator = {/
             <> { node <> makeCall(funcRef, node, actuals*) }
         }
     |
-        # `target.name = expression`
-        @"="
+        # `target.name := expression`
+        @":="
         expr = parExpression
         {
             def setterRef = makeVarRef(cat("set-", dataOf(name)));
