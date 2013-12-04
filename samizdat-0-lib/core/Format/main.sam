@@ -118,7 +118,7 @@ fn isIdentifier(string) {
     <> true
 };
 
-# Stringifies a key (or derived value type).
+# Stringifies a key (or derived value name).
 fn keyString(key) {
     ifIs { <> isIdentifier(key) }
         { return key };
@@ -127,6 +127,21 @@ fn keyString(key) {
         { string -> return cat("(", string, ")") };
 
     <> sourceGeneral(key, true)
+};
+
+# Stringifies a derived value type.
+fn typeString(type){
+    ifIs { <> isString(type) }
+        {
+            ifIs { <> isIdentifier(type) }
+                { return type }
+                { return sourceGeneral(type, true) }
+        };
+
+    def body = ifValueOr { <> get(SPECIAL_VALUES, type) }
+        { <> sourceGeneral(type, true) };
+
+    <> cat("(", body, ")")
 };
 
 # The first Unicode surrogate code point.
@@ -218,54 +233,37 @@ fn String_sourceGeneral(string, adorn) {
 };
 genericBind(sourceGeneral, String, String_sourceGeneral);
 
-# Stringifies a type.
-fn Type_sourceGeneral(type, adorn) {
-    def name = sourceGeneral(nameOf(type), true);
-
-    <> adornIf(adorn, "@(Type ", name, ")");
-};
-genericBind(sourceGeneral, Type, Type_sourceGeneral);
-
 # Stringifies a derived value or an opaque core value.
 fn Value_sourceGeneral(value, adorn) {
     ifValue { <> get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def type = typeOf(value);
-    def typeString = keyString(type);
+    def prefix = adornIf(adorn, "@", typeString(typeOf(value)), "");
 
-    def nameString = ifIs { <> canCall(nameOf, value) }
+    ifIs { <> isOpaqueValue(value) }
         {
-            # It binds `nameOf` but might not have a name.
-            <> ifValue { <> nameOf(value) }
-                { name <> cat(" ", sourceGeneral(name, true)) }
-                { <> "" }
-        }
-        { <> "" };
-
-    def dataString = ifIs { <> isOpaqueValue(value) }
-        { <> " /*opaque*/" }
-        {
-            <> ifValue { <> dataOf(value) }
-                { data ->
-                    # Transparent derived value with payload.
-                    <> cat(" ", sourceGeneral(data, true))
-                }
+            # Opaque value, possibly named.
+            def body = ifIs { <> canCall(nameOf, value) }
                 {
-                    # Type-only transparent derived value.
-                    ifIs { <> isString(type) }
-                        { return adornIf(adorn, "@", typeString, "") };
-                    <> ""
+                    # It binds `nameOf` but might not have a name.
+                    <> ifValue { <> nameOf(value) }
+                        { name <> keyString(name) }
+                        { <> "..." }
                 }
+                { <> "..." };
+
+            return cat(prefix, "<", body, ">")
         };
 
-    def extraString = ifValue { <> ne("", cat(nameString, dataString))  }
-        { s <> cat(":", s) }
-        { <> "" };
-
-    def body = cat(typeString, extraString);
-
-    <> adornIf(adorn, "@[", body, "]");
+    <> ifValue { <> dataOf(value) }
+        { data ->
+            # Transparent derived value with payload.
+            return cat(prefix, "(", sourceGeneral(data, true), ")")
+        }
+        {
+            # Type-only transparent derived value.
+            <> prefix
+        };
 };
 genericBind(sourceGeneral, Value, Value_sourceGeneral);
 
