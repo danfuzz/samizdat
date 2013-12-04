@@ -1,0 +1,56 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Derived value literal demo, *Layer 2* specific
+#
+
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
+
+#
+# Helper Definitions
+#
+
+fn msg(v) {
+    Io1::note("Got: \%q(v)")
+};
+
+
+#
+# Main Tests
+#
+
+Io1::note("Layer 0...");
+
+# These all refer to the same value.
+msg(@["Null"]);
+msg(@"Null");
+msg(@Null);
+msg(null);
+
+# This is not the same as the above, as the type is `null`, not `"Null"`.
+msg(@[(null)]);
+
+# These both refer to the same value.
+msg(@[potion: "blort"]);
+msg(@["potion": "blort"]);
+
+msg(false);
+msg(true);
+
+msg(@blort);
+msg(@"%fizmo%");
+msg(@["^zorch^": ["scorch"]]);
+
+# Keywords can be used as types.
+msg(@def);
+msg(@[fn]);
+
+
+Io1::note("\nLayer 2...");
+
+msg(@"\&mu;sec");
+
+<> 0

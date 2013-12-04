@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# String literal demo
+# String literal demo, *Layer 2* specific
 #
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
@@ -17,9 +17,12 @@ fn msg(string) {
     Io1::note("Got: \%q(string)")
 };
 
+
 #
 # Main Tests
 #
+
+Io1::note("Layer 0...");
 
 msg("");
 msg("a");
@@ -30,6 +33,14 @@ msg("\r");
 msg("\t");
 msg("\"");
 msg("\\");
+
+Io1::note("\nLayer 1...");
+
+msg("A couple
+     of lines.");
+
+Io1::note("\nLayer 2...");
+
 msg("\x0;");
 msg("Hello \x46,75,7a,7a; and \&#70,#117,#x7a,#x7a;");
 msg("\x1_F60F;");

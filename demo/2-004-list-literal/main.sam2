@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Int literal demo, *Layer 2* specific
+# List literal demo, *Layer 2* specific
 #
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
@@ -24,21 +24,16 @@ fn msg(v) {
 
 Io1::note("Layer 0...");
 
-msg(0);
-msg(-9);
-msg(20);
-msg(98765);
-msg(-12345);
+msg([]);
+msg([1]);
+msg([-1]);
+msg(["foo", "bar"]);
+msg([[1]*]);
+msg([[1]*, [2, 3]*, [4, 5, 6]*]);
+msg(["blort"*]);
+
 
 Io1::note("\nLayer 2...");
-
-msg(1_234_452);
-msg(0x1234abcd);            # Decimal 305441741.
-msg(-0x_ABCDEF);            # Decimal -11259375.
-msg(0b0);
-msg(0b1);
-msg(-0b1);
-msg(-0b11);                 # Decimal -3.
-msg(0b1011_0111_1110_1111); # Decimal 47087.
+Io1::note("(No new forms...yet.)");
 
 <> 0

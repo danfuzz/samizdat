@@ -45,15 +45,9 @@ fn main(selfPath, name?, rest*) {
 
     process(selfPath);
     process(rest);
-    process(0);
-    process(98765);
-    process(-12345);
-    process([]);
-    process([(-1)]);
     process(Collection::butFirst([0, 1, -2]));
     process(Sequence::reverse(Collection::butLast([-1, 2, 300, 999])));
     process(Sequence::reverse("!niffuM"));
-    process("\"Blort.\" \\ \0 \n");
     process(Collection::slice("^muffins^", 1, 8));
     process(Collection::slice(["x", "y", "muffins", "biscuits"], 2));
     process(Collection::slice({a: "apple", b: "biscuit", s: "scones"}, 2, 3));
@@ -66,25 +60,6 @@ fn main(selfPath, name?, rest*) {
     process(Collection::keyList([@a, @b, @c]));
     process(Collection::keyList("abcde"));
     process(Collection::keyList({a: "apple", b: "butter"}));
-    process({});
-    process({1: 2});
-    process({1: 2, 888: 1});
-    process({fizmo: "omzif", igram: "margi", blort: "trolb"});
-    process({"#stuff": "muff", ["x", "y"]: "zee"});
-    process(@["Null"]);
-    process(@"Null");
-    process(@Null);
-    process(null);
-    process(false);
-    process(true);
-    process(@blort);
-    process(@"%fizmo%");
-    process(@[potion: "blort"]);
-    process(@["^zorch^": ["scorch"]]);
-    process(@def); # Demos that keywords can be used as token types.
-    process(@[fn]); # Ditto.
-    process({def: "defined", fn: "done"}); # Likewise, for map keys.
-    process(@[(null)]);
     process(makeUniqlet());
     process(blort);
     process(cat);
