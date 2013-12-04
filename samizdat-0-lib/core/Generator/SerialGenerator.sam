@@ -42,7 +42,7 @@ fn SerialGenerator_nextValue(gen, box) {
             <> ifValue { <> Generator::nextValue(firstGen, innerBox) }
                 { nextGenerator ->
                     Box::store(box, Box::fetch(innerBox));
-                    <> @SerialGenerator([nextGenerator, moreGens*])
+                    <> @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
                     # First generator was voided.

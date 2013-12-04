@@ -348,7 +348,7 @@ fn makeString(string) {
     # Make a list of rules per character.
     def chars = Generator::filter(string, makeToken);
 
-    <> @PegSequence([chars*, @PegResult(@(string))])
+    <> @PegSequence[chars*, @PegResult(@(string))]
 };
 
 # Documented in Samizdat Layer 0 spec.

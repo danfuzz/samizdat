@@ -816,7 +816,7 @@ def parSequencePex = {/
 def implChoicePex = {/
     one = parSequencePex
     rest = (@"|" parSequencePex)*
-    { <> @choice([one, rest*]) }
+    { <> @choice[one, rest*] }
 /};
 Box::store(parChoicePex, implChoicePex);
 ```

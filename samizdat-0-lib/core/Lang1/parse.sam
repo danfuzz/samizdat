@@ -664,7 +664,7 @@ def implChoicePex = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeToken("|"),
             parSequencePex)),
-    Peg::makeCode { one, rest <> @choice([one, rest*]) });
+    Peg::makeCode { one, rest <> @choice[one, rest*] });
 Box::store(parChoicePex, implChoicePex);
 
 
