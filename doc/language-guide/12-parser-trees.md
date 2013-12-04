@@ -97,7 +97,7 @@ reference).
 
 ### Non-terminal parsing expression nodes
 
-#### `@choice([pex*])`
+#### `@choice[pex*]`
 
 Representation of an ordered choice of items to match. Each element
 of the list must be a parsing expression node.
@@ -132,7 +132,7 @@ expression node.
 
 This corresponds to the syntax `pex+`.
 
-#### `@sequence([pexOrVarDef*])`
+#### `@sequence[pexOrVarDef*]`
 
 Representation of a sequence of items to match, in order. Each element
 of the list must be a parsing expression node or a `varDef` node.

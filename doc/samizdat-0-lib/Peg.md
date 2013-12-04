@@ -67,7 +67,7 @@ data payload they use and what it means to call `parse` on them.
 
 Consumes and yields a single token if available.
 
-#### `@PegChoice([rules*]).parse(...)`
+#### `@PegChoice[rules*].parse(...)`
 
 Tries to parse the input using each of the given `rules` in order.
 Yields a value and returns replacement input based on the first one
@@ -134,7 +134,7 @@ expressions.
 
 Always yields the given `value`, consuming no input.
 
-#### `@PegSequence([rules*]).parse(...)`
+#### `@PegSequence[rules*].parse(...)`
 
 Tries to parse the given rules one after the other. Succeeds if all of
 the rules were successfully applied, yielding the result of the *final*
