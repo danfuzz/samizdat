@@ -380,18 +380,11 @@ def parList = Peg::makeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def parDeriv = Peg::makeMainSequence(
     Peg::makeToken("@"),
-    Peg::makeChoice(
-        Peg::makeMainSequence(
-            Peg::makeToken("["),
-            Peg::makeChoice(parIdentifierString, parTerm),
-            Peg::makeOpt(
-                Peg::makeSequence(Peg::makeToken(":"), parExpression)),
-            Peg::makeToken("]"),
-            Peg::makeCode { ., type, value, . <> [type, value*] }),
-        Peg::makeMainSequence(
-            parIdentifierString,
-            Peg::makeCode { type <> [type] })),
-    Peg::makeCode { ., tokenArgs <> makeCallName("makeValue", tokenArgs*) });
+    Peg::makeChoice(parIdentifierString, parParenExpression),
+    Peg::makeOpt(parParenExpression),
+    Peg::makeCode { ., type, value ->
+        <> makeCallName("makeValue", type, value*)
+    });
 
 # Documented in Samizdat Layer 0 spec.
 def parVarRef = Peg::makeMainSequence(
