@@ -349,6 +349,11 @@ DEF_PARSE(parenExpression) {
 
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue expression = PARSE_OR_REJECT(expression);
+
+    if (MATCH(CH_COMMA)) {
+        die("Comma not allowed within parenthesized expression.");
+    }
+
     MATCH_OR_REJECT(CH_CPAREN);
 
     return makeTransValue(STR_expression, expression);

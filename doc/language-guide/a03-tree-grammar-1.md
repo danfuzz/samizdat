@@ -110,7 +110,17 @@ def parUnaryExpression = ParseForwarder::make();
 def parParenExpression = {/
     @"("
     ex = parExpression
+
+    (
+        # Reject commas explicitly, to make for a better error message and
+        # also avoid letting a would-be parenthesized expression turn out to
+        # be taken to be a function application argument list.
+        @","
+        { Io1::die("Comma not allowed within parenthesized expression.") }
+    )?
+
     @")"
+
     { <> @expression(ex) }
 /};
 

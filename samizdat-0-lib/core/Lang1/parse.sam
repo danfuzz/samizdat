@@ -119,8 +119,14 @@ def parUnaryExpression = ParseForwarder::make();
 def parParenExpression = Peg::makeMainSequence(
     Peg::makeToken("("),
     parExpression,
+    Peg::makeOpt(
+        Peg::makeSequence(
+            Peg::makeToken(","),
+            Peg::makeCode { ., . ->
+                Io1::die("Comma not allowed within parenthesized expression.")
+            })),
     Peg::makeToken(")"),
-    Peg::makeCode { ., ex, . <> @expression(ex) });
+    Peg::makeCode { ., ex, ., . <> @expression(ex) });
 
 # Documented in Samizdat Layer 0 spec.
 def parIdentifier = Peg::makeMainSequence(
