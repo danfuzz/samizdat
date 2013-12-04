@@ -747,61 +747,6 @@ DEF_PARSE(list) {
         : makeCallName(STR_makeList, expressions);
 }
 
-/**
- * Helper for `deriv`: Parses `@"[" keyTerm (@":" expression)? @"]"`.
- */
-DEF_PARSE(deriv1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-
-    zvalue type = PARSE(identifierString);
-    if (type == NULL) { type = PARSE_OR_REJECT(term); }
-
-    zvalue result;
-
-    if (MATCH(CH_COLON)) {
-        // Note: Strictly speaking this doesn't quite follow the spec.
-        // However, there is no meaningful difference, in that the only
-        // difference is *how* errors are recognized, not *whether* they
-        // are.
-        zvalue value = PARSE_OR_REJECT(expression);
-        result = listFrom2(type, value);
-    } else {
-        result = listFrom1(type);
-    }
-
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return result;
-}
-
-/**
- * Helper for `deriv`: Parses `identifierString` returning a list of the
- * parsed value if successful.
- */
-DEF_PARSE(deriv2) {
-    MARK();
-
-    zvalue result = PARSE_OR_REJECT(identifierString);
-
-    return listFrom1(result);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(derivOld) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_AT);
-
-    zvalue args = NULL;
-    if (args == NULL) { args = PARSE(deriv1); }
-    if (args == NULL) { args = PARSE(deriv2); }
-    REJECT_IF(args == NULL);
-
-    return makeCallName(STR_makeValue, args);
-}
-
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(deriv) {
     MARK();
