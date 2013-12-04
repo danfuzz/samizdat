@@ -16,7 +16,7 @@ def Generator = moduleUse({name: ["proto", "Generator"]});
 
 # Documented in spec.
 fn makeListWrapGenerator(generator) {
-    <> @[ListWrapGenerator: generator]
+    <> @ListWrapGenerator(generator)
 };
 
 # Documented in spec.
@@ -26,7 +26,7 @@ fn ListWrapGenerator_nextValue(gen, box) {
     <> ifValue { <> Generator::nextValue(dataOf(gen), innerBox) }
         { nextGenerator ->
             Box::store(box, [Box::fetch(innerBox)]);
-            <> @[ListWrapGenerator: nextGenerator]
+            <> @ListWrapGenerator(nextGenerator)
         }
         {
             # It became voided.

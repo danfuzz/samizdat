@@ -28,7 +28,7 @@ fn makeParaGenerator(generators*) {
     ifIs { <> eq(Collection::sizeOf(generators), 1) }
         { return ListWrapGenerator::makeListWrapGenerator(generators*) };
 
-    <> @[ParaGenerator: generators]
+    <> @ParaGenerator(generators)
 };
 
 # Documented in spec.
@@ -57,7 +57,7 @@ fn ParaGenerator_nextValue(gen, box) {
         { one <> Collection::nth(one, 1) });
 
     Box::store(box, yields);
-    <> @[ParaGenerator: nexts]
+    <> @ParaGenerator(nexts)
 };
 genericBind(Generator::nextValue, "ParaGenerator", ParaGenerator_nextValue);
 

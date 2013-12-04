@@ -19,7 +19,7 @@ def ValueGenerator = submoduleUse("ValueGenerator");
 
 # Documented in spec.
 fn makeOptGenerator(generator) {
-    <> @[OptGenerator: generator]
+    <> @OptGenerator(generator)
 };
 
 # Documented in spec.
@@ -36,7 +36,7 @@ fn OptGenerator_nextValue(gen, box) {
     <> ifValue { <> Generator::nextValue(subGen, innerBox) }
         { nextGen ->
             Box::store(box, [Box::fetch(innerBox)]);
-            <> @[OptGenerator: nextGen]
+            <> @OptGenerator(nextGen)
         }
         {
             <> Generator::nextValue(
