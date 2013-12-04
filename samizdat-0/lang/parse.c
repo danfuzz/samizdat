@@ -627,16 +627,6 @@ DEF_PARSE(identifierString) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(emptyMap) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OCURLY);
-    MATCH_OR_REJECT(CH_CCURLY);
-
-    return makeLiteral(EMPTY_MAP);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(keyTerm) {
     MARK();
 
@@ -703,11 +693,18 @@ DEF_PARSE(mapping) {
 DEF_PARSE(map) {
     MARK();
 
+    // This one isn't just a transliteration of the reference code, but the
+    // effect is the same.
+
     MATCH_OR_REJECT(CH_OCURLY);
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
     MATCH_OR_REJECT(CH_CCURLY);
 
-    return makeCallName(STR_cat, mappings);
+    switch (collSize(mappings)) {
+        case 0:  return makeLiteral(EMPTY_MAP);
+        case 1:  return collNth(mappings, 0);
+        default: return makeCallName(STR_cat, mappings);
+    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -853,7 +850,6 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
-    if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(deriv); }
