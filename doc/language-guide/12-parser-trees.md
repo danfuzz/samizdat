@@ -10,7 +10,7 @@ types and functions used to implement parsing.
 
 ### Normal (non-parsing) expression nodes
 
-#### `@[parser: pex]`
+#### `@parser(pex)`
 
 Representation of an anonymous parsing function. `pex` must be a parsing
 expression node, that is, any of the node types defined here other than
@@ -30,7 +30,7 @@ Representation of the "match anything" rule.
 
 This corresponds to the syntax `.`.
 
-#### `@[code: {(yieldDef: name)?, statements: [statement*], (yield: expression)?}]`
+#### `@code{(yieldDef: name)?, statements: [statement*], (yield: expression)?}`
 
 Representation of a code expression.
 
@@ -53,14 +53,14 @@ Representation of the "empty" ("always succeed" / no-op) rule.
 
 This corresponds to the syntax `()`.
 
-#### `@[string: string]`
+#### `@string(string)`
 
 Representation of a multi-character sequence match. `string` must be a
 string.
 
 This corresponds to the syntax `"string"`.
 
-#### `@[token: type]`
+#### `@token(type)`
 
 Representation of a token-match terminal. This is also used for
 single-character matches in tokenizers. `type` must be a string. This
@@ -69,7 +69,7 @@ indicates that a token of the given type is to be matched.
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
 a single character).
 
-#### `@[tokenSet: tokenSet]`
+#### `@tokenSet(tokenSet)`
 
 Representation of a token set rule. This is also used for matching
 character sets in tokenizers. `tokenSet` must be a list of strings,
@@ -77,7 +77,7 @@ which is taken to be an unordered set of token types to match.
 
 This corresponds to the syntax `[token1 token2 etc]` or `["charsToMatch"]`.
 
-#### `@[tokenSetComplement: tokenSet]`
+#### `@tokenSetComplement(tokenSet)`
 
 Representation of a token set complement rule. This is also used for matching
 character set complements in tokenizers. `tokenSet` must be a list of
@@ -86,7 +86,7 @@ strings, which is taken to be an unordered set of token types to not-match.
 This corresponds to the syntax `[! token1 token2 etc]` or
 `[! "charsToNotMatch"]`.
 
-#### `@[varRef: name]`
+#### `@varRef(name)`
 
 Representation of a call out to a named parsing function. `name` is
 an arbitrary value, but typically a string.
@@ -97,49 +97,49 @@ reference).
 
 ### Non-terminal parsing expression nodes
 
-#### `@[choice: [pex*]]`
+#### `@choice[pex*]`
 
 Representation of an ordered choice of items to match. Each element
 of the list must be a parsing expression node.
 
 This corresponds to the syntax `pex1 | pex2 | etc`.
 
-#### `@[lookaheadSuccess: pex]`
+#### `@lookaheadSuccess(pex)`
 
 Representation of a lookahead-success expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `&pex`.
 
-#### `@[lookaheadFailure: pex]`
+#### `@lookaheadFailure(pex)`
 
 Representation of a lookahead-failure expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `!pex`.
 
-#### `@[opt: pex]`
+#### `@opt(pex)`
 
 Representation of an optional (zero-or-one) expression. `pex` must be a
 parsing expression node.
 
 This corresponds to the syntax `pex?`.
 
-#### `@[plus: pex]`
+#### `@plus(pex)`
 
 Representation of a plus (one-or-more) expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `pex+`.
 
-#### `@[sequence: [pexOrVarDef*]]`
+#### `@sequence[pexOrVarDef*]`
 
 Representation of a sequence of items to match, in order. Each element
 of the list must be a parsing expression node or a `varDef` node.
 
 This corresponds to the syntax `pex1 pex2 etc`.
 
-#### `@[star: pex]`
+#### `@star(pex)`
 
 Representation of a star (zero-or-more) expression. `pex` must be a parsing
 expression node.
@@ -149,7 +149,7 @@ This corresponds to the syntax `pex*`.
 
 ### Other nodes
 
-#### `@[varDef: {name: name, value: pex}]`
+#### `@varDef{name: name, value: pex}`
 
 Representation of a name-bound expression. These are *only* ever valid
 as direct elements of the array of parsing nodes attached to a `sequence`

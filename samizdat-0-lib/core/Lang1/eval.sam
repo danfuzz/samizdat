@@ -20,10 +20,10 @@ def convertPex = makeRegularGeneric("convertPex", 2, 2);
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
 # Reference to the variable `get`.
-def GET_REF = @[varRef: "get"];
+def GET_REF = @varRef("get");
 
 # Reference to the variable `Peg`.
-def PEG_REF = @[varRef: "Peg"];
+def PEG_REF = @varRef("Peg");
 
 # Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
@@ -32,12 +32,12 @@ fn convertPexInList(nodes) {
 
 # Constructs a function call.
 fn makeCall(function, args*) {
-    <> @[call: {function: function, actuals: args}]
+    <> @call{function: function, actuals: args}
 };
 
 # Makes a peg variable reference.
 fn makePegRef(name) {
-    <> makeCall(GET_REF, PEG_REF, @[literal: name])
+    <> makeCall(GET_REF, PEG_REF, @literal(name))
 };
 
 # Constructs a named peg function call with the given arguments, each of
@@ -54,7 +54,7 @@ fn callPegNameWithPex(node, formals, functionName) {
 
 # Constructs a named peg function call of the given literal arguments.
 fn callPegNameWithLiterals(functionName, args*) {
-    def literalArgs = Generator::filterAll(args) { arg <> @[literal: arg] };
+    def literalArgs = Generator::filterAll(args) { arg <> @literal(arg) };
     <> callPegNameWithExpressions(functionName, literalArgs*)
 };
 
@@ -149,7 +149,7 @@ fn code_convertPex(node, formals) {
     # and just convert that.
 
     def closurePayload = {(dataOf(node))*, formals: formals};
-    def convertedClosure = convertPexIn(@[closure: closurePayload]);
+    def convertedClosure = convertPexIn(@closure(closurePayload));
 
     <> callPegNameWithExpressions("makeCode", convertedClosure)
 };
@@ -199,7 +199,7 @@ fn convertClosureLike(node) {
         { yield <> {yield: convertPexIn(yield)} }
         { <> {} };
 
-    <> @[(nodeType): {nodeValue*, yield*, statements: statements}]
+    <> @(nodeType){nodeValue*, yield*, statements: statements}
 };
 
 # Does parser conversion of a node whose payload value is an
@@ -209,7 +209,7 @@ fn convertExpressionPayload(node) {
     def nodeType = typeOf(node);
     def nodeValue = convertPexIn(dataOf(node));
 
-    <> @[(nodeType): nodeValue]
+    <> @(nodeType)(nodeValue)
 };
 
 # Does parser conversion of a `call` node.
@@ -218,7 +218,7 @@ fn call_convertPexIn(node) {
     def function = convertPexIn(nodeValue::function);
     def actuals = convertPexInList(nodeValue::actuals);
 
-    <> @[call: {nodeValue*, function: function, actuals: actuals}]
+    <> @call{nodeValue*, function: function, actuals: actuals}
 };
 genericBind(convertPexIn, "call", call_convertPexIn);
 
@@ -264,7 +264,7 @@ fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
     def value = convertPexIn(nodeValue::value);
 
-    <> @[varDef: {nodeValue*, value: value}]
+    <> @varDef{nodeValue*, value: value}
 };
 genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 

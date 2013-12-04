@@ -66,8 +66,8 @@ Straightforward protocol implementation.
 
 #### Constant: `false`
 
-The boolean value false. It is defined as `@[Boolean: 0]`.
+The boolean value false. It is defined as `@Boolean(0)`.
 
 #### Constant: `true`
 
-The boolean value true. It is defined as `@[Boolean: 1]`.
+The boolean value true. It is defined as `@Boolean(1)`.

@@ -21,7 +21,7 @@ def KEYWORDS = Generator::collectAsMap(
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])
-        { name <> {(name): @[(name)]} });
+        { name <> {(name): @(name)} });
 
 # Documented in Samizdat Layer 0 spec.
 def INT_CHARS = {
@@ -39,7 +39,7 @@ fn intFromDigitChar(ch) {
 
 # Documented in Samizdat Layer 0 spec.
 fn processStringParts(parts) {
-    <> @[string: cat("", parts*)]
+    <> @string(cat("", parts*))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -78,7 +78,7 @@ def tokInt = Peg::makeMainSequence(
     Peg::makeCode { digits ->
         def value = Generator::doReduce1(digits, 0)
             { digit, result <> Number::add(digit, Number::mul(result, 10)) };
-        <> @[int: value]
+        <> @int(value)
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -108,7 +108,7 @@ def tokString = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeString("\""),
             Peg::makeCode { ., parts, . <> processStringParts(parts) }),
-        Peg::makeCode { ., . <> @[error: "Unterminated string literal."] }));
+        Peg::makeCode { ., . <> @error("Unterminated string literal.") }));
 
 # These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -124,14 +124,14 @@ def tokIdentifier = Peg::makeMainSequence(
     Peg::makeCode { one, rest ->
         def string = Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
-            { <> @[identifier: string] }
+            { <> @identifier(string) }
     });
 
 # Documented in Samizdat Layer 0 spec.
 def tokQuotedIdentifier = Peg::makeMainSequence(
     Peg::makeString("\\"),
     tokString,
-    Peg::makeCode { ., s <> @[identifier: dataOf(s)] });
+    Peg::makeCode { ., s <> @identifier(dataOf(s)) });
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = Peg::makeMainSequence(
@@ -139,7 +139,7 @@ def tokError = Peg::makeMainSequence(
     Peg::makeStar(Peg::makeCharSetComplement("\n")),
     Peg::makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", typeOf(badCh));
-        <> @[error: msg]
+        <> @error(msg)
     });
 
 # Documented in Samizdat Layer 0 spec.

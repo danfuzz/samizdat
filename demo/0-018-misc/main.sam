@@ -64,6 +64,7 @@ fn main(selfPath, name?, rest*) {
     process(blort);
     process(cat);
     process(ne);
+    process(String);
     process(ENVIRONMENT::HOME);
     process(Format::int(71, 2));
     process(Format::int(71, 10));

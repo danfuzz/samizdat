@@ -338,16 +338,26 @@ DEF_PARSE(optSemicolons) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(programBody);
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(term);
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression);
+DEF_PARSE(programBody);
+DEF_PARSE(term);
+DEF_PARSE(unaryExpression);
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(unaryExpression);
+DEF_PARSE(parenExpression) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OPAREN);
+    zvalue expression = PARSE_OR_REJECT(expression);
+
+    if (MATCH(CH_COMMA)) {
+        die("Comma not allowed within parenthesized expression.");
+    }
+
+    MATCH_OR_REJECT(CH_CPAREN);
+
+    return makeTransValue(STR_expression, expression);
+}
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(identifier) {
@@ -622,16 +632,6 @@ DEF_PARSE(identifierString) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(emptyMap) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OCURLY);
-    MATCH_OR_REJECT(CH_CCURLY);
-
-    return makeLiteral(EMPTY_MAP);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(keyTerm) {
     MARK();
 
@@ -698,11 +698,18 @@ DEF_PARSE(mapping) {
 DEF_PARSE(map) {
     MARK();
 
+    // This one isn't just a transliteration of the reference code, but the
+    // effect is the same.
+
     MATCH_OR_REJECT(CH_OCURLY);
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
     MATCH_OR_REJECT(CH_CCURLY);
 
-    return makeCallName(STR_cat, mappings);
+    switch (collSize(mappings)) {
+        case 0:  return makeLiteral(EMPTY_MAP);
+        case 1:  return collNth(mappings, 0);
+        default: return makeCallName(STR_cat, mappings);
+    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -745,57 +752,25 @@ DEF_PARSE(list) {
         : makeCallName(STR_makeList, expressions);
 }
 
-/**
- * Helper for `deriv`: Parses `@"[" keyTerm (@":" expression)? @"]"`.
- */
-DEF_PARSE(deriv1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-
-    zvalue type = PARSE(identifierString);
-    if (type == NULL) { type = PARSE_OR_REJECT(term); }
-
-    zvalue result;
-
-    if (MATCH(CH_COLON)) {
-        // Note: Strictly speaking this doesn't quite follow the spec.
-        // However, there is no meaningful difference, in that the only
-        // difference is *how* errors are recognized, not *whether* they
-        // are.
-        zvalue value = PARSE_OR_REJECT(expression);
-        result = listFrom2(type, value);
-    } else {
-        result = listFrom1(type);
-    }
-
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return result;
-}
-
-/**
- * Helper for `deriv`: Parses `identifierString` returning a list of the
- * parsed value if successful.
- */
-DEF_PARSE(deriv2) {
-    MARK();
-
-    zvalue result = PARSE_OR_REJECT(identifierString);
-
-    return listFrom1(result);
-}
-
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(deriv) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue args = NULL;
-    if (args == NULL) { args = PARSE(deriv1); }
-    if (args == NULL) { args = PARSE(deriv2); }
-    REJECT_IF(args == NULL);
+    zvalue type = PARSE(identifierString);
+    if (type == NULL) {
+        type = PARSE_OR_REJECT(parenExpression);
+    }
+
+    // Value is optional; these are allowed to all fail.
+    zvalue value = PARSE(parenExpression);
+    if (value == NULL) value = PARSE(map);
+    if (value == NULL) value = PARSE(list);
+
+    zvalue args = (value == NULL)
+        ? listFrom1(type)
+        : listFrom2(type, value);
 
     return makeCallName(STR_makeValue, args);
 }
@@ -823,24 +798,12 @@ DEF_PARSE(varDef) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(parenExpression) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OPAREN);
-    zvalue expression = PARSE_OR_REJECT(expression);
-    MATCH_OR_REJECT(CH_CPAREN);
-
-    return makeTransValue(STR_expression, expression);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(term) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
-    if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(deriv); }

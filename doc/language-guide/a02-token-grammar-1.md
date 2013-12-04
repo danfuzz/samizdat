@@ -22,7 +22,7 @@ def KEYWORDS = Generator::collectAsMap(
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])
-        { name <> {(name): @[(name)]} });
+        { name <> {(name): @(name)} });
 
 # These are all the int digits, as a map from strings to digit values. This
 # includes hex digits as well, in both lower and upper case. Finally, this
@@ -47,7 +47,7 @@ fn intFromDigitChar(ch) {
 # value. In *Layer 2* (and higher) this can also yield an
 # `interpolatedString` or an `error`.
 fn processStringParts(parts) {
-    <> @[string: cat("", parts*)]
+    <> @string(cat("", parts*))
 };
 
 # Forward declaration of `tokToken`, for use in the interpolated string
@@ -115,7 +115,7 @@ def tokInt = {/
     {
         def value = Generator::doReduce1(digits, 0)
             { digit, result <> Number::add(digit, Number::mul(result, 10)) };
-        <> @[int: value]
+        <> @int(value)
     }
 /};
 
@@ -157,7 +157,7 @@ def tokString = {/
         "\""
         { <> processStringParts(parts) }
     |
-        { <> @[error: "Unterminated string literal."] }
+        { <> @error("Unterminated string literal.") }
     )
 /};
 
@@ -169,7 +169,7 @@ def tokIdentifier = {/
     {
         def string = Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
-            { <> @[identifier: string] }
+            { <> @identifier(string) }
     }
 /};
 
@@ -178,7 +178,7 @@ def tokQuotedIdentifier = {/
     "\\"
     s = tokString
 
-    { <> @[identifier: dataOf(s)] }
+    { <> @identifier(dataOf(s)) }
 /};
 
 # "Parses" an unrecognized character. This also consumes any further characters
@@ -189,7 +189,7 @@ def tokError = {/
 
     {
         def msg = cat("Unrecognized character: ", typeOf(badCh));
-        <> @[error: msg]
+        <> @error(msg)
     }
 /};
 

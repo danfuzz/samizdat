@@ -34,7 +34,7 @@ def KEYWORDS = Generator::collectAsMap(
         "break", "continue", "default", "do", "else", "export",
         "for", "if", "import", "in", "module", "reduce",
         "switch", "var", "while"])
-        { name <> {(name): @[(name)]} });
+        { name <> {(name): @(name)} });
 
 # These are all the int digits, as a map from strings to digit values. This
 # includes hex digits as well, in both lower and upper case. Finally, this
@@ -118,7 +118,7 @@ def tokPunctuation = {/
         # where we're parsing other punctuation. This is clean but a little
         # non-obvious, hence this comment.
         "/*" .*
-        { <> @[error: "Unterminated comment."] }
+        { <> @error("Unterminated comment.") }
     |
         # Single-character punctuation / operator.
         .
@@ -169,7 +169,7 @@ def tokString = {/
         "\""
         { <> processStringParts(parts) }
     |
-        { <> @[error: "Unterminated string literal."] }
+        { <> @error("Unterminated string literal.") }
     )
 /};
 
@@ -181,7 +181,7 @@ def tokIdentifier = {/
     {
         def string = Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
-            { <> @[identifier: string] }
+            { <> @identifier(string) }
     }
 /};
 
@@ -190,7 +190,7 @@ def tokQuotedIdentifier = {/
     "\\"
     s = tokString
 
-    { <> @[identifier: dataOf(s)] }
+    { <> @identifier(dataOf(s)) }
 /};
 
 # "Parses" an unrecognized character. This also consumes any further characters
@@ -201,7 +201,7 @@ def tokError = {/
 
     {
         def msg = cat("Unrecognized character: ", typeOf(badCh));
-        <> @[error: msg]
+        <> @error(msg)
     }
 /};
 
@@ -258,7 +258,7 @@ fn implProcessStringParts(parts) {
     # Handle the empty string as a special case, to make the
     # reduce below be more straightforward.
     ifIs { <> eq(parts, []) }
-        { return @[string: ""] };
+        { return @string("") };
 
     # If there is an error part (represented as an `@error` token), return
     # it.
@@ -288,12 +288,12 @@ fn implProcessStringParts(parts) {
                 { elem ->
                     # There's only one element, and it's a string. So,
                     # we have a simple non-interpolated string. Return it.
-                    return @[string: elem]
+                    return @string(elem)
                 }
         };
 
     # At this point, we have a valid interpolation.
-    <> @[interpolatedString: elems]
+    <> @interpolatedString(elems)
 };
 Box::store(processStringParts, implProcessStringParts);
 
@@ -352,7 +352,7 @@ def implInt = {/
         tokBinDigit+
     )
 
-    { <> @[int: intFromDigitList(base, digits)] }
+    { <> @int(intFromDigitList(base, digits)) }
 /};
 Box::store(tokInt, implInt);
 
@@ -431,7 +431,7 @@ def implStringPart2 = {/
             ";"
             { <> cat(one, rest*) }
         |
-            { <> @[error: "Invalid hexadecimal character literal."] }
+            { <> @error("Invalid hexadecimal character literal.") }
         )
     |
         "&"
@@ -441,7 +441,7 @@ def implStringPart2 = {/
             ";"
             { <> cat(one, rest*) }
         |
-            { <> @[error: "Invalid named character literal."] }
+            { <> @error("Invalid named character literal.") }
         )
     |
         format = (
@@ -458,10 +458,10 @@ def implStringPart2 = {/
             tokens = tokStringInterpolation
             { <> {format*, tokens: tokens} }
         |
-            { <> @[error: "Unbalanced string interpolation."] }
+            { <> @error("Unbalanced string interpolation.") }
         )
     |
-        { <> @[error: "Invalid character literal escape sequence."] }
+        { <> @error("Invalid character literal escape sequence.") }
     )
 /};
 Box::store(tokStringPart2, implStringPart2);

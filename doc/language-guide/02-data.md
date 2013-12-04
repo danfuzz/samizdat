@@ -269,9 +269,9 @@ of type:
   string of the "human" name of the type. By convention, core type names
   are capitalized.
 
-* The type of a data value created using the syntax `@[type: value]`
+* The type of a data value created using the syntax `@(type)(value)`
   is a transparent derived type, where the type's name is the `type` specified
-  in the syntax. For example, the type of `@["stuff": [1, 2, 3]]` is a
+  in the syntax. For example, the type of `@("stuff")([1, 2, 3])` is a
   transparent type with name `"stuff"`. This is described more fully below
   under "Derived types".
 
@@ -300,40 +300,45 @@ function.
 A derived value is one that was constructed with an explicit type tag and
 optional data payload.
 
-Samizdat allows one to name a value with an explicit type tag
-by placing the type and value within `@[...]` delimiters. Inside
-the delimiters, a single binding of the form `type: value` indicates
-the type tag and payload data, or if the there is no payload, just a
-`type` need be mentioned.
+Derived values are introduced with an at-sign (`@`). This is followed by
+the required type tag and then the optional data payload. The type tag
+and payload (if present) must each be surrounded by parentheses (separately),
+with the following exceptions:
 
-If the type tag is a string that abides by the syntax for identifiers
-in the language, then the double quotes may be omitted.
+* If the type tag is a literal string which abides by the syntax for
+  identifiers in the language, then it may be represented directly, with
+  no parentheses or quoting required.
 
-If the type tag is a string and the value has no payload, then the
-square brackets may be omitted. If, furthermore, the type tag
-abides by the syntax for identifiers in the language, then the double quotes
-may be omitted in this already-shortened form.
+* If the type tag is a string form (`"..."`), then it may be represented
+  without parentheses.
+
+* If the data payload is a map form (`{...}`), then it may be represented
+  without parentheses.
+
+* If the data payload is a list form (`[...]`), then it may be represented
+  without parentheses.
 
 ```
-@["heartState": @pure]        # a "heart state" value
-@[heartState: @pure]          # shorthand for same
-
-@[
-  "spell":
-  {name: "frotz", purpose: "cause item to glow"}
-]
-
-@["lozenge"]                  # a payload-free value of type "lozenge"
-@[lozenge]                    # shorthand for same
+@("lozenge")                  # a payload-free value of type `"lozenge"`
 @"lozenge"                    # shorthand for same
 @lozenge                      # shorthand for same
 
-@["Null"]                     # the value usually just written as `null`
-@[Null]                       # same as above
-@[(null)]                     # a type-only value with type `null`
+@("heartState")("pure")       # a "heart state" value, with string payload
+@"heartState"("pure")         # shorthand for same
+@heartState("pure")           # shorthand for same
 
-@[Boolean: 0]                 # the value usually just written as `false`
-@[Boolean: 1]                 # the value usually just written as `true`
+@spell({name: "frotz", purpose: "cause item to glow"}) # a map payload
+@spell{name: "frotz", purpose: "cause item to glow"}   # shorthand for same
+
+@utensils(["fork", "knife", "spoon"])                  # a list payload
+@utensils["fork", "knife", "spoon"]                    # shorthand for same
+
+@("Null")                     # the value usually just written as `null`
+@Null                         # same as above
+@(null)                       # a type-only value with type `null`
+
+@Boolean(0)                   # the value usually just written as `false`
+@Boolean(1)                   # the value usually just written as `true`
 ```
 
 #### Boolean
@@ -342,8 +347,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = @[Boolean: 0]
-true = @[Boolean: 1]
+def false = @Boolean(0);
+def true = @Boolean(1);
 ```
 
 These values are most useful when placed into variables and passed
@@ -359,7 +364,7 @@ a named constant `null` to refer to this value. This constant can be
 defined as:
 
 ```
-null = @Null
+def null = @Null;
 ```
 
 

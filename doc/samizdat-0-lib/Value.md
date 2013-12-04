@@ -154,15 +154,15 @@ and optional data payload value (also an arbitrary value). These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = @[(type)];         is equivalent to  v = makeValue(type);
-v = @[(type): value];  is equivalent to  v = makeValue(type, value);
+v = @(type);         is equivalent to  v = makeValue(type);
+v = @(type)(value);  is equivalent to  v = makeValue(type, value);
 ```
 
 If `type` names a core type, and the given `value` is a value
 of that type, then this function returns `value` directly.
 
-**Syntax Note:** Used in the translation of `@type` and `@[type: value]`
-forms.
+**Syntax Note:** Used in the translation of `@(type)(value)`
+(and related) forms.
 
 #### `ne(value1, value2) <> logic`
 

@@ -28,7 +28,7 @@ genericBind(Generator::nextValue, "ValueGenerator", ValueGenerator_nextValue);
 
 # Documented in spec.
 fn makeValueGenerator(value) {
-    <> @[ValueGenerator: value]
+    <> @ValueGenerator(value)
 };
 
 <> {

@@ -27,38 +27,38 @@ def LOWER_ALPHA = {
 
 # Returns an `interpolate` node.
 fn makeInterpolate(expression) {
-    <> @[interpolate: expression]
+    <> @interpolate(expression)
 };
 
 # Returns a `literal` node.
 fn makeLiteral(value) {
-    <> @[literal: value]
+    <> @literal(value)
 };
 
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @[closure: {formals: [], statements: [], yield: expression}]
+    <> @closure{formals: [], statements: [], yield: expression}
 };
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @[varDef: {name: name, value: value}]
+    <> @varDef{name: name, value: value}
 };
 
 # Returns a `varRef` node.
 fn makeVarRef(name) {
-    <> @[varRef: name]
+    <> @varRef(name)
 };
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @[call: {function: function, actuals: actuals}]
+    <> @call{function: function, actuals: actuals}
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @[call: {function: makeVarRef(name), actuals: actuals}]
+    <> @call{function: makeVarRef(name), actuals: actuals}
 };
 
 # Returns a collection access (`get`) expression. This is a `call` node
@@ -99,8 +99,30 @@ fn makeCallNonlocalExit(name, optExpression?) {
 def parParser = makeParseForwarder();
 
 # Forward declarations.
-def parProgramBody = makeParseForwarder();
-def parExpression = makeParseForwarder();
+def parExpression = ParseForwarder::make();
+def parProgramBody = ParseForwarder::make();
+def parTerm = ParseForwarder::make();
+def parUnaryExpression = ParseForwarder::make();
+
+# Parses a parenthesized expression. This produces an `expression` node,
+# which prevents void-contagion from escaping. If void-contagion-prevention
+# is undesired, the result of this rule can be unwrapped with `dataOf`.
+def parParenExpression = {/
+    @"("
+    ex = parExpression
+
+    (
+        # Reject commas explicitly, to make for a better error message and
+        # also avoid letting a would-be parenthesized expression turn out to
+        # be taken to be a function application argument list.
+        @","
+        { Io1::die("Comma not allowed within parenthesized expression.") }
+    )?
+
+    @")"
+
+    { <> @expression(ex) }
+/};
 
 # Parses an identifier. **Note:** This is nontrivial in layer 2.
 def parIdentifier = {/
@@ -168,7 +190,7 @@ def parProgramDeclarations = {/
 def parProgram = {/
     decls = parProgramDeclarations
     body = parProgramBody
-    { <> @[closure: {decls*, body*}] }
+    { <> @closure{decls*, body*} }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -284,7 +306,7 @@ def parFnDef = {/
 
     {
         <> ifIs { <> funcMap::name }
-            { <> @[fnDef: funcMap] }
+            { <> @fnDef(funcMap) }
     }
 /};
 
@@ -309,16 +331,16 @@ def parFnExpression = {/
     (
         name = { <> funcMap::name }
         {
-            def mainClosure = @[closure: {
+            def mainClosure = @closure{
                 formals: [],
-                statements: [@[fnDef: funcMap]],
+                statements: [@fnDef(funcMap)],
                 yield: makeVarRef(name)
-            }];
+            };
 
             <> makeCall(mainClosure)
         }
     |
-        { <> @[closure: funcMap] }
+        { <> @closure(funcMap) }
     )
 /};
 
@@ -360,12 +382,6 @@ def parIdentifierString = {/
     }
 /};
 
-# Parses an empty map literal.
-def parEmptyMap = {/
-    @"{" @"}"
-    { <> makeLiteral({}) }
-/};
-
 # Parses a key term. This includes parsing of interpolation syntax.
 def parKeyTerm = {/
     # The lookahead-failure is to ensure we don't match a variable being
@@ -394,7 +410,7 @@ def parMapping = {/
 
     # The `value` is wrapped in an `expression` node here to prevent
     # interpolation from being applied to `makeValueMap`.
-    { <> makeCallName("makeValueMap", key, @[expression: value]) }
+    { <> makeCallName("makeValueMap", key, @expression(value)) }
 |
     map = parTerm
     @"*"
@@ -404,10 +420,22 @@ def parMapping = {/
 # Parses a map literal.
 def parMap = {/
     @"{"
-    one = parMapping
-    rest = (@"," parMapping)*
+
+    result = (
+        one = parMapping
+        rest = (@"," parMapping)*
+        {
+            <> ifIs { <> eq(rest, []) }
+                { <> one }
+                { <> makeCallName("cat", one, rest*) }
+        }
+    |
+        { <> makeLiteral({}) }
+    )
+
     @"}"
-    { <> makeCallName("cat", one, rest*) }
+
+    { <> result }
 /};
 
 # Parses a list item or function call argument. This handles all of:
@@ -424,7 +452,7 @@ def parListItem = {/
 |
     @"&"
     ex = parUnaryExpression
-    { <> @[voidable: ex] }
+    { <> @voidable(ex) }
 |
     parExpression
 /};
@@ -455,18 +483,10 @@ def parList = {/
 def parDeriv = {/
     @"@"
 
-    derivArgs = (
-        @"["
-        type = (parIdentifierString | parTerm)
-        value = (@":" parExpression)?
-        @"]"
-        { <> [type, value*] }
-    |
-        type = parIdentifierString
-        { <> [type] }
-    )
+    type = (parIdentifierString | parParenExpression)
+    value = (parParenExpression | parMap | parList)?
 
-    { <> makeCallName("makeValue", derivArgs*) }
+    { <> makeCallName("makeValue", type, value*) }
 /};
 
 # Parses a variable reference.
@@ -484,19 +504,11 @@ def parVarDef = {/
     { <> makeVarDef(dataOf(name), ex) }
 /};
 
-# Parses a parenthesized expression.
-def parParenExpression = {/
-    @"("
-    ex = parExpression
-    @")"
-    { <> @[expression: ex] }
-/};
-
 # Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
 # to be done before `List`, since the latter rejects "map-like" syntax as a
 # fatal error.
 def parTerm = {/
-    parVarRef | parInt | parString | parEmptyMap | parMap | parList
+    parVarRef | parInt | parString | parMap | parList
     parDeriv | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
@@ -671,7 +683,7 @@ def implParser = {/
     @"{/"
     pex = parChoicePex
     @"/}"
-    { <> @[parser: pex] }
+    { <> @parser(pex) }
 /};
 Box::store(parParser, implParser);
 
@@ -689,7 +701,7 @@ def parParserString = {/
     {
         def value = dataOf(s);
         <> ifIs { <> eq(Collection::sizeOf(value), 1) }
-            { <> @[token: value] }
+            { <> @token(value) }
             { <> s }
     }
 /};
@@ -698,7 +710,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @[token: dataOf(type)] }
+    { <> @token(dataOf(type)) }
 /};
 
 # Parses a string or character range parsing expression, used when defining
@@ -746,13 +758,13 @@ def parParserSet = {/
 
     @"]"
 
-    { <> @[(type): terminals] }
+    { <> @(type)(terminals) }
 /};
 
 # Parses a code block parsing expression.
 def parParserCode = {/
     closure = parNullaryClosure
-    { <> @[code: dataOf(closure) ] }
+    { <> @code(dataOf(closure)) }
 /};
 
 # Parses a parsing expression term.
@@ -773,7 +785,7 @@ def parRepeatPex = {/
     term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(get(PEX_TYPES, typeOf(repeat))): term] }
+        { <> @(get(PEX_TYPES, typeOf(repeat)))(term) }
     |
         { <> term }
     )
@@ -785,7 +797,7 @@ def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @[(get(PEX_TYPES, typeOf(lookahead))): pex] }
+        { <> @(get(PEX_TYPES, typeOf(lookahead)))(pex) }
     )
 |
     parRepeatPex
@@ -797,7 +809,7 @@ def parNamePex = {/
         name = parIdentifier
         @"="
         pex = parLookaheadPex
-        { <> @[varDef: {name: dataOf(name), value: pex}] }
+        { <> @varDef{name: dataOf(name), value: pex} }
     )
 |
     parLookaheadPex
@@ -807,14 +819,14 @@ def parNamePex = {/
 # one, but it does *not* parse empty (zero-length) sequences.
 def parSequencePex = {/
     items = parNamePex+
-    { <> @[sequence: items] }
+    { <> @sequence(items) }
 /};
 
 # Parses a choice parsing expression. This includes a single choice.
 def implChoicePex = {/
     one = parSequencePex
     rest = (@"|" parSequencePex)*
-    { <> @[choice: [one, rest*]] }
+    { <> @choice[one, rest*] }
 /};
 Box::store(parChoicePex, implChoicePex);
 ```
