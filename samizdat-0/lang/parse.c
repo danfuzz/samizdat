@@ -758,7 +758,11 @@ DEF_PARSE(deriv) {
         type = PARSE_OR_REJECT(parenExpression);
     }
 
-    zvalue value = PARSE(parenExpression); // Optional; allowed to fail.
+    // Value is optional; these are allowed to all fail.
+    zvalue value = PARSE(parenExpression);
+    if (value == NULL) value = PARSE(map);
+    if (value == NULL) value = PARSE(list);
+
     zvalue args = (value == NULL)
         ? listFrom1(type)
         : listFrom2(type, value);
