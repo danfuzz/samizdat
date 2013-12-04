@@ -467,18 +467,10 @@ def parList = {/
 def parDeriv = {/
     @"@"
 
-    derivArgs = (
-        @"["
-        type = (parIdentifierString | parTerm)
-        value = (@":" parExpression)?
-        @"]"
-        { <> [type, value*] }
-    |
-        type = parIdentifierString
-        { <> [type] }
-    )
+    type = (parIdentifierString | parParenExpression)
+    value = parParenExpression?
 
-    { <> makeCallName("makeValue", derivArgs*) }
+    { <> makeCallName("makeValue", type, value*) }
 /};
 
 # Parses a variable reference.
