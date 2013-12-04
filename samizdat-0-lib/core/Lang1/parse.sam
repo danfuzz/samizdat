@@ -381,7 +381,7 @@ def parList = Peg::makeMainSequence(
 def parDeriv = Peg::makeMainSequence(
     Peg::makeToken("@"),
     Peg::makeChoice(parIdentifierString, parParenExpression),
-    Peg::makeOpt(parParenExpression),
+    Peg::makeOpt(Peg::makeChoice(parParenExpression, parMap, parList)),
     Peg::makeCode { ., type, value ->
         <> makeCallName("makeValue", type, value*)
     });

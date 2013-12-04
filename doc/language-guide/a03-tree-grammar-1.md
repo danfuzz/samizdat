@@ -474,7 +474,7 @@ def parDeriv = {/
     @"@"
 
     type = (parIdentifierString | parParenExpression)
-    value = parParenExpression?
+    value = (parParenExpression | parMap | parList)?
 
     { <> makeCallName("makeValue", type, value*) }
 /};
