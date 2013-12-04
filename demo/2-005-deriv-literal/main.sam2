@@ -48,7 +48,9 @@ msg(@([123]));
 
 msg(@"^zorch^"("scorch"));
 msg(@fizmo([1, 2, 3]));
+msg(@fizmo[1, 2, 3]);
 msg(@fizmo({a: 1, b: 2, c: 3}));
+msg(@fizmo{a: 1, b: 2, c: 3});
 msg(@(123)(456));
 
 # Keywords can be used as types.
