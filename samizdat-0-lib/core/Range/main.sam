@@ -38,8 +38,8 @@ fn makeClosedRange(firstValue, increment, size) {
     # `totGt` ensures that `size` is an int.
     <> ifIs { <> totGt(size, 0) }
         {
-            <> @[ClosedRange:
-                {firstValue: firstValue, increment: increment, size: size}]
+            <> @ClosedRange(
+                {firstValue: firstValue, increment: increment, size: size})
         }
         { <> Generator::nullGenerator }
 };
@@ -124,7 +124,7 @@ genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 
 # Documented in spec.
 fn makeOpenRange(firstValue, increment) {
-    <> @[OpenRange: {firstValue: firstValue, increment: increment}]
+    <> @OpenRange({firstValue: firstValue, increment: increment})
 };
 
 # Documented in spec.

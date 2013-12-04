@@ -13,7 +13,7 @@
 # These are all documented in Samizdat Layer 0 spec.
 
 <> {
-    false: @[Boolean: 0],
-    true:  @[Boolean: 1],
+    false: @Boolean(0),
+    true:  @Boolean(1),
     null:  @Null
 }
