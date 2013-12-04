@@ -23,7 +23,7 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `@[call: {function: expression, actuals: [expression*]}]`
+#### `call` &mdash; `@call({function: expression, actuals: [expression*]})`
 
 * `function: expression` (required) &mdash; An expression node that must
   evaluate to a function.
@@ -50,7 +50,7 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `closure` &mdash; `@[closure: {formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}]`
+#### `closure` &mdash; `@closure({formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?})`
 
 * `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
@@ -100,7 +100,7 @@ along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
 facility is an implementation of downward-passed / upward-called
 continuations.
 
-#### `expression` &mdash; `@[expression: expression]`
+#### `expression` &mdash; `@expression(expression)`
 
 * `expression` &mdash; Arbitrary expression node.
 
@@ -117,7 +117,7 @@ of `bar`'s (zero or more) elements as arguments, whereas `foo((bar*))`
 is a single-argument call to `foo`, asserting that `bar` is indeed a
 single-element list.
 
-#### `interpolate` &mdash; `@[interpolate: expression]`
+#### `interpolate` &mdash; `@interpolate(expression)`
 
 * `expression` &mdash; Expression node, which must yield a list when
   evaluated.
@@ -139,7 +139,7 @@ It is an error (terminating the runtime) either if `expression` evaluates to
 something other than a list, or it evaluates to a list of size greater than
 one when being used as anything but a function call argument.
 
-#### `literal` &mdash; `@[literal: value]`
+#### `literal` &mdash; `@literal(value)`
 
 * `value` (required) &mdash; Arbitrary data value.
 
@@ -150,7 +150,7 @@ The data `value` is the result of evaluation,
 When a `literal` node is run, the result of evaluation is `value`.
 Evaluation never fails.
 
-#### `varRef` &mdash; `@[varRef: name]`
+#### `varRef` &mdash; `@varRef(name)`
 
 * `name` (required) &mdash; Name of a variable (typically a string).
 
@@ -167,7 +167,7 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `fnDef` &mdash; `@[fnDef: {name: name, formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}]`
+#### `fnDef` &mdash; `@fnDef({name: name, formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?})`
 
 * `name: name` (required) &mdash; The name of the function.
 
@@ -222,7 +222,7 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDef` &mdash; `@[varDef: {name: name, value: expression}]`
+#### `varDef` &mdash; `@varDef({name: name, value: expression})`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 
@@ -238,7 +238,7 @@ then evaluation fails (terminating the runtime). Otherwise, the evaluated
 value is bound in the current (topmost) execution context to the
 indicated `name`.
 
-#### `voidable` &mdash; `@[voidable: expression]`
+#### `voidable` &mdash; `@voidable(expression)`
 
 * `expression` &mdash; Expression node.
 
