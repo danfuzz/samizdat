@@ -792,7 +792,7 @@ DEF_PARSE(deriv2) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(deriv) {
+DEF_PARSE(derivOld) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
@@ -801,6 +801,31 @@ DEF_PARSE(deriv) {
     if (args == NULL) { args = PARSE(deriv1); }
     if (args == NULL) { args = PARSE(deriv2); }
     REJECT_IF(args == NULL);
+
+    return makeCallName(STR_makeValue, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(deriv) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_AT);
+
+    zvalue type = PARSE(identifierString);
+    if (type == NULL) {
+        // TODO: Replace this body with
+        //   type = PARSE_OR_REJECT(parenExpression);
+        type = PARSE(parenExpression);
+        if (type == NULL) {
+            RESET();
+            return PARSE(derivOld);
+        }
+    }
+
+    zvalue value = PARSE(parenExpression); // Optional; allowed to fail.
+    zvalue args = (value == NULL)
+        ? listFrom1(type)
+        : listFrom2(type, value);
 
     return makeCallName(STR_makeValue, args);
 }
