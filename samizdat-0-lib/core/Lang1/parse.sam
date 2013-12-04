@@ -110,10 +110,17 @@ fn makeCallNonlocalExit(name, optExpression?) {
 def parParser = ParseForwarder::make();
 
 # Forward declarations.
+def parExpression = ParseForwarder::make();
 def parProgramBody = ParseForwarder::make();
 def parTerm = ParseForwarder::make();
-def parExpression = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
+
+# Documented in Samizdat Layer 0 spec.
+def parParenExpression = Peg::makeMainSequence(
+    Peg::makeToken("("),
+    parExpression,
+    Peg::makeToken(")"),
+    Peg::makeCode { ., ex, . <> @[expression: ex] });
 
 # Documented in Samizdat Layer 0 spec.
 def parIdentifier = Peg::makeMainSequence(
@@ -398,13 +405,6 @@ def parVarDef = Peg::makeMainSequence(
     Peg::makeToken("="),
     parExpression,
     Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) });
-
-# Documented in Samizdat Layer 0 spec.
-def parParenExpression = Peg::makeMainSequence(
-    Peg::makeToken("("),
-    parExpression,
-    Peg::makeToken(")"),
-    Peg::makeCode { ., ex, . <> @[expression: ex] });
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
 def implTerm = Peg::makeMainChoice(

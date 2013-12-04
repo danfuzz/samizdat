@@ -99,8 +99,20 @@ fn makeCallNonlocalExit(name, optExpression?) {
 def parParser = makeParseForwarder();
 
 # Forward declarations.
-def parProgramBody = makeParseForwarder();
-def parExpression = makeParseForwarder();
+def parExpression = ParseForwarder::make();
+def parProgramBody = ParseForwarder::make();
+def parTerm = ParseForwarder::make();
+def parUnaryExpression = ParseForwarder::make();
+
+# Parses a parenthesized expression. This produces an `expression` node,
+# which prevents void-contagion from escaping. If void-contagion-prevention
+# is undesired, the result of this rule can be unwrapped with `dataOf`.
+def parParenExpression = {/
+    @"("
+    ex = parExpression
+    @")"
+    { <> @[expression: ex] }
+/};
 
 # Parses an identifier. **Note:** This is nontrivial in layer 2.
 def parIdentifier = {/
@@ -482,14 +494,6 @@ def parVarDef = {/
     @"="
     ex = parExpression
     { <> makeVarDef(dataOf(name), ex) }
-/};
-
-# Parses a parenthesized expression.
-def parParenExpression = {/
-    @"("
-    ex = parExpression
-    @")"
-    { <> @[expression: ex] }
 /};
 
 # Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

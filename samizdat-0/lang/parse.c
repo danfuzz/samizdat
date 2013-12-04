@@ -338,16 +338,21 @@ DEF_PARSE(optSemicolons) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(programBody);
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(term);
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression);
+DEF_PARSE(programBody);
+DEF_PARSE(term);
+DEF_PARSE(unaryExpression);
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(unaryExpression);
+DEF_PARSE(parenExpression) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OPAREN);
+    zvalue expression = PARSE_OR_REJECT(expression);
+    MATCH_OR_REJECT(CH_CPAREN);
+
+    return makeTransValue(STR_expression, expression);
+}
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(identifier) {
@@ -820,17 +825,6 @@ DEF_PARSE(varDef) {
 
     zvalue name = dataOf(identifier);
     return makeVarDef(name, expression);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(parenExpression) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OPAREN);
-    zvalue expression = PARSE_OR_REJECT(expression);
-    MATCH_OR_REJECT(CH_CPAREN);
-
-    return makeTransValue(STR_expression, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
