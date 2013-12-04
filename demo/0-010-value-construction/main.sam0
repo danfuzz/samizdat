@@ -177,28 +177,27 @@ Io0::note("\nDerived values");
 
 expectSame(@boo, @boo);
 expectSame(@boo, @"boo");
-expectSame(@boo, @[boo]);
-expectSame(@boo, @["boo"]);
+expectSame(@boo, @("boo"));
 expectSame(null, @Null);
 expectSame(null, @"Null");
-expectSame(null, @[Null]);
-expectSame(false, @[Boolean: 0]);
-expectSame(true, @[Boolean: 1]);
-expectSame(@[eek: 10], @["eek": 10]);
-expectSame(@[eek: 10], @["eek": Number::add(5, 5)]);
-expectSame(@[eek: 10], @[(cat("ee", "k")): 10]);
+expectSame(null, @("Null"));
+expectSame(false, @Boolean(0));
+expectSame(true, @Boolean(1));
+expectSame(@eek(10), @("eek")(10));
+expectSame(@eek(10), @eek(Number::add(5, 5)));
+expectSame(@eek(10), @(cat("ee", "k"))(10));
 
-expectDifferent(@x, @[x: 1]);
-expectDifferent(@[x: 1], @[x: 2]);
-expectDifferent(@[x: 1], @[y: 1]);
+expectDifferent(@x, @x(1));
+expectDifferent(@x(1), @x(2));
+expectDifferent(@x(1), @y(1));
 
-# The value's types are strings in the following.
-expectDifferent(@[null: 1], @[(null): 1]);
-expectDifferent(@[true: 1], @[(true): 1]);
-expectDifferent(@[false: 1], @[(false): 1]);
+# The first value's types are strings in the following.
+expectDifferent(@null(1), @(null)(1));
+expectDifferent(@true(1), @(true)(1));
+expectDifferent(@false(1), @(false)(1));
 
 expectDerived(@blort);
-expectDerived(@[fizmo: "igram"]);
+expectDerived(@fizmo("igram"));
 expectDerived(null);
 expectDerived(false);
 expectDerived(true);
