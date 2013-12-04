@@ -23,7 +23,7 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `@call({function: expression, actuals: [expression*]})`
+#### `call` &mdash; `@call{function: expression, actuals: [expression*]}`
 
 * `function: expression` (required) &mdash; An expression node that must
   evaluate to a function.
@@ -50,7 +50,7 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `closure` &mdash; `@closure({formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?})`
+#### `closure` &mdash; `@closure{formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
 
 * `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
@@ -167,7 +167,7 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `fnDef` &mdash; `@fnDef({name: name, formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?})`
+#### `fnDef` &mdash; `@fnDef{name: name, formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
 
 * `name: name` (required) &mdash; The name of the function.
 
@@ -222,7 +222,7 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDef` &mdash; `@varDef({name: name, value: expression})`
+#### `varDef` &mdash; `@varDef{name: name, value: expression}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 

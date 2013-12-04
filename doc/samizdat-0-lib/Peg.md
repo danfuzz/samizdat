@@ -119,7 +119,7 @@ also succeeds, yielding a single-element list of the result.
 If it fails, then this rule succeeds, consuming no input and yielding
 `[]`.
 
-#### `@PegRepeat({rule: rule, (minSize: n)?}).parse(...)`
+#### `@PegRepeat{rule: rule, (minSize: n)?}.parse(...)`
 
 Tries to parse the input using `rule`, iterating until `rule` is no longer
 able to be parsed. Yields a list of all the parsed results, and returns
@@ -145,14 +145,14 @@ If any of the rules fail, then this rule also fails, consuming no input.
 In addition to the original `items*` passed in to this rule, each sub-rule
 receives the results of all the previous sub-rules as additional `items*`.
 
-#### `@PegTokenSet({types*: null}).parse(...)`
+#### `@PegTokenSet{types*: null}.parse(...)`
 
 If there is any input available, checks the type of the first input
 token against the given set of types (map where only the keys matter).
 If the type is found in the set, then yields and consumes the token.
 Otherwise fails, yielding and returning void.
 
-#### `@PegTokenSetComplement({types*: null}).parse(...)`
+#### `@PegTokenSetComplement{types*: null}.parse(...)`
 
 If there is any input available, checks the type of the first input
 token against the given set of types (map where only the keys matter).
