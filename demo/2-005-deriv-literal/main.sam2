@@ -25,28 +25,35 @@ fn msg(v) {
 Io1::note("Layer 0...");
 
 # These all refer to the same value.
-msg(@["Null"]);
+msg(@("Null"));
 msg(@"Null");
 msg(@Null);
 msg(null);
 
 # This is not the same as the above, as the type is `null`, not `"Null"`.
-msg(@[(null)]);
+msg(@(null));
 
-# These both refer to the same value.
-msg(@[potion: "blort"]);
-msg(@["potion": "blort"]);
+# These all refer to the same value.
+msg(@potion("blort"));
+msg(@"potion"("blort"));
+msg(@("potion")("blort"));
 
 msg(false);
 msg(true);
 
 msg(@blort);
 msg(@"%fizmo%");
-msg(@["^zorch^": ["scorch"]]);
+msg(@(123));
+msg(@([123]));
+
+msg(@"^zorch^"("scorch"));
+msg(@fizmo([1, 2, 3]));
+msg(@fizmo({a: 1, b: 2, c: 3}));
+msg(@(123)(456));
 
 # Keywords can be used as types.
 msg(@def);
-msg(@[fn]);
+msg(@fn(100));
 
 
 Io1::note("\nLayer 2...");
