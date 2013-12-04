@@ -372,12 +372,6 @@ def parIdentifierString = {/
     }
 /};
 
-# Parses an empty map literal.
-def parEmptyMap = {/
-    @"{" @"}"
-    { <> makeLiteral({}) }
-/};
-
 # Parses a key term. This includes parsing of interpolation syntax.
 def parKeyTerm = {/
     # The lookahead-failure is to ensure we don't match a variable being
@@ -416,10 +410,22 @@ def parMapping = {/
 # Parses a map literal.
 def parMap = {/
     @"{"
-    one = parMapping
-    rest = (@"," parMapping)*
+
+    result = (
+        one = parMapping
+        rest = (@"," parMapping)*
+        {
+            <> ifIs { <> eq(rest, []) }
+                { <> one }
+                { <> makeCallName("cat", one, rest*) }
+        }
+    |
+        { <> makeLiteral({}) }
+    )
+
     @"}"
-    { <> makeCallName("cat", one, rest*) }
+
+    { <> result }
 /};
 
 # Parses a list item or function call argument. This handles all of:
@@ -492,7 +498,7 @@ def parVarDef = {/
 # to be done before `List`, since the latter rejects "map-like" syntax as a
 # fatal error.
 def parTerm = {/
-    parVarRef | parInt | parString | parEmptyMap | parMap | parList
+    parVarRef | parInt | parString | parMap | parList
     parDeriv | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
