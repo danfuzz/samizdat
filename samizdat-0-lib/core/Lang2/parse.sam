@@ -486,15 +486,6 @@ def parDeriv = {/
     value = parParenExpression?
 
     { <> makeCallName("makeValue", type, value*) }
-|
-    # TODO: Remove this deprecated variant.
-    @"@"
-    @"["
-    type = (parIdentifierString | parTerm)
-    value = (@":" parExpression)?
-    @"]"
-
-    { <> makeCallName("makeValue", type, value*) }
 /};
 
 # Parses a variable reference.

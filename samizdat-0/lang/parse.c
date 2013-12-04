@@ -813,13 +813,7 @@ DEF_PARSE(deriv) {
 
     zvalue type = PARSE(identifierString);
     if (type == NULL) {
-        // TODO: Replace this body with
-        //   type = PARSE_OR_REJECT(parenExpression);
-        type = PARSE(parenExpression);
-        if (type == NULL) {
-            RESET();
-            return PARSE(derivOld);
-        }
+        type = PARSE_OR_REJECT(parenExpression);
     }
 
     zvalue value = PARSE(parenExpression); // Optional; allowed to fail.
