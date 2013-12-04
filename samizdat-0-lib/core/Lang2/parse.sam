@@ -46,12 +46,12 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @closure({formals: [], statements: [], yield: expression})
+    <> @closure{formals: [], statements: [], yield: expression}
 };
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @varDef({name: name, value: value})
+    <> @varDef{name: name, value: value}
 };
 
 # Returns a `varRef` node.
@@ -61,12 +61,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @call({function: function, actuals: actuals})
+    <> @call{function: function, actuals: actuals}
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @call({function: makeVarRef(name), actuals: actuals})
+    <> @call{function: makeVarRef(name), actuals: actuals}
 };
 
 # Returns a collection access (`get`) expression. This is a `call` node
@@ -195,7 +195,7 @@ def parProgramDeclarations = {/
 def parProgram = {/
     decls = parProgramDeclarations
     body = parProgramBody
-    { <> @closure({decls*, body*}) }
+    { <> @closure{decls*, body*} }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -336,11 +336,11 @@ def parFnExpression = {/
     (
         name = { <> funcMap::name }
         {
-            def mainClosure = @closure({
+            def mainClosure = @closure{
                 formals: [],
                 statements: [@fnDef(funcMap)],
                 yield: makeVarRef(name)
-            });
+            };
 
             <> makeCall(mainClosure)
         }
@@ -806,7 +806,7 @@ def parNamePex = {/
         name = parIdentifier
         @"="
         pex = parLookaheadPex
-        { <> @varDef({name: dataOf(name), value: pex}) }
+        { <> @varDef{name: dataOf(name), value: pex} }
     )
 |
     parLookaheadPex
@@ -855,17 +855,17 @@ fn makeCallModName(modVar, funcName, actuals*) {
 # binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
 fn closureWithFormals(closure, formals*) {
-    <> @closure({(dataOf(closure))*, formals: formals})
+    <> @closure{(dataOf(closure))*, formals: formals}
 };
 
 # Returns a `closure` node like the one given, except with `yieldDef`
 # bound to the indicated name.
 fn closureWithYieldDef(closure, name) {
-    <> @closure({(dataOf(closure))*, yieldDef: name})
+    <> @closure{(dataOf(closure))*, yieldDef: name}
 };
 
 # A no-argument yield-void thunk.
-def YIELD_VOID_THUNK = @closure({formals: [], statements: []});
+def YIELD_VOID_THUNK = @closure{formals: [], statements: []};
 
 # A single-argument yield-void function.
 def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
@@ -1001,11 +1001,11 @@ def parStringInterpolation = {/
 # is along these lines:
 #
 # ```
-# @interpolatedString({
+# @interpolatedString{
 #     "string",
 #     {format: "formatStr", tokens: [@"(", exprToken, ..., @")"]},
 #     {format: "formatStr", tokens: [@"{", blockToken, ..., @"}"]}
-# })
+# }
 # ```
 # =>
 # ```
@@ -1100,7 +1100,7 @@ def parComprehensionBody = {/
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        <> [@closure({filterBody*, formals: genFormals}), genInits*]
+        <> [@closure{filterBody*, formals: genFormals}, genInits*]
     }
 /};
 
@@ -1734,7 +1734,7 @@ def parWhileExpression = {/
     code = parNullaryClosure
 
     {
-        def loopClosure = @closure({
+        def loopClosure = @closure{
             formals: [],
             yieldDef: "continue",
             statements: [
@@ -1742,13 +1742,13 @@ def parWhileExpression = {/
                     code,
                     makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
             ]
-        });
+        };
 
-        def mainClosure = @closure({
+        def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
             statements: [breakDef*, makeCallName("loop", loopClosure)]
-        });
+        };
 
         <> makeCall(mainClosure)
     }
@@ -1789,17 +1789,17 @@ def parDoExpression = {/
     )?
 
     {
-        def loopClosure = @closure({
+        def loopClosure = @closure{
             formals: [],
             yieldDef: "continue",
             statements: [makeCall(code), condition*]
-        });
+        };
 
-        def mainClosure = @closure({
+        def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
             statements: [breakDef*, makeCallName("loop", loopClosure)]
-        });
+        };
 
         <> makeCall(mainClosure)
     }
@@ -1841,13 +1841,13 @@ def parForExpression = {/
             { name <> [makeVarDef(name, makeVarRef("continue"))] }
             { <> [] };
 
-        def loopClosure = @closure({
+        def loopClosure = @closure{
             formals: genFormals,
             yieldDef: "continue",
             statements: [continueDef*, codePayload::statements*]
-        });
+        };
 
-        def mainClosure = @closure({
+        def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
             statements: [
@@ -1855,7 +1855,7 @@ def parForExpression = {/
                 makeCallModName(
                     "Generator", "filterPump", loopClosure, genInits*)
             ]
-        });
+        };
 
         <> makeCall(mainClosure)
     }
@@ -2012,12 +2012,12 @@ def parSwitchExpression = {/
             SWITCH_DISPATCH_CLOSURE,
             optElse*);
 
-        def mainClosure = @closure({
+        def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
             statements: [breakDef*],
             yield: ifCall
-        });
+        };
 
         <> makeCall(mainClosure)
     }

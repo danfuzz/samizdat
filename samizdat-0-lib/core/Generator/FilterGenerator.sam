@@ -19,10 +19,10 @@ def ParaGenerator = submoduleUse("ParaGenerator");
 
 # Documented in spec.
 fn makeFilterGenerator(filterFunction, generators*) {
-    <> @FilterGenerator({
+    <> @FilterGenerator{
         filterFunction: filterFunction,
         generator: ParaGenerator::makeParaGenerator(generators*)
-    })
+    }
 };
 
 # Documented in spec.

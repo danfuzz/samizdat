@@ -32,7 +32,7 @@ fn convertPexInList(nodes) {
 
 # Constructs a function call.
 fn makeCall(function, args*) {
-    <> @call({function: function, actuals: args})
+    <> @call{function: function, actuals: args}
 };
 
 # Makes a peg variable reference.
@@ -199,7 +199,7 @@ fn convertClosureLike(node) {
         { yield <> {yield: convertPexIn(yield)} }
         { <> {} };
 
-    <> @(nodeType)({nodeValue*, yield*, statements: statements})
+    <> @(nodeType){nodeValue*, yield*, statements: statements}
 };
 
 # Does parser conversion of a node whose payload value is an
@@ -218,7 +218,7 @@ fn call_convertPexIn(node) {
     def function = convertPexIn(nodeValue::function);
     def actuals = convertPexInList(nodeValue::actuals);
 
-    <> @call({nodeValue*, function: function, actuals: actuals})
+    <> @call{nodeValue*, function: function, actuals: actuals}
 };
 genericBind(convertPexIn, "call", call_convertPexIn);
 
@@ -264,7 +264,7 @@ fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
     def value = convertPexIn(nodeValue::value);
 
-    <> @varDef({nodeValue*, value: value})
+    <> @varDef{nodeValue*, value: value}
 };
 genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 

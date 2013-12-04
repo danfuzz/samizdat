@@ -38,12 +38,12 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @closure({formals: [], statements: [], yield: expression})
+    <> @closure{formals: [], statements: [], yield: expression}
 };
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @varDef({name: name, value: value})
+    <> @varDef{name: name, value: value}
 };
 
 # Returns a `varRef` node.
@@ -53,12 +53,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @call({function: function, actuals: actuals})
+    <> @call{function: function, actuals: actuals}
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @call({function: makeVarRef(name), actuals: actuals})
+    <> @call{function: makeVarRef(name), actuals: actuals}
 };
 
 # Returns a collection access (`get`) expression. This is a `call` node
@@ -180,7 +180,7 @@ def parProgramDeclarations = {/
 def parProgram = {/
     decls = parProgramDeclarations
     body = parProgramBody
-    { <> @closure({decls*, body*}) }
+    { <> @closure{decls*, body*} }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -321,11 +321,11 @@ def parFnExpression = {/
     (
         name = { <> funcMap::name }
         {
-            def mainClosure = @closure({
+            def mainClosure = @closure{
                 formals: [],
                 statements: [@fnDef(funcMap)],
                 yield: makeVarRef(name)
-            });
+            };
 
             <> makeCall(mainClosure)
         }
@@ -799,7 +799,7 @@ def parNamePex = {/
         name = parIdentifier
         @"="
         pex = parLookaheadPex
-        { <> @varDef({name: dataOf(name), value: pex}) }
+        { <> @varDef{name: dataOf(name), value: pex} }
     )
 |
     parLookaheadPex

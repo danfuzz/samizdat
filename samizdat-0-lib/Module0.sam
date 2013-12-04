@@ -155,7 +155,7 @@ fn getInfo(modu) {
 # Returns a new module like the given one, except with `exports` as
 # given.
 fn withExports(modu, newExports) {
-    <> @Module({(dataOf(modu))*, exports: newExports})
+    <> @Module{(dataOf(modu))*, exports: newExports}
 };
 
 # Documented in spec.
@@ -279,7 +279,7 @@ fn load(baseCtx, fqPath) {
     def exports = ctx::submoduleUse("main");
 
     # Combine `moduleInfo` and `exports` to form the final module value.
-    def result = @Module({info: ctx::moduleInfo, exports: exports});
+    def result = @Module{info: ctx::moduleInfo, exports: exports};
 
     # Update the loaded module map. Note that we re-fetch the value, since
     # it may have been altered by other loads while this load was in progress.
@@ -338,7 +338,7 @@ fn stringFromModuleName(fqName) {
 };
 
 # Documented in spec. This is a manual definition of the `Module0` module.
-def Module0 = @Module({
+def Module0 = @Module{
     info: {
         name: ["core", "Module0"],
         path: [],
@@ -355,7 +355,7 @@ def Module0 = @Module({
         moduleUse:            moduleUse,
         stringFromModuleName: stringFromModuleName
     }
-});
+};
 moduleDef(Module0);
 
 <> {

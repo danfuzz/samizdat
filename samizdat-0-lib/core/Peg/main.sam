@@ -310,7 +310,7 @@ fn makeOpt(rule) {
 
 # Documented in Samizdat Layer 0 spec.
 fn makePlus(rule) {
-    <> @PegRepeat({rule: rule, minSize: 1})
+    <> @PegRepeat{rule: rule, minSize: 1}
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -329,7 +329,7 @@ fn makeSequence(rules*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn makeStar(rule) {
-    <> @PegRepeat({rule: rule})
+    <> @PegRepeat{rule: rule}
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -356,7 +356,7 @@ fn makeToken(type) {
     # This is just uses a single-item token set. The performance difference
     # between that and doing a more special-case single item type check is
     # probably negligible.
-    <> @PegTokenSet({(type): null});
+    <> @PegTokenSet{(type): null}
 };
 
 # Documented in Samizdat Layer 0 spec.

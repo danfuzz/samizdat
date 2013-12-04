@@ -20,7 +20,7 @@ fn makeCollectionGenerator(coll, optIndex?) {
         { index <> {index: index} }
         { <> {} };
 
-    <> @CollectionGenerator({collection: coll, indexMap*})
+    <> @CollectionGenerator{collection: coll, indexMap*}
 };
 
 # Documented in spec.
@@ -47,7 +47,7 @@ genericBind(Generator::nextValue, "CollectionGenerator",
 fn Collection_nextValue(coll, box) {
     # Get the first element directly, and return a generator for the rest.
     <> ifIs { <> Box::store(box, &Collection::nth(coll, 0)) }
-        { <> @CollectionGenerator({collection: coll, index: 1}) }
+        { <> @CollectionGenerator{collection: coll, index: 1} }
         {
             # `coll` is empty.
             Box::store(box)
