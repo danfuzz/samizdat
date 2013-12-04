@@ -309,24 +309,29 @@ with the following exceptions:
   identifiers in the language, then it may be represented directly, with
   no parentheses or quoting required.
 
-* If the type tag is a literal string, then it may be represented without
-  parentheses.
+* If the type tag is a string form (`"..."`), then it may be represented
+  without parentheses.
+
+* If the data payload is a map form (`{...}`), then it may be represented
+  without parentheses.
+
+* If the data payload is a list form (`[...]`), then it may be represented
+  without parentheses.
 
 ```
-@("lozenge")                  # a payload-free value of type "lozenge"
+@("lozenge")                  # a payload-free value of type `"lozenge"`
 @"lozenge"                    # shorthand for same
 @lozenge                      # shorthand for same
 
-@("heartState")("pure")       # a "heart state" value, with payload
+@("heartState")("pure")       # a "heart state" value, with string payload
 @"heartState"("pure")         # shorthand for same
 @heartState("pure")           # shorthand for same
 
-@spell({
-    name:    "frotz",
-    purpose: "cause item to glow"
-})
+@spell({name: "frotz", purpose: "cause item to glow"}) # a map payload
+@spell{name: "frotz", purpose: "cause item to glow"}   # shorthand for same
 
-@utensils(["fork", "knife", "spoon"])
+@utensils(["fork", "knife", "spoon"])                  # a list payload
+@utensils["fork", "knife", "spoon"]                    # shorthand for same
 
 @("Null")                     # the value usually just written as `null`
 @Null                         # same as above
@@ -342,8 +347,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = @Boolean(0)
-true = @Boolean(1)
+def false = @Boolean(0);
+def true = @Boolean(1);
 ```
 
 These values are most useful when placed into variables and passed
@@ -359,7 +364,7 @@ a named constant `null` to refer to this value. This constant can be
 defined as:
 
 ```
-null = @Null
+def null = @Null;
 ```
 
 
