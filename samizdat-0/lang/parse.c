@@ -695,15 +695,25 @@ DEF_PARSE(mapping1) {
 }
 
 /**
- * Helper for `mapping`: Parses a guaranteed-interpolate `expression`.
+ * Helper for `mapping`: Parses `expression`, modifying or rejecting the
+ * result as appropriate.
  */
 DEF_PARSE(mapping2) {
     MARK();
 
-    zvalue map = PARSE_OR_REJECT(term);
-    MATCH_OR_REJECT(CH_STAR);
+    zvalue elem = PARSE_OR_REJECT(expression);
 
-    return map;
+    zvalue type = typeOf(elem);
+    zvalue value = dataOf(elem);
+
+    if (valEq(type, STR_interpolate)) {
+        return value;
+    } else if (valEq(type, STR_varRef)) {
+        return makeCallName(STR_makeValueMap,
+            listFrom2(makeLiteral(value), elem));
+    }
+
+    REJECT();
 }
 
 /* Documented in Samizdat Layer 0 spec. */
