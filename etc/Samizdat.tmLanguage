@@ -219,12 +219,6 @@
 				<dict>
 					<key>name</key>
 					<string>constant.other</string>
-					<key>match</key>
-					<string>@\[[_a-zA-Z][_a-zA-Z0-9]*\]</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>constant.other</string>
 					<key>begin</key>
 					<string>@"</string>
 					<key>end</key>
@@ -361,6 +355,37 @@
 					<key>name</key>
 					<string>meta.parens.samizdat</string>
 					<key>begin</key>
+					<string>@\(</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>constant.other</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>\)</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>constant.other</string>
+						</dict>
+					</dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>meta.parens.samizdat</string>
+					<key>begin</key>
 					<string>\(</string>
 					<key>end</key>
 					<string>\)</string>
@@ -376,7 +401,7 @@
 					<key>name</key>
 					<string>meta.collection.samizdat</string>
 					<key>begin</key>
-					<string>@?\[</string>
+					<string>\[</string>
 					<key>end</key>
 					<string>\]</string>
 					<key>patterns</key>
