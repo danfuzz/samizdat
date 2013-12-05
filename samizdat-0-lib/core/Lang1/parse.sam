@@ -341,9 +341,15 @@ def parMapping = Peg::makeMainChoice(
             <> makeCallName("makeValueMap", key, @expression(value))
         }),
     Peg::makeSequence(
-        parTerm,
-        Peg::makeToken("*"),
-        Peg::makeCode { map, . <> map }));
+        parExpression,
+        Peg::makeCode { <out> elem ->
+            def type = typeOf(elem);
+            def value = dataOf(elem);
+            ifIs { <> eq(type, "interpolate") }
+                { <out> value };
+            ifIs { <> eq(type, "varRef") }
+                { <out> makeCallName("makeValueMap", makeLiteral(value), elem) }
+        }));
 
 # Documented in Samizdat Layer 0 spec.
 def parMap = Peg::makeMainSequence(

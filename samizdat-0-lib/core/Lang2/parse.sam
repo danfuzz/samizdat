@@ -442,9 +442,17 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @expression(value)) }
 |
-    map = parTerm
-    @"*"
-    { <> map }
+    # The only acceptable expressions are interpolations and variable
+    # references.
+    elem = parExpression
+    { <out> ->
+        def type = typeOf(elem);
+        def value = dataOf(elem);
+        ifIs { <> eq(type, "interpolate") }
+            { <out> value };
+        ifIs { <> eq(type, "varRef") }
+            { <out> makeCallName("makeValueMap", makeLiteral(value), elem) }
+    }
 /};
 
 # Parses a map literal.
