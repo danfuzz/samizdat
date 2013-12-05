@@ -183,7 +183,7 @@ map to interpolate followed by `*`.
 }
 
 {["complex", "data", "as", "key"]: "Handy!"}
-{0..9: "digits", 10: "not a digit"}
+{(0..9)*: "digits", 10: "not a digit"}
 
 # The first three here are equivalent. The last contains a variable reference
 # to `the`.
