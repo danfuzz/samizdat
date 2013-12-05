@@ -34,4 +34,8 @@ msg({["f", "u", "z"]*: "muffins"});
 msg({{a: 1}*, {b: 2}*});
 msg({(Number::add(1, 1)): cat("t", "wo")});
 
+def axe = "Axe";
+def bazooka = "Bazooka";
+msg({axe, bazooka});
+
 <> 0

@@ -36,6 +36,10 @@ msg({["f", "u", "z"]*: "muffins"});
 msg({{a: 1}*, {b: 2}*});
 msg({(Number::add(1, 1)): cat("t", "wo")});
 
+def axe = "Axe";
+def bazooka = "Bazooka";
+msg({axe, bazooka});
+
 Io1::note("\nLayer 2...");
 
 msg({("0".."9")*: "woo"});
