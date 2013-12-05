@@ -129,6 +129,21 @@ def parIdentifier = {/
     @identifier
 /};
 
+# Parses a variable reference.
+def parVarRef = {/
+    name = parIdentifier
+    { <> makeVarRef(dataOf(name)) }
+/};
+
+# Parses a variable definition.
+def parVarDef = {/
+    @def
+    name = parIdentifier
+    @"="
+    ex = parExpression
+    { <> makeVarDef(dataOf(name), ex) }
+/};
+
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
@@ -487,21 +502,6 @@ def parDeriv = {/
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCallName("makeValue", type, value*) }
-/};
-
-# Parses a variable reference.
-def parVarRef = {/
-    name = parIdentifier
-    { <> makeVarRef(dataOf(name)) }
-/};
-
-# Parses a variable definition.
-def parVarDef = {/
-    @def
-    name = parIdentifier
-    @"="
-    ex = parExpression
-    { <> makeVarDef(dataOf(name), ex) }
 /};
 
 # Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

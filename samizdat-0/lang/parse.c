@@ -365,6 +365,28 @@ DEF_PARSE(identifier) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(varRef) {
+    MARK();
+
+    zvalue identifier = PARSE_OR_REJECT(identifier);
+
+    return makeVarRef(dataOf(identifier));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(varDef) {
+    MARK();
+
+    MATCH_OR_REJECT(def);
+    zvalue identifier = PARSE_OR_REJECT(identifier);
+    MATCH_OR_REJECT(CH_EQUAL);
+    zvalue expression = PARSE_OR_REJECT(expression);
+
+    zvalue name = dataOf(identifier);
+    return makeVarDef(name, expression);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(yieldDef) {
     MARK();
 
@@ -773,28 +795,6 @@ DEF_PARSE(deriv) {
         : listFrom2(type, value);
 
     return makeCallName(STR_makeValue, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(varRef) {
-    MARK();
-
-    zvalue identifier = PARSE_OR_REJECT(identifier);
-
-    return makeVarRef(dataOf(identifier));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(varDef) {
-    MARK();
-
-    MATCH_OR_REJECT(def);
-    zvalue identifier = PARSE_OR_REJECT(identifier);
-    MATCH_OR_REJECT(CH_EQUAL);
-    zvalue expression = PARSE_OR_REJECT(expression);
-
-    zvalue name = dataOf(identifier);
-    return makeVarDef(name, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
