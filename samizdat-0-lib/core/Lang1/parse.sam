@@ -315,41 +315,43 @@ def parIdentifierString = Peg::makeMainChoice(
             }));
 
 # Documented in Samizdat Layer 0 spec.
-def parKeyTerm = Peg::makeMainChoice(
+def parKey = Peg::makeMainChoice(
     Peg::makeSequence(
         parIdentifierString,
-        Peg::makeLookaheadFailure(Peg::makeToken("*")),
+        Peg::makeToken(":"),
         Peg::makeCode { key, . <> key }),
     Peg::makeSequence(
-        parTerm,
-        Peg::makeChoice(
-            Peg::makeSequence(
-                Peg::makeToken("*"),
-                Peg::makeCode { key, . <> makeInterpolate(key) }),
-            Peg::makeCode { key <> key })));
-
-# Documented in Samizdat Layer 0 spec.
-def parKey = parKeyTerm;
-
-# Documented in Samizdat Layer 0 spec.
-def parMapping = Peg::makeMainChoice(
-    Peg::makeSequence(
-        parKey,
+        parExpression,
         Peg::makeToken(":"),
-        parExpression,
-        Peg::makeCode { key, ., value ->
-            <> makeCallName("makeValueMap", key, @expression(value))
-        }),
-    Peg::makeSequence(
-        parExpression,
-        Peg::makeCode { <out> elem ->
-            def type = typeOf(elem);
-            def value = dataOf(elem);
-            ifIs { <> eq(type, "interpolate") }
-                { <out> value };
-            ifIs { <> eq(type, "varRef") }
-                { <out> makeCallName("makeValueMap", makeLiteral(value), elem) }
-        }));
+        Peg::makeCode { key, . <> key }));
+
+# Documented in Samizdat Layer 0 spec.
+def parMapping = Peg::makeMainSequence(
+    Peg::makeStar(parKey),
+    parExpression,
+    Peg::makeCode { keys, value ->
+        <> ifIs { <> eq(keys, []) }
+            { <out> ->
+                # No keys were specified, so the value must be either a
+                # whole-map interpolation or a variable-name-to-its-value
+                # binding.
+                def type = typeOf(value);
+                def data = dataOf(value);
+                ifIs { <> eq(type, "interpolate") }
+                    { <out> data };
+                ifIs { <> eq(type, "varRef") }
+                    {
+                        <out> makeCallName("makeValueMap",
+                            makeLiteral(data), value)
+                    }
+            }
+            {
+                # One or more keys. The `value` is wrapped in an
+                # `expression` node here to prevent interpolation from
+                # being applied to `makeValueMap`.
+                <> makeCallName("makeValueMap", keys*, @expression(value))
+            }
+    });
 
 # Documented in Samizdat Layer 0 spec.
 def parMap = Peg::makeMainSequence(

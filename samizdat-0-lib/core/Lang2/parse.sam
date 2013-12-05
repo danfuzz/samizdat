@@ -105,7 +105,6 @@ fn makeCallNonlocalExit(name, optExpression?) {
 
 # Forward declarations required for layer 2.
 def parIdentifier2 = ParseForwarder::make();
-def parKey2 = ParseForwarder::make();
 def parNonlocalExit2 = ParseForwarder::make();
 def parPostfixOperator2 = ParseForwarder::make();
 def parPrefixOperator2 = ParseForwarder::make();
@@ -412,46 +411,44 @@ def parIdentifierString = {/
     }
 /};
 
-# Parses a key term. This includes parsing of interpolation syntax.
-def parKeyTerm = {/
-    # The lookahead-failure is to ensure we don't match a variable being
-    # interpolated, which is handled by the second alternative.
+# Parses a map key.
+def parKey = {/
     key = parIdentifierString
-    !@"*"
+    @":"
     { <> key }
 |
-    key = parTerm
-    (
-        @"*"
-        { <> makeInterpolate(key) }
-    |
-        { <> key }
-    )
+    key = parExpression
+    @":"
+    { <> key }
 /};
-
-# Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
-def parKey = parKey2;
 
 # Parses a mapping (element of a map).
 def parMapping = {/
-    key = parKey
-    @":"
+    keys = parKey*
     value = parExpression
 
-    # The `value` is wrapped in an `expression` node here to prevent
-    # interpolation from being applied to `makeValueMap`.
-    { <> makeCallName("makeValueMap", key, @expression(value)) }
-|
-    # The only acceptable expressions are interpolations and variable
-    # references.
-    elem = parExpression
-    { <out> ->
-        def type = typeOf(elem);
-        def value = dataOf(elem);
-        ifIs { <> eq(type, "interpolate") }
-            { <out> value };
-        ifIs { <> eq(type, "varRef") }
-            { <out> makeCallName("makeValueMap", makeLiteral(value), elem) }
+    {
+        <> ifIs { <> eq(keys, []) }
+            { <out> ->
+                # No keys were specified, so the value must be either a
+                # whole-map interpolation or a variable-name-to-its-value
+                # binding.
+                def type = typeOf(value);
+                def data = dataOf(value);
+                ifIs { <> eq(type, "interpolate") }
+                    { <out> data };
+                ifIs { <> eq(type, "varRef") }
+                    {
+                        <out> makeCallName("makeValueMap",
+                            makeLiteral(data), value)
+                    }
+            }
+            {
+                # One or more keys. The `value` is wrapped in an
+                # `expression` node here to prevent interpolation from
+                # being applied to `makeValueMap`.
+                <> makeCallName("makeValueMap", keys*, @expression(value))
+            }
     }
 /};
 
@@ -978,23 +975,6 @@ def implIdentifier2 = {/
     )
 /};
 Box::store(parIdentifier2, implIdentifier2);
-
-# Parses a *Layer 2* map key.
-def implKey2 = {/
-    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
-    firstKey = parKeyTerm
-    moreKeys = (@"|" parKeyTerm)*
-
-    {
-        <> ifIs { <> eq(moreKeys, []) }
-            { <> firstKey }
-            {
-                <> makeInterpolate(
-                    makeCallName("makeList", firstKey, moreKeys*))
-            }
-    }
-/};
-Box::store(parKey2, implKey2);
 
 # Helper for string interpolation: Parses the two kinds of interpolation,
 # yielding an appropriate expression node if syntactically valid, including
@@ -1884,13 +1864,13 @@ def parForExpression = {/
 # `code`.
 def parSwitchCase = {/
     keys = (
-        [@default @else]
+        special = [@default @else]
+        @":"
+        { <> special }
     |
-        k = parKey
-        { <> @expression(k) }
+        parKey+
     )
 
-    @":"
     code = parCodeOnlyClosure
 
     { <> {code, keys} }
@@ -1961,9 +1941,21 @@ def parSwitchExpression = {/
     testClause = parParenTestClause
 
     @"{"
+    @";"*
 
-    cases = parSwitchCase*
+    cases = (
+        most = (
+            c = parSwitchCase
+            @";"+
+            { <> c }
+        )*
 
+        last = parSwitchCase?
+
+        { <> [most*, last*] }
+    )
+
+    @";"*
     @"}"
 
     {
@@ -1982,10 +1974,10 @@ def parSwitchExpression = {/
 
         def regularCases = Generator::filterAll(cases) { case ->
             def keys = case::keys;
-            <> ifIs { <> eq(typeOf(keys), "expression") }
+            <> ifIs { <> isList(keys) }
                 {
                     <> makeCallName("makeValueMap",
-                        dataOf(keys),
+                        keys*,
                         closureWithFormals(case::code, formal))
                 }
         };

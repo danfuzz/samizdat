@@ -397,46 +397,44 @@ def parIdentifierString = {/
     }
 /};
 
-# Parses a key term. This includes parsing of interpolation syntax.
-def parKeyTerm = {/
-    # The lookahead-failure is to ensure we don't match a variable being
-    # interpolated, which is handled by the second alternative.
+# Parses a map key.
+def parKey = {/
     key = parIdentifierString
-    !@"*"
+    @":"
     { <> key }
 |
-    key = parTerm
-    (
-        @"*"
-        { <> makeInterpolate(key) }
-    |
-        { <> key }
-    )
+    key = parExpression
+    @":"
+    { <> key }
 /};
-
-# Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
-def parKey = parKeyTerm;
 
 # Parses a mapping (element of a map).
 def parMapping = {/
-    key = parKey
-    @":"
+    keys = parKey*
     value = parExpression
 
-    # The `value` is wrapped in an `expression` node here to prevent
-    # interpolation from being applied to `makeValueMap`.
-    { <> makeCallName("makeValueMap", key, @expression(value)) }
-|
-    # The only acceptable expressions are interpolations and variable
-    # references.
-    elem = parExpression
-    { <out> ->
-        def type = typeOf(elem);
-        def value = dataOf(elem);
-        ifIs { <> eq(type, "interpolate") }
-            { <out> value };
-        ifIs { <> eq(type, "varRef") }
-            { <out> makeCallName("makeValueMap", makeLiteral(value), elem) }
+    {
+        <> ifIs { <> eq(keys, []) }
+            { <out> ->
+                # No keys were specified, so the value must be either a
+                # whole-map interpolation or a variable-name-to-its-value
+                # binding.
+                def type = typeOf(value);
+                def data = dataOf(value);
+                ifIs { <> eq(type, "interpolate") }
+                    { <out> data };
+                ifIs { <> eq(type, "varRef") }
+                    {
+                        <out> makeCallName("makeValueMap",
+                            makeLiteral(data), value)
+                    }
+            }
+            {
+                # One or more keys. The `value` is wrapped in an
+                # `expression` node here to prevent interpolation from
+                # being applied to `makeValueMap`.
+                <> makeCallName("makeValueMap", keys*, @expression(value))
+            }
     }
 /};
 
