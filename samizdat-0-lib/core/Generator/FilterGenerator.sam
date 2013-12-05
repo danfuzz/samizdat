@@ -20,7 +20,7 @@ def ParaGenerator = submoduleUse("ParaGenerator");
 # Documented in spec.
 fn makeFilterGenerator(filterFunction, generators*) {
     <> @FilterGenerator{
-        filterFunction: filterFunction,
+        filterFunction,
         generator: ParaGenerator::makeParaGenerator(generators*)
     }
 };
@@ -60,5 +60,5 @@ genericBind(Generator::nextValue, "FilterGenerator",
     FilterGenerator_nextValue);
 
 <> {
-    makeFilterGenerator: makeFilterGenerator
+    makeFilterGenerator
 }

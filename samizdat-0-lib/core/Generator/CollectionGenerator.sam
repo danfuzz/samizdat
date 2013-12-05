@@ -17,7 +17,7 @@ def Generator = moduleUse({name: ["proto", "Generator"]});
 # Documented in spec.
 fn makeCollectionGenerator(coll, optIndex?) {
     def indexMap = ifValue { <> optIndex* }
-        { index <> {index: index} }
+        { index <> {index} }
         { <> {} };
 
     <> @CollectionGenerator{collection: coll, indexMap*}
@@ -58,5 +58,5 @@ genericBind(Generator::nextValue, Map,    Collection_nextValue);
 genericBind(Generator::nextValue, String, Collection_nextValue);
 
 <> {
-    makeCollectionGenerator: makeCollectionGenerator
+    makeCollectionGenerator
 }

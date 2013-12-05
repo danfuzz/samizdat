@@ -310,7 +310,7 @@ fn makeOpt(rule) {
 
 # Documented in Samizdat Layer 0 spec.
 fn makePlus(rule) {
-    <> @PegRepeat{rule: rule, minSize: 1}
+    <> @PegRepeat{rule, minSize: 1}
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -329,7 +329,7 @@ fn makeSequence(rules*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn makeStar(rule) {
-    <> @PegRepeat{rule: rule}
+    <> @PegRepeat{rule}
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -400,28 +400,28 @@ fn stringFromTokenList(tokens) {
 #
 
 <> {
-    any:                    any,
-    apply:                  apply,
-    empty:                  empty,
-    eof:                    eof,
-    fail:                   fail,
-    makeCharSet:            makeCharSet,
-    makeCharSetComplement:  makeCharSetComplement,
-    makeChoice:             makeChoice,
-    makeCode:               makeCode,
-    makeLookaheadFailure:   makeLookaheadFailure,
-    makeLookaheadSuccess:   makeLookaheadSuccess,
-    makeMainChoice:         makeMainChoice,
-    makeMainSequence:       makeMainSequence,
-    makeOpt:                makeOpt,
-    makePlus:               makePlus,
-    makeResult:             makeResult,
-    makeSequence:           makeSequence,
-    makeStar:               makeStar,
-    makeString:             makeString,
-    makeToken:              makeToken,
-    makeTokenSet:           makeTokenSet,
-    makeTokenSetComplement: makeTokenSetComplement,
-    parse:                  parse,
-    stringFromTokenList:    stringFromTokenList
+    any,
+    apply,
+    empty,
+    eof,
+    fail,
+    makeCharSet,
+    makeCharSetComplement,
+    makeChoice,
+    makeCode,
+    makeLookaheadFailure,
+    makeLookaheadSuccess,
+    makeMainChoice,
+    makeMainSequence,
+    makeOpt,
+    makePlus,
+    makeResult,
+    makeSequence,
+    makeStar,
+    makeString,
+    makeToken,
+    makeTokenSet,
+    makeTokenSetComplement,
+    parse,
+    stringFromTokenList
 }

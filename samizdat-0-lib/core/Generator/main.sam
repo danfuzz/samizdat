@@ -133,10 +133,10 @@ fn generatorPump(generator) {
     nullGenerator:           NullGenerator::nullGenerator,
 
     # Defined in this file.
-    collectAsMap:            collectAsMap,
-    doReduce:                doReduce,
-    doReduce1:               doReduce1,
-    filterAll:               filterAll,
-    filterPump:              filterPump,
-    generatorPump:           generatorPump
+    collectAsMap,
+    doReduce,
+    doReduce1,
+    filterAll,
+    filterPump,
+    generatorPump
 }

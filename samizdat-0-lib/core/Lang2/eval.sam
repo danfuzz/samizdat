@@ -31,5 +31,5 @@ fn eval(context, expressionNode) {
 };
 
 <> {
-    eval: eval
+    eval
 }

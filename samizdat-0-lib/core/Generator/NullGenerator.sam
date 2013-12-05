@@ -29,5 +29,5 @@ genericBind(Generator::nextValue, "NullGenerator", NullGenerator_nextValue);
 def nullGenerator = @NullGenerator;
 
 <> {
-    nullGenerator: nullGenerator
+    nullGenerator
 }

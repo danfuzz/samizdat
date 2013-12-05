@@ -37,5 +37,5 @@ genericBind(Box::store, "NullBox", NullBox_store);
 def nullBox = @NullBox;
 
 <> {
-    nullBox: nullBox
+    nullBox
 }

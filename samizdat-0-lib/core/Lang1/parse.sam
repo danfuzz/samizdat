@@ -50,7 +50,7 @@ fn makeThunk(expression) {
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @varDef{name: name, value: value}
+    <> @varDef{name, value}
 };
 
 # Returns a `varRef` node.
@@ -60,12 +60,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @call{function: function, actuals: actuals}
+    <> @call{function, actuals}
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @call{function: makeVarRef(name), actuals: actuals}
+    <> @call{function: makeVarRef(name), actuals}
 };
 
 # Returns a collection access (`get`) expression. This is a `call` node
@@ -192,7 +192,7 @@ def parProgramDeclarations = Peg::makeMainChoice(
             Peg::makeToken("->"),
             Peg::makeLookaheadSuccess(Peg::makeToken("<>"))),
         Peg::makeCode { yieldDef, formals, . ->
-            <> {formals: formals, yieldDef*}
+            <> {formals, yieldDef*}
         }),
     Peg::makeResult({formals: []}));
 
@@ -249,9 +249,9 @@ def parFnCommon = Peg::makeMainSequence(
         def statements = [returnDef*, codeMap::statements*];
         <> {
             codeMap*, name*,
-            formals: formals,
+            formals,
             yieldDef: "return",
-            statements: statements
+            statements
         }
     });
 
@@ -703,6 +703,6 @@ fn parseProgram(program) {
 };
 
 <> {
-    parseExpression: parseExpression,
-    parseProgram:    parseProgram
+    parseExpression,
+    parseProgram
 }
