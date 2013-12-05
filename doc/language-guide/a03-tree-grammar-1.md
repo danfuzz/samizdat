@@ -43,7 +43,7 @@ fn makeThunk(expression) {
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @varDef{name: name, value: value}
+    <> @varDef{name, value}
 };
 
 # Returns a `varRef` node.
@@ -53,12 +53,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @call{function: function, actuals: actuals}
+    <> @call{function, actuals}
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @call{function: makeVarRef(name), actuals: actuals}
+    <> @call{function: makeVarRef(name), actuals}
 };
 
 # Returns a collection access (`get`) expression. This is a `call` node
@@ -196,7 +196,7 @@ def parProgramDeclarations = {/
 
     (@"->" | &@"<>")
 
-    { <> {formals: formals, yieldDef*} }
+    { <> {formals, yieldDef*} }
 |
     { <> {formals: []} }
 /};
@@ -304,9 +304,9 @@ def parFnCommon = {/
         def statements = [returnDef*, codeMap::statements*];
         <> {
             codeMap*, name*,
-            formals: formals,
+            formals,
             yieldDef: "return",
-            statements: statements
+            statements
         }
     }
 /};
