@@ -52,8 +52,8 @@ fn last(collection) {
     slice:    Collection::slice,
 
     # Defined in this file.
-    butFirst: butFirst,
-    butLast:  butLast,
-    first:    first,
-    last:     last
+    butFirst,
+    butLast,
+    first,
+    last
 }

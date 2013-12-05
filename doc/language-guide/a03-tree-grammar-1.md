@@ -43,7 +43,7 @@ fn makeThunk(expression) {
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @varDef{name: name, value: value}
+    <> @varDef{name, value}
 };
 
 # Returns a `varRef` node.
@@ -53,12 +53,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @call{function: function, actuals: actuals}
+    <> @call{function, actuals}
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @call{function: makeVarRef(name), actuals: actuals}
+    <> @call{function: makeVarRef(name), actuals}
 };
 
 # Returns a collection access (`get`) expression. This is a `call` node
@@ -129,6 +129,21 @@ def parIdentifier = {/
     @identifier
 /};
 
+# Parses a variable reference.
+def parVarRef = {/
+    name = parIdentifier
+    { <> makeVarRef(dataOf(name)) }
+/};
+
+# Parses a variable definition.
+def parVarDef = {/
+    @def
+    name = parIdentifier
+    @"="
+    ex = parExpression
+    { <> makeVarDef(dataOf(name), ex) }
+/};
+
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
@@ -181,7 +196,7 @@ def parProgramDeclarations = {/
 
     (@"->" | &@"<>")
 
-    { <> {formals: formals, yieldDef*} }
+    { <> {formals, yieldDef*} }
 |
     { <> {formals: []} }
 /};
@@ -289,9 +304,9 @@ def parFnCommon = {/
         def statements = [returnDef*, codeMap::statements*];
         <> {
             codeMap*, name*,
-            formals: formals,
+            formals,
             yieldDef: "return",
-            statements: statements
+            statements
         }
     }
 /};
@@ -412,9 +427,17 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @expression(value)) }
 |
-    map = parTerm
-    @"*"
-    { <> map }
+    # The only acceptable expressions are interpolations and variable
+    # references.
+    elem = parExpression
+    { <out> ->
+        def type = typeOf(elem);
+        def value = dataOf(elem);
+        ifIs { <> eq(type, "interpolate") }
+            { <out> value };
+        ifIs { <> eq(type, "varRef") }
+            { <out> makeCallName("makeValueMap", makeLiteral(value), elem) }
+    }
 /};
 
 # Parses a map literal.
@@ -487,21 +510,6 @@ def parDeriv = {/
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCallName("makeValue", type, value*) }
-/};
-
-# Parses a variable reference.
-def parVarRef = {/
-    name = parIdentifier
-    { <> makeVarRef(dataOf(name)) }
-/};
-
-# Parses a variable definition.
-def parVarDef = {/
-    @def
-    name = parIdentifier
-    @"="
-    ex = parExpression
-    { <> makeVarDef(dataOf(name), ex) }
 /};
 
 # Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

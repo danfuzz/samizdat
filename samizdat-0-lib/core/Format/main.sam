@@ -355,10 +355,10 @@ fn formatterFor(formatSpec) {
 
 
 <> {
-    formatterFor:    formatterFor,
-    int:             int,
-    intHex:          intHex,
-    source:          source,
-    sourceUnadorned: sourceUnadorned,
-    usual:           usual
+    formatterFor,
+    int,
+    intHex,
+    source,
+    sourceUnadorned,
+    usual
 }

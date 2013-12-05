@@ -47,5 +47,5 @@ fn OptGenerator_nextValue(gen, box) {
 genericBind(Generator::nextValue, "OptGenerator", OptGenerator_nextValue);
 
 <> {
-    makeOptGenerator: makeOptGenerator
+    makeOptGenerator
 }

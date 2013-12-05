@@ -81,4 +81,4 @@ fn main(selfPath, name?, rest*) {
     stuff(1, 2);
 };
 
-<> {main: main}
+<> {main}

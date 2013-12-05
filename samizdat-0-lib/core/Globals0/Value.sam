@@ -103,20 +103,20 @@ fn totNe(v1, v2) {
 };
 
 <> {
-    isInt:         isInt,
-    isList:        isList,
-    isMap:         isMap,
-    isOpaqueValue: isOpaqueValue,
-    isString:      isString,
-    isUniqlet:     isUniqlet,
-    perGe:         perGe,
-    perGt:         perGt,
-    perLe:         perLe,
-    perLt:         perLt,
-    perNe:         perNe,
-    totGe:         totGe,
-    totGt:         totGt,
-    totLe:         totLe,
-    totLt:         totLt,
-    totNe:         totNe
+    isInt,
+    isList,
+    isMap,
+    isOpaqueValue,
+    isString,
+    isUniqlet,
+    perGe,
+    perGt,
+    perLe,
+    perLt,
+    perNe,
+    totGe,
+    totGt,
+    totLe,
+    totLt,
+    totNe
 }

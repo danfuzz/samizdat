@@ -75,7 +75,7 @@ def parArguments = {/
         def options = cat({}, optionList*);
         ifIs { <> options::error }
             { Io1::die("Invalid option(s).") };
-        <> {options: options, args: args}
+        <> {options, args}
     }
 /};
 
@@ -146,6 +146,6 @@ fn runCommandLine(rawArgs*) {
 };
 
 <> {
-    parseArgs:      parseArgs,
-    runCommandLine: runCommandLine
+    parseArgs,
+    runCommandLine
 }

@@ -248,16 +248,16 @@ fn writeFileUtf8(path, text) {
 
 <> {
     # Re-exported from Io0.
-    die:               Io0::die,
-    note:              Io0::note,
+    die:  Io0::die,
+    note: Io0::note,
 
     # Defined in this file.
-    fileExists:        fileExists,
-    flatFromPath:      flatFromPath,
-    pathFromFlat:      pathFromFlat,
-    pathListFromFlat:  pathListFromFlat,
-    readFileUtf8:      readFileUtf8,
-    readLink:          readLink,
-    sandboxedReader:   sandboxedReader,
-    writeFileUtf8:     writeFileUtf8
+    fileExists,
+    flatFromPath,
+    pathFromFlat,
+    pathListFromFlat,
+    readFileUtf8,
+    readLink,
+    sandboxedReader,
+    writeFileUtf8
 }

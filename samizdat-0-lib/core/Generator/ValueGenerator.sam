@@ -32,5 +32,5 @@ fn makeValueGenerator(value) {
 };
 
 <> {
-    makeValueGenerator: makeValueGenerator
+    makeValueGenerator
 }

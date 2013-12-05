@@ -26,4 +26,4 @@ fn main(.*) {
     Io1::note(Format::source(Stuff::SUBSTUFF));
 };
 
-<> {main: main}
+<> {main}

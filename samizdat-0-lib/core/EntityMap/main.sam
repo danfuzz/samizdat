@@ -2251,4 +2251,4 @@ def ENTITY_MAP = {
     "zwnj": "‌"
 };
 
-<> { ENTITY_MAP: ENTITY_MAP }
+<> { ENTITY_MAP }

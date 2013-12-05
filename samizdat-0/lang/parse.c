@@ -365,6 +365,28 @@ DEF_PARSE(identifier) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(varRef) {
+    MARK();
+
+    zvalue identifier = PARSE_OR_REJECT(identifier);
+
+    return makeVarRef(dataOf(identifier));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(varDef) {
+    MARK();
+
+    MATCH_OR_REJECT(def);
+    zvalue identifier = PARSE_OR_REJECT(identifier);
+    MATCH_OR_REJECT(CH_EQUAL);
+    zvalue expression = PARSE_OR_REJECT(expression);
+
+    zvalue name = dataOf(identifier);
+    return makeVarDef(name, expression);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(yieldDef) {
     MARK();
 
@@ -673,15 +695,25 @@ DEF_PARSE(mapping1) {
 }
 
 /**
- * Helper for `mapping`: Parses a guaranteed-interpolate `expression`.
+ * Helper for `mapping`: Parses `expression`, modifying or rejecting the
+ * result as appropriate.
  */
 DEF_PARSE(mapping2) {
     MARK();
 
-    zvalue map = PARSE_OR_REJECT(term);
-    MATCH_OR_REJECT(CH_STAR);
+    zvalue elem = PARSE_OR_REJECT(expression);
 
-    return map;
+    zvalue type = typeOf(elem);
+    zvalue value = dataOf(elem);
+
+    if (valEq(type, STR_interpolate)) {
+        return value;
+    } else if (valEq(type, STR_varRef)) {
+        return makeCallName(STR_makeValueMap,
+            listFrom2(makeLiteral(value), elem));
+    }
+
+    REJECT();
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -773,28 +805,6 @@ DEF_PARSE(deriv) {
         : listFrom2(type, value);
 
     return makeCallName(STR_makeValue, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(varRef) {
-    MARK();
-
-    zvalue identifier = PARSE_OR_REJECT(identifier);
-
-    return makeVarRef(dataOf(identifier));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(varDef) {
-    MARK();
-
-    MATCH_OR_REJECT(def);
-    zvalue identifier = PARSE_OR_REJECT(identifier);
-    MATCH_OR_REJECT(CH_EQUAL);
-    zvalue expression = PARSE_OR_REJECT(expression);
-
-    zvalue name = dataOf(identifier);
-    return makeVarDef(name, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

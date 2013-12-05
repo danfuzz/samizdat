@@ -164,6 +164,10 @@ can be used in the key position.
 An entire other map can be interpolated into a new map by naming the
 map to interpolate followed by `*`.
 
+As one final shorthand, to map a name to the contents of a defined variable,
+it is only necessary to name the variable (no colon, etc.). This is to handle
+the common case of putting together a map of current variable definitions.
+
 `{}` denotes the empty map.
 
 ```
@@ -174,6 +178,11 @@ map to interpolate followed by `*`.
 {(true): "yes"}               # key is (the boolean value) `true`, not a string
 {favorites: ["biscuits", "muffins"]}
 
+def blort = "B";
+def zorch = "Z";
+{blort, zorch}                # shorthand to reference active variables
+{blort: blort, zorch: zorch}  # longhand of the above
+
 {
     "blort":  "potion; the ability to see in the dark",
     "borch":  "spell; insect soporific",
@@ -183,7 +192,7 @@ map to interpolate followed by `*`.
 }
 
 {["complex", "data", "as", "key"]: "Handy!"}
-{0..9: "digits", 10: "not a digit"}
+{(0..9)*: "digits", 10: "not a digit"}
 
 # The first three here are equivalent. The last contains a variable reference
 # to `the`.

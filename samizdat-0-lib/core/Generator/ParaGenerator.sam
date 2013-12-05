@@ -62,5 +62,5 @@ fn ParaGenerator_nextValue(gen, box) {
 genericBind(Generator::nextValue, "ParaGenerator", ParaGenerator_nextValue);
 
 <> {
-    makeParaGenerator: makeParaGenerator
+    makeParaGenerator
 }

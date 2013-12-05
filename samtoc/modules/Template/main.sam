@@ -20,7 +20,7 @@ def parSubstitution = {/
     ")"
 
     {
-        <> {format: format, name: Peg::stringFromTokenList(name)}
+        <> {format, name: Peg::stringFromTokenList(name)}
     }
 /};
 
@@ -55,4 +55,4 @@ fn apply(templateString, defs) {
     <> cat("", texts*)
 };
 
-<> {apply: apply}
+<> {apply}

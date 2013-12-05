@@ -171,5 +171,5 @@ fn tokenize(programText) {
 };
 
 <> {
-    tokenize: tokenize
+    tokenize
 }

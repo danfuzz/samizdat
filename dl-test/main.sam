@@ -15,4 +15,4 @@ fn main(.*) {
     Io1::note(Format::source(Test::TEST))
 };
 
-<> {main: main}
+<> {main}
