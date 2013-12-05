@@ -33,7 +33,8 @@ msg({"#stuff": "muff", ["x", "y"]: "zee"});
 msg({def: "defined", do: "done"}); # Keywords should be "stringified".
 msg({true: 10, (true): 20}); # First key is a string, second is a boolean.
 msg({["f", "u", "z"]*: "muffins"});
-
+msg({{a: 1}*, {b: 2}*});
+msg({(Number::add(1, 1)): cat("t", "wo")});
 
 Io1::note("\nLayer 2...");
 
@@ -43,5 +44,6 @@ msg({"a" | "b": 10});
 msg({a | b: 20});
 msg({true | (true): 30});
 msg({1 | 2 | 3 | a | b | c: 10, 1 | 3 | b: 20});
+msg({1 | (1 + 1) | (2 + 1): 30});
 
 <> 0

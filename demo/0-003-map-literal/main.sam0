@@ -31,5 +31,7 @@ msg({"#stuff": "muff", ["x", "y"]: "zee"});
 msg({def: "defined", do: "done"}); # Keywords should be "stringified".
 msg({true: 10, (true): 20}); # First key is a string, second is a boolean.
 msg({["f", "u", "z"]*: "muffins"});
+msg({{a: 1}*, {b: 2}*});
+msg({(Number::add(1, 1)): cat("t", "wo")});
 
 <> 0
