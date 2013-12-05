@@ -30,4 +30,4 @@ fn main(selfPath, rawArgs*) {
     modeModule::compile(sourcePath, targetPath);
 };
 
-<> {main: main}
+<> {main}

@@ -80,4 +80,4 @@ fn compile(sourcePath, targetPath) {
     Io1::writeFileUtf8(targetPath, outputText)
 };
 
-<> {compile: compile}
+<> {compile}
