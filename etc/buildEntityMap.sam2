@@ -133,7 +133,7 @@ def outText = "\
     \(resultText)
     };
 
-    <> { ENTITY_MAP: ENTITY_MAP }
+    <> { ENTITY_MAP }
     ";
 
 Io1::writeFileUtf8(outPath, outText);

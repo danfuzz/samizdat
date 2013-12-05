@@ -11,9 +11,10 @@
 # details.
 
 <> {
-    cat:     cat,
+    cat,
+    get,
+
     del:     Collection_del,
-    get:     get,
     keyList: Collection_keyList,
     nth:     Collection_nth,
     put:     Collection_put,
