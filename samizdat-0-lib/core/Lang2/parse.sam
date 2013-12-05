@@ -51,7 +51,7 @@ fn makeThunk(expression) {
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @varDef{name: name, value: value}
+    <> @varDef{name, value}
 };
 
 # Returns a `varRef` node.
@@ -61,12 +61,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @call{function: function, actuals: actuals}
+    <> @call{function, actuals}
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @call{function: makeVarRef(name), actuals: actuals}
+    <> @call{function: makeVarRef(name), actuals}
 };
 
 # Returns a collection access (`get`) expression. This is a `call` node
@@ -211,7 +211,7 @@ def parProgramDeclarations = {/
 
     (@"->" | &@"<>")
 
-    { <> {formals: formals, yieldDef*} }
+    { <> {formals, yieldDef*} }
 |
     { <> {formals: []} }
 /};
@@ -319,9 +319,9 @@ def parFnCommon = {/
         def statements = [returnDef*, codeMap::statements*];
         <> {
             codeMap*, name*,
-            formals: formals,
+            formals,
             yieldDef: "return",
-            statements: statements
+            statements
         }
     }
 /};
@@ -873,7 +873,7 @@ fn makeCallModName(modVar, funcName, actuals*) {
 # binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
 fn closureWithFormals(closure, formals*) {
-    <> @closure{(dataOf(closure))*, formals: formals}
+    <> @closure{(dataOf(closure))*, formals}
 };
 
 # Returns a `closure` node like the one given, except with `yieldDef`
@@ -1084,7 +1084,7 @@ def parGeneratorDef = {/
     @in
     init = parExpression
 
-    { <> {formal: formal, init: init} }
+    { <> {formal, init} }
 /};
 
 # Parses a comma-separated list of generator definitions, for use in
@@ -1102,7 +1102,7 @@ def parGeneratorList = {/
         def formals = Generator::filterAll(gens) { gen <> gen::formal };
         def inits = Generator::filterAll(gens) { gen <> gen::init };
 
-        <> {formals: formals, inits: inits}
+        <> {formals, inits}
     }
 /};
 
@@ -1389,7 +1389,7 @@ def parTestClause = {/
 
     test = parExpression
 
-    { <> {formal: formal, test: test} }
+    { <> {formal, test} }
 /};
 
 # Parses a single parenthesized test clause.
@@ -1418,7 +1418,7 @@ def parLogicAndClause = {/
     parParenTestClause
 |
     test = parCompareExpression
-    { <> {formal: {}, test: test} }
+    { <> {formal: {}, test} }
 /};
 
 # Parses a short-circuit logical-and expression. The translation is along
@@ -1672,7 +1672,7 @@ def parIfExpression = {/
         @if
         condition = parMultiTest
         then = parCodeOnlyClosure
-        { <> {maker: condition, then: then} }
+        { <> {maker: condition, then} }
     )*
 
     optElse = (@else parCodeOnlyClosure)?
@@ -1893,7 +1893,7 @@ def parSwitchCase = {/
     @":"
     code = parCodeOnlyClosure
 
-    { <> {code: code, keys: keys} }
+    { <> {code, keys} }
 /};
 
 # Tree for the second argument to the `ifValue` inside a `switch` translation.
@@ -2089,6 +2089,6 @@ fn parseProgram(program) {
 };
 
 <> {
-    parseExpression: parseExpression,
-    parseProgram:    parseProgram
+    parseExpression,
+    parseProgram
 }

@@ -124,11 +124,11 @@ fn makeModuleContext(baseCtx, directory) {
 
     def fullCtx = {
         baseCtx*,
-        moduleInfo:     moduleInfo,
+        moduleInfo,
         submoduleEval:  languageModule::eval,
-        submoduleUse:   submoduleUse,
+        submoduleUse,
         submoduleParse: languageModule::parseProgram,
-        submoduleRead:  submoduleRead
+        submoduleRead
     };
 
     Box_store(ctxBox, fullCtx);
@@ -279,7 +279,7 @@ fn load(baseCtx, fqPath) {
     def exports = ctx::submoduleUse("main");
 
     # Combine `moduleInfo` and `exports` to form the final module value.
-    def result = @Module{info: ctx::moduleInfo, exports: exports};
+    def result = @Module{info: ctx::moduleInfo, exports};
 
     # Update the loaded module map. Note that we re-fetch the value, since
     # it may have been altered by other loads while this load was in progress.
@@ -345,21 +345,21 @@ def Module0 = @Module{
         version: "0.0.1"
     },
     exports: {
-        getAllModules:        getAllModules,
-        getExports:           getExports,
-        getGlobals:           getGlobals,
-        getInfo:              getInfo,
-        load:                 load,
-        moduleDef:            moduleDef,
-        moduleGet:            moduleGet,
-        moduleUse:            moduleUse,
-        stringFromModuleName: stringFromModuleName
+        getAllModules,
+        getExports,
+        getGlobals,
+        getInfo,
+        load,
+        moduleDef,
+        moduleGet,
+        moduleUse,
+        stringFromModuleName
     }
 };
 moduleDef(Module0);
 
 <> {
-    moduleDef: moduleDef,
-    moduleGet: moduleGet,
-    moduleUse: moduleUse
+    moduleDef,
+    moduleGet,
+    moduleUse
 }

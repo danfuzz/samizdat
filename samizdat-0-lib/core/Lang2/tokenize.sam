@@ -456,7 +456,7 @@ def implStringPart2 = {/
 
         (
             tokens = tokStringInterpolation
-            { <> {format*, tokens: tokens} }
+            { <> {format*, tokens} }
         |
             { <> @error("Unbalanced string interpolation.") }
         )
@@ -477,5 +477,5 @@ fn tokenize(programText) {
 };
 
 <> {
-    tokenize: tokenize
+    tokenize
 }

@@ -119,5 +119,5 @@ fn moduleUse(searchInfo, modulePaths?) {
     stringFromModuleName: Module0::stringFromModuleName,
 
     # Defined here.
-    moduleUse:  moduleUse
+    moduleUse
 }
