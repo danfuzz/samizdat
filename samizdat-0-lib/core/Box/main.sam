@@ -36,5 +36,5 @@ fn update(box, updateFunction) {
     makePromise: Box_makePromise,
 
     # Defined in this file.
-    update:      update
+    update
 }

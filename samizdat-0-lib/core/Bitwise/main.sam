@@ -30,5 +30,5 @@ fn shr(bitwise, n) {
     xor:     Bitwise::xor,
 
     # Defined here.
-    shr: shr
+    shr
 }
