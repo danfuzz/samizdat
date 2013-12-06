@@ -15,6 +15,7 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include <stdarg.h>
 #include <stdlib.h>
 
 
@@ -166,6 +167,42 @@ void arrayFromMap(zmapping *result, zvalue map) {
 
     MapInfo *info = getInfo(map);
     utilCpy(zmapping, result, info->elems, info->size);
+}
+
+/* Documented in header. */
+zvalue mapFromArgs(zvalue first, ...) {
+    if (first == NULL) {
+        return EMPTY_MAP;
+    }
+
+    zint size = 1;
+    va_list rest;
+
+    va_start(rest, first);
+    for (;;) {
+        if (va_arg(rest, zvalue) == NULL) {
+            break;
+        }
+        size++;
+    }
+    va_end(rest);
+
+    if ((size & 1) != 0) {
+        die("Odd argument count: %lld", size);
+    }
+
+    size >>= 1;
+
+    zmapping mappings[size];
+
+    va_start(rest, first);
+    for (zint i = 0; i < size; i++) {
+        mappings[i].key = (i == 0) ? first : va_arg(rest, zvalue);
+        mappings[i].value = va_arg(rest, zvalue);
+    }
+    va_end(rest);
+
+    return mapFromArray(size, mappings);
 }
 
 /* Documented in header. */

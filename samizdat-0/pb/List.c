@@ -12,6 +12,8 @@
 #include "type/Type.h"
 #include "type/Value.h"
 
+#include <stdarg.h>
+
 
 /*
  * Private Definitions
@@ -91,6 +93,36 @@ void arrayFromList(zvalue *result, zvalue list) {
     ListInfo *info = getInfo(list);
 
     utilCpy(zvalue, result, info->elems, info->size);
+}
+
+/* Documented in header. */
+zvalue listFromArgs(zvalue first, ...) {
+    if (first == NULL) {
+        return EMPTY_LIST;
+    }
+
+    zint size = 1;
+    va_list rest;
+
+    va_start(rest, first);
+    for (;;) {
+        if (va_arg(rest, zvalue) == NULL) {
+            break;
+        }
+        size++;
+    }
+    va_end(rest);
+
+    zvalue values[size];
+    values[0] = first;
+
+    va_start(rest, first);
+    for (zint i = 1; i < size; i++) {
+        values[i] = va_arg(rest, zvalue);
+    }
+    va_end(rest);
+
+    return listFromArray(size, values);
 }
 
 /* Documented in header. */

@@ -28,6 +28,11 @@ extern zvalue EMPTY_LIST;
 void arrayFromList(zvalue *result, zvalue list);
 
 /**
+ * Constructs a list from a `NULL`-terminated list of arguments.
+ */
+zvalue listFromArgs(zvalue first, ...);
+
+/**
  * Constructs a list from an array of `zvalue`s of the given size.
  */
 zvalue listFromArray(zint size, const zvalue *values);
