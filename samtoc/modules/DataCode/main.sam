@@ -1,0 +1,100 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Convert data into C code that constructs that data.
+#
+
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
+# Map of special-case characters to either their stringified forms or
+# to `"x"` to indicate a need to convert as hex.
+def SPECIAL_CHARS = {
+    ("\x1;".."\x1f;")*: "x",
+    "\x7f;":            "x",
+    "\0":               "\\0",
+    "\n":               "\\n",
+    "\r":               "\\r",
+    "\t":               "\\t",
+    "\"":               "\\\"",
+    "\\":               "\\\\"
+};
+
+# Helper for converting strings: Returns the converted form of the
+# given character.
+fn stringChar(ch) {
+    if (ch > "\x7f;") {
+        Io1::die("Cannot convert characters beyond 0x7f.")
+    } else if (def special = SPECIAL_CHARS[ch]) {
+        if (special == "x") {
+            return "\\x\%x(toInt(ch))"
+        } else {
+            return special
+        }
+    };
+
+    <> ch
+};
+
+# Generic function to perform the conversion.
+def convert = makeRegularGeneric("convert", 1, 1);
+
+# Converts an int.
+fn Int_convert(int) {
+    <> "intFromZint(\(int))"
+};
+genericBind(convert, Int, Int_convert);
+
+# Converts a list.
+fn List_convert(list) {
+    if (list == []) {
+        return "EMPTY_LIST"
+    };
+
+    def listElems = [ elem in list <> "\(convert(elem)), " ];
+    <> "listFromArgs(\(listElems)NULL)"
+};
+genericBind(convert, List, List_convert);
+
+# Converts a map.
+fn Map_convert(map) {
+    if (map == {}) {
+        return "EMPTY_MAP"
+    };
+
+    def mapElems = [ mapping in map ->
+        def key = keyOf(mapping);
+        def value = valueOf(mapping);
+        <> "\(convert(key)), \(convert(value)), "
+    ];
+
+    <> "mapFromArgs(\(mapElems)NULL)"
+};
+genericBind(convert, Map, Map_convert);
+
+# Converts a string.
+fn String_convert(string) {
+    def bodyChars = [ ch in string <> stringChar(ch) ];
+    def size = Collection::sizeOf(string);
+
+    <> "stringFromUtf8(\(size), \"\(bodyChars)\")"
+};
+genericBind(convert, String, String_convert);
+
+# Converts a derived value or an opaque core value.
+fn Value_convert(value) {
+    if (isOpaqueValue(value)) {
+        Io1::die("Cannot convert opaque non-data values.")
+    };
+
+    def type = convert(typeOf(value));
+    def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
+
+    <> "makeTransValue(\(type), \(data))"
+};
+genericBind(convert, Value, Value_convert);
+
+<> {
+    convert
+}

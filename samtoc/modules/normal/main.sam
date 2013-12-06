@@ -2,9 +2,11 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def Template = moduleUse({name: ["Template"]});
 def templateText = submoduleRead("template.txt");
 def collectLiterals = submoduleUse("collectLiterals");
+
+def DataCode = moduleUse({name: ["DataCode"]});
+def Template = moduleUse({name: ["Template"]});
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
@@ -59,9 +61,17 @@ fn compile(sourcePath, targetPath) {
     };
 
     # TODO: Something real here.
-    def statements = [s in tree.getStatements() ->
-        <> "\%q(s)\n\n"
-    ];
+    def statements = [ s in tree.getStatements() <> "\%q(s)\n\n" ];
+
+    Io1::note("=== \%q(DataCode::convert([]))");
+    Io1::note("=== \%q(DataCode::convert({}))");
+    Io1::note("=== \%q(DataCode::convert(123))");
+    Io1::note("=== \%q(DataCode::convert("hello"))");
+    Io1::note("=== \%q(DataCode::convert([1, 2, 3]))");
+    Io1::note("=== \%q(DataCode::convert({a: "axe"}))");
+    Io1::note("=== \%q(DataCode::convert(null))");
+    Io1::note("=== \%q(DataCode::convert(true))");
+    Io1::note("=== \%q(DataCode::convert(@blort))");
 
     def literals = collectLiterals(tree);
     for (lit in literals) {
