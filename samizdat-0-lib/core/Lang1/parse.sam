@@ -447,7 +447,10 @@ def parPostfixOperator = Peg::makeMainChoice(
         Peg::makeCode { ., key <> { node <> makeGetExpression(node, key) } }),
     Peg::makeSequence(
         Peg::makeToken("*"),
-        Peg::makeCode { . <> { node <> makeInterpolate(node) } }));
+        Peg::makeCode { . <> { node <> makeInterpolate(node) } }),
+    Peg::makeSequence(
+        Peg::makeToken("*"),
+        Peg::makeCode { . <> { node <> makeOptValueExpression(node) } }));
 
 # Documented in Samizdat Layer 0 spec.
 def implUnaryExpression = Peg::makeMainSequence(

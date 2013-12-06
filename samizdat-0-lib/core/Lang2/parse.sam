@@ -571,6 +571,9 @@ def parPostfixOperator = {/
     @"*" !parExpression
     { <> { node <> makeInterpolate(node) } }
 |
+    @"?"
+    { <> { node <> makeOptValueExpression(node) } }
+|
     # Note: *Layer 2* adds additional rules here.
     parPostfixOperator2
 /};
@@ -1197,9 +1200,6 @@ Box::store(parPrefixOperator2, implPrefixOperator2);
 # function (per se) to call in order to construct a node that represents the
 # appropriate operator application, function call, or the like.
 def implPostfixOperator2 = {/
-    @"?"
-    { <> { node <> makeOptValueExpression(node) } }
-|
     @"**"
     { <> { node <> makeCallName("totNe", makeLiteral(false), node) } }
 |

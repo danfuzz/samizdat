@@ -554,6 +554,9 @@ def parPostfixOperator = {/
     # but higher layers augment its meaning.)
     @"*" !parExpression
     { <> { node <> makeInterpolate(node) } }
+|
+    @"?"
+    { <> { node <> makeOptValueExpression(node) } }
 # |
     # Note: *Layer 2* adds additional rules here.
 /};
