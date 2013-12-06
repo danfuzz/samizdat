@@ -39,6 +39,12 @@ extern zvalue EMPTY_MAP;
 void arrayFromMap(zmapping *result, zvalue map);
 
 /**
+ * Constructs a map from a `NULL`-terminated list of key-then-value argument
+ * pairs.
+ */
+zvalue mapFromArgs(zvalue first, ...);
+
+/**
  * Gets the map resulting from adding all the given mappings
  * to an empty map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
