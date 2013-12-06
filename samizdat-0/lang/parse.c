@@ -832,9 +832,9 @@ DEF_PARSE(actualsList) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(postfixOperator) {
-    // We differ from the spec here, returning the payload directly
-    // or a `*` token for interpolation. The corresponding `unaryExpression`
-    // code decodes these as appropriate.
+    // We differ from the spec here, returning a payload or single token
+    // (`*` or `?`) directly. The corresponding `unaryExpression` code
+    // decodes these as appropriate.
 
     MARK();
 
@@ -847,6 +847,7 @@ DEF_PARSE(postfixOperator) {
     }
 
     if (result == NULL) { result = MATCH(CH_STAR); }
+    if (result == NULL) { result = MATCH(CH_QMARK); }
 
     return result;
 }
@@ -865,6 +866,8 @@ DEF_PARSE(unaryExpression) {
             result = makeCall(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
+        } else if (valEq(one, TOK_CH_QMARK)) {
+            result = makeOptValueExpression(result);
         } else if (hasType(one, STR_literal)) {
             result = makeCallName(STR_get, listFrom2(result, one));
         } else {
