@@ -75,6 +75,7 @@ The only operators recognized in Layer 0 are:
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
 * `expr::name` &mdash; Collection-style indexing by name.
 * `expr*` &mdash; Interpolation.
+* `expr?` &mdash; Optional-value-to-list conversion.
 * `<> expr` &mdash; Local yield.
 * `<out> exr` &mdash; Named nonlocal return.
 * `return expr` &mdash; Function return.
