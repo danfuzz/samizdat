@@ -653,77 +653,70 @@ DEF_PARSE(identifierString) {
     return makeLiteral(value);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(keyTerm) {
+/**
+ * Helper for `key`: Parses `identifierString @":"`.
+ */
+DEF_PARSE(key1) {
     MARK();
 
-    zvalue key = PARSE(identifierString);
+    zvalue result = PARSE_OR_REJECT(identifierString);
+    MATCH_OR_REJECT(CH_COLON);
 
-    if (key != NULL) {
-        if (PEEK(CH_STAR) == NULL) {
-            return key;
-        }
-        RESET();
-    }
+    return result;
+}
 
-    key = PARSE_OR_REJECT(term);
+/**
+ * Helper for `key`: Parses `expression @":"`.
+ */
+DEF_PARSE(key2) {
+    MARK();
 
-    if (MATCH(CH_STAR) != NULL) {
-        return makeInterpolate(key);
-    } else {
-        return key;
-    }
+    zvalue result = PARSE_OR_REJECT(expression);
+    MATCH_OR_REJECT(CH_COLON);
+
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(key) {
-    return PARSE(keyTerm);
-}
+    zvalue result = NULL;
 
-/**
- * Helper for `mapping`: Parses `key @":" expression`.
- */
-DEF_PARSE(mapping1) {
-    MARK();
+    if (result == NULL) { result = PARSE(key1); }
+    if (result == NULL) { result = PARSE(key2); }
 
-    zvalue key = PARSE_OR_REJECT(key);
-    MATCH_OR_REJECT(CH_COLON);
-    zvalue value = PARSE_OR_REJECT(expression);
-
-    return makeCallName(STR_makeValueMap,
-        listFrom2(key, makeTransValue(STR_expression, value)));
-}
-
-/**
- * Helper for `mapping`: Parses `expression`, modifying or rejecting the
- * result as appropriate.
- */
-DEF_PARSE(mapping2) {
-    MARK();
-
-    zvalue elem = PARSE_OR_REJECT(expression);
-
-    zvalue type = typeOf(elem);
-    zvalue value = dataOf(elem);
-
-    if (valEq(type, STR_interpolate)) {
-        return value;
-    } else if (valEq(type, STR_varRef)) {
-        return makeCallName(STR_makeValueMap,
-            listFrom2(makeLiteral(value), elem));
-    }
-
-    REJECT();
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(mapping) {
-    zvalue result = NULL;
+    MARK();
 
-    if (result == NULL) { result = PARSE(mapping1); }
-    if (result == NULL) { result = PARSE(mapping2); }
+    zvalue keys = PARSE_STAR(key);
+    zvalue value = PARSE_OR_REJECT(expression);
 
-    return result;
+    if (collSize(keys) == 0) {
+        // No keys were specified, so the value must be either a
+        // whole-map interpolation or a variable-name-to-its-value
+        // binding.
+        zvalue type = typeOf(value);
+        zvalue data = dataOf(value);
+
+        if (valEq(type, STR_interpolate)) {
+            return data;
+        } else if (valEq(type, STR_varRef)) {
+            return makeCallName(STR_makeValueMap,
+                listFrom2(makeLiteral(data), value));
+        }
+
+        REJECT();
+    }
+
+    // One or more keys. The `value` is wrapped in an
+    // `expression` node here to prevent interpolation from
+    // being applied to `makeValueMap`.
+
+    return makeCallName(STR_makeValueMap,
+        listAppend(keys, makeTransValue(STR_expression, value)));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

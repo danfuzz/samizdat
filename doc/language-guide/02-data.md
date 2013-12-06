@@ -154,15 +154,16 @@ Syntactically, keys are "terms", that is, simple values, collection literals,
 or parenthesized expressions. As a short-hand, a string key with the same
 form as an identifier can be written without the quotes.
 
-A group of mappings with multiple keys that map to the same value
-can be written in a short-hand using the same interpolation syntax as with
-lists.
+A collection of values may be mapped as a key to a single value, using the
+same postfix `*` interpolation syntax that is used with lists, e.g.
+`{foo*: value}`.
 
-In addition, a pipe-separated list of keys (including interpolations)
-can be used in the key position.
+In addition, explicitly listed keys may be mapped to the same value by
+omitting the value after all but the last of the list, e.g.
+`{foo: bar: commonValue}`.
 
 An entire other map can be interpolated into a new map by naming the
-map to interpolate followed by `*`.
+map to interpolate followed by `*` (with no colon).
 
 As one final shorthand, to map a name to the contents of a defined variable,
 it is only necessary to name the variable (no colon, etc.). This is to handle
@@ -197,9 +198,9 @@ def zorch = "Z";
 # The first three here are equivalent. The last contains a variable reference
 # to `the`.
 {["these", "map", "to", "the"]*: "same value"}
-{these | map | "to" | the: "same value"}
-{["these", "map"]* | to | the: "same value"}
-{these | map | "to" | (the): "same value"}
+{these: map: "to": the: "same value"}
+{["these", "map"]*: to: the: "same value"}
+{these: map: "to": (the): "same value"}
 
 # These are all equivalent.
 {first: 1, second: 2, third: 3}

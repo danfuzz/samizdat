@@ -58,11 +58,6 @@ Handling of all of these is implemented in Layer 2.
 In addition, literal newlines are not ever valid inside string literals in
 Layer 0. Handling of *unescaped* newlines is implemented in Layer 1.
 
-#### Maps
-
-In Layer 0, pipe-separated lists of keys are not recognized. This is
-implemented in Layer 2.
-
 #### Variable Definition
 
 Only immutable variable definitions (`def name = ...`) are recognized in

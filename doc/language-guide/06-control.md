@@ -229,19 +229,19 @@ In addition, the same identifier-as-string shorthands apply:
 
 ```
 switch (expression) {
-    (testExpression1(), testExpression2(), testExpression3()): {
+    testExpression1(): testExpression2(): testExpression3(): {
         block123
-    }
+    };
     (4..6)*: {
         block456
-    }
+    };
     ["fizmo", "igram", secretSpellName()]*: {
         spellBlock
-    }
+    };
     name: {
         nameBlock
-    }
-    (north, south, east, west): {
+    };
+    north: south: east: west: {
         directionBlock
     }
 }
