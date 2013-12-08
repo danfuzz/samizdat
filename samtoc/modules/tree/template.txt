@@ -1,0 +1,39 @@
+/*
+ * GENERATED CODE!
+ * GENERATED CODE!
+ * GENERATED CODE!
+ *
+ * This code *may* be derived from a copyrighted source. Proceed with
+ * caution!
+ */
+
+#include "type/List.h"
+#include "type/Map.h"
+#include "type/String.h"
+#include "type/Value.h"
+#include "util.h"
+
+static zvalue programTree(void) {
+return
+\(source)
+}
+
+static zvalue lookup(zvalue context, const char *name) {
+    return collGet(context, stringFromUtf8(-1, name));
+}
+
+zvalue eval(zvalue context) {
+    zvalue langModule = FUN_CALL(
+        lookup(context, "moduleUse"),
+        collPut(
+            EMPTY_MAP,
+            stringFromUtf8(-1, "name"),
+            listFromArgs(
+                stringFromUtf8(-1, "core"),
+                stringFromUtf8(-1, "Lang0"))));
+
+    return FUN_CALL(
+        lookup(langModule, "eval"),
+        context,
+        programTree());
+}
