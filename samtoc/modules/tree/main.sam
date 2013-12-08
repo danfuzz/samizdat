@@ -1,0 +1,31 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Compilation mode "tree" which converts the source into a parse tree,
+# and emits C code to recreate same.
+#
+
+def templateText = submoduleRead("template.txt");
+
+def DataCode = moduleUse({name: ["DataCode"]});
+def Template = moduleUse({name: ["Template"]});
+
+def Io1 = moduleUse({name: ["core", "Io1"]});
+def Lang2 = moduleUse({name: ["core", "Lang2"]});
+
+fn compile(sourcePath, targetPath) {
+    def sourceText = Io1::readFileUtf8(sourcePath);
+    def tree = Lang2::parseProgram(sourceText);
+    def treeText = DataCode::convert(tree);
+
+    def replacements = {
+        source: treeText
+    };
+
+    def outputText = Template::apply(templateText, replacements);
+    Io1::writeFileUtf8(targetPath, outputText)
+};
+
+<> {compile}
