@@ -6,13 +6,17 @@
 # Layer 1 parsing and evaluation functions
 #
 
+def Lang0 = moduleUse({name: ["core", "Lang0"]});
+
 #
 # Exported Definitions
 #
 
-# This just re-exports stuff defined in submodules.
+# This just re-exports stuff defined in submodules as well as `evalBinary`
+# which is a re-export from `Lang0`.
 <> {
     (submoduleUse("tokenize"))*,
     (submoduleUse("parse"))*,
-    (submoduleUse("eval"))*
+    (submoduleUse("eval"))*,
+    evalBinary: Lang0::evalBinary
 }

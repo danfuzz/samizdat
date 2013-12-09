@@ -31,6 +31,21 @@ Very notably, the result of calling `parseProgram` is valid as the
 It is recommended (but not required) that the given `context` include
 bindings for all of the library functions specified by this document.
 
+#### `evalBinary(context, filePath) <> . | void`
+
+Evaluates the named compiled file. `filePath` is expected to name
+a file in the (platform-dependent) binary library format. The file
+is loaded, and its `eval` function is called, passing it the given
+`context`. The return value of this function is the result of the `eval`
+call.
+
+It is an error (terminating the runtime) if the file does not exist,
+is not a library file, or is missing necessary bindings.
+
+**Note:** The `Lang0` and `Lang1` versions of this function accept a
+platform-dependent flat path string as the `filePath` argument. Higher
+language layers accept standard structured paths (lists of path components).
+
 #### `parseExpression(expression) <> expressionNode`
 
 Parses the given `expression` as an expression in the language.
