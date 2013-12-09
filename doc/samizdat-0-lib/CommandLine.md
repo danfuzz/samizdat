@@ -53,5 +53,7 @@ was returned by the inner function call (including void).
 
 Currently recognized command-line options:
 
-* `--layer=N` &mdash; Indicates which layer to use for parsing and
-  evaluation. `N` must be one of: `0` `1` `2`
+* `--suffix=name` &mdash; Provides a file name suffix to use when interpreting
+  the file name. Used to override the default of which language layer is
+  used for parsing and evaluation. Must be `sam`, `samb`, or `samN` where `N`
+  is a digit.

@@ -7,6 +7,7 @@
 #
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
+def Lang2 = moduleUse({name: ["core", "Lang2"]});
 def Module = moduleUse({name: ["core", "Module"]});
 
 
@@ -79,6 +80,32 @@ def parArguments = {/
     }
 /};
 
+# Gets the language layer suffix (or suffix-like-thing) from a file name.
+fn suffixFromName(name) {
+    def dotsAt = Generator::filterAll(Range::makeOpenRange(0, 1), name)
+        { index, elem ->
+            <> ifIs { <> eq(elem, ".") }
+                { <> index }
+        };
+
+    ifIs { <> eq(dotsAt, []) }
+        {
+            # No suffix on the name; assume it names a module directory.
+            return "module"
+        };
+
+    <> Collection::slice(name, Number::add(Collection::last(dotsAt), 1));
+};
+
+# Makes a global environment, given file path and command-line arguments.
+fn makeGlobals(filePath, args) {
+    <> {
+        (Module::getExports(moduleUse({name: ["core", "Globals"]})))*,
+        ARGUMENTS: args,
+        PATH:      filePath
+    }
+};
+
 # Runs a module-form command-line. In this case, a named directory is
 # loaded as a module. It is expected to export a `main()` function, which
 # is called with the Posix-style command-line arguments.
@@ -95,18 +122,20 @@ fn runModule(modulePath, args) {
 # Its environment includes `PATH` and `ARGUMENTS` variables indicating
 # the path to the file and the command-line arguments, respectively.
 fn runFile(langLayer, filePath, args) {
+    def globals = makeGlobals(filePath, args);
     def programText = Io1::readFileUtf8(filePath);
     def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
     def parsedProgram = langModule::parseProgram(programText);
-
-    def globals = {
-        (Module::getExports(moduleUse({name: ["core", "Globals"]})))*,
-        ARGUMENTS: args,
-        PATH:      filePath
-    };
-
     def evalled = langModule::eval(globals, parsedProgram);
+
     <> evalled()
+};
+
+# Runs a binary library command-line. The global environment is set up the
+# same as for `runFile`.
+fn runBinary(filePath, args) {
+    def globals = makeGlobals(filePath, args);
+    <> Lang2::evalBinary(globals, filePath);
 };
 
 
@@ -137,12 +166,20 @@ fn runCommandLine(rawArgs*) {
     def args = ifValueOr { <> Collection::butFirst(argWords) }
         { <> [] };
 
-    <> ifIs { <> Io1::fileExists([filePath*, "module.sam"]) }
-        { <> runModule(filePath, args) }
-        {
-            def langLayer = ifValueOr { <> options::layer } { <> "2" };
-            <> runFile(langLayer, filePath, args)
-        }
+    def suffix = ifValueOr { <> options::suffix }
+        { <> suffixFromName(Collection::last(filePath)) };
+
+    ifIs { <> eq(suffix, "module") }
+        { return runModule(filePath, args) };
+
+    ifIs { <> eq(suffix, "samb") }
+        { return runBinary(filePath, args) };
+
+    def langLayer = ifIs { <> eq(suffix, "sam") }
+        { <> "2" }
+        { <> Collection::last(suffix) };
+
+    <> runFile(langLayer, filePath, args)
 };
 
 <> {

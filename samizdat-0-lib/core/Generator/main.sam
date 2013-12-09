@@ -115,7 +115,6 @@ fn generatorPump(generator) {
     }
 };
 
-
 <> {
     # Re-exported from proto module.
     collect:                 Generator::collect,

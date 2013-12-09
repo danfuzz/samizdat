@@ -144,12 +144,6 @@ fi
 PATH="${PATH}:${baseDir}/out/samizdat-0"
 cmd=("samizdat-0")
 
-# If it's numbered, use the file extension to generate a `--layer=` option.
-if [[ ${mainFile} =~ ^.*\.sam([0-9])$ ]]; then
-    layer="${BASH_REMATCH[1]}"
-    cmd=("${cmd[@]}" --layer="${layer}")
-fi
-
 if [[ ${timeRun} == 'yes' ]]; then
     cmd=(time -p "${cmd[@]}")
 elif [[ ${iprofiler} == 'yes' ]]; then

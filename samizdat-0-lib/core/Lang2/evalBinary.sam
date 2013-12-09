@@ -1,0 +1,25 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 2 Binary Library Support
+#
+
+def Io1 = moduleUse({name: ["core", "Io1"]});
+def Lang1 = moduleUse({name: ["core", "Lang1"]});
+
+
+#
+# Exported Definitions
+#
+
+# Documented in Samizdat Layer 1 spec.
+fn evalBinary(context, filePath) {
+    def flatPath = Io1::flatFromPath(filePath);
+    <> Lang1::evalBinary(context, flatPath)
+};
+
+<> {
+    evalBinary
+}

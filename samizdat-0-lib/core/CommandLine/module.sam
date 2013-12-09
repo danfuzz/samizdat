@@ -8,5 +8,5 @@
 
     globalExports: ["runCommandLine"],
 
-    language: "Lang1"
+    language: "Lang2"
 }

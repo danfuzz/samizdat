@@ -15,5 +15,6 @@
 <> {
     (submoduleUse("tokenize"))*,
     (submoduleUse("parse"))*,
-    (submoduleUse("eval"))*
+    (submoduleUse("eval"))*,
+    (submoduleUse("evalBinary"))*
 }
