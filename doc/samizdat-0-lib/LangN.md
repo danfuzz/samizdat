@@ -39,6 +39,10 @@ is loaded, and its `eval` function is called, passing it the given
 `context`. The return value of this function is the result of the `eval`
 call.
 
+The usual case is for a binary to evaluate to a function definition,
+most typically one that takes no arguments. This is parallel to what
+results from evaluating a program tree using `eval` (above).
+
 It is an error (terminating the runtime) if the file does not exist,
 is not a library file, or is missing necessary bindings.
 

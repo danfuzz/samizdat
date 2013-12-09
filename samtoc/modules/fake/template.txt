@@ -40,7 +40,6 @@ zvalue eval(zvalue context) {
 
     zvalue progTree = FUN_CALL(parseProgram, progStr);
     zvalue evalResult = FUN_CALL(evalFn, context, progTree);
-    zvalue result = FUN_CALL(evalResult);
 
-    return result;
+    return evalResult;
 }
