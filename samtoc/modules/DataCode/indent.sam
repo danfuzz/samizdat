@@ -1,0 +1,139 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Indenting of C function call source.
+#
+
+def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
+
+
+#
+# Private definitions: Call parser
+#
+
+def parArgs = ParseForwarder::make();
+
+def parIdent = {/
+    first = ["a".."z" "A".."Z" "_"]
+    rest = ["a".."z" "A".."Z" "_" "0".."9"]*
+    { <> Peg::stringFromTokenList([first, rest*]) }
+/};
+
+def parInt = {/
+    first = ["0".."9" "-"]
+    rest = ["0".."9" "-"]*
+    { <> Peg::stringFromTokenList([first, rest*]) }
+/};
+
+def parString = {/
+    @"\""
+    chars = (
+        @"\\"
+        ch = .
+        { <> cat("\\", typeOf(ch)) }
+    |
+        ch = [! @"\""]
+        { <> typeOf(ch) }
+    )*
+    @"\""
+
+    { <> cat("\"", chars*, "\"") }
+/};
+
+def parWord = {/
+    parInt
+|
+    parIdent
+|
+    parString
+/};
+
+def parArg = {/
+    word = parWord
+    (
+        @"("
+        args = parArgs
+        @")"
+        { <> {name: word, args} }
+    |
+        { <> word }
+    )
+/};
+
+def implArgs = {/
+    first = parArg
+    rest = (@"," @" "* parArg)*
+    { <> [first, rest*] }
+|
+    { <> [] }
+/};
+Box::store(parArgs, implArgs);
+
+# Parses a call into a `name` string and a list of `args`
+fn parseCall(source) {
+    <> Peg::apply(parArg, source)
+};
+
+#
+# Private definitions
+#
+
+# Makes an indent string for the given level.
+fn indentString(level) {
+    <> cat([. in 1..(2 * level) <> " "]*)
+};
+
+# Flattens the given call-or-string to a string.
+fn flatten(item) {
+    if (isString(item)) {
+        return item
+    };
+
+    def args = item::args;
+
+    <> cat(
+        item::name,
+        "(",
+        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
+            <> cat(flatten(a), (i == 1) & "" | ", ")
+        )*,
+        ")")
+};
+
+
+#
+# Exported definitions
+#
+
+# Indents the given source string by the given amount, aiming to keep lines
+# no longer than the given number of columns.
+fn indent(source, level, maxColumns) {
+    def prefix = indentString(level);
+    def prefixSize = Collection::sizeOf(prefix);
+
+    if ((Collection::sizeOf(source) + prefixSize) < maxColumns) {
+        return cat(prefix, source)
+    };
+
+    def parsed = parseCall(source);
+
+    if (isString(parsed)) {
+        return cat(prefix, source);
+    };
+
+    def args = parsed::args;
+
+    <> cat(
+        prefix, parsed::name, "(\n",
+        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
+            def s = cat(indent(flatten(a), level + 1, maxColumns));
+            <> cat(s, (i == 1) & "" | ",\n")
+        )*,
+        ")")
+};
+
+<> {
+    indent
+}

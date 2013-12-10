@@ -7,6 +7,7 @@
  * caution!
  */
 
+#include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
@@ -14,8 +15,8 @@
 #include "util.h"
 
 static zvalue programTree(void) {
-return
-\(source)
+  return
+\(source);
 }
 
 static zvalue lookup(zvalue context, const char *name) {
@@ -30,7 +31,8 @@ zvalue eval(zvalue context) {
             stringFromUtf8(-1, "name"),
             listFromArgs(
                 stringFromUtf8(-1, "core"),
-                stringFromUtf8(-1, "Lang0"))));
+                stringFromUtf8(-1, "Lang0"),
+                NULL)));
 
     return FUN_CALL(
         lookup(langModule, "eval"),
