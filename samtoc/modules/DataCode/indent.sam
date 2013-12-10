@@ -56,7 +56,7 @@ def parArg = {/
         @"("
         args = parArgs
         @")"
-        { <> @call{name: word, args} }
+        { <> {name: word, args} }
     |
         { <> word }
     )
@@ -82,7 +82,7 @@ fn parseCall(source) {
 
 # Makes an indent string for the given level.
 fn indentString(level) {
-    <> cat([. in 0..(4 * level) <> " "]*)
+    <> cat([. in 1..(2 * level) <> " "]*)
 };
 
 # Flattens the given call-or-string to a string.
@@ -91,11 +91,13 @@ fn flatten(item) {
         return item
     };
 
+    def args = item::args;
+
     <> cat(
         item::name,
         "(",
-        ( a in parsed::args, i in (Collection::sizeOf(a))..-1..+ ->
-            <> cat(flatten(a), (i == 1) & "" | ",")
+        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
+            <> cat(flatten(a), (i == 1) & "" | ", ")
         )*,
         ")")
 };
@@ -121,9 +123,11 @@ fn indent(source, level, maxColumns) {
         return cat(prefix, source);
     };
 
+    def args = parsed::args;
+
     <> cat(
         prefix, parsed::name, "(\n",
-        ( a in parsed::args, i in (Collection::sizeOf(a))..-1..+ ->
+        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
             def s = cat(indent(flatten(a), level + 1, maxColumns));
             <> cat(s, (i == 1) & "" | ",\n")
         )*,
