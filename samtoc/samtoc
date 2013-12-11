@@ -40,7 +40,7 @@ unset newProg
 #
 
 # Output file name.
-outputFile='-'
+outputFile=''
 
 # Whether to compile to binary.
 fullCompile='yes'
@@ -77,12 +77,18 @@ if (( $# == 0 )); then
     echo 'Missing source file name.' 1>&2
     exit 1
 elif (( $# > 1 )); then
-    echo 'Too many arguments.' 1>&2
-    exit 1
+    # Multiple source files.
+    fullCompile='no'
+    if [[ ${outputFile} != '' ]]; then
+        echo 'Cannot specify --output with multiple sources.' 1>&2
+        exit 1
+    fi
+else
+    # Single source file.
+    if [[ ${outputFile} == '' && ${fullCompile} == 'yes' ]]; then
+        outputFile="$1.c"
+    fi
 fi
-
-sourceFile="$1"
-shift
 
 if [[ ${outputFile} == '-' || ${outputFile} == '/dev/stdout' ]]; then
     outputFile='/dev/stdout'
@@ -94,14 +100,12 @@ fi
 # Main script
 #
 
-if [[ ${fullCompile} == yes ]]; then
-    generatedFile="${outputFile}.c"
-else
-    generatedFile="${outputFile}"
+if [[ ${outputFile} != '' ]]; then
+    moreArgs+=("--output=${outputFile}")
 fi
 
 "${baseDir}/samizdat-0/samizdat-0" "${progDir}" \
-    "${moreArgs[@]}" --output="${generatedFile}" -- "${sourceFile}" \
+    "${moreArgs[@]}" -- "$@" \
 || exit 1
 
 if [[ ${fullCompile} == no ]]; then

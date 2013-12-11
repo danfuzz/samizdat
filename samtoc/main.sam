@@ -5,29 +5,60 @@
 def CommandLine = moduleUse({name: ["core", "CommandLine"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
+
+# Removes the `.*` suffix from `name`.
+fn withoutSuffix(name) {
+    def dotsAt = [ index in 0..+, ch in name <> (ch == ".") & index ];
+
+    if (dotsAt == []) {
+        # No suffix on the name.
+        return name
+    } else {
+        def lastDot = Collection::last(dotsAt);
+        return Collection::slice(name, 0, lastDot)
+    }
+};
+
+fn getOutputPath(sourcePath, args) {
+    if (def output = args::options::output) {
+        return Io1::pathFromFlat(output)
+    } else {
+        def baseName = withoutSuffix(Collection::last(sourcePath));
+        return [Collection::butLast(sourcePath)*, "\(baseName).c"];
+    }
+};
+
+fn doOne(modeModule, args, sourceName) {
+    def sourcePath = Io1::pathFromFlat(sourceName);
+    def targetPath = getOutputPath(sourcePath, args);
+
+    Io1::note("\
+        \%q(sourcePath)
+        -> \%q(targetPath)\n");
+
+    modeModule::compile(sourcePath, targetPath);
+};
+
 fn main(selfPath, rawArgs*) {
     Io1::note("\
         Starting: \%q(selfPath)
         Raw args: \%q(rawArgs)\n");
 
     def args = CommandLine::parseArgs(rawArgs);
-
-    Io1::note("Args:     \%q(args)\n");
-
-    def sourceFile = args::args[0];
-    def targetFile = args::options::output;
     def modeName = args::options::mode | "fake";
-
-    def sourcePath = Io1::pathFromFlat(sourceFile);
-    def targetPath = Io1::pathFromFlat(targetFile);
     def modeModule = moduleUse({name: [modeName]});
+    def sources = args::args;
 
-    Io1::note("\
-        Source:   \%q(sourcePath)
-        Target:   \%q(targetPath)
-        Compiler: \%q(modeName)\n");
+    if (Collection::sizeOf(sources) == 0) {
+        Io1::note("No source files specified!");
+        return 1
+    };
 
-    modeModule::compile(sourcePath, targetPath);
+    Io1::note("Mode: \%q(modeName)\n");
+
+    for (s in sources) {
+        doOne(modeModule, args, s)
+    };
 };
 
 <> {main}
