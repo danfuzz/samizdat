@@ -135,5 +135,6 @@ fi
 cd "${INTERMED}"
 OBJECTS=($(find . -name '*.o'))
 "${LINK_BIN[@]}" -o "${binName}" "${OBJECTS[@]}" || exit 1
-cp "${binName}" "${FINAL_LIB}"
+cp "${binName}" "${FINAL_LIB}" || exit 1
+rm -f "${FINAL_BIN}/${binName}" || exit 1
 ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}"
