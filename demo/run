@@ -141,7 +141,7 @@ fi
 
 # Set up how to run the executable.
 
-PATH="${PATH}:${baseDir}/out/samizdat-0"
+PATH="${PATH}:${baseDir}/out/final/samizdat-0/bin"
 cmd=("samizdat")
 
 if [[ ${timeRun} == 'yes' ]]; then
