@@ -138,3 +138,4 @@ OBJECTS=($(find . -name '*.o'))
 cp "${binName}" "${FINAL_LIB}" || exit 1
 rm -f "${FINAL_BIN}/${binName}" || exit 1
 ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}"
+cp -r "${progDir}/include"/* "${FINAL_INCLUDE}"

@@ -128,7 +128,7 @@ CC=cc
 COMPILE_LIB=(
     "${CC[@]}"
         -dynamiclib -undefined dynamic_lookup
-        -I"${baseDir}/../../samizdat-0/include"
+        -I"${baseDir}/include/samizdat"
 )
 
 "${COMPILE_LIB[@]}" -o "${compiledFile}" "${outputFile}"
