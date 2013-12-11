@@ -44,10 +44,13 @@ unset newProg
 projectName="$(basename "${progDir}")"
 binName="samtoc"
 
-OUT="${OUT:-${baseDir}/out}/final/${projectName}"
-rm -rf "${OUT}" || exit 1
-mkdir -p "${OUT}/bin" || exit 1
-mkdir -p "${OUT}/lib/${binName}" || exit 1
+OUT="${OUT:-${baseDir}/out}"
+FINAL="${OUT}/final"
+FINAL_BIN="${FINAL}/bin"
+FINAL_LIB="${FINAL}/lib/${binName}"
+rm -rf "${FINAL_LIB}" || exit 1
+mkdir -p "${FINAL_BIN}" || exit 1
+mkdir -p "${FINAL_LIB}" || exit 1
 
-cp -r "${progDir}/${binName}" "${OUT}/bin"
-cp -r "${progDir}/"{main.sam,module.sam,modules} "${OUT}/lib/${binName}"
+cp "${progDir}/${binName}" "${FINAL_BIN}/${binName}" || exit 1
+cp -r "${progDir}/"{main.sam,module.sam,modules} "${FINAL_LIB}" || exit 1
