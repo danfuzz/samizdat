@@ -75,9 +75,15 @@ unset opt
 projectName="$(basename "${progDir}")"
 binName="samizdat"
 
-OUT="${OUT:-${baseDir}/out}/${projectName}"
-rm -rf "${OUT}" || exit 1
-mkdir -p "${OUT}" || exit 1
+OUT="${OUT:-${baseDir}/out}"
+INTERMED="${OUT}/intermed/${projectName}"
+FINAL="${OUT}/final/${projectName}"
+FINAL_BIN="${FINAL}/bin"
+FINAL_LIB="${FINAL}/bin/corelib"
+
+rm -rf "${INTERMED}" "${FINAL}" || exit 1
+mkdir -p "${INTERMED}" || exit 1
+mkdir -p "${FINAL}" || exit 1
 
 if [[ ${profile} == 'yes' ]]; then
     CC=(cc -pg)
@@ -97,9 +103,9 @@ C_SOURCES=($(find . -name '*.c'))
 LIB_SOURCE_BASE="${progDir}/../samizdat-0-lib"
 LIB_SOURCES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
-# Copies each library source file to the executable `out` directory.
+# Copies each library source file to the final lib directory.
 for file in "${LIB_SOURCES[@]}"; do
-    outFile="${OUT}/corelib/${file}"
+    outFile="${FINAL_LIB}/${file}"
     mkdir -p "$(dirname "${outFile}")"
     cp "${LIB_SOURCE_BASE}/${file}" "${outFile}"
 done
@@ -109,7 +115,7 @@ for file in "${C_SOURCES[@]}"; do
     [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]] || exit 1
     dir="${BASH_REMATCH[1]}"
     baseName="${BASH_REMATCH[2]}"
-    outDir="${OUT}/${dir}"
+    outDir="${INTERMED}/${dir}"
     infoName="${file}"
 
     outFile="${outDir}/${baseName}.o"
@@ -123,6 +129,7 @@ if (( errors != 0 )); then
     exit 1
 fi
 
-cd "${OUT}"
+cd "${INTERMED}"
 OBJECTS=($(find . -name '*.o'))
 "${LINK_BIN[@]}" -o "${binName}" "${OBJECTS[@]}" || exit 1
+cp "${binName}" "${FINAL_BIN}"
