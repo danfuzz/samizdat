@@ -42,9 +42,12 @@ unset newProg
 "${baseDir}/samizdat-0/build" --optimize
 
 projectName="$(basename "${progDir}")"
+binName="samtoc"
 
-OUT="${OUT:-${baseDir}/out}/${projectName}"
+OUT="${OUT:-${baseDir}/out}/final/${projectName}"
 rm -rf "${OUT}" || exit 1
-mkdir -p "${OUT}" || exit 1
+mkdir -p "${OUT}/bin" || exit 1
+mkdir -p "${OUT}/lib/${binName}" || exit 1
 
-cp -r ${progDir}/* "${OUT}"
+cp -r "${progDir}/${binName}" "${OUT}/bin"
+cp -r "${progDir}/"{main.sam,module.sam,modules} "${OUT}/lib/${binName}"
