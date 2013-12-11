@@ -77,13 +77,16 @@ binName="samizdat"
 
 OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
-FINAL="${OUT}/final/${projectName}"
+FINAL="${OUT}/final"
+FINAL_INCLUDE="${FINAL}/include/${binName}"
 FINAL_BIN="${FINAL}/bin"
-FINAL_LIB="${FINAL}/bin/corelib"
+FINAL_LIB="${FINAL}/lib/${binName}"
 
-rm -rf "${INTERMED}" "${FINAL}" || exit 1
+rm -rf "${INTERMED}" "${FINAL_LIB}" "${FINAL_INCLUDE}" || exit 1
 mkdir -p "${INTERMED}" || exit 1
-mkdir -p "${FINAL}" || exit 1
+mkdir -p "${FINAL_INCLUDE}" || exit 1
+mkdir -p "${FINAL_BIN}" || exit 1
+mkdir -p "${FINAL_LIB}" || exit 1
 
 if [[ ${profile} == 'yes' ]]; then
     CC=(cc -pg)
@@ -105,7 +108,7 @@ LIB_SOURCES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
 # Copies each library source file to the final lib directory.
 for file in "${LIB_SOURCES[@]}"; do
-    outFile="${FINAL_LIB}/${file}"
+    outFile="${FINAL_LIB}/corelib/${file}"
     mkdir -p "$(dirname "${outFile}")"
     cp "${LIB_SOURCE_BASE}/${file}" "${outFile}"
 done
@@ -132,4 +135,5 @@ fi
 cd "${INTERMED}"
 OBJECTS=($(find . -name '*.o'))
 "${LINK_BIN[@]}" -o "${binName}" "${OBJECTS[@]}" || exit 1
-cp "${binName}" "${FINAL_BIN}"
+cp "${binName}" "${FINAL_LIB}"
+ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}"
