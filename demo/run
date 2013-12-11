@@ -142,7 +142,7 @@ fi
 # Set up how to run the executable.
 
 PATH="${PATH}:${baseDir}/out/samizdat-0"
-cmd=("samizdat-0")
+cmd=("samizdat")
 
 if [[ ${timeRun} == 'yes' ]]; then
     cmd=(time -p "${cmd[@]}")

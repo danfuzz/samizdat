@@ -104,7 +104,7 @@ if [[ ${outputFile} != '' ]]; then
     moreArgs+=("--output=${outputFile}")
 fi
 
-"${baseDir}/samizdat-0/samizdat-0" "${progDir}" \
+"${baseDir}/samizdat-0/samizdat" "${progDir}" \
     "${moreArgs[@]}" -- "$@" \
 || exit 1
 
