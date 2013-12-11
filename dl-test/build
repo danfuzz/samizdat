@@ -40,15 +40,14 @@ unset newProg
 #
 
 projectName="$(basename "${progDir}")"
-binName="dl-test"
 
 OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
-FINAL="${OUT}/final/${projectName}"
+FINAL_LIB="${OUT}/final/lib/${projectName}"
 
-rm -rf "${INTERMED}" "${FINAL}" || exit 1
+rm -rf "${INTERMED}" "${FINAL_LIB}" || exit 1
 mkdir -p "${INTERMED}" || exit 1
-mkdir -p "${FINAL}" || exit 1
+mkdir -p "${FINAL_LIB}" || exit 1
 
 CC=cc
 COMPILE_C=(
@@ -86,8 +85,8 @@ cd "${INTERMED}"
 OBJECTS=($(find . -name '*.o'))
 "${LINK_LIB[@]}" -o "main.samb" "${OBJECTS[@]}" || exit 1
 
-mkdir -p "${FINAL}"/modules/app/Test
-cp "${progDir}/module.sam" "${FINAL}"
-cp "${progDir}/main.sam" "${FINAL}"
-cp "${progDir}/app-test/module.sam" "${FINAL}"/modules/app/Test
-cp main.samb "${FINAL}"/modules/app/Test
+mkdir -p "${FINAL_LIB}"/modules/app/Test
+cp "${progDir}/module.sam" "${FINAL_LIB}"
+cp "${progDir}/main.sam" "${FINAL_LIB}"
+cp "${progDir}/app-test/module.sam" "${FINAL_LIB}"/modules/app/Test
+cp main.samb "${FINAL_LIB}"/modules/app/Test

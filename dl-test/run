@@ -41,5 +41,5 @@ unset newProg
 "${baseDir}/samizdat-0/build" --optimize
 "${progDir}/build"
 
-"${baseDir}/out/final/samizdat-0/bin/samizdat" \
-    "${baseDir}/out/final/dl-test"
+"${baseDir}/out/final/bin/samizdat" \
+    "${baseDir}/out/final/lib/dl-test"
