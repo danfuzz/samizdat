@@ -141,14 +141,14 @@ fi
 
 # Set up how to run the executable.
 
-PATH="${PATH}:${baseDir}/out/final/samizdat-0/bin"
+PATH="${PATH}:${baseDir}/out/final/bin"
 cmd=("samizdat")
 
 if [[ ${timeRun} == 'yes' ]]; then
     cmd=(time -p "${cmd[@]}")
 elif [[ ${iprofiler} == 'yes' ]]; then
     # May also want to use the -allocations option.
-    cmd=("$(which samizdat-0)")
+    cmd=("$(which samizdat)")
     cmd=(iprofiler -T 20s -timeprofiler "${cmd[@]}")
 fi
 
