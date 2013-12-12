@@ -18,7 +18,7 @@ enum {
      * Maximum number of items that can be `collect`ed or `filter`ed out
      * of a generator.
      */
-    DAT_MAX_GENERATOR_ITEMS = 10000,
+    DAT_MAX_GENERATOR_ITEMS = 25000,
 
     /**
      * Number of entries in the map lookup cache. Probably best for this
