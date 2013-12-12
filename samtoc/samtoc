@@ -85,8 +85,12 @@ elif (( $# > 1 )); then
     fi
 else
     # Single source file.
-    if [[ ${outputFile} == '' && ${fullCompile} == 'yes' ]]; then
-        outputFile="$1.c"
+    if [[ ${outputFile} == '' ]]; then
+        if [[ ${fullCompile} == 'yes' ]]; then
+            outputFile="${1%.sam*}.samb"
+        else
+            outputFile="${1%.sam*}.c"
+        fi
     fi
 fi
 
@@ -100,11 +104,16 @@ fi
 # Main script
 #
 
+if [[ ${fullCompile} == 'yes' ]]; then
+    compiledFile="${outputFile}"
+    outputFile="${compiledFile}.c"
+fi
+
 if [[ ${outputFile} != '' ]]; then
     moreArgs+=("--output=${outputFile}")
 fi
 
-"${baseDir}/samizdat-0/samizdat-0" "${progDir}" \
+"${progDir}/samizdat" "${baseDir}/lib/${progName}" \
     "${moreArgs[@]}" -- "$@" \
 || exit 1
 
@@ -119,7 +128,7 @@ CC=cc
 COMPILE_LIB=(
     "${CC[@]}"
         -dynamiclib -undefined dynamic_lookup
-        -I"${baseDir}/../samizdat-0/include"
+        -I"${baseDir}/include/samizdat"
 )
 
-"${COMPILE_LIB[@]}" -o "${outputFile}" "${generatedFile}"
+"${COMPILE_LIB[@]}" -o "${compiledFile}" "${outputFile}"
