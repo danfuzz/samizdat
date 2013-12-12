@@ -73,7 +73,7 @@ unset opt
 #
 
 projectName="$(basename "${progDir}")"
-binName="samizdat"
+binName="samex-naif"
 
 OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
@@ -103,7 +103,7 @@ LINK_BIN=("${CC[@]}" -g)
 cd "${progDir}"
 
 C_SOURCES=($(find . -name '*.c'))
-LIB_SOURCE_BASE="${progDir}/../samizdat-0-lib"
+LIB_SOURCE_BASE="${progDir}/../samlib-naif"
 LIB_SOURCES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
 # Copies each library source file to the final lib directory.
@@ -137,5 +137,8 @@ OBJECTS=($(find . -name '*.o'))
 "${LINK_BIN[@]}" -o "${binName}" "${OBJECTS[@]}" || exit 1
 cp "${binName}" "${FINAL_LIB}" || exit 1
 rm -f "${FINAL_BIN}/${binName}" || exit 1
-ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}"
+ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}" || exit 1
 cp -r "${progDir}/include"/* "${FINAL_INCLUDE}"
+
+rm -f "${FINAL_BIN}/samex" || exit 1
+ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/samex" || exit 1

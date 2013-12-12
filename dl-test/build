@@ -51,7 +51,7 @@ mkdir -p "${FINAL_LIB}" || exit 1
 
 CC=cc
 COMPILE_C=(
-    "${CC[@]}" -g -c -I"${baseDir}/samizdat-0/include" -I"${progDir}/include"
+    "${CC[@]}" -g -c -I"${baseDir}/samex-naif/include" -I"${progDir}/include"
 )
 
 # Note: The GNU equivalent to `-dynamiclib` seems to be `-shared`, and

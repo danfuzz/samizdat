@@ -25,22 +25,32 @@ exist (if incompletely), followed by pieces that are merely planned.
 
 ### Existing pieces
 
-* `samizdat-0` &mdash; *Samizdat Layer 0* interpreter.
+* `samex-naif` &mdash; Simple interpreter, written in C.
 
-  This is an interpreter for the *Samizdat Layer 0* language. See
-  [the spec](doc/samizdat-0/README.md) and
+  This is an interpreter for *Layer 0* of the language, which can be paired
+  with a companion library to interpret *Layer 1* and *Layer 2* as well.
+
+  See [the spec](doc/language-guide) and
   [the implementation's README](samizdat-0/README.md) for more details.
 
-* `samizdat-0-lib` &mdash; *Samizdat Layer 0* in-language core library.
+* `samlib-naif` &mdash; In-language core library for *Layer 2*.
 
   This is an implementation of the non-primitive portion of the
-  *Samizdat Layer 0* core library. See [the spec](doc/samizdat-0/README.md)
-  and [the implementation's README](samizdat-0-lib/README.md) for more
-  details.
+  core library, sufficient for running code written in
+  *Layers 0&ndash;2*.
 
-  This also includes the implementation of the parsers for *Samizdat Layer 1*
-  and *Samizdat Layer 2*, as well as library functionality introduced at
-  those layers.
+  See [the spec](doc/language-guide) and
+  [the implementation's README](samizdat-0/README.md) for more details.
+
+### Pieces in progress
+
+* `samtoc` &mdash; Simple compiler to C, written in *Layer 2*.
+
+  This is a compiler that accepts *Layer 2*, producing C source as output,
+  which is suitable for loading as binary library files (modules or
+  standalone binaries) by `samex-naif`.
+
+  It has a couple different compilation modes, of varying sophistication.
 
 ### Planned pieces
 
@@ -50,16 +60,17 @@ exist (if incompletely), followed by pieces that are merely planned.
   For `M` and `N` where `N == M + 1`, `samizdat-N` is written in the
   language implemented by *Samizdat Layer M*. `samizdat-N` accepts the
   language *Samizdat layer N*, translating it to the same underlying
-  executable parse tree form that `samizdat-0` executes.
+  executable parse tree form that is specified by *Layer 0* and
+  executed by `samizdat-naif`.
 
-* `sam` &mdash; *Samizdat* interpreter.
+* `samex-deft` &mdash; *Samizdat* interpreter.
 
   Tool that accepts input written in *Samizdat* (per se), and runs
   it.
 
   Written in *Samizdat Layer N* (for the ultimate value of `N`).
 
-* `samc` &mdash; Tool to compile Samizdat source code.
+* `samtoc-solo` &mdash; Tool to compile Samizdat source code.
 
   Compiler that accepts bona fide Samizdat syntax and outputs C
   code to be linked and run with an associated library (details
@@ -73,7 +84,7 @@ exist (if incompletely), followed by pieces that are merely planned.
   * Run using compiled `sam` and given `samc`'s source as input, in
     order to produce a compiled version of `samc`.
 
-* `samizdat-0.sam` &mdash; *Samizdat Layer 0* interpreter.
+* `samizdat-naif.sam` &mdash; *Samizdat Layer 0* interpreter.
 
   This is a maximally-reifying implementation of *Samizdat Layer 0*,
   meant to be both an "executable specification" for *Samizdat Layer
@@ -82,7 +93,7 @@ exist (if incompletely), followed by pieces that are merely planned.
   relied upon for further iterative development of the other layers of
   the language implementation.
 
-  Written in Samizdat. Run and compiled-and-run with `sam` and `samc`
+  Written in Samizdat. Run and compiled-and-run with `samex` and `samtoc-solo`
   (respectively), for purposes of verification, validation, and
   further language iteration.
 

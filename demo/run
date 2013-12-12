@@ -136,19 +136,19 @@ if [[ ${build} == 'yes' ]]; then
     fi
 
     echo "Building the executable..."
-    "${baseDir}/samizdat-0/build" "${buildOpts[@]}" > /dev/null || exit 1
+    "${baseDir}/samex-naif/build" "${buildOpts[@]}" > /dev/null || exit 1
 fi
 
 # Set up how to run the executable.
 
 PATH="${PATH}:${baseDir}/out/final/bin"
-cmd=("samizdat")
+cmd=("samex")
 
 if [[ ${timeRun} == 'yes' ]]; then
     cmd=(time -p "${cmd[@]}")
 elif [[ ${iprofiler} == 'yes' ]]; then
     # May also want to use the -allocations option.
-    cmd=("$(which samizdat)")
+    cmd=("$(which samex)")
     cmd=(iprofiler -T 20s -timeprofiler "${cmd[@]}")
 fi
 

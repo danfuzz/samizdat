@@ -113,7 +113,7 @@ if [[ ${outputFile} != '' ]]; then
     moreArgs+=("--output=${outputFile}")
 fi
 
-"${progDir}/samizdat" "${baseDir}/lib/${progName}" \
+"${progDir}/samex" "${baseDir}/lib/${progName}" \
     "${moreArgs[@]}" -- "$@" \
 || exit 1
 
@@ -128,7 +128,7 @@ CC=cc
 COMPILE_LIB=(
     "${CC[@]}"
         -dynamiclib -undefined dynamic_lookup
-        -I"${baseDir}/include/samizdat"
+        -I"${baseDir}/include/samex-naif"
 )
 
 "${COMPILE_LIB[@]}" -o "${compiledFile}" "${outputFile}"
