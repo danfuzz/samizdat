@@ -38,8 +38,8 @@ unset newProg
 # Main script
 #
 
-"${baseDir}/samizdat-0/build" --optimize
+"${baseDir}/samex-naif/build" --optimize
 "${progDir}/build"
 
-"${baseDir}/out/final/bin/samizdat" \
+"${baseDir}/out/final/bin/samex" \
     "${baseDir}/out/final/lib/dl-test"
