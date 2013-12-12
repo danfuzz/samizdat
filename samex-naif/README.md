@@ -76,9 +76,8 @@ later-named modules depending only on earlier-named ones):
 * `lib` &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
   that need to be (or are most conveniently) implemented in C. The
-  latter are what can be implemented in Samizdat Layer 0. Depends on
-  everything above it. It also bundles in code from the parallel directory
-  `samizdat-0-lib`.
+  latter are what can be implemented in *Samizdat Layer 0*. Depends on
+  everything above it.
 
 * `main` &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
