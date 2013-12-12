@@ -59,12 +59,15 @@ static zvalue collectOrFilter(zvalue generator, zvalue function) {
             die("Unexpected lack of result.");
         }
 
-        if (at == DAT_MAX_GENERATOR_ITEMS) {
-            die("Generator produced too many items.");
+        if (at < DAT_MAX_GENERATOR_ITEMS) {
+            arr[at] = one;
         }
 
-        arr[at] = one;
         at++;
+    }
+
+    if (at > DAT_MAX_GENERATOR_ITEMS) {
+        die("Generator produced too many items: %lld", at);
     }
 
     zvalue result = listFromArray(at, arr);
