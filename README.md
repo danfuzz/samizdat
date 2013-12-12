@@ -47,7 +47,8 @@ exist (if incompletely), followed by pieces that are merely planned.
 * `samtoc` &mdash; Simple compiler to C, written in *Layer 2*.
 
   This is a compiler that accepts *Layer 2*, producing C source as output,
-  which is suitable for loading as library modules by `samex-naif`.
+  which is suitable for loading as binary library files (modules or
+  standalone binaries) by `samex-naif`.
 
   It has a couple different compilation modes, of varying sophistication.
 
