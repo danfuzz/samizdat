@@ -69,11 +69,11 @@ cd "${baseDir}"
 
 docs="$(getCount '*.md')"
 
-cHeader="$(getCount '*.h' samizdat-0)"
-cCode="$(getCount '*.c' samizdat-0)"
+cHeader="$(getCount '*.h' samex-naif)"
+cCode="$(getCount '*.c' samex-naif)"
 (( cTotal = cHeader + cCode ))
 
-sam0Code="$(getCount '*.sam*' samizdat-0-lib)"
+sam0Code="$(getCount '*.sam*' samlib-naif)"
 demoCode="$(getCount '*.sam*' demo)"
 samTotal="$(getCount '*.sam*')"
 (( otherSam = samTotal - sam0Code - demoCode ))
