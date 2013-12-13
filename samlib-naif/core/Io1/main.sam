@@ -45,7 +45,7 @@ def implIgnoredComponent = {/
     component = parRegularComponent
 
     (
-        { <> eq(component, ".") }
+        { <> eq(component, ["."]) }
     |
         parIgnoredComponent?
         dotdot = parPathComponent
