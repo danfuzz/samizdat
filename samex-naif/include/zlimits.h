@@ -51,7 +51,7 @@ enum {
     PB_MAX_CACHED_CHAR = 127,
 
     /** Maximum number of immortal values allowed. */
-    PB_MAX_IMMORTALS = 2000,
+    PB_MAX_IMMORTALS = 4000,
 
     /** Maximum number of references on the stack. */
     PB_MAX_STACK = 50000,
