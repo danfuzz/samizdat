@@ -42,7 +42,7 @@ def parRegularComponent = {/
 # `"/x/y/../.."` or `"/."`.
 def parIgnoredComponent = ParseForwarder::make();
 def implIgnoredComponent = {/
-    component = parPathComponent
+    component = parRegularComponent
 
     (
         { <> eq(component, ".") }
