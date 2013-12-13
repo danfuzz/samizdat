@@ -29,7 +29,9 @@
  * Common implementation for `Value.collect` and `Value.filter`.
  */
 static zvalue collectOrFilter(zvalue generator, zvalue function) {
-    zvalue arr[DAT_MAX_GENERATOR_ITEMS];
+    zvalue stackArr[DAT_SOFT_MAX_GENERATOR_ITEMS];
+    zvalue *arr = stackArr;
+    zint maxSize = DAT_SOFT_MAX_GENERATOR_ITEMS;
     zint at = 0;
 
     zstackPointer save = pbFrameStart();
@@ -59,19 +61,27 @@ static zvalue collectOrFilter(zvalue generator, zvalue function) {
             die("Unexpected lack of result.");
         }
 
-        if (at < DAT_MAX_GENERATOR_ITEMS) {
-            arr[at] = one;
+        if (at == maxSize) {
+            if (arr == stackArr) {
+                maxSize = DAT_HARD_MAX_GENERATOR_ITEMS;
+                arr = utilAlloc(maxSize * sizeof(zvalue));
+                memcpy(arr, stackArr, at * sizeof(zvalue));
+            } else {
+                die("Generator produced way too many items.");
+            }
         }
 
+        arr[at] = one;
         at++;
-    }
-
-    if (at > DAT_MAX_GENERATOR_ITEMS) {
-        die("Generator produced too many items: %lld", at);
     }
 
     zvalue result = listFromArray(at, arr);
     pbFrameReturn(save, result);
+
+    if (arr != stackArr) {
+        utilFree(arr);
+    }
+
     return result;
 }
 
