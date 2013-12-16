@@ -63,6 +63,11 @@ LIB_SOURCES=(
     ))
 
 "${FINAL_BIN}/samtoc" --mode=tree "${LIB_SOURCES[@]}"
-rm -f "${LIB_SOURCES[@]}"
 
-# TODO: Compile C code.
+for f in "${LIB_SOURCES[@]}"; do
+    inFile="${f%.sam*}.c"
+    outFile="${f%.sam*}.samb"
+    "${progDir}/compile-samex-addon" --output="${outFile}" "${inFile}" \
+        || exit 1
+    rm -f "${inFile}"
+done
