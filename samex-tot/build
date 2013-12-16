@@ -48,6 +48,7 @@ FINAL="${OUT}/final"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
+"${baseDir}/samex/build" || exit 1
 "${baseDir}/samtoc/build" || exit 1
 "${baseDir}/samex-naif/build" --optimize --bin-name="${binName}" || exit 1
 
@@ -67,7 +68,7 @@ LIB_SOURCES=(
 for f in "${LIB_SOURCES[@]}"; do
     inFile="${f%.sam*}.c"
     outFile="${f%.sam*}.samb"
-    "${progDir}/compile-samex-addon" --output="${outFile}" "${inFile}" \
+    "${FINAL_BIN}/compile-samex-addon" --output="${outFile}" "${inFile}" \
         || exit 1
     rm -f "${inFile}"
 done
