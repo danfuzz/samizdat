@@ -117,18 +117,6 @@ fi
     "${moreArgs[@]}" -- "$@" \
 || exit 1
 
-if [[ ${fullCompile} == no ]]; then
-    exit
+if [[ ${fullCompile} == 'yes' ]]; then
+    "${progDir}/compile-samex-addon" --output="${compiledFile}" "${outputFile}"
 fi
-
-CC=cc
-
-# Note: The GNU equivalent to `-dynamiclib` seems to be `-shared`, and
-# the equivalent to `-undefined dynamic_lookup` seems to be `-Ur`.
-COMPILE_LIB=(
-    "${CC[@]}"
-        -dynamiclib -undefined dynamic_lookup
-        -I"${baseDir}/include/samex-naif"
-)
-
-"${COMPILE_LIB[@]}" -o "${compiledFile}" "${outputFile}"
