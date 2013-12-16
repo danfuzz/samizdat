@@ -6,7 +6,7 @@
     name: ["core", "Module"],
     version: "0.0.1",
 
-    globalExports: ["moduleUse"],
+    globalExports: ["moduleGet", "moduleUse"],
 
     language: "Lang1"
 }
