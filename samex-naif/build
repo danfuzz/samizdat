@@ -143,6 +143,3 @@ cp "${binName}" "${FINAL_LIB}" || exit 1
 rm -f "${FINAL_BIN}/${binName}" || exit 1
 ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}" || exit 1
 cp -r "${progDir}/include"/* "${FINAL_INCLUDE}"
-
-rm -f "${FINAL_BIN}/samex" || exit 1
-ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/samex" || exit 1
