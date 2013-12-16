@@ -13,6 +13,22 @@ def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 # Private definitions: Call parser
 #
 
+fn flatten(parsed) {
+    if (def s = isString(parsed) | parsed::flat) {
+        return s
+    };
+
+    def args = parsed::args;
+
+    <> cat(
+        flatten(parsed::name),
+        "(",
+        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
+            <> cat(flatten(a), (i == 1) & "" | ", ")
+        )*,
+        ")")
+};
+
 def parArgs = ParseForwarder::make();
 
 def parIdent = {/
@@ -56,7 +72,10 @@ def parArg = {/
         @"("
         args = parArgs
         @")"
-        { <> {name: word, args} }
+        {
+            def parsed = {name: word, args};
+            <> {parsed*, flat: flatten(parsed)}
+        }
     |
         { <> word }
     )
@@ -80,24 +99,33 @@ fn parseCall(source) {
 # Private definitions
 #
 
-# Makes an indent string for the given level.
-fn indentString(level) {
-    <> cat([. in 1..(2 * level) <> " "]*)
+# Makes an indentation prefix string for the given level.
+fn indentPrefix(level) {
+    <> cat([. in 1..level <> "  "]*)
 };
 
-# Flattens the given call-or-string to a string.
-fn flatten(item) {
-    if (isString(item)) {
-        return item
+# Indents the given tree by the given amount, yielding a string.
+fn indentTree(tree, level, maxColumns) {
+    def prefix = indentPrefix(level);
+    def prefixSize = Collection::sizeOf(prefix);
+
+    if (isString(tree)) {
+        return cat(prefix, tree);
     };
 
-    def args = item::args;
+    def flat = flatten(tree);
+
+    if ((Collection::sizeOf(flat) + prefixSize) < maxColumns) {
+        return cat(prefix, flat)
+    };
+
+    def args = tree::args;
 
     <> cat(
-        item::name,
-        "(",
+        prefix, flatten(tree::name), "(\n",
         ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
-            <> cat(flatten(a), (i == 1) & "" | ", ")
+            def s = cat(indentTree(a, level + 1, maxColumns));
+            <> cat(s, (i == 1) & "" | ",\n")
         )*,
         ")")
 };
@@ -110,28 +138,8 @@ fn flatten(item) {
 # Indents the given source string by the given amount, aiming to keep lines
 # no longer than the given number of columns.
 fn indent(source, level, maxColumns) {
-    def prefix = indentString(level);
-    def prefixSize = Collection::sizeOf(prefix);
-
-    if ((Collection::sizeOf(source) + prefixSize) < maxColumns) {
-        return cat(prefix, source)
-    };
-
-    def parsed = parseCall(source);
-
-    if (isString(parsed)) {
-        return cat(prefix, source);
-    };
-
-    def args = parsed::args;
-
-    <> cat(
-        prefix, parsed::name, "(\n",
-        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
-            def s = cat(indent(flatten(a), level + 1, maxColumns));
-            <> cat(s, (i == 1) & "" | ",\n")
-        )*,
-        ")")
+    def tree = parseCall(source);
+    <> indentTree(tree, level, maxColumns)
 };
 
 <> {
