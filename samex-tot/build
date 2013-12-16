@@ -68,7 +68,8 @@ LIB_SOURCES=(
 for f in "${LIB_SOURCES[@]}"; do
     inFile="${f%.sam*}.c"
     outFile="${f%.sam*}.samb"
+    echo "Compiling: ${outFile}"
     "${FINAL_BIN}/compile-samex-addon" --output="${outFile}" "${inFile}" \
         || exit 1
-    rm -f "${inFile}"
+    rm -f "${inFile}" "${f}"
 done
