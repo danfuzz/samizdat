@@ -44,6 +44,7 @@ binNames=("samex" "compile-samex-addon" "find-samex")
 
 OUT="${OUT:-${baseDir}/out}"
 FINAL_BIN="${OUT}/final/bin"
+mkdir -p "${FINAL_BIN}"
 
 for name in "${binNames[@]}"; do
     rm -f "${FINAL_BIN}/${name}"
