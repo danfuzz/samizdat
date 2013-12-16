@@ -39,20 +39,9 @@ unset newProg
 # Main script
 #
 
-names=(samex-tot samex-naif)
-found=''
-
-for n in "${names[@]}"; do
-    candidate="${progDir}/${n}"
-    if [[ -x "${candidate}" ]]; then
-        found="${candidate}"
-        break
-    fi
-done
-
-if [[ ${found} == '' ]]; then
-    echo 'No suitable binary found.' 1>&2
+name="$("${progDir}/find-samex" --bin)"
+if [[ $? != 0 ]]; then
     exit 1
 fi
 
-exec "${candidate}" "$@"
+exec "${name}" "$@"

@@ -40,10 +40,12 @@ unset newProg
 #
 
 projectName="$(basename "${progDir}")"
-binName="samex"
+binNames=("samex" "compile-samex-addon" "find-samex")
 
 OUT="${OUT:-${baseDir}/out}"
-FINAL_BIN="${FINAL}/bin"
+FINAL_BIN="${OUT}/final/bin"
 
-rm -f "${FINAL_BIN}/${binName}"
-cp "${progDir}/${binName}" "${FINAL_BIN}/${binName}"
+for name in "${binNames[@]}"; do
+    rm -f "${FINAL_BIN}/${name}"
+    cp "${progDir}/${name}" "${FINAL_BIN}/${name}"
+done
