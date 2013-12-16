@@ -63,8 +63,13 @@ done
 unset opt
 
 if [[ ${outputFile} == '' ]]; then
-    echo 'Missing --output option.' 1>&2
-    exit 1
+    if [[ "$#" == 1 ]]; then
+        # Use the sole file name as the basis for the output name.
+        outputFile="${1%.c}.samb"
+    else
+        echo 'Missing --output option.' 1>&2
+        exit 1
+    fi
 fi
 
 
