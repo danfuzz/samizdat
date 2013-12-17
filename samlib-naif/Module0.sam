@@ -67,19 +67,19 @@ fn makeModuleContext(baseCtx, directory) {
         Io0_note(cat("        ", name));
         def ctx = Box_fetch(ctxBox);
 
+        def binName = submoduleFileName(name, "samb");
+        ifIs { <> Io0_flatFileExists(binName) }
+            {
+                def func = Lang0_evalBinary(ctx, binName);
+                return func()
+            };
+
         def regularName = submoduleFileName(name, "sam");
         ifIs { <> Io0_flatFileExists(regularName) }
             {
                 def text = Io0_flatReadFileUtf8(regularName);
                 def tree = ctx::submoduleParse(text);
                 def func = ctx::submoduleEval(ctx, tree);
-                return func()
-            };
-
-        def binName = submoduleFileName(name, "samb");
-        ifIs { <> Io0_flatFileExists(binName) }
-            {
-                def func = Lang0_evalBinary(ctx, binName);
                 return func()
             };
 

@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Argument parsing
+#
+
+# What to output.
+output='name'
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName} [--name] [--bin] [--include]"
+        exit
+    elif [[ ${opt} == '--name' ]]; then
+        output='name'
+    elif [[ ${opt} == '--bin' ]]; then
+        output='bin'
+    elif [[ ${opt} == '--include' ]]; then
+        output='include'
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+
+#
+# Main script
+#
+
+names=(samex-tot samex-naif)
+found=''
+
+for n in "${names[@]}"; do
+    candidate="${progDir}/${n}"
+    if [[ -x "${candidate}" ]]; then
+        found="${n}"
+        break
+    fi
+done
+
+if [[ ${found} == '' ]]; then
+    echo 'No suitable binary found.' 1>&2
+    exit 1
+fi
+
+case "${output}" in
+    (name)
+        echo "${found}"
+        ;;
+    (bin)
+        echo "${progDir}/${found}"
+        ;;
+    (include)
+        echo "${baseDir}/include/${found}"
+        ;;
+    (*)
+        echo "Unknown output option: ${output}" 1>&2
+        exit 1
+        ;;
+esac

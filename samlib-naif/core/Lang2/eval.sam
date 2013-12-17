@@ -6,17 +6,10 @@
 # Samizdat Layer 2 Evaluation
 #
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-
-
-#
-# Private Definitions
-#
-
 # TODO
-fn convertExpression(node) {
-    Io1::die("TODO");
-};
+# def convertToLang0 = submoduleUse("convert")::convertToLang0;
+
+def Lang1 = moduleUse({name: ["core", "Lang1"]});
 
 
 #
@@ -25,8 +18,9 @@ fn convertExpression(node) {
 
 # Documented in Samizdat Layer 1 spec.
 fn eval(context, expressionNode) {
-    <> submoduleEval(context, expressionNode)
-    # def convertedNode = convertExpression(expressionNode);
+    <> Lang1::eval(context, expressionNode)
+    # TODO
+    # def convertedNode = convertToLang0(expressionNode);
     # <> Lang0::eval(context, convertedNode)
 };
 

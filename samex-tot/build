@@ -1,0 +1,80 @@
+#!/bin/bash
+#
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Main script
+#
+
+projectName="$(basename "${progDir}")"
+binName="samex-tot"
+
+OUT="${OUT:-${baseDir}/out}"
+INTERMED="${OUT}/intermed/${projectName}"
+FINAL="${OUT}/final"
+FINAL_BIN="${FINAL}/bin"
+FINAL_LIB="${FINAL}/lib/${binName}"
+
+"${baseDir}/samex/build" || exit 1
+"${baseDir}/samtoc/build" || exit 1
+"${baseDir}/samex-naif/build" --optimize --bin-name="${binName}" || exit 1
+
+cd "${FINAL_LIB}/corelib"
+
+LIB_SOURCES=(
+    $(find . \
+        -mindepth 2 \
+        '(' -name 'EntityMap' -prune ')' -o \
+        -name '*.sam' \
+        '!' -name 'module.sam' \
+        -print
+    ))
+
+"${FINAL_BIN}/samtoc" --mode=tree "${LIB_SOURCES[@]}"
+
+for f in "${LIB_SOURCES[@]}"; do
+    inFile="${f%.sam*}.c"
+    outFile="${f%.sam*}.samb"
+    if [[ -r ${inFile} ]]; then
+        echo "Compiling: ${outFile}"
+        "${FINAL_BIN}/compile-samex-addon" --output="${outFile}" "${inFile}" \
+            || exit 1
+        rm -f "${inFile}" "${f}"
+    else
+        # Probably because `samtoc` crashed.
+        echo "Skipping: ${outFile}"
+    fi
+done

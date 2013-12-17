@@ -45,14 +45,19 @@ profile='no'
 # Whether to compile with optimiaztions on.
 optimize='no'
 
+# Name of binary to produce.
+binName='samex-naif'
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--optimize] [--profile]"
+        echo "${progName} [--optimize] [--profile] [--bin-name=<name>]"
         exit
+    elif [[ ${opt} =~ ^--bin-name=(.*) ]]; then
+        binName="${BASH_REMATCH[1]}"
     elif [[ ${opt} == '--optimize' ]]; then
         optimize='yes'
     elif [[ ${opt} == '--profile' ]]; then
@@ -73,7 +78,6 @@ unset opt
 #
 
 projectName="$(basename "${progDir}")"
-binName="samex-naif"
 
 OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
@@ -139,6 +143,3 @@ cp "${binName}" "${FINAL_LIB}" || exit 1
 rm -f "${FINAL_BIN}/${binName}" || exit 1
 ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}" || exit 1
 cp -r "${progDir}/include"/* "${FINAL_INCLUDE}"
-
-rm -f "${FINAL_BIN}/samex" || exit 1
-ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/samex" || exit 1
