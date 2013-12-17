@@ -71,6 +71,12 @@ enum {
     /** Minumum (lowest value) small int constant to keep. */
     PB_SMALL_INT_MIN = -300,
 
+    /**
+     * Maximum size in characters of a string that can be handled
+     * on the stack (without resorting to heavyweight memory operations).
+     */
+    PB_SOFT_MAX_STRING = 10000,
+
     /** Maximum number of active stack frames. */
     UTIL_MAX_CALL_STACK_DEPTH = 4000,
 

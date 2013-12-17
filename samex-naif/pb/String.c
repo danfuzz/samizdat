@@ -22,6 +22,12 @@
 static zvalue CACHED_CHARS[PB_MAX_CACHED_CHAR + 1];
 
 /**
+ * Shared `zchar` array, used to avoid memory allocation in common cases.
+ * **Note:** It is only safe to use this via `allocArray`.
+ */
+static zchar SHARED_ARRAY[PB_SOFT_MAX_STRING];
+
+/**
  * String structure.
  */
 typedef struct {
@@ -68,6 +74,29 @@ static void assertStringSize1(zvalue value) {
     assertString(value);
     if (getInfo(value)->size != 1) {
         die("Not a size 1 string.");
+    }
+}
+
+/**
+ * Allocates a `zchar[]` of the given size.
+ *
+ * **Note:** It is only safe to use this if external code *cannot* be called
+ * while the allocation is active.
+ */
+static zchar *allocArray(zint size) {
+    if (size < PB_SOFT_MAX_STRING) {
+        return SHARED_ARRAY;
+    } else {
+        return utilAlloc(size * sizeof(zchar));
+    }
+}
+
+/**
+ * Frees a `zchar[]` previously allocated by `allocArray`.
+ */
+static void freeArray(zchar *array) {
+    if (array != SHARED_ARRAY) {
+        utilFree(array);
     }
 }
 
@@ -212,14 +241,16 @@ METH_IMPL(String, cat) {
         size += getInfo(args[i])->size;
     }
 
-    zchar chars[size];
+    zchar *chars = allocArray(size);
 
     for (zint i = 0, at = 0; i < argCount; i++) {
         zcharsFromString(&chars[at], args[i]);
         at += getInfo(args[i])->size;
     }
 
-    return stringFromZchars(size, chars);
+    zvalue result = stringFromZchars(size, chars);
+    freeArray(chars);
+    return result;
 }
 
 /* Documented in header. */
@@ -236,10 +267,12 @@ METH_IMPL(String, del) {
         return string;
     }
 
-    zchar chars[size - 1];
+    zchar *chars = allocArray(size - 1);
     utilCpy(zchar, chars, elems, index);
     utilCpy(zchar, &chars[index], &elems[index + 1], (size - index - 1));
-    return stringFromZchars(size - 1, chars);
+    zvalue result = stringFromZchars(size - 1, chars);
+    freeArray(chars);
+    return result;
 }
 
 /* Documented in header. */
@@ -283,10 +316,12 @@ METH_IMPL(String, put) {
         return GFN_CALL(cat, string, value);
     }
 
-    zchar chars[size];
+    zchar *chars = allocArray(size);
     zcharsFromString(chars, string);
     chars[index] = zcharFromString(value);
-    return stringFromZchars(size, chars);
+    zvalue result = stringFromZchars(size, chars);
+    freeArray(chars);
+    return result;
 }
 
 /* Documented in header. */
@@ -296,13 +331,15 @@ METH_IMPL(String, reverse) {
     StringInfo *info = getInfo(string);
     zint size = info->size;
     zchar *elems = info->elems;
-    zchar arr[size];
+    zchar *arr = allocArray(size);
 
     for (zint i = 0, j = size - 1; i < size; i++, j--) {
         arr[i] = elems[j];
     }
 
-    return stringFromZchars(size, arr);
+    zvalue result = stringFromZchars(size, arr);
+    freeArray(arr);
+    return result;
 }
 
 /* Documented in header. */
