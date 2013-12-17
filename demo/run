@@ -136,7 +136,9 @@ if [[ ${build} == 'yes' ]]; then
     fi
 
     echo "Building the executable..."
+    rm -rf "${baseDir}/out"
     "${baseDir}/samex-naif/build" "${buildOpts[@]}" > /dev/null || exit 1
+    "${baseDir}/samex/build" "${buildOpts[@]}" > /dev/null || exit 1
 fi
 
 # Set up how to run the executable.
