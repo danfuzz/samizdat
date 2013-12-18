@@ -582,11 +582,23 @@ def parPostfixOperator = {/
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def implUnaryExpression = {/
-    prefixes = parPrefixOperator2*
-    base = parTerm
+    # The rule is written this way in order to ensure that the `-`
+    # in front of a numeric constant gets parsed as a term and not as
+    # a unary expression.
+    basePrefixes = (
+        base = parTerm
+        { <> {base, prefixes: []} }
+    |
+        prefixes = parPrefixOperator2*
+        base = parTerm
+        { <> {base, prefixes} }
+    )
+
     postfixes = parPostfixOperator*
 
     {
+        def base = basePrefixes::base;
+        def prefixes = basePrefixes::prefixes;
         def withPosts = Generator::doReduce1(postfixes, base)
             { op, result <> op(result) };
         <> Generator::doReduce1(Sequence::reverse(prefixes), withPosts)
@@ -1183,10 +1195,6 @@ Box::store(parNonlocalExit2, implNonlocalExit2);
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
 def implPrefixOperator2 = {/
-    # Don't match if a term would. This prevents the rule from matching
-    # the `-` of a negative numeric constant.
-    !parTerm
-
     operator = [@"-" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, typeOf(operator));
