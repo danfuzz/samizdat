@@ -1,15 +1,15 @@
 Samizdat Language Guide
 =======================
 
-Appendix: *Samizdat 0* Implementation Restrictions
---------------------------------------------------
+Appendix: Lower Layer Implementation Restrictions
+-------------------------------------------------
 
-*Samizdat 0* is the system in which the full Samizdat implementation is
-written. It implements several "layers" of language, with *Samizdat Layer 0*
-being the most basic language, and each subsequent layer being (practically
-speaking) a strict superset of the layer that it is build directly upon.
+The langauge layers 0 through 2 are used to build and bootstrap the rest
+of the system. *Samizdat Layer 0* is the most basic language, and each
+subsequent layer is (practically speaking) a strict superset of the layer
+that it is built directly upon.
 
-This document describes how the various layers of *Samizdat 0* differ
+This document describes how these various lower layers of differ
 from the full language.
 
 ### The Layers
