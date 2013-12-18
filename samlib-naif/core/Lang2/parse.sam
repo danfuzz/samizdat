@@ -1183,6 +1183,10 @@ Box::store(parNonlocalExit2, implNonlocalExit2);
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
 def implPrefixOperator2 = {/
+    # Don't match if a term would. This prevents the rule from matching
+    # the `-` of a negative numeric constant.
+    !parTerm
+
     operator = [@"-" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, typeOf(operator));
