@@ -565,11 +565,29 @@ def parPostfixOperator = {/
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def parUnaryExpression = {/
-    # Note: Layer 2 adds prefix operator parsing here.
-    base = parTerm
+    # The rule is written this way in order to ensure that the `-`
+    # in front of a numeric constant gets parsed as a term and not as
+    # a unary expression.
+    basePrefixes = (
+        base = parTerm
+        { <> {base, prefixes: []} }
+    |
+        # Note: Layer 2 adds prefix operator parsing here.
+        prefixes = !()
+        base = parTerm
+        { <> {base, prefixes} }
+    )
+
     postfixes = parPostfixOperator*
 
-    { <> Generator::doReduce1(postfixes, base) { op, result <> op(result) } }
+    {
+        def base = basePrefixes::base;
+        def prefixes = basePrefixes::prefixes;
+        def withPosts = Generator::doReduce1(postfixes, base)
+            { op, result <> op(result) };
+        <> Generator::doReduce1(Sequence::reverse(prefixes), withPosts)
+            { op, result <> op(result) }
+    }
 /};
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
