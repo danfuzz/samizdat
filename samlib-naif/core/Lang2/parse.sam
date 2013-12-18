@@ -374,8 +374,8 @@ def parFnExpression = {/
 /};
 
 # Parses an integer literal. Note: This includes parsing a `-` prefix,
-# so that simple negative numbers are considered terms and hence eligible
-# to be used as map keys.
+# so that simple negative constants aren't turned into complicated function
+# calls.
 def parInt = {/
     @"-"
     i = @int
