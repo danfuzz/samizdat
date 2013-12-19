@@ -1,8 +1,8 @@
 Samizdat Language Guide
 =======================
 
-Appendix: *Samizdat Layer 1* Token Grammar
-------------------------------------------
+Appendix: Layer 1 Token Grammar
+-------------------------------
 
 The following is a nearly complete token grammar for *Samizdat Layer 1*,
 written in *Samizdat Layer 1*, with commentary calling out the parts

@@ -254,7 +254,7 @@ context.
 `switch` expressions do *not* define a continue context, and do not
 allow multiple test expressions.
 
-**Note:** Unlike other languages in the C tradition, *Samizdat* does
+**Note:** Unlike other languages in the C tradition, Samizdat does
 not allow consequent blocks to fall through. So, a block-final
 `break` isn't ever necessary. If there is partial code in common
 between cases, the thing to do is factor it out into a separate

@@ -1,11 +1,11 @@
 Samizdat Language Guide
 =======================
 
-Appendix: *Samizdat Layer 1* Tree Grammar
------------------------------------------
+Appendix: Layer 1 Tree Grammar
+------------------------------
 
-The following is a nearly complete tree grammar for *Samizdat Layer 1*,
-written in *Samizdat Layer 1*, with commentary calling out the parts
+The following is a nearly complete tree grammar for Samizdat Layer 1,
+written in Samizdat Layer 1, with commentary calling out the parts
 that are needed specifically for *Layer 1*. Anything left unmarked is
 also needed for *Layer 0*. In addition, places where higher layers add
 or vary rules are noted in comments.
@@ -517,11 +517,11 @@ def parTerm = {/
     parVarRef | parInt | parString | parMap | parList
     parDeriv | parClosure | parParenExpression
 |
-    # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
-    # that *Layer 1* can only be "activated" with that one specific token.
+    # Defined by Samizdat Layer 1. The lookahead is just to make it clear
+    # that Layer 1 can only be "activated" with that one specific token.
     &@"{/" parParser
 # |
-    # Note: There are additional term rules in *Samizdat Layer 2*.
+    # Note: There are additional term rules in Samizdat Layer 2.
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.

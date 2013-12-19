@@ -380,11 +380,11 @@ def null = @Null;
 
 ### Protocols
 
-There are a number of type-like things in *Samizdat*, which are effectively
+There are a number of type-like things in Samizdat, which are effectively
 defined as types (per se) which have implemented a particular set of methods
 (that is, added bindings to a particular set of generics).
 
-Protocols are not first-class within *Samizdat* but they have significance
+Protocols are not first-class within Samizdat but they have significance
 nonetheless. The following are the protocols currently defined.
 
 #### Function
@@ -406,7 +406,7 @@ See the library documentation for `Collection` for more details.
 
 #### Generator
 
-Generators in *Samizdat* are the closest analog to what are sometimes
+Generators in Samizdat are the closest analog to what are sometimes
 called "iterators" in other languages (and are sometimes called generators,
 to be clear). When called in an appropriate manner, a related series of
 generators yields a related sequence of values. Put another way,

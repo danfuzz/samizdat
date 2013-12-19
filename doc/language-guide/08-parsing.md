@@ -6,7 +6,7 @@ Parsing
 
 ### Overview
 
-Since parsing is something so many programs have to do, *Samizdat*
+Since parsing is something so many programs have to do, Samizdat
 offers language-level facilities for building parsers.
 
 The foundation of parsing is a parser value. A parer value is
