@@ -21,7 +21,7 @@ def tokStringPart2 = ParseForwarder::make();
 #
 # This section is meant to mirror the code in the spec for tokenization as
 # closely as possible, comments and all. The spec is a self-description of
-# *Layer 1* parsing, and the comments should be taken in light of that.
+# Layer 1 parsing, and the comments should be taken in light of that.
 #
 
 # Map of all the keywords, from their string name to valueless tokens. These
@@ -30,7 +30,7 @@ def tokStringPart2 = ParseForwarder::make();
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
         "def", "fn", "return",
-        # *Layer 2* defines additional keywords here.
+        # Layer 2 defines additional keywords here.
         "break", "continue", "default", "do", "else", "export",
         "for", "if", "import", "in", "module", "reduce",
         "switch", "var", "while"])
@@ -41,7 +41,7 @@ def KEYWORDS = Generator::collectAsMap(
 # includes a mapping of `"_"` to `-1` for the implementation of the
 # "digit space" syntax.
 #
-# **Note:** Only the decimal digits matter in *Layer 0* and *Layer 1*.
+# **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
 def INT_CHARS = {
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
     "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
@@ -56,7 +56,7 @@ fn intFromDigitChar(ch) {
 };
 
 # Processes a list of `stringPart` elements, yielding a literal `string`
-# value. In *Layer 2* (and higher) this can also yield an
+# value. In Layer 2 (and higher) this can also yield an
 # `interpolatedString` or an `error`.
 def processStringParts = FunctionForwarder::make();
 
@@ -65,7 +65,7 @@ def processStringParts = FunctionForwarder::make();
 def tokWhitespace = {/
     # The lookahead here is to avoid the bulk of this rule if there's
     # no chance we're actually looking at whitespace. The final
-    # lookahead character is only useful as of *Layer 2*.
+    # lookahead character is only useful as of Layer 2.
     &["# \n" "/"]
 
     (
@@ -80,7 +80,7 @@ def tokWhitespace = {/
             !.
         )
     |
-        # Introduced in *Layer 2*.
+        # Introduced in Layer 2.
         &"/*" # Avoid calling the rule unless we know it will match.
         tokMultilineComment
     )+
@@ -88,27 +88,27 @@ def tokWhitespace = {/
 
 # Parses punctuation and operators.
 #
-# **Note:** This rule is expanded significantly in *Layer 2*.
+# **Note:** This rule is expanded significantly in Layer 2.
 def tokPunctuation = {/
     # The lookahead here is done to avoid bothering with the choice
     # expression, except when we have a definite match. The second
     # string in the lookahead calls out the characters that are only
-    # needed in *Layer 1*. Yet more characters are included in *Layer 2*.
+    # needed in Layer 1. Yet more characters are included in Layer 2.
     &["&@:.,=-+?;*<>{}()[]" "/|!" "\\%^"]
 
     (
-        # Introduced in *Layer 2*.
+        # Introduced in Layer 2.
         "\\==" | "\\!=" | "\\<=" | "\\>=" | "\\<" | "\\>"
     |
-        # Introduced in *Layer 2*.
+        # Introduced in Layer 2.
         "&&&" | "|||" | "^^^" | "!!!" | "<<<" | ">>>" | "..!" | "..+"
     |
-        # Introduced in *Layer 2*.
+        # Introduced in Layer 2.
         "==" | "!=" | "<=" | ">=" | "??" | "**" | ":=" | "//" | "%%"
     |
         "->" | "::" | ".." | "<>"
     |
-        # These are only needed in *Layer 1*.
+        # These are only needed in Layer 1.
         "{/" | "/}"
     |
         # Note: We check this error condition here instead of in the
@@ -127,14 +127,14 @@ def tokPunctuation = {/
 
 # Parses an integer literal.
 #
-# **Note:** This rule is rewritten in *Layer 2*.
+# **Note:** This rule is rewritten in Layer 2.
 def tokInt = ParseForwarder::make();
 
 # Parses a run of regular characters or an escape / special sequence,
 # inside a quoted string.
 #
 # **Note:** Additional rules for string character parsing are defined
-# in *Layer 2*.
+# in Layer 2.
 def tokStringPart = {/
     (
         chars = [! "\\" "\"" "\n"]+
@@ -156,7 +156,7 @@ def tokStringPart = {/
         "0"  { <> "\0" }
     )
 |
-    # Introduced in *Layer 2*.
+    # Introduced in Layer 2.
     tokStringPart2
 /};
 
@@ -216,7 +216,7 @@ def tokToken = {/
 |
     # This needs to be listed after the identifier rule, to prevent
     # an identifier-initial `_` from triggering this rule. (This is
-    # only significant in *Layer 2* and higher.)
+    # only significant in Layer 2 and higher.)
     tokInt
 |
     tokError
@@ -232,9 +232,9 @@ def tokFile = {/
 
 
 #
-# *Layer 2* definitions
+# Layer 2 definitions
 #
-# These are all specific to parsing *Layer 2* (and higher).
+# These are all specific to parsing Layer 2 (and higher).
 #
 
 # Map from opening tokens to corresponding closers. Only includes mappings
@@ -412,7 +412,7 @@ def implStringInterpolation = {/
 /};
 Box::store(tokStringInterpolation, implStringInterpolation);
 
-# Additional `stringPart` definitions for *Layer 2*.
+# Additional `stringPart` definitions for Layer 2.
 def implStringPart2 = {/
     "\\"
     (
