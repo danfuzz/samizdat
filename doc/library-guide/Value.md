@@ -151,7 +151,7 @@ returns void.
 
 Returns a general value with the given type tag (an arbitrary value)
 and optional data payload value (also an arbitrary value). These
-equivalences hold for *Samizdat Layer 0* source code:
+equivalences hold for Samizdat Layer 0 source code:
 
 ```
 v = @(type);         is equivalent to  v = makeValue(type);
