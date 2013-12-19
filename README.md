@@ -33,7 +33,7 @@ exist (if incompletely), followed by pieces that are merely planned.
   See [the spec](doc/language-guide) and
   [the implementation's README](samizdat-0/README.md) for more details.
 
-* `samlib-naif` &mdash; In-language core library for *Layer 2*.
+* `samlib-naif` &mdash; In-language core library for *Layers 0&mdash;2*.
 
   This is an implementation of the non-primitive portion of the
   core library, sufficient for running code written in
@@ -41,6 +41,29 @@ exist (if incompletely), followed by pieces that are merely planned.
 
   See [the spec](doc/language-guide) and
   [the implementation's README](samizdat-0/README.md) for more details.
+
+* `samex-tot` &mdash; Runtime build with "compiled" core library.
+
+  This is the same code as `samex-naif` and `samlib-naif`, except that
+  the library code has been all compiled into a very simple binary form,
+  where the code merely reconstructs interpretable trees (thus avoiding
+  the overhead of parsing).
+
+  This is built by running `samtoc` in "tree" mode over most (but not all)
+  of the `samlib-naif` sources.
+
+* `samex` &mdash; Wrapper that dispatches to an appropriate runtime.
+
+  This is a wrapper script which can dispatch to specific runtime versions
+  (e.g. and i.e. `samex-naif` or `samex-tot`). The point is to keep
+  version names out of other utility scripts.
+
+* `compile-samex-addon` &mdash; Wrapper for the C compiler, to compile
+  "addon" library code.
+
+  This script knows how to call the C compiler with appropriate arguments
+  for building "addon" libraries, which can subsequently be loaded by
+  `samex-naif`.
 
 ### Pieces in progress
 
