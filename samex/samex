@@ -36,10 +36,38 @@ unset newProg
 
 
 #
+# Argument parsing
+#
+
+# Preferred runtime name option.
+runtimeOpt=()
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName} [--runtime=<name>]"
+        exit
+    elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
+        runtimeOpt=("${opt}")
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+
+#
 # Main script
 #
 
-name="$("${progDir}/find-samex" --bin)"
+name="$("${progDir}/find-samex" "${runtimeOpt[@]}" --bin)"
 if [[ $? != 0 ]]; then
     exit 1
 fi

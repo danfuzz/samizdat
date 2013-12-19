@@ -39,6 +39,9 @@ unset newProg
 # Argument parsing
 #
 
+# Preferred runtime name.
+runtime=''
+
 # What to output.
 output='name'
 
@@ -48,7 +51,7 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--name] [--bin] [--include]"
+        echo "${progName} [--runtime=<name>] [--name] [--bin] [--include]"
         exit
     elif [[ ${opt} == '--name' ]]; then
         output='name'
@@ -56,6 +59,8 @@ while [[ $1 != '' ]]; do
         output='bin'
     elif [[ ${opt} == '--include' ]]; then
         output='include'
+    elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
+        runtime="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -71,7 +76,12 @@ unset opt
 # Main script
 #
 
-names=(samex-tot samex-naif)
+if [[ "${runtime}" == "" ]]; then
+    names=(samex-tot samex-naif)
+else
+    names=("samex-${runtime}")
+fi
+
 found=''
 
 for n in "${names[@]}"; do

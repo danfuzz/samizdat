@@ -40,6 +40,9 @@ unset newProg
 # Argument parsing
 #
 
+# Preferred runtime name option.
+runtimeOpt=()
+
 # Whether to build the binary.
 build='no'
 
@@ -52,13 +55,15 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName}"
+        echo "${progName} [--build] [--optimize] [--runtime=<name>]"
         exit
     elif [[ ${opt} == '--build' ]]; then
         build='yes'
     elif [[ ${opt} == '--optimize' ]]; then
         optimize='yes'
         build='yes'
+    elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
+        runtimeOpt=("${opt}")
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -92,7 +97,7 @@ fi
 errorNames=()
 for name in "${allNames[@]}"; do
     echo ''
-    "${progDir}/run" "${buildOpts[@]}" "${name}"
+    "${progDir}/run" "${buildOpts[@]}" "${runtimeOpt[@]}" "${name}"
     error="$?"
     if [[ ${error} != 0 ]]; then
         echo "Exited with error code: ${error}"
