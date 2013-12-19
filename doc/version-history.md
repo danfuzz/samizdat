@@ -50,3 +50,7 @@ Version History
     * Added dot-based syntax for getter and setter methods.
     * Totally new derived value syntax.
     * Implemented postfix `?` in all layers.
+
+* 0.4.1 &mdash; 19-dec-2013
+
+  * Docs improvements, and minor cleanup.
