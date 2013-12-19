@@ -31,3 +31,22 @@ Version History
     support.
 
   * Arranged all core functionality into modules.
+
+* 0.4.0 &mdash; 18-dec-2013 &mdash; "A Tree Grows In SoMa"
+
+  * Milestone: Version of runtime where library code is compiled into
+    binary form.
+
+  * Runtime now supports loading of "addon" libraries.
+
+  * New `samtoc` compiler produces C code that builds parse trees, for
+    interpretation using the original runtime interpreter. As such, it's
+    not a "real" compiler, but it does vet the process of building and
+    loading binary "addon" libraries.
+
+  * Major revision to the mechanics of module loading.
+
+  * Various rework and changes to syntax:
+    * Added dot-based syntax for getter and setter methods.
+    * Totally new derived value syntax.
+    * Implemented postfix `?` in all layers.
