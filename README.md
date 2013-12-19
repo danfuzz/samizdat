@@ -33,7 +33,7 @@ exist (if incompletely), followed by pieces that are merely planned.
   See [the spec](doc/language-guide) and
   [the implementation's README](samizdat-0/README.md) for more details.
 
-* `samlib-naif` &mdash; In-language core library for *Layers 0&mdash;2*.
+* `samlib-naif` &mdash; In-language core library for *Layers 0&ndash;2*.
 
   This is an implementation of the non-primitive portion of the
   core library, sufficient for running code written in
