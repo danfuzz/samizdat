@@ -93,7 +93,7 @@ def tokPunctuation = {/
     # |
         "->" | "::" | ".." | "<>"
     |
-        # These are only needed in Layer 1.
+        # These are introduced in Layer 1.
         "{/" | "/}"
     # |
         # Layer 2 introduces additional definitions here.
