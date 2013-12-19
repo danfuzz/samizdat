@@ -8,7 +8,7 @@ defining self-recursive functions.
 
 **Summary**
 
-If you want to make a self-recursive function in *Samizdat Layer 0*,
+If you want to make a self-recursive function in Samizdat Layer 0,
 you can write it like this:
 
 ```
@@ -76,7 +76,7 @@ functions as arguments, resulting in a list of mutual-recursion-enabled
 result functions.
 
 If you want to make a set of N mututally-recursive functions in
-*Samizdat Layer 0*, you can write it like this:
+Samizdat Layer 0, you can write it like this:
 
 ```
 myRecursiveFunctions = yStarCombinator

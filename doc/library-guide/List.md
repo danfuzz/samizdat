@@ -96,7 +96,7 @@ On a non-empty list, calls `store(box, first(list))` and returns
 #### `makeList(elems*) <> list`
 
 Returns a list with the given elements (in argument order).
-These equivalences hold for *Samizdat Layer 0* source code:
+These equivalences hold for Samizdat Layer 0 source code:
 
 ```
 v = [v1];      is equivalent to  v = makeList(v1);

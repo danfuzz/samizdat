@@ -77,7 +77,7 @@ Straightforward protocol implementation.
 Straightforward protocol implementation.
 
 **Note:** Unlike some other languages, there is no unsigned int right-shift
-operation in *Samizdat Layer 0*. This is because ints are unlimited
+operation in Samizdat. This is because ints are unlimited
 in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
 non-negative ints.

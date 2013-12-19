@@ -2,7 +2,7 @@ samex
 =====
 
 This provides commands and utilities that work with multiple versions
-of *Samizdat* runtime.
+of Samizdat runtime.
 
 * `samex` &mdash; This is a simple front-end which knows how to dispatch to
   the most "mature" available version of the runtime.

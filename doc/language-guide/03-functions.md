@@ -4,7 +4,7 @@ Samizdat Language Guide
 Functions and Blocks
 --------------------
 
-*Samizdat* is a closure-forward language, in that almost any nontrivial
+Samizdat is a closure-forward language, in that almost any nontrivial
 piece of code will consist of multiple nested closures. Closures in the
 language are the typical sort, namely a function which captures elements
 from its execution context and which continues to be valid after its
@@ -251,7 +251,7 @@ how many arguments they take, and what sort of things they return
 #### Logic functions
 
 A logic function is one which is meant to be used, at least some of the
-time, as a logical predicate of some sort. In *Samizdat*, logical true
+time, as a logical predicate of some sort. In Samizdat, logical true
 is represented by a return value of any value at all, and logical false
 is represented by a void return. Logic functions, in general, may take
 any number of arguments (including none).
@@ -261,7 +261,7 @@ See the introductory section "Logic operations" for more details.
 #### Parser functions
 
 Parser functions are used (unsurprisingly) to perform parsing operations.
-*Samizdat* provides both syntactic and library support for parsing.
+Samizdat provides both syntactic and library support for parsing.
 
 Briefly, parser functions work very similar to generators. The
 majore differences are:

@@ -23,8 +23,8 @@ Contents:
 Appendix:
 
 * [Lower Layer Implementation Restrictions](a01-low-layer-restrictions.md)
-* [*Layer 1* Token Grammar](a02-token-grammar-1.md)
-* [*Layer 1* Tree Grammar](a03-tree-grammar-1.md)
+* [Layer 1 Token Grammar](a02-token-grammar-1.md)
+* [Layer 1 Tree Grammar](a03-tree-grammar-1.md)
 
 - - - - -
 

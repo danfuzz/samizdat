@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Map literal demo, *Layer 2* specific
+# Map literal demo, Layer 2 specific
 #
 
 def Io1 = moduleUse({name: ["core", "Io1"]});

@@ -118,12 +118,12 @@ formal arguments.
 
 ### Void and Any (`.`)
 
-*Samizdat* has the concept of "void" meaning the lack of a value.
+Samizdat has the concept of "void" meaning the lack of a value.
 This is in contrast to many other languages which define one or
 more distinguished values as meaning "nothingness" while still
 actually being "something".
 
-For example, it is possible for functions in *Samizdat* to return without
+For example, it is possible for functions in Samizdat to return without
 yielding a value. Such functions are referred to as "void functions", and
 one can say that such a function "returns void" or "returns a void result".
 
@@ -140,7 +140,7 @@ There are three major restrictions on how voids may be used:
 * A void cannot be part of a data structure (e.g., a list element,
   or a map key or value).
 
-The *Samizdat* library provides several facilities to help deal with
+The Samizdat library provides several facilities to help deal with
 cases where code needs to act sensibly without knowing up-front whether
 or not a given expression will yield a value. The facilities notably
 include `if` expressions and the question mark (`?`) and star (`*`)
@@ -158,13 +158,13 @@ syntax used in function argument declaration and in defining parsers.
 
 ### Logic operations
 
-Logic operations in *Samizdat* &mdash; things like `if`s, logical
+Logic operations in Samizdat &mdash; things like `if`s, logical
 conjunctions and disjunctions, loop tests, and so on &mdash;
 are based on the idea that a value &mdash; any value &mdash; counts
 as logical-true, whereas void &mdash; that is, the lack of a
 value &mdash; counts as logical-false.
 
-*Samizdat* also has boolean values `true` and `false`, which are used
+Samizdat also has boolean values `true` and `false`, which are used
 for boolean values "at rest", such as in variables or data structures.
 There are operators in the language and library support functions that
 aid in the conversion between logical and boolean truth values. See later
@@ -175,8 +175,8 @@ value to return, it will use the boolean value `true`.
 
 While this is a bit of a departure from the object-safe languages in the
 C family (such as Java and JavaScript), it is actually close to how C
-itself operates, in that void in *Samizdat* is very close in meaning to
-`NULL` in C. *Samizdat* departs from C in that void and `false` are
+itself operates, in that void in Samizdat is very close in meaning to
+`NULL` in C. Samizdat departs from C in that void and `false` are
 not equivalent. Somewhat confusingly &mdash; but necessary to avoid certain
 ambiguities &mdash; the boolean value `false` counts as true, as
 far as logical expressions are concerned.

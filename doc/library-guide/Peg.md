@@ -4,10 +4,10 @@ Samizdat Layer 0: Core Library
 core::Peg (parsing)
 -------------------
 
-*Samizdat* provides a module of "parsing expression grammar" (a.k.a.
-"PEG") functions, for use in building parsers. *Samizdat Layer 1*
+Samizdat provides a module of "parsing expression grammar" (a.k.a.
+"PEG") functions, for use in building parsers. Samizdat Layer 1
 provides syntactic support for using these functions, and they can be
-used directly in *Samizdat Layer 0*.
+used directly in Samizdat Layer 0.
 
 These functions can be used to build both tokenizers (that is, parsers of
 strings / sequences of characters) and tree parsers (that is, parsers of
@@ -54,7 +54,7 @@ A parsing function, upon failure when called, must do two things: It must
 call its yield `box` with no argument to indicate a void result of parsing.
 Then, it must also return void.
 
-In the following descriptions, code shorthands use the *Samizdat* parsing
+In the following descriptions, code shorthands use the Samizdat parsing
 syntax for explanatory purposes.
 
 <br><br>
@@ -198,7 +198,7 @@ a string. The result of successful parsing is a character-as-token of the
 parsed character.
 
 This function exists primarily to aid in "by hand" parser implementation
-in *Samizdat Layer 0* (as opposed to using the higher layer syntax), as
+in Samizdat Layer 0 (as opposed to using the higher layer syntax), as
 it is merely a convenient wrapper for a call to `makeTokenSet` (see
 which).
 
@@ -212,7 +212,7 @@ Each argument must be a string. The result of successful parsing is a
 character-as-token of the parsed character.
 
 This function exists primarily to aid in "by hand" parser implementation
-in *Samizdat Layer 0* (as opposed to using the higher layer syntax), as
+in Samizdat Layer 0 (as opposed to using the higher layer syntax), as
 it is merely a convenient wrapper for a call to `makeTokenSetComplement`
 (see which).
 

@@ -25,4 +25,4 @@ safe to call the forwarder, and it will in turn call the implementation
 with the same arguments and returns whatever the implementation returns.
 
 This function is meant to make it a little easier to deal with the fact
-that *Samizdat Layer 0* prohibits use-before-def.
+that Samizdat Layer 0 prohibits use-before-def.

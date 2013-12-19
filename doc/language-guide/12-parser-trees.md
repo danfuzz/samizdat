@@ -38,11 +38,11 @@ Representation of a code expression.
   as the nonlocal-exit function.
 
 * `statements: [statement*]` (required) — A list of statement nodes.
-  Statement nodes are as defined by the *Samizdat Layer 0* specification.
+  Statement nodes are as defined by the Samizdat Layer 0 specification.
 
 * `yield: expression` (optional) — An expression node representing the
   (local) result value for the code. Expression nodes are as defined
-  by the *Samizdat Layer 0* specification.
+  by the Samizdat Layer 0 specification.
 
 This corresponds to the syntax `{ <yieldDef> -> statement1; statement2;
 etc; <> yield }`.

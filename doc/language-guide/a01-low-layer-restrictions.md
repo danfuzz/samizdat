@@ -5,7 +5,7 @@ Appendix: Lower Layer Implementation Restrictions
 -------------------------------------------------
 
 The langauge layers 0 through 2 are used to build and bootstrap the rest
-of the system. *Samizdat Layer 0* is the most basic language, and each
+of the system. Samizdat Layer 0 is the most basic language, and each
 subsequent layer is (practically speaking) a strict superset of the layer
 that it is built directly upon.
 
@@ -16,7 +16,7 @@ from the full language.
 
 #### Layer 0
 
-*Samizdat Layer 0* a "parti" of the final language layer. That is, it
+Samizdat Layer 0 is a "parti" of the final language layer. That is, it
 embodies *just* the main thrusts of the language with very little
 embellishment.
 
@@ -25,12 +25,12 @@ even while eschewing niceties such as most operators and control constructs.
 
 #### Layer 1
 
-The sole purpose of *Samizdat Layer 1* is to introduce parsing syntax
+The sole purpose of Samizdat Layer 1 is to introduce parsing syntax
 into the language.
 
 #### Layer 2
 
-*Samizdat Layer 2* adds a more complete set of syntactic constructs to
+Samizdat Layer 2 adds a more complete set of syntactic constructs to
 the main language, including functional operators (e.g. math operations),
 control constructs, and a bit more variety in expressing literal data.
 

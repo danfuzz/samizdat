@@ -3,7 +3,7 @@ Samizdat Programming Language: Reading List
 
 The following are links to articles, papers, or general web pages that
 have provided information, inspiration, or guidance during the
-design and implementation of *Samizdat*.
+design and implementation of Samizdat.
 
 * Back to the future: the story of Squeak, a practical Smalltalk written in
   itself &mdash; <http://ftp.squeak.org/docs/OOPSLA.Squeak.html>

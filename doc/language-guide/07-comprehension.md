@@ -4,7 +4,7 @@ Samizdat Language Guide
 Comprehensions and Filters
 --------------------------
 
-*Samizdat* provides a concise syntax for building filters that process
+Samizdat provides a concise syntax for building filters that process
 generators and collections. The result of such an expression is either
 a generator or a list, depending on delimiter. As used here,
 the term "comprehension" applies to either variant.

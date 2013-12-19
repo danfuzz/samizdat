@@ -1,13 +1,13 @@
 Samizdat Language Guide
 =======================
 
-Appendix: *Samizdat Layer 1* Token Grammar
-------------------------------------------
+Appendix: Layer 1 Token Grammar
+-------------------------------
 
-The following is a nearly complete token grammar for *Samizdat Layer 1*,
-written in *Samizdat Layer 1*, with commentary calling out the parts
-that are needed specifically for *Layer 1*. Anything left unmarked is
-needed for *Layer 0*.
+The following is a nearly complete token grammar for Samizdat Layer 1,
+written in Samizdat Layer 1, with commentary calling out the parts
+that are needed specifically for Layer 1. Anything left unmarked is
+needed for Layer 0.
 
 A program is tokenized by matching the `file` rule, resulting in a
 list of all the tokens. Tokenization errors are represented in the
@@ -20,7 +20,7 @@ result as tokens of type `error`.
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
         "def", "fn", "return",
-        # *Layer 2* defines additional keywords here.
+        # Layer 2 defines additional keywords here.
         []*])
         { name <> {(name): @(name)} });
 
@@ -29,7 +29,7 @@ def KEYWORDS = Generator::collectAsMap(
 # includes a mapping of `"_"` to `-1` for the implementation of the
 # "digit space" syntax.
 #
-# **Note:** Only the decimal digits matter in *Layer 0* and *Layer 1*.
+# **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
 def INT_CHARS = {
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
     "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
@@ -44,14 +44,14 @@ fn intFromDigitChar(ch) {
 };
 
 # Processes a list of `stringPart` elements, yielding a literal `string`
-# value. In *Layer 2* (and higher) this can also yield an
+# value. In Layer 2 (and higher) this can also yield an
 # `interpolatedString` or an `error`.
 fn processStringParts(parts) {
     <> @string(cat("", parts*))
 };
 
 # Forward declaration of `tokToken`, for use in the interpolated string
-# rule. (This is only significant as of *Layer 2*.)
+# rule. (This is only significant as of Layer 2.)
 def tokToken = makeParseForwarder();
 
 # Parses any amount of whitespace and comments (including nothing at all).
@@ -59,7 +59,7 @@ def tokToken = makeParseForwarder();
 def tokWhitespace = {/
     # The lookahead here is to avoid the bulk of this rule if there's
     # no chance we're actually looking at whitespace. The final
-    # lookahead character is only useful as of *Layer 2*.
+    # lookahead character is only useful as of Layer 2.
     &["# \n" "/"]
 
     (
@@ -80,23 +80,23 @@ def tokWhitespace = {/
 
 # Parses punctuation and operators.
 #
-# **Note:** This rule is expanded significantly in *Layer 2*.
+# **Note:** This rule is expanded significantly in Layer 2.
 def tokPunctuation = {/
     # The lookahead here is done to avoid bothering with the choice
     # expression, except when we have a definite match. The second
     # string in the lookahead calls out the characters that are only
-    # needed in *Layer 1*. Yet more characters are included in *Layer 2*.
+    # needed in Layer 1. Yet more characters are included in Layer 2.
     &["&@:.,=-+?;*<>{}()[]" "/|!"]
 
     (
-        # *Layer 2* introduces additional definitions here.
+        # Layer 2 introduces additional definitions here.
     # |
         "->" | "::" | ".." | "<>"
     |
-        # These are only needed in *Layer 1*.
+        # These are introduced in Layer 1.
         "{/" | "/}"
     # |
-        # *Layer 2* introduces additional definitions here.
+        # Layer 2 introduces additional definitions here.
     |
         # Single-character punctuation / operator.
         .
@@ -105,7 +105,7 @@ def tokPunctuation = {/
 
 # Parses an integer literal.
 #
-# **Note:** This rule is rewritten in *Layer 2*.
+# **Note:** This rule is rewritten in Layer 2.
 def tokInt = {/
     digits = (
         ch = ["0".."9"]
@@ -123,7 +123,7 @@ def tokInt = {/
 # inside a quoted string.
 #
 # **Note:** Additional rules for string character parsing are defined
-# in *Layer 2*.
+# in Layer 2.
 def tokStringPart = {/
     (
         chars = [! "\\" "\"" "\n"]+
@@ -145,7 +145,7 @@ def tokStringPart = {/
         "0"  { <> "\0" }
     )
 # |
-    # *Layer 2* introduces additional definitions here.
+    # Layer 2 introduces additional definitions here.
 /};
 
 # Parses a quoted string.
@@ -204,7 +204,7 @@ def implToken = {/
 |
     # This needs to be listed after the identifier rule, to prevent
     # an identifier-initial `_` from triggering this rule. (This is
-    # only significant in *Layer 2* and higher.)
+    # only significant in Layer 2 and higher.)
     tokInt
 |
     tokError

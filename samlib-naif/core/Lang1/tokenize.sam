@@ -6,7 +6,7 @@
 # Samizdat Layer 1 tokenizer
 #
 # The following is a near-transliteration of the token grammar in
-# the *Samizdat Layer 0* and *Samizdat Layer 1* specifications.
+# the Samizdat Layer 0 and Samizdat Layer 1 specifications.
 #
 
 
@@ -19,7 +19,7 @@
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
         "def", "fn", "return",
-        # *Layer 2* defines additional keywords here.
+        # Layer 2 defines additional keywords here.
         []*])
         { name <> {(name): @(name)} });
 

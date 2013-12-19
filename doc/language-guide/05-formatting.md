@@ -4,7 +4,7 @@ Samizdat Language Guide
 String Formatting
 -----------------
 
-*Samizdat* provides string content interpolation inside literal strings,
+Samizdat provides string content interpolation inside literal strings,
 in order to make dynamic string construction reasonably straightforward.
 
 Interpolation is placed in a string by surrounding code to interpolate
@@ -73,7 +73,7 @@ For example:
 ### `%q` &mdash; Data quoting
 
 A format specifier of `%q` converts all values to a form meant to hew
-closely to the corresponding literal forms in the *Samizdat* source
+closely to the corresponding literal forms in the Samizdat source
 language. Void is converted to the string `"void"`.
 
 For example:

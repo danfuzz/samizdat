@@ -97,9 +97,9 @@ fn makeCallNonlocalExit(name, optExpression?) {
 
 
 #
-# *Layer 0* Rules
+# Layer 0 Rules
 #
-# This section consists of the definitions required to implement *Layer 0*,
+# This section consists of the definitions required to implement Layer 0,
 # with comments indicating the "hooks" for higher layers.
 #
 
@@ -531,11 +531,11 @@ def implTerm = {/
     parVarRef | parInt | parString | parMap | parList |
     parDeriv | parClosure | parParenExpression
 |
-    # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
-    # that *Layer 1* can only be "activated" with that one specific token.
+    # Defined by Samizdat Layer 1. The lookahead is just to make it clear
+    # that Layer 1 can only be "activated" with that one specific token.
     &@"{/" parParser
 |
-    # Defined by *Samizdat Layer 2*.
+    # Defined by Samizdat Layer 2.
     &[@interpolatedString @"(" @"["] parTerm2
 /};
 Box::store(parTerm, implTerm);
@@ -566,7 +566,7 @@ def parPostfixOperator = {/
     { <> { node <> makeGetExpression(node, key) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
-    # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
+    # treated as a binary op. (`*` is only defined as postfix in Layer 0,
     # but higher layers augment its meaning.)
     @"*" !parExpression
     { <> { node <> makeInterpolate(node) } }
@@ -574,7 +574,7 @@ def parPostfixOperator = {/
     @"?"
     { <> { node <> makeOptValueExpression(node) } }
 |
-    # Note: *Layer 2* adds additional rules here.
+    # Note: Layer 2 adds additional rules here.
     parPostfixOperator2
 /};
 
@@ -609,15 +609,15 @@ Box::store(parUnaryExpression, implUnaryExpression);
 
 # `expression` from layer 0 is omitted here (it's forwarded earlier).
 
-# Note: There are additional expression rules in *Layer 2* and beyond.
+# Note: There are additional expression rules in Layer 2 and beyond.
 def parStatement = {/
     parVarDef | parFnDef | parExpression
 |
-    # Note: *Layer 2* adds additional rules here.
+    # Note: Layer 2 adds additional rules here.
     parStatement2
 /};
 
-# Note: There are additional nonlocal exit rules in *Layer 2* and beyond.
+# Note: There are additional nonlocal exit rules in Layer 2 and beyond.
 # This rule still exists but has several additions.
 def parNonlocalExit = parNonlocalExit2;
 
@@ -684,9 +684,9 @@ def parProgramOrError = {/
 
 
 #
-# *Layer 1* Rules
+# Layer 1 Rules
 #
-# This section consists of the definitions required to implement *Layer 1*,
+# This section consists of the definitions required to implement Layer 1,
 # above and beyond the preceding section.
 #
 # **Note:** The grammar uses the label "pex" to denote various
@@ -977,7 +977,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
         { <> result }
 };
 
-# Parses a *Layer 2* `identifier`.
+# Parses a Layer 2 `identifier`.
 def implIdentifier2 = {/
     ident = @identifier
 
@@ -1153,7 +1153,7 @@ def parComprehension = {/
     { <> makeCallModName("Generator", "filterAll", body*) }
 /};
 
-# Parses the `term` variants introduced in *Layer 2*.
+# Parses the `term` variants introduced in Layer 2.
 def implTerm2 = {/
     parInterpolatedString
 |
@@ -1208,7 +1208,7 @@ def implPrefixOperator2 = {/
 /};
 Box::store(parPrefixOperator2, implPrefixOperator2);
 
-# *Layer 2* additions to unary postfix operator parsing. This yields a
+# Layer 2 additions to unary postfix operator parsing. This yields a
 # function (per se) to call in order to construct a node that represents the
 # appropriate operator application, function call, or the like.
 def implPostfixOperator2 = {/
