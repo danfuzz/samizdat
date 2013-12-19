@@ -20,7 +20,7 @@ layers 0, 1, and 2.
 #### `convertToLang0(expressionNode) <> expressionNode`
 
 Converts any higher-layer node types within the given expression into
-*Layer 0* forms.
+Layer 0 forms.
 
 In `Lang0`, this is a no-op. In `Lang1` and `Lang2` this converts parser
 expression nodes into appropriate calls to `Peg` functions.

@@ -6,8 +6,8 @@ Appendix: Layer 1 Tree Grammar
 
 The following is a nearly complete tree grammar for Samizdat Layer 1,
 written in Samizdat Layer 1, with commentary calling out the parts
-that are needed specifically for *Layer 1*. Anything left unmarked is
-also needed for *Layer 0*. In addition, places where higher layers add
+that are needed specifically for Layer 1. Anything left unmarked is
+also needed for Layer 0. In addition, places where higher layers add
 or vary rules are noted in comments.
 
 A program is parsed by matching the `program` rule, which yields a
@@ -89,9 +89,9 @@ fn makeCallNonlocalExit(name, optExpression?) {
 
 
 #
-# *Layer 0* Rules
+# Layer 0 Rules
 #
-# This section consists of the definitions required to implement *Layer 0*,
+# This section consists of the definitions required to implement Layer 0,
 # with comments indicating the "hooks" for higher layers.
 #
 
@@ -550,7 +550,7 @@ def parPostfixOperator = {/
     { <> { node <> makeGetExpression(node, key) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
-    # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
+    # treated as a binary op. (`*` is only defined as postfix in Layer 0,
     # but higher layers augment its meaning.)
     @"*" !parExpression
     { <> { node <> makeInterpolate(node) } }
@@ -558,7 +558,7 @@ def parPostfixOperator = {/
     @"?"
     { <> { node <> makeOptValueExpression(node) } }
 # |
-    # Note: *Layer 2* adds additional rules here.
+    # Note: Layer 2 adds additional rules here.
 /};
 
 # Parses a unary expression. This is a term, optionally surrounded on
@@ -590,21 +590,21 @@ def parUnaryExpression = {/
     }
 /};
 
-# Note: There are additional expression rules in *Layer 2* and beyond.
+# Note: There are additional expression rules in Layer 2 and beyond.
 # This rule is totally rewritten at that layer.
 def implExpression = {/
     parUnaryExpression | parFnExpression
 /};
 Box::store(parExpression, implExpression);
 
-# Note: There are additional expression rules in *Layer 2* and beyond.
+# Note: There are additional expression rules in Layer 2 and beyond.
 def parStatement = {/
     parVarDef | parFnDef | parExpression
 # |
-    # Note: *Layer 2* adds additional rules here.
+    # Note: Layer 2 adds additional rules here.
 /};
 
-# Note: There are additional nonlocal exit rules in *Layer 2* and beyond.
+# Note: There are additional nonlocal exit rules in Layer 2 and beyond.
 # This rule still exists but has several additions.
 def parNonlocalExit = {/
     name = (
@@ -684,9 +684,9 @@ def parProgramOrError = {/
 
 
 #
-# *Layer 1* Rules
+# Layer 1 Rules
 #
-# This section consists of the definitions required to implement *Layer 1*,
+# This section consists of the definitions required to implement Layer 1,
 # above and beyond the preceding section.
 #
 # **Note:** The grammar uses the label "pex" to denote various

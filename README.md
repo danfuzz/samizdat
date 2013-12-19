@@ -27,17 +27,17 @@ exist (if incompletely), followed by pieces that are merely planned.
 
 * `samex-naif` &mdash; Simple interpreter, written in C.
 
-  This is an interpreter for *Layer 0* of the language, which can be paired
-  with a companion library to interpret *Layer 1* and *Layer 2* as well.
+  This is an interpreter for Layer 0 of the language, which can be paired
+  with a companion library to interpret Layer 1 and Layer 2 as well.
 
   See [the spec](doc/language-guide) and
   [the implementation's README](samizdat-0/README.md) for more details.
 
-* `samlib-naif` &mdash; In-language core library for *Layers 0&ndash;2*.
+* `samlib-naif` &mdash; In-language core library for Layers 0&ndash;2.
 
   This is an implementation of the non-primitive portion of the
   core library, sufficient for running code written in
-  *Layers 0&ndash;2*.
+  Layers 0&ndash;2.
 
   See [the spec](doc/language-guide) and
   [the implementation's README](samizdat-0/README.md) for more details.
@@ -67,9 +67,9 @@ exist (if incompletely), followed by pieces that are merely planned.
 
 ### Pieces in progress
 
-* `samtoc` &mdash; Simple compiler to C, written in *Layer 2*.
+* `samtoc` &mdash; Simple compiler to C, written in Layer 2.
 
-  This is a compiler that accepts *Layer 2*, producing C source as output,
+  This is a compiler that accepts Layer 2, producing C source as output,
   which is suitable for loading as binary library files (modules or
   standalone binaries) by `samex-naif`.
 
