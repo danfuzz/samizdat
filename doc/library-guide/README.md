@@ -1,7 +1,7 @@
-Samizdat 0 Library Guide
-========================
+Samizdat Layers 0&ndash;2 Library Guide
+=======================================
 
-The following sections define the core library for *Samizdat 0*.
+The following sections define the core library for Samizdat Layers 0&ndash;2.
 
 The core library isn't as minimal as the language itself, but it is still
 intended to be more on the minimal side of things. Beyond the true
@@ -22,7 +22,7 @@ definition, as well as where particular types indicate which generics they
 bind and with what specific meaning. From the perspective of "client"
 code written in the language, there is no distinction between the final
 two sections, but from the perspective of implementation, there is.
-In particular, an implementation of *Samizdat 0* must provide the primitive
+In particular, an implementation of Samizdat 0 must provide the primitive
 definitions, but it can rely on the canonical in-language library source
 for the remainder, which is written in terms of the primitives.
 

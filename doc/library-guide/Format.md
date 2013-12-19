@@ -53,7 +53,7 @@ Converts an arbitrary value into a string representation form
 that is meant to mimic the Samizdat source syntax. If `value` is not passed,
 this returns the string `"void"`.
 
-**Note:** The output differs from *Samizdat Layer 0* syntax in that
+**Note:** The output differs from Samizdat Layer 0 syntax in that
 string forms can include two escape forms not defined in the
 language:
 

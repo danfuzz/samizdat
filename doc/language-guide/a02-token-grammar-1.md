@@ -4,10 +4,10 @@ Samizdat Language Guide
 Appendix: Layer 1 Token Grammar
 -------------------------------
 
-The following is a nearly complete token grammar for *Samizdat Layer 1*,
-written in *Samizdat Layer 1*, with commentary calling out the parts
-that are needed specifically for *Layer 1*. Anything left unmarked is
-needed for *Layer 0*.
+The following is a nearly complete token grammar for Samizdat Layer 1,
+written in Samizdat Layer 1, with commentary calling out the parts
+that are needed specifically for Layer 1. Anything left unmarked is
+needed for Layer 0.
 
 A program is tokenized by matching the `file` rule, resulting in a
 list of all the tokens. Tokenization errors are represented in the
@@ -44,14 +44,14 @@ fn intFromDigitChar(ch) {
 };
 
 # Processes a list of `stringPart` elements, yielding a literal `string`
-# value. In *Layer 2* (and higher) this can also yield an
+# value. In Layer 2 (and higher) this can also yield an
 # `interpolatedString` or an `error`.
 fn processStringParts(parts) {
     <> @string(cat("", parts*))
 };
 
 # Forward declaration of `tokToken`, for use in the interpolated string
-# rule. (This is only significant as of *Layer 2*.)
+# rule. (This is only significant as of Layer 2.)
 def tokToken = makeParseForwarder();
 
 # Parses any amount of whitespace and comments (including nothing at all).
@@ -59,7 +59,7 @@ def tokToken = makeParseForwarder();
 def tokWhitespace = {/
     # The lookahead here is to avoid the bulk of this rule if there's
     # no chance we're actually looking at whitespace. The final
-    # lookahead character is only useful as of *Layer 2*.
+    # lookahead character is only useful as of Layer 2.
     &["# \n" "/"]
 
     (

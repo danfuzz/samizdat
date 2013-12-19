@@ -50,7 +50,7 @@ is what is returned from `fetch` until `store` is called to replace it.
 If `value` is not supplied, `fetch` returns void until `store` is called.
 
 This function is meant to be the primary way to define (what amount to)
-mutable variables, in that *Samizdat Layer 0* only provides immutably-bound
+mutable variables, in that Samizdat Layer 0 only provides immutably-bound
 variables. It is hoped that this facility will be used as minimally as
 possible, so as to not preclude the system from performing functional-style
 optimizations.
