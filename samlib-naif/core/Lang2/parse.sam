@@ -531,11 +531,11 @@ def implTerm = {/
     parVarRef | parInt | parString | parMap | parList |
     parDeriv | parClosure | parParenExpression
 |
-    # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
-    # that *Layer 1* can only be "activated" with that one specific token.
+    # Defined by Samizdat Layer 1. The lookahead is just to make it clear
+    # that Layer 1 can only be "activated" with that one specific token.
     &@"{/" parParser
 |
-    # Defined by *Samizdat Layer 2*.
+    # Defined by Samizdat Layer 2.
     &[@interpolatedString @"(" @"["] parTerm2
 /};
 Box::store(parTerm, implTerm);

@@ -1,7 +1,7 @@
 Samizdat Layer 0
 ================
 
-This is an implementation of the *Samizdat Layer 0* language, written in
+This is an implementation of the Samizdat Layer 0 language, written in
 C.
 
 The goals of this implementation, in priority order, are:
@@ -76,7 +76,7 @@ later-named modules depending only on earlier-named ones):
 * `lib` &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
   that need to be (or are most conveniently) implemented in C. The
-  latter are what can be implemented in *Samizdat Layer 0*. Depends on
+  latter are what can be implemented in Samizdat Layer 0. Depends on
   everything above it.
 
 * `main` &mdash; Where it all comes together. This implements the

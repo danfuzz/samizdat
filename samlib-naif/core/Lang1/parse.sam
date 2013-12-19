@@ -99,7 +99,7 @@ fn makeCallNonlocalExit(name, optExpression?) {
 # Grammar rules
 #
 # The following is a near-transliteration of the tree grammar in
-# the *Samizdat Layer 0* and *Samizdat Layer 1* specifications.
+# the Samizdat Layer 0 and Samizdat Layer 1 specifications.
 #
 
 #
