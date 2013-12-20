@@ -39,8 +39,6 @@ unset newProg
 # Main script
 #
 
-"${baseDir}/samex-naif/build" --optimize
-
 projectName="$(basename "${progDir}")"
 binName="samtoc"
 

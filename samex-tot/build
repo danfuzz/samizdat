@@ -49,8 +49,9 @@ FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
 "${baseDir}/samex/build" || exit 1
-"${baseDir}/samtoc/build" || exit 1
+"${baseDir}/samex-naif/build" --optimize || exit 1
 "${baseDir}/samex-naif/build" --optimize --bin-name="${binName}" || exit 1
+"${baseDir}/samtoc/build" || exit 1
 
 cd "${FINAL_LIB}/corelib"
 
