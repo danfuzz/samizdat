@@ -6,106 +6,28 @@
 # Indenting of C function call source.
 #
 
-def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
-
-
-#
-# Private definitions: Call parser
-#
-
-fn flatten(parsed) {
-    if (def s = isString(parsed) | parsed::flat) {
-        return s
-    };
-
-    def args = parsed::args;
-
-    <> cat(
-        flatten(parsed::name),
-        "(",
-        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
-            <> cat(flatten(a), (i == 1) & "" | ", ")
-        )*,
-        ")")
-};
-
-def parArgs = ParseForwarder::make();
-
-def parIdent = {/
-    first = ["a".."z" "A".."Z" "_"]
-    rest = ["a".."z" "A".."Z" "_" "0".."9"]*
-    { <> Peg::stringFromTokenList([first, rest*]) }
-/};
-
-def parInt = {/
-    first = ["0".."9" "-"]
-    rest = ["0".."9" "-"]*
-    { <> Peg::stringFromTokenList([first, rest*]) }
-/};
-
-def parString = {/
-    @"\""
-    chars = (
-        @"\\"
-        ch = .
-        { <> cat("\\", typeOf(ch)) }
-    |
-        ch = [! @"\""]
-        { <> typeOf(ch) }
-    )*
-    @"\""
-
-    { <> cat("\"", chars*, "\"") }
-/};
-
-def parWord = {/
-    parInt
-|
-    parIdent
-|
-    parString
-/};
-
-def parArg = {/
-    word = parWord
-    (
-        @"("
-        args = parArgs
-        @")"
-        {
-            def parsed = {name: word, args};
-            <> {parsed*, flat: flatten(parsed)}
-        }
-    |
-        { <> word }
-    )
-/};
-
-def implArgs = {/
-    first = parArg
-    rest = (@"," @" "* parArg)*
-    { <> [first, rest*] }
-|
-    { <> [] }
-/};
-Box::store(parArgs, implArgs);
-
-# Parses a call into a `name` string and a list of `args`
-fn parseCall(source) {
-    <> Peg::apply(parArg, source)
-};
-
 #
 # Private definitions
 #
+
+# Gets the flattened version of the given source tree.
+fn flatten(tree) {
+    <> isString(tree) | tree::flat
+};
 
 # Makes an indentation prefix string for the given level.
 fn indentPrefix(level) {
     <> cat([. in 1..level <> "  "]*)
 };
 
-# Indents the given tree by the given amount, yielding a string.
-fn indentTree(tree, level, maxColumns) {
+
+#
+# Exported definitions
+#
+
+# Indents the given source tree by the given amount, aiming to keep lines
+# no longer than the given number of columns. Yields a string.
+fn indent(tree, level, maxColumns) {
     def prefix = indentPrefix(level);
     def prefixSize = Collection::sizeOf(prefix);
 
@@ -124,22 +46,10 @@ fn indentTree(tree, level, maxColumns) {
     <> cat(
         prefix, flatten(tree::name), "(\n",
         ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
-            def s = cat(indentTree(a, level + 1, maxColumns));
+            def s = cat(indent(a, level + 1, maxColumns));
             <> cat(s, (i == 1) & "" | ",\n")
         )*,
         ")")
-};
-
-
-#
-# Exported definitions
-#
-
-# Indents the given source string by the given amount, aiming to keep lines
-# no longer than the given number of columns.
-fn indent(source, level, maxColumns) {
-    def tree = parseCall(source);
-    <> indentTree(tree, level, maxColumns)
 };
 
 <> {

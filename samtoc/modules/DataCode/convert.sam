@@ -8,6 +8,29 @@
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
+# Flattens a source tree to a simple string.
+fn flatten(tree) {
+    if (def s = isString(tree) | tree::flat) {
+        return s
+    };
+
+    def args = tree::args;
+
+    <> cat(
+        flatten(tree::name),
+        "(",
+        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
+            <> cat(flatten(a), (i == 1) & "" | ", ")
+        )*,
+        ")")
+};
+
+# Makes a function call output tree.
+fn makeCall(name, args*) {
+    def result = {name, args};
+    <> {result*, flat: flatten(result)}
+};
+
 # Map of special-case characters to either their stringified forms or
 # to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
@@ -42,7 +65,7 @@ def convert = makeRegularGeneric("convert", 1, 1);
 
 # Converts an int.
 fn Int_convert(int) {
-    <> "intFromZint(\(int))"
+    <> makeCall("intFromZint", "\(int)")
 };
 genericBind(convert, Int, Int_convert);
 
@@ -52,8 +75,8 @@ fn List_convert(list) {
         return "EMPTY_LIST"
     };
 
-    def listElems = [ elem in list <> "\(convert(elem)), " ];
-    <> "listFromArgs(\(listElems)NULL)"
+    def listElems = [ elem in list <> convert(elem) ];
+    <> makeCall("listFromArgs", listElems*, "NULL")
 };
 genericBind(convert, List, List_convert);
 
@@ -63,13 +86,11 @@ fn Map_convert(map) {
         return "EMPTY_MAP"
     };
 
-    def mapElems = [ mapping in map ->
-        def key = keyOf(mapping);
-        def value = valueOf(mapping);
-        <> "\(convert(key)), \(convert(value)), "
+    def mapPairs = [ mapping in map ->
+        <> [convert(keyOf(mapping)), convert(valueOf(mapping))]
     ];
 
-    <> "mapFromArgs(\(mapElems)NULL)"
+    <> makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
 };
 genericBind(convert, Map, Map_convert);
 
@@ -78,11 +99,12 @@ fn String_convert(string) {
     def bodyChars = [ ch in string <> stringChar(ch) ];
     def size = Collection::sizeOf(string);
 
-    <> "stringFromUtf8(\(size), \"\(bodyChars)\")"
+    <> makeCall("stringFromUtf8", "\(size)", "\"\(bodyChars)\"")
 };
 genericBind(convert, String, String_convert);
 
-# Converts a derived value or an opaque core value.
+# Converts a derived value or an opaque core value, yielding a tree
+# that can be stringified with `indent`.
 fn Value_convert(value) {
     if (isOpaqueValue(value)) {
         Io1::die("Cannot convert opaque non-data values.")
@@ -91,7 +113,7 @@ fn Value_convert(value) {
     def type = convert(typeOf(value));
     def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
 
-    <> "makeTransValue(\(type), \(data))"
+    <> makeCall("makeTransValue", type, data)
 };
 genericBind(convert, Value, Value_convert);
 
