@@ -15,10 +15,8 @@ fn flatten(tree) {
     <> isString(tree) | tree::flat
 };
 
-# Makes an indentation prefix string for the given level.
-fn indentPrefix(level) {
-    <> cat([. in 1..level <> "  "]*)
-};
+# List of indentation prefixes (index is level of indentation).
+def INDENTATION = [ n in 0..100 <> "".cat([. in 1..n <> "  "]*) ];
 
 
 #
@@ -28,13 +26,13 @@ fn indentPrefix(level) {
 # Indents the given source tree by the given amount, aiming to keep lines
 # no longer than the given number of columns. Yields a string.
 fn indent(tree, level, maxColumns) {
-    def prefix = indentPrefix(level);
-    def prefixSize = Collection::sizeOf(prefix);
+    def prefix = INDENTATION[level];
 
     if (isString(tree)) {
         return cat(prefix, tree);
     };
 
+    def prefixSize = Collection::sizeOf(prefix);
     def flat = flatten(tree);
 
     if ((Collection::sizeOf(flat) + prefixSize) < maxColumns) {
