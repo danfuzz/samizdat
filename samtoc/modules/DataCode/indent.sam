@@ -44,10 +44,8 @@ fn indent(tree, level, maxColumns) {
     <> cat(
         prefix, flatten(tree::name), "(\n",
         ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
-            def s = cat(indent(a, level + 1, maxColumns));
-            <> cat(s, (i == 1) & "" | ",\n")
-        )*,
-        ")")
+            <> cat(indent(a, level + 1, maxColumns), (i == 1) & ")" | ",\n")
+        )*)
 };
 
 <> {
