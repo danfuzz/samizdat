@@ -32,19 +32,19 @@ fn indent(tree, level, maxColumns) {
         return cat(prefix, tree);
     };
 
-    def prefixSize = Collection::sizeOf(prefix);
     def flat = flatten(tree);
 
-    if ((Collection::sizeOf(flat) + prefixSize) < maxColumns) {
+    if ((Collection::sizeOf(flat) + Collection::sizeOf(prefix)) < maxColumns) {
         return cat(prefix, flat)
     };
 
     def args = tree::args;
+    def nextLevel = level + 1;
 
     <> cat(
         prefix, flatten(tree::name), "(\n",
         ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
-            <> cat(indent(a, level + 1, maxColumns), (i == 1) & ")" | ",\n")
+            <> cat(indent(a, nextLevel, maxColumns), (i == 1) & ")" | ",\n")
         )*)
 };
 
