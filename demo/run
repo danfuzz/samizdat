@@ -155,7 +155,7 @@ if [[ ${timeRun} == 'yes' ]]; then
     cmd=(time -p "${cmd[@]}")
 elif [[ ${iprofiler} == 'yes' ]]; then
     # May also want to use the -allocations option.
-    cmd=("$(which "samex-${runtime}")")
+    cmd=("$(find-samex --runtime="${runtime}" --bin)")
     cmd=(iprofiler -T 20s -timeprofiler "${cmd[@]}")
 fi
 
