@@ -45,14 +45,11 @@ runtime='naif'
 # Whether to build a binary.
 build='no'
 
-# Whether to compile with optimization.
+# Whether to build with optimization.
 optimize='no'
 
-# Whether to run with iprofiler (OS X specific profile tool).
-iprofiler='no'
-
-# Whether to run with `time`.
-timeRun='no'
+# Extra options to pass to `samex`.
+samexOpts=()
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -60,21 +57,19 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--build] [--optimize] [--iprofile | --time]"
+        echo "${progName} [--build] [--optimize] [--profile | --time]"
         echo '     [--runtime=<name>]'
         echo 'demo-name arg...'
         exit
     elif [[ ${opt} == '--build' ]]; then
         build='yes'
-    elif [[ ${opt} == '--iprofiler' ]]; then
-        iprofiler='yes'
-        timeRun='no'
-    elif [[ ${opt} == '--time' ]]; then
-        timeRun='yes'
-        iprofiler='no'
     elif [[ ${opt} == '--optimize' ]]; then
         optimize='yes'
         build='yes'
+    elif [[ ${opt} == '--profile' ]]; then
+        samexOpts+=(--profile)
+    elif [[ ${opt} == '--time' ]]; then
+        samexOpts+=(--time)
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
         runtime="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^- ]]; then
@@ -146,25 +141,14 @@ if [[ ${build} == 'yes' ]]; then
     "${baseDir}/samex/build" "${buildOpts[@]}" > /dev/null || exit 1
 fi
 
-# Set up how to run the executable.
-
-PATH="${PATH}:${baseDir}/out/final/bin"
-cmd=(samex --runtime="${runtime}")
-
-if [[ ${timeRun} == 'yes' ]]; then
-    cmd=(time -p "${cmd[@]}")
-elif [[ ${iprofiler} == 'yes' ]]; then
-    # May also want to use the -allocations option.
-    cmd=("$(find-samex --runtime="${runtime}" --bin)")
-    cmd=(iprofiler -T 20s -timeprofiler "${cmd[@]}")
-fi
-
 # Run it in the demo dir, passing it the main script name and any other
 # arguments passed to this script.
 
+PATH="${PATH}:${baseDir}/out/final/bin"
+cmd=(samex --runtime="${runtime}" "${samexOpts[@]}" "${mainFile}" "$@")
+
 echo "Running demo: $(basename "${name}")"
 cd "${name}"
-cmd=("${cmd[@]}" "${mainFile}" "$@")
 echo '$' "${cmd[@]}"
 echo ''
 exec "${cmd[@]}"
