@@ -42,12 +42,6 @@ unset newProg
 # Preferred runtime name.
 runtime='naif'
 
-# Whether to build a binary.
-build='no'
-
-# Whether to build with optimization.
-optimize='no'
-
 # Extra options to pass to `samex`.
 samexOpts=()
 
@@ -57,19 +51,13 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--build] [--optimize] [--profile | --time]"
-        echo '     [--runtime=<name>]'
-        echo 'demo-name arg...'
+        echo "${progName} [--runtime=<name>]"
+        echo '    [--build] [--optimize] [--time | --profile]'
+        echo '    demo-name arg...'
         exit
-    elif [[ ${opt} == '--build' ]]; then
-        build='yes'
-    elif [[ ${opt} == '--optimize' ]]; then
-        optimize='yes'
-        build='yes'
-    elif [[ ${opt} == '--profile' ]]; then
-        samexOpts+=(--profile)
-    elif [[ ${opt} == '--time' ]]; then
-        samexOpts+=(--time)
+    elif [[ ${opt} == '--build' || ${opt} == '--optimize'
+        || ${opt} == '--profile' || ${opt} == '--time' ]]; then
+        samexOpts+=("${opt}")
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
         runtime="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^- ]]; then
@@ -125,20 +113,6 @@ else
         echo "No main or module file in directory: ${name}" 1>&2
         exit 1
     fi
-fi
-
-# Build the executable, if requested.
-
-if [[ ${build} == 'yes' ]]; then
-    buildOpts=()
-
-    if [[ ${optimize} == 'yes' ]]; then
-        buildOpts=(--optimize)
-    fi
-
-    echo "Building the executable..."
-    "${baseDir}/samex-${runtime}/build" "${buildOpts[@]}" > /dev/null || exit 1
-    "${baseDir}/samex/build" "${buildOpts[@]}" > /dev/null || exit 1
 fi
 
 # Run it in the demo dir, passing it the main script name and any other
