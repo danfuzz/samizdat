@@ -1,0 +1,120 @@
+#!/bin/bash
+#
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Argument parsing
+#
+
+# Installation target location.
+targetDir="${HOME}"
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName} [--dir=<directory>]"
+        exit
+    elif [[ ${opt} =~ ^--dir=(.*) ]]; then
+        targetDir="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+
+#
+# Main script
+#
+
+name="$(cat "${progDir}/NAME.txt")"
+version="$(cat "${progDir}/VERSION.txt")"
+nameVersion="${name}-${version}"
+dateStamp="$(date -u '+%Y%m%d-%H%M%S')"
+
+if [[ ${name} == '' ]]; then
+    echo 'Missing product name.' 1>&2
+    exit 1
+fi
+
+if [[ ${version} == '' ]]; then
+    echo 'Missing product version.' 1>&2
+    exit 1
+fi
+
+mkdir -p "${targetDir}" || exit 1
+mkdir -p "${targetDir}/bin" || exit 1
+mkdir -p "${targetDir}/lib" || exit 1
+
+# Where most of the files go.
+filesDir="${targetDir}/lib/${nameVersion}"
+
+if [[ -d "${filesDir}" ]]; then
+    backupDir="${filesDir}-${dateStamp}"
+    echo "Product already installed at ${filesDir}."
+    if [[ -d ${backupDir} ]]; then
+        echo "Backup already exists: ${backupDir}" 1>&2
+        echo 'Giving up.' 1>&2
+        exit 1
+    fi
+    echo "Backing up previous installation to ${backupDir}."
+    cp -a "${filesDir}" "${backupDir}"
+    rm -rf "${filesDir}"
+fi
+
+cp -a "${progDir}" "${filesDir}"
+
+binFiles=($(find "${progDir}/bin" -type f -maxdepth 1))
+for f in "${binFiles[@]}"; do
+    f="$(baseName "${f}")"
+    linkFile="${targetDir}/bin/${f}"
+    if [[ -e ${linkFile} ]]; then
+        if [[ -h ${linkFile} ]]; then
+            rm -f "${linkFile}"
+        else
+            echo "Not overwriting file: ${linkFile}" 1>&2
+            echo 'Giving up.' 1>&2
+            exit 1
+        fi
+    fi
+    ln -s "../lib/${nameVersion}/bin/${f}" "${linkFile}"
+done
