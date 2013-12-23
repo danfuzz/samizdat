@@ -42,16 +42,28 @@ unset newProg
 # Preferred runtime name option.
 runtimeOpt=()
 
+# Whether to time the run.
+timeRun='no'
+
+# Whether to profile the run.
+profileRun='no'
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--runtime=<name>]"
+        echo "${progName} [--runtime=<name>] [--time | --profile]"
         exit
+    elif [[ ${opt} == '--profile' ]]; then
+        profileRun='yes'
+        timeRun='no'
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
         runtimeOpt=("${opt}")
+    elif [[ ${opt} == '--time' ]]; then
+        timeRun='yes'
+        profileRun='no'
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -72,4 +84,13 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
-exec "${name}" "$@"
+cmd=("${name}" "$@")
+
+if [[ ${timeRun} == 'yes' ]]; then
+    time -p "${cmd[@]}"
+elif [[ ${profileRun} == 'yes' ]]; then
+    # May also want to use the -allocations option.
+    iprofiler -T 20s -timeprofiler "${cmd[@]}"
+else
+    exec "${cmd[@]}"
+fi
