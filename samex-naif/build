@@ -45,8 +45,8 @@ profile='no'
 # Whether to compile with optimiaztions on.
 optimize='no'
 
-# Name of binary to produce.
-binName='samex-naif'
+# Name of executable to produce.
+name='samex-naif'
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -54,10 +54,10 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--optimize] [--profile] [--bin-name=<name>]"
+        echo "${progName} [--optimize] [--profile] [--name=<name>]"
         exit
-    elif [[ ${opt} =~ ^--bin-name=(.*) ]]; then
-        binName="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--name=(.*) ]]; then
+        name="${BASH_REMATCH[1]}"
     elif [[ ${opt} == '--optimize' ]]; then
         optimize='yes'
     elif [[ ${opt} == '--profile' ]]; then
@@ -78,18 +78,17 @@ unset opt
 #
 
 projectName="$(basename "${progDir}")"
+binName='samex' # Name of executable in the `lib` directory.
 
 OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
 FINAL="${OUT}/final"
-FINAL_INCLUDE="${FINAL}/include/${binName}"
-FINAL_BIN="${FINAL}/bin"
-FINAL_LIB="${FINAL}/lib/${binName}"
+FINAL_INCLUDE="${FINAL}/include/${name}"
+FINAL_LIB="${FINAL}/lib/${name}"
 
 rm -rf "${INTERMED}" "${FINAL_LIB}" "${FINAL_INCLUDE}" || exit 1
 mkdir -p "${INTERMED}" || exit 1
 mkdir -p "${FINAL_INCLUDE}" || exit 1
-mkdir -p "${FINAL_BIN}" || exit 1
 mkdir -p "${FINAL_LIB}" || exit 1
 
 if [[ ${profile} == 'yes' ]]; then
@@ -140,6 +139,4 @@ cd "${INTERMED}"
 OBJECTS=($(find . -name '*.o'))
 "${LINK_BIN[@]}" -o "${binName}" "${OBJECTS[@]}" || exit 1
 cp "${binName}" "${FINAL_LIB}" || exit 1
-rm -f "${FINAL_BIN}/${binName}" || exit 1
-ln -s "../lib/${binName}/${binName}" "${FINAL_BIN}/${binName}" || exit 1
 cp -r "${progDir}/include"/* "${FINAL_INCLUDE}"

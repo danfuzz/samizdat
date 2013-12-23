@@ -40,7 +40,19 @@ unset newProg
 #
 
 # Preferred runtime name option.
-runtimeOpt=()
+runtimeName=''
+
+# Whether to build a binary.
+build='no'
+
+# Whether to build with optimization.
+optimize='no'
+
+# Whether to time the run.
+timeRun='no'
+
+# Whether to profile the run.
+profileRun='no'
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -49,9 +61,21 @@ while [[ $1 != '' ]]; do
         break
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--runtime=<name>]"
+        echo '    [--build] [--optimize] [--time | --profile]'
         exit
+    elif [[ ${opt} == '--build' ]]; then
+        build='yes'
+    elif [[ ${opt} == '--optimize' ]]; then
+        optimize='yes'
+        build='yes'
+    elif [[ ${opt} == '--profile' ]]; then
+        profileRun='yes'
+        timeRun='no'
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
-        runtimeOpt=("${opt}")
+        runtimeName="${BASH_REMATCH[1]}"
+    elif [[ ${opt} == '--time' ]]; then
+        timeRun='yes'
+        profileRun='no'
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -67,9 +91,47 @@ unset opt
 # Main script
 #
 
+# Build the binary, if requested.
+
+if [[ ${build} == 'yes' ]]; then
+    if [[ ${runtimeName} == '' ]]; then
+        echo 'No --runtime specified.' 1>&2
+        exit 1
+    fi
+
+    sourceDir="$(cd "${baseDir}/../.."; pwd)/samex-${runtimeName}"
+    if [[ ! -d "${sourceDir}" ]]; then
+        echo "Source directory not found: ${sourceDir}" 1>&2
+        exit 1
+    fi
+
+    buildOpts=()
+
+    if [[ ${optimize} == 'yes' ]]; then
+        buildOpts=(--optimize)
+    fi
+
+    echo "Building..."
+    "${sourceDir}/build" "${buildOpts[@]}" > /dev/null || exit 1
+fi
+
+runtimeOpt=()
+if [[ ${runtimeName} != '' ]]; then
+    runtimeOpt=(--runtime="${runtimeName}")
+fi
+
 name="$("${progDir}/find-samex" "${runtimeOpt[@]}" --bin)"
 if [[ $? != 0 ]]; then
     exit 1
 fi
 
-exec "${name}" "$@"
+cmd=("${name}" "$@")
+
+if [[ ${timeRun} == 'yes' ]]; then
+    time -p "${cmd[@]}"
+elif [[ ${profileRun} == 'yes' ]]; then
+    # May also want to use the -allocations option.
+    iprofiler -T 20s -timeprofiler "${cmd[@]}"
+else
+    exec "${cmd[@]}"
+fi

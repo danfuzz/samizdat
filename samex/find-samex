@@ -76,6 +76,8 @@ unset opt
 # Main script
 #
 
+binName='samex'
+
 if [[ "${runtime}" == "" ]]; then
     names=(samex-tot samex-naif)
 else
@@ -85,7 +87,7 @@ fi
 found=''
 
 for n in "${names[@]}"; do
-    candidate="${progDir}/${n}"
+    candidate="${baseDir}/lib/${n}/${binName}"
     if [[ -x "${candidate}" ]]; then
         found="${n}"
         break
@@ -102,7 +104,7 @@ case "${output}" in
         echo "${found}"
         ;;
     (bin)
-        echo "${progDir}/${found}"
+        echo "${baseDir}/lib/${found}/${binName}"
         ;;
     (include)
         echo "${baseDir}/include/${found}"
