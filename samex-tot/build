@@ -40,7 +40,7 @@ unset newProg
 #
 
 projectName="$(basename "${progDir}")"
-binName="samex-tot"
+name="samex-tot"
 
 OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
@@ -50,7 +50,7 @@ FINAL_LIB="${FINAL}/lib/${binName}"
 
 "${baseDir}/samex/build" || exit 1
 "${baseDir}/samex-naif/build" --optimize || exit 1
-"${baseDir}/samex-naif/build" --optimize --bin-name="${binName}" || exit 1
+"${baseDir}/samex-naif/build" --optimize --name="${name}" || exit 1
 "${baseDir}/samtoc/build" || exit 1
 
 cd "${FINAL_LIB}/corelib"
