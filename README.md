@@ -117,8 +117,8 @@ exist (if incompletely), followed by pieces that are merely planned.
   relied upon for further iterative development of the other layers of
   the language implementation.
 
-  Written in Samizdat. Run and compiled-and-run with `samex` and `samtoc-solo`
-  (respectively), for purposes of verification, validation, and
+  Written in Samizdat. Run and compiled-and-run with `samex-deft` and
+  `samtoc-solo` (respectively), for purposes of verification, validation, and
   further language iteration.
 
 * ?
