@@ -101,11 +101,12 @@ exist (if incompletely), followed by pieces that are merely planned.
 
   Written in Samizdat. Used to produce (at least) two executables:
 
-  * Run using interpreted `sam` and given `sam`'s source as input, in
-    order to produce a compiled version of `sam`.
+  * Run using interpreted `samex-deft` and given `samtoc-solo`'s source as
+    input, in order to produce a compiled version of `samtoc-solo`.
 
-  * Run using compiled `sam` and given `samc`'s source as input, in
-    order to produce a compiled version of `samc`.
+  * Run as a compiled binary (output of the previous bullet item)
+    and given `samex-deft`'s source as input, in order to produce a
+    compiled version of `samex-deft`.
 
 * `samizdat-naif.sam` &mdash; Samizdat Layer 0 interpreter.
 
