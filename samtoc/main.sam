@@ -1,17 +1,17 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def CommandLine = moduleUse({name: ["core", "CommandLine"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-# Removes the `.*` suffix from `name`.
+## Removes the `.*` suffix from `name`.
 fn withoutSuffix(name) {
     def dotsAt = [ index in 0..+, ch in name <> (ch == ".") & index ];
 
     if (dotsAt == []) {
-        # No suffix on the name.
+        ## No suffix on the name.
         return name
     } else {
         def lastDot = Collection::last(dotsAt);
