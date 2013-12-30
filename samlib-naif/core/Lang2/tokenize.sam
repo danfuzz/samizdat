@@ -193,8 +193,8 @@ def tokQuotedIdentifier = {/
     { <> @identifier(dataOf(s)) }
 /};
 
-## "Parses" an unrecognized character. This also consumes any further characters
-## on the same line, in an attempt to resynch the input.
+## "Parses" an unrecognized character. This also consumes any further
+## characters on the same line, in an attempt to resynch the input.
 def tokError = {/
     badCh = .
     [! "\n"]*

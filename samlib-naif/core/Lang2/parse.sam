@@ -233,9 +233,9 @@ def parClosure = {/
 ## Parses a closure which must not define any formal arguments. This is done
 ## by parsing an arbitrary closure and then verifying that it does not
 ## declare formals. This is preferable to not-including formal argument
-## syntax, because (a) no rule wants to differentiate these cases (rules either
-## want an arbitrary closure or a specifically-constrained kind); (b) it
-## reduces redundancy in the syntax, and (c) the error case on the former
+## syntax, because (a) no rule wants to differentiate these cases (rules
+## either want an arbitrary closure or a specifically-constrained kind); (b)
+## it reduces redundancy in the syntax, and (c) the error case on the former
 ## would be more obscure (as in just something like "unexpected token" on
 ## the would-be formal argument).
 def parNullaryClosure = {/
@@ -900,14 +900,15 @@ def YIELD_VOID_THUNK = @closure{formals: [], statements: []};
 ## A single-argument yield-void function.
 def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
 
-## Prefix identifiers (identifiers which can be followed by another identifier,
-## yielding a compound identifier "phrase").
+## Prefix identifiers (identifiers which can be followed by another
+## identifier, yielding a compound identifier "phrase").
 def IDENTIFIER_PREFIXES = {
     get: "get",
     set: "set"
 };
 
-## For unary operators, map of token types to function name variable references.
+## For unary operators, map of token types to function name variable
+## references.
 def UNARY_OPERATORS = {
     "-":   makeModNameRef("Number", "neg"),
     "!!!": makeModNameRef("Bitwise", "not"),
@@ -1051,7 +1052,8 @@ def parInterpolatedString = {/
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
                         {
-                            Io1::die("Invalid syntax in string interpolation.")
+                            Io1::die(
+                                "Invalid syntax in string interpolation.")
                         };
 
                     <> makeCall(formatter,
@@ -1366,9 +1368,9 @@ def parCompareExpression = {/
 /};
 
 ## Parses a single test clause with optional assignment, yielding a map of
-## the form `{formal: ..., test: ...}`, with `formal` bound to a formal argument
-## declaration and `test` bound to the test expression. If no formal was
-## parsed, `formal` is bound to `{}`.
+## the form `{formal: ..., test: ...}`, with `formal` bound to a formal
+## argument declaration and `test` bound to the test expression. If no formal
+## was parsed, `formal` is bound to `{}`.
 def parTestClause = {/
     formal = (
         @def
@@ -1477,7 +1479,8 @@ def parLogicAndExpression = {/
     |
         ## Compound `&` expression (three or more clauses).
         {
-            ## Make a version of the test clauses, as thunks with formals lists.
+            ## Make a version of the test clauses, as thunks with formals
+            ## lists.
             def formals =
                 Generator::filterAll(most) { clause <> clause::formal };
             def testThunks =
@@ -1512,7 +1515,8 @@ def parLogicOrExpression = {/
     rest = (@"|" parLogicAndExpression)*
 
     (
-        ## This handles the case of not actually being a logical-or expression.
+        ## This handles the case of not actually being a logical-or
+        ## expression.
         {
             <> ifIs { <> eq(rest, []) }
                 { <> one }
@@ -1590,7 +1594,8 @@ def parMultiTest = {/
     |
         ## General case.
         {
-            ## Make a version of the test clauses, as thunks with formals lists.
+            ## Make a version of the test clauses, as thunks with formals
+            ## lists.
             def formals =
                 Generator::filterAll(clauses) { clause <> clause::formal };
             def testThunks =
@@ -1676,8 +1681,8 @@ def parIfExpression = {/
 
         ## To keep things simple, partial results are always thunks wrapped
         ## in a single-element list, so that they can be slotted directly into
-        ## place as the third argument to an enclosing `if*` by saying `result*`
-        ## (which also handles the case of a missing final `else`).
+        ## place as the third argument to an enclosing `if*` by saying
+        ## `result*` (which also handles the case of a missing final `else`).
         def reduction = Generator::doReduce1(clauses, optElse)
             { clause, optResult ->
                 def maker = clause::maker;
@@ -1888,9 +1893,9 @@ def parSwitchCase = {/
     { <> {code, keys} }
 /};
 
-## Tree for the second argument to the `ifValue` inside a `switch` translation.
-## This expression is constant across all switches, and it's most easily
-## constructed by using the built-in parser.
+## Tree for the second argument to the `ifValue` inside a `switch`
+## translation. This expression is constant across all switches, and it's most
+## easily constructed by using the built-in parser.
 def SWITCH_DISPATCH_CLOSURE = Lang0::parseProgram("
     args ->
     <> { cases, defaultFunction, value ->
@@ -2011,8 +2016,9 @@ def parSwitchExpression = {/
         ##   "logic nature" of the expression operate as expected (that is,
         ##   not cause a runtime error if the test is logical-false, instead
         ##   running the `else` block if any). The test is furthermore wrapped
-        ##   in an `expression` node in case it happens to be an interpolation,
-        ##   which will have to have expression and not argument semantics.
+        ##   in an `expression` node in case it happens to be an
+        ##   interpolation, which will have to have expression and not
+        ##   argument semantics.
         def testBody = makeThunk(
                 makeCallName("makeList",
                     ifIs { <> eq(regularCases, []) }

@@ -118,9 +118,11 @@ fn loadLibraryOrModule(ctx, name) {
 
 ## Loads all of libraries named by the manifest, in order, allowing later
 ## libraries to depend on earlier ones. The first listed library can depend
-## only on the initial given `baseCtx` (that is, the primitive library context).
+## only on the initial given `baseCtx` (that is, the primitive library
+## context).
 fn loadAllLibraries(baseCtx) {
-    ## Read the manifest file, to figure out what all to load and in what order.
+    ## Read the manifest file, to figure out what all to load and in what
+    ## order.
     def manifest = loadLibrary(baseCtx, "manifest.sam")::MANIFEST;
 
     <> loopReduce(manifest, baseCtx)

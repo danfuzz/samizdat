@@ -37,7 +37,8 @@ fn flattenPath(name) {
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
 
-    ## A box for the final load context, to enable the necessary self-reference.
+    ## A box for the final load context, to enable the necessary
+    ## self-reference.
     def ctxBox = Box_makePromise();
 
     ## A box for all the loaded submodule files.
@@ -304,8 +305,8 @@ fn moduleDef(modu) {
 
 ## Documented in spec.
 fn moduleGet(searchInfo) {
-    ## TODO: Currently ignores everything about `searchInfo` other than the name
-    ## and path.
+    ## TODO: Currently ignores everything about `searchInfo` other than the
+    ## name and path.
 
     ifValue { <> searchInfo::path }
         { path -> return get(Box_fetch(thePathsBox), path) };
