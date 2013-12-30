@@ -46,7 +46,7 @@ OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
 FINAL="${OUT}/final"
 FINAL_BIN="${FINAL}/bin"
-FINAL_LIB="${FINAL}/lib/${binName}"
+FINAL_LIB="${FINAL}/lib/${name}"
 
 "${baseDir}/samex/build" || exit 1
 "${baseDir}/samex-naif/build" --optimize || exit 1
