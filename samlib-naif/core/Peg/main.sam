@@ -222,7 +222,7 @@ genericBind(parse, "PegTokenSetComplement", PegTokenSetComplement_parse);
 ## Private helper for `make*Set*`, which takes a `sense` argument and
 ## produces the desired rule.
 fn genericMakeTokenSet(sense, types) {
-    def set = {types*: true}; # A set-like map of all the token types.
+    def set = {types*: true}; ## A set-like map of all the token types.
 
     ifIs { <> eq(set, {}) }
         {

@@ -145,13 +145,13 @@ fn typeString(type){
 };
 
 ## The first Unicode surrogate code point.
-def CHAR_SURROGATE_START = toString(55296); # U+D800
+def CHAR_SURROGATE_START = toString(55296); ## U+D800
 
 ## The last Unicode surrogate code point.
-def CHAR_SURROGATE_END = toString(57343); # U+DFFF
+def CHAR_SURROGATE_END = toString(57343); ## U+DFFF
 
 ## The last Unicode code point.
-def CHAR_UNICODE_END = toString(1114111); # U+10FFFF
+def CHAR_UNICODE_END = toString(1114111); ## U+10FFFF
 
 ## Map of special-case characters to either their stringified forms or
 ## to `"x"` to indicate a need to convert as hex.

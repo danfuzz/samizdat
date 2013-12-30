@@ -48,15 +48,15 @@ def MANIFEST = [
     ["core", "Collection"],
 
     ["core", "Io0"],
-    ["core", "FunctionForwarder"], # Uses `Box` and `Io0`.
-    ["core", "Boolean"],           # Uses `Io0`.
+    ["core", "FunctionForwarder"], ## Uses `Box` and `Io0`.
+    ["core", "Boolean"],           ## Uses `Io0`.
 
     ## Layer 0: Nontrivial modules.
     ["core", "Generator"],
     ["core", "Range"],
     ["core", "Format"],
     ["core", "Peg"],
-    ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
+    ["core", "ParseForwarder"],  ## Uses `parse` defined by `core::Peg`.
 
     ## Layer 1: Language implementation.
     ["core", "Lang1"],

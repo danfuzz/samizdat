@@ -1293,7 +1293,7 @@ def parRangeExpression = {/
         increment = (
             @".."
             inc = parUnaryExpression
-            &[@".." @"..!" @"..+"] # So this won't match a limit expression.
+            &[@".." @"..!" @"..+"] ## So this won't match a limit expression.
             { <> inc }
         |
             { <> makeLiteral(1) }
@@ -2065,7 +2065,7 @@ Box::store(parExpression, implExpression);
 ## Parses a statement.
 def implStatement2 = {/
     ## TODO: Perhaps there will be more statement variants.
-    !() # Always fail, for now.
+    !() ## Always fail, for now.
 /};
 Box::store(parStatement2, implStatement2);
 
