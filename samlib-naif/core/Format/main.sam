@@ -242,10 +242,10 @@ fn Value_sourceGeneral(value, adorn) {
 
     ifIs { <> isOpaqueValue(value) }
         {
-            # Opaque value, possibly named.
+            ## Opaque value, possibly named.
             def body = ifIs { <> canCall(nameOf, value) }
                 {
-                    # It binds `nameOf` but might not have a name.
+                    ## It binds `nameOf` but might not have a name.
                     <> ifValue { <> nameOf(value) }
                         { name <> keyString(name) }
                         { <> "..." }
@@ -257,11 +257,11 @@ fn Value_sourceGeneral(value, adorn) {
 
     <> ifValue { <> dataOf(value) }
         { data ->
-            # Transparent derived value with payload.
+            ## Transparent derived value with payload.
             return cat(prefix, "(", sourceGeneral(data, true), ")")
         }
         {
-            # Type-only transparent derived value.
+            ## Type-only transparent derived value.
             <> prefix
         };
 };

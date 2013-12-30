@@ -41,7 +41,7 @@ fn last(collection) {
 };
 
 <> {
-    # Re-exported from proto.
+    ## Re-exported from proto.
     cat:      Collection::cat,
     del:      Collection::del,
     get:      Collection::get,
@@ -51,7 +51,7 @@ fn last(collection) {
     sizeOf:   Collection::sizeOf,
     slice:    Collection::slice,
 
-    # Defined in this file.
+    ## Defined in this file.
     butFirst,
     butLast,
     first,

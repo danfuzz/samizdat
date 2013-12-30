@@ -29,7 +29,7 @@ PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 ## Converts an unstructured string into a list-of-strings, by delimiting on
 ## the given character. Empty strings are discarded from the result list.
 fn splitString(string, delimCh) {
-    # Append to list, ignoring empty strings.
+    ## Append to list, ignoring empty strings.
     fn appendNonempty(list, one) {
         <> ifIs { <> eq(one, "") }
             { <> list }
@@ -77,19 +77,19 @@ fn loadLibrary(ctx, name) {
     def tree = ctx::Lang0_parseProgram(text);
     def function = ctx::Lang0_eval(ctx, tree);
 
-    # Evaluating the program text/tree results in a function which, when
-    # called, yields the bindings defined by that file (because that's how
-    # each library file is written). If the function yields void, then
-    # the file was only loaded for side effects (such as binding generic
-    # functions).
+    ## Evaluating the program text/tree results in a function which, when
+    ## called, yields the bindings defined by that file (because that's how
+    ## each library file is written). If the function yields void, then
+    ## the file was only loaded for side effects (such as binding generic
+    ## functions).
     <> ifValue { <> function() }
         { bindings ->
-            # The end result is the addition of the new bindings to the
-            # original context.
+            ## The end result is the addition of the new bindings to the
+            ## original context.
             <> {ctx*, bindings*};
         }
         {
-            # No new bindings.
+            ## No new bindings.
             <> ctx
         }
 };
@@ -120,7 +120,7 @@ fn loadLibraryOrModule(ctx, name) {
 ## libraries to depend on earlier ones. The first listed library can depend
 ## only on the initial given `baseCtx` (that is, the primitive library context).
 fn loadAllLibraries(baseCtx) {
-    # Read the manifest file, to figure out what all to load and in what order.
+    ## Read the manifest file, to figure out what all to load and in what order.
     def manifest = loadLibrary(baseCtx, "manifest.sam")::MANIFEST;
 
     <> loopReduce(manifest, baseCtx)
@@ -139,11 +139,11 @@ fn loadAllLibraries(baseCtx) {
 ## Builds the final core library, by doing file loading / evaluation, and then
 ## doing final module system setup.
 fn makeCoreLibrary() {
-    # This is the final core library load context, which has extra bindings
-    # beyond what's supposed to be in the real core library.
+    ## This is the final core library load context, which has extra bindings
+    ## beyond what's supposed to be in the real core library.
     def finalContext = loadAllLibraries(PRIMITIVE_CONTEXT);
 
-    # The module `core::Globals` is the "sanitized" core library context.
+    ## The module `core::Globals` is the "sanitized" core library context.
     <> finalContext::moduleUse({name: ["core", "Globals"]});
 };
 

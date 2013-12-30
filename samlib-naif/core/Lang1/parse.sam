@@ -332,9 +332,9 @@ def parMapping = Peg::makeMainSequence(
     Peg::makeCode { keys, value ->
         <> ifIs { <> eq(keys, []) }
             { <out> ->
-                # No keys were specified, so the value must be either a
-                # whole-map interpolation or a variable-name-to-its-value
-                # binding.
+                ## No keys were specified, so the value must be either a
+                ## whole-map interpolation or a variable-name-to-its-value
+                ## binding.
                 def type = typeOf(value);
                 def data = dataOf(value);
                 ifIs { <> eq(type, "interpolate") }
@@ -346,9 +346,9 @@ def parMapping = Peg::makeMainSequence(
                     }
             }
             {
-                # One or more keys. The `value` is wrapped in an
-                # `expression` node here to prevent interpolation from
-                # being applied to `makeValueMap`.
+                ## One or more keys. The `value` is wrapped in an
+                ## `expression` node here to prevent interpolation from
+                ## being applied to `makeValueMap`.
                 <> makeCallName("makeValueMap", keys*, @expression(value))
             }
     });
@@ -417,8 +417,8 @@ def parDeriv = Peg::makeMainSequence(
 def implTerm = Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
     parDeriv, parClosure, parParenExpression,
-    # Defined by Samizdat Layer 1. The lookahead is just to make
-    # it clear what is required to "jump into" Layer 1 parsing.
+    ## Defined by Samizdat Layer 1. The lookahead is just to make
+    ## it clear what is required to "jump into" Layer 1 parsing.
     Peg::makeSequence(
         Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
         parParser));

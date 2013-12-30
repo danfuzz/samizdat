@@ -35,7 +35,7 @@ genericBind(rangeAdd, String, String_rangeAdd);
 
 ## Documented in spec.
 fn makeClosedRange(firstValue, increment, size) {
-    # `totGt` ensures that `size` is an int.
+    ## `totGt` ensures that `size` is an int.
     <> ifIs { <> totGt(size, 0) }
         {
             <> @ClosedRange{firstValue, increment, size}
@@ -45,13 +45,13 @@ fn makeClosedRange(firstValue, increment, size) {
 
 ## Documented in spec.
 fn makeExclusiveRange(firstValue, increment, limit) {
-    # `totEq` ensures that `firstValue` and `limit` have the same type.
-    # `optValue({ <> x})` == `x?`.
+    ## `totEq` ensures that `firstValue` and `limit` have the same type.
+    ## `optValue({ <> x})` == `x?`.
     def isEmpty = optValue { <> totEq(firstValue, limit) };
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
 
-    # `totEq` ensures that `increment` is an int.
+    ## `totEq` ensures that `increment` is an int.
     ifIs { <> totEq(increment, 0) }
         {
             return ifIs { <> isEmpty* }
@@ -59,9 +59,9 @@ fn makeExclusiveRange(firstValue, increment, limit) {
                 { <> makeClosedRange(firstValue, 0, 1) }
         };
 
-    # `sign(increment)` is either `-1` or `+1`, which when subtracted from
-    # limit "pushes" the limit in the right direction to make the truncated
-    # division produce the correct result size.
+    ## `sign(increment)` is either `-1` or `+1`, which when subtracted from
+    ## limit "pushes" the limit in the right direction to make the truncated
+    ## division produce the correct result size.
     def size =
         Number::add(1,
             Number::div(
@@ -78,10 +78,10 @@ fn makeExclusiveRange(firstValue, increment, limit) {
 
 ## Documented in spec.
 fn makeInclusiveRange(firstValue, increment, limit) {
-    # This ensures that `firstValue` and `limit` have the same type.
+    ## This ensures that `firstValue` and `limit` have the same type.
     totEq(firstValue, limit);
 
-    # `totEq` ensures that `increment` is an int.
+    ## `totEq` ensures that `increment` is an int.
     ifIs { <> totEq(increment, 0) }
         { return makeClosedRange(firstValue, 0, 1) };
 
@@ -110,7 +110,7 @@ fn ClosedRange_nextValue(range, box) {
                 Number::sub(size, 1))
         }
         {
-            # Voided.
+            ## Voided.
             Box::store(box);
         }
 };

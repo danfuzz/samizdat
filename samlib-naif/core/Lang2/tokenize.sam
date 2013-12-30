@@ -30,7 +30,7 @@ def tokStringPart2 = ParseForwarder::make();
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
         "def", "fn", "return",
-        # Layer 2 defines additional keywords here.
+        ## Layer 2 defines additional keywords here.
         "break", "continue", "default", "do", "else", "export",
         "for", "if", "import", "in", "module", "reduce",
         "switch", "var", "while"])
@@ -63,9 +63,9 @@ def processStringParts = FunctionForwarder::make();
 ## Parses a non-zero amount of whitespace and comments.
 ## **Note:** The yielded result is always ignored.
 def tokWhitespace = {/
-    # The lookahead here is to avoid the bulk of this rule if there's
-    # no chance we're actually looking at whitespace. The final
-    # lookahead character is only useful as of Layer 2.
+    ## The lookahead here is to avoid the bulk of this rule if there's
+    ## no chance we're actually looking at whitespace. The final
+    ## lookahead character is only useful as of Layer 2.
     &["# \n" "/"]
 
     (
@@ -80,7 +80,7 @@ def tokWhitespace = {/
             !.
         )
     |
-        # Introduced in Layer 2.
+        ## Introduced in Layer 2.
         &"/*" # Avoid calling the rule unless we know it will match.
         tokMultilineComment
     )+
@@ -90,37 +90,37 @@ def tokWhitespace = {/
 ##
 ## **Note:** This rule is expanded significantly in Layer 2.
 def tokPunctuation = {/
-    # The lookahead here is done to avoid bothering with the choice
-    # expression, except when we have a definite match. The second
-    # string in the lookahead calls out the characters that are only
-    # needed in Layer 1. Yet more characters are included in Layer 2.
+    ## The lookahead here is done to avoid bothering with the choice
+    ## expression, except when we have a definite match. The second
+    ## string in the lookahead calls out the characters that are only
+    ## needed in Layer 1. Yet more characters are included in Layer 2.
     &["&@:.,=-+?;*<>{}()[]" "/|!" "\\%^"]
 
     (
-        # Introduced in Layer 2.
+        ## Introduced in Layer 2.
         "\\==" | "\\!=" | "\\<=" | "\\>=" | "\\<" | "\\>"
     |
-        # Introduced in Layer 2.
+        ## Introduced in Layer 2.
         "&&&" | "|||" | "^^^" | "!!!" | "<<<" | ">>>" | "..!" | "..+"
     |
-        # Introduced in Layer 2.
+        ## Introduced in Layer 2.
         "==" | "!=" | "<=" | ">=" | "??" | "**" | ":=" | "//" | "%%"
     |
         "->" | "::" | ".." | "<>"
     |
-        # These are introduced in Layer 1.
+        ## These are introduced in Layer 1.
         "{/" | "/}"
     |
-        # Note: We check this error condition here instead of in the
-        # comment parsing code, because comments get parsed as whitespace,
-        # which gets ignored. Rather than changing to not-quite-ignore
-        # whitespace -- which would be messy -- we instead notice `/*` here
-        # where we're parsing other punctuation. This is clean but a little
-        # non-obvious, hence this comment.
+        ## Note: We check this error condition here instead of in the
+        ## comment parsing code, because comments get parsed as whitespace,
+        ## which gets ignored. Rather than changing to not-quite-ignore
+        ## whitespace -- which would be messy -- we instead notice `/*` here
+        ## where we're parsing other punctuation. This is clean but a little
+        ## non-obvious, hence this comment.
         "/*" .*
         { <> @error("Unterminated comment.") }
     |
-        # Single-character punctuation / operator.
+        ## Single-character punctuation / operator.
         .
     )
 /};
@@ -141,7 +141,7 @@ def tokStringPart = {/
         { <> Peg::stringFromTokenList(chars) }
     )
 |
-    # This is the rule that ignores spaces after newlines.
+    ## This is the rule that ignores spaces after newlines.
     "\n"
     " "*
     { <> "\n" }
@@ -156,7 +156,7 @@ def tokStringPart = {/
         "0"  { <> "\0" }
     )
 |
-    # Introduced in Layer 2.
+    ## Introduced in Layer 2.
     tokStringPart2
 /};
 
@@ -209,14 +209,14 @@ def tokError = {/
 def tokToken = {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
-    # This needs to be listed after the quoted identifier rule, to
-    # prevent `\"...` from being treated as a `\` token followed by
-    # a string.
+    ## This needs to be listed after the quoted identifier rule, to
+    ## prevent `\"...` from being treated as a `\` token followed by
+    ## a string.
     tokPunctuation
 |
-    # This needs to be listed after the identifier rule, to prevent
-    # an identifier-initial `_` from triggering this rule. (This is
-    # only significant in Layer 2 and higher.)
+    ## This needs to be listed after the identifier rule, to prevent
+    ## an identifier-initial `_` from triggering this rule. (This is
+    ## only significant in Layer 2 and higher.)
     tokInt
 |
     tokError
@@ -255,22 +255,22 @@ fn intFromDigitList(base, digits) {
 };
 
 fn implProcessStringParts(parts) {
-    # Handle the empty string as a special case, to make the
-    # reduce below be more straightforward.
+    ## Handle the empty string as a special case, to make the
+    ## reduce below be more straightforward.
     ifIs { <> eq(parts, []) }
         { return @string("") };
 
-    # If there is an error part (represented as an `@error` token), return
-    # it.
+    ## If there is an error part (represented as an `@error` token), return
+    ## it.
     Generator::filterPump(parts)
         { part ->
             <> ifIs { <> eq(typeOf(part), "error") }
                 { return part }
         };
 
-    # Coalesce adjacent literal strings in `parts`. The result is an
-    # `elems` list consisting of multi-character strings and
-    # interpolation maps.
+    ## Coalesce adjacent literal strings in `parts`. The result is an
+    ## `elems` list consisting of multi-character strings and
+    ## interpolation maps.
     def elems = Generator::doReduce1(
         Collection::butFirst(parts),
         [Collection::first(parts)])
@@ -281,18 +281,18 @@ fn implProcessStringParts(parts) {
                 { <> [result*, part] };
         };
 
-    # Check for a simple result.
+    ## Check for a simple result.
     ifIs { <> eq(Collection::sizeOf(elems), 1) }
         {
             ifValue { <> isString(elems*) }
                 { elem ->
-                    # There's only one element, and it's a string. So,
-                    # we have a simple non-interpolated string. Return it.
+                    ## There's only one element, and it's a string. So,
+                    ## we have a simple non-interpolated string. Return it.
                     return @string(elem)
                 }
         };
 
-    # At this point, we have a valid interpolation.
+    ## At this point, we have a valid interpolation.
     <> @interpolatedString(elems)
 };
 Box::store(processStringParts, implProcessStringParts);
@@ -418,8 +418,8 @@ def implStringPart2 = {/
     (
         "/"  { <> "" }
     |
-        # This is the rule that ignores an escaped newline, followed by
-        # any number of spaces.
+        ## This is the rule that ignores an escaped newline, followed by
+        ## any number of spaces.
         "\n"
         " "*
         { <> "" }

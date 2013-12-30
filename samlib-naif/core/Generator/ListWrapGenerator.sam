@@ -29,7 +29,7 @@ fn ListWrapGenerator_nextValue(gen, box) {
             <> @ListWrapGenerator(nextGenerator)
         }
         {
-            # It became voided.
+            ## It became voided.
             Box::store(box);
         }
 };

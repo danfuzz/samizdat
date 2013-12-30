@@ -19,21 +19,21 @@ def BOOTSTRAP_FILES = [
 ## dependency order. That is, the first one depends only on the primitives,
 ## the second can depend on primitives and the first, etc.
 def MANIFEST = [
-    # Layer 0 in-language core library.
+    ## Layer 0 in-language core library.
 
-    # Layer 0: Basic module system. Listed first so it can be used
-    # by everything else.
+    ## Layer 0: Basic module system. Listed first so it can be used
+    ## by everything else.
     "Module0.sam",
 
-    # Layer 0: Constant value definitions and simple functions, directly
-    # added to the global library context.
+    ## Layer 0: Constant value definitions and simple functions, directly
+    ## added to the global library context.
     ["core", "Globals0"],
 
-    # Layer 0 evaluation as a module. Used by everything that follows.
+    ## Layer 0 evaluation as a module. Used by everything that follows.
     ["core", "Lang0"],
 
-    # Layer 0: Prototype definition modules, re-exported from the primitive
-    # core library.
+    ## Layer 0: Prototype definition modules, re-exported from the primitive
+    ## core library.
     ["proto", "Bitwise"],
     ["proto", "Box"],
     ["proto", "Collection"],
@@ -41,7 +41,7 @@ def MANIFEST = [
     ["proto", "Number"],
     ["proto", "Sequence"],
 
-    # Layer 0: Simple modules.
+    ## Layer 0: Simple modules.
     ["core", "EntityMap"],
     ["core", "Bitwise"],
     ["core", "Box"],
@@ -51,27 +51,27 @@ def MANIFEST = [
     ["core", "FunctionForwarder"], # Uses `Box` and `Io0`.
     ["core", "Boolean"],           # Uses `Io0`.
 
-    # Layer 0: Nontrivial modules.
+    ## Layer 0: Nontrivial modules.
     ["core", "Generator"],
     ["core", "Range"],
     ["core", "Format"],
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
-    # Layer 1: Language implementation.
+    ## Layer 1: Language implementation.
     ["core", "Lang1"],
 
-    # Layer 1: Modules.
+    ## Layer 1: Modules.
     ["core", "Io1"],
     ["core", "Module"],
 
-    # Layer 2: Language implementation.
+    ## Layer 2: Language implementation.
     ["core", "Lang2"],
 
-    # Layer 2: Modules.
+    ## Layer 2: Modules.
     ["core", "CommandLine"],
 
-    # Final global variable context setup.
+    ## Final global variable context setup.
     ["core", "Globals"]
 ];
 

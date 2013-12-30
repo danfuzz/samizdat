@@ -17,13 +17,13 @@ def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 ## Parses a single path component.
 def parPathComponent = {/
-    # Ignore duplicate slashes, but require at least one. Note: The parser
-    # is only ever called on a string that begins with a slash.
+    ## Ignore duplicate slashes, but require at least one. Note: The parser
+    ## is only ever called on a string that begins with a slash.
     "/"+
 
-    # Match the component text. This is a `*` and not a `+` rule, in order to
-    # successfully match a string-final empty component (that is, a trailing
-    # slash on the overall path string).
+    ## Match the component text. This is a `*` and not a `+` rule, in order to
+    ## successfully match a string-final empty component (that is, a trailing
+    ## slash on the overall path string).
     component = [! "/"]*
     { <> Peg::stringFromTokenList(component) }
 /};
@@ -129,8 +129,8 @@ fn isPrefix(prefix, path) {
 
     ifIs { <> gt(prefixSize, Collection::sizeOf(path)) }
         {
-            # The "prefix" is longer than the path, so it can't actually be
-            # a prefix.
+            ## The "prefix" is longer than the path, so it can't actually be
+            ## a prefix.
             return
         };
 
@@ -177,9 +177,9 @@ fn flatFromPath(path) {
         Generator::makeFilterGenerator(
             path, Range::makeOpenRange(Collection::sizeOf(path), -1))
             { <out> one, n ->
-                # This test skips the check on the last path component, if it
-                # happens to be empty (which is the only valid case of an empty
-                # path component).
+                ## This test skips the check on the last path component, if it
+                ## happens to be empty (which is the only valid case of an empty
+                ## path component).
                 ifIs { <> eq([one, n], ["", 1]) }
                     { <out> "/" }
                     {
@@ -195,16 +195,16 @@ fn flatFromPath(path) {
 
 ## Documented in Samizdat Layer 0 spec.
 fn pathFromFlat(string) {
-    # Reject the empty string.
+    ## Reject the empty string.
     ifIs { <> eq(string, "") }
         { dieWith("Invalid path", "") };
 
-    # Prepend the current directory if the path isn't absolute.
+    ## Prepend the current directory if the path isn't absolute.
     def absoluteString = ifIs { <> eq(Collection::nth(string, 0), "/") }
         { <> string }
         { <> cat(Io0::flatCwd(), "/", string) };
 
-    # Parse the string into components (or an error string).
+    ## Parse the string into components (or an error string).
     def components = Peg::apply(parPathString, absoluteString);
 
     ifIs { <> isString(components) }
@@ -215,10 +215,10 @@ fn pathFromFlat(string) {
 
 ## Documented in Samizdat Layer 0 spec.
 fn pathListFromFlat(string) {
-    # Parse the given string into a list of flat paths.
+    ## Parse the given string into a list of flat paths.
     def flats = Peg::apply(parPathList, string);
 
-    # Call `pathFromFlat` on each element.
+    ## Call `pathFromFlat` on each element.
     <> Generator::filterAll(pathFromFlat, flats)
 };
 
@@ -247,11 +247,11 @@ fn writeFileUtf8(path, text) {
 };
 
 <> {
-    # Re-exported from Io0.
+    ## Re-exported from Io0.
     die:  Io0::die,
     note: Io0::note,
 
-    # Defined in this file.
+    ## Defined in this file.
     fileExists,
     flatFromPath,
     pathFromFlat,

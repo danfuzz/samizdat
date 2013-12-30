@@ -18,12 +18,12 @@ def NullGenerator = submoduleUse("NullGenerator");
 
 ## Documented in spec.
 fn makeSerialGenerator(generators*) {
-    # Return the `nullGenerator` if we weren't passed any arguments.
+    ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
         { return NullGenerator::nullGenerator };
 
-    # Return the argument directly if we were only passed one.
-    # This saves some gratuitous call wrapping / double yields.
+    ## Return the argument directly if we were only passed one.
+    ## This saves some gratuitous call wrapping / double yields.
     ifIs { <> eq(Collection::sizeOf(generators), 1) }
         { return generators* };
 
@@ -45,14 +45,14 @@ fn SerialGenerator_nextValue(gen, box) {
                     <> @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
-                    # First generator was voided.
+                    ## First generator was voided.
                     <> Generator::nextValue(
                         makeSerialGenerator(moreGens*),
                         box)
                 }
         }
         {
-            # Totally voided.
+            ## Totally voided.
             Box::store(box)
         }
 };

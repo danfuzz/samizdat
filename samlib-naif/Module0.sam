@@ -25,7 +25,7 @@ def thePathsBox = Box_makeCell({});
 ## `Io*` modules, because this function needs to be called before the `Io*`
 ## modules are loaded.
 fn flattenPath(name) {
-    # Prefix each component with `/`, and concatenate them all together.
+    ## Prefix each component with `/`, and concatenate them all together.
 
     def withSlashes = Generator_filter(name, { elem <> cat("/", elem) });
     <> cat(withSlashes*);
@@ -37,10 +37,10 @@ fn flattenPath(name) {
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
 
-    # A box for the final load context, to enable the necessary self-reference.
+    ## A box for the final load context, to enable the necessary self-reference.
     def ctxBox = Box_makePromise();
 
-    # A box for all the loaded submodule files.
+    ## A box for all the loaded submodule files.
     def subsBox = Box_makeCell({});
 
     fn submoduleFileName(name, extension?) {
@@ -97,9 +97,9 @@ fn makeModuleContext(baseCtx, directory) {
         <> result
     };
 
-    # If the `module` file exists, it must evaluate to a map. If not,
-    # create a minimal "anonymous" module definition. In either case, add
-    # an extra binding for the path to the module.
+    ## If the `module` file exists, it must evaluate to a map. If not,
+    ## create a minimal "anonymous" module definition. In either case, add
+    ## an extra binding for the path to the module.
     def moduleInfo = {
         (
             ifValue { <> submoduleReadIfExists("module", "sam") }
@@ -115,7 +115,7 @@ fn makeModuleContext(baseCtx, directory) {
     def languageModule = ifIs { <> ne(languageName, "none") }
         { <> baseCtx::moduleUse({name: ["core", languageName]}) }
         {
-            # Fall-back used when loading modules before `Lang0` is defined.
+            ## Fall-back used when loading modules before `Lang0` is defined.
             <> {
                 eval:         Lang0_eval,
                 parseProgram: Lang0_parseProgram
@@ -236,11 +236,11 @@ fn getGlobals(modu) {
         { globals ->
             <> ifIs { <> eq(globals, "all") }
                 {
-                    # Export all bindings.
+                    ## Export all bindings.
                     <> getExports(modu)
                 }
                 {
-                    # Selective global export.
+                    ## Selective global export.
                     def bindings = Generator_filter(
                         globals,
                         { g <> {(g): get(modu, g)} });
@@ -260,9 +260,9 @@ fn load(baseCtx, fqPath) {
     def paths = Box_fetch(thePathsBox);
     ifValue { <> get(paths, fqPath) }
         { already ->
-            # Either the module is already loaded, or it's currently in
-            # the middle of being loaded. Figure out which, and respond
-            # accordingly.
+            ## Either the module is already loaded, or it's currently in
+            ## the middle of being loaded. Figure out which, and respond
+            ## accordingly.
             ifIs { <> eq(already, "loading") }
                 {
                     Io0_die(cat("Module load loop detected: ",
@@ -275,14 +275,14 @@ fn load(baseCtx, fqPath) {
 
     def ctx = makeModuleContext(baseCtx, fqPath);
 
-    # This is supposed to evaluate to a map.
+    ## This is supposed to evaluate to a map.
     def exports = ctx::submoduleUse("main");
 
-    # Combine `moduleInfo` and `exports` to form the final module value.
+    ## Combine `moduleInfo` and `exports` to form the final module value.
     def result = @Module{info: ctx::moduleInfo, exports};
 
-    # Update the loaded module map. Note that we re-fetch the value, since
-    # it may have been altered by other loads while this load was in progress.
+    ## Update the loaded module map. Note that we re-fetch the value, since
+    ## it may have been altered by other loads while this load was in progress.
     Box_store(thePathsBox,
         Collection_put(Box_fetch(thePathsBox), fqPath, result));
 
@@ -304,8 +304,8 @@ fn moduleDef(modu) {
 
 ## Documented in spec.
 fn moduleGet(searchInfo) {
-    # TODO: Currently ignores everything about `searchInfo` other than the name
-    # and path.
+    ## TODO: Currently ignores everything about `searchInfo` other than the name
+    ## and path.
 
     ifValue { <> searchInfo::path }
         { path -> return get(Box_fetch(thePathsBox), path) };
@@ -329,8 +329,8 @@ fn moduleUse(searchInfo, modulePaths?) {
 
 ## Documented in spec.
 fn stringFromModuleName(fqName) {
-    # Prefix each component with "::", combine them all, and then drop the
-    # first two characters.
+    ## Prefix each component with "::", combine them all, and then drop the
+    ## first two characters.
     def parts = Generator_filter(fqName, { n <> cat("::", n) });
     def result = cat(parts*);
 

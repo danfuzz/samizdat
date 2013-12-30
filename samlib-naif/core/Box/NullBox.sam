@@ -15,20 +15,20 @@ def Box = moduleUse({name: ["proto", "Box"]});
 
 ## Documented in spec.
 fn NullBox_canStore(box) {
-    # Always succeeds.
+    ## Always succeeds.
     <> box
 };
 genericBind(Box::canStore, "NullBox", NullBox_canStore);
 
 ## Documented in spec.
 fn NullBox_fetch(box) {
-    # Return void.
+    ## Return void.
 };
 genericBind(Box::fetch, "NullBox", NullBox_fetch);
 
 ## Documented in spec.
 fn NullBox_store(box, value?) {
-    # Return `value` but otherwise do nothing.
+    ## Return `value` but otherwise do nothing.
     <> value*
 };
 genericBind(Box::store, "NullBox", NullBox_store);

@@ -30,9 +30,9 @@ fn FilterGenerator_nextValue(gen, box) {
     def payload = dataOf(gen);
     def filterFunction = payload::filterFunction;
 
-    # This loop handles the fact that the filter function is
-    # allowed to yield void to indicate a generated value is to
-    # be discarded.
+    ## This loop handles the fact that the filter function is
+    ## allowed to yield void to indicate a generated value is to
+    ## be discarded.
     loopReduce(payload::generator) { <next> gen ->
         def innerBox = Box::makePromise();
 
@@ -46,12 +46,12 @@ fn FilterGenerator_nextValue(gen, box) {
                                 nextGenerator))
                     }
                     {
-                        # The filter discarded the value. Iterate!
+                        ## The filter discarded the value. Iterate!
                         <next> [nextGenerator]
                     }
             };
 
-        # The inner generator was voided.
+        ## The inner generator was voided.
         Box::store(box);
         return
     }

@@ -19,12 +19,12 @@ def NullGenerator = submoduleUse("NullGenerator");
 
 ## Documented in spec.
 fn makeParaGenerator(generators*) {
-    # Return the `nullGenerator` if we weren't passed any arguments.
+    ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
         { return NullGenerator::nullGenerator };
 
-    # Return a `ListWrapGenerator` if we were only passed one argument.
-    # This saves some overhead.
+    ## Return a `ListWrapGenerator` if we were only passed one argument.
+    ## This saves some overhead.
     ifIs { <> eq(Collection::sizeOf(generators), 1) }
         { return ListWrapGenerator::makeListWrapGenerator(generators*) };
 
@@ -45,7 +45,7 @@ fn ParaGenerator_nextValue(gen, box) {
             <> ifValue { <> Generator::nextValue(gen, innerBox) }
                 { nextGenerator <> [Box::fetch(innerBox), nextGenerator] }
                 {
-                    # One of the sub-generators became voided.
+                    ## One of the sub-generators became voided.
                     Box::store(box);
                     return
                 }

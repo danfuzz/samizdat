@@ -44,7 +44,7 @@ fn loadPath(moduleDir, modulePaths) {
     def baseContext = Module0::getGlobals(
         Module0::moduleGet({name: ["core", "Globals"]}));
 
-    # This `moduleUse` is bound in the load context.
+    ## This `moduleUse` is bound in the load context.
     fn innerModuleUse(searchInfo, optPaths?) {
         def fullPaths = ifValue { <> optPaths* }
             { paths <> [paths*, modulePaths*] }
@@ -75,9 +75,9 @@ fn moduleUse(searchInfo, modulePaths?) {
 
     ifValue { <> searchInfo::path }
         { path ->
-            # The module is being specified as an explicit path. This
-            # means that the path per se should be loaded, and it should
-            # include its own `modules` at the head of the paths list.
+            ## The module is being specified as an explicit path. This
+            ## means that the path per se should be loaded, and it should
+            ## include its own `modules` at the head of the paths list.
             return loadPath(path, [[path*, "modules"], paths*])
         };
 
@@ -95,8 +95,8 @@ fn moduleUse(searchInfo, modulePaths?) {
     def result = loadPath(moduleDir, remainingPaths);
     def info = Module0::getInfo(result);
 
-    # TODO: Currently ignores everything about `searchInfo` other than
-    # the name.
+    ## TODO: Currently ignores everything about `searchInfo` other than
+    ## the name.
     ifIs { <> ne(fqName, info::name) }
         {
             Io1::die(cat(
@@ -108,7 +108,7 @@ fn moduleUse(searchInfo, modulePaths?) {
 };
 
 <> {
-    # Re-exports from `core::Module0`.
+    ## Re-exports from `core::Module0`.
     getAllModules:        Module0::getAllModules,
     getExports:           Module0::getExports,
     getGlobals:           Module0::getGlobals,
@@ -118,6 +118,6 @@ fn moduleUse(searchInfo, modulePaths?) {
     moduleGet:            Module0::moduleGet,
     stringFromModuleName: Module0::stringFromModuleName,
 
-    # Defined here.
+    ## Defined here.
     moduleUse
 }

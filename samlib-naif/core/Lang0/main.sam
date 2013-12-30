@@ -12,7 +12,7 @@
 ##
 
 <> {
-    # Re-exported from primitive library.
+    ## Re-exported from primitive library.
     eval:            Lang0_eval,
     evalBinary:      Lang0_evalBinary,
     parseExpression: Lang0_parseExpression,

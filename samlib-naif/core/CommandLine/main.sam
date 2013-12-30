@@ -90,7 +90,7 @@ fn suffixFromName(name) {
 
     ifIs { <> eq(dotsAt, []) }
         {
-            # No suffix on the name; assume it names a module directory.
+            ## No suffix on the name; assume it names a module directory.
             return "module"
         };
 
@@ -147,12 +147,12 @@ fn runBinary(filePath, args) {
 
 ## Documented in Samizdat Layer 0 spec.
 fn parseArgs(args) {
-    # Make a unified string with each argument "\0"-terminated.
+    ## Make a unified string with each argument "\0"-terminated.
     def argFilter = Generator::makeFilterGenerator(args)
         { arg <> cat(arg, "\0") };
     def argString = cat("", argFilter*);
 
-    # Use the peg grammar above to split the arguments back apart.
+    ## Use the peg grammar above to split the arguments back apart.
     <> Peg::apply(parArguments, argString)
 };
 

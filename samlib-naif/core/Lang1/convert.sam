@@ -76,15 +76,15 @@ genericBind(convertPex, "choice", choice_convertPex);
 fn sequence_convertPex(node, formals) {
     def pexes = dataOf(node);
 
-    # Extract the formals out of any `varDef` nodes.
+    ## Extract the formals out of any `varDef` nodes.
     def newFormals = Generator::filterAll(pexes) { pex ->
         <> ifIs { <> eq(typeOf(pex), "varDef") }
             { <> {name: dataOf(pex)::name} }
             { <> {} }
     };
 
-    # Convert all the pexes, passing in appropriately-extended formals
-    # lists to each conversion.
+    ## Convert all the pexes, passing in appropriately-extended formals
+    ## lists to each conversion.
     def convertedPexes =
         Generator::filterAll(Range::makeOpenRange(0, 1), pexes)
             { n, pex ->
@@ -113,8 +113,8 @@ genericBind(convertPex, "token", token_convertPex);
 
 ## Converts a `varRef` pex node.
 fn varRef_convertPex(node, formals) {
-    # `varRef` in the context of a pex just translates to the same `varRef`
-    # in the context of an expression / statement.
+    ## `varRef` in the context of a pex just translates to the same `varRef`
+    ## in the context of an expression / statement.
     <> node
 };
 genericBind(convertPex, "varRef", varRef_convertPex);
@@ -145,8 +145,8 @@ genericBind(convertPex, "tokenSetComplement", tokenSetComplement_convertPex);
 
 ## Converts a `code` pex node.
 fn code_convertPex(node, formals) {
-    # Use the lexical `formals` context to make a regular closure node,
-    # and just convert that.
+    ## Use the lexical `formals` context to make a regular closure node,
+    ## and just convert that.
 
     def closurePayload = {(dataOf(node))*, formals};
     def convertedClosure = convertPexIn(@closure(closurePayload));

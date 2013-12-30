@@ -20,7 +20,7 @@ fn shr(bitwise, n) {
 
 
 <> {
-    # Re-exported from proto.
+    ## Re-exported from proto.
     and:     Bitwise::and,
     bit:     Bitwise::bit,
     bitSize: Bitwise::bitSize,
@@ -29,6 +29,6 @@ fn shr(bitwise, n) {
     shl:     Bitwise::shl,
     xor:     Bitwise::xor,
 
-    # Defined here.
+    ## Defined here.
     shr
 }
