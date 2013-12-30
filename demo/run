@@ -39,9 +39,6 @@ unset newProg
 # Argument parsing
 #
 
-# Preferred runtime name.
-runtime='naif'
-
 # Extra options to pass to `samex`.
 samexOpts=()
 
@@ -59,7 +56,7 @@ while [[ $1 != '' ]]; do
         || ${opt} == '--profile' || ${opt} == '--time' ]]; then
         samexOpts+=("${opt}")
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
-        runtime="${BASH_REMATCH[1]}"
+        samexOpts+=("${opt}")
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -119,7 +116,7 @@ fi
 # arguments passed to this script.
 
 PATH="${PATH}:${baseDir}/out/final/bin"
-cmd=(samex --runtime="${runtime}" "${samexOpts[@]}" "${mainFile}" "$@")
+cmd=(samex "${samexOpts[@]}" "${mainFile}" "$@")
 
 echo "Running demo: $(basename "${name}")"
 cd "${name}"
