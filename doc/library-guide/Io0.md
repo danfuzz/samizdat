@@ -17,7 +17,7 @@ by the lowest layer of core library.
 <br><br>
 ### Function Definitions
 
-#### `die(string?) <> n/a # Terminates the runtime.`
+#### `die(string?) <> n/a ## Terminates the runtime.`
 
 This is the same as the same-named function in the `core::Io1` module.
 

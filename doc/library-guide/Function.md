@@ -30,7 +30,7 @@ of a generic function, this checks to see if value's type is bound.
 <br><br>
 ### Primitive Definitions
 
-#### `nonlocalExit(exitFunction, optValue?) <> n/a # Returns elsewhere.`
+#### `nonlocalExit(exitFunction, optValue?) <> n/a ## Returns elsewhere.`
 
 Helper for calling nonlocal exit functions. This calls the given
 `exitFunction`, passing it `optValue*` (that is, the given value as a
