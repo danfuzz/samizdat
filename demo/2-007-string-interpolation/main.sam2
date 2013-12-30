@@ -29,7 +29,7 @@ print("I like \([@muffins, @scones]).");
 
 print("\
     I like \{
-        # A small sampling of foods.
+        ## A small sampling of foods.
         def foods = {icky: "sardines", yummy: "muffins"};
         <> foods::yummy
     }!");

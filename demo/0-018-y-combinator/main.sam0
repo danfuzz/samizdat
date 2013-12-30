@@ -45,9 +45,9 @@ fn uStarCombinator(functions) {
 
 ## Documented in associated README file.
 fn yCombinator(function) {
-    # Although it is coded here using a named function, it's just for
-    # readability and not a strict necessity. That is, the definition of
-    # `applicator` doesn't directly refer to the variable `applicator`.
+    ## Although it is coded here using a named function, it's just for
+    ## readability and not a strict necessity. That is, the definition of
+    ## `applicator` doesn't directly refer to the variable `applicator`.
 
     fn applicator(selfRef) {
         <> { args* <> function(uCombinator(selfRef))(args*) }
@@ -58,10 +58,10 @@ fn yCombinator(function) {
 
 ## Documented in associated README file.
 fn yStarCombinator(functions*) {
-    # The code here is meant to be exactly parallel to that of `yCombinator`,
-    # except with additional list mapping (including via the
-    # `uStarCombinator` function) where necessitated by the multiple-function
-    # nature of this variant.
+    ## The code here is meant to be exactly parallel to that of `yCombinator`,
+    ## except with additional list mapping (including via the
+    ## `uStarCombinator` function) where necessitated by the multiple-function
+    ## nature of this variant.
 
     def applicators = Generator::filter(
         functions,

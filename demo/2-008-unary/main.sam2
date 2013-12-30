@@ -20,7 +20,7 @@ fn msg(value) {
 
 ## Something to call.
 fn returnVoid() {
-    # Nothing to see here!
+    ## Nothing to see here!
 };
 
 ## Something to call.
@@ -52,7 +52,7 @@ Io1::note("\nBoolean / logic conversion");
 msg(returnVoid()??);
 msg(returnString()??);
 msg(true??);
-msg(false??);   # This one is the documented surprising result.
+msg(false??);   ## This one is the documented surprising result.
 msg((true**)?);
 msg((false**)?);
 
@@ -61,7 +61,7 @@ Io1::note("\nLogic ops");
 msg((!returnVoid())?);
 msg((!returnString())?);
 msg((!true)?);
-msg((!false)?);  # This one is the documented surprising result.
+msg((!false)?);  ## This one is the documented surprising result.
 msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
 msg((! ! !@fizmo)?);

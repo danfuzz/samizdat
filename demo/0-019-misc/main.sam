@@ -27,7 +27,7 @@ fn blort(foo, bar?, \"weird name"?, more*) {
 fn process(value) {
     Io0::note(Format::source(value));
 
-    # Test of explicit void yield.
+    ## Test of explicit void yield.
     <>
 };
 
@@ -37,7 +37,7 @@ fn process(value) {
 ##
 
 fn main(selfPath, name?, rest*) {
-    # Be welcoming.
+    ## Be welcoming.
 
     ifIs { <> eq(&(name*), "danfuzz") }
         { Io0::note("Hello, Danfuzz!\n") }

@@ -18,7 +18,7 @@ fn msg(value) {
 };
 
 fn getVoid() {
-    # This space intentionally left blank.
+    ## This space intentionally left blank.
 };
 
 fn getValue(x) {

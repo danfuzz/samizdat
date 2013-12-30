@@ -39,9 +39,9 @@ fn applyAll(initialValue, functions) {
 ## Takes an initial value and a list of maps of `[op, value]`,
 ## and evaluates the result using the "shunting yard" algorithm.
 fn applyShuntingYard(initialValue, opValues) {
-    # Reduces the top of the given pending stack. That is, it takes the
-    # top two values, and combines them by applying the top op, and places
-    # the result back at the top of the value stack.
+    ## Reduces the top of the given pending stack. That is, it takes the
+    ## top two values, and combines them by applying the top op, and places
+    ## the result back at the top of the value stack.
     fn applyTop(ops, values) {
         def valuesSize = Collection::sizeOf(values);
         def function = Collection::last(ops)::function;
@@ -52,8 +52,8 @@ fn applyShuntingYard(initialValue, opValues) {
         ]
     };
 
-    # Reduces the given pending stack with knowledge that the next operator
-    # to apply is of the given precedence.
+    ## Reduces the given pending stack with knowledge that the next operator
+    ## to apply is of the given precedence.
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
             { <next> ops, values ->
@@ -67,8 +67,8 @@ fn applyShuntingYard(initialValue, opValues) {
 
     loopReduce([], [initialValue], opValues) { ops, values, opValues ->
         if (opValues == []) {
-            # Use precedence `-1` to drain the op stack, leaving a single
-            # value.
+            ## Use precedence `-1` to drain the op stack, leaving a single
+            ## value.
             def finalResult = reducePending(ops, values, -1);
             return Collection::last(Collection::last(finalResult))
         };
@@ -157,7 +157,7 @@ def evalExpressions = {/
         "\n"
         {
             Io1::note("\%q(ex)");
-            # Explicit yield here to indicate successful parsing.
+            ## Explicit yield here to indicate successful parsing.
             <> null
         }
     )*

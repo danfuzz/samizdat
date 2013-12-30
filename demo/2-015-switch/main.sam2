@@ -77,7 +77,7 @@ Io1::note("\nElse...");
 Io1::note(elser("blort"));
 Io1::note(elser("fizmo"));
 Io1::note(elser());
-Io1::note(Format::source(elser("igram")?)); # `?` because we expect void.
+Io1::note(Format::source(elser("igram")?)); ## `?` because we expect void.
 
 Io1::note("\nVoid yield...");
 ifNot
