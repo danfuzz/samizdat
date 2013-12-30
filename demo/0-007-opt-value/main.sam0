@@ -1,17 +1,17 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Optional-value operator demo
-#
+##
+## Optional-value operator demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn msg(value) {
     Io0::note(cat("Got: ", Format::source(value)))
@@ -26,9 +26,9 @@ fn getValue(x) {
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 msg(getVoid()?);
 msg(getValue("yay")?);

@@ -1,37 +1,37 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Unary operator demo
-#
+##
+## Unary operator demo
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Prints out the given value.
+## Prints out the given value.
 fn msg(value) {
     Io1::note(Format::source(value))
 };
 
-# Something to call.
+## Something to call.
 fn returnVoid() {
     # Nothing to see here!
 };
 
-# Something to call.
+## Something to call.
 fn returnString() {
     <> "Fun times!"
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 Io1::note("Ints and binary");
 

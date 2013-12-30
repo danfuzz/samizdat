@@ -1,17 +1,17 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Switch expression demo
-#
+##
+## Switch expression demo
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn powerName(value) {
     <> switch <out> (value) {
@@ -51,9 +51,9 @@ fn namer(value) {
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 Io1::note("Power...");
 Io1::note(powerName(0));

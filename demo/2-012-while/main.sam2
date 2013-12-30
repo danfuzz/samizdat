@@ -1,17 +1,17 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Loop expression demo
-#
+##
+## Loop expression demo
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 def box = Box::makeCell(0);
 
@@ -62,13 +62,13 @@ while (def value = (45 > Box::fetch(box))) {
     Io1::note("Value F is \%q(nextVal).")
 };
 
-# First test will be the one that fails.
+## First test will be the one that fails.
 while (def value1 = (50 > Box::fetch(box)), def value2 = value1 + 100) {
     Box::store(box, value1 + 1);
     Io1::note("Value G is \%q(Box::fetch(box)); \%q(value1) \%q(value2)");
 };
 
-# Second test will be the one that fails.
+## Second test will be the one that fails.
 while (def value1 = Box::fetch(box), def value2 = (55 > value1)) {
     Box::store(box, value1 + 1);
     Io1::note("Value H is \%q(Box::fetch(box)); \%q(value1) \%q(value2)");

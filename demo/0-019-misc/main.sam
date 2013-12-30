@@ -1,29 +1,29 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Demo / scratch code
-#
+##
+## Demo / scratch code
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Demo of `+` argument repeat modifier.
+## Demo of `+` argument repeat modifier.
 fn stuff(items+) {
     Io0::note(cat("stuff: ", Format::source(items)))
 };
 
-# Demo of formal argument repeat modifiers. Also of quoted identifiers.
+## Demo of formal argument repeat modifiers. Also of quoted identifiers.
 fn blort(foo, bar?, \"weird name"?, more*) {
     stuff(foo, bar, \"weird name", more)
 };
 
-# Emits the stringified version of the given value to the console.
+## Emits the stringified version of the given value to the console.
 fn process(value) {
     Io0::note(Format::source(value));
 
@@ -32,9 +32,9 @@ fn process(value) {
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 fn main(selfPath, name?, rest*) {
     # Be welcoming.

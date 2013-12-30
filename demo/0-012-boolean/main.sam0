@@ -1,19 +1,19 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Boolean demo
-#
+##
+## Boolean demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Checks an expected result.
+## Checks an expected result.
 fn expect(name, result, func, args*) {
     def got = func(args*);
     ifNot { <> eq(got, result) }
@@ -24,9 +24,9 @@ fn expect(name, result, func, args*) {
 };
 
 
-#
-# Main demos
-#
+##
+## Main demos
+##
 
 Io0::note("Booleans");
 

@@ -1,46 +1,46 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Binary operator demo. Also demos hex and binary numbers, and "digit spaces".
-#
+##
+## Binary operator demo. Also demos hex and binary numbers, and "digit spaces".
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Prints out the given value.
+## Prints out the given value.
 fn msg(value) {
     Io1::note(Format::source(value))
 };
 
-# Prints out the given value in hex.
+## Prints out the given value in hex.
 fn msgHex(value) {
     Io1::note("\%x(value)")
 };
 
-# Returns void.
+## Returns void.
 fn returnVoid() {
     <>
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
-# Different bases, and digit spaces.
+## Different bases, and digit spaces.
 Io1::note("Literals");
 msg(1);
 msg(1_234);
 msg(0x1004);
 msg(0b1111_1010);
 
-# Operators.
+## Operators.
 Io1::note("\nInt operators");
 msg(1 + 2);
 msg(2 - 1);
@@ -59,8 +59,8 @@ msgHex(0xfff0 ^^^ 0x0fff);
 msgHex(0x00ff <<< 0x8);
 msgHex(0xff00 >>> 0x8);
 
-# Ordering. The ones expected to be "falsey" are surrounded by `??` to
-# make them easily printable.
+## Ordering. The ones expected to be "falsey" are surrounded by `??` to
+## make them easily printable.
 
 Io1::note("\nPer-type Order 1");
 msg(1 == 1);
@@ -142,8 +142,8 @@ msg("1" \> 11);
 msg(1 \<= [12]);
 msg("1" \>= {13: 13});
 
-# Logical ops. The ones expected to be "falsey" are surrounded by `??` to
-# make them easily printable.
+## Logical ops. The ones expected to be "falsey" are surrounded by `??` to
+## make them easily printable.
 Io1::note("\nLogic 1");
 msg(1 & 2);
 msg(1 & 2 & "three");
