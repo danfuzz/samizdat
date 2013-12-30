@@ -1,16 +1,16 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
-#
-# GENERATED FILE. DO NOT MODIFY DIRECTLY.
-# GENERATED FILE. DO NOT MODIFY DIRECTLY.
-# GENERATED FILE. DO NOT MODIFY DIRECTLY.
-#
-# This file was generated with the buildEntityMap program, using the
-# file entity-map.txt as input. Rerun that program should the contents
-# of this file need to be updated.
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+##
+## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+##
+## This file was generated with the buildEntityMap program, using the
+## file entity-map.txt as input. Rerun that program should the contents
+## of this file need to be updated.
 
-# Documented in the specification.
+## Documented in the specification.
 def ENTITY_MAP = {
     "AElig": "Æ",
     "AMP": "&",

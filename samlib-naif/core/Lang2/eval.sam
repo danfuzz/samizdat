@@ -1,22 +1,22 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Samizdat Layer 2 Evaluation
-#
+##
+## Samizdat Layer 2 Evaluation
+##
 
-# TODO
-# def convertToLang0 = submoduleUse("convert")::convertToLang0;
+## TODO
+## def convertToLang0 = submoduleUse("convert")::convertToLang0;
 
 def Lang1 = moduleUse({name: ["core", "Lang1"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 1 spec.
+## Documented in Samizdat Layer 1 spec.
 fn eval(context, expressionNode) {
     <> Lang1::eval(context, expressionNode)
     # TODO

@@ -1,22 +1,22 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `SerialGenerator` Type
-#
-# Payload is `[subGens*]`, a list of sub-generators.
+##
+## `SerialGenerator` Type
+##
+## Payload is `[subGens*]`, a list of sub-generators.
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 def NullGenerator = submoduleUse("NullGenerator");
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeSerialGenerator(generators*) {
     # Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
@@ -30,7 +30,7 @@ fn makeSerialGenerator(generators*) {
     <> @SerialGenerator(generators)
 };
 
-# Documented in spec.
+## Documented in spec.
 fn SerialGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 

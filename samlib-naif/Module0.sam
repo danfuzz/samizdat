@@ -1,29 +1,29 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Module functions
-#
+##
+## Module functions
+##
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# Box containing a map from fully-qualified names to modules. Each name is a
-# list-of-strings denoting a "path" to the module.
+## Box containing a map from fully-qualified names to modules. Each name is a
+## list-of-strings denoting a "path" to the module.
 def theModulesBox = Box_makeCell({});
 
-# Box containing a map from full directory paths to corresponding modules.
-# If a module is in the middle of loading, then its path maps to "loading".
+## Box containing a map from full directory paths to corresponding modules.
+## If a module is in the middle of loading, then its path maps to "loading".
 def thePathsBox = Box_makeCell({});
 
-# Flattens an absolute path to a simple name.
-#
-# **Note:** This function is a (low rent) duplicate of functionality in
-# `Io*` modules, because this function needs to be called before the `Io*`
-# modules are loaded.
+## Flattens an absolute path to a simple name.
+##
+## **Note:** This function is a (low rent) duplicate of functionality in
+## `Io*` modules, because this function needs to be called before the `Io*`
+## modules are loaded.
 fn flattenPath(name) {
     # Prefix each component with `/`, and concatenate them all together.
 
@@ -31,9 +31,9 @@ fn flattenPath(name) {
     <> cat(withSlashes*);
 };
 
-# Makes a module-load global context, based on the given `baseCtx` and which
-# adds submodule read and load functions that use the given `directory` (a
-# structured path).
+## Makes a module-load global context, based on the given `baseCtx` and which
+## adds submodule read and load functions that use the given `directory` (a
+## structured path).
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
 
@@ -136,29 +136,29 @@ fn makeModuleContext(baseCtx, directory) {
 };
 
 
-#
-# Type Definition
-#
-# `Module` payload is `{info: map, exports: map}`. `info` includes at least
-# `{name: [string, ...], version: string}`.
+##
+## Type Definition
+##
+## `Module` payload is `{info: map, exports: map}`. `info` includes at least
+## `{name: [string, ...], version: string}`.
 
-# Gets the `exports` of a module.
+## Gets the `exports` of a module.
 fn getExports(modu) {
     <> dataOf(modu)::exports
 };
 
-# Gets the `info` of a module.
+## Gets the `info` of a module.
 fn getInfo(modu) {
     <> dataOf(modu)::info
 };
 
-# Returns a new module like the given one, except with `exports` as
-# given.
+## Returns a new module like the given one, except with `exports` as
+## given.
 fn withExports(modu, newExports) {
     <> @Module{(dataOf(modu))*, exports: newExports}
 };
 
-# Documented in spec.
+## Documented in spec.
 fn Module_cat(modu, more*) {
     def data = dataOf(modu);
 
@@ -169,49 +169,49 @@ fn Module_cat(modu, more*) {
 };
 genericBind(cat, "Module", Module_cat);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_del(modu, key) {
     <> withExports(modu, Collection_del(getExports(modu), key))
 };
 genericBind(Collection_del, "Module", Module_del);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_get(modu, key) {
     <> get(getExports(modu), key)
 };
 genericBind(get, "Module", Module_get);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_keyList(modu) {
     <> Collection_keyList(getExports(modu))
 };
 genericBind(Collection_keyList, "Module", Module_keyList);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_nameOf(modu) {
     <> getInfo(modu)::name
 };
 genericBind(nameOf, "Module", Module_nameOf);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_nth(modu, n) {
     <> Collection_nth(getExports(modu), n)
 };
 genericBind(Collection_nth, "Module", Module_nth);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_put(modu, key, value) {
     <> withExports(modu, Collection_put(getExports(modu), key, value))
 };
 genericBind(Collection_put, "Module", Module_put);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_sizeOf(modu) {
     <> Collection_sizeOf(getExports(modu))
 };
 genericBind(Collection_sizeOf, "Module", Module_sizeOf);
 
-# Documented in spec.
+## Documented in spec.
 fn Module_slice(modu, start, end?) {
     <> withExports(modu, Collection_slice(getExports(modu), start, end*))
 };
@@ -219,17 +219,17 @@ genericBind(Collection_slice, "Module", Module_slice);
 
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn getAllModules() {
     def mods = Box_fetch(theModulesBox);
     <> Generator_filter(mods, { mod <> valueOf(mod) })
 };
 
-# Documented in spec.
+## Documented in spec.
 fn getGlobals(modu) {
     def info = getInfo(modu);
     def bindings = ifValue { <> info::globalExports }
@@ -255,7 +255,7 @@ fn getGlobals(modu) {
     <> { bindings*, moduleBinding* }
 };
 
-# Documented in spec.
+## Documented in spec.
 fn load(baseCtx, fqPath) {
     def paths = Box_fetch(thePathsBox);
     ifValue { <> get(paths, fqPath) }
@@ -289,7 +289,7 @@ fn load(baseCtx, fqPath) {
     <> result
 };
 
-# Documented in spec.
+## Documented in spec.
 fn moduleDef(modu) {
     def mods = Box_fetch(theModulesBox);
     def name = nameOf(modu);
@@ -302,7 +302,7 @@ fn moduleDef(modu) {
     Box_store(theModulesBox, Collection_put(mods, name, modu));
 };
 
-# Documented in spec.
+## Documented in spec.
 fn moduleGet(searchInfo) {
     # TODO: Currently ignores everything about `searchInfo` other than the name
     # and path.
@@ -314,11 +314,11 @@ fn moduleGet(searchInfo) {
         { name -> return get(Box_fetch(theModulesBox), name) };
 };
 
-# Documented in spec.
-#
-# **Note:** This is the early-bootstrap version of this function, which
-# requires modules to be pre-defined (that is, `modulePaths` is not
-# consulted).
+## Documented in spec.
+##
+## **Note:** This is the early-bootstrap version of this function, which
+## requires modules to be pre-defined (that is, `modulePaths` is not
+## consulted).
 fn moduleUse(searchInfo, modulePaths?) {
     <> ifValueOr { <> moduleGet(searchInfo) }
         {
@@ -327,7 +327,7 @@ fn moduleUse(searchInfo, modulePaths?) {
         }
 };
 
-# Documented in spec.
+## Documented in spec.
 fn stringFromModuleName(fqName) {
     # Prefix each component with "::", combine them all, and then drop the
     # first two characters.
@@ -337,7 +337,7 @@ fn stringFromModuleName(fqName) {
     <> Collection_slice(result, 2)
 };
 
-# Documented in spec. This is a manual definition of the `Module0` module.
+## Documented in spec. This is a manual definition of the `Module0` module.
 def Module0 = @Module{
     info: {
         name: ["core", "Module0"],

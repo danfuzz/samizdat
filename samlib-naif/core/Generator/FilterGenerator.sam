@@ -1,23 +1,23 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `FilterGenerator` Type
-#
-# Payload is a map `[filterFunction: function, generator: subGen]`.
-# `subGen` is expected to produce lists of arguments to apply.
+##
+## `FilterGenerator` Type
+##
+## Payload is a map `[filterFunction: function, generator: subGen]`.
+## `subGen` is expected to produce lists of arguments to apply.
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 def ParaGenerator = submoduleUse("ParaGenerator");
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeFilterGenerator(filterFunction, generators*) {
     <> @FilterGenerator{
         filterFunction,
@@ -25,7 +25,7 @@ fn makeFilterGenerator(filterFunction, generators*) {
     }
 };
 
-# Documented in spec.
+## Documented in spec.
 fn FilterGenerator_nextValue(gen, box) {
     def payload = dataOf(gen);
     def filterFunction = payload::filterFunction;

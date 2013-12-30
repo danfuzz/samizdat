@@ -1,32 +1,32 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Samizdat Layer 2 Tokenizer
-#
+##
+## Samizdat Layer 2 Tokenizer
+##
 
 def FunctionForwarder = moduleUse({name: ["core", "FunctionForwarder"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 
-# The standard entity map.
+## The standard entity map.
 def ENTITY_MAP = moduleUse({name: ["core", "EntityMap"]})::ENTITY_MAP;
 
-# Forward declarations for Layer 2 definitions.
+## Forward declarations for Layer 2 definitions.
 def tokMultilineComment = ParseForwarder::make();
 def tokStringPart2 = ParseForwarder::make();
 
 
-#
-# This section is meant to mirror the code in the spec for tokenization as
-# closely as possible, comments and all. The spec is a self-description of
-# Layer 1 parsing, and the comments should be taken in light of that.
-#
+##
+## This section is meant to mirror the code in the spec for tokenization as
+## closely as possible, comments and all. The spec is a self-description of
+## Layer 1 parsing, and the comments should be taken in light of that.
+##
 
-# Map of all the keywords, from their string name to valueless tokens. These
-# are (to a first approximation) operators whose spellings match the
-# tokenization syntax of identifiers.
+## Map of all the keywords, from their string name to valueless tokens. These
+## are (to a first approximation) operators whose spellings match the
+## tokenization syntax of identifiers.
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
         "def", "fn", "return",
@@ -36,12 +36,12 @@ def KEYWORDS = Generator::collectAsMap(
         "switch", "var", "while"])
         { name <> {(name): @(name)} });
 
-# These are all the int digits, as a map from strings to digit values. This
-# includes hex digits as well, in both lower and upper case. Finally, this
-# includes a mapping of `"_"` to `-1` for the implementation of the
-# "digit space" syntax.
-#
-# **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
+## These are all the int digits, as a map from strings to digit values. This
+## includes hex digits as well, in both lower and upper case. Finally, this
+## includes a mapping of `"_"` to `-1` for the implementation of the
+## "digit space" syntax.
+##
+## **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
 def INT_CHARS = {
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
     "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
@@ -50,18 +50,18 @@ def INT_CHARS = {
     "_": -1
 };
 
-# Given a decimal digit, returns the digit value.
+## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
     <> get(INT_CHARS, typeOf(ch))
 };
 
-# Processes a list of `stringPart` elements, yielding a literal `string`
-# value. In Layer 2 (and higher) this can also yield an
-# `interpolatedString` or an `error`.
+## Processes a list of `stringPart` elements, yielding a literal `string`
+## value. In Layer 2 (and higher) this can also yield an
+## `interpolatedString` or an `error`.
 def processStringParts = FunctionForwarder::make();
 
-# Parses a non-zero amount of whitespace and comments.
-# **Note:** The yielded result is always ignored.
+## Parses a non-zero amount of whitespace and comments.
+## **Note:** The yielded result is always ignored.
 def tokWhitespace = {/
     # The lookahead here is to avoid the bulk of this rule if there's
     # no chance we're actually looking at whitespace. The final
@@ -86,9 +86,9 @@ def tokWhitespace = {/
     )+
 /};
 
-# Parses punctuation and operators.
-#
-# **Note:** This rule is expanded significantly in Layer 2.
+## Parses punctuation and operators.
+##
+## **Note:** This rule is expanded significantly in Layer 2.
 def tokPunctuation = {/
     # The lookahead here is done to avoid bothering with the choice
     # expression, except when we have a definite match. The second
@@ -125,16 +125,16 @@ def tokPunctuation = {/
     )
 /};
 
-# Parses an integer literal.
-#
-# **Note:** This rule is rewritten in Layer 2.
+## Parses an integer literal.
+##
+## **Note:** This rule is rewritten in Layer 2.
 def tokInt = ParseForwarder::make();
 
-# Parses a run of regular characters or an escape / special sequence,
-# inside a quoted string.
-#
-# **Note:** Additional rules for string character parsing are defined
-# in Layer 2.
+## Parses a run of regular characters or an escape / special sequence,
+## inside a quoted string.
+##
+## **Note:** Additional rules for string character parsing are defined
+## in Layer 2.
 def tokStringPart = {/
     (
         chars = [! "\\" "\"" "\n"]+
@@ -160,7 +160,7 @@ def tokStringPart = {/
     tokStringPart2
 /};
 
-# Parses a quoted string.
+## Parses a quoted string.
 def tokString = {/
     "\""
     parts = tokStringPart*
@@ -173,7 +173,7 @@ def tokString = {/
     )
 /};
 
-# Parses an identifier (in the usual form). This also parses keywords.
+## Parses an identifier (in the usual form). This also parses keywords.
 def tokIdentifier = {/
     one = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
@@ -185,7 +185,7 @@ def tokIdentifier = {/
     }
 /};
 
-# Parses the quoted-string identifier form.
+## Parses the quoted-string identifier form.
 def tokQuotedIdentifier = {/
     "\\"
     s = tokString
@@ -193,8 +193,8 @@ def tokQuotedIdentifier = {/
     { <> @identifier(dataOf(s)) }
 /};
 
-# "Parses" an unrecognized character. This also consumes any further characters
-# on the same line, in an attempt to resynch the input.
+## "Parses" an unrecognized character. This also consumes any further characters
+## on the same line, in an attempt to resynch the input.
 def tokError = {/
     badCh = .
     [! "\n"]*
@@ -205,7 +205,7 @@ def tokError = {/
     }
 /};
 
-# Parses an arbitrary token or error.
+## Parses an arbitrary token or error.
 def tokToken = {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
@@ -222,7 +222,7 @@ def tokToken = {/
     tokError
 /};
 
-# Parses a file of tokens, yielding a list of them.
+## Parses a file of tokens, yielding a list of them.
 def tokFile = {/
     tokens = (tokWhitespace? tokToken)*
     tokWhitespace?
@@ -231,21 +231,21 @@ def tokFile = {/
 /};
 
 
-#
-# Layer 2 definitions
-#
-# These are all specific to parsing Layer 2 (and higher).
-#
+##
+## Layer 2 definitions
+##
+## These are all specific to parsing Layer 2 (and higher).
+##
 
-# Map from opening tokens to corresponding closers. Only includes mappings
-# necessary to parse string interpolations.
+## Map from opening tokens to corresponding closers. Only includes mappings
+## necessary to parse string interpolations.
 def OPEN_CLOSE_MAP = {
     "(":  ")",
     "{":  "}",
     "{/": "/}"
 };
 
-# Converts a list of digit values into an int, given the base.
+## Converts a list of digit values into an int, given the base.
 fn intFromDigitList(base, digits) {
     <> Generator::doReduce1(digits, 0) { digit, result ->
         <> ifIs { <> eq(digit, -1) }
@@ -297,7 +297,7 @@ fn implProcessStringParts(parts) {
 };
 Box::store(processStringParts, implProcessStringParts);
 
-# Parses a `/* ... */` comment, with nesting.
+## Parses a `/* ... */` comment, with nesting.
 def implMultilineComment = {/
     "/*"
 
@@ -313,25 +313,25 @@ def implMultilineComment = {/
 /};
 Box::store(tokMultilineComment, implMultilineComment);
 
-# Parses a single binary digit (or spacer), returning its value.
+## Parses a single binary digit (or spacer), returning its value.
 def tokBinDigit = {/
     ch = ["_01"]
     { <> intFromDigitChar(ch) }
 /};
 
-# Parses a single decimal digit (or spacer), returning its value.
+## Parses a single decimal digit (or spacer), returning its value.
 def tokDecDigit = {/
     ch = ["_" "0".."9"]
     { <> intFromDigitChar(ch) }
 /};
 
-# Parses a single hexadecimal digit (or spacer), returning its value.
+## Parses a single hexadecimal digit (or spacer), returning its value.
 def tokHexDigit = {/
     ch = ["_" "0".."9" "a".."f" "A".."F"]
     { <> intFromDigitChar(ch) }
 /};
 
-# Parses an integer literal.
+## Parses an integer literal.
 def implInt = {/
     base = (
         "0x" { <> 16 }
@@ -356,15 +356,15 @@ def implInt = {/
 /};
 Box::store(tokInt, implInt);
 
-# Parses a single hexadecimal character. This is called during `\x...;`
-# parsing.
+## Parses a single hexadecimal character. This is called during `\x...;`
+## parsing.
 def tokHexChar = {/
     digits = tokHexDigit+
     { <> toString(intFromDigitList(16, digits)) }
 /};
 
-# Parses a single entity-named character. This is called during `\&...;`
-# parsing.
+## Parses a single entity-named character. This is called during `\&...;`
+## parsing.
 def tokNamedChar = {/
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
@@ -381,9 +381,9 @@ def tokNamedChar = {/
     { <> toString(intFromDigitList(10, digits)) }
 /};
 
-# Parses the inner portion of a string interpolation expression. This
-# captures a list of inner tokens, ending when parentheses and braces are
-# balanced out (and ignoring other could-be-matched delimiter tokens).
+## Parses the inner portion of a string interpolation expression. This
+## captures a list of inner tokens, ending when parentheses and braces are
+## balanced out (and ignoring other could-be-matched delimiter tokens).
 def tokStringInterpolation = ParseForwarder::make();
 def implStringInterpolation = {/
     &["({"]
@@ -412,7 +412,7 @@ def implStringInterpolation = {/
 /};
 Box::store(tokStringInterpolation, implStringInterpolation);
 
-# Additional `stringPart` definitions for Layer 2.
+## Additional `stringPart` definitions for Layer 2.
 def implStringPart2 = {/
     "\\"
     (
@@ -467,11 +467,11 @@ def implStringPart2 = {/
 Box::store(tokStringPart2, implStringPart2);
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 1 spec.
+## Documented in Samizdat Layer 1 spec.
 fn tokenize(programText) {
     <> Peg::apply(tokFile, programText)
 };

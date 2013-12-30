@@ -1,24 +1,24 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Module functions
-#
+##
+## Module functions
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang0 = moduleUse({name: ["core", "Lang0"]});
 def Module0 = moduleUse({name: ["core", "Module0"]});
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# Finds the directory for the named module, by iterating over the given
-# `modulePaths`, looking for a `module.sam` file. Either returns
-# the tail of `modulePaths` that starts with the module path where the
-# module was found, or dies with an error.
+## Finds the directory for the named module, by iterating over the given
+## `modulePaths`, looking for a `module.sam` file. Either returns
+## the tail of `modulePaths` that starts with the module path where the
+## module was found, or dies with an error.
 fn findModuleDirectory(searchInfo, modulePaths) {
     def fqName = searchInfo::name;
 
@@ -38,8 +38,8 @@ fn findModuleDirectory(searchInfo, modulePaths) {
     };
 };
 
-# Loads a module at the given path, using the given module paths for
-# subsequent module lookups.
+## Loads a module at the given path, using the given module paths for
+## subsequent module lookups.
 fn loadPath(moduleDir, modulePaths) {
     def baseContext = Module0::getGlobals(
         Module0::moduleGet({name: ["core", "Globals"]}));
@@ -62,11 +62,11 @@ fn loadPath(moduleDir, modulePaths) {
 };
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn moduleUse(searchInfo, modulePaths?) {
     ifValue { <> Module0::moduleGet(searchInfo) }
         { modu -> return modu };

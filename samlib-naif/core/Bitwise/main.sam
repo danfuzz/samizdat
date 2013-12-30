@@ -1,19 +1,19 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Bitwise functions
-#
+##
+## Bitwise functions
+##
 
 def Bitwise = moduleUse({name: ["proto", "Bitwise"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn shr(bitwise, n) {
     <> Bitwise::shl(bitwise, Number::neg(n))
 };

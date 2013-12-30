@@ -1,25 +1,25 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `ListWrapGenerator` Type
-#
-# Payload is `subGen`, the sub-generator.
+##
+## `ListWrapGenerator` Type
+##
+## Payload is `subGen`, the sub-generator.
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeListWrapGenerator(generator) {
     <> @ListWrapGenerator(generator)
 };
 
-# Documented in spec.
+## Documented in spec.
 fn ListWrapGenerator_nextValue(gen, box) {
     def innerBox = Box::makePromise();
 

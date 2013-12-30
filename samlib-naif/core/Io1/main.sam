@@ -1,21 +1,21 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Baseline I/O functions
-#
+##
+## Baseline I/O functions
+##
 
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 
-#
-# Private Definitions: `parPathString`
-#
+##
+## Private Definitions: `parPathString`
+##
 
-# Parses a single path component.
+## Parses a single path component.
 def parPathComponent = {/
     # Ignore duplicate slashes, but require at least one. Note: The parser
     # is only ever called on a string that begins with a slash.
@@ -28,8 +28,8 @@ def parPathComponent = {/
     { <> Peg::stringFromTokenList(component) }
 /};
 
-# Parses a regular (non-up-directory) component. The `..` check ensures that
-# `..` only gets parsed as part of a balanced `name/..` pair.
+## Parses a regular (non-up-directory) component. The `..` check ensures that
+## `..` only gets parsed as part of a balanced `name/..` pair.
 def parRegularComponent = {/
     component = parPathComponent
     {
@@ -38,8 +38,8 @@ def parRegularComponent = {/
     }
 /};
 
-# Parses a matched set of components that are collectively ignored, e.g.
-# `"/x/y/../.."` or `"/."`.
+## Parses a matched set of components that are collectively ignored, e.g.
+## `"/x/y/../.."` or `"/."`.
 def parIgnoredComponent = ParseForwarder::make();
 def implIgnoredComponent = {/
     component = parRegularComponent
@@ -56,9 +56,9 @@ def implIgnoredComponent = {/
 /};
 Box::store(parIgnoredComponent, implIgnoredComponent);
 
-# Helper for `pathFromFlat` which parses absolute path strings
-# into components. This canonicalizes the path by ignoring duplicate
-# slashes, `.` components, and matched `name/..` pairs.
+## Helper for `pathFromFlat` which parses absolute path strings
+## into components. This canonicalizes the path by ignoring duplicate
+## slashes, `.` components, and matched `name/..` pairs.
 def parPathString = {/
     components = (parIgnoredComponent | parRegularComponent)+
 
@@ -71,18 +71,18 @@ def parPathString = {/
 /};
 
 
-#
-# Private Definitions: `parPathList`
-#
+##
+## Private Definitions: `parPathList`
+##
 
-# Parses a path within a path list.
+## Parses a path within a path list.
 def parOnePath = {/
     chars = [! ":"]+
     { <> Peg::stringFromTokenList(chars) }
 /};
 
-# Parses a flattened path list (e.g. the format for a Posix-style `PATH`
-# variable) into a list of strings (for further parsing).
+## Parses a flattened path list (e.g. the format for a Posix-style `PATH`
+## variable) into a list of strings (for further parsing).
 def parPathList = {/
     ":"*
     first = parOnePath
@@ -96,12 +96,12 @@ def parPathList = {/
 /};
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# Helper for `flatFromPath` which validates a single path component.
-# Yields an error string on invalid. Parsing fails for valid components.
+## Helper for `flatFromPath` which validates a single path component.
+## Yields an error string on invalid. Parsing fails for valid components.
 def parErrorFromPathComponent = {/
     ".." !.
     { <> "Invalid `..` component in path." }
@@ -122,8 +122,8 @@ def parErrorFromPathComponent = {/
     )
 /};
 
-# Checks whether the given alleged prefix is actually a prefix of the
-# given path, or equal to it.
+## Checks whether the given alleged prefix is actually a prefix of the
+## given path, or equal to it.
 fn isPrefix(prefix, path) {
     def prefixSize = Collection::sizeOf(prefix);
 
@@ -137,13 +137,13 @@ fn isPrefix(prefix, path) {
     <> eq(prefix, Collection::slice(path, 0, prefixSize))
 };
 
-# Dies with the given message including the given path.
+## Dies with the given message including the given path.
 fn dieWith(msg, path) {
     Io0::die(cat(msg, ": ", Format::source(path)))
 };
 
-# Helper for `sandboxedReader` which does symbolic link resolution,
-# respecting the sandbox directory.
+## Helper for `sandboxedReader` which does symbolic link resolution,
+## respecting the sandbox directory.
 fn resolveLinks(sandboxDirectory, path) {
     loopReduce(path, 50) { path, limit ->
         ifIs { <> le(limit, 0) }
@@ -158,17 +158,17 @@ fn resolveLinks(sandboxDirectory, path) {
 };
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn fileExists(path) {
     <> ifIs { <> Io0::flatFileExists(flatFromPath(path)) }
         { <> path }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn flatFromPath(path) {
     ifIs { <> eq(path, []) }
         { dieWith("Invalid empty path", path) };
@@ -193,7 +193,7 @@ fn flatFromPath(path) {
     <> cat(gen*)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn pathFromFlat(string) {
     # Reject the empty string.
     ifIs { <> eq(string, "") }
@@ -213,7 +213,7 @@ fn pathFromFlat(string) {
     <> components
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn pathListFromFlat(string) {
     # Parse the given string into a list of flat paths.
     def flats = Peg::apply(parPathList, string);
@@ -222,18 +222,18 @@ fn pathListFromFlat(string) {
     <> Generator::filterAll(pathFromFlat, flats)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn readFileUtf8(path) {
     <> Io0::flatReadFileUtf8(flatFromPath(path))
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn readLink(path) {
     <> ifValue { <> Io0::flatReadLink(flatFromPath(path)) }
         { newPath <> pathFromFlat(newPath) }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn sandboxedReader(directory) {
     <> { path ->
         def fullPath = resolveLinks(directory, [directory*, path*]);
@@ -241,7 +241,7 @@ fn sandboxedReader(directory) {
     }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn writeFileUtf8(path, text) {
     <> Io0::flatWriteFileUtf8(flatFromPath(path), text)
 };

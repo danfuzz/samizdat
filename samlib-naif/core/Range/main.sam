@@ -1,21 +1,21 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `ClosedRange` and `OpenRange` Types
-#
-# `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
-# `OpenRange` payload: `{start: intOrChar, increment: int}`
+##
+## `ClosedRange` and `OpenRange` Types
+##
+## `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
+## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# `rangeAdd` generic, used to increment ints and chars.
+## `rangeAdd` generic, used to increment ints and chars.
 def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
 
 fn Int_rangeAdd(value, increment) {
@@ -29,11 +29,11 @@ fn String_rangeAdd(value, increment) {
 genericBind(rangeAdd, String, String_rangeAdd);
 
 
-#
-# Exported Definitions: `ClosedRange`
-#
+##
+## Exported Definitions: `ClosedRange`
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeClosedRange(firstValue, increment, size) {
     # `totGt` ensures that `size` is an int.
     <> ifIs { <> totGt(size, 0) }
@@ -43,7 +43,7 @@ fn makeClosedRange(firstValue, increment, size) {
         { <> Generator::nullGenerator }
 };
 
-# Documented in spec.
+## Documented in spec.
 fn makeExclusiveRange(firstValue, increment, limit) {
     # `totEq` ensures that `firstValue` and `limit` have the same type.
     # `optValue({ <> x})` == `x?`.
@@ -76,7 +76,7 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     <> makeClosedRange(firstValue, increment, size);
 };
 
-# Documented in spec.
+## Documented in spec.
 fn makeInclusiveRange(firstValue, increment, limit) {
     # This ensures that `firstValue` and `limit` have the same type.
     totEq(firstValue, limit);
@@ -98,7 +98,7 @@ fn makeInclusiveRange(firstValue, increment, limit) {
     <> makeClosedRange(firstValue, increment, size);
 };
 
-# Documented in spec.
+## Documented in spec.
 fn ClosedRange_nextValue(range, box) {
     def data = dataOf(range);
     <> ifValue { <> totLe(0, data::size) }
@@ -117,22 +117,22 @@ fn ClosedRange_nextValue(range, box) {
 genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 
 
-#
-# Exported Definitions: `OpenRange`
-#
+##
+## Exported Definitions: `OpenRange`
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeOpenRange(firstValue, increment) {
     <> @OpenRange{firstValue, increment}
 };
 
-# Documented in spec.
+## Documented in spec.
 fn OpenRange_collect(range) {
     Io0::die("Unbounded generator.");
 };
 genericBind(Generator::collect, "OpenRange", OpenRange_collect);
 
-# Documented in spec.
+## Documented in spec.
 fn OpenRange_nextValue(range, box) {
     def data = dataOf(range);
     def firstValue = data::firstValue;
@@ -144,9 +144,9 @@ fn OpenRange_nextValue(range, box) {
 genericBind(Generator::nextValue, "OpenRange", OpenRange_nextValue);
 
 
-#
-# Overall exports
-#
+##
+## Overall exports
+##
 
 <> {
     makeClosedRange,

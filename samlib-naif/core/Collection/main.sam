@@ -1,26 +1,26 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Collection functions
-#
+##
+## Collection functions
+##
 
 def Collection = moduleUse({name: ["proto", "Collection"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn butFirst(collection) {
     <> Collection::slice(
         collection,
         &ge(Collection::sizeOf(collection), 1))
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn butLast(collection) {
     <> Collection::slice(
         collection,
@@ -28,12 +28,12 @@ fn butLast(collection) {
         &le(0, Number::sub(Collection::sizeOf(collection), 1)))
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn first(collection) {
     <> Collection::nth(collection, 0)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn last(collection) {
     <> Collection::nth(
         collection,

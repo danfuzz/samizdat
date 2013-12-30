@@ -1,20 +1,20 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `CollectionGenerator` Type
-#
-# Payload is `[collection: coll, index: int]`.
+##
+## `CollectionGenerator` Type
+##
+## Payload is `[collection: coll, index: int]`.
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeCollectionGenerator(coll, optIndex?) {
     def indexMap = ifValue { <> optIndex* }
         { index <> {index} }
@@ -23,7 +23,7 @@ fn makeCollectionGenerator(coll, optIndex?) {
     <> @CollectionGenerator{collection: coll, indexMap*}
 };
 
-# Documented in spec.
+## Documented in spec.
 fn CollectionGenerator_nextValue(gen, box) {
     def data = dataOf(gen);
     def index = data::index;
@@ -43,7 +43,7 @@ fn CollectionGenerator_nextValue(gen, box) {
 genericBind(Generator::nextValue, "CollectionGenerator",
     CollectionGenerator_nextValue);
 
-# `nextValue` binding for the core collection types.
+## `nextValue` binding for the core collection types.
 fn Collection_nextValue(coll, box) {
     # Get the first element directly, and return a generator for the rest.
     <> ifIs { <> Box::store(box, &Collection::nth(coll, 0)) }

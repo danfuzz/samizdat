@@ -1,38 +1,38 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `FunctionForwarder` type
-#
-# Data payload is a yield box.
-#
+##
+## `FunctionForwarder` type
+##
+## Data payload is a yield box.
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn make() {
     <> @FunctionForwarder(Box::makePromise())
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_canStore(fwd) {
     <> Box::canStore(dataOf(fwd))
 };
 genericBind(Box::canStore, "FunctionForwarder", FunctionForwarder_canStore);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_fetch(fwd) {
     <> Box::fetch(dataOf(fwd))
 };
 genericBind(Box::fetch, "FunctionForwarder", FunctionForwarder_fetch);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_store(fwd, function) {
     ifNot { <> canCall(call, function) }
         { Io0::die("Attempt to forward to non-function.") };
@@ -41,13 +41,13 @@ fn FunctionForwarder_store(fwd, function) {
 };
 genericBind(Box::store, "FunctionForwarder", FunctionForwarder_store);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_call(fwd, args*) {
     <> call(Box::fetch(dataOf(fwd)), args*)
 };
 genericBind(call, "FunctionForwarder", FunctionForwarder_call);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_canCall(fwd, arg) {
     <> canCall(Box::fetch(dataOf(fwd)), arg)
 };

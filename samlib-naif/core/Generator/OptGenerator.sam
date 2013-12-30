@@ -1,11 +1,11 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `OptGenerator` Type
-#
-# Payload is `subGen`, the sub-generator.
+##
+## `OptGenerator` Type
+##
+## Payload is `subGen`, the sub-generator.
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 def Io0 = moduleUse({name: ["core", "Io0"]});
@@ -13,22 +13,22 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 def ValueGenerator = submoduleUse("ValueGenerator");
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeOptGenerator(generator) {
     <> @OptGenerator(generator)
 };
 
-# Documented in spec.
+## Documented in spec.
 fn OptGenerator_collect(gen) {
     Io0::die("Unbounded generator.");
 };
 genericBind(Generator::collect, "OptGenerator", OptGenerator_collect);
 
-# Documented in spec.
+## Documented in spec.
 fn OptGenerator_nextValue(gen, box) {
     def subGen = dataOf(gen);
     def innerBox = Box::makePromise();

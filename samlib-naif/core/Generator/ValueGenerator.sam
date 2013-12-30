@@ -1,32 +1,32 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `ValueGenerator` Type
-#
+##
+## `ValueGenerator` Type
+##
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn ValueGenerator_collect(gen) {
     Io0::die("Unbounded generator.");
 };
 genericBind(Generator::collect, "ValueGenerator", ValueGenerator_collect);
 
-# Documented in spec.
+## Documented in spec.
 fn ValueGenerator_nextValue(gen, box) {
     Box::store(box, dataOf(gen));
     <> gen
 };
 genericBind(Generator::nextValue, "ValueGenerator", ValueGenerator_nextValue);
 
-# Documented in spec.
+## Documented in spec.
 fn makeValueGenerator(value) {
     <> @ValueGenerator(value)
 };
