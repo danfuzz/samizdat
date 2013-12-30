@@ -77,7 +77,7 @@ fi
 # Main script
 #
 
-includeDir="$("${progDir}/find-samex" --include)"
+includeDir="$("${baseDir}/helper/find-samex" --include)"
 if [[ $? != 0 ]]; then
     exit 1
 fi

@@ -120,7 +120,7 @@ if [[ ${runtimeName} != '' ]]; then
     runtimeOpt=(--runtime="${runtimeName}")
 fi
 
-name="$("${progDir}/find-samex" "${runtimeOpt[@]}" --bin)"
+name="$("${baseDir}/helper/find-samex" "${runtimeOpt[@]}" --bin)"
 if [[ $? != 0 ]]; then
     exit 1
 fi

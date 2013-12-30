@@ -40,13 +40,13 @@ unset newProg
 #
 
 projectName="$(basename "${progDir}")"
-binNames=("samex" "compile-samex-addon" "find-samex")
+binNames=("bin/samex" "bin/compile-samex-addon" "helper/find-samex")
 
 OUT="${OUT:-${baseDir}/out}"
-FINAL_BIN="${OUT}/final/bin"
-mkdir -p "${FINAL_BIN}"
+FINAL="${OUT}/final"
 
 for name in "${binNames[@]}"; do
-    rm -f "${FINAL_BIN}/${name}"
-    cp "${progDir}/${name}" "${FINAL_BIN}/${name}"
+    rm -f "${FINAL}/${name}"
+    mkdir -p "${FINAL}/$(dirname "${name}")" || exit 1
+    cp "${progDir}/${name}" "${FINAL}/${name}" || exit 1
 done
