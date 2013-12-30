@@ -1,40 +1,40 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Entity map converter
-#
-# This program accepts the `entity-map.txt` file as input, outputting a
-# (very large) map literal corresponding to its contents.
-#
+##
+## Entity map converter
+##
+## This program accepts the `entity-map.txt` file as input, outputting a
+## (very large) map literal corresponding to its contents.
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-# Map of hex digit tokens to int values.
+## Map of hex digit tokens to int values.
 def DIGIT_VALUES = {
     @"0": 0,  @"1": 1,  @"2": 2,  @"3": 3,  @"4": 4,
     @"5": 5,  @"6": 6,  @"7": 7,  @"8": 8,  @"9": 9,
     @"A": 10, @"B": 11, @"C": 12, @"D": 13, @"E": 14, @"F": 15
 };
 
-# Parses the end of a line, which consists of any number of spaces, optionally
-# followed by a comment, and finally followed by a newline.
+## Parses the end of a line, which consists of any number of spaces, optionally
+## followed by a comment, and finally followed by a newline.
 def parLineEnd = {/
     " "*
     ("#" [! "\n"]*)?
     "\n"
 /};
 
-# Parses a comma, optionally surrounded by whitespace.
+## Parses a comma, optionally surrounded by whitespace.
 def parComma = {/
     " "*
     ","
     " "*
 /};
 
-# Parses a single code point, yielding the value as a single-character string.
+## Parses a single code point, yielding the value as a single-character string.
 def parCodePoint = {/
     " "*
     "U+"
@@ -51,24 +51,24 @@ def parCodePoint = {/
     }
 /};
 
-# Parses a list of code points, yielding a converted string of them.
+## Parses a list of code points, yielding a converted string of them.
 def parCodePoints = {/
     codes = parCodePoint+
     { <> cat(codes*) }
 /};
 
-# Parses an entry description.
+## Parses an entry description.
 def parDescription = {/
     [! ",\n"]*
 /};
 
-# Parses an entity name.
+## Parses an entity name.
 def parName = {/
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     { <> Peg::stringFromTokenList(chars) }
 /};
 
-# Parses a single content line.
+## Parses a single content line.
 def parContentLine = {/
     string = parCodePoints
     parComma
@@ -77,15 +77,15 @@ def parContentLine = {/
     { <> {names*: string} }
 /};
 
-# Parses the entire file.
+## Parses the entire file.
 def parFile = {/
     lines = (
-        # Skip empty lines.
+        ## Skip empty lines.
         parLineEnd*
         parContentLine
     )*
 
-    # Skip trailing empty lines.
+    ## Skip trailing empty lines.
     parLineEnd*
 
     (
@@ -106,9 +106,9 @@ Io1::note("Processing file: \%q(inPath)");
 def text = Io1::readFileUtf8(inPath);
 def result = Peg::apply(parFile, text);
 
-# This makes each result line *start* with `,\n`, to make it easy to just
-# trim the first two characters off the beginning, yielding a valid comma-
-# separated list of mappings.
+## This makes each result line *start* with `,\n`, to make it easy to just
+## trim the first two characters off the beginning, yielding a valid comma-
+## separated list of mappings.
 def resultLines = (mapping in result ->
     <> ",\n    \%q(keyOf(mapping)): \%q(valueOf(mapping))"
 );
@@ -116,19 +116,19 @@ def resultLines = (mapping in result ->
 def resultText = Collection::slice(cat(resultLines*), 2);
 
 def outText = "\
-    # Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-    # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-    # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
-    #
-    # GENERATED FILE. DO NOT MODIFY DIRECTLY.
-    # GENERATED FILE. DO NOT MODIFY DIRECTLY.
-    # GENERATED FILE. DO NOT MODIFY DIRECTLY.
-    #
-    # This file was generated with the buildEntityMap program, using the
-    # file entity-map.txt as input. Rerun that program should the contents
-    # of this file need to be updated.
+    ## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+    ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+    ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+    ##
+    ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+    ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+    ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+    ##
+    ## This file was generated with the buildEntityMap program, using the
+    ## file entity-map.txt as input. Rerun that program should the contents
+    ## of this file need to be updated.
 
-    # Documented in the specification.
+    ## Documented in the specification.
     def ENTITY_MAP = {
     \(resultText)
     };
