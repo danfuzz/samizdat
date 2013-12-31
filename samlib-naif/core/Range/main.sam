@@ -122,7 +122,9 @@ genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 ##
 
 ## Documented in spec.
-fn makeOpenRange(firstValue, increment) {
+fn makeOpenRange(firstValue, optIncrement?) {
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+
     <> @OpenRange{firstValue, increment}
 };
 

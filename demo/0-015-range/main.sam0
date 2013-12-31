@@ -57,6 +57,9 @@ fn msgTen(header, gen) {
 ## Main Tests
 ##
 
+msgTen("Open range (10)",
+    Range::makeOpenRange(10));
+
 msgTen("Open range (100, 5)",
     Range::makeOpenRange(100, 5));
 
