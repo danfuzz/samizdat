@@ -1,24 +1,24 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Module functions
-#
+##
+## Module functions
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang0 = moduleUse({name: ["core", "Lang0"]});
 def Module0 = moduleUse({name: ["core", "Module0"]});
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# Finds the directory for the named module, by iterating over the given
-# `modulePaths`, looking for a `module.sam` file. Either returns
-# the tail of `modulePaths` that starts with the module path where the
-# module was found, or dies with an error.
+## Finds the directory for the named module, by iterating over the given
+## `modulePaths`, looking for a `module.sam` file. Either returns
+## the tail of `modulePaths` that starts with the module path where the
+## module was found, or dies with an error.
 fn findModuleDirectory(searchInfo, modulePaths) {
     def fqName = searchInfo::name;
 
@@ -38,13 +38,13 @@ fn findModuleDirectory(searchInfo, modulePaths) {
     };
 };
 
-# Loads a module at the given path, using the given module paths for
-# subsequent module lookups.
+## Loads a module at the given path, using the given module paths for
+## subsequent module lookups.
 fn loadPath(moduleDir, modulePaths) {
     def baseContext = Module0::getGlobals(
         Module0::moduleGet({name: ["core", "Globals"]}));
 
-    # This `moduleUse` is bound in the load context.
+    ## This `moduleUse` is bound in the load context.
     fn innerModuleUse(searchInfo, optPaths?) {
         def fullPaths = ifValue { <> optPaths* }
             { paths <> [paths*, modulePaths*] }
@@ -62,11 +62,11 @@ fn loadPath(moduleDir, modulePaths) {
 };
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn moduleUse(searchInfo, modulePaths?) {
     ifValue { <> Module0::moduleGet(searchInfo) }
         { modu -> return modu };
@@ -75,9 +75,9 @@ fn moduleUse(searchInfo, modulePaths?) {
 
     ifValue { <> searchInfo::path }
         { path ->
-            # The module is being specified as an explicit path. This
-            # means that the path per se should be loaded, and it should
-            # include its own `modules` at the head of the paths list.
+            ## The module is being specified as an explicit path. This
+            ## means that the path per se should be loaded, and it should
+            ## include its own `modules` at the head of the paths list.
             return loadPath(path, [[path*, "modules"], paths*])
         };
 
@@ -95,8 +95,8 @@ fn moduleUse(searchInfo, modulePaths?) {
     def result = loadPath(moduleDir, remainingPaths);
     def info = Module0::getInfo(result);
 
-    # TODO: Currently ignores everything about `searchInfo` other than
-    # the name.
+    ## TODO: Currently ignores everything about `searchInfo` other than
+    ## the name.
     ifIs { <> ne(fqName, info::name) }
         {
             Io1::die(cat(
@@ -108,7 +108,7 @@ fn moduleUse(searchInfo, modulePaths?) {
 };
 
 <> {
-    # Re-exports from `core::Module0`.
+    ## Re-exports from `core::Module0`.
     getAllModules:        Module0::getAllModules,
     getExports:           Module0::getExports,
     getGlobals:           Module0::getGlobals,
@@ -118,6 +118,6 @@ fn moduleUse(searchInfo, modulePaths?) {
     moduleGet:            Module0::moduleGet,
     stringFromModuleName: Module0::stringFromModuleName,
 
-    # Defined here.
+    ## Defined here.
     moduleUse
 }

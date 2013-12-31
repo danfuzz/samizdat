@@ -36,6 +36,11 @@ control constructs, and a bit more variety in expressing literal data.
 
 ### The Restrictions
 
+#### Comments
+
+In Layers 0 and 1, only single-line comments are recognized. Layer 2
+introduces multi-line comment syntax (`/* ... */`).
+
 #### Ints
 
 Ints only have a 64-bit signed range in Layers 0, 1, and 2. Out-of-range

@@ -1,16 +1,16 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Constants (non-function definitions)
-#
+##
+## Constants (non-function definitions)
+##
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# These are all documented in Samizdat Layer 0 spec.
+## These are all documented in Samizdat Layer 0 spec.
 
 <> {
     false: @Boolean(0),

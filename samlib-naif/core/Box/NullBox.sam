@@ -1,39 +1,39 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# NullBox type.
-#
+##
+## NullBox type.
+##
 
 def Box = moduleUse({name: ["proto", "Box"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn NullBox_canStore(box) {
-    # Always succeeds.
+    ## Always succeeds.
     <> box
 };
 genericBind(Box::canStore, "NullBox", NullBox_canStore);
 
-# Documented in spec.
+## Documented in spec.
 fn NullBox_fetch(box) {
-    # Return void.
+    ## Return void.
 };
 genericBind(Box::fetch, "NullBox", NullBox_fetch);
 
-# Documented in spec.
+## Documented in spec.
 fn NullBox_store(box, value?) {
-    # Return `value` but otherwise do nothing.
+    ## Return `value` but otherwise do nothing.
     <> value*
 };
 genericBind(Box::store, "NullBox", NullBox_store);
 
-# Documented in spec.
+## Documented in spec.
 def nullBox = @NullBox;
 
 <> {

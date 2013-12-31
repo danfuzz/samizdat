@@ -1,17 +1,17 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# List / argument interpolation demo
-#
+##
+## List / argument interpolation demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn msg(args*) {
     Io0::note(cat("Got: ", Format::source(args)))
@@ -34,9 +34,9 @@ fn nonlocalTest(x) {
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 msg(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
 msg({[1, 2, 3]*: 6});
@@ -60,8 +60,8 @@ ifValue { <> nonlocalTest(["fizmo"]) }
     { value <> msg(value) }
     { Io0::note("(void)") };
 
-# The extra parens here force the interpolated expression not to be considered
-# at function argument level.
+## The extra parens here force the interpolated expression not to be considered
+## at function argument level.
 msg((list5()*));
 
 def five = list5()*;

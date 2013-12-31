@@ -13,7 +13,7 @@ you can write it like this:
 
 ```
 myRecursiveFunction = yCombinator { selfCall ->
-    # Inner function.
+    ## Inner function.
     <> { myArg1 myArg2 ... ->
         ... my code ...
         selfCall args ...
@@ -81,20 +81,20 @@ Samizdat Layer 0, you can write it like this:
 ```
 myRecursiveFunctions = yStarCombinator
     { selfCall1, selfCall2, ... ->
-        # Inner function.
+        ## Inner function.
         <> { myArg1, myArg2, ... ->
             ... my code ...
-            selfCall1(args, ...) # Call this function self-recursively.
-            selfCall2(args, ...) # Call the other function.
+            selfCall1(args, ...) ## Call this function self-recursively.
+            selfCall2(args, ...) ## Call the other function.
             ... my code ...
         }
     }
     { selfCall1, selfCall2, ... ->
-        # Inner function.
+        ## Inner function.
         <> { myArg1, myArg2, ... ->
             ... my code ...
-            selfCall1(args, ...) # Call the other function.
-            selfCall2(args, ...) # Call this function self-recursively.
+            selfCall1(args, ...) ## Call the other function.
+            selfCall2(args, ...) ## Call this function self-recursively.
             ... my code ...
         }
     };

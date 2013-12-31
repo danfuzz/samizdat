@@ -1,24 +1,24 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Range demo, with layer 2 syntax
-#
+##
+## Range demo, with layer 2 syntax
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Prints out the values yielded by the given generator.
+## Prints out the values yielded by the given generator.
 fn msg(generator) {
     Io1::note("Got: \%q([generator*])")
 };
 
-# Prints out 10 values yielded by the given generator (and no more).
+## Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
     def values = Generator::makeFilterGenerator(generator, 1..10)
         { v, . <> v };
@@ -26,9 +26,9 @@ fn msgTen(generator) {
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 Io1::note("Inclusive, default increment...");
 msg(100..110);

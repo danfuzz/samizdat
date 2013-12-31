@@ -25,18 +25,19 @@ with any other expressions in the language.
 
 Samizdat has both single-line and multi-line comments.
 
-A single-line comment starts with a number sign (`#`) and continues to the
-end of the line it appears on. To be considered a comment, in addition one
-of the following must be the case:
+A single-line comment starts with a pair of hash marks `##` (also
+known as "pound signs" or "number signs") and continues to the
+end of the line it appears on.
 
-* It is the final character on its line (or in the file).
-* It is followed by one of the characters `#` `!` or <code>&nbsp;</code>
-  (another number sign, an exclamation mark, or a space).
+In order to support Unix-style "shebang" script redirection,
+a hash mark followed by an exclamation point `#!` is also treated as a
+single-line comment start sequence.
 
 ```
-#
-# I am commentary.
-thisIsNotCommentary   # ...but this *is* commentary.
+#! I am commentary.
+##
+## I am also commentary.
+thisIsNotCommentary   ## ...but this *is* commentary.
 ```
 
 A multi-line comment starts with the sequence slash-star (`/*`) and continues

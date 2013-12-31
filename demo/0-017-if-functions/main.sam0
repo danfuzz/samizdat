@@ -1,17 +1,17 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `if*` function demo
-#
+##
+## `if*` function demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Main demos
-#
+##
+## Main demos
+##
 
 def opt1 = optValue { <> };
 Io0::note(Format::source(opt1));
@@ -79,13 +79,13 @@ def v12 = ifValueOr
     { <> "Yes: v12" };
 Io0::note(v12);
 
-# Admittedly odd edge case.
+## Admittedly odd edge case.
 def v13 = ifValues([],
     { <> "Yes: v13" },
     { Io0::die("No.") });
 Io0::note(v13);
 
-# Admittedly odd edge case.
+## Admittedly odd edge case.
 def v14 = ifValues([],
     { <> "Yes: v14" });
 Io0::note(v14);

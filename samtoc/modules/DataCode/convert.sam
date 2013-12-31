@@ -1,14 +1,14 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Convert data into C code that constructs that data.
-#
+##
+## Convert data into C code that constructs that data.
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
-# Flattens a source tree to a simple string.
+## Flattens a source tree to a simple string.
 fn flatten(tree) {
     if (def s = isString(tree) | tree::flat) {
         return s
@@ -25,14 +25,14 @@ fn flatten(tree) {
         ")")
 };
 
-# Makes a function call output tree.
+## Makes a function call output tree.
 fn makeCall(name, args*) {
     def result = {name, args};
     <> {result*, flat: flatten(result)}
 };
 
-# Map of special-case characters to either their stringified forms or
-# to `"x"` to indicate a need to convert as hex.
+## Map of special-case characters to either their stringified forms or
+## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
     ("\x1;".."\x1f;")*: "x",
     "\x7f;":            "x",
@@ -44,8 +44,8 @@ def SPECIAL_CHARS = {
     "\\":               "\\\\"
 };
 
-# Helper for converting strings: Returns the converted form of the
-# given character.
+## Helper for converting strings: Returns the converted form of the
+## given character.
 fn stringChar(ch) {
     if (ch > "\x7f;") {
         Io1::die("Cannot convert characters beyond 0x7f.")
@@ -60,16 +60,16 @@ fn stringChar(ch) {
     <> ch
 };
 
-# Generic function to perform the conversion.
+## Generic function to perform the conversion.
 def convert = makeRegularGeneric("convert", 1, 1);
 
-# Converts an int.
+## Converts an int.
 fn Int_convert(int) {
     <> makeCall("intFromZint", "\(int)")
 };
 genericBind(convert, Int, Int_convert);
 
-# Converts a list.
+## Converts a list.
 fn List_convert(list) {
     if (list == []) {
         return "EMPTY_LIST"
@@ -80,7 +80,7 @@ fn List_convert(list) {
 };
 genericBind(convert, List, List_convert);
 
-# Converts a map.
+## Converts a map.
 fn Map_convert(map) {
     if (map == {}) {
         return "EMPTY_MAP"
@@ -94,7 +94,7 @@ fn Map_convert(map) {
 };
 genericBind(convert, Map, Map_convert);
 
-# Converts a string.
+## Converts a string.
 fn String_convert(string) {
     def bodyChars = [ ch in string <> stringChar(ch) ];
     def size = Collection::sizeOf(string);
@@ -103,8 +103,8 @@ fn String_convert(string) {
 };
 genericBind(convert, String, String_convert);
 
-# Converts a derived value or an opaque core value, yielding a tree
-# that can be stringified with `indent`.
+## Converts a derived value or an opaque core value, yielding a tree
+## that can be stringified with `indent`.
 fn Value_convert(value) {
     if (isOpaqueValue(value)) {
         Io1::die("Cannot convert opaque non-data values.")

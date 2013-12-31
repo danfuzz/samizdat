@@ -1,69 +1,69 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Samizdat Layer 1 Conversion / Simplification
-#
+##
+## Samizdat Layer 1 Conversion / Simplification
+##
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# `convertPex(node, formals)`, used to expand pex nodes into expression
-# nodes.
+## `convertPex(node, formals)`, used to expand pex nodes into expression
+## nodes.
 def convertPex = makeRegularGeneric("convertPex", 2, 2);
 
-# `convertPexIn(node)`, used to convert a layer 1 expression or statement
-# node into an equivalent layer 0 node.
+## `convertPexIn(node)`, used to convert a layer 1 expression or statement
+## node into an equivalent layer 0 node.
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
-# Reference to the variable `get`.
+## Reference to the variable `get`.
 def GET_REF = @varRef("get");
 
-# Reference to the variable `Peg`.
+## Reference to the variable `Peg`.
 def PEG_REF = @varRef("Peg");
 
-# Does parser conversion of an expression or statement list.
+## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
     <> Generator::filterAll(nodes) { node <> convertPexIn(node) }
 };
 
-# Constructs a function call.
+## Constructs a function call.
 fn makeCall(function, args*) {
     <> @call{function, actuals: args}
 };
 
-# Makes a peg variable reference.
+## Makes a peg variable reference.
 fn makePegRef(name) {
     <> makeCall(GET_REF, PEG_REF, @literal(name))
 };
 
-# Constructs a named peg function call with the given arguments, each of
-# which must be a (non-parsing) expression node.
+## Constructs a named peg function call with the given arguments, each of
+## which must be a (non-parsing) expression node.
 fn callPegNameWithExpressions(functionName, args*) {
     <> makeCall(makePegRef(functionName), args*);
 };
 
-# Converts a pex to a named peg function call of the converted inner pex.
+## Converts a pex to a named peg function call of the converted inner pex.
 fn callPegNameWithPex(node, formals, functionName) {
     def convertedNode = convertPex(dataOf(node), formals);
     <> callPegNameWithExpressions(functionName, convertedNode)
 };
 
-# Constructs a named peg function call of the given literal arguments.
+## Constructs a named peg function call of the given literal arguments.
 fn callPegNameWithLiterals(functionName, args*) {
     def literalArgs = Generator::filterAll(args) { arg <> @literal(arg) };
     <> callPegNameWithExpressions(functionName, literalArgs*)
 };
 
 
-#
-# `convertPex` bindings
-#
+##
+## `convertPex` bindings
+##
 
-# Converts a `choice` pex node.
+## Converts a `choice` pex node.
 fn choice_convertPex(node, formals) {
     def pexes = dataOf(node);
     def convertedPexes = Generator::filterAll(pexes)
@@ -72,19 +72,19 @@ fn choice_convertPex(node, formals) {
 };
 genericBind(convertPex, "choice", choice_convertPex);
 
-# Converts a `sequence` pex node.
+## Converts a `sequence` pex node.
 fn sequence_convertPex(node, formals) {
     def pexes = dataOf(node);
 
-    # Extract the formals out of any `varDef` nodes.
+    ## Extract the formals out of any `varDef` nodes.
     def newFormals = Generator::filterAll(pexes) { pex ->
         <> ifIs { <> eq(typeOf(pex), "varDef") }
             { <> {name: dataOf(pex)::name} }
             { <> {} }
     };
 
-    # Convert all the pexes, passing in appropriately-extended formals
-    # lists to each conversion.
+    ## Convert all the pexes, passing in appropriately-extended formals
+    ## lists to each conversion.
     def convertedPexes =
         Generator::filterAll(Range::makeOpenRange(0, 1), pexes)
             { n, pex ->
@@ -99,54 +99,54 @@ fn sequence_convertPex(node, formals) {
 };
 genericBind(convertPex, "sequence", sequence_convertPex);
 
-# Converts a `string` pex node.
+## Converts a `string` pex node.
 fn string_convertPex(node, formals) {
     <> callPegNameWithLiterals("makeString", dataOf(node))
 };
 genericBind(convertPex, "string", string_convertPex);
 
-# Converts a `token` pex node.
+## Converts a `token` pex node.
 fn token_convertPex(node, formals) {
     <> callPegNameWithLiterals("makeToken", dataOf(node))
 };
 genericBind(convertPex, "token", token_convertPex);
 
-# Converts a `varRef` pex node.
+## Converts a `varRef` pex node.
 fn varRef_convertPex(node, formals) {
-    # `varRef` in the context of a pex just translates to the same `varRef`
-    # in the context of an expression / statement.
+    ## `varRef` in the context of a pex just translates to the same `varRef`
+    ## in the context of an expression / statement.
     <> node
 };
 genericBind(convertPex, "varRef", varRef_convertPex);
 
-# Converts an `any` pex node.
+## Converts an `any` pex node.
 fn any_convertPex(node, formals) {
     <> makePegRef("any")
 };
 genericBind(convertPex, "any", any_convertPex);
 
-# Converts an `empty` pex node.
+## Converts an `empty` pex node.
 fn empty_convertPex(node, formals) {
     <> makePegRef("empty")
 };
 genericBind(convertPex, "empty", empty_convertPex);
 
-# Converts a `tokenSet` pex node.
+## Converts a `tokenSet` pex node.
 fn tokenSet_convertPex(node, formals) {
     <> callPegNameWithLiterals("makeTokenSet", dataOf(node)*)
 };
 genericBind(convertPex, "tokenSet", tokenSet_convertPex);
 
-# Converts a `tokenSetComplement` pex node.
+## Converts a `tokenSetComplement` pex node.
 fn tokenSetComplement_convertPex(node, formals) {
     <> callPegNameWithLiterals("makeTokenSetComplement", dataOf(node)*);
 };
 genericBind(convertPex, "tokenSetComplement", tokenSetComplement_convertPex);
 
-# Converts a `code` pex node.
+## Converts a `code` pex node.
 fn code_convertPex(node, formals) {
-    # Use the lexical `formals` context to make a regular closure node,
-    # and just convert that.
+    ## Use the lexical `formals` context to make a regular closure node,
+    ## and just convert that.
 
     def closurePayload = {(dataOf(node))*, formals};
     def convertedClosure = convertPexIn(@closure(closurePayload));
@@ -155,42 +155,42 @@ fn code_convertPex(node, formals) {
 };
 genericBind(convertPex, "code", code_convertPex);
 
-# Converts a `lookaheadSuccess` pex node.
+## Converts a `lookaheadSuccess` pex node.
 fn lookaheadSuccess_convertPex(node, formals) {
     <> callPegNameWithPex(node, formals, "makeLookaheadSuccess")
 };
 genericBind(convertPex, "lookaheadSuccess", lookaheadSuccess_convertPex);
 
-# Converts a `lookaheadFailure` pex node.
+## Converts a `lookaheadFailure` pex node.
 fn lookaheadFailure_convertPex(node, formals) {
     <> callPegNameWithPex(node, formals, "makeLookaheadFailure")
 };
 genericBind(convertPex, "lookaheadFailure", lookaheadFailure_convertPex);
 
-# Converts an `opt` pex node.
+## Converts an `opt` pex node.
 fn opt_convertPex(node, formals) {
     <> callPegNameWithPex(node, formals, "makeOpt")
 };
 genericBind(convertPex, "opt", opt_convertPex);
 
-# Converts a `star` pex node.
+## Converts a `star` pex node.
 fn star_convertPex(node, formals) {
     <> callPegNameWithPex(node, formals, "makeStar")
 };
 genericBind(convertPex, "star", star_convertPex);
 
-# Converts a `plus` pex node.
+## Converts a `plus` pex node.
 fn plus_convertPex(node, formals) {
     <> callPegNameWithPex(node, formals, "makePlus")
 };
 genericBind(convertPex, "plus", plus_convertPex);
 
 
-#
-# `convertPexIn` bindings
-#
+##
+## `convertPexIn` bindings
+##
 
-# Does parser conversion of a `closure` or `fnDef` node.
+## Does parser conversion of a `closure` or `fnDef` node.
 fn convertClosureLike(node) {
     def nodeType = typeOf(node);
     def nodeValue = dataOf(node);
@@ -202,9 +202,9 @@ fn convertClosureLike(node) {
     <> @(nodeType){nodeValue*, yield*, statements}
 };
 
-# Does parser conversion of a node whose payload value is an
-# arbitrary expression. This includes `expression` (per se) and
-# `interpolate` nodes.
+## Does parser conversion of a node whose payload value is an
+## arbitrary expression. This includes `expression` (per se) and
+## `interpolate` nodes.
 fn convertExpressionPayload(node) {
     def nodeType = typeOf(node);
     def nodeValue = convertPexIn(dataOf(node));
@@ -212,7 +212,7 @@ fn convertExpressionPayload(node) {
     <> @(nodeType)(nodeValue)
 };
 
-# Does parser conversion of a `call` node.
+## Does parser conversion of a `call` node.
 fn call_convertPexIn(node) {
     def nodeValue = dataOf(node);
     def function = convertPexIn(nodeValue::function);
@@ -222,44 +222,44 @@ fn call_convertPexIn(node) {
 };
 genericBind(convertPexIn, "call", call_convertPexIn);
 
-# Does parser conversion of a `closure` node.
+## Does parser conversion of a `closure` node.
 fn closure_convertPexIn(node) {
     <> convertClosureLike(node)
 };
 genericBind(convertPexIn, "closure", closure_convertPexIn);
 
-# Does parser conversion of an `expression` node.
+## Does parser conversion of an `expression` node.
 fn expression_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
 genericBind(convertPexIn, "expression", expression_convertPexIn);
 
-# Does parser conversion of a `fnDef` node.
+## Does parser conversion of a `fnDef` node.
 fn fnDef_convertPexIn(node) {
     <> convertClosureLike(node)
 };
 genericBind(convertPexIn, "fnDef", fnDef_convertPexIn);
 
-# Does parser conversion of an `interpolate` node.
+## Does parser conversion of an `interpolate` node.
 fn interpolate_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
 genericBind(convertPexIn, "interpolate", interpolate_convertPexIn);
 
-# Does parser conversion of a `literal` node.
+## Does parser conversion of a `literal` node.
 fn literal_convertPexIn(node) {
     <> node
 };
 genericBind(convertPexIn, "literal", literal_convertPexIn);
 
-# Does parser conversion of a `parser` node. This is where the juicy stuff
-# happens!
+## Does parser conversion of a `parser` node. This is where the juicy stuff
+## happens!
 fn parser_convertPexIn(node) {
     <> callPegNameWithPex(node, [], "makeMainSequence")
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 
-# Does parser conversion of a `varDef` node.
+## Does parser conversion of a `varDef` node.
 fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
     def value = convertPexIn(nodeValue::value);
@@ -268,24 +268,24 @@ fn varDef_convertPexIn(node) {
 };
 genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
-# Does parser conversion of a `varRef` node.
+## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
     <> node
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
-# Does parser conversion of a `voidable` node.
+## Does parser conversion of a `voidable` node.
 fn voidable_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
 genericBind(convertPexIn, "voidable", voidable_convertPexIn);
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn convertToLang0(expressionNode) {
     <> convertPexIn(expressionNode);
 };

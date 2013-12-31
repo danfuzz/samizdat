@@ -1,25 +1,25 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# String interpolation demo
-#
+##
+## String interpolation demo
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn print(string) {
     Io1::note(string)
 };
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 print("\("Hello.")");
 print("\{ <> "Greetings." }");
@@ -29,7 +29,7 @@ print("I like \([@muffins, @scones]).");
 
 print("\
     I like \{
-        # A small sampling of foods.
+        ## A small sampling of foods.
         def foods = {icky: "sardines", yummy: "muffins"};
         <> foods::yummy
     }!");
@@ -45,7 +45,7 @@ print("\
 print("\%s("Zero") \%q(1) \%q("two") \%Q([3, 4, 5]), and 0x\%x(0x6ff).");
 print("\%s(["WHYA", ["REYO", ["UREA"]], "DING", "THIS", "?"])");
 
-# Test all the void conversions.
+## Test all the void conversions.
 print("[\{}] [\%s{}] [\%q{}] [\%Q(isString(1))]");
 
 <> 0

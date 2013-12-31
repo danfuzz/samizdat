@@ -1,26 +1,26 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Generator function demo
-#
+##
+## Generator function demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Prints the given value, indented slightly.
+## Prints the given value, indented slightly.
 fn msg(value) {
     Io0::note(cat("  ", Format::source(value)))
 };
 
-# Outputs all generated values, with an initial header, followed by
-# the listification of the generator, all followed by an extra newline
-# at the end.
+## Outputs all generated values, with an initial header, followed by
+## the listification of the generator, all followed by an extra newline
+## at the end.
 fn msgAll(header, gen) {
     Io0::note(header);
 
@@ -43,9 +43,9 @@ fn msgAll(header, gen) {
 
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 msgAll("Empty list", []);
 msgAll("Empty map", {});

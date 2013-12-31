@@ -1,19 +1,19 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Box demo
-#
+##
+## Box demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Prints box info.
+## Prints box info.
 fn msg(box) {
     def storeStr = ifIs { <> Box::canStore(box) }
         { <> "can-store : "}
@@ -27,9 +27,9 @@ fn msg(box) {
 };
 
 
-#
-# Main demos
-#
+##
+## Main demos
+##
 
 Io0::note("Mutable Box");
 

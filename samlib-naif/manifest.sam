@@ -1,39 +1,39 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# File manifest for the library.
-#
+##
+## File manifest for the library.
+##
 
-# Files that need to be handled specially. They're not loaded like the
-# rest of the library, but things that want to iterate over all the files
-# (e.g. just to get the text) can use the list here to avoid having to
-# name them explicitly.
+## Files that need to be handled specially. They're not loaded like the
+## rest of the library, but things that want to iterate over all the files
+## (e.g. just to get the text) can use the list here to avoid having to
+## name them explicitly.
 def BOOTSTRAP_FILES = [
     "manifest.sam",
     "main.sam"
 ];
 
-# The following is a list of the names of all the core library files, in
-# dependency order. That is, the first one depends only on the primitives,
-# the second can depend on primitives and the first, etc.
+## The following is a list of the names of all the core library files, in
+## dependency order. That is, the first one depends only on the primitives,
+## the second can depend on primitives and the first, etc.
 def MANIFEST = [
-    # Layer 0 in-language core library.
+    ## Layer 0 in-language core library.
 
-    # Layer 0: Basic module system. Listed first so it can be used
-    # by everything else.
+    ## Layer 0: Basic module system. Listed first so it can be used
+    ## by everything else.
     "Module0.sam",
 
-    # Layer 0: Constant value definitions and simple functions, directly
-    # added to the global library context.
+    ## Layer 0: Constant value definitions and simple functions, directly
+    ## added to the global library context.
     ["core", "Globals0"],
 
-    # Layer 0 evaluation as a module. Used by everything that follows.
+    ## Layer 0 evaluation as a module. Used by everything that follows.
     ["core", "Lang0"],
 
-    # Layer 0: Prototype definition modules, re-exported from the primitive
-    # core library.
+    ## Layer 0: Prototype definition modules, re-exported from the primitive
+    ## core library.
     ["proto", "Bitwise"],
     ["proto", "Box"],
     ["proto", "Collection"],
@@ -41,37 +41,37 @@ def MANIFEST = [
     ["proto", "Number"],
     ["proto", "Sequence"],
 
-    # Layer 0: Simple modules.
+    ## Layer 0: Simple modules.
     ["core", "EntityMap"],
     ["core", "Bitwise"],
     ["core", "Box"],
     ["core", "Collection"],
 
     ["core", "Io0"],
-    ["core", "FunctionForwarder"], # Uses `Box` and `Io0`.
-    ["core", "Boolean"],           # Uses `Io0`.
+    ["core", "FunctionForwarder"], ## Uses `Box` and `Io0`.
+    ["core", "Boolean"],           ## Uses `Io0`.
 
-    # Layer 0: Nontrivial modules.
+    ## Layer 0: Nontrivial modules.
     ["core", "Generator"],
     ["core", "Range"],
     ["core", "Format"],
     ["core", "Peg"],
-    ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
+    ["core", "ParseForwarder"],  ## Uses `parse` defined by `core::Peg`.
 
-    # Layer 1: Language implementation.
+    ## Layer 1: Language implementation.
     ["core", "Lang1"],
 
-    # Layer 1: Modules.
+    ## Layer 1: Modules.
     ["core", "Io1"],
     ["core", "Module"],
 
-    # Layer 2: Language implementation.
+    ## Layer 2: Language implementation.
     ["core", "Lang2"],
 
-    # Layer 2: Modules.
+    ## Layer 2: Modules.
     ["core", "CommandLine"],
 
-    # Final global variable context setup.
+    ## Final global variable context setup.
     ["core", "Globals"]
 ];
 

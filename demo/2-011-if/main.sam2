@@ -1,17 +1,17 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# If clause demo
-#
+##
+## If clause demo
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn returnBlort() {
     <> "blort"
@@ -26,13 +26,13 @@ fn returnIgram() {
 };
 
 fn returnVoid() {
-    # I can see through time.
+    ## I can see through time.
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 if (1 \== 1) {
     Io1::note("1 is 1")

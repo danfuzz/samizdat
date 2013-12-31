@@ -1,11 +1,11 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
-# TODO: Ought to be able to do something like:
-#     use Lang0Node *;
+## TODO: Ought to be able to do something like:
+##     use Lang0Node *;
 def get actuals    = Lang0Node::get actuals;
 def get expression = Lang0Node::get expression;
 def get formals    = Lang0Node::get formals;
@@ -16,7 +16,7 @@ def get value      = Lang0Node::get value;
 def get yield      = Lang0Node::get yield;
 def get yieldDef   = Lang0Node::get yieldDef;
 
-# `lits(node, resultBox)`, implements one layer of literal collection.
+## `lits(node, resultBox)`, implements one layer of literal collection.
 def lits = makeRegularGeneric("lits", 2, 2);
 
 fn call_lits(node, resultBox) {
@@ -64,7 +64,7 @@ fn varDef_lits(node, resultBox) {
 genericBind(lits, "varDef", varDef_lits);
 
 fn varRef_lits(node, resultBox) {
-    # Nothing to do.
+    ## Nothing to do.
 };
 genericBind(lits, "varRef", varRef_lits);
 
@@ -73,8 +73,8 @@ fn voidable_lits(node, resultBox) {
 };
 genericBind(lits, "voidable", voidable_lits);
 
-# Collects all literal nodes at or under the given one into a map
-# from literal value to index (zero-based).
+## Collects all literal nodes at or under the given one into a map
+## from literal value to index (zero-based).
 fn collectLiterals(node) {
     def resultBox = Box::makeCell({});
     lits(node, resultBox);

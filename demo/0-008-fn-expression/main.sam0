@@ -1,26 +1,26 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Function expression demo
-#
+##
+## Function expression demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn print(args*) {
     Io0::note(Format::sourceUnadorned(args))
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 def func1 = fn (x) {
     print("func1", x);
@@ -36,7 +36,7 @@ def func2 = fn <out> (x*) {
 
 Io0::note(func2(20, "twenty"));
 
-# Recursive call.
+## Recursive call.
 def func3 = fn whee(x) {
     print("func3", x);
     ifIs { <> lt(x, 5) }

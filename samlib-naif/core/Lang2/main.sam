@@ -1,20 +1,20 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Layer 2 parsing and evaluation functions
-#
+##
+## Layer 2 parsing and evaluation functions
+##
 
 
 def Lang1 = moduleUse({name: ["core", "Lang1"]});
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# This just re-exports stuff defined in submodules as well as `convertToLang0`
-# which is a re-export from `Lang1`.
+## This just re-exports stuff defined in submodules as well as `convertToLang0`
+## which is a re-export from `Lang1`.
 <> {
     (submoduleUse("eval"))*,
     (submoduleUse("evalBinary"))*,

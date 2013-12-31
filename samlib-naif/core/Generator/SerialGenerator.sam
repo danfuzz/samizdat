@@ -1,36 +1,36 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `SerialGenerator` Type
-#
-# Payload is `[subGens*]`, a list of sub-generators.
+##
+## `SerialGenerator` Type
+##
+## Payload is `[subGens*]`, a list of sub-generators.
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 def NullGenerator = submoduleUse("NullGenerator");
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn makeSerialGenerator(generators*) {
-    # Return the `nullGenerator` if we weren't passed any arguments.
+    ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
         { return NullGenerator::nullGenerator };
 
-    # Return the argument directly if we were only passed one.
-    # This saves some gratuitous call wrapping / double yields.
+    ## Return the argument directly if we were only passed one.
+    ## This saves some gratuitous call wrapping / double yields.
     ifIs { <> eq(Collection::sizeOf(generators), 1) }
         { return generators* };
 
     <> @SerialGenerator(generators)
 };
 
-# Documented in spec.
+## Documented in spec.
 fn SerialGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
@@ -45,18 +45,19 @@ fn SerialGenerator_nextValue(gen, box) {
                     <> @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
-                    # First generator was voided.
+                    ## First generator was voided.
                     <> Generator::nextValue(
                         makeSerialGenerator(moreGens*),
                         box)
                 }
         }
         {
-            # Totally voided.
+            ## Totally voided.
             Box::store(box)
         }
 };
-genericBind(Generator::nextValue, "SerialGenerator", SerialGenerator_nextValue);
+genericBind(Generator::nextValue, "SerialGenerator",
+    SerialGenerator_nextValue);
 
 <> {
     makeSerialGenerator

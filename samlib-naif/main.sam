@@ -1,35 +1,35 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Samizdat Layer 0 Core Library
-#
-# This is a Samizdat Layer 0 program which defines all the
-# core library functions and other bindings that aren't primitive.
-# It returns the default global variable environment.
-#
+##
+## Samizdat Layer 0 Core Library
+##
+## This is a Samizdat Layer 0 program which defines all the
+## core library functions and other bindings that aren't primitive.
+## It returns the default global variable environment.
+##
 
-# The following declares the arguments passed to the library itself.
-#
-# * `PRIMITIVE_CONTEXT` is expected to be a map of all primitively-defined
-#   variables.
-#
-# * `LIBRARY_FLAT_DIR` is expected to be a flat path (simple string with
-#   slashes separating components) naming the directory where library files
-#   are to be found.
+## The following declares the arguments passed to the library itself.
+##
+## * `PRIMITIVE_CONTEXT` is expected to be a map of all primitively-defined
+##   variables.
+##
+## * `LIBRARY_FLAT_DIR` is expected to be a flat path (simple string with
+##   slashes separating components) naming the directory where library files
+##   are to be found.
 
 PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# Converts an unstructured string into a list-of-strings, by delimiting on
-# the given character. Empty strings are discarded from the result list.
+## Converts an unstructured string into a list-of-strings, by delimiting on
+## the given character. Empty strings are discarded from the result list.
 fn splitString(string, delimCh) {
-    # Append to list, ignoring empty strings.
+    ## Append to list, ignoring empty strings.
     fn appendNonempty(list, one) {
         <> ifIs { <> eq(one, "") }
             { <> list }
@@ -47,9 +47,9 @@ fn splitString(string, delimCh) {
     }
 };
 
-# Converts a flat path into an absolute structured (list of components)
-# version. This prepends the current directory if the given path is
-# not absolute.
+## Converts a flat path into an absolute structured (list of components)
+## version. This prepends the current directory if the given path is
+## not absolute.
 fn convertFlatPath(flat) {
     def flatAbs = ifIs { <> eq(Collection_nth(flat, 0), "/") }
         { <> flat }
@@ -57,10 +57,10 @@ fn convertFlatPath(flat) {
     <> splitString(flatAbs, "/")
 };
 
-# Structured path (list of components) version of `LIBRARY_FLAT_DIR`.
+## Structured path (list of components) version of `LIBRARY_FLAT_DIR`.
 def LIBRARY_DIR = convertFlatPath(LIBRARY_FLAT_DIR);
 
-# Reads the named library file.
+## Reads the named library file.
 fn readLibraryFile(name) {
     def path = cat(LIBRARY_FLAT_DIR, "/", name);
     <> ifIs { <> Io0_flatFileExists(path) }
@@ -68,34 +68,34 @@ fn readLibraryFile(name) {
         { Io0_die(cat("No such core library file: ", path)) }
 };
 
-# Loads the named library file in the given context, returning a map
-# representing both the originally-given context *and* the bindings defined
-# by the named library. Each library file is expected to return a map of
-# bindings that it wishes to export.
+## Loads the named library file in the given context, returning a map
+## representing both the originally-given context *and* the bindings defined
+## by the named library. Each library file is expected to return a map of
+## bindings that it wishes to export.
 fn loadLibrary(ctx, name) {
     def text = readLibraryFile(name);
     def tree = ctx::Lang0_parseProgram(text);
     def function = ctx::Lang0_eval(ctx, tree);
 
-    # Evaluating the program text/tree results in a function which, when
-    # called, yields the bindings defined by that file (because that's how
-    # each library file is written). If the function yields void, then
-    # the file was only loaded for side effects (such as binding generic
-    # functions).
+    ## Evaluating the program text/tree results in a function which, when
+    ## called, yields the bindings defined by that file (because that's how
+    ## each library file is written). If the function yields void, then
+    ## the file was only loaded for side effects (such as binding generic
+    ## functions).
     <> ifValue { <> function() }
         { bindings ->
-            # The end result is the addition of the new bindings to the
-            # original context.
+            ## The end result is the addition of the new bindings to the
+            ## original context.
             <> {ctx*, bindings*};
         }
         {
-            # No new bindings.
+            ## No new bindings.
             <> ctx
         }
 };
 
-# Loads the named module, returning a map that includes any additional
-# global bindings as specified by the module.
+## Loads the named module, returning a map that includes any additional
+## global bindings as specified by the module.
 fn loadModule(ctx, name) {
     def Module0 = ctx::moduleUse({name: ["core", "Module0"]});
     Io0_note(cat("    ", Module0::stringFromModuleName(name)));
@@ -105,8 +105,8 @@ fn loadModule(ctx, name) {
     <> { ctx*, (Module0::getGlobals(modu))* }
 };
 
-# Loads the named library or module, using either `loadLibrary` or
-# `loadModule` above (see which).
+## Loads the named library or module, using either `loadLibrary` or
+## `loadModule` above (see which).
 fn loadLibraryOrModule(ctx, name) {
     <> ifIs { <> hasType(name, List) }
         { <> loadModule(ctx, name) }
@@ -116,11 +116,13 @@ fn loadLibraryOrModule(ctx, name) {
         }
 };
 
-# Loads all of libraries named by the manifest, in order, allowing later
-# libraries to depend on earlier ones. The first listed library can depend
-# only on the initial given `baseCtx` (that is, the primitive library context).
+## Loads all of libraries named by the manifest, in order, allowing later
+## libraries to depend on earlier ones. The first listed library can depend
+## only on the initial given `baseCtx` (that is, the primitive library
+## context).
 fn loadAllLibraries(baseCtx) {
-    # Read the manifest file, to figure out what all to load and in what order.
+    ## Read the manifest file, to figure out what all to load and in what
+    ## order.
     def manifest = loadLibrary(baseCtx, "manifest.sam")::MANIFEST;
 
     <> loopReduce(manifest, baseCtx)
@@ -136,21 +138,21 @@ fn loadAllLibraries(baseCtx) {
         }
 };
 
-# Builds the final core library, by doing file loading / evaluation, and then
-# doing final module system setup.
+## Builds the final core library, by doing file loading / evaluation, and then
+## doing final module system setup.
 fn makeCoreLibrary() {
-    # This is the final core library load context, which has extra bindings
-    # beyond what's supposed to be in the real core library.
+    ## This is the final core library load context, which has extra bindings
+    ## beyond what's supposed to be in the real core library.
     def finalContext = loadAllLibraries(PRIMITIVE_CONTEXT);
 
-    # The module `core::Globals` is the "sanitized" core library context.
+    ## The module `core::Globals` is the "sanitized" core library context.
     <> finalContext::moduleUse({name: ["core", "Globals"]});
 };
 
 
-#
-# Main Definition
-#
+##
+## Main Definition
+##
 
 Io0_note("Loading core library...");
 

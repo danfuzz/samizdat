@@ -1,20 +1,20 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Calculator Demo
-#
+##
+## Calculator Demo
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Map from binary operation names to precedece/function maps.
+## Map from binary operation names to precedece/function maps.
 def BINARY_OPS = {
     "+": {function: Number::add, precedence: 1},
     "-": {function: Number::sub, precedence: 1},
@@ -23,25 +23,25 @@ def BINARY_OPS = {
     "%": {function: Number::mod, precedence: 2}
 };
 
-# Map from unary operation names to functions.
+## Map from unary operation names to functions.
 def UNARY_OPS = {
     "+": { x <> x },
     "-": Number::neg
 };
 
-# Takes an initial value and a list of one-argument functions, and
-# does a reduction by applying each of the functions in order.
+## Takes an initial value and a list of one-argument functions, and
+## does a reduction by applying each of the functions in order.
 fn applyAll(initialValue, functions) {
     <> Generator::doReduce1(functions, initialValue)
         { function, result <> function(result) }
 };
 
-# Takes an initial value and a list of maps of `[op, value]`,
-# and evaluates the result using the "shunting yard" algorithm.
+## Takes an initial value and a list of maps of `[op, value]`,
+## and evaluates the result using the "shunting yard" algorithm.
 fn applyShuntingYard(initialValue, opValues) {
-    # Reduces the top of the given pending stack. That is, it takes the
-    # top two values, and combines them by applying the top op, and places
-    # the result back at the top of the value stack.
+    ## Reduces the top of the given pending stack. That is, it takes the
+    ## top two values, and combines them by applying the top op, and places
+    ## the result back at the top of the value stack.
     fn applyTop(ops, values) {
         def valuesSizeM2 = Number::sub(Collection::sizeOf(values), 2);
         def function = Collection::last(ops)::function;
@@ -52,8 +52,8 @@ fn applyShuntingYard(initialValue, opValues) {
         ]
     };
 
-    # Reduces the given pending stack with knowledge that the next operator
-    # to apply is of the given precedence.
+    ## Reduces the given pending stack with knowledge that the next operator
+    ## to apply is of the given precedence.
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
             { <next> ops, values ->
@@ -69,8 +69,8 @@ fn applyShuntingYard(initialValue, opValues) {
     loopReduce([], [initialValue], opValues) { ops, values, opValues ->
         ifIs { <> eq(opValues, []) }
             {
-                # Use precedence `-1` to drain the op stack, leaving a single
-                # value.
+                ## Use precedence `-1` to drain the op stack, leaving a single
+                ## value.
                 def finalResult = reducePending(ops, values, -1);
                 return Collection::last(Collection::last(finalResult))
             };
@@ -87,16 +87,16 @@ fn applyShuntingYard(initialValue, opValues) {
     }
 };
 
-# Forward declaration of `expression`.
+## Forward declaration of `expression`.
 def expression = ParseForwarder::make();
 
-# Parses a single digit, yielding its value as an int.
+## Parses a single digit, yielding its value as an int.
 def digit = {/
     ch = ["0".."9"]
     { <> Number::sub(toInt(typeOf(ch)), toInt("0")) }
 /};
 
-# Parses a whole number (non-negative integer), yielding its value as an int.
+## Parses a whole number (non-negative integer), yielding its value as an int.
 def number = {/
     digits = digit+
     {
@@ -105,9 +105,9 @@ def number = {/
     }
 /};
 
-# Parses an expression term. In this case it's either a number or a
-# parenthesized expression. Yields the number or evaluated expression result,
-# respectively.
+## Parses an expression term. In this case it's either a number or a
+## parenthesized expression. Yields the number or evaluated expression result,
+## respectively.
 def term = {/
     number
 |
@@ -117,29 +117,29 @@ def term = {/
     { <> ex }
 /};
 
-# Parses a unary (in this case, prefix) operation, yielding its corresponding
-# function.
+## Parses a unary (in this case, prefix) operation, yielding its corresponding
+## function.
 def unaryOp = {/
     op = ["+-"]
     { <> get(UNARY_OPS, typeOf(op)) }
 /};
 
-# Parses a unary expression, that is, a series of unary operators followed
-# by a term, yielding the evaluated result.
+## Parses a unary expression, that is, a series of unary operators followed
+## by a term, yielding the evaluated result.
 def unaryExpression = {/
     ops = unaryOp*
     ex = term
     { <> applyAll(ex, Sequence::reverse(ops)) }
 /};
 
-# Parses a binary operation, yielding a map of precedence and function.
+## Parses a binary operation, yielding a map of precedence and function.
 def binaryOp = {/
     op = ["+-*/%"]
     { <> get(BINARY_OPS, typeOf(op)) }
 /};
 
-# Parses a chained sequence of unary expressions separated by binary
-# operators.
+## Parses a chained sequence of unary expressions separated by binary
+## operators.
 def expressionImpl = {/
     firstValue = unaryExpression
     opValues = (
@@ -151,24 +151,24 @@ def expressionImpl = {/
 /};
 Box::store(expression, expressionImpl);
 
-# Evaluates all the expressions passed to it, printing the evaluated results
-# in order. Each expression is expected to be terminated with a newline.
+## Evaluates all the expressions passed to it, printing the evaluated results
+## in order. Each expression is expected to be terminated with a newline.
 def evalExpressions = {/
     (
         ex = expression
         "\n"
         {
             Io1::note(Format::source(ex));
-            # Explicit yield here to indicate successful parsing.
+            ## Explicit yield here to indicate successful parsing.
             <> null
         }
     )*
 /};
 
 
-#
-# Main Definition
-#
+##
+## Main Definition
+##
 
 fn main(args*) {
     def argFilter = Generator::makeFilterGenerator(args)

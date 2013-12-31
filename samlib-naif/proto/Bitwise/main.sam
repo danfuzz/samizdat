@@ -1,10 +1,10 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Bitwise protocol. This is just a re-export from the primitive core library.
-#
+##
+## Bitwise protocol. This is just a re-export from the primitive core library.
+##
 
 <> {
     and:     Bitwise_and,

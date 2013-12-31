@@ -1,18 +1,18 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Layer 0 parsing and evaluation functions
-#
+##
+## Layer 0 parsing and evaluation functions
+##
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
 <> {
-    # Re-exported from primitive library.
+    ## Re-exported from primitive library.
     eval:            Lang0_eval,
     evalBinary:      Lang0_evalBinary,
     parseExpression: Lang0_parseExpression,

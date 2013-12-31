@@ -1,31 +1,31 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `nullGenerator` Value and Type
-#
+##
+## `nullGenerator` Value and Type
+##
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in spec.
+## Documented in spec.
 fn NullGenerator_collect(gen) {
     <> []
 };
 genericBind(Generator::collect, "NullGenerator", NullGenerator_collect);
 
-# Documented in spec.
+## Documented in spec.
 fn NullGenerator_nextValue(gen, box) {
     Box::store(box)
 };
 genericBind(Generator::nextValue, "NullGenerator", NullGenerator_nextValue);
 
-# Documented in spec.
+## Documented in spec.
 def nullGenerator = @NullGenerator;
 
 <> {

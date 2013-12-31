@@ -1,49 +1,49 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Booleans
-#
+##
+## Booleans
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_and(bool1, bool2) {
     <> @Boolean(Bitwise::and(dataOf(bool1), dataOf(bool2)))
 };
 genericBind(Bitwise::and, "Boolean", Boolean_and);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_bit(bool, n) {
     <> Bitwise::bit(dataOf(bool), n)
 };
 genericBind(Bitwise::bit, "Boolean", Boolean_bit);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_bitSize(bool) {
     <> 1
 };
 genericBind(Bitwise::bitSize, "Boolean", Boolean_bitSize);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_not(bool) {
     <> @Boolean(Bitwise::xor(dataOf(bool), 1))
 };
 genericBind(Bitwise::not, "Boolean", Boolean_not);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_or(bool1, bool2) {
     <> @Boolean(Bitwise::or(dataOf(bool1), dataOf(bool2)))
 };
 genericBind(Bitwise::or, "Boolean", Boolean_or);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_shl(bool, n) {
     def newValue = Bitwise::shl(dataOf(bool), n);
 
@@ -52,19 +52,19 @@ fn Boolean_shl(bool, n) {
 };
 genericBind(Bitwise::shl, "Boolean", Boolean_shl);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_toInt(bool) {
     <> dataOf(bool)
 };
 genericBind(toInt, "Boolean", Boolean_toInt);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_toNumber(bool) {
     <> dataOf(bool)
 };
 genericBind(toNumber, "Boolean", Boolean_toNumber);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn Boolean_xor(bool1, bool2) {
     <> @Boolean(Bitwise::xor(dataOf(bool1), dataOf(bool2)))
 };

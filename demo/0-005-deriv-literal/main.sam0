@@ -1,37 +1,37 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Derived value literal demo
-#
+##
+## Derived value literal demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn msg(string) {
     Io0::note(cat("Got: ", Format::source(string)))
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
-# These all refer to the same value.
+## These all refer to the same value.
 msg(@("Null"));
 msg(@"Null");
 msg(@Null);
 msg(null);
 
-# This is not the same as the above, as the type is `null`, not `"Null"`.
+## This is not the same as the above, as the type is `null`, not `"Null"`.
 msg(@(null));
 
-# These all refer to the same value.
+## These all refer to the same value.
 msg(@potion("blort"));
 msg(@"potion"("blort"));
 msg(@("potion")("blort"));
@@ -51,7 +51,7 @@ msg(@fizmo({a: 1, b: 2, c: 3}));
 msg(@fizmo{a: 1, b: 2, c: 3});
 msg(@(123)(456));
 
-# Keywords can be used as types.
+## Keywords can be used as types.
 msg(@def);
 msg(@fn(100));
 

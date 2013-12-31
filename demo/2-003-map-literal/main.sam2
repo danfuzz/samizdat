@@ -1,26 +1,26 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Map literal demo, Layer 2 specific
-#
+##
+## Map literal demo, Layer 2 specific
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn msg(v) {
     Io1::note("Got: \%q(v)")
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 Io1::note("Layer 0...");
 
@@ -30,8 +30,8 @@ msg({1: 2, 888: 1});
 msg({"fizmo": "omzif"});
 msg({fizmo: "omzif", igram: "margi", blort: "trolb"});
 msg({"#stuff": "muff", ["x", "y"]: "zee"});
-msg({def: "defined", do: "done"}); # Keywords should be "stringified".
-msg({true: 10, (true): 20}); # First key is a string, second is a boolean.
+msg({def: "defined", do: "done"}); ## Keywords should be "stringified".
+msg({true: 10, (true): 20}); ## First key is a string, second is a boolean.
 msg({["f", "u", "z"]*: "muffins"});
 msg({{a: 1}*, {b: 2}*});
 msg({Number::add(1, 1): cat("t", "wo")});

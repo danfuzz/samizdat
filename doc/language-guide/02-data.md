@@ -97,16 +97,16 @@ include string interpolations in otherwise-literal strings. This syntax
 is covered in the section on string formatting.
 
 ```
-""                            # the empty string
+""                            ## the empty string
 "a"
 "fizmo"
 "Hello, Самиздат!"
-"\x0;"                        # same as "\0"
-"\x46,75,7a,7a;"              # same as "Fuzz"
-"\&#70,#117,#x7a,#x7a;"       # same as "Fuzz"
-"\x1_F60F;"                   # same as "😏"
-"\&zigrarr;"                  # same as "\x21dd;" or "⇝"
-"\&mu,nu;"                    # same as "μν"
+"\x0;"                        ## same as "\0"
+"\x46,75,7a,7a;"              ## same as "Fuzz"
+"\&#70,#117,#x7a,#x7a;"       ## same as "Fuzz"
+"\x1_F60F;"                   ## same as "😏"
+"\&zigrarr;"                  ## same as "\x21dd;" or "⇝"
+"\&mu,nu;"                    ## same as "μν"
 "\"blort\" \&mdash; potion that enables one to see in the dark.\n"
 
 # same as "* A handful\n  of separate\n  lines.\n"
@@ -131,11 +131,11 @@ of the result) by placing a `*` after the value or expression to
 interpolate.
 
 ```
-[]                            # the empty list
+[]                            ## the empty list
 [1]
 ["blort", "fizmo", "igram"]
 [[1], 242, -23]
-[[1, 2]*, (3..5)*, [f: 6]*]   # the same as [1, 2, 3, 4, 5, [f: 6]]
+[[1, 2]*, (3..5)*, [f: 6]*]   ## the same as [1, 2, 3, 4, 5, [f: 6]]
 ```
 
 #### Map
@@ -172,17 +172,17 @@ the common case of putting together a map of current variable definitions.
 `{}` denotes the empty map.
 
 ```
-{}                            # the empty map
+{}                           ## the empty map
 {1: "number one"}
-{two: 2}                      # the same as {"two": 2}
-{true: "yes"}                 # the same as {"true": "yes"}
-{(true): "yes"}               # key is (the boolean value) `true`, not a string
+{two: 2}                     ## the same as {"two": 2}
+{true: "yes"}                ## the same as {"true": "yes"}
+{(true): "yes"}              ## key is (the boolean value) `true`, not a string
 {favorites: ["biscuits", "muffins"]}
 
 def blort = "B";
 def zorch = "Z";
-{blort, zorch}                # shorthand to reference active variables
-{blort: blort, zorch: zorch}  # longhand of the above
+{blort, zorch}               ## shorthand to reference active variables
+{blort: blort, zorch: zorch} ## longhand of the above
 
 {
     "blort":  "potion; the ability to see in the dark",
@@ -195,8 +195,8 @@ def zorch = "Z";
 {["complex", "data", "as", "key"]: "Handy!"}
 {(0..9)*: "digits", 10: "not a digit"}
 
-# The first three here are equivalent. The last contains a variable reference
-# to `the`.
+## The first three here are equivalent. The last contains a variable reference
+## to `the`.
 {["these", "map", "to", "the"]*: "same value"}
 {these: map: "to": the: "same value"}
 {["these", "map"]*: to: the: "same value"}
@@ -329,26 +329,26 @@ with the following exceptions:
   without parentheses.
 
 ```
-@("lozenge")                  # a payload-free value of type `"lozenge"`
-@"lozenge"                    # shorthand for same
-@lozenge                      # shorthand for same
+@("lozenge")                  ## a payload-free value of type `"lozenge"`
+@"lozenge"                    ## shorthand for same
+@lozenge                      ## shorthand for same
 
-@("heartState")("pure")       # a "heart state" value, with string payload
-@"heartState"("pure")         # shorthand for same
-@heartState("pure")           # shorthand for same
+@("heartState")("pure")       ## a "heart state" value, with string payload
+@"heartState"("pure")         ## shorthand for same
+@heartState("pure")           ## shorthand for same
 
-@spell({name: "frotz", purpose: "cause item to glow"}) # a map payload
-@spell{name: "frotz", purpose: "cause item to glow"}   # shorthand for same
+@spell({name: "frotz", purpose: "cause item to glow"}) ## a map payload
+@spell{name: "frotz", purpose: "cause item to glow"}   ## shorthand for same
 
-@utensils(["fork", "knife", "spoon"])                  # a list payload
-@utensils["fork", "knife", "spoon"]                    # shorthand for same
+@utensils(["fork", "knife", "spoon"])                  ## a list payload
+@utensils["fork", "knife", "spoon"]                    ## shorthand for same
 
-@("Null")                     # the value usually just written as `null`
-@Null                         # same as above
-@(null)                       # a type-only value with type `null`
+@("Null")                     ## the value usually just written as `null`
+@Null                         ## same as above
+@(null)                       ## a type-only value with type `null`
 
-@Boolean(0)                   # the value usually just written as `false`
-@Boolean(1)                   # the value usually just written as `true`
+@Boolean(0)                   ## the value usually just written as `false`
+@Boolean(1)                   ## the value usually just written as `true`
 ```
 
 #### Boolean

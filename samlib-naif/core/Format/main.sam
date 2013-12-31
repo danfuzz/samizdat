@@ -1,27 +1,27 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Value stringification
-#
+##
+## Value stringification
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-#
-# Int formatting
-#
+##
+## Int formatting
+##
 
-# This is int digits for bases up to 36, in order.
+## This is int digits for bases up to 36, in order.
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-# Helper for stringifying ints, which does most of the conversion,
-# as well as prepending the given prefix.
+## Helper for stringifying ints, which does most of the conversion,
+## as well as prepending the given prefix.
 fn intBody(start, value, base) {
     loopReduce("", value) { text, value ->
         <> ifIs { <> ne(value, 0) }
@@ -34,38 +34,38 @@ fn intBody(start, value, base) {
     }
 };
 
-# Map from int sign values to the appropriate stringifier for each.
+## Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = {
     -1: { int, base <> intBody("-", Number::neg(int), base) },
     0:  { int, base <> "0" },
     1:  { int, base <> intBody("", int, base) }
 };
 
-# Stringifies an int using the given base.
+## Stringifies an int using the given base.
 fn intWithBase(int, base) {
     <> get(INT_SIGNS, Number::sign(int))(int, base)
 };
 
 
-#
-# `sourceGeneral` and helpers
-#
+##
+## `sourceGeneral` and helpers
+##
 
-# Common generic for the two `source*` variants, which takes an
-# `adorn` flag.
+## Common generic for the two `source*` variants, which takes an
+## `adorn` flag.
 def sourceGeneral = makeRegularGeneric("sourceGeneral", 2, 2);
 
-# Helper for optionally adorning results.
+## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
     <> ifIs { <> totEq(adorn, true) }
         { <> cat(before, value, after) }
         { <> value }
 };
 
-# Helper which concatenates a list of list or map element stringifications.
-# It assumes that every element is a string that starts with `", "`, and it
-# removes that prefix from the first element. As a special case, this returns
-# `""` if given `[]` for `elems`.
+## Helper which concatenates a list of list or map element stringifications.
+## It assumes that every element is a string that starts with `", "`, and it
+## removes that prefix from the first element. As a special case, this returns
+## `""` if given `[]` for `elems`.
 fn collectionBody(elems) {
     ifIs { <> totEq(elems, []) }
         { return "" };
@@ -74,18 +74,18 @@ fn collectionBody(elems) {
     <> cat(one, Collection::butFirst(elems)*)
 };
 
-# These are all the characters which are allowed to start an identifier.
+## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_STARTS = {
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"*: true
 };
 
-# These are all the characters which are allowed to be in an identifier.
+## These are all the characters which are allowed to be in an identifier.
 def IDENTIFIER_CHARS = {
     IDENTIFIER_STARTS*,
     "0123456789"*: true
 };
 
-# Values with special conversions.
+## Values with special conversions.
 def SPECIAL_VALUES = {
     (Int):      "Int",
     (List):     "List",
@@ -98,8 +98,8 @@ def SPECIAL_VALUES = {
     (true):     "true"
 };
 
-# Checks to see if the given value is a string with the form of an
-# in-language identifier.
+## Checks to see if the given value is a string with the form of an
+## in-language identifier.
 fn isIdentifier(string) {
     ifNot { <> isString(string) }
         { return };
@@ -118,7 +118,7 @@ fn isIdentifier(string) {
     <> true
 };
 
-# Stringifies a key (or derived value name).
+## Stringifies a key (or derived value name).
 fn keyString(key) {
     ifIs { <> isIdentifier(key) }
         { return key };
@@ -129,7 +129,7 @@ fn keyString(key) {
     <> sourceGeneral(key, true)
 };
 
-# Stringifies a derived value type.
+## Stringifies a derived value type.
 fn typeString(type){
     ifIs { <> isString(type) }
         {
@@ -144,17 +144,17 @@ fn typeString(type){
     <> cat("(", body, ")")
 };
 
-# The first Unicode surrogate code point.
-def CHAR_SURROGATE_START = toString(55296); # U+D800
+## The first Unicode surrogate code point.
+def CHAR_SURROGATE_START = toString(55296); ## U+D800
 
-# The last Unicode surrogate code point.
-def CHAR_SURROGATE_END = toString(57343); # U+DFFF
+## The last Unicode surrogate code point.
+def CHAR_SURROGATE_END = toString(57343); ## U+DFFF
 
-# The last Unicode code point.
-def CHAR_UNICODE_END = toString(1114111); # U+10FFFF
+## The last Unicode code point.
+def CHAR_UNICODE_END = toString(1114111); ## U+10FFFF
 
-# Map of special-case characters to either their stringified forms or
-# to `"x"` to indicate a need to convert as hex.
+## Map of special-case characters to either their stringified forms or
+## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
     (Range::makeInclusiveRange(toString(1), 1, toString(31)))*: "x",
     (Range::makeInclusiveRange(toString(127), 1, toString(159)))*: "x",
@@ -168,7 +168,7 @@ def SPECIAL_CHARS = {
     "\\": "\\\\"
 };
 
-# Does hex character conversion.
+## Does hex character conversion.
 fn hexStringChar(ch) {
     <> cat(
         "\\x",
@@ -176,8 +176,8 @@ fn hexStringChar(ch) {
         ";")
 };
 
-# Helper for stringifying strings: Returns the converted form of the
-# given character.
+## Helper for stringifying strings: Returns the converted form of the
+## given character.
 fn stringChar(ch) {
     ifValue { <> get(SPECIAL_CHARS, ch) }
         { special ->
@@ -197,13 +197,13 @@ fn stringChar(ch) {
         { <> hexStringChar(ch) }
 };
 
-# Stringifies an int.
+## Stringifies an int.
 fn Int_sourceGeneral(int, adorn) {
     <> intWithBase(int, 10)
 };
 genericBind(sourceGeneral, Int, Int_sourceGeneral);
 
-# Stringifies a list.
+## Stringifies a list.
 fn List_sourceGeneral(list, adorn) {
     def listElems = Generator::filterAll(list)
         { elem <> cat(", ", sourceGeneral(elem, true)) };
@@ -212,7 +212,7 @@ fn List_sourceGeneral(list, adorn) {
 };
 genericBind(sourceGeneral, List, List_sourceGeneral);
 
-# Stringifies a map.
+## Stringifies a map.
 fn Map_sourceGeneral(map, adorn) {
     def mapElems = Generator::filterAll(map)
         { mapping ->
@@ -225,7 +225,7 @@ fn Map_sourceGeneral(map, adorn) {
 };
 genericBind(sourceGeneral, Map, Map_sourceGeneral);
 
-# Stringifies a string.
+## Stringifies a string.
 fn String_sourceGeneral(string, adorn) {
     def bodyChars = Generator::makeFilterGenerator(string)
         { ch <> stringChar(ch) };
@@ -233,7 +233,7 @@ fn String_sourceGeneral(string, adorn) {
 };
 genericBind(sourceGeneral, String, String_sourceGeneral);
 
-# Stringifies a derived value or an opaque core value.
+## Stringifies a derived value or an opaque core value.
 fn Value_sourceGeneral(value, adorn) {
     ifValue { <> get(SPECIAL_VALUES, value) }
         { string -> return string };
@@ -242,10 +242,10 @@ fn Value_sourceGeneral(value, adorn) {
 
     ifIs { <> isOpaqueValue(value) }
         {
-            # Opaque value, possibly named.
+            ## Opaque value, possibly named.
             def body = ifIs { <> canCall(nameOf, value) }
                 {
-                    # It binds `nameOf` but might not have a name.
+                    ## It binds `nameOf` but might not have a name.
                     <> ifValue { <> nameOf(value) }
                         { name <> keyString(name) }
                         { <> "..." }
@@ -257,51 +257,51 @@ fn Value_sourceGeneral(value, adorn) {
 
     <> ifValue { <> dataOf(value) }
         { data ->
-            # Transparent derived value with payload.
+            ## Transparent derived value with payload.
             return cat(prefix, "(", sourceGeneral(data, true), ")")
         }
         {
-            # Type-only transparent derived value.
+            ## Type-only transparent derived value.
             <> prefix
         };
 };
 genericBind(sourceGeneral, Value, Value_sourceGeneral);
 
 
-#
-# `humanString`
-#
+##
+## `humanString`
+##
 
-# `humanString(value)`: Produces a human-oriented string of the argument.
+## `humanString(value)`: Produces a human-oriented string of the argument.
 def humanString = makeRegularGeneric("humanString", 1, 1);
 
-# Human-stringifies a list, which recursively flattens it using
-# `humanString`.
+## Human-stringifies a list, which recursively flattens it using
+## `humanString`.
 fn List_humanString(list) {
     def elems = Generator::makeFilterGenerator(humanString, list);
     <> cat("", elems*)
 };
 genericBind(humanString, List, List_humanString);
 
-# Human-stringifies a string, which just returns the string as-is.
+## Human-stringifies a string, which just returns the string as-is.
 fn String_humanString(string) {
     <> string
 };
 genericBind(humanString, String, String_humanString);
 
-# Default human-stringifier, which just calls through to
-# `sourceGeneral`.
+## Default human-stringifier, which just calls through to
+## `sourceGeneral`.
 fn Value_humanString(value) {
     <> sourceGeneral(value, true)
 };
 genericBind(humanString, Value, Value_humanString);
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn int(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
@@ -310,33 +310,33 @@ fn int(value, optBase?) {
         { Io0::die("Invalid base for int.") }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn intHex(arg) {
     <> intWithBase(arg, 16)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn source(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, true) }
         { <> "void" }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn sourceUnadorned(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, false) }
         { <> "void" }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn usual(value?) {
     <> ifValue { <> value* }
         { value <> humanString(value) }
         { <> "" }
 };
 
-# Mapping from format escape characters to their respective handler functions.
+## Mapping from format escape characters to their respective handler functions.
 def FORMATTERS = {
     q: source,
     Q: sourceUnadorned,
@@ -344,10 +344,10 @@ def FORMATTERS = {
     x: intHex
 };
 
-# Documented in Samizdat Layer 0 spec.
-#
-# This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
-# is defined in terms of other exported functions.
+## Documented in Samizdat Layer 0 spec.
+##
+## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
+## is defined in terms of other exported functions.
 fn formatterFor(formatSpec) {
     <> ifValueOr { <> get(FORMATTERS, formatSpec) }
         { Io0::die(cat("Unrecognized format spec: ", source(formatSpec))) }

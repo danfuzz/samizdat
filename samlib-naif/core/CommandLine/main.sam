@@ -1,35 +1,35 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Command line interpreter
-#
+##
+## Command line interpreter
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
 def Module = moduleUse({name: ["core", "Module"]});
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# Parses a single `\0`-terminated word. Yields a simple string.
+## Parses a single `\0`-terminated word. Yields a simple string.
 def parWord = {/
     chars = [! "\0"]*
     "\0"
     { <> Peg::stringFromTokenList(chars) }
 /};
 
-# Parses a key prefix of a word, not including the ending `=`.
+## Parses a key prefix of a word, not including the ending `=`.
 def parKey = {/
     chars = [! "=\0"]+
     { <> Peg::stringFromTokenList(chars) }
 /};
 
-# Parses a key-value option word. Yields a single-mapping map of
-# `[(key): value]`.
+## Parses a key-value option word. Yields a single-mapping map of
+## `[(key): value]`.
 def parKeyValue = {/
     "--"
     key = parKey
@@ -38,18 +38,18 @@ def parKeyValue = {/
     { <> {(key): value} }
 /};
 
-# Parses a non-value flag option word. Yields a single-mapping map of
-# `[(flag): true]`.
+## Parses a non-value flag option word. Yields a single-mapping map of
+## `[(flag): true]`.
 def parFlag = {/
     "--"
     flag = parWord
-    { <> ne(flag, "") } # Reject plain `--`.
+    { <> ne(flag, "") } ## Reject plain `--`.
     { <> {(flag): true} }
 /};
 
-# Parses a syntactically invalid option. This includes words that start with
-# just a single dash and are not *just* `-` (which is a valid non-option
-# argument); as well as options with empty keys (`--=...`).
+## Parses a syntactically invalid option. This includes words that start with
+## just a single dash and are not *just* `-` (which is a valid non-option
+## argument); as well as options with empty keys (`--=...`).
 def parError = {/
     ch1 = "-"
     ch2 = [! "-\0"]
@@ -61,13 +61,13 @@ def parError = {/
     }
 /};
 
-# Parses and yields an arbitrary option (including errors).
+## Parses and yields an arbitrary option (including errors).
 def parOption = {/
     parKeyValue | parFlag | parError
 /};
 
-# Parses the entire list of argument words. Yields a map of
-# `[options: [k: v, ...], args: [arg, ...]]`.
+## Parses the entire list of argument words. Yields a map of
+## `[options: [k: v, ...], args: [arg, ...]]`.
 def parArguments = {/
     optionList = parOption*
     "--\0"?
@@ -80,7 +80,7 @@ def parArguments = {/
     }
 /};
 
-# Gets the language layer suffix (or suffix-like-thing) from a file name.
+## Gets the language layer suffix (or suffix-like-thing) from a file name.
 fn suffixFromName(name) {
     def dotsAt = Generator::filterAll(Range::makeOpenRange(0, 1), name)
         { index, elem ->
@@ -90,14 +90,14 @@ fn suffixFromName(name) {
 
     ifIs { <> eq(dotsAt, []) }
         {
-            # No suffix on the name; assume it names a module directory.
+            ## No suffix on the name; assume it names a module directory.
             return "module"
         };
 
     <> Collection::slice(name, Number::add(Collection::last(dotsAt), 1));
 };
 
-# Makes a global environment, given file path and command-line arguments.
+## Makes a global environment, given file path and command-line arguments.
 fn makeGlobals(filePath, args) {
     <> {
         (Module::getExports(moduleUse({name: ["core", "Globals"]})))*,
@@ -106,9 +106,9 @@ fn makeGlobals(filePath, args) {
     }
 };
 
-# Runs a module-form command-line. In this case, a named directory is
-# loaded as a module. It is expected to export a `main()` function, which
-# is called with the Posix-style command-line arguments.
+## Runs a module-form command-line. In this case, a named directory is
+## loaded as a module. It is expected to export a `main()` function, which
+## is called with the Posix-style command-line arguments.
 fn runModule(modulePath, args) {
     def loaded = Module::moduleUse({path: modulePath});
 
@@ -117,10 +117,10 @@ fn runModule(modulePath, args) {
         { Io1::die("No `main` exported from primary module.") }
 };
 
-# Runs a simple-file-form command-line. In this case, the indicated file
-# is read as a top-level program, and evaluated, passing it no arguments.
-# Its environment includes `PATH` and `ARGUMENTS` variables indicating
-# the path to the file and the command-line arguments, respectively.
+## Runs a simple-file-form command-line. In this case, the indicated file
+## is read as a top-level program, and evaluated, passing it no arguments.
+## Its environment includes `PATH` and `ARGUMENTS` variables indicating
+## the path to the file and the command-line arguments, respectively.
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
     def programText = Io1::readFileUtf8(filePath);
@@ -131,8 +131,8 @@ fn runFile(langLayer, filePath, args) {
     <> evalled()
 };
 
-# Runs a binary library command-line. The global environment is set up the
-# same as for `runFile`.
+## Runs a binary library command-line. The global environment is set up the
+## same as for `runFile`.
 fn runBinary(filePath, args) {
     def globals = makeGlobals(filePath, args);
     def evalled = Lang2::evalBinary(globals, filePath);
@@ -141,22 +141,22 @@ fn runBinary(filePath, args) {
 };
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn parseArgs(args) {
-    # Make a unified string with each argument "\0"-terminated.
+    ## Make a unified string with each argument "\0"-terminated.
     def argFilter = Generator::makeFilterGenerator(args)
         { arg <> cat(arg, "\0") };
     def argString = cat("", argFilter*);
 
-    # Use the peg grammar above to split the arguments back apart.
+    ## Use the peg grammar above to split the arguments back apart.
     <> Peg::apply(parArguments, argString)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn runCommandLine(rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
     def options = parsedArgs::options;

@@ -16,7 +16,7 @@ This module defines simple I/O operations.
 <br><br>
 ### Function Definitions
 
-#### `die(string?) <> n/a # Terminates the runtime.`
+#### `die(string?) <> n/a ## Terminates the runtime.`
 
 Prints the given string to the system console (as if with `Io1::note`)
 if supplied, and terminates the runtime with a failure status code (`1`).

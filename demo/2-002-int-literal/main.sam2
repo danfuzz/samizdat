@@ -1,26 +1,26 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Int literal demo, Layer 2 specific
-#
+##
+## Int literal demo, Layer 2 specific
+##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
 fn msg(v) {
     Io1::note("Got: \%q(v)")
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 Io1::note("Layer 0...");
 
@@ -33,12 +33,12 @@ msg(-12345);
 Io1::note("\nLayer 2...");
 
 msg(1_234_452);
-msg(0x1234abcd);            # Decimal 305441741.
-msg(-0x_ABCDEF);            # Decimal -11259375.
+msg(0x1234abcd);            ## Decimal 305441741.
+msg(-0x_ABCDEF);            ## Decimal -11259375.
 msg(0b0);
 msg(0b1);
 msg(-0b1);
-msg(-0b11);                 # Decimal -3.
-msg(0b1011_0111_1110_1111); # Decimal 47087.
+msg(-0b11);                 ## Decimal -3.
+msg(0b1011_0111_1110_1111); ## Decimal 47087.
 
 <> 0

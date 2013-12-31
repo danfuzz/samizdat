@@ -1,10 +1,10 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Samizdat Layer 1 tree parser
-#
+##
+## Samizdat Layer 1 tree parser
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
@@ -12,11 +12,11 @@ def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 def tokenize = submoduleUse("tokenize")::tokenize;
 
 
-#
-# Private Definitions
-#
+##
+## Private Definitions
+##
 
-# Reports the given list of pending tokens as part of error processing.
+## Reports the given list of pending tokens as part of error processing.
 fn reportError(pending) {
     Io0::note("Pending tokens:");
 
@@ -26,64 +26,64 @@ fn reportError(pending) {
     Io0::die("\nExtra tokens at end of program.")
 };
 
-# Set-like map of all lowercase identifier characters. Used to figure
-# out if we're looking at a keyword in the `identifierString` rule.
+## Set-like map of all lowercase identifier characters. Used to figure
+## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
     (Range::makeInclusiveRange("a", 1, "z"))*: true
 };
 
-# Returns an `interpolate` node.
+## Returns an `interpolate` node.
 fn makeInterpolate(expression) {
     <> @interpolate(expression)
 };
 
-# Returns a `literal` node.
+## Returns a `literal` node.
 fn makeLiteral(value) {
     <> @literal(value)
 };
 
-# Returns a node representing a thunk (no-arg function) that returns the
-# expression represented by the given node.
+## Returns a node representing a thunk (no-arg function) that returns the
+## expression represented by the given node.
 fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: expression}
 };
 
-# Returns a `varDef` node.
+## Returns a `varDef` node.
 fn makeVarDef(name, value) {
     <> @varDef{name, value}
 };
 
-# Returns a `varRef` node.
+## Returns a `varRef` node.
 fn makeVarRef(name) {
     <> @varRef(name)
 };
 
-# Returns a `call` node.
+## Returns a `call` node.
 fn makeCall(function, actuals*) {
     <> @call{function, actuals}
 };
 
-# Returns a `call` node that names a function as a `varRef`.
+## Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
     <> @call{function: makeVarRef(name), actuals}
 };
 
-# Returns a collection access (`get`) expression. This is a `call` node
-# of two arguments (a collection node and a key node).
+## Returns a collection access (`get`) expression. This is a `call` node
+## of two arguments (a collection node and a key node).
 fn makeGetExpression(collArg, keyArg) {
     <> makeCallName("get", collArg, keyArg)
 };
 
-# Returns an optional-value expression. This wraps `node` as
-# `optValue { <> node }`.
+## Returns an optional-value expression. This wraps `node` as
+## `optValue { <> node }`.
 fn makeOptValueExpression(node) {
     <> makeCallName("optValue", makeThunk(node))
 };
 
-# Returns a `call` node to a nonlocal exit with the given name and
-# with optional expression value. If passed, the expression is allowed
-# to evaluate to void, in which case the nonlocal exit yields void at
-# its exit point.
+## Returns a `call` node to a nonlocal exit with the given name and
+## with optional expression value. If passed, the expression is allowed
+## to evaluate to void, in which case the nonlocal exit yields void at
+## its exit point.
 fn makeCallNonlocalExit(name, optExpression?) {
     <> ifValue { <> optExpression* }
         { ex ->
@@ -95,27 +95,27 @@ fn makeCallNonlocalExit(name, optExpression?) {
 };
 
 
-#
-# Grammar rules
-#
-# The following is a near-transliteration of the tree grammar in
-# the Samizdat Layer 0 and Samizdat Layer 1 specifications.
-#
+##
+## Grammar rules
+##
+## The following is a near-transliteration of the tree grammar in
+## the Samizdat Layer 0 and Samizdat Layer 1 specifications.
+##
 
-#
-# Samizdat Layer 0 definitions
-#
+##
+## Samizdat Layer 0 definitions
+##
 
-# Forward declaration required for integrating layer 1 definitions.
+## Forward declaration required for integrating layer 1 definitions.
 def parParser = ParseForwarder::make();
 
-# Forward declarations.
+## Forward declarations.
 def parExpression = ParseForwarder::make();
 def parProgramBody = ParseForwarder::make();
 def parTerm = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parParenExpression = Peg::makeMainSequence(
     Peg::makeToken("("),
     parExpression,
@@ -128,16 +128,16 @@ def parParenExpression = Peg::makeMainSequence(
     Peg::makeToken(")"),
     Peg::makeCode { ., ex, ., . <> @expression(ex) });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parIdentifier = Peg::makeMainSequence(
     Peg::makeToken("identifier"));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parVarRef = Peg::makeMainSequence(
     parIdentifier,
     Peg::makeCode { name <> makeVarRef(dataOf(name)) });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parVarDef = Peg::makeMainSequence(
     Peg::makeToken("def"),
     parIdentifier,
@@ -145,21 +145,21 @@ def parVarDef = Peg::makeMainSequence(
     parExpression,
     Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parYieldDef = Peg::makeMainSequence(
     Peg::makeToken("<"),
     parIdentifier,
     Peg::makeToken(">"),
     Peg::makeCode { ., name, . <> dataOf(name) });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parOptYieldDef = Peg::makeMainChoice(
     Peg::makeSequence(
         parYieldDef,
         Peg::makeCode { y <> {yieldDef: y} }),
     Peg::makeResult({}));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parFormal = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
@@ -175,7 +175,7 @@ def parFormal = Peg::makeMainSequence(
         Peg::makeResult({})),
     Peg::makeCode { name, repeat <> {name*, repeat*} });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parFormalsList = Peg::makeMainChoice(
     Peg::makeSequence(
         parFormal,
@@ -183,7 +183,7 @@ def parFormalsList = Peg::makeMainChoice(
         Peg::makeCode { one, rest <> [one, rest*] }),
     Peg::makeResult([]));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parProgramDeclarations = Peg::makeMainChoice(
     Peg::makeSequence(
         parOptYieldDef,
@@ -196,20 +196,20 @@ def parProgramDeclarations = Peg::makeMainChoice(
         }),
     Peg::makeResult({formals: []}));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parProgram = Peg::makeMainSequence(
     parProgramDeclarations,
     parProgramBody,
     Peg::makeCode { decls, body <> @closure{decls*, body*} });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parClosure = Peg::makeMainSequence(
     Peg::makeToken("{"),
     parProgram,
     Peg::makeToken("}"),
     Peg::makeCode { ., prog, . <> prog });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parNullaryClosure = Peg::makeMainSequence(
     parClosure,
     Peg::makeCode { c ->
@@ -219,7 +219,7 @@ def parNullaryClosure = Peg::makeMainSequence(
         <> c
     });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parCodeOnlyClosure = Peg::makeMainSequence(
     parNullaryClosure,
     Peg::makeCode { c ->
@@ -228,7 +228,7 @@ def parCodeOnlyClosure = Peg::makeMainSequence(
         <> c
     });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parFnCommon = Peg::makeMainSequence(
     Peg::makeToken("fn"),
     Peg::makeOpt(
@@ -255,7 +255,7 @@ def parFnCommon = Peg::makeMainSequence(
         }
     });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parFnDef = Peg::makeMainSequence(
     parFnCommon,
     Peg::makeCode { funcMap ->
@@ -263,7 +263,7 @@ def parFnDef = Peg::makeMainSequence(
             { <> @fnDef(funcMap) }
     });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parFnExpression = Peg::makeMainSequence(
     parFnCommon,
     Peg::makeChoice(
@@ -280,7 +280,7 @@ def parFnExpression = Peg::makeMainSequence(
             }),
         Peg::makeCode { funcMap <> @closure(funcMap) }));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 
 def parInt = Peg::makeMainChoice(
     Peg::makeSequence(
@@ -291,12 +291,12 @@ def parInt = Peg::makeMainChoice(
         Peg::makeToken("int"),
         Peg::makeCode { i <> makeLiteral(dataOf(i)) }));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parString = Peg::makeMainSequence(
     Peg::makeToken("string"),
     Peg::makeCode { s <> makeLiteral(dataOf(s)) });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parIdentifierString = Peg::makeMainChoice(
     parString,
     Peg::makeSequence(
@@ -314,7 +314,7 @@ def parIdentifierString = Peg::makeMainChoice(
                 }
             }));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parKey = Peg::makeMainChoice(
     Peg::makeSequence(
         parIdentifierString,
@@ -325,16 +325,16 @@ def parKey = Peg::makeMainChoice(
         Peg::makeToken(":"),
         Peg::makeCode { key, . <> key }));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parMapping = Peg::makeMainSequence(
     Peg::makeStar(parKey),
     parExpression,
     Peg::makeCode { keys, value ->
         <> ifIs { <> eq(keys, []) }
             { <out> ->
-                # No keys were specified, so the value must be either a
-                # whole-map interpolation or a variable-name-to-its-value
-                # binding.
+                ## No keys were specified, so the value must be either a
+                ## whole-map interpolation or a variable-name-to-its-value
+                ## binding.
                 def type = typeOf(value);
                 def data = dataOf(value);
                 ifIs { <> eq(type, "interpolate") }
@@ -346,14 +346,14 @@ def parMapping = Peg::makeMainSequence(
                     }
             }
             {
-                # One or more keys. The `value` is wrapped in an
-                # `expression` node here to prevent interpolation from
-                # being applied to `makeValueMap`.
+                ## One or more keys. The `value` is wrapped in an
+                ## `expression` node here to prevent interpolation from
+                ## being applied to `makeValueMap`.
                 <> makeCallName("makeValueMap", keys*, @expression(value))
             }
     });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parMap = Peg::makeMainSequence(
     Peg::makeToken("{"),
     Peg::makeChoice(
@@ -369,7 +369,7 @@ def parMap = Peg::makeMainSequence(
     Peg::makeToken("}"),
     Peg::makeCode { ., result, . <> result });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parListItem = Peg::makeMainChoice(
     Peg::makeSequence(
         parIdentifierString,
@@ -384,7 +384,7 @@ def parListItem = Peg::makeMainChoice(
         Peg::makeCode { ., ex <> @voidable(ex) }),
     parExpression);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parUnadornedList = Peg::makeMainChoice(
     Peg::makeSequence(
         parListItem,
@@ -393,7 +393,7 @@ def parUnadornedList = Peg::makeMainChoice(
         Peg::makeCode { one, rest <> [one, rest*] }),
     Peg::makeResult([]));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parList = Peg::makeMainSequence(
     Peg::makeToken("["),
     parUnadornedList,
@@ -404,7 +404,7 @@ def parList = Peg::makeMainSequence(
             { <> makeCallName("makeList", expressions*) }
     });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parDeriv = Peg::makeMainSequence(
     Peg::makeToken("@"),
     Peg::makeChoice(parIdentifierString, parParenExpression),
@@ -413,18 +413,18 @@ def parDeriv = Peg::makeMainSequence(
         <> makeCallName("makeValue", type, value*)
     });
 
-# Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
+## Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
 def implTerm = Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
     parDeriv, parClosure, parParenExpression,
-    # Defined by Samizdat Layer 1. The lookahead is just to make
-    # it clear what is required to "jump into" Layer 1 parsing.
+    ## Defined by Samizdat Layer 1. The lookahead is just to make
+    ## it clear what is required to "jump into" Layer 1 parsing.
     Peg::makeSequence(
         Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
         parParser));
 Box::store(parTerm, implTerm);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parActualsList = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("("),
@@ -436,7 +436,7 @@ def parActualsList = Peg::makeMainChoice(
         }),
     Peg::makePlus(parClosure));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parPostfixOperator = Peg::makeMainChoice(
     Peg::makeSequence(
         parActualsList,
@@ -452,7 +452,7 @@ def parPostfixOperator = Peg::makeMainChoice(
         Peg::makeToken("*"),
         Peg::makeCode { . <> { node <> makeOptValueExpression(node) } }));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def implUnaryExpression = Peg::makeMainSequence(
     parTerm,
     Peg::makeStar(parPostfixOperator),
@@ -461,19 +461,19 @@ def implUnaryExpression = Peg::makeMainSequence(
     });
 Box::store(parUnaryExpression, implUnaryExpression);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def implExpression = Peg::makeChoice(
     parUnaryExpression,
     parFnExpression);
 Box::store(parExpression, implExpression);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parStatement = Peg::makeChoice(
     parVarDef,
     parFnDef,
     parExpression);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parNonlocalExit = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
@@ -489,7 +489,7 @@ def parNonlocalExit = Peg::makeMainSequence(
         <> makeCallNonlocalExit(name, value*)
     });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parYield = Peg::makeMainSequence(
     Peg::makeToken("<>"),
     Peg::makeChoice(
@@ -498,7 +498,7 @@ def parYield = Peg::makeMainSequence(
             Peg::makeCode { ., ex <> {yield: ex} }),
         Peg::makeResult({})));
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def implProgramBody = Peg::makeMainSequence(
     Peg::makeStar(Peg::makeToken(";")),
     Peg::makeStar(
@@ -521,7 +521,7 @@ def implProgramBody = Peg::makeMainSequence(
     });
 Box::store(parProgramBody, implProgramBody);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parExpressionOrError = Peg::makeMainSequence(
     parExpression,
     Peg::makeOpt(
@@ -530,7 +530,7 @@ def parExpressionOrError = Peg::makeMainSequence(
             Peg::makeCode { pending -> reportError(pending) })),
     Peg::makeCode { ex, . <> ex });
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def parProgramOrError = Peg::makeMainSequence(
     parProgram,
     Peg::makeOpt(
@@ -540,14 +540,14 @@ def parProgramOrError = Peg::makeMainSequence(
     Peg::makeCode { prog, . <> prog });
 
 
-#
-# Samizdat Layer 1 definitions
-#
+##
+## Samizdat Layer 1 definitions
+##
 
-# `choicePex` is the top-level parsing expression node type.
+## `choicePex` is the top-level parsing expression node type.
 def parChoicePex = ParseForwarder::make();
 
-# Map from parser tokens to derived value types for pexes.
+## Map from parser tokens to derived value types for pexes.
 def PEX_TYPES = {
     "&": "lookaheadSuccess",
     "!": "lookaheadFailure",
@@ -685,11 +685,11 @@ def implChoicePex = Peg::makeMainSequence(
 Box::store(parChoicePex, implChoicePex);
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn parseExpression(expression) {
     def tokens = ifIs { <> isString(expression) }
         { <> tokenize(expression) }
@@ -698,7 +698,7 @@ fn parseExpression(expression) {
     <> Peg::apply(parExpressionOrError, tokens)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn parseProgram(program) {
     def tokens = ifIs { <> isString(program) }
         { <> tokenize(program) }

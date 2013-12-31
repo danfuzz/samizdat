@@ -1,38 +1,38 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# PEG (Parsing Expression Grammar) support
-#
+##
+## PEG (Parsing Expression Grammar) support
+##
 
 
-#
-# Type Definitions
-#
+##
+## Type Definitions
+##
 
-# `parse(peg, box, input, items*)`
+## `parse(peg, box, input, items*)`
 def parse = makeRegularGeneric("parse", 3);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def any = @PegAny;
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def empty = @PegResult(null);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def eof = @PegEof;
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 def fail = @PegFail;
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegAny_parse(peg, box, input, .*) {
     <> Generator::nextValue(input, box)
 };
 genericBind(parse, "PegAny", PegAny_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegChoice_parse(peg, box, input, items*) {
     Generator::filterPump(dataOf(peg)) { rule ->
         def innerBox = Box::makePromise();
@@ -43,12 +43,12 @@ fn PegChoice_parse(peg, box, input, items*) {
             }
     };
 
-    # No rule succeeded.
+    ## No rule succeeded.
     Box::store(box)
 };
 genericBind(parse, "PegChoice", PegChoice_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegCode_parse(peg, box, input, items*) {
     <> ifValue { <> dataOf(peg)(items*) }
         { result ->
@@ -59,7 +59,7 @@ fn PegCode_parse(peg, box, input, items*) {
 };
 genericBind(parse, "PegCode", PegCode_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegEof_parse(peg, box, input, .*) {
     <> ifIs { <> Generator::nextValue(input, Box::nullBox) }
         { Box::store(box) }
@@ -70,13 +70,13 @@ fn PegEof_parse(peg, box, input, .*) {
 };
 genericBind(parse, "PegEof", PegEof_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegFail_parse(peg, box, input, .*) {
     Box::store(box)
 };
 genericBind(parse, "PegFail", PegFail_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegLookaheadFailure_parse(peg, box, input, items*) {
     <> ifIs { <> parse(dataOf(peg), Box::nullBox, input, items*) }
         { Box::store(box) }
@@ -87,21 +87,21 @@ fn PegLookaheadFailure_parse(peg, box, input, items*) {
 };
 genericBind(parse, "PegLookaheadFailure", PegLookaheadFailure_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegLookaheadSuccess_parse(peg, box, input, items*) {
     <> ifIs { <> parse(dataOf(peg), box, input, items*) }
         { <> input }
 };
 genericBind(parse, "PegLookaheadSuccess", PegLookaheadSuccess_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegMain_parse(peg, box, input, .*) {
-    # The point of this implementation is to drop the `items` context.
+    ## The point of this implementation is to drop the `items` context.
     <> parse(dataOf(peg), box, input)
 };
 genericBind(parse, "PegMain", PegMain_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegOpt_parse(peg, box, input, items*) {
     def innerBox = Box::makePromise();
     <> ifValue { <> parse(dataOf(peg), innerBox, input, items*) }
@@ -116,7 +116,7 @@ fn PegOpt_parse(peg, box, input, items*) {
 };
 genericBind(parse, "PegOpt", PegOpt_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegRepeat_parse(peg, box, input, items*) {
     def params = dataOf(peg);
     def rule = params::rule;
@@ -131,7 +131,7 @@ fn PegRepeat_parse(peg, box, input, items*) {
                         { minSize ->
                             ifIs { <> lt(Collection::sizeOf(values), minSize) }
                                 {
-                                    # Did not parse minimum required size.
+                                    ## Did not parse minimum required size.
                                     Box::store(box);
                                     return
                                 }
@@ -143,17 +143,17 @@ fn PegRepeat_parse(peg, box, input, items*) {
 };
 genericBind(parse, "PegRepeat", PegRepeat_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegResult_parse(peg, box, input, .*) {
     Box::store(box, dataOf(peg));
     <> input
 };
 genericBind(parse, "PegResult", PegResult_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegSequence_parse(peg, box, input, items*) {
-    # Each rule after the first gets passed as additional arguments
-    # the matched results of all the previous rules, in order.
+    ## Each rule after the first gets passed as additional arguments
+    ## the matched results of all the previous rules, in order.
 
     def reduction = Generator::doReduce(dataOf(peg), input, items)
         { rule, input, items ->
@@ -161,7 +161,7 @@ fn PegSequence_parse(peg, box, input, items*) {
             <> ifValue { <> parse(rule, innerBox, input, items*) }
                 { newInput <> [newInput, [items*, Box::fetch(innerBox)]] }
                 {
-                    # Propagate the failure.
+                    ## Propagate the failure.
                     Box::store(box);
                     return
                 }
@@ -174,7 +174,7 @@ fn PegSequence_parse(peg, box, input, items*) {
 };
 genericBind(parse, "PegSequence", PegSequence_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegTokenSet_parse(peg, box, input, items*) {
     def set = dataOf(peg);
     def innerBox = Box::makePromise();
@@ -189,12 +189,12 @@ fn PegTokenSet_parse(peg, box, input, items*) {
                 }
         };
 
-    # Either EOF or no match.
+    ## Either EOF or no match.
     Box::store(box);
 };
 genericBind(parse, "PegTokenSet", PegTokenSet_parse);
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn PegTokenSetComplement_parse(peg, box, input, items*) {
     def set = dataOf(peg);
     def innerBox = Box::makePromise();
@@ -209,24 +209,24 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
                 }
         };
 
-    # Either EOF or no match.
+    ## Either EOF or no match.
     Box::store(box);
 };
 genericBind(parse, "PegTokenSetComplement", PegTokenSetComplement_parse);
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Private helper for `make*Set*`, which takes a `sense` argument and
-# produces the desired rule.
+## Private helper for `make*Set*`, which takes a `sense` argument and
+## produces the desired rule.
 fn genericMakeTokenSet(sense, types) {
-    def set = {types*: true}; # A set-like map of all the token types.
+    def set = {types*: true}; ## A set-like map of all the token types.
 
     ifIs { <> eq(set, {}) }
         {
-            # Trivial case: Empty set. Return an appropriate absolute rule.
+            ## Trivial case: Empty set. Return an appropriate absolute rule.
             return ifIs { <> eq(sense, true) }
                 { <> fail }
                 { <> any }
@@ -237,150 +237,150 @@ fn genericMakeTokenSet(sense, types) {
         { <> @PegTokenSetComplement(set) }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeResult(value) {
     <> @PegResult(value)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeCharSet(strings*) {
-    # Make a combined string, passing it to the general token set constructor,
-    # which then splays all the characters out as a set of map keys.
+    ## Make a combined string, passing it to the general token set constructor,
+    ## which then splays all the characters out as a set of map keys.
     <> genericMakeTokenSet(true, cat("", strings*))
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeCharSetComplement(strings*) {
-    # See comment in `makeCharSet`.
+    ## See comment in `makeCharSet`.
     <> genericMakeTokenSet(false, cat("", strings*))
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeChoice(rules*) {
-    # Trivial case: No rules. Return the failure rule.
+    ## Trivial case: No rules. Return the failure rule.
     ifIs { <> eq(rules, []) }
         { return @PegFail };
 
-    # Trivial case: One rule. Return that rule directly.
+    ## Trivial case: One rule. Return that rule directly.
     ifIs { <> eq(Collection::sizeOf(rules), 1) }
         { return rules* };
 
-    # The general case.
+    ## The general case.
     <> @PegChoice(rules)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeCode(function) {
     <> @PegCode(function)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeLookaheadFailure(rule) {
-    # Optimiziation: Representation of `!.`.
+    ## Optimiziation: Representation of `!.`.
     ifIs { <> eq(rule, @PegAny) }
         { return @PegEof };
 
-    # Optimization: Representation of `!()`.
+    ## Optimization: Representation of `!()`.
     ifIs { <> eq(rule, empty) }
         { return @PegFail };
 
-    # The general case.
+    ## The general case.
     <> @PegLookaheadFailure(rule)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeLookaheadSuccess(rule) {
     <> @PegLookaheadSuccess(rule)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeMainChoice(rules*) {
     <> @PegMain(makeChoice(rules*))
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeMainSequence(rules*) {
     <> @PegMain(makeSequence(rules*))
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeOpt(rule) {
     <> @PegOpt(rule)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makePlus(rule) {
     <> @PegRepeat{rule, minSize: 1}
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeSequence(rules*) {
-    # Trivial case: No rules. Return the empty rule.
+    ## Trivial case: No rules. Return the empty rule.
     ifIs { <> eq(rules, []) }
         { return empty };
 
-    # Trivial case: One rule. Return that rule directly.
+    ## Trivial case: One rule. Return that rule directly.
     ifIs { <> eq(Collection::sizeOf(rules), 1) }
         { return rules* };
 
-    # The general case.
+    ## The general case.
     <> @PegSequence(rules)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeStar(rule) {
     <> @PegRepeat{rule}
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeString(string) {
-    # Trivial case: Empty string. Return an always-successful yield of `@""`.
+    ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { <> eq(string, "") }
         { return @PegResult(@"") };
 
-    # Trivial case: One-char string. Return a simple one-char rule.
+    ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { <> eq(Collection::sizeOf(string), 1) }
         { return makeToken(string) };
 
-    # This is implemented as, in effect, `("1" "2" ... { <> string })`,
-    # which allows us to minimize code duplication.
+    ## This is implemented as, in effect, `("1" "2" ... { <> string })`,
+    ## which allows us to minimize code duplication.
 
-    # Make a list of rules per character.
+    ## Make a list of rules per character.
     def chars = Generator::filter(string, makeToken);
 
     <> @PegSequence[chars*, @PegResult(@(string))]
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeToken(type) {
-    # This is just uses a single-item token set. The performance difference
-    # between that and doing a more special-case single item type check is
-    # probably negligible.
+    ## This is just uses a single-item token set. The performance difference
+    ## between that and doing a more special-case single item type check is
+    ## probably negligible.
     <> @PegTokenSet{(type): null}
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeTokenSet(tokens*) {
     <> genericMakeTokenSet(true, tokens)
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn makeTokenSetComplement(tokens*) {
     <> genericMakeTokenSet(false, tokens)
 };
 
 
-#
-# Miscellaneous functions
-#
+##
+## Miscellaneous functions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn apply(rule, input) {
     def box = Box::makePromise();
     def generator = ifIs { <> isString(input) }
         {
-            # This converts generated characters into tokens with the
-            # characters as the type.
+            ## This converts generated characters into tokens with the
+            ## characters as the type.
             <> Generator::makeFilterGenerator(makeValue, input)
         }
         { <> input };
@@ -389,15 +389,15 @@ fn apply(rule, input) {
         { <> Box::fetch(box) }
 };
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn stringFromTokenList(tokens) {
     <> cat("", Generator::filter(tokens, typeOf)*)
 };
 
 
-#
-# Export mechanics
-#
+##
+## Export mechanics
+##
 
 <> {
     any,

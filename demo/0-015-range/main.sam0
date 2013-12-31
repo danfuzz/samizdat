@@ -1,24 +1,24 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Generator function demo
-#
+##
+## Generator function demo
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Prints the given value, indented slightly.
+## Prints the given value, indented slightly.
 fn msg(value) {
     Io0::note(cat("  ", Format::source(value)))
 };
 
-# Outputs all generated values, with a header and a footer.
+## Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
     Io0::note(header);
     Generator::filterAll([gen*]) { elem -> msg(elem) };
@@ -27,7 +27,7 @@ fn msgAll(header, gen) {
     Io0::note("")
 };
 
-# Outputs ten generated values, with a header and a footer.
+## Outputs ten generated values, with a header and a footer.
 fn msgTen(header, gen) {
     Io0::note(header);
 
@@ -53,9 +53,9 @@ fn msgTen(header, gen) {
 };
 
 
-#
-# Main Tests
-#
+##
+## Main Tests
+##
 
 msgTen("Open range (100, 5)",
     Range::makeOpenRange(100, 5));

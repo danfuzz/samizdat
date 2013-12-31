@@ -1,19 +1,19 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Demo of value construction
-#
+##
+## Demo of value construction
+##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
-#
-# Helper Definitions
-#
+##
+## Helper Definitions
+##
 
-# Expects the two values to be `eq`.
+## Expects the two values to be `eq`.
 fn expectSame(v1, v2) {
     ifIs { <> eq(v1, v2) }
         { Io0::note("Yes.") }
@@ -23,14 +23,14 @@ fn expectSame(v1, v2) {
         }
 };
 
-# Expects the two values to be `ne`.
+## Expects the two values to be `ne`.
 fn expectDifferent(v1, v2) {
     ifIs { <> ne(v1, v2) }
         { Io0::note("Yes.") }
         { Io0::note(cat("Same: ", Format::source(v1))) }
 };
 
-# Expects the value to be a core value.
+## Expects the value to be a core value.
 fn expectCore(v) {
     ifIs { <> isOpaqueValue(v) }
         {
@@ -41,7 +41,7 @@ fn expectCore(v) {
         { Io0::note(cat("Derived: ", Format::source(v))) }
 };
 
-# Expects the value to be a derived value.
+## Expects the value to be a derived value.
 fn expectDerived(v) {
     ifIs { <> isOpaqueValue(v) }
         { Io0::note(cat("Opaque: ", Format::source(v))) }
@@ -49,13 +49,13 @@ fn expectDerived(v) {
 };
 
 
-#
-# Main Tests
-#
-# Expect everything to be a "yes".
-#
+##
+## Main Tests
+##
+## Expect everything to be a "yes".
+##
 
-# Int
+## Int
 
 Io0::note("Int");
 
@@ -75,7 +75,7 @@ expectCore(-1);
 expectCore(987654321);
 
 
-# List
+## List
 
 Io0::note("\nList");
 
@@ -96,7 +96,7 @@ expectCore([1]);
 expectCore([1, 2, [3, 4, 5]]);
 
 
-# Map
+## Map
 
 Io0::note("\nMap");
 
@@ -112,7 +112,7 @@ expectSame(Collection::nth({a: 10, b: 20}, 0), {a: 10});
 
 expectDifferent({["x"]: "blort"}, {"x": "blort"});
 
-# The first map's keys are strings in the following.
+## The first map's keys are strings in the following.
 expectDifferent({null: 1}, {(null): 1});
 expectDifferent({true: 1}, {(true): 1});
 expectDifferent({false: 1}, {(false): 1});
@@ -122,7 +122,7 @@ expectCore({0: 0});
 expectCore({blort: "fizmo"});
 
 
-# String
+## String
 
 Io0::note("\nString");
 
@@ -141,7 +141,7 @@ expectCore("x");
 expectCore("muffins");
 
 
-# Uniqlet
+## Uniqlet
 
 Io0::note("\nUniqlet");
 
@@ -156,7 +156,7 @@ expectCore(uniq1);
 expectCore(uniq2);
 
 
-# Function
+## Function
 
 Io0::note("\nFunction");
 
@@ -171,7 +171,7 @@ expectCore(fn1);
 expectCore(fn2);
 
 
-# Derived values
+## Derived values
 
 Io0::note("\nDerived values");
 
@@ -191,7 +191,7 @@ expectDifferent(@x, @x(1));
 expectDifferent(@x(1), @x(2));
 expectDifferent(@x(1), @y(1));
 
-# The first value's types are strings in the following.
+## The first value's types are strings in the following.
 expectDifferent(@null(1), @(null)(1));
 expectDifferent(@true(1), @(true)(1));
 expectDifferent(@false(1), @(false)(1));

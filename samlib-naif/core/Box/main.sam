@@ -1,21 +1,21 @@
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
-# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Box functions
-#
+##
+## Box functions
+##
 
 def Box = moduleUse({name: ["proto", "Box"]});
 
 def NullBox = submoduleUse("NullBox");
 
 
-#
-# Exported Definitions
-#
+##
+## Exported Definitions
+##
 
-# Documented in Samizdat Layer 0 spec.
+## Documented in Samizdat Layer 0 spec.
 fn update(box, updateFunction) {
     <> ifValue { <> Box_fetch(box) }
         { value <> Box_store(box, updateFunction(value)) }
@@ -23,18 +23,18 @@ fn update(box, updateFunction) {
 };
 
 <> {
-    # Re-exported from proto.
+    ## Re-exported from proto.
     canStore:    Box::canStore,
     fetch:       Box::fetch,
     store:       Box::store,
 
-    # Re-exported from `NullBox`.
+    ## Re-exported from `NullBox`.
     nullBox:     NullBox::nullBox,
 
-    # Re-exported from primitive library.
+    ## Re-exported from primitive library.
     makeCell:    Box_makeCell,
     makePromise: Box_makePromise,
 
-    # Defined in this file.
+    ## Defined in this file.
     update
 }
