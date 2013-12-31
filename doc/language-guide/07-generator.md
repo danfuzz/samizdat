@@ -52,11 +52,11 @@ For example:
 
 ```
 # Infinite generator of even whole numbers, by multiplying by 2.
-(x in 0..+ <> x * 2)
+(x in (0..) <> x * 2)
 # => 0, 2, 4, 6, ...
 
 # Infinite generator of even whole numbers, by filtering out odd ones.
-(x in 0..+ <> ((x % 2) == 0) & x)
+(x in (0..) <> ((x % 2) == 0) & x)
 # => 0, 2, 4, 6, ...
 
 # List of just the strings.
@@ -64,11 +64,11 @@ For example:
 # => ["b", "l", "o", "r", "t"]
 
 # List of sum of corresponding pairs.
-[n1 in 1..9, n2 in 100..100..+ <> n1 + n2]
+[n1 in (1..9), n2 in (100.., +100) <> n1 + n2]
 # => [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
 # Sum of three ranges.
-[a in 0..4, b in 50..10..90, c in 300..100..700 =>
+[a in (0..4), b in (50..90, +10), c in (300..700, +100) =>
     def sum = a + b + c;
     <> sum
 ]
