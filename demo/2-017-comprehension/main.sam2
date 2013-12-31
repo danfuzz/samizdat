@@ -37,7 +37,7 @@ msg("One-item collect",
     [x in ["a", "b", "c"] <> "~~\(x)~~"]);
 
 msg("Two-item collect",
-    [foo in 1..10, bar in 100..100..+ <> foo + bar]);
+    [foo in (1..10), bar in (100.., +100) <> foo + bar]);
 
 Io1::note("Extended forms\n");
 
@@ -47,7 +47,7 @@ msg("One-item generator",
     ));
 
 msg("Two-item multi-line generator",
-    (foo in 1..10, bar in 100..100..+ ->
+    (foo in (1..10), bar in (100.., +100) ->
         def result = foo + bar;
         <> result
     ));
@@ -58,13 +58,13 @@ msg("One-item collect",
     ]);
 
 msg("Two-item multi-line collect",
-    [foo in 1..10, bar in 100..100..+ ->
+    [foo in (1..10), bar in (100.., +100) ->
         def result = foo + bar;
         <> result
     ]);
 
 msg("Three-item multi-line collect",
-    [a in 0..4, b in 50..10..90, c in 300..100..700 ->
+    [a in (0..4), b in (50..90, +10), c in (300..700, +100) ->
         def sum = a + b + c;
         def evenOdd = ((sum % 2) \== 0) & "Even" | "Odd";
         <> "\(evenOdd)\(sum)"

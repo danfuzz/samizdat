@@ -20,7 +20,7 @@ fn msg(generator) {
 
 ## Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
-    def values = Generator::makeFilterGenerator(generator, 1..10)
+    def values = Generator::makeFilterGenerator(generator, (1..10))
         { v, . <> v };
     Io1::note("Got: \%q([values*])")
 };
@@ -31,41 +31,41 @@ fn msgTen(generator) {
 ##
 
 Io1::note("Inclusive, default increment...");
-msg(100..110);
-msg("U".."Z");
-msg(9..9);
-msg(9..0);
-msg("f".."f");
-msg("f".."a");
+msg((100..110));
+msg(("U".."Z"));
+msg((9..9));
+msg((9..0));
+msg(("f".."f"));
+msg(("f".."a"));
 
 Io1::note("\nInclusive, explicit increment...");
-msg(0..200..1000);
-msg("a"..5.."z");
-msg(10..-1..1);
-msg("F"..-2.."A");
-msg(9..0..9);
+msg((0..1000, +200));
+msg(("a".."z", +5));
+msg((10..1, -1));
+msg(("F".."A", -2));
+msg((9..9, 0));
 
 Io1::note("\nExclusive, default increment...");
-msg(100..!110);
-msg("U"..!"Z");
-msg(9..!9);
-msg(9..!0);
-msg("f"..!"f");
-msg("f"..!"a");
+msg((100..!110));
+msg(("U"..!"Z"));
+msg((9..!9));
+msg((9..!0));
+msg(("f"..!"f"));
+msg(("f"..!"a"));
 
 Io1::note("\nExclusive, explicit increment...");
-msg(0..200..!1000);
-msg("a"..5..!"z");
-msg(10..-1..!1);
-msg("F"..-2..!"A");
-msg(9..0..!9);
+msg((0..!1000, +200));
+msg(("a"..!"z", 5));
+msg((10..!1, -1));
+msg(("F"..!"A", -2));
+msg((9..!9, 0));
 
 Io1::note("\nOpen, default increment...");
-msgTen(-10..+);
-msgTen("M"..+);
+msgTen((-10..));
+msgTen(("M"..));
 
 Io1::note("\nOpen, explicit increment...");
-msgTen(99..-1..+);
-msgTen("z"..-2..+);
+msgTen((99.., -1));
+msgTen(("z".., -2));
 
 <> 0
