@@ -13,7 +13,7 @@ Contents:
 * [Expression Operators](04-operators.md)
 * [String Formatting](05-formatting.md)
 * [Control Constructs](06-control.md)
-* [Comprehensions and Filtering](07-comprehension.md)
+* [Generators and Filters](07-generator.md)
 * [Parsing](08-parsing.md)
 * [Modules](09-modules.md)
 * [Actors](10-actors.md)

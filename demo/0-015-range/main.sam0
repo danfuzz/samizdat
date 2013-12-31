@@ -57,6 +57,9 @@ fn msgTen(header, gen) {
 ## Main Tests
 ##
 
+msgTen("Open range (10)",
+    Range::makeOpenRange(10));
+
 msgTen("Open range (100, 5)",
     Range::makeOpenRange(100, 5));
 
@@ -71,53 +74,56 @@ msgTen("Open range (\"!\", 0)",
 
 Io0::note("");
 
-msgAll("Closed range (3, 10, 5)",
-    Range::makeClosedRange(3, 10, 5));
+msgAll("Closed range (100, 7)",
+    Range::makeClosedRange(100, 7));
 
-msgAll("Closed range (3, 10, 0)",
-    Range::makeClosedRange(3, 10, 0));
+msgAll("Closed range (3, 5, 10)",
+    Range::makeClosedRange(3, 5, 10));
 
-msgAll("Closed range (\"9\", -1, 10)",
-    Range::makeClosedRange("9", -1, 10));
+msgAll("Closed range (3, 0, 10)",
+    Range::makeClosedRange(3, 0, 10));
+
+msgAll("Closed range (\"9\", 10, -1)",
+    Range::makeClosedRange("9", 10, -1));
 
 Io0::note("");
 
-msgAll("Inclusive range 5..10",
-    Range::makeInclusiveRange(5, 1, 10));
+msgAll("Inclusive range (5..10)",
+    Range::makeInclusiveRange(5, 10));
 
-msgAll("Inclusive range 10..-2..1",
-    Range::makeInclusiveRange(10, -2, 1));
+msgAll("Inclusive range (10..1, -2)",
+    Range::makeInclusiveRange(10, 1, -2));
 
-msgAll("Inclusive range \"a\"..5..\"z\"",
-    Range::makeInclusiveRange("a", 5, "z"));
+msgAll("Inclusive range (\"a\"..\"z\", +5)",
+    Range::makeInclusiveRange("a", "z", 5));
 
 msgAll("Zero-increment inclusive int range",
-    Range::makeInclusiveRange(10, 0, 20));
+    Range::makeInclusiveRange(10, 20, 0));
 
 msgAll("Zero-increment inclusive character range",
-    Range::makeInclusiveRange("x", 0, "a"));
+    Range::makeInclusiveRange("x", "a", 0));
 
 msgAll("Empty inclusive range",
-    Range::makeInclusiveRange(10, 1, 9));
+    Range::makeInclusiveRange(10, 9, 1));
 
 Io0::note("");
 
-msgAll("Exclusive range 5..!10",
-    Range::makeExclusiveRange(5, 1, 10));
+msgAll("Exclusive range (5..!10)",
+    Range::makeExclusiveRange(5, 10));
 
-msgAll("Exclusive range 10..-2..!1",
-    Range::makeExclusiveRange(10, -2, 1));
+msgAll("Exclusive range (10..!1, -2)",
+    Range::makeExclusiveRange(10, 1, -2));
 
-msgAll("Exclusive range \"a\"..5..!\"z\"",
-    Range::makeExclusiveRange("a", 5, "z"));
+msgAll("Exclusive range (\"a\"..!\"z\", +5)",
+    Range::makeExclusiveRange("a", "z", 5));
 
 msgAll("Zero-increment exclusive int range",
-    Range::makeExclusiveRange(10, 0, 20));
+    Range::makeExclusiveRange(10, 20, 0));
 
 msgAll("Zero-increment exclusive character range",
-    Range::makeExclusiveRange("x", 0, "a"));
+    Range::makeExclusiveRange("x", "a", 0));
 
 msgAll("Empty exclusive range",
-    Range::makeExclusiveRange(10, 1, 9));
+    Range::makeExclusiveRange(10, 9, 1));
 
 <> 0

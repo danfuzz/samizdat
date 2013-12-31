@@ -34,7 +34,9 @@ genericBind(rangeAdd, String, String_rangeAdd);
 ##
 
 ## Documented in spec.
-fn makeClosedRange(firstValue, increment, size) {
+fn makeClosedRange(firstValue, size, optIncrement?) {
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+
     ## `totGt` ensures that `size` is an int.
     <> ifIs { <> totGt(size, 0) }
         {
@@ -44,19 +46,20 @@ fn makeClosedRange(firstValue, increment, size) {
 };
 
 ## Documented in spec.
-fn makeExclusiveRange(firstValue, increment, limit) {
+fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ## `totEq` ensures that `firstValue` and `limit` have the same type.
     ## `optValue({ <> x})` == `x?`.
     def isEmpty = optValue { <> totEq(firstValue, limit) };
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
 
     ## `totEq` ensures that `increment` is an int.
     ifIs { <> totEq(increment, 0) }
         {
             return ifIs { <> isEmpty* }
                 { <> Generator::nullGenerator }
-                { <> makeClosedRange(firstValue, 0, 1) }
+                { <> makeClosedRange(firstValue, 1, 0) }
         };
 
     ## `sign(increment)` is either `-1` or `+1`, which when subtracted from
@@ -73,17 +76,19 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     ifIs { <> totLe(size, 0) }
         { return Generator::nullGenerator };
 
-    <> makeClosedRange(firstValue, increment, size);
+    <> makeClosedRange(firstValue, size, increment);
 };
 
 ## Documented in spec.
-fn makeInclusiveRange(firstValue, increment, limit) {
+fn makeInclusiveRange(firstValue, limit, optIncrement?) {
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+
     ## This ensures that `firstValue` and `limit` have the same type.
     totEq(firstValue, limit);
 
     ## `totEq` ensures that `increment` is an int.
     ifIs { <> totEq(increment, 0) }
-        { return makeClosedRange(firstValue, 0, 1) };
+        { return makeClosedRange(firstValue, 1, 0) };
 
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
@@ -95,7 +100,7 @@ fn makeInclusiveRange(firstValue, increment, limit) {
     ifIs { <> totLe(size, 0) }
         { return Generator::nullGenerator };
 
-    <> makeClosedRange(firstValue, increment, size);
+    <> makeClosedRange(firstValue, size, increment);
 };
 
 ## Documented in spec.
@@ -106,8 +111,10 @@ fn ClosedRange_nextValue(range, box) {
             def firstValue = data::firstValue;
             def increment = data::increment;
             Box::store(box, firstValue);
-            <> makeClosedRange(rangeAdd(firstValue, increment), increment,
-                Number::sub(size, 1))
+            <> makeClosedRange(
+                rangeAdd(firstValue, increment),
+                Number::sub(size, 1),
+                increment)
         }
         {
             ## Voided.
@@ -122,7 +129,9 @@ genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 ##
 
 ## Documented in spec.
-fn makeOpenRange(firstValue, increment) {
+fn makeOpenRange(firstValue, optIncrement?) {
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+
     <> @OpenRange{firstValue, increment}
 };
 

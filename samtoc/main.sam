@@ -8,7 +8,7 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 
 ## Removes the `.*` suffix from `name`.
 fn withoutSuffix(name) {
-    def dotsAt = [ index in 0..+, ch in name <> (ch == ".") & index ];
+    def dotsAt = [ index in (0..), ch in name <> (ch == ".") & index ];
 
     if (dotsAt == []) {
         ## No suffix on the name.

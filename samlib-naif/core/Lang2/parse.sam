@@ -21,7 +21,7 @@ def tokenize = submoduleUse("tokenize")::tokenize;
 fn reportError(pending) {
     Io1::note("Pending tokens:");
 
-    Generator::filterPump(pending, Range::makeInclusiveRange(1, 1, 50))
+    Generator::filterPump(pending, Range::makeInclusiveRange(1, 50))
         { token, . -> Io1::note(cat("    ", Format::source(token))) };
 
     Io1::die("\nExtra tokens at end of program.")
@@ -30,7 +30,7 @@ fn reportError(pending) {
 ## Set-like map of all lowercase identifier characters. Used to figure
 ## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    (Range::makeInclusiveRange("a", 1, "z"))*: true
+    (Range::makeInclusiveRange("a", "z"))*: true
 };
 
 ## Returns an `interpolate` node.
@@ -756,7 +756,7 @@ def parParserSetString = {/
                         &eq(Collection::sizeOf(startChar),
                             Collection::sizeOf(endChar)))
                 }
-                { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
+                { <> cat(Range::makeInclusiveRange(startChar, endChar)*) }
         }
     |
         { <> dataOf(s) }
@@ -941,10 +941,7 @@ def BINARY_OPERATORS = {
     "\\<":  makeVarRef("lt"),
     "\\>":  makeVarRef("gt"),
     "\\<=": makeVarRef("le"),
-    "\\>=": makeVarRef("ge"),
-    "..":   makeModNameRef("Range", "makeInclusiveRange"),
-    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
-    "..+":  makeModNameRef("Range", "makeOpenRange")
+    "\\>=": makeVarRef("ge")
 };
 
 ## Helper for parsing binary operator expressions, which puts together
@@ -1103,9 +1100,9 @@ def parGeneratorList = {/
     }
 /};
 
-## Helper for `parComprehension`, which parses the body of a comprehension,
-## yielding appropriate arguments for a call to either `makeFilterGenerator`
-## or `filterAll`.
+## Helper for `parComprehensionExpression`, which parses the body of a
+## comprehension, yielding appropriate arguments for a call to either
+## `makeFilterGenerator` or `filterAll`.
 def parComprehensionBody = {/
     genList = parGeneratorList
     (@"->" | &@"<>")
@@ -1141,7 +1138,7 @@ def parComprehensionBody = {/
 ## Generator::filterAll(expr1, expr2)
 ##     { name1, name2 -> filterBody }
 ## ```
-def parComprehension = {/
+def parComprehensionExpression = {/
     @"("
     body = parComprehensionBody
     @")"
@@ -1155,15 +1152,61 @@ def parComprehension = {/
     { <> makeCallModName("Generator", "filterAll", body*) }
 /};
 
+## Parses a range expression.
+def parRangeExpression = {/
+    @"("
+    base = parExpression
+    op = [@".." @"..!"]
+
+    optLimit = (
+        limit = parExpression
+        { <> [limit] }
+    |
+        ## The limit is mandatory for exclusive ranges.
+        {
+            <> ifIs { <> eq(op, @"..") }
+                { <> [] }
+        }
+    )
+
+    optIncrement = (@"," @"+"? parExpression)?
+
+    @")"
+
+    {
+        <> ifIs { <> eq(op, @"..!") }
+            {
+                <> makeCallModName(
+                    "Range", "makeExclusiveRange",
+                    base, optLimit*, optIncrement*)
+            }
+            {
+                <> ifValue { <> optLimit* }
+                    { limit ->
+                        <> makeCallModName(
+                            "Range", "makeInclusiveRange",
+                            base, limit, optIncrement*)
+                    }
+                    {
+                        <> makeCallModName(
+                            "Range", "makeOpenRange",
+                            base, optIncrement*)
+                    }
+            }
+    }
+/};
+
 ## Parses the `term` variants introduced in Layer 2.
 def implTerm2 = {/
     parInterpolatedString
 |
-    parComprehension
+    parComprehensionExpression
+|
+    parRangeExpression
 /};
 Box::store(parTerm2, implTerm2);
 
-## Parses a nonlocal exit / return. All of the form matched by this rule
+## Parses a nonlocal exit / return. All of the forms matched by this rule
 ## have the dual properties of (a) necessarily being at the end of a code
 ## block, and (b) being represented as a function call in the underlying
 ## function representation of code blocks.
@@ -1283,52 +1326,12 @@ def implPostfixOperator2 = {/
 /};
 Box::store(parPostfixOperator2, implPostfixOperator2);
 
-## Parses a range expression.
-def parRangeExpression = {/
-    base = parUnaryExpression
-
-    (
-        ## Not actually a range expression.
-        ![@".." @"..!" @"..+"]
-        { <> base }
-    |
-        increment = (
-            @".."
-            inc = parUnaryExpression
-            &[@".." @"..!" @"..+"] ## So this won't match a limit expression.
-            { <> inc }
-        |
-            { <> makeLiteral(1) }
-        )
-
-        result = (
-            op = [@".." @"..!"]
-            limit = parUnaryExpression
-            {
-                <> makeCall(get(BINARY_OPERATORS, typeOf(op)),
-                    base, increment, limit)
-            }
-        |
-            @"..+"
-            { <> makeCall((BINARY_OPERATORS::"..+"), base, increment) }
-        )
-
-        (
-            ## Any additional range-ish operators cause an explicit error.
-            [@".." @"..!" @"..+"]
-            { Io1::die("Invalid form for range expression.") }
-        |
-            { <> result }
-        )
-    )
-/};
-
 ## Parses a multiplicative expression.
 def parMulExpression = {/
-    firstEx = parRangeExpression
+    firstEx = parUnaryExpression
     opExes = (
         op = [@"*" @"/" @"%" @"//" @"%%" @"<<<" @">>>"]
-        ex = parRangeExpression
+        ex = parUnaryExpression
         { <> [op, ex] }
     )*
 
@@ -1484,7 +1487,7 @@ def parLogicAndExpression = {/
             def formals =
                 Generator::filterAll(most) { clause <> clause::formal };
             def testThunks =
-                Generator::filterAll(most, Range::makeOpenRange(0, 1))
+                Generator::filterAll(most, Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
                         <> closureWithFormals(makeThunk(test),
@@ -1599,7 +1602,7 @@ def parMultiTest = {/
             def formals =
                 Generator::filterAll(clauses) { clause <> clause::formal };
             def testThunks =
-                Generator::filterAll(clauses, Range::makeOpenRange(0, 1))
+                Generator::filterAll(clauses, Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
                         <> closureWithFormals(makeThunk(test),
