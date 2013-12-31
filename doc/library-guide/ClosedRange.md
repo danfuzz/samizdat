@@ -34,11 +34,11 @@ return void, but with normal usage, this never happens.
 <br><br>
 ### In-Language Definitions: `Range` module
 
-#### `makeClosedRange(firstValue, increment, size) <> range | nullGenerator`
+#### `makeClosedRange(firstValue, size, increment) <> range | nullGenerator`
 
 Creates a closed range. `firstValue` must be either a number or
-a single-character string. `increment` must be a number. `size` must be
-a non-negative int.
+a single-character string. `size` must be a non-negative int.
+`increment` must be a number.
 
 If `size` is positive, this returns a `ClosedRange`. Otherwise
 (`size` is `0`), this returns `nullGenerator`.

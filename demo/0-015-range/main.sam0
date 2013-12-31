@@ -74,14 +74,14 @@ msgTen("Open range (\"!\", 0)",
 
 Io0::note("");
 
-msgAll("Closed range (3, 10, 5)",
-    Range::makeClosedRange(3, 10, 5));
+msgAll("Closed range (3, 5, 10)",
+    Range::makeClosedRange(3, 5, 10));
 
-msgAll("Closed range (3, 10, 0)",
-    Range::makeClosedRange(3, 10, 0));
+msgAll("Closed range (3, 0, 10)",
+    Range::makeClosedRange(3, 0, 10));
 
-msgAll("Closed range (\"9\", -1, 10)",
-    Range::makeClosedRange("9", -1, 10));
+msgAll("Closed range (\"9\", 10, -1)",
+    Range::makeClosedRange("9", 10, -1));
 
 Io0::note("");
 
