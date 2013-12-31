@@ -106,21 +106,21 @@ msgAll("Empty inclusive range",
 Io0::note("");
 
 msgAll("Exclusive range (5..!10)",
-    Range::makeExclusiveRange(5, 1, 10));
+    Range::makeExclusiveRange(5, 10, 1));
 
 msgAll("Exclusive range (10..!1, -2)",
-    Range::makeExclusiveRange(10, -2, 1));
+    Range::makeExclusiveRange(10, 1, -2));
 
 msgAll("Exclusive range (\"a\"..!\"z\", +5)",
-    Range::makeExclusiveRange("a", 5, "z"));
+    Range::makeExclusiveRange("a", "z", 5));
 
 msgAll("Zero-increment exclusive int range",
-    Range::makeExclusiveRange(10, 0, 20));
+    Range::makeExclusiveRange(10, 20, 0));
 
 msgAll("Zero-increment exclusive character range",
-    Range::makeExclusiveRange("x", 0, "a"));
+    Range::makeExclusiveRange("x", "a", 0));
 
 msgAll("Empty exclusive range",
-    Range::makeExclusiveRange(10, 1, 9));
+    Range::makeExclusiveRange(10, 9, 1));
 
 <> 0

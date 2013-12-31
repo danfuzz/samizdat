@@ -1180,7 +1180,7 @@ def parRangeExpression = {/
             {
                 <> makeCallModName(
                     "Range", "makeExclusiveRange",
-                    base, increment, optLimit*)
+                    base, optLimit*, increment)
             }
             {
                 <> ifValue { <> optLimit* }

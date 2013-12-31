@@ -43,13 +43,14 @@ a single-character string. `size` must be a non-negative int.
 If `size` is positive, this returns a `ClosedRange`. Otherwise
 (`size` is `0`), this returns `nullGenerator`.
 
-#### `makeExclusiveRange(firstValue, increment, limit) <> range`
+#### `makeExclusiveRange(firstValue, limit, increment) <> range`
 
 End-exclusive range generator for int or single-character strings.
 This is a convenient wrapper for `makeClosedRange`.
 
 Takes an initial value, which must either be an int or a single-character
-string, and an int (always an int) increment. The first `nextValue` call to
+string, a limit of the same type as the initial value, and an int
+(always an int) increment. The first `nextValue` call to
 the resulting generator yields the `firstValue`, and each subsequent call
 yields the previous value plus the given increment (converted to a
 single-character string if `firstValue` is a string). If the value yielded

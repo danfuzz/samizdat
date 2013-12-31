@@ -105,11 +105,11 @@ and/or `,`, as follows:
   `Range::makeInclusiveRange(first, increment, limit)`.
 
 * `(first..!limit)` &mdash; Exclusive range with increment 1. This is
-  equivalent to `Range::makeExclusiveRange(first, 1, limit)`.
+  equivalent to `Range::makeExclusiveRange(first, limit, 1)`.
 
 * `(first..!limit, increment)` &mdash; Exclusive range with arbitrary
   increment. This is equivalent to
-  `Range::makeExclusiveRange(first, increment, limit)`.
+  `Range::makeExclusiveRange(first, limit, increment)`.
 
 * `(first..)` &mdash; Open range with increment 1. This is equivalent to
   `Range::makeOpenRange(first)`.
