@@ -1103,9 +1103,9 @@ def parGeneratorList = {/
     }
 /};
 
-## Helper for `parComprehension`, which parses the body of a comprehension,
-## yielding appropriate arguments for a call to either `makeFilterGenerator`
-## or `filterAll`.
+## Helper for `parComprehensionExpression`, which parses the body of a
+## comprehension, yielding appropriate arguments for a call to either
+## `makeFilterGenerator` or `filterAll`.
 def parComprehensionBody = {/
     genList = parGeneratorList
     (@"->" | &@"<>")
@@ -1141,7 +1141,7 @@ def parComprehensionBody = {/
 ## Generator::filterAll(expr1, expr2)
 ##     { name1, name2 -> filterBody }
 ## ```
-def parComprehension = {/
+def parComprehensionExpression = {/
     @"("
     body = parComprehensionBody
     @")"
@@ -1155,11 +1155,58 @@ def parComprehension = {/
     { <> makeCallModName("Generator", "filterAll", body*) }
 /};
 
+## Parses a range expression.
+def parRangeExpression = {/
+    @"("
+    base = parUnaryExpression
+
+    result = (
+        ## Not actually a range expression.
+        ![@".." @"..!" @"..+"]
+        { <> base }
+    |
+        increment = (
+            @".."
+            inc = parUnaryExpression
+            &[@".." @"..!" @"..+"] ## So this won't match a limit expression.
+            { <> inc }
+        |
+            { <> makeLiteral(1) }
+        )
+
+        result = (
+            op = [@".." @"..!"]
+            limit = parUnaryExpression
+            {
+                <> makeCall(get(BINARY_OPERATORS, typeOf(op)),
+                    base, increment, limit)
+            }
+        |
+            @"..+"
+            { <> makeCall((BINARY_OPERATORS::"..+"), base, increment) }
+        )
+
+        (
+            ## Any additional range-ish operators cause an explicit error.
+            [@".." @"..!" @"..+"]
+            { Io1::die("Invalid form for range expression.") }
+        |
+            { <> result }
+        )
+    )
+
+    @")"
+
+    { <> result }
+/};
+
 ## Parses the `term` variants introduced in Layer 2.
 def implTerm2 = {/
     parInterpolatedString
 |
-    parComprehension
+    parComprehensionExpression
+|
+    parRangeExpression
 /};
 Box::store(parTerm2, implTerm2);
 
@@ -1283,52 +1330,12 @@ def implPostfixOperator2 = {/
 /};
 Box::store(parPostfixOperator2, implPostfixOperator2);
 
-## Parses a range expression.
-def parRangeExpression = {/
-    base = parUnaryExpression
-
-    (
-        ## Not actually a range expression.
-        ![@".." @"..!" @"..+"]
-        { <> base }
-    |
-        increment = (
-            @".."
-            inc = parUnaryExpression
-            &[@".." @"..!" @"..+"] ## So this won't match a limit expression.
-            { <> inc }
-        |
-            { <> makeLiteral(1) }
-        )
-
-        result = (
-            op = [@".." @"..!"]
-            limit = parUnaryExpression
-            {
-                <> makeCall(get(BINARY_OPERATORS, typeOf(op)),
-                    base, increment, limit)
-            }
-        |
-            @"..+"
-            { <> makeCall((BINARY_OPERATORS::"..+"), base, increment) }
-        )
-
-        (
-            ## Any additional range-ish operators cause an explicit error.
-            [@".." @"..!" @"..+"]
-            { Io1::die("Invalid form for range expression.") }
-        |
-            { <> result }
-        )
-    )
-/};
-
 ## Parses a multiplicative expression.
 def parMulExpression = {/
-    firstEx = parRangeExpression
+    firstEx = parUnaryExpression
     opExes = (
         op = [@"*" @"/" @"%" @"//" @"%%" @"<<<" @">>>"]
-        ex = parRangeExpression
+        ex = parUnaryExpression
         { <> [op, ex] }
     )*
 
