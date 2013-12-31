@@ -1,8 +1,8 @@
 Samizdat Language Guide
 =======================
 
-Comprehensions and Filters
---------------------------
+Generators and Filters
+----------------------
 
 Samizdat provides a concise syntax for building filters that process
 generators and collections. The result of such an expression is either
