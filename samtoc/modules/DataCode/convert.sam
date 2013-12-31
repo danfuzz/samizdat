@@ -19,7 +19,7 @@ fn flatten(tree) {
     <> cat(
         flatten(tree::name),
         "(",
-        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
+        ( a in args, i in (Collection::sizeOf(args).., -1) ->
             <> cat(flatten(a), (i == 1) & "" | ", ")
         )*,
         ")")

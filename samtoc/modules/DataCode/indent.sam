@@ -16,7 +16,7 @@ fn flatten(tree) {
 };
 
 ## List of indentation prefixes (index is level of indentation).
-def INDENTATION = [ n in 0..100 <> "".cat([. in 1..n <> "  "]*) ];
+def INDENTATION = [ n in (0..100) <> "".cat([. in 1..n <> "  "]*) ];
 
 
 ##
@@ -43,7 +43,7 @@ fn indent(tree, level, maxColumns) {
 
     <> cat(
         prefix, flatten(tree::name), "(\n",
-        ( a in args, i in (Collection::sizeOf(args))..-1..+ ->
+        ( a in args, i in (Collection::sizeOf(args).., -1) ->
             <> cat(indent(a, nextLevel, maxColumns), (i == 1) & ")" | ",\n")
         )*)
 };
