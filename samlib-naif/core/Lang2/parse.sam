@@ -941,10 +941,7 @@ def BINARY_OPERATORS = {
     "\\<":  makeVarRef("lt"),
     "\\>":  makeVarRef("gt"),
     "\\<=": makeVarRef("le"),
-    "\\>=": makeVarRef("ge"),
-    "..":   makeModNameRef("Range", "makeInclusiveRange"),
-    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
-    "..+":  makeModNameRef("Range", "makeOpenRange")
+    "\\>=": makeVarRef("ge")
 };
 
 ## Helper for parsing binary operator expressions, which puts together
@@ -1158,46 +1155,47 @@ def parComprehensionExpression = {/
 ## Parses a range expression.
 def parRangeExpression = {/
     @"("
-    base = parUnaryExpression
+    base = parExpression
+    op = [@".." @"..!"]
 
-    result = (
-        ## Not actually a range expression.
-        ![@".." @"..!" @"..+"]
-        { <> base }
+    optLimit = (
+        limit = parExpression
+        { <> [limit] }
     |
-        increment = (
-            @".."
-            inc = parUnaryExpression
-            &[@".." @"..!" @"..+"] ## So this won't match a limit expression.
-            { <> inc }
-        |
-            { <> makeLiteral(1) }
-        )
-
-        result = (
-            op = [@".." @"..!"]
-            limit = parUnaryExpression
-            {
-                <> makeCall(get(BINARY_OPERATORS, typeOf(op)),
-                    base, increment, limit)
-            }
-        |
-            @"..+"
-            { <> makeCall((BINARY_OPERATORS::"..+"), base, increment) }
-        )
-
-        (
-            ## Any additional range-ish operators cause an explicit error.
-            [@".." @"..!" @"..+"]
-            { Io1::die("Invalid form for range expression.") }
-        |
-            { <> result }
-        )
+        ## The limit is mandatory for exclusive ranges.
+        {
+            <> ifIs { <> eq(op, @"..") }
+                { <> [] }
+        }
     )
+
+    optIncrement = (@"," @"+"? parExpression)?
 
     @")"
 
-    { <> result }
+    {
+        def increment = ifValueOr { <> optIncrement* } { <> makeLiteral(1) };
+
+        <> ifIs { <> eq(op, @"..!") }
+            {
+                <> makeCallModName(
+                    "Range", "makeExclusiveRange",
+                    base, increment, optLimit*)
+            }
+            {
+                <> ifValue { <> optLimit* }
+                    { limit ->
+                        <> makeCallModName(
+                            "Range", "makeInclusiveRange",
+                            base, increment, limit)
+                    }
+                    {
+                        <> makeCallModName(
+                            "Range", "makeOpenRange",
+                            base, increment)
+                    }
+            }
+    }
 /};
 
 ## Parses the `term` variants introduced in Layer 2.
@@ -1210,7 +1208,7 @@ def implTerm2 = {/
 /};
 Box::store(parTerm2, implTerm2);
 
-## Parses a nonlocal exit / return. All of the form matched by this rule
+## Parses a nonlocal exit / return. All of the forms matched by this rule
 ## have the dual properties of (a) necessarily being at the end of a code
 ## block, and (b) being represented as a function call in the underlying
 ## function representation of code blocks.
