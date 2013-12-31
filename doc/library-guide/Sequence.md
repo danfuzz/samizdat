@@ -22,7 +22,7 @@ reporting a terminal error).
 
 (Refinement of `Collection` protocol.)
 
-Returns the list `[0..!sizeOf(sequence)]`.
+Returns the list `[(0..!sizeOf(sequence))*]`.
 
 #### `reverse(sequence) <> sequence`
 

@@ -39,4 +39,4 @@ resulting generator yields the `firstValue`, and each subsequent call
 yields the previous value plus the given increment (converted to a
 single-character string if `firstValue` is a string).
 
-**Syntax Note:** Used in the translation of `expression..+` forms.
+**Syntax Note:** Used in the translation of `(expression..)` forms.

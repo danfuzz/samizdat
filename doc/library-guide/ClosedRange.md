@@ -63,7 +63,7 @@ Special cases:
 * Barring the above, if `increment` is `0`, the resulting generator is
   of size `1` (just yielding `firstValue` and then becoming voided).
 
-**Syntax Note:** Used in the translation of `expression..!expression`
+**Syntax Note:** Used in the translation of `(expression..!expression)`
 forms.
 
 #### `makeInclusiveRange(firstValue, increment, limit) <> range`
@@ -82,5 +82,5 @@ As a special case, if `increment` is `0`, the resulting generator is
 forced to be of size `1` (just yielding `firstValue` and then becoming
 voided).
 
-**Syntax Note:** Used in the translation of `expression..expression`
+**Syntax Note:** Used in the translation of `(expression..expression)`
 forms.
