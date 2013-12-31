@@ -65,14 +65,7 @@ def tokWhitespace = {/
     (
         [" " "\n"]+
     |
-        "#"
-        (
-            (["#! "] [! "\n"]*)
-        |
-            "\n"
-        |
-            !.
-        )
+        "#" ["#!"] [! "\n"]*
     ## |
         ## Note: Layer 2 introduces additional definitions here.
     )+
