@@ -97,26 +97,26 @@ Syntactically, a range expression consists of one or more expressions
 in parentheses, with the expressions internally delimited with `..`, `..!`,
 and/or `,`, as follows:
 
-#### Inclusive range with increment 1 &mdash; `(first..limit)`
+* `(first..limit)` &mdash; Inclusive range with increment 1. This is
+  equivalent to `Range::makeInclusiveRange(first, 1, limit)`.
 
-This is equivalent to `Range::makeInclusiveRange(first, 1, limit)`.
+* `(first..limit, increment)` &mdash; Inclusive range with arbitrary
+  increment. This is equivalent to
+  `Range::makeInclusiveRange(first, increment, limit)`.
 
-#### Inclusive range with arbitrary increment &mdash; `(first..limit, increment)`
+* `(first..!limit)` &mdash; Exclusive range with increment 1. This is
+  equivalent to `Range::makeExclusiveRange(first, 1, limit)`.
 
-This is equivalent to `Range::makeInclusiveRange(first, increment, limit)`.
+* `(first..!limit, increment)` &mdash; Exclusive range with arbitrary
+  increment. This is equivalent to
+  `Range::makeExclusiveRange(first, increment, limit)`.
 
-#### Exclusive range with increment 1 &mdash; `(first..!limit)`
+* `(first..)` &mdash; Open range with increment 1. This is equivalent to
+  `Range::makeOpenRange(first, 1)`.
 
-This is equivalent to `Range::makeExclusiveRange(first, 1, limit)`.
+* `(first.., increment)` &mdash; Open range with arbitrary increment. This
+  is equivalent to `Range::makeOpenRange(first, increment)`.
 
-#### Exclusive range with arbitrary increment &mdash; `(first..!limit, increment)`
-
-This is equivalent to `Range::makeExclusiveRange(first, increment, limit)`.
-
-#### Open range with increment 1 &mdash; `(first..)`
-
-This is equivalent to `Range::makeOpenRange(first, 1)`.
-
-#### Open range with arbitrary increment &mdash; `(first.., increment)`
-
-This is equivalent to `Range::makeOpenRange(first, increment)`.
+**Note:** Though `+` is not a real unary prefix operator, it is allowed
+(but not required) to prefix increment expressions, as a way to mnemonically
+emphasize those expressions' role.
