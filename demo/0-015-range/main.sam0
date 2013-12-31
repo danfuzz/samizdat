@@ -74,6 +74,9 @@ msgTen("Open range (\"!\", 0)",
 
 Io0::note("");
 
+msgAll("Closed range (100, 7)",
+    Range::makeClosedRange(100, 7));
+
 msgAll("Closed range (3, 5, 10)",
     Range::makeClosedRange(3, 5, 10));
 
@@ -86,7 +89,7 @@ msgAll("Closed range (\"9\", 10, -1)",
 Io0::note("");
 
 msgAll("Inclusive range (5..10)",
-    Range::makeInclusiveRange(5, 10, 1));
+    Range::makeInclusiveRange(5, 10));
 
 msgAll("Inclusive range (10..1, -2)",
     Range::makeInclusiveRange(10, 1, -2));
@@ -106,7 +109,7 @@ msgAll("Empty inclusive range",
 Io0::note("");
 
 msgAll("Exclusive range (5..!10)",
-    Range::makeExclusiveRange(5, 10, 1));
+    Range::makeExclusiveRange(5, 10));
 
 msgAll("Exclusive range (10..!1, -2)",
     Range::makeExclusiveRange(10, 1, -2));
