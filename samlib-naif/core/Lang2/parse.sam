@@ -1489,7 +1489,7 @@ def parLogicAndExpression = {/
             def formals =
                 Generator::filterAll(most) { clause <> clause::formal };
             def testThunks =
-                Generator::filterAll(most, Range::makeOpenRange(0, 1))
+                Generator::filterAll(most, Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
                         <> closureWithFormals(makeThunk(test),
@@ -1604,7 +1604,7 @@ def parMultiTest = {/
             def formals =
                 Generator::filterAll(clauses) { clause <> clause::formal };
             def testThunks =
-                Generator::filterAll(clauses, Range::makeOpenRange(0, 1))
+                Generator::filterAll(clauses, Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
                         <> closureWithFormals(makeThunk(test),
