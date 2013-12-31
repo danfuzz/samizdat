@@ -55,7 +55,7 @@ msg(("f"..!"a"));
 
 Io1::note("\nExclusive, explicit increment...");
 msg((0..!1000, +200));
-msg(("a"..!"z", 5));
+msg(("a"..!"z", +5));
 msg((10..!1, -1));
 msg(("F"..!"A", -2));
 msg((9..!9, 0));
