@@ -93,29 +93,30 @@ functions `Range::makeExclusiveRange`, `Range::makeInclusiveRange`,
 or `Range::makeOpenRange`. Refer to the documentation on those functions
 for how to interpret the various combinations.
 
-**Note:** Unlike most binary operators, the range operators have no
-operator associativity, in that `x..y..z..huhwhat` is a syntax error.
+Syntactically, a range expression consists of one or more expressions
+in parentheses, with the expressions internally delimited with `..`, `..!`,
+and/or `,`, as follows:
 
-#### Inclusive range with increment 1 &mdash; `first..limit`
+#### Inclusive range with increment 1 &mdash; `(first..limit)`
 
 This is equivalent to `Range::makeInclusiveRange(first, 1, limit)`.
 
-#### Inclusive range with arbitrary increment &mdash; `first..increment..limit`
+#### Inclusive range with arbitrary increment &mdash; `(first..limit, increment)`
 
 This is equivalent to `Range::makeInclusiveRange(first, increment, limit)`.
 
-#### Exclusive range with increment 1 &mdash; `first..!limit`
+#### Exclusive range with increment 1 &mdash; `(first..!limit)`
 
 This is equivalent to `Range::makeExclusiveRange(first, 1, limit)`.
 
-#### Exclusive range with arbitrary increment &mdash; `first..increment..!limit`
+#### Exclusive range with arbitrary increment &mdash; `(first..!limit, increment)`
 
 This is equivalent to `Range::makeExclusiveRange(first, increment, limit)`.
 
-#### Open range with increment 1 &mdash; `first..+`
+#### Open range with increment 1 &mdash; `(first..)`
 
 This is equivalent to `Range::makeOpenRange(first, 1)`.
 
-#### Open range with arbitrary increment &mdash; `first..increment..+`
+#### Open range with arbitrary increment &mdash; `(first.., increment)`
 
 This is equivalent to `Range::makeOpenRange(first, increment)`.
