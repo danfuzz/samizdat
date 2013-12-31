@@ -1174,25 +1174,23 @@ def parRangeExpression = {/
     @")"
 
     {
-        def increment = ifValueOr { <> optIncrement* } { <> makeLiteral(1) };
-
         <> ifIs { <> eq(op, @"..!") }
             {
                 <> makeCallModName(
                     "Range", "makeExclusiveRange",
-                    base, optLimit*, increment)
+                    base, optLimit*, optIncrement*)
             }
             {
                 <> ifValue { <> optLimit* }
                     { limit ->
                         <> makeCallModName(
                             "Range", "makeInclusiveRange",
-                            base, limit, increment)
+                            base, limit, optIncrement*)
                     }
                     {
                         <> makeCallModName(
                             "Range", "makeOpenRange",
-                            base, increment)
+                            base, optIncrement*)
                     }
             }
     }
