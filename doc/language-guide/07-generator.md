@@ -112,7 +112,7 @@ and/or `,`, as follows:
   `Range::makeExclusiveRange(first, increment, limit)`.
 
 * `(first..)` &mdash; Open range with increment 1. This is equivalent to
-  `Range::makeOpenRange(first, 1)`.
+  `Range::makeOpenRange(first)`.
 
 * `(first.., increment)` &mdash; Open range with arbitrary increment. This
   is equivalent to `Range::makeOpenRange(first, increment)`.
