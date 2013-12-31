@@ -115,8 +115,7 @@ fi
 # Run it in the demo dir, passing it the main script name and any other
 # arguments passed to this script.
 
-PATH="${PATH}:${baseDir}/out/final/bin"
-cmd=(samex "${samexOpts[@]}" "${mainFile}" "$@")
+cmd=("${baseDir}/out/final/bin/samex" "${samexOpts[@]}" "${mainFile}" "$@")
 
 echo "Running demo: $(basename "${name}")"
 cd "${name}"
