@@ -4,6 +4,22 @@ Samizdat Language Guide
 Generators and Filters
 ----------------------
 
+Samizdat provides a number of facilities around the concept of generators.
+A generator is a value or object which represents a (possibly infinite)
+sequence of other values. A similar concept is sometimes referred to as
+an "iterator" in other languages.
+
+At the lowest level, a generator is any value which implements the
+`proto::Generator` protocol. This protocol specifies three methods, two
+of which have default implementations. The one method that must be provided
+is `nextValue()`, which is called to both produce a value and gain access
+to the generator to use to get at the next value (and so on).
+
+Samizdat both provides a number of generator implementations in the core
+library and provides convenient syntax for creating them.
+
+### Comprehensions
+
 Samizdat provides a concise syntax for building filters that process
 generators and collections. The result of such an expression is either
 a generator or a list, depending on delimiter. As used here,
