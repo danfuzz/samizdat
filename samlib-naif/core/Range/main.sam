@@ -77,7 +77,7 @@ fn makeExclusiveRange(firstValue, limit, increment) {
 };
 
 ## Documented in spec.
-fn makeInclusiveRange(firstValue, increment, limit) {
+fn makeInclusiveRange(firstValue, limit, increment) {
     ## This ensures that `firstValue` and `limit` have the same type.
     totEq(firstValue, limit);
 

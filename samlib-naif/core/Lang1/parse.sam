@@ -20,7 +20,7 @@ def tokenize = submoduleUse("tokenize")::tokenize;
 fn reportError(pending) {
     Io0::note("Pending tokens:");
 
-    Generator::filterPump(pending, Range::makeInclusiveRange(1, 1, 50))
+    Generator::filterPump(pending, Range::makeInclusiveRange(1, 50, 1))
         { token, . -> Io0::note(cat("    ", Format::source(token))) };
 
     Io0::die("\nExtra tokens at end of program.")
@@ -29,7 +29,7 @@ fn reportError(pending) {
 ## Set-like map of all lowercase identifier characters. Used to figure
 ## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    (Range::makeInclusiveRange("a", 1, "z"))*: true
+    (Range::makeInclusiveRange("a", "z", 1))*: true
 };
 
 ## Returns an `interpolate` node.
@@ -600,7 +600,7 @@ def parParserSetString = Peg::makeMainSequence(
                     }
                     {
                         <> cat(Range::makeInclusiveRange(
-                            startChar, 1, endChar)*)
+                            startChar, endChar, 1)*)
                     }
             }),
         Peg::makeCode { s <> dataOf(s) }));

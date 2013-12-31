@@ -156,8 +156,8 @@ def CHAR_UNICODE_END = toString(1114111); ## U+10FFFF
 ## Map of special-case characters to either their stringified forms or
 ## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
-    (Range::makeInclusiveRange(toString(1), 1, toString(31)))*: "x",
-    (Range::makeInclusiveRange(toString(127), 1, toString(159)))*: "x",
+    (Range::makeInclusiveRange(toString(1), toString(31), 1))*: "x",
+    (Range::makeInclusiveRange(toString(127), toString(159), 1))*: "x",
     (toString(65534)): "x",
     (toString(65535)): "x",
     "\0": "\\0",

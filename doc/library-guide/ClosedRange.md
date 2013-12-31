@@ -67,13 +67,14 @@ Special cases:
 **Syntax Note:** Used in the translation of `(expression..!expression)`
 forms.
 
-#### `makeInclusiveRange(firstValue, increment, limit) <> range`
+#### `makeInclusiveRange(firstValue, limit, increment) <> range`
 
 End-inclusive range generator for int or single-character strings.
 This is a convenient wrapper for `makeClosedRange`.
 
 Takes an initial value, which must either be an int or a single-character
-string, and an int (always an int) increment. The first `nextValue` call to
+string, a limit of the same type as the initial value, and an int
+(always an int) increment. The first `nextValue` call to
 the resulting generator yields the `firstValue`, and each subsequent call
 yields the previous value plus the given increment (converted to a
 single-character string if `firstValue` is a string). If the value yielded

@@ -98,11 +98,11 @@ in parentheses, with the expressions internally delimited with `..`, `..!`,
 and/or `,`, as follows:
 
 * `(first..limit)` &mdash; Inclusive range with increment 1. This is
-  equivalent to `Range::makeInclusiveRange(first, 1, limit)`.
+  equivalent to `Range::makeInclusiveRange(first, limit, 1)`.
 
 * `(first..limit, increment)` &mdash; Inclusive range with arbitrary
   increment. This is equivalent to
-  `Range::makeInclusiveRange(first, increment, limit)`.
+  `Range::makeInclusiveRange(first, limit, increment)`.
 
 * `(first..!limit)` &mdash; Exclusive range with increment 1. This is
   equivalent to `Range::makeExclusiveRange(first, limit, 1)`.

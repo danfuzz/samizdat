@@ -86,22 +86,22 @@ msgAll("Closed range (\"9\", 10, -1)",
 Io0::note("");
 
 msgAll("Inclusive range (5..10)",
-    Range::makeInclusiveRange(5, 1, 10));
+    Range::makeInclusiveRange(5, 10, 1));
 
 msgAll("Inclusive range (10..1, -2)",
-    Range::makeInclusiveRange(10, -2, 1));
+    Range::makeInclusiveRange(10, 1, -2));
 
 msgAll("Inclusive range (\"a\"..\"z\", +5)",
-    Range::makeInclusiveRange("a", 5, "z"));
+    Range::makeInclusiveRange("a", "z", 5));
 
 msgAll("Zero-increment inclusive int range",
-    Range::makeInclusiveRange(10, 0, 20));
+    Range::makeInclusiveRange(10, 20, 0));
 
 msgAll("Zero-increment inclusive character range",
-    Range::makeInclusiveRange("x", 0, "a"));
+    Range::makeInclusiveRange("x", "a", 0));
 
 msgAll("Empty inclusive range",
-    Range::makeInclusiveRange(10, 1, 9));
+    Range::makeInclusiveRange(10, 9, 1));
 
 Io0::note("");
 
