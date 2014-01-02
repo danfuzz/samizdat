@@ -58,9 +58,8 @@ def tokToken = makeParseForwarder();
 ## **Note:** The yielded result is always ignored.
 def tokWhitespace = {/
     ## The lookahead here is to avoid the bulk of this rule if there's
-    ## no chance we're actually looking at whitespace. The final
-    ## lookahead character is only useful as of Layer 2.
-    &["# \n" "/"]
+    ## no chance we're actually looking at whitespace.
+    &["# \n"]
 
     (
         [" " "\n"]+

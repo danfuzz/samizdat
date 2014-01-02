@@ -39,7 +39,7 @@ control constructs, and a bit more variety in expressing literal data.
 #### Comments
 
 In Layers 0 and 1, only single-line comments are recognized. Layer 2
-introduces multi-line comment syntax (`/* ... */`).
+introduces multi-line comment syntax (`#: ... :#`).
 
 #### Ints
 
