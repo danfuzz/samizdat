@@ -203,6 +203,12 @@ Placing a minus sign in front of an expression asserts that the inner
 expression results in a number, and results in the negative value of the
 inner expression's result.
 
+#### Collection size &mdash; `#expression`
+
+Placing a hash mark (also known as a number sign or pound sign) in front
+of an expression is equivalent to calling `Collection::sizeOf` on the
+evaluated result of that expression.
+
 #### Logical not &mdash; `!expression`
 
 Placing a bang (exclamation point) in front of an expression reverses
@@ -217,8 +223,8 @@ false and any value as true.
 #### Bitwise complement &mdash; `!!!expression`
 
 Placing a triple-bang in front of an expression asserts that the inner
-expression results in an int, and results in the bitwise complement of
-the inner expression's result.
+expression results in an int or boolean, and results in the bitwise complement
+of the inner expression's result.
 
 
 ### Multiplicative Infix Operators (Precedence 6)
