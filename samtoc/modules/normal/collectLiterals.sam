@@ -53,7 +53,7 @@ fn literal_lits(node, resultBox) {
     def result = Box::fetch(resultBox);
 
     if (!result[value]) {
-        Box::store(resultBox, { result*, (value): Collection::sizeOf(result) });
+        Box::store(resultBox, {result*, (value): #result});
     };
 };
 genericBind(lits, "literal", literal_lits);

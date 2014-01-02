@@ -112,10 +112,18 @@ else
     fi
 fi
 
-# Run it in the demo dir, passing it the main script name and any other
-# arguments passed to this script.
+# Build `samex` (helper / wrapper scripts) if necessary.
 
-cmd=("${baseDir}/out/final/bin/samex" "${samexOpts[@]}" "${mainFile}" "$@")
+cmdName="${baseDir}/out/final/bin/samex"
+
+if [[ ! -x "${cmdName}" ]]; then
+    "${baseDir}/samex/build" || exit 1
+fi
+
+# Start the runtime, cd'ed to the demo dir, passing it the main script
+# name and any other arguments passed to this script.
+
+cmd=("${cmdName}" "${samexOpts[@]}" "${mainFile}" "$@")
 
 echo "Running demo: $(basename "${name}")"
 cd "${name}"

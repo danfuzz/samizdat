@@ -66,7 +66,11 @@ msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
 msg((! ! !@fizmo)?);
 
-Io1::note("\nCollection indexing");
+Io1::note("\nCollections");
+
+msg(#"foo");
+msg(#[]);
+msg(#({a: 10, b: 20, c: 30, d:40}));
 
 msg(["blort", "fizmo", "igram"][0]);
 msg(["blort", "fizmo", "igram"][1]);

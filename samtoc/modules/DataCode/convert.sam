@@ -19,7 +19,7 @@ fn flatten(tree) {
     <> cat(
         flatten(tree::name),
         "(",
-        ( a in args, i in (Collection::sizeOf(args).., -1) ->
+        ( a in args, i in (#args.., -1) ->
             <> cat(flatten(a), (i == 1) & "" | ", ")
         )*,
         ")")
@@ -97,9 +97,8 @@ genericBind(convert, Map, Map_convert);
 ## Converts a string.
 fn String_convert(string) {
     def bodyChars = [ ch in string <> stringChar(ch) ];
-    def size = Collection::sizeOf(string);
 
-    <> makeCall("stringFromUtf8", "\(size)", "\"\(bodyChars)\"")
+    <> makeCall("stringFromUtf8", "\(#string)", "\"\(bodyChars)\"")
 };
 genericBind(convert, String, String_convert);
 

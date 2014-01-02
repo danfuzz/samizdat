@@ -49,7 +49,7 @@ fn main(selfPath, rawArgs*) {
     def modeModule = moduleUse({name: [modeName]});
     def sources = args::args;
 
-    if (Collection::sizeOf(sources) == 0) {
+    if (#sources == 0) {
         Io1::note("No source files specified!");
         return 1
     };

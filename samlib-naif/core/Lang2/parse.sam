@@ -911,6 +911,7 @@ def IDENTIFIER_PREFIXES = {
 ## references.
 def UNARY_OPERATORS = {
     "-":   makeModNameRef("Number", "neg"),
+    "#":   makeModNameRef("Collection", "sizeOf"),
     "!!!": makeModNameRef("Bitwise", "not"),
     "[]":  makeVarRef("get")
 };
@@ -1240,7 +1241,7 @@ Box::store(parNonlocalExit2, implNonlocalExit2);
 ## Parses a unary prefix operator. This yields a function (per se) that
 ## takes a node and yields a call to the appropriate operator function.
 def implPrefixOperator2 = {/
-    operator = [@"-" @"!!!"]
+    operator = [@"-" @"#" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, typeOf(operator));
         <> { node <> makeCall(name, node) }

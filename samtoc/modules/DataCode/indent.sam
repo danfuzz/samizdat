@@ -34,7 +34,7 @@ fn indent(tree, level, maxColumns) {
 
     def flat = flatten(tree);
 
-    if ((Collection::sizeOf(flat) + Collection::sizeOf(prefix)) < maxColumns) {
+    if ((#flat + #prefix) < maxColumns) {
         return cat(prefix, flat)
     };
 
@@ -43,7 +43,7 @@ fn indent(tree, level, maxColumns) {
 
     <> cat(
         prefix, flatten(tree::name), "(\n",
-        ( a in args, i in (Collection::sizeOf(args).., -1) ->
+        ( a in args, i in (#args.., -1) ->
             <> cat(indent(a, nextLevel, maxColumns), (i == 1) & ")" | ",\n")
         )*)
 };

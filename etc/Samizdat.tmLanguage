@@ -63,9 +63,9 @@
 			<key>name</key>
 			<string>comment.block</string>
 			<key>begin</key>
-			<string>/\*</string>
+			<string>#:</string>
 			<key>end</key>
-			<string>\*/</string>
+			<string>:#</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -542,8 +542,8 @@
 					<string>(?x)
 						&amp;&amp;?&amp;? | \|\|?\|? | \^\^?\^? |
 						\\?&lt;&lt;?&lt;? | \\?&gt;&gt;?&gt;? | !!?!? |
-						:: | := | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
-						&lt;&gt; | \.\.[!+]? | \+ | - | \* | //? | %%? | \?
+						:[:=] | \\?[!&lt;&gt;]?==? | &lt;&gt; |
+						\.\.!? | \+ | - | \* | //? | %%? | \? | \#
 					</string>
 				</dict>
 				<dict>

@@ -40,15 +40,15 @@ single-line comment start sequence.
 thisIsNotCommentary   ## ...but this *is* commentary.
 ```
 
-A multi-line comment starts with the sequence slash-star (`/*`) and continues
-to a matching star-slash (`*/`). Multi-line comments nest.
+A multi-line comment starts with the sequence hash-colon (`#:`) and continues
+to a matching colon-hash (`:#`). Multi-line comments nest.
 
 ```
-/* I am commentary. */ thisIsNotCommentary
+#: I am commentary. :# thisIsNotCommentary
 
-/* This
-is commentary. /* This too. */ Commentary
-continues. */ thisIsNotCommentary
+#: This
+is commentary. #: This too. :# Commentary
+continues. :# thisIsNotCommentary
 ```
 
 ### Statements and Expressions

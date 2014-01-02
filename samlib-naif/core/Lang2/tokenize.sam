@@ -64,9 +64,8 @@ def processStringParts = FunctionForwarder::make();
 ## **Note:** The yielded result is always ignored.
 def tokWhitespace = {/
     ## The lookahead here is to avoid the bulk of this rule if there's
-    ## no chance we're actually looking at whitespace. The final
-    ## lookahead character is only useful as of Layer 2.
-    &["# \n" "/"]
+    ## no chance we're actually looking at whitespace.
+    &["# \n"]
 
     (
         [" " "\n"]+
@@ -74,7 +73,7 @@ def tokWhitespace = {/
         "#" ["#!"] [! "\n"]*
     |
         ## Introduced in Layer 2.
-        &"/*" ## Avoid calling the rule unless we know it will match.
+        &"#:" ## Avoid calling the rule unless we know it will match.
         tokMultilineComment
     )+
 /};
@@ -87,7 +86,7 @@ def tokPunctuation = {/
     ## expression, except when we have a definite match. The second
     ## string in the lookahead calls out the characters that are only
     ## needed in Layer 1. Yet more characters are included in Layer 2.
-    &["&@:.,=-+?;*<>{}()[]" "/|!" "\\%^"]
+    &["&@:.,=-+?;*<>{}()[]" "/|!" "\\%^#"]
 
     (
         ## Introduced in Layer 2.
@@ -107,10 +106,10 @@ def tokPunctuation = {/
         ## Note: We check this error condition here instead of in the
         ## comment parsing code, because comments get parsed as whitespace,
         ## which gets ignored. Rather than changing to not-quite-ignore
-        ## whitespace -- which would be messy -- we instead notice `/*` here
+        ## whitespace -- which would be messy -- we instead notice `#:` here
         ## where we're parsing other punctuation. This is clean but a little
         ## non-obvious, hence this comment.
-        "/*" .*
+        "#:" .*
         { <> @error("Unterminated comment.") }
     |
         ## Single-character punctuation / operator.
@@ -290,19 +289,19 @@ fn implProcessStringParts(parts) {
 };
 Box::store(processStringParts, implProcessStringParts);
 
-## Parses a `/* ... */` comment, with nesting.
+## Parses a `#: ... :#` comment, with nesting.
 def implMultilineComment = {/
-    "/*"
+    "#:"
 
     (
         tokMultilineComment
     |
-        [! "*"]
+        [! ":"]
     |
-        "*" !"/"
+        ":" !"#"
     )*
 
-    "*/"
+    ":#"
 /};
 Box::store(tokMultilineComment, implMultilineComment);
 
