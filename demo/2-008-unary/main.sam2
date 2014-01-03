@@ -72,6 +72,9 @@ msg(#"foo");
 msg(#[]);
 msg(#({a: 10, b: 20, c: 30, d:40}));
 
+msg(^"!sniffuM");
+msg(^[1000, 100, 10, 1]);
+
 msg(["blort", "fizmo", "igram"][0]);
 msg(["blort", "fizmo", "igram"][1]);
 msg(["blort", "fizmo", "igram"][3]?);
