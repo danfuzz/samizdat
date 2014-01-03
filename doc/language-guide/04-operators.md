@@ -137,7 +137,8 @@ A slice expression using `..` is equivalent to calling `expression.slice(start, 
 A slice expression using `..!` is equivalent to calling `expression.slice(start, end)`.
 
 **Note:** `expression[..!]` is a convenient shorthand for getting a
-sequence of all but the last element of `expression`.
+sequence of all but the last element of `expression`. `expression[..]`
+is somewhat pointless but still allowed.
 
 **Note:** `slice` by definition always takes ints and not arbitrary keys.
 This may be confusing enough (when operating on maps) to warrant a change
