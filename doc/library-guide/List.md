@@ -68,9 +68,13 @@ order.
 
 Returns the number of elements in the list.
 
-#### `slice(list, start, end?) <> list`
+#### `sliceExclusive(list, start, end?) <> list`
 
-Returns a slice of the given list.
+Returns an end-exclusive slice of the given list.
+
+#### `sliceInclusive(list, start, end?) <> list`
+
+Returns an end-inclusive slice of the given list.
 
 
 <br><br>

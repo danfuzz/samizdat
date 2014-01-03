@@ -90,10 +90,17 @@ additional mapping in cases where `map` didn't already bind `key`.
 
 Returns the number of mappings in the map.
 
-#### `slice(map, start, end?) <> map`
+#### `sliceExclusive(map, start, end?) <> map`
 
-Returns a slice of the given map. **Note:** `start` and `end` are int
-indices, not map keys.
+Returns an end-exclusive slice of the given map.
+
+**Note:** `start` and `end` are int indices, not map keys.
+
+#### `sliceInclusive(map, start, end?) <> map`
+
+Returns an end-inclusive slice of the given map.
+
+**Note:** `start` and `end` are int indices, not map keys.
 
 
 <br><br>

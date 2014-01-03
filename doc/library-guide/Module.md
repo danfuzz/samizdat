@@ -52,7 +52,12 @@ the `exports` mapping for the given `key` is to the given `value`.
 
 Returns the number of elements in the given module's `exports`.
 
-#### `slice(modu, start, end?) <> module`
+#### `sliceExclusive(modu, start, end?) <> module`
+
+Returns a module just like the given one, except with only the given slice
+of the original's `exports`.
+
+#### `sliceInclusive(modu, start, end?) <> module`
 
 Returns a module just like the given one, except with only the given slice
 of the original's `exports`.

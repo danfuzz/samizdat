@@ -85,9 +85,13 @@ order.
 
 Returns the number of characters in the string.
 
-#### `slice(string, start, end?) <> string`
+#### `sliceExclusive(string, start, end?) <> string`
 
-Returns a slice of the given string.
+Returns an end-exclusive slice of the given string.
+
+#### `sliceInclusive(string, start, end?) <> string`
+
+Returns an end-inclusive slice of the given string.
 
 
 <br><br>
