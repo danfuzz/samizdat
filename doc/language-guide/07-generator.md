@@ -77,8 +77,9 @@ For example:
 
 ### Ranges
 
-Range expressions are used to build generators of ranges of values
-of ints or characters (the latter in the form of single-element strings).
+Range expressions are used to build generators or lists of ranges of values.
+The ranges can consist of either ints or characters, the latter in the form
+of single-element strings.
 
 Closed ranges all consist of at least two sub-expressions, namely a `first`
 (initial) value and a `limit` value. Open-ended ranges need only have a
@@ -94,8 +95,12 @@ or `Range::makeOpenRange`. Refer to the documentation on those functions
 for how to interpret the various combinations.
 
 Syntactically, a range expression consists of one or more expressions
-in parentheses, with the expressions internally delimited with `..`, `..!`,
-and/or `,`, as follows:
+in either parentheses `(...)` or square brackets `[...]`, with the
+expressions internally delimited with `..`, `..!`, and optionally `,`.
+As with the comprehension syntax, parentheses are used to indicate a range
+generator, and square brackets are used to indicate a range list.
+
+Details for the generator variants are as follows:
 
 * `(first..limit)` &mdash; Inclusive range with increment 1. This is
   equivalent to `Range::makeInclusiveRange(first, limit)`.
@@ -116,6 +121,11 @@ and/or `,`, as follows:
 
 * `(first.., increment)` &mdash; Open range with arbitrary increment. This
   is equivalent to `Range::makeOpenRange(first, increment)`.
+
+All of the *closed* range variants are valid using the square bracket list
+form, but no open range variants are allowed to be bracketed, as Samizdat
+does not support unbounded-size lists. Semantically, the list forms are
+equivalent to `[(first..limit, increment)*]` (and so on).
 
 **Note:** Though `+` is not a real unary prefix operator, it is allowed
 (but not required) to prefix increment expressions, as a way to mnemonically

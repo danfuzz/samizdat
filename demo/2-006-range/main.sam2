@@ -13,9 +13,13 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 ## Helper Definitions
 ##
 
-## Prints out the values yielded by the given generator.
-fn msg(generator) {
-    Io1::note("Got: \%q([generator*])")
+## Prints out the values yielded by the given generator or list.
+fn msg(item) {
+    if (isList(item)) {
+        Io1::note("Got list: \%q(item)")
+    } else {
+        Io1::note("Got gen: \%q([item*])")
+    }
 };
 
 ## Prints out 10 values yielded by the given generator (and no more).
@@ -37,6 +41,8 @@ msg((9..9));
 msg((9..0));
 msg(("f".."f"));
 msg(("f".."a"));
+msg([1..10]);
+msg([10..1]);
 
 Io1::note("\nInclusive, explicit increment...");
 msg((0..1000, +200));
@@ -44,6 +50,7 @@ msg(("a".."z", +5));
 msg((10..1, -1));
 msg(("F".."A", -2));
 msg((9..9, 0));
+msg([0..9, +3]);
 
 Io1::note("\nExclusive, default increment...");
 msg((100..!110));
@@ -52,6 +59,8 @@ msg((9..!9));
 msg((9..!0));
 msg(("f"..!"f"));
 msg(("f"..!"a"));
+msg([1..!10]);
+msg([10..!1]);
 
 Io1::note("\nExclusive, explicit increment...");
 msg((0..!1000, +200));
@@ -59,6 +68,7 @@ msg(("a"..!"z", +5));
 msg((10..!1, -1));
 msg(("F"..!"A", -2));
 msg((9..!9, 0));
+msg([0..!9, +3]);
 
 Io1::note("\nOpen, default increment...");
 msgTen((-10..));

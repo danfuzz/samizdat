@@ -68,9 +68,9 @@ Io1::note(powerName("blort"));
 
 Io1::note("\nInterpolate...");
 Io1::note(interpolator(1, [1, 2, 3]));
-Io1::note(interpolator(2, [(4..6)*]));
-Io1::note(interpolator(10, [(8..18)*]));
-Io1::note(interpolator(11, [(8..18)*]));
+Io1::note(interpolator(2, [4..6]));
+Io1::note(interpolator(10, [8..18]));
+Io1::note(interpolator(11, [8..18]));
 Io1::note(interpolator(0, [0, 5]));
 
 Io1::note("\nElse...");
