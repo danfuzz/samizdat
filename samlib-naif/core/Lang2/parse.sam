@@ -907,6 +907,17 @@ def IDENTIFIER_PREFIXES = {
     set: "set"
 };
 
+## Reference to `Range::makeOpenRange`.
+def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
+
+## Reference to `Range::makeInclusiveRange`.
+def REF_Range_makeInclusiveRange =
+    makeModNameRef("Range", "makeInclusiveRange");
+
+## Reference to `Range::makeExclusiveRange`.
+def REF_Range_makeExclusiveRange =
+    makeModNameRef("Range", "makeExclusiveRange");
+
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
@@ -1153,10 +1164,10 @@ def parComprehensionExpression = {/
     { <> makeCallModName("Generator", "filterAll", body*) }
 /};
 
-## Parses a range expression.
-def parRangeExpression = {/
-    @"("
-    base = parExpression
+## Helper for `parRangeExpression`, which parses the body of a
+## range, always yielding a generator.
+def parRangeBody = {/
+    firstValue = parExpression
     op = [@".." @"..!"]
 
     optLimit = (
@@ -1172,29 +1183,44 @@ def parRangeExpression = {/
 
     optIncrement = (@"," @"+"? parExpression)?
 
-    @")"
-
     {
         <> ifIs { <> eq(op, @"..!") }
             {
-                <> makeCallModName(
-                    "Range", "makeExclusiveRange",
-                    base, optLimit*, optIncrement*)
+                <> makeCall(
+                    REF_Range_makeExclusiveRange,
+                    firstValue, optLimit*, optIncrement*)
             }
             {
                 <> ifValue { <> optLimit* }
                     { limit ->
-                        <> makeCallModName(
-                            "Range", "makeInclusiveRange",
-                            base, limit, optIncrement*)
+                        <> makeCall(
+                            REF_Range_makeInclusiveRange,
+                            firstValue, limit, optIncrement*)
                     }
                     {
-                        <> makeCallModName(
-                            "Range", "makeOpenRange",
-                            base, optIncrement*)
+                        <> makeCall(
+                            REF_Range_makeOpenRange,
+                            firstValue, optIncrement*)
                     }
             }
     }
+/};
+
+## Parses a range expression, including both generator and list forms.
+def parRangeExpression = {/
+    @"("
+    body = parRangeBody
+    @")"
+
+    { <> body }
+|
+    @"["
+    body = parRangeBody
+    @"]"
+
+    ## The test here is to prevent open ranges from being allowed.
+    { <> ne(dataOf(body)::function, REF_Range_makeOpenRange) }
+    { <> makeCallName("makeList", makeInterpolate(body)) }
 /};
 
 ## Parses the `term` variants introduced in Layer 2.
