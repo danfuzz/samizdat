@@ -209,6 +209,11 @@ Placing a hash mark (also known as a number sign or pound sign) in front
 of an expression is equivalent to calling `Collection::sizeOf` on the
 evaluated result of that expression.
 
+#### Sequence reverse &mdash; `^expression`
+
+Placing a caret in front of an expression is equivalent to calling
+`Sequence::reverse` on the evaluated result of that expression.
+
 #### Logical not &mdash; `!expression`
 
 Placing a bang (exclamation point) in front of an expression reverses
