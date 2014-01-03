@@ -15,7 +15,7 @@ fn withoutSuffix(name) {
         return name
     } else {
         def lastDot = Collection::last(dotsAt);
-        return Collection::slice(name, 0, lastDot)
+        return Collection::sliceExclusive(name, 0, lastDot)
     }
 };
 

@@ -94,7 +94,9 @@ fn suffixFromName(name) {
             return "module"
         };
 
-    <> Collection::slice(name, Number::add(Collection::last(dotsAt), 1));
+    <> Collection::sliceInclusive(
+        name,
+        Number::add(Collection::last(dotsAt), 1));
 };
 
 ## Makes a global environment, given file path and command-line arguments.

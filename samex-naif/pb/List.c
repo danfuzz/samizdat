@@ -252,14 +252,29 @@ METH_IMPL(List, sizeOf) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, slice) {
+static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     zvalue list = args[0];
     ListInfo *info = getInfo(list);
     zint start;
     zint end;
 
-    collConvertSliceArgs(&start, &end, info->size, argCount, args);
-    return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
+    collConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
+
+    if (start == -1) {
+        return NULL;
+    } else {
+        return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
+    }
+}
+
+/* Documented in header. */
+METH_IMPL(List, sliceExclusive) {
+    return doSlice(false, argCount, args);
+}
+
+/* Documented in header. */
+METH_IMPL(List, sliceInclusive) {
+    return doSlice(true, argCount, args);
 }
 
 /* Documented in header. */
@@ -327,7 +342,8 @@ MOD_INIT(List) {
     METH_BIND(List, put);
     METH_BIND(List, reverse);
     METH_BIND(List, sizeOf);
-    METH_BIND(List, slice);
+    METH_BIND(List, sliceExclusive);
+    METH_BIND(List, sliceInclusive);
     METH_BIND(List, totEq);
     METH_BIND(List, totOrder);
     seqBind(TYPE_List);

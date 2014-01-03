@@ -213,10 +213,18 @@ fn Module_sizeOf(modu) {
 genericBind(Collection_sizeOf, "Module", Module_sizeOf);
 
 ## Documented in spec.
-fn Module_slice(modu, start, end?) {
-    <> withExports(modu, Collection_slice(getExports(modu), start, end*))
+fn Module_sliceExclusive(modu, start, end?) {
+    <> withExports(modu,
+        Collection_sliceExclusive(getExports(modu), start, end*))
 };
-genericBind(Collection_slice, "Module", Module_slice);
+genericBind(Collection_sliceExclusive, "Module", Module_sliceExclusive);
+
+## Documented in spec.
+fn Module_sliceInclusive(modu, start, end?) {
+    <> withExports(modu,
+        Collection_sliceInclusive(getExports(modu), start, end*))
+};
+genericBind(Collection_sliceInclusive, "Module", Module_sliceInclusive);
 
 
 
@@ -335,7 +343,7 @@ fn stringFromModuleName(fqName) {
     def parts = Generator_filter(fqName, { n <> cat("::", n) });
     def result = cat(parts*);
 
-    <> Collection_slice(result, 2)
+    <> Collection_sliceInclusive(result, 2)
 };
 
 ## Documented in spec. This is a manual definition of the `Module0` module.

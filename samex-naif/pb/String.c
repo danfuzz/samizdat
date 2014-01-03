@@ -349,14 +349,29 @@ METH_IMPL(String, sizeOf) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, slice) {
+static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     zvalue string = args[0];
     StringInfo *info = getInfo(string);
     zint start;
     zint end;
 
-    collConvertSliceArgs(&start, &end, info->size, argCount, args);
-    return stringFromZchars(end - start, &info->elems[start]);
+    collConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
+
+    if (start == -1) {
+        return NULL;
+    } else {
+        return stringFromZchars(end - start, &info->elems[start]);
+    }
+}
+
+/* Documented in header. */
+METH_IMPL(String, sliceExclusive) {
+    return doSlice(false, argCount, args);
+}
+
+/* Documented in header. */
+METH_IMPL(String, sliceInclusive) {
+    return doSlice(true, argCount, args);
 }
 
 /* Documented in header. */
@@ -446,7 +461,8 @@ MOD_INIT(String) {
     METH_BIND(String, put);
     METH_BIND(String, reverse);
     METH_BIND(String, sizeOf);
-    METH_BIND(String, slice);
+    METH_BIND(String, sliceExclusive);
+    METH_BIND(String, sliceInclusive);
     METH_BIND(String, toInt);
     METH_BIND(String, toNumber);
     METH_BIND(String, toString);

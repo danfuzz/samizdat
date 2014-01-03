@@ -41,24 +41,40 @@ void assertNthOrSize(zint size, zint n) {
 }
 
 /* Documented in header. */
-void collConvertSliceArgs(zint *startPtr, zint *endPtr, zint size,
-        zint argCount, const zvalue *args) {
+void collConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
+        zint size, zint argCount, const zvalue *args) {
     if (argCount < 2) {
-        die("Invalid `slice` argument count: %lld", argCount);
+        die("Invalid `slice*` argument count: %lld", argCount);
     }
 
     zvalue startVal = args[1];
     zvalue endVal = (argCount > 2) ? args[2] : NULL;
+    zint limit = inclusive ? (size - 1) : size;
     zint start = zintFromInt(startVal);
-    zint end = (endVal != NULL) ? zintFromInt(endVal) : size;
+    zint end = (endVal != NULL) ? zintFromInt(endVal) : (size - 1);
 
-    if ((start < 0) || (end < 0) || (end < start) || (end > size)) {
-        die("Invalid slice range: (%lld..!%lld) for size %lld",
-            start, end, size);
+    if (start < 0) {
+        start = 0;
     }
 
-    *startPtr = start;
-    *endPtr = end;
+    if (end > limit) {
+        end = limit;
+    }
+
+    if (inclusive) {
+        end++;
+    }
+
+    if (end > start) {
+        *startPtr = start;
+        *endPtr = end;
+    } else if (end == start) {
+        *startPtr = 0;
+        *endPtr = 0;
+    } else {
+        *startPtr = -1;
+        *endPtr = -1;
+    }
 }
 
 /* Documented in header. */
@@ -204,8 +220,13 @@ MOD_INIT(Collection) {
     GFN_sizeOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sizeOf"));
     pbImmortalize(GFN_sizeOf);
 
-    GFN_slice = makeGeneric(2, 3, GFN_NONE, stringFromUtf8(-1, "slice"));
-    pbImmortalize(GFN_slice);
+    GFN_sliceExclusive = makeGeneric(2, 3, GFN_NONE,
+        stringFromUtf8(-1, "sliceExclusive"));
+    pbImmortalize(GFN_sliceExclusive);
+
+    GFN_sliceInclusive = makeGeneric(2, 3, GFN_NONE,
+        stringFromUtf8(-1, "sliceInclusive"));
+    pbImmortalize(GFN_sliceInclusive);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get),
         stringFromUtf8(-1, "Sequence.get"));
@@ -241,4 +262,7 @@ zvalue GFN_reverse = NULL;
 zvalue GFN_sizeOf = NULL;
 
 /* Documented in header. */
-zvalue GFN_slice = NULL;
+zvalue GFN_sliceExclusive = NULL;
+
+/* Documented in header. */
+zvalue GFN_sliceInclusive = NULL;
