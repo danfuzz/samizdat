@@ -102,7 +102,7 @@ collection.
 Returns a collection of the same type as `collection`, consisting of an
 index-based "slice" of elements taken from `collection`, from the `start`
 index (inclusive) through the `end` index (exclusive). `start` and `end`
-must both be ints. `end` defaults to `#collection` if omitted.
+must both be ints. `end` defaults to `#collection - 1` if omitted.
 
 In the usual case, `start < end`, `start < #collection`, and `end > start`.
 In this case, the result is the expected slice. If `start < 0`, then it is
