@@ -133,21 +133,18 @@ specifying it as `#expression - 1` (that is, one less than the size of
 the collection).
 
 A slice expression using `..` is equivalent to calling
-`expression.slice(start, end + 1)`. (The `+ 1` is because `slice`
-specifies the end as exclusive.) As a special case, a slice expression
-using `..` but omitting the end is equivalent to calling
-`expression.slice(start)`.
+`expression.sliceInclusive(start, end)` (with `end` possibly omitted).
 
 A slice expression using `..!` is equivalent to calling
-`expression.slice(start, end)`.
+`expression.sliceExclusive(start, end)` (with `end` possibly omitted).
 
 **Note:** `expression[..!]` is a convenient shorthand for getting a
 sequence of all but the last element of `expression`. `expression[..]`
 is somewhat pointless but still allowed.
 
-**Note:** `slice` by definition always takes ints and not arbitrary keys.
-This may be confusing enough (when operating on maps) to warrant a change
-of spec. TODO: Evaluate this!
+**Note:** The slice operations by definition always take ints and not
+arbitrary keys. This may be confusing enough (when operating on maps) to
+warrant a change of spec. TODO: Evaluate this!
 
 #### Convert Value-or-void to list &mdash; `expression?`
 

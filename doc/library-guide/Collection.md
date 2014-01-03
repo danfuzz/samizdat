@@ -97,6 +97,31 @@ collection size, and must form a range (though possibly empty) with
 `start <= end`. If `end` is not specified, it defaults to the size of the
 collection.
 
+#### `sliceExclusive(collection, start, end?) <> collection | void`
+
+Returns a collection of the same type as `collection`, consisting of an
+index-based "slice" of elements taken from `collection`, from the `start`
+index (inclusive) through the `end` index (exclusive). `start` and `end`
+must both be ints. `end` defaults to `#collection` if omitted.
+
+In the usual case, `start < end`, `start < #collection`, and `end > start`.
+In this case, the result is the expected slice. If `start < 0`, then it is
+treated as if it were passed as `0`. If `end > #collection`, then it is
+treated as if it were passed as `#collection`.
+
+If `start == end`, this returns an empty collection.
+
+In all other cases (as long as the type restrictions hold), this returns void.
+
+#### `sliceInclusive(collection, start, end?) <> collection | void`
+
+Returns a collection of the same type as `collection`, consisting of an
+index-based "slice" of elements taken from `collection`, from the `start`
+index (inclusive) through the `end` index (inclusive). `start` and `end`
+must both be ints. `end` defaults to `#collection - 1` if omitted.
+
+This is equivalent to calling `sliceExclusive(collection, start, end + 1)`.
+
 
 <br><br>
 ### Primitive Definitions
