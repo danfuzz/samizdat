@@ -132,9 +132,14 @@ is equivalent to specifying it as `0`. Omitting the end is equivalent to
 specifying it as `#expression - 1` (that is, one less than the size of
 the collection).
 
-A slice expression using `..` is equivalent to calling `expression.slice(start, end + 1)`. (The `+ 1` is because `slice` specifies the end as exclusive.)
+A slice expression using `..` is equivalent to calling
+`expression.slice(start, end + 1)`. (The `+ 1` is because `slice`
+specifies the end as exclusive.) As a special case, a slice expression
+using `..` but omitting the end is equivalent to calling
+`expression.slice(start)`.
 
-A slice expression using `..!` is equivalent to calling `expression.slice(start, end)`.
+A slice expression using `..!` is equivalent to calling
+`expression.slice(start, end)`.
 
 **Note:** `expression[..!]` is a convenient shorthand for getting a
 sequence of all but the last element of `expression`. `expression[..]`

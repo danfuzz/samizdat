@@ -94,7 +94,7 @@ index-based "slice" of elements taken from `collection`, from the `start`
 index (inclusive) through the `end` index (exclusive). `start` and `end`
 must both be ints, must be valid indices into `collection` *or* the
 collection size, and must form a range (though possibly empty) with
-`start <= end`. If `end` is not specified, it defaults to the end of the
+`start <= end`. If `end` is not specified, it defaults to the size of the
 collection.
 
 
