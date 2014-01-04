@@ -14,26 +14,6 @@ def Collection = moduleUse({name: ["proto", "Collection"]});
 ##
 
 ## Documented in Samizdat Layer 0 spec.
-fn butFirst(collection) {
-    <> Collection::slice(
-        collection,
-        &ge(Collection::sizeOf(collection), 1))
-};
-
-## Documented in Samizdat Layer 0 spec.
-fn butLast(collection) {
-    <> Collection::slice(
-        collection,
-        0,
-        &le(0, Number::sub(Collection::sizeOf(collection), 1)))
-};
-
-## Documented in Samizdat Layer 0 spec.
-fn first(collection) {
-    <> Collection::nth(collection, 0)
-};
-
-## Documented in Samizdat Layer 0 spec.
 fn last(collection) {
     <> Collection::nth(
         collection,
@@ -42,18 +22,16 @@ fn last(collection) {
 
 <> {
     ## Re-exported from proto.
-    cat:      Collection::cat,
-    del:      Collection::del,
-    get:      Collection::get,
-    keyList:  Collection::keyList,
-    nth:      Collection::nth,
-    put:      Collection::put,
-    sizeOf:   Collection::sizeOf,
-    slice:    Collection::slice,
+    cat:            Collection::cat,
+    del:            Collection::del,
+    get:            Collection::get,
+    keyList:        Collection::keyList,
+    nth:            Collection::nth,
+    put:            Collection::put,
+    sizeOf:         Collection::sizeOf,
+    sliceExclusive: Collection::sliceExclusive,
+    sliceInclusive: Collection::sliceInclusive,
 
     ## Defined in this file.
-    butFirst,
-    butLast,
-    first,
     last
 }

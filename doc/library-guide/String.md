@@ -85,9 +85,13 @@ order.
 
 Returns the number of characters in the string.
 
-#### `slice(string, start, end?) <> string`
+#### `sliceExclusive(string, start, end?) <> string`
 
-Returns a slice of the given string.
+Returns an end-exclusive slice of the given string.
+
+#### `sliceInclusive(string, start, end?) <> string`
+
+Returns an end-inclusive slice of the given string.
 
 
 <br><br>
@@ -103,8 +107,8 @@ Filters the characters of `string` using `filterFunction`.
 
 #### `nextValue(string, box) <> generator | void`
 
-On a non-empty string, calls `store(box, first(string))` and returns
-`butFirst(string)`. On an empty string, calls `store(box)` and returns void.
+On a non-empty string, calls `store(box, string[0])` and returns
+`string[1..]`. On an empty string, calls `store(box)` and returns void.
 
 
 <br><br>

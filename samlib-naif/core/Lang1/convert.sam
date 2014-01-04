@@ -92,7 +92,7 @@ fn sequence_convertPex(node, formals) {
                     { <> dataOf(pex)::value }
                     { <> pex };
                 <> convertPex(subPex,
-                    [formals*, Collection::slice(newFormals, 0, n)*])
+                    [formals*, Collection::sliceExclusive(newFormals, 0, n)*])
             };
 
     <> callPegNameWithExpressions("makeSequence", convertedPexes*)

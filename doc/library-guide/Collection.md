@@ -87,15 +87,30 @@ check for the existence of `key` in the original.
 
 Returns the number of elements in the given collection.
 
-#### `slice(collection, start, end?) <> collection`
+#### `sliceExclusive(collection, start, end?) <> collection | void`
 
 Returns a collection of the same type as `collection`, consisting of an
 index-based "slice" of elements taken from `collection`, from the `start`
 index (inclusive) through the `end` index (exclusive). `start` and `end`
-must both be ints, must be valid indices into `collection` *or* the
-collection size, and must form a range (though possibly empty) with
-`start <= end`. If `end` is not specified, it defaults to the end of the
-collection.
+must both be ints. `end` defaults to `#collection - 1` if omitted.
+
+In the usual case, `start < end`, `start < #collection`, and `end > start`.
+In this case, the result is the expected slice. If `start < 0`, then it is
+treated as if it were passed as `0`. If `end > #collection`, then it is
+treated as if it were passed as `#collection`.
+
+If `start == end`, this returns an empty collection.
+
+In all other cases (as long as the type restrictions hold), this returns void.
+
+#### `sliceInclusive(collection, start, end?) <> collection | void`
+
+Returns a collection of the same type as `collection`, consisting of an
+index-based "slice" of elements taken from `collection`, from the `start`
+index (inclusive) through the `end` index (inclusive). `start` and `end`
+must both be ints. `end` defaults to `#collection - 1` if omitted.
+
+This is equivalent to calling `sliceExclusive(collection, start, end + 1)`.
 
 
 <br><br>
@@ -107,30 +122,9 @@ collection.
 <br><br>
 ### In-Language Definitions
 
-#### `butFirst(collection) <> collection | void`
-
-Returns a collection consisting of all the elements of the given `collection`
-except for the first element (that is, all but the first element). If
-`collection` is empty, this returns void. This is similar to
-`slice(collection, 1)`, except that this function returns void instead of
-reporting an error when `collection` is empty.
-
-#### `butLast(collection) <> collection | void`
-
-Returns a collection consisting of all the elements of the given `collection`
-except for the last element (that is, all but the last element). If
-`collection` is empty, this returns void. This is similar to
-`slice(collection, 0, sizeOf(collection) - 1)`, except that this function
-returns void instead of reporting an error when `collection` is empty.
-
-#### `first(collection) <> . | void`
-
-Returns the first element of the given `collection` or void if it is empty.
-This is just a convenient shorthand for `nth(collection, 0)`.
-
 #### `last(collection) <> . | void`
 
 Returns the last element of the given `collection` or void if the it is empty.
-This is similar to `nth(collection, sizeOf(collection) - 1)`, except that this
+This is similar to `nth(collection, #collection - 1)`, except that this
 function returns void given an empty collection instead of reporting an
 error.

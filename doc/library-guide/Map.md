@@ -90,10 +90,17 @@ additional mapping in cases where `map` didn't already bind `key`.
 
 Returns the number of mappings in the map.
 
-#### `slice(map, start, end?) <> map`
+#### `sliceExclusive(map, start, end?) <> map`
 
-Returns a slice of the given map. **Note:** `start` and `end` are int
-indices, not map keys.
+Returns an end-exclusive slice of the given map.
+
+**Note:** `start` and `end` are int indices, not map keys.
+
+#### `sliceInclusive(map, start, end?) <> map`
+
+Returns an end-inclusive slice of the given map.
+
+**Note:** `start` and `end` are int indices, not map keys.
 
 
 <br><br>
@@ -109,8 +116,8 @@ Filters the mappings of `map` using `filterFunction`.
 
 #### `nextValue(map, box) <> generator | void`
 
-On a non-empty map, calls `store(box, first(map))` and returns
-`butFirst(map)`. On an empty map, calls `store(box)` and returns void.
+On a non-empty map, calls `store(box, map[0])` and returns
+`map[1..]`. On an empty map, calls `store(box)` and returns void.
 
 
 <br><br>

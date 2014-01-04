@@ -99,8 +99,8 @@ def parFile = {/
     { <> cat(lines*) }
 /};
 
-def inPath = [Collection::butLast(PATH)*, "entity-map.txt"];
-def outPath = [Collection::butLast(PATH)*, "entityMap.sam"];
+def inPath = [Collection::sliceExclusive(PATH, 0)*, "entity-map.txt"];
+def outPath = [Collection::sliceExclusive(PATH, 0)*, "entityMap.sam"];
 Io1::note("Processing file: \%q(inPath)");
 
 def text = Io1::readFileUtf8(inPath);
@@ -113,7 +113,7 @@ def resultLines = (mapping in result ->
     <> ",\n    \%q(keyOf(mapping)): \%q(valueOf(mapping))"
 );
 
-def resultText = Collection::slice(cat(resultLines*), 2);
+def resultText = cat(resultLines*)[2..];
 
 def outText = "\
     ## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).

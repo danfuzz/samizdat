@@ -68,9 +68,13 @@ order.
 
 Returns the number of elements in the list.
 
-#### `slice(list, start, end?) <> list`
+#### `sliceExclusive(list, start, end?) <> list`
 
-Returns a slice of the given list.
+Returns an end-exclusive slice of the given list.
+
+#### `sliceInclusive(list, start, end?) <> list`
+
+Returns an end-inclusive slice of the given list.
 
 
 <br><br>
@@ -86,8 +90,8 @@ Filters the elements of `list` using `filterFunction`.
 
 #### `nextValue(list, box) <> generator | void`
 
-On a non-empty list, calls `store(box, first(list))` and returns
-`butFirst(list)`. On an empty list, calls `store(box)` and returns void.
+On a non-empty list, calls `store(box, list[0])` and returns
+`list[1..]`. On an empty list, calls `store(box)` and returns void.
 
 
 <br><br>

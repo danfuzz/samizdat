@@ -15,7 +15,7 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 
 ## Demo of reading a sibling file through a sandboxed reader.
 fn sibling() {
-    def reader = Io1::sandboxedReader(Collection::butLast(PATH));
+    def reader = Io1::sandboxedReader(Collection::sliceExclusive(PATH, 0));
     def text = reader(["sibling.txt"]);
     Io1::note(text);
 };
@@ -28,7 +28,7 @@ fn fileExists() {
             { Io1::note(cat("Does not exist: ", Format::source(path))) }
     };
 
-    def base = Collection::butLast(PATH);
+    def base = Collection::sliceExclusive(PATH, 0);
     tryFile([base*, "sibling.txt"]);
     tryFile([base*, "non-sibling.txt"]);
 };

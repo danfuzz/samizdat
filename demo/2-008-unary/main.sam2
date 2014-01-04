@@ -97,5 +97,20 @@ msg("frotz"["ztrof"]?);
 msg(returnString()[2]);
 msg((returnString()[99])?);
 
+msg("--Biscuits!---"[2..10]);
+msg("--Biscuits!---"[2..!11]);
+msg([-7, -6, -5, 1, 2, 3][3..]);
+msg([-7, -6, -5, 1, 2, 3][3..!]);
+msg([1, 2, 3, -7, -6, -5][..2]);
+msg([1, 2, 3, -7, -6, -5][..!2]);
+msg([1, 2, 3, 4, 5, 6][..]);
+msg([1, 2, 3, 4, 5, 6][..!]);
+msg({a: "apple", b: "biscuit", s: "scones"}[2..!3]);
+msg([1, 2, 3][5..!5]);
+msg([1, 2, 3][4..3]);
+msg([1, 2, 3][-10..20]);
+msg(([1, 2, 3][3..1])?); ## `?` since this should be a void return.
+msg(([][1..])?);         ## Ditto.
+msg(([][..!])?);         ## Ditto.
 
 <> 0

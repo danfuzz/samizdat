@@ -87,6 +87,17 @@ This is a variant of the function calling syntax, and is equivalent to
 This is the preferred syntax to use for applying a method or method-like
 function to a target.
 
+#### Access collection with literal string key &mdash; `expression::name`
+
+A literal string key can be looked up in a collection by naming
+the collection and following it with a double-colon (`::`) and the
+quoted string key. If the key fits the syntax of an in-language
+identifier, then it is valid to omit the quotes.
+
+This is equivalent to calling `get` on the collection, passing it the
+key as the argument. That is, `foo::bar` and `foo::"bar"` are both
+equivalent to `foo.get("bar")`.
+
 #### Access collection &mdash; `expression[index]`
 
 To index into a collection (e.g., a list, map, or string) or collection-like
@@ -108,20 +119,32 @@ A collection access expression is identical to a function call of `get`
 with the value to be accessed as the argument. That is, `x[y]` means
 the same thing as `x.get(y)`.
 
-#### Access collection with string key &mdash; `expression::name`
+#### Collection slice &mdash; `expression[start..end]` `expression[start..!afterEnd]`
 
-If the key to use to access a collection is a string literal, then
-instead of placing it in square brackets, it can be placed after a
-colon. Furthermore, if the string fits the syntax of an in-language
-identifier, then it is valid to omit the quotes.
+To extract a "slice" of a collection, indicate the start and end positions
+of the slice inside square brackets and separated by `..` or `..!`, after
+naming the collection to slice. As with the related range syntax, `..`
+indicates that the end is inclusive, and `..!` indicates that the end is
+exclusive.
 
-For example, all of these are equivalent:
+Either or both of the start and end can be omitted. Omitting the start
+is equivalent to specifying it as `0`. Omitting the end is equivalent to
+specifying it as `#expression - 1` (that is, one less than the size of
+the collection).
 
-```
-someExpression["blort"]
-someExpression::"blort"
-someExpression::blort
-```
+A slice expression using `..` is equivalent to calling
+`expression.sliceInclusive(start, end)` (with `end` possibly omitted).
+
+A slice expression using `..!` is equivalent to calling
+`expression.sliceExclusive(start, end)` (with `end` possibly omitted).
+
+**Note:** `expression[..!]` is a convenient shorthand for getting a
+sequence of all but the last element of `expression`. `expression[..]`
+is somewhat pointless but still allowed.
+
+**Note:** The slice operations by definition always take ints and not
+arbitrary keys. This may be confusing enough (when operating on maps) to
+warrant a change of spec. TODO: Evaluate this!
 
 #### Convert Value-or-void to list &mdash; `expression?`
 

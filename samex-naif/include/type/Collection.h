@@ -48,8 +48,11 @@ extern zvalue GFN_reverse;
 /** Generic `sizeOf(collection)`: Documented in spec. */
 extern zvalue GFN_sizeOf;
 
-/** Generic `slice(collection, start, end?)`: Documented in spec. */
-extern zvalue GFN_slice;
+/** Generic `sliceExclusive(collection, start, end?)`: Documented in spec. */
+extern zvalue GFN_sliceExclusive;
+
+/** Generic `sliceInclusive(collection, start, end?)`: Documented in spec. */
+extern zvalue GFN_sliceInclusive;
 
 /**
  * Asserts that the given size accommodates accessing the `n`th element.
@@ -66,12 +69,14 @@ void assertNthOrSize(zint size, zint n);
 
 /**
  * Validates and converts the `start` and optional `end` arguments to
- * a `slice` call, based on having a collection of the given `size`.
- * On success, stores the start and end values through the given pointers.
- * On failure, terminates the runtime with an error.
+ * a `slice{Ex,In}clusive` call, based on having a collection of the given
+ * `size`. On success, stores the start (inclusive) and end (exclusive, always)
+ * values through the given pointers. For an empty range, returns `0` for
+ * both values. For a void range, returns `-1` for both values. On type
+ * failure, terminates the runtime with an error.
  */
-void collConvertSliceArgs(zint *startPtr, zint *endPtr, zint size,
-        zint argCount, const zvalue *args);
+void collConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
+        zint size, zint argCount, const zvalue *args);
 
 /**
  * Validates the given `key` to use for a `get` style function on a sequence.

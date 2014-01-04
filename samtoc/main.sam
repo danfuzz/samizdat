@@ -15,7 +15,7 @@ fn withoutSuffix(name) {
         return name
     } else {
         def lastDot = Collection::last(dotsAt);
-        return Collection::slice(name, 0, lastDot)
+        return name[..!lastDot]
     }
 };
 
@@ -24,7 +24,7 @@ fn getOutputPath(sourcePath, args) {
         return Io1::pathFromFlat(output)
     } else {
         def baseName = withoutSuffix(Collection::last(sourcePath));
-        return [Collection::butLast(sourcePath)*, "\(baseName).c"];
+        return [sourcePath[..!]*, "\(baseName).c"]
     }
 };
 
