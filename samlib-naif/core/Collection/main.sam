@@ -14,23 +14,6 @@ def Collection = moduleUse({name: ["proto", "Collection"]});
 ##
 
 ## Documented in Samizdat Layer 0 spec.
-fn butFirst(collection) {
-    <> ifIs { <> ne(Collection::sizeOf(collection), 0) }
-        { <> Collection::sliceInclusive(collection, 1) }
-};
-
-## Documented in Samizdat Layer 0 spec.
-fn butLast(collection) {
-    <> ifIs { <> ne(Collection::sizeOf(collection), 0) }
-        { <> Collection::sliceExclusive(collection, 0) }
-};
-
-## Documented in Samizdat Layer 0 spec.
-fn first(collection) {
-    <> Collection::nth(collection, 0)
-};
-
-## Documented in Samizdat Layer 0 spec.
 fn last(collection) {
     <> Collection::nth(
         collection,
@@ -50,8 +33,5 @@ fn last(collection) {
     sliceInclusive: Collection::sliceInclusive,
 
     ## Defined in this file.
-    butFirst,
-    butLast,
-    first,
     last
 }
