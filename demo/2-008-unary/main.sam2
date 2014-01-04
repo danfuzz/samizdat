@@ -108,6 +108,7 @@ msg([1, 2, 3, 4, 5, 6][..!]);
 msg({a: "apple", b: "biscuit", s: "scones"}[2..!3]);
 msg([1, 2, 3][5..!5]);
 msg([1, 2, 3][4..3]);
+mst(([1, 2, 3][3..1])?); ## `?` since this should be a void return.
 msg([1, 2, 3][-10..20]);
 
 <> 0
