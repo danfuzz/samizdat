@@ -46,13 +46,7 @@ fn main(selfPath, name?, rest*) {
     process(selfPath);
     process(rest);
     process(Collection::butFirst([0, 1, -2]));
-    process(Sequence::reverse(Collection::butLast([-1, 2, 300, 999])));
-    process(Sequence::reverse("!niffuM"));
-    process(Collection::sliceExclusive("^muffins^", 1, 8));
-    process(Collection::sliceInclusive(["x", "y", "muffins", "biscuits"], 2));
-    process(
-        Collection::sliceExclusive(
-            {a: "apple", b: "biscuit", s: "scones"}, 2, 3));
+    process(Collection::butLast([1, 2, 3, 999]));
     process(Collection::del("mufxfins", 3));
     process(Collection::del(["pie", "fishburgers", "croissants"], 1));
     process(Collection::del({one: 1, two: 2, three: 3}, "two"));
