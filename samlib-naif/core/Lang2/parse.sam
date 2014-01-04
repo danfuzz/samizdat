@@ -978,8 +978,8 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
     def voidable = ifValueOr { <> optVoidable* } { <> false };
 
     def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
-        def op = Collection::first(opEx);
-        def ex = Collection::last(opEx);
+        def op = Collection::get(opEx, 0);
+        def ex = Collection::get(opEx, 1);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
         def call = makeCall(resolvedOp, result, ex);
 
