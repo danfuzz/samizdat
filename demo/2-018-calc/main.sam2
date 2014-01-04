@@ -44,11 +44,10 @@ fn applyShuntingYard(initialValue, opValues) {
     ## the result back at the top of the value stack.
     fn applyTop(ops, values) {
         def function = Collection::last(ops)::function;
-        def newValue =
-            function(Collection::sliceInclusive(values, #values - 2)*);
+        def newValue = function(values[#values - 2..]*);
         <> [
-            Collection::butLast(ops),
-            [Collection::sliceExclusive(values, 0, #values - 2)*, newValue]
+            ops[..!],
+            [values[..!#values - 2]*, newValue]
         ]
     };
 
@@ -70,17 +69,17 @@ fn applyShuntingYard(initialValue, opValues) {
             ## Use precedence `-1` to drain the op stack, leaving a single
             ## value.
             def finalResult = reducePending(ops, values, -1);
-            return Collection::last(Collection::last(finalResult))
+            return Collection::last(finalResult[1])
         };
 
-        def nextOpValue = Collection::first(opValues);
+        def nextOpValue = opValues[0];
         def nextOp = nextOpValue::op;
         def nextVal = nextOpValue::value;
         def newPending = reducePending(ops, values, nextOp::precedence);
         <> [
-            [Collection::first(newPending)*, nextOp],
-            [Collection::last(newPending)*, nextVal],
-            Collection::butFirst(opValues)
+            [newPending[0]*, nextOp],
+            [newPending[1]*, nextVal],
+            opValues[1..]
         ]
     }
 };

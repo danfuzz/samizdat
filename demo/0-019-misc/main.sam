@@ -45,8 +45,6 @@ fn main(selfPath, name?, rest*) {
 
     process(selfPath);
     process(rest);
-    process(Collection::butFirst([0, 1, -2]));
-    process(Collection::butLast([1, 2, 3, 999]));
     process(Collection::del("mufxfins", 3));
     process(Collection::del(["pie", "fishburgers", "croissants"], 1));
     process(Collection::del({one: 1, two: 2, three: 3}, "two"));
