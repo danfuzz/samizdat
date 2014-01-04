@@ -269,7 +269,9 @@ fn implProcessStringParts(parts) {
         { part, result ->
             <> ifValue
                 { <> [&isString(Collection::last(result)), &isString(part)] }
-                { newLast <> [Collection::butLast(result)*, cat(newLast*)] }
+                { newLast ->
+                    <> [Collection::sliceExclusive(result, 0)*, cat(newLast*)]
+                }
                 { <> [result*, part] };
         };
 
