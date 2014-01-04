@@ -90,8 +90,8 @@ Filters the elements of `list` using `filterFunction`.
 
 #### `nextValue(list, box) <> generator | void`
 
-On a non-empty list, calls `store(box, first(list))` and returns
-`butFirst(list)`. On an empty list, calls `store(box)` and returns void.
+On a non-empty list, calls `store(box, list[0])` and returns
+`list[1..]`. On an empty list, calls `store(box)` and returns void.
 
 
 <br><br>

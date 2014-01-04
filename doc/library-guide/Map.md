@@ -116,8 +116,8 @@ Filters the mappings of `map` using `filterFunction`.
 
 #### `nextValue(map, box) <> generator | void`
 
-On a non-empty map, calls `store(box, first(map))` and returns
-`butFirst(map)`. On an empty map, calls `store(box)` and returns void.
+On a non-empty map, calls `store(box, map[0])` and returns
+`map[1..]`. On an empty map, calls `store(box)` and returns void.
 
 
 <br><br>
