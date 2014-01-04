@@ -113,7 +113,7 @@ def resultLines = (mapping in result ->
     <> ",\n    \%q(keyOf(mapping)): \%q(valueOf(mapping))"
 );
 
-def resultText = Collection::sliceInclusive(cat(resultLines*), 2);
+def resultText = cat(resultLines*)[2..];
 
 def outText = "\
     ## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
