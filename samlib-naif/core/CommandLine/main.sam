@@ -94,9 +94,7 @@ fn suffixFromName(name) {
             return "module"
         };
 
-    <> Collection::sliceInclusive(
-        name,
-        Number::add(Collection::last(dotsAt), 1));
+    <> name[Collection::last(dotsAt) + 1..]
 };
 
 ## Makes a global environment, given file path and command-line arguments.
@@ -164,10 +162,10 @@ fn runCommandLine(rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def fileName = ifValueOr { <> Collection::first(argWords) }
+    def fileName = ifValueOr { <> argWords[0] }
         { <> "/dev/stdin" };
     def filePath = Io1::pathFromFlat(fileName);
-    def args = ifValueOr { <> Collection::butFirst(argWords) }
+    def args = ifValueOr { <> argWords[1..] }
         { <> [] };
 
     def suffix = ifValueOr { <> options::suffix }

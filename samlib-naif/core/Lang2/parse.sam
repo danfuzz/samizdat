@@ -1579,8 +1579,8 @@ def parLogicOrExpression = {/
         {
             def allExprs = Sequence::reverse([one, rest*]);
             <> Generator::doReduce1(
-                Collection::butFirst(allExprs),
-                Collection::first(allExprs))
+                Collection::sliceInclusive(allExprs, 1),
+                get(allExprs, 0))
                 { ex, result ->
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))

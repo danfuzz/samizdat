@@ -30,11 +30,11 @@ fn findModuleDirectory(searchInfo, modulePaths) {
                 Module0::stringFromModuleName(fqName)))
             };
 
-        def moduleFile = [Collection::first(paths)*, fqName*, "module.sam"];
+        def moduleFile = [get(paths, 0)*, fqName*, "module.sam"];
         ifIs { <> Io1::fileExists(moduleFile) }
             { return paths };
 
-        <> [Collection::butFirst(paths)]
+        <> [Collection::sliceInclusive(paths, 1)]
     };
 };
 
@@ -91,7 +91,7 @@ fn moduleUse(searchInfo, modulePaths?) {
         };
 
     def remainingPaths = findModuleDirectory(searchInfo, paths);
-    def moduleDir = [Collection::first(remainingPaths)*, fqName*];
+    def moduleDir = [get(remainingPaths, 0)*, fqName*];
     def result = loadPath(moduleDir, remainingPaths);
     def info = Module0::getInfo(result);
 

@@ -36,7 +36,7 @@ fn SerialGenerator_nextValue(gen, box) {
 
     <> ifValue { <> Collection::first(subGens) }
         { firstGen ->
-            def moreGens = Collection::butFirst(subGens);
+            def moreGens = Collection::sliceInclusive(subGens, 1);
             def innerBox = Box::makePromise();
 
             <> ifValue { <> Generator::nextValue(firstGen, innerBox) }
