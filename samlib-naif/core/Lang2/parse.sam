@@ -907,6 +907,14 @@ def IDENTIFIER_PREFIXES = {
     set: "set"
 };
 
+## Reference to `Collection::sliceInclusive`.
+def REF_Collection_sliceInclusive =
+    makeModNameRef("Collection", "sliceInclusive");
+
+## Reference to `Collection::sliceExclusive`.
+def REF_Collection_sliceExclusive =
+    makeModNameRef("Collection", "sliceExclusive");
+
 ## Reference to `Range::makeOpenRange`.
 def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
 
@@ -924,8 +932,7 @@ def UNARY_OPERATORS = {
     "-":   makeModNameRef("Number", "neg"),
     "#":   makeModNameRef("Collection", "sizeOf"),
     "^":   makeModNameRef("Sequence", "reverse"),
-    "!!!": makeModNameRef("Bitwise", "not"),
-    "[]":  makeVarRef("get")
+    "!!!": makeModNameRef("Bitwise", "not")
 };
 
 ## For binary operators, map of token types to function name variable
@@ -1297,14 +1304,30 @@ def implPostfixOperator2 = {/
     }
 |
     @"["
-    exprs = parUnadornedList
+    optStart = parExpression?
+    optOp = [@".." @"..!"]?
+    optEnd = parExpression?
     @"]"
 
     (
-        { <> eq(exprs, []) }
-        { Io1::die("Missing index value(s) from index expression.") }
+        ## It's a slice expression of some sort.
+        op = { <> optOp* }
+        start = ({ <> optStart* } | { <> makeLiteral(0) })
+
+        {
+            def func = ifIs { <> eq(op, @"..") }
+                { <> REF_Collection_sliceInclusive }
+                { <> REF_Collection_sliceExclusive };
+
+            <> { node <> makeCall(func, node, start, optEnd*) }
+        }
     |
-        { <> { node <> makeCall((UNARY_OPERATORS::"[]"), node, exprs*) } }
+        ## The following assignment means that `optStart` must be non-empty
+        ## at this point. The lack of subsequent alternates means that `foo[]`
+        ## per se (that is, empty content inside the brackets) won't pass as
+        ## syntactically valid.
+        index = { <> optStart* }
+        { <> { node <> makeCallName("get", node, index) } }
     )
 |
     ## This translates as something like the following:
