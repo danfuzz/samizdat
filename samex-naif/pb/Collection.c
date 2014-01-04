@@ -49,31 +49,33 @@ void collConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
 
     zvalue startVal = args[1];
     zvalue endVal = (argCount > 2) ? args[2] : NULL;
-    zint limit = inclusive ? (size - 1) : size;
     zint start = zintFromInt(startVal);
     zint end = (endVal != NULL) ? zintFromInt(endVal) : (size - 1);
-
-    if (start < 0) {
-        start = 0;
-    }
-
-    if (end > limit) {
-        end = limit;
-    }
 
     if (inclusive) {
         end++;
     }
 
+    if (end < start) {
+        *startPtr = -1;
+        *endPtr = -1;
+        return;
+    }
+
+    if (start < 0) {
+        start = 0;
+    }
+
+    if (end > size) {
+        end = size;
+    }
+
     if (end > start) {
         *startPtr = start;
         *endPtr = end;
-    } else if (end == start) {
+    } else {
         *startPtr = 0;
         *endPtr = 0;
-    } else {
-        *startPtr = -1;
-        *endPtr = -1;
     }
 }
 
