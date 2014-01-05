@@ -64,7 +64,7 @@ Returns the list of keys mapped by the collection.
 #### `nth(collection, n) <> . | void`
 
 Returns the nth (zero-based) element of the collection, in its defined
-fixed order. Returns void if `n >= sizeOf(collection)`. It is an error
+fixed order. Returns void if `n >= #collection`. It is an error
 (terminating the runtime) if `n < 0` or if `n` is not an `Int`.
 
 #### `put(collection, key, value) <> collection`
@@ -128,3 +128,26 @@ Returns the last element of the given `collection` or void if the it is empty.
 This is similar to `nth(collection, #collection - 1)`, except that this
 function returns void given an empty collection instead of reporting an
 error.
+
+#### `nthFromEnd(collection, n) <> . | void`
+
+Returns the nth (zero-based) element of the collection, in its defined
+fixed order but counting backward from the end of the collection. Returns void
+if `n < 0` or `n >= #collection`. It is an error (terminating the
+runtime) if `n` is not an `Int`.
+
+#### `sliceGeneral(collection, style, start, end?) <> collection | void`
+
+Returns a collection of the same type as `collection`, consisting of an
+index-based "slice" of elements taken from `collection`, from the `start`
+index through the `end` index.
+
+The `start` is always an inclusive index. `style` indicates whether the
+end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
+
+Each of `start` and `end` must be a transparent derived value of type
+`@fromStart` or `@fromEnd` with an int payload. The type indicates which
+end of the collection is to be counted from.
+
+This function in turn calls one of `sliceExclusive` or `sliceInclusive` to
+perform the actual slicing.
