@@ -80,12 +80,9 @@ zint collNthIndexLenient(zvalue key) {
 zint collNthIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
-        if (index < 0) {
-            die("Invalid index for nth (negative).");
-        }
-        return (index < size) ? index: -1;
+        return ((index >= 0) && (index < size)) ? index : -1;
     } else {
-        die("Invalid type for nth (non-int).");
+        die("Invalid type for `nth` (non-int).");
     }
 }
 

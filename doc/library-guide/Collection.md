@@ -64,8 +64,8 @@ Returns the list of keys mapped by the collection.
 #### `nth(collection, n) <> . | void`
 
 Returns the nth (zero-based) element of the collection, in its defined
-fixed order. Returns void if `n >= #collection`. It is an error
-(terminating the runtime) if `n < 0` or if `n` is not an `Int`.
+fixed order. Returns void if `n < 0` or `n >= #collection`. It is an error
+(terminating the runtime) if `n` is not an `Int`.
 
 #### `put(collection, key, value) <> collection`
 
