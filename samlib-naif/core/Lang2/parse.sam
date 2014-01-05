@@ -907,6 +907,9 @@ def IDENTIFIER_PREFIXES = {
     set: "set"
 };
 
+## Reference to `Collection::nthFromEnd`.
+def REF_Collection_nthFromEnd = makeModNameRef("Collection", "nthFromEnd");
+
 ## Reference to `Collection::sliceInclusive`.
 def REF_Collection_sliceInclusive =
     makeModNameRef("Collection", "sliceInclusive");
@@ -914,6 +917,9 @@ def REF_Collection_sliceInclusive =
 ## Reference to `Collection::sliceExclusive`.
 def REF_Collection_sliceExclusive =
     makeModNameRef("Collection", "sliceExclusive");
+
+## Reference to `Collection::sliceGeneral`.
+def REF_Collection_sliceGeneral = makeModNameRef("Collection", "sliceGeneral");
 
 ## Reference to `Range::makeOpenRange`.
 def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
@@ -925,6 +931,9 @@ def REF_Range_makeInclusiveRange =
 ## Reference to `Range::makeExclusiveRange`.
 def REF_Range_makeExclusiveRange =
     makeModNameRef("Range", "makeExclusiveRange");
+
+## Reference to `get`.
+def REF_get = makeVarRef("get");
 
 ## For unary operators, map of token types to function name variable
 ## references.
@@ -1288,6 +1297,78 @@ def implPrefixOperator2 = {/
 /};
 Box::store(parPrefixOperator2, implPrefixOperator2);
 
+## Parses an index expression (inside a collection indexing postfix form).
+def parIndexExpression = {/
+    @"^"
+    expr = parExpression
+    { <> @fromEnd(expr) }
+|
+    expr = parExpression
+    { <> @fromStart(expr) }
+/};
+
+## Parses an indexing postfix.
+def parIndexPostfix = {/
+    optStart = parIndexExpression?
+    optOp = [@".." @"..!"]?
+    end = (
+        { <> optOp* } ## End can only be parsed if there was a slice op.
+        parIndexExpression
+    |
+        { <> @toEnd }
+    )
+
+    (
+        ## It's a slice expression of some sort.
+        op = { <> optOp* }
+        start = ({ <> optStart* } | { <> @fromStart(makeLiteral(0)) })
+
+        (
+            ## It's a non-size-dependant slice.
+            { <> ne(typeOf(start), "fromEnd") }
+            { <> ne(typeOf(end), "fromEnd") }
+
+            {
+                def func = ifIs { <> eq(op, @"..") }
+                    { <> REF_Collection_sliceInclusive }
+                    { <> REF_Collection_sliceExclusive };
+
+                <> { node ->
+                    <> makeCall(func, node, dataOf(start), dataOf(end)*)
+                }
+            }
+        |
+            ## At least one of start or end is `fromEnd`, so we have to
+            ## use an intermediate function call.
+            {
+                def style = ifIs { <> eq(op, @"..") }
+                    { <> makeLiteral(@inclusive) }
+                    { <> makeLiteral(@exclusive) };
+
+                def startNode =
+                    makeCallName("makeValue",
+                        makeLiteral(startType),
+                        dataOf(start));
+
+                def optEndNode = (ifNot { <> eq(end, @toEnd) }
+                    {
+                        <> makeCallName("makeValue",
+                            makeLiteral(typeOf(end)),
+                            dataOf(end))
+                    })?;
+
+                <> { node ->
+                    <> makeCall(REF_Collection_sliceGeneral,
+                        node,
+                        style,
+                        startNode,
+                        optEndNode*)
+                }
+            }
+        )
+    )
+/};
+
 ## Layer 2 additions to unary postfix operator parsing. This yields a
 ## function (per se) to call in order to construct a node that represents the
 ## appropriate operator application, function call, or the like.
@@ -1303,6 +1384,11 @@ def implPostfixOperator2 = {/
         }
     }
 |
+    ## TODO:
+    ## @"["
+    ## result = parIndexPostfix
+    ## @"]"
+    ## { <> result }
     @"["
     optStart = parExpression?
     optOp = [@".." @"..!"]?
