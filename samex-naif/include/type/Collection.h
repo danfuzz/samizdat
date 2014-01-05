@@ -55,19 +55,6 @@ extern zvalue GFN_sliceExclusive;
 extern zvalue GFN_sliceInclusive;
 
 /**
- * Asserts that the given size accommodates accessing the `n`th element.
- * This includes asserting that `n >= 0`. Note that all non-negative `n`
- * are valid for accessing ints (their size notwithstanding).
- */
-void assertNth(zint size, zint n);
-
-/**
- * Like `assertNth` but also accepts the case where `n` is the size
- * of the value.
- */
-void assertNthOrSize(zint size, zint n);
-
-/**
  * Validates and converts the `start` and optional `end` arguments to
  * a `slice{Ex,In}clusive` call, based on having a collection of the given
  * `size`. On success, stores the start (inclusive) and end (exclusive, always)
