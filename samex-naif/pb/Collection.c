@@ -107,13 +107,13 @@ zint collPutIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
         if (index < 0) {
-            die("Invalid index for put (negative).");
+            die("Invalid index for `put` (negative).");
         } else if (index > size) {
-            die("Invalid index for put: %lld, size %lld", index, size);
+            die("Invalid index for `put`: %lld, size %lld", index, size);
         }
         return index;
     } else {
-        die("Invalid type for put (non-int).");
+        die("Invalid type for `put` (non-int).");
     }
 }
 
