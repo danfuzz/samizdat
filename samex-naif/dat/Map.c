@@ -438,32 +438,6 @@ METH_IMPL(Map, sizeOf) {
 }
 
 /* Documented in header. */
-static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
-    zvalue map = args[0];
-    MapInfo *info = getInfo(map);
-    zint start;
-    zint end;
-
-    collConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
-
-    if (start == -1) {
-        return NULL;
-    } else {
-        return mapFromArray(end - start, &info->elems[start]);
-    }
-}
-
-/* Documented in header. */
-METH_IMPL(Map, sliceExclusive) {
-    return doSlice(false, argCount, args);
-}
-
-/* Documented in header. */
-METH_IMPL(Map, sliceInclusive) {
-    return doSlice(true, argCount, args);
-}
-
-/* Documented in header. */
 METH_IMPL(Map, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -555,8 +529,6 @@ MOD_INIT(Map) {
     METH_BIND(Map, nth);
     METH_BIND(Map, put);
     METH_BIND(Map, sizeOf);
-    METH_BIND(Map, sliceExclusive);
-    METH_BIND(Map, sliceInclusive);
     METH_BIND(Map, totEq);
     METH_BIND(Map, totOrder);
     METH_BIND(Map, valueOf);

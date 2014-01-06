@@ -24,8 +24,8 @@ fn nthFromEnd(collection, n) {
 fn sliceGeneral(collection, style, start, optEnd?) {
     def limit = Number::sub(Collection::sizeOf(collection), 1);
     def func = ifIs { <> eq(style, @exclusive) }
-        { <> Collection::sliceExclusive }
-        { <> Collection::sliceInclusive };
+        { <> Sequence::sliceExclusive }
+        { <> Sequence::sliceInclusive };
     def startIndex = ifIs { <> eq(typeOf(start), "fromStart") }
         { <> dataOf(start) }
         { <> Number::sub(limit, dataOf(start)) };
@@ -41,15 +41,13 @@ fn sliceGeneral(collection, style, start, optEnd?) {
 
 <> {
     ## Re-exported from proto.
-    cat:            Collection::cat,
-    del:            Collection::del,
-    get:            Collection::get,
-    keyList:        Collection::keyList,
-    nth:            Collection::nth,
-    put:            Collection::put,
-    sizeOf:         Collection::sizeOf,
-    sliceExclusive: Collection::sliceExclusive,
-    sliceInclusive: Collection::sliceInclusive,
+    cat:     Collection::cat,
+    del:     Collection::del,
+    get:     Collection::get,
+    keyList: Collection::keyList,
+    nth:     Collection::nth,
+    put:     Collection::put,
+    sizeOf:  Collection::sizeOf,
 
     ## Defined in this file.
     nthFromEnd,

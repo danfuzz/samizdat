@@ -7,5 +7,7 @@
 ##
 
 <> {
-    reverse: Sequence_reverse
+    reverse:        Sequence_reverse,
+    sliceExclusive: Sequence_sliceExclusive,
+    sliceInclusive: Sequence_sliceInclusive
 }

@@ -46,10 +46,10 @@ fn applyShuntingYard(initialValue, opValues) {
         def valuesSizeM2 = Number::sub(Collection::sizeOf(values), 2);
         def function = Collection::nthFromEnd(ops, 0)::function;
         def newValue =
-            function(Collection::sliceInclusive(values, valuesSizeM2)*);
+            function(Sequence::sliceInclusive(values, valuesSizeM2)*);
         <> [
-            Collection::sliceExclusive(ops, 0),
-            [Collection::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
+            Sequence::sliceExclusive(ops, 0),
+            [Sequence::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
         ]
     };
 
@@ -85,7 +85,7 @@ fn applyShuntingYard(initialValue, opValues) {
         <> [
             [get(newPending, 0)*, nextOp],
             [get(newPending, 1)*, nextVal],
-            Collection::sliceInclusive(opValues, 1)
+            Sequence::sliceInclusive(opValues, 1)
         ]
     }
 };

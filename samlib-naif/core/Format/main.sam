@@ -70,8 +70,8 @@ fn collectionBody(elems) {
     ifIs { <> totEq(elems, []) }
         { return "" };
 
-    def one = Collection::sliceInclusive(get(elems, 0), 2);
-    <> cat(one, Collection::sliceInclusive(elems, 1)*)
+    def one = Sequence::sliceInclusive(get(elems, 0), 2);
+    <> cat(one, Sequence::sliceInclusive(elems, 1)*)
 };
 
 ## These are all the characters which are allowed to start an identifier.

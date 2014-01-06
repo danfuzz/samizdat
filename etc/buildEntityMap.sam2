@@ -99,8 +99,8 @@ def parFile = {/
     { <> cat(lines*) }
 /};
 
-def inPath = [Collection::sliceExclusive(PATH, 0)*, "entity-map.txt"];
-def outPath = [Collection::sliceExclusive(PATH, 0)*, "entityMap.sam"];
+def inPath = [PATH[..!]*, "entity-map.txt"];
+def outPath = [PATH[..!]*, "entityMap.sam"];
 Io1::note("Processing file: \%q(inPath)");
 
 def text = Io1::readFileUtf8(inPath);

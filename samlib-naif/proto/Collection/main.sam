@@ -18,7 +18,5 @@
     keyList:        Collection_keyList,
     nth:            Collection_nth,
     put:            Collection_put,
-    sizeOf:         Collection_sizeOf,
-    sliceExclusive: Collection_sliceExclusive,
-    sliceInclusive: Collection_sliceInclusive
+    sizeOf:         Collection_sizeOf
 }

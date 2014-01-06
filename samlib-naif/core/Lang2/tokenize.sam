@@ -264,7 +264,7 @@ fn implProcessStringParts(parts) {
     ## `elems` list consisting of multi-character strings and
     ## interpolation maps.
     def elems = Generator::doReduce1(
-        Collection::sliceInclusive(parts, 1),
+        Sequence::sliceInclusive(parts, 1),
         [get(parts, 0)])
         { part, result ->
             <> ifValue
@@ -275,7 +275,7 @@ fn implProcessStringParts(parts) {
                     ]
                 }
                 { newLast ->
-                    <> [Collection::sliceExclusive(result, 0)*, cat(newLast*)]
+                    <> [Sequence::sliceExclusive(result, 0)*, cat(newLast*)]
                 }
                 { <> [result*, part] };
         };

@@ -40,7 +40,7 @@ fn splitString(string, delimCh) {
         ifIs { <> eq(str, "") }
             { return appendNonempty(result, one) };
         def ch = Collection_nth(str, 0);
-        def newStr = Collection_sliceInclusive(str, 1);
+        def newStr = Sequence_sliceInclusive(str, 1);
         <> ifIs { <> eq(ch, delimCh) }
             { <> [newStr, appendNonempty(result, one), ""] }
             { <> [newStr, result, cat(one, ch)] };
@@ -130,7 +130,7 @@ fn loadAllLibraries(baseCtx) {
             <> ifValue { <> Collection_nth(names, 0) }
                 { name ->
                     <> [
-                        Collection_sliceInclusive(names, 1),
+                        Sequence_sliceInclusive(names, 1),
                         loadLibraryOrModule(ctx, name)
                     ]
                 }

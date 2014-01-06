@@ -34,7 +34,7 @@ fn findModuleDirectory(searchInfo, modulePaths) {
         ifIs { <> Io1::fileExists(moduleFile) }
             { return paths };
 
-        <> [Collection::sliceInclusive(paths, 1)]
+        <> [Sequence::sliceInclusive(paths, 1)]
     };
 };
 
@@ -53,7 +53,7 @@ fn loadPath(moduleDir, modulePaths) {
         <> moduleUse(searchInfo, fullPaths)
     };
 
-    def fullContext = { baseContext*, moduleUse: innerModuleUse };
+    def fullContext = {baseContext*, moduleUse: innerModuleUse};
     def result = Module0::load(fullContext, moduleDir);
 
     Module0::moduleDef(result);
