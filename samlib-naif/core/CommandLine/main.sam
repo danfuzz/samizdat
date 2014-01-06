@@ -94,7 +94,7 @@ fn suffixFromName(name) {
             return "module"
         };
 
-    <> name[Collection::last(dotsAt) + 1..]
+    <> name[dotsAt[^0] + 1..]
 };
 
 ## Makes a global environment, given file path and command-line arguments.
@@ -169,7 +169,7 @@ fn runCommandLine(rawArgs*) {
         { <> [] };
 
     def suffix = ifValueOr { <> options::suffix }
-        { <> suffixFromName(Collection::last(filePath)) };
+        { <> suffixFromName(filePath[^0]) };
 
     ifIs { <> eq(suffix, "module") }
         { return runModule(filePath, args) };
@@ -179,7 +179,7 @@ fn runCommandLine(rawArgs*) {
 
     def langLayer = ifIs { <> eq(suffix, "sam") }
         { <> "2" }
-        { <> Collection::last(suffix) };
+        { <> suffix[^0] };
 
     <> runFile(langLayer, filePath, args)
 };
