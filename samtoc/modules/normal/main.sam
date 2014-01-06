@@ -82,7 +82,7 @@ fn compile(sourcePath, targetPath) {
     def replacements = {
         minArgs: 0,
         maxArgs: 0,
-        name:    Collection::last(sourcePath),
+        name:    sourcePath[^0],
         body:    "\%Q(statements)"
     };
 

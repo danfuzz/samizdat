@@ -14,8 +14,7 @@ fn withoutSuffix(name) {
         ## No suffix on the name.
         return name
     } else {
-        def lastDot = Collection::last(dotsAt);
-        return name[..!lastDot]
+        return name[..!dotsAt[^0]]
     }
 };
 
@@ -23,7 +22,7 @@ fn getOutputPath(sourcePath, args) {
     if (def output = args::options::output) {
         return Io1::pathFromFlat(output)
     } else {
-        def baseName = withoutSuffix(Collection::last(sourcePath));
+        def baseName = withoutSuffix(sourcePath[^0]);
         return [sourcePath[..!]*, "\(baseName).c"]
     }
 };
