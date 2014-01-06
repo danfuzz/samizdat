@@ -371,7 +371,7 @@ METH_IMPL(Map, nth) {
     zvalue n = args[1];
 
     MapInfo *info = getInfo(map);
-    zint index = collNthIndexStrict(info->size, n);
+    zint index = seqNthIndexStrict(info->size, n);
 
     if (index < 0) {
         return NULL;

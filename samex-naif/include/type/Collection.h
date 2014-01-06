@@ -5,7 +5,7 @@
  */
 
 /*
- * `Collection` protocols
+ * `Collection` protocol
  *
  * **Note:** There is no in-model value `Collection`. There are a few
  * different subsets of collection-like functionality which may eventually
@@ -20,8 +20,6 @@
 
 #include "pb.h"
 #include "type/Generic.h"
-
-#include <stdbool.h>
 
 
 /** Generic `cat(collection, more*)`: Documented in spec. */
@@ -42,43 +40,8 @@ extern zvalue GFN_nth;
 /** Generic `put(collection, key, value)`: Documented in spec. */
 extern zvalue GFN_put;
 
-/** Generic `reverse(sequence)`: Documented in spec. */
-extern zvalue GFN_reverse;
-
 /** Generic `sizeOf(collection)`: Documented in spec. */
 extern zvalue GFN_sizeOf;
-
-/** Generic `sliceExclusive(collection, start, end?)`: Documented in spec. */
-extern zvalue GFN_sliceExclusive;
-
-/** Generic `sliceInclusive(collection, start, end?)`: Documented in spec. */
-extern zvalue GFN_sliceInclusive;
-
-/**
- * Validates and converts the `start` and optional `end` arguments to
- * a `slice{Ex,In}clusive` call, based on having a collection of the given
- * `size`. On success, stores the start (inclusive) and end (exclusive, always)
- * values through the given pointers. For an empty range, returns `0` for
- * both values. For a void range, returns `-1` for both values. On type
- * failure, terminates the runtime with an error.
- */
-void collConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
-        zint size, zint argCount, const zvalue *args);
-
-/**
- * Validates the given `key` to use for a `get` style function on a sequence.
- * Returns the int value for a valid `key` (a non-negative `Int`), or
- * `-1` if not.
- */
-zint collNthIndexLenient(zvalue key);
-
-/**
- * Returns an index to use for an `nth` style function, given a collection
- * `size` and client-supplied index `n`. This returns `-1` to indicate that
- * the caller should in turn return `NULL`. This is strict in that
- * blatantly-invalid `n`s (non-int) cause runtime termination.
- */
-zint collNthIndexStrict(zint size, zvalue n);
 
 /**
  * Calls the `get` generic.
@@ -86,42 +49,13 @@ zint collNthIndexStrict(zint size, zvalue n);
 zvalue collGet(zvalue coll, zvalue key);
 
 /**
- * Calls `nth`, converting the given `zint` index to an `Int` value.
- */
-zvalue collNth(zvalue coll, zint index);
-
-/**
- * Calls `nth`, converting the given `zint` index to an `Int` value, and
- * converting a non-void return value &mdash; which must be a single-character
- * `String` &mdash; to a `zint` in the range of a `zchar`. A void return
- * value gets converted to `-1`.
- */
-zint collNthChar(zvalue coll, zint index);
-
-/**
  * Calls the `put` generic.
  */
 zvalue collPut(zvalue coll, zvalue key, zvalue value);
 
 /**
- * Returns an index to use for an `put` style function, given a collection
- * `size` and client-supplied index `n`. This returns `-1` to indicate that
- * the caller should in turn return `NULL`. This is strict in that
- * all invalid `n` (non-int, negative int, or `> size`) cause runtime
- * termination.
- */
-zint collPutIndexStrict(zint size, zvalue n);
-
-/**
  * Calls `sizeOf` on the given collection, converting the result to a `zint`.
  */
 zint collSize(zvalue coll);
-
-/**
- * Binds the standard methods for a `Sequence` type. That is, this
- * is for collections whose keys are a zero-based `Int` sequence.
- * In particular, this binds `get` and `keyList`.
- */
-void seqBind(zvalue type);
 
 #endif

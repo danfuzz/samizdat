@@ -108,7 +108,7 @@ METH_IMPL(Map, collect) {
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = collNth(map, i);
+        arr[i] = seqNth(map, i);
     }
 
     return listFromArray(size, arr);
@@ -151,7 +151,7 @@ METH_IMPL(Collection, filter) {
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = collNth(coll, i);
+        zvalue elem = seqNth(coll, i);
         zvalue one = FUN_CALL(function, elem);
 
         if (one != NULL) {

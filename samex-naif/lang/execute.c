@@ -132,7 +132,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
     switch (collSize(result)) {
         case 0: return NULL;
-        case 1: return collNth(result, 0);
+        case 1: return seqNth(result, 0);
         default: {
             die("Attempt to interpolate multiple values.");
         }

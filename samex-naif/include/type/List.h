@@ -12,7 +12,7 @@
 #define _TYPE_LIST_H_
 
 #include "pb.h"
-#include "type/Collection.h"
+#include "type/Sequence.h"
 
 
 /** Type value for in-model type `List`. */

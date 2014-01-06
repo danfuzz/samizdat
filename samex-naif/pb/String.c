@@ -261,7 +261,7 @@ METH_IMPL(String, del) {
     StringInfo *info = getInfo(string);
     zchar *elems = info->elems;
     zint size = info->size;
-    zint index = collNthIndexLenient(n);
+    zint index = seqNthIndexLenient(n);
 
     if ((index < 0) || (index >= size)) {
         return string;
@@ -289,7 +289,7 @@ METH_IMPL(String, nth) {
     zvalue n = args[1];
 
     StringInfo *info = getInfo(string);
-    zint index = collNthIndexStrict(info->size, n);
+    zint index = seqNthIndexStrict(info->size, n);
 
     if (index < 0) {
         return NULL;
@@ -309,7 +309,7 @@ METH_IMPL(String, put) {
     StringInfo *info = getInfo(string);
     zchar *elems = info->elems;
     zint size = info->size;
-    zint index = collPutIndexStrict(size, n);
+    zint index = seqPutIndexStrict(size, n);
 
     if (index == size) {
         // This is an append operation.
@@ -355,7 +355,7 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     zint start;
     zint end;
 
-    collConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
+    seqConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
 
     if (start == -1) {
         return NULL;

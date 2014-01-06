@@ -23,7 +23,7 @@
  */
 
 /* Documented in header. */
-void collConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
+void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
         zint size, zint argCount, const zvalue *args) {
     if (argCount < 2) {
         die("Invalid `slice*` argument count: %lld", argCount);
@@ -67,7 +67,7 @@ zvalue collGet(zvalue coll, zvalue key) {
 }
 
 /* Documented in header. */
-zint collNthIndexLenient(zvalue key) {
+zint seqNthIndexLenient(zvalue key) {
     if (hasType(key, TYPE_Int)) {
         zint index = zintFromInt(key);
         return (index >= 0) ? index : -1;
@@ -77,7 +77,7 @@ zint collNthIndexLenient(zvalue key) {
 }
 
 /* Documented in header. */
-zint collNthIndexStrict(zint size, zvalue n) {
+zint seqNthIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
         return ((index >= 0) && (index < size)) ? index : -1;
@@ -87,13 +87,13 @@ zint collNthIndexStrict(zint size, zvalue n) {
 }
 
 /* Documented in header. */
-zvalue collNth(zvalue coll, zint index) {
+zvalue seqNth(zvalue coll, zint index) {
     return GFN_CALL(nth, coll, intFromZint(index));
 }
 
 /* Documented in header. */
-zint collNthChar(zvalue coll, zint index) {
-    zvalue result = collNth(coll, index);
+zint seqNthChar(zvalue coll, zint index) {
+    zvalue result = seqNth(coll, index);
     return (result == NULL) ? -1 : zcharFromString(result);
 }
 
@@ -103,7 +103,7 @@ zvalue collPut(zvalue coll, zvalue key, zvalue value) {
 }
 
 /* Documented in header. */
-zint collPutIndexStrict(zint size, zvalue n) {
+zint seqPutIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
         if (index < 0) {
@@ -141,7 +141,7 @@ METH_IMPL(Sequence, get) {
     zvalue seq = args[0];
     zvalue key = args[1];
 
-    if (collNthIndexLenient(key) >= 0) {
+    if (seqNthIndexLenient(key) >= 0) {
         return GFN_CALL(nth, seq, key);
     } else {
         return NULL;
