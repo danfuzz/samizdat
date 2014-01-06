@@ -1315,7 +1315,7 @@ def parIndexPostfix = {/
         { <> optOp* } ## End can only be parsed if there was a slice op.
         parIndexExpression
     |
-        { <> @toEnd }
+        { <> @endIndex }
     )
 
     (
@@ -1329,12 +1329,12 @@ def parIndexPostfix = {/
             { <> ne(typeOf(end), "fromEnd") }
 
             {
-                def func = ifIs { <> eq(op, @"..") }
+                def funcRef = ifIs { <> eq(op, @"..") }
                     { <> REF_Collection_sliceInclusive }
                     { <> REF_Collection_sliceExclusive };
 
                 <> { node ->
-                    <> makeCall(func, node, dataOf(start), dataOf(end)?*)
+                    <> makeCall(funcRef, node, dataOf(start), dataOf(end)?*)
                 }
             }
         |
@@ -1347,15 +1347,17 @@ def parIndexPostfix = {/
 
                 def startNode =
                     makeCallName("makeValue",
-                        makeLiteral(startType),
+                        makeLiteral(typeOf(start)),
                         dataOf(start));
 
-                def optEndNode = (ifNot { <> eq(end, @toEnd) }
-                    {
+                Io1::note("=== x1");
+                def optEndNode = (ifValue { <> dataOf(end) }
+                    { endData ->
                         <> makeCallName("makeValue",
                             makeLiteral(typeOf(end)),
-                            dataOf(end))
+                            endData)
                     })?;
+                Io1::note("=== x2");
 
                 <> { node ->
                     <> makeCall(REF_Collection_sliceGeneral,
@@ -1366,6 +1368,20 @@ def parIndexPostfix = {/
                 }
             }
         )
+    |
+        ## The following assignment means that `optStart` must be non-empty
+        ## at this point. The lack of subsequent alternates means that `foo[]`
+        ## per se (that is, empty content inside the brackets) won't pass as
+        ## syntactically valid.
+        index = { <> optStart* }
+
+        {
+            def funcRef = ifIs { <> eq(typeOf(index), "fromStart") }
+                { <> REF_get }
+                { <> REF_Collection_nthFromEnd };
+
+            <> { node <> makeCall(funcRef, node, dataOf(index)) }
+        }
     )
 /};
 
