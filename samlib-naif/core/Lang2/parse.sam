@@ -1384,11 +1384,7 @@ def implPostfixOperator2 = {/
         }
     }
 |
-    ## TODO:
-    ## @"["
-    ## result = parIndexPostfix
-    ## @"]"
-    ## { <> result }
+    ## TODO: Remove this alternate when the next one is fully working.
     @"["
     optStart = parExpression?
     optOp = [@".." @"..!"]?
@@ -1415,6 +1411,11 @@ def implPostfixOperator2 = {/
         index = { <> optStart* }
         { <> { node <> makeCallName("get", node, index) } }
     )
+|
+    @"["
+    result = parIndexPostfix
+    @"]"
+    { <> result }
 |
     ## This translates as something like the following:
     ##
