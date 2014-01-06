@@ -125,7 +125,7 @@ msg([1, 2, 3][^3]?);
 Io1::note("\nCollections -- ranges including from-end");
 msg("--blort-spaz-foo"[^2..]);
 msg("--blort-spaz-foo"[^2..!]);
-msg("--blort-spaz-foo"[^8..^4]);
+msg("--blort-spaz-foo"[^7..^4]);
 msg("--blort-spaz-foo"[^8..!^3]);
 msg("blort-zorch"[..^6]);
 msg("blort-zorch"[..!^5]);
