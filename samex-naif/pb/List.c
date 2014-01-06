@@ -330,7 +330,7 @@ METH_IMPL(List, totOrder) {
 
 /** Initializes the module. */
 MOD_INIT(List) {
-    MOD_USE(Collection);
+    MOD_USE(Sequence);
     MOD_USE(OneOff);
 
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);

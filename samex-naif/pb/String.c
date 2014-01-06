@@ -449,7 +449,7 @@ METH_IMPL(String, totOrder) {
 
 /** Initializes the module. */
 MOD_INIT(String) {
-    MOD_USE(Collection);
+    MOD_USE(Sequence);
     MOD_USE(OneOff);
 
     // Note: The `typeSystem` module initializes `TYPE_String`.
