@@ -14,13 +14,6 @@ def Collection = moduleUse({name: ["proto", "Collection"]});
 ##
 
 ## Documented in Samizdat Layer 0 spec.
-fn last(collection) {
-    <> Collection::nth(
-        collection,
-        &le(0, Number::sub(Collection::sizeOf(collection), 1)))
-};
-
-## Documented in Samizdat Layer 0 spec.
 fn nthFromEnd(collection, n) {
     def index =
         Number::sub(Collection::sizeOf(collection), Number::add(n, 1));
@@ -59,7 +52,6 @@ fn sliceGeneral(collection, style, start, optEnd?) {
     sliceInclusive: Collection::sliceInclusive,
 
     ## Defined in this file.
-    last,
     nthFromEnd,
     sliceGeneral
 }

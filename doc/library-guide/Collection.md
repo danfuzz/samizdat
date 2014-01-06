@@ -122,13 +122,6 @@ This is equivalent to calling `sliceExclusive(collection, start, end + 1)`.
 <br><br>
 ### In-Language Definitions
 
-#### `last(collection) <> . | void`
-
-Returns the last element of the given `collection` or void if the it is empty.
-This is similar to `nth(collection, #collection - 1)`, except that this
-function returns void given an empty collection instead of reporting an
-error.
-
 #### `nthFromEnd(collection, n) <> . | void`
 
 Returns the nth (zero-based) element of the collection, in its defined
