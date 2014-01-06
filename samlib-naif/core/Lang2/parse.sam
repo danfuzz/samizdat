@@ -1350,14 +1350,12 @@ def parIndexPostfix = {/
                         makeLiteral(typeOf(start)),
                         dataOf(start));
 
-                Io1::note("=== x1");
                 def optEndNode = (ifValue { <> dataOf(end) }
                     { endData ->
                         <> makeCallName("makeValue",
                             makeLiteral(typeOf(end)),
                             endData)
                     })?;
-                Io1::note("=== x2");
 
                 <> { node ->
                     <> makeCall(REF_Collection_sliceGeneral,
@@ -1399,34 +1397,6 @@ def implPostfixOperator2 = {/
                 node, makeLiteral(true), makeLiteral(false))
         }
     }
-|
-    ## TODO: Remove this alternate when the next one is fully working.
-    @"["
-    optStart = parExpression?
-    optOp = [@".." @"..!"]?
-    optEnd = parExpression?
-    @"]"
-
-    (
-        ## It's a slice expression of some sort.
-        op = { <> optOp* }
-        start = ({ <> optStart* } | { <> makeLiteral(0) })
-
-        {
-            def func = ifIs { <> eq(op, @"..") }
-                { <> REF_Collection_sliceInclusive }
-                { <> REF_Collection_sliceExclusive };
-
-            <> { node <> makeCall(func, node, start, optEnd*) }
-        }
-    |
-        ## The following assignment means that `optStart` must be non-empty
-        ## at this point. The lack of subsequent alternates means that `foo[]`
-        ## per se (that is, empty content inside the brackets) won't pass as
-        ## syntactically valid.
-        index = { <> optStart* }
-        { <> { node <> makeCallName("get", node, index) } }
-    )
 |
     @"["
     result = parIndexPostfix
