@@ -1334,7 +1334,7 @@ def parIndexPostfix = {/
                     { <> REF_Collection_sliceExclusive };
 
                 <> { node ->
-                    <> makeCall(func, node, dataOf(start), dataOf(end)*)
+                    <> makeCall(func, node, dataOf(start), dataOf(end)?*)
                 }
             }
         |
