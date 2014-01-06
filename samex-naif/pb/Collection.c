@@ -23,24 +23,6 @@
  */
 
 /* Documented in header. */
-void assertNth(zint size, zint n) {
-    if (n < 0) {
-        die("Invalid index (negative): %lld", n);
-    }
-
-    if (n >= size) {
-        die("Invalid index: %lld; size %lld", n, size);
-    }
-}
-
-/* Documented in header. */
-void assertNthOrSize(zint size, zint n) {
-    if (n != size) {
-        assertNth(size, n);
-    }
-}
-
-/* Documented in header. */
 void collConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
         zint size, zint argCount, const zvalue *args) {
     if (argCount < 2) {
@@ -98,12 +80,9 @@ zint collNthIndexLenient(zvalue key) {
 zint collNthIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
-        if (index < 0) {
-            die("Invalid index for nth (negative).");
-        }
-        return (index < size) ? index: -1;
+        return ((index >= 0) && (index < size)) ? index : -1;
     } else {
-        die("Invalid type for nth (non-int).");
+        die("Invalid type for `nth` (non-int).");
     }
 }
 
@@ -128,13 +107,13 @@ zint collPutIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
         if (index < 0) {
-            die("Invalid index for put (negative).");
+            die("Invalid index for `put` (negative).");
         } else if (index > size) {
-            die("Invalid index for put: %lld, size %lld", index, size);
+            die("Invalid index for `put`: %lld, size %lld", index, size);
         }
         return index;
     } else {
-        die("Invalid type for put (non-int).");
+        die("Invalid type for `put` (non-int).");
     }
 }
 

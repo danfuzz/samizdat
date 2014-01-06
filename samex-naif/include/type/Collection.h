@@ -55,19 +55,6 @@ extern zvalue GFN_sliceExclusive;
 extern zvalue GFN_sliceInclusive;
 
 /**
- * Asserts that the given size accommodates accessing the `n`th element.
- * This includes asserting that `n >= 0`. Note that all non-negative `n`
- * are valid for accessing ints (their size notwithstanding).
- */
-void assertNth(zint size, zint n);
-
-/**
- * Like `assertNth` but also accepts the case where `n` is the size
- * of the value.
- */
-void assertNthOrSize(zint size, zint n);
-
-/**
  * Validates and converts the `start` and optional `end` arguments to
  * a `slice{Ex,In}clusive` call, based on having a collection of the given
  * `size`. On success, stores the start (inclusive) and end (exclusive, always)
@@ -89,7 +76,7 @@ zint collNthIndexLenient(zvalue key);
  * Returns an index to use for an `nth` style function, given a collection
  * `size` and client-supplied index `n`. This returns `-1` to indicate that
  * the caller should in turn return `NULL`. This is strict in that
- * blatantly-invalid `n`s (non-int or negative int) cause runtime termination.
+ * blatantly-invalid `n`s (non-int) cause runtime termination.
  */
 zint collNthIndexStrict(zint size, zvalue n);
 

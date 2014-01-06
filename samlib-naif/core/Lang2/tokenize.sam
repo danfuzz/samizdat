@@ -268,7 +268,12 @@ fn implProcessStringParts(parts) {
         [get(parts, 0)])
         { part, result ->
             <> ifValue
-                { <> [&isString(Collection::last(result)), &isString(part)] }
+                {
+                    <> [
+                        &isString(Collection::nthFromEnd(result, 0)),
+                        &isString(part)
+                    ]
+                }
                 { newLast ->
                     <> [Collection::sliceExclusive(result, 0)*, cat(newLast*)]
                 }

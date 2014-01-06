@@ -66,15 +66,16 @@ msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
 msg((! ! !@fizmo)?);
 
-Io1::note("\nCollections");
-
+Io1::note("\nCollections -- size");
 msg(#"foo");
 msg(#[]);
 msg(#({a: 10, b: 20, c: 30, d:40}));
 
+Io1::note("\nCollections -- reverse");
 msg(^"!sniffuM");
 msg(^[1000, 100, 10, 1]);
 
+Io1::note("\nCollections -- single value index");
 msg(["blort", "fizmo", "igram"][0]);
 msg(["blort", "fizmo", "igram"][1]);
 msg(["blort", "fizmo", "igram"][3]?);
@@ -97,6 +98,7 @@ msg("frotz"["ztrof"]?);
 msg(returnString()[2]);
 msg((returnString()[99])?);
 
+Io1::note("\nCollections -- ranges");
 msg("--Biscuits!---"[2..10]);
 msg("--Biscuits!---"[2..!11]);
 msg([-7, -6, -5, 1, 2, 3][3..]);
@@ -112,5 +114,22 @@ msg([1, 2, 3][-10..20]);
 msg(([1, 2, 3][3..1])?); ## `?` since this should be a void return.
 msg(([][1..])?);         ## Ditto.
 msg(([][..!])?);         ## Ditto.
+
+Io1::note("\nCollections -- single value index from end");
+msg([1, 2, 3][^-1]?);
+msg([1, 2, 3][^0]);
+msg([1, 2, 3][^1]);
+msg([1, 2, 3][^2]);
+msg([1, 2, 3][^3]?);
+
+Io1::note("\nCollections -- ranges including from-end");
+msg("--blort-spaz-foo"[^2..]);
+msg("--blort-spaz-foo"[^2..!]);
+msg("--blort-spaz-foo"[^7..^4]);
+msg("--blort-spaz-foo"[^7..!^3]);
+msg("blort-zorch"[..^6]);
+msg("blort-zorch"[..!^5]);
+msg([0, 1, 2, 3, 4, 5][1..^1]);
+msg([0, 1, 2, 3, 4, 5][^2..!5]);
 
 <> 0
