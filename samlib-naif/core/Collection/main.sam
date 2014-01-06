@@ -33,12 +33,12 @@ fn sliceGeneral(collection, style, start, optEnd?) {
     def func = ifIs { <> eq(style, @exclusive) }
         { <> Collection::sliceExclusive }
         { <> Collection::sliceInclusive };
-    def startIndex = ifIs { <> eq(typeOf(start), @fromStart) }
+    def startIndex = ifIs { <> eq(typeOf(start), "fromStart") }
         { <> dataOf(start) }
         { <> Number::sub(limit, dataOf(start)) };
     def optEndIndex = (ifValue { <> optEnd* }
         { end ->
-            <> ifIs { <> eq(typeOf(end), @fromStart) }
+            <> ifIs { <> eq(typeOf(end), "fromStart") }
                 { <> dataOf(end) }
                 { <> Number::sub(limit, dataOf(end)) }
         })?;
