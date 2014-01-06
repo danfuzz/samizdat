@@ -98,7 +98,7 @@ This is equivalent to calling `get` on the collection, passing it the
 key as the argument. That is, `foo::bar` and `foo::"bar"` are both
 equivalent to `foo.get("bar")`.
 
-#### Access collection &mdash; `expression[index]`
+#### Access collection &mdash; `expression[index]` `expression[^index]`
 
 To index into a collection (e.g., a list, map, or string) or collection-like
 value, by integer index (e.g., for a list or string) or arbitrary key value
@@ -111,13 +111,17 @@ of range or key not in map).
 As with function calls, a star after an index expression indicates
 interpolation. However, it is only ever valid to include one index.
 
+To indicate indexing by int index from the end of a collection, prefix
+the index with a caret (`^`).
+
 The expression to index into and the index must both be non-void, except
 that an index expression can be marked with a `&` prefix to indicate void
 contagion (see which for details).
 
-A collection access expression is identical to a function call of `get`
-with the value to be accessed as the argument. That is, `x[y]` means
-the same thing as `x.get(y)`.
+A collection access expression is identical to a function call of either
+`get` or `Collection::nthFromEnd` with the value to be accessed as the
+argument. That is, `x[y]` means the same thing as `x.get(y)`, and
+`x[^y]` means the same thing as `x.nthFromEnd(y)`.
 
 #### Collection slice &mdash; `expression[start..end]` `expression[start..!afterEnd]`
 
@@ -131,6 +135,10 @@ Either or both of the start and end can be omitted. Omitting the start
 is equivalent to specifying it as `0`. Omitting the end is equivalent to
 specifying it as `#expression - 1` (that is, one less than the size of
 the collection).
+
+As with single-value indexing, either/both of the start and end expressions
+may be prefixed with `^` to indicate indexing by position from the end
+of the collection.
 
 A slice expression using `..` is equivalent to calling
 `expression.sliceInclusive(start, end)` (with `end` possibly omitted).
