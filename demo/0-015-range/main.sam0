@@ -114,7 +114,7 @@ msgAll("Exclusive range (5..!10)",
 msgAll("Exclusive range (10..!1 by -2)",
     Range::makeExclusiveRange(10, 1, -2));
 
-msgAll("Exclusive range (\"a\"..!\"z\" by +5)",
+msgAll("Exclusive range (\"a\"..!\"z\" by 5)",
     Range::makeExclusiveRange("a", "z", 5));
 
 msgAll("Zero-increment exclusive int range",

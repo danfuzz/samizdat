@@ -50,7 +50,7 @@ msg(("a".."z" by 5));
 msg((10..1 by -1));
 msg(("F".."A" by -2));
 msg((9..9 by 0));
-msg([0..9 by +3]);
+msg([0..9 by 3]);
 
 Io1::note("\nExclusive, default increment...");
 msg((100..!110));
