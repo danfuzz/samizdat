@@ -321,7 +321,7 @@
 					<key>match</key>
 					<string>(?x)
 						\b(
-						def|export|fn|import|in|module|var
+						by|def|export|fn|import|in|module|var
 						)\b
 					</string>
 				</dict>
@@ -408,7 +408,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>#collection-body</string>
+							<string>#block-body</string>
 						</dict>
 					</array>
 				</dict>
