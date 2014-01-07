@@ -172,7 +172,7 @@ METH_IMPL(List, del) {
     ListInfo *info = getInfo(list);
     zvalue *elems = info->elems;
     zint size = info->size;
-    zint index = collNthIndexLenient(n);
+    zint index = seqNthIndexLenient(n);
 
     if ((index < 0) || (index >= size)) {
         return list;
@@ -201,7 +201,7 @@ METH_IMPL(List, nth) {
     zvalue n = args[1];
 
     ListInfo *info = getInfo(list);
-    zint index = collNthIndexStrict(info->size, n);
+    zint index = seqNthIndexStrict(info->size, n);
 
     if (index < 0) {
         return NULL;
@@ -219,7 +219,7 @@ METH_IMPL(List, put) {
     ListInfo *info = getInfo(list);
     zvalue *elems = info->elems;
     zint size = info->size;
-    zint index = collPutIndexStrict(size, n);
+    zint index = seqPutIndexStrict(size, n);
 
     if (index == size) {
         // This is an append operation.
@@ -258,7 +258,7 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     zint start;
     zint end;
 
-    collConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
+    seqConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
 
     if (start == -1) {
         return NULL;
@@ -330,7 +330,7 @@ METH_IMPL(List, totOrder) {
 
 /** Initializes the module. */
 MOD_INIT(List) {
-    MOD_USE(Collection);
+    MOD_USE(Sequence);
     MOD_USE(OneOff);
 
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);

@@ -3,10 +3,10 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    name: ["core", "Collection"],
+    name: ["core", "Sequence"],
     version: "0.0.1",
 
-    globalModuleName: "Collection",
+    globalModuleName: "Sequence",
 
     language: "Lang0"
 }

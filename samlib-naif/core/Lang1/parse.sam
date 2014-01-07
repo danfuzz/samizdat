@@ -308,7 +308,7 @@ def parIdentifierString = Peg::makeMainChoice(
             <> ifNot { <> dataOf(token) }
                 {
                     def type = typeOf(token);
-                    def firstCh = Collection::nth(type, 0);
+                    def firstCh = Sequence::nth(type, 0);
                     <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                         { <> makeLiteral(type) }
                 }

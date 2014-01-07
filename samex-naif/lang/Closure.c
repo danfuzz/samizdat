@@ -176,7 +176,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
             if (collSize(repeat) != 1) {
                 die("Invalid repeat modifier: %s", valDebugString(repeat));
             }
-            switch (collNthChar(repeat, 0)) {
+            switch (seqNthChar(repeat, 0)) {
                 case '*': rep = REP_STAR;  break;
                 case '+': rep = REP_PLUS;  break;
                 case '?': rep = REP_QMARK; break;

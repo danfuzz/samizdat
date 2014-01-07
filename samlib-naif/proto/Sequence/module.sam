@@ -6,7 +6,5 @@
     name: ["proto", "Sequence"],
     version: "0.0.1",
 
-    globalModuleName: "Sequence",
-
     language: "Lang0"
 }

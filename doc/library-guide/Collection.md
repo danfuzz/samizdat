@@ -61,10 +61,11 @@ bound in the collection at all).
 
 Returns the list of keys mapped by the collection.
 
-#### `nth(collection, n) <> . | void`
+#### `nthMapping(collection, n) <> map | void`
 
-Returns the nth (zero-based) element of the collection, in its defined
-fixed order. Returns void if `n < 0` or `n >= #collection`. It is an error
+Returns the nth (zero-based) mapping of the collection, in its predefined
+iteration order. The result is a one-element map of the key and corresponding
+value. Returns void if `n < 0` or `n >= #collection`. It is an error
 (terminating the runtime) if `n` is not an `Int`.
 
 #### `put(collection, key, value) <> collection`
@@ -87,31 +88,6 @@ check for the existence of `key` in the original.
 
 Returns the number of elements in the given collection.
 
-#### `sliceExclusive(collection, start, end?) <> collection | void`
-
-Returns a collection of the same type as `collection`, consisting of an
-index-based "slice" of elements taken from `collection`, from the `start`
-index (inclusive) through the `end` index (exclusive). `start` and `end`
-must both be ints. `end` defaults to `#collection - 1` if omitted.
-
-In the usual case, `start < end`, `start < #collection`, and `end > start`.
-In this case, the result is the expected slice. If `start < 0`, then it is
-treated as if it were passed as `0`. If `end > #collection`, then it is
-treated as if it were passed as `#collection`.
-
-If `start == end`, this returns an empty collection.
-
-In all other cases (as long as the type restrictions hold), this returns void.
-
-#### `sliceInclusive(collection, start, end?) <> collection | void`
-
-Returns a collection of the same type as `collection`, consisting of an
-index-based "slice" of elements taken from `collection`, from the `start`
-index (inclusive) through the `end` index (inclusive). `start` and `end`
-must both be ints. `end` defaults to `#collection - 1` if omitted.
-
-This is equivalent to calling `sliceExclusive(collection, start, end + 1)`.
-
 
 <br><br>
 ### Primitive Definitions
@@ -122,25 +98,4 @@ This is equivalent to calling `sliceExclusive(collection, start, end + 1)`.
 <br><br>
 ### In-Language Definitions
 
-#### `nthFromEnd(collection, n) <> . | void`
-
-Returns the nth (zero-based) element of the collection, in its defined
-fixed order but counting backward from the end of the collection. Returns void
-if `n < 0` or `n >= #collection`. It is an error (terminating the
-runtime) if `n` is not an `Int`.
-
-#### `sliceGeneral(collection, style, start, end?) <> collection | void`
-
-Returns a collection of the same type as `collection`, consisting of an
-index-based "slice" of elements taken from `collection`, from the `start`
-index through the `end` index.
-
-The `start` is always an inclusive index. `style` indicates whether the
-end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
-
-Each of `start` and `end` must be a transparent derived value of type
-`@fromStart` or `@fromEnd` with an int payload. The type indicates which
-end of the collection is to be counted from.
-
-This function in turn calls one of `sliceExclusive` or `sliceInclusive` to
-perform the actual slicing.
+(none)

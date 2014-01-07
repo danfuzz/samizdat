@@ -404,7 +404,7 @@ def parIdentifierString = {/
         <> ifNot { <> dataOf(token) }
             {
                 def type = typeOf(token);
-                def firstCh = Collection::nth(type, 0);
+                def firstCh = Sequence::nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
@@ -907,20 +907,6 @@ def IDENTIFIER_PREFIXES = {
     set: "set"
 };
 
-## Reference to `Collection::nthFromEnd`.
-def REF_Collection_nthFromEnd = makeModNameRef("Collection", "nthFromEnd");
-
-## Reference to `Collection::sliceInclusive`.
-def REF_Collection_sliceInclusive =
-    makeModNameRef("Collection", "sliceInclusive");
-
-## Reference to `Collection::sliceExclusive`.
-def REF_Collection_sliceExclusive =
-    makeModNameRef("Collection", "sliceExclusive");
-
-## Reference to `Collection::sliceGeneral`.
-def REF_Collection_sliceGeneral = makeModNameRef("Collection", "sliceGeneral");
-
 ## Reference to `Range::makeOpenRange`.
 def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
 
@@ -931,6 +917,20 @@ def REF_Range_makeInclusiveRange =
 ## Reference to `Range::makeExclusiveRange`.
 def REF_Range_makeExclusiveRange =
     makeModNameRef("Range", "makeExclusiveRange");
+
+## Reference to `Sequence::nthFromEnd`.
+def REF_Sequence_nthFromEnd = makeModNameRef("Sequence", "nthFromEnd");
+
+## Reference to `Sequence::sliceGeneral`.
+def REF_Sequence_sliceGeneral = makeModNameRef("Sequence", "sliceGeneral");
+
+## Reference to `Sequence::sliceInclusive`.
+def REF_Sequence_sliceInclusive =
+    makeModNameRef("Sequence", "sliceInclusive");
+
+## Reference to `Sequence::sliceExclusive`.
+def REF_Sequence_sliceExclusive =
+    makeModNameRef("Sequence", "sliceExclusive");
 
 ## Reference to `get`.
 def REF_get = makeVarRef("get");
@@ -1330,8 +1330,8 @@ def parIndexPostfix = {/
 
             {
                 def funcRef = ifIs { <> eq(op, @"..") }
-                    { <> REF_Collection_sliceInclusive }
-                    { <> REF_Collection_sliceExclusive };
+                    { <> REF_Sequence_sliceInclusive }
+                    { <> REF_Sequence_sliceExclusive };
 
                 <> { node ->
                     <> makeCall(funcRef, node, dataOf(start), dataOf(end)?*)
@@ -1358,7 +1358,7 @@ def parIndexPostfix = {/
                     })?;
 
                 <> { node ->
-                    <> makeCall(REF_Collection_sliceGeneral,
+                    <> makeCall(REF_Sequence_sliceGeneral,
                         node,
                         style,
                         startNode,
@@ -1376,7 +1376,7 @@ def parIndexPostfix = {/
         {
             def funcRef = ifIs { <> eq(typeOf(index), "fromStart") }
                 { <> REF_get }
-                { <> REF_Collection_nthFromEnd };
+                { <> REF_Sequence_nthFromEnd };
 
             <> { node <> makeCall(funcRef, node, dataOf(index)) }
         }
@@ -1615,7 +1615,7 @@ def parLogicAndExpression = {/
                     { clause, index ->
                         def test = clause::test;
                         <> closureWithFormals(makeThunk(test),
-                            Collection::sliceExclusive(formals, 0, index)*)
+                            Sequence::sliceExclusive(formals, 0, index)*)
                     };
 
             ## Construct the overall `ifValues` call.
@@ -1652,7 +1652,7 @@ def parLogicOrExpression = {/
         {
             def allExprs = Sequence::reverse([one, rest*]);
             <> Generator::doReduce1(
-                Collection::sliceInclusive(allExprs, 1),
+                Sequence::sliceInclusive(allExprs, 1),
                 get(allExprs, 0))
                 { ex, result ->
                     <> makeCallName("ifValueOr",
@@ -1730,7 +1730,7 @@ def parMultiTest = {/
                     { clause, index ->
                         def test = clause::test;
                         <> closureWithFormals(makeThunk(test),
-                            Collection::sliceExclusive(formals, 0, index)*)
+                            Sequence::sliceExclusive(formals, 0, index)*)
                     };
 
             ## Result function which constructs the overall `ifValues` call.

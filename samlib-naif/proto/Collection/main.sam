@@ -14,11 +14,9 @@
     cat,
     get,
 
-    del:            Collection_del,
-    keyList:        Collection_keyList,
-    nth:            Collection_nth,
-    put:            Collection_put,
-    sizeOf:         Collection_sizeOf,
-    sliceExclusive: Collection_sliceExclusive,
-    sliceInclusive: Collection_sliceInclusive
+    del:        Collection_del,
+    keyList:    Collection_keyList,
+    nthMapping: Collection_nthMapping,
+    put:        Collection_put,
+    sizeOf:     Collection_sizeOf
 }

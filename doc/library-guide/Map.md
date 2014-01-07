@@ -70,14 +70,9 @@ the given map. If there is no such mapping, then this returns void.
 
 Returns a list of all the keys mapped by the given `map`, in sorted order.
 
-#### `nth(map, n) <> . | void`
+#### `nthMapping(map, n) <> map | void`
 
-Returns the nth (zero-based) *mapping* of the given map.
-
-When given a valid index, the return value is a single-mapping map, which is
-suitable as the argument to `keyOf` and `valueOf`.
-
-The ordering of the mappings is by sort order of the keys.
+Gets the nth mapping of the given map.
 
 #### `put(map, key, value) <> map`
 
@@ -89,18 +84,6 @@ additional mapping in cases where `map` didn't already bind `key`.
 #### `sizeOf(map) <> int`
 
 Returns the number of mappings in the map.
-
-#### `sliceExclusive(map, start, end?) <> map`
-
-Returns an end-exclusive slice of the given map.
-
-**Note:** `start` and `end` are int indices, not map keys.
-
-#### `sliceInclusive(map, start, end?) <> map`
-
-Returns an end-inclusive slice of the given map.
-
-**Note:** `start` and `end` are int indices, not map keys.
 
 
 <br><br>
@@ -116,8 +99,10 @@ Filters the mappings of `map` using `filterFunction`.
 
 #### `nextValue(map, box) <> generator | void`
 
-On a non-empty map, calls `store(box, map[0])` and returns
-`map[1..]`. On an empty map, calls `store(box)` and returns void.
+On a non-empty map, calls `store(box, mapping)` where `mapping` is
+the first mapping in the map in its iteration order, and returns
+a map of the remaining mappings. On an empty map, calls `store(box)` and
+returns void.
 
 
 <br><br>

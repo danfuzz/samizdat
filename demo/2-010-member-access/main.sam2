@@ -24,7 +24,7 @@ fn msg(value) {
 ##
 
 def sizeOf = Collection::sizeOf;
-def nth = Collection::nth;
+def nth = Sequence::nth;
 
 Io1::note("\nMethod call syntax");
 msg([1, 2].sizeOf());

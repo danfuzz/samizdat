@@ -3,10 +3,10 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Collection functions
+## Sequence functions
 ##
 
-def Collection = moduleUse({name: ["proto", "Collection"]});
+def Sequence = moduleUse({name: ["proto", "Sequence"]});
 
 
 ##
@@ -14,18 +14,18 @@ def Collection = moduleUse({name: ["proto", "Collection"]});
 ##
 
 ## Documented in Samizdat Layer 0 spec.
-fn nthFromEnd(collection, n) {
+fn nthFromEnd(seq, n) {
     def index =
-        Number::sub(Collection::sizeOf(collection), Number::add(n, 1));
-    <> Collection::nth(collection, index)
+        Number::sub(Collection::sizeOf(seq), Number::add(n, 1));
+    <> Sequence::nth(seq, index)
 };
 
 ## Documented in Samizdat Layer 0 spec.
-fn sliceGeneral(collection, style, start, optEnd?) {
-    def limit = Number::sub(Collection::sizeOf(collection), 1);
+fn sliceGeneral(seq, style, start, optEnd?) {
+    def limit = Number::sub(Collection::sizeOf(seq), 1);
     def func = ifIs { <> eq(style, @exclusive) }
-        { <> Collection::sliceExclusive }
-        { <> Collection::sliceInclusive };
+        { <> Sequence::sliceExclusive }
+        { <> Sequence::sliceInclusive };
     def startIndex = ifIs { <> eq(typeOf(start), "fromStart") }
         { <> dataOf(start) }
         { <> Number::sub(limit, dataOf(start)) };
@@ -36,22 +36,19 @@ fn sliceGeneral(collection, style, start, optEnd?) {
                 { <> Number::sub(limit, dataOf(end)) }
         })?;
 
-    <> func(collection, startIndex, optEndIndex*)
+    <> func(seq, startIndex, optEndIndex*)
 };
 
 <> {
     ## Re-exported from proto.
-    cat:            Collection::cat,
-    del:            Collection::del,
-    get:            Collection::get,
-    keyList:        Collection::keyList,
-    nth:            Collection::nth,
-    put:            Collection::put,
-    sizeOf:         Collection::sizeOf,
-    sliceExclusive: Collection::sliceExclusive,
-    sliceInclusive: Collection::sliceInclusive,
+    nth:            Sequence::nth,
+    reverse:        Sequence::reverse,
+    sliceExclusive: Sequence::sliceExclusive,
+    sliceInclusive: Sequence::sliceInclusive,
 
     ## Defined in this file.
     nthFromEnd,
     sliceGeneral
 }
+
+

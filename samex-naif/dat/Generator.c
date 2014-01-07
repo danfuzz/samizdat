@@ -105,10 +105,13 @@ METH_IMPL(Map, collect) {
     zvalue map = args[0];
 
     zint size = collSize(map);
+    zmapping mappings[size];
     zvalue arr[size];
 
+    arrayFromMap(mappings, map);
+
     for (zint i = 0; i < size; i++) {
-        arr[i] = collNth(map, i);
+        arr[i] = mapFromArray(1, &mappings[i]);
     }
 
     return listFromArray(size, arr);
@@ -143,6 +146,15 @@ METH_IMPL(Value, collect) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, filter) {
+    zvalue map = args[0];
+    zvalue function = args[1];
+    zvalue unfiltered = GFN_CALL(collect, map);
+
+    return GFN_CALL(filter, unfiltered, function);
+}
+
+/* Documented in header. */
 METH_IMPL(Collection, filter) {
     zvalue coll = args[0];
     zvalue function = args[1];
@@ -151,7 +163,7 @@ METH_IMPL(Collection, filter) {
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = collNth(coll, i);
+        zvalue elem = seqNth(coll, i);
         zvalue one = FUN_CALL(function, elem);
 
         if (one != NULL) {
@@ -196,9 +208,9 @@ MOD_INIT(Generator) {
     METH_BIND(String, collect);
     METH_BIND(Value,  collect);
 
+    METH_BIND(Map,    filter);
     METH_BIND(Value,  filter);
     genericBindPrim(GFN_filter, TYPE_List,   Collection_filter, "List.filter");
-    genericBindPrim(GFN_filter, TYPE_Map,    Collection_filter, "Map.filter");
     genericBindPrim(GFN_filter, TYPE_String, Collection_filter, "String.filter");
 }
 
