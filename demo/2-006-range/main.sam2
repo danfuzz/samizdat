@@ -45,12 +45,12 @@ msg([1..10]);
 msg([10..1]);
 
 Io1::note("\nInclusive, explicit increment...");
-msg((0..1000, +200));
-msg(("a".."z", +5));
-msg((10..1, -1));
-msg(("F".."A", -2));
-msg((9..9, 0));
-msg([0..9, +3]);
+msg((0..1000 by 200));
+msg(("a".."z" by 5));
+msg((10..1 by -1));
+msg(("F".."A" by -2));
+msg((9..9 by 0));
+msg([0..9 by 3]);
 
 Io1::note("\nExclusive, default increment...");
 msg((100..!110));
@@ -63,19 +63,19 @@ msg([1..!10]);
 msg([10..!1]);
 
 Io1::note("\nExclusive, explicit increment...");
-msg((0..!1000, +200));
-msg(("a"..!"z", +5));
-msg((10..!1, -1));
-msg(("F"..!"A", -2));
-msg((9..!9, 0));
-msg([0..!9, +3]);
+msg((0..!1000 by 200));
+msg(("a"..!"z" by 5));
+msg((10..!1 by -1));
+msg(("F"..!"A" by -2));
+msg((9..!9 by 0));
+msg([0..!9 by 3]);
 
 Io1::note("\nOpen, default increment...");
 msgTen((-10..));
 msgTen(("M"..));
 
 Io1::note("\nOpen, explicit increment...");
-msgTen((99.., -1));
-msgTen(("z".., -2));
+msgTen((99.. by -1));
+msgTen(("z".. by -2));
 
 <> 0

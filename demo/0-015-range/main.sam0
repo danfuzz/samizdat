@@ -91,10 +91,10 @@ Io0::note("");
 msgAll("Inclusive range (5..10)",
     Range::makeInclusiveRange(5, 10));
 
-msgAll("Inclusive range (10..1, -2)",
+msgAll("Inclusive range (10..1 by -2)",
     Range::makeInclusiveRange(10, 1, -2));
 
-msgAll("Inclusive range (\"a\"..\"z\", +5)",
+msgAll("Inclusive range (\"a\"..\"z\" by 5)",
     Range::makeInclusiveRange("a", "z", 5));
 
 msgAll("Zero-increment inclusive int range",
@@ -111,10 +111,10 @@ Io0::note("");
 msgAll("Exclusive range (5..!10)",
     Range::makeExclusiveRange(5, 10));
 
-msgAll("Exclusive range (10..!1, -2)",
+msgAll("Exclusive range (10..!1 by -2)",
     Range::makeExclusiveRange(10, 1, -2));
 
-msgAll("Exclusive range (\"a\"..!\"z\", +5)",
+msgAll("Exclusive range (\"a\"..!\"z\" by 5)",
     Range::makeExclusiveRange("a", "z", 5));
 
 msgAll("Zero-increment exclusive int range",

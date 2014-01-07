@@ -1198,7 +1198,7 @@ def parRangeBody = {/
         }
     )
 
-    optIncrement = (@"," @"+"? parExpression)?
+    optIncrement = (@"by" parExpression)?
 
     {
         <> ifIs { <> eq(op, @"..!") }
