@@ -169,7 +169,7 @@ fn PegSequence_parse(peg, box, input, items*) {
 
     def newInput = Sequence::nth(reduction, 0);
     def results = Sequence::nth(reduction, 1);
-    Box::store(box, Collection::nthFromEnd(results, 0));
+    Box::store(box, Sequence::nthFromEnd(results, 0));
     <> newInput
 };
 genericBind(parse, "PegSequence", PegSequence_parse);

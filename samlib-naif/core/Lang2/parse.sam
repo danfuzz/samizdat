@@ -907,12 +907,6 @@ def IDENTIFIER_PREFIXES = {
     set: "set"
 };
 
-## Reference to `Collection::nthFromEnd`.
-def REF_Collection_nthFromEnd = makeModNameRef("Collection", "nthFromEnd");
-
-## Reference to `Collection::sliceGeneral`.
-def REF_Collection_sliceGeneral = makeModNameRef("Collection", "sliceGeneral");
-
 ## Reference to `Range::makeOpenRange`.
 def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
 
@@ -923,6 +917,12 @@ def REF_Range_makeInclusiveRange =
 ## Reference to `Range::makeExclusiveRange`.
 def REF_Range_makeExclusiveRange =
     makeModNameRef("Range", "makeExclusiveRange");
+
+## Reference to `Sequence::nthFromEnd`.
+def REF_Sequence_nthFromEnd = makeModNameRef("Sequence", "nthFromEnd");
+
+## Reference to `Sequence::sliceGeneral`.
+def REF_Sequence_sliceGeneral = makeModNameRef("Sequence", "sliceGeneral");
 
 ## Reference to `Sequence::sliceInclusive`.
 def REF_Sequence_sliceInclusive =
@@ -1358,7 +1358,7 @@ def parIndexPostfix = {/
                     })?;
 
                 <> { node ->
-                    <> makeCall(REF_Collection_sliceGeneral,
+                    <> makeCall(REF_Sequence_sliceGeneral,
                         node,
                         style,
                         startNode,
@@ -1376,7 +1376,7 @@ def parIndexPostfix = {/
         {
             def funcRef = ifIs { <> eq(typeOf(index), "fromStart") }
                 { <> REF_get }
-                { <> REF_Collection_nthFromEnd };
+                { <> REF_Sequence_nthFromEnd };
 
             <> { node <> makeCall(funcRef, node, dataOf(index)) }
         }

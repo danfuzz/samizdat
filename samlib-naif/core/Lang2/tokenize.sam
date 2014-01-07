@@ -270,7 +270,7 @@ fn implProcessStringParts(parts) {
             <> ifValue
                 {
                     <> [
-                        &isString(Collection::nthFromEnd(result, 0)),
+                        &isString(Sequence::nthFromEnd(result, 0)),
                         &isString(part)
                     ]
                 }

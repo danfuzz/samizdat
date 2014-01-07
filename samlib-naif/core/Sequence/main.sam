@@ -1,0 +1,54 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Sequence functions
+##
+
+def Sequence = moduleUse({name: ["proto", "Sequence"]});
+
+
+##
+## Exported Definitions
+##
+
+## Documented in Samizdat Layer 0 spec.
+fn nthFromEnd(seq, n) {
+    def index =
+        Number::sub(Collection::sizeOf(seq), Number::add(n, 1));
+    <> Sequence::nth(seq, index)
+};
+
+## Documented in Samizdat Layer 0 spec.
+fn sliceGeneral(seq, style, start, optEnd?) {
+    def limit = Number::sub(Collection::sizeOf(seq), 1);
+    def func = ifIs { <> eq(style, @exclusive) }
+        { <> Sequence::sliceExclusive }
+        { <> Sequence::sliceInclusive };
+    def startIndex = ifIs { <> eq(typeOf(start), "fromStart") }
+        { <> dataOf(start) }
+        { <> Number::sub(limit, dataOf(start)) };
+    def optEndIndex = (ifValue { <> optEnd* }
+        { end ->
+            <> ifIs { <> eq(typeOf(end), "fromStart") }
+                { <> dataOf(end) }
+                { <> Number::sub(limit, dataOf(end)) }
+        })?;
+
+    <> func(seq, startIndex, optEndIndex*)
+};
+
+<> {
+    ## Re-exported from proto.
+    nth:            Sequence::nth,
+    reverse:        Sequence::reverse,
+    sliceExclusive: Sequence::sliceExclusive,
+    sliceInclusive: Sequence::sliceInclusive,
+
+    ## Defined in this file.
+    nthFromEnd,
+    sliceGeneral
+}
+
+

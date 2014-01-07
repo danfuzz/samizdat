@@ -46,6 +46,7 @@ def MANIFEST = [
     ["core", "Bitwise"],
     ["core", "Box"],
     ["core", "Collection"],
+    ["core", "Sequence"],
 
     ["core", "Io0"],
     ["core", "FunctionForwarder"], ## Uses `Box` and `Io0`.
