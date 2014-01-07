@@ -111,34 +111,35 @@ of range or key not in map).
 As with function calls, a star after an index expression indicates
 interpolation. However, it is only ever valid to include one index.
 
-To indicate indexing by int index from the end of a collection, prefix
-the index with a caret (`^`).
+To indicate indexing by int index from the end of a sequence, prefix
+the index with a caret (`^`). This is only valid for sequences, not
+collections in general.
 
 The expression to index into and the index must both be non-void, except
 that an index expression can be marked with a `&` prefix to indicate void
 contagion (see which for details).
 
 A collection access expression is identical to a function call of either
-`get` or `Collection::nthFromEnd` with the value to be accessed as the
+`get` or `Sequence::nthFromEnd` with the value to be accessed as the
 argument. That is, `x[y]` means the same thing as `x.get(y)`, and
 `x[^y]` means the same thing as `x.nthFromEnd(y)`.
 
-#### Collection slice &mdash; `expression[start..end]` `expression[start..!afterEnd]`
+#### Sequence slice &mdash; `expression[start..end]` `expression[start..!afterEnd]`
 
-To extract a "slice" of a collection, indicate the start and end positions
+To extract a "slice" of a sequence, indicate the start and end positions
 of the slice inside square brackets and separated by `..` or `..!`, after
-naming the collection to slice. As with the related range syntax, `..`
+naming the sequence to slice. As with the related range syntax, `..`
 indicates that the end is inclusive, and `..!` indicates that the end is
 exclusive.
 
 Either or both of the start and end can be omitted. Omitting the start
 is equivalent to specifying it as `0`. Omitting the end is equivalent to
 specifying it as `#expression - 1` (that is, one less than the size of
-the collection).
+the sequence).
 
 As with single-value indexing, either/both of the start and end expressions
 may be prefixed with `^` to indicate indexing by position from the end
-of the collection.
+of the sequence.
 
 A slice expression using `..` is equivalent to calling
 `expression.sliceInclusive(start, end)` (with `end` possibly omitted).

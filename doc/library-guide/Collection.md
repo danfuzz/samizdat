@@ -98,25 +98,4 @@ Returns the number of elements in the given collection.
 <br><br>
 ### In-Language Definitions
 
-#### `nthFromEnd(collection, n) <> . | void`
-
-Returns the nth (zero-based) element of the collection, in its defined
-fixed order but counting backward from the end of the collection. Returns void
-if `n < 0` or `n >= #collection`. It is an error (terminating the
-runtime) if `n` is not an `Int`.
-
-#### `sliceGeneral(collection, style, start, end?) <> collection | void`
-
-Returns a collection of the same type as `collection`, consisting of an
-index-based "slice" of elements taken from `collection`, from the `start`
-index through the `end` index.
-
-The `start` is always an inclusive index. `style` indicates whether the
-end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
-
-Each of `start` and `end` must be a transparent derived value of type
-`@fromStart` or `@fromEnd` with an int payload. The type indicates which
-end of the collection is to be counted from.
-
-This function in turn calls one of `sliceExclusive` or `sliceInclusive` to
-perform the actual slicing.
+(none)
