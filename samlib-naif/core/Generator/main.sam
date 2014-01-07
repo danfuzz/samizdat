@@ -122,7 +122,6 @@ fn generatorPump(generator) {
     nextValue:               Generator::nextValue,
 
     ## Re-exported from submodules.
-    makeCollectionGenerator: CollectionGenerator::makeCollectionGenerator,
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
     makeListWrapGenerator:   ListWrapGenerator::makeListWrapGenerator,
     makeOptGenerator:        OptGenerator::makeOptGenerator,

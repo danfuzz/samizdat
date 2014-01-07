@@ -70,6 +70,10 @@ Defined as per the `Sequence` protocol.
 
 Gets the nth character of the string, as a single-element string.
 
+#### `nthMapping(string, n) <> map | void`
+
+Gets the nth mapping of the string.
+
 #### `put(string, n, char) <> string`
 
 Returns a string like the given one, but with the `n`th character replaced

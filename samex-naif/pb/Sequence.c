@@ -14,6 +14,7 @@
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
+#include "type/Map.h"
 #include "type/String.h"
 #include "type/Type.h"
 
@@ -121,6 +122,9 @@ static zvalue BI_Sequence_get = NULL;
 /** Builtin for `Sequence.keyList`. */
 static zvalue BI_Sequence_keyList = NULL;
 
+/** Builtin for `Sequence.nthMapping`. */
+static zvalue BI_Sequence_nthMapping = NULL;
+
 /* Documented in header. */
 METH_IMPL(Sequence, get) {
     zvalue seq = args[0];
@@ -148,14 +152,32 @@ METH_IMPL(Sequence, keyList) {
 }
 
 /* Documented in header. */
+METH_IMPL(Sequence, nthMapping) {
+    zvalue seq = args[0];
+    zvalue n = args[1];
+    zvalue value = GFN_CALL(nth, seq, n);
+
+    if (value == NULL) {
+        return NULL;
+    } else {
+        zmapping mapping = {n, value};
+        return mapFromArray(1, &mapping);
+    }
+}
+
+/* Documented in header. */
 void seqBind(zvalue type) {
-    genericBind(GFN_get,     type, BI_Sequence_get);
-    genericBind(GFN_keyList, type, BI_Sequence_keyList);
+    genericBind(GFN_get,        type, BI_Sequence_get);
+    genericBind(GFN_keyList,    type, BI_Sequence_keyList);
+    genericBind(GFN_nthMapping, type, BI_Sequence_nthMapping);
 }
 
 /** Initializes the module. */
 MOD_INIT(Sequence) {
     MOD_USE(Collection);
+
+    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
+    pbImmortalize(GFN_nth);
 
     GFN_reverse = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "reverse"));
     pbImmortalize(GFN_reverse);
@@ -175,7 +197,14 @@ MOD_INIT(Sequence) {
     BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList),
         stringFromUtf8(-1, "Sequence.keyList"));
     pbImmortalize(BI_Sequence_keyList);
+
+    BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
+        stringFromUtf8(-1, "Sequence.nthMapping"));
+    pbImmortalize(BI_Sequence_nthMapping);
 }
+
+/* Documented in header. */
+zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_reverse = NULL;

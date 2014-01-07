@@ -195,10 +195,10 @@ fn Module_nameOf(modu) {
 genericBind(nameOf, "Module", Module_nameOf);
 
 ## Documented in spec.
-fn Module_nth(modu, n) {
-    <> Collection_nth(getExports(modu), n)
+fn Module_nthMapping(modu, n) {
+    <> Collection_nthMapping(getExports(modu), n)
 };
-genericBind(Collection_nth, "Module", Module_nth);
+genericBind(Collection_nthMapping, "Module", Module_nthMapping);
 
 ## Documented in spec.
 fn Module_put(modu, key, value) {

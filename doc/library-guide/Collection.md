@@ -61,10 +61,11 @@ bound in the collection at all).
 
 Returns the list of keys mapped by the collection.
 
-#### `nth(collection, n) <> . | void`
+#### `nthMapping(collection, n) <> map | void`
 
-Returns the nth (zero-based) element of the collection, in its defined
-fixed order. Returns void if `n < 0` or `n >= #collection`. It is an error
+Returns the nth (zero-based) mapping of the collection, in its predefined
+iteration order. The result is a one-element map of the key and corresponding
+value. Returns void if `n < 0` or `n >= #collection`. It is an error
 (terminating the runtime) if `n` is not an `Int`.
 
 #### `put(collection, key, value) <> collection`

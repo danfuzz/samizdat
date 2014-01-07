@@ -31,11 +31,11 @@ extern zvalue GFN_del;
 /** Generic `get(collection, key)`: Documented in spec. */
 extern zvalue GFN_get;
 
+/** Generic `nthMapping(collection, n)`: Documented in spec. */
+extern zvalue GFN_nthMapping;
+
 /** Generic `keyList(collection)`: Documented in spec. */
 extern zvalue GFN_keyList;
-
-/** Generic `nth(collection, n)`: Documented in spec. */
-extern zvalue GFN_nth;
 
 /** Generic `put(collection, key, value)`: Documented in spec. */
 extern zvalue GFN_put;

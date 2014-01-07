@@ -22,6 +22,9 @@
 #include <stdbool.h>
 
 
+/** Generic `nth(sequence, n)`: Documented in spec. */
+extern zvalue GFN_nth;
+
 /** Generic `reverse(sequence)`: Documented in spec. */
 extern zvalue GFN_reverse;
 
@@ -82,7 +85,7 @@ zint seqPutIndexStrict(zint size, zvalue n);
 /**
  * Binds the standard methods for a `Sequence` type. That is, this
  * is for collections whose keys are a zero-based `Int` sequence.
- * In particular, this binds `get` and `keyList`.
+ * In particular, this binds `get`, `keyList`, and `nthMapping`.
  */
 void seqBind(zvalue type);
 

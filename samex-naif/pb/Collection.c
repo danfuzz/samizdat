@@ -55,8 +55,9 @@ MOD_INIT(Collection) {
     GFN_keyList = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyList"));
     pbImmortalize(GFN_keyList);
 
-    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
-    pbImmortalize(GFN_nth);
+    GFN_nthMapping =
+        makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nthMapping"));
+    pbImmortalize(GFN_nthMapping);
 
     GFN_put = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "put"));
     pbImmortalize(GFN_put);
@@ -78,7 +79,7 @@ zvalue GFN_get = NULL;
 zvalue GFN_keyList = NULL;
 
 /* Documented in header. */
-zvalue GFN_nth = NULL;
+zvalue GFN_nthMapping = NULL;
 
 /* Documented in header. */
 zvalue GFN_put = NULL;

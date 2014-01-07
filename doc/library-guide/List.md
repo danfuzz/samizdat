@@ -52,6 +52,10 @@ Defined as per the `Sequence` protocol.
 
 Gets the nth element of the string.
 
+#### `nthMapping(list, n) <> map | void`
+
+Gets the nth mapping of the list.
+
 #### `put(list, n, value) <> list`
 
 Returns a list like the given one, but with the `n`th element replaced

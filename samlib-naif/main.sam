@@ -39,7 +39,7 @@ fn splitString(string, delimCh) {
     loopReduce(string, [], "") { str, result, one ->
         ifIs { <> eq(str, "") }
             { return appendNonempty(result, one) };
-        def ch = Collection_nth(str, 0);
+        def ch = Sequence_nth(str, 0);
         def newStr = Sequence_sliceInclusive(str, 1);
         <> ifIs { <> eq(ch, delimCh) }
             { <> [newStr, appendNonempty(result, one), ""] }
@@ -51,7 +51,7 @@ fn splitString(string, delimCh) {
 ## version. This prepends the current directory if the given path is
 ## not absolute.
 fn convertFlatPath(flat) {
-    def flatAbs = ifIs { <> eq(Collection_nth(flat, 0), "/") }
+    def flatAbs = ifIs { <> eq(Sequence_nth(flat, 0), "/") }
         { <> flat }
         { <> cat(Io0_flatCwd(), "/", flat) };
     <> splitString(flatAbs, "/")
@@ -127,7 +127,7 @@ fn loadAllLibraries(baseCtx) {
 
     <> loopReduce(manifest, baseCtx)
         { names, ctx ->
-            <> ifValue { <> Collection_nth(names, 0) }
+            <> ifValue { <> Sequence_nth(names, 0) }
                 { name ->
                     <> [
                         Sequence_sliceInclusive(names, 1),

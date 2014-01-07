@@ -366,7 +366,7 @@ METH_IMPL(Map, keyOf) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, nth) {
+METH_IMPL(Map, nthMapping) {
     zvalue map = args[0];
     zvalue n = args[1];
 
@@ -526,7 +526,7 @@ MOD_INIT(Map) {
     METH_BIND(Map, get);
     METH_BIND(Map, keyList);
     METH_BIND(Map, keyOf);
-    METH_BIND(Map, nth);
+    METH_BIND(Map, nthMapping);
     METH_BIND(Map, put);
     METH_BIND(Map, sizeOf);
     METH_BIND(Map, totEq);
