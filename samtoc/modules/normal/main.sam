@@ -6,36 +6,16 @@ def templateText = submoduleRead("template.txt");
 def collectLiterals = submoduleUse("collectLiterals");
 
 def DataCode = moduleUse({name: ["DataCode"]});
+def Lang0Node = moduleUse({name: ["Lang0Node"]});
 def Template = moduleUse({name: ["Template"]});
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
-
-## Accessor for `closure` and `fnDef` nodes.
-fn getFormals(node) {
-    <> dataOf(node)::formals
-};
-
-## Accessor for `fnDef` nodes.
-fn getName(node) {
-    <> dataOf(node)::name
-};
-
-## Accessor for `closure` and `fnDef` nodes.
-fn getStatements(node) {
-    <> dataOf(node)::statements
-};
-
-## Accessor for `closure` and `fnDef` nodes.
-fn getYieldDef(node) {
-    <> dataOf(node)::yieldDef
-};
-
-## Accessor for `closure` and `fnDef` nodes.
-fn getYield(node) {
-    <> dataOf(node)::yield
-};
+def get formals = Lang0Node::get formals;
+def get statements = Lang0Node::get statements;
+def get yield = Lang0Node::get yield;
+def get yieldDef = Lang0Node::get yieldDef;
 
 fn compile(sourcePath, targetPath) {
     def sourceText = Io1::readFileUtf8(sourcePath);
@@ -46,23 +26,23 @@ fn compile(sourcePath, targetPath) {
 
     ## Reject closures that define any `formals`.
     ## TODO: Remove this restriction.
-    if (tree.getFormals() != []) {
+    if (tree.formals != []) {
         Io1::die("Program must not define formals.");
     };
 
     ## Reject closures that have a `yieldDef`. TODO: Remove this restriction.
-    if (tree.getYieldDef()) {
+    if (tree.yieldDef) {
         Io1::die("Program must not have a yield definition.");
     };
 
     ## Reject closures that do not have a `yield`. TODO: Remove this
     ## restriction.
-    if (!tree.getYield()) {
+    if (!tree.yield) {
         Io1::die("Program must yield a value.");
     };
 
     ## TODO: Something real here.
-    def statements = [ s in tree.getStatements() <> "\%q(s)\n\n" ];
+    def statements = [ s in tree.statements <> "\%q(s)\n\n" ];
 
     Io1::note("=== \%q(DataCode::convert([]))");
     Io1::note("=== \%q(DataCode::convert({}))");
