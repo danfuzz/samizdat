@@ -45,7 +45,6 @@ def MANIFEST = [
     ["core", "EntityMap"],
     ["core", "Bitwise"],
     ["core", "Box"],
-    ["core", "Collection"],
     ["core", "Sequence"],
 
     ["core", "Io0"],
