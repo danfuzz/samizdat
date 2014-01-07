@@ -64,11 +64,11 @@ For example:
 # => ["b", "l", "o", "r", "t"]
 
 # List of sum of corresponding pairs.
-[n1 in (1..9), n2 in (100.., +100) <> n1 + n2]
+[n1 in (1..9), n2 in (100.. by 100) <> n1 + n2]
 # => [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
 # Sum of three ranges.
-[a in (0..4), b in (50..90, +10), c in (300..700, +100) =>
+[a in (0..4), b in (50..90 by 10), c in (300..700 by 100) =>
     def sum = a + b + c;
     <> sum
 ]
@@ -96,7 +96,7 @@ for how to interpret the various combinations.
 
 Syntactically, a range expression consists of one or more expressions
 in either parentheses `(...)` or square brackets `[...]`, with the
-expressions internally delimited with `..`, `..!`, and optionally `,`.
+expressions internally delimited with `..`, `..!`, and optionally `by`.
 As with the comprehension syntax, parentheses are used to indicate a range
 generator, and square brackets are used to indicate a range list.
 
@@ -105,28 +105,24 @@ Details for the generator variants are as follows:
 * `(first..limit)` &mdash; Inclusive range with increment 1. This is
   equivalent to `Range::makeInclusiveRange(first, limit)`.
 
-* `(first..limit, increment)` &mdash; Inclusive range with arbitrary
+* `(first..limit by increment)` &mdash; Inclusive range with arbitrary
   increment. This is equivalent to
   `Range::makeInclusiveRange(first, limit, increment)`.
 
 * `(first..!limit)` &mdash; Exclusive range with increment 1. This is
   equivalent to `Range::makeExclusiveRange(first, limit)`.
 
-* `(first..!limit, increment)` &mdash; Exclusive range with arbitrary
+* `(first..!limit by increment)` &mdash; Exclusive range with arbitrary
   increment. This is equivalent to
   `Range::makeExclusiveRange(first, limit, increment)`.
 
 * `(first..)` &mdash; Open range with increment 1. This is equivalent to
   `Range::makeOpenRange(first)`.
 
-* `(first.., increment)` &mdash; Open range with arbitrary increment. This
+* `(first.. by increment)` &mdash; Open range with arbitrary increment. This
   is equivalent to `Range::makeOpenRange(first, increment)`.
 
 All of the *closed* range variants are valid using the square bracket list
 form, but no open range variants are allowed to be bracketed, as Samizdat
 does not support unbounded-size lists. Semantically, the list forms are
-equivalent to `[(first..limit, increment)*]` (and so on).
-
-**Note:** Though `+` is not a real unary prefix operator, it is allowed
-(but not required) to prefix increment expressions, as a way to mnemonically
-emphasize those expressions' role.
+equivalent to `[(first..limit by increment)*]` (and so on).
