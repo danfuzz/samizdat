@@ -31,7 +31,7 @@ def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
         "def", "fn", "return",
         ## Layer 2 defines additional keywords here.
-        "break", "continue", "default", "do", "else", "export",
+        "break", "by", "continue", "default", "do", "else", "export",
         "for", "if", "import", "in", "module", "reduce",
         "switch", "var", "while"])
         { name <> {(name): @(name)} });
