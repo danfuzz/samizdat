@@ -147,13 +147,10 @@ A slice expression using `..` is equivalent to calling
 A slice expression using `..!` is equivalent to calling
 `expression.sliceExclusive(start, end)` (with `end` possibly omitted).
 
-**Note:** `expression[..!]` is a convenient shorthand for getting a
-sequence of all but the last element of `expression`. `expression[..]`
-is somewhat pointless but still allowed.
-
-**Note:** The slice operations by definition always take ints and not
-arbitrary keys. This may be confusing enough (when operating on maps) to
-warrant a change of spec. TODO: Evaluate this!
+**Note:** `expression[..!]` per se is a convenient shorthand for getting a
+sequence of all but the last element of `expression`. `expression[..]` per se
+is somewhat pointless (asserts that `expression` is a sequence and
+returns it) but still allowed.
 
 #### Convert Value-or-void to list &mdash; `expression?`
 
