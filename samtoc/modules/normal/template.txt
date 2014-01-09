@@ -15,6 +15,7 @@ static zvalue GLOBALS = NULL;
 static zvalue EVAL_RESULT = NULL;
 
 static zvalue topFunctionBody(zint argCount, zvalue *args) {
+  return
 \(body)
 }
 

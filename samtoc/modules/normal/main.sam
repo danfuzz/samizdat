@@ -41,29 +41,28 @@ fn compile(sourcePath, targetPath) {
         Io1::die("Program must yield a value.");
     };
 
-    ## TODO: Something real here.
-    def statements = [ s in tree.statements <> "\%q(s)\n\n" ];
+    def litsNode = collectLiterals(tree);
+    def literals = litsNode::literals;
+    def unlitTree = litsNode::node;
 
-    Io1::note("=== \%q(DataCode::convert([]))");
-    Io1::note("=== \%q(DataCode::convert({}))");
-    Io1::note("=== \%q(DataCode::convert(123))");
-    Io1::note("=== \%q(DataCode::convert("hello"))");
-    Io1::note("=== \%q(DataCode::convert([1, 2, 3]))");
-    Io1::note("=== \%q(DataCode::convert({a: "axe"}))");
-    Io1::note("=== \%q(DataCode::convert(null))");
-    Io1::note("=== \%q(DataCode::convert(true))");
-    Io1::note("=== \%q(DataCode::convert(@blort))");
-
-    def literals = collectLiterals(tree);
+    Io1::note("=== Literals:");
     for (lit in literals) {
-        Io1::note("=== \%q(lit)")
+        Io1::note("===   \%q(lit)")
     };
+
+    Io1::note("\n=== tree \%q(unlitTree)\n\n");
+
+    ## TODO: Something real here.
+    def treeText = DataCode::indent(
+        DataCode::convert(unlitTree),
+        2,
+        78);
 
     def replacements = {
         minArgs: 0,
         maxArgs: 0,
         name:    sourcePath[^0],
-        body:    "\%Q(statements)"
+        body:    "\(treeText)"
     };
 
     def outputText = Template::apply(templateText, replacements);
