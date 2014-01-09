@@ -34,6 +34,13 @@ fn get function(node) {
 
 def get name = makeRegularGeneric("get-name", 1, 1);
 
+## This makes it a little easier to manipulate `closure` and `fnDef` nodes
+## with the same code.
+genericBind(
+    get name,
+    "closure",
+    fn closure_get_name(node) { <> });
+
 genericBind(
     get name,
     "fnDef",
