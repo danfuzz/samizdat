@@ -30,65 +30,83 @@ fn closureLikeLits(node, litsBox) {
     }
 };
 
-fn call_lits(node, litsBox) {
-    <> @call{
-        function: lits(node.function, litsBox),
-        actuals: [ a in node.actuals <> lits(a, litsBox) ]
-    }
-};
-genericBind(lits, "call", call_lits);
+genericBind(
+    lits,
+    "call",
+    fn call_lits(node, litsBox) {
+        <> @call{
+            function: lits(node.function, litsBox),
+            actuals: [ a in node.actuals <> lits(a, litsBox) ]
+        }
+    });
 
-fn closure_lits(node, litsBox) {
-    <> closureLikeLits(node, litsBox)
-};
-genericBind(lits, "closure", closure_lits);
+genericBind(
+    lits,
+    "closure",
+    fn closure_lits(node, litsBox) {
+        <> closureLikeLits(node, litsBox)
+    });
 
-fn expression_lits(node, litsBox) {
-    <> @expression(lits(node.expression, litsBox))
-};
-genericBind(lits, "expression", expression_lits);
+genericBind(
+    lits,
+    "expression",
+    fn expression_lits(node, litsBox) {
+        <> @expression(lits(node.expression, litsBox))
+    });
 
-fn fnDef_lits(node, litsBox) {
-    <> closureLikeLits(node, litsBox)
-};
-genericBind(lits, "fnDef", fnDef_lits);
+genericBind(
+    lits,
+    "fnDef",
+    fn fnDef_lits(node, litsBox) {
+        <> closureLikeLits(node, litsBox)
+    });
 
-fn interpolate_lits(node, litsBox) {
-    <> @interpolate(lits(node.expression, litsBox))
-};
-genericBind(lits, "interpolate", interpolate_lits);
+genericBind(
+    lits,
+    "interpolate",
+    fn interpolate_lits(node, litsBox) {
+        <> @interpolate(lits(node.expression, litsBox))
+    });
 
-fn literal_lits(node, litsBox) {
-    def value = node.value;
-    def lits = Box::fetch(litsBox);
+genericBind(
+    lits,
+    "literal",
+    fn literal_lits(node, litsBox) {
+        def value = node.value;
+        def lits = Box::fetch(litsBox);
 
-    if (def already = lits[value]) {
-        return already;
-    };
+        if (def already = lits[value]) {
+            return already;
+        };
 
-    def result = @literalRef(#lits);
-    Box::store(litsBox, {lits*, (value): result});
-    <> result
-};
-genericBind(lits, "literal", literal_lits);
+        def result = @literalRef(#lits);
+        Box::store(litsBox, {lits*, (value): result});
+        <> result
+    });
 
-fn varDef_lits(node, litsBox) {
-    <> @varDef{
-        name: node.name,
-        value: lits(node.value, litsBox)
-    }
-};
-genericBind(lits, "varDef", varDef_lits);
+genericBind(
+    lits,
+    "varDef",
+    fn varDef_lits(node, litsBox) {
+        <> @varDef{
+            name: node.name,
+            value: lits(node.value, litsBox)
+        }
+    });
 
-fn varRef_lits(node, litsBox) {
-    <> node
-};
-genericBind(lits, "varRef", varRef_lits);
+genericBind(
+    lits,
+    "varRef",
+    fn varRef_lits(node, litsBox) {
+        <> node
+    });
 
-fn voidable_lits(node, litsBox) {
-    <> @voidable(lits(node.expression, litsBox))
-};
-genericBind(lits, "voidable", voidable_lits);
+genericBind(
+    lits,
+    "voidable",
+    fn voidable_lits(node, litsBox) {
+        <> @voidable(lits(node.expression, litsBox))
+    });
 
 ## Collects all literal nodes at or under the given one into a map
 ## from literal value to index (zero-based). Returns `{literals, node}`
