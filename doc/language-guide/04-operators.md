@@ -69,7 +69,7 @@ For example, the two lines in each pair here are equivalent to each other:
 someCall(onSomething).zorch
 \"get-zorch"(someCall(onSomething))
 
-blort.spaz = foo + 10
+blort.spaz := foo + 10
 \"set-spaz"(blort, foo + 10)
 ```
 
