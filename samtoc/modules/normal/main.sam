@@ -45,10 +45,19 @@ fn compile(sourcePath, targetPath) {
     def literals = litsNode::literals;
     def unlitTree = litsNode::node;
 
-    Io1::note("=== Literals:");
-    for (lit in literals) {
-        Io1::note("===   \%q(lit)")
-    };
+    def literalDeclarations = cat(
+        ( index in (0..!#literals) ->
+            <> "static zvalue LIT_\(index) = NULL;\n"
+        )*);
+
+    def literalInits = cat(
+        ( index in (0..!#literals) ->
+            def initText = DataCode::indent(
+                DataCode::convert(literals[index]),
+                2,
+                78);
+            <> "  LIT_\(index) =\n\(initText);\n"
+        )*);
 
     Io1::note("\n=== tree \%q(unlitTree)\n\n");
 
@@ -59,6 +68,8 @@ fn compile(sourcePath, targetPath) {
         78);
 
     def replacements = {
+        literalDeclarations,
+        literalInits,
         minArgs: 0,
         maxArgs: 0,
         name:    sourcePath[^0],
