@@ -56,7 +56,10 @@ fn compile(sourcePath, targetPath) {
                 DataCode::convert(literals[index]),
                 2,
                 78);
-            <> "  LIT_\(index) =\n\(initText);\n"
+            <> "\
+            \/  LIT_\(index) =
+            \/\(initText);
+            \/  pbImmortalize(LIT_\(index));\n"
         )*);
 
     def closuresNode = collectClosures(litsNode::node);
