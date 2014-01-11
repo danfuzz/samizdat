@@ -14,8 +14,9 @@
 static zvalue GLOBALS = NULL;
 static zvalue EVAL_RESULT = NULL;
 
-\(literalDeclarations)
+\(closureBodies)
 
+\(literalDeclarations)
 static void initLiterals(zvalue context) {
 \(literalInits)}
 

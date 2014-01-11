@@ -3,6 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def templateText = submoduleRead("template.txt");
+def collectClosures = submoduleUse("collectClosures");
 def collectLiterals = submoduleUse("collectLiterals");
 
 def DataCode = moduleUse({name: ["DataCode"]});
@@ -43,7 +44,6 @@ fn compile(sourcePath, targetPath) {
 
     def litsNode = collectLiterals(tree);
     def literals = litsNode::literals;
-    def unlitTree = litsNode::node;
 
     def literalDeclarations = cat(
         ( index in (0..!#literals) ->
@@ -59,15 +59,28 @@ fn compile(sourcePath, targetPath) {
             <> "  LIT_\(index) =\n\(initText);\n"
         )*);
 
-    Io1::note("\n=== tree \%q(unlitTree)\n\n");
+    def closuresNode = collectClosures(litsNode::node);
+    def closures = closuresNode::closures;
+
+    def closureBodies = cat(
+        ( index in (0..!#closures) ->
+            <> "\
+            \/static zvalue BODY_\(index)(zint argCount, const zvalue *args) {
+            \/  return NULL; // TODO
+            \/  /*
+            \/  \%q(closures[index])
+            \/  */
+            \/}\n\n"
+        )*);
 
     ## TODO: Something real here.
     def treeText = DataCode::indent(
-        DataCode::convert(unlitTree),
+        DataCode::convert(closuresNode::node),
         2,
         78);
 
     def replacements = {
+        closureBodies,
         literalDeclarations,
         literalInits,
         minArgs: 0,

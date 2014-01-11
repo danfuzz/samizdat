@@ -1,0 +1,129 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def Lang0Node = moduleUse({name: ["Lang0Node"]});
+
+## TODO: Ought to be able to do something like:
+##     use Lang0Node *;
+def get actuals    = Lang0Node::get actuals;
+def get expression = Lang0Node::get expression;
+def get formals    = Lang0Node::get formals;
+def get function   = Lang0Node::get function;
+def get name       = Lang0Node::get name;
+def get statements = Lang0Node::get statements;
+def get value      = Lang0Node::get value;
+def get yield      = Lang0Node::get yield;
+def get yieldDef   = Lang0Node::get yieldDef;
+
+## `bodies(node, bodiesBox)`, implements one layer of body collection.
+def bodies = makeRegularGeneric("bodies", 2, 2);
+
+genericBind(
+    bodies,
+    "call",
+    fn call_bodies(node, bodiesBox) {
+        <> @call{
+            function: bodies(node.function, bodiesBox),
+            actuals: [ a in node.actuals <> bodies(a, bodiesBox) ]
+        }
+    });
+
+genericBind(
+    bodies,
+    "closure",
+    fn closure_bodies(node, bodiesBox) {
+        def newNode = @closure{
+            formals: node.formals,
+            ((def name = node.name) & {name} | {})*,
+            statements: [ s in node.statements <> bodies(s, bodiesBox) ],
+            ((def y = node.yield) & {yield: bodies(y, bodiesBox)} | {})*,
+            ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
+        };
+
+        def bodies = Box::fetch(bodiesBox);
+        if (def already = bodies[newNode]) {
+            return already
+        };
+
+        def result = @closureRef(#bodies);
+        Box::store(bodiesBox, {bodies*, (newNode): result});
+        <> result
+    });
+
+genericBind(
+    bodies,
+    "expression",
+    fn expression_bodies(node, bodiesBox) {
+        <> @expression(bodies(node.expression, bodiesBox))
+    });
+
+genericBind(
+    bodies,
+    "fnDef",
+    fn fnDef_bodies(node, bodiesBox) {
+        <> @fnDef{
+            name: node.name,
+            body: bodies(@closure(dataOf(node)), bodiesBox)
+        }
+    });
+
+genericBind(
+    bodies,
+    "interpolate",
+    fn interpolate_bodies(node, bodiesBox) {
+        <> @interpolate(bodies(node.expression, bodiesBox))
+    });
+
+genericBind(
+    bodies,
+    "literalRef",
+    fn literalRef_bodies(node, bodiesBox) {
+        <> node
+    });
+
+genericBind(
+    bodies,
+    "varDef",
+    fn varDef_bodies(node, bodiesBox) {
+        <> @varDef{
+            name: node.name,
+            value: bodies(node.value, bodiesBox)
+        }
+    });
+
+genericBind(
+    bodies,
+    "varRef",
+    fn varRef_bodies(node, bodiesBox) {
+        <> node
+    });
+
+genericBind(
+    bodies,
+    "voidable",
+    fn voidable_bodies(node, bodiesBox) {
+        <> @voidable(bodies(node.expression, bodiesBox))
+    });
+
+## Collects all closure nodes at or under the given one into a list.
+## Returns `{closures, node}`, where `closures` is a list of collected
+## closures (includes ones derived from `fnDef` nodes) and `node` is a
+## replacement for the original argument, in which `closure` and `fnDef`
+## nodes have been replaced by indexed closure references.
+fn collectClosures(node) {
+    def bodiesBox = Box::makeCell({});
+    def newNode = bodies(node, bodiesBox);
+    def bodiesMap = Box::fetch(bodiesBox);
+
+    def bodiesBoxList = [ n in (0..#bodiesMap) <> Box::makePromise() ];
+    for (body in bodiesMap) {
+        def index = dataOf(valueOf(body));
+        Box::store(bodiesBoxList[index], keyOf(body))
+    };
+    def closures = [ box in bodiesBoxList <> Box::fetch(box) ];
+
+    <> { closures, node: newNode }
+};
+
+<> collectClosures
