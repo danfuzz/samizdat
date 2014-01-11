@@ -14,14 +14,21 @@
 static zvalue GLOBALS = NULL;
 static zvalue EVAL_RESULT = NULL;
 
+\(closureBodies)
+
+\(literalDeclarations)
+static void initLiterals(zvalue context) {
+\(literalInits)}
+
 static zvalue topFunctionBody(zint argCount, zvalue *args) {
   return
-\(body)
+\(body);
 }
 
 zvalue eval(zvalue context) {
     if (GLOBALS == NULL) {
         GLOBALS = context;
+        initLiterals(context);
     } else if (!valEq(GLOBALS, context))
         die("Cannot re-eval with different global context.");
     }

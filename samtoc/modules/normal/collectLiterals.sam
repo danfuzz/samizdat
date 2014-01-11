@@ -108,15 +108,23 @@ genericBind(
         <> @voidable(lits(node.expression, litsBox))
     });
 
-## Collects all literal nodes at or under the given one into a map
-## from literal value to index (zero-based). Returns `{literals, node}`
-## where `literals` is a map of collected literals and `node` is a
-## replacement for the original argument, in which literals have been
-## replaced by references to same.
+## Collects all literal nodes at or under the given one into a list.
+## Returns `{literals, node}`, where `literals` is a list of collected
+## literals and `node` is a replacement for the original argument, in which
+## literals have been replaced by indexed references to same.
 fn collectLiterals(node) {
     def litsBox = Box::makeCell({});
     def newNode = lits(node, litsBox);
-    <> { literals: Box::fetch(litsBox), node: newNode }
+    def literalsMap = Box::fetch(litsBox);
+
+    def litsBoxList = [ n in (0..#literalsMap) <> Box::makePromise() ];
+    for (l in literalsMap) {
+        def index = dataOf(valueOf(l));
+        Box::store(litsBoxList[index], keyOf(l))
+    };
+    def literals = [ box in litsBoxList <> Box::fetch(box) ];
+
+    <> { literals, node: newNode }
 };
 
 <> collectLiterals
