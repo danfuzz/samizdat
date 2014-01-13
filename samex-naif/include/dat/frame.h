@@ -8,8 +8,8 @@
  * Frame (stack references) management
  */
 
-#ifndef _PB_FRAME_H_
-#define _PB_FRAME_H_
+#ifndef _DAT_FRAME_H_
+#define _DAT_FRAME_H_
 
 
 /*

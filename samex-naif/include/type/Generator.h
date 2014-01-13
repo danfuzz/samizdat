@@ -18,7 +18,7 @@
 #ifndef _TYPE_GENERATOR_H_
 #define _TYPE_GENERATOR_H_
 
-#include "pb.h"
+#include "dat.h"
 
 
 /** Generic `collect(generator)`: Documenetd in spec. */

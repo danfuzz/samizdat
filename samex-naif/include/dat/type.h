@@ -4,8 +4,8 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#ifndef _PB_TYPE_H_
-#define _PB_TYPE_H_
+#ifndef _DAT_TYPE_H_
+#define _DAT_TYPE_H_
 
 /**
  * Arbitrary value. The contents of a value are *not* directly

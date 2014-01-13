@@ -8,14 +8,14 @@
  * Lowest-layer plumbing and data structures
  */
 
-#ifndef _PB_H_
-#define _PB_H_
+#ifndef _DAT_H_
+#define _DAT_H_
 
 #include "module.h"
 #include "ztype.h"
 
-#include "pb/type.h"  // Types (must be included before other `pb` stuff).
-#include "pb/frame.h" // Frame (stack reference) management.
+#include "dat/type.h"  // Types (must be included before other `pb` stuff).
+#include "dat/frame.h" // Frame (stack reference) management.
 
 
 /*

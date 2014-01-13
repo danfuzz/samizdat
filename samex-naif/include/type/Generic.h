@@ -11,7 +11,7 @@
 #ifndef _TYPE_GENERIC_H_
 #define _TYPE_GENERIC_H_
 
-#include "pb.h"
+#include "dat.h"
 #include "type/Function.h"
 
 /** Flags passed to `makeGeneric`. */
