@@ -139,7 +139,7 @@ zvalue genericFindByIndex(zvalue generic, zint index);
  * `Type` per se; this is *not* checked.
  */
 inline zint indexFromTrueType(zvalue type) {
-    return ((TypeInfo *) pbPayload(type))->id;
+    return ((TypeInfo *) datPayload(type))->id;
 }
 
 /**

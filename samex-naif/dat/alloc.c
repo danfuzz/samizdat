@@ -167,7 +167,7 @@ static void doGc(void) {
     // the live list.
 
     for (zint i = 0; i < immortalsSize; i++) {
-        pbMark(immortals[i]);
+        datMark(immortals[i]);
     }
 
     if (CHATTY_GC) {
@@ -235,9 +235,9 @@ static void doGc(void) {
  */
 
 /* Documented in header. */
-zvalue pbAllocValue(zvalue type, zint extraBytes) {
+zvalue datAllocValue(zvalue type, zint extraBytes) {
     if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
-        pbGc();
+        datGc();
     } else {
         sanityCheck(false);
     }
@@ -277,7 +277,7 @@ void assertValidOrNull(zvalue value) {
 }
 
 /* Documented in header. */
-void pbGc(void) {
+void datGc(void) {
     allocationCount = 0;
 
     if (CHATTY_GC) {
@@ -294,7 +294,7 @@ void pbGc(void) {
 }
 
 /* Documented in header. */
-void pbImmortalize(zvalue value) {
+void datImmortalize(zvalue value) {
     if (immortalsSize == PB_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
@@ -306,7 +306,7 @@ void pbImmortalize(zvalue value) {
 }
 
 /* Documented in header. */
-void pbMark(zvalue value) {
+void datMark(zvalue value) {
     if ((value == NULL) || value->marked) {
         return;
     }
@@ -317,7 +317,7 @@ void pbMark(zvalue value) {
     GFN_CALL(gcMark, value);
 
     // As of this writing, types are all immortal, but that may change. This
-    // `pbMark` call has negligible cost and safeguards against that possible
+    // `datMark` call has negligible cost and safeguards against that possible
     // change.
-    pbMark(value->type);
+    datMark(value->type);
 }

@@ -39,12 +39,12 @@ MOD_INIT(const) {
 
     #define STR(name, str) \
         STR_##name = stringFromUtf8(-1, str); \
-        pbImmortalize(STR_##name)
+        datImmortalize(STR_##name)
 
     #define TOK(name, str) \
         STR(name, str); \
         TOK_##name = makeTransValue(STR_##name, NULL); \
-        pbImmortalize(TOK_##name)
+        datImmortalize(TOK_##name)
 
     #include "const/const-def.h"
 
@@ -52,5 +52,5 @@ MOD_INIT(const) {
 
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.
-    pbGc();
+    datGc();
 }

@@ -123,7 +123,7 @@ typedef struct {
  * Gets a pointer to the info of a closure value.
  */
 static ClosureInfo *getInfo(zvalue closure) {
-    return pbPayload(closure);
+    return datPayload(closure);
 }
 
 /**
@@ -136,7 +136,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     // Build out most of the result.
 
-    zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    zvalue result = datAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
 
     info->defMap = defMap;
@@ -305,7 +305,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
  */
 static zvalue buildClosure(zvalue node) {
     zvalue cachedClosure = getCachedClosure(node);
-    zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    zvalue result = datAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
 
     utilCpy(ClosureInfo, getInfo(result), getInfo(cachedClosure), 1);
@@ -467,7 +467,7 @@ METH_IMPL(Closure, gcMark) {
     ClosureInfo *info = getInfo(closure);
 
     frameMark(&info->frame);
-    pbMark(info->defMap); // All the other bits are derived from this.
+    datMark(info->defMap); // All the other bits are derived from this.
     return NULL;
 }
 
@@ -494,7 +494,7 @@ MOD_INIT(Closure) {
 
     nodeCache = EMPTY_MAP;
     nodeCacheBox = makeCell(EMPTY_MAP);
-    pbImmortalize(nodeCacheBox);
+    datImmortalize(nodeCacheBox);
 }
 
 /* Documented in header. */

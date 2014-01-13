@@ -42,7 +42,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static StringInfo *getInfo(zvalue list) {
-    return pbPayload(list);
+    return datPayload(list);
 }
 
 /**
@@ -50,7 +50,7 @@ static StringInfo *getInfo(zvalue list) {
  */
 static zvalue allocString(zint size) {
     zvalue result =
-        pbAllocValue(TYPE_String, sizeof(StringInfo) + size * sizeof(zchar));
+        datAllocValue(TYPE_String, sizeof(StringInfo) + size * sizeof(zchar));
 
     getInfo(result)->size = size;
     return result;
@@ -146,7 +146,7 @@ zvalue stringFromZchar(zchar value) {
 
     if (value <= PB_MAX_CACHED_CHAR) {
         CACHED_CHARS[value] = result;
-        pbImmortalize(result);
+        datImmortalize(result);
     }
 
     return result;
@@ -471,7 +471,7 @@ MOD_INIT(String) {
     seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);
-    pbImmortalize(EMPTY_STRING);
+    datImmortalize(EMPTY_STRING);
 }
 
 /* Documented in header. */

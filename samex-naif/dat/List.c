@@ -34,7 +34,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static ListInfo *getInfo(zvalue list) {
-    return pbPayload(list);
+    return datPayload(list);
 }
 
 /**
@@ -42,7 +42,7 @@ static ListInfo *getInfo(zvalue list) {
  */
 static zvalue allocList(zint size) {
     zvalue result =
-        pbAllocValue(TYPE_List, sizeof(ListInfo) + size * sizeof(zvalue));
+        datAllocValue(TYPE_List, sizeof(ListInfo) + size * sizeof(zvalue));
 
     getInfo(result)->size = size;
     return result;
@@ -189,7 +189,7 @@ METH_IMPL(List, gcMark) {
     zint size = info->size;
 
     for (zint i = 0; i < size; i++) {
-        pbMark(elems[i]);
+        datMark(elems[i]);
     }
 
     return NULL;
@@ -349,7 +349,7 @@ MOD_INIT(List) {
     seqBind(TYPE_List);
 
     EMPTY_LIST = allocList(0);
-    pbImmortalize(EMPTY_LIST);
+    datImmortalize(EMPTY_LIST);
 }
 
 /* Documented in header. */

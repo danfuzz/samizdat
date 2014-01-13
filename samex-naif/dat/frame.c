@@ -29,7 +29,7 @@ void datFrameError(const char *msg) {
     // As a hail-mary, do a forced gc and then clear the value stack, in
     // the hope that a gc won't end up being done while producing the
     // dying stack trace.
-    pbGc();
+    datGc();
     frameStackTop = frameStackBase;
 
     die("%s", msg);
@@ -44,7 +44,7 @@ zint markFrameStack(void) {
     zint stackSize = frameStackTop - frameStackBase;
 
     for (int i = 0; i < stackSize; i++) {
-        pbMark(theStack[i]);
+        datMark(theStack[i]);
     }
 
     return stackSize;

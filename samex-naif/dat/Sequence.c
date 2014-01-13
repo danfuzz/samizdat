@@ -177,30 +177,30 @@ MOD_INIT(Sequence) {
     MOD_USE(Collection);
 
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
-    pbImmortalize(GFN_nth);
+    datImmortalize(GFN_nth);
 
     GFN_reverse = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "reverse"));
-    pbImmortalize(GFN_reverse);
+    datImmortalize(GFN_reverse);
 
     GFN_sliceExclusive = makeGeneric(2, 3, GFN_NONE,
         stringFromUtf8(-1, "sliceExclusive"));
-    pbImmortalize(GFN_sliceExclusive);
+    datImmortalize(GFN_sliceExclusive);
 
     GFN_sliceInclusive = makeGeneric(2, 3, GFN_NONE,
         stringFromUtf8(-1, "sliceInclusive"));
-    pbImmortalize(GFN_sliceInclusive);
+    datImmortalize(GFN_sliceInclusive);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get),
         stringFromUtf8(-1, "Sequence.get"));
-    pbImmortalize(BI_Sequence_get);
+    datImmortalize(BI_Sequence_get);
 
     BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList),
         stringFromUtf8(-1, "Sequence.keyList"));
-    pbImmortalize(BI_Sequence_keyList);
+    datImmortalize(BI_Sequence_keyList);
 
     BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
         stringFromUtf8(-1, "Sequence.nthMapping"));
-    pbImmortalize(BI_Sequence_nthMapping);
+    datImmortalize(BI_Sequence_nthMapping);
 }
 
 /* Documented in header. */

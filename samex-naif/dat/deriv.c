@@ -29,7 +29,7 @@ typedef struct {
  * Gets the info of a derived value.
  */
 static DerivInfo *getInfo(zvalue value) {
-    return (DerivInfo *) pbPayload(value);
+    return (DerivInfo *) datPayload(value);
 }
 
 
@@ -62,8 +62,8 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
         die("Attempt to create derived value with incorrect secret.");
     }
 
-    zvalue result = pbAllocValue(trueType, sizeof(DerivInfo));
-    ((DerivInfo *) pbPayload(result))->data = data;
+    zvalue result = datAllocValue(trueType, sizeof(DerivInfo));
+    ((DerivInfo *) datPayload(result))->data = data;
 
     return result;
 }
@@ -93,7 +93,7 @@ static zvalue BI_Deriv_totOrder = NULL;
 /* Documented in header. */
 METH_IMPL(Deriv, gcMark) {
     zvalue value = args[0];
-    pbMark(getInfo(value)->data);
+    datMark(getInfo(value)->data);
     return NULL;
 }
 
@@ -134,13 +134,13 @@ MOD_INIT(Deriv) {
 
     BI_Deriv_gcMark = makeBuiltin(1, 1, METH_NAME(Deriv, gcMark),
         stringFromUtf8(-1, "Deriv.gcMark"));
-    pbImmortalize(BI_Deriv_gcMark);
+    datImmortalize(BI_Deriv_gcMark);
 
     BI_Deriv_totEq = makeBuiltin(2, 2, METH_NAME(Deriv, totEq),
         stringFromUtf8(-1, "Deriv.totEq"));
-    pbImmortalize(BI_Deriv_totEq);
+    datImmortalize(BI_Deriv_totEq);
 
     BI_Deriv_totOrder = makeBuiltin(2, 2, METH_NAME(Deriv, totOrder),
         stringFromUtf8(-1, "Deriv.totOrder"));
-    pbImmortalize(BI_Deriv_totOrder);
+    datImmortalize(BI_Deriv_totOrder);
 }

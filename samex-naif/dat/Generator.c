@@ -195,13 +195,13 @@ MOD_INIT(Generator) {
     MOD_USE(String);
 
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
-    pbImmortalize(GFN_collect);
+    datImmortalize(GFN_collect);
 
     GFN_filter = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "filter"));
-    pbImmortalize(GFN_filter);
+    datImmortalize(GFN_filter);
 
     GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
-    pbImmortalize(GFN_nextValue);
+    datImmortalize(GFN_nextValue);
 
     METH_BIND(List,   collect);
     METH_BIND(Map,    collect);

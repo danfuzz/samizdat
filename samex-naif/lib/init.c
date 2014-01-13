@@ -96,7 +96,7 @@ static void makePrimitiveContext(void) {
 
     // Set the final value, and make it immortal.
     PRIMITIVE_CONTEXT = ctx;
-    pbImmortalize(PRIMITIVE_CONTEXT);
+    datImmortalize(PRIMITIVE_CONTEXT);
 }
 
 /**
@@ -149,7 +149,7 @@ zvalue libNewContext(const char *libraryDir) {
 
     // Force a garbage collection here, to have a maximally clean slate when
     // moving into main program execution.
-    pbGc();
+    datGc();
 
     return result;
 }

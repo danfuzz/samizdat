@@ -46,7 +46,7 @@ void assertValidOrNull(zvalue value);
  * path to the module (as a flat string), which must be absolute. This
  * function returns whatever was returned by the `eval` function.
  */
-zvalue pbEvalBinary(zvalue context, zvalue flatPath);
+zvalue datEvalBinary(zvalue context, zvalue flatPath);
 
 
 /*
@@ -58,30 +58,30 @@ zvalue pbEvalBinary(zvalue context, zvalue flatPath);
  * to include the given amount of extra bytes as raw payload data.
  * The resulting value is added to the live reference stack.
  */
-zvalue pbAllocValue(zvalue type, zint extraBytes);
+zvalue datAllocValue(zvalue type, zint extraBytes);
 
 /**
  * Forces a gc.
  */
-void pbGc(void);
+void datGc(void);
 
 /**
  * Marks the given value as "immortal." It is considered a root and
  * will never get freed.
  */
-void pbImmortalize(zvalue value);
+void datImmortalize(zvalue value);
 
 /**
  * Marks a value during garbage collection. This in turn calls a type-specific
  * mark function when appropriate and may recurse arbitrarily. It is valid
  * to pass `NULL` to this, but no other non-values are acceptable.
  */
-void pbMark(zvalue value);
+void datMark(zvalue value);
 
 /**
  * Gets a pointer to the data payload of a `zvalue`.
  */
-inline void *pbPayload(zvalue value) {
+inline void *datPayload(zvalue value) {
     return (void *) (((char *) value) + DAT_HEADER_SIZE);
 }
 

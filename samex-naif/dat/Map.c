@@ -38,7 +38,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static MapInfo *getInfo(zvalue list) {
-    return pbPayload(list);
+    return datPayload(list);
 }
 
 /**
@@ -46,7 +46,7 @@ static MapInfo *getInfo(zvalue list) {
  */
 static zvalue allocMap(zint size) {
     zvalue result =
-        pbAllocValue(TYPE_Map, sizeof(MapInfo) + size * sizeof(zmapping));
+        datAllocValue(TYPE_Map, sizeof(MapInfo) + size * sizeof(zmapping));
 
     getInfo(result)->size = size;
     return result;
@@ -319,8 +319,8 @@ METH_IMPL(Map, gcMark) {
     zmapping *elems = info->elems;
 
     for (zint i = 0; i < size; i++) {
-        pbMark(elems[i].key);
-        pbMark(elems[i].value);
+        datMark(elems[i].key);
+        datMark(elems[i].value);
     }
 
     return NULL;
@@ -534,7 +534,7 @@ MOD_INIT(Map) {
     METH_BIND(Map, valueOf);
 
     EMPTY_MAP = allocMap(0);
-    pbImmortalize(EMPTY_MAP);
+    datImmortalize(EMPTY_MAP);
 }
 
 /* Documented in header. */

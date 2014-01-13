@@ -39,7 +39,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static BoxInfo *getInfo(zvalue box) {
-    return pbPayload(box);
+    return datPayload(box);
 }
 
 
@@ -49,7 +49,7 @@ static BoxInfo *getInfo(zvalue box) {
 
 /* Documented in header. */
 zvalue makeCell(zvalue value) {
-    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = value;
@@ -61,7 +61,7 @@ zvalue makeCell(zvalue value) {
 
 /* Documented in header. */
 zvalue makePromise(void) {
-    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = NULL;
@@ -115,7 +115,7 @@ METH_IMPL(Box, gcMark) {
     zvalue box = args[0];
     BoxInfo *info = getInfo(box);
 
-    pbMark(info->value);
+    datMark(info->value);
 
     return NULL;
 }
@@ -145,13 +145,13 @@ MOD_INIT(Box) {
     MOD_USE(Value);
 
     GFN_canStore = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "canStore"));
-    pbImmortalize(GFN_canStore);
+    datImmortalize(GFN_canStore);
 
     GFN_fetch = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "fetch"));
-    pbImmortalize(GFN_fetch);
+    datImmortalize(GFN_fetch);
 
     GFN_store = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "store"));
-    pbImmortalize(GFN_store);
+    datImmortalize(GFN_store);
 
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
 

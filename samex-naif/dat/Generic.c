@@ -49,7 +49,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static GenericInfo *getInfo(zvalue generic) {
-    return pbPayload(generic);
+    return datPayload(generic);
 }
 
 /**
@@ -158,7 +158,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(TYPE_Generic, sizeof(GenericInfo));
+    zvalue result = datAllocValue(TYPE_Generic, sizeof(GenericInfo));
     GenericInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
@@ -210,9 +210,9 @@ METH_IMPL(Generic, gcMark) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
 
-    pbMark(info->name);
+    datMark(info->name);
     for (zint i = 0; i < PB_MAX_TYPES; i++) {
-        pbMark(info->functions[i]);
+        datMark(info->functions[i]);
     }
 
     return NULL;

@@ -39,7 +39,7 @@ static zvalue coreSecret = NULL;
  * Gets a pointer to the value's info.
  */
 static TypeInfo *getInfo(zvalue type) {
-    return pbPayload(type);
+    return datPayload(type);
 }
 
 /**
@@ -67,14 +67,14 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
     theTypes[theNextId] = type;
     theNeedSort = true;
     theNextId++;
-    pbImmortalize(type);
+    datImmortalize(type);
 }
 
 /**
  * Allocates a type value.
  */
 static zvalue allocType(void) {
-    return pbAllocValue(TYPE_Type, sizeof(TypeInfo));
+    return datAllocValue(TYPE_Type, sizeof(TypeInfo));
 }
 
 /**
@@ -350,8 +350,8 @@ METH_IMPL(Type, gcMark) {
     zvalue type = args[0];
     TypeInfo *info = getInfo(type);
 
-    pbMark(info->name);
-    pbMark(info->secret);
+    datMark(info->name);
+    datMark(info->secret);
 
     return NULL;
 }
@@ -391,7 +391,7 @@ MOD_INIT(typeSystem) {
     TYPE_Uniqlet = allocType();
 
     coreSecret = makeUniqlet();
-    pbImmortalize(coreSecret);
+    datImmortalize(coreSecret);
 
     typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret, false);
     typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret, false);

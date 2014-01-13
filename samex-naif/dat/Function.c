@@ -160,10 +160,10 @@ MOD_INIT(Function) {
     MOD_USE(Value);
 
     GFN_call = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "call"));
-    pbImmortalize(GFN_call);
+    datImmortalize(GFN_call);
 
     GFN_canCall = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "canCall"));
-    pbImmortalize(GFN_canCall);
+    datImmortalize(GFN_canCall);
 }
 
 /* Documented in header. */

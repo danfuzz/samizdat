@@ -19,7 +19,7 @@ typedef zvalue *zstackPointer;
 
 enum {
     /**
-     * (Private) Size of the `DatHeader` struct; used so that `pbPayload`
+     * (Private) Size of the `DatHeader` struct; used so that `datPayload`
      * can be an inline function.
      */
     DAT_HEADER_SIZE =
