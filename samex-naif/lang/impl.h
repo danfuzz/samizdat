@@ -32,7 +32,7 @@ typedef enum {
 } zevalType;
 
 /** Mapping from `Type` index to corresponding `zevalType`. */
-extern zevalType langTypeMap[PB_MAX_TYPES];
+extern zevalType langTypeMap[DAT_MAX_TYPES];
 
 /** Function called into by `nleCall`. */
 typedef zvalue (*znleFunction)(void *state, zvalue exitFunction);

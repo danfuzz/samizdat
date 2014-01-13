@@ -26,7 +26,7 @@
 static zint theNextId = 0;
 
 /** Array of all existing types, in sort order (possibly stale). */
-static zvalue theTypes[PB_MAX_TYPES];
+static zvalue theTypes[DAT_MAX_TYPES];
 
 /** Whether `theTypes` needs a sort. */
 static bool theNeedSort = true;
@@ -47,7 +47,7 @@ static TypeInfo *getInfo(zvalue type) {
  */
 static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
         bool identified) {
-    if (theNextId == PB_MAX_TYPES) {
+    if (theNextId == DAT_MAX_TYPES) {
         die("Too many types!");
     }
 
@@ -402,10 +402,10 @@ MOD_INIT(typeSystem) {
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (indexFromTrueType(TYPE_Builtin) != PB_INDEX_BUILTIN) {
+    if (indexFromTrueType(TYPE_Builtin) != DAT_INDEX_BUILTIN) {
         die("Mismatched index for `Builtin`: should be %lld",
             indexFromTrueType(TYPE_Builtin));
-    } else if (indexFromTrueType(TYPE_Generic) != PB_INDEX_GENERIC) {
+    } else if (indexFromTrueType(TYPE_Generic) != DAT_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
             indexFromTrueType(TYPE_Generic));
     }

@@ -21,11 +21,11 @@
 
 enum {
     /** Count of cached small int value. */
-    PB_SMALL_INT_COUNT = PB_SMALL_INT_MAX - PB_SMALL_INT_MIN + 1
+    DAT_SMALL_INT_COUNT = DAT_SMALL_INT_MAX - DAT_SMALL_INT_MIN + 1
 };
 
 /** Array of small integer values. */
-static zvalue SMALL_INTS[PB_SMALL_INT_COUNT];
+static zvalue SMALL_INTS[DAT_SMALL_INT_COUNT];
 
 /**
  * Int structure.
@@ -61,8 +61,8 @@ zvalue intFrom(zint value) {
 
 /* Documented in header. */
 zvalue intFromZint(zint value) {
-    if ((value >= PB_SMALL_INT_MIN) && (value < PB_SMALL_INT_MAX)) {
-        return SMALL_INTS[value - PB_SMALL_INT_MIN];
+    if ((value >= DAT_SMALL_INT_MIN) && (value < DAT_SMALL_INT_MAX)) {
+        return SMALL_INTS[value - DAT_SMALL_INT_MIN];
     } else {
         return intFrom(value);
     }
@@ -230,8 +230,8 @@ MOD_INIT(Int) {
     METH_BIND(Int, totEq);
     METH_BIND(Int, totOrder);
 
-    for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
-        SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
+    for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
+        SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
         datImmortalize(SMALL_INTS[i]);
     }
 

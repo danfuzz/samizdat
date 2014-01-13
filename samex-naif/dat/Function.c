@@ -79,10 +79,10 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     // The first two cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Function` or `Generic`.
     switch (index) {
-        case PB_INDEX_BUILTIN: {
+        case DAT_INDEX_BUILTIN: {
             return builtinCall(function, argCount, args);
         }
-        case PB_INDEX_GENERIC: {
+        case DAT_INDEX_GENERIC: {
             return genericCall(function, argCount, args);
         }
         default: {

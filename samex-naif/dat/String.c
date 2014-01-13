@@ -19,13 +19,13 @@
  */
 
 /** Array of single-character strings, for low character codes. */
-static zvalue CACHED_CHARS[PB_MAX_CACHED_CHAR + 1];
+static zvalue CACHED_CHARS[DAT_MAX_CACHED_CHAR + 1];
 
 /**
  * Shared `zchar` array, used to avoid memory allocation in common cases.
  * **Note:** It is only safe to use this via `allocArray`.
  */
-static zchar SHARED_ARRAY[PB_SOFT_MAX_STRING];
+static zchar SHARED_ARRAY[DAT_SOFT_MAX_STRING];
 
 /**
  * String structure.
@@ -84,7 +84,7 @@ static void assertStringSize1(zvalue value) {
  * while the allocation is active.
  */
 static zchar *allocArray(zint size) {
-    if (size < PB_SOFT_MAX_STRING) {
+    if (size < DAT_SOFT_MAX_STRING) {
         return SHARED_ARRAY;
     } else {
         return utilAlloc(size * sizeof(zchar));
@@ -134,7 +134,7 @@ zvalue stringFromUtf8(zint stringBytes, const char *string) {
 
 /* Documented in header. */
 zvalue stringFromZchar(zchar value) {
-    if (value <= PB_MAX_CACHED_CHAR) {
+    if (value <= DAT_MAX_CACHED_CHAR) {
         zvalue result = CACHED_CHARS[value];
         if (result != NULL) {
             return result;
@@ -144,7 +144,7 @@ zvalue stringFromZchar(zchar value) {
     zvalue result = allocString(1);
     getInfo(result)->elems[0] = value;
 
-    if (value <= PB_MAX_CACHED_CHAR) {
+    if (value <= DAT_MAX_CACHED_CHAR) {
         CACHED_CHARS[value] = result;
         datImmortalize(result);
     }

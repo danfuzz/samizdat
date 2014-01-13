@@ -25,7 +25,7 @@ enum {
 };
 
 /** Array of all immortal values. */
-static zvalue immortals[PB_MAX_IMMORTALS];
+static zvalue immortals[DAT_MAX_IMMORTALS];
 
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
@@ -59,7 +59,7 @@ static zint allocationCount = 0;
  */
 static bool isAligned(void *maybeValue) {
     intptr_t bits = (intptr_t) (void *) maybeValue;
-    return ((bits & (PB_VALUE_ALIGNMENT - 1)) == 0);
+    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
 }
 
 /**
@@ -78,7 +78,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
         die("Invalid value (not in heap): %p", maybeValue);
     }
 
-    if (maybeValue->magic != PB_VALUE_MAGIC) {
+    if (maybeValue->magic != DAT_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", maybeValue);
     }
 
@@ -236,14 +236,14 @@ static void doGc(void) {
 
 /* Documented in header. */
 zvalue datAllocValue(zvalue type, zint extraBytes) {
-    if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
+    if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
         datGc();
     } else {
         sanityCheck(false);
     }
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->magic = PB_VALUE_MAGIC;
+    result->magic = DAT_VALUE_MAGIC;
     result->type = type;
 
     allocationCount++;
@@ -260,7 +260,7 @@ void assertValid(zvalue value) {
         die("Null value.");
     }
 
-    if (value->magic != PB_VALUE_MAGIC) {
+    if (value->magic != DAT_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", value);
     }
 
@@ -295,7 +295,7 @@ void datGc(void) {
 
 /* Documented in header. */
 void datImmortalize(zvalue value) {
-    if (immortalsSize == PB_MAX_IMMORTALS) {
+    if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
 

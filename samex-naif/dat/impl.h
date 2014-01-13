@@ -17,16 +17,16 @@
 
 enum {
     /** "Magic number" for value validation. */
-    PB_VALUE_MAGIC = 0x600f1e57,
+    DAT_VALUE_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    PB_VALUE_ALIGNMENT = 8,
+    DAT_VALUE_ALIGNMENT = 8,
 
     /** The type index for type `Builtin`. */
-    PB_INDEX_BUILTIN = 2,
+    DAT_INDEX_BUILTIN = 2,
 
     /** The type index for type `Generic`. */
-    PB_INDEX_GENERIC = 3
+    DAT_INDEX_GENERIC = 3
 };
 
 /**

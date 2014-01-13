@@ -13,7 +13,7 @@
  */
 
 /** Actual stack memory. */
-static zvalue theStack[PB_MAX_STACK];
+static zvalue theStack[DAT_MAX_STACK];
 
 /* Documented in header. */
 zstackPointer frameStackBase = theStack;
@@ -22,7 +22,7 @@ zstackPointer frameStackBase = theStack;
 zstackPointer frameStackTop = theStack;
 
 /* Documented in header. */
-zstackPointer frameStackLimit = &theStack[PB_MAX_STACK];
+zstackPointer frameStackLimit = &theStack[DAT_MAX_STACK];
 
 /* Documented in header. */
 void datFrameError(const char *msg) {

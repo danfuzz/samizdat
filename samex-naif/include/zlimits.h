@@ -51,31 +51,31 @@ enum {
     LANG_MAX_STRING_CHARS = 200,
 
     /** Number of allocations between each forced gc. */
-    PB_ALLOCATIONS_PER_GC = 500000,
+    DAT_ALLOCATIONS_PER_GC = 500000,
 
     /** Largest code point to keep a cached single-character string for. */
-    PB_MAX_CACHED_CHAR = 127,
+    DAT_MAX_CACHED_CHAR = 127,
 
     /** Maximum number of immortal values allowed. */
-    PB_MAX_IMMORTALS = 4000,
+    DAT_MAX_IMMORTALS = 4000,
 
     /** Maximum number of references on the stack. */
-    PB_MAX_STACK = 50000,
+    DAT_MAX_STACK = 50000,
 
     /** Maximum number of types allowed. */
-    PB_MAX_TYPES = 2500,
+    DAT_MAX_TYPES = 2500,
 
     /** Maximum (highest value) small int constant to keep. */
-    PB_SMALL_INT_MAX = 700,
+    DAT_SMALL_INT_MAX = 700,
 
     /** Minumum (lowest value) small int constant to keep. */
-    PB_SMALL_INT_MIN = -300,
+    DAT_SMALL_INT_MIN = -300,
 
     /**
      * Maximum size in characters of a string that can be handled
      * on the stack (without resorting to heavyweight memory operations).
      */
-    PB_SOFT_MAX_STRING = 10000,
+    DAT_SOFT_MAX_STRING = 10000,
 
     /** Maximum number of active stack frames. */
     UTIL_MAX_CALL_STACK_DEPTH = 4000,

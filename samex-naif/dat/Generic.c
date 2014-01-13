@@ -42,7 +42,7 @@ typedef struct {
     zvalue name;
 
     /** Bindings from type to function, keyed off of type sequence number. */
-    zvalue functions[PB_MAX_TYPES];
+    zvalue functions[DAT_MAX_TYPES];
 } GenericInfo;
 
 /**
@@ -211,7 +211,7 @@ METH_IMPL(Generic, gcMark) {
     GenericInfo *info = getInfo(generic);
 
     datMark(info->name);
-    for (zint i = 0; i < PB_MAX_TYPES; i++) {
+    for (zint i = 0; i < DAT_MAX_TYPES; i++) {
         datMark(info->functions[i]);
     }
 
