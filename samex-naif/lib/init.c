@@ -105,14 +105,14 @@ static void makePrimitiveContext(void) {
  * primitive-only global context.
  */
 static zvalue evalFile(zvalue directory, zvalue name) {
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
 
     zvalue path = GFN_CALL(cat, directory, STR_CH_SLASH, name);
     zvalue programText = ioFlatReadFileUtf8(path);
     zvalue programTree = langParseProgram0(programText);
     zvalue result = langEval0(PRIMITIVE_CONTEXT, programTree);
 
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
     return result;
 }
 
@@ -142,10 +142,10 @@ zvalue libNewContext(const char *libraryDir) {
 
     makePrimitiveContext();
 
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
     zvalue result = getLibrary(stringFromUtf8(-1, libraryDir));
 
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
 
     // Force a garbage collection here, to have a maximally clean slate when
     // moving into main program execution.

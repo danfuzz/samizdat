@@ -307,7 +307,7 @@ static zvalue tokenizeOne(ParseState *state) {
 zvalue langTokenize0(zvalue string) {
     MOD_USE(lang);
 
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
 
     zint size = collSize(string);
 
@@ -335,6 +335,6 @@ zvalue langTokenize0(zvalue string) {
     }
 
     zvalue resultList = listFromArray(out, result);
-    pbFrameReturn(save, resultList);
+    datFrameReturn(save, resultList);
     return resultList;
 }

@@ -70,7 +70,7 @@ static zvalue makeNonlocalExit(void) {
 zvalue nleCall(znleFunction function, void *state) {
     UTIL_TRACE_START(NULL, NULL);
 
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
     zvalue result;
 
     zvalue exitFunction = makeNonlocalExit();
@@ -85,7 +85,7 @@ zvalue nleCall(znleFunction function, void *state) {
     }
 
     info->active = false;
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
     UTIL_TRACE_END();
 
     return result;

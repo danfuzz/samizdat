@@ -248,7 +248,7 @@ zvalue pbAllocValue(zvalue type, zint extraBytes) {
 
     allocationCount++;
     enlist(&liveHead, result);
-    pbFrameAdd(result);
+    datFrameAdd(result);
     sanityCheck(false);
 
     return result;

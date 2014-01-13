@@ -127,11 +127,11 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     }
 
     UTIL_TRACE_START(callReporter, function);
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
 
     zvalue result = funCall0(function, argCount, args);
 
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
     UTIL_TRACE_END();
 
     return result;

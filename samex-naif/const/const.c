@@ -33,7 +33,7 @@
 
 /** Initializes the module. */
 MOD_INIT(const) {
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
 
     MOD_USE(Value);
 
@@ -48,7 +48,7 @@ MOD_INIT(const) {
 
     #include "const/const-def.h"
 
-    pbFrameReturn(save, NULL);
+    datFrameReturn(save, NULL);
 
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.

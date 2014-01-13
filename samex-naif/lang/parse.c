@@ -305,10 +305,10 @@ zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
             break;
         }
 
-        zstackPointer save = pbFrameStart();
+        zstackPointer save = datFrameStart();
         item = rule(state);
 
-        pbFrameReturn(save, item);
+        datFrameReturn(save, item);
 
         if (item == NULL) {
             RESET();
@@ -880,26 +880,26 @@ DEF_PARSE(unaryExpression) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression) {
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(unaryExpression); }
     if (result == NULL) { result = PARSE(fnExpression); }
 
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
     return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(statement) {
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varDef); }
     if (result == NULL) { result = PARSE(fnDef); }
     if (result == NULL) { result = PARSE(expression); }
 
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
     return result;
 }
 

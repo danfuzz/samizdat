@@ -104,7 +104,7 @@ METH_IMPL(Box, fetch) {
         // could become garbage after this, we have to treat the value as
         // "escaped" and so explicitly add the result value to the frame at
         // this point. This ensures that GC will be able to find it.
-        pbFrameAdd(result);
+        datFrameAdd(result);
     }
 
     return result;

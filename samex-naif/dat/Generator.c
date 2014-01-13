@@ -34,7 +34,7 @@ static zvalue collectOrFilter(zvalue generator, zvalue function) {
     zint maxSize = DAT_SOFT_MAX_GENERATOR_ITEMS;
     zint at = 0;
 
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
     zvalue box = makeCell(NULL);
 
     for (;;) {
@@ -76,7 +76,7 @@ static zvalue collectOrFilter(zvalue generator, zvalue function) {
     }
 
     zvalue result = listFromArray(at, arr);
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
 
     if (arr != stackArr) {
         utilFree(arr);

@@ -104,9 +104,9 @@ zorder valOrder(zvalue v1, zvalue v2) {
     }
 
     if (haveSameType(v1, v2)) {
-        zstackPointer save = pbFrameStart();
+        zstackPointer save = datFrameStart();
         zorder result = zintFromInt(GFN_CALL(totOrder, v1, v2));
-        pbFrameReturn(save, NULL);
+        datFrameReturn(save, NULL);
         return result;
     } else {
         return valOrder(typeOf(v1), typeOf(v2));
