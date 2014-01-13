@@ -25,7 +25,7 @@ static zvalue CACHED_CHARS[DAT_MAX_CACHED_CHAR + 1];
  * Shared `zchar` array, used to avoid memory allocation in common cases.
  * **Note:** It is only safe to use this via `allocArray`.
  */
-static zchar SHARED_ARRAY[DAT_SOFT_MAX_STRING];
+static zchar SHARED_ARRAY[DAT_MAX_STRING_SOFT];
 
 /**
  * String structure.
@@ -84,7 +84,7 @@ static void assertStringSize1(zvalue value) {
  * while the allocation is active.
  */
 static zchar *allocArray(zint size) {
-    if (size < DAT_SOFT_MAX_STRING) {
+    if (size < DAT_MAX_STRING_SOFT) {
         return SHARED_ARRAY;
     } else {
         return utilAlloc(size * sizeof(zchar));

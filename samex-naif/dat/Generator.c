@@ -29,9 +29,9 @@
  * Common implementation for `Value.collect` and `Value.filter`.
  */
 static zvalue collectOrFilter(zvalue generator, zvalue function) {
-    zvalue stackArr[DAT_SOFT_MAX_GENERATOR_ITEMS];
+    zvalue stackArr[DAT_MAX_GENERATOR_ITEMS_SOFT];
     zvalue *arr = stackArr;
-    zint maxSize = DAT_SOFT_MAX_GENERATOR_ITEMS;
+    zint maxSize = DAT_MAX_GENERATOR_ITEMS_SOFT;
     zint at = 0;
 
     zstackPointer save = datFrameStart();
@@ -63,7 +63,7 @@ static zvalue collectOrFilter(zvalue generator, zvalue function) {
 
         if (at == maxSize) {
             if (arr == stackArr) {
-                maxSize = DAT_HARD_MAX_GENERATOR_ITEMS;
+                maxSize = DAT_MAX_GENERATOR_ITEMS_HARD;
                 arr = utilAlloc(maxSize * sizeof(zvalue));
                 memcpy(arr, stackArr, at * sizeof(zvalue));
             } else {
