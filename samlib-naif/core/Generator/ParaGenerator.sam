@@ -38,7 +38,7 @@ fn ParaGenerator_nextValue(gen, box) {
     ifIs { <> eq(subGens, []) }
         { return Generator::nextValue(Box::nullBox, box) };
 
-    def generatorCalls = Generator::filter(
+    def generatorCalls = Generator::collect(
         subGens,
         { gen ->
             def innerBox = Box::makePromise();
@@ -51,9 +51,9 @@ fn ParaGenerator_nextValue(gen, box) {
                 }
         });
 
-    def yields = Generator::filter(generatorCalls,
+    def yields = Generator::collect(generatorCalls,
         { one <> Sequence::nth(one, 0) });
-    def nexts = Generator::filter(generatorCalls,
+    def nexts = Generator::collect(generatorCalls,
         { one <> Sequence::nth(one, 1) });
 
     Box::store(box, yields);

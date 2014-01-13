@@ -21,9 +21,6 @@
 /** Generic `collect(generator)`: Documenetd in spec. */
 extern zvalue GFN_collect;
 
-/** Generic `filter(generator, filterFunction)`: Documenetd in spec. */
-extern zvalue GFN_filter;
-
 /** Generic `nextValue(generator, box)`: Documenetd in spec. */
 extern zvalue GFN_nextValue;
 

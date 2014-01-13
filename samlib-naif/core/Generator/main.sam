@@ -36,8 +36,8 @@ fn filterAll(filterFunction, generators*) {
     <> ifIs { <> eq(Collection::sizeOf(generators), 1) }
         {
             ## We are filtering a single generator, so just use the
-            ## special-case (and often more efficient) `filter`.
-            <> Generator::filter(generators*, filterFunction)
+            ## special-case (and often more efficient) `collect`.
+            <> Generator::collect(generators*, filterFunction)
         }
         {
             ## The general case.
@@ -118,7 +118,6 @@ fn generatorPump(generator) {
 <> {
     ## Re-exported from proto module.
     collect:                 Generator::collect,
-    filter:                  Generator::filter,
     nextValue:               Generator::nextValue,
 
     ## Re-exported from submodules.

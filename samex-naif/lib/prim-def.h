@@ -72,7 +72,6 @@ PRIM_DEF(Sequence_sliceInclusive, GFN_sliceInclusive);
 
 // Generic functions: `Generator` protocol, intended for modularization
 PRIM_DEF(Generator_collect,      GFN_collect);
-PRIM_DEF(Generator_filter,       GFN_filter);
 PRIM_DEF(Generator_nextValue,    GFN_nextValue);
 
 // Generic functions: `Number` protocol, intended for modularization
