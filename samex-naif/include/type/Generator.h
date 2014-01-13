@@ -10,9 +10,6 @@
  * **Note:** There is no in-model value `Generator`. That said, there is
  * effectively a `Generator` interface or protocol, in that things that
  * implement the `next` and `collect` generics are generators.
- *
- * **Note:** Because `generator` per se is an awkward prefix, instead the
- * suggestive prefix `gtr` is used.
  */
 
 #ifndef _TYPE_GENERATOR_H_
