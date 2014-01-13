@@ -59,7 +59,7 @@ fn compile(sourcePath, targetPath) {
             <> "\
             \/  LIT_\(index) =
             \/\(initText);
-            \/  pbImmortalize(LIT_\(index));\n"
+            \/  datImmortalize(LIT_\(index));\n"
         )*);
 
     def closuresNode = collectClosures(litsNode::node);
