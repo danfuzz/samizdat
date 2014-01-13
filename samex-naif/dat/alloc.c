@@ -142,7 +142,7 @@ static void doGc(void) {
     zint counter; // Used throughout.
 
     if (GFN_totEq == NULL) {
-        die("`pb` module not yet initialized.");
+        die("`dat` module not yet initialized.");
     }
 
     sanityCheck(false);

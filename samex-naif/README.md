@@ -51,26 +51,23 @@ later-named modules depending only on earlier-named ones):
   messaging, Unicode conversion, and about the simplest memory
   allocation facility.
 
-* `pb` &mdash; "Lowest-layer" data and plumbing model. This implements just
-  enough of the model to be able to do function definition and calling.
-  Also provides related utilities, such as assertions. Depends on `util`.
-
-* `dat` &mdash; "Low-layer" data model. This implements the Samizdat
-  low-layer data types not covered by `pb`, providing constructors, accessors,
-  and a handful of assertions. Depends on `util` and `pb`.
+* `dat` &mdash; "Low-layer" data and plubming model. This implements all the
+  low-layer data types as well as the subtrate for such stuff as allocation
+  and function calling. Also provides related utilities, such as assertions.
+  Depends on `util`.
 
 * `const` &mdash; Commonly-used in-model constants and related utilities.
   This includes things like strings used during parsing, and the like.
-  Depends on `util`, `pb`, and `dat`.
+  Depends on `util` and `dat`.
 
 * `io` &mdash; I/O functions. This implements a minimal set of I/O
-  operations. Depends on `util`, `pb`, `dat`, and `const`.
+  operations. Depends on `util`, `dat`, and `const`.
 
 * `lang` &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any of the library itself. Depends on `util`, `pb`, `dat`,
+  not implement any of the library itself. Depends on `util`, `dat`,
   and `const`.
 
 * `lib` &mdash; Library bindings. This implements both primitive and

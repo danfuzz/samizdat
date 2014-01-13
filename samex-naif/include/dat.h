@@ -14,7 +14,7 @@
 #include "module.h"
 #include "ztype.h"
 
-#include "dat/type.h"  // Types (must be included before other `pb` stuff).
+#include "dat/type.h"  // Types (must be included before other `dat` stuff).
 #include "dat/frame.h" // Frame (stack reference) management.
 
 
