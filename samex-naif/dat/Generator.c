@@ -21,70 +21,6 @@
 #include "zlimits.h"
 
 
-/*
- * Private definitions
- */
-
-/**
- * Common implementation for `Value.collect` and `Value.filter`.
- */
-static zvalue collectOrFilter(zvalue generator, zvalue function) {
-    zvalue stackArr[DAT_MAX_GENERATOR_ITEMS_SOFT];
-    zvalue *arr = stackArr;
-    zint maxSize = DAT_MAX_GENERATOR_ITEMS_SOFT;
-    zint at = 0;
-
-    zstackPointer save = datFrameStart();
-    zvalue box = makeCell(NULL);
-
-    for (;;) {
-        zvalue nextGen = GFN_CALL(nextValue, generator, box);
-
-        if (nextGen == NULL) {
-            break;
-        }
-
-        zvalue one = GFN_CALL(fetch, box);
-        generator = nextGen;
-
-        // Ideally, we wouldn't reuse the box (we'd use N yield boxes), but
-        // for the sake of efficiency, we use the same box but reset it for
-        // each iteration.
-        GFN_CALL(store, box);
-
-        if (function != NULL) {
-            one = FUN_CALL(function, one);
-            if (one == NULL) {
-                continue;
-            }
-        } else if (one == NULL) {
-            die("Unexpected lack of result.");
-        }
-
-        if (at == maxSize) {
-            if (arr == stackArr) {
-                maxSize = DAT_MAX_GENERATOR_ITEMS_HARD;
-                arr = utilAlloc(maxSize * sizeof(zvalue));
-                memcpy(arr, stackArr, at * sizeof(zvalue));
-            } else {
-                die("Generator produced way too many items.");
-            }
-        }
-
-        arr[at] = one;
-        at++;
-    }
-
-    zvalue result = listFromArray(at, arr);
-    datFrameReturn(save, result);
-
-    if (arr != stackArr) {
-        utilFree(arr);
-    }
-
-    return result;
-}
-
 
 /*
  * Type Definition: `Generator`
@@ -149,8 +85,60 @@ METH_IMPL(Collection, collect) {
 METH_IMPL(Value, collect) {
     zvalue generator = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
+    zvalue stackArr[DAT_MAX_GENERATOR_ITEMS_SOFT];
+    zvalue *arr = stackArr;
+    zint maxSize = DAT_MAX_GENERATOR_ITEMS_SOFT;
+    zint at = 0;
 
-    return collectOrFilter(generator, function);
+    zstackPointer save = datFrameStart();
+    zvalue box = makeCell(NULL);
+
+    for (;;) {
+        zvalue nextGen = GFN_CALL(nextValue, generator, box);
+
+        if (nextGen == NULL) {
+            break;
+        }
+
+        zvalue one = GFN_CALL(fetch, box);
+        generator = nextGen;
+
+        // Ideally, we wouldn't reuse the box (we'd use N yield boxes), but
+        // for the sake of efficiency, we use the same box but reset it for
+        // each iteration.
+        GFN_CALL(store, box);
+
+        if (function != NULL) {
+            one = FUN_CALL(function, one);
+            if (one == NULL) {
+                continue;
+            }
+        } else if (one == NULL) {
+            die("Unexpected lack of result.");
+        }
+
+        if (at == maxSize) {
+            if (arr == stackArr) {
+                maxSize = DAT_MAX_GENERATOR_ITEMS_HARD;
+                arr = utilAlloc(maxSize * sizeof(zvalue));
+                memcpy(arr, stackArr, at * sizeof(zvalue));
+            } else {
+                die("Generator produced way too many items.");
+            }
+        }
+
+        arr[at] = one;
+        at++;
+    }
+
+    zvalue result = listFromArray(at, arr);
+    datFrameReturn(save, result);
+
+    if (arr != stackArr) {
+        utilFree(arr);
+    }
+
+    return result;
 }
 
 /** Initializes the module. */
