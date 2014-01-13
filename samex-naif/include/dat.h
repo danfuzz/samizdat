@@ -82,7 +82,7 @@ void pbMark(zvalue value);
  * Gets a pointer to the data payload of a `zvalue`.
  */
 inline void *pbPayload(zvalue value) {
-    return (void *) (((char *) value) + PB_HEADER_SIZE);
+    return (void *) (((char *) value) + DAT_HEADER_SIZE);
 }
 
 #endif

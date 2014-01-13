@@ -32,7 +32,7 @@ enum {
 /**
  * Common fields across all values. Used as a header for other types.
  */
-typedef struct PbHeader {
+typedef struct DatHeader {
     /**
      * Forward circular link. Every value is linked into a circularly
      * linked list, which identifies its current fate / classification.
@@ -59,7 +59,7 @@ typedef struct PbHeader {
 
     /** Type-specific data goes here. */
     uint8_t payload[/*flexible*/];
-} PbHeader;
+} DatHeader;
 
 /**
  * Payload struct for type `Type`.

@@ -31,7 +31,7 @@ static zvalue immortals[PB_MAX_IMMORTALS];
 static zint immortalsSize = 0;
 
 /** List head for the list of all live values. Double-linked circular list. */
-static PbHeader liveHead = {
+static DatHeader liveHead = {
     .next = &liveHead,
     .prev = &liveHead,
     .magic = 0,
@@ -42,7 +42,7 @@ static PbHeader liveHead = {
 /**
  * List head for the list of all doomed values. Double-linked circular list.
  */
-static PbHeader doomedHead = {
+static DatHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,
     .magic = 0,
@@ -93,7 +93,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
 /**
  * Sanity check the circular list with the given head.
  */
-static void sanityCheckList(PbHeader *head) {
+static void sanityCheckList(DatHeader *head) {
     for (zvalue item = head->next; item != head; item = item->next) {
         thoroughlyValidate(item);
     }
@@ -119,7 +119,7 @@ static void sanityCheck(bool force) {
  * Links the given value into the given list, removing it from its
  * previous list (if any).
  */
-static void enlist(PbHeader *head, zvalue value) {
+static void enlist(DatHeader *head, zvalue value) {
     if (value->next != NULL) {
         zvalue next = value->next;
         zvalue prev = value->prev;
@@ -242,7 +242,7 @@ zvalue pbAllocValue(zvalue type, zint extraBytes) {
         sanityCheck(false);
     }
 
-    zvalue result = utilAlloc(sizeof(PbHeader) + extraBytes);
+    zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
     result->magic = PB_VALUE_MAGIC;
     result->type = type;
 

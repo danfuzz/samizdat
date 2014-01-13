@@ -411,8 +411,8 @@ MOD_INIT(typeSystem) {
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
-    if (PB_HEADER_SIZE != sizeof(PbHeader)) {
-        die("Mismatched value header size: should be %lu", sizeof(PbHeader));
+    if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
+        die("Mismatched value header size: should be %lu", sizeof(DatHeader));
     }
 }
 
