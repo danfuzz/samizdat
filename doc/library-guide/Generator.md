@@ -50,6 +50,12 @@ calls `store(box)` (storing void), and returns void.
 function is provided as a convenient thing to bind to `collect` for
 types that don't have anything fancier to do.
 
+#### `unboundedCollect(generator, optFilterFunction?) <>  n/a ## Terminates the runtime.`
+
+Handy implementation of `collect` which simply dies with a message indicating
+that the given generator is unbounded (that is, has infinite elements).
+This function is provided as a convenient thing to bind to `collect` for
+appropriate types.
 
 <br><br>
 ### In-Language Definitions

@@ -6,18 +6,18 @@
 ## `ValueGenerator` Type
 ##
 
+def unboundedCollect = submoduleUse("unboundedCollect")::unboundedCollect;
+
 def Generator = moduleUse({name: ["proto", "Generator"]});
 def Io0 = moduleUse({name: ["core", "Io0"]});
+
 
 ##
 ## Exported Definitions
 ##
 
 ## Documented in spec.
-fn ValueGenerator_collect(gen, optFilterFunction?) {
-    Io0::die("Unbounded generator.");
-};
-genericBind(Generator::collect, "ValueGenerator", ValueGenerator_collect);
+genericBind(Generator::collect, "ValueGenerator", unboundedCollect);
 
 ## Documented in spec.
 fn ValueGenerator_nextValue(gen, box) {

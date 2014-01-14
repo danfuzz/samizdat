@@ -138,11 +138,8 @@ fn makeOpenRange(firstValue, optIncrement?) {
     <> @OpenRange{firstValue, increment}
 };
 
-## Documented in spec.
-fn OpenRange_collect(range, optFilterFunction?) {
-    Io0::die("Unbounded generator.");
-};
-genericBind(Generator::collect, "OpenRange", OpenRange_collect);
+## Just use the standard "unbounded" implementation.
+genericBind(Generator::collect, "OpenRange", Generator::unboundedCollect);
 
 ## Documented in spec.
 fn OpenRange_nextValue(range, box) {

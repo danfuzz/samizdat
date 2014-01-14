@@ -15,7 +15,7 @@ def OptGenerator = submoduleUse("OptGenerator");
 def ParaGenerator = submoduleUse("ParaGenerator");
 def SerialGenerator = submoduleUse("SerialGenerator");
 def ValueGenerator = submoduleUse("ValueGenerator");
-
+def unboundedCollect = submoduleUse("unboundedCollect")::unboundedCollect;
 
 ##
 ## Exported Definitions
@@ -130,6 +130,7 @@ fn generatorPump(generator) {
     makeSerialGenerator:     SerialGenerator::makeSerialGenerator,
     makeValueGenerator:      ValueGenerator::makeValueGenerator,
     nullGenerator:           NullGenerator::nullGenerator,
+    unboundedCollect,
 
     ## Defined in this file.
     collectAsMap,
