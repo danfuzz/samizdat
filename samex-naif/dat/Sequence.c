@@ -139,6 +139,13 @@ static zvalue BI_Sequence_nthMapping = NULL;
 METH_IMPL(Sequence, collect) {
     zvalue coll = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
+
+    if ((function == NULL) && hasType(coll, TYPE_List)) {
+        // Special case: Collecting a list (without filtering) results in
+        // that same list.
+        return coll;
+    }
+
     zint size = collSize(coll);
     zvalue result[size];
     zint at = 0;
