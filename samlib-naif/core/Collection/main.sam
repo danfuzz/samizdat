@@ -8,9 +8,8 @@
 
 def Collection = moduleUse({name: ["proto", "Collection"]});
 
-## These just bind generics without adding exports.
+## This just binds generics without adding exports.
 submoduleUse("MapGenerator");
-submoduleUse("SequenceGenerator");
 
 
 ##
