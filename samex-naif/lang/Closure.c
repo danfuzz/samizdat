@@ -306,7 +306,6 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
 static zvalue buildClosure(zvalue node) {
     zvalue cachedClosure = getCachedClosure(node);
     zvalue result = datAllocValue(TYPE_Closure, sizeof(ClosureInfo));
-    ClosureInfo *info = getInfo(result);
 
     utilCpy(ClosureInfo, getInfo(result), getInfo(cachedClosure), 1);
     return result;
