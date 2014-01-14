@@ -1374,7 +1374,7 @@ def parIndexPostfix = {/
         index = { <> optStart* }
 
         {
-            def funcRef = ifIs { <> eq(typeOf(index), "fromStart") }
+            def funcRef = ifIs { <> hasType(index, "fromStart") }
                 { <> REF_get }
                 { <> REF_Sequence_nthFromEnd };
 

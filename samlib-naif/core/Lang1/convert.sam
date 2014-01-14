@@ -78,7 +78,7 @@ fn sequence_convertPex(node, formals) {
 
     ## Extract the formals out of any `varDef` nodes.
     def newFormals = Generator::filterAll(pexes) { pex ->
-        <> ifIs { <> eq(typeOf(pex), "varDef") }
+        <> ifIs { <> hasType(pex, "varDef") }
             { <> {name: dataOf(pex)::name} }
             { <> {} }
     };
@@ -88,7 +88,7 @@ fn sequence_convertPex(node, formals) {
     def convertedPexes =
         Generator::filterAll(Range::makeOpenRange(0), pexes)
             { n, pex ->
-                def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
+                def subPex = ifIs { <> hasType(pex, "varDef") }
                     { <> dataOf(pex)::value }
                     { <> pex };
                 <> convertPex(subPex,
