@@ -1,0 +1,35 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `MapGenerator` Type
+##
+## Payload is `{map: map, index: int}`.
+
+def Collection = moduleUse({name: ["proto", "Collection"]});
+def Generator = moduleUse({name: ["proto", "Generator"]});
+
+
+##
+## Exported Definitions
+##
+
+## Generator used when iterating over maps.
+fn MapGenerator_nextValue(gen, box) {
+    def data = dataOf(gen);
+    def index = data::index;
+
+    ## This uses void contagion to fail the `Box::store` call when `index` is
+    ## out of range for the collection.
+    <> ifIs { <> Box::store(box, &Collection::nthMapping(data::map, index)) }
+        {
+            <> @MapGenerator(
+                Collection::put(data, "index", Number::add(index, 1)))
+        }
+        {
+            ## Voided (out of elements).
+            Box::store(box)
+        }
+};
+genericBind(Generator::nextValue, "MapGenerator", MapGenerator_nextValue);

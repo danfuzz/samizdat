@@ -3,10 +3,12 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `SequenceGenerator` and `MapGenerator` Types
+## `SequenceGenerator` Type
 ##
-## Payload is `{seq: seq, index: int}` or `{map: map, index: int}`.
+## Payload is `{seq: seq, index: int}`.
 
+def Collection = moduleUse({name: ["proto", "Collection"]});
+def Sequence = moduleUse({name: ["proto", "Sequence"]});
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
@@ -33,22 +35,3 @@ fn SequenceGenerator_nextValue(gen, box) {
 };
 genericBind(Generator::nextValue, "SequenceGenerator",
     SequenceGenerator_nextValue);
-
-## Generator used when iterating over maps.
-fn MapGenerator_nextValue(gen, box) {
-    def data = dataOf(gen);
-    def index = data::index;
-
-    ## This uses void contagion to fail the `Box::store` call when `index` is
-    ## out of range for the collection.
-    <> ifIs { <> Box::store(box, &Collection::nthMapping(data::map, index)) }
-        {
-            <> @MapGenerator(
-                Collection::put(data, "index", Number::add(index, 1)))
-        }
-        {
-            ## Voided (out of elements).
-            Box::store(box)
-        }
-};
-genericBind(Generator::nextValue, "MapGenerator", MapGenerator_nextValue);
