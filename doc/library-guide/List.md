@@ -84,13 +84,10 @@ Returns an end-inclusive slice of the given list.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(list) <> list`
+#### `collect(list, optFilterFunction?) <> list`
 
-Returns `list`.
-
-#### `filter(list, filterFunction) <> list`
-
-Filters the elements of `list` using `filterFunction`.
+Filters the elements of `list` using the given filter function if supplied,
+or just returns `list` if there is no filter function.
 
 #### `nextValue(list, box) <> generator | void`
 

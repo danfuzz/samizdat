@@ -101,13 +101,9 @@ Returns an end-inclusive slice of the given string.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(string) <> list`
+#### `collect(string, filterFunction) <> list`
 
-Returns a list of all the characters of `string`, in order.
-
-#### `filter(string, filterFunction) <> list`
-
-Filters the characters of `string` using `filterFunction`.
+Collects or filters the characters of `string`.
 
 #### `nextValue(string, box) <> generator | void`
 

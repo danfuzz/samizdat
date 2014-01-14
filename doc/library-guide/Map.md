@@ -89,13 +89,9 @@ Returns the number of mappings in the map.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(map) <> list`
+#### `collect(map, optFilterFunction?) <> list`
 
-Returns a list of all the individual mappings of `map`, in sorted order.
-
-#### `filter(map, filterFunction) <> list`
-
-Filters the mappings of `map` using `filterFunction`.
+Collects or filters the mappings of `map`.
 
 #### `nextValue(map, box) <> generator | void`
 
