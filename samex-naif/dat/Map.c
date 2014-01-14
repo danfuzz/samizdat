@@ -400,7 +400,7 @@ METH_IMPL(Map, nextValue) {
     // `SequenceGenerator` value to represent the rest.
     zvalue map = args[0];
     zvalue box = args[1];
-    zvalue first = GFN_CALL(nthMapping, intFromZint(0));
+    zvalue first = GFN_CALL(nthMapping, map, intFromZint(0));
 
     if (first == NULL) {
         // `map` is empty.
