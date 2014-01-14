@@ -15,7 +15,7 @@ def Lang0 = moduleUse({name: ["core", "Lang0"]});
 ## Exported Definitions
 ##
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn eval(context, expressionNode) {
     def convertedNode = convertToLang0(expressionNode);
     <> Lang0::eval(context, convertedNode)

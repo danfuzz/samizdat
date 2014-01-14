@@ -12,7 +12,7 @@
  * Exported Definitions
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(Lang0_eval) {
     zvalue ctx = args[0];
     zvalue expressionNode = args[1];
@@ -20,22 +20,22 @@ PRIM_IMPL(Lang0_eval) {
     return langEval0(ctx, expressionNode);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(Lang0_evalBinary) {
     return datEvalBinary(args[0], args[1]);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(Lang0_parseExpression) {
     return langParseExpression0(args[0]);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(Lang0_parseProgram) {
     return langParseProgram0(args[0]);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(Lang0_tokenize) {
     return langTokenize0(args[0]);
 }

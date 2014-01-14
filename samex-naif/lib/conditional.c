@@ -14,7 +14,7 @@
  * Exported Definitions
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(ifIs) {
     if (FUN_CALL(args[0]) != NULL) {
         return FUN_CALL(args[1]);
@@ -25,7 +25,7 @@ PRIM_IMPL(ifIs) {
     }
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(ifNot) {
     if (FUN_CALL(args[0]) == NULL) {
         return FUN_CALL(args[1]);
@@ -34,7 +34,7 @@ PRIM_IMPL(ifNot) {
     }
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(ifValue) {
     zvalue result = FUN_CALL(args[0]);
 
@@ -47,7 +47,7 @@ PRIM_IMPL(ifValue) {
     }
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(ifValueOr) {
     zvalue result = FUN_CALL(args[0]);
 
@@ -58,7 +58,7 @@ PRIM_IMPL(ifValueOr) {
     }
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(ifValues) {
     zvalue testFunctions = args[0];
     zvalue valueFunction = args[1];
@@ -79,7 +79,7 @@ PRIM_IMPL(ifValues) {
     return funCall(valueFunction, size, results);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(loop) {
     zvalue function = args[0];
     for (;;) {
@@ -89,7 +89,7 @@ PRIM_IMPL(loop) {
     }
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(loopReduce) {
     zstackPointer save = datFrameStart();
     zvalue function = args[0];
@@ -104,7 +104,7 @@ PRIM_IMPL(loopReduce) {
     }
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(optValue) {
     zvalue function = args[0];
     zvalue value = FUN_CALL(function);

@@ -15,7 +15,7 @@
  * Exported Definitions
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(makeValueMap) {
     zint size = argCount - 1;
     zvalue value = args[size];

@@ -162,13 +162,13 @@ fn resolveLinks(sandboxDirectory, path) {
 ## Exported Definitions
 ##
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn fileExists(path) {
     <> ifIs { <> Io0::flatFileExists(flatFromPath(path)) }
         { <> path }
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn flatFromPath(path) {
     ifIs { <> eq(path, []) }
         { dieWith("Invalid empty path", path) };
@@ -193,7 +193,7 @@ fn flatFromPath(path) {
     <> cat(gen*)
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn pathFromFlat(string) {
     ## Reject the empty string.
     ifIs { <> eq(string, "") }
@@ -213,7 +213,7 @@ fn pathFromFlat(string) {
     <> components
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn pathListFromFlat(string) {
     ## Parse the given string into a list of flat paths.
     def flats = Peg::apply(parPathList, string);
@@ -222,18 +222,18 @@ fn pathListFromFlat(string) {
     <> Generator::filterAll(pathFromFlat, flats)
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn readFileUtf8(path) {
     <> Io0::flatReadFileUtf8(flatFromPath(path))
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn readLink(path) {
     <> ifValue { <> Io0::flatReadLink(flatFromPath(path)) }
         { newPath <> pathFromFlat(newPath) }
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn sandboxedReader(directory) {
     <> { path ->
         def fullPath = resolveLinks(directory, [directory*, path*]);
@@ -241,7 +241,7 @@ fn sandboxedReader(directory) {
     }
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn writeFileUtf8(path, text) {
     <> Io0::flatWriteFileUtf8(flatFromPath(path), text)
 };

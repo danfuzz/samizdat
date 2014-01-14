@@ -2207,7 +2207,7 @@ Box::store(parStatement2, implStatement2);
 ## Exported Definitions
 ##
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn parseExpression(expression) {
     def tokens = ifIs { <> isString(expression) }
         { <> tokenize(expression) }

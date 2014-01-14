@@ -285,7 +285,7 @@ genericBind(convertPexIn, "voidable", voidable_convertPexIn);
 ## Exported Definitions
 ##
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn convertToLang0(expressionNode) {
     <> convertPexIn(expressionNode);
 };

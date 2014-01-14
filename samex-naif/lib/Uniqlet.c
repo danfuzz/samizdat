@@ -12,7 +12,7 @@
  * Exported Definitions
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(makeUniqlet) {
     return makeUniqlet();
 }

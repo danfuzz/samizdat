@@ -14,7 +14,7 @@
  * Exported Definitions
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(dataOf) {
     zvalue value = args[0];
     zvalue secret = (argCount == 2) ? args[1] : NULL;
@@ -22,7 +22,7 @@ PRIM_IMPL(dataOf) {
     return valDataOf(value, secret);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -30,7 +30,7 @@ PRIM_IMPL(eq) {
     return valEq(v1, v2) ? v2 : NULL;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(ge) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -38,7 +38,7 @@ PRIM_IMPL(ge) {
     return (valOrder(v1, v2) >= 0) ? v2 : NULL;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(gt) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -46,7 +46,7 @@ PRIM_IMPL(gt) {
     return (valOrder(v1, v2) > 0) ? v2 : NULL;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(hasType) {
     zvalue value = args[0];
     zvalue type = args[1];
@@ -54,7 +54,7 @@ PRIM_IMPL(hasType) {
     return hasType(value, type) ? value : NULL;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(le) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -62,7 +62,7 @@ PRIM_IMPL(le) {
     return (valOrder(v1, v2) <= 0) ? v2 : NULL;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(lt) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -70,13 +70,13 @@ PRIM_IMPL(lt) {
     return (valOrder(v1, v2) < 0) ? v2 : NULL;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(makeValue) {
     zvalue value = (argCount == 2) ? args[1] : NULL;
     return makeTransValue(args[0], value);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(ne) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -84,12 +84,12 @@ PRIM_IMPL(ne) {
     return valEq(v1, v2) ? NULL : v2;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(totalOrder) {
     return intFromZint(valOrder(args[0], args[1]));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(typeOf) {
     return typeOf(args[0]);
 }

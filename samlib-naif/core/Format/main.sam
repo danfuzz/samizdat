@@ -301,7 +301,7 @@ genericBind(humanString, Value, Value_humanString);
 ## Exported Definitions
 ##
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn int(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
@@ -310,26 +310,26 @@ fn int(value, optBase?) {
         { Io0::die("Invalid base for int.") }
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn intHex(arg) {
     <> intWithBase(arg, 16)
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn source(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, true) }
         { <> "void" }
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn sourceUnadorned(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, false) }
         { <> "void" }
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 fn usual(value?) {
     <> ifValue { <> value* }
         { value <> humanString(value) }
@@ -344,7 +344,7 @@ def FORMATTERS = {
     x: intHex
 };
 
-## Documented in Samizdat Layer 0 spec.
+## Documented in spec.
 ##
 ## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 ## is defined in terms of other exported functions.

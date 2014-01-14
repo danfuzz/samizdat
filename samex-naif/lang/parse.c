@@ -162,17 +162,17 @@ static zvalue listAppend(zvalue list, zvalue elem) {
     return GFN_CALL(cat, list, listFrom1(elem));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeInterpolate(zvalue expression) {
     return makeTransValue(STR_interpolate, expression);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeLiteral(zvalue value) {
     return makeTransValue(STR_literal, value);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeThunk(zvalue expression) {
     zvalue value = mapFrom3(
         STR_formals, EMPTY_LIST,
@@ -181,18 +181,18 @@ static zvalue makeThunk(zvalue expression) {
     return makeTransValue(STR_closure, value);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_name, name, STR_value, value);
     return makeTransValue(STR_varDef, payload);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
     return makeTransValue(STR_varRef, name);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeCall(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
@@ -202,17 +202,17 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     return makeTransValue(STR_call, value);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeCallName(zvalue name, zvalue actuals) {
     return makeCall(makeVarRef(name), actuals);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeOptValueExpression(zvalue expression) {
     return makeCallName(STR_optValue, listFrom1(makeThunk(expression)));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
     zvalue actuals;
 
@@ -337,13 +337,13 @@ DEF_PARSE(optSemicolons) {
  * rules from the Samizdat Layer 0 spec.
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(expression);
 DEF_PARSE(programBody);
 DEF_PARSE(term);
 DEF_PARSE(unaryExpression);
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(parenExpression) {
     MARK();
 
@@ -359,12 +359,12 @@ DEF_PARSE(parenExpression) {
     return makeTransValue(STR_expression, expression);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(identifier) {
     return MATCH(identifier);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(varRef) {
     MARK();
 
@@ -373,7 +373,7 @@ DEF_PARSE(varRef) {
     return makeVarRef(dataOf(identifier));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(varDef) {
     MARK();
 
@@ -386,7 +386,7 @@ DEF_PARSE(varDef) {
     return makeVarDef(name, expression);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(yieldDef) {
     MARK();
 
@@ -397,7 +397,7 @@ DEF_PARSE(yieldDef) {
     return dataOf(identifier);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(optYieldDef) {
     zvalue result = PARSE(yieldDef);
     return (result != NULL) ? mapFrom1(STR_yieldDef, result) : EMPTY_MAP;
@@ -421,7 +421,7 @@ DEF_PARSE(formal1) {
     return typeOf(result);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(formal) {
     MARK();
 
@@ -440,7 +440,7 @@ DEF_PARSE(formal) {
     return mapFrom2(STR_name, name, STR_repeat, repeat);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(formalsList) {
     return PARSE_COMMA_SEQ(formal);
 }
@@ -462,7 +462,7 @@ DEF_PARSE(programDeclarations1) {
     return GFN_CALL(cat, mapFrom1(STR_formals, formals), yieldDef);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(programDeclarations) {
     zvalue result = NULL;
 
@@ -472,7 +472,7 @@ DEF_PARSE(programDeclarations) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
@@ -480,7 +480,7 @@ DEF_PARSE(program) {
     return makeTransValue(STR_closure, GFN_CALL(cat, declarations, body));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(closure) {
     MARK();
 
@@ -494,7 +494,7 @@ DEF_PARSE(closure) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(nullaryClosure) {
     MARK();
 
@@ -508,7 +508,7 @@ DEF_PARSE(nullaryClosure) {
     return c;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(codeOnlyClosure) {
     MARK();
 
@@ -549,7 +549,7 @@ DEF_PARSE(fnCommon2) {
     return mapFrom1(STR_name, dataOf(n));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(fnCommon) {
     MARK();
 
@@ -575,7 +575,7 @@ DEF_PARSE(fnCommon) {
             STR_statements, statements));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(fnDef) {
     MARK();
 
@@ -588,7 +588,7 @@ DEF_PARSE(fnDef) {
     return makeTransValue(STR_fnDef, funcMap);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(fnExpression) {
     MARK();
 
@@ -610,7 +610,7 @@ DEF_PARSE(fnExpression) {
     return makeCall(mainClosure, NULL);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(int) {
     MARK();
 
@@ -625,7 +625,7 @@ DEF_PARSE(int) {
     return makeLiteral(value);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(string) {
     MARK();
 
@@ -634,7 +634,7 @@ DEF_PARSE(string) {
     return makeLiteral(dataOf(string));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(identifierString) {
     zvalue result = NULL;
 
@@ -677,7 +677,7 @@ DEF_PARSE(key2) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(key) {
     zvalue result = NULL;
 
@@ -687,7 +687,7 @@ DEF_PARSE(key) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(mapping) {
     MARK();
 
@@ -719,7 +719,7 @@ DEF_PARSE(mapping) {
         listAppend(keys, makeTransValue(STR_expression, value)));
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(map) {
     MARK();
 
@@ -737,7 +737,7 @@ DEF_PARSE(map) {
     }
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(listItem) {
     MARK();
 
@@ -759,12 +759,12 @@ DEF_PARSE(listItem) {
     return PARSE(expression);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(unadornedList) {
     return PARSE_COMMA_SEQ(listItem);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(list) {
     MARK();
 
@@ -777,7 +777,7 @@ DEF_PARSE(list) {
         : makeCallName(STR_makeList, expressions);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(deriv) {
     MARK();
 
@@ -800,7 +800,7 @@ DEF_PARSE(deriv) {
     return makeCallName(STR_makeValue, args);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(term) {
     zvalue result = NULL;
 
@@ -816,7 +816,7 @@ DEF_PARSE(term) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(actualsList) {
     MARK();
 
@@ -830,7 +830,7 @@ DEF_PARSE(actualsList) {
     return PARSE_PLUS(closure);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(postfixOperator) {
     // We differ from the spec here, returning a payload or single token
     // (`*` or `?`) directly. The corresponding `unaryExpression` code
@@ -852,7 +852,7 @@ DEF_PARSE(postfixOperator) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(unaryExpression) {
     MARK();
 
@@ -878,7 +878,7 @@ DEF_PARSE(unaryExpression) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(expression) {
     zstackPointer save = datFrameStart();
     zvalue result = NULL;
@@ -890,7 +890,7 @@ DEF_PARSE(expression) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(statement) {
     zstackPointer save = datFrameStart();
     zvalue result = NULL;
@@ -904,7 +904,7 @@ DEF_PARSE(statement) {
 }
 
 /**
- * Documented in Samizdat Layer 0 spec. This implementation differs from the
+ * Documented in spec. This implementation differs from the
  * spec in that it will return `NULL` either if no diamond is present
  * or if it is a void yield. This is compensated for by matching changes to
  * the implementation of `programBody`, below.
@@ -939,7 +939,7 @@ DEF_PARSE(nonlocalExit2) {
     return makeVarRef(STR_return);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(nonlocalExit) {
     zvalue name = NULL;
 
@@ -951,7 +951,7 @@ DEF_PARSE(nonlocalExit) {
     return makeCallNonlocalExit(name, value);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 DEF_PARSE(programBody) {
     zvalue statements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.

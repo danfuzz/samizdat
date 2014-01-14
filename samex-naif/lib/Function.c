@@ -13,7 +13,7 @@
  * Exported Definitions
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(nonlocalExit) {
     zvalue yieldFunction = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;

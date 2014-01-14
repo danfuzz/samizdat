@@ -38,7 +38,7 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
  * Exported Definitions
  */
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(genericBind) {
     zvalue generic = args[0];
     zvalue type = args[1];
@@ -48,12 +48,12 @@ PRIM_IMPL(genericBind) {
     return NULL;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(makeRegularGeneric) {
     return doMakeGeneric(GFN_NONE, argCount, args);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
+/* Documented in spec. */
 PRIM_IMPL(makeUnitypeGeneric) {
     return doMakeGeneric(GFN_SAME_TYPE, argCount, args);
 }
