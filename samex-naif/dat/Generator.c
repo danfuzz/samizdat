@@ -10,6 +10,7 @@
 
 #include "impl.h"
 #include "type/Box.h"
+#include "type/Builtin.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
 #include "type/Int.h"
@@ -20,19 +21,12 @@
 #include "zlimits.h"
 
 
-
 /*
  * Type Definition: `Generator`
- *
- * This includes bindings for the methods on all the core types.
  */
 
-/**
- * Does generator collection/filtering to get a list. This is what's bound
- * to type `Value`, on the assumption that the value in question has a binding
- * for the generic `nextValue`, which this function uses.
- */
-METH_IMPL(Value, collect) {
+/** "Standard" `collect` implementation. Documented in spec. */
+METH_IMPL(Generator, stdCollect) {
     zvalue generator = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
     zvalue stackArr[DAT_MAX_GENERATOR_ITEMS_SOFT];
@@ -102,7 +96,10 @@ MOD_INIT(Generator) {
     GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
     datImmortalize(GFN_nextValue);
 
-    METH_BIND(Value,  collect);
+    FUN_Generator_stdCollect = makeBuiltin(1, 2,
+        METH_NAME(Generator, stdCollect),
+        stringFromUtf8(-1, "Generator.stdCollect"));
+    datImmortalize(FUN_Generator_stdCollect);
 }
 
 /* Documented in header. */
@@ -110,3 +107,6 @@ zvalue GFN_collect = NULL;
 
 /* Documented in header. */
 zvalue GFN_nextValue = NULL;
+
+/* Documented in header. */
+zvalue FUN_Generator_stdCollect = NULL;

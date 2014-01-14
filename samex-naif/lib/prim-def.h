@@ -115,6 +115,7 @@ PRIM_FUNC(totalOrder,            2, 2);
 PRIM_FUNC(typeOf,                1, 1);
 
 // Primitive functions: intended for modularization
+PRIM_DEF(Generator_stdCollect, FUN_Generator_stdCollect);
 PRIM_FUNC(Box_makeCell,          0, 1);
 PRIM_FUNC(Box_makePromise,       0, 0);
 PRIM_FUNC(Io0_flatCwd,           0, 0);

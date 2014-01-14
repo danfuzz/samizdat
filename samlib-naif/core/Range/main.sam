@@ -123,6 +123,9 @@ fn ClosedRange_nextValue(range, box) {
 };
 genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 
+## Just use the standard implementation.
+genericBind(Generator::collect, "ClosedRange", Generator::stdCollect);
+
 
 ##
 ## Exported Definitions: `OpenRange`

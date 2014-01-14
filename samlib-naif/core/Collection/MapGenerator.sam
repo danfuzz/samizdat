@@ -33,3 +33,6 @@ fn MapGenerator_nextValue(gen, box) {
         }
 };
 genericBind(Generator::nextValue, "MapGenerator", MapGenerator_nextValue);
+
+## Just use the standard implementation.
+genericBind(Generator::collect, "MapGenerator", Generator_stdCollect);

@@ -24,5 +24,11 @@ extern zvalue GFN_collect;
 /** Generic `nextValue(generator, box)`: Documenetd in spec. */
 extern zvalue GFN_nextValue;
 
+/**
+ * "Standard" implementation of `collect`, in terms of `nextValue`.
+ * Documented in spec.
+ */
+extern zvalue FUN_Generator_stdCollect;
+
 
 #endif

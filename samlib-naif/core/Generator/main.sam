@@ -115,6 +115,9 @@ fn generatorPump(generator) {
 };
 
 <> {
+    ## Re-exported from builtins.
+    stdCollect:              Generator_stdCollect,
+
     ## Re-exported from proto module.
     collect:                 Generator::collect,
     nextValue:               Generator::nextValue,

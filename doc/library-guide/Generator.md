@@ -44,7 +44,11 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### Primitive Definitions
 
-(none)
+#### `stdCollect(generator, optFilterFunction?) <> list`
+
+"Standard" implementation of `collect`, in terms of `nextValue`. This
+function is provided as a convenient thing to bind to `collect` for
+types that don't have anything fancier to do.
 
 
 <br><br>

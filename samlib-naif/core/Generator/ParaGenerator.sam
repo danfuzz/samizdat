@@ -61,6 +61,9 @@ fn ParaGenerator_nextValue(gen, box) {
 };
 genericBind(Generator::nextValue, "ParaGenerator", ParaGenerator_nextValue);
 
+## Just use the standard implementation.
+genericBind(Generator::collect, "ParaGenerator", Generator_stdCollect);
+
 <> {
     makeParaGenerator
 }
