@@ -8,15 +8,19 @@
  * Sequence values
  */
 
+#include "const.h"
 #include "impl.h"
+#include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Sequence.h"
+#include "type/Generator.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
 #include "type/Type.h"
+#include "type/Value.h"
 
 
 /*
@@ -116,14 +120,43 @@ zint seqPutIndexStrict(zint size, zvalue n) {
  * methods are bound on many types.
  */
 
+/** Builtin for `Sequence.collect`. */
+static zvalue BI_Sequence_collect = NULL;
+
 /** Builtin for `Sequence.get`. */
 static zvalue BI_Sequence_get = NULL;
 
 /** Builtin for `Sequence.keyList`. */
 static zvalue BI_Sequence_keyList = NULL;
 
+/** Builtin for `Sequence.nextValue`. */
+static zvalue BI_Sequence_nextValue = NULL;
+
 /** Builtin for `Sequence.nthMapping`. */
 static zvalue BI_Sequence_nthMapping = NULL;
+
+/* Documented in header. */
+METH_IMPL(Sequence, collect) {
+    zvalue coll = args[0];
+    zvalue function = (argCount > 1) ? args[1] : NULL;
+    zint size = collSize(coll);
+    zvalue result[size];
+    zint at = 0;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue elem = seqNth(coll, i);
+        zvalue one = (function == NULL)
+            ? elem
+            : FUN_CALL(function, elem);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return listFromArray(at, result);
+}
 
 /* Documented in header. */
 METH_IMPL(Sequence, get) {
@@ -152,6 +185,29 @@ METH_IMPL(Sequence, keyList) {
 }
 
 /* Documented in header. */
+METH_IMPL(Sequence, nextValue) {
+    // This yields the first element directly (if any), and returns a
+    // `SequenceGenerator` value to represent the rest.
+    zvalue seq = args[0];
+    zvalue box = args[1];
+    zvalue first = seqNth(seq, 0);
+
+    if (first == NULL) {
+        // `seq` is empty.
+        GFN_CALL(store, box);
+        return NULL;
+    } else {
+        GFN_CALL(store, box, first);
+        return makeTransValue(
+            STR_SequenceGenerator,
+            mapFromArgs(
+                STR_seq,   seq,
+                STR_index, intFromZint(1),
+                NULL));
+    }
+}
+
+/* Documented in header. */
 METH_IMPL(Sequence, nthMapping) {
     zvalue seq = args[0];
     zvalue n = args[1];
@@ -167,14 +223,17 @@ METH_IMPL(Sequence, nthMapping) {
 
 /* Documented in header. */
 void seqBind(zvalue type) {
+    genericBind(GFN_collect,    type, BI_Sequence_collect);
     genericBind(GFN_get,        type, BI_Sequence_get);
     genericBind(GFN_keyList,    type, BI_Sequence_keyList);
+    genericBind(GFN_nextValue,  type, BI_Sequence_nextValue);
     genericBind(GFN_nthMapping, type, BI_Sequence_nthMapping);
 }
 
 /** Initializes the module. */
 MOD_INIT(Sequence) {
     MOD_USE(Collection);
+    MOD_USE_NEXT(Generator);
 
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
     datImmortalize(GFN_nth);
@@ -190,6 +249,10 @@ MOD_INIT(Sequence) {
         stringFromUtf8(-1, "sliceInclusive"));
     datImmortalize(GFN_sliceInclusive);
 
+    BI_Sequence_collect = makeBuiltin(1, 2, METH_NAME(Sequence, collect),
+        stringFromUtf8(-1, "Sequence.collect"));
+    datImmortalize(BI_Sequence_collect);
+
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get),
         stringFromUtf8(-1, "Sequence.get"));
     datImmortalize(BI_Sequence_get);
@@ -197,6 +260,10 @@ MOD_INIT(Sequence) {
     BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList),
         stringFromUtf8(-1, "Sequence.keyList"));
     datImmortalize(BI_Sequence_keyList);
+
+    BI_Sequence_nextValue = makeBuiltin(2, 2, METH_NAME(Sequence, nextValue),
+        stringFromUtf8(-1, "Sequence.nextValue"));
+    datImmortalize(BI_Sequence_nextValue);
 
     BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
         stringFromUtf8(-1, "Sequence.nthMapping"));

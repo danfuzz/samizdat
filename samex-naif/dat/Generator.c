@@ -14,7 +14,6 @@
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
-#include "type/Map.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -27,55 +26,6 @@
  *
  * This includes bindings for the methods on all the core types.
  */
-
-/* Documented in header. */
-METH_IMPL(Map, collect) {
-    zvalue map = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
-    zint size = collSize(map);
-    zmapping mappings[size];
-    zvalue result[size];
-    zint at = 0;
-
-    arrayFromMap(mappings, map);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue elem = mapFromArray(1, &mappings[i]);
-        zvalue one = (function == NULL)
-            ? elem
-            : FUN_CALL(function, elem);
-
-        if (one != NULL) {
-            result[at] = one;
-            at++;
-        }
-    }
-
-    return listFromArray(at, result);
-}
-
-/* Documented in header. */
-METH_IMPL(Collection, collect) {
-    zvalue coll = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
-    zint size = collSize(coll);
-    zvalue result[size];
-    zint at = 0;
-
-    for (zint i = 0; i < size; i++) {
-        zvalue elem = seqNth(coll, i);
-        zvalue one = (function == NULL)
-            ? elem
-            : FUN_CALL(function, elem);
-
-        if (one != NULL) {
-            result[at] = one;
-            at++;
-        }
-    }
-
-    return listFromArray(at, result);
-}
 
 /**
  * Does generator collection/filtering to get a list. This is what's bound
@@ -144,9 +94,7 @@ METH_IMPL(Value, collect) {
 /** Initializes the module. */
 MOD_INIT(Generator) {
     MOD_USE(Box);
-    MOD_USE(List);
-    MOD_USE(Map);
-    MOD_USE(String);
+    MOD_USE_NEXT(List);
 
     GFN_collect = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "collect"));
     datImmortalize(GFN_collect);
@@ -154,10 +102,7 @@ MOD_INIT(Generator) {
     GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
     datImmortalize(GFN_nextValue);
 
-    METH_BIND(Map,    collect);
     METH_BIND(Value,  collect);
-    genericBindPrim(GFN_collect, TYPE_List,   Collection_collect, "List.collect");
-    genericBindPrim(GFN_collect, TYPE_String, Collection_collect, "String.collect");
 }
 
 /* Documented in header. */

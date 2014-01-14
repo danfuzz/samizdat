@@ -4,7 +4,10 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
+#include "type/Box.h"
+#include "type/Generator.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -285,6 +288,32 @@ METH_IMPL(Map, cat) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, collect) {
+    zvalue map = args[0];
+    zvalue function = (argCount > 1) ? args[1] : NULL;
+    zint size = collSize(map);
+    zmapping mappings[size];
+    zvalue result[size];
+    zint at = 0;
+
+    arrayFromMap(mappings, map);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue elem = mapFromArray(1, &mappings[i]);
+        zvalue one = (function == NULL)
+            ? elem
+            : FUN_CALL(function, elem);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return listFromArray(at, result);
+}
+
+/* Documented in header. */
 METH_IMPL(Map, del) {
     zvalue map = args[0];
     zvalue key = args[1];
@@ -363,6 +392,29 @@ METH_IMPL(Map, keyOf) {
     }
 
     return info->elems[0].key;
+}
+
+/* Documented in header. */
+METH_IMPL(Map, nextValue) {
+    // This yields the first element directly (if any), and returns a
+    // `SequenceGenerator` value to represent the rest.
+    zvalue map = args[0];
+    zvalue box = args[1];
+    zvalue first = GFN_CALL(nthMapping, intFromZint(0));
+
+    if (first == NULL) {
+        // `map` is empty.
+        GFN_CALL(store, box);
+        return NULL;
+    } else {
+        GFN_CALL(store, box, first);
+        return makeTransValue(
+            STR_MapGenerator,
+            mapFromArgs(
+                STR_map,   map,
+                STR_index, intFromZint(1),
+                NULL));
+    }
 }
 
 /* Documented in header. */
@@ -515,17 +567,21 @@ METH_IMPL(Map, valueOf) {
 /** Initializes the module. */
 MOD_INIT(Map) {
     MOD_USE(Collection);
+    MOD_USE(Generator);
+    MOD_USE(List);
     MOD_USE(MapCache);
     MOD_USE(OneOff);
 
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
 
     METH_BIND(Map, cat);
+    METH_BIND(Map, collect);
     METH_BIND(Map, del);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, keyList);
     METH_BIND(Map, keyOf);
+    METH_BIND(Map, nextValue);
     METH_BIND(Map, nthMapping);
     METH_BIND(Map, put);
     METH_BIND(Map, sizeOf);
