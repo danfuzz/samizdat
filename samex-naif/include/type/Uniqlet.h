@@ -11,7 +11,7 @@
 #ifndef _TYPE_UNIQLET_H_
 #define _TYPE_UNIQLET_H_
 
-#include "pb.h"
+#include "dat.h"
 
 
 /** Type value for in-model type `Uniqlet`. */

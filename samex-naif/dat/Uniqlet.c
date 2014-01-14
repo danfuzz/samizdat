@@ -14,7 +14,7 @@
 
 /* Documented in header. */
 zvalue makeUniqlet(void) {
-    return pbAllocValue(TYPE_Uniqlet, 0);
+    return datAllocValue(TYPE_Uniqlet, 0);
 }
 
 

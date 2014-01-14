@@ -59,6 +59,9 @@ fn FilterGenerator_nextValue(gen, box) {
 genericBind(Generator::nextValue, "FilterGenerator",
     FilterGenerator_nextValue);
 
+## Just use the standard implementation.
+genericBind(Generator::collect, "FilterGenerator", Generator_stdCollect);
+
 <> {
     makeFilterGenerator
 }

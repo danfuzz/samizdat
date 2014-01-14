@@ -22,7 +22,7 @@
  */
 
 /* Documented in header. */
-zevalType langTypeMap[PB_MAX_TYPES];
+zevalType langTypeMap[DAT_MAX_TYPES];
 
 /* Documented in header. */
 extern zevalType evalTypeOf(zvalue node);

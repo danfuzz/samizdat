@@ -25,13 +25,13 @@ enum {
 };
 
 /** Array of all immortal values. */
-static zvalue immortals[PB_MAX_IMMORTALS];
+static zvalue immortals[DAT_MAX_IMMORTALS];
 
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
 
 /** List head for the list of all live values. Double-linked circular list. */
-static PbHeader liveHead = {
+static DatHeader liveHead = {
     .next = &liveHead,
     .prev = &liveHead,
     .magic = 0,
@@ -42,7 +42,7 @@ static PbHeader liveHead = {
 /**
  * List head for the list of all doomed values. Double-linked circular list.
  */
-static PbHeader doomedHead = {
+static DatHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,
     .magic = 0,
@@ -59,7 +59,7 @@ static zint allocationCount = 0;
  */
 static bool isAligned(void *maybeValue) {
     intptr_t bits = (intptr_t) (void *) maybeValue;
-    return ((bits & (PB_VALUE_ALIGNMENT - 1)) == 0);
+    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
 }
 
 /**
@@ -78,7 +78,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
         die("Invalid value (not in heap): %p", maybeValue);
     }
 
-    if (maybeValue->magic != PB_VALUE_MAGIC) {
+    if (maybeValue->magic != DAT_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", maybeValue);
     }
 
@@ -93,7 +93,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
 /**
  * Sanity check the circular list with the given head.
  */
-static void sanityCheckList(PbHeader *head) {
+static void sanityCheckList(DatHeader *head) {
     for (zvalue item = head->next; item != head; item = item->next) {
         thoroughlyValidate(item);
     }
@@ -119,7 +119,7 @@ static void sanityCheck(bool force) {
  * Links the given value into the given list, removing it from its
  * previous list (if any).
  */
-static void enlist(PbHeader *head, zvalue value) {
+static void enlist(DatHeader *head, zvalue value) {
     if (value->next != NULL) {
         zvalue next = value->next;
         zvalue prev = value->prev;
@@ -142,7 +142,7 @@ static void doGc(void) {
     zint counter; // Used throughout.
 
     if (GFN_totEq == NULL) {
-        die("`pb` module not yet initialized.");
+        die("`dat` module not yet initialized.");
     }
 
     sanityCheck(false);
@@ -167,7 +167,7 @@ static void doGc(void) {
     // the live list.
 
     for (zint i = 0; i < immortalsSize; i++) {
-        pbMark(immortals[i]);
+        datMark(immortals[i]);
     }
 
     if (CHATTY_GC) {
@@ -235,20 +235,20 @@ static void doGc(void) {
  */
 
 /* Documented in header. */
-zvalue pbAllocValue(zvalue type, zint extraBytes) {
-    if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
-        pbGc();
+zvalue datAllocValue(zvalue type, zint extraBytes) {
+    if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
+        datGc();
     } else {
         sanityCheck(false);
     }
 
-    zvalue result = utilAlloc(sizeof(PbHeader) + extraBytes);
-    result->magic = PB_VALUE_MAGIC;
+    zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
+    result->magic = DAT_VALUE_MAGIC;
     result->type = type;
 
     allocationCount++;
     enlist(&liveHead, result);
-    pbFrameAdd(result);
+    datFrameAdd(result);
     sanityCheck(false);
 
     return result;
@@ -260,7 +260,7 @@ void assertValid(zvalue value) {
         die("Null value.");
     }
 
-    if (value->magic != PB_VALUE_MAGIC) {
+    if (value->magic != DAT_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", value);
     }
 
@@ -277,7 +277,7 @@ void assertValidOrNull(zvalue value) {
 }
 
 /* Documented in header. */
-void pbGc(void) {
+void datGc(void) {
     allocationCount = 0;
 
     if (CHATTY_GC) {
@@ -294,8 +294,8 @@ void pbGc(void) {
 }
 
 /* Documented in header. */
-void pbImmortalize(zvalue value) {
-    if (immortalsSize == PB_MAX_IMMORTALS) {
+void datImmortalize(zvalue value) {
+    if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
 
@@ -306,7 +306,7 @@ void pbImmortalize(zvalue value) {
 }
 
 /* Documented in header. */
-void pbMark(zvalue value) {
+void datMark(zvalue value) {
     if ((value == NULL) || value->marked) {
         return;
     }
@@ -317,7 +317,7 @@ void pbMark(zvalue value) {
     GFN_CALL(gcMark, value);
 
     // As of this writing, types are all immortal, but that may change. This
-    // `pbMark` call has negligible cost and safeguards against that possible
+    // `datMark` call has negligible cost and safeguards against that possible
     // change.
-    pbMark(value->type);
+    datMark(value->type);
 }

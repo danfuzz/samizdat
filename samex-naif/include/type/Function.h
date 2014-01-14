@@ -11,7 +11,7 @@
 #ifndef _TYPE_FUNCTION_H_
 #define _TYPE_FUNCTION_H_
 
-#include "pb.h"
+#include "dat.h"
 
 #include <stddef.h>
 
@@ -113,15 +113,15 @@ inline zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
  * the fact that the first argument to the call here is the function, and not
  * a numbered argument.
  */
-#define PB_CONCAT(x, y) x##y
-#define PB_ARG_COUNT(...) \
-    PB_ARG_COUNT0(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-#define PB_ARG_COUNT0(...) PB_ARG_COUNT1(__VA_ARGS__)
-#define PB_ARG_COUNT1(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, n, ...) n
+#define DAT_CONCAT(x, y) x##y
+#define DAT_ARG_COUNT(...) \
+    DAT_ARG_COUNT0(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+#define DAT_ARG_COUNT0(...) DAT_ARG_COUNT1(__VA_ARGS__)
+#define DAT_ARG_COUNT1(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, n, ...) n
 #define FUN_CALL(...) \
-    FUN_CALL0(PB_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
+    FUN_CALL0(DAT_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
 #define FUN_CALL0(argCount, ...) \
-    PB_CONCAT(funCallWith, argCount)(__VA_ARGS__)
+    DAT_CONCAT(funCallWith, argCount)(__VA_ARGS__)
 
 /**
  * `GFN_CALL(name, arg, ...)`: Calls a generic function by (unadorned) name,

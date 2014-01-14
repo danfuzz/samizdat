@@ -19,25 +19,25 @@ MOD_INIT(Bitwise) {
     MOD_USE(Value);
 
     GFN_and = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "and"));
-    pbImmortalize(GFN_and);
+    datImmortalize(GFN_and);
 
     GFN_bit = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "bit"));
-    pbImmortalize(GFN_bit);
+    datImmortalize(GFN_bit);
 
     GFN_bitSize = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "bitSize"));
-    pbImmortalize(GFN_bitSize);
+    datImmortalize(GFN_bitSize);
 
     GFN_not = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "not"));
-    pbImmortalize(GFN_not);
+    datImmortalize(GFN_not);
 
     GFN_or = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "or"));
-    pbImmortalize(GFN_or);
+    datImmortalize(GFN_or);
 
     GFN_shl = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "shl"));
-    pbImmortalize(GFN_shl);
+    datImmortalize(GFN_shl);
 
     GFN_xor = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "xor"));
-    pbImmortalize(GFN_xor);
+    datImmortalize(GFN_xor);
 }
 
 /* Documented in header. */

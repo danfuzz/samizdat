@@ -38,22 +38,22 @@ MOD_INIT(OneOff) {
     MOD_USE(Value);
 
     GFN_keyOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyOf"));
-    pbImmortalize(GFN_keyOf);
+    datImmortalize(GFN_keyOf);
 
     GFN_nameOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "nameOf"));
-    pbImmortalize(GFN_nameOf);
+    datImmortalize(GFN_nameOf);
 
     GFN_toInt = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toInt"));
-    pbImmortalize(GFN_toInt);
+    datImmortalize(GFN_toInt);
 
     GFN_toNumber = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toNumber"));
-    pbImmortalize(GFN_toNumber);
+    datImmortalize(GFN_toNumber);
 
     GFN_toString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toString"));
-    pbImmortalize(GFN_toString);
+    datImmortalize(GFN_toString);
 
     GFN_valueOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "valueOf"));
-    pbImmortalize(GFN_valueOf);
+    datImmortalize(GFN_valueOf);
 }
 
 /* Documented in header. */

@@ -79,10 +79,10 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     // The first two cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Function` or `Generic`.
     switch (index) {
-        case PB_INDEX_BUILTIN: {
+        case DAT_INDEX_BUILTIN: {
             return builtinCall(function, argCount, args);
         }
-        case PB_INDEX_GENERIC: {
+        case DAT_INDEX_GENERIC: {
             return genericCall(function, argCount, args);
         }
         default: {
@@ -127,11 +127,11 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     }
 
     UTIL_TRACE_START(callReporter, function);
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
 
     zvalue result = funCall0(function, argCount, args);
 
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
     UTIL_TRACE_END();
 
     return result;
@@ -160,10 +160,10 @@ MOD_INIT(Function) {
     MOD_USE(Value);
 
     GFN_call = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "call"));
-    pbImmortalize(GFN_call);
+    datImmortalize(GFN_call);
 
     GFN_canCall = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "canCall"));
-    pbImmortalize(GFN_canCall);
+    datImmortalize(GFN_canCall);
 }
 
 /* Documented in header. */

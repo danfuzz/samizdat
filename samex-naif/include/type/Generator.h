@@ -10,25 +10,25 @@
  * **Note:** There is no in-model value `Generator`. That said, there is
  * effectively a `Generator` interface or protocol, in that things that
  * implement the `next` and `collect` generics are generators.
- *
- * **Note:** Because `generator` per se is an awkward prefix, instead the
- * suggestive prefix `gtr` is used.
  */
 
 #ifndef _TYPE_GENERATOR_H_
 #define _TYPE_GENERATOR_H_
 
-#include "pb.h"
+#include "dat.h"
 
 
 /** Generic `collect(generator)`: Documenetd in spec. */
 extern zvalue GFN_collect;
 
-/** Generic `filter(generator, filterFunction)`: Documenetd in spec. */
-extern zvalue GFN_filter;
-
 /** Generic `nextValue(generator, box)`: Documenetd in spec. */
 extern zvalue GFN_nextValue;
+
+/**
+ * "Standard" implementation of `collect`, in terms of `nextValue`.
+ * Documented in spec.
+ */
+extern zvalue FUN_Generator_stdCollect;
 
 
 #endif

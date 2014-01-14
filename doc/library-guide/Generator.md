@@ -14,26 +14,16 @@ elements in sequence).
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(generator) <> list`
+#### `collect(generator, optFilterFunction?) <> list`
 
 Collects all the elements yielded by the generator into a list. Returns
-the list.
+the list. If a filter function is given, calls it with each element (as
+a sole argument), and the collected results are the results of calling
+the function instead of the originally-generated values. If the filter
+function returns void for a given element, then that element is not
+represented in the collected output.
 
 Calling `collect` on an unbounded generator (one with an infinite number
-of elements to generate) is a fatal error (terminating the runtime).
-
-The default implementation of this method iterates over calls to
-`nextValue()` in the expected manner, collecting up all the yielded
-results.
-
-#### `filter(generator, filterFunction) <> list`
-
-Collects the result of calling `filterFunction` on each of the elements
-yielded by the generator, into a list. Returns the list. If a given call
-to `filterFunction` returns void, then there is no result element for the
-corresponding generated value.
-
-Calling `filter` on an unbounded generator (one with an infinite number
 of elements to generate) is a fatal error (terminating the runtime).
 
 The default implementation of this method iterates over calls to
@@ -54,7 +44,11 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### Primitive Definitions
 
-(none)
+#### `stdCollect(generator, optFilterFunction?) <> list`
+
+"Standard" implementation of `collect`, in terms of `nextValue`. This
+function is provided as a convenient thing to bind to `collect` for
+types that don't have anything fancier to do.
 
 
 <br><br>

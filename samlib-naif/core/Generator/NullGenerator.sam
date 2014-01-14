@@ -14,7 +14,7 @@ def Generator = moduleUse({name: ["proto", "Generator"]});
 ##
 
 ## Documented in spec.
-fn NullGenerator_collect(gen) {
+fn NullGenerator_collect(gen, optFilterFunction?) {
     <> []
 };
 genericBind(Generator::collect, "NullGenerator", NullGenerator_collect);

@@ -79,5 +79,5 @@ MOD_INIT(MapCache) {
     zvalue TYPE_MapCache =
         coreTypeFromName(stringFromUtf8(-1, "MapCache"), true);
     METH_BIND(MapCache, gcMark);
-    pbImmortalize(pbAllocValue(TYPE_MapCache, 0));
+    datImmortalize(datAllocValue(TYPE_MapCache, 0));
 }

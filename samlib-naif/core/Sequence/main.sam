@@ -8,6 +8,9 @@
 
 def Sequence = moduleUse({name: ["proto", "Sequence"]});
 
+## This just binds generics without adding exports.
+submoduleUse("SequenceGenerator");
+
 
 ##
 ## Exported Definitions

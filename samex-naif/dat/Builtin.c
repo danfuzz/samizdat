@@ -43,7 +43,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static BuiltinInfo *getInfo(zvalue builtin) {
-    return pbPayload(builtin);
+    return datPayload(builtin);
 }
 
 
@@ -79,7 +79,7 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(TYPE_Builtin, sizeof(BuiltinInfo));
+    zvalue result = datAllocValue(TYPE_Builtin, sizeof(BuiltinInfo));
     BuiltinInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
@@ -130,7 +130,7 @@ METH_IMPL(Builtin, gcMark) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
 
-    pbMark(info->name);
+    datMark(info->name);
     return NULL;
 }
 

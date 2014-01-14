@@ -71,7 +71,7 @@ static zvalue evalLibrary(void *libHandle, zvalue context) {
  */
 
 /* Documented in header. */
-zvalue pbEvalBinary(zvalue context, zvalue flatPath) {
+zvalue datEvalBinary(zvalue context, zvalue flatPath) {
     zint size = utf8SizeFromString(flatPath);
     char path[size + 1];
     utf8FromString(size + 1, path, flatPath);

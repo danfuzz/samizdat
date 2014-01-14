@@ -11,7 +11,7 @@
 #ifndef _TYPE_NUMBER_H_
 #define _TYPE_NUMBER_H_
 
-#include "pb.h"
+#include "dat.h"
 
 
 /** Generic `abs(number)`: Documented in spec. */

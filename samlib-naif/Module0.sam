@@ -27,7 +27,7 @@ def thePathsBox = Box_makeCell({});
 fn flattenPath(name) {
     ## Prefix each component with `/`, and concatenate them all together.
 
-    def withSlashes = Generator_filter(name, { elem <> cat("/", elem) });
+    def withSlashes = Generator_collect(name, { elem <> cat("/", elem) });
     <> cat(withSlashes*);
 };
 
@@ -163,7 +163,7 @@ fn withExports(modu, newExports) {
 fn Module_cat(modu, more*) {
     def data = dataOf(modu);
 
-    def allExports = Generator_filter([modu, more*], getExports);
+    def allExports = Generator_collect([modu, more*], getExports);
     def combinedExports = cat({}, allExports*);
 
     <> withExports(modu, combinedExports)
@@ -220,7 +220,7 @@ genericBind(Collection_sizeOf, "Module", Module_sizeOf);
 ## Documented in spec.
 fn getAllModules() {
     def mods = Box_fetch(theModulesBox);
-    <> Generator_filter(mods, { mod <> valueOf(mod) })
+    <> Generator_collect(mods, { mod <> valueOf(mod) })
 };
 
 ## Documented in spec.
@@ -235,7 +235,7 @@ fn getGlobals(modu) {
                 }
                 {
                     ## Selective global export.
-                    def bindings = Generator_filter(
+                    def bindings = Generator_collect(
                         globals,
                         { g <> {(g): get(modu, g)} });
                     <> cat(bindings*)
@@ -325,7 +325,7 @@ fn moduleUse(searchInfo, modulePaths?) {
 fn stringFromModuleName(fqName) {
     ## Prefix each component with "::", combine them all, and then drop the
     ## first two characters.
-    def parts = Generator_filter(fqName, { n <> cat("::", n) });
+    def parts = Generator_collect(fqName, { n <> cat("::", n) });
     def result = cat(parts*);
 
     <> Sequence_sliceInclusive(result, 2)

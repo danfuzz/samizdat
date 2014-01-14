@@ -13,7 +13,7 @@
  */
 
 /** Actual stack memory. */
-static zvalue theStack[PB_MAX_STACK];
+static zvalue theStack[DAT_MAX_STACK];
 
 /* Documented in header. */
 zstackPointer frameStackBase = theStack;
@@ -22,14 +22,14 @@ zstackPointer frameStackBase = theStack;
 zstackPointer frameStackTop = theStack;
 
 /* Documented in header. */
-zstackPointer frameStackLimit = &theStack[PB_MAX_STACK];
+zstackPointer frameStackLimit = &theStack[DAT_MAX_STACK];
 
 /* Documented in header. */
-void pbFrameError(const char *msg) {
+void datFrameError(const char *msg) {
     // As a hail-mary, do a forced gc and then clear the value stack, in
     // the hope that a gc won't end up being done while producing the
     // dying stack trace.
-    pbGc();
+    datGc();
     frameStackTop = frameStackBase;
 
     die("%s", msg);
@@ -44,7 +44,7 @@ zint markFrameStack(void) {
     zint stackSize = frameStackTop - frameStackBase;
 
     for (int i = 0; i < stackSize; i++) {
-        pbMark(theStack[i]);
+        datMark(theStack[i]);
     }
 
     return stackSize;
@@ -56,13 +56,13 @@ zint markFrameStack(void) {
  */
 
 /* Documented in header. */
-extern zstackPointer pbFrameStart(void);
+extern zstackPointer datFrameStart(void);
 
 /* Documented in header. */
-extern void pbFrameAdd(zvalue value);
+extern void datFrameAdd(zvalue value);
 
 /* Documented in header. */
-extern void pbFrameReset(zstackPointer savedStack, zvalue stackedValue);
+extern void datFrameReset(zstackPointer savedStack, zvalue stackedValue);
 
 /* Documented in header. */
-extern void pbFrameReturn(zstackPointer savedStack, zvalue returnValue);
+extern void datFrameReturn(zstackPointer savedStack, zvalue returnValue);

@@ -59,6 +59,9 @@ fn SerialGenerator_nextValue(gen, box) {
 genericBind(Generator::nextValue, "SerialGenerator",
     SerialGenerator_nextValue);
 
+## Just use the standard implementation.
+genericBind(Generator::collect, "SerialGenerator", Generator_stdCollect);
+
 <> {
     makeSerialGenerator
 }

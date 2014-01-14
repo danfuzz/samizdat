@@ -14,7 +14,7 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 ##
 
 ## Documented in spec.
-fn ValueGenerator_collect(gen) {
+fn ValueGenerator_collect(gen, optFilterFunction?) {
     Io0::die("Unbounded generator.");
 };
 genericBind(Generator::collect, "ValueGenerator", ValueGenerator_collect);

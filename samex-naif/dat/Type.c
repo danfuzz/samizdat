@@ -26,7 +26,7 @@
 static zint theNextId = 0;
 
 /** Array of all existing types, in sort order (possibly stale). */
-static zvalue theTypes[PB_MAX_TYPES];
+static zvalue theTypes[DAT_MAX_TYPES];
 
 /** Whether `theTypes` needs a sort. */
 static bool theNeedSort = true;
@@ -39,7 +39,7 @@ static zvalue coreSecret = NULL;
  * Gets a pointer to the value's info.
  */
 static TypeInfo *getInfo(zvalue type) {
-    return pbPayload(type);
+    return datPayload(type);
 }
 
 /**
@@ -47,7 +47,7 @@ static TypeInfo *getInfo(zvalue type) {
  */
 static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
         bool identified) {
-    if (theNextId == PB_MAX_TYPES) {
+    if (theNextId == DAT_MAX_TYPES) {
         die("Too many types!");
     }
 
@@ -67,14 +67,14 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
     theTypes[theNextId] = type;
     theNeedSort = true;
     theNextId++;
-    pbImmortalize(type);
+    datImmortalize(type);
 }
 
 /**
  * Allocates a type value.
  */
 static zvalue allocType(void) {
-    return pbAllocValue(TYPE_Type, sizeof(TypeInfo));
+    return datAllocValue(TYPE_Type, sizeof(TypeInfo));
 }
 
 /**
@@ -350,8 +350,8 @@ METH_IMPL(Type, gcMark) {
     zvalue type = args[0];
     TypeInfo *info = getInfo(type);
 
-    pbMark(info->name);
-    pbMark(info->secret);
+    datMark(info->name);
+    datMark(info->secret);
 
     return NULL;
 }
@@ -391,7 +391,7 @@ MOD_INIT(typeSystem) {
     TYPE_Uniqlet = allocType();
 
     coreSecret = makeUniqlet();
-    pbImmortalize(coreSecret);
+    datImmortalize(coreSecret);
 
     typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret, false);
     typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret, false);
@@ -402,17 +402,17 @@ MOD_INIT(typeSystem) {
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (indexFromTrueType(TYPE_Builtin) != PB_INDEX_BUILTIN) {
+    if (indexFromTrueType(TYPE_Builtin) != DAT_INDEX_BUILTIN) {
         die("Mismatched index for `Builtin`: should be %lld",
             indexFromTrueType(TYPE_Builtin));
-    } else if (indexFromTrueType(TYPE_Generic) != PB_INDEX_GENERIC) {
+    } else if (indexFromTrueType(TYPE_Generic) != DAT_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
             indexFromTrueType(TYPE_Generic));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
-    if (PB_HEADER_SIZE != sizeof(PbHeader)) {
-        die("Mismatched value header size: should be %lu", sizeof(PbHeader));
+    if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
+        die("Mismatched value header size: should be %lu", sizeof(DatHeader));
     }
 }
 

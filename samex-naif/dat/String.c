@@ -19,13 +19,13 @@
  */
 
 /** Array of single-character strings, for low character codes. */
-static zvalue CACHED_CHARS[PB_MAX_CACHED_CHAR + 1];
+static zvalue CACHED_CHARS[DAT_MAX_CACHED_CHAR + 1];
 
 /**
  * Shared `zchar` array, used to avoid memory allocation in common cases.
  * **Note:** It is only safe to use this via `allocArray`.
  */
-static zchar SHARED_ARRAY[PB_SOFT_MAX_STRING];
+static zchar SHARED_ARRAY[DAT_MAX_STRING_SOFT];
 
 /**
  * String structure.
@@ -42,7 +42,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static StringInfo *getInfo(zvalue list) {
-    return pbPayload(list);
+    return datPayload(list);
 }
 
 /**
@@ -50,7 +50,7 @@ static StringInfo *getInfo(zvalue list) {
  */
 static zvalue allocString(zint size) {
     zvalue result =
-        pbAllocValue(TYPE_String, sizeof(StringInfo) + size * sizeof(zchar));
+        datAllocValue(TYPE_String, sizeof(StringInfo) + size * sizeof(zchar));
 
     getInfo(result)->size = size;
     return result;
@@ -84,7 +84,7 @@ static void assertStringSize1(zvalue value) {
  * while the allocation is active.
  */
 static zchar *allocArray(zint size) {
-    if (size < PB_SOFT_MAX_STRING) {
+    if (size < DAT_MAX_STRING_SOFT) {
         return SHARED_ARRAY;
     } else {
         return utilAlloc(size * sizeof(zchar));
@@ -134,7 +134,7 @@ zvalue stringFromUtf8(zint stringBytes, const char *string) {
 
 /* Documented in header. */
 zvalue stringFromZchar(zchar value) {
-    if (value <= PB_MAX_CACHED_CHAR) {
+    if (value <= DAT_MAX_CACHED_CHAR) {
         zvalue result = CACHED_CHARS[value];
         if (result != NULL) {
             return result;
@@ -144,9 +144,9 @@ zvalue stringFromZchar(zchar value) {
     zvalue result = allocString(1);
     getInfo(result)->elems[0] = value;
 
-    if (value <= PB_MAX_CACHED_CHAR) {
+    if (value <= DAT_MAX_CACHED_CHAR) {
         CACHED_CHARS[value] = result;
-        pbImmortalize(result);
+        datImmortalize(result);
     }
 
     return result;
@@ -471,7 +471,7 @@ MOD_INIT(String) {
     seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);
-    pbImmortalize(EMPTY_STRING);
+    datImmortalize(EMPTY_STRING);
 }
 
 /* Documented in header. */

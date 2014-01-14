@@ -1,0 +1,28 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Generator functions
+##
+
+def Collection = moduleUse({name: ["proto", "Collection"]});
+
+## This just binds generics without adding exports.
+submoduleUse("MapGenerator");
+
+
+##
+## Exported Definitions
+##
+
+<> {
+    ## Re-exported from proto module.
+    cat:        Collection::cat,
+    get:        Collection::get,
+    del:        Collection::del,
+    keyList:    Collection::keyList,
+    nthMapping: Collection::nthMapping,
+    put:        Collection::put,
+    sizeOf:     Collection::sizeOf
+}

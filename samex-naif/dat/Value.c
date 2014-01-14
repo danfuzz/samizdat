@@ -52,7 +52,7 @@ zvalue dataOf(zvalue value) {
 }
 
 /* Documented in header. */
-extern void *pbPayload(zvalue value);
+extern void *datPayload(zvalue value);
 
 /* Documented in header. */
 zint valIdentityOf(zvalue value) {
@@ -104,9 +104,9 @@ zorder valOrder(zvalue v1, zvalue v2) {
     }
 
     if (haveSameType(v1, v2)) {
-        zstackPointer save = pbFrameStart();
+        zstackPointer save = datFrameStart();
         zorder result = zintFromInt(GFN_CALL(totOrder, v1, v2));
-        pbFrameReturn(save, NULL);
+        datFrameReturn(save, NULL);
         return result;
     } else {
         return valOrder(typeOf(v1), typeOf(v2));
@@ -202,22 +202,22 @@ MOD_INIT(Value) {
     // Note: The `typeSystem` module initializes `TYPE_Value`.
 
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
-    pbImmortalize(GFN_debugString);
+    datImmortalize(GFN_debugString);
 
     GFN_gcMark = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "gcMark"));
-    pbImmortalize(GFN_gcMark);
+    datImmortalize(GFN_gcMark);
 
     GFN_perEq = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "perEq"));
-    pbImmortalize(GFN_perEq);
+    datImmortalize(GFN_perEq);
 
     GFN_perOrder = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "perOrder"));
-    pbImmortalize(GFN_perOrder);
+    datImmortalize(GFN_perOrder);
 
     GFN_totEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totEq"));
-    pbImmortalize(GFN_totEq);
+    datImmortalize(GFN_totEq);
 
     GFN_totOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totOrder"));
-    pbImmortalize(GFN_totOrder);
+    datImmortalize(GFN_totOrder);
 
     METH_BIND(Value, debugString);
     METH_BIND(Value, gcMark);

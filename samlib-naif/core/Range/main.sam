@@ -123,6 +123,9 @@ fn ClosedRange_nextValue(range, box) {
 };
 genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 
+## Just use the standard implementation.
+genericBind(Generator::collect, "ClosedRange", Generator::stdCollect);
+
 
 ##
 ## Exported Definitions: `OpenRange`
@@ -136,7 +139,7 @@ fn makeOpenRange(firstValue, optIncrement?) {
 };
 
 ## Documented in spec.
-fn OpenRange_collect(range) {
+fn OpenRange_collect(range, optFilterFunction?) {
     Io0::die("Unbounded generator.");
 };
 genericBind(Generator::collect, "OpenRange", OpenRange_collect);

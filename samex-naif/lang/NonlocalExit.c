@@ -45,14 +45,14 @@ typedef struct {
  * Gets a pointer to the info of a nonlocal exit.
  */
 static NonlocalExitInfo *getInfo(zvalue nle) {
-    return pbPayload(nle);
+    return datPayload(nle);
 }
 
 /**
  * Constructs and returns a nonlocal exit function.
  */
 static zvalue makeNonlocalExit(void) {
-    zvalue result = pbAllocValue(TYPE_NonlocalExit, sizeof(NonlocalExitInfo));
+    zvalue result = datAllocValue(TYPE_NonlocalExit, sizeof(NonlocalExitInfo));
 
     NonlocalExitInfo *info = getInfo(result);
     info->active = true;
@@ -70,7 +70,7 @@ static zvalue makeNonlocalExit(void) {
 zvalue nleCall(znleFunction function, void *state) {
     UTIL_TRACE_START(NULL, NULL);
 
-    zstackPointer save = pbFrameStart();
+    zstackPointer save = datFrameStart();
     zvalue result;
 
     zvalue exitFunction = makeNonlocalExit();
@@ -85,7 +85,7 @@ zvalue nleCall(znleFunction function, void *state) {
     }
 
     info->active = false;
-    pbFrameReturn(save, result);
+    datFrameReturn(save, result);
     UTIL_TRACE_END();
 
     return result;
@@ -137,7 +137,7 @@ METH_IMPL(NonlocalExit, canCall) {
 METH_IMPL(NonlocalExit, gcMark) {
     zvalue nle = args[0];
 
-    pbMark(getInfo(nle)->result);
+    datMark(getInfo(nle)->result);
     return NULL;
 }
 

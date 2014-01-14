@@ -23,7 +23,7 @@ fn makeOptGenerator(generator) {
 };
 
 ## Documented in spec.
-fn OptGenerator_collect(gen) {
+fn OptGenerator_collect(gen, optFilterFunction?) {
     Io0::die("Unbounded generator.");
 };
 genericBind(Generator::collect, "OptGenerator", OptGenerator_collect);

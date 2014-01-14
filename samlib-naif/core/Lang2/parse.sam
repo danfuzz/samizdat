@@ -778,7 +778,7 @@ def parParserSet = {/
         { <> [cat(strings*)*] }
     |
         tokens = parParserToken+
-        { <> Generator::filter(tokens, dataOf) }
+        { <> Generator::collect(tokens, dataOf) }
     |
         { <> [] }
     )
