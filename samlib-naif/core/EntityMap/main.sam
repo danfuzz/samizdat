@@ -10,7 +10,7 @@
 ## file entity-map.txt as input. Rerun that program should the contents
 ## of this file need to be updated.
 
-## Documented in the specification.
+## Documented in spec.
 def ENTITY_MAP = {
     "AElig": "Æ",
     "AMP": "&",

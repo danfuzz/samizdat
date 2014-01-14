@@ -2216,7 +2216,7 @@ fn parseExpression(expression) {
     <> Peg::apply(parExpressionOrError, tokens)
 };
 
-## Documented in Samizdat Layer 1 spec.
+## Documented in spec.
 fn parseProgram(program) {
     def tokens = ifIs { <> isString(program) }
         { <> tokenize(program) }

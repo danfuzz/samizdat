@@ -413,7 +413,7 @@ def parDeriv = Peg::makeMainSequence(
         <> makeCallName("makeValue", type, value*)
     });
 
-## Documented in spec and Samizdat Layer 1 spec.
+## Documented in spec.
 def implTerm = Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
     parDeriv, parClosure, parParenExpression,

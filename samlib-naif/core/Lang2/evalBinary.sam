@@ -14,7 +14,7 @@ def Lang1 = moduleUse({name: ["core", "Lang1"]});
 ## Exported Definitions
 ##
 
-## Documented in Samizdat Layer 1 spec.
+## Documented in spec.
 fn evalBinary(context, filePath) {
     def flatPath = Io1::flatFromPath(filePath);
     <> Lang1::evalBinary(context, flatPath)
