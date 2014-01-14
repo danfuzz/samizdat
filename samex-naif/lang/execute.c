@@ -25,6 +25,20 @@
  */
 
 /**
+ * Executes an `expression` form, with the result never allowed to be
+ * `void`.
+ */
+static zvalue execExpression(Frame *frame, zvalue expression) {
+    zvalue result = execExpressionVoidOk(frame, expression);
+
+    if (result == NULL) {
+        die("Invalid use of void expression result.");
+    }
+
+    return result;
+}
+
+/**
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
@@ -143,17 +157,6 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 /*
  * Module Definitions
  */
-
-/* Documented in header. */
-zvalue execExpression(Frame *frame, zvalue expression) {
-    zvalue result = execExpressionVoidOk(frame, expression);
-
-    if (result == NULL) {
-        die("Invalid use of void expression result.");
-    }
-
-    return result;
-}
 
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {

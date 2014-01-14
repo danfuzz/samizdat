@@ -74,12 +74,6 @@ inline zevalType evalTypeOf(zvalue node) {
 zvalue execClosure(Frame *frame, zvalue closureNode);
 
 /**
- * Executes an `expression` form, with the result never allowed to be
- * `void`.
- */
-zvalue execExpression(Frame *frame, zvalue expression);
-
-/**
  * Executes an `expression` form, with the result possibly being
  * `void` (represented as `NULL`).
  */
