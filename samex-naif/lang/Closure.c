@@ -423,11 +423,10 @@ METH_IMPL(Closure, call) {
     // The first argument is the closure itself. The rest are the arguments
     // it is being called with, hence `argCount - 1, &args[1]` below.
     zvalue closure = args[0];
-    ClosureInfo *info = getInfo(closure);
     CallState callState = { closure, argCount - 1, &args[1] };
     zvalue result;
 
-    if (info->yieldDef != NULL) {
+    if (getInfo(closure)->yieldDef != NULL) {
         result = nleCall(callClosureWithNle, &callState);
     } else {
         result = callClosureMain(&callState, NULL);
@@ -440,16 +439,14 @@ METH_IMPL(Closure, call) {
 METH_IMPL(Closure, canCall) {
     zvalue closure = args[0];
     zvalue value = args[1];
-    ClosureInfo *info = getInfo(closure);
 
-    return (info->formalsSize == 0) ? NULL : value;
+    return (getInfo(closure)->formalsSize == 0) ? NULL : value;
 }
 
 /* Documented in header. */
 METH_IMPL(Closure, debugString) {
     zvalue closure = args[0];
-    ClosureInfo *info = getInfo(closure);
-    zvalue name = collGet(info->defMap, STR_name);
+    zvalue name = collGet(getInfo(closure)->defMap, STR_name);
     zvalue nameString = (name == NULL)
         ? stringFromUtf8(-1, "(unknown)")
         : GFN_CALL(debugString, name);
@@ -473,8 +470,7 @@ METH_IMPL(Closure, gcMark) {
 /* Documented in header. */
 METH_IMPL(Closure, nameOf) {
     zvalue closure = args[0];
-    ClosureInfo *info = getInfo(closure);
-    return collGet(info->defMap, STR_name);
+    return collGet(getInfo(closure)->defMap, STR_name);
 }
 
 /** Initializes the module. */
