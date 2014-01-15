@@ -68,7 +68,7 @@ zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    return info->function(argCount, args);
+    return info->function(builtin, argCount, args);
 }
 
 
