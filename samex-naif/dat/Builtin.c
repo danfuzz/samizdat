@@ -13,6 +13,7 @@
 #include "type/Generic.h"
 #include "type/OneOff.h"
 #include "type/String.h"
+#include "type/Type.h"
 #include "type/Value.h"
 
 
@@ -27,16 +28,20 @@ typedef struct {
     /** Minimum argument count. Always `>= 0`. */
     zint minArgs;
 
-    /**
-     * Maximum argument count. Always `>= minArgs`.
-     */
+    /** Maximum argument count. Always `>= minArgs`. */
     zint maxArgs;
 
     /** C function to call. */
     zfunction function;
 
+    /** The count of mutable slots of state. Always `>= 0`. */
+    zint stateSize;
+
     /** The builtin's name, if any. Used when producing stack traces. */
     zvalue name;
+
+    /** The mutable state (if any). */
+    zvalue state[/*stateSize*/];
 } BuiltinInfo;
 
 /**
@@ -81,18 +86,27 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
 
     if (stateSize < 0) {
         die("Invalid `stateSize`: %lld", stateSize);
-    } else if (stateSize != 0) {
-        // TODO: Start allowing state.
-        die("Cannot have state...yet.");
     }
 
-    zvalue result = datAllocValue(TYPE_Builtin, sizeof(BuiltinInfo));
+    zvalue result = datAllocValue(TYPE_Builtin,
+        sizeof(BuiltinInfo) + stateSize * sizeof(zvalue));
     BuiltinInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->function = function;
+    info->stateSize = stateSize;
     info->name = name;
+
+    return result;
+}
+
+/* Documented in header. */
+BuiltinState builtinGetState(zvalue builtin) {
+    assertHasType(builtin, TYPE_Builtin);
+
+    BuiltinInfo *info = getInfo(builtin);
+    BuiltinState result = { info->stateSize, info->state };
 
     return result;
 }

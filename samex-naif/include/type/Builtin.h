@@ -20,11 +20,11 @@ extern zvalue TYPE_Builtin;
 
 /** Return value from `bltGetState` (see which). */
 typedef struct {
-    /** Pointer to the array of state slots. */
-    zvalue *values;
-
     /** Number of state slots. */
     zint size;
+
+    /** Pointer to the array of state slots. */
+    zvalue *arr;
 } BuiltinState;
 
 /**
@@ -40,6 +40,6 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
 /**
  * Gets the mutable state of the given builtin.
  */
-BuiltinState bltGetState(zvalue builtin);
+BuiltinState builtinGetState(zvalue builtin);
 
 #endif
