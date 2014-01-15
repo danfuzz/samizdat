@@ -73,10 +73,17 @@ zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
-        zvalue name) {
+        zint stateSize, zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
+    }
+
+    if (stateSize < 0) {
+        die("Invalid `stateSize`: %lld", stateSize);
+    } else if (stateSize != 0) {
+        // TODO: Start allowing state.
+        die("Cannot have state...yet.");
     }
 
     zvalue result = datAllocValue(TYPE_Builtin, sizeof(BuiltinInfo));

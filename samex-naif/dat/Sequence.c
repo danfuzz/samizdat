@@ -256,24 +256,24 @@ MOD_INIT(Sequence) {
         stringFromUtf8(-1, "sliceInclusive"));
     datImmortalize(GFN_sliceInclusive);
 
-    BI_Sequence_collect = makeBuiltin(1, 2, METH_NAME(Sequence, collect),
+    BI_Sequence_collect = makeBuiltin(1, 2, METH_NAME(Sequence, collect), 0,
         stringFromUtf8(-1, "Sequence.collect"));
     datImmortalize(BI_Sequence_collect);
 
-    BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get),
+    BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));
     datImmortalize(BI_Sequence_get);
 
-    BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList),
+    BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList), 0,
         stringFromUtf8(-1, "Sequence.keyList"));
     datImmortalize(BI_Sequence_keyList);
 
     BI_Sequence_nextValue = makeBuiltin(2, 2, METH_NAME(Sequence, nextValue),
-        stringFromUtf8(-1, "Sequence.nextValue"));
+        0, stringFromUtf8(-1, "Sequence.nextValue"));
     datImmortalize(BI_Sequence_nextValue);
 
     BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
-        stringFromUtf8(-1, "Sequence.nthMapping"));
+        0, stringFromUtf8(-1, "Sequence.nthMapping"));
     datImmortalize(BI_Sequence_nthMapping);
 }
 
