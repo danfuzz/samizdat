@@ -132,15 +132,15 @@ void derivBind(zvalue type) {
 MOD_INIT(Deriv) {
     MOD_USE(Value);
 
-    BI_Deriv_gcMark = makeBuiltin(1, 1, METH_NAME(Deriv, gcMark),
+    BI_Deriv_gcMark = makeBuiltin(1, 1, METH_NAME(Deriv, gcMark), 0,
         stringFromUtf8(-1, "Deriv.gcMark"));
     datImmortalize(BI_Deriv_gcMark);
 
-    BI_Deriv_totEq = makeBuiltin(2, 2, METH_NAME(Deriv, totEq),
+    BI_Deriv_totEq = makeBuiltin(2, 2, METH_NAME(Deriv, totEq), 0,
         stringFromUtf8(-1, "Deriv.totEq"));
     datImmortalize(BI_Deriv_totEq);
 
-    BI_Deriv_totOrder = makeBuiltin(2, 2, METH_NAME(Deriv, totOrder),
+    BI_Deriv_totOrder = makeBuiltin(2, 2, METH_NAME(Deriv, totOrder), 0,
         stringFromUtf8(-1, "Deriv.totOrder"));
     datImmortalize(BI_Deriv_totOrder);
 }

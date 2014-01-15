@@ -15,12 +15,12 @@
  */
 
 /* Documented in spec. */
-PRIM_IMPL(Box_makeCell) {
+FUN_IMPL_DECL(Box_makeCell) {
     zvalue value = (argCount == 1) ? args[0] : NULL;
     return makeCell(value);
 }
 
 /* Documented in spec. */
-PRIM_IMPL(Box_makePromise) {
+FUN_IMPL_DECL(Box_makePromise) {
     return makePromise();
 }

@@ -13,6 +13,7 @@
 #include "type/Generic.h"
 #include "type/OneOff.h"
 #include "type/String.h"
+#include "type/Type.h"
 #include "type/Value.h"
 
 
@@ -27,16 +28,20 @@ typedef struct {
     /** Minimum argument count. Always `>= 0`. */
     zint minArgs;
 
-    /**
-     * Maximum argument count. Always `>= minArgs`.
-     */
+    /** Maximum argument count. Always `>= minArgs`. */
     zint maxArgs;
 
     /** C function to call. */
     zfunction function;
 
+    /** The count of mutable slots of state. Always `>= 0`. */
+    zint stateSize;
+
     /** The builtin's name, if any. Used when producing stack traces. */
     zvalue name;
+
+    /** The mutable state (if any). */
+    zvalue state[/*stateSize*/];
 } BuiltinInfo;
 
 /**
@@ -63,7 +68,7 @@ zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    return info->function(argCount, args);
+    return info->function(builtin, argCount, args);
 }
 
 
@@ -73,21 +78,43 @@ zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
-        zvalue name) {
+        zint stateSize, zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = datAllocValue(TYPE_Builtin, sizeof(BuiltinInfo));
+    if (stateSize < 0) {
+        die("Invalid `stateSize`: %lld", stateSize);
+    }
+
+    zvalue result = datAllocValue(TYPE_Builtin,
+        sizeof(BuiltinInfo) + stateSize * sizeof(zvalue));
     BuiltinInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->function = function;
+    info->stateSize = stateSize;
     info->name = name;
 
     return result;
+}
+
+/* Documented in header. */
+BuiltinState builtinGetState(zvalue builtin) {
+    assertHasType(builtin, TYPE_Builtin);
+
+    BuiltinInfo *info = getInfo(builtin);
+    zint size = info->stateSize;
+
+    if (size == 0) {
+        BuiltinState result = { 0, NULL };
+        return result;
+    } else {
+        BuiltinState result = { size, info->state };
+        return result;
+    }
 }
 
 

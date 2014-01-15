@@ -14,7 +14,7 @@
  */
 
 /* Documented in spec. */
-PRIM_IMPL(nonlocalExit) {
+FUN_IMPL_DECL(nonlocalExit) {
     zvalue yieldFunction = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
 

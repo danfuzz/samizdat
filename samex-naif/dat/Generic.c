@@ -139,7 +139,8 @@ void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
     zvalue name = (builtinName != NULL)
         ? stringFromUtf8(-1, builtinName)
         : info->name;
-    zvalue builtin = makeBuiltin(info->minArgs, info->maxArgs, function, name);
+    zvalue builtin =
+        makeBuiltin(info->minArgs, info->maxArgs, function, 0, name);
 
     genericBind(generic, typeOrName, builtin);
 }

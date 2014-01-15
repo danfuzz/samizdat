@@ -18,14 +18,28 @@
 /** Type value for in-model type `Builtin`. */
 extern zvalue TYPE_Builtin;
 
+/** Return value from `bltGetState` (see which). */
+typedef struct {
+    /** Number of state slots. */
+    zint size;
+
+    /** Pointer to the array of state slots. */
+    zvalue *arr;
+} BuiltinState;
+
 /**
- * Constructs and returns a builtin with the given argument
- * restrictions, optional associated closure state, and optional name
- * (used when producing stack traces). `minArgs` must be non-negative,
- * and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
- * that there is no limit.
+ * Constructs and returns a builtin with the given argument restrictions and
+ * optional name (used when producing stack traces). `minArgs` must be
+ * non-negative, and `maxArgs` must be either greater than `minArgs` or `-1`
+ * to indicate that there is no limit. `stateSize` must be non-negative, and
+ * indicates how much space to add for mutable value slots.
  */
 zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
-    zvalue name);
+    zint stateSize, zvalue name);
+
+/**
+ * Gets the mutable state of the given builtin.
+ */
+BuiltinState builtinGetState(zvalue builtin);
 
 #endif

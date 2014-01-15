@@ -38,6 +38,7 @@ zvalue eval(zvalue context) {
             \(minArgs),
             \(maxArgs),
             topFunctionBody,
+            0,
             stringFromUtf8(-1, \%q(name));
     }
 

@@ -92,11 +92,12 @@ MOD_INIT(Generator) {
     GFN_collect = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "collect"));
     datImmortalize(GFN_collect);
 
-    GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
+    GFN_nextValue = makeGeneric(2, 2, GFN_NONE,
+        stringFromUtf8(-1, "nextValue"));
     datImmortalize(GFN_nextValue);
 
     FUN_Generator_stdCollect = makeBuiltin(1, 2,
-        METH_NAME(Generator, stdCollect),
+        METH_NAME(Generator, stdCollect), 0,
         stringFromUtf8(-1, "Generator.stdCollect"));
     datImmortalize(FUN_Generator_stdCollect);
 }

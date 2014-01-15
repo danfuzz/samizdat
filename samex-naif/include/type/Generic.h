@@ -30,7 +30,8 @@ typedef enum {
 
 /** Declaration for a method on the given type with the given name. */
 #define METH_IMPL(type, name) \
-    static zvalue METH_NAME(type, name)(zint argCount, const zvalue *args)
+    static zvalue METH_NAME(type, name)( \
+        zvalue thisFunction, zint argCount, const zvalue *args)
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(type, name) \

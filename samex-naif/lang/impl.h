@@ -19,8 +19,7 @@
 
 /** Simple enumeration for all the evaluable node types. */
 typedef enum {
-    EVAL_NOT_A_NODE = 0, // So that `EVAL_call` won't be a "sneaky default".
-    EVAL_call,
+    EVAL_call = 1, // 1, so that it won't be a "sneaky default."
     EVAL_closure,
     EVAL_expression,
     EVAL_interpolate,
@@ -73,12 +72,6 @@ inline zevalType evalTypeOf(zvalue node) {
  * Executes a `closure` form.
  */
 zvalue execClosure(Frame *frame, zvalue closureNode);
-
-/**
- * Executes an `expression` form, with the result never allowed to be
- * `void`.
- */
-zvalue execExpression(Frame *frame, zvalue expression);
 
 /**
  * Executes an `expression` form, with the result possibly being

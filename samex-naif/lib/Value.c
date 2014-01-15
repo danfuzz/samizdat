@@ -15,7 +15,7 @@
  */
 
 /* Documented in spec. */
-PRIM_IMPL(dataOf) {
+FUN_IMPL_DECL(dataOf) {
     zvalue value = args[0];
     zvalue secret = (argCount == 2) ? args[1] : NULL;
 
@@ -23,7 +23,7 @@ PRIM_IMPL(dataOf) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(eq) {
+FUN_IMPL_DECL(eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -31,7 +31,7 @@ PRIM_IMPL(eq) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(ge) {
+FUN_IMPL_DECL(ge) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -39,7 +39,7 @@ PRIM_IMPL(ge) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(gt) {
+FUN_IMPL_DECL(gt) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -47,7 +47,7 @@ PRIM_IMPL(gt) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(hasType) {
+FUN_IMPL_DECL(hasType) {
     zvalue value = args[0];
     zvalue type = args[1];
 
@@ -55,7 +55,7 @@ PRIM_IMPL(hasType) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(le) {
+FUN_IMPL_DECL(le) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -63,7 +63,7 @@ PRIM_IMPL(le) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(lt) {
+FUN_IMPL_DECL(lt) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -71,13 +71,13 @@ PRIM_IMPL(lt) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(makeValue) {
+FUN_IMPL_DECL(makeValue) {
     zvalue value = (argCount == 2) ? args[1] : NULL;
     return makeTransValue(args[0], value);
 }
 
 /* Documented in spec. */
-PRIM_IMPL(ne) {
+FUN_IMPL_DECL(ne) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -85,11 +85,11 @@ PRIM_IMPL(ne) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(totalOrder) {
+FUN_IMPL_DECL(totalOrder) {
     return intFromZint(valOrder(args[0], args[1]));
 }
 
 /* Documented in spec. */
-PRIM_IMPL(typeOf) {
+FUN_IMPL_DECL(typeOf) {
     return typeOf(args[0]);
 }

@@ -13,6 +13,6 @@
  */
 
 /* Documented in spec. */
-PRIM_IMPL(makeList) {
+FUN_IMPL_DECL(makeList) {
     return listFromArray(argCount, args);
 }
