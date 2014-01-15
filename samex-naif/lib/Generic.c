@@ -39,7 +39,7 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
  */
 
 /* Documented in spec. */
-PRIM_IMPL(genericBind) {
+FUN_IMPL_DECL(genericBind) {
     zvalue generic = args[0];
     zvalue type = args[1];
     zvalue function = args[2];
@@ -49,11 +49,11 @@ PRIM_IMPL(genericBind) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(makeRegularGeneric) {
+FUN_IMPL_DECL(makeRegularGeneric) {
     return doMakeGeneric(GFN_NONE, argCount, args);
 }
 
 /* Documented in spec. */
-PRIM_IMPL(makeUnitypeGeneric) {
+FUN_IMPL_DECL(makeUnitypeGeneric) {
     return doMakeGeneric(GFN_SAME_TYPE, argCount, args);
 }

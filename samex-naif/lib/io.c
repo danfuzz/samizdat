@@ -34,7 +34,7 @@ static void emitNote(zvalue message) {
  */
 
 /* Documented in spec. */
-PRIM_IMPL(Io0_die) {
+FUN_IMPL_DECL(Io0_die) {
     if (argCount == 1) {
         emitNote(args[0]);
     }
@@ -43,35 +43,35 @@ PRIM_IMPL(Io0_die) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(Io0_note) {
+FUN_IMPL_DECL(Io0_note) {
     emitNote(args[0]);
     return NULL;
 }
 
 /* Documented in spec. */
-PRIM_IMPL(Io0_flatCwd) {
+FUN_IMPL_DECL(Io0_flatCwd) {
     return ioFlatCwd();
 }
 
 /* Documented in spec. */
-PRIM_IMPL(Io0_flatFileExists) {
+FUN_IMPL_DECL(Io0_flatFileExists) {
     zvalue flatPath = args[0];
 
     return ioFlatFileExists(flatPath) ? flatPath : NULL;
 }
 
 /* Documented in spec. */
-PRIM_IMPL(Io0_flatReadFileUtf8) {
+FUN_IMPL_DECL(Io0_flatReadFileUtf8) {
     return ioFlatReadFileUtf8(args[0]);
 }
 
 /* Documented in spec. */
-PRIM_IMPL(Io0_flatReadLink) {
+FUN_IMPL_DECL(Io0_flatReadLink) {
     return ioFlatReadLink(args[0]);
 }
 
 /* Documented in spec. */
-PRIM_IMPL(Io0_flatWriteFileUtf8) {
+FUN_IMPL_DECL(Io0_flatWriteFileUtf8) {
     ioFlatWriteFileUtf8(args[0], args[1]);
     return NULL;
 }

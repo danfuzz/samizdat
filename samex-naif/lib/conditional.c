@@ -15,7 +15,7 @@
  */
 
 /* Documented in spec. */
-PRIM_IMPL(ifIs) {
+FUN_IMPL_DECL(ifIs) {
     if (FUN_CALL(args[0]) != NULL) {
         return FUN_CALL(args[1]);
     } else if (argCount == 3) {
@@ -26,7 +26,7 @@ PRIM_IMPL(ifIs) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(ifNot) {
+FUN_IMPL_DECL(ifNot) {
     if (FUN_CALL(args[0]) == NULL) {
         return FUN_CALL(args[1]);
     } else {
@@ -35,7 +35,7 @@ PRIM_IMPL(ifNot) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(ifValue) {
+FUN_IMPL_DECL(ifValue) {
     zvalue result = FUN_CALL(args[0]);
 
     if (result != NULL) {
@@ -48,7 +48,7 @@ PRIM_IMPL(ifValue) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(ifValueOr) {
+FUN_IMPL_DECL(ifValueOr) {
     zvalue result = FUN_CALL(args[0]);
 
     if (result != NULL) {
@@ -59,7 +59,7 @@ PRIM_IMPL(ifValueOr) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(ifValues) {
+FUN_IMPL_DECL(ifValues) {
     zvalue testFunctions = args[0];
     zvalue valueFunction = args[1];
     zvalue voidFunction = (argCount == 3) ? args[2] : NULL;
@@ -80,7 +80,7 @@ PRIM_IMPL(ifValues) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(loop) {
+FUN_IMPL_DECL(loop) {
     zvalue function = args[0];
     for (;;) {
         zstackPointer save = datFrameStart();
@@ -90,7 +90,7 @@ PRIM_IMPL(loop) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(loopReduce) {
+FUN_IMPL_DECL(loopReduce) {
     zstackPointer save = datFrameStart();
     zvalue function = args[0];
     zvalue innerArgs = listFromArray(argCount - 1, &args[1]);
@@ -105,7 +105,7 @@ PRIM_IMPL(loopReduce) {
 }
 
 /* Documented in spec. */
-PRIM_IMPL(optValue) {
+FUN_IMPL_DECL(optValue) {
     zvalue function = args[0];
     zvalue value = FUN_CALL(function);
 

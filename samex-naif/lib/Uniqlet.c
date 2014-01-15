@@ -13,7 +13,7 @@
  */
 
 /* Documented in spec. */
-PRIM_IMPL(makeUniqlet) {
+FUN_IMPL_DECL(makeUniqlet) {
     return makeUniqlet();
 }
 

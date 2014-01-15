@@ -16,7 +16,7 @@
  */
 
 /* Documented in spec. */
-PRIM_IMPL(makeValueMap) {
+FUN_IMPL_DECL(makeValueMap) {
     zint size = argCount - 1;
     zvalue value = args[size];
 

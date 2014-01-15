@@ -80,7 +80,8 @@ static void makePrimitiveContext(void) {
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
             ctx = collPut(ctx, nameStr, \
-                makeBuiltin(minArgs, maxArgs, PRIM_##name, 0, nameStr)); \
+                makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
+                    nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
