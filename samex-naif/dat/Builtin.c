@@ -106,9 +106,15 @@ BuiltinState builtinGetState(zvalue builtin) {
     assertHasType(builtin, TYPE_Builtin);
 
     BuiltinInfo *info = getInfo(builtin);
-    BuiltinState result = { info->stateSize, info->state };
+    zint size = info->stateSize;
 
-    return result;
+    if (size == 0) {
+        BuiltinState result = { 0, NULL };
+        return result;
+    } else {
+        BuiltinState result = { size, info->state };
+        return result;
+    }
 }
 
 
