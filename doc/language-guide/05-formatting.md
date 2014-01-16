@@ -17,17 +17,19 @@ and true percent sign (`%`). These are outlined below, but see also
 the documentation for the library function `formatterFor`, which
 this functionality is based upon.
 
-### `\(...)` &mdash; Expression interpolation
+### `\(...)` `\[...]` &mdash; Expression interpolation
 
-An arbitrary expression (not statement) can be placed within parentheses.
-When the interpolation is evaluated, the expression gets evaluated, and
-its result is passed on to the indicated (or implied) formatter, producing
-the string to include.
+An arbitrary expression (not statement) can be placed within parentheses,
+and a square-bracket-delimited expression (such as a list construction or
+comprehension) can be used directly. When the interpolation is evaluated, the
+expression gets evaluated, and its result is passed on to the indicated (or
+implied) formatter, producing the string to include.
 
 For example:
 
 ```
 "I have \(5 * 5) muffins." => "I have 25 muffins."
+"Digits \[0..9]."          => "Digits 0123456789."
 ```
 
 Expressions can evaluate to void, in which case the indicated (or implied)

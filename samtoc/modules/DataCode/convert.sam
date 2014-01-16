@@ -16,13 +16,14 @@ fn flatten(tree) {
 
     def args = tree::args;
 
-    <> cat(
+    <> "\[
         flatten(tree::name),
         "(",
         ( a in args, i in (#args.. by -1) ->
-            <> cat(flatten(a), (i == 1) & "" | ", ")
+            <> "\[flatten(a), (i == 1) & "" | ", "]"
         )*,
-        ")")
+        ")"
+    ]"
 };
 
 ## Makes a function call output tree.

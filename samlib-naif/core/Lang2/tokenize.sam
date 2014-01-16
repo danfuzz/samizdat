@@ -229,10 +229,11 @@ def tokFile = {/
 ## These are all specific to parsing Layer 2 (and higher).
 ##
 
-## Map from opening tokens to corresponding closers. Only includes mappings
-## necessary to parse string interpolations.
+## Map from opening tokens to corresponding closers. Used when parsing
+## string interpolations.
 def OPEN_CLOSE_MAP = {
     "(":  ")",
+    "[":  "]",
     "{":  "}",
     "{/": "/}"
 };
@@ -385,14 +386,14 @@ def tokNamedChar = {/
 ## balanced out (and ignoring other could-be-matched delimiter tokens).
 def tokStringInterpolation = ParseForwarder::make();
 def implStringInterpolation = {/
-    &["({"]
+    &["({["]
     open = tokToken
     expectClose = { <> get(OPEN_CLOSE_MAP, typeOf(open)) }
 
     tokens = (
         tokWhitespace?
         (
-            !["(){}"]
+            !["(){}[]"]
             !"/}"
             t = tokToken
             { <> [t] }
@@ -451,7 +452,7 @@ def implStringPart2 = {/
             { <> {} }
         )
 
-        &["({"]
+        &["({["]
 
         (
             tokens = tokStringInterpolation

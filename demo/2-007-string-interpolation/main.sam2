@@ -44,8 +44,12 @@ print("\
 
 print("\%s("Zero") \%q(1) \%q("two") \%Q([3, 4, 5]), and 0x\%x(0x6ff).");
 print("\%s(["WHYA", ["REYO", ["UREA"]], "DING", "THIS", "?"])");
+print("\["AREY", "OURE", "CEIV", "INGM", "E?!?"]");
+print("\["a".."z"]");
 
-## Test all the void conversions.
-print("[\{}] [\%s{}] [\%q{}] [\%Q(isString(1))]");
+## Test all the void/empty conversions.
+print("[\{}] [\%s{}] [\%q{}]");
+print("[\%Q(isString(1))]");
+print("[\[]] [\%q[]]");
 
 <> 0
