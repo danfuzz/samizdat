@@ -103,7 +103,7 @@
 					<key>name</key>
 					<string>string.interpolated</string>
 					<key>begin</key>
-					<string>\\(%[0-9a-zA-Z+-.]*)?[({]</string>
+					<string>\\(%[0-9a-zA-Z+-.]*)?[\[({]</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>0</key>
@@ -113,7 +113,7 @@
 						</dict>
 					</dict>
 					<key>end</key>
-					<string>[)}]</string>
+					<string>[\])}]</string>
 					<key>endCaptures</key>
 					<dict>
 						<key>0</key>
