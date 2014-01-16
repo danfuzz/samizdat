@@ -13,9 +13,10 @@ def ListWrapGenerator = submoduleUse("ListWrapGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
 def OptGenerator = submoduleUse("OptGenerator");
 def ParaGenerator = submoduleUse("ParaGenerator");
+def RepeatGenerator = submoduleUse("RepeatGenerator");
 def SerialGenerator = submoduleUse("SerialGenerator");
 def ValueGenerator = submoduleUse("ValueGenerator");
-def unboundedCollect = submoduleUse("unboundedCollect")::unboundedCollect;
+def unboundedCollect = submoduleUse("unboundedCollect");
 
 ##
 ## Exported Definitions
@@ -127,10 +128,11 @@ fn generatorPump(generator) {
     makeListWrapGenerator:   ListWrapGenerator::makeListWrapGenerator,
     makeOptGenerator:        OptGenerator::makeOptGenerator,
     makeParaGenerator:       ParaGenerator::makeParaGenerator,
+    makeRepeatGenerator:     RepeatGenerator::makeRepeatGenerator,
     makeSerialGenerator:     SerialGenerator::makeSerialGenerator,
     makeValueGenerator:      ValueGenerator::makeValueGenerator,
     nullGenerator:           NullGenerator::nullGenerator,
-    unboundedCollect,
+    unboundedCollect:        unboundedCollect::unboundedCollect,
 
     ## Defined in this file.
     collectAsMap,

@@ -1,0 +1,57 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `RepeatGenerator` Type
+##
+## Payload is `{size, value}`.
+
+def NullGenerator = submoduleUse("NullGenerator");
+
+def Generator = moduleUse({name: ["proto", "Generator"]});
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+fn makeRepeatGenerator(size, optValue?) {
+    ifIs { perLe(size, 0) }
+        {
+            ifIs { <> perLt(size, 0) }
+                { Io0::die("Invalid negative size for RepeatGenerator.") };
+            return NullGenerator::nullGenerator
+        };
+
+    def value = ifValueOr { <> optValue* } { <> null };
+    <> @RepeatGenerator{size, value}
+};
+
+## Just use the standard implementation.
+genericBind(Generator::collect, "RepeatGenerator", Generator_stdCollect);
+
+## Documented in spec.
+fn RepeatGenerator_nextValue(gen, box) {
+    def size = dataOf(gen)::size;
+    def value = dataOf(gen)::value;
+
+    <> ifIs { <> perGt(size, 0) }
+        {
+            Box::store(box, value);
+            <> makeRepeatGenerator(Number::sub(size, 1), value)
+        }
+        {
+            ## Size is `0` or negative.
+            Box::store(box, value);
+        }
+};
+genericBind(Generator::nextValue, "RepeatGenerator",
+    RepeatGenerator_nextValue);
+
+
+<> {
+    makeRepeatGenerator
+}
