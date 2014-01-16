@@ -68,7 +68,7 @@ fn compile(sourcePath, targetPath) {
     def closureBodies = cat(
         ( index in (0..!#closures) ->
             <> "\
-            \/static zvalue BODY_\(index)(zint argCount, const zvalue *args) {
+            \/static FUN_IMPL_DECL(\(index)) {
             \/  return NULL; // TODO
             \/  /*
             \/  \%q(closures[index])

@@ -20,7 +20,7 @@ static zvalue EVAL_RESULT = NULL;
 static void initLiterals(zvalue context) {
 \(literalInits)}
 
-static zvalue topFunctionBody(zint argCount, zvalue *args) {
+static FUN_IMPL_DECL(main) {
   return
 \(body);
 }
@@ -37,7 +37,7 @@ zvalue eval(zvalue context) {
         EVAL_RESULT = makeBuiltin(
             \(minArgs),
             \(maxArgs),
-            topFunctionBody,
+            FUN_IMPL_NAME(main),
             0,
             stringFromUtf8(-1, \%q(name));
     }
