@@ -9,7 +9,6 @@
 def unboundedCollect = submoduleUse("unboundedCollect")::unboundedCollect;
 
 def Generator = moduleUse({name: ["proto", "Generator"]});
-def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
 ##
