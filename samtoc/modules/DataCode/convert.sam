@@ -54,25 +54,25 @@ fn utf8Char(ch) {
         def x0 = (0xc0 ||| (value >>> 6));
         def x1 = (0x80 ||| (value &&& 0x3f));
         <> hexEscape(x0, x1)
-    } else if (value < 0x10000) {
+    } else if (value < 0x1_0000) {
         def x0 = (0xe0 |||  (value >>> 12)        );
         def x1 = (0x80 ||| ((value >>> 6)  &&& 0x3f));
         def x2 = (0x80 ||| ( value         &&& 0x3f));
         <> hexEscape(x0, x1, x2)
-    } else if (value < 0x200000) {
+    } else if (value < 0x20_0000) {
         def x0 = (0xf0 |||  (value >>> 18)        );
         def x1 = (0x80 ||| ((value >>> 12) &&& 0x3f));
         def x2 = (0x80 ||| ((value >>> 6)  &&& 0x3f));
         def x3 = (0x80 ||| ( value         &&& 0x3f));
         <> hexEscape(x0, x1, x2, x3)
-    } else if (value < 0x4000000) {
+    } else if (value < 0x400_0000) {
         def x0 = (0xf8 |||  (value >>> 24)        );
         def x1 = (0x80 ||| ((value >>> 18) &&& 0x3f));
         def x2 = (0x80 ||| ((value >>> 12) &&& 0x3f));
         def x3 = (0x80 ||| ((value >>> 6)  &&& 0x3f));
         def x4 = (0x80 ||| ( value         &&& 0x3f));
         <> hexEscape(x0, x1, x2, x3, x4)
-    } else if (value < 0x80000000) {
+    } else if (value < 0x8000_0000) {
         def x0 = (0xfc |||  (value >>> 30)        );
         def x1 = (0x80 ||| ((value >>> 24) &&& 0x3f));
         def x2 = (0x80 ||| ((value >>> 18) &&& 0x3f));
@@ -80,7 +80,7 @@ fn utf8Char(ch) {
         def x4 = (0x80 ||| ((value >>> 6)  &&& 0x3f));
         def x5 = (0x80 ||| ( value         &&& 0x3f));
         <> hexEscape(x0, x1, x2, x3, x4, x5)
-    } else if (value < 0x100000000) {
+    } else if (value < 0x1_0000_0000) {
         def x0 =  0xfe;
         def x1 = (0x80 ||| ((value >>> 30) &&& 0x3f));
         def x2 = (0x80 ||| ((value >>> 24) &&& 0x3f));
@@ -90,7 +90,7 @@ fn utf8Char(ch) {
         def x6 = (0x80 ||| ( value         &&& 0x3f));
         <> hexEscape(x0, x1, x2, x3, x4, x5, x6)
     } else {
-        die("Out of range for UTF-8: 0x\%x(value)");
+        Io1::die("Out of range for UTF-8: 0x\%x(value)");
     }
 };
 
