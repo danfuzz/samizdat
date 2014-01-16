@@ -74,25 +74,21 @@ def parArguments = {/
     args = parWord*
     {
         def options = cat({}, optionList*);
-        ifIs { <> options::error }
-            { Io1::die("Invalid option(s).") };
+        if (options::error) {
+            Io1::die("Invalid option(s).")
+        };
         <> {options, args}
     }
 /};
 
 ## Gets the language layer suffix (or suffix-like-thing) from a file name.
 fn suffixFromName(name) {
-    def dotsAt = Generator::filterAll(Range::makeOpenRange(0, 1), name)
-        { index, elem ->
-            <> ifIs { <> eq(elem, ".") }
-                { <> index }
-        };
+    def dotsAt = [index in (0..), elem in name <> (elem == ".") & index];
 
-    ifIs { <> eq(dotsAt, []) }
-        {
-            ## No suffix on the name; assume it names a module directory.
-            return "module"
-        };
+    if (dotsAt == []) {
+        ## No suffix on the name; assume it names a module directory.
+        return "module"
+    };
 
     <> name[dotsAt[^0] + 1..]
 };
@@ -112,9 +108,11 @@ fn makeGlobals(filePath, args) {
 fn runModule(modulePath, args) {
     def loaded = Module::moduleUse({path: modulePath});
 
-    <> ifValue { <> loaded::main }
-        { main <> main(modulePath, args*) }
-        { Io1::die("No `main` exported from primary module.") }
+    if (def main = loaded::main) {
+        return main(modulePath, args*)
+    } else {
+        Io1::die("No `main` exported from primary module.")
+    }
 };
 
 ## Runs a simple-file-form command-line. In this case, the indicated file
@@ -162,24 +160,19 @@ fn runCommandLine(rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def fileName = ifValueOr { <> argWords[0] }
-        { <> "/dev/stdin" };
+    def fileName = argWords[0] | "/dev/stdin";
     def filePath = Io1::pathFromFlat(fileName);
-    def args = ifValueOr { <> argWords[1..] }
-        { <> [] };
+    def args = argWords[1..] | [];
 
-    def suffix = ifValueOr { <> options::suffix }
-        { <> suffixFromName(filePath[^0]) };
+    def suffix = options::suffix | suffixFromName(filePath[^0]);
 
-    ifIs { <> eq(suffix, "module") }
-        { return runModule(filePath, args) };
+    if (suffix == "module") {
+        return runModule(filePath, args)
+    } else if (suffix == "samb") {
+        return runBinary(filePath, args)
+    };
 
-    ifIs { <> eq(suffix, "samb") }
-        { return runBinary(filePath, args) };
-
-    def langLayer = ifIs { <> eq(suffix, "sam") }
-        { <> "2" }
-        { <> suffix[^0] };
+    def langLayer = (suffix == "sam") & "2" | suffix[^0];
 
     <> runFile(langLayer, filePath, args)
 };
