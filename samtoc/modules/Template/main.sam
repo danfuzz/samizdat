@@ -33,7 +33,7 @@ def parItem = {/
         { <> "\\" }
     |
         ch = .
-        { Io1::die("Invalid escape sequence: \%q(cat("\\", typeOf(ch)))") }
+        { Io1::die("Invalid escape sequence: \%q["\\", typeOf(ch)]") }
     )
 |
     chars = [! "\\"]+
@@ -52,7 +52,7 @@ fn apply(templateString, defs) {
             Format::formatterFor(item::format)(defs[item::name])
     ];
 
-    <> cat("", texts*)
+    <> "\[texts*]"
 };
 
 <> {apply}

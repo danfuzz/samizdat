@@ -20,7 +20,7 @@ fn flatten(tree) {
         flatten(tree::name),
         "(",
         ( a in args, i in (#args.. by -1) ->
-            <> cat(flatten(a), (i == 1) & "" | ", ")
+            <> "\[flatten(a), (i == 1) & "" | ", "]"
         )*,
         ")")
 };
