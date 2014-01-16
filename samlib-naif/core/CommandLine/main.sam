@@ -147,9 +147,7 @@ fn runBinary(filePath, args) {
 ## Documented in spec.
 fn parseArgs(args) {
     ## Make a unified string with each argument "\0"-terminated.
-    def argFilter = Generator::makeFilterGenerator(args)
-        { arg <> cat(arg, "\0") };
-    def argString = cat("", argFilter*);
+    def argString = "\[ arg in args <> [arg, "\0"] ]";
 
     ## Use the peg grammar above to split the arguments back apart.
     <> Peg::apply(parArguments, argString)
