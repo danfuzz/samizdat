@@ -116,7 +116,7 @@ fn collectClosures(node) {
     def newNode = bodies(node, bodiesBox);
     def bodiesMap = Box::fetch(bodiesBox);
 
-    def bodiesBoxList = [ n in (0..#bodiesMap) <> Box::makePromise() ];
+    def bodiesBoxList = [ for #bodiesMap <> Box::makePromise() ];
     for (body in bodiesMap) {
         def index = dataOf(valueOf(body));
         Box::store(bodiesBoxList[index], keyOf(body))

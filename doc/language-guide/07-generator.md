@@ -18,6 +18,7 @@ to the generator to use to get at the next value (and so on).
 Samizdat both provides a number of generator implementations in the core
 library and provides convenient syntax for creating them.
 
+
 ### Comprehensions
 
 Samizdat provides a concise syntax for building filters that process
@@ -51,29 +52,52 @@ then the `->` may be omitted.
 For example:
 
 ```
-# Infinite generator of even whole numbers, by multiplying by 2.
+## Infinite generator of even whole numbers, by multiplying by 2.
 (x in (0..) <> x * 2)
-# => 0, 2, 4, 6, ...
+## => 0, 2, 4, 6, ...
 
-# Infinite generator of even whole numbers, by filtering out odd ones.
+## Infinite generator of even whole numbers, by filtering out odd ones.
 (x in (0..) <> ((x % 2) == 0) & x)
-# => 0, 2, 4, 6, ...
+## => 0, 2, 4, 6, ...
 
-# List of just the strings.
+## List of just the strings.
 [v in ["b", 10, "l", @foo, "o", "r", ["wow"], "t"] <> isString(v)]
-# => ["b", "l", "o", "r", "t"]
+## => ["b", "l", "o", "r", "t"]
 
-# List of sum of corresponding pairs.
+## List of sum of corresponding pairs.
 [n1 in (1..9), n2 in (100.. by 100) <> n1 + n2]
-# => [101, 202, 303, 404, 505, 606, 707, 808, 909]
+## => [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
-# Sum of three ranges.
+## Sum of three ranges.
 [a in (0..4), b in (50..90 by 10), c in (300..700 by 100) =>
     def sum = a + b + c;
     <> sum
 ]
-# => [350, 461, 572, 683, 794]
+## => [350, 461, 572, 683, 794]
 ```
+
+
+### Simple repetition counts
+
+If a comprehension is just to be a fixed-size (fixed at evaluation time)
+repeatedly-evaluated expression, or a repetition of a constant, then
+the shorthand `for expression` can be used instead of a `var in expression`
+form. `expression` is an arbitrary expression, which must evaluate to a
+non-negative int.
+
+This can be combined with other generator forms to place an upper limit
+on the number of values yielded by a comprehension.
+
+For example:
+
+```
+[for 5 <> "Yay!"]
+## => ["Yay!", "Yay!", "Yay!", "Yay!", "Yay!"]
+
+[x in (0..), for 7]
+## => [0, 1, 2, 3, 4, 5, 6]
+```
+
 
 ### Ranges
 

@@ -209,6 +209,22 @@ appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of `for` forms.
 
+#### `makeRepeatGenerator(size, optValue?) <> generator`
+
+Repeated-value generator. This takes a size, which must be a non-negative
+int, and an optional value, producing a generator that yields the given
+value (or `null` if no value was supplied) the indicated number of times.
+
+Special cases:
+
+* If passed `0` for `size`, this returns `nullGenerator`.
+
+**Note:** Special cases aside, this function makes a value of type
+`"RepeatGenerator"` with `{size, value}` as the payload. That type has
+appropriate `Generator` method bindings.
+
+**Syntax Note:** Used in the translation of `for` and comprehension forms.
+
 #### `makeSerialGenerator(generators*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number

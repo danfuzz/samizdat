@@ -54,6 +54,11 @@ msgAll("NullGenerator", Generator::nullGenerator);
 msgAll("Empty ListWrapGenerator", Generator::makeListWrapGenerator([]));
 msgAll("Empty ParaGenerator", Generator::makeParaGenerator());
 msgAll("Empty SerialGenerator", Generator::makeSerialGenerator());
+msgAll("Empty RepeatGenerator", Generator::makeRepeatGenerator(0));
+msgAll("RepeatGenerator with default value",
+    Generator::makeRepeatGenerator(7));
+msgAll("RepeatGenerator with string value",
+    Generator::makeRepeatGenerator(3, "blort"));
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", {one: 1, two: 2, three: 3, four: 4, five: "fizmo"});

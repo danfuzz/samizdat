@@ -33,11 +33,20 @@ msg("One-item generator",
 msg("Two-item generator",
     (foo in (1..10), bar in (100.. by 100) <> foo + bar));
 
+msg("Simple repeat count generator",
+    (for 10 <> "Woo!"));
+
 msg("One-item collect",
     [x in ["a", "b", "c"] <> "~~\(x)~~"]);
 
 msg("Two-item collect",
     [foo in (1..10), bar in (100.. by 100) <> foo + bar]);
+
+msg("Simple repeat count collect",
+    [for 10 <> "Woo!"]);
+
+msg("Size-limited collect",
+    [x in (0..), for 7 <> x]);
 
 Io1::note("Extended forms\n");
 

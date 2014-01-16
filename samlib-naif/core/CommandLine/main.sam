@@ -29,7 +29,7 @@ def parKey = {/
 /};
 
 ## Parses a key-value option word. Yields a single-mapping map of
-## `[(key): value]`.
+## `{(key): value}`.
 def parKeyValue = {/
     "--"
     key = parKey
@@ -39,12 +39,13 @@ def parKeyValue = {/
 /};
 
 ## Parses a non-value flag option word. Yields a single-mapping map of
-## `[(flag): true]`.
+## `{(flag): true}`.
 def parFlag = {/
     "--"
     flag = parWord
-    { <> ne(flag, "") } ## Reject plain `--`.
-    { <> {(flag): true} }
+
+    ## The `!=` rejects plain `--`.
+    { <> (flag != "") & {(flag): true} }
 /};
 
 ## Parses a syntactically invalid option. This includes words that start with
@@ -55,8 +56,8 @@ def parError = {/
     ch2 = [! "-\0"]
     word = parWord
     {
-        def value = cat(stringFromTokens(ch1, ch2), word);
-        Io1::note(cat("Unknown option: ", Format::source(value)));
+        def value = "\[stringFromTokens(ch1, ch2), word]";
+        Io1::note("Unknown option: \%q(value)");
         <> {error: true}
     }
 /};
@@ -67,32 +68,28 @@ def parOption = {/
 /};
 
 ## Parses the entire list of argument words. Yields a map of
-## `[options: [k: v, ...], args: [arg, ...]]`.
+## `{options: {k: v, ...}, args: [arg, ...]}`.
 def parArguments = {/
     optionList = parOption*
     "--\0"?
     args = parWord*
     {
-        def options = cat({}, optionList*);
-        ifIs { <> options::error }
-            { Io1::die("Invalid option(s).") };
+        def options = {}.cat(optionList*);
+        if (options::error) {
+            Io1::die("Invalid option(s).")
+        };
         <> {options, args}
     }
 /};
 
 ## Gets the language layer suffix (or suffix-like-thing) from a file name.
 fn suffixFromName(name) {
-    def dotsAt = Generator::filterAll(Range::makeOpenRange(0, 1), name)
-        { index, elem ->
-            <> ifIs { <> eq(elem, ".") }
-                { <> index }
-        };
+    def dotsAt = [index in (0..), elem in name <> (elem == ".") & index];
 
-    ifIs { <> eq(dotsAt, []) }
-        {
-            ## No suffix on the name; assume it names a module directory.
-            return "module"
-        };
+    if (dotsAt == []) {
+        ## No suffix on the name; assume it names a module directory.
+        return "module"
+    };
 
     <> name[dotsAt[^0] + 1..]
 };
@@ -100,7 +97,7 @@ fn suffixFromName(name) {
 ## Makes a global environment, given file path and command-line arguments.
 fn makeGlobals(filePath, args) {
     <> {
-        (Module::getExports(moduleUse({name: ["core", "Globals"]})))*,
+        Module::getExports(moduleUse({name: ["core", "Globals"]}))*,
         ARGUMENTS: args,
         PATH:      filePath
     }
@@ -112,9 +109,11 @@ fn makeGlobals(filePath, args) {
 fn runModule(modulePath, args) {
     def loaded = Module::moduleUse({path: modulePath});
 
-    <> ifValue { <> loaded::main }
-        { main <> main(modulePath, args*) }
-        { Io1::die("No `main` exported from primary module.") }
+    if (def main = loaded::main) {
+        return main(modulePath, args*)
+    } else {
+        Io1::die("No `main` exported from primary module.")
+    }
 };
 
 ## Runs a simple-file-form command-line. In this case, the indicated file
@@ -148,9 +147,7 @@ fn runBinary(filePath, args) {
 ## Documented in spec.
 fn parseArgs(args) {
     ## Make a unified string with each argument "\0"-terminated.
-    def argFilter = Generator::makeFilterGenerator(args)
-        { arg <> cat(arg, "\0") };
-    def argString = cat("", argFilter*);
+    def argString = "\[ arg in args <> [arg, "\0"] ]";
 
     ## Use the peg grammar above to split the arguments back apart.
     <> Peg::apply(parArguments, argString)
@@ -162,24 +159,19 @@ fn runCommandLine(rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def fileName = ifValueOr { <> argWords[0] }
-        { <> "/dev/stdin" };
+    def fileName = argWords[0] | "/dev/stdin";
     def filePath = Io1::pathFromFlat(fileName);
-    def args = ifValueOr { <> argWords[1..] }
-        { <> [] };
+    def args = argWords[1..] | [];
 
-    def suffix = ifValueOr { <> options::suffix }
-        { <> suffixFromName(filePath[^0]) };
+    def suffix = options::suffix | suffixFromName(filePath[^0]);
 
-    ifIs { <> eq(suffix, "module") }
-        { return runModule(filePath, args) };
+    if (suffix == "module") {
+        return runModule(filePath, args)
+    } else if (suffix == "samb") {
+        return runBinary(filePath, args)
+    };
 
-    ifIs { <> eq(suffix, "samb") }
-        { return runBinary(filePath, args) };
-
-    def langLayer = ifIs { <> eq(suffix, "sam") }
-        { <> "2" }
-        { <> suffix[^0] };
+    def langLayer = (suffix == "sam") & "2" | suffix[^0];
 
     <> runFile(langLayer, filePath, args)
 };
