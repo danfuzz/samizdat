@@ -1108,6 +1108,14 @@ def parGeneratorDef = {/
     init = parExpression
 
     { <> {formal, init} }
+|
+    @for
+    size = parExpression
+
+    {
+        def init = makeCallModName("Generator", "makeRepeatGenerator", size);
+        <> {formal: {}, init}
+    }
 /};
 
 ## Parses a comma-separated list of generator definitions, for use in
