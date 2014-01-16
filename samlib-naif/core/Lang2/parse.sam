@@ -1022,7 +1022,7 @@ Box::store(parIdentifier2, implIdentifier2);
 ## yielding an appropriate expression node if syntactically valid, including
 ## verification that all input was consumed.
 def parStringInterpolation = {/
-    &@"("
+    &[@"(" @"["]
     ex = parTerm
     !.
     { <> ex }
