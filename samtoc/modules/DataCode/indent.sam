@@ -41,14 +41,15 @@ fn indent(tree, level, maxColumns) {
     def args = tree::args;
     def nextLevel = level + 1;
 
-    <> cat(
+    <> "\[
         prefix, flatten(tree::name), "(\n",
         ( a in args, i in (#args.. by -1) ->
             <> "\[
                 indent(a, nextLevel, maxColumns),
                 (i == 1) & ")" | ",\n"
             ]"
-        )*)
+        )*
+    ]"
 };
 
 <> {
