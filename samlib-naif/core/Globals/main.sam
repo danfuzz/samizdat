@@ -11,7 +11,6 @@
 def Module = moduleUse({name: ["core", "Module"]});
 
 def allModules = Module::getAllModules();
-def globalsList = Generator::filterAll(Module::getAllModules())
-    { modu <> Module::getGlobals(modu) };
+def globalsMaps = ( modu in allModules <> Module::getGlobals(modu) );
 
-<> cat(globalsList*)
+<> cat(globalsMaps*)
