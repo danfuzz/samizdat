@@ -64,7 +64,7 @@ genericBind(
     fn fnDef_bodies(node, bodiesBox) {
         <> @fnDef{
             name: node.name,
-            body: bodies(@closure(dataOf(node)), bodiesBox)
+            value: bodies(@closure(dataOf(node)), bodiesBox)
         }
     });
 
