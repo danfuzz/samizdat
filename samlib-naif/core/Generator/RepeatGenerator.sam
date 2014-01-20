@@ -45,7 +45,7 @@ fn RepeatGenerator_nextValue(gen, box) {
         }
         {
             ## Size is `0` or negative.
-            Box::store(box, value);
+            Box::store(box);
         }
 };
 genericBind(Generator::nextValue, "RepeatGenerator",
