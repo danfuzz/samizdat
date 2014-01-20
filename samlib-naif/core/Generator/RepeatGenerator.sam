@@ -36,10 +36,10 @@ genericBind(Generator::collect, "RepeatGenerator", Generator_stdCollect);
 ## Documented in spec.
 fn RepeatGenerator_nextValue(gen, box) {
     def size = dataOf(gen)::size;
-    def value = dataOf(gen)::value;
 
     <> ifIs { <> perGt(size, 0) }
         {
+            def value = dataOf(gen)::value;
             Box::store(box, value);
             <> makeRepeatGenerator(Number::sub(size, 1), value)
         }
