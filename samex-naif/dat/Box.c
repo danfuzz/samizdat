@@ -128,7 +128,7 @@ METH_IMPL(Box, store) {
     BoxInfo *info = getInfo(box);
 
     if (!info->canStore) {
-        die("Attempt to re-store yield box.");
+        die("Attempt to re-store to promise.");
     }
 
     if (info->setOnce) {
