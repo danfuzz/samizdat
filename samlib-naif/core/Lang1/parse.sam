@@ -258,9 +258,13 @@ def parFnCommon = Peg::makeMainSequence(
 ## Documented in spec.
 def parFnDef = Peg::makeMainSequence(
     parFnCommon,
-    Peg::makeCode { funcMap ->
-        <> ifIs { <> funcMap::name }
-            { <> @fnDef(funcMap) }
+    Peg::makeCode { funcMap <> funcMap::name },
+    Peg::makeCode { funcMap, name ->
+        ## `@topDeclaration` is split apart in the `programBody` rule.
+        <> @topDeclaration{
+            top: @varDeclare{name},
+            main: @varBind{name, value: @closure(funcMap)}
+        }
     });
 
 ## Documented in spec.
@@ -515,8 +519,19 @@ def implProgramBody = Peg::makeMainSequence(
         Peg::makeResult({statements: []})),
     Peg::makeStar(Peg::makeToken(";")),
     Peg::makeCode { ., most, last, . ->
-        def allStatements = [most*, last::statements*];
-        <> {last*, statements: allStatements}
+        def rawStatements = [most*, last::statements*];
+        def tops = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::top }
+            };
+        def mains = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::main }
+                    { <> s }
+            };
+        <> {last*, statements: [tops*, mains*]}
     });
 Box::store(parProgramBody, implProgramBody);
 

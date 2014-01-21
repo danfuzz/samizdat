@@ -319,9 +319,13 @@ def parFnCommon = {/
 def parFnDef = {/
     funcMap = parFnCommon
 
+    name = { <> funcMap::name }
     {
-        <> ifIs { <> funcMap::name }
-            { <> @fnDef(funcMap) }
+        ## `@topDeclaration` is split apart in the `programBody` rule.
+        <> @topDeclaration{
+            top: @varDeclare{name},
+            main: @varBind{name, value: @closure(funcMap)}
+        }
     }
 /};
 
@@ -655,8 +659,19 @@ def implProgramBody = {/
     @";"*
 
     {
-        def allStatements = [most*, last::statements*];
-        <> [last*, statements: allStatements]
+        def rawStatements = [most*, last::statements*];
+        def tops = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::top }
+            };
+        def mains = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::main }
+                    { <> s }
+            };
+        <> {last*, statements: [tops*, mains*]}
     }
 /};
 Box::store(parProgramBody, implProgramBody);

@@ -580,12 +580,22 @@ DEF_PARSE(fnDef) {
     MARK();
 
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
+    zvalue name = collGet(funcMap, STR_name);
 
-    if (collGet(funcMap, STR_name) == NULL) {
+    if (name == NULL) {
         return NULL;
     }
 
-    return makeTransValue(STR_fnDef, funcMap);
+    zvalue closure = makeTransValue(STR_closure, funcMap);
+
+    return makeTransValue(STR_topDeclaration,
+        mapFrom2(
+            STR_top,
+                makeTransValue(STR_varDeclare,
+                    mapFrom1(STR_name, name)),
+            STR_main,
+                makeTransValue(STR_varBind,
+                    mapFrom2(STR_name, name, STR_value, closure))));
 }
 
 /* Documented in spec. */
@@ -957,7 +967,7 @@ DEF_PARSE(nonlocalExit) {
 
 /* Documented in spec. */
 DEF_PARSE(programBody) {
-    zvalue statements = EMPTY_LIST;
+    zvalue rawStatements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
     PARSE(optSemicolons);
@@ -976,7 +986,7 @@ DEF_PARSE(programBody) {
         }
 
         PARSE(optSemicolons);
-        statements = listAppend(statements, statement);
+        rawStatements = listAppend(rawStatements, statement);
     }
 
     zvalue statement = PARSE(statement);
@@ -986,12 +996,29 @@ DEF_PARSE(programBody) {
     }
 
     if (statement != NULL) {
-        statements = listAppend(statements, statement);
+        rawStatements = listAppend(rawStatements, statement);
     } else {
         yield = PARSE(yield);
     }
 
     PARSE(optSemicolons);
+
+    zvalue tops = EMPTY_LIST;
+    zvalue mains = EMPTY_LIST;
+    zint size = collSize(rawStatements);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = seqNth(rawStatements, i);
+        if (hasType(one, STR_topDeclaration)) {
+            zvalue data = dataOf(one);
+            tops = listAppend(tops, collGet(data, STR_top));
+            mains = listAppend(mains, collGet(data, STR_main));
+        } else {
+            mains = listAppend(mains, one);
+        }
+    }
+
+    zvalue statements = GFN_CALL(cat, tops, mains);
 
     return mapFrom2(STR_statements, statements, STR_yield, yield);
 }
