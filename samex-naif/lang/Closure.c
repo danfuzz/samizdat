@@ -280,7 +280,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
 
         if (!ignore) {
             elems[elemAt].key = name;
-            elems[elemAt].value = value;
+            elems[elemAt].value = makeResult(value);
             elemAt++;
         }
     }
@@ -292,7 +292,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
 
     if (exitFunction != NULL) {
         elems[elemAt].key = info->yieldDef;
-        elems[elemAt].value = exitFunction;
+        elems[elemAt].value = makeResult(exitFunction);
         elemAt++;
     }
 

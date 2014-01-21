@@ -10,6 +10,7 @@
 
 #include "const.h"
 #include "impl.h"
+#include "type/Box.h"
 #include "type/Function.h"
 #include "type/Generator.h"
 #include "type/List.h"
@@ -191,6 +192,15 @@ void execVarDef(Frame *frame, zvalue varDef) {
 /* Documented in header. */
 zvalue langEval0(zvalue context, zvalue node) {
     Frame frame;
+
+    zint size = collSize(context);
+    zmapping mappings[size];
+
+    arrayFromMap(mappings, context);
+    for (zint i = 0; i < size; i++) {
+        mappings[i].value = makeResult(mappings[i].value);
+    }
+    context = mapFromArray(size, mappings);
 
     frameInit(&frame, NULL, NULL, context);
     return execExpressionVoidOk(&frame, node);

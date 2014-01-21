@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Box.h"
 #include "type/Map.h"
 #include "type/Value.h"
 #include "util.h"
@@ -43,7 +44,7 @@ void frameMark(Frame *frame) {
 /* Documented in header. */
 void frameAdd(Frame *frame, zvalue name, zvalue value) {
     zvalue vars = frame->vars;
-    zvalue newVars = collPut(frame->vars, name, value);
+    zvalue newVars = collPut(frame->vars, name, makeResult(value));
 
     if (collSize(vars) == collSize(newVars)) {
         die("Variable already defined: %s", valDebugString(name));
@@ -58,7 +59,7 @@ zvalue frameGet(Frame *frame, zvalue name) {
         zvalue result = collGet(frame->vars, name);
 
         if (result != NULL) {
-            return result;
+            return boxFetch(result);
         }
     }
 
