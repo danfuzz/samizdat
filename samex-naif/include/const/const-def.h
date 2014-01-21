@@ -43,7 +43,6 @@ TOK(def,               "def");
 TOK(fn,                "fn");
 TOK(return,            "return");
 
-STR(ENVIRONMENT,       "ENVIRONMENT");
 STR(MapGenerator,      "MapGenerator");
 STR(SequenceGenerator, "SequenceGenerator");
 STR(actuals,           "actuals");

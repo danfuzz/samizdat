@@ -13,7 +13,6 @@
 ## These are all documented in Samizdat Layer 0 spec.
 
 <> {
-    ENVIRONMENT,
     Int,
     List,
     Map,
