@@ -81,16 +81,9 @@ zvalue execClosure(Frame *frame, zvalue closureNode);
 zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
 
 /**
- * Executes a `varDeclare` node, by updating the given execution frame
- * as appropriate.
+ * Executes a `statement` form.
  */
-void execVarDeclare(Frame *frame, zvalue varDeclare);
-
-/**
- * Executes a `varDef` node, by updating the given execution frame
- * as appropriate.
- */
-void execVarDef(Frame *frame, zvalue varDef);
+void execStatement(Frame *frame, zvalue statement);
 
 /**
  * Initializes the given frame. The `frame` is assumed to live on the

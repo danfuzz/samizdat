@@ -158,6 +158,29 @@ static zvalue execVarBind(Frame *frame, zvalue varBind) {
 }
 
 /**
+ * Executes a `varDeclare` form, by updating the given execution frame
+ * as appropriate.
+ */
+static void execVarDeclare(Frame *frame, zvalue varDeclare) {
+    zvalue name = collGet(dataOf(varDeclare), STR_name);
+
+    frameDeclare(frame, name);
+}
+
+/**
+ * Executes a `varDef` form, by updating the given execution frame
+ * as appropriate.
+ */
+static void execVarDef(Frame *frame, zvalue varDef) {
+    zvalue nameValue = dataOf(varDef);
+    zvalue name = collGet(nameValue, STR_name);
+    zvalue valueExpression = collGet(nameValue, STR_value);
+    zvalue value = execExpression(frame, valueExpression);
+
+    frameAdd(frame, name, value);
+}
+
+/**
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
@@ -187,20 +210,12 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 }
 
 /* Documented in header. */
-void execVarDeclare(Frame *frame, zvalue varDeclare) {
-    zvalue name = collGet(dataOf(varDeclare), STR_name);
-
-    frameDeclare(frame, name);
-}
-
-/* Documented in header. */
-void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue nameValue = dataOf(varDef);
-    zvalue name = collGet(nameValue, STR_name);
-    zvalue valueExpression = collGet(nameValue, STR_value);
-    zvalue value = execExpression(frame, valueExpression);
-
-    frameAdd(frame, name, value);
+void execStatement(Frame *frame, zvalue statement) {
+    switch (evalTypeOf(statement)) {
+        case EVAL_varDeclare: execVarDeclare(frame, statement);       break;
+        case EVAL_varDef:     execVarDef(frame, statement);           break;
+        default:              execExpressionVoidOk(frame, statement); break;
+    }
 }
 
 

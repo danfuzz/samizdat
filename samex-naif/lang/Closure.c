@@ -331,22 +331,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     arrayFromList(statementsArr, statements);
 
     for (zint i = 0; i < statementsSize; i++) {
-        zvalue one = statementsArr[i];
-
-        switch (evalTypeOf(one)) {
-            case EVAL_varDeclare: {
-                execVarDeclare(&frame, one);
-                break;
-            }
-            case EVAL_varDef: {
-                execVarDef(&frame, one);
-                break;
-            }
-            default: {
-                execExpressionVoidOk(&frame, one);
-                break;
-            }
-        }
+        execStatement(&frame, statementsArr[i]);
     }
 
     // Evaluate the yield expression if present, and return the final
