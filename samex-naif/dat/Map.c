@@ -404,10 +404,10 @@ METH_IMPL(Map, nextValue) {
 
     if (first == NULL) {
         // `map` is empty.
-        GFN_CALL(store, box);
+        boxStore(box, NULL);
         return NULL;
     } else {
-        GFN_CALL(store, box, first);
+        boxStore(box, first);
         return makeTransValue(
             STR_MapGenerator,
             mapFromArgs(

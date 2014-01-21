@@ -34,6 +34,15 @@ extern zvalue GFN_fetch;
  */
 extern zvalue GFN_store;
 
+/** Direct call to Box implementation of `fetch(box)`. Checks argument type. */
+zvalue boxFetch(zvalue box);
+
+/**
+ * Direct call to Box implementation of `store(box, optValue?)`. Checks
+ * argument type.
+ */
+void boxStore(zvalue box, zvalue value);
+
 /**
  * Constructs a mutable (re-settable) box, with the given initial value.
  * Pass `NULL` to leave it initially unset.
