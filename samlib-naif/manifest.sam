@@ -49,7 +49,6 @@ def MANIFEST = [
     ["core", "Sequence"],
 
     ["core", "Io0"],
-    ["core", "FunctionForwarder"], ## Uses `Box` and `Io0`.
     ["core", "Boolean"],           ## Uses `Io0`.
 
     ## Layer 0: Nontrivial modules.
