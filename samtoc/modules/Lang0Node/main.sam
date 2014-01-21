@@ -18,7 +18,7 @@ fn get expression(node) {
     <> dataOf(node)
 };
 
-## Accessor for `closure` and `fnDef` nodes.
+## Accessor for `closure` nodes.
 
 fn get formals(node) {
     <> dataOf(node)::formals
@@ -30,21 +30,25 @@ fn get function(node) {
     <> dataOf(node)::function
 };
 
-## Accessor for `fnDef`, `varDef`, and `varRef` nodes.
+## Accessor for `closure`, `varBind`, `varDeclare`, `varDef`, and `varRef`
+## nodes.
 
 def get name = makeRegularGeneric("get-name", 1, 1);
 
-## This makes it a little easier to manipulate `closure` and `fnDef` nodes
-## with the same code.
 genericBind(
     get name,
     "closure",
-    fn closure_get_name(node) { <> });
+    fn closure_get_name(node) { <> dataOf(node)::name });
 
 genericBind(
     get name,
-    "fnDef",
-    fn fnDef_get_name(node) { <> dataOf(node)::name });
+    "varBind",
+    fn varBind_get_name(node) { <> dataOf(node)::name });
+
+genericBind(
+    get name,
+    "varDeclare",
+    fn varDeclare_get_name(node) { <> dataOf(node)::name });
 
 genericBind(
     get name,
@@ -56,13 +60,13 @@ genericBind(
     "varRef",
     fn varRef_get_name(node) { <> dataOf(node) });
 
-## Accessor for `closure` and `fnDef` nodes.
+## Accessor for `closure` nodes.
 
 fn get statements(node) {
     <> dataOf(node)::statements
 };
 
-## Accessor for `literal` and `varDef` nodes.
+## Accessor for `literal`, `varBind`, and `varDef` nodes.
 
 def get value = makeRegularGeneric("get-value", 1, 1);
 
@@ -73,16 +77,21 @@ genericBind(
 
 genericBind(
     get value,
+    "varBind",
+    fn varBind_get_value(node) { <> dataOf(node)::value });
+
+genericBind(
+    get value,
     "varDef",
     fn varDef_get_value(node) { <> dataOf(node)::value });
 
-## Accessor for `closure` and `fnDef` nodes.
+## Accessor for `closure` nodes.
 
 fn get yield(node) {
     <> dataOf(node)::yield
 };
 
-## Accessor for `closure` and `fnDef` nodes.
+## Accessor for `closure` nodes.
 
 fn get yieldDef(node) {
     <> dataOf(node)::yieldDef
