@@ -43,6 +43,8 @@ MOD_INIT(lang) {
     langTypeMap[typeIndex(STR_interpolate)] = EVAL_interpolate;
     langTypeMap[typeIndex(STR_literal)]     = EVAL_literal;
     langTypeMap[typeIndex(STR_fnDef)]       = EVAL_fnDef;
+    langTypeMap[typeIndex(STR_varBind)]     = EVAL_varBind;
+    langTypeMap[typeIndex(STR_varDeclare)]  = EVAL_varDeclare;
     langTypeMap[typeIndex(STR_varDef)]      = EVAL_varDef;
     langTypeMap[typeIndex(STR_varRef)]      = EVAL_varRef;
     langTypeMap[typeIndex(STR_voidable)]    = EVAL_voidable;

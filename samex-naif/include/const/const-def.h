@@ -73,6 +73,8 @@ STR(seq,               "seq");
 STR(statements,        "statements");
 STR(string,            "string");
 STR(value,             "value");
+STR(varBind,           "varBind");
+STR(varDeclare,        "varDeclare");
 STR(varDef,            "varDef");
 STR(varRef,            "varRef");
 STR(voidable,          "voidable");
