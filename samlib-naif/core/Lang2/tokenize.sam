@@ -6,7 +6,6 @@
 ## Samizdat Layer 2 Tokenizer
 ##
 
-def FunctionForwarder = moduleUse({name: ["core", "FunctionForwarder"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 
@@ -58,7 +57,8 @@ fn intFromDigitChar(ch) {
 ## Processes a list of `stringPart` elements, yielding a literal `string`
 ## value. In Layer 2 (and higher) this can also yield an
 ## `interpolatedString` or an `error`.
-def processStringParts = FunctionForwarder::make();
+##
+## **Note:** Defined below in Layer 2.
 
 ## Parses a non-zero amount of whitespace and comments.
 ## **Note:** The yielded result is always ignored.
@@ -247,7 +247,7 @@ fn intFromDigitList(base, digits) {
     };
 };
 
-fn implProcessStringParts(parts) {
+fn processStringParts(parts) {
     ## Handle the empty string as a special case, to make the
     ## reduce below be more straightforward.
     ifIs { <> eq(parts, []) }
@@ -295,7 +295,6 @@ fn implProcessStringParts(parts) {
     ## At this point, we have a valid interpolation.
     <> @interpolatedString(elems)
 };
-Box::store(processStringParts, implProcessStringParts);
 
 ## Parses a `#: ... :#` comment, with nesting.
 def implMultilineComment = {/
