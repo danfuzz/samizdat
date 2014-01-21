@@ -25,6 +25,8 @@ typedef enum {
     EVAL_interpolate,
     EVAL_literal,
     EVAL_fnDef,
+    EVAL_varBind,
+    EVAL_varDeclare,
     EVAL_varDef,
     EVAL_varRef,
     EVAL_voidable
@@ -80,7 +82,19 @@ zvalue execClosure(Frame *frame, zvalue closureNode);
 zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
 
 /**
- * Executes a variable definition, by updating the given execution frame,
+ * Executes a `varBind` node, by updating the given execution frame
+ * as appropriate.
+ */
+void execVarBind(Frame *frame, zvalue varBind);
+
+/**
+ * Executes a `varDeclare` node, by updating the given execution frame
+ * as appropriate.
+ */
+void execVarDeclare(Frame *frame, zvalue varDeclare);
+
+/**
+ * Executes a `varDef` node, by updating the given execution frame
  * as appropriate.
  */
 void execVarDef(Frame *frame, zvalue varDef);
@@ -101,6 +115,16 @@ void frameMark(Frame *frame);
  * Adds a new variable to the given frame.
  */
 void frameAdd(Frame *frame, zvalue name, zvalue value);
+
+/**
+ * Binds the given variable in the given frame.
+ */
+void frameBind(Frame *frame, zvalue name, zvalue value);
+
+/**
+ * Declares a bind-once variable in the given frame.
+ */
+void frameDeclare(Frame *frame, zvalue name);
 
 /**
  * Gets a variable's value out of the given frame.

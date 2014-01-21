@@ -175,6 +175,23 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 }
 
 /* Documented in header. */
+void execVarBind(Frame *frame, zvalue varBind) {
+    zvalue nameValue = dataOf(varBind);
+    zvalue name = collGet(nameValue, STR_name);
+    zvalue valueExpression = collGet(nameValue, STR_value);
+    zvalue value = execExpression(frame, valueExpression);
+
+    frameBind(frame, name, value);
+}
+
+/* Documented in header. */
+void execVarDeclare(Frame *frame, zvalue varDeclare) {
+    zvalue name = collGet(dataOf(varDeclare), STR_name);
+
+    frameDeclare(frame, name);
+}
+
+/* Documented in header. */
 void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = dataOf(varDef);
     zvalue name = collGet(nameValue, STR_name);
