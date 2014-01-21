@@ -603,9 +603,13 @@ DEF_PARSE(fnExpression) {
     zvalue mainClosure = makeTransValue(
         STR_closure,
         mapFrom3(
-            STR_formals,    EMPTY_LIST,
-            STR_statements, listFrom1(makeTransValue(STR_fnDef, funcMap)),
-            STR_yield,      makeVarRef(name)));
+            STR_formals, EMPTY_LIST,
+            STR_statements,
+                listFrom1(
+                    makeTransValue(STR_varDeclare, mapFrom1(STR_name, name))),
+            STR_yield,
+                makeTransValue(STR_varBind,
+                    mapFrom2(STR_name, name, STR_value, closure))));
 
     return makeCall(mainClosure, NULL);
 }

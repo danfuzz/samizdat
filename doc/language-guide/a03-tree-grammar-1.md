@@ -336,8 +336,8 @@ def parFnDef = {/
 ## =>
 ## ```
 ## {
-##     fn <out> name ...;
-##     <> name
+##     def name;
+##     <> name := { <out> ... }
 ## }()
 ## ```
 def parFnExpression = {/
@@ -348,8 +348,8 @@ def parFnExpression = {/
         {
             def mainClosure = @closure{
                 formals: [],
-                statements: [@fnDef(funcMap)],
-                yield: makeVarRef(name)
+                statements: [@varDeclare{name}],
+                yield: @varBind{name, value: @closure(funcMap)}
             };
 
             <> makeCall(mainClosure)

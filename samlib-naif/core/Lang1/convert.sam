@@ -259,6 +259,21 @@ fn parser_convertPexIn(node) {
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 
+## Does parser conversion of a `varBind` node.
+fn varBind_convertPexIn(node) {
+    def nodeValue = dataOf(node);
+    def value = convertPexIn(nodeValue::value);
+
+    <> @varBind{nodeValue*, value}
+};
+genericBind(convertPexIn, "varBind", varBind_convertPexIn);
+
+## Does parser conversion of a `varDeclare` node.
+fn varDeclare_convertPexIn(node) {
+    <> node
+};
+genericBind(convertPexIn, "varDeclare", varDeclare_convertPexIn);
+
 ## Does parser conversion of a `varDef` node.
 fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);

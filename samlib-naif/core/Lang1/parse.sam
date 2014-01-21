@@ -268,12 +268,12 @@ def parFnExpression = Peg::makeMainSequence(
     parFnCommon,
     Peg::makeChoice(
         Peg::makeSequence(
-            Peg::makeCode { funcMap, . <> funcMap::name },
+            Peg::makeCode { funcMap <> funcMap::name },
             Peg::makeCode { funcMap, name ->
                 def mainClosure = @closure{
                     formals: [],
-                    statements: [@fnDef(funcMap)],
-                    yield: makeVarRef(name)
+                    statements: [@varDeclare{name}],
+                    yield: @varBind{name, value: @closure(funcMap)}
                 };
 
                 <> makeCall(mainClosure)
@@ -281,7 +281,6 @@ def parFnExpression = Peg::makeMainSequence(
         Peg::makeCode { funcMap <> @closure(funcMap) }));
 
 ## Documented in spec.
-
 def parInt = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("-"),
