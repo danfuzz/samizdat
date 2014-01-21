@@ -50,7 +50,7 @@ fn loadPath(moduleDir, modulePaths) {
             { paths <> [paths*, modulePaths*] }
             { <> modulePaths };
 
-        <> moduleUse(searchInfo, fullPaths)
+        <> moduleUse1(searchInfo, fullPaths)
     };
 
     def fullContext = {baseContext*, moduleUse: innerModuleUse};
