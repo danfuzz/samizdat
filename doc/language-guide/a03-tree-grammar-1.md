@@ -41,6 +41,16 @@ fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: expression}
 };
 
+## Returns a `varBind` node.
+fn makeVarBind(name, value) {
+    <> @varBind{name, value}
+};
+
+## Returns a `varDeclare` node.
+fn makeVarDeclare(name) {
+    <> @varDeclare{name}
+};
+
 ## Returns a `varDef` node.
 fn makeVarDef(name, value) {
     <> @varDef{name, value}
@@ -322,8 +332,8 @@ def parFnDef = {/
     {
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
-            top: @varDeclare{name},
-            main: @varBind{name, value: closure}
+            top:  makeVarDeclare(name),
+            main: makeVarBind(name, closure)
         }
     }
 /};
@@ -350,9 +360,9 @@ def parFnExpression = {/
         name = { <> dataOf(closure)::name }
         {
             def mainClosure = @closure{
-                formals: [],
-                statements: [@varDeclare{name}],
-                yield: @varBind{name, value: closure}
+                formals:    [],
+                statements: [makeVarDeclare(name)],
+                yield:      makeVarBind(name, closure)
             };
 
             <> makeCall(mainClosure)

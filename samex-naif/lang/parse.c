@@ -174,17 +174,28 @@ static zvalue makeLiteral(zvalue value) {
 
 /* Documented in spec. */
 static zvalue makeThunk(zvalue expression) {
-    zvalue value = mapFrom3(
-        STR_formals, EMPTY_LIST,
-        STR_statements, EMPTY_LIST,
-        STR_yield, expression);
-    return makeTransValue(STR_closure, value);
+    return makeTransValue(STR_closure,
+        mapFrom3(
+            STR_formals, EMPTY_LIST,
+            STR_statements, EMPTY_LIST,
+            STR_yield, expression));
+}
+
+/* Documented in spec. */
+static zvalue makeVarBind(zvalue name, zvalue value) {
+    return makeTransValue(STR_varBind,
+        mapFrom2(STR_name, name, STR_value, value));
+}
+
+/* Documented in spec. */
+static zvalue makeVarDeclare(zvalue name) {
+    return makeTransValue(STR_varDeclare, mapFrom1(STR_name, name));
 }
 
 /* Documented in spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
-    zvalue payload = mapFrom2(STR_name, name, STR_value, value);
-    return makeTransValue(STR_varDef, payload);
+    return makeTransValue(STR_varDef,
+        mapFrom2(STR_name, name, STR_value, value));
 }
 
 /* Documented in spec. */
@@ -589,12 +600,8 @@ DEF_PARSE(fnDef) {
 
     return makeTransValue(STR_topDeclaration,
         mapFrom2(
-            STR_top,
-                makeTransValue(STR_varDeclare,
-                    mapFrom1(STR_name, name)),
-            STR_main,
-                makeTransValue(STR_varBind,
-                    mapFrom2(STR_name, name, STR_value, closure))));
+            STR_top,  makeVarDeclare(name),
+            STR_main, makeVarBind(name, closure)));
 }
 
 /* Documented in spec. */
@@ -611,13 +618,9 @@ DEF_PARSE(fnExpression) {
     zvalue mainClosure = makeTransValue(
         STR_closure,
         mapFrom3(
-            STR_formals, EMPTY_LIST,
-            STR_statements,
-                listFrom1(
-                    makeTransValue(STR_varDeclare, mapFrom1(STR_name, name))),
-            STR_yield,
-                makeTransValue(STR_varBind,
-                    mapFrom2(STR_name, name, STR_value, closure))));
+            STR_formals,    EMPTY_LIST,
+            STR_statements, listFrom1(makeVarDeclare(name)),
+            STR_yield,      makeVarBind(name, closure)));
 
     return makeCall(mainClosure, NULL);
 }
