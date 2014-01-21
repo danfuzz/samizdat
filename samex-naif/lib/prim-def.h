@@ -111,7 +111,6 @@ PRIM_FUNC(makeValueMap,          1, -1);
 PRIM_FUNC(ne,                    2, 2);
 PRIM_FUNC(nonlocalExit,          1, 2);
 PRIM_FUNC(optValue,              1, 1);
-PRIM_FUNC(totalOrder,            2, 2);
 PRIM_FUNC(typeOf,                1, 1);
 
 // Primitive functions: intended for modularization

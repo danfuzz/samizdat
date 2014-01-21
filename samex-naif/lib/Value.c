@@ -85,11 +85,6 @@ FUN_IMPL_DECL(ne) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(totalOrder) {
-    return intFromZint(valOrder(args[0], args[1]));
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(typeOf) {
     return typeOf(args[0]);
 }

@@ -57,7 +57,6 @@
     toString,
     totEq,
     totOrder,
-    totalOrder,
     typeOf,
     valueOf
 }

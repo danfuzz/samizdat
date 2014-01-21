@@ -171,25 +171,6 @@ the two given values are not identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
-#### `totalOrder(value1, value2) <> int`
-
-Returns the order of the two given values in the total order of
-Samizdat values. This returns one of `-1 0 1` indicating
-how the two values sort with each other, using the reasonably
-standard meaning of those values:
-
-* `-1` &mdash; The first value orders before the second value.
-
-* `0` &mdash; The two values are identical.
-
-* `1` &mdash; The first value orders after the second value.
-
-Ordering is calculated as follows:
-
-The "majorest" order is by type (see below for details). The minor order
-is according to `totOrder` called on the arguments. See that generic
-function for more details.
-
 #### `typeOf(value) <> .`
 
 Returns the type tag of the given arbitrary value. For transparent values,
