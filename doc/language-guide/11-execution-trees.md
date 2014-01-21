@@ -153,6 +153,26 @@ The data `value` is the result of evaluation,
 When a `literal` node is run, the result of evaluation is `value`.
 Evaluation never fails.
 
+#### `varBind` &mdash; `@varBind{name: name, value: expression}`
+
+* `name: name` &mdash; Variable name to bind (typically a string).
+
+* `value: expression` (optional) &mdash; Expression node representing the
+  value that the variable should take on when defined.
+
+This represents a variable binding (assignment) statement as part of a
+closure body.
+
+When run, the `value` expression is evaluated. If it evaluates to void,
+then evaluation fails (terminating the runtime). Otherwise, the `name`
+is looked up and resolved to a variable reference. It is an error
+(terminating the runtime) if no such variable is found, or if such a
+variable is found and it is not available for binding (or rebinding).
+Otherwise, the evaluated value is bound to the variable.
+
+The result of evaluating this form is the same as the result of evaluating
+`value`.
+
 #### `varRef` &mdash; `@varRef(name)`
 
 * `name` (required) &mdash; Name of a variable (typically a string).
@@ -224,24 +244,6 @@ multiple `fnDef`s in a row can mutually self-reference.
 If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
-
-#### `varBind` &mdash; `@varBind{name: name, value: expression}`
-
-* `name: name` &mdash; Variable name to bind (typically a string).
-
-* `value: expression` (optional) &mdash; Expression node representing the
-  value that the variable should take on when defined.
-
-This represents a variable binding (assignment) statement as part of a
-closure body. Nodes of this type are valid within the `statements` list of
-a `closure` or `fnDef` node.
-
-When run, the `value` expression is evaluated. If it evaluates to void,
-then evaluation fails (terminating the runtime). Otherwise, the `name`
-is looked up and resolved to a variable reference. It is an error
-(terminating the runtime) if no such variable is found, or if such a
-variable is found and it is not available for binding (or rebinding).
-Otherwise, the evaluated value is bound to the variable.
 
 #### `varDeclare` &mdash; `@varDeclare{name: name}`
 

@@ -82,12 +82,6 @@ zvalue execClosure(Frame *frame, zvalue closureNode);
 zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
 
 /**
- * Executes a `varBind` node, by updating the given execution frame
- * as appropriate.
- */
-void execVarBind(Frame *frame, zvalue varBind);
-
-/**
  * Executes a `varDeclare` node, by updating the given execution frame
  * as appropriate.
  */

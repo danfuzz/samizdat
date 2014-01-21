@@ -126,14 +126,6 @@ static zvalue execCall(Frame *frame, zvalue call) {
 }
 
 /**
- * Executes a `varRef` form.
- */
-static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = dataOf(varRef);
-    return frameGet(frame, name);
-}
-
-/**
  * Executes an `interpolate` form.
  */
 static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
@@ -154,6 +146,25 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
     }
 }
 
+/* Documented in header. */
+static zvalue execVarBind(Frame *frame, zvalue varBind) {
+    zvalue nameValue = dataOf(varBind);
+    zvalue name = collGet(nameValue, STR_name);
+    zvalue valueExpression = collGet(nameValue, STR_value);
+    zvalue value = execExpression(frame, valueExpression);
+
+    frameBind(frame, name, value);
+    return value;
+}
+
+/**
+ * Executes a `varRef` form.
+ */
+static zvalue execVarRef(Frame *frame, zvalue varRef) {
+    zvalue name = dataOf(varRef);
+    return frameGet(frame, name);
+}
+
 
 /*
  * Module Definitions
@@ -167,21 +178,12 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_expression:  return execExpressionVoidOk(frame, dataOf(e));
         case EVAL_interpolate: return execInterpolate(frame, e);
         case EVAL_literal:     return dataOf(e);
+        case EVAL_varBind:     return execVarBind(frame, e);
         case EVAL_varRef:      return execVarRef(frame, e);
         default: {
             die("Invalid expression type: %s", valDebugString(typeOf(e)));
         }
     }
-}
-
-/* Documented in header. */
-void execVarBind(Frame *frame, zvalue varBind) {
-    zvalue nameValue = dataOf(varBind);
-    zvalue name = collGet(nameValue, STR_name);
-    zvalue valueExpression = collGet(nameValue, STR_value);
-    zvalue value = execExpression(frame, valueExpression);
-
-    frameBind(frame, name, value);
 }
 
 /* Documented in header. */
