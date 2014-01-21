@@ -50,11 +50,14 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `closure` &mdash; `@closure{formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
+#### `closure` &mdash; `@closure{formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
 
 * `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
+
+* `name: name` (optional) &mdash; The function name of the closure. Only
+  used for producing debugging info (e.g. stack traces).
 
 * `yieldDef: name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
