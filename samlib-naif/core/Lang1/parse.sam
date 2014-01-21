@@ -247,7 +247,7 @@ def parFnCommon = Peg::makeMainSequence(
     Peg::makeCode { ., returnDef, name, ., formals, ., code ->
         def codeMap = dataOf(code);
         def statements = [returnDef*, codeMap::statements*];
-        <> {
+        <> @closure{
             codeMap*, name*,
             formals,
             yieldDef: "return",
@@ -258,12 +258,12 @@ def parFnCommon = Peg::makeMainSequence(
 ## Documented in spec.
 def parFnDef = Peg::makeMainSequence(
     parFnCommon,
-    Peg::makeCode { funcMap <> funcMap::name },
-    Peg::makeCode { funcMap, name ->
+    Peg::makeCode { closure <> dataOf(closure)::name },
+    Peg::makeCode { closure, name ->
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
             top: @varDeclare{name},
-            main: @varBind{name, value: @closure(funcMap)}
+            main: @varBind{name, value: closure}
         }
     });
 
@@ -272,17 +272,17 @@ def parFnExpression = Peg::makeMainSequence(
     parFnCommon,
     Peg::makeChoice(
         Peg::makeSequence(
-            Peg::makeCode { funcMap <> funcMap::name },
+            Peg::makeCode { closure <> dataOf(closure)::name },
             Peg::makeCode { funcMap, name ->
                 def mainClosure = @closure{
                     formals: [],
                     statements: [@varDeclare{name}],
-                    yield: @varBind{name, value: @closure(funcMap)}
+                    yield: @varBind{name, value: closure}
                 };
 
                 <> makeCall(mainClosure)
             }),
-        Peg::makeCode { funcMap <> @closure(funcMap) }));
+        Peg::makeCode { closure <> closure }));
 
 ## Documented in spec.
 def parInt = Peg::makeMainChoice(

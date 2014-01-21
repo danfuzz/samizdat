@@ -253,9 +253,8 @@ def parCodeOnlyClosure = {/
 ## what's required for a closure payload, except that `name` may also
 ## be bound.
 ##
-## The result of this rule is suitable for use as a `closure` node
-## payload. And as long as `name` is bound, the result is valid to use
-## as the payload for a `fnDef` node.
+## The result of this rule is a `closure` node, with `name` possibly
+## (but not necssarily) bound in the payload.
 ##
 ## The translation is along these lines:
 ##
@@ -302,7 +301,7 @@ def parFnCommon = {/
     {
         def codeMap = dataOf(code);
         def statements = [returnDef*, codeMap::statements*];
-        <> {
+        <> @closure{
             codeMap*, name*,
             formals,
             yieldDef: "return",
@@ -317,14 +316,14 @@ def parFnCommon = {/
 ## that just means that we're looking at a legit `fn` expression, which will
 ## get successfully parsed by the `expression` alternative of `statement`.
 def parFnDef = {/
-    funcMap = parFnCommon
+    closure = parFnCommon
 
-    name = { <> funcMap::name }
+    name = { <> dataOf(closure)::name }
     {
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
             top: @varDeclare{name},
-            main: @varBind{name, value: @closure(funcMap)}
+            main: @varBind{name, value: closure}
         }
     }
 /};
@@ -345,21 +344,21 @@ def parFnDef = {/
 ## }()
 ## ```
 def parFnExpression = {/
-    funcMap = parFnCommon
+    closure = parFnCommon
 
     (
-        name = { <> funcMap::name }
+        name = { <> dataOf(closure)::name }
         {
             def mainClosure = @closure{
                 formals: [],
                 statements: [@varDeclare{name}],
-                yield: @varBind{name, value: @closure(funcMap)}
+                yield: @varBind{name, value: closure}
             };
 
             <> makeCall(mainClosure)
         }
     |
-        { <> @closure(funcMap) }
+        { <> closure }
     )
 /};
 

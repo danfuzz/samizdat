@@ -565,28 +565,27 @@ DEF_PARSE(fnCommon) {
     zvalue codeMap = dataOf(code);
     zvalue statements =
         GFN_CALL(cat, returnDef, collGet(codeMap, STR_statements));
-
-    return GFN_CALL(cat,
+    zvalue closureMap = GFN_CALL(cat,
         codeMap,
         name,
         mapFrom3(
             STR_formals,    formals,
             STR_yieldDef,   STR_return,
             STR_statements, statements));
+
+    return makeTransValue(STR_closure, closureMap);
 }
 
 /* Documented in spec. */
 DEF_PARSE(fnDef) {
     MARK();
 
-    zvalue funcMap = PARSE_OR_REJECT(fnCommon);
-    zvalue name = collGet(funcMap, STR_name);
+    zvalue closure = PARSE_OR_REJECT(fnCommon);
+    zvalue name = collGet(dataOf(closure), STR_name);
 
     if (name == NULL) {
         return NULL;
     }
-
-    zvalue closure = makeTransValue(STR_closure, funcMap);
 
     return makeTransValue(STR_topDeclaration,
         mapFrom2(
@@ -602,10 +601,9 @@ DEF_PARSE(fnDef) {
 DEF_PARSE(fnExpression) {
     MARK();
 
-    zvalue funcMap = PARSE_OR_REJECT(fnCommon);
-    zvalue closure = makeTransValue(STR_closure, funcMap);
+    zvalue closure = PARSE_OR_REJECT(fnCommon);
+    zvalue name = collGet(dataOf(closure), STR_name);
 
-    zvalue name = collGet(funcMap, STR_name);
     if (name == NULL) {
         return closure;
     }
