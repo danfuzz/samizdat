@@ -34,6 +34,7 @@ fn update(box, updateFunction) {
     ## Re-exported from primitive library.
     makeCell:    Box_makeCell,
     makePromise: Box_makePromise,
+    makeResult:  Box_makeResult,
 
     ## Defined in this file.
     update

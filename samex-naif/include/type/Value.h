@@ -131,7 +131,7 @@ bool valEq(zvalue v1, zvalue v2);
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
- * See `totalOrder` in the Samizdat Layer 0 spec for more details about
+ * See `totOrder` in the Samizdat Layer 0 spec for more details about
  * value sorting.
  *
  * If `NULL` is passed as an argument, it is accepted and treated as

@@ -60,6 +60,16 @@ msg(box3);
 Box::store(box3, "fizmo");
 msg(box3);
 
+Io0::note("\nResult Box, void");
+
+def box4 = Box::makeResult();
+msg(box4);
+
+Io0::note("\nResult Box, value");
+
+def box5 = Box::makeResult("blort");
+msg(box5);
+
 Io0::note("\nnullBox");
 
 msg(Box::nullBox);
@@ -67,15 +77,15 @@ Box::store(Box::nullBox, "stuff");
 msg(Box::nullBox);
 
 Io0::note("\nUpdate mutable box");
-def box4 = Box::makeCell();
-Box::update(box4, { args* <> Format::source(args) });
-msg(box4);
-Box::update(box4, { value <> cat("Yes: ", value) });
-msg(box4);
+def box6 = Box::makeCell();
+Box::update(box6, { args* <> Format::source(args) });
+msg(box6);
+Box::update(box6, { value <> cat("Yes: ", value) });
+msg(box6);
 
 Io0::note("\nUpdate yield box");
-def box5 = Box::makePromise();
-Box::update(box5, { args* <> Format::source(args) });
-msg(box5);
+def box7 = Box::makePromise();
+Box::update(box7, { args* <> Format::source(args) });
+msg(box7);
 
 <> 0

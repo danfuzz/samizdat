@@ -42,10 +42,57 @@ static BoxInfo *getInfo(zvalue box) {
     return datPayload(box);
 }
 
+/**
+ * Does the main action of fetching, without checking the argument type.
+ */
+static zvalue doFetch(zvalue box) {
+    zvalue result = getInfo(box)->value;
+
+    if (result != NULL) {
+        // The box has a value that we are about to return. Since the box
+        // could become garbage after this, we have to treat the value as
+        // "escaped" and so explicitly add the result value to the frame at
+        // this point. This ensures that GC will be able to find it.
+        datFrameAdd(result);
+    }
+
+    return result;
+}
+
+/**
+ * Does the main action of storing, without checking the argument type.
+ */
+static zvalue doStore(zvalue box, zvalue value) {
+    BoxInfo *info = getInfo(box);
+
+    if (!info->canStore) {
+        die("Attempt to re-store to promise.");
+    }
+
+    if (info->setOnce) {
+        info->canStore = false;
+    }
+
+    info->value = value;
+    return value;
+}
+
 
 /*
  * Exported Definitions
  */
+
+/* Documented in header. */
+zvalue boxFetch(zvalue box) {
+    assertHasType(box, TYPE_Box);
+    return doFetch(box);
+}
+
+/* Documented in header. */
+void boxStore(zvalue box, zvalue value) {
+    assertHasType(box, TYPE_Box);
+    doStore(box, value);
+}
 
 /* Documented in header. */
 zvalue makeCell(zvalue value) {
@@ -66,6 +113,18 @@ zvalue makePromise(void) {
 
     info->value = NULL;
     info->canStore = true;
+    info->setOnce = true;
+
+    return result;
+}
+
+/* Documented in header. */
+zvalue makeResult(zvalue value) {
+    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    BoxInfo *info = getInfo(result);
+
+    info->value = value;
+    info->canStore = false;
     info->setOnce = true;
 
     return result;
@@ -97,17 +156,7 @@ METH_IMPL(Box, canStore) {
 /* Documented in header. */
 METH_IMPL(Box, fetch) {
     zvalue box = args[0];
-    zvalue result = getInfo(box)->value;
-
-    if (result != NULL) {
-        // The box has a value that we are about to return. Since the box
-        // could become garbage after this, we have to treat the value as
-        // "escaped" and so explicitly add the result value to the frame at
-        // this point. This ensures that GC will be able to find it.
-        datFrameAdd(result);
-    }
-
-    return result;
+    return doFetch(box);
 }
 
 /* Documented in header. */
@@ -116,7 +165,6 @@ METH_IMPL(Box, gcMark) {
     BoxInfo *info = getInfo(box);
 
     datMark(info->value);
-
     return NULL;
 }
 
@@ -124,20 +172,7 @@ METH_IMPL(Box, gcMark) {
 METH_IMPL(Box, store) {
     zvalue box = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
-
-    BoxInfo *info = getInfo(box);
-
-    if (!info->canStore) {
-        die("Attempt to re-store yield box.");
-    }
-
-    if (info->setOnce) {
-        info->canStore = false;
-    }
-
-    info->value = value;
-
-    return value;
+    return doStore(box, value);
 }
 
 /** Initializes the module. */

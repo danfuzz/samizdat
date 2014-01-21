@@ -59,7 +59,6 @@ fn main(selfPath, name?, rest*) {
     process(cat);
     process(ne);
     process(String);
-    process(ENVIRONMENT::HOME);
     process(Format::int(71, 2));
     process(Format::int(71, 10));
     process(Format::int(71, 16));

@@ -111,13 +111,13 @@ PRIM_FUNC(makeValueMap,          1, -1);
 PRIM_FUNC(ne,                    2, 2);
 PRIM_FUNC(nonlocalExit,          1, 2);
 PRIM_FUNC(optValue,              1, 1);
-PRIM_FUNC(totalOrder,            2, 2);
 PRIM_FUNC(typeOf,                1, 1);
 
 // Primitive functions: intended for modularization
 PRIM_DEF(Generator_stdCollect, FUN_Generator_stdCollect);
 PRIM_FUNC(Box_makeCell,          0, 1);
 PRIM_FUNC(Box_makePromise,       0, 0);
+PRIM_FUNC(Box_makeResult,        0, 1);
 PRIM_FUNC(Io0_flatCwd,           0, 0);
 PRIM_FUNC(Io0_flatFileExists,    1, 1);
 PRIM_FUNC(Io0_flatReadLink,      1, 1);
