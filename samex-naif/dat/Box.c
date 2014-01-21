@@ -118,6 +118,18 @@ zvalue makePromise(void) {
     return result;
 }
 
+/* Documented in header. */
+zvalue makeResult(zvalue value) {
+    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    BoxInfo *info = getInfo(result);
+
+    info->value = value;
+    info->canStore = false;
+    info->setOnce = true;
+
+    return result;
+}
+
 
 /*
  * Type Definition

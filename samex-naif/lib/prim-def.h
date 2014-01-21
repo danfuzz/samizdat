@@ -118,6 +118,7 @@ PRIM_FUNC(typeOf,                1, 1);
 PRIM_DEF(Generator_stdCollect, FUN_Generator_stdCollect);
 PRIM_FUNC(Box_makeCell,          0, 1);
 PRIM_FUNC(Box_makePromise,       0, 0);
+PRIM_FUNC(Box_makeResult,        0, 1);
 PRIM_FUNC(Io0_flatCwd,           0, 0);
 PRIM_FUNC(Io0_flatFileExists,    1, 1);
 PRIM_FUNC(Io0_flatReadLink,      1, 1);

@@ -54,4 +54,10 @@ zvalue makeCell(zvalue value);
  */
 zvalue makePromise(void);
 
+/**
+ * Constructs a permanently-set box, with the given value. Pass `NULL` to
+ * make it un-valued.
+ */
+zvalue makeResult(zvalue value);
+
 #endif

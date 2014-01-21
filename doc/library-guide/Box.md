@@ -39,15 +39,15 @@ which `store` has already been called.
 <br><br>
 ### Primitive Definitions
 
-#### `makeCell(value?) <> cell`
+#### `makeCell(optValue?) <> cell`
 
 Creates a cell (a mutable box), with optional pre-set value. The result of
 a call to this function is a cell which can be set any number of times using
 `store`. The contents of the cell are accessible by calling `fetch`.
 
-The initial cell content value is the `value` given to this function. This
+The initial cell content value is the `optValue` given to this function. This
 is what is returned from `fetch` until `store` is called to replace it.
-If `value` is not supplied, `fetch` returns void until `store` is called.
+If `optValue` is not supplied, `fetch` returns void until `store` is called.
 
 This function is meant to be the primary way to define (what amount to)
 mutable variables, in that Samizdat Layer 0 only provides immutably-bound
@@ -66,6 +66,13 @@ void until and unless `store` is called with a second argument.
 This function is meant to be the primary way to capture the yielded values
 from functions (such as object service functions and parser functions) which
 expect to yield values by calling a function.
+
+#### `makeResult(optValue?) <> promise`
+
+Creates a permanently-set or permanently valueless box. The result of a call
+to this function is a box which cannot be stored to, and which will always
+respond to `fetch` with the given `optValue`. If `optValue` is not supplied,
+`fetch` on the result will always return void.
 
 
 <br><br>
