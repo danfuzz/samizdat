@@ -31,9 +31,6 @@ enum {
     CHATTY_CACHEY = false
 };
 
-// Defined below.
-static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
-
 /**
  * Cache that maps all encountered closure(ish) nodes to their associated
  * `Closure` values.
@@ -79,8 +76,7 @@ typedef struct {
 
     /**
      * Closure payload map that represents the fixed definition of the
-     * closure. This can be the payload of either a `closure` or a
-     * `fnDef` node.
+     * closure.
      */
     zvalue defMap;
 
@@ -127,8 +123,8 @@ static ClosureInfo *getInfo(zvalue closure) {
 }
 
 /**
- * Builds and returns a `Closure` from a `closure` or `fnDef` payload,
- * suitable for storage in the cache.
+ * Builds and returns a `Closure` from a `closure` payload, suitable for
+ * storage in the cache.
  */
 static zvalue buildCachedClosure(zvalue defMap) {
     zvalue formals = collGet(defMap, STR_formals);
@@ -300,8 +296,8 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
 }
 
 /**
- * Helper for evaluating `closure` and `fnDef` nodes. This allocates a
- * new `Closure`, cloning its info from a cached instance.
+ * Helper for evaluating `closure` nodes. This allocates a new `Closure`,
+ * cloning its info from a cached instance.
  */
 static zvalue buildClosure(zvalue node) {
     zvalue cachedClosure = getCachedClosure(node);
@@ -338,19 +334,6 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
         zvalue one = statementsArr[i];
 
         switch (evalTypeOf(one)) {
-            case EVAL_fnDef: {
-                // Look for immediately adjacent `fnDef` nodes, and
-                // process them all together.
-                zint end = i + 1;
-                for (/*end*/; end < statementsSize; end++) {
-                    if (evalTypeOf(statementsArr[end]) != EVAL_fnDef) {
-                        break;
-                    }
-                }
-                execFnDefs(&frame, end - i, &statementsArr[i]);
-                i = end - 1;
-                break;
-            }
             case EVAL_varDeclare: {
                 execVarDeclare(&frame, one);
                 break;
@@ -378,31 +361,6 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
  */
 static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
     return callClosureMain((CallState *) state, exitFunction);
-}
-
-/**
- * Executes a sequence of one or more statement-level function definitions.
- * Each of the elements of `statements` must be a `fnDef` node.
- */
-static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
-    zvalue closures[size];
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = statements[i];
-        zvalue fnMap = dataOf(one);
-        zvalue name = collGet(fnMap, STR_name);
-
-        closures[i] = buildClosure(one);
-        frameAdd(frame, name, closures[i]);
-    }
-
-    // Rewrite the local variable context of all the constructed closures
-    // to be the *current* context. This allows for self-recursion when
-    // `size == 1` and mutual recursion when `size > 1`.
-
-    for (zint i = 0; i < size; i++) {
-        frameSnap(&getInfo(closures[i])->frame, frame);
-    }
 }
 
 

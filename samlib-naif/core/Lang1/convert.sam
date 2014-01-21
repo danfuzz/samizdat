@@ -190,7 +190,7 @@ genericBind(convertPex, "plus", plus_convertPex);
 ## `convertPexIn` bindings
 ##
 
-## Does parser conversion of a `closure` or `fnDef` node.
+## Does parser conversion of a `closure` node.
 fn convertClosureLike(node) {
     def nodeType = typeOf(node);
     def nodeValue = dataOf(node);
@@ -224,7 +224,13 @@ genericBind(convertPexIn, "call", call_convertPexIn);
 
 ## Does parser conversion of a `closure` node.
 fn closure_convertPexIn(node) {
-    <> convertClosureLike(node)
+    def nodeValue = dataOf(node);
+    def statements = convertPexInList(nodeValue::statements);
+    def yield = ifValue { <> nodeValue::yield }
+        { yield <> {yield: convertPexIn(yield)} }
+        { <> {} };
+
+    <> @closure{nodeValue*, yield*, statements}
 };
 genericBind(convertPexIn, "closure", closure_convertPexIn);
 
@@ -233,12 +239,6 @@ fn expression_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
 genericBind(convertPexIn, "expression", expression_convertPexIn);
-
-## Does parser conversion of a `fnDef` node.
-fn fnDef_convertPexIn(node) {
-    <> convertClosureLike(node)
-};
-genericBind(convertPexIn, "fnDef", fnDef_convertPexIn);
 
 ## Does parser conversion of an `interpolate` node.
 fn interpolate_convertPexIn(node) {

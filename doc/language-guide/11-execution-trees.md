@@ -63,9 +63,9 @@ void).
   bind as the nonlocal-exit function.
 
 * `statements: [statement*]` (required) &mdash; A list of statement
-  nodes. A statement node must be either an expression node, or a
-  `fnDef` or `varDef` node (as defined below). This defines the bulk of
-  the code to execute.
+  nodes. A statement node must be either an expression node, or one of the
+  various variable definition nodes (as defined below). This defines the bulk
+  of the code to execute.
 
 * `yield: expression` (optional) &mdash; An expression node representing
   the (local) result value for a call.
@@ -190,29 +190,6 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `fnDef` &mdash; `@fnDef{name: name, formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
-
-* `name: name` (required) &mdash; The name of the function.
-
-* `formals: [formal+]` (required) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-* `yieldDef: name` (optional) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-* `statements: [statement*]` (required) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-* `yield: expression` (optional) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-This represents a statement-level function definition. Nodes of this
-type are valid within the `statements` list of a `closure` or `fnDef` node.
-
-This is similar to assigning the variable `name` to the result of
-evaluating `fn ...` as an expression, with one twist: In a statement list,
-multiple `fnDef`s in a row can mutually self-reference.
-
 #### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
 
 * `name: name` (optional) &mdash; an arbitrary value (but typically a string),
@@ -251,7 +228,7 @@ actual argument as passed (no extra wrapping).
 
 This represents a forward declaration for a single-assignment variable
 as part of a closure body. Nodes of this type are valid within the
-`statements` list of a `closure` or `fnDef` node.
+`statements` list of a `closure` node.
 
 When run, a variable with the given `name` is defined in the current (topmost)
 execution context, and bound to void. It is an error (terminating the runtime)
@@ -269,7 +246,7 @@ becomes bound to its final value via execution of a `varBind` node.
 
 This represents a variable definition statement as part of a closure body.
 Nodes of this type are valid within the `statements` list of a `closure`
-or `fnDef` node.
+node.
 
 When run, the `value` expression is evaluated. If it evaluates to void,
 then evaluation fails (terminating the runtime). Otherwise, the evaluated

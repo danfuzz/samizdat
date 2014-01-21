@@ -50,7 +50,6 @@ STR(call,              "call");
 STR(cat,               "cat");
 STR(closure,           "closure");
 STR(expression,        "expression");
-STR(fnDef,             "fnDef");
 STR(formals,           "formals");
 STR(function,          "function");
 STR(get,               "get");
