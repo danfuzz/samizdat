@@ -351,12 +351,21 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 i = end - 1;
                 break;
             }
+            case EVAL_varBind: {
+                execVarBind(&frame, one);
+                break;
+            }
+            case EVAL_varDeclare: {
+                execVarDeclare(&frame, one);
+                break;
+            }
             case EVAL_varDef: {
                 execVarDef(&frame, one);
                 break;
             }
             default: {
                 execExpressionVoidOk(&frame, one);
+                break;
             }
         }
     }
