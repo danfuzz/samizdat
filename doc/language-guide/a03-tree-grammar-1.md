@@ -115,8 +115,8 @@ def parParser;
 def parAssignExpression;
 def parFnExpression;
 def parOpExpression;
-def parProgramBody = ParseForwarder::make();
-def parUnaryExpression = ParseForwarder::make();
+def parProgramBody;
+def parUnaryExpression;
 
 ## Parses an expression in general.
 def parExpression = {/
@@ -236,7 +236,7 @@ def parProgramDeclarations = {/
 ## Parses a program (top-level program or contents inside function braces).
 def parProgram = {/
     decls = parProgramDeclarations
-    body = parProgramBody
+    body = %parProgramBody
     { <> @closure{decls*, body*} }
 /};
 
@@ -507,7 +507,7 @@ def parListItem = {/
     { Io1::die("Mapping syntax not valid as a list item or call argument.") }
 |
     @"&"
-    ex = parUnaryExpression
+    ex = %parUnaryExpression
     { <> @voidable(ex) }
 |
     parExpression
@@ -599,7 +599,7 @@ def parPostfixOperator = {/
 ## Parses a unary expression. This is a term, optionally surrounded on
 ## either side by any number of unary operators. Postfix operators
 ## take precedence over (are applied before) the prefix operators.
-def parUnaryExpression = {/
+parUnaryExpression := {/
     ## The rule is written this way in order to ensure that the `-`
     ## in front of a numeric constant gets parsed as a term and not as
     ## a unary expression.
@@ -684,7 +684,7 @@ def parYield = {/
 /};
 
 ## Parses a program body (statements plus optional yield).
-def implProgramBody = {/
+parProgramBody := {/
     @";"*
 
     most = (
@@ -721,7 +721,6 @@ def implProgramBody = {/
         <> {last*, statements: [tops*, mains*]}
     }
 /};
-Box::store(parProgramBody, implProgramBody);
 
 ## Top-level rule to parse an expression with possible error afterwards.
 def parExpressionOrError = {/
