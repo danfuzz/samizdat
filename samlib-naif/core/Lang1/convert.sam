@@ -301,7 +301,8 @@ genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
-    <> node
+    ## Strip the `lvalue` out of the node, but otherwise leave it alone.
+    <> @varRef(Collection::del(dataOf(node), "lvalue"))
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
