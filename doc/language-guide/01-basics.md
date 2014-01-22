@@ -101,16 +101,20 @@ where `name` is a variable name (per above), and `value` is an arbitrary
 expression. `def` introduces an immutable variable binding, and
 (TODO) `var` introduces a mutable variable binding.
 
-(TODO) A mutable variable can be rebound using the syntax:
+It is valid to declare a variable (either mutable or immutable) but leave
+it unbound, by omitting the `= value` part.
+
+Declared-but-unbound and mutable variables can be rebound using the syntax:
 
 ```
-name = value
+name := value
 ```
 
-that is, an assignment without prefacing it with either `def` or `var`.
+that is, an `:=` assignment without prefacing it with either `def` or `var`.
 
-Variable definitions and assignments such as this are some of the few
-statement forms in Samizdat. That is, these are not combining expressions.
+Variable definitions (not including `:=` assignments) as described in
+this section are some of the few statement forms in Samizdat. That is, these
+are not combining expressions.
 
 #### Formal arguments
 
