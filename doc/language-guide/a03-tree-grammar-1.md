@@ -849,6 +849,13 @@ def parParserCode = {/
     { <> @code(dataOf(closure)) }
 /};
 
+## Parses a thunk parsing expression.
+def parParserThunk = {/
+    @"%"
+    term = parTerm
+    { <> @thunk(term) }
+/};
+
 ## Parses a parsing expression term.
 def parParserTerm = {/
     @"."
@@ -859,7 +866,7 @@ def parParserTerm = {/
     { <> @empty }
 |
     parVarRef | parParserString | parParserToken | parParserSet |
-    parParserCode | parParenPex
+    parParserCode | parParserThunk | parParenPex
 /};
 
 ## Parses a repeat (or not) parsing expression.
