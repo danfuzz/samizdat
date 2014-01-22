@@ -130,7 +130,7 @@ def parUnaryExpression;
 ## Documented in spec.
 def parParenExpression = Peg::makeMainSequence(
     Peg::makeToken("("),
-    Peg::makeThunk { <> parExpression },
+    Peg::makeThunk { . <> parExpression },
     Peg::makeOpt(
         Peg::makeSequence(
             Peg::makeToken(","),
@@ -156,7 +156,7 @@ def parVarDef = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken("="),
-            Peg::makeThunk { <> parExpression },
+            Peg::makeThunk { ., ., . <> parExpression },
             Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) }),
         Peg::makeCode { ., name <> makeVarDeclare(dataOf(name)) }));
 
@@ -214,7 +214,7 @@ def parProgramDeclarations = Peg::makeMainChoice(
 ## Documented in spec.
 def parProgram = Peg::makeMainSequence(
     parProgramDeclarations,
-    Peg::makeThunk { <> parProgramBody },
+    Peg::makeThunk { . <> parProgramBody },
     Peg::makeCode { decls, body <> @closure{decls*, body*} });
 
 ## Documented in spec.
@@ -346,7 +346,7 @@ def parKey = Peg::makeMainChoice(
 ## Documented in spec.
 def parMapping = Peg::makeMainSequence(
     Peg::makeStar(parKey),
-    Peg::makeThunk { <> parExpression },
+    Peg::makeThunk { . <> parExpression },
     Peg::makeCode { keys, value ->
         <> ifIs { <> eq(keys, []) }
             { <out> ->
@@ -398,7 +398,7 @@ def parListItem = Peg::makeMainChoice(
         }),
     Peg::makeSequence(
         Peg::makeToken("&"),
-        Peg::makeThunk { <> parUnaryExpression },
+        Peg::makeThunk { . <> parUnaryExpression },
         Peg::makeCode { ., ex <> @voidable(ex) }),
     Peg::makeThunk { <> parExpression });
 
@@ -439,7 +439,7 @@ def parTerm = Peg::makeMainChoice(
     ## it clear what is required to "jump into" Layer 1 parsing.
     Peg::makeSequence(
         Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
-        Peg::makeThunk { <> parParser }));
+        Peg::makeThunk { . <> parParser }));
 
 ## Documented in spec.
 def parActualsList = Peg::makeMainChoice(
@@ -487,7 +487,7 @@ def parAssignExpression = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeToken(":="),
             Peg::makeCode { base, . <> dataOf(base)::lvalue },
-            Peg::makeThunk { <> parExpression },
+            Peg::makeThunk { ., ., . <> parExpression },
             Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
         Peg::makeCode { base <> base }));
 

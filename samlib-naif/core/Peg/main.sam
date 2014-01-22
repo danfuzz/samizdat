@@ -176,7 +176,7 @@ genericBind(parse, "PegSequence", PegSequence_parse);
 
 ## Documented in spec.
 fn PegThunk_parse(peg, box, input, items*) {
-    <> parse(dataOf(peg)(), box, input, items*)
+    <> parse(&(dataOf(peg)(items*)), box, input, items*)
 };
 genericBind(parse, "PegThunk", PegThunk_parse);
 
