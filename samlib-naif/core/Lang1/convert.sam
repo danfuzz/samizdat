@@ -155,6 +155,22 @@ fn code_convertPex(node, formals) {
 };
 genericBind(convertPex, "code", code_convertPex);
 
+## Converts a `thunk` pex node.
+fn thunk_convertPex(node, formals) {
+    ## Use the lexical `formals` context to make a regular closure node,
+    ## and just convert that.
+
+    def closure = @closure{
+        formals,
+        statements: [],
+        yield: dataOf(node)
+    };
+    def convertedClosure = convertPexIn(closure);
+
+    <> callPegNameWithExpressions("makeThunk", convertedClosure)
+};
+genericBind(convertPex, "thunk", thunk_convertPex);
+
 ## Converts a `lookaheadSuccess` pex node.
 fn lookaheadSuccess_convertPex(node, formals) {
     <> callPegNameWithPex(node, formals, "makeLookaheadSuccess")
