@@ -176,7 +176,7 @@ genericBind(convert, String, String_convert);
 ## that can be stringified with `indent`.
 fn Value_convert(value) {
     if (isOpaqueValue(value)) {
-        Io1::die("Cannot convert opaque non-data values.")
+        Io1::die("Cannot convert opaque non-data value: \%q(value)")
     };
 
     def type = convert(typeOf(value));
