@@ -104,7 +104,6 @@ will be returned, or one of:
   * [core::Lang*](LangN.md)
   * [core::Module](Module.md)
   * [core::Module0](Module0.md)
-  * [core::ParseForwarder](ParseForwarder.md)
   * [core::Peg (parsing)](Peg.md)
   * [core::Range](Range.md)
 
