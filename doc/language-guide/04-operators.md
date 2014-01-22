@@ -5,8 +5,9 @@ Expression Operators
 --------------------
 
 Samizdat provides many of the same operators found throughout the C family,
-as well as a few new ones. In Samizdat, all infix operators are
+as well as a few new ones. In Samizdat, almost all infix operators are
 left-associative, that is `x op y op z` is equivalent to `(x op y) op z`.
+The one exception is the assignment operator `:=`.
 
 The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
@@ -414,7 +415,7 @@ slightly longer form `(x & y? | z?)*` is an equivalent that ensures that
 a void `y` won't improperly cause `z` to be evaluated.
 
 
-#### Assignment (Precedence 1) &mdash; `lvalue := expression`
+### Assignment (Precedence 1) &mdash; `lvalue := expression`
 
 The `:=` operator indicates assignment. `lvalue` is an expression that must
 be a valid value reference (assignment target).
@@ -422,6 +423,10 @@ be a valid value reference (assignment target).
 In general, the `lvalue` is evaluated before the `expression`, and the
 result of the overall expression is the same as the evaluated result
 of `expression`. `expression` must not evaluate to void.
+
+Any number of `lvalue :=` left-hand sides can be included (e.g.,
+`a := b := expr`). Unlike all other infix operator forms, assignment operators
+are right-associative.
 
 Beyond that, the specific meaning of an assignment expression depends on
 what sort of reference `lvalue` is; see those for more details.
