@@ -125,7 +125,7 @@ def parParser;
 ## Forward declarations.
 def parExpression;
 def parProgramBody;
-def parUnaryExpression = ParseForwarder::make();
+def parUnaryExpression;
 
 ## Documented in spec.
 def parParenExpression = Peg::makeMainSequence(
@@ -398,7 +398,7 @@ def parListItem = Peg::makeMainChoice(
         }),
     Peg::makeSequence(
         Peg::makeToken("&"),
-        parUnaryExpression,
+        Peg::makeThunk { <> parUnaryExpression },
         Peg::makeCode { ., ex <> @voidable(ex) }),
     Peg::makeThunk { <> parExpression });
 
@@ -470,16 +470,15 @@ def parPostfixOperator = Peg::makeMainChoice(
         Peg::makeCode { . <> { node <> makeOptValueExpression(node) } }));
 
 ## Documented in spec.
-def implUnaryExpression = Peg::makeMainSequence(
+parUnaryExpression := Peg::makeMainSequence(
     parTerm,
     Peg::makeStar(parPostfixOperator),
     Peg::makeCode { base, postfixes ->
         <> Generator::doReduce1(postfixes, base) { op, result <> op(result) }
     });
-Box::store(parUnaryExpression, implUnaryExpression);
 
 ## Documented in spec.
-def parOpExpression = implUnaryExpression;
+def parOpExpression = parUnaryExpression;
 
 ## Documented in spec.
 def parAssignExpression = Peg::makeMainSequence(
