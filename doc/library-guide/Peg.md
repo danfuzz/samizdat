@@ -343,10 +343,15 @@ This is equivalent to the syntactic form `{/ "string" /}`.
 
 Makes and returns a parser rule which runs the given function to produce
 a parser, which is then called to do the actual parsing. `function`
-must be a function of no arguments. When called, it must return a parser
-value.
+must be a function. When called, it is passed as arguments all the
+in-scope matched results from the current sequence context. Whatever it
+returns is expected to be a parser, and that parser is then called upon
+to perform parsing.
 
-This is equivalent to the syntactic form `{/ %(function()) /}`.
+If the called function returns void, then the rule is considered to have
+failed.
+
+This is equivalent to the syntactic form `{/ %term /}`.
 
 #### `makeToken(type) <> rule`
 

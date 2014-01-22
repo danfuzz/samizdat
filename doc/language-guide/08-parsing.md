@@ -308,6 +308,9 @@ immediately, but instead is evaluated when encountered during a parsing
 operation. When evaluated, it is expected to produce a parser, and then
 *that* parser value is called upon to perform parsing.
 
+It is valid to refer to any variables bound by the parse-in-progress in
+the term.
+
 The most common use of this is to enable forward or recursive referencing of
 parser rules, such as:
 
