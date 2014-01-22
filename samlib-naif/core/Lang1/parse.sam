@@ -607,12 +607,14 @@ parParser := Peg::makeMainSequence(
     Peg::makeToken("/}"),
     Peg::makeCode { ., pex, . <> @parser(pex) });
 
+## Documented in spec.
 def parParenPex = Peg::makeMainSequence(
     Peg::makeToken("("),
     parChoicePex,
     Peg::makeToken(")"),
     Peg::makeCode { ., pex, . <> pex });
 
+## Documented in spec.
 def parParserString = Peg::makeMainSequence(
     Peg::makeToken("string"),
     Peg::makeCode { s ->
@@ -622,11 +624,13 @@ def parParserString = Peg::makeMainSequence(
             { <> s }
     });
 
+## Documented in spec.
 def parParserToken = Peg::makeMainSequence(
     Peg::makeToken("@"),
     parIdentifierString,
     Peg::makeCode { ., type <> @token(dataOf(type)) });
 
+## Documented in spec.
 def parParserSetString = Peg::makeMainSequence(
     Peg::makeToken("string"),
     Peg::makeChoice(
@@ -648,6 +652,7 @@ def parParserSetString = Peg::makeMainSequence(
             }),
         Peg::makeCode { s <> dataOf(s) }));
 
+## Documented in spec.
 def parParserSet = Peg::makeMainSequence(
     Peg::makeToken("["),
     Peg::makeChoice(
@@ -666,10 +671,12 @@ def parParserSet = Peg::makeMainSequence(
     Peg::makeToken("]"),
     Peg::makeCode { ., type, terminals, . <> @(type)(terminals) });
 
+## Documented in spec.
 def parParserCode = Peg::makeMainSequence(
     parNullaryClosure,
     Peg::makeCode { closure <> @code(dataOf(closure)) });
 
+## Documented in spec.
 def parParserTerm = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("."),
@@ -685,6 +692,7 @@ def parParserTerm = Peg::makeMainChoice(
     parParserCode,
     parParenPex);
 
+## Documented in spec.
 def parRepeatPex = Peg::makeMainSequence(
     parParserTerm,
     Peg::makeChoice(
@@ -695,6 +703,7 @@ def parRepeatPex = Peg::makeMainSequence(
             }),
         Peg::makeCode { term <> term }));
 
+## Documented in spec.
 def parLookaheadPex = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeTokenSet("&", "!"),
@@ -704,6 +713,7 @@ def parLookaheadPex = Peg::makeMainChoice(
         }),
     parRepeatPex);
 
+## Documented in spec.
 def parNamePex = Peg::makeMainChoice(
     Peg::makeSequence(
         parIdentifier,
@@ -714,10 +724,12 @@ def parNamePex = Peg::makeMainChoice(
         }),
     parLookaheadPex);
 
+## Documented in spec.
 def parSequencePex = Peg::makeMainSequence(
     Peg::makePlus(parNamePex),
     Peg::makeCode { items <> @sequence(items) });
 
+## Documented in spec.
 def implChoicePex = Peg::makeMainSequence(
     parSequencePex,
     Peg::makeStar(
