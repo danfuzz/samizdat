@@ -1,0 +1,32 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## String literal demo
+##
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Helper Definitions
+##
+
+## Demo of variable declaration and binding.
+fn frotz(foo) {
+    def ignatz;
+
+    Io0::note("frotz:");
+    ignatz := cat("    ", foo);
+    Io0::note(ignatz)
+};
+
+
+##
+## Main Tests
+##
+
+frotz("fizmo");
+
+<> 0
