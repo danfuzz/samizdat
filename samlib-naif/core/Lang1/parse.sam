@@ -123,15 +123,15 @@ fn makeCallNonlocalExit(name, optExpression?) {
 def parParser;
 
 ## Forward declarations.
-def parExpression = ParseForwarder::make();
-def parProgramBody = ParseForwarder::make();
+def parExpression;
+def parProgramBody;
 def parTerm = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
 
 ## Documented in spec.
 def parParenExpression = Peg::makeMainSequence(
     Peg::makeToken("("),
-    parExpression,
+    Peg::makeThunk { <> parExpression },
     Peg::makeOpt(
         Peg::makeSequence(
             Peg::makeToken(","),
@@ -157,7 +157,7 @@ def parVarDef = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken("="),
-            parExpression,
+            Peg::makeThunk { <> parExpression },
             Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) }),
         Peg::makeCode { ., name <> makeVarDeclare(dataOf(name)) }));
 
@@ -215,7 +215,7 @@ def parProgramDeclarations = Peg::makeMainChoice(
 ## Documented in spec.
 def parProgram = Peg::makeMainSequence(
     parProgramDeclarations,
-    parProgramBody,
+    Peg::makeThunk { <> parProgramBody },
     Peg::makeCode { decls, body <> @closure{decls*, body*} });
 
 ## Documented in spec.
@@ -340,14 +340,14 @@ def parKey = Peg::makeMainChoice(
         Peg::makeToken(":"),
         Peg::makeCode { key, . <> key }),
     Peg::makeSequence(
-        parExpression,
+        Peg::makeThunk { <> parExpression },
         Peg::makeToken(":"),
         Peg::makeCode { key, . <> key }));
 
 ## Documented in spec.
 def parMapping = Peg::makeMainSequence(
     Peg::makeStar(parKey),
-    parExpression,
+    Peg::makeThunk { <> parExpression },
     Peg::makeCode { keys, value ->
         <> ifIs { <> eq(keys, []) }
             { <out> ->
@@ -401,7 +401,7 @@ def parListItem = Peg::makeMainChoice(
         Peg::makeToken("&"),
         parUnaryExpression,
         Peg::makeCode { ., ex <> @voidable(ex) }),
-    parExpression);
+    Peg::makeThunk { <> parExpression });
 
 ## Documented in spec.
 def parUnadornedList = Peg::makeMainChoice(
@@ -490,15 +490,14 @@ def parAssignExpression = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeToken(":="),
             Peg::makeCode { base, . <> dataOf(base)::lvalue },
-            parExpression,
+            Peg::makeThunk { <> parExpression },
             Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
         Peg::makeCode { base <> base }));
 
 ## Documented in spec.
-def implExpression = Peg::makeChoice(
+parExpression := Peg::makeChoice(
     parAssignExpression,
     parFnExpression);
-Box::store(parExpression, implExpression);
 
 ## Documented in spec.
 def parStatement = Peg::makeChoice(
@@ -532,7 +531,7 @@ def parYield = Peg::makeMainSequence(
         Peg::makeResult({})));
 
 ## Documented in spec.
-def implProgramBody = Peg::makeMainSequence(
+parProgramBody := Peg::makeMainSequence(
     Peg::makeStar(Peg::makeToken(";")),
     Peg::makeStar(
         Peg::makeMainSequence(
@@ -563,7 +562,6 @@ def implProgramBody = Peg::makeMainSequence(
             };
         <> {last*, statements: [tops*, mains*]}
     });
-Box::store(parProgramBody, implProgramBody);
 
 ## Documented in spec.
 def parExpressionOrError = Peg::makeMainSequence(
