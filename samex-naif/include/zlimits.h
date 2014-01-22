@@ -42,7 +42,7 @@ enum {
     DAT_MAX_IMMORTALS = 4000,
 
     /** Maximum number of references on the stack. */
-    DAT_MAX_STACK = 50000,
+    DAT_MAX_STACK = 100000,
 
     /**
      * Maximum size in characters of a string that can be handled
