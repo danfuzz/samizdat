@@ -66,7 +66,10 @@ fn makeVarDef(name, value) {
 
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
-    <> @varRef{name}
+    <> @varRef{
+        name,
+        lvalue: { node <> makeVarBind(name, node) }
+    }
 };
 
 ## Returns a `call` node.
@@ -159,13 +162,18 @@ def parVarRef = {/
     { <> makeVarRef(dataOf(name)) }
 /};
 
-## Parses a variable definition.
+## Parses a variable definition or declaration.
 def parVarDef = {/
     @def
     name = parIdentifier
-    @"="
-    ex = parExpression
-    { <> makeVarDef(dataOf(name), ex) }
+
+    (
+        @"="
+        ex = parExpression
+        { <> makeVarDef(dataOf(name), ex) }
+    |
+        { <> makeVarDeclare(dataOf(name)) }
+    )
 /};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
@@ -619,6 +627,29 @@ def implUnaryExpression = {/
     }
 /};
 Box::store(parUnaryExpression, implUnaryExpression);
+
+## Parses an operator-bearing expression (or simple term). This is a trivial
+## passthrough to `unaryExpression` in layer 0, but is expanded significantly
+## in layer 2.
+def parOpExpression = ParseForwarder::make();
+
+## Parses an assignment expression, or passes through to parse a regular
+## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
+## `opExpression` and then extracting the `lvalue` constructor out of it.
+## This fails (gracefully) if there is no `lvalue` to extract from a given
+## expression.
+def parAssignExpression = {/
+    base = parOpExpression
+
+    (
+        @":="
+        lvalue = { <> dataOf(base)::lvalue }
+        ex = parExpression
+        { <> lvalue(ex) }
+    |
+        { <> base }
+    )
+/};
 
 ## `expression` from layer 0 is omitted here (it's forwarded earlier).
 
@@ -2210,11 +2241,13 @@ def parSwitchExpression = {/
     }
 /};
 
+Box::store(parOpExpression, parLogicOrExpression);
+
 ## Parses a general expression.
 def implExpression = {/
     ## This one's the top level "regular-looking" expression (in that it
     ## covers the territory of C-style expressions).
-    parLogicOrExpression
+    parAssignExpression
 |
     ## This one is only nominally "regular-looking" (in that not many C
     ## family languages have function expressions).

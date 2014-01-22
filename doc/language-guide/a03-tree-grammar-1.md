@@ -58,7 +58,10 @@ fn makeVarDef(name, value) {
 
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
-    <> @varRef{name}
+    <> @varRef{
+        name,
+        lvalue: { node <> makeVarBind(name, node) }
+    }
 };
 
 ## Returns a `call` node.
@@ -110,6 +113,7 @@ def parParser = makeParseForwarder();
 
 ## Forward declarations.
 def parExpression = ParseForwarder::make();
+def parOpExpression;
 def parProgramBody = ParseForwarder::make();
 def parTerm = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
@@ -145,13 +149,18 @@ def parVarRef = {/
     { <> makeVarRef(dataOf(name)) }
 /};
 
-## Parses a variable definition.
+## Parses a variable definition or declaration.
 def parVarDef = {/
     @def
     name = parIdentifier
-    @"="
-    ex = parExpression
-    { <> makeVarDef(dataOf(name), ex) }
+
+    (
+        @"="
+        ex = parExpression
+        { <> makeVarDef(dataOf(name), ex) }
+    |
+        { <> makeVarDeclare(dataOf(name)) }
+    )
 /};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
@@ -603,10 +612,33 @@ def parUnaryExpression = {/
     }
 /};
 
+## Parses an operator-bearing expression (or simple term). This is a trivial
+## passthrough to `unaryExpression` in layer 0, but is expanded significantly
+## in layer 2.
+parOpExpression := parUnaryExpression;
+
+## Parses an assignment expression, or passes through to parse a regular
+## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
+## `opExpression` and then extracting the `lvalue` constructor out of it.
+## This fails (gracefully) if there is no `lvalue` to extract from a given
+## expression.
+def parAssignExpression = {/
+    base = parOpExpression
+
+    (
+        @":="
+        lvalue = { <> dataOf(base)::lvalue }
+        ex = parExpression
+        { <> lvalue(ex) }
+    |
+        { <> base }
+    )
+/};
+
 ## Note: There are additional expression rules in Layer 2 and beyond.
 ## This rule is totally rewritten at that layer.
 def implExpression = {/
-    parUnaryExpression | parFnExpression
+    parAssignExpression | parFnExpression
 /};
 Box::store(parExpression, implExpression);
 

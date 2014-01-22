@@ -65,7 +65,10 @@ fn makeVarDef(name, value) {
 
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
-    <> @varRef{name}
+    <> @varRef{
+        name,
+        lvalue: { node <> makeVarBind(name, node) }
+    }
 };
 
 ## Returns a `call` node.
@@ -151,9 +154,12 @@ def parVarRef = Peg::makeMainSequence(
 def parVarDef = Peg::makeMainSequence(
     Peg::makeToken("def"),
     parIdentifier,
-    Peg::makeToken("="),
-    parExpression,
-    Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) });
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken("="),
+            parExpression,
+            Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) }),
+        Peg::makeCode { ., name <> makeVarDeclare(dataOf(name)) }));
 
 ## Documented in spec.
 def parYieldDef = Peg::makeMainSequence(
@@ -475,8 +481,22 @@ def implUnaryExpression = Peg::makeMainSequence(
 Box::store(parUnaryExpression, implUnaryExpression);
 
 ## Documented in spec.
+def parOpExpression = implUnaryExpression;
+
+## Documented in spec.
+def parAssignExpression = Peg::makeMainSequence(
+    parOpExpression,
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken(":="),
+            Peg::makeCode { base, . <> dataOf(base)::lvalue },
+            parExpression,
+            Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
+        Peg::makeCode { base <> base }));
+
+## Documented in spec.
 def implExpression = Peg::makeChoice(
-    parUnaryExpression,
+    parAssignExpression,
     parFnExpression);
 Box::store(parExpression, implExpression);
 
