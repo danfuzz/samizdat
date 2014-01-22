@@ -389,12 +389,15 @@ DEF_PARSE(varDef) {
     MARK();
 
     MATCH_OR_REJECT(def);
-    zvalue identifier = PARSE_OR_REJECT(identifier);
-    MATCH_OR_REJECT(CH_EQUAL);
+    zvalue name = PARSE_OR_REJECT(identifier);
+
+    if (!MATCH(CH_EQUAL)) {
+        return makeVarDeclare(dataOf(name));
+    }
+
     zvalue expression = PARSE_OR_REJECT(expression);
 
-    zvalue name = dataOf(identifier);
-    return makeVarDef(name, expression);
+    return makeVarDef(dataOf(name), expression);
 }
 
 /* Documented in spec. */
@@ -894,11 +897,36 @@ DEF_PARSE(unaryExpression) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(opExpression) {
+    return PARSE(unaryExpression);
+}
+
+/* Documented in spec. */
+DEF_PARSE(assignExpression) {
+    MARK();
+
+    zvalue base = PARSE_OR_REJECT(opExpression);
+
+    if (!(hasType(base, STR_varRef) && MATCH(CH_COLONEQUAL))) {
+        return base;
+    }
+
+    // This code isn't parallel to the in-language code but has the
+    // same effect, given that the only valid lvalues are variable references.
+    // In this case, we ensured (above) that we've got a `varRef` and
+    // recombine it here into a `varBind`.
+    zvalue ex = PARSE_OR_REJECT(expression);
+    zvalue name = collGet(dataOf(base), STR_name);
+
+    return makeVarBind(name, ex);
+}
+
+/* Documented in spec. */
 DEF_PARSE(expression) {
     zstackPointer save = datFrameStart();
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(unaryExpression); }
+    if (result == NULL) { result = PARSE(assignExpression); }
     if (result == NULL) { result = PARSE(fnExpression); }
 
     datFrameReturn(save, result);
