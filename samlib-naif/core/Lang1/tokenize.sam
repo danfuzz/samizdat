@@ -58,6 +58,7 @@ def tokPunctuation = Peg::makeMainSequence(
     Peg::makeLookaheadSuccess(Peg::makeCharSet("&@:.,=-+?;*<>{}()[]", "/|!")),
     Peg::makeChoice(
         Peg::makeString("->"),
+        Peg::makeString(":="),
         Peg::makeString("::"),
         Peg::makeString(".."),
         Peg::makeString("<>"),
