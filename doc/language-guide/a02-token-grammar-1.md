@@ -50,10 +50,6 @@ fn processStringParts(parts) {
     <> @string(cat("", parts*))
 };
 
-## Forward declaration of `tokToken`, for use in the interpolated string
-## rule. (This is only significant as of Layer 2.)
-def tokToken = makeParseForwarder();
-
 ## Parses any amount of whitespace and comments (including nothing at all).
 ## **Note:** The yielded result is always ignored.
 def tokWhitespace = {/
@@ -186,7 +182,7 @@ def tokError = {/
 /};
 
 ## Parses an arbitrary token or error.
-def implToken = {/
+tokToken := {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     ## This needs to be listed after the quoted identifier rule, to
@@ -201,7 +197,6 @@ def implToken = {/
 |
     tokError
 /};
-Box::store(tokToken, implToken);
 
 ## Parses a file of tokens, yielding a list of them.
 def tokFile = {/

@@ -6,15 +6,13 @@
 ## Samizdat Layer 2 Tokenizer
 ##
 
-def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
-
 
 ## The standard entity map.
 def ENTITY_MAP = moduleUse({name: ["core", "EntityMap"]})::ENTITY_MAP;
 
 ## Forward declarations for Layer 2 definitions.
-def tokMultilineComment = ParseForwarder::make();
-def tokStringPart2 = ParseForwarder::make();
+def tokMultilineComment;
+def tokStringPart2;
 
 
 ##
@@ -74,7 +72,7 @@ def tokWhitespace = {/
     |
         ## Introduced in Layer 2.
         &"#:" ## Avoid calling the rule unless we know it will match.
-        tokMultilineComment
+        %tokMultilineComment
     )+
 /};
 
@@ -120,7 +118,7 @@ def tokPunctuation = {/
 ## Parses an integer literal.
 ##
 ## **Note:** This rule is rewritten in Layer 2.
-def tokInt = ParseForwarder::make();
+def tokInt;
 
 ## Parses a run of regular characters or an escape / special sequence,
 ## inside a quoted string.
@@ -149,7 +147,7 @@ def tokStringPart = {/
     )
 |
     ## Introduced in Layer 2.
-    tokStringPart2
+    %tokStringPart2
 /};
 
 ## Parses a quoted string.
@@ -209,7 +207,7 @@ def tokToken = {/
     ## This needs to be listed after the identifier rule, to prevent
     ## an identifier-initial `_` from triggering this rule. (This is
     ## only significant in Layer 2 and higher.)
-    tokInt
+    %tokInt
 |
     tokError
 /};
@@ -297,11 +295,11 @@ fn processStringParts(parts) {
 };
 
 ## Parses a `#: ... :#` comment, with nesting.
-def implMultilineComment = {/
+tokMultilineComment := {/
     "#:"
 
     (
-        tokMultilineComment
+        %tokMultilineComment
     |
         [! ":"]
     |
@@ -310,7 +308,6 @@ def implMultilineComment = {/
 
     ":#"
 /};
-Box::store(tokMultilineComment, implMultilineComment);
 
 ## Parses a single binary digit (or spacer), returning its value.
 def tokBinDigit = {/
@@ -331,7 +328,7 @@ def tokHexDigit = {/
 /};
 
 ## Parses an integer literal.
-def implInt = {/
+tokInt := {/
     base = (
         "0x" { <> 16 }
     |
@@ -353,7 +350,6 @@ def implInt = {/
 
     { <> @int(intFromDigitList(base, digits)) }
 /};
-Box::store(tokInt, implInt);
 
 ## Parses a single hexadecimal character. This is called during `\x...;`
 ## parsing.
@@ -383,8 +379,8 @@ def tokNamedChar = {/
 ## Parses the inner portion of a string interpolation expression. This
 ## captures a list of inner tokens, ending when parentheses and braces are
 ## balanced out (and ignoring other could-be-matched delimiter tokens).
-def tokStringInterpolation = ParseForwarder::make();
-def implStringInterpolation = {/
+def tokStringInterpolation;
+tokStringInterpolation := {/
     &["({["]
     open = tokToken
     expectClose = { <> get(OPEN_CLOSE_MAP, typeOf(open)) }
@@ -397,7 +393,7 @@ def implStringInterpolation = {/
             t = tokToken
             { <> [t] }
         |
-            tokStringInterpolation
+            %tokStringInterpolation
         )
     )*
 
@@ -409,10 +405,9 @@ def implStringInterpolation = {/
             { <> [open, cat([], tokens*)*, close] }
     }
 /};
-Box::store(tokStringInterpolation, implStringInterpolation);
 
 ## Additional `stringPart` definitions for Layer 2.
-def implStringPart2 = {/
+tokStringPart2 := {/
     "\\"
     (
         "/"  { <> "" }
@@ -463,7 +458,6 @@ def implStringPart2 = {/
         { <> @error("Invalid character literal escape sequence.") }
     )
 /};
-Box::store(tokStringPart2, implStringPart2);
 
 
 ##
