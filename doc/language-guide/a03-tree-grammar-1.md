@@ -749,7 +749,7 @@ def parProgramOrError = {/
 ##
 
 ## Forward declaration.
-def parChoicePex = makeParseForwarder();
+def parChoicePex;
 
 ## Map from parser tokens to derived value types for pexes.
 def PEX_TYPES = {
@@ -763,7 +763,7 @@ def PEX_TYPES = {
 ## Parses a parser function.
 def implParser = {/
     @"{/"
-    pex = parChoicePex
+    pex = %parChoicePex
     @"/}"
     { <> @parser(pex) }
 /};
@@ -772,7 +772,7 @@ Box::store(parParser, implParser);
 ## Parses a parenthesized parsing expression.
 def parParenPex = {/
     @"("
-    pex = parChoicePex
+    pex = %parChoicePex
     @")"
     { <> pex }
 /};
@@ -912,10 +912,9 @@ def parSequencePex = {/
 /};
 
 ## Parses a choice parsing expression. This includes a single choice.
-def implChoicePex = {/
+parChoicePex := {/
     one = parSequencePex
     rest = (@"|" parSequencePex)*
     { <> @choice[one, rest*] }
 /};
-Box::store(parChoicePex, implChoicePex);
 ```

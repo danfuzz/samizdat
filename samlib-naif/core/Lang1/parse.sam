@@ -7,7 +7,6 @@
 ##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
-def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 def tokenize = submoduleUse("tokenize")::tokenize;
 
@@ -584,7 +583,7 @@ def parProgramOrError = Peg::makeMainSequence(
 ##
 
 ## `choicePex` is the top-level parsing expression node type.
-def parChoicePex = ParseForwarder::make();
+def parChoicePex;
 
 ## Map from parser tokens to derived value types for pexes.
 def PEX_TYPES = {
@@ -598,14 +597,14 @@ def PEX_TYPES = {
 ## Documented in spec.
 parParser := Peg::makeMainSequence(
     Peg::makeToken("{/"),
-    parChoicePex,
+    Peg::makeThunk { . <> parChoicePex },
     Peg::makeToken("/}"),
     Peg::makeCode { ., pex, . <> @parser(pex) });
 
 ## Documented in spec.
 def parParenPex = Peg::makeMainSequence(
     Peg::makeToken("("),
-    parChoicePex,
+    Peg::makeThunk { . <> parChoicePex },
     Peg::makeToken(")"),
     Peg::makeCode { ., pex, . <> pex });
 
@@ -733,14 +732,13 @@ def parSequencePex = Peg::makeMainSequence(
     Peg::makeCode { items <> @sequence(items) });
 
 ## Documented in spec.
-def implChoicePex = Peg::makeMainSequence(
+parChoicePex := Peg::makeMainSequence(
     parSequencePex,
     Peg::makeStar(
         Peg::makeSequence(
             Peg::makeToken("|"),
             parSequencePex)),
     Peg::makeCode { one, rest <> @choice[one, rest*] });
-Box::store(parChoicePex, implChoicePex);
 
 
 ##
