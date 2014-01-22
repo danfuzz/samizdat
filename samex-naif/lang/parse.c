@@ -349,9 +349,22 @@ DEF_PARSE(optSemicolons) {
  */
 
 /* Documented in spec. */
-DEF_PARSE(expression);
+DEF_PARSE(assignExpression);
+DEF_PARSE(fnExpression);
 DEF_PARSE(programBody);
 DEF_PARSE(unaryExpression);
+
+/* Documented in spec. */
+DEF_PARSE(expression) {
+    zstackPointer save = datFrameStart();
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(assignExpression); }
+    if (result == NULL) { result = PARSE(fnExpression); }
+
+    datFrameReturn(save, result);
+    return result;
+}
 
 /* Documented in spec. */
 DEF_PARSE(parenExpression) {
@@ -918,18 +931,6 @@ DEF_PARSE(assignExpression) {
     zvalue name = collGet(dataOf(base), STR_name);
 
     return makeVarBind(name, ex);
-}
-
-/* Documented in spec. */
-DEF_PARSE(expression) {
-    zstackPointer save = datFrameStart();
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(assignExpression); }
-    if (result == NULL) { result = PARSE(fnExpression); }
-
-    datFrameReturn(save, result);
-    return result;
 }
 
 /* Documented in spec. */

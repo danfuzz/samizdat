@@ -109,13 +109,27 @@ fn makeCallNonlocalExit(name, optExpression?) {
 ##
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser = makeParseForwarder();
+def parParser;
 
 ## Forward declarations.
-def parExpression = ParseForwarder::make();
+def parAssignExpression;
+def parFnExpression;
 def parOpExpression;
 def parProgramBody = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
+
+## Parses an expression in general.
+def parExpression = {/
+    ## This one's the top level "regular-looking" expression (in that it
+    ## covers the territory of C-style expressions).
+    %parAssignExpression
+|
+    ## This one is only nominally "regular-looking" (in that not many C
+    ## family languages have function expressions).
+    %parFnExpression
+## |
+    ## Note: Layer 2 adds additional rules here.
+/};
 
 ## Parses a parenthesized expression. This produces an `expression` node,
 ## which prevents void-contagion from escaping. If void-contagion-prevention
@@ -361,7 +375,7 @@ def parFnDef = {/
 ##     <> name := { <out> ... }
 ## }()
 ## ```
-def parFnExpression = {/
+parFnExpression := {/
     closure = parFnCommon
 
     (
@@ -540,7 +554,7 @@ def parTerm = {/
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
-    &@"{/" parParser
+    &@"{/" %parParser
 ## |
     ## Note: There are additional term rules in Samizdat Layer 2.
 /};
@@ -621,7 +635,7 @@ parOpExpression := parUnaryExpression;
 ## `opExpression` and then extracting the `lvalue` constructor out of it.
 ## This fails (gracefully) if there is no `lvalue` to extract from a given
 ## expression.
-def parAssignExpression = {/
+parAssignExpression := {/
     base = parOpExpression
 
     (
@@ -633,13 +647,6 @@ def parAssignExpression = {/
         { <> base }
     )
 /};
-
-## Note: There are additional expression rules in Layer 2 and beyond.
-## This rule is totally rewritten at that layer.
-def implExpression = {/
-    parAssignExpression | parFnExpression
-/};
-Box::store(parExpression, implExpression);
 
 ## Note: There are additional expression rules in Layer 2 and beyond.
 def parStatement = {/
@@ -761,13 +768,12 @@ def PEX_TYPES = {
 };
 
 ## Parses a parser function.
-def implParser = {/
+parParser := {/
     @"{/"
     pex = %parChoicePex
     @"/}"
     { <> @parser(pex) }
 /};
-Box::store(parParser, implParser);
 
 ## Parses a parenthesized parsing expression.
 def parParenPex = {/
