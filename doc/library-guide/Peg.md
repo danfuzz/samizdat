@@ -145,6 +145,12 @@ If any of the rules fail, then this rule also fails, consuming no input.
 In addition to the original `items*` passed in to this rule, each sub-rule
 receives the results of all the previous sub-rules as additional `items*`.
 
+#### `@PegThunk(function).parse(...)`
+
+Calls the given function, which is expected to return a parser. Then
+calls the so-returned parser, passing it the remaining arguments to
+this call, returing whatever that call returns (including void).
+
 #### `@PegTokenSet{types*: null}.parse(...)`
 
 If there is any input available, checks the type of the first input
@@ -332,6 +338,15 @@ string. The result of successful parsing is a valueless token with
 `string` as its type tag.
 
 This is equivalent to the syntactic form `{/ "string" /}`.
+
+#### `makeThunk(function) <> rule`
+
+Makes and returns a parser rule which runs the given function to produce
+a parser, which is then called to do the actual parsing. `function`
+must be a function of no arguments. When called, it must return a parser
+value.
+
+This is equivalent to the syntactic form `{/ %(function()) /}`.
 
 #### `makeToken(type) <> rule`
 
