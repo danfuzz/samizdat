@@ -173,7 +173,7 @@ Otherwise, the evaluated value is bound to the variable.
 The result of evaluating this form is the same as the result of evaluating
 `value`.
 
-#### `varRef` &mdash; `@varRef(name)`
+#### `varRef` &mdash; `@varRef{name: name}`
 
 * `name` (required) &mdash; Name of a variable (typically a string).
 

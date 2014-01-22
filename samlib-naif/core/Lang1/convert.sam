@@ -20,10 +20,10 @@ def convertPex = makeRegularGeneric("convertPex", 2, 2);
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
 ## Reference to the variable `get`.
-def GET_REF = @varRef("get");
+def GET_REF = @varRef{name: "get"};
 
 ## Reference to the variable `Peg`.
-def PEG_REF = @varRef("Peg");
+def PEG_REF = @varRef{name: "Peg"};
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {

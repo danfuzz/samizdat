@@ -184,7 +184,7 @@ static void execVarDef(Frame *frame, zvalue varDef) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = dataOf(varRef);
+    zvalue name = collGet(dataOf(varRef), STR_name);
     return frameGet(frame, name);
 }
 

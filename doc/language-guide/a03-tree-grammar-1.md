@@ -58,7 +58,7 @@ fn makeVarDef(name, value) {
 
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
-    <> @varRef(name)
+    <> @varRef{name}
 };
 
 ## Returns a `call` node.
@@ -439,7 +439,7 @@ def parMapping = {/
                 ifIs { <> eq(type, "varRef") }
                     {
                         <out> makeCallName("makeValueMap",
-                            makeLiteral(data), value)
+                            makeLiteral(data::name), value)
                     }
             }
             {

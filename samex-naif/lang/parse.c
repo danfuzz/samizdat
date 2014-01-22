@@ -200,7 +200,7 @@ static zvalue makeVarDef(zvalue name, zvalue value) {
 
 /* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
-    return makeTransValue(STR_varRef, name);
+    return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
 }
 
 /* Documented in spec. */
@@ -720,7 +720,7 @@ DEF_PARSE(mapping) {
             return data;
         } else if (valEq(type, STR_varRef)) {
             return makeCallName(STR_makeValueMap,
-                listFrom2(makeLiteral(data), value));
+                listFrom2(makeLiteral(collGet(data, STR_name)), value));
         }
 
         REJECT();
