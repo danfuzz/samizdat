@@ -120,7 +120,7 @@ fn makeCallNonlocalExit(name, optExpression?) {
 ##
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser = ParseForwarder::make();
+def parParser;
 
 ## Forward declarations.
 def parExpression = ParseForwarder::make();
@@ -440,7 +440,7 @@ def implTerm = Peg::makeMainChoice(
     ## it clear what is required to "jump into" Layer 1 parsing.
     Peg::makeSequence(
         Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
-        parParser));
+        Peg::makeThunk { <> parParser }));
 Box::store(parTerm, implTerm);
 
 ## Documented in spec.
@@ -600,12 +600,12 @@ def PEX_TYPES = {
     "+": "plus"
 };
 
-def implParser = Peg::makeMainSequence(
+## Documented in spec.
+parParser := Peg::makeMainSequence(
     Peg::makeToken("{/"),
     parChoicePex,
     Peg::makeToken("/}"),
     Peg::makeCode { ., pex, . <> @parser(pex) });
-Box::store(parParser, implParser);
 
 def parParenPex = Peg::makeMainSequence(
     Peg::makeToken("("),
