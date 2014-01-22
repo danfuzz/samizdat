@@ -125,7 +125,6 @@ def parParser;
 ## Forward declarations.
 def parExpression;
 def parProgramBody;
-def parTerm = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
 
 ## Documented in spec.
@@ -433,7 +432,7 @@ def parDeriv = Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def implTerm = Peg::makeMainChoice(
+def parTerm = Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
     parDeriv, parClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
@@ -441,7 +440,6 @@ def implTerm = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
         Peg::makeThunk { <> parParser }));
-Box::store(parTerm, implTerm);
 
 ## Documented in spec.
 def parActualsList = Peg::makeMainChoice(

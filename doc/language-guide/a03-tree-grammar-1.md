@@ -115,7 +115,6 @@ def parParser = makeParseForwarder();
 def parExpression = ParseForwarder::make();
 def parOpExpression;
 def parProgramBody = ParseForwarder::make();
-def parTerm = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
 
 ## Parses a parenthesized expression. This produces an `expression` node,

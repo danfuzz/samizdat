@@ -130,7 +130,6 @@ def parParser = ParseForwarder::make();
 ## Forward declarations.
 def parExpression = ParseForwarder::make();
 def parProgramBody = ParseForwarder::make();
-def parTerm = ParseForwarder::make();
 def parUnaryExpression = ParseForwarder::make();
 
 ## Parses a parenthesized expression. This produces an `expression` node,
@@ -548,7 +547,7 @@ def parDeriv = {/
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
 ## to be done before `List`, since the latter rejects "map-like" syntax as a
 ## fatal error.
-def implTerm = {/
+def parTerm = {/
     parVarRef | parInt | parString | parMap | parList |
     parDeriv | parClosure | parParenExpression
 |
@@ -559,7 +558,6 @@ def implTerm = {/
     ## Defined by Samizdat Layer 2.
     &[@interpolatedString @"(" @"["] parTerm2
 /};
-Box::store(parTerm, implTerm);
 
 ## Parses a list of "actual" (as opposed to formal) arguments to a function.
 ## Yields a list of expression nodes.
