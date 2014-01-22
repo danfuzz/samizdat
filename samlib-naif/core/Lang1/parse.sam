@@ -124,6 +124,7 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parFnExpression;
+def parOpExpression;
 def parProgramBody;
 def parUnaryExpression;
 
@@ -483,7 +484,7 @@ parUnaryExpression := Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parOpExpression = parUnaryExpression;
+parOpExpression := parUnaryExpression;
 
 ## Documented in spec.
 parAssignExpression := Peg::makeMainSequence(

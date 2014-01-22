@@ -132,6 +132,7 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parFnExpression;
+def parOpExpression;
 def parProgramBody;
 def parUnaryExpression;
 
@@ -647,7 +648,8 @@ parUnaryExpression := {/
 ## Parses an operator-bearing expression (or simple term). This is a trivial
 ## passthrough to `unaryExpression` in layer 0, but is expanded significantly
 ## in layer 2.
-def parOpExpression;
+##
+## **Note:** Omitted here, as it is defined later.
 
 ## Parses an assignment expression, or passes through to parse a regular
 ## `opExpression`. An lvalue is parsed here by first parsing an arbitrary

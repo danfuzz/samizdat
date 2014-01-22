@@ -351,6 +351,7 @@ DEF_PARSE(optSemicolons) {
 /* Documented in spec. */
 DEF_PARSE(assignExpression);
 DEF_PARSE(fnExpression);
+DEF_PARSE(opExpression);
 DEF_PARSE(programBody);
 DEF_PARSE(unaryExpression);
 
