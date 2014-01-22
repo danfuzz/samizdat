@@ -115,7 +115,7 @@ genericBind(convertPex, "token", token_convertPex);
 fn varRef_convertPex(node, formals) {
     ## `varRef` in the context of a pex just translates to the same `varRef`
     ## in the context of an expression / statement.
-    <> node
+    <> convertPexIn(node)
 };
 genericBind(convertPex, "varRef", varRef_convertPex);
 
