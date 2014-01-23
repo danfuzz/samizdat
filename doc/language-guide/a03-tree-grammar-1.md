@@ -628,8 +628,6 @@ parUnaryExpression := {/
 ## Parses an operator-bearing expression (or simple term). This is a trivial
 ## passthrough to `unaryExpression` in layer 0, but is expanded significantly
 ## in layer 2.
-##
-## **Note:** Omitted here, as it is defined later.
 parOpExpression := parUnaryExpression;
 
 ## Parses an assignment expression, or passes through to parse a regular
