@@ -33,8 +33,8 @@ def LOWER_ALPHA = {
 };
 
 ## Returns an `interpolate` node.
-fn makeInterpolate(expression) {
-    <> @interpolate(expression)
+fn makeInterpolate(value) {
+    <> @interpolate{value}
 };
 
 ## Returns a `literal` node.
@@ -476,7 +476,7 @@ def parMapping = {/
                 def type = typeOf(value);
                 def data = dataOf(value);
                 ifIs { <> eq(type, "interpolate") }
-                    { <out> data };
+                    { <out> data::value };
                 ifIs { <> eq(type, "varRef") }
                     {
                         <out> makeCallName("makeValueMap",

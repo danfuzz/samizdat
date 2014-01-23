@@ -26,8 +26,8 @@ def LOWER_ALPHA = {
 };
 
 ## Returns an `interpolate` node.
-fn makeInterpolate(expression) {
-    <> @interpolate(expression)
+fn makeInterpolate(value) {
+    <> @interpolate{value}
 };
 
 ## Returns a `literal` node.

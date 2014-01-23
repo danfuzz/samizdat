@@ -12,12 +12,6 @@ fn get actuals(node) {
     <> dataOf(node)::actuals
 };
 
-## Accessor for `interpolate` nodes.
-
-fn get expression(node) {
-    <> dataOf(node)
-};
-
 ## Accessor for `closure` nodes.
 
 fn get formals(node) {
@@ -43,8 +37,8 @@ fn get statements(node) {
     <> dataOf(node)::statements
 };
 
-## Accessor for `expression`, `literal`, `varBind`, `varDef`, and `voidable`
-## nodes.
+## Accessor for `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
+## and `voidable` nodes.
 
 fn get value(node) {
     <> dataOf(node)::value
@@ -64,7 +58,6 @@ fn get yieldDef(node) {
 
 <> {
     get actuals:    get actuals,
-    get expression: get expression,
     get formals:    get formals,
     get function:   get function,
     get name:       get name,

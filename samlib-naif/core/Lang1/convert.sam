@@ -219,16 +219,6 @@ fn convertClosureLike(node) {
     <> @(nodeType){nodeValue*, yield*, statements}
 };
 
-## Does parser conversion of a node whose payload value is an
-## arbitrary expression. This includes `expression` (per se) and
-## `interpolate` nodes.
-fn convertExpressionPayload(node) {
-    def nodeType = typeOf(node);
-    def nodeValue = convertPexIn(dataOf(node));
-
-    <> @(nodeType)(nodeValue)
-};
-
 ## Does parser conversion of a node whose payload is a map with
 ## a `value` binding to an arbitrary expression.
 fn convertValuePayload(node) {
@@ -269,7 +259,7 @@ genericBind(convertPexIn, "expression", expression_convertPexIn);
 
 ## Does parser conversion of an `interpolate` node.
 fn interpolate_convertPexIn(node) {
-    <> convertExpressionPayload(node)
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "interpolate", interpolate_convertPexIn);
 

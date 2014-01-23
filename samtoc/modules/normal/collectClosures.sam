@@ -7,7 +7,6 @@ def Lang0Node = moduleUse({name: ["Lang0Node"]});
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
 def get actuals    = Lang0Node::get actuals;
-def get expression = Lang0Node::get expression;
 def get formals    = Lang0Node::get formals;
 def get function   = Lang0Node::get function;
 def get name       = Lang0Node::get name;
@@ -62,7 +61,7 @@ genericBind(
     bodies,
     "interpolate",
     fn interpolate_bodies(node, bodiesBox) {
-        <> @interpolate(bodies(node.expression, bodiesBox))
+        <> @interpolate{value: bodies(node.value, bodiesBox)}
     });
 
 genericBind(

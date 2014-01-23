@@ -83,7 +83,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         zvalue eval;
 
         if (interpolate) {
-            one = dataOf(one);
+            one = valueOf(one);
         }
 
         if (voidable) {
@@ -136,7 +136,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes an `interpolate` form.
  */
 static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
-    zvalue result = execExpressionVoidOk(frame, dataOf(interpolate));
+    zvalue result = execExpressionVoidOk(frame, valueOf(interpolate));
 
     if (result == NULL) {
         die("Attempt to interpolate void.");

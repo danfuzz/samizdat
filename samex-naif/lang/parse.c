@@ -163,8 +163,8 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 }
 
 /* Documented in spec. */
-static zvalue makeInterpolate(zvalue expression) {
-    return makeTransValue(STR_interpolate, expression);
+static zvalue makeInterpolate(zvalue value) {
+    return makeTransValue(STR_interpolate, mapFrom1(STR_value, value));
 }
 
 /* Documented in spec. */
@@ -733,7 +733,7 @@ DEF_PARSE(mapping) {
         zvalue data = dataOf(value);
 
         if (valEq(type, STR_interpolate)) {
-            return data;
+            return collGet(data, STR_value);
         } else if (valEq(type, STR_varRef)) {
             return makeCallName(STR_makeValueMap,
                 listFrom2(makeLiteral(collGet(data, STR_name)), value));
