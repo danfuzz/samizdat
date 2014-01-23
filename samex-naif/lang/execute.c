@@ -26,6 +26,13 @@
  */
 
 /**
+ * Gets the `value` binding out of the given node's data payload.
+ */
+static zvalue valueOf(zvalue node) {
+    return collGet(dataOf(node), STR_value);
+}
+
+/**
  * Executes an `expression` form, with the result never allowed to be
  * `void`.
  */
@@ -68,7 +75,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         bool voidable = (oneType == EVAL_voidable);
 
         if (voidable) {
-            one = collGet(dataOf(one), STR_value);
+            one = valueOf(one);
             oneType = evalTypeOf(one);
         }
 
@@ -198,9 +205,9 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (evalTypeOf(e)) {
         case EVAL_call:        return execCall(frame, e);
         case EVAL_closure:     return execClosure(frame, e);
-        case EVAL_expression:  return execExpressionVoidOk(frame, dataOf(e));
+        case EVAL_expression:  return execExpressionVoidOk(frame, valueOf(e));
         case EVAL_interpolate: return execInterpolate(frame, e);
-        case EVAL_literal:     return collGet(dataOf(e), STR_value);
+        case EVAL_literal:     return valueOf(e);
         case EVAL_varBind:     return execVarBind(frame, e);
         case EVAL_varRef:      return execVarRef(frame, e);
         default: {

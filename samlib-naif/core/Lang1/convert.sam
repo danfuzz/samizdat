@@ -263,7 +263,7 @@ genericBind(convertPexIn, "closure", closure_convertPexIn);
 
 ## Does parser conversion of an `expression` node.
 fn expression_convertPexIn(node) {
-    <> convertExpressionPayload(node)
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "expression", expression_convertPexIn);
 

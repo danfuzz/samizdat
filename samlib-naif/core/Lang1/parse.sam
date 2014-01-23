@@ -144,7 +144,7 @@ def parParenExpression = Peg::makeMainSequence(
                 Io1::die("Comma not allowed within parenthesized expression.")
             })),
     Peg::makeToken(")"),
-    Peg::makeCode { ., ex, ., . <> @expression(ex) });
+    Peg::makeCode { ., ex, ., . <> @expression{value: ex} });
 
 ## Documented in spec.
 def parIdentifier = Peg::makeMainSequence(
@@ -373,7 +373,7 @@ def parMapping = Peg::makeMainSequence(
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCallName("makeValueMap", keys*, @expression(value))
+                <> makeCallName("makeValueMap", keys*, @expression{value})
             }
     });
 

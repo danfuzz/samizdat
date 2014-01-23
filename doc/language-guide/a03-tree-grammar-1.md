@@ -148,7 +148,7 @@ def parParenExpression = {/
 
     @")"
 
-    { <> @expression(ex) }
+    { <> @expression{value: ex} }
 /};
 
 ## Parses an identifier. **Note:** This is nontrivial in layer 2.
@@ -468,7 +468,7 @@ def parMapping = {/
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCallName("makeValueMap", keys*, @expression(value))
+                <> makeCallName("makeValueMap", keys*, @expression{value})
             }
     }
 /};

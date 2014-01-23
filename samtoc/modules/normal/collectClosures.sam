@@ -55,7 +55,7 @@ genericBind(
     bodies,
     "expression",
     fn expression_bodies(node, bodiesBox) {
-        <> @expression(bodies(node.expression, bodiesBox))
+        <> @expression{value: bodies(node.value, bodiesBox)}
     });
 
 genericBind(
@@ -110,7 +110,7 @@ genericBind(
     bodies,
     "voidable",
     fn voidable_bodies(node, bodiesBox) {
-        <> @voidable{value: bodies(node.expression, bodiesBox)}
+        <> @voidable{value: bodies(node.value, bodiesBox)}
     });
 
 ## Collects all closure nodes at or under the given one into a list.

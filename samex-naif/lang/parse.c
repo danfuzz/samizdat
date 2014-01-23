@@ -380,7 +380,7 @@ DEF_PARSE(parenExpression) {
 
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return makeTransValue(STR_expression, expression);
+    return makeTransValue(STR_expression, mapFrom1(STR_value, expression));
 }
 
 /* Documented in spec. */
@@ -747,7 +747,8 @@ DEF_PARSE(mapping) {
     // being applied to `makeValueMap`.
 
     return makeCallName(STR_makeValueMap,
-        listAppend(keys, makeTransValue(STR_expression, value)));
+        listAppend(keys,
+            makeTransValue(STR_expression, mapFrom1(STR_value, value))));
 }
 
 /* Documented in spec. */

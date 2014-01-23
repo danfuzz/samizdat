@@ -12,7 +12,7 @@ fn get actuals(node) {
     <> dataOf(node)::actuals
 };
 
-## Accessor for `expression`, `interpolate`, and `voidable` nodes.
+## Accessor for `interpolate` nodes.
 
 fn get expression(node) {
     <> dataOf(node)
@@ -43,24 +43,12 @@ fn get statements(node) {
     <> dataOf(node)::statements
 };
 
-## Accessor for `literal`, `varBind`, and `varDef` nodes.
+## Accessor for `expression`, `literal`, `varBind`, `varDef`, and `voidable`
+## nodes.
 
-def get value = makeRegularGeneric("get-value", 1, 1);
-
-genericBind(
-    get value,
-    "literal",
-    fn literal_get_value(node) { <> dataOf(node)::value });
-
-genericBind(
-    get value,
-    "varBind",
-    fn varBind_get_value(node) { <> dataOf(node)::value });
-
-genericBind(
-    get value,
-    "varDef",
-    fn varDef_get_value(node) { <> dataOf(node)::value });
+fn get value(node) {
+    <> dataOf(node)::value
+};
 
 ## Accessor for `closure` nodes.
 
