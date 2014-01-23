@@ -405,7 +405,7 @@ def parListItem = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("&"),
         Peg::makeThunk { . <> parUnaryExpression },
-        Peg::makeCode { ., ex <> @voidable(ex) }),
+        Peg::makeCode { ., ex <> @voidable{value: ex} }),
     parExpression);
 
 ## Documented in spec.

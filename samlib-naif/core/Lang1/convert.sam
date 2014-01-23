@@ -229,6 +229,16 @@ fn convertExpressionPayload(node) {
     <> @(nodeType)(nodeValue)
 };
 
+## Does parser conversion of a node whose payload is a map with
+## a `value` binding to an arbitrary expression.
+fn convertValuePayload(node) {
+    def nodeType = typeOf(node);
+    def nodeValue = dataOf(node);
+    def value = convertPexIn(nodeValue::value);
+
+    <> @(nodeType){nodeValue*, value}
+};
+
 ## Does parser conversion of a `call` node.
 fn call_convertPexIn(node) {
     def nodeValue = dataOf(node);
@@ -309,7 +319,7 @@ genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
 ## Does parser conversion of a `voidable` node.
 fn voidable_convertPexIn(node) {
-    <> convertExpressionPayload(node)
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "voidable", voidable_convertPexIn);
 

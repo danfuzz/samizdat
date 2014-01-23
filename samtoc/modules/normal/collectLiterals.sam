@@ -110,7 +110,7 @@ genericBind(
     lits,
     "voidable",
     fn voidable_lits(node, litsBox) {
-        <> @voidable(lits(node.expression, litsBox))
+        <> @voidable{value: lits(node.expression, litsBox)}
     });
 
 ## Collects all literal nodes at or under the given one into a list.

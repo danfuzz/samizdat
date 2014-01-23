@@ -508,7 +508,7 @@ def parListItem = {/
 |
     @"&"
     ex = %parUnaryExpression
-    { <> @voidable(ex) }
+    { <> @voidable{value: ex} }
 |
     parExpression
 /};

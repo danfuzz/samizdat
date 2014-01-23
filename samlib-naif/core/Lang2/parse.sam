@@ -527,7 +527,7 @@ def parListItem = {/
 |
     @"&"
     ex = %parUnaryExpression
-    { <> @voidable(ex) }
+    { <> @voidable{value: ex} }
 |
     parExpression
 /};
@@ -1070,14 +1070,14 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
         def call = makeCall(resolvedOp, result, ex);
 
         <> ifIs { <> eq(voidable, true) }
-            { <> @voidable(call) }
+            { <> @voidable{value: call} }
             { <> call }
     };
 
     ## For an inner-voidable expression, unwrap the outermost layer of
     ## voidability.
     <> ifIs { <> eq(voidable, true) }
-        { <> dataOf(result) }
+        { <> dataOf(result)::value }
         { <> result }
 };
 
@@ -2240,7 +2240,7 @@ def parSwitchExpression = {/
                     ifValue { <> optDefault* }
                         { value <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },
-                    @voidable(@expression(test))));
+                    @voidable{value: @expression(test)}));
 
         def ifCall = makeCallName("ifValue",
             testBody,

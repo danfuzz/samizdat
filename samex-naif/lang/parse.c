@@ -781,7 +781,7 @@ DEF_PARSE(listItem) {
     if (MATCH(CH_AND)) {
         zvalue ex = PARSE(unaryExpression);
         if (ex != NULL) {
-            return makeTransValue(STR_voidable, ex);
+            return makeTransValue(STR_voidable, mapFrom1(STR_value, ex));
         }
     }
 

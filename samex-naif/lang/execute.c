@@ -68,7 +68,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         bool voidable = (oneType == EVAL_voidable);
 
         if (voidable) {
-            one = dataOf(one);
+            one = collGet(dataOf(one), STR_value);
             oneType = evalTypeOf(one);
         }
 
