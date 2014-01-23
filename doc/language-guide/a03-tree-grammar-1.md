@@ -41,6 +41,16 @@ fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: expression}
 };
 
+## Returns a `varBind` node.
+fn makeVarBind(name, value) {
+    <> @varBind{name, value}
+};
+
+## Returns a `varDeclare` node.
+fn makeVarDeclare(name) {
+    <> @varDeclare{name}
+};
+
 ## Returns a `varDef` node.
 fn makeVarDef(name, value) {
     <> @varDef{name, value}
@@ -48,7 +58,10 @@ fn makeVarDef(name, value) {
 
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
-    <> @varRef(name)
+    <> @varRef{
+        name,
+        lvalue: { node <> makeVarBind(name, node) }
+    }
 };
 
 ## Returns a `call` node.
@@ -96,13 +109,27 @@ fn makeCallNonlocalExit(name, optExpression?) {
 ##
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser = makeParseForwarder();
+def parParser;
 
 ## Forward declarations.
-def parExpression = ParseForwarder::make();
-def parProgramBody = ParseForwarder::make();
-def parTerm = ParseForwarder::make();
-def parUnaryExpression = ParseForwarder::make();
+def parAssignExpression;
+def parFnExpression;
+def parOpExpression;
+def parProgramBody;
+def parUnaryExpression;
+
+## Parses an expression in general.
+def parExpression = {/
+    ## This one's the top level "regular-looking" expression (in that it
+    ## covers the territory of C-style expressions).
+    %parAssignExpression
+|
+    ## This one is only nominally "regular-looking" (in that not many C
+    ## family languages have function expressions).
+    %parFnExpression
+## |
+    ## Note: Layer 2 adds additional rules here.
+/};
 
 ## Parses a parenthesized expression. This produces an `expression` node,
 ## which prevents void-contagion from escaping. If void-contagion-prevention
@@ -135,13 +162,18 @@ def parVarRef = {/
     { <> makeVarRef(dataOf(name)) }
 /};
 
-## Parses a variable definition.
+## Parses a variable definition or declaration.
 def parVarDef = {/
     @def
     name = parIdentifier
-    @"="
-    ex = parExpression
-    { <> makeVarDef(dataOf(name), ex) }
+
+    (
+        @"="
+        ex = parExpression
+        { <> makeVarDef(dataOf(name), ex) }
+    |
+        { <> makeVarDeclare(dataOf(name)) }
+    )
 /};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
@@ -204,7 +236,7 @@ def parProgramDeclarations = {/
 ## Parses a program (top-level program or contents inside function braces).
 def parProgram = {/
     decls = parProgramDeclarations
-    body = parProgramBody
+    body = %parProgramBody
     { <> @closure{decls*, body*} }
 /};
 
@@ -253,9 +285,8 @@ def parCodeOnlyClosure = {/
 ## what's required for a closure payload, except that `name` may also
 ## be bound.
 ##
-## The result of this rule is suitable for use as a `closure` node
-## payload. And as long as `name` is bound, the result is valid to use
-## as the payload for a `fnDef` node.
+## The result of this rule is a `closure` node, with `name` possibly
+## (but not necssarily) bound in the payload.
 ##
 ## The translation is along these lines:
 ##
@@ -302,7 +333,7 @@ def parFnCommon = {/
     {
         def codeMap = dataOf(code);
         def statements = [returnDef*, codeMap::statements*];
-        <> {
+        <> @closure{
             codeMap*, name*,
             formals,
             yieldDef: "return",
@@ -317,11 +348,15 @@ def parFnCommon = {/
 ## that just means that we're looking at a legit `fn` expression, which will
 ## get successfully parsed by the `expression` alternative of `statement`.
 def parFnDef = {/
-    funcMap = parFnCommon
+    closure = parFnCommon
 
+    name = { <> dataOf(closure)::name }
     {
-        <> ifIs { <> funcMap::name }
-            { <> @fnDef(funcMap) }
+        ## `@topDeclaration` is split apart in the `programBody` rule.
+        <> @topDeclaration{
+            top:  makeVarDeclare(name),
+            main: makeVarBind(name, closure)
+        }
     }
 /};
 
@@ -336,26 +371,26 @@ def parFnDef = {/
 ## =>
 ## ```
 ## {
-##     fn <out> name ...;
-##     <> name
+##     def name;
+##     <> name := { <out> ... }
 ## }()
 ## ```
-def parFnExpression = {/
-    funcMap = parFnCommon
+parFnExpression := {/
+    closure = parFnCommon
 
     (
-        name = { <> funcMap::name }
+        name = { <> dataOf(closure)::name }
         {
             def mainClosure = @closure{
-                formals: [],
-                statements: [@fnDef(funcMap)],
-                yield: makeVarRef(name)
+                formals:    [],
+                statements: [makeVarDeclare(name)],
+                yield:      makeVarBind(name, closure)
             };
 
             <> makeCall(mainClosure)
         }
     |
-        { <> @closure(funcMap) }
+        { <> closure }
     )
 /};
 
@@ -426,7 +461,7 @@ def parMapping = {/
                 ifIs { <> eq(type, "varRef") }
                     {
                         <out> makeCallName("makeValueMap",
-                            makeLiteral(data), value)
+                            makeLiteral(data::name), value)
                     }
             }
             {
@@ -472,7 +507,7 @@ def parListItem = {/
     { Io1::die("Mapping syntax not valid as a list item or call argument.") }
 |
     @"&"
-    ex = parUnaryExpression
+    ex = %parUnaryExpression
     { <> @voidable(ex) }
 |
     parExpression
@@ -519,7 +554,7 @@ def parTerm = {/
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
-    &@"{/" parParser
+    &@"{/" %parParser
 ## |
     ## Note: There are additional term rules in Samizdat Layer 2.
 /};
@@ -564,7 +599,7 @@ def parPostfixOperator = {/
 ## Parses a unary expression. This is a term, optionally surrounded on
 ## either side by any number of unary operators. Postfix operators
 ## take precedence over (are applied before) the prefix operators.
-def parUnaryExpression = {/
+parUnaryExpression := {/
     ## The rule is written this way in order to ensure that the `-`
     ## in front of a numeric constant gets parsed as a term and not as
     ## a unary expression.
@@ -590,12 +625,28 @@ def parUnaryExpression = {/
     }
 /};
 
-## Note: There are additional expression rules in Layer 2 and beyond.
-## This rule is totally rewritten at that layer.
-def implExpression = {/
-    parUnaryExpression | parFnExpression
+## Parses an operator-bearing expression (or simple term). This is a trivial
+## passthrough to `unaryExpression` in layer 0, but is expanded significantly
+## in layer 2.
+parOpExpression := parUnaryExpression;
+
+## Parses an assignment expression, or passes through to parse a regular
+## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
+## `opExpression` and then extracting the `lvalue` constructor out of it.
+## This fails (gracefully) if there is no `lvalue` to extract from a given
+## expression.
+parAssignExpression := {/
+    base = %parOpExpression
+
+    (
+        @":="
+        lvalue = { <> dataOf(base)::lvalue }
+        ex = parExpression
+        { <> lvalue(ex) }
+    |
+        { <> base }
+    )
 /};
-Box::store(parExpression, implExpression);
 
 ## Note: There are additional expression rules in Layer 2 and beyond.
 def parStatement = {/
@@ -633,7 +684,7 @@ def parYield = {/
 /};
 
 ## Parses a program body (statements plus optional yield).
-def implProgramBody = {/
+parProgramBody := {/
     @";"*
 
     most = (
@@ -655,11 +706,21 @@ def implProgramBody = {/
     @";"*
 
     {
-        def allStatements = [most*, last::statements*];
-        <> [last*, statements: allStatements]
+        def rawStatements = [most*, last::statements*];
+        def tops = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::top }
+            };
+        def mains = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::main }
+                    { <> s }
+            };
+        <> {last*, statements: [tops*, mains*]}
     }
 /};
-Box::store(parProgramBody, implProgramBody);
 
 ## Top-level rule to parse an expression with possible error afterwards.
 def parExpressionOrError = {/
@@ -694,7 +755,7 @@ def parProgramOrError = {/
 ##
 
 ## Forward declaration.
-def parChoicePex = makeParseForwarder();
+def parChoicePex;
 
 ## Map from parser tokens to derived value types for pexes.
 def PEX_TYPES = {
@@ -706,18 +767,17 @@ def PEX_TYPES = {
 };
 
 ## Parses a parser function.
-def implParser = {/
+parParser := {/
     @"{/"
-    pex = parChoicePex
+    pex = %parChoicePex
     @"/}"
     { <> @parser(pex) }
 /};
-Box::store(parParser, implParser);
 
 ## Parses a parenthesized parsing expression.
 def parParenPex = {/
     @"("
-    pex = parChoicePex
+    pex = %parChoicePex
     @")"
     { <> pex }
 /};
@@ -794,6 +854,13 @@ def parParserCode = {/
     { <> @code(dataOf(closure)) }
 /};
 
+## Parses a thunk parsing expression.
+def parParserThunk = {/
+    @"%"
+    term = parTerm
+    { <> @thunk(term) }
+/};
+
 ## Parses a parsing expression term.
 def parParserTerm = {/
     @"."
@@ -804,7 +871,7 @@ def parParserTerm = {/
     { <> @empty }
 |
     parVarRef | parParserString | parParserToken | parParserSet |
-    parParserCode | parParenPex
+    parParserCode | parParserThunk | parParenPex
 /};
 
 ## Parses a repeat (or not) parsing expression.
@@ -850,10 +917,9 @@ def parSequencePex = {/
 /};
 
 ## Parses a choice parsing expression. This includes a single choice.
-def implChoicePex = {/
+parChoicePex := {/
     one = parSequencePex
     rest = (@"|" parSequencePex)*
     { <> @choice[one, rest*] }
 /};
-Box::store(parChoicePex, implChoicePex);
 ```

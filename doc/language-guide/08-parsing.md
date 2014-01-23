@@ -298,6 +298,31 @@ For example:
 * The parser `{/ f=@foo { <out> -> <out> [[[f]]] } /}` is just like the
   previous example, except it is written with an explicit yield definition.
 
+#### Running code to produce a parser value
+
+Sometimes the actual parsing that needs to be done can't be totally
+specified in advance. In these cases, it is possible to prefix a regular
+non-parser term (e.g. a simple variable reference or a more complicated
+expression surrounded by parentheses) with `%`. The term is *not* evaluated
+immediately, but instead is evaluated when encountered during a parsing
+operation. When evaluated, it is expected to produce a parser, and then
+*that* parser value is called upon to perform parsing.
+
+It is valid to refer to any variables bound by the parse-in-progress in
+the term.
+
+The most common use of this is to enable forward or recursive referencing of
+parser rules, such as:
+
+```
+def parRecursive;
+parRecursive := {/ "x" %parRecursive "y" | () /};
+```
+
+Without the `%`, the above would fail because `parRecursive` isn't yet
+bound at the use site.
+
+
 #### Future direction: Destructuring bind
 
 If in the future a "destructuring bind" form is supported, then it

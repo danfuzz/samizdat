@@ -50,19 +50,22 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `closure` &mdash; `@closure{formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
+#### `closure` &mdash; `@closure{formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
 
 * `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
 
+* `name: name` (optional) &mdash; The function name of the closure. Only
+  used for producing debugging info (e.g. stack traces).
+
 * `yieldDef: name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
 
 * `statements: [statement*]` (required) &mdash; A list of statement
-  nodes. A statement node must be either an expression node, or a
-  `fnDef` or `varDef` node (as defined below). This defines the bulk of
-  the code to execute.
+  nodes. A statement node must be either an expression node, or one of the
+  various variable definition nodes (as defined below). This defines the bulk
+  of the code to execute.
 
 * `yield: expression` (optional) &mdash; An expression node representing
   the (local) result value for a call.
@@ -150,7 +153,27 @@ The data `value` is the result of evaluation,
 When a `literal` node is run, the result of evaluation is `value`.
 Evaluation never fails.
 
-#### `varRef` &mdash; `@varRef(name)`
+#### `varBind` &mdash; `@varBind{name: name, value: expression}`
+
+* `name: name` &mdash; Variable name to bind (typically a string).
+
+* `value: expression` (optional) &mdash; Expression node representing the
+  value that the variable should take on when defined.
+
+This represents a variable binding (assignment) statement as part of a
+closure body.
+
+When run, the `value` expression is evaluated. If it evaluates to void,
+then evaluation fails (terminating the runtime). Otherwise, the `name`
+is looked up and resolved to a variable reference. It is an error
+(terminating the runtime) if no such variable is found, or if such a
+variable is found and it is not available for binding (or rebinding).
+Otherwise, the evaluated value is bound to the variable.
+
+The result of evaluating this form is the same as the result of evaluating
+`value`.
+
+#### `varRef` &mdash; `@varRef{name: name}`
 
 * `name` (required) &mdash; Name of a variable (typically a string).
 
@@ -166,29 +189,6 @@ evaluation fails (terminating the runtime).
 
 These are nodes and values that appear within the data payloads
 of various expression nodes.
-
-#### `fnDef` &mdash; `@fnDef{name: name, formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
-
-* `name: name` (required) &mdash; The name of the function.
-
-* `formals: [formal+]` (required) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-* `yieldDef: name` (optional) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-* `statements: [statement*]` (required) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-* `yield: expression` (optional) &mdash; Same meaning as for
-  `closure` nodes (see which).
-
-This represents a statement-level function definition. Nodes of this
-type are valid within the `statements` list of a `closure` or `fnDef` node.
-
-This is similar to assigning the variable `name` to the result of
-evaluating `fn ...` as an expression, with one twist: In a statement list,
-multiple `fnDef`s in a row can mutually self-reference.
 
 #### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
 
@@ -222,6 +222,21 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
+#### `varDeclare` &mdash; `@varDeclare{name: name}`
+
+* `name: name` &mdash; Variable name to declare (typically a string).
+
+This represents a forward declaration for a single-assignment variable
+as part of a closure body. Nodes of this type are valid within the
+`statements` list of a `closure` node.
+
+When run, a variable with the given `name` is defined in the current (topmost)
+execution context, and bound to void. It is an error (terminating the runtime)
+if a variable with the given `name` is already defined in the current context.
+
+Once defined, it is then invalid to reference the variable's value until it
+becomes bound to its final value via execution of a `varBind` node.
+
 #### `varDef` &mdash; `@varDef{name: name, value: expression}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
@@ -231,7 +246,7 @@ actual argument as passed (no extra wrapping).
 
 This represents a variable definition statement as part of a closure body.
 Nodes of this type are valid within the `statements` list of a `closure`
-or `fnDef` node.
+node.
 
 When run, the `value` expression is evaluated. If it evaluates to void,
 then evaluation fails (terminating the runtime). Otherwise, the evaluated

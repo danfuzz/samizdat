@@ -8,7 +8,6 @@
 
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
-def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 
 ##
@@ -40,21 +39,20 @@ def parRegularComponent = {/
 
 ## Parses a matched set of components that are collectively ignored, e.g.
 ## `"/x/y/../.."` or `"/."`.
-def parIgnoredComponent = ParseForwarder::make();
-def implIgnoredComponent = {/
+def parIgnoredComponent;
+parIgnoredComponent := {/
     component = parRegularComponent
 
     (
         { <> eq(component, ["."]) }
     |
-        parIgnoredComponent?
+        (%parIgnoredComponent)?
         dotdot = parPathComponent
         { <> eq(dotdot, "..") }
     )
 
     { <> [] }
 /};
-Box::store(parIgnoredComponent, implIgnoredComponent);
 
 ## Helper for `pathFromFlat` which parses absolute path strings
 ## into components. This canonicalizes the path by ignoring duplicate

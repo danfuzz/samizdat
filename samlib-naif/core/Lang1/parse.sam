@@ -7,7 +7,6 @@
 ##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
-def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
 
 def tokenize = submoduleUse("tokenize")::tokenize;
 
@@ -48,6 +47,16 @@ fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: expression}
 };
 
+## Returns a `varBind` node.
+fn makeVarBind(name, value) {
+    <> @varBind{name, value}
+};
+
+## Returns a `varDeclare` node.
+fn makeVarDeclare(name) {
+    <> @varDeclare{name}
+};
+
 ## Returns a `varDef` node.
 fn makeVarDef(name, value) {
     <> @varDef{name, value}
@@ -55,7 +64,10 @@ fn makeVarDef(name, value) {
 
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
-    <> @varRef(name)
+    <> @varRef{
+        name,
+        lvalue: { node <> makeVarBind(name, node) }
+    }
 };
 
 ## Returns a `call` node.
@@ -107,13 +119,19 @@ fn makeCallNonlocalExit(name, optExpression?) {
 ##
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser = ParseForwarder::make();
+def parParser;
 
 ## Forward declarations.
-def parExpression = ParseForwarder::make();
-def parProgramBody = ParseForwarder::make();
-def parTerm = ParseForwarder::make();
-def parUnaryExpression = ParseForwarder::make();
+def parAssignExpression;
+def parFnExpression;
+def parOpExpression;
+def parProgramBody;
+def parUnaryExpression;
+
+## Documented in spec.
+def parExpression = Peg::makeMainChoice(
+    Peg::makeThunk { <> parAssignExpression },
+    Peg::makeThunk { <> parFnExpression });
 
 ## Documented in spec.
 def parParenExpression = Peg::makeMainSequence(
@@ -141,9 +159,12 @@ def parVarRef = Peg::makeMainSequence(
 def parVarDef = Peg::makeMainSequence(
     Peg::makeToken("def"),
     parIdentifier,
-    Peg::makeToken("="),
-    parExpression,
-    Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) });
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken("="),
+            parExpression,
+            Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) }),
+        Peg::makeCode { ., name <> makeVarDeclare(dataOf(name)) }));
 
 ## Documented in spec.
 def parYieldDef = Peg::makeMainSequence(
@@ -199,7 +220,7 @@ def parProgramDeclarations = Peg::makeMainChoice(
 ## Documented in spec.
 def parProgram = Peg::makeMainSequence(
     parProgramDeclarations,
-    parProgramBody,
+    Peg::makeThunk { . <> parProgramBody },
     Peg::makeCode { decls, body <> @closure{decls*, body*} });
 
 ## Documented in spec.
@@ -247,7 +268,7 @@ def parFnCommon = Peg::makeMainSequence(
     Peg::makeCode { ., returnDef, name, ., formals, ., code ->
         def codeMap = dataOf(code);
         def statements = [returnDef*, codeMap::statements*];
-        <> {
+        <> @closure{
             codeMap*, name*,
             formals,
             yieldDef: "return",
@@ -258,30 +279,33 @@ def parFnCommon = Peg::makeMainSequence(
 ## Documented in spec.
 def parFnDef = Peg::makeMainSequence(
     parFnCommon,
-    Peg::makeCode { funcMap ->
-        <> ifIs { <> funcMap::name }
-            { <> @fnDef(funcMap) }
+    Peg::makeCode { closure <> dataOf(closure)::name },
+    Peg::makeCode { closure, name ->
+        ## `@topDeclaration` is split apart in the `programBody` rule.
+        <> @topDeclaration{
+            top:  makeVarDeclare(name),
+            main: makeVarBind(name, closure)
+        }
     });
 
 ## Documented in spec.
-def parFnExpression = Peg::makeMainSequence(
+parFnExpression := Peg::makeMainSequence(
     parFnCommon,
     Peg::makeChoice(
         Peg::makeSequence(
-            Peg::makeCode { funcMap, . <> funcMap::name },
+            Peg::makeCode { closure <> dataOf(closure)::name },
             Peg::makeCode { funcMap, name ->
                 def mainClosure = @closure{
-                    formals: [],
-                    statements: [@fnDef(funcMap)],
-                    yield: makeVarRef(name)
+                    formals:    [],
+                    statements: [makeVarDeclare(name)],
+                    yield:      makeVarBind(name, closure)
                 };
 
                 <> makeCall(mainClosure)
             }),
-        Peg::makeCode { funcMap <> @closure(funcMap) }));
+        Peg::makeCode { closure <> closure }));
 
 ## Documented in spec.
-
 def parInt = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("-"),
@@ -342,7 +366,7 @@ def parMapping = Peg::makeMainSequence(
                 ifIs { <> eq(type, "varRef") }
                     {
                         <out> makeCallName("makeValueMap",
-                            makeLiteral(data), value)
+                            makeLiteral(data::name), value)
                     }
             }
             {
@@ -380,7 +404,7 @@ def parListItem = Peg::makeMainChoice(
         }),
     Peg::makeSequence(
         Peg::makeToken("&"),
-        parUnaryExpression,
+        Peg::makeThunk { . <> parUnaryExpression },
         Peg::makeCode { ., ex <> @voidable(ex) }),
     parExpression);
 
@@ -414,15 +438,14 @@ def parDeriv = Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def implTerm = Peg::makeMainChoice(
+def parTerm = Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
     parDeriv, parClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     Peg::makeSequence(
         Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
-        parParser));
-Box::store(parTerm, implTerm);
+        Peg::makeThunk { . <> parParser }));
 
 ## Documented in spec.
 def parActualsList = Peg::makeMainChoice(
@@ -453,19 +476,26 @@ def parPostfixOperator = Peg::makeMainChoice(
         Peg::makeCode { . <> { node <> makeOptValueExpression(node) } }));
 
 ## Documented in spec.
-def implUnaryExpression = Peg::makeMainSequence(
+parUnaryExpression := Peg::makeMainSequence(
     parTerm,
     Peg::makeStar(parPostfixOperator),
     Peg::makeCode { base, postfixes ->
         <> Generator::doReduce1(postfixes, base) { op, result <> op(result) }
     });
-Box::store(parUnaryExpression, implUnaryExpression);
 
 ## Documented in spec.
-def implExpression = Peg::makeChoice(
-    parUnaryExpression,
-    parFnExpression);
-Box::store(parExpression, implExpression);
+parOpExpression := parUnaryExpression;
+
+## Documented in spec.
+parAssignExpression := Peg::makeMainSequence(
+    parOpExpression,
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken(":="),
+            Peg::makeCode { base, . <> dataOf(base)::lvalue },
+            parExpression,
+            Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
+        Peg::makeCode { base <> base }));
 
 ## Documented in spec.
 def parStatement = Peg::makeChoice(
@@ -499,7 +529,7 @@ def parYield = Peg::makeMainSequence(
         Peg::makeResult({})));
 
 ## Documented in spec.
-def implProgramBody = Peg::makeMainSequence(
+parProgramBody := Peg::makeMainSequence(
     Peg::makeStar(Peg::makeToken(";")),
     Peg::makeStar(
         Peg::makeMainSequence(
@@ -516,10 +546,20 @@ def implProgramBody = Peg::makeMainSequence(
         Peg::makeResult({statements: []})),
     Peg::makeStar(Peg::makeToken(";")),
     Peg::makeCode { ., most, last, . ->
-        def allStatements = [most*, last::statements*];
-        <> {last*, statements: allStatements}
+        def rawStatements = [most*, last::statements*];
+        def tops = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::top }
+            };
+        def mains = Generator::filterAll(rawStatements)
+            { s ->
+                <> ifIs { <> hasType(s, "topDeclaration") }
+                    { <> dataOf(s)::main }
+                    { <> s }
+            };
+        <> {last*, statements: [tops*, mains*]}
     });
-Box::store(parProgramBody, implProgramBody);
 
 ## Documented in spec.
 def parExpressionOrError = Peg::makeMainSequence(
@@ -545,7 +585,7 @@ def parProgramOrError = Peg::makeMainSequence(
 ##
 
 ## `choicePex` is the top-level parsing expression node type.
-def parChoicePex = ParseForwarder::make();
+def parChoicePex;
 
 ## Map from parser tokens to derived value types for pexes.
 def PEX_TYPES = {
@@ -556,19 +596,21 @@ def PEX_TYPES = {
     "+": "plus"
 };
 
-def implParser = Peg::makeMainSequence(
+## Documented in spec.
+parParser := Peg::makeMainSequence(
     Peg::makeToken("{/"),
-    parChoicePex,
+    Peg::makeThunk { . <> parChoicePex },
     Peg::makeToken("/}"),
     Peg::makeCode { ., pex, . <> @parser(pex) });
-Box::store(parParser, implParser);
 
+## Documented in spec.
 def parParenPex = Peg::makeMainSequence(
     Peg::makeToken("("),
-    parChoicePex,
+    Peg::makeThunk { . <> parChoicePex },
     Peg::makeToken(")"),
     Peg::makeCode { ., pex, . <> pex });
 
+## Documented in spec.
 def parParserString = Peg::makeMainSequence(
     Peg::makeToken("string"),
     Peg::makeCode { s ->
@@ -578,11 +620,13 @@ def parParserString = Peg::makeMainSequence(
             { <> s }
     });
 
+## Documented in spec.
 def parParserToken = Peg::makeMainSequence(
     Peg::makeToken("@"),
     parIdentifierString,
     Peg::makeCode { ., type <> @token(dataOf(type)) });
 
+## Documented in spec.
 def parParserSetString = Peg::makeMainSequence(
     Peg::makeToken("string"),
     Peg::makeChoice(
@@ -604,6 +648,7 @@ def parParserSetString = Peg::makeMainSequence(
             }),
         Peg::makeCode { s <> dataOf(s) }));
 
+## Documented in spec.
 def parParserSet = Peg::makeMainSequence(
     Peg::makeToken("["),
     Peg::makeChoice(
@@ -622,10 +667,19 @@ def parParserSet = Peg::makeMainSequence(
     Peg::makeToken("]"),
     Peg::makeCode { ., type, terminals, . <> @(type)(terminals) });
 
+## Documented in spec.
 def parParserCode = Peg::makeMainSequence(
     parNullaryClosure,
     Peg::makeCode { closure <> @code(dataOf(closure)) });
 
+
+## Documented in spec.
+def parParserThunk = Peg::makeMainSequence(
+    Peg::makeToken("%"),
+    parTerm,
+    Peg::makeCode { ., term <> @thunk(term) });
+
+## Documented in spec.
 def parParserTerm = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("."),
@@ -639,8 +693,10 @@ def parParserTerm = Peg::makeMainChoice(
     parParserToken,
     parParserSet,
     parParserCode,
+    parParserThunk,
     parParenPex);
 
+## Documented in spec.
 def parRepeatPex = Peg::makeMainSequence(
     parParserTerm,
     Peg::makeChoice(
@@ -651,6 +707,7 @@ def parRepeatPex = Peg::makeMainSequence(
             }),
         Peg::makeCode { term <> term }));
 
+## Documented in spec.
 def parLookaheadPex = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeTokenSet("&", "!"),
@@ -660,6 +717,7 @@ def parLookaheadPex = Peg::makeMainChoice(
         }),
     parRepeatPex);
 
+## Documented in spec.
 def parNamePex = Peg::makeMainChoice(
     Peg::makeSequence(
         parIdentifier,
@@ -670,18 +728,19 @@ def parNamePex = Peg::makeMainChoice(
         }),
     parLookaheadPex);
 
+## Documented in spec.
 def parSequencePex = Peg::makeMainSequence(
     Peg::makePlus(parNamePex),
     Peg::makeCode { items <> @sequence(items) });
 
-def implChoicePex = Peg::makeMainSequence(
+## Documented in spec.
+parChoicePex := Peg::makeMainSequence(
     parSequencePex,
     Peg::makeStar(
         Peg::makeSequence(
             Peg::makeToken("|"),
             parSequencePex)),
     Peg::makeCode { one, rest <> @choice[one, rest*] });
-Box::store(parChoicePex, implChoicePex);
 
 
 ##

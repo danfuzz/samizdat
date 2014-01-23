@@ -60,6 +60,15 @@ string.
 
 This corresponds to the syntax `"string"`.
 
+#### `@thunk(expression)`
+
+Representation of a parser thunk.
+
+* `expression` (required) &mdash; Regular (non-parsing) expression node,
+  which when evaluated is expected to produce a parser.
+
+This corresponds to the syntax `%expression`.
+
 #### `@token(type)`
 
 Representation of a token-match terminal. This is also used for
@@ -86,7 +95,7 @@ strings, which is taken to be an unordered set of token types to not-match.
 This corresponds to the syntax `[! token1 token2 etc]` or
 `[! "charsToNotMatch"]`.
 
-#### `@varRef(name)`
+#### `@varRef{name: name}`
 
 Representation of a call out to a named parsing function. `name` is
 an arbitrary value, but typically a string.

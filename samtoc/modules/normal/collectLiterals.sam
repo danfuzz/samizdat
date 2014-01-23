@@ -19,17 +19,6 @@ def get yieldDef   = Lang0Node::get yieldDef;
 ## `lits(node, litsBox)`, implements one layer of literal collection.
 def lits = makeRegularGeneric("lits", 2, 2);
 
-## Common implementation for both `@closure` and `@fnDef`.
-fn closureLikeLits(node, litsBox) {
-    <> @(typeOf(node)){
-        formals: node.formals,
-        ((def name = node.name) & {name} | {})*,
-        statements: [ s in node.statements <> lits(s, litsBox) ],
-        ((def y = node.yield) & {yield: lits(y, litsBox)} | {})*,
-        ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
-    }
-};
-
 genericBind(
     lits,
     "call",
@@ -44,7 +33,13 @@ genericBind(
     lits,
     "closure",
     fn closure_lits(node, litsBox) {
-        <> closureLikeLits(node, litsBox)
+        <> @closure{
+            formals: node.formals,
+            ((def name = node.name) & {name} | {})*,
+            statements: [ s in node.statements <> lits(s, litsBox) ],
+            ((def y = node.yield) & {yield: lits(y, litsBox)} | {})*,
+            ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
+        }
     });
 
 genericBind(
@@ -52,13 +47,6 @@ genericBind(
     "expression",
     fn expression_lits(node, litsBox) {
         <> @expression(lits(node.expression, litsBox))
-    });
-
-genericBind(
-    lits,
-    "fnDef",
-    fn fnDef_lits(node, litsBox) {
-        <> closureLikeLits(node, litsBox)
     });
 
 genericBind(
@@ -82,6 +70,23 @@ genericBind(
         def result = @literalRef(#lits);
         Box::store(litsBox, {lits*, (value): result});
         <> result
+    });
+
+genericBind(
+    lits,
+    "varBind",
+    fn varBind_lits(node, litsBox) {
+        <> @varBind{
+            name: node.name,
+            value: lits(node.value, litsBox)
+        }
+    });
+
+genericBind(
+    lits,
+    "varDeclare",
+    fn varDeclare_lits(node, litsBox) {
+        <> node
     });
 
 genericBind(

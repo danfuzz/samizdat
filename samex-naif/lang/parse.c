@@ -174,22 +174,33 @@ static zvalue makeLiteral(zvalue value) {
 
 /* Documented in spec. */
 static zvalue makeThunk(zvalue expression) {
-    zvalue value = mapFrom3(
-        STR_formals, EMPTY_LIST,
-        STR_statements, EMPTY_LIST,
-        STR_yield, expression);
-    return makeTransValue(STR_closure, value);
+    return makeTransValue(STR_closure,
+        mapFrom3(
+            STR_formals, EMPTY_LIST,
+            STR_statements, EMPTY_LIST,
+            STR_yield, expression));
+}
+
+/* Documented in spec. */
+static zvalue makeVarBind(zvalue name, zvalue value) {
+    return makeTransValue(STR_varBind,
+        mapFrom2(STR_name, name, STR_value, value));
+}
+
+/* Documented in spec. */
+static zvalue makeVarDeclare(zvalue name) {
+    return makeTransValue(STR_varDeclare, mapFrom1(STR_name, name));
 }
 
 /* Documented in spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
-    zvalue payload = mapFrom2(STR_name, name, STR_value, value);
-    return makeTransValue(STR_varDef, payload);
+    return makeTransValue(STR_varDef,
+        mapFrom2(STR_name, name, STR_value, value));
 }
 
 /* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
-    return makeTransValue(STR_varRef, name);
+    return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
 }
 
 /* Documented in spec. */
@@ -338,10 +349,23 @@ DEF_PARSE(optSemicolons) {
  */
 
 /* Documented in spec. */
-DEF_PARSE(expression);
+DEF_PARSE(assignExpression);
+DEF_PARSE(fnExpression);
+DEF_PARSE(opExpression);
 DEF_PARSE(programBody);
-DEF_PARSE(term);
 DEF_PARSE(unaryExpression);
+
+/* Documented in spec. */
+DEF_PARSE(expression) {
+    zstackPointer save = datFrameStart();
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(assignExpression); }
+    if (result == NULL) { result = PARSE(fnExpression); }
+
+    datFrameReturn(save, result);
+    return result;
+}
 
 /* Documented in spec. */
 DEF_PARSE(parenExpression) {
@@ -378,12 +402,15 @@ DEF_PARSE(varDef) {
     MARK();
 
     MATCH_OR_REJECT(def);
-    zvalue identifier = PARSE_OR_REJECT(identifier);
-    MATCH_OR_REJECT(CH_EQUAL);
+    zvalue name = PARSE_OR_REJECT(identifier);
+
+    if (!MATCH(CH_EQUAL)) {
+        return makeVarDeclare(dataOf(name));
+    }
+
     zvalue expression = PARSE_OR_REJECT(expression);
 
-    zvalue name = dataOf(identifier);
-    return makeVarDef(name, expression);
+    return makeVarDef(dataOf(name), expression);
 }
 
 /* Documented in spec. */
@@ -565,37 +592,41 @@ DEF_PARSE(fnCommon) {
     zvalue codeMap = dataOf(code);
     zvalue statements =
         GFN_CALL(cat, returnDef, collGet(codeMap, STR_statements));
-
-    return GFN_CALL(cat,
+    zvalue closureMap = GFN_CALL(cat,
         codeMap,
         name,
         mapFrom3(
             STR_formals,    formals,
             STR_yieldDef,   STR_return,
             STR_statements, statements));
+
+    return makeTransValue(STR_closure, closureMap);
 }
 
 /* Documented in spec. */
 DEF_PARSE(fnDef) {
     MARK();
 
-    zvalue funcMap = PARSE_OR_REJECT(fnCommon);
+    zvalue closure = PARSE_OR_REJECT(fnCommon);
+    zvalue name = collGet(dataOf(closure), STR_name);
 
-    if (collGet(funcMap, STR_name) == NULL) {
+    if (name == NULL) {
         return NULL;
     }
 
-    return makeTransValue(STR_fnDef, funcMap);
+    return makeTransValue(STR_topDeclaration,
+        mapFrom2(
+            STR_top,  makeVarDeclare(name),
+            STR_main, makeVarBind(name, closure)));
 }
 
 /* Documented in spec. */
 DEF_PARSE(fnExpression) {
     MARK();
 
-    zvalue funcMap = PARSE_OR_REJECT(fnCommon);
-    zvalue closure = makeTransValue(STR_closure, funcMap);
+    zvalue closure = PARSE_OR_REJECT(fnCommon);
+    zvalue name = collGet(dataOf(closure), STR_name);
 
-    zvalue name = collGet(funcMap, STR_name);
     if (name == NULL) {
         return closure;
     }
@@ -604,8 +635,8 @@ DEF_PARSE(fnExpression) {
         STR_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
-            STR_statements, listFrom1(makeTransValue(STR_fnDef, funcMap)),
-            STR_yield,      makeVarRef(name)));
+            STR_statements, listFrom1(makeVarDeclare(name)),
+            STR_yield,      makeVarBind(name, closure)));
 
     return makeCall(mainClosure, NULL);
 }
@@ -705,7 +736,7 @@ DEF_PARSE(mapping) {
             return data;
         } else if (valEq(type, STR_varRef)) {
             return makeCallName(STR_makeValueMap,
-                listFrom2(makeLiteral(data), value));
+                listFrom2(makeLiteral(collGet(data, STR_name)), value));
         }
 
         REJECT();
@@ -879,15 +910,28 @@ DEF_PARSE(unaryExpression) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(expression) {
-    zstackPointer save = datFrameStart();
-    zvalue result = NULL;
+DEF_PARSE(opExpression) {
+    return PARSE(unaryExpression);
+}
 
-    if (result == NULL) { result = PARSE(unaryExpression); }
-    if (result == NULL) { result = PARSE(fnExpression); }
+/* Documented in spec. */
+DEF_PARSE(assignExpression) {
+    MARK();
 
-    datFrameReturn(save, result);
-    return result;
+    zvalue base = PARSE_OR_REJECT(opExpression);
+
+    if (!(hasType(base, STR_varRef) && MATCH(CH_COLONEQUAL))) {
+        return base;
+    }
+
+    // This code isn't parallel to the in-language code but has the
+    // same effect, given that the only valid lvalues are variable references.
+    // In this case, we ensured (above) that we've got a `varRef` and
+    // recombine it here into a `varBind`.
+    zvalue ex = PARSE_OR_REJECT(expression);
+    zvalue name = collGet(dataOf(base), STR_name);
+
+    return makeVarBind(name, ex);
 }
 
 /* Documented in spec. */
@@ -953,7 +997,7 @@ DEF_PARSE(nonlocalExit) {
 
 /* Documented in spec. */
 DEF_PARSE(programBody) {
-    zvalue statements = EMPTY_LIST;
+    zvalue rawStatements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
     PARSE(optSemicolons);
@@ -972,7 +1016,7 @@ DEF_PARSE(programBody) {
         }
 
         PARSE(optSemicolons);
-        statements = listAppend(statements, statement);
+        rawStatements = listAppend(rawStatements, statement);
     }
 
     zvalue statement = PARSE(statement);
@@ -982,12 +1026,29 @@ DEF_PARSE(programBody) {
     }
 
     if (statement != NULL) {
-        statements = listAppend(statements, statement);
+        rawStatements = listAppend(rawStatements, statement);
     } else {
         yield = PARSE(yield);
     }
 
     PARSE(optSemicolons);
+
+    zvalue tops = EMPTY_LIST;
+    zvalue mains = EMPTY_LIST;
+    zint size = collSize(rawStatements);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = seqNth(rawStatements, i);
+        if (hasType(one, STR_topDeclaration)) {
+            zvalue data = dataOf(one);
+            tops = listAppend(tops, collGet(data, STR_top));
+            mains = listAppend(mains, collGet(data, STR_main));
+        } else {
+            mains = listAppend(mains, one);
+        }
+    }
+
+    zvalue statements = GFN_CALL(cat, tops, mains);
 
     return mapFrom2(STR_statements, statements, STR_yield, yield);
 }

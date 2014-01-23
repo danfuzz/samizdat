@@ -175,6 +175,12 @@ fn PegSequence_parse(peg, box, input, items*) {
 genericBind(parse, "PegSequence", PegSequence_parse);
 
 ## Documented in spec.
+fn PegThunk_parse(peg, box, input, items*) {
+    <> parse(&(dataOf(peg)(items*)), box, input, items*)
+};
+genericBind(parse, "PegThunk", PegThunk_parse);
+
+## Documented in spec.
 fn PegTokenSet_parse(peg, box, input, items*) {
     def set = dataOf(peg);
     def innerBox = Box::makePromise();
@@ -333,6 +339,11 @@ fn makeStar(rule) {
 };
 
 ## Documented in spec.
+fn makeThunk(function) {
+    <> @PegThunk(function)
+};
+
+## Documented in spec.
 fn makeString(string) {
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { <> eq(string, "") }
@@ -419,6 +430,7 @@ fn stringFromTokenList(tokens) {
     makeSequence,
     makeStar,
     makeString,
+    makeThunk,
     makeToken,
     makeTokenSet,
     makeTokenSetComplement,

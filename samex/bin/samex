@@ -54,13 +54,16 @@ timeRun='no'
 # Whether to profile the run.
 profileRun='no'
 
+# File suffix to use.
+suffix=''
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--runtime=<name>]"
+        echo "${progName} [--runtime=<name>] [--suffix=<suffix>]"
         echo '    [--build] [--optimize] [--time | --profile]'
         exit
     elif [[ ${opt} == '--build' ]]; then
@@ -73,6 +76,8 @@ while [[ $1 != '' ]]; do
         timeRun='no'
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
         runtimeName="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--suffix=(.*) ]]; then
+        suffix="${BASH_REMATCH[1]}"
     elif [[ ${opt} == '--time' ]]; then
         timeRun='yes'
         profileRun='no'
@@ -120,12 +125,17 @@ if [[ ${runtimeName} != '' ]]; then
     runtimeOpt=(--runtime="${runtimeName}")
 fi
 
+suffixOpt=()
+if [[ ${suffix} != '' ]]; then
+    suffixOpt=(--suffix="${suffix}")
+fi
+
 name="$("${baseDir}/helper/find-samex" "${runtimeOpt[@]}" --bin)"
 if [[ $? != 0 ]]; then
     exit 1
 fi
 
-cmd=("${name}" "$@")
+cmd=("${name}" "${suffixOpt[@]}" "$@")
 
 if [[ ${timeRun} == 'yes' ]]; then
     time -p "${cmd[@]}"

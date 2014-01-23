@@ -55,9 +55,10 @@ def tokWhitespace = Peg::makeMainSequence(
 
 ## Documented in spec.
 def tokPunctuation = Peg::makeMainSequence(
-    Peg::makeLookaheadSuccess(Peg::makeCharSet("&@:.,=-+?;*<>{}()[]", "/|!")),
+    Peg::makeLookaheadSuccess(Peg::makeCharSet("&@:.,=-+?;*<>{}()[]", "/|!%")),
     Peg::makeChoice(
         Peg::makeString("->"),
+        Peg::makeString(":="),
         Peg::makeString("::"),
         Peg::makeString(".."),
         Peg::makeString("<>"),

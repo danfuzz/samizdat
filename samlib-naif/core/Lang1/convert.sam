@@ -20,10 +20,10 @@ def convertPex = makeRegularGeneric("convertPex", 2, 2);
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
 ## Reference to the variable `get`.
-def GET_REF = @varRef("get");
+def GET_REF = @varRef{name: "get"};
 
 ## Reference to the variable `Peg`.
-def PEG_REF = @varRef("Peg");
+def PEG_REF = @varRef{name: "Peg"};
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
@@ -115,7 +115,7 @@ genericBind(convertPex, "token", token_convertPex);
 fn varRef_convertPex(node, formals) {
     ## `varRef` in the context of a pex just translates to the same `varRef`
     ## in the context of an expression / statement.
-    <> node
+    <> convertPexIn(node)
 };
 genericBind(convertPex, "varRef", varRef_convertPex);
 
@@ -155,6 +155,22 @@ fn code_convertPex(node, formals) {
 };
 genericBind(convertPex, "code", code_convertPex);
 
+## Converts a `thunk` pex node.
+fn thunk_convertPex(node, formals) {
+    ## Use the lexical `formals` context to make a regular closure node,
+    ## and just convert that.
+
+    def closure = @closure{
+        formals,
+        statements: [],
+        yield: dataOf(node)
+    };
+    def convertedClosure = convertPexIn(closure);
+
+    <> callPegNameWithExpressions("makeThunk", convertedClosure)
+};
+genericBind(convertPex, "thunk", thunk_convertPex);
+
 ## Converts a `lookaheadSuccess` pex node.
 fn lookaheadSuccess_convertPex(node, formals) {
     <> callPegNameWithPex(node, formals, "makeLookaheadSuccess")
@@ -190,7 +206,7 @@ genericBind(convertPex, "plus", plus_convertPex);
 ## `convertPexIn` bindings
 ##
 
-## Does parser conversion of a `closure` or `fnDef` node.
+## Does parser conversion of a `closure` node.
 fn convertClosureLike(node) {
     def nodeType = typeOf(node);
     def nodeValue = dataOf(node);
@@ -224,7 +240,13 @@ genericBind(convertPexIn, "call", call_convertPexIn);
 
 ## Does parser conversion of a `closure` node.
 fn closure_convertPexIn(node) {
-    <> convertClosureLike(node)
+    def nodeValue = dataOf(node);
+    def statements = convertPexInList(nodeValue::statements);
+    def yield = ifValue { <> nodeValue::yield }
+        { yield <> {yield: convertPexIn(yield)} }
+        { <> {} };
+
+    <> @closure{nodeValue*, yield*, statements}
 };
 genericBind(convertPexIn, "closure", closure_convertPexIn);
 
@@ -233,12 +255,6 @@ fn expression_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
 genericBind(convertPexIn, "expression", expression_convertPexIn);
-
-## Does parser conversion of a `fnDef` node.
-fn fnDef_convertPexIn(node) {
-    <> convertClosureLike(node)
-};
-genericBind(convertPexIn, "fnDef", fnDef_convertPexIn);
 
 ## Does parser conversion of an `interpolate` node.
 fn interpolate_convertPexIn(node) {
@@ -259,6 +275,21 @@ fn parser_convertPexIn(node) {
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 
+## Does parser conversion of a `varBind` node.
+fn varBind_convertPexIn(node) {
+    def nodeValue = dataOf(node);
+    def value = convertPexIn(nodeValue::value);
+
+    <> @varBind{nodeValue*, value}
+};
+genericBind(convertPexIn, "varBind", varBind_convertPexIn);
+
+## Does parser conversion of a `varDeclare` node.
+fn varDeclare_convertPexIn(node) {
+    <> node
+};
+genericBind(convertPexIn, "varDeclare", varDeclare_convertPexIn);
+
 ## Does parser conversion of a `varDef` node.
 fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
@@ -270,7 +301,8 @@ genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
-    <> node
+    ## Strip the `lvalue` out of the node, but otherwise leave it alone.
+    <> @varRef(Collection::del(dataOf(node), "lvalue"))
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 

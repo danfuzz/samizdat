@@ -97,7 +97,6 @@ will be returned, or one of:
   * [core::CommandLine](CommandLine.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
-  * [core::FunctionForwarder](FunctionForwarder.md)
   * [core::Generator](Generator.md)
   * [core::Globals / core::Globals0](Globals.md)
   * [core::Io0](Io0.md)
@@ -105,7 +104,6 @@ will be returned, or one of:
   * [core::Lang*](LangN.md)
   * [core::Module](Module.md)
   * [core::Module0](Module0.md)
-  * [core::ParseForwarder](ParseForwarder.md)
   * [core::Peg (parsing)](Peg.md)
   * [core::Range](Range.md)
 

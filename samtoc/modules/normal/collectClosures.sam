@@ -60,16 +60,6 @@ genericBind(
 
 genericBind(
     bodies,
-    "fnDef",
-    fn fnDef_bodies(node, bodiesBox) {
-        <> @fnDef{
-            name: node.name,
-            value: bodies(@closure(dataOf(node)), bodiesBox)
-        }
-    });
-
-genericBind(
-    bodies,
     "interpolate",
     fn interpolate_bodies(node, bodiesBox) {
         <> @interpolate(bodies(node.expression, bodiesBox))
@@ -79,6 +69,23 @@ genericBind(
     bodies,
     "literalRef",
     fn literalRef_bodies(node, bodiesBox) {
+        <> node
+    });
+
+genericBind(
+    bodies,
+    "varBind",
+    fn varBind_bodies(node, bodiesBox) {
+        <> @varBind{
+            name: node.name,
+            value: bodies(node.value, bodiesBox)
+        }
+    });
+
+genericBind(
+    bodies,
+    "varDeclare",
+    fn varDef_bodies(node, bodiesBox) {
         <> node
     });
 
@@ -108,9 +115,8 @@ genericBind(
 
 ## Collects all closure nodes at or under the given one into a list.
 ## Returns `{closures, node}`, where `closures` is a list of collected
-## closures (includes ones derived from `fnDef` nodes) and `node` is a
-## replacement for the original argument, in which `closure` and `fnDef`
-## nodes have been replaced by indexed closure references.
+## closures and `node` is a replacement for the original argument, in which
+## `closure` nodes have been replaced by indexed closure references.
 fn collectClosures(node) {
     def bodiesBox = Box::makeCell({});
     def newNode = bodies(node, bodiesBox);

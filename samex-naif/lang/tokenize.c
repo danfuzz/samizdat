@@ -239,11 +239,22 @@ static zvalue tokenizeOneOrTwoChars(ParseState *state, zint ch2,
     if (peek(state) == ch2) {
         read(state);
         return token2;
-    } else if (token1 != NULL) {
+    } else {
         return token1;
     }
+}
 
-    die("Invalid partial \"%c%c\" token.", (char) ch1, (char) ch2);
+/**
+ * Tokenizes `:`, `::`, or `:=`.
+ */
+static zvalue tokenizeColon(ParseState *state) {
+    read(state); // Skip the `:`
+
+    switch (peek(state)) {
+        case ':': read(state); return TOK_CH_COLONCOLON;
+        case '=': read(state); return TOK_CH_COLONEQUAL;
+        default:               return TOK_CH_COLON;
+    }
 }
 
 /**
@@ -268,16 +279,12 @@ static zvalue tokenizeOne(ParseState *state) {
         case '+':  read(state); return TOK_CH_PLUS;
         case ';':  read(state); return TOK_CH_SEMICOLON;
         case '*':  read(state); return TOK_CH_STAR;
-        case '\"':
-            return tokenizeString(state);
-        case '\\':
-            return tokenizeQuotedIdentifier(state);
+        case '\"': return tokenizeString(state);
+        case '\\': return tokenizeQuotedIdentifier(state);
+        case ':':  return tokenizeColon(state);
         case '-':
             return tokenizeOneOrTwoChars(state, '>',
                                          TOK_CH_MINUS, TOK_CH_RARROW);
-        case ':':
-            return tokenizeOneOrTwoChars(state, ':',
-                                         TOK_CH_COLON, TOK_CH_COLONCOLON);
         case '.':
             return tokenizeOneOrTwoChars(state, '.',
                                          TOK_CH_DOT, TOK_CH_DOTDOT);
