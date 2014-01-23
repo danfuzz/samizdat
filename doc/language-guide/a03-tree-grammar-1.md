@@ -26,13 +26,13 @@ def LOWER_ALPHA = {
 };
 
 ## Returns an `interpolate` node.
-fn makeInterpolate(expression) {
-    <> @interpolate(expression)
+fn makeInterpolate(value) {
+    <> @interpolate{value}
 };
 
 ## Returns a `literal` node.
 fn makeLiteral(value) {
-    <> @literal(value)
+    <> @literal{value}
 };
 
 ## Returns a node representing a thunk (no-arg function) that returns the
@@ -148,7 +148,7 @@ def parParenExpression = {/
 
     @")"
 
-    { <> @expression(ex) }
+    { <> @expression{value: ex} }
 /};
 
 ## Parses an identifier. **Note:** This is nontrivial in layer 2.
@@ -468,7 +468,7 @@ def parMapping = {/
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCallName("makeValueMap", keys*, @expression(value))
+                <> makeCallName("makeValueMap", keys*, @expression{value})
             }
     }
 /};
@@ -508,7 +508,7 @@ def parListItem = {/
 |
     @"&"
     ex = %parUnaryExpression
-    { <> @voidable(ex) }
+    { <> @voidable{value: ex} }
 |
     parExpression
 /};
@@ -797,7 +797,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @token(dataOf(type)) }
+    { <> @token(dataOf(type)::value) }
 /};
 
 ## Parses a string or character range parsing expression, used when defining

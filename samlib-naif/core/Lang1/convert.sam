@@ -37,7 +37,7 @@ fn makeCall(function, args*) {
 
 ## Makes a peg variable reference.
 fn makePegRef(name) {
-    <> makeCall(GET_REF, PEG_REF, @literal(name))
+    <> makeCall(GET_REF, PEG_REF, @literal{value: name})
 };
 
 ## Constructs a named peg function call with the given arguments, each of
@@ -54,7 +54,8 @@ fn callPegNameWithPex(node, formals, functionName) {
 
 ## Constructs a named peg function call of the given literal arguments.
 fn callPegNameWithLiterals(functionName, args*) {
-    def literalArgs = Generator::filterAll(args) { arg <> @literal(arg) };
+    def literalArgs = Generator::filterAll(args)
+        { arg <> @literal{value: arg} };
     <> callPegNameWithExpressions(functionName, literalArgs*)
 };
 
@@ -218,14 +219,14 @@ fn convertClosureLike(node) {
     <> @(nodeType){nodeValue*, yield*, statements}
 };
 
-## Does parser conversion of a node whose payload value is an
-## arbitrary expression. This includes `expression` (per se) and
-## `interpolate` nodes.
-fn convertExpressionPayload(node) {
+## Does parser conversion of a node whose payload is a map with
+## a `value` binding to an arbitrary expression.
+fn convertValuePayload(node) {
     def nodeType = typeOf(node);
-    def nodeValue = convertPexIn(dataOf(node));
+    def nodeValue = dataOf(node);
+    def value = convertPexIn(nodeValue::value);
 
-    <> @(nodeType)(nodeValue)
+    <> @(nodeType){nodeValue*, value}
 };
 
 ## Does parser conversion of a `call` node.
@@ -252,13 +253,13 @@ genericBind(convertPexIn, "closure", closure_convertPexIn);
 
 ## Does parser conversion of an `expression` node.
 fn expression_convertPexIn(node) {
-    <> convertExpressionPayload(node)
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "expression", expression_convertPexIn);
 
 ## Does parser conversion of an `interpolate` node.
 fn interpolate_convertPexIn(node) {
-    <> convertExpressionPayload(node)
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "interpolate", interpolate_convertPexIn);
 
@@ -308,7 +309,7 @@ genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
 ## Does parser conversion of a `voidable` node.
 fn voidable_convertPexIn(node) {
-    <> convertExpressionPayload(node)
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "voidable", voidable_convertPexIn);
 

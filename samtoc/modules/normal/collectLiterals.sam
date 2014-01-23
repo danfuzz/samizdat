@@ -7,7 +7,6 @@ def Lang0Node = moduleUse({name: ["Lang0Node"]});
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
 def get actuals    = Lang0Node::get actuals;
-def get expression = Lang0Node::get expression;
 def get formals    = Lang0Node::get formals;
 def get function   = Lang0Node::get function;
 def get name       = Lang0Node::get name;
@@ -46,14 +45,14 @@ genericBind(
     lits,
     "expression",
     fn expression_lits(node, litsBox) {
-        <> @expression(lits(node.expression, litsBox))
+        <> @expression{value: lits(node.value, litsBox)}
     });
 
 genericBind(
     lits,
     "interpolate",
     fn interpolate_lits(node, litsBox) {
-        <> @interpolate(lits(node.expression, litsBox))
+        <> @interpolate{value: lits(node.value, litsBox)}
     });
 
 genericBind(
@@ -110,7 +109,7 @@ genericBind(
     lits,
     "voidable",
     fn voidable_lits(node, litsBox) {
-        <> @voidable(lits(node.expression, litsBox))
+        <> @voidable{value: lits(node.value, litsBox)}
     });
 
 ## Collects all literal nodes at or under the given one into a list.

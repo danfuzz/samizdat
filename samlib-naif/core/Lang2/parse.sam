@@ -33,13 +33,13 @@ def LOWER_ALPHA = {
 };
 
 ## Returns an `interpolate` node.
-fn makeInterpolate(expression) {
-    <> @interpolate(expression)
+fn makeInterpolate(value) {
+    <> @interpolate{value}
 };
 
 ## Returns a `literal` node.
 fn makeLiteral(value) {
-    <> @literal(value)
+    <> @literal{value}
 };
 
 ## Returns a node representing a thunk (no-arg function) that returns the
@@ -167,7 +167,7 @@ def parParenExpression = {/
 
     @")"
 
-    { <> @expression(ex) }
+    { <> @expression{value: ex} }
 /};
 
 ## Parses an identifier. **Note:** This is nontrivial in layer 2.
@@ -476,7 +476,7 @@ def parMapping = {/
                 def type = typeOf(value);
                 def data = dataOf(value);
                 ifIs { <> eq(type, "interpolate") }
-                    { <out> data };
+                    { <out> data::value };
                 ifIs { <> eq(type, "varRef") }
                     {
                         <out> makeCallName("makeValueMap",
@@ -487,7 +487,7 @@ def parMapping = {/
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCallName("makeValueMap", keys*, @expression(value))
+                <> makeCallName("makeValueMap", keys*, @expression{value})
             }
     }
 /};
@@ -527,7 +527,7 @@ def parListItem = {/
 |
     @"&"
     ex = %parUnaryExpression
-    { <> @voidable(ex) }
+    { <> @voidable{value: ex} }
 |
     parExpression
 /};
@@ -808,7 +808,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @token(dataOf(type)) }
+    { <> @token(dataOf(type)::value) }
 /};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -1070,14 +1070,14 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
         def call = makeCall(resolvedOp, result, ex);
 
         <> ifIs { <> eq(voidable, true) }
-            { <> @voidable(call) }
+            { <> @voidable{value: call} }
             { <> call }
     };
 
     ## For an inner-voidable expression, unwrap the outermost layer of
     ## voidability.
     <> ifIs { <> eq(voidable, true) }
-        { <> dataOf(result) }
+        { <> dataOf(result)::value }
         { <> result }
 };
 
@@ -1510,7 +1510,7 @@ parPostfixOperator2 := {/
         ## `target.name(arg, ...)`
         actuals = parActualsList
         {
-            def funcRef = makeVarRef(dataOf(name));
+            def funcRef = makeVarRef(dataOf(name)::value);
             <> { node <> makeCall(funcRef, node, actuals*) }
         }
     |
@@ -1518,13 +1518,13 @@ parPostfixOperator2 := {/
         @":="
         expr = parExpression
         {
-            def setterRef = makeVarRef(cat("set-", dataOf(name)));
+            def setterRef = makeVarRef(cat("set-", dataOf(name)::value));
             <> { node <> makeCall(setterRef, node, expr) }
         }
     |
         ## `target.name`
         {
-            def getterRef = makeVarRef(cat("get-", dataOf(name)));
+            def getterRef = makeVarRef(cat("get-", dataOf(name)::value));
             <> { node <> makeCall(getterRef, node) }
         }
     )
@@ -2240,7 +2240,7 @@ def parSwitchExpression = {/
                     ifValue { <> optDefault* }
                         { value <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },
-                    @voidable(@expression(test))));
+                    @voidable{value: @expression{value: test}}));
 
         def ifCall = makeCallName("ifValue",
             testBody,

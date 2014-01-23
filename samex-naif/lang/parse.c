@@ -163,13 +163,13 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 }
 
 /* Documented in spec. */
-static zvalue makeInterpolate(zvalue expression) {
-    return makeTransValue(STR_interpolate, expression);
+static zvalue makeInterpolate(zvalue value) {
+    return makeTransValue(STR_interpolate, mapFrom1(STR_value, value));
 }
 
 /* Documented in spec. */
 static zvalue makeLiteral(zvalue value) {
-    return makeTransValue(STR_literal, value);
+    return makeTransValue(STR_literal, mapFrom1(STR_value, value));
 }
 
 /* Documented in spec. */
@@ -380,7 +380,7 @@ DEF_PARSE(parenExpression) {
 
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return makeTransValue(STR_expression, expression);
+    return makeTransValue(STR_expression, mapFrom1(STR_value, expression));
 }
 
 /* Documented in spec. */
@@ -733,7 +733,7 @@ DEF_PARSE(mapping) {
         zvalue data = dataOf(value);
 
         if (valEq(type, STR_interpolate)) {
-            return data;
+            return collGet(data, STR_value);
         } else if (valEq(type, STR_varRef)) {
             return makeCallName(STR_makeValueMap,
                 listFrom2(makeLiteral(collGet(data, STR_name)), value));
@@ -747,7 +747,8 @@ DEF_PARSE(mapping) {
     // being applied to `makeValueMap`.
 
     return makeCallName(STR_makeValueMap,
-        listAppend(keys, makeTransValue(STR_expression, value)));
+        listAppend(keys,
+            makeTransValue(STR_expression, mapFrom1(STR_value, value))));
 }
 
 /* Documented in spec. */
@@ -781,7 +782,7 @@ DEF_PARSE(listItem) {
     if (MATCH(CH_AND)) {
         zvalue ex = PARSE(unaryExpression);
         if (ex != NULL) {
-            return makeTransValue(STR_voidable, ex);
+            return makeTransValue(STR_voidable, mapFrom1(STR_value, ex));
         }
     }
 

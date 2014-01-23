@@ -103,9 +103,9 @@ along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
 facility is an implementation of downward-passed / upward-called
 continuations.
 
-#### `expression` &mdash; `@expression(expression)`
+#### `expression` &mdash; `@expression{value: expression}`
 
-* `expression` &mdash; Arbitrary expression node.
+* `value` &mdash; Arbitrary expression node.
 
 A node with type `expression` per se is merely a pass-through to its
 enclosed expression. In terms of surface syntax, `expression` nodes
@@ -120,9 +120,9 @@ of `bar`'s (zero or more) elements as arguments, whereas `foo((bar*))`
 is a single-argument call to `foo`, asserting that `bar` is indeed a
 single-element list.
 
-#### `interpolate` &mdash; `@interpolate(expression)`
+#### `interpolate` &mdash; `@interpolate{value: expression}`
 
-* `expression` &mdash; Expression node, which must yield a list when
+* `value` &mdash; Expression node, which must yield a list when
   evaluated.
 
 This represents the interpolation of a list, either as an expression per
@@ -142,7 +142,7 @@ It is an error (terminating the runtime) either if `expression` evaluates to
 something other than a list, or it evaluates to a list of size greater than
 one when being used as anything but a function call argument.
 
-#### `literal` &mdash; `@literal(value)`
+#### `literal` &mdash; `@literal{value: value}`
 
 * `value` (required) &mdash; Arbitrary data value.
 
@@ -253,9 +253,9 @@ then evaluation fails (terminating the runtime). Otherwise, the evaluated
 value is bound in the current (topmost) execution context to the
 indicated `name`.
 
-#### `voidable` &mdash; `@voidable(expression)`
+#### `voidable` &mdash; `@voidable{value: expression}`
 
-* `expression` &mdash; Expression node.
+* `value` &mdash; Expression node.
 
 This represents a "voidable" expression as part of an actuals list to a
 `call` node. `voidable` nodes are not valid anywhere else.

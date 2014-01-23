@@ -32,13 +32,13 @@ def LOWER_ALPHA = {
 };
 
 ## Returns an `interpolate` node.
-fn makeInterpolate(expression) {
-    <> @interpolate(expression)
+fn makeInterpolate(value) {
+    <> @interpolate{value}
 };
 
 ## Returns a `literal` node.
 fn makeLiteral(value) {
-    <> @literal(value)
+    <> @literal{value}
 };
 
 ## Returns a node representing a thunk (no-arg function) that returns the
@@ -144,7 +144,7 @@ def parParenExpression = Peg::makeMainSequence(
                 Io1::die("Comma not allowed within parenthesized expression.")
             })),
     Peg::makeToken(")"),
-    Peg::makeCode { ., ex, ., . <> @expression(ex) });
+    Peg::makeCode { ., ex, ., . <> @expression{value: ex} });
 
 ## Documented in spec.
 def parIdentifier = Peg::makeMainSequence(
@@ -362,7 +362,7 @@ def parMapping = Peg::makeMainSequence(
                 def type = typeOf(value);
                 def data = dataOf(value);
                 ifIs { <> eq(type, "interpolate") }
-                    { <out> data };
+                    { <out> data::value };
                 ifIs { <> eq(type, "varRef") }
                     {
                         <out> makeCallName("makeValueMap",
@@ -373,7 +373,7 @@ def parMapping = Peg::makeMainSequence(
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCallName("makeValueMap", keys*, @expression(value))
+                <> makeCallName("makeValueMap", keys*, @expression{value})
             }
     });
 
@@ -405,7 +405,7 @@ def parListItem = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("&"),
         Peg::makeThunk { . <> parUnaryExpression },
-        Peg::makeCode { ., ex <> @voidable(ex) }),
+        Peg::makeCode { ., ex <> @voidable{value: ex} }),
     parExpression);
 
 ## Documented in spec.
@@ -624,7 +624,7 @@ def parParserString = Peg::makeMainSequence(
 def parParserToken = Peg::makeMainSequence(
     Peg::makeToken("@"),
     parIdentifierString,
-    Peg::makeCode { ., type <> @token(dataOf(type)) });
+    Peg::makeCode { ., type <> @token(dataOf(type)::value) });
 
 ## Documented in spec.
 def parParserSetString = Peg::makeMainSequence(
