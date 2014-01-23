@@ -153,6 +153,11 @@ difference between these two forms, except that the statement form
 binds the function to a variable outside the context of the execution
 of the function itself.
 
+When used as a statement, the function's name is in effect declared at
+the top of the block it appears in, though the name only becomes *bound*
+when the statement is encountered. This arrangement is done to make
+common patterns of self- and mututal-recursion convenient.
+
 Functions definitions are introduced with the `fn` keyword. The keyword
 is followed by declarations, and then followed by the main code body,
 inside curly braces.
