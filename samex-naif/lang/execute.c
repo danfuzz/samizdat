@@ -200,7 +200,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_closure:     return execClosure(frame, e);
         case EVAL_expression:  return execExpressionVoidOk(frame, dataOf(e));
         case EVAL_interpolate: return execInterpolate(frame, e);
-        case EVAL_literal:     return dataOf(e);
+        case EVAL_literal:     return collGet(dataOf(e), STR_value);
         case EVAL_varBind:     return execVarBind(frame, e);
         case EVAL_varRef:      return execVarRef(frame, e);
         default: {

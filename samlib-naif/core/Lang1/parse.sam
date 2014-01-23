@@ -38,7 +38,7 @@ fn makeInterpolate(expression) {
 
 ## Returns a `literal` node.
 fn makeLiteral(value) {
-    <> @literal(value)
+    <> @literal{value}
 };
 
 ## Returns a node representing a thunk (no-arg function) that returns the
@@ -624,7 +624,7 @@ def parParserString = Peg::makeMainSequence(
 def parParserToken = Peg::makeMainSequence(
     Peg::makeToken("@"),
     parIdentifierString,
-    Peg::makeCode { ., type <> @token(dataOf(type)) });
+    Peg::makeCode { ., type <> @token(dataOf(type)::value) });
 
 ## Documented in spec.
 def parParserSetString = Peg::makeMainSequence(

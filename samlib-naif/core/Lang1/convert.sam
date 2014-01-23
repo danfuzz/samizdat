@@ -37,7 +37,7 @@ fn makeCall(function, args*) {
 
 ## Makes a peg variable reference.
 fn makePegRef(name) {
-    <> makeCall(GET_REF, PEG_REF, @literal(name))
+    <> makeCall(GET_REF, PEG_REF, @literal{value: name})
 };
 
 ## Constructs a named peg function call with the given arguments, each of
@@ -54,7 +54,8 @@ fn callPegNameWithPex(node, formals, functionName) {
 
 ## Constructs a named peg function call of the given literal arguments.
 fn callPegNameWithLiterals(functionName, args*) {
-    def literalArgs = Generator::filterAll(args) { arg <> @literal(arg) };
+    def literalArgs = Generator::filterAll(args)
+        { arg <> @literal{value: arg} };
     <> callPegNameWithExpressions(functionName, literalArgs*)
 };
 

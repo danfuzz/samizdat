@@ -169,7 +169,7 @@ static zvalue makeInterpolate(zvalue expression) {
 
 /* Documented in spec. */
 static zvalue makeLiteral(zvalue value) {
-    return makeTransValue(STR_literal, value);
+    return makeTransValue(STR_literal, mapFrom1(STR_value, value));
 }
 
 /* Documented in spec. */

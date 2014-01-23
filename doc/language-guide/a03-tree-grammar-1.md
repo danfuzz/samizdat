@@ -32,7 +32,7 @@ fn makeInterpolate(expression) {
 
 ## Returns a `literal` node.
 fn makeLiteral(value) {
-    <> @literal(value)
+    <> @literal{value}
 };
 
 ## Returns a node representing a thunk (no-arg function) that returns the
@@ -797,7 +797,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @token(dataOf(type)) }
+    { <> @token(dataOf(type)::value) }
 /};
 
 ## Parses a string or character range parsing expression, used when defining
