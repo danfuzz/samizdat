@@ -27,7 +27,7 @@ Version History
 
   * Major changes to punctuation tokens.
 
-  * Implemented module system mechanism, though without barely any syntactic
+  * Implemented module system mechanism, though with barely any syntactic
     support.
 
   * Arranged all core functionality into modules.
