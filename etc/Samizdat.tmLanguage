@@ -247,50 +247,11 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>keyword.control</string>
-					<key>match</key>
-					<string>(?x)
-						\b(
-						break|continue|default|do|else|
-						for|if|return|switch|while
-						)\b
-					</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>keyword.definition</string>
-					<key>match</key>
-					<string>(?x)
-						\b(
-						by|def|export|fn|import|in|module|var
-						)\b
-					</string>
-				</dict>
-				<dict>
-					<key>name</key>
 					<string>constant.language</string>
 					<key>match</key>
 					<string>(?x)
-						\b(true|false|null|nullBox|nullGenerator)\b |
 						\[\] | \{\}
 					</string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>string.unquoted</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:)(?![:=])</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -404,6 +365,69 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
+							<string>string.unquoted</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:)(?![:=])</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>meta.function-call</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>([_a-zA-Z][_a-zA-Z0-9:]*)\b(?= *[\({])</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>variable.definition</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(def|var)  *([_a-zA-Z][_a-zA-Z0-9]*)</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>variable.defintion</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:?=)(?!=)</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
 							<string>variable.parameter</string>
 						</dict>
 						<key>2</key>
@@ -422,12 +446,6 @@
 					<string>\.[_a-zA-Z][_a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
-					<key>name</key>
-					<string>variable.parameter</string>
-					<key>match</key>
-					<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
-				</dict>
-				<dict>
 					<key>captures</key>
 					<dict>
 						<key>0</key>
@@ -438,16 +456,21 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>entity.name.function</string>
+							<string>keyword.definition</string>
 						</dict>
 						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>entity.name.function</string>
+						</dict>
+						<key>3</key>
 						<dict>
 							<key>name</key>
 							<string>variable.parameter</string>
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(?&lt;=fn ) *([_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
+					<string>(fn)  *([_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
 				</dict>
 				<dict>
 					<key>begin</key>
@@ -472,6 +495,47 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>keyword.control</string>
+					<key>match</key>
+					<string>(?x)
+						\b(
+						break|continue|default|do|else|
+						for|if|return|switch|while
+						)\b
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>keyword.definition</string>
+					<key>match</key>
+					<string>(?x)
+						\b(
+						by|def|export|fn|import|in|module|var
+						)\b
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>constant.language</string>
+					<key>match</key>
+					<string>(?x)
+						\b(true|false|null|nullBox|nullGenerator)\b
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>variable.other</string>
+					<key>match</key>
+					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>variable.other</string>
+					<key>match</key>
+					<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>punctuation.definition</string>
 					<key>match</key>
 					<string>\{/?|/?\}|\[|\]|:</string>
@@ -486,35 +550,6 @@
 						:[:=] | \\?[!&lt;&gt;]?==? | &lt;&gt; |
 						\.\.!? | \+ | - | \* | //? | %%? | \? | \#
 					</string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>meta.function-call</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9]*)\b(?= *[\({])</string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>variable.other</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.operator</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:?=)(?!=)</string>
 				</dict>
 			</array>
 		</dict>
