@@ -386,7 +386,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9:]*)\b(?= *[\({])</string>
+					<string>([._a-zA-Z][._a-zA-Z0-9:]*)\b(?= *[\({])</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -411,7 +411,7 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>variable.defintion</string>
+							<string>variable.definition</string>
 						</dict>
 						<key>2</key>
 						<dict>
