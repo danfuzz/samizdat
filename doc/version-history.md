@@ -57,8 +57,8 @@ Version History
 
 * 0.5.0 &mdash; 27-jan-2014 "Scratching the Surface"
 
-  * Milestone: First round of syntax and semantics changes based on the
-    "real world" experience of building `samtoc`.
+  * Milestone: First round of syntax and semantics changes prompted by
+    "real world" experience (in particular, of starting to build `samtoc`).
 
   * Revised syntax for ranges, collection access, and comments.
 
