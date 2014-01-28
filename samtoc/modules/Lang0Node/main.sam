@@ -8,61 +8,61 @@
 
 ## Accessor for `call` nodes.
 
-fn get actuals(node) {
+fn get_actuals(node) {
     <> dataOf(node)::actuals
 };
 
 ## Accessor for `closure` nodes.
 
-fn get formals(node) {
+fn get_formals(node) {
     <> dataOf(node)::formals
 };
 
 ## Accessor for `call` nodes.
 
-fn get function(node) {
+fn get_function(node) {
     <> dataOf(node)::function
 };
 
 ## Accessor for `closure`, `varBind`, `varDeclare`, `varDef`, and `varRef`
 ## nodes.
 
-fn get name(node) {
+fn get_name(node) {
     <> dataOf(node)::name
 };
 
 ## Accessor for `closure` nodes.
 
-fn get statements(node) {
+fn get_statements(node) {
     <> dataOf(node)::statements
 };
 
 ## Accessor for `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
 ## and `voidable` nodes.
 
-fn get value(node) {
+fn get_value(node) {
     <> dataOf(node)::value
 };
 
 ## Accessor for `closure` nodes.
 
-fn get yield(node) {
+fn get_yield(node) {
     <> dataOf(node)::yield
 };
 
 ## Accessor for `closure` nodes.
 
-fn get yieldDef(node) {
+fn get_yieldDef(node) {
     <> dataOf(node)::yieldDef
 };
 
 <> {
-    get actuals:    get actuals,
-    get formals:    get formals,
-    get function:   get function,
-    get name:       get name,
-    get statements: get statements,
-    get value:      get value,
-    get yield:      get yield,
-    get yieldDef:   get yieldDef
+    get_actuals:    get_actuals,
+    get_formals:    get_formals,
+    get_function:   get_function,
+    get_name:       get_name,
+    get_statements: get_statements,
+    get_value:      get_value,
+    get_yield:      get_yield,
+    get_yieldDef:   get_yieldDef
 }

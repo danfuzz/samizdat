@@ -384,15 +384,10 @@ DEF_PARSE(parenExpression) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(identifier) {
-    return MATCH(identifier);
-}
-
-/* Documented in spec. */
 DEF_PARSE(varRef) {
     MARK();
 
-    zvalue identifier = PARSE_OR_REJECT(identifier);
+    zvalue identifier = MATCH_OR_REJECT(identifier);
 
     return makeVarRef(dataOf(identifier));
 }
@@ -402,7 +397,7 @@ DEF_PARSE(varDef) {
     MARK();
 
     MATCH_OR_REJECT(def);
-    zvalue name = PARSE_OR_REJECT(identifier);
+    zvalue name = MATCH_OR_REJECT(identifier);
 
     if (!MATCH(CH_EQUAL)) {
         return makeVarDeclare(dataOf(name));
@@ -418,7 +413,7 @@ DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
-    zvalue identifier = PARSE_OR_REJECT(identifier);
+    zvalue identifier = MATCH_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_GT);
 
     return dataOf(identifier);
@@ -452,7 +447,7 @@ DEF_PARSE(formal1) {
 DEF_PARSE(formal) {
     MARK();
 
-    zvalue name = PARSE(identifier);
+    zvalue name = MATCH(identifier);
 
     if (name != NULL) {
         name = dataOf(name);
@@ -567,7 +562,7 @@ DEF_PARSE(fnCommon1) {
  * wrapping.
  */
 DEF_PARSE(fnCommon2) {
-    zvalue n = PARSE(identifier);
+    zvalue n = MATCH(identifier);
 
     if (n == NULL) {
         return EMPTY_MAP;
@@ -670,7 +665,7 @@ DEF_PARSE(identifierString) {
     zvalue result = NULL;
 
     if (result == NULL) { result = MATCH(string); }
-    if (result == NULL) { result = PARSE(identifier); }
+    if (result == NULL) { result = MATCH(identifier); }
     if (result == NULL) { result = MATCH(def); }
     if (result == NULL) { result = MATCH(fn); }
     if (result == NULL) { result = MATCH(return); }

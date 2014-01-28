@@ -151,21 +151,16 @@ def parParenExpression = {/
     { <> @expression{value: ex} }
 /};
 
-## Parses an identifier. **Note:** This is nontrivial in layer 2.
-def parIdentifier = {/
-    @identifier
-/};
-
 ## Parses a variable reference.
 def parVarRef = {/
-    name = parIdentifier
+    name = @identifier
     { <> makeVarRef(dataOf(name)) }
 /};
 
 ## Parses a variable definition or declaration.
 def parVarDef = {/
     @def
-    name = parIdentifier
+    name = @identifier
 
     (
         @"="
@@ -179,7 +174,7 @@ def parVarDef = {/
 ## Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
-    name = parIdentifier
+    name = @identifier
     @">"
     { <> dataOf(name) }
 /};
@@ -196,7 +191,7 @@ def parOptYieldDef = {/
 ## Parses a formal argument decalaration.
 def parFormal = {/
     name = (
-        n = parIdentifier
+        n = @identifier
         { <> {name: dataOf(n)} }
     |
         @"." { <> {} }
@@ -318,7 +313,7 @@ def parFnCommon = {/
     )?
 
     name = (
-        n = parIdentifier
+        n = @identifier
         { <> {name: dataOf(n)} }
     |
         { <> {} }
@@ -417,7 +412,7 @@ def parString = {/
 def parIdentifierString = {/
     parString
 |
-    ident = parIdentifier
+    ident = @identifier
     { <> makeLiteral(dataOf(ident)) }
 |
     token = .
@@ -900,7 +895,7 @@ def parLookaheadPex = {/
 ## Parses a name (or not) parsing expression.
 def parNamePex = {/
     (
-        name = parIdentifier
+        name = @identifier
         @"="
         pex = parLookaheadPex
         { <> @varDef{name: dataOf(name), value: pex} }

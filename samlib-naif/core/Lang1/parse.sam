@@ -147,18 +147,14 @@ def parParenExpression = Peg::makeMainSequence(
     Peg::makeCode { ., ex, ., . <> @expression{value: ex} });
 
 ## Documented in spec.
-def parIdentifier = Peg::makeMainSequence(
-    Peg::makeToken("identifier"));
-
-## Documented in spec.
 def parVarRef = Peg::makeMainSequence(
-    parIdentifier,
+    Peg::makeToken("identifier"),
     Peg::makeCode { name <> makeVarRef(dataOf(name)) });
 
 ## Documented in spec.
 def parVarDef = Peg::makeMainSequence(
     Peg::makeToken("def"),
-    parIdentifier,
+    Peg::makeToken("identifier"),
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken("="),
@@ -169,7 +165,7 @@ def parVarDef = Peg::makeMainSequence(
 ## Documented in spec.
 def parYieldDef = Peg::makeMainSequence(
     Peg::makeToken("<"),
-    parIdentifier,
+    Peg::makeToken("identifier"),
     Peg::makeToken(">"),
     Peg::makeCode { ., name, . <> dataOf(name) });
 
@@ -184,7 +180,7 @@ def parOptYieldDef = Peg::makeMainChoice(
 def parFormal = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
-            parIdentifier,
+            Peg::makeToken("identifier"),
             Peg::makeCode { n <> {name: dataOf(n)} }),
         Peg::makeSequence(
             Peg::makeToken("."),
@@ -258,7 +254,7 @@ def parFnCommon = Peg::makeMainSequence(
             Peg::makeCode { ., y <> makeVarDef(y, makeVarRef("return")) })),
     Peg::makeChoice(
         Peg::makeSequence(
-            parIdentifier,
+            Peg::makeToken("identifier"),
             Peg::makeCode { ., ., n <> {name: dataOf(n)} }),
         Peg::makeResult({})),
     Peg::makeToken("("),
@@ -324,7 +320,7 @@ def parString = Peg::makeMainSequence(
 def parIdentifierString = Peg::makeMainChoice(
     parString,
     Peg::makeSequence(
-        parIdentifier,
+        Peg::makeToken("identifier"),
         Peg::makeCode { ident <> makeLiteral(dataOf(ident)) }),
     Peg::makeSequence(
         Peg::any,
@@ -720,7 +716,7 @@ def parLookaheadPex = Peg::makeMainChoice(
 ## Documented in spec.
 def parNamePex = Peg::makeMainChoice(
     Peg::makeSequence(
-        parIdentifier,
+        Peg::makeToken("identifier"),
         Peg::makeToken("="),
         parLookaheadPex,
         Peg::makeCode { name, ., pex ->

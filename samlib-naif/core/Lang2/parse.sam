@@ -119,7 +119,6 @@ fn makeCallNonlocalExit(name, optExpression?) {
 ## layer 0 or 1 rules, used to expand the syntactic possibilities of the
 ## indicated base forms.
 def parExpression2;
-def parIdentifier2;
 def parNonlocalExit2;
 def parPostfixOperator2;
 def parPrefixOperator2;
@@ -170,21 +169,16 @@ def parParenExpression = {/
     { <> @expression{value: ex} }
 /};
 
-## Parses an identifier. **Note:** This is nontrivial in layer 2.
-def parIdentifier = {/
-    %parIdentifier2
-/};
-
 ## Parses a variable reference.
 def parVarRef = {/
-    name = parIdentifier
+    name = @identifier
     { <> makeVarRef(dataOf(name)) }
 /};
 
 ## Parses a variable definition or declaration.
 def parVarDef = {/
     @def
-    name = parIdentifier
+    name = @identifier
 
     (
         @"="
@@ -198,7 +192,7 @@ def parVarDef = {/
 ## Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
-    name = parIdentifier
+    name = @identifier
     @">"
     { <> dataOf(name) }
 /};
@@ -215,7 +209,7 @@ def parOptYieldDef = {/
 ## Parses a formal argument decalaration.
 def parFormal = {/
     name = (
-        n = parIdentifier
+        n = @identifier
         { <> {name: dataOf(n)} }
     |
         @"." { <> {} }
@@ -337,7 +331,7 @@ def parFnCommon = {/
     )?
 
     name = (
-        n = parIdentifier
+        n = @identifier
         { <> {name: dataOf(n)} }
     |
         { <> {} }
@@ -436,7 +430,7 @@ def parString = {/
 def parIdentifierString = {/
     parString
 |
-    ident = parIdentifier
+    ident = @identifier
     { <> makeLiteral(dataOf(ident)) }
 |
     token = .
@@ -911,7 +905,7 @@ def parLookaheadPex = {/
 ## Parses a name (or not) parsing expression.
 def parNamePex = {/
     (
-        name = parIdentifier
+        name = @identifier
         @"="
         pex = parLookaheadPex
         { <> @varDef{name: dataOf(name), value: pex} }
@@ -976,13 +970,6 @@ def YIELD_VOID_THUNK = @closure{formals: [], statements: []};
 
 ## A single-argument yield-void function.
 def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
-
-## Prefix identifiers (identifiers which can be followed by another
-## identifier, yielding a compound identifier "phrase").
-def IDENTIFIER_PREFIXES = {
-    get: "get",
-    set: "set"
-};
 
 ## Reference to `Range::makeOpenRange`.
 def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
@@ -1081,19 +1068,6 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
         { <> result }
 };
 
-## Parses a Layer 2 `identifier`.
-parIdentifier2 := {/
-    ident = @identifier
-
-    (
-        prefix = { <> get(IDENTIFIER_PREFIXES, dataOf(ident)) }
-        suffix = @identifier
-        { <> @identifier(cat(prefix, "-", dataOf(suffix))) }
-    |
-        { <> ident }
-    )
-/};
-
 ## Helper for string interpolation: Parses the two kinds of interpolation,
 ## yielding an appropriate expression node if syntactically valid, including
 ## verification that all input was consumed.
@@ -1173,7 +1147,7 @@ def parInterpolatedString = {/
 ## a formal argument declaration.
 def parGeneratorDef = {/
     formal = (
-        name = parIdentifier
+        name = @identifier
         { <> {name: dataOf(name)} }
     |
         "."
@@ -1495,13 +1469,13 @@ parPostfixOperator2 := {/
     ## ```
     ## target.name
     ## =>
-    ## \"get-name"(target)
+    ## get_name(target)
     ## ```
     ##
     ## ```
     ## target.name := expression
     ## =>
-    ## \"set-name"(target, expression)
+    ## set_name(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -1521,13 +1495,13 @@ parPostfixOperator2 := {/
         ## `target.name` (includes parsing of both getters and setters)
         {
             def suffix = dataOf(name)::value;
-            def getterRef = makeVarRef(cat("get-", suffix));
+            def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
                 <> @(typeOf(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
-                        def setterRef = makeVarRef(cat("set-", suffix));
+                        def setterRef = makeVarRef(cat("set_", suffix));
                         <> makeCall(setterRef, node, expr)
                     }
                 }
@@ -1587,7 +1561,7 @@ def parCompareExpression = {/
 def parTestClause = {/
     formal = (
         @def
-        name = parIdentifier
+        name = @identifier
         @"="
         { <> {name: dataOf(name)} }
     |

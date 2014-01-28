@@ -62,16 +62,16 @@ the function is passed `targetExpr` as its sole argument. As a setter, the
 function is passed `targetExpr` and `expression` (in that order).
 
 Getter and setter functions are constructed from the indicated `identifier`
-by prepending `"get-"` or `"set-"`.
+by prepending `"get_"` or `"set_"`.
 
 For example, the two lines in each pair here are equivalent to each other:
 
 ```
 someCall(onSomething).zorch
-\"get-zorch"(someCall(onSomething))
+get_zorch(someCall(onSomething))
 
 blort.spaz := foo + 10
-\"set-spaz"(blort, foo + 10)
+set_spaz(blort, foo + 10)
 ```
 
 **Note:** The `:=` operator in the setter syntax is the assignment operator,

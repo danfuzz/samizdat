@@ -6,14 +6,14 @@ def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def get actuals    = Lang0Node::get actuals;
-def get formals    = Lang0Node::get formals;
-def get function   = Lang0Node::get function;
-def get name       = Lang0Node::get name;
-def get statements = Lang0Node::get statements;
-def get value      = Lang0Node::get value;
-def get yield      = Lang0Node::get yield;
-def get yieldDef   = Lang0Node::get yieldDef;
+def get_actuals    = Lang0Node::get_actuals;
+def get_formals    = Lang0Node::get_formals;
+def get_function   = Lang0Node::get_function;
+def get_name       = Lang0Node::get_name;
+def get_statements = Lang0Node::get_statements;
+def get_value      = Lang0Node::get_value;
+def get_yield      = Lang0Node::get_yield;
+def get_yieldDef   = Lang0Node::get_yieldDef;
 
 ## `lits(node, litsBox)`, implements one layer of literal collection.
 def lits = makeRegularGeneric("lits", 2, 2);
