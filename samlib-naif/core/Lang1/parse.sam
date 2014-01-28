@@ -601,7 +601,7 @@ parParser := Peg::makeMainSequence(
     Peg::makeToken("{/"),
     Peg::makeThunk { . <> parChoicePex },
     Peg::makeToken("/}"),
-    Peg::makeCode { ., pex, . <> @parser(pex) });
+    Peg::makeCode { ., pex, . <> @parser{value: pex} });
 
 ## Documented in spec.
 def parParenPex = Peg::makeMainSequence(

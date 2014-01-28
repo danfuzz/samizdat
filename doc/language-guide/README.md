@@ -17,8 +17,8 @@ Contents:
 * [Parsing](08-parsing.md)
 * [Modules](09-modules.md)
 * [Actors](10-actors.md)
-* [Execution Parse Trees](11-execution-trees.md)
-* [Parser Parse Trees](12-parser-trees.md)
+* [Execution Trees](11-execution-trees.md)
+* [Parser Trees](12-parser-trees.md)
 
 Appendix:
 

@@ -782,7 +782,7 @@ parParser := {/
     @"{/"
     pex = %parChoicePex
     @"/}"
-    { <> @parser(pex) }
+    { <> @parser{value: pex} }
 /};
 
 ## Parses a parenthesized parsing expression.
@@ -1493,16 +1493,20 @@ parPostfixOperator2 := {/
     ## ```
     ##
     ## ```
+    ## target.name
+    ## =>
+    ## \"get-name"(target)
+    ## ```
+    ##
+    ## ```
     ## target.name := expression
     ## =>
     ## \"set-name"(target, expression)
     ## ```
     ##
-    ## ```
-    ## target.name
-    ## =>
-    ## \"get-name"(target)
-    ## ```
+    ## The setter variant works via an `lvalue` binding added to a parsed
+    ## getter expression.
+    ##
     @"."
     name = parIdentifierString
 
@@ -1514,18 +1518,20 @@ parPostfixOperator2 := {/
             <> { node <> makeCall(funcRef, node, actuals*) }
         }
     |
-        ## `target.name := expression`
-        @":="
-        expr = parExpression
+        ## `target.name` (includes parsing of both getters and setters)
         {
-            def setterRef = makeVarRef(cat("set-", dataOf(name)::value));
-            <> { node <> makeCall(setterRef, node, expr) }
-        }
-    |
-        ## `target.name`
-        {
-            def getterRef = makeVarRef(cat("get-", dataOf(name)::value));
-            <> { node <> makeCall(getterRef, node) }
+            def suffix = dataOf(name)::value;
+            def getterRef = makeVarRef(cat("get-", suffix));
+            <> { node ->
+                def getterCall = makeCall(getterRef, node);
+                <> @(typeOf(getterCall)){
+                    dataOf(getterCall)*,
+                    lvalue: { expr ->
+                        def setterRef = makeVarRef(cat("set-", suffix));
+                        <> makeCall(setterRef, node, expr)
+                    }
+                }
+            }
         }
     )
 /};
