@@ -665,7 +665,7 @@ parAssignExpression := {/
         ex = parExpression
         { <> lvalue(ex) }
     |
-        { <> base }
+        { <> @(typeOf(base))(Collection::del(dataOf(base), "lvalue")) }
     )
 /};
 

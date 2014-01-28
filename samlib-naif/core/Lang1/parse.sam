@@ -495,7 +495,9 @@ parAssignExpression := Peg::makeMainSequence(
             Peg::makeCode { base, . <> dataOf(base)::lvalue },
             parExpression,
             Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
-        Peg::makeCode { base <> base }));
+        Peg::makeCode { base ->
+            <> @(typeOf(base))(Collection::del(dataOf(base), "lvalue"))
+        }));
 
 ## Documented in spec.
 def parStatement = Peg::makeChoice(
