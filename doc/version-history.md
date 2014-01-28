@@ -27,7 +27,7 @@ Version History
 
   * Major changes to punctuation tokens.
 
-  * Implemented module system mechanism, though without barely any syntactic
+  * Implemented module system mechanism, though with barely any syntactic
     support.
 
   * Arranged all core functionality into modules.
@@ -54,3 +54,17 @@ Version History
 * 0.4.1 &mdash; 19-dec-2013
 
   * Docs improvements, and minor cleanup.
+
+* 0.5.0 &mdash; 27-jan-2014 "Scratching the Surface"
+
+  * Milestone: First round of syntax and semantics changes prompted by
+    "real world" experience (in particular, of starting to build `samtoc`).
+
+  * Revised syntax for ranges, collection access, and comments.
+
+  * Revised and simplified execuction tree semantics.
+
+  * New syntax for collection size, parser thunks, and variable definition
+    variants.
+
+  * New semantics for (local) variable binding.
