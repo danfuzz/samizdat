@@ -207,18 +207,6 @@ genericBind(convertPex, "plus", plus_convertPex);
 ## `convertPexIn` bindings
 ##
 
-## Does parser conversion of a `closure` node.
-fn convertClosureLike(node) {
-    def nodeType = typeOf(node);
-    def nodeValue = dataOf(node);
-    def statements = convertPexInList(nodeValue::statements);
-    def yield = ifValue { <> nodeValue::yield }
-        { yield <> {yield: convertPexIn(yield)} }
-        { <> {} };
-
-    <> @(nodeType){nodeValue*, yield*, statements}
-};
-
 ## Does parser conversion of a node whose payload is a map with
 ## a `value` binding to an arbitrary expression.
 fn convertValuePayload(node) {
