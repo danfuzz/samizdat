@@ -5,6 +5,11 @@
 ##
 ## Samizdat Layer 1 Conversion / Simplification
 ##
+## This includes code to strip out `lvalue` bindings in expression nodes,
+## which are only appropriate for use while parsing. It's a bit of a layering
+## violation to remove them here, admittedly, but the unsavory alternative is
+## to do an entire separate tree walk to just do this (at the end of parsing).
+##
 
 
 ##
@@ -57,6 +62,11 @@ fn callPegNameWithLiterals(functionName, args*) {
     def literalArgs = Generator::filterAll(args)
         { arg <> @literal{value: arg} };
     <> callPegNameWithExpressions(functionName, literalArgs*)
+};
+
+## Gets the data payload of a node, minus any binding for `lvalue`.
+fn rvalueDataOf(node) {
+    <> Collection::del(dataOf(node), "lvalue")
 };
 
 
@@ -219,7 +229,7 @@ fn convertValuePayload(node) {
 
 ## Does parser conversion of a `call` node.
 fn call_convertPexIn(node) {
-    def nodeValue = dataOf(node);
+    def nodeValue = rvalueDataOf(node);
     def function = convertPexIn(nodeValue::function);
     def actuals = convertPexInList(nodeValue::actuals);
 
@@ -292,8 +302,7 @@ genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
-    ## Strip the `lvalue` out of the node, but otherwise leave it alone.
-    <> @varRef(Collection::del(dataOf(node), "lvalue"))
+    <> @varRef(rvalueDataOf(node))
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
