@@ -1495,13 +1495,13 @@ parPostfixOperator2 := {/
     ## ```
     ## target.name
     ## =>
-    ## \"get-name"(target)
+    ## get_name(target)
     ## ```
     ##
     ## ```
     ## target.name := expression
     ## =>
-    ## \"set-name"(target, expression)
+    ## set_name(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -1521,13 +1521,13 @@ parPostfixOperator2 := {/
         ## `target.name` (includes parsing of both getters and setters)
         {
             def suffix = dataOf(name)::value;
-            def getterRef = makeVarRef(cat("get-", suffix));
+            def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
                 <> @(typeOf(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
-                        def setterRef = makeVarRef(cat("set-", suffix));
+                        def setterRef = makeVarRef(cat("set_", suffix));
                         <> makeCall(setterRef, node, expr)
                     }
                 }
