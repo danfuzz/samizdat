@@ -260,7 +260,9 @@ genericBind(convertPexIn, "literal", literal_convertPexIn);
 ## Does parser conversion of a `parser` node. This is where the juicy stuff
 ## happens!
 fn parser_convertPexIn(node) {
-    <> callPegNameWithPex(node, [], "makeMainSequence")
+    ## `@x(...)` is done here to convert this node from an expression node
+    ## form (with map payload) into a parser node form (with pex payload).
+    <> callPegNameWithPex(@x(dataOf(node)::value), [], "makeMainSequence")
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 

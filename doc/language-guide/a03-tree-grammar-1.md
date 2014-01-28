@@ -771,7 +771,7 @@ parParser := {/
     @"{/"
     pex = %parChoicePex
     @"/}"
-    { <> @parser(pex) }
+    { <> @parser{value: pex} }
 /};
 
 ## Parses a parenthesized parsing expression.
