@@ -1,8 +1,8 @@
 Samizdat Language Guide
 =======================
 
-Parser Parse Trees
-------------------
+Parser Trees
+------------
 
 The node types and contents used in the parsed form of the parser syntax
 have a fairly direct correspondence to the surface syntax and the
@@ -10,14 +10,13 @@ types and functions used to implement parsing.
 
 ### Normal (non-parsing) expression nodes
 
-#### `@parser(pex)`
+#### `@parser{value: pex}`
 
-Representation of an anonymous parsing function. `pex` must be a parsing
+Representation of an anonymous parsing function. `value` must be a parsing
 expression node, that is, any of the node types defined here other than
 this one.
 
-Nodes of this type are the "glue" between execution parse trees and
-parser parse trees.
+Nodes of this type are the "glue" between execution trees and parser trees.
 
 This corresponds to the syntax `{/ pex /}`.
 
