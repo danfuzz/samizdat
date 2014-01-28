@@ -207,18 +207,6 @@ genericBind(convertPex, "plus", plus_convertPex);
 ## `convertPexIn` bindings
 ##
 
-## Does parser conversion of a `closure` node.
-fn convertClosureLike(node) {
-    def nodeType = typeOf(node);
-    def nodeValue = dataOf(node);
-    def statements = convertPexInList(nodeValue::statements);
-    def yield = ifValue { <> nodeValue::yield }
-        { yield <> {yield: convertPexIn(yield)} }
-        { <> {} };
-
-    <> @(nodeType){nodeValue*, yield*, statements}
-};
-
 ## Does parser conversion of a node whose payload is a map with
 ## a `value` binding to an arbitrary expression.
 fn convertValuePayload(node) {
@@ -272,7 +260,9 @@ genericBind(convertPexIn, "literal", literal_convertPexIn);
 ## Does parser conversion of a `parser` node. This is where the juicy stuff
 ## happens!
 fn parser_convertPexIn(node) {
-    <> callPegNameWithPex(node, [], "makeMainSequence")
+    ## `@x(...)` is done here to convert this node from an expression node
+    ## form (with map payload) into a parser node form (with pex payload).
+    <> callPegNameWithPex(@x(dataOf(node)::value), [], "makeMainSequence")
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 
@@ -302,8 +292,7 @@ genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
-    ## Strip the `lvalue` out of the node, but otherwise leave it alone.
-    <> @varRef(Collection::del(dataOf(node), "lvalue"))
+    <> node
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 

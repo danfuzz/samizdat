@@ -1,8 +1,8 @@
 Samizdat Language Guide
 =======================
 
-Execution Parse Trees
----------------------
+Execution Trees
+---------------
 
 Samizdat source code is itself parsed into a well-specified parse tree form
 before being executed (or being prepared for execution). This format,
