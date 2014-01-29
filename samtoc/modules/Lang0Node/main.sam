@@ -24,11 +24,17 @@ fn get_function(node) {
     <> dataOf(node)::function
 };
 
-## Accessor for `closure`, `varBind`, `varDeclare`, `varDef`, and `varRef`
-## nodes.
+## Accessor for `closure`, `formal`, `varBind`, `varDeclare`, `varDef`,
+## and `varRef` nodes.
 
 fn get_name(node) {
     <> dataOf(node)::name
+};
+
+## Accessor for `formal` nodes.
+
+fn get_repeat(node) {
+    <> dataOf(node)::repeat
 };
 
 ## Accessor for `closure` nodes.
@@ -61,6 +67,7 @@ fn get_yieldDef(node) {
     get_formals:    get_formals,
     get_function:   get_function,
     get_name:       get_name,
+    get_repeat:     get_repeat,
     get_statements: get_statements,
     get_value:      get_value,
     get_yield:      get_yield,
