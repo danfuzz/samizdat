@@ -4,6 +4,8 @@
 
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
 def get_actuals    = Lang0Node::get_actuals;
@@ -16,6 +18,11 @@ def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
+## Extracts and combines the `varRefs` of all the arguments.
+fn varRefsOf(nodes*) {
+    <> {}.cat(( n in nodes <> dataOf(n)::varRefs )*)
+};
+
 ## `bodies(node, bodiesBox)`, implements one layer of body collection.
 def bodies = makeRegularGeneric("bodies", 2, 2);
 
@@ -23,21 +30,26 @@ genericBind(
     bodies,
     "call",
     fn call_bodies(node, bodiesBox) {
-        <> @call{
-            function: bodies(node.function, bodiesBox),
-            actuals: [ a in node.actuals <> bodies(a, bodiesBox) ]
-        }
+        def function = bodies(node.function, bodiesBox);
+        def actuals = [ a in node.actuals <> bodies(a, bodiesBox) ];
+        def varRefs = varRefsOf(function, actuals*);
+        <> @call{function, actuals, varRefs}
     });
 
 genericBind(
     bodies,
     "closure",
     fn closure_bodies(node, bodiesBox) {
+        def statements = [ s in node.statements <> bodies(s, bodiesBox) ];
+        def optYield = ((def y = node.yield) & bodies(y, bodiesBox))?;
+        def varRefs = varRefsOf(statements*, optYield*);
+
         def newNode = @closure{
             formals: node.formals,
             ((def name = node.name) & {name} | {})*,
-            statements: [ s in node.statements <> bodies(s, bodiesBox) ],
-            ((def y = node.yield) & {yield: bodies(y, bodiesBox)} | {})*,
+            statements,
+            varRefs,
+            ((def yield = optYield*) & {yield} | {})*,
             ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
         };
 
@@ -46,7 +58,7 @@ genericBind(
             return already
         };
 
-        def result = @closureRef(#bodies);
+        def result = @closureRef{id: #bodies};
         Box::store(bodiesBox, {bodies*, (newNode): result});
         <> result
     });
@@ -55,14 +67,18 @@ genericBind(
     bodies,
     "expression",
     fn expression_bodies(node, bodiesBox) {
-        <> @expression{value: bodies(node.value, bodiesBox)}
+        def value = bodies(node.value, bodiesBox);
+        def varRefs = varRefsOf(value);
+        <> @expression{value, varRefs}
     });
 
 genericBind(
     bodies,
     "interpolate",
     fn interpolate_bodies(node, bodiesBox) {
-        <> @interpolate{value: bodies(node.value, bodiesBox)}
+        def value = bodies(node.value, bodiesBox);
+        def varRefs = varRefsOf(value);
+        <> @interpolate{value, varRefs}
     });
 
 genericBind(
@@ -76,10 +92,9 @@ genericBind(
     bodies,
     "varBind",
     fn varBind_bodies(node, bodiesBox) {
-        <> @varBind{
-            name: node.name,
-            value: bodies(node.value, bodiesBox)
-        }
+        def value = bodies(node.value, bodiesBox);
+        def varRefs = varRefsOf(value);
+        <> @varBind{name: node.name, value, varRefs}
     });
 
 genericBind(
@@ -93,24 +108,26 @@ genericBind(
     bodies,
     "varDef",
     fn varDef_bodies(node, bodiesBox) {
-        <> @varDef{
-            name: node.name,
-            value: bodies(node.value, bodiesBox)
-        }
+        def value = bodies(node.value, bodiesBox);
+        def varRefs = varRefsOf(value);
+        <> @varDef{name: node.name, value, varRefs}
     });
 
 genericBind(
     bodies,
     "varRef",
     fn varRef_bodies(node, bodiesBox) {
-        <> node
+        def name = node.name;
+        <> @varRef{name, varRefs: {(name): null}}
     });
 
 genericBind(
     bodies,
     "voidable",
     fn voidable_bodies(node, bodiesBox) {
-        <> @voidable{value: bodies(node.value, bodiesBox)}
+        def value = bodies(node.value, bodiesBox);
+        def varRefs = varRefsOf(value);
+        <> @voidable{value, varRefs}
     });
 
 ## Collects all closure nodes at or under the given one into a list.
@@ -124,7 +141,7 @@ fn collectClosures(node) {
 
     def bodiesBoxList = [ for #bodiesMap <> Box::makePromise() ];
     for (body in bodiesMap) {
-        def index = dataOf(valueOf(body));
+        def index = dataOf(valueOf(body))::id;
         Box::store(bodiesBoxList[index], keyOf(body))
     };
     def closures = [ box in bodiesBoxList <> Box::fetch(box) ];

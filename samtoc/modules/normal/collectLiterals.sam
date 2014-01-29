@@ -67,7 +67,7 @@ genericBind(
             return already;
         };
 
-        def result = @literalRef(#lits);
+        def result = @literalRef{id: #lits};
         Box::store(litsBox, {lits*, (value): result});
         <> result
     });
@@ -124,7 +124,7 @@ fn collectLiterals(node) {
 
     def litsBoxList = [ n in (0..#literalsMap) <> Box::makePromise() ];
     for (l in literalsMap) {
-        def index = dataOf(valueOf(l));
+        def index = dataOf(valueOf(l))::id;
         Box::store(litsBoxList[index], keyOf(l))
     };
     def literals = [ box in litsBoxList <> Box::fetch(box) ];
