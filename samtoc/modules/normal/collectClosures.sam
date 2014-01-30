@@ -10,7 +10,6 @@ def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
 def get_function   = Lang0Node::get_function;
 def get_name       = Lang0Node::get_name;
-def get_repeat     = Lang0Node::get_repeat;
 def get_statements = Lang0Node::get_statements;
 def get_value      = Lang0Node::get_value;
 def get_varRefs    = Lang0Node::get_varRefs;
