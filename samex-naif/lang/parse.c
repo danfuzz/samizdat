@@ -194,6 +194,12 @@ static zvalue makeVarDef(zvalue name, zvalue value) {
 }
 
 /* Documented in spec. */
+static zvalue makeVarDefMutable(zvalue name, zvalue value) {
+    return makeTransValue(STR_varDefMutable,
+        mapFrom2(STR_name, name, STR_value, value));
+}
+
+/* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
     return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
 }
@@ -391,16 +397,29 @@ DEF_PARSE(varRef) {
 DEF_PARSE(varDef) {
     MARK();
 
-    MATCH_OR_REJECT(def);
-    zvalue name = MATCH_OR_REJECT(identifier);
+    bool isMutable;
 
-    if (!MATCH(CH_EQUAL)) {
-        return makeVarDef(dataOf(name), NULL);
+    if (MATCH(def)) {
+        isMutable = false;
+    } else {
+        MATCH_OR_REJECT(var);
+        isMutable = true;
     }
 
-    zvalue expression = PARSE_OR_REJECT(expression);
+    zvalue name = MATCH_OR_REJECT(identifier);
 
-    return makeVarDef(dataOf(name), expression);
+    zvalue expr;
+    if (MATCH(CH_EQUAL)) {
+        expr = PARSE_OR_REJECT(expression);
+    } else {
+        expr = NULL;
+    }
+
+    if (isMutable) {
+        return makeVarDefMutable(dataOf(name), expr);
+    } else {
+        return makeVarDef(dataOf(name), expr);
+    }
 }
 
 /* Documented in spec. */
