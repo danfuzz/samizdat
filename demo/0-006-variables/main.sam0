@@ -13,7 +13,7 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 ## Helper Definitions
 ##
 
-## Demo of variable declaration and binding.
+## Demo of immutable variable declaration and binding.
 fn frotz(foo) {
     def ignatz;
 
@@ -22,11 +22,24 @@ fn frotz(foo) {
     Io0::note(ignatz)
 };
 
+## Demo of mutable variable declaration and binding.
+fn zorch(foo) {
+    var ignatz;
+    var fizmo = foo;
+
+    Io0::note("zorch:");
+    ignatz := cat("    ", fizmo);
+    Io0::note(ignatz);
+    ignatz := cat(ignatz, " and ");
+    fizmo := cat(ignatz, "trolb");
+    Io0::note(fizmo)
+};
 
 ##
 ## Main Tests
 ##
 
 frotz("fizmo");
+zorch("blort");
 
 <> 0
