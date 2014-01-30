@@ -43,6 +43,7 @@ TOK(CH_STAR,           "*");
 TOK(def,               "def");
 TOK(fn,                "fn");
 TOK(return,            "return");
+TOK(var,               "var");
 
 STR(MapGenerator,      "MapGenerator");
 STR(SequenceGenerator, "SequenceGenerator");
