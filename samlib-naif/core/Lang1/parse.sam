@@ -59,6 +59,13 @@ fn makeVarDef(name, optValue?) {
         { <> @varDef{name} }
 };
 
+## Returns a `varDefMutable` node.
+fn makeVarDefMutable(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDefMutable{name, value} }
+        { <> @varDefMutable{name} }
+};
+
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
     <> @varRef{
@@ -150,14 +157,15 @@ def parVarRef = Peg::makeMainSequence(
 
 ## Documented in spec.
 def parVarDef = Peg::makeMainSequence(
-    Peg::makeToken("def"),
+    Peg::makeTokenSet("def", "var"),
     Peg::makeToken("identifier"),
-    Peg::makeChoice(
-        Peg::makeSequence(
-            Peg::makeToken("="),
-            parExpression,
-            Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) }),
-        Peg::makeCode { ., name <> makeVarDef(dataOf(name)) }));
+    Peg::makeOpt(Peg::makeSequence(Peg::makeToken("="), parExpression)),
+    Peg::makeCode { style, name, optExpr ->
+        def nameString = dataOf(name);
+        <> ifIs { <> hasType(style, "def") }
+            { <> makeVarDef(nameString, optExpr*) }
+            { <> makeVarDefMutable(nameString, optExpr*) }
+    });
 
 ## Documented in spec.
 def parYieldDef = Peg::makeMainSequence(
