@@ -53,6 +53,13 @@ fn makeVarDef(name, optValue?) {
         { <> @varDef{name} }
 };
 
+## Returns a `varDefMutable` node.
+fn makeVarDefMutable(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDefMutable{name, value} }
+        { <> @varDefMutable{name} }
+};
+
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
     <> @varRef{
