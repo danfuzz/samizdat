@@ -4,8 +4,6 @@
 
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
 def get_actuals    = Lang0Node::get_actuals;
@@ -15,6 +13,7 @@ def get_name       = Lang0Node::get_name;
 def get_repeat     = Lang0Node::get_repeat;
 def get_statements = Lang0Node::get_statements;
 def get_value      = Lang0Node::get_value;
+def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
@@ -32,8 +31,7 @@ genericBind(
     fn call_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);
         def actuals = [ a in node.actuals <> bodies(a, bodiesBox) ];
-        def varRefs = varRefsOf(function, actuals*);
-        <> @call{function, actuals, varRefs}
+        <> @call{function, actuals}
     });
 
 genericBind(
@@ -42,7 +40,7 @@ genericBind(
     fn closure_bodies(node, bodiesBox) {
         def statements = [ s in node.statements <> bodies(s, bodiesBox) ];
         def optYield = ((def y = node.yield) & bodies(y, bodiesBox))?;
-        def varRefs = varRefsOf(statements*, optYield*);
+        def varRefs = node.varRefs;
 
         def newNode = @closure{
             formals: node.formals,
@@ -68,8 +66,7 @@ genericBind(
     "expression",
     fn expression_bodies(node, bodiesBox) {
         def value = bodies(node.value, bodiesBox);
-        def varRefs = varRefsOf(value);
-        <> @expression{value, varRefs}
+        <> @expression{value}
     });
 
 genericBind(
@@ -77,8 +74,7 @@ genericBind(
     "interpolate",
     fn interpolate_bodies(node, bodiesBox) {
         def value = bodies(node.value, bodiesBox);
-        def varRefs = varRefsOf(value);
-        <> @interpolate{value, varRefs}
+        <> @interpolate{value}
     });
 
 genericBind(
@@ -93,8 +89,7 @@ genericBind(
     "varBind",
     fn varBind_bodies(node, bodiesBox) {
         def value = bodies(node.value, bodiesBox);
-        def varRefs = varRefsOf(value);
-        <> @varBind{name: node.name, value, varRefs}
+        <> @varBind{name: node.name, value}
     });
 
 genericBind(
@@ -109,16 +104,14 @@ genericBind(
     "varDef",
     fn varDef_bodies(node, bodiesBox) {
         def value = bodies(node.value, bodiesBox);
-        def varRefs = varRefsOf(value);
-        <> @varDef{name: node.name, value, varRefs}
+        <> @varDef{name: node.name, value}
     });
 
 genericBind(
     bodies,
     "varRef",
     fn varRef_bodies(node, bodiesBox) {
-        def name = node.name;
-        <> @varRef{name, varRefs: {(name): null}}
+        <> @varRef{name: node.name}
     });
 
 genericBind(
@@ -126,8 +119,7 @@ genericBind(
     "voidable",
     fn voidable_bodies(node, bodiesBox) {
         def value = bodies(node.value, bodiesBox);
-        def varRefs = varRefsOf(value);
-        <> @voidable{value, varRefs}
+        <> @voidable{value}
     });
 
 ## Collects all closure nodes at or under the given one into a list.
