@@ -10,7 +10,6 @@
         "get_formals",
         "get_function",
         "get_name",
-        "get_repeat",
         "get_statements",
         "get_value",
         "get_varRefs",
