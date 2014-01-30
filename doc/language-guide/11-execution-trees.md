@@ -105,7 +105,7 @@ continuations.
 
 #### `expression` &mdash; `@expression{value: expression}`
 
-* `value` &mdash; Arbitrary expression node.
+* `value: expression` &mdash; Arbitrary expression node.
 
 A node with type `expression` per se is merely a pass-through to its
 enclosed expression. In terms of surface syntax, `expression` nodes
@@ -122,7 +122,7 @@ single-element list.
 
 #### `interpolate` &mdash; `@interpolate{value: expression}`
 
-* `value` &mdash; Expression node, which must yield a list when
+* `value: expression` &mdash; Expression node, which must yield a list when
   evaluated.
 
 This represents the interpolation of a list, either as an expression per
@@ -144,7 +144,7 @@ one when being used as anything but a function call argument.
 
 #### `literal` &mdash; `@literal{value: value}`
 
-* `value` (required) &mdash; Arbitrary data value.
+* `value: value` (required) &mdash; Arbitrary data value.
 
 This represents arbitrary literal data.
 
@@ -175,7 +175,7 @@ The result of evaluating this form is the same as the result of evaluating
 
 #### `varRef` &mdash; `@varRef{name: name}`
 
-* `name` (required) &mdash; Name of a variable (typically a string).
+* `name: name` (required) &mdash; Name of a variable (typically a string).
 
 This represents a by-name variable reference.
 
@@ -275,7 +275,7 @@ The behavior varies depending on if `value` is supplied in this node:
 
 #### `voidable` &mdash; `@voidable{value: expression}`
 
-* `value` &mdash; Expression node.
+* `value: expression` &mdash; Expression node.
 
 This represents a "voidable" expression as part of an actuals list to a
 `call` node. `voidable` nodes are not valid anywhere else.
