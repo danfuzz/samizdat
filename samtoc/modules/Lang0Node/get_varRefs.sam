@@ -42,12 +42,29 @@ genericBind(
         def baseLocals = yieldDef.cat(( f in node.formals ->
             <> (def name = f::name) & {(name): null}
         )*);
-        def statementDefs = [ s in node.statements <> s.varDefs ];
+
+        ## The extra element at the end is to represent the yield.
+        def statementDefs = [( s in node.statements <> s.varDefs )*, {}];
 
         Io1::note("=== baseLocals: \%q(baseLocals)");
         for (d in statementDefs, idx in (0..)) {
             Io1::note("=== stat#\(idx): \%q(d)")
         };
+
+        def statementRefs = [
+                s in [node.statements*, node.yield?*],
+                idx in (0..#statementDefs) ->
+            def defs =
+                Collection::keyList(baseLocals.cat(statementDefs[..!idx]*));
+            ## TODO: Need mutable variables for this!
+            ## var refs = s.varRefs;
+            ## for (d in defs) {
+            ##    refs := Collection::del(refs, d)
+            ## };
+            ## Io1::note("=== stat#\(idx): \%q(refs)");
+            Io1::note("=== stat#\(idx): \%q(defs)");
+            <> defs
+        ];
 
         <> catVarRefs(node.yield?*, node.statements*)
     });
