@@ -188,11 +188,6 @@ static zvalue makeVarBind(zvalue name, zvalue value) {
 }
 
 /* Documented in spec. */
-static zvalue makeVarDeclare(zvalue name) {
-    return makeTransValue(STR_varDeclare, mapFrom1(STR_name, name));
-}
-
-/* Documented in spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     return makeTransValue(STR_varDef,
         mapFrom2(STR_name, name, STR_value, value));
@@ -400,7 +395,7 @@ DEF_PARSE(varDef) {
     zvalue name = MATCH_OR_REJECT(identifier);
 
     if (!MATCH(CH_EQUAL)) {
-        return makeVarDeclare(dataOf(name));
+        return makeVarDef(dataOf(name), NULL);
     }
 
     zvalue expression = PARSE_OR_REJECT(expression);
@@ -611,7 +606,7 @@ DEF_PARSE(fnDef) {
 
     return makeTransValue(STR_topDeclaration,
         mapFrom2(
-            STR_top,  makeVarDeclare(name),
+            STR_top,  makeVarDef(name, NULL),
             STR_main, makeVarBind(name, closure)));
 }
 
@@ -630,7 +625,7 @@ DEF_PARSE(fnExpression) {
         STR_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
-            STR_statements, listFrom1(makeVarDeclare(name)),
+            STR_statements, listFrom1(makeVarDef(name, NULL)),
             STR_yield,      makeVarBind(name, closure)));
 
     return makeCall(mainClosure, NULL);
