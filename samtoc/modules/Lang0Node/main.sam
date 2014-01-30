@@ -8,6 +8,7 @@
 
 ## This just re-exports stuff defined in submodules.
 <> {
+    (submoduleUse("get_varDefs"))*,
     (submoduleUse("get_varRefs"))*,
     (submoduleUse("getters"))*
 }

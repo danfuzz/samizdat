@@ -3,7 +3,9 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def getters = submoduleUse("getters");
+def get_varDefs = submoduleUse("get_varDefs")::get_varDefs;
 
+def Io1 = moduleUse({name: ["core", "Io1"]});
 
 ## TODO: Ought to be able to do something like:
 ##     use .getters *;
@@ -11,7 +13,6 @@ def get_actuals    = getters::get_actuals;
 def get_formals    = getters::get_formals;
 def get_function   = getters::get_function;
 def get_name       = getters::get_name;
-def get_repeat     = getters::get_repeat;
 def get_statements = getters::get_statements;
 def get_value      = getters::get_value;
 def get_yield      = getters::get_yield;
@@ -37,6 +38,17 @@ genericBind(
     get_varRefs,
     "closure",
     fn closure_get_varRefs(node) {
+        def yieldDef = (def yd = node.yieldDef) & {(yd): null} | {};
+        def baseLocals = yieldDef.cat(( f in node.formals ->
+            <> (def name = f::name) & {(name): null}
+        )*);
+        def statementDefs = [ s in node.statements <> s.varDefs ];
+
+        Io1::note("=== baseLocals: \%q(baseLocals)");
+        for (d in statementDefs, idx in (0..)) {
+            Io1::note("=== stat#\(idx): \%q(d)")
+        };
+
         <> catVarRefs(node.yield?*, node.statements*)
     });
 
