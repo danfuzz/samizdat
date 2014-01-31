@@ -21,20 +21,21 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 ## module was found, or dies with an error.
 fn findModuleDirectory(searchInfo, modulePaths) {
     def fqName = searchInfo::name;
+    var paths = modulePaths;
 
-    loopReduce(modulePaths) { paths ->
+    loop {
         ifIs { <> eq(paths, []) }
             {
                 Io1::die(cat(
-                "Module not found: ",
-                Module0::stringFromModuleName(fqName)))
+                    "Module not found: ",
+                    Module0::stringFromModuleName(fqName)))
             };
 
         def moduleFile = [get(paths, 0)*, fqName*, "module.sam"];
         ifIs { <> Io1::fileExists(moduleFile) }
             { return paths };
 
-        <> [Sequence::sliceInclusive(paths, 1)]
+        paths := Sequence::sliceInclusive(paths, 1)
     };
 };
 

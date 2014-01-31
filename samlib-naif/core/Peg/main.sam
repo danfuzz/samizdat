@@ -120,26 +120,32 @@ genericBind(parse, "PegOpt", PegOpt_parse);
 fn PegRepeat_parse(peg, box, input, items*) {
     def params = dataOf(peg);
     def rule = params::rule;
+    var remainingInput = input;
+    var results = []; ## Values that have been parsed by the inner rule.
 
-    loopReduce(input, [])
-        { input, values ->
-            def innerBox = Box::makePromise();
-            <> ifValue { <> parse(rule, innerBox, input, items*) }
-                { newInput <> [newInput, [values*, Box::fetch(innerBox)]] }
-                {
-                    ifValue { <> params::minSize }
-                        { minSize ->
-                            ifIs { <> lt(Collection::sizeOf(values), minSize) }
-                                {
-                                    ## Did not parse minimum required size.
-                                    Box::store(box);
-                                    return
-                                }
-                        };
-                    Box::store(box, values);
-                    return input
-                }
-        }
+    loop {
+        def innerBox = Box::makePromise();
+        ifValue { <> parse(rule, innerBox, remainingInput, items*) }
+            { newInput ->
+                ## Successfully parsed the inner rule.
+                remainingInput := newInput;
+                results := [results*, Box::fetch(innerBox)]
+            }
+            {
+                ## Failed to parse the inner rule.
+                ifValue { <> params::minSize }
+                    { minSize ->
+                        ifIs { <> lt(Collection::sizeOf(results), minSize) }
+                            {
+                                ## Did not parse minimum required count.
+                                Box::store(box);
+                                return
+                            }
+                    };
+                Box::store(box, results);
+                return remainingInput
+            }
+    }
 };
 genericBind(parse, "PegRepeat", PegRepeat_parse);
 
@@ -155,22 +161,26 @@ fn PegSequence_parse(peg, box, input, items*) {
     ## Each rule after the first gets passed as additional arguments
     ## the matched results of all the previous rules, in order.
 
-    def reduction = Generator::doReduce(dataOf(peg), input, items)
-        { rule, input, items ->
-            def innerBox = Box::makePromise();
-            <> ifValue { <> parse(rule, innerBox, input, items*) }
-                { newInput <> [newInput, [items*, Box::fetch(innerBox)]] }
-                {
-                    ## Propagate the failure.
-                    Box::store(box);
-                    return
-                }
-        };
+    var remainingInput = input;
+    var results = items; ## Includes intial items and each parsed value.
 
-    def newInput = Sequence::nth(reduction, 0);
-    def results = Sequence::nth(reduction, 1);
+    ## This is akin to `for (rule in dataOf(peg)) { ... }`.
+    Generator::filterPump(dataOf(peg)) { rule ->
+        def innerBox = Box::makePromise();
+        ifValue { <> parse(rule, innerBox, remainingInput, results*) }
+            { newInput ->
+                remainingInput := newInput;
+                results := [results*, Box::fetch(innerBox)]
+            }
+            {
+                ## Propagate the failure.
+                Box::store(box);
+                return
+            }
+    };
+
     Box::store(box, Sequence::nthFromEnd(results, 0));
-    <> newInput
+    <> remainingInput
 };
 genericBind(parse, "PegSequence", PegSequence_parse);
 

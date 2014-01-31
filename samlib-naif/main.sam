@@ -29,21 +29,30 @@ PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 ## Converts an unstructured string into a list-of-strings, by delimiting on
 ## the given character. Empty strings are discarded from the result list.
 fn splitString(string, delimCh) {
-    ## Append to list, ignoring empty strings.
+    ## Appends `one` to the end of `list`, ignoring empty strings.
     fn appendNonempty(list, one) {
         <> ifIs { <> eq(one, "") }
             { <> list }
             { <> [list*, one] }
     };
 
-    loopReduce(string, [], "") { str, result, one ->
+    var str = string;
+    var result = [];
+    var nextItem = "";
+
+    loop {
         ifIs { <> eq(str, "") }
-            { return appendNonempty(result, one) };
+            { return appendNonempty(result, nextItem) };
+
         def ch = Sequence_nth(str, 0);
-        def newStr = Sequence_sliceInclusive(str, 1);
-        <> ifIs { <> eq(ch, delimCh) }
-            { <> [newStr, appendNonempty(result, one), ""] }
-            { <> [newStr, result, cat(one, ch)] };
+        str := Sequence_sliceInclusive(str, 1);
+
+        ifIs { <> eq(ch, delimCh) }
+            {
+                result := appendNonempty(result, nextItem);
+                nextItem := ""
+            }
+            { nextItem := cat(nextItem, ch) }
     }
 };
 
@@ -124,18 +133,18 @@ fn loadAllLibraries(baseCtx) {
     ## Read the manifest file, to figure out what all to load and in what
     ## order.
     def manifest = loadLibrary(baseCtx, "manifest.sam")::MANIFEST;
+    var idx = 0;
+    var ctx = baseCtx;
 
-    <> loopReduce(manifest, baseCtx)
-        { names, ctx ->
-            <> ifValue { <> Sequence_nth(names, 0) }
-                { name ->
-                    <> [
-                        Sequence_sliceInclusive(names, 1),
-                        loadLibraryOrModule(ctx, name)
-                    ]
-                }
-                { return ctx }
-        }
+    ## This is approximately `for (name in manifest) { ... }`.
+    loop {
+        ifValue { <> Sequence_nth(manifest, idx) }
+            { name ->
+                ctx := loadLibraryOrModule(ctx, name);
+                idx := Number_add(idx, 1)
+            }
+            { return ctx }
+    }
 };
 
 ## Builds the final core library, by doing file loading / evaluation, and then

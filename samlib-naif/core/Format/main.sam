@@ -20,25 +20,26 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 ## This is int digits for bases up to 36, in order.
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-## Helper for stringifying ints, which does most of the conversion,
-## as well as prepending the given prefix.
-fn intBody(start, value, base) {
-    loopReduce("", value) { text, value ->
-        <> ifIs { <> ne(value, 0) }
-            {
-                def digit =
-                    Sequence::nth(DIGIT_CHARS, Number::mod(value, base));
-                <> [cat(digit, text), Number::div(value, base)];
-            }
-            { return cat(start, text) }
+## Helper for stringifying ints, which does most of the conversion.
+fn intBody(value, base) {
+    var text = "";
+    var v = value;
+
+    loop {
+        ifIs { <> perEq(v, 0) }
+            { return text };
+
+        def digit = Sequence::nth(DIGIT_CHARS, Number::mod(v, base));
+        text := cat(digit, text);
+        v := Number::div(v, base)
     }
 };
 
 ## Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = {
-    -1: { int, base <> intBody("-", Number::neg(int), base) },
+    -1: { int, base <> cat("-", intBody(Number::neg(int), base)) },
     0:  { int, base <> "0" },
-    1:  { int, base <> intBody("", int, base) }
+    1:  { int, base <> intBody(int, base) }
 };
 
 ## Stringifies an int using the given base.

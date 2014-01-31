@@ -52,11 +52,17 @@ fn intFromDigitChar(ch) {
     <> get(INT_CHARS, typeOf(ch))
 };
 
-## Processes a list of `stringPart` elements, yielding a literal `string`
-## value. In Layer 2 (and higher) this can also yield an
-## `interpolatedString` or an `error`.
-##
-## **Note:** Defined below in Layer 2.
+## Converts a list of digit values into an int, given the base.
+fn intFromDigitList(base, digits) {
+    var result = 0;
+
+    Generator::filterPump(digits) { digit ->
+        ifIs { <> perNe(digit, -1) }
+            { result := Number::add(Number::mul(result, base), digit) }
+    };
+
+    <> result
+};
 
 ## Parses a non-zero amount of whitespace and comments.
 ## **Note:** The yielded result is always ignored.
@@ -236,48 +242,40 @@ def OPEN_CLOSE_MAP = {
     "{/": "/}"
 };
 
-## Converts a list of digit values into an int, given the base.
-fn intFromDigitList(base, digits) {
-    <> Generator::doReduce1(digits, 0) { digit, result ->
-        <> ifIs { <> eq(digit, -1) }
-            { <> result }
-            { <> Number::add(Number::mul(result, base), digit) }
-    };
-};
-
+## Processes a list of `stringPart` elements, yielding a literal `string`
+## token, an `interpolatedString`, or an `error`.
 fn processStringParts(parts) {
     ## Handle the empty string as a special case, to make the
     ## reduce below be more straightforward.
     ifIs { <> eq(parts, []) }
         { return @string("") };
 
-    ## If there is an error part (represented as an `@error` token), return
-    ## it.
-    Generator::filterPump(parts)
-        { part ->
-            <> ifIs { <> hasType(part, "error") }
-                { return part }
-        };
-
     ## Coalesce adjacent literal strings in `parts`. The result is an
-    ## `elems` list consisting of multi-character strings and
+    ## `elems` list consisting of alternating multi-character strings and
     ## interpolation maps.
-    def elems = Generator::doReduce1(
-        Sequence::sliceInclusive(parts, 1),
-        [get(parts, 0)])
-        { part, result ->
-            <> ifValue
-                {
-                    <> [
-                        &isString(Sequence::nthFromEnd(result, 0)),
-                        &isString(part)
-                    ]
-                }
-                { newLast ->
-                    <> [Sequence::sliceExclusive(result, 0)*, cat(newLast*)]
-                }
-                { <> [result*, part] };
-        };
+    var elems = [];
+    Generator::filterPump(parts) { <next> part ->
+        ## If there is an error part (represented as an `@error` token),
+        ## return it.
+        ifIs { <> hasType(part, "error") }
+            { return part };
+
+        ifValue { <> isString(&Sequence::nthFromEnd(elems, 0)) }
+            { lastString ->
+                ifIs { <> isString(part) }
+                    {
+                        ## The last item in `elems` and the current `part`
+                        ## are both strings. Combine them.
+                        elems := [
+                            Sequence::sliceExclusive(elems, 0)*,
+                            cat(lastString, part)
+                        ];
+                        <next>
+                    }
+            };
+
+        elems := [elems*, part]
+    };
 
     ## Check for a simple result.
     ifIs { <> eq(Collection::sizeOf(elems), 1) }
