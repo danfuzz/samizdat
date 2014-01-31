@@ -91,18 +91,39 @@ fn doReduce1(reduceFunction, generator, baseValue) {
 
 ## Documented in spec.
 fn filterPump(filterFunction, generators*) {
-    loopReduce(ParaGenerator::makeParaGenerator(generators*))
-        { gen ->
-            def box = Box::makePromise();
-            <> ifValue { <> Generator::nextValue(gen, box) }
-                { nextGenerator ->
-                    filterFunction(Box::fetch(box)*);
-                    <> [nextGenerator]
-                }
-                {
-                    ## The inner generator was voided.
-                    return
-                }
+    ifIs { <> eq(Collection::sizeOf(generators), 1) }
+        {
+            ## Handle a single generator as a special case to avoid a lot of
+            ## unnecessary wrapping / unwrapping.
+            var gen = generators*;
+            loop {
+                def box = Box::makePromise();
+                ifValue { <> Generator::nextValue(gen, box) }
+                    { nextGen ->
+                        filterFunction(Box::fetch(box));
+                        gen := nextGen
+                    }
+                    {
+                        ## The generator was voided.
+                        return
+                    }
+            }
+        }
+        {
+            ## General case of multiple (or zero) generators.
+            var gen = ParaGenerator::makeParaGenerator(generators*);
+            loop {
+                def box = Box::makePromise();
+                <> ifValue { <> Generator::nextValue(gen, box) }
+                    { nextGen ->
+                        filterFunction(Box::fetch(box)*);
+                        gen := nextGen
+                    }
+                    {
+                        ## The inner generator was voided.
+                        return
+                    }
+            }
         }
 };
 
