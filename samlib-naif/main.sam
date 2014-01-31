@@ -133,18 +133,18 @@ fn loadAllLibraries(baseCtx) {
     ## Read the manifest file, to figure out what all to load and in what
     ## order.
     def manifest = loadLibrary(baseCtx, "manifest.sam")::MANIFEST;
+    var idx = 0;
+    var ctx = baseCtx;
 
-    <> loopReduce(manifest, baseCtx)
-        { names, ctx ->
-            <> ifValue { <> Sequence_nth(names, 0) }
-                { name ->
-                    <> [
-                        Sequence_sliceInclusive(names, 1),
-                        loadLibraryOrModule(ctx, name)
-                    ]
-                }
-                { return ctx }
-        }
+    ## This is approximately `for (name in manifest) { ... }`.
+    loop {
+        ifValue { <> Sequence_nth(manifest, idx) }
+            { name ->
+                ctx := loadLibraryOrModule(ctx, name);
+                idx := Number_add(idx, 1)
+            }
+            { return ctx }
+    }
 };
 
 ## Builds the final core library, by doing file loading / evaluation, and then
