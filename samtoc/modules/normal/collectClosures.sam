@@ -95,7 +95,7 @@ genericBind(
     bodies,
     "varDef",
     fn varDef_bodies(node, bodiesBox) {
-        def value = ifValue { <> nodeValue::value }
+        def value = ifValue { <> node.value }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
         <> @varDef{name: node.name, value*}
@@ -105,7 +105,7 @@ genericBind(
     bodies,
     "varDefMutable",
     fn varDefMutable_bodies(node, bodiesBox) {
-        def value = ifValue { <> nodeValue::value }
+        def value = ifValue { <> node.value }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
         <> @varDefMutable{name: node.name, value*}

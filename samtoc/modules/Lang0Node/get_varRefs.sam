@@ -99,16 +99,16 @@ genericBind(
 
 genericBind(
     get_varRefs,
-    "varDeclare",
+    "varDef",
     fn varDef_get_varRefs(node) {
-        <> {}
+        <> (def v = node.value) & v.varRefs
     });
 
 genericBind(
     get_varRefs,
-    "varDef",
-    fn varDef_get_varRefs(node) {
-        <> node.value.varRefs
+    "varDefMutable",
+    fn varDefMutable_get_varRefs(node) {
+        <> (def v = node.value) & v.varRefs
     });
 
 genericBind(
