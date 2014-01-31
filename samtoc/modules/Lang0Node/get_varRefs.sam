@@ -38,20 +38,24 @@ genericBind(
     get_varRefs,
     "closure",
     fn closure_get_varRefs(node) {
+        ## `baseLocals` is the set of all local variables defined at the
+        ## top of the closure, including formal arguments and a yield def
+        ## (if any).
         def yieldDef = (def yd = node.yieldDef) & {(yd): null} | {};
         def baseLocals = yieldDef.cat(( f in node.formals ->
             <> (def name = f::name) & {(name): null}
         )*);
 
-        ## The extra element at the end is to represent the yield.
+        ## The extra element at the end is to represent the closure yield.
         def statementDefs = [( s in node.statements <> s.varDefs )*, {}];
 
-        Io1::note("=== baseLocals: \%q(baseLocals)");
-        for (d in statementDefs, idx in (0..)) {
-            Io1::note("=== stat#\(idx): \%q(d)")
-        };
-
-        def statementRefs = [
+        ## What's happening here is that for each statement (and the yield at
+        ## the end), we get its variable references and remove from them refs
+        ## for any variables that are locally defined before the statement.
+        ## This produces the array `statementRefs` whose elements are merged,
+        ## producing the full set of free variables referenced by the closure
+        ## as a whole.
+        def statementRefs = (
                 s in [node.statements*, node.yield?*],
                 idx in (0..) ->
             def defs =
@@ -60,11 +64,10 @@ genericBind(
             for (d in defs) {
                refs := Collection::del(refs, d)
             };
-            Io1::note("=== stat#\(idx): \%q(refs)");
             <> refs
-        ];
+        );
 
-        <> catVarRefs(node.yield?*, node.statements*)
+        <> cat(statementRefs*)
     });
 
 genericBind(
