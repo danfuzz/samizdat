@@ -15,7 +15,9 @@
 ## tokenization, as closely as possible.
 ##
 
-## Documented in spec.
+## Map of all the keywords, from their string name to valueless tokens. These
+## are (to a first approximation) operators whose spellings match the
+## tokenization syntax of identifiers.
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
         "def", "fn", "return", "var",
@@ -23,7 +25,12 @@ def KEYWORDS = Generator::collectAsMap(
         []*])
         { name <> {(name): @(name)} });
 
-## Documented in spec.
+## These are all the int digits, as a map from strings to digit values. This
+## includes hex digits as well, in both lower and upper case. Finally, this
+## includes a mapping of `"_"` to `-1` for the implementation of the
+## "digit space" syntax.
+##
+## **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
 def INT_CHARS = {
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
     "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
@@ -32,14 +39,21 @@ def INT_CHARS = {
     "_": -1
 };
 
-## Documented in spec.
+## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
     <> get(INT_CHARS, typeOf(ch))
 };
 
-## Documented in spec.
-fn processStringParts(parts) {
-    <> @string(cat("", parts*))
+## Converts a list of digit values into an int, given the base.
+fn intFromDigitList(base, digits) {
+    var result = 0;
+
+    Generator::filterPump(digits) { digit ->
+        ifIs { <> perNe(digit, -1) }
+            { result := Number::add(Number::mul(result, base), digit) }
+    };
+
+    <> result
 };
 
 ## Documented in spec.
@@ -72,11 +86,7 @@ def tokInt = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeCharSet("0123456789"),
             Peg::makeCode(intFromDigitChar))),
-    Peg::makeCode { digits ->
-        def value = Generator::doReduce1(digits, 0)
-            { digit, result <> Number::add(digit, Number::mul(result, 10)) };
-        <> @int(value)
-    });
+    Peg::makeCode { digits <> @int(intFromDigitList(10, digits)) });
 
 ## Documented in spec.
 def tokStringPart = Peg::makeMainChoice(
@@ -104,7 +114,7 @@ def tokString = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeString("\""),
-            Peg::makeCode { ., parts, . <> processStringParts(parts) }),
+            Peg::makeCode { ., parts, . <> @string(cat("", parts*)) }),
         Peg::makeCode { ., . <> @error("Unterminated string literal.") }));
 
 ## These are all the characters which are allowed to start an identifier.

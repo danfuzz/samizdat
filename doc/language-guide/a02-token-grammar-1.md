@@ -19,7 +19,7 @@ result as tokens of type `error`.
 ## tokenization syntax of identifiers.
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
-        "def", "fn", "return",
+        "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
         []*])
         { name <> {(name): @(name)} });
@@ -43,11 +43,16 @@ fn intFromDigitChar(ch) {
     <> get(INT_CHARS, typeOf(ch))
 };
 
-## Processes a list of `stringPart` elements, yielding a literal `string`
-## value. In Layer 2 (and higher) this can also yield an
-## `interpolatedString` or an `error`.
-fn processStringParts(parts) {
-    <> @string(cat("", parts*))
+## Converts a list of digit values into an int, given the base.
+fn intFromDigitList(base, digits) {
+    var result = 0;
+
+    Generator::filterPump(digits) { digit ->
+        ifIs { <> perNe(digit, -1) }
+            { result := Number::add(Number::mul(result, base), digit) }
+    };
+
+    <> result
 };
 
 ## Parses any amount of whitespace and comments (including nothing at all).
@@ -100,11 +105,7 @@ def tokInt = {/
         { <> intFromDigitChar(ch) }
     )+
 
-    {
-        def value = Generator::doReduce1(digits, 0)
-            { digit, result <> Number::add(digit, Number::mul(result, 10)) };
-        <> @int(value)
-    }
+    { <> @int(intFromDigitList(10, digits)) }
 /};
 
 ## Parses a run of regular characters or an escape / special sequence,
@@ -143,7 +144,7 @@ def tokString = {/
 
     (
         "\""
-        { <> processStringParts(parts) }
+        { <> @string(cat("", parts*)) }
     |
         { <> @error("Unterminated string literal.") }
     )

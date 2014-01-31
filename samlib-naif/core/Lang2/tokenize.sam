@@ -52,11 +52,17 @@ fn intFromDigitChar(ch) {
     <> get(INT_CHARS, typeOf(ch))
 };
 
-## Processes a list of `stringPart` elements, yielding a literal `string`
-## value. In Layer 2 (and higher) this can also yield an
-## `interpolatedString` or an `error`.
-##
-## **Note:** Defined below in Layer 2.
+## Converts a list of digit values into an int, given the base.
+fn intFromDigitList(base, digits) {
+    var result = 0;
+
+    Generator::filterPump(digits) { digit ->
+        ifIs { <> perNe(digit, -1) }
+            { result := Number::add(Number::mul(result, base), digit) }
+    };
+
+    <> result
+};
 
 ## Parses a non-zero amount of whitespace and comments.
 ## **Note:** The yielded result is always ignored.
@@ -236,15 +242,8 @@ def OPEN_CLOSE_MAP = {
     "{/": "/}"
 };
 
-## Converts a list of digit values into an int, given the base.
-fn intFromDigitList(base, digits) {
-    <> Generator::doReduce1(digits, 0) { digit, result ->
-        <> ifIs { <> eq(digit, -1) }
-            { <> result }
-            { <> Number::add(Number::mul(result, base), digit) }
-    };
-};
-
+## Processes a list of `stringPart` elements, yielding a literal `string`
+## token, an `interpolatedString`, or an `error`.
 fn processStringParts(parts) {
     ## Handle the empty string as a special case, to make the
     ## reduce below be more straightforward.
