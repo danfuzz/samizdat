@@ -105,7 +105,7 @@ continuations.
 
 #### `expression` &mdash; `@expression{value: expression}`
 
-* `value` &mdash; Arbitrary expression node.
+* `value: expression` &mdash; Arbitrary expression node.
 
 A node with type `expression` per se is merely a pass-through to its
 enclosed expression. In terms of surface syntax, `expression` nodes
@@ -122,7 +122,7 @@ single-element list.
 
 #### `interpolate` &mdash; `@interpolate{value: expression}`
 
-* `value` &mdash; Expression node, which must yield a list when
+* `value: expression` &mdash; Expression node, which must yield a list when
   evaluated.
 
 This represents the interpolation of a list, either as an expression per
@@ -144,7 +144,7 @@ one when being used as anything but a function call argument.
 
 #### `literal` &mdash; `@literal{value: value}`
 
-* `value` (required) &mdash; Arbitrary data value.
+* `value: value` (required) &mdash; Arbitrary data value.
 
 This represents arbitrary literal data.
 
@@ -157,7 +157,7 @@ Evaluation never fails.
 
 * `name: name` &mdash; Variable name to bind (typically a string).
 
-* `value: expression` (optional) &mdash; Expression node representing the
+* `value: expression` &mdash; Expression node representing the
   value that the variable should take on when defined.
 
 This represents a variable binding (assignment) statement as part of a
@@ -175,7 +175,7 @@ The result of evaluating this form is the same as the result of evaluating
 
 #### `varRef` &mdash; `@varRef{name: name}`
 
-* `name` (required) &mdash; Name of a variable (typically a string).
+* `name: name` (required) &mdash; Name of a variable (typically a string).
 
 This represents a by-name variable reference.
 
@@ -222,40 +222,60 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDeclare` &mdash; `@varDeclare{name: name}`
-
-* `name: name` &mdash; Variable name to declare (typically a string).
-
-This represents a forward declaration for a single-assignment variable
-as part of a closure body. Nodes of this type are valid within the
-`statements` list of a `closure` node.
-
-When run, a variable with the given `name` is defined in the current (topmost)
-execution context, and bound to void. It is an error (terminating the runtime)
-if a variable with the given `name` is already defined in the current context.
-
-Once defined, it is then invalid to reference the variable's value until it
-becomes bound to its final value via execution of a `varBind` node.
-
 #### `varDef` &mdash; `@varDef{name: name, value: expression}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 
-* `value: expression` &mdash; Expression node representing the value
-  that the variable should take on when defined.
+* `value: expression` (optional) &mdash; Expression node representing the
+  value that the variable should take on when defined.
 
-This represents a variable definition statement as part of a closure body.
-Nodes of this type are valid within the `statements` list of a `closure`
+This represents an immutable variable definition statement as part of a
+closure body. Nodes of this type are valid within the `statements` list of
+a `closure` node.
+
+When run successfully, nodes of this type cause `name` to be bound in the
+current (topmost) execution context, to an immutable variable. That is,
+once the variable is bound to a value, it can never be re-bound. The
+behavior varies depending on if `value` is supplied in this node:
+
+* Without a supplied `value`, this serves as a forward declaration. The
+  variable is defined, but it is unbound (i.e. bound to void). It is then
+  valid to bind the variable to a value *exactly once* by use of a
+  `varBind` node. Before such binding, it is invalid (terminating the runtime)
+  to refer to the variable.
+
+* With `value` supplied, said `value` is evaluated. If it evaluates to void,
+  then evaluation fails (terminating the runtime). Otherwise, the evaluated
+  value becomes the permanently-bound value of the variable.
+
+#### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
+
+* `name: name` &mdash; Variable name to define (typically a string).
+
+* `value: expression` (optional) &mdash; Expression node representing the
+  value that the variable should take on when defined.
+
+This represents a mutable variable definition statement as part of a closure
+body. Nodes of this type are valid within the `statements` list of a `closure`
 node.
 
-When run, the `value` expression is evaluated. If it evaluates to void,
-then evaluation fails (terminating the runtime). Otherwise, the evaluated
-value is bound in the current (topmost) execution context to the
-indicated `name`.
+When run successfully, nodes of this type cause `name` to be bound in the
+current (topmost) execution context, to a mutable variable. That is, the
+variable may be bound and re-bound multiple times, by using `varBind` nodes.
+The behavior varies depending on if `value` is supplied in this node:
+
+* Without a supplied `value`, this serves as a forward declaration. The
+  variable is defined, but it is unbound (i.e. bound to void). After
+  definition and before binding (via `varBind`), it is invalid (terminating
+  the runtime) to refer to the variable.
+
+* With `value` supplied, said `value` is evaluated. If it evaluates to void,
+  then evaluation fails (terminating the runtime). Otherwise, the evaluated
+  value becomes the initially-bound value of the variable.
 
 #### `voidable` &mdash; `@voidable{value: expression}`
 
-* `value` &mdash; Expression node.
+* `value: expression` &mdash; Expression node.
 
 This represents a "voidable" expression as part of an actuals list to a
 `call` node. `voidable` nodes are not valid anywhere else.

@@ -24,7 +24,8 @@ fn get_function(node) {
     <> dataOf(node)::function
 };
 
-## Accessor for `closure`, `varBind`, `varDeclare`, `varDef`, and `varRef` nodes.
+## Accessor for `closure`, `varBind`, `varDef`, `varDefMutable`, and `varRef`
+## nodes.
 
 fn get_name(node) {
     <> dataOf(node)::name
@@ -37,7 +38,7 @@ fn get_statements(node) {
 };
 
 ## Accessor for `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
-## and `voidable` nodes.
+## `varDefMutable` and `voidable` nodes.
 
 fn get_value(node) {
     <> dataOf(node)::value

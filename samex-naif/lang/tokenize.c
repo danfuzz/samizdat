@@ -155,6 +155,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'd': { if (valEq(string, STR_def))    return TOK_def;    break; }
         case 'f': { if (valEq(string, STR_fn))     return TOK_fn;     break; }
         case 'r': { if (valEq(string, STR_return)) return TOK_return; break; }
+        case 'v': { if (valEq(string, STR_var))    return TOK_var;    break; }
     }
 
     return makeTransValue(STR_identifier, string);

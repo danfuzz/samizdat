@@ -84,19 +84,22 @@ genericBind(
 
 genericBind(
     lits,
-    "varDeclare",
-    fn varDeclare_lits(node, litsBox) {
-        <> node
+    "varDef",
+    fn varDef_lits(node, litsBox) {
+        def value = ifValue { <> nodeValue::value }
+            { value <> {value: lits(value, bodiesBox)} }
+            { <> {} };
+        <> @varDef{name: node.name, value*}
     });
 
 genericBind(
     lits,
-    "varDef",
-    fn varDef_lits(node, litsBox) {
-        <> @varDef{
-            name: node.name,
-            value: lits(node.value, litsBox)
-        }
+    "varDefMutable",
+    fn varDefMutable_lits(node, litsBox) {
+        def value = ifValue { <> nodeValue::value }
+            { value <> {value: lits(value, bodiesBox)} }
+            { <> {} };
+        <> @varDefMutable{name: node.name, value*}
     });
 
 genericBind(

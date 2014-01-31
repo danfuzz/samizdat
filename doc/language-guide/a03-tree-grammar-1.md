@@ -46,14 +46,18 @@ fn makeVarBind(name, value) {
     <> @varBind{name, value}
 };
 
-## Returns a `varDeclare` node.
-fn makeVarDeclare(name) {
-    <> @varDeclare{name}
+## Returns a `varDef` node.
+fn makeVarDef(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDef{name, value} }
+        { <> @varDef{name} }
 };
 
-## Returns a `varDef` node.
-fn makeVarDef(name, value) {
-    <> @varDef{name, value}
+## Returns a `varDefMutable` node.
+fn makeVarDefMutable(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDefMutable{name, value} }
+        { <> @varDefMutable{name} }
 };
 
 ## Returns a `varRef` node.
@@ -167,7 +171,7 @@ def parVarDef = {/
         ex = parExpression
         { <> makeVarDef(dataOf(name), ex) }
     |
-        { <> makeVarDeclare(dataOf(name)) }
+        { <> makeVarDef(dataOf(name)) }
     )
 /};
 
@@ -349,7 +353,7 @@ def parFnDef = {/
     {
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
-            top:  makeVarDeclare(name),
+            top:  makeVarDef(name),
             main: makeVarBind(name, closure)
         }
     }
@@ -378,7 +382,7 @@ parFnExpression := {/
         {
             def mainClosure = @closure{
                 formals:    [],
-                statements: [makeVarDeclare(name)],
+                statements: [makeVarDef(name)],
                 yield:      makeVarBind(name, closure)
             };
 

@@ -43,6 +43,7 @@ TOK(CH_STAR,           "*");
 TOK(def,               "def");
 TOK(fn,                "fn");
 TOK(return,            "return");
+TOK(var,               "var");
 
 STR(MapGenerator,      "MapGenerator");
 STR(SequenceGenerator, "SequenceGenerator");
@@ -77,8 +78,8 @@ STR(top,               "top");
 STR(topDeclaration,    "topDeclaration");
 STR(value,             "value");
 STR(varBind,           "varBind");
-STR(varDeclare,        "varDeclare");
 STR(varDef,            "varDef");
+STR(varDefMutable,     "varDefMutable");
 STR(varRef,            "varRef");
 STR(voidable,          "voidable");
 STR(yield,             "yield");

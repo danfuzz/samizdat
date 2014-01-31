@@ -20,21 +20,6 @@
  */
 
 /**
- * Binds a variable name to the given value, per se, which must be a
- * box of some sort.
- */
-static void bindBox(Frame *frame, zvalue name, zvalue box) {
-    zvalue vars = frame->vars;
-    zvalue newVars = collPut(frame->vars, name, box);
-
-    if (collSize(vars) == collSize(newVars)) {
-        die("Variable already defined: %s", valDebugString(name));
-    }
-
-    frame->vars = newVars;
-}
-
-/**
  * Finds the variable with the given name, returning the box it is bound
  * to if found, or failing (terminating) if not found.
  */
@@ -78,19 +63,31 @@ void frameMark(Frame *frame) {
 }
 
 /* Documented in header. */
-void frameAdd(Frame *frame, zvalue name, zvalue value) {
-    bindBox(frame, name, makeResult(value));
+void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
+    zvalue box;
+
+    if (mutab) {
+        box = makeCell(value);
+    } else if (value == NULL) {
+        box = makePromise();
+    } else {
+        box = makeResult(value);
+    }
+
+    zvalue vars = frame->vars;
+    zvalue newVars = collPut(vars, name, box);
+
+    if (collSize(vars) == collSize(newVars)) {
+        die("Variable already defined: %s", valDebugString(name));
+    }
+
+    frame->vars = newVars;
 }
 
 /* Documented in header. */
 void frameBind(Frame *frame, zvalue name, zvalue value) {
     zvalue box = findBox(frame, name);
     boxStore(box, value);
-}
-
-/* Documented in header. */
-void frameDeclare(Frame *frame, zvalue name) {
-    bindBox(frame, name, makePromise());
 }
 
 /* Documented in header. */

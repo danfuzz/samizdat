@@ -188,13 +188,14 @@ static zvalue makeVarBind(zvalue name, zvalue value) {
 }
 
 /* Documented in spec. */
-static zvalue makeVarDeclare(zvalue name) {
-    return makeTransValue(STR_varDeclare, mapFrom1(STR_name, name));
+static zvalue makeVarDef(zvalue name, zvalue value) {
+    return makeTransValue(STR_varDef,
+        mapFrom2(STR_name, name, STR_value, value));
 }
 
 /* Documented in spec. */
-static zvalue makeVarDef(zvalue name, zvalue value) {
-    return makeTransValue(STR_varDef,
+static zvalue makeVarDefMutable(zvalue name, zvalue value) {
+    return makeTransValue(STR_varDefMutable,
         mapFrom2(STR_name, name, STR_value, value));
 }
 
@@ -396,16 +397,29 @@ DEF_PARSE(varRef) {
 DEF_PARSE(varDef) {
     MARK();
 
-    MATCH_OR_REJECT(def);
-    zvalue name = MATCH_OR_REJECT(identifier);
+    bool isMutable;
 
-    if (!MATCH(CH_EQUAL)) {
-        return makeVarDeclare(dataOf(name));
+    if (MATCH(def)) {
+        isMutable = false;
+    } else {
+        MATCH_OR_REJECT(var);
+        isMutable = true;
     }
 
-    zvalue expression = PARSE_OR_REJECT(expression);
+    zvalue name = MATCH_OR_REJECT(identifier);
 
-    return makeVarDef(dataOf(name), expression);
+    zvalue expr;
+    if (MATCH(CH_EQUAL)) {
+        expr = PARSE_OR_REJECT(expression);
+    } else {
+        expr = NULL;
+    }
+
+    if (isMutable) {
+        return makeVarDefMutable(dataOf(name), expr);
+    } else {
+        return makeVarDef(dataOf(name), expr);
+    }
 }
 
 /* Documented in spec. */
@@ -611,7 +625,7 @@ DEF_PARSE(fnDef) {
 
     return makeTransValue(STR_topDeclaration,
         mapFrom2(
-            STR_top,  makeVarDeclare(name),
+            STR_top,  makeVarDef(name, NULL),
             STR_main, makeVarBind(name, closure)));
 }
 
@@ -630,7 +644,7 @@ DEF_PARSE(fnExpression) {
         STR_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
-            STR_statements, listFrom1(makeVarDeclare(name)),
+            STR_statements, listFrom1(makeVarDef(name, NULL)),
             STR_yield,      makeVarBind(name, closure)));
 
     return makeCall(mainClosure, NULL);
