@@ -251,33 +251,32 @@ fn processStringParts(parts) {
     ifIs { <> eq(parts, []) }
         { return @string("") };
 
-    ## If there is an error part (represented as an `@error` token), return
-    ## it.
-    Generator::filterPump(parts)
-        { part ->
-            <> ifIs { <> hasType(part, "error") }
-                { return part }
-        };
-
     ## Coalesce adjacent literal strings in `parts`. The result is an
-    ## `elems` list consisting of multi-character strings and
+    ## `elems` list consisting of alternating multi-character strings and
     ## interpolation maps.
-    def elems = Generator::doReduce1(
-        Sequence::sliceInclusive(parts, 1),
-        [get(parts, 0)])
-        { part, result ->
-            <> ifValue
-                {
-                    <> [
-                        &isString(Sequence::nthFromEnd(result, 0)),
-                        &isString(part)
-                    ]
-                }
-                { newLast ->
-                    <> [Sequence::sliceExclusive(result, 0)*, cat(newLast*)]
-                }
-                { <> [result*, part] };
-        };
+    var elems = [];
+    Generator::filterPump(parts) { <next> part ->
+        ## If there is an error part (represented as an `@error` token),
+        ## return it.
+        ifIs { <> hasType(part, "error") }
+            { return part };
+
+        ifValue { <> isString(&Sequence::nthFromEnd(elems, 0)) }
+            { lastString ->
+                ifIs { <> isString(part) }
+                    {
+                        ## The last item in `elems` and the current `part`
+                        ## are both strings. Combine them.
+                        elems := [
+                            Sequence::sliceExclusive(elems, 0)*,
+                            cat(lastString, part)
+                        ];
+                        <next>
+                    }
+            };
+
+        elems := [elems*, part]
+    };
 
     ## Check for a simple result.
     ifIs { <> eq(Collection::sizeOf(elems), 1) }
