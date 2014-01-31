@@ -629,18 +629,20 @@ parUnaryExpression := {/
         ## Note: Layer 2 adds prefix operator parsing here.
         prefixes = (%parPrefixOperator2)*
         base = parTerm
-        { <> {base, prefixes} }
+        ## Reverse the `prefixes` list, so that prefixes are applied
+        ## in outward order from the base term.
+        { <> {base, prefixes: Sequence::reverse(prefixes)} }
     )
 
     postfixes = parPostfixOperator*
 
     {
-        def base = basePrefixes::base;
         def prefixes = basePrefixes::prefixes;
-        def withPosts = Generator::doReduce1(postfixes, base)
-            { op, result <> op(result) };
-        <> Generator::doReduce1(Sequence::reverse(prefixes), withPosts)
-            { op, result <> op(result) }
+        var result = basePrefixes::base;
+
+        Generator::filterPump(postfixes) { op -> result := op(result) };
+        Generator::filterPump(prefixes) { op -> result := op(result) };
+        <> result
     }
 /};
 

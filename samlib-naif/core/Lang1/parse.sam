@@ -478,10 +478,20 @@ def parPostfixOperator = Peg::makeMainChoice(
 
 ## Documented in spec.
 parUnaryExpression := Peg::makeMainSequence(
-    parTerm,
+    Peg::makeChoice(
+        Peg::makeSequence(
+            parTerm,
+            Peg::makeCode { base <> {base, prefixes: []} }),
+        ## This is a stub representing the layer 2 part of the rule.
+        Peg::fail),
     Peg::makeStar(parPostfixOperator),
-    Peg::makeCode { base, postfixes ->
-        <> Generator::doReduce1(postfixes, base) { op, result <> op(result) }
+    Peg::makeCode { basePrefixes, postfixes ->
+        def prefixes = basePrefixes::prefixes;
+        var result = basePrefixes::base;
+
+        Generator::filterPump(postfixes) { op -> result := op(result) };
+        Generator::filterPump(prefixes) { op -> result := op(result) };
+        <> result
     });
 
 ## Documented in spec.
