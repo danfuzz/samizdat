@@ -12,6 +12,7 @@ def get_function   = Lang0Node::get_function;
 def get_name       = Lang0Node::get_name;
 def get_statements = Lang0Node::get_statements;
 def get_value      = Lang0Node::get_value;
+def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
@@ -66,7 +67,7 @@ genericBind(
             return already;
         };
 
-        def result = @literalRef(#lits);
+        def result = @literalRef{id: #lits};
         Box::store(litsBox, {lits*, (value): result});
         <> result
     });
@@ -85,8 +86,8 @@ genericBind(
     lits,
     "varDef",
     fn varDef_lits(node, litsBox) {
-        def value = ifValue { <> nodeValue::value }
-            { value <> {value: lits(value, bodiesBox)} }
+        def value = ifValue { <> node.value }
+            { value <> {value: lits(value, litsBox)} }
             { <> {} };
         <> @varDef{name: node.name, value*}
     });
@@ -95,8 +96,8 @@ genericBind(
     lits,
     "varDefMutable",
     fn varDefMutable_lits(node, litsBox) {
-        def value = ifValue { <> nodeValue::value }
-            { value <> {value: lits(value, bodiesBox)} }
+        def value = ifValue { <> node.value }
+            { value <> {value: lits(value, litsBox)} }
             { <> {} };
         <> @varDefMutable{name: node.name, value*}
     });
@@ -126,7 +127,7 @@ fn collectLiterals(node) {
 
     def litsBoxList = [ n in (0..#literalsMap) <> Box::makePromise() ];
     for (l in literalsMap) {
-        def index = dataOf(valueOf(l));
+        def index = dataOf(valueOf(l))::id;
         Box::store(litsBoxList[index], keyOf(l))
     };
     def literals = [ box in litsBoxList <> Box::fetch(box) ];

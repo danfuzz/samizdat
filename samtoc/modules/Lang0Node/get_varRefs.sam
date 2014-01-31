@@ -1,0 +1,129 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def getters = submoduleUse("getters");
+def get_varDefs = submoduleUse("get_varDefs")::get_varDefs;
+
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
+## TODO: Ought to be able to do something like:
+##     use .getters *;
+def get_actuals    = getters::get_actuals;
+def get_formals    = getters::get_formals;
+def get_function   = getters::get_function;
+def get_name       = getters::get_name;
+def get_statements = getters::get_statements;
+def get_value      = getters::get_value;
+def get_yield      = getters::get_yield;
+def get_yieldDef   = getters::get_yieldDef;
+
+## generic `get_varRefs(node)`, returns free variable references of `node`,
+## as a set-like map of names.
+def get_varRefs = makeRegularGeneric("get_varRefs", 1, 1);
+
+## Extracts and combines the `varRefs` of all the arguments.
+fn catVarRefs(nodes*) {
+    <> {}.cat(( n in nodes <> n.varRefs )*)
+};
+
+genericBind(
+    get_varRefs,
+    "call",
+    fn call_get_varRefs(node) {
+        <> catVarRefs(node.function, node.actuals*)
+    });
+
+genericBind(
+    get_varRefs,
+    "closure",
+    fn closure_get_varRefs(node) {
+        ## `baseLocals` is the set of all local variables defined at the
+        ## top of the closure, including formal arguments and a yield def
+        ## (if any).
+        def yieldDef = (def yd = node.yieldDef) & {(yd): null} | {};
+        def baseLocals = yieldDef.cat(( f in node.formals ->
+            <> (def name = f::name) & {(name): null}
+        )*);
+
+        ## The extra element at the end is to represent the closure yield.
+        def statementDefs = [( s in node.statements <> s.varDefs )*, {}];
+
+        ## What's happening here is that for each statement (and the yield at
+        ## the end), we get its variable references and remove from them refs
+        ## for any variables that are locally defined before the statement.
+        ## This produces the array `statementRefs` whose elements are merged,
+        ## producing the full set of free variables referenced by the closure
+        ## as a whole.
+        def statementRefs = (
+                s in [node.statements*, node.yield?*],
+                idx in (0..) ->
+            def defs =
+                Collection::keyList(baseLocals.cat(statementDefs[..!idx]*));
+            var refs = s.varRefs;
+            for (d in defs) {
+               refs := Collection::del(refs, d)
+            };
+            <> refs
+        );
+
+        <> cat(statementRefs*)
+    });
+
+genericBind(
+    get_varRefs,
+    "expression",
+    fn expression_get_varRefs(node) {
+        <> node.value.varRefs
+    });
+
+genericBind(
+    get_varRefs,
+    "interpolate",
+    fn interpolate_get_varRefs(node) {
+        <> node.value.varRefs
+    });
+
+genericBind(
+    get_varRefs,
+    "literalRef",
+    fn literalRef_get_varRefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varRefs,
+    "varBind",
+    fn varBind_get_varRefs(node) {
+        <> node.value.varRefs
+    });
+
+genericBind(
+    get_varRefs,
+    "varDef",
+    fn varDef_get_varRefs(node) {
+        <> (def v = node.value) & v.varRefs | {}
+    });
+
+genericBind(
+    get_varRefs,
+    "varDefMutable",
+    fn varDefMutable_get_varRefs(node) {
+        <> (def v = node.value) & v.varRefs | {}
+    });
+
+genericBind(
+    get_varRefs,
+    "varRef",
+    fn varRef_get_varRefs(node) {
+        <> {(node.name): null}
+    });
+
+genericBind(
+    get_varRefs,
+    "voidable",
+    fn voidable_get_varRefs(node) {
+        <> node.value.varRefs
+    });
+
+<> {get_varRefs}

@@ -12,6 +12,7 @@
         "get_name",
         "get_statements",
         "get_value",
+        "get_varRefs",
         "get_yield",
         "get_yieldDef"
     ]

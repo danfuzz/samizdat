@@ -1,0 +1,68 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Convenient access to execution parse trees.
+##
+
+## Accessor for `call` nodes.
+
+fn get_actuals(node) {
+    <> dataOf(node)::actuals
+};
+
+## Accessor for `closure` nodes.
+
+fn get_formals(node) {
+    <> dataOf(node)::formals
+};
+
+## Accessor for `call` nodes.
+
+fn get_function(node) {
+    <> dataOf(node)::function
+};
+
+## Accessor for `closure`, `varBind`, `varDef`, `varDefMutable`, and `varRef`
+## nodes.
+
+fn get_name(node) {
+    <> dataOf(node)::name
+};
+
+## Accessor for `closure` nodes.
+
+fn get_statements(node) {
+    <> dataOf(node)::statements
+};
+
+## Accessor for `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
+## `varDefMutable` and `voidable` nodes.
+
+fn get_value(node) {
+    <> dataOf(node)::value
+};
+
+## Accessor for `closure` nodes.
+
+fn get_yield(node) {
+    <> dataOf(node)::yield
+};
+
+## Accessor for `closure` nodes.
+
+fn get_yieldDef(node) {
+    <> dataOf(node)::yieldDef
+};
+
+<> {
+    get_actuals,
+    get_formals,
+    get_function,
+    get_name,
+    get_statements,
+    get_value,
+    get_yield,
+    get_yieldDef
+}

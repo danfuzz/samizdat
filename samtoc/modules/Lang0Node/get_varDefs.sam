@@ -1,0 +1,81 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def get_name = submoduleUse("getters")::get_name;
+
+## generic `get_varDefs(node)`, returns set-like map of variable names
+## newly-defined by `node`.
+def get_varDefs = makeRegularGeneric("get_varDefs", 1, 1);
+
+genericBind(
+    get_varDefs,
+    "call",
+    fn call_get_varDefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varDefs,
+    "closure",
+    fn closure_get_varDefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varDefs,
+    "expression",
+    fn expression_get_varDefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varDefs,
+    "interpolate",
+    fn interpolate_get_varDefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varDefs,
+    "literalRef",
+    fn literalRef_get_varDefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varDefs,
+    "varBind",
+    fn varBind_get_varDefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varDefs,
+    "varDef",
+    fn varDef_get_varDefs(node) {
+        <> {(node.name): null}
+    });
+
+genericBind(
+    get_varDefs,
+    "varDefMutable",
+    fn varDef_get_varDefs(node) {
+        <> {(node.name): null}
+    });
+
+genericBind(
+    get_varDefs,
+    "varRef",
+    fn varRef_get_varDefs(node) {
+        <> {}
+    });
+
+genericBind(
+    get_varDefs,
+    "voidable",
+    fn voidable_get_varDefs(node) {
+        <> {}
+    });
+
+<> {get_varDefs}

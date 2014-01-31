@@ -3,66 +3,12 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Convenient access to execution parse trees.
+## Exported Definitions
 ##
 
-## Accessor for `call` nodes.
-
-fn get_actuals(node) {
-    <> dataOf(node)::actuals
-};
-
-## Accessor for `closure` nodes.
-
-fn get_formals(node) {
-    <> dataOf(node)::formals
-};
-
-## Accessor for `call` nodes.
-
-fn get_function(node) {
-    <> dataOf(node)::function
-};
-
-## Accessor for `closure`, `varBind`, `varDef`, and `varRef`
-## nodes.
-
-fn get_name(node) {
-    <> dataOf(node)::name
-};
-
-## Accessor for `closure` nodes.
-
-fn get_statements(node) {
-    <> dataOf(node)::statements
-};
-
-## Accessor for `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
-## and `voidable` nodes.
-
-fn get_value(node) {
-    <> dataOf(node)::value
-};
-
-## Accessor for `closure` nodes.
-
-fn get_yield(node) {
-    <> dataOf(node)::yield
-};
-
-## Accessor for `closure` nodes.
-
-fn get_yieldDef(node) {
-    <> dataOf(node)::yieldDef
-};
-
+## This just re-exports stuff defined in submodules.
 <> {
-    get_actuals:    get_actuals,
-    get_formals:    get_formals,
-    get_function:   get_function,
-    get_name:       get_name,
-    get_statements: get_statements,
-    get_value:      get_value,
-    get_yield:      get_yield,
-    get_yieldDef:   get_yieldDef
+    (submoduleUse("get_varDefs"))*,
+    (submoduleUse("get_varRefs"))*,
+    (submoduleUse("getters"))*
 }

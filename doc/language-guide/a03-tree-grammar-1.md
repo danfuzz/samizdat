@@ -163,16 +163,16 @@ def parVarRef = {/
 
 ## Parses a variable definition or declaration.
 def parVarDef = {/
-    @def
+    style = [@def @var]
     name = @identifier
+    optExpr = (@"=" parExpression)?
 
-    (
-        @"="
-        ex = parExpression
-        { <> makeVarDef(dataOf(name), ex) }
-    |
-        { <> makeVarDef(dataOf(name)) }
-    )
+    {
+        def nameString = dataOf(name);
+        <> ifIs { <> hasType(style, "def") }
+            { <> makeVarDef(nameString, optExpr*) }
+            { <> makeVarDefMutable(nameString, optExpr*) }
+    }
 /};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
