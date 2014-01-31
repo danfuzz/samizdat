@@ -607,7 +607,7 @@ parUnaryExpression := {/
         { <> {base, prefixes: []} }
     |
         ## Note: Layer 2 adds prefix operator parsing here.
-        prefixes = !()
+        prefixes = (!())*
         base = parTerm
         { <> {base, prefixes} }
     )
