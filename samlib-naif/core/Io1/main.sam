@@ -143,15 +143,22 @@ fn dieWith(msg, path) {
 ## Helper for `sandboxedReader` which does symbolic link resolution,
 ## respecting the sandbox directory.
 fn resolveLinks(sandboxDirectory, path) {
-    loopReduce(path, 50) { path, limit ->
-        ifIs { <> le(limit, 0) }
+    var result = path;
+    var limit = 50;
+
+    loop {
+        ifIs { <> perLe(limit, 0) }
             { Io0::die("Too many links in symbolic link chain.") };
-        ifNot { <> isPrefix(sandboxDirectory, path) }
+
+        ifNot { <> isPrefix(sandboxDirectory, result) }
             { Io0::die("Symbolic link escapes sandbox directory.") };
 
-        <> ifValue { <> readLink(path) }
-            { newPath <> [newPath, Number::sub(limit, 1)] }
-            { return path }
+        <> ifValue { <> readLink(result) }
+            { newPath ->
+                result := newPath;
+                limit := Number::sub(limit, 1)
+            }
+            { return result }
     }
 };
 
