@@ -33,21 +33,22 @@ fn FilterGenerator_nextValue(gen, box) {
     ## This loop handles the fact that the filter function is
     ## allowed to yield void to indicate a generated value is to
     ## be discarded.
-    loopReduce(payload::generator) { <next> gen ->
+    var innerGen = payload::generator;
+    loop { <next> ->
         def innerBox = Box::makePromise();
 
-        ifValue { <> Generator::nextValue(gen, innerBox) }
-            { nextGenerator ->
+        ifValue { <> Generator::nextValue(innerGen, innerBox) }
+            { nextGen ->
                 ifValue { <> filterFunction(Box::fetch(innerBox)*) }
                     { value ->
                         Box::store(box, value);
                         return @FilterGenerator(
-                            Collection::put(payload, "generator",
-                                nextGenerator))
+                            Collection::put(payload, "generator", nextGen))
                     }
                     {
                         ## The filter discarded the value. Iterate!
-                        <next> [nextGenerator]
+                        innerGen := nextGen;
+                        <next>
                     }
             };
 
