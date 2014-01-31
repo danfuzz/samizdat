@@ -29,21 +29,30 @@ PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 ## Converts an unstructured string into a list-of-strings, by delimiting on
 ## the given character. Empty strings are discarded from the result list.
 fn splitString(string, delimCh) {
-    ## Append to list, ignoring empty strings.
+    ## Appends `one` to the end of `list`, ignoring empty strings.
     fn appendNonempty(list, one) {
         <> ifIs { <> eq(one, "") }
             { <> list }
             { <> [list*, one] }
     };
 
-    loopReduce(string, [], "") { str, result, one ->
+    var str = string;
+    var result = [];
+    var nextItem = "";
+
+    loop {
         ifIs { <> eq(str, "") }
-            { return appendNonempty(result, one) };
+            { return appendNonempty(result, nextItem) };
+
         def ch = Sequence_nth(str, 0);
-        def newStr = Sequence_sliceInclusive(str, 1);
-        <> ifIs { <> eq(ch, delimCh) }
-            { <> [newStr, appendNonempty(result, one), ""] }
-            { <> [newStr, result, cat(one, ch)] };
+        str := Sequence_sliceInclusive(str, 1);
+
+        ifIs { <> eq(ch, delimCh) }
+            {
+                result := appendNonempty(result, nextItem);
+                nextItem := ""
+            }
+            { nextItem := cat(nextItem, ch) }
     }
 };
 
