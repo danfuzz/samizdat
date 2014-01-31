@@ -165,16 +165,6 @@ static zvalue execVarBind(Frame *frame, zvalue varBind) {
 }
 
 /**
- * Executes a `varDeclare` form, by updating the given execution frame
- * as appropriate.
- */
-static void execVarDeclare(Frame *frame, zvalue varDeclare) {
-    zvalue name = collGet(dataOf(varDeclare), STR_name);
-
-    frameDeclare(frame, name);
-}
-
-/**
  * Executes a `varDef` form, by updating the given execution frame
  * as appropriate.
  */
@@ -182,9 +172,26 @@ static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = dataOf(varDef);
     zvalue name = collGet(nameValue, STR_name);
     zvalue valueExpression = collGet(nameValue, STR_value);
-    zvalue value = execExpression(frame, valueExpression);
+    zvalue value = valueExpression
+        ? execExpression(frame, valueExpression)
+        : NULL;
 
-    frameAdd(frame, name, value);
+    frameDef(frame, false, name, value);
+}
+
+/**
+ * Executes a `varDefMutable` form, by updating the given execution frame
+ * as appropriate.
+ */
+static void execVarDefMutable(Frame *frame, zvalue varDef) {
+    zvalue nameValue = dataOf(varDef);
+    zvalue name = collGet(nameValue, STR_name);
+    zvalue valueExpression = collGet(nameValue, STR_value);
+    zvalue value = valueExpression
+        ? execExpression(frame, valueExpression)
+        : NULL;
+
+    frameDef(frame, true, name, value);
 }
 
 /**
@@ -219,9 +226,9 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /* Documented in header. */
 void execStatement(Frame *frame, zvalue statement) {
     switch (evalTypeOf(statement)) {
-        case EVAL_varDeclare: execVarDeclare(frame, statement);       break;
-        case EVAL_varDef:     execVarDef(frame, statement);           break;
-        default:              execExpressionVoidOk(frame, statement); break;
+        case EVAL_varDef:        execVarDef(frame, statement);           break;
+        case EVAL_varDefMutable: execVarDefMutable(frame, statement);    break;
+        default:                 execExpressionVoidOk(frame, statement); break;
     }
 }
 

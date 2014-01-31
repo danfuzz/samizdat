@@ -285,20 +285,27 @@ fn varBind_convertPexIn(node) {
 };
 genericBind(convertPexIn, "varBind", varBind_convertPexIn);
 
-## Does parser conversion of a `varDeclare` node.
-fn varDeclare_convertPexIn(node) {
-    <> node
-};
-genericBind(convertPexIn, "varDeclare", varDeclare_convertPexIn);
-
 ## Does parser conversion of a `varDef` node.
 fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
-    def value = convertPexIn(nodeValue::value);
+    def value = ifValue { <> nodeValue::value }
+        { value <> {value: convertPexIn(value)} }
+        { <> {} };
 
-    <> @varDef{nodeValue*, value}
+    <> @varDef{nodeValue*, value*}
 };
 genericBind(convertPexIn, "varDef", varDef_convertPexIn);
+
+## Does parser conversion of a `varDefMutable` node.
+fn varDefMutable_convertPexIn(node) {
+    def nodeValue = dataOf(node);
+    def value = ifValue { <> nodeValue::value }
+        { value <> {value: convertPexIn(value)} }
+        { <> {} };
+
+    <> @varDefMutable{nodeValue*, value*}
+};
+genericBind(convertPexIn, "varDefMutable", varDefMutable_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {

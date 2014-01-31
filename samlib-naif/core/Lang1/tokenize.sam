@@ -18,7 +18,7 @@
 ## Documented in spec.
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
-        "def", "fn", "return",
+        "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
         []*])
         { name <> {(name): @(name)} });

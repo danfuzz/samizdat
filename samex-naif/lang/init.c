@@ -37,14 +37,14 @@ MOD_INIT(lang) {
     MOD_USE(NonlocalExit);
 
     memset(langTypeMap, 0, sizeof(langTypeMap));
-    langTypeMap[typeIndex(STR_call)]        = EVAL_call;
-    langTypeMap[typeIndex(STR_closure)]     = EVAL_closure;
-    langTypeMap[typeIndex(STR_expression)]  = EVAL_expression;
-    langTypeMap[typeIndex(STR_interpolate)] = EVAL_interpolate;
-    langTypeMap[typeIndex(STR_literal)]     = EVAL_literal;
-    langTypeMap[typeIndex(STR_varBind)]     = EVAL_varBind;
-    langTypeMap[typeIndex(STR_varDeclare)]  = EVAL_varDeclare;
-    langTypeMap[typeIndex(STR_varDef)]      = EVAL_varDef;
-    langTypeMap[typeIndex(STR_varRef)]      = EVAL_varRef;
-    langTypeMap[typeIndex(STR_voidable)]    = EVAL_voidable;
+    langTypeMap[typeIndex(STR_call)]          = EVAL_call;
+    langTypeMap[typeIndex(STR_closure)]       = EVAL_closure;
+    langTypeMap[typeIndex(STR_expression)]    = EVAL_expression;
+    langTypeMap[typeIndex(STR_interpolate)]   = EVAL_interpolate;
+    langTypeMap[typeIndex(STR_literal)]       = EVAL_literal;
+    langTypeMap[typeIndex(STR_varBind)]       = EVAL_varBind;
+    langTypeMap[typeIndex(STR_varDef)]        = EVAL_varDef;
+    langTypeMap[typeIndex(STR_varDefMutable)] = EVAL_varDefMutable;
+    langTypeMap[typeIndex(STR_varRef)]        = EVAL_varRef;
+    langTypeMap[typeIndex(STR_voidable)]      = EVAL_voidable;
 }

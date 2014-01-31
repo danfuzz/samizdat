@@ -25,8 +25,8 @@ typedef enum {
     EVAL_interpolate,
     EVAL_literal,
     EVAL_varBind,
-    EVAL_varDeclare,
     EVAL_varDef,
+    EVAL_varDefMutable,
     EVAL_varRef,
     EVAL_voidable
 } zevalType;
@@ -98,19 +98,16 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
 void frameMark(Frame *frame);
 
 /**
- * Adds a new variable to the given frame.
+ * Defines a new variable to the given frame, optionally binding it to a value
+ * (that is, if `value` is `NULL` then the variable is created but not bound),
+ * and making it either mutable or immutable as specified.
  */
-void frameAdd(Frame *frame, zvalue name, zvalue value);
+void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value);
 
 /**
  * Binds the given variable in the given frame.
  */
 void frameBind(Frame *frame, zvalue name, zvalue value);
-
-/**
- * Declares a bind-once variable in the given frame.
- */
-void frameDeclare(Frame *frame, zvalue name);
 
 /**
  * Gets a variable's value out of the given frame.

@@ -24,7 +24,7 @@ fn get_function(node) {
     <> dataOf(node)::function
 };
 
-## Accessor for `closure`, `varBind`, `varDeclare`, `varDef`, and `varRef`
+## Accessor for `closure`, `varBind`, `varDef`, and `varRef`
 ## nodes.
 
 fn get_name(node) {
