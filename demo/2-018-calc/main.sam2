@@ -49,23 +49,27 @@ fn applyShuntingYard(initialValue, opValues) {
     fn applyTop(ops, values) {
         def function = ops[^0]::function;
         def newValue = function(values[^1..]*);
-        <> [
-            ops[..!],
-            [values[..!^1]*, newValue]
-        ]
+        <> {
+            ops: ops[..!],
+            values: [values[..!^1]*, newValue]
+        }
     };
 
     ## Reduces the given pending stack with knowledge that the next operator
     ## to apply is of the given precedence.
-    fn reducePending(ops, values, precedence) {
-        loopReduce(ops, values)
-            { <next> ops, values ->
-                if (  (def lastOp = ops[^0])
-                    & (lastOp::precedence >= precedence)) {
-                    <next> applyTop(ops, values)
-                };
-                return [ops, values]
-            }
+    fn reducePending(origOps, origValues, precedence) {
+        var ops = origOps;
+        var values = origValues;
+        loop { <next> ->
+            if (  (def lastOp = ops[^0])
+                & (lastOp::precedence >= precedence)) {
+                def opVal = applyTop(ops, values);
+                ops := opVal::ops;
+                values := opVal::values;
+                <next>
+            };
+            return [ops, values]
+        }
     };
 
     loopReduce([], [initialValue], opValues) { ops, values, opValues ->

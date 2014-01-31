@@ -51,24 +51,31 @@ fn applyShuntingYard(initialValue, opValues) {
         def function = Sequence::nthFromEnd(ops, 0)::function;
         def newValue =
             function(Sequence::sliceInclusive(values, valuesSizeM2)*);
-        <> [
-            Sequence::sliceExclusive(ops, 0),
-            [Sequence::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
-        ]
+        <> {
+            ops: Sequence::sliceExclusive(ops, 0),
+            values:
+                [Sequence::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
+        }
     };
 
     ## Reduces the given pending stack with knowledge that the next operator
     ## to apply is of the given precedence.
-    fn reducePending(ops, values, precedence) {
-        loopReduce(ops, values)
-            { <next> ops, values ->
-                ifValue { <> Sequence::nthFromEnd(ops, 0) }
-                    { lastOp ->
-                        ifIs { <> ge(lastOp::precedence, precedence) }
-                            { <next> applyTop(ops, values) }
-                    };
-                return [ops, values]
-            }
+    fn reducePending(origOps, origValues, precedence) {
+        var ops = origOps;
+        var values = origValues;
+        loop { <next> ->
+            ifValue { <> Sequence::nthFromEnd(ops, 0) }
+                { lastOp ->
+                    ifIs { <> ge(lastOp::precedence, precedence) }
+                        {
+                            def opVal = applyTop(ops, values);
+                            ops := opVal::ops;
+                            values := opVal::values;
+                            <next>
+                        }
+                };
+            return [ops, values]
+        }
     };
 
     loopReduce([], [initialValue], opValues) { ops, values, opValues ->
