@@ -40,7 +40,7 @@ fn applyAll(initialValue, functions) {
     <> result
 };
 
-## Takes an initial value and a list of maps of `[op, value]`,
+## Takes an initial value and a list of maps of `{op, value}`,
 ## and evaluates the result using the "shunting yard" algorithm.
 fn applyShuntingYard(initialValue, opValues) {
     ## Reduces the top of the given pending stack. That is, it takes the
@@ -68,7 +68,7 @@ fn applyShuntingYard(initialValue, opValues) {
                 values := opVal::values;
                 <next>
             };
-            return [ops, values]
+            return {ops, values}
         }
     };
 
@@ -77,7 +77,7 @@ fn applyShuntingYard(initialValue, opValues) {
             ## Use precedence `-1` to drain the op stack, leaving a single
             ## value.
             def finalResult = reducePending(ops, values, -1);
-            return finalResult[1][^0]
+            return finalResult::values[^0]
         };
 
         def nextOpValue = opValues[0];
@@ -85,8 +85,8 @@ fn applyShuntingYard(initialValue, opValues) {
         def nextVal = nextOpValue::value;
         def newPending = reducePending(ops, values, nextOp::precedence);
         <> [
-            [newPending[0]*, nextOp],
-            [newPending[1]*, nextVal],
+            [newPending::ops*, nextOp],
+            [newPending::values*, nextVal],
             opValues[1..]
         ]
     }
