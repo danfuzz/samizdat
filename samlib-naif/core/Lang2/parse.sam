@@ -1636,8 +1636,7 @@ def parLogicAndClause = {/
 def parLogicAndExpression = {/
     ## This is done with the `*` on the list head (that is, most-then-last
     ## instead of the more usual arrangement of first-then-rest), since the
-    ## last clause is special in that it can't be an assignment. The last
-    ## clause is also the base case for the `doReduce1` call.
+    ## last clause is special in that it can't be an assignment.
     most = (
         clause = parLogicAndClause
         @"&"
@@ -1713,14 +1712,16 @@ def parLogicOrExpression = {/
         }
     |
         {
-            def allExprs = Sequence::reverse([one, rest*]);
-            <> Generator::doReduce1(
-                Sequence::sliceInclusive(allExprs, 1),
-                get(allExprs, 0))
-                { ex, result ->
-                    <> makeCallName("ifValueOr",
-                        makeThunk(ex), makeThunk(result))
-                }
+            ## Reverse, because we're building the result from the inside out.
+            def exprs = Sequence::reverse([one, rest*]);
+            var result = Sequence::nth(exprs, 0);
+
+            Generator::filterPump(Sequence::sliceInclusive(exprs, 1)) { ex ->
+                result := makeCallName("ifValueOr",
+                    makeThunk(ex), makeThunk(result))
+            };
+
+            <> result
         }
     )
 /};
@@ -1872,13 +1873,12 @@ def parIfExpression = {/
         ## To keep things simple, partial results are always thunks wrapped
         ## in a single-element list, so that they can be slotted directly into
         ## place as the third argument to an enclosing `if*` by saying
-        ## `result*` (which also handles the case of a missing final `else`).
-        def reduction = Generator::doReduce1(clauses, optElse)
-            { clause, optResult ->
-                def maker = clause::maker;
-                def then = clause::then;
-                <> [makeThunk(maker(then, optResult*))]
-            };
+        ## `reduction*` (which also handles the case of a missing final
+        ## `else`).
+        var reduction = optElse;
+        Generator::filterPump(clauses) { clause ->
+            reduction := [makeThunk(clause::maker(clause::then, reduction*))]
+        };
 
         ## Unwrap the single-element `reduction` result list;
         def mainThunk = reduction*;
