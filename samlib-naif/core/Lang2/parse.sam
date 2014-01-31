@@ -1048,31 +1048,27 @@ def BINARY_OPERATORS = {
 ## a sequence of function calls. `voidable`, if passed as `true`, indicates
 ## that the inner calls should be made voidable.
 fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
-    ifIs { <> eq(opExList, []) }
+    ifIs { <> perEq(opExList, []) }
         {
             ## Don't bother with the rest if there are no ops to apply.
-            ## This avoids having to special-case the voidable stuff.
             return firstEx
         };
 
     def voidable = ifValueOr { <> optVoidable* } { <> false };
+    var result = firstEx;
 
-    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
-        def op = Collection::get(opEx, 0);
-        def ex = Collection::get(opEx, 1);
+    Generator::filterPump(opExList) { opEx ->
+        def op = Sequence::nth(opEx, 0);
+        def ex = Sequence::nth(opEx, 1);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
-        def call = makeCall(resolvedOp, result, ex);
 
-        <> ifIs { <> eq(voidable, true) }
-            { <> @voidable{value: call} }
-            { <> call }
+        ifIs { <> perEq(voidable, true) }
+            { result := @voidable{value: result} };
+
+        result := makeCall(resolvedOp, result, ex)
     };
 
-    ## For an inner-voidable expression, unwrap the outermost layer of
-    ## voidability.
-    <> ifIs { <> eq(voidable, true) }
-        { <> dataOf(result)::value }
-        { <> result }
+    <> result
 };
 
 ## Helper for string interpolation: Parses the two kinds of interpolation,
