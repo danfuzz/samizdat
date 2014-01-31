@@ -53,17 +53,15 @@ genericBind(
 
         def statementRefs = [
                 s in [node.statements*, node.yield?*],
-                idx in (0..#statementDefs) ->
+                idx in (0..) ->
             def defs =
                 Collection::keyList(baseLocals.cat(statementDefs[..!idx]*));
-            ## TODO: Need mutable variables for this!
-            ## var refs = s.varRefs;
-            ## for (d in defs) {
-            ##    refs := Collection::del(refs, d)
-            ## };
-            ## Io1::note("=== stat#\(idx): \%q(refs)");
-            Io1::note("=== stat#\(idx): \%q(defs)");
-            <> defs
+            var refs = s.varRefs;
+            for (d in defs) {
+               refs := Collection::del(refs, d)
+            };
+            Io1::note("=== stat#\(idx): \%q(refs)");
+            <> refs
         ];
 
         <> catVarRefs(node.yield?*, node.statements*)
@@ -101,14 +99,14 @@ genericBind(
     get_varRefs,
     "varDef",
     fn varDef_get_varRefs(node) {
-        <> (def v = node.value) & v.varRefs
+        <> (def v = node.value) & v.varRefs | {}
     });
 
 genericBind(
     get_varRefs,
     "varDefMutable",
     fn varDefMutable_get_varRefs(node) {
-        <> (def v = node.value) & v.varRefs
+        <> (def v = node.value) & v.varRefs | {}
     });
 
 genericBind(
