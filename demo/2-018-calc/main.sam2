@@ -61,8 +61,7 @@ fn applyShuntingYard(initialValue, opValues) {
         var ops = origOps;
         var values = origValues;
         loop { <next> ->
-            if (  (def lastOp = ops[^0])
-                & (lastOp::precedence >= precedence)) {
+            if ((def lastOp = ops[^0]) & (lastOp::precedence >= precedence)) {
                 def opVal = applyTop(ops, values);
                 ops := opVal::ops;
                 values := opVal::values;
@@ -72,24 +71,23 @@ fn applyShuntingYard(initialValue, opValues) {
         }
     };
 
-    loopReduce([], [initialValue], opValues) { ops, values, opValues ->
-        if (opValues == []) {
-            ## Use precedence `-1` to drain the op stack, leaving a single
-            ## value.
-            def finalResult = reducePending(ops, values, -1);
-            return finalResult::values[^0]
-        };
 
-        def nextOpValue = opValues[0];
-        def nextOp = nextOpValue::op;
-        def nextVal = nextOpValue::value;
-        def newPending = reducePending(ops, values, nextOp::precedence);
-        <> [
-            [newPending::ops*, nextOp],
-            [newPending::values*, nextVal],
-            opValues[1..]
-        ]
-    }
+    var ops = [];
+    var values = [initialValue];
+
+    for (opValue in opValues) {
+        def op = opValue::op;
+        def value = opValue::value;
+        def opVal = reducePending(ops, values, op::precedence);
+
+        ops := [opVal::ops*, op];
+        values := [opVal::values*, value]
+    };
+
+    ## Use precedence `-1` to drain the op stack, leaving a single
+    ## value.
+    def finalResult = reducePending(ops, values, -1);
+    return finalResult::values*
 };
 
 ## Forward declaration of `expression`.

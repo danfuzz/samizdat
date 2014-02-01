@@ -78,25 +78,22 @@ fn applyShuntingYard(initialValue, opValues) {
         }
     };
 
-    loopReduce([], [initialValue], opValues) { ops, values, opValues ->
-        ifIs { <> eq(opValues, []) }
-            {
-                ## Use precedence `-1` to drain the op stack, leaving a single
-                ## value.
-                def finalResult = reducePending(ops, values, -1);
-                return Sequence::nthFromEnd(finalResult::values, 0)
-            };
+    var ops = [];
+    var values = [initialValue];
 
-        def nextOpValue = get(opValues, 0);
-        def nextOp = nextOpValue::op;
-        def nextVal = nextOpValue::value;
-        def newPending = reducePending(ops, values, nextOp::precedence);
-        <> [
-            [newPending::ops*, nextOp],
-            [newPending::values*, nextVal],
-            Sequence::sliceInclusive(opValues, 1)
-        ]
-    }
+    Generator::filterPump(opValues) { opValue ->
+        def op = opValue::op;
+        def value = opValue::value;
+        def opVal = reducePending(ops, values, op::precedence);
+
+        ops := [opVal::ops*, op];
+        values := [opVal::values*, value]
+    };
+
+    ## Use precedence `-1` to drain the op stack, leaving a single
+    ## value.
+    def finalResult = reducePending(ops, values, -1);
+    return finalResult::values*
 };
 
 ## Forward declaration of `expression`.
