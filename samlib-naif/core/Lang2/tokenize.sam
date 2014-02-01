@@ -29,8 +29,7 @@ def KEYWORDS = Generator::collectAsMap(
         "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
         "break", "by", "continue", "default", "do", "else", "export",
-        "for", "if", "import", "in", "module", "reduce",
-        "switch", "while"])
+        "for", "if", "import", "in", "module", "switch", "while"])
         { name <> {(name): @(name)} });
 
 ## These are all the int digits, as a map from strings to digit values. This
@@ -245,8 +244,7 @@ def OPEN_CLOSE_MAP = {
 ## Processes a list of `stringPart` elements, yielding a literal `string`
 ## token, an `interpolatedString`, or an `error`.
 fn processStringParts(parts) {
-    ## Handle the empty string as a special case, to make the
-    ## reduce below be more straightforward.
+    ## Handle the empty string as a special case.
     ifIs { <> eq(parts, []) }
         { return @string("") };
 
