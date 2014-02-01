@@ -100,7 +100,6 @@ PRIM_FUNC(ifValueOr,             2, 2);
 PRIM_FUNC(ifValues,              2, 3);
 PRIM_FUNC(le,                    2, 2);
 PRIM_FUNC(loop,                  1, 1);
-PRIM_FUNC(loopReduce,            1, -1);
 PRIM_FUNC(lt,                    2, 2);
 PRIM_FUNC(makeList,              0, -1);
 PRIM_FUNC(makeRegularGeneric,    2, 3);

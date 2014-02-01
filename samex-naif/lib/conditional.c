@@ -90,21 +90,6 @@ FUN_IMPL_DECL(loop) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(loopReduce) {
-    zstackPointer save = datFrameStart();
-    zvalue function = args[0];
-    zvalue innerArgs = listFromArray(argCount - 1, &args[1]);
-
-    for (;;) {
-        zvalue nextArgs = funApply(function, innerArgs);
-        if (nextArgs != NULL) {
-            innerArgs = nextArgs;
-            datFrameReset(save, innerArgs);
-        }
-    }
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(optValue) {
     zvalue function = args[0];
     zvalue value = FUN_CALL(function);
