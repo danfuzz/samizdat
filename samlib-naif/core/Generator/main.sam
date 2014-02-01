@@ -48,48 +48,6 @@ fn filterAll(filterFunction, generators*) {
 };
 
 ## Documented in spec.
-fn doReduce(reduceFunction, generator, baseValues*) {
-    loopReduce(generator, baseValues)
-        { gen, values ->
-            def box = Box::makePromise();
-            <> ifValue { <> Generator::nextValue(gen, box) }
-                { nextGenerator ->
-                    <> ifValue { <> reduceFunction(Box::fetch(box), values*) }
-                        { nextValues <> [nextGenerator, nextValues] }
-                        {
-                            ## The reduce function discarded the values.
-                            <> [nextGenerator, values]
-                        }
-                }
-                {
-                    ## The generator was voided.
-                    return values
-                }
-        }
-};
-
-## Documented in spec.
-fn doReduce1(reduceFunction, generator, baseValue) {
-    loopReduce(generator, baseValue)
-        { gen, value ->
-            def box = Box::makePromise();
-            <> ifValue { <> Generator::nextValue(gen, box) }
-                { nextGenerator ->
-                    <> ifValue { <> reduceFunction(Box::fetch(box), value) }
-                        { nextVal <> [nextGenerator, nextVal] }
-                        {
-                            ## The reduce function discarded the value.
-                            <> [nextGenerator, value]
-                        }
-                }
-                {
-                    ## The generator was voided.
-                    return value
-                }
-        }
-};
-
-## Documented in spec.
 fn filterPump(filterFunction, generators*) {
     ifIs { <> eq(Collection::sizeOf(generators), 1) }
         {
@@ -114,7 +72,7 @@ fn filterPump(filterFunction, generators*) {
             var gen = ParaGenerator::makeParaGenerator(generators*);
             loop {
                 def box = Box::makePromise();
-                <> ifValue { <> Generator::nextValue(gen, box) }
+                ifValue { <> Generator::nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(Box::fetch(box)*);
                         gen := nextGen
@@ -129,9 +87,10 @@ fn filterPump(filterFunction, generators*) {
 
 ## Documented in spec.
 fn generatorPump(generator) {
-    loopReduce(generator) { gen ->
-        <> ifValue { <> Generator::nextValue(gen, Box::nullBox) }
-            { nextGen <> [nextGen] }
+    var gen = generator;
+
+    loop {
+        gen := ifValueOr { <> Generator::nextValue(gen, Box::nullBox) }
             { return }
     }
 };
@@ -157,8 +116,6 @@ fn generatorPump(generator) {
 
     ## Defined in this file.
     collectAsMap,
-    doReduce,
-    doReduce1,
     filterAll,
     filterPump,
     generatorPump

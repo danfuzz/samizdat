@@ -28,27 +28,29 @@ fn msgAll(header, gen) {
 };
 
 ## Outputs ten generated values, with a header and a footer.
-fn msgTen(header, gen) {
+fn msgTen(header, origGen) {
     Io0::note(header);
 
+    var count = 10;
+    var gen = origGen;
     { <done> ->
-        def count = Box::makeCell(10);
-        loopReduce(gen) { gen ->
-            Box::store(count, Number::sub(Box::fetch(count), 1));
-            ifIs { <> lt(Box::fetch(count), 0) }
+        loop {
+            count := Number::sub(count, 1);
+            ifIs { <> lt(count, 0) }
                 { <done> };
 
             def box = Box::makePromise();
             <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGen ->
                     msg(Box::fetch(box));
-                    <> [nextGen]
+                    gen := nextGen
                 }
+                { <done> }
         }
     }();
 
     Io0::note("  [...]");
-    Io0::note(cat("  value: ", Format::source(gen)));
+    Io0::note(cat("  value: ", Format::source(origGen)));
     Io0::note("")
 };
 

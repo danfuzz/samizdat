@@ -45,8 +45,10 @@ def parCodePoint = {/
     )+
 
     {
-        def value = Generator::doReduce1(digits, 0)
-            { digit, result <> result * 16 + digit };
+        var value = 0;
+        Generator::filterPump(digits) { digit ->
+            value := value * 16 + digit
+        };
         <> toString(value);
     }
 /};

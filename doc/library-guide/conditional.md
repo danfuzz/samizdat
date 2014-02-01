@@ -96,16 +96,6 @@ In order for the loop to terminate, the function must use a nonlocal exit.
 
 **Syntax Note:** Used in the translation of `do` and `while` forms.
 
-#### `loopReduce(function, baseValues*) <> void`
-
-Primitive unconditional loop construct, with reduce semantics. This repeatedly
-calls the given function with a list of arguments. The arguments are the
-most recent non-void result of calling the function (which must be a list),
-or the original `baseValues` list if the function has yet to return non-void
-(including notably to the first call to the function).
-
-In order for the loop to terminate, the function must use a nonlocal exit.
-
 #### `optValue(function) <> list`
 
 Function call helper, to deal with value-or-void situations. This calls
