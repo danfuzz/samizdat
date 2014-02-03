@@ -72,6 +72,7 @@ fn compile(sourcePath, targetPath) {
         ( index in (0..!#closures), clo in closures ->
             <> "\
             \/static FUN_IMPL_DECL(\(index)) {
+            \/  zvalue *state = builtinGetState(thisFunction)->arr;
             \/  return NULL; // TODO
             \/  /*
             \/  \%q(clo)
@@ -86,12 +87,12 @@ fn compile(sourcePath, targetPath) {
                 | "NULL";
             <> "\
             \/static makeClosure\(index)(/*TODO: state*/) {
-            \/    zint stateCount = 0; // TODO
-            \/    zvalue result = makeBuiltin(
-            \/      \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(index)),
-            \/      stateCount, \(name));
-            \/    // Set up state.
-            \/    return result;
+            \/  zint stateCount = 0; // TODO
+            \/  zvalue result = makeBuiltin(
+            \/    \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(index)),
+            \/    stateCount, \(name));
+            \/  // Set up state.
+            \/  return result;
             \/}\n\n"
         )*);
 
