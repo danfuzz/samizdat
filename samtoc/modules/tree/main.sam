@@ -18,16 +18,9 @@ def Lang2 = moduleUse({name: ["core", "Lang2"]});
 fn compile(sourcePath, targetPath) {
     def sourceText = Io1::readFileUtf8(sourcePath);
     def tree = Lang2::convertToLang0(Lang2::parseProgram(sourceText));
-    def treeText = DataCode::indent(
-        DataCode::convert(tree),
-        2,
-        78);
+    def source = DataCode::convertIndent(tree, 2, 78);
+    def outputText = Template::apply(templateText, {source});
 
-    def replacements = {
-        source: treeText
-    };
-
-    def outputText = Template::apply(templateText, replacements);
     Io1::writeFileUtf8(targetPath, outputText)
 };
 

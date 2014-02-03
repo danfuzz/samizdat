@@ -45,10 +45,7 @@ fn compile(sourcePath, targetPath) {
 
     def literalInits = cat(
         ( index in (0..), lit in literals ->
-            def initText = DataCode::indent(
-                DataCode::convert(lit),
-                2,
-                78);
+            def initText = DataCode::convertIndent(lit, 2, 78);
             <> "\
             \/  LIT_\(index) =
             \/\(initText);
@@ -73,7 +70,7 @@ fn compile(sourcePath, targetPath) {
     def closureMakers = cat(
         ( index in (0..), clo in closures ->
             def name = (def n = clo.name)
-                & DataCode::indent(DataCode::convert(n), 0, 1000)
+                & DataCode::convertNoIndent(n)
                 | "NULL";
             <> "\
             \/static makeClosure\(index)(/*TODO: state*/ void) {
