@@ -24,6 +24,12 @@ fn get_function(node) {
     <> dataOf(node)::function
 };
 
+## Accessor for `literalRef` and `closureRef` nodes.
+
+fn get_id(node) {
+    <> dataOf(node)::id
+};
+
 ## Accessor for `closure` nodes.
 
 fn get_maxArgs(node) {
@@ -98,6 +104,7 @@ fn get_yieldDef(node) {
     get_actuals,
     get_formals,
     get_function,
+    get_id,
     get_maxArgs,
     get_minArgs,
     get_name,

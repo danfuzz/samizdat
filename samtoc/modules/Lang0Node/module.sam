@@ -9,6 +9,7 @@
         "get_actuals",
         "get_formals",
         "get_function",
+        "get_id",
         "get_maxArgs",
         "get_minArgs",
         "get_name",
