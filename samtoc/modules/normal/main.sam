@@ -14,6 +14,9 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
 def get_formals = Lang0Node::get_formals;
+def get_maxArgs = Lang0Node::get_maxArgs;
+def get_minArgs = Lang0Node::get_minArgs;
+def get_name = Lang0Node::get_name;
 def get_statements = Lang0Node::get_statements;
 def get_yield = Lang0Node::get_yield;
 def get_yieldDef = Lang0Node::get_yieldDef;
@@ -51,9 +54,9 @@ fn compile(sourcePath, targetPath) {
         )*);
 
     def literalInits = cat(
-        ( index in (0..!#literals) ->
+        ( index in (0..!#literals), lit in literals ->
             def initText = DataCode::indent(
-                DataCode::convert(literals[index]),
+                DataCode::convert(lit),
                 2,
                 78);
             <> "\
@@ -66,13 +69,29 @@ fn compile(sourcePath, targetPath) {
     def closures = closuresNode::closures;
 
     def closureBodies = cat(
-        ( index in (0..!#closures) ->
+        ( index in (0..!#closures), clo in closures ->
             <> "\
             \/static FUN_IMPL_DECL(\(index)) {
             \/  return NULL; // TODO
             \/  /*
-            \/  \%q(closures[index])
+            \/  \%q(clo)
             \/  */
+            \/}\n\n"
+        )*);
+
+    def closureMakers = cat(
+        ( index in (0..!#closures), clo in closures ->
+            def name = (def n = clo.name)
+                & DataCode::indent(DataCode::convert(n), 0, 1000)
+                | "NULL";
+            <> "\
+            \/static makeClosure\(index)(/*TODO: state*/) {
+            \/    zint stateCount = 0; // TODO
+            \/    zvalue result = makeBuiltin(
+            \/      \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(index)),
+            \/      stateCount, \(name));
+            \/    // Set up state.
+            \/    return result;
             \/}\n\n"
         )*);
 
@@ -84,10 +103,11 @@ fn compile(sourcePath, targetPath) {
 
     def replacements = {
         closureBodies,
+        closureMakers,
         literalDeclarations,
         literalInits,
-        minArgs: 0,
-        maxArgs: 0,
+        minArgs: tree.minArgs,
+        maxArgs: tree.maxArgs,
         name:    sourcePath[^0],
         body:    "\(treeText)"
     };

@@ -14,11 +14,24 @@
 static zvalue GLOBALS = NULL;
 static zvalue EVAL_RESULT = NULL;
 
-\(closureBodies)
+/*
+ * Literal values
+ */
 
 \(literalDeclarations)
 static void initLiterals(zvalue context) {
 \(literalInits)}
+
+/*
+ * Closure definitions
+ */
+
+\(closureBodies)
+\(closureMakers)
+
+/*
+ * Main function and overall binding
+ */
 
 static FUN_IMPL_DECL(main) {
   return
