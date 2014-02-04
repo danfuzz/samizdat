@@ -9,7 +9,18 @@
 def DataCode = moduleUse({name: ["DataCode"]});
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
-def get_id = Lang0Node::get_id;
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
+def get_actuals    = Lang0Node::get_actuals;
+def get_formals    = Lang0Node::get_formals;
+def get_function   = Lang0Node::get_function;
+def get_id         = Lang0Node::get_id;
+def get_name       = Lang0Node::get_name;
+def get_statements = Lang0Node::get_statements;
+def get_value      = Lang0Node::get_value;
+def get_varRefs    = Lang0Node::get_varRefs;
+def get_yield      = Lang0Node::get_yield;
+def get_yieldDef   = Lang0Node::get_yieldDef;
 
 ## Generic function to perform the translation.
 def translate = makeRegularGeneric("translate", 1, 1);
@@ -19,14 +30,16 @@ genericBind(
     translate,
     "call",
     fn call_translate(node) {
-        <> "NULL /* TODO: call */"
+        ## TODO: Handle `voidable` and `interpolate` nodes.
+        def actuals = (a in node.actuals <> translate(a));
+        <> DataCode::makeCall(translate(node.function), actuals*)
     });
 
 genericBind(
     translate,
     "closure",
     fn closure_translate(node) {
-        <> "NULL /* TODO: closure */"
+        Io1::die("Cannot translate raw `closure` node.")
     });
 
 genericBind(
@@ -40,7 +53,7 @@ genericBind(
     translate,
     "expression",
     fn expression_translate(node) {
-        <> "NULL /* TODO: expression */"
+        <> translate(node.value)
     });
 
 genericBind(
