@@ -1,0 +1,109 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Translate execution trees into corresponding C code.
+##
+
+def DataCode = moduleUse({name: ["DataCode"]});
+def Lang0Node = moduleUse({name: ["Lang0Node"]});
+
+def get_id = Lang0Node::get_id;
+
+## Generic function to perform the translation.
+def translate = makeRegularGeneric("translate", 1, 1);
+
+
+genericBind(
+    translate,
+    "call",
+    fn call_translate(node) {
+        <> "TODO:call"
+    });
+
+genericBind(
+    translate,
+    "closure",
+    fn closure_translate(node) {
+        <> "TODO:closure"
+    });
+
+genericBind(
+    translate,
+    "closureRef",
+    fn closureRef_translate(node) {
+        <> "TODO:closure_\(node.id)"
+    });
+
+genericBind(
+    translate,
+    "expression",
+    fn expression_translate(node) {
+        <> "TODO:expression"
+    });
+
+genericBind(
+    translate,
+    "interpolate",
+    fn interpolate_translate(node) {
+        <> "TODO:interpolate"
+    });
+
+genericBind(
+    translate,
+    "literalRef",
+    fn literalRef_translate(node) {
+        <> "LIT_\(node.id)"
+    });
+
+genericBind(
+    translate,
+    "varBind",
+    fn varBind_translate(node) {
+        <> "TODO:varBind"
+    });
+
+genericBind(
+    translate,
+    "varDef",
+    fn varDef_translate(node) {
+        <> "TODO:varDef"
+    });
+
+genericBind(
+    translate,
+    "varDefMutable",
+    fn varDefMutable_translate(node) {
+        <> "TODO:varDefMutable"
+    });
+
+genericBind(
+    translate,
+    "varRef",
+    fn varRef_translate(node) {
+        <> "TODO:varRef"
+    });
+
+genericBind(
+    translate,
+    "voidable",
+    fn voidable_translate(node) {
+        <> "TODO:voidable"
+    });
+
+## Translates and converts to a string, without indentation.
+fn translateNoIndent(node) {
+    <> translateIndent(node, 0, 100_000_000)
+};
+
+## Translates and converts to a string, with indentation.
+fn translateIndent(node, level, maxColumns) {
+    <> DataCode::indent(translate(node), level, maxColumns)
+};
+
+<> {
+    translate,
+    translateIndent,
+    translateNoIndent
+}

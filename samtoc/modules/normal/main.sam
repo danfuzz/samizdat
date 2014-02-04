@@ -5,6 +5,7 @@
 def templateText = submoduleRead("template.txt");
 def collectClosures = submoduleUse("collectClosures");
 def collectLiterals = submoduleUse("collectLiterals");
+def translate = submoduleUse("translate");
 
 def DataCode = moduleUse({name: ["DataCode"]});
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
@@ -63,8 +64,9 @@ fn compile(sourcePath, targetPath) {
     def closureMakers = cat(
         ( index in (0..), clo in closures ->
             def name = (def n = clo.name)
-                & DataCode::convertNoIndent(n)
+                & translate::translateNoIndent(n)
                 | "NULL";
+
             <> "\
             \/static makeClosure\(index)(/*TODO: state*/ void) {
             \/  zint stateCount = 0; // TODO
