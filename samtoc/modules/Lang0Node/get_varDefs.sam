@@ -60,7 +60,7 @@ genericBind(
 genericBind(
     get_varDefs,
     "varDefMutable",
-    fn varDef_get_varDefs(node) {
+    fn varDefMutable_get_varDefs(node) {
         <> {(node.name): null}
     });
 
