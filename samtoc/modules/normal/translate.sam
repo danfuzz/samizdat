@@ -9,97 +9,135 @@
 def DataCode = moduleUse({name: ["DataCode"]});
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
-def get_id = Lang0Node::get_id;
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
+def get_actuals    = Lang0Node::get_actuals;
+def get_formals    = Lang0Node::get_formals;
+def get_function   = Lang0Node::get_function;
+def get_id         = Lang0Node::get_id;
+def get_maxArgs    = Lang0Node::get_maxArgs;
+def get_minArgs    = Lang0Node::get_minArgs;
+def get_name       = Lang0Node::get_name;
+def get_statements = Lang0Node::get_statements;
+def get_value      = Lang0Node::get_value;
+def get_varRefs    = Lang0Node::get_varRefs;
+def get_yield      = Lang0Node::get_yield;
+def get_yieldDef   = Lang0Node::get_yieldDef;
 
 ## Generic function to perform the translation.
-def translate = makeRegularGeneric("translate", 1, 1);
+def translate = makeRegularGeneric("translate", 2, 2);
 
+
+## Common translation code for variable definition.
+fn varDefCommon(node, varsBox) {
+    def vars = Box::fetch(varsBox);
+    def name = node.name;
+    def value = (def v = node.value) & translate(v, varsBox) | "NULL";
+    if ((def found = vars[name]) & (found::kind != "free")) {
+        Io1::die("Cannot re-define local variable: \%q(name).")
+    };
+    def binding = {name: "local_\(#vars)", kind: "local"};
+
+    Box::store(varsBox, {vars*, (name): binding});
+    <> DataCode::makeCall("DEFINE /*\%q(name)*/", binding::name, value);
+};
 
 genericBind(
     translate,
     "call",
-    fn call_translate(node) {
-        <> "TODO:call"
+    fn call_translate(node, varsBox) {
+        ## TODO: Handle `voidable` and `interpolate` nodes.
+        def actuals = (a in node.actuals <> translate(a, varsBox));
+        <> DataCode::makeCall(translate(node.function, varsBox), actuals*)
     });
 
 genericBind(
     translate,
     "closure",
-    fn closure_translate(node) {
-        <> "TODO:closure"
+    fn closure_translate(node, varsBox) {
+        Io1::die("Cannot translate raw `closure` node.")
     });
 
 genericBind(
     translate,
     "closureRef",
-    fn closureRef_translate(node) {
-        <> "TODO:closure_\(node.id)"
+    fn closureRef_translate(node, varsBox) {
+        <> "NULL /* TODO: closure_\(node.id) */"
     });
 
 genericBind(
     translate,
     "expression",
-    fn expression_translate(node) {
-        <> "TODO:expression"
+    fn expression_translate(node, varsBox) {
+        <> translate(node.value, varsBox)
     });
 
 genericBind(
     translate,
     "interpolate",
-    fn interpolate_translate(node) {
-        <> "TODO:interpolate"
+    fn interpolate_translate(node, varsBox) {
+        <> "NULL /* TODO: interpolate */"
     });
 
 genericBind(
     translate,
     "literalRef",
-    fn literalRef_translate(node) {
+    fn literalRef_translate(node, varsBox) {
         <> "LIT_\(node.id)"
     });
 
 genericBind(
     translate,
     "varBind",
-    fn varBind_translate(node) {
-        <> "TODO:varBind"
+    fn varBind_translate(node, varsBox) {
+        def name = node.name;
+        def value = translate(node.value, varsBox);
+        def vars = Box::fetch(varsBox);
+        def binding = vars[name]
+            | Io1::die("Bind of undefined variable: \%q(node.name)");
+        <> DataCode::makeCall("ASSIGN /*\%q(name)*/", binding::name, value)
     });
 
 genericBind(
     translate,
     "varDef",
-    fn varDef_translate(node) {
-        <> "TODO:varDef"
+    fn varDef_translate(node, varsBox) {
+        <> varDefCommon(node, varsBox)
     });
 
 genericBind(
     translate,
     "varDefMutable",
-    fn varDefMutable_translate(node) {
-        <> "TODO:varDefMutable"
+    fn varDefMutable_translate(node, varsBox) {
+        <> varDefCommon(node, varsBox)
     });
 
 genericBind(
     translate,
     "varRef",
-    fn varRef_translate(node) {
-        <> "TODO:varRef"
+    fn varRef_translate(node, varsBox) {
+        def name = node.name;
+        def vars = Box::fetch(varsBox);
+        def binding = vars[name]
+            | Io1::die("Reference of undefined variable: \%q(node.name)");
+        <> "\(binding::name) /*\%q(name)*/"
     });
 
 genericBind(
     translate,
     "voidable",
-    fn voidable_translate(node) {
-        <> "TODO:voidable"
+    fn voidable_translate(node, varsBox) {
+        <> "NULL /* TODO: voidable */"
     });
 
 ## Translates and converts to a string, without indentation.
-fn translateNoIndent(node) {
-    <> translateIndent(node, 0, 100_000_000)
+fn translateNoIndent(node, varsBox) {
+    <> translateIndent(node, varsBox, 0, 100_000_000)
 };
 
 ## Translates and converts to a string, with indentation.
-fn translateIndent(node, level, maxColumns) {
-    <> DataCode::indent(translate(node), level, maxColumns)
+fn translateIndent(node, varsBox, level, maxColumns) {
+    <> DataCode::indent(translate(node, varsBox), level, maxColumns)
 };
 
 <> {
