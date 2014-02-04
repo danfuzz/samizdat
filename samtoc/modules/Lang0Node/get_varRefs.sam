@@ -38,6 +38,11 @@ genericBind(
     get_varRefs,
     "closure",
     fn closure_get_varRefs(node) {
+        if (def refs = dataOf(node)::varRefs) {
+            ## Already calculated for this node.
+            return refs
+        };
+
         ## `baseLocals` is the set of all local variables defined at the
         ## top of the closure, including formal arguments and a yield def
         ## (if any).
@@ -68,6 +73,13 @@ genericBind(
         );
 
         <> cat(statementRefs*)
+    });
+
+genericBind(
+    get_varRefs,
+    "closureRef",
+    fn closureRef_get_varRefs(node) {
+        <> dataOf(node)::varRefs
     });
 
 genericBind(
