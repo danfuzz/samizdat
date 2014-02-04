@@ -51,13 +51,23 @@ fn compile(sourcePath, targetPath) {
 
     def closureBodies = cat(
         ( index in (0..), clo in closures ->
+            def yield = (def y = clo.yield)
+                & translate::translateNoIndent(y)
+                | "NULL";
+
+            def statements = (s in clo.statements ->
+                <> "\(translate::translateIndent(s, 1, 78));\n"
+            );
+
             <> "\
             \/static FUN_IMPL_DECL(\(index)) {
+            \/  // yieldDef: \[clo.yieldDef?*]
+            \/  // formals: \%q(clo.formals)
             \/  zvalue *state = builtinGetState(thisFunction)->arr;
-            \/  return NULL; // TODO
-            \/  /*
-            \/  \%q(clo)
-            \/  */
+            \/
+            \/\[statements*]
+            \/  zvalue result = \(yield);
+            \/  return result;
             \/}\n\n"
         )*);
 

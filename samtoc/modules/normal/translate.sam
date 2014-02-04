@@ -19,35 +19,35 @@ genericBind(
     translate,
     "call",
     fn call_translate(node) {
-        <> "TODO:call"
+        <> "NULL /* TODO: call */"
     });
 
 genericBind(
     translate,
     "closure",
     fn closure_translate(node) {
-        <> "TODO:closure"
+        <> "NULL /* TODO: closure */"
     });
 
 genericBind(
     translate,
     "closureRef",
     fn closureRef_translate(node) {
-        <> "TODO:closure_\(node.id)"
+        <> "NULL /* TODO: closure_\(node.id) */"
     });
 
 genericBind(
     translate,
     "expression",
     fn expression_translate(node) {
-        <> "TODO:expression"
+        <> "NULL /* TODO: expression */"
     });
 
 genericBind(
     translate,
     "interpolate",
     fn interpolate_translate(node) {
-        <> "TODO:interpolate"
+        <> "NULL /* TODO: interpolate */"
     });
 
 genericBind(
@@ -61,35 +61,35 @@ genericBind(
     translate,
     "varBind",
     fn varBind_translate(node) {
-        <> "TODO:varBind"
+        <> "NULL /* TODO: varBind */"
     });
 
 genericBind(
     translate,
     "varDef",
     fn varDef_translate(node) {
-        <> "TODO:varDef"
+        <> "NULL /* TODO: varDef */"
     });
 
 genericBind(
     translate,
     "varDefMutable",
     fn varDefMutable_translate(node) {
-        <> "TODO:varDefMutable"
+        <> "NULL /* TODO: varDefMutable */"
     });
 
 genericBind(
     translate,
     "varRef",
     fn varRef_translate(node) {
-        <> "TODO:varRef"
+        <> "NULL /* TODO: varRef */"
     });
 
 genericBind(
     translate,
     "voidable",
     fn voidable_translate(node) {
-        <> "TODO:voidable"
+        <> "NULL /* TODO: voidable */"
     });
 
 ## Translates and converts to a string, without indentation.
