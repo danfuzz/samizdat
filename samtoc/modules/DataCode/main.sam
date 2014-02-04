@@ -11,7 +11,7 @@ def indent = submoduleUse("indent")::indent;
 
 ## Converts a tree to a string, without any indentation.
 fn convertNoIndent(tree) {
-    <> convertIndent(tree, 0, 100000000)
+    <> convertIndent(tree, 0, 100_000_000)
 };
 
 ## Converts a tree to a string, with indentation.
