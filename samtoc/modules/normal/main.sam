@@ -24,18 +24,11 @@ def get_yieldDef = Lang0Node::get_yieldDef;
 
 fn compile(sourcePath, targetPath) {
     def sourceText = Io1::readFileUtf8(sourcePath);
-    def tree = Lang2::parseProgram(sourceText);
 
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
-
-    ## Reject closures that define any `formals`.
-    ## TODO: Remove this restriction.
-    if (tree.formals != []) {
-        Io1::die("Program must not define formals.");
-    };
-
-    def litsNode = collectLiterals(tree);
+    def mainNode = Lang2::parseProgram(sourceText);
+    def litsNode = collectLiterals(mainNode);
     def literals = litsNode::literals;
 
     def literalDeclarations = cat(
