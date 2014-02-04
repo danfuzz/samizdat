@@ -5,6 +5,7 @@
 def templateText = submoduleRead("template.txt");
 def collectClosures = submoduleUse("collectClosures");
 def collectLiterals = submoduleUse("collectLiterals");
+def translate = submoduleUse("translate");
 
 def DataCode = moduleUse({name: ["DataCode"]});
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
@@ -14,35 +15,21 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
 def get_formals = Lang0Node::get_formals;
+def get_id = Lang0Node::get_id;
+def get_maxArgs = Lang0Node::get_maxArgs;
+def get_minArgs = Lang0Node::get_minArgs;
+def get_name = Lang0Node::get_name;
 def get_statements = Lang0Node::get_statements;
 def get_yield = Lang0Node::get_yield;
 def get_yieldDef = Lang0Node::get_yieldDef;
 
 fn compile(sourcePath, targetPath) {
     def sourceText = Io1::readFileUtf8(sourcePath);
-    def tree = Lang2::parseProgram(sourceText);
 
-    ## Note: The node resulting from parsing a program must be of
+    ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
-
-    ## Reject closures that define any `formals`.
-    ## TODO: Remove this restriction.
-    if (tree.formals != []) {
-        Io1::die("Program must not define formals.");
-    };
-
-    ## Reject closures that have a `yieldDef`. TODO: Remove this restriction.
-    if (tree.yieldDef) {
-        Io1::die("Program must not have a yield definition.");
-    };
-
-    ## Reject closures that do not have a `yield`. TODO: Remove this
-    ## restriction.
-    if (!tree.yield) {
-        Io1::die("Program must yield a value.");
-    };
-
-    def litsNode = collectLiterals(tree);
+    def mainNode = Lang2::parseProgram(sourceText);
+    def litsNode = collectLiterals(mainNode);
     def literals = litsNode::literals;
 
     def literalDeclarations = cat(
@@ -51,11 +38,8 @@ fn compile(sourcePath, targetPath) {
         )*);
 
     def literalInits = cat(
-        ( index in (0..!#literals) ->
-            def initText = DataCode::indent(
-                DataCode::convert(literals[index]),
-                2,
-                78);
+        ( index in (0..), lit in literals ->
+            def initText = DataCode::convertIndent(lit, 2, 78);
             <> "\
             \/  LIT_\(index) =
             \/\(initText);
@@ -66,30 +50,42 @@ fn compile(sourcePath, targetPath) {
     def closures = closuresNode::closures;
 
     def closureBodies = cat(
-        ( index in (0..!#closures) ->
+        ( index in (0..), clo in closures ->
             <> "\
             \/static FUN_IMPL_DECL(\(index)) {
+            \/  zvalue *state = builtinGetState(thisFunction)->arr;
             \/  return NULL; // TODO
             \/  /*
-            \/  \%q(closures[index])
+            \/  \%q(clo)
             \/  */
             \/}\n\n"
         )*);
 
-    ## TODO: Something real here.
-    def treeText = DataCode::indent(
-        DataCode::convert(closuresNode::node),
-        2,
-        78);
+    def closureMakers = cat(
+        ( index in (0..), clo in closures ->
+            def name = (def n = clo.name)
+                & translate::translateNoIndent(n)
+                | "NULL";
+
+            <> "\
+            \/static makeClosure\(index)(/*TODO: state*/ void) {
+            \/  zint stateCount = 0; // TODO
+            \/  zvalue result = makeBuiltin(
+            \/    \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(index)),
+            \/    stateCount, \(name));
+            \/  // TODO: Set up state.
+            \/  return result;
+            \/}\n\n"
+        )*);
+
+    def mainClosure = "makeClosure\(closuresNode::node.id)(/*TODO: state*/)";
 
     def replacements = {
         closureBodies,
+        closureMakers,
         literalDeclarations,
         literalInits,
-        minArgs: 0,
-        maxArgs: 0,
-        name:    sourcePath[^0],
-        body:    "\(treeText)"
+        mainClosure
     };
 
     def outputText = Template::apply(templateText, replacements);

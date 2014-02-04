@@ -49,7 +49,8 @@ fn apply(templateString, defs) {
 
     def texts = [ item in items ->
         <> isString(item) |
-            Format::formatterFor(item::format)(defs[item::name])
+            Format::formatterFor(item::format)(
+                defs[item::name] | "<MISSING \%q(item::name)>")
     ];
 
     <> "\[texts*]"

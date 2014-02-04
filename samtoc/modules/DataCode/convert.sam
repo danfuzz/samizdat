@@ -186,6 +186,4 @@ fn Value_convert(value) {
 };
 genericBind(convert, Value, Value_convert);
 
-<> {
-    convert
-}
+<> {convert, makeCall}

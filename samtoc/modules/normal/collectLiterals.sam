@@ -33,9 +33,13 @@ genericBind(
     lits,
     "closure",
     fn closure_lits(node, litsBox) {
+        def name = (def value = node.name)
+            & {name: lits(@literal{value}, litsBox)}
+            | {};
+
         <> @closure{
+            name*,
             formals: node.formals,
-            ((def name = node.name) & {name} | {})*,
             statements: [ s in node.statements <> lits(s, litsBox) ],
             ((def y = node.yield) & {yield: lits(y, litsBox)} | {})*,
             ((def yieldDef = node.yieldDef) & {yieldDef} | {})*

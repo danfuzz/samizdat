@@ -6,7 +6,22 @@
 ## Convert data into C code that constructs that data.
 ##
 
+def convert = submoduleUse("convert")::convert;
+def indent = submoduleUse("indent")::indent;
+
+## Converts a tree to a string, without any indentation.
+fn convertNoIndent(tree) {
+    <> convertIndent(tree, 0, 100_000_000)
+};
+
+## Converts a tree to a string, with indentation.
+fn convertIndent(tree, level, maxColumns) {
+    <> indent(convert(tree), level, maxColumns)
+};
+
 <> {
-    (submoduleUse("convert"))*,
-    (submoduleUse("indent"))*
+    convert,
+    indent,
+    convertIndent,
+    convertNoIndent
 }

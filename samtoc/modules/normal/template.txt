@@ -3,7 +3,7 @@
  * GENERATED CODE!
  * GENERATED CODE!
  *
- * This code *may* be derived from a copyrighted source. Proceed with
+ * This code *might* be derived from a copyrighted source. Proceed with
  * caution!
  */
 
@@ -11,36 +11,40 @@
 #include "type/String.h"
 #include "type/Value.h"
 
-static zvalue GLOBALS = NULL;
-static zvalue EVAL_RESULT = NULL;
-
-\(closureBodies)
+/*
+ * Literal values
+ */
 
 \(literalDeclarations)
 static void initLiterals(zvalue context) {
 \(literalInits)}
 
-static FUN_IMPL_DECL(main) {
-  return
-\(body);
-}
+/*
+ * Closure definitions
+ */
+
+\(closureBodies)
+\(closureMakers)
+
+/*
+ * Main entry point
+ */
+
+static zvalue GLOBALS = NULL;
+static zvalue EVAL_RESULT = NULL;
 
 zvalue eval(zvalue context) {
-    if (GLOBALS == NULL) {
-        GLOBALS = context;
-        initLiterals(context);
-    } else if (!valEq(GLOBALS, context))
-        die("Cannot re-eval with different global context.");
-    }
+  if (GLOBALS == NULL) {
+    GLOBALS = context;
+    initLiterals(context);
+  } else if (!valEq(GLOBALS, context))
+    die("Cannot re-eval with different global context.");
+  }
 
-    if (EVAL_RESULT == NULL) {
-        EVAL_RESULT = makeBuiltin(
-            \(minArgs),
-            \(maxArgs),
-            FUN_IMPL_NAME(main),
-            0,
-            stringFromUtf8(-1, \%q(name));
-    }
+  if (EVAL_RESULT == NULL) {
+    EVAL_RESULT = \(mainClosure);
+    datImmortalize(EVAL_RESULT);
+  }
 
-    return EVAL_RESULT;
+  return EVAL_RESULT;
 }

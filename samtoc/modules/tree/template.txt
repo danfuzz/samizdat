@@ -3,7 +3,7 @@
  * GENERATED CODE!
  * GENERATED CODE!
  *
- * This code *may* be derived from a copyrighted source. Proceed with
+ * This code *might* be derived from a copyrighted source. Proceed with
  * caution!
  */
 
