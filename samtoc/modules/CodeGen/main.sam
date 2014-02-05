@@ -10,7 +10,9 @@
 submoduleUse("String");
 
 <> {
+    submoduleUse("Assign")*,
     submoduleUse("Call")*,
+    submoduleUse("Comment")*,
     submoduleUse("Simple")*,
     submoduleUse("protocol")*
 }

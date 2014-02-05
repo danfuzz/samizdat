@@ -42,7 +42,9 @@ fn varDefCommon(node, varsBox) {
     def binding = {name: "local_\(#vars)", kind: "local"};
 
     Box::store(varsBox, {vars*, (name): binding});
-    <> CodeGen::makeCall("DEFINE /*\%q(name)*/", binding::name, value);
+    <> CodeGen::makeComment(
+        "\(binding::name) <- \%q(name)",
+        CodeGen::makeAssign(binding::name, value));
 };
 
 genericBind(
