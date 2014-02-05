@@ -7,12 +7,16 @@ def collectClosures = submoduleUse("collectClosures");
 def collectLiterals = submoduleUse("collectLiterals");
 def translate = submoduleUse("translate");
 
+def CodeGen = moduleUse({name: ["CodeGen"]});
 def DataCode = moduleUse({name: ["DataCode"]});
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 def Template = moduleUse({name: ["Template"]});
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang2 = moduleUse({name: ["core", "Lang2"]});
+
+def flatten = CodeGen::flatten;
+def indent = CodeGen::indent;
 
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
@@ -27,6 +31,67 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
+fn closureBody(cloIdx, clo) {
+    ## Set up the initial variable bindings.
+    def freeNames = Collection::keyList(clo.varRefs);
+    var vars = cat(
+        ( idx in (0..), name in freeNames ->
+            <> {(name): {kind: "free", name: "free_\(idx)"}}
+        )*,
+        ( idx in (0..), f in clo.formals ->
+            <> {(f::name): {kind: "formal", name: "formal_\(idx)"}}
+        )*
+    );
+    def varsBox = Box::makeCell(vars);
+
+    ## Make C local variable defintions for each of the free
+    ## variables.
+    def frees = [ idx in (0..), name in freeNames ->
+        def binding = vars[name];
+        def stat = CodeGen::makeComment(
+            "\(binding::name) <- \%q(name)",
+            CodeGen::makeAssign(
+                "zvalue \(binding::name)", "state[\(idx)]"));
+        <> "\(stat.indent(1, 78));\n"
+    ];
+
+    ## Make C local variable defintions for each of the actuals
+    ## (passed arguments). TODO: Handle repetition modifiers.
+    def actuals = [ idx in (0..), f in clo.formals ->
+        def binding = vars[f::name];
+        def stat = CodeGen::makeComment(
+            "\(binding::name) <- \%q(f::name)",
+            CodeGen::makeAssign(
+                "zvalue \(binding::name)",
+                CodeGen::makeCall("makeResult", "args[\(idx)]")));
+        <> "\(stat.indent(1, 78));\n"
+    ];
+
+    ## Translate the statements and the yield. Note that the
+    ## `statements` definition is a list comprehension and not
+    ## a generator, as its body has to run before `yield` is
+    ## calculated (in order to have the right vars defined).
+    def statements = [ s in clo.statements ->
+        <> "\(translate::translateIndent(s, varsBox, 1, 78));\n"
+    ];
+    def yield = (def y = clo.yield)
+        & translate::translateNoIndent(y, varsBox)
+        | "NULL";
+
+    <> "\
+    \/static FUN_IMPL_DECL(\(cloIdx)) {
+    \/  // formals: \%q(clo.formals)
+    \/\(actuals)
+    \/  // varRefs: \%q(freeNames)
+    \/  zvalue *state = builtinGetState(thisFunction)->arr;
+    \/\(frees)
+    \/  // yieldDef: \[clo.yieldDef?*]
+    \/
+    \/\(statements)
+    \/  zvalue result = \(yield);
+    \/  return result;
+    \/}\n\n"
+};
 
 fn compile(sourcePath, targetPath) {
     def sourceText = Io1::readFileUtf8(sourcePath);
@@ -55,53 +120,19 @@ fn compile(sourcePath, targetPath) {
     def closures = closuresNode::closures;
 
     def closureBodies = cat(
-        ( index in (0..), clo in closures ->
-            ## Set up the initial variable bindings.
-            var vars = cat(
-                ( idx in (0..), v in Collection::keyList(clo.varRefs) ->
-                    <> {(v): {kind: "free", name: "free_\(idx)"}}
-                )*,
-                ( idx in (0..), f in clo.formals ->
-                    <> {(f::name): {kind: "formal", name: "formal_\(idx)"}}
-                )*
-            );
-            def varsBox = Box::makeCell(vars);
-
-            ## Translate the statements and the yield. Note that the
-            ## `statements` definition is a list comprehension and not
-            ## a generator, as its body has to run before `yield` is
-            ## calculated (in order to have the right vars defined).
-            def statements = [ s in clo.statements ->
-                <> "\(translate::translateIndent(s, varsBox, 1, 78));\n"
-            ];
-            def yield = (def y = clo.yield)
-                & translate::translateNoIndent(y, varsBox)
-                | "NULL";
-
-            <> "\
-            \/static FUN_IMPL_DECL(\(index)) {
-            \/  // yieldDef: \[clo.yieldDef?*]
-            \/  // formals: \%q(clo.formals)
-            \/  // varRefs: \%q(Collection::keyList(clo.varRefs))
-            \/  zvalue *state = builtinGetState(thisFunction)->arr;
-            \/
-            \/\[statements*]
-            \/  zvalue result = \(yield);
-            \/  return result;
-            \/}\n\n"
-        )*);
+        ( idx in (0..), clo in closures <> closureBody(idx, clo) )*);
 
     def closureMakers = cat(
-        ( index in (0..), clo in closures ->
+        ( idx in (0..), clo in closures ->
             def name = (def n = clo.name)
                 & translate::translateNoIndent(n, Box::nullBox)
                 | "NULL";
 
             <> "\
-            \/static makeClosure\(index)(/*TODO: state*/ void) {
+            \/static makeClosure\(idx)(/*TODO: state*/ void) {
             \/  zint stateCount = 0; // TODO
             \/  zvalue result = makeBuiltin(
-            \/    \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(index)),
+            \/    \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(idx)),
             \/    stateCount, \(name));
             \/  // TODO: Set up state.
             \/  return result;
