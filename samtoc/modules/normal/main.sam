@@ -31,39 +31,52 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
+fn varInit(binding) {
+    <> CodeGen::makeComment(
+        "\(binding::name) <- \%q(binding::origName)",
+        CodeGen::makeAssign(
+            "zvalue \(binding::name)", binding::init.flatten()))
+};
+
 fn closureBody(cloIdx, clo) {
     ## Set up the initial variable bindings.
     def freeNames = Collection::keyList(clo.varRefs);
+    def formalNames = [ f in clo.formals <> f::name ];
+
     var vars = cat(
         ( idx in (0..), name in freeNames ->
-            <> {(name): {kind: "free", name: "free_\(idx)"}}
+            <> {(name): {
+                origName: name,
+                kind: "free",
+                name: "free_\(idx)",
+                init: "state[\(idx)]"
+            }}
         )*,
-        ( idx in (0..), f in clo.formals ->
-            <> {(f::name): {kind: "formal", name: "formal_\(idx)"}}
+        ( idx in (0..), name in formalNames ->
+            ## TODO: Handle repetition modifiers.
+            <> {(name): {
+                origName: name,
+                kind: "arg",
+                name: "arg_\(idx)",
+                init: CodeGen::makeCall("makeResult", "args[\(idx)]")
+            }}
+        )*,
+        ( name in clo.yieldDef? ->
+            ## TODO: Something real.
+            <> {(name): {
+                origName: "<\(name)>",
+                kind: "yield",
+                name: "yield",
+                init: "NULL"
+            }}
         )*
     );
     def varsBox = Box::makeCell(vars);
 
-    ## Make C local variable defintions for each of the free
+    ## Make C local variable defintions for each of the incoming
     ## variables.
-    def frees = [ idx in (0..), name in freeNames ->
-        def binding = vars[name];
-        def stat = CodeGen::makeComment(
-            "\(binding::name) <- \%q(name)",
-            CodeGen::makeAssign(
-                "zvalue \(binding::name)", "state[\(idx)]"));
-        <> "\(stat.indent(1, 78));\n"
-    ];
-
-    ## Make C local variable defintions for each of the actuals
-    ## (passed arguments). TODO: Handle repetition modifiers.
-    def actuals = [ idx in (0..), f in clo.formals ->
-        def binding = vars[f::name];
-        def stat = CodeGen::makeComment(
-            "\(binding::name) <- \%q(f::name)",
-            CodeGen::makeAssign(
-                "zvalue \(binding::name)",
-                CodeGen::makeCall("makeResult", "args[\(idx)]")));
+    def varStats = [ name in [freeNames*, formalNames*, clo.yieldDef?*] ->
+        def stat = varInit(vars[name]);
         <> "\(stat.indent(1, 78));\n"
     ];
 
@@ -80,13 +93,8 @@ fn closureBody(cloIdx, clo) {
 
     <> "\
     \/static FUN_IMPL_DECL(\(cloIdx)) {
-    \/  // formals: \%q(clo.formals)
-    \/\(actuals)
-    \/  // varRefs: \%q(freeNames)
     \/  zvalue *state = builtinGetState(thisFunction)->arr;
-    \/\(frees)
-    \/  // yieldDef: \[clo.yieldDef?*]
-    \/
+    \/\(varStats)
     \/\(statements)
     \/  zvalue result = \(yield);
     \/  return result;
