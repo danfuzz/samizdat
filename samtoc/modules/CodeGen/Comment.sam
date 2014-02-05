@@ -1,0 +1,51 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Comment tree.
+##
+
+def indentation = submoduleUse("indentation")::indentation;
+def protocol = submoduleUse("protocol");
+
+def flatten = protocol::flatten;
+def indent = protocol::indent;
+
+fn makeComment(text, optPayload?) {
+    def flat = "/* \(text) */ \(optPayload*)";
+    def payloadMap = (def payload = optPayload*) & {payload} | {};
+
+    <> @Comment{payloadMap*, text, flat}
+};
+
+genericBind(
+    flatten,
+    "Comment",
+    fn Comment_flatten(tree) {
+        <> dataOf(tree)::flat
+    });
+
+genericBind(
+    indent,
+    "Comment",
+    fn Comment_indent(tree, level, maxColumns) {
+        def data = dataOf(tree);
+        def prefix = indentation(level);
+
+        if ((#data::flat + #prefix) < maxColumns) {
+            return "\[prefix, data::flat]"
+        };
+
+        <> "\[
+            prefix,
+            "/* ", data::text, " */",
+            (if (def p = data::payload) {
+                <> ["\n", p.indent(level, maxColumns)]
+            })?
+        ]"
+    });
+
+<> {
+    makeComment
+}

@@ -1,0 +1,48 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Variable assignment tree.
+##
+
+def indentation = submoduleUse("indentation")::indentation;
+def protocol = submoduleUse("protocol");
+
+def flatten = protocol::flatten;
+def indent = protocol::indent;
+
+fn makeAssign(target, value) {
+    def flat = "\(target.flatten()) = \(value.flatten())";
+
+    <> @Assign{target, value, flat}
+};
+
+genericBind(
+    flatten,
+    "Assign",
+    fn Assign_flatten(tree) {
+        <> dataOf(tree)::flat
+    });
+
+genericBind(
+    indent,
+    "Assign",
+    fn Assign_indent(tree, level, maxColumns) {
+        def data = dataOf(tree);
+        def prefix = indentation(level);
+
+        if ((#data::flat + #prefix) < maxColumns) {
+            return "\[prefix, data::flat]"
+        };
+
+        <> "\[
+            data::target.indent(level, maxColumns),
+            " =\n",
+            data::value.indent(level + 1, maxColumns)
+        ]"
+    });
+
+<> {
+    makeAssign
+}
