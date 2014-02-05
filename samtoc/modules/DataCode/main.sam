@@ -6,22 +6,191 @@
 ## Convert data into C code that constructs that data.
 ##
 
-def convert = submoduleUse("convert");
-def indent = submoduleUse("indent")::indent;
+def CodeGen = moduleUse({name: ["CodeGen"]});
+
+def flatten = CodeGen::flatten;
+def indent = CodeGen::indent;
+
+
+##
+## Private definitions
+##
+
+## Encode the given values as a list of C-style `\xNN` escapes.
+fn hexEscape(values*) {
+    <> [ value in values ->
+        def digit1 = (value >>> 4) &&& 0x0f;
+        def digit2 =  value        &&& 0x0f;
+        <> "\\x\%x(digit1)\%x(digit2)"
+    ]
+};
+
+## UTF-8 encode the given character, returning a representation as a list of
+## C-style `\xNN` escapes.
+fn utf8Char(ch) {
+    def value = toInt(ch);
+
+    <> if (value < 0) {
+        Io1::die("Out of range for UTF-8 encoding: 0x\%x(value)");
+    } else if (value < 0x80) {
+        <> hexEscape(value)
+    } else if (value < 0x800) {
+        def x0 = 0xc0 |||  (value >>> 6)           ;
+        def x1 = 0x80 ||| ( value         &&& 0x3f);
+        <> hexEscape(x0, x1)
+    } else if (value < 0x1_0000) {
+        def x0 = 0xe0 |||  (value >>> 12)          ;
+        def x1 = 0x80 ||| ((value >>> 6)  &&& 0x3f);
+        def x2 = 0x80 ||| ( value         &&& 0x3f);
+        <> hexEscape(x0, x1, x2)
+    } else if (value < 0x20_0000) {
+        def x0 = 0xf0 |||  (value >>> 18)          ;
+        def x1 = 0x80 ||| ((value >>> 12) &&& 0x3f);
+        def x2 = 0x80 ||| ((value >>> 6)  &&& 0x3f);
+        def x3 = 0x80 ||| ( value         &&& 0x3f);
+        <> hexEscape(x0, x1, x2, x3)
+    } else if (value < 0x400_0000) {
+        def x0 = 0xf8 |||  (value >>> 24)          ;
+        def x1 = 0x80 ||| ((value >>> 18) &&& 0x3f);
+        def x2 = 0x80 ||| ((value >>> 12) &&& 0x3f);
+        def x3 = 0x80 ||| ((value >>> 6)  &&& 0x3f);
+        def x4 = 0x80 ||| ( value         &&& 0x3f);
+        <> hexEscape(x0, x1, x2, x3, x4)
+    } else if (value < 0x8000_0000) {
+        def x0 = 0xfc |||  (value >>> 30)          ;
+        def x1 = 0x80 ||| ((value >>> 24) &&& 0x3f);
+        def x2 = 0x80 ||| ((value >>> 18) &&& 0x3f);
+        def x3 = 0x80 ||| ((value >>> 12) &&& 0x3f);
+        def x4 = 0x80 ||| ((value >>> 6)  &&& 0x3f);
+        def x5 = 0x80 ||| ( value         &&& 0x3f);
+        <> hexEscape(x0, x1, x2, x3, x4, x5)
+    } else if (value < 0x1_0000_0000) {
+        def x0 = 0xfe                              ;
+        def x1 = 0x80 ||| ((value >>> 30) &&& 0x3f);
+        def x2 = 0x80 ||| ((value >>> 24) &&& 0x3f);
+        def x3 = 0x80 ||| ((value >>> 18) &&& 0x3f);
+        def x4 = 0x80 ||| ((value >>> 12) &&& 0x3f);
+        def x5 = 0x80 ||| ((value >>> 6)  &&& 0x3f);
+        def x6 = 0x80 ||| ( value         &&& 0x3f);
+        <> hexEscape(x0, x1, x2, x3, x4, x5, x6)
+    } else {
+        Io1::die("Out of range for UTF-8: 0x\%x(value)");
+    }
+};
+
+## Map of special-case characters to either their stringified forms or
+## to `"x"` to indicate a need to convert as hex.
+def SPECIAL_CHARS = {
+    ("\x1;".."\x1f;")*: "x",
+    "\x7f;":            "x",
+    "\0":               "\\0",
+    "\n":               "\\n",
+    "\r":               "\\r",
+    "\t":               "\\t",
+    "\"":               "\\\"",
+    "\\":               "\\\\"
+};
+
+## Helper for converting strings: Returns the converted form of the
+## given character as a list of single-character forms in C syntax.
+fn stringChar(ch) {
+    if (ch > "\x7f;") {
+        return utf8Char(ch)
+    } else if (def special = SPECIAL_CHARS[ch]) {
+        if (special == "x") {
+            return hexEscape(toInt(ch))
+        } else {
+            return [special]
+        }
+    };
+
+    <> [ch]
+};
+
+
+##
+## Private defintions: `convert` generic
+##
+
+## Generic function to perform the conversion.
+def convert = makeRegularGeneric("convert", 1, 1);
+
+## Converts an int.
+fn Int_convert(int) {
+    <> CodeGen::makeCall("intFromZint", "\(int)")
+};
+genericBind(convert, Int, Int_convert);
+
+## Converts a list.
+fn List_convert(list) {
+    if (list == []) {
+        return "EMPTY_LIST"
+    };
+
+    def listElems = [ elem in list <> convert(elem) ];
+    <> CodeGen::makeCall("listFromArgs", listElems*, "NULL")
+};
+genericBind(convert, List, List_convert);
+
+## Converts a map.
+fn Map_convert(map) {
+    if (map == {}) {
+        return "EMPTY_MAP"
+    };
+
+    def mapPairs = [ mapping in map ->
+        <> [convert(keyOf(mapping)), convert(valueOf(mapping))]
+    ];
+
+    <> CodeGen::makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
+};
+genericBind(convert, Map, Map_convert);
+
+## Converts a string.
+fn String_convert(string) {
+    if (string == "") {
+        return "EMPTY_STRING"
+    };
+
+    ## Each `stringChar()` call returns a list (each list element representing
+    ## one byte), and we have to interpolate+concatenate them all together in
+    ## order to find the encoded length.
+    def bodyChars = cat((ch in string <> stringChar(ch))*);
+
+    <> CodeGen::makeCall("stringFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
+};
+genericBind(convert, String, String_convert);
+
+## Converts a derived value or an opaque core value, yielding a tree
+## that can be stringified with `indent`.
+fn Value_convert(value) {
+    if (isOpaqueValue(value)) {
+        Io1::die("Cannot convert opaque non-data value: \%q(value)")
+    };
+
+    def type = convert(typeOf(value));
+    def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
+
+    <> CodeGen::makeCall("makeTransValue", type, data)
+};
+genericBind(convert, Value, Value_convert);
+
+
+##
+## Exported definitions
+##
 
 ## Converts a tree to a string, without any indentation.
 fn convertNoIndent(tree) {
-    <> convertIndent(tree, 0, 100_000_000)
+    <> tree.convert().flatten()
 };
 
 ## Converts a tree to a string, with indentation.
 fn convertIndent(tree, level, maxColumns) {
-    <> indent(convert::convert(tree), level, maxColumns)
+    <> tree.convert().indent(level, maxColumns)
 };
 
 <> {
-    convert*,
-    indent,
     convertIndent,
     convertNoIndent
 }
