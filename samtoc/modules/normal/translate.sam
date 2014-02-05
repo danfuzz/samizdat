@@ -32,10 +32,8 @@ def translate = makeRegularGeneric("translate", 2, 2);
 
 
 ## Common translation code for variable definition.
-fn varDefCommon(node, varsBox) {
+fn varDefCommon(name, value, varsBox) {
     def vars = Box::fetch(varsBox);
-    def name = node.name;
-    def value = (def v = node.value) & translate(v, varsBox) | "NULL";
     if ((def found = vars[name]) & (found::kind != "free")) {
         Io1::die("Cannot re-define local variable: \%q(name).")
     };
@@ -100,21 +98,31 @@ genericBind(
         def vars = Box::fetch(varsBox);
         def binding = vars[name]
             | Io1::die("Bind of undefined variable: \%q(node.name)");
-        <> CodeGen::makeCall("ASSIGN /*\%q(name)*/", binding::name, value)
+
+        <> CodeGen::makeCall("boxStore", binding::name, value)
     });
 
 genericBind(
     translate,
     "varDef",
     fn varDef_translate(node, varsBox) {
-        <> varDefCommon(node, varsBox)
+        def value = (def v = node.value)
+            & CodeGen::makeCall("makeResult", translate(v, varsBox))
+            | CodeGen::makeCall("makePromise");
+
+        <> varDefCommon(node.name, value, varsBox)
     });
 
 genericBind(
     translate,
     "varDefMutable",
     fn varDefMutable_translate(node, varsBox) {
-        <> varDefCommon(node, varsBox)
+        def value = (def v = node.value)
+            & translate(v, varsBox)
+            | "NULL";
+
+        <> varDefCommon(
+            node.name, CodeGen::makeCall("makeCell", value), varsBox)
     });
 
 genericBind(
@@ -125,7 +133,7 @@ genericBind(
         def vars = Box::fetch(varsBox);
         def binding = vars[name]
             | Io1::die("Reference of undefined variable: \%q(node.name)");
-        <> "\(binding::name) /*\%q(name)*/"
+        <> CodeGen::makeCall("boxFetch", binding::name)
     });
 
 genericBind(
