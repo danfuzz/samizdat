@@ -1,0 +1,35 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Simple string value tree.
+##
+
+def indentation = submoduleUse("indentation")::indentation;
+def protocol = submoduleUse("protocol");
+
+def flatten = protocol::flatten;
+def indent = protocol::indent;
+
+fn makeSimple(value) {
+    <> @Simple{value}
+};
+
+genericBind(
+    flatten,
+    "Simple",
+    fn Simple_flatten(tree) {
+        <> dataOf(tree)::value
+    });
+
+genericBind(
+    indent,
+    "Simple",
+    fn Simple_indent(tree, level, maxColumns) {
+        <> "\[indentation(level), dataOf(tree)::value]"
+    });
+
+<> {
+    makeSimple
+}

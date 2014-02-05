@@ -6,10 +6,13 @@
 ## Translate execution trees into corresponding C code.
 ##
 
-def DataCode = moduleUse({name: ["DataCode"]});
+def CodeGen = moduleUse({name: ["CodeGen"]});
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
+
+def flatten = CodeGen::flatten;
+def indent = CodeGen::indent;
 
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
@@ -39,7 +42,7 @@ fn varDefCommon(node, varsBox) {
     def binding = {name: "local_\(#vars)", kind: "local"};
 
     Box::store(varsBox, {vars*, (name): binding});
-    <> DataCode::makeCall("DEFINE /*\%q(name)*/", binding::name, value);
+    <> CodeGen::makeCall("DEFINE /*\%q(name)*/", binding::name, value);
 };
 
 genericBind(
@@ -48,7 +51,7 @@ genericBind(
     fn call_translate(node, varsBox) {
         ## TODO: Handle `voidable` and `interpolate` nodes.
         def actuals = (a in node.actuals <> translate(a, varsBox));
-        <> DataCode::makeCall(translate(node.function, varsBox), actuals*)
+        <> CodeGen::makeCall(translate(node.function, varsBox), actuals*)
     });
 
 genericBind(
@@ -95,7 +98,7 @@ genericBind(
         def vars = Box::fetch(varsBox);
         def binding = vars[name]
             | Io1::die("Bind of undefined variable: \%q(node.name)");
-        <> DataCode::makeCall("ASSIGN /*\%q(name)*/", binding::name, value)
+        <> CodeGen::makeCall("ASSIGN /*\%q(name)*/", binding::name, value)
     });
 
 genericBind(
@@ -132,12 +135,12 @@ genericBind(
 
 ## Translates and converts to a string, without indentation.
 fn translateNoIndent(node, varsBox) {
-    <> translateIndent(node, varsBox, 0, 100_000_000)
+    <> node.translate(varsBox).flatten()
 };
 
 ## Translates and converts to a string, with indentation.
 fn translateIndent(node, varsBox, level, maxColumns) {
-    <> DataCode::indent(translate(node, varsBox), level, maxColumns)
+    <> node.translate(varsBox).indent(level, maxColumns)
 };
 
 <> {

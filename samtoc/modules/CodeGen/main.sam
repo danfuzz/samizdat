@@ -1,0 +1,16 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Convert data into C code that constructs that data.
+##
+
+## This just binds generics.
+submoduleUse("String");
+
+<> {
+    submoduleUse("Call")*,
+    submoduleUse("Simple")*,
+    submoduleUse("protocol")*
+}
