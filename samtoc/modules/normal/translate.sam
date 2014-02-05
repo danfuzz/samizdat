@@ -42,7 +42,7 @@ fn varDefCommon(name, value, varsBox) {
     Box::store(varsBox, {vars*, (name): binding});
     <> CodeGen::makeComment(
         "\(binding::name) <- \%q(name)",
-        CodeGen::makeAssign(binding::name, value));
+        CodeGen::makeAssign("zvalue \(binding::name)", value));
 };
 
 genericBind(
