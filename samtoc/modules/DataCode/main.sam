@@ -181,7 +181,7 @@ genericBind(convert, Value, Value_convert);
 ##
 
 ## Converts a tree to a string, without any indentation.
-fn convertNoIndent(tree) {
+fn convertFlatten(tree) {
     <> tree.convert().flatten()
 };
 
@@ -191,6 +191,6 @@ fn convertIndent(tree, level, maxColumns) {
 };
 
 <> {
-    convertIndent,
-    convertNoIndent
+    convertFlatten,
+    convertIndent
 }

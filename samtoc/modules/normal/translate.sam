@@ -144,7 +144,7 @@ genericBind(
     });
 
 ## Translates and converts to a string, without indentation.
-fn translateNoIndent(node, varsBox) {
+fn translateFlatten(node, varsBox) {
     <> node.translate(varsBox).flatten()
 };
 
@@ -155,6 +155,6 @@ fn translateIndent(node, varsBox, level, maxColumns) {
 
 <> {
     translate,
-    translateIndent,
-    translateNoIndent
+    translateFlatten,
+    translateIndent
 }

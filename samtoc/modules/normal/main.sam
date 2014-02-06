@@ -88,7 +88,7 @@ fn closureBody(cloIdx, clo) {
         <> "\(translate::translateIndent(s, varsBox, 1, 78));\n"
     ];
     def yield = (def y = clo.yield)
-        & translate::translateNoIndent(y, varsBox)
+        & translate::translateFlatten(y, varsBox)
         | "NULL";
 
     <> "\
@@ -133,7 +133,7 @@ fn compile(sourcePath, targetPath) {
     def closureMakers = cat(
         ( idx in (0..), clo in closures ->
             def name = (def n = clo.name)
-                & translate::translateNoIndent(n, Box::nullBox)
+                & translate::translateFlatten(n, Box::nullBox)
                 | "NULL";
 
             <> "\
