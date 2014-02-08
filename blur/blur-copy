@@ -1,0 +1,148 @@
+#!/bin/bash
+#
+# Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Argument parsing
+#
+
+# Error flag.
+error=0
+
+# Identification name (optional).
+id=''
+
+# Source directory.
+fromDir=''
+
+# Target directory.
+toDir=''
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        error='usage'
+    elif [[ ${opt} =~ ^--id=(.*) ]]; then
+        id="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--from-dir=(.*) ]]; then
+        fromDir="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--to-dir=(.*) ]]; then
+        toDir="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        error=1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+# Files to copy.
+files=("$@")
+
+if [[ ${error} == 0 ]]; then
+    if [[ ${fromDir} == '' ]]; then
+        echo 'Missing option: --from-dir' 1>&2
+        error=1
+    fi
+    if [[ ${toDir} == '' ]]; then
+        echo 'Missing option: --to-dir' 1>&2
+        error=1
+    fi
+fi
+
+if [[ ${error} != 0 ]]; then
+    echo 1>&2 "${progName} [--id=<name>]" \
+        "--from-dir=<name> --to-dir=<name> file..."
+    if [[ ${error} == 'usage' ]]; then
+        error=0
+    fi
+    exit ${error}
+fi
+
+
+#
+# Main script
+#
+
+error=0
+
+# Make the directories absolute, if not already.
+
+if [[ ${fromDir} =~ ^[^/] ]]; then
+    fromDir="${PWD}/${fromDir}"
+fi
+
+if [[ ${toDir} =~ ^[^/] ]]; then
+    topDir="${PWD}/${toDir}"
+fi
+
+# Set up a identification line, if asked.
+
+idLine=''
+if [[ ${id} != '' ]]; then
+    printf -v triggerLine '  id %q\n' "${id}"
+fi
+
+# Emit a rule set for each named file.
+
+for f in "${files[@]}"; do
+    if [[ ${f} =~ /$ ]]; then
+        echo "Invalid file name (trailing slash): ${f}" 1>&2
+        error=1
+        continue
+    elif [[ ${f} =~ ^/ ]]; then
+        echo "Invalid file name (leading slash): ${f}" 1>&2
+        error=1
+        continue
+    fi
+
+    targetFile="${toDir}/${f}"
+    sourceFile="${fromDir}/${f}"
+    printf 'start\n'
+    printf '%s' "${triggerLine}"
+    printf '  target %q\n' "${targetFile}"
+    printf '  source %q\n' "${sourceFile}"
+    printf '  cmd mkdir -p %q\n' "${targetFile%/*}"
+    printf '  cmd cp %q %q\n' "${sourceFile}" "${targetFile}"
+    printf 'end\n'
+done
+
+exit ${error}

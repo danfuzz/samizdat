@@ -1,0 +1,234 @@
+#!/bin/bash
+#
+# Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Argument parsing
+#
+
+# Error flag.
+error=0
+
+# File to find rules in.
+rulesFile='-'
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        error='usage'
+    elif [[ ${opt} =~ ^--rules=(.*) ]]; then
+        rulesFile="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        error=1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+# Initial targets (files or named ids).
+targets=("$@")
+
+if [[ ${error} != 0 ]]; then
+    echo 1>&2 "${progName} [--rules=<file>] (target-file | id) ..."
+    if [[ ${error} == 'usage' ]]; then
+        error=0
+    fi
+    exit ${error}
+fi
+
+if [[ ${rulesFile} == '/dev/stdin' ]]; then
+    rulesFile='-'
+fi
+
+
+#
+# Temporary directory setup
+#
+
+function tmpInit {
+    tmpDir="$(mktemp -d "${TMPDIR:-/tmp/}${progName}-XXXXX")"
+    if [[ $? != 0 ]]; then
+        exit 1
+    fi
+
+    trap 'tmpCleanup' EXIT TERM
+}
+
+function tmpCleanup {
+    cd /
+    rm -rf "${tmpDir}"
+}
+
+
+#
+# Helper functions
+#
+
+# Unquotes the given string.
+function unquote {
+    local s="$1"
+
+    if [[ $s == "''" ]]; then
+        # Empty string.
+        return
+    fi
+
+    if [[ $s =~ ^"$'"(.*)"'"$ ]]; then
+        # Remove `$'...'` cladding.
+        s="${BASH_REMATCH[1]}"
+    fi
+
+    if [[ ! $s =~ '\' ]]; then
+        # Easy out: No escapes.
+        printf '%s' "$s"
+        return
+    fi
+
+    local i result=''
+
+    for (( i = 0; i < ${#s}; i++ )); do
+        local c="${s:$i:1}"
+        if [[ $c == '\' ]]; then
+            ((i++))
+            c="${s:$i:1}"
+            case "$c" in
+                ('n') c=$'\n' ;;
+                ('r') c=$'\r' ;;
+                ('t') c=$'\t' ;;
+                (' '|'"'|"'") ;; # Pass through as-is.
+                (*)
+                    echo "Unknown character escape: ${c}" 1>&2
+                    exit 1
+                    ;;
+            esac
+        fi
+        result+="$c"
+    done
+
+    printf '%s' "${result}"
+}
+
+# Exits success if the given word is a defined id.
+function isId {
+    local id="$1"
+    local i
+
+    for (( i = 0; i < ${#ids[@]}; i++ )); do
+        if [[ "${ids[$i]}" == "${id}" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+# Collects all the id'ed targets, setting up `${ids[@]}`.
+ids=()
+function idsInit {
+    local cmd rest
+
+    while read -r cmd rest; do
+        if [[ ${cmd} == 'id' ]]; then
+            local id=("$(unquote "${rest}")") || exit 1
+            if ! isId "${id}"; then
+                ids+=("${id}")
+            fi
+        fi
+    done < "${rulesFile}"
+}
+
+# Outputs the targets associated with the given id.
+function targetsFromId {
+    local id="$1"
+    local curId='' cmd rest
+
+    while read -r cmd rest; do
+        if [[ ${cmd} == 'id' ]]; then
+            curId=("$(unquote "${rest}")")
+        elif [[ ${cmd} == 'target' && ${curId} == ${id} ]]; then
+            echo "${rest}"
+        fi
+    done < "${rulesFile}"
+}
+
+# Expands the targets, so they are all absolute file names. This modifies
+# `${targets[@]}` in place.
+function expandTargets {
+    local line
+    local at=0
+
+    while read -r line; do
+        targets["${at}"]="${line}"
+        (( at++ ))
+    done \
+    < <(
+        local i
+        for (( i = 0; i < ${#targets[@]}; i++ )); do
+            local t="${targets[$i]}"
+            if isId "$t"; then
+                targetsFromId "${t}"
+            elif [[ $t =~ ^/ ]]; then
+                echo "$t"
+            else
+                echo "${PWD}/$t"
+            fi
+        done
+    )
+}
+
+
+#
+# Main script
+#
+
+if [[ ${rulesFile} == '-' ]]; then
+    # The rules are coming from stdin. Pull them all into a temporary file,
+    # so we can re(re...)read them as necessary.
+    tmpInit
+    rulesFile="${tmpDir}/rules.txt"
+    cat < /dev/stdin > "${rulesFile}" || exit 1
+fi
+
+idsInit
+expandTargets
+
+# TODO: Stuff
