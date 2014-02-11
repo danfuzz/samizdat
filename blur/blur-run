@@ -103,6 +103,50 @@ function tmpCleanup {
 # Helper functions
 #
 
+# Makes an absolute path out of the given path, which might be either absolute
+# or relative. This does not resolve symlinks but does flatten away `.` and
+# `..` components.
+function absPath {
+    local path="$1"
+
+    if [[ ! ${path} =~ ^/ ]]; then
+        path="${PWD}/${path}"
+    fi
+
+    local result=() at=0
+    while [[ ${path} != '' ]]; do
+        if [[ ${path} =~ ^// ]]; then
+            path="${path:1}"
+        elif [[ ${path} =~ ^/\./ ]]; then
+            path="${path:2}"
+        elif [[ ${path} == '/.' ]]; then
+            path=''
+        elif [[ ${path} =~ ^/\.\./ ]]; then
+            if (( at > 0 )); then
+                (( at-- ))
+            fi
+            path="${path:3}"
+        elif [[ ${path} == '/..' ]]; then
+            if (( at > 0 )); then
+                (( at-- ))
+            fi
+            path=''
+        elif [[ ${path} == '/' ]]; then
+            result[$at]=''
+            path=''
+            (( at++ ))
+        else
+            [[ ${path} =~ /([^/]*)(.*) ]]
+            result[$at]="${BASH_REMATCH[1]}"
+            path="${BASH_REMATCH[2]}"
+            (( at++ ))
+        fi
+    done
+
+    printf '/%s' "${result[@]}"
+    printf '\n'
+}
+
 # Unquotes the given string.
 function unquote {
     local s="$1"
@@ -147,6 +191,11 @@ function unquote {
     printf '%s' "${result}"
 }
 
+# Combines `unquote` and `absPath`.
+function unquoteAbs {
+    absPath "$(unquote "$1")"
+}
+
 # Exits success if the given word is a defined id.
 function isId {
     local id="$1"
@@ -176,43 +225,80 @@ function idsInit {
     done < "${rulesFile}"
 }
 
-# Outputs the targets associated with the given id.
-function targetsFromId {
-    local id="$1"
-    local curId='' cmd rest
+# Outputs all the rules associated with the given target.
+function rulesFor {
+    local target="$1"
+    local match curRule=() cmd rest
 
     while read -r cmd rest; do
-        if [[ ${cmd} == 'id' ]]; then
-            curId=("$(unquote "${rest}")")
-        elif [[ ${cmd} == 'target' && ${curId} == ${id} ]]; then
-            echo "${rest}"
-        fi
+        curRule+=("${cmd} ${rest}")
+        case "${cmd}" in
+            (start)
+                match=no
+                curRule=(start)
+                ;;
+            (end)
+                if [[ ${match} == yes ]]; then
+                    printf '%s\n' "${curRule[@]}"
+                fi
+                ;;
+            (id)
+                if [[ "$(unquote "${rest}")" == ${target} ]]; then
+                    match=yes
+                fi
+                ;;
+            (target)
+                if [[ "$(unquoteAbs "${rest}")" == ${target} ]]; then
+                    match=yes
+                fi
+                ;;
+        esac
     done < "${rulesFile}"
 }
 
-# Expands the targets, so they are all absolute file names. This modifies
-# `${targets[@]}` in place.
-function expandTargets {
-    local line
-    local at=0
+# Attempts to satisfy the indicated target. The target can be either a file
+# name or a named id. This works by finding all the sources associated with
+# the target, attempting (recursively) to satisfy them, and then running any
+# commands associated with the target.
+function satisfyTarget {
+    local target="$1"
+    local any=no
+    local error=no
 
-    while read -r line; do
-        targets["${at}"]="${line}"
-        (( at++ ))
+    if ! isId "${target}"; then
+        target="$(absPath "${target}")"
+    fi
+
+    echo ">> ${target}" 1>&2
+
+    while read -r cmd rest; do
+        any=yes
+        satisfyTarget "$(unquote "${rest}")"
+        if [[ $? != 0 ]]; then
+            error=yes
+            break
+        fi
     done \
-    < <(
-        local i
-        for (( i = 0; i < ${#targets[@]}; i++ )); do
-            local t="${targets[$i]}"
-            if isId "$t"; then
-                targetsFromId "${t}"
-            elif [[ $t =~ ^/ ]]; then
-                echo "$t"
-            else
-                echo "${PWD}/$t"
-            fi
-        done
-    )
+    < <(rulesFor "${target}" | grep '^source ')
+
+    if [[ ${any} == no ]]; then
+        if [[ ! -e "${target}" ]]; then
+            echo "No rules defined for non-existent target: ${target}" 1>&2
+            error=yes
+        fi
+    elif [[ ${error} == no ]]; then
+        echo "=== commands"
+        while read -r cmd rest; do
+            echo "=== ${cmd} ${rest}"
+        done \
+        < <(rulesFor "${target}" | grep '^cmd ')
+    fi
+
+    echo "<< ${target}" 1>&2
+
+    if [[ ${error} == yes ]]; then
+        return 1
+    fi
 }
 
 
@@ -229,6 +315,10 @@ if [[ ${rulesFile} == '-' ]]; then
 fi
 
 idsInit
-expandTargets
 
-# TODO: Stuff
+for (( i = 0; i < ${#targets[@]}; i++ )); do
+    satisfyTarget "${targets[$i]}"
+    if [[ $? != 0 ]]; then
+        exit 1
+    fi
+done
