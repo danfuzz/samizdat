@@ -100,8 +100,31 @@ function tmpCleanup {
 
 
 #
+# OS detection
+#
+
+# OS flavor; either `bsd` or `linux`.
+OS_FLAVOR=linux
+
+if ! ls --version > /dev/null 2>&1; then
+    OS_FLAVOR=bsd
+fi
+
+
+#
 # Helper functions
 #
+
+# Gets the modification time of the given file.
+function modTime {
+    local file="$1"
+
+    if [[ ${OS_FLAVOR} == bsd ]]; then
+        stat -f %m "${file}"
+    else
+        stat --format=%Y "${file}"
+    fi
+}
 
 # Makes an absolute path out of the given path, which might be either absolute
 # or relative. This does not resolve symlinks but does flatten away `.` and
@@ -256,6 +279,91 @@ function rulesFor {
     done < "${rulesFile}"
 }
 
+# Reads a rule from stdin, writing it to stdout. Returns non-zero for EOF.
+function readRule {
+    local cmd rest
+
+    read -r cmd rest
+    if [[ $? != 0 ]]; then
+        return 1
+    fi
+
+    if [[ ${cmd} != start ]]; then
+        echo "Unexpected start and not command: ${cmd}" 1>&2
+        exit 1
+    fi
+
+    echo start
+
+    while read -r cmd rest; do
+        echo "${cmd} ${rest}"
+        if [[ ${cmd} == end ]]; then
+            break
+        fi
+    done
+
+    if [[ ${cmd} != end ]]; then
+        echo 'Missing end.' 1>&2
+        exit 1
+    fi
+}
+
+# Runs the given rule if any of:
+# * it has no sources
+# * it has no targets
+# * at least one target doesn't exist
+# * at least one existing target has an older modification time than at least
+#   one source
+function runIfNeeded {
+    # Split the rule into an array of lines.
+    local rule=()
+    IFS=$'\n' rule=($1)
+
+    local newestSource=-1 oldestTarget=-1 line stamp cmd rest
+    local runIt=no
+
+    for line in "${rule[@]}"; do
+        [[ ${line} =~ ^' '*([^ ]*)' '*(.*)$ ]]
+        cmd="${BASH_REMATCH[1]}"
+        rest="${BASH_REMATCH[2]}"
+        case "${cmd}" in
+            (source)
+                rest="$(unquoteAbs "${rest}")"
+                if [[ ! -e "${rest}" ]]; then
+                    echo "Missing source: ${rest}" 1>&2
+                    exit 1
+                fi
+                stamp="$(modTime "${rest}")"
+                if (( stamp > newestSource )); then
+                    newestSource="${stamp}"
+                fi
+                ;;
+            (target)
+                rest="$(unquoteAbs "${rest}")"
+                if [[ ! -e "${rest}" ]]; then
+                    # Missing target. Means that we need to run the rule.
+                    newestSource=-1
+                    oldestTarget=-1
+                    break
+                fi
+                stamp="$(modTime "${rest}")"
+                if (( oldestTarget == -1 || stamp < oldestTarget )); then
+                    oldestTarget="${stamp}"
+                fi
+                ;;
+        esac
+    done
+
+    if (( newestSource > 0 && oldestTarget > 0 )); then
+        if (( newestSource < oldestTarget )); then
+            # Everything is up-to-date.
+            return
+        fi
+    fi
+
+    echo "=== TODO run commands"
+}
+
 # Attempts to satisfy the indicated target. The target can be either a file
 # name or a named id. This works by finding all the sources associated with
 # the target, attempting (recursively) to satisfy them, and then running any
@@ -287,11 +395,15 @@ function satisfyTarget {
             error=yes
         fi
     elif [[ ${error} == no ]]; then
-        echo "=== commands"
-        while read -r cmd rest; do
-            echo "=== ${cmd} ${rest}"
+        local rule
+        while true; do
+            rule="$(readRule)"
+            if [[ $? != 0 ]]; then
+                break;
+            fi
+            runIfNeeded "${rule}"
         done \
-        < <(rulesFor "${target}" | grep '^cmd ')
+        < <(rulesFor "${target}")
     fi
 
     echo "<< ${target}" 1>&2
