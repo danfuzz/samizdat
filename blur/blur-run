@@ -260,9 +260,10 @@ function rulesInit {
         curRule+=("${cmd}${space}${rest}")
         case "${cmd}" in
             (start)
-                curRule=(start)
+                curRule=()
                 ;;
             (end)
+                unset curRule[$((${#curRule[@]} - 1))]
                 RULES+=("$(printf '%s\n' "${curRule[@]}")")
                 curRule=()
                 ;;
