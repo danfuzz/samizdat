@@ -383,12 +383,25 @@ function runIfNeeded {
 # name or a named id. This works by finding all the sources associated with
 # the target, attempting (recursively) to satisfy them, and then running any
 # commands associated with the target.
+#
+# If a target has already been satisfied at least once during this run,
+# then it will not be tried again.
+SATISFIED=()
 function satisfyTarget {
     local target="$1"
+    local i
 
     if ! isId "${target}"; then
         target="$(absPath "${target}")"
     fi
+
+    for (( i = 0; i < ${#SATISFIED[@]}; i++ )); do
+        if [[ ${target} == ${SATISFIED[$i]} ]]; then
+            # The target has already been satisfied due to earlier activity.
+            msg "!! ${target}"
+            return
+        fi
+    done
 
     local rules=($(rulesFor "${target}"))
 
@@ -398,7 +411,7 @@ function satisfyTarget {
             echo "  ${target}" 1>&2
             return 1
         else
-            msg "<> ${target}"
+            msg "== ${target}"
             return
         fi
     fi
@@ -406,7 +419,7 @@ function satisfyTarget {
     msg ">> ${target}"
     enterLayer
 
-    local i error=no
+    local error=no
 
     for (( i = 0; i < "${#rules[@]}"; i++ )); do
         if [[ ${error} == yes ]]; then
@@ -437,6 +450,8 @@ function satisfyTarget {
 
     leaveLayer
     msg "<< ${target}"
+
+    SATISFIED+=(${target})
 
     if [[ ${error} == yes ]]; then
         return 1
