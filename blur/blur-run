@@ -112,6 +112,34 @@ fi
 
 
 #
+# Logging / spew
+#
+
+# Current depth
+DEPTH=0
+
+# Increase status message depth.
+function enterLayer {
+    (( DEPTH++ ))
+}
+
+# Decrease status message depth.
+function leaveLayer {
+    (( DEPTH-- ))
+}
+
+# Emit a status message.
+function msg {
+    local i
+    for (( i = 0; i < DEPTH; i++ )); do
+        printf '  '
+    done
+
+    echo "$@"
+}
+
+
+#
 # Helper functions
 #
 
@@ -368,7 +396,7 @@ function runIfNeeded {
         cmd="${BASH_REMATCH[1]}"
         rest="${BASH_REMATCH[2]}"
         if [[ "${cmd}" == cmd ]]; then
-            echo '$' "${rest}"
+            msg '$' "${rest}"
             bash -c "${rest}"
             local status="$?"
             if [[ ${status} != 0 ]]; then
@@ -394,7 +422,8 @@ function satisfyTarget {
         target="$(absPath "${target}")"
     fi
 
-    echo ">> ${target}"
+    msg ">> ${target}"
+    enterLayer
 
     while read -r cmd rest; do
         any=yes
@@ -428,7 +457,8 @@ function satisfyTarget {
         < <(rulesFor "${target}")
     fi
 
-    echo "<< ${target}"
+    leaveLayer
+    msg "<< ${target}"
 
     if [[ ${error} == yes ]]; then
         return 1
