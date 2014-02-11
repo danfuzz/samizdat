@@ -6,7 +6,7 @@
 
 
 #
-# Directory and program name detection
+# General setup
 #
 
 # Preserve the original working dir as origDir.
@@ -33,6 +33,8 @@ baseDir="${PWD}"
 cd "${origDir}"
 unset prog
 unset newProg
+
+. "${progDir}/blur-utils.sh"
 
 
 #
@@ -102,17 +104,10 @@ fi
 # Main script
 #
 
-error=0
-
 # Make the directories absolute, if not already.
 
-if [[ ${fromDir} =~ ^[^/] ]]; then
-    fromDir="${PWD}/${fromDir}"
-fi
-
-if [[ ${toDir} =~ ^[^/] ]]; then
-    topDir="${PWD}/${toDir}"
-fi
+fromDir="$(absPath "${fromDir}")"
+toDir="$(absPath "${toDir}")"
 
 # Set up a identification line, if asked.
 
