@@ -101,6 +101,27 @@ fi
 
 
 #
+# Helper functions
+#
+
+# Emits a rule for directory creation, if one hasn't been emitted already.
+DIRS=()
+function dirRule {
+    local dir="$1"
+    local i
+
+    for (( i = 0; i < ${#DIRS[@]}; i++ )); do
+        if [[ ${dir} == ${DIRS[$i]} ]]; then
+            return
+        fi
+    done
+
+    "${progDir}/blur-mkdir" "${dir}"
+    DIRS+=("${dir}")
+}
+
+
+#
 # Main script
 #
 
@@ -116,7 +137,8 @@ if [[ ${id} != '' ]]; then
     printf -v triggerLine '  id %q\n' "${id}"
 fi
 
-# Emit a rule set for each named file.
+# Emit a rule for each named file, and accumulate directories.
+dirs=()
 
 for f in "${files[@]}"; do
     if [[ ${f} =~ /$ ]]; then
@@ -129,13 +151,15 @@ for f in "${files[@]}"; do
         continue
     fi
 
+    dirRule "${toDir}"
     targetFile="${toDir}/${f}"
     sourceFile="${fromDir}/${f}"
+
     printf 'start\n'
     printf '%s' "${triggerLine}"
     printf '  target %q\n' "${targetFile}"
+    printf '  source %q\n' "${toDir}"
     printf '  source %q\n' "${sourceFile}"
-    printf '  cmd mkdir -p %q\n' "${targetFile%/*}"
     printf '  cmd cp %q %q\n' "${sourceFile}" "${targetFile}"
     printf 'end\n'
 done
