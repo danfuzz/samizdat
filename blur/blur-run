@@ -203,8 +203,36 @@ function runIfNeeded {
     local rule=()
     IFS=$'\n' rule=($1)
 
-    local newestSource=-1 oldestTarget=-1 line stamp cmd rest
-    local runIt=no
+    local line cmd rest
+
+    # Check asserts and moots.
+    for line in "${rule[@]}"; do
+        [[ ${line} =~ ^' '*([^ ]*)' '*(.*)$ ]]
+        cmd="${BASH_REMATCH[1]}"
+        rest="${BASH_REMATCH[2]}"
+        case "${cmd}" in
+            (moot)
+                msg '??' "${rest}"
+                bash -c "${rest}"
+                if [[ $? == 0 ]]; then
+                    # Moot test succeeded, which means that the rule doesn't
+                    # need to execute anything.
+                    return
+                fi
+                ;;
+            (assert)
+                msg '!!' "${rest}"
+                bash -c "${rest}"
+                if [[ $? != 0 ]]; then
+                    # Assert failed, which is a real error.
+                    msg "Assert failed."
+                    return 1
+                fi
+                ;;
+        esac
+    done
+
+    local newestSource=-1 oldestTarget=-1 stamp
 
     for line in "${rule[@]}"; do
         [[ ${line} =~ ^' '*([^ ]*)' '*(.*)$ ]]
@@ -225,7 +253,8 @@ function runIfNeeded {
             (target)
                 rest="$(unquoteAbs "${rest}")"
                 if [[ ! -e "${rest}" ]]; then
-                    # Missing target. Means that we need to run the rule.
+                    # Missing target. Means that we need to run the rule
+                    # (unless previously mooted).
                     newestSource=-1
                     oldestTarget=-1
                     break
@@ -252,7 +281,7 @@ function runIfNeeded {
         cmd="${BASH_REMATCH[1]}"
         rest="${BASH_REMATCH[2]}"
         if [[ "${cmd}" == cmd ]]; then
-            msg '$' "${rest}"
+            msg '$$' "${rest}"
             bash -c "${rest}"
             local status="$?"
             if [[ ${status} != 0 ]]; then
@@ -284,7 +313,7 @@ function satisfyTarget {
     for (( i = 0; i < ${#SATISFIED[@]}; i++ )); do
         if [[ ${target} == ${SATISFIED[$i]} ]]; then
             # The target has already been satisfied due to earlier activity.
-            msg "!! ${target}"
+            msg "<> ${target}"
             return
         fi
     done
