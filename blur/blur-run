@@ -331,7 +331,7 @@ function runIfNeeded {
                 rest="$(unquoteAbs "${rest}")"
                 if [[ ! -e "${rest}" ]]; then
                     echo "Missing source: ${rest}" 1>&2
-                    exit 1
+                    return 1
                 fi
                 stamp="$(modTime "${rest}")"
                 if (( stamp > newestSource )); then
@@ -361,7 +361,24 @@ function runIfNeeded {
         fi
     fi
 
-    echo "=== TODO run commands"
+    # Need to run the associated commands.
+
+    for line in "${rule[@]}"; do
+        [[ ${line} =~ ^' '*([^ ]*)' '*(.*)$ ]]
+        cmd="${BASH_REMATCH[1]}"
+        rest="${BASH_REMATCH[2]}"
+        if [[ "${cmd}" == cmd ]]; then
+            echo '$' "${rest}"
+            bash -c "${rest}"
+            local status="$?"
+            if [[ ${status} != 0 ]]; then
+                echo "Non-zero exit status: ${status}" 1>&1
+                echo "On command:" 1>&2
+                echo '  $' "${rest}" 1>&2
+                return 1
+            fi
+        fi
+    done
 }
 
 # Attempts to satisfy the indicated target. The target can be either a file
@@ -377,7 +394,7 @@ function satisfyTarget {
         target="$(absPath "${target}")"
     fi
 
-    echo ">> ${target}" 1>&2
+    echo ">> ${target}"
 
     while read -r cmd rest; do
         any=yes
@@ -399,14 +416,19 @@ function satisfyTarget {
         while true; do
             rule="$(readRule)"
             if [[ $? != 0 ]]; then
-                break;
+                # No more rules. (Not an error.)
+                break
             fi
             runIfNeeded "${rule}"
+            if [[ $? != 0 ]]; then
+                error=yes
+                break
+            fi
         done \
         < <(rulesFor "${target}")
     fi
 
-    echo "<< ${target}" 1>&2
+    echo "<< ${target}"
 
     if [[ ${error} == yes ]]; then
         return 1
