@@ -368,7 +368,7 @@ function satisfyTarget {
     leaveLayer
     msg "<< ${target}"
 
-    SATISFIED+=(${target})
+    SATISFIED+=("${target}")
 
     if [[ ${error} == yes ]]; then
         msg "Could not satisfy target: ${target}"
