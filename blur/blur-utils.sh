@@ -143,9 +143,26 @@ function rule-mkdir {
     "${BLUR_DIR}/blur-mkdir" "$@"
 }
 
+# Like `rule-mkdir` but keeps track of what rules have been emitted, and
+# only ever emits once per unique directory name.
+MKDIRS=()
+function rule-mkdir-once {
+    local dir="$1"
+    local i
+
+    for (( i = 0; i < ${#MKDIRS[@]}; i++ )); do
+        if [[ ${dir} == ${MKDIRS[$i]} ]]; then
+            return
+        fi
+    done
+
+    rule-mkdir "${dir}"
+    MKDIRS+=("${dir}")
+}
+
 
 #
 # Directory setup. This has to be done after `absPath` is defined.
 #
 
-BLUR_DIR="$(absPath "${BASH_SOURCE[1]%/*}")"
+BLUR_DIR="$(absPath "${BASH_SOURCE[0]%/*}")"

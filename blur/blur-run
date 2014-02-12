@@ -276,17 +276,23 @@ function runIfNeeded {
         [[ ${line} =~ ^' '*([^ ]*)' '*(.*)$ ]]
         cmd="${BASH_REMATCH[1]}"
         rest="${BASH_REMATCH[2]}"
-        if [[ "${cmd}" == cmd ]]; then
-            msg '$$' "${rest}"
-            bash -c "${rest}"
-            local status="$?"
-            if [[ ${status} != 0 ]]; then
-                echo "Non-zero exit status: ${status}" 1>&1
-                echo "On command:" 1>&2
-                echo '  $' "${rest}" 1>&2
-                return 1
-            fi
-        fi
+        case "${cmd}" in
+            (cmd)
+                msg '$$' "${rest}"
+                bash -c "${rest}"
+                local status="$?"
+                if [[ ${status} != 0 ]]; then
+                    echo "Non-zero exit status: ${status}" 1>&1
+                    echo "On command:" 1>&2
+                    echo '  $' "${rest}" 1>&2
+                    return 1
+                fi
+                ;;
+            (msg)
+                rest="$(bash -c "echo ${rest}")"
+                msg "${rest}"
+                ;;
+        esac
     done
 }
 

@@ -97,27 +97,6 @@ fi
 
 
 #
-# Helper functions
-#
-
-# Emits a rule for directory creation, if one hasn't been emitted already.
-DIRS=()
-function dirRule {
-    local dir="$1"
-    local i
-
-    for (( i = 0; i < ${#DIRS[@]}; i++ )); do
-        if [[ ${dir} == ${DIRS[$i]} ]]; then
-            return
-        fi
-    done
-
-    rule-mkdir "${dir}"
-    DIRS+=("${dir}")
-}
-
-
-#
 # Main script
 #
 
@@ -133,8 +112,7 @@ if [[ ${id} != '' ]]; then
     printf -v triggerLine '  id %q\n' "${id}"
 fi
 
-# Emit a rule for each named file, and accumulate directories.
-dirs=()
+# Emit a rule for each named file and each target directory.
 
 for f in "${files[@]}"; do
     if [[ ${f} =~ /$ ]]; then
@@ -147,7 +125,7 @@ for f in "${files[@]}"; do
         continue
     fi
 
-    dirRule "${toDir}"
+    rule-mkdir-once "${toDir}"
     targetFile="${toDir}/${f}"
     sourceFile="${fromDir}/${f}"
 
@@ -156,6 +134,7 @@ for f in "${files[@]}"; do
     printf '  target %q\n' "${targetFile}"
     printf '  source %q\n' "${toDir}"
     printf '  source %q\n' "${sourceFile}"
+    printf '  msg Copy: %q\n' "${sourceFile}"
     printf '  cmd cp %q %q\n' "${sourceFile}" "${targetFile}"
     printf 'end\n'
 done
