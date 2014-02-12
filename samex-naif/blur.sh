@@ -83,6 +83,7 @@ INTERMED="${OUT}/intermed/${projectName}"
 FINAL="${OUT}/final"
 FINAL_INCLUDE="${FINAL}/include/${name}"
 FINAL_LIB="${FINAL}/lib/${name}"
+FINAL_EXE="${FINAL}/bin/${binName}"
 
 if [[ ${profile} == 'yes' ]]; then
     CC=(cc -pg)
@@ -152,8 +153,18 @@ done
 printf 'start\n'
 printf '  id link-bin\n'
 printf '  source %q\n' "${C_OBJECTS[@]}"
-printf '  msg Link: %q\n' "${binName}"
+printf '  msg Link: %q\n' "${FINAL_EXE}"
 printf '  cmd '
-    printf '%q ' "${LINK_BIN[@]}" -o "${binName}" "${C_OBJECTS[@]}"
+    printf '%q ' "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}"
     printf '\n'
+printf 'end\n'
+
+# Rule to clean stuff
+
+printf 'start\n'
+printf '  id clean\n'
+printf '  cmd rm -rf %q\n' "${FINAL_EXE}"
+printf '  cmd rm -rf %q\n' "${FINAL_INCLUDE}"
+printf '  cmd rm -rf %q\n' "${FINAL_LIB}"
+printf '  cmd rm -rf %q\n' "${INTERMED}"
 printf 'end\n'
