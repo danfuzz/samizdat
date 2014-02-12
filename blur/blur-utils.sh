@@ -6,6 +6,7 @@
 # Helper library. Meant to be included via `.` command.
 #
 
+
 #
 # OS detection
 #
@@ -22,7 +23,8 @@ fi
 # Exported functions
 #
 
-# Gets the modification time of the given file.
+# Gets the modification time of the given file as seconds since the Unix
+# Epoch.
 function modTime {
     local file="$1"
 
@@ -125,3 +127,25 @@ function unquote {
 function unquoteAbs {
     absPath "$(unquote "$1")"
 }
+
+
+#
+# Pass-through to external scripts
+#
+
+# Emits a file copy rule.
+function rule-copy {
+    "${BLUR_DIR}/blur-copy" "$@"
+}
+
+# Emits a directory creation rule.
+function rule-mkdir {
+    "${BLUR_DIR}/blur-mkdir" "$@"
+}
+
+
+#
+# Directory setup. This has to be done after `absPath` is defined.
+#
+
+BLUR_DIR="$(absPath "${BASH_SOURCE[1]%/*}")"
