@@ -238,7 +238,7 @@ function runIfNeeded {
             (source)
                 rest="$(unquoteAbs "${rest}")"
                 if [[ ! -e "${rest}" ]]; then
-                    echo "Missing source: ${rest}" 1>&2
+                    msg "Missing source: ${rest}"
                     return 1
                 fi
                 stamp="$(modTime "${rest}")"
@@ -282,9 +282,9 @@ function runIfNeeded {
                 bash -c "${rest}"
                 local status="$?"
                 if [[ ${status} != 0 ]]; then
-                    echo "Non-zero exit status: ${status}" 1>&1
-                    echo "On command:" 1>&2
-                    echo '  $' "${rest}" 1>&2
+                    msg "Non-zero exit status: ${status}"
+                    msg "On command:"
+                    msg '  $$' "${rest}"
                     return 1
                 fi
                 ;;
@@ -338,7 +338,7 @@ function satisfyTarget {
 
     local error=no
 
-    for (( i = 0; i < "${#rules[@]}"; i++ )); do
+    for (( i = 0; i < ${#rules[@]}; i++ )); do
         if [[ ${error} == yes ]]; then
             break
         fi
@@ -354,7 +354,7 @@ function satisfyTarget {
         done <<< "${RULES[${rules[$i]}]}"
     done
 
-    for (( i = 0; i < "${#rules[@]}"; i++ )); do
+    for (( i = 0; i < ${#rules[@]}; i++ )); do
         if [[ ${error} == yes ]]; then
             break
         fi
@@ -371,6 +371,7 @@ function satisfyTarget {
     SATISFIED+=(${target})
 
     if [[ ${error} == yes ]]; then
+        msg "Could not satisfy target: ${target}"
         return 1
     fi
 }
