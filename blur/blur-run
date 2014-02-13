@@ -67,7 +67,9 @@ unset opt
 targets=("$@")
 
 if [[ ${error} != 0 ]]; then
-    echo 1>&2 "${progName} [--rules=<file>] (target-file | id) ..."
+    echo 1>&2 "${progName} --help"
+    echo 1>&2 "${progName} [--rules=<file>] [--quiet | --verbose=<level>]"
+    echo 1>&2 "    (target-file | id) ..."
     if [[ ${error} == 'usage' ]]; then
         error=0
     fi
@@ -95,36 +97,39 @@ fi
 
 # Emit a status message.
 function msg {
-    local label=log
+    local level=1
 
     if [[ $1 == '--err' ]]; then
-        label=err
+        level=0
         shift
     elif [[ $1 == '--quiet' ]]; then
-        label=quiet
+        level=-1
+        shift
+    elif [[ $1 == '--verbose' ]]; then
+        level=2
         shift
     fi
 
     local line="$@"
 
-    if (( spew == 0 )); then
-        # Allow `err` or `quiet` but nothing else.
-        if [[ ${label} == log ]]; then
+    if (( level == -1 )); then
+        # Only emit `quiet` messages on low spew levels.
+        if (( spew >= 2 )); then
             return
         fi
-    elif [[ ${label} == quiet ]]; then
-        # Message is only for when running quiet, and we aren't quiet.
+    elif (( level > spew )); then
+        # Message is out-of-range for current spew level.
         return
     fi
 
-    if (( spew != 0 )); then
+    if (( spew >= 2 )); then
         local i
         for (( i = 0; i < DEPTH; i++ )); do
             printf '  '
         done
     fi
 
-    if (( spew <= 1 )); then
+    if (( spew <= 2 )); then
         local max=$(( MAX_COLS - DEPTH * 2 ))
         if (( ${#line} > max )); then
             local len=$(( (max - 5) / 2 ))
@@ -149,7 +154,7 @@ function enterLayer {
     local name="$@"
 
     LAYERS[${DEPTH}]="${name}"
-    msg ">> ${name}"
+    msg --verbose ">> ${name}"
 
     (( DEPTH++ ))
 }
@@ -161,7 +166,7 @@ function leaveLayer {
     local name="${LAYERS[${DEPTH}]}"
     unset LAYERS[${DEPTH}]
 
-    msg "<< ${name}"
+    msg --verbose "<< ${name}"
 }
 
 # Dump a layer trace.
@@ -272,7 +277,7 @@ function runIfNeeded {
         rest="${BASH_REMATCH[2]}"
         case "${cmd}" in
             (moot)
-                msg '??' "${rest}"
+                msg --verbose '??' "${rest}"
                 bash -c "${rest}"
                 if [[ $? == 0 ]]; then
                     # Moot test succeeded, which means that the rule doesn't
@@ -281,7 +286,7 @@ function runIfNeeded {
                 fi
                 ;;
             (assert)
-                msg '!!' "${rest}"
+                msg --verbose '!!' "${rest}"
                 bash -c "${rest}"
                 if [[ $? != 0 ]]; then
                     # Assert failed, which is a real error.
@@ -348,7 +353,7 @@ function runIfNeeded {
         rest="${BASH_REMATCH[2]}"
         case "${cmd}" in
             (cmd)
-                msg '$$' "${rest}"
+                msg --verbose '$$' "${rest}"
                 bash -c "${rest}"
                 local status="$?"
                 if [[ ${status} != 0 ]]; then
@@ -386,7 +391,7 @@ function satisfyTarget {
     for (( i = 0; i < ${#SATISFIED[@]}; i++ )); do
         if [[ ${target} == ${SATISFIED[$i]} ]]; then
             # The target has already been satisfied due to earlier activity.
-            msg "<> ${target}"
+            msg --verbose "<> ${target}"
             return
         fi
     done
@@ -408,7 +413,7 @@ function satisfyTarget {
             traceLayers
             return 1
         else
-            msg "== ${target}"
+            msg --verbose "== ${target}"
             return
         fi
     fi
@@ -451,7 +456,7 @@ function satisfyTarget {
     unset PENDING[$((${#PENDING[@]} - 1))]
 
     if [[ ${error} == yes ]]; then
-        msg "Could not satisfy target: ${target}"
+        msg --err "Could not satisfy target: ${target}"
         return 1
     fi
 }
