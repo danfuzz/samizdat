@@ -83,7 +83,8 @@ INTERMED="${OUT}/intermed/${projectName}"
 FINAL="${OUT}/final"
 FINAL_INCLUDE="${FINAL}/include/${name}"
 FINAL_LIB="${FINAL}/lib/${name}"
-FINAL_EXE="${FINAL}/bin/${binName}"
+FINAL_BIN="${FINAL}/bin"
+FINAL_EXE="${FINAL_BIN}/${binName}"
 
 if [[ ${profile} == 'yes' ]]; then
     CC=(cc -pg)
@@ -150,8 +151,12 @@ done
 
 # Rules to link the executable
 
+rule-mkdir "${FINAL_BIN}"
+
 printf 'start\n'
 printf '  id link-bin\n'
+printf '  target %q\n' "${FINAL_EXE}"
+printf '  source %q\n' "${FINAL_BIN}"
 printf '  source %q\n' "${C_OBJECTS[@]}"
 printf '  msg Link: %q\n' "${FINAL_EXE}"
 printf '  cmd '
