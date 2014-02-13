@@ -221,15 +221,11 @@ function isId {
 RULES=()
 IDS=()
 function rulesInit {
-    local cmd rest space curRule=()
+    local cmd rest curRule=()
 
     while read -r cmd rest; do
-        if [[ ${rest} != '' ]]; then
-            space=' '
-        else
-            space=''
-        fi
-        curRule+=("${cmd}${space}${rest}")
+        [[ ${rest} == '' ]] \
+            && curRule+=("${cmd}") || curRule+=("${cmd} ${rest}")
         case "${cmd}" in
             (start)
                 curRule=()
