@@ -96,7 +96,7 @@ tput cols >/dev/null 2>&1 && MAX_COLS="$(tput cols)"
 if [[ ${MAX_COLS} == '' ]]; then
     MAX_COLS=79
 else
-    (( MAX_COLS = MAX_COLS - 1 ))
+    (( MAX_COLS-- ))
 fi
 
 # Emit a status message.
