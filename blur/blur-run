@@ -89,18 +89,15 @@ fi
 # Logging / spew
 #
 
-# Current depth
-DEPTH=0
-
-# Increase status message depth.
-function enterLayer {
-    (( DEPTH++ ))
-}
-
-# Decrease status message depth.
-function leaveLayer {
-    (( DEPTH-- ))
-}
+# Maximum line size, in columns. The double call is because redirecting
+# stderr within a process substitution confuses `tput` for some reason.
+# See <http://stackoverflow.com/questions/21763397>.
+tput cols >/dev/null 2>&1 && MAX_COLS="$(tput cols)"
+if [[ ${MAX_COLS} == '' ]]; then
+    MAX_COLS=79
+else
+    (( MAX_COLS = MAX_COLS - 1 ))
+fi
 
 # Emit a status message.
 function msg {
@@ -134,9 +131,9 @@ function msg {
     fi
 
     if (( spew <= 1 )); then
-        local max=$(( 78 - DEPTH * 2 ))
+        local max=$(( MAX_COLS - DEPTH * 2 ))
         if (( ${#line} > max )); then
-            local len=$(( max / 2 - 3 ))
+            local len=$(( (max - 5) / 2 ))
             if (( len < 20 )); then
                 len=20
             fi
@@ -145,6 +142,41 @@ function msg {
     fi
 
     printf '%s\n' "${line}"
+}
+
+# Current depth
+DEPTH=0
+
+# Layer names.
+LAYERS=()
+
+# Increase status message depth.
+function enterLayer {
+    local name="$@"
+
+    LAYERS[${DEPTH}]="${name}"
+    msg ">> ${name}"
+
+    (( DEPTH++ ))
+}
+
+# Decrease status message depth.
+function leaveLayer {
+    (( DEPTH-- ))
+
+    local name="${LAYERS[${DEPTH}]}"
+    unset LAYERS[${DEPTH}]
+
+    msg "<< ${name}"
+}
+
+# Dump a layer trace.
+function traceLayers {
+    local i
+
+    for (( i = DEPTH - 1; i >= 0; i-- )); do
+        msg --err "...while in ${LAYERS[$i]}"
+    done
 }
 
 
@@ -271,6 +303,7 @@ function runIfNeeded {
                     # Assert failed, which is a real error.
                     msg --quiet '!!' "${rest}"
                     msg --err "Assert failed."
+                    traceLayers
                     return 1
                 fi
                 ;;
@@ -288,6 +321,7 @@ function runIfNeeded {
                 rest="$(unquoteAbs "${rest}")"
                 if [[ ! -e "${rest}" ]]; then
                     msg --err "Missing source: ${rest}"
+                    traceLayers
                     return 1
                 elif [[ ! -d "${rest}" ]]; then
                     # Update source timestamp only if the source is *not*
@@ -336,6 +370,7 @@ function runIfNeeded {
                 if [[ ${status} != 0 ]]; then
                     msg --quiet '$$' "${rest}"
                     msg --err "Non-zero exit status: ${status}"
+                    traceLayers
                     return 1
                 fi
                 ;;
@@ -375,7 +410,8 @@ function satisfyTarget {
     for (( i = 0; i < ${#PENDING[@]}; i++ )); do
         if [[ ${target} == ${PENDING[$i]} ]]; then
             # The target is already in the middle of being satisfied.
-            msg "Recursive dependency on target: ${target}"
+            msg --err "Recursive dependency on target: ${target}"
+            traceLayers
             return 1
         fi
     done
@@ -384,8 +420,8 @@ function satisfyTarget {
 
     if [[ ${#rules[@]} == 0 ]]; then
         if [[ ! -e "${target}" ]]; then
-            echo 'No rules defined for non-existent target:' 1>&2
-            echo "  ${target}" 1>&2
+            msg --err "No rules defined for non-existent target: ${target}"
+            traceLayers
             return 1
         else
             msg "== ${target}"
@@ -393,8 +429,7 @@ function satisfyTarget {
         fi
     fi
 
-    msg ">> ${target}"
-    enterLayer
+    enterLayer "${target}"
     PENDING+=("${target}")
 
     local error=no
@@ -427,7 +462,6 @@ function satisfyTarget {
     done
 
     leaveLayer
-    msg "<< ${target}"
 
     SATISFIED+=("${target}")
     unset PENDING[$((${#PENDING[@]} - 1))]
