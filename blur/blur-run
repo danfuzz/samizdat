@@ -158,7 +158,7 @@ function isId {
     local i
 
     for (( i = 0; i < ${#IDS[@]}; i++ )); do
-        if [[ "${IDS[$i]}" == "${id}" ]]; then
+        if [[ ${IDS[$i]} == ${id} ]]; then
             return 0
         fi
     done
@@ -220,10 +220,12 @@ function rulesFor {
             if [[ ${cmd} == id ]]; then
                 if [[ "$(unquote "${rest}")" == ${target} ]]; then
                     echo "$i"
+                    continue
                 fi
             else
                 if [[ "$(unquoteAbs "${rest}")" == ${target} ]]; then
                     echo "$i"
+                    continue
                 fi
             fi
         done <<< "${RULES[$i]}"
