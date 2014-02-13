@@ -20,7 +20,7 @@ function initProg {
         if [[ ${newProg} =~ ^/ ]]; then
             prog="${newProg}"
         else
-            prog="${foo%/*}/${newProg}"
+            prog="${prog%/*}/${newProg}"
         fi
     done
 
