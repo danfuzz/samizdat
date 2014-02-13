@@ -167,3 +167,12 @@ printf '  cmd rm -rf %q\n' "${FINAL_INCLUDE}"
 printf '  cmd rm -rf %q\n' "${FINAL_LIB}"
 printf '  cmd rm -rf %q\n' "${INTERMED}"
 printf 'end\n'
+
+# Default build rule
+
+printf 'start\n'
+printf '  id build\n'
+printf '  source link-bin\n'
+printf '  source build-lib\n'
+printf '  source build-include\n'
+printf 'end\n'
