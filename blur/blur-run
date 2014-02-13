@@ -43,6 +43,9 @@ error=0
 # File to find rules in.
 rulesFile='-'
 
+# Verbosity level.
+spew=1
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
@@ -52,6 +55,10 @@ while [[ $1 != '' ]]; do
         error='usage'
     elif [[ ${opt} =~ ^--rules=(.*) ]]; then
         rulesFile="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--quiet ]]; then
+        spew=0
+    elif [[ ${opt} =~ ^--verbose=(.*) ]]; then
+        spew="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         error=1
@@ -97,12 +104,47 @@ function leaveLayer {
 
 # Emit a status message.
 function msg {
-    local i
-    for (( i = 0; i < DEPTH; i++ )); do
-        printf '  '
-    done
+    local label=log
 
-    echo "$@"
+    if [[ $1 == '--err' ]]; then
+        label=err
+        shift
+    elif [[ $1 == '--quiet' ]]; then
+        label=quiet
+        shift
+    fi
+
+    local line="$@"
+
+    if (( spew == 0 )); then
+        # Allow `err` or `quiet` but nothing else.
+        if [[ ${label} == log ]]; then
+            return
+        fi
+    elif [[ ${label} == quiet ]]; then
+        # Message is only for when running quiet, and we aren't quiet.
+        return
+    fi
+
+    if (( spew != 0 )); then
+        local i
+        for (( i = 0; i < DEPTH; i++ )); do
+            printf '  '
+        done
+    fi
+
+    if (( spew <= 1 )); then
+        local max=$(( 78 - DEPTH * 2 ))
+        if (( ${#line} > max )); then
+            local len=$(( max / 2 - 3 ))
+            if (( len < 20 )); then
+                len=20
+            fi
+            line="${line:0:${len}} ... ${line:$(( ${#line} - len ))}"
+        fi
+    fi
+
+    printf '%s\n' "${line}"
 }
 
 
@@ -197,7 +239,11 @@ function rulesFor {
 function runIfNeeded {
     # Split the rule into an array of lines.
     local rule=()
-    IFS=$'\n' rule=($1)
+
+    local oldIfs="${IFS}"
+    IFS=$'\n'
+    rule=($1)
+    IFS="${oldIfs}"
 
     local line cmd rest
 
@@ -221,7 +267,8 @@ function runIfNeeded {
                 bash -c "${rest}"
                 if [[ $? != 0 ]]; then
                     # Assert failed, which is a real error.
-                    msg "Assert failed."
+                    msg --quiet '!!' "${rest}"
+                    msg --err "Assert failed."
                     return 1
                 fi
                 ;;
@@ -238,7 +285,7 @@ function runIfNeeded {
             (source)
                 rest="$(unquoteAbs "${rest}")"
                 if [[ ! -e "${rest}" ]]; then
-                    msg "Missing source: ${rest}"
+                    msg --err "Missing source: ${rest}"
                     return 1
                 fi
                 stamp="$(modTime "${rest}")"
@@ -282,9 +329,8 @@ function runIfNeeded {
                 bash -c "${rest}"
                 local status="$?"
                 if [[ ${status} != 0 ]]; then
-                    msg "Non-zero exit status: ${status}"
-                    msg "On command:"
-                    msg '  $$' "${rest}"
+                    msg --quiet '$$' "${rest}"
+                    msg --err "Non-zero exit status: ${status}"
                     return 1
                 fi
                 ;;
@@ -304,6 +350,7 @@ function runIfNeeded {
 # If a target has already been satisfied at least once during this run,
 # then it will not be tried again.
 SATISFIED=()
+PENDING=()
 function satisfyTarget {
     local target="$1"
     local i
@@ -317,6 +364,14 @@ function satisfyTarget {
             # The target has already been satisfied due to earlier activity.
             msg "<> ${target}"
             return
+        fi
+    done
+
+    for (( i = 0; i < ${#PENDING[@]}; i++ )); do
+        if [[ ${target} == ${PENDING[$i]} ]]; then
+            # The target is already in the middle of being satisfied.
+            msg "Recursive dependency on target: ${target}"
+            return 1
         fi
     done
 
@@ -335,6 +390,7 @@ function satisfyTarget {
 
     msg ">> ${target}"
     enterLayer
+    PENDING+=("${target}")
 
     local error=no
 
@@ -369,6 +425,7 @@ function satisfyTarget {
     msg "<< ${target}"
 
     SATISFIED+=("${target}")
+    unset PENDING[$((${#PENDING[@]} - 1))]
 
     if [[ ${error} == yes ]]; then
         msg "Could not satisfy target: ${target}"
