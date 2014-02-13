@@ -303,17 +303,20 @@ function runIfNeeded {
         rest="${BASH_REMATCH[2]}"
         case "${cmd}" in
             (source)
-                rest="$(unquoteAbs "${rest}")"
-                if [[ ! -e "${rest}" ]]; then
-                    msg --err "Missing source: ${rest}"
-                    traceLayers
-                    return 1
-                elif [[ ! -d "${rest}" ]]; then
-                    # Update source timestamp only if the source is *not*
-                    # a directory. (Directory modtimes aren't really useful.)
-                    stamp="$(modTime "${rest}")"
-                    if (( stamp > newestSource )); then
-                        newestSource="${stamp}"
+                rest="$(unquote "${rest}")"
+                if ! isId "${rest}"; then
+                    rest="$(absPath "${rest}")"
+                    if [[ ! -e "${rest}" ]]; then
+                        msg --err "Missing source: ${rest}"
+                        traceLayers
+                        return 1
+                    elif [[ ! -d "${rest}" ]]; then
+                        # Update source timestamp only if the source is *not*
+                        # a directory. (Directory modtimes aren't really useful.)
+                        stamp="$(modTime "${rest}")"
+                        if (( stamp > newestSource )); then
+                            newestSource="${stamp}"
+                        fi
                     fi
                 fi
                 ;;
