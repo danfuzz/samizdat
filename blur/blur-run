@@ -12,16 +12,10 @@
 # Set `progName` to the program name, `progDir` to its directory, and `baseDir`
 # to `progDir`'s directory. Follows symlinks.
 function initProg {
-    local newProg prog="$0"
+    local newp prog="$0"
 
-    while [[ -h ${prog} ]]; do
-        [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
-        newProg="${BASH_REMATCH[1]}"
-        if [[ ${newProg} =~ ^/ ]]; then
-            prog="${newProg}"
-        else
-            prog="${prog%/*}/${newProg}"
-        fi
+    while newp="$(readlink "${prog}")"; do
+        [[ ${newp} =~ ^/ ]] && prog="${newp}" || prog="${prog%/*}/${newp}"
     done
 
     progName="${prog##*/}"
