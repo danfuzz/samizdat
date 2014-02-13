@@ -90,8 +90,8 @@ fi
 #
 
 # Maximum line size, in columns. The double call is because redirecting
-# stderr within a process substitution confuses `tput` for some reason.
-# See <http://stackoverflow.com/questions/21763397>.
+# stderr within a process substitution leaves `tput` without access to a
+# terminal device to query. See <http://stackoverflow.com/questions/21763397>.
 tput cols >/dev/null 2>&1 && MAX_COLS="$(tput cols)"
 if [[ ${MAX_COLS} == '' ]]; then
     MAX_COLS=79
