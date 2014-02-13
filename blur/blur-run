@@ -289,10 +289,13 @@ function runIfNeeded {
                 if [[ ! -e "${rest}" ]]; then
                     msg --err "Missing source: ${rest}"
                     return 1
-                fi
-                stamp="$(modTime "${rest}")"
-                if (( stamp > newestSource )); then
-                    newestSource="${stamp}"
+                elif [[ ! -d "${rest}" ]]; then
+                    # Update source timestamp only if the source is *not*
+                    # a directory. (Directory modtimes aren't really useful.)
+                    stamp="$(modTime "${rest}")"
+                    if (( stamp > newestSource )); then
+                        newestSource="${stamp}"
+                    fi
                 fi
                 ;;
             (target)
