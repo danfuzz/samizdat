@@ -119,14 +119,15 @@ for f in "${files[@]}"; do
         continue
     fi
 
-    rule-mkdir-once "${toDir}"
-    targetFile="${toDir}/${f}"
-    sourceFile="${fromDir}/${f}"
+    targetFile="$(absPath ${toDir}/${f})"
+    sourceFile="$(absPath ${fromDir}/${f})"
+    targetDir="${targetFile%/*}"
+    rule-mkdir-once "${targetDir}"
 
     printf 'start\n'
     printf '%s' "${triggerLine}"
     printf '  target %q\n' "${targetFile}"
-    printf '  source %q\n' "${toDir}"
+    printf '  source %q\n' "${targetDir}"
     printf '  source %q\n' "${sourceFile}"
     printf '  msg Copy: %q\n' "${sourceFile}"
     printf '  cmd cp %q %q\n' "${sourceFile}" "${targetFile}"
