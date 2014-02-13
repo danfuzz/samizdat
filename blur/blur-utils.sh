@@ -23,6 +23,29 @@ fi
 # Exported functions
 #
 
+# Mangles an arbitrary string into a valid variable name.
+function mangleString {
+    local s="$1"
+
+    printf '__'
+
+    while [[ ${s} != '' ]]; do
+        # Emit a chunk of valid characters (if any).
+        local chunk="${s%%[^A-Za-z0-9]*}"
+        if [[ ${chunk} != '' ]]; then
+            printf '%s' "${chunk}"
+            s="${s:${#chunk}}"
+        fi
+
+        # Emit the next character (if any) as an escape.
+        if [[ ${s} != '' ]]; then
+            local c="${s:0:1}"
+            printf '_%02x' "'${c}"
+            s="${s:1}"
+        fi
+    done
+}
+
 # Gets the modification time of the given file as seconds since the Unix
 # Epoch.
 function modTime {
