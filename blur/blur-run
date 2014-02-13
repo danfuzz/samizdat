@@ -453,6 +453,7 @@ function satisfyTarget {
 
     if [[ ${error} == yes ]]; then
         msg --err "Could not satisfy target: ${target}"
+        traceLayers
         return 1
     fi
 }
