@@ -62,7 +62,7 @@ Any other options get passed to the rule generation script (see below).
 
 The `<target>`s are which targets to build. Targets can be either file
 names (if non-absolute, relative to the directory being built) or
-named ids.
+named ids. If no target is specified, it defaults to `build`.
 
 On a given run, Blur will only ever attempt to satisfy a given target
 at most once, no matter how many times that target is mentioned on the
