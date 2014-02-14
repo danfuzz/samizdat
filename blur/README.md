@@ -154,3 +154,9 @@ newlines are just fine, though.) This is because of the shell semantics
 around command substitution, which silently drops end-of-response newlines.
 It is possible to fix Blur, but at the time of this writing not considered
 worth the trouble.
+
+If a req (dependency) and target have exactly the same timestamp, Blur
+assumes that the target is up-to-date. Since timestamps have one-second
+(not sub-second) granularity, it is possible for a target to be undetectably
+out-of-date in some circular dependency situations. Of course, circular
+dependency is a bad idea.

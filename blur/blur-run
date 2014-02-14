@@ -338,7 +338,7 @@ function runIfNeeded {
     done
 
     if (( newestReq > 0 && oldestTarget > 0 )); then
-        if (( newestReq < oldestTarget )); then
+        if (( newestReq <= oldestTarget )); then
             # Everything is up-to-date.
             return
         fi
