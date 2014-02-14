@@ -62,10 +62,20 @@ function mod-time {
 # or relative. This does not resolve symlinks but does flatten away `.` and
 # `..` components.
 function abs-path {
+    local inDir='.'
+
+    if [[ "$1" =~ --in-dir=(.*) ]]; then
+        inDir="${BASH_REMATCH[1]}"
+        shift
+    fi
+
     local path="$1"
 
     if [[ ! ${path} =~ ^/ ]]; then
-        path="${PWD}/${path}"
+        if [[ ! ${inDir} =~ ^/ ]]; then
+            inDir="${PWD}/${inDir}"
+        fi
+        path="${inDir}/${path}"
     fi
 
     local result=() at=0
@@ -276,13 +286,15 @@ function rule-body-mkdir {
 
 # Implementation for `copy` rule.
 function rule-body-copy {
-    local opt name fromDir toDir
+    local opt name fromDir toDir mode
 
     for opt in "${OPTS[@]}"; do
         if [[ ${opt} =~ ^--from-dir=(.*) ]]; then
             fromDir="${BASH_REMATCH[1]}"
         elif [[ ${opt} =~ ^--to-dir=(.*) ]]; then
             toDir="${BASH_REMATCH[1]}"
+        elif [[ ${opt} =~ ^--chmod=(.*) ]]; then
+            mode="${BASH_REMATCH[1]}"
         else
             echo "Unknown option: ${opt}" 1>&2
             return 1
@@ -313,6 +325,14 @@ function rule-body-copy {
         local targetFile="$(abs-path ${toDir}/${name})"
         local sourceFile="$(abs-path ${fromDir}/${name})"
         local targetDir="${targetFile%/*}"
+        local chmodCmd=()
+
+        if [[ ${mode} != '' ]]; then
+            chmodCmd=(
+                --cmd="chmod $(quote "${mode}" "${targetFile}")"
+            )
+        fi
+
         rule mkdir -- "${targetDir}"
 
         emit-rule \
@@ -320,7 +340,30 @@ function rule-body-copy {
             --req="${targetDir}" \
             --req="${sourceFile}" \
             --msg="Copy: ${sourceFile}" \
-            --cmd="cp $(quote "${sourceFile}" "${targetFile}")"
+            --cmd="cp $(quote "${sourceFile}" "${targetFile}")" \
+            "${chmodCmd[@]}"
+    done
+}
+
+# Implementation for `rm` rule.
+function rule-body-rm {
+    local opt name inDir='.'
+
+    for opt in "${OPTS[@]}"; do
+        if [[ ${opt} =~ ^--in-dir=(.*) ]]; then
+            inDir="${BASH_REMATCH[1]}"
+        else
+            echo "Unknown option: ${opt}" 1>&2
+            return 1
+        fi
+    done
+
+    for name in "${ARGS[@]}"; do
+        name="$(abs-path --in-dir="${inDir}" "${name}")"
+        emit-rule \
+            --moot="[[ ! -e $(quote "${name}") ]]" \
+            --msg="Rm: ${name}" \
+            --cmd="rm -rf $(quote "${name}")"
     done
 }
 
