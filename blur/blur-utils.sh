@@ -244,46 +244,6 @@ function rule-body-body {
     emit-rule "${ARGS[@]}"
 }
 
-# Implementation for `mkdir` rule. Ensures a given directory only ever has one
-# rule emitted for it.
-MKDIRS=()
-function rule-body-mkdir {
-    local name i
-
-    if [[ ${#OPTS[@]} != 0 ]]; then
-        echo "Unknown option: ${OPTS[0]}" 1>&2
-        return 1
-    fi
-
-    for name in "${ARGS[@]}"; do
-        name="$(abs-path "${name}")"
-        if [[ ${name} =~ /$ ]]; then
-            # Remove trailing slash.
-            name="${name%/}"
-        fi
-
-        local already=0
-        for (( i = 0; i < ${#MKDIRS[@]}; i++ )); do
-            if [[ ${name} == ${MKDIRS[$i]} ]]; then
-                already=1
-                break
-            fi
-        done
-
-        if (( already )); then
-            continue
-        fi
-
-        MKDIRS+=("${name}")
-
-        emit-rule \
-            --target="${name}" \
-            --moot="[[ -d $(quote "${name}") ]]" \
-            --assert="[[ ! -e $(quote "${name}") ]]" \
-            --cmd="mkdir -p $(quote "${name}")"
-    done
-}
-
 # Implementation for `copy` rule.
 function rule-body-copy {
     local opt name fromDir toDir mode
@@ -342,6 +302,46 @@ function rule-body-copy {
             --msg="Copy: ${sourceFile}" \
             --cmd="cp $(quote "${sourceFile}" "${targetFile}")" \
             "${chmodCmd[@]}"
+    done
+}
+
+# Implementation for `mkdir` rule. Ensures a given directory only ever has one
+# rule emitted for it.
+MKDIRS=()
+function rule-body-mkdir {
+    local name i
+
+    if [[ ${#OPTS[@]} != 0 ]]; then
+        echo "Unknown option: ${OPTS[0]}" 1>&2
+        return 1
+    fi
+
+    for name in "${ARGS[@]}"; do
+        name="$(abs-path "${name}")"
+        if [[ ${name} =~ /$ ]]; then
+            # Remove trailing slash.
+            name="${name%/}"
+        fi
+
+        local already=0
+        for (( i = 0; i < ${#MKDIRS[@]}; i++ )); do
+            if [[ ${name} == ${MKDIRS[$i]} ]]; then
+                already=1
+                break
+            fi
+        done
+
+        if (( already )); then
+            continue
+        fi
+
+        MKDIRS+=("${name}")
+
+        emit-rule \
+            --target="${name}" \
+            --moot="[[ -d $(quote "${name}") ]]" \
+            --assert="[[ ! -e $(quote "${name}") ]]" \
+            --cmd="mkdir -p $(quote "${name}")"
     done
 }
 
