@@ -40,6 +40,9 @@ dir='.'
 # Spew option.
 spewOption=()
 
+# Options to pass through to the rules script.
+rulesOpts=()
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
@@ -47,12 +50,15 @@ while [[ $1 != '' ]]; do
         break
     elif [[ ${opt} == '--help' ]]; then
         error='usage'
+        break
     elif [[ ${opt} =~ ^--dir=(.*) ]]; then
         dir="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^--quiet || ${opt} =~ ^--verbose=(.*) ]]; then
         spewOption=("${opt}")
-    elif [[ ${opt} =~ ^- ]]; then
-        echo "Unknown option: ${opt}" 1>&2
+    elif [[ ${opt} =~ ^-- ]]; then
+        rulesOpts+=("${opt}")
+    elif [[ ${opt} =~ ^-. ]]; then
+        echo "Invalid option: ${opt}" 1>&2
         error=1
     else
         break
@@ -72,7 +78,7 @@ fi
 if [[ ${error} != 0 ]]; then
     echo 1>&2 "${progName} --help"
     echo 1>&2 "${progName} [--quiet | --verbose=<level>] [--dir=<dir>]"
-    echo 1>&2 "    (target-file | id) ..."
+    echo 1>&2 "    [--<build-opt> ...] (target-file | id) ..."
     if [[ ${error} == 'usage' ]]; then
         error=0
     fi
@@ -89,7 +95,7 @@ fi
 scriptName='blur.sh'
 scriptPath="${dir}/${scriptName}"
 
-if [[ ! (-f ${scriptPath} && -x ${scriptPath} ) ]]; then
+if [[ ! (-f ${scriptPath} && -r ${scriptPath} ) ]]; then
     echo "No rules for directory: ${dir}" 1>&2
     exit 1
 fi
@@ -98,7 +104,10 @@ cd "${dir}" # The rest of the script runs in the context of `dir`.
 
 # Run the script, and collect output.
 
-rules="$("./${scriptName}")"
+rules="$(
+    BASH_ENV="${progDir}/blur-utils.sh" \
+        bash -- "./${scriptName}" "${rulesOpts[@]}"
+)"
 
 if [[ $? != 0 ]]; then
     echo "Trouble generating rules." 1>&2

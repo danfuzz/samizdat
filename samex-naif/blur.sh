@@ -1,30 +1,6 @@
-#!/bin/bash
-#
-# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
-
-
-#
-# General setup
-#
-
-# Set `progName` to the program name, `progDir` to its directory, and `baseDir`
-# to `progDir`'s directory. Follows symlinks.
-function initProg {
-    local newp prog="$0"
-
-    while newp="$(readlink "${prog}")"; do
-        [[ ${newp} =~ ^/ ]] && prog="${newp}" || prog="${prog%/*}/${newp}"
-    done
-
-    progName="${prog##*/}"
-    progDir="$(cd "${prog%/*}"; /bin/pwd -P)"
-    baseDir="$(cd "${progDir}/.."; /bin/pwd -P)"
-}
-
-initProg
-. "${baseDir}/blur/blur-utils.sh"
 
 
 #
@@ -35,30 +11,22 @@ initProg
 profile='no'
 
 # Whether to compile with optimiaztions on.
-optimize='no'
+optimize='yes'
 
 # Name of executable to produce.
 name='samex-naif'
 
 while [[ $1 != '' ]]; do
     opt="$1"
-    if [[ ${opt} == '--' ]]; then
-        shift
-        break
-    elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--optimize] [--profile] [--name=<name>]"
-        exit
-    elif [[ ${opt} =~ ^--name=(.*) ]]; then
+    if [[ ${opt} =~ ^--name=(.*) ]]; then
         name="${BASH_REMATCH[1]}"
-    elif [[ ${opt} == '--optimize' ]]; then
-        optimize='yes'
+    elif [[ ${opt} == '--no-optimize' ]]; then
+        optimize='no'
     elif [[ ${opt} == '--profile' ]]; then
         profile='yes'
-    elif [[ ${opt} =~ ^- ]]; then
+    else
         echo "Unknown option: ${opt}" 1>&2
         exit 1
-    else
-        break
     fi
     shift
 done
@@ -69,7 +37,10 @@ unset opt
 # Main script
 #
 
-projectName="$(basename "${progDir}")"
+progDir="$(absPath .)"
+baseDir="$(absPath ..)"
+projectName="${progDir##*/}"
+
 binName='samex' # Name of executable in the `lib` directory.
 
 OUT="${OUT:-${baseDir}/out}"
@@ -101,7 +72,7 @@ rule copy \
     --id=build-lib \
     --from-dir="${LIB_SOURCE_BASE}" \
     --to-dir="${FINAL_LIB}" \
-    "${LIB_FILES[@]}"
+    -- "${LIB_FILES[@]}"
 
 # Rules to copy each include file to the final include directory.
 
@@ -112,7 +83,7 @@ rule copy \
     --id=build-include \
     --from-dir="${INCLUDE_SOURCE_BASE}" \
     --to-dir="${FINAL_INCLUDE}" \
-    "${INCLUDE_FILES[@]}"
+    -- "${INCLUDE_FILES[@]}"
 
 # Rules to compile each C source file.
 
