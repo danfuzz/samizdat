@@ -110,6 +110,18 @@ these options:
 * `--cmd=<cmd>` &mdash; Runs the command when the rule is considered
   out-of-date.
 
+Some types accept one or more of these options:
+
+* `--in-dir=<dir>` &mdash; Indicates that relative file name arguments
+  should be taken to be in the given directory. By default, relative paths
+  are taken to be relative to the source base directory (where the rules
+  script is stored).
+
+* `--target-dir=<dir>` &mdash; If the rule uses relative file names for both
+  reqs and targets, this is how to specify the relative base for the
+  targets.
+
+
 When a rule is run, the following takes place, in this order:
 
 * Rules for each reqs are run (recursively).
@@ -130,12 +142,12 @@ The rule types are as follows:
 * `body` &mdash; Catch-all. Has no semantics beyond the general rule
   semantics defined above.
 
-* `copy [--from-dir=<dir>] [--to-dir=<dir>] [--chmod=<mode>] [--] <name> ...`
+* `copy --target-dir=<dir> [--in-dir=<dir>] [--chmod=<mode>] [--] <name> ...`
   &mdash; Copies files from a tree rooted in the indicated `from-dir` to a
-  tree rooted in the indicated `to-dir`. Each of the `<name>`s must
-  be a relative path within the directories. And each file copy operation
-  is represented by its own rule. If `--chmod` is specified, each target is
-  `chmod`ed to the indicated `mode`.
+  tree rooted in the indicated `target-dir` (which must be specified). Each of
+  the `<name>`s must be a relative path within the directories. And each
+  file copy operation is represented by its own rule. If `--chmod` is
+  specified, each target is `chmod`ed to the indicated `mode`.
 
 * `mkdir <name> ...` &mdash; Makes directories with the given names. Each
   directory creation is its own rule.
