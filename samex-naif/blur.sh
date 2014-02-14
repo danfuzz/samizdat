@@ -37,8 +37,8 @@ unset opt
 # Main script
 #
 
-progDir="$(absPath .)"
-baseDir="$(absPath ..)"
+progDir="$(abs-path .)"
+baseDir="$(abs-path ..)"
 projectName="${progDir##*/}"
 
 binName='samex' # Name of executable in the `lib` directory.

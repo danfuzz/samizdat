@@ -24,7 +24,7 @@ fi
 #
 
 # Mangles an arbitrary string into a valid variable name.
-function mangleString {
+function mangle-string {
     local s="$1"
 
     printf '__'
@@ -48,7 +48,7 @@ function mangleString {
 
 # Gets the modification time of the given file as seconds since the Unix
 # Epoch.
-function modTime {
+function mod-time {
     local file="$1"
 
     if [[ ${OS_FLAVOR} == bsd ]]; then
@@ -61,7 +61,7 @@ function modTime {
 # Makes an absolute path out of the given path, which might be either absolute
 # or relative. This does not resolve symlinks but does flatten away `.` and
 # `..` components.
-function absPath {
+function abs-path {
     local path="$1"
 
     if [[ ! ${path} =~ ^/ ]]; then
@@ -157,9 +157,9 @@ function unquote {
     printf '%s' "${result}"
 }
 
-# Combines `unquote` and `absPath`.
-function unquoteAbs {
-    absPath "$(unquote "$1")"
+# Combines `unquote` and `abs-path`.
+function unquote-abs {
+    abs-path "$(unquote "$1")"
 }
 
 
@@ -246,17 +246,24 @@ function rule-body-mkdir {
     fi
 
     for name in "${ARGS[@]}"; do
-        name="$(absPath "${name}")"
+        name="$(abs-path "${name}")"
         if [[ ${name} =~ /$ ]]; then
             # Remove trailing slash.
             name="${name%/}"
         fi
 
+        local already=0
         for (( i = 0; i < ${#MKDIRS[@]}; i++ )); do
             if [[ ${name} == ${MKDIRS[$i]} ]]; then
-                continue
+                already=1
+                break
             fi
         done
+
+        if (( already )); then
+            continue
+        fi
+
         MKDIRS+=("${name}")
 
         emit-rule \
@@ -291,8 +298,8 @@ function rule-body-copy {
     fi
 
     # Make the directories absolute, if not already.
-    fromDir="$(absPath "${fromDir}")"
-    toDir="$(absPath "${toDir}")"
+    fromDir="$(abs-path "${fromDir}")"
+    toDir="$(abs-path "${toDir}")"
 
     for name in "${ARGS[@]}"; do
         if [[ ${name} =~ /$ ]]; then
@@ -303,8 +310,8 @@ function rule-body-copy {
             return 1
         fi
 
-        local targetFile="$(absPath ${toDir}/${name})"
-        local sourceFile="$(absPath ${fromDir}/${name})"
+        local targetFile="$(abs-path ${toDir}/${name})"
+        local sourceFile="$(abs-path ${fromDir}/${name})"
         local targetDir="${targetFile%/*}"
         rule mkdir -- "${targetDir}"
 
@@ -334,7 +341,7 @@ function rule {
 
 
 #
-# Directory setup. This has to be done after `absPath` is defined.
+# Directory setup. This has to be done after `abs-path` is defined.
 #
 
-BLUR_DIR="$(absPath "${BASH_SOURCE[0]%/*}")"
+BLUR_DIR="$(abs-path "${BASH_SOURCE[0]%/*}")"
