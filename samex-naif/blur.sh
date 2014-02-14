@@ -132,8 +132,8 @@ for file in "${C_SOURCES[@]}"; do
 
     printf 'start\n'
     printf '  id build-c\n'
-    printf '  source %q\n' "${inFile}"
-    printf '  source %q\n' "${outDir}"
+    printf '  req %q\n' "${inFile}"
+    printf '  req %q\n' "${outDir}"
     printf '  target %q\n' "${outFile}"
     printf '  msg Compile: %q\n' "${file#./}"
     printf '  cmd '
@@ -149,8 +149,8 @@ rule-mkdir-once "${FINAL_LIB}"
 printf 'start\n'
 printf '  id link-bin\n'
 printf '  target %q\n' "${FINAL_EXE}"
-printf '  source %q\n' "${FINAL_LIB}"
-printf '  source %q\n' "${C_OBJECTS[@]}"
+printf '  req %q\n' "${FINAL_LIB}"
+printf '  req %q\n' "${C_OBJECTS[@]}"
 printf '  msg Link: %q\n' "${FINAL_EXE}"
 printf '  cmd '
     printf '%q ' "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}"
@@ -171,7 +171,7 @@ printf 'end\n'
 
 printf 'start\n'
 printf '  id build\n'
-printf '  source link-bin\n'
-printf '  source build-lib\n'
-printf '  source build-include\n'
+printf '  req link-bin\n'
+printf '  req build-lib\n'
+printf '  req build-include\n'
 printf 'end\n'

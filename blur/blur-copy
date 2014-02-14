@@ -127,8 +127,8 @@ for f in "${files[@]}"; do
     printf 'start\n'
     printf '%s' "${triggerLine}"
     printf '  target %q\n' "${targetFile}"
-    printf '  source %q\n' "${targetDir}"
-    printf '  source %q\n' "${sourceFile}"
+    printf '  req %q\n' "${targetDir}"
+    printf '  req %q\n' "${sourceFile}"
     printf '  msg Copy: %q\n' "${sourceFile}"
     printf '  cmd cp %q %q\n' "${sourceFile}" "${targetFile}"
     printf 'end\n'

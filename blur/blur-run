@@ -250,11 +250,11 @@ function rulesInit {
 }
 
 # Runs the given rule if any of:
-# * it has no sources
+# * it has no reqs
 # * it has no targets
 # * at least one target doesn't exist
 # * at least one existing target has an older modification time than at least
-#   one source
+#   one req
 function runIfNeeded {
     # Split the rule into an array of lines.
     local rule=()
@@ -295,27 +295,27 @@ function runIfNeeded {
         esac
     done
 
-    local newestSource=-1 oldestTarget=-1 stamp
+    local newestReq=-1 oldestTarget=-1 stamp
 
     for line in "${rule[@]}"; do
         [[ ${line} =~ ^' '*([^ ]*)' '*(.*)$ ]]
         cmd="${BASH_REMATCH[1]}"
         rest="${BASH_REMATCH[2]}"
         case "${cmd}" in
-            (source)
+            (req)
                 rest="$(unquote "${rest}")"
                 if ! isId "${rest}"; then
                     rest="$(absPath "${rest}")"
                     if [[ ! -e "${rest}" ]]; then
-                        msg --err "Missing source: ${rest}"
+                        msg --err "Missing req: ${rest}"
                         traceLayers
                         return 1
                     elif [[ ! -d "${rest}" ]]; then
-                        # Update source timestamp only if the source is *not*
+                        # Update req timestamp only if the req is *not*
                         # a directory. (Directory modtimes aren't really useful.)
                         stamp="$(modTime "${rest}")"
-                        if (( stamp > newestSource )); then
-                            newestSource="${stamp}"
+                        if (( stamp > newestReq )); then
+                            newestReq="${stamp}"
                         fi
                     fi
                 fi
@@ -325,7 +325,7 @@ function runIfNeeded {
                 if [[ ! -e "${rest}" ]]; then
                     # Missing target. Means that we need to run the rule
                     # (unless previously mooted).
-                    newestSource=-1
+                    newestReq=-1
                     oldestTarget=-1
                     break
                 fi
@@ -337,8 +337,8 @@ function runIfNeeded {
         esac
     done
 
-    if (( newestSource > 0 && oldestTarget > 0 )); then
-        if (( newestSource < oldestTarget )); then
+    if (( newestReq > 0 && oldestTarget > 0 )); then
+        if (( newestReq < oldestTarget )); then
             # Everything is up-to-date.
             return
         fi
@@ -371,7 +371,7 @@ function runIfNeeded {
 }
 
 # Attempts to satisfy the indicated target. The target can be either a file
-# name or a named id. This works by finding all the sources associated with
+# name or a named id. This works by finding all the reqs associated with
 # the target, attempting (recursively) to satisfy them, and then running any
 # commands associated with the target.
 #
@@ -428,7 +428,7 @@ function satisfyTarget {
         fi
 
         while read -r cmd rest; do
-            if [[ ${cmd} == source ]]; then
+            if [[ ${cmd} == req ]]; then
                 satisfyTarget "$(unquote "${rest}")"
                 if [[ $? != 0 ]]; then
                     error=yes
