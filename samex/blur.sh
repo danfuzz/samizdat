@@ -17,10 +17,7 @@ fi
 # Main script
 #
 
-progDir="$(abs-path .)"
-baseDir="$(abs-path ..)"
-projectName="${progDir##*/}"
-OUT="${OUT:-${baseDir}/out}"
+OUT="${BASE_DIR}/out"
 FINAL="${OUT}/final"
 
 binNames=(
@@ -31,7 +28,6 @@ binNames=(
 
 rule copy \
     --id=build \
-    --in-dir="${progDir}" \
     --target-dir="${FINAL}" \
     --chmod=755 \
     -- "${binNames[@]}"
