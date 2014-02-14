@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+# Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# General setup
+#
+
+# Set `progName` to the program name, `progDir` to its directory, and `baseDir`
+# to `progDir`'s directory. Follows symlinks.
+function initProg {
+    local newp prog="$0"
+
+    while newp="$(readlink "${prog}")"; do
+        [[ ${newp} =~ ^/ ]] && prog="${newp}" || prog="${prog%/*}/${newp}"
+    done
+
+    progName="${prog##*/}"
+    progDir="$(cd "${prog%/*}"; /bin/pwd -P)"
+    baseDir="$(cd "${progDir}/.."; /bin/pwd -P)"
+}
+
+initProg
+. "${progDir}/blur-utils.sh"
+
+
+#
+# Argument parsing
+#
+
+# Error flag.
+error=0
+
+# Directory to process.
+dir='.'
+
+# Spew option.
+spewOption=()
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        error='usage'
+    elif [[ ${opt} =~ ^--dir=(.*) ]]; then
+        dir="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--quiet || ${opt} =~ ^--verbose=(.*) ]]; then
+        spewOption=("${opt}")
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        error=1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+# Targets (files or named ids).
+targets=("$@")
+
+if [[ ${#targets[@]} == 0 ]]; then
+    # Default target.
+    targets=(build)
+fi
+
+if [[ ${error} != 0 ]]; then
+    echo 1>&2 "${progName} --help"
+    echo 1>&2 "${progName} [--quiet | --verbose=<level>] [--dir=<dir>]"
+    echo 1>&2 "    (target-file | id) ..."
+    if [[ ${error} == 'usage' ]]; then
+        error=0
+    fi
+    exit ${error}
+fi
+
+
+#
+# Main script
+#
+
+# Find a blur rules script in the designated directory.
+
+scriptName='blur.sh'
+scriptPath="${dir}/${scriptName}"
+
+if [[ ! (-f ${scriptPath} && -x ${scriptPath} ) ]]; then
+    echo "No rules for directory: ${dir}" 1>&2
+    exit 1
+fi
+
+cd "${dir}" # The rest of the script runs in the context of `dir`.
+
+# Run the script, and collect output.
+
+rules="$("./${scriptName}")"
+
+if [[ $? != 0 ]]; then
+    echo "Trouble generating rules." 1>&2
+    exit 1
+fi
+
+# Run `blur-run`, passing it the rules.
+
+echo "${rules}" | \
+    "${progDir}/blur-run" "${spewOption[@]}" -- "${targets[@]}"
