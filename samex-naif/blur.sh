@@ -40,12 +40,12 @@ unset opt
 progDir="$(abs-path .)"
 baseDir="$(abs-path ..)"
 projectName="${progDir##*/}"
+OUT="${OUT:-${baseDir}/out}"
+FINAL="${OUT}/final"
 
 binName='samex' # Name of executable in the `lib` directory.
 
-OUT="${OUT:-${baseDir}/out}"
 INTERMED="${OUT}/intermed/${projectName}"
-FINAL="${OUT}/final"
 FINAL_INCLUDE="${FINAL}/include/${name}"
 FINAL_LIB="${FINAL}/lib/${name}"
 FINAL_EXE="${FINAL_LIB}/${binName}"
