@@ -97,7 +97,7 @@ LINK_BIN=("${CC[@]}" -g)
 LIB_SOURCE_BASE="${progDir}/../samlib-naif"
 LIB_FILES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
-rule-copy \
+rule copy \
     --id=build-lib \
     --from-dir="${LIB_SOURCE_BASE}" \
     --to-dir="${FINAL_LIB}" \
@@ -108,7 +108,7 @@ rule-copy \
 INCLUDE_SOURCE_BASE="${progDir}/include"
 INCLUDE_FILES=($(cd "${INCLUDE_SOURCE_BASE}"; find . -name '*.h'))
 
-rule-copy \
+rule copy \
     --id=build-include \
     --from-dir="${INCLUDE_SOURCE_BASE}" \
     --to-dir="${FINAL_INCLUDE}" \
@@ -128,7 +128,7 @@ for file in "${C_SOURCES[@]}"; do
     inFile="${progDir}/${file}"
 
     C_OBJECTS+=("${outFile}")
-    rule-mkdir-once "${outDir}"
+    rule mkdir "${outDir}"
 
     printf 'start\n'
     printf '  id build-c\n'
@@ -144,7 +144,7 @@ done
 
 # Rules to link the executable
 
-rule-mkdir-once "${FINAL_LIB}"
+rule mkdir "${FINAL_LIB}"
 
 printf 'start\n'
 printf '  id link-bin\n'

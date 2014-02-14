@@ -20,7 +20,7 @@ fi
 
 
 #
-# Exported functions
+# Exported functions: General utilities
 #
 
 # Mangles an arbitrary string into a valid variable name.
@@ -102,6 +102,16 @@ function absPath {
     printf '\n'
 }
 
+# Quotes each of the given arguments as strings.
+function quote {
+    printf '%q' "$1"
+    shift
+
+    if (( $# > 0 )); then
+        printf ' %q' "$@"
+    fi
+}
+
 # Unquotes the given string.
 function unquote {
     local s="$1"
@@ -153,34 +163,138 @@ function unquoteAbs {
 
 
 #
-# Pass-through to external scripts
+# Exported functions: Rule constructors
 #
 
-# Emits a file copy rule.
-function rule-copy {
-    "${BLUR_DIR}/rule-copy" "$@"
+# Emits a rule with the current `PREFIX` and any additional lines as given.
+function emit-rule {
+    echo 'start'
+
+    if [[ ${#PREFIX[@]} != 0 ]]; then
+        printf '  %s\n' "${PREFIX[@]}"
+    fi
+
+    printf '  %s\n' "$@"
+    echo 'end'
 }
 
-# Emits a directory creation rule.
-function rule-mkdir {
-    "${BLUR_DIR}/rule-mkdir" "$@"
-}
-
-# Like `rule-mkdir` but keeps track of what rules have been emitted, and
-# only ever emits once per unique directory name.
+# Implementation for `mkdir` rule. Ensures a given directory only ever has one
+# rule emitted for it.
 MKDIRS=()
-function rule-mkdir-once {
-    local dir="$1"
-    local i
+function rule-body-mkdir {
+    local opt name i
 
-    for (( i = 0; i < ${#MKDIRS[@]}; i++ )); do
-        if [[ ${dir} == ${MKDIRS[$i]} ]]; then
-            return
+    for opt in "${OPTS[@]}"; do
+        echo "Unknown option: ${opt}" 1>&2
+        return 1
+    done
+
+    for name in "${ARGS[@]}"; do
+        name="$(absPath "${name}")"
+        if [[ ${name} =~ /$ ]]; then
+            # Remove trailing slash.
+            name="${name%/}"
+        fi
+
+        for (( i = 0; i < ${#MKDIRS[@]}; i++ )); do
+            if [[ ${name} == ${MKDIRS[$i]} ]]; then
+                continue
+            fi
+        done
+        MKDIRS+=("${name}")
+
+        emit-rule \
+            "target $(quote "${name}")" \
+            "moot [[ -d $(quote "${name}") ]]" \
+            "assert [[ ! -e $(quote "${name}") ]]" \
+            "cmd mkdir -p $(quote "${name}")"
+    done
+}
+
+# Implementation for `copy` rule.
+function rule-body-copy {
+    local opt name fromDir toDir
+
+    for opt in "${OPTS[@]}"; do
+        if [[ ${opt} =~ ^--from-dir=(.*) ]]; then
+            fromDir="${BASH_REMATCH[1]}"
+        elif [[ ${opt} =~ ^--to-dir=(.*) ]]; then
+            toDir="${BASH_REMATCH[1]}"
+        else
+            echo "Unknown option: ${opt}" 1>&2
+            return 1
         fi
     done
 
-    rule-mkdir "${dir}"
-    MKDIRS+=("${dir}")
+    if [[ ${fromDir} == '' ]]; then
+        echo 'Missing option: --from-dir' 1>&2
+        return 1
+    elif [[ ${toDir} == '' ]]; then
+        echo 'Missing option: --to-dir' 1>&2
+        return 1
+    fi
+
+    # Make the directories absolute, if not already.
+    fromDir="$(absPath "${fromDir}")"
+    toDir="$(absPath "${toDir}")"
+
+    for name in "${ARGS[@]}"; do
+        if [[ ${name} =~ /$ ]]; then
+            echo "Invalid file name (trailing slash): ${name}" 1>&2
+            return 1
+        elif [[ ${name} =~ ^/ ]]; then
+            echo "Invalid file name (leading slash): ${name}" 1>&2
+            return 1
+        fi
+
+        local targetFile="$(absPath ${toDir}/${name})"
+        local sourceFile="$(absPath ${fromDir}/${name})"
+        local targetDir="${targetFile%/*}"
+        rule mkdir "${targetDir}"
+
+        emit-rule \
+            "target $(quote "${targetFile}")" \
+            "req $(quote "${targetDir}")" \
+            "req $(quote "${sourceFile}")" \
+            "msg $(quote Copy: ${sourceFile})" \
+            "cmd cp $(quote "${sourceFile}" "${targetFile}") "
+    done
+}
+
+# Emits a rule (or set of rules) of the indicated type, with given additional
+# arguments. Every type accepts any number of `--id=` (tag rule with
+# indicated id) and `--req=` (add additional reqs beyond what the rule would
+# already have) options. Beyond that, arguments are type-specific.
+function rule {
+    local type="$1"
+    shift
+
+    # These are used / modified by per-type rule constructors.
+    local PREFIX=()
+    local OPTS=()
+    local ARGS=()
+
+    local opt
+    local moreOpts=()
+    while [[ $1 != '' ]]; do
+        opt="$1"
+        if [[ ${opt} == '--' ]]; then
+            shift
+            break
+        elif [[ ${opt} =~ ^--id=(.*) ]]; then
+            PREFIX+=("$(printf 'id %q' "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--req=(.*) ]]; then
+            PREFIX+=("$(printf 'req %q' "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^- ]]; then
+            OPTS+=("${opt}")
+        else
+            break
+        fi
+        shift
+    done
+
+    ARGS=("$@")
+    eval "rule-body-${type}"
 }
 
 
