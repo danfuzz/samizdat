@@ -158,12 +158,12 @@ function unquoteAbs {
 
 # Emits a file copy rule.
 function rule-copy {
-    "${BLUR_DIR}/blur-copy" "$@"
+    "${BLUR_DIR}/rule-copy" "$@"
 }
 
 # Emits a directory creation rule.
 function rule-mkdir {
-    "${BLUR_DIR}/blur-mkdir" "$@"
+    "${BLUR_DIR}/rule-mkdir" "$@"
 }
 
 # Like `rule-mkdir` but keeps track of what rules have been emitted, and
