@@ -29,7 +29,7 @@ FINAL_LIB="${FINAL}/lib/${binName}"
 
 LIB_FILES=(
     main.sam
-    modules.sam
+    module.sam
     $(find modules -type f)
 )
 
@@ -41,6 +41,7 @@ rule copy \
 rule copy \
     --id=build \
     --target-dir="${FINAL_BIN}" \
+    --chmod=755 \
     -- "${binName}"
 
 rule rm \
