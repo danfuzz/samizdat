@@ -75,6 +75,14 @@ defined in its environment. It is passed as arguments any options
 not understood by Blur itself. The file is responsible for writing a
 set of build rules to stdout.
 
+The rules script is also provided with the following environement
+variables:
+
+* `PROJECT_DIR` &mdash; Full path to the directory in which the rules
+  script is located.
+* `PROJECT_NAME` &mdash; Final path component of `PROJECT_DIR`.
+* `BASE_DIR` &mdash; Parent directory of `PROJECT_DIR`.
+
 The main utility function available to rules scripts is called `rule`.
 `rule` is called as:
 

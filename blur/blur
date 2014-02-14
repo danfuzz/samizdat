@@ -105,6 +105,9 @@ cd "${dir}" # The rest of the script runs in the context of `dir`.
 # Run the script, and collect output.
 
 rules="$(
+    PROJECT_NAME="${dir%/*}" \
+    PROJECT_DIR="$(abs-path .)" \
+    BASE_DIR="$(abs-path ..)" \
     BASH_ENV="${progDir}/blur-utils.sh" \
         bash -- "./${scriptName}" "${rulesOpts[@]}"
 )"
