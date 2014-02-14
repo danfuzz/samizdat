@@ -17,10 +17,7 @@ fi
 # Main script
 #
 
-progDir="$(abs-path .)"
-baseDir="$(abs-path ..)"
-projectName="${progDir##*/}"
-OUT="${OUT:-${baseDir}/out}"
+OUT="${BASE_DIR}/out}"
 FINAL="${OUT}/final"
 
 binName="samtoc"

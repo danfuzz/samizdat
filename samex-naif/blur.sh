@@ -13,13 +13,10 @@ profile='no'
 # Whether to compile with optimiaztions on.
 optimize='yes'
 
-# Name of executable to produce.
-name='samex-naif'
-
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} =~ ^--name=(.*) ]]; then
-        name="${BASH_REMATCH[1]}"
+        PROJECT_NAME="${BASH_REMATCH[1]}"
     elif [[ ${opt} == '--no-optimize' ]]; then
         optimize='no'
     elif [[ ${opt} == '--profile' ]]; then
@@ -37,17 +34,14 @@ unset opt
 # Main script
 #
 
-progDir="$(abs-path .)"
-baseDir="$(abs-path ..)"
-projectName="${progDir##*/}"
-OUT="${OUT:-${baseDir}/out}"
+OUT="${BASE_DIR}/out"
 FINAL="${OUT}/final"
 
 binName='samex' # Name of executable in the `lib` directory.
 
-INTERMED="${OUT}/intermed/${projectName}"
-FINAL_INCLUDE="${FINAL}/include/${name}"
-FINAL_LIB="${FINAL}/lib/${name}"
+INTERMED="${OUT}/intermed/${PROJECT_NAME}"
+FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
+FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 FINAL_EXE="${FINAL_LIB}/${binName}"
 
 if [[ ${profile} == 'yes' ]]; then
@@ -60,12 +54,12 @@ if [[ ${optimize} == 'yes' ]]; then
     CC=(${CC[@]} -O3)
 fi
 
-COMPILE_C=("${CC[@]}" -g -c -I"${progDir}/include")
+COMPILE_C=("${CC[@]}" -g -c -I"${PROJECT_DIR}/include")
 LINK_BIN=("${CC[@]}" -g)
 
 # Rules to copy each library source file to the final lib directory.
 
-LIB_SOURCE_BASE="${progDir}/../samlib-naif"
+LIB_SOURCE_BASE="${BASE_DIR}/samlib-naif"
 LIB_FILES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
 rule copy \
@@ -76,7 +70,7 @@ rule copy \
 
 # Rules to copy each include file to the final include directory.
 
-INCLUDE_SOURCE_BASE="${progDir}/include"
+INCLUDE_SOURCE_BASE="${PROJECT_DIR}/include"
 INCLUDE_FILES=($(cd "${INCLUDE_SOURCE_BASE}"; find . -name '*.h'))
 
 rule copy \
@@ -87,7 +81,7 @@ rule copy \
 
 # Rules to compile each C source file.
 
-C_SOURCES=($(cd "${progDir}"; find . -name '*.c'))
+C_SOURCES=($(find . -name '*.c'))
 C_OBJECTS=()
 
 for file in "${C_SOURCES[@]}"; do
@@ -96,7 +90,7 @@ for file in "${C_SOURCES[@]}"; do
     baseName="${BASH_REMATCH[2]}"
     outDir="${INTERMED}/${dir}"
     outFile="${outDir}/${baseName}.o"
-    inFile="${progDir}/${file}"
+    inFile="${PROJECT_DIR}/${file}"
 
     C_OBJECTS+=("${outFile}")
     rule mkdir -- "${outDir}"
