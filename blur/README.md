@@ -125,3 +125,12 @@ The rule types are as follows:
 
 See the file `blur-utils.sh` for information about the other available
 utilities.
+
+Limitations
+-----------
+
+Blur has trouble with file names that end with newlines. (Embedded
+newlines are just fine, though.) This is because of the shell semantics
+around command substitution, which silently drops end-of-response newlines.
+It is possible to fix Blur, but at the time of this writing not considered
+worth the trouble.
