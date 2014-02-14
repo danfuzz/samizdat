@@ -84,6 +84,7 @@ function absPath {
         elif [[ ${path} == '/..' ]]; then
             if (( at > 0 )); then
                 (( at-- ))
+                unset result[$at]
             fi
             path=''
         elif [[ ${path} == '/' ]]; then
