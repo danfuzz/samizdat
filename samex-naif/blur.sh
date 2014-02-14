@@ -130,48 +130,40 @@ for file in "${C_SOURCES[@]}"; do
     C_OBJECTS+=("${outFile}")
     rule mkdir "${outDir}"
 
-    printf 'start\n'
-    printf '  id build-c\n'
-    printf '  req %q\n' "${inFile}"
-    printf '  req %q\n' "${outDir}"
-    printf '  target %q\n' "${outFile}"
-    printf '  msg Compile: %q\n' "${file#./}"
-    printf '  cmd '
-        printf '%q ' "${COMPILE_C[@]}" -o "${outFile}" "${inFile}"
-        printf '\n'
-    printf 'end\n'
+    rule body \
+        --id=build-c \
+        --req="${inFile}" \
+        --req="${outDir}" \
+        --target="${outFile}" \
+        --msg="Compile: ${file#./}" \
+        "cmd $(quote "${COMPILE_C[@]}" -o "${outFile}" "${inFile}")"
 done
 
 # Rules to link the executable
 
 rule mkdir "${FINAL_LIB}"
 
-printf 'start\n'
-printf '  id link-bin\n'
-printf '  target %q\n' "${FINAL_EXE}"
-printf '  req %q\n' "${FINAL_LIB}"
-printf '  req %q\n' "${C_OBJECTS[@]}"
-printf '  msg Link: %q\n' "${FINAL_EXE}"
-printf '  cmd '
-    printf '%q ' "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}"
-    printf '\n'
-printf 'end\n'
+rule body \
+    --id=link-bin \
+    --target="${FINAL_EXE}" \
+    --req="${FINAL_LIB}" \
+    "${C_OBJECTS[@]/#/--req=}" \
+    --msg="Link: ${FINAL_EXE}" \
+    "cmd $(quote "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}")"
 
 # Rule to clean stuff
 
-printf 'start\n'
-printf '  id clean\n'
-printf '  cmd rm -rf %q\n' "${FINAL_EXE}"
-printf '  cmd rm -rf %q\n' "${FINAL_INCLUDE}"
-printf '  cmd rm -rf %q\n' "${FINAL_LIB}"
-printf '  cmd rm -rf %q\n' "${INTERMED}"
-printf 'end\n'
+rule body \
+    --id=clean \
+    "cmd rm -rf $(quote "${FINAL_EXE}")" \
+    "cmd rm -rf $(quote "${FINAL_INCLUDE}")" \
+    "cmd rm -rf $(quote "${FINAL_LIB}")" \
+    "cmd rm -rf $(quote "${INTERMED}")"
 
 # Default build rule
 
-printf 'start\n'
-printf '  id build\n'
-printf '  req link-bin\n'
-printf '  req build-lib\n'
-printf '  req build-include\n'
-printf 'end\n'
+rule body \
+    --id=build \
+    --req=link-bin \
+    --req=build-lib \
+    --req=build-include

@@ -178,6 +178,18 @@ function emit-rule {
     echo 'end'
 }
 
+# Implementation for `body` rule (arbitrary body lines).
+function rule-body-body {
+    local opt
+
+    for opt in "${OPTS[@]}"; do
+        echo "Unknown option: ${opt}" 1>&2
+        return 1
+    done
+
+    emit-rule "${ARGS[@]}"
+}
+
 # Implementation for `mkdir` rule. Ensures a given directory only ever has one
 # rule emitted for it.
 MKDIRS=()
@@ -262,9 +274,8 @@ function rule-body-copy {
 }
 
 # Emits a rule (or set of rules) of the indicated type, with given additional
-# arguments. Every type accepts any number of `--id=` (tag rule with
-# indicated id) and `--req=` (add additional reqs beyond what the rule would
-# already have) options. Beyond that, arguments are type-specific.
+# arguments. Every type accepts any number of `--id=`, `--req=`, `--target`,
+# and `--msg=` options. Beyond that, arguments are type-specific.
 function rule {
     local type="$1"
     shift
@@ -282,9 +293,13 @@ function rule {
             shift
             break
         elif [[ ${opt} =~ ^--id=(.*) ]]; then
-            PREFIX+=("$(printf 'id %q' "${BASH_REMATCH[1]}")")
+            PREFIX+=("id $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--req=(.*) ]]; then
-            PREFIX+=("$(printf 'req %q' "${BASH_REMATCH[1]}")")
+            PREFIX+=("req $(quote "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--target=(.*) ]]; then
+            PREFIX+=("target $(quote "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--msg=(.*) ]]; then
+            PREFIX+=("msg $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^- ]]; then
             OPTS+=("${opt}")
         else
