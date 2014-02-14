@@ -128,7 +128,7 @@ for file in "${C_SOURCES[@]}"; do
     inFile="${progDir}/${file}"
 
     C_OBJECTS+=("${outFile}")
-    rule mkdir "${outDir}"
+    rule mkdir -- "${outDir}"
 
     rule body \
         --id=build-c \
@@ -136,12 +136,12 @@ for file in "${C_SOURCES[@]}"; do
         --req="${outDir}" \
         --target="${outFile}" \
         --msg="Compile: ${file#./}" \
-        "cmd $(quote "${COMPILE_C[@]}" -o "${outFile}" "${inFile}")"
+        --cmd="$(quote "${COMPILE_C[@]}" -o "${outFile}" "${inFile}")"
 done
 
 # Rules to link the executable
 
-rule mkdir "${FINAL_LIB}"
+rule mkdir -- "${FINAL_LIB}"
 
 rule body \
     --id=link-bin \
@@ -149,16 +149,16 @@ rule body \
     --req="${FINAL_LIB}" \
     "${C_OBJECTS[@]/#/--req=}" \
     --msg="Link: ${FINAL_EXE}" \
-    "cmd $(quote "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}")"
+    --cmd="$(quote "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}")"
 
 # Rule to clean stuff
 
 rule body \
     --id=clean \
-    "cmd rm -rf $(quote "${FINAL_EXE}")" \
-    "cmd rm -rf $(quote "${FINAL_INCLUDE}")" \
-    "cmd rm -rf $(quote "${FINAL_LIB}")" \
-    "cmd rm -rf $(quote "${INTERMED}")"
+    --cmd="rm -rf $(quote "${FINAL_EXE}")" \
+    --cmd="rm -rf $(quote "${FINAL_INCLUDE}")" \
+    --cmd="rm -rf $(quote "${FINAL_LIB}")" \
+    --cmd="rm -rf $(quote "${INTERMED}")"
 
 # Default build rule
 

@@ -262,20 +262,20 @@ function rule-body-copy {
         local targetFile="$(absPath ${toDir}/${name})"
         local sourceFile="$(absPath ${fromDir}/${name})"
         local targetDir="${targetFile%/*}"
-        rule mkdir "${targetDir}"
+        rule mkdir -- "${targetDir}"
 
         emit-rule \
             "target $(quote "${targetFile}")" \
             "req $(quote "${targetDir}")" \
             "req $(quote "${sourceFile}")" \
             "msg $(quote Copy: ${sourceFile})" \
-            "cmd cp $(quote "${sourceFile}" "${targetFile}") "
+            "cmd cp $(quote "${sourceFile}" "${targetFile}")"
     done
 }
 
 # Emits a rule (or set of rules) of the indicated type, with given additional
 # arguments. Every type accepts any number of `--id=`, `--req=`, `--target`,
-# and `--msg=` options. Beyond that, arguments are type-specific.
+# `--cmd=`, and `--msg=` options. Beyond that, arguments are type-specific.
 function rule {
     local type="$1"
     shift
@@ -299,7 +299,9 @@ function rule {
         elif [[ ${opt} =~ ^--target=(.*) ]]; then
             PREFIX+=("target $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--msg=(.*) ]]; then
-            PREFIX+=("msg $(quote "${BASH_REMATCH[1]}")")
+            PREFIX+=("msg ${BASH_REMATCH[1]}")
+        elif [[ ${opt} =~ ^--cmd=(.*) ]]; then
+            PREFIX+=("cmd ${BASH_REMATCH[1]}")
         elif [[ ${opt} =~ ^- ]]; then
             OPTS+=("${opt}")
         else
