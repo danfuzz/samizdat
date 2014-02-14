@@ -246,13 +246,13 @@ function rule-body-body {
 
 # Implementation for `copy` rule.
 function rule-body-copy {
-    local opt name fromDir toDir mode
+    local opt name inDir='.' targetBase mode
 
     for opt in "${OPTS[@]}"; do
-        if [[ ${opt} =~ ^--from-dir=(.*) ]]; then
-            fromDir="${BASH_REMATCH[1]}"
-        elif [[ ${opt} =~ ^--to-dir=(.*) ]]; then
-            toDir="${BASH_REMATCH[1]}"
+        if [[ ${opt} =~ ^--in-dir=(.*) ]]; then
+            inDir="${BASH_REMATCH[1]}"
+        elif [[ ${opt} =~ ^--target-dir=(.*) ]]; then
+            targetBase="${BASH_REMATCH[1]}"
         elif [[ ${opt} =~ ^--chmod=(.*) ]]; then
             mode="${BASH_REMATCH[1]}"
         else
@@ -261,17 +261,10 @@ function rule-body-copy {
         fi
     done
 
-    if [[ ${fromDir} == '' ]]; then
-        echo 'Missing option: --from-dir' 1>&2
-        return 1
-    elif [[ ${toDir} == '' ]]; then
-        echo 'Missing option: --to-dir' 1>&2
+    if [[ ${targetBase} == '' ]]; then
+        echo 'Missing option: --target-dir' 1>&2
         return 1
     fi
-
-    # Make the directories absolute, if not already.
-    fromDir="$(abs-path "${fromDir}")"
-    toDir="$(abs-path "${toDir}")"
 
     for name in "${ARGS[@]}"; do
         if [[ ${name} =~ /$ ]]; then
@@ -282,8 +275,8 @@ function rule-body-copy {
             return 1
         fi
 
-        local targetFile="$(abs-path ${toDir}/${name})"
-        local sourceFile="$(abs-path ${fromDir}/${name})"
+        local targetFile="$(abs-path --in-dir="${targetBase}" "${name}")"
+        local sourceFile="$(abs-path --in-dir="${inDir}" "${name}")"
         local targetDir="${targetFile%/*}"
         local chmodCmd=()
 

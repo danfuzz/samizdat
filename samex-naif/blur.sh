@@ -70,8 +70,8 @@ LIB_FILES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
 rule copy \
     --id=build-lib \
-    --from-dir="${LIB_SOURCE_BASE}" \
-    --to-dir="${FINAL_LIB}" \
+    --in-dir="${LIB_SOURCE_BASE}" \
+    --target-dir="${FINAL_LIB}" \
     -- "${LIB_FILES[@]}"
 
 # Rules to copy each include file to the final include directory.
@@ -81,8 +81,8 @@ INCLUDE_FILES=($(cd "${INCLUDE_SOURCE_BASE}"; find . -name '*.h'))
 
 rule copy \
     --id=build-include \
-    --from-dir="${INCLUDE_SOURCE_BASE}" \
-    --to-dir="${FINAL_INCLUDE}" \
+    --in-dir="${INCLUDE_SOURCE_BASE}" \
+    --target-dir="${FINAL_INCLUDE}" \
     -- "${INCLUDE_FILES[@]}"
 
 # Rules to compile each C source file.
@@ -124,12 +124,9 @@ rule body \
 
 # Rule to clean stuff
 
-rule body \
+rule rm \
     --id=clean \
-    --cmd="rm -rf $(quote "${FINAL_EXE}")" \
-    --cmd="rm -rf $(quote "${FINAL_INCLUDE}")" \
-    --cmd="rm -rf $(quote "${FINAL_LIB}")" \
-    --cmd="rm -rf $(quote "${INTERMED}")"
+    -- "${FINAL_EXE}" "${FINAL_INCLUDE}" "${FINAL_LIB}" "${INTERMED}"
 
 # Default build rule
 
