@@ -130,14 +130,22 @@ The rule types are as follows:
 * `body` &mdash; Catch-all. Has no semantics beyond the general rule
   semantics defined above.
 
+* `copy [--from-dir=<dir>] [--to-dir=<dir>] [--chmod=<mode>] [--] <name> ...`
+  &mdash; Copies files from a tree rooted in the indicated `from-dir` to a
+  tree rooted in the indicated `to-dir`. Each of the `<name>`s must
+  be a relative path within the directories. And each file copy operation
+  is represented by its own rule. If `--chmod` is specified, each target is
+  `chmod`ed to the indicated `mode`.
+
 * `mkdir <name> ...` &mdash; Makes directories with the given names. Each
   directory creation is its own rule.
 
-* `copy [--from-dir=<dir>] [--to-dir=<dir>] [--] <name> ...` &mdash;
-  Copies files from a tree rooted in the indicated `from-dir` to a
-  tree rooted in the indicated `to-dir`. Each of the `<name>`s must
-  be a relative path within the directories. And each file copy operation
-  is represented by its own rule.
+* `rm [--in-dir=<dir>] <name> ...` &mdash; Removes files or directories with
+  the given names. If `--in-dir` is specified, then relative paths are with
+  respect to that directory (and not the source base directory).
+  Each file is its own rule. Unless explicitly added, the emitted rules have
+  no reqs and no targets. However, the rules are all automatically mooted with
+  a check for the non-existence of the named files.
 
 See the file `blur-utils.sh` for information about the other available
 utilities.
