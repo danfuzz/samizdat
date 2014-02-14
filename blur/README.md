@@ -146,6 +146,9 @@ utilities.
 Limitations
 -----------
 
+Blur has very few built-in rule types. Should it turn into a long-term
+viable product, it is likely that the set of rule types will be expanded.
+
 Blur has trouble with file names that end with newlines. (Embedded
 newlines are just fine, though.) This is because of the shell semantics
 around command substitution, which silently drops end-of-response newlines.
