@@ -166,26 +166,69 @@ function unquoteAbs {
 # Exported functions: Rule constructors
 #
 
+# Adds to `PREFIX`, `OPTS`, and `ARGS` based on the given raw arguments.
+function parse-rule-args {
+    while [[ $1 != '' ]]; do
+        local opt="$1"
+        if [[ ${opt} == '--' ]]; then
+            shift
+            break
+        elif [[ ${opt} =~ ^--id=(.*) ]]; then
+            PREFIX+=("id $(quote "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--req=(.*) ]]; then
+            PREFIX+=("req $(quote "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--target=(.*) ]]; then
+            PREFIX+=("target $(quote "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--assert=(.*) ]]; then
+            PREFIX+=("assert ${BASH_REMATCH[1]}")
+        elif [[ ${opt} =~ ^--cmd=(.*) ]]; then
+            PREFIX+=("cmd ${BASH_REMATCH[1]}")
+        elif [[ ${opt} =~ ^--moot=(.*) ]]; then
+            PREFIX+=("moot ${BASH_REMATCH[1]}")
+        elif [[ ${opt} =~ ^--msg=(.*) ]]; then
+            PREFIX+=("msg ${BASH_REMATCH[1]}")
+        elif [[ ${opt} =~ ^- ]]; then
+            OPTS+=("${opt}")
+        else
+            break
+        fi
+        shift
+    done
+
+    ARGS+=("$@")
+}
+
 # Emits a rule with the current `PREFIX` and any additional lines as given.
 function emit-rule {
+    # Note: Let `PREFIX` be inherited but become local.
+    local OPTS=() ARGS=() PREFIX=("${PREFIX[@]}")
+    parse-rule-args "$@"
+
+    if [[ ${#OPTS[@]} != 0 ]]; then
+        echo "Unknown option: ${OPTS[0]}" 1>&2
+        return 1
+    fi
+
+    if [[ ${#ARGS[@]} != 0 ]]; then
+        echo "Invalid argument: ${ARGS[0]}" 1>&2
+        return 1
+    fi
+
     echo 'start'
 
     if [[ ${#PREFIX[@]} != 0 ]]; then
         printf '  %s\n' "${PREFIX[@]}"
     fi
 
-    printf '  %s\n' "$@"
     echo 'end'
 }
 
 # Implementation for `body` rule (arbitrary body lines).
 function rule-body-body {
-    local opt
-
-    for opt in "${OPTS[@]}"; do
-        echo "Unknown option: ${opt}" 1>&2
+    if [[ ${#OPTS[@]} != 0 ]]; then
+        echo "Unknown option: ${OPTS[0]}" 1>&2
         return 1
-    done
+    fi
 
     emit-rule "${ARGS[@]}"
 }
@@ -194,12 +237,12 @@ function rule-body-body {
 # rule emitted for it.
 MKDIRS=()
 function rule-body-mkdir {
-    local opt name i
+    local name i
 
-    for opt in "${OPTS[@]}"; do
-        echo "Unknown option: ${opt}" 1>&2
+    if [[ ${#OPTS[@]} != 0 ]]; then
+        echo "Unknown option: ${OPTS[0]}" 1>&2
         return 1
-    done
+    fi
 
     for name in "${ARGS[@]}"; do
         name="$(absPath "${name}")"
@@ -216,10 +259,10 @@ function rule-body-mkdir {
         MKDIRS+=("${name}")
 
         emit-rule \
-            "target $(quote "${name}")" \
-            "moot [[ -d $(quote "${name}") ]]" \
-            "assert [[ ! -e $(quote "${name}") ]]" \
-            "cmd mkdir -p $(quote "${name}")"
+            --target="${name}" \
+            --moot="[[ -d $(quote "${name}") ]]" \
+            --assert="[[ ! -e $(quote "${name}") ]]" \
+            --cmd="mkdir -p $(quote "${name}")"
     done
 }
 
@@ -265,52 +308,26 @@ function rule-body-copy {
         rule mkdir -- "${targetDir}"
 
         emit-rule \
-            "target $(quote "${targetFile}")" \
-            "req $(quote "${targetDir}")" \
-            "req $(quote "${sourceFile}")" \
-            "msg $(quote Copy: ${sourceFile})" \
-            "cmd cp $(quote "${sourceFile}" "${targetFile}")"
+            --target="${targetFile}" \
+            --req="${targetDir}" \
+            --req="${sourceFile}" \
+            --msg="Copy: ${sourceFile}" \
+            --cmd="cp $(quote "${sourceFile}" "${targetFile}")"
     done
 }
 
 # Emits a rule (or set of rules) of the indicated type, with given additional
 # arguments. Every type accepts any number of `--id=`, `--req=`, `--target`,
-# `--cmd=`, and `--msg=` options. Beyond that, arguments are type-specific.
+# `--assert=`, `--cmd=`, `--moot`, and `--msg=` options. Beyond that,
+# arguments are type-specific.
 function rule {
     local type="$1"
     shift
 
     # These are used / modified by per-type rule constructors.
-    local PREFIX=()
-    local OPTS=()
-    local ARGS=()
+    local PREFIX=() OPTS=() ARGS=()
 
-    local opt
-    local moreOpts=()
-    while [[ $1 != '' ]]; do
-        opt="$1"
-        if [[ ${opt} == '--' ]]; then
-            shift
-            break
-        elif [[ ${opt} =~ ^--id=(.*) ]]; then
-            PREFIX+=("id $(quote "${BASH_REMATCH[1]}")")
-        elif [[ ${opt} =~ ^--req=(.*) ]]; then
-            PREFIX+=("req $(quote "${BASH_REMATCH[1]}")")
-        elif [[ ${opt} =~ ^--target=(.*) ]]; then
-            PREFIX+=("target $(quote "${BASH_REMATCH[1]}")")
-        elif [[ ${opt} =~ ^--msg=(.*) ]]; then
-            PREFIX+=("msg ${BASH_REMATCH[1]}")
-        elif [[ ${opt} =~ ^--cmd=(.*) ]]; then
-            PREFIX+=("cmd ${BASH_REMATCH[1]}")
-        elif [[ ${opt} =~ ^- ]]; then
-            OPTS+=("${opt}")
-        else
-            break
-        fi
-        shift
-    done
-
-    ARGS=("$@")
+    parse-rule-args "$@"
     eval "rule-body-${type}"
 }
 
