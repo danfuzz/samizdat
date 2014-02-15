@@ -59,7 +59,9 @@ while [[ $1 != '' ]]; do
         exit
     elif [[ ${opt} == '--c-code' ]]; then
         fullCompile='no'
-    elif [[ ${opt} =~ ^--mode=(.*) ]]; then
+    elif [[    ${opt} =~ ^--mode=(.*)
+            || ${opt} =~ ^--in-dir=(.*)
+            || ${opt} =~ ^--out-dir=(.*) ]]; then
         moreArgs+=("${opt}")
     elif [[ ${opt} =~ ^--output=(.*) ]]; then
         outputFile="${BASH_REMATCH[1]}"

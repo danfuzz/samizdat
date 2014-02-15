@@ -18,24 +18,36 @@ fn withoutSuffix(name) {
     }
 };
 
-fn getOutputPath(sourcePath, args) {
+fn getSourcePath(rawPath, args) {
+    return Io1::pathFromFlat(
+        (def inDir = args::options::"in-dir")
+        & "\(inDir)/\(rawPath)"
+        | rawPath);
+};
+
+fn getOutputPath(rawPath, args) {
     if (def output = args::options::output) {
         return Io1::pathFromFlat(output)
-    } else {
-        def baseName = withoutSuffix(sourcePath[^0]);
-        return [sourcePath[..!]*, "\(baseName).c"]
-    }
+    };
+
+    def path = Io1::pathFromFlat(
+        (def outDir = args::options::"out-dir")
+        & "\(outDir)/\(rawPath)"
+        | rawPath);
+
+    def baseName = withoutSuffix(path[^0]);
+    return [path[..!]*, "\(baseName).c"]
 };
 
 fn doOne(modeModule, args, sourceName) {
-    def sourcePath = Io1::pathFromFlat(sourceName);
-    def targetPath = getOutputPath(sourcePath, args);
+    def sourcePath = getSourcePath(sourceName, args);
+    def outputPath = getOutputPath(sourceName, args);
 
     Io1::note("\
         \%q(sourcePath)
-        -> \%q(targetPath)\n");
+        -> \%q(outputPath)\n");
 
-    modeModule::compile(sourcePath, targetPath);
+    modeModule::compile(sourcePath, outputPath);
 };
 
 fn main(selfPath, rawArgs*) {
@@ -53,6 +65,11 @@ fn main(selfPath, rawArgs*) {
 
     if (#sources == 0) {
         Io1::note("No source files specified!");
+        return 1
+    };
+
+    if (args::options::output & (#sources > 1)) {
+        Io1::note("Cannot use --output with more than one source!");
         return 1
     };
 
