@@ -125,6 +125,11 @@ these options:
   out-of-date. Array variables `STALE_TARGETS` and `NEW_REQS` are available
   to commands.
 
+* `--group-start` &hellip; `--group-end` &mdash; Can be used to group
+  together related sets of reqs and targets. When used, staleness of a target
+  only depends on the reqs in its group. It is only valid to used `--req=`
+  and `--target=` options within a group.
+
 Some types accept one or more of these options:
 
 * `--in-dir=<dir>` &mdash; Indicates that relative file name arguments
