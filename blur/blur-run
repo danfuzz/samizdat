@@ -294,6 +294,7 @@ function runIfNeeded {
         rest="${BASH_REMATCH[3]}"
         case "${cmd}" in
             (moot)
+                rest="$(unquote "${rest}")"
                 msg --verbose '??' "${rest}"
                 bash -c "${rest}"
                 if [[ $? == 0 ]]; then
@@ -303,6 +304,7 @@ function runIfNeeded {
                 fi
                 ;;
             (assert)
+                rest="$(unquote "${rest}")"
                 msg --verbose '!!' "${rest}"
                 bash -c "${rest}"
                 if [[ $? != 0 ]]; then
@@ -444,6 +446,7 @@ function runIfNeeded {
         rest="${BASH_REMATCH[3]}"
         case "${cmd}" in
             (cmd)
+                rest="$(unquote "${rest}")"
                 msg --verbose '$$' "${rest}"
                 bash -c "
                     STALE_TARGETS=($(quote "${oldTargets[@]}"))

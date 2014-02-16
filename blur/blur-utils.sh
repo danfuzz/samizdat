@@ -154,7 +154,7 @@ function unquote {
                 ('n') c=$'\n' ;;
                 ('r') c=$'\r' ;;
                 ('t') c=$'\t' ;;
-                (' '|'"'|"'"|'!'|'$') ;; # Pass through as-is.
+                (' '|'"'|"'"|'!'|'$'|'['|']') ;; # Pass through as-is.
                 (*)
                     echo "Unknown character escape: ${c}" 1>&2
                     exit 1
@@ -198,11 +198,11 @@ function parse-rule-args {
         elif [[ ${opt} =~ ^--target=(.*) ]]; then
             PREFIX+=("target $(quote-abs "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--assert=(.*) ]]; then
-            PREFIX+=("assert ${BASH_REMATCH[1]}")
+            PREFIX+=("assert $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--cmd=(.*) ]]; then
-            PREFIX+=("cmd ${BASH_REMATCH[1]}")
+            PREFIX+=("cmd $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--moot=(.*) ]]; then
-            PREFIX+=("moot ${BASH_REMATCH[1]}")
+            PREFIX+=("moot $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--msg=(.*) ]]; then
             PREFIX+=("msg $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} == --group-start ]]; then
