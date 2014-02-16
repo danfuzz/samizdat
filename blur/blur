@@ -37,6 +37,9 @@ error=0
 # Directory to process.
 dir='.'
 
+# Whether to dump (print) rules before proceeding.
+dump=0
+
 # Spew option.
 spewOption=()
 
@@ -51,8 +54,10 @@ while [[ $1 != '' ]]; do
     elif [[ ${opt} == '--help' ]]; then
         error='usage'
         break
-    elif [[ ${opt} =~ ^--dir=(.*) ]]; then
+    elif [[ ${opt} =~ ^--in-dir=(.*) ]]; then
         dir="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--dump ]]; then
+        dump=1
     elif [[ ${opt} =~ ^--quiet || ${opt} =~ ^--verbose=(.*) ]]; then
         spewOption=("${opt}")
     elif [[ ${opt} =~ ^-- ]]; then
@@ -77,8 +82,8 @@ fi
 
 if [[ ${error} != 0 ]]; then
     echo 1>&2 "${progName} --help"
-    echo 1>&2 "${progName} [--quiet | --verbose=<level>] [--dir=<dir>]"
-    echo 1>&2 "    [--<build-opt> ...] (target-file | id) ..."
+    echo 1>&2 "${progName} [--quiet | --verbose=<level>] [--dump]"
+    echo 1>&2 "    [--in-dir=<dir>] [--<build-opt> ...] (target-file | id) ..."
     if [[ ${error} == 'usage' ]]; then
         error=0
     fi
@@ -117,7 +122,11 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
+if (( dump )); then
+    printf '%s\n' "${rules}"
+fi
+
 # Run `blur-run`, passing it the rules.
 
-echo "${rules}" | \
+printf '%s\n' "${rules}" | \
     "${progDir}/blur-run" "${spewOption[@]}" -- "${targets[@]}"
