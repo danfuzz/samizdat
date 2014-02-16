@@ -225,13 +225,13 @@ function emit-rule {
         return 1
     fi
 
-    echo 'start'
+    echo 'rule-start'
 
     if [[ ${#PREFIX[@]} != 0 ]]; then
         printf '  %s\n' "${PREFIX[@]}"
     fi
 
-    echo 'end'
+    echo 'rule-end'
 }
 
 # Implementation for `body` rule (arbitrary body lines).

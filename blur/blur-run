@@ -227,10 +227,10 @@ function rulesInit {
         [[ ${rest} == '' ]] \
             && curRule+=("${cmd}") || curRule+=("${cmd} ${rest}")
         case "${cmd}" in
-            (start)
+            (rule-start)
                 curRule=()
                 ;;
-            (end)
+            (rule-end)
                 unset curRule[$((${#curRule[@]} - 1))]
                 RULES+=("$(printf '%s\n' "${curRule[@]}")")
                 curRule=()
