@@ -65,7 +65,7 @@ LIB_FILES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 rule copy \
     --id=build-lib \
     --in-dir="${LIB_SOURCE_BASE}" \
-    --target-dir="${FINAL_LIB}" \
+    --out-dir="${FINAL_LIB}" \
     -- "${LIB_FILES[@]}"
 
 # Rules to copy each include file to the final include directory.
@@ -76,7 +76,7 @@ INCLUDE_FILES=($(cd "${INCLUDE_SOURCE_BASE}"; find . -name '*.h'))
 rule copy \
     --id=build-include \
     --in-dir="${INCLUDE_SOURCE_BASE}" \
-    --target-dir="${FINAL_INCLUDE}" \
+    --out-dir="${FINAL_INCLUDE}" \
     -- "${INCLUDE_FILES[@]}"
 
 # Rules to compile each C source file.

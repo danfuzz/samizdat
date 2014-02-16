@@ -126,7 +126,7 @@ Some types accept one or more of these options:
   are taken to be relative to the source base directory (where the rules
   script is stored).
 
-* `--target-dir=<dir>` &mdash; If the rule uses relative file names for both
+* `--out-dir=<dir>` &mdash; If the rule uses relative file names for both
   reqs and targets, this is how to specify the relative base for the
   targets.
 
@@ -151,9 +151,9 @@ The rule types are as follows:
 * `body` &mdash; Catch-all. Has no semantics beyond the general rule
   semantics defined above.
 
-* `copy --target-dir=<dir> [--in-dir=<dir>] [--chmod=<mode>] [--] <name> ...`
+* `copy --out-dir=<dir> [--in-dir=<dir>] [--chmod=<mode>] [--] <name> ...`
   &mdash; Copies files from a tree rooted in the indicated `from-dir` to a
-  tree rooted in the indicated `target-dir` (which must be specified). Each of
+  tree rooted in the indicated `out-dir` (which must be specified). Each of
   the `<name>`s must be a relative path within the directories. And each
   file copy operation is represented by its own rule. If `--chmod` is
   specified, each target is `chmod`ed to the indicated `mode`.

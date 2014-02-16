@@ -246,13 +246,13 @@ function rule-body-body {
 
 # Implementation for `copy` rule.
 function rule-body-copy {
-    local opt name inDir='.' targetBase mode
+    local opt name inDir='.' outDir mode
 
     for opt in "${OPTS[@]}"; do
         if [[ ${opt} =~ ^--in-dir=(.*) ]]; then
             inDir="${BASH_REMATCH[1]}"
-        elif [[ ${opt} =~ ^--target-dir=(.*) ]]; then
-            targetBase="${BASH_REMATCH[1]}"
+        elif [[ ${opt} =~ ^--out-dir=(.*) ]]; then
+            outDir="${BASH_REMATCH[1]}"
         elif [[ ${opt} =~ ^--chmod=(.*) ]]; then
             mode="${BASH_REMATCH[1]}"
         else
@@ -261,8 +261,8 @@ function rule-body-copy {
         fi
     done
 
-    if [[ ${targetBase} == '' ]]; then
-        echo 'Missing option: --target-dir' 1>&2
+    if [[ ${outDir} == '' ]]; then
+        echo 'Missing option: --out-dir' 1>&2
         return 1
     fi
 
@@ -275,7 +275,7 @@ function rule-body-copy {
             return 1
         fi
 
-        local targetFile="$(abs-path --in-dir="${targetBase}" "${name}")"
+        local targetFile="$(abs-path --in-dir="${outDir}" "${name}")"
         local sourceFile="$(abs-path --in-dir="${inDir}" "${name}")"
         local targetDir="${targetFile%/*}"
         local chmodCmd=()

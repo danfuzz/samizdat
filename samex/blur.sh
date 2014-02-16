@@ -28,7 +28,7 @@ binNames=(
 
 rule copy \
     --id=build \
-    --target-dir="${FINAL}" \
+    --out-dir="${FINAL}" \
     --chmod=755 \
     -- "${binNames[@]}"
 

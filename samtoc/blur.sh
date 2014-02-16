@@ -32,12 +32,12 @@ LIB_FILES=(
 
 rule copy \
     --id=build \
-    --target-dir="${FINAL_LIB}" \
+    --out-dir="${FINAL_LIB}" \
     -- "${LIB_FILES[@]}"
 
 rule copy \
     --id=build \
-    --target-dir="${FINAL_BIN}" \
+    --out-dir="${FINAL_BIN}" \
     --chmod=755 \
     -- "${binName}"
 
