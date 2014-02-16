@@ -289,9 +289,9 @@ function runIfNeeded {
 
     # Check asserts and moots.
     for line in "${rule[@]}"; do
-        [[ ${line} =~ ^([^ ]*)' '(.*)$ ]]
+        [[ ${line} =~ ^([^ ]*)(' ')?(.*)$ ]]
         cmd="${BASH_REMATCH[1]}"
-        rest="${BASH_REMATCH[2]}"
+        rest="${BASH_REMATCH[3]}"
         case "${cmd}" in
             (moot)
                 msg --verbose '??' "${rest}"
@@ -319,12 +319,12 @@ function runIfNeeded {
     local newReqs=()   oldTargets=()
     local reqs=()      targets=()
     local newestReq=-1 oldestTarget=-1
-    local inGroup=0 anyStale=0 stamp
+    local inGroup=0 anyGroups=0 anyStale=0 stamp
 
     for line in "${rule[@]}"; do
-        [[ ${line} =~ ^([^ ]*)' '(.*)$ ]]
+        [[ ${line} =~ ^([^ ]*)(' ')?(.*)$ ]]
         cmd="${BASH_REMATCH[1]}"
-        rest="${BASH_REMATCH[2]}"
+        rest="${BASH_REMATCH[3]}"
         case "${cmd}" in
             (group-start)
                 if (( inGroup )); then
@@ -337,6 +337,7 @@ function runIfNeeded {
                     return 1
                 fi
                 inGroup=1
+                anyGroups=1
                 ;;
             (group-end)
                 if (( ! inGroup )); then
@@ -392,14 +393,20 @@ function runIfNeeded {
                 if (( inGroup )); then
                     msg --err "Invalid command in group: ${cmd}"
                     traceLayers
-                    return1
+                    return 1
                 fi
                 ;;
         esac
     done
 
     # Handle reqs/targets that weren't part of a group.
-    if isStale "${newestReq}" "${oldestTarget}"; then
+    if (( anyGroups )); then
+        if [[ ${#reqs[@]} != 0 || ${#targets[@]} != 0 ]]; then
+            msg --err "Cannot mix grouped / ungrouped dependencies."
+            traceLayers
+            return 1
+        fi
+    elif isStale "${newestReq}" "${oldestTarget}"; then
         anyStale=1
         newReqs+=("${reqs[@]}")
         oldTargets+=("${targets[@]}")
@@ -432,9 +439,9 @@ function runIfNeeded {
     fi
 
     for line in "${rule[@]}"; do
-        [[ ${line} =~ ^([^ ]*)' '(.*)$ ]]
+        [[ ${line} =~ ^([^ ]*)(' ')?(.*)$ ]]
         cmd="${BASH_REMATCH[1]}"
-        rest="${BASH_REMATCH[2]}"
+        rest="${BASH_REMATCH[3]}"
         case "${cmd}" in
             (cmd)
                 msg --verbose '$$' "${rest}"
