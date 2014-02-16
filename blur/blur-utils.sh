@@ -113,17 +113,60 @@ function abs-path {
     printf '\n'
 }
 
-# Quotes each of the given arguments as strings.
+# Quotes each of the given arguments as strings, if they contain any
+# syntactically-significant shell characters. This function takes a
+# conservative view of what is acceptably un-quoted.
 function quote {
-    printf '%q' "$1"
-    shift
+    local s any=0
 
-    if (( $# > 0 )); then
-        printf ' %q' "$@"
-    fi
+    for s in "$@"; do
+        if (( any )); then
+            printf ' '
+        else
+            any=1
+        fi
+
+        if [[ $s == '' ]]; then
+            # It's the empty string.
+            printf $'\'\''
+            continue
+        elif [[ $s =~ ^[-_/.:=@A-Za-z0-9]*$ ]]; then
+            # It is conservatively safe.
+            printf $'%s' "$s"
+            continue
+        elif [[ $s =~ ^[' '-~]*$ && ! $s =~ '\\' ]]; then
+            # It has syntactically significant characters but nothing that
+            # needs escaping.
+            printf $'$\'%s\'' "$s"
+            continue
+        fi
+
+        # It has at least one character in need of escaping.
+
+        printf $'$\''
+
+        local i
+        for (( i = 0; i < ${#s}; i++ )); do
+            local c="${s:$i:1}"
+            case "$c" in
+                ($'\n')   printf '\\n'           ;;
+                ($'\r')   printf '\\r'           ;;
+                ($'\t')   printf '\\t'           ;;
+                ($'\\')   printf '\\\\'          ;;
+                ([' '-~]) printf '%s' "$c"       ;;
+                (*)       printf '\\x%02x' "'$c" ;;
+            esac
+        done
+
+        printf $'\''
+    done
+
+    printf $'\n'
 }
 
-# Unquotes the given string.
+# Unquotes the given string. This is only designed to handle the
+# possibilities produced by `quote`, and not the full general shell quoting
+# syntax.
 function unquote {
     local s="$1"
 
@@ -143,28 +186,32 @@ function unquote {
         return
     fi
 
-    local i result=''
+    local i
 
     for (( i = 0; i < ${#s}; i++ )); do
         local c="${s:$i:1}"
         if [[ $c == '\' ]]; then
-            ((i++))
+            (( i++ ))
             c="${s:$i:1}"
             case "$c" in
-                ('n') c=$'\n' ;;
-                ('r') c=$'\r' ;;
-                ('t') c=$'\t' ;;
-                (' '|'"'|"'"|'!'|'$'|'['|']') ;; # Pass through as-is.
+                ('n') printf $'\n' ;;
+                ('r') printf $'\r' ;;
+                ('t') printf $'\t' ;;
+                ($'\\') ;; # Pass through as-is.
+                (x)
+                    (( i++ ))
+                    printf "\\x${s:$i:2}"
+                    (( i++ ))
+                    ;;
                 (*)
                     echo "Unknown character escape: ${c}" 1>&2
                     exit 1
                     ;;
             esac
+        else
+            printf '%s' "$c"
         fi
-        result+="$c"
     done
-
-    printf '%s' "${result}"
 }
 
 # Combines `quote` and `abs-path`.
