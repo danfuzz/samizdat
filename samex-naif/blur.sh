@@ -126,6 +126,6 @@ rule rm \
 
 rule body \
     --id=build \
-    --req=link-bin \
-    --req=build-lib \
-    --req=build-include
+    --req-id=link-bin \
+    --req-id=build-lib \
+    --req-id=build-include

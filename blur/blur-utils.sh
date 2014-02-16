@@ -167,6 +167,11 @@ function unquote {
     printf '%s' "${result}"
 }
 
+# Combines `quote` and `abs-path`.
+function quote-abs {
+    quote "$(abs-path "$1")"
+}
+
 # Combines `unquote` and `abs-path`.
 function unquote-abs {
     abs-path "$(unquote "$1")"
@@ -187,9 +192,11 @@ function parse-rule-args {
         elif [[ ${opt} =~ ^--id=(.*) ]]; then
             PREFIX+=("id $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--req=(.*) ]]; then
+            PREFIX+=("req $(quote-abs "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--req-id=(.*) ]]; then
             PREFIX+=("req $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--target=(.*) ]]; then
-            PREFIX+=("target $(quote "${BASH_REMATCH[1]}")")
+            PREFIX+=("target $(quote-abs "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--assert=(.*) ]]; then
             PREFIX+=("assert ${BASH_REMATCH[1]}")
         elif [[ ${opt} =~ ^--cmd=(.*) ]]; then

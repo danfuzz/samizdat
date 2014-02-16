@@ -101,9 +101,11 @@ these options:
   the indicated name.
 
 * `--req=<target>` &mdash; Indicate that this rule requires the given target
-  to be satisfied / built before it can proceed. `<target>` can be either
-  a file name (if non-absolute, relative to the directory being built) or
-  a named id.
+  to be satisfied / built before it can proceed. `<target>` must be a file
+  name (if non-absolute, relative to the directory being built).
+
+* `--req-id=<id>` &mdash; Indicate that this rule requires the given named
+  id to be satisfied / built before it can proceed.
 
 * `--target=<file>` &mdash; Indicate that this rule produces the named target
   file.
