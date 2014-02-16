@@ -26,8 +26,28 @@ binNames=(
     "helper/find-samex"
 )
 
+rule body \
+    --id=blort \
+    --group-start \
+        --req=bin/samex \
+        --target="${FINAL}/bin/samex" \
+    --group-end \
+    --group-start \
+        --req=bin/compile-samex-addon \
+        --target="${FINAL}/bin/compile-samex-addon" \
+    --group-end \
+    --group-start \
+        --req=helper/find-samex \
+        --target="${FINAL}/helper/find-samex" \
+    --group-end \
+    --msg='Stale
+    stuff!' \
+    --cmd='echo "${STALE_TARGETS[@]}"' \
+    --msg='Woo!'
+
 rule copy \
     --id=build \
+    --req-id=blort \
     --out-dir="${FINAL}" \
     --chmod=755 \
     -- "${binNames[@]}"
