@@ -458,7 +458,7 @@ function runIfNeeded {
                 fi
                 ;;
             (msg)
-                rest="$(bash -c "echo ${rest}")"
+                rest="$(unquote "${rest}")"
                 msg "${rest}"
                 ;;
         esac
