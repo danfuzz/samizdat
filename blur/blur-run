@@ -249,6 +249,27 @@ function rulesInit {
     done < "${rulesFile}"
 }
 
+# Checks the given timestamps for newest req and oldest target. Returns
+# true (0) if it indicates stale / missing targets.
+function isStale {
+    local newestReq="$1"
+    local oldestTarget="$2"
+
+    if (( newestReq < 0 || oldestTarget < 0 )); then
+        # Either no reqs specified, no targets specified, or a nonexistent
+        # target.
+        return 0
+    fi
+
+    if (( newestReq > oldestTarget )); then
+        # There is at least one req that is newer than one target.
+        return 0
+    fi
+
+    # Nothing is stale, so exit false (failure).
+    return 1
+}
+
 # Runs the given rule if any of:
 # * it has no reqs
 # * it has no targets
@@ -295,24 +316,57 @@ function runIfNeeded {
         esac
     done
 
-    local newestReq=-1 oldestTarget=-1 stamp
+    local newReqs=()   oldTargets=()
+    local reqs=()      targets=()
+    local newestReq=-1 oldestTarget=-1
+    local inGroup=0 anyStale=0 stamp
 
     for line in "${rule[@]}"; do
         [[ ${line} =~ ^([^ ]*)' '(.*)$ ]]
         cmd="${BASH_REMATCH[1]}"
         rest="${BASH_REMATCH[2]}"
         case "${cmd}" in
+            (group-start)
+                if (( inGroup )); then
+                    msg --err "Group within group."
+                    traceLayers
+                    return 1
+                elif [[ ${#reqs[@]} != 0 || ${#targets[@]} != 0 ]]; then
+                    msg --err "Reqs or targets outside group."
+                    traceLayers
+                    return 1
+                fi
+                inGroup=1
+                ;;
+            (group-end)
+                if (( ! inGroup )); then
+                    msg --err "Not in group."
+                    traceLayers
+                    return 1
+                elif isStale "${newestReq}" "${oldestTarget}"; then
+                    anyStale=1
+                    newReqs+=("${reqs[@]}")
+                    oldTargets+=("${targets[@]}")
+                fi
+                # Reset for further groups.
+                reqs=()
+                targets=()
+                newestReq=-1
+                oldestTarget=-1
+                inGroup=0
+                ;;
             (req)
                 rest="$(unquote "${rest}")"
                 if ! isId "${rest}"; then
                     rest="$(abs-path "${rest}")"
+                    reqs+=("${rest}")
                     if [[ ! -e "${rest}" ]]; then
                         msg --err "Missing req: ${rest}"
                         traceLayers
                         return 1
                     elif [[ ! -d "${rest}" ]]; then
-                        # Update req timestamp only if the req is *not*
-                        # a directory. (Directory modtimes aren't really useful.)
+                        # Update req timestamp only if the req is *not* a
+                        # directory. (Directory modtimes aren't really useful.)
                         stamp="$(mod-time "${rest}")"
                         if (( stamp > newestReq )); then
                             newestReq="${stamp}"
@@ -322,29 +376,60 @@ function runIfNeeded {
                 ;;
             (target)
                 rest="$(unquote-abs "${rest}")"
+                targets+=("${rest}")
                 if [[ ! -e "${rest}" ]]; then
                     # Missing target. Means that we need to run the rule
                     # (unless previously mooted).
-                    newestReq=-1
                     oldestTarget=-1
-                    break
+                else
+                    stamp="$(mod-time "${rest}")"
+                    if (( oldestTarget == -1 || stamp < oldestTarget )); then
+                        oldestTarget="${stamp}"
+                    fi
                 fi
-                stamp="$(mod-time "${rest}")"
-                if (( oldestTarget == -1 || stamp < oldestTarget )); then
-                    oldestTarget="${stamp}"
+                ;;
+            (*)
+                if (( inGroup )); then
+                    msg --err "Invalid command in group: ${cmd}"
+                    traceLayers
+                    return1
                 fi
                 ;;
         esac
     done
 
-    if (( newestReq > 0 && oldestTarget > 0 )); then
-        if (( newestReq <= oldestTarget )); then
-            # Everything is up-to-date.
-            return
-        fi
+    # Handle reqs/targets that weren't part of a group.
+    if isStale "${newestReq}" "${oldestTarget}"; then
+        anyStale=1
+        newReqs+=("${reqs[@]}")
+        oldTargets+=("${targets[@]}")
+    fi
+
+    if (( ! anyStale )); then
+        # Everything is up-to-date, and there is at least one req and one
+        # target.
+        return
     fi
 
     # Need to run the associated commands.
+
+    if (( spew > 2 )); then
+        local name
+
+        if [[ ${#oldTargets[@]} != 0 ]]; then
+            msg "Stale targets:"
+            for name in "${oldTargets[@]}"; do
+                msg "  ${name}"
+            done
+        fi
+
+        if [[ ${#newReqs[@]} != 0 ]]; then
+            msg "New reqs:"
+            for name in "${newReqs[@]}"; do
+                msg "  ${name}"
+            done
+        fi
+    fi
 
     for line in "${rule[@]}"; do
         [[ ${line} =~ ^([^ ]*)' '(.*)$ ]]
@@ -353,7 +438,10 @@ function runIfNeeded {
         case "${cmd}" in
             (cmd)
                 msg --verbose '$$' "${rest}"
-                bash -c "${rest}"
+                bash -c "
+                    STALE_TARGETS=($(quote "${oldTargets[@]}"))
+                    NEW_REQS=($(quote "${newReqs[@]}"))
+                    ${rest}"
                 local status="$?"
                 if [[ ${status} != 0 ]]; then
                     msg --quiet '$$' "${rest}"
