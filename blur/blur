@@ -11,7 +11,7 @@
 
 # Set `progName` to the program name, `progDir` to its directory, and `baseDir`
 # to `progDir`'s directory. Follows symlinks.
-function initProg {
+function init-prog {
     local newp prog="$0"
 
     while newp="$(readlink "${prog}")"; do
@@ -23,7 +23,7 @@ function initProg {
     baseDir="$(cd "${progDir}/.."; /bin/pwd -P)"
 }
 
-initProg
+init-prog
 . "${progDir}/blur-utils.sh"
 
 
