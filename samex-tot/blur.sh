@@ -32,6 +32,7 @@ SOURCE_FILES=(
         '!' -name 'module.sam' \
         -print
     ))
+
 EXTRA_FILES=(
     $(cd ../samlib-naif; find . -type f \
         '(' '!' -name '*.sam' ')' -o \
@@ -51,8 +52,16 @@ C_SOURCE_FILES=("${C_SOURCE_FILES[@]/#/${INTERMED}/}") # Add directory prefix.
 # lib directory.
 rule copy \
     --id=copy-files \
-    --out-dir="${FINAL_LIB}" \
+    --in-dir="../samlib-naif" \
+    --out-dir="${FINAL_LIB}/corelib" \
     -- "${EXTRA_FILES[@]}"
+
+# Copies the `samex` binary from `samex-naif` to the final lib directory.
+rule copy \
+    --id=copy-files \
+    --in-dir="${FINAL}/samex-naif" \
+    --out-dir="${FINAL_LIB}" \
+    -- samex
 
 # Sub-rules for translation and compilation
 
@@ -65,7 +74,7 @@ rule copy \
 
 groups=()
 for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
-    inFile="${SOURCE_FILES[$i]}"
+    inFile="../samlib-naif/${SOURCE_FILES[$i]}"
     outFile="${C_SOURCE_FILES[$i]}"
     outDir="${outFile%/*}"
 
@@ -115,21 +124,13 @@ done
 
 # Default build rules
 
-# This builds a different-named version of `samex`, which the rest of the
-# rules here flesh out.
 rule body \
-    --id=external-samex \
-    --value="--todo-stuff-here" \
-    --build-in-dir="../samex-naif"
-
-rule body \
-    --id=external-samtoc \
+    --id=external-reqs \
     --build-in-dir="../samtoc"
 
 rule body \
     --id=build \
-    --req-id=external-samex \
-    --req-id=external-samtoc \
+    --req-id=external-reqs \
     --req-id=copy-files \
     --req-id=compile-libs
 
