@@ -134,7 +134,7 @@ function quote {
             # It is conservatively safe.
             printf $'%s' "$s"
             continue
-        elif [[ $s =~ ^[' '-~]*$ && ! $s =~ '\\' ]]; then
+        elif [[ $s =~ ^[' '-~]*$ && ! $s =~ [\\\'] ]]; then
             # It has syntactically significant characters but nothing that
             # needs escaping.
             printf $'$\'%s\'' "$s"
@@ -152,6 +152,7 @@ function quote {
                 ($'\n')   printf '\\n'           ;;
                 ($'\r')   printf '\\r'           ;;
                 ($'\t')   printf '\\t'           ;;
+                ($'\'')   printf '\\'\'          ;;
                 ($'\\')   printf '\\\\'          ;;
                 ([' '-~]) printf '%s' "$c"       ;;
                 (*)       printf '\\x%02x' "'$c" ;;
