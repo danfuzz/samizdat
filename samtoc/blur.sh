@@ -29,6 +29,12 @@ FINAL_LIB="${FINAL}/lib/${binName}"
 SOURCE_FILES=($(find . -type f -name '*.sam'))
 EXTRA_FILES=($(find modules -type f '!' -name '*.sam'))
 
+# These are all the intermediate C source files, corresponding to original
+# sources.
+C_SOURCE_FILES=("${SOURCE_FILES[@]/%.sam/.c}")         # Change suffix.
+C_SOURCE_FILES=("${C_SOURCE_FILES[@]/#/${INTERMED}/}") # Add directory prefix.
+
+
 # Copies the wrapper script into place.
 rule copy \
     --id=copy-files \
@@ -50,15 +56,23 @@ rule copy \
     -- "${SOURCE_FILES[@]}"
 
 # Runs `samtoc` out of its source directory, in order to process its own
-# files. Output is placed in the final lib directory.
+# files. Output files (C sources) are placed in the intermediates directory.
+# The groups ensure that `samtoc` is only asked to process out-of-date
+# sources.
 
 groups=()
+for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
+    inFile="${SOURCE_FILES[$i]}"
+    outFile="${C_SOURCE_FILES[$i]}"
+    outDir="${outFile%/*}"
 
-for f in "${SOURCE_FILES[@]}"; do
+    rule mkdir -- "${outDir}"
+
     groups+=(
         '('
-            --req="$f"
-            --target="${FINAL_LIB}/${f%.sam}.c"
+        --req="${outDir}"
+        --req="${inFile}"
+        --target="${outFile}"
         ')'
     )
 done
@@ -67,8 +81,8 @@ rule body \
     --id=process-self \
     "${groups[@]}" \
     -- \
-    --cmd='echo === ${NEW_REQS[@]}' \
-    --cmd='echo === ${STALE_TARGETS[@]}'
+    --cmd='printf "=== req %s\n" ${NEW_REQS[@]}' \
+    --cmd='printf "=== trg %s\n" ${STALE_TARGETS[@]}'
 
 # Default build rules
 
