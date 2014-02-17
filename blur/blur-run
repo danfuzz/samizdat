@@ -558,13 +558,15 @@ function satisfyTarget {
         fi
 
         while read -r cmd rest; do
-            if [[ ${cmd} == req ]]; then
-                satisfyTarget "$(unquote "${rest}")"
-                if [[ $? != 0 ]]; then
-                    error=yes
-                    break
-                fi
-            fi
+            case "${cmd}" in
+                (req)
+                    satisfyTarget "$(unquote "${rest}")"
+                    if [[ $? != 0 ]]; then
+                        error=yes
+                        break
+                    fi
+                    ;;
+            esac
         done <<< "${RULES[${rules[$i]}]}"
     done
 
