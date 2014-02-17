@@ -142,13 +142,13 @@ Some types accept one or more of these options:
   reqs and targets, this is how to specify the relative base for the
   targets.
 
-
 When a rule is run, the following takes place, in this order:
 
-* Rules for each reqs are run (recursively).
+* Rules for each of the reqs are run (recursively).
 * Moots and asserts are run, in the order specified by the rule.
 * Reqs are checked for existence. It is a fatal error at this point if
-  any req doesn't exist.
+  any req doesn't exist. (Reqs get created by recursively attempting to
+  satisfy them before rules are run. See below.)
 * The timestamps of all reqs and targets are collected.
 * If any target doesn't exist, or if any target is older than any req,
   then the rule is considered out-of-date. Caveat: Timestamps on directories
@@ -182,6 +182,36 @@ The rule types are as follows:
 
 See the file `blur-utils.sh` for information about the other available
 utilities.
+
+Satisfying a Target
+-------------------
+
+The main operation of Blur is to "satisfy" the targets named on its
+command-line. Each named target is satisfied, in order, as a separate
+operation. (That is, Blur does not attempt to simultaneously satisfy
+multiple targets, though that may happen as a byproduct of how rule
+dependencies happen to be set up.) Once a target is considered satisfied,
+Blur will not attempt to re-satisfy it during a single run of the program.
+
+Satisfying a target takes place in the following manner:
+
+* All rules are selected which name the target as `target` file (per se) or
+  a named id.
+
+* If the target is a named id, then further rules are selected if there
+  are any others that have `target`s in common with the `target`s of rules
+  already selected. This additional rule selection repeats with any
+  newly-selected rules, and so on, until a full transitive closure of rules
+  is found.
+
+* The selected rules are iterated, in the order that they were specified
+  by the original rules generation script. For each rule, its `req`s are
+  iterated over, in order. Target satisfaction is run on each `req`. (That is,
+  this procedure is invoked recursively on each `req`.)
+
+* The selected rules are iterated, in the order that they were specified
+  by the original rules generation script. Each rule is run, per the
+  description of `rule`, above.
 
 
 Limitations
