@@ -188,7 +188,7 @@ function addRuleToTarget {
     local rule="$1"
     local target="$2"
 
-    local v="rules$(mangle-string "${target}")"
+    local v="_rules$(mangle-string "${target}")"
     eval "${v}+=' ${rule}'"
 }
 
@@ -196,20 +196,26 @@ function addRuleToTarget {
 # associated with the given target.
 function rulesFor {
     local target="$1"
-    local v="rules$(mangle-string "${target}")"
+    local v="_rules$(mangle-string "${target}")"
     eval "echo \$${v}"
+}
+
+# Indicates that the given word is a defined id.
+function defineAsId {
+    local id="$1"
+    local v="_id$(mangle-string "${id}")"
+    eval "${v}=yes"
 }
 
 # Exits success if the given word is a defined id.
 function isId {
     local id="$1"
-    local i
+    local v="_id$(mangle-string "${id}")"
+    local value="$(eval "echo \$${v:-no}")"
 
-    for (( i = 0; i < ${#IDS[@]}; i++ )); do
-        if [[ ${IDS[$i]} == ${id} ]]; then
-            return 0
-        fi
-    done
+    if [[ ${value} == yes ]]; then
+        return 0
+    fi
 
     return 1
 }
@@ -219,7 +225,6 @@ function isId {
 # and one space after the command. Finally, this also sets up the `IDS` array,
 # which lists all named ids.
 RULES=()
-IDS=()
 function rulesInit {
     local cmd rest curRule=()
 
@@ -240,9 +245,7 @@ function rulesInit {
                 ;;
             (id)
                 local id=("$(unquote "${rest}")")
-                if ! isId "${id}"; then
-                    IDS+=("${id}")
-                fi
+                defineAsId "${id}"
                 addRuleToTarget "${#RULES[@]}" "${id}"
                 ;;
         esac
