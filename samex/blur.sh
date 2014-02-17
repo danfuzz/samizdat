@@ -27,7 +27,6 @@ binNames=(
 )
 
 rule body \
-    --id=blort \
     --group-start \
         --req=bin/samex \
         --target="${FINAL}/bin/samex" \
@@ -40,14 +39,11 @@ rule body \
         --req=helper/find-samex \
         --target="${FINAL}/helper/find-samex" \
     --group-end \
-    --msg='Stale
-    stuff!' \
-    --cmd='echo "${STALE_TARGETS[@]}"' \
-    --msg='Woo!'
+    --msg=$'Stuff\nis\nstale.' \
+    --cmd='printf "stale: %s\n" "${STALE_TARGETS[@]}"'
 
 rule copy \
     --id=build \
-    --req-id=blort \
     --out-dir="${FINAL}" \
     --chmod=755 \
     -- "${binNames[@]}"
