@@ -325,21 +325,11 @@ function isStale {
 # * at least one existing target has an older modification time than at least
 #   one req
 function runIfNeeded {
-    # Split the rule into an array of lines.
-    local rule=()
-
-    local oldIfs="${IFS}"
-    IFS=$'\n'
-    rule=($1)
-    IFS="${oldIfs}"
-
-    local line cmd rest
+    local rule="$1"
+    local cmd rest
 
     # Check asserts and moots.
-    for line in "${rule[@]}"; do
-        [[ ${line} =~ ^([^ ]*)(' ')?(.*)$ ]]
-        cmd="${BASH_REMATCH[1]}"
-        rest="${BASH_REMATCH[3]}"
+    while read -r cmd rest; do
         case "${cmd}" in
             (moot)
                 rest="$(unquote "${rest}")"
@@ -364,17 +354,14 @@ function runIfNeeded {
                 fi
                 ;;
         esac
-    done
+    done <<< "${rule}"
 
     local newReqs=()   oldTargets=()
     local reqs=()      targets=()
     local newestReq=-1 oldestTarget=-1
     local inGroup=0 anyGroups=0 anyStale=0 stamp
 
-    for line in "${rule[@]}"; do
-        [[ ${line} =~ ^([^ ]*)(' ')?(.*)$ ]]
-        cmd="${BASH_REMATCH[1]}"
-        rest="${BASH_REMATCH[3]}"
+    while read -r cmd rest; do
         case "${cmd}" in
             (group-start)
                 if (( inGroup )); then
@@ -447,7 +434,7 @@ function runIfNeeded {
                 fi
                 ;;
         esac
-    done
+    done <<< "${rule}"
 
     # Handle reqs/targets that weren't part of a group.
     if (( anyGroups )); then
@@ -488,10 +475,7 @@ function runIfNeeded {
         fi
     fi
 
-    for line in "${rule[@]}"; do
-        [[ ${line} =~ ^([^ ]*)(' ')?(.*)$ ]]
-        cmd="${BASH_REMATCH[1]}"
-        rest="${BASH_REMATCH[3]}"
+    while read -r cmd rest; do
         case "${cmd}" in
             (cmd)
                 rest="$(unquote "${rest}")"
@@ -513,7 +497,7 @@ function runIfNeeded {
                 msg "${rest}"
                 ;;
         esac
-    done
+    done <<< "${rule}"
 }
 
 # Attempts to satisfy the indicated target. The target can be either a file
