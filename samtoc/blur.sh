@@ -17,30 +17,58 @@ fi
 # Main script
 #
 
-OUT="${BASE_DIR}/out}"
+OUT="${BASE_DIR}/out"
 FINAL="${OUT}/final"
 
 binName="samtoc"
+
+INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
-LIB_FILES=(
-    main.sam
-    module.sam
-    $(find modules -type f)
-)
+SOURCE_FILES=($(find . -type f -name '*.sam'))
+EXTRA_FILES=($(find modules -type f '!' -name '*.sam'))
 
-rule copy \
-    --id=copy-files \
-    --out-dir="${FINAL_LIB}" \
-    -- "${LIB_FILES[@]}"
-
+# Copies the wrapper script into place.
 rule copy \
     --id=copy-files \
     --out-dir="${FINAL_BIN}" \
     --chmod=755 \
     -- "${binName}"
 
+# Copies all non-source files (resource files, essentially) to the final
+# lib directory.
+rule copy \
+    --id=copy-files \
+    --out-dir="${FINAL_LIB}" \
+    -- "${EXTRA_FILES[@]}"
+
+# TEMP: Copy all source files to final.
+rule copy \
+    --id=copy-files \
+    --out-dir="${FINAL_LIB}" \
+    -- "${SOURCE_FILES[@]}"
+
+# Runs `samtoc` out of its source directory, in order to process its own
+# files. Output is placed in the final lib directory.
+
+groups=()
+
+for f in "${SOURCE_FILES[@]}"; do
+    groups+=(
+        '('
+            --req="$f"
+            --target="${FINAL_LIB}/${f%.sam}.c"
+        ')'
+    )
+done
+
+rule body \
+    --id=process-self \
+    "${groups[@]}" \
+    -- \
+    --cmd='echo === ${NEW_REQS[@]}' \
+    --cmd='echo === ${STALE_TARGETS[@]}'
 
 # Default build rules
 
@@ -50,8 +78,9 @@ rule body \
 
 rule body \
     --id=build \
-    --req-id=external-reqs\
-    --req-id=copy-files
+    --req-id=external-reqs \
+    --req-id=copy-files \
+    --req-id=process-self
 
 # Rules for cleaning
 
