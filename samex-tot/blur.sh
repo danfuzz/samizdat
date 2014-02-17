@@ -24,6 +24,8 @@ INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 
+# This skips module files and `EntityMap`. The latter is because it its
+# hugeness makes for a slow `samtoc` run
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -mindepth 2 \
@@ -33,6 +35,7 @@ SOURCE_FILES=(
         -print
     ))
 
+# Files that are just copied as-is to the final lib directory.
 EXTRA_FILES=(
     $(cd ../samlib-naif; find . -type f \
         '(' '!' -name '*.sam' ')' -o \
