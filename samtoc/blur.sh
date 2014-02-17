@@ -31,21 +31,32 @@ LIB_FILES=(
 )
 
 rule copy \
-    --id=build \
+    --id=copy-files \
     --out-dir="${FINAL_LIB}" \
     -- "${LIB_FILES[@]}"
 
 rule copy \
-    --id=build \
+    --id=copy-files \
     --out-dir="${FINAL_BIN}" \
     --chmod=755 \
     -- "${binName}"
 
-rule rm \
-    --id=clean \
-    --in-dir="${FINAL_BIN}" \
-    -- "${binName}"
+
+# Default build rules
+
+rule body \
+    --id=external-reqs \
+    --build-in-dir="../samex-naif"
+
+rule body \
+    --id=build \
+    --req-id=external-reqs\
+    --req-id=copy-files
+
+# Rules for cleaning
 
 rule rm \
     --id=clean \
-    -- "${FINAL_LIB}"
+    -- \
+    "${FINAL_LIB}" \
+    "${FINAL_BIN}/${binName}"
