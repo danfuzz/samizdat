@@ -149,13 +149,14 @@ When a rule is run, the following takes place, in this order:
 
 * Rules for each of the reqs are run (recursively).
 * Moots and asserts are run, in the order specified by the rule.
-* Reqs are checked for existence. It is a fatal error at this point if
-  any req doesn't exist. (Reqs get created by recursively attempting to
-  satisfy them before rules are run. See below.)
+* Reqs that name files (as opposed to ones that are named ids) are checked
+  for existence. It is a fatal error at this point if any file req doesn't
+  exist. (Reqs get created by recursively attempting to satisfy them before
+  rules are run. See below.)
 * The timestamps of all reqs and targets are collected.
-* If any target doesn't exist, or if any target is older than any req,
-  then the rule is considered out-of-date. Caveat: Timestamps on directories
-  are ignored.
+* If any target doesn't exist, or if any target is older than any req
+  (limited to reqs in its group, if it is in a group), then the rule is
+  considered out-of-date. Caveat: Timestamps on directories are ignored.
 * If the rule has no targets at all, or has no reqs at all, it is always
   considered out-of-date.
 * If the rule is considered out-of-date (per above), then its messages
