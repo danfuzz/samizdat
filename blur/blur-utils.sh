@@ -198,7 +198,7 @@ function unquote {
                 ('n') printf $'\n' ;;
                 ('r') printf $'\r' ;;
                 ('t') printf $'\t' ;;
-                ($'\\') ;; # Pass through as-is.
+                ($'\\'|$'\'') printf '%s' "$c" ;; # Pass through as-is.
                 (x)
                     (( i++ ))
                     printf "\\x${s:$i:2}"
