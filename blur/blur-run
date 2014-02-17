@@ -173,13 +173,14 @@ function msg {
         return
     fi
 
-    local depth=$(( DEPTH + startingDepth ))
+    local max=$(( MAX_COLS ))
 
     if (( spew >= 2 )); then
         local i
-        for (( i = depth; i > 0; i-- )); do
+        for (( i = DEPTH + startingDepth; i > 0; i-- )); do
             printf '  '
         done
+        (( max = max - depth * 2 ))
     fi
 
     if (( spew <= 2 )); then
