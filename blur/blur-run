@@ -227,7 +227,7 @@ function is-id {
 # and one space after the command. Finally, this also sets up the `IDS` array,
 # which lists all named ids.
 RULES=()
-function rulesInit {
+function rules-init {
     local cmd rest curRule=()
 
     while read -r cmd rest; do
@@ -256,7 +256,7 @@ function rulesInit {
 
 # Checks the given timestamps for newest req and oldest target. Returns
 # true (0) if it indicates stale / missing targets.
-function isStale {
+function is-stale {
     local newestReq="$1"
     local oldestTarget="$2"
 
@@ -281,7 +281,7 @@ function isStale {
 # * at least one target doesn't exist
 # * at least one existing target has an older modification time than at least
 #   one req
-function runIfNeeded {
+function run-if-needed {
     local rule="$1"
     local cmd rest
 
@@ -338,7 +338,7 @@ function runIfNeeded {
                     msg --err "Not in group."
                     trace-layers
                     return 1
-                elif isStale "${newestReq}" "${oldestTarget}"; then
+                elif is-stale "${newestReq}" "${oldestTarget}"; then
                     anyStale=1
                     newReqs+=("${reqs[@]}")
                     oldTargets+=("${targets[@]}")
@@ -400,7 +400,7 @@ function runIfNeeded {
             trace-layers
             return 1
         fi
-    elif isStale "${newestReq}" "${oldestTarget}"; then
+    elif is-stale "${newestReq}" "${oldestTarget}"; then
         anyStale=1
         newReqs+=("${reqs[@]}")
         oldTargets+=("${targets[@]}")
@@ -461,7 +461,7 @@ function runIfNeeded {
 # name or a named id. See the documentation for details on how this operates.
 PENDING=()
 USED_RULES=()
-function satisfyTarget {
+function satisfy-target {
     local target="$1"
     local i
 
@@ -509,7 +509,7 @@ function satisfyTarget {
         while read -r cmd rest; do
             case "${cmd}" in
                 (req)
-                    satisfyTarget "$(unquote "${rest}")"
+                    satisfy-target "$(unquote "${rest}")"
                     if [[ $? != 0 ]]; then
                         error=1
                         break
@@ -528,7 +528,7 @@ function satisfyTarget {
             continue
         fi
 
-        runIfNeeded "${RULES[$r]}"
+        run-if-needed "${RULES[$r]}"
         if [[ $? != 0 ]]; then
             error=1
         fi
@@ -552,10 +552,10 @@ function satisfyTarget {
 # Main script
 #
 
-rulesInit
+rules-init
 
 for (( i = 0; i < ${#targets[@]}; i++ )); do
-    satisfyTarget "${targets[$i]}"
+    satisfy-target "${targets[$i]}"
     if [[ $? != 0 ]]; then
         exit 1
     fi
