@@ -65,7 +65,7 @@ LIB_FILES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 rule copy \
     --id=build-lib \
     --in-dir="${LIB_SOURCE_BASE}" \
-    --out-dir="${FINAL_LIB}" \
+    --out-dir="${FINAL_LIB}/corelib" \
     -- "${LIB_FILES[@]}"
 
 # Rules to copy each include file to the final include directory.
