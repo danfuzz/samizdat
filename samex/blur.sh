@@ -26,19 +26,7 @@ binNames=(
     "helper/find-samex"
 )
 
-rule body \
-    --id=stale-check \
-    '(' --req=bin/samex \
-        --target="${FINAL}/bin/samex" ')' \
-    '(' --req=bin/compile-samex-addon \
-        --target="${FINAL}/bin/compile-samex-addon" ')' \
-    '(' --req=helper/find-samex \
-        --target="${FINAL}/helper/find-samex" ')' \
-    --msg=$'Stuff\nis\nstale.' \
-    --cmd=$'printf $\'stale: %s\\n\' "${STALE_TARGETS[@]}"'
-
 rule copy \
-    --req-id=stale-check \
     --out-dir="${FINAL}" \
     --chmod=755 \
     -- "${binNames[@]}"
