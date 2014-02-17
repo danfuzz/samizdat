@@ -247,6 +247,8 @@ function parse-rule-args {
             PREFIX+=("target $(quote-abs "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--assert=(.*) ]]; then
             PREFIX+=("assert $(quote "${BASH_REMATCH[1]}")")
+        elif [[ ${opt} =~ ^--build-in-dir=(.*) ]]; then
+            PREFIX+=("build-in-dir $(quote-abs "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--cmd=(.*) ]]; then
             PREFIX+=("cmd $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--moot=(.*) ]]; then

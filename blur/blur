@@ -40,8 +40,8 @@ dir='.'
 # Whether to dump (print) rules before proceeding.
 dump=0
 
-# Spew option.
-spewOption=()
+# Options to pass onto `blur-run` option.
+runOpts=()
 
 # Options to pass through to the rules script.
 rulesOpts=()
@@ -58,8 +58,10 @@ while [[ $1 != '' ]]; do
         dir="${BASH_REMATCH[1]}"
     elif [[ ${opt} == --dump ]]; then
         dump=1
-    elif [[ ${opt} =~ ^--quiet || ${opt} =~ ^--verbose=(.*) ]]; then
-        spewOption=("${opt}")
+    elif [[ ${opt} =~ ^--quiet ||
+            ${opt} =~ ^--verbose= ||
+            ${opt} =~ ^--depth= ]]; then
+        runOpts+=("${opt}")
     elif [[ ${opt} =~ ^-- ]]; then
         rulesOpts+=("${opt}")
     elif [[ ${opt} =~ ^-. ]]; then
@@ -129,4 +131,4 @@ fi
 # Run `blur-run`, passing it the rules.
 
 printf '%s\n' "${rules}" | \
-    "${progDir}/blur-run" "${spewOption[@]}" -- "${targets[@]}"
+    "${progDir}/blur-run" "${runOpts[@]}" -- "${targets[@]}"

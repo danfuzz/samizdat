@@ -40,6 +40,9 @@ rulesFile='-'
 # Verbosity level.
 spew=1
 
+# Initial logging depth.
+startingDepth=0
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
@@ -53,6 +56,9 @@ while [[ $1 != '' ]]; do
         spew=0
     elif [[ ${opt} =~ ^--verbose=(.*) ]]; then
         spew="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--depth=(.*) ]]; then
+        startingDepth="${BASH_REMATCH[1]}"
+        startingDepth=$(( startingDepth + 0 ))
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         error=1
@@ -69,7 +75,7 @@ targets=("$@")
 if [[ ${error} != 0 ]]; then
     echo 1>&2 "${progName} --help"
     echo 1>&2 "${progName} [--rules=<file>] [--quiet | --verbose=<level>]"
-    echo 1>&2 "    (target-file | id) ..."
+    echo 1>&2 "    [--depth=<n>] (target-file | id) ..."
     if [[ ${error} == 'usage' ]]; then
         error=0
     fi
@@ -95,59 +101,16 @@ else
     (( MAX_COLS-- ))
 fi
 
-# Emit a status message.
-function msg {
-    local level=1
-
-    if [[ $1 == '--err' ]]; then
-        level=0
-        shift
-    elif [[ $1 == '--quiet' ]]; then
-        level=-1
-        shift
-    elif [[ $1 == '--verbose' ]]; then
-        level=2
-        shift
-    fi
-
-    local line="$@"
-
-    if (( level == -1 )); then
-        # Only emit `quiet` messages on low spew levels.
-        if (( spew >= 2 )); then
-            return
-        fi
-    elif (( level > spew )); then
-        # Message is out-of-range for current spew level.
-        return
-    fi
-
-    if (( spew >= 2 )); then
-        local i
-        for (( i = 0; i < DEPTH; i++ )); do
-            printf '  '
-        done
-    fi
-
-    if (( spew <= 2 )); then
-        local max=$(( MAX_COLS - DEPTH * 2 ))
-        if (( ${#line} > max )); then
-            local len=$(( (max - 5) / 2 ))
-            if (( len < 20 )); then
-                len=20
-            fi
-            line="${line:0:${len}} ... ${line:$(( ${#line} - len ))}"
-        fi
-    fi
-
-    printf '%s\n' "${line}"
-}
-
 # Current depth
 DEPTH=0
 
 # Layer names.
 LAYERS=()
+
+# Writes the current layer depth to stdout.
+function layer-depth {
+    echo $(( DEPTH + startingDepth ))
+}
 
 # Increase status message depth.
 function enter-layer {
@@ -176,6 +139,61 @@ function trace-layers {
     for (( i = DEPTH - 1; i >= 0; i-- )); do
         msg --err "...while in ${LAYERS[$i]}"
     done
+}
+
+# Emit a status message.
+function msg {
+    local level=1
+
+    if [[ $1 == '--err' ]]; then
+        level=0
+        shift
+    elif [[ $1 == '--detail-err' ]]; then
+        # This is to spew things that were earlier spewed as --detail that
+        # are salient to an error report.
+        level=-1
+        shift
+    elif [[ $1 == '--verbose' ]]; then
+        level=2
+        shift
+    elif [[ $1 == '--detail' ]]; then
+        level=3
+        shift
+    fi
+
+    local line="$@"
+
+    if (( level == -1 )); then
+        # Only emit `detail-err` messages on low spew levels.
+        if (( spew >= 3 )); then
+            return
+        fi
+    elif (( level > spew )); then
+        # Message is out-of-range for current spew level.
+        return
+    fi
+
+    local depth=$(( DEPTH + startingDepth ))
+
+    if (( spew >= 2 )); then
+        local i
+        for (( i = depth; i > 0; i-- )); do
+            printf '  '
+        done
+    fi
+
+    if (( spew <= 2 )); then
+        local max=$(( MAX_COLS - depth * 2 ))
+        if (( ${#line} > max )); then
+            local len=$(( (max - 5) / 2 ))
+            if (( len < 20 )); then
+                len=20
+            fi
+            line="${line:0:${len}} ... ${line:$(( ${#line} - len ))}"
+        fi
+    fi
+
+    printf '%s\n' "${line}"
 }
 
 
@@ -290,7 +308,7 @@ function run-if-needed {
         case "${cmd}" in
             (moot)
                 rest="$(unquote "${rest}")"
-                msg --verbose '??' "${rest}"
+                msg --detail '??' "${rest}"
                 bash -c "${rest}"
                 if [[ $? == 0 ]]; then
                     # Moot test succeeded, which means that the rule doesn't
@@ -300,11 +318,11 @@ function run-if-needed {
                 ;;
             (assert)
                 rest="$(unquote "${rest}")"
-                msg --verbose '!!' "${rest}"
+                msg --detail '!!' "${rest}"
                 bash -c "${rest}"
                 if [[ $? != 0 ]]; then
                     # Assert failed, which is a real error.
-                    msg --quiet '!!' "${rest}"
+                    msg --detail-err '!!' "${rest}"
                     msg --err "Assert failed."
                     trace-layers
                     return 1
@@ -436,18 +454,35 @@ function run-if-needed {
         case "${cmd}" in
             (cmd)
                 rest="$(unquote "${rest}")"
-                msg --verbose '$$' "${rest}"
+                msg --detail '$$' "${rest}"
                 bash -c "
                     STALE_TARGETS=($(quote "${oldTargets[@]}"))
                     NEW_REQS=($(quote "${newReqs[@]}"))
                     ${rest}"
                 local status="$?"
                 if [[ ${status} != 0 ]]; then
-                    msg --quiet '$$' "${rest}"
+                    msg --detail-err '$$' "${rest}"
                     msg --err "Non-zero exit status: ${status}"
                     trace-layers
                     return 1
                 fi
+                ;;
+            (build-in-dir)
+                rest="$(unquote "${rest}")"
+                enter-layer "blur ${rest}"
+                "${progDir}/blur" \
+                    --depth="$(layer-depth)" \
+                    --verbose="${spew}" \
+                    --in-dir="${rest}" \
+                    -- "${oldTargets[@]}"
+                local status="$?"
+                if [[ ${status} != 0 ]]; then
+                    msg --err "Non-zero exit status: ${status}"
+                    trace-layers
+                    leave-layer
+                    return 1
+                fi
+                leave-layer
                 ;;
             (msg)
                 rest="$(unquote "${rest}")"
@@ -487,7 +522,7 @@ function satisfy-target {
             trace-layers
             return 1
         else
-            msg --verbose "== ${target}"
+            msg --detail "== ${target}"
             return
         fi
     fi
@@ -554,9 +589,6 @@ function satisfy-target {
 
 rules-init
 
-for (( i = 0; i < ${#targets[@]}; i++ )); do
-    satisfy-target "${targets[$i]}"
-    if [[ $? != 0 ]]; then
-        exit 1
-    fi
+for t in "${targets[@]}"; do
+    satisfy-target "$t" || exit 1
 done

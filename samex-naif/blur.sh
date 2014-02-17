@@ -122,10 +122,15 @@ rule rm \
     --id=clean \
     -- "${FINAL_EXE}" "${FINAL_INCLUDE}" "${FINAL_LIB}" "${INTERMED}"
 
-# Default build rule
+# Default build rules
+
+rule body \
+    --id=external-reqs \
+    --build-in-dir="../samex"
 
 rule body \
     --id=build \
+    --req-id=external-reqs \
     --req-id=link-bin \
     --req-id=build-lib \
     --req-id=build-include
