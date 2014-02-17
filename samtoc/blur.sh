@@ -26,14 +26,20 @@ INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
-SOURCE_FILES=($(find . -type f -name '*.sam'))
-EXTRA_FILES=($(find modules -type f '!' -name '*.sam'))
+COMPILE_C=(cc -g -c -I"${FINAL}/include/samex-naif")
+
+SOURCE_FILES=($(find . -type f -name '*.sam' '!' -name 'module.sam'))
+EXTRA_FILES=(
+    $(find modules -type f -name 'module.sam')
+    $(find modules -type f '!' -name '*.sam')
+)
 
 # These are all the intermediate C source files, corresponding to original
 # sources.
 C_SOURCE_FILES=("${SOURCE_FILES[@]/%.sam/.c}")         # Change suffix.
 C_SOURCE_FILES=("${C_SOURCE_FILES[@]/#/${INTERMED}/}") # Add directory prefix.
 
+# Sub-rules for file copying
 
 # Copies the wrapper script into place.
 rule copy \
@@ -49,11 +55,7 @@ rule copy \
     --out-dir="${FINAL_LIB}" \
     -- "${EXTRA_FILES[@]}"
 
-# TEMP: Copy all source files to final.
-rule copy \
-    --id=copy-files \
-    --out-dir="${FINAL_LIB}" \
-    -- "${SOURCE_FILES[@]}"
+# Sub-rules for translation and compilation
 
 # Runs `samtoc` out of its source directory, in order to process its own
 # files. Output files (C sources) are placed in the intermediates directory.
@@ -79,13 +81,40 @@ for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
     )
 done
 
+samexCmdStart="$(quote \
+    "${OUT}/final/bin/samex" . --out-dir="${INTERMED}" --mode=tree
+)"
+
 rule body \
-    --id=process-self \
     "${groups[@]}" \
     -- \
-    --cmd='printf "=== req %s\n" ${NEW_REQS[@]}' \
-    --cmd='printf "=== trg %s\n" ${STALE_TARGETS[@]}' \
-    --cmd='printf "=== val %s\n" ${VALUES[@]}'
+    --cmd='printf "Will compile: %s\n" ${VALUES[@]}' \
+    --cmd="${samexCmdStart} \${VALUES[@]}"
+
+# Rules to compile each C source file.
+
+C_OBJECTS=()
+
+for file in "${SOURCE_FILES[@]}"; do
+    dir="${file%/*}"
+    name="${file##*/}"
+
+    inFile="${INTERMED}/${dir}/${name/%.sam/.c}"
+    outDir="${FINAL_LIB}/${dir}"
+    outFile="${outDir}/${name/%.sam/.samb}"
+
+    C_OBJECTS+=("${outFile}")
+    rule mkdir -- "${outDir}"
+
+    rule body \
+        --id=process-self \
+        --req="${inFile}" \
+        --req="${outDir}" \
+        --target="${outFile}" \
+        --msg="Compile: ${file#./}" \
+        --cmd="$(quote "${COMPILE_C[@]}" -o "${outFile}" "${inFile}")"
+done
+
 
 # Default build rules
 
