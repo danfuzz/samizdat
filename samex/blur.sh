@@ -27,18 +27,12 @@ binNames=(
 )
 
 rule body \
-    --group-start \
-        --req=bin/samex \
-        --target="${FINAL}/bin/samex" \
-    --group-end \
-    --group-start \
-        --req=bin/compile-samex-addon \
-        --target="${FINAL}/bin/compile-samex-addon" \
-    --group-end \
-    --group-start \
-        --req=helper/find-samex \
-        --target="${FINAL}/helper/find-samex" \
-    --group-end \
+    '(' --req=bin/samex \
+        --target="${FINAL}/bin/samex" ')' \
+    '(' --req=bin/compile-samex-addon \
+        --target="${FINAL}/bin/compile-samex-addon" ')' \
+    '(' --req=helper/find-samex \
+        --target="${FINAL}/helper/find-samex" ')' \
     --msg=$'Stuff\nis\nstale.' \
     --cmd='printf "stale: %s\n" "${STALE_TARGETS[@]}"'
 

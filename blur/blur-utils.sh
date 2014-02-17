@@ -252,9 +252,9 @@ function parse-rule-args {
             PREFIX+=("moot $(quote "${BASH_REMATCH[1]}")")
         elif [[ ${opt} =~ ^--msg=(.*) ]]; then
             PREFIX+=("msg $(quote "${BASH_REMATCH[1]}")")
-        elif [[ ${opt} == --group-start ]]; then
+        elif [[ ${opt} == '(' ]]; then
             PREFIX+=("group-start")
-        elif [[ ${opt} == --group-end ]]; then
+        elif [[ ${opt} == ')' ]]; then
             PREFIX+=("group-end")
         elif [[ ${opt} =~ ^- ]]; then
             OPTS+=("${opt}")
