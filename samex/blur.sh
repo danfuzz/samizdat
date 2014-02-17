@@ -35,7 +35,7 @@ rule body \
     '(' --req=helper/find-samex \
         --target="${FINAL}/helper/find-samex" ')' \
     --msg=$'Stuff\nis\nstale.' \
-    --cmd='printf "stale: %s\n" "${STALE_TARGETS[@]}"'
+    --cmd=$'printf $\'stale: %s\\n\' "${STALE_TARGETS[@]}"'
 
 rule copy \
     --req-id=stale-check \
