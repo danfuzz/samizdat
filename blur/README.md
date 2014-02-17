@@ -70,9 +70,9 @@ The `<target>`s are which targets to build. Targets can be either file
 names (if non-absolute, relative to the directory being built) or
 named ids. If no target is specified, it defaults to `build`.
 
-On a given run, Blur will only ever attempt to satisfy a given target
-at most once, no matter how many times that target is mentioned on the
-command-line or in rules being invoked.
+On a given run, Blur will only ever attempt to run the commands associated
+with a given rule at most once, no matter how many times that rule is
+"activated" (via dependencies).
 
 Rules are set up by writing a Bash script named `blur.sh`, and
 placing it at the base directory of the source. Blur runs that file
@@ -194,8 +194,7 @@ The main operation of Blur is to "satisfy" the targets named on its
 command-line. Each named target is satisfied, in order, as a separate
 operation. (That is, Blur does not attempt to simultaneously satisfy
 multiple targets, though that may happen as a byproduct of how rule
-dependencies happen to be set up.) Once a target is considered satisfied,
-Blur will not attempt to re-satisfy it during a single run of the program.
+dependencies happen to be set up.)
 
 Satisfying a target takes place in the following manner:
 
@@ -203,13 +202,17 @@ Satisfying a target takes place in the following manner:
   a named id.
 
 * The selected rules are iterated, in the order that they were specified
-  by the original rules generation script. For each rule, its `req`s are
-  iterated over, in order. Target satisfaction is run on each `req`. (That is,
-  this procedure is invoked recursively on each `req`.)
+  by the original rules generation script. For each rule that has not yet
+  been run, its `req`s are iterated over, in order. Target satisfaction is
+  run on each `req`. (That is, this procedure is invoked recursively on each
+  `req`.)
 
 * The selected rules are iterated, in the order that they were specified
-  by the original rules generation script. Each rule is run, per the
-  description of `rule`, above.
+  by the original rules generation script. Each rule that has not yet
+  been run is run, per the description of `rule` above, and then it is
+  noted to have run.
+
+Per the above, once a rule has been run once, it will not be run again.
 
 
 Limitations
