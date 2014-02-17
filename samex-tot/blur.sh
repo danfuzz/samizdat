@@ -59,7 +59,8 @@ rule copy \
     --out-dir="${FINAL_LIB}/corelib" \
     -- "${EXTRA_FILES[@]}"
 
-# Copies the `samex` binary from `samex-naif` to the final lib directory.
+# Copies the compiled `samex` binary from `samex-naif` to the final lib
+# directory.
 rule copy \
     --id=copy-files \
     --in-dir="${FINAL}/samex-naif" \
