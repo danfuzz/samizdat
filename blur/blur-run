@@ -332,8 +332,8 @@ function run-if-needed {
         esac
     done <<< "${rule}"
 
-    local newReqs=()   oldTargets=()
-    local reqs=()      targets=()
+    local newReqs=()   oldTargets=()   useValues=()
+    local reqs=()      targets=()      values=()
     local newestReq=-1 oldestTarget=-1
     local inGroup=0 anyGroups=0 anyStale=0 stamp
 
@@ -344,8 +344,10 @@ function run-if-needed {
                     msg --err "Group within group."
                     trace-layers
                     return 1
-                elif [[ ${#reqs[@]} != 0 || ${#targets[@]} != 0 ]]; then
-                    msg --err "Reqs or targets outside group."
+                elif [[ ${#reqs[@]} != 0 ||
+                        ${#targets[@]} != 0 ||
+                        ${#values[@]} != 0 ]]; then
+                    msg --err "Reqs, targets, or values outside group."
                     trace-layers
                     return 1
                 fi
@@ -361,10 +363,12 @@ function run-if-needed {
                     anyStale=1
                     newReqs+=("${reqs[@]}")
                     oldTargets+=("${targets[@]}")
+                    useValues+=("${values[@]}")
                 fi
                 # Reset for further groups.
                 reqs=()
                 targets=()
+                values=()
                 newestReq=-1
                 oldestTarget=-1
                 inGroup=0
@@ -402,6 +406,10 @@ function run-if-needed {
                     fi
                 fi
                 ;;
+            (value)
+                rest="$(unquote "${rest}")"
+                values+=("${rest}")
+                ;;
             (*)
                 if (( inGroup )); then
                     msg --err "Invalid command in group: ${cmd}"
@@ -423,6 +431,7 @@ function run-if-needed {
         anyStale=1
         newReqs+=("${reqs[@]}")
         oldTargets+=("${targets[@]}")
+        useValues+=("${values[@]}")
     fi
 
     if (( ! anyStale )); then
@@ -449,6 +458,13 @@ function run-if-needed {
                 msg "  ${name}"
             done
         fi
+
+        if [[ ${#useValues[@]} != 0 ]]; then
+            msg "Values:"
+            for name in "${useValues[@]}"; do
+                msg "  ${name}"
+            done
+        fi
     fi
 
     while read -r cmd rest; do
@@ -459,6 +475,7 @@ function run-if-needed {
                 bash -c "
                     STALE_TARGETS=($(quote "${oldTargets[@]}"))
                     NEW_REQS=($(quote "${newReqs[@]}"))
+                    VALUES=($(quote "${useValues[@]}"))
                     ${rest}"
                 local status="$?"
                 if [[ ${status} != 0 ]]; then

@@ -116,6 +116,9 @@ these options:
 * `--target=<file>` &mdash; Indicate that this rule produces the named target
   file.
 
+* `--value=<string>` &mdash; Adds an arbitrary value passed to commands, when
+  the targets are out-of-date. This is most useful within a req/target group.
+
 * `--msg=<string>` &mdash; Causes the given message to be emitted when the
   rule is considered out-of-date.
 
@@ -128,18 +131,18 @@ these options:
   failed.
 
 * `--cmd=<cmd>` &mdash; Runs the command, when the rule is considered
-  out-of-date. Array variables `STALE_TARGETS` and `NEW_REQS` are available
-  to commands.
+  out-of-date. Array variables `STALE_TARGETS`, `NEW_REQS`, and `VALUES` are
+  available to commands.
 
 * `--build-in-dir=<dir>` &mdash; Runs Blur in the given directory, when the
   rule is considered out-of-date. Passes all stale targets to the command.
 
 * `(` &hellip; `)` &mdash; Can be used to group
-  together related sets of reqs and targets. When used, staleness of a target
-  only depends on the reqs in its group. It is only valid to used `--req=`
-  and `--target=` options within a group. Furthermore, if a rule has any
-  groups, then *all* `--req=` and `--target=` options must be in some group
-  or other.
+  together related sets of reqs and targets. When used, the staleness of a
+  target only depends on the reqs in its group. It is only valid to used
+  `--req=`, `--target=`, and `--value=` options within a group. Furthermore,
+  if a rule has any groups, then *all* `--req=`, `--target=`, and `--value=`
+  options must be in some group or other.
 
 Some types accept one or more of these options:
 

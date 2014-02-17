@@ -58,7 +58,8 @@ rule copy \
 # Runs `samtoc` out of its source directory, in order to process its own
 # files. Output files (C sources) are placed in the intermediates directory.
 # The groups ensure that `samtoc` is only asked to process out-of-date
-# sources.
+# sources. `--value` is used to pass through the relative path of the source,
+# since that makes the `samtoc` call more straightforward.
 
 groups=()
 for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
@@ -73,6 +74,7 @@ for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
         --req="${outDir}"
         --req="${inFile}"
         --target="${outFile}"
+        --value="${inFile}"
         ')'
     )
 done
@@ -82,7 +84,8 @@ rule body \
     "${groups[@]}" \
     -- \
     --cmd='printf "=== req %s\n" ${NEW_REQS[@]}' \
-    --cmd='printf "=== trg %s\n" ${STALE_TARGETS[@]}'
+    --cmd='printf "=== trg %s\n" ${STALE_TARGETS[@]}' \
+    --cmd='printf "=== val %s\n" ${VALUES[@]}'
 
 # Default build rules
 
