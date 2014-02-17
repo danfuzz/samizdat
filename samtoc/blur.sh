@@ -26,8 +26,6 @@ INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
-COMPILE_C=(cc -g -c -I"${FINAL}/include/samex-naif")
-
 SOURCE_FILES=($(find . -type f -name '*.sam' '!' -name 'module.sam'))
 EXTRA_FILES=(
     $(find modules -type f -name 'module.sam')
@@ -81,7 +79,7 @@ for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
     )
 done
 
-samexCmdStart="$(quote \
+samtocCmdStart="$(quote \
     "${OUT}/final/bin/samex" . --out-dir="${INTERMED}" --mode=tree
 )"
 
@@ -89,7 +87,7 @@ rule body \
     "${groups[@]}" \
     -- \
     --cmd='printf "Will compile: %s\n" ${VALUES[@]}' \
-    --cmd="${samexCmdStart} \${VALUES[@]}"
+    --cmd="${samtocCmdStart} \${VALUES[@]}"
 
 # Rules to compile each C source file.
 
@@ -104,7 +102,7 @@ for file in "${SOURCE_FILES[@]}"; do
     rule mkdir -- "${outDir}"
 
     rule body \
-        --id=process-self \
+        --id=compile-self \
         --req="${inFile}" \
         --req="${outDir}" \
         --target="${outFile}" \
@@ -124,7 +122,7 @@ rule body \
     --id=build \
     --req-id=external-reqs \
     --req-id=copy-files \
-    --req-id=process-self
+    --req-id=compile-self
 
 # Rules for cleaning
 
