@@ -173,23 +173,22 @@ function msg {
         return
     fi
 
-    local max=$(( MAX_COLS ))
+    local max="${MAX_COLS}"
 
     if (( spew >= 2 )); then
         local i
         for (( i = DEPTH + startingDepth; i > 0; i-- )); do
             printf '  '
         done
-        (( max = max - depth * 2 ))
+        (( max = max - (DEPTH + startingDepth) * 2 ))
+        if (( max < 25 )); then
+            max=25
+        fi
     fi
 
     if (( spew <= 2 )); then
-        local max=$(( MAX_COLS - depth * 2 ))
         if (( ${#line} > max )); then
             local len=$(( (max - 5) / 2 ))
-            if (( len < 20 )); then
-                len=20
-            fi
             line="${line:0:${len}} ... ${line:$(( ${#line} - len ))}"
         fi
     fi
