@@ -131,7 +131,8 @@ these options:
   together related sets of reqs and targets. When used, staleness of a target
   only depends on the reqs in its group. It is only valid to used `--req=`
   and `--target=` options within a group. Furthermore, if a rule has any
-  groups, then all `--req=` and `--target=` options must be in a group.
+  groups, then *all* `--req=` and `--target=` options must be in some group
+  or other.
 
 Some types accept one or more of these options:
 
