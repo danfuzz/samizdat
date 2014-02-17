@@ -180,7 +180,7 @@ function msg {
         for (( i = DEPTH + startingDepth; i > 0; i-- )); do
             printf '  '
         done
-        (( max = max - (DEPTH + startingDepth) * 2 ))
+        (( max -= (DEPTH + startingDepth) * 2 ))
         if (( max < 25 )); then
             max=25
         fi
