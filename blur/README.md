@@ -72,11 +72,11 @@ named ids. If no target is specified, it defaults to `build`.
 
 On a given run, Blur will only ever attempt to satisfy a given target
 at most once, no matter how many times that target is mentioned on the
-commandline or in rules being invoked.
+command-line or in rules being invoked.
 
 Rules are set up by writing a Bash script named `blur.sh`, and
 placing it at the base directory of the source. Blur runs that file
-`cd`ed to its directory, with the Blur utility functions already
+while `cd`ed to its directory, with the Blur utility functions already
 defined in its environment. It is passed as arguments any options
 not understood by Blur itself. The file is responsible for writing a
 set of build rules to stdout.
