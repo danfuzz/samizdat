@@ -63,7 +63,7 @@ rule copy \
 # directory.
 rule copy \
     --id=copy-files \
-    --in-dir="${FINAL}/samex-naif" \
+    --in-dir="${FINAL}/lib/samex-naif" \
     --out-dir="${FINAL_LIB}" \
     -- samex
 
@@ -135,8 +135,8 @@ rule body \
 rule body \
     --id=build \
     --req-id=external-reqs \
-    --req-id=copy-files \
-    --req-id=compile-libs
+    --req-id=compile-libs \
+    --req-id=copy-files
 
 # Rules for cleaning
 
