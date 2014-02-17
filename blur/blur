@@ -111,10 +111,14 @@ cd "${dir}" # The rest of the script runs in the context of `dir`.
 
 # Run the script, and collect output.
 
+BASE_DIR="$(abs-path ..)"
+PROJECT_DIR="$(abs-path .)"
+PROJECT_NAME="${PROJECT_DIR##*/}"
+
 rules="$(
-    PROJECT_NAME="${dir%/*}" \
-    PROJECT_DIR="$(abs-path .)" \
-    BASE_DIR="$(abs-path ..)" \
+    BASE_DIR="${BASE_DIR}" \
+    PROJECT_DIR="${PROJECT_DIR}" \
+    PROJECT_NAME="${PROJECT_NAME}" \
     BASH_ENV="${progDir}/blur-utils.sh" \
         bash -- "./${scriptName}" "${rulesOpts[@]}"
 )"
