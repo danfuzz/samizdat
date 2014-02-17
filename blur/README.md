@@ -226,9 +226,9 @@ viable product, it is likely that the set of rule types will be expanded.
 
 Blur has trouble with file names that end with newlines. (Embedded
 newlines are just fine, though.) This is because of the shell semantics
-around command substitution, which silently drops end-of-response newlines.
-It is possible to fix Blur, but at the time of this writing not considered
-worth the trouble.
+around command substitution, which silently drops any end-of-output newlines.
+It is possible to fix Blur with respect to this problem, but at the time of
+this writing it was not considered worth the trouble.
 
 If a req (dependency) and target have exactly the same timestamp, Blur
 assumes that the target is up-to-date. Since timestamps have one-second
