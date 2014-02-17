@@ -27,6 +27,7 @@ binNames=(
 )
 
 rule body \
+    --id=stale-check \
     '(' --req=bin/samex \
         --target="${FINAL}/bin/samex" ')' \
     '(' --req=bin/compile-samex-addon \
@@ -37,10 +38,14 @@ rule body \
     --cmd='printf "stale: %s\n" "${STALE_TARGETS[@]}"'
 
 rule copy \
-    --id=build \
+    --req-id=stale-check \
     --out-dir="${FINAL}" \
     --chmod=755 \
     -- "${binNames[@]}"
+
+rule body \
+    --id=build \
+    "${binNames[@]/#/--req=${FINAL}/}"
 
 rule rm \
     --id=clean \

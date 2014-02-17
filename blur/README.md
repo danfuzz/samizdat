@@ -202,12 +202,6 @@ Satisfying a target takes place in the following manner:
 * All rules are selected which name the target as `target` file (per se) or
   a named id.
 
-* If the target is a named id, then further rules are selected if there
-  are any others that have `target`s in common with the `target`s of rules
-  already selected. This additional rule selection repeats with any
-  newly-selected rules, and so on, until a full transitive closure of rules
-  is found.
-
 * The selected rules are iterated, in the order that they were specified
   by the original rules generation script. For each rule, its `req`s are
   iterated over, in order. Target satisfaction is run on each `req`. (That is,
