@@ -93,8 +93,6 @@ rule body \
 
 # Rules to compile each C source file.
 
-C_OBJECTS=()
-
 for file in "${SOURCE_FILES[@]}"; do
     dir="${file%/*}"
     name="${file##*/}"
@@ -103,7 +101,6 @@ for file in "${SOURCE_FILES[@]}"; do
     outDir="${FINAL_LIB}/${dir}"
     outFile="${outDir}/${name/%.sam/.samb}"
 
-    C_OBJECTS+=("${outFile}")
     rule mkdir -- "${outDir}"
 
     rule body \
@@ -112,7 +109,8 @@ for file in "${SOURCE_FILES[@]}"; do
         --req="${outDir}" \
         --target="${outFile}" \
         --msg="Compile: ${file#./}" \
-        --cmd="$(quote "${COMPILE_C[@]}" -o "${outFile}" "${inFile}")"
+        --cmd="$(quote "${FINAL_BIN}/compile-samex-addon" \
+            --output="${outFile}" "${inFile}")"
 done
 
 
