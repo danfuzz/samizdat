@@ -40,5 +40,5 @@ unset -f init-env
 
 # Calls the Blur build utility.
 function blur {
-    "${SAMIZDAT_BASE_DIR}/blur" "$@"
+    "${SAMIZDAT_BASE_DIR}/blur/blur" "$@"
 }
