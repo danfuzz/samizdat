@@ -95,9 +95,10 @@ if [[ ${build} == 'yes' ]]; then
         exit 1
     fi
 
-    sourceDir="$(cd "${baseDir}/../.."; pwd)/samex-${runtimeName}"
-    if [[ ! -d "${sourceDir}" ]]; then
-        echo "Source directory not found: ${sourceDir}" 1>&2
+    sourceDir="$(cd "${baseDir}/../.."; pwd)"
+    projectDir="${sourceDir}/samex-${runtimeName}"
+    if [[ ! -d "${projectDir}" ]]; then
+        echo "Source directory not found: ${projectDir}" 1>&2
         exit 1
     fi
 
@@ -108,7 +109,9 @@ if [[ ${build} == 'yes' ]]; then
     fi
 
     echo "Building..."
-    "${sourceDir}/build" "${buildOpts[@]}" > /dev/null || exit 1
+    "${sourceDir}/blur/blur" \
+        --quiet --in-dir="${projectDir}" "${buildOpts[@]}" \
+        || exit 1
 fi
 
 runtimeOpt=()
