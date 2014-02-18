@@ -37,7 +37,7 @@ runtimeName=''
 build='no'
 
 # Whether to build with optimization.
-optimize='no'
+optimize='yes'
 
 # Whether to time the run.
 timeRun='no'
@@ -55,12 +55,12 @@ while [[ $1 != '' ]]; do
         break
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--runtime=<name>] [--suffix=<suffix>]"
-        echo '    [--build] [--optimize] [--time | --profile]'
+        echo '    [--build] [--no-optimize] [--time | --profile]'
         exit
     elif [[ ${opt} == '--build' ]]; then
         build='yes'
-    elif [[ ${opt} == '--optimize' ]]; then
-        optimize='yes'
+    elif [[ ${opt} == '--no-optimize' ]]; then
+        optimize='no'
         build='yes'
     elif [[ ${opt} == '--profile' ]]; then
         profileRun='yes'
@@ -104,8 +104,8 @@ if [[ ${build} == 'yes' ]]; then
 
     buildOpts=()
 
-    if [[ ${optimize} == 'yes' ]]; then
-        buildOpts=(--optimize)
+    if [[ ${optimize} == 'no' ]]; then
+        buildOpts=(--no-optimize)
     fi
 
     echo "Building..."

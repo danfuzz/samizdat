@@ -37,7 +37,7 @@ runtimeOpt=()
 build='no'
 
 # Whether to compile with optimization.
-optimize='no'
+optimize='yes'
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -45,12 +45,12 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--build] [--optimize] [--runtime=<name>]"
+        echo "${progName} [--build] [--no-optimize] [--runtime=<name>]"
         exit
     elif [[ ${opt} == '--build' ]]; then
         build='yes'
-    elif [[ ${opt} == '--optimize' ]]; then
-        optimize='yes'
+    elif [[ ${opt} == '--no-optimize' ]]; then
+        optimize='no'
         build='yes'
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
         runtimeOpt=("${opt}")
@@ -79,8 +79,8 @@ allNames=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
 buildOpts=()
 if [[ ${build} == 'yes' ]]; then
     buildOpts=(--build)
-    if [[ ${optimize} == 'yes' ]]; then
-        buildOpts+=(--optimize)
+    if [[ ${optimize} == 'no' ]]; then
+        buildOpts+=(--no-optimize)
     fi
 fi
 
