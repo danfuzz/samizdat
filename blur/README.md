@@ -12,6 +12,8 @@ to use Make... or do build system work in general.
 Philosophy
 ----------
 
+### "I'd rather write shell scripts than Makefiles."
+
 I'm not going to claim that this is the be-all end-all of build
 systems. However, it does have the nice properties of:
 
