@@ -29,21 +29,31 @@ FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 # and compiling it doesn't really speed it up anyway.
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
-        -mindepth 2 \
-        '(' -name 'EntityMap' -prune ')' -o \
-        -name '*.sam' \
-        '!' -name 'module.sam' \
-        -print
+        -type f \
+        '(' \
+            '(' -depth 1 -name '*.sam' -prune ')' -o \
+            '(' -path '*/EntityMap/*' -prune ')' -o \
+            '(' \
+                -name '*.sam' \
+                '!' -name 'module.sam' \
+                -print \
+            ')' \
+        ')'
     ))
 
 # Files that are just copied as-is to the final lib directory. This is
 # everything in the library source directory not covered by `SOURCE_FILES`,
 # above.
 EXTRA_FILES=(
-    $(cd ../samlib-naif; find . -type f \
-        '(' '!' -name '*.sam' ')' -o \
-        -path '*/EntityMap/*' -o \
-        '(' -depth 1 -name '*.sam' ')'
+    $(cd ../samlib-naif; find . \
+        -type f \
+        '(' \
+            '(' -depth 1 -name '*.sam' ')' -o \
+            -path '*/EntityMap/*' -o \
+            '(' '!' -name '*.sam' ')' -o \
+            -name 'module.sam' \
+        ')' \
+        -print
     ))
 
 # These are all the intermediate C source files, corresponding to original
