@@ -9,7 +9,7 @@
 # General setup
 #
 
-VERSION=0.1.0
+VERSION=0.1.1
 
 # Set `progName` to the program name, `progDir` to its directory, and `baseDir`
 # to `progDir`'s directory. Follows symlinks.
@@ -108,7 +108,7 @@ fi
 scriptName='blur.sh'
 scriptPath="${dir}/${scriptName}"
 
-if [[ ! (-f ${scriptPath} && -r ${scriptPath} ) ]]; then
+if [[ ! (-f ${scriptPath} && -r ${scriptPath}) ]]; then
     echo "No rules for directory: ${dir}" 1>&2
     exit 1
 fi
@@ -117,16 +117,13 @@ cd "${dir}" # The rest of the script runs in the context of `dir`.
 
 # Run the script, and collect output.
 
-BASE_DIR="$(abs-path ..)"
-PROJECT_DIR="$(abs-path .)"
-PROJECT_NAME="${PROJECT_DIR##*/}"
 
 rules="$(
-    BASE_DIR="${BASE_DIR}" \
-    PROJECT_DIR="${PROJECT_DIR}" \
-    PROJECT_NAME="${PROJECT_NAME}" \
-    BASH_ENV="${progDir}/blur-utils.sh" \
-        bash -- "./${scriptName}" "${rulesOpts[@]}"
+    export BASE_DIR="$(abs-path ..)"
+    export PROJECT_DIR="$(abs-path .)"
+    export PROJECT_NAME="${PROJECT_DIR##*/}"
+    export BASH_ENV="${progDir}/blur-utils.sh"
+    bash -- "./${scriptName}" "${rulesOpts[@]}"
 )"
 
 if [[ $? != 0 ]]; then
