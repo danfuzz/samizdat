@@ -24,8 +24,9 @@ INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 
-# This skips module files and `EntityMap`. The latter is because it its
-# hugeness makes for a slow `samtoc` run
+# This skips top-level sources, module definition files, and the `EntityMap`
+# module. The last is because it its hugeness makes for a slow `samtoc` run,
+# and compiling it doesn't really speed it up anyway.
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -mindepth 2 \
@@ -35,7 +36,9 @@ SOURCE_FILES=(
         -print
     ))
 
-# Files that are just copied as-is to the final lib directory.
+# Files that are just copied as-is to the final lib directory. This is
+# everything in the library source directory not covered by `SOURCE_FILES`,
+# above.
 EXTRA_FILES=(
     $(cd ../samlib-naif; find . -type f \
         '(' '!' -name '*.sam' ')' -o \
@@ -78,7 +81,7 @@ rule copy \
 
 groups=()
 for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
-    inFile="../samlib-naif/${SOURCE_FILES[$i]}"
+    inFile="${SOURCE_FILES[$i]}"
     outFile="${C_SOURCE_FILES[$i]}"
     outDir="${outFile%/*}"
 
@@ -87,7 +90,7 @@ for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
     groups+=(
         '('
         --req="${outDir}"
-        --req="${inFile}"
+        --req="../samlib-naif/${inFile}"
         --target="${outFile}"
         --value="${inFile}"
         ')'
@@ -95,7 +98,10 @@ for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
 done
 
 samtocCmdStart="$(quote \
-    "${OUT}/final/bin/samtoc" --out-dir="${INTERMED}" --c-code --mode=tree
+    "${OUT}/final/bin/samtoc" \
+    --in-dir="../samlib-naif" \
+    --out-dir="${INTERMED}" \
+    --c-code --mode=tree
 )"
 
 rule body \
@@ -111,7 +117,7 @@ for file in "${SOURCE_FILES[@]}"; do
     name="${file##*/}"
 
     inFile="${INTERMED}/${dir}/${name/%.sam/.c}"
-    outDir="${FINAL_LIB}/${dir}"
+    outDir="${FINAL_LIB}/corelib/${dir}"
     outFile="${outDir}/${name/%.sam/.samb}"
 
     rule mkdir -- "${outDir}"
