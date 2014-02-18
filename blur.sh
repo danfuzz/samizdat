@@ -17,7 +17,7 @@ fi
 # Main script
 #
 
-OUT="${BASE_DIR}/out"
+OUT="${PROJECT_DIR}/out"
 
 rule body \
     --id=build \
