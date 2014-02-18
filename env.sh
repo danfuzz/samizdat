@@ -32,7 +32,6 @@ function init-env {
 
 init-env
 unset -f init-env
-echo === === "${PATH}"
 
 
 #
