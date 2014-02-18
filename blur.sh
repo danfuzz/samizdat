@@ -21,6 +21,7 @@ OUT="${BASE_DIR}/out"
 
 rule body \
     --id=build \
+    --build-in-dir="installer" \
     --build-in-dir="samex-tot"
 
 rule rm \
