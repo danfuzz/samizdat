@@ -9,33 +9,24 @@
 #
 
 #
-# Directory and program name detection
+# General setup
 #
 
-# Preserve the original working dir as origDir.
-origDir="${PWD}"
+# Set `progName` to the program name, `progDir` to its directory, and `baseDir`
+# to `progDir`'s directory. Follows symlinks.
+function init-prog {
+    local newp p="$0"
 
-# Set progName to the program name, progDir to its directory, and baseDir
-# to progDir's directory. Follows symlinks.
-prog="$0"
-while [[ -h ${prog} ]]; do
-    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
-    newProg="${BASH_REMATCH[1]}"
-    if [[ ${newProg} =~ ^/ ]]; then
-        prog="${newProg}"
-    else
-        prog="$(dirname "${prog}")/${newProg}"
-    fi
-done
-progName="$(basename "${prog}")"
-progDir="$(dirname "${prog}")"
-cd "${progDir}"
-progDir="${PWD}"
-cd ..
-baseDir="${PWD}"
-cd "${origDir}"
-unset prog
-unset newProg
+    while newp="$(readlink "$p")"; do
+        [[ ${newp} =~ ^/ ]] && p="${newp}" || p="$(dirname "$p")/${newp}"
+    done
+
+    progName="${p##*/}"
+    progDir="$(cd "$(dirname "$p")"; /bin/pwd -P)"
+    baseDir="$(cd "${progDir}/.."; /bin/pwd -P)"
+}
+
+init-prog
 
 
 #
