@@ -9,33 +9,24 @@
 #
 
 #
-# Directory and program name detection
+# General setup
 #
 
-# Preserve the original working dir as origDir.
-origDir="${PWD}"
+# Set `progName` to the program name, `progDir` to its directory, and `baseDir`
+# to `progDir`'s directory. Follows symlinks.
+function init-prog {
+    local newp p="$0"
 
-# Set progName to the program name, progDir to its directory, and baseDir
-# to progDir's directory. Follows symlinks.
-prog="$0"
-while [[ -h ${prog} ]]; do
-    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
-    newProg="${BASH_REMATCH[1]}"
-    if [[ ${newProg} =~ ^/ ]]; then
-        prog="${newProg}"
-    else
-        prog="$(dirname "${prog}")/${newProg}"
-    fi
-done
-progName="$(basename "${prog}")"
-progDir="$(dirname "${prog}")"
-cd "${progDir}"
-progDir="${PWD}"
-cd ..
-baseDir="${PWD}"
-cd "${origDir}"
-unset prog
-unset newProg
+    while newp="$(readlink "$p")"; do
+        [[ ${newp} =~ ^/ ]] && p="${newp}" || p="$(dirname "$p")/${newp}"
+    done
+
+    progName="${p##*/}"
+    progDir="$(cd "$(dirname "$p")"; /bin/pwd -P)"
+    baseDir="$(cd "${progDir}/.."; /bin/pwd -P)"
+}
+
+init-prog
 
 
 #
@@ -45,19 +36,45 @@ unset newProg
 # Reports a line count of all files in the repo that match the given
 # name (a glob pattern).
 function getCount {
-    local glob="$1"
+    local match=glob
+
+    if [[ $1 == '--type' ]]; then
+        match=type
+        shift
+    fi
+
+    local pattern="$1"
     local dir="$2"
 
     if [[ ${dir} == '' ]]; then
         dir='.'
     fi
 
-    wc -l $(find "${dir}" \
-        '(' -type d -name out -prune ')' \
-        -o -name "${glob}" -print) |
-    awk '
-    { count = $1; }
-    END { print count; }'
+    local -a files
+
+    if [[ ${match} == glob ]]; then
+        files=($(find "${dir}" \
+            '(' -type d -name .git -prune ')' -o \
+            '(' -type d -name out -prune ')' -o \
+            -name "${pattern}" -print
+        ))
+    else
+        files=($(
+            find "${dir}" \
+                '(' -type d -name .git -prune ')' -o \
+                '(' -type d -name out -prune ')' -o \
+                -exec file '{}' ';' \
+            | awk -F': ' '
+                $2 ~ /'"${pattern}"'/ { print $1; }
+            '
+        ))
+    fi
+
+    wc -l "${files[@]}" \
+    | awk '
+        { count = $1; }
+        END { print count; }
+    '
 }
 
 
@@ -68,15 +85,18 @@ function getCount {
 cd "${baseDir}"
 
 docs="$(getCount '*.md')"
+scripts=$(( $(getCount '*.sh') + $(getCount --type 'shell') ))
+(( otherTotal = docs + scripts ))
 
 cHeader="$(getCount '*.h' samex-naif)"
 cCode="$(getCount '*.c' samex-naif)"
 (( cTotal = cHeader + cCode ))
 
-sam0Code="$(getCount '*.sam*' samlib-naif)"
+samlibCode="$(getCount '*.sam*' samlib-naif)"
 demoCode="$(getCount '*.sam*' demo)"
+samtocCode="$(getCount '*.sam*' samtoc)"
 samTotal="$(getCount '*.sam*')"
-(( otherSam = samTotal - sam0Code - demoCode ))
+(( otherSam = samTotal - samlibCode - demoCode - samtocCode ))
 
 (( codeTotal = cTotal + samTotal ))
 (( total = codeTotal + docs ))
@@ -87,24 +107,30 @@ samTotal="$(getCount '*.sam*')"
 
 printf '\n'
 
-printf 'Docs\n'
-printf -- '----------------------\n'
-printf '  Docs       %5d\n' "${docs}"
-printf '\n'
-
 printf 'C Code\n'
 printf -- '----------------------\n'
 printf '  Header     %5d\n' "${cHeader}"
 printf '  Code       %5d\n' "${cCode}"
+printf -- '  --------\n'
 printf '  Total      %5d\n' "${cTotal}"
 printf '\n'
 
 printf 'Samizdat Code\n'
 printf -- '----------------------\n'
-printf '  Library    %5d\n' "${sam0Code}"
+printf '  Library    %5d\n' "${samlibCode}"
+printf '  Samtoc     %5d\n' "${samtocCode}"
 printf '  Demo       %5d\n' "${demoCode}"
 printf '  Other      %5d\n' "${otherSam}"
+printf -- '  --------\n'
 printf '  Total      %5d\n' "${samTotal}"
+printf '\n'
+
+printf 'Other\n'
+printf -- '----------------------\n'
+printf '  Docs       %5d\n' "${docs}"
+printf '  Scripts    %5d\n' "${scripts}"
+printf -- '  --------\n'
+printf '  Total      %5d\n' "${otherTotal}"
 printf '\n'
 
 printf 'Summary\n'
