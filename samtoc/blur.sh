@@ -79,9 +79,16 @@ for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
     )
 done
 
-samtocCmdStart="$(quote \
-    "${OUT}/final/bin/samex" . --out-dir="${INTERMED}" --mode=tree
-)"
+# This sets up the `samtoc` command to run directly out of its source on
+# a new build, but use the already-built binary for subsequent runs. If a
+# change introduces an error in "tree" mode, then this can cause a cascading
+# failure; this can be corrected by removing the compiled output of `samtoc`.
+if [[ -x "${FINAL_BIN}/samtoc" ]]; then
+    samtocCmdStart="$(quote "${FINAL_BIN}/samtoc")"
+else
+    samtocCmdStart="$(quote "${FINAL_BIN}/samex" .)"
+fi
+samtocCmdStart+=" $(quote --out-dir="${INTERMED}" --mode=tree)"
 
 rule body \
     "${groups[@]}" \

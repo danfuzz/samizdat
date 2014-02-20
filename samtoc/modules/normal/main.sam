@@ -40,7 +40,7 @@ fn varInit(binding) {
 
 fn closureBody(cloIdx, clo) {
     ## Set up the initial variable bindings.
-    def freeNames = Collection::keyList(clo.varRefs);
+    def freeNames = clo.varRefs;
     def formalNames = [ f in clo.formals <> f::name ];
 
     var vars = cat(

@@ -4,78 +4,78 @@
 
 def get_name = submoduleUse("getters")::get_name;
 
-## generic `get_varDefs(node)`, returns set-like map of variable names
-## newly-defined by `node`.
+## generic `get_varDefs(node)`, returns list of variable names
+## newly-defined by `node`. Result may have duplicates.
 def get_varDefs = makeRegularGeneric("get_varDefs", 1, 1);
 
 genericBind(
     get_varDefs,
     "call",
     fn call_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
     get_varDefs,
     "closure",
     fn closure_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
     get_varDefs,
     "expression",
     fn expression_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
     get_varDefs,
     "interpolate",
     fn interpolate_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
     get_varDefs,
     "literalRef",
     fn literalRef_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
     get_varDefs,
     "varBind",
     fn varBind_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
     get_varDefs,
     "varDef",
     fn varDef_get_varDefs(node) {
-        <> {(node.name): null}
+        <> [node.name]
     });
 
 genericBind(
     get_varDefs,
     "varDefMutable",
     fn varDefMutable_get_varDefs(node) {
-        <> {(node.name): null}
+        <> [node.name]
     });
 
 genericBind(
     get_varDefs,
     "varRef",
     fn varRef_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
     get_varDefs,
     "voidable",
     fn voidable_get_varDefs(node) {
-        <> {}
+        <> []
     });
 
 <> {get_varDefs}
