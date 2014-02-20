@@ -142,7 +142,7 @@ fn compile(sourcePath, targetPath) {
             \/  zvalue result = makeBuiltin(
             \/    \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(idx)),
             \/    stateCount, \(name));
-            \/  // TODO: Set up state.
+            \/  // TODO: Set up state. Refs: \%q(clo.varRefs)
             \/  return result;
             \/}\n\n"
         )*);
