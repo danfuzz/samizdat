@@ -19,11 +19,6 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-## Extracts and combines the `varRefs` of all the arguments.
-fn varRefsOf(nodes*) {
-    <> {}.cat(( n in nodes <> dataOf(n)::varRefs )*)
-};
-
 ## `bodies(node, bodiesBox)`, implements one layer of body collection.
 def bodies = makeRegularGeneric("bodies", 2, 2);
 
