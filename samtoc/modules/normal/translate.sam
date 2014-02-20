@@ -65,7 +65,7 @@ genericBind(
     translate,
     "closureRef",
     fn closureRef_translate(node, varsBox) {
-        <> "NULL /* TODO: closure_\(node.id) */"
+        <> "NULL /* TODO: closure_\(node.id) \%q(node.varRefs) */"
     });
 
 genericBind(
