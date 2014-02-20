@@ -139,7 +139,7 @@ $ git clone git@github.com:danfuzz/samizdat.git
 [...]
 $ cd samizdat
 $ . env.sh
-$ blur/blur
+$ blur
 [...]
 $
 ```
