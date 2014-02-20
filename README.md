@@ -124,3 +124,37 @@ exist (if incompletely), followed by pieces that are merely planned.
 * ?
 
 * Profit!
+
+
+Building and Testing
+--------------------
+
+To build Samizdat from the console, run the Blur builder when cd'ed
+to the root of the source directory. If you source (shell `.` command)
+the file `env.sh`, then `blur` will be in your `PATH`. If not, then
+`blur/blur` will work too.
+
+```shell
+$ git clone git@github.com:danfuzz/samizdat.git
+[...]
+$ cd samizdat
+$ . env.sh
+$ blur/blur
+[...]
+$
+```
+
+As of this writing full build can take up to something like an hour on
+mid-range personal computing hardware. The build consists of both C
+compilation as well as compilation of most of the Samizdat library as
+well as compilation of the compiler itself.
+
+Once built, you can run `samex <path-to-script>`. `samex` and all the other
+built binaries are deposited in the directory `out/final/bin`. If you used
+`env.sh` this will be on your `PATH`.
+
+You can also run the various demo / test cases, with the scripts
+`demo/run <demo-number>` or `demo/run-all`. Demo numbers are of the form
+`N-MMM` where `N` is a language "layer" and `MMM` is a sequence number.
+Each lives in a directory named with its number along with a suggestive
+summary, e.g. `0-001-string-literal`.
