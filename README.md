@@ -25,6 +25,8 @@ exist (if incompletely), followed by pieces that are merely planned.
 
 ### Existing pieces
 
+These all exist in some form, though most are still very much in-progress.
+
 * `samex-naif` &mdash; Simple interpreter, written in C.
 
   This is an interpreter for Layer 0 of the language, which can be paired
@@ -64,8 +66,6 @@ exist (if incompletely), followed by pieces that are merely planned.
   This script knows how to call the C compiler with appropriate arguments
   for building "addon" libraries, which can subsequently be loaded by
   `samex-naif`.
-
-### Pieces in progress
 
 * `samtoc` &mdash; Simple compiler to C, written in Layer 2.
 
