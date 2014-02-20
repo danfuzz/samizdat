@@ -158,3 +158,22 @@ You can also run the various demo / test cases, with the scripts
 `N-MMM` where `N` is a language "layer" and `MMM` is a sequence number.
 Each lives in a directory named with its number along with a suggestive
 summary, e.g. `0-001-string-literal`.
+
+
+Contributing
+------------
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+
+License
+-------
+
+Licensed under the Apache License, Version 2.0. See [LICENSE.md](LICENSE.md)
+and <http://www.apache.org/licenses/LICENSE-2.0>.
+
+
+Authors
+-------
+
+See [AUTHORS.md](AUTHORS.md).
