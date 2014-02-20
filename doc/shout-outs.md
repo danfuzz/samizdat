@@ -25,19 +25,19 @@ Samizdat's syntax can be traced in part to
 [JavaScript](http://en.wikipedia.org/wiki/JavaScript), and
 [E](http://en.wikipedia.org/wiki/E_%28programming_language%29). Its
 other syntactic influences include
-[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk) and traditional
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk),
+[Scala](https://en.wikipedia.org/wiki/Scala_%28programming_language%29),
+and traditional
 [Backus-Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
 (BNF), with an honorable mention to
 [Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29) for
 early inspiration.
 
-The Samizdat core data model was influenced by
-[Lisp](http://en.wikipedia.org/wiki/LISP),
-[Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
-[Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript.
-
-Samizdat's execution model probably owes its biggest debts to Smalltalk and
-[Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29).
+Samizdat's data and execution models probably owe their biggest debts to
+Smalltalk, JavaScript,
+[Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29),
+[Clojure](http://en.wikipedia.org/wiki/Clojure), and
+[Lisp](http://en.wikipedia.org/wiki/LISP) in general.
 [Icon](http://en.wikipedia.org/wiki/Icon_%28programming_language%29),
 [Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
 [Erlang](http://en.wikipedia.org/wiki/Erlang_%28programming_language%29),
