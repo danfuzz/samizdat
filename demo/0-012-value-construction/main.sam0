@@ -52,7 +52,7 @@ fn expectDerived(v) {
 ##
 ## Main Tests
 ##
-## Expect everything to be a "yes".
+## Expect everything to be a "yes."
 ##
 
 ## Int

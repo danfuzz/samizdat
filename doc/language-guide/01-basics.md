@@ -68,7 +68,7 @@ detail in later sections of this guide.
 ### Variables
 
 The most convenient way to name a variable in code is as a regular
-"identifier". An regular identifier consists of an initial ASCII alphabetic
+"identifier." An regular identifier consists of an initial ASCII alphabetic
 character (either lower- or upper-case) or initial underscore (`_`),
 followed by zero or more other ASCII alphabetic characters, underscores, or
 ASCII decimal digits.
@@ -123,11 +123,11 @@ formal arguments.
 Samizdat has the concept of "void" meaning the lack of a value.
 This is in contrast to many other languages which define one or
 more distinguished values as meaning "nothingness" while still
-actually being "something".
+actually being "something."
 
 For example, it is possible for functions in Samizdat to return without
 yielding a value. Such functions are referred to as "void functions," and
-one can say that such a function "returns void" or "returns a void result".
+one can say that such a function "returns void" or "returns a void result."
 
 There are three major restrictions on how voids may be used:
 

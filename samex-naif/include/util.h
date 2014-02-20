@@ -36,7 +36,7 @@ enum {
 typedef char *(*zcontextFunction)(void *state);
 
 /**
- * Stack "giblet". This is a struct placed on the (C) stack, for use
+ * Stack "giblet." This is a struct placed on the (C) stack, for use
  * when producing a stack trace upon process death.
  */
 typedef struct UtilStackGiblet {

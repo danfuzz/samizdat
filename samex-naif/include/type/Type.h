@@ -37,7 +37,7 @@ void assertHasType(zvalue value, zvalue type);
 /**
  * Gets a new core type, given its name. When given the same name twice, this
  * returns identical results. `identified` indicates whether the type should
- * be considered "identified". Values of an "identified" type have unique
+ * be considered "identified." Values of an "identified" type have unique
  * identity values which can be retrieved using `valIdentityOf`. These values
  * are automatically used when comparing values of the same type.
  */
@@ -66,7 +66,7 @@ zint typeIndex(zvalue typeOrName);
 zint typeIndexOf(zvalue value);
 
 /**
- * Returns true iff the given type is "identified". That is, this returns
+ * Returns true iff the given type is "identified." That is, this returns
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.
  */

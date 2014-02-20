@@ -6,7 +6,7 @@ core::Box / proto::Box
 
 A `Box` is a container for a single other value or for void.
 In terms of value comparison, all boxes should compare by identity,
-and not by "happenstance content". That is, two boxes should only be
+and not by "happenstance content." That is, two boxes should only be
 considered "equal" if they are indistinguishable, even in the face of
 calling mutating operations.
 

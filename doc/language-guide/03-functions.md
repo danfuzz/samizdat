@@ -144,9 +144,9 @@ variable, and sometimes a module variable) whose name matches the
 function name.
 
 Most typically functions are defined and bound to a variable within
-the same construct; these are known as "function statements". It is
+the same construct; these are known as "function statements." It is
 also possible to define a function as a component of an enclosing
-expression; these are known as "function expressions". There is no
+expression; these are known as "function expressions." There is no
 syntactic difference between these two forms, except that the statement
 form requires the function to have a name. There is no semantic
 difference between these two forms, except that the statement form

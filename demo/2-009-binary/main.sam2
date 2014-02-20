@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Binary operator demo. Also demos hex and binary numbers, and "digit spaces".
+## Binary operator demo. Also demos hex and binary numbers, and "digit spaces."
 ##
 
 def Io1 = moduleUse({name: ["core", "Io1"]});

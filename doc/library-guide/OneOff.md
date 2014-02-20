@@ -56,7 +56,7 @@ to a string (e.g. turning the int value 242 into the string `"242"`).
 
 #### `valueOf(value) <> .`
 
-Some values have an associated "sub-value" or "inner value".
+Some values have an associated "sub-value" or "inner value."
 This generic provides access to that value. This generic often goes
 hand-in-hand with `keyOf`.
 

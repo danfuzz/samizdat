@@ -227,7 +227,7 @@ See the language guide section on generic functions for more details.
 #### Box
 
 A `Box` is a holder for some other value. (In other systems, boxes are
-sometimes called "cells" or "handles".)
+sometimes called "cells" or "handles.")
 
 In addition to the box constructor functions, the three functions that
 deal with boxes are `fetch` to get the contents of a box (or void if
@@ -242,7 +242,7 @@ There are three predefined box variants:
 
 * A "promise" is a box which can be stored to at most once. This type
   of box is often used as something along the lines of a "reified
-  return value".
+  return value."
 
 * The special value `nullBox` is a box that is permanently empty (succeeds
   but does nothing when `store` is called on it).
@@ -283,7 +283,7 @@ of type:
   is a transparent derived type, where the type's name is the `type` specified
   in the syntax. For example, the type of `@("stuff")([1, 2, 3])` is a
   transparent type with name `"stuff"`. This is described more fully below
-  under "Derived types".
+  under "Derived types."
 
   There is a one-to-one correspondence between a value and a
   transparent derived type with that value as its name. As such, Samizdat

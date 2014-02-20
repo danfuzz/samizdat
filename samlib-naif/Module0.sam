@@ -16,7 +16,7 @@
 def theModulesBox = Box_makeCell({});
 
 ## Box containing a map from full directory paths to corresponding modules.
-## If a module is in the middle of loading, then its path maps to "loading".
+## If a module is in the middle of loading, then its path maps to "loading."
 def thePathsBox = Box_makeCell({});
 
 ## Flattens an absolute path to a simple name.

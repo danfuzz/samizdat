@@ -48,7 +48,7 @@ zvalue stringFromZchars(zint size, const zchar *chars);
  *
  * **Note:** If the given string possibly contains any `U+0` code points,
  * then the only "safe" way to use the result is as an explicitly-sized
- * buffer. (For example, `strlen()` might "lie".)
+ * buffer. (For example, `strlen()` might "lie.")
  */
 void utf8FromString(zint resultSize, char *result, zvalue string);
 

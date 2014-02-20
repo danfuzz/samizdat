@@ -16,7 +16,7 @@ specification for more details.
 
 The syntax below provides a convenient way to define standard-form
 parsing functions. It is perfectly acceptable to mix-and-match the parsing
-functions defined using this syntax with ones defined more "manually".
+functions defined using this syntax with ones defined more "manually."
 
 
 ### Details

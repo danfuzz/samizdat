@@ -9,7 +9,7 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
-#include <time.h> // Used for "chatty gc".
+#include <time.h> // Used for "chatty gc."
 
 
 /*

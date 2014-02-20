@@ -22,7 +22,7 @@
 
 /**
  * The next identity value to return. This starts at `1`, because `0` is
- * taken to mean "uninitialized".
+ * taken to mean "uninitialized."
  */
 static zint theNextIdentity = 1;
 
@@ -122,7 +122,7 @@ zorder valOrder(zvalue v1, zvalue v2) {
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = typeOf(value);
-    char addrBuf[19]; // Includes room for "0x" and "\0".
+    char addrBuf[19]; // Includes room for `0x` and `\0`.
 
     sprintf(addrBuf, "%p", value);
 

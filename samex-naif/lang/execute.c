@@ -59,7 +59,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zint argCount = collSize(actuals);
     zvalue actualsArr[argCount];
     zvalue args[argCount];
-    zint interpCounts[argCount]; // -1 indicates "regular argument".
+    zint interpCounts[argCount]; // -1 indicates "regular argument."
 
     arrayFromList(actualsArr, actuals);
 

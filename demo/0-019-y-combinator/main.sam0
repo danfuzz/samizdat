@@ -36,8 +36,8 @@ fn uCombinator(function) { <> function(function) };
 ## value of this function.
 ##
 ## Naming note: I (danfuzz) haven't found any official name for this
-## function, but the name "U*" makes for a nice parallel with the name
-## "Y*". That is, the Y combinator uses the U combinator in the same way
+## function, but the name `U*` makes for a nice parallel with the name
+## `Y*`. That is, the Y combinator uses the U combinator in the same way
 ## that the Y* combinator uses this function.
 fn uStarCombinator(functions) {
     <> Generator::collect(functions, { function <> function(functions*) })

@@ -40,7 +40,7 @@ typedef zvalue (*znleFunction)(void *state, zvalue exitFunction);
 /**
  * Active execution frame. These are passed around during evaluation
  * as code executes, and can become referenced by closures that are
- * released "in the wild".
+ * released "in the wild."
  */
 typedef struct Frame {
     /** Parent closure value. May be `NULL`. */

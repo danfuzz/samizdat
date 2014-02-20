@@ -78,7 +78,7 @@ typedef struct {
     bool derived : 1;
 
     /**
-     * Whether the type is "identified". `true` indicates that
+     * Whether the type is "identified." `true` indicates that
      * `valIdentityOf` will work on values of the type.
      */
     bool identified : 1;

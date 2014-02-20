@@ -195,7 +195,7 @@ static zvalue trueTypeFromTypeOrName(zvalue typeOrName) {
 
 /**
  * Compares two types (per se) for equality. This is just `==` since
- * types are all "identified".
+ * types are all "identified."
  */
 static bool typeEq(zvalue type1, zvalue type2) {
     return (type1 == type2);
