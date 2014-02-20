@@ -30,6 +30,9 @@ init-prog
 # Argument parsing
 #
 
+# Preferred runtime name option.
+runtimeOpt=()
+
 # Output file name.
 outputFile=''
 
@@ -39,8 +42,11 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--output=<path>] <source-path> ..."
+        echo "${progName} [--runtime=<name>] [--output=<path>]"
+        echo "    <source-path> ..."
         exit
+    elif [[ ${opt} =~ ^--runtime= ]]; then
+        runtimeOpt=("${opt}")
     elif [[ ${opt} =~ ^--output=(.*) ]]; then
         outputFile="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^- ]]; then
@@ -68,7 +74,7 @@ fi
 # Main script
 #
 
-includeDir="$("${baseDir}/helper/find-samex" --include)"
+includeDir="$("${baseDir}/helper/find-samex" "${runtimeOpt[@]}" --include)"
 if [[ $? != 0 ]]; then
     exit 1
 fi
