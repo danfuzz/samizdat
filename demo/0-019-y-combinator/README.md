@@ -50,7 +50,7 @@ more details about some of the theoretical basis for this stuff.
 This function is in the "Y combinator family" but is not exactly any
 of the ones described on that page. It is most similar to the Z
 combinator, which is also known as the "call-by-value Y combinator"
-and the "applicative-order Y combinator", but this function is not
+and the "applicative-order Y combinator," but this function is not
 *exactly* the Z combinator. In particular, this version is written
 such that the wrapper function always gets called directly with the
 result of a U combinator call. It is unclear whether this results

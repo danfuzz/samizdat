@@ -150,7 +150,7 @@ more mappings, followed by a final `}`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
-Syntactically, keys are "terms", that is, simple values, collection literals,
+Syntactically, keys are "terms," that is, simple values, collection literals,
 or parenthesized expressions. As a short-hand, a string key with the same
 form as an identifier can be written without the quotes.
 

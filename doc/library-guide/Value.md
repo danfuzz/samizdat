@@ -11,8 +11,8 @@ Value (the base type)
 
 Performs a per-type equality comparison of the two given values, using the
 per-type order. This should return `value2` if the two values are to be
-considered "equal", return void if the two values are to be considered
-"unequal", or fail terminally if the two values are considered "incomparable".
+considered "equal," return void if the two values are to be considered
+"unequal," or fail terminally if the two values are considered "incomparable".
 
 Each type can specify its own per-type equality check, and the two arguments
 are notably *not* required to be of the same type. The default implementation

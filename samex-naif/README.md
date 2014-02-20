@@ -20,9 +20,9 @@ The language parser and runtime do the bare minimum of error
 checking, attempting to fail fast in the face of any errors but not to
 provide much in the way of meaningful messages.
 
-On the topic of "debugability", the code is written to be totally
+On the topic of "debugability," the code is written to be totally
 deterministic. For example, the addresses of structures are never
-used for things like "identity hashes", and the C stack is *not*
+used for things like "identity hashes," and the C stack is *not*
 scanned conservatively. (The GC has a conservative aspect to it,
 but not due to confusion between ints and pointers.)
 
@@ -30,7 +30,7 @@ but not due to confusion between ints and pointers.)
 Directory and File Organization
 -------------------------------
 
-The code is structured into "modules", with each module's code in a
+The code is structured into "modules," with each module's code in a
 directory with the module's name, and with "exports" from that module (if
 any) in a header file directly under `include/` bearing the module's
 name. For example, the code of the `util` module is in the `util/` directory,

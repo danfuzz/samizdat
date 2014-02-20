@@ -10,7 +10,7 @@ language are the typical sort, namely a function which captures elements
 from its execution context and which continues to be valid after its
 enclosing execution context has exited.
 
-There are two kinds of closure in the language, "functions" and blocks",
+There are two kinds of closure in the language, "functions" and "blocks,"
 which correspond to two different common use cases. Both forms have in
 common that the body of the closure (containing its statements) are
 enclosed within matching curly braces (`{...}`). The forms differ in
@@ -109,7 +109,7 @@ Two kinds of yield are applicable in all contexts:
   expression is in order to be stylisticly unambiguous.
 
 * `<name>` &mdash; Yield from named closure. The `name` must match
-  the yield definition name of an enclosing closure. (See "Yield Definitions",
+  the yield definition name of an enclosing closure. (See "Yield Definitions,"
   above.) In addition, the so-named enclosing closure must still be
   in the middle of executing; that is, the enclosing closure must not
   have yet yielded (including yielding void). It is a fatal error to try to

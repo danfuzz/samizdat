@@ -37,7 +37,7 @@ the expression it contains.
 #### Matching one of multiple alternates
 
 To match any one of a series of alternates, the alternates are listed in
-priority sequence (first one listed gets first "dibs", etc.), separated
+priority sequence (first one listed gets first "dibs," etc.), separated
 by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 

@@ -126,7 +126,7 @@ more distinguished values as meaning "nothingness" while still
 actually being "something".
 
 For example, it is possible for functions in Samizdat to return without
-yielding a value. Such functions are referred to as "void functions", and
+yielding a value. Such functions are referred to as "void functions," and
 one can say that such a function "returns void" or "returns a void result".
 
 There are three major restrictions on how voids may be used:
@@ -167,7 +167,7 @@ as logical-true, whereas void &mdash; that is, the lack of a
 value &mdash; counts as logical-false.
 
 Samizdat also has boolean values `true` and `false`, which are used
-for boolean values "at rest", such as in variables or data structures.
+for boolean values "at rest," such as in variables or data structures.
 There are operators in the language and library support functions that
 aid in the conversion between logical and boolean truth values. See later
 sections for details.

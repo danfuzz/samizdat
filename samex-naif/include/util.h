@@ -30,7 +30,7 @@ enum {
 };
 
 /**
- * Function added to the "death context", which is expected to return
+ * Function added to the "death context," which is expected to return
  * some sort of interesting string.
  */
 typedef char *(*zcontextFunction)(void *state);

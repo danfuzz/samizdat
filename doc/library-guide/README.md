@@ -7,7 +7,7 @@ The core library isn't as minimal as the language itself, but it is still
 intended to be more on the minimal side of things. Beyond the true
 essentials, the library contains bindings that have proven to be useful
 in practice for building programs in the language. A subset of the library
-is defined to be "primitive", that is written into the lowest layer of
+is defined to be "primitive," that is written into the lowest layer of
 language implementation as primitive functions. The remainder of the library
 is implemented in-language in terms of the primitive functions and the
 language syntax.

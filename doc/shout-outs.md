@@ -13,7 +13,7 @@ computation, the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
 concurrency, maximally pure / immutable data models, and [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
 (STM). The Samizdat language has a mostly-immutable data model and
-generally has "capability nature", but it does not innately implement
+generally has "capability nature," but it does not innately implement
 promises, actors, or STM (yet). It is intended to be a fertile
 substrate on which to explore these topics, while still being a
 practical and compelling language in its own right.
@@ -58,7 +58,7 @@ and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
 the trail for general-purpose languages that make parsing a first-class
 operation.
 
-In terms of "flavor" and "feel", the Samizdat core library was influenced
+In terms of "flavor" and "feel," the Samizdat core library was influenced
 by Scheme and [Underscore.js](http://underscorejs.org/).
 
 The implementation tactics used to build Samizdat were informed by
