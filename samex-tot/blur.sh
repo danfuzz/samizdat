@@ -118,7 +118,7 @@ rule body \
     "${groups[@]}" \
     -- \
     --cmd='printf "Will compile: %s\n" "${VALUES[@]}"' \
-    --cmd="${samtocCmdStart} \"\${VALUES[@]}\""
+    --cmd="${samtocCmdStart}"' "${VALUES[@]}"'
 
 # Rules to compile each C source file.
 
