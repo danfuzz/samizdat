@@ -175,7 +175,7 @@ static bool isType(zvalue value) {
 }
 
 /**
- * Returns the `Type` per se for the given in-model "type", the latter which
+ * Returns the `Type` per se for the given in-model "type," the latter which
  * may be an arbitrary value representing a transparent type by name.
  */
 static zvalue trueTypeFromTypeOrName(zvalue typeOrName) {

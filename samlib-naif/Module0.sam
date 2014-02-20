@@ -323,7 +323,7 @@ fn moduleUse(searchInfo, modulePaths?) {
 
 ## Documented in spec.
 fn stringFromModuleName(fqName) {
-    ## Prefix each component with "::", combine them all, and then drop the
+    ## Prefix each component with `::`, combine them all, and then drop the
     ## first two characters.
     def parts = Generator_collect(fqName, { n <> cat("::", n) });
     def result = cat(parts*);
