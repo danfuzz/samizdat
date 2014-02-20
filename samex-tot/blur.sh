@@ -139,7 +139,7 @@ for file in "${SOURCE_FILES[@]}"; do
         --target="${outFile}" \
         --msg="Compile: ${file#./}" \
         --cmd="$(quote "${FINAL_BIN}/compile-samex-addon" \
-            --output="${outFile}" "${inFile}")"
+            --runtime=naif --output="${outFile}" "${inFile}")"
 done
 
 # Default build rules
