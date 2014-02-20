@@ -5,8 +5,6 @@
 def getters = submoduleUse("getters");
 def get_varDefs = submoduleUse("get_varDefs")::get_varDefs;
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-
 ## TODO: Ought to be able to do something like:
 ##     use .getters *;
 def get_actuals    = getters::get_actuals;
@@ -19,12 +17,12 @@ def get_yield      = getters::get_yield;
 def get_yieldDef   = getters::get_yieldDef;
 
 ## generic `get_varRefs(node)`, returns free variable references of `node`,
-## as a set-like map of names.
+## as list of names.
 def get_varRefs = makeRegularGeneric("get_varRefs", 1, 1);
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
-    <> {}.cat(( n in nodes <> n.varRefs )*)
+    <> [].cat(( n in nodes <> n.varRefs )*)
 };
 
 genericBind(
@@ -43,36 +41,38 @@ genericBind(
             return refs
         };
 
-        ## `baseLocals` is the set of all local variables defined at the
+        ## `baseLocals` is the list of all local variables defined at the
         ## top of the closure, including formal arguments and a yield def
         ## (if any).
-        def yieldDef = (def yd = node.yieldDef) & {(yd): null} | {};
-        def baseLocals = yieldDef.cat(( f in node.formals ->
-            <> (def name = f::name) & {(name): null}
-        )*);
+        def baseLocals = [
+            node.yieldDef?*,
+            ( f in node.formals <> f::name )*];
 
         ## The extra element at the end is to represent the closure yield.
-        def statementDefs = [( s in node.statements <> s.varDefs )*, {}];
+        def statementDefs = [( s in node.statements <> s.varDefs )*, []];
 
         ## What's happening here is that for each statement (and the yield at
         ## the end), we get its variable references and remove from them refs
         ## for any variables that are locally defined before the statement.
         ## This produces the array `statementRefs` whose elements are merged,
         ## producing the full set of free variables referenced by the closure
-        ## as a whole.
+        ## as a whole. Deletion from the list is achieved by converting the
+        ## refs to a map (refs as keys, values all `null`), and then doing
+        ## key deletion. The resulting `statmentRefs` is a list of these maps.
         def statementRefs = (
                 s in [node.statements*, node.yield?*],
                 idx in (0..) ->
-            def defs =
-                Collection::keyList(baseLocals.cat(statementDefs[..!idx]*));
-            var refs = s.varRefs;
+            def defs = baseLocals.cat(statementDefs[..!idx]*);
+            var refs = {s.varRefs*: null};
             for (d in defs) {
                refs := Collection::del(refs, d)
             };
             <> refs
         );
 
-        <> cat(statementRefs*)
+        ## The result of concatenating all the `statementRefs` is a map. The
+        ## final result is the list of refs, that is, a list of all the keys.
+        <> Collection::keyList({}.cat(statementRefs*))
     });
 
 genericBind(
@@ -100,7 +100,7 @@ genericBind(
     get_varRefs,
     "literalRef",
     fn literalRef_get_varRefs(node) {
-        <> {}
+        <> []
     });
 
 genericBind(
@@ -114,21 +114,21 @@ genericBind(
     get_varRefs,
     "varDef",
     fn varDef_get_varRefs(node) {
-        <> (def v = node.value) & v.varRefs | {}
+        <> (def v = node.value) & v.varRefs | []
     });
 
 genericBind(
     get_varRefs,
     "varDefMutable",
     fn varDefMutable_get_varRefs(node) {
-        <> (def v = node.value) & v.varRefs | {}
+        <> (def v = node.value) & v.varRefs | []
     });
 
 genericBind(
     get_varRefs,
     "varRef",
     fn varRef_get_varRefs(node) {
-        <> {(node.name): null}
+        <> [node.name]
     });
 
 genericBind(
