@@ -35,13 +35,13 @@ def translate = makeRegularGeneric("translate", 2, 2);
 fn varDefCommon(name, value, varsBox) {
     def vars = Box::fetch(varsBox);
     if ((def found = vars[name]) & (found::kind != "free")) {
-        Io1::die("Cannot re-define local variable: \%q(name).")
+        Io1::die("Cannot redefine local variable: \%q(name).")
     };
     def binding = {name: "local_\(#vars)", kind: "local"};
 
     Box::store(varsBox, {vars*, (name): binding});
     <> CodeGen::makeComment(
-        "\(binding::name) <- \%q(name)",
+        "\%q(name)",
         CodeGen::makeAssign("zvalue \(binding::name)", value));
 };
 

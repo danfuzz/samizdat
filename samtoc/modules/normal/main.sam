@@ -33,7 +33,7 @@ def get_yieldDef   = Lang0Node::get_yieldDef;
 
 fn varInit(binding) {
     <> CodeGen::makeComment(
-        "\(binding::name) <- \%q(binding::origName)",
+        "\%q(binding::origName)",
         CodeGen::makeAssign(
             "zvalue \(binding::name)", binding::init.flatten()))
 };
@@ -43,13 +43,27 @@ fn closureMaker(cloIdx, clo) {
         & translate::translateFlatten(n, Box::nullBox)
         | "NULL";
 
+    def varRefs = clo.varRefs;
+    def declaration = CodeGen::makeCall(
+        "static zvalue makeClosure\(cloIdx)",
+        ( idx in (0..), name in varRefs ->
+            <> CodeGen::makeComment("\%q(name)", "free_\(idx)")
+        )*);
+    def stateAssigns = [ idx in (0..#varRefs) ->
+        def stat = CodeGen::makeAssign("state[\(idx)]", "free_\(idx)");
+        <> "\(stat.indent(1, 78));\n"
+    ];
+    def resultAssign = CodeGen::makeAssign(
+        "zvalue result",
+        CodeGen::makeCall(
+            "makeBuiltin", "\(clo.minArgs)", "\(clo.maxArgs)",
+            "FUN_IMPL_NAME(\(cloIdx))", "\(#varRefs)", name));
+
     <> "\
-    \/static makeClosure\(cloIdx)(/*TODO: state*/ void) {
-    \/  zint stateCount = 0; // TODO
-    \/  zvalue result = makeBuiltin(
-    \/    \(clo.minArgs), \(clo.maxArgs), FUN_IMPL_NAME(\(cloIdx)),
-    \/    stateCount, \(name));
-    \/  // TODO: Set up state. Refs: \%q(clo.varRefs)
+    \/\(declaration.indent(0, 78)) {
+    \/\(resultAssign.indent(1, 78));
+    \/  zvalue *state = builtinGetState(result).arr;
+    \/\(stateAssigns)
     \/  return result;
     \/}\n\n"
 };
@@ -109,7 +123,7 @@ fn closureBody(cloIdx, clo) {
 
     <> "\
     \/static FUN_IMPL_DECL(\(cloIdx)) {
-    \/  zvalue *state = builtinGetState(thisFunction)->arr;
+    \/  zvalue *state = builtinGetState(thisFunction).arr;
     \/\(varStats)
     \/\(statements)
     \/  zvalue result = \(yield);
