@@ -40,13 +40,14 @@ genericBind(
             return "\[prefix, data::flat]"
         };
 
-        <> "\[
-            prefix,
-            "/* ", data::text, " */",
-            (def p = data::payload)
-                & ["\n", p.indent(level, maxColumns)]
-                | ""
-        ]"
+        <> if (def p = data::payload) {
+            <> "\[
+                prefix, "// ", data::text, "\n",
+                p.indent(level, maxColumns)
+            ]"
+        } else {
+            <> "\(prefix)/* \(data::text) */"
+        }
     });
 
 <> {
