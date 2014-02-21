@@ -191,6 +191,7 @@ fn convertIndent(tree, level, maxColumns) {
 };
 
 <> {
+    convert,
     convertFlatten,
     convertIndent
 }
