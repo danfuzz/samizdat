@@ -151,18 +151,4 @@ genericBind(
         <> "NULL /* TODO: voidable */"
     });
 
-## Translates and converts to a string, without indentation.
-fn translateFlatten(node, varsBox) {
-    <> node.translate(varsBox).flatten()
-};
-
-## Translates and converts to a string, with indentation.
-fn translateIndent(node, varsBox, level, maxColumns) {
-    <> node.translate(varsBox).indent(level, maxColumns)
-};
-
-<> {
-    translate,
-    translateFlatten,
-    translateIndent
-}
+<> {translate}

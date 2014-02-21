@@ -31,15 +31,9 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-fn varInit(binding) {
-    <> CodeGen::makeComment(
-        "\%q(binding::origName)",
-        CodeGen::makeAssign("zvalue \(binding::name)", binding::init))
-};
-
 fn closureMaker(cloIdx, clo) {
     def name = (def n = clo.name)
-        & translate::translateFlatten(n, Box::nullBox)
+        & translate::translate(n, Box::nullBox).flatten()
         | "NULL";
 
     def varRefs = clo.varRefs;
@@ -49,8 +43,9 @@ fn closureMaker(cloIdx, clo) {
             <> CodeGen::makeComment("\%q(name)", "free_\(idx)")
         )*);
     def stateAssigns = [ idx in (0..#varRefs) ->
-        def stat = CodeGen::makeAssign("state[\(idx)]", "free_\(idx)");
-        <> "\(stat.indent(1, 78));\n"
+        def stat = CodeGen::makeStatement(
+            CodeGen::makeAssign("state[\(idx)]", "free_\(idx)"));
+        <> stat.indent(1, 78)
     ];
     def resultAssign = CodeGen::makeAssign(
         "zvalue result",
@@ -105,8 +100,13 @@ fn closureBody(cloIdx, clo) {
     ## Make C local variable defintions for each of the incoming
     ## variables.
     def varStats = [ name in [freeNames*, formalNames*, clo.yieldDef?*] ->
-        def stat = varInit(vars[name]);
-        <> "\(stat.indent(1, 78));\n"
+        def binding = vars[name];
+        def stat = CodeGen::makeStatement(
+            CodeGen::makeComment(
+                "\%q(binding::origName)",
+                CodeGen::makeAssign("zvalue \(binding::name)",
+                    binding::init)));
+        <> stat.indent(1, 78)
     ];
 
     ## Translate the statements and the yield. Note that the
@@ -114,10 +114,11 @@ fn closureBody(cloIdx, clo) {
     ## a generator, as its body has to run before `yield` is
     ## calculated (in order to have the right vars defined).
     def statements = [ s in clo.statements ->
-        <> "\(translate::translateIndent(s, varsBox, 1, 78));\n"
+        def stat = CodeGen::makeStatement(translate::translate(s, varsBox));
+        <> stat.indent(1, 78)
     ];
     def yield = (def y = clo.yield)
-        & translate::translateFlatten(y, varsBox)
+        & translate::translate(y, varsBox).flatten()
         | "NULL";
 
     <> "\
@@ -146,10 +147,11 @@ fn compile(sourcePath, targetPath) {
 
     def literalInits = cat(
         ( index in (0..), lit in literals ->
-            def varName = "LIT_\(index)";
-            def init = CodeGen::makeCall("datImmortalize",
-                CodeGen::makeAssign("LIT_\(index)", DataCode::convert(lit)));
-            <> "\(init.indent(2, 78));\n"
+            def init = CodeGen::makeStatement(
+                    CodeGen::makeCall("datImmortalize",
+                        CodeGen::makeAssign("LIT_\(index)",
+                            DataCode::convert(lit))));
+            <> init.indent(2, 78)
         )*);
 
     def closuresNode = collectClosures(litsNode::node);
