@@ -116,7 +116,8 @@ fn closureBody(cloIdx, clo) {
     ## a generator, as its body has to run before `yield` is
     ## calculated (in order to have the right vars defined).
     def statements = [ s in clo.statements ->
-        <> "\(translate::translate(s, varsBox).indent(1, 78));\n"
+        def stat = CodeGen::makeStatement(translate::translate(s, varsBox));
+        <> stat.indent(1, 78)
     ];
     def yield = (def y = clo.yield)
         & translate::translate(y, varsBox).flatten()
