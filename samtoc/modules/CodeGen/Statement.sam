@@ -33,7 +33,7 @@ genericBind(
         <> if ((#data::flat + #prefix) <= maxColumns) {
             <> "\(prefix)\(data::flat)\n"
         } else {
-            <> "\(tree.indent(level, maxColumns))\n"
+            <> "\(data::tree.indent(level, maxColumns))\n"
         }
     });
 
