@@ -39,7 +39,7 @@ genericBind(
         def data = dataOf(tree);
         def prefix = indentation(level);
 
-        if ((#data::flat + #prefix) < maxColumns) {
+        if ((#data::flat + #prefix) <= maxColumns) {
             return "\[prefix, data::flat]"
         };
 

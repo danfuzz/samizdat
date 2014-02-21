@@ -34,8 +34,7 @@ def get_yieldDef   = Lang0Node::get_yieldDef;
 fn varInit(binding) {
     <> CodeGen::makeComment(
         "\%q(binding::origName)",
-        CodeGen::makeAssign(
-            "zvalue \(binding::name)", binding::init.flatten()))
+        CodeGen::makeAssign("zvalue \(binding::name)", binding::init))
 };
 
 fn closureMaker(cloIdx, clo) {

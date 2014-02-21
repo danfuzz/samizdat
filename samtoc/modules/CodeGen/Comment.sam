@@ -13,10 +13,13 @@ def flatten = protocol::flatten;
 def indent = protocol::indent;
 
 fn makeComment(text, optPayload?) {
-    def flat = "/* \(text) */ \(optPayload*)";
-    def payloadMap = (def payload = optPayload*) & {payload} | {};
-
-    <> @Comment{payloadMap*, text, flat}
+    <> if (def payload = optPayload*) {
+        def flat = "/* \(text) */ \(payload.flatten())";
+        <> @Comment{payload, text, flat}
+    } else {
+        def flat = "/* \(text) */";
+        <> @Comment{text, flat}
+    }
 };
 
 genericBind(
@@ -33,16 +36,16 @@ genericBind(
         def data = dataOf(tree);
         def prefix = indentation(level);
 
-        if ((#data::flat + #prefix) < maxColumns) {
+        if ((#data::flat + #prefix) <= maxColumns) {
             return "\[prefix, data::flat]"
         };
 
         <> "\[
             prefix,
             "/* ", data::text, " */",
-            (if (def p = data::payload) {
-                <> ["\n", p.indent(level, maxColumns)]
-            })?
+            (def p = data::payload)
+                & ["\n", p.indent(level, maxColumns)]
+                | ""
         ]"
     });
 
