@@ -32,9 +32,10 @@ def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
 fn varInit(binding) {
-    <> CodeGen::makeComment(
-        "\%q(binding::origName)",
-        CodeGen::makeAssign("zvalue \(binding::name)", binding::init))
+    <> CodeGen::makeStatement(
+        CodeGen::makeComment(
+            "\%q(binding::origName)",
+            CodeGen::makeAssign("zvalue \(binding::name)", binding::init)))
 };
 
 fn closureMaker(cloIdx, clo) {
@@ -106,7 +107,7 @@ fn closureBody(cloIdx, clo) {
     ## variables.
     def varStats = [ name in [freeNames*, formalNames*, clo.yieldDef?*] ->
         def stat = varInit(vars[name]);
-        <> "\(stat.indent(1, 78));\n"
+        <> stat.indent(1, 78)
     ];
 
     ## Translate the statements and the yield. Note that the
@@ -146,10 +147,11 @@ fn compile(sourcePath, targetPath) {
 
     def literalInits = cat(
         ( index in (0..), lit in literals ->
-            def varName = "LIT_\(index)";
-            def init = CodeGen::makeCall("datImmortalize",
-                CodeGen::makeAssign("LIT_\(index)", DataCode::convert(lit)));
-            <> "\(init.indent(2, 78));\n"
+            def init = CodeGen::makeStatement(
+                    CodeGen::makeCall("datImmortalize",
+                        CodeGen::makeAssign("LIT_\(index)",
+                            DataCode::convert(lit))));
+            <> init.indent(2, 78)
         )*);
 
     def closuresNode = collectClosures(litsNode::node);
