@@ -142,13 +142,10 @@ fn compile(sourcePath, targetPath) {
 
     def closuresNode = collectClosures(litsNode::node);
     def closures = closuresNode::closures;
-
-    def closureBodies = cat(
-        ( idx in (0..), clo in closures <> closureBody(idx, clo) )*);
-
     def closureMakers = cat(
         ( idx in (0..), clo in closures <> closureMaker(idx, clo) )*);
-
+    def closureBodies = cat(
+        ( idx in (0..), clo in closures <> closureBody(idx, clo) )*);
     def mainClosure = "makeClosure\(closuresNode::node.id)(/*TODO: state*/)";
 
     def replacements = {
