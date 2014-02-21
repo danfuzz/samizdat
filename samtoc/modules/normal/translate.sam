@@ -51,7 +51,8 @@ genericBind(
     fn call_translate(node, varsBox) {
         ## TODO: Handle `voidable` and `interpolate` nodes.
         def actuals = (a in node.actuals <> translate(a, varsBox));
-        <> CodeGen::makeCall(translate(node.function, varsBox), actuals*)
+        <> CodeGen::makeCall("FUN_CALL",
+            translate(node.function, varsBox), actuals*)
     });
 
 genericBind(
