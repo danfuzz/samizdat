@@ -131,6 +131,23 @@ fn closureBody(cloIdx, clo) {
     \/}\n\n"
 };
 
+## Constructs the top-level closure. This is similar to translating a
+## `@closureRef` node, except that the closure state is initialized from
+## the global context and not from local or captured variables.
+fn mainClosureMaker(node) {
+    ## TODO: The `GLOBALS` lookups need to use literal variables.
+    def stat = CodeGen::makeAssign("zvalue result",
+        CodeGen::makeCall("makeClosure\(node.id)",
+            ( name in node.varRefs ->
+                <> CodeGen::makeCall("collGet",
+                    "GLOBALS",
+                    CodeGen::makeComment("\%q(name)", "\%q(name)"))
+            )*));
+    <> "\
+    \/\(stat.indent(1, 78))
+    \/  return result;\n"
+};
+
 fn compile(sourcePath, targetPath) {
     def sourceText = Io1::readFileUtf8(sourcePath);
 
@@ -160,7 +177,7 @@ fn compile(sourcePath, targetPath) {
         ( idx in (0..), clo in closures <> closureMaker(idx, clo) )*);
     def closureBodies = cat(
         ( idx in (0..), clo in closures <> closureBody(idx, clo) )*);
-    def mainClosure = "makeClosure\(closuresNode::node.id)(/*TODO: state*/)";
+    def mainClosure = mainClosureMaker(closuresNode::node);
 
     def replacements = {
         closureBodies,
