@@ -40,7 +40,7 @@ fn varInit(binding) {
 
 fn closureMaker(cloIdx, clo) {
     def name = (def n = clo.name)
-        & translate::translateFlatten(n, Box::nullBox)
+        & translate::translate(n, Box::nullBox).flatten()
         | "NULL";
 
     def varRefs = clo.varRefs;
@@ -116,10 +116,10 @@ fn closureBody(cloIdx, clo) {
     ## a generator, as its body has to run before `yield` is
     ## calculated (in order to have the right vars defined).
     def statements = [ s in clo.statements ->
-        <> "\(translate::translateIndent(s, varsBox, 1, 78));\n"
+        <> "\(translate::translate(s, varsBox).indent(1, 78));\n"
     ];
     def yield = (def y = clo.yield)
-        & translate::translateFlatten(y, varsBox)
+        & translate::translate(y, varsBox).flatten()
         | "NULL";
 
     <> "\
