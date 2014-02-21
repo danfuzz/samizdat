@@ -2,6 +2,8 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+def Interner = submoduleUse("Interner");
+
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
 ## TODO: Ought to be able to do something like:
@@ -19,32 +21,35 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-## `lits(node, litsBox)`, implements one layer of literal collection.
+def get_interns = Interner::get_interns;
+def intern = Interner::intern;
+
+## `lits(node, interner)`, implements one layer of literal collection.
 def lits = makeRegularGeneric("lits", 2, 2);
 
 genericBind(
     lits,
     "call",
-    fn call_lits(node, litsBox) {
+    fn call_lits(node, interner) {
         <> @call{
-            function: lits(node.function, litsBox),
-            actuals: [ a in node.actuals <> lits(a, litsBox) ]
+            function: lits(node.function, interner),
+            actuals: [ a in node.actuals <> lits(a, interner) ]
         }
     });
 
 genericBind(
     lits,
     "closure",
-    fn closure_lits(node, litsBox) {
+    fn closure_lits(node, interner) {
         def name = (def value = node.name)
-            & {name: lits(@literal{value}, litsBox)}
+            & {name: lits(@literal{value}, interner)}
             | {};
 
         <> @closure{
             name*,
             formals: node.formals,
-            statements: [ s in node.statements <> lits(s, litsBox) ],
-            ((def y = node.yield) & {yield: lits(y, litsBox)} | {})*,
+            statements: [ s in node.statements <> lits(s, interner) ],
+            ((def y = node.yield) & {yield: lits(y, interner)} | {})*,
             ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
         }
     });
@@ -52,49 +57,40 @@ genericBind(
 genericBind(
     lits,
     "expression",
-    fn expression_lits(node, litsBox) {
-        <> @expression{value: lits(node.value, litsBox)}
+    fn expression_lits(node, interner) {
+        <> @expression{value: lits(node.value, interner)}
     });
 
 genericBind(
     lits,
     "interpolate",
-    fn interpolate_lits(node, litsBox) {
-        <> @interpolate{value: lits(node.value, litsBox)}
+    fn interpolate_lits(node, interner) {
+        <> @interpolate{value: lits(node.value, interner)}
     });
 
 genericBind(
     lits,
     "literal",
-    fn literal_lits(node, litsBox) {
-        def value = node.value;
-        def lits = Box::fetch(litsBox);
-
-        if (def already = lits[value]) {
-            return already;
-        };
-
-        def result = @literalRef{id: #lits};
-        Box::store(litsBox, {lits*, (value): result});
-        <> result
+    fn literal_lits(node, interner) {
+        <> @literalRef{id: interner.intern(node.value)}
     });
 
 genericBind(
     lits,
     "varBind",
-    fn varBind_lits(node, litsBox) {
+    fn varBind_lits(node, interner) {
         <> @varBind{
             name: node.name,
-            value: lits(node.value, litsBox)
+            value: lits(node.value, interner)
         }
     });
 
 genericBind(
     lits,
     "varDef",
-    fn varDef_lits(node, litsBox) {
+    fn varDef_lits(node, interner) {
         def value = ifValue { <> node.value }
-            { value <> {value: lits(value, litsBox)} }
+            { value <> {value: lits(value, interner)} }
             { <> {} };
         <> @varDef{name: node.name, value*}
     });
@@ -102,9 +98,9 @@ genericBind(
 genericBind(
     lits,
     "varDefMutable",
-    fn varDefMutable_lits(node, litsBox) {
+    fn varDefMutable_lits(node, interner) {
         def value = ifValue { <> node.value }
-            { value <> {value: lits(value, litsBox)} }
+            { value <> {value: lits(value, interner)} }
             { <> {} };
         <> @varDefMutable{name: node.name, value*}
     });
@@ -112,15 +108,15 @@ genericBind(
 genericBind(
     lits,
     "varRef",
-    fn varRef_lits(node, litsBox) {
+    fn varRef_lits(node, interner) {
         <> node
     });
 
 genericBind(
     lits,
     "voidable",
-    fn voidable_lits(node, litsBox) {
-        <> @voidable{value: lits(node.value, litsBox)}
+    fn voidable_lits(node, interner) {
+        <> @voidable{value: lits(node.value, interner)}
     });
 
 ## Collects all literal nodes at or under the given one into a list.
@@ -128,16 +124,9 @@ genericBind(
 ## literals and `node` is a replacement for the original argument, in which
 ## literals have been replaced by indexed references to same.
 fn collectLiterals(node) {
-    def litsBox = Box::makeCell({});
-    def newNode = lits(node, litsBox);
-    def literalsMap = Box::fetch(litsBox);
-
-    def litsBoxList = [ n in (0..#literalsMap) <> Box::makePromise() ];
-    for (l in literalsMap) {
-        def index = dataOf(valueOf(l))::id;
-        Box::store(litsBoxList[index], keyOf(l))
-    };
-    def literals = [ box in litsBoxList <> Box::fetch(box) ];
+    def interner = Interner::makeInterner();
+    def newNode = lits(node, interner);
+    def literals = interner.interns;
 
     <> { literals, node: newNode }
 };
