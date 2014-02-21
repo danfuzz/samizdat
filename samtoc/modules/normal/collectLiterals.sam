@@ -21,7 +21,6 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-def get_interns = Interner::get_interns;
 def intern = Interner::intern;
 
 ## `lits(node, interner)`, implements one layer of literal collection.
@@ -119,16 +118,11 @@ genericBind(
         <> @voidable{value: lits(node.value, interner)}
     });
 
-## Collects all literal nodes at or under the given one into a list.
-## Returns `{literals, node}`, where `literals` is a list of collected
-## literals and `node` is a replacement for the original argument, in which
-## literals have been replaced by indexed references to same.
-fn collectLiterals(node) {
-    def interner = Interner::makeInterner();
-    def newNode = lits(node, interner);
-    def literals = interner.interns;
-
-    <> { literals, node: newNode }
+## Interns all literal nodes at or under the given `node`, into the given
+## `interner`. Returns a replacement for the original `node` argument, in
+## which literals have been replaced by indexed references to same.
+fn collectLiterals(node, interner) {
+    <> lits(node, interner);
 };
 
 <> collectLiterals

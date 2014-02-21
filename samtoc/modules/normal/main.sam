@@ -5,6 +5,7 @@
 def templateText = submoduleRead("template.txt");
 def collectClosures = submoduleUse("collectClosures");
 def collectLiterals = submoduleUse("collectLiterals");
+def Interner = submoduleUse("Interner");
 def translate = submoduleUse("translate");
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
@@ -17,6 +18,9 @@ def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
 def flatten = CodeGen::flatten;
 def indent = CodeGen::indent;
+
+def get_interns = Interner::get_interns;
+def intern = Interner::intern;
 
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
@@ -157,8 +161,10 @@ fn compile(sourcePath, targetPath) {
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
     def mainNode = Lang2::parseProgram(sourceText);
-    def litsNode = collectLiterals(mainNode);
-    def literals = litsNode::literals;
+
+    def interner = Interner::makeInterner();
+    def litsNode = collectLiterals(mainNode, interner);
+    def literals = interner.interns;
 
     def literalDeclarations = cat(
         ( index in (0..!#literals) ->
@@ -174,7 +180,7 @@ fn compile(sourcePath, targetPath) {
             <> init.indent(2, 78)
         )*);
 
-    def closuresNode = collectClosures(litsNode::node);
+    def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;
     def closureMakers = cat(
         ( idx in (0..), clo in closures <> closureMaker(idx, clo) )*);
