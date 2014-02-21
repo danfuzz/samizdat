@@ -109,24 +109,27 @@ fn closureBody(cloIdx, clo) {
         <> stat.indent(1, 78)
     ];
 
-    ## Translate the statements and the yield. Note that the
-    ## `statements` definition is a list comprehension and not
-    ## a generator, as its body has to run before `yield` is
-    ## calculated (in order to have the right vars defined).
+    ## Translate the statements and the yield. Note that the `statements`
+    ## definition is a list constructor (not a generator), as its body has
+    ## to run before `yield` is calculated (in order to have the correct
+    ## set of vars defined).
     def statements = [ s in clo.statements ->
         def stat = CodeGen::makeStatement(translate::translate(s, varsBox));
         <> stat.indent(1, 78)
     ];
+
     def yield = (def y = clo.yield)
-        & translate::translate(y, varsBox).flatten()
+        & translate::translate(y, varsBox)
         | "NULL";
+    def yieldStat = CodeGen::makeStatement(
+        CodeGen::makeAssign("zvalue result", yield));
 
     <> "\
     \/static FUN_IMPL_DECL(\(cloIdx)) {
     \/  zvalue *state = builtinGetState(thisFunction).arr;
     \/\(varStats)
     \/\(statements)
-    \/  zvalue result = \(yield);
+    \/\(yieldStat.indent(1, 78))
     \/  return result;
     \/}\n\n"
 };
