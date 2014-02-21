@@ -180,18 +180,4 @@ genericBind(convert, Value, Value_convert);
 ## Exported definitions
 ##
 
-## Converts a tree to a string, without any indentation.
-fn convertFlatten(tree) {
-    <> tree.convert().flatten()
-};
-
-## Converts a tree to a string, with indentation.
-fn convertIndent(tree, level, maxColumns) {
-    <> tree.convert().indent(level, maxColumns)
-};
-
-<> {
-    convert,
-    convertFlatten,
-    convertIndent
-}
+<> {convert}
