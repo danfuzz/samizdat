@@ -161,8 +161,4 @@ fn translateIndent(node, varsBox, level, maxColumns) {
     <> node.translate(varsBox).indent(level, maxColumns)
 };
 
-<> {
-    translate,
-    translateFlatten,
-    translateIndent
-}
+<> {translate}
