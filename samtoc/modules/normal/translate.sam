@@ -65,7 +65,14 @@ genericBind(
     translate,
     "closureRef",
     fn closureRef_translate(node, varsBox) {
-        <> "NULL /* TODO: closure_\(node.id) \%q(node.varRefs) */"
+        ## This passes each of the `varRefs` as an argument to the
+        ## closure maker.
+        def vars = Box::fetch(varsBox);
+        <> CodeGen::makeCall("makeClosure\(node.id)",
+            ( name in node.varRefs ->
+                <> vars[name]::name
+                    | Io1::die("Capture of undefined variable: \%q(name)");
+            )*)
     });
 
 genericBind(
