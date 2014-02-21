@@ -1,0 +1,42 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Statement tree.
+##
+
+def indentation = submoduleUse("indentation")::indentation;
+def protocol = submoduleUse("protocol");
+
+def flatten = protocol::flatten;
+def indent = protocol::indent;
+
+fn makeStatement(tree) {
+    <> @Statement{tree, flat: "\(tree.flatten());"}
+};
+
+genericBind(
+    flatten,
+    "Statement",
+    fn Statement_flatten(tree) {
+        <> dataOf(tree)::flat
+    });
+
+genericBind(
+    indent,
+    "Statement",
+    fn Statement_indent(tree, level, maxColumns) {
+        def data = dataOf(tree);
+        def prefix = indentation(level);
+
+        <> if ((#data::flat + #prefix) <= maxColumns) {
+            <> "\(prefix)\(data::flat)\n"
+        } else {
+            <> "\(tree.indent(level, maxColumns))\n"
+        }
+    });
+
+<> {
+    makeStatement
+}
