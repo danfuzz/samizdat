@@ -31,13 +31,6 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-fn varInit(binding) {
-    <> CodeGen::makeStatement(
-        CodeGen::makeComment(
-            "\%q(binding::origName)",
-            CodeGen::makeAssign("zvalue \(binding::name)", binding::init)))
-};
-
 fn closureMaker(cloIdx, clo) {
     def name = (def n = clo.name)
         & translate::translate(n, Box::nullBox).flatten()
@@ -107,7 +100,12 @@ fn closureBody(cloIdx, clo) {
     ## Make C local variable defintions for each of the incoming
     ## variables.
     def varStats = [ name in [freeNames*, formalNames*, clo.yieldDef?*] ->
-        def stat = varInit(vars[name]);
+        def binding = vars[name];
+        def stat = CodeGen::makeStatement(
+            CodeGen::makeComment(
+                "\%q(binding::origName)",
+                CodeGen::makeAssign("zvalue \(binding::name)",
+                    binding::init)));
         <> stat.indent(1, 78)
     ];
 
