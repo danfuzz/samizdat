@@ -23,8 +23,8 @@ static void initLiterals(zvalue context) {
  * Closure definitions
  */
 
-\(closureBodies)
 \(closureMakers)
+\(closureBodies)
 
 /*
  * Main entry point

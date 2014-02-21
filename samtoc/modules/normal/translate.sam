@@ -35,13 +35,13 @@ def translate = makeRegularGeneric("translate", 2, 2);
 fn varDefCommon(name, value, varsBox) {
     def vars = Box::fetch(varsBox);
     if ((def found = vars[name]) & (found::kind != "free")) {
-        Io1::die("Cannot re-define local variable: \%q(name).")
+        Io1::die("Cannot redefine local variable: \%q(name).")
     };
     def binding = {name: "local_\(#vars)", kind: "local"};
 
     Box::store(varsBox, {vars*, (name): binding});
     <> CodeGen::makeComment(
-        "\(binding::name) <- \%q(name)",
+        "\%q(name)",
         CodeGen::makeAssign("zvalue \(binding::name)", value));
 };
 
@@ -51,7 +51,8 @@ genericBind(
     fn call_translate(node, varsBox) {
         ## TODO: Handle `voidable` and `interpolate` nodes.
         def actuals = (a in node.actuals <> translate(a, varsBox));
-        <> CodeGen::makeCall(translate(node.function, varsBox), actuals*)
+        <> CodeGen::makeCall("FUN_CALL",
+            translate(node.function, varsBox), actuals*)
     });
 
 genericBind(
@@ -65,7 +66,14 @@ genericBind(
     translate,
     "closureRef",
     fn closureRef_translate(node, varsBox) {
-        <> "NULL /* TODO: closure_\(node.id) */"
+        ## This passes each of the `varRefs` as an argument to the
+        ## closure maker.
+        def vars = Box::fetch(varsBox);
+        <> CodeGen::makeCall("makeClosure\(node.id)",
+            ( name in node.varRefs ->
+                <> vars[name]::name
+                    | Io1::die("Capture of undefined variable: \%q(name)");
+            )*)
     });
 
 genericBind(
