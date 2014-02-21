@@ -50,8 +50,9 @@ fn closureMaker(cloIdx, clo) {
             <> CodeGen::makeComment("\%q(name)", "free_\(idx)")
         )*);
     def stateAssigns = [ idx in (0..#varRefs) ->
-        def stat = CodeGen::makeAssign("state[\(idx)]", "free_\(idx)");
-        <> "\(stat.indent(1, 78));\n"
+        def stat = CodeGen::makeStatement(
+            CodeGen::makeAssign("state[\(idx)]", "free_\(idx)"));
+        <> stat.indent(1, 78)
     ];
     def resultAssign = CodeGen::makeAssign(
         "zvalue result",
