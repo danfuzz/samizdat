@@ -147,11 +147,12 @@ fn compile(sourcePath, targetPath) {
 
     def literalInits = cat(
         ( index in (0..), lit in literals ->
-            def initText = DataCode::convertIndent(lit, 2, 78);
-            <> "\
-            \/  LIT_\(index) =
-            \/\(initText);
-            \/  datImmortalize(LIT_\(index));\n"
+            Io1::note("=== idx \(index)");
+            Io1::note("=== lit \%q(lit)");
+            def varName = "LIT_\(index)";
+            def init = CodeGen::makeCall("datImmortalize",
+                CodeGen::makeAssign("LIT_\(index)", DataCode::convert(lit)));
+            <> "\(init.indent(2, 78));\n"
         )*);
 
     def closuresNode = collectClosures(litsNode::node);
