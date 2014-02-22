@@ -50,6 +50,4 @@ genericBind(
         }
     });
 
-<> {
-    makeComment
-}
+<> {makeComment}

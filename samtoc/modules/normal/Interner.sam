@@ -1,0 +1,40 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+fn makeInterner() {
+    <> @Interner{values: Box::makeCell({})}
+};
+
+fn intern(this, value) {
+    def box = dataOf(this)::values;
+    def values = Box::fetch(box);
+
+    if (def already = values[value]) {
+        return already;
+    };
+
+    def result = #values;
+
+    Box::store(box, {values*, (value): result});
+    <> result
+};
+
+fn get_interns(this) {
+    def map = Box::fetch(dataOf(this)::values);
+    def boxList = [ n in (0..#map) <> Box::makePromise() ];
+
+    for (mapping in map) {
+        def id = valueOf(mapping);
+        Box::store(boxList[id], keyOf(mapping))
+    };
+
+    <> [ box in boxList <> Box::fetch(box) ]
+};
+
+<> {
+    get_interns,
+    intern,
+    makeInterner
+}

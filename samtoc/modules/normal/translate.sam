@@ -69,7 +69,7 @@ genericBind(
         ## This passes each of the `varRefs` as an argument to the
         ## closure maker.
         def vars = Box::fetch(varsBox);
-        <> CodeGen::makeCall("makeClosure\(node.id)",
+        <> CodeGen::makeCall("makeClosure_\(node.id)",
             ( name in node.varRefs ->
                 <> vars[name]::name
                     | Io1::die("Capture of undefined variable: \%q(name)");

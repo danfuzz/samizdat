@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Variable assignment tree.
+## Return tree.
 ##
 
 def indentation = submoduleUse("indentation")::indentation;
@@ -12,35 +12,31 @@ def protocol = submoduleUse("protocol");
 def flatten = protocol::flatten;
 def indent = protocol::indent;
 
-fn makeAssign(target, value) {
-    def flat = "\(target.flatten()) = \(value.flatten())";
-
-    <> @Assign{target, value, flat}
+fn makeReturn(tree) {
+    <> @Return{tree, flat: "return \(tree.flatten())"}
 };
 
 genericBind(
     flatten,
-    "Assign",
-    fn Assign_flatten(tree) {
+    "Return",
+    fn Return_flatten(tree) {
         <> dataOf(tree)::flat
     });
 
 genericBind(
     indent,
-    "Assign",
-    fn Assign_indent(tree, level, maxColumns) {
+    "Return",
+    fn Return_indent(tree, level, maxColumns) {
         def data = dataOf(tree);
         def prefix = indentation(level);
 
-        if ((#data::flat + #prefix) <= maxColumns) {
-            return "\[prefix, data::flat]"
-        };
-
-        <> "\[
-            data::target.indent(level, maxColumns),
-            " =\n",
-            data::value.indent(level + 1, maxColumns)
-        ]"
+        <> if ((#data::flat + #prefix) <= maxColumns) {
+            <> "\(prefix)\(data::flat)"
+        } else {
+            <> "\
+            \(prefix)return
+            \(data::tree.indent(level + 1, maxColumns))"
+        }
     });
 
-<> {makeAssign}
+<> {makeReturn}

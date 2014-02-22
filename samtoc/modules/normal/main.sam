@@ -3,8 +3,10 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def templateText = submoduleRead("template.txt");
+
+def Interner = submoduleUse("Interner");
 def collectClosures = submoduleUse("collectClosures");
-def collectLiterals = submoduleUse("collectLiterals");
+def internLiterals = submoduleUse("internLiterals");
 def translate = submoduleUse("translate");
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
@@ -17,6 +19,9 @@ def Lang2 = moduleUse({name: ["core", "Lang2"]});
 
 def flatten = CodeGen::flatten;
 def indent = CodeGen::indent;
+
+def get_interns = Interner::get_interns;
+def intern = Interner::intern;
 
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
@@ -38,7 +43,7 @@ fn closureMaker(cloIdx, clo) {
 
     def varRefs = clo.varRefs;
     def declaration = CodeGen::makeCall(
-        "static zvalue makeClosure\(cloIdx)",
+        "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
             <> CodeGen::makeComment("\%q(name)", "free_\(idx)")
         )*);
@@ -109,26 +114,45 @@ fn closureBody(cloIdx, clo) {
         <> stat.indent(1, 78)
     ];
 
-    ## Translate the statements and the yield. Note that the
-    ## `statements` definition is a list comprehension and not
-    ## a generator, as its body has to run before `yield` is
-    ## calculated (in order to have the right vars defined).
+    ## Translate the statements and the yield. Note that the `statements`
+    ## definition is a list constructor (not a generator), as its body has
+    ## to run before `yield` is calculated (in order to have the correct
+    ## set of vars defined).
     def statements = [ s in clo.statements ->
         def stat = CodeGen::makeStatement(translate::translate(s, varsBox));
         <> stat.indent(1, 78)
     ];
+
     def yield = (def y = clo.yield)
-        & translate::translate(y, varsBox).flatten()
+        & translate::translate(y, varsBox)
         | "NULL";
+    def yieldStat = CodeGen::makeStatement(
+        CodeGen::makeReturn(yield));
 
     <> "\
     \/static FUN_IMPL_DECL(\(cloIdx)) {
     \/  zvalue *state = builtinGetState(thisFunction).arr;
     \/\(varStats)
     \/\(statements)
-    \/  zvalue result = \(yield);
-    \/  return result;
-    \/}\n\n"
+    \/\(yieldStat.indent(1, 78))}\n\n"
+};
+
+## Constructs the top-level closure. This is similar to translating a
+## `@closureRef` node, except that the closure state is initialized from
+## the global context and not from local or captured variables.
+fn mainClosureMaker(node, interner) {
+    def varRefs = node.varRefs;
+    def ids = [ name in varRefs <> interner.intern(name) ];
+
+    def stat = CodeGen::makeStatement(
+        CodeGen::makeReturn(
+            CodeGen::makeCall("makeClosure_\(node.id)",
+                ( name in varRefs, id in ids ->
+                    <> CodeGen::makeComment("\%q(name)",
+                        CodeGen::makeCall("collGet", "GLOBALS", "LIT_\(id)"))
+                )*)));
+
+    <> stat.indent(1, 78)
 };
 
 fn compile(sourcePath, targetPath) {
@@ -137,30 +161,31 @@ fn compile(sourcePath, targetPath) {
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
     def mainNode = Lang2::parseProgram(sourceText);
-    def litsNode = collectLiterals(mainNode);
-    def literals = litsNode::literals;
 
-    def literalDeclarations = cat(
-        ( index in (0..!#literals) ->
-            <> "static zvalue LIT_\(index) = NULL;\n"
-        )*);
+    def interner = Interner::makeInterner();
+    def litsNode = internLiterals(mainNode, interner);
 
-    def literalInits = cat(
-        ( index in (0..), lit in literals ->
-            def init = CodeGen::makeStatement(
-                    CodeGen::makeCall("datImmortalize",
-                        CodeGen::makeAssign("LIT_\(index)",
-                            DataCode::convert(lit))));
-            <> init.indent(2, 78)
-        )*);
-
-    def closuresNode = collectClosures(litsNode::node);
+    def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;
     def closureMakers = cat(
         ( idx in (0..), clo in closures <> closureMaker(idx, clo) )*);
     def closureBodies = cat(
         ( idx in (0..), clo in closures <> closureBody(idx, clo) )*);
-    def mainClosure = "makeClosure\(closuresNode::node.id)(/*TODO: state*/)";
+    def mainClosure = mainClosureMaker(closuresNode::node, interner);
+
+    def literals = interner.interns;
+    def literalDeclarations = cat(
+        ( index in (0..!#literals) ->
+            <> "static zvalue LIT_\(index) = NULL;\n"
+        )*);
+    def literalInits = cat(
+        ( index in (0..), lit in literals ->
+            def init = CodeGen::makeStatement(
+                CodeGen::makeCall("datImmortalize",
+                    CodeGen::makeAssign("LIT_\(index)",
+                        DataCode::convert(lit))));
+            <> init.indent(2, 78)
+        )*);
 
     def replacements = {
         closureBodies,

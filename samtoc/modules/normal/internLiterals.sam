@@ -1,0 +1,128 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def Interner = submoduleUse("Interner");
+
+def Lang0Node = moduleUse({name: ["Lang0Node"]});
+
+## TODO: Ought to be able to do something like:
+##     use Lang0Node *;
+def get_actuals    = Lang0Node::get_actuals;
+def get_formals    = Lang0Node::get_formals;
+def get_function   = Lang0Node::get_function;
+def get_id         = Lang0Node::get_id;
+def get_maxArgs    = Lang0Node::get_maxArgs;
+def get_minArgs    = Lang0Node::get_minArgs;
+def get_name       = Lang0Node::get_name;
+def get_statements = Lang0Node::get_statements;
+def get_value      = Lang0Node::get_value;
+def get_varRefs    = Lang0Node::get_varRefs;
+def get_yield      = Lang0Node::get_yield;
+def get_yieldDef   = Lang0Node::get_yieldDef;
+
+def intern = Interner::intern;
+
+## `lits(node, interner)`, implements one layer of literal interning.
+def lits = makeRegularGeneric("lits", 2, 2);
+
+genericBind(
+    lits,
+    "call",
+    fn call_lits(node, interner) {
+        <> @call{
+            function: lits(node.function, interner),
+            actuals: [ a in node.actuals <> lits(a, interner) ]
+        }
+    });
+
+genericBind(
+    lits,
+    "closure",
+    fn closure_lits(node, interner) {
+        def name = (def value = node.name)
+            & {name: lits(@literal{value}, interner)}
+            | {};
+
+        <> @closure{
+            name*,
+            formals: node.formals,
+            statements: [ s in node.statements <> lits(s, interner) ],
+            ((def y = node.yield) & {yield: lits(y, interner)} | {})*,
+            ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
+        }
+    });
+
+genericBind(
+    lits,
+    "expression",
+    fn expression_lits(node, interner) {
+        <> @expression{value: lits(node.value, interner)}
+    });
+
+genericBind(
+    lits,
+    "interpolate",
+    fn interpolate_lits(node, interner) {
+        <> @interpolate{value: lits(node.value, interner)}
+    });
+
+genericBind(
+    lits,
+    "literal",
+    fn literal_lits(node, interner) {
+        <> @literalRef{id: interner.intern(node.value)}
+    });
+
+genericBind(
+    lits,
+    "varBind",
+    fn varBind_lits(node, interner) {
+        <> @varBind{
+            name: node.name,
+            value: lits(node.value, interner)
+        }
+    });
+
+genericBind(
+    lits,
+    "varDef",
+    fn varDef_lits(node, interner) {
+        def value = ifValue { <> node.value }
+            { value <> {value: lits(value, interner)} }
+            { <> {} };
+        <> @varDef{name: node.name, value*}
+    });
+
+genericBind(
+    lits,
+    "varDefMutable",
+    fn varDefMutable_lits(node, interner) {
+        def value = ifValue { <> node.value }
+            { value <> {value: lits(value, interner)} }
+            { <> {} };
+        <> @varDefMutable{name: node.name, value*}
+    });
+
+genericBind(
+    lits,
+    "varRef",
+    fn varRef_lits(node, interner) {
+        <> node
+    });
+
+genericBind(
+    lits,
+    "voidable",
+    fn voidable_lits(node, interner) {
+        <> @voidable{value: lits(node.value, interner)}
+    });
+
+## Interns all literal nodes at or under the given `node`, into the given
+## `interner`. Returns a replacement for the original `node` argument, in
+## which literals have been replaced by indexed references to same.
+fn internLiterals(node, interner) {
+    <> lits(node, interner);
+};
+
+<> internLiterals

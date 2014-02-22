@@ -13,6 +13,7 @@ submoduleUse("String");
     submoduleUse("Assign")*,
     submoduleUse("Call")*,
     submoduleUse("Comment")*,
+    submoduleUse("Return")*,
     submoduleUse("Statement")*,
     submoduleUse("protocol")*
 }

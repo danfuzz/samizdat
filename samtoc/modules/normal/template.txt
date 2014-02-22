@@ -11,6 +11,10 @@
 #include "type/String.h"
 #include "type/Value.h"
 
+/* Global context originally passed into `eval`. */
+static zvalue GLOBALS = NULL;
+
+
 /*
  * Literal values
  */
@@ -19,18 +23,22 @@
 static void initLiterals(zvalue context) {
 \(literalInits)}
 
+
 /*
  * Closure definitions
  */
 
 \(closureMakers)
 \(closureBodies)
+static zvalue mainClosure(void) {
+\(mainClosure)}
+
 
 /*
  * Main entry point
  */
 
-static zvalue GLOBALS = NULL;
+/* Top-level evaluation result. */
 static zvalue EVAL_RESULT = NULL;
 
 zvalue eval(zvalue context) {
@@ -42,7 +50,7 @@ zvalue eval(zvalue context) {
   }
 
   if (EVAL_RESULT == NULL) {
-    EVAL_RESULT = \(mainClosure);
+    EVAL_RESULT = mainClosure();
     datImmortalize(EVAL_RESULT);
   }
 
