@@ -57,6 +57,4 @@ genericBind(
         ]"
     });
 
-<> {
-    makeCall
-}
+<> {makeCall}
