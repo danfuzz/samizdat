@@ -43,7 +43,7 @@ fn closureMaker(cloIdx, clo) {
 
     def varRefs = clo.varRefs;
     def declaration = CodeGen::makeCall(
-        "static zvalue makeClosure\(cloIdx)",
+        "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
             <> CodeGen::makeComment("\%q(name)", "free_\(idx)")
         )*);
@@ -147,7 +147,7 @@ fn mainClosureMaker(node, interner) {
     def ids = [ name in varRefs <> interner.intern(name) ];
 
     def stat = CodeGen::makeAssign("zvalue result",
-        CodeGen::makeCall("makeClosure\(node.id)",
+        CodeGen::makeCall("makeClosure_\(node.id)",
             ( name in varRefs, id in ids ->
                 <> CodeGen::makeComment("\%q(name)",
                     CodeGen::makeCall("collGet", "GLOBALS", "LIT_\(id)"))
