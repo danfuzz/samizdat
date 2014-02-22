@@ -3,9 +3,10 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def templateText = submoduleRead("template.txt");
-def collectClosures = submoduleUse("collectClosures");
-def collectLiterals = submoduleUse("collectLiterals");
+
 def Interner = submoduleUse("Interner");
+def collectClosures = submoduleUse("collectClosures");
+def internLiterals = submoduleUse("internLiterals");
 def translate = submoduleUse("translate");
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
@@ -163,7 +164,7 @@ fn compile(sourcePath, targetPath) {
     def mainNode = Lang2::parseProgram(sourceText);
 
     def interner = Interner::makeInterner();
-    def litsNode = collectLiterals(mainNode, interner);
+    def litsNode = internLiterals(mainNode, interner);
     def literals = interner.interns;
 
     def literalDeclarations = cat(
@@ -174,9 +175,9 @@ fn compile(sourcePath, targetPath) {
     def literalInits = cat(
         ( index in (0..), lit in literals ->
             def init = CodeGen::makeStatement(
-                    CodeGen::makeCall("datImmortalize",
-                        CodeGen::makeAssign("LIT_\(index)",
-                            DataCode::convert(lit))));
+                CodeGen::makeCall("datImmortalize",
+                    CodeGen::makeAssign("LIT_\(index)",
+                        DataCode::convert(lit))));
             <> init.indent(2, 78)
         )*);
 

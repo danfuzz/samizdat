@@ -23,7 +23,7 @@ def get_yieldDef   = Lang0Node::get_yieldDef;
 
 def intern = Interner::intern;
 
-## `lits(node, interner)`, implements one layer of literal collection.
+## `lits(node, interner)`, implements one layer of literal interning.
 def lits = makeRegularGeneric("lits", 2, 2);
 
 genericBind(
@@ -121,8 +121,8 @@ genericBind(
 ## Interns all literal nodes at or under the given `node`, into the given
 ## `interner`. Returns a replacement for the original `node` argument, in
 ## which literals have been replaced by indexed references to same.
-fn collectLiterals(node, interner) {
+fn internLiterals(node, interner) {
     <> lits(node, interner);
 };
 
-<> collectLiterals
+<> internLiterals
