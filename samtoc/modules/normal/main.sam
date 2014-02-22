@@ -127,16 +127,14 @@ fn closureBody(cloIdx, clo) {
         & translate::translate(y, varsBox)
         | "NULL";
     def yieldStat = CodeGen::makeStatement(
-        CodeGen::makeAssign("zvalue result", yield));
+        CodeGen::makeReturn(yield));
 
     <> "\
     \/static FUN_IMPL_DECL(\(cloIdx)) {
     \/  zvalue *state = builtinGetState(thisFunction).arr;
     \/\(varStats)
     \/\(statements)
-    \/\(yieldStat.indent(1, 78))
-    \/  return result;
-    \/}\n\n"
+    \/\(yieldStat.indent(1, 78))}\n\n"
 };
 
 ## Constructs the top-level closure. This is similar to translating a
@@ -146,16 +144,15 @@ fn mainClosureMaker(node, interner) {
     def varRefs = node.varRefs;
     def ids = [ name in varRefs <> interner.intern(name) ];
 
-    def stat = CodeGen::makeAssign("zvalue result",
-        CodeGen::makeCall("makeClosure_\(node.id)",
-            ( name in varRefs, id in ids ->
-                <> CodeGen::makeComment("\%q(name)",
-                    CodeGen::makeCall("collGet", "GLOBALS", "LIT_\(id)"))
-            )*));
+    def stat = CodeGen::makeStatement(
+        CodeGen::makeReturn(
+            CodeGen::makeCall("makeClosure_\(node.id)",
+                ( name in varRefs, id in ids ->
+                    <> CodeGen::makeComment("\%q(name)",
+                        CodeGen::makeCall("collGet", "GLOBALS", "LIT_\(id)"))
+                )*)));
 
-    <> "\
-    \/\(stat.indent(1, 78))
-    \/  return result;\n"
+    <> stat.indent(1, 78)
 };
 
 fn compile(sourcePath, targetPath) {
