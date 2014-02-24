@@ -36,6 +36,11 @@ def get_varRefs    = Lang0Node::get_varRefs;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
+## Indent with the usual width column limit.
+fn usualIndent(tree, depth) {
+    <> indent(tree, depth, 78)
+};
+
 fn closureMaker(cloIdx, clo) {
     def name = (def n = clo.name)
         & translate::translate(n, Box::nullBox).flatten()
@@ -50,7 +55,7 @@ fn closureMaker(cloIdx, clo) {
     def stateAssigns = [ idx in (0..#varRefs) ->
         def stat = CodeGen::makeStatement(
             CodeGen::makeAssign("state[\(idx)]", "free_\(idx)"));
-        <> stat.indent(1, 78)
+        <> stat.usualIndent(1)
     ];
     def resultAssign = CodeGen::makeAssign(
         "zvalue result",
@@ -59,8 +64,8 @@ fn closureMaker(cloIdx, clo) {
             "FUN_IMPL_NAME(\(cloIdx))", "\(#varRefs)", name));
 
     <> "\
-    \/\(declaration.indent(0, 78)) {
-    \/\(resultAssign.indent(1, 78));
+    \/\(declaration.usualIndent(0)) {
+    \/\(resultAssign.usualIndent(1));
     \/  zvalue *state = builtinGetState(result).arr;
     \/\(stateAssigns)
     \/  return result;
@@ -111,7 +116,7 @@ fn closureBody(cloIdx, clo) {
                 "\%q(binding::origName)",
                 CodeGen::makeAssign("zvalue \(binding::name)",
                     binding::init)));
-        <> stat.indent(1, 78)
+        <> stat.usualIndent(1)
     ];
 
     ## Translate the statements and the yield. Note that the `statements`
@@ -120,7 +125,7 @@ fn closureBody(cloIdx, clo) {
     ## set of vars defined).
     def statements = [ s in clo.statements ->
         def stat = CodeGen::makeStatement(translate::translate(s, varsBox));
-        <> stat.indent(1, 78)
+        <> stat.usualIndent(1)
     ];
 
     def yield = (def y = clo.yield)
@@ -134,7 +139,7 @@ fn closureBody(cloIdx, clo) {
     \/  zvalue *state = builtinGetState(thisFunction).arr;
     \/\(varStats)
     \/\(statements)
-    \/\(yieldStat.indent(1, 78))}\n\n"
+    \/\(yieldStat.usualIndent(1))}\n\n"
 };
 
 ## Constructs the top-level closure. This is similar to translating a
@@ -152,7 +157,7 @@ fn mainClosureMaker(node, interner) {
                         CodeGen::makeCall("collGet", "GLOBALS", "LIT_\(id)"))
                 )*)));
 
-    <> stat.indent(1, 78)
+    <> stat.usualIndent(1)
 };
 
 fn compile(sourcePath, targetPath) {
@@ -184,7 +189,7 @@ fn compile(sourcePath, targetPath) {
                 CodeGen::makeCall("datImmortalize",
                     CodeGen::makeAssign("LIT_\(index)",
                         DataCode::convert(lit))));
-            <> init.indent(2, 78)
+            <> init.usualIndent(2)
         )*);
 
     def replacements = {
