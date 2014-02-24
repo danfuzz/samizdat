@@ -258,6 +258,7 @@ fn processStringParts(parts) {
         ifIs { <> hasType(part, "error") }
             { return part };
 
+        ## TODO: Remove void contagion here.
         ifValue { <> isString(&Sequence::nthFromEnd(elems, 0)) }
             { lastString ->
                 ifIs { <> isString(part) }

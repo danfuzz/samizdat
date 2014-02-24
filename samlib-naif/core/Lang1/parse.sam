@@ -649,6 +649,7 @@ def parParserSetString = Peg::makeMainSequence(
                 def endChar = dataOf(end);
                 <> ifIs
                     {
+                        ## TODO: Remove void contagion here.
                         <> eq(1,
                             &eq(Collection::sizeOf(startChar),
                                 Collection::sizeOf(endChar)))

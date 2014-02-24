@@ -185,6 +185,7 @@ fn PegSequence_parse(peg, box, input, items*) {
 genericBind(parse, "PegSequence", PegSequence_parse);
 
 ## Documented in spec.
+## TODO: Remove void contagion here.
 fn PegThunk_parse(peg, box, input, items*) {
     <> parse(&(dataOf(peg)(items*)), box, input, items*)
 };

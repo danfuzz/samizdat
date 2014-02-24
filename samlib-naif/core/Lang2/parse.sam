@@ -824,6 +824,7 @@ def parParserSetString = {/
             def endChar = dataOf(end);
             <> ifIs
                 {
+                    ## TODO: Remove void contagion here.
                     <> eq(1,
                         &eq(Collection::sizeOf(startChar),
                             Collection::sizeOf(endChar)))
@@ -2142,6 +2143,8 @@ def SWITCH_DISPATCH_CLOSURE = Lang0::parseProgram("
 ## Note that the translation here is arranged so that the expressions to
 ## evaluate and all the case bodies only see the expected variable bindings,
 ## and not any "implementation detail" local variables.
+##
+## TODO: Remove generation of voidable (void contagion) here.
 def parSwitchExpression = {/
     @switch
     breakDef = parOptBreakDef

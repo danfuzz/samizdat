@@ -17,6 +17,7 @@ def Generator = moduleUse({name: ["proto", "Generator"]});
 ##
 
 ## Generator used when iterating over lists and strings.
+## TODO: Remove void contagion here.
 fn SequenceGenerator_nextValue(gen, box) {
     def data = dataOf(gen);
     def index = data::index;
