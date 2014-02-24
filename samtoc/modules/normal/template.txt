@@ -7,9 +7,13 @@
  * caution!
  */
 
+#include "type/Box.h"
 #include "type/Builtin.h"
+#include "type/Collection.h"
+#include "type/Int.h"
 #include "type/String.h"
 #include "type/Value.h"
+#include "util.h"
 
 /* Global context originally passed into `eval`. */
 static zvalue GLOBALS = NULL;
@@ -28,8 +32,9 @@ static void initLiterals(zvalue context) {
  * Closure definitions
  */
 
-\(closureMakers)
+\(closureDeclarations)
 \(closureBodies)
+\(closureMakers)
 static zvalue mainClosure(void) {
 \(mainClosure)}
 
@@ -45,7 +50,7 @@ zvalue eval(zvalue context) {
   if (GLOBALS == NULL) {
     GLOBALS = context;
     initLiterals(context);
-  } else if (!valEq(GLOBALS, context))
+  } else if (!valEq(GLOBALS, context)) {
     die("Cannot re-eval with different global context.");
   }
 
