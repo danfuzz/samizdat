@@ -59,7 +59,7 @@ fn closureMaker(cloIdx, clo) {
 
     def varRefs = clo.varRefs;
     def declaration = closureDeclaration(cloIdx, clo);
-    def stateAssigns = [ idx in (0..#varRefs) ->
+    def stateAssigns = [ idx in (0..!#varRefs) ->
         def stat = CodeGen::makeStatement(
             CodeGen::makeAssign("state[\(idx)]", "free_\(idx)"));
         <> stat.usualIndent(1)
