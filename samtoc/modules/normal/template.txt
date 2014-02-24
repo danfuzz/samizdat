@@ -13,6 +13,7 @@
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Value.h"
+#include "util.h"
 
 /* Global context originally passed into `eval`. */
 static zvalue GLOBALS = NULL;
@@ -49,7 +50,7 @@ zvalue eval(zvalue context) {
   if (GLOBALS == NULL) {
     GLOBALS = context;
     initLiterals(context);
-  } else if (!valEq(GLOBALS, context))
+  } else if (!valEq(GLOBALS, context)) {
     die("Cannot re-eval with different global context.");
   }
 
