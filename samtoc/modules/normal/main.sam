@@ -162,7 +162,9 @@ fn mainClosureMaker(node, interner) {
             CodeGen::makeCall("makeClosure_\(node.id)",
                 ( name in varRefs, id in ids ->
                     <> CodeGen::makeComment("\%q(name)",
-                        CodeGen::makeCall("collGet", "GLOBALS", "LIT_\(id)"))
+                        CodeGen::makeCall("makeResult",
+                            CodeGen::makeCall("collGet",
+                                "GLOBALS", "LIT_\(id)")))
                 )*)));
 
     <> stat.usualIndent(1)
