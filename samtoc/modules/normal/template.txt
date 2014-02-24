@@ -7,7 +7,10 @@
  * caution!
  */
 
+#include "type/Box.h"
 #include "type/Builtin.h"
+#include "type/Collection.h"
+#include "type/Int.h"
 #include "type/String.h"
 #include "type/Value.h"
 
@@ -28,8 +31,9 @@ static void initLiterals(zvalue context) {
  * Closure definitions
  */
 
-\(closureMakers)
+\(closureDeclarations)
 \(closureBodies)
+\(closureMakers)
 static zvalue mainClosure(void) {
 \(mainClosure)}
 

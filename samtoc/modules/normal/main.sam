@@ -41,17 +41,24 @@ fn usualIndent(tree, depth) {
     <> indent(tree, depth, 78)
 };
 
+## Returns a `makeClosure_*` declaration, as a code tree.
+fn closureDeclaration(cloIdx, clo) {
+    def varRefs = clo.varRefs;
+    <> CodeGen::makeCall(
+        "static zvalue makeClosure_\(cloIdx)",
+        ( idx in (0..), name in varRefs ->
+            <> CodeGen::makeComment("\%q(name)", "free_\(idx)")
+        )*);
+};
+
+## Returns a full `makeClosure_*` definition, as as string.
 fn closureMaker(cloIdx, clo) {
     def name = (def n = clo.name)
         & translate::translate(n, Box::nullBox).flatten()
         | "NULL";
 
     def varRefs = clo.varRefs;
-    def declaration = CodeGen::makeCall(
-        "static zvalue makeClosure_\(cloIdx)",
-        ( idx in (0..), name in varRefs ->
-            <> CodeGen::makeComment("\%q(name)", "free_\(idx)")
-        )*);
+    def declaration = closureDeclaration(cloIdx, clo);
     def stateAssigns = [ idx in (0..#varRefs) ->
         def stat = CodeGen::makeStatement(
             CodeGen::makeAssign("state[\(idx)]", "free_\(idx)"));
@@ -72,6 +79,7 @@ fn closureMaker(cloIdx, clo) {
     \/}\n\n"
 };
 
+## Returns a function definition for the code for a closure, as a string.
 fn closureBody(cloIdx, clo) {
     ## Set up the initial variable bindings.
     def freeNames = clo.varRefs;
@@ -172,6 +180,11 @@ fn compile(sourcePath, targetPath) {
 
     def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;
+    def closureDeclarations = cat(
+        ( idx in (0..), clo in closures ->
+            def stat = CodeGen::makeStatement(closureDeclaration(idx, clo));
+            <> "stat.usualIndent(0)\n"
+        )*);
     def closureMakers = cat(
         ( idx in (0..), clo in closures <> closureMaker(idx, clo) )*);
     def closureBodies = cat(
@@ -194,6 +207,7 @@ fn compile(sourcePath, targetPath) {
 
     def replacements = {
         closureBodies,
+        closureDeclarations,
         closureMakers,
         literalDeclarations,
         literalInits,
