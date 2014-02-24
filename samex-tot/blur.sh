@@ -23,6 +23,7 @@ FINAL="${OUT}/final"
 INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
+FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 
 # This skips top-level sources, module definition files, and the `EntityMap`
 # module. The last is because it its hugeness makes for a slow `samtoc` run,
@@ -66,6 +67,7 @@ C_SOURCE_FILES=("${C_SOURCE_FILES[@]/#/${INTERMED}/}") # Add directory prefix.
 
 # Copies all non-source files (resource files, essentially) to the final
 # lib directory.
+
 rule copy \
     --id=copy-files \
     --in-dir="../samlib-naif" \
@@ -74,11 +76,24 @@ rule copy \
 
 # Copies the compiled `samex` binary from `samex-naif` to the final lib
 # directory.
+
 rule copy \
     --id=copy-files \
     --in-dir="${FINAL}/lib/samex-naif" \
     --out-dir="${FINAL_LIB}" \
     -- samex
+
+# Rules to copy each include file to the final include directory.
+
+INCLUDE_SOURCE_BASE="../samex-naif/include"
+INCLUDE_FILES=($(cd "${INCLUDE_SOURCE_BASE}"; find . -name '*.h'))
+
+rule copy \
+    --id=copy-files \
+    --in-dir="${INCLUDE_SOURCE_BASE}" \
+    --out-dir="${FINAL_INCLUDE}" \
+    -- "${INCLUDE_FILES[@]}"
+
 
 # Sub-rules for translation and compilation
 
