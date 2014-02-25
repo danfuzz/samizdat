@@ -1059,15 +1059,15 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
     var result = firstEx;
 
     Generator::filterPump(opExList) { opEx ->
-        def op = Sequence::nth(opEx, 0);
-        def ex = Sequence::nth(opEx, 1);
+        def op = opEx::op;
+        def expr = opEx::expr;
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
 
         ## TODO: Stop generating void contagion here.
         ifIs { <> perEq(voidable, true) }
             { result := @voidable{value: result} };
 
-        result := makeCall(resolvedOp, result, ex)
+        result := makeCall(resolvedOp, result, expr)
     };
 
     <> result
@@ -1520,8 +1520,8 @@ def parMulExpression = {/
     firstEx = parUnaryExpression
     opExes = (
         op = [@"*" @"/" @"%" @"//" @"%%" @"<<<" @">>>"]
-        ex = parUnaryExpression
-        { <> [op, ex] }
+        expr = parUnaryExpression
+        { <> {op, expr} }
     )*
 
     { <> makeBinaryCalls(firstEx, opExes) }
@@ -1532,8 +1532,8 @@ def parAddExpression = {/
     firstEx = parMulExpression
     opExes = (
         op = [@"+" @"-" @"&&&" @"|||" @"^^^"]
-        ex = parMulExpression
-        { <> [op, ex] }
+        expr = parMulExpression
+        { <> {op, expr} }
     )*
 
     { <> makeBinaryCalls(firstEx, opExes) }
@@ -1550,8 +1550,8 @@ def parCompareExpression = {/
             @"=="   @"!="   @"<"   @">"   @"<="   @">="
             @"\\==" @"\\!=" @"\\<" @"\\>" @"\\<=" @"\\>="
         ]
-        ex = parAddExpression
-        { <> [op, ex] }
+        expr = parAddExpression
+        { <> {op, expr} }
     )*
 
     ## Third argument here indicates that the inner calls need to be made
