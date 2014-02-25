@@ -1063,27 +1063,77 @@ fn makeBinaryCalls(firstEx, opExList) {
 
 ## Helper for parsing binary comparison operator expressions, which puts
 ## together a sequence of function calls. This is like `makeBinaryCalls`,
-## except that a void comparison result causes the overall call result
-## to be void (and not become a hard failure).
+## except that a void comparison result (that is a logical-false result)
+## causes the overall call result to be void (and not become a hard failure).
+## This is done by wrapping the entire expression in a thunk-call, and
+## transforming each comparison other than the last into an `ifValueOr` where
+## the else clause is an exit of the thunk. For example:
+##
+## ```
+## x < y <= z == q
+## ```
+## =>
+## ```
+## eq(le(lt(x, y), z), q)
+## ```
+## =>
+## ```
+## { <out> ->
+##     <> eq(
+##         ifValueOr
+##             { <> le(
+##                 ifValueOr { <> lt(x, y) } { <out> },
+##                 z),
+##             }
+##             { <out> }
+##         q)
+## }()
+## ```
 fn makeCompareCalls(firstEx, opExList) {
-    ifIs { <> perEq(opExList, []) }
+    ## Use `makeBinaryCalls` to do the initial processing. This avoids some
+    ## duplication of logic, and this result is what's used directly in the
+    ## simple cases.
+    def baseResult = makeBinaryCalls(firstEx, opExList);
+    def opCount = Collection::sizeOf(opExList);
+
+    ifIs { <> perLe(opCount, 1) }
         {
-            ## Don't bother with the rest if there are no ops to apply.
-            return firstEx
+            ## Use the straightforward `makeBinaryCalls` if this turns out to
+            ## be a single-op expression or not a comparison expression at all.
+            return baseResult
         };
 
-    var result = firstEx;
+    ## Nontrivial case. We need to transform the inner first call arguments.
 
-    Generator::filterPump(opExList) { opEx ->
-        def op = opEx::op;
-        def expr = opEx::expr;
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
+    def yieldName = "out_FIXME"; ## TODO: Needs to be generated.
+    def yieldCall = makeThunk(makeCallNonlocalExit(makeVarRef(yieldName)));
 
-        result := @voidable{value: result};
-        result := makeCall(resolvedOp, result, expr)
+    fn transform(tree, layer) {
+        ifIs { <> le(layer, 1) }
+            { return tree };
+
+        ## We are looking at `@call{function, actuals: [firstActual, ...]}`.
+        def data = dataOf(tree);
+        def function = data::function;
+        def actuals = data::actuals;
+        def firstActual = makeCallName("ifValueOr",
+            makeThunk(
+                transform(Sequence::nth(actuals, 0), Number::sub(layer, 1))),
+            yieldCall);
+
+        <> @call{
+            data*,
+            actuals: [firstActual, Sequence::sliceInclusive(actuals, 1)*]
+        }
     };
 
-    <> result
+    <> = makeCall(
+        @closure{
+            formals: [],
+            yieldDef: yieldName,
+            statements: [],
+            yield: transform(baseResult, opCount)
+        });
 };
 
 ## Helper for string interpolation: Parses the two kinds of interpolation,
