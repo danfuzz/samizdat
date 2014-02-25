@@ -1618,8 +1618,6 @@ def parCompareExpression = {/
         { <> {op, expr} }
     )*
 
-    ## Third argument here indicates that the inner calls need to be made
-    ## voidable.
     { <> makeCompareCalls(firstEx, opExes) }
 /};
 
