@@ -94,6 +94,13 @@ msg((2 > 3 == 3)??);
 msg((4 < 5 == 6)??);
 msg((9 < 10 < 11 < 12 != 12)??);
 
+## These help validate the choice of hidden yield definition declarations.
+msg((9 < 10 < 11) < 12 < 13 < 14);
+msg(9 < 10 < (11 < 12 < 13) < 14);
+msg(9 < 10 < 11 < (12 < 13 < 14));
+msg(9 < 10 < 11 < ((13 < 12 < 11) | 14));
+msg(9 < 10 < (11 < (12 < 13 < 14) < 15) < 16);
+
 Io1::note("\nTotal Order 1");
 msg(1 \== 1);
 msg(1 \!= 2);

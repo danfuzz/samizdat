@@ -9,6 +9,7 @@
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang0 = moduleUse({name: ["core", "Lang0"]});
 
+def safeVarName = submoduleUse("safeVarName")::safeVarName;
 def tokenize = submoduleUse("tokenize")::tokenize;
 
 
@@ -1105,7 +1106,7 @@ fn makeCompareCalls(firstEx, opExList) {
 
     ## Nontrivial case. We need to transform the inner first call arguments.
 
-    def yieldName = "out_FIXME"; ## TODO: Needs to be generated.
+    def yieldName = safeVarName("out", baseResult);
     def yieldCall = makeThunk(makeCallNonlocalExit(makeVarRef(yieldName)));
 
     fn transform(tree, layer) {

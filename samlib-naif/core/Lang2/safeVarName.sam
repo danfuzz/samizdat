@@ -1,0 +1,165 @@
+## Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def Lang0 = moduleUse({name: ["core", "Lang0"]});
+
+## Int value of Unicode code point `0`.
+def CHAR_0 = toInt("0");
+
+## Parses and returns a base-10 unsigned int, or returns void if the string
+## doesn't represent such a number.
+fn intOrVoid(string) {
+    var value = 0;
+
+    Generator::filterPump(string) { ch ->
+        ifIs { <> perLt(ch, "0") } { return };
+        ifIs { <> perGt(ch, "9") } { return };
+        def digit = Number::sub(toInt(ch), CHAR_0);
+        value := Number::add(Number::mul(value, 10), digit);
+    };
+
+    <> value
+};
+
+## Returns the maximum of the given values. Returns `-1` if given no values,
+## and never returns a value less than `-1`.
+fn maxOf(values*) {
+    var max = -1;
+
+    Generator::filterPump(values) { v ->
+        ifIs { <> perGt(v, max) }
+            { max := v }
+    };
+
+    <> max
+};
+
+## Returns a safe index for the given `base` that is safe with respect
+## to all the other given `names`.
+fn safeIndexForNames(base, names*) {
+    def baseSz = Collection::sizeOf(base);
+
+    def indexes = Generator::filterAll(names) { <next> name ->
+        ifIs { <> perLt(Collection::sizeOf(name), baseSz) }
+            {
+                ## Can't possibly be a prefix, so no conflict.
+                <next>
+            };
+        ifIs { <> perEq(base, name) } { <next> -1 };
+        ifIs { <> perEq(base, Sequence::sliceExclusive(name, 0, baseSz)) }
+            { <next> intOrVoid(Sequence::sliceInclusive(name, baseSz)) };
+    };
+
+    <> ifIs { <> perEq(indexes, []) }
+        { <> -1 }
+        { <> Number::add(maxOf(indexes*), 1) }
+};
+
+## generic `safeIndex(node, base)`, returns a safe (unused) index for the given
+## `base` variable name, with regard to the contents of `node`.
+def safeIndex = makeRegularGeneric("safeIndex", 2, 2);
+
+## Maps / reduces `safeIndex` over the given nodes.
+fn safeIndexForNodes(base, nodes*) {
+    def indexes = Generator::filterAll(nodes)
+        { node <> safeIndex(node, base) };
+    <> maxOf(indexes*)
+};
+
+genericBind(
+    safeIndex,
+    "call",
+    fn call_safeIndex(node, base) {
+        <> safeIndexForNodes(base,
+            Lang0::get_function(node),
+            Lang0::get_actuals(node)*);
+    });
+
+genericBind(
+    safeIndex,
+    "closure",
+    fn closure_safeIndex(node, base) {
+        def namesIndex = safeIndexForNames(base,
+            Lang0::get_name(node)?*,
+            Lang0::get_yieldDef(node)?*);
+        def nodesIndex = safeIndexForNodes(base,
+            Lang0::get_statements(node)*,
+            Lang0::get_yield(node)?*);
+
+        <> maxOf(namesIndex, nodesIndex)
+    });
+
+genericBind(
+    safeIndex,
+    "expression",
+    fn expression_safeIndex(node, base) {
+        <> safeIndex(Lang0::get_value(node), base)
+    });
+
+genericBind(
+    safeIndex,
+    "interpolate",
+    fn interpolate_safeIndex(node, base) {
+        <> safeIndex(Lang0::get_value(node), base)
+    });
+
+genericBind(
+    safeIndex,
+    "literal",
+    fn literal_safeIndex(node, base) {
+        <> -1
+    });
+
+genericBind(
+    safeIndex,
+    "varBind",
+    fn varBind_safeIndex(node, base) {
+        def nameIndex = safeIndexForNames(base, Lang0::get_name(node));
+        def valueIndex = safeIndexForNodes(base, Lang0::get_value(node));
+        <> maxOf(nameIndex, valueIndex)
+    });
+
+genericBind(
+    safeIndex,
+    "varDef",
+    fn varDef_safeIndex(node, base) {
+        def nameIndex = safeIndexForNames(base, Lang0::get_name(node));
+        def valueIndex = safeIndexForNodes(base, Lang0::get_value(node)?*);
+        <> maxOf(nameIndex, valueIndex)
+    });
+
+genericBind(
+    safeIndex,
+    "varDefMutable",
+    fn varDefMutable_safeIndex(node, base) {
+        def nameIndex = safeIndexForNames(base, Lang0::get_name(node));
+        def valueIndex = safeIndexForNodes(base, Lang0::get_value(node)?*);
+        <> maxOf(nameIndex, valueIndex)
+    });
+
+genericBind(
+    safeIndex,
+    "varRef",
+    fn varRef_safeIndex(node, base) {
+        <> safeIndexForNames(base, Lang0::get_name(node))
+    });
+
+genericBind(
+    safeIndex,
+    "voidable",
+    fn voidable_safeIndex(node, base) {
+        <> safeIndex(Lang0::get_value(node), base)
+    });
+
+## Returns an unused variable name within `node`, either the given `base` or
+## `base` suffixed with an unsigned int.
+fn safeVarName(base, node) {
+    def index = safeIndex(node, base);
+
+    <> ifIs { <> perEq(index, -1) }
+        { <> base }
+        { <> cat(base, Format::int(index)) }
+};
+
+<> {safeVarName}
