@@ -816,20 +816,20 @@ def parParserToken = {/
 ## sets. Yields a string per se (not a token).
 def parParserSetString = {/
     s = @string
+
     (
         @".."
         end = @string
-        {
+
+        { <out> ->
             def startChar = dataOf(s);
             def endChar = dataOf(end);
-            <> ifIs
-                {
-                    ## TODO: Remove void contagion here.
-                    <> eq(1,
-                        &eq(Collection::sizeOf(startChar),
-                            Collection::sizeOf(endChar)))
-                }
-                { <> cat(Range::makeInclusiveRange(startChar, endChar)*) }
+
+            ## Reject non-single-character strings.
+            ifIs { <> ne(1, Collection::sizeOf(startChar)) } { <out> };
+            ifIs { <> ne(1, Collection::sizeOf(endChar)) } { <out> };
+
+            <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }
     |
         { <> dataOf(s) }
