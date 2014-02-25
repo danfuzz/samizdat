@@ -1127,7 +1127,7 @@ fn makeCompareCalls(firstEx, opExList) {
         }
     };
 
-    <> = makeCall(
+    <> makeCall(
         @closure{
             formals: [],
             yieldDef: yieldName,
