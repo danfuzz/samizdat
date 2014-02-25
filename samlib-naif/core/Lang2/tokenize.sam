@@ -258,16 +258,24 @@ fn processStringParts(parts) {
         ifIs { <> hasType(part, "error") }
             { return part };
 
-        ## TODO: Remove void contagion here.
-        ifValue { <> isString(&Sequence::nthFromEnd(elems, 0)) }
-            { lastString ->
-                ifIs { <> isString(part) }
+        ifIs { <> eq(elems, []) }
+            {
+                ## First element. No possibility to coalesce, so special-case
+                ## it.
+                elems := [part];
+                <next>
+            };
+
+        ifIs { <> isString(part) }
+            {
+                def lastElem = Sequence::nthFromEnd(elems, 0);
+                ifIs { <> isString(lastElem) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
                         elems := [
                             Sequence::sliceExclusive(elems, 0)*,
-                            cat(lastString, part)
+                            cat(lastElem, part)
                         ];
                         <next>
                     }
