@@ -295,7 +295,7 @@ parFnExpression := Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeCode { closure <> dataOf(closure)::name },
-            Peg::makeCode { funcMap, name ->
+            Peg::makeCode { closure, name ->
                 def mainClosure = @closure{
                     formals:    [],
                     statements: [makeVarDef(name)],
