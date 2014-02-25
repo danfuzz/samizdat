@@ -12,22 +12,20 @@ def Sequence = moduleUse({name: ["proto", "Sequence"]});
 def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
+
 ##
 ## Exported Definitions
 ##
 
 ## Generator used when iterating over lists and strings.
-## TODO: Remove void contagion here.
 fn SequenceGenerator_nextValue(gen, box) {
     def data = dataOf(gen);
     def index = data::index;
 
-    ## This uses void contagion to fail the `Box::store` call when `index` is
-    ## out of range for the collection.
-    <> ifIs { <> Box::store(box, &Sequence::nth(data::seq, index)) }
-        {
-            <> @SequenceGenerator(
-                Collection::put(data, "index", Number::add(index, 1)))
+    <> ifValue { <> Sequence::nth(data::seq, index) }
+        { value ->
+            Box::store(box, value);
+            <> @SequenceGenerator{data*, index: Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).
