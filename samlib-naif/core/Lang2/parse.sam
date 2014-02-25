@@ -1063,6 +1063,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
         def ex = Sequence::nth(opEx, 1);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
 
+        ## TODO: Stop generating void contagion here.
         ifIs { <> perEq(voidable, true) }
             { result := @voidable{value: result} };
 
