@@ -1047,7 +1047,8 @@ def BINARY_OPERATORS = {
 
 ## Helper for parsing binary operator expressions, which puts together
 ## a sequence of function calls. `voidable`, if passed as `true`, indicates
-## that the inner calls should be made voidable.
+## that the inner calls should be made voidable (which is used for building
+## cascading comparisons).
 fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
     ifIs { <> perEq(opExList, []) }
         {
