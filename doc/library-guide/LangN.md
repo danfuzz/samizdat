@@ -132,7 +132,7 @@ Gets the statement list of a `closure` node.
 
 Gets the value (literal or node) used by the given node. This is applicable to
 nodes of type `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
-`varDefMutable` and `voidable`.
+and `varDefMutable`.
 
 #### `get_yield(node) <> node | void`
 
