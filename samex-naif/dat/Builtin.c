@@ -156,8 +156,14 @@ METH_IMPL(Builtin, debugString) {
 METH_IMPL(Builtin, gcMark) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
+    zvalue *state = info->state;
 
     datMark(info->name);
+
+    for (zint i = 0; i < info->stateSize; i++) {
+        datMark(state[i]);
+    }
+
     return NULL;
 }
 
