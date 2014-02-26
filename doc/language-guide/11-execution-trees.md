@@ -37,9 +37,7 @@ This represents a function call.
 When run, first `function` and then the elements of `actuals` (in
 order) are evaluated. If `function` evaluates to something other than
 a function, the call fails (terminating the runtime). If any of the
-`actuals` evaluates to void, the call fails (terminating the runtime),
-unless the actual is a `voidable` node. See `voidable` below for
-more details.
+`actuals` evaluates to void, the call fails (terminating the runtime).
 
 If there are too few actual arguments for the function (e.g., the
 function requires at least three arguments, but only two are passed),
@@ -272,16 +270,3 @@ The behavior varies depending on if `value` is supplied in this node:
 * With `value` supplied, said `value` is evaluated. If it evaluates to void,
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
   value becomes the initially-bound value of the variable.
-
-#### `voidable` &mdash; `@voidable{value: expression}`
-
-* `value: expression` &mdash; Expression node.
-
-This represents a "voidable" expression as part of an actuals list to a
-`call` node. `voidable` nodes are not valid anywhere else.
-
-When a `voidable` is evaluated, the inner expression is evaluated. If
-that results in a value (not void), then the value becomes the result of
-the outer evaluation. If the inner expression yields void, then this causes
-the function call that the node is part of to immediately yield void,
-instead of continuing to evaluate.
