@@ -131,11 +131,4 @@ genericBind(
         <> [node.name]
     });
 
-genericBind(
-    get_varRefs,
-    "voidable",
-    fn voidable_get_varRefs(node) {
-        <> node.value.varRefs
-    });
-
 <> {get_varRefs}

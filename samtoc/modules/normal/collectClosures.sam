@@ -116,14 +116,6 @@ genericBind(
         <> @varRef{name: node.name}
     });
 
-genericBind(
-    bodies,
-    "voidable",
-    fn voidable_bodies(node, bodiesBox) {
-        def value = bodies(node.value, bodiesBox);
-        <> @voidable{value}
-    });
-
 ## Collects all closure nodes at or under the given one into a list.
 ## Returns `{closures, node}`, where `closures` is a list of collected
 ## closures and `node` is a replacement for the original argument, in which

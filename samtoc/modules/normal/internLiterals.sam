@@ -111,13 +111,6 @@ genericBind(
         <> node
     });
 
-genericBind(
-    lits,
-    "voidable",
-    fn voidable_lits(node, interner) {
-        <> @voidable{value: lits(node.value, interner)}
-    });
-
 ## Interns all literal nodes at or under the given `node`, into the given
 ## `interner`. Returns a replacement for the original `node` argument, in
 ## which literals have been replaced by indexed references to same.
