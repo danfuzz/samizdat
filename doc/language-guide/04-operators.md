@@ -323,8 +323,7 @@ bitwise xor of the two numbers.
 
 Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
 `(x < y) & (y <= z)` with the additional guarantee that `y` is only
-evaluated once. This falls naturally out of the value-or-void logic
-model of the language.
+evaluated once.
 
 #### Same-type comparison &mdash; `== != < > <= >=`
 
