@@ -102,6 +102,7 @@ will be returned, or one of:
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
   * [core::Lang*](LangN.md)
+  * [core::Lang0Node](Lang0Node.md)
   * [core::Module](Module.md)
   * [core::Module0](Module0.md)
   * [core::Peg (parsing)](Peg.md)

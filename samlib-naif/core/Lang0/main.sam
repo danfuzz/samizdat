@@ -17,7 +17,5 @@
     evalBinary:      Lang0_evalBinary,
     parseExpression: Lang0_parseExpression,
     parseProgram:    Lang0_parseProgram,
-    tokenize:        Lang0_tokenize,
-
-    submoduleUse("getters")*
+    tokenize:        Lang0_tokenize
 }

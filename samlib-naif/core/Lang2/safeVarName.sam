@@ -2,7 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def Lang0 = moduleUse({name: ["core", "Lang0"]});
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 ## Int value of Unicode code point `0`.
 def CHAR_0 = toInt("0");
@@ -72,8 +72,8 @@ genericBind(
     "call",
     fn call_safeIndex(node, base) {
         <> safeIndexForNodes(base,
-            Lang0::get_function(node),
-            Lang0::get_actuals(node)*);
+            Lang0Node::get_function(node),
+            Lang0Node::get_actuals(node)*);
     });
 
 genericBind(
@@ -81,11 +81,11 @@ genericBind(
     "closure",
     fn closure_safeIndex(node, base) {
         def namesIndex = safeIndexForNames(base,
-            Lang0::get_name(node)?*,
-            Lang0::get_yieldDef(node)?*);
+            Lang0Node::get_name(node)?*,
+            Lang0Node::get_yieldDef(node)?*);
         def nodesIndex = safeIndexForNodes(base,
-            Lang0::get_statements(node)*,
-            Lang0::get_yield(node)?*);
+            Lang0Node::get_statements(node)*,
+            Lang0Node::get_yield(node)?*);
 
         <> maxOf(namesIndex, nodesIndex)
     });
@@ -94,14 +94,14 @@ genericBind(
     safeIndex,
     "expression",
     fn expression_safeIndex(node, base) {
-        <> safeIndex(Lang0::get_value(node), base)
+        <> safeIndex(Lang0Node::get_value(node), base)
     });
 
 genericBind(
     safeIndex,
     "interpolate",
     fn interpolate_safeIndex(node, base) {
-        <> safeIndex(Lang0::get_value(node), base)
+        <> safeIndex(Lang0Node::get_value(node), base)
     });
 
 genericBind(
@@ -115,8 +115,8 @@ genericBind(
     safeIndex,
     "varBind",
     fn varBind_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0::get_name(node));
-        def valueIndex = safeIndexForNodes(base, Lang0::get_value(node));
+        def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
+        def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node));
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -124,8 +124,8 @@ genericBind(
     safeIndex,
     "varDef",
     fn varDef_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0::get_name(node));
-        def valueIndex = safeIndexForNodes(base, Lang0::get_value(node)?*);
+        def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
+        def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node)?*);
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -133,8 +133,8 @@ genericBind(
     safeIndex,
     "varDefMutable",
     fn varDefMutable_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0::get_name(node));
-        def valueIndex = safeIndexForNodes(base, Lang0::get_value(node)?*);
+        def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
+        def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node)?*);
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -142,7 +142,7 @@ genericBind(
     safeIndex,
     "varRef",
     fn varRef_safeIndex(node, base) {
-        <> safeIndexForNames(base, Lang0::get_name(node))
+        <> safeIndexForNames(base, Lang0Node::get_name(node))
     });
 
 ## Returns an unused variable name within `node`, either the given `base` or

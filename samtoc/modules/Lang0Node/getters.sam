@@ -6,21 +6,21 @@
 ## Convenient access to execution parse trees.
 ##
 
-## This is just a re-export from `core::Lang0`. TODO: Clean users up to
-## refer to `Lang0` directly.
+## This is just a re-export from `core::Lang0Node`. TODO: Clean users up to
+## refer to `Lang0Node` directly.
 
-def Lang0 = moduleUse({name: ["core", "Lang0"]});
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 <> {
-    get_actuals:    Lang0::get_actuals,
-    get_formals:    Lang0::get_formals,
-    get_function:   Lang0::get_function,
-    get_id:         Lang0::get_id,
-    get_maxArgs:    Lang0::get_maxArgs,
-    get_minArgs:    Lang0::get_minArgs,
-    get_name:       Lang0::get_name,
-    get_statements: Lang0::get_statements,
-    get_value:      Lang0::get_value,
-    get_yield:      Lang0::get_yield,
-    get_yieldDef:   Lang0::get_yieldDef
+    get_actuals:    Lang0Node::get_actuals,
+    get_formals:    Lang0Node::get_formals,
+    get_function:   Lang0Node::get_function,
+    get_id:         Lang0Node::get_id,
+    get_maxArgs:    Lang0Node::get_maxArgs,
+    get_minArgs:    Lang0Node::get_minArgs,
+    get_name:       Lang0Node::get_name,
+    get_statements: Lang0Node::get_statements,
+    get_value:      Lang0Node::get_value,
+    get_yield:      Lang0Node::get_yield,
+    get_yieldDef:   Lang0Node::get_yieldDef
 }
