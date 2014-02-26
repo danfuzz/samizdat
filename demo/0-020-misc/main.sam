@@ -39,7 +39,7 @@ fn process(value) {
 fn main(selfPath, name?, rest*) {
     ## Be welcoming.
 
-    ifIs { <> eq(&(name*), "danfuzz") }
+    ifIs { <> eq(name, ["danfuzz"]) }
         { Io0::note("Hello, Danfuzz!\n") }
         { Io0::note("Hello, Самиздат!\n") };
 
