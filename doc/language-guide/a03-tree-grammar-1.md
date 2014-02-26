@@ -136,7 +136,7 @@ def parExpression = {/
 /};
 
 ## Parses a parenthesized expression. This produces an `expression` node,
-## which prevents void-contagion from escaping. If void-contagion-prevention
+## which prevents interpolation from escaping. If interpolation-prevention
 ## is undesired, the result of this rule can be unwrapped with `dataOf`.
 def parParenExpression = {/
     @"("

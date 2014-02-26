@@ -27,9 +27,7 @@ of the apply expression is the same as the result of the function call.
 If the function call returns void, then the expression's result is also void.
 
 If an argument evaluates to void, then this causes an immmediate error
-(terminating the runtime), *unless* that argument is prefixed with the
-`&` operator (see "Void contagion," below). In the latter case, the function
-isn't called, and the expression yields void.
+(terminating the runtime).
 
 In order to make it convenient to define control-structure-like functions,
 any number of block closure literals may follow the closing parenthesis. All
@@ -116,9 +114,7 @@ To indicate indexing by int index from the end of a sequence, prefix
 the index with a caret (`^`). This is only valid for sequences, not
 collections in general.
 
-The expression to index into and the index must both be non-void, except
-that an index expression can be marked with a `&` prefix to indicate void
-contagion (see which for details).
+The expression to index into and the index must both be non-void.
 
 A collection access expression is identical to a function call of either
 `get` or `Sequence::nthFromEnd` with the value to be accessed as the
@@ -213,19 +209,6 @@ expression (such as might be the expression checked in an `if` statement).
 
 Prefix operators are higher in precedence than infix operators, but lower
 in precedence than postfix operators.
-
-#### Void contagion &mdash; `&expression`
-
-Placing an ampersand in front of an expression indicates that the
-expression *may* yield void, and if so, causes the void to "spread"
-outward to the immediately-surrounding function call, making that function
-call itself yield void, instead of actually performing the call.
-
-This operator is *only* valid when placed directly before an argument
-to a function call, element of a list construction, or index argument
-to a `[]` expression (and not, e.g., embedded any deeper in any
-sort of expression). If the argument isn't a simple term or a unary
-expression, then it must be placed in parentheses.
 
 #### Numeric negative &mdash; `-expression`
 
