@@ -265,7 +265,6 @@ static zvalue tokenizeOne(ParseState *state) {
     zint ch = peek(state);
 
     switch (ch) {
-        case '&':  read(state); return TOK_CH_AND;
         case '@':  read(state); return TOK_CH_AT;
         case '}':  read(state); return TOK_CH_CCURLY;
         case ')':  read(state); return TOK_CH_CPAREN;

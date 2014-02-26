@@ -14,7 +14,6 @@
  * Token constants are type-only values whose types are the indicated strings.
  */
 
-TOK(CH_AND,            "&");
 TOK(CH_AT,             "@");
 TOK(CH_CCURLY,         "}");
 TOK(CH_CPAREN,         ")");
