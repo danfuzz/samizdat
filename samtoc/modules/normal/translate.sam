@@ -49,7 +49,7 @@ genericBind(
     translate,
     "call",
     fn call_translate(node, varsBox) {
-        ## TODO: Handle `voidable` and `interpolate` nodes.
+        ## TODO: Handle `interpolate` nodes.
         def actuals = (a in node.actuals <> translate(a, varsBox));
         <> CodeGen::makeCall("FUN_CALL",
             translate(node.function, varsBox), actuals*)
@@ -142,13 +142,6 @@ genericBind(
         def binding = vars[name]
             | Io1::die("Reference of undefined variable: \%q(node.name)");
         <> CodeGen::makeCall("boxFetch", binding::name)
-    });
-
-genericBind(
-    translate,
-    "voidable",
-    fn voidable_translate(node, varsBox) {
-        <> "NULL /* TODO: voidable */"
     });
 
 <> {translate}

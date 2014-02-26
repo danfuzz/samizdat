@@ -72,13 +72,6 @@ static zvalue execCall(Frame *frame, zvalue call) {
     for (zint i = 0; i < argCount; i++) {
         zvalue one = actualsArr[i];
         zevalType oneType = evalTypeOf(one);
-        bool voidable = (oneType == EVAL_voidable);
-
-        if (voidable) {
-            one = valueOf(one);
-            oneType = evalTypeOf(one);
-        }
-
         bool interpolate = (oneType == EVAL_interpolate);
         zvalue eval;
 
@@ -86,14 +79,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             one = valueOf(one);
         }
 
-        if (voidable) {
-            eval = execExpressionVoidOk(frame, one);
-            if (eval == NULL) {
-                return NULL;
-            }
-        } else {
-            eval = execExpression(frame, one);
-        }
+        eval = execExpression(frame, one);
 
         if (interpolate) {
             eval = GFN_CALL(collect, eval);

@@ -9,6 +9,7 @@
 def Io1 = moduleUse({name: ["core", "Io1"]});
 def Lang0 = moduleUse({name: ["core", "Lang0"]});
 
+def safeVarName = submoduleUse("safeVarName")::safeVarName;
 def tokenize = submoduleUse("tokenize")::tokenize;
 
 
@@ -154,7 +155,7 @@ def parExpression = {/
 /};
 
 ## Parses a parenthesized expression. This produces an `expression` node,
-## which prevents void-contagion from escaping. If void-contagion-prevention
+## which prevents interpolation from escaping. If interpolation-prevention
 ## is undesired, the result of this rule can be unwrapped with `dataOf`.
 def parParenExpression = {/
     @"("
@@ -514,7 +515,6 @@ def parMap = {/
 ## Parses a list item or function call argument. This handles all of:
 ##
 ## * accepting general expressions
-## * accepting voidable-prefixed expressions
 ## * rejecting expressions that look like `key:value` mappings. This is
 ##   effectively "reserved syntax" (for future expansion); rejecting this
 ##   here means that `x:y` won't be mistaken for other valid syntax.
@@ -522,10 +522,6 @@ def parListItem = {/
     parIdentifierString
     @":"
     { Io1::die("Mapping syntax not valid as a list item or call argument.") }
-|
-    @"&"
-    ex = %parUnaryExpression
-    { <> @voidable{value: ex} }
 |
     parExpression
 /};
@@ -816,19 +812,20 @@ def parParserToken = {/
 ## sets. Yields a string per se (not a token).
 def parParserSetString = {/
     s = @string
+
     (
         @".."
         end = @string
-        {
+
+        { <out> ->
             def startChar = dataOf(s);
             def endChar = dataOf(end);
-            <> ifIs
-                {
-                    <> eq(1,
-                        &eq(Collection::sizeOf(startChar),
-                            Collection::sizeOf(endChar)))
-                }
-                { <> cat(Range::makeInclusiveRange(startChar, endChar)*) }
+
+            ## Reject non-single-character strings.
+            ifIs { <> ne(1, Collection::sizeOf(startChar)) } { <out> };
+            ifIs { <> ne(1, Collection::sizeOf(endChar)) } { <out> };
+
+            <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }
     |
         { <> dataOf(s) }
@@ -972,12 +969,6 @@ fn closureWithYieldDef(closure, name) {
     <> @closure{(dataOf(closure))*, yieldDef: name}
 };
 
-## A no-argument yield-void thunk.
-def YIELD_VOID_THUNK = @closure{formals: [], statements: []};
-
-## A single-argument yield-void function.
-def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
-
 ## Reference to `Range::makeOpenRange`.
 def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
 
@@ -1045,30 +1036,94 @@ def BINARY_OPERATORS = {
 };
 
 ## Helper for parsing binary operator expressions, which puts together
-## a sequence of function calls. `voidable`, if passed as `true`, indicates
-## that the inner calls should be made voidable.
-fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
-    ifIs { <> perEq(opExList, []) }
-        {
-            ## Don't bother with the rest if there are no ops to apply.
-            return firstEx
-        };
-
-    def voidable = ifValueOr { <> optVoidable* } { <> false };
+## a sequence of function calls.
+fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     Generator::filterPump(opExList) { opEx ->
-        def op = Sequence::nth(opEx, 0);
-        def ex = Sequence::nth(opEx, 1);
+        def op = opEx::op;
+        def expr = opEx::expr;
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
 
-        ifIs { <> perEq(voidable, true) }
-            { result := @voidable{value: result} };
-
-        result := makeCall(resolvedOp, result, ex)
+        result := makeCall(resolvedOp, result, expr)
     };
 
     <> result
+};
+
+## Helper for parsing binary comparison operator expressions, which puts
+## together a sequence of function calls. This is like `makeBinaryCalls`,
+## except that a void comparison result (that is a logical-false result)
+## causes the overall call result to be void (and not become a hard failure).
+## This is done by wrapping the entire expression in a thunk-call, and
+## transforming each comparison other than the last into an `ifValueOr` where
+## the else clause is an exit of the thunk. For example:
+##
+## ```
+## x < y <= z == q
+## ```
+## =>
+## ```
+## eq(le(lt(x, y), z), q)
+## ```
+## =>
+## ```
+## { <out> ->
+##     <> eq(
+##         ifValueOr
+##             { <> le(
+##                 ifValueOr { <> lt(x, y) } { <out> },
+##                 z),
+##             }
+##             { <out> }
+##         q)
+## }()
+## ```
+fn makeCompareCalls(firstEx, opExList) {
+    ## Use `makeBinaryCalls` to do the initial processing. This avoids some
+    ## duplication of logic, and this result is what's used directly in the
+    ## simple cases.
+    def baseResult = makeBinaryCalls(firstEx, opExList);
+    def opCount = Collection::sizeOf(opExList);
+
+    ifIs { <> perLe(opCount, 1) }
+        {
+            ## Use the straightforward `makeBinaryCalls` if this turns out to
+            ## be a single-op expression or not a comparison expression at all.
+            return baseResult
+        };
+
+    ## Nontrivial case. We need to transform the inner first call arguments.
+
+    def yieldName = safeVarName("out", baseResult);
+    def yieldCall = makeThunk(makeCallNonlocalExit(makeVarRef(yieldName)));
+
+    fn transform(tree, layer) {
+        ifIs { <> le(layer, 1) }
+            { return tree };
+
+        ## We are looking at `@call{function, actuals: [firstActual, ...]}`.
+        def data = dataOf(tree);
+        def function = data::function;
+        def actuals = data::actuals;
+        def firstActual = makeCallName("ifValueOr",
+            makeThunk(
+                transform(Sequence::nth(actuals, 0), Number::sub(layer, 1))),
+            yieldCall);
+
+        <> @call{
+            data*,
+            actuals: [firstActual, Sequence::sliceInclusive(actuals, 1)*]
+        }
+    };
+
+    <> makeCall(
+        @closure{
+            formals: [],
+            yieldDef: yieldName,
+            statements: [],
+            yield: transform(baseResult, opCount)
+        });
 };
 
 ## Helper for string interpolation: Parses the two kinds of interpolation,
@@ -1518,8 +1573,8 @@ def parMulExpression = {/
     firstEx = parUnaryExpression
     opExes = (
         op = [@"*" @"/" @"%" @"//" @"%%" @"<<<" @">>>"]
-        ex = parUnaryExpression
-        { <> [op, ex] }
+        expr = parUnaryExpression
+        { <> {op, expr} }
     )*
 
     { <> makeBinaryCalls(firstEx, opExes) }
@@ -1530,8 +1585,8 @@ def parAddExpression = {/
     firstEx = parMulExpression
     opExes = (
         op = [@"+" @"-" @"&&&" @"|||" @"^^^"]
-        ex = parMulExpression
-        { <> [op, ex] }
+        expr = parMulExpression
+        { <> {op, expr} }
     )*
 
     { <> makeBinaryCalls(firstEx, opExes) }
@@ -1548,13 +1603,11 @@ def parCompareExpression = {/
             @"=="   @"!="   @"<"   @">"   @"<="   @">="
             @"\\==" @"\\!=" @"\\<" @"\\>" @"\\<=" @"\\>="
         ]
-        ex = parAddExpression
-        { <> [op, ex] }
+        expr = parAddExpression
+        { <> {op, expr} }
     )*
 
-    ## Third argument here indicates that the inner calls need to be made
-    ## voidable.
-    { <> makeBinaryCalls(firstEx, opExes, true) }
+    { <> makeCompareCalls(firstEx, opExes) }
 /};
 
 ## Parses a single test clause with optional assignment, yielding a map of
@@ -2083,23 +2136,17 @@ def parSwitchCase = {/
     { <> {code, keys} }
 /};
 
-## Tree for the second argument to the `ifValue` inside a `switch`
+## Tree for the second argument to the inner `ifValue` inside a `switch`
 ## translation. This expression is constant across all switches, and it's most
 ## easily constructed by using the built-in parser.
-def SWITCH_DISPATCH_CLOSURE = Lang0::parseProgram("
-    args ->
-    <> { cases, defaultFunction, value ->
-        <> ifValue { <> get(cases, value) }
-            { function <> function(value) }
-            { <> defaultFunction(value) }
-    }(args*)");
+def CALL_ARG = Lang0::parseProgram("body <> body()");
 
 ## Parses a switch expression. The translation is along these lines:
 ##
 ## ```
-## switch <out> (def name = test) {
-##     ex1: { stat1a; stat1b }
-##     ex2: { stat2a; stat2b }
+## switch <out> (def name = testExpr) {
+##     ex1: { s1a; s1b }
+##     ex2: { s2a; s2b }
 ##     default: { statDefault }
 ##     else: { statElse }
 ## }
@@ -2108,40 +2155,24 @@ def SWITCH_DISPATCH_CLOSURE = Lang0::parseProgram("
 ## ```
 ## { <\"break"> ->
 ##     def out = \"break";
-##     <> ifValue
-##         {
-##             <> [
-##                 {
-##                     (ex1): { name -> stat1a; stat1b },
-##                     (ex2): { name -> stat2a; stat2b }
-##                 },
-##                 { name -> statDefault },
-##                 &test
-##             ]
-##         }
-##         { args ->
-##             <> { cases, defaultFunction, value ->
-##                 <> ifValue { <> get(cases, value) }
-##                     { function <> function(value) }
-##                     { <> defaultFunction(value) }
-##             }(args*)
+##     <> ifValue { <> testExpr }
+##         { name ->
+##             <> ifValue
+##                 { <> get({(ex1): {s1a; s1b}, (ex2): {s2a; s2b}}, name) }
+##                 { body <> body() }
+##                 { statDefault }
 ##         }
 ##         { statElse }
 ## }()
 ## ```
 ##
 ## with:
-## * The initial break assignment omitted if there is no yield def.
-## * Overrides of map keys switched around so the *first* key wins.
-## * The `statElse` block omitted if there is no `else` clause.
-## * The `statDefault` block replaced with `{ . -> }` (that is, a yield-void
-##   one-arg function) if there is no `default` clause.
-## * the consequent closure argument declarations changed to `.` for any
-##   if no name binding was present.
-##
-## Note that the translation here is arranged so that the expressions to
-## evaluate and all the case bodies only see the expected variable bindings,
-## and not any "implementation detail" local variables.
+## * the initial break assignment omitted if there is no yield def.
+## * overrides of map keys switched around so the *first* key wins.
+## * the `statElse` block omitted if there is no `else` clause.
+## * the `statDefault` block omitted if there is no `default` clause.
+## * the test expression variable binding changed to a safe (otherwise unused)
+##   name, if no variable name was specified.
 def parSwitchExpression = {/
     @switch
     breakDef = parOptBreakDef
@@ -2166,27 +2197,12 @@ def parSwitchExpression = {/
     @"}"
 
     {
-        def formal = testClause::formal;
-        def test = testClause::test;
-
         def optDefault = Generator::filterAll(cases) { case ->
-            <> ifIs { <> eq(case::keys, @default) }
-                { <> closureWithFormals(case::code, formal) }
+            <> ifIs { <> eq(case::keys, @default) } { <> case::code }
         };
 
         def optElse = Generator::filterAll(cases) { case ->
-            <> ifIs { <> eq(case::keys, @else) }
-                { <> case::code }
-        };
-
-        def regularCases = Generator::filterAll(cases) { case ->
-            def keys = case::keys;
-            <> ifIs { <> isList(keys) }
-                {
-                    <> makeCallName("makeValueMap",
-                        keys*,
-                        closureWithFormals(case::code, formal))
-                }
+            <> ifIs { <> eq(case::keys, @else) } { <> case::code }
         };
 
         ifIs { <> gt(Collection::sizeOf(optDefault), 1) }
@@ -2195,46 +2211,46 @@ def parSwitchExpression = {/
         ifIs { <> gt(Collection::sizeOf(optElse), 1) }
             { Io1::die("Multiple else cases in switch.") };
 
-        ## Notes:
-        ##
-        ## * The cases are constructed in the somewhat-convoluted way that
-        ##   they are in order to preserve the left-to-right evaluation order
-        ##   of the apparent text, even though the key/case override semantics
-        ##   is the opposite of what `cat(map)` defines.
-        ##
-        ## * The `test` is wrapped in a `voidable` node to make the
-        ##   "logic nature" of the expression operate as expected (that is,
-        ##   not cause a runtime error if the test is logical-false, instead
-        ##   running the `else` block if any). The test is furthermore wrapped
-        ##   in an `expression` node in case it happens to be an
-        ##   interpolation, which will have to have expression and not
-        ##   argument semantics.
-        def testBody = makeThunk(
-                makeCallName("makeList",
-                    ifIs { <> eq(regularCases, []) }
-                        { <> makeLiteral({}) }
-                        {
-                            <> makeCallName("cat",
-                                makeInterpolate(
-                                    makeCallModName("Sequence", "reverse",
-                                        makeCallName("makeList",
-                                            regularCases*))))
-                        },
-                    ifValue { <> optDefault* }
-                        { value <> closureWithFormals(value, formal) }
-                        { <> YIELD_VOID_FN_1 },
-                    @voidable{value: @expression{value: test}}));
+        ## The `reverse` in the case construction code is done in order to
+        ## preserve the left-to-right evaluation order of the apparent text,
+        ## even though the key/case override semantics is the opposite of
+        ## what `cat(map)` defines.
+        def caseClauses = Generator::filterAll(cases) { case ->
+            def keys = case::keys;
+            <> ifIs { <> isList(keys) }
+                { <> makeCallName("makeValueMap", keys*, case::code) }
+        };
+        def caseMap = makeCallName("cat",
+            makeInterpolate(
+                makeCallModName("Sequence", "reverse",
+                    makeCallName("makeList", caseClauses*))));
 
-        def ifCall = makeCallName("ifValue",
-            testBody,
-            SWITCH_DISPATCH_CLOSURE,
+        ## If there is no specified formal, then pick a safe one, that is,
+        ## a name not referenced in the case clauses.
+        def testVar = ifValueOr { <> testClause::formal::name }
+            { <> safeVarName("testValue", caseMap) };
+
+        def innerIf = makeCallName("ifValue",
+            makeThunk(makeCallName("get", caseMap, makeVarRef(testVar))),
+            CALL_ARG,
+            optDefault*);
+
+        def mainBody = @closure{
+            formals: [{name: testVar}],
+            statements: [],
+            yield: innerIf
+        };
+
+        def outerIf = makeCallName("ifValue",
+            makeThunk(testClause::test),
+            mainBody,
             optElse*);
 
         def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
             statements: [breakDef*],
-            yield: ifCall
+            yield: outerIf
         };
 
         <> makeCall(mainClosure)

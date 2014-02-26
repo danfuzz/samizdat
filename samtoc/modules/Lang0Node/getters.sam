@@ -6,110 +6,21 @@
 ## Convenient access to execution parse trees.
 ##
 
-## Accessor for `call` nodes.
+## This is just a re-export from `core::Lang0Node`. TODO: Clean users up to
+## refer to `Lang0Node` directly.
 
-fn get_actuals(node) {
-    <> dataOf(node)::actuals
-};
-
-## Accessor for `closure` nodes.
-
-fn get_formals(node) {
-    <> dataOf(node)::formals
-};
-
-## Accessor for `call` nodes.
-
-fn get_function(node) {
-    <> dataOf(node)::function
-};
-
-## Accessor for `literalRef` and `closureRef` nodes.
-
-fn get_id(node) {
-    <> dataOf(node)::id
-};
-
-## Accessor for `closure` nodes.
-
-fn get_maxArgs(node) {
-    def formals = node.formals;
-    var maxArgs = 0;
-
-    for (f in formals) {
-        def n = switch (f::repeat) {
-            "?":  { <> 1 };
-            "*":  { return -1 };
-            "+":  { return -1 };
-            else: { <> 1 }
-        };
-        maxArgs := maxArgs + n;
-    };
-
-    <> maxArgs
-};
-
-## Accessor for `closure` nodes.
-
-fn get_minArgs(node) {
-    def formals = node.formals;
-    var minArgs = 0;
-
-    for (f in formals) {
-        def n = switch (f::repeat) {
-            "?":  { <> 0 };
-            "*":  { <> 0 };
-            "+":  { <> 1 };
-            else: { <> 1 }
-        };
-        minArgs := minArgs + n;
-    };
-
-    <> minArgs
-};
-
-## Accessor for `closure`, `varBind`, `varDef`, `varDefMutable`, and `varRef`
-## nodes.
-
-fn get_name(node) {
-    <> dataOf(node)::name
-};
-
-## Accessor for `closure` nodes.
-
-fn get_statements(node) {
-    <> dataOf(node)::statements
-};
-
-## Accessor for `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
-## `varDefMutable` and `voidable` nodes.
-
-fn get_value(node) {
-    <> dataOf(node)::value
-};
-
-## Accessor for `closure` nodes.
-
-fn get_yield(node) {
-    <> dataOf(node)::yield
-};
-
-## Accessor for `closure` nodes.
-
-fn get_yieldDef(node) {
-    <> dataOf(node)::yieldDef
-};
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 <> {
-    get_actuals,
-    get_formals,
-    get_function,
-    get_id,
-    get_maxArgs,
-    get_minArgs,
-    get_name,
-    get_statements,
-    get_value,
-    get_yield,
-    get_yieldDef
+    get_actuals:    Lang0Node::get_actuals,
+    get_formals:    Lang0Node::get_formals,
+    get_function:   Lang0Node::get_function,
+    get_id:         Lang0Node::get_id,
+    get_maxArgs:    Lang0Node::get_maxArgs,
+    get_minArgs:    Lang0Node::get_minArgs,
+    get_name:       Lang0Node::get_name,
+    get_statements: Lang0Node::get_statements,
+    get_value:      Lang0Node::get_value,
+    get_yield:      Lang0Node::get_yield,
+    get_yieldDef:   Lang0Node::get_yieldDef
 }

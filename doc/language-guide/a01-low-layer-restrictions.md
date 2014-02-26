@@ -85,7 +85,6 @@ The only operators recognized in Layer 0 are:
 * `<> expr` &mdash; Local yield.
 * `<out> exr` &mdash; Named nonlocal return.
 * `return expr` &mdash; Function return.
-* `&expr` &mdash; Void contagion.
 
 Parsing expression operator syntax is implemented in Layer 1.
 Full expression operator syntax is implemented in Layer 2.

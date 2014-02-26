@@ -136,7 +136,7 @@ def parExpression = {/
 /};
 
 ## Parses a parenthesized expression. This produces an `expression` node,
-## which prevents void-contagion from escaping. If void-contagion-prevention
+## which prevents interpolation from escaping. If interpolation-prevention
 ## is undesired, the result of this rule can be unwrapped with `dataOf`.
 def parParenExpression = {/
     @"("
@@ -496,7 +496,6 @@ def parMap = {/
 ## Parses a list item or function call argument. This handles all of:
 ##
 ## * accepting general expressions
-## * accepting voidable-prefixed expressions
 ## * rejecting expressions that look like `key:value` mappings. This is
 ##   effectively "reserved syntax" (for future expansion); rejecting this
 ##   here means that `x:y` won't be mistaken for other valid syntax.
@@ -504,10 +503,6 @@ def parListItem = {/
     parIdentifierString
     @":"
     { Io1::die("Mapping syntax not valid as a list item or call argument.") }
-|
-    @"&"
-    ex = %parUnaryExpression
-    { <> @voidable{value: ex} }
 |
     parExpression
 /};
@@ -805,19 +800,20 @@ def parParserToken = {/
 ## sets. Yields a string per se (not a token).
 def parParserSetString = {/
     s = @string
+
     (
         @".."
         end = @string
-        {
+
+        { <out> ->
             def startChar = dataOf(s);
             def endChar = dataOf(end);
-            <> ifIs
-                {
-                    <> eq(1,
-                        &eq(Collection::sizeOf(startChar),
-                            Collection::sizeOf(endChar)))
-                }
-                { <> cat(Range::makeInclusiveRange(startChar, endChar)*) }
+
+            ## Reject non-single-character strings.
+            ifIs { <> ne(1, Collection::sizeOf(startChar)) } { <out> };
+            ifIs { <> ne(1, Collection::sizeOf(endChar)) } { <out> };
+
+            <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }
     |
         { <> dataOf(s) }

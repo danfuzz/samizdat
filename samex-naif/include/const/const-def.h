@@ -14,7 +14,6 @@
  * Token constants are type-only values whose types are the indicated strings.
  */
 
-TOK(CH_AND,            "&");
 TOK(CH_AT,             "@");
 TOK(CH_CCURLY,         "}");
 TOK(CH_CPAREN,         ")");
@@ -81,6 +80,5 @@ STR(varBind,           "varBind");
 STR(varDef,            "varDef");
 STR(varDefMutable,     "varDefMutable");
 STR(varRef,            "varRef");
-STR(voidable,          "voidable");
 STR(yield,             "yield");
 STR(yieldDef,          "yieldDef");

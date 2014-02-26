@@ -71,11 +71,4 @@ genericBind(
         <> []
     });
 
-genericBind(
-    get_varDefs,
-    "voidable",
-    fn voidable_get_varDefs(node) {
-        <> []
-    });
-
 <> {get_varDefs}

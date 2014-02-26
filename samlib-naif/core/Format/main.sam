@@ -306,9 +306,13 @@ genericBind(humanString, Value, Value_humanString);
 fn int(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
-    <> ifIs { <> le(&le(2, base), 36) }
-        { <> intWithBase(value, base) }
-        { Io0::die("Invalid base for int.") }
+    ifIs { <> lt(base, 2) }
+        { Io0::die("Invalid base for int.") };
+
+    ifIs { <> gt(base, 36) }
+        { Io0::die("Invalid base for int.") };
+
+    <> intWithBase(value, base)
 };
 
 ## Documented in spec.
