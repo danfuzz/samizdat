@@ -392,9 +392,9 @@ result (whether a value or void) becomes the result of the outer expression.
 **Note:** The question-mark-colon trinary operator from C (and descendants)
 is obviated in Samizdat by this and the logical-and operator.
 `x ? y : z` in C can generally be turned into `x & y | z` in Samizdat,
-as long as `y` is never void. If `y` can legitimately be void, then the
-slightly longer form `(x & y? | z?)*` is an equivalent that ensures that
-a void `y` won't improperly cause `z` to be evaluated.
+as long as `y` will never evaluate to void. If `y` can legitimately evaluate
+to void, then the slightly longer form `(x & y? | z?)*` is an equivalent that
+ensures that a void `y` won't improperly cause `z` to be evaluated.
 
 
 ### Assignment (Precedence 1) &mdash; `lvalue := expression`
