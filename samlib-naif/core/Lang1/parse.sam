@@ -403,10 +403,6 @@ def parListItem = Peg::makeMainChoice(
             Io0::die(
                 "Mapping syntax not valid as a list item or call argument.")
         }),
-    Peg::makeSequence(
-        Peg::makeToken("&"),
-        Peg::makeThunk { . <> parUnaryExpression },
-        Peg::makeCode { ., ex <> @voidable{value: ex} }),
     parExpression);
 
 ## Documented in spec.

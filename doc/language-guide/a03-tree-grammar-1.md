@@ -496,7 +496,6 @@ def parMap = {/
 ## Parses a list item or function call argument. This handles all of:
 ##
 ## * accepting general expressions
-## * accepting voidable-prefixed expressions
 ## * rejecting expressions that look like `key:value` mappings. This is
 ##   effectively "reserved syntax" (for future expansion); rejecting this
 ##   here means that `x:y` won't be mistaken for other valid syntax.
@@ -504,10 +503,6 @@ def parListItem = {/
     parIdentifierString
     @":"
     { Io1::die("Mapping syntax not valid as a list item or call argument.") }
-|
-    @"&"
-    ex = %parUnaryExpression
-    { <> @voidable{value: ex} }
 |
     parExpression
 /};
