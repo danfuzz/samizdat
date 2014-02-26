@@ -81,6 +81,5 @@ STR(varBind,           "varBind");
 STR(varDef,            "varDef");
 STR(varDefMutable,     "varDefMutable");
 STR(varRef,            "varRef");
-STR(voidable,          "voidable");
 STR(yield,             "yield");
 STR(yieldDef,          "yieldDef");
