@@ -145,13 +145,6 @@ genericBind(
         <> safeIndexForNames(base, Lang0::get_name(node))
     });
 
-genericBind(
-    safeIndex,
-    "voidable",
-    fn voidable_safeIndex(node, base) {
-        <> safeIndex(Lang0::get_value(node), base)
-    });
-
 ## Returns an unused variable name within `node`, either the given `base` or
 ## `base` suffixed with an unsigned int.
 fn safeVarName(base, node) {

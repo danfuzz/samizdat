@@ -313,12 +313,6 @@ fn varRef_convertPexIn(node) {
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
-## Does parser conversion of a `voidable` node.
-fn voidable_convertPexIn(node) {
-    <> convertValuePayload(node)
-};
-genericBind(convertPexIn, "voidable", voidable_convertPexIn);
-
 
 ##
 ## Exported Definitions
