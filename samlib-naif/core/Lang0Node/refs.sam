@@ -10,19 +10,24 @@
 def NAMES = [
     "cat",
     "catCollect",
+    "eq",
+    "ge",
     "get",
+    "gt",
     "ifIs",
     "ifNot",
     "ifValue",
     "ifValueOr",
     "ifValues",
+    "le",
     "loop",
+    "lt",
     "makeList",
     "makeValue",
     "makeValueMap",
+    "ne",
     "nonlocalExit",
     "optValue",
-    "totEq",
     "totNe"
 ];
 
