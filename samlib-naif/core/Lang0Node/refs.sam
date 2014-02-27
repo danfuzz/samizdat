@@ -33,13 +33,35 @@ def NAMES = [
 
 ## Module-scoped names.
 def MOD_NAMES = [
-    {mod: "Format",    name: "formatterFor"},
-    {mod: "Format",    name: "usual"},
-    {mod: "Generator", name: "filterAll"},
-    {mod: "Generator", name: "filterPump"},
-    {mod: "Generator", name: "makeRepeatGenerator"},
-    {mod: "Generator", name: "makeFilterGenerator"},
-    {mod: "Sequence",  name: "reverse"}
+    {mod: "Bitwise",    name: "and"},
+    {mod: "Bitwise",    name: "not"},
+    {mod: "Bitwise",    name: "or"},
+    {mod: "Bitwise",    name: "shl"},
+    {mod: "Bitwise",    name: "shr"},
+    {mod: "Bitwise",    name: "xor"},
+    {mod: "Collection", name: "sizeOf"},
+    {mod: "Format",     name: "formatterFor"},
+    {mod: "Format",     name: "usual"},
+    {mod: "Generator",  name: "filterAll"},
+    {mod: "Generator",  name: "filterPump"},
+    {mod: "Generator",  name: "makeRepeatGenerator"},
+    {mod: "Generator",  name: "makeFilterGenerator"},
+    {mod: "Number",     name: "add"},
+    {mod: "Number",     name: "div"},
+    {mod: "Number",     name: "divEu"},
+    {mod: "Number",     name: "mod"},
+    {mod: "Number",     name: "modEu"},
+    {mod: "Number",     name: "mul"},
+    {mod: "Number",     name: "neg"},
+    {mod: "Number",     name: "sub"},
+    {mod: "Range",      name: "makeExclusiveRange"},
+    {mod: "Range",      name: "makeInclusiveRange"},
+    {mod: "Range",      name: "makeOpenRange"},
+    {mod: "Sequence",   name: "nthFromEnd"},
+    {mod: "Sequence",   name: "reverse"},
+    {mod: "Sequence",   name: "sliceGeneral"},
+    {mod: "Sequence",   name: "sliceExclusive"},
+    {mod: "Sequence",   name: "sliceInclusive"}
 ];
 
 ## Used in `MOD_NAMES` processing.

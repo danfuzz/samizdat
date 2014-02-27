@@ -876,12 +876,6 @@ parChoicePex := {/
 ## Layer 2 Definitions and Rules
 ##
 
-## Returns a collection access expression, with a `varRef` to the collection
-## and a literal string to look up.
-fn makeModNameRef(modVar, name) {
-    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
-};
-
 ## Returns a `closure` node like the one given, except with the `formals`
 ## binding replaced with the given arguments. Each of the `formals`
 ## must be a formal argument map as described in the execution tree spec.
@@ -895,64 +889,36 @@ fn closureWithYieldDef(closure, name) {
     <> @closure{(dataOf(closure))*, yieldDef: name}
 };
 
-## Reference to `Range::makeOpenRange`.
-def REF_Range_makeOpenRange = makeModNameRef("Range", "makeOpenRange");
-
-## Reference to `Range::makeInclusiveRange`.
-def REF_Range_makeInclusiveRange =
-    makeModNameRef("Range", "makeInclusiveRange");
-
-## Reference to `Range::makeExclusiveRange`.
-def REF_Range_makeExclusiveRange =
-    makeModNameRef("Range", "makeExclusiveRange");
-
-## Reference to `Sequence::nthFromEnd`.
-def REF_Sequence_nthFromEnd = makeModNameRef("Sequence", "nthFromEnd");
-
-## Reference to `Sequence::sliceGeneral`.
-def REF_Sequence_sliceGeneral = makeModNameRef("Sequence", "sliceGeneral");
-
-## Reference to `Sequence::sliceInclusive`.
-def REF_Sequence_sliceInclusive =
-    makeModNameRef("Sequence", "sliceInclusive");
-
-## Reference to `Sequence::sliceExclusive`.
-def REF_Sequence_sliceExclusive =
-    makeModNameRef("Sequence", "sliceExclusive");
-
-## Reference to `get`.
-def REF_get = makeVarRef("get");
-
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
-    "-":   makeModNameRef("Number", "neg"),
-    "#":   makeModNameRef("Collection", "sizeOf"),
-    "^":   makeModNameRef("Sequence", "reverse"),
-    "!!!": makeModNameRef("Bitwise", "not")
+    "-":   REFS::Number_neg,
+    "#":   REFS::Collection_sizeOf,
+    "^":   REFS::Sequence_reverse,
+    "!!!": REFS::Bitwise_not
 };
 
 ## For binary operators, map of token types to function name variable
 ## references.
 def BINARY_OPERATORS = {
-    "+":    makeModNameRef("Number", "add"),
-    "-":    makeModNameRef("Number", "sub"),
-    "*":    makeModNameRef("Number", "mul"),
-    "/":    makeModNameRef("Number", "div"),
-    "%":    makeModNameRef("Number", "mod"),
-    "//":   makeModNameRef("Number", "divEu"),
-    "%%":   makeModNameRef("Number", "modEu"),
+    "+":    REFS::Number_add,
+    "-":    REFS::Number_sub,
+    "*":    REFS::Number_mul,
+    "/":    REFS::Number_div,
+    "%":    REFS::Number_mod,
+    "//":   REFS::Number_divEu,
+    "%%":   REFS::Number_modEu,
     "==":   makeVarRef("perEq"),
     "!=":   makeVarRef("perNe"),
     "<":    makeVarRef("perLt"),
     ">":    makeVarRef("perGt"),
     "<=":   makeVarRef("perLe"),
     ">=":   makeVarRef("perGe"),
-    "&&&":  makeModNameRef("Bitwise", "and"),
-    "|||":  makeModNameRef("Bitwise", "or"),
-    "^^^":  makeModNameRef("Bitwise", "xor"),
-    "<<<":  makeModNameRef("Bitwise", "shl"),
-    ">>>":  makeModNameRef("Bitwise", "shr"),
+    "&&&":  REFS::Bitwise_and,
+    "|||":  REFS::Bitwise_or,
+    "^^^":  REFS::Bitwise_xor,
+    "<<<":  REFS::Bitwise_shl,
+    ">>>":  REFS::Bitwise_shr,
     "\\==": makeVarRef("eq"),
     "\\!=": makeVarRef("ne"),
     "\\<":  makeVarRef("lt"),
@@ -1246,19 +1212,19 @@ def parRangeBody = {/
         <> ifIs { <> eq(op, @"..!") }
             {
                 <> makeCall(
-                    REF_Range_makeExclusiveRange,
+                    REFS::Range_makeExclusiveRange,
                     firstValue, optLimit*, optIncrement*)
             }
             {
                 <> ifValue { <> optLimit* }
                     { limit ->
                         <> makeCall(
-                            REF_Range_makeInclusiveRange,
+                            REFS::Range_makeInclusiveRange,
                             firstValue, limit, optIncrement*)
                     }
                     {
                         <> makeCall(
-                            REF_Range_makeOpenRange,
+                            REFS::Range_makeOpenRange,
                             firstValue, optIncrement*)
                     }
             }
@@ -1278,7 +1244,7 @@ def parRangeExpression = {/
     @"]"
 
     ## The test here is to prevent open ranges from being allowed.
-    { <> ne(dataOf(body)::function, REF_Range_makeOpenRange) }
+    { <> ne(dataOf(body)::function, REFS::Range_makeOpenRange) }
     { <> makeCall(REFS::makeList, makeInterpolate(body)) }
 /};
 
@@ -1369,8 +1335,8 @@ def parIndexPostfix = {/
 
             {
                 def funcRef = ifIs { <> eq(op, @"..") }
-                    { <> REF_Sequence_sliceInclusive }
-                    { <> REF_Sequence_sliceExclusive };
+                    { <> REFS::Sequence_sliceInclusive }
+                    { <> REFS::Sequence_sliceExclusive };
 
                 <> { node ->
                     <> makeCall(funcRef, node, dataOf(start), dataOf(end)?*)
@@ -1397,7 +1363,7 @@ def parIndexPostfix = {/
                     })?;
 
                 <> { node ->
-                    <> makeCall(REF_Sequence_sliceGeneral,
+                    <> makeCall(REFS::Sequence_sliceGeneral,
                         node,
                         style,
                         startNode,
@@ -1414,8 +1380,8 @@ def parIndexPostfix = {/
 
         {
             def funcRef = ifIs { <> hasType(index, "fromStart") }
-                { <> REF_get }
-                { <> REF_Sequence_nthFromEnd };
+                { <> REFS::get }
+                { <> REFS::Sequence_nthFromEnd };
 
             <> { node <> makeCall(funcRef, node, dataOf(index)) }
         }
