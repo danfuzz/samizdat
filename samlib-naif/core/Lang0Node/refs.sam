@@ -7,6 +7,7 @@
 ##
 
 def NAMES = [
+    "cat",
     "catCollect",
     "get",
     "ifIs",
@@ -14,9 +15,14 @@ def NAMES = [
     "ifValue",
     "ifValueOr",
     "ifValues",
+    "loop",
     "makeList",
+    "makeValue",
+    "makeValueMap",
     "nonlocalExit",
-    "optValue"
+    "optValue",
+    "totEq",
+    "totNe"
 ];
 
 def REFS = cat(

@@ -15,7 +15,6 @@ def tokenize = submoduleUse("tokenize")::tokenize;
 
 def REFS                   = Lang0Node::REFS;
 def makeCall               = Lang0Node::makeCall;
-def makeCallName           = Lang0Node::makeCallName;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallThunks         = Lang0Node::makeCallThunks;
 def makeDirectApply        = Lang0Node::makeDirectApply;
@@ -418,7 +417,7 @@ def parMapping = {/
                     { <out> data::value };
                 ifIs { <> eq(type, "varRef") }
                     {
-                        <out> makeCallName("makeValueMap",
+                        <out> makeCall(REFS::makeValueMap,
                             makeLiteral(data::name), value)
                     }
             }
@@ -426,7 +425,7 @@ def parMapping = {/
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCallName("makeValueMap", keys*, @expression{value})
+                <> makeCall(REFS::makeValueMap, keys*, @expression{value})
             }
     }
 /};
@@ -441,7 +440,7 @@ def parMap = {/
         {
             <> ifIs { <> eq(rest, []) }
                 { <> one }
-                { <> makeCallName("cat", one, rest*) }
+                { <> makeCall(REFS::cat, one, rest*) }
         }
     |
         { <> makeLiteral({}) }
@@ -484,7 +483,7 @@ def parList = {/
     {
         <> ifIs { <> eq(expressions, []) }
             { <> makeLiteral([]) }
-            { <> makeCallName("makeList", expressions*) }
+            { <> makeCall(REFS::makeList, expressions*) }
     }
 /};
 
@@ -495,7 +494,7 @@ def parDeriv = {/
     type = (parIdentifierString | parParenExpression)
     value = (parParenExpression | parMap | parList)?
 
-    { <> makeCallName("makeValue", type, value*) }
+    { <> makeCall(REFS::makeValue, type, value*) }
 /};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -877,13 +876,6 @@ parChoicePex := {/
 ## Layer 2 Definitions and Rules
 ##
 
-## Returns a `call` node that names a function as a `varRef` and passes
-## "thunked" versions of each of the given actual arguments.
-fn makeCallNameThunks(name, actuals*) {
-    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
-    <> makeCallName(name, thunks*)
-};
-
 ## Returns a collection access expression, with a `varRef` to the collection
 ## and a literal string to look up.
 fn makeModNameRef(modVar, name) {
@@ -1135,7 +1127,7 @@ def parInterpolatedString = {/
                 }
         };
 
-        <> makeCallName("cat", elems*)
+        <> makeCall(REFS::cat, elems*)
     }
 /};
 
@@ -1293,7 +1285,7 @@ def parRangeExpression = {/
 
     ## The test here is to prevent open ranges from being allowed.
     { <> ne(dataOf(body)::function, REF_Range_makeOpenRange) }
-    { <> makeCallName("makeList", makeInterpolate(body)) }
+    { <> makeCall(REFS::makeList, makeInterpolate(body)) }
 /};
 
 ## Parses the `term` variants introduced in Layer 2.
@@ -1399,13 +1391,13 @@ def parIndexPostfix = {/
                     { <> makeLiteral(@exclusive) };
 
                 def startNode =
-                    makeCallName("makeValue",
+                    makeCall(REFS::makeValue,
                         makeLiteral(typeOf(start)),
                         dataOf(start));
 
                 def optEndNode = (ifValue { <> dataOf(end) }
                     { endData ->
-                        <> makeCallName("makeValue",
+                        <> makeCall(REFS::makeValue,
                             makeLiteral(typeOf(end)),
                             endData)
                     })?;
@@ -1441,7 +1433,7 @@ def parIndexPostfix = {/
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {/
     @"**"
-    { <> { node <> makeCallName("totNe", makeLiteral(false), node) } }
+    { <> { node <> makeCall(REFS::totNe, makeLiteral(false), node) } }
 |
     @"??"
     {
@@ -1945,7 +1937,7 @@ def parWhileExpression = {/
         def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
-            statements: [breakDef*, makeCallName("loop", loopClosure)]
+            statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         };
 
         <> makeCall(mainClosure)
@@ -1996,7 +1988,7 @@ def parDoExpression = {/
         def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
-            statements: [breakDef*, makeCallName("loop", loopClosure)]
+            statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         };
 
         <> makeCall(mainClosure)
@@ -2158,12 +2150,12 @@ def parSwitchExpression = {/
         def caseClauses = Generator::filterAll(cases) { case ->
             def keys = case::keys;
             <> ifIs { <> isList(keys) }
-                { <> makeCallName("makeValueMap", keys*, case::code) }
+                { <> makeCall(REFS::makeValueMap, keys*, case::code) }
         };
-        def caseMap = makeCallName("cat",
+        def caseMap = makeCall(REFS::cat,
             makeInterpolate(
                 makeCallModName("Sequence", "reverse",
-                    makeCallName("makeList", caseClauses*))));
+                    makeCall(REFS::makeList, caseClauses*))));
 
         ## If there is no specified formal, then pick a safe one, that is,
         ## a name not referenced in the case clauses.

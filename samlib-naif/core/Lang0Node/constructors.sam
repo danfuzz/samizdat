@@ -60,11 +60,6 @@ fn makeCall(function, actuals*) {
         makeDirectCall(REFS::catCollect, cookedActuals*))
 };
 
-## Returns a `call` node that names a function as a `varRef`.
-fn makeCallName(name, actuals*) {
-    <> makeCall(makeVarRef(name), actuals*)
-};
-
 ## Returns a `call` node to a nonlocal exit reference and with optional
 ## expression value. If passed, the expression is allowed to evaluate to void,
 ## in which case the nonlocal exit yields void at its exit point.
@@ -157,7 +152,6 @@ fn makeVarRefLvalue(name) {
 
 <> {
     makeCall,
-    makeCallName,
     makeCallNonlocalExit,
     makeCallThunks,
     makeDirectApply,
