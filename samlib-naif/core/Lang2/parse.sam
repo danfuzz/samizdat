@@ -882,12 +882,6 @@ fn makeModNameRef(modVar, name) {
     <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
 };
 
-## Returns a `call` node that names a function as a `varRef` to a module
-## and a literal name to look up in that module.
-fn makeCallModName(modVar, funcName, actuals*) {
-    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
-};
-
 ## Returns a `closure` node like the one given, except with the `formals`
 ## binding replaced with the given arguments. Each of the `formals`
 ## must be a formal argument map as described in the execution tree spec.
@@ -1110,10 +1104,10 @@ def parInterpolatedString = {/
 
                     def formatter = ifValue { <> elem::format }
                         { format ->
-                            <> makeCallModName(
-                                "Format", "formatterFor", makeLiteral(format))
+                            <> makeCall(REFS::Format_formatterFor,
+                                makeLiteral(format))
                         }
-                        { <> makeModNameRef("Format", "usual") };
+                        { <> REFS::Format_usual };
 
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
@@ -1153,7 +1147,7 @@ def parGeneratorDef = {/
     size = parExpression
 
     {
-        def init = makeCallModName("Generator", "makeRepeatGenerator", size);
+        def init = makeCall(REFS::Generator_makeRepeatGenerator, size);
         <> {formal: {}, init}
     }
 /};
@@ -1220,13 +1214,13 @@ def parComprehensionExpression = {/
     body = parComprehensionBody
     @")"
 
-    { <> makeCallModName("Generator", "makeFilterGenerator", body*) }
+    { <> makeCall(REFS::Generator_makeFilterGenerator, body*) }
 |
     @"["
     body = parComprehensionBody
     @"]"
 
-    { <> makeCallModName("Generator", "filterAll", body*) }
+    { <> makeCall(REFS::Generator_filterAll, body*) }
 /};
 
 ## Helper for `parRangeExpression`, which parses the body of a
@@ -2042,8 +2036,7 @@ def parForExpression = {/
             yieldDef: "break",
             statements: [
                 breakDef*,
-                makeCallModName(
-                    "Generator", "filterPump", loopClosure, genInits*)
+                makeCall(REFS::Generator::filterPump, loopClosure, genInits*)
             ]
         };
 
@@ -2154,7 +2147,7 @@ def parSwitchExpression = {/
         };
         def caseMap = makeCall(REFS::cat,
             makeInterpolate(
-                makeCallModName("Sequence", "reverse",
+                makeCall(REFS::Sequence_reverse,
                     makeCall(REFS::makeList, caseClauses*))));
 
         ## If there is no specified formal, then pick a safe one, that is,
