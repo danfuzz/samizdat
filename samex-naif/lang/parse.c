@@ -166,6 +166,26 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 #define REFS(name) (makeVarRef(STR_##name))
 
 /* Documented in spec. */
+static zvalue makeDirectApply(zvalue function, zvalue actuals) {
+    if (actuals == NULL) {
+        actuals = EMPTY_LIST;
+    }
+
+    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
+    return makeTransValue(STR_apply, value);
+}
+
+/* Documented in spec. */
+static zvalue makeDirectCall(zvalue function, zvalue actuals) {
+    if (actuals == NULL) {
+        actuals = EMPTY_LIST;
+    }
+
+    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
+    return makeTransValue(STR_call, value);
+}
+
+/* Documented in spec. */
 static zvalue makeInterpolate(zvalue value) {
     return makeTransValue(STR_interpolate, mapFrom1(STR_value, value));
 }
@@ -207,19 +227,57 @@ static zvalue makeVarRef(zvalue name) {
     return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
 }
 
-/* Documented in spec. */
+/**
+ * Documented in spec. This is a fairly direct (but not exact) transliteration
+ * of the corresponding code in `Lang0Node`.
+ */
 static zvalue makeCall(zvalue function, zvalue actuals) {
-    if (actuals == NULL) {
-        actuals = EMPTY_LIST;
+    zint sz = (actuals == NULL) ? 0 : collSize(actuals);
+    zvalue pending[sz];
+    zvalue cookedActuals[sz];
+    zint pendAt = 0;
+    zint cookAt = 0;
+
+    for (zint i = 0; i < sz; i++) {
+        zvalue one = seqNth(actuals, i);
+        if (hasType(one, STR_interpolate)) {
+            if (pendAt != 0) {
+                zvalue call = makeDirectCall(REFS(makeList),
+                    listFromArray(pendAt, pending));
+                cookedActuals[cookAt] = call;
+                cookAt++;
+                pendAt = 0;
+            }
+            cookedActuals[cookAt] = collGet(dataOf(one), STR_value);
+            cookAt++;
+        } else {
+            pending[pendAt] = one;
+            pendAt++;
+        }
     }
 
-    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeTransValue(STR_call, value);
+    if ((sz == 0) || (pendAt != 0)) {
+        if (cookAt == 0) {
+            // There were no interpolated arguments.
+            return makeDirectCall(function, actuals);
+        }
+        zvalue call = makeDirectCall(REFS(makeList),
+            listFromArray(pendAt, pending));
+        cookedActuals[cookAt] = call;
+        cookAt++;
+    }
+
+    // TODO/FIXME: Remove this when the rest of the function is working.
+    if (actuals != NULL) {
+        return makeDirectCall(function, actuals);
+    }
+
+    return makeDirectApply(function, listFromArray(cookAt, cookedActuals));
 }
 
 /* Documented in spec. */
 static zvalue makeOptValueExpression(zvalue expression) {
-    return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
+    return makeDirectCall(REFS(optValue), listFrom1(makeThunk(expression)));
 }
 
 /* Documented in spec. */
