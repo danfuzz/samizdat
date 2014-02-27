@@ -15,6 +15,26 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+
+def REFS                   = Lang0Node::REFS;
+def makeCall               = Lang0Node::makeCall;
+def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
+def makeCallThunks         = Lang0Node::makeCallThunks;
+def makeDirectApply        = Lang0Node::makeDirectApply;
+def makeDirectCall         = Lang0Node::makeDirectCall;
+def makeGetExpression      = Lang0Node::makeGetExpression;
+def makeInterpolate        = Lang0Node::makeInterpolate;
+def makeLiteral            = Lang0Node::makeLiteral;
+def makeOptValueExpression = Lang0Node::makeOptValueExpression;
+def makeThunk              = Lang0Node::makeThunk;
+def makeVarBind            = Lang0Node::makeVarBind;
+def makeVarDef             = Lang0Node::makeVarDef;
+def makeVarDefMutable      = Lang0Node::makeVarDefMutable;
+def makeVarRef             = Lang0Node::makeVarRef;
+def makeVarRefLvalue       = Lang0Node::makeVarRefLvalue;
+
+
 ##
 ## Helper Definitions
 ##
@@ -23,85 +43,6 @@ can be used.
 ## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
     (Range::makeInclusiveRange("a", "z"))*: true
-};
-
-## Returns an `interpolate` node.
-fn makeInterpolate(value) {
-    <> @interpolate{value}
-};
-
-## Returns a `literal` node.
-fn makeLiteral(value) {
-    <> @literal{value}
-};
-
-## Returns a node representing a thunk (no-arg function) that returns the
-## expression represented by the given node.
-fn makeThunk(expression) {
-    <> @closure{formals: [], statements: [], yield: expression}
-};
-
-## Returns a `varBind` node.
-fn makeVarBind(name, value) {
-    <> @varBind{name, value}
-};
-
-## Returns a `varDef` node.
-fn makeVarDef(name, optValue?) {
-    <> ifValue { <> optValue* }
-        { value <> @varDef{name, value} }
-        { <> @varDef{name} }
-};
-
-## Returns a `varDefMutable` node.
-fn makeVarDefMutable(name, optValue?) {
-    <> ifValue { <> optValue* }
-        { value <> @varDefMutable{name, value} }
-        { <> @varDefMutable{name} }
-};
-
-## Returns a `varRef` node.
-fn makeVarRef(name) {
-    <> @varRef{
-        name,
-        lvalue: { node <> makeVarBind(name, node) }
-    }
-};
-
-## Returns a `call` node.
-fn makeCall(function, actuals*) {
-    <> @call{function, actuals}
-};
-
-## Returns a `call` node that names a function as a `varRef`.
-fn makeCallName(name, actuals*) {
-    <> @call{function: makeVarRef(name), actuals}
-};
-
-## Returns a collection access (`get`) expression. This is a `call` node
-## of two arguments (a collection node and a key node).
-fn makeGetExpression(collArg, keyArg) {
-    <> makeCallName("get", collArg, keyArg)
-};
-
-## Returns an optional-value expression. This wraps `node` as
-## `optValue { <> node }`.
-fn makeOptValueExpression(node) {
-    <> makeCallName("optValue", makeThunk(node))
-};
-
-## Returns a `call` node to a nonlocal exit with the given name and
-## with optional expression value. If passed, the expression is allowed
-## to evaluate to void, in which case the nonlocal exit yields void at
-## its exit point.
-fn makeCallNonlocalExit(name, optExpression?) {
-    <> ifValue { <> optExpression* }
-        { ex ->
-            <> makeCallName("nonlocalExit",
-                name,
-                makeInterpolate(makeOptValueExpression(ex)))
-        }
-        { <> makeCallName("nonlocalExit", name) }
 };
 
 
@@ -158,7 +99,7 @@ def parParenExpression = {/
 ## Parses a variable reference.
 def parVarRef = {/
     name = @identifier
-    { <> makeVarRef(dataOf(name)) }
+    { <> makeVarRefLvalue(dataOf(name)) }
 /};
 
 ## Parses a variable definition or declaration.
@@ -313,7 +254,7 @@ def parFnCommon = {/
     ## name to the `return` function, if there is in fact a yield def present.
     returnDef = (
         y = parYieldDef
-        { <> makeVarDef(y, makeVarRef("return")) }
+        { <> makeVarDef(y, REFS::return") }
     )?
 
     name = (
@@ -459,7 +400,7 @@ def parMapping = {/
                     { <out> data };
                 ifIs { <> eq(type, "varRef") }
                     {
-                        <out> makeCallName("makeValueMap",
+                        <out> makeCall(REFS::makeValueMap,
                             makeLiteral(data::name), value)
                     }
             }
@@ -467,7 +408,7 @@ def parMapping = {/
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCallName("makeValueMap", keys*, @expression{value})
+                <> makeCall(REFS::makeValueMap, keys*, @expression{value})
             }
     }
 /};
@@ -482,7 +423,7 @@ def parMap = {/
         {
             <> ifIs { <> eq(rest, []) }
                 { <> one }
-                { <> makeCallName("cat", one, rest*) }
+                { <> makeCall(REFS::cat, one, rest*) }
         }
     |
         { <> makeLiteral({}) }
@@ -525,7 +466,7 @@ def parList = {/
     {
         <> ifIs { <> eq(expressions, []) }
             { <> makeLiteral([]) }
-            { <> makeCallName("makeList", expressions*) }
+            { <> makeCall(REFS::makeList, expressions*) }
     }
 /};
 
@@ -536,7 +477,7 @@ def parDeriv = {/
     type = (parIdentifierString | parParenExpression)
     value = (parParenExpression | parMap | parList)?
 
-    { <> makeCallName("makeValue", type, value*) }
+    { <> makeCall(REFS::makeValue, type, value*) }
 /};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -661,7 +602,7 @@ def parNonlocalExit = {/
         { <> n }
     |
         @return
-        { <> makeVarRef("return") }
+        { <> REFS::return }
     )
 
     value = parExpression?
