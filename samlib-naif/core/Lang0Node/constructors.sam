@@ -7,25 +7,20 @@
 ## Private definitions
 ##
 
-## Makes a non-assignable (no `lvalue` binding) `varRef`.
-fn makeSimpleVarRef(name) {
-    <> @varRef{name}
-};
-
 ## Variable reference to `catCollect`.
-def REF_catCollect = makeSimpleVarRef("catCollect");
+def REF_catCollect = @varRef{name: "catCollect"};
 
 ## Variable reference to `get`.
-def REF_get = makeSimpleVarRef("get");
+def REF_get = @varRef{name: "get"};
 
 ## Variable reference to `makeList`.
-def REF_makeList = makeSimpleVarRef("makeList");
+def REF_makeList = @varRef{name: "makeList"};
 
 ## Variable reference to `nonlocalExit`.
-def REF_nonlocalExit = makeSimpleVarRef("nonlocalExit");
+def REF_nonlocalExit = @varRef{name: "nonlocalExit"};
 
 ## Variable reference to `optValue`.
-def REF_optValue = makeSimpleVarRef("optValue");
+def REF_optValue = @varRef{name: "optValue"};
 
 
 ##
@@ -75,7 +70,7 @@ fn makeCall(function, actuals*) {
             addPendingToCooked()
         };
 
-    ## There was at least one interpolated argument.
+    ## There is at least one interpolated argument.
 
     <> makeDirectApply(
         function,
@@ -84,7 +79,7 @@ fn makeCall(function, actuals*) {
 
 ## Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> makeCall(makeSimpleVarRef(name), actuals*)
+    <> makeCall(makeVarRef(name), actuals*)
 };
 
 ## Returns a `call` node to a nonlocal exit reference and with optional
@@ -100,12 +95,19 @@ fn makeCallNonlocalExit(nleRef, optExpression?) {
         { <> makeDirectCall(REF_nonlocalExit, nleRef) }
 };
 
-## Returns an `apply` node, without doing any special processing of actuals.
+## Returns a `call` node to a given function and passes "thunked" versions of
+## each of the given actual arguments.
+fn makeCallThunks(function, actuals*) {
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    <> makeDirectCall(function, thunks*)
+};
+
+## Returns an `apply` node, without doing any special processing of `actuals`.
 fn makeDirectApply(function, actuals) {
     <> @apply{function, actuals}
 };
 
-## Returns a `call` node, without doing any special processing of actuals.
+## Returns a `call` node, without doing any special processing of `actuals`.
 fn makeDirectCall(function, actuals*) {
     <> @call{function, actuals}
 };
@@ -159,6 +161,11 @@ fn makeVarDefMutable(name, optValue?) {
 
 ## Returns a `varRef` node.
 fn makeVarRef(name) {
+    <> @varRef{name}
+};
+
+## Returns a `varRef` node, which also has an `lvalue` binding.
+fn makeVarRefLvalue(name) {
     <> @varRef{
         name,
         lvalue: { node <> makeVarBind(name, node) }
@@ -169,6 +176,7 @@ fn makeVarRef(name) {
     makeCall,
     makeCallName,
     makeCallNonlocalExit,
+    makeCallThunks,
     makeDirectApply,
     makeDirectCall,
     makeGetExpression,
@@ -179,5 +187,6 @@ fn makeVarRef(name) {
     makeVarBind,
     makeVarDef,
     makeVarDefMutable,
-    makeVarRef
+    makeVarRef,
+    makeVarRefLvalue
 }
