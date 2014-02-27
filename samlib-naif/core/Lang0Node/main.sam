@@ -3,102 +3,16 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Convenient access to execution parse trees.
+## Execution tree node helpers
 ##
 
+
 ##
-## Exported functions
+## Exported Definitions
 ##
 
-## Documented in spec.
-fn get_actuals(node) {
-    <> dataOf(node)::actuals
-};
-
-## Documented in spec.
-fn get_formals(node) {
-    <> dataOf(node)::formals
-};
-
-## Documented in spec.
-fn get_function(node) {
-    <> dataOf(node)::function
-};
-
-## Documented in spec.
-fn get_id(node) {
-    <> dataOf(node)::id
-};
-
-## Documented in spec.
-fn get_maxArgs(node) {
-    def formals = get_formals(node);
-    var maxArgs = 0;
-
-    Generator::filterPump(formals) { f ->
-        ifValue { <> f::repeat }
-            { rep ->
-                ifIs { <> eq(rep, "*") } { return -1 };
-                ifIs { <> eq(rep, "+") } { return -1 };
-            };
-        maxArgs := Number::add(maxArgs, 1)
-    };
-
-    <> maxArgs
-};
-
-## Documented in spec.
-fn get_minArgs(node) {
-    def formals = get_formals(node);
-    var minArgs = 0;
-
-    Generator::filterPump(formals) { <next> f ->
-        ifValue { <> f::repeat }
-            { rep ->
-                ifIs { <> eq(rep, "?") } { <next> };
-                ifIs { <> eq(rep, "*") } { <next> };
-            };
-        minArgs := Number::add(minArgs, 1)
-    };
-
-    <> minArgs
-};
-
-## Documented in spec.
-fn get_name(node) {
-    <> dataOf(node)::name
-};
-
-## Documented in spec.
-fn get_statements(node) {
-    <> dataOf(node)::statements
-};
-
-## Documented in spec.
-fn get_value(node) {
-    <> dataOf(node)::value
-};
-
-## Documented in spec.
-fn get_yield(node) {
-    <> dataOf(node)::yield
-};
-
-## Documented in spec.
-fn get_yieldDef(node) {
-    <> dataOf(node)::yieldDef
-};
-
+## This just re-exports stuff defined in submodules.
 <> {
-    get_actuals,
-    get_formals,
-    get_function,
-    get_id,
-    get_maxArgs,
-    get_minArgs,
-    get_name,
-    get_statements,
-    get_value,
-    get_yield,
-    get_yieldDef
+    (submoduleUse("constructors"))*,
+    (submoduleUse("getters"))*
 }
