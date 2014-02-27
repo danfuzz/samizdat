@@ -47,6 +47,20 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
 }
 
 /**
+ * Executes an `apply` form.
+ */
+static zvalue execApply(Frame *frame, zvalue apply) {
+    apply = dataOf(apply);
+
+    zvalue functionExpr = collGet(apply, STR_function);
+    zvalue actualsExpr = collGet(apply, STR_actuals);
+    zvalue function = execExpression(frame, functionExpr);
+    zvalue actuals = execExpression(frame, actualsExpr);
+
+    return funApply(function, actuals);
+}
+
+/**
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
@@ -196,6 +210,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (evalTypeOf(e)) {
+        case EVAL_apply:       return execApply(frame, e);
         case EVAL_call:        return execCall(frame, e);
         case EVAL_closure:     return execClosure(frame, e);
         case EVAL_expression:  return execExpressionVoidOk(frame, valueOf(e));

@@ -15,7 +15,7 @@ of accessors for the elements of execution tree nodes.
 
 #### `get_actuals(node) <> [node*]`
 
-Gets the actual arguments of a `call` node.
+Gets the actual arguments of a `call` or `apply` node.
 
 #### `get_formals(node) <> [formal*]`
 
@@ -23,7 +23,7 @@ Gets the formal arguments of a `closure` node.
 
 #### `get_function(node) <> node`
 
-Gets the function a `call` node.
+Gets the function a `call` or `apply` node.
 
 #### `get_id(node) <> .`
 

@@ -37,6 +37,7 @@ MOD_INIT(lang) {
     MOD_USE(NonlocalExit);
 
     memset(langTypeMap, 0, sizeof(langTypeMap));
+    langTypeMap[typeIndex(STR_apply)]         = EVAL_apply;
     langTypeMap[typeIndex(STR_call)]          = EVAL_call;
     langTypeMap[typeIndex(STR_closure)]       = EVAL_closure;
     langTypeMap[typeIndex(STR_expression)]    = EVAL_expression;

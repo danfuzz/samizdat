@@ -47,6 +47,7 @@ TOK(var,               "var");
 STR(MapGenerator,      "MapGenerator");
 STR(SequenceGenerator, "SequenceGenerator");
 STR(actuals,           "actuals");
+STR(apply,             "apply");
 STR(call,              "call");
 STR(cat,               "cat");
 STR(closure,           "closure");

@@ -23,6 +23,33 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
+#### `apply` &mdash; `@apply{function: expression, actuals: expression}`
+
+* `function: expression` (required) &mdash; An expression node that must
+  evaluate to a function.
+
+* `actuals: expression` (required) &mdash; An expression node that must
+  evaluate to a list.
+
+This represents a function call.
+
+When run, first `function` and then `actuals` are evaluated. If `function`
+evaluates to something other than a function, the call fails (terminating
+the runtime). If `actuals` evaluates to anything but a list, the call fails
+(terminating the runtime).
+
+If there are too few actual arguments for the function (e.g., the
+function requires at least three arguments, but only two are passed),
+then the call fails (terminating the runtime).
+
+With all the above prerequisites passed, the function is applied to
+the evaluated actuals as its arguments, and the result of evaluation
+is the same as whatever was returned by the function call (including
+void).
+
+**Note:** The difference between this and `call` is that the latter
+takes its `actuals` as a list in the node itself.
+
 #### `call` &mdash; `@call{function: expression, actuals: [expression*]}`
 
 * `function: expression` (required) &mdash; An expression node that must
@@ -39,14 +66,8 @@ order) are evaluated. If `function` evaluates to something other than
 a function, the call fails (terminating the runtime). If any of the
 `actuals` evaluates to void, the call fails (terminating the runtime).
 
-If there are too few actual arguments for the function (e.g., the
-function requires at least three arguments, but only two are passed),
-then the call fails (terminating the runtime).
-
-With all the above prerequisites passed, the function is applied to
-the evaluated actuals as its arguments, and the result of evaluation
-is the same as whatever was returned by the function call (including
-void).
+After that, this proceeds in the same manner as `apply`, using the
+list of evaluated `actuals` as the arguments to the call.
 
 #### `closure` &mdash; `@closure{formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
 
