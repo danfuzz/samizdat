@@ -10,8 +10,7 @@ def REFS = submoduleUse("refs")::REFS;
 ## Exported definitions
 ##
 
-## Returns a `call` node. This handles conversion of interpolated arguments
-## into a form that can be directly executed.
+## Documented in spec.
 fn makeCall(function, actuals*) {
     ifIs { <> perEq(actuals, []) }
         {
@@ -60,89 +59,83 @@ fn makeCall(function, actuals*) {
         makeDirectCall(REFS::catCollect, cookedActuals*))
 };
 
-## Returns a `call` node to a nonlocal exit reference and with optional
-## expression value. If passed, the expression is allowed to evaluate to void,
-## in which case the nonlocal exit yields void at its exit point.
-fn makeCallNonlocalExit(nleRef, optExpression?) {
-    <> ifValue { <> optExpression* }
-        { ex ->
+## Documented in spec.
+fn makeCallNonlocalExit(nleRef, optExpr?) {
+    <> ifValue { <> optExpr* }
+        { expr ->
             <> makeCall(REFS::nonlocalExit,
                 nleRef,
-                makeInterpolate(makeOptValueExpression(ex)))
+                makeInterpolate(makeOptValueExpression(expr)))
         }
         { <> makeDirectCall(REFS::nonlocalExit, nleRef) }
 };
 
-## Returns a `call` node to a given function and passes "thunked" versions of
-## each of the given actual arguments.
+## Documented in spec.
 fn makeCallThunks(function, actuals*) {
     def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeDirectCall(function, thunks*)
 };
 
-## Returns an `apply` node, without doing any special processing of `actuals`.
+## Documented in spec.
 fn makeDirectApply(function, actuals) {
     <> @apply{function, actuals}
 };
 
-## Returns a `call` node, without doing any special processing of `actuals`.
+## Documented in spec.
 fn makeDirectCall(function, actuals*) {
     <> @call{function, actuals}
 };
 
-## Returns a collection access (`get`) expression. This is a `call` node
-## of two arguments (a collection node and a key node).
+## Documented in spec.
 fn makeGetExpression(collArg, keyArg) {
     <> makeDirectCall(REFS::get, collArg, keyArg)
 };
 
-## Returns an `interpolate` node.
+## Documented in spec.
 fn makeInterpolate(value) {
     <> @interpolate{value}
 };
 
-## Returns a `literal` node.
+## Documented in spec.
 fn makeLiteral(value) {
     <> @literal{value}
 };
 
-## Returns an optional-value expression. This wraps `node` as
-## `optValue { <> node }`.
+## Documented in spec.
 fn makeOptValueExpression(node) {
     <> makeCall(REFS::optValue, makeThunk(node))
 };
 
-## Returns a node representing a thunk (no-arg function) that returns the
-## expression represented by the given node.
+## Documented in spec.
 fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: expression}
 };
 
-## Returns a `varBind` node.
+## Documented in spec.
 fn makeVarBind(name, value) {
     <> @varBind{name, value}
 };
 
-## Returns a `varDef` node.
+## Documented in spec.
 fn makeVarDef(name, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @varDef{name, value} }
         { <> @varDef{name} }
 };
 
-## Returns a `varDefMutable` node.
+## Documented in spec.
 fn makeVarDefMutable(name, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @varDefMutable{name, value} }
         { <> @varDefMutable{name} }
 };
 
-## Returns a `varRef` node.
+## Documented in spec.
 fn makeVarRef(name) {
     <> @varRef{name}
 };
 
-## Returns a `varRef` node, which also has an `lvalue` binding.
+## Documented in spec.
 fn makeVarRefLvalue(name) {
     <> @varRef{
         name,

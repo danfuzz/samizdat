@@ -81,6 +81,7 @@ def REF_get = @varRef{name: "get"};
 ## Exported definitions
 ##
 
+## Documented in spec.
 def REFS = cat(
     (Generator::filterAll(NAMES) { name <> {(name): @varRef{name}} })*,
     (Generator::filterAll(MOD_NAMES) { modName ->
