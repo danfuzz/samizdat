@@ -10,6 +10,9 @@ utility functions for making and using various generators.
 Note that all collections are also generators (which generate their
 elements in sequence).
 
+**Note:** The function `catCollect` is exported to the global variable
+environment, as it is very-commonly used.
+
 
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
@@ -43,6 +46,12 @@ calls `store(box)` (storing void), and returns void.
 
 <br><br>
 ### Primitive Definitions
+
+#### `catCollect(generator*) <> list`
+
+Calls `collect` on each of the arguments (in order), and combines them all
+with a call to `cat`. As special cases, this function returns `[]` if given
+no arguments, and it doesn't bother with `cat` if only given one argument.
 
 #### `stdCollect(generator, optFilterFunction?) <> list`
 
