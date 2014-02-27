@@ -116,7 +116,7 @@ def parParenExpression = {/
 ## Parses a variable reference.
 def parVarRef = {/
     name = @identifier
-    { <> makeVarRef(dataOf(name)) }
+    { <> makeVarRefLvalue(dataOf(name)) }
 /};
 
 ## Parses a variable definition or declaration.
