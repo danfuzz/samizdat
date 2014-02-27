@@ -98,6 +98,7 @@ fn generatorPump(generator) {
 <> {
     ## Re-exported from builtins.
     stdCollect:              Generator_stdCollect,
+    catCollect:              catCollect,
 
     ## Re-exported from proto module.
     collect:                 Generator::collect,

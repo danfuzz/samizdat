@@ -23,6 +23,7 @@
     call,
     canCall,
     cat,
+    catCollect,
     dataOf,
     eq,
     ge,
