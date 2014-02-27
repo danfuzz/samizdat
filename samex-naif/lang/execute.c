@@ -66,16 +66,16 @@ static zvalue execApply(Frame *frame, zvalue apply) {
 static zvalue execCall(Frame *frame, zvalue call) {
     call = dataOf(call);
 
-    zvalue function = collGet(call, STR_function);
-    zvalue actuals = collGet(call, STR_actuals);
-    zvalue functionId = execExpression(frame, function);
+    zvalue functionExpr = collGet(call, STR_function);
+    zvalue actualsExprs = collGet(call, STR_actuals);
+    zvalue function = execExpression(frame, functionExpr);
 
-    zint argCount = collSize(actuals);
+    zint argCount = collSize(actualsExprs);
     zvalue actualsArr[argCount];
     zvalue args[argCount];
     zint interpCounts[argCount]; // -1 indicates "regular argument."
 
-    arrayFromList(actualsArr, actuals);
+    arrayFromList(actualsArr, actualsExprs);
 
     // If there are any interpolated arguments, then `interpolateAny` is
     // set to `true`, and `fullCount` indicates the count of arguments
@@ -126,9 +126,9 @@ static zvalue execCall(Frame *frame, zvalue call) {
             }
         }
 
-        return funCall(functionId, fullCount, fullArgs);
+        return funCall(function, fullCount, fullArgs);
     } else {
-        return funCall(functionId, argCount, args);
+        return funCall(function, argCount, args);
     }
 }
 
