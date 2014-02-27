@@ -6,6 +6,7 @@
 ## Exported definitions
 ##
 
+## Global variable names.
 def NAMES = [
     "cat",
     "catCollect",
@@ -25,7 +26,35 @@ def NAMES = [
     "totNe"
 ];
 
+## Module-scoped names.
+def MOD_NAMES = [
+    {mod: "Format",    name: "formatterFor"},
+    {mod: "Format",    name: "usual"},
+    {mod: "Generator", name: "filterAll"},
+    {mod: "Generator", name: "filterPump"},
+    {mod: "Generator", name: "makeRepeatGenerator"},
+    {mod: "Generator", name: "makeFilterGenerator"},
+    {mod: "Sequence",  name: "reverse"}
+];
+
+## Used in `MOD_NAMES` processing.
+def REF_get = @varRef{name: "get"};
+
+
+##
+## Exported definitions
+##
+
 def REFS = cat(
-    (Generator::filterAll(NAMES) { name <> {(name): @varRef{name}} })*);
+    (Generator::filterAll(NAMES) { name <> {(name): @varRef{name}} })*,
+    (Generator::filterAll(MOD_NAMES) { modName ->
+        def mod = modName::mod;
+        def name = modName::name;
+        def modRef = @varRef{name: mod};
+        def nameLit = @literal{value: name};
+        def bindName = cat(mod, "_", name);
+        <> {(bindName): @call{function: REF_get, actuals: [modRef, nameLit]}}
+    })*
+);
 
 <> {REFS}
