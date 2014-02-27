@@ -24,6 +24,15 @@ def bodies = makeRegularGeneric("bodies", 2, 2);
 
 genericBind(
     bodies,
+    "apply",
+    fn apply_bodies(node, bodiesBox) {
+        def function = bodies(node.function, bodiesBox);
+        def actuals = bodies(node.acutals, bodiesBox);
+        <> @apply{function, actuals}
+    });
+
+genericBind(
+    bodies,
     "call",
     fn call_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);

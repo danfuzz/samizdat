@@ -47,6 +47,15 @@ fn varDefCommon(name, value, varsBox) {
 
 genericBind(
     translate,
+    "apply",
+    fn apply_translate(node, varsBox) {
+        <> CodeGen::makeCall("funApply",
+            translate(node.function, varsBox),
+            translate(node.actuals, varsBox))
+    });
+
+genericBind(
+    translate,
     "call",
     fn call_translate(node, varsBox) {
         ## TODO: Handle `interpolate` nodes.

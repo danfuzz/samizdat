@@ -28,6 +28,16 @@ def lits = makeRegularGeneric("lits", 2, 2);
 
 genericBind(
     lits,
+    "apply",
+    fn apply_lits(node, interner) {
+        <> @apply{
+            function: lits(node.function, interner),
+            actuals: lits(node.actuals, interner)
+        }
+    });
+
+genericBind(
+    lits,
     "call",
     fn call_lits(node, interner) {
         <> @call{
