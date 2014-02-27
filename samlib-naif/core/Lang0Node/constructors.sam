@@ -103,7 +103,7 @@ fn makeLiteral(value) {
 
 ## Documented in spec.
 fn makeOptValueExpression(node) {
-    <> makeCall(REFS::optValue, makeThunk(node))
+    <> makeDirectCall(REFS::optValue, makeThunk(node))
 };
 
 ## Documented in spec.
