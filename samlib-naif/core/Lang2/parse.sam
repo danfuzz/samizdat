@@ -13,6 +13,7 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def safeVarName = submoduleUse("safeVarName")::safeVarName;
 def tokenize = submoduleUse("tokenize")::tokenize;
 
+def REFS                   = Lang0Node::REFS;
 def makeCall               = Lang0Node::makeCall;
 def makeCallName           = Lang0Node::makeCallName;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
@@ -1045,7 +1046,7 @@ fn makeCompareCalls(firstEx, opExList) {
         def data = dataOf(tree);
         def function = data::function;
         def actuals = data::actuals;
-        def firstActual = makeCallName("ifValueOr",
+        def firstActual = makeCall(REFS::ifValueOr,
             makeThunk(
                 transform(Sequence::nth(actuals, 0), Number::sub(layer, 1))),
             yieldCall);
@@ -1346,7 +1347,7 @@ parPrefixOperator2 := {/
     ## This one is specially converted, since it's a control construct,
     ## not just a simple function application.
     @"!"
-    { <> { node <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
+    { <> { node <> makeCallThunks(REFS::ifNot, node, makeLiteral(true)) } }
 /};
 
 ## Parses an index expression (inside a collection indexing postfix form).
@@ -1445,7 +1446,7 @@ parPostfixOperator2 := {/
     @"??"
     {
         <> { node ->
-            <> makeCallNameThunks("ifIs",
+            <> makeCallThunks(REFS::ifIs,
                 node, makeLiteral(true), makeLiteral(false))
         }
     }
@@ -1650,9 +1651,9 @@ def parLogicAndExpression = {/
             def resultThunk = makeThunk(last);
 
             <> ifIs { <> eq(formal, {}) }
-                { <> makeCallName("ifIs", testThunk, resultThunk) }
+                { <> makeCall(REFS::ifIs, testThunk, resultThunk) }
                 {
-                    <> makeCallName("ifValue",
+                    <> makeCall(REFS::ifValue,
                         testThunk,
                         closureWithFormals(resultThunk, formal))
                 }
@@ -1673,8 +1674,8 @@ def parLogicAndExpression = {/
                     };
 
             ## Construct the overall `ifValues` call.
-            <> makeCallName("ifValues",
-                makeCallName("makeList", testThunks*),
+            <> makeCall(REFS::ifValues,
+                makeCall(REFS::makeList, testThunks*),
                 closureWithFormals(makeThunk(last), formals*))
         }
     )
@@ -1709,7 +1710,7 @@ def parLogicOrExpression = {/
             var result = Sequence::nth(exprs, 0);
 
             Generator::filterPump(Sequence::sliceInclusive(exprs, 1)) { ex ->
-                result := makeCallName("ifValueOr",
+                result := makeCall(REFS::ifValueOr,
                     makeThunk(ex), makeThunk(result))
             };
 
@@ -1763,11 +1764,11 @@ def parMultiTest = {/
             <> { thenThunk, elseThunk? ->
                 <> ifIs { eq(formal, {}) }
                     {
-                        <> makeCallName("ifIs",
+                        <> makeCall(REFS::ifIs,
                             testThunk, thenThunk, elseThunk*)
                     }
                     {
-                        <> makeCallName("ifValue",
+                        <> makeCall(REFS::ifValue,
                             testThunk,
                             closureWithFormals(thenThunk, formal),
                             elseThunk*)
@@ -1791,8 +1792,8 @@ def parMultiTest = {/
 
             ## Result function which constructs the overall `ifValues` call.
             <> { thenThunk, elseThunk? ->
-                <> makeCallName("ifValues",
-                    makeCallName("makeList", testThunks*),
+                <> makeCall(REFS::ifValues,
+                    makeCall(REFS::makeList, testThunks*),
                     closureWithFormals(thenThunk, formals*),
                     elseThunk*)
             }
@@ -1979,9 +1980,9 @@ def parDoExpression = {/
         @while
         ex = parParenExpression
         {
-            <> makeCallName("ifNot",
-                makeThunk(ex),
-                makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
+            <> makeCallThunks(REFS::ifNot,
+                ex,
+                makeCallNonlocalExit(makeVarRef("break")))
         }
     )?
 
@@ -2169,8 +2170,8 @@ def parSwitchExpression = {/
         def testVar = ifValueOr { <> testClause::formal::name }
             { <> safeVarName("testValue", caseMap) };
 
-        def innerIf = makeCallName("ifValue",
-            makeThunk(makeCallName("get", caseMap, makeVarRef(testVar))),
+        def innerIf = makeCall(REFS::ifValue,
+            makeThunk(makeGetExpression(caseMap, makeVarRef(testVar))),
             CALL_ARG,
             optDefault*);
 
@@ -2180,7 +2181,7 @@ def parSwitchExpression = {/
             yield: innerIf
         };
 
-        def outerIf = makeCallName("ifValue",
+        def outerIf = makeCall(REFS::ifValue,
             makeThunk(testClause::test),
             mainBody,
             optElse*);

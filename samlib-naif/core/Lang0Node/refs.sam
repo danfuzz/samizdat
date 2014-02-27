@@ -9,6 +9,11 @@
 def NAMES = [
     "catCollect",
     "get",
+    "ifIs",
+    "ifNot",
+    "ifValue",
+    "ifValueOr",
+    "ifValues",
     "makeList",
     "nonlocalExit",
     "optValue"
