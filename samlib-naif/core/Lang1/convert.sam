@@ -36,8 +36,8 @@ fn convertPexInList(nodes) {
 };
 
 ## Constructs a function call.
-fn makeCall(function, args*) {
-    <> @call{function, actuals: args}
+fn makeCall(function, actuals*) {
+    <> @call{function, actuals}
 };
 
 ## Makes a peg variable reference.
@@ -226,6 +226,16 @@ fn convertValuePayload(node) {
 
     <> @(nodeType){nodeValue*, value}
 };
+
+## Does parser conversion of an `apply` node.
+fn apply_convertPexIn(node) {
+    def nodeValue = rvalueDataOf(node);
+    def function = convertPexIn(nodeValue::function);
+    def actuals = convertPexIn(nodeValue::actuals);
+
+    <> @apply{nodeValue*, function, actuals}
+};
+genericBind(convertPexIn, "apply", apply_convertPexIn);
 
 ## Does parser conversion of a `call` node.
 fn call_convertPexIn(node) {
