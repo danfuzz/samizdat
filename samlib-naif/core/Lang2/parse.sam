@@ -76,9 +76,64 @@ fn makeVarRef(name) {
     }
 };
 
-## Returns a `call` node.
-fn makeCall(function, actuals*) {
+## Returns a `apply` node, without doing any special processing of actuals.
+fn makeDirectApply(function, actuals) {
+    <> @apply{function, actuals}
+};
+
+## Returns a `call` node, without doing any special processing of actuals.
+fn makeDirectCall(function, actuals*) {
     <> @call{function, actuals}
+};
+
+## Returns a `call` node. This handles conversion of interpolated arguments
+## into a form that can be directly executed.
+fn makeCall(function, actuals*) {
+    ifIs { <> perEq(actuals, []) }
+        {
+            ## No actuals. Easy out.
+            return makeDirectCall(function)
+        };
+
+    ## Convert the actuals as if interpolation needs to be handled. If in the
+    ## end it doesn't, then the original actuals are used as-is.
+
+    var pending = [];
+    var cookedActuals = [];
+
+    fn addCookedActual(actual) {
+        cookedActuals := [cookedActuals*, actual];
+    };
+
+    fn addPendingToCooked() {
+        addCookedActual(makeDirectCall(makeVarRef("makeList"), pending*));
+        pending := [];
+    };
+
+    Generator::filterPump(actuals) { actual ->
+        ifIs { <> hasType(actual, "interpolate") }
+            {
+                ifIs { <> perNe(pending, []) } { addPendingToCooked() };
+                addCookedActual(dataOf(actual)::value)
+            }
+            { pending := [pending*, actual] }
+    };
+
+    ifIs { <> perNe(pending, []) }
+        {
+            ifIs { <> perEq(cookedActuals, []) }
+                {
+                    ## There were no interpolated arguments.
+                    return makeDirectCall(function, actuals*)
+                };
+            addPendingToCooked()
+        };
+
+    ## There was at least one interpolated argument.
+
+    <> makeDirectApply(
+        function,
+        makeDirectCall(makeVarRef("catCollect"), cookedActuals*))
 };
 
 ## Returns a `call` node that names a function as a `varRef`.
