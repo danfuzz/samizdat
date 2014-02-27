@@ -6,10 +6,12 @@
 ## Exported definitions
 ##
 
-## Global variable names.
+## Global variable names / regular variable references.
 def NAMES = [
+    "break",
     "cat",
     "catCollect",
+    "continue",
     "eq",
     "ge",
     "get",
@@ -28,6 +30,13 @@ def NAMES = [
     "ne",
     "nonlocalExit",
     "optValue",
+    "perEq",
+    "perGe",
+    "perGt",
+    "perLe",
+    "perLt",
+    "perNe",
+    "return",
     "totNe"
 ];
 

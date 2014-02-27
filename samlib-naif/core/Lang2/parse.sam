@@ -271,7 +271,7 @@ def parFnCommon = {/
     ## name to the `return` function, if there is in fact a yield def present.
     returnDef = (
         y = parYieldDef
-        { <> makeVarDef(y, makeVarRef("return")) }
+        { <> makeVarDef(y, REFS::return) }
     )?
 
     name = (
@@ -908,23 +908,23 @@ def BINARY_OPERATORS = {
     "%":    REFS::Number_mod,
     "//":   REFS::Number_divEu,
     "%%":   REFS::Number_modEu,
-    "==":   makeVarRef("perEq"),
-    "!=":   makeVarRef("perNe"),
-    "<":    makeVarRef("perLt"),
-    ">":    makeVarRef("perGt"),
-    "<=":   makeVarRef("perLe"),
-    ">=":   makeVarRef("perGe"),
+    "==":   REFS::perEq,
+    "!=":   REFS::perNe,
+    "<":    REFS::perLt,
+    ">":    REFS::perGt,
+    "<=":   REFS::perLe,
+    ">=":   REFS::perGe,
     "&&&":  REFS::Bitwise_and,
     "|||":  REFS::Bitwise_or,
     "^^^":  REFS::Bitwise_xor,
     "<<<":  REFS::Bitwise_shl,
     ">>>":  REFS::Bitwise_shr,
-    "\\==": makeVarRef("eq"),
-    "\\!=": makeVarRef("ne"),
-    "\\<":  makeVarRef("lt"),
-    "\\>":  makeVarRef("gt"),
-    "\\<=": makeVarRef("le"),
-    "\\>=": makeVarRef("ge")
+    "\\==": REFS::eq,
+    "\\!=": REFS::ne,
+    "\\<":  REFS::lt,
+    "\\>":  REFS::gt,
+    "\\<=": REFS::le,
+    "\\>=": REFS::ge
 };
 
 ## Helper for parsing binary operator expressions, which puts together
@@ -1850,7 +1850,7 @@ def parIfExpression = {/
 def parOptBreakDef = {/
     (
         y = parYieldDef
-        { <> makeVarDef(y, makeVarRef("break")) }
+        { <> makeVarDef(y, REFS::break) }
     )?
 /};
 
@@ -1890,7 +1890,7 @@ def parWhileExpression = {/
             statements: [
                 testMaker(
                     code,
-                    makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
+                    makeThunk(makeCallNonlocalExit(REFS::break)))
             ]
         };
 
@@ -1934,7 +1934,7 @@ def parDoExpression = {/
         {
             <> makeCallThunks(REFS::ifNot,
                 ex,
-                makeCallNonlocalExit(makeVarRef("break")))
+                makeCallNonlocalExit(REFS::break))
         }
     )?
 
@@ -1988,7 +1988,7 @@ def parForExpression = {/
 
         def codePayload = dataOf(code);
         def continueDef = ifValue { <> codePayload::yieldDef }
-            { name <> [makeVarDef(name, makeVarRef("continue"))] }
+            { name <> [makeVarDef(name, REFS::continue)] }
             { <> [] };
 
         def loopClosure = @closure{
