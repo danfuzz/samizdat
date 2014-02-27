@@ -14,5 +14,6 @@
 ## This just re-exports stuff defined in submodules.
 <> {
     (submoduleUse("constructors"))*,
-    (submoduleUse("getters"))*
+    (submoduleUse("getters"))*,
+    (submoduleUse("refs"))*
 }
