@@ -271,8 +271,12 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 
     addPendingToCooked();
 
-    return makeDirectApply(function,
-        makeDirectCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
+    if (cookAt > 1) {
+        return makeDirectApply(function,
+            makeDirectCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
+    } else {
+        return makeDirectApply(function, cookedActuals[0]);
+    }
 
     #undef addToCooked
     #undef addPendingToCooked

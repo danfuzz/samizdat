@@ -58,7 +58,16 @@ fn makeCall(function, actuals*) {
 
     addPendingToCooked();
 
-    <> makeDirectApply(function, makeDirectCall(REFS::cat, cookedActuals*))
+    <> ifIs { <> Sequence::nth(cookedActuals, 1) }
+        {
+            ## More than one actual. Use `cat`.
+            <> makeDirectApply(function,
+                makeDirectCall(REFS::cat, cookedActuals*))
+        }
+        {
+            ## Only one. Use it directly as the actuals for the `apply` node.
+            <> makeDirectApply(function, cookedActuals*)
+        }
 };
 
 ## Documented in spec.
