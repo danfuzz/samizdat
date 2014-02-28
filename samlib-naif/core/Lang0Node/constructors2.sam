@@ -4,6 +4,12 @@
 
 
 def REFS = submoduleUse("refs")::REFS;
+def constructors1 = submoduleUse("constructors1");
+
+def makeDirectApply = constructors1::makeDirectApply;
+def makeDirectCall  = constructors1::makeDirectCall;
+def makeInterpolate = constructors1::makeInterpolate;
+def makeThunk       = constructors1::makeThunk;
 
 
 ##
@@ -82,34 +88,8 @@ fn makeCallNonlocalExit(nleRef, optExpr?) {
 };
 
 ## Documented in spec.
-fn makeCallThunks(function, actuals*) {
-    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
-    <> makeDirectCall(function, thunks*)
-};
-
-## Documented in spec.
-fn makeDirectApply(function, actuals) {
-    <> @apply{function, actuals}
-};
-
-## Documented in spec.
-fn makeDirectCall(function, actuals*) {
-    <> @call{function, actuals}
-};
-
-## Documented in spec.
 fn makeGetExpression(collArg, keyArg) {
     <> makeDirectCall(REFS::get, collArg, keyArg)
-};
-
-## Documented in spec.
-fn makeInterpolate(value) {
-    <> @interpolate{value}
-};
-
-## Documented in spec.
-fn makeLiteral(value) {
-    <> @literal{value}
 };
 
 ## Documented in spec.
@@ -117,57 +97,9 @@ fn makeOptValueExpression(node) {
     <> makeDirectCall(REFS::optValue, makeThunk(node))
 };
 
-## Documented in spec.
-fn makeThunk(expression) {
-    <> @closure{formals: [], statements: [], yield: expression}
-};
-
-## Documented in spec.
-fn makeVarBind(name, value) {
-    <> @varBind{name, value}
-};
-
-## Documented in spec.
-fn makeVarDef(name, optValue?) {
-    <> ifValue { <> optValue* }
-        { value <> @varDef{name, value} }
-        { <> @varDef{name} }
-};
-
-## Documented in spec.
-fn makeVarDefMutable(name, optValue?) {
-    <> ifValue { <> optValue* }
-        { value <> @varDefMutable{name, value} }
-        { <> @varDefMutable{name} }
-};
-
-## Documented in spec.
-fn makeVarRef(name) {
-    <> @varRef{name}
-};
-
-## Documented in spec.
-fn makeVarRefLvalue(name) {
-    <> @varRef{
-        name,
-        lvalue: { node <> makeVarBind(name, node) }
-    }
-};
-
 <> {
     makeCall,
     makeCallNonlocalExit,
-    makeCallThunks,
-    makeDirectApply,
-    makeDirectCall,
     makeGetExpression,
-    makeInterpolate,
-    makeLiteral,
-    makeOptValueExpression,
-    makeThunk,
-    makeVarBind,
-    makeVarDef,
-    makeVarDefMutable,
-    makeVarRef,
-    makeVarRefLvalue
+    makeOptValueExpression
 }

@@ -1,0 +1,85 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+##
+## Exported definitions
+##
+
+## Documented in spec.
+fn makeCallThunks(function, actuals*) {
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    <> makeDirectCall(function, thunks*)
+};
+
+## Documented in spec.
+fn makeDirectApply(function, actuals) {
+    <> @apply{function, actuals}
+};
+
+## Documented in spec.
+fn makeDirectCall(function, actuals*) {
+    <> @call{function, actuals}
+};
+
+## Documented in spec.
+fn makeInterpolate(value) {
+    <> @interpolate{value}
+};
+
+## Documented in spec.
+fn makeLiteral(value) {
+    <> @literal{value}
+};
+
+## Documented in spec.
+fn makeThunk(expression) {
+    <> @closure{formals: [], statements: [], yield: expression}
+};
+
+## Documented in spec.
+fn makeVarBind(name, value) {
+    <> @varBind{name, value}
+};
+
+## Documented in spec.
+fn makeVarDef(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDef{name, value} }
+        { <> @varDef{name} }
+};
+
+## Documented in spec.
+fn makeVarDefMutable(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDefMutable{name, value} }
+        { <> @varDefMutable{name} }
+};
+
+## Documented in spec.
+fn makeVarRef(name) {
+    <> @varRef{name}
+};
+
+## Documented in spec.
+fn makeVarRefLvalue(name) {
+    <> @varRef{
+        name,
+        lvalue: { node <> makeVarBind(name, node) }
+    }
+};
+
+<> {
+    makeCallThunks,
+    makeDirectApply,
+    makeDirectCall,
+    makeInterpolate,
+    makeLiteral,
+    makeThunk,
+    makeVarBind,
+    makeVarDef,
+    makeVarDefMutable,
+    makeVarRef,
+    makeVarRefLvalue
+}
