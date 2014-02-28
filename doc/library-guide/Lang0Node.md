@@ -82,6 +82,23 @@ Gets the yield of a `closure` node, if any.
 
 Gets the yield definition name of a `closure` node, if any.
 
+#### `makeApply(function, actuals) <> node`
+
+Makes an `apply` node, with the given `function` (an expression node)
+being applied to the given `actuals` (an expression node).
+
+#### `makeCall(function, actuals*) <> node`
+
+Makes a `call` node, where `function` (an expression node) is called
+with each of the `actuals` (each an expression node) as arguments, in
+order.
+
+#### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
+
+Returns a function call node to a nonlocal exit reference, with optional
+expression value. If passed, the expression is allowed to evaluate to void,
+in which case the nonlocal exit yields void at its exit point.
+
 #### `makeCallOrApply(function, actuals*) <> node`
 
 Returns a function call node, where `function` (an expression node) is called
@@ -96,27 +113,10 @@ If there are no `interpolate` nodes in `actuals`, the end result is a
 straightforward `call` node, the same as calling `makeCall` on the same
 arguments.
 
-#### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
-
-Returns a function call node to a nonlocal exit reference, with optional
-expression value. If passed, the expression is allowed to evaluate to void,
-in which case the nonlocal exit yields void at its exit point.
-
 #### `makeCallThunks(function, actuals*) <> node`
 
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
-
-#### `makeApply(function, actuals) <> node`
-
-Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `actuals` (an expression node).
-
-#### `makeCall(function, actuals*) <> node`
-
-Makes a `call` node, where `function` (an expression node) is called
-with each of the `actuals` (each an expression node) as arguments, in
-order.
 
 #### `makeGetExpression(collArg, keyArg) <> node`
 
