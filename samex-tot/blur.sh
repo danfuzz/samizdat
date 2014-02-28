@@ -174,5 +174,4 @@ rule body \
 rule rm \
     --id=clean \
     -- \
-    "${FINAL_LIB}" \
-    "${FINAL_BIN}/${binName}"
+    "${FINAL_LIB}" "${FINAL_INCLUDE}"
