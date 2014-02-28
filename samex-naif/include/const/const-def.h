@@ -50,6 +50,7 @@ STR(actuals,           "actuals");
 STR(apply,             "apply");
 STR(call,              "call");
 STR(cat,               "cat");
+STR(catCollect,        "catCollect");
 STR(closure,           "closure");
 STR(expression,        "expression");
 STR(formals,           "formals");

@@ -267,12 +267,9 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
         cookAt++;
     }
 
-    // TODO/FIXME: Remove this when the rest of the function is working.
-    if (actuals != NULL) {
-        return makeDirectCall(function, actuals);
-    }
-
-    return makeDirectApply(function, listFromArray(cookAt, cookedActuals));
+    return makeDirectApply(function,
+        makeDirectCall(REFS(catCollect),
+            listFromArray(cookAt, cookedActuals)));
 }
 
 /* Documented in spec. */
