@@ -7,7 +7,7 @@ def REFS = submoduleUse("refs")::REFS;
 def constructors1 = submoduleUse("constructors1");
 
 def makeApply = constructors1::makeApply;
-def makeDirectCall  = constructors1::makeDirectCall;
+def makeCall  = constructors1::makeCall;
 def makeInterpolate = constructors1::makeInterpolate;
 def makeThunk       = constructors1::makeThunk;
 
@@ -21,7 +21,7 @@ fn makeCallOrApply(function, actuals*) {
     ifIs { <> perEq(actuals, []) }
         {
             ## No actuals. Easy out.
-            return makeDirectCall(function)
+            return makeCall(function)
         };
 
     ## Convert the actuals as if interpolation needs to be handled. If in the
@@ -39,7 +39,7 @@ fn makeCallOrApply(function, actuals*) {
     fn addPendingToCooked() {
         ifIs { <> perNe(pending, []) }
             {
-                addToCooked(makeDirectCall(REFS::makeList, pending*));
+                addToCooked(makeCall(REFS::makeList, pending*));
                 pending := [];
             }
     };
@@ -49,7 +49,7 @@ fn makeCallOrApply(function, actuals*) {
             {
                 addPendingToCooked();
                 addToCooked(
-                    makeDirectCall(REFS::collect, dataOf(actual)::value))
+                    makeCall(REFS::collect, dataOf(actual)::value))
             }
             { pending := [pending*, actual] }
     };
@@ -57,7 +57,7 @@ fn makeCallOrApply(function, actuals*) {
     ifIs { <> perEq(cookedActuals, []) }
         {
             ## There were no interpolated arguments.
-            return makeDirectCall(function, actuals*)
+            return makeCall(function, actuals*)
         };
 
     ## There is at least one interpolated argument.
@@ -68,7 +68,7 @@ fn makeCallOrApply(function, actuals*) {
         {
             ## More than one actual. Use `cat`.
             <> makeApply(function,
-                makeDirectCall(REFS::cat, cookedActuals*))
+                makeCall(REFS::cat, cookedActuals*))
         }
         {
             ## Only one. Use it directly as the actuals for the `apply` node.
@@ -84,17 +84,17 @@ fn makeCallNonlocalExit(nleRef, optExpr?) {
                 nleRef,
                 makeInterpolate(makeOptValueExpression(expr)))
         }
-        { <> makeDirectCall(REFS::nonlocalExit, nleRef) }
+        { <> makeCall(REFS::nonlocalExit, nleRef) }
 };
 
 ## Documented in spec.
 fn makeGetExpression(collArg, keyArg) {
-    <> makeDirectCall(REFS::get, collArg, keyArg)
+    <> makeCall(REFS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
 fn makeOptValueExpression(node) {
-    <> makeDirectCall(REFS::optValue, makeThunk(node))
+    <> makeCall(REFS::optValue, makeThunk(node))
 };
 
 <> {

@@ -19,10 +19,10 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def REFS                   = Lang0Node::REFS;
 def makeApply              = Lang0Node::makeApply;
+def makeCall               = Lang0Node::makeCall;
 def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallThunks         = Lang0Node::makeCallThunks;
-def makeDirectCall         = Lang0Node::makeDirectCall;
 def makeGetExpression      = Lang0Node::makeGetExpression;
 def makeInterpolate        = Lang0Node::makeInterpolate;
 def makeLiteral            = Lang0Node::makeLiteral;
@@ -327,7 +327,7 @@ parFnExpression := {/
                 yield:      makeVarBind(name, closure)
             };
 
-            <> makeDirectCall(mainClosure)
+            <> makeCall(mainClosure)
         }
     |
         { <> closure }
@@ -400,7 +400,7 @@ def parMapping = {/
                     { <out> data };
                 ifIs { <> eq(type, "varRef") }
                     {
-                        <out> makeDirectCall(REFS::makeValueMap,
+                        <out> makeCall(REFS::makeValueMap,
                             makeLiteral(data::name), value)
                     }
             }
@@ -424,7 +424,7 @@ def parMap = {/
         {
             <> ifIs { <> eq(rest, []) }
                 { <> one }
-                { <> makeDirectCall(REFS::cat, one, rest*) }
+                { <> makeCall(REFS::cat, one, rest*) }
         }
     |
         { <> makeLiteral({}) }
@@ -478,7 +478,7 @@ def parDeriv = {/
     type = (parIdentifierString | parParenExpression)
     value = (parParenExpression | parMap | parList)?
 
-    { <> makeDirectCall(REFS::makeValue, type, value*) }
+    { <> makeCall(REFS::makeValue, type, value*) }
 /};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

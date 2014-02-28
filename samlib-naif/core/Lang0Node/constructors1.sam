@@ -10,7 +10,7 @@
 ## Documented in spec.
 fn makeCallThunks(function, actuals*) {
     def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
-    <> makeDirectCall(function, thunks*)
+    <> makeCall(function, thunks*)
 };
 
 ## Documented in spec.
@@ -19,7 +19,7 @@ fn makeApply(function, actuals) {
 };
 
 ## Documented in spec.
-fn makeDirectCall(function, actuals*) {
+fn makeCall(function, actuals*) {
     <> @call{function, actuals}
 };
 
@@ -73,7 +73,7 @@ fn makeVarRefLvalue(name) {
 <> {
     makeCallThunks,
     makeApply,
-    makeDirectCall,
+    makeCall,
     makeInterpolate,
     makeLiteral,
     makeThunk,

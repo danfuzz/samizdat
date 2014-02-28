@@ -13,10 +13,10 @@ def tokenize = submoduleUse("tokenize")::tokenize;
 
 def REFS                   = Lang0Node::REFS;
 def makeApply              = Lang0Node::makeApply;
+def makeCall               = Lang0Node::makeCall;
 def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallThunks         = Lang0Node::makeCallThunks;
-def makeDirectCall         = Lang0Node::makeDirectCall;
 def makeGetExpression      = Lang0Node::makeGetExpression;
 def makeInterpolate        = Lang0Node::makeInterpolate;
 def makeLiteral            = Lang0Node::makeLiteral;
@@ -241,7 +241,7 @@ parFnExpression := Peg::makeMainSequence(
                     yield:      makeVarBind(name, closure)
                 };
 
-                <> makeDirectCall(mainClosure)
+                <> makeCall(mainClosure)
             }),
         Peg::makeCode { closure <> closure }));
 
@@ -305,7 +305,7 @@ def parMapping = Peg::makeMainSequence(
                     { <out> data::value };
                 ifIs { <> eq(type, "varRef") }
                     {
-                        <out> makeDirectCall(REFS::makeValueMap,
+                        <out> makeCall(REFS::makeValueMap,
                             makeLiteral(data::name), value)
                     }
             }
@@ -328,7 +328,7 @@ def parMap = Peg::makeMainSequence(
             Peg::makeCode { ., one, rest ->
                 <> ifIs { <> eq(rest, []) }
                     { <> one }
-                    { <> makeDirectCall(REFS::cat, one, rest*) }
+                    { <> makeCall(REFS::cat, one, rest*) }
             }),
         Peg::makeCode { . <> makeLiteral({}) }),
     Peg::makeToken("}"),
@@ -371,7 +371,7 @@ def parDeriv = Peg::makeMainSequence(
     Peg::makeChoice(parIdentifierString, parParenExpression),
     Peg::makeOpt(Peg::makeChoice(parParenExpression, parMap, parList)),
     Peg::makeCode { ., type, value ->
-        <> makeDirectCall(REFS::makeValue, type, value*)
+        <> makeCall(REFS::makeValue, type, value*)
     });
 
 ## Documented in spec.

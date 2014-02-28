@@ -13,7 +13,7 @@
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
-def makeDirectCall = Lang0Node::makeDirectCall;
+def makeCall = Lang0Node::makeCall;
 
 
 ##
@@ -41,13 +41,13 @@ fn convertPexInList(nodes) {
 
 ## Makes a peg variable reference.
 fn makePegRef(name) {
-    <> makeDirectCall(GET_REF, PEG_REF, @literal{value: name})
+    <> makeCall(GET_REF, PEG_REF, @literal{value: name})
 };
 
 ## Constructs a named peg function call with the given arguments, each of
 ## which must be a (non-parsing) expression node.
 fn callPegNameWithExpressions(functionName, args*) {
-    <> makeDirectCall(makePegRef(functionName), args*);
+    <> makeCall(makePegRef(functionName), args*);
 };
 
 ## Converts a pex to a named peg function call of the converted inner pex.

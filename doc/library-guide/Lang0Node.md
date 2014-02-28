@@ -92,8 +92,9 @@ If any of the `actuals` is an `interpolate` node, this converts the
 call into a form where the interpolated nodes have their usual
 surface-language effect. The end result is an `apply` node.
 
-If there are no `interpolate` nodes, the end result is a straightforward
-`call` node, the same as calling `makeDirectCall` on the same arguments.
+If there are no `interpolate` nodes in `actuals`, the end result is a
+straightforward `call` node, the same as calling `makeCall` on the same
+arguments.
 
 #### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
 
@@ -103,7 +104,7 @@ in which case the nonlocal exit yields void at its exit point.
 
 #### `makeCallThunks(function, actuals*) <> node`
 
-Like `makeDirectCall`, except that each of the `actuals` is wrapped in
+Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
 #### `makeApply(function, actuals) <> node`
@@ -111,7 +112,7 @@ a thunk. This is useful in converting conditional expressions and the like.
 Makes an `apply` node, with the given `function` (an expression node)
 being applied to the given `actuals` (an expression node).
 
-#### `makeDirectCall(function, actuals*) <> node`
+#### `makeCall(function, actuals*) <> node`
 
 Makes a `call` node, where `function` (an expression node) is called
 with each of the `actuals` (each an expression node) as arguments, in

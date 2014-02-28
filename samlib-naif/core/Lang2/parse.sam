@@ -15,10 +15,10 @@ def tokenize = submoduleUse("tokenize")::tokenize;
 
 def REFS                   = Lang0Node::REFS;
 def makeApply              = Lang0Node::makeApply;
+def makeCall               = Lang0Node::makeCall;
 def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallThunks         = Lang0Node::makeCallThunks;
-def makeDirectCall         = Lang0Node::makeDirectCall;
 def makeGetExpression      = Lang0Node::makeGetExpression;
 def makeInterpolate        = Lang0Node::makeInterpolate;
 def makeLiteral            = Lang0Node::makeLiteral;
@@ -344,7 +344,7 @@ parFnExpression := {/
                 yield:      makeVarBind(name, closure)
             };
 
-            <> makeDirectCall(mainClosure)
+            <> makeCall(mainClosure)
         }
     |
         { <> closure }
@@ -417,7 +417,7 @@ def parMapping = {/
                     { <out> data::value };
                 ifIs { <> eq(type, "varRef") }
                     {
-                        <out> makeDirectCall(REFS::makeValueMap,
+                        <out> makeCall(REFS::makeValueMap,
                             makeLiteral(data::name), value)
                     }
             }
@@ -441,7 +441,7 @@ def parMap = {/
         {
             <> ifIs { <> eq(rest, []) }
                 { <> one }
-                { <> makeDirectCall(REFS::cat, one, rest*) }
+                { <> makeCall(REFS::cat, one, rest*) }
         }
     |
         { <> makeLiteral({}) }
@@ -495,7 +495,7 @@ def parDeriv = {/
     type = (parIdentifierString | parParenExpression)
     value = (parParenExpression | parMap | parList)?
 
-    { <> makeDirectCall(REFS::makeValue, type, value*) }
+    { <> makeCall(REFS::makeValue, type, value*) }
 /};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -938,7 +938,7 @@ fn makeBinaryCalls(firstEx, opExList) {
         def expr = opEx::expr;
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
 
-        result := makeDirectCall(resolvedOp, result, expr)
+        result := makeCall(resolvedOp, result, expr)
     };
 
     <> result
@@ -999,7 +999,7 @@ fn makeCompareCalls(firstEx, opExList) {
         def data = dataOf(tree);
         def function = data::function;
         def actuals = data::actuals;
-        def firstActual = makeDirectCall(REFS::ifValueOr,
+        def firstActual = makeCall(REFS::ifValueOr,
             makeThunk(
                 transform(Sequence::nth(actuals, 0), Number::sub(layer, 1))),
             yieldCall);
@@ -1010,7 +1010,7 @@ fn makeCompareCalls(firstEx, opExList) {
         }
     };
 
-    <> makeDirectCall(
+    <> makeCall(
         @closure{
             formals: [],
             yieldDef: yieldName,
@@ -1031,7 +1031,7 @@ def parStringInterpolation = {/
     &@"{"
     block = parNullaryClosure
     !.
-    { <> makeDirectCall(block) }
+    { <> makeCall(block) }
 /};
 
 ## Parses an interpolated string. The payload of an interpolated string
@@ -1071,7 +1071,7 @@ def parInterpolatedString = {/
 
                     def formatter = ifValue { <> elem::format }
                         { format ->
-                            <> makeDirectCall(REFS::Format_formatterFor,
+                            <> makeCall(REFS::Format_formatterFor,
                                 makeLiteral(format))
                         }
                         { <> REFS::Format_usual };
@@ -1088,7 +1088,7 @@ def parInterpolatedString = {/
                 }
         };
 
-        <> makeDirectCall(REFS::cat, elems*)
+        <> makeCall(REFS::cat, elems*)
     }
 /};
 
@@ -1114,7 +1114,7 @@ def parGeneratorDef = {/
     size = parExpression
 
     {
-        def init = makeDirectCall(REFS::Generator_makeRepeatGenerator, size);
+        def init = makeCall(REFS::Generator_makeRepeatGenerator, size);
         <> {formal: {}, init}
     }
 /};
@@ -1181,13 +1181,13 @@ def parComprehensionExpression = {/
     body = parComprehensionBody
     @")"
 
-    { <> makeDirectCall(REFS::Generator_makeFilterGenerator, body*) }
+    { <> makeCall(REFS::Generator_makeFilterGenerator, body*) }
 |
     @"["
     body = parComprehensionBody
     @"]"
 
-    { <> makeDirectCall(REFS::Generator_filterAll, body*) }
+    { <> makeCall(REFS::Generator_filterAll, body*) }
 /};
 
 ## Helper for `parRangeExpression`, which parses the body of a
@@ -1212,19 +1212,19 @@ def parRangeBody = {/
     {
         <> ifIs { <> eq(op, @"..!") }
             {
-                <> makeDirectCall(
+                <> makeCall(
                     REFS::Range_makeExclusiveRange,
                     firstValue, optLimit*, optIncrement*)
             }
             {
                 <> ifValue { <> optLimit* }
                     { limit ->
-                        <> makeDirectCall(
+                        <> makeCall(
                             REFS::Range_makeInclusiveRange,
                             firstValue, limit, optIncrement*)
                     }
                     {
-                        <> makeDirectCall(
+                        <> makeCall(
                             REFS::Range_makeOpenRange,
                             firstValue, optIncrement*)
                     }
@@ -1294,7 +1294,7 @@ parPrefixOperator2 := {/
     operator = [@"-" @"#" @"^" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, typeOf(operator));
-        <> { node <> makeDirectCall(name, node) }
+        <> { node <> makeCall(name, node) }
     }
 |
     ## This one is specially converted, since it's a control construct,
@@ -1340,7 +1340,7 @@ def parIndexPostfix = {/
                     { <> REFS::Sequence_sliceExclusive };
 
                 <> { node ->
-                    <> makeDirectCall(funcRef,
+                    <> makeCall(funcRef,
                         node, dataOf(start), dataOf(end)?*)
                 }
             }
@@ -1353,19 +1353,19 @@ def parIndexPostfix = {/
                     { <> makeLiteral(@exclusive) };
 
                 def startNode =
-                    makeDirectCall(REFS::makeValue,
+                    makeCall(REFS::makeValue,
                         makeLiteral(typeOf(start)),
                         dataOf(start));
 
                 def optEndNode = (ifValue { <> dataOf(end) }
                     { endData ->
-                        <> makeDirectCall(REFS::makeValue,
+                        <> makeCall(REFS::makeValue,
                             makeLiteral(typeOf(end)),
                             endData)
                     })?;
 
                 <> { node ->
-                    <> makeDirectCall(REFS::Sequence_sliceGeneral,
+                    <> makeCall(REFS::Sequence_sliceGeneral,
                         node,
                         style,
                         startNode,
@@ -1385,7 +1385,7 @@ def parIndexPostfix = {/
                 { <> REFS::get }
                 { <> REFS::Sequence_nthFromEnd };
 
-            <> { node <> makeDirectCall(funcRef, node, dataOf(index)) }
+            <> { node <> makeCall(funcRef, node, dataOf(index)) }
         }
     )
 /};
@@ -1395,7 +1395,7 @@ def parIndexPostfix = {/
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {/
     @"**"
-    { <> { node <> makeDirectCall(REFS::perNe, makeLiteral(false), node) } }
+    { <> { node <> makeCall(REFS::perNe, makeLiteral(false), node) } }
 |
     @"??"
     {
@@ -1449,12 +1449,12 @@ parPostfixOperator2 := {/
             def suffix = dataOf(name)::value;
             def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
-                def getterCall = makeDirectCall(getterRef, node);
+                def getterCall = makeCall(getterRef, node);
                 <> @(typeOf(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarRef(cat("set_", suffix));
-                        <> makeDirectCall(setterRef, node, expr)
+                        <> makeCall(setterRef, node, expr)
                     }
                 }
             }
@@ -1605,9 +1605,9 @@ def parLogicAndExpression = {/
             def resultThunk = makeThunk(last);
 
             <> ifIs { <> eq(formal, {}) }
-                { <> makeDirectCall(REFS::ifIs, testThunk, resultThunk) }
+                { <> makeCall(REFS::ifIs, testThunk, resultThunk) }
                 {
-                    <> makeDirectCall(REFS::ifValue,
+                    <> makeCall(REFS::ifValue,
                         testThunk,
                         closureWithFormals(resultThunk, formal))
                 }
@@ -1628,8 +1628,8 @@ def parLogicAndExpression = {/
                     };
 
             ## Construct the overall `ifValues` call.
-            <> makeDirectCall(REFS::ifValues,
-                makeDirectCall(REFS::makeList, testThunks*),
+            <> makeCall(REFS::ifValues,
+                makeCall(REFS::makeList, testThunks*),
                 closureWithFormals(makeThunk(last), formals*))
         }
     )
@@ -1717,11 +1717,11 @@ def parMultiTest = {/
             <> { thenThunk, elseThunk? ->
                 <> ifIs { eq(formal, {}) }
                     {
-                        <> makeDirectCall(REFS::ifIs,
+                        <> makeCall(REFS::ifIs,
                             testThunk, thenThunk, elseThunk*)
                     }
                     {
-                        <> makeDirectCall(REFS::ifValue,
+                        <> makeCall(REFS::ifValue,
                             testThunk,
                             closureWithFormals(thenThunk, formal),
                             elseThunk*)
@@ -1745,8 +1745,8 @@ def parMultiTest = {/
 
             ## Result function which constructs the overall `ifValues` call.
             <> { thenThunk, elseThunk? ->
-                <> makeDirectCall(REFS::ifValues,
-                    makeDirectCall(REFS::makeList, testThunks*),
+                <> makeCall(REFS::ifValues,
+                    makeCall(REFS::makeList, testThunks*),
                     closureWithFormals(thenThunk, formals*),
                     elseThunk*)
             }
@@ -1839,7 +1839,7 @@ def parIfExpression = {/
                 ## and wrap that in a call.
                 def mainClosure =
                     closureWithYieldDef(mainThunk, valueOf(yieldDef));
-                <> makeDirectCall(mainClosure)
+                <> makeCall(mainClosure)
             }
     }
 /};
@@ -1898,10 +1898,10 @@ def parWhileExpression = {/
         def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
-            statements: [breakDef*, makeDirectCall(REFS::loop, loopClosure)]
+            statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         };
 
-        <> makeDirectCall(mainClosure)
+        <> makeCall(mainClosure)
     }
 /};
 
@@ -1943,16 +1943,16 @@ def parDoExpression = {/
         def loopClosure = @closure{
             formals: [],
             yieldDef: "continue",
-            statements: [makeDirectCall(code), condition*]
+            statements: [makeCall(code), condition*]
         };
 
         def mainClosure = @closure{
             formals: [],
             yieldDef: "break",
-            statements: [breakDef*, makeDirectCall(REFS::loop, loopClosure)]
+            statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         };
 
-        <> makeDirectCall(mainClosure)
+        <> makeCall(mainClosure)
     }
 /};
 
@@ -2003,12 +2003,12 @@ def parForExpression = {/
             yieldDef: "break",
             statements: [
                 breakDef*,
-                makeDirectCall(REFS::Generator_filterPump,
+                makeCall(REFS::Generator_filterPump,
                     loopClosure, genInits*)
             ]
         };
 
-        <> makeDirectCall(mainClosure)
+        <> makeCall(mainClosure)
     }
 /};
 
@@ -2115,7 +2115,7 @@ def parSwitchExpression = {/
         };
         def caseMap = makeCallOrApply(REFS::cat,
             makeInterpolate(
-                makeDirectCall(REFS::Sequence_reverse,
+                makeCall(REFS::Sequence_reverse,
                     makeCallOrApply(REFS::makeList, caseClauses*))));
 
         ## If there is no specified formal, then pick a safe one, that is,
@@ -2123,7 +2123,7 @@ def parSwitchExpression = {/
         def testVar = ifValueOr { <> testClause::formal::name }
             { <> safeVarName("switchValue", caseMap) };
 
-        def innerIf = makeDirectCall(REFS::ifValue,
+        def innerIf = makeCall(REFS::ifValue,
             makeThunk(makeGetExpression(caseMap, makeVarRef(testVar))),
             CALL_ARG,
             optDefault*);
@@ -2134,7 +2134,7 @@ def parSwitchExpression = {/
             yield: innerIf
         };
 
-        def outerIf = makeDirectCall(REFS::ifValue,
+        def outerIf = makeCall(REFS::ifValue,
             makeThunk(testClause::test),
             mainBody,
             optElse*);
@@ -2146,7 +2146,7 @@ def parSwitchExpression = {/
             yield: outerIf
         };
 
-        <> makeDirectCall(mainClosure)
+        <> makeCall(mainClosure)
     }
 /};
 
