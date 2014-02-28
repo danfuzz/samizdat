@@ -2002,7 +2002,7 @@ def parForExpression = {/
             yieldDef: "break",
             statements: [
                 breakDef*,
-                makeDirectCall(REFS::Generator::filterPump,
+                makeDirectCall(REFS::Generator_filterPump,
                     loopClosure, genInits*)
             ]
         };
