@@ -241,7 +241,7 @@ parFnExpression := Peg::makeMainSequence(
                     yield:      makeVarBind(name, closure)
                 };
 
-                <> makeCall(mainClosure)
+                <> makeDirectCall(mainClosure)
             }),
         Peg::makeCode { closure <> closure }));
 
@@ -305,7 +305,7 @@ def parMapping = Peg::makeMainSequence(
                     { <out> data::value };
                 ifIs { <> eq(type, "varRef") }
                     {
-                        <out> makeCall(REFS::makeValueMap,
+                        <out> makeDirectCall(REFS::makeValueMap,
                             makeLiteral(data::name), value)
                     }
             }
@@ -327,7 +327,7 @@ def parMap = Peg::makeMainSequence(
             Peg::makeCode { ., one, rest ->
                 <> ifIs { <> eq(rest, []) }
                     { <> one }
-                    { <> makeCall(REFS::cat, one, rest*) }
+                    { <> makeDirectCall(REFS::cat, one, rest*) }
             }),
         Peg::makeCode { . <> makeLiteral({}) }),
     Peg::makeToken("}"),
@@ -370,7 +370,7 @@ def parDeriv = Peg::makeMainSequence(
     Peg::makeChoice(parIdentifierString, parParenExpression),
     Peg::makeOpt(Peg::makeChoice(parParenExpression, parMap, parList)),
     Peg::makeCode { ., type, value ->
-        <> makeCall(REFS::makeValue, type, value*)
+        <> makeDirectCall(REFS::makeValue, type, value*)
     });
 
 ## Documented in spec.

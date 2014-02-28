@@ -327,7 +327,7 @@ parFnExpression := {/
                 yield:      makeVarBind(name, closure)
             };
 
-            <> makeCall(mainClosure)
+            <> makeDirectCall(mainClosure)
         }
     |
         { <> closure }
@@ -400,7 +400,7 @@ def parMapping = {/
                     { <out> data };
                 ifIs { <> eq(type, "varRef") }
                     {
-                        <out> makeCall(REFS::makeValueMap,
+                        <out> makeDirectCall(REFS::makeValueMap,
                             makeLiteral(data::name), value)
                     }
             }
@@ -423,7 +423,7 @@ def parMap = {/
         {
             <> ifIs { <> eq(rest, []) }
                 { <> one }
-                { <> makeCall(REFS::cat, one, rest*) }
+                { <> makeDirectCall(REFS::cat, one, rest*) }
         }
     |
         { <> makeLiteral({}) }
@@ -477,7 +477,7 @@ def parDeriv = {/
     type = (parIdentifierString | parParenExpression)
     value = (parParenExpression | parMap | parList)?
 
-    { <> makeCall(REFS::makeValue, type, value*) }
+    { <> makeDirectCall(REFS::makeValue, type, value*) }
 /};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

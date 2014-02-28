@@ -710,7 +710,7 @@ DEF_PARSE(fnExpression) {
             STR_statements, listFrom1(makeVarDef(name, NULL)),
             STR_yield,      makeVarBind(name, closure)));
 
-    return makeCall(mainClosure, NULL);
+    return makeDirectCall(mainClosure, NULL);
 }
 
 /* Documented in spec. */
@@ -807,7 +807,7 @@ DEF_PARSE(mapping) {
         if (valEq(type, STR_interpolate)) {
             return collGet(data, STR_value);
         } else if (valEq(type, STR_varRef)) {
-            return makeCall(REFS(makeValueMap),
+            return makeDirectCall(REFS(makeValueMap),
                 listFrom2(makeLiteral(collGet(data, STR_name)), value));
         }
 
@@ -837,7 +837,7 @@ DEF_PARSE(map) {
     switch (collSize(mappings)) {
         case 0:  return makeLiteral(EMPTY_MAP);
         case 1:  return seqNth(mappings, 0);
-        default: return makeCall(REFS(cat), mappings);
+        default: return makeDirectCall(REFS(cat), mappings);
     }
 }
 
@@ -892,7 +892,7 @@ DEF_PARSE(deriv) {
         ? listFrom1(type)
         : listFrom2(type, value);
 
-    return makeCall(REFS(makeValue), args);
+    return makeDirectCall(REFS(makeValue), args);
 }
 
 /* Documented in spec. */
