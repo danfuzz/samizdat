@@ -13,7 +13,11 @@
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
-def makeCall = Lang0Node::makeCall;
+def REFS              = Lang0Node::REFS;
+def makeCall          = Lang0Node::makeCall;
+def makeGetExpression = Lang0Node::makeGetExpression;
+def makeLiteral       = Lang0Node::makeLiteral;
+def makeVarRef        = Lang0Node::makeVarRef;
 
 
 ##
@@ -28,11 +32,8 @@ def convertPex = makeRegularGeneric("convertPex", 2, 2);
 ## node into an equivalent layer 0 node.
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
-## Reference to the variable `get`.
-def GET_REF = @varRef{name: "get"};
-
 ## Reference to the variable `Peg`.
-def PEG_REF = @varRef{name: "Peg"};
+def PEG_REF = makeVarRef("Peg");
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
@@ -41,7 +42,7 @@ fn convertPexInList(nodes) {
 
 ## Makes a peg variable reference.
 fn makePegRef(name) {
-    <> makeCall(GET_REF, PEG_REF, @literal{value: name})
+    <> makeGetExpression(PEG_REF, makeLiteral(name))
 };
 
 ## Constructs a named peg function call with the given arguments, each of
@@ -59,7 +60,7 @@ fn callPegNameWithPex(node, formals, functionName) {
 ## Constructs a named peg function call of the given literal arguments.
 fn callPegNameWithLiterals(functionName, args*) {
     def literalArgs = Generator::filterAll(args)
-        { arg <> @literal{value: arg} };
+        { arg <> makeLiteral(arg) };
     <> callPegNameWithExpressions(functionName, literalArgs*)
 };
 
