@@ -16,7 +16,7 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 ## Prints box info.
 fn msg(box) {
     def storeStr = ifIs { <> Box::canStore(box) }
-        { <> "can-store : "}
+        { <> "can-store : " }
         { <> "no-store  : " };
 
     def fetchStr = ifValue { <> Box::fetch(box) }
