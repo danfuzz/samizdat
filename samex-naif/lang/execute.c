@@ -71,65 +71,15 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue function = execExpression(frame, functionExpr);
 
     zint argCount = collSize(actualsExprs);
-    zvalue actualsArr[argCount];
     zvalue args[argCount];
-    zint interpCounts[argCount]; // -1 indicates "regular argument."
+    arrayFromList(args, actualsExprs);
 
-    arrayFromList(actualsArr, actualsExprs);
-
-    // If there are any interpolated arguments, then `interpolateAny` is
-    // set to `true`, and `fullCount` indicates the count of arguments
-    // after interpolation.
-    zint fullCount = 0;
-    bool interpolateAny = false;
-
+    // Replace each actual with its evaluation.
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = actualsArr[i];
-        zevalType oneType = evalTypeOf(one);
-        bool interpolate = (oneType == EVAL_interpolate);
-        zvalue eval;
-
-        if (interpolate) {
-            one = valueOf(one);
-        }
-
-        eval = execExpression(frame, one);
-
-        if (interpolate) {
-            eval = GFN_CALL(collect, eval);
-            args[i] = eval;
-            interpCounts[i] = collSize(eval);
-            fullCount += interpCounts[i];
-            interpolateAny = true;
-        } else {
-            args[i] = eval;
-            interpCounts[i] = -1;
-            fullCount++;
-        }
+        args[i] = execExpression(frame, args[i]);
     }
 
-    if (interpolateAny) {
-        zvalue fullArgs[fullCount];
-        zint at = 0;
-
-        // Build the flattened argument list.
-        for (zint i = 0; i < argCount; i++) {
-            zvalue oneNode = actualsArr[i];
-            zvalue oneArg = args[i];
-            zint oneCount = interpCounts[i];
-            if (oneCount >= 0) {
-                arrayFromList(&fullArgs[at], oneArg);
-                at += oneCount;
-            } else {
-                fullArgs[at] = oneArg;
-                at++;
-            }
-        }
-
-        return funCall(function, fullCount, fullArgs);
-    } else {
-        return funCall(function, argCount, args);
-    }
+    return funCall(function, argCount, args);
 }
 
 /**
