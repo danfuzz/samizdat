@@ -71,8 +71,8 @@ Gets the statement list of a `closure` node.
 #### `get_value(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
-and `varDefMutable`.
+nodes of type `expression`, `interpolate`, `literal`, `parser`, `varBind`,
+`varDef`, and `varDefMutable`.
 
 #### `get_yield(node) <> node | void`
 
@@ -163,3 +163,8 @@ additional bindings.
 Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
+
+#### `withoutLvalue(node) <> node`
+
+Makes a node just like the given one, except without any data payload
+binding for `lvalue`.

@@ -18,6 +18,7 @@ def makeCall          = Lang0Node::makeCall;
 def makeGetExpression = Lang0Node::makeGetExpression;
 def makeLiteral       = Lang0Node::makeLiteral;
 def makeVarRef        = Lang0Node::makeVarRef;
+def withoutLvalue     = Lang0Node::withoutLvalue;
 
 
 ##
@@ -319,7 +320,7 @@ genericBind(convertPexIn, "varDefMutable", varDefMutable_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
-    <> @varRef(rvalueDataOf(node))
+    <> withoutLvalue(node)
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
