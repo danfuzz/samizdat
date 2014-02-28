@@ -238,38 +238,43 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     zint pendAt = 0;
     zint cookAt = 0;
 
+    #define addToCooked(actual) do { \
+        cookedActuals[cookAt] = (actual); \
+        cookAt++; \
+    } while (0)
+
+    #define addPendingToCooked() do { \
+        if (pendAt != 0) { \
+            addToCooked(makeDirectCall(REFS(makeList), \
+                listFromArray(pendAt, pending))); \
+            pendAt = 0; \
+        } \
+    } while (0)
+
     for (zint i = 0; i < sz; i++) {
         zvalue one = seqNth(actuals, i);
         if (hasType(one, STR_interpolate)) {
-            if (pendAt != 0) {
-                zvalue call = makeDirectCall(REFS(makeList),
-                    listFromArray(pendAt, pending));
-                cookedActuals[cookAt] = call;
-                cookAt++;
-                pendAt = 0;
-            }
-            cookedActuals[cookAt] = collGet(dataOf(one), STR_value);
-            cookAt++;
+            addPendingToCooked();
+            addToCooked(collGet(dataOf(one), STR_value));
         } else {
             pending[pendAt] = one;
             pendAt++;
         }
     }
 
-    if ((sz == 0) || (pendAt != 0)) {
-        if (cookAt == 0) {
-            // There were no interpolated arguments.
-            return makeDirectCall(function, actuals);
-        }
-        zvalue call = makeDirectCall(REFS(makeList),
-            listFromArray(pendAt, pending));
-        cookedActuals[cookAt] = call;
-        cookAt++;
+    if (cookAt == 0) {
+        // There were no interpolated arguments.
+        return makeDirectCall(function, actuals);
     }
+
+    addPendingToCooked();
 
     return makeDirectApply(function,
         makeDirectCall(REFS(catCollect),
             listFromArray(cookAt, cookedActuals)));
+
+    #undef addToCooked
+    #undef addPendingToCooked
 }
 
 /* Documented in spec. */
