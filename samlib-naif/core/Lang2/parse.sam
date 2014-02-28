@@ -1394,7 +1394,7 @@ def parIndexPostfix = {/
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {/
     @"**"
-    { <> { node <> makeDirectCall(REFS::totNe, makeLiteral(false), node) } }
+    { <> { node <> makeDirectCall(REFS::perNe, makeLiteral(false), node) } }
 |
     @"??"
     {
