@@ -2,8 +2,16 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+
+def constructors1 = submoduleUse("constructors1");
+
+def makeDirectCall = constructors1::makeDirectCall;
+def makeLiteral    = constructors1::makeLiteral;
+def makeVarRef     = constructors1::makeVarRef;
+
+
 ##
-## Exported definitions
+## Private definitions
 ##
 
 ## Global variable names / regular variable references.
@@ -73,7 +81,7 @@ def MOD_NAMES = [
 ];
 
 ## Used in `MOD_NAMES` processing.
-def REF_get = @varRef{name: "get"};
+def REF_get = makeVarRef("get");
 
 
 ##
@@ -82,14 +90,14 @@ def REF_get = @varRef{name: "get"};
 
 ## Documented in spec.
 def REFS = cat(
-    (Generator::filterAll(NAMES) { name <> {(name): @varRef{name}} })*,
+    (Generator::filterAll(NAMES) { name <> {(name): makeVarRef(name)} })*,
     (Generator::filterAll(MOD_NAMES) { modName ->
         def mod = modName::mod;
         def name = modName::name;
-        def modRef = @varRef{name: mod};
-        def nameLit = @literal{value: name};
-        def bindName = cat(mod, "_", name);
-        <> {(bindName): @call{function: REF_get, actuals: [modRef, nameLit]}}
+        <> {
+            (cat(mod, "_", name)):
+                makeDirectCall(REF_get, makeVarRef(mod), makeLiteral(name))
+        }
     })*
 );
 
