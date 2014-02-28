@@ -6,8 +6,8 @@
 def REFS = submoduleUse("refs")::REFS;
 def constructors1 = submoduleUse("constructors1");
 
-def makeApply = constructors1::makeApply;
-def makeCall  = constructors1::makeCall;
+def makeApply       = constructors1::makeApply;
+def makeCall        = constructors1::makeCall;
 def makeInterpolate = constructors1::makeInterpolate;
 def makeThunk       = constructors1::makeThunk;
 
@@ -15,6 +15,17 @@ def makeThunk       = constructors1::makeThunk;
 ##
 ## Exported definitions
 ##
+
+## Documented in spec.
+fn makeCallNonlocalExit(nleRef, optExpr?) {
+    <> ifValue { <> optExpr* }
+        { expr ->
+            <> makeCallOrApply(REFS::nonlocalExit,
+                nleRef,
+                makeInterpolate(makeOptValueExpression(expr)))
+        }
+        { <> makeCall(REFS::nonlocalExit, nleRef) }
+};
 
 ## Documented in spec.
 fn makeCallOrApply(function, actuals*) {
@@ -77,17 +88,6 @@ fn makeCallOrApply(function, actuals*) {
 };
 
 ## Documented in spec.
-fn makeCallNonlocalExit(nleRef, optExpr?) {
-    <> ifValue { <> optExpr* }
-        { expr ->
-            <> makeCallOrApply(REFS::nonlocalExit,
-                nleRef,
-                makeInterpolate(makeOptValueExpression(expr)))
-        }
-        { <> makeCall(REFS::nonlocalExit, nleRef) }
-};
-
-## Documented in spec.
 fn makeGetExpression(collArg, keyArg) {
     <> makeCall(REFS::get, collArg, keyArg)
 };
@@ -98,8 +98,8 @@ fn makeOptValueExpression(node) {
 };
 
 <> {
-    makeCallOrApply,
     makeCallNonlocalExit,
+    makeCallOrApply,
     makeGetExpression,
     makeOptValueExpression
 }

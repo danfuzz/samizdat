@@ -8,12 +8,6 @@
 ##
 
 ## Documented in spec.
-fn makeCallThunks(function, actuals*) {
-    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
-    <> makeCall(function, thunks*)
-};
-
-## Documented in spec.
 fn makeApply(function, actuals) {
     <> @apply{function, actuals}
 };
@@ -21,6 +15,12 @@ fn makeApply(function, actuals) {
 ## Documented in spec.
 fn makeCall(function, actuals*) {
     <> @call{function, actuals}
+};
+
+## Documented in spec.
+fn makeCallThunks(function, actuals*) {
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    <> makeCall(function, thunks*)
 };
 
 ## Documented in spec.
@@ -71,9 +71,9 @@ fn makeVarRefLvalue(name) {
 };
 
 <> {
-    makeCallThunks,
     makeApply,
     makeCall,
+    makeCallThunks,
     makeInterpolate,
     makeLiteral,
     makeThunk,

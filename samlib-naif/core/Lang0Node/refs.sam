@@ -5,7 +5,7 @@
 
 def constructors1 = submoduleUse("constructors1");
 
-def makeCall = constructors1::makeCall;
+def makeCall       = constructors1::makeCall;
 def makeLiteral    = constructors1::makeLiteral;
 def makeVarRef     = constructors1::makeVarRef;
 
