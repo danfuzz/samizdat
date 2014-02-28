@@ -82,7 +82,7 @@ Gets the yield of a `closure` node, if any.
 
 Gets the yield definition name of a `closure` node, if any.
 
-#### `makeCall(function, actuals*) <> node`
+#### `makeCallOrApply(function, actuals*) <> node`
 
 Returns a function call node, where `function` (an expression node) is called
 with each of the `actuals` (each an expression node) as arguments, in

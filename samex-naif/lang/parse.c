@@ -231,7 +231,7 @@ static zvalue makeVarRef(zvalue name) {
  * Documented in spec. This is a fairly direct (but not exact) transliteration
  * of the corresponding code in `Lang0Node`.
  */
-static zvalue makeCall(zvalue function, zvalue actuals) {
+static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     zint sz = (actuals == NULL) ? 0 : collSize(actuals);
     zvalue pending[sz];
     zvalue cookedActuals[sz];
@@ -298,7 +298,7 @@ static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
         actuals = listFrom1(name);
     }
 
-    return makeCall(REFS(nonlocalExit), actuals);
+    return makeCallOrApply(REFS(nonlocalExit), actuals);
 }
 
 
@@ -818,7 +818,7 @@ DEF_PARSE(mapping) {
     // `expression` node here to prevent interpolation from
     // being applied to `makeValueMap`.
 
-    return makeCall(REFS(makeValueMap),
+    return makeCallOrApply(REFS(makeValueMap),
         listAppend(keys,
             makeTransValue(STR_expression, mapFrom1(STR_value, value))));
 }
@@ -869,7 +869,7 @@ DEF_PARSE(list) {
 
     return (collSize(expressions) == 0)
         ? makeLiteral(EMPTY_LIST)
-        : makeCall(REFS(makeList), expressions);
+        : makeCallOrApply(REFS(makeList), expressions);
 }
 
 /* Documented in spec. */
@@ -958,13 +958,13 @@ DEF_PARSE(unaryExpression) {
     for (zint i = 0; i < size; i++) {
         zvalue one = seqNth(postfixes, i);
         if (hasType(one, TYPE_List)) {
-            result = makeCall(result, one);
+            result = makeCallOrApply(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeOptValueExpression(result);
         } else if (hasType(one, STR_literal)) {
-            result = makeCall(REFS(get), listFrom2(result, one));
+            result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
         }

@@ -18,7 +18,7 @@ can be used.
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def REFS                   = Lang0Node::REFS;
-def makeCall               = Lang0Node::makeCall;
+def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallThunks         = Lang0Node::makeCallThunks;
 def makeDirectApply        = Lang0Node::makeDirectApply;
@@ -408,7 +408,8 @@ def parMapping = {/
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCall(REFS::makeValueMap, keys*, @expression{value})
+                <> makeCallOrApply(REFS::makeValueMap,
+                    keys*, @expression{value})
             }
     }
 /};
@@ -466,7 +467,7 @@ def parList = {/
     {
         <> ifIs { <> eq(expressions, []) }
             { <> makeLiteral([]) }
-            { <> makeCall(REFS::makeList, expressions*) }
+            { <> makeCallOrApply(REFS::makeList, expressions*) }
     }
 /};
 
@@ -511,7 +512,7 @@ def parActualsList = {/
 ## function call.
 def parPostfixOperator = {/
     actuals = parActualsList
-    { <> { node <> makeCall(node, actuals*) } }
+    { <> { node <> makeCallOrApply(node, actuals*) } }
 |
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.

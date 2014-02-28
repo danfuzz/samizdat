@@ -12,7 +12,7 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def tokenize = submoduleUse("tokenize")::tokenize;
 
 def REFS                   = Lang0Node::REFS;
-def makeCall               = Lang0Node::makeCall;
+def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallThunks         = Lang0Node::makeCallThunks;
 def makeDirectApply        = Lang0Node::makeDirectApply;
@@ -313,7 +313,8 @@ def parMapping = Peg::makeMainSequence(
                 ## One or more keys. The `value` is wrapped in an
                 ## `expression` node here to prevent interpolation from
                 ## being applied to `makeValueMap`.
-                <> makeCall(REFS::makeValueMap, keys*, @expression{value})
+                <> makeCallOrApply(REFS::makeValueMap,
+                    keys*, @expression{value})
             }
     });
 
@@ -361,7 +362,7 @@ def parList = Peg::makeMainSequence(
     Peg::makeCode { ., expressions, . ->
         <> ifIs { <> eq(expressions, []) }
             { <> makeLiteral([]) }
-            { <> makeCall(REFS::makeList, expressions*) }
+            { <> makeCallOrApply(REFS::makeList, expressions*) }
     });
 
 ## Documented in spec.
@@ -399,7 +400,9 @@ def parActualsList = Peg::makeMainChoice(
 def parPostfixOperator = Peg::makeMainChoice(
     Peg::makeSequence(
         parActualsList,
-        Peg::makeCode { actuals <> { node <> makeCall(node, actuals*) } }),
+        Peg::makeCode { actuals ->
+            <> { node <> makeCallOrApply(node, actuals*) }
+        }),
     Peg::makeSequence(
         Peg::makeToken("::"),
         parIdentifierString,

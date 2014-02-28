@@ -11,6 +11,10 @@
 ## to do an entire separate tree walk to just do this (at the end of parsing).
 ##
 
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+
+def makeDirectCall = Lang0Node::makeDirectCall;
+
 
 ##
 ## Private Definitions
@@ -35,20 +39,15 @@ fn convertPexInList(nodes) {
     <> Generator::filterAll(nodes) { node <> convertPexIn(node) }
 };
 
-## Constructs a function call.
-fn makeCall(function, actuals*) {
-    <> @call{function, actuals}
-};
-
 ## Makes a peg variable reference.
 fn makePegRef(name) {
-    <> makeCall(GET_REF, PEG_REF, @literal{value: name})
+    <> makeDirectCall(GET_REF, PEG_REF, @literal{value: name})
 };
 
 ## Constructs a named peg function call with the given arguments, each of
 ## which must be a (non-parsing) expression node.
 fn callPegNameWithExpressions(functionName, args*) {
-    <> makeCall(makePegRef(functionName), args*);
+    <> makeDirectCall(makePegRef(functionName), args*);
 };
 
 ## Converts a pex to a named peg function call of the converted inner pex.
