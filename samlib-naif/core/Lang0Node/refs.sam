@@ -11,6 +11,7 @@ def NAMES = [
     "break",
     "cat",
     "catCollect",
+    "collect",
     "continue",
     "eq",
     "ge",

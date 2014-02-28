@@ -255,7 +255,9 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
         zvalue one = seqNth(actuals, i);
         if (hasType(one, STR_interpolate)) {
             addPendingToCooked();
-            addToCooked(collGet(dataOf(one), STR_value));
+            addToCooked(
+                makeDirectCall(REFS(collect),
+                    listFrom1(collGet(dataOf(one), STR_value))));
         } else {
             pending[pendAt] = one;
             pendAt++;
@@ -270,8 +272,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     addPendingToCooked();
 
     return makeDirectApply(function,
-        makeDirectCall(REFS(catCollect),
-            listFromArray(cookAt, cookedActuals)));
+        makeDirectCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
 
     #undef addToCooked
     #undef addPendingToCooked

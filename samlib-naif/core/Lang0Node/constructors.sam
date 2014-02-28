@@ -21,8 +21,7 @@ fn makeCall(function, actuals*) {
     ## Convert the actuals as if interpolation needs to be handled. If in the
     ## end it doesn't, then the original actuals are used as-is. This converts
     ## runs of non-interpolated actuals to `makeList(ac, ac, ...)`, which
-    ## converts cleanly at runtime as part of the ultimate call to
-    ## `catCollect`.
+    ## converts cleanly at runtime as part of the ultimate call to `cat`.
 
     var pending = [];       ## Non-interpolated actuals, to be `makeList`ed.
     var cookedActuals = []; ## Fully-processed actuals (of either type).
@@ -43,7 +42,8 @@ fn makeCall(function, actuals*) {
         ifIs { <> hasType(actual, "interpolate") }
             {
                 addPendingToCooked();
-                addToCooked(dataOf(actual)::value)
+                addToCooked(
+                    makeDirectCall(REFS::collect, dataOf(actual)::value))
             }
             { pending := [pending*, actual] }
     };
@@ -58,9 +58,7 @@ fn makeCall(function, actuals*) {
 
     addPendingToCooked();
 
-    <> makeDirectApply(
-        function,
-        makeDirectCall(REFS::catCollect, cookedActuals*))
+    <> makeDirectApply(function, makeDirectCall(REFS::cat, cookedActuals*))
 };
 
 ## Documented in spec.
