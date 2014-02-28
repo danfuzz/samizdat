@@ -5,6 +5,8 @@
  */
 
 #include "impl.h"
+#include "type/Function.h"
+#include "type/Generator.h"
 #include "type/List.h"
 
 

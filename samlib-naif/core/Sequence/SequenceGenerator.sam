@@ -9,8 +9,6 @@
 
 def Collection = moduleUse({name: ["proto", "Collection"]});
 def Sequence = moduleUse({name: ["proto", "Sequence"]});
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 
 
 ##
@@ -32,8 +30,7 @@ fn SequenceGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(Generator::nextValue, "SequenceGenerator",
-    SequenceGenerator_nextValue);
+genericBind(nextValue, "SequenceGenerator", SequenceGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(Generator::collect, "SequenceGenerator", Generator_stdCollect);
+genericBind(collect, "SequenceGenerator", Generator_stdCollect);

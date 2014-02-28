@@ -40,7 +40,7 @@ fn msgTen(header, origGen) {
                 { <done> };
 
             def box = Box::makePromise();
-            <> ifValue { <> Generator::nextValue(gen, box) }
+            <> ifValue { <> nextValue(gen, box) }
                 { nextGen ->
                     msg(Box::fetch(box));
                     gen := nextGen

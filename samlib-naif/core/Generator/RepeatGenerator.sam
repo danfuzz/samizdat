@@ -9,7 +9,6 @@
 
 def NullGenerator = submoduleUse("NullGenerator");
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
@@ -31,7 +30,7 @@ fn makeRepeatGenerator(size, optValue?) {
 };
 
 ## Just use the standard implementation.
-genericBind(Generator::collect, "RepeatGenerator", Generator_stdCollect);
+genericBind(collect, "RepeatGenerator", Generator_stdCollect);
 
 ## Documented in spec.
 fn RepeatGenerator_nextValue(gen, box) {
@@ -48,8 +47,7 @@ fn RepeatGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(Generator::nextValue, "RepeatGenerator",
-    RepeatGenerator_nextValue);
+genericBind(nextValue, "RepeatGenerator", RepeatGenerator_nextValue);
 
 
 <> {

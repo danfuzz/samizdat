@@ -8,22 +8,20 @@
 
 def unboundedCollect = submoduleUse("unboundedCollect")::unboundedCollect;
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 
 ##
 ## Exported Definitions
 ##
 
 ## Documented in spec.
-genericBind(Generator::collect, "ValueGenerator", unboundedCollect);
+genericBind(collect, "ValueGenerator", unboundedCollect);
 
 ## Documented in spec.
 fn ValueGenerator_nextValue(gen, box) {
     Box::store(box, dataOf(gen));
     <> gen
 };
-genericBind(Generator::nextValue, "ValueGenerator", ValueGenerator_nextValue);
+genericBind(nextValue, "ValueGenerator", ValueGenerator_nextValue);
 
 ## Documented in spec.
 fn makeValueGenerator(value) {

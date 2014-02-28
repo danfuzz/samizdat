@@ -162,6 +162,29 @@ static zvalue listAppend(zvalue list, zvalue elem) {
     return GFN_CALL(cat, list, listFrom1(elem));
 }
 
+/** Equivalent to `REFS::name` in the spec. */
+#define REFS(name) (makeVarRef(STR_##name))
+
+/* Documented in spec. */
+static zvalue makeDirectApply(zvalue function, zvalue actuals) {
+    if (actuals == NULL) {
+        actuals = EMPTY_LIST;
+    }
+
+    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
+    return makeTransValue(STR_apply, value);
+}
+
+/* Documented in spec. */
+static zvalue makeDirectCall(zvalue function, zvalue actuals) {
+    if (actuals == NULL) {
+        actuals = EMPTY_LIST;
+    }
+
+    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
+    return makeTransValue(STR_call, value);
+}
+
 /* Documented in spec. */
 static zvalue makeInterpolate(zvalue value) {
     return makeTransValue(STR_interpolate, mapFrom1(STR_value, value));
@@ -204,24 +227,64 @@ static zvalue makeVarRef(zvalue name) {
     return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
 }
 
-/* Documented in spec. */
+/**
+ * Documented in spec. This is a fairly direct (but not exact) transliteration
+ * of the corresponding code in `Lang0Node`.
+ */
 static zvalue makeCall(zvalue function, zvalue actuals) {
-    if (actuals == NULL) {
-        actuals = EMPTY_LIST;
+    zint sz = (actuals == NULL) ? 0 : collSize(actuals);
+    zvalue pending[sz];
+    zvalue cookedActuals[sz];
+    zint pendAt = 0;
+    zint cookAt = 0;
+
+    #define addToCooked(actual) do { \
+        cookedActuals[cookAt] = (actual); \
+        cookAt++; \
+    } while (0)
+
+    #define addPendingToCooked() do { \
+        if (pendAt != 0) { \
+            addToCooked(makeDirectCall(REFS(makeList), \
+                listFromArray(pendAt, pending))); \
+            pendAt = 0; \
+        } \
+    } while (0)
+
+    for (zint i = 0; i < sz; i++) {
+        zvalue one = seqNth(actuals, i);
+        if (hasType(one, STR_interpolate)) {
+            addPendingToCooked();
+            addToCooked(
+                makeDirectCall(REFS(collect),
+                    listFrom1(collGet(dataOf(one), STR_value))));
+        } else {
+            pending[pendAt] = one;
+            pendAt++;
+        }
     }
 
-    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeTransValue(STR_call, value);
-}
+    if (cookAt == 0) {
+        // There were no interpolated arguments.
+        return makeDirectCall(function, actuals);
+    }
 
-/* Documented in spec. */
-static zvalue makeCallName(zvalue name, zvalue actuals) {
-    return makeCall(makeVarRef(name), actuals);
+    addPendingToCooked();
+
+    if (cookAt > 1) {
+        return makeDirectApply(function,
+            makeDirectCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
+    } else {
+        return makeDirectApply(function, cookedActuals[0]);
+    }
+
+    #undef addToCooked
+    #undef addPendingToCooked
 }
 
 /* Documented in spec. */
 static zvalue makeOptValueExpression(zvalue expression) {
-    return makeCallName(STR_optValue, listFrom1(makeThunk(expression)));
+    return makeDirectCall(REFS(optValue), listFrom1(makeThunk(expression)));
 }
 
 /* Documented in spec. */
@@ -235,7 +298,7 @@ static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
         actuals = listFrom1(name);
     }
 
-    return makeCallName(STR_nonlocalExit, actuals);
+    return makeCall(REFS(nonlocalExit), actuals);
 }
 
 
@@ -568,7 +631,7 @@ DEF_PARSE(fnCommon1) {
         return EMPTY_LIST;
     }
 
-    return listFrom1(makeVarDef(result, makeVarRef(STR_return)));
+    return listFrom1(makeVarDef(result, REFS(return)));
 }
 
 /**
@@ -647,7 +710,7 @@ DEF_PARSE(fnExpression) {
             STR_statements, listFrom1(makeVarDef(name, NULL)),
             STR_yield,      makeVarBind(name, closure)));
 
-    return makeCall(mainClosure, NULL);
+    return makeDirectCall(mainClosure, NULL);
 }
 
 /* Documented in spec. */
@@ -744,7 +807,7 @@ DEF_PARSE(mapping) {
         if (valEq(type, STR_interpolate)) {
             return collGet(data, STR_value);
         } else if (valEq(type, STR_varRef)) {
-            return makeCallName(STR_makeValueMap,
+            return makeDirectCall(REFS(makeValueMap),
                 listFrom2(makeLiteral(collGet(data, STR_name)), value));
         }
 
@@ -755,7 +818,7 @@ DEF_PARSE(mapping) {
     // `expression` node here to prevent interpolation from
     // being applied to `makeValueMap`.
 
-    return makeCallName(STR_makeValueMap,
+    return makeCall(REFS(makeValueMap),
         listAppend(keys,
             makeTransValue(STR_expression, mapFrom1(STR_value, value))));
 }
@@ -774,7 +837,7 @@ DEF_PARSE(map) {
     switch (collSize(mappings)) {
         case 0:  return makeLiteral(EMPTY_MAP);
         case 1:  return seqNth(mappings, 0);
-        default: return makeCallName(STR_cat, mappings);
+        default: return makeDirectCall(REFS(cat), mappings);
     }
 }
 
@@ -806,7 +869,7 @@ DEF_PARSE(list) {
 
     return (collSize(expressions) == 0)
         ? makeLiteral(EMPTY_LIST)
-        : makeCallName(STR_makeList, expressions);
+        : makeCall(REFS(makeList), expressions);
 }
 
 /* Documented in spec. */
@@ -829,7 +892,7 @@ DEF_PARSE(deriv) {
         ? listFrom1(type)
         : listFrom2(type, value);
 
-    return makeCallName(STR_makeValue, args);
+    return makeDirectCall(REFS(makeValue), args);
 }
 
 /* Documented in spec. */
@@ -901,7 +964,7 @@ DEF_PARSE(unaryExpression) {
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeOptValueExpression(result);
         } else if (hasType(one, STR_literal)) {
-            result = makeCallName(STR_get, listFrom2(result, one));
+            result = makeCall(REFS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
         }
@@ -981,7 +1044,7 @@ DEF_PARSE(nonlocalExit2) {
     MARK();
 
     MATCH_OR_REJECT(return);
-    return makeVarRef(STR_return);
+    return REFS(return);
 }
 
 /* Documented in spec. */

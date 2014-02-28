@@ -28,7 +28,7 @@ fn msgAll(header, origGen) {
     { <done> ->
         loop {
             def box = Box::makePromise();
-            <> ifValue { <> Generator::nextValue(gen, box) }
+            <> ifValue { <> nextValue(gen, box) }
                 { nextGen ->
                     msg(Box::fetch(box));
                     gen := nextGen
@@ -38,7 +38,7 @@ fn msgAll(header, origGen) {
     }();
 
     Io0::note("  [all]");
-    msg(Generator::collect(origGen));
+    msg(collect(origGen));
     Io0::note("")
 };
 

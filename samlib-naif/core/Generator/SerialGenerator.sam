@@ -7,8 +7,6 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 def NullGenerator = submoduleUse("NullGenerator");
 
 
@@ -39,14 +37,14 @@ fn SerialGenerator_nextValue(gen, box) {
             def moreGens = Sequence::sliceInclusive(subGens, 1);
             def innerBox = Box::makePromise();
 
-            <> ifValue { <> Generator::nextValue(firstGen, innerBox) }
+            <> ifValue { <> nextValue(firstGen, innerBox) }
                 { nextGenerator ->
                     Box::store(box, Box::fetch(innerBox));
                     <> @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
                     ## First generator was voided.
-                    <> Generator::nextValue(
+                    <> nextValue(
                         makeSerialGenerator(moreGens*),
                         box)
                 }
@@ -56,11 +54,10 @@ fn SerialGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(Generator::nextValue, "SerialGenerator",
-    SerialGenerator_nextValue);
+genericBind(nextValue, "SerialGenerator", SerialGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(Generator::collect, "SerialGenerator", Generator_stdCollect);
+genericBind(collect, "SerialGenerator", Generator_stdCollect);
 
 <> {
     makeSerialGenerator

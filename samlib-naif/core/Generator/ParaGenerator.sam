@@ -7,8 +7,6 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 def ListWrapGenerator = submoduleUse("ListWrapGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
 
@@ -36,13 +34,13 @@ fn ParaGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
     ifIs { <> eq(subGens, []) }
-        { return Generator::nextValue(Box::nullBox, box) };
+        { return nextValue(Box::nullBox, box) };
 
-    def generatorCalls = Generator::collect(
+    def generatorCalls = collect(
         subGens,
         { gen ->
             def innerBox = Box::makePromise();
-            <> ifValue { <> Generator::nextValue(gen, innerBox) }
+            <> ifValue { <> nextValue(gen, innerBox) }
                 { nextGenerator <> [Box::fetch(innerBox), nextGenerator] }
                 {
                     ## One of the sub-generators became voided.
@@ -51,18 +49,18 @@ fn ParaGenerator_nextValue(gen, box) {
                 }
         });
 
-    def yields = Generator::collect(generatorCalls,
+    def yields = collect(generatorCalls,
         { one <> Sequence::nth(one, 0) });
-    def nexts = Generator::collect(generatorCalls,
+    def nexts = collect(generatorCalls,
         { one <> Sequence::nth(one, 1) });
 
     Box::store(box, yields);
     <> @ParaGenerator(nexts)
 };
-genericBind(Generator::nextValue, "ParaGenerator", ParaGenerator_nextValue);
+genericBind(nextValue, "ParaGenerator", ParaGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(Generator::collect, "ParaGenerator", Generator_stdCollect);
+genericBind(collect, "ParaGenerator", Generator_stdCollect);
 
 <> {
     makeParaGenerator

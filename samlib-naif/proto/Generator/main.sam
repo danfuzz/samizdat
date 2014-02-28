@@ -8,6 +8,6 @@
 ##
 
 <> {
-    collect:   Generator_collect,
-    nextValue: Generator_nextValue
+    collect,
+    nextValue
 }

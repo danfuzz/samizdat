@@ -47,75 +47,39 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
 }
 
 /**
+ * Executes an `apply` form.
+ */
+static zvalue execApply(Frame *frame, zvalue apply) {
+    apply = dataOf(apply);
+
+    zvalue functionExpr = collGet(apply, STR_function);
+    zvalue actualsExpr = collGet(apply, STR_actuals);
+    zvalue function = execExpression(frame, functionExpr);
+    zvalue actuals = execExpression(frame, actualsExpr);
+
+    return funApply(function, actuals);
+}
+
+/**
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
     call = dataOf(call);
 
-    zvalue function = collGet(call, STR_function);
-    zvalue actuals = collGet(call, STR_actuals);
-    zvalue functionId = execExpression(frame, function);
+    zvalue functionExpr = collGet(call, STR_function);
+    zvalue actualsExprs = collGet(call, STR_actuals);
+    zvalue function = execExpression(frame, functionExpr);
 
-    zint argCount = collSize(actuals);
-    zvalue actualsArr[argCount];
+    zint argCount = collSize(actualsExprs);
     zvalue args[argCount];
-    zint interpCounts[argCount]; // -1 indicates "regular argument."
+    arrayFromList(args, actualsExprs);
 
-    arrayFromList(actualsArr, actuals);
-
-    // If there are any interpolated arguments, then `interpolateAny` is
-    // set to `true`, and `fullCount` indicates the count of arguments
-    // after interpolation.
-    zint fullCount = 0;
-    bool interpolateAny = false;
-
+    // Replace each actual with its evaluation.
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = actualsArr[i];
-        zevalType oneType = evalTypeOf(one);
-        bool interpolate = (oneType == EVAL_interpolate);
-        zvalue eval;
-
-        if (interpolate) {
-            one = valueOf(one);
-        }
-
-        eval = execExpression(frame, one);
-
-        if (interpolate) {
-            eval = GFN_CALL(collect, eval);
-            args[i] = eval;
-            interpCounts[i] = collSize(eval);
-            fullCount += interpCounts[i];
-            interpolateAny = true;
-        } else {
-            args[i] = eval;
-            interpCounts[i] = -1;
-            fullCount++;
-        }
+        args[i] = execExpression(frame, args[i]);
     }
 
-    if (interpolateAny) {
-        zvalue fullArgs[fullCount];
-        zint at = 0;
-
-        // Build the flattened argument list.
-        for (zint i = 0; i < argCount; i++) {
-            zvalue oneNode = actualsArr[i];
-            zvalue oneArg = args[i];
-            zint oneCount = interpCounts[i];
-            if (oneCount >= 0) {
-                arrayFromList(&fullArgs[at], oneArg);
-                at += oneCount;
-            } else {
-                fullArgs[at] = oneArg;
-                at++;
-            }
-        }
-
-        return funCall(functionId, fullCount, fullArgs);
-    } else {
-        return funCall(functionId, argCount, args);
-    }
+    return funCall(function, argCount, args);
 }
 
 /**
@@ -196,6 +160,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (evalTypeOf(e)) {
+        case EVAL_apply:       return execApply(frame, e);
         case EVAL_call:        return execCall(frame, e);
         case EVAL_closure:     return execClosure(frame, e);
         case EVAL_expression:  return execExpressionVoidOk(frame, valueOf(e));

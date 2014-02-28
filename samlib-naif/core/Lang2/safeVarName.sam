@@ -69,6 +69,15 @@ fn safeIndexForNodes(base, nodes*) {
 
 genericBind(
     safeIndex,
+    "apply",
+    fn apply_safeIndex(node, base) {
+        <> safeIndexForNodes(base,
+            Lang0Node::get_function(node),
+            Lang0Node::get_actuals(node));
+    });
+
+genericBind(
+    safeIndex,
     "call",
     fn call_safeIndex(node, base) {
         <> safeIndexForNodes(base,

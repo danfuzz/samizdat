@@ -10,6 +10,12 @@ utility functions for making and using various generators.
 Note that all collections are also generators (which generate their
 elements in sequence).
 
+Because they are so commonly used, the following definitions are
+exported to the standard global variable environment:
+
+* `collect`
+* `nextValue`
+
 
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.

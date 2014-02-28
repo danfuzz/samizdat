@@ -8,8 +8,6 @@
 ## Payload is a map `[filterFunction: function, generator: subGen]`.
 ## `subGen` is expected to produce lists of arguments to apply.
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 def ParaGenerator = submoduleUse("ParaGenerator");
 
 
@@ -37,7 +35,7 @@ fn FilterGenerator_nextValue(gen, box) {
     loop { <next> ->
         def innerBox = Box::makePromise();
 
-        ifValue { <> Generator::nextValue(innerGen, innerBox) }
+        ifValue { <> nextValue(innerGen, innerBox) }
             { nextGen ->
                 ifValue { <> filterFunction(Box::fetch(innerBox)*) }
                     { value ->
@@ -57,11 +55,10 @@ fn FilterGenerator_nextValue(gen, box) {
         return
     }
 };
-genericBind(Generator::nextValue, "FilterGenerator",
-    FilterGenerator_nextValue);
+genericBind(nextValue, "FilterGenerator", FilterGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(Generator::collect, "FilterGenerator", Generator_stdCollect);
+genericBind(collect, "FilterGenerator", Generator_stdCollect);
 
 <> {
     makeFilterGenerator

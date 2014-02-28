@@ -10,6 +10,13 @@ def get_varDefs = makeRegularGeneric("get_varDefs", 1, 1);
 
 genericBind(
     get_varDefs,
+    "apply",
+    fn apply_get_varDefs(node) {
+        <> []
+    });
+
+genericBind(
+    get_varDefs,
     "call",
     fn call_get_varDefs(node) {
         <> []

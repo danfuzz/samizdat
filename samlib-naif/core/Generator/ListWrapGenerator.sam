@@ -7,8 +7,6 @@
 ##
 ## Payload is `subGen`, the sub-generator.
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 
 ##
 ## Exported Definitions
@@ -23,7 +21,7 @@ fn makeListWrapGenerator(generator) {
 fn ListWrapGenerator_nextValue(gen, box) {
     def innerBox = Box::makePromise();
 
-    <> ifValue { <> Generator::nextValue(dataOf(gen), innerBox) }
+    <> ifValue { <> nextValue(dataOf(gen), innerBox) }
         { nextGenerator ->
             Box::store(box, [Box::fetch(innerBox)]);
             <> @ListWrapGenerator(nextGenerator)
@@ -33,11 +31,11 @@ fn ListWrapGenerator_nextValue(gen, box) {
             Box::store(box);
         }
 };
-genericBind(Generator::nextValue, "ListWrapGenerator",
+genericBind(nextValue, "ListWrapGenerator",
     ListWrapGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(Generator::collect, "ListWrapGenerator", Generator_stdCollect);
+genericBind(collect, "ListWrapGenerator", Generator_stdCollect);
 
 <> {
     makeListWrapGenerator

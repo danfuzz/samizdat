@@ -27,6 +27,13 @@ fn catVarRefs(nodes*) {
 
 genericBind(
     get_varRefs,
+    "apply",
+    fn apply_get_varRefs(node) {
+        <> catVarRefs(node.function, node.actuals)
+    });
+
+genericBind(
+    get_varRefs,
     "call",
     fn call_get_varRefs(node) {
         <> catVarRefs(node.function, node.actuals*)

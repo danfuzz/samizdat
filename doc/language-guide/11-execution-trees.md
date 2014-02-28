@@ -23,6 +23,33 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
+#### `apply` &mdash; `@apply{function: expression, actuals: expression}`
+
+* `function: expression` (required) &mdash; An expression node that must
+  evaluate to a function.
+
+* `actuals: expression` (required) &mdash; An expression node that must
+  evaluate to a list.
+
+This represents a function call.
+
+When run, first `function` and then `actuals` are evaluated. If `function`
+evaluates to something other than a function, the call fails (terminating
+the runtime). If `actuals` evaluates to anything but a list, the call fails
+(terminating the runtime).
+
+If there are too few actual arguments for the function (e.g., the
+function requires at least three arguments, but only two are passed),
+then the call fails (terminating the runtime).
+
+With all the above prerequisites passed, the function is applied to
+the evaluated actuals as its arguments, and the result of evaluation
+is the same as whatever was returned by the function call (including
+void).
+
+**Note:** The difference between this and `call` is that the latter
+takes its `actuals` as a list in the node itself.
+
 #### `call` &mdash; `@call{function: expression, actuals: [expression*]}`
 
 * `function: expression` (required) &mdash; An expression node that must
@@ -39,14 +66,8 @@ order) are evaluated. If `function` evaluates to something other than
 a function, the call fails (terminating the runtime). If any of the
 `actuals` evaluates to void, the call fails (terminating the runtime).
 
-If there are too few actual arguments for the function (e.g., the
-function requires at least three arguments, but only two are passed),
-then the call fails (terminating the runtime).
-
-With all the above prerequisites passed, the function is applied to
-the evaluated actuals as its arguments, and the result of evaluation
-is the same as whatever was returned by the function call (including
-void).
+After that, this proceeds in the same manner as `apply`, using the
+list of evaluated `actuals` as the arguments to the call.
 
 #### `closure` &mdash; `@closure{formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
 
@@ -109,36 +130,22 @@ A node with type `expression` per se is merely a pass-through to its
 enclosed expression. In terms of surface syntax, `expression` nodes
 generally correspond to parenthesized expressions.
 
-In most positions, this type of node is effectively a no-op.
-However, it is useful to disambiguate argument or list element
-interpolation from regular expression interpolation.
-
-For example, `foo(bar*)` is a call to `foo` with an interpolation of all
-of `bar`'s (zero or more) elements as arguments, whereas `foo((bar*))`
-is a single-argument call to `foo`, asserting that `bar` is indeed a
-single-element list.
+**Note:** Strictly speaking, there is no need for these nodes to exist.
+However, they can be handy when generating execution trees.
 
 #### `interpolate` &mdash; `@interpolate{value: expression}`
 
 * `value: expression` &mdash; Expression node, which must yield a list when
   evaluated.
 
-This represents the interpolation of a list, either as an expression per
-se or with special rules as part of an argument list.
+This represents the interpolation of a generator, which must either produce
+no values or exactly one value when `collect`ed.
 
-As a regular expression, the node's `expression` is evaluated and must
-result in a list. If the list is empty, then the result of evaluation
-of this node is void. If the list has a single element, then the result
-of evaluation is that single element value. All other evaluations are
-invalid (terminating the runtime).
-
-As part of function call argument evaluation, each `interpolate` node is
-evaluated, and the elements of the resulting list become individual actual
-arguments to the call, rather than the list itself being a single argument.
-
-It is an error (terminating the runtime) either if `expression` evaluates to
-something other than a list, or it evaluates to a list of size greater than
-one when being used as anything but a function call argument.
+When run, the node's `expression` is evaluated and must result in a generator.
+`collect` is called on the generator, producing a list. If the list is empty,
+then the result of evaluation of this node is void. If the list has a single
+element, then the result of evaluation is that single element value. All other
+evaluations are invalid (terminating the runtime).
 
 #### `literal` &mdash; `@literal{value: value}`
 
