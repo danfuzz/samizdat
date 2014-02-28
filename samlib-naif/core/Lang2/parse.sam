@@ -2120,7 +2120,7 @@ def parSwitchExpression = {/
         ## If there is no specified formal, then pick a safe one, that is,
         ## a name not referenced in the case clauses.
         def testVar = ifValueOr { <> testClause::formal::name }
-            { <> safeVarName("testValue", caseMap) };
+            { <> safeVarName("switchValue", caseMap) };
 
         def innerIf = makeDirectCall(REFS::ifValue,
             makeThunk(makeGetExpression(caseMap, makeVarRef(testVar))),
