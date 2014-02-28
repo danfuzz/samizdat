@@ -27,7 +27,7 @@ genericBind(
     "apply",
     fn apply_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);
-        def actuals = bodies(node.acutals, bodiesBox);
+        def actuals = bodies(node.actuals, bodiesBox);
         <> @apply{function, actuals}
     });
 
