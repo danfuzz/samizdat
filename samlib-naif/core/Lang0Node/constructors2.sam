@@ -6,7 +6,7 @@
 def REFS = submoduleUse("refs")::REFS;
 def constructors1 = submoduleUse("constructors1");
 
-def makeDirectApply = constructors1::makeDirectApply;
+def makeApply = constructors1::makeApply;
 def makeDirectCall  = constructors1::makeDirectCall;
 def makeInterpolate = constructors1::makeInterpolate;
 def makeThunk       = constructors1::makeThunk;
@@ -67,12 +67,12 @@ fn makeCallOrApply(function, actuals*) {
     <> ifIs { <> Sequence::nth(cookedActuals, 1) }
         {
             ## More than one actual. Use `cat`.
-            <> makeDirectApply(function,
+            <> makeApply(function,
                 makeDirectCall(REFS::cat, cookedActuals*))
         }
         {
             ## Only one. Use it directly as the actuals for the `apply` node.
-            <> makeDirectApply(function, cookedActuals*)
+            <> makeApply(function, cookedActuals*)
         }
 };
 

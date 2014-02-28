@@ -106,7 +106,7 @@ in which case the nonlocal exit yields void at its exit point.
 Like `makeDirectCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
-#### `makeDirectApply(function, actuals) <> node`
+#### `makeApply(function, actuals) <> node`
 
 Makes an `apply` node, with the given `function` (an expression node)
 being applied to the given `actuals` (an expression node).

@@ -18,10 +18,10 @@ can be used.
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def REFS                   = Lang0Node::REFS;
+def makeApply              = Lang0Node::makeApply;
 def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallThunks         = Lang0Node::makeCallThunks;
-def makeDirectApply        = Lang0Node::makeDirectApply;
 def makeDirectCall         = Lang0Node::makeDirectCall;
 def makeGetExpression      = Lang0Node::makeGetExpression;
 def makeInterpolate        = Lang0Node::makeInterpolate;

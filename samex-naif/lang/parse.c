@@ -166,7 +166,7 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 #define REFS(name) (makeVarRef(STR_##name))
 
 /* Documented in spec. */
-static zvalue makeDirectApply(zvalue function, zvalue actuals) {
+static zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
     }
@@ -272,10 +272,10 @@ static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     addPendingToCooked();
 
     if (cookAt > 1) {
-        return makeDirectApply(function,
+        return makeApply(function,
             makeDirectCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
     } else {
-        return makeDirectApply(function, cookedActuals[0]);
+        return makeApply(function, cookedActuals[0]);
     }
 
     #undef addToCooked
