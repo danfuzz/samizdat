@@ -28,7 +28,7 @@ def fail = @PegFail;
 
 ## Documented in spec.
 fn PegAny_parse(peg, box, input, .*) {
-    <> Generator::nextValue(input, box)
+    <> nextValue(input, box)
 };
 genericBind(parse, "PegAny", PegAny_parse);
 
@@ -61,7 +61,7 @@ genericBind(parse, "PegCode", PegCode_parse);
 
 ## Documented in spec.
 fn PegEof_parse(peg, box, input, .*) {
-    <> ifIs { <> Generator::nextValue(input, Box::nullBox) }
+    <> ifIs { <> nextValue(input, Box::nullBox) }
         { Box::store(box) }
         {
             Box::store(box, null);
@@ -196,7 +196,7 @@ fn PegTokenSet_parse(peg, box, input, items*) {
     def set = dataOf(peg);
     def innerBox = Box::makePromise();
 
-    ifValue { <> Generator::nextValue(input, innerBox) }
+    ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
             ifIs { <> get(set, typeOf(item)) }
@@ -216,7 +216,7 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
     def set = dataOf(peg);
     def innerBox = Box::makePromise();
 
-    ifValue { <> Generator::nextValue(input, innerBox) }
+    ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
             ifNot { <> get(set, typeOf(item)) }
@@ -368,7 +368,7 @@ fn makeString(string) {
     ## which allows us to minimize code duplication.
 
     ## Make a list of rules per character.
-    def chars = Generator::collect(string, makeToken);
+    def chars = collect(string, makeToken);
 
     <> @PegSequence[chars*, @PegResult(@(string))]
 };
@@ -413,7 +413,7 @@ fn apply(rule, input) {
 
 ## Documented in spec.
 fn stringFromTokenList(tokens) {
-    <> cat("", Generator::collect(tokens, typeOf)*)
+    <> cat("", collect(tokens, typeOf)*)
 };
 
 

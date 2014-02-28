@@ -8,7 +8,6 @@
 ## Payload is `{map: map, index: int}`.
 
 def Collection = moduleUse({name: ["proto", "Collection"]});
-def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
 ##
@@ -30,7 +29,7 @@ fn MapGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(Generator::nextValue, "MapGenerator", MapGenerator_nextValue);
+genericBind(nextValue, "MapGenerator", MapGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(Generator::collect, "MapGenerator", Generator_stdCollect);
+genericBind(collect, "MapGenerator", Generator_stdCollect);

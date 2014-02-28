@@ -605,7 +605,7 @@ def parParserSet = Peg::makeMainSequence(
             Peg::makeCode { strings <> [cat(strings*)*] }),
         Peg::makeMainSequence(
             Peg::makePlus(parParserToken),
-            Peg::makeCode { tokens <> Generator::collect(tokens, dataOf) }),
+            Peg::makeCode { tokens <> collect(tokens, dataOf) }),
         Peg::makeResult([])),
     Peg::makeToken("]"),
     Peg::makeCode { ., type, terminals, . <> @(type)(terminals) });

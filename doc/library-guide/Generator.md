@@ -10,8 +10,12 @@ utility functions for making and using various generators.
 Note that all collections are also generators (which generate their
 elements in sequence).
 
-**Note:** The function `catCollect` is exported to the global variable
-environment, as it is very-commonly used.
+Because they are so commonly used, the following definitions are
+exported to the standard global variable environment:
+
+* `catCollect`
+* `collect`
+* `nextValue`
 
 
 <br><br>

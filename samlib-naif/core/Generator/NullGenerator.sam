@@ -6,8 +6,6 @@
 ## `nullGenerator` Value and Type
 ##
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 
 ##
 ## Exported Definitions
@@ -17,13 +15,13 @@ def Generator = moduleUse({name: ["proto", "Generator"]});
 fn NullGenerator_collect(gen, optFilterFunction?) {
     <> []
 };
-genericBind(Generator::collect, "NullGenerator", NullGenerator_collect);
+genericBind(collect, "NullGenerator", NullGenerator_collect);
 
 ## Documented in spec.
 fn NullGenerator_nextValue(gen, box) {
     Box::store(box)
 };
-genericBind(Generator::nextValue, "NullGenerator", NullGenerator_nextValue);
+genericBind(nextValue, "NullGenerator", NullGenerator_nextValue);
 
 ## Documented in spec.
 def nullGenerator = @NullGenerator;

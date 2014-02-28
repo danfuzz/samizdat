@@ -6,8 +6,6 @@
 ## Generator functions
 ##
 
-def Generator = moduleUse({name: ["proto", "Generator"]});
-
 def FilterGenerator = submoduleUse("FilterGenerator");
 def ListWrapGenerator = submoduleUse("ListWrapGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
@@ -37,11 +35,11 @@ fn filterAll(filterFunction, generators*) {
         {
             ## We are filtering a single generator, so just use the
             ## special-case (and often more efficient) `collect`.
-            <> Generator::collect(generators*, filterFunction)
+            <> collect(generators*, filterFunction)
         }
         {
             ## The general case.
-            <> Generator::collect(
+            <> collect(
                 FilterGenerator::makeFilterGenerator(
                     filterFunction, generators*))
         }
@@ -56,7 +54,7 @@ fn filterPump(filterFunction, generators*) {
             var gen = generators*;
             loop {
                 def box = Box::makePromise();
-                ifValue { <> Generator::nextValue(gen, box) }
+                ifValue { <> nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(Box::fetch(box));
                         gen := nextGen
@@ -72,7 +70,7 @@ fn filterPump(filterFunction, generators*) {
             var gen = ParaGenerator::makeParaGenerator(generators*);
             loop {
                 def box = Box::makePromise();
-                ifValue { <> Generator::nextValue(gen, box) }
+                ifValue { <> nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(Box::fetch(box)*);
                         gen := nextGen
@@ -90,7 +88,7 @@ fn generatorPump(generator) {
     var gen = generator;
 
     loop {
-        gen := ifValueOr { <> Generator::nextValue(gen, Box::nullBox) }
+        gen := ifValueOr { <> nextValue(gen, Box::nullBox) }
             { return }
     }
 };
@@ -100,9 +98,9 @@ fn generatorPump(generator) {
     stdCollect:              Generator_stdCollect,
     catCollect:              catCollect,
 
-    ## Re-exported from proto module.
-    collect:                 Generator::collect,
-    nextValue:               Generator::nextValue,
+    ## Re-exported from globals (and proto module).
+    collect,
+    nextValue,
 
     ## Re-exported from submodules.
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
