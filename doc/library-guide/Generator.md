@@ -13,7 +13,6 @@ elements in sequence).
 Because they are so commonly used, the following definitions are
 exported to the standard global variable environment:
 
-* `catCollect`
 * `collect`
 * `nextValue`
 
@@ -50,12 +49,6 @@ calls `store(box)` (storing void), and returns void.
 
 <br><br>
 ### Primitive Definitions
-
-#### `catCollect(generator*) <> list`
-
-Calls `collect` on each of the arguments (in order), and combines them all
-with a call to `cat`. As special cases, this function returns `[]` if given
-no arguments, and it doesn't bother with `cat` if only given one argument.
 
 #### `stdCollect(generator, optFilterFunction?) <> list`
 

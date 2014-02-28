@@ -15,26 +15,6 @@
  */
 
 /* Documented in spec. */
-FUN_IMPL_DECL(catCollect) {
-    // Handle some easy / special cases up-front.
-    switch (argCount) {
-        case 0: {
-            return EMPTY_LIST;
-        }
-        case 1: {
-            return GFN_CALL(collect, args[0]);
-        }
-    }
-
-    zvalue collected[argCount];
-    for (zint i = 0; i < argCount; i++) {
-        collected[i] = GFN_CALL(collect, args[i]);
-    }
-
-    return funCall(GFN_cat, argCount, collected);
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(makeList) {
     return listFromArray(argCount, args);
 }
