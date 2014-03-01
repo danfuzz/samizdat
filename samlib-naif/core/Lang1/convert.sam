@@ -52,16 +52,9 @@ fn makePegRef(name) {
     <> makeGetExpression(PEG_REF, makeLiteral(name))
 };
 
-## Constructs a named peg function call with the given arguments, each of
-## which must be a (non-parsing) expression node.
-fn callPegNameWithExpressions(functionName, args*) {
-    <> makeCall(makePegRef(functionName), args*);
-};
-
-## Converts a pex to a named peg function call of the converted inner pex.
-fn callPegNameWithPex(node, formals, functionName) {
-    def convertedNode = convertPex(dataOf(node), formals);
-    <> callPegNameWithExpressions(functionName, convertedNode)
+## Converts a pex to a function call on its converted inner pex.
+fn makeCallPex(function, node, formals) {
+    <> makeCall(function, convertPex(dataOf(node), formals))
 };
 
 ## Makes a node with additional / replacement bindings from the original.
@@ -190,31 +183,31 @@ genericBind(convertPex, "thunk", thunk_convertPex);
 
 ## Converts a `lookaheadSuccess` pex node.
 fn lookaheadSuccess_convertPex(node, formals) {
-    <> callPegNameWithPex(node, formals, "makeLookaheadSuccess")
+    <> makeCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
 };
 genericBind(convertPex, "lookaheadSuccess", lookaheadSuccess_convertPex);
 
 ## Converts a `lookaheadFailure` pex node.
 fn lookaheadFailure_convertPex(node, formals) {
-    <> callPegNameWithPex(node, formals, "makeLookaheadFailure")
+    <> makeCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
 };
 genericBind(convertPex, "lookaheadFailure", lookaheadFailure_convertPex);
 
 ## Converts an `opt` pex node.
 fn opt_convertPex(node, formals) {
-    <> callPegNameWithPex(node, formals, "makeOpt")
+    <> makeCallPex(REFS::Peg_makeOpt, node, formals)
 };
 genericBind(convertPex, "opt", opt_convertPex);
 
 ## Converts a `star` pex node.
 fn star_convertPex(node, formals) {
-    <> callPegNameWithPex(node, formals, "makeStar")
+    <> makeCallPex(REFS::Peg_makeStar, node, formals)
 };
 genericBind(convertPex, "star", star_convertPex);
 
 ## Converts a `plus` pex node.
 fn plus_convertPex(node, formals) {
-    <> callPegNameWithPex(node, formals, "makePlus")
+    <> makeCallPex(REFS::Peg_makePlus, node, formals)
 };
 genericBind(convertPex, "plus", plus_convertPex);
 
@@ -283,7 +276,7 @@ genericBind(convertPexIn, "literal", literal_convertPexIn);
 fn parser_convertPexIn(node) {
     ## `@x(...)` is done here to convert this node from an expression node
     ## form (with map payload) into a parser node form (with pex payload).
-    <> callPegNameWithPex(@x(get_value(node)), [], "makeMainSequence")
+    <> makeCallPex(REFS::Peg_makeMainSequence, @x(get_value(node)), [])
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 
