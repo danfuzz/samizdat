@@ -39,17 +39,9 @@ def convertPex = makeRegularGeneric("convertPex", 2, 2);
 ## node into an equivalent layer 0 node.
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
-## Reference to the variable `Peg`.
-def PEG_REF = makeVarRef("Peg");
-
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
     <> Generator::filterAll(nodes) { node <> convertPexIn(node) }
-};
-
-## Makes a peg variable reference.
-fn makePegRef(name) {
-    <> makeGetExpression(PEG_REF, makeLiteral(name))
 };
 
 ## Converts a pex to a function call on its converted inner pex.
@@ -131,13 +123,13 @@ genericBind(convertPex, "varRef", varRef_convertPex);
 
 ## Converts an `any` pex node.
 fn any_convertPex(node, formals) {
-    <> makePegRef("any")
+    <> REFS::Peg_any
 };
 genericBind(convertPex, "any", any_convertPex);
 
 ## Converts an `empty` pex node.
 fn empty_convertPex(node, formals) {
-    <> makePegRef("empty")
+    <> REFS::Peg_empty
 };
 genericBind(convertPex, "empty", empty_convertPex);
 
