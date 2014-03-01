@@ -14,6 +14,8 @@
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def REFS              = Lang0Node::REFS;
+def get_actuals       = Lang0Node::get_actuals;
+def get_function      = Lang0Node::get_function;
 def get_value         = Lang0Node::get_value;
 def makeCall          = Lang0Node::makeCall;
 def makeGetExpression = Lang0Node::makeGetExpression;
@@ -64,11 +66,6 @@ fn callPegNameWithLiterals(functionName, args*) {
     def literalArgs = Generator::filterAll(args)
         { arg <> makeLiteral(arg) };
     <> callPegNameWithExpressions(functionName, literalArgs*)
-};
-
-## Gets the data payload of a node, minus any binding for `lvalue`.
-fn rvalueDataOf(node) {
-    <> Collection::del(dataOf(node), "lvalue")
 };
 
 ## Makes a node with additional / replacement bindings from the original.
@@ -240,21 +237,19 @@ fn convertValuePayload(node) {
 
 ## Does parser conversion of an `apply` node.
 fn apply_convertPexIn(node) {
-    def nodeValue = rvalueDataOf(node);
-    def function = convertPexIn(nodeValue::function);
-    def actuals = convertPexIn(nodeValue::actuals);
+    def function = convertPexIn(get_function(node));
+    def actuals = convertPexIn(get_actuals(node));
 
-    <> @apply{nodeValue*, function, actuals}
+    <> withRvalueBindings(node, {function, actuals});
 };
 genericBind(convertPexIn, "apply", apply_convertPexIn);
 
 ## Does parser conversion of a `call` node.
 fn call_convertPexIn(node) {
-    def nodeValue = rvalueDataOf(node);
-    def function = convertPexIn(nodeValue::function);
-    def actuals = convertPexInList(nodeValue::actuals);
+    def function = convertPexIn(get_function(node));
+    def actuals = convertPexInList(get_actuals(node));
 
-    <> @call{nodeValue*, function, actuals}
+    <> withRvalueBindings(node, {function, actuals});
 };
 genericBind(convertPexIn, "call", call_convertPexIn);
 
