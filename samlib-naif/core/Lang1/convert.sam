@@ -230,14 +230,12 @@ genericBind(convertPex, "plus", plus_convertPex);
 ## `convertPexIn` bindings
 ##
 
-## Does parser conversion of a node whose payload is a map with
-## an optional `value` binding to an arbitrary expression.
+## Does parser conversion of a node whose payload is a map with an optional
+## `value` binding to an arbitrary expression. Does not perform lvalue removal.
 fn convertValuePayload(node) {
-    def nodeType = typeOf(node);
-    def nodeValue = dataOf(node);
-    def value = convertPexIn(nodeValue::value);
-
-    <> @(nodeType){nodeValue*, value}
+    <> ifValue { <> get_value(node) }
+        { value <> withBindings(node, {value: convertPexIn(value)}) }
+        { <> node };
 };
 
 ## Does parser conversion of an `apply` node.
@@ -301,23 +299,19 @@ genericBind(convertPexIn, "parser", parser_convertPexIn);
 
 ## Does parser conversion of a `varBind` node.
 fn varBind_convertPexIn(node) {
-    <> withBindings(node, {value: convertPexIn(get_value(node))})
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "varBind", varBind_convertPexIn);
 
 ## Does parser conversion of a `varDef` node.
 fn varDef_convertPexIn(node) {
-    <> ifValue { <> get_value(node) }
-        { value <> withBindings(node, {value: convertPexIn(value)}) }
-        { <> node };
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
 ## Does parser conversion of a `varDefMutable` node.
 fn varDefMutable_convertPexIn(node) {
-    <> ifValue { <> get_value(node) }
-        { value <> withBindings(node, {value: convertPexIn(value)}) }
-        { <> node };
+    <> convertValuePayload(node)
 };
 genericBind(convertPexIn, "varDefMutable", varDefMutable_convertPexIn);
 
