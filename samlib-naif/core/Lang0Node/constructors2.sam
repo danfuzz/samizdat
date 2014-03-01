@@ -1,0 +1,105 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+def REFS = submoduleUse("refs")::REFS;
+def constructors1 = submoduleUse("constructors1");
+
+def makeApply       = constructors1::makeApply;
+def makeCall        = constructors1::makeCall;
+def makeInterpolate = constructors1::makeInterpolate;
+def makeThunk       = constructors1::makeThunk;
+
+
+##
+## Exported definitions
+##
+
+## Documented in spec.
+fn makeCallNonlocalExit(nleRef, optExpr?) {
+    <> ifValue { <> optExpr* }
+        { expr ->
+            <> makeCallOrApply(REFS::nonlocalExit,
+                nleRef,
+                makeInterpolate(makeOptValueExpression(expr)))
+        }
+        { <> makeCall(REFS::nonlocalExit, nleRef) }
+};
+
+## Documented in spec.
+fn makeCallOrApply(function, actuals*) {
+    ifIs { <> perEq(actuals, []) }
+        {
+            ## No actuals. Easy out.
+            return makeCall(function)
+        };
+
+    ## Convert the actuals as if interpolation needs to be handled. If in the
+    ## end it doesn't, then the original actuals are used as-is. This converts
+    ## runs of non-interpolated actuals to `makeList(ac, ac, ...)`, which
+    ## converts cleanly at runtime as part of the ultimate call to `cat`.
+
+    var pending = [];       ## Non-interpolated actuals, to be `makeList`ed.
+    var cookedActuals = []; ## Fully-processed actuals (of either type).
+
+    fn addToCooked(actual) {
+        cookedActuals := [cookedActuals*, actual];
+    };
+
+    fn addPendingToCooked() {
+        ifIs { <> perNe(pending, []) }
+            {
+                addToCooked(makeCall(REFS::makeList, pending*));
+                pending := [];
+            }
+    };
+
+    Generator::filterPump(actuals) { actual ->
+        ifIs { <> hasType(actual, "interpolate") }
+            {
+                addPendingToCooked();
+                addToCooked(
+                    makeCall(REFS::collect, dataOf(actual)::value))
+            }
+            { pending := [pending*, actual] }
+    };
+
+    ifIs { <> perEq(cookedActuals, []) }
+        {
+            ## There were no interpolated arguments.
+            return makeCall(function, actuals*)
+        };
+
+    ## There is at least one interpolated argument.
+
+    addPendingToCooked();
+
+    <> ifIs { <> Sequence::nth(cookedActuals, 1) }
+        {
+            ## More than one actual. Use `cat`.
+            <> makeApply(function,
+                makeCall(REFS::cat, cookedActuals*))
+        }
+        {
+            ## Only one. Use it directly as the actuals for the `apply` node.
+            <> makeApply(function, cookedActuals*)
+        }
+};
+
+## Documented in spec.
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCall(REFS::get, collArg, keyArg)
+};
+
+## Documented in spec.
+fn makeOptValueExpression(node) {
+    <> makeCall(REFS::optValue, makeThunk(node))
+};
+
+<> {
+    makeCallNonlocalExit,
+    makeCallOrApply,
+    makeGetExpression,
+    makeOptValueExpression
+}

@@ -71,8 +71,8 @@ Gets the statement list of a `closure` node.
 #### `get_value(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `expression`, `interpolate`, `literal`, `varBind`, `varDef`,
-and `varDefMutable`.
+nodes of type `expression`, `interpolate`, `literal`, `parser`, `varBind`,
+`varDef`, and `varDefMutable`.
 
 #### `get_yield(node) <> node | void`
 
@@ -82,7 +82,29 @@ Gets the yield of a `closure` node, if any.
 
 Gets the yield definition name of a `closure` node, if any.
 
+#### `makeApply(function, actuals) <> node`
+
+Makes an `apply` node, with the given `function` (an expression node)
+being applied to the given `actuals` (an expression node).
+
 #### `makeCall(function, actuals*) <> node`
+
+Makes a `call` node, where `function` (an expression node) is called
+with each of the `actuals` (each an expression node) as arguments, in
+order.
+
+#### `makeCallLiterals(function, actuals*) <> node`
+
+Like `makeCall`, except that each of the `actuals` is made to be a literal
+value.
+
+#### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
+
+Returns a function call node to a nonlocal exit reference, with optional
+expression value. If passed, the expression is allowed to evaluate to void,
+in which case the nonlocal exit yields void at its exit point.
+
+#### `makeCallOrApply(function, actuals*) <> node`
 
 Returns a function call node, where `function` (an expression node) is called
 with each of the `actuals` (each an expression node) as arguments, in
@@ -92,30 +114,14 @@ If any of the `actuals` is an `interpolate` node, this converts the
 call into a form where the interpolated nodes have their usual
 surface-language effect. The end result is an `apply` node.
 
-If there are no `interpolate` nodes, the end result is a straightforward
-`call` node, the same as calling `makeDirectCall` on the same arguments.
-
-#### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
-
-Returns a function call node to a nonlocal exit reference, with optional
-expression value. If passed, the expression is allowed to evaluate to void,
-in which case the nonlocal exit yields void at its exit point.
+If there are no `interpolate` nodes in `actuals`, the end result is a
+straightforward `call` node, the same as calling `makeCall` on the same
+arguments.
 
 #### `makeCallThunks(function, actuals*) <> node`
 
-Like `makeDirectCall`, except that each of the `actuals` is wrapped in
+Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
-
-#### `makeDirectApply(function, actuals) <> node`
-
-Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `actuals` (an expression node).
-
-#### `makeDirectCall(function, actuals*) <> node`
-
-Makes a `call` node, where `function` (an expression node) is called
-with each of the `actuals` (each an expression node) as arguments, in
-order.
 
 #### `makeGetExpression(collArg, keyArg) <> node`
 
@@ -162,3 +168,8 @@ additional bindings.
 Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
+
+#### `withoutLvalue(node) <> node`
+
+Makes a node just like the given one, except without any data payload
+binding for `lvalue`.

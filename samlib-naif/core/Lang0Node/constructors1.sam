@@ -1,0 +1,98 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+##
+## Exported definitions
+##
+
+## Documented in spec.
+fn makeApply(function, actuals) {
+    <> @apply{function, actuals}
+};
+
+## Documented in spec.
+fn makeCall(function, actuals*) {
+    <> @call{function, actuals}
+};
+
+## Documented in spec.
+fn makeCallLiterals(function, actuals*) {
+    def literals = Generator::filterAll(actuals) { one <> makeLiteral(one) };
+    <> makeCall(function, literals*)
+};
+
+## Documented in spec.
+fn makeCallThunks(function, actuals*) {
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    <> makeCall(function, thunks*)
+};
+
+## Documented in spec.
+fn makeInterpolate(value) {
+    <> @interpolate{value}
+};
+
+## Documented in spec.
+fn makeLiteral(value) {
+    <> @literal{value}
+};
+
+## Documented in spec.
+fn makeThunk(expression) {
+    <> @closure{formals: [], statements: [], yield: expression}
+};
+
+## Documented in spec.
+fn makeVarBind(name, value) {
+    <> @varBind{name, value}
+};
+
+## Documented in spec.
+fn makeVarDef(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDef{name, value} }
+        { <> @varDef{name} }
+};
+
+## Documented in spec.
+fn makeVarDefMutable(name, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @varDefMutable{name, value} }
+        { <> @varDefMutable{name} }
+};
+
+## Documented in spec.
+fn makeVarRef(name) {
+    <> @varRef{name}
+};
+
+## Documented in spec.
+fn makeVarRefLvalue(name) {
+    <> @varRef{
+        name,
+        lvalue: { node <> makeVarBind(name, node) }
+    }
+};
+
+## Documented in spec.
+fn withoutLvalue(node) {
+    <> @(typeOf(node))(Collection::del(dataOf(node), "lvalue"))
+};
+
+<> {
+    makeApply,
+    makeCall,
+    makeCallLiterals,
+    makeCallThunks,
+    makeInterpolate,
+    makeLiteral,
+    makeThunk,
+    makeVarBind,
+    makeVarDef,
+    makeVarDefMutable,
+    makeVarRef,
+    makeVarRefLvalue,
+    withoutLvalue
+}
