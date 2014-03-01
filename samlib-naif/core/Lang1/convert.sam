@@ -14,6 +14,7 @@
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def REFS              = Lang0Node::REFS;
+def get_value         = Lang0Node::get_value;
 def makeCall          = Lang0Node::makeCall;
 def makeGetExpression = Lang0Node::makeGetExpression;
 def makeLiteral       = Lang0Node::makeLiteral;
@@ -68,6 +69,17 @@ fn callPegNameWithLiterals(functionName, args*) {
 ## Gets the data payload of a node, minus any binding for `lvalue`.
 fn rvalueDataOf(node) {
     <> Collection::del(dataOf(node), "lvalue")
+};
+
+## Makes a node with additional / replacement bindings from the original.
+fn withBindings(orig, more) {
+    <> @(typeOf(orig))({dataOf(orig)*, more*})
+};
+
+## Makes a node with additional / replacement bindings from the original,
+## but *without* an lvalue bindings.
+fn withRvalueBindings(orig, more) {
+    <> withBindings(withoutLvalue(orig), more)
 };
 
 
@@ -283,7 +295,7 @@ genericBind(convertPexIn, "literal", literal_convertPexIn);
 fn parser_convertPexIn(node) {
     ## `@x(...)` is done here to convert this node from an expression node
     ## form (with map payload) into a parser node form (with pex payload).
-    <> callPegNameWithPex(@x(dataOf(node)::value), [], "makeMainSequence")
+    <> callPegNameWithPex(@x(get_value(node)), [], "makeMainSequence")
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 
