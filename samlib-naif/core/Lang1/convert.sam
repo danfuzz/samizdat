@@ -16,7 +16,9 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS              = Lang0Node::REFS;
 def get_actuals       = Lang0Node::get_actuals;
 def get_function      = Lang0Node::get_function;
+def get_statements    = Lang0Node::get_statements;
 def get_value         = Lang0Node::get_value;
+def get_yield         = Lang0Node::get_yield;
 def makeCall          = Lang0Node::makeCall;
 def makeGetExpression = Lang0Node::makeGetExpression;
 def makeLiteral       = Lang0Node::makeLiteral;
@@ -255,13 +257,12 @@ genericBind(convertPexIn, "call", call_convertPexIn);
 
 ## Does parser conversion of a `closure` node.
 fn closure_convertPexIn(node) {
-    def nodeValue = dataOf(node);
-    def statements = convertPexInList(nodeValue::statements);
-    def yield = ifValue { <> nodeValue::yield }
+    def statements = convertPexInList(get_statements(node));
+    def yield = ifValue { <> get_yield(node) }
         { yield <> {yield: convertPexIn(yield)} }
         { <> {} };
 
-    <> @closure{nodeValue*, yield*, statements}
+    <> withBindings(node, {statements, yield*})
 };
 genericBind(convertPexIn, "closure", closure_convertPexIn);
 
