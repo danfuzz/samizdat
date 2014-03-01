@@ -18,6 +18,12 @@ fn makeCall(function, actuals*) {
 };
 
 ## Documented in spec.
+fn makeCallLiterals(function, actuals*) {
+    def literals = Generator::filterAll(actuals) { one <> makeLiteral(one) };
+    <> makeCall(function, literals*)
+};
+
+## Documented in spec.
 fn makeCallThunks(function, actuals*) {
     def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeCall(function, thunks*)
@@ -78,6 +84,7 @@ fn withoutLvalue(node) {
 <> {
     makeApply,
     makeCall,
+    makeCallLiterals,
     makeCallThunks,
     makeInterpolate,
     makeLiteral,

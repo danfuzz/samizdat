@@ -93,6 +93,11 @@ Makes a `call` node, where `function` (an expression node) is called
 with each of the `actuals` (each an expression node) as arguments, in
 order.
 
+#### `makeCallLiterals(function, actuals*) <> node`
+
+Like `makeCall`, except that each of the `actuals` is made to be a literal
+value.
+
 #### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
 
 Returns a function call node to a nonlocal exit reference, with optional
