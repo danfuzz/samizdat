@@ -121,6 +121,18 @@ fn freeVarName(name, index) {
     <> safeName("free", name, index)
 };
 
+## Gets the C variable declaration to use for the variable at the indicated
+## index (into a list of local variables) and with the given original name.
+fn localVarDecl(name, index) {
+    <> safeName("zvalue local", name, index)
+};
+
+## Gets the C variable name to use for the variable at the indicated
+## index (into a list of local variables) and with the given original name.
+fn localVarName(name, index) {
+    <> safeName("local", name, index)
+};
+
 ## Returns `{names, vars, inits}` for all variables that are defined
 ## within the given closure.
 fn processVars(clo) {
@@ -153,5 +165,7 @@ fn processVars(clo) {
 <> {
     freeVarDecl,
     freeVarName,
+    localVarDecl,
+    localVarName,
     processVars
 }

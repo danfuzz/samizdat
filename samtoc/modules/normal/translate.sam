@@ -6,10 +6,15 @@
 ## Translate execution trees into corresponding C code.
 ##
 
+def vars = submoduleUse("vars");
+
 def CodeGen = moduleUse({name: ["CodeGen"]});
 def Lang0Node = moduleUse({name: ["Lang0Node"]});
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
+
+def localVarDecl = vars::localVarDecl;
+def localVarName = vars::localVarName;
 
 def flatten = CodeGen::flatten;
 def indent = CodeGen::indent;
@@ -34,15 +39,17 @@ def translate = makeRegularGeneric("translate", 2, 2);
 ## Common translation code for variable definition.
 fn varDefCommon(name, value, varsBox) {
     def vars = Box::fetch(varsBox);
+
     if ((def found = vars[name]) & (found::kind != "free")) {
         Io1::die("Cannot redefine local variable: \%q(name).")
     };
-    def binding = {name: "local_\(#vars)", kind: "local"};
+
+    def index = #vars;
+    def decl = localVarDecl(name, index);
+    def binding = {name: localVarName(name, index), kind: "local"};
 
     Box::store(varsBox, {vars*, (name): binding});
-    <> CodeGen::makeComment(
-        "\%q(name)",
-        CodeGen::makeAssign("zvalue \(binding::name)", value));
+    <> CodeGen::makeComment("\%q(name)", CodeGen::makeAssign(decl, value));
 };
 
 genericBind(
