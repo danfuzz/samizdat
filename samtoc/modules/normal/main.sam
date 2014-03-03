@@ -48,7 +48,7 @@ fn closureDeclaration(cloIdx, clo) {
     <> CodeGen::makeCall(
         "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
-            <> CodeGen::makeComment("\%q(name)", vars::freeVarDecl(idx, name))
+            <> CodeGen::makeComment("\%q(name)", vars::freeVarDecl(name, idx))
         )*);
 };
 
@@ -61,7 +61,7 @@ fn closureMaker(cloIdx, clo) {
     def varRefs = clo.varRefs;
     def declaration = closureDeclaration(cloIdx, clo);
     def stateAssigns = [ idx in (0..), name in varRefs ->
-        def varName = vars::freeVarName(idx, name);
+        def varName = vars::freeVarName(name, idx);
         def stat = CodeGen::makeStatement(
             CodeGen::makeAssign("state[\(idx)]", varName));
         <> stat.usualIndent(1)

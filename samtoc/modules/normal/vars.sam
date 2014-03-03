@@ -10,6 +10,18 @@ def get_formals  = Lang0Node::get_formals;
 def get_yieldDef = Lang0Node::get_yieldDef;
 def get_varRefs  = Lang0Node::get_varRefs;
 
+##
+## Helper definitions
+##
+
+## Set-like map of valid C identifier characters.
+def C_IDENT_CHARS = {
+    ("0".."9")*: true,
+    ("A".."Z")*: true,
+    ("a".."z")*: true,
+    "_":         true
+};
+
 ## Helper for `processFormals` which does the more complicated processing
 ## required for handling repeat specifiers.
 fn processFormalsWithRepeat(clo) {
@@ -31,7 +43,7 @@ fn processFormals(clo) {
             {(name): {
                 origName: name,
                 kind: "arg",
-                name: "arg_\(idx)",
+                name: safeName("arg", name, idx),
                 init: CodeGen::makeCall("makeResult", "args[\(idx)]")
             }}
     );
@@ -56,7 +68,7 @@ fn processYieldDef(clo) {
             vars: {(name): {
                     origName: "<\(name)>",
                     kind: "yield",
-                    name: "yield",
+                    name: safeName("yield", name),
                     init: "NULL"
                 }}
         }
@@ -73,12 +85,23 @@ fn processFreeVars(clo) {
         <> {(name): {
             origName: name,
             kind: "free",
-            name: freeVarName(idx, name),
+            name: freeVarName(name, idx),
             init: "state[\(idx)]"
         }}
     );
 
     <> {names, preInits: [], vars: {}.cat(vars*)}
+};
+
+## Makes a "safe" (syntactically correct C) variable name, given a `prefix`
+## (must be safe), an arbitrary original `name`, and an optional `optIndex`
+## (an unsigned int).
+fn safeName(prefix, name, optIndex?) {
+    def nameStr = isString(name) | "\(name)";
+    def chars = ( ch in nameStr <> C_IDENT_CHARS[ch] & ch | "_" );
+    def index = (def i = optIndex*) & [i, "_"] | "";
+
+    <> "\(prefix)_\(index)\[chars*]"
 };
 
 
@@ -88,14 +111,14 @@ fn processFreeVars(clo) {
 
 ## Gets the C variable declaration to use for the variable at the indicated
 ## index (into a list of free variables) and with the given original name.
-fn freeVarDecl(idx, name) {
-    <> "zvalue free_\(idx)"
+fn freeVarDecl(name, index) {
+    <> safeName("zvalue free", name, index)
 };
 
 ## Gets the C variable name to use for the variable at the indicated
 ## index (into a list of free variables) and with the given original name.
-fn freeVarName(idx, name) {
-    <> "free_\(idx)"
+fn freeVarName(name, index) {
+    <> safeName("free", name, index)
 };
 
 ## Returns `{names, vars, inits}` for all variables that are defined
