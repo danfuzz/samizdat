@@ -1,0 +1,119 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def CodeGen = moduleUse({name: ["CodeGen"]});
+
+def Lang0Node = moduleUse({name: ["Lang0Node"]});
+
+def get_formals  = Lang0Node::get_formals;
+def get_yieldDef = Lang0Node::get_yieldDef;
+def get_varRefs  = Lang0Node::get_varRefs;
+
+## Helper for `processFormals` which does the more complicated processing
+## required for handling repeat specifiers.
+fn processFormalsWithRepeat(clo) {
+    ## TODO: Handle repetition modifiers.
+    Io1::die("TODO")
+};
+
+## Returns `{names, vars, preInits}` for the formal arguments to the
+## given closure, if any.
+fn processFormals(clo) {
+    def vars = (idx in (0..), f in clo.formals ->
+        if (f::repeat) {
+            ## At least one argument has a repeat specifier. Do the requisite
+            ## processing.
+            return processFormalsWithRepeat(clo)
+        };
+
+        <> (def name = f::name) &
+            {(name): {
+                origName: name,
+                kind: "arg",
+                name: "arg_\(idx)",
+                init: CodeGen::makeCall("makeResult", "args[\(idx)]")
+            }}
+    );
+
+    def names = [ f in clo.formals <> f::name ];
+
+    def preInits = [ idx in (0..), f in clo.formals ->
+        <> (!f::name) & CodeGen::makeComment("Unnamed argument \(idx)")
+    ];
+
+    <> {names, preInits, vars: {}.cat(vars*)}
+};
+
+## Returns `{names, vars, preInits}` for the yield definition of the given
+## closure, if any.
+fn processYieldDef(clo) {
+    <> if (def name = clo.yieldDef) {
+        ## TODO: Something real.
+        <> {
+            names: [name],
+            preInits: [],
+            vars: {(name): {
+                    origName: "<\(name)>",
+                    kind: "yield",
+                    name: "yield",
+                    init: "NULL"
+                }}
+        }
+    } else {
+        <> {names: [], preInits: [], vars: {}}
+    }
+};
+
+## Returns `{names, vars, preInits}` for the free variables of the given
+## closure, if any.
+fn processFreeVars(clo) {
+    def names = clo.varRefs;
+    def vars = ( name in names, idx in (0..) ->
+        <> {(name): {
+            origName: name,
+            kind: "free",
+            name: "free_\(idx)",
+            init: "state[\(idx)]"
+        }}
+    );
+
+    <> {names, preInits: [], vars: {}.cat(vars*)}
+};
+
+
+##
+## Exported definitions
+##
+
+## Returns `{names, vars, inits}` for all variables that are defined
+## within the given closure.
+
+fn processVars(clo) {
+    def formals = processFormals(clo);
+    def freeVars = processFreeVars(clo);
+    def yieldDef = processYieldDef(clo);
+
+    def vars = {formals::vars*, freeVars::vars*, yieldDef::vars*};
+    def names = [formals::names*, freeVars::names*, yieldDef::names*];
+
+    ## Make C local variable defintions for all the variables.
+    def varStats = ( name in names ->
+        def binding = vars[name];
+        <> CodeGen::makeComment(
+            "\%q(binding::origName)",
+            CodeGen::makeAssign("zvalue \(binding::name)", binding::init));
+    );
+
+    <> {
+        inits: [
+            formals::preInits*,
+            freeVars::preInits*,
+            yieldDef::preInits*,
+            varStats*],
+        names,
+        vars
+    }
+};
+
+<> {processVars}

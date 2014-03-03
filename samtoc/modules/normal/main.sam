@@ -8,6 +8,7 @@ def Interner = submoduleUse("Interner");
 def collectClosures = submoduleUse("collectClosures");
 def internLiterals = submoduleUse("internLiterals");
 def translate = submoduleUse("translate");
+def vars = submoduleUse("vars");
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
 def DataCode = moduleUse({name: ["DataCode"]});
@@ -79,94 +80,12 @@ fn closureMaker(cloIdx, clo) {
     \/}\n\n"
 };
 
-## Helper for `processFormals` which does the more complicated processing
-## required for handling repeat specifiers.
-fn processFormalsWithRepeat(clo) {
-    ## TODO: Handle repetition modifiers.
-    Io1::die("TODO")
-};
-
-## Returns `{names, vars, preInits}` for the formal arguments to the
-## given closure, if any.
-fn processFormals(clo) {
-    def vars = (f in clo.formals, idx in (0..) ->
-        if (f::repeat) {
-            ## At least one argument has a repeat specifier. Do the requisite
-            ## processing.
-            return processFormalsWithRepeat(clo)
-        };
-
-        <> (def name = f::name) &
-            {(name): {
-                origName: name,
-                kind: "arg",
-                name: "arg_\(idx)",
-                init: CodeGen::makeCall("makeResult", "args[\(idx)]")
-            }}
-    );
-
-    def names = [ f in clo.formals <> f::name ];
-
-    def preInits = [f in clo.formals, idx in (0..) ->
-        <> (!f::name) & CodeGen::makeComment("Unnamed argument \(idx)")
-    ];
-
-    <> {names, preInits, vars: {}.cat(vars*)}
-};
-
-## Returns `{names, vars, preInits}` for the yield definition of the given
-## closure, if any.
-fn processYieldDef(clo) {
-    <> if (def name = clo.yieldDef) {
-        ## TODO: Something real.
-        <> {
-            names: [name],
-            preInits: [],
-            vars: {(name): {
-                    origName: "<\(name)>",
-                    kind: "yield",
-                    name: "yield",
-                    init: "NULL"
-                }}
-        }
-    } else {
-        <> {names: [], preInits: [], vars: {}}
-    }
-};
-
-## Returns `{names, vars, preInits}` for the free variables of the given
-## closure, if any.
-fn processFreeVars(clo) {
-    def names = clo.varRefs;
-    def vars = ( name in names, idx in (0..) ->
-        <> {(name): {
-            origName: name,
-            kind: "free",
-            name: "free_\(idx)",
-            init: "state[\(idx)]"
-        }}
-    );
-
-    <> {names, preInits: [], vars: {}.cat(vars*)}
-};
-
 ## Returns a function definition for the code for a closure, as a string.
 fn closureBody(cloIdx, clo) {
     ## Set up the initial variable bindings.
-    def formals = processFormals(clo);
-    def freeVars = processFreeVars(clo);
-    def yieldDef = processYieldDef(clo);
-    def vars = {formals::vars*, freeVars::vars*, yieldDef::vars*};
-    def varNames = [formals::names*, freeVars::names*, yieldDef::names*];
-
-    ## Make C local variable defintions for all the variables.
-    def varStats = [ name in varNames ->
-        def binding = vars[name];
-        <> CodeGen::makeComment(
-            "\%q(binding::origName)",
-            CodeGen::makeAssign("zvalue \(binding::name)",
-                binding::init));
-    ];
+    def varInfo = vars::processVars(clo);
+    def vars = varInfo::vars;
+    def varNames = varInfo::names;
 
     ## Translate the statements and the yield. Note that the `statements`
     ## definition is a list constructor (not a generator), as its body has
@@ -184,7 +103,7 @@ fn closureBody(cloIdx, clo) {
 
     ## Process all the statements, producing source code.
 
-    def allStats = [ s in [varStats*, mainStats*, yieldStat] ->
+    def allStats = [ s in [varInfo::inits*, mainStats*, yieldStat] ->
         <> CodeGen::makeStatement(s).usualIndent(1)
     ];
 
