@@ -22,21 +22,59 @@ def C_IDENT_CHARS = {
     "_":         true
 };
 
+## Helper for `processFormals*` which produces the helpful commentary about
+## unnamed formals.
+fn unnamedFormals(clo) {
+    <> [ idx in (0..), f in clo.formals ->
+        <> (!f::name) & CodeGen::makeComment("Unnamed formal \(idx)")
+    ];
+};
+
 ## Helper for `processFormals` which does the more complicated processing
 ## required for handling repeat specifiers.
-fn processFormalsWithRepeat(clo) {
-    ## TODO: Handle repetition modifiers.
-    Io1::die("TODO")
+fn processFormalsWithRepeat(clo, names) {
+    def preInits = [
+        "zint argAt = 0",
+        unnamedFormals(clo)*
+    ];
+
+    def vars = (idx in (0..), f in clo.formals ->
+        def init = switch (f::repeat) {
+            "?": {
+                <> "(argAt >= argCount) \
+                    ? EMPTY_LIST : listFromArray(1, &args[argAt++])"
+            };
+            "*":
+            "+": {
+                <> "listFromArray(argCount - argAt, &args[argAt])"
+            };
+            else: {
+                <> "args[argAt++]"
+            }
+        };
+
+        <> (def name = f::name) &
+            {(name): {
+                origName: name,
+                kind: "arg",
+                name: safeName("arg", name, idx),
+                init: CodeGen::makeCall("makeResult", init)
+            }}
+    );
+
+    <> {names, preInits, vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the formal arguments to the
 ## given closure, if any.
 fn processFormals(clo) {
+    def names = [ f in clo.formals <> f::name ];
+
     def vars = (idx in (0..), f in clo.formals ->
         if (f::repeat) {
             ## At least one argument has a repeat specifier. Do the requisite
             ## processing.
-            return processFormalsWithRepeat(clo)
+            return processFormalsWithRepeat(clo, names)
         };
 
         <> (def name = f::name) &
@@ -48,13 +86,7 @@ fn processFormals(clo) {
             }}
     );
 
-    def names = [ f in clo.formals <> f::name ];
-
-    def preInits = [ idx in (0..), f in clo.formals ->
-        <> (!f::name) & CodeGen::makeComment("Unnamed argument \(idx)")
-    ];
-
-    <> {names, preInits, vars: {}.cat(vars*)}
+    <> {names, preInits: unnamedFormals(clo), vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the yield definition of the given
