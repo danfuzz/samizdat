@@ -194,6 +194,7 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(String);
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Generic);
+    MOD_USE_NEXT(Jump);
     MOD_USE_NEXT(Int);
     MOD_USE_NEXT(Uniqlet);
     MOD_USE_NEXT(List);

@@ -23,8 +23,8 @@
 /**
  * Gets a pointer to the value's info.
  */
-static NonlocalJumpInfo *getInfo(zvalue nljump) {
-    return datPayload(nljump);
+static JumpInfo *getInfo(zvalue jump) {
+    return datPayload(jump);
 }
 
 
@@ -33,8 +33,8 @@ static NonlocalJumpInfo *getInfo(zvalue nljump) {
  */
 
 /* Documented in header. */
-zvalue nljumpCall(zvalue nljump, zint argCount, const zvalue *args) {
-    NonlocalJumpInfo *info = getInfo(nljump);
+zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
+    JumpInfo *info = getInfo(jump);
 
     if (!info->valid) {
         die("Out-of-scope nonlocal jump.");
@@ -56,9 +56,9 @@ zvalue nljumpCall(zvalue nljump, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zvalue makeNonlocalJump(void) {
-    zvalue result = datAllocValue(TYPE_NonlocalJump, sizeof(NonlocalJumpInfo));
-    NonlocalJumpInfo *info = getInfo(result);
+zvalue makeJump(void) {
+    zvalue result = datAllocValue(TYPE_Jump, sizeof(JumpInfo));
+    JumpInfo *info = getInfo(result);
 
     info->valid = false;
     return result;
@@ -70,15 +70,15 @@ zvalue makeNonlocalJump(void) {
  */
 
 /* Documented in header. */
-METH_IMPL(NonlocalJump, call) {
-    // The first argument is the nljump per se, and the rest are the
+METH_IMPL(Jump, call) {
+    // The first argument is the jump per se, and the rest are the
     // arguments to call it with.
-    return nljumpCall(args[0], argCount - 1, &args[1]);
+    return jumpCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */
-METH_IMPL(NonlocalJump, canCall) {
-    zvalue nljump = args[0];
+METH_IMPL(Jump, canCall) {
+    zvalue jump = args[0];
     zvalue value = args[1];
 
     // A nonlocal jump accepts any first argument.
@@ -86,38 +86,37 @@ METH_IMPL(NonlocalJump, canCall) {
 }
 
 /* Documented in header. */
-METH_IMPL(NonlocalJump, debugString) {
-    zvalue nljump = args[0];
-    NonlocalJumpInfo *info = getInfo(nljump);
+METH_IMPL(Jump, debugString) {
+    zvalue jump = args[0];
+    JumpInfo *info = getInfo(jump);
     zvalue validStr = info->valid ? EMPTY_STRING : stringFromUtf8(-1, "in");
 
     return GFN_CALL(cat,
-        stringFromUtf8(-1, "@(NonlocalJump "),
+        stringFromUtf8(-1, "@(Jump "),
         validStr,
         stringFromUtf8(-1, "valid)"));
 }
 
 /* Documented in header. */
-METH_IMPL(NonlocalJump, gcMark) {
-    zvalue nljump = args[0];
-    NonlocalJumpInfo *info = getInfo(nljump);
+METH_IMPL(Jump, gcMark) {
+    zvalue jump = args[0];
+    JumpInfo *info = getInfo(jump);
 
     datMark(info->result);
     return NULL;
 }
 
 /** Initializes the module. */
-MOD_INIT(NonlocalJump) {
+MOD_INIT(Jump) {
     MOD_USE(Function);
 
-    TYPE_NonlocalJump =
-        coreTypeFromName(stringFromUtf8(-1, "NonlocalJump"), true);
+    // Note: The `typeSystem` module initializes `TYPE_Jump`.
 
-    METH_BIND(NonlocalJump, call);
-    METH_BIND(NonlocalJump, canCall);
-    METH_BIND(NonlocalJump, debugString);
-    METH_BIND(NonlocalJump, gcMark);
+    METH_BIND(Jump, call);
+    METH_BIND(Jump, canCall);
+    METH_BIND(Jump, debugString);
+    METH_BIND(Jump, gcMark);
 }
 
 /* Documented in header. */
-zvalue TYPE_NonlocalJump = NULL;
+zvalue TYPE_Jump = NULL;

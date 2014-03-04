@@ -5,11 +5,11 @@
  */
 
 /*
- * `NonlocalJump` data type
+ * `Jump` data type
  */
 
-#ifndef _TYPE_NONLOCAL_JUMP_H_
-#define _TYPE_NONLOCAL_JUMP_H_
+#ifndef _TYPE_JUMP_H_
+#define _TYPE_JUMP_H_
 
 #include "dat.h"
 #include "type/Function.h"
@@ -17,14 +17,14 @@
 #include <setjmp.h>
 
 
-/** Type value for in-model type `NonlocalJump`. */
-extern zvalue TYPE_NonlocalJump;
+/** Type value for in-model type `Jump`. */
+extern zvalue TYPE_Jump;
 
 /**
  * Constructs and returns a nonlocal jump, which is initially invalid for
- * use. It becomes valid when `nonlocalJumpTarget()` is called.
+ * use. It becomes valid when `JumpTarget()` is called.
  */
-zvalue makeNonlocalJump(void);
+zvalue makeJump(void);
 
 /**
  * Jump function structure. This is defined here so that the exported macros
@@ -39,14 +39,14 @@ typedef struct {
 
     /** What to return when jumped to. */
     zvalue result;
-} NonlocalJumpInfo;
+} JumpInfo;
 
 /**
  * Sets the return point for the given nonlocal jump.
  */
-#define nonlocalJumpTarget(nljump) \
+#define JumpTarget(jump) \
     do { \
-        NonlocalJumpInfo *info = datPayload((nljump)); \
+        JumpInfo *info = datPayload((jump)); \
         if (sigsetjmp(info->env, 0)) { \
             return info->result; \
         } \
@@ -56,9 +56,9 @@ typedef struct {
 /**
  * Retires (invalidates) the given nonlocal jump.
  */
-#define nonlocalJumpRetire(nljump) \
+#define JumpRetire(jump) \
     do { \
-        NonlocalJumpInfo *info = datPayload((nljump)); \
+        JumpInfo *info = datPayload((jump)); \
         info->valid = false; \
     } while (0)
 

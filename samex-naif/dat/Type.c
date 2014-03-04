@@ -8,6 +8,7 @@
 #include "type/Builtin.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/NonlocalJump.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
@@ -384,11 +385,13 @@ METH_IMPL(Type, totOrder) {
 MOD_INIT(typeSystem) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
-    TYPE_Value = allocType();
-    TYPE_Builtin = allocType();
-    TYPE_Generic = allocType();
-    TYPE_String = allocType();
-    TYPE_Uniqlet = allocType();
+
+    TYPE_Value      = allocType();
+    TYPE_Builtin    = allocType();
+    TYPE_Generic    = allocType();
+    TYPE_Jump       = allocType();
+    TYPE_String     = allocType();
+    TYPE_Uniqlet    = allocType();
 
     coreSecret = makeUniqlet();
     datImmortalize(coreSecret);
@@ -397,6 +400,7 @@ MOD_INIT(typeSystem) {
     typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret, false);
     typeInit(TYPE_Builtin, TYPE_Value, stringFromUtf8(-1, "Builtin"), coreSecret, true);
     typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret, true);
+    typeInit(TYPE_Jump,    TYPE_Value, stringFromUtf8(-1, "Jump"),    coreSecret, true);
     typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  coreSecret, false);
     typeInit(TYPE_Uniqlet, TYPE_Value, stringFromUtf8(-1, "Uniqlet"), coreSecret, true);
 
@@ -408,6 +412,9 @@ MOD_INIT(typeSystem) {
     } else if (indexFromTrueType(TYPE_Generic) != DAT_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
             indexFromTrueType(TYPE_Generic));
+    } else if (indexFromTrueType(TYPE_Jump) != DAT_INDEX_JUMP) {
+        die("Mismatched index for `Jump`: should be %lld",
+            indexFromTrueType(TYPE_Jump));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
