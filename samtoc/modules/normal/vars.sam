@@ -40,7 +40,7 @@ fn processFormalsWithRepeat(clo, names) {
                     parse:
                         "(argAt >= argCount) \
                         ? EMPTY_LIST : listFromArray(1, &args[argAt])",
-                    update: "argAt++"
+                    update: "if (argAt < argCount) { argAt++; }"
                 }
             };
             "*":
@@ -52,8 +52,8 @@ fn processFormalsWithRepeat(clo, names) {
             };
             else: {
                 <> {
-                    parse:  "args[argAt]",
-                    update: "argAt++"
+                    parse:  "(argAt >= argCount) ? EMPTY_LIST : args[argAt]",
+                    update: "if (argAt < argCount) { argAt++; }"
                 }
             }
         };
