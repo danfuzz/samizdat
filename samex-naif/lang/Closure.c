@@ -12,6 +12,7 @@
 #include "impl.h"
 #include "type/Box.h"
 #include "type/Generic.h"
+#include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
@@ -341,13 +342,6 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     return (yield == NULL) ? NULL : execExpressionVoidOk(&frame, yield);
 }
 
-/**
- * Nonlocal exit callthrough function. This is called by `nleCall`.
- */
-static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
-    return callClosureMain((CallState *) state, exitFunction);
-}
-
 
 /*
  * Module Definitions
@@ -372,13 +366,16 @@ METH_IMPL(Closure, call) {
     // it is being called with, hence `argCount - 1, &args[1]` below.
     zvalue closure = args[0];
     CallState callState = { closure, argCount - 1, &args[1] };
-    zvalue result;
 
-    if (getInfo(closure)->yieldDef != NULL) {
-        result = nleCall(callClosureWithNle, &callState);
-    } else {
-        result = callClosureMain(&callState, NULL);
+    if (getInfo(closure)->yieldDef == NULL) {
+        return callClosureMain(&callState, NULL);
     }
+
+    zvalue jump = makeJump();
+    jumpArm(jump);
+
+    zvalue result = callClosureMain(&callState, jump);
+    jumpRetire(jump);
 
     return result;
 }
