@@ -1,0 +1,58 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Demo of local yield
+##
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Helper Definitions
+##
+
+fn bad() {
+    Io0::die("Wrong!")
+};
+
+fn good() {
+    Io0::note("Ok")
+};
+
+fn yieldVoid1() {
+    <>
+};
+
+fn yieldVoid2() {
+    ## This space intentionally left blank
+};
+
+fn yieldVoid3() {
+    <> yieldVoid1()
+};
+
+fn yieldVoid4() {
+    "not-actually-yielded"
+};
+
+fn yieldArg(a) {
+    <> a
+};
+
+
+##
+## Main Tests
+##
+
+ifIs(yieldVoid1, bad, good);
+ifIs(yieldVoid2, bad, good);
+ifIs(yieldVoid3, bad, good);
+ifIs(yieldVoid4, bad, good);
+
+ifValue { <> yieldArg("woo") }
+    { v <> Io0::note(v) }
+    { bad() };
+
+<> 0

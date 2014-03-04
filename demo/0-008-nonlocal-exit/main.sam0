@@ -1,0 +1,78 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Demo of nonlocal exit
+##
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Helper Definitions
+##
+
+fn bad() {
+    Io0::die("Wrong!")
+};
+
+fn good() {
+    Io0::note("Ok")
+};
+
+fn returnVoid1() {
+    return
+};
+
+fn returnVoid2() {
+    return returnVoid1()
+};
+
+fn <out> returnVoid3() {
+    <out>
+};
+
+fn <out> returnVoid4() {
+    <out> returnVoid1()
+};
+
+def returnVoid5 = { <out> -> <out> };
+
+def returnVoid6 = { <out> -> <out> returnVoid1() };
+
+fn returnArg1(a) {
+    return a
+};
+
+fn <out> returnArg2(a) {
+    <out> a
+};
+
+def returnArg3 = { <out> a -> <out> a };
+
+
+##
+## Main Tests
+##
+
+ifIs(returnVoid1, bad, good);
+ifIs(returnVoid2, bad, good);
+ifIs(returnVoid3, bad, good);
+ifIs(returnVoid4, bad, good);
+ifIs(returnVoid5, bad, good);
+ifIs(returnVoid6, bad, good);
+
+ifValue { <> returnArg1("woo") }
+    { v <> Io0::note(v) }
+    { bad() };
+
+ifValue { <> returnArg2("woo") }
+    { v <> Io0::note(v) }
+    { bad() };
+
+ifValue { <> returnArg3("woo") }
+    { v <> Io0::note(v) }
+    { bad() };
+
+<> 0
