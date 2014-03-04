@@ -33,38 +33,60 @@ fn unnamedFormals(clo) {
 ## Helper for `processFormals` which does the more complicated processing
 ## required for handling repeat specifiers.
 fn processFormalsWithRepeat(clo, names) {
-    def preInits = [
-        "zint argAt = 0",
-        unnamedFormals(clo)*
-    ];
-
-    def vars = (idx in (0..), f in clo.formals ->
-        def init = switch (f::repeat) {
+    def varList = [ idx in (0..), f in clo.formals ->
+        def parse = switch (f::repeat) {
             "?": {
-                <> "(argAt >= argCount) \
-                    ? EMPTY_LIST : listFromArray(1, &args[argAt++])"
+                <> {
+                    parse:
+                        "(argAt >= argCount) \
+                        ? EMPTY_LIST : listFromArray(1, &args[argAt])",
+                    update: "argAt++"
+                }
             };
             "*":
             "+": {
-                <> "listFromArray(argCount - argAt, &args[argAt])"
+                <> {
+                    parse:  "listFromArray(argCount - argAt, &args[argAt])",
+                    update: "argAt = argCount"
+                }
             };
             else: {
-                <> "args[argAt++]"
+                <> {
+                    parse:  "args[argAt]",
+                    update: "argAt++"
+                }
             }
         };
 
-        ## Note: Because we have to adjust `argAt` for unnamed formals, we
-        ## can't just skip the formal declaration.
-        def names = (def n = f::name)
-            & {orig: n,   c: safeName("arg", n, idx)}
-            | {orig: ".", c: safeName("arg", "anon", idx)};
-
-        <> {(names::orig): {
-                origName: names::orig,
+        <> if (def origName = f::name) {
+            def name = safeName("arg", origName, idx);
+            def rawName = "raw_\(name)";
+            <> {
                 kind: "arg",
-                name: names::c,
-                init: CodeGen::makeCall("makeResult", init)
-            }}
+                name,
+                origName,
+                preInit: [
+                    CodeGen::makeAssign("zvalue \(rawName)", parse::parse),
+                    parse::update
+                ],
+                init: CodeGen::makeCall("makeResult", rawName)
+            }
+        } else {
+            ## Note: Because we have to adjust `argAt` for unnamed formals, we
+            ## can't just skip the formal entirely.
+            <> {preInit: [parse::update]}
+        };
+    ];
+
+    def preInits = [
+        unnamedFormals(clo)*,
+        "zint argAt = 0",
+        cat(( v in varList <> v::preInit )*)*
+    ];
+
+    def vars = ( v in varList ->
+        <> (def origName = v::origName)
+            & {(origName): Collection::del(v, "preInit")}
     );
 
     <> {names, preInits, vars: {}.cat(vars*)}
@@ -75,7 +97,7 @@ fn processFormalsWithRepeat(clo, names) {
 fn processFormals(clo) {
     def names = [ f in clo.formals <> f::name ];
 
-    def vars = (idx in (0..), f in clo.formals ->
+    def vars = ( idx in (0..), f in clo.formals ->
         if (f::repeat) {
             ## At least one argument has a repeat specifier. Do the requisite
             ## processing.
