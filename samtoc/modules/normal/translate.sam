@@ -65,7 +65,6 @@ genericBind(
     translate,
     "call",
     fn call_translate(node, varsBox) {
-        ## TODO: Handle `interpolate` nodes.
         def actuals = (a in node.actuals <> translate(a, varsBox));
         <> CodeGen::makeCall("FUN_CALL",
             translate(node.function, varsBox), actuals*)
