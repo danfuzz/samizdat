@@ -8,7 +8,7 @@
 #include "type/Builtin.h"
 #include "type/Generic.h"
 #include "type/Int.h"
-#include "type/NonlocalJump.h"
+#include "type/Jump.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
