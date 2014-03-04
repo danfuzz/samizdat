@@ -60,6 +60,7 @@ STR(identifier,        "identifier");
 STR(index,             "index");
 STR(int,               "int");
 STR(interpolate,       "interpolate");
+STR(jump,              "jump");
 STR(literal,           "literal");
 STR(makeList,          "makeList");
 STR(makeValue,         "makeValue");
