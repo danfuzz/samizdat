@@ -101,22 +101,6 @@ typedef struct {
 } ClosureInfo;
 
 /**
- * Function call state. This is used during function call setup. Pointers
- * to these are passed directly within this file as well as passed
- * indirectly via the nonlocal exit handling code.
- */
-typedef struct {
-    /** Closure being called. */
-    zvalue closure;
-
-    /** Argument count. */
-    zint argCount;
-
-    /** Array of arguments. */
-    const zvalue *args;
-} CallState;
-
-/**
  * Gets a pointer to the info of a closure value.
  */
 static ClosureInfo *getInfo(zvalue closure) {
@@ -312,16 +296,15 @@ static zvalue buildClosure(zvalue node) {
  * Helper that does the main work of `callClosure`, including nonlocal
  * exit binding when appropriate.
  */
-static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
-    zvalue closure = callState->closure;
+static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
+        zint argCount, const zvalue *args) {
     ClosureInfo *info = getInfo(closure);
 
     // With the closure's frame as the parent, bind the formals and
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    zvalue argMap = bindArguments(closure,
-        exitFunction, callState->argCount, callState->args);
+    zvalue argMap = bindArguments(closure, exitFunction, argCount, args);
     frameInit(&frame, &info->frame, closure, argMap);
 
     // Evaluate the statements, updating the frame as needed.
@@ -363,18 +346,19 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 /* Documented in header. */
 METH_IMPL(Closure, call) {
     // The first argument is the closure itself. The rest are the arguments
-    // it is being called with, hence `argCount - 1, &args[1]` below.
+    // it is being called with, hence `argCount--` and `args++` below.
     zvalue closure = args[0];
-    CallState callState = { closure, argCount - 1, &args[1] };
+    argCount--;
+    args++;
 
     if (getInfo(closure)->yieldDef == NULL) {
-        return callClosureMain(&callState, NULL);
+        return callClosureMain(closure, NULL, argCount, args);
     }
 
     zvalue jump = makeJump();
     jumpArm(jump);
 
-    zvalue result = callClosureMain(&callState, jump);
+    zvalue result = callClosureMain(closure, jump, argCount, args);
     jumpRetire(jump);
 
     return result;
