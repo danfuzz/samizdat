@@ -59,9 +59,6 @@ typedef struct Frame {
 /** Type for closure functions. */
 extern zvalue TYPE_Closure;
 
-/** Type for nonlocal exit functions. */
-extern zvalue TYPE_NonlocalExit;
-
 /**
  * Gets the evaluation type (enumerated value) of the given node.
  */
@@ -119,11 +116,5 @@ zvalue frameGet(Frame *frame, zvalue name);
  * to be part of a heap-allocated structure.
  */
 void frameSnap(Frame *target, Frame *source);
-
-/**
- * Sets up a nonlocal exit, and calls the given function with the
- * given state and a nonlocal exit function.
- */
-zvalue nleCall(znleFunction function, void *state);
 
 #endif
