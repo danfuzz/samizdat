@@ -53,11 +53,16 @@ fn processFormalsWithRepeat(clo, names) {
             }
         };
 
-        <> (def name = f::name) &
-            {(name): {
-                origName: name,
+        ## Note: Because we have to adjust `argAt` for unnamed formals, we
+        ## can't just skip the formal declaration.
+        def names = (def n = f::name)
+            & {orig: n,   c: safeName("arg", n, idx)}
+            | {orig: ".", c: safeName("arg", "anon", idx)};
+
+        <> {(names::orig): {
+                origName: names::orig,
                 kind: "arg",
-                name: safeName("arg", name, idx),
+                name: names::c,
                 init: CodeGen::makeCall("makeResult", init)
             }}
     );
