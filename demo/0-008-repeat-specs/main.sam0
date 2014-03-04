@@ -1,0 +1,94 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Demo of formal argument repeat specifiers
+##
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Helper Definitions
+##
+
+fn opt(arg?) {
+    Io0::note(cat("opt() got: ", Format::source(arg)))
+};
+
+fn plus(args+) {
+    Io0::note(cat("plus() got: ", Format::source(args)))
+};
+
+fn star(args*) {
+    Io0::note(cat("star() got: ", Format::source(args)))
+};
+
+fn argOpt(arg1, arg2?) {
+    Io0::note("argOpt() got:");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+};
+
+fn argPlus(arg1, arg2+) {
+    Io0::note("argPlus() got:");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+};
+
+fn argStar(arg1, arg2*) {
+    Io0::note("argStar() got:");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+};
+
+fn optStar(arg1?, arg2*) {
+    Io0::note("optStar() got:");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+};
+
+fn argOptStar(arg1, arg2?, arg3*) {
+    Io0::note("argOptStar() got:");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+    Io0::note(cat("  ", Format::source(arg3)));
+};
+
+
+##
+## Main Tests
+##
+
+opt();
+opt("blort");
+star();
+star("blort");
+star("blort", "igram");
+star("blort", "igram", "fizmo");
+plus("blort");
+plus("blort", "igram");
+plus("blort", "igram", "fizmo");
+
+argOpt("x");
+argOpt("x", "blort");
+argStar("x");
+argStar("x", "blort");
+argStar("x", "blort", "igram");
+argStar("x", "blort", "igram", "fizmo");
+argPlus("x", "blort");
+argPlus("x", "blort", "igram");
+argPlus("x", "blort", "igram", "fizmo");
+
+optStar();
+optStar("blort");
+optStar("blort", "igram");
+optStar("blort", "igram", "fizmo");
+
+argOptStar("x");
+argOptStar("x", "blort");
+argOptStar("x", "blort", "igram");
+argOptStar("x", "blort", "igram", "fizmo");
+
+<> 0

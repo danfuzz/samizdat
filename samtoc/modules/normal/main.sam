@@ -8,6 +8,7 @@ def Interner = submoduleUse("Interner");
 def collectClosures = submoduleUse("collectClosures");
 def internLiterals = submoduleUse("internLiterals");
 def translate = submoduleUse("translate");
+def vars = submoduleUse("vars");
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
 def DataCode = moduleUse({name: ["DataCode"]});
@@ -42,26 +43,33 @@ fn usualIndent(tree, depth) {
 };
 
 ## Returns a `makeClosure_*` declaration, as a code tree.
-fn closureDeclaration(cloIdx, clo) {
+fn closureDeclaration(cloIdx, clo, literals) {
     def varRefs = clo.varRefs;
-    <> CodeGen::makeCall(
+    def decl = CodeGen::makeCall(
         "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
-            <> CodeGen::makeComment("\%q(name)", "zvalue free_\(idx)")
+            <> CodeGen::makeComment("\%q(name)", vars::freeVarDecl(name, idx))
         )*);
+
+    <> if (def ref = clo.name) {
+        <> CodeGen::makeComment("\%q(literals[ref.id])", decl)
+    } else {
+        <> decl
+    }
 };
 
 ## Returns a full `makeClosure_*` definition, as as string.
-fn closureMaker(cloIdx, clo) {
+fn closureMaker(cloIdx, clo, literals) {
     def name = (def n = clo.name)
         & translate::translate(n, Box::nullBox).flatten()
         | "NULL";
 
     def varRefs = clo.varRefs;
-    def declaration = closureDeclaration(cloIdx, clo);
-    def stateAssigns = [ idx in (0..!#varRefs) ->
+    def decl = closureDeclaration(cloIdx, clo, literals);
+    def stateAssigns = [ idx in (0..), name in varRefs ->
+        def varName = vars::freeVarName(name, idx);
         def stat = CodeGen::makeStatement(
-            CodeGen::makeAssign("state[\(idx)]", "free_\(idx)"));
+            CodeGen::makeAssign("state[\(idx)]", varName));
         <> stat.usualIndent(1)
     ];
     def resultAssign = CodeGen::makeAssign(
@@ -71,7 +79,7 @@ fn closureMaker(cloIdx, clo) {
             "FUN_IMPL_NAME(\(cloIdx))", "\(#varRefs)", name));
 
     <> "\
-    \/\(declaration.usualIndent(0)) {
+    \/\(decl.usualIndent(0)) {
     \/\(resultAssign.usualIndent(1));
     \/  zvalue *state = builtinGetState(result).arr;
     \/\(stateAssigns)
@@ -80,74 +88,41 @@ fn closureMaker(cloIdx, clo) {
 };
 
 ## Returns a function definition for the code for a closure, as a string.
-fn closureBody(cloIdx, clo) {
+fn closureBody(cloIdx, clo, literals) {
     ## Set up the initial variable bindings.
-    def freeNames = clo.varRefs;
-    def formalNames = [ f in clo.formals <> f::name ];
-
-    var vars = cat(
-        ( idx in (0..), name in freeNames ->
-            <> {(name): {
-                origName: name,
-                kind: "free",
-                name: "free_\(idx)",
-                init: "state[\(idx)]"
-            }}
-        )*,
-        ( idx in (0..), name in formalNames ->
-            ## TODO: Handle repetition modifiers.
-            <> {(name): {
-                origName: name,
-                kind: "arg",
-                name: "arg_\(idx)",
-                init: CodeGen::makeCall("makeResult", "args[\(idx)]")
-            }}
-        )*,
-        ( name in clo.yieldDef? ->
-            ## TODO: Something real.
-            <> {(name): {
-                origName: "<\(name)>",
-                kind: "yield",
-                name: "yield",
-                init: "NULL"
-            }}
-        )*
-    );
-    def varsBox = Box::makeCell(vars);
-
-    ## Make C local variable defintions for each of the incoming
-    ## variables.
-    def varStats = [ name in [freeNames*, formalNames*, clo.yieldDef?*] ->
-        def binding = vars[name];
-        def stat = CodeGen::makeStatement(
-            CodeGen::makeComment(
-                "\%q(binding::origName)",
-                CodeGen::makeAssign("zvalue \(binding::name)",
-                    binding::init)));
-        <> stat.usualIndent(1)
-    ];
+    def varInfo = vars::processVars(clo);
+    def vars = varInfo::vars;
+    def varNames = varInfo::names;
 
     ## Translate the statements and the yield. Note that the `statements`
     ## definition is a list constructor (not a generator), as its body has
     ## to run before `yield` is calculated (in order to have the correct
-    ## set of vars defined).
-    def statements = [ s in clo.statements ->
-        def stat = CodeGen::makeStatement(translate::translate(s, varsBox));
-        <> stat.usualIndent(1)
-    ];
+    ## set of vars defined in `varsBox`).
 
+    def varsBox = Box::makeCell(vars);
+    def mainStats = [ s in clo.statements ->
+        <> translate::translate(s, varsBox)
+    ];
     def yield = (def y = clo.yield)
         & translate::translate(y, varsBox)
         | "NULL";
-    def yieldStat = CodeGen::makeStatement(
-        CodeGen::makeReturn(yield));
+    def yieldStat = CodeGen::makeReturn(yield);
+
+    ## Process all the statements, producing source code.
+
+    def allStats = [ s in [varInfo::inits*, mainStats*, yieldStat] ->
+        <> CodeGen::makeStatement(s).usualIndent(1)
+    ];
+
+    def nameLine = (def ref = clo.name)
+        & "/* \%q(literals[ref.id]) */\n"
+        | "";
 
     <> "\
+    \/\(nameLine)\
     \/static FUN_IMPL_DECL(\(cloIdx)) {
     \/  zvalue *state = builtinGetState(thisFunction).arr;
-    \/\(varStats)
-    \/\(statements)
-    \/\(yieldStat.usualIndent(1))}\n\n"
+    \/\(allStats)}\n\n"
 };
 
 ## Constructs the top-level closure. This is similar to translating a
@@ -179,18 +154,24 @@ fn compile(sourcePath, targetPath) {
 
     def interner = Interner::makeInterner();
     def litsNode = internLiterals(mainNode, interner);
+    def partialLits = interner.interns; ## Needed for closure declarations.
 
     def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;
     def closureDeclarations = cat(
         ( idx in (0..), clo in closures ->
-            def stat = CodeGen::makeStatement(closureDeclaration(idx, clo));
+            def stat = CodeGen::makeStatement(
+                closureDeclaration(idx, clo, partialLits));
             <> "\(stat.usualIndent(0))\n"
         )*);
     def closureMakers = cat(
-        ( idx in (0..), clo in closures <> closureMaker(idx, clo) )*);
+        ( idx in (0..), clo in closures ->
+            <> closureMaker(idx, clo, partialLits)
+        )*);
     def closureBodies = cat(
-        ( idx in (0..), clo in closures <> closureBody(idx, clo) )*);
+        ( idx in (0..), clo in closures ->
+            <> closureBody(idx, clo, partialLits)
+        )*);
     def mainClosure = mainClosureMaker(closuresNode::node, interner);
 
     def literals = interner.interns;

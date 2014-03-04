@@ -3,20 +3,5 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    name: ["Lang0Node"],
-
-    exports: [
-        "get_actuals",
-        "get_formals",
-        "get_function",
-        "get_id",
-        "get_maxArgs",
-        "get_minArgs",
-        "get_name",
-        "get_statements",
-        "get_value",
-        "get_varRefs",
-        "get_yield",
-        "get_yieldDef"
-    ]
+    name: ["Lang0Node"]
 }

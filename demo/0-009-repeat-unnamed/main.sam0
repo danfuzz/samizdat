@@ -1,0 +1,111 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Demo of formal argument repeat specifiers, of unnamed (anonymous) arguments
+##
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Helper Definitions
+##
+
+fn uopt(.?) {
+    Io0::note("uopt()");
+};
+
+fn uplus(.+) {
+    Io0::note("uplus()");
+};
+
+fn ustar(.*) {
+    Io0::note("ustar()");
+};
+
+fn uargOpt(., arg?) {
+    Io0::note(cat("uargOpt() got: ", Format::source(arg)))
+};
+
+fn uargPlus(., arg+) {
+    Io0::note(cat("uargPlus() got: ", Format::source(arg)))
+};
+
+fn uargStar(., arg*) {
+    Io0::note(cat("uargStar() got: ", Format::source(arg)))
+};
+
+fn argUopt(arg, .?) {
+    Io0::note(cat("argUopt() got: ", Format::source(arg)))
+};
+
+fn argUplus(arg, .+) {
+    Io0::note(cat("argUplus() got: ", Format::source(arg)))
+};
+
+fn argUstar(arg, .*) {
+    Io0::note(cat("argUstar() got: ", Format::source(arg)))
+};
+
+fn argUoptStar(arg1, .?, arg2*) {
+    Io0::note("argUoptStar() got:");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+};
+
+fn argUoptOptStar(arg1, .?, arg2?, arg3*) {
+    Io0::note("argUoptOptStar() got:");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+    Io0::note(cat("  ", Format::source(arg3)));
+};
+
+
+##
+## Main Tests
+##
+
+uopt();
+uopt("x");
+ustar();
+ustar("x");
+ustar("x", "x");
+ustar("x", "x", "x");
+uplus("x");
+uplus("x", "x");
+uplus("x", "x", "x");
+
+uargOpt("x");
+uargOpt("x", "blort");
+uargStar("x");
+uargStar("x", "blort");
+uargStar("x", "blort", "igram");
+uargStar("x", "blort", "igram", "fizmo");
+uargPlus("x", "blort");
+uargPlus("x", "blort", "igram");
+uargPlus("x", "blort", "igram", "fizmo");
+
+argUopt("zorch");
+argUopt("zorch", "x");
+argUstar("zorch");
+argUstar("zorch", "x");
+argUstar("zorch", "x", "x");
+argUstar("zorch", "x", "x", "x");
+argUplus("zorch", "x");
+argUplus("zorch", "x", "x");
+argUplus("zorch", "x", "x", "x");
+
+argUoptStar("zorch");
+argUoptStar("zorch", "x");
+argUoptStar("zorch", "x", "igram");
+argUoptStar("zorch", "x", "igram", "fizmo");
+
+argUoptOptStar("zorch");
+argUoptOptStar("zorch", "x");
+argUoptOptStar("zorch", "x", "blort");
+argUoptOptStar("zorch", "x", "blort", "igram");
+argUoptOptStar("zorch", "x", "blort", "igram", "fizmo");
+
+<> 0

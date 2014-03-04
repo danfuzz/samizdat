@@ -1,0 +1,44 @@
+## Copyright 2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Demo of unnamed arguments
+##
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Helper Definitions
+##
+
+fn anon(.) {
+    Io0::note("anon()")
+};
+
+fn anonArg(., arg) {
+    Io0::note(cat("anonArg() got: ", Format::source(arg)))
+};
+
+fn argAnon(arg, .) {
+    Io0::note(cat("argAnon() got: ", Format::source(arg)))
+};
+
+fn argAnonArg(arg1, ., arg2) {
+    Io0::note("argAnonArg() got");
+    Io0::note(cat("  ", Format::source(arg1)));
+    Io0::note(cat("  ", Format::source(arg2)));
+};
+
+
+##
+## Main Tests
+##
+
+anon("x");
+anonArg("x", "blort");
+argAnon("blort", "x");
+argAnonArg("blort", "x", "igram");
+
+<> 0
