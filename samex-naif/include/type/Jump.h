@@ -47,8 +47,11 @@ typedef struct {
 #define jumpArm(jump) \
     do { \
         JumpInfo *info = datPayload((jump)); \
+        zstackPointer save = datFrameStart(); \
         if (sigsetjmp(info->env, 0)) { \
-            return info->result; \
+            zvalue result = info->result; \
+            datFrameReturn(save, result); \
+            return result; \
         } \
         info->valid = true; \
     } while (0)
