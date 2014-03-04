@@ -22,7 +22,7 @@ extern zvalue TYPE_Jump;
 
 /**
  * Constructs and returns a nonlocal jump, which is initially invalid for
- * use. It becomes valid when `JumpTarget()` is called.
+ * use. It becomes valid when `JumpArm()` is called.
  */
 zvalue makeJump(void);
 
@@ -44,7 +44,7 @@ typedef struct {
 /**
  * Sets the return point for the given nonlocal jump.
  */
-#define JumpTarget(jump) \
+#define jumpArm(jump) \
     do { \
         JumpInfo *info = datPayload((jump)); \
         if (sigsetjmp(info->env, 0)) { \
@@ -56,7 +56,7 @@ typedef struct {
 /**
  * Retires (invalidates) the given nonlocal jump.
  */
-#define JumpRetire(jump) \
+#define jumpRetire(jump) \
     do { \
         JumpInfo *info = datPayload((jump)); \
         info->valid = false; \
