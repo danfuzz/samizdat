@@ -191,6 +191,14 @@ static zvalue makeInterpolate(zvalue value) {
 }
 
 /* Documented in spec. */
+static zvalue makeJump(zvalue function, zvalue optArg) {
+    zvalue actuals = (optArg == NULL) ? EMPTY_LIST : listFrom1(optArg);
+
+    return makeTransValue(STR_jump,
+        mapFrom2(STR_function, function, STR_actuals, actuals));
+}
+
+/* Documented in spec. */
 static zvalue makeLiteral(zvalue value) {
     return makeTransValue(STR_literal, mapFrom1(STR_value, value));
 }
@@ -285,20 +293,6 @@ static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 /* Documented in spec. */
 static zvalue makeOptValueExpression(zvalue expression) {
     return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
-}
-
-/* Documented in spec. */
-static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
-    zvalue actuals;
-
-    if (optExpression != NULL) {
-        actuals = listFrom2(name,
-            makeInterpolate(makeOptValueExpression(optExpression)));
-    } else {
-        actuals = listFrom1(name);
-    }
-
-    return makeCallOrApply(REFS(nonlocalExit), actuals);
 }
 
 
@@ -1056,7 +1050,7 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { return NULL; }
 
     zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
-    return makeCallNonlocalExit(name, value);
+    return makeJump(name, value);
 }
 
 /* Documented in spec. */
