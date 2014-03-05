@@ -35,9 +35,6 @@ typedef enum {
 /** Mapping from `Type` index to corresponding `zevalType`. */
 extern zevalType langTypeMap[DAT_MAX_TYPES];
 
-/** Function called into by `nleCall`. */
-typedef zvalue (*znleFunction)(void *state, zvalue exitFunction);
-
 /**
  * Active execution frame. These are passed around during evaluation
  * as code executes, and can become referenced by closures that are
