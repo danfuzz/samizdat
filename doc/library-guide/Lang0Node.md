@@ -177,7 +177,9 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
-#### `withoutLvalue(node) <> node`
+#### `withoutIntermediates(node) <> node`
 
-Makes a node just like the given one, except without any data payload
-binding for `lvalue`.
+Makes a node just like the given one, except without any "intermediate"
+data payload bindings. These are bindings which are incidentally used
+during typical tree node construction but which are not used for execution.
+This includes `lvalue` and `interpolate`.

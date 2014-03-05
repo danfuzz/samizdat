@@ -13,18 +13,18 @@
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
-def REFS             = Lang0Node::REFS;
-def get_actuals      = Lang0Node::get_actuals;
-def get_function     = Lang0Node::get_function;
-def get_statements   = Lang0Node::get_statements;
-def get_value        = Lang0Node::get_value;
-def get_yield        = Lang0Node::get_yield;
-def makeCall         = Lang0Node::makeCall;
-def makeCallLiterals = Lang0Node::makeCallLiterals;
-def makeGet          = Lang0Node::makeGet;
-def makeLiteral      = Lang0Node::makeLiteral;
-def makeVarRef       = Lang0Node::makeVarRef;
-def withoutLvalue    = Lang0Node::withoutLvalue;
+def REFS                 = Lang0Node::REFS;
+def get_actuals          = Lang0Node::get_actuals;
+def get_function         = Lang0Node::get_function;
+def get_statements       = Lang0Node::get_statements;
+def get_value            = Lang0Node::get_value;
+def get_yield            = Lang0Node::get_yield;
+def makeCall             = Lang0Node::makeCall;
+def makeCallLiterals     = Lang0Node::makeCallLiterals;
+def makeGet              = Lang0Node::makeGet;
+def makeLiteral          = Lang0Node::makeLiteral;
+def makeVarRef           = Lang0Node::makeVarRef;
+def withoutIntermediates = Lang0Node::withoutIntermediates;
 
 
 ##
@@ -55,9 +55,9 @@ fn withBindings(orig, more) {
 };
 
 ## Makes a node with additional / replacement bindings from the original,
-## but *without* an lvalue bindings.
-fn withRvalueBindings(orig, more) {
-    <> withBindings(withoutLvalue(orig), more)
+## but *without* intermediate bindings.
+fn withFinalBindings(orig, more) {
+    <> withBindings(withoutIntermediates(orig), more)
 };
 
 
@@ -221,7 +221,7 @@ fn apply_convertPexIn(node) {
     def function = convertPexIn(get_function(node));
     def actuals = convertPexIn(get_actuals(node));
 
-    <> withRvalueBindings(node, {function, actuals});
+    <> withFinalBindings(node, {function, actuals});
 };
 genericBind(convertPexIn, "apply", apply_convertPexIn);
 
@@ -230,7 +230,7 @@ fn call_convertPexIn(node) {
     def function = convertPexIn(get_function(node));
     def actuals = convertPexInList(get_actuals(node));
 
-    <> withRvalueBindings(node, {function, actuals});
+    <> withFinalBindings(node, {function, actuals});
 };
 genericBind(convertPexIn, "call", call_convertPexIn);
 
@@ -258,7 +258,7 @@ fn jump_convertPexIn(node) {
         { value <> {value: convertPexIn(value)} }
         { <> {} };
 
-    <> withRvalueBindings(node, {function, optValue*});
+    <> withFinalBindings(node, {function, optValue*});
 };
 genericBind(convertPexIn, "jump", jump_convertPexIn);
 
@@ -297,7 +297,7 @@ genericBind(convertPexIn, "varDefMutable", varDefMutable_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
-    <> withoutLvalue(node)
+    <> withoutIntermediates(node)
 };
 genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 

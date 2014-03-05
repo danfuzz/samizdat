@@ -79,8 +79,17 @@ fn makeVarRefLvalue(name) {
 };
 
 ## Documented in spec.
-fn withoutLvalue(node) {
-    <> @(typeOf(node))(Collection::del(dataOf(node), "lvalue"))
+fn withoutInterpolate(node) {
+    <> @(typeOf(node))(Collection::del(dataOf(node), "interpolate"))
+};
+
+## Documented in spec.
+fn withoutIntermediates(node) {
+    def data = Collection::del(
+        Collection::del(dataOf(node), "lvalue"),
+        "interpolate");
+
+    <> @(typeOf(node))(data)
 };
 
 <> {
@@ -96,5 +105,5 @@ fn withoutLvalue(node) {
     makeVarDefMutable,
     makeVarRef,
     makeVarRefLvalue,
-    withoutLvalue
+    withoutIntermediates
 }
