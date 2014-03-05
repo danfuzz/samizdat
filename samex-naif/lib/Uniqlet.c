@@ -16,4 +16,3 @@
 FUN_IMPL_DECL(makeUniqlet) {
     return makeUniqlet();
 }
-
