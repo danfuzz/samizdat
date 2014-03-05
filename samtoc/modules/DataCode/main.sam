@@ -8,6 +8,8 @@
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
 
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
 def flatten = CodeGen::flatten;
 def indent = CodeGen::indent;
 
