@@ -146,25 +146,24 @@ then the result of evaluation of this node is void. If the list has a single
 element, then the result of evaluation is that single element value. All other
 evaluations are invalid (terminating the runtime).
 
-#### `jump` &mdash; `@jump{function: expression, actuals: [expression?]}`
+#### `jump` &mdash; `@jump{function: expression, (value: expression)?}`
 
 * `function: expression` (required) &mdash; An expression node that must
   evaluate to a function.
 
-* `actuals: [expression?]` (required) &mdash; A list of zero or one arbitrary
-  expression nodes. If present, the expression is allowed to evaluate to void.
+* `value: expression` (optional) &mdash; An expression node, which is allowed
+  to evaluate to void.
 
 This represents a call to a function which is not expected to return.
-When run, this behaves very nearly like a `call` node with the same payload.
-The differences are:
+When run, this behaves very nearly like a `call` node with the `value` as
+the call `actuals`. The differences are:
 
-* At most one expression element may be in `actuals`.
-* The `actuals` expression is allowed to evaluate to void, which in turn
+* The `value` expression is allowed to evaluate to void, which in turn
   causes the evaluated `function` to be called with no arguments.
 * It is a fatal error (terminating the runtime) if the called function returns.
 
-This is used in the translation of `return` calls, `<named>` exits, and other
-nonlocal exit calls.
+This is used in the translation of `break`s, `return`s, `<named>` exits, and
+other nonlocal exit calls.
 
 #### `literal` &mdash; `@literal{value: value}`
 

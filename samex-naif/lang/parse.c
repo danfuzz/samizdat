@@ -191,11 +191,9 @@ static zvalue makeInterpolate(zvalue value) {
 }
 
 /* Documented in spec. */
-static zvalue makeJump(zvalue function, zvalue optArg) {
-    zvalue actuals = (optArg == NULL) ? EMPTY_LIST : listFrom1(optArg);
-
+static zvalue makeJump(zvalue function, zvalue optValue) {
     return makeTransValue(STR_jump,
-        mapFrom2(STR_function, function, STR_actuals, actuals));
+        mapFrom2(STR_function, function, STR_value, optValue));
 }
 
 /* Documented in spec. */

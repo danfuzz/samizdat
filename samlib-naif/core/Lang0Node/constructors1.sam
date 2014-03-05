@@ -35,8 +35,10 @@ fn makeInterpolate(value) {
 };
 
 ## Documented in spec.
-fn makeJump(function, optArg?) {
-    <> @jump{function, actuals: optArg}
+fn makeJump(function, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @jump{function, value} }
+        { <> @jump{function} }
 };
 
 ## Documented in spec.

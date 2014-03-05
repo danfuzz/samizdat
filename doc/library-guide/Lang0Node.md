@@ -32,7 +32,7 @@ development.)
 
 #### `get_actuals(node) <> [node*]`
 
-Gets the actual arguments of an `apply`, `call`, or `jump` node.
+Gets the actual arguments of an `apply` or `call` node.
 
 #### `get_formals(node) <> [formal*]`
 
@@ -71,8 +71,8 @@ Gets the statement list of a `closure` node.
 #### `get_value(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `expression`, `interpolate`, `literal`, `parser`, `varBind`,
-`varDef`, and `varDefMutable`.
+nodes of type `expression`, `interpolate`, `jump`, `literal`, `parser`,
+`varBind`, `varDef`, and `varDefMutable`.
 
 #### `get_yield(node) <> node | void`
 
@@ -126,10 +126,10 @@ of two arguments (a collection node and a key node).
 
 Makes an `interpolate` node.
 
-#### `makeJump(function, optArg?) <> node`
+#### `makeJump(function, optValue?) <> node`
 
 Makes a `jump` node, for calling the given `function` with optional
-expression value.
+expression argument `value`.
 
 #### `makeLiteral(value) <> node`
 
