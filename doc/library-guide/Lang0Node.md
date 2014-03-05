@@ -49,6 +49,13 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
+#### `get_interpolate(node) <> node | .`
+
+Gets the interpolated node, if any, of a `call` node. This is non-void
+when a `call` node was created by virtue of a call to `makeInterpolate`
+and is in turn used by `makeCallOrApply` to detect when to translate
+a call into an interpolated form.
+
 #### `get_maxArgs(node) <> int`
 
 Gets the maximum number of arguments that a given `closure` node
