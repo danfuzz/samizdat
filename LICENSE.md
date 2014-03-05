@@ -8,9 +8,10 @@ for details.
 Samizdat is licensed under the Apache License, version 2.0. The full
 text of the license is reproduced below.
 
-**Note:** Instead of the usual highly-verbose file header recommended
-in the Appendix to the License, this project uses the following briefer
-file header:
+### Copyright header
+
+Instead of the usual highly-verbose file header recommended in the Appendix
+to the License, this project uses the following briefer file header:
 
 ```
 Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
