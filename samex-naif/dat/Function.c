@@ -140,6 +140,17 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     return result;
 }
 
+/* Documented in header. */
+zvalue funJump(zvalue function, zvalue optArg) {
+    if (optArg == NULL) {
+        funCall(function, 0, NULL);
+    } else {
+        funCall(function, 1, &optArg);
+    }
+
+    die("Improper return from jump.");
+}
+
 // All documented in header.
 extern zvalue funCallWith0(zvalue function);
 extern zvalue funCallWith1(zvalue function, zvalue arg0);
