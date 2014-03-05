@@ -5,10 +5,10 @@
 ##
 ## Samizdat Layer 1 Conversion / Simplification
 ##
-## This includes code to strip out `lvalue` bindings in expression nodes,
-## which are only appropriate for use while parsing. It's a bit of a layering
-## violation to remove them here, admittedly, but the unsavory alternative is
-## to do an entire separate tree walk to just do this (at the end of parsing).
+## This includes code to strip out intermediate bindings in expression nodes.
+## It's a bit of a layering violation to remove them here, admittedly, but the
+## unsavory alternative is to do an entire separate tree walk to just do this
+## (at the end of parsing).
 ##
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
