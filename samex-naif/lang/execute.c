@@ -107,7 +107,34 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
  * Executes a `jump` form.
  */
 static zvalue execJump(Frame *frame, zvalue jump) {
-    execCall(frame, jump);
+    jump = dataOf(jump);
+
+    zvalue functionExpr = collGet(jump, STR_function);
+    zvalue actualsExprs = collGet(jump, STR_actuals);
+    zvalue function = execExpression(frame, functionExpr);
+    zint argCount = collSize(actualsExprs);
+    zvalue arg;
+
+    switch (argCount) {
+        case 0: {
+            arg = NULL;
+            break;
+        }
+        case 1: {
+            arg = execExpressionVoidOk(frame, seqNth(actualsExprs, 0));
+            break;
+        }
+        default: {
+            die("Invalid actuals count for jump: %lld", argCount);
+        }
+    }
+
+    if (arg == NULL) {
+        funCall(function, 0, NULL);
+    } else {
+        funCall(function, 1, &arg);
+    }
+
     die("Improper return from jump.");
 }
 
