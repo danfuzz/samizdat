@@ -8,7 +8,8 @@ for details.
 Samizdat is licensed under the Apache License, version 2.0. The full
 text of the license is reproduced below.
 
-### Copyright header
+Copyright header
+----------------
 
 Instead of the usual highly-verbose file header recommended in the Appendix
 to the License, this project uses the following briefer file header:
@@ -30,9 +31,13 @@ The rationale for using this header is as follows:
   to check a file for correctness, and there is no concern about
   inadvertently putting the wrong year on a particular file.
 * Although it does require an annual update, this is easily scripted
-  and in fact has been done so in `etc/update-copyright`.
+  and in fact has been done so in <etc/update-copyright>.
 
 - - - - - - - - - -
+
+The license
+-----------
+
 <pre>
 
                                  Apache License
