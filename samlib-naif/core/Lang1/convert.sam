@@ -257,6 +257,15 @@ fn interpolate_convertPexIn(node) {
 };
 genericBind(convertPexIn, "interpolate", interpolate_convertPexIn);
 
+## Does parser conversion of a `jump` node.
+fn jump_convertPexIn(node) {
+    def function = convertPexIn(get_function(node));
+    def actuals = convertPexInList(get_actuals(node));
+
+    <> withRvalueBindings(node, {function, actuals});
+};
+genericBind(convertPexIn, "jump", call_convertPexIn);
+
 ## Does parser conversion of a `literal` node.
 fn literal_convertPexIn(node) {
     <> node

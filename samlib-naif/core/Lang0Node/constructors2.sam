@@ -17,14 +17,8 @@ def makeThunk       = constructors1::makeThunk;
 ##
 
 ## Documented in spec.
-fn makeCallNonlocalExit(nleRef, optExpr?) {
-    <> ifValue { <> optExpr* }
-        { expr ->
-            <> makeCallOrApply(REFS::nonlocalExit,
-                nleRef,
-                makeInterpolate(makeOptValueExpression(expr)))
-        }
-        { <> makeCall(REFS::nonlocalExit, nleRef) }
+fn makeCallNonlocalExit(function, optArg?) {
+    <> @jump{function, actuals: optArg}
 };
 
 ## Documented in spec.
