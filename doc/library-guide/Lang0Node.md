@@ -32,7 +32,7 @@ development.)
 
 #### `get_actuals(node) <> [node*]`
 
-Gets the actual arguments of a `call` or `apply` node.
+Gets the actual arguments of an `apply`, `call`, or `jump` node.
 
 #### `get_formals(node) <> [formal*]`
 
@@ -40,14 +40,14 @@ Gets the formal arguments of a `closure` node.
 
 #### `get_function(node) <> node`
 
-Gets the function a `call` or `apply` node.
+Gets the function of an `apply`, `call`, or `jump` node.
 
-#### `get_id(node) <> .`
+#### `get_id(node) <> int`
 
-Gets the identifier of reference nodes.
+Gets the identifier of a reference node.
 
-This function is defined here as a convenience for node types used as
-intermediates during compilation. No layer 0 types use this.
+This function is defined here as a convenience for "reference" node types
+used as intermediates during compilation. No layer 0 types use this.
 
 #### `get_maxArgs(node) <> int`
 
