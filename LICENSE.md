@@ -31,7 +31,7 @@ The rationale for using this header is as follows:
   to check a file for correctness, and there is no concern about
   inadvertently putting the wrong year on a particular file.
 * Although it does require an annual update, this is easily scripted
-  and in fact has been done so in <etc/update-copyright>.
+  and in fact has been done so in [etc/update-copyright](etc/update-copyright).
 
 - - - - - - - - - -
 
