@@ -131,7 +131,9 @@ of two arguments (a collection node and a key node).
 
 #### `makeInterpolate(expr) <> node`
 
-Makes an `interpolate` node.
+Makes an interpolation of the given expression node. The result is a
+`call` to the function `interpolate`, but with an additional `interpolate`
+binding in the data payload. See `makeCallOrApply` for more details.
 
 #### `makeJump(function, optValue?) <> node`
 
