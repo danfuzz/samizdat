@@ -142,20 +142,6 @@ generally correspond to parenthesized expressions.
 **Note:** Strictly speaking, there is no need for these nodes to exist.
 However, they can be handy when generating execution trees.
 
-#### `interpolate` &mdash; `@interpolate{value: expression}`
-
-* `value: expression` &mdash; Expression node, which must yield a list when
-  evaluated.
-
-This represents the interpolation of a generator, which must either produce
-no values or exactly one value when `collect`ed.
-
-When run, the node's `expression` is evaluated and must result in a generator.
-`collect` is called on the generator, producing a list. If the list is empty,
-then the result of evaluation of this node is void. If the list has a single
-element, then the result of evaluation is that single element value. All other
-evaluations are invalid (terminating the runtime).
-
 #### `jump` &mdash; `@jump{function: expression, (value: expression)?}`
 
 * `function: expression` (required) &mdash; An expression node that must
