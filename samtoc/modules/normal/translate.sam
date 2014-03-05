@@ -100,13 +100,6 @@ genericBind(
 
 genericBind(
     translate,
-    "interpolate",
-    fn interpolate_translate(node, varsBox) {
-        <> "NULL /* TODO: interpolate */"
-    });
-
-genericBind(
-    translate,
     "jump",
     fn call_translate(node, varsBox) {
         def value = (def v = node.value)

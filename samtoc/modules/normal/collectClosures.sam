@@ -77,14 +77,6 @@ genericBind(
 
 genericBind(
     bodies,
-    "interpolate",
-    fn interpolate_bodies(node, bodiesBox) {
-        def value = bodies(node.value, bodiesBox);
-        <> @interpolate{value}
-    });
-
-genericBind(
-    bodies,
     "jump",
     fn jump_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);

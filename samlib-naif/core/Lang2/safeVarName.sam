@@ -108,13 +108,6 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "interpolate",
-    fn interpolate_safeIndex(node, base) {
-        <> safeIndex(Lang0Node::get_value(node), base)
-    });
-
-genericBind(
-    safeIndex,
     "jump",
     fn jump_safeIndex(node, base) {
         <> safeIndexForNodes(base,
