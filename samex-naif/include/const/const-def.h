@@ -69,7 +69,6 @@ STR(main,              "main");
 STR(main_sam,          "main.sam");
 STR(map,               "map");
 STR(name,              "name");
-STR(nonlocalExit,      "nonlocalExit");
 STR(optValue,          "optValue");
 STR(repeat,            "repeat");
 STR(runCommandLine,    "runCommandLine");
