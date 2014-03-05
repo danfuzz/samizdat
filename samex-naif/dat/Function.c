@@ -85,6 +85,9 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
         case DAT_INDEX_GENERIC: {
             return genericCall(function, argCount, args);
         }
+        case DAT_INDEX_JUMP: {
+            return jumpCall(function, argCount, args);
+        }
         default: {
             // The original `function` is some kind of higher layer function.
             // Use generic dispatch to get to it: Prepend `function` as a new
@@ -135,6 +138,17 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     UTIL_TRACE_END();
 
     return result;
+}
+
+/* Documented in header. */
+zvalue funJump(zvalue function, zvalue optArg) {
+    if (optArg == NULL) {
+        funCall(function, 0, NULL);
+    } else {
+        funCall(function, 1, &optArg);
+    }
+
+    die("Improper return from jump.");
 }
 
 // All documented in header.

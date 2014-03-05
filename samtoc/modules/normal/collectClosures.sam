@@ -85,6 +85,18 @@ genericBind(
 
 genericBind(
     bodies,
+    "jump",
+    fn jump_bodies(node, bodiesBox) {
+        def function = bodies(node.function, bodiesBox);
+        def optValue = (def v = node.value)
+            & {value: bodies(v, bodiesBox)}
+            | {};
+
+        <> @jump{function, optValue*}
+    });
+
+genericBind(
+    bodies,
     "literalRef",
     fn literalRef_bodies(node, bodiesBox) {
         <> node

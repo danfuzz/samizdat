@@ -105,6 +105,13 @@ genericBind(
 
 genericBind(
     get_varRefs,
+    "jump",
+    fn jump_get_varRefs(node) {
+        <> catVarRefs(node.function, node.value?*)
+    });
+
+genericBind(
+    get_varRefs,
     "literalRef",
     fn literalRef_get_varRefs(node) {
         <> []

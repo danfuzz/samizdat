@@ -49,7 +49,6 @@
     nameOf,
     ne,
     nextValue,
-    nonlocalExit,
     optValue,
     perEq,
     perOrder,

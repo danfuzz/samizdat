@@ -20,11 +20,11 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS                   = Lang0Node::REFS;
 def makeApply              = Lang0Node::makeApply;
 def makeCall               = Lang0Node::makeCall;
-def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallThunks         = Lang0Node::makeCallThunks;
 def makeGetExpression      = Lang0Node::makeGetExpression;
 def makeInterpolate        = Lang0Node::makeInterpolate;
+def makeJump               = Lang0Node::makeJump;
 def makeLiteral            = Lang0Node::makeLiteral;
 def makeOptValueExpression = Lang0Node::makeOptValueExpression;
 def makeThunk              = Lang0Node::makeThunk;
@@ -607,7 +607,7 @@ def parNonlocalExit = {/
     )
 
     value = parExpression?
-    { <> makeCallNonlocalExit(name, value*) }
+    { <> makeJump(name, value*) }
 /};
 
 ## Parses a local yield / return.

@@ -103,6 +103,24 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
     }
 }
 
+/**
+ * Executes a `jump` form.
+ */
+static void execJump(Frame *frame, zvalue jump)
+    __attribute__((noreturn));
+static void execJump(Frame *frame, zvalue jump) {
+    jump = dataOf(jump);
+
+    zvalue functionExpr = collGet(jump, STR_function);
+    zvalue argExpr = collGet(jump, STR_value);
+    zvalue function = execExpression(frame, functionExpr);
+    zvalue arg = (argExpr == NULL)
+        ? NULL
+        : execExpressionVoidOk(frame, argExpr);
+
+    funJump(function, arg);
+}
+
 /* Documented in header. */
 static zvalue execVarBind(Frame *frame, zvalue varBind) {
     zvalue nameValue = dataOf(varBind);
@@ -165,6 +183,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_closure:     return execClosure(frame, e);
         case EVAL_expression:  return execExpressionVoidOk(frame, valueOf(e));
         case EVAL_interpolate: return execInterpolate(frame, e);
+        case EVAL_jump:        execJump(frame, e);
         case EVAL_literal:     return valueOf(e);
         case EVAL_varBind:     return execVarBind(frame, e);
         case EVAL_varRef:      return execVarRef(frame, e);

@@ -35,6 +35,13 @@ fn makeInterpolate(value) {
 };
 
 ## Documented in spec.
+fn makeJump(function, optValue?) {
+    <> ifValue { <> optValue* }
+        { value <> @jump{function, value} }
+        { <> @jump{function} }
+};
+
+## Documented in spec.
 fn makeLiteral(value) {
     <> @literal{value}
 };
@@ -87,6 +94,7 @@ fn withoutLvalue(node) {
     makeCallLiterals,
     makeCallThunks,
     makeInterpolate,
+    makeJump,
     makeLiteral,
     makeThunk,
     makeVarBind,

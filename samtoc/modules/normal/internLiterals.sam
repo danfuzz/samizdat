@@ -79,6 +79,18 @@ genericBind(
 
 genericBind(
     lits,
+    "jump",
+    fn jump_lits(node, interner) {
+        def function = lits(node.function, interner);
+        def optValue = (def v = node.value)
+            & {value: lits(v, interner)}
+            | {};
+
+        <> @jump{function, optValue*}
+    });
+
+genericBind(
+    lits,
     "literal",
     fn literal_lits(node, interner) {
         <> @literalRef{id: interner.intern(node.value)}

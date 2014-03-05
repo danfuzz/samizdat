@@ -24,6 +24,7 @@ typedef enum {
     EVAL_closure,
     EVAL_expression,
     EVAL_interpolate,
+    EVAL_jump,
     EVAL_literal,
     EVAL_varBind,
     EVAL_varDef,
@@ -33,9 +34,6 @@ typedef enum {
 
 /** Mapping from `Type` index to corresponding `zevalType`. */
 extern zevalType langTypeMap[DAT_MAX_TYPES];
-
-/** Function called into by `nleCall`. */
-typedef zvalue (*znleFunction)(void *state, zvalue exitFunction);
 
 /**
  * Active execution frame. These are passed around during evaluation
@@ -58,9 +56,6 @@ typedef struct Frame {
 
 /** Type for closure functions. */
 extern zvalue TYPE_Closure;
-
-/** Type for nonlocal exit functions. */
-extern zvalue TYPE_NonlocalExit;
 
 /**
  * Gets the evaluation type (enumerated value) of the given node.
@@ -119,11 +114,5 @@ zvalue frameGet(Frame *frame, zvalue name);
  * to be part of a heap-allocated structure.
  */
 void frameSnap(Frame *target, Frame *source);
-
-/**
- * Sets up a nonlocal exit, and calls the given function with the
- * given state and a nonlocal exit function.
- */
-zvalue nleCall(znleFunction function, void *state);
 
 #endif
