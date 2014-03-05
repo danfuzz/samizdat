@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Updates the year in the copyright header of all the source files.
+#
+
+
+#
+# General setup
+#
+
+# Set `progName` to the program name, `progDir` to its directory, and `baseDir`
+# to `progDir`'s directory. Follows symlinks.
+function init-prog {
+    local newp p="$0"
+
+    while newp="$(readlink "$p")"; do
+        [[ ${newp} =~ ^/ ]] && p="${newp}" || p="$(dirname "$p")/${newp}"
+    done
+
+    progName="${p##*/}"
+    progDir="$(cd "$(dirname "$p")"; /bin/pwd -P)"
+    baseDir="$(cd "${progDir}/.."; /bin/pwd -P)"
+}
+
+init-prog
+
+
+#
+# Temporary file setup
+#
+
+TMP_FILE="$(mktemp "${TMPDIR:-/tmp/}${progName}-XXXXX")" || exit 1
+
+function tmpCleanup {
+    rm -rf "${TMP_FILE}"
+}
+
+trap 'tmpCleanup' EXIT TERM
+
+
+#
+# Main script
+#
+
+# Regex of copyright statement. Note: Not anchored at start-of-line, nor
+# terminated with a period, so that legitimate variations can be found.
+COPYRIGHT_REGEX='Copyright [-0-9]* the Samizdat Authors'
+
+# Replacement copyright statement. This is a replacement for the text matched
+# by `COPYRIGHT_REGEX` above.
+COPYRIGHT_NOW="Copyright 2013-$(date +%Y) the Samizdat Authors"
+
+# Get a list of all the source files. The crazy `eval` and `printf` stuff is
+# to handle file names with spaces or newlines in them. (Not that these are
+# often a good idea to have of course.)
+
+cd "${baseDir}"
+
+printfCmd='printf %q\\n "$@"'
+eval "
+    files=($(find . \
+        '(' -name '.*' '!' -name '.' -prune ')' -o \
+        '(' -name 'out' -prune ')' -o \
+        '(' -type f -exec bash -c "${printfCmd}" x '{}' '+' ')'
+    ))
+"
+
+# In each file, look for the copyright line with `grep` (so as to avoid a file
+# rewrite when there's nothing to rewrite). For files that have a match, use
+# `sed` to perform the replacement.
+
+for f in "${files[@]}"; do
+    if grep -q -e "${COPYRIGHT_REGEX}" "$f"; then
+        echo "${f:2}" # `:2` skips the `./` left by `find`.
+        sed -e "s/${COPYRIGHT_REGEX}/${COPYRIGHT_NOW}/g" "$f" > "${TMP_FILE}" \
+            || exit 1
+        cp "${TMP_FILE}" "$f" || exit 1
+    fi
+done
