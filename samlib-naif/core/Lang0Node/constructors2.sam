@@ -77,7 +77,7 @@ fn makeCallOrApply(function, actuals*) {
 };
 
 ## Documented in spec.
-fn makeGetExpression(collArg, keyArg) {
+fn makeGet(collArg, keyArg) {
     <> makeCall(REFS::get, collArg, keyArg)
 };
 
@@ -87,13 +87,13 @@ fn makeInterpolate(node) {
 };
 
 ## Documented in spec.
-fn makeOptValueExpression(node) {
+fn makeOptValue(node) {
     <> makeCall(REFS::optValue, makeThunk(node))
 };
 
 <> {
     makeCallOrApply,
-    makeGetExpression,
+    makeGet,
     makeInterpolate,
-    makeOptValueExpression
+    makeOptValue
 }

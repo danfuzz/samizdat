@@ -305,7 +305,7 @@ static zvalue makeVarRef(zvalue name) {
 }
 
 /* Documented in spec. */
-static zvalue makeOptValueExpression(zvalue expression) {
+static zvalue makeOptValue(zvalue expression) {
     return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
 }
 
@@ -968,7 +968,7 @@ DEF_PARSE(unaryExpression) {
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
-            result = makeOptValueExpression(result);
+            result = makeOptValue(result);
         } else if (hasType(one, STR_literal)) {
             result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {

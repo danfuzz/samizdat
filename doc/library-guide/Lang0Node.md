@@ -124,7 +124,7 @@ arguments.
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
-#### `makeGetExpression(collArg, keyArg) <> node`
+#### `makeGet(collArg, keyArg) <> node`
 
 Makes a collection access (`get`) expression. This is a `call` node
 of two arguments (a collection node and a key node).
@@ -144,7 +144,7 @@ expression argument `value`.
 
 Makes a `literal` node.
 
-#### `makeOptValueExpression(node) <> node`
+#### `makeOptValue(node) <> node`
 
 Makes an optional-value expression for the given `node`. This effectively
 returns `node?`, or equivalently and more expanded, `optValue { <> node }`.

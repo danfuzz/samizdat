@@ -13,18 +13,18 @@
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
-def REFS              = Lang0Node::REFS;
-def get_actuals       = Lang0Node::get_actuals;
-def get_function      = Lang0Node::get_function;
-def get_statements    = Lang0Node::get_statements;
-def get_value         = Lang0Node::get_value;
-def get_yield         = Lang0Node::get_yield;
-def makeCall          = Lang0Node::makeCall;
-def makeCallLiterals  = Lang0Node::makeCallLiterals;
-def makeGetExpression = Lang0Node::makeGetExpression;
-def makeLiteral       = Lang0Node::makeLiteral;
-def makeVarRef        = Lang0Node::makeVarRef;
-def withoutLvalue     = Lang0Node::withoutLvalue;
+def REFS             = Lang0Node::REFS;
+def get_actuals      = Lang0Node::get_actuals;
+def get_function     = Lang0Node::get_function;
+def get_statements   = Lang0Node::get_statements;
+def get_value        = Lang0Node::get_value;
+def get_yield        = Lang0Node::get_yield;
+def makeCall         = Lang0Node::makeCall;
+def makeCallLiterals = Lang0Node::makeCallLiterals;
+def makeGet          = Lang0Node::makeGet;
+def makeLiteral      = Lang0Node::makeLiteral;
+def makeVarRef       = Lang0Node::makeVarRef;
+def withoutLvalue    = Lang0Node::withoutLvalue;
 
 
 ##
