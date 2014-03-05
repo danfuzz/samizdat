@@ -18,7 +18,7 @@
 /** Type value for in-model type `Builtin`. */
 extern zvalue TYPE_Builtin;
 
-/** Return value from `bltGetState` (see which). */
+/** Return value from `builtinGetState` (see which). */
 typedef struct {
     /** Number of state slots. */
     zint size;

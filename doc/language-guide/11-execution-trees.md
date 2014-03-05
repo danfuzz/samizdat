@@ -56,8 +56,7 @@ takes its `actuals` as a list in the node itself.
   evaluate to a function.
 
 * `actuals: [expression*]` (required) &mdash; A list of arbitrary
-  expression nodes (each of which must evaluate to a non-void value)
-  or `interpolate` nodes (each of which must evaluate to a list).
+  expression nodes, each of which must evaluate to a non-void value.
 
 This represents a function call.
 
@@ -146,6 +145,25 @@ When run, the node's `expression` is evaluated and must result in a generator.
 then the result of evaluation of this node is void. If the list has a single
 element, then the result of evaluation is that single element value. All other
 evaluations are invalid (terminating the runtime).
+
+#### `jump` &mdash; `@jump{function: expression, (value: expression)?}`
+
+* `function: expression` (required) &mdash; An expression node that must
+  evaluate to a function.
+
+* `value: expression` (optional) &mdash; An expression node, which is allowed
+  to evaluate to void.
+
+This represents a call to a function which is not expected to return.
+When run, this behaves very nearly like a `call` node with the `value` as
+the call `actuals`. The differences are:
+
+* The `value` expression is allowed to evaluate to void, which in turn
+  causes the evaluated `function` to be called with no arguments.
+* It is a fatal error (terminating the runtime) if the called function returns.
+
+This is used in the translation of `break`s, `return`s, `<named>` exits, and
+other nonlocal exit calls.
 
 #### `literal` &mdash; `@literal{value: value}`
 

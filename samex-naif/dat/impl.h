@@ -26,7 +26,10 @@ enum {
     DAT_INDEX_BUILTIN = 2,
 
     /** The type index for type `Generic`. */
-    DAT_INDEX_GENERIC = 3
+    DAT_INDEX_GENERIC = 3,
+
+    /** The type index for type `Jump`. */
+    DAT_INDEX_JUMP = 4
 };
 
 /**
@@ -141,6 +144,13 @@ zvalue genericFindByIndex(zvalue generic, zint index);
 inline zint indexFromTrueType(zvalue type) {
     return ((TypeInfo *) datPayload(type))->id;
 }
+
+/**
+ * Actual implementation of nonlocal jump calling. This is where
+ * short-circuited generic function dispatch of `call` on type `Jump`
+ * lands.
+ */
+zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
 
 /**
  * Gets the `CacheEntry` for the given map/key pair.

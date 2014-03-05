@@ -16,11 +16,11 @@ def tokenize = submoduleUse("tokenize")::tokenize;
 def REFS                   = Lang0Node::REFS;
 def makeApply              = Lang0Node::makeApply;
 def makeCall               = Lang0Node::makeCall;
-def makeCallNonlocalExit   = Lang0Node::makeCallNonlocalExit;
 def makeCallOrApply        = Lang0Node::makeCallOrApply;
 def makeCallThunks         = Lang0Node::makeCallThunks;
 def makeGetExpression      = Lang0Node::makeGetExpression;
 def makeInterpolate        = Lang0Node::makeInterpolate;
+def makeJump               = Lang0Node::makeJump;
 def makeLiteral            = Lang0Node::makeLiteral;
 def makeOptValueExpression = Lang0Node::makeOptValueExpression;
 def makeThunk              = Lang0Node::makeThunk;
@@ -989,7 +989,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## Nontrivial case. We need to transform the inner first call arguments.
 
     def yieldName = safeVarName("out", baseResult);
-    def yieldCall = makeThunk(makeCallNonlocalExit(makeVarRef(yieldName)));
+    def yieldCall = makeThunk(makeJump(makeVarRef(yieldName)));
 
     fn transform(tree, layer) {
         ifIs { <> le(layer, 1) }
@@ -1285,7 +1285,7 @@ parNonlocalExit2 := {/
         }
     )?
 
-    { <> makeCallNonlocalExit(name, value*) }
+    { <> makeJump(name, value*) }
 /};
 
 ## Parses a unary prefix operator. This yields a function (per se) that
@@ -1888,11 +1888,7 @@ def parWhileExpression = {/
         def loopClosure = @closure{
             formals: [],
             yieldDef: "continue",
-            statements: [
-                testMaker(
-                    code,
-                    makeThunk(makeCallNonlocalExit(REFS::break)))
-            ]
+            statements: [testMaker(code, makeThunk(makeJump(REFS::break)))]
         };
 
         def mainClosure = @closure{
@@ -1933,9 +1929,7 @@ def parDoExpression = {/
         @while
         ex = parParenExpression
         {
-            <> makeCallThunks(REFS::ifNot,
-                ex,
-                makeCallNonlocalExit(REFS::break))
+            <> makeCallThunks(REFS::ifNot, ex, makeJump(REFS::break))
         }
     )?
 

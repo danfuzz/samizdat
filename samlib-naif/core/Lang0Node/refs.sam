@@ -36,7 +36,6 @@ def NAMES = [
     "makeValue",
     "makeValueMap",
     "ne",
-    "nonlocalExit",
     "optValue",
     "perEq",
     "perGe",

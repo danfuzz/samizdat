@@ -32,7 +32,7 @@ development.)
 
 #### `get_actuals(node) <> [node*]`
 
-Gets the actual arguments of a `call` or `apply` node.
+Gets the actual arguments of an `apply` or `call` node.
 
 #### `get_formals(node) <> [formal*]`
 
@@ -40,14 +40,14 @@ Gets the formal arguments of a `closure` node.
 
 #### `get_function(node) <> node`
 
-Gets the function a `call` or `apply` node.
+Gets the function of an `apply`, `call`, or `jump` node.
 
-#### `get_id(node) <> .`
+#### `get_id(node) <> int`
 
-Gets the identifier of reference nodes.
+Gets the identifier of a reference node.
 
-This function is defined here as a convenience for node types used as
-intermediates during compilation. No layer 0 types use this.
+This function is defined here as a convenience for "reference" node types
+used as intermediates during compilation. No layer 0 types use this.
 
 #### `get_maxArgs(node) <> int`
 
@@ -71,8 +71,8 @@ Gets the statement list of a `closure` node.
 #### `get_value(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `expression`, `interpolate`, `literal`, `parser`, `varBind`,
-`varDef`, and `varDefMutable`.
+nodes of type `expression`, `interpolate`, `jump`, `literal`, `parser`,
+`varBind`, `varDef`, and `varDefMutable`.
 
 #### `get_yield(node) <> node | void`
 
@@ -97,12 +97,6 @@ order.
 
 Like `makeCall`, except that each of the `actuals` is made to be a literal
 value.
-
-#### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
-
-Returns a function call node to a nonlocal exit reference, with optional
-expression value. If passed, the expression is allowed to evaluate to void,
-in which case the nonlocal exit yields void at its exit point.
 
 #### `makeCallOrApply(function, actuals*) <> node`
 
@@ -131,6 +125,11 @@ of two arguments (a collection node and a key node).
 #### `makeInterpolate(expr) <> node`
 
 Makes an `interpolate` node.
+
+#### `makeJump(function, optValue?) <> node`
+
+Makes a `jump` node, for calling the given `function` with optional
+expression argument `value`.
 
 #### `makeLiteral(value) <> node`
 

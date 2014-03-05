@@ -115,6 +115,15 @@ genericBind(
 
 genericBind(
     safeIndex,
+    "jump",
+    fn jump_safeIndex(node, base) {
+        <> safeIndexForNodes(base,
+            Lang0Node::get_function(node),
+            Lang0Node::get_value(node)?*);
+    });
+
+genericBind(
+    safeIndex,
     "literal",
     fn literal_safeIndex(node, base) {
         <> -1
