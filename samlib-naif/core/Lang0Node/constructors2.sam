@@ -17,11 +17,6 @@ def makeThunk       = constructors1::makeThunk;
 ##
 
 ## Documented in spec.
-fn makeCallNonlocalExit(function, optArg?) {
-    <> @jump{function, actuals: optArg}
-};
-
-## Documented in spec.
 fn makeCallOrApply(function, actuals*) {
     ifIs { <> perEq(actuals, []) }
         {
@@ -92,7 +87,6 @@ fn makeOptValueExpression(node) {
 };
 
 <> {
-    makeCallNonlocalExit,
     makeCallOrApply,
     makeGetExpression,
     makeOptValueExpression

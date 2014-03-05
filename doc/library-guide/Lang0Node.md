@@ -98,12 +98,6 @@ order.
 Like `makeCall`, except that each of the `actuals` is made to be a literal
 value.
 
-#### `makeCallNonlocalExit(nleRef, optExpr?) <> node`
-
-Returns a function call node to a nonlocal exit reference, with optional
-expression value. If passed, the expression is allowed to evaluate to void,
-in which case the nonlocal exit yields void at its exit point.
-
 #### `makeCallOrApply(function, actuals*) <> node`
 
 Returns a function call node, where `function` (an expression node) is called
@@ -131,6 +125,11 @@ of two arguments (a collection node and a key node).
 #### `makeInterpolate(expr) <> node`
 
 Makes an `interpolate` node.
+
+#### `makeJump(function, optArg?) <> node`
+
+Makes a `jump` node, for calling the given `function` with optional
+expression value.
 
 #### `makeLiteral(value) <> node`
 
