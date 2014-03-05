@@ -14,6 +14,8 @@ Because they are so commonly used, the following definitions are
 exported to the standard global variable environment:
 
 * `collect`
+* `interpolate`
+* `optValue`
 * `nextValue`
 
 
@@ -49,6 +51,60 @@ calls `store(box)` (storing void), and returns void.
 
 <br><br>
 ### Primitive Definitions
+
+#### `interpolate(generator) <> . | void`
+
+Interpolation helper. This takes a generator, `collect`s it, and then does
+the following based on the size of the collected result:
+
+* If the result is empty (the empty list), then this function returns void.
+* If the result has exactly one element, then this function returns
+  that element.
+* In all other cases, this terminates the runtime with an error.
+
+This function could be implemented as something like:
+
+```
+fn interpolate(generator) {
+    def list = [generator*];
+    <> if (list[1]) {
+        ## Die with error.
+    } else {
+        <> list[0]
+    }
+}
+```
+
+**Syntax Note:** Used in the translation of `expression*` forms when they
+are *not* collection constructor or function call arguments.
+
+
+#### `optValue(function) <> list`
+
+Function call helper, to deal with value-or-void situations. This calls
+`function` with no arguments, wrapping its return value in a list and in
+turn returning that list. That is, if `function` returns `value`, then this
+function returns `[value]`, and if `function` returns void, then this
+function returns `[]`.
+
+This function could be implemented as:
+
+```
+fn optValue(function) {
+    <> (def v = function()) & [v] | []
+}
+```
+
+or more primitively as:
+
+```
+fn optValue(function) {
+    <> ifValue(function, { v <> [v] }, { <> [] })
+}
+```
+
+**Syntax Note:** Used in the translation of string interpolation and
+`expression?` forms.
 
 #### `stdCollect(generator, optFilterFunction?) <> list`
 
