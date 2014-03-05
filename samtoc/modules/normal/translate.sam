@@ -107,6 +107,17 @@ genericBind(
 
 genericBind(
     translate,
+    "jump",
+    fn call_translate(node, varsBox) {
+        def value = (def v = node.value)
+            & translate(v, varsBox)
+            | "NULL";
+        <> CodeGen::makeCall("funJump",
+            translate(node.function, varsBox), value)
+    });
+
+genericBind(
+    translate,
     "literalRef",
     fn literalRef_translate(node, varsBox) {
         <> "LIT_\(node.id)"
