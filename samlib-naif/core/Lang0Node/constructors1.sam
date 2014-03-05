@@ -30,11 +30,6 @@ fn makeCallThunks(function, actuals*) {
 };
 
 ## Documented in spec.
-fn makeInterpolate(value) {
-    <> @interpolate{value}
-};
-
-## Documented in spec.
 fn makeJump(function, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @jump{function, value} }
@@ -93,7 +88,6 @@ fn withoutLvalue(node) {
     makeCall,
     makeCallLiterals,
     makeCallThunks,
-    makeInterpolate,
     makeJump,
     makeLiteral,
     makeThunk,

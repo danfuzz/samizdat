@@ -251,12 +251,6 @@ fn expression_convertPexIn(node) {
 };
 genericBind(convertPexIn, "expression", expression_convertPexIn);
 
-## Does parser conversion of an `interpolate` node.
-fn interpolate_convertPexIn(node) {
-    <> convertValuePayload(node)
-};
-genericBind(convertPexIn, "interpolate", interpolate_convertPexIn);
-
 ## Does parser conversion of a `jump` node.
 fn jump_convertPexIn(node) {
     def function = convertPexIn(get_function(node));
