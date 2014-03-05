@@ -18,6 +18,8 @@ can be used.
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def REFS                   = Lang0Node::REFS;
+def get_interpolate        = Lang0Node::get_interpolate;
+def get_name               = Lang0Node::get_name;
 def makeApply              = Lang0Node::makeApply;
 def makeCall               = Lang0Node::makeCall;
 def makeCallOrApply        = Lang0Node::makeCallOrApply;
@@ -394,14 +396,12 @@ def parMapping = {/
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
-                def type = typeOf(value);
-                def data = dataOf(value);
-                ifIs { <> eq(type, "interpolate") }
-                    { <out> data };
-                ifIs { <> eq(type, "varRef") }
+                ifValue { <> get_interpolate(value) }
+                    { interp -> <out> interp };
+                ifIs { <> hasType(value, "varRef") }
                     {
                         <out> makeCall(REFS::makeValueMap,
-                            makeLiteral(data::name), value)
+                            makeLiteral(get_name(value)), value)
                     }
             }
             {
