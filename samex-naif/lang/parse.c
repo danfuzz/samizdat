@@ -165,6 +165,19 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 /** Equivalent to `REFS::name` in the spec. */
 #define REFS(name) (makeVarRef(STR_##name))
 
+/* Defined below.*/
+static zvalue makeVarRef(zvalue name);
+
+/* Documented in spec. */
+static zvalue get_interpolate(zvalue node) {
+    return collGet(dataOf(node), STR_interpolate);
+}
+
+/* Documented in spec. */
+static zvalue get_name(zvalue node) {
+    return collGet(dataOf(node), STR_name);
+}
+
 /* Documented in spec. */
 static zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
@@ -185,9 +198,67 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     return makeTransValue(STR_call, value);
 }
 
+/**
+ * Documented in spec. This is a fairly direct (but not exact) transliteration
+ * of the corresponding code in `Lang0Node`.
+ */
+static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
+    zint sz = (actuals == NULL) ? 0 : collSize(actuals);
+    zvalue pending[sz];
+    zvalue cookedActuals[sz];
+    zint pendAt = 0;
+    zint cookAt = 0;
+
+    #define addToCooked(actual) do { \
+        cookedActuals[cookAt] = (actual); \
+        cookAt++; \
+    } while (0)
+
+    #define addPendingToCooked() do { \
+        if (pendAt != 0) { \
+            addToCooked(makeCall(REFS(makeList), \
+                listFromArray(pendAt, pending))); \
+            pendAt = 0; \
+        } \
+    } while (0)
+
+    for (zint i = 0; i < sz; i++) {
+        zvalue one = seqNth(actuals, i);
+        zvalue node = get_interpolate(one);
+        if (node != NULL) {
+            addPendingToCooked();
+            addToCooked(makeCall(REFS(collect), listFrom1(node)));
+        } else {
+            pending[pendAt] = one;
+            pendAt++;
+        }
+    }
+
+    if (cookAt == 0) {
+        // There were no interpolated arguments.
+        return makeCall(function, actuals);
+    }
+
+    addPendingToCooked();
+
+    if (cookAt > 1) {
+        return makeApply(function,
+            makeCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
+    } else {
+        return makeApply(function, cookedActuals[0]);
+    }
+
+    #undef addToCooked
+    #undef addPendingToCooked
+}
+
 /* Documented in spec. */
-static zvalue makeInterpolate(zvalue value) {
-    return makeTransValue(STR_interpolate, mapFrom1(STR_value, value));
+static zvalue makeInterpolate(zvalue node) {
+    return makeTransValue(STR_call,
+        mapFrom3(
+            STR_function,    REFS(interpolate),
+            STR_actuals,     listFrom1(node),
+            STR_interpolate, node));
 }
 
 /* Documented in spec. */
@@ -231,61 +302,6 @@ static zvalue makeVarDefMutable(zvalue name, zvalue value) {
 /* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
     return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
-}
-
-/**
- * Documented in spec. This is a fairly direct (but not exact) transliteration
- * of the corresponding code in `Lang0Node`.
- */
-static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
-    zint sz = (actuals == NULL) ? 0 : collSize(actuals);
-    zvalue pending[sz];
-    zvalue cookedActuals[sz];
-    zint pendAt = 0;
-    zint cookAt = 0;
-
-    #define addToCooked(actual) do { \
-        cookedActuals[cookAt] = (actual); \
-        cookAt++; \
-    } while (0)
-
-    #define addPendingToCooked() do { \
-        if (pendAt != 0) { \
-            addToCooked(makeCall(REFS(makeList), \
-                listFromArray(pendAt, pending))); \
-            pendAt = 0; \
-        } \
-    } while (0)
-
-    for (zint i = 0; i < sz; i++) {
-        zvalue one = seqNth(actuals, i);
-        if (hasType(one, STR_interpolate)) {
-            addPendingToCooked();
-            addToCooked(
-                makeCall(REFS(collect),
-                    listFrom1(collGet(dataOf(one), STR_value))));
-        } else {
-            pending[pendAt] = one;
-            pendAt++;
-        }
-    }
-
-    if (cookAt == 0) {
-        // There were no interpolated arguments.
-        return makeCall(function, actuals);
-    }
-
-    addPendingToCooked();
-
-    if (cookAt > 1) {
-        return makeApply(function,
-            makeCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
-    } else {
-        return makeApply(function, cookedActuals[0]);
-    }
-
-    #undef addToCooked
-    #undef addPendingToCooked
 }
 
 /* Documented in spec. */
@@ -793,14 +809,12 @@ DEF_PARSE(mapping) {
         // No keys were specified, so the value must be either a
         // whole-map interpolation or a variable-name-to-its-value
         // binding.
-        zvalue type = typeOf(value);
-        zvalue data = dataOf(value);
-
-        if (valEq(type, STR_interpolate)) {
-            return collGet(data, STR_value);
-        } else if (valEq(type, STR_varRef)) {
+        zvalue interp = get_interpolate(value);
+        if (interp != NULL) {
+            return interp;
+        } else if (hasType(value, STR_varRef)) {
             return makeCall(REFS(makeValueMap),
-                listFrom2(makeLiteral(collGet(data, STR_name)), value));
+                listFrom2(makeLiteral(get_name(value)), value));
         }
 
         REJECT();
