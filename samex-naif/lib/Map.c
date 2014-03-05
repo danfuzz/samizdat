@@ -5,7 +5,6 @@
  */
 
 #include "impl.h"
-#include "type/List.h"
 #include "type/Map.h"
 #include "type/Value.h"
 #include "util.h"
