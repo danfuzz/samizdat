@@ -20,6 +20,11 @@
  */
 
 /* Documented in header. */
+zvalue collDel(zvalue coll, zvalue key) {
+    return GFN_CALL(del, coll, key);
+}
+
+/* Documented in header. */
 zvalue collGet(zvalue coll, zvalue key) {
     return GFN_CALL(get, coll, key);
 }

@@ -44,6 +44,11 @@ extern zvalue GFN_put;
 extern zvalue GFN_sizeOf;
 
 /**
+ * Calls the `del` generic.
+ */
+zvalue collDel(zvalue coll, zvalue key);
+
+/**
  * Calls the `get` generic.
  */
 zvalue collGet(zvalue coll, zvalue key);
