@@ -14,6 +14,7 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
 def get_formals        = Lang0Node::get_formals;
 def get_interpolate    = Lang0Node::get_interpolate;
+def get_lvalue         = Lang0Node::get_lvalue;
 def get_name           = Lang0Node::get_name;
 def get_statements     = Lang0Node::get_statements;
 def get_value          = Lang0Node::get_value;
@@ -444,7 +445,7 @@ parAssignExpression := Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken(":="),
-            Peg::makeCode { base, . <> dataOf(base)::lvalue },
+            Peg::makeCode { base, . <> get_lvalue(base) },
             parExpression,
             Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
         Peg::makeCode { base <> base }));
