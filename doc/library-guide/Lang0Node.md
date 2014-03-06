@@ -78,8 +78,8 @@ Gets the statement list of a `closure` node.
 #### `get_value(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `interpolate`, `jump`, `literal`, `parser`,
-`varBind`, `varDef`, and `varDefMutable`.
+nodes of type `jump`, `literal`, `parser`, `varBind`, `varDef`, and
+`varDefMutable`.
 
 #### `get_yield(node) <> node | void`
 
