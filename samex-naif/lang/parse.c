@@ -179,6 +179,11 @@ static zvalue get_name(zvalue node) {
 }
 
 /* Documented in spec. */
+static zvalue get_yieldDef(zvalue node) {
+    return collGet(dataOf(node), STR_yieldDef);
+}
+
+/* Documented in spec. */
 static zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
@@ -628,7 +633,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (collGet(dataOf(c), STR_yieldDef) != NULL) {
+    if (get_yieldDef(c) != NULL) {
         die("Invalid yield definition in code block.");
     }
 

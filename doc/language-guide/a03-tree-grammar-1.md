@@ -21,6 +21,7 @@ def REFS               = Lang0Node::REFS;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
 def get_value          = Lang0Node::get_value;
+def get_yieldDef       = Lang0Node::get_yieldDef;
 def makeApply          = Lang0Node::makeApply;
 def makeCall           = Lang0Node::makeCall;
 def makeCallOrApply    = Lang0Node::makeCallOrApply;
@@ -216,7 +217,7 @@ def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
     {
-        ifIs { <> dataOf(c)::yieldDef }
+        ifIs { <> get_yieldDef(c) }
             { Io0::die("Invalid yield definition in code block.") };
         <> c
     }
