@@ -294,7 +294,7 @@ def parFnCommon = {/
 def parFnDef = {/
     closure = parFnCommon
 
-    name = { <> dataOf(closure)::name }
+    name = { <> get_name(closure) }
     {
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
@@ -323,7 +323,7 @@ parFnExpression := {/
     closure = parFnCommon
 
     (
-        name = { <> dataOf(closure)::name }
+        name = { <> get_name(closure) }
         {
             def mainClosure = @closure{
                 formals:    [],

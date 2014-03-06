@@ -224,7 +224,7 @@ def parFnCommon = Peg::makeMainSequence(
 ## Documented in spec.
 def parFnDef = Peg::makeMainSequence(
     parFnCommon,
-    Peg::makeCode { closure <> dataOf(closure)::name },
+    Peg::makeCode { closure <> get_name(closure) },
     Peg::makeCode { closure, name ->
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
@@ -238,7 +238,7 @@ parFnExpression := Peg::makeMainSequence(
     parFnCommon,
     Peg::makeChoice(
         Peg::makeSequence(
-            Peg::makeCode { closure <> dataOf(closure)::name },
+            Peg::makeCode { closure <> get_name(closure) },
             Peg::makeCode { closure, name ->
                 def mainClosure = @closure{
                     formals:    [],

@@ -700,7 +700,7 @@ DEF_PARSE(fnDef) {
     MARK();
 
     zvalue closure = PARSE_OR_REJECT(fnCommon);
-    zvalue name = collGet(dataOf(closure), STR_name);
+    zvalue name = get_name(closure);
 
     if (name == NULL) {
         return NULL;
@@ -717,7 +717,7 @@ DEF_PARSE(fnExpression) {
     MARK();
 
     zvalue closure = PARSE_OR_REJECT(fnCommon);
-    zvalue name = collGet(dataOf(closure), STR_name);
+    zvalue name = get_name(closure);
 
     if (name == NULL) {
         return closure;
@@ -1007,7 +1007,7 @@ DEF_PARSE(assignExpression) {
     // In this case, we ensured (above) that we've got a `varRef` and
     // recombine it here into a `varBind`.
     zvalue ex = PARSE_OR_REJECT(expression);
-    zvalue name = collGet(dataOf(base), STR_name);
+    zvalue name = get_name(base);
 
     return makeVarBind(name, ex);
 }
