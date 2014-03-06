@@ -309,6 +309,13 @@ static zvalue makeOptValue(zvalue expression) {
     return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
 }
 
+/* Documented in spec. */
+static zvalue withoutInterpolate(zvalue node) {
+    return makeTransValue(
+        typeOf(node),
+        collDel(dataOf(node), STR_interpolate));
+}
+
 
 /*
  * Parsing helper functions
@@ -452,7 +459,7 @@ DEF_PARSE(parenExpression) {
 
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return makeTransValue(STR_expression, mapFrom1(STR_value, expression));
+    return withoutInterpolate(expression);
 }
 
 /* Documented in spec. */
@@ -820,13 +827,9 @@ DEF_PARSE(mapping) {
         REJECT();
     }
 
-    // One or more keys. The `value` is wrapped in an
-    // `expression` node here to prevent interpolation from
-    // being applied to `makeValueMap`.
-
+    // One or more keys.
     return makeCallOrApply(REFS(makeValueMap),
-        listAppend(keys,
-            makeTransValue(STR_expression, mapFrom1(STR_value, value))));
+        listAppend(keys, withoutInterpolate(value)));
 }
 
 /* Documented in spec. */
