@@ -78,7 +78,7 @@ Gets the statement list of a `closure` node.
 #### `get_value(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `expression`, `interpolate`, `jump`, `literal`, `parser`,
+nodes of type `interpolate`, `jump`, `literal`, `parser`,
 `varBind`, `varDef`, and `varDefMutable`.
 
 #### `get_yield(node) <> node | void`
@@ -183,3 +183,9 @@ Makes a node just like the given one, except without any "intermediate"
 data payload bindings. These are bindings which are incidentally used
 during typical tree node construction but which are not used for execution.
 This includes `lvalue` and `interpolate`.
+
+#### `withoutInterpolate(node) <> node`
+
+Makes a node just like the given one, except without any binding
+for `interpolate`. This is used by parser code to preventing argument
+interpolation from applying to parenthesized expressions.

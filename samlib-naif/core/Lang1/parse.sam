@@ -11,24 +11,25 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def tokenize = submoduleUse("tokenize")::tokenize;
 
-def REFS              = Lang0Node::REFS;
-def get_interpolate   = Lang0Node::get_interpolate;
-def get_name          = Lang0Node::get_name;
-def makeApply         = Lang0Node::makeApply;
-def makeCall          = Lang0Node::makeCall;
-def makeCallOrApply   = Lang0Node::makeCallOrApply;
-def makeCallThunks    = Lang0Node::makeCallThunks;
-def makeGet           = Lang0Node::makeGet;
-def makeInterpolate   = Lang0Node::makeInterpolate;
-def makeJump          = Lang0Node::makeJump;
-def makeLiteral       = Lang0Node::makeLiteral;
-def makeOptValue      = Lang0Node::makeOptValue;
-def makeThunk         = Lang0Node::makeThunk;
-def makeVarBind       = Lang0Node::makeVarBind;
-def makeVarDef        = Lang0Node::makeVarDef;
-def makeVarDefMutable = Lang0Node::makeVarDefMutable;
-def makeVarRef        = Lang0Node::makeVarRef;
-def makeVarRefLvalue  = Lang0Node::makeVarRefLvalue;
+def REFS               = Lang0Node::REFS;
+def get_interpolate    = Lang0Node::get_interpolate;
+def get_name           = Lang0Node::get_name;
+def makeApply          = Lang0Node::makeApply;
+def makeCall           = Lang0Node::makeCall;
+def makeCallOrApply    = Lang0Node::makeCallOrApply;
+def makeCallThunks     = Lang0Node::makeCallThunks;
+def makeGet            = Lang0Node::makeGet;
+def makeInterpolate    = Lang0Node::makeInterpolate;
+def makeJump           = Lang0Node::makeJump;
+def makeLiteral        = Lang0Node::makeLiteral;
+def makeOptValue       = Lang0Node::makeOptValue;
+def makeThunk          = Lang0Node::makeThunk;
+def makeVarBind        = Lang0Node::makeVarBind;
+def makeVarDef         = Lang0Node::makeVarDef;
+def makeVarDefMutable  = Lang0Node::makeVarDefMutable;
+def makeVarRef         = Lang0Node::makeVarRef;
+def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
+def withoutInterpolate = Lang0Node::withoutInterpolate;
 
 
 ##
@@ -89,7 +90,7 @@ def parParenExpression = Peg::makeMainSequence(
                 Io1::die("Comma not allowed within parenthesized expression.")
             })),
     Peg::makeToken(")"),
-    Peg::makeCode { ., ex, ., . <> @expression{value: ex} });
+    Peg::makeCode { ., ex, ., . <> withoutInterpolate(ex) });
 
 ## Documented in spec.
 def parVarRef = Peg::makeMainSequence(
@@ -310,11 +311,9 @@ def parMapping = Peg::makeMainSequence(
                     }
             }
             {
-                ## One or more keys. The `value` is wrapped in an
-                ## `expression` node here to prevent interpolation from
-                ## being applied to `makeValueMap`.
+                ## One or more keys.
                 <> makeCallOrApply(REFS::makeValueMap,
-                    keys*, @expression{value})
+                    keys*, withoutInterpolate(value))
             }
     });
 

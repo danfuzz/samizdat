@@ -17,24 +17,25 @@ can be used.
 ```
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
-def REFS              = Lang0Node::REFS;
-def get_interpolate   = Lang0Node::get_interpolate;
-def get_name          = Lang0Node::get_name;
-def makeApply         = Lang0Node::makeApply;
-def makeCall          = Lang0Node::makeCall;
-def makeCallOrApply   = Lang0Node::makeCallOrApply;
-def makeCallThunks    = Lang0Node::makeCallThunks;
-def makeGet           = Lang0Node::makeGet;
-def makeInterpolate   = Lang0Node::makeInterpolate;
-def makeJump          = Lang0Node::makeJump;
-def makeLiteral       = Lang0Node::makeLiteral;
-def makeOptValue      = Lang0Node::makeOptValue;
-def makeThunk         = Lang0Node::makeThunk;
-def makeVarBind       = Lang0Node::makeVarBind;
-def makeVarDef        = Lang0Node::makeVarDef;
-def makeVarDefMutable = Lang0Node::makeVarDefMutable;
-def makeVarRef        = Lang0Node::makeVarRef;
-def makeVarRefLvalue  = Lang0Node::makeVarRefLvalue;
+def REFS               = Lang0Node::REFS;
+def get_interpolate    = Lang0Node::get_interpolate;
+def get_name           = Lang0Node::get_name;
+def makeApply          = Lang0Node::makeApply;
+def makeCall           = Lang0Node::makeCall;
+def makeCallOrApply    = Lang0Node::makeCallOrApply;
+def makeCallThunks     = Lang0Node::makeCallThunks;
+def makeGet            = Lang0Node::makeGet;
+def makeInterpolate    = Lang0Node::makeInterpolate;
+def makeJump           = Lang0Node::makeJump;
+def makeLiteral        = Lang0Node::makeLiteral;
+def makeOptValue       = Lang0Node::makeOptValue;
+def makeThunk          = Lang0Node::makeThunk;
+def makeVarBind        = Lang0Node::makeVarBind;
+def makeVarDef         = Lang0Node::makeVarDef;
+def makeVarDefMutable  = Lang0Node::makeVarDefMutable;
+def makeVarRef         = Lang0Node::makeVarRef;
+def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
+def withoutInterpolate = Lang0Node::withoutInterpolate;
 
 
 ##
@@ -78,9 +79,8 @@ def parExpression = {/
     ## Note: Layer 2 adds additional rules here.
 /};
 
-## Parses a parenthesized expression. This produces an `expression` node,
-## which prevents interpolation from escaping. If interpolation-prevention
-## is undesired, the result of this rule can be unwrapped with `dataOf`.
+## Parses a parenthesized expression. This produces a result identical to
+## the inner `expression` node, except without an `interpolate` binding.
 def parParenExpression = {/
     @"("
     ex = parExpression
@@ -95,7 +95,7 @@ def parParenExpression = {/
 
     @")"
 
-    { <> @expression{value: ex} }
+    { <> withoutInterpolate(ex) }
 /};
 
 ## Parses a variable reference.
@@ -405,11 +405,9 @@ def parMapping = {/
                     }
             }
             {
-                ## One or more keys. The `value` is wrapped in an
-                ## `expression` node here to prevent interpolation from
-                ## being applied to `makeValueMap`.
+                ## One or more keys.
                 <> makeCallOrApply(REFS::makeValueMap,
-                    keys*, @expression{value})
+                    keys*, withoutInterpolate(value))
             }
     }
 /};

@@ -93,13 +93,6 @@ genericBind(
 
 genericBind(
     translate,
-    "expression",
-    fn expression_translate(node, varsBox) {
-        <> translate(node.value, varsBox)
-    });
-
-genericBind(
-    translate,
     "jump",
     fn call_translate(node, varsBox) {
         def value = (def v = node.value)
