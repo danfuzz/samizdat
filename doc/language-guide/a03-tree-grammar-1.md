@@ -20,6 +20,7 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
+def get_value          = Lang0Node::get_value;
 def makeApply          = Lang0Node::makeApply;
 def makeCall           = Lang0Node::makeCall;
 def makeCallOrApply    = Lang0Node::makeCallOrApply;
@@ -256,7 +257,7 @@ def parFnCommon = {/
     ## name to the `return` function, if there is in fact a yield def present.
     returnDef = (
         y = parYieldDef
-        { <> makeVarDef(y, REFS::return") }
+        { <> makeVarDef(y, REFS::return) }
     )?
 
     name = (
@@ -733,7 +734,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @token(dataOf(type)::value) }
+    { <> @token(get_value(type)) }
 /};
 
 ## Parses a string or character range parsing expression, used when defining

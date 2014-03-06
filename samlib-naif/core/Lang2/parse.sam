@@ -16,6 +16,7 @@ def tokenize = submoduleUse("tokenize")::tokenize;
 def REFS               = Lang0Node::REFS;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
+def get_value          = Lang0Node::get_value;
 def makeApply          = Lang0Node::makeApply;
 def makeCall           = Lang0Node::makeCall;
 def makeCallOrApply    = Lang0Node::makeCallOrApply;
@@ -743,7 +744,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @token(dataOf(type)::value) }
+    { <> @token(get_value(type)) }
 /};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -1438,13 +1439,13 @@ parPostfixOperator2 := {/
         ## `target.name(arg, ...)`
         actuals = parActualsList
         {
-            def funcRef = makeVarRef(dataOf(name)::value);
+            def funcRef = makeVarRef(get_value(name));
             <> { node <> makeCallOrApply(funcRef, node, actuals*) }
         }
     |
         ## `target.name` (includes parsing of both getters and setters)
         {
-            def suffix = dataOf(name)::value;
+            def suffix = get_value(name);
             def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
