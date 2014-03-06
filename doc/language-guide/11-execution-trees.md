@@ -131,17 +131,6 @@ along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
 facility is an implementation of downward-passed / upward-called
 continuations.
 
-#### `expression` &mdash; `@expression{value: expression}`
-
-* `value: expression` &mdash; Arbitrary expression node.
-
-A node with type `expression` per se is merely a pass-through to its
-enclosed expression. In terms of surface syntax, `expression` nodes
-generally correspond to parenthesized expressions.
-
-**Note:** Strictly speaking, there is no need for these nodes to exist.
-However, they can be handy when generating execution trees.
-
 #### `jump` &mdash; `@jump{function: expression, (value: expression)?}`
 
 * `function: expression` (required) &mdash; An expression node that must
