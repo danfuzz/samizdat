@@ -32,6 +32,11 @@ fn get_interpolate(node) {
 };
 
 ## Documented in spec.
+fn get_lvalue(node) {
+    <> dataOf(node)::lvalue
+};
+
+## Documented in spec.
 fn get_maxArgs(node) {
     def formals = get_formals(node);
     var maxArgs = 0;
@@ -96,6 +101,7 @@ fn get_yieldDef(node) {
     get_function,
     get_id,
     get_interpolate,
+    get_lvalue,
     get_maxArgs,
     get_minArgs,
     get_name,
