@@ -17,22 +17,24 @@ can be used.
 ```
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
-def REFS                   = Lang0Node::REFS;
-def makeApply              = Lang0Node::makeApply;
-def makeCall               = Lang0Node::makeCall;
-def makeCallOrApply        = Lang0Node::makeCallOrApply;
-def makeCallThunks         = Lang0Node::makeCallThunks;
-def makeGetExpression      = Lang0Node::makeGetExpression;
-def makeInterpolate        = Lang0Node::makeInterpolate;
-def makeJump               = Lang0Node::makeJump;
-def makeLiteral            = Lang0Node::makeLiteral;
-def makeOptValueExpression = Lang0Node::makeOptValueExpression;
-def makeThunk              = Lang0Node::makeThunk;
-def makeVarBind            = Lang0Node::makeVarBind;
-def makeVarDef             = Lang0Node::makeVarDef;
-def makeVarDefMutable      = Lang0Node::makeVarDefMutable;
-def makeVarRef             = Lang0Node::makeVarRef;
-def makeVarRefLvalue       = Lang0Node::makeVarRefLvalue;
+def REFS              = Lang0Node::REFS;
+def get_interpolate   = Lang0Node::get_interpolate;
+def get_name          = Lang0Node::get_name;
+def makeApply         = Lang0Node::makeApply;
+def makeCall          = Lang0Node::makeCall;
+def makeCallOrApply   = Lang0Node::makeCallOrApply;
+def makeCallThunks    = Lang0Node::makeCallThunks;
+def makeGet           = Lang0Node::makeGet;
+def makeInterpolate   = Lang0Node::makeInterpolate;
+def makeJump          = Lang0Node::makeJump;
+def makeLiteral       = Lang0Node::makeLiteral;
+def makeOptValue      = Lang0Node::makeOptValue;
+def makeThunk         = Lang0Node::makeThunk;
+def makeVarBind       = Lang0Node::makeVarBind;
+def makeVarDef        = Lang0Node::makeVarDef;
+def makeVarDefMutable = Lang0Node::makeVarDefMutable;
+def makeVarRef        = Lang0Node::makeVarRef;
+def makeVarRefLvalue  = Lang0Node::makeVarRefLvalue;
 
 
 ##
@@ -394,14 +396,12 @@ def parMapping = {/
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
-                def type = typeOf(value);
-                def data = dataOf(value);
-                ifIs { <> eq(type, "interpolate") }
-                    { <out> data };
-                ifIs { <> eq(type, "varRef") }
+                ifValue { <> get_interpolate(value) }
+                    { interp -> <out> interp };
+                ifIs { <> hasType(value, "varRef") }
                     {
                         <out> makeCall(REFS::makeValueMap,
-                            makeLiteral(data::name), value)
+                            makeLiteral(get_name(value)), value)
                     }
             }
             {
@@ -518,7 +518,7 @@ def parPostfixOperator = {/
     ## fits better here.
     @"::"
     key = parIdentifierString
-    { <> { node <> makeGetExpression(node, key) } }
+    { <> { node <> makeGet(node, key) } }
 |
     ## The lookahead failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
@@ -527,7 +527,7 @@ def parPostfixOperator = {/
     { <> { node <> makeInterpolate(node) } }
 |
     @"?"
-    { <> { node <> makeOptValueExpression(node) } }
+    { <> { node <> makeOptValue(node) } }
 ## |
     ## Note: Layer 2 adds additional rules here.
 /};

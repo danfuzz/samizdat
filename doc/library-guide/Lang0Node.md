@@ -49,6 +49,13 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
+#### `get_interpolate(node) <> node | .`
+
+Gets the interpolated node, if any, of a `call` node. This is non-void
+when a `call` node was created by virtue of a call to `makeInterpolate`
+and is in turn used by `makeCallOrApply` to detect when to translate
+a call into an interpolated form.
+
 #### `get_maxArgs(node) <> int`
 
 Gets the maximum number of arguments that a given `closure` node
@@ -117,14 +124,16 @@ arguments.
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
-#### `makeGetExpression(collArg, keyArg) <> node`
+#### `makeGet(collArg, keyArg) <> node`
 
 Makes a collection access (`get`) expression. This is a `call` node
 of two arguments (a collection node and a key node).
 
 #### `makeInterpolate(expr) <> node`
 
-Makes an `interpolate` node.
+Makes an interpolation of the given expression node. The result is a
+`call` to the function `interpolate`, but with an additional `interpolate`
+binding in the data payload. See `makeCallOrApply` for more details.
 
 #### `makeJump(function, optValue?) <> node`
 
@@ -135,7 +144,7 @@ expression argument `value`.
 
 Makes a `literal` node.
 
-#### `makeOptValueExpression(node) <> node`
+#### `makeOptValue(node) <> node`
 
 Makes an optional-value expression for the given `node`. This effectively
 returns `node?`, or equivalently and more expanded, `optValue { <> node }`.
@@ -168,7 +177,9 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
-#### `withoutLvalue(node) <> node`
+#### `withoutIntermediates(node) <> node`
 
-Makes a node just like the given one, except without any data payload
-binding for `lvalue`.
+Makes a node just like the given one, except without any "intermediate"
+data payload bindings. These are bindings which are incidentally used
+during typical tree node construction but which are not used for execution.
+This includes `lvalue` and `interpolate`.

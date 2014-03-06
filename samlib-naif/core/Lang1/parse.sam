@@ -11,22 +11,24 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 
 def tokenize = submoduleUse("tokenize")::tokenize;
 
-def REFS                   = Lang0Node::REFS;
-def makeApply              = Lang0Node::makeApply;
-def makeCall               = Lang0Node::makeCall;
-def makeCallOrApply        = Lang0Node::makeCallOrApply;
-def makeCallThunks         = Lang0Node::makeCallThunks;
-def makeGetExpression      = Lang0Node::makeGetExpression;
-def makeInterpolate        = Lang0Node::makeInterpolate;
-def makeJump               = Lang0Node::makeJump;
-def makeLiteral            = Lang0Node::makeLiteral;
-def makeOptValueExpression = Lang0Node::makeOptValueExpression;
-def makeThunk              = Lang0Node::makeThunk;
-def makeVarBind            = Lang0Node::makeVarBind;
-def makeVarDef             = Lang0Node::makeVarDef;
-def makeVarDefMutable      = Lang0Node::makeVarDefMutable;
-def makeVarRef             = Lang0Node::makeVarRef;
-def makeVarRefLvalue       = Lang0Node::makeVarRefLvalue;
+def REFS              = Lang0Node::REFS;
+def get_interpolate   = Lang0Node::get_interpolate;
+def get_name          = Lang0Node::get_name;
+def makeApply         = Lang0Node::makeApply;
+def makeCall          = Lang0Node::makeCall;
+def makeCallOrApply   = Lang0Node::makeCallOrApply;
+def makeCallThunks    = Lang0Node::makeCallThunks;
+def makeGet           = Lang0Node::makeGet;
+def makeInterpolate   = Lang0Node::makeInterpolate;
+def makeJump          = Lang0Node::makeJump;
+def makeLiteral       = Lang0Node::makeLiteral;
+def makeOptValue      = Lang0Node::makeOptValue;
+def makeThunk         = Lang0Node::makeThunk;
+def makeVarBind       = Lang0Node::makeVarBind;
+def makeVarDef        = Lang0Node::makeVarDef;
+def makeVarDefMutable = Lang0Node::makeVarDefMutable;
+def makeVarRef        = Lang0Node::makeVarRef;
+def makeVarRefLvalue  = Lang0Node::makeVarRefLvalue;
 
 
 ##
@@ -299,14 +301,12 @@ def parMapping = Peg::makeMainSequence(
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
-                def type = typeOf(value);
-                def data = dataOf(value);
-                ifIs { <> eq(type, "interpolate") }
-                    { <out> data::value };
-                ifIs { <> eq(type, "varRef") }
+                ifValue { <> get_interpolate(value) }
+                    { interp -> <out> interp };
+                ifIs { <> hasType(value, "varRef") }
                     {
                         <out> makeCall(REFS::makeValueMap,
-                            makeLiteral(data::name), value)
+                            makeLiteral(get_name(value)), value)
                     }
             }
             {
@@ -406,13 +406,13 @@ def parPostfixOperator = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("::"),
         parIdentifierString,
-        Peg::makeCode { ., key <> { node <> makeGetExpression(node, key) } }),
+        Peg::makeCode { ., key <> { node <> makeGet(node, key) } }),
     Peg::makeSequence(
         Peg::makeToken("*"),
         Peg::makeCode { . <> { node <> makeInterpolate(node) } }),
     Peg::makeSequence(
         Peg::makeToken("?"),
-        Peg::makeCode { . <> { node <> makeOptValueExpression(node) } }));
+        Peg::makeCode { . <> { node <> makeOptValue(node) } }));
 
 ## Documented in spec.
 parUnaryExpression := Peg::makeMainSequence(

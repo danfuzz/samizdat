@@ -72,13 +72,6 @@ genericBind(
 
 genericBind(
     lits,
-    "interpolate",
-    fn interpolate_lits(node, interner) {
-        <> @interpolate{value: lits(node.value, interner)}
-    });
-
-genericBind(
-    lits,
     "jump",
     fn jump_lits(node, interner) {
         def function = lits(node.function, interner);

@@ -30,11 +30,6 @@ fn makeCallThunks(function, actuals*) {
 };
 
 ## Documented in spec.
-fn makeInterpolate(value) {
-    <> @interpolate{value}
-};
-
-## Documented in spec.
 fn makeJump(function, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @jump{function, value} }
@@ -84,8 +79,17 @@ fn makeVarRefLvalue(name) {
 };
 
 ## Documented in spec.
-fn withoutLvalue(node) {
-    <> @(typeOf(node))(Collection::del(dataOf(node), "lvalue"))
+fn withoutInterpolate(node) {
+    <> @(typeOf(node))(Collection::del(dataOf(node), "interpolate"))
+};
+
+## Documented in spec.
+fn withoutIntermediates(node) {
+    def data = Collection::del(
+        Collection::del(dataOf(node), "lvalue"),
+        "interpolate");
+
+    <> @(typeOf(node))(data)
 };
 
 <> {
@@ -93,7 +97,6 @@ fn withoutLvalue(node) {
     makeCall,
     makeCallLiterals,
     makeCallThunks,
-    makeInterpolate,
     makeJump,
     makeLiteral,
     makeThunk,
@@ -102,5 +105,5 @@ fn withoutLvalue(node) {
     makeVarDefMutable,
     makeVarRef,
     makeVarRefLvalue,
-    withoutLvalue
+    withoutIntermediates
 }

@@ -36,6 +36,7 @@
     ifValue,
     ifValueOr,
     ifValues,
+    interpolate,
     keyOf,
     le,
     loop,

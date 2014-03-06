@@ -5,10 +5,11 @@
 
 def REFS = submoduleUse("refs")::REFS;
 def constructors1 = submoduleUse("constructors1");
+def getters = submoduleUse("getters");
 
+def get_interpolate = getters::get_interpolate;
 def makeApply       = constructors1::makeApply;
 def makeCall        = constructors1::makeCall;
-def makeInterpolate = constructors1::makeInterpolate;
 def makeThunk       = constructors1::makeThunk;
 
 
@@ -45,11 +46,10 @@ fn makeCallOrApply(function, actuals*) {
     };
 
     Generator::filterPump(actuals) { actual ->
-        ifIs { <> hasType(actual, "interpolate") }
-            {
+        ifValue { <> get_interpolate(actual) }
+            { node ->
                 addPendingToCooked();
-                addToCooked(
-                    makeCall(REFS::collect, dataOf(actual)::value))
+                addToCooked(makeCall(REFS::collect, node))
             }
             { pending := [pending*, actual] }
     };
@@ -77,17 +77,23 @@ fn makeCallOrApply(function, actuals*) {
 };
 
 ## Documented in spec.
-fn makeGetExpression(collArg, keyArg) {
+fn makeGet(collArg, keyArg) {
     <> makeCall(REFS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
-fn makeOptValueExpression(node) {
+fn makeInterpolate(node) {
+    <> @call{function: REFS::interpolate, actuals: [node], interpolate: node}
+};
+
+## Documented in spec.
+fn makeOptValue(node) {
     <> makeCall(REFS::optValue, makeThunk(node))
 };
 
 <> {
     makeCallOrApply,
-    makeGetExpression,
-    makeOptValueExpression
+    makeGet,
+    makeInterpolate,
+    makeOptValue
 }

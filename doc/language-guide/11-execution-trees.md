@@ -50,13 +50,16 @@ void).
 **Note:** The difference between this and `call` is that the latter
 takes its `actuals` as a list in the node itself.
 
-#### `call` &mdash; `@call{function: expression, actuals: [expression*]}`
+#### `call` &mdash; `@call{function: expression, actuals: [expression*], (interpolate: expression)?}`
 
 * `function: expression` (required) &mdash; An expression node that must
   evaluate to a function.
 
 * `actuals: [expression*]` (required) &mdash; A list of arbitrary
   expression nodes, each of which must evaluate to a non-void value.
+
+* `interpolate: expression` (optional) &mdash; Expression to use when treating
+  this as a function call argument interpolation. (See below.)
 
 This represents a function call.
 
@@ -67,6 +70,13 @@ a function, the call fails (terminating the runtime). If any of the
 
 After that, this proceeds in the same manner as `apply`, using the
 list of evaluated `actuals` as the arguments to the call.
+
+The `interpolate` binding is *not* used during execution, rather it is only
+ever used when programatically constructing trees. For example, it is used
+by the function `Lang0Node::makeCallOrApply` to know that a "call
+to the function `interpolate`" should actually be treated like an in-line
+argument interpolation. Relatedly, `call` nodes with `interpolate` are
+produced by the function `Lang0Node::makeInterpolate`.
 
 #### `closure` &mdash; `@closure{formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
 
@@ -131,20 +141,6 @@ generally correspond to parenthesized expressions.
 
 **Note:** Strictly speaking, there is no need for these nodes to exist.
 However, they can be handy when generating execution trees.
-
-#### `interpolate` &mdash; `@interpolate{value: expression}`
-
-* `value: expression` &mdash; Expression node, which must yield a list when
-  evaluated.
-
-This represents the interpolation of a generator, which must either produce
-no values or exactly one value when `collect`ed.
-
-When run, the node's `expression` is evaluated and must result in a generator.
-`collect` is called on the generator, producing a list. If the list is empty,
-then the result of evaluation of this node is void. If the list has a single
-element, then the result of evaluation is that single element value. All other
-evaluations are invalid (terminating the runtime).
 
 #### `jump` &mdash; `@jump{function: expression, (value: expression)?}`
 

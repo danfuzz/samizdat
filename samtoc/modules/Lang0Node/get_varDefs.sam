@@ -38,13 +38,6 @@ genericBind(
 
 genericBind(
     get_varDefs,
-    "interpolate",
-    fn interpolate_get_varDefs(node) {
-        <> []
-    });
-
-genericBind(
-    get_varDefs,
     "jump",
     fn jump_get_varDefs(node) {
         <> []

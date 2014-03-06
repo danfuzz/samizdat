@@ -99,7 +99,9 @@ fn generatorPump(generator) {
 
     ## Re-exported from globals (and proto module).
     collect,
+    interpolate,
     nextValue,
+    optValue,
 
     ## Re-exported from submodules.
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
