@@ -69,14 +69,6 @@ genericBind(
 
 genericBind(
     bodies,
-    "expression",
-    fn expression_bodies(node, bodiesBox) {
-        def value = bodies(node.value, bodiesBox);
-        <> @expression{value}
-    });
-
-genericBind(
-    bodies,
     "jump",
     fn jump_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);

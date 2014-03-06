@@ -65,13 +65,6 @@ genericBind(
 
 genericBind(
     lits,
-    "expression",
-    fn expression_lits(node, interner) {
-        <> @expression{value: lits(node.value, interner)}
-    });
-
-genericBind(
-    lits,
     "jump",
     fn jump_lits(node, interner) {
         def function = lits(node.function, interner);

@@ -245,12 +245,6 @@ fn closure_convertPexIn(node) {
 };
 genericBind(convertPexIn, "closure", closure_convertPexIn);
 
-## Does parser conversion of an `expression` node.
-fn expression_convertPexIn(node) {
-    <> convertValuePayload(node)
-};
-genericBind(convertPexIn, "expression", expression_convertPexIn);
-
 ## Does parser conversion of a `jump` node.
 fn jump_convertPexIn(node) {
     def function = convertPexIn(get_function(node));
