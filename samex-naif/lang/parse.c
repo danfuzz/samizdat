@@ -169,6 +169,11 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 static zvalue makeVarRef(zvalue name);
 
 /* Documented in spec. */
+static zvalue get_formals(zvalue node) {
+    return collGet(dataOf(node), STR_formals);
+}
+
+/* Documented in spec. */
 static zvalue get_interpolate(zvalue node) {
     return collGet(dataOf(node), STR_interpolate);
 }
@@ -286,9 +291,9 @@ static zvalue makeLiteral(zvalue value) {
 static zvalue makeThunk(zvalue expression) {
     return makeTransValue(STR_closure,
         mapFrom3(
-            STR_formals, EMPTY_LIST,
+            STR_formals,    EMPTY_LIST,
             STR_statements, EMPTY_LIST,
-            STR_yield, expression));
+            STR_yield,      expression));
 }
 
 /* Documented in spec. */
@@ -624,7 +629,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    zvalue formals = collGet(dataOf(c), STR_formals);
+    zvalue formals = get_formals(c);
     if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }

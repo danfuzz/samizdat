@@ -17,6 +17,7 @@ can be used.
 ```
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
+def get_formals        = Lang0Node::get_formals;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
 def get_statements     = Lang0Node::get_statements;
@@ -204,7 +205,7 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        def formals = dataOf(c)::formals;
+        def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
             { Io0::die("Invalid formal argument in code block.") };
         <> c
