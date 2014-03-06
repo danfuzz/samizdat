@@ -183,3 +183,9 @@ Makes a node just like the given one, except without any "intermediate"
 data payload bindings. These are bindings which are incidentally used
 during typical tree node construction but which are not used for execution.
 This includes `lvalue` and `interpolate`.
+
+#### `withoutInterpolate(node) <> node`
+
+Makes a node just like the given one, except without any binding
+for `interpolate`. This is used by parser code to preventing argument
+interpolation from applying to parenthesized expressions.
