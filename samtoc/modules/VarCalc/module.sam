@@ -2,13 +2,6 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-##
-## Exported Definitions
-##
-
-## This just re-exports stuff defined in submodules.
-<> {
-    (submoduleUse("get_varDefs"))*,
-    (submoduleUse("get_varRefs"))*,
-    (submoduleUse("getters"))*
+{
+    name: ["VarCalc"]
 }

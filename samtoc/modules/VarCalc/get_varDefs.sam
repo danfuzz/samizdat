@@ -2,7 +2,8 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def get_name = submoduleUse("getters")::get_name;
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def get_name = Lang0Node::get_name;
 
 ## generic `get_varDefs(node)`, returns list of variable names
 ## newly-defined by `node`. Result may have duplicates.
