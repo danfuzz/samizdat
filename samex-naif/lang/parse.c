@@ -165,33 +165,11 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 /** Equivalent to `REFS::name` in the spec. */
 #define REFS(name) (makeVarRef(STR_##name))
 
+/** Equivalent to `get_name(node)` in the spec. */
+#define GET(name, node) (collGet(dataOf((node)), STR_##name))
+
 /* Defined below.*/
 static zvalue makeVarRef(zvalue name);
-
-/* Documented in spec. */
-static zvalue get_formals(zvalue node) {
-    return collGet(dataOf(node), STR_formals);
-}
-
-/* Documented in spec. */
-static zvalue get_interpolate(zvalue node) {
-    return collGet(dataOf(node), STR_interpolate);
-}
-
-/* Documented in spec. */
-static zvalue get_name(zvalue node) {
-    return collGet(dataOf(node), STR_name);
-}
-
-/* Documented in spec. */
-static zvalue get_statements(zvalue node) {
-    return collGet(dataOf(node), STR_statements);
-}
-
-/* Documented in spec. */
-static zvalue get_yieldDef(zvalue node) {
-    return collGet(dataOf(node), STR_yieldDef);
-}
 
 /* Documented in spec. */
 static zvalue makeApply(zvalue function, zvalue actuals) {
@@ -239,7 +217,7 @@ static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 
     for (zint i = 0; i < sz; i++) {
         zvalue one = seqNth(actuals, i);
-        zvalue node = get_interpolate(one);
+        zvalue node = GET(interpolate, one);
         if (node != NULL) {
             addPendingToCooked();
             addToCooked(makeCall(REFS(collect), listFrom1(node)));
@@ -629,7 +607,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    zvalue formals = get_formals(c);
+    zvalue formals = GET(formals, c);
     if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
@@ -643,7 +621,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (get_yieldDef(c) != NULL) {
+    if (GET(yieldDef, c) != NULL) {
         die("Invalid yield definition in code block.");
     }
 
@@ -691,7 +669,7 @@ DEF_PARSE(fnCommon) {
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(codeOnlyClosure);
 
-    zvalue statements = GFN_CALL(cat, returnDef, get_statements(code));
+    zvalue statements = GFN_CALL(cat, returnDef, GET(statements, code));
     zvalue closureMap = GFN_CALL(cat,
         dataOf(code),
         name,
@@ -708,7 +686,7 @@ DEF_PARSE(fnDef) {
     MARK();
 
     zvalue closure = PARSE_OR_REJECT(fnCommon);
-    zvalue name = get_name(closure);
+    zvalue name = GET(name, closure);
 
     if (name == NULL) {
         return NULL;
@@ -725,7 +703,7 @@ DEF_PARSE(fnExpression) {
     MARK();
 
     zvalue closure = PARSE_OR_REJECT(fnCommon);
-    zvalue name = get_name(closure);
+    zvalue name = GET(name, closure);
 
     if (name == NULL) {
         return closure;
@@ -829,12 +807,12 @@ DEF_PARSE(mapping) {
         // No keys were specified, so the value must be either a
         // whole-map interpolation or a variable-name-to-its-value
         // binding.
-        zvalue interp = get_interpolate(value);
+        zvalue interp = GET(interpolate, value);
         if (interp != NULL) {
             return interp;
         } else if (hasType(value, STR_varRef)) {
             return makeCall(REFS(makeValueMap),
-                listFrom2(makeLiteral(get_name(value)), value));
+                listFrom2(makeLiteral(GET(name, value)), value));
         }
 
         REJECT();
@@ -1015,7 +993,7 @@ DEF_PARSE(assignExpression) {
     // In this case, we ensured (above) that we've got a `varRef` and
     // recombine it here into a `varBind`.
     zvalue ex = PARSE_OR_REJECT(expression);
-    zvalue name = get_name(base);
+    zvalue name = GET(name, base);
 
     return makeVarBind(name, ex);
 }
