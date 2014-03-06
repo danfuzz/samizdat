@@ -14,6 +14,8 @@ def Lang0 = moduleUse({name: ["core", "Lang0"]});
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
+def get_actuals        = Lang0Node::get_actuals;
+def get_function       = Lang0Node::get_function;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
 def get_value          = Lang0Node::get_value;
@@ -996,9 +998,8 @@ fn makeCompareCalls(firstEx, opExList) {
             { return tree };
 
         ## We are looking at `@call{function, actuals: [firstActual, ...]}`.
-        def data = dataOf(tree);
-        def function = data::function;
-        def actuals = data::actuals;
+        def function = get_function(tree);
+        def actuals = get_actuals(tree);
         def firstActual = makeCall(REFS::ifValueOr,
             makeThunk(
                 transform(Sequence::nth(actuals, 0), Number::sub(layer, 1))),
@@ -1245,7 +1246,7 @@ def parRangeExpression = {/
     @"]"
 
     ## The test here is to prevent open ranges from being allowed.
-    { <> ne(dataOf(body)::function, REFS::Range_makeOpenRange) }
+    { <> ne(get_function(body), REFS::Range_makeOpenRange) }
     { <> makeCallOrApply(REFS::makeList, makeInterpolate(body)) }
 /};
 
