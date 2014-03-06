@@ -22,7 +22,6 @@ typedef enum {
     EVAL_apply = 1, // 1, so that it won't be a "sneaky default."
     EVAL_call,
     EVAL_closure,
-    EVAL_expression,
     EVAL_jump,
     EVAL_literal,
     EVAL_varBind,

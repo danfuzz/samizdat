@@ -52,7 +52,6 @@ STR(call,              "call");
 STR(cat,               "cat");
 STR(closure,           "closure");
 STR(collect,           "collect");
-STR(expression,        "expression");
 STR(formals,           "formals");
 STR(function,          "function");
 STR(get,               "get");
