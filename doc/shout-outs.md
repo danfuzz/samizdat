@@ -58,10 +58,7 @@ and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
 the trail for general-purpose languages that make parsing a first-class
 operation.
 
-In terms of "flavor" and "feel," the Samizdat core library was influenced
-by Scheme and [Underscore.js](http://underscorejs.org/).
-
-The implementation tactics used to build Samizdat were informed by
+The implementation tactics used to build Samizdat were / will be informed by
 [Scheme-48](http://en.wikipedia.org/wiki/Scheme_48),
 the [Jikes RVM](http://en.wikipedia.org/wiki/Jikes_RVM)
 (formerly a.k.a. Jalape&ntilde;o),
