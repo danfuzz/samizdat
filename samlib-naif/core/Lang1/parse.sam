@@ -6,11 +6,11 @@
 ## Samizdat Layer 1 tree parser
 ##
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
-
 def tokenize = submoduleUse("tokenize")::tokenize;
 
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;

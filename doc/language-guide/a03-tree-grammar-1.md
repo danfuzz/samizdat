@@ -16,7 +16,6 @@ can be used.
 
 ```
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
-
 def REFS               = Lang0Node::REFS;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
