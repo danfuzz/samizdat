@@ -19,6 +19,7 @@ def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
+def get_statements     = Lang0Node::get_statements;
 def get_value          = Lang0Node::get_value;
 def get_yieldDef       = Lang0Node::get_yieldDef;
 def makeApply          = Lang0Node::makeApply;
@@ -274,10 +275,10 @@ def parFnCommon = {/
     code = parCodeOnlyClosure
 
     {
-        def codeMap = dataOf(code);
-        def statements = [returnDef*, codeMap::statements*];
+        def statements = [returnDef*, get_statements(code)*];
         <> @closure{
-            codeMap*, name*,
+            dataOf(code)*,
+            name*,
             formals,
             yieldDef: "return",
             statements

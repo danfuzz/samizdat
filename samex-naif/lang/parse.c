@@ -179,6 +179,11 @@ static zvalue get_name(zvalue node) {
 }
 
 /* Documented in spec. */
+static zvalue get_statements(zvalue node) {
+    return collGet(dataOf(node), STR_statements);
+}
+
+/* Documented in spec. */
 static zvalue get_yieldDef(zvalue node) {
     return collGet(dataOf(node), STR_yieldDef);
 }
@@ -681,11 +686,9 @@ DEF_PARSE(fnCommon) {
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(codeOnlyClosure);
 
-    zvalue codeMap = dataOf(code);
-    zvalue statements =
-        GFN_CALL(cat, returnDef, collGet(codeMap, STR_statements));
+    zvalue statements = GFN_CALL(cat, returnDef, get_statements(code));
     zvalue closureMap = GFN_CALL(cat,
-        codeMap,
+        dataOf(code),
         name,
         mapFrom3(
             STR_formals,    formals,

@@ -295,10 +295,10 @@ def parFnCommon = {/
     code = parCodeOnlyClosure
 
     {
-        def codeMap = dataOf(code);
-        def statements = [returnDef*, codeMap::statements*];
+        def statements = [returnDef*, get_statements(code)*];
         <> @closure{
-            codeMap*, name*,
+            dataOf(code)*,
+            name*,
             formals,
             yieldDef: "return",
             statements
