@@ -23,7 +23,6 @@ typedef enum {
     EVAL_call,
     EVAL_closure,
     EVAL_expression,
-    EVAL_interpolate,
     EVAL_jump,
     EVAL_literal,
     EVAL_varBind,

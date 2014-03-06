@@ -83,27 +83,6 @@ static zvalue execCall(Frame *frame, zvalue call) {
 }
 
 /**
- * Executes an `interpolate` form.
- */
-static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
-    zvalue result = execExpressionVoidOk(frame, valueOf(interpolate));
-
-    if (result == NULL) {
-        die("Attempt to interpolate void.");
-    }
-
-    result = GFN_CALL(collect, result);
-
-    switch (collSize(result)) {
-        case 0: return NULL;
-        case 1: return seqNth(result, 0);
-        default: {
-            die("Attempt to interpolate multiple values.");
-        }
-    }
-}
-
-/**
  * Executes a `jump` form.
  */
 static void execJump(Frame *frame, zvalue jump)
@@ -178,15 +157,14 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (evalTypeOf(e)) {
-        case EVAL_apply:       return execApply(frame, e);
-        case EVAL_call:        return execCall(frame, e);
-        case EVAL_closure:     return execClosure(frame, e);
-        case EVAL_expression:  return execExpressionVoidOk(frame, valueOf(e));
-        case EVAL_interpolate: return execInterpolate(frame, e);
-        case EVAL_jump:        execJump(frame, e);
-        case EVAL_literal:     return valueOf(e);
-        case EVAL_varBind:     return execVarBind(frame, e);
-        case EVAL_varRef:      return execVarRef(frame, e);
+        case EVAL_apply:      return execApply(frame, e);
+        case EVAL_call:       return execCall(frame, e);
+        case EVAL_closure:    return execClosure(frame, e);
+        case EVAL_expression: return execExpressionVoidOk(frame, valueOf(e));
+        case EVAL_jump:       execJump(frame, e);
+        case EVAL_literal:    return valueOf(e);
+        case EVAL_varBind:    return execVarBind(frame, e);
+        case EVAL_varRef:     return execVarRef(frame, e);
         default: {
             die("Invalid expression type: %s", valDebugString(typeOf(e)));
         }
