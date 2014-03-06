@@ -889,12 +889,6 @@ fn closureWithFormals(closure, formals*) {
     <> @closure{(dataOf(closure))*, formals}
 };
 
-## Returns a `closure` node like the one given, except with `yieldDef`
-## bound to the indicated name.
-fn closureWithYieldDef(closure, name) {
-    <> @closure{(dataOf(closure))*, yieldDef: name}
-};
-
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
@@ -1841,9 +1835,7 @@ def parIfExpression = {/
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                def mainClosure =
-                    closureWithYieldDef(mainThunk, valueOf(yieldDef));
-                <> makeCall(mainClosure)
+                <> makeCall(@closure{dataOf(mainThunk)*, yieldDef})
             }
     }
 /};
