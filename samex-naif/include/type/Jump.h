@@ -15,6 +15,7 @@
 #include "type/Function.h"
 
 #include <setjmp.h>
+#include <stdbool.h>
 
 
 /** Type value for in-model type `Jump`. */
@@ -22,7 +23,7 @@ extern zvalue TYPE_Jump;
 
 /**
  * Constructs and returns a nonlocal jump, which is initially invalid for
- * use. It becomes valid when `JumpArm()` is called.
+ * use. It becomes valid when `jumpArm()` is called.
  */
 zvalue makeJump(void);
 

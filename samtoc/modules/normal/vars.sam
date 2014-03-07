@@ -82,7 +82,6 @@ fn processFormalsWithRepeat(clo, names) {
     ];
 
     def preInits = [
-        unnamedFormals(clo)*,
         "zint argAt = 0",
         cat(( v in varList <> v::preInit )*)*
     ];
@@ -92,7 +91,7 @@ fn processFormalsWithRepeat(clo, names) {
             & {(origName): Collection::del(v, "preInit")}
     );
 
-    <> {names, preInits, vars: {}.cat(vars*)}
+    <> {names, preInits, cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the formal arguments to the
@@ -116,26 +115,29 @@ fn processFormals(clo) {
             }}
     );
 
-    <> {names, preInits: unnamedFormals(clo), vars: {}.cat(vars*)}
+    <> {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the yield definition of the given
 ## closure, if any.
 fn processYieldDef(clo) {
     <> if (def name = clo.yieldDef) {
-        ## TODO: Something real.
         <> {
             names: [name],
-            preInits: [],
+            preInits: [
+                "zvalue jump = makeJump()",
+                "jumpArm(jump)"
+            ],
+            cleanups: ["jumpRetire(jump)"],
             vars: {(name): {
                     origName: "<\(name)>",
                     kind: "yield",
                     name: safeName("yield", name),
-                    init: "NULL"
+                    init: "makeResult(jump)"
                 }}
         }
     } else {
-        <> {names: [], preInits: [], vars: {}}
+        <> {names: [], preInits: [], cleanups: [], vars: {}}
     }
 };
 
@@ -152,7 +154,7 @@ fn processFreeVars(clo) {
         }}
     );
 
-    <> {names, preInits: [], vars: {}.cat(vars*)}
+    <> {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Makes a "safe" (syntactically correct C) variable name, given a `prefix`
@@ -214,7 +216,13 @@ fn processVars(clo) {
     );
 
     <> {
+        cleanups: [
+            formals::cleanups*,
+            freeVars::cleanups*,
+            yieldDef::cleanups*
+        ],
         inits: [
+            unnamedFormals(clo)*,
             formals::preInits*,
             freeVars::preInits*,
             yieldDef::preInits*,

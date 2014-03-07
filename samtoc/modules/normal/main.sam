@@ -91,6 +91,22 @@ fn closureMaker(cloIdx, clo, literals) {
     \/}\n\n"
 };
 
+## Returns the statements needed to return the given `yield` value, first
+## performing any given `cleanups`.
+fn makeYieldStatements(yield, cleanups) {
+    <> if (yield \== "NULL") {
+        <> [cleanups*, CodeGen::makeReturn(yield)]
+    } else if (cleanups == []) {
+        <> [CodeGen::makeReturn(yield)]
+    } else {
+        <> [
+            CodeGen::makeAssign("zvalue result", yield),
+            cleanups*,
+            CodeGen::makeReturn("result")
+        ]
+    }
+};
+
 ## Returns a function definition for the code for a closure, as a string.
 fn closureBody(cloIdx, clo, literals) {
     ## Set up the initial variable bindings.
@@ -110,11 +126,11 @@ fn closureBody(cloIdx, clo, literals) {
     def yield = (def y = clo.yield)
         & translate::translate(y, varsBox)
         | "NULL";
-    def yieldStat = CodeGen::makeReturn(yield);
+    def yieldStats = makeYieldStatements(yield, varInfo::cleanups);
 
     ## Process all the statements, producing source code.
 
-    def allStats = [ s in [varInfo::inits*, mainStats*, yieldStat] ->
+    def allStats = [ s in [varInfo::inits*, mainStats*, yieldStats*] ->
         <> CodeGen::makeStatement(s).usualIndent(1)
     ];
 
@@ -154,7 +170,7 @@ fn compile(sourcePath, targetPath) {
 
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
-    def mainNode = Lang2::parseProgram(sourceText);
+    def mainNode = Lang2::convertToLang0(Lang2::parseProgram(sourceText));
 
     def interner = Interner::makeInterner();
     def litsNode = internLiterals(mainNode, interner);
