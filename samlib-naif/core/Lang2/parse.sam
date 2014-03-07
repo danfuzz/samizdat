@@ -961,14 +961,14 @@ fn makeBinaryCalls(firstEx, opExList) {
 ## ```
 ## =>
 ## ```
-## { <out> ->
+## { <voided> ->
 ##     <> eq(
 ##         ifValueOr
 ##             { <> le(
-##                 ifValueOr { <> lt(x, y) } { <out> },
+##                 ifValueOr { <> lt(x, y) } { <voided> },
 ##                 z),
 ##             }
-##             { <out> }
+##             { <voided> }
 ##         q)
 ## }()
 ## ```
@@ -988,7 +988,7 @@ fn makeCompareCalls(firstEx, opExList) {
 
     ## Nontrivial case. We need to transform the inner first call arguments.
 
-    def yieldName = safeVarName("out", baseResult);
+    def yieldName = safeVarName("voided", baseResult);
     def yieldCall = makeThunk(makeJump(makeVarRef(yieldName)));
 
     fn transform(tree, layer) {
