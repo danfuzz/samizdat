@@ -16,10 +16,13 @@ can be used.
 
 ```
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
-
 def REFS               = Lang0Node::REFS;
+def get_formals        = Lang0Node::get_formals;
 def get_interpolate    = Lang0Node::get_interpolate;
 def get_name           = Lang0Node::get_name;
+def get_statements     = Lang0Node::get_statements;
+def get_value          = Lang0Node::get_value;
+def get_yieldDef       = Lang0Node::get_yieldDef;
 def makeApply          = Lang0Node::makeApply;
 def makeCall           = Lang0Node::makeCall;
 def makeCallOrApply    = Lang0Node::makeCallOrApply;
@@ -202,7 +205,7 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        def formals = dataOf(c)::formals;
+        def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
             { Io0::die("Invalid formal argument in code block.") };
         <> c
@@ -215,7 +218,7 @@ def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
     {
-        ifIs { <> dataOf(c)::yieldDef }
+        ifIs { <> get_yieldDef(c) }
             { Io0::die("Invalid yield definition in code block.") };
         <> c
     }
@@ -256,7 +259,7 @@ def parFnCommon = {/
     ## name to the `return` function, if there is in fact a yield def present.
     returnDef = (
         y = parYieldDef
-        { <> makeVarDef(y, REFS::return") }
+        { <> makeVarDef(y, REFS::return) }
     )?
 
     name = (
@@ -273,10 +276,10 @@ def parFnCommon = {/
     code = parCodeOnlyClosure
 
     {
-        def codeMap = dataOf(code);
-        def statements = [returnDef*, codeMap::statements*];
+        def statements = [returnDef*, get_statements(code)*];
         <> @closure{
-            codeMap*, name*,
+            dataOf(code)*,
+            name*,
             formals,
             yieldDef: "return",
             statements
@@ -292,7 +295,7 @@ def parFnCommon = {/
 def parFnDef = {/
     closure = parFnCommon
 
-    name = { <> dataOf(closure)::name }
+    name = { <> get_name(closure) }
     {
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
@@ -321,7 +324,7 @@ parFnExpression := {/
     closure = parFnCommon
 
     (
-        name = { <> dataOf(closure)::name }
+        name = { <> get_name(closure) }
         {
             def mainClosure = @closure{
                 formals:    [],
@@ -733,7 +736,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @token(dataOf(type)::value) }
+    { <> @token(get_value(type)) }
 /};
 
 ## Parses a string or character range parsing expression, used when defining

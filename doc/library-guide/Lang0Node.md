@@ -49,12 +49,26 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
+#### `get_lvalue(node) <> function | .`
+
+Gets the `lvalue` binding for a node, if any. This is non-void for
+`varRef` nodes created with `makeVarRefLvalue` or for any node in general
+to which an `lvalue` has been attached.
+
+The expected use of an `lvalue` is that it is a function (a real one, not
+a tree of one) of one node argument, which can be called to produce a tree
+representing an assignment of the lvalue-bearing node to the given node.
+
+**Note**: `lvalue` bindings aren't used during execution.
+
 #### `get_interpolate(node) <> node | .`
 
 Gets the interpolated node, if any, of a `call` node. This is non-void
 when a `call` node was created by virtue of a call to `makeInterpolate`
 and is in turn used by `makeCallOrApply` to detect when to translate
 a call into an interpolated form.
+
+**Note**: `interpolate` bindings aren't used during execution.
 
 #### `get_maxArgs(node) <> int`
 
@@ -78,8 +92,8 @@ Gets the statement list of a `closure` node.
 #### `get_value(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `interpolate`, `jump`, `literal`, `parser`,
-`varBind`, `varDef`, and `varDefMutable`.
+nodes of type `jump`, `literal`, `parser`, `varBind`, `varDef`, and
+`varDefMutable`.
 
 #### `get_yield(node) <> node | void`
 

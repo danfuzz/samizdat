@@ -6,16 +6,24 @@
 ## Samizdat Layer 2 Tree Parser
 ##
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-def Lang0 = moduleUse({name: ["core", "Lang0"]});
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
-
 def safeVarName = submoduleUse("safeVarName")::safeVarName;
 def tokenize = submoduleUse("tokenize")::tokenize;
 
+def Io1 = moduleUse({name: ["core", "Io1"]});
+def Lang0 = moduleUse({name: ["core", "Lang0"]});
+
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
+def get_actuals        = Lang0Node::get_actuals;
+def get_formals        = Lang0Node::get_formals;
+def get_function       = Lang0Node::get_function;
 def get_interpolate    = Lang0Node::get_interpolate;
+def get_lvalue         = Lang0Node::get_lvalue;
 def get_name           = Lang0Node::get_name;
+def get_statements     = Lang0Node::get_statements;
+def get_value          = Lang0Node::get_value;
+def get_yield          = Lang0Node::get_yield;
+def get_yieldDef       = Lang0Node::get_yieldDef;
 def makeApply          = Lang0Node::makeApply;
 def makeCall           = Lang0Node::makeCall;
 def makeCallOrApply    = Lang0Node::makeCallOrApply;
@@ -219,7 +227,7 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        def formals = dataOf(c)::formals;
+        def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
             { Io1::die("Invalid formal argument in code block.") };
         <> c
@@ -232,7 +240,7 @@ def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
     {
-        ifIs { <> dataOf(c)::yieldDef }
+        ifIs { <> get_yieldDef(c) }
             { Io1::die("Invalid yield definition in code block.") };
         <> c
     }
@@ -290,10 +298,10 @@ def parFnCommon = {/
     code = parCodeOnlyClosure
 
     {
-        def codeMap = dataOf(code);
-        def statements = [returnDef*, codeMap::statements*];
+        def statements = [returnDef*, get_statements(code)*];
         <> @closure{
-            codeMap*, name*,
+            dataOf(code)*,
+            name*,
             formals,
             yieldDef: "return",
             statements
@@ -309,7 +317,7 @@ def parFnCommon = {/
 def parFnDef = {/
     closure = parFnCommon
 
-    name = { <> dataOf(closure)::name }
+    name = { <> get_name(closure) }
     {
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
@@ -338,7 +346,7 @@ parFnExpression := {/
     closure = parFnCommon
 
     (
-        name = { <> dataOf(closure)::name }
+        name = { <> get_name(closure) }
         {
             def mainClosure = @closure{
                 formals:    [],
@@ -596,7 +604,7 @@ parAssignExpression := {/
 
     (
         @":="
-        lvalue = { <> dataOf(base)::lvalue }
+        lvalue = { <> get_lvalue(base) }
         ex = parExpression
         { <> lvalue(ex) }
     |
@@ -743,7 +751,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @token(dataOf(type)::value) }
+    { <> @token(get_value(type)) }
 /};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -882,12 +890,6 @@ fn closureWithFormals(closure, formals*) {
     <> @closure{(dataOf(closure))*, formals}
 };
 
-## Returns a `closure` node like the one given, except with `yieldDef`
-## bound to the indicated name.
-fn closureWithYieldDef(closure, name) {
-    <> @closure{(dataOf(closure))*, yieldDef: name}
-};
-
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
@@ -959,14 +961,14 @@ fn makeBinaryCalls(firstEx, opExList) {
 ## ```
 ## =>
 ## ```
-## { <out> ->
+## { <voided> ->
 ##     <> eq(
 ##         ifValueOr
 ##             { <> le(
-##                 ifValueOr { <> lt(x, y) } { <out> },
+##                 ifValueOr { <> lt(x, y) } { <voided> },
 ##                 z),
 ##             }
-##             { <out> }
+##             { <voided> }
 ##         q)
 ## }()
 ## ```
@@ -986,7 +988,7 @@ fn makeCompareCalls(firstEx, opExList) {
 
     ## Nontrivial case. We need to transform the inner first call arguments.
 
-    def yieldName = safeVarName("out", baseResult);
+    def yieldName = safeVarName("voided", baseResult);
     def yieldCall = makeThunk(makeJump(makeVarRef(yieldName)));
 
     fn transform(tree, layer) {
@@ -994,16 +996,14 @@ fn makeCompareCalls(firstEx, opExList) {
             { return tree };
 
         ## We are looking at `@call{function, actuals: [firstActual, ...]}`.
-        def data = dataOf(tree);
-        def function = data::function;
-        def actuals = data::actuals;
+        def actuals = get_actuals(tree);
         def firstActual = makeCall(REFS::ifValueOr,
             makeThunk(
                 transform(Sequence::nth(actuals, 0), Number::sub(layer, 1))),
             yieldCall);
 
         <> @call{
-            data*,
+            dataOf(tree)*,
             actuals: [firstActual, Sequence::sliceInclusive(actuals, 1)*]
         }
     };
@@ -1243,7 +1243,7 @@ def parRangeExpression = {/
     @"]"
 
     ## The test here is to prevent open ranges from being allowed.
-    { <> ne(dataOf(body)::function, REFS::Range_makeOpenRange) }
+    { <> ne(get_function(body), REFS::Range_makeOpenRange) }
     { <> makeCallOrApply(REFS::makeList, makeInterpolate(body)) }
 /};
 
@@ -1438,13 +1438,13 @@ parPostfixOperator2 := {/
         ## `target.name(arg, ...)`
         actuals = parActualsList
         {
-            def funcRef = makeVarRef(dataOf(name)::value);
+            def funcRef = makeVarRef(get_value(name));
             <> { node <> makeCallOrApply(funcRef, node, actuals*) }
         }
     |
         ## `target.name` (includes parsing of both getters and setters)
         {
-            def suffix = dataOf(name)::value;
+            def suffix = get_value(name);
             def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
@@ -1831,13 +1831,11 @@ def parIfExpression = {/
         ## unwrap it into a straight call, depending on if the original `if`
         ## has a yield def or not.
         <> ifIs { <> eq(yieldDef, {}) }
-            { <> dataOf(mainThunk)::yield }
+            { <> get_yield(mainThunk) }
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                def mainClosure =
-                    closureWithYieldDef(mainThunk, valueOf(yieldDef));
-                <> makeCall(mainClosure)
+                <> makeCall(@closure{dataOf(mainThunk)*, yieldDef*})
             }
     }
 /};
@@ -1979,15 +1977,14 @@ def parForExpression = {/
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        def codePayload = dataOf(code);
-        def continueDef = ifValue { <> codePayload::yieldDef }
+        def continueDef = ifValue { <> get_yieldDef(code) }
             { name <> [makeVarDef(name, REFS::continue)] }
             { <> [] };
 
         def loopClosure = @closure{
             formals: genFormals,
             yieldDef: "continue",
-            statements: [continueDef*, codePayload::statements*]
+            statements: [continueDef*, get_statements(code)*]
         };
 
         def mainClosure = @closure{

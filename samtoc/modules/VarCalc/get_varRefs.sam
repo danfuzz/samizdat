@@ -2,19 +2,19 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def getters = submoduleUse("getters");
 def get_varDefs = submoduleUse("get_varDefs")::get_varDefs;
 
 ## TODO: Ought to be able to do something like:
-##     use .getters *;
-def get_actuals    = getters::get_actuals;
-def get_formals    = getters::get_formals;
-def get_function   = getters::get_function;
-def get_name       = getters::get_name;
-def get_statements = getters::get_statements;
-def get_value      = getters::get_value;
-def get_yield      = getters::get_yield;
-def get_yieldDef   = getters::get_yieldDef;
+##     use Lang0Node *;
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def get_actuals    = Lang0Node::get_actuals;
+def get_formals    = Lang0Node::get_formals;
+def get_function   = Lang0Node::get_function;
+def get_name       = Lang0Node::get_name;
+def get_statements = Lang0Node::get_statements;
+def get_value      = Lang0Node::get_value;
+def get_yield      = Lang0Node::get_yield;
+def get_yieldDef   = Lang0Node::get_yieldDef;
 
 ## generic `get_varRefs(node)`, returns free variable references of `node`,
 ## as list of names.

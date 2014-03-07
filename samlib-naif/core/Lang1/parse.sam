@@ -6,14 +6,19 @@
 ## Samizdat Layer 1 tree parser
 ##
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
-
 def tokenize = submoduleUse("tokenize")::tokenize;
 
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
+def get_formals        = Lang0Node::get_formals;
 def get_interpolate    = Lang0Node::get_interpolate;
+def get_lvalue         = Lang0Node::get_lvalue;
 def get_name           = Lang0Node::get_name;
+def get_statements     = Lang0Node::get_statements;
+def get_value          = Lang0Node::get_value;
+def get_yieldDef       = Lang0Node::get_yieldDef;
 def makeApply          = Lang0Node::makeApply;
 def makeCall           = Lang0Node::makeCall;
 def makeCallOrApply    = Lang0Node::makeCallOrApply;
@@ -177,7 +182,7 @@ def parClosure = Peg::makeMainSequence(
 def parNullaryClosure = Peg::makeMainSequence(
     parClosure,
     Peg::makeCode { c ->
-        def formals = dataOf(c)::formals;
+        def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
             { Io0::die("Invalid formal argument in code block.") };
         <> c
@@ -187,7 +192,7 @@ def parNullaryClosure = Peg::makeMainSequence(
 def parCodeOnlyClosure = Peg::makeMainSequence(
     parNullaryClosure,
     Peg::makeCode { c ->
-        ifIs { <> dataOf(c)::yieldDef }
+        ifIs { <> get_yieldDef(c) }
             { Io0::die("Invalid yield definition in code block.") };
         <> c
     });
@@ -209,10 +214,10 @@ def parFnCommon = Peg::makeMainSequence(
     Peg::makeToken(")"),
     parCodeOnlyClosure,
     Peg::makeCode { ., returnDef, name, ., formals, ., code ->
-        def codeMap = dataOf(code);
-        def statements = [returnDef*, codeMap::statements*];
+        def statements = [returnDef*, get_statements(code)*];
         <> @closure{
-            codeMap*, name*,
+            dataOf(code)*,
+            name*,
             formals,
             yieldDef: "return",
             statements
@@ -222,7 +227,7 @@ def parFnCommon = Peg::makeMainSequence(
 ## Documented in spec.
 def parFnDef = Peg::makeMainSequence(
     parFnCommon,
-    Peg::makeCode { closure <> dataOf(closure)::name },
+    Peg::makeCode { closure <> get_name(closure) },
     Peg::makeCode { closure, name ->
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
@@ -236,7 +241,7 @@ parFnExpression := Peg::makeMainSequence(
     parFnCommon,
     Peg::makeChoice(
         Peg::makeSequence(
-            Peg::makeCode { closure <> dataOf(closure)::name },
+            Peg::makeCode { closure <> get_name(closure) },
             Peg::makeCode { closure, name ->
                 def mainClosure = @closure{
                     formals:    [],
@@ -440,7 +445,7 @@ parAssignExpression := Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken(":="),
-            Peg::makeCode { base, . <> dataOf(base)::lvalue },
+            Peg::makeCode { base, . <> get_lvalue(base) },
             parExpression,
             Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
         Peg::makeCode { base <> base }));
@@ -570,7 +575,7 @@ def parParserString = Peg::makeMainSequence(
 def parParserToken = Peg::makeMainSequence(
     Peg::makeToken("@"),
     parIdentifierString,
-    Peg::makeCode { ., type <> @token(dataOf(type)::value) });
+    Peg::makeCode { ., type <> @token(get_value(type)) });
 
 ## Documented in spec.
 def parParserSetString = Peg::makeMainSequence(
