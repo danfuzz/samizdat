@@ -1835,7 +1835,7 @@ def parIfExpression = {/
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                <> makeCall(@closure{dataOf(mainThunk)*, yieldDef})
+                <> makeCall(@closure{dataOf(mainThunk)*, yieldDef*})
             }
     }
 /};
