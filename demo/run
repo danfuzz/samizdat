@@ -30,8 +30,14 @@ init-prog
 # Argument parsing
 #
 
+# Whether to build.
+build=0
+
 # Extra options to pass to `samex`.
 samexOpts=()
+
+# What compiler mode to use, if any.
+compilerMode=''
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -39,14 +45,20 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--runtime=<name>] [--suffix=<suffix>]"
+        echo "${progName} [--runtime=<name>] [--suffix=<suffix>]" \
+            " [--compiler=<mode>]"
         echo '    [--build] [--no-optimize] [--time | --profile]'
         echo '    demo-name arg...'
         exit
+    elif [[ ${opt} =~ ^--compiler=(.*) ]]; then
+        compilerMode="${BASH_REMATCH[1]}"
     elif [[ ${opt} == '--build' || ${opt} == '--no-optimize'
-        || ${opt} == '--profile' || ${opt} == '--time'
-        || ${opt} =~ ^--runtime= || ${opt} =~ ^--suffix= ]]; then
+            || ${opt} == '--profile' || ${opt} == '--time'
+            || ${opt} =~ ^--runtime= || ${opt} =~ ^--suffix= ]]; then
         samexOpts+=("${opt}")
+        if [[ ${opt} == '--build' ]]; then
+            build=1
+        fi
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -66,57 +78,108 @@ fi
 
 
 #
+# Temporary directory setup
+#
+
+# The temporary directory name.
+TMP_DIR=''
+
+# Clean up the temporary directory, if it was created. This is called
+# automatically on process exit.
+function tmpCleanup {
+    if [[ ${TMP_DIR} != '' ]]; then
+        cd /
+        rm -rf "${TMP_DIR}"
+    fi
+}
+
+# Set up a temporary directory. This sets `TMP_DIR` and arranges for
+# cleanup on exit.
+function tmpSetup {
+    TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp/}${progName}-XXXXX")" || exit 1
+    trap 'tmpCleanup' EXIT TERM
+}
+
+
+#
 # Main script
 #
 
+# Where to find built commands.
+binDir="${baseDir}/out/final/bin"
+
 # Find the demo directory, expanding from the given name if necessary.
 
-if [[ ! ${name} =~ ^/ ]]; then
-    names=($(find "${progDir}" -type d -name "${name}*"))
-    case "${#names[@]}" in
-        (0) echo "Not found: ${name}" 1>&2 ;;
+demoDir="${name}"
+if [[ ! ${demoDir} =~ ^/ ]]; then
+    matches=($(find "${progDir}" -type d -name "${demoDir}*"))
+    case "${#matches[@]}" in
+        (0) echo "Not found: ${demoDir}" 1>&2 ;;
         (1) : ;;
-        (*) echo "Multiple matches: ${name}" 1>&2 ;;
+        (*) echo "Multiple matches: ${demoDir}" 1>&2 ;;
     esac
-    name="${names[0]}"
+    demoDir="${matches[0]}"
 fi
 
-# Ensure it's a readable directory .
+# Ensure it's a readable directory.
 
-if [[ ! (-r ${name} && -d ${name}) ]]; then
+if [[ ! (-r ${demoDir} && -d ${demoDir}) ]]; then
     echo "Not a readable directory: ${name}" 1>&2
     exit 1
 fi
 
 # Find the "main" and/or "module" file.
 
-moduleFile="$(cd "${name}"; find . -maxdepth 1 -name 'module.sam')"
+moduleFile="$(cd "${demoDir}"; find . -maxdepth 1 -name 'module.sam')"
 if [[ ${moduleFile} != '' ]]; then
     # If there's a module file, the path to pass is the directory.
     mainFile="."
 else
-    mainFile="$(cd "${name}"; find . -maxdepth 1 -name 'main.sam*')"
+    mainFile="$(cd "${demoDir}"; find . -maxdepth 1 -name 'main.sam*')"
     if [[ ${mainFile} == '' ]]; then
         echo "No main or module file in directory: ${name}" 1>&2
         exit 1
     fi
 fi
 
-# Build `samex` (helper / wrapper scripts) if necessary.
+# Build `samex` (helper / wrapper scripts) and `samtoc` if necessary /
+# requested.
 
-cmdName="${baseDir}/out/final/bin/samex"
+if (( build )); then
+    if [[ ! -x "${binDir}/samex" ]]; then
+        "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samex" || exit 1
+    fi
 
-if [[ ! -x "${cmdName}" ]]; then
-    "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samex" || exit 1
+    if [[ ! -x "${binDir}/samtoc" ]]; then
+        "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samtoc" || exit 1
+    fi
+fi
+
+# If we're compiling, then copy the demo to a temporary directory, and
+# compile everything there.
+
+if [[ ${compilerMode} != '' ]]; then
+    tmpSetup
+    runDir="${TMP_DIR}/files"
+    cp -r "${demoDir}" "${runDir}" || exit 1
+    demoDir="${runDir}"
+    cd "${runDir}"
+    files=($(find . -name '*.sam*' '!' -name 'module.sam'))
+    "${binDir}/samtoc" --mode="${compilerMode}" "${files[@]}" || exit 1
+    for file in "${files[@]}"; do
+        cFile="${file%.sam*}.c"
+        "${binDir}/compile-samex-addon" "${cFile}" || exit 1
+        rm -f "${file}" "${cFile}"
+    done
 fi
 
 # Start the runtime, cd'ed to the demo dir, passing it the main script
 # name and any other arguments passed to this script.
 
-cmd=("${cmdName}" "${samexOpts[@]}" "${mainFile}" "$@")
+cmd=("${binDir}/samex" "${samexOpts[@]}" "${mainFile}" "$@")
 
 echo "Running demo: $(basename "${name}")"
-cd "${name}"
+cd "${demoDir}"
 echo '$' "${cmd[@]}"
 echo ''
 exec "${cmd[@]}"
