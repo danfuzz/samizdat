@@ -170,7 +170,7 @@ fn compile(sourcePath, targetPath) {
 
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
-    def mainNode = Lang2::parseProgram(sourceText);
+    def mainNode = Lang2::convertToLang0(Lang2::parseProgram(sourceText));
 
     def interner = Interner::makeInterner();
     def litsNode = internLiterals(mainNode, interner);
