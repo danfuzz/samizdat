@@ -996,7 +996,6 @@ fn makeCompareCalls(firstEx, opExList) {
             { return tree };
 
         ## We are looking at `@call{function, actuals: [firstActual, ...]}`.
-        def function = get_function(tree);
         def actuals = get_actuals(tree);
         def firstActual = makeCall(REFS::ifValueOr,
             makeThunk(
@@ -1004,7 +1003,7 @@ fn makeCompareCalls(firstEx, opExList) {
             yieldCall);
 
         <> @call{
-            data*,
+            dataOf(tree)*,
             actuals: [firstActual, Sequence::sliceInclusive(actuals, 1)*]
         }
     };
