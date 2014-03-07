@@ -126,12 +126,15 @@ fn processYieldDef(clo) {
         ## TODO: Something real.
         <> {
             names: [name],
-            preInits: [],
+            preInits: [
+                "zvalue jump = makeJump()",
+                "jumpArm(jump)"
+            ],
             vars: {(name): {
                     origName: "<\(name)>",
                     kind: "yield",
                     name: safeName("yield", name),
-                    init: "NULL"
+                    init: "makeResult(jump)"
                 }}
         }
     } else {
