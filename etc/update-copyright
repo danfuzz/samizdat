@@ -55,9 +55,9 @@ COPYRIGHT_REGEX='Copyright [-0-9]* the Samizdat Authors'
 # by `COPYRIGHT_REGEX` above.
 COPYRIGHT_NOW="Copyright 2013-$(date +%Y) the Samizdat Authors"
 
-# Get a list of all the source files. **Note**: `IFS` and `-print0` work
-# together to handle file names with spaces or newlines in them. (Not that
-# these are often a good idea to have of course.)
+# Get a list of all the source files. **Note**: `IFS`, `read -d ''`, and
+# `find ... -print0` all work together to handle file names with spaces or
+# newlines in them. (Not that these are often a good idea to have of course.)
 
 cd "${baseDir}"
 
