@@ -48,7 +48,7 @@ while [[ $1 != '' ]]; do
     elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
         buildOpts+=("${opt}")
     elif [[ ${opt} =~ ^--runtime= || ${opt} =~ ^--compiler= ]]; then
-        runtimeOpt=("${opt}")
+        runtimeOpts+=("${opt}")
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
