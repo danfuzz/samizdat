@@ -37,7 +37,7 @@ outputFile=''
 gotOutDir=0
 
 # Whether to compile to binary.
-fullCompile='yes'
+fullCompile=1
 
 # Additional arguments passed to the program.
 moreArgs=()
@@ -48,11 +48,12 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--output=<path>] [--c-code] [--mode=<mode>]"
+        echo "${progName} [--in-dir=<dir>] [--out-dir=<dir> | --output=<path>]"
+        echo "    [--c-code] [--mode=<mode>]"
         echo "    <source-path>"
         exit
     elif [[ ${opt} == '--c-code' ]]; then
-        fullCompile='no'
+        fullCompile=0
     elif [[    ${opt} =~ ^--mode=
             || ${opt} =~ ^--in-dir= ]]; then
         moreArgs+=("${opt}")
@@ -76,7 +77,7 @@ if (( $# == 0 )); then
     exit 1
 elif (( $# > 1 || gotOutDir )); then
     # Multiple source files or `--out-dir` specified.
-    fullCompile='no'
+    fullCompile=0
     if [[ ${outputFile} != '' ]]; then
         echo 'Cannot specify --output with multiple sources or --out-dir.' 1>&2
         exit 1
@@ -84,7 +85,7 @@ elif (( $# > 1 || gotOutDir )); then
 else
     # Single source file and no `--out-dir`.
     if [[ ${outputFile} == '' ]]; then
-        if [[ ${fullCompile} == 'yes' ]]; then
+        if (( fullCompile )); then
             outputFile="${1%.sam*}.samb"
         else
             outputFile="${1%.sam*}.c"
@@ -94,7 +95,7 @@ fi
 
 if [[ ${outputFile} == '-' || ${outputFile} == '/dev/stdout' ]]; then
     outputFile='/dev/stdout'
-    fullCompile='no'
+    fullCompile=0
 fi
 
 
@@ -102,7 +103,7 @@ fi
 # Main script
 #
 
-if [[ ${fullCompile} == 'yes' ]]; then
+if (( fullCompile )); then
     compiledFile="${outputFile}"
     outputFile="${compiledFile}.c"
 fi
@@ -115,6 +116,6 @@ fi
     "${moreArgs[@]}" -- "$@" \
 || exit 1
 
-if [[ ${fullCompile} == 'yes' ]]; then
+if (( fullCompile )); then
     "${progDir}/compile-samex-addon" --output="${compiledFile}" "${outputFile}"
 fi

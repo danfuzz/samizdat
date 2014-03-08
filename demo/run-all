@@ -30,14 +30,11 @@ init-prog
 # Argument parsing
 #
 
-# Preferred runtime name option.
-runtimeOpt=()
+# Runtime / compiler selection options.
+runtimeOpts=()
 
-# Whether to build the binary.
-build='no'
-
-# Whether to compile with optimization.
-optimize='yes'
+# Build options.
+buildOpts=()
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -45,15 +42,13 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--build] [--no-optimize] [--runtime=<name>]"
+        echo "${progName} [--build] [--no-optimize] [--runtime=<name>]" \
+            "[--compiler=<mode>]"
         exit
-    elif [[ ${opt} == '--build' ]]; then
-        build='yes'
-    elif [[ ${opt} == '--no-optimize' ]]; then
-        optimize='no'
-        build='yes'
-    elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
-        runtimeOpt=("${opt}")
+    elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
+        buildOpts+=("${opt}")
+    elif [[ ${opt} =~ ^--runtime= || ${opt} =~ ^--compiler= ]]; then
+        runtimeOpts+=("${opt}")
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -76,18 +71,10 @@ allNames=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
 # Run each demo. For the first, pass it the appropriate build option(s) if
 # so requested.
 
-buildOpts=()
-if [[ ${build} == 'yes' ]]; then
-    buildOpts=(--build)
-    if [[ ${optimize} == 'no' ]]; then
-        buildOpts+=(--no-optimize)
-    fi
-fi
-
 errorNames=()
 for name in "${allNames[@]}"; do
     echo ''
-    "${progDir}/run" "${buildOpts[@]}" "${runtimeOpt[@]}" "${name}"
+    "${progDir}/run" "${buildOpts[@]}" "${runtimeOpts[@]}" "${name}"
     error="$?"
     if [[ ${error} != 0 ]]; then
         echo "Exited with error code: ${error}"
