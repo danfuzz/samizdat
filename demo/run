@@ -204,20 +204,36 @@ if [[ ${compilerMode} != '' ]]; then
 
     tmpSetup
     runDir="${TMP_DIR}/files"
+    cSrcDir="${TMP_DIR}/c-src"
 
     cp -r "${demoDir}" "${runDir}" || exit 1
     demoDir="${runDir}"
 
-    cd "${runDir}"
-    files=($(find . -name '*.sam*' '!' -name 'module.sam'))
+    files=($(
+        cd "${runDir}"
+        find . -name '*.sam*' '!' -name 'module.sam'
+    ))
 
-    "${binDir}/samtoc" --c-code --mode="${compilerMode}" "${files[@]}" \
+    for file in "${files[@]}"; do
+        outFile="${cSrcDir}/${file}"
+        mkdir -p "$(dirname "${outFile}")"
+        mv "${runDir}/${file}" "${outFile}"
+    done
+
+    "${binDir}/samtoc" \
+        --in-dir="${cSrcDir}" --out-dir="${cSrcDir}" \
+        --c-code --mode="${compilerMode}" \
+        -- "${files[@]}" \
         || handleError
 
     for file in "${files[@]}"; do
-        cFile="${file%.sam*}.c"
-        "${binDir}/compile-samex-addon" "${cFile}" || handleError
-        rm -f "${file}" "${cFile}"
+        outFile="${file%.sam*}.samb"
+        cFile="${cSrcDir}/${file%.sam*}.c"
+        "${binDir}/compile-samex-addon" \
+            --output="${cSrcDir}/${outFile}" "${cFile}" \
+            || handleError
+        cp "${cSrcDir}/${outFile}" "${runDir}/${outFile}"
+        rm -f "${runDir}/${file}"
     done
 
     if [[ ${mainFile} != '.' ]]; then
