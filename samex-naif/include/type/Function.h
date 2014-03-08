@@ -219,4 +219,51 @@ inline zvalue funCallWith15(zvalue function, zvalue arg0, zvalue arg1,
     return funCall(function, 15, args);
 }
 
+inline zvalue funCallWith16(zvalue function, zvalue arg0, zvalue arg1,
+        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
+        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
+        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15) {
+    zvalue args[] = {
+        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
+        arg11, arg12, arg13, arg14, arg15
+    };
+    return funCall(function, 16, args);
+}
+
+inline zvalue funCallWith17(zvalue function, zvalue arg0, zvalue arg1,
+        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
+        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
+        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
+        zvalue arg16) {
+    zvalue args[] = {
+        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
+        arg11, arg12, arg13, arg14, arg15, arg16
+    };
+    return funCall(function, 17, args);
+}
+
+inline zvalue funCallWith18(zvalue function, zvalue arg0, zvalue arg1,
+        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
+        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
+        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
+        zvalue arg16, zvalue arg17) {
+    zvalue args[] = {
+        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
+        arg11, arg12, arg13, arg14, arg15, arg16, arg17
+    };
+    return funCall(function, 18, args);
+}
+
+inline zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
+        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
+        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
+        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
+        zvalue arg16, zvalue arg17, zvalue arg18) {
+    zvalue args[] = {
+        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
+        arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18
+    };
+    return funCall(function, 19, args);
+}
+
 #endif
