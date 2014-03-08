@@ -102,6 +102,35 @@ function tmpSetup {
 
 
 #
+# Error handling
+#
+
+# Called in case of error so that the detritus (if any) can be scrutinized.
+function handleError {
+    echo ''
+    echo "########## FAILED: ${name}"
+
+    if [[ ${TMP_DIR} == '' ]]; then
+        # Nothing to save.
+        exit 1
+    fi
+
+    destDir="${baseDir}/out/demo-oof/${name}"
+    rm -rf "${destDir}"
+    mkdir -p "$(dirname "${destDir}")"
+    cp -r "${TMP_DIR}" "${destDir}"
+
+    echo '#'
+    echo '# Files left in directory:'
+    echo '#'
+    echo "# ${destDir}"
+    echo '#'
+    echo ''
+    exit 1
+}
+
+
+#
 # Main script
 #
 
@@ -114,17 +143,26 @@ demoDir="${name}"
 if [[ ! ${demoDir} =~ ^/ ]]; then
     matches=($(find "${progDir}" -type d -name "${demoDir}*"))
     case "${#matches[@]}" in
-        (0) echo "Not found: ${demoDir}" 1>&2 ;;
-        (1) : ;;
-        (*) echo "Multiple matches: ${demoDir}" 1>&2 ;;
+        (0)
+            echo "Not found: ${demoDir}" 1>&2
+            exit 1
+            ;;
+        (1)
+            : # All good.
+            ;;
+        (*)
+            echo "Multiple matches: ${demoDir}" 1>&2
+            exit 1
+            ;;
     esac
     demoDir="${matches[0]}"
 fi
+name="$(basename "${demoDir}")"
 
 # Ensure it's a readable directory.
 
 if [[ ! (-r ${demoDir} && -d ${demoDir}) ]]; then
-    echo "Not a readable directory: ${name}" 1>&2
+    echo "Not a readable directory: ${demoDir}" 1>&2
     exit 1
 fi
 
@@ -137,7 +175,7 @@ if [[ ${moduleFile} != '' ]]; then
 else
     mainFile="$(cd "${demoDir}"; find . -maxdepth 1 -name 'main.sam*')"
     if [[ ${mainFile} == '' ]]; then
-        echo "No main or module file in directory: ${name}" 1>&2
+        echo "No main or module file for demo: ${name}" 1>&2
         exit 1
     fi
 fi
@@ -161,18 +199,30 @@ fi
 # compile everything there.
 
 if [[ ${compilerMode} != '' ]]; then
+    echo "########## COMPILING: ${name}"
+    echo ''
+
     tmpSetup
     runDir="${TMP_DIR}/files"
+
     cp -r "${demoDir}" "${runDir}" || exit 1
     demoDir="${runDir}"
+
     cd "${runDir}"
     files=($(find . -name '*.sam*' '!' -name 'module.sam'))
-    "${binDir}/samtoc" --mode="${compilerMode}" "${files[@]}" || exit 1
+
+    "${binDir}/samtoc" --c-code --mode="${compilerMode}" "${files[@]}" \
+        || handleError
+
     for file in "${files[@]}"; do
         cFile="${file%.sam*}.c"
-        "${binDir}/compile-samex-addon" "${cFile}" || exit 1
+        "${binDir}/compile-samex-addon" "${cFile}" || handleError
         rm -f "${file}" "${cFile}"
     done
+
+    if [[ ${mainFile} != '.' ]]; then
+        mainFile="${file%.sam*}.samb"
+    fi
 fi
 
 # Start the runtime, cd'ed to the demo dir, passing it the main script
@@ -180,8 +230,17 @@ fi
 
 cmd=("${binDir}/samex" "${samexOpts[@]}" "${mainFile}" "$@")
 
-echo "Running demo: $(basename "${name}")"
 cd "${demoDir}"
-echo '$' "${cmd[@]}"
+
 echo ''
-exec "${cmd[@]}"
+echo "########## RUNNING: ${name}"
+echo '#'
+echo "# $(basename "${cmd[0]}")" "${cmd[@]:1}"
+echo '#'
+echo ''
+
+"${cmd[@]}" || handleError
+
+echo ''
+echo "########## SUCCESS: ${name}"
+echo ''
