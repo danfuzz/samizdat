@@ -147,10 +147,12 @@ fi
 
 if (( build )); then
     if [[ ! -x "${binDir}/samex" ]]; then
+        echo 'Building samex...'
         "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samex" || exit 1
     fi
 
     if [[ ! -x "${binDir}/samtoc" ]]; then
+        echo 'Building samtoc...'
         "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samtoc" || exit 1
     fi
 fi
