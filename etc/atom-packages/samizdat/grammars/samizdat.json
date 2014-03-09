@@ -1,0 +1,351 @@
+{
+  "fileTypes" : [
+    "sam",
+    "sam0",
+    "sam1",
+    "sam2",
+    "sam3",
+    "sam4"
+  ],
+  "foldingStartMarker" : "\\{ *(#.*)?$",
+  "foldingStopMarker" : "^[^\\{]*\\} *(#.*)?$",
+  "repository" : {
+    "block-body" : {
+      "patterns" : [
+        {
+          "include" : "#comment"
+        },
+        {
+          "include" : "#simple-constants"
+        },
+        {
+          "match" : "(?x)\n\t\t\t\t\t\t\\[\\] | \\{\\}\n\t\t\t\t\t",
+          "name" : "constant.language"
+        },
+        {
+          "end" : "\\)",
+          "begin" : "@\\(",
+          "beginCaptures" : {
+            "0" : {
+              "name" : "constant.other"
+            }
+          },
+          "patterns" : [
+            {
+              "include" : "#block-body"
+            }
+          ],
+          "name" : "meta.parens.samizdat",
+          "endCaptures" : {
+            "0" : {
+              "name" : "constant.other"
+            }
+          }
+        },
+        {
+          "end" : "\\)",
+          "begin" : "\\(",
+          "patterns" : [
+            {
+              "include" : "#block-body"
+            }
+          ],
+          "name" : "meta.parens.samizdat"
+        },
+        {
+          "end" : "\\]",
+          "begin" : "\\[",
+          "patterns" : [
+            {
+              "include" : "#block-body"
+            }
+          ],
+          "name" : "meta.collection.samizdat"
+        },
+        {
+          "end" : "\/\\}",
+          "begin" : "\\{\/",
+          "patterns" : [
+            {
+              "include" : "#block-body"
+            }
+          ],
+          "name" : "meta.block.parser.samizdat"
+        },
+        {
+          "end" : "\\}",
+          "begin" : "\\{",
+          "patterns" : [
+            {
+              "include" : "#block-body"
+            }
+          ],
+          "name" : "meta.block.samizdat"
+        },
+        {
+          "end" : "\"",
+          "begin" : "\\\\\"",
+          "patterns" : [
+            {
+              "include" : "#recursive-string-content"
+            }
+          ],
+          "name" : "variable.other"
+        },
+        {
+          "match" : "([_a-zA-Z][_a-zA-Z0-9]*) *(:)(?![:=])",
+          "captures" : {
+            "1" : {
+              "name" : "string.unquoted"
+            },
+            "2" : {
+              "name" : "punctuation.definition"
+            }
+          }
+        },
+        {
+          "match" : "([._a-zA-Z][._a-zA-Z0-9:]*)\\b(?= *[\\({])",
+          "captures" : {
+            "1" : {
+              "name" : "meta.function-call"
+            }
+          }
+        },
+        {
+          "match" : "(def|var)  *([_a-zA-Z][_a-zA-Z0-9]*)",
+          "captures" : {
+            "1" : {
+              "name" : "keyword.operator"
+            },
+            "2" : {
+              "name" : "variable.definition"
+            }
+          }
+        },
+        {
+          "match" : "([_a-zA-Z][_a-zA-Z0-9]*) *(:?=)(?!=)",
+          "captures" : {
+            "1" : {
+              "name" : "variable.definition"
+            },
+            "2" : {
+              "name" : "keyword.operator"
+            }
+          }
+        },
+        {
+          "match" : "([a-zA-Z_.][^:@\"{}()\\[\\]]*) *(->|(?=<>))",
+          "captures" : {
+            "1" : {
+              "name" : "variable.parameter"
+            },
+            "2" : {
+              "name" : "punctuation.definition"
+            }
+          }
+        },
+        {
+          "match" : "\\.[_a-zA-Z][_a-zA-Z0-9]*",
+          "name" : "variable.other.dot-access"
+        },
+        {
+          "match" : "(fn)  *([_a-zA-Z][_a-zA-Z0-9]*)? *\\(([^\\)]*)\\)",
+          "captures" : {
+            "3" : {
+              "name" : "variable.parameter"
+            },
+            "0" : {
+              "name" : "meta.function"
+            },
+            "1" : {
+              "name" : "keyword.definition"
+            },
+            "2" : {
+              "name" : "entity.name.function"
+            }
+          }
+        },
+        {
+          "end" : "(?=[^\"_a-zA-Z0-9])",
+          "begin" : "(::) *",
+          "beginCaptures" : {
+            "1" : {
+              "name" : "keyword.operator"
+            }
+          },
+          "patterns" : [
+            {
+              "include" : "#identifier-string"
+            }
+          ]
+        },
+        {
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tbreak|continue|default|do|else|\n\t\t\t\t\t\tfor|if|return|switch|while\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
+          "name" : "keyword.control"
+        },
+        {
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tby|def|export|fn|import|in|module|var\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
+          "name" : "keyword.definition"
+        },
+        {
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(true|false|null|nullBox|nullGenerator)\\b\n\t\t\t\t\t",
+          "name" : "constant.language"
+        },
+        {
+          "match" : "[_a-zA-Z][_a-zA-Z0-9]*",
+          "name" : "variable.other"
+        },
+        {
+          "match" : "<[_a-zA-Z][_a-zA-Z0-9]*>",
+          "name" : "variable.other"
+        },
+        {
+          "match" : "\\{\/?|\/?\\}|\\[|\\]|:",
+          "name" : "punctuation.definition"
+        },
+        {
+          "match" : "(?x)\n\t\t\t\t\t\t&&?&? | \\|\\|?\\|? | \\^\\^?\\^? |\n\t\t\t\t\t\t\\\\?<<?<? | \\\\?>>?>? | !!?!? |\n\t\t\t\t\t\t:[:=] | \\\\?[!<>]?==? | <> |\n\t\t\t\t\t\t\\.\\.!? | \\+ | - | \\* | \/\/? | %%? | \\? | \\#\n\t\t\t\t\t",
+          "name" : "keyword.operator"
+        }
+      ]
+    },
+    "identifier-string" : {
+      "patterns" : [
+        {
+          "match" : "[_a-zA-Z][_a-zA-Z0-9]*",
+          "name" : "string.unquoted"
+        },
+        {
+          "include" : "#recursive-string"
+        }
+      ]
+    },
+    "recursive-string-content" : {
+      "patterns" : [
+        {
+          "match" : "\\\\ *$",
+          "name" : "constant.character.escape"
+        },
+        {
+          "match" : "(?x)\n\t\t\t\t\t\t\\\\\n\t\t\t\t\t\t(\n\t\t\t\t\t\t  [0nrt\\\\\"\/]\n\t\t\t\t\t\t|\n\t\t\t\t\t\t  x[0-9a-fA-F_,]*;?\n\t\t\t\t\t\t|\n\t\t\t\t\t\t  &[0-9a-zA-Z.,]*;?\n\t\t\t\t\t\t)\n\t\t\t\t\t",
+          "name" : "constant.character.escape"
+        },
+        {
+          "end" : "[\\])}]",
+          "begin" : "\\\\(%[0-9a-zA-Z+-.]*)?[\\[({]",
+          "beginCaptures" : {
+            "0" : {
+              "name" : "punctuation.definition.string.begin string.quoted.double"
+            }
+          },
+          "patterns" : [
+            {
+              "include" : "#block-body"
+            }
+          ],
+          "name" : "string.interpolated",
+          "endCaptures" : {
+            "0" : {
+              "name" : "punctuation.definition.string.end string.quoted.double"
+            }
+          }
+        }
+      ]
+    },
+    "simple-constants" : {
+      "patterns" : [
+        {
+          "include" : "#recursive-string"
+        },
+        {
+          "match" : "-?\\b[0-9_]+\\b",
+          "name" : "constant.numeric"
+        },
+        {
+          "match" : "\\b0x-?[0-9a-fA-F_]+\\b",
+          "name" : "constant.numeric"
+        },
+        {
+          "match" : "\\b0b-?[01_]+\\b",
+          "name" : "constant.numeric"
+        },
+        {
+          "match" : "@[_a-zA-Z][_a-zA-Z0-9]*",
+          "name" : "constant.other"
+        },
+        {
+          "end" : "\"",
+          "begin" : "@\"",
+          "patterns" : [
+            {
+              "include" : "#recursive-string-content"
+            }
+          ],
+          "name" : "constant.other"
+        }
+      ]
+    },
+    "comment" : {
+      "patterns" : [
+        {
+          "include" : "#recursive-comment"
+        },
+        {
+          "match" : "(#!|###*).*$",
+          "captures" : {
+            "0" : {
+              "name" : "comment.line.number-sign"
+            },
+            "1" : {
+              "name" : "punctuation.definition.comment"
+            },
+            "2" : {
+              "name" : "punctuation.definition.comment"
+            }
+          }
+        }
+      ]
+    },
+    "recursive-comment" : {
+      "end" : ":#",
+      "begin" : "#:",
+      "patterns" : [
+        {
+          "include" : "#recursive-comment"
+        }
+      ],
+      "name" : "comment.block"
+    },
+    "recursive-string" : {
+      "end" : "\"",
+      "begin" : "\"",
+      "beginCaptures" : {
+        "0" : {
+          "name" : "punctuation.definition.string.begin string.quoted.double"
+        }
+      },
+      "patterns" : [
+        {
+          "include" : "#recursive-string-content"
+        },
+        {
+          "match" : ".",
+          "name" : "string.quoted.double"
+        }
+      ],
+      "endCaptures" : {
+        "0" : {
+          "name" : "punctuation.definition.string.end string.quoted.double"
+        }
+      }
+    }
+  },
+  "uuid" : "ACB22210-E84C-11E2-91E2-0800200C9A66",
+  "patterns" : [
+    {
+      "include" : "#block-body"
+    }
+  ],
+  "name" : "Samizdat",
+  "scopeName" : "source.samizdat"
+}

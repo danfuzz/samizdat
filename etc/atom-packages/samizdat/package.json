@@ -1,0 +1,12 @@
+{
+  "name": "samizdat",
+  "version": "0.0.1",
+  "description": "Samizdat language support for Atom",
+  "repository": "https://github.com/danfuzz/samizdat",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+  }
+}
