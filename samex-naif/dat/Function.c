@@ -76,8 +76,9 @@ static char *callReporter(void *state) {
 static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     zint index = typeIndexOf(function);
 
-    // The first two cases are how we bottom out the recursion, instead of
-    // calling `funCall0` on the `call` methods for `Function` or `Generic`.
+    // The first three cases are how we bottom out the recursion, instead of
+    // calling `funCall0` on the `call` methods for `Function`, `Generic`, or
+    // `Jump`.
     switch (index) {
         case DAT_INDEX_BUILTIN: {
             return builtinCall(function, argCount, args);
