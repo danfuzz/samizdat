@@ -188,7 +188,7 @@ if [[ ${#buildOpts[@]} != 0 ]]; then
     echo '#'
     echo ''
 
-    "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samex" \
+    "${baseDir}/blur/blur" --in-dir="${baseDir}/samex" \
         || exit 1
 
     echo ''
@@ -206,7 +206,7 @@ if [[ ${#buildOpts[@]} != 0 ]]; then
         echo '# Building samtoc...'
         echo '#'
         echo ''
-        "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samtoc" \
+        "${baseDir}/blur/blur" --in-dir="${baseDir}/samtoc" \
             || exit 1
     fi
 
