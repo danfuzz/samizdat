@@ -73,7 +73,7 @@ These all exist in some form, though most are still very much in-progress.
   which is suitable for loading as binary library files (modules or
   standalone binaries) by `samex-naif`.
 
-  It has a couple different compilation modes, of varying sophistication.
+  It has a handful of different compilation modes, of varying sophistication.
 
 ### Planned pieces
 

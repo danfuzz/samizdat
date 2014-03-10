@@ -5,6 +5,15 @@
 def CommandLine = moduleUse({name: ["core", "CommandLine"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
+## Default mode to use
+def DEFAULT_MODE = "simple";
+
+## Map from `--mode` values to module names.
+def MODE_MAP = {
+    "interp-text": "interpText",
+    "interp-tree": "interpTree",
+    "simple":      "simple"
+};
 
 ## Removes the `.*` suffix from `name`.
 fn withoutSuffix(name) {
@@ -56,12 +65,13 @@ fn main(selfPath, rawArgs*) {
         Raw args: \%q(rawArgs)\n");
 
     def args = CommandLine::parseArgs(rawArgs);
-    def modeName = args::options::mode | "fake";
-
-    Io1::note("Mode: \%q(modeName)\n");
-    def modeModule = moduleUse({name: [modeName]});
-
     def sources = args::args;
+    def modeName = MODE_MAP[args::options::mode | DEFAULT_MODE] |
+        {
+            Io1::note("Unknown compilation mode: \%q(args::options::mode)");
+            return 1
+        }();
+    def modeModule = moduleUse({name: ["mode", modeName]});
 
     if (#sources == 0) {
         Io1::note("No source files specified!");
