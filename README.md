@@ -13,7 +13,7 @@ text processing, free-form data structure manipulation, and general
 systems programming.
 
 Find lots of documentation in [the doc/ directory](doc), including
-a handful of [shout-outs](doc/shout-outs.md) that may help understand
+a handful of [shout-outs](doc/notes/shout-outs.md) that may help understand
 where the system is coming from (both literally and figuratively).
 
 
