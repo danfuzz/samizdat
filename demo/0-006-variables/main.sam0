@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## String literal demo
+## Variable declaration and binding demo
 ##
 
 def Io0 = moduleUse({name: ["core", "Io0"]});
@@ -22,7 +22,7 @@ fn frotz(foo) {
     Io0::note(ignatz)
 };
 
-## Demo of mutable variable declaration and binding.
+## Demo of same-scope mutable variable declaration and binding.
 fn zorch(foo) {
     var ignatz;
     var fizmo = foo;
@@ -35,11 +35,34 @@ fn zorch(foo) {
     Io0::note(fizmo)
 };
 
+## Demo of different-scope mutable variable declaration and binding.
+fn igram(foo) {
+    var fizmo = foo;
+
+    Io0::note("igram:");
+
+    ifIs { <> eq(fizmo, "fizmo") }
+        { fizmo := "Yes, fizmo." };
+
+    Io0::note(cat("    ", fizmo));
+    fizmo := foo;
+
+    ifIs { <> eq(fizmo, "fizmo") }
+        {
+            ifIs { <> eq(fizmo, "fizmo") }
+                { fizmo := "Yes yes, fizmo." }
+        };
+
+    Io0::note(cat("    ", fizmo));
+};
+
+
 ##
 ## Main Tests
 ##
 
 frotz("fizmo");
 zorch("blort");
+igram("fizmo");
 
 <> 0

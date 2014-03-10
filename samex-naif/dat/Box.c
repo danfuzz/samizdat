@@ -89,9 +89,9 @@ zvalue boxFetch(zvalue box) {
 }
 
 /* Documented in header. */
-void boxStore(zvalue box, zvalue value) {
+zvalue boxStore(zvalue box, zvalue value) {
     assertHasType(box, TYPE_Box);
-    doStore(box, value);
+    return doStore(box, value);
 }
 
 /* Documented in header. */

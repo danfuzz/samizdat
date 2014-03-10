@@ -30,8 +30,8 @@ init-prog
 # Argument parsing
 #
 
-# Whether to build.
-build=0
+# Build options to pass to `samex`.
+buildOpts=()
 
 # Extra options to pass to `samex`.
 samexOpts=()
@@ -52,13 +52,11 @@ while [[ $1 != '' ]]; do
         exit
     elif [[ ${opt} =~ ^--compiler=(.*) ]]; then
         compilerMode="${BASH_REMATCH[1]}"
-    elif [[ ${opt} == '--build' || ${opt} == '--no-optimize'
-            || ${opt} == '--profile' || ${opt} == '--time'
+    elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
+        buildOpts+=("${opt}")
+    elif [[    ${opt} == '--profile' || ${opt} == '--time'
             || ${opt} =~ ^--runtime= || ${opt} =~ ^--suffix= ]]; then
         samexOpts+=("${opt}")
-        if [[ ${opt} == '--build' ]]; then
-            build=1
-        fi
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -183,16 +181,39 @@ fi
 # Build `samex` (helper / wrapper scripts) and `samtoc` if necessary /
 # requested.
 
-if (( build )); then
-    if [[ ! -x "${binDir}/samex" ]]; then
-        echo 'Building samex...'
-        "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samex" || exit 1
+if [[ ${#buildOpts[@]} != 0 ]]; then
+    echo '########## PRE-RUN BUILDS'
+    echo '#'
+    echo '# Building samex (wrappers)...'
+    echo '#'
+    echo ''
+
+    "${baseDir}/blur/blur" --in-dir="${baseDir}/samex" \
+        || exit 1
+
+    echo ''
+    echo '#'
+    echo '# Building samex-* (runtime)...'
+    echo '#'
+    echo ''
+
+    "${binDir}/samex" --just-build "${buildOpts[@]}" "${samexOpts[@]}" \
+        || exit 1
+
+    if [[ ${compilerMode} != '' ]]; then
+        echo ''
+        echo '#'
+        echo '# Building samtoc...'
+        echo '#'
+        echo ''
+        "${baseDir}/blur/blur" --in-dir="${baseDir}/samtoc" \
+            || exit 1
     fi
 
-    if [[ ! -x "${binDir}/samtoc" ]]; then
-        echo 'Building samtoc...'
-        "${baseDir}/blur/blur" --quiet --in-dir="${baseDir}/samtoc" || exit 1
-    fi
+    echo ''
+    echo '#'
+    echo '########## DONE WITH PRE-RUN BUILDS'
+    echo ''
 fi
 
 # If we're compiling, then copy the demo to a temporary directory, and
