@@ -37,16 +37,16 @@ runtimeName=''
 justBuild=0
 
 # Whether to build a binary.
-build='no'
+build=0
 
-# Whether to build with optimization.
-optimize='yes'
+# Whether to build with optimization, when building.
+optimize=1
 
 # Whether to time the run.
-timeRun='no'
+timeRun=0
 
 # Whether to profile the run.
-profileRun='no'
+profileRun=0
 
 # File suffix to use.
 suffix=''
@@ -62,23 +62,23 @@ while [[ $1 != '' ]]; do
             '[--time | --profile]'
         exit
     elif [[ ${opt} == '--build' ]]; then
-        build='yes'
+        build=1
     elif [[ ${opt} == '--just-build' ]]; then
-        build='yes'
+        build=1
         justBuild=1
     elif [[ ${opt} == '--no-optimize' ]]; then
-        optimize='no'
-        build='yes'
+        optimize=0
+        build=1
     elif [[ ${opt} == '--profile' ]]; then
-        profileRun='yes'
-        timeRun='no'
+        profileRun=1
+        timeRun=0
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
         runtimeName="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^--suffix=(.*) ]]; then
         suffix="${BASH_REMATCH[1]}"
     elif [[ ${opt} == '--time' ]]; then
-        timeRun='yes'
-        profileRun='no'
+        timeRun=1
+        profileRun=0
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -96,7 +96,7 @@ unset opt
 
 # Build the binary, if requested.
 
-if [[ ${build} == 'yes' ]]; then
+if (( build )); then
     if [[ ${runtimeName} == '' ]]; then
         echo 'No --runtime specified.' 1>&2
         exit 1
@@ -111,7 +111,7 @@ if [[ ${build} == 'yes' ]]; then
 
     buildOpts=()
 
-    if [[ ${optimize} == 'no' ]]; then
+    if (( optimize )); then
         buildOpts=(--no-optimize)
     fi
 
@@ -141,9 +141,9 @@ fi
 
 cmd=("${name}" "${suffixOpt[@]}" "$@")
 
-if [[ ${timeRun} == 'yes' ]]; then
+if (( timeRun )); then
     time -p "${cmd[@]}"
-elif [[ ${profileRun} == 'yes' ]]; then
+elif (( profileRun )); then
     # May also want to use the -allocations option.
     iprofiler -T 20s -timeprofiler "${cmd[@]}"
 else
