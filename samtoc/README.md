@@ -37,6 +37,7 @@ takes the following options:
 * `--` &mdash; Indicates the end of options. Any further arguments are taken
   to be file names.
 
+
 Compilation Modes
 -----------------
 
