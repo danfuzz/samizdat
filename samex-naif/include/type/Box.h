@@ -41,7 +41,7 @@ zvalue boxFetch(zvalue box);
  * Direct call to Box implementation of `store(box, optValue?)`. Checks
  * argument type.
  */
-void boxStore(zvalue box, zvalue value);
+zvalue boxStore(zvalue box, zvalue value);
 
 /**
  * Constructs a mutable (re-settable) box, with the given initial value.
