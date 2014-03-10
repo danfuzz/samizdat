@@ -107,7 +107,7 @@ genericBind(
     get_varRefs,
     "varBind",
     fn varBind_get_varRefs(node) {
-        <> node.value.varRefs
+        <> [node.name, node.value.varRefs*]
     });
 
 genericBind(
