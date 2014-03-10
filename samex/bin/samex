@@ -116,7 +116,7 @@ if (( build )); then
     fi
 
     "${sourceDir}/blur/blur" \
-        --quiet --in-dir="${projectDir}" "${buildOpts[@]}" \
+        --in-dir="${projectDir}" "${buildOpts[@]}" \
         || exit 1
 
     if (( justBuild )); then
