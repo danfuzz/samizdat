@@ -37,7 +37,7 @@ outputFile=''
 gotOutDir=0
 
 # Whether to compile to binary.
-fullCompile=1
+fullCompile=0
 
 # Additional arguments passed to the program.
 moreArgs=()
@@ -49,11 +49,11 @@ while [[ $1 != '' ]]; do
         break
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--in-dir=<dir>] [--out-dir=<dir> | --output=<path>]"
-        echo "    [--c-code] [--mode=<mode>]"
-        echo "    <source-path>"
+        echo "    [--binary] [--mode=<mode>]"
+        echo "    <source-path> ..."
         exit
-    elif [[ ${opt} == '--c-code' ]]; then
-        fullCompile=0
+    elif [[ ${opt} == '--binary' ]]; then
+        fullCompile=1
     elif [[    ${opt} =~ ^--mode=
             || ${opt} =~ ^--in-dir= ]]; then
         moreArgs+=("${opt}")
@@ -75,9 +75,11 @@ unset opt
 if (( $# == 0 )); then
     echo 'Missing source file name.' 1>&2
     exit 1
+elif (( $# > 1 && fullCompile )); then
+    echo 'Cannoy specify --binary with multiple sources.' 1>&2
+    exit 1
 elif (( $# > 1 || gotOutDir )); then
     # Multiple source files or `--out-dir` specified.
-    fullCompile=0
     if [[ ${outputFile} != '' ]]; then
         echo 'Cannot specify --output with multiple sources or --out-dir.' 1>&2
         exit 1
@@ -95,7 +97,6 @@ fi
 
 if [[ ${outputFile} == '-' || ${outputFile} == '/dev/stdout' ]]; then
     outputFile='/dev/stdout'
-    fullCompile=0
 fi
 
 
@@ -105,7 +106,7 @@ fi
 
 if (( fullCompile )); then
     compiledFile="${outputFile}"
-    outputFile="${compiledFile}.c"
+    outputFile="${compiledFile%.sam*}.c"
 fi
 
 if [[ ${outputFile} != '' ]]; then

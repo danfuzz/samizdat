@@ -18,8 +18,8 @@ takes the following options:
 
 * `--help` &mdash; Emit a short help message.
 
-* `--c-code` &mdash; Only compile to C code; don't compile a binary. This is
-  the default if `-` or `/dev/stdout` is specified as the output file.
+* `--binary` &mdash; Compile all the way to a `.samb` binary addon library.
+  This is only valid if a single source file is specified.
 
 * `--output=<file-name>` &mdash; Specify the name of the output file. This is
   only valid if a single source file is given. `-` indicates that

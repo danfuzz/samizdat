@@ -126,7 +126,8 @@ samtocCmdStart="$(quote \
     "${OUT}/final/bin/samtoc" \
     --in-dir="../samlib-naif" \
     --out-dir="${INTERMED}" \
-    --c-code --mode=interp-tree
+    --mode=interp-tree \
+    --
 )"
 
 rule body \
