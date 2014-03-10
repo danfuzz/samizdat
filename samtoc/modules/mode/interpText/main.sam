@@ -3,8 +3,9 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Compilation mode "fake" which just takes the source text and
-## embeds it into C code which calls the parser.
+## Compilation mode "interp-text" which just takes the source text and
+## embeds it into C code which calls the parser. When run, this uses the
+## underlying interpreter (hence the name's prefix).
 ##
 
 def Template = moduleUse({name: ["Template"]});

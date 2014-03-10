@@ -2,6 +2,11 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+##
+## Compilation mode "simple" which does the simplest possible conversion of
+## source into C code that *does not* rely on an interpreter when run.
+##
+
 def templateText = submoduleRead("template.txt");
 
 def Interner = submoduleUse("Interner");

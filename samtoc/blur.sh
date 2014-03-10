@@ -88,7 +88,7 @@ if [[ -x "${FINAL_BIN}/samtoc" ]]; then
 else
     samtocCmdStart="$(quote "${FINAL_BIN}/samex" .)"
 fi
-samtocCmdStart+=" $(quote --out-dir="${INTERMED}" --mode=tree)"
+samtocCmdStart+=" $(quote --out-dir="${INTERMED}" --mode=interp-tree)"
 
 rule body \
     "${groups[@]}" \
