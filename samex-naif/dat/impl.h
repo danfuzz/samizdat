@@ -176,11 +176,5 @@ inline zvalue trueTypeOf(zvalue value) {
  */
 bool typeHasSecret(zvalue type, zvalue secret);
 
-/**
- * Returns true iff the given type is a derived type (whether opaque or
- * transparent).
- */
-bool typeIsDerived(zvalue type);
-
 
 #endif

@@ -221,12 +221,6 @@ bool typeHasSecret(zvalue type, zvalue secret) {
     return valEq(getInfo(type)->secret, secret);
 }
 
-/* Documented in header. */
-bool typeIsDerived(zvalue type) {
-    assertHasTypeType(type);
-    return getInfo(type)->derived;
-}
-
 
 /*
  * Exported Definitions
@@ -305,9 +299,23 @@ zint typeIndexOf(zvalue value) {
 }
 
 /* Documented in header. */
+bool typeIsDerived(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->derived;
+}
+
+/* Documented in header. */
 bool typeIsIdentified(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->identified;
+}
+
+/* Documented in header. */
+bool typeIsTransparentDerived(zvalue type) {
+    assertHasTypeType(type);
+
+    TypeInfo *info = getInfo(type);
+    return info->derived && (info->secret == NULL);
 }
 
 /* Documented in header. */

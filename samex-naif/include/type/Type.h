@@ -78,11 +78,22 @@ zint typeIndex(zvalue typeOrName);
 zint typeIndexOf(zvalue value);
 
 /**
+ * Returns true iff the given type is a derived type (whether opaque or
+ * transparent).
+ */
+bool typeIsDerived(zvalue type);
+
+/**
  * Returns true iff the given type is "identified." That is, this returns
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.
  */
 bool typeIsIdentified(zvalue type);
+
+/**
+ * Returns true iff the given type is a transparent derived type.
+ */
+bool typeIsTransparentDerived(zvalue type);
 
 /**
  * Gets the overt data type of the given value. `value` must be a
