@@ -96,13 +96,6 @@ bool typeIsIdentified(zvalue type);
 bool typeIsTransparentDerived(zvalue type);
 
 /**
- * Gets the overt data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`). For transparent derived types,
- * this returns the name of the type, and not a `Type` value per se.
- */
-zvalue typeOf(zvalue value);
-
-/**
  * Gets the type of the given value. `value` must be a valid value (in
  * particular, non-`NULL`). The return value is of type `Type`.
  */

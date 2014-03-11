@@ -319,15 +319,6 @@ bool typeIsTransparentDerived(zvalue type) {
 }
 
 /* Documented in header. */
-zvalue typeOf(zvalue value) {
-    zvalue type = trueTypeOf(value);
-    TypeInfo *info = getInfo(type);
-
-    // `typeOf` on a transparent type returns its name.
-    return (info->secret == NULL) ? info->name : type;
-}
-
-/* Documented in header. */
 zvalue typeOf_new(zvalue value) {
     return trueTypeOf(value);
 }
