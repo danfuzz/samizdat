@@ -92,7 +92,7 @@ FUN_IMPL_DECL(ne) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(typeOf) {
-    zvalue result = typeOf_new(args[0]);
+    zvalue result = typeOf(args[0]);
 
     // TODO: Remove this when the high level model specifies types-per-se.
     if (typeIsTransparentDerived(result)) {

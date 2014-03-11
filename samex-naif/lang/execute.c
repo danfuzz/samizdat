@@ -165,7 +165,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_varBind: return execVarBind(frame, e);
         case EVAL_varRef:  return execVarRef(frame, e);
         default: {
-            die("Invalid expression type: %s", valDebugString(typeOf_new(e)));
+            die("Invalid expression type: %s", valDebugString(typeOf(e)));
         }
     }
 }

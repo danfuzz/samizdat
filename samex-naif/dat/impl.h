@@ -164,13 +164,6 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 zint markFrameStack(void);
 
 /**
- * Gets the `Type` per se for the given value.
- */
-inline zvalue trueTypeOf(zvalue value) {
-    return value->type;
-}
-
-/**
  * Checks whether the given value matches the secret of the given type.
  * `secret` may be passed as `NULL`.
  */

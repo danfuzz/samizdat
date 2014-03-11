@@ -53,7 +53,7 @@ static char *callReporter(void *state) {
         return valToString(value);
     }
 
-    zvalue type = nameOrValue(typeOf_new(value));
+    zvalue type = nameOrValue(typeOf(value));
     char *typeString;
     char *result;
 

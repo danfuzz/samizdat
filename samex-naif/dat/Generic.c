@@ -93,7 +93,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
         assertAllHaveSameType(argCount, args);
     }
 
-    zvalue function = findByTrueType(generic, trueTypeOf(args[0]));
+    zvalue function = findByTrueType(generic, typeOf(args[0]));
 
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
@@ -189,7 +189,7 @@ METH_IMPL(Generic, canCall) {
     zvalue value = args[1];
     GenericInfo *info = getInfo(generic);
 
-    return (findByTrueType(generic, trueTypeOf(value)) != NULL) ? value : NULL;
+    return (findByTrueType(generic, typeOf(value)) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */

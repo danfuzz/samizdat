@@ -99,7 +99,7 @@ bool typeIsTransparentDerived(zvalue type);
  * Gets the type of the given value. `value` must be a valid value (in
  * particular, non-`NULL`). The return value is of type `Type`.
  */
-zvalue typeOf_new(zvalue value);
+zvalue typeOf(zvalue value);
 
 /**
  * Gets the parent type of the given type.

@@ -172,7 +172,7 @@ static bool isType(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
-    return (trueTypeOf(value) == TYPE_Type);
+    return (typeOf(value) == TYPE_Type);
 }
 
 /**
@@ -210,10 +210,7 @@ static bool typeEq(zvalue type1, zvalue type2) {
  */
 
 /* Documented in header. */
-extern zint indexFromTrueType(zvalue type);
-
-/* Documented in header. */
-extern zvalue trueTypeOf(zvalue value);
+extern inline zint indexFromTrueType(zvalue type);
 
 /* Documented in header. */
 bool typeHasSecret(zvalue type, zvalue secret) {
@@ -234,11 +231,11 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
     }
 
     zvalue arg0 = args[0];
-    zvalue type0 = trueTypeOf(arg0);
+    zvalue type0 = typeOf(arg0);
 
     for (zint i = 1; i < argCount; i++) {
         zvalue one = args[i];
-        if (!typeEq(type0, trueTypeOf(one))) {
+        if (!typeEq(type0, typeOf(one))) {
             die("Mismatched types: %s, %s",
                 valDebugString(arg0), valDebugString(one));
         }
@@ -268,12 +265,12 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 
 /* Documented in header. */
 bool hasType(zvalue value, zvalue typeOrName) {
-    return typeEq(trueTypeOf(value), trueTypeFromTypeOrName(typeOrName));
+    return typeEq(typeOf(value), trueTypeFromTypeOrName(typeOrName));
 }
 
 /* Documented in header. */
 bool haveSameType(zvalue v1, zvalue v2) {
-    return typeEq(trueTypeOf(v1), trueTypeOf(v2));
+    return typeEq(typeOf(v1), typeOf(v2));
 }
 
 /* Documented in header. */
@@ -295,7 +292,7 @@ zint typeIndex(zvalue typeOrName) {
 
 /* Documented in header. */
 zint typeIndexOf(zvalue value) {
-    return indexFromTrueType(trueTypeOf(value));
+    return indexFromTrueType(typeOf(value));
 }
 
 /* Documented in header. */
@@ -319,8 +316,8 @@ bool typeIsTransparentDerived(zvalue type) {
 }
 
 /* Documented in header. */
-zvalue typeOf_new(zvalue value) {
-    return trueTypeOf(value);
+zvalue typeOf(zvalue value) {
+    return value->type;
 }
 
 /* Documented in header. */

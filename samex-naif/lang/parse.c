@@ -309,7 +309,7 @@ static zvalue makeOptValue(zvalue expression) {
 /* Documented in spec. */
 static zvalue withoutInterpolate(zvalue node) {
     return makeValue_new(
-        typeOf_new(node),
+        typeOf(node),
         collDel(dataOf(node), STR_interpolate),
         NULL);
 }
@@ -545,7 +545,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
     if (repeat != NULL) {
-        repeat = nameOf(typeOf_new(repeat));
+        repeat = nameOf(typeOf(repeat));
     }
 
     return mapFrom2(STR_name, name, STR_repeat, repeat);
@@ -763,7 +763,7 @@ DEF_PARSE(identifierString) {
 
     zvalue value = dataOf(result);
     if (value == NULL) {
-        value = nameOf(typeOf_new(result));
+        value = nameOf(typeOf(result));
     }
 
     return makeLiteral(value);
