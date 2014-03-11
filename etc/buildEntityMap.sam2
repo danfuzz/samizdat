@@ -21,21 +21,21 @@ def DIGIT_VALUES = {
 
 ## Parses the end of a line, which consists of any number of spaces, optionally
 ## followed by a comment, and finally followed by a newline.
-def parLineEnd = {/
+def parLineEnd = {:
     " "*
     ("#" [! "\n"]*)?
     "\n"
-/};
+:};
 
 ## Parses a comma, optionally surrounded by whitespace.
-def parComma = {/
+def parComma = {:
     " "*
     ","
     " "*
-/};
+:};
 
 ## Parses a single code point, yielding the value as a single-character string.
-def parCodePoint = {/
+def parCodePoint = {:
     " "*
     "U+"
     "0"*
@@ -51,36 +51,36 @@ def parCodePoint = {/
         };
         <> toString(value);
     }
-/};
+:};
 
 ## Parses a list of code points, yielding a converted string of them.
-def parCodePoints = {/
+def parCodePoints = {:
     codes = parCodePoint+
     { <> cat(codes*) }
-/};
+:};
 
 ## Parses an entry description.
-def parDescription = {/
+def parDescription = {:
     [! ",\n"]*
-/};
+:};
 
 ## Parses an entity name.
-def parName = {/
+def parName = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     { <> Peg::stringFromTokenList(chars) }
-/};
+:};
 
 ## Parses a single content line.
-def parContentLine = {/
+def parContentLine = {:
     string = parCodePoints
     parComma
     parDescription
     names = (parComma parName)+
     { <> {names*: string} }
-/};
+:};
 
 ## Parses the entire file.
-def parFile = {/
+def parFile = {:
     lines = (
         ## Skip empty lines.
         parLineEnd*
@@ -99,7 +99,7 @@ def parFile = {/
     )?
 
     { <> cat(lines*) }
-/};
+:};
 
 def inPath = [PATH[..!]*, "entity-map.txt"];
 def outPath = [PATH[..!]*, "entityMap.sam"];

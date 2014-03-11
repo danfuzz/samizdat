@@ -385,7 +385,7 @@ def parTerm = Peg::makeMainChoice(
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     Peg::makeSequence(
-        Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
+        Peg::makeLookaheadSuccess(Peg::makeToken("{:")),
         Peg::makeThunk { . <> parParser }));
 
 ## Documented in spec.
@@ -549,9 +549,9 @@ def PEX_TYPES = {
 
 ## Documented in spec.
 parParser := Peg::makeMainSequence(
-    Peg::makeToken("{/"),
+    Peg::makeToken("{:"),
     Peg::makeThunk { . <> parChoicePex },
-    Peg::makeToken("/}"),
+    Peg::makeToken(":}"),
     Peg::makeCode { ., pex, . <> @parser{value: pex} });
 
 ## Documented in spec.

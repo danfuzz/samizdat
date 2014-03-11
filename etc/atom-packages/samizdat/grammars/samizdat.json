@@ -7,8 +7,8 @@
     "sam3",
     "sam4"
   ],
-  "foldingStartMarker" : "\\{ *(#.*)?$",
-  "foldingStopMarker" : "^[^\\{]*\\} *(#.*)?$",
+  "foldingStartMarker" : "\\{:? *(##.*)?$",
+  "foldingStopMarker" : "^[^\\{]*\\} *(##.*)?$",
   "repository" : {
     "block-body" : {
       "patterns" : [
@@ -63,8 +63,8 @@
           "name" : "meta.collection.samizdat"
         },
         {
-          "end" : "\/\\}",
-          "begin" : "\\{\/",
+          "end" : ":\\}",
+          "begin" : "\\{:",
           "patterns" : [
             {
               "include" : "#block-body"
@@ -200,7 +200,7 @@
           "name" : "variable.other"
         },
         {
-          "match" : "\\{\/?|\/?\\}|\\[|\\]|:",
+          "match" : "\\{:?|:?\\}|\\[|\\]|:",
           "name" : "punctuation.definition"
         },
         {

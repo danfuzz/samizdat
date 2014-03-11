@@ -15,7 +15,7 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 ##
 
 ## Parses a single path component.
-def parPathComponent = {/
+def parPathComponent = {:
     ## Ignore duplicate slashes, but require at least one. Note: The parser
     ## is only ever called on a string that begins with a slash.
     "/"+
@@ -25,22 +25,22 @@ def parPathComponent = {/
     ## slash on the overall path string).
     component = [! "/"]*
     { <> Peg::stringFromTokenList(component) }
-/};
+:};
 
 ## Parses a regular (non-up-directory) component. The `..` check ensures that
 ## `..` only gets parsed as part of a balanced `name/..` pair.
-def parRegularComponent = {/
+def parRegularComponent = {:
     component = parPathComponent
     {
         <> ifIs { <> ne(component, "..") }
             { <> [component] }
     }
-/};
+:};
 
 ## Parses a matched set of components that are collectively ignored, e.g.
 ## `"/x/y/../.."` or `"/."`.
 def parIgnoredComponent;
-parIgnoredComponent := {/
+parIgnoredComponent := {:
     component = parRegularComponent
 
     (
@@ -52,12 +52,12 @@ parIgnoredComponent := {/
     )
 
     { <> [] }
-/};
+:};
 
 ## Helper for `pathFromFlat` which parses absolute path strings
 ## into components. This canonicalizes the path by ignoring duplicate
 ## slashes, `.` components, and matched `name/..` pairs.
-def parPathString = {/
+def parPathString = {:
     components = (parIgnoredComponent | parRegularComponent)+
 
     (
@@ -66,7 +66,7 @@ def parPathString = {/
     |
         { <> cat(components*) }
     )
-/};
+:};
 
 
 ##
@@ -74,14 +74,14 @@ def parPathString = {/
 ##
 
 ## Parses a path within a path list.
-def parOnePath = {/
+def parOnePath = {:
     chars = [! ":"]+
     { <> Peg::stringFromTokenList(chars) }
-/};
+:};
 
 ## Parses a flattened path list (e.g. the format for a Posix-style `PATH`
 ## variable) into a list of strings (for further parsing).
-def parPathList = {/
+def parPathList = {:
     ":"*
     first = parOnePath
     rest = (
@@ -91,7 +91,7 @@ def parPathList = {/
     ":"*
 
     { <> [first, rest*] }
-/};
+:};
 
 
 ##
@@ -100,7 +100,7 @@ def parPathList = {/
 
 ## Helper for `flatFromPath` which validates a single path component.
 ## Yields an error string on invalid. Parsing fails for valid components.
-def parErrorFromPathComponent = {/
+def parErrorFromPathComponent = {:
     ".." !.
     { <> "Invalid `..` component in path." }
 |
@@ -118,7 +118,7 @@ def parErrorFromPathComponent = {/
         "\0"
         { <> "Invalid `\\0` in path." }
     )
-/};
+:};
 
 ## Checks whether the given alleged prefix is actually a prefix of the
 ## given path, or equal to it.

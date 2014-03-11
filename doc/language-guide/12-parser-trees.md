@@ -18,7 +18,7 @@ this one.
 
 Nodes of this type are the "glue" between execution trees and parser trees.
 
-This corresponds to the syntax `{/ pex /}`.
+This corresponds to the syntax `{: pex :}`.
 
 
 ### Terminal parsing expression nodes
