@@ -9,7 +9,8 @@
  * have the usual guard macros.
  *
  * `STR(name, "string")` defines a string constant.
- * `TOK(name, "string")` defines both a string *and* a token constant.
+ * `TYP(name, "string")` defines a string and a transparent derived type.
+ * `TOK(name, "string")` defines a string, a type, and a token constant.
  *
  * Token constants are type-only values whose types are the indicated strings.
  */
@@ -44,6 +45,11 @@ TOK(fn,                "fn");
 TOK(return,            "return");
 TOK(var,               "var");
 
+TYP(varBind,           "varBind");
+TYP(varDef,            "varDef");
+TYP(varDefMutable,     "varDefMutable");
+TYP(varRef,            "varRef");
+
 STR(MapGenerator,      "MapGenerator");
 STR(SequenceGenerator, "SequenceGenerator");
 STR(actuals,           "actuals");
@@ -77,9 +83,5 @@ STR(string,            "string");
 STR(top,               "top");
 STR(topDeclaration,    "topDeclaration");
 STR(value,             "value");
-STR(varBind,           "varBind");
-STR(varDef,            "varDef");
-STR(varDefMutable,     "varDefMutable");
-STR(varRef,            "varRef");
 STR(yield,             "yield");
 STR(yieldDef,          "yieldDef");

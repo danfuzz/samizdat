@@ -5,6 +5,7 @@
  */
 
 #include "type/String.h"
+#include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -17,14 +18,19 @@
 
 #define STR(name, str) zvalue STR_##name = NULL
 
-#define TOK(name, str) \
+#define TYP(name, str) \
     STR(name, str); \
+    zvalue TYPE_##name = NULL
+
+#define TOK(name, str) \
+    TYP(name, str); \
     zvalue TOK_##name = NULL
 
 #include "const/const-def.h"
 
 #undef STR
 #undef TOK
+#undef TYP
 
 
 /*
@@ -41,9 +47,14 @@ MOD_INIT(const) {
         STR_##name = stringFromUtf8(-1, str); \
         datImmortalize(STR_##name)
 
-    #define TOK(name, str) \
+    #define TYP(name, str) \
         STR(name, str); \
-        TOK_##name = makeTransValue(STR_##name, NULL); \
+        TYPE_##name = typeFromName(STR_##name); \
+        datImmortalize(TYPE_##name)
+
+    #define TOK(name, str) \
+        TYP(name, str); \
+        TOK_##name = makeValue_new(TYPE_##name, NULL, NULL); \
         datImmortalize(TOK_##name)
 
     #include "const/const-def.h"
