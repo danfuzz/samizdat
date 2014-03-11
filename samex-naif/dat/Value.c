@@ -56,7 +56,7 @@ extern void *datPayload(zvalue value);
 
 /* Documented in header. */
 zint valIdentityOf(zvalue value) {
-    if (!typeIsIdentified(typeOf(value))) {
+    if (!typeIsIdentified(typeOf_new(value))) {
         die("Attempt to use `valIdentityOf` on non-identified value.");
     }
 
@@ -109,7 +109,7 @@ zorder valOrder(zvalue v1, zvalue v2) {
         datFrameReturn(save, NULL);
         return result;
     } else {
-        return valOrder(typeOf(v1), typeOf(v2));
+        return valOrder(typeOf_new(v1), typeOf_new(v2));
     }
 }
 
@@ -121,7 +121,7 @@ zorder valOrder(zvalue v1, zvalue v2) {
 /* Documented in header. */
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
-    zvalue type = typeOf(value);
+    zvalue type = typeOf_new(value);
     char addrBuf[19]; // Includes room for `0x` and `\0`.
 
     sprintf(addrBuf, "%p", value);
