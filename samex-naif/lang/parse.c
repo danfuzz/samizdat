@@ -326,8 +326,8 @@ static zvalue withoutInterpolate(zvalue node) {
 #define PARSE_STAR(name) parseStar(RULE(name), state)
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define PARSE_COMMA_SEQ(name) parseCommaSequence(RULE(name), state)
-#define MATCH(type) readMatch(state, (STR_##type))
-#define PEEK(type) peekMatch(state, (STR_##type))
+#define MATCH(type) readMatch(state, (TYPE_##type))
+#define PEEK(type) peekMatch(state, (TYPE_##type))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
 #define REJECT() do { RESET(); return NULL; } while (0)
