@@ -516,21 +516,17 @@ DEF_PARSE(optYieldDef) {
 }
 
 /**
- * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns either the
- * parsed token payload or `NULL` to indicate that no alternate matched.
+ * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns the parsed token,
+ * or `NULL` to indicate that no alternate matched.
  */
 DEF_PARSE(formal1) {
-    MARK();
-
     zvalue result = NULL;
 
     if (result == NULL) { result = MATCH(CH_QMARK); }
     if (result == NULL) { result = MATCH(CH_STAR); }
     if (result == NULL) { result = MATCH(CH_PLUS); }
 
-    REJECT_IF(result == NULL);
-
-    return typeOf(result);
+    return result;
 }
 
 /* Documented in spec. */
@@ -548,6 +544,9 @@ DEF_PARSE(formal) {
     }
 
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
+    if (repeat != NULL) {
+        repeat = nameOf(typeOf_new(repeat));
+    }
 
     return mapFrom2(STR_name, name, STR_repeat, repeat);
 }
@@ -764,7 +763,7 @@ DEF_PARSE(identifierString) {
 
     zvalue value = dataOf(result);
     if (value == NULL) {
-        value = typeOf(result);
+        value = nameOf(typeOf_new(result));
     }
 
     return makeLiteral(value);
