@@ -178,7 +178,7 @@ static zvalue makeApply(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeTransValue(STR_apply, value);
+    return makeValue_new(TYPE_apply, value, NULL);
 }
 
 /* Documented in spec. */
@@ -188,7 +188,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeTransValue(STR_call, value);
+    return makeValue_new(TYPE_call, value, NULL);
 }
 
 /**
@@ -247,54 +247,60 @@ static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 
 /* Documented in spec. */
 static zvalue makeInterpolate(zvalue node) {
-    return makeTransValue(STR_call,
+    return makeValue_new(TYPE_call,
         mapFrom3(
             STR_function,    REFS(interpolate),
             STR_actuals,     listFrom1(node),
-            STR_interpolate, node));
+            STR_interpolate, node),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeJump(zvalue function, zvalue optValue) {
-    return makeTransValue(STR_jump,
-        mapFrom2(STR_function, function, STR_value, optValue));
+    return makeValue_new(TYPE_jump,
+        mapFrom2(STR_function, function, STR_value, optValue),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeLiteral(zvalue value) {
-    return makeTransValue(STR_literal, mapFrom1(STR_value, value));
+    return makeValue_new(TYPE_literal, mapFrom1(STR_value, value), NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeThunk(zvalue expression) {
-    return makeTransValue(STR_closure,
+    return makeValue_new(TYPE_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, EMPTY_LIST,
-            STR_yield,      expression));
+            STR_yield,      expression),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarBind(zvalue name, zvalue value) {
-    return makeTransValue(STR_varBind,
-        mapFrom2(STR_name, name, STR_value, value));
+    return makeValue_new(TYPE_varBind,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
-    return makeTransValue(STR_varDef,
-        mapFrom2(STR_name, name, STR_value, value));
+    return makeValue_new(TYPE_varDef,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return makeTransValue(STR_varDefMutable,
-        mapFrom2(STR_name, name, STR_value, value));
+    return makeValue_new(TYPE_varDefMutable,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
-    return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
+    return makeValue_new(TYPE_varRef, mapFrom1(STR_name, name), NULL);
 }
 
 /* Documented in spec. */
@@ -584,7 +590,9 @@ DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
 
-    return makeTransValue(STR_closure, GFN_CALL(cat, declarations, body));
+    return makeValue_new(TYPE_closure,
+        GFN_CALL(cat, declarations, body),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -678,7 +686,7 @@ DEF_PARSE(fnCommon) {
             STR_yieldDef,   STR_return,
             STR_statements, statements));
 
-    return makeTransValue(STR_closure, closureMap);
+    return makeValue_new(TYPE_closure, closureMap, NULL);
 }
 
 /* Documented in spec. */
@@ -692,10 +700,11 @@ DEF_PARSE(fnDef) {
         return NULL;
     }
 
-    return makeTransValue(STR_topDeclaration,
+    return makeValue_new(TYPE_topDeclaration,
         mapFrom2(
             STR_top,  makeVarDef(name, NULL),
-            STR_main, makeVarBind(name, closure)));
+            STR_main, makeVarBind(name, closure)),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -709,12 +718,12 @@ DEF_PARSE(fnExpression) {
         return closure;
     }
 
-    zvalue mainClosure = makeTransValue(
-        STR_closure,
+    zvalue mainClosure = makeValue_new(STR_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, listFrom1(makeVarDef(name, NULL)),
-            STR_yield,      makeVarBind(name, closure)));
+            STR_yield,      makeVarBind(name, closure)),
+        NULL);
 
     return makeCall(mainClosure, NULL);
 }
