@@ -6,7 +6,7 @@
 ## Simple template substitution facility
 ##
 
-def parSubstitution = {/
+def parSubstitution = {:
     format = (
         "%"
         chars = [! "("]+
@@ -22,9 +22,9 @@ def parSubstitution = {/
     {
         <> {format, name: Peg::stringFromTokenList(name)}
     }
-/};
+:};
 
-def parItem = {/
+def parItem = {:
     "\\"
     (
         parSubstitution
@@ -38,11 +38,11 @@ def parItem = {/
 |
     chars = [! "\\"]+
     { <> Peg::stringFromTokenList(chars) }
-/};
+:};
 
-def parTemplate = {/
+def parTemplate = {:
     parItem*
-/};
+:};
 
 fn apply(templateString, defs) {
     def items = Peg::apply(parTemplate, templateString);
