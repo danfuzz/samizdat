@@ -208,7 +208,7 @@ in Samizdat Layer 0 (as opposed to using the higher layer syntax), as
 it is merely a convenient wrapper for a call to `makeTokenSet` (see
 which).
 
-This is equivalent to the syntactic form `{/ ["string1" "string2" "etc"] /}`.
+This is equivalent to the syntactic form `{: ["string1" "string2" "etc"] :}`.
 
 #### `makeCharSetComplement(string*) <> rule`
 
@@ -223,7 +223,7 @@ it is merely a convenient wrapper for a call to `makeTokenSetComplement`
 (see which).
 
 This is equivalent to the syntactic form
-`{/ [! "string1" "string2" "etc."] /}`.
+`{: [! "string1" "string2" "etc."] :}`.
 
 #### `makeChoice(rules*) <> rule`
 
@@ -231,7 +231,7 @@ Makes and returns a parser rule which performs an ordered choice amongst
 the given rules. Upon success, it passes back the yield and replacement
 state of whichever alternate rule succeeded.
 
-This is equivalent to the syntactic form `{/ rule1 | rule2 | etc /}`.
+This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
 
 #### `makeCode(function) <> rule`
 
@@ -242,7 +242,7 @@ returns becomes the yielded value of the rule. If it returns void, then
 the rule is considered to have failed. Code rules never consume any
 input.
 
-This is equivalent to the syntactic form `{/ ... { arg1 arg2 etc -> code } /}`.
+This is equivalent to the syntactic form `{: ... { arg1 arg2 etc -> code } :}`.
 
 #### `makeLookaheadFailure(rule) <> rule`
 
@@ -251,7 +251,7 @@ its usual yield and state update behavior. Instead, if the other rule
 succeeds, this rule fails. And if the other rule fails, this one succeeds,
 yielding `null` and consuming no input.
 
-This is equivalent to the syntactic form `{/ !rule /}`.
+This is equivalent to the syntactic form `{: !rule :}`.
 
 #### `makeLookaheadSuccess(rule) <> rule`
 
@@ -259,7 +259,7 @@ Makes and returns a parser rule which runs a given other rule, suppressing
 its usual state update behavior. Instead, if the other rule succeeds, this
 rule also succeeds, yielding the same value but *not* consuming any input.
 
-This is equivalent to the syntactic form `{/ &rule /}`.
+This is equivalent to the syntactic form `{: &rule :}`.
 
 #### `makeMainChoice(rules*) <> rule`
 
@@ -267,7 +267,7 @@ Makes and returns a parser rule which tries the given rules in order until
 one succeeds. This is identical to `makeChoice` (see which), except that
 it provides a fresh (empty) parsed item scope.
 
-This is equivalent to the syntactic form `{/ rule1 | rule2 | etc /}`.
+This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
 
 #### `makeMainSequence(rules*) <> rule`
 
@@ -275,7 +275,7 @@ Makes and returns a parser rule which runs a sequence of given other rules
 (in order). This is identical to `makeSequence` (see which), except that
 it provides a fresh (empty) parsed item scope.
 
-This is equivalent to the syntactic form `{/ rule1 rule2 etc /}`.
+This is equivalent to the syntactic form `{: rule1 rule2 etc :}`.
 
 #### `makeOpt(rule) <> rule`
 
@@ -286,7 +286,7 @@ single-element list of the successful yield of the other rule, and it
 returns updated state to reflect the successful parse. If the other
 rule fails, this one yields an empty list and does not consume any input.
 
-This is equivalent to the syntactic form `{/ rule? /}`.
+This is equivalent to the syntactic form `{: rule? :}`.
 
 #### `makePlus(rule) <> rule`
 
@@ -296,14 +296,14 @@ It yields a list of all the matched results (in order), and it returns
 updated state that reflects all the input consumed by these matches.
 This rule will succeed only if the given rule is matched at least once.
 
-This is equivalent to the syntactic form `{/ rule+ /}`.
+This is equivalent to the syntactic form `{: rule+ :}`.
 
 #### `makeResult(value) <> rule`
 
 Makes and returns a parser rule which always succeeds, yielding the
 given result `value`, and never consuming any input.
 
-This is equivalent to the syntactic form `{/ { <> value } /}` assuming
+This is equivalent to the syntactic form `{: { <> value } :}` assuming
 that `value` is a constant expression.
 
 #### `makeSequence(rules*) <> rule`
@@ -317,7 +317,7 @@ parsing in sequence of all the rules.
 Each rule is passed a list of in-scope parsing results, starting with the
 first result from the "closest" enclosing main sequence.
 
-This is equivalent to the syntactic form `{/ ... (rule1 rule2 etc) ... /}`.
+This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
 
 #### `makeStar(rule) <> rule`
 
@@ -328,7 +328,7 @@ updated state that reflects all the input consumed by these matches.
 This rule always succeeds, including if the given rule is never matched,
 in which case this rule yields the empty list.
 
-This is equivalent to the syntactic form `{/ rule* /}`.
+This is equivalent to the syntactic form `{: rule* :}`.
 
 #### `makeString(string) <> rule`
 
@@ -337,7 +337,7 @@ exactly, consuming them from the input upon success. `string` must be a
 string. The result of successful parsing is a valueless token with
 `string` as its type tag.
 
-This is equivalent to the syntactic form `{/ "string" /}`.
+This is equivalent to the syntactic form `{: "string" :}`.
 
 #### `makeThunk(function) <> rule`
 
@@ -351,7 +351,7 @@ to perform parsing.
 If the called function returns void, then the rule is considered to have
 failed.
 
-This is equivalent to the syntactic form `{/ %term /}`.
+This is equivalent to the syntactic form `{: %term :}`.
 
 #### `makeToken(type) <> rule`
 
@@ -361,7 +361,7 @@ a string. Upon success, the rule consumes and yields the matched token.
 
 This is also used to match single characters in tokenizers.
 
-This is equivalent to the syntactic form `{/ @token /}` or `{/ "ch" /}`
+This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 (where `ch` represents a single character).
 
 #### `makeTokenSet(types*) <> rule`
@@ -372,7 +372,7 @@ Each argument is taken to be a token type, which is typically
 (but not necessarily) a string. The result of successful parsing is
 whatever token was matched.
 
-This is equivalent to the syntactic form `{/ [@token1 @token2 @etc] /}`.
+This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 
 #### `makeTokenSetComplement(types*) <> rule`
 
@@ -382,7 +382,7 @@ Each argument is taken to be a token type, which is typically
 (but not necessarily) a string. The result of successful parsing is
 whatever token was matched.
 
-This is equivalent to the syntactic form `{/ [! @token1 @token2 @etc] /}`.
+This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
 #### `stringFromTokenList(tokens) <> string`
 
@@ -400,7 +400,7 @@ succeeds on any non-empty input.
 This is a direct parser rule, meant to be referred to by value instead of
 called directly.
 
-This is equivalent to the syntactic form `{/ . /}`.
+This is equivalent to the syntactic form `{: . :}`.
 
 #### Rule: `empty`
 
@@ -410,7 +410,7 @@ yields `null`.
 This is a direct parser rule, meant to be referred to by value instead of
 called directly.
 
-This is equivalent to the syntactic form `{/ () /}`.
+This is equivalent to the syntactic form `{: () :}`.
 
 #### Rule: `eof`
 
@@ -420,7 +420,7 @@ it always yields `null`.
 This is a direct parser rule, meant to be referred to by value instead of
 called directly.
 
-This is equivalent to the syntactic form `{/ !. /}`.
+This is equivalent to the syntactic form `{: !. :}`.
 
 #### Rule: `fail`
 
@@ -429,7 +429,7 @@ Parser rule which always fails.
 This is a direct parser rule, meant to be referred to by value instead of
 called directly.
 
-This is equivalent to the syntactic form `{/ !() /}` (that is, attempting
+This is equivalent to the syntactic form `{: !() :}` (that is, attempting
 to find a lookahead failure for the empty rule, said rule which always
-succeeds). It is also equivalent to the syntactic form `{/ [] /}` (that is,
+succeeds). It is also equivalent to the syntactic form `{: [] :}` (that is,
 the empty set of tokens or characters).

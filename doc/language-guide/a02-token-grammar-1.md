@@ -57,7 +57,7 @@ fn intFromDigitList(base, digits) {
 
 ## Parses any amount of whitespace and comments (including nothing at all).
 ## **Note:** The yielded result is always ignored.
-def tokWhitespace = {/
+def tokWhitespace = {:
     ## The lookahead here is to avoid the bulk of this rule if there's
     ## no chance we're actually looking at whitespace.
     &["# \n"]
@@ -69,12 +69,12 @@ def tokWhitespace = {/
     ## |
         ## Note: Layer 2 introduces additional definitions here.
     )+
-/};
+:};
 
 ## Parses punctuation and operators.
 ##
 ## **Note:** This rule is expanded significantly in Layer 2.
-def tokPunctuation = {/
+def tokPunctuation = {:
     ## The lookahead here is done to avoid bothering with the choice
     ## expression, except when we have a definite match. The second
     ## string in the lookahead calls out the characters that are only
@@ -94,26 +94,26 @@ def tokPunctuation = {/
         ## Single-character punctuation / operator.
         .
     )
-/};
+:};
 
 ## Parses an integer literal.
 ##
 ## **Note:** This rule is rewritten in Layer 2.
-def tokInt = {/
+def tokInt = {:
     digits = (
         ch = ["0".."9"]
         { <> intFromDigitChar(ch) }
     )+
 
     { <> @int(intFromDigitList(10, digits)) }
-/};
+:};
 
 ## Parses a run of regular characters or an escape / special sequence,
 ## inside a quoted string.
 ##
 ## **Note:** Additional rules for string character parsing are defined
 ## in Layer 2.
-def tokStringPart = {/
+def tokStringPart = {:
     (
         chars = [! "\\" "\"" "\n"]+
         { <> Peg::stringFromTokenList(chars) }
@@ -135,10 +135,10 @@ def tokStringPart = {/
     )
 ## |
     ## Layer 2 introduces additional definitions here.
-/};
+:};
 
 # Parses a quoted string.
-def tokString = {/
+def tokString = {:
     "\""
     parts = tokStringPart*
 
@@ -148,10 +148,10 @@ def tokString = {/
     |
         { <> @error("Unterminated string literal.") }
     )
-/};
+:};
 
 ## Parses an identifier (in the usual form). This also parses keywords.
-def tokIdentifier = {/
+def tokIdentifier = {:
     one = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
 
@@ -160,19 +160,19 @@ def tokIdentifier = {/
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @identifier(string) }
     }
-/};
+:};
 
 ## Parses the quoted-string identifier form.
-def tokQuotedIdentifier = {/
+def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
     { <> @identifier(dataOf(s)) }
-/};
+:};
 
 ## "Parses" an unrecognized character. This also consumes any further
 ## characters on the same line, in an attempt to resynch the input.
-def tokError = {/
+def tokError = {:
     badCh = .
     [! "\n"]*
 
@@ -180,10 +180,10 @@ def tokError = {/
         def msg = cat("Unrecognized character: ", typeOf(badCh));
         <> @error(msg)
     }
-/};
+:};
 
 ## Parses an arbitrary token or error.
-tokToken := {/
+tokToken := {:
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     ## This needs to be listed after the quoted identifier rule, to
@@ -197,13 +197,13 @@ tokToken := {/
     tokInt
 |
     tokError
-/};
+:};
 
 ## Parses a file of tokens, yielding a list of them.
-def tokFile = {/
+def tokFile = {:
     tokens = (tokWhitespace? tokToken)*
     tokWhitespace?
 
     { <> tokens }
-/};
+:};
 ```

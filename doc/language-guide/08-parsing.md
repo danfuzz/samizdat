@@ -41,7 +41,7 @@ priority sequence (first one listed gets first "dibs," etc.), separated
 by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 
-For example, the parser `{/ "f" | "foobar" /}` will match the string
+For example, the parser `{: "f" | "foobar" :}` will match the string
 `"foobar"`, resulting in the yielded value `@f` and a remainder of
 `"oobar"`. Note that because of the prioritized ordering, the second
 alternate could never get picked in this case.
@@ -52,7 +52,7 @@ To match a sequence of items, the items are simply listed in order.
 The result of matching a sequence of items is the yielded result from
 the *last* item listed.
 
-For example, the parser `{/ @foo @bar /}` will match the token
+For example, the parser `{: @foo @bar :}` will match the token
 list `[@foo, @bar, @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`.
 
@@ -68,7 +68,7 @@ is finished (e.g. syntactically via a close paren or a close parsing
 brace). Notably, a variable from one `|`-delimited alternate will *not*
 be bound for any other alternate.
 
-For example, the parser `{/ (f=@foo b=@bar X) Y /}` will match the token
+For example, the parser `{: (f=@foo b=@bar X) Y :}` will match the token
 list `[@foo, @bar, @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`. At the point marked `X`, a local
 variable `f` will be bound to the matched yield of `@foo`, and a local
@@ -92,12 +92,12 @@ item in question.
 
 For example:
 
-* The parser `{/ &"foobar" "foo" /}` will match the string
+* The parser `{: &"foobar" "foo" :}` will match the string
   `"foobar"`, resulting in the yielded value `@foo` and a
   remainder of `"bar"`. However, the same parser will *fail* to match
   `"foobaz"` because the lookahead `&"foobar"` will fail.
 
-* The parser `{/ !"foobaz" "foo" /}` will match the string
+* The parser `{: !"foobaz" "foo" :}` will match the string
   `"foobar"`, resulting in the yielded value `@foo` and a remainder of
   `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
   the lookahead `!"foobaz"` will fail (because a `"foobaz"` lookahead
@@ -123,17 +123,17 @@ be matched at all, then the match will fail.
 
 For example:
 
-* The parser `{/ "f"? /}` will match the string `"foobar"`, resulting
+* The parser `{: "f"? :}` will match the string `"foobar"`, resulting
   in the yielded value `[@f]` and a remainder of `"oobar"`. The
   same parser will match the string `"blort"`, resulting in the
   yielded value `[]` and a remainder of `"blort"`.
 
-* The parser `{/ "f"* /}` will match the string `"ffffuuuu"`, resulting
+* The parser `{: "f"* :}` will match the string `"ffffuuuu"`, resulting
   in the yielded value `[@f, @f, @f, @f]` and a remainder of `"uuuu"`. The
   same parser will match the string `"blort"`, resulting in the
   yielded value `[]` and a remainder of `"blort"`.
 
-* The parser `{/ "f"+ /}` will match the string `"ffizmo"`, resulting
+* The parser `{: "f"+ :}` will match the string `"ffizmo"`, resulting
   in the yielded value `[@f, @f]` and a remainder of `"izmo"`. The
   same parser will fail to match the string `"blort"`, since there is
   not even a single `"f"` at the start of the input.
@@ -146,13 +146,13 @@ expression is the same as result of the expression so parenthesized.
 
 For example*
 
-* The parser `{/ (@foo @bar) /}` is equivalent to the parser
-  `{/ @foo @bar /}`.
+* The parser `{: (@foo @bar) :}` is equivalent to the parser
+  `{: @foo @bar :}`.
 
-* The parser `{/ (@foo | @bar) @baz /}` is equivalent to the parser
-  `{/ @foo @baz | @bar @baz /}`.
+* The parser `{: (@foo | @bar) @baz :}` is equivalent to the parser
+  `{: @foo @baz | @bar @baz :}`.
 
-* The parser `{/ zamboni=(@foo | @bar) X }` will match either a `@foo`
+* The parser `{: zamboni=(@foo | @bar) X }` will match either a `@foo`
   token or a `@bar` token, and at the point marked `X` a variable named
   `zamboni` will be bound with the result of parsing the `@foo`-or-`@bar`.
 
@@ -164,7 +164,7 @@ is identical to whatever that other parsing function returns.
 
 For example:
 
-* The parser `{/ foo /}` will match whatever `foo` matches,
+* The parser `{: foo :}` will match whatever `foo` matches,
   assuming that `foo` is a properly-written parser function. The yielded
   result will be the same as the `foo` parser's yield.
 
@@ -181,7 +181,7 @@ token forms `@type` or `@"type"`. This will succeed in matching any
 token whose type tag is as given, yielding that token directly
 (including any payload data) as the result.
 
-For example, the parser `{/ @foo /}` will match the token list
+For example, the parser `{: @foo :}` will match the token list
 `[@foo, @bar]`, resulting in the yielded value `@foo` and a
 remainder of `[@bar]`.
 
@@ -199,10 +199,10 @@ tag is the matched string.
 
 For example:
 
-* The parser `{/ "f" /}` will match the string `"foobar"`, resulting in
+* The parser `{: "f" :}` will match the string `"foobar"`, resulting in
 the yielded value `@f` and a remainder of `"oobar"`.
 
-* The parser `{/ "foo" /}` will match the string `"foobar"`, resulting in
+* The parser `{: "foo" :}` will match the string `"foobar"`, resulting in
 the yielded value `@foo` and a remainder of `"bar"`.
 
 #### Matching an arbitrary terminal item (terminal)
@@ -210,7 +210,7 @@ the yielded value `@foo` and a remainder of `"bar"`.
 To match an arbitrary terminal item (character or token), use a
 plain dot (`.`).
 
-For example, the parser `{/ . . . /}` matches an arbitrary
+For example, the parser `{: . . . :}` matches an arbitrary
 sequence of three terminals, with the result being the value of the
 third terminal.
 
@@ -220,7 +220,7 @@ To match the end of input, use a not-dot (`!.`). This only ever matches
 when there is no input available (that is, when the input is `[]`). When
 matched, this always yields the result value `null`.
 
-For example, the parser `{/ "foo" !. /}` will match the string `"foo"` but
+For example, the parser `{: "foo" !. :}` will match the string `"foo"` but
 only if it's at the end of input, resulting in the yielded value `null`
 and a remainder of `[]`.
 
@@ -232,10 +232,10 @@ yielding the result value `null`.
 
 For example:
 
-* The parser `{/ () /}` always succeeds, resulting in the yielded
+* The parser `{: () :}` always succeeds, resulting in the yielded
   value `null`.
 
-* The parser `{/ "foo" | () /}` always succeeds, resulting in the yielded
+* The parser `{: "foo" | () :}` always succeeds, resulting in the yielded
   value `@foo` if the input begins with `"foo"`, or resulting in the
   yielded value `null` if not.
 
@@ -257,16 +257,16 @@ a set (`![ ... ]`), which never consumes input (see above for details).
 
 For example:
 
-* The parser `{/ ["blort"] /}` or its equivalent `{/ ["b" "l" "o" "r" "t"] /}`
+* The parser `{: ["blort"] :}` or its equivalent `{: ["b" "l" "o" "r" "t"] :}`
   will match any of the characters `b` `l` `o` `r` or `t`.
 
-* The parser `{/ [! "\n"] /}` will match any terminal but a newline.
+* The parser `{: [! "\n"] :}` will match any terminal but a newline.
 
-* The parser `{/ ["A".."Z"] /}` will match any upper-case ASCII letter.
+* The parser `{: ["A".."Z"] :}` will match any upper-case ASCII letter.
 
-* The parser `{/ [@foo @bar] /}` will match either a `@foo` or a `@bar` token.
+* The parser `{: [@foo @bar] :}` will match either a `@foo` or a `@bar` token.
 
-* The parser `{/ [! @foo @bar] /}` will match any terminal but a `@foo`
+* The parser `{: [! @foo @bar] :}` will match any terminal but a `@foo`
   or a `@bar` token.
 
 Future direction: It may become possible to name symbolic character
@@ -286,16 +286,16 @@ code block are available to be used in the code block.
 
 For example:
 
-* The parser `{/ { <> 23 } /}` will always succeed, yielding the int
+* The parser `{: { <> 23 } :}` will always succeed, yielding the int
   value `23` and consuming no input.
 
-* The parser `{/ { "stuff" } /}` will always fail, since the code block never
+* The parser `{: { "stuff" } :}` will always fail, since the code block never
   yields a value.
 
-* The parser `{/ f=@foo { <> [[[f]]] } /}` will match the input `[@foo @bar]`,
+* The parser `{: f=@foo { <> [[[f]]] } :}` will match the input `[@foo @bar]`,
   resulting in the yielded value `[[[@foo]]]` and a remainder of `[@bar]`.
 
-* The parser `{/ f=@foo { <out> -> <out> [[[f]]] } /}` is just like the
+* The parser `{: f=@foo { <out> -> <out> [[[f]]] } :}` is just like the
   previous example, except it is written with an explicit yield definition.
 
 #### Running code to produce a parser value
@@ -316,7 +316,7 @@ parser rules, such as:
 
 ```
 def parRecursive;
-parRecursive := {/ "x" %parRecursive "y" | () /};
+parRecursive := {: "x" %parRecursive "y" | () :};
 ```
 
 Without the `%`, the above would fail because `parRecursive` isn't yet
