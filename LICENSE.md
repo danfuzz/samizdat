@@ -22,14 +22,12 @@ Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 The rationale for using this header is as follows:
 
-* The long header is annoyingly long. This header conveys the essentials
-  of year, author identification, name of license, and link to full
-  details.
+* The long header is annoyingly long. This header conveys the essentials.
 * The years are listed as a range, since the copyright is really for the
   collection and not for each file individually.
-* The identical header can be used for every file. This makes it easy
-  to check a file for correctness, and there is no concern about
-  inadvertently putting the wrong year on a particular file.
+* Comment prefix aside, the same exact header text can be used for every file.
+  This makes it easy to check a file for correctness, and there is no concern
+  about inadvertently putting the wrong year on a particular file.
 * Although it does require an annual update, this is easily scripted
   and in fact has been done so in [etc/update-copyright](etc/update-copyright).
 

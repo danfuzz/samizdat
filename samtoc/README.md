@@ -13,7 +13,7 @@ convenience), or it can limit itself to producing C code. The
 scripts, can be used to perform compilation of C code in the proper manner
 (and is in fact what `samtoc` itself uses when asked to fully compile code).
 
-As a commandline tool, `samtoc` accepts any number of files to process and
+As a command-line tool, `samtoc` accepts any number of files to process and
 takes the following options:
 
 * `--help` &mdash; Emit a short help message.

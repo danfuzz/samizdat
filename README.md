@@ -10,10 +10,10 @@ family lineage from all of [ALGOL](http://en.wikipedia.org/wiki/ALGOL),
 [Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is
 intended that the language be an attractive target for use in
 text processing, free-form data structure manipulation, and general
-systems programming.
+higher-level systems programming.
 
 Find lots of documentation in [the doc/ directory](doc), including
-a handful of [shout-outs](doc/shout-outs.md) that may help understand
+a handful of [shout-outs](doc/notes/shout-outs.md) that may help understand
 where the system is coming from (both literally and figuratively).
 
 
