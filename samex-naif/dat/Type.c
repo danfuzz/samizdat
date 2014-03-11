@@ -305,13 +305,9 @@ zint typeIndexOf(zvalue value) {
 }
 
 /* Documented in header. */
-bool typeIsIdentified(zvalue typeOrName) {
-    if (!isType(typeOrName)) {
-        // Transparent types are not identified.
-        return false;
-    }
-
-    return getInfo(typeOrName)->identified;
+bool typeIsIdentified(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->identified;
 }
 
 /* Documented in header. */
@@ -329,8 +325,9 @@ zvalue typeOf_new(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue typeParent(zvalue typeOrName) {
-    return isType(typeOrName) ? getInfo(typeOrName)->parent : TYPE_Value;
+zvalue typeParent(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->parent;
 }
 
 

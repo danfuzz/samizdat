@@ -82,7 +82,7 @@ zint typeIndexOf(zvalue value);
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.
  */
-bool typeIsIdentified(zvalue typeOrName);
+bool typeIsIdentified(zvalue type);
 
 /**
  * Gets the overt data type of the given value. `value` must be a
@@ -98,10 +98,8 @@ zvalue typeOf(zvalue value);
 zvalue typeOf_new(zvalue value);
 
 /**
- * Gets the parent type of the given type. If given a non-`Type` value for
- * `type`, this takes it to name a transparent derived type; as such it
- * will return `TYPE_Value` in these cases.
+ * Gets the parent type of the given type.
  */
-zvalue typeParent(zvalue typeOrName);
+zvalue typeParent(zvalue type);
 
 #endif
