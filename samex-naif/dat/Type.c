@@ -184,14 +184,7 @@ static zvalue trueTypeFromTypeOrName(zvalue typeOrName) {
         return typeOrName;
     }
 
-    zvalue result = findType(typeOrName, NULL);
-
-    if (result == NULL) {
-        result = makeType(typeOrName, NULL, false);
-        derivBind(result);
-    }
-
-    return result;
+    return typeFromName(typeOrName);
 }
 
 /**
@@ -284,6 +277,18 @@ bool hasType(zvalue value, zvalue typeOrName) {
 /* Documented in header. */
 bool haveSameType(zvalue v1, zvalue v2) {
     return typeEq(trueTypeOf(v1), trueTypeOf(v2));
+}
+
+/* Documented in header. */
+zvalue typeFromName(zvalue name) {
+    zvalue result = findType(name, NULL);
+
+    if (result == NULL) {
+        result = makeType(name, NULL, false);
+        derivBind(result);
+    }
+
+    return result;
 }
 
 /* Documented in header. */

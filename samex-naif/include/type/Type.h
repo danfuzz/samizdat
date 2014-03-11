@@ -56,6 +56,11 @@ bool hasType(zvalue value, zvalue typeOrName);
 bool haveSameType(zvalue v1, zvalue v2);
 
 /**
+ * Returns the type value for the transparent type with the given name.
+ */
+zvalue typeFromName(zvalue name);
+
+/**
  * Returns the unique index for the given type (or transparent type name).
  */
 zint typeIndex(zvalue typeOrName);
