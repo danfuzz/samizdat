@@ -71,8 +71,15 @@ FUN_IMPL_DECL(lt) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(makeValue) {
+    zvalue type = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
-    return makeTransValue(args[0], value);
+
+    // TODO: Remove this when types-per-se are strictly required.
+    if (!hasType(type, TYPE_Type)) {
+        type = typeFromName(type);
+    }
+
+    return makeValue_new(type, value, NULL);
 }
 
 /* Documented in spec. */
