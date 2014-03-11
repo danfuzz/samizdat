@@ -205,12 +205,13 @@ METH_IMPL(Sequence, nextValue) {
         return NULL;
     } else {
         boxStore(box, first);
-        return makeTransValue(
-            STR_SequenceGenerator,
+        return makeValue_new(
+            TYPE_SequenceGenerator,
             mapFromArgs(
                 STR_seq,   seq,
                 STR_index, intFromZint(1),
-                NULL));
+                NULL),
+            NULL);
     }
 }
 

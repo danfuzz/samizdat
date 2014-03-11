@@ -45,13 +45,13 @@ TOK(fn,                "fn");
 TOK(return,            "return");
 TOK(var,               "var");
 
+TYP(MapGenerator,      "MapGenerator");
+TYP(SequenceGenerator, "SequenceGenerator");
 TYP(varBind,           "varBind");
 TYP(varDef,            "varDef");
 TYP(varDefMutable,     "varDefMutable");
 TYP(varRef,            "varRef");
 
-STR(MapGenerator,      "MapGenerator");
-STR(SequenceGenerator, "SequenceGenerator");
 STR(actuals,           "actuals");
 STR(apply,             "apply");
 STR(call,              "call");
