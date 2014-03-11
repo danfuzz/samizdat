@@ -65,7 +65,7 @@ fn intFromDigitList(base, digits) {
 
 ## Parses a non-zero amount of whitespace and comments.
 ## **Note:** The yielded result is always ignored.
-def tokWhitespace = {/
+def tokWhitespace = {:
     ## The lookahead here is to avoid the bulk of this rule if there's
     ## no chance we're actually looking at whitespace.
     &["# \n"]
@@ -79,12 +79,12 @@ def tokWhitespace = {/
         &"#:" ## Avoid calling the rule unless we know it will match.
         %tokMultilineComment
     )+
-/};
+:};
 
 ## Parses punctuation and operators.
 ##
 ## **Note:** This rule is expanded significantly in Layer 2.
-def tokPunctuation = {/
+def tokPunctuation = {:
     ## The lookahead here is done to avoid bothering with the choice
     ## expression, except when we have a definite match. The second
     ## string in the lookahead calls out the characters that are only
@@ -118,7 +118,7 @@ def tokPunctuation = {/
         ## Single-character punctuation / operator.
         .
     )
-/};
+:};
 
 ## Parses an integer literal.
 ##
@@ -130,7 +130,7 @@ def tokInt;
 ##
 ## **Note:** Additional rules for string character parsing are defined
 ## in Layer 2.
-def tokStringPart = {/
+def tokStringPart = {:
     (
         chars = [! "\\" "\"" "\n"]+
         { <> Peg::stringFromTokenList(chars) }
@@ -153,10 +153,10 @@ def tokStringPart = {/
 |
     ## Introduced in Layer 2.
     %tokStringPart2
-/};
+:};
 
 ## Parses a quoted string.
-def tokString = {/
+def tokString = {:
     "\""
     parts = tokStringPart*
 
@@ -166,10 +166,10 @@ def tokString = {/
     |
         { <> @error("Unterminated string literal.") }
     )
-/};
+:};
 
 ## Parses an identifier (in the usual form). This also parses keywords.
-def tokIdentifier = {/
+def tokIdentifier = {:
     one = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
 
@@ -178,19 +178,19 @@ def tokIdentifier = {/
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @identifier(string) }
     }
-/};
+:};
 
 ## Parses the quoted-string identifier form.
-def tokQuotedIdentifier = {/
+def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
     { <> @identifier(dataOf(s)) }
-/};
+:};
 
 ## "Parses" an unrecognized character. This also consumes any further
 ## characters on the same line, in an attempt to resynch the input.
-def tokError = {/
+def tokError = {:
     badCh = .
     [! "\n"]*
 
@@ -198,10 +198,10 @@ def tokError = {/
         def msg = cat("Unrecognized character: ", typeOf(badCh));
         <> @error(msg)
     }
-/};
+:};
 
 ## Parses an arbitrary token or error.
-def tokToken = {/
+def tokToken = {:
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     ## This needs to be listed after the quoted identifier rule, to
@@ -215,15 +215,15 @@ def tokToken = {/
     %tokInt
 |
     tokError
-/};
+:};
 
 ## Parses a file of tokens, yielding a list of them.
-def tokFile = {/
+def tokFile = {:
     tokens = (tokWhitespace? tokToken)*
     tokWhitespace?
 
     { <> tokens }
-/};
+:};
 
 
 ##
@@ -238,7 +238,7 @@ def OPEN_CLOSE_MAP = {
     "(":  ")",
     "[":  "]",
     "{":  "}",
-    "{/": "/}"
+    "{:": ":}"
 };
 
 ## Processes a list of `stringPart` elements, yielding a literal `string`
@@ -300,7 +300,7 @@ fn processStringParts(parts) {
 };
 
 ## Parses a `#: ... :#` comment, with nesting.
-tokMultilineComment := {/
+tokMultilineComment := {:
     "#:"
 
     (
@@ -312,28 +312,28 @@ tokMultilineComment := {/
     )*
 
     ":#"
-/};
+:};
 
 ## Parses a single binary digit (or spacer), returning its value.
-def tokBinDigit = {/
+def tokBinDigit = {:
     ch = ["_01"]
     { <> intFromDigitChar(ch) }
-/};
+:};
 
 ## Parses a single decimal digit (or spacer), returning its value.
-def tokDecDigit = {/
+def tokDecDigit = {:
     ch = ["_" "0".."9"]
     { <> intFromDigitChar(ch) }
-/};
+:};
 
 ## Parses a single hexadecimal digit (or spacer), returning its value.
-def tokHexDigit = {/
+def tokHexDigit = {:
     ch = ["_" "0".."9" "a".."f" "A".."F"]
     { <> intFromDigitChar(ch) }
-/};
+:};
 
 ## Parses an integer literal.
-tokInt := {/
+tokInt := {:
     base = (
         "0x" { <> 16 }
     |
@@ -354,18 +354,18 @@ tokInt := {/
     )
 
     { <> @int(intFromDigitList(base, digits)) }
-/};
+:};
 
 ## Parses a single hexadecimal character. This is called during `\x...;`
 ## parsing.
-def tokHexChar = {/
+def tokHexChar = {:
     digits = tokHexDigit+
     { <> toString(intFromDigitList(16, digits)) }
-/};
+:};
 
 ## Parses a single entity-named character. This is called during `\&...;`
 ## parsing.
-def tokNamedChar = {/
+def tokNamedChar = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
         def name = Peg::stringFromTokenList(chars);
@@ -379,13 +379,13 @@ def tokNamedChar = {/
     "#"
     digits = tokDecDigit+
     { <> toString(intFromDigitList(10, digits)) }
-/};
+:};
 
 ## Parses the inner portion of a string interpolation expression. This
 ## captures a list of inner tokens, ending when parentheses and braces are
 ## balanced out (and ignoring other could-be-matched delimiter tokens).
 def tokStringInterpolation;
-tokStringInterpolation := {/
+tokStringInterpolation := {:
     &["({["]
     open = tokToken
     expectClose = { <> get(OPEN_CLOSE_MAP, typeOf(open)) }
@@ -394,7 +394,7 @@ tokStringInterpolation := {/
         tokWhitespace?
         (
             !["(){}[]"]
-            !"/}"
+            !":}"
             t = tokToken
             { <> [t] }
         |
@@ -409,10 +409,10 @@ tokStringInterpolation := {/
         <> ifIs { <> hasType(close, expectClose) }
             { <> [open, cat([], tokens*)*, close] }
     }
-/};
+:};
 
 ## Additional `stringPart` definitions for Layer 2.
-tokStringPart2 := {/
+tokStringPart2 := {:
     "\\"
     (
         "/"  { <> "" }
@@ -462,7 +462,7 @@ tokStringPart2 := {/
     |
         { <> @error("Invalid character literal escape sequence.") }
     )
-/};
+:};
 
 
 ##
