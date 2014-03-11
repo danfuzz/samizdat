@@ -79,7 +79,7 @@ def tokPunctuation = {/
     ## expression, except when we have a definite match. The second
     ## string in the lookahead calls out the characters that are only
     ## needed in Layer 1. Yet more characters are included in Layer 2.
-    &["@:.,=-+?;*<>{}()[]" "/&|!%"]
+    &["@:.,=-+?;*<>{}()[]" "&|!%"]
 
     (
         ## Layer 2 introduces additional definitions here.
@@ -87,7 +87,7 @@ def tokPunctuation = {/
         "->" | ":=" | "::" | ".." | "<>"
     |
         ## These are introduced in Layer 1.
-        "{/" | "/}"
+        "{:" | ":}"
     ## |
         ## Layer 2 introduces additional definitions here.
     |

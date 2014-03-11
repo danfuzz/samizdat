@@ -491,7 +491,7 @@ def parTerm = {/
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
-    &@"{/" %parParser
+    &@"{:" %parParser
 ## |
     ## Note: There are additional term rules in Samizdat Layer 2.
 /};
@@ -707,9 +707,9 @@ def PEX_TYPES = {
 
 ## Parses a parser function.
 parParser := {/
-    @"{/"
+    @"{:"
     pex = %parChoicePex
-    @"/}"
+    @":}"
     { <> @parser{value: pex} }
 /};
 

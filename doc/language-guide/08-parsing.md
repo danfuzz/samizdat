@@ -27,7 +27,7 @@ expression forms, they are is in precedence, from loosest to tightest.
 #### Parsing functions
 
 Parsing functions are written as a single parsing expression inside
-"parsing braces" `{/ ... /}`. Just as regular braces enclose an anonymous
+"parsing braces" `{: ... :}`. Just as regular braces enclose an anonymous
 function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
