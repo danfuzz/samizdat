@@ -171,24 +171,16 @@ inline zvalue trueTypeOf(zvalue value) {
 }
 
 /**
- * Gets the `Type` per se from a type (which may be the name of a transparent
- * derived type) and secret. Returns `NULL` if the type and secret don't
- * match.
+ * Checks whether the given value matches the secret of the given type.
+ * `secret` may be passed as `NULL`.
  */
-zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret);
+bool typeHasSecret(zvalue type, zvalue secret);
 
 /**
  * Returns true iff the given type is a derived type (whether opaque or
- * transparent). This works (returns `true`) if given a non-`Type` value.
+ * transparent).
  */
-bool typeIsDerived(zvalue typeOrName);
-
-/**
- * Checks whether the given value matches the secret of the given type.
- * `secret` may be passed as `NULL`. This works (treating it as a transparent
- * type) if given a non-`Type` value for `typeOrName`.
- */
-bool typeSecretIs(zvalue typeOrName, zvalue secret);
+bool typeIsDerived(zvalue type);
 
 
 #endif

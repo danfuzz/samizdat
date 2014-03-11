@@ -64,6 +64,16 @@ zvalue dataOf(zvalue value);
 
 /**
  * Returns a derived value with the given type tag, and with the given
+ * optional data payload (`NULL` indicating a type-only value). `type` must
+ * be a value of type `Type`, and the result is a value of the indicated type.
+ * If `type` represents an opaque type, then `secret` must match the secret
+ * known by `type`. If `type` is a transparent type, then `secret` must be
+ * `NULL`.
+ */
+zvalue makeValue_new(zvalue type, zvalue data, zvalue secret);
+
+/**
+ * Returns a derived value with the given type tag, and with the given
  * optional data payload (`NULL` indicating a type-only value). `type` and
  * `secret` must be as follows:
  *

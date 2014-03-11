@@ -9,6 +9,7 @@
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
+#include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -41,11 +42,26 @@ static DerivInfo *getInfo(zvalue value) {
 zvalue valDataOf(zvalue value, zvalue secret) {
     zvalue type = trueTypeOf(value);
 
-    if (typeIsDerived(type) && typeSecretIs(type, secret)) {
+    if (typeIsDerived(type) && typeHasSecret(type, secret)) {
         return getInfo(value)->data;
     } else {
         return NULL;
     }
+}
+
+/* Documented in header. */
+zvalue makeValue_new(zvalue type, zvalue data, zvalue secret) {
+    assertValidOrNull(data);
+    assertValidOrNull(secret);
+
+    if (!typeHasSecret(type, secret)) {
+        die("Attempt to create derived value with incorrect secret.");
+    }
+
+    zvalue result = datAllocValue(type, sizeof(DerivInfo));
+    ((DerivInfo *) datPayload(result))->data = data;
+
+    return result;
 }
 
 /* Documented in header. */
@@ -54,18 +70,11 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
     assertValidOrNull(data);
     assertValidOrNull(secret);
 
-    // Make sure the secrets match. In the case of a transparent type,
-    // this both converts to a `Type` and checks that `secret` is `NULL`.
-    zvalue trueType = typeFromTypeAndSecret(type, secret);
-
-    if (trueType == NULL) {
-        die("Attempt to create derived value with incorrect secret.");
+    if (!hasType(type, TYPE_Type)) {
+        type = typeFromName(type);
     }
 
-    zvalue result = datAllocValue(trueType, sizeof(DerivInfo));
-    ((DerivInfo *) datPayload(result))->data = data;
-
-    return result;
+    return makeValue_new(type, data, secret);
 }
 
 /* Documented in header. */

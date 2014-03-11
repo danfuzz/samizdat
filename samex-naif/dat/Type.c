@@ -176,6 +176,15 @@ static bool isType(zvalue value) {
 }
 
 /**
+ * Asserts `isType(value)`.
+ */
+static void assertHasTypeType(zvalue value) {
+    if (!isType(value)) {
+        die("Expected type Type; got %s.", valDebugString(value));
+    }
+}
+
+/**
  * Returns the `Type` per se for the given in-model "type," the latter which
  * may be an arbitrary value representing a transparent type by name.
  */
@@ -207,21 +216,15 @@ extern zint indexFromTrueType(zvalue type);
 extern zvalue trueTypeOf(zvalue value);
 
 /* Documented in header. */
-zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
-    zvalue type = trueTypeFromTypeOrName(typeOrName);
-    return typeSecretIs(type, secret) ? type : NULL;
+bool typeHasSecret(zvalue type, zvalue secret) {
+    assertHasTypeType(type);
+    return valEq(getInfo(type)->secret, secret);
 }
 
 /* Documented in header. */
-bool typeIsDerived(zvalue typeOrName) {
-    return isType(typeOrName) ? getInfo(typeOrName)->derived : true;
-}
-
-/* Documented in header. */
-bool typeSecretIs(zvalue typeOrName, zvalue secret) {
-    zvalue typeSecret =
-        isType(typeOrName) ? getInfo(typeOrName)->secret : NULL;
-    return valEq(typeSecret, secret);
+bool typeIsDerived(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->derived;
 }
 
 

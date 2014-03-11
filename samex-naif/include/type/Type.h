@@ -61,6 +61,12 @@ bool haveSameType(zvalue v1, zvalue v2);
 zvalue typeFromName(zvalue name);
 
 /**
+ * Returns `true` if the given `type` has the indicated `secret`. `secret`
+ * may be passed as `NULL`.
+ */
+bool typeHasSecret(zvalue type, zvalue secret);
+
+/**
  * Returns the unique index for the given type (or transparent type name).
  */
 zint typeIndex(zvalue typeOrName);
