@@ -328,15 +328,15 @@ static zvalue withoutInterpolate(zvalue node) {
 #define PARSE_STAR(name) parseStar(RULE(name), state)
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define PARSE_COMMA_SEQ(name) parseCommaSequence(RULE(name), state)
-#define MATCH(typeOf) readMatch(state, (STR_##typeOf))
-#define PEEK(typeOf) peekMatch(state, (STR_##typeOf))
+#define MATCH(type) readMatch(state, (STR_##type))
+#define PEEK(type) peekMatch(state, (STR_##type))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
 #define REJECT() do { RESET(); return NULL; } while (0)
 #define REJECT_IF(condition) \
     do { if ((condition)) REJECT(); } while (0)
-#define MATCH_OR_REJECT(typeOf) \
-    tempResult = MATCH(typeOf); \
+#define MATCH_OR_REJECT(type) \
+    tempResult = MATCH(type); \
     REJECT_IF(tempResult == NULL)
 #define PARSE_OR_REJECT(name) \
     tempResult = PARSE(name); \
