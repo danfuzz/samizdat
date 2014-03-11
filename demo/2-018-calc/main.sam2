@@ -94,13 +94,13 @@ fn applyShuntingYard(initialValue, opValues) {
 def expression;
 
 ## Parses a single digit, yielding its value as an int.
-def digit = {/
+def digit = {:
     ch = ["0".."9"]
     { <> toInt(typeOf(ch)) - toInt("0") }
-/};
+:};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.
-def number = {/
+def number = {:
     digits = digit+
     {
         var result = 0;
@@ -109,44 +109,44 @@ def number = {/
         };
         <> result
     }
-/};
+:};
 
 ## Parses an expression term. In this case it's either a number or a
 ## parenthesized expression. Yields the number or evaluated expression result,
 ## respectively.
-def term = {/
+def term = {:
     number
 |
     "("
     ex = %expression
     ")"
     { <> ex }
-/};
+:};
 
 ## Parses a unary (in this case, prefix) operation, yielding its corresponding
 ## function.
-def unaryOp = {/
+def unaryOp = {:
     op = ["+-"]
     { <> UNARY_OPS[typeOf(op)] }
-/};
+:};
 
 ## Parses a unary expression, that is, a series of unary operators followed
 ## by a term, yielding the evaluated result.
-def unaryExpression = {/
+def unaryExpression = {:
     ops = unaryOp*
     ex = term
     { <> applyAll(ex, ^ops) }
-/};
+:};
 
 ## Parses a binary operation, yielding a map of precedence and function.
-def binaryOp = {/
+def binaryOp = {:
     op = ["+-*/%"]
     { <> BINARY_OPS[typeOf(op)] }
-/};
+:};
 
 ## Parses a chained sequence of unary expressions separated by binary
 ## operators.
-expression := {/
+expression := {:
     firstValue = unaryExpression
     opValues = (
         op = binaryOp
@@ -154,11 +154,11 @@ expression := {/
         { <> {op, value} }
     )*
     { <> applyShuntingYard(firstValue, opValues) }
-/};
+:};
 
 ## Evaluates all the expressions passed to it, printing the evaluated results
 ## in order. Each expression is expected to be terminated with a newline.
-def evalExpressions = {/
+def evalExpressions = {:
     (
         ex = expression
         "\n"
@@ -168,7 +168,7 @@ def evalExpressions = {/
             <> null
         }
     )*
-/};
+:};
 
 
 ##
