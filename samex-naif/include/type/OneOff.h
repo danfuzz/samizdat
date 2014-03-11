@@ -33,6 +33,11 @@ extern zvalue GFN_toString;
 extern zvalue GFN_valueOf;
 
 /**
+ * Calls `nameOf` on the given value.
+ */
+zvalue nameOf(zvalue value);
+
+/**
  * Calls `toString` on the given value, returning the result as a `char *`.
  * The caller is responsible for `free()`ing the result. As a convenience,
  * this converts `NULL` into `"(null)"`.

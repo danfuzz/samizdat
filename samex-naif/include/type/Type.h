@@ -12,6 +12,7 @@
 #define _TYPE_TYPE_H_
 
 #include "dat.h"
+#include "type/OneOff.h"
 
 #include <stdbool.h>
 
