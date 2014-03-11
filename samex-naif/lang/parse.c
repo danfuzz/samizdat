@@ -61,14 +61,12 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     }
 
     zvalue result = seqNth(state->tokens, state->at);
-    zvalue resultType = typeOf(result);
 
-    if (!valEq(type, resultType)) {
+    if (!hasType(result, type)) {
         return NULL;
     }
 
     state->at++;
-
     return result;
 }
 
