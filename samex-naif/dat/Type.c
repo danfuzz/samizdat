@@ -324,6 +324,11 @@ zvalue typeOf(zvalue value) {
 }
 
 /* Documented in header. */
+zvalue typeOf_new(zvalue value) {
+    return trueTypeOf(value);
+}
+
+/* Documented in header. */
 zvalue typeParent(zvalue typeOrName) {
     return isType(typeOrName) ? getInfo(typeOrName)->parent : TYPE_Value;
 }

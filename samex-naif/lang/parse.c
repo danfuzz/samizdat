@@ -310,9 +310,10 @@ static zvalue makeOptValue(zvalue expression) {
 
 /* Documented in spec. */
 static zvalue withoutInterpolate(zvalue node) {
-    return makeTransValue(
-        typeOf(node),
-        collDel(dataOf(node), STR_interpolate));
+    return makeValue_new(
+        typeOf_new(node),
+        collDel(dataOf(node), STR_interpolate),
+        NULL);
 }
 
 

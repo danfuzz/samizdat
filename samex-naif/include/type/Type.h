@@ -91,6 +91,12 @@ bool typeIsIdentified(zvalue typeOrName);
 zvalue typeOf(zvalue value);
 
 /**
+ * Gets the type of the given value. `value` must be a valid value (in
+ * particular, non-`NULL`). The return value is of type `Type`.
+ */
+zvalue typeOf_new(zvalue value);
+
+/**
  * Gets the parent type of the given type. If given a non-`Type` value for
  * `type`, this takes it to name a transparent derived type; as such it
  * will return `TYPE_Value` in these cases.
