@@ -24,14 +24,14 @@ fn makeComment(text, optPayload?) {
 
 genericBind(
     flatten,
-    "Comment",
+    @@Comment,
     fn Comment_flatten(tree) {
         <> dataOf(tree)::flat
     });
 
 genericBind(
     indent,
-    "Comment",
+    @@Comment,
     fn Comment_indent(tree, level, maxColumns) {
         def data = dataOf(tree);
         def prefix = indentation(level);

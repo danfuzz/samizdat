@@ -20,14 +20,14 @@ fn makeAssign(target, value) {
 
 genericBind(
     flatten,
-    "Assign",
+    @@Assign,
     fn Assign_flatten(tree) {
         <> dataOf(tree)::flat
     });
 
 genericBind(
     indent,
-    "Assign",
+    @@Assign,
     fn Assign_indent(tree, level, maxColumns) {
         def data = dataOf(tree);
         def prefix = indentation(level);

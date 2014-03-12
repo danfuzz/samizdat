@@ -18,14 +18,14 @@ fn makeStatement(tree) {
 
 genericBind(
     flatten,
-    "Statement",
+    @@Statement,
     fn Statement_flatten(tree) {
         <> dataOf(tree)::flat
     });
 
 genericBind(
     indent,
-    "Statement",
+    @@Statement,
     fn Statement_indent(tree, level, maxColumns) {
         def data = dataOf(tree);
         def prefix = indentation(level);

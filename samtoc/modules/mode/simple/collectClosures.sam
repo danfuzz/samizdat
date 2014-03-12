@@ -25,7 +25,7 @@ def bodies = makeRegularGeneric("bodies", 2, 2);
 
 genericBind(
     bodies,
-    "apply",
+    @@apply,
     fn apply_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);
         def actuals = bodies(node.actuals, bodiesBox);
@@ -34,7 +34,7 @@ genericBind(
 
 genericBind(
     bodies,
-    "call",
+    @@call,
     fn call_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);
         def actuals = [ a in node.actuals <> bodies(a, bodiesBox) ];
@@ -43,7 +43,7 @@ genericBind(
 
 genericBind(
     bodies,
-    "closure",
+    @@closure,
     fn closure_bodies(node, bodiesBox) {
         def statements = [ s in node.statements <> bodies(s, bodiesBox) ];
         def optYield = ((def y = node.yield) & bodies(y, bodiesBox))?;
@@ -70,7 +70,7 @@ genericBind(
 
 genericBind(
     bodies,
-    "jump",
+    @@jump,
     fn jump_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);
         def optValue = (def v = node.value)
@@ -82,14 +82,14 @@ genericBind(
 
 genericBind(
     bodies,
-    "literalRef",
+    @@literalRef,
     fn literalRef_bodies(node, bodiesBox) {
         <> node
     });
 
 genericBind(
     bodies,
-    "varBind",
+    @@varBind,
     fn varBind_bodies(node, bodiesBox) {
         def value = bodies(node.value, bodiesBox);
         <> @varBind{name: node.name, value}
@@ -97,7 +97,7 @@ genericBind(
 
 genericBind(
     bodies,
-    "varDef",
+    @@varDef,
     fn varDef_bodies(node, bodiesBox) {
         def value = ifValue { <> node.value }
             { value <> {value: bodies(value, bodiesBox)} }
@@ -107,7 +107,7 @@ genericBind(
 
 genericBind(
     bodies,
-    "varDefMutable",
+    @@varDefMutable,
     fn varDefMutable_bodies(node, bodiesBox) {
         def value = ifValue { <> node.value }
             { value <> {value: bodies(value, bodiesBox)} }
@@ -117,7 +117,7 @@ genericBind(
 
 genericBind(
     bodies,
-    "varRef",
+    @@varRef,
     fn varRef_bodies(node, bodiesBox) {
         <> @varRef{name: node.name}
     });

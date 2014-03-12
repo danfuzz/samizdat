@@ -58,7 +58,7 @@ fn varDefCommon(name, value, varsBox) {
 
 genericBind(
     translate,
-    "apply",
+    @@apply,
     fn apply_translate(node, varsBox) {
         <> CodeGen::makeCall("funApply",
             translate(node.function, varsBox),
@@ -67,7 +67,7 @@ genericBind(
 
 genericBind(
     translate,
-    "call",
+    @@call,
     fn call_translate(node, varsBox) {
         def actuals = (a in node.actuals <> translate(a, varsBox));
         <> CodeGen::makeCall("FUN_CALL",
@@ -76,14 +76,14 @@ genericBind(
 
 genericBind(
     translate,
-    "closure",
+    @@closure,
     fn closure_translate(node, varsBox) {
         Io1::die("Cannot translate raw `closure` node.")
     });
 
 genericBind(
     translate,
-    "closureRef",
+    @@closureRef,
     fn closureRef_translate(node, varsBox) {
         ## This passes each of the `varRefs` as an argument to the
         ## closure maker.
@@ -97,7 +97,7 @@ genericBind(
 
 genericBind(
     translate,
-    "jump",
+    @@jump,
     fn call_translate(node, varsBox) {
         def value = (def v = node.value)
             & translate(v, varsBox)
@@ -108,14 +108,14 @@ genericBind(
 
 genericBind(
     translate,
-    "literalRef",
+    @@literalRef,
     fn literalRef_translate(node, varsBox) {
         <> "LIT_\(node.id)"
     });
 
 genericBind(
     translate,
-    "varBind",
+    @@varBind,
     fn varBind_translate(node, varsBox) {
         def name = node.name;
         def value = translate(node.value, varsBox);
@@ -128,7 +128,7 @@ genericBind(
 
 genericBind(
     translate,
-    "varDef",
+    @@varDef,
     fn varDef_translate(node, varsBox) {
         def value = (def v = node.value)
             & CodeGen::makeCall("makeResult", translate(v, varsBox))
@@ -139,7 +139,7 @@ genericBind(
 
 genericBind(
     translate,
-    "varDefMutable",
+    @@varDefMutable,
     fn varDefMutable_translate(node, varsBox) {
         def value = (def v = node.value)
             & translate(v, varsBox)
@@ -151,7 +151,7 @@ genericBind(
 
 genericBind(
     translate,
-    "varRef",
+    @@varRef,
     fn varRef_translate(node, varsBox) {
         def name = node.name;
         def vars = Box::fetch(varsBox);
