@@ -59,5 +59,6 @@
     totEq,
     totOrder,
     typeOf,
+    typeOf_new,
     valueOf
 }
