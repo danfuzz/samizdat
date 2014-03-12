@@ -716,7 +716,7 @@ DEF_PARSE(fnExpression) {
         return closure;
     }
 
-    zvalue mainClosure = makeValue(STR_closure,
+    zvalue mainClosure = makeValue(TYPE_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, listFrom1(makeVarDef(name, NULL)),
