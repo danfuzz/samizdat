@@ -50,6 +50,12 @@ Returns a `Type` instance which represents a transparent derived type
 with the given `name`. `name` can be an arbitrary value but is most
 typically a string.
 
+#### `typeIsTransparentDerived(type) <> type | void`
+
+Returns boolean true (returning `type` itself) if `type` is a transparent
+derived type. Returns boolean false (void) if `type` is any other kind of
+type.
+
 
 <br><br>
 ### In-Language Definitions

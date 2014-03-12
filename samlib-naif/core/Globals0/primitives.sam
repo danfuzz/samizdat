@@ -59,6 +59,7 @@
     totEq,
     totOrder,
     typeFromName,
+    typeIsTransparentDerived,
     typeOf,
     typeOf_new,
     valueOf

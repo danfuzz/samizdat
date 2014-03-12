@@ -96,6 +96,12 @@ FUN_IMPL_DECL(typeFromName) {
 }
 
 /* Documented in spec. */
+FUN_IMPL_DECL(typeIsTransparentDerived) {
+    zvalue type = args[0];
+    return typeIsTransparentDerived(type) ? type : NULL;
+}
+
+/* Documented in spec. */
 FUN_IMPL_DECL(typeOf) {
     // TODO: Remove this function when the high level model specifies
     // types-per-se.
