@@ -476,10 +476,14 @@ def parList = {:
 def parDeriv = {:
     @"@"
 
-    type = (parIdentifierString | parParenExpression)
+    typeName = (parIdentifierString | parParenExpression)
     value = (parParenExpression | parMap | parList)?
 
-    { <> makeCall(REFS::makeValue, type, value*) }
+    {
+        <> makeCall(REFS::makeValue,
+            makeCall(REFS::typeFromName, typeName),
+            value*)
+    }
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

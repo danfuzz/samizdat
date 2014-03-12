@@ -374,8 +374,10 @@ def parDeriv = Peg::makeMainSequence(
     Peg::makeToken("@"),
     Peg::makeChoice(parIdentifierString, parParenExpression),
     Peg::makeOpt(Peg::makeChoice(parParenExpression, parMap, parList)),
-    Peg::makeCode { ., type, value ->
-        <> makeCall(REFS::makeValue, type, value*)
+    Peg::makeCode { ., typeName, value ->
+        <> makeCall(REFS::makeValue,
+            makeCall(REFS::typeFromName, typeName),
+            value*)
     });
 
 ## Documented in spec.

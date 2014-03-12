@@ -82,6 +82,7 @@ STR(runCommandLine,    "runCommandLine");
 STR(seq,               "seq");
 STR(statements,        "statements");
 STR(top,               "top");
+STR(typeFromName,      "typeFromName");
 STR(value,             "value");
 STR(yield,             "yield");
 STR(yieldDef,          "yieldDef");

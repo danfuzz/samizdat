@@ -498,10 +498,14 @@ def parList = {:
 def parDeriv = {:
     @"@"
 
-    type = (parIdentifierString | parParenExpression)
+    typeName = (parIdentifierString | parParenExpression)
     value = (parParenExpression | parMap | parList)?
 
-    { <> makeCall(REFS::makeValue, type, value*) }
+    {
+        <> makeCall(REFS::makeValue,
+            makeCall(REFS::typeFromName, typeName),
+            value*)
+    }
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -1352,13 +1356,13 @@ def parIndexPostfix = {:
 
                 def startNode =
                     makeCall(REFS::makeValue,
-                        makeLiteral(typeNameOf(start)),
+                        makeLiteral(typeOf(start)),
                         dataOf(start));
 
                 def optEndNode = (ifValue { <> dataOf(end) }
                     { endData ->
                         <> makeCall(REFS::makeValue,
-                            makeLiteral(typeNameOf(end)),
+                            makeLiteral(typeOf(end)),
                             endData)
                     })?;
 

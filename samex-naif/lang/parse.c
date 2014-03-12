@@ -885,9 +885,9 @@ DEF_PARSE(deriv) {
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue type = PARSE(identifierString);
-    if (type == NULL) {
-        type = PARSE_OR_REJECT(parenExpression);
+    zvalue typeName = PARSE(identifierString);
+    if (typeName == NULL) {
+        typeName = PARSE_OR_REJECT(parenExpression);
     }
 
     // Value is optional; these are allowed to all fail.
@@ -895,9 +895,8 @@ DEF_PARSE(deriv) {
     if (value == NULL) value = PARSE(map);
     if (value == NULL) value = PARSE(list);
 
-    zvalue args = (value == NULL)
-        ? listFrom1(type)
-        : listFrom2(type, value);
+    zvalue type = makeCall(REFS(typeFromName), listFrom1(typeName));
+    zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
 
     return makeCall(REFS(makeValue), args);
 }
