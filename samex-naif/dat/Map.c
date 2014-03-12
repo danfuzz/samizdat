@@ -408,7 +408,7 @@ METH_IMPL(Map, nextValue) {
         return NULL;
     } else {
         boxStore(box, first);
-        return makeValue_new(
+        return makeValue(
             TYPE_MapGenerator,
             mapFromArgs(
                 STR_map,   map,

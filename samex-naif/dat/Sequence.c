@@ -205,7 +205,7 @@ METH_IMPL(Sequence, nextValue) {
         return NULL;
     } else {
         boxStore(box, first);
-        return makeValue_new(
+        return makeValue(
             TYPE_SequenceGenerator,
             mapFromArgs(
                 STR_seq,   seq,

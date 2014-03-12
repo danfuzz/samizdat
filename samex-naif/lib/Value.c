@@ -79,7 +79,7 @@ FUN_IMPL_DECL(makeValue) {
         type = typeFromName(type);
     }
 
-    return makeValue_new(type, value, NULL);
+    return makeValue(type, value, NULL);
 }
 
 /* Documented in spec. */

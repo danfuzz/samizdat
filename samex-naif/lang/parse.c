@@ -176,7 +176,7 @@ static zvalue makeApply(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeValue_new(TYPE_apply, value, NULL);
+    return makeValue(TYPE_apply, value, NULL);
 }
 
 /* Documented in spec. */
@@ -186,7 +186,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeValue_new(TYPE_call, value, NULL);
+    return makeValue(TYPE_call, value, NULL);
 }
 
 /**
@@ -245,7 +245,7 @@ static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 
 /* Documented in spec. */
 static zvalue makeInterpolate(zvalue node) {
-    return makeValue_new(TYPE_call,
+    return makeValue(TYPE_call,
         mapFrom3(
             STR_function,    REFS(interpolate),
             STR_actuals,     listFrom1(node),
@@ -255,19 +255,19 @@ static zvalue makeInterpolate(zvalue node) {
 
 /* Documented in spec. */
 static zvalue makeJump(zvalue function, zvalue optValue) {
-    return makeValue_new(TYPE_jump,
+    return makeValue(TYPE_jump,
         mapFrom2(STR_function, function, STR_value, optValue),
         NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeLiteral(zvalue value) {
-    return makeValue_new(TYPE_literal, mapFrom1(STR_value, value), NULL);
+    return makeValue(TYPE_literal, mapFrom1(STR_value, value), NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeThunk(zvalue expression) {
-    return makeValue_new(TYPE_closure,
+    return makeValue(TYPE_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, EMPTY_LIST,
@@ -277,28 +277,28 @@ static zvalue makeThunk(zvalue expression) {
 
 /* Documented in spec. */
 static zvalue makeVarBind(zvalue name, zvalue value) {
-    return makeValue_new(TYPE_varBind,
+    return makeValue(TYPE_varBind,
         mapFrom2(STR_name, name, STR_value, value),
         NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
-    return makeValue_new(TYPE_varDef,
+    return makeValue(TYPE_varDef,
         mapFrom2(STR_name, name, STR_value, value),
         NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return makeValue_new(TYPE_varDefMutable,
+    return makeValue(TYPE_varDefMutable,
         mapFrom2(STR_name, name, STR_value, value),
         NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
-    return makeValue_new(TYPE_varRef, mapFrom1(STR_name, name), NULL);
+    return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
 }
 
 /* Documented in spec. */
@@ -308,7 +308,7 @@ static zvalue makeOptValue(zvalue expression) {
 
 /* Documented in spec. */
 static zvalue withoutInterpolate(zvalue node) {
-    return makeValue_new(
+    return makeValue(
         typeOf(node),
         collDel(dataOf(node), STR_interpolate),
         NULL);
@@ -588,7 +588,7 @@ DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
 
-    return makeValue_new(TYPE_closure,
+    return makeValue(TYPE_closure,
         GFN_CALL(cat, declarations, body),
         NULL);
 }
@@ -684,7 +684,7 @@ DEF_PARSE(fnCommon) {
             STR_yieldDef,   STR_return,
             STR_statements, statements));
 
-    return makeValue_new(TYPE_closure, closureMap, NULL);
+    return makeValue(TYPE_closure, closureMap, NULL);
 }
 
 /* Documented in spec. */
@@ -698,7 +698,7 @@ DEF_PARSE(fnDef) {
         return NULL;
     }
 
-    return makeValue_new(TYPE_topDeclaration,
+    return makeValue(TYPE_topDeclaration,
         mapFrom2(
             STR_top,  makeVarDef(name, NULL),
             STR_main, makeVarBind(name, closure)),
@@ -716,7 +716,7 @@ DEF_PARSE(fnExpression) {
         return closure;
     }
 
-    zvalue mainClosure = makeValue_new(STR_closure,
+    zvalue mainClosure = makeValue(STR_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, listFrom1(makeVarDef(name, NULL)),

@@ -70,7 +70,7 @@ zvalue dataOf(zvalue value);
  * known by `type`. If `type` is a transparent type, then `secret` must be
  * `NULL`.
  */
-zvalue makeValue_new(zvalue type, zvalue data, zvalue secret);
+zvalue makeValue(zvalue type, zvalue data, zvalue secret);
 
 /**
  * Gets the data payload of the given value, if possible. This behaves
