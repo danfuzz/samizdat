@@ -94,13 +94,14 @@ def SPECIAL_VALUES = {
     (String):   "String",
     (Type):     "Type",
     (Uniqlet):  "Uniqlet",
+    (Value):    "Value",
     (false):    "false",
     (null):     "null",
     (true):     "true"
 };
 
 ## Checks to see if the given value is a string with the form of an
-## in-language identifier.
+## in-language identifier. Returns the given `string` if so.
 fn isIdentifier(string) {
     ifNot { <> isString(string) }
         { return };
@@ -116,7 +117,7 @@ fn isIdentifier(string) {
             { return }
     };
 
-    <> true
+    <> string
 };
 
 ## Stringifies a key (or derived value name).
@@ -128,21 +129,6 @@ fn keyString(key) {
         { string -> return cat("(", string, ")") };
 
     <> sourceGeneral(key, true)
-};
-
-## Stringifies a derived value type.
-fn typeString(type){
-    ifIs { <> isString(type) }
-        {
-            ifIs { <> isIdentifier(type) }
-                { return type }
-                { return sourceGeneral(type, true) }
-        };
-
-    def body = ifValueOr { <> get(SPECIAL_VALUES, type) }
-        { <> sourceGeneral(type, true) };
-
-    <> cat("(", body, ")")
 };
 
 ## The first Unicode surrogate code point.
@@ -234,12 +220,40 @@ fn String_sourceGeneral(string, adorn) {
 };
 genericBind(sourceGeneral, String, String_sourceGeneral);
 
+## Stringifies a type.
+fn Type_sourceGeneral(type, adorn) {
+    ifValue { <> get(SPECIAL_VALUES, type) }
+        { string -> return string };
+
+    def name = nameOf(type);
+
+    ifNot { <> typeIsTransparentDerived(type) }
+        { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
+
+    def body = ifIs { <> isString(name) }
+        {
+            <> ifValueOr { <> isIdentifier(name) }
+                { <> sourceGeneral(name, true) }
+        }
+        { <> cat("(", sourceGeneral(name, true), ")") };
+
+    <> adornIf(adorn, "@@", body, "")
+};
+genericBind(sourceGeneral, Type, Type_sourceGeneral);
+
 ## Stringifies a derived value or an opaque core value.
 fn Value_sourceGeneral(value, adorn) {
     ifValue { <> get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def prefix = adornIf(adorn, "@", typeString(typeOf(value)), "");
+    def typeStr = sourceGeneral(typeOf_new(value), true);
+    def prefix = ifIs { <> eq("@", Sequence::nth(typeStr, 0)) }
+        {
+            ## The `sliceInclusive` gets rid of the first `@` from the type
+            ## representation, which itself starts with `@@` (see above).
+            <> Sequence::sliceInclusive(typeStr, 1)
+        }
+        { <> typeStr };
 
     ifIs { <> isOpaqueValue(value) }
         {
