@@ -72,7 +72,7 @@ fn choice_convertPex(node, formals) {
         { pex <> convertPex(pex, formals) };
     <> makeCall(REFS::Peg_makeChoice, convertedPexes*)
 };
-genericBind(convertPex, "choice", choice_convertPex);
+genericBind(convertPex, @@choice, choice_convertPex);
 
 ## Converts a `sequence` pex node.
 fn sequence_convertPex(node, formals) {
@@ -99,19 +99,19 @@ fn sequence_convertPex(node, formals) {
 
     <> makeCall(REFS::Peg_makeSequence, convertedPexes*)
 };
-genericBind(convertPex, "sequence", sequence_convertPex);
+genericBind(convertPex, @@sequence, sequence_convertPex);
 
 ## Converts a `string` pex node.
 fn string_convertPex(node, formals) {
     <> makeCallLiterals(REFS::Peg_makeString, dataOf(node))
 };
-genericBind(convertPex, "string", string_convertPex);
+genericBind(convertPex, @@string, string_convertPex);
 
 ## Converts a `token` pex node.
 fn token_convertPex(node, formals) {
     <> makeCallLiterals(REFS::Peg_makeToken, dataOf(node))
 };
-genericBind(convertPex, "token", token_convertPex);
+genericBind(convertPex, @@token, token_convertPex);
 
 ## Converts a `varRef` pex node.
 fn varRef_convertPex(node, formals) {
@@ -119,31 +119,31 @@ fn varRef_convertPex(node, formals) {
     ## in the context of an expression / statement.
     <> convertPexIn(node)
 };
-genericBind(convertPex, "varRef", varRef_convertPex);
+genericBind(convertPex, @@varRef, varRef_convertPex);
 
 ## Converts an `any` pex node.
 fn any_convertPex(node, formals) {
     <> REFS::Peg_any
 };
-genericBind(convertPex, "any", any_convertPex);
+genericBind(convertPex, @@any, any_convertPex);
 
 ## Converts an `empty` pex node.
 fn empty_convertPex(node, formals) {
     <> REFS::Peg_empty
 };
-genericBind(convertPex, "empty", empty_convertPex);
+genericBind(convertPex, @@empty, empty_convertPex);
 
 ## Converts a `tokenSet` pex node.
 fn tokenSet_convertPex(node, formals) {
     <> makeCallLiterals(REFS::Peg_makeTokenSet, dataOf(node)*)
 };
-genericBind(convertPex, "tokenSet", tokenSet_convertPex);
+genericBind(convertPex, @@tokenSet, tokenSet_convertPex);
 
 ## Converts a `tokenSetComplement` pex node.
 fn tokenSetComplement_convertPex(node, formals) {
     <> makeCallLiterals(REFS::Peg_makeTokenSetComplement, dataOf(node)*);
 };
-genericBind(convertPex, "tokenSetComplement", tokenSetComplement_convertPex);
+genericBind(convertPex, @@tokenSetComplement, tokenSetComplement_convertPex);
 
 ## Converts a `code` pex node.
 fn code_convertPex(node, formals) {
@@ -155,7 +155,7 @@ fn code_convertPex(node, formals) {
 
     <> makeCall(REFS::Peg_makeCode, convertedClosure)
 };
-genericBind(convertPex, "code", code_convertPex);
+genericBind(convertPex, @@code, code_convertPex);
 
 ## Converts a `thunk` pex node.
 fn thunk_convertPex(node, formals) {
@@ -171,37 +171,37 @@ fn thunk_convertPex(node, formals) {
 
     <> makeCall(REFS::Peg_makeThunk, convertedClosure)
 };
-genericBind(convertPex, "thunk", thunk_convertPex);
+genericBind(convertPex, @@thunk, thunk_convertPex);
 
 ## Converts a `lookaheadSuccess` pex node.
 fn lookaheadSuccess_convertPex(node, formals) {
     <> makeCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
 };
-genericBind(convertPex, "lookaheadSuccess", lookaheadSuccess_convertPex);
+genericBind(convertPex, @@lookaheadSuccess, lookaheadSuccess_convertPex);
 
 ## Converts a `lookaheadFailure` pex node.
 fn lookaheadFailure_convertPex(node, formals) {
     <> makeCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
 };
-genericBind(convertPex, "lookaheadFailure", lookaheadFailure_convertPex);
+genericBind(convertPex, @@lookaheadFailure, lookaheadFailure_convertPex);
 
 ## Converts an `opt` pex node.
 fn opt_convertPex(node, formals) {
     <> makeCallPex(REFS::Peg_makeOpt, node, formals)
 };
-genericBind(convertPex, "opt", opt_convertPex);
+genericBind(convertPex, @@opt, opt_convertPex);
 
 ## Converts a `star` pex node.
 fn star_convertPex(node, formals) {
     <> makeCallPex(REFS::Peg_makeStar, node, formals)
 };
-genericBind(convertPex, "star", star_convertPex);
+genericBind(convertPex, @@star, star_convertPex);
 
 ## Converts a `plus` pex node.
 fn plus_convertPex(node, formals) {
     <> makeCallPex(REFS::Peg_makePlus, node, formals)
 };
-genericBind(convertPex, "plus", plus_convertPex);
+genericBind(convertPex, @@plus, plus_convertPex);
 
 
 ##
@@ -223,7 +223,7 @@ fn apply_convertPexIn(node) {
 
     <> withFinalBindings(node, {function, actuals});
 };
-genericBind(convertPexIn, "apply", apply_convertPexIn);
+genericBind(convertPexIn, @@apply, apply_convertPexIn);
 
 ## Does parser conversion of a `call` node.
 fn call_convertPexIn(node) {
@@ -232,7 +232,7 @@ fn call_convertPexIn(node) {
 
     <> withFinalBindings(node, {function, actuals});
 };
-genericBind(convertPexIn, "call", call_convertPexIn);
+genericBind(convertPexIn, @@call, call_convertPexIn);
 
 ## Does parser conversion of a `closure` node.
 fn closure_convertPexIn(node) {
@@ -243,7 +243,7 @@ fn closure_convertPexIn(node) {
 
     <> withBindings(node, {statements, yield*})
 };
-genericBind(convertPexIn, "closure", closure_convertPexIn);
+genericBind(convertPexIn, @@closure, closure_convertPexIn);
 
 ## Does parser conversion of a `jump` node.
 fn jump_convertPexIn(node) {
@@ -254,13 +254,13 @@ fn jump_convertPexIn(node) {
 
     <> withFinalBindings(node, {function, optValue*});
 };
-genericBind(convertPexIn, "jump", jump_convertPexIn);
+genericBind(convertPexIn, @@jump, jump_convertPexIn);
 
 ## Does parser conversion of a `literal` node.
 fn literal_convertPexIn(node) {
     <> node
 };
-genericBind(convertPexIn, "literal", literal_convertPexIn);
+genericBind(convertPexIn, @@literal, literal_convertPexIn);
 
 ## Does parser conversion of a `parser` node. This is where the juicy stuff
 ## happens!
@@ -269,31 +269,31 @@ fn parser_convertPexIn(node) {
     ## form (with map payload) into a parser node form (with pex payload).
     <> makeCallPex(REFS::Peg_makeMainSequence, @x(get_value(node)), [])
 };
-genericBind(convertPexIn, "parser", parser_convertPexIn);
+genericBind(convertPexIn, @@parser, parser_convertPexIn);
 
 ## Does parser conversion of a `varBind` node.
 fn varBind_convertPexIn(node) {
     <> convertValuePayload(node)
 };
-genericBind(convertPexIn, "varBind", varBind_convertPexIn);
+genericBind(convertPexIn, @@varBind, varBind_convertPexIn);
 
 ## Does parser conversion of a `varDef` node.
 fn varDef_convertPexIn(node) {
     <> convertValuePayload(node)
 };
-genericBind(convertPexIn, "varDef", varDef_convertPexIn);
+genericBind(convertPexIn, @@varDef, varDef_convertPexIn);
 
 ## Does parser conversion of a `varDefMutable` node.
 fn varDefMutable_convertPexIn(node) {
     <> convertValuePayload(node)
 };
-genericBind(convertPexIn, "varDefMutable", varDefMutable_convertPexIn);
+genericBind(convertPexIn, @@varDefMutable, varDefMutable_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
 fn varRef_convertPexIn(node) {
     <> withoutIntermediates(node)
 };
-genericBind(convertPexIn, "varRef", varRef_convertPexIn);
+genericBind(convertPexIn, @@varRef, varRef_convertPexIn);
 
 
 ##

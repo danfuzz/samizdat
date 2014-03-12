@@ -30,7 +30,7 @@ fn SequenceGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, "SequenceGenerator", SequenceGenerator_nextValue);
+genericBind(nextValue, @@SequenceGenerator, SequenceGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, "SequenceGenerator", Generator_stdCollect);
+genericBind(collect, @@SequenceGenerator, Generator_stdCollect);

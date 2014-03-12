@@ -15,13 +15,13 @@
 fn NullGenerator_collect(gen, optFilterFunction?) {
     <> []
 };
-genericBind(collect, "NullGenerator", NullGenerator_collect);
+genericBind(collect, @@NullGenerator, NullGenerator_collect);
 
 ## Documented in spec.
 fn NullGenerator_nextValue(gen, box) {
     Box::store(box)
 };
-genericBind(nextValue, "NullGenerator", NullGenerator_nextValue);
+genericBind(nextValue, @@NullGenerator, NullGenerator_nextValue);
 
 ## Documented in spec.
 def nullGenerator = @NullGenerator;

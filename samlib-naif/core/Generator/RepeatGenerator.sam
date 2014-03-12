@@ -30,7 +30,7 @@ fn makeRepeatGenerator(size, optValue?) {
 };
 
 ## Just use the standard implementation.
-genericBind(collect, "RepeatGenerator", Generator_stdCollect);
+genericBind(collect, @@RepeatGenerator, Generator_stdCollect);
 
 ## Documented in spec.
 fn RepeatGenerator_nextValue(gen, box) {
@@ -47,7 +47,7 @@ fn RepeatGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, "RepeatGenerator", RepeatGenerator_nextValue);
+genericBind(nextValue, @@RepeatGenerator, RepeatGenerator_nextValue);
 
 
 <> {

@@ -21,7 +21,7 @@ fn makeOptGenerator(generator) {
 };
 
 ## Documented in spec.
-genericBind(collect, "OptGenerator", unboundedCollect);
+genericBind(collect, @@OptGenerator, unboundedCollect);
 
 ## Documented in spec.
 fn OptGenerator_nextValue(gen, box) {
@@ -39,7 +39,7 @@ fn OptGenerator_nextValue(gen, box) {
                 box)
         }
 };
-genericBind(nextValue, "OptGenerator", OptGenerator_nextValue);
+genericBind(nextValue, @@OptGenerator, OptGenerator_nextValue);
 
 <> {
     makeOptGenerator

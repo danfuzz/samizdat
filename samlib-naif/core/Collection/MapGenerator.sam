@@ -29,7 +29,7 @@ fn MapGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, "MapGenerator", MapGenerator_nextValue);
+genericBind(nextValue, @@MapGenerator, MapGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, "MapGenerator", Generator_stdCollect);
+genericBind(collect, @@MapGenerator, Generator_stdCollect);
