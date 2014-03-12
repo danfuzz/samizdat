@@ -102,6 +102,11 @@ fn totNe(v1, v2) {
         { <> v2 }
 };
 
+## Documented in spec.
+fn typeNameOf(value) {
+    <> nameOf(typeOf_new(value))
+};
+
 <> {
     isInt,
     isList,
@@ -118,5 +123,6 @@ fn totNe(v1, v2) {
     totGt,
     totLe,
     totLt,
-    totNe
+    totNe,
+    typeNameOf
 }

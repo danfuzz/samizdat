@@ -58,6 +58,7 @@
     toString,
     totEq,
     totOrder,
+    typeFromName,
     typeOf,
     typeOf_new,
     valueOf

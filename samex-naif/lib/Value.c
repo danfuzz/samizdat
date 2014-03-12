@@ -91,6 +91,11 @@ FUN_IMPL_DECL(ne) {
 }
 
 /* Documented in spec. */
+FUN_IMPL_DECL(typeFromName) {
+    return typeFromName(args[0]);
+}
+
+/* Documented in spec. */
 FUN_IMPL_DECL(typeOf) {
     // TODO: Remove this function when the high level model specifies
     // types-per-se.
