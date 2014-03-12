@@ -168,49 +168,49 @@ fn Module_cat(modu, more*) {
 
     <> withExports(modu, combinedExports)
 };
-genericBind(cat, "Module", Module_cat);
+genericBind(cat, @@Module, Module_cat);
 
 ## Documented in spec.
 fn Module_del(modu, key) {
     <> withExports(modu, Collection_del(getExports(modu), key))
 };
-genericBind(Collection_del, "Module", Module_del);
+genericBind(Collection_del, @@Module, Module_del);
 
 ## Documented in spec.
 fn Module_get(modu, key) {
     <> get(getExports(modu), key)
 };
-genericBind(get, "Module", Module_get);
+genericBind(get, @@Module, Module_get);
 
 ## Documented in spec.
 fn Module_keyList(modu) {
     <> Collection_keyList(getExports(modu))
 };
-genericBind(Collection_keyList, "Module", Module_keyList);
+genericBind(Collection_keyList, @@Module, Module_keyList);
 
 ## Documented in spec.
 fn Module_nameOf(modu) {
     <> getInfo(modu)::name
 };
-genericBind(nameOf, "Module", Module_nameOf);
+genericBind(nameOf, @@Module, Module_nameOf);
 
 ## Documented in spec.
 fn Module_nthMapping(modu, n) {
     <> Collection_nthMapping(getExports(modu), n)
 };
-genericBind(Collection_nthMapping, "Module", Module_nthMapping);
+genericBind(Collection_nthMapping, @@Module, Module_nthMapping);
 
 ## Documented in spec.
 fn Module_put(modu, key, value) {
     <> withExports(modu, Collection_put(getExports(modu), key, value))
 };
-genericBind(Collection_put, "Module", Module_put);
+genericBind(Collection_put, @@Module, Module_put);
 
 ## Documented in spec.
 fn Module_sizeOf(modu) {
     <> Collection_sizeOf(getExports(modu))
 };
-genericBind(Collection_sizeOf, "Module", Module_sizeOf);
+genericBind(Collection_sizeOf, @@Module, Module_sizeOf);
 
 
 ##
