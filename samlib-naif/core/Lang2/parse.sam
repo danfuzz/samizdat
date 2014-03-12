@@ -494,18 +494,27 @@ def parList = {:
     }
 :};
 
+## Parses a type name, yielding a type value. If the name is a blatant
+## literal, then the result of this rule is also a literal. If not, the
+## result of this rule is a call to `typeFromName`.
+def parTypeName = {:
+    name = (parIdentifierString | parParenExpression)
+
+    {
+        <> ifIs { <> hasType(name, "literal") }
+            { <> makeLiteral(typeFromName(get_value(name))) }
+            { <> makeCall(REFS::typeFromName, name) }
+    }
+:};
+
 ## Parses a literal in derived value form.
 def parDeriv = {:
     @"@"
 
-    typeName = (parIdentifierString | parParenExpression)
+    type = parTypeName
     value = (parParenExpression | parMap | parList)?
 
-    {
-        <> makeCall(REFS::makeValue,
-            makeCall(REFS::typeFromName, typeName),
-            value*)
-    }
+    { <> makeCall(REFS::makeValue, type, value*) }
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

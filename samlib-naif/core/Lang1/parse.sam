@@ -370,14 +370,21 @@ def parList = Peg::makeMainSequence(
     });
 
 ## Documented in spec.
+def parTypeName = Peg::makeMainSequence(
+    Peg::makeChoice(parIdentifierString, parParenExpression),
+    Peg::makeCode { name ->
+        <> ifIs { <> hasType(name, "literal") }
+            { <> makeLiteral(typeFromName(get_value(name))) }
+            { <> makeCall(REFS::typeFromName, name) }
+    });
+
+## Documented in spec.
 def parDeriv = Peg::makeMainSequence(
     Peg::makeToken("@"),
-    Peg::makeChoice(parIdentifierString, parParenExpression),
+    parTypeName,
     Peg::makeOpt(Peg::makeChoice(parParenExpression, parMap, parList)),
-    Peg::makeCode { ., typeName, value ->
-        <> makeCall(REFS::makeValue,
-            makeCall(REFS::typeFromName, typeName),
-            value*)
+    Peg::makeCode { ., type, value ->
+        <> makeCall(REFS::makeValue, type, value*)
     });
 
 ## Documented in spec.

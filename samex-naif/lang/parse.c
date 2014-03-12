@@ -880,22 +880,32 @@ DEF_PARSE(list) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(typeName) {
+    MARK();
+
+    zvalue name = PARSE(identifierString);
+    if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
+
+    if (hasType(name, STR_literal)) {
+        return makeLiteral(typeFromName(GET(value, name)));
+    } else {
+        return makeCall(REFS(typeFromName), listFrom1(name));
+    }
+}
+
+/* Documented in spec. */
 DEF_PARSE(deriv) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue typeName = PARSE(identifierString);
-    if (typeName == NULL) {
-        typeName = PARSE_OR_REJECT(parenExpression);
-    }
+    zvalue type = PARSE_OR_REJECT(typeName);
 
     // Value is optional; these are allowed to all fail.
     zvalue value = PARSE(parenExpression);
     if (value == NULL) value = PARSE(map);
     if (value == NULL) value = PARSE(list);
 
-    zvalue type = makeCall(REFS(typeFromName), listFrom1(typeName));
     zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
 
     return makeCall(REFS(makeValue), args);
