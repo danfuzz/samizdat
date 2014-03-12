@@ -277,7 +277,10 @@ of type:
 * All core values (described above, and values of type `type` as described
   here) have a "core type" as their type. The name of each core type is a
   string of the "human" name of the type. By convention, core type names
-  are capitalized.
+  are capitalized. Many core value types are exported as variables in the
+  standard global environment, each with a variable name that matches its
+  type name. For example, the global reference `String` refers to the core
+  value type named `String`.
 
 * The type of a data value created using the syntax `@(type)(value)`
   is a transparent derived type, where the type's name is the `type` specified
@@ -287,6 +290,13 @@ of type:
 
   There is a one-to-one correspondence between a value and a
   transparent derived type with that value as its name.
+
+  A transparent derive type can be specified in code by indicating its name
+  in parentheses, preceded by `@@`. If the name is a literal string, then
+  the parentheses may be omitted. Furthermore, if the name is a literal
+  string which abides by the syntax for identifiers in the language, then
+  the double quotes may be omitted. For example, all of `@@("blort")`,
+  `@@"blort"`, and `@@blort` refer to the same type.
 
 * TODO: The third kind of type is an "opaque derived" type. These have a
   name and secret. The secret is used to prevent creation of values of the

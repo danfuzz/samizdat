@@ -50,6 +50,8 @@ Returns a `Type` instance which represents a transparent derived type
 with the given `name`. `name` can be an arbitrary value but is most
 typically a string.
 
+**Note:** This is used in the translation of `@@(name)` forms.
+
 #### `typeIsTransparentDerived(type) <> type | void`
 
 Returns boolean true (returning `type` itself) if `type` is a transparent
