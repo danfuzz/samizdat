@@ -302,7 +302,7 @@ function.
 
 ### Derived types
 
-A transparent derived value is one that was constructed with an explicit type
+A transparent derived value is one that is constructed with an explicit type
 tag and optional data payload.
 
 Transparent derived values are introduced with an at-sign (`@`). This is
