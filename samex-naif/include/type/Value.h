@@ -73,29 +73,6 @@ zvalue dataOf(zvalue value);
 zvalue makeValue_new(zvalue type, zvalue data, zvalue secret);
 
 /**
- * Returns a derived value with the given type tag, and with the given
- * optional data payload (`NULL` indicating a type-only value). `type` and
- * `secret` must be as follows:
- *
- * * If `type` is a value of type `Type`, then the resulting value is of
- *   that type. If `type` is an opaque type, then `secret` must match the
- *   secret known by `type`. If `type` is a transparent type, then `secret`
- *   must be `NULL`.
- *
- * * If `type` is any other value (that is, other than a `Type`), then it
- *   is taken to indicate a transparent type whose name is `type`. As such
- *   `secret` must be `NULL`.
- */
-zvalue makeValue(zvalue type, zvalue data, zvalue secret);
-
-/**
- * Returns a transparent derived value with the given type tag, and with the
- * given optional data payload. This is a convenient shorthand for calling
- * `makeValue(type, data, NULL)`.
- */
-zvalue makeTransValue(zvalue type, zvalue data);
-
-/**
  * Gets the data payload of the given value, if possible. This behaves
  * as follows:
  *

@@ -64,24 +64,6 @@ zvalue makeValue_new(zvalue type, zvalue data, zvalue secret) {
     return result;
 }
 
-/* Documented in header. */
-zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
-    assertValid(type);
-    assertValidOrNull(data);
-    assertValidOrNull(secret);
-
-    if (!hasType(type, TYPE_Type)) {
-        type = typeFromName(type);
-    }
-
-    return makeValue_new(type, data, secret);
-}
-
-/* Documented in header. */
-zvalue makeTransValue(zvalue type, zvalue data) {
-    return makeValue(type, data, NULL);
-}
-
 
 /*
  * Type Definition
