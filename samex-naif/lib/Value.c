@@ -74,11 +74,6 @@ FUN_IMPL_DECL(makeValue) {
     zvalue type = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
 
-    // TODO: Remove this when types-per-se are strictly required.
-    if (!hasType(type, TYPE_Type)) {
-        type = typeFromName(type);
-    }
-
     return makeValue(type, value, NULL);
 }
 
