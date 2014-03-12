@@ -199,7 +199,7 @@ fn PegTokenSet_parse(peg, box, input, items*) {
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
-            ifIs { <> get(set, typeOf(item)) }
+            ifIs { <> get(set, typeNameOf(item)) }
                 {
                     Box::store(box, item);
                     return newInput
@@ -219,7 +219,7 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
-            ifNot { <> get(set, typeOf(item)) }
+            ifNot { <> get(set, typeNameOf(item)) }
                 {
                     Box::store(box, item);
                     return newInput
@@ -413,7 +413,7 @@ fn apply(rule, input) {
 
 ## Documented in spec.
 fn stringFromTokenList(tokens) {
-    <> cat("", collect(tokens, typeOf)*)
+    <> cat("", collect(tokens, typeNameOf)*)
 };
 
 
