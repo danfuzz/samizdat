@@ -379,6 +379,11 @@ def parTypeName = Peg::makeMainSequence(
     });
 
 ## Documented in spec.
+def parType = Peg::makeMainSequence(
+    Peg::makeToken("@@"),
+    parTypeName);
+
+## Documented in spec.
 def parDeriv = Peg::makeMainSequence(
     Peg::makeToken("@"),
     parTypeName,
@@ -390,7 +395,7 @@ def parDeriv = Peg::makeMainSequence(
 ## Documented in spec.
 def parTerm = Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
-    parDeriv, parClosure, parParenExpression,
+    parDeriv, parType, parClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     Peg::makeSequence(

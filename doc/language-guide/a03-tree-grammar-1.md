@@ -485,6 +485,12 @@ def parTypeName = {:
     }
 :};
 
+## Parses a type literal form.
+def parType = {:
+    @"@@"
+    parTypeName
+:};
+
 ## Parses a literal in derived value form.
 def parDeriv = {:
     @"@"
@@ -500,7 +506,7 @@ def parDeriv = {:
 ## fatal error.
 def parTerm = {:
     parVarRef | parInt | parString | parMap | parList
-    parDeriv | parClosure | parParenExpression
+    parDeriv | parType | parClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.

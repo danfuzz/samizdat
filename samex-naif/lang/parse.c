@@ -894,6 +894,14 @@ DEF_PARSE(typeName) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(type) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_ATAT);
+    return PARSE_OR_REJECT(typeName);
+}
+
+/* Documented in spec. */
 DEF_PARSE(deriv) {
     MARK();
 
@@ -921,6 +929,7 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(deriv); }
+    if (result == NULL) { result = PARSE(type); }
     if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }
 
