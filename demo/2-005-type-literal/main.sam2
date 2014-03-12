@@ -14,7 +14,7 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 ##
 
 fn msg(string) {
-    Io0::note(cat("Got: ", Format::source(string)))
+    Io1::note(cat("Got: ", Format::source(string)))
 };
 
 
