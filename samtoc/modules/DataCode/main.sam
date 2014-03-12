@@ -176,7 +176,7 @@ fn Value_convert(value) {
         Io1::die("Cannot convert opaque non-data value: \%q(value)")
     };
 
-    def type = convert(typeOf_new(value));
+    def type = convert(typeOf(value));
     def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
 
     <> CodeGen::makeCall("makeValue", type, data, "NULL")

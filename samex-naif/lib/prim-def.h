@@ -115,7 +115,6 @@ PRIM_FUNC(optValue,               1, 1);
 PRIM_FUNC(typeFromName,           1, 1);
 PRIM_FUNC(typeIsTransparentDerived, 1, 1);
 PRIM_FUNC(typeOf,                 1, 1);
-PRIM_FUNC(typeOf_new,             1, 1);
 
 // Primitive functions: intended for modularization
 PRIM_DEF(Generator_stdCollect,    FUN_Generator_stdCollect);

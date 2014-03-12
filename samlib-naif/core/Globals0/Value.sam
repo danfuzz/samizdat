@@ -28,7 +28,7 @@ fn isMap(value) {
 
 ## Documented in spec.
 fn isOpaqueValue(value) {
-    <> ifNot { <> typeIsTransparentDerived(typeOf_new(value)) }
+    <> ifNot { <> typeIsTransparentDerived(typeOf(value)) }
         { <> value }
 };
 
@@ -104,7 +104,7 @@ fn totNe(v1, v2) {
 
 ## Documented in spec.
 fn typeNameOf(value) {
-    <> nameOf(typeOf_new(value))
+    <> nameOf(typeOf(value))
 };
 
 <> {

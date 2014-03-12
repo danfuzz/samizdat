@@ -61,6 +61,5 @@
     typeFromName,
     typeIsTransparentDerived,
     typeOf,
-    typeOf_new,
     valueOf
 }
