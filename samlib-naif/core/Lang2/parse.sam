@@ -171,7 +171,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> {repeat: typeOf(r)} }
+        { <> {repeat: typeNameOf(r)} }
     |
         { <> {} }
     )
@@ -391,7 +391,7 @@ def parIdentifierString = {:
     {
         <> ifNot { <> dataOf(token) }
             {
-                def type = typeOf(token);
+                def type = typeNameOf(token);
                 def firstCh = Sequence::nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
@@ -834,7 +834,7 @@ def parRepeatPex = {:
     term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @(get(PEX_TYPES, typeOf(repeat)))(term) }
+        { <> @(get(PEX_TYPES, typeNameOf(repeat)))(term) }
     |
         { <> term }
     )
@@ -846,7 +846,7 @@ def parLookaheadPex = {:
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @(get(PEX_TYPES, typeOf(lookahead)))(pex) }
+        { <> @(get(PEX_TYPES, typeNameOf(lookahead)))(pex) }
     )
 |
     parRepeatPex
@@ -936,7 +936,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     Generator::filterPump(opExList) { opEx ->
         def op = opEx::op;
         def expr = opEx::expr;
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
+        def resolvedOp = get(BINARY_OPERATORS, typeNameOf(op));
 
         result := makeCall(resolvedOp, result, expr)
     };
@@ -1268,7 +1268,7 @@ parNonlocalExit2 := {:
         { <> n }
     |
         op = [@break @continue @return]
-        { <> makeVarRef(typeOf(op)) }
+        { <> makeVarRef(typeNameOf(op)) }
     )
 
     value = (
@@ -1291,7 +1291,7 @@ parNonlocalExit2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = get(UNARY_OPERATORS, typeOf(operator));
+        def name = get(UNARY_OPERATORS, typeNameOf(operator));
         <> { node <> makeCall(name, node) }
     }
 |
@@ -1329,8 +1329,8 @@ def parIndexPostfix = {:
 
         (
             ## It's a non-size-dependant slice.
-            { <> ne(typeOf(start), "fromEnd") }
-            { <> ne(typeOf(end), "fromEnd") }
+            { <> ne(typeNameOf(start), "fromEnd") }
+            { <> ne(typeNameOf(end), "fromEnd") }
 
             {
                 def funcRef = ifIs { <> eq(op, @"..") }
@@ -1352,13 +1352,13 @@ def parIndexPostfix = {:
 
                 def startNode =
                     makeCall(REFS::makeValue,
-                        makeLiteral(typeOf(start)),
+                        makeLiteral(typeNameOf(start)),
                         dataOf(start));
 
                 def optEndNode = (ifValue { <> dataOf(end) }
                     { endData ->
                         <> makeCall(REFS::makeValue,
-                            makeLiteral(typeOf(end)),
+                            makeLiteral(typeNameOf(end)),
                             endData)
                     })?;
 
@@ -1448,7 +1448,7 @@ parPostfixOperator2 := {:
             def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
-                <> @(typeOf(getterCall)){
+                <> @(typeNameOf(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarRef(cat("set_", suffix));

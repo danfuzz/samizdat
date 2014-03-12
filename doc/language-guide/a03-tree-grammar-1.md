@@ -149,7 +149,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> {repeat: typeOf(r)} }
+        { <> {repeat: typeNameOf(r)} }
     |
         { <> {} }
     )
@@ -369,7 +369,7 @@ def parIdentifierString = {:
     {
         <> ifNot { <> dataOf(token) }
             {
-                def type = typeOf(token);
+                def type = typeNameOf(token);
                 def firstCh = Sequence::nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
@@ -819,7 +819,7 @@ def parRepeatPex = {:
     term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @(get(PEX_TYPES, typeOf(repeat)))(term) }
+        { <> @(get(PEX_TYPES, typeNameOf(repeat)))(term) }
     |
         { <> term }
     )
@@ -831,7 +831,7 @@ def parLookaheadPex = {:
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @(get(PEX_TYPES, typeOf(lookahead)))(pex) }
+        { <> @(get(PEX_TYPES, typeNameOf(lookahead)))(pex) }
     )
 |
     parRepeatPex

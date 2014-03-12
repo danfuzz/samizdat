@@ -140,7 +140,7 @@ def parFormal = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeTokenSet("?", "*", "+"),
-            Peg::makeCode { ., r <> {repeat: typeOf(r)} }),
+            Peg::makeCode { ., r <> {repeat: typeNameOf(r)} }),
         Peg::makeResult({})),
     Peg::makeCode { name, repeat <> {name*, repeat*} });
 
@@ -279,7 +279,7 @@ def parIdentifierString = Peg::makeMainChoice(
         Peg::makeCode { token ->
             <> ifNot { <> dataOf(token) }
                 {
-                    def type = typeOf(token);
+                    def type = typeNameOf(token);
                     def firstCh = Sequence::nth(type, 0);
                     <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                         { <> makeLiteral(type) }
@@ -651,7 +651,7 @@ def parRepeatPex = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeTokenSet("?", "*", "+"),
             Peg::makeCode { term, repeat ->
-                <> @(get(PEX_TYPES, typeOf(repeat)))(term)
+                <> @(get(PEX_TYPES, typeNameOf(repeat)))(term)
             }),
         Peg::makeCode { term <> term }));
 
@@ -661,7 +661,7 @@ def parLookaheadPex = Peg::makeMainChoice(
         Peg::makeTokenSet("&", "!"),
         parRepeatPex,
         Peg::makeCode { lookahead, pex ->
-            <> @(get(PEX_TYPES, typeOf(lookahead)))(pex)
+            <> @(get(PEX_TYPES, typeNameOf(lookahead)))(pex)
         }),
     parRepeatPex);
 
