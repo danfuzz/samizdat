@@ -109,7 +109,7 @@ genericBind(convertPex, @@string, string_convertPex);
 
 ## Converts a `token` pex node.
 fn token_convertPex(node, formals) {
-    <> makeCallLiterals(REFS::Peg_makeToken, @@(dataOf(node)))
+    <> makeCallLiterals(REFS::Peg_makeToken, dataOf(node))
 };
 genericBind(convertPex, @@token, token_convertPex);
 
@@ -135,16 +135,14 @@ genericBind(convertPex, @@empty, empty_convertPex);
 
 ## Converts a `tokenSet` pex node.
 fn tokenSet_convertPex(node, formals) {
-    def names = dataOf(node);
-    def types = collect(names, { n <> @@(n) });
+    def types = dataOf(node);
     <> makeCallLiterals(REFS::Peg_makeTokenSet, types*)
 };
 genericBind(convertPex, @@tokenSet, tokenSet_convertPex);
 
 ## Converts a `tokenSetComplement` pex node.
 fn tokenSetComplement_convertPex(node, formals) {
-    def names = dataOf(node);
-    def types = collect(names, { n <> @@(n) });
+    def types = dataOf(node);
     <> makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*);
 };
 genericBind(convertPex, @@tokenSetComplement, tokenSetComplement_convertPex);

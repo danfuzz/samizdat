@@ -749,7 +749,7 @@ def parParserString = {:
 def parParserToken = {:
     @"@"
     type = parIdentifierString
-    { <> @token(get_value(type)) }
+    { <> @token(@@(get_value(type))) }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -788,7 +788,7 @@ def parParserSet = {:
 
     terminals = (
         strings = parParserSetString+
-        { <> [cat(strings*)*] }
+        { <> collect(cat(strings*), { ch <> @@(ch) }) }
     |
         tokens = parParserToken+
         { <> collect(tokens, dataOf) }

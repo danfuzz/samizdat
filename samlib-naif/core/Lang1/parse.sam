@@ -584,7 +584,7 @@ def parParserString = Peg::makeMainSequence(
 def parParserToken = Peg::makeMainSequence(
     Peg::makeToken(@@"@"),
     parIdentifierString,
-    Peg::makeCode { ., type <> @token(get_value(type)) });
+    Peg::makeCode { ., type <> @token(@@(get_value(type))) });
 
 ## Documented in spec.
 def parParserSetString = Peg::makeMainSequence(
@@ -616,7 +616,9 @@ def parParserSet = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeMainSequence(
             Peg::makePlus(parParserSetString),
-            Peg::makeCode { strings <> [cat(strings*)*] }),
+            Peg::makeCode { strings ->
+                <> collect(cat(strings*), { ch <> @@(ch) })
+            }),
         Peg::makeMainSequence(
             Peg::makePlus(parParserToken),
             Peg::makeCode { tokens <> collect(tokens, dataOf) }),
