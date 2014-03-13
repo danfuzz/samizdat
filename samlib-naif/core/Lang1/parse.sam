@@ -578,13 +578,7 @@ def parParenPex = Peg::makeMainSequence(
 
 ## Documented in spec.
 def parParserString = Peg::makeMainSequence(
-    Peg::makeToken(@@"string"),
-    Peg::makeCode { s ->
-        def value = dataOf(s);
-        <> ifIs { <> eq(Collection::sizeOf(value), 1) }
-            { <> @token(value) }
-            { <> s }
-    });
+    Peg::makeToken(@@"string"));
 
 ## Documented in spec.
 def parParserToken = Peg::makeMainSequence(

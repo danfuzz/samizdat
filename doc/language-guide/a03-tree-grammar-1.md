@@ -743,12 +743,6 @@ def parParenPex = {:
 ## Parses a string literal parsing expression.
 def parParserString = {:
     s = @string
-    {
-        def value = dataOf(s);
-        <> ifIs { <> eq(Collection::sizeOf(value), 1) }
-            { <> @token(value) }
-            { <> s }
-    }
 :};
 
 ## Parses a token literal parsing expression.
