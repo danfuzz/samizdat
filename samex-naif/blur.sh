@@ -8,19 +8,19 @@
 #
 
 # Whether to compile for profiling.
-profile='no'
+profile=0
 
 # Whether to compile with optimiaztions on.
-optimize='yes'
+optimize=1
 
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} =~ ^--name=(.*) ]]; then
         PROJECT_NAME="${BASH_REMATCH[1]}"
     elif [[ ${opt} == '--no-optimize' ]]; then
-        optimize='no'
+        optimize=0
     elif [[ ${opt} == '--profile' ]]; then
-        profile='yes'
+        profile=1
     else
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -44,13 +44,13 @@ FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 FINAL_EXE="${FINAL_LIB}/${binName}"
 
-if [[ ${profile} == 'yes' ]]; then
+if (( profile )); then
     CC=(cc -pg)
 else
     CC=(cc)
 fi
 
-if [[ ${optimize} == 'yes' ]]; then
+if (( optimize )); then
     CC=(${CC[@]} -O3)
 fi
 
