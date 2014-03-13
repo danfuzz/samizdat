@@ -1064,13 +1064,17 @@ DEF_PARSE(nonlocalExit1) {
 }
 
 /**
- * Helper for `nonlocalExit`: Parses `@"return"`.
+ * Helper for `nonlocalExit`: Parses `@break | @continue | @return`.
  */
 DEF_PARSE(nonlocalExit2) {
-    MARK();
+    zvalue result = NULL;
 
-    MATCH_OR_REJECT(return);
-    return REFS(return);
+    if (result == NULL) { result = MATCH(break); }
+    if (result == NULL) { result = MATCH(continue); }
+    if (result == NULL) { result = MATCH(return); }
+    if (result == NULL) { return NULL; }
+
+    return makeVarRef(nameOf(typeOf(result)));
 }
 
 /* Documented in spec. */
@@ -1081,8 +1085,8 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { name = PARSE(nonlocalExit2); }
     if (name == NULL) { return NULL; }
 
-    zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
-    return makeJump(name, value);
+    zvalue optValue = PARSE(expression); // It's okay for this to be `NULL`.
+    return makeJump(name, optValue);
 }
 
 /* Documented in spec. */
