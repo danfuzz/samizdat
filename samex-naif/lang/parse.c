@@ -759,6 +759,7 @@ DEF_PARSE(identifierString) {
     if (result == NULL) { result = MATCH(def); }
     if (result == NULL) { result = MATCH(fn); }
     if (result == NULL) { result = MATCH(return); }
+    if (result == NULL) { result = MATCH(var); }
     if (result == NULL) { return NULL; }
 
     zvalue value = dataOf(result);
