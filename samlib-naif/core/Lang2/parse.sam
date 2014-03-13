@@ -1271,8 +1271,8 @@ parTerm2 := {:
 
 ## Parses a nonlocal exit / return. All of the forms matched by this rule
 ## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a function call in the underlying
-## function representation of code blocks.
+## block, and (b) being represented as a `jump` call in the underlying
+## tree representation.
 parNonlocalExit2 := {:
     name = (
         @"<"
@@ -1284,19 +1284,9 @@ parNonlocalExit2 := {:
         { <> makeVarRef(typeNameOf(op)) }
     )
 
-    value = (
-        ex = parExpression
-        {
-            ## The test for a valued `continue` is done explicitly here
-            ## (rather than just letting the rule fail) in order to make the
-            ## error message more sensible.
-            ifIs { <> eq(dataOf(name), "continue") }
-                { Io0::die("Invalid use of continue with value.") };
-            <> ex
-        }
-    )?
+    optValue = parExpression?
 
-    { <> makeJump(name, value*) }
+    { <> makeJump(name, optValue*) }
 :};
 
 ## Parses a unary prefix operator. This yields a function (per se) that

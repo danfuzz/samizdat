@@ -108,8 +108,8 @@ is to be skipped over.
 All the looping control constructs define a "continue context" that goes
 with a special `continue` keyword. This keyword can be used in
 yield context (that is, as the last statement of a block). Calling `continue`
-causes the loop to restart at its top. It is never valid to pass an
-expression to `continue`.
+causes the loop to restart at its top. It is valid to pass an expression to
+`continue`, though the value is often ignored in practice.
 
 For example:
 
