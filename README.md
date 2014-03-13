@@ -145,7 +145,7 @@ $ blur
 $
 ```
 
-As of this writing full build can take up to something like an hour on
+As of this writing, the full build can take up to something like an hour on
 mid-range personal computing hardware. Among its steps, the build consists of:
 
 * Compilation of the core runtime, into an executable binary.
