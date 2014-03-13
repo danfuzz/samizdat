@@ -105,7 +105,7 @@ definitions contained in the file in question.
 Files of more than about 1,000 lines are generally considered to be
 too long. The general aim is to split them into two or more files.
 There are a couple exceptions, which unfortunately do not lend themselves
-to splitting up.
+to being split up.
 
 ### Intra-file Arrangement
 
@@ -201,10 +201,11 @@ and functions:
 * `GFN_methodName` &mdash; Identifies a generic function (value of type
   `Generic`).
 
-* `STR_NAME` &mdash; Identifies a value of type `String`.
+* `STR_valueOfString` &mdash; Identifies a value of type `String`.
 
-* `TOK_NAME` &mdash; Identifies a transparent derived value whose type is
-  `STR_NAME`.
+* `TOK_nameOfToken` &mdash; Identifies a payload-free transparent derived
+  value whose type is `TYPE_nameOfToken`, where the type's name is
+  `"nameOfToken"`.
 
 * `theName` (that is, `the` as a prefix) &mdash; Identifies a variable as
   static (file scope).
@@ -263,13 +264,13 @@ Most other comments, including multi-line comments, are `//`-prefixed.
 Comment text is written using Markdown syntax, even when not marked `/**`.
 Code samples are delimited with triple-backticks (Github flavor).
 
-A general aim of commenting is to take a "DRY" attitude, with
-specification files being the ultimate "source of truth" and header files
-being more authoritative than (non-header) source files. Comments of the
-form `/* Documented in header. */` and `/* Documented in spec. */`
-are used liberally as an explicit indication that the so-marked item does
-in fact have documentation elsewhere. (That is, it is an unintentional
-oversight for an item to *not* have such a comment.)
+A general aim of commenting is to take a "DRY" (Don't Repeat Yourself)
+attitude, with specification files being the ultimate "source of truth" and
+header files being more authoritative than (non-header) source files.
+Comments of the form `/* Documented in header. */` and
+`/* Documented in spec. */` are used liberally as an explicit indication
+that the so-marked item does in fact have documentation elsewhere. (That is,
+it is an unintentional oversight for an item to *not* have such a comment.)
 
 ### Macros
 
