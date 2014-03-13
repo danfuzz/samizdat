@@ -48,7 +48,7 @@ zvalue coreTypeFromName(zvalue name, bool identified);
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
  * is as given.
  */
-bool hasType(zvalue value, zvalue typeOrName);
+bool hasType(zvalue value, zvalue type);
 
 /**
  * Returns true iff the types of the given values (that is, `typeOf()` on

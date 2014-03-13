@@ -185,18 +185,6 @@ static void assertHasTypeType(zvalue value) {
 }
 
 /**
- * Returns the `Type` per se for the given in-model "type," the latter which
- * may be an arbitrary value representing a transparent type by name.
- */
-static zvalue trueTypeFromTypeOrName(zvalue typeOrName) {
-    if (isType(typeOrName)) {
-        return typeOrName;
-    }
-
-    return typeFromName(typeOrName);
-}
-
-/**
  * Compares two types (per se) for equality. This is just `==` since
  * types are all "identified."
  */
@@ -264,8 +252,9 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 }
 
 /* Documented in header. */
-bool hasType(zvalue value, zvalue typeOrName) {
-    return typeEq(typeOf(value), trueTypeFromTypeOrName(typeOrName));
+bool hasType(zvalue value, zvalue type) {
+    assertHasTypeType(type);
+    return typeEq(typeOf(value), type);
 }
 
 /* Documented in header. */
