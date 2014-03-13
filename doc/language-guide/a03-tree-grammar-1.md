@@ -715,13 +715,13 @@ def parProgramOrError = {:
 ## Forward declaration.
 def parChoicePex;
 
-## Map from parser tokens to derived value types for pexes.
+## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
-    "&": "lookaheadSuccess",
-    "!": "lookaheadFailure",
-    "?": "opt",
-    "*": "star",
-    "+": "plus"
+    @@"&": "lookaheadSuccess",
+    @@"!": "lookaheadFailure",
+    @@"?": "opt",
+    @@"*": "star",
+    @@"+": "plus"
 };
 
 ## Parses a parser function.
@@ -838,7 +838,7 @@ def parRepeatPex = {:
     term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @(get(PEX_TYPES, typeNameOf(repeat)))(term) }
+        { <> @(get(PEX_TYPES, typeOf(repeat)))(term) }
     |
         { <> term }
     )
@@ -850,7 +850,7 @@ def parLookaheadPex = {:
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @(get(PEX_TYPES, typeNameOf(lookahead)))(pex) }
+        { <> @(get(PEX_TYPES, typeOf(lookahead)))(pex) }
     )
 |
     parRepeatPex

@@ -552,13 +552,13 @@ def parProgramOrError = Peg::makeMainSequence(
 ## `choicePex` is the top-level parsing expression node type.
 def parChoicePex;
 
-## Map from parser tokens to derived value types for pexes.
+## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
-    "&": "lookaheadSuccess",
-    "!": "lookaheadFailure",
-    "?": "opt",
-    "*": "star",
-    "+": "plus"
+    @@"&": "lookaheadSuccess",
+    @@"!": "lookaheadFailure",
+    @@"?": "opt",
+    @@"*": "star",
+    @@"+": "plus"
 };
 
 ## Documented in spec.
@@ -665,7 +665,7 @@ def parRepeatPex = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeTokenSet("?", "*", "+"),
             Peg::makeCode { term, repeat ->
-                <> @(get(PEX_TYPES, typeNameOf(repeat)))(term)
+                <> @(get(PEX_TYPES, typeOf(repeat)))(term)
             }),
         Peg::makeCode { term <> term }));
 
@@ -675,7 +675,7 @@ def parLookaheadPex = Peg::makeMainChoice(
         Peg::makeTokenSet("&", "!"),
         parRepeatPex,
         Peg::makeCode { lookahead, pex ->
-            <> @(get(PEX_TYPES, typeNameOf(lookahead)))(pex)
+            <> @(get(PEX_TYPES, typeOf(lookahead)))(pex)
         }),
     parRepeatPex);
 
