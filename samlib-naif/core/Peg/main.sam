@@ -370,7 +370,7 @@ fn makeString(string) {
     ifIs { <> eq(Collection::sizeOf(string), 1) }
         { return makeToken(@@(string)) };
 
-    ## This is implemented as, in effect, `("1" "2" ... { <> string })`,
+    ## This is implemented as, in effect, `(@"1" @"2" ... { <> string })`,
     ## which allows us to minimize code duplication.
 
     ## Make a list of rules per character.
