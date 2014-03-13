@@ -70,10 +70,12 @@ These all exist in some form, though most are still very much in-progress.
 * `samtoc` &mdash; Simple compiler to C, written in Layer 2.
 
   This is a compiler that accepts Layer 2, producing C source as output,
-  which is suitable for loading as binary library files (modules or
-  standalone binaries) by `samex-naif`.
+  which when compiled is suitable for loading as binary library files
+  (modules or standalone binaries) by `samex-naif` or `samex-tot`.
 
   It has a handful of different compilation modes, of varying sophistication.
+
+  See [the implementation's README](samtoc/README.md) for more details.
 
 ### Planned pieces
 
