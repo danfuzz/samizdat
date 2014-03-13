@@ -912,39 +912,39 @@ fn closureWithFormals(closure, formals*) {
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
-    "-":   REFS::Number_neg,
-    "#":   REFS::Collection_sizeOf,
-    "^":   REFS::Sequence_reverse,
-    "!!!": REFS::Bitwise_not
+    @@"-":   REFS::Number_neg,
+    @@"#":   REFS::Collection_sizeOf,
+    @@"^":   REFS::Sequence_reverse,
+    @@"!!!": REFS::Bitwise_not
 };
 
 ## For binary operators, map of token types to function name variable
 ## references.
 def BINARY_OPERATORS = {
-    "+":    REFS::Number_add,
-    "-":    REFS::Number_sub,
-    "*":    REFS::Number_mul,
-    "/":    REFS::Number_div,
-    "%":    REFS::Number_mod,
-    "//":   REFS::Number_divEu,
-    "%%":   REFS::Number_modEu,
-    "==":   REFS::perEq,
-    "!=":   REFS::perNe,
-    "<":    REFS::perLt,
-    ">":    REFS::perGt,
-    "<=":   REFS::perLe,
-    ">=":   REFS::perGe,
-    "&&&":  REFS::Bitwise_and,
-    "|||":  REFS::Bitwise_or,
-    "^^^":  REFS::Bitwise_xor,
-    "<<<":  REFS::Bitwise_shl,
-    ">>>":  REFS::Bitwise_shr,
-    "\\==": REFS::eq,
-    "\\!=": REFS::ne,
-    "\\<":  REFS::lt,
-    "\\>":  REFS::gt,
-    "\\<=": REFS::le,
-    "\\>=": REFS::ge
+    @@"+":    REFS::Number_add,
+    @@"-":    REFS::Number_sub,
+    @@"*":    REFS::Number_mul,
+    @@"/":    REFS::Number_div,
+    @@"%":    REFS::Number_mod,
+    @@"//":   REFS::Number_divEu,
+    @@"%%":   REFS::Number_modEu,
+    @@"==":   REFS::perEq,
+    @@"!=":   REFS::perNe,
+    @@"<":    REFS::perLt,
+    @@">":    REFS::perGt,
+    @@"<=":   REFS::perLe,
+    @@">=":   REFS::perGe,
+    @@"&&&":  REFS::Bitwise_and,
+    @@"|||":  REFS::Bitwise_or,
+    @@"^^^":  REFS::Bitwise_xor,
+    @@"<<<":  REFS::Bitwise_shl,
+    @@">>>":  REFS::Bitwise_shr,
+    @@"\\==": REFS::eq,
+    @@"\\!=": REFS::ne,
+    @@"\\<":  REFS::lt,
+    @@"\\>":  REFS::gt,
+    @@"\\<=": REFS::le,
+    @@"\\>=": REFS::ge
 };
 
 ## Helper for parsing binary operator expressions, which puts together
@@ -955,7 +955,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     Generator::filterPump(opExList) { opEx ->
         def op = opEx::op;
         def expr = opEx::expr;
-        def resolvedOp = get(BINARY_OPERATORS, typeNameOf(op));
+        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
 
         result := makeCall(resolvedOp, result, expr)
     };
@@ -1310,7 +1310,7 @@ parNonlocalExit2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = get(UNARY_OPERATORS, typeNameOf(operator));
+        def name = get(UNARY_OPERATORS, typeOf(operator));
         <> { node <> makeCall(name, node) }
     }
 |
@@ -1348,8 +1348,8 @@ def parIndexPostfix = {:
 
         (
             ## It's a non-size-dependant slice.
-            { <> ne(typeNameOf(start), "fromEnd") }
-            { <> ne(typeNameOf(end), "fromEnd") }
+            !{ <> hasType(start, @@fromEnd) }
+            !{ <> hasType(end, @@fromEnd) }
 
             {
                 def funcRef = ifIs { <> eq(op, @"..") }
