@@ -742,7 +742,7 @@ def parParenPex = {:
 
 ## Parses a string literal parsing expression.
 def parParserString = {:
-    s = @string
+    @string
 :};
 
 ## Parses a token literal parsing expression.
