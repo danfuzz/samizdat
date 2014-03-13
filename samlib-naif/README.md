@@ -19,6 +19,6 @@ language.
 so are (a) a bit hard to read, and (b) not representative of the style
 of the final language layer.
 
-**Note:** If files are added or removed here, then a corresponding line
-needs to be added to or removed from the file `manifest.sam` in this
-directory.
+**Note:** If files or directories are added or removed here, then
+corresponding lines need to be added to or removed from the file
+`manifest.sam` in this directory.

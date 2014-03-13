@@ -32,8 +32,8 @@ These all exist in some form, though most are still very much in-progress.
   This is an interpreter for Layer 0 of the language, which can be paired
   with a companion library to interpret Layer 1 and Layer 2 as well.
 
-  See [the spec](doc/language-guide) and
-  [the implementation's README](samizdat-0/README.md) for more details.
+  See [the language spec](doc/language-guide) and
+  [the implementation's README](samex-naif/README.md) for more details.
 
 * `samlib-naif` &mdash; In-language core library for Layers 0&ndash;2.
 
@@ -41,8 +41,8 @@ These all exist in some form, though most are still very much in-progress.
   core library, sufficient for running code written in
   Layers 0&ndash;2.
 
-  See [the spec](doc/language-guide) and
-  [the implementation's README](samizdat-0/README.md) for more details.
+  See [the library spec](doc/library-guide) and
+  [the implementation's README](samlib-naif/README.md) for more details.
 
 * `samex-tot` &mdash; Runtime build with "compiled" core library.
 
@@ -70,10 +70,12 @@ These all exist in some form, though most are still very much in-progress.
 * `samtoc` &mdash; Simple compiler to C, written in Layer 2.
 
   This is a compiler that accepts Layer 2, producing C source as output,
-  which is suitable for loading as binary library files (modules or
-  standalone binaries) by `samex-naif`.
+  which when compiled is suitable for loading as binary library files
+  (modules or standalone binaries) by `samex-naif` or `samex-tot`.
 
   It has a handful of different compilation modes, of varying sophistication.
+
+  See [the implementation's README](samtoc/README.md) for more details.
 
 ### Planned pieces
 
@@ -129,7 +131,8 @@ These all exist in some form, though most are still very much in-progress.
 Building and Testing
 --------------------
 
-To build Samizdat from the console, run the Blur builder when cd'ed
+To build Samizdat from the console, run the
+[Blur](https://github.com/danfuzz/blur) builder when cd'ed
 to the root of the source directory. If you source (shell `.` command)
 the file `env.sh`, then `blur` will be in your `PATH`. If not, then
 `blur/blur` will work too.
@@ -144,10 +147,17 @@ $ blur
 $
 ```
 
-As of this writing full build can take up to something like an hour on
-mid-range personal computing hardware. The build consists of both C
-compilation as well as compilation of most of the Samizdat library as
-well as compilation of the compiler itself.
+As of this writing, the full build can take up to something like an hour on
+mid-range personal computing hardware. Among its steps, the build consists of:
+
+* Compilation of the core runtime, into an executable binary.
+* Compilation of the Samizdat compiler, into a collection of loadable
+  libraries. This is done by the Samizdat compiler itself, running using the
+  baseline interpreter. The compiler emits C code, which is then compiled
+  using the usual C compiler on the system.
+* Compilation of the core library, into a collection of loadable
+  libraries. This is done by the compiled Samizdat compiler, using C
+  code as an intermediate form in the same manner as the previous item.
 
 Once built, you can run `samex <path-to-script>`. `samex` and all the other
 built binaries are deposited in the directory `out/final/bin`. If you used
@@ -160,20 +170,27 @@ Each lives in a directory named with its number along with a suggestive
 summary, e.g. `0-001-string-literal`.
 
 
-Contributing
-------------
+More Info
+---------
+
+### Authors
+
+See [AUTHORS.md](AUTHORS.md).
+
+### Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+### Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+### Copyright and License
 
-License
--------
+See [LICENSE.md](LICENSE.md).
 
-Licensed under the Apache License, Version 2.0. See [LICENSE.md](LICENSE.md)
-and <http://www.apache.org/licenses/LICENSE-2.0>.
-
-
-Authors
--------
-
-See [AUTHORS.md](AUTHORS.md).
+```
+Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+```
