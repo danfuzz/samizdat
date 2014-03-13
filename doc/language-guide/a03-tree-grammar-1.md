@@ -480,7 +480,7 @@ def parTypeName = {:
 
     {
         <> ifIs { <> hasType(name, @@literal) }
-            { <> makeLiteral(typeFromName(get_value(name))) }
+            { <> makeLiteral(@@(get_value(name))) }
             { <> makeCall(REFS::typeFromName, name) }
     }
 :};
