@@ -129,7 +129,8 @@ These all exist in some form, though most are still very much in-progress.
 Building and Testing
 --------------------
 
-To build Samizdat from the console, run the Blur builder when cd'ed
+To build Samizdat from the console, run the
+[Blur](https://github.com/danfuzz/blur) builder when cd'ed
 to the root of the source directory. If you source (shell `.` command)
 the file `env.sh`, then `blur` will be in your `PATH`. If not, then
 `blur/blur` will work too.
@@ -145,9 +146,16 @@ $
 ```
 
 As of this writing full build can take up to something like an hour on
-mid-range personal computing hardware. The build consists of both C
-compilation as well as compilation of most of the Samizdat library as
-well as compilation of the compiler itself.
+mid-range personal computing hardware. Among its steps, the build consists of:
+
+* Compilation of the core runtime, into an executable binary.
+* Compilation of the Samizdat compiler, into a collection of loadable
+  libraries. This is done by the Samizdat compiler itself, running using the
+  baseline interpreter. The compiler emits C code, which is then compiled
+  using the usual C compiler on the system.
+* Compilation of the core library, into a collection of loadable
+  libraries. This is done by the compiled Samizdat compiler, using C
+  code as an intermediate form in the same manner as the previous item.
 
 Once built, you can run `samex <path-to-script>`. `samex` and all the other
 built binaries are deposited in the directory `out/final/bin`. If you used
