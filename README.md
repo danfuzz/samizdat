@@ -160,20 +160,27 @@ Each lives in a directory named with its number along with a suggestive
 summary, e.g. `0-001-string-literal`.
 
 
-Contributing
-------------
+More Info
+---------
+
+### Authors
+
+See [AUTHORS.md](AUTHORS.md).
+
+### Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+### Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+### Copyright and License
 
-License
--------
+See [LICENSE.md](LICENSE.md).
 
-Licensed under the Apache License, Version 2.0. See [LICENSE.md](LICENSE.md)
-and <http://www.apache.org/licenses/LICENSE-2.0>.
-
-
-Authors
--------
-
-See [AUTHORS.md](AUTHORS.md).
+```
+Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+```
