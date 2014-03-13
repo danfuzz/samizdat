@@ -45,20 +45,20 @@ extern zvalue TYPE_Generic;
 
 /**
  * Adds a type-to-function binding to the given generic. `generic` must be
- * a generic function, `typeOrName` is the usual representation of a type,
- * and `function` must be a valid `Fallable`. The type must not have already
- * been bound in the given generic, and the generic must not be sealed.
+ * a generic function, `type` must be a type, and `function` must be a valid
+ * `Callable`. The type must not have already been bound in the given generic,
+ * and the generic must not be sealed.
  */
-void genericBind(zvalue generic, zvalue typeOrName, zvalue function);
+void genericBind(zvalue generic, zvalue type, zvalue function);
 
 /**
  * Adds a type-to-C-function binding to the given generic. `generic` must
- * be a generic function, `typeOrName` is the usual representation of a type,
- * and `function` must be a valid `zfunction`. The type must not have already
- * been bound in the given generic, and the generic must not be sealed.
- * An optional `builtinName` becomes the name of the bound builtin.
+ * be a generic function, `type` must be a type, and `function` must be a
+ * valid `zfunction`. The type must not have already been bound in the given
+ * generic, and the generic must not be sealed. An optional `builtinName`
+ * becomes the name of the bound builtin.
  */
-void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
+void genericBindPrim(zvalue generic, zvalue type, zfunction function,
     const char *builtinName);
 
 /**

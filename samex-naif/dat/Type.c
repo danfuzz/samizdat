@@ -286,8 +286,9 @@ zvalue typeFromName(zvalue name) {
 }
 
 /* Documented in header. */
-zint typeIndex(zvalue typeOrName) {
-    return indexFromTrueType(trueTypeFromTypeOrName(typeOrName));
+zint typeIndex(zvalue type) {
+    assertHasTypeType(type);
+    return indexFromTrueType(type);
 }
 
 /* Documented in header. */

@@ -114,24 +114,24 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
  */
 
 /* Documented in header. */
-void genericBind(zvalue generic, zvalue typeOrName, zvalue function) {
+void genericBind(zvalue generic, zvalue type, zvalue function) {
     assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zint index = typeIndex(typeOrName);
+    zint index = typeIndex(type);
 
     if (info->sealed) {
         die("Sealed generic.");
     } else if (info->functions[index] != NULL) {
         die("Duplicate binding in generic: %s(%s, ...)",
-            valDebugString(generic), valDebugString(typeOrName));
+            valDebugString(generic), valDebugString(type));
     }
 
     info->functions[index] = function;
 }
 
 /* Documented in header. */
-void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
+void genericBindPrim(zvalue generic, zvalue type, zfunction function,
         const char *builtinName) {
     assertHasType(generic, TYPE_Generic);
 
@@ -142,7 +142,7 @@ void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
     zvalue builtin =
         makeBuiltin(info->minArgs, info->maxArgs, function, 0, name);
 
-    genericBind(generic, typeOrName, builtin);
+    genericBind(generic, type, builtin);
 }
 
 /* Documented in header. */

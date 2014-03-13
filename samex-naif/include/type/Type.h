@@ -68,9 +68,9 @@ zvalue typeFromName(zvalue name);
 bool typeHasSecret(zvalue type, zvalue secret);
 
 /**
- * Returns the unique index for the given type (or transparent type name).
+ * Returns the unique index for the given type.
  */
-zint typeIndex(zvalue typeOrName);
+zint typeIndex(zvalue type);
 
 /**
  * Returns the unique index for the type of the given value.
