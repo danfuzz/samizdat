@@ -58,6 +58,8 @@
     toString,
     totEq,
     totOrder,
+    typeFromName,
+    typeIsTransparentDerived,
     typeOf,
     valueOf
 }

@@ -149,17 +149,14 @@ returns void.
 
 #### `makeValue(type, value?) <> .`
 
-Returns a general value with the given type tag (an arbitrary value)
-and optional data payload value (also an arbitrary value). These
+Returns a derived value with the given type (a value of type `Type`)
+and optional data payload value (an arbitrary value). These
 equivalences hold for Samizdat Layer 0 source code:
 
 ```
-v = @(type);         is equivalent to  v = makeValue(type);
-v = @(type)(value);  is equivalent to  v = makeValue(type, value);
+@(type)         is equivalent to  v = makeValue(typeFromName(type));
+@(type)(value)  is equivalent to  v = makeValue(typeFromName(type), value);
 ```
-
-If `type` names a core type, and the given `value` is a value
-of that type, then this function returns `value` directly.
 
 **Syntax Note:** Used in the translation of `@(type)(value)`
 (and related) forms.
@@ -171,13 +168,9 @@ the two given values are not identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
-#### `typeOf(value) <> .`
+#### `typeOf(value) <> type`
 
-Returns the type tag of the given arbitrary value. For transparent values,
-this returns the type tag the value was constructed with, as a regular value.
-For opaque values, this returns a value of type `Type`.
-
-**Note:** It is invalid to construct a transparent value with a type tag
+Returns the type of the given arbitrary `value`. The return value is always
 of type `Type`.
 
 
@@ -272,3 +265,8 @@ It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
 **Syntax Note:** Used in the translation of `expr**` forms.
+
+#### `typeNameOf(value) <> .`
+
+Returns the name of the given `value`'s type. This function is the equivalent
+to `nameOf(typeOf(value))`.

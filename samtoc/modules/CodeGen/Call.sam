@@ -27,14 +27,14 @@ fn makeCall(function, args*) {
 
 genericBind(
     flatten,
-    "Call",
+    @@Call,
     fn Call_flatten(tree) {
         <> dataOf(tree)::flat
     });
 
 genericBind(
     indent,
-    "Call",
+    @@Call,
     fn Call_indent(tree, level, maxColumns) {
         def data = dataOf(tree);
         def prefix = indentation(level);

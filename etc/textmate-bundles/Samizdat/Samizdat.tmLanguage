@@ -214,13 +214,13 @@
 					<key>name</key>
 					<string>constant.other</string>
 					<key>match</key>
-					<string>@[_a-zA-Z][_a-zA-Z0-9]*</string>
+					<string>@@?[_a-zA-Z][_a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>constant.other</string>
 					<key>begin</key>
-					<string>@"</string>
+					<string>@@?"</string>
 					<key>end</key>
 					<string>"</string>
 					<key>patterns</key>
@@ -257,7 +257,7 @@
 					<key>name</key>
 					<string>meta.parens.samizdat</string>
 					<key>begin</key>
-					<string>@\(</string>
+					<string>@@?\(</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>0</key>

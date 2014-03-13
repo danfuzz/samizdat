@@ -118,7 +118,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeTransValue(STR_int, intval);
+    return makeValue(TYPE_int, intval, NULL);
 }
 
 /**
@@ -158,7 +158,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'v': { if (valEq(string, STR_var))    return TOK_var;    break; }
     }
 
-    return makeTransValue(STR_identifier, string);
+    return makeValue(TYPE_identifier, string, NULL);
 }
 
 /**
@@ -208,7 +208,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZchars(size, chars);
-    return makeTransValue(STR_string, string);
+    return makeValue(TYPE_string, string, NULL);
 }
 
 /**
@@ -224,7 +224,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue string = dataOf(result);
-    return makeTransValue(STR_identifier, string);
+    return makeValue(TYPE_identifier, string, NULL);
 }
 
 /**
@@ -233,8 +233,8 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
  * returns the given one-character token or errors (the latter
  * if the one-character token was passed as `NULL`).
  */
-static zvalue tokenizeOneOrTwoChars(ParseState *state, zint ch2,
-                                    zvalue token1, zvalue token2) {
+static zvalue tokenizeOneOrTwo(ParseState *state, zint ch2,
+        zvalue token1, zvalue token2) {
     zint ch1 = read(state);
 
     if (peek(state) == ch2) {
@@ -265,7 +265,6 @@ static zvalue tokenizeOne(ParseState *state) {
     zint ch = peek(state);
 
     switch (ch) {
-        case '@':  read(state); return TOK_CH_AT;
         case '}':  read(state); return TOK_CH_CCURLY;
         case ')':  read(state); return TOK_CH_CPAREN;
         case ']':  read(state); return TOK_CH_CSQUARE;
@@ -283,14 +282,13 @@ static zvalue tokenizeOne(ParseState *state) {
         case '\\': return tokenizeQuotedIdentifier(state);
         case ':':  return tokenizeColon(state);
         case '-':
-            return tokenizeOneOrTwoChars(state, '>',
-                                         TOK_CH_MINUS, TOK_CH_RARROW);
+            return tokenizeOneOrTwo(state, '>', TOK_CH_MINUS, TOK_CH_RARROW);
         case '.':
-            return tokenizeOneOrTwoChars(state, '.',
-                                         TOK_CH_DOT, TOK_CH_DOTDOT);
+            return tokenizeOneOrTwo(state, '.', TOK_CH_DOT,   TOK_CH_DOTDOT);
         case '<':
-            return tokenizeOneOrTwoChars(state, '>',
-                                         TOK_CH_LT, TOK_CH_DIAMOND);
+            return tokenizeOneOrTwo(state, '>', TOK_CH_LT,    TOK_CH_DIAMOND);
+        case '@':
+            return tokenizeOneOrTwo(state, '@', TOK_CH_AT,    TOK_CH_ATAT);
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
             return tokenizeInt(state);

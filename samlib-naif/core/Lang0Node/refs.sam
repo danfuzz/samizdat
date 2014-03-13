@@ -44,7 +44,8 @@ def NAMES = [
     "perLe",
     "perLt",
     "perNe",
-    "return"
+    "return",
+    "typeFromName"
 ];
 
 ## Module-scoped names.

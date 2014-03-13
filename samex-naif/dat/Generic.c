@@ -56,11 +56,11 @@ static GenericInfo *getInfo(zvalue generic) {
  * Find the function binding for a given type, including walking up the
  * parent type chain. Returns `NULL` if there is no binding.
  */
-static zvalue findByTrueType(zvalue generic, zvalue type) {
+static zvalue findByType(zvalue generic, zvalue type) {
     zvalue *functions = getInfo(generic)->functions;
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
-        zvalue result = functions[indexFromTrueType(type)];
+        zvalue result = functions[typeIndexUnchecked(type)];
         if (result != NULL) {
             return result;
         }
@@ -93,7 +93,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
         assertAllHaveSameType(argCount, args);
     }
 
-    zvalue function = findByTrueType(generic, trueTypeOf(args[0]));
+    zvalue function = findByType(generic, typeOf(args[0]));
 
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
@@ -114,24 +114,24 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
  */
 
 /* Documented in header. */
-void genericBind(zvalue generic, zvalue typeOrName, zvalue function) {
+void genericBind(zvalue generic, zvalue type, zvalue function) {
     assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zint index = typeIndex(typeOrName);
+    zint index = typeIndex(type);
 
     if (info->sealed) {
         die("Sealed generic.");
     } else if (info->functions[index] != NULL) {
         die("Duplicate binding in generic: %s(%s, ...)",
-            valDebugString(generic), valDebugString(typeOrName));
+            valDebugString(generic), valDebugString(type));
     }
 
     info->functions[index] = function;
 }
 
 /* Documented in header. */
-void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
+void genericBindPrim(zvalue generic, zvalue type, zfunction function,
         const char *builtinName) {
     assertHasType(generic, TYPE_Generic);
 
@@ -142,7 +142,7 @@ void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
     zvalue builtin =
         makeBuiltin(info->minArgs, info->maxArgs, function, 0, name);
 
-    genericBind(generic, typeOrName, builtin);
+    genericBind(generic, type, builtin);
 }
 
 /* Documented in header. */
@@ -189,7 +189,7 @@ METH_IMPL(Generic, canCall) {
     zvalue value = args[1];
     GenericInfo *info = getInfo(generic);
 
-    return (findByTrueType(generic, trueTypeOf(value)) != NULL) ? value : NULL;
+    return (findByType(generic, typeOf(value)) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */

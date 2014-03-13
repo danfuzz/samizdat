@@ -17,31 +17,31 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 fn Boolean_and(bool1, bool2) {
     <> @Boolean(Bitwise::and(dataOf(bool1), dataOf(bool2)))
 };
-genericBind(Bitwise::and, "Boolean", Boolean_and);
+genericBind(Bitwise::and, @@Boolean, Boolean_and);
 
 ## Documented in spec.
 fn Boolean_bit(bool, n) {
     <> Bitwise::bit(dataOf(bool), n)
 };
-genericBind(Bitwise::bit, "Boolean", Boolean_bit);
+genericBind(Bitwise::bit, @@Boolean, Boolean_bit);
 
 ## Documented in spec.
 fn Boolean_bitSize(bool) {
     <> 1
 };
-genericBind(Bitwise::bitSize, "Boolean", Boolean_bitSize);
+genericBind(Bitwise::bitSize, @@Boolean, Boolean_bitSize);
 
 ## Documented in spec.
 fn Boolean_not(bool) {
     <> @Boolean(Bitwise::xor(dataOf(bool), 1))
 };
-genericBind(Bitwise::not, "Boolean", Boolean_not);
+genericBind(Bitwise::not, @@Boolean, Boolean_not);
 
 ## Documented in spec.
 fn Boolean_or(bool1, bool2) {
     <> @Boolean(Bitwise::or(dataOf(bool1), dataOf(bool2)))
 };
-genericBind(Bitwise::or, "Boolean", Boolean_or);
+genericBind(Bitwise::or, @@Boolean, Boolean_or);
 
 ## Documented in spec.
 fn Boolean_shl(bool, n) {
@@ -50,22 +50,22 @@ fn Boolean_shl(bool, n) {
     <> ifValueOr { <> get({0: false, 1: true}, newValue) }
         { Io0::die("Undefined boolean shift result.") }
 };
-genericBind(Bitwise::shl, "Boolean", Boolean_shl);
+genericBind(Bitwise::shl, @@Boolean, Boolean_shl);
 
 ## Documented in spec.
 fn Boolean_toInt(bool) {
     <> dataOf(bool)
 };
-genericBind(toInt, "Boolean", Boolean_toInt);
+genericBind(toInt, @@Boolean, Boolean_toInt);
 
 ## Documented in spec.
 fn Boolean_toNumber(bool) {
     <> dataOf(bool)
 };
-genericBind(toNumber, "Boolean", Boolean_toNumber);
+genericBind(toNumber, @@Boolean, Boolean_toNumber);
 
 ## Documented in spec.
 fn Boolean_xor(bool1, bool2) {
     <> @Boolean(Bitwise::xor(dataOf(bool1), dataOf(bool2)))
 };
-genericBind(Bitwise::xor, "Boolean", Boolean_xor);
+genericBind(Bitwise::xor, @@Boolean, Boolean_xor);

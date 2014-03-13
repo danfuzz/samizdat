@@ -277,7 +277,10 @@ of type:
 * All core values (described above, and values of type `type` as described
   here) have a "core type" as their type. The name of each core type is a
   string of the "human" name of the type. By convention, core type names
-  are capitalized.
+  are capitalized. Many core value types are exported as variables in the
+  standard global environment, each with a variable name that matches its
+  type name. For example, the global reference `String` refers to the core
+  value type named `String`.
 
 * The type of a data value created using the syntax `@(type)(value)`
   is a transparent derived type, where the type's name is the `type` specified
@@ -286,16 +289,18 @@ of type:
   under "Derived types."
 
   There is a one-to-one correspondence between a value and a
-  transparent derived type with that value as its name. As such, Samizdat
-  does not expose transparent derived types directly. These are represented
-  as the name of the type. That is, `typeOf(value)` is not actually a
-  `Type` in these cases.
+  transparent derived type with that value as its name.
 
-* TODO: The type of a data value explicitly created using a type is that type.
-  In the language, the only way to do this is with an opaque derived type.
-  Such types are created with both a name and a secret. The same secret must
-  be used both the create values of the type as well as access the data
-  payload of values of the type.
+  A transparent derive type can be specified in code by indicating its name
+  in parentheses, preceded by `@@`. If the name is a literal string, then
+  the parentheses may be omitted. Furthermore, if the name is a literal
+  string which abides by the syntax for identifiers in the language, then
+  the double quotes may be omitted. For example, all of `@@("blort")`,
+  `@@"blort"`, and `@@blort` refer to the same type.
+
+* TODO: The third kind of type is an "opaque derived" type. These have a
+  name and secret. The secret is used to prevent creation of values of the
+  type beyond the scope of the type's trusted implementation.
 
 
 #### Value
@@ -307,20 +312,20 @@ function.
 
 ### Derived types
 
-A derived value is one that was constructed with an explicit type tag and
-optional data payload.
+A transparent derived value is one that is constructed with an explicit type
+tag and optional data payload.
 
-Derived values are introduced with an at-sign (`@`). This is followed by
-the required type tag and then the optional data payload. The type tag
-and payload (if present) must each be surrounded by parentheses (separately),
-with the following exceptions:
+Transparent derived values are introduced with an at-sign (`@`). This is
+followed by a required type name and then an optional data payload. The type
+name and payload (if present) must each be surrounded by parentheses
+(separately), with the following exceptions:
 
-* If the type tag is a literal string which abides by the syntax for
+* If the type name is a literal string which abides by the syntax for
   identifiers in the language, then it may be represented directly, with
   no parentheses or quoting required.
 
-* If the type tag is a string form (`"..."`), then it may be represented
-  without parentheses.
+* If the type name is a literal string form (`"..."`), then it may be
+  represented without parentheses.
 
 * If the data payload is a map form (`{...}`), then it may be represented
   without parentheses.

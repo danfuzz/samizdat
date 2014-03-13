@@ -54,10 +54,10 @@ fn SerialGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, "SerialGenerator", SerialGenerator_nextValue);
+genericBind(nextValue, @@SerialGenerator, SerialGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, "SerialGenerator", Generator_stdCollect);
+genericBind(collect, @@SerialGenerator, Generator_stdCollect);
 
 <> {
     makeSerialGenerator

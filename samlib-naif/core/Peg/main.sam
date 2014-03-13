@@ -30,7 +30,7 @@ def fail = @PegFail;
 fn PegAny_parse(peg, box, input, .*) {
     <> nextValue(input, box)
 };
-genericBind(parse, "PegAny", PegAny_parse);
+genericBind(parse, @@PegAny, PegAny_parse);
 
 ## Documented in spec.
 fn PegChoice_parse(peg, box, input, items*) {
@@ -46,7 +46,7 @@ fn PegChoice_parse(peg, box, input, items*) {
     ## No rule succeeded.
     Box::store(box)
 };
-genericBind(parse, "PegChoice", PegChoice_parse);
+genericBind(parse, @@PegChoice, PegChoice_parse);
 
 ## Documented in spec.
 fn PegCode_parse(peg, box, input, items*) {
@@ -57,7 +57,7 @@ fn PegCode_parse(peg, box, input, items*) {
         }
         { Box::store(box) };
 };
-genericBind(parse, "PegCode", PegCode_parse);
+genericBind(parse, @@PegCode, PegCode_parse);
 
 ## Documented in spec.
 fn PegEof_parse(peg, box, input, .*) {
@@ -68,13 +68,13 @@ fn PegEof_parse(peg, box, input, .*) {
             <> input
         }
 };
-genericBind(parse, "PegEof", PegEof_parse);
+genericBind(parse, @@PegEof, PegEof_parse);
 
 ## Documented in spec.
 fn PegFail_parse(peg, box, input, .*) {
     Box::store(box)
 };
-genericBind(parse, "PegFail", PegFail_parse);
+genericBind(parse, @@PegFail, PegFail_parse);
 
 ## Documented in spec.
 fn PegLookaheadFailure_parse(peg, box, input, items*) {
@@ -85,21 +85,21 @@ fn PegLookaheadFailure_parse(peg, box, input, items*) {
             <> input
         }
 };
-genericBind(parse, "PegLookaheadFailure", PegLookaheadFailure_parse);
+genericBind(parse, @@PegLookaheadFailure, PegLookaheadFailure_parse);
 
 ## Documented in spec.
 fn PegLookaheadSuccess_parse(peg, box, input, items*) {
     <> ifIs { <> parse(dataOf(peg), box, input, items*) }
         { <> input }
 };
-genericBind(parse, "PegLookaheadSuccess", PegLookaheadSuccess_parse);
+genericBind(parse, @@PegLookaheadSuccess, PegLookaheadSuccess_parse);
 
 ## Documented in spec.
 fn PegMain_parse(peg, box, input, .*) {
     ## The point of this implementation is to drop the `items` context.
     <> parse(dataOf(peg), box, input)
 };
-genericBind(parse, "PegMain", PegMain_parse);
+genericBind(parse, @@PegMain, PegMain_parse);
 
 ## Documented in spec.
 fn PegOpt_parse(peg, box, input, items*) {
@@ -114,7 +114,7 @@ fn PegOpt_parse(peg, box, input, items*) {
             <> input
         }
 };
-genericBind(parse, "PegOpt", PegOpt_parse);
+genericBind(parse, @@PegOpt, PegOpt_parse);
 
 ## Documented in spec.
 fn PegRepeat_parse(peg, box, input, items*) {
@@ -147,14 +147,14 @@ fn PegRepeat_parse(peg, box, input, items*) {
             }
     }
 };
-genericBind(parse, "PegRepeat", PegRepeat_parse);
+genericBind(parse, @@PegRepeat, PegRepeat_parse);
 
 ## Documented in spec.
 fn PegResult_parse(peg, box, input, .*) {
     Box::store(box, dataOf(peg));
     <> input
 };
-genericBind(parse, "PegResult", PegResult_parse);
+genericBind(parse, @@PegResult, PegResult_parse);
 
 ## Documented in spec.
 fn PegSequence_parse(peg, box, input, items*) {
@@ -182,14 +182,14 @@ fn PegSequence_parse(peg, box, input, items*) {
     Box::store(box, Sequence::nthFromEnd(results, 0));
     <> remainingInput
 };
-genericBind(parse, "PegSequence", PegSequence_parse);
+genericBind(parse, @@PegSequence, PegSequence_parse);
 
 ## Documented in spec.
 fn PegThunk_parse(peg, box, input, items*) {
     <> ifValue { <> dataOf(peg)(items*) }
         { thunkResult <> parse(thunkResult, box, input, items*) }
 };
-genericBind(parse, "PegThunk", PegThunk_parse);
+genericBind(parse, @@PegThunk, PegThunk_parse);
 
 ## Documented in spec.
 fn PegTokenSet_parse(peg, box, input, items*) {
@@ -209,7 +209,7 @@ fn PegTokenSet_parse(peg, box, input, items*) {
     ## Either EOF or no match.
     Box::store(box);
 };
-genericBind(parse, "PegTokenSet", PegTokenSet_parse);
+genericBind(parse, @@PegTokenSet, PegTokenSet_parse);
 
 ## Documented in spec.
 fn PegTokenSetComplement_parse(peg, box, input, items*) {
@@ -229,12 +229,18 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
     ## Either EOF or no match.
     Box::store(box);
 };
-genericBind(parse, "PegTokenSetComplement", PegTokenSetComplement_parse);
+genericBind(parse, @@PegTokenSetComplement, PegTokenSetComplement_parse);
 
 
 ##
 ## Exported Definitions
 ##
+
+## Private helper for `makeCharSet*`, which takes a string and produces a
+## list of token types for the characters.
+fn typeListFromString(string) {
+    <> collect(string, { ch <> @@(ch) })
+};
 
 ## Private helper for `make*Set*`, which takes a `sense` argument and
 ## produces the desired rule.
@@ -263,13 +269,13 @@ fn makeResult(value) {
 fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
-    <> genericMakeTokenSet(true, cat("", strings*))
+    <> genericMakeTokenSet(true, typeListFromString(cat("", strings*)))
 };
 
 ## Documented in spec.
 fn makeCharSetComplement(strings*) {
     ## See comment in `makeCharSet`.
-    <> genericMakeTokenSet(false, cat("", strings*))
+    <> genericMakeTokenSet(false, typeListFromString(cat("", strings*)))
 };
 
 ## Documented in spec.
@@ -362,13 +368,14 @@ fn makeString(string) {
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { <> eq(Collection::sizeOf(string), 1) }
-        { return makeToken(string) };
+        { return makeToken(@@(string)) };
 
-    ## This is implemented as, in effect, `("1" "2" ... { <> string })`,
+    ## This is implemented as, in effect, `(@"1" @"2" ... { <> string })`,
     ## which allows us to minimize code duplication.
 
     ## Make a list of rules per character.
-    def chars = collect(string, makeToken);
+    def types = typeListFromString(string);
+    def chars = collect(types, makeToken);
 
     <> @PegSequence[chars*, @PegResult(@(string))]
 };
@@ -403,7 +410,7 @@ fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.
-            <> Generator::makeFilterGenerator(makeValue, input)
+            <> Generator::makeFilterGenerator(input) { ch <> @(ch) }
         }
         { <> input };
 
@@ -413,7 +420,7 @@ fn apply(rule, input) {
 
 ## Documented in spec.
 fn stringFromTokenList(tokens) {
-    <> cat("", collect(tokens, typeOf)*)
+    <> cat("", collect(tokens, typeNameOf)*)
 };
 
 

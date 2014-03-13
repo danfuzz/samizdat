@@ -141,7 +141,7 @@ zvalue genericFindByIndex(zvalue generic, zint index);
  * Gets the index for a given type value. The given value *must* be a
  * `Type` per se; this is *not* checked.
  */
-inline zint indexFromTrueType(zvalue type) {
+inline zint typeIndexUnchecked(zvalue type) {
     return ((TypeInfo *) datPayload(type))->id;
 }
 
@@ -164,31 +164,10 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 zint markFrameStack(void);
 
 /**
- * Gets the `Type` per se for the given value.
- */
-inline zvalue trueTypeOf(zvalue value) {
-    return value->type;
-}
-
-/**
- * Gets the `Type` per se from a type (which may be the name of a transparent
- * derived type) and secret. Returns `NULL` if the type and secret don't
- * match.
- */
-zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret);
-
-/**
- * Returns true iff the given type is a derived type (whether opaque or
- * transparent). This works (returns `true`) if given a non-`Type` value.
- */
-bool typeIsDerived(zvalue typeOrName);
-
-/**
  * Checks whether the given value matches the secret of the given type.
- * `secret` may be passed as `NULL`. This works (treating it as a transparent
- * type) if given a non-`Type` value for `typeOrName`.
+ * `secret` may be passed as `NULL`.
  */
-bool typeSecretIs(zvalue typeOrName, zvalue secret);
+bool typeHasSecret(zvalue type, zvalue secret);
 
 
 #endif

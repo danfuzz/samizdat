@@ -71,7 +71,8 @@ This corresponds to the syntax `%expression`.
 #### `@token(type)`
 
 Representation of a token-match terminal. This is also used for
-single-character matches in tokenizers. `type` must be a string. This
+single-character matches in tokenizers. `type` must be a type (per se),
+and is typically a transparent derived type (e.g., `@@stuff`). This
 indicates that a token of the given type is to be matched.
 
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
@@ -80,18 +81,20 @@ a single character).
 #### `@tokenSet(tokenSet)`
 
 Representation of a token set rule. This is also used for matching
-character sets in tokenizers. `tokenSet` must be a list of strings,
-which is taken to be an unordered set of token types to match.
+character sets in tokenizers. `tokenSet` must be a list of types (type values
+per se; same as the payload of `@token` nodes), which is taken to be an
+unordered set of token types to match.
 
-This corresponds to the syntax `[token1 token2 etc]` or `["charsToMatch"]`.
+This corresponds to the syntax `[@token1 @token2 @etc]` or `["charsToMatch"]`.
 
 #### `@tokenSetComplement(tokenSet)`
 
 Representation of a token set complement rule. This is also used for matching
-character set complements in tokenizers. `tokenSet` must be a list of
-strings, which is taken to be an unordered set of token types to not-match.
+character set complements in tokenizers. `tokenSet` must be a list of types
+(type values per se; same as the payload of `@token` nodes), which is taken
+to be an unordered set of token types to not-match.
 
-This corresponds to the syntax `[! token1 token2 etc]` or
+This corresponds to the syntax `[! @token1 @token2 @etc]` or
 `[! "charsToNotMatch"]`.
 
 #### `@varRef{name: name}`

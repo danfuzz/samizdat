@@ -69,7 +69,7 @@ fn safeIndexForNodes(base, nodes*) {
 
 genericBind(
     safeIndex,
-    "apply",
+    @@apply,
     fn apply_safeIndex(node, base) {
         <> safeIndexForNodes(base,
             Lang0Node::get_function(node),
@@ -78,7 +78,7 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "call",
+    @@call,
     fn call_safeIndex(node, base) {
         <> safeIndexForNodes(base,
             Lang0Node::get_function(node),
@@ -87,7 +87,7 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "closure",
+    @@closure,
     fn closure_safeIndex(node, base) {
         def namesIndex = safeIndexForNames(base,
             Lang0Node::get_name(node)?*,
@@ -101,7 +101,7 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "jump",
+    @@jump,
     fn jump_safeIndex(node, base) {
         <> safeIndexForNodes(base,
             Lang0Node::get_function(node),
@@ -110,14 +110,14 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "literal",
+    @@literal,
     fn literal_safeIndex(node, base) {
         <> -1
     });
 
 genericBind(
     safeIndex,
-    "varBind",
+    @@varBind,
     fn varBind_safeIndex(node, base) {
         def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
         def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node));
@@ -126,7 +126,7 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "varDef",
+    @@varDef,
     fn varDef_safeIndex(node, base) {
         def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
         def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node)?*);
@@ -135,7 +135,7 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "varDefMutable",
+    @@varDefMutable,
     fn varDefMutable_safeIndex(node, base) {
         def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
         def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node)?*);
@@ -144,7 +144,7 @@ genericBind(
 
 genericBind(
     safeIndex,
-    "varRef",
+    @@varRef,
     fn varRef_safeIndex(node, base) {
         <> safeIndexForNames(base, Lang0Node::get_name(node))
     });

@@ -71,8 +71,10 @@ FUN_IMPL_DECL(lt) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(makeValue) {
+    zvalue type = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
-    return makeTransValue(args[0], value);
+
+    return makeValue(type, value, NULL);
 }
 
 /* Documented in spec. */
@@ -81,6 +83,17 @@ FUN_IMPL_DECL(ne) {
     zvalue v2 = args[1];
 
     return valEq(v1, v2) ? NULL : v2;
+}
+
+/* Documented in spec. */
+FUN_IMPL_DECL(typeFromName) {
+    return typeFromName(args[0]);
+}
+
+/* Documented in spec. */
+FUN_IMPL_DECL(typeIsTransparentDerived) {
+    zvalue type = args[0];
+    return typeIsTransparentDerived(type) ? type : NULL;
 }
 
 /* Documented in spec. */

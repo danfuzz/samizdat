@@ -31,11 +31,11 @@ fn ListWrapGenerator_nextValue(gen, box) {
             Box::store(box);
         }
 };
-genericBind(nextValue, "ListWrapGenerator",
+genericBind(nextValue, @@ListWrapGenerator,
     ListWrapGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, "ListWrapGenerator", Generator_stdCollect);
+genericBind(collect, @@ListWrapGenerator, Generator_stdCollect);
 
 <> {
     makeListWrapGenerator

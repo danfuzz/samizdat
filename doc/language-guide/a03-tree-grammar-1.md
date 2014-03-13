@@ -115,7 +115,7 @@ def parVarDef = {:
 
     {
         def nameString = dataOf(name);
-        <> ifIs { <> hasType(style, "def") }
+        <> ifIs { <> hasType(style, @@def) }
             { <> makeVarDef(nameString, optExpr*) }
             { <> makeVarDefMutable(nameString, optExpr*) }
     }
@@ -149,7 +149,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> {repeat: typeOf(r)} }
+        { <> {repeat: typeNameOf(r)} }
     |
         { <> {} }
     )
@@ -369,7 +369,7 @@ def parIdentifierString = {:
     {
         <> ifNot { <> dataOf(token) }
             {
-                def type = typeOf(token);
+                def type = typeNameOf(token);
                 def firstCh = Sequence::nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
@@ -401,7 +401,7 @@ def parMapping = {:
                 ## binding.
                 ifValue { <> get_interpolate(value) }
                     { interp -> <out> interp };
-                ifIs { <> hasType(value, "varRef") }
+                ifIs { <> hasType(value, @@varRef) }
                     {
                         <out> makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
@@ -472,11 +472,30 @@ def parList = {:
     }
 :};
 
+## Parses a type name, yielding a type value. If the name is a blatant
+## literal, then the result of this rule is also a literal. If not, the
+## result of this rule is a call to `typeFromName`.
+def parTypeName = {:
+    name = (parIdentifierString | parParenExpression)
+
+    {
+        <> ifIs { <> hasType(name, @@literal) }
+            { <> makeLiteral(@@(get_value(name))) }
+            { <> makeCall(REFS::typeFromName, name) }
+    }
+:};
+
+## Parses a type literal form.
+def parType = {:
+    @"@@"
+    parTypeName
+:};
+
 ## Parses a literal in derived value form.
 def parDeriv = {:
     @"@"
 
-    type = (parIdentifierString | parParenExpression)
+    type = parTypeName
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCall(REFS::makeValue, type, value*) }
@@ -487,7 +506,7 @@ def parDeriv = {:
 ## fatal error.
 def parTerm = {:
     parVarRef | parInt | parString | parMap | parList
-    parDeriv | parClosure | parParenExpression
+    parDeriv | parType | parClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
@@ -648,12 +667,12 @@ parProgramBody := {:
         def rawStatements = [most*, last::statements*];
         def tops = Generator::filterAll(rawStatements)
             { s ->
-                <> ifIs { <> hasType(s, "topDeclaration") }
+                <> ifIs { <> hasType(s, @@topDeclaration) }
                     { <> dataOf(s)::top }
             };
         def mains = Generator::filterAll(rawStatements)
             { s ->
-                <> ifIs { <> hasType(s, "topDeclaration") }
+                <> ifIs { <> hasType(s, @@topDeclaration) }
                     { <> dataOf(s)::main }
                     { <> s }
             };
@@ -696,13 +715,13 @@ def parProgramOrError = {:
 ## Forward declaration.
 def parChoicePex;
 
-## Map from parser tokens to derived value types for pexes.
+## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
-    "&": "lookaheadSuccess",
-    "!": "lookaheadFailure",
-    "?": "opt",
-    "*": "star",
-    "+": "plus"
+    @@"&": "lookaheadSuccess",
+    @@"!": "lookaheadFailure",
+    @@"?": "opt",
+    @@"*": "star",
+    @@"+": "plus"
 };
 
 ## Parses a parser function.
@@ -723,20 +742,14 @@ def parParenPex = {:
 
 ## Parses a string literal parsing expression.
 def parParserString = {:
-    s = @string
-    {
-        def value = dataOf(s);
-        <> ifIs { <> eq(Collection::sizeOf(value), 1) }
-            { <> @token(value) }
-            { <> s }
-    }
+    @string
 :};
 
 ## Parses a token literal parsing expression.
 def parParserToken = {:
     @"@"
     type = parIdentifierString
-    { <> @token(get_value(type)) }
+    { <> @token(@@(get_value(type))) }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -775,7 +788,7 @@ def parParserSet = {:
 
     terminals = (
         strings = parParserSetString+
-        { <> [cat(strings*)*] }
+        { <> collect(cat(strings*), { ch <> @@(ch) }) }
     |
         tokens = parParserToken+
         { <> collect(tokens, dataOf) }

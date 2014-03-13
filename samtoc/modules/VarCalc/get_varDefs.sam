@@ -11,63 +11,63 @@ def get_varDefs = makeRegularGeneric("get_varDefs", 1, 1);
 
 genericBind(
     get_varDefs,
-    "apply",
+    @@apply,
     fn apply_get_varDefs(node) {
         <> []
     });
 
 genericBind(
     get_varDefs,
-    "call",
+    @@call,
     fn call_get_varDefs(node) {
         <> []
     });
 
 genericBind(
     get_varDefs,
-    "closure",
+    @@closure,
     fn closure_get_varDefs(node) {
         <> []
     });
 
 genericBind(
     get_varDefs,
-    "jump",
+    @@jump,
     fn jump_get_varDefs(node) {
         <> []
     });
 
 genericBind(
     get_varDefs,
-    "literalRef",
+    @@literalRef,
     fn literalRef_get_varDefs(node) {
         <> []
     });
 
 genericBind(
     get_varDefs,
-    "varBind",
+    @@varBind,
     fn varBind_get_varDefs(node) {
         <> []
     });
 
 genericBind(
     get_varDefs,
-    "varDef",
+    @@varDef,
     fn varDef_get_varDefs(node) {
         <> [node.name]
     });
 
 genericBind(
     get_varDefs,
-    "varDefMutable",
+    @@varDefMutable,
     fn varDefMutable_get_varDefs(node) {
         <> [node.name]
     });
 
 genericBind(
     get_varDefs,
-    "varRef",
+    @@varRef,
     fn varRef_get_varDefs(node) {
         <> []
     });

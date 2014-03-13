@@ -172,26 +172,16 @@ static bool isType(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
-    return (trueTypeOf(value) == TYPE_Type);
+    return (typeOf(value) == TYPE_Type);
 }
 
 /**
- * Returns the `Type` per se for the given in-model "type," the latter which
- * may be an arbitrary value representing a transparent type by name.
+ * Asserts `isType(value)`.
  */
-static zvalue trueTypeFromTypeOrName(zvalue typeOrName) {
-    if (isType(typeOrName)) {
-        return typeOrName;
+static void assertHasTypeType(zvalue value) {
+    if (!isType(value)) {
+        die("Expected type Type; got %s.", valDebugString(value));
     }
-
-    zvalue result = findType(typeOrName, NULL);
-
-    if (result == NULL) {
-        result = makeType(typeOrName, NULL, false);
-        derivBind(result);
-    }
-
-    return result;
 }
 
 /**
@@ -208,27 +198,12 @@ static bool typeEq(zvalue type1, zvalue type2) {
  */
 
 /* Documented in header. */
-extern zint indexFromTrueType(zvalue type);
+extern inline zint typeIndexUnchecked(zvalue type);
 
 /* Documented in header. */
-extern zvalue trueTypeOf(zvalue value);
-
-/* Documented in header. */
-zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
-    zvalue type = trueTypeFromTypeOrName(typeOrName);
-    return typeSecretIs(type, secret) ? type : NULL;
-}
-
-/* Documented in header. */
-bool typeIsDerived(zvalue typeOrName) {
-    return isType(typeOrName) ? getInfo(typeOrName)->derived : true;
-}
-
-/* Documented in header. */
-bool typeSecretIs(zvalue typeOrName, zvalue secret) {
-    zvalue typeSecret =
-        isType(typeOrName) ? getInfo(typeOrName)->secret : NULL;
-    return valEq(typeSecret, secret);
+bool typeHasSecret(zvalue type, zvalue secret) {
+    assertHasTypeType(type);
+    return valEq(getInfo(type)->secret, secret);
 }
 
 
@@ -244,11 +219,11 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
     }
 
     zvalue arg0 = args[0];
-    zvalue type0 = trueTypeOf(arg0);
+    zvalue type0 = typeOf(arg0);
 
     for (zint i = 1; i < argCount; i++) {
         zvalue one = args[i];
-        if (!typeEq(type0, trueTypeOf(one))) {
+        if (!typeEq(type0, typeOf(one))) {
             die("Mismatched types: %s, %s",
                 valDebugString(arg0), valDebugString(one));
         }
@@ -256,10 +231,10 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void assertHasType(zvalue value, zvalue typeOrName) {
-    if (!hasType(value, typeOrName)) {
+void assertHasType(zvalue value, zvalue type) {
+    if (!hasType(value, type)) {
         die("Expected type %s; got %s.",
-            valDebugString(typeOrName), valDebugString(value));
+            valDebugString(type), valDebugString(value));
     }
 }
 
@@ -277,47 +252,68 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 }
 
 /* Documented in header. */
-bool hasType(zvalue value, zvalue typeOrName) {
-    return typeEq(trueTypeOf(value), trueTypeFromTypeOrName(typeOrName));
+bool hasType(zvalue value, zvalue type) {
+    assertHasTypeType(type);
+    return typeEq(typeOf(value), type);
 }
 
 /* Documented in header. */
 bool haveSameType(zvalue v1, zvalue v2) {
-    return typeEq(trueTypeOf(v1), trueTypeOf(v2));
+    return typeEq(typeOf(v1), typeOf(v2));
 }
 
 /* Documented in header. */
-zint typeIndex(zvalue typeOrName) {
-    return indexFromTrueType(trueTypeFromTypeOrName(typeOrName));
+zvalue typeFromName(zvalue name) {
+    zvalue result = findType(name, NULL);
+
+    if (result == NULL) {
+        result = makeType(name, NULL, false);
+        derivBind(result);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
+zint typeIndex(zvalue type) {
+    assertHasTypeType(type);
+    return typeIndexUnchecked(type);
 }
 
 /* Documented in header. */
 zint typeIndexOf(zvalue value) {
-    return indexFromTrueType(trueTypeOf(value));
+    return typeIndexUnchecked(typeOf(value));
 }
 
 /* Documented in header. */
-bool typeIsIdentified(zvalue typeOrName) {
-    if (!isType(typeOrName)) {
-        // Transparent types are not identified.
-        return false;
-    }
+bool typeIsDerived(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->derived;
+}
 
-    return getInfo(typeOrName)->identified;
+/* Documented in header. */
+bool typeIsIdentified(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->identified;
+}
+
+/* Documented in header. */
+bool typeIsTransparentDerived(zvalue type) {
+    assertHasTypeType(type);
+
+    TypeInfo *info = getInfo(type);
+    return info->derived && (info->secret == NULL);
 }
 
 /* Documented in header. */
 zvalue typeOf(zvalue value) {
-    zvalue type = trueTypeOf(value);
-    TypeInfo *info = getInfo(type);
-
-    // `typeOf` on a transparent type returns its name.
-    return (info->secret == NULL) ? info->name : type;
+    return value->type;
 }
 
 /* Documented in header. */
-zvalue typeParent(zvalue typeOrName) {
-    return isType(typeOrName) ? getInfo(typeOrName)->parent : TYPE_Value;
+zvalue typeParent(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->parent;
 }
 
 
@@ -406,15 +402,15 @@ MOD_INIT(typeSystem) {
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (indexFromTrueType(TYPE_Builtin) != DAT_INDEX_BUILTIN) {
+    if (typeIndex(TYPE_Builtin) != DAT_INDEX_BUILTIN) {
         die("Mismatched index for `Builtin`: should be %lld",
-            indexFromTrueType(TYPE_Builtin));
-    } else if (indexFromTrueType(TYPE_Generic) != DAT_INDEX_GENERIC) {
+            typeIndex(TYPE_Builtin));
+    } else if (typeIndex(TYPE_Generic) != DAT_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
-            indexFromTrueType(TYPE_Generic));
-    } else if (indexFromTrueType(TYPE_Jump) != DAT_INDEX_JUMP) {
+            typeIndex(TYPE_Generic));
+    } else if (typeIndex(TYPE_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
-            indexFromTrueType(TYPE_Jump));
+            typeIndex(TYPE_Jump));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.

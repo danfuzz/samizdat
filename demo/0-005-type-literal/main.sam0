@@ -1,0 +1,49 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Type literal demo
+##
+
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
+
+##
+## Helper Definitions
+##
+
+fn msg(string) {
+    Io0::note(cat("Got: ", Format::source(string)))
+};
+
+
+##
+## Main Tests
+##
+
+## These all refer to the same type.
+msg(@@("Null"));
+msg(@@"Null");
+msg(@@Null);
+
+## This is not the same as the above, as the type is `null`, not `"Null"`.
+msg(@@(null));
+
+## These all refer to the same type.
+msg(@@potion);
+msg(@@"potion");
+msg(@@("potion"));
+
+msg(@@"** zorch **");
+msg(@@(123));
+msg(@@([123]));
+
+## Keywords can be used as types.
+msg(@@def);
+msg(@@fn);
+
+## Expressions can be used as names.
+msg(@@(cat("blo", "rt")));
+
+<> 0

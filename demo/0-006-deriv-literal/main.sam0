@@ -55,4 +55,7 @@ msg(@(123)(456));
 msg(@def);
 msg(@fn(100));
 
+## Expressions can be used as names.
+msg(@(cat("blo", "rt")));
+
 <> 0

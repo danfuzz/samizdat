@@ -356,8 +356,9 @@ This is equivalent to the syntactic form `{: %term :}`.
 #### `makeToken(type) <> rule`
 
 Makes and returns a parser rule which matches any token with the same
-type as given. `type` is an arbitrary value, but is typically
-a string. Upon success, the rule consumes and yields the matched token.
+type as given. `type` is an arbitrary type, which is typically (but not
+necessarily) a transparent derived type with a string as its
+name. Upon success, the rule consumes and yields the matched token.
 
 This is also used to match single characters in tokenizers.
 
@@ -369,8 +370,8 @@ This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 Makes and returns a parser rule which matches a token whose type
 matches that of any of the given types, consuming it upon success.
 Each argument is taken to be a token type, which is typically
-(but not necessarily) a string. The result of successful parsing is
-whatever token was matched.
+(but not necessarily) a transparent derived type with a string as its
+name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 
@@ -379,16 +380,16 @@ This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 Makes and returns a parser rule which matches a token whose type
 matches none of any of the given tokens, consuming it upon success.
 Each argument is taken to be a token type, which is typically
-(but not necessarily) a string. The result of successful parsing is
-whatever token was matched.
+(but not necessarily) a transparent derived type with a string as its
+name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
 #### `stringFromTokenList(tokens) <> string`
 
-Takes a list of tokenizer-style character tokens (that is, derived values
-whose type tags are each a single-character string), returning the result
-of concatenating all the characters together in order.
+Takes a list of tokenizer-style character tokens (that is, transparent derived
+values whose type names are each a single-character string), returning the
+result of concatenating all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.
 

@@ -19,13 +19,18 @@
 
 #define STR(name, str) extern zvalue STR_##name
 
-#define TOK(name, str) \
+#define TYP(name, str) \
     STR(name, str); \
+    extern zvalue TYPE_##name
+
+#define TOK(name, str) \
+    TYP(name, str); \
     extern zvalue TOK_##name
 
 #include "const/const-def.h"
 
 #undef STR
+#undef TYP
 #undef TOK
 
 

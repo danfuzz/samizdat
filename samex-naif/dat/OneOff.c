@@ -15,6 +15,11 @@
  */
 
 /* Documented in header. */
+zvalue nameOf(zvalue value) {
+    return GFN_CALL(nameOf, value);
+}
+
+/* Documented in header. */
 char *valToString(zvalue value) {
     if (value == NULL) {
         return strdup("(null)");

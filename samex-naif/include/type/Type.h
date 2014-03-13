@@ -12,6 +12,7 @@
 #define _TYPE_TYPE_H_
 
 #include "dat.h"
+#include "type/OneOff.h"
 
 #include <stdbool.h>
 
@@ -47,7 +48,7 @@ zvalue coreTypeFromName(zvalue name, bool identified);
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
  * is as given.
  */
-bool hasType(zvalue value, zvalue typeOrName);
+bool hasType(zvalue value, zvalue type);
 
 /**
  * Returns true iff the types of the given values (that is, `typeOf()` on
@@ -56,9 +57,20 @@ bool hasType(zvalue value, zvalue typeOrName);
 bool haveSameType(zvalue v1, zvalue v2);
 
 /**
- * Returns the unique index for the given type (or transparent type name).
+ * Returns the type value for the transparent type with the given name.
  */
-zint typeIndex(zvalue typeOrName);
+zvalue typeFromName(zvalue name);
+
+/**
+ * Returns `true` if the given `type` has the indicated `secret`. `secret`
+ * may be passed as `NULL`.
+ */
+bool typeHasSecret(zvalue type, zvalue secret);
+
+/**
+ * Returns the unique index for the given type.
+ */
+zint typeIndex(zvalue type);
 
 /**
  * Returns the unique index for the type of the given value.
@@ -66,24 +78,32 @@ zint typeIndex(zvalue typeOrName);
 zint typeIndexOf(zvalue value);
 
 /**
+ * Returns true iff the given type is a derived type (whether opaque or
+ * transparent).
+ */
+bool typeIsDerived(zvalue type);
+
+/**
  * Returns true iff the given type is "identified." That is, this returns
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.
  */
-bool typeIsIdentified(zvalue typeOrName);
+bool typeIsIdentified(zvalue type);
 
 /**
- * Gets the overt data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`). For transparent derived types,
- * this returns the name of the type, and not a `Type` value per se.
+ * Returns true iff the given type is a transparent derived type.
+ */
+bool typeIsTransparentDerived(zvalue type);
+
+/**
+ * Gets the type of the given value. `value` must be a valid value (in
+ * particular, non-`NULL`). The return value is of type `Type`.
  */
 zvalue typeOf(zvalue value);
 
 /**
- * Gets the parent type of the given type. If given a non-`Type` value for
- * `type`, this takes it to name a transparent derived type; as such it
- * will return `TYPE_Value` in these cases.
+ * Gets the parent type of the given type.
  */
-zvalue typeParent(zvalue typeOrName);
+zvalue typeParent(zvalue type);
 
 #endif

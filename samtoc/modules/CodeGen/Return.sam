@@ -18,14 +18,14 @@ fn makeReturn(tree) {
 
 genericBind(
     flatten,
-    "Return",
+    @@Return,
     fn Return_flatten(tree) {
         <> dataOf(tree)::flat
     });
 
 genericBind(
     indent,
-    "Return",
+    @@Return,
     fn Return_indent(tree, level, maxColumns) {
         def data = dataOf(tree);
         def prefix = indentation(level);

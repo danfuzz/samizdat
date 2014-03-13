@@ -24,7 +24,7 @@
         },
         {
           "end" : "\\)",
-          "begin" : "@\\(",
+          "begin" : "@@?\\(",
           "beginCaptures" : {
             "0" : {
               "name" : "constant.other"
@@ -270,12 +270,12 @@
           "name" : "constant.numeric"
         },
         {
-          "match" : "@[_a-zA-Z][_a-zA-Z0-9]*",
+          "match" : "@@?[_a-zA-Z][_a-zA-Z0-9]*",
           "name" : "constant.other"
         },
         {
           "end" : "\"",
-          "begin" : "@\"",
+          "begin" : "@@?\"",
           "patterns" : [
             {
               "include" : "#recursive-string-content"

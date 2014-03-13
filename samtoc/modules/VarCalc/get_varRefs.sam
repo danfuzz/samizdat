@@ -27,21 +27,21 @@ fn catVarRefs(nodes*) {
 
 genericBind(
     get_varRefs,
-    "apply",
+    @@apply,
     fn apply_get_varRefs(node) {
         <> catVarRefs(node.function, node.actuals)
     });
 
 genericBind(
     get_varRefs,
-    "call",
+    @@call,
     fn call_get_varRefs(node) {
         <> catVarRefs(node.function, node.actuals*)
     });
 
 genericBind(
     get_varRefs,
-    "closure",
+    @@closure,
     fn closure_get_varRefs(node) {
         if (def refs = dataOf(node)::varRefs) {
             ## Already calculated for this node.
@@ -84,49 +84,49 @@ genericBind(
 
 genericBind(
     get_varRefs,
-    "closureRef",
+    @@closureRef,
     fn closureRef_get_varRefs(node) {
         <> dataOf(node)::varRefs
     });
 
 genericBind(
     get_varRefs,
-    "jump",
+    @@jump,
     fn jump_get_varRefs(node) {
         <> catVarRefs(node.function, node.value?*)
     });
 
 genericBind(
     get_varRefs,
-    "literalRef",
+    @@literalRef,
     fn literalRef_get_varRefs(node) {
         <> []
     });
 
 genericBind(
     get_varRefs,
-    "varBind",
+    @@varBind,
     fn varBind_get_varRefs(node) {
         <> [node.name, node.value.varRefs*]
     });
 
 genericBind(
     get_varRefs,
-    "varDef",
+    @@varDef,
     fn varDef_get_varRefs(node) {
         <> (def v = node.value) & v.varRefs | []
     });
 
 genericBind(
     get_varRefs,
-    "varDefMutable",
+    @@varDefMutable,
     fn varDefMutable_get_varRefs(node) {
         <> (def v = node.value) & v.varRefs | []
     });
 
 genericBind(
     get_varRefs,
-    "varRef",
+    @@varRef,
     fn varRef_get_varRefs(node) {
         <> [node.name]
     });

@@ -55,10 +55,10 @@ fn FilterGenerator_nextValue(gen, box) {
         return
     }
 };
-genericBind(nextValue, "FilterGenerator", FilterGenerator_nextValue);
+genericBind(nextValue, @@FilterGenerator, FilterGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, "FilterGenerator", Generator_stdCollect);
+genericBind(collect, @@FilterGenerator, Generator_stdCollect);
 
 <> {
     makeFilterGenerator

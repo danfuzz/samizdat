@@ -9,12 +9,14 @@
  * have the usual guard macros.
  *
  * `STR(name, "string")` defines a string constant.
- * `TOK(name, "string")` defines both a string *and* a token constant.
+ * `TYP(name, "string")` defines a string and a transparent derived type.
+ * `TOK(name, "string")` defines a string, a type, and a token constant.
  *
  * Token constants are type-only values whose types are the indicated strings.
  */
 
 TOK(CH_AT,             "@");
+TOK(CH_ATAT,           "@@");
 TOK(CH_CCURLY,         "}");
 TOK(CH_CPAREN,         ")");
 TOK(CH_CSQUARE,        "]");
@@ -44,23 +46,30 @@ TOK(fn,                "fn");
 TOK(return,            "return");
 TOK(var,               "var");
 
-STR(MapGenerator,      "MapGenerator");
-STR(SequenceGenerator, "SequenceGenerator");
+TYP(MapGenerator,      "MapGenerator");
+TYP(SequenceGenerator, "SequenceGenerator");
+TYP(apply,             "apply");
+TYP(call,              "call");
+TYP(closure,           "closure");
+TYP(identifier,        "identifier");
+TYP(int,               "int");
+TYP(jump,              "jump");
+TYP(literal,           "literal");
+TYP(string,            "string");
+TYP(topDeclaration,    "topDeclaration");
+TYP(varBind,           "varBind");
+TYP(varDef,            "varDef");
+TYP(varDefMutable,     "varDefMutable");
+TYP(varRef,            "varRef");
+
 STR(actuals,           "actuals");
-STR(apply,             "apply");
-STR(call,              "call");
 STR(cat,               "cat");
-STR(closure,           "closure");
 STR(collect,           "collect");
 STR(formals,           "formals");
 STR(function,          "function");
 STR(get,               "get");
-STR(identifier,        "identifier");
 STR(index,             "index");
-STR(int,               "int");
 STR(interpolate,       "interpolate");
-STR(jump,              "jump");
-STR(literal,           "literal");
 STR(makeList,          "makeList");
 STR(makeValue,         "makeValue");
 STR(makeValueMap,      "makeValueMap");
@@ -73,13 +82,8 @@ STR(repeat,            "repeat");
 STR(runCommandLine,    "runCommandLine");
 STR(seq,               "seq");
 STR(statements,        "statements");
-STR(string,            "string");
 STR(top,               "top");
-STR(topDeclaration,    "topDeclaration");
+STR(typeFromName,      "typeFromName");
 STR(value,             "value");
-STR(varBind,           "varBind");
-STR(varDef,            "varDef");
-STR(varDefMutable,     "varDefMutable");
-STR(varRef,            "varRef");
 STR(yield,             "yield");
 STR(yieldDef,          "yieldDef");

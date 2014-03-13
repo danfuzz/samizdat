@@ -61,14 +61,12 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     }
 
     zvalue result = seqNth(state->tokens, state->at);
-    zvalue resultType = typeOf(result);
 
-    if (!valEq(type, resultType)) {
+    if (!hasType(result, type)) {
         return NULL;
     }
 
     state->at++;
-
     return result;
 }
 
@@ -178,7 +176,7 @@ static zvalue makeApply(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeTransValue(STR_apply, value);
+    return makeValue(TYPE_apply, value, NULL);
 }
 
 /* Documented in spec. */
@@ -188,7 +186,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeTransValue(STR_call, value);
+    return makeValue(TYPE_call, value, NULL);
 }
 
 /**
@@ -247,54 +245,60 @@ static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 
 /* Documented in spec. */
 static zvalue makeInterpolate(zvalue node) {
-    return makeTransValue(STR_call,
+    return makeValue(TYPE_call,
         mapFrom3(
             STR_function,    REFS(interpolate),
             STR_actuals,     listFrom1(node),
-            STR_interpolate, node));
+            STR_interpolate, node),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeJump(zvalue function, zvalue optValue) {
-    return makeTransValue(STR_jump,
-        mapFrom2(STR_function, function, STR_value, optValue));
+    return makeValue(TYPE_jump,
+        mapFrom2(STR_function, function, STR_value, optValue),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeLiteral(zvalue value) {
-    return makeTransValue(STR_literal, mapFrom1(STR_value, value));
+    return makeValue(TYPE_literal, mapFrom1(STR_value, value), NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeThunk(zvalue expression) {
-    return makeTransValue(STR_closure,
+    return makeValue(TYPE_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, EMPTY_LIST,
-            STR_yield,      expression));
+            STR_yield,      expression),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarBind(zvalue name, zvalue value) {
-    return makeTransValue(STR_varBind,
-        mapFrom2(STR_name, name, STR_value, value));
+    return makeValue(TYPE_varBind,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
-    return makeTransValue(STR_varDef,
-        mapFrom2(STR_name, name, STR_value, value));
+    return makeValue(TYPE_varDef,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return makeTransValue(STR_varDefMutable,
-        mapFrom2(STR_name, name, STR_value, value));
+    return makeValue(TYPE_varDefMutable,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 /* Documented in spec. */
 static zvalue makeVarRef(zvalue name) {
-    return makeTransValue(STR_varRef, mapFrom1(STR_name, name));
+    return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
 }
 
 /* Documented in spec. */
@@ -304,9 +308,10 @@ static zvalue makeOptValue(zvalue expression) {
 
 /* Documented in spec. */
 static zvalue withoutInterpolate(zvalue node) {
-    return makeTransValue(
+    return makeValue(
         typeOf(node),
-        collDel(dataOf(node), STR_interpolate));
+        collDel(dataOf(node), STR_interpolate),
+        NULL);
 }
 
 
@@ -321,15 +326,15 @@ static zvalue withoutInterpolate(zvalue node) {
 #define PARSE_STAR(name) parseStar(RULE(name), state)
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define PARSE_COMMA_SEQ(name) parseCommaSequence(RULE(name), state)
-#define MATCH(typeOf) readMatch(state, (STR_##typeOf))
-#define PEEK(typeOf) peekMatch(state, (STR_##typeOf))
+#define MATCH(type) readMatch(state, (TYPE_##type))
+#define PEEK(type) peekMatch(state, (TYPE_##type))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
 #define REJECT() do { RESET(); return NULL; } while (0)
 #define REJECT_IF(condition) \
     do { if ((condition)) REJECT(); } while (0)
-#define MATCH_OR_REJECT(typeOf) \
-    tempResult = MATCH(typeOf); \
+#define MATCH_OR_REJECT(type) \
+    tempResult = MATCH(type); \
     REJECT_IF(tempResult == NULL)
 #define PARSE_OR_REJECT(name) \
     tempResult = PARSE(name); \
@@ -511,21 +516,17 @@ DEF_PARSE(optYieldDef) {
 }
 
 /**
- * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns either the
- * parsed token payload or `NULL` to indicate that no alternate matched.
+ * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns the parsed token,
+ * or `NULL` to indicate that no alternate matched.
  */
 DEF_PARSE(formal1) {
-    MARK();
-
     zvalue result = NULL;
 
     if (result == NULL) { result = MATCH(CH_QMARK); }
     if (result == NULL) { result = MATCH(CH_STAR); }
     if (result == NULL) { result = MATCH(CH_PLUS); }
 
-    REJECT_IF(result == NULL);
-
-    return typeOf(result);
+    return result;
 }
 
 /* Documented in spec. */
@@ -543,6 +544,9 @@ DEF_PARSE(formal) {
     }
 
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
+    if (repeat != NULL) {
+        repeat = nameOf(typeOf(repeat));
+    }
 
     return mapFrom2(STR_name, name, STR_repeat, repeat);
 }
@@ -584,7 +588,9 @@ DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
 
-    return makeTransValue(STR_closure, GFN_CALL(cat, declarations, body));
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat, declarations, body),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -678,7 +684,7 @@ DEF_PARSE(fnCommon) {
             STR_yieldDef,   STR_return,
             STR_statements, statements));
 
-    return makeTransValue(STR_closure, closureMap);
+    return makeValue(TYPE_closure, closureMap, NULL);
 }
 
 /* Documented in spec. */
@@ -692,10 +698,11 @@ DEF_PARSE(fnDef) {
         return NULL;
     }
 
-    return makeTransValue(STR_topDeclaration,
+    return makeValue(TYPE_topDeclaration,
         mapFrom2(
             STR_top,  makeVarDef(name, NULL),
-            STR_main, makeVarBind(name, closure)));
+            STR_main, makeVarBind(name, closure)),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -709,12 +716,12 @@ DEF_PARSE(fnExpression) {
         return closure;
     }
 
-    zvalue mainClosure = makeTransValue(
-        STR_closure,
+    zvalue mainClosure = makeValue(TYPE_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, listFrom1(makeVarDef(name, NULL)),
-            STR_yield,      makeVarBind(name, closure)));
+            STR_yield,      makeVarBind(name, closure)),
+        NULL);
 
     return makeCall(mainClosure, NULL);
 }
@@ -752,11 +759,12 @@ DEF_PARSE(identifierString) {
     if (result == NULL) { result = MATCH(def); }
     if (result == NULL) { result = MATCH(fn); }
     if (result == NULL) { result = MATCH(return); }
+    if (result == NULL) { result = MATCH(var); }
     if (result == NULL) { return NULL; }
 
     zvalue value = dataOf(result);
     if (value == NULL) {
-        value = typeOf(result);
+        value = nameOf(typeOf(result));
     }
 
     return makeLiteral(value);
@@ -810,7 +818,7 @@ DEF_PARSE(mapping) {
         zvalue interp = GET(interpolate, value);
         if (interp != NULL) {
             return interp;
-        } else if (hasType(value, STR_varRef)) {
+        } else if (hasType(value, TYPE_varRef)) {
             return makeCall(REFS(makeValueMap),
                 listFrom2(makeLiteral(GET(name, value)), value));
         }
@@ -873,24 +881,41 @@ DEF_PARSE(list) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(typeName) {
+    MARK();
+
+    zvalue name = PARSE(identifierString);
+    if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
+
+    if (hasType(name, TYPE_literal)) {
+        return makeLiteral(typeFromName(GET(value, name)));
+    } else {
+        return makeCall(REFS(typeFromName), listFrom1(name));
+    }
+}
+
+/* Documented in spec. */
+DEF_PARSE(type) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_ATAT);
+    return PARSE_OR_REJECT(typeName);
+}
+
+/* Documented in spec. */
 DEF_PARSE(deriv) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue type = PARSE(identifierString);
-    if (type == NULL) {
-        type = PARSE_OR_REJECT(parenExpression);
-    }
+    zvalue type = PARSE_OR_REJECT(typeName);
 
     // Value is optional; these are allowed to all fail.
     zvalue value = PARSE(parenExpression);
     if (value == NULL) value = PARSE(map);
     if (value == NULL) value = PARSE(list);
 
-    zvalue args = (value == NULL)
-        ? listFrom1(type)
-        : listFrom2(type, value);
+    zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
 
     return makeCall(REFS(makeValue), args);
 }
@@ -905,6 +930,7 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(deriv); }
+    if (result == NULL) { result = PARSE(type); }
     if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }
 
@@ -963,7 +989,7 @@ DEF_PARSE(unaryExpression) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeOptValue(result);
-        } else if (hasType(one, STR_literal)) {
+        } else if (hasType(one, TYPE_literal)) {
             result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
@@ -984,7 +1010,7 @@ DEF_PARSE(assignExpression) {
 
     zvalue base = PARSE_OR_REJECT(opExpression);
 
-    if (!(hasType(base, STR_varRef) && MATCH(CH_COLONEQUAL))) {
+    if (!(hasType(base, TYPE_varRef) && MATCH(CH_COLONEQUAL))) {
         return base;
     }
 
@@ -1103,7 +1129,7 @@ DEF_PARSE(programBody) {
 
     for (zint i = 0; i < size; i++) {
         zvalue one = seqNth(rawStatements, i);
-        if (hasType(one, STR_topDeclaration)) {
+        if (hasType(one, TYPE_topDeclaration)) {
             zvalue data = dataOf(one);
             tops = listAppend(tops, collGet(data, STR_top));
             mains = listAppend(mains, collGet(data, STR_main));

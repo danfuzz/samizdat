@@ -57,10 +57,10 @@ fn ParaGenerator_nextValue(gen, box) {
     Box::store(box, yields);
     <> @ParaGenerator(nexts)
 };
-genericBind(nextValue, "ParaGenerator", ParaGenerator_nextValue);
+genericBind(nextValue, @@ParaGenerator, ParaGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, "ParaGenerator", Generator_stdCollect);
+genericBind(collect, @@ParaGenerator, Generator_stdCollect);
 
 <> {
     makeParaGenerator

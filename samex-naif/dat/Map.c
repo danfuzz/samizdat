@@ -408,12 +408,13 @@ METH_IMPL(Map, nextValue) {
         return NULL;
     } else {
         boxStore(box, first);
-        return makeTransValue(
-            STR_MapGenerator,
+        return makeValue(
+            TYPE_MapGenerator,
             mapFromArgs(
                 STR_map,   map,
                 STR_index, intFromZint(1),
-                NULL));
+                NULL),
+            NULL);
     }
 }
 
