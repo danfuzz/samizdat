@@ -199,7 +199,7 @@ fn PegTokenSet_parse(peg, box, input, items*) {
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
-            ifIs { <> get(set, typeNameOf(item)) }
+            ifIs { <> get(set, typeOf(item)) }
                 {
                     Box::store(box, item);
                     return newInput
@@ -219,7 +219,7 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
-            ifNot { <> get(set, typeNameOf(item)) }
+            ifNot { <> get(set, typeOf(item)) }
                 {
                     Box::store(box, item);
                     return newInput
@@ -235,6 +235,12 @@ genericBind(parse, @@PegTokenSetComplement, PegTokenSetComplement_parse);
 ##
 ## Exported Definitions
 ##
+
+## Private helper for `makeCharSet*`, which takes a string and produces a
+## list of token types for the characters.
+fn typeListFromString(string) {
+    <> collect(string, { ch <> @@(ch) })
+};
 
 ## Private helper for `make*Set*`, which takes a `sense` argument and
 ## produces the desired rule.
@@ -263,13 +269,13 @@ fn makeResult(value) {
 fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
-    <> genericMakeTokenSet(true, cat("", strings*))
+    <> genericMakeTokenSet(true, typeListFromString(cat("", strings*)))
 };
 
 ## Documented in spec.
 fn makeCharSetComplement(strings*) {
     ## See comment in `makeCharSet`.
-    <> genericMakeTokenSet(false, cat("", strings*))
+    <> genericMakeTokenSet(false, typeListFromString(cat("", strings*)))
 };
 
 ## Documented in spec.
@@ -362,13 +368,14 @@ fn makeString(string) {
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { <> eq(Collection::sizeOf(string), 1) }
-        { return makeToken(string) };
+        { return makeToken(@@(string)) };
 
     ## This is implemented as, in effect, `("1" "2" ... { <> string })`,
     ## which allows us to minimize code duplication.
 
     ## Make a list of rules per character.
-    def chars = collect(string, makeToken);
+    def types = typeListFromString(string);
+    def chars = collect(types, makeToken);
 
     <> @PegSequence[chars*, @PegResult(@(string))]
 };
