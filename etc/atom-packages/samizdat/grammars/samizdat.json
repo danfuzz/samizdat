@@ -20,14 +20,17 @@
         },
         {
           "match" : "(?x)\n\t\t\t\t\t\t\\[\\] | \\{\\}\n\t\t\t\t\t",
-          "name" : "constant.language"
+          "name" : "constant.language.samizdat"
         },
         {
           "end" : "\\)",
-          "begin" : "@@?\\(",
+          "begin" : "@@?(\\()",
           "beginCaptures" : {
             "0" : {
-              "name" : "constant.other"
+              "name" : "constant.other.samizdat"
+            },
+            "1" : {
+              "name" : "punctuation.paren.open.samizdat"
             }
           },
           "patterns" : [
@@ -38,49 +41,89 @@
           "name" : "meta.parens.samizdat",
           "endCaptures" : {
             "0" : {
-              "name" : "constant.other"
+              "name" : "constant.other.samizdat punctuation.paren.close.samizdat"
             }
           }
         },
         {
           "end" : "\\)",
           "begin" : "\\(",
+          "beginCaptures" : {
+            "0" : {
+              "name" : "punctuation.paren.open.samizdat"
+            }
+          },
           "patterns" : [
             {
               "include" : "#block-body"
             }
           ],
-          "name" : "meta.parens.samizdat"
+          "name" : "meta.parens.samizdat",
+          "endCaptures" : {
+            "0" : {
+              "name" : "punctuation.paren.close.samizdat"
+            }
+          }
         },
         {
           "end" : "\\]",
           "begin" : "\\[",
+          "beginCaptures" : {
+            "0" : {
+              "name" : "punctuation.bracket.open.samizdat"
+            }
+          },
           "patterns" : [
             {
               "include" : "#block-body"
             }
           ],
-          "name" : "meta.collection.samizdat"
+          "name" : "meta.collection.samizdat",
+          "endCaptures" : {
+            "0" : {
+              "name" : "punctuation.bracket.close.samizdat"
+            }
+          }
         },
         {
           "end" : ":\\}",
           "begin" : "\\{:",
+          "beginCaptures" : {
+            "0" : {
+              "name" : "punctuation.parser.open.samizdat"
+            }
+          },
           "patterns" : [
             {
               "include" : "#block-body"
             }
           ],
-          "name" : "meta.block.parser.samizdat"
+          "name" : "meta.block.parser.samizdat",
+          "endCaptures" : {
+            "0" : {
+              "name" : "punctuation.parser.close.samizdat"
+            }
+          }
         },
         {
           "end" : "\\}",
           "begin" : "\\{",
+          "beginCaptures" : {
+            "0" : {
+              "name" : "punctuation.brace.open.samizdat"
+            }
+          },
           "patterns" : [
             {
               "include" : "#block-body"
             }
           ],
-          "name" : "meta.block.samizdat"
+          "name" : "meta.block.samizdat",
+          "endCaptures" : {
+            "0" : {
+              "name" : "punctuation.brace.close.samizdat"
+            }
+          }
         },
         {
           "end" : "\"",
@@ -90,16 +133,16 @@
               "include" : "#recursive-string-content"
             }
           ],
-          "name" : "variable.other"
+          "name" : "variable.other.samizdat"
         },
         {
           "match" : "([_a-zA-Z][_a-zA-Z0-9]*) *(:)(?![:=])",
           "captures" : {
             "1" : {
-              "name" : "string.unquoted"
+              "name" : "string.unquoted.samizdat"
             },
             "2" : {
-              "name" : "punctuation.definition"
+              "name" : "punctuation.definition.samizdat"
             }
           }
         },
@@ -107,7 +150,7 @@
           "match" : "([._a-zA-Z][._a-zA-Z0-9:]*)\\b(?= *[\\({])",
           "captures" : {
             "1" : {
-              "name" : "meta.function-call"
+              "name" : "meta.function-call.samizdat"
             }
           }
         },
@@ -115,10 +158,10 @@
           "match" : "(def|var)  *([_a-zA-Z][_a-zA-Z0-9]*)",
           "captures" : {
             "1" : {
-              "name" : "keyword.operator"
+              "name" : "keyword.operator.samizdat"
             },
             "2" : {
-              "name" : "variable.definition"
+              "name" : "variable.definition.samizdat"
             }
           }
         },
@@ -126,10 +169,10 @@
           "match" : "([_a-zA-Z][_a-zA-Z0-9]*) *(:?=)(?!=)",
           "captures" : {
             "1" : {
-              "name" : "variable.definition"
+              "name" : "variable.definition.samizdat"
             },
             "2" : {
-              "name" : "keyword.operator"
+              "name" : "keyword.operator.samizdat"
             }
           }
         },
@@ -137,31 +180,31 @@
           "match" : "([a-zA-Z_.][^:@\"{}()\\[\\]]*) *(->|(?=<>))",
           "captures" : {
             "1" : {
-              "name" : "variable.parameter"
+              "name" : "variable.parameter.samizdat"
             },
             "2" : {
-              "name" : "punctuation.definition"
+              "name" : "punctuation.definition.samizdat"
             }
           }
         },
         {
           "match" : "\\.[_a-zA-Z][_a-zA-Z0-9]*",
-          "name" : "variable.other.dot-access"
+          "name" : "variable.other.dot-access.samizdat"
         },
         {
           "match" : "(fn)  *([_a-zA-Z][_a-zA-Z0-9]*)? *\\(([^\\)]*)\\)",
           "captures" : {
             "3" : {
-              "name" : "variable.parameter"
+              "name" : "variable.parameter.samizdat"
             },
             "0" : {
-              "name" : "meta.function"
+              "name" : "meta.function.samizdat"
             },
             "1" : {
-              "name" : "keyword.definition"
+              "name" : "keyword.definition.samizdat"
             },
             "2" : {
-              "name" : "entity.name.function"
+              "name" : "entity.name.function.samizdat"
             }
           }
         },
@@ -170,7 +213,7 @@
           "begin" : "(::) *",
           "beginCaptures" : {
             "1" : {
-              "name" : "keyword.operator"
+              "name" : "keyword.operator.samizdat"
             }
           },
           "patterns" : [
@@ -181,31 +224,63 @@
         },
         {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tbreak|continue|default|do|else|\n\t\t\t\t\t\tfor|if|return|switch|while\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
-          "name" : "keyword.control"
+          "name" : "keyword.control.samizdat"
         },
         {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tby|def|export|fn|import|in|module|var\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
-          "name" : "keyword.definition"
+          "name" : "keyword.definition.samizdat"
         },
         {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(true|false|null|nullBox|nullGenerator)\\b\n\t\t\t\t\t",
-          "name" : "constant.language"
+          "name" : "constant.language.samizdat"
         },
         {
           "match" : "[_a-zA-Z][_a-zA-Z0-9]*",
-          "name" : "variable.other"
+          "name" : "variable.other.samizdat"
         },
         {
           "match" : "<[_a-zA-Z][_a-zA-Z0-9]*>",
-          "name" : "variable.other"
+          "name" : "variable.other.samizdat"
         },
         {
-          "match" : "\\{:?|:?\\}|\\[|\\]|:",
-          "name" : "punctuation.definition"
+          "match" : "\\{:",
+          "name" : "punctuation.parser.open.samizdat"
+        },
+        {
+          "match" : ":\\}",
+          "name" : "punctuation.parser.close.samizdat"
+        },
+        {
+          "match" : "\\{",
+          "name" : "punctuation.brace.open.samizdat"
+        },
+        {
+          "match" : "\\}",
+          "name" : "punctuation.brace.close.samizdat"
+        },
+        {
+          "match" : "\\[",
+          "name" : "punctuation.bracket.open.samizdat"
+        },
+        {
+          "match" : "\\]",
+          "name" : "punctuation.bracket.close.samizdat"
+        },
+        {
+          "match" : "\\(",
+          "name" : "punctuation.paren.open.samizdat"
+        },
+        {
+          "match" : "\\)",
+          "name" : "punctuation.paren.close.samizdat"
         },
         {
           "match" : "(?x)\n\t\t\t\t\t\t&&?&? | \\|\\|?\\|? | \\^\\^?\\^? |\n\t\t\t\t\t\t\\\\?<<?<? | \\\\?>>?>? | !!?!? |\n\t\t\t\t\t\t:[:=] | \\\\?[!<>]?==? | <> |\n\t\t\t\t\t\t\\.\\.!? | \\+ | - | \\* | \/\/? | %%? | \\? | \\#\n\t\t\t\t\t",
-          "name" : "keyword.operator"
+          "name" : "keyword.operator.samizdat"
+        },
+        {
+          "match" : ":",
+          "name" : "punctuation.definition.samizdat"
         }
       ]
     },
@@ -213,7 +288,7 @@
       "patterns" : [
         {
           "match" : "[_a-zA-Z][_a-zA-Z0-9]*",
-          "name" : "string.unquoted"
+          "name" : "string.unquoted.samizdat"
         },
         {
           "include" : "#recursive-string"
@@ -224,18 +299,18 @@
       "patterns" : [
         {
           "match" : "\\\\ *$",
-          "name" : "constant.character.escape"
+          "name" : "constant.character.escape.samizdat"
         },
         {
           "match" : "(?x)\n\t\t\t\t\t\t\\\\\n\t\t\t\t\t\t(\n\t\t\t\t\t\t  [0nrt\\\\\"\/]\n\t\t\t\t\t\t|\n\t\t\t\t\t\t  x[0-9a-fA-F_,]*;?\n\t\t\t\t\t\t|\n\t\t\t\t\t\t  &[0-9a-zA-Z.,]*;?\n\t\t\t\t\t\t)\n\t\t\t\t\t",
-          "name" : "constant.character.escape"
+          "name" : "constant.character.escape.samizdat"
         },
         {
           "end" : "[\\])}]",
           "begin" : "\\\\(%[0-9a-zA-Z+-.]*)?[\\[({]",
           "beginCaptures" : {
             "0" : {
-              "name" : "punctuation.definition.string.begin string.quoted.double"
+              "name" : "punctuation.definition.string.begin.samizdat string.quoted.double.samizdat"
             }
           },
           "patterns" : [
@@ -243,10 +318,10 @@
               "include" : "#block-body"
             }
           ],
-          "name" : "string.interpolated",
+          "name" : "string.interpolated.samizdat",
           "endCaptures" : {
             "0" : {
-              "name" : "punctuation.definition.string.end string.quoted.double"
+              "name" : "punctuation.definition.string.end.samizdat string.quoted.double.samizdat"
             }
           }
         }
@@ -259,19 +334,19 @@
         },
         {
           "match" : "-?\\b[0-9_]+\\b",
-          "name" : "constant.numeric"
+          "name" : "constant.numeric.samizdat"
         },
         {
           "match" : "\\b0x-?[0-9a-fA-F_]+\\b",
-          "name" : "constant.numeric"
+          "name" : "constant.numeric.samizdat"
         },
         {
           "match" : "\\b0b-?[01_]+\\b",
-          "name" : "constant.numeric"
+          "name" : "constant.numeric.samizdat"
         },
         {
           "match" : "@@?[_a-zA-Z][_a-zA-Z0-9]*",
-          "name" : "constant.other"
+          "name" : "constant.other.samizdat"
         },
         {
           "end" : "\"",
@@ -281,7 +356,7 @@
               "include" : "#recursive-string-content"
             }
           ],
-          "name" : "constant.other"
+          "name" : "constant.other.samizdat"
         }
       ]
     },
@@ -294,13 +369,13 @@
           "match" : "(#!|###*).*$",
           "captures" : {
             "0" : {
-              "name" : "comment.line.number-sign"
+              "name" : "comment.line.number-sign.samizdat"
             },
             "1" : {
-              "name" : "punctuation.definition.comment"
+              "name" : "punctuation.definition.comment.samizdat"
             },
             "2" : {
-              "name" : "punctuation.definition.comment"
+              "name" : "punctuation.definition.comment.samizdat"
             }
           }
         }
@@ -314,14 +389,14 @@
           "include" : "#recursive-comment"
         }
       ],
-      "name" : "comment.block"
+      "name" : "comment.block.samizdat"
     },
     "recursive-string" : {
       "end" : "\"",
       "begin" : "\"",
       "beginCaptures" : {
         "0" : {
-          "name" : "punctuation.definition.string.begin string.quoted.double"
+          "name" : "punctuation.definition.string.begin.samizdat string.quoted.double.samizdat"
         }
       },
       "patterns" : [
@@ -330,12 +405,12 @@
         },
         {
           "match" : ".",
-          "name" : "string.quoted.double"
+          "name" : "string.quoted.double.samizdat"
         }
       ],
       "endCaptures" : {
         "0" : {
-          "name" : "punctuation.definition.string.end string.quoted.double"
+          "name" : "punctuation.definition.string.end.samizdat string.quoted.double.samizdat"
         }
       }
     }

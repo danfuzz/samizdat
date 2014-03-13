@@ -40,17 +40,17 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>comment.line.number-sign</string>
+							<string>comment.line.number-sign.samizdat</string>
 						</dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.comment</string>
+							<string>punctuation.definition.comment.samizdat</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.comment</string>
+							<string>punctuation.definition.comment.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -61,7 +61,7 @@
 		<key>recursive-comment</key>
 		<dict>
 			<key>name</key>
-			<string>comment.block</string>
+			<string>comment.block.samizdat</string>
 			<key>begin</key>
 			<string>#:</string>
 			<key>end</key>
@@ -80,13 +80,13 @@
 			<array>
 				<dict>
 					<key>name</key>
-					<string>constant.character.escape</string>
+					<string>constant.character.escape.samizdat</string>
 					<key>match</key>
 					<string>\\ *$</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.character.escape</string>
+					<string>constant.character.escape.samizdat</string>
 					<key>match</key>
 					<string>(?x)
 						\\
@@ -101,7 +101,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>string.interpolated</string>
+					<string>string.interpolated.samizdat</string>
 					<key>begin</key>
 					<string>\\(%[0-9a-zA-Z+-.]*)?[\[({]</string>
 					<key>beginCaptures</key>
@@ -109,7 +109,7 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.string.begin string.quoted.double</string>
+							<string>punctuation.definition.string.begin.samizdat string.quoted.double.samizdat</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -119,7 +119,7 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.string.end string.quoted.double</string>
+							<string>punctuation.definition.string.end.samizdat string.quoted.double.samizdat</string>
 						</dict>
 					</dict>
 					<key>patterns</key>
@@ -141,7 +141,7 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition.string.begin string.quoted.double</string>
+					<string>punctuation.definition.string.begin.samizdat string.quoted.double.samizdat</string>
 				</dict>
 			</dict>
 			<key>end</key>
@@ -151,7 +151,7 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition.string.end string.quoted.double</string>
+					<string>punctuation.definition.string.end.samizdat string.quoted.double.samizdat</string>
 				</dict>
 			</dict>
 			<key>patterns</key>
@@ -162,7 +162,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>string.quoted.double</string>
+					<string>string.quoted.double.samizdat</string>
 					<key>match</key>
 					<string>.</string>
 				</dict>
@@ -174,7 +174,7 @@
 			<array>
 				<dict>
 					<key>name</key>
-					<string>string.unquoted</string>
+					<string>string.unquoted.samizdat</string>
 					<key>match</key>
 					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
 				</dict>
@@ -194,31 +194,31 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.numeric</string>
+					<string>constant.numeric.samizdat</string>
 					<key>match</key>
 					<string>-?\b[0-9_]+\b</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.numeric</string>
+					<string>constant.numeric.samizdat</string>
 					<key>match</key>
 					<string>\b0x-?[0-9a-fA-F_]+\b</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.numeric</string>
+					<string>constant.numeric.samizdat</string>
 					<key>match</key>
 					<string>\b0b-?[01_]+\b</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.other</string>
+					<string>constant.other.samizdat</string>
 					<key>match</key>
 					<string>@@?[_a-zA-Z][_a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.other</string>
+					<string>constant.other.samizdat</string>
 					<key>begin</key>
 					<string>@@?"</string>
 					<key>end</key>
@@ -247,7 +247,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.language</string>
+					<string>constant.language.samizdat</string>
 					<key>match</key>
 					<string>(?x)
 						\[\] | \{\}
@@ -257,13 +257,18 @@
 					<key>name</key>
 					<string>meta.parens.samizdat</string>
 					<key>begin</key>
-					<string>@@?\(</string>
+					<string>@@?(\()</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>constant.other</string>
+							<string>constant.other.samizdat</string>
+						</dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.paren.open.samizdat</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -273,7 +278,7 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>constant.other</string>
+							<string>constant.other.samizdat punctuation.paren.close.samizdat</string>
 						</dict>
 					</dict>
 					<key>patterns</key>
@@ -291,6 +296,22 @@
 					<string>\(</string>
 					<key>end</key>
 					<string>\)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.paren.open.samizdat</string>
+						</dict>
+					</dict>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.paren.close.samizdat</string>
+						</dict>
+					</dict>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -306,6 +327,22 @@
 					<string>\[</string>
 					<key>end</key>
 					<string>\]</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.bracket.open.samizdat</string>
+						</dict>
+					</dict>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.bracket.close.samizdat</string>
+						</dict>
+					</dict>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -321,6 +358,22 @@
 					<string>\{:</string>
 					<key>end</key>
 					<string>:\}</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.parser.open.samizdat</string>
+						</dict>
+					</dict>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.parser.close.samizdat</string>
+						</dict>
+					</dict>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -336,6 +389,22 @@
 					<string>\{</string>
 					<key>end</key>
 					<string>\}</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.brace.open.samizdat</string>
+						</dict>
+					</dict>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.brace.close.samizdat</string>
+						</dict>
+					</dict>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -346,7 +415,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>variable.other</string>
+					<string>variable.other.samizdat</string>
 					<key>begin</key>
 					<string>\\"</string>
 					<key>end</key>
@@ -365,12 +434,12 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>string.unquoted</string>
+							<string>string.unquoted.samizdat</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition</string>
+							<string>punctuation.definition.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -382,7 +451,7 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>meta.function-call</string>
+							<string>meta.function-call.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -394,12 +463,12 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator</string>
+							<string>keyword.operator.samizdat</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>variable.definition</string>
+							<string>variable.definition.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -411,12 +480,12 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>variable.definition</string>
+							<string>variable.definition.samizdat</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator</string>
+							<string>keyword.operator.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -428,12 +497,12 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>variable.parameter</string>
+							<string>variable.parameter.samizdat</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition</string>
+							<string>punctuation.definition.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -441,7 +510,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>variable.other.dot-access</string>
+					<string>variable.other.dot-access.samizdat</string>
 					<key>match</key>
 					<string>\.[_a-zA-Z][_a-zA-Z0-9]*</string>
 				</dict>
@@ -451,22 +520,22 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>meta.function</string>
+							<string>meta.function.samizdat</string>
 						</dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.definition</string>
+							<string>keyword.definition.samizdat</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>entity.name.function</string>
+							<string>entity.name.function.samizdat</string>
 						</dict>
 						<key>3</key>
 						<dict>
 							<key>name</key>
-							<string>variable.parameter</string>
+							<string>variable.parameter.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -480,7 +549,7 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator</string>
+							<string>keyword.operator.samizdat</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -495,7 +564,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>keyword.control</string>
+					<string>keyword.control.samizdat</string>
 					<key>match</key>
 					<string>(?x)
 						\b(
@@ -506,7 +575,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>keyword.definition</string>
+					<string>keyword.definition.samizdat</string>
 					<key>match</key>
 					<string>(?x)
 						\b(
@@ -516,7 +585,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>constant.language</string>
+					<string>constant.language.samizdat</string>
 					<key>match</key>
 					<string>(?x)
 						\b(true|false|null|nullBox|nullGenerator)\b
@@ -524,25 +593,67 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>variable.other</string>
+					<string>variable.other.samizdat</string>
 					<key>match</key>
 					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>variable.other</string>
+					<string>variable.other.samizdat</string>
 					<key>match</key>
 					<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition</string>
+					<string>punctuation.parser.open.samizdat</string>
 					<key>match</key>
-					<string>\{:?|:?\}|\[|\]|:</string>
+					<string>\{:</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator</string>
+					<string>punctuation.parser.close.samizdat</string>
+					<key>match</key>
+					<string>:\}</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.brace.open.samizdat</string>
+					<key>match</key>
+					<string>\{</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.brace.close.samizdat</string>
+					<key>match</key>
+					<string>\}</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.bracket.open.samizdat</string>
+					<key>match</key>
+					<string>\[</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.bracket.close.samizdat</string>
+					<key>match</key>
+					<string>\]</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.paren.open.samizdat</string>
+					<key>match</key>
+					<string>\(</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.paren.close.samizdat</string>
+					<key>match</key>
+					<string>\)</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.samizdat</string>
 					<key>match</key>
 					<string>(?x)
 						&amp;&amp;?&amp;? | \|\|?\|? | \^\^?\^? |
@@ -550,6 +661,12 @@
 						:[:=] | \\?[!&lt;&gt;]?==? | &lt;&gt; |
 						\.\.!? | \+ | - | \* | //? | %%? | \? | \#
 					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.samizdat</string>
+					<key>match</key>
+					<string>:</string>
 				</dict>
 			</array>
 		</dict>
