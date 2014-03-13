@@ -578,7 +578,7 @@ def parParenPex = Peg::makeMainSequence(
 
 ## Documented in spec.
 def parParserString = Peg::makeMainSequence(
-    Peg::makeToken(@@"string"));
+    Peg::makeToken(@@string));
 
 ## Documented in spec.
 def parParserToken = Peg::makeMainSequence(
