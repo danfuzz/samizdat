@@ -817,7 +817,7 @@ DEF_PARSE(mapping) {
         zvalue interp = GET(interpolate, value);
         if (interp != NULL) {
             return interp;
-        } else if (hasType(value, STR_varRef)) {
+        } else if (hasType(value, TYPE_varRef)) {
             return makeCall(REFS(makeValueMap),
                 listFrom2(makeLiteral(GET(name, value)), value));
         }
@@ -886,7 +886,7 @@ DEF_PARSE(typeName) {
     zvalue name = PARSE(identifierString);
     if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
 
-    if (hasType(name, STR_literal)) {
+    if (hasType(name, TYPE_literal)) {
         return makeLiteral(typeFromName(GET(value, name)));
     } else {
         return makeCall(REFS(typeFromName), listFrom1(name));
@@ -988,7 +988,7 @@ DEF_PARSE(unaryExpression) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeOptValue(result);
-        } else if (hasType(one, STR_literal)) {
+        } else if (hasType(one, TYPE_literal)) {
             result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
@@ -1009,7 +1009,7 @@ DEF_PARSE(assignExpression) {
 
     zvalue base = PARSE_OR_REJECT(opExpression);
 
-    if (!(hasType(base, STR_varRef) && MATCH(CH_COLONEQUAL))) {
+    if (!(hasType(base, TYPE_varRef) && MATCH(CH_COLONEQUAL))) {
         return base;
     }
 
@@ -1128,7 +1128,7 @@ DEF_PARSE(programBody) {
 
     for (zint i = 0; i < size; i++) {
         zvalue one = seqNth(rawStatements, i);
-        if (hasType(one, STR_topDeclaration)) {
+        if (hasType(one, TYPE_topDeclaration)) {
             zvalue data = dataOf(one);
             tops = listAppend(tops, collGet(data, STR_top));
             mains = listAppend(mains, collGet(data, STR_main));

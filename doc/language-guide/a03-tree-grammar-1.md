@@ -115,7 +115,7 @@ def parVarDef = {:
 
     {
         def nameString = dataOf(name);
-        <> ifIs { <> hasType(style, "def") }
+        <> ifIs { <> hasType(style, @@def) }
             { <> makeVarDef(nameString, optExpr*) }
             { <> makeVarDefMutable(nameString, optExpr*) }
     }
@@ -401,7 +401,7 @@ def parMapping = {:
                 ## binding.
                 ifValue { <> get_interpolate(value) }
                     { interp -> <out> interp };
-                ifIs { <> hasType(value, "varRef") }
+                ifIs { <> hasType(value, @@varRef) }
                     {
                         <out> makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
@@ -479,7 +479,7 @@ def parTypeName = {:
     name = (parIdentifierString | parParenExpression)
 
     {
-        <> ifIs { <> hasType(name, "literal") }
+        <> ifIs { <> hasType(name, @@literal) }
             { <> makeLiteral(typeFromName(get_value(name))) }
             { <> makeCall(REFS::typeFromName, name) }
     }
@@ -667,12 +667,12 @@ parProgramBody := {:
         def rawStatements = [most*, last::statements*];
         def tops = Generator::filterAll(rawStatements)
             { s ->
-                <> ifIs { <> hasType(s, "topDeclaration") }
+                <> ifIs { <> hasType(s, @@topDeclaration) }
                     { <> dataOf(s)::top }
             };
         def mains = Generator::filterAll(rawStatements)
             { s ->
-                <> ifIs { <> hasType(s, "topDeclaration") }
+                <> ifIs { <> hasType(s, @@topDeclaration) }
                     { <> dataOf(s)::main }
                     { <> s }
             };
