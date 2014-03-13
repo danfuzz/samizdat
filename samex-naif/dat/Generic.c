@@ -60,7 +60,7 @@ static zvalue findByType(zvalue generic, zvalue type) {
     zvalue *functions = getInfo(generic)->functions;
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
-        zvalue result = functions[indexFromTrueType(type)];
+        zvalue result = functions[typeIndexUnchecked(type)];
         if (result != NULL) {
             return result;
         }

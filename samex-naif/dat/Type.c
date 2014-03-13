@@ -198,7 +198,7 @@ static bool typeEq(zvalue type1, zvalue type2) {
  */
 
 /* Documented in header. */
-extern inline zint indexFromTrueType(zvalue type);
+extern inline zint typeIndexUnchecked(zvalue type);
 
 /* Documented in header. */
 bool typeHasSecret(zvalue type, zvalue secret) {
@@ -277,12 +277,12 @@ zvalue typeFromName(zvalue name) {
 /* Documented in header. */
 zint typeIndex(zvalue type) {
     assertHasTypeType(type);
-    return indexFromTrueType(type);
+    return typeIndexUnchecked(type);
 }
 
 /* Documented in header. */
 zint typeIndexOf(zvalue value) {
-    return indexFromTrueType(typeOf(value));
+    return typeIndexUnchecked(typeOf(value));
 }
 
 /* Documented in header. */
@@ -402,15 +402,15 @@ MOD_INIT(typeSystem) {
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (indexFromTrueType(TYPE_Builtin) != DAT_INDEX_BUILTIN) {
+    if (typeIndex(TYPE_Builtin) != DAT_INDEX_BUILTIN) {
         die("Mismatched index for `Builtin`: should be %lld",
-            indexFromTrueType(TYPE_Builtin));
-    } else if (indexFromTrueType(TYPE_Generic) != DAT_INDEX_GENERIC) {
+            typeIndex(TYPE_Builtin));
+    } else if (typeIndex(TYPE_Generic) != DAT_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
-            indexFromTrueType(TYPE_Generic));
-    } else if (indexFromTrueType(TYPE_Jump) != DAT_INDEX_JUMP) {
+            typeIndex(TYPE_Generic));
+    } else if (typeIndex(TYPE_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
-            indexFromTrueType(TYPE_Jump));
+            typeIndex(TYPE_Jump));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
