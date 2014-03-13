@@ -15,6 +15,8 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
+def Io0 = moduleUse({name: ["core", "Io0"]});
+
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
 def get_formals        = Lang0Node::get_formals;
@@ -59,6 +61,16 @@ def LOWER_ALPHA = {
 ## with comments indicating the "hooks" for higher layers.
 ##
 
+## Forward declarations required for layer 2. These are all add-ons to
+## layer 0 or 1 rules, used to expand the syntactic possibilities of the
+## indicated base forms.
+def parExpression2;
+def parNonlocalExit2;
+def parPostfixOperator2;
+def parPrefixOperator2;
+def parStatement2;
+def parTerm2;
+
 ## Forward declaration required for integrating layer 1 definitions.
 def parParser;
 
@@ -78,8 +90,9 @@ def parExpression = {:
     ## This one is only nominally "regular-looking" (in that not many C
     ## family languages have function expressions).
     %parFnExpression
-## |
+|
     ## Note: Layer 2 adds additional rules here.
+    %parExpression2
 :};
 
 ## Parses a parenthesized expression. This produces a result identical to
@@ -93,7 +106,7 @@ def parParenExpression = {:
         ## also avoid letting a would-be parenthesized expression turn out to
         ## be taken to be a function application argument list.
         @","
-        { Io1::die("Comma not allowed within parenthesized expression.") }
+        { Io0::die("Comma not allowed within parenthesized expression.") }
     )?
 
     @")"
@@ -196,9 +209,9 @@ def parClosure = {:
 ## Parses a closure which must not define any formal arguments. This is done
 ## by parsing an arbitrary closure and then verifying that it does not
 ## declare formals. This is preferable to not-including formal argument
-## syntax, because (a) no rule wants to differentiate these cases (rules either
-## want an arbitrary closure or a specifically-constrained kind); (b) it
-## reduces redundancy in the syntax, and (c) the error case on the former
+## syntax, because (a) no rule wants to differentiate these cases (rules
+## either want an arbitrary closure or a specifically-constrained kind); (b)
+## it reduces redundancy in the syntax, and (c) the error case on the former
 ## would be more obscure (as in just something like "unexpected token" on
 ## the would-be formal argument).
 def parNullaryClosure = {:
@@ -445,7 +458,7 @@ def parMap = {:
 def parListItem = {:
     parIdentifierString
     @":"
-    { Io1::die("Mapping syntax not valid as a list item or call argument.") }
+    { Io0::die("Mapping syntax not valid as a list item or call argument.") }
 |
     parExpression
 :};
@@ -505,14 +518,15 @@ def parDeriv = {:
 ## to be done before `List`, since the latter rejects "map-like" syntax as a
 ## fatal error.
 def parTerm = {:
-    parVarRef | parInt | parString | parMap | parList
+    parVarRef | parInt | parString | parMap | parList |
     parDeriv | parType | parClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
     &@"{:" %parParser
-## |
-    ## Note: There are additional term rules in Samizdat Layer 2.
+|
+    ## Defined by Samizdat Layer 2.
+    &[@interpolatedString @"(" @"["] %parTerm2
 :};
 
 ## Parses a list of "actual" (as opposed to formal) arguments to a function.
@@ -548,8 +562,9 @@ def parPostfixOperator = {:
 |
     @"?"
     { <> { node <> makeOptValue(node) } }
-## |
+|
     ## Note: Layer 2 adds additional rules here.
+    %parPostfixOperator2
 :};
 
 ## Parses a unary expression. This is a term, optionally surrounded on
@@ -564,7 +579,7 @@ parUnaryExpression := {:
         { <> {base, prefixes: []} }
     |
         ## Note: Layer 2 adds prefix operator parsing here.
-        prefixes = (!())*
+        prefixes = (%parPrefixOperator2)*
         base = parTerm
         ## Reverse the `prefixes` list, so that prefixes are applied
         ## in outward order from the base term.
@@ -598,7 +613,7 @@ parAssignExpression := {:
 
     (
         @":="
-        lvalue = { <> dataOf(base)::lvalue }
+        lvalue = { <> get_lvalue(base) }
         ex = parExpression
         { <> lvalue(ex) }
     |
@@ -609,8 +624,9 @@ parAssignExpression := {:
 ## Note: There are additional expression rules in Layer 2 and beyond.
 def parStatement = {:
     parVarDef | parFnDef | parExpression
-## |
+|
     ## Note: Layer 2 adds additional rules here.
+    %parStatement2
 :};
 
 ## Note: There are additional nonlocal exit rules in Layer 2 and beyond.
@@ -875,4 +891,19 @@ parChoicePex := {:
     rest = (@"|" parSequencePex)*
     { <> @choice[one, rest*] }
 :};
+
+
+##
+## Layer 2 Rule Stubs
+##
+
+## In layer 2, these are all non-trivial, but here they are simply
+## always-fail.
+
+parExpression2      := {: !() :};
+parNonlocalExit2    := {: !() :};
+parPostfixOperator2 := {: !() :};
+parPrefixOperator2  := {: !() :};
+parStatement2       := {: !() :};
+parTerm2            := {: !() :};
 ```
