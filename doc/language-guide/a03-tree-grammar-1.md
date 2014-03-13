@@ -65,7 +65,6 @@ def LOWER_ALPHA = {
 ## layer 0 or 1 rules, used to expand the syntactic possibilities of the
 ## indicated base forms.
 def parExpression2;
-def parNonlocalExit2;
 def parPostfixOperator2;
 def parPrefixOperator2;
 def parStatement2;
@@ -629,8 +628,10 @@ def parStatement = {:
     %parStatement2
 :};
 
-## Note: There are additional nonlocal exit rules in Layer 2 and beyond.
-## This rule still exists but has several additions.
+## Parses a nonlocal exit / return. All of the forms matched by this rule
+## have the dual properties of (a) necessarily being at the end of a code
+## block, and (b) being represented as a `jump` call in the underlying
+## tree representation.
 def parNonlocalExit = {:
     name = (
         @"<"
@@ -638,12 +639,13 @@ def parNonlocalExit = {:
         @">"
         { <> n }
     |
-        @return
-        { <> REFS::return }
+        op = [@break @continue @return]
+        { <> makeVarRef(typeNameOf(op)) }
     )
 
-    value = parExpression?
-    { <> makeJump(name, value*) }
+    optValue = parExpression?
+
+    { <> makeJump(name, optValue*) }
 :};
 
 ## Parses a local yield / return.
@@ -901,7 +903,6 @@ parChoicePex := {:
 ## always-fail.
 
 parExpression2      := {: !() :};
-parNonlocalExit2    := {: !() :};
 parPostfixOperator2 := {: !() :};
 parPrefixOperator2  := {: !() :};
 parStatement2       := {: !() :};

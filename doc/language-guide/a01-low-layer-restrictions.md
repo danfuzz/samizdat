@@ -77,12 +77,13 @@ The only operators recognized in Layer 0 are:
 * `expr::name` &mdash; Collection-style indexing by name.
 * `expr*` &mdash; Interpolation.
 * `expr?` &mdash; Optional-value-to-list conversion.
-* `<> expr` &mdash; Local yield.
-* `<out> exr` &mdash; Named nonlocal return.
-* `return expr` &mdash; Function return.
 
 Parsing expression operator syntax is implemented in Layer 1.
 Full expression operator syntax is implemented in Layer 2.
+
+**Note:** All yield statements (`<>`, `<out>`, `break`, `continue`, and
+`return`) are available at all layers, though `break` and `continue` aren't
+particularly useful in layers 0 or 1.
 
 **Note:** Negative int constants (e.g. `-1`) are recognized in all layers,
 but unary negation as an operator is only introduced in Layer 2.

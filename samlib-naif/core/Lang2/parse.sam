@@ -74,7 +74,6 @@ def LOWER_ALPHA = {
 ## layer 0 or 1 rules, used to expand the syntactic possibilities of the
 ## indicated base forms.
 def parExpression2;
-def parNonlocalExit2;
 def parPostfixOperator2;
 def parPrefixOperator2;
 def parStatement2;
@@ -639,10 +638,24 @@ def parStatement = {:
     %parStatement2
 :};
 
-## Note: There are additional nonlocal exit rules in Layer 2 and beyond.
-## This rule still exists but has several additions.
+## Parses a nonlocal exit / return. All of the forms matched by this rule
+## have the dual properties of (a) necessarily being at the end of a code
+## block, and (b) being represented as a `jump` call in the underlying
+## tree representation.
 def parNonlocalExit = {:
-    %parNonlocalExit2
+    name = (
+        @"<"
+        n = parVarRef
+        @">"
+        { <> n }
+    |
+        op = [@break @continue @return]
+        { <> makeVarRef(typeNameOf(op)) }
+    )
+
+    optValue = parExpression?
+
+    { <> makeJump(name, optValue*) }
 :};
 
 ## Parses a local yield / return.
@@ -1267,26 +1280,6 @@ parTerm2 := {:
     parComprehensionExpression
 |
     parRangeExpression
-:};
-
-## Parses a nonlocal exit / return. All of the forms matched by this rule
-## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a `jump` call in the underlying
-## tree representation.
-parNonlocalExit2 := {:
-    name = (
-        @"<"
-        n = parVarRef
-        @">"
-        { <> n }
-    |
-        op = [@break @continue @return]
-        { <> makeVarRef(typeNameOf(op)) }
-    )
-
-    optValue = parExpression?
-
-    { <> makeJump(name, optValue*) }
 :};
 
 ## Parses a unary prefix operator. This yields a function (per se) that
