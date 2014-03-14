@@ -79,7 +79,8 @@ Version History
 
   * Notable syntax+semantics changes:
     * Added mutable variables (`var` keyword).
-    * Removed void contagion (prefix operator `&`).
+    * Removed void contagion (prefix operator `&`) and associated `voidable`
+      execution tree type.
     * Reworked type system, so that type values are treated more consistently
       and uniformly. New form `@@name` to refer to transparent derived types.
 
