@@ -33,7 +33,7 @@ static zint theNextIdentity = 1;
 static zint nextIdentity(void) {
     if (theNextIdentity < 0) {
         // At one new identity per nanosecond: (1<<63) nsec ~== 292 years.
-        die("Too many identified values!");
+        die("Too many selfish values!");
     }
 
     zint result = theNextIdentity;
@@ -57,7 +57,7 @@ extern void *datPayload(zvalue value);
 /* Documented in header. */
 zint valIdentityOf(zvalue value) {
     if (!typeIsIdentified(typeOf(value))) {
-        die("Attempt to use `valIdentityOf` on non-identified value.");
+        die("Attempt to use `valIdentityOf` on non-selfish value.");
     }
 
     zint result = value->identity;

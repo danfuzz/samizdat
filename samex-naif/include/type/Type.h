@@ -37,12 +37,12 @@ void assertHasType(zvalue value, zvalue type);
 
 /**
  * Gets a new core type, given its name. When given the same name twice, this
- * returns identical results. `identified` indicates whether the type should
- * be considered "identified." Values of an "identified" type have unique
- * identity values which can be retrieved using `valIdentityOf`. These values
+ * returns identical results. `selfish` indicates whether the type should
+ * be considered "selfish." Values of an selfish type have unique identity
+ * values which can be retrieved using `valIdentityOf`. These values
  * are automatically used when comparing values of the same type.
  */
-zvalue coreTypeFromName(zvalue name, bool identified);
+zvalue coreTypeFromName(zvalue name, bool selfish);
 
 /**
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
@@ -84,7 +84,7 @@ zint typeIndexOf(zvalue value);
 bool typeIsDerived(zvalue type);
 
 /**
- * Returns true iff the given type is "identified." That is, this returns
+ * Returns true iff the given type is "selfish." That is, this returns
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.
  */

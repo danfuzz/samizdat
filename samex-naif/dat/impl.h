@@ -56,7 +56,7 @@ typedef struct DatHeader {
 
     /**
      * Unique identity number. Only set if requested, and only usable by
-     * opaque types that are marked as `identified`.
+     * opaque types that are marked as `selfish`.
      */
     zint identity;
 
@@ -81,10 +81,10 @@ typedef struct {
     bool derived : 1;
 
     /**
-     * Whether the type is "identified." `true` indicates that
+     * Whether the type is "selfish." `true` indicates that
      * `valIdentityOf` will work on values of the type.
      */
-    bool identified : 1;
+    bool selfish : 1;
 
     /**
      * Type identifier / index. Assigned upon initialization, in sequential

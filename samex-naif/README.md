@@ -227,9 +227,7 @@ Other naming conventions (which sometimes override the above):
   type to another, with no loss of data).
 
 * `makeTypeName` &mdash; Indicates a function that creates a value of
-  type `TypeName`. These are almost all for the creation of "identified"
-  values (that is, values that have an identity beyond their underlying
-  data).
+  type `TypeName`.
 
 * `assertSomething` &mdash; Indicates an assertion function of some sort.
 
