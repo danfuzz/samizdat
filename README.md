@@ -46,8 +46,8 @@ These all exist in some form, though most are still very much in-progress.
 
 * `samex-tot` &mdash; Runtime build with "compiled" core library.
 
-  This is the same code as `samex-naif` and `samlib-naif`, except that
-  the library code has been all compiled into a very simple binary form,
+  This is the same code as `samex-naif` and `samlib-naif`, except that most
+  of the library code has been compiled into a very simple binary form,
   where the code merely reconstructs interpretable trees (thus avoiding
   the overhead of parsing).
 
