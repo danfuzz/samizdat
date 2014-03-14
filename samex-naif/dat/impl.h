@@ -90,7 +90,7 @@ typedef struct {
      * Type identifier / index. Assigned upon initialization, in sequential
      * order.
      */
-    zint id;
+    zint typeId;
 } TypeInfo;
 
 /**
@@ -142,7 +142,7 @@ zvalue genericFindByIndex(zvalue generic, zint index);
  * `Type` per se; this is *not* checked.
  */
 inline zint typeIndexUnchecked(zvalue type) {
-    return ((TypeInfo *) datPayload(type))->id;
+    return ((TypeInfo *) datPayload(type))->typeId;
 }
 
 /**

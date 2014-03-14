@@ -24,7 +24,7 @@
  */
 
 /** Next type sequence number to assign. */
-static zint theNextId = 0;
+static zint theNextTypeId = 0;
 
 /** Array of all existing types, in sort order (possibly stale). */
 static zvalue theTypes[DAT_MAX_TYPES];
@@ -48,7 +48,7 @@ static TypeInfo *getInfo(zvalue type) {
  */
 static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
         bool selfish) {
-    if (theNextId == DAT_MAX_TYPES) {
+    if (theNextTypeId == DAT_MAX_TYPES) {
         die("Too many types!");
     }
 
@@ -61,13 +61,13 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
     info->parent = parent;
     info->name = name;
     info->secret = secret;
-    info->id = theNextId;
+    info->typeId = theNextTypeId;
     info->derived = (secret != coreSecret);
     info->selfish = selfish;
 
-    theTypes[theNextId] = type;
+    theTypes[theNextTypeId] = type;
     theNeedSort = true;
-    theNextId++;
+    theNextTypeId++;
     datImmortalize(type);
 }
 
@@ -154,13 +154,13 @@ static zvalue findType(zvalue name, zvalue secret) {
             // know we'll only be getting new types anyway.
             return NULL;
         }
-        mergesort(theTypes, theNextId, sizeof(zvalue), sortOrder);
+        mergesort(theTypes, theNextTypeId, sizeof(zvalue), sortOrder);
         theNeedSort = false;
     }
 
     zvalue searchFor[2] = { name, secret };
-    zvalue *found = (zvalue *)
-        bsearch(searchFor, theTypes, theNextId, sizeof(zvalue), searchOrder);
+    zvalue *found = (zvalue *) bsearch(
+        searchFor, theTypes, theNextTypeId, sizeof(zvalue), searchOrder);
 
     return (found == NULL) ? NULL : *found;
 }
