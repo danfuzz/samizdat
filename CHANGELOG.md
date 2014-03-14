@@ -69,3 +69,29 @@ Version History
     variants.
 
   * New semantics for (local) variable binding.
+
+* 0.6.0 &mdash; 14-mar-2014 "Birthday Pi"
+
+  * **Milestone:** The Samizdat project is now one year old.
+
+  * First cut of a real compiler mode in `samtoc`, which emits C code that
+    *doesn't* end up relying on a tree interpreter.
+
+  * Notable syntax+semantics changes:
+    * Added mutable variables (`var` keyword).
+    * Removed void contagion (prefix operator `&`).
+    * Reworked type system, so that type values are treated more consistently
+      and uniformly. New form `@@name` to refer to transparent derived types.
+
+  * Other notable semantics changes:
+    * Got rid of the `reduce*` family of library functions, because mutable
+      variables are more "natural feeling" for the salient use cases.
+    * Defined new execution tree types `apply` and `jump`. These are now used
+      for calls with interpolated arguments and nonlocal exits (respectively).
+    * Removed execution tree types `interpolate` and `expression`.
+
+  * Other notable syntax changes:
+    * Simplified identifiers.
+    * Switched to `{: ... :}` for delimiting parser blocks.
+
+  * Now built using a "real" build system (Blur).
