@@ -15,7 +15,7 @@ in Samizdat.
 This arrangement adds some drag to the ongoing development of the
 system. Any change to the language &mdash; its syntax, its semantics,
 its library &mdash; has the potential to require both a direct change
-(e.g. remove a library function) as well as a "recursive" change to
+(e.g. add a library function) as well as a "recursive" change to
 the self-hosted portion of the system (e.g. fix the parser to not use
 that library function).
 
