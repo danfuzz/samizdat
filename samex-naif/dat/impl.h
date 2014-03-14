@@ -58,7 +58,7 @@ typedef struct DatHeader {
      * Unique identity number. Only set if requested, and only usable by
      * opaque types that are marked as `selfish`.
      */
-    zint identity;
+    zint selfId;
 
     /** Type-specific data goes here. */
     uint8_t payload[/*flexible*/];
