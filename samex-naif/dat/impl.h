@@ -56,9 +56,9 @@ typedef struct DatHeader {
 
     /**
      * Unique identity number. Only set if requested, and only usable by
-     * opaque types that are marked as `identified`.
+     * opaque types that are marked as `selfish`.
      */
-    zint identity;
+    zint selfId;
 
     /** Type-specific data goes here. */
     uint8_t payload[/*flexible*/];
@@ -81,16 +81,16 @@ typedef struct {
     bool derived : 1;
 
     /**
-     * Whether the type is "identified." `true` indicates that
-     * `valIdentityOf` will work on values of the type.
+     * Whether the type is "selfish." `true` indicates that `valSelfIdOf` will
+     * work on values of the type.
      */
-    bool identified : 1;
+    bool selfish : 1;
 
     /**
      * Type identifier / index. Assigned upon initialization, in sequential
      * order.
      */
-    zint id;
+    zint typeId;
 } TypeInfo;
 
 /**
@@ -142,7 +142,7 @@ zvalue genericFindByIndex(zvalue generic, zint index);
  * `Type` per se; this is *not* checked.
  */
 inline zint typeIndexUnchecked(zvalue type) {
-    return ((TypeInfo *) datPayload(type))->id;
+    return ((TypeInfo *) datPayload(type))->typeId;
 }
 
 /**

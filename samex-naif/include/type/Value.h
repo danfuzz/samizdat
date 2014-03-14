@@ -95,9 +95,9 @@ zvalue valDataOf(zvalue value, zvalue secret);
 /**
  * Gets a unique identity number associated with this value. Only works
  * on values of an opaque type, and only if the type is marked as
- * `identified`.
+ * `selfish`.
  */
-zint valIdentityOf(zvalue value);
+zint valSelfIdOf(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller

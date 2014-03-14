@@ -24,7 +24,7 @@
  */
 
 /** Next type sequence number to assign. */
-static zint theNextId = 0;
+static zint theNextTypeId = 0;
 
 /** Array of all existing types, in sort order (possibly stale). */
 static zvalue theTypes[DAT_MAX_TYPES];
@@ -47,8 +47,8 @@ static TypeInfo *getInfo(zvalue type) {
  * Initializes a type value.
  */
 static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
-        bool identified) {
-    if (theNextId == DAT_MAX_TYPES) {
+        bool selfish) {
+    if (theNextTypeId == DAT_MAX_TYPES) {
         die("Too many types!");
     }
 
@@ -61,13 +61,13 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
     info->parent = parent;
     info->name = name;
     info->secret = secret;
-    info->id = theNextId;
+    info->typeId = theNextTypeId;
     info->derived = (secret != coreSecret);
-    info->identified = identified;
+    info->selfish = selfish;
 
-    theTypes[theNextId] = type;
+    theTypes[theNextTypeId] = type;
     theNeedSort = true;
-    theNextId++;
+    theNextTypeId++;
     datImmortalize(type);
 }
 
@@ -82,9 +82,9 @@ static zvalue allocType(void) {
  * Creates and returns a new type with the given name and secret. The type
  * is marked derived *unless* the given secret is `coreSecret`.
  */
-static zvalue makeType(zvalue name, zvalue secret, bool identified) {
+static zvalue makeType(zvalue name, zvalue secret, bool selfish) {
     zvalue result = allocType();
-    typeInit(result, TYPE_Value, name, secret, identified);
+    typeInit(result, TYPE_Value, name, secret, selfish);
     return result;
 }
 
@@ -154,13 +154,13 @@ static zvalue findType(zvalue name, zvalue secret) {
             // know we'll only be getting new types anyway.
             return NULL;
         }
-        mergesort(theTypes, theNextId, sizeof(zvalue), sortOrder);
+        mergesort(theTypes, theNextTypeId, sizeof(zvalue), sortOrder);
         theNeedSort = false;
     }
 
     zvalue searchFor[2] = { name, secret };
-    zvalue *found = (zvalue *)
-        bsearch(searchFor, theTypes, theNextId, sizeof(zvalue), searchOrder);
+    zvalue *found = (zvalue *) bsearch(
+        searchFor, theTypes, theNextTypeId, sizeof(zvalue), searchOrder);
 
     return (found == NULL) ? NULL : *found;
 }
@@ -186,7 +186,7 @@ static void assertHasTypeType(zvalue value) {
 
 /**
  * Compares two types (per se) for equality. This is just `==` since
- * types are all "identified."
+ * types are all "selfish."
  */
 static bool typeEq(zvalue type1, zvalue type2) {
     return (type1 == type2);
@@ -239,13 +239,13 @@ void assertHasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-zvalue coreTypeFromName(zvalue name, bool identified) {
+zvalue coreTypeFromName(zvalue name, bool selfish) {
     zvalue result = findType(name, coreSecret);
 
     if (result == NULL) {
-        result = makeType(name, coreSecret, identified);
-    } else if (identified != getInfo(result)->identified) {
-        die("Mismatch on `identified`.");
+        result = makeType(name, coreSecret, selfish);
+    } else if (selfish != getInfo(result)->selfish) {
+        die("Mismatch on `selfish`.");
     }
 
     return result;
@@ -292,9 +292,9 @@ bool typeIsDerived(zvalue type) {
 }
 
 /* Documented in header. */
-bool typeIsIdentified(zvalue type) {
+bool typeIsSelfish(zvalue type) {
     assertHasTypeType(type);
-    return getInfo(type)->identified;
+    return getInfo(type)->selfish;
 }
 
 /* Documented in header. */

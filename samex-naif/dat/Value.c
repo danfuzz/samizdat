@@ -24,20 +24,21 @@
  * The next identity value to return. This starts at `1`, because `0` is
  * taken to mean "uninitialized."
  */
-static zint theNextIdentity = 1;
+static zint theNextSelfId = 1;
 
 /**
- * Gets a unique "order id" to use when comparing otherwise-incomparable
- * values of the same type, for use in defining the total order of values.
+ * Gets a unique "self-identity" value to use when comparing
+ * otherwise-incomparable values of the same type, for use in defining the
+ * total order of values.
  */
-static zint nextIdentity(void) {
-    if (theNextIdentity < 0) {
+static zint nextSelfId(void) {
+    if (theNextSelfId < 0) {
         // At one new identity per nanosecond: (1<<63) nsec ~== 292 years.
-        die("Too many identified values!");
+        die("Too many selfish values!");
     }
 
-    zint result = theNextIdentity;
-    theNextIdentity++;
+    zint result = theNextSelfId;
+    theNextSelfId++;
     return result;
 }
 
@@ -55,15 +56,15 @@ zvalue dataOf(zvalue value) {
 extern void *datPayload(zvalue value);
 
 /* Documented in header. */
-zint valIdentityOf(zvalue value) {
-    if (!typeIsIdentified(typeOf(value))) {
-        die("Attempt to use `valIdentityOf` on non-identified value.");
+zint valSelfIdOf(zvalue value) {
+    if (!typeIsSelfish(typeOf(value))) {
+        die("Attempt to use `valSelfIdOf` on non-selfish value.");
     }
 
-    zint result = value->identity;
+    zint result = value->selfId;
 
     if (result == 0) {
-        result = value->identity = nextIdentity();
+        result = value->selfId = nextSelfId();
     }
 
     return result;
@@ -172,8 +173,8 @@ METH_IMPL(Value, totOrder) {
         return INT_0;
     }
 
-    zint id1 = valIdentityOf(v1);
-    zint id2 = valIdentityOf(v2);
+    zint id1 = valSelfIdOf(v1);
+    zint id2 = valSelfIdOf(v2);
 
     if (id1 < id2) {
         return INT_NEG1;
