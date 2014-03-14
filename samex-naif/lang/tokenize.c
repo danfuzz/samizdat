@@ -152,10 +152,12 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue string = stringFromZchars(size, chars);
 
     switch (chars[0]) {
-        case 'd': { if (valEq(string, STR_def))    return TOK_def;    break; }
-        case 'f': { if (valEq(string, STR_fn))     return TOK_fn;     break; }
-        case 'r': { if (valEq(string, STR_return)) return TOK_return; break; }
-        case 'v': { if (valEq(string, STR_var))    return TOK_var;    break; }
+        case 'b': { if (valEq(string, STR_break))    return TOK_break;    }
+        case 'c': { if (valEq(string, STR_continue)) return TOK_continue; }
+        case 'd': { if (valEq(string, STR_def))      return TOK_def;      }
+        case 'f': { if (valEq(string, STR_fn))       return TOK_fn;       }
+        case 'r': { if (valEq(string, STR_return))   return TOK_return;   }
+        case 'v': { if (valEq(string, STR_var))      return TOK_var;      }
     }
 
     return makeValue(TYPE_identifier, string, NULL);

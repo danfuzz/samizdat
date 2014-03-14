@@ -19,7 +19,7 @@ result as tokens of type `error`.
 ## tokenization syntax of identifiers.
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
-        "def", "fn", "return", "var",
+        "break", "continue", "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
         []*])
         { name <> {(name): @(name)} });

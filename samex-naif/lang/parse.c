@@ -754,12 +754,14 @@ DEF_PARSE(string) {
 DEF_PARSE(identifierString) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = MATCH(string); }
+    if (result == NULL) { result = MATCH(string);     }
     if (result == NULL) { result = MATCH(identifier); }
-    if (result == NULL) { result = MATCH(def); }
-    if (result == NULL) { result = MATCH(fn); }
-    if (result == NULL) { result = MATCH(return); }
-    if (result == NULL) { result = MATCH(var); }
+    if (result == NULL) { result = MATCH(break);      }
+    if (result == NULL) { result = MATCH(continue);   }
+    if (result == NULL) { result = MATCH(def);        }
+    if (result == NULL) { result = MATCH(fn);         }
+    if (result == NULL) { result = MATCH(return);     }
+    if (result == NULL) { result = MATCH(var);        }
     if (result == NULL) { return NULL; }
 
     zvalue value = dataOf(result);

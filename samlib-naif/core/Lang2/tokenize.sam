@@ -26,10 +26,10 @@ def tokStringPart2;
 ## tokenization syntax of identifiers.
 def KEYWORDS = Generator::collectAsMap(
     Generator::makeFilterGenerator([
-        "def", "fn", "return", "var",
+        "break", "continue", "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
-        "break", "by", "continue", "default", "do", "else", "export",
-        "for", "if", "import", "in", "module", "switch", "while"])
+        "by", "default", "do", "else", "export", "for", "if", "import",
+        "in", "module", "switch", "while"])
         { name <> {(name): @(name)} });
 
 ## These are all the int digits, as a map from strings to digit values. This
