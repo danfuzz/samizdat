@@ -170,6 +170,13 @@ Each lives in a directory named with its number along with a suggestive
 summary, e.g. `0-001-string-literal`.
 
 
+Editor Support
+--------------
+
+Find syntax highlighter packages for Atom and TextMate / SublimeText in the
+[the etc/ directory](etc).
+
+
 More Info
 ---------
 
