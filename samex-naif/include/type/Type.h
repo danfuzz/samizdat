@@ -88,7 +88,7 @@ bool typeIsDerived(zvalue type);
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.
  */
-bool typeIsIdentified(zvalue type);
+bool typeIsSelfish(zvalue type);
 
 /**
  * Returns true iff the given type is a transparent derived type.

@@ -56,7 +56,7 @@ extern void *datPayload(zvalue value);
 
 /* Documented in header. */
 zint valIdentityOf(zvalue value) {
-    if (!typeIsIdentified(typeOf(value))) {
+    if (!typeIsSelfish(typeOf(value))) {
         die("Attempt to use `valIdentityOf` on non-selfish value.");
     }
 

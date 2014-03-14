@@ -292,7 +292,7 @@ bool typeIsDerived(zvalue type) {
 }
 
 /* Documented in header. */
-bool typeIsIdentified(zvalue type) {
+bool typeIsSelfish(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->selfish;
 }
