@@ -97,7 +97,7 @@ zvalue valDataOf(zvalue value, zvalue secret);
  * on values of an opaque type, and only if the type is marked as
  * `selfish`.
  */
-zint valIdentityOf(zvalue value);
+zint valSelfIdOf(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller

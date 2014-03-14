@@ -81,8 +81,8 @@ typedef struct {
     bool derived : 1;
 
     /**
-     * Whether the type is "selfish." `true` indicates that
-     * `valIdentityOf` will work on values of the type.
+     * Whether the type is "selfish." `true` indicates that `valSelfIdOf` will
+     * work on values of the type.
      */
     bool selfish : 1;
 

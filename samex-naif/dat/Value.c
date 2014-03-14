@@ -55,9 +55,9 @@ zvalue dataOf(zvalue value) {
 extern void *datPayload(zvalue value);
 
 /* Documented in header. */
-zint valIdentityOf(zvalue value) {
+zint valSelfIdOf(zvalue value) {
     if (!typeIsSelfish(typeOf(value))) {
-        die("Attempt to use `valIdentityOf` on non-selfish value.");
+        die("Attempt to use `valSelfIdOf` on non-selfish value.");
     }
 
     zint result = value->identity;
@@ -172,8 +172,8 @@ METH_IMPL(Value, totOrder) {
         return INT_0;
     }
 
-    zint id1 = valIdentityOf(v1);
-    zint id2 = valIdentityOf(v2);
+    zint id1 = valSelfIdOf(v1);
+    zint id2 = valSelfIdOf(v2);
 
     if (id1 < id2) {
         return INT_NEG1;
