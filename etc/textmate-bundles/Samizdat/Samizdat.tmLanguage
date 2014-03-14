@@ -451,18 +451,6 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>meta.function-call.samizdat</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>([._a-zA-Z][._a-zA-Z0-9:]*)\b(?= *[\({])</string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
 							<string>keyword.operator.samizdat</string>
 						</dict>
 						<key>2</key>
@@ -590,6 +578,18 @@
 					<string>(?x)
 						\b(true|false|null|nullBox|nullGenerator)\b
 					</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>meta.function-call.samizdat</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>([._a-zA-Z][._a-zA-Z0-9:]*)\b(?= *[\({])</string>
 				</dict>
 				<dict>
 					<key>name</key>

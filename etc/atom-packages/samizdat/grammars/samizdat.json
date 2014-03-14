@@ -147,14 +147,6 @@
           }
         },
         {
-          "match" : "([._a-zA-Z][._a-zA-Z0-9:]*)\\b(?= *[\\({])",
-          "captures" : {
-            "1" : {
-              "name" : "meta.function-call.samizdat"
-            }
-          }
-        },
-        {
           "match" : "(def|var)  *([_a-zA-Z][_a-zA-Z0-9]*)",
           "captures" : {
             "1" : {
@@ -233,6 +225,14 @@
         {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(true|false|null|nullBox|nullGenerator)\\b\n\t\t\t\t\t",
           "name" : "constant.language.samizdat"
+        },
+        {
+          "match" : "([._a-zA-Z][._a-zA-Z0-9:]*)\\b(?= *[\\({])",
+          "captures" : {
+            "1" : {
+              "name" : "meta.function-call.samizdat"
+            }
+          }
         },
         {
           "match" : "[_a-zA-Z][_a-zA-Z0-9]*",
