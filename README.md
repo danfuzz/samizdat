@@ -127,6 +127,11 @@ These all exist in some form, though most are still very much in-progress.
 
 * Profit!
 
+### Editor Support
+
+Find syntax highlighter packages for Atom and TextMate / SublimeText in the
+[the etc/ directory](etc).
+
 
 Building and Testing
 --------------------
@@ -168,13 +173,6 @@ You can also run the various demo / test cases, with the scripts
 `N-MMM` where `N` is a language "layer" and `MMM` is a sequence number.
 Each lives in a directory named with its number along with a suggestive
 summary, e.g. `0-001-string-literal`.
-
-
-Editor Support
---------------
-
-Find syntax highlighter packages for Atom and TextMate / SublimeText in the
-[the etc/ directory](etc).
 
 
 More Info
