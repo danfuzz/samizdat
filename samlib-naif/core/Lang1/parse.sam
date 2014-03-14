@@ -480,10 +480,10 @@ def parNonlocalExit = Peg::makeMainSequence(
             Peg::makeToken(@@">"),
             Peg::makeCode { ., n, . <> n }),
         Peg::makeSequence(
-            Peg::makeToken(@@"return"),
-            Peg::makeResult(REFS::return))),
+            Peg::makeTokenSet(@@break, @@continue, @@return),
+            Peg::makeCode { op <> makeVarRef(typeNameOf(op)) })),
     Peg::makeOpt(parExpression),
-    Peg::makeCode { name, value <> makeJump(name, value*) });
+    Peg::makeCode { name, optValue <> makeJump(name, optValue*) });
 
 ## Documented in spec.
 def parYield = Peg::makeMainSequence(
@@ -578,7 +578,7 @@ def parParenPex = Peg::makeMainSequence(
 
 ## Documented in spec.
 def parParserString = Peg::makeMainSequence(
-    Peg::makeToken(@@"string"));
+    Peg::makeToken(@@string));
 
 ## Documented in spec.
 def parParserToken = Peg::makeMainSequence(

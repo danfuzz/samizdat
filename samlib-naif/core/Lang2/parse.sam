@@ -9,7 +9,7 @@
 def safeVarName = submoduleUse("safeVarName")::safeVarName;
 def tokenize = submoduleUse("tokenize")::tokenize;
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def Io0 = moduleUse({name: ["core", "Io0"]});
 def Lang0 = moduleUse({name: ["core", "Lang0"]});
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
@@ -48,12 +48,12 @@ def withoutInterpolate = Lang0Node::withoutInterpolate;
 
 ## Reports the given list of pending tokens as part of error processing.
 fn reportError(pending) {
-    Io1::note("Pending tokens:");
+    Io0::note("Pending tokens:");
 
     Generator::filterPump(pending, Range::makeInclusiveRange(1, 50))
-        { token, . -> Io1::note(cat("    ", Format::source(token))) };
+        { token, . -> Io0::note(cat("    ", Format::source(token))) };
 
-    Io1::die("\nExtra tokens at end of program.")
+    Io0::die("\nExtra tokens at end of program.")
 };
 
 ## Set-like map of all lowercase identifier characters. Used to figure
@@ -74,7 +74,6 @@ def LOWER_ALPHA = {
 ## layer 0 or 1 rules, used to expand the syntactic possibilities of the
 ## indicated base forms.
 def parExpression2;
-def parNonlocalExit2;
 def parPostfixOperator2;
 def parPrefixOperator2;
 def parStatement2;
@@ -115,7 +114,7 @@ def parParenExpression = {:
         ## also avoid letting a would-be parenthesized expression turn out to
         ## be taken to be a function application argument list.
         @","
-        { Io1::die("Comma not allowed within parenthesized expression.") }
+        { Io0::die("Comma not allowed within parenthesized expression.") }
     )?
 
     @")"
@@ -229,7 +228,7 @@ def parNullaryClosure = {:
     {
         def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
-            { Io1::die("Invalid formal argument in code block.") };
+            { Io0::die("Invalid formal argument in code block.") };
         <> c
     }
 :};
@@ -241,7 +240,7 @@ def parCodeOnlyClosure = {:
 
     {
         ifIs { <> get_yieldDef(c) }
-            { Io1::die("Invalid yield definition in code block.") };
+            { Io0::die("Invalid yield definition in code block.") };
         <> c
     }
 :};
@@ -467,7 +466,7 @@ def parMap = {:
 def parListItem = {:
     parIdentifierString
     @":"
-    { Io1::die("Mapping syntax not valid as a list item or call argument.") }
+    { Io0::die("Mapping syntax not valid as a list item or call argument.") }
 |
     parExpression
 :};
@@ -639,10 +638,24 @@ def parStatement = {:
     %parStatement2
 :};
 
-## Note: There are additional nonlocal exit rules in Layer 2 and beyond.
-## This rule still exists but has several additions.
+## Parses a nonlocal exit / return. All of the forms matched by this rule
+## have the dual properties of (a) necessarily being at the end of a code
+## block, and (b) being represented as a `jump` call in the underlying
+## tree representation.
 def parNonlocalExit = {:
-    %parNonlocalExit2
+    name = (
+        @"<"
+        n = parVarRef
+        @">"
+        { <> n }
+    |
+        op = [@break @continue @return]
+        { <> makeVarRef(typeNameOf(op)) }
+    )
+
+    optValue = parExpression?
+
+    { <> makeJump(name, optValue*) }
 :};
 
 ## Parses a local yield / return.
@@ -1090,7 +1103,7 @@ def parInterpolatedString = {:
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
                         {
-                            Io1::die(
+                            Io0::die(
                                 "Invalid syntax in string interpolation.")
                         };
 
@@ -1218,7 +1231,7 @@ def parRangeBody = {:
         }
     )
 
-    optIncrement = (@"by" parExpression)?
+    optIncrement = (@by parExpression)?
 
     {
         <> ifIs { <> eq(op, @"..!") }
@@ -1267,36 +1280,6 @@ parTerm2 := {:
     parComprehensionExpression
 |
     parRangeExpression
-:};
-
-## Parses a nonlocal exit / return. All of the forms matched by this rule
-## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a function call in the underlying
-## function representation of code blocks.
-parNonlocalExit2 := {:
-    name = (
-        @"<"
-        n = parVarRef
-        @">"
-        { <> n }
-    |
-        op = [@break @continue @return]
-        { <> makeVarRef(typeNameOf(op)) }
-    )
-
-    value = (
-        ex = parExpression
-        {
-            ## The test for a valued `continue` is done explicitly here
-            ## (rather than just letting the rule fail) in order to make the
-            ## error message more sensible.
-            ifIs { <> eq(dataOf(name), "continue") }
-                { Io1::die("Invalid use of continue with value.") };
-            <> ex
-        }
-    )?
-
-    { <> makeJump(name, value*) }
 :};
 
 ## Parses a unary prefix operator. This yields a function (per se) that
@@ -2101,10 +2084,10 @@ def parSwitchExpression = {:
         };
 
         ifIs { <> gt(Collection::sizeOf(optDefault), 1) }
-            { Io1::die("Multiple default cases in switch.") };
+            { Io0::die("Multiple default cases in switch.") };
 
         ifIs { <> gt(Collection::sizeOf(optElse), 1) }
-            { Io1::die("Multiple else cases in switch.") };
+            { Io0::die("Multiple else cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to
         ## preserve the left-to-right evaluation order of the apparent text,
