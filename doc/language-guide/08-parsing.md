@@ -11,12 +11,12 @@ offers language-level facilities for building parsers.
 
 The foundation of parsing is a parser value. A parer value is
 a value which binds the `parse` generic function, with specific requirements
-for formal arguments and behavior. See the `PEG` section in the library
+for formal arguments and behavior. See the `Peg` section in the library
 specification for more details.
 
 The syntax below provides a convenient way to define standard-form
-parsing functions. It is perfectly acceptable to mix-and-match the parsing
-functions defined using this syntax with ones defined more "manually."
+parsers. It is perfectly acceptable to mix-and-match the parsers
+defined using this syntax with ones defined more "manually."
 
 
 ### Details
@@ -24,15 +24,29 @@ functions defined using this syntax with ones defined more "manually."
 The following list of parser forms. With respect to the
 expression forms, they are is in precedence, from loosest to tightest.
 
-#### Parsing functions
+#### Parser values
 
-Parsing functions are written as a single parsing expression inside
-"parsing braces" `{: ... :}`. Just as regular braces enclose an anonymous
-function / closure, parsing braces enclose an anonymous parsing
-function / closure.
+Parser values (hereafter just "parsers") are written as a single parsing
+expression inside "parser braces" `{: ... :}`. Just as regular braces
+enclose an anonymous function / closure, parser braces enclose an anonymous
+parser.
 
-The result of calling a parsing function is the same as the result of
+The result of calling a parser's `parse` method is the same as the result of
 the expression it contains.
+
+The `parse` method takes two fixed arguments, a promise to hold the result
+of parsing and a generator used to produce input to parse. In addition
+the method should accept a set of additional arguments representing the
+items that have already been parsed (in the context of where the parser
+is called). **Note:** These details are only important if you are writing
+your own parser "manually." When using parser syntax, the language
+automatically generates parser values that abide by the expected contract.
+
+The easiest (and most typical) way of calling a parser from non-parser code
+is to use the utility function `Peg::apply(parser, input)`. This takes a
+`parser` value and an `input` generator, and returns either the value
+successfully parsed by the parser or void if parsing was unsuccessful. See
+the `Peg` library section for more details.
 
 #### Matching one of multiple alternates
 
