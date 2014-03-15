@@ -145,7 +145,7 @@ from arbitrary keys to arbitrary values. Keys and values are both
 allowed to be any type of value. Notably, keys are *not* restricted to
 only being strings (or string-like things).
 
-Non-empty maps are written as an initial `{`, followed by one or
+Maps are written as an initial `{`, followed by zero or
 more mappings, followed by a final `}`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
