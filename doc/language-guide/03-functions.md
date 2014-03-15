@@ -22,9 +22,10 @@ curly brace delimiters  (`{...}`), and with few exceptions curly braces
 are only used to indicate a closure of some form or another.
 
 Every closure can be declared to take arguments, and every closure can
-yield (return) a value. With only one exception, the curly braces are *only*
-used in the definition of closures. (This is a departure from most
-languages in the C family, however it is similar to Smalltalk.)
+yield (return) a value. With only one exception, curly braces in a
+code-containing context are *only* used in the definition of closures.
+(This is a departure from most languages in the C family, however it is
+similar to how Smalltalk defines its blocks.)
 
 
 ### Argument Declarations
