@@ -270,7 +270,7 @@ Parser functions are used (unsurprisingly) to perform parsing operations.
 Samizdat provides both syntactic and library support for parsing.
 
 Briefly, parser functions work very similar to generators. The
-majore differences are:
+major differences are:
 
 * Parser functions are `Function` values (and not values that bind other
   methods).
