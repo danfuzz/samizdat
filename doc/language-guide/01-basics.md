@@ -136,9 +136,8 @@ There are three major restrictions on how voids may be used:
 * A void cannot be stored in a variable.
 
 * A void cannot take part in a function application. An attempt to
-  apply void as a function is a fatal error, and an attempt to pass
-  a void argument causes short-circuit (but non-fatal) termination
-  of the application. See the section on "Function Application" for
+  apply void as a function is a fatal error, as is an attempt to pass
+  a void argument to a function. See the section on "Function Application" for
   more details.
 
 * A void cannot be part of a data structure (e.g., a list element,
