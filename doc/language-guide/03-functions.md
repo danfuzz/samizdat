@@ -263,21 +263,3 @@ is represented by a void return. Logic functions, in general, may take
 any number of arguments (including none).
 
 See the introductory section "Logic operations" for more details.
-
-#### Parser functions
-
-Parser functions are used (unsurprisingly) to perform parsing operations.
-Samizdat provides both syntactic and library support for parsing.
-
-Briefly, parser functions work very similar to generators. The
-major differences are:
-
-* Parser functions are `Function` values (and not values that bind other
-  methods).
-
-* Parser functions take two or more arguments, in this order:
-  * a yield box.
-  * The "text" to parse.
-  * Optionally, a trailing context of one or more already-parsed values.
-
-See the "Parsing" section for more details.
