@@ -178,7 +178,7 @@ summary, e.g. `0-001-string-literal`.
 More Info
 ---------
 
-### Authors
+### Authors and Acknowledgments
 
 See [AUTHORS.md](AUTHORS.md).
 
