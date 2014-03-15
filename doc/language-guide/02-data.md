@@ -233,9 +233,9 @@ In addition to the box constructor functions, the three functions that
 deal with boxes are `fetch` to get the contents of a box (or void if
 the box value has yet to be set), `store` to set the contents of
 a box, and `canStore` to indicate whether it is okay to call
-`store` (which is not the same as `fetch` returning non-void).
+`store` (which is not the same as `fetch` returning void).
 
-There are three predefined box variants:
+There are four predefined box variants:
 
 * A "cell" is a fully mutable box, which can be stored to any number of
   times.
@@ -243,6 +243,9 @@ There are three predefined box variants:
 * A "promise" is a box which can be stored to at most once. This type
   of box is often used as something along the lines of a "reified
   return value."
+
+* A "result" is a box which is immutably bound to a particular value, or
+  to void.
 
 * The special value `nullBox` is a box that is permanently empty (succeeds
   but does nothing when `store` is called on it).
