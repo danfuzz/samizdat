@@ -15,8 +15,10 @@ and [JavaScript](https://en.wikipedia.org/wiki/JavaScript).
 The goal of Samizdat is to be a compelling language choice when building
 applications that need to take into account the realities of computing
 across address spaces and over sometimes-high-latency communications links.
+(TODO: No actual concurrency or networking support has yet been implemented
+or even fully specified.)
 
-Samizdat is mostly an "expression language": Most syntactic constructs in
+Samizdat is mostly an "expression language:" Most syntactic constructs in
 the language &mdash; including those which look like "statements" from the
 C tradition &mdash; are in fact "expressions" that can be combined usefully
 with any other expressions in the language.
@@ -107,7 +109,7 @@ immutable variables can be bound or rebound using the syntax:
 name := value
 ```
 
-that is, an `:=` assignment without prefacing it with either `def` or `var`.
+that is, a `:=` assignment without prefacing it with either `def` or `var`.
 
 Variable definitions (but *not* `:=` assignments) as described in
 this section are some of the few statement forms in Samizdat. That is, these
