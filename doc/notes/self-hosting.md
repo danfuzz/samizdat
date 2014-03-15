@@ -15,9 +15,9 @@ in Samizdat.
 This arrangement adds some drag to the ongoing development of the
 system. Any change to the language &mdash; its syntax, its semantics,
 its library &mdash; has the potential to require both a direct change
-(e.g. add a library function) as well as a "recursive" change to
-the self-hosted portion of the system (e.g. fix the parser to use
-that library function).
+(e.g. change the contract of a library function) as well as a "recursive"
+change to the self-hosted portion of the system (e.g. fix the parser to use
+that library function in its newly-required way).
 
 The highest drag is from invasive syntactic changes (e.g. changing what a
 function call looks like), because these require almost all the self-hosted
