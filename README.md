@@ -86,7 +86,7 @@ These all exist in some form, though most are still very much in-progress.
   language implemented by Samizdat Layer M. `samizdat-N` accepts the
   language Samizdat layer N, translating it to the same underlying
   executable parse tree form that is specified by Layer 0 and
-  executed by `samizdat-naif`.
+  executed by `samex-naif` and `samizdat-naif`.
 
 * `samex-deft` &mdash; Samizdat interpreter.
 
