@@ -132,7 +132,7 @@ and are described along with those constructs.
 
 ### The empty closure
 
-In order to disambiguate with the empty list, an otherwise empty function
+In order to disambiguate with the empty map, an otherwise empty function
 must contain at least an `->` or a `<>`, e.g. `{ <> }`.
 
 
