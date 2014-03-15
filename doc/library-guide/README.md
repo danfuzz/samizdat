@@ -16,7 +16,7 @@ Each section covers definitions for one conceptual area, either
 concerning a data type or some more nebulous concept.
 
 Each section is divided into subsections: generic functions (one section
-per protocol), primitive defintions, and one for in-language definitions.
+per protocol), primitive definitions, and one for in-language definitions.
 The first sections are where generic functions are specified as a general
 definition, as well as where particular types indicate which generics they
 bind and with what specific meaning. From the perspective of "client"
