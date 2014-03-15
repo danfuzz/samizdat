@@ -427,13 +427,13 @@ method bindings (preferably pure functions) and a particular contract.
 The contract is as follows:
 
 * The generic function `nextValue` always accepts exactly two arguments,
-  a generator and a "yield box" (or equivalent). (Boxes are described
-  more completely in a different section.)
+  a generator and a promise (or equivalent). (Promises are described
+  more completely in the section on boxes.)
 
 * When a generator is not "voided" (out of values to yield), calling
   `nextValue` causes two things to be done:
 
-  * It calls `store(box, value)` on its argument in order to yield
+  * It calls `store(promise, value)` on its argument in order to yield
     one value out of itself.
   * It returns a new generator as a result which, when applied to
     `nextValue`, yields the *next* value, and so on.
@@ -443,13 +443,13 @@ The contract is as follows:
 
 * When `nextValue` is called on a voided generator, it does these two things:
 
-  * It calls `store(box)` (with no payload argument) on its argument
+  * It calls `store(promise)` (with no payload argument) on its argument
     in order to yield void.
   * It returns void.
 
 **Note:** Clients of generators should rely primarily on the return value
 from `nextValue` to determine whether the generator has been voided, rather
-than on what gets done to the box passed in as the first argument.
+than on what gets done to the promise passed in as the first argument.
 
 Generators also bind a couple other generic functions. See the library
 specification for `Generator` for more details.
