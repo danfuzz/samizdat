@@ -12,9 +12,16 @@ family, including C per se, [C++](https://en.wikipedia.org/wiki/C%2B%2B),
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
 and [JavaScript](https://en.wikipedia.org/wiki/JavaScript).
 
-The goal of Samizdat is to be a compelling language choice when building
-applications that need to take into account the realities of computing
-across address spaces and over sometimes-high-latency communications links.
+One major goal of Samizdat is to be a useful synchronous language, for use
+in text processing and general parsing and data processing tasks such as is
+accomplished using tools such as [Awk](http://en.wikipedia.org/wiki/AWK) or in
+general purpose languages, sometimes with the support of a parsing framework
+such as [ANTLR](http://en.wikipedia.org/wiki/ANTLR).
+
+Another major goal of Samizdat &mdash; arguably its ultimate goal &mdash;
+is to be a compelling language choice when building applications that need
+to take into account the realities of computing across address spaces and
+over sometimes-high-latency communications links.
 (TODO: No actual concurrency or networking support has yet been implemented
 or even fully specified.)
 
