@@ -3,7 +3,9 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Source this file to set up for development.
+# Source this file (`. env.sh`) to set up for development, using Bash.
+# **Note:** This is only meant as a convenience for interactive development
+# and is not strictly necessary.
 #
 
 function init-env {
