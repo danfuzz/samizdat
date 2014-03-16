@@ -82,11 +82,12 @@ These all exist in some form, though most are still very much in-progress.
 * `samex-3` &hellip; `samex-N` &mdash; Samizdat Layers 3
   through N interpreters.
 
-  For `M` and `N` where `N == M + 1`, `samizdat-N` is written in the
-  language implemented by Samizdat Layer M. `samizdat-N` accepts the
-  language Samizdat layer N, translating it to the same underlying
-  executable parse tree form that is specified by Layer 0 and
-  executed by `samex-naif` and `samizdat-naif`.
+  For each `N`, `samizdat-N` accepts the language Samizdat Layer N,
+  translating it to the same underlying executable parse tree form that is
+  specified by Layer 0 and executed by `samex-naif` and `samizdat-naif`.
+
+  For `M` and `N` where `M == N + 1`, `samizdat-M` is written in the
+  language implemented by Samizdat Layer N.
 
 * `samex-deft` &mdash; Samizdat interpreter.
 
