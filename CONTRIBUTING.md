@@ -92,11 +92,12 @@ to do:
   ```
   I hereby assert:
 
-  * I am licensing all code I contribute to this project, under the
+  * I hereby license all code I contribute to this project, under the
     stated terms of this project's license.
-
-  * All code I contribute is my own original work.
-
+  * I hereby authorize the project's maintainers and their designated
+    agents to act as my agent, for the purpose of copyright management
+    of my contributions.
+  * All code I contribute to this project is my own original work.
   * I have permission to contribute to this project under these terms.
 
   Signed,
