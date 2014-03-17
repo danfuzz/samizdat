@@ -90,7 +90,7 @@ to do:
 * If you have not already done so, file a separate issue stating:
 
   ```
-  I hereby assert:
+  For the record:
 
   * I hereby license all code I contribute to this project, under the
     stated terms of this project's license.
