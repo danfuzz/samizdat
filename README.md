@@ -137,6 +137,34 @@ Find syntax highlighter packages for Atom and TextMate / SublimeText in the
 Building and Testing
 --------------------
 
+### Prerequisites
+
+Samizdat intentionally limits its prerequisites, as a simplifying tactic.
+
+Producing a Samizdat executable, per se, requires two items of its
+environment:
+
+* Samizdat requires a C compiler / linker. The variant of C used in Samizdat
+  is C99 with modest use of extensions that are available in both Clang and
+  the Gnu C compiler.
+
+* Samizdat requires a C library to link with. It expects to link with a
+  Posix-compatible library which exports a few additional commonly-supported
+  functions, including notably those for dynamic code loading.
+
+The automated build for Samizdat requires these additional items:
+
+* The build makes use of standard Posix command-line utilities, such as
+  (but not limited to) `cp`, `mkdir`, and `find`.
+
+* The build makes use of the Bash scripting language, version 3.2 or later.
+
+To be clear, the Samizdat build process is fairly straightforward, and
+it is not be particularly hard to compile it "manually," should the need
+arise.
+
+### Build process
+
 To build Samizdat from the console, run the
 [Blur](https://github.com/danfuzz/blur) builder when cd'ed
 to the root of the source directory. If you source (shell `.` command)
