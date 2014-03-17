@@ -96,7 +96,7 @@ to do:
     stated terms of this project's license.
   * I hereby authorize the project's maintainers and their designated
     agents to act as my agent, for the purpose of copyright management
-    of my contributions.
+    of my contributions to this project.
   * All code I contribute to this project is my own original work.
   * I have permission to contribute to this project under these terms.
 
