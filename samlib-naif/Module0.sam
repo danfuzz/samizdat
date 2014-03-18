@@ -98,12 +98,13 @@ fn makeModuleContext(baseCtx, directory) {
         <> result
     };
 
-    ## If the `module` file exists, it must evaluate to a map. If not,
-    ## create a minimal "anonymous" module definition. In either case, add
-    ## an extra binding for the path to the module.
+    ## If the module info file (`main.saminfo`) exists, it must evaluate to a
+    ## map. If it does not exist, create a minimal "anonymous" module
+    ## definition. In either case, add an extra binding for the path to the
+    ## module.
     def moduleInfo = {
         (
-            ifValue { <> submoduleReadIfExists("module", "sam") }
+            ifValue { <> submoduleReadIfExists("main", "saminfo") }
                 { moduleText ->
                     <> Lang0_eval(baseCtx, Lang0_parseExpression(moduleText))
                 }
