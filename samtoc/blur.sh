@@ -26,11 +26,8 @@ INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
-SOURCE_FILES=($(find . -type f -name '*.sam' '!' -name 'module.sam'))
-EXTRA_FILES=(
-    $(find modules -type f -name 'module.sam')
-    $(find modules -type f '!' -name '*.sam')
-)
+SOURCE_FILES=($(find . -type f -name '*.sam'))
+EXTRA_FILES=($(find modules -type f '!' -name '*.sam'))
 
 # These are all the intermediate C source files, corresponding to original
 # sources.
