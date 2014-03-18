@@ -11,8 +11,8 @@ to the library is the `main` file, which is responsible for loading up all
 the other files in a dependency-appropriate order.
 
 To figure out what layer of the language a particular module is written in,
-look in the `module.sam` file for a `language` tag. The files that aren't
-in a module at all (e.g. `Module0.sam`) are all written in the Layer 0
+look in the module's `main.saminfo` file for a `language` tag. The files that
+aren't in a module at all (e.g. `Module0.sam`) are all written in the Layer 0
 language.
 
 **Note:** Language layers 0 and 1 are particularly light on syntax and

@@ -166,7 +166,7 @@ fi
 
 # Find the "main" and/or "module" file.
 
-moduleFile="$(cd "${demoDir}"; find . -maxdepth 1 -name 'module.sam')"
+moduleFile="$(cd "${demoDir}"; find . -maxdepth 1 -name 'main.saminfo')"
 if [[ ${moduleFile} != '' ]]; then
     # If there's a module file, the path to pass is the directory.
     mainFile="."
@@ -232,7 +232,7 @@ if [[ ${compilerMode} != '' ]]; then
 
     files=($(
         cd "${runDir}"
-        find . -name '*.sam*' '!' -name 'module.sam'
+        find . -name '*.sam' -o -name '*.sam[0-9]'
     ))
 
     for file in "${files[@]}"; do
