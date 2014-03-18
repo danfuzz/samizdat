@@ -16,7 +16,7 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 ##
 
 ## Finds the directory for the named module, by iterating over the given
-## `modulePaths`, looking for a `module.sam` file. Either returns
+## `modulePaths`, looking for a `main.saminfo` file. Either returns
 ## the tail of `modulePaths` that starts with the module path where the
 ## module was found, or dies with an error.
 fn findModuleDirectory(searchInfo, modulePaths) {
@@ -31,7 +31,7 @@ fn findModuleDirectory(searchInfo, modulePaths) {
                     Module0::stringFromModuleName(fqName)))
             };
 
-        def moduleFile = [get(paths, 0)*, fqName*, "module.sam"];
+        def moduleFile = [get(paths, 0)*, fqName*, "main.saminfo"];
         ifIs { <> Io1::fileExists(moduleFile) }
             { return paths };
 

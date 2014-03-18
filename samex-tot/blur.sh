@@ -31,15 +31,12 @@ FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
-        '(' \
-            '(' -depth 1 -name '*.sam' -prune ')' -o \
-            '(' -path '*/EntityMap/*' -prune ')' -o \
-            '(' \
-                -name '*.sam' \
-                '!' -name 'module.sam' \
-                -print \
-            ')' \
-        ')'
+        '!' '(' \
+            '(' -depth 1 -name '*.sam' ')' -o \
+            '(' -path '*/EntityMap/*' ')' \
+        ')' \
+        '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
+        -print
     ))
 
 # Files that are just copied as-is to the final lib directory. This is
@@ -50,9 +47,8 @@ EXTRA_FILES=(
         -type f \
         '(' \
             '(' -depth 1 -name '*.sam' ')' -o \
-            -path '*/EntityMap/*' -o \
-            '(' '!' -name '*.sam' ')' -o \
-            -name 'module.sam' \
+            '(' -path '*/EntityMap/*' ')' -o \
+            '!' '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
         ')' \
         -print
     ))
