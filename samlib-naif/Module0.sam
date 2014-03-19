@@ -36,10 +36,8 @@ fn flattenPath(name) {
 ## structured path).
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
+    var subMods = {};                      ## All the loaded submodule files.
     def fullCtx;                           ## Final load context.
-
-    ## A box for all the loaded submodule files.
-    def subsBox = Box_makeCell({});
 
     fn submoduleFileName(name, extension?) {
         <> ifIs { <> extension* }
@@ -83,13 +81,13 @@ fn makeModuleContext(baseCtx, directory) {
     };
 
     fn submoduleUse(name) {
-        ifValue { <> get(Box_fetch(subsBox), name) }
+        ifValue { <> get(subMods, name) }
             { value -> return value };
 
         def result = ifValueOr { <> submoduleLoad(name) }
             { <> {} };
 
-        Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
+        subMods := {subMods*, (name): result};
         <> result
     };
 
