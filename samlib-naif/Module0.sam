@@ -11,13 +11,13 @@
 ## Private Definitions
 ##
 
-## Box containing a map from fully-qualified names to modules. Each name is a
-## list-of-strings denoting a "path" to the module.
-def theModulesBox = Box_makeCell({});
+## Map from fully-qualified names to modules. Each name is a list-of-strings
+## denoting a "path" to the module.
+var theModules = {};
 
-## Box containing a map from full directory paths to corresponding modules.
-## If a module is in the middle of loading, then its path maps to "loading."
-def thePathsBox = Box_makeCell({});
+## Map from full directory paths to corresponding modules. If a module is in
+## the middle of loading, then its path maps to `"loading"`.
+var thePaths = {};
 
 ## Flattens an absolute path to a simple name.
 ##
@@ -220,8 +220,7 @@ genericBind(Collection_sizeOf, @@Module, Module_sizeOf);
 
 ## Documented in spec.
 fn getAllModules() {
-    def mods = Box_fetch(theModulesBox);
-    <> collect(mods, { mod <> valueOf(mod) })
+    <> collect(theModules, { mod <> valueOf(mod) })
 };
 
 ## Documented in spec.
@@ -252,8 +251,7 @@ fn getGlobals(modu) {
 
 ## Documented in spec.
 fn load(baseCtx, fqPath) {
-    def paths = Box_fetch(thePathsBox);
-    ifValue { <> get(paths, fqPath) }
+    ifValue { <> get(thePaths, fqPath) }
         { already ->
             ## Either the module is already loaded, or it's currently in
             ## the middle of being loaded. Figure out which, and respond
@@ -266,7 +264,7 @@ fn load(baseCtx, fqPath) {
             return already;
         };
 
-    Box_store(thePathsBox, Collection_put(paths, fqPath, "loading"));
+    thePaths := Collection_put(thePaths, fqPath, "loading");
 
     def ctx = makeModuleContext(baseCtx, fqPath);
 
@@ -278,23 +276,21 @@ fn load(baseCtx, fqPath) {
 
     ## Update the loaded module map. Note that we re-fetch the value, since
     ## it may have been altered by other loads while this load was in progress.
-    Box_store(thePathsBox,
-        Collection_put(Box_fetch(thePathsBox), fqPath, result));
+    thePaths := Collection_put(thePaths, fqPath, result);
 
     <> result
 };
 
 ## Documented in spec.
 fn moduleDef(modu) {
-    def mods = Box_fetch(theModulesBox);
     def name = nameOf(modu);
-    ifIs { <> get(mods, name) }
+    ifIs { <> get(theModules, name) }
         {
             Io0_die(cat("Cannot redefine module by name: ",
                 stringFromModuleName(name)))
         };
 
-    Box_store(theModulesBox, Collection_put(mods, name, modu));
+    theModules := Collection_put(theModules, name, modu);
 };
 
 ## Documented in spec.
@@ -303,10 +299,10 @@ fn moduleGet(searchInfo) {
     ## name and path.
 
     ifValue { <> searchInfo::path }
-        { path -> return get(Box_fetch(thePathsBox), path) };
+        { path -> return get(thePaths, path) };
 
     ifValue { <> searchInfo::name }
-        { name -> return get(Box_fetch(theModulesBox), name) };
+        { name -> return get(theModules, name) };
 };
 
 ## Documented in spec.
