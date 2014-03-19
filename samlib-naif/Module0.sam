@@ -266,8 +266,9 @@ fn load(baseCtx, fqPath) {
     ## Combine `moduleInfo` and `exports` to form the final module value.
     def result = @Module{info: ctx::moduleInfo, exports};
 
-    ## Update the loaded module map. Note that we re-fetch the value, since
-    ## it may have been altered by other loads while this load was in progress.
+    ## Update the loaded module map. Note that we (implicitly) re-fetch the
+    ## value of `thePaths`, since it may have been altered by other loads
+    ## while this load was in progress.
     thePaths := Collection_put(thePaths, fqPath, result);
 
     <> result
