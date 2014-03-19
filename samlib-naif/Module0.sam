@@ -11,13 +11,13 @@
 ## Private Definitions
 ##
 
-## Box containing a map from fully-qualified names to modules. Each name is a
-## list-of-strings denoting a "path" to the module.
-def theModulesBox = Box_makeCell({});
+## Map from fully-qualified names to modules. Each name is a list-of-strings
+## denoting a "path" to the module.
+var theModules = {};
 
-## Box containing a map from full directory paths to corresponding modules.
-## If a module is in the middle of loading, then its path maps to "loading."
-def thePathsBox = Box_makeCell({});
+## Map from full directory paths to corresponding modules. If a module is in
+## the middle of loading, then its path maps to `"loading"`.
+var thePaths = {};
 
 ## Flattens an absolute path to a simple name.
 ##
@@ -36,13 +36,8 @@ fn flattenPath(name) {
 ## structured path).
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
-
-    ## A box for the final load context, to enable the necessary
-    ## self-reference.
-    def ctxBox = Box_makePromise();
-
-    ## A box for all the loaded submodule files.
-    def subsBox = Box_makeCell({});
+    var subMods = {};                      ## All the loaded submodule files.
+    def fullCtx;                           ## Final load context.
 
     fn submoduleFileName(name, extension?) {
         <> ifIs { <> extension* }
@@ -66,12 +61,10 @@ fn makeModuleContext(baseCtx, directory) {
 
     fn submoduleLoad(name) {
         Io0_note(cat("        ", name));
-        def ctx = Box_fetch(ctxBox);
-
         def binName = submoduleFileName(name, "samb");
         ifIs { <> Io0_flatFileExists(binName) }
             {
-                def func = Lang0_evalBinary(ctx, binName);
+                def func = Lang0_evalBinary(fullCtx, binName);
                 return func()
             };
 
@@ -79,8 +72,8 @@ fn makeModuleContext(baseCtx, directory) {
         ifIs { <> Io0_flatFileExists(regularName) }
             {
                 def text = Io0_flatReadFileUtf8(regularName);
-                def tree = ctx::submoduleParse(text);
-                def func = ctx::submoduleEval(ctx, tree);
+                def tree = fullCtx::submoduleParse(text);
+                def func = fullCtx::submoduleEval(fullCtx, tree);
                 return func()
             };
 
@@ -88,13 +81,13 @@ fn makeModuleContext(baseCtx, directory) {
     };
 
     fn submoduleUse(name) {
-        ifValue { <> get(Box_fetch(subsBox), name) }
+        ifValue { <> get(subMods, name) }
             { value -> return value };
 
         def result = ifValueOr { <> submoduleLoad(name) }
             { <> {} };
 
-        Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
+        subMods := {subMods*, (name): result};
         <> result
     };
 
@@ -124,7 +117,7 @@ fn makeModuleContext(baseCtx, directory) {
             }
         };
 
-    def fullCtx = {
+    fullCtx := {
         baseCtx*,
         moduleInfo,
         submoduleEval:  languageModule::eval,
@@ -133,7 +126,6 @@ fn makeModuleContext(baseCtx, directory) {
         submoduleRead
     };
 
-    Box_store(ctxBox, fullCtx);
     <> fullCtx
 };
 
@@ -203,7 +195,7 @@ genericBind(Collection_nthMapping, @@Module, Module_nthMapping);
 
 ## Documented in spec.
 fn Module_put(modu, key, value) {
-    <> withExports(modu, Collection_put(getExports(modu), key, value))
+    <> withExports(modu, {getExports(modu)*, (key): value})
 };
 genericBind(Collection_put, @@Module, Module_put);
 
@@ -220,8 +212,7 @@ genericBind(Collection_sizeOf, @@Module, Module_sizeOf);
 
 ## Documented in spec.
 fn getAllModules() {
-    def mods = Box_fetch(theModulesBox);
-    <> collect(mods, { mod <> valueOf(mod) })
+    <> collect(theModules, { mod <> valueOf(mod) })
 };
 
 ## Documented in spec.
@@ -252,8 +243,7 @@ fn getGlobals(modu) {
 
 ## Documented in spec.
 fn load(baseCtx, fqPath) {
-    def paths = Box_fetch(thePathsBox);
-    ifValue { <> get(paths, fqPath) }
+    ifValue { <> get(thePaths, fqPath) }
         { already ->
             ## Either the module is already loaded, or it's currently in
             ## the middle of being loaded. Figure out which, and respond
@@ -266,7 +256,7 @@ fn load(baseCtx, fqPath) {
             return already;
         };
 
-    Box_store(thePathsBox, Collection_put(paths, fqPath, "loading"));
+    thePaths := {thePaths*, (fqPath): "loading"};
 
     def ctx = makeModuleContext(baseCtx, fqPath);
 
@@ -276,25 +266,24 @@ fn load(baseCtx, fqPath) {
     ## Combine `moduleInfo` and `exports` to form the final module value.
     def result = @Module{info: ctx::moduleInfo, exports};
 
-    ## Update the loaded module map. Note that we re-fetch the value, since
-    ## it may have been altered by other loads while this load was in progress.
-    Box_store(thePathsBox,
-        Collection_put(Box_fetch(thePathsBox), fqPath, result));
+    ## Update the loaded module map. Note that we (implicitly) re-fetch the
+    ## value of `thePaths`, since it may have been altered by other loads
+    ## while this load was in progress.
+    thePaths := {thePaths*, (fqPath): result};
 
     <> result
 };
 
 ## Documented in spec.
 fn moduleDef(modu) {
-    def mods = Box_fetch(theModulesBox);
     def name = nameOf(modu);
-    ifIs { <> get(mods, name) }
+    ifIs { <> get(theModules, name) }
         {
             Io0_die(cat("Cannot redefine module by name: ",
                 stringFromModuleName(name)))
         };
 
-    Box_store(theModulesBox, Collection_put(mods, name, modu));
+    theModules := {theModules*, (name): modu};
 };
 
 ## Documented in spec.
@@ -303,10 +292,10 @@ fn moduleGet(searchInfo) {
     ## name and path.
 
     ifValue { <> searchInfo::path }
-        { path -> return get(Box_fetch(thePathsBox), path) };
+        { path -> return get(thePaths, path) };
 
     ifValue { <> searchInfo::name }
-        { name -> return get(Box_fetch(theModulesBox), name) };
+        { name -> return get(theModules, name) };
 };
 
 ## Documented in spec.
