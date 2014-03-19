@@ -36,10 +36,7 @@ fn flattenPath(name) {
 ## structured path).
 fn makeModuleContext(baseCtx, directory) {
     def flatDir = flattenPath(directory);
-
-    ## A box for the final load context, to enable the necessary
-    ## self-reference.
-    def ctxBox = Box_makePromise();
+    def fullCtx;                           ## Final load context.
 
     ## A box for all the loaded submodule files.
     def subsBox = Box_makeCell({});
@@ -66,12 +63,10 @@ fn makeModuleContext(baseCtx, directory) {
 
     fn submoduleLoad(name) {
         Io0_note(cat("        ", name));
-        def ctx = Box_fetch(ctxBox);
-
         def binName = submoduleFileName(name, "samb");
         ifIs { <> Io0_flatFileExists(binName) }
             {
-                def func = Lang0_evalBinary(ctx, binName);
+                def func = Lang0_evalBinary(fullCtx, binName);
                 return func()
             };
 
@@ -79,8 +74,8 @@ fn makeModuleContext(baseCtx, directory) {
         ifIs { <> Io0_flatFileExists(regularName) }
             {
                 def text = Io0_flatReadFileUtf8(regularName);
-                def tree = ctx::submoduleParse(text);
-                def func = ctx::submoduleEval(ctx, tree);
+                def tree = fullCtx::submoduleParse(text);
+                def func = fullCtx::submoduleEval(fullCtx, tree);
                 return func()
             };
 
@@ -124,7 +119,7 @@ fn makeModuleContext(baseCtx, directory) {
             }
         };
 
-    def fullCtx = {
+    fullCtx := {
         baseCtx*,
         moduleInfo,
         submoduleEval:  languageModule::eval,
@@ -133,7 +128,6 @@ fn makeModuleContext(baseCtx, directory) {
         submoduleRead
     };
 
-    Box_store(ctxBox, fullCtx);
     <> fullCtx
 };
 
