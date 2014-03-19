@@ -195,7 +195,7 @@ genericBind(Collection_nthMapping, @@Module, Module_nthMapping);
 
 ## Documented in spec.
 fn Module_put(modu, key, value) {
-    <> withExports(modu, Collection_put(getExports(modu), key, value))
+    <> withExports(modu, {getExports(modu)*, (key): value})
 };
 genericBind(Collection_put, @@Module, Module_put);
 
@@ -256,7 +256,7 @@ fn load(baseCtx, fqPath) {
             return already;
         };
 
-    thePaths := Collection_put(thePaths, fqPath, "loading");
+    thePaths := {thePaths*, (fqPath): "loading"};
 
     def ctx = makeModuleContext(baseCtx, fqPath);
 
@@ -269,7 +269,7 @@ fn load(baseCtx, fqPath) {
     ## Update the loaded module map. Note that we (implicitly) re-fetch the
     ## value of `thePaths`, since it may have been altered by other loads
     ## while this load was in progress.
-    thePaths := Collection_put(thePaths, fqPath, result);
+    thePaths := {thePaths*, (fqPath): result};
 
     <> result
 };
@@ -283,7 +283,7 @@ fn moduleDef(modu) {
                 stringFromModuleName(name)))
         };
 
-    theModules := Collection_put(theModules, name, modu);
+    theModules := {theModules*, (name): modu};
 };
 
 ## Documented in spec.
