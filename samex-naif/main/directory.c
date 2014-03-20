@@ -181,11 +181,7 @@ char *getProgramDirectory(const char *argv0, const char *suffix) {
     }
 
     if (suffix != NULL) {
-        int finalLength = strlen(result) + strlen(suffix) + 2;
-        char *newResult = utilAlloc(finalLength);
-        strcpy(newResult, result);
-        strcat(newResult, "/");
-        strcat(newResult, suffix);
+        char *newResult = catTwoPaths(result, suffix);
         utilFree(result);
         result = newResult;
     }
