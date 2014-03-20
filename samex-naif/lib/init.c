@@ -27,6 +27,9 @@
 #include "util.h"
 
 
+// TODO: Remove this when the new system is all working and happy.
+#define NEW_MODULE_SYSTEM 1
+
 /*
  * Private Definitions
  */
@@ -89,7 +92,11 @@ static zvalue evalFile(zvalue directory, zvalue name) {
  * return value from running the in-language library file `main`.
  */
 static zvalue getLibrary(zvalue libraryDir) {
+    #if NEW_MODULE_SYSTEM
+    zvalue mainFunction = evalFile(libraryDir, STR_boot_sam);
+    #else
     zvalue mainFunction = evalFile(libraryDir, STR_main_sam);
+    #endif
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.

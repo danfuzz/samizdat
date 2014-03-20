@@ -65,6 +65,7 @@ TYP(varDefMutable,     "varDefMutable");
 TYP(varRef,            "varRef");
 
 STR(actuals,           "actuals");
+STR(boot_sam,          "boot.sam");
 STR(cat,               "cat");
 STR(collect,           "collect");
 STR(formals,           "formals");

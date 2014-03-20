@@ -1,0 +1,112 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Samizdat Layer 0 Core Library
+##
+## This is a Samizdat Layer 0 program which defines all the
+## core library functions and other bindings that aren't primitive.
+## It returns the default global variable environment.
+##
+
+## The following declares the arguments passed to the library itself.
+##
+## * `PRIMITIVE_CONTEXT` is expected to be a map of all primitively-defined
+##   variables. All these variables are also defined in the variable context
+##   in which this file is evaluated.
+##
+## * `LIBRARY_FLAT_DIR` is expected to be a flat path (simple string with
+##   slashes separating components) naming the directory where library files
+##   are to be found.
+
+PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
+
+
+##
+## Private Definitions
+##
+
+## Converts an unstructured string into a list-of-strings, by delimiting on
+## the given character. Empty strings are discarded from the result list.
+fn splitString(string, delimCh) {
+    ## Appends `one` to the end of `list`, ignoring empty strings.
+    fn appendNonempty(list, one) {
+        <> ifIs { <> eq(one, "") }
+            { <> list }
+            { <> [list*, one] }
+    };
+
+    var str = string;
+    var result = [];
+    var nextItem = "";
+
+    loop {
+        ifIs { <> eq(str, "") }
+            { return appendNonempty(result, nextItem) };
+
+        def ch = Sequence_nth(str, 0);
+        str := Sequence_sliceInclusive(str, 1);
+
+        ifIs { <> eq(ch, delimCh) }
+            {
+                result := appendNonempty(result, nextItem);
+                nextItem := ""
+            }
+            { nextItem := cat(nextItem, ch) }
+    }
+};
+
+## Converts a flat path into an absolute structured (list of components)
+## version. This prepends the current directory if the given path is
+## not absolute.
+fn convertFlatPath(flat) {
+    def flatAbs = ifIs { <> eq(Sequence_nth(flat, 0), "/") }
+        { <> flat }
+        { <> cat(Io0_flatCwd(), "/", flat) };
+    <> splitString(flatAbs, "/")
+};
+
+## Reads the named library file.
+fn readLibraryFile(name) {
+    def path = cat(LIBRARY_FLAT_DIR, "/", name);
+    <> ifIs { <> Io0_flatFileExists(path) }
+        { <> Io0_flatReadFileUtf8(path) }
+        { Io0_die(cat("No such core library file: ", path)) }
+};
+
+## Structured path (list of components) version of `LIBRARY_FLAT_DIR`.
+def LIBRARY_DIR = convertFlatPath(LIBRARY_FLAT_DIR);
+
+## Reads and evaluates the module system definition.
+fn makeModuleSystem() {
+    def text = readLibraryFile("ModuleX.sam");
+    def tree = Lang0_parseProgram(text);
+    def function = Lang0_eval(PRIMITIVE_CONTEXT, tree);
+
+    <> function()
+};
+
+## Builds the core library, by treating it as a module definition to be
+## loaded.
+fn makeCoreLibrary() {
+    def moduleSystem = makeModuleSystem();
+    def libraryLoader =
+        moduleSystem::makeLibraryLoader(LIBRARY_DIR, PRIMITIVE_CONTEXT);
+
+    <> moduleSystem::localLoad(libraryLoader, ["mainx"])
+};
+
+
+##
+## Main Definition
+##
+
+Io0_note("Loading core library...");
+
+def CORE_LIBRARY = makeCoreLibrary();
+
+Io0_note("    [fin]");
+Io0_note("");
+
+<> CORE_LIBRARY
