@@ -50,7 +50,10 @@ fn doLoad(md, path) {
 
     def infoPath = flattenPath([modulePath*, "main.saminfo"]);
     <> ifIs { <> Io0_flatFileExists(infoPath) }
-        { <> makeModuleLoader(modulePath, data::globals, md) }
+        {
+            def loader = makeModuleLoader(modulePath, data::globals, md);
+            <> localLoad(loader, ["main"])
+        }
 };
 
 ## Documented in spec.
