@@ -12,37 +12,6 @@
 ##
 
 ## Documented in spec.
-fn isInt(value) {
-    <> hasType(value, Int)
-};
-
-## Documented in spec.
-fn isList(value) {
-    <> hasType(value, List)
-};
-
-## Documented in spec.
-fn isMap(value) {
-    <> hasType(value, Map)
-};
-
-## Documented in spec.
-fn isOpaqueValue(value) {
-    <> ifNot { <> typeIsTransparentDerived(typeOf(value)) }
-        { <> value }
-};
-
-## Documented in spec.
-fn isString(value) {
-    <> hasType(value, String)
-};
-
-## Documented in spec.
-fn isUniqlet(value) {
-    <> hasType(value, Uniqlet)
-};
-
-## Documented in spec.
 fn perGe(v1, v2) {
     <> ifNot { <> totEq(perOrder(v1, v2), -1) }
         { <> v2 }
@@ -102,18 +71,7 @@ fn totNe(v1, v2) {
         { <> v2 }
 };
 
-## Documented in spec.
-fn typeNameOf(value) {
-    <> nameOf(typeOf(value))
-};
-
 <> {
-    isInt,
-    isList,
-    isMap,
-    isOpaqueValue,
-    isString,
-    isUniqlet,
     perGe,
     perGt,
     perLe,
@@ -123,6 +81,5 @@ fn typeNameOf(value) {
     totGt,
     totLe,
     totLt,
-    totNe,
-    typeNameOf
+    totNe
 }

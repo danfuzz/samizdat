@@ -14,5 +14,6 @@
 <> {
     (submoduleUse("constants"))*,
     (submoduleUse("primitives"))*,
-    (submoduleUse("Value"))*
+    (submoduleUse("Value"))*,
+    (submoduleUse("Type"))*
 }
