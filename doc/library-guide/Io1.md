@@ -23,9 +23,13 @@ if supplied, and terminates the runtime with a failure status code (`1`).
 
 #### `fileExists(path) <> logic`
 
-Returns `path` if it corresponds to an already-existing file.
+Returns `path` if it corresponds to an already-existing regular file.
 Returns void if not. `path` must be a componentized path-list,
 such as might have been returned from `pathFromFlat`.
+
+This returns void if the file doesn't exist at all, or if it exists but
+is either a directory or a "special" file.
+
 
 #### `flatFromPath(path) <> flatPath`
 

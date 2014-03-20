@@ -1,0 +1,58 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Type functions
+##
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+fn isInt(value) {
+    <> hasType(value, Int)
+};
+
+## Documented in spec.
+fn isList(value) {
+    <> hasType(value, List)
+};
+
+## Documented in spec.
+fn isMap(value) {
+    <> hasType(value, Map)
+};
+
+## Documented in spec.
+fn isOpaqueValue(value) {
+    <> ifNot { <> typeIsTransparentDerived(typeOf(value)) }
+        { <> value }
+};
+
+## Documented in spec.
+fn isString(value) {
+    <> hasType(value, String)
+};
+
+## Documented in spec.
+fn isUniqlet(value) {
+    <> hasType(value, Uniqlet)
+};
+
+## Documented in spec.
+fn typeNameOf(value) {
+    <> nameOf(typeOf(value))
+};
+
+<> {
+    isInt,
+    isList,
+    isMap,
+    isOpaqueValue,
+    isString,
+    isUniqlet,
+    typeNameOf
+}

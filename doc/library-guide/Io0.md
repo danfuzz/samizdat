@@ -43,8 +43,11 @@ This function is a thin veneer over the standard Posix call `readlink()`.
 
 #### `flatFileExists(flatPath) <> logic`
 
-Returns `flatPath` if it corresponds to an already-existing file.
-Returns void if not.
+Returns `flatPath` if it corresponds to an already-existing regular file.
+Returns void if not a regular file.
+
+This returns void if the file doesn't exist at all, or if it exists but
+is either a directory or a "special" file.
 
 #### `flatReadFileUtf8(flatPath) <> string`
 
