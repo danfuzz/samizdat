@@ -21,6 +21,9 @@ def BOOTSTRAP_FILES = [
 def MANIFEST = [
     ## Layer 0 in-language core library.
 
+    ## New module system.
+    "ModuleX.sam",
+
     ## Layer 0: Basic module system. Listed first so it can be used
     ## by everything else.
     "Module0.sam",

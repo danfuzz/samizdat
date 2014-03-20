@@ -1,0 +1,237 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Module loading mechanism
+##
+
+## Flattens an absolute path to a simple name, optionally adding a suffix
+## to the final path component.
+##
+## **Note:** This function is a (low rent) duplicate of functionality in
+## `Io*` modules, because this function needs to be called before the `Io*`
+## modules are loaded.
+fn flattenPath(path, optSuffix?) {
+    ## Prefix each component with `/`, and concatenate them all together.
+    def withSlashes = collect(path, { elem <> cat("/", elem) });
+    <> cat(withSlashes*, optSuffix*);
+};
+
+## Flattens a (presumably relative) path to a string, for use when emitting
+## messages to the console.
+fn humanPath(path) {
+    ## Prefix each component with `/`, concatenate them all together, and
+    ## drop the leading `/`.
+    def withSlashes = collect(path, { elem <> cat("/", elem) });
+    <> Sequence_sliceInclusive(withSlashes, 1)
+};
+
+
+##
+## Type Definition: `ModulesDirectory`
+##
+## Payload:
+## * `next` -- next `ModulesDirectory` to check when trying to find a module
+## * `basePath` -- absolute path prefix for all loading. Relative subdirectory
+##   paths correspond to modules
+## * `globals` -- global variable context to use when loading
+## * `loadedBox` -- map from partial paths to the results of loading
+##
+
+## Documented in spec.
+def load = makeRegularGeneric("load", 2, 2);
+
+## Helper for `load` which does the actual loading.
+fn doLoad(md, path) {
+    Io0_note(cat("    ", humanPath(path)));
+    def data = dataOf(md);
+    def modulePath = [data::basePath*, path*];
+
+    def infoPath = flattenPath([modulePath*, "main.saminfo"]);
+    <> ifIs { <> Io0_flatFileExists(infoPath) }
+        { <> makeModuleLoader(modulePath, data::globals, md) }
+};
+
+## Documented in spec.
+genericBind(
+    load,
+    @@ModulesDirectory,
+    fn ModuleLoader_load(md, path) {
+        def data = dataOf(md);
+        def loadedBox = data::loadedBox;
+
+        ifValue { <> get(Box_fetch(loadedBox), path) }
+            { found -> return found };
+
+        def result = ifValueOr { <> doLoad(md, path) }
+            { <> load(next, path) };
+
+        Box_store(loadedBox, result);
+        <> result
+    });
+
+## Documented in spec.
+genericBind(
+    load,
+    @@Null,
+    fn Null_load(md, path) {
+        Io0_die(cat("Module not found: ", humanPath(path)))
+    });
+
+## Documented in spec.
+fn makeModulesDirectory(path, nextModulesDirectory, globals) {
+    <> @ModulesDirectory{
+        globals,
+        next: nextModulesDirectory,
+        path: basePath,
+        loadedBox: makeCell({})
+    }
+};
+
+
+##
+## Type Definition: `ModuleLoader`
+##
+## Payload:
+## * `modulesDirectory` -- module finder / memoizer
+## * `basePath` -- absolute path prefix for all loading
+## * `globals` -- global variable context to use when loading
+## * `languageModule` -- language module to use when loading
+## * `loadedBox` -- map from partial paths to the results of loading
+##
+
+## Documented in spec.
+def localLoad = makeRegularGeneric("localLoad", 2, 2);
+def localRead = makeRegularGeneric("localRead", 2, 2);
+def localExists = makeRegularGeneric("localExists", 2, 2);
+
+## Helper for `localLoad` which does the actual loading.
+fn doLocalLoad(ml, path) {
+    Io0_note(cat("        ", humanPath(path)));
+    def data = dataOf(ml);
+    def pathPrefix = [data::basePath*, path*];
+
+    def binPath = flattenPath(pathPrefix, ".samb");
+    ifIs { <> Io0_flatFileExists(binPath) }
+        {
+            def func = Lang0_evalBinary(data::globals, binPath);
+            return func()
+        };
+
+    def sourcePath = flattenPath(pathPrefix, ".sam");
+    ifIs { <> Io0_flatFileExists(sourcePath) }
+        {
+            def lang = data::languageModule;
+            def text = Io0_flatReadFileUtf8(sourcePath);
+            def tree = lang::parseProgram(text);
+            def func = lang::eval(data::globals, tree);
+            return func()
+        };
+
+    Io0_die(cat("Missing code: ", sourcePath));
+};
+
+## Documented in spec.
+genericBind(
+    localExists,
+    @@ModuleLoader,
+    fn ModuleLoader_localExists(ml, path) {
+        def data = dataOf(ml);
+        def fullPath = flattenPath([data::basePath*, path*]);
+        <> ifIs { <> Io0_flatFileExists(fullPath) }
+            { <> path }
+    });
+
+## Documented in spec.
+genericBind(
+    localLoad,
+    @@ModuleLoader,
+    fn ModuleLoader_localLoad(ml, path) {
+        def data = dataOf(ml);
+        def loadedBox = data::loadedBox;
+
+        ifValue { <> get(Box_fetch(loadedBox), path) }
+            { found -> return found };
+
+        def result = doLocalLoad(ml, path);
+        Box_store(loadedBox, result);
+        <> result
+    });
+
+## Documented in spec.
+genericBind(
+    localRead,
+    @@ModuleLoader,
+    fn ModuleLoader_localRead(ml, path) {
+        def data = dataOf(ml);
+        def fullPath = flattenPath([data::basePath*, path*]);
+
+        ifNot { <> Io0_flatFileExists(fullPath) }
+            { Io0_die(cat("Missing resource: ", fullPath)) };
+
+        <> Io0_flatReadFileUtf8(fullPath)
+    });
+
+## Documented in spec.
+fn makeModuleLoader(path, nextModulesDirectory, globals) {
+    ## If the module info file (`main.saminfo`) exists, it must evaluate to a
+    ## map. If it does not exist, create minimal "anonymous" module info.
+    def infoPath = flattenPath([path*, "main.saminfo"]);
+    def moduleInfo = ifIs { <> Io0_flatFileExists(infoPath) }
+        {
+            def text = Io0_flatReadFileUtf8(infoPath);
+            <> Lang0_eval(globals, Lang0_parseExpression(text))
+        }
+        { <> {name: [], version: "0"} };
+
+    def modulesDirectory = makeModulesDirectory(
+        [path*, "modules"], nextModulesDirectory, globals);
+
+    ## Forward declaration of `result`, for recursive reference in the
+    ## `module_*` functions immediately below.
+    def result;
+
+    fn module_localExists(path) { <> localExists(result, path)    };
+    fn module_localLoad(path)   { <> localLoad(result, path)      };
+    fn module_localRead(path)   { <> localRead(result, path)      };
+    fn module_load(path)        { <> load(modulesDirectory, path) };
+
+    def fullGlobals = {
+        globals*,
+        localExists: module_localExists,
+        localLoad:   module_localLoad,
+        localRead:   module_localRead,
+        load:        module_load
+    };
+
+    def languageName = ifValueOr { <> get(moduleInfo, "language") }
+        { <> "Lang2" };
+    def languageModule = module_load(["core", languageName]);
+
+    result := @ModuleLoader{
+        languageModule,
+        modulesDirectory,
+        globals: fullGlobals,
+        basePath: path,
+        loadedBox: makeCell({})
+    };
+
+    <> result
+};
+
+## Documented in spec.
+fn makeLibraryLoader(path, globals) {
+    <> makeModuleLoader(path, @Null, globals)
+};
+
+
+##
+## Exported Definitions
+##
+
+<> {
+    makeLibraryLoader,
+    makeModuleLoader,
+    makeModulesDirectory
+}
