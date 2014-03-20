@@ -29,5 +29,5 @@ char *utilCwd(void) {
         die("Trouble with getcwd(): %s", strerror(errno));
     }
 
-    return strdup(buf);
+    return utilStrdup(buf);
 }

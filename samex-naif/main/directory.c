@@ -69,7 +69,7 @@ static char *resolveLinks(const char *path) {
         die("Trouble with realpath(): %s", strerror(errno));
     }
 
-    return strdup(resultBuf);
+    return utilStrdup(resultBuf);
 }
 
 /**
@@ -94,7 +94,7 @@ static char *resolveArgv0(const char *argv0) {
 
     if (argv0[0] == '/') {
         // Absolute path.
-        return strdup(argv0);
+        return utilStrdup(argv0);
     }
 
     if (strchr(argv0, '/') != NULL) {

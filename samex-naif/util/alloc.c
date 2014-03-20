@@ -185,3 +185,13 @@ bool utilIsHeapAllocated(void *memory) {
 
     return false;
 }
+
+/* Documented in header. */
+char *utilStrdup(const char *string) {
+    zint len = strlen(string);
+    char *result = utilAlloc(len + 1);
+
+    memcpy(result, string, len);
+    result[len] = '\0';
+    return result;
+}
