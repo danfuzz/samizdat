@@ -231,6 +231,10 @@ fn makeLibraryLoader(path, globals) {
 ##
 
 <> {
+    load,
+    localLoad,
+    localRead,
+    localExists,
     makeLibraryLoader,
     makeModuleLoader,
     makeModulesDirectory
