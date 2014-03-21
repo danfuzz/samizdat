@@ -3,14 +3,20 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Standard global variable context
+## Global variable context
 ##
-## This is how the variables exported by other modules to the global scope
-## end up getting themselves defined in a module.
+## The exports of this module become the standard global variable environment.
+##
 
-def Module = moduleUse({name: ["core", "Module"]});
-
-def allModules = Module::getAllModules();
-def globalsMaps = ( modu in allModules <> Module::getGlobals(modu) );
-
-<> cat(globalsMaps*)
+<> {
+    moduleLoad(["core", "Globals0"])*,
+    Bitwise:    moduleLoad(["core", "Bitwise"]),
+    Box:        moduleLoad(["core", "Box"]),
+    Collection: moduleLoad(["core", "Collection"]),
+    Format:     moduleLoad(["core", "Format"]),
+    Generator:  moduleLoad(["core", "Generator"]),
+    Peg:        moduleLoad(["core", "Peg"]),
+    Range:      moduleLoad(["core", "Range"]),
+    Sequence:   moduleLoad(["core", "Sequence"]),
+    Number:     moduleLoad(["proto", "Number"])
+}
