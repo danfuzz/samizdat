@@ -22,7 +22,7 @@ zvalue nameOf(zvalue value) {
 /* Documented in header. */
 char *valToString(zvalue value) {
     if (value == NULL) {
-        return strdup("(null)");
+        return utilStrdup("(null)");
     }
 
     zvalue result = GFN_CALL(toString, value);

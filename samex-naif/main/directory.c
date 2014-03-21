@@ -69,7 +69,7 @@ static char *resolveLinks(const char *path) {
         die("Trouble with realpath(): %s", strerror(errno));
     }
 
-    return strdup(resultBuf);
+    return utilStrdup(resultBuf);
 }
 
 /**
@@ -94,7 +94,7 @@ static char *resolveArgv0(const char *argv0) {
 
     if (argv0[0] == '/') {
         // Absolute path.
-        return strdup(argv0);
+        return utilStrdup(argv0);
     }
 
     if (strchr(argv0, '/') != NULL) {
@@ -181,11 +181,7 @@ char *getProgramDirectory(const char *argv0, const char *suffix) {
     }
 
     if (suffix != NULL) {
-        int finalLength = strlen(result) + strlen(suffix) + 2;
-        char *newResult = utilAlloc(finalLength);
-        strcpy(newResult, result);
-        strcat(newResult, "/");
-        strcat(newResult, suffix);
+        char *newResult = catTwoPaths(result, suffix);
         utilFree(result);
         result = newResult;
     }

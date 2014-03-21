@@ -114,6 +114,12 @@ void utilFree(void *memory);
  */
 bool utilIsHeapAllocated(void *memory);
 
+/**
+ * Equivalent to `strdup` that uses the memory allocation functions defined
+ * by this module.
+ */
+char *utilStrdup(const char *string);
+
 
 /*
  * UTF-8 Declarations
