@@ -6,6 +6,8 @@
 ## Samizdat Layer 2 Tokenizer
 ##
 
+def Collection = moduleLoad(["core", "Collection"]);
+def Generator = moduleLoad(["core", "Generator"]);
 
 ## The standard entity map.
 def ENTITY_MAP = moduleUse({name: ["core", "EntityMap"]})::ENTITY_MAP;

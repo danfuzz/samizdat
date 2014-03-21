@@ -6,6 +6,8 @@
 ## Generator functions
 ##
 
+def Collection = moduleLoad(["core", "Collection"]);
+
 def FilterGenerator = localLoad(["FilterGenerator"]);
 def ListWrapGenerator = localLoad(["ListWrapGenerator"]);
 def NullGenerator = localLoad(["NullGenerator"]);

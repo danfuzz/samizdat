@@ -10,7 +10,7 @@
 ##
 
 def Generator = moduleLoad(["core", "Generator"]);
-def Number    = moduleLoad(["core", "Number"]);
+def Number    = moduleLoad(["proto", "Number"]);
 def Peg       = moduleLoad(["core", "Peg"]);
 
 

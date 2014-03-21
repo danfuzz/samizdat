@@ -6,8 +6,7 @@
 ## Samizdat Layer 1 tree parser
 ##
 
-def tokenize = localLoad(["tokenize"])::tokenize;
-
+def Collection = moduleLoad(["core", "Collection"]);
 def Io0 = moduleLoad(["core", "Io0"]);
 
 def Lang0Node = moduleLoad(["core", "Lang0Node"]);
@@ -35,6 +34,8 @@ def makeVarDefMutable  = Lang0Node::makeVarDefMutable;
 def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
+
+def tokenize = localLoad(["tokenize"])::tokenize;
 
 
 ##

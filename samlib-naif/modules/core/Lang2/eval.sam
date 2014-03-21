@@ -9,7 +9,7 @@
 ## TODO
 ## def convertToLang0 = submoduleUse("convert")::convertToLang0;
 
-def Lang1 = moduleUse({name: ["core", "Lang1"]});
+def Lang1 = moduleLoad(["core", "Lang1"]);
 
 
 ##

@@ -7,7 +7,7 @@
 ##
 
 
-def Lang1 = moduleUse({name: ["core", "Lang1"]});
+def Lang1 = moduleLoad(["core", "Lang1"]);
 
 ##
 ## Exported Definitions
@@ -16,9 +16,9 @@ def Lang1 = moduleUse({name: ["core", "Lang1"]});
 ## This just re-exports stuff defined in submodules as well as `convertToLang0`
 ## which is a re-export from `Lang1`.
 <> {
-    (submoduleUse("eval"))*,
-    (submoduleUse("evalBinary"))*,
-    (submoduleUse("tokenize"))*,
-    (submoduleUse("parse"))*,
+    (localLoad(["eval"]))*,
+    (localLoad(["evalBinary"]))*,
+    (localLoad(["tokenize"]))*,
+    (localLoad(["parse"]))*,
     convertToLang0: Lang1::convertToLang0
 }
