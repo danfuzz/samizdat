@@ -6,6 +6,10 @@
 ## Module loading mechanism
 ##
 
+##
+## Private definitions
+##
+
 ## Flattens an absolute path to a simple name, optionally adding a suffix
 ## to the final path component.
 ##
@@ -29,6 +33,19 @@ fn humanPath(path) {
 
 
 ##
+## Generic functions
+##
+
+## Documented in spec.
+def load = makeRegularGeneric("load", 2, 2);
+
+## Documented in spec.
+def localLoad = makeRegularGeneric("localLoad", 2, 2);
+def localRead = makeRegularGeneric("localRead", 2, 2);
+def localExists = makeRegularGeneric("localExists", 2, 2);
+
+
+##
 ## Type Definition: `ModulesDirectory`
 ##
 ## Payload:
@@ -38,9 +55,6 @@ fn humanPath(path) {
 ## * `globals` -- global variable context to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
-
-## Documented in spec.
-def load = makeRegularGeneric("load", 2, 2);
 
 ## Helper for `load` which does the actual loading.
 fn doLoad(md, path) {
@@ -103,11 +117,6 @@ fn makeModulesDirectory(path, nextModulesDirectory, globals) {
 ## * `languageModule` -- language module to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
-
-## Documented in spec.
-def localLoad = makeRegularGeneric("localLoad", 2, 2);
-def localRead = makeRegularGeneric("localRead", 2, 2);
-def localExists = makeRegularGeneric("localExists", 2, 2);
 
 ## Helper for `localLoad` which does the actual loading.
 fn doLocalLoad(ml, path) {
