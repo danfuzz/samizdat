@@ -77,7 +77,6 @@ STR(makeList,          "makeList");
 STR(makeValue,         "makeValue");
 STR(makeValueMap,      "makeValueMap");
 STR(main,              "main");
-STR(main_sam,          "main.sam");
 STR(map,               "map");
 STR(name,              "name");
 STR(optValue,          "optValue");
