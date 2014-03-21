@@ -97,12 +97,12 @@ fn makeModuleSystem() {
 ## loaded.
 fn makeCoreLibrary() {
     def moduleSystem = makeModuleSystem();
-    def libraryLoader =
+    def loader =
         moduleSystem::makeLibraryLoader(
             convertFlatPath(LIBRARY_FLAT_DIR),
             BASE_CONTEXT);
 
-    <> moduleSystem::localLoad(libraryLoader, ["main"])
+    <> moduleSystem::localLoad(loader, ["main"])
 };
 
 
