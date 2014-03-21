@@ -34,7 +34,10 @@ fn init(primitiveContext, libraryDir) {
         Number:     moduleLoad(["proto", "Number"]),
         Peg:        moduleLoad(["core", "Peg"]),
         Range:      moduleLoad(["core", "Range"]),
-        Sequence:   moduleLoad(["core", "Sequence"])
+        Sequence:   moduleLoad(["core", "Sequence"]),
+
+        ## The one higher-layer function that gets exported to the globals.
+        runCommandLine: moduleLoad(["core", "CommandLine"])::runCommandLine
     }
 };
 
