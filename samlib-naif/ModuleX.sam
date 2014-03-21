@@ -210,7 +210,15 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
 
     def languageName = ifValueOr { <> get(moduleInfo, "language") }
         { <> "Lang2" };
-    def languageModule = module_load(["core", languageName]);
+    def languageModule = ifIs { <> ne(languageName, "none") }
+        { <> module_load(["core", languageName]) }
+        {
+            ## Language `none`, a special case used by `Lang0`.
+            <> {
+                eval:         Lang0_eval,
+                parseProgram: Lang0_parseProgram
+            }
+        };
 
     result := @ModuleLoader{
         languageModule,
