@@ -31,6 +31,13 @@ fn humanPath(path) {
     <> Sequence_sliceInclusive(cat(withSlashes*), 1)
 };
 
+## Updates a map-containing box to have the given additional / replacement
+## binding.
+fn updateMapBox(box, key, value) {
+    def newMap = { Box_fetch(box)*, (key): value };
+    Box_store(box, newMap)
+};
+
 
 ##
 ## Generic functions
@@ -80,18 +87,22 @@ genericBind(
         def data = dataOf(md);
         def loadedBox = data::loadedBox;
 
+        ## The loaded map maps paths to `"loading"` for a load-in-progress
+        ## and to `[result]` for a successfully-loaded result.
+
         ifValue { <> get(Box_fetch(loadedBox), path) }
-            { found -> return found };
+            { found ->
+                ifIs { <> eq(found, "loading") }
+                    { Io0_die("Module load loop: ", flattenPath(path)) };
+                return found*
+            };
+
+        updateMapBox(loadedBox, path, "loading");
 
         def result = ifValueOr { <> doModuleLoad(md, path) }
             { <> moduleLoad(data::next, path) };
 
-        ## Update the contents of `loadedBox`. **Note:** This re-fetches
-        ## `loadedBox` because other modules may have been loaded and stored
-        ## in the process of loading this one.
-        def newLoaded = { Box_fetch(loadedBox)*, (path): result };
-        Box_store(loadedBox, newLoaded);
-
+        updateMapBox(loadedBox, path, [result]);
         <> result
     });
 
@@ -177,13 +188,7 @@ genericBind(
             { found -> return found* };
 
         def optResult = doLocalLoad(ml, path)?;
-
-        ## Update the contents of `loadedBox`. **Note:** This re-fetches
-        ## `loadedBox` because other files may have been loaded and stored
-        ## in the process of loading this one.
-        def newLoaded = { Box_fetch(loadedBox)*, (path): optResult };
-        Box_store(loadedBox, newLoaded);
-
+        updateMapBox(loadedBox, path, optResult);
         <> optResult*
     });
 
