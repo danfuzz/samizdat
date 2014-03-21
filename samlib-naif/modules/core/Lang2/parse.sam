@@ -1091,7 +1091,7 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = Generator::filterAll(dataOf(token)) { elem ->
-            <> ifIs { <> isString(elem) }
+            <> ifIs { <> hasType(elem, String) }
                 { <> makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
@@ -2162,7 +2162,7 @@ parStatement2 := {:
 
 ## Documented in spec.
 fn parseExpression(expression) {
-    def tokens = ifIs { <> isString(expression) }
+    def tokens = ifIs { <> hasType(expression, String) }
         { <> tokenize(expression) }
         { <> expression };
 
@@ -2171,7 +2171,7 @@ fn parseExpression(expression) {
 
 ## Documented in spec.
 fn parseProgram(program) {
-    def tokens = ifIs { <> isString(program) }
+    def tokens = ifIs { <> hasType(program, String) }
         { <> tokenize(program) }
         { <> program };
 

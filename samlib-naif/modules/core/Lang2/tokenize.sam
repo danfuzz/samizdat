@@ -267,10 +267,10 @@ fn processStringParts(parts) {
                 <next>
             };
 
-        ifIs { <> isString(part) }
+        ifIs { <> hasType(part, String) }
             {
                 def lastElem = Sequence::nthFromEnd(elems, 0);
-                ifIs { <> isString(lastElem) }
+                ifIs { <> hasType(lastElem, String) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
@@ -288,7 +288,7 @@ fn processStringParts(parts) {
     ## Check for a simple result.
     ifIs { <> eq(Collection::sizeOf(elems), 1) }
         {
-            ifValue { <> isString(elems*) }
+            ifValue { <> hasType(elems*, String) }
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.

@@ -216,7 +216,7 @@ fn pathFromFlat(string) {
     ## Parse the string into components (or an error string).
     def components = Peg::apply(parPathString, absoluteString);
 
-    ifIs { <> isString(components) }
+    ifIs { <> hasType(components, String) }
         { dieWith(components, string) };
 
     <> components

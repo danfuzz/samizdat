@@ -104,7 +104,7 @@ def SPECIAL_VALUES = {
 ## Checks to see if the given value is a string with the form of an
 ## in-language identifier. Returns the given `string` if so.
 fn isIdentifier(string) {
-    ifNot { <> isString(string) }
+    ifNot { <> hasType(string, String) }
         { return };
 
     ifIs { <> eq(string, "") }
@@ -231,7 +231,7 @@ fn Type_sourceGeneral(type, adorn) {
     ifNot { <> typeIsTransparentDerived(type) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
-    def body = ifIs { <> isString(name) }
+    def body = ifIs { <> hasType(name, String) }
         {
             <> ifValueOr { <> isIdentifier(name) }
                 { <> sourceGeneral(name, true) }

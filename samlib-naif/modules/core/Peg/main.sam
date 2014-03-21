@@ -410,7 +410,7 @@ fn makeTokenSetComplement(tokens*) {
 ## Documented in spec.
 fn apply(rule, input) {
     def box = Box::makePromise();
-    def generator = ifIs { <> isString(input) }
+    def generator = ifIs { <> hasType(input, String) }
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.
