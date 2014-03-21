@@ -16,6 +16,7 @@ can be used.
 
 ```
 def Collection = moduleLoad(["core", "Collection"]);
+def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
 def Io0        = moduleLoad(["core", "Io0"]);
 def Lang0      = moduleLoad(["core", "Lang0"]);

@@ -3,6 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def Collection = moduleLoad(["core", "Collection"]);
+def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
 def Lang0Node  = moduleLoad(["core", "Lang0Node"]);
 def Number     = moduleLoad(["proto", "Number"]);
