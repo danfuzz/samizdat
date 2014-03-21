@@ -17,7 +17,7 @@ def globals = intraLoad(["globals", "main"]);
 fn init(libraryDir) {
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
     def earlyGlobals = { moduleEnvironment()*, globals* };
-    def loader = ModuleSystem::makeModulesDirectory(
+    def loader = ModuleSystem::makeModuleLoader(
         [libraryDir*, "modules"],
         @Null,
         earlyGlobals);

@@ -58,10 +58,10 @@ def intraExists = makeRegularGeneric("intraExists", 2, 2);
 
 
 ##
-## Type Definition: `ModulesDirectory`
+## Type Definition: `ModuleLoader`
 ##
 ## Payload:
-## * `next` -- next `ModulesDirectory` to check when trying to find a module
+## * `next` -- next `ModuleLoader` to check when trying to find a module
 ## * `basePath` -- absolute path prefix for all loading. Relative subdirectory
 ##   paths correspond to modules
 ## * `globals` -- global variable context to use when loading
@@ -92,8 +92,8 @@ fn doModuleLoad(md, path) {
 ## Documented in spec.
 genericBind(
     moduleLoad,
-    @@ModulesDirectory,
-    fn ModulesDirectory_moduleLoad(md, path) {
+    @@ModuleLoader,
+    fn ModuleLoader_moduleLoad(md, path) {
         def data = dataOf(md);
         def loadedBox = data::loadedBox;
 
@@ -125,10 +125,10 @@ genericBind(
     });
 
 ## Documented in spec.
-fn makeModulesDirectory(path, nextModulesDirectory, globals) {
-    <> @ModulesDirectory{
+fn makeModuleLoader(path, nextModuleLoader, globals) {
+    <> @ModuleLoader{
         globals,
-        next: nextModulesDirectory,
+        next: nextModuleLoader,
         basePath: path,
         loadedBox: Box_makeCell({})
     }
@@ -139,7 +139,7 @@ fn makeModulesDirectory(path, nextModulesDirectory, globals) {
 ## Type Definition: `IntraLoader`
 ##
 ## Payload:
-## * `modulesDirectory` -- module finder / memoizer
+## * `moduleLoader` -- module loader
 ## * `basePath` -- absolute path prefix for all loading
 ## * `globals` -- global variable context to use when loading
 ## * `languageModule` -- language module to use when loading
@@ -217,7 +217,7 @@ genericBind(
     });
 
 ## Documented in spec.
-fn makeIntraLoader(path, nextModulesDirectory, globals) {
+fn makeIntraLoader(path, nextModuleLoader, globals) {
     ## If the module info file (`main.saminfo`) exists, it must evaluate to a
     ## map. If it does not exist, create minimal "anonymous" module info.
     def infoPath = flattenPath([path*, "main.saminfo"]);
@@ -228,19 +228,19 @@ fn makeIntraLoader(path, nextModulesDirectory, globals) {
         }
         { <> {name: [], version: "0"} };
 
-    def modulesDirectory = makeModulesDirectory(
-        [path*, "modules"], nextModulesDirectory, globals);
+    def moduleLoader = makeModuleLoader(
+        [path*, "modules"], nextModuleLoader, globals);
 
     ## Forward declarations, for recursive references in the `module_*`
     ## functions immediately below.
     def result;
     def fullGlobals;
 
-    fn module_intraExists(path)   { <> intraExists(result, path)          };
-    fn module_intraLoad(path)     { <> intraLoad(result, path)            };
-    fn module_intraRead(path)     { <> intraRead(result, path)            };
-    fn module_moduleEnvironment() { <> fullGlobals                        };
-    fn module_moduleLoad(path)    { <> moduleLoad(modulesDirectory, path) };
+    fn module_intraExists(path)   { <> intraExists(result, path)      };
+    fn module_intraLoad(path)     { <> intraLoad(result, path)        };
+    fn module_intraRead(path)     { <> intraRead(result, path)        };
+    fn module_moduleEnvironment() { <> fullGlobals                    };
+    fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
 
     fullGlobals := {
         globals*,
@@ -266,7 +266,7 @@ fn makeIntraLoader(path, nextModulesDirectory, globals) {
 
     result := @IntraLoader{
         languageModule,
-        modulesDirectory,
+        moduleLoader,
         globals: fullGlobals,
         basePath: path,
         loadedBox: Box_makeCell({})
@@ -291,6 +291,6 @@ fn intraLoadMain(loader) {
     intraRead,
     intraExists,
     makeIntraLoader,
-    makeModulesDirectory,
+    makeModuleLoader,
     moduleLoad
 }
