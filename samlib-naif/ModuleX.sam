@@ -170,18 +170,21 @@ genericBind(
         def data = dataOf(ml);
         def loadedBox = data::loadedBox;
 
-        ifValue { <> get(Box_fetch(loadedBox), path) }
-            { found -> return found };
+        ## Local loads are allowed to return void, so we track a list of
+        ## the result. That is, a void return ends up being `[]`.
 
-        def result = doLocalLoad(ml, path);
+        ifValue { <> get(Box_fetch(loadedBox), path) }
+            { found -> return found* };
+
+        def optResult = doLocalLoad(ml, path)?;
 
         ## Update the contents of `loadedBox`. **Note:** This re-fetches
-        ## `loadedBox` because other modules may have been loaded and stored
+        ## `loadedBox` because other files may have been loaded and stored
         ## in the process of loading this one.
-        def newLoaded = { Box_fetch(loadedBox)*, (path): result };
+        def newLoaded = { Box_fetch(loadedBox)*, (path): optResult };
         Box_store(loadedBox, newLoaded);
 
-        <> result
+        <> optResult*
     });
 
 ## Documented in spec.
