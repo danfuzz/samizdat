@@ -118,7 +118,7 @@ fn runModule(modulePath, args) {
         nextzzzzz, ## FIXME!!!
         moduleEnvironment());
 
-    def main = ModuleSystem::localLoadMain(loader);
+    def main = ModuleSystem::intraLoadMain(loader);
 
     if (def mainFunc = main::main) {
         return mainFunc(modulePath, args*)

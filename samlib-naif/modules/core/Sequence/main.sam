@@ -11,7 +11,7 @@ def Number     = moduleLoad(["proto", "Number"]);
 def Sequence   = moduleLoad(["proto", "Sequence"]);
 
 ## This just binds generics without adding exports.
-localLoad(["SequenceGenerator"]);
+intraLoad(["SequenceGenerator"]);
 
 
 ##

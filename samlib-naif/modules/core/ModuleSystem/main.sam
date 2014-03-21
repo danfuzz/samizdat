@@ -52,9 +52,9 @@ fn updateMapBox(box, key, value) {
 def moduleLoad = makeRegularGeneric("moduleLoad", 2, 2);
 
 ## Documented in spec.
-def localLoad = makeRegularGeneric("localLoad", 2, 2);
-def localRead = makeRegularGeneric("localRead", 2, 2);
-def localExists = makeRegularGeneric("localExists", 2, 2);
+def intraLoad   = makeRegularGeneric("intraLoad", 2, 2);
+def intraRead   = makeRegularGeneric("intraRead", 2, 2);
+def intraExists = makeRegularGeneric("intraExists", 2, 2);
 
 
 ##
@@ -81,7 +81,7 @@ fn doModuleLoad(md, path) {
 
             ## A successful void module load result gets silently transformed
             ## to the empty map.
-            def result = ifValueOr { <> localLoadMain(loader) }
+            def result = ifValueOr { <> intraLoadMain(loader) }
                 { <> {} };
 
             Io0_note("        Done.");
@@ -146,7 +146,7 @@ fn makeModulesDirectory(path, nextModulesDirectory, globals) {
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
 
-## Helper for `localLoad` which does the actual loading.
+## Helper for `intraLoad` which does the actual loading.
 fn doLocalLoad(ml, path) {
     Io0_note(cat("        ", humanPath(path)));
     def data = dataOf(ml);
@@ -174,9 +174,9 @@ fn doLocalLoad(ml, path) {
 
 ## Documented in spec.
 genericBind(
-    localExists,
+    intraExists,
     @@IntraLoader,
-    fn IntraLoader_localExists(ml, path) {
+    fn IntraLoader_intraExists(ml, path) {
         def data = dataOf(ml);
         def fullPath = flattenPath([data::basePath*, path*]);
         <> ifIs { <> Io0_flatFileExists(fullPath) }
@@ -185,9 +185,9 @@ genericBind(
 
 ## Documented in spec.
 genericBind(
-    localLoad,
+    intraLoad,
     @@IntraLoader,
-    fn IntraLoader_localLoad(ml, path) {
+    fn IntraLoader_intraLoad(ml, path) {
         def data = dataOf(ml);
         def loadedBox = data::loadedBox;
 
@@ -204,9 +204,9 @@ genericBind(
 
 ## Documented in spec.
 genericBind(
-    localRead,
+    intraRead,
     @@IntraLoader,
-    fn IntraLoader_localRead(ml, path) {
+    fn IntraLoader_intraRead(ml, path) {
         def data = dataOf(ml);
         def fullPath = flattenPath([data::basePath*, path*]);
 
@@ -236,17 +236,17 @@ fn makeIntraLoader(path, nextModulesDirectory, globals) {
     def result;
     def fullGlobals;
 
-    fn module_localExists(path)   { <> localExists(result, path)          };
-    fn module_localLoad(path)     { <> localLoad(result, path)            };
-    fn module_localRead(path)     { <> localRead(result, path)            };
+    fn module_intraExists(path)   { <> intraExists(result, path)          };
+    fn module_intraLoad(path)     { <> intraLoad(result, path)            };
+    fn module_intraRead(path)     { <> intraRead(result, path)            };
     fn module_moduleEnvironment() { <> fullGlobals                        };
     fn module_moduleLoad(path)    { <> moduleLoad(modulesDirectory, path) };
 
     fullGlobals := {
         globals*,
-        localExists:       module_localExists,
-        localLoad:         module_localLoad,
-        localRead:         module_localRead,
+        intraExists:       module_intraExists,
+        intraLoad:         module_intraLoad,
+        intraRead:         module_intraRead,
         moduleEnvironment: module_moduleEnvironment,
         moduleLoad:        module_moduleLoad
     };
@@ -281,15 +281,15 @@ fn makeIntraLoader(path, nextModulesDirectory, globals) {
 ##
 
 ## Documented in spec.
-fn localLoadMain(loader) {
-    <> localLoad(loader, ["main"])
+fn intraLoadMain(loader) {
+    <> intraLoad(loader, ["main"])
 };
 
 <> {
-    localLoad,
-    localLoadMain,
-    localRead,
-    localExists,
+    intraLoad,
+    intraLoadMain,
+    intraRead,
+    intraExists,
     makeIntraLoader,
     makeModulesDirectory,
     moduleLoad

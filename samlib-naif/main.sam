@@ -10,7 +10,7 @@
 ##
 
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
-def globals = localLoad(["globals", "main"]);
+def globals = intraLoad(["globals", "main"]);
 
 ## Initializes the world, and returns the final global variable environment.
 ## `libraryDir` is list-style absolute path to the system library.

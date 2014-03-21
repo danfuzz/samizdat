@@ -11,7 +11,7 @@ def Box    = moduleLoad(["core", "Box"]);
 def Io0    = moduleLoad(["core", "Io0"]);
 def Number = moduleLoad(["proto", "Number"]);
 
-def NullGenerator = localLoad(["NullGenerator"]);
+def NullGenerator = intraLoad(["NullGenerator"]);
 
 
 

@@ -13,8 +13,8 @@
 
 ## This just re-exports stuff defined in intramodule files.
 <> {
-    (localLoad(["constructors1"]))*,
-    (localLoad(["constructors2"]))*,
-    (localLoad(["getters"]))*,
-    (localLoad(["refs"]))*
+    (intraLoad(["constructors1"]))*,
+    (intraLoad(["constructors2"]))*,
+    (intraLoad(["getters"]))*,
+    (intraLoad(["refs"]))*
 }

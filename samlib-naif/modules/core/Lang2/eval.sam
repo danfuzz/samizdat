@@ -7,7 +7,7 @@
 ##
 
 ## TODO
-## def convertToLang0 = localLoad(["convert"])::convertToLang0;
+## def convertToLang0 = intraLoad(["convert"])::convertToLang0;
 
 def Lang1 = moduleLoad(["core", "Lang1"]);
 

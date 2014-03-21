@@ -96,7 +96,7 @@ fn makeCoreLibrary() {
             @Null,    ## `null` isn't yet defined when this file is parsed.
             PRIMITIVE_CONTEXT);
 
-    <> moduleSystem::localLoadMain(loader)::init(libraryDir)
+    <> moduleSystem::intraLoadMain(loader)::init(libraryDir)
 };
 
 

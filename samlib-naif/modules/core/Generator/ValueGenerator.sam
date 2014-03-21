@@ -8,7 +8,7 @@
 
 def Box = moduleLoad(["core", "Box"]);
 
-def unboundedCollect = localLoad(["unboundedCollect"])::unboundedCollect;
+def unboundedCollect = intraLoad(["unboundedCollect"])::unboundedCollect;
 
 
 ##

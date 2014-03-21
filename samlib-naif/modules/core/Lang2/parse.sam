@@ -45,8 +45,8 @@ def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
 
-def safeVarName = localLoad(["safeVarName"])::safeVarName;
-def tokenize    = localLoad(["tokenize"])::tokenize;
+def safeVarName = intraLoad(["safeVarName"])::safeVarName;
+def tokenize    = intraLoad(["tokenize"])::tokenize;
 
 
 ##

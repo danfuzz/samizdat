@@ -11,8 +11,8 @@ def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["core", "Collection"]);
 def Sequence   = moduleLoad(["core", "Sequence"]);
 
-def ListWrapGenerator = localLoad(["ListWrapGenerator"]);
-def NullGenerator     = localLoad(["NullGenerator"]);
+def ListWrapGenerator = intraLoad(["ListWrapGenerator"]);
+def NullGenerator     = intraLoad(["NullGenerator"]);
 
 
 ##

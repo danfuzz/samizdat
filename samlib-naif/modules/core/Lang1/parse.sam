@@ -41,7 +41,7 @@ def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
 
-def tokenize = localLoad(["tokenize"])::tokenize;
+def tokenize = intraLoad(["tokenize"])::tokenize;
 
 
 ##
