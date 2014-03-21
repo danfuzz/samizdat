@@ -77,7 +77,7 @@ fn doModuleLoad(md, path) {
     <> ifIs { <> Io0_flatFileExists(infoPath) }
         {
             Io0_note(cat("    ", humanPath(path)));
-            def loader = makeModuleLoader(modulePath, md, data::globals);
+            def loader = makeIntraLoader(modulePath, md, data::globals);
 
             ## A successful void module load result gets silently transformed
             ## to the empty map.
@@ -136,7 +136,7 @@ fn makeModulesDirectory(path, nextModulesDirectory, globals) {
 
 
 ##
-## Type Definition: `ModuleLoader`
+## Type Definition: `IntraLoader`
 ##
 ## Payload:
 ## * `modulesDirectory` -- module finder / memoizer
@@ -175,8 +175,8 @@ fn doLocalLoad(ml, path) {
 ## Documented in spec.
 genericBind(
     localExists,
-    @@ModuleLoader,
-    fn ModuleLoader_localExists(ml, path) {
+    @@IntraLoader,
+    fn IntraLoader_localExists(ml, path) {
         def data = dataOf(ml);
         def fullPath = flattenPath([data::basePath*, path*]);
         <> ifIs { <> Io0_flatFileExists(fullPath) }
@@ -186,8 +186,8 @@ genericBind(
 ## Documented in spec.
 genericBind(
     localLoad,
-    @@ModuleLoader,
-    fn ModuleLoader_localLoad(ml, path) {
+    @@IntraLoader,
+    fn IntraLoader_localLoad(ml, path) {
         def data = dataOf(ml);
         def loadedBox = data::loadedBox;
 
@@ -205,8 +205,8 @@ genericBind(
 ## Documented in spec.
 genericBind(
     localRead,
-    @@ModuleLoader,
-    fn ModuleLoader_localRead(ml, path) {
+    @@IntraLoader,
+    fn IntraLoader_localRead(ml, path) {
         def data = dataOf(ml);
         def fullPath = flattenPath([data::basePath*, path*]);
 
@@ -217,7 +217,7 @@ genericBind(
     });
 
 ## Documented in spec.
-fn makeModuleLoader(path, nextModulesDirectory, globals) {
+fn makeIntraLoader(path, nextModulesDirectory, globals) {
     ## If the module info file (`main.saminfo`) exists, it must evaluate to a
     ## map. If it does not exist, create minimal "anonymous" module info.
     def infoPath = flattenPath([path*, "main.saminfo"]);
@@ -264,7 +264,7 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
             }
         };
 
-    result := @ModuleLoader{
+    result := @IntraLoader{
         languageModule,
         modulesDirectory,
         globals: fullGlobals,
@@ -290,7 +290,7 @@ fn localLoadMain(loader) {
     localLoadMain,
     localRead,
     localExists,
-    makeModuleLoader,
+    makeIntraLoader,
     makeModulesDirectory,
     moduleLoad
 }

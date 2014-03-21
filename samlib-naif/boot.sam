@@ -91,7 +91,7 @@ fn makeCoreLibrary() {
     def libraryDir = convertFlatPath(LIBRARY_FLAT_DIR);
     def moduleSystem = makeModuleSystem();
     def loader =
-        moduleSystem::makeModuleLoader(
+        moduleSystem::makeIntraLoader(
             libraryDir,
             @Null,    ## `null` isn't yet defined when this file is parsed.
             PRIMITIVE_CONTEXT);
