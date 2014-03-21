@@ -3,6 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def Generator = moduleLoad(["core", "Generator"]);
+def Number    = moduleLoad(["proto", "Number"]);
 
 
 ##

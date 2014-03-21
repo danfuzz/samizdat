@@ -7,8 +7,9 @@
 ##
 ## Payload is `{size, value}`.
 
-def Box = moduleLoad(["core", "Box"]);
-def Io0 = moduleLoad(["core", "Io0"]);
+def Box    = moduleLoad(["core", "Box"]);
+def Io0    = moduleLoad(["core", "Io0"]);
+def Number = moduleLoad(["proto", "Number"]);
 
 def NullGenerator = localLoad(["NullGenerator"]);
 
