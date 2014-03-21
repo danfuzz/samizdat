@@ -6,9 +6,10 @@
 ## Value stringification
 ##
 
-def Io0      = moduleLoad(["core", "Io0"]);
-def Range    = moduleLoad(["core", "Range"]);
-def Sequence = moduleLoad(["core", "Sequence"]);
+def Generator = moduleLoad(["core", "Generator"]);
+def Io0       = moduleLoad(["core", "Io0"]);
+def Range     = moduleLoad(["core", "Range"]);
+def Sequence  = moduleLoad(["core", "Sequence"]);
 
 
 ##
