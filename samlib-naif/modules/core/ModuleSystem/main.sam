@@ -67,6 +67,8 @@ def intraExists = makeRegularGeneric("intraExists", 2, 2);
 ## * `globals` -- global variable context to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
+## TODO: This should be an opaque type.
+##
 
 ## Helper for `moduleLoad` which does the actual loading.
 fn doModuleLoad(md, path) {
@@ -144,6 +146,8 @@ fn makeModuleLoader(path, nextModuleLoader, globals) {
 ## * `globals` -- global variable context to use when loading
 ## * `languageModule` -- language module to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
+##
+## TODO: This should be an opaque type.
 ##
 
 ## Helper for `intraLoad` which does the actual loading.
@@ -241,6 +245,7 @@ fn makeIntraLoader(path, nextModuleLoader, globals) {
     fn module_intraRead(path)     { <> intraRead(result, path)        };
     fn module_moduleEnvironment() { <> fullGlobals                    };
     fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
+    fn module_moduleLoader()      { <> moduleLoader                   };
 
     fullGlobals := {
         globals*,
@@ -248,7 +253,8 @@ fn makeIntraLoader(path, nextModuleLoader, globals) {
         intraLoad:         module_intraLoad,
         intraRead:         module_intraRead,
         moduleEnvironment: module_moduleEnvironment,
-        moduleLoad:        module_moduleLoad
+        moduleLoad:        module_moduleLoad,
+        moduleLoader:      module_moduleLoader
     };
 
     def languageName = ifValueOr { <> get(moduleInfo, "language") }
