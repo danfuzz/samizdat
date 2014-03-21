@@ -6,6 +6,7 @@
 ## Generator functions
 ##
 
+def Box = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["core", "Collection"]);
 
 def FilterGenerator = localLoad(["FilterGenerator"]);

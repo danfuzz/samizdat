@@ -7,7 +7,9 @@
 ##
 ## Payload is `{map: map, index: int}`.
 
+def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["proto", "Collection"]);
+def Number     = moduleLoad(["proto", "Number"]);
 
 
 ##

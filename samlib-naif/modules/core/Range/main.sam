@@ -8,7 +8,8 @@
 ## `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 ## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
+def Box = moduleLoad(["core", "Box"]);
+def Io0 = moduleLoad(["core", "Io0"]);
 
 
 ##
