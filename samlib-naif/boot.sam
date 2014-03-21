@@ -75,9 +75,6 @@ fn readLibraryFile(name) {
         { Io0_die(cat("No such core library file: ", path)) }
 };
 
-## Structured path (list of components) version of `LIBRARY_FLAT_DIR`.
-def LIBRARY_DIR = convertFlatPath(LIBRARY_FLAT_DIR);
-
 ## Reads and evaluates the module system definition.
 fn makeModuleSystem() {
     def text = readLibraryFile("ModuleX.sam");
@@ -92,7 +89,9 @@ fn makeModuleSystem() {
 fn makeCoreLibrary() {
     def moduleSystem = makeModuleSystem();
     def libraryLoader =
-        moduleSystem::makeLibraryLoader(LIBRARY_DIR, PRIMITIVE_CONTEXT);
+        moduleSystem::makeLibraryLoader(
+            convertFlatPath(LIBRARY_FLAT_DIR),
+            PRIMITIVE_CONTEXT);
 
     <> moduleSystem::localLoad(libraryLoader, ["mainx"])
 };
