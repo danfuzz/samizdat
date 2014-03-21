@@ -9,6 +9,10 @@
 ## the Samizdat Layer 0 and Samizdat Layer 1 specifications.
 ##
 
+def Generator = moduleLoad(["core", "Generator"]);
+def Number    = moduleLoad(["core", "Number"]);
+def Peg       = moduleLoad(["core", "Peg"]);
+
 
 ##
 ## These definitions are meant to mirror the code in the spec for

@@ -13,8 +13,8 @@
 
 ## This just re-exports stuff defined in submodules.
 <> {
-    (submoduleUse("constructors1"))*,
-    (submoduleUse("constructors2"))*,
-    (submoduleUse("getters"))*,
-    (submoduleUse("refs"))*
+    (localLoad(["constructors1"]))*,
+    (localLoad(["constructors2"]))*,
+    (localLoad(["getters"]))*,
+    (localLoad(["refs"]))*
 }
