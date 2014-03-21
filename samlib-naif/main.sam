@@ -13,11 +13,10 @@ def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 def globals = localLoad(["globals", "main"]);
 
 ## Initializes the world, and returns the final global variable environment.
-## `primitiveContext` is the same as passed into `boot.sam`, and
 ## `libraryDir` is list-style absolute path to the system library.
-fn init(primitiveContext, libraryDir) {
+fn init(libraryDir) {
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
-    def earlyGlobals = {primitiveContext*, globals*};
+    def earlyGlobals = { moduleEnvironment()*, globals* };
     def loader = ModuleSystem::makeModulesDirectory(
         [libraryDir*, "modules"],
         @Null,
@@ -28,7 +27,7 @@ fn init(primitiveContext, libraryDir) {
     load(loader, ["core", "Boolean"]);
 
     <> {
-        earlyGlobals*,
+        globals*,
         Bitwise:    load(loader, ["core", "Bitwise"]),
         Box:        load(loader, ["core", "Box"]),
         Collection: load(loader, ["core", "Collection"]),
@@ -39,7 +38,7 @@ fn init(primitiveContext, libraryDir) {
         Range:      load(loader, ["core", "Range"]),
         Sequence:   load(loader, ["core", "Sequence"]),
 
-        ## The one higher-layer function that gets exported to the globals.
+        ## The one higher-layer function that gets exported to the environment.
         runCommandLine: load(loader, ["core", "CommandLine"])::runCommandLine
     }
 };
