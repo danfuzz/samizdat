@@ -20,6 +20,7 @@ def Io0        = moduleLoad(["core", "Io0"]);
 def Lang0      = moduleLoad(["core", "Lang0"]);
 def Peg        = moduleLoad(["core", "Peg"]);
 def Range      = moduleLoad(["core", "Range"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;

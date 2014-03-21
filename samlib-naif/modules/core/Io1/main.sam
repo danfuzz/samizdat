@@ -8,10 +8,11 @@
 
 
 def Collection = moduleLoad(["core", "Collection"]);
-def Generator = moduleLoad(["core", "Generator"]);
-def Io0 = moduleLoad(["core", "Io0"]);
-def Peg = moduleLoad(["core", "Peg"]);
-def Range = moduleLoad(["core", "Range"]);
+def Generator  = moduleLoad(["core", "Generator"]);
+def Io0        = moduleLoad(["core", "Io0"]);
+def Peg        = moduleLoad(["core", "Peg"]);
+def Range      = moduleLoad(["core", "Range"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
 
 
 ##

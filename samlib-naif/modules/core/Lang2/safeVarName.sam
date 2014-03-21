@@ -3,8 +3,9 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def Collection = moduleLoad(["core", "Collection"]);
-def Generator = moduleLoad(["core", "Generator"]);
-def Lang0Node = moduleLoad(["core", "Lang0Node"]);
+def Generator  = moduleLoad(["core", "Generator"]);
+def Lang0Node  = moduleLoad(["core", "Lang0Node"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
 
 ## Int value of Unicode code point `0`.
 def CHAR_0 = toInt("0");

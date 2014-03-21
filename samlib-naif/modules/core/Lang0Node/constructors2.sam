@@ -3,14 +3,17 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
-def REFS = localLoad(["refs"])::REFS;
-def constructors1 = localLoad(["constructors1"]);
-def getters = localLoad(["getters"]);
+def Sequence = moduleLoad(["core", "Sequence"]);
 
+def constructors1 = localLoad(["constructors1"]);
+def makeApply = constructors1::makeApply;
+def makeCall  = constructors1::makeCall;
+def makeThunk = constructors1::makeThunk;
+
+def getters = localLoad(["getters"]);
 def get_interpolate = getters::get_interpolate;
-def makeApply       = constructors1::makeApply;
-def makeCall        = constructors1::makeCall;
-def makeThunk       = constructors1::makeThunk;
+
+def REFS = localLoad(["refs"])::REFS;
 
 
 ##
