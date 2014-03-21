@@ -8,6 +8,9 @@
 ## The exports of this module become the standard global variable environment.
 ##
 
+## This is just loaded to set up generic function bindings.
+moduleLoad(["core", "Boolean"]);
+
 <> {
     moduleLoad(["core", "Globals0"])*,
     Bitwise:    moduleLoad(["core", "Bitwise"]),
