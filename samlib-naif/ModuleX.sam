@@ -37,7 +37,7 @@ fn humanPath(path) {
 ##
 
 ## Documented in spec.
-def load = makeRegularGeneric("load", 2, 2);
+def loadModule = makeRegularGeneric("loadModule", 2, 2);
 
 ## Documented in spec.
 def localLoad = makeRegularGeneric("localLoad", 2, 2);
@@ -56,8 +56,8 @@ def localExists = makeRegularGeneric("localExists", 2, 2);
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
 
-## Helper for `load` which does the actual loading.
-fn doLoad(md, path) {
+## Helper for `loadModule` which does the actual loading.
+fn doLoadModule(md, path) {
     Io0_note(cat("    ", humanPath(path)));
     def data = dataOf(md);
     def modulePath = [data::basePath*, path*];
@@ -72,17 +72,17 @@ fn doLoad(md, path) {
 
 ## Documented in spec.
 genericBind(
-    load,
+    loadModule,
     @@ModulesDirectory,
-    fn ModulesDirectory_load(md, path) {
+    fn ModulesDirectory_loadModule(md, path) {
         def data = dataOf(md);
         def loadedBox = data::loadedBox;
 
         ifValue { <> get(Box_fetch(loadedBox), path) }
             { found -> return found };
 
-        def result = ifValueOr { <> doLoad(md, path) }
-            { <> load(data::next, path) };
+        def result = ifValueOr { <> doLoadModule(md, path) }
+            { <> loadModule(data::next, path) };
 
         Box_store(loadedBox, result);
         <> result
@@ -90,9 +90,9 @@ genericBind(
 
 ## Documented in spec.
 genericBind(
-    load,
+    loadModule,
     @@Null,
-    fn Null_load(md, path) {
+    fn Null_loadModule(md, path) {
         Io0_die(cat("Module not found: ", humanPath(path)))
     });
 
@@ -204,23 +204,23 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
     ## `module_*` functions immediately below.
     def result;
 
-    fn module_localExists(path) { <> localExists(result, path)    };
-    fn module_localLoad(path)   { <> localLoad(result, path)      };
-    fn module_localRead(path)   { <> localRead(result, path)      };
-    fn module_load(path)        { <> load(modulesDirectory, path) };
+    fn module_localExists(path) { <> localExists(result, path)          };
+    fn module_localLoad(path)   { <> localLoad(result, path)            };
+    fn module_localRead(path)   { <> localRead(result, path)            };
+    fn module_loadModule(path)  { <> loadModule(modulesDirectory, path) };
 
     def fullGlobals = {
         globals*,
         localExists: module_localExists,
         localLoad:   module_localLoad,
         localRead:   module_localRead,
-        load:        module_load
+        loadModule:  module_loadModule
     };
 
     def languageName = ifValueOr { <> get(moduleInfo, "language") }
         { <> "Lang2" };
     def languageModule = ifIs { <> ne(languageName, "none") }
-        { <> module_load(["core", languageName]) }
+        { <> module_loadModule(["core", languageName]) }
         {
             ## Language `none`, a special case used by `Lang0`.
             <> {
@@ -251,7 +251,7 @@ fn makeLibraryLoader(path, globals) {
 ##
 
 <> {
-    load,
+    loadModule,
     localLoad,
     localRead,
     localExists,
