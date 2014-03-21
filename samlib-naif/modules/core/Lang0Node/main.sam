@@ -11,7 +11,7 @@
 ## Exported Definitions
 ##
 
-## This just re-exports stuff defined in submodules.
+## This just re-exports stuff defined in intramodule files.
 <> {
     (localLoad(["constructors1"]))*,
     (localLoad(["constructors2"]))*,

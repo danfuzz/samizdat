@@ -13,8 +13,8 @@ def Lang0 = moduleLoad(["core", "Lang0"]);
 ## Exported Definitions
 ##
 
-## This just re-exports stuff defined in submodules as well as `evalBinary`
-## which is a re-export from `Lang0`.
+## This just re-exports stuff defined in intramodule files, as well as
+## `evalBinary` which is a re-export from `Lang0`.
 <> {
     (localLoad(["convert"]))*,
     (localLoad(["eval"]))*,

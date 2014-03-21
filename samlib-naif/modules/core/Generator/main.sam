@@ -106,7 +106,7 @@ fn generatorPump(generator) {
     nextValue,
     optValue,
 
-    ## Re-exported from submodules.
+    ## Re-exported from intramodule files.
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
     makeListWrapGenerator:   ListWrapGenerator::makeListWrapGenerator,
     makeOptGenerator:        OptGenerator::makeOptGenerator,

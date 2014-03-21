@@ -10,10 +10,10 @@
 ## Exported Definitions
 ##
 
-## This just re-exports stuff defined in submodules.
+## This just re-exports stuff defined in intramodule files.
 <> {
-    (submoduleUse("constants"))*,
-    (submoduleUse("primitives"))*,
-    (submoduleUse("Value"))*,
-    (submoduleUse("Type"))*
+    (localLoad(["constants"]))*,
+    (localLoad(["primitives"]))*,
+    (localLoad(["Value"]))*,
+    (localLoad(["Type"]))*
 }

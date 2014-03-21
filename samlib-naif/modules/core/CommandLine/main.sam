@@ -98,7 +98,7 @@ fn suffixFromName(name) {
 ## Makes a global environment, given file path and command-line arguments.
 fn makeGlobals(filePath, args) {
     <> {
-        Module::getExports(moduleUse({name: ["core", "Globals"]}))*,
+        Module::getExports(moduleLoad(["core", "Globals"]))*,
         ARGUMENTS: args,
         PATH:      filePath
     }
