@@ -51,7 +51,7 @@ fn doLoad(md, path) {
     def infoPath = flattenPath([modulePath*, "main.saminfo"]);
     <> ifIs { <> Io0_flatFileExists(infoPath) }
         {
-            def loader = makeModuleLoader(modulePath, data::globals, md);
+            def loader = makeModuleLoader(modulePath, md, data::globals);
             <> localLoad(loader, ["main"])
         }
 };
@@ -68,7 +68,7 @@ genericBind(
             { found -> return found };
 
         def result = ifValueOr { <> doLoad(md, path) }
-            { <> load(next, path) };
+            { <> load(data::next, path) };
 
         Box_store(loadedBox, result);
         <> result
