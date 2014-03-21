@@ -78,7 +78,12 @@ fn doModuleLoad(md, path) {
         {
             Io0_note(cat("    ", humanPath(path)));
             def loader = makeModuleLoader(modulePath, md, data::globals);
-            def result = localLoad(loader, ["main"]);
+
+            ## A successful void module load result gets silently transformed
+            ## to the empty map.
+            def result = ifValueOr { <> localLoad(loader, ["main"]) }
+                { <> {} };
+
             Io0_note("        Done.");
             <> result
         }
@@ -248,7 +253,8 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
     def languageModule = ifIs { <> ne(languageName, "none") }
         { <> module_moduleLoad(["core", languageName]) }
         {
-            ## Language `none`, a special case used by `Lang0`.
+            ## Language `none`, a special case used when loading files before
+            ## `Lang0` is defined.
             <> {
                 eval:         Lang0_eval,
                 parseProgram: Lang0_parseProgram
