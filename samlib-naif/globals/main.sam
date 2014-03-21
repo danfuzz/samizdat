@@ -12,8 +12,8 @@
 
 ## This just re-exports stuff defined in intramodule files.
 <> {
-    (localLoad(["constants"]))*,
-    (localLoad(["primitives"]))*,
-    (localLoad(["Value"]))*,
-    (localLoad(["Type"]))*
+    (localLoad(["globals", "constants"]))*,
+    (localLoad(["globals", "primitives"]))*,
+    (localLoad(["globals", "Value"]))*,
+    (localLoad(["globals", "Type"]))*
 }

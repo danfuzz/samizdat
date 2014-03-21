@@ -9,4 +9,6 @@
 ## the standard global variable environment.
 ##
 
+def globals = localLoad(["globals", "main"]);
+
 <> moduleLoad(["core", "Globals"])
