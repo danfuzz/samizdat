@@ -231,21 +231,24 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
     def modulesDirectory = makeModulesDirectory(
         [path*, "modules"], nextModulesDirectory, globals);
 
-    ## Forward declaration of `result`, for recursive reference in the
-    ## `module_*` functions immediately below.
+    ## Forward declarations, for recursive references in the `module_*`
+    ## functions immediately below.
     def result;
+    def fullGlobals;
 
-    fn module_localExists(path) { <> localExists(result, path)          };
-    fn module_localLoad(path)   { <> localLoad(result, path)            };
-    fn module_localRead(path)   { <> localRead(result, path)            };
-    fn module_moduleLoad(path)  { <> moduleLoad(modulesDirectory, path) };
+    fn module_localExists(path)   { <> localExists(result, path)          };
+    fn module_localLoad(path)     { <> localLoad(result, path)            };
+    fn module_localRead(path)     { <> localRead(result, path)            };
+    fn module_moduleEnvironment() { <> fullGlobals                        };
+    fn module_moduleLoad(path)    { <> moduleLoad(modulesDirectory, path) };
 
-    def fullGlobals = {
+    fullGlobals := {
         globals*,
-        localExists: module_localExists,
-        localLoad:   module_localLoad,
-        localRead:   module_localRead,
-        moduleLoad:  module_moduleLoad
+        localExists:       module_localExists,
+        localLoad:         module_localLoad,
+        localRead:         module_localRead,
+        moduleEnvironment: module_moduleEnvironment,
+        moduleLoad:        module_moduleLoad
     };
 
     def languageName = ifValueOr { <> get(moduleInfo, "language") }
