@@ -25,7 +25,7 @@ def unboundedCollect = localLoad(["unboundedCollect"]);
 ## Documented in spec.
 fn collectAsMap(generator) {
     ## Avoid pointless map->generator->map conversion.
-    ifIs { <> isMap(generator) }
+    ifIs { <> hasType(generator, Map) }
         { return generator };
 
     <> cat({}, generator*)
