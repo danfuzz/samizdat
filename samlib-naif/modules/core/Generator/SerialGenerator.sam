@@ -7,9 +7,9 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
-def Box = moduleLoad(["core", "Box"]);
+def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["core", "Collection"]);
-def Sequence = moduleLoad(["core", "Sequence"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
 
 def NullGenerator = localLoad(["NullGenerator"]);
 

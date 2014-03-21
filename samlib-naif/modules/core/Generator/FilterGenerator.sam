@@ -9,7 +9,7 @@
 ## `subGen` is expected to produce lists of arguments to apply.
 
 def Collection = moduleLoad(["core", "Collection"]);
-def Box = moduleLoad(["core", "Box"]);
+def Box        = moduleLoad(["core", "Box"]);
 
 def ParaGenerator = localLoad(["ParaGenerator"]);
 

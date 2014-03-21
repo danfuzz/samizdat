@@ -6,18 +6,18 @@
 ## Generator functions
 ##
 
-def Box = moduleLoad(["core", "Box"]);
+def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["core", "Collection"]);
 
-def FilterGenerator = localLoad(["FilterGenerator"]);
+def FilterGenerator   = localLoad(["FilterGenerator"]);
 def ListWrapGenerator = localLoad(["ListWrapGenerator"]);
-def NullGenerator = localLoad(["NullGenerator"]);
-def OptGenerator = localLoad(["OptGenerator"]);
-def ParaGenerator = localLoad(["ParaGenerator"]);
-def RepeatGenerator = localLoad(["RepeatGenerator"]);
-def SerialGenerator = localLoad(["SerialGenerator"]);
-def ValueGenerator = localLoad(["ValueGenerator"]);
-def unboundedCollect = localLoad(["unboundedCollect"]);
+def NullGenerator     = localLoad(["NullGenerator"]);
+def OptGenerator      = localLoad(["OptGenerator"]);
+def ParaGenerator     = localLoad(["ParaGenerator"]);
+def RepeatGenerator   = localLoad(["RepeatGenerator"]);
+def SerialGenerator   = localLoad(["SerialGenerator"]);
+def ValueGenerator    = localLoad(["ValueGenerator"]);
+def unboundedCollect  = localLoad(["unboundedCollect"]);
 
 ##
 ## Exported Definitions

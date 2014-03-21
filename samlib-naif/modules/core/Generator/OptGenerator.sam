@@ -9,7 +9,7 @@
 
 def Box = moduleLoad(["core", "Box"]);
 
-def ValueGenerator = localLoad(["ValueGenerator"]);
+def ValueGenerator   = localLoad(["ValueGenerator"]);
 def unboundedCollect = localLoad(["unboundedCollect"])::unboundedCollect;
 
 

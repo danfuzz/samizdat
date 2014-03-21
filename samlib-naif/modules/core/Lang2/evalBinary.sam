@@ -6,7 +6,7 @@
 ## Samizdat Layer 2 Binary Library Support
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
+def Io1   = moduleLoad(["core", "Io1"]);
 def Lang1 = moduleLoad(["core", "Lang1"]);
 
 
