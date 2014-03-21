@@ -27,6 +27,15 @@ PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 ## Private Definitions
 ##
 
+## Same as `PRIMITIVE_CONTEXT`, except augmented with bindings for the
+## standard constants `null`, `false`, and `true`, defined as per the spec.
+def BASE_CONTEXT = {
+    PRIMITIVE_CONTEXT*,
+    null:  @Null,
+    false: @Boolean(0),
+    true:  @Boolean(1)
+};
+
 ## Converts an unstructured string into a list-of-strings, by delimiting on
 ## the given character. Empty strings are discarded from the result list.
 fn splitString(string, delimCh) {
@@ -79,7 +88,7 @@ fn readLibraryFile(name) {
 fn makeModuleSystem() {
     def text = readLibraryFile("ModuleX.sam");
     def tree = Lang0_parseProgram(text);
-    def function = Lang0_eval(PRIMITIVE_CONTEXT, tree);
+    def function = Lang0_eval(BASE_CONTEXT, tree);
 
     <> function()
 };
@@ -91,7 +100,7 @@ fn makeCoreLibrary() {
     def libraryLoader =
         moduleSystem::makeLibraryLoader(
             convertFlatPath(LIBRARY_FLAT_DIR),
-            PRIMITIVE_CONTEXT);
+            BASE_CONTEXT);
 
     <> moduleSystem::localLoad(libraryLoader, ["mainx"])
 };
