@@ -5,6 +5,11 @@
 ##
 ## Module loading mechanism
 ##
+## **Note:** When running fully interpreted, this file is loaded twice. The
+## first time is before any other in-language definitions are made, which is
+## why there are references to internal-form names instead of the more
+## usual `Module::name` style.
+##
 
 ##
 ## Private definitions
@@ -261,11 +266,6 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
     <> result
 };
 
-## Documented in spec.
-fn makeLibraryLoader(path, globals) {
-    <> makeModuleLoader(path, @Null, globals)
-};
-
 
 ##
 ## Exported Definitions
@@ -275,7 +275,6 @@ fn makeLibraryLoader(path, globals) {
     localLoad,
     localRead,
     localExists,
-    makeLibraryLoader,
     makeModuleLoader,
     makeModulesDirectory,
     moduleLoad
