@@ -18,26 +18,29 @@ def globals = localLoad(["globals", "main"]);
 fn init(primitiveContext, libraryDir) {
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
     def earlyGlobals = {primitiveContext*, globals*};
-    def loader =
-        ModuleSystem::makeModuleLoader(libraryDir, @Null, earlyGlobals);
+    def loader = ModuleSystem::makeModulesDirectory(
+        [libraryDir*, "modules"],
+        @Null,
+        earlyGlobals);
+    def load = ModuleSystem::moduleLoad;
 
     ## This is just loaded to set up generic function bindings.
-    moduleLoad(["core", "Boolean"]);
+    load(loader, ["core", "Boolean"]);
 
     <> {
         earlyGlobals*,
-        Bitwise:    moduleLoad(["core", "Bitwise"]),
-        Box:        moduleLoad(["core", "Box"]),
-        Collection: moduleLoad(["core", "Collection"]),
-        Format:     moduleLoad(["core", "Format"]),
-        Generator:  moduleLoad(["core", "Generator"]),
-        Number:     moduleLoad(["proto", "Number"]),
-        Peg:        moduleLoad(["core", "Peg"]),
-        Range:      moduleLoad(["core", "Range"]),
-        Sequence:   moduleLoad(["core", "Sequence"]),
+        Bitwise:    load(loader, ["core", "Bitwise"]),
+        Box:        load(loader, ["core", "Box"]),
+        Collection: load(loader, ["core", "Collection"]),
+        Format:     load(loader, ["core", "Format"]),
+        Generator:  load(loader, ["core", "Generator"]),
+        Number:     load(loader, ["proto", "Number"]),
+        Peg:        load(loader, ["core", "Peg"]),
+        Range:      load(loader, ["core", "Range"]),
+        Sequence:   load(loader, ["core", "Sequence"]),
 
         ## The one higher-layer function that gets exported to the globals.
-        runCommandLine: moduleLoad(["core", "CommandLine"])::runCommandLine
+        runCommandLine: load(loader, ["core", "CommandLine"])::runCommandLine
     }
 };
 
