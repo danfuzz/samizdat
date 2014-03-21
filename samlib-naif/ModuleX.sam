@@ -87,8 +87,8 @@ fn makeModulesDirectory(path, nextModulesDirectory, globals) {
     <> @ModulesDirectory{
         globals,
         next: nextModulesDirectory,
-        path: basePath,
-        loadedBox: makeCell({})
+        basePath: path,
+        loadedBox: Box_makeCell({})
     }
 };
 
@@ -217,7 +217,7 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
         modulesDirectory,
         globals: fullGlobals,
         basePath: path,
-        loadedBox: makeCell({})
+        loadedBox: Box_makeCell({})
     };
 
     <> result
