@@ -24,7 +24,7 @@ fn humanPath(path) {
     ## Prefix each component with `/`, concatenate them all together, and
     ## drop the leading `/`.
     def withSlashes = collect(path, { elem <> cat("/", elem) });
-    <> Sequence_sliceInclusive(withSlashes, 1)
+    <> Sequence_sliceInclusive(cat(withSlashes*), 1)
 };
 
 
