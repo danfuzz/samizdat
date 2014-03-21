@@ -86,7 +86,7 @@ fn readLibraryFile(name) {
 
 ## Reads and evaluates the module system definition.
 fn makeModuleSystem() {
-    def text = readLibraryFile("ModuleX.sam");
+    def text = readLibraryFile("moduleSystem.sam");
     def tree = Lang0_parseProgram(text);
     def function = Lang0_eval(BASE_CONTEXT, tree);
 
@@ -102,7 +102,7 @@ fn makeCoreLibrary() {
             convertFlatPath(LIBRARY_FLAT_DIR),
             BASE_CONTEXT);
 
-    <> moduleSystem::localLoad(libraryLoader, ["mainx"])
+    <> moduleSystem::localLoad(libraryLoader, ["main"])
 };
 
 
