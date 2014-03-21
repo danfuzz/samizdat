@@ -7,8 +7,11 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
-def ListWrapGenerator = submoduleUse("ListWrapGenerator");
-def NullGenerator = submoduleUse("NullGenerator");
+def Box = moduleLoad(["core", "Box"]);
+def Collection = moduleLoad(["core", "Collection"]);
+
+def ListWrapGenerator = localLoad(["ListWrapGenerator"]);
+def NullGenerator = localLoad(["NullGenerator"]);
 
 
 ##

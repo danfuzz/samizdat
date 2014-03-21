@@ -6,15 +6,15 @@
 ## Generator functions
 ##
 
-def FilterGenerator = submoduleUse("FilterGenerator");
-def ListWrapGenerator = submoduleUse("ListWrapGenerator");
-def NullGenerator = submoduleUse("NullGenerator");
-def OptGenerator = submoduleUse("OptGenerator");
-def ParaGenerator = submoduleUse("ParaGenerator");
-def RepeatGenerator = submoduleUse("RepeatGenerator");
-def SerialGenerator = submoduleUse("SerialGenerator");
-def ValueGenerator = submoduleUse("ValueGenerator");
-def unboundedCollect = submoduleUse("unboundedCollect");
+def FilterGenerator = localLoad(["FilterGenerator"]);
+def ListWrapGenerator = localLoad(["ListWrapGenerator"]);
+def NullGenerator = localLoad(["NullGenerator"]);
+def OptGenerator = localLoad(["OptGenerator"]);
+def ParaGenerator = localLoad(["ParaGenerator"]);
+def RepeatGenerator = localLoad(["RepeatGenerator"]);
+def SerialGenerator = localLoad(["SerialGenerator"]);
+def ValueGenerator = localLoad(["ValueGenerator"]);
+def unboundedCollect = localLoad(["unboundedCollect"]);
 
 ##
 ## Exported Definitions

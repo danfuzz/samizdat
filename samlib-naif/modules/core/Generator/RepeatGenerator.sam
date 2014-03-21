@@ -7,9 +7,11 @@
 ##
 ## Payload is `{size, value}`.
 
-def NullGenerator = submoduleUse("NullGenerator");
+def Box = moduleLoad(["core", "Box"]);
+def Io0 = moduleLoad(["core", "Io0"]);
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
+def NullGenerator = localLoad(["NullGenerator"]);
+
 
 
 ##

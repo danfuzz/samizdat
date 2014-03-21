@@ -6,7 +6,9 @@
 ## `ValueGenerator` Type
 ##
 
-def unboundedCollect = submoduleUse("unboundedCollect")::unboundedCollect;
+def Box = moduleLoad(["core", "Box"]);
+
+def unboundedCollect = localLoad(["unboundedCollect"])::unboundedCollect;
 
 
 ##

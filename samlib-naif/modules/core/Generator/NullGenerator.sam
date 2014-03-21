@@ -6,6 +6,8 @@
 ## `nullGenerator` Value and Type
 ##
 
+def Box = moduleLoad(["core", "Box"]);
+
 
 ##
 ## Exported Definitions

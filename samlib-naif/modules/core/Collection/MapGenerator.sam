@@ -7,7 +7,7 @@
 ##
 ## Payload is `{map: map, index: int}`.
 
-def Collection = moduleUse({name: ["proto", "Collection"]});
+def Collection = moduleLoad(["proto", "Collection"]);
 
 
 ##
