@@ -6,14 +6,15 @@
 ## Command line interpreter
 ##
 
-def Format    = moduleLoad(["core", "Format"]);     ## Implicitly used.
-def Generator = moduleLoad(["core", "Generator"]);  ## Implicitly used.
-def Io1       = moduleLoad(["core", "Io1"]);
-def Lang2     = moduleLoad(["core", "Lang2"]);
-def Number    = moduleLoad(["proto", "Number"]);    ## Implicitly used.
-def Peg       = moduleLoad(["core", "Peg"]);
-def Range     = moduleLoad(["core", "Range"]);      ## Implicitly used.
-def Sequence  = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
+def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
+def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
+def Io1          = moduleLoad(["core", "Io1"]);
+def Lang2        = moduleLoad(["core", "Lang2"]);
+def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
+def Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
+def Peg          = moduleLoad(["core", "Peg"]);
+def Range        = moduleLoad(["core", "Range"]);      ## Implicitly used.
+def Sequence     = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
 
 
 ##
