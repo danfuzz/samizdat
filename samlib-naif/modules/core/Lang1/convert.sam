@@ -11,8 +11,9 @@
 ## (at the end of parsing).
 ##
 
-def Range    = moduleLoad(["core", "Range"]);
-def Sequence = moduleLoad(["core", "Sequence"]);
+def Generator = moduleLoad(["core", "Generator"]);
+def Range     = moduleLoad(["core", "Range"]);
+def Sequence  = moduleLoad(["core", "Sequence"]);
 
 def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS                 = Lang0Node::REFS;
