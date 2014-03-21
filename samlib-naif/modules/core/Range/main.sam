@@ -40,8 +40,10 @@ genericBind(rangeAdd, String, String_rangeAdd);
 fn makeClosedRange(firstValue, size, optIncrement?) {
     def increment = ifValueOr { <> optIncrement* } { <> 1 };
 
-    ## `totGt` ensures that `size` is an int.
-    <> ifIs { <> totGt(size, 0) }
+    ifNot { <> hasType(size, Int) }
+        { Io0::die("`size` must be an int.") };
+
+    <> ifIs { <> gt(size, 0) }
         {
             <> @ClosedRange{firstValue, increment, size}
         }
@@ -76,7 +78,7 @@ fn makeExclusiveRange(firstValue, limit, optIncrement?) {
                     Number::sign(increment)),
                 increment));
 
-    ifIs { <> totLe(size, 0) }
+    ifIs { <> le(size, 0) }
         { return Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);
@@ -100,7 +102,7 @@ fn makeInclusiveRange(firstValue, limit, optIncrement?) {
             Number::sub(limitInt, firstInt),
             increment));
 
-    ifIs { <> totLe(size, 0) }
+    ifIs { <> le(size, 0) }
         { return Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);
@@ -109,7 +111,7 @@ fn makeInclusiveRange(firstValue, limit, optIncrement?) {
 ## Documented in spec.
 fn ClosedRange_nextValue(range, box) {
     def data = dataOf(range);
-    <> ifValue { <> totLe(0, data::size) }
+    <> ifValue { <> le(0, data::size) }
         { size ->
             def firstValue = data::firstValue;
             def increment = data::increment;
