@@ -9,6 +9,33 @@
 ## the standard global variable environment.
 ##
 
+def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 def globals = localLoad(["globals", "main"]);
 
-<> moduleLoad(["core", "Globals"])
+## Initializes the world, and returns the final global variable environment.
+## `primitiveContext` is the same as passed into `boot.sam`, and
+## `libraryDir` is list-style absolute path to the system library.
+fn init(primitiveContext, libraryDir) {
+    ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
+    def earlyGlobals = {primitiveContext*, globals*};
+    def loader =
+        ModuleSystem::makeModuleLoader(libraryDir, @Null, earlyGlobals);
+
+    ## This is just loaded to set up generic function bindings.
+    moduleLoad(["core", "Boolean"]);
+
+    <> {
+        earlyGlobals*,
+        Bitwise:    moduleLoad(["core", "Bitwise"]),
+        Box:        moduleLoad(["core", "Box"]),
+        Collection: moduleLoad(["core", "Collection"]),
+        Format:     moduleLoad(["core", "Format"]),
+        Generator:  moduleLoad(["core", "Generator"]),
+        Number:     moduleLoad(["proto", "Number"]),
+        Peg:        moduleLoad(["core", "Peg"]),
+        Range:      moduleLoad(["core", "Range"]),
+        Sequence:   moduleLoad(["core", "Sequence"])
+    }
+};
+
+<> {init}

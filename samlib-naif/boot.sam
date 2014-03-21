@@ -27,15 +27,6 @@ PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 ## Private Definitions
 ##
 
-## Same as `PRIMITIVE_CONTEXT`, except augmented with bindings for the
-## standard constants `null`, `false`, and `true`, defined as per the spec.
-def BASE_CONTEXT = {
-    PRIMITIVE_CONTEXT*,
-    null:  @Null,
-    false: @Boolean(0),
-    true:  @Boolean(1)
-};
-
 ## Converts an unstructured string into a list-of-strings, by delimiting on
 ## the given character. Empty strings are discarded from the result list.
 fn splitString(string, delimCh) {
@@ -88,22 +79,25 @@ fn readLibraryFile(name) {
 fn makeModuleSystem() {
     def text = readLibraryFile("modules/core/ModuleSystem/main.sam");
     def tree = Lang0_parseProgram(text);
-    def function = Lang0_eval(BASE_CONTEXT, tree);
+    def function = Lang0_eval(PRIMITIVE_CONTEXT, tree);
 
     <> function()
 };
 
 ## Builds the core library, by treating it as a module definition to be
-## loaded.
+## loaded. The module exports `init`, which is called to produce the final
+## global variable environment.
 fn makeCoreLibrary() {
+    def libraryDir = convertFlatPath(LIBRARY_FLAT_DIR);
     def moduleSystem = makeModuleSystem();
     def loader =
         moduleSystem::makeModuleLoader(
-            convertFlatPath(LIBRARY_FLAT_DIR),
+            libraryDir,
             @Null,    ## `null` isn't yet defined when this file is parsed.
-            BASE_CONTEXT);
+            PRIMITIVE_CONTEXT);
 
-    <> moduleSystem::localLoad(loader, ["main"])
+    <> moduleSystem::localLoad(loader, ["main"])::init(
+        PRIMITIVE_CONTEXT, libraryDir)
 };
 
 

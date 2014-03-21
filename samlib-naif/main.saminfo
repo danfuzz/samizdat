@@ -6,5 +6,5 @@
     name: ["corelib"],
     version: "0.0.1",
 
-    language: "Lang0"
+    language: "none"
 }
