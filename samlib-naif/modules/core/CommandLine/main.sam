@@ -115,7 +115,7 @@ fn makeGlobals(filePath, args) {
 fn runModule(modulePath, args) {
     def loader = ModuleSystem::makeIntraLoader(
         modulePath,
-        nextzzzzz, ## FIXME!!!
+        moduleLoader(),
         moduleEnvironment());
 
     def main = ModuleSystem::intraLoadMain(loader);
