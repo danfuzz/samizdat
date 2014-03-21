@@ -8,8 +8,10 @@
 ## `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 ## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
-def Box = moduleLoad(["core", "Box"]);
-def Io0 = moduleLoad(["core", "Io0"]);
+def Box       = moduleLoad(["core", "Box"]);
+def Generator = moduleLoad(["core", "Generator"]);
+def Io0       = moduleLoad(["core", "Io0"]);
+def Number    = moduleLoad(["proto", "Number"]);
 
 
 ##

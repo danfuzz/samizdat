@@ -7,7 +7,8 @@
 ##
 
 def Collection = moduleLoad(["core", "Collection"]);
-def Io0 = moduleLoad(["core", "Io0"]);
+def Io0        = moduleLoad(["core", "Io0"]);
+def Range      = moduleLoad(["core", "Range"]);
 
 def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = Lang0Node::REFS;
