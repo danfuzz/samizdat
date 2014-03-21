@@ -6,10 +6,14 @@
 ## Command line interpreter
 ##
 
-def Io1    = moduleLoad(["core", "Io1"]);
-def Lang2  = moduleLoad(["core", "Lang2"]);
-def Module = moduleLoad(["core", "Module"]);
-def Peg    = moduleLoad(["core", "Peg"]);
+def Format    = moduleLoad(["core", "Format"]);     ## Implicitly used.
+def Generator = moduleLoad(["core", "Generator"]);  ## Implicitly used.
+def Io1       = moduleLoad(["core", "Io1"]);
+def Lang2     = moduleLoad(["core", "Lang2"]);
+def Number    = moduleLoad(["proto", "Number"]);    ## Implicitly used.
+def Peg       = moduleLoad(["core", "Peg"]);
+def Range     = moduleLoad(["core", "Range"]);      ## Implicitly used.
+def Sequence  = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
 
 
 ##
@@ -98,7 +102,7 @@ fn suffixFromName(name) {
 ## Makes a global environment, given file path and command-line arguments.
 fn makeGlobals(filePath, args) {
     <> {
-        Module::getExports(moduleLoad(["core", "Globals"]))*,
+        moduleEnvironment()*,
         ARGUMENTS: args,
         PATH:      filePath
     }
@@ -124,7 +128,7 @@ fn runModule(modulePath, args) {
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
     def programText = Io1::readFileUtf8(filePath);
-    def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
+    def langModule = moduleLoad(["core", cat("Lang", langLayer)]);
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(globals, parsedProgram);
 
