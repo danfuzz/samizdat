@@ -9,6 +9,7 @@
 def Collection = moduleLoad(["core", "Collection"]);
 def Io0        = moduleLoad(["core", "Io0"]);
 def Lang0      = moduleLoad(["core", "Lang0"]);
+def Peg        = moduleLoad(["core", "Peg"]);
 def Range      = moduleLoad(["core", "Range"]);
 
 def Lang0Node = moduleLoad(["core", "Lang0Node"]);

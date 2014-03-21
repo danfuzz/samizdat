@@ -7,10 +7,9 @@
 ##
 
 def Collection = moduleLoad(["core", "Collection"]);
-def Generator = moduleLoad(["core", "Generator"]);
-
-## The standard entity map.
-def ENTITY_MAP = moduleUse({name: ["core", "EntityMap"]})::ENTITY_MAP;
+def ENTITY_MAP = moduleLoad(["core", "EntityMap"])::ENTITY_MAP;
+def Generator  = moduleLoad(["core", "Generator"]);
+def Peg        = moduleLoad(["core", "Peg"]);
 
 ## Forward declarations for Layer 2 definitions.
 def tokMultilineComment;

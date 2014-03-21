@@ -6,9 +6,10 @@
 ## Command line interpreter
 ##
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-def Lang2 = moduleUse({name: ["core", "Lang2"]});
-def Module = moduleUse({name: ["core", "Module"]});
+def Io1    = moduleLoad(["core", "Io1"]);
+def Lang2  = moduleLoad(["core", "Lang2"]);
+def Module = moduleLoad(["core", "Module"]);
+def Peg    = moduleLoad(["core", "Peg"]);
 
 
 ##
