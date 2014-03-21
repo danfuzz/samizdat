@@ -81,7 +81,7 @@ fn doModuleLoad(md, path) {
 
             ## A successful void module load result gets silently transformed
             ## to the empty map.
-            def result = ifValueOr { <> localLoad(loader, ["main"]) }
+            def result = ifValueOr { <> localLoadMain(loader) }
                 { <> {} };
 
             Io0_note("        Done.");
@@ -280,8 +280,14 @@ fn makeModuleLoader(path, nextModulesDirectory, globals) {
 ## Exported Definitions
 ##
 
+## Documented in spec.
+fn localLoadMain(loader) {
+    <> localLoad(loader, ["main"])
+};
+
 <> {
     localLoad,
+    localLoadMain,
     localRead,
     localExists,
     makeModuleLoader,
