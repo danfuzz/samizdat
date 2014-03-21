@@ -60,7 +60,7 @@ fn doLoad(md, path) {
 genericBind(
     load,
     @@ModulesDirectory,
-    fn ModuleLoader_load(md, path) {
+    fn ModulesDirectory_load(md, path) {
         def data = dataOf(md);
         def loadedBox = data::loadedBox;
 
