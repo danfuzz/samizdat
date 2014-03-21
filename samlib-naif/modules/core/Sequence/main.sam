@@ -6,10 +6,11 @@
 ## Sequence functions
 ##
 
-def Sequence = moduleUse({name: ["proto", "Sequence"]});
+def Number = moduleLoad(["proto", "Number"]);
+def Sequence = moduleLoad(["proto", "Sequence"]);
 
 ## This just binds generics without adding exports.
-submoduleUse("SequenceGenerator");
+localLoad(["SequenceGenerator"]);
 
 
 ##
