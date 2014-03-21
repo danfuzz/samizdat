@@ -66,7 +66,9 @@ fn doModuleLoad(md, path) {
         {
             Io0_note(cat("    ", humanPath(path)));
             def loader = makeModuleLoader(modulePath, md, data::globals);
-            <> localLoad(loader, ["main"])
+            def result = localLoad(loader, ["main"]);
+            Io0_note("        Done.");
+            <> result
         }
 };
 
@@ -84,7 +86,12 @@ genericBind(
         def result = ifValueOr { <> doModuleLoad(md, path) }
             { <> moduleLoad(data::next, path) };
 
-        Box_store(loadedBox, result);
+        ## Update the contents of `loadedBox`. **Note:** This re-fetches
+        ## `loadedBox` because other modules may have been loaded and stored
+        ## in the process of loading this one.
+        def newLoaded = { Box_fetch(loadedBox)*, (path): result };
+        Box_store(loadedBox, newLoaded);
+
         <> result
     });
 
@@ -167,7 +174,13 @@ genericBind(
             { found -> return found };
 
         def result = doLocalLoad(ml, path);
-        Box_store(loadedBox, result);
+
+        ## Update the contents of `loadedBox`. **Note:** This re-fetches
+        ## `loadedBox` because other modules may have been loaded and stored
+        ## in the process of loading this one.
+        def newLoaded = { Box_fetch(loadedBox)*, (path): result };
+        Box_store(loadedBox, newLoaded);
+
         <> result
     });
 
