@@ -58,13 +58,13 @@ def localExists = makeRegularGeneric("localExists", 2, 2);
 
 ## Helper for `moduleLoad` which does the actual loading.
 fn doModuleLoad(md, path) {
-    Io0_note(cat("    ", humanPath(path)));
     def data = dataOf(md);
     def modulePath = [data::basePath*, path*];
 
     def infoPath = flattenPath([modulePath*, "main.saminfo"]);
     <> ifIs { <> Io0_flatFileExists(infoPath) }
         {
+            Io0_note(cat("    ", humanPath(path)));
             def loader = makeModuleLoader(modulePath, md, data::globals);
             <> localLoad(loader, ["main"])
         }
