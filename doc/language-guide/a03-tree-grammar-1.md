@@ -15,7 +15,11 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
-def Io0 = moduleUse({name: ["core", "Io0"]});
+def Collection = moduleLoad(["core", "Collection"]);
+def Io0        = moduleLoad(["core", "Io0"]);
+def Lang0      = moduleLoad(["core", "Lang0"]);
+def Peg        = moduleLoad(["core", "Peg"]);
+def Range      = moduleLoad(["core", "Range"]);
 
 def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
 def REFS               = Lang0Node::REFS;
