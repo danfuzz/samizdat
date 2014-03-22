@@ -8,6 +8,6 @@
 
 ## This just re-exports stuff defined in submodules.
 <> {
-    (submoduleUse("get_varDefs"))*,
-    (submoduleUse("get_varRefs"))*
+    (intraLoad(["get_varDefs"]))*,
+    (intraLoad(["get_varRefs"]))*
 }

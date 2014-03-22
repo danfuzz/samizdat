@@ -6,7 +6,7 @@
 ## Translate execution trees into corresponding C code.
 ##
 
-def vars = submoduleUse("vars");
+def vars = intraLoad(["vars"]);
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
 

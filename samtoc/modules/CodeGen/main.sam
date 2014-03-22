@@ -7,13 +7,13 @@
 ##
 
 ## This just binds generics.
-submoduleUse("String");
+intraLoad(["String"]);
 
 <> {
-    submoduleUse("Assign")*,
-    submoduleUse("Call")*,
-    submoduleUse("Comment")*,
-    submoduleUse("Return")*,
-    submoduleUse("Statement")*,
-    submoduleUse("protocol")*
+    intraLoad(["Assign"])*,
+    intraLoad(["Call"])*,
+    intraLoad(["Comment"])*,
+    intraLoad(["Return"])*,
+    intraLoad(["Statement"])*,
+    intraLoad(["protocol"])*
 }

@@ -9,11 +9,11 @@
 
 def templateText = submoduleRead("template.txt");
 
-def Interner = submoduleUse("Interner");
-def collectClosures = submoduleUse("collectClosures");
-def internLiterals = submoduleUse("internLiterals");
-def translate = submoduleUse("translate");
-def vars = submoduleUse("vars");
+def Interner = intraLoad(["Interner"]);
+def collectClosures = intraLoad(["collectClosures"]);
+def internLiterals = intraLoad(["internLiterals"]);
+def translate = intraLoad(["translate"]);
+def vars = intraLoad(["vars"]);
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
 def DataCode = moduleUse({name: ["DataCode"]});
