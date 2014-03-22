@@ -67,19 +67,33 @@ fn convertFlatPath(flat) {
     <> splitString(flatAbs, "/")
 };
 
-## Reads the named library file.
-fn readLibraryFile(name) {
+## Loads the named binary file if it exists.
+fn loadBinaryIfPossible(name) {
     def path = cat(LIBRARY_FLAT_DIR, "/", name);
+
     <> ifIs { <> Io0_flatFileExists(path) }
-        { <> Io0_flatReadFileUtf8(path) }
-        { Io0_die(cat("No such core library file: ", path)) }
+        { <> Lang0_evalBinary(PRIMITIVE_CONTEXT, path) }
 };
 
-## Reads and evaluates the module system definition.
-fn makeModuleSystem() {
-    def text = readLibraryFile("modules/core/ModuleSystem/main.sam");
+## Reads and evaluates the named library file.
+fn loadLibraryFile(name) {
+    def path = cat(LIBRARY_FLAT_DIR, "/", name);
+
+    ifNot { <> Io0_flatFileExists(path) }
+        { Io0_die(cat("No such core library file: ", path)) };
+
+    def text = Io0_flatReadFileUtf8(path);
     def tree = Lang0_parseProgram(text);
-    def function = Lang0_eval(PRIMITIVE_CONTEXT, tree);
+    <> Lang0_eval(PRIMITIVE_CONTEXT, tree);
+};
+
+## Reads and evaluates the module system definition. Can handle it being
+## either interpreted or binary.
+fn makeModuleSystem() {
+    def baseName = "modules/core/ModuleSystem/main.";
+    def function = ifValueOr
+        { <> loadBinaryIfPossible(cat(baseName, "samb")) }
+        { <> loadLibraryFile(cat(baseName, "sam")) };
 
     <> function()
 };
