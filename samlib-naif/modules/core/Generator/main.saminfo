@@ -6,7 +6,5 @@
     name: ["core", "Generator"],
     version: "0.0.1",
 
-    globalModuleName: "Generator",
-
     language: "Lang0"
 }

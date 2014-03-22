@@ -6,7 +6,5 @@
     name: ["core", "CommandLine"],
     version: "0.0.1",
 
-    globalExports: ["runCommandLine"],
-
     language: "Lang2"
 }

@@ -6,7 +6,5 @@
     name: ["core", "Format"],
     version: "0.0.1",
 
-    globalModuleName: "Format",
-
     language: "Lang0"
 }

@@ -6,7 +6,5 @@
     name: ["proto", "Number"],
     version: "0.0.1",
 
-    globalModuleName: "Number",
-
     language: "Lang0"
 }

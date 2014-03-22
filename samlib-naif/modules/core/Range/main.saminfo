@@ -6,7 +6,5 @@
     name: ["core", "Range"],
     version: "0.0.1",
 
-    globalModuleName: "Range",
-
     language: "Lang0"
 }
