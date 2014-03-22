@@ -26,24 +26,24 @@ static zvalue lookup(zvalue context, const char *name) {
 
 zvalue eval(zvalue context) {
     zvalue moduleLoad = lookup(context, "moduleLoad");
+    zvalue evalFn;
 
-    if (moduleLoad == NULL) {
-        die("Binding missing: moduleLoad");
-    }
-
-    zvalue langModule = FUN_CALL(
-        moduleLoad,
-        listFromArgs(
-            stringFromUtf8(-1, "core"),
-            stringFromUtf8(-1, "Lang0"),
-            NULL));
-
-    zvalue evalFn = langModule
-        ? lookup(langModule, "eval")
-        : lookup(context, "Lang0_eval");
-
-    if (evalFn == NULL) {
-        die("Binding missing: eval");
+    if (moduleLoad != NULL) {
+        zvalue langModule = FUN_CALL(
+            moduleLoad,
+            listFromArgs(
+                stringFromUtf8(-1, "core"),
+                stringFromUtf8(-1, "Lang0"),
+                NULL));
+        evalFn = lookup(langModule, "eval");
+        if (evalFn == NULL) {
+            die("Binding missing: core.Lang0::eval");
+        }
+    } else {
+        evalFn = lookup(context, "Lang0_eval");
+        if (evalFn == NULL) {
+            die("Binding missing: Lang0_eval");
+        }
     }
 
     return FUN_CALL(evalFn, context, programTree());
