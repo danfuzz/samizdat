@@ -8,6 +8,7 @@
 
 def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
 def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
+def Globals      = moduleLoad(["core", "Globals"]);
 def Io1          = moduleLoad(["core", "Io1"]);
 def Lang2        = moduleLoad(["core", "Lang2"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
@@ -103,7 +104,7 @@ fn suffixFromName(name) {
 ## Makes a global environment, given file path and command-line arguments.
 fn makeGlobals(filePath, args) {
     <> {
-        moduleEnvironment()*,
+        Globals::fullEnvironment()*,
         ARGUMENTS: args,
         PATH:      filePath
     }
@@ -116,7 +117,7 @@ fn runModule(modulePath, args) {
     def loader = ModuleSystem::makeIntraLoader(
         modulePath,
         moduleLoader(),
-        moduleEnvironment());
+        Globals::fullEnvironment());
 
     def main = ModuleSystem::intraLoadMain(loader);
 
