@@ -104,9 +104,15 @@ fn suffixFromName(name) {
 ## Makes a global environment, given file path and command-line arguments.
 fn makeGlobals(filePath, args) {
     <> {
+        ## The standard global environment.
         Globals::fullEnvironment()*,
+
+        ## Special bindings for individual scripts.
         ARGUMENTS: args,
-        PATH:      filePath
+        PATH:      filePath,
+
+        ## Use the system module loader.
+        moduleLoad
     }
 };
 
