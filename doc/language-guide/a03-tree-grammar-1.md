@@ -25,7 +25,7 @@ def Peg        = moduleLoad(["core", "Peg"]);
 def Range      = moduleLoad(["core", "Range"]);
 def Sequence   = moduleLoad(["core", "Sequence"]);
 
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = Lang0Node::REFS;
 def get_formals        = Lang0Node::get_formals;
 def get_interpolate    = Lang0Node::get_interpolate;
