@@ -2,12 +2,12 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def CodeGen = moduleUse({name: ["CodeGen"]});
+def CodeGen = moduleLoad(["CodeGen"]);
 
-def VarCalc = moduleUse({name: ["VarCalc"]});
+def VarCalc = moduleLoad(["VarCalc"]);
 def get_varRefs = VarCalc::get_varRefs;
 
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def get_formals  = Lang0Node::get_formals;
 def get_yieldDef = Lang0Node::get_yieldDef;
 

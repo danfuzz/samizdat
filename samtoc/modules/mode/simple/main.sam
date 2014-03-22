@@ -15,16 +15,16 @@ def internLiterals = intraLoad(["internLiterals"]);
 def translate = intraLoad(["translate"]);
 def vars = intraLoad(["vars"]);
 
-def CodeGen = moduleUse({name: ["CodeGen"]});
-def DataCode = moduleUse({name: ["DataCode"]});
-def Template = moduleUse({name: ["Template"]});
+def CodeGen = moduleLoad(["CodeGen"]);
+def DataCode = moduleLoad(["DataCode"]);
+def Template = moduleLoad(["Template"]);
 
-def VarCalc = moduleUse({name: ["VarCalc"]});
+def VarCalc = moduleLoad(["VarCalc"]);
 def get_varRefs = VarCalc::get_varRefs;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
 def get_function   = Lang0Node::get_function;
@@ -37,8 +37,8 @@ def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-def Lang2 = moduleUse({name: ["core", "Lang2"]});
+def Io1 = moduleLoad(["core", "Io1"]);
+def Lang2 = moduleLoad(["core", "Lang2"]);
 
 def flatten = CodeGen::flatten;
 def indent = CodeGen::indent;

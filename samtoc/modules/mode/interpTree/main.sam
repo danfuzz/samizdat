@@ -10,12 +10,12 @@
 
 def templateText = intraRead(["template.txt"]);
 
-def CodeGen = moduleUse({name: ["CodeGen"]});
-def DataCode = moduleUse({name: ["DataCode"]});
-def Template = moduleUse({name: ["Template"]});
+def CodeGen = moduleLoad(["CodeGen"]);
+def DataCode = moduleLoad(["DataCode"]);
+def Template = moduleLoad(["Template"]);
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-def Lang2 = moduleUse({name: ["core", "Lang2"]});
+def Io1 = moduleLoad(["core", "Io1"]);
+def Lang2 = moduleLoad(["core", "Lang2"]);
 
 fn compile(sourcePath, targetPath) {
     def sourceText = Io1::readFileUtf8(sourcePath);
