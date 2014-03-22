@@ -25,20 +25,17 @@ static zvalue lookup(zvalue context, const char *name) {
 }
 
 zvalue eval(zvalue context) {
-    zvalue moduleGetFn = lookup(context, "moduleGet");
+    zvalue moduleLoad = lookup(context, "moduleLoad");
 
-    if (moduleGetFn == NULL) {
-        die("Binding missing: moduleGet");
+    if (moduleLoad == NULL) {
+        die("Binding missing: moduleLoad");
     }
 
     zvalue langModule = FUN_CALL(
-        moduleGetFn,
-        mapFromArgs(
-            stringFromUtf8(-1, "name"),
-            listFromArgs(
-                stringFromUtf8(-1, "core"),
-                stringFromUtf8(-1, "Lang0"),
-                NULL),
+        moduleLoad,
+        listFromArgs(
+            stringFromUtf8(-1, "core"),
+            stringFromUtf8(-1, "Lang0"),
             NULL));
 
     zvalue evalFn = langModule
