@@ -105,7 +105,7 @@ genericBind(
         ifValue { <> get(Box_fetch(loadedBox), path) }
             { found ->
                 ifIs { <> eq(found, "loading") }
-                    { Io0_die("Module load loop: ", flattenPath(path)) };
+                    { Io0_die(cat("Module load loop: ", flattenPath(path))) };
                 return found*
             };
 
