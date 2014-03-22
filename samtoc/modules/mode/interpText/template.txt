@@ -17,19 +17,14 @@ static zvalue lookup(zvalue context, const char *name) {
 }
 
 zvalue eval(zvalue context) {
-    zvalue moduleUse = lookup(context, "moduleUse");
+    zvalue moduleLoad = lookup(context, "moduleLoad");
 
     zvalue langModuleName[2] = {
         stringFromUtf8(-1, "core"),
         stringFromUtf8(-1, "Lang2")
     };
 
-    zvalue langModuleSpec =
-        collPut(
-            EMPTY_MAP,
-            stringFromUtf8(-1, "name"),
-            listFromArray(2, langModuleName));
-
+    zvalue langModuleSpec = listFromArray(2, langModuleName);
     zvalue langModule = FUN_CALL(moduleUse, langModuleSpec);
     zvalue parseProgram = lookup(langModule, "parseProgram");
     zvalue evalFn = lookup(langModule, "eval");
