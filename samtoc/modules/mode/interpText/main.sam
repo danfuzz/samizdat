@@ -9,7 +9,7 @@
 ##
 
 def Template = moduleUse({name: ["Template"]});
-def templateText = submoduleRead("template.txt");
+def templateText = intraRead(["template.txt"]);
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
 

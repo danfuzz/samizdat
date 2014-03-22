@@ -8,7 +8,7 @@
 ## interpreter (hence the name's prefix).
 ##
 
-def templateText = submoduleRead("template.txt");
+def templateText = intraRead(["template.txt"]);
 
 def CodeGen = moduleUse({name: ["CodeGen"]});
 def DataCode = moduleUse({name: ["DataCode"]});

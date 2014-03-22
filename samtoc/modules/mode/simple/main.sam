@@ -7,7 +7,7 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
-def templateText = submoduleRead("template.txt");
+def templateText = intraRead(["template.txt"]);
 
 def Interner = intraLoad(["Interner"]);
 def collectClosures = intraLoad(["collectClosures"]);
