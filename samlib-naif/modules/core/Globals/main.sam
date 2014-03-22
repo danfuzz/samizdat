@@ -3,14 +3,72 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Standard global variable context
+## Standard global environment
 ##
-## This is how the variables exported by other modules to the global scope
-## end up getting themselves defined in a module.
 
-def Module = moduleUse({name: ["core", "Module"]});
+##
+## Private Definitions
+##
 
-def allModules = Module::getAllModules();
-def globalsMaps = ( modu in allModules <> Module::getGlobals(modu) );
+## All the early globals. This is evaluated eagerly at load time.
+def EARLY_GLOBALS = {
+    ## Simple constant and function definitions.
+    (intraLoad(["constants"]))*,
+    (intraLoad(["primitives"]))*,
+    (intraLoad(["Value"]))*,
+    (intraLoad(["Type"]))*
+};
 
-<> cat(globalsMaps*)
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+fn earlyEnvironment() {
+    <> EARLY_GLOBALS
+};
+
+## Documented in spec.
+fn fullEnvironment() {
+    ## These `moduleLoad` calls are intentionally delayed, so that this
+    ## file can be successfully loaded before most of the module system is
+    ## ready.
+
+    ## This is just loaded to set up generic function bindings.
+    moduleLoad(["core", "Boolean"]);
+
+    def Bitwise     = moduleLoad(["core", "Bitwise"]);
+    def Box         = moduleLoad(["core", "Box"]);
+    def Collection  = moduleLoad(["core", "Collection"]);
+    def CommandLine = moduleLoad(["core", "CommandLine"]);
+    def Format      = moduleLoad(["core", "Format"]);
+    def Generator   = moduleLoad(["core", "Generator"]);
+    def Number      = moduleLoad(["proto", "Number"]);
+    def Peg         = moduleLoad(["core", "Peg"]);
+    def Range       = moduleLoad(["core", "Range"]);
+    def Sequence    = moduleLoad(["core", "Sequence"]);
+
+    <> {
+        EARLY_GLOBALS*,
+
+        ## Globally-exported modules.
+        Bitwise,
+        Box,
+        Collection,
+        Format,
+        Generator,
+        Number,
+        Peg,
+        Range,
+        Sequence,
+
+        ## The one higher-layer function that gets exported to the environment.
+        runCommandLine: CommandLine::runCommandLine
+    }
+};
+
+<> {
+    earlyEnvironment,
+    fullEnvironment
+}

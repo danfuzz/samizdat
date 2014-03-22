@@ -3,10 +3,8 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    name: ["core", "Module"],
+    name: ["corelib"],
     version: "0.0.1",
 
-    globalExports: ["moduleGet", "moduleUse"],
-
-    language: "Lang1"
+    language: "none"
 }

@@ -6,7 +6,5 @@
     name: ["core", "Box"],
     version: "0.0.1",
 
-    globalModuleName: "Box",
-
     language: "Lang0"
 }

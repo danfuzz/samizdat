@@ -7,7 +7,11 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
-def NullGenerator = submoduleUse("NullGenerator");
+def Box        = moduleLoad(["core", "Box"]);
+def Collection = moduleLoad(["core", "Collection"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
+
+def NullGenerator = intraLoad(["NullGenerator"]);
 
 
 ##

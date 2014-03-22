@@ -7,7 +7,14 @@
 ##
 
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
+def Collection = moduleLoad(["core", "Collection"]);
+def Format     = moduleLoad(["core", "Format"]);
+def Generator  = moduleLoad(["core", "Generator"]);
+def Io0        = moduleLoad(["core", "Io0"]);
+def Number     = moduleLoad(["proto", "Number"]);
+def Peg        = moduleLoad(["core", "Peg"]);
+def Range      = moduleLoad(["core", "Range"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
 
 
 ##
@@ -212,7 +219,7 @@ fn pathFromFlat(string) {
     ## Parse the string into components (or an error string).
     def components = Peg::apply(parPathString, absoluteString);
 
-    ifIs { <> isString(components) }
+    ifIs { <> hasType(components, String) }
         { dieWith(components, string) };
 
     <> components

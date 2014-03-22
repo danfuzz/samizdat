@@ -2,11 +2,11 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def get_varDefs = submoduleUse("get_varDefs")::get_varDefs;
+def get_varDefs = intraLoad(["get_varDefs"])::get_varDefs;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
 def get_function   = Lang0Node::get_function;

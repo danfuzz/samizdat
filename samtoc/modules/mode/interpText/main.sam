@@ -8,10 +8,10 @@
 ## underlying interpreter (hence the name's prefix).
 ##
 
-def Template = moduleUse({name: ["Template"]});
-def templateText = submoduleRead("template.txt");
+def Template = moduleLoad(["Template"]);
+def templateText = intraRead(["template.txt"]);
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def Io1 = moduleLoad(["core", "Io1"]);
 
 fn compile(sourcePath, targetPath) {
     def replacements = {

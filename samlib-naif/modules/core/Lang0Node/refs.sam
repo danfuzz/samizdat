@@ -3,8 +3,9 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
-def constructors1 = submoduleUse("constructors1");
+def Generator = moduleLoad(["core", "Generator"]);
 
+def constructors1 = intraLoad(["constructors1"]);
 def makeCall    = constructors1::makeCall;
 def makeLiteral = constructors1::makeLiteral;
 def makeVarRef  = constructors1::makeVarRef;

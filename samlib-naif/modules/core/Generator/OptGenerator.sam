@@ -7,8 +7,10 @@
 ##
 ## Payload is `subGen`, the sub-generator.
 
-def ValueGenerator = submoduleUse("ValueGenerator");
-def unboundedCollect = submoduleUse("unboundedCollect")::unboundedCollect;
+def Box = moduleLoad(["core", "Box"]);
+
+def ValueGenerator   = intraLoad(["ValueGenerator"]);
+def unboundedCollect = intraLoad(["unboundedCollect"])::unboundedCollect;
 
 
 ##

@@ -6,9 +6,9 @@
 ## Samizdat Layer 1 Evaluation
 ##
 
-def convertToLang0 = submoduleUse("convert")::convertToLang0;
+def Lang0 = moduleLoad(["core", "Lang0"]);
 
-def Lang0 = moduleUse({name: ["core", "Lang0"]});
+def convertToLang0 = intraLoad(["convert"])::convertToLang0;
 
 
 ##

@@ -2,8 +2,8 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def CommandLine = moduleUse({name: ["core", "CommandLine"]});
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def CommandLine = moduleLoad(["core", "CommandLine"]);
+def Io1 = moduleLoad(["core", "Io1"]);
 
 ## Default mode to use
 def DEFAULT_MODE = "simple";
@@ -71,7 +71,7 @@ fn main(selfPath, rawArgs*) {
             Io1::note("Unknown compilation mode: \%q(args::options::mode)");
             return 1
         }();
-    def modeModule = moduleUse({name: ["mode", modeName]});
+    def modeModule = moduleLoad(["mode", modeName]);
 
     if (#sources == 0) {
         Io1::note("No source files specified!");

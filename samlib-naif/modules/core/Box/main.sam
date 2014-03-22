@@ -6,9 +6,9 @@
 ## Box functions
 ##
 
-def Box = moduleUse({name: ["proto", "Box"]});
+def Box = moduleLoad(["proto", "Box"]);
 
-def NullBox = submoduleUse("NullBox");
+def NullBox = intraLoad(["NullBox"]);
 
 
 ##

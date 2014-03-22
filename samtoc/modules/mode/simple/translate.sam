@@ -6,14 +6,14 @@
 ## Translate execution trees into corresponding C code.
 ##
 
-def vars = submoduleUse("vars");
+def vars = intraLoad(["vars"]);
 
-def CodeGen = moduleUse({name: ["CodeGen"]});
+def CodeGen = moduleLoad(["CodeGen"]);
 
-def VarCalc = moduleUse({name: ["VarCalc"]});
+def VarCalc = moduleLoad(["VarCalc"]);
 def get_varRefs = VarCalc::get_varRefs;
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def Io1 = moduleLoad(["core", "Io1"]);
 
 def localVarDecl = vars::localVarDecl;
 def localVarName = vars::localVarName;
@@ -23,7 +23,7 @@ def indent = CodeGen::indent;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
 def get_function   = Lang0Node::get_function;

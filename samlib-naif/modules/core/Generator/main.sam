@@ -6,15 +6,18 @@
 ## Generator functions
 ##
 
-def FilterGenerator = submoduleUse("FilterGenerator");
-def ListWrapGenerator = submoduleUse("ListWrapGenerator");
-def NullGenerator = submoduleUse("NullGenerator");
-def OptGenerator = submoduleUse("OptGenerator");
-def ParaGenerator = submoduleUse("ParaGenerator");
-def RepeatGenerator = submoduleUse("RepeatGenerator");
-def SerialGenerator = submoduleUse("SerialGenerator");
-def ValueGenerator = submoduleUse("ValueGenerator");
-def unboundedCollect = submoduleUse("unboundedCollect");
+def Box        = moduleLoad(["core", "Box"]);
+def Collection = moduleLoad(["core", "Collection"]);
+
+def FilterGenerator   = intraLoad(["FilterGenerator"]);
+def ListWrapGenerator = intraLoad(["ListWrapGenerator"]);
+def NullGenerator     = intraLoad(["NullGenerator"]);
+def OptGenerator      = intraLoad(["OptGenerator"]);
+def ParaGenerator     = intraLoad(["ParaGenerator"]);
+def RepeatGenerator   = intraLoad(["RepeatGenerator"]);
+def SerialGenerator   = intraLoad(["SerialGenerator"]);
+def ValueGenerator    = intraLoad(["ValueGenerator"]);
+def unboundedCollect  = intraLoad(["unboundedCollect"]);
 
 ##
 ## Exported Definitions
@@ -23,7 +26,7 @@ def unboundedCollect = submoduleUse("unboundedCollect");
 ## Documented in spec.
 fn collectAsMap(generator) {
     ## Avoid pointless map->generator->map conversion.
-    ifIs { <> isMap(generator) }
+    ifIs { <> hasType(generator, Map) }
         { return generator };
 
     <> cat({}, generator*)
@@ -103,7 +106,7 @@ fn generatorPump(generator) {
     nextValue,
     optValue,
 
-    ## Re-exported from submodules.
+    ## Re-exported from intramodule files.
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
     makeListWrapGenerator:   ListWrapGenerator::makeListWrapGenerator,
     makeOptGenerator:        OptGenerator::makeOptGenerator,

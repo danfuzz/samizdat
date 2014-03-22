@@ -11,13 +11,13 @@
 ##
 
 ## A known module (shouldn't cause any trouble).
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def Io1 = moduleLoad(["core", "Io1"]);
 
 ## A locally-defined module.
-def Stuff = moduleUse({name: ["app", "Stuff"]});
+def Stuff = moduleLoad(["app", "Stuff"]);
 
 ## Ensure it's not re-evaluated.
-def Stuff2 = moduleUse({name: ["app", "Stuff"]});
+def Stuff2 = moduleLoad(["app", "Stuff"]);
 ifIs { <> ne(Stuff, Stuff2) }
     { Io1::die("Different modules!") };
 

@@ -6,7 +6,7 @@
 ## Int literal demo
 ##
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
+def Io0 = moduleLoad(["core", "Io0"]);
 
 
 ##

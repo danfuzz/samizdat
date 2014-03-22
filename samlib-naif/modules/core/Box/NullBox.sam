@@ -6,7 +6,7 @@
 ## NullBox type.
 ##
 
-def Box = moduleUse({name: ["proto", "Box"]});
+def Box = moduleLoad(["proto", "Box"]);
 
 
 ##

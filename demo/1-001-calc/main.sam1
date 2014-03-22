@@ -6,7 +6,7 @@
 ## Calculator Demo
 ##
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def Io1 = moduleLoad(["core", "Io1"]);
 
 
 ##

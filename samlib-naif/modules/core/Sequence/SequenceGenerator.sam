@@ -7,8 +7,10 @@
 ##
 ## Payload is `{seq: seq, index: int}`.
 
-def Collection = moduleUse({name: ["proto", "Collection"]});
-def Sequence = moduleUse({name: ["proto", "Sequence"]});
+def Box        = moduleLoad(["core", "Box"]);
+def Collection = moduleLoad(["proto", "Collection"]);
+def Number     = moduleLoad(["proto", "Number"]);
+def Sequence   = moduleLoad(["proto", "Sequence"]);
 
 
 ##

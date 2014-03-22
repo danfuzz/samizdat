@@ -11,10 +11,10 @@
 ## Exported Definitions
 ##
 
-## This just re-exports stuff defined in submodules.
+## This just re-exports stuff defined in intramodule files.
 <> {
-    (submoduleUse("constructors1"))*,
-    (submoduleUse("constructors2"))*,
-    (submoduleUse("getters"))*,
-    (submoduleUse("refs"))*
+    (intraLoad(["constructors1"]))*,
+    (intraLoad(["constructors2"]))*,
+    (intraLoad(["getters"]))*,
+    (intraLoad(["refs"]))*
 }

@@ -1,15 +1,22 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Globals / core::Globals0
-------------------------------
+core::Globals
+-------------
 
-The `Globals` module is special: It exports as its bindings all of the
-global variables which are part of the standard evaluation environment.
+The `Globals` module is the provider of the standard global variable
+environment used when evaluating Samizdat source in the usual manner.
 
-As such, you will find it documented by virtue of what is exported as
-globals from other modules as well as what is defined outside the context
-of any module.
+<br><br>
+### In-Language Definitions
 
-The `Globals0` module is an incomplete version of the `Globals` module, used
-during initial system startup.
+#### `earlyEnvironment() <> map`
+
+Returns a map of the simplest constant and function definitions. This
+function is used internally during system bootstrap.
+
+#### `fullEnvironment() <> map`
+
+Returns a map of all of the standard global variable bindings.
+
+Find details of the bindings as noted by the documentation on other modules.

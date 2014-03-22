@@ -6,10 +6,10 @@
 ## Generator functions
 ##
 
-def Collection = moduleUse({name: ["proto", "Collection"]});
+def Collection = moduleLoad(["proto", "Collection"]);
 
 ## This just binds generics without adding exports.
-submoduleUse("MapGenerator");
+intraLoad(["MapGenerator"]);
 
 
 ##

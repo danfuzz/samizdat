@@ -6,7 +6,5 @@
     name: ["core", "Bitwise"],
     version: "0.0.1",
 
-    globalModuleName: "Bitwise",
-
     language: "Lang0"
 }

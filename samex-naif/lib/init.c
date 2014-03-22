@@ -89,7 +89,7 @@ static zvalue evalFile(zvalue directory, zvalue name) {
  * return value from running the in-language library file `main`.
  */
 static zvalue getLibrary(zvalue libraryDir) {
-    zvalue mainFunction = evalFile(libraryDir, STR_main_sam);
+    zvalue mainFunction = evalFile(libraryDir, STR_boot_sam);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.

@@ -6,11 +6,16 @@
 ## Samizdat Layer 1 tree parser
 ##
 
-def tokenize = submoduleUse("tokenize")::tokenize;
+def Collection = moduleLoad(["core", "Collection"]);
+def Format     = moduleLoad(["core", "Format"]);
+def Generator  = moduleLoad(["core", "Generator"]);
+def Io0        = moduleLoad(["core", "Io0"]);
+def Number     = moduleLoad(["proto", "Number"]);
+def Peg        = moduleLoad(["core", "Peg"]);
+def Range      = moduleLoad(["core", "Range"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
-
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = Lang0Node::REFS;
 def get_formals        = Lang0Node::get_formals;
 def get_interpolate    = Lang0Node::get_interpolate;
@@ -35,6 +40,8 @@ def makeVarDefMutable  = Lang0Node::makeVarDefMutable;
 def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
+
+def tokenize = intraLoad(["tokenize"])::tokenize;
 
 
 ##
@@ -708,7 +715,7 @@ parChoicePex := Peg::makeMainSequence(
 
 ## Documented in spec.
 fn parseExpression(expression) {
-    def tokens = ifIs { <> isString(expression) }
+    def tokens = ifIs { <> hasType(expression, String) }
         { <> tokenize(expression) }
         { <> expression };
 
@@ -717,7 +724,7 @@ fn parseExpression(expression) {
 
 ## Documented in spec.
 fn parseProgram(program) {
-    def tokens = ifIs { <> isString(program) }
+    def tokens = ifIs { <> hasType(program, String) }
         { <> tokenize(program) }
         { <> program };
 

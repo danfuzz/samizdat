@@ -65,6 +65,7 @@ TYP(varDefMutable,     "varDefMutable");
 TYP(varRef,            "varRef");
 
 STR(actuals,           "actuals");
+STR(boot_sam,          "boot.sam");
 STR(cat,               "cat");
 STR(collect,           "collect");
 STR(formals,           "formals");
@@ -76,7 +77,6 @@ STR(makeList,          "makeList");
 STR(makeValue,         "makeValue");
 STR(makeValueMap,      "makeValueMap");
 STR(main,              "main");
-STR(main_sam,          "main.sam");
 STR(map,               "map");
 STR(name,              "name");
 STR(optValue,          "optValue");

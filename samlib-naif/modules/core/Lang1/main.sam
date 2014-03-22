@@ -6,18 +6,19 @@
 ## Layer 1 parsing and evaluation functions
 ##
 
-def Lang0 = moduleUse({name: ["core", "Lang0"]});
+def Lang0 = moduleLoad(["core", "Lang0"]);
+
 
 ##
 ## Exported Definitions
 ##
 
-## This just re-exports stuff defined in submodules as well as `evalBinary`
-## which is a re-export from `Lang0`.
+## This just re-exports stuff defined in intramodule files, as well as
+## `evalBinary` which is a re-export from `Lang0`.
 <> {
-    (submoduleUse("convert"))*,
-    (submoduleUse("eval"))*,
-    (submoduleUse("tokenize"))*,
-    (submoduleUse("parse"))*,
+    (intraLoad(["convert"]))*,
+    (intraLoad(["eval"]))*,
+    (intraLoad(["tokenize"]))*,
+    (intraLoad(["parse"]))*,
     evalBinary: Lang0::evalBinary
 }

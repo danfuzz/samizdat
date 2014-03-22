@@ -9,7 +9,7 @@
 ## (very large) map literal corresponding to its contents.
 ##
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def Io1 = moduleLoad(["core", "Io1"]);
 
 
 ## Map of hex digit tokens to int values.

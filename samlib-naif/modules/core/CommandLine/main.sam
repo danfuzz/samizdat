@@ -6,9 +6,16 @@
 ## Command line interpreter
 ##
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
-def Lang2 = moduleUse({name: ["core", "Lang2"]});
-def Module = moduleUse({name: ["core", "Module"]});
+def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
+def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
+def Globals      = moduleLoad(["core", "Globals"]);
+def Io1          = moduleLoad(["core", "Io1"]);
+def Lang2        = moduleLoad(["core", "Lang2"]);
+def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
+def Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
+def Peg          = moduleLoad(["core", "Peg"]);
+def Range        = moduleLoad(["core", "Range"]);      ## Implicitly used.
+def Sequence     = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
 
 
 ##
@@ -97,9 +104,15 @@ fn suffixFromName(name) {
 ## Makes a global environment, given file path and command-line arguments.
 fn makeGlobals(filePath, args) {
     <> {
-        Module::getExports(moduleUse({name: ["core", "Globals"]}))*,
+        ## The standard global environment.
+        Globals::fullEnvironment()*,
+
+        ## Special bindings for individual scripts.
         ARGUMENTS: args,
-        PATH:      filePath
+        PATH:      filePath,
+
+        ## Use the system module loader.
+        moduleLoad
     }
 };
 
@@ -107,10 +120,15 @@ fn makeGlobals(filePath, args) {
 ## loaded as a module. It is expected to export a `main()` function, which
 ## is called with the Posix-style command-line arguments.
 fn runModule(modulePath, args) {
-    def loaded = Module::moduleUse({path: modulePath});
+    def loader = ModuleSystem::makeIntraLoader(
+        modulePath,
+        moduleLoader(),
+        Globals::fullEnvironment());
 
-    if (def main = loaded::main) {
-        return main(modulePath, args*)
+    def main = ModuleSystem::intraLoadMain(loader);
+
+    if (def mainFunc = main::main) {
+        return mainFunc(modulePath, args*)
     } else {
         Io1::die("No `main` exported from primary module.")
     }
@@ -123,7 +141,7 @@ fn runModule(modulePath, args) {
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
     def programText = Io1::readFileUtf8(filePath);
-    def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
+    def langModule = moduleLoad(["core", cat("Lang", langLayer)]);
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(globals, parsedProgram);
 

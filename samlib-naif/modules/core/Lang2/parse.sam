@@ -6,13 +6,17 @@
 ## Samizdat Layer 2 Tree Parser
 ##
 
-def safeVarName = submoduleUse("safeVarName")::safeVarName;
-def tokenize = submoduleUse("tokenize")::tokenize;
+def Collection = moduleLoad(["core", "Collection"]);
+def Format     = moduleLoad(["core", "Format"]);
+def Generator  = moduleLoad(["core", "Generator"]);
+def Io0        = moduleLoad(["core", "Io0"]);
+def Lang0      = moduleLoad(["core", "Lang0"]);
+def Number     = moduleLoad(["proto", "Number"]);
+def Peg        = moduleLoad(["core", "Peg"]);
+def Range      = moduleLoad(["core", "Range"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
-def Lang0 = moduleUse({name: ["core", "Lang0"]});
-
-def Lang0Node = moduleUse({name: ["core", "Lang0Node"]});
+def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = Lang0Node::REFS;
 def get_actuals        = Lang0Node::get_actuals;
 def get_formals        = Lang0Node::get_formals;
@@ -40,6 +44,9 @@ def makeVarDefMutable  = Lang0Node::makeVarDefMutable;
 def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
+
+def safeVarName = intraLoad(["safeVarName"])::safeVarName;
+def tokenize    = intraLoad(["tokenize"])::tokenize;
 
 
 ##
@@ -1088,7 +1095,7 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = Generator::filterAll(dataOf(token)) { elem ->
-            <> ifIs { <> isString(elem) }
+            <> ifIs { <> hasType(elem, String) }
                 { <> makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
@@ -2159,7 +2166,7 @@ parStatement2 := {:
 
 ## Documented in spec.
 fn parseExpression(expression) {
-    def tokens = ifIs { <> isString(expression) }
+    def tokens = ifIs { <> hasType(expression, String) }
         { <> tokenize(expression) }
         { <> expression };
 
@@ -2168,7 +2175,7 @@ fn parseExpression(expression) {
 
 ## Documented in spec.
 fn parseProgram(program) {
-    def tokens = ifIs { <> isString(program) }
+    def tokens = ifIs { <> hasType(program, String) }
         { <> tokenize(program) }
         { <> program };
 

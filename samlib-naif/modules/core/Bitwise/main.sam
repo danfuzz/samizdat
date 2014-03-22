@@ -6,7 +6,8 @@
 ## Bitwise functions
 ##
 
-def Bitwise = moduleUse({name: ["proto", "Bitwise"]});
+def Bitwise = moduleLoad(["proto", "Bitwise"]);
+def Number = moduleLoad(["proto", "Number"]);
 
 
 ##

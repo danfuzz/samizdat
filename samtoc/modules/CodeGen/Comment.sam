@@ -6,8 +6,8 @@
 ## Comment tree.
 ##
 
-def indentation = submoduleUse("indentation")::indentation;
-def protocol = submoduleUse("protocol");
+def indentation = intraLoad(["indentation"])::indentation;
+def protocol = intraLoad(["protocol"]);
 
 def flatten = protocol::flatten;
 def indent = protocol::indent;
