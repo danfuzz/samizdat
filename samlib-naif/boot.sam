@@ -16,73 +16,45 @@
 ##   variables. All these variables are also defined in the variable context
 ##   in which this file is evaluated.
 ##
-## * `LIBRARY_FLAT_DIR` is expected to be a flat path (simple string with
-##   slashes separating components) naming the directory where library files
-##   are to be found.
+## * `LIBRARY_PATH` is expected to be an absolute path (in the form of a list
+##   of string components) naming the directory where library files are to be
+##   found.
 
-PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
+PRIMITIVE_CONTEXT, LIBRARY_PATH ->
 
 
 ##
 ## Private Definitions
 ##
 
-## Converts an unstructured string into a list-of-strings, by delimiting on
-## the given character. Empty strings are discarded from the result list.
-fn splitString(string, delimCh) {
-    ## Appends `one` to the end of `list`, ignoring empty strings.
-    fn appendNonempty(list, one) {
-        <> ifIs { <> eq(one, "") }
-            { <> list }
-            { <> [list*, one] }
-    };
-
-    var str = string;
-    var result = [];
-    var nextItem = "";
-
-    loop {
-        ifIs { <> eq(str, "") }
-            { return appendNonempty(result, nextItem) };
-
-        def ch = Sequence_nth(str, 0);
-        str := Sequence_sliceInclusive(str, 1);
-
-        ifIs { <> eq(ch, delimCh) }
-            {
-                result := appendNonempty(result, nextItem);
-                nextItem := ""
-            }
-            { nextItem := cat(nextItem, ch) }
-    }
-};
-
-## Converts a flat path into an absolute structured (list of components)
-## version. This prepends the current directory if the given path is
-## not absolute.
-fn convertFlatPath(flat) {
-    def flatAbs = ifIs { <> eq(Sequence_nth(flat, 0), "/") }
-        { <> flat }
-        { <> cat(Io0_flatCwd(), "/", flat) };
-    <> splitString(flatAbs, "/")
+## Flattens an absolute path to a simple name, optionally adding a suffix
+## to the final path component.
+##
+## **Note:** This function is a (low rent) duplicate of functionality in
+## `Io*` modules, because this function needs to be called before the `Io*`
+## modules are loaded.
+fn flattenPath(path, optSuffix?) {
+    ## Prefix each component with `/`, and concatenate them all together.
+    def withSlashes = collect(path, { elem <> cat("/", elem) });
+    <> cat(withSlashes*, optSuffix*);
 };
 
 ## Loads the named binary file if it exists.
-fn loadBinaryIfPossible(name) {
-    def path = cat(LIBRARY_FLAT_DIR, "/", name);
+fn loadBinaryIfPossible(path) {
+    def flatPath = flattenPath(path);
 
-    <> ifIs { <> Io0_flatFileExists(path) }
-        { <> Lang0_evalBinary(PRIMITIVE_CONTEXT, path) }
+    <> ifIs { <> Io0_flatFileExists(flatPath) }
+        { <> Lang0_evalBinary(PRIMITIVE_CONTEXT, flatPath) }
 };
 
 ## Reads and evaluates the named library file.
-fn loadLibraryFile(name) {
-    def path = cat(LIBRARY_FLAT_DIR, "/", name);
+fn loadLibraryFile(path) {
+    def flatPath = flattenPath(path);
 
-    ifNot { <> Io0_flatFileExists(path) }
-        { Io0_die(cat("No such core library file: ", path)) };
+    ifNot { <> Io0_flatFileExists(flatPath) }
+        { Io0_die(cat("No such core library file: ", flatPath)) };
 
-    def text = Io0_flatReadFileUtf8(path);
+    def text = Io0_flatReadFileUtf8(flatPath);
     def tree = Lang0_parseProgram(text);
     <> Lang0_eval(PRIMITIVE_CONTEXT, tree);
 };
@@ -90,10 +62,10 @@ fn loadLibraryFile(name) {
 ## Reads and evaluates the module system definition. Can handle it being
 ## either interpreted or binary.
 fn makeModuleSystem() {
-    def baseName = "modules/core/ModuleSystem/main.";
+    def path = [LIBRARY_PATH*, "modules", "core", "ModuleSystem"];
     def function = ifValueOr
-        { <> loadBinaryIfPossible(cat(baseName, "samb")) }
-        { <> loadLibraryFile(cat(baseName, "sam")) };
+        { <> loadBinaryIfPossible([path*, "main.samb"]) }
+        { <> loadLibraryFile([path*, "main.sam"]) };
 
     <> function()
 };
@@ -102,15 +74,15 @@ fn makeModuleSystem() {
 ## loaded. The module exports `init`, which is called to produce the final
 ## global variable environment.
 fn makeCoreLibrary() {
-    def libraryDir = convertFlatPath(LIBRARY_FLAT_DIR);
     def moduleSystem = makeModuleSystem();
     def loader =
         moduleSystem::makeIntraLoader(
-            libraryDir,
+            LIBRARY_PATH,
             @Null,    ## `null` isn't yet defined when this file is parsed.
             PRIMITIVE_CONTEXT);
 
-    <> moduleSystem::intraLoadMain(loader)::init(libraryDir)
+    <> moduleSystem::intraLoadMain(loader)::init(
+        PRIMITIVE_CONTEXT, LIBRARY_PATH)
 };
 
 

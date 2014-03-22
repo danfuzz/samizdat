@@ -13,16 +13,17 @@ def Globals      = moduleLoad(["core", "Globals"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 
 ## Initializes the world, and returns the final global variable environment.
-## `libraryDir` is a list-style absolute path to the system library.
-fn init(libraryDir) {
+## `primitiveContext` and `libraryPath` are the same as what gets passed to
+## the `boot` file.
+fn init(primitiveContext, libraryPath) {
     def earlyGlobals = {
-        moduleEnvironment()*,
+        primitiveContext*,
         Globals::earlyEnvironment()*
     };
 
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
     def loader = ModuleSystem::makeModuleLoader(
-        [libraryDir*, "modules"],
+        [libraryPath*, "modules"],
         @Null,
         earlyGlobals);
 

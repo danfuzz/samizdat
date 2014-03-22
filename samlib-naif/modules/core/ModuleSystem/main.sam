@@ -235,24 +235,21 @@ fn makeIntraLoader(path, nextModuleLoader, globals) {
     def moduleLoader = makeModuleLoader(
         [path*, "modules"], nextModuleLoader, globals);
 
-    ## Forward declarations, for recursive references in the `module_*`
+    ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
     def result;
-    def fullGlobals;
 
     fn module_intraExists(path)   { <> intraExists(result, path)      };
     fn module_intraLoad(path)     { <> intraLoad(result, path)        };
     fn module_intraRead(path)     { <> intraRead(result, path)        };
-    fn module_moduleEnvironment() { <> fullGlobals                    };
     fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
     fn module_moduleLoader()      { <> moduleLoader                   };
 
-    fullGlobals := {
+    def fullGlobals = {
         globals*,
         intraExists:       module_intraExists,
         intraLoad:         module_intraLoad,
         intraRead:         module_intraRead,
-        moduleEnvironment: module_moduleEnvironment,
         moduleLoad:        module_moduleLoad,
         moduleLoader:      module_moduleLoader
     };
