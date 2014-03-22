@@ -6,7 +6,7 @@
 ## Derived value literal demo, Layer 2 specific
 ##
 
-def Io1 = moduleUse({name: ["core", "Io1"]});
+def Io1 = moduleLoad(["core", "Io1"]);
 
 
 ##
