@@ -13,10 +13,11 @@ def Globals      = moduleLoad(["core", "Globals"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 
 ## Initializes the world, and returns the final global variable environment.
-## `libraryPath` is a list-style absolute path to the system library.
-fn init(libraryPath) {
+## `primitiveContext` and `libraryPath` are the same as what gets passed to
+## the `boot` file.
+fn init(primitiveContext, libraryPath) {
     def earlyGlobals = {
-        moduleEnvironment()*,
+        primitiveContext*,
         Globals::earlyEnvironment()*
     };
 
