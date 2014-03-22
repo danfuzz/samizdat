@@ -88,12 +88,13 @@ static zvalue evalFile(zvalue directory, zvalue name) {
  * Returns a map with all the core library bindings. This is the
  * return value from running the in-language library file `main`.
  */
-static zvalue getLibrary(zvalue libraryDir) {
-    zvalue mainFunction = evalFile(libraryDir, STR_boot_sam);
+static zvalue getLibrary(zvalue libraryFlatPath) {
+    zvalue mainFunction = evalFile(libraryFlatPath, STR_boot_sam);
+    zvalue libraryPath = ioSplitAbsolutePath(libraryFlatPath);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    return FUN_CALL(mainFunction, PRIMITIVE_CONTEXT, libraryDir);
+    return FUN_CALL(mainFunction, PRIMITIVE_CONTEXT, libraryPath);
 }
 
 
@@ -102,7 +103,7 @@ static zvalue getLibrary(zvalue libraryDir) {
  */
 
 /* Documented in header. */
-zvalue libNewContext(const char *libraryDir) {
+zvalue libNewContext(const char *libraryPath) {
     MOD_USE(const);
     MOD_USE(Box);
     MOD_USE(Generator);
@@ -111,7 +112,7 @@ zvalue libNewContext(const char *libraryDir) {
     makePrimitiveContext();
 
     zstackPointer save = datFrameStart();
-    zvalue result = getLibrary(stringFromUtf8(-1, libraryDir));
+    zvalue result = getLibrary(stringFromUtf8(-1, libraryPath));
 
     datFrameReturn(save, result);
 

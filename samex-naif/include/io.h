@@ -48,4 +48,11 @@ zvalue ioFlatReadFileUtf8(zvalue flatPath);
  */
 void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text);
 
+/**
+ * Splits an absolute flat path into an array of slash-separated components.
+ * Does not do error checking beyond requiring a string that starts with a
+ * slash.
+ */
+zvalue ioSplitAbsolutePath(zvalue flatPath);
+
 #endif
