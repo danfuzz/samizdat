@@ -40,21 +40,21 @@ fn flattenPath(path, optSuffix?) {
 };
 
 ## Loads the named binary file if it exists.
-fn loadBinaryIfPossible(name) {
-    def path = flattenPath([LIBRARY_PATH*, name]);
+fn loadBinaryIfPossible(path) {
+    def flatPath = flattenPath(path);
 
-    <> ifIs { <> Io0_flatFileExists(path) }
-        { <> Lang0_evalBinary(PRIMITIVE_CONTEXT, path) }
+    <> ifIs { <> Io0_flatFileExists(flatPath) }
+        { <> Lang0_evalBinary(PRIMITIVE_CONTEXT, flatPath) }
 };
 
 ## Reads and evaluates the named library file.
-fn loadLibraryFile(name) {
-    def path = flattenPath([LIBRARY_PATH*, name]);
+fn loadLibraryFile(path) {
+    def flatPath = flattenPath(path);
 
-    ifNot { <> Io0_flatFileExists(path) }
-        { Io0_die(cat("No such core library file: ", path)) };
+    ifNot { <> Io0_flatFileExists(flatPath) }
+        { Io0_die(cat("No such core library file: ", flatPath)) };
 
-    def text = Io0_flatReadFileUtf8(path);
+    def text = Io0_flatReadFileUtf8(flatPath);
     def tree = Lang0_parseProgram(text);
     <> Lang0_eval(PRIMITIVE_CONTEXT, tree);
 };
@@ -62,10 +62,10 @@ fn loadLibraryFile(name) {
 ## Reads and evaluates the module system definition. Can handle it being
 ## either interpreted or binary.
 fn makeModuleSystem() {
-    def baseName = "modules/core/ModuleSystem/main.";
+    def path = [LIBRARY_PATH*, "modules", "core", "ModuleSystem"];
     def function = ifValueOr
-        { <> loadBinaryIfPossible(cat(baseName, "samb")) }
-        { <> loadLibraryFile(cat(baseName, "sam")) };
+        { <> loadBinaryIfPossible([path*, "main.samb"]) }
+        { <> loadLibraryFile([path*, "main.sam"]) };
 
     <> function()
 };
