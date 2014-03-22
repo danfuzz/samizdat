@@ -6,7 +6,7 @@
 ## Generic function demo
 ##
 
-def Io0 = moduleUse({name: ["core", "Io0"]});
+def Io0 = moduleLoad(["core", "Io0"]);
 
 
 def whatIs = makeRegularGeneric("whatIs", 1, 1);
