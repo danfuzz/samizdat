@@ -68,6 +68,9 @@ family of functions produces useful results.
 defined within this module. `globals` is the global variable environment
 to use when evaluating source.
 
+**Note:** If this loader should not have a module loader, then
+`moduleLoader` should be passed as `null`.
+
 #### `makeModuleLoader(path, nextModuleLoader, globals) <> ModuleLoader`
 
 This creates a module loader, for which the `moduleLoad` function produces
@@ -77,3 +80,6 @@ useful results.
 definition subdirectories. `nextModuleLoader` is the loader to use to find
 required modules that aren't defined within `path`'s hierarchy. `globals`
 is the global variable environment to use when evaluating source.
+
+**Note:** If this loader should not have a next module loader, then
+`nextModuleLoader` should be passed as `null`.
