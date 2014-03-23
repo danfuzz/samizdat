@@ -8,6 +8,9 @@ design and implementation of Samizdat.
 Languages
 ---------
 
+* Ceylon
+  * Ceylon Language &mdash; <http://ceylon-lang.org/>
+
 * Clojure
   * Agents &mdash; <http://clojure.org/agents>
   * Refs and Transactions &mdash; <http://clojure.org/Refs>
