@@ -12,8 +12,8 @@ Languages
   * Agents &mdash; <http://clojure.org/agents>
   * Refs and Transactions &mdash; <http://clojure.org/Refs>
 
-* Coffeescript (interesting syntactic choices) &mdash;
-  <http://coffeescript.org/>
+* Coffeescript
+  * Coffeescript &mdash; <http://coffeescript.org/>
 
 * Elixir
   * The Elixir language (compiles to Erlang VM) &mdash;
