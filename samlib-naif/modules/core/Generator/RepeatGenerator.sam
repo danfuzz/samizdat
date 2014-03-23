@@ -21,7 +21,7 @@ def NullGenerator = intraLoad(["NullGenerator"]);
 
 ## Documented in spec.
 fn makeRepeatGenerator(size, optValue?) {
-    ifIs { perLe(size, 0) }
+    ifIs { <> perLe(size, 0) }
         {
             ifIs { <> perLt(size, 0) }
                 { Io0::die("Invalid negative size for RepeatGenerator.") };
