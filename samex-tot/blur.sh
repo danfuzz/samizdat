@@ -31,10 +31,8 @@ FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
-        '!' '(' \
-            '(' -path '*/core.EntityMap/*' ')' \
-        ')' \
-        '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
+        '(' '!' -path '*/core.EntityMap/*' ')' \
+        '(' -name '*.sam' ')' \
         -print
     ))
 
@@ -46,7 +44,7 @@ EXTRA_FILES=(
         -type f \
         '(' \
             '(' -path '*/core.EntityMap/*' ')' -o \
-            '!' '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
+            '(' '!' -name '*.sam' ')' \
         ')' \
         -print
     ))
