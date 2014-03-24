@@ -143,6 +143,7 @@ zvalue libNewContext(const char *libraryPath) {
     MOD_USE(Box);
     MOD_USE(Generator);
     MOD_USE(Map);
+    MOD_USE(lang);
 
     makePrimitiveContext();
 

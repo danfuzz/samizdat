@@ -1156,8 +1156,6 @@ DEF_PARSE(programBody) {
 
 /* Documented in header. */
 zvalue langParseExpression0(zvalue expression) {
-    MOD_USE(lang);
-
     zvalue tokens;
 
     if (hasType(expression, TYPE_String)) {
@@ -1178,8 +1176,6 @@ zvalue langParseExpression0(zvalue expression) {
 
 /* Documented in header. */
 zvalue langParseProgram0(zvalue program) {
-    MOD_USE(lang);
-
     zvalue tokens;
 
     if (hasType(program, TYPE_String)) {
