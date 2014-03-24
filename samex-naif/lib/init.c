@@ -68,33 +68,68 @@ static void makePrimitiveContext(void) {
 }
 
 /**
- * Reads and evaluates the file whose name is the two given components,
- * concatenated with a `/` in the middle. Evaluation is done using the
- * primitive-only global context.
+ * Loads the named binary file if it exists.
  */
-static zvalue evalFile(zvalue directory, zvalue name) {
-    zstackPointer save = datFrameStart();
+static zvalue loadBinaryIfPossible(zvalue flatPath) {
+    if (!ioFlatFileExists(flatPath)) {
+        return NULL;
+    }
 
-    zvalue path = GFN_CALL(cat, directory, STR_CH_SLASH, name);
-    zvalue programText = ioFlatReadFileUtf8(path);
-    zvalue programTree = langParseProgram0(programText);
-    zvalue result = langEval0(PRIMITIVE_CONTEXT, programTree);
+    return datEvalBinary(PRIMITIVE_CONTEXT, flatPath);
+};
 
-    datFrameReturn(save, result);
-    return result;
-}
+/**
+ * Reads and evaluates the named source file.
+ */
+static zvalue loadSource(zvalue flatPath) {
+    if (!ioFlatFileExists(flatPath)) {
+        die("Missing bootstrap library file: %s", valDebugString(flatPath));
+    }
+
+    zvalue text = ioFlatReadFileUtf8(flatPath);
+    zvalue tree = langParseProgram0(text);
+    return langEval0(PRIMITIVE_CONTEXT, tree);
+};
 
 /**
  * Returns a map with all the core library bindings. This is the
- * return value from running the top-level in-language library file `boot`.
+ * return value from loading the top-level in-language library file `main`
+ * and calling its `main` function.
  */
 static zvalue getLibrary(zvalue libraryFlatPath) {
-    zvalue mainFunction = evalFile(libraryFlatPath, STR_boot_sam);
+    zstackPointer save = datFrameStart();
     zvalue libraryPath = ioSplitAbsolutePath(libraryFlatPath);
 
-    // It is the responsibility of the `main` core library program
-    // to return the full set of core library bindings.
-    return FUN_CALL(mainFunction, PRIMITIVE_CONTEXT, libraryPath);
+    // Evaluate `ModuleSystem`. Works with either source or binary.
+
+    zvalue moduleSystemFn = loadBinaryIfPossible(
+        GFN_CALL(cat, libraryFlatPath,
+            stringFromUtf8(-1, "/modules/core.ModuleSystem/main.samb")));
+
+    if (moduleSystemFn == NULL) {
+        moduleSystemFn = loadSource(
+            GFN_CALL(cat, libraryFlatPath,
+                stringFromUtf8(-1, "/modules/core.ModuleSystem/main.sam")));
+    }
+
+    zvalue moduleSystem = FUN_CALL(moduleSystemFn);
+
+    // Make a module system loader for the core library.
+    zvalue makeIntraLoader = collGet(moduleSystem, STR_makeIntraLoader);
+    zvalue loader = FUN_CALL(makeIntraLoader,
+        libraryPath, TOK_Null, PRIMITIVE_CONTEXT);
+
+    // Use the module system instance to load the top-level `main` module
+    // definition file.
+    zvalue intraLoadMain = collGet(moduleSystem, STR_intraLoadMain);
+    zvalue mainModule = FUN_CALL(intraLoadMain, loader);
+
+    // Look up `main` in the loaded result, and call it as a function.
+    zvalue main = collGet(mainModule, STR_main);
+    zvalue result = FUN_CALL(main, PRIMITIVE_CONTEXT, libraryPath);
+
+    datFrameReturn(save, result);
+    return result;
 }
 
 
