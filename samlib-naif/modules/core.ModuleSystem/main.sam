@@ -23,10 +23,16 @@ def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: @Null};
 ## characters (`\0`) in them. It returns the component prefixed with `.`
 ## on success.
 fn flattenModuleComponent(component) {
+    ifIs { <> eq(component, "") }
+        { Io0_die("Invalid module path component: empty string") };
+    ifNot { <> hasType(component, String) }
+        { Io0_die("Invalid module path component: not a string") };
+
+    ## `collect` is used here as a "for each," ignoring the collected result.
     collect(component,
         { ch ->
             ifIs { <> get(INVALID_MODULE_CHARS, ch) }
-                { Io0_die("Invalid character in module name.") }
+                { Io0_die("Invalid character in module path component.") }
         });
 
     <> cat(".", component)
@@ -36,6 +42,11 @@ fn flattenModuleComponent(component) {
 ## corresponds to both the "human" name of the module and the directory name
 ## that the module could be found in.
 fn flattenModulePath(name) {
+    ifIs { <> eq(name, []) }
+        { Io0_die("Invalid module path: empty list") };
+    ifNot { <> hasType(name, List) }
+        { Io0_die("Invalid module path: not a list") };
+
     ## Validate each component, prefixing them with `.`. Concatenate them all
     ## together, and drop the leading `.`.
     def withDots = collect(name, flattenModuleComponent);
