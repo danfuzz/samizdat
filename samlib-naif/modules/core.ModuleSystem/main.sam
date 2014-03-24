@@ -130,7 +130,7 @@ genericBind(
         ## The loaded map maps paths to `"loading"` for a load-in-progress
         ## and to `[result]` for a successfully-loaded result.
 
-        ifValue { <> get(Box_fetch(loadedBox), path) }
+        ifValue { <> get(Box_fetch(loadedBox), dotName) }
             { found ->
                 ifIs { <> eq(found, "loading") }
                     { Io0_die(cat("Module load loop: ", dotName)) };
