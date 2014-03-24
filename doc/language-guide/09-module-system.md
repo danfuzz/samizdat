@@ -77,11 +77,11 @@ Once a module has been found and loaded, the loader (or loaders) that
 were used in the process note the result of loading. If asked to re-load the
 same module, they simply return the previously-stored value.
 
-#### Pedantic details
+### Pedantic details
 
-The previous description is meant to be an "in practice" outline of what
-the module search looks like. The actual implementation is actually
-much simpler than the description might have you believe.
+Most of the description in this section is meant to be an "in practice"
+outline of what the module system looks like. The actual implementation is
+actually much simpler than the description might have you believe.
 
 There are two types which interplay to cause module loading to happen.
 
@@ -99,6 +99,9 @@ of *one* module, and (b) a reference to the "next" `ModuleLoader` to
 use. When instantiated, `IntraLoader` makes a `ModuleLoader` which points
 to a `modules` directory under its given filesystem path, and that
 `ModuleLoader` is the one that's used directly by the intra-module code.
+
+The core library is loaded as an `IntraLoader`, as are application modules.
+In the case of an application module, its "next" loader is the core library.
 
 As a final note, though the default module system is implemented in terms
 of the filesystem, all of the behavior of the system is based on generic
