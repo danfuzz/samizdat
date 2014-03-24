@@ -33,7 +33,7 @@ SOURCE_FILES=(
         -type f \
         '!' '(' \
             '(' -depth 1 -name '*.sam' ')' -o \
-            '(' -path '*/EntityMap/*' ')' \
+            '(' -path '*/core.EntityMap/*' ')' \
         ')' \
         '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
         -print
@@ -47,7 +47,7 @@ EXTRA_FILES=(
         -type f \
         '(' \
             '(' -depth 1 -name '*.sam' ')' -o \
-            '(' -path '*/EntityMap/*' ')' -o \
+            '(' -path '*/core.EntityMap/*' ')' -o \
             '!' '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
         ')' \
         -print
