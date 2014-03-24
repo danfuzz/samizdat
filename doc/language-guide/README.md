@@ -15,7 +15,7 @@ Contents:
 * [Control Constructs](06-control.md)
 * [Generators and Filters](07-generator.md)
 * [Parsing](08-parsing.md)
-* [Modules](09-modules.md)
+* [Module System](09-module-system.md)
 * [Actors](10-actors.md)
 * [Execution Trees](11-execution-trees.md)
 * [Parser Trees](12-parser-trees.md)
