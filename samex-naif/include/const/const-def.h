@@ -41,6 +41,7 @@ TOK(CH_SEMICOLON,      ";");
 TOK(CH_SLASH,          "/");
 TOK(CH_STAR,           "*");
 
+TOK(Null,              "Null");
 TOK(break,             "break");
 TOK(continue,          "continue");
 TOK(def,               "def");
@@ -65,7 +66,6 @@ TYP(varDefMutable,     "varDefMutable");
 TYP(varRef,            "varRef");
 
 STR(actuals,           "actuals");
-STR(boot_sam,          "boot.sam");
 STR(cat,               "cat");
 STR(collect,           "collect");
 STR(formals,           "formals");
@@ -73,6 +73,8 @@ STR(function,          "function");
 STR(get,               "get");
 STR(index,             "index");
 STR(interpolate,       "interpolate");
+STR(intraLoadMain,     "intraLoadMain");
+STR(makeIntraLoader,   "makeIntraLoader");
 STR(makeList,          "makeList");
 STR(makeValue,         "makeValue");
 STR(makeValueMap,      "makeValueMap");

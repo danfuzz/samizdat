@@ -312,8 +312,6 @@ static zvalue tokenizeOne(ParseState *state) {
 
 /* Documented in header. */
 zvalue langTokenize0(zvalue string) {
-    MOD_USE(lang);
-
     zstackPointer save = datFrameStart();
 
     zint size = collSize(string);

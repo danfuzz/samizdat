@@ -9,17 +9,21 @@
 ## the standard global variable environment.
 ##
 
+Io0_note("\nLoading module system...");
+
 def Globals      = moduleLoad(["core", "Globals"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 
 ## Initializes the world, and returns the final global variable environment.
-## `primitiveContext` and `libraryPath` are the same as what gets passed to
-## the `boot` file.
-fn init(primitiveContext, libraryPath) {
+## `primitiveContext` is the map of native bindings, and `libraryPath` is
+## the filesystem path to the core library (as a list of strings).
+fn main(primitiveContext, libraryPath) {
     def earlyGlobals = {
         primitiveContext*,
         Globals::earlyEnvironment()*
     };
+
+    Io0_note("\nLoading core library...");
 
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
     def loader = ModuleSystem::makeModuleLoader(
@@ -28,7 +32,10 @@ fn init(primitiveContext, libraryPath) {
         earlyGlobals);
 
     def innerGlobals = ModuleSystem::moduleLoad(loader, ["core", "Globals"]);
-    <> innerGlobals::fullEnvironment()
+    def result = innerGlobals::fullEnvironment();
+
+    Io0_note("    [fin]\n");
+    <> result
 };
 
-<> {init}
+<> {main}

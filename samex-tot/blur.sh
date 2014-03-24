@@ -25,17 +25,14 @@ FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 
-# This skips top-level sources, module definition files, and the `EntityMap`
-# module. The last is because it its hugeness makes for a slow `samtoc` run,
-# and compiling it doesn't really speed it up anyway.
+# This skips top-level `boot` file and the `EntityMap` module. The latter is
+# because it its hugeness makes for a slow `samtoc` run, and compiling it
+# doesn't really speed it up anyway.
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
-        '!' '(' \
-            '(' -depth 1 -name '*.sam' ')' -o \
-            '(' -path '*/EntityMap/*' ')' \
-        ')' \
-        '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
+        '(' '!' -path '*/core.EntityMap/*' ')' \
+        '(' -name '*.sam' ')' \
         -print
     ))
 
@@ -46,9 +43,8 @@ EXTRA_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
         '(' \
-            '(' -depth 1 -name '*.sam' ')' -o \
-            '(' -path '*/EntityMap/*' ')' -o \
-            '!' '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
+            '(' -path '*/core.EntityMap/*' ')' -o \
+            '(' '!' -name '*.sam' ')' \
         ')' \
         -print
     ))

@@ -15,6 +15,44 @@
 ## Private definitions
 ##
 
+## Set-like map of characters that are not allowed in module components.
+def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: @Null};
+
+## Helper for `flattenModulePath`, which processes a single component. It
+## rejects empty components and components with dots, slashes, or null
+## characters (`\0`) in them. It returns the component prefixed with `.`
+## on success.
+fn flattenModuleComponent(component) {
+    ifIs { <> eq(component, "") }
+        { Io0_die("Invalid module path component: empty string") };
+    ifNot { <> hasType(component, String) }
+        { Io0_die("Invalid module path component: not a string") };
+
+    ## `collect` is used here as a "for each," ignoring the collected result.
+    collect(component,
+        { ch ->
+            ifIs { <> get(INVALID_MODULE_CHARS, ch) }
+                { Io0_die("Invalid character in module path component.") }
+        });
+
+    <> cat(".", component)
+};
+
+## Flattens a module path (list of component names) to a simple string, which
+## corresponds to both the "human" name of the module and the directory name
+## that the module could be found in.
+fn flattenModulePath(name) {
+    ifIs { <> eq(name, []) }
+        { Io0_die("Invalid module path: empty list") };
+    ifNot { <> hasType(name, List) }
+        { Io0_die("Invalid module path: not a list") };
+
+    ## Validate each component, prefixing them with `.`. Concatenate them all
+    ## together, and drop the leading `.`.
+    def withDots = collect(name, flattenModuleComponent);
+    <> Sequence_sliceInclusive(cat(withDots*), 1)
+};
+
 ## Flattens an absolute path to a simple name, optionally adding a suffix
 ## to the final path component.
 ##
@@ -71,14 +109,14 @@ def intraExists = makeRegularGeneric("intraExists", 2, 2);
 ##
 
 ## Helper for `moduleLoad` which does the actual loading.
-fn doModuleLoad(md, path) {
+fn doModuleLoad(md, dotName) {
     def data = dataOf(md);
-    def modulePath = [data::basePath*, path*];
+    def modulePath = [data::basePath*, dotName];
 
     def infoPath = flattenPath([modulePath*, "main.saminfo"]);
     <> ifIs { <> Io0_flatFileExists(infoPath) }
         {
-            Io0_note(cat("    ", humanPath(path)));
+            Io0_note(cat("    ", dotName));
             def loader = makeIntraLoader(modulePath, md, data::globals);
 
             ## A successful void module load result gets silently transformed
@@ -98,23 +136,24 @@ genericBind(
     fn ModuleLoader_moduleLoad(md, path) {
         def data = dataOf(md);
         def loadedBox = data::loadedBox;
+        def dotName = flattenModulePath(path);
 
         ## The loaded map maps paths to `"loading"` for a load-in-progress
         ## and to `[result]` for a successfully-loaded result.
 
-        ifValue { <> get(Box_fetch(loadedBox), path) }
+        ifValue { <> get(Box_fetch(loadedBox), dotName) }
             { found ->
                 ifIs { <> eq(found, "loading") }
-                    { Io0_die(cat("Module load loop: ", flattenPath(path))) };
+                    { Io0_die(cat("Module load loop: ", dotName)) };
                 return found*
             };
 
-        updateMapBox(loadedBox, path, "loading");
+        updateMapBox(loadedBox, dotName, "loading");
 
-        def result = ifValueOr { <> doModuleLoad(md, path) }
+        def result = ifValueOr { <> doModuleLoad(md, dotName) }
             { <> moduleLoad(data::next, path) };
 
-        updateMapBox(loadedBox, path, [result]);
+        updateMapBox(loadedBox, dotName, [result]);
         <> result
     });
 
@@ -123,7 +162,7 @@ genericBind(
     moduleLoad,
     @@Null,
     fn Null_moduleLoad(md, path) {
-        Io0_die(cat("Module not found: ", humanPath(path)))
+        Io0_die(cat("Module not found: ", flattenModulePath(path)))
     });
 
 ## Documented in spec.
