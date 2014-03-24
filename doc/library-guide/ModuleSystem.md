@@ -24,6 +24,10 @@ This function will only ever load a given path once. If the same path
 is requested more than once, whatever was returned the first time
 is returned again, without re-evaluating the module.
 
+It is an error (terminating the runtime) if `path` does not correspond to
+a module known to this loader. It is also an error (terminating the runtime)
+if `path` is not a valid module name path (list of strings).
+
 
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
@@ -38,17 +42,26 @@ logical-true and void for logical-false.
 
 This loads and evaluates an intra-module file. The `path` is expected to be
 a list of strings identifying a relative file path within the module's file
-hierarchy.
+hierarchy. The final name in `path` should *not* have a file suffix (such
+as `.sam` or `samb`).
 
 This function will only ever load a given path once. If the same path
 is requested more than once, whatever was returned the first time
 is returned again, without re-evaluating the module.
+
+It is an error (terminating the runtime) if the indicated `path` does not
+correspond to an existing file. It is also an error (terminating the runtime)
+if the indicated `path` failed to be loadable.
+
 
 #### `localRead(loader, path) <> .`
 
 This reads an intra-module file. The `path` is expected to be a list of
 strings identifying a relative file path within the module's file
 hierarchy.
+
+It is an error (terminating the runtime) if the indicated `path` does not
+exist as a file.
 
 
 <br><br>
