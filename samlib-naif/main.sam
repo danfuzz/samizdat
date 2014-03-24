@@ -9,6 +9,8 @@
 ## the standard global variable environment.
 ##
 
+Io0_note("\nLoading module system...");
+
 def Globals      = moduleLoad(["core", "Globals"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 
@@ -21,7 +23,7 @@ fn main(primitiveContext, libraryPath) {
         Globals::earlyEnvironment()*
     };
 
-    Io0_note("Loading core library...");
+    Io0_note("\nLoading core library...");
 
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
     def loader = ModuleSystem::makeModuleLoader(
