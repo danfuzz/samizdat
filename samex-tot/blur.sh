@@ -32,7 +32,6 @@ SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
         '!' '(' \
-            '(' -depth 1 -name 'boot.sam' ')' -o \
             '(' -path '*/core.EntityMap/*' ')' \
         ')' \
         '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
@@ -46,7 +45,6 @@ EXTRA_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
         '(' \
-            '(' -depth 1 -name 'boot.sam' ')' -o \
             '(' -path '*/core.EntityMap/*' ')' -o \
             '!' '(' -name '*.sam' -o -name '*.sam[0-9]' ')' \
         ')' \
