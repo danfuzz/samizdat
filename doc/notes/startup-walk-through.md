@@ -62,4 +62,4 @@ During this process, any time a file is being loaded, the system will
 always first check to see if there is a compiled binary for the file,
 named `baseName.samb`. If that exists, then it's loaded directly. If not,
 the system checks for source named `baseName.sam`, which then gets parsed
-via one of the `core.Lang*` modules.
+and evaluated via one of the `core.Lang*` modules.
