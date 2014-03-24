@@ -62,7 +62,7 @@ fn loadLibraryFile(path) {
 ## Reads and evaluates the module system definition. Can handle it being
 ## either interpreted or binary.
 fn makeModuleSystem() {
-    def path = [LIBRARY_PATH*, "modules", "core", "ModuleSystem"];
+    def path = [LIBRARY_PATH*, "modules", "core.ModuleSystem"];
     def function = ifValueOr
         { <> loadBinaryIfPossible([path*, "main.samb"]) }
         { <> loadLibraryFile([path*, "main.sam"]) };
