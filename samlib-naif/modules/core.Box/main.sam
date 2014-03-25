@@ -17,9 +17,9 @@ def NullBox = intraLoad(["NullBox"]);
 
 ## Documented in spec.
 fn update(box, updateFunction) {
-    <> ifValue { <> Box_fetch(box) }
-        { value <> Box_store(box, updateFunction(value)) }
-        { <> Box_store(box, updateFunction()) }
+    <> ifValue { <> fetch(box) }
+        { value <> store(box, updateFunction(value)) }
+        { <> store(box, updateFunction()) }
 };
 
 <> {

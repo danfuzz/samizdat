@@ -37,7 +37,7 @@ PRIM_DEF(toNumber,                GFN_toNumber);
 PRIM_DEF(toString,                GFN_toString);
 PRIM_DEF(valueOf,                 GFN_valueOf);
 
-// Generic functions: `Bitwise` protocol.
+// Generic functions: `Bitwise` protocol, intended for modularization.
 PRIM_DEF(Bitwise_and,             GFN_and);
 PRIM_DEF(Bitwise_bit,             GFN_bit);
 PRIM_DEF(Bitwise_bitSize,         GFN_bitSize);
@@ -46,10 +46,10 @@ PRIM_DEF(Bitwise_or,              GFN_or);
 PRIM_DEF(Bitwise_shl,             GFN_shl);
 PRIM_DEF(Bitwise_xor,             GFN_xor);
 
-// Generic functions: `Box` protocol, intended for modularization.
-PRIM_DEF(Box_canStore,            GFN_canStore);
-PRIM_DEF(Box_fetch,               GFN_fetch);
-PRIM_DEF(Box_store,               GFN_store);
+// Generic functions: `Box` protocol.
+PRIM_DEF(canStore,                GFN_canStore);
+PRIM_DEF(fetch,                   GFN_fetch);
+PRIM_DEF(store,                   GFN_store);
 
 // Generic functions: `Function` protocol.
 PRIM_DEF(call,                    GFN_call);

@@ -13,6 +13,12 @@ calling mutating operations.
 The `Box` module provides the generic functions of the `Box` protocol,
 as well as related constructors and constants.
 
+The `Box` protocol is defined in a `proto.` module as one
+would expect. However, as a special case, the `Box` generics
+are also exported to the global variable environment. This is because
+they are so commonly used (sometimes overtly, and sometimes "behind the
+scenes").
+
 
 <br><br>
 ### Generic Function Definitions: `Box` protocol
