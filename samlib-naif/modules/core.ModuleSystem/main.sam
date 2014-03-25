@@ -117,7 +117,7 @@ fn doModuleLoad(md, dotName) {
     <> ifIs { <> Io0_flatFileExists(infoPath) }
         {
             Io0_note(cat("    ", dotName));
-            def loader = makeIntraLoader(modulePath, md, data::globals);
+            def loader = makeIntraLoader(modulePath, data::globals, md);
 
             ## A successful void module load result gets silently transformed
             ## to the empty map.
@@ -166,7 +166,7 @@ genericBind(
     });
 
 ## Documented in spec.
-fn makeModuleLoader(path, nextModuleLoader, globals) {
+fn makeModuleLoader(path, globals, nextModuleLoader) {
     <> @ModuleLoader{
         globals,
         next: nextModuleLoader,
@@ -265,7 +265,7 @@ genericBind(
     });
 
 ## Documented in spec.
-fn makeIntraLoader(path, nextModuleLoader, globals) {
+fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## If the module info file (`main.saminfo`) exists, it must evaluate to a
     ## map. If it does not exist, create minimal "anonymous" module info.
     def infoPath = flattenPath([path*, "main.saminfo"]);
@@ -277,7 +277,7 @@ fn makeIntraLoader(path, nextModuleLoader, globals) {
         { <> {name: [], version: "0"} };
 
     def moduleLoader = makeModuleLoader(
-        [path*, "modules"], nextModuleLoader, globals);
+        [path*, "modules"], globals, nextModuleLoader);
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
@@ -328,8 +328,8 @@ fn makeIntraLoader(path, nextModuleLoader, globals) {
 ##
 
 ## Documented in spec.
-fn run(path, moduleLoader, globals, args*) {
-    def loader = makeIntraLoader(path, moduleLoader, globals);
+fn run(path, globals, moduleLoader, args*) {
+    def loader = makeIntraLoader(path, globals, moduleLoader);
     def optMainModule = intraLoadMain(loader)?;
 
     ifIs { <> eq(optMainModule, []) }

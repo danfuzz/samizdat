@@ -118,7 +118,7 @@ static zvalue getLibrary(zvalue libraryFlatPath) {
     // the `main` function bound in the result.
     zvalue runFn = collGet(moduleSystem, STR_run);
     zvalue result = FUN_CALL(runFn,
-        libraryPath, TOK_Null, PRIMITIVE_CONTEXT,
+        libraryPath, PRIMITIVE_CONTEXT, TOK_Null,
         libraryPath, PRIMITIVE_CONTEXT);
 
     datFrameReturn(save, result);

@@ -121,11 +121,8 @@ fn makeGlobals(filePath, args) {
 ## is called with the Posix-style command-line arguments.
 fn runModule(modulePath, args) {
     <> ModuleSystem::run(
-        modulePath,
-        moduleLoader(),
-        Globals::fullEnvironment(),
-        modulePath,
-        args*)
+        modulePath, Globals::fullEnvironment(), moduleLoader(),
+        modulePath, args*)
 };
 
 ## Runs a simple-file-form command-line. In this case, the indicated file

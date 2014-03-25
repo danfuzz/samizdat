@@ -66,7 +66,7 @@ exist as a file.
 <br><br>
 ### In-Language Definitions
 
-#### `makeIntraLoader(path, moduleLoader, globals) <> IntraLoader`
+#### `makeIntraLoader(path, globals, moduleLoader) <> IntraLoader`
 
 This creates and returns an intra-module file loader, for which the `intra*`
 family of functions produces useful results.
@@ -79,7 +79,7 @@ to use when evaluating source.
 **Note:** If this loader should not have a module loader, then
 `moduleLoader` should be passed as `null`.
 
-#### `makeModuleLoader(path, nextModuleLoader, globals) <> ModuleLoader`
+#### `makeModuleLoader(path, globals, nextModuleLoader) <> ModuleLoader`
 
 This creates a module loader, for which the `moduleLoad` function produces
 useful results.
@@ -92,7 +92,7 @@ is the global variable environment to use when evaluating source.
 **Note:** If this loader should not have a next module loader, then
 `nextModuleLoader` should be passed as `null`.
 
-#### `run(path, moduleLoader, globals, args*) <> . | void`
+#### `run(path, globals, moduleLoader, args*) <> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
 `main` binding, and runs it, handing it the given `args`.
@@ -100,7 +100,7 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
-def loader = makeIntraLoader(path, moduleLoader, globals);
+def loader = makeIntraLoader(path, globals, moduleLoader);
 def mainModule = intraLoad(loader, ["main"]);
 <> mainModule::main(args*)
 ```

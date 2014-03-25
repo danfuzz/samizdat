@@ -27,9 +27,7 @@ fn main(libraryPath, primitiveContext) {
 
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
     def loader = ModuleSystem::makeModuleLoader(
-        [libraryPath*, "modules"],
-        @Null,
-        earlyGlobals);
+        [libraryPath*, "modules"], earlyGlobals, @Null);
 
     def innerGlobals = ModuleSystem::moduleLoad(loader, ["core", "Globals"]);
     def result = innerGlobals::fullEnvironment();
