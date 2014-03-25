@@ -24,12 +24,12 @@ fn SequenceGenerator_nextValue(gen, box) {
 
     <> ifValue { <> Sequence::nth(data::seq, index) }
         { value ->
-            Box::store(box, value);
+            store(box, value);
             <> @SequenceGenerator{data*, index: Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).
-            Box::store(box)
+            store(box)
         }
 };
 genericBind(nextValue, @@SequenceGenerator, SequenceGenerator_nextValue);

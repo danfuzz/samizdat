@@ -59,7 +59,7 @@ fn filterPump(filterFunction, generators*) {
                 def box = Box::makePromise();
                 ifValue { <> nextValue(gen, box) }
                     { nextGen ->
-                        filterFunction(Box::fetch(box));
+                        filterFunction(fetch(box));
                         gen := nextGen
                     }
                     {
@@ -75,7 +75,7 @@ fn filterPump(filterFunction, generators*) {
                 def box = Box::makePromise();
                 ifValue { <> nextValue(gen, box) }
                     { nextGen ->
-                        filterFunction(Box::fetch(box)*);
+                        filterFunction(fetch(box)*);
                         gen := nextGen
                     }
                     {

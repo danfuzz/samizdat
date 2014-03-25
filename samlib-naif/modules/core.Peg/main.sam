@@ -43,13 +43,13 @@ fn PegChoice_parse(peg, box, input, items*) {
         def innerBox = Box::makePromise();
         ifValue { <> parse(rule, innerBox, input, items*) }
             { newInput ->
-                Box::store(box, Box::fetch(innerBox));
+                store(box, fetch(innerBox));
                 return newInput
             }
     };
 
     ## No rule succeeded.
-    Box::store(box)
+    store(box)
 };
 genericBind(parse, @@PegChoice, PegChoice_parse);
 
@@ -57,19 +57,19 @@ genericBind(parse, @@PegChoice, PegChoice_parse);
 fn PegCode_parse(peg, box, input, items*) {
     <> ifValue { <> dataOf(peg)(items*) }
         { result ->
-            Box::store(box, result);
+            store(box, result);
             <> input
         }
-        { Box::store(box) };
+        { store(box) };
 };
 genericBind(parse, @@PegCode, PegCode_parse);
 
 ## Documented in spec.
 fn PegEof_parse(peg, box, input, .*) {
     <> ifIs { <> nextValue(input, Box::nullBox) }
-        { Box::store(box) }
+        { store(box) }
         {
-            Box::store(box, null);
+            store(box, null);
             <> input
         }
 };
@@ -77,16 +77,16 @@ genericBind(parse, @@PegEof, PegEof_parse);
 
 ## Documented in spec.
 fn PegFail_parse(peg, box, input, .*) {
-    Box::store(box)
+    store(box)
 };
 genericBind(parse, @@PegFail, PegFail_parse);
 
 ## Documented in spec.
 fn PegLookaheadFailure_parse(peg, box, input, items*) {
     <> ifIs { <> parse(dataOf(peg), Box::nullBox, input, items*) }
-        { Box::store(box) }
+        { store(box) }
         {
-            Box::store(box, null);
+            store(box, null);
             <> input
         }
 };
@@ -111,11 +111,11 @@ fn PegOpt_parse(peg, box, input, items*) {
     def innerBox = Box::makePromise();
     <> ifValue { <> parse(dataOf(peg), innerBox, input, items*) }
         { newInput ->
-            Box::store(box, [Box::fetch(innerBox)]);
+            store(box, [fetch(innerBox)]);
             <> newInput
         }
         {
-            Box::store(box, []);
+            store(box, []);
             <> input
         }
 };
@@ -134,7 +134,7 @@ fn PegRepeat_parse(peg, box, input, items*) {
             { newInput ->
                 ## Successfully parsed the inner rule.
                 remainingInput := newInput;
-                results := [results*, Box::fetch(innerBox)]
+                results := [results*, fetch(innerBox)]
             }
             {
                 ## Failed to parse the inner rule.
@@ -143,11 +143,11 @@ fn PegRepeat_parse(peg, box, input, items*) {
                         ifIs { <> lt(Collection::sizeOf(results), minSize) }
                             {
                                 ## Did not parse minimum required count.
-                                Box::store(box);
+                                store(box);
                                 return
                             }
                     };
-                Box::store(box, results);
+                store(box, results);
                 return remainingInput
             }
     }
@@ -156,7 +156,7 @@ genericBind(parse, @@PegRepeat, PegRepeat_parse);
 
 ## Documented in spec.
 fn PegResult_parse(peg, box, input, .*) {
-    Box::store(box, dataOf(peg));
+    store(box, dataOf(peg));
     <> input
 };
 genericBind(parse, @@PegResult, PegResult_parse);
@@ -175,16 +175,16 @@ fn PegSequence_parse(peg, box, input, items*) {
         ifValue { <> parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
-                results := [results*, Box::fetch(innerBox)]
+                results := [results*, fetch(innerBox)]
             }
             {
                 ## Propagate the failure.
-                Box::store(box);
+                store(box);
                 return
             }
     };
 
-    Box::store(box, Sequence::nthFromEnd(results, 0));
+    store(box, Sequence::nthFromEnd(results, 0));
     <> remainingInput
 };
 genericBind(parse, @@PegSequence, PegSequence_parse);
@@ -203,16 +203,16 @@ fn PegTokenSet_parse(peg, box, input, items*) {
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
-            def item = Box::fetch(innerBox);
+            def item = fetch(innerBox);
             ifIs { <> get(set, typeOf(item)) }
                 {
-                    Box::store(box, item);
+                    store(box, item);
                     return newInput
                 }
         };
 
     ## Either EOF or no match.
-    Box::store(box);
+    store(box);
 };
 genericBind(parse, @@PegTokenSet, PegTokenSet_parse);
 
@@ -223,16 +223,16 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
-            def item = Box::fetch(innerBox);
+            def item = fetch(innerBox);
             ifNot { <> get(set, typeOf(item)) }
                 {
-                    Box::store(box, item);
+                    store(box, item);
                     return newInput
                 }
         };
 
     ## Either EOF or no match.
-    Box::store(box);
+    store(box);
 };
 genericBind(parse, @@PegTokenSetComplement, PegTokenSetComplement_parse);
 
@@ -420,7 +420,7 @@ fn apply(rule, input) {
         { <> input };
 
     <> ifIs { <> parse(rule, box, generator) }
-        { <> Box::fetch(box) }
+        { <> fetch(box) }
 };
 
 ## Documented in spec.

@@ -32,7 +32,7 @@ fn OptGenerator_nextValue(gen, box) {
 
     <> ifValue { <> nextValue(subGen, innerBox) }
         { nextGen ->
-            Box::store(box, [Box::fetch(innerBox)]);
+            store(box, [fetch(innerBox)]);
             <> @OptGenerator(nextGen)
         }
         {

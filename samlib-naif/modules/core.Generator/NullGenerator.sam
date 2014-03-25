@@ -21,7 +21,7 @@ genericBind(collect, @@NullGenerator, NullGenerator_collect);
 
 ## Documented in spec.
 fn NullGenerator_nextValue(gen, box) {
-    Box::store(box)
+    store(box)
 };
 genericBind(nextValue, @@NullGenerator, NullGenerator_nextValue);
 

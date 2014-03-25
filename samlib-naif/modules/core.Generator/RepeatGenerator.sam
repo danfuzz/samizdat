@@ -41,12 +41,12 @@ fn RepeatGenerator_nextValue(gen, box) {
     <> ifIs { <> perGt(size, 0) }
         {
             def value = dataOf(gen)::value;
-            Box::store(box, value);
+            store(box, value);
             <> makeRepeatGenerator(Number::sub(size, 1), value)
         }
         {
             ## Size is `0` or negative.
-            Box::store(box)
+            store(box)
         }
 };
 genericBind(nextValue, @@RepeatGenerator, RepeatGenerator_nextValue);

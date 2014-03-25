@@ -25,12 +25,12 @@ fn ListWrapGenerator_nextValue(gen, box) {
 
     <> ifValue { <> nextValue(dataOf(gen), innerBox) }
         { nextGenerator ->
-            Box::store(box, [Box::fetch(innerBox)]);
+            store(box, [fetch(innerBox)]);
             <> @ListWrapGenerator(nextGenerator)
         }
         {
             ## It became voided.
-            Box::store(box);
+            store(box);
         }
 };
 genericBind(nextValue, @@ListWrapGenerator,
