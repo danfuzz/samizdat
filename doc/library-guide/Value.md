@@ -177,10 +177,6 @@ of type `Type`.
 <br><br>
 ### In-Language Definitions
 
-#### `isInt(value) <> logic`
-
-Returns the given `value` if it is an int. Returns void if not.
-
 #### `isList(value) <> logic`
 
 Returns the given `value` if it is a list. Returns void if not.
