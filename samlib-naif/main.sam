@@ -16,10 +16,10 @@ def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 
 ## Initializes the world, and returns the final global variable environment.
 ## `libraryPath` is the filesystem path to the core library (as a list of
-## strings). `primitiveContext` is the map of native bindings.
-fn main(libraryPath, primitiveContext) {
+## strings). `primitiveEnvironment` is the map of native bindings.
+fn main(libraryPath, primitiveEnvironment) {
     def earlyGlobals = {
-        primitiveContext*,
+        primitiveEnvironment*,
         Globals::earlyEnvironment()*
     };
 
