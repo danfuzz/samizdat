@@ -14,31 +14,31 @@
 def box = Box::makeCell(0);
 
 do {
-    Box::store(box, Box::fetch(box) + 1);
-    if (Box::fetch(box) == 5) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 5) {
         break
     };
-    note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(fetch(box)).")
 };
 
 do { <next> ->
-    Box::store(box, Box::fetch(box) + 1);
-    if (Box::fetch(box) == 10) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 10) {
         continue
-    } else if (Box::fetch(box) == 12) {
+    } else if (fetch(box) == 12) {
         <next>
-    } else if (Box::fetch(box) == 15) {
+    } else if (fetch(box) == 15) {
         break
     };
-    note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(fetch(box)).")
 };
 
 def result = do <out> {
-    Box::store(box, Box::fetch(box) + 1);
-    if (Box::fetch(box) == 20) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 20) {
         <out> "igram"
     };
-    note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(fetch(box)).")
 };
 
 note("Result is \%q(result).");
