@@ -32,13 +32,13 @@ if `path` is not a valid module name path (list of strings).
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
 
-#### `localExists(loader, path) <> path | void`
+#### `intraExists(loader, path) <> path | void`
 
 This indicates if the given intra-module file exists and is a regular
 (non-directory, non-special) file. It returns the given `path` for
 logical-true and void for logical-false.
 
-#### `localLoad(loader, path) <> . | void`
+#### `intraLoad(loader, path) <> . | void`
 
 This loads and evaluates an intra-module file. The `path` is expected to be
 a list of strings identifying a relative file path within the module's file
@@ -53,11 +53,11 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `localRead(loader, path) <> .`
+#### `intraReadUtf8(loader, path) <> .`
 
-This reads an intra-module file. The `path` is expected to be a list of
-strings identifying a relative file path within the module's file
-hierarchy.
+This reads an intra-module file, interpreting it as UTF-8 encoded text.
+The `path` is expected to be a list of strings identifying a relative file
+path within the module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
 exist as a file.
