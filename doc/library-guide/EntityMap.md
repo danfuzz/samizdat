@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::EntityMap
----------------
+core.EntityMap
+--------------
 
 This module defines a map of XML-style entity names to corresponding strings.
 

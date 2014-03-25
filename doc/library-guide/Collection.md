@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Collection / proto::Collection
-------------------------------------
+core.Collection / proto.Collection
+----------------------------------
 
 A `Collection` is a set of key-value mappings. Every `Collection` has
 a defined order of iteration. *Some* `Collection`s allow arbitrary

@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Format (string formatting)
---------------------------------
+core.Format (string formatting)
+-------------------------------
 
 This module provides a handful of functions for taking arbitrary values
 and formatting them into strings. Many of the functions are used

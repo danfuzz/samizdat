@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Io0
----------
+core.Io0
+--------
 
 This module defines primitive I/O operations. It is only meant to be used
 by the lowest layer of core library.

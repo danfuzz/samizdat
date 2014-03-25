@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Globals
--------------
+core.Globals
+------------
 
 The `Globals` module is the provider of the standard global variable
 environment used when evaluating Samizdat source in the usual manner.

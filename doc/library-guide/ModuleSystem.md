@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::ModuleSystem
-------------------
+core.ModuleSystem
+-----------------
 
 This module is the module which knows how to load modules!
 

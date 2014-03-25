@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-proto::Number
--------------
+proto.Number
+------------
 
 `Number` is a protocol for values that can be treated numerically.
 All the generics in this protocol are defined to return the same type

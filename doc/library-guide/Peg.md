@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Peg (parsing)
--------------------
+core.Peg (parsing)
+------------------
 
 Samizdat provides a module of "parsing expression grammar" (a.k.a.
 "PEG") functions, for use in building parsers. Samizdat Layer 1
