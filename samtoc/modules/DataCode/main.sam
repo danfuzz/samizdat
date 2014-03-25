@@ -169,14 +169,14 @@ genericBind(convert, Type, Type_convert);
 ## Converts a derived value or an opaque core value, yielding a tree
 ## that can be stringified with `indent`.
 fn Value_convert(value) {
-    if (isOpaqueValue(value)) {
+    def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
+    def type = typeOf(value);
+
+    if (!typeIsDerivedData(type)) {
         die("Cannot convert opaque non-data value: \%q(value)")
     };
 
-    def type = convert(typeOf(value));
-    def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
-
-    <> CodeGen::makeCall("makeValue", type, data, "NULL")
+    <> CodeGen::makeCall("makeValue", convert(type), data, "NULL")
 };
 genericBind(convert, Value, Value_convert);
 

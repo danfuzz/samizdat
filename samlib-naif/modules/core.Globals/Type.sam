@@ -12,17 +12,10 @@
 ##
 
 ## Documented in spec.
-fn isOpaqueValue(value) {
-    <> ifNot { <> typeIsDerivedData(typeOf(value)) }
-        { <> value }
-};
-
-## Documented in spec.
 fn typeNameOf(value) {
     <> nameOf(typeOf(value))
 };
 
 <> {
-    isOpaqueValue,
     typeNameOf
 }

@@ -249,7 +249,8 @@ fn Value_sourceGeneral(value, adorn) {
     ifValue { <> get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def typeStr = sourceGeneral(typeOf(value), true);
+    def type = typeOf(value);
+    def typeStr = sourceGeneral(type, true);
     def prefix = ifIs { <> eq("@", Sequence::nth(typeStr, 0)) }
         {
             ## The `sliceInclusive` gets rid of the first `@` from the type
@@ -258,7 +259,7 @@ fn Value_sourceGeneral(value, adorn) {
         }
         { <> typeStr };
 
-    ifIs { <> isOpaqueValue(value) }
+    ifNot { <> typeIsDerivedData(type) }
         {
             ## Opaque value, possibly named.
             def body = ifIs { <> canCall(nameOf, value) }
