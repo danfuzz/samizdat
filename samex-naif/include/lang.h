@@ -20,12 +20,12 @@
 
 /**
  * Evaluates the given expression node in the given variable
- * context. Returns the evaluated value of the expression, which
+ * environment. Returns the evaluated value of the expression, which
  * will be `NULL` if the expression did not yield a value.
  *
  * See the Samizdat Layer 0 spec for details on expression nodes.
  */
-zvalue langEval0(zvalue ctx, zvalue node);
+zvalue langEval0(zvalue env, zvalue node);
 
 /**
  * Compiles the given expression text into a parse tree form, suitable

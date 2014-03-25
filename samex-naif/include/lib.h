@@ -14,11 +14,11 @@
 #include "dat.h"
 
 /**
- * Constructs and returns a fresh execution context, containing bindings for
- * all the core library values and functions. `libraryPath` is an absolute
+ * Constructs and returns a fresh execution environment, containing bindings
+ * for all the core library values and functions. `libraryPath` is an absolute
  * filesystem path which is expected to point at a directory containing all
  * the in-language library implementation files.
  */
-zvalue libNewContext(const char *libraryPath);
+zvalue libNewEnvironment(const char *libraryPath);
 
 #endif

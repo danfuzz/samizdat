@@ -185,18 +185,18 @@ void execStatement(Frame *frame, zvalue statement) {
  */
 
 /* Documented in header. */
-zvalue langEval0(zvalue context, zvalue node) {
+zvalue langEval0(zvalue env, zvalue node) {
     Frame frame;
 
-    zint size = collSize(context);
+    zint size = collSize(env);
     zmapping mappings[size];
 
-    arrayFromMap(mappings, context);
+    arrayFromMap(mappings, env);
     for (zint i = 0; i < size; i++) {
         mappings[i].value = makeResult(mappings[i].value);
     }
-    context = mapFromArray(size, mappings);
+    env = mapFromArray(size, mappings);
 
-    frameInit(&frame, NULL, NULL, context);
+    frameInit(&frame, NULL, NULL, env);
     return execExpressionVoidOk(&frame, node);
 }

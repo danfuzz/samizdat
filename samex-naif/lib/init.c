@@ -31,14 +31,14 @@
  * Private Definitions
  */
 
-/** Globals map (context) containing all the primitive definitions. */
-static zvalue PRIMITIVE_CONTEXT = NULL;
+/** Globals map (environment) containing all the primitive definitions. */
+static zvalue PRIMITIVE_ENVIRONMENT = NULL;
 
 /**
- * Sets up `PRIMITIVE_CONTEXT`, if not already done.
+ * Sets up `PRIMITIVE_ENVIRONMENT`, if not already done.
  */
-static void makePrimitiveContext(void) {
-    if (PRIMITIVE_CONTEXT != NULL) {
+static void makePrimitiveEnvironment(void) {
+    if (PRIMITIVE_ENVIRONMENT != NULL) {
         return;
     }
 
@@ -63,8 +63,8 @@ static void makePrimitiveContext(void) {
     #include "prim-def.h"
 
     // Set the final value, and make it immortal.
-    PRIMITIVE_CONTEXT = ctx;
-    datImmortalize(PRIMITIVE_CONTEXT);
+    PRIMITIVE_ENVIRONMENT = ctx;
+    datImmortalize(PRIMITIVE_ENVIRONMENT);
 }
 
 /**
@@ -75,7 +75,7 @@ static zvalue loadBinaryIfPossible(zvalue flatPath) {
         return NULL;
     }
 
-    return datEvalBinary(PRIMITIVE_CONTEXT, flatPath);
+    return datEvalBinary(PRIMITIVE_ENVIRONMENT, flatPath);
 };
 
 /**
@@ -88,7 +88,7 @@ static zvalue loadSource(zvalue flatPath) {
 
     zvalue text = ioFlatReadFileUtf8(flatPath);
     zvalue tree = langParseProgram0(text);
-    return langEval0(PRIMITIVE_CONTEXT, tree);
+    return langEval0(PRIMITIVE_ENVIRONMENT, tree);
 };
 
 /**
@@ -118,8 +118,8 @@ static zvalue getLibrary(zvalue libraryFlatPath) {
     // the `main` function bound in the result.
     zvalue runFn = collGet(moduleSystem, STR_run);
     zvalue result = FUN_CALL(runFn,
-        libraryPath, PRIMITIVE_CONTEXT, TOK_Null,
-        libraryPath, PRIMITIVE_CONTEXT);
+        libraryPath, PRIMITIVE_ENVIRONMENT, TOK_Null,
+        libraryPath, PRIMITIVE_ENVIRONMENT);
 
     datFrameReturn(save, result);
     return result;
@@ -131,14 +131,14 @@ static zvalue getLibrary(zvalue libraryFlatPath) {
  */
 
 /* Documented in header. */
-zvalue libNewContext(const char *libraryPath) {
+zvalue libNewEnvironment(const char *libraryPath) {
     MOD_USE(const);
     MOD_USE(Box);
     MOD_USE(Generator);
     MOD_USE(Map);
     MOD_USE(lang);
 
-    makePrimitiveContext();
+    makePrimitiveEnvironment();
 
     zstackPointer save = datFrameStart();
     zvalue result = getLibrary(stringFromUtf8(-1, libraryPath));
