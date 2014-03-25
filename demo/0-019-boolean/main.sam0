@@ -6,8 +6,6 @@
 ## Boolean demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
@@ -18,8 +16,8 @@ fn expect(name, result, func, args*) {
     def got = func(args*);
     ifNot { <> eq(got, result) }
         {
-            Io0::note(cat("Unexpected result: ", Format::source(got)));
-            Io0::die(cat("For: ", name, " ", Format::source(args)));
+            note(cat("Unexpected result: ", Format::source(got)));
+            die(cat("For: ", name, " ", Format::source(args)));
         }
 };
 
@@ -28,7 +26,7 @@ fn expect(name, result, func, args*) {
 ## Main demos
 ##
 
-Io0::note("Booleans");
+note("Booleans");
 
 expect("and", false, Bitwise::and, false, false);
 expect("and", false, Bitwise::and, false, true);
@@ -84,6 +82,6 @@ expect("toInt", 1, toInt, true);
 expect("toNumber", 0, toNumber, false);
 expect("toNumber", 1, toNumber, true);
 
-Io0::note("All good.");
+note("All good.");
 
 <> 0

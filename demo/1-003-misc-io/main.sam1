@@ -17,15 +17,15 @@ def Io1 = moduleLoad(["core", "Io1"]);
 fn sibling() {
     def reader = Io1::sandboxedReader(Sequence::sliceExclusive(PATH, 0));
     def text = reader(["sibling.txt"]);
-    Io1::note(text);
+    note(text);
 };
 
 ## Demo of finding and non-finding files.
 fn fileExists() {
     fn tryFile(path) {
         ifIs { <> Io1::fileExists(path) }
-            { Io1::note(cat("Exists: ", Format::source(path))) }
-            { Io1::note(cat("Does not exist: ", Format::source(path))) }
+            { note(cat("Exists: ", Format::source(path))) }
+            { note(cat("Does not exist: ", Format::source(path))) }
     };
 
     def base = Sequence::sliceExclusive(PATH, 0);
@@ -35,7 +35,7 @@ fn fileExists() {
 
 ## Emits the stringified version of the given value to the console.
 fn process(value) {
-    Io1::note(Format::source(value));
+    note(Format::source(value));
 };
 
 

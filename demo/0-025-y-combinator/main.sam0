@@ -6,8 +6,6 @@
 ## The venerable Y Combinator and friends
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Combinator Definitions
@@ -112,11 +110,11 @@ def countDown2 = Sequence::nth(countDowns, 0);
 
 ## Emits the stringified version of the given value to the console.
 fn msg(value) {
-    Io0::note(Format::source(value));
+    note(Format::source(value));
 };
 
 msg(countDown(10));
-Io0::note("");
+note("");
 msg(countDown2(5));
 
 <> 0

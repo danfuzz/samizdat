@@ -6,8 +6,6 @@
 ## Loop expression demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Main Tests
@@ -22,7 +20,7 @@ do { <next> ->
     } else if (Box::fetch(box) == 7) {
         <next>
     };
-    Io1::note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(Box::fetch(box)).")
 } while (Box::fetch(box) < 10);
 
 def result1 = do {
@@ -30,19 +28,19 @@ def result1 = do {
     if (Box::fetch(box) == 13) {
         break "blort"
     };
-    Io1::note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(Box::fetch(box)).")
 } while (Box::fetch(box) < 15);
 
-Io1::note("Result is \%q(result1).");
+note("Result is \%q(result1).");
 
 def result2 = do <out> {
     Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) == 18) {
         <out> "frotz"
     };
-    Io1::note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(Box::fetch(box)).")
 } while (Box::fetch(box) < 20);
 
-Io1::note("Result is \%q(result2).");
+note("Result is \%q(result2).");
 
 <> 0

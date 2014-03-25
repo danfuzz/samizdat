@@ -18,7 +18,6 @@ can be used.
 def Collection = moduleLoad(["core", "Collection"]);
 def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
-def Io0        = moduleLoad(["core", "Io0"]);
 def Lang0      = moduleLoad(["core", "Lang0"]);
 def Number     = moduleLoad(["proto", "Number"]);
 def Peg        = moduleLoad(["core", "Peg"]);
@@ -113,7 +112,7 @@ def parParenExpression = {:
         ## also avoid letting a would-be parenthesized expression turn out to
         ## be taken to be a function application argument list.
         @","
-        { Io0::die("Comma not allowed within parenthesized expression.") }
+        { die("Comma not allowed within parenthesized expression.") }
     )?
 
     @")"
@@ -227,7 +226,7 @@ def parNullaryClosure = {:
     {
         def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
-            { Io0::die("Invalid formal argument in code block.") };
+            { die("Invalid formal argument in code block.") };
         <> c
     }
 :};
@@ -239,7 +238,7 @@ def parCodeOnlyClosure = {:
 
     {
         ifIs { <> get_yieldDef(c) }
-            { Io0::die("Invalid yield definition in code block.") };
+            { die("Invalid yield definition in code block.") };
         <> c
     }
 :};
@@ -465,7 +464,7 @@ def parMap = {:
 def parListItem = {:
     parIdentifierString
     @":"
-    { Io0::die("Mapping syntax not valid as a list item or call argument.") }
+    { die("Mapping syntax not valid as a list item or call argument.") }
 |
     parExpression
 :};

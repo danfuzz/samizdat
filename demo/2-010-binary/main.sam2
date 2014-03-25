@@ -6,8 +6,6 @@
 ## Binary operator demo. Also demos hex and binary numbers, and "digit spaces."
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -15,12 +13,12 @@ def Io1 = moduleLoad(["core", "Io1"]);
 
 ## Prints out the given value.
 fn msg(value) {
-    Io1::note(Format::source(value))
+    note(Format::source(value))
 };
 
 ## Prints out the given value in hex.
 fn msgHex(value) {
-    Io1::note("\%x(value)")
+    note("\%x(value)")
 };
 
 ## Returns void.
@@ -34,14 +32,14 @@ fn returnVoid() {
 ##
 
 ## Different bases, and digit spaces.
-Io1::note("Literals");
+note("Literals");
 msg(1);
 msg(1_234);
 msg(0x1004);
 msg(0b1111_1010);
 
 ## Operators.
-Io1::note("\nInt operators");
+note("\nInt operators");
 msg(1 + 2);
 msg(2 - 1);
 msg(3 * 4);
@@ -62,7 +60,7 @@ msgHex(0xff00 >>> 0x8);
 ## Ordering. The ones expected to be "falsey" are surrounded by `??` to
 ## make them easily printable.
 
-Io1::note("\nPer-type Order 1");
+note("\nPer-type Order 1");
 msg(1 == 1);
 msg(1 != 2);
 msg(1 < 3);
@@ -73,7 +71,7 @@ msg("a" == "a");
 msg("a" != "b");
 msg("a" < "c");
 
-Io1::note("\nPer-type Order 2");
+note("\nPer-type Order 2");
 msg((1 != 1)??);
 msg((1 == 2)??);
 msg((1 >= 2)??);
@@ -84,7 +82,7 @@ msg(([1] > [1])??);
 msg(([1] <= [0])??);
 msg(([1] >= [2])??);
 
-Io1::note("\nPer-type Order 3");
+note("\nPer-type Order 3");
 msg(1 < 2 < 20);
 msg(100 == 100 > 21);
 msg(10 >= 5 < 22);
@@ -101,7 +99,7 @@ msg(9 < 10 < 11 < (12 < 13 < 14));
 msg(9 < 10 < 11 < ((13 < 12 < 11) | 14));
 msg(9 < 10 < (11 < (12 < 13 < 14) < 15) < 16);
 
-Io1::note("\nTotal Order 1");
+note("\nTotal Order 1");
 msg(1 \== 1);
 msg(1 \!= 2);
 msg(1 \< 3);
@@ -112,7 +110,7 @@ msg("a" \== "a");
 msg("a" \!= "b");
 msg("a" \< "c");
 
-Io1::note("\nTotal Order 2");
+note("\nTotal Order 2");
 msg((1 \!= 1)??);
 msg((1 \== 2)??);
 msg((1 \>= 2)??);
@@ -123,7 +121,7 @@ msg(([1] \> [1])??);
 msg(([1] \<= [0])??);
 msg(([1] \>= [2])??);
 
-Io1::note("\nTotal Order 3");
+note("\nTotal Order 3");
 msg(1 \< 2 \< 20);
 msg(100 \== 100 \> 21);
 msg(10 \>= 5 \< 22);
@@ -133,7 +131,7 @@ msg((2 \> 3 \== 3)??);
 msg((4 \< 5 \== 6)??);
 msg((9 \< 10 \< 11 \< 12 \!= 12)??);
 
-Io1::note("\nTotal Order 4");
+note("\nTotal Order 4");
 msg(0 \== 0);
 msg(1 \!= "1");
 msg([1] \!= "2");
@@ -151,7 +149,7 @@ msg("1" \>= {13: 13});
 
 ## Logical ops. The ones expected to be "falsey" are surrounded by `??` to
 ## make them easily printable.
-Io1::note("\nLogic 1");
+note("\nLogic 1");
 msg(1 & 2);
 msg(1 & 2 & "three");
 msg((1 == 1) & (4 == 4));
@@ -171,7 +169,7 @@ msg((def x = 1) & -x);
 msg((def foo = 1) & (def bar = -foo) & Number::add(-foo, bar));
 msg((def blort = "th") & (1 == 1) & (def fizmo = "ree") & cat(blort, fizmo));
 
-Io1::note("\nLogic 2");
+note("\nLogic 2");
 msg(10 | true);
 msg(20 | returnVoid());
 msg(returnVoid() | 30);

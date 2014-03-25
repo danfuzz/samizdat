@@ -6,8 +6,6 @@
 ## Comprehension syntax demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -15,9 +13,9 @@ def Io1 = moduleLoad(["core", "Io1"]);
 
 ## Prints generator or collection output.
 fn msg(header, gen) {
-    Io1::note(header);
-    Generator::filterPump(gen) { item <> Io1::note("  \%q(item)") };
-    Io1::note("")
+    note(header);
+    Generator::filterPump(gen) { item <> note("  \%q(item)") };
+    note("")
 };
 
 
@@ -25,7 +23,7 @@ fn msg(header, gen) {
 ## Main Tests
 ##
 
-Io1::note("Concise Forms\n");
+note("Concise Forms\n");
 
 msg("One-item generator",
     (x in ["a", "b", "c"] <> "~~\(x)~~"));
@@ -48,7 +46,7 @@ msg("Simple repeat count collect",
 msg("Size-limited collect",
     [x in (0..), for 7 <> x]);
 
-Io1::note("Extended forms\n");
+note("Extended forms\n");
 
 msg("One-item generator",
     (x in ["a", "b", "c"] ->

@@ -7,7 +7,6 @@
 ##
 
 def Bitwise = moduleLoad(["core", "Bitwise"]);
-def Io0     = moduleLoad(["core", "Io0"]);
 
 
 ##
@@ -49,7 +48,7 @@ fn Boolean_shl(bool, n) {
     def newValue = Bitwise::shl(dataOf(bool), n);
 
     <> ifValueOr { <> get({0: false, 1: true}, newValue) }
-        { Io0::die("Undefined boolean shift result.") }
+        { die("Undefined boolean shift result.") }
 };
 genericBind(Bitwise::shl, @@Boolean, Boolean_shl);
 

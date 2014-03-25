@@ -6,54 +6,52 @@
 ## Demo of formal argument repeat specifiers
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn opt(arg?) {
-    Io0::note(cat("opt() got: ", Format::source(arg)))
+    note(cat("opt() got: ", Format::source(arg)))
 };
 
 fn plus(args+) {
-    Io0::note(cat("plus() got: ", Format::source(args)))
+    note(cat("plus() got: ", Format::source(args)))
 };
 
 fn star(args*) {
-    Io0::note(cat("star() got: ", Format::source(args)))
+    note(cat("star() got: ", Format::source(args)))
 };
 
 fn argOpt(arg1, arg2?) {
-    Io0::note("argOpt() got:");
-    Io0::note(cat("  ", Format::source(arg1)));
-    Io0::note(cat("  ", Format::source(arg2)));
+    note("argOpt() got:");
+    note(cat("  ", Format::source(arg1)));
+    note(cat("  ", Format::source(arg2)));
 };
 
 fn argPlus(arg1, arg2+) {
-    Io0::note("argPlus() got:");
-    Io0::note(cat("  ", Format::source(arg1)));
-    Io0::note(cat("  ", Format::source(arg2)));
+    note("argPlus() got:");
+    note(cat("  ", Format::source(arg1)));
+    note(cat("  ", Format::source(arg2)));
 };
 
 fn argStar(arg1, arg2*) {
-    Io0::note("argStar() got:");
-    Io0::note(cat("  ", Format::source(arg1)));
-    Io0::note(cat("  ", Format::source(arg2)));
+    note("argStar() got:");
+    note(cat("  ", Format::source(arg1)));
+    note(cat("  ", Format::source(arg2)));
 };
 
 fn optStar(arg1?, arg2*) {
-    Io0::note("optStar() got:");
-    Io0::note(cat("  ", Format::source(arg1)));
-    Io0::note(cat("  ", Format::source(arg2)));
+    note("optStar() got:");
+    note(cat("  ", Format::source(arg1)));
+    note(cat("  ", Format::source(arg2)));
 };
 
 fn argOptStar(arg1, arg2?, arg3*) {
-    Io0::note("argOptStar() got:");
-    Io0::note(cat("  ", Format::source(arg1)));
-    Io0::note(cat("  ", Format::source(arg2)));
-    Io0::note(cat("  ", Format::source(arg3)));
+    note("argOptStar() got:");
+    note(cat("  ", Format::source(arg1)));
+    note(cat("  ", Format::source(arg2)));
+    note(cat("  ", Format::source(arg3)));
 };
 
 

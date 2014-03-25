@@ -6,8 +6,6 @@
 ## Loop expression demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Main Tests
@@ -20,7 +18,7 @@ do {
     if (Box::fetch(box) == 5) {
         break
     };
-    Io1::note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(Box::fetch(box)).")
 };
 
 do { <next> ->
@@ -32,7 +30,7 @@ do { <next> ->
     } else if (Box::fetch(box) == 15) {
         break
     };
-    Io1::note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(Box::fetch(box)).")
 };
 
 def result = do <out> {
@@ -40,9 +38,9 @@ def result = do <out> {
     if (Box::fetch(box) == 20) {
         <out> "igram"
     };
-    Io1::note("Value is \%q(Box::fetch(box)).")
+    note("Value is \%q(Box::fetch(box)).")
 };
 
-Io1::note("Result is \%q(result).");
+note("Result is \%q(result).");
 
 <> 0

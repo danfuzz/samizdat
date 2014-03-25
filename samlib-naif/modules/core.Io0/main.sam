@@ -7,11 +7,9 @@
 ##
 
 <> {
-    die:               Io0_die,
     flatCwd:           Io0_flatCwd,
     flatReadLink:      Io0_flatReadLink,
     flatFileExists:    Io0_flatFileExists,
     flatReadFileUtf8:  Io0_flatReadFileUtf8,
-    flatWriteFileUtf8: Io0_flatWriteFileUtf8,
-    note:              Io0_note
+    flatWriteFileUtf8: Io0_flatWriteFileUtf8
 }

@@ -6,15 +6,13 @@
 ## Map literal demo, Layer 2 specific
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn msg(v) {
-    Io1::note("Got: \%q(v)")
+    note("Got: \%q(v)")
 };
 
 
@@ -22,7 +20,7 @@ fn msg(v) {
 ## Main Tests
 ##
 
-Io1::note("Layer 0...");
+note("Layer 0...");
 
 msg({});
 msg({1: 2});
@@ -44,7 +42,7 @@ def axe = "Axe";
 def bazooka = "Bazooka";
 msg({axe, bazooka});
 
-Io1::note("\nLayer 2...");
+note("\nLayer 2...");
 
 msg({("0".."9")*: "woo"});
 msg({{(0..6)*: "blort"}*, {(5..9)*: "fizmo"}*});

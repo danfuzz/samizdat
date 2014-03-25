@@ -6,15 +6,13 @@
 ## Derived value literal demo, Layer 2 specific
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn msg(v) {
-    Io1::note("Got: \%q(v)")
+    note("Got: \%q(v)")
 };
 
 
@@ -22,7 +20,7 @@ fn msg(v) {
 ## Main Tests
 ##
 
-Io1::note("Layer 0...");
+note("Layer 0...");
 
 ## These all refer to the same value.
 msg(@("Null"));
@@ -58,7 +56,7 @@ msg(@def);
 msg(@fn(100));
 
 
-Io1::note("\nLayer 2...");
+note("\nLayer 2...");
 
 msg(@"\&mu;sec");
 

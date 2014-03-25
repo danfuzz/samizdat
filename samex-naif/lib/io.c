@@ -6,47 +6,11 @@
 
 #include "io.h"
 #include "impl.h"
-#include "type/String.h"
-#include "util.h"
-
-#include <stdio.h>
-
-
-/*
- * Private Definitions
- */
-
-/**
- * Emits a note.
- */
-static void emitNote(zvalue message) {
-    zint size = utf8SizeFromString(message);
-    char str[size + 1];
-    utf8FromString(size + 1, str, message);
-
-    fwrite(str, 1, size, stderr);
-    fputc('\n', stderr);
-}
 
 
 /*
  * Exported Definitions
  */
-
-/* Documented in spec. */
-FUN_IMPL_DECL(Io0_die) {
-    if (argCount == 1) {
-        emitNote(args[0]);
-    }
-
-    die("Alas.");
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(Io0_note) {
-    emitNote(args[0]);
-    return NULL;
-}
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Io0_flatCwd) {

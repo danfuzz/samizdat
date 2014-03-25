@@ -6,18 +6,10 @@
 ## Translate execution trees into corresponding C code.
 ##
 
-def vars = intraLoad(["vars"]);
-
-def CodeGen = moduleLoad(["CodeGen"]);
-
 def VarCalc = moduleLoad(["VarCalc"]);
 def get_varRefs = VarCalc::get_varRefs;
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
-def localVarDecl = vars::localVarDecl;
-def localVarName = vars::localVarName;
-
+def CodeGen = moduleLoad(["CodeGen"]);
 def flatten = CodeGen::flatten;
 def indent = CodeGen::indent;
 
@@ -36,6 +28,10 @@ def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
+def vars = intraLoad(["vars"]);
+def localVarDecl = vars::localVarDecl;
+def localVarName = vars::localVarName;
+
 ## Generic function to perform the translation.
 def translate = makeRegularGeneric("translate", 2, 2);
 
@@ -45,7 +41,7 @@ fn varDefCommon(name, value, varsBox) {
     def vars = Box::fetch(varsBox);
 
     if ((def found = vars[name]) & (found::kind != "free")) {
-        Io1::die("Cannot redefine local variable: \%q(name).")
+        die("Cannot redefine local variable: \%q(name).")
     };
 
     def index = #vars;
@@ -78,7 +74,7 @@ genericBind(
     translate,
     @@closure,
     fn closure_translate(node, varsBox) {
-        Io1::die("Cannot translate raw `closure` node.")
+        die("Cannot translate raw `closure` node.")
     });
 
 genericBind(
@@ -91,7 +87,7 @@ genericBind(
         <> CodeGen::makeCall("makeClosure_\(node.id)",
             ( name in node.varRefs ->
                 <> vars[name]::name
-                    | Io1::die("Capture of undefined variable: \%q(name)");
+                    | die("Capture of undefined variable: \%q(name)");
             )*)
     });
 
@@ -121,7 +117,7 @@ genericBind(
         def value = translate(node.value, varsBox);
         def vars = Box::fetch(varsBox);
         def binding = vars[name]
-            | Io1::die("Bind of undefined variable: \%q(node.name)");
+            | die("Bind of undefined variable: \%q(node.name)");
 
         <> CodeGen::makeCall("boxStore", binding::name, value)
     });
@@ -156,7 +152,7 @@ genericBind(
         def name = node.name;
         def vars = Box::fetch(varsBox);
         def binding = vars[name]
-            | Io1::die("Reference of undefined variable: \%q(node.name)");
+            | die("Reference of undefined variable: \%q(node.name)");
         <> CodeGen::makeCall("boxFetch", binding::name)
     });
 

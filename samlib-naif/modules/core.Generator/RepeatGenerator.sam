@@ -8,7 +8,6 @@
 ## Payload is `{size, value}`.
 
 def Box    = moduleLoad(["core", "Box"]);
-def Io0    = moduleLoad(["core", "Io0"]);
 def Number = moduleLoad(["proto", "Number"]);
 
 def NullGenerator = intraLoad(["NullGenerator"]);
@@ -24,7 +23,7 @@ fn makeRepeatGenerator(size, optValue?) {
     ifIs { <> perLe(size, 0) }
         {
             ifIs { <> perLt(size, 0) }
-                { Io0::die("Invalid negative size for RepeatGenerator.") };
+                { die("Invalid negative size for RepeatGenerator.") };
             return NullGenerator::nullGenerator
         };
 

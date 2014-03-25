@@ -6,19 +6,17 @@
 ## Demo of local yield
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn bad() {
-    Io0::die("Wrong!")
+    die("Wrong!")
 };
 
 fn good() {
-    Io0::note("Ok")
+    note("Ok")
 };
 
 fn yieldVoid1() {
@@ -52,7 +50,7 @@ ifIs(yieldVoid3, bad, good);
 ifIs(yieldVoid4, bad, good);
 
 ifValue { <> yieldArg("woo") }
-    { v <> Io0::note(v) }
+    { v <> note(v) }
     { bad() };
 
 <> 0

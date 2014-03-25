@@ -16,11 +16,6 @@ This module defines simple I/O operations.
 <br><br>
 ### Function Definitions
 
-#### `die(string?) <> n/a ## Terminates the runtime.`
-
-Prints the given string to the system console (as if with `Io1::note`)
-if supplied, and terminates the runtime with a failure status code (`1`).
-
 #### `fileExists(path) <> logic`
 
 Returns `path` if it corresponds to an already-existing regular file.
@@ -47,12 +42,6 @@ constraints are violated.
 
 * No path component other than the final one may be empty (that is,
   equal to `""`).
-
-#### `note(string) <> void`
-
-Writes out a newline-terminated note to the system console or equivalent.
-This is intended for debugging, and as such this will generally end up
-emitting to the standard-error stream.
 
 #### `pathFromFlat(flatPath) <> path`
 

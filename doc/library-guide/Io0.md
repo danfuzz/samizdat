@@ -17,10 +17,6 @@ by the lowest layer of core library.
 <br><br>
 ### Function Definitions
 
-#### `die(string?) <> n/a ## Terminates the runtime.`
-
-This is the same as the same-named function in the `core::Io1` module.
-
 #### `flatCwd() <> flatPath`
 
 Returns the current working directory of the process, as a
@@ -59,7 +55,3 @@ of the read and decoded text.
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
-
-#### `note(string) <> void`
-
-This is the same as the same-named function in the `core::Io1` module.

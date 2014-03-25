@@ -144,7 +144,7 @@ fn isPrefix(prefix, path) {
 
 ## Dies with the given message including the given path.
 fn dieWith(msg, path) {
-    Io0::die(cat(msg, ": ", Format::source(path)))
+    die(cat(msg, ": ", Format::source(path)))
 };
 
 ## Helper for `sandboxedReader` which does symbolic link resolution,
@@ -155,10 +155,10 @@ fn resolveLinks(sandboxDirectory, path) {
 
     loop {
         ifIs { <> perLe(limit, 0) }
-            { Io0::die("Too many links in symbolic link chain.") };
+            { die("Too many links in symbolic link chain.") };
 
         ifNot { <> isPrefix(sandboxDirectory, result) }
-            { Io0::die("Symbolic link escapes sandbox directory.") };
+            { die("Symbolic link escapes sandbox directory.") };
 
         <> ifValue { <> readLink(result) }
             { newPath ->
@@ -259,11 +259,6 @@ fn writeFileUtf8(path, text) {
 };
 
 <> {
-    ## Re-exported from Io0.
-    die:  Io0::die,
-    note: Io0::note,
-
-    ## Defined in this file.
     fileExists,
     flatFromPath,
     pathFromFlat,

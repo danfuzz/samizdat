@@ -6,8 +6,6 @@
 ## Variable declaration and binding demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
@@ -17,9 +15,9 @@ def Io0 = moduleLoad(["core", "Io0"]);
 fn frotz(foo) {
     def ignatz;
 
-    Io0::note("frotz:");
+    note("frotz:");
     ignatz := cat("    ", foo);
-    Io0::note(ignatz)
+    note(ignatz)
 };
 
 ## Demo of same-scope mutable variable declaration and binding.
@@ -27,24 +25,24 @@ fn zorch(foo) {
     var ignatz;
     var fizmo = foo;
 
-    Io0::note("zorch:");
+    note("zorch:");
     ignatz := cat("    ", fizmo);
-    Io0::note(ignatz);
+    note(ignatz);
     ignatz := cat(ignatz, " and ");
     fizmo := cat(ignatz, "trolb");
-    Io0::note(fizmo)
+    note(fizmo)
 };
 
 ## Demo of different-scope mutable variable declaration and binding.
 fn igram(foo) {
     var fizmo = foo;
 
-    Io0::note("igram:");
+    note("igram:");
 
     ifIs { <> eq(fizmo, "fizmo") }
         { fizmo := "Yes, fizmo." };
 
-    Io0::note(cat("    ", fizmo));
+    note(cat("    ", fizmo));
     fizmo := foo;
 
     ifIs { <> eq(fizmo, "fizmo") }
@@ -53,7 +51,7 @@ fn igram(foo) {
                 { fizmo := "Yes yes, fizmo." }
         };
 
-    Io0::note(cat("    ", fizmo));
+    note(cat("    ", fizmo));
 };
 
 

@@ -6,8 +6,6 @@
 ## Range demo, with layer 2 syntax
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -16,9 +14,9 @@ def Io1 = moduleLoad(["core", "Io1"]);
 ## Prints out the values yielded by the given generator or list.
 fn msg(item) {
     if (isList(item)) {
-        Io1::note("Got list: \%q(item)")
+        note("Got list: \%q(item)")
     } else {
-        Io1::note("Got gen: \%q([item*])")
+        note("Got gen: \%q([item*])")
     }
 };
 
@@ -26,7 +24,7 @@ fn msg(item) {
 fn msgTen(generator) {
     def values = Generator::makeFilterGenerator(generator, (1..10))
         { v, . <> v };
-    Io1::note("Got: \%q([values*])")
+    note("Got: \%q([values*])")
 };
 
 
@@ -34,7 +32,7 @@ fn msgTen(generator) {
 ## Main Tests
 ##
 
-Io1::note("Inclusive, default increment...");
+note("Inclusive, default increment...");
 msg((100..110));
 msg(("U".."Z"));
 msg((9..9));
@@ -44,7 +42,7 @@ msg(("f".."a"));
 msg([1..10]);
 msg([10..1]);
 
-Io1::note("\nInclusive, explicit increment...");
+note("\nInclusive, explicit increment...");
 msg((0..1000 by 200));
 msg(("a".."z" by 5));
 msg((10..1 by -1));
@@ -52,7 +50,7 @@ msg(("F".."A" by -2));
 msg((9..9 by 0));
 msg([0..9 by 3]);
 
-Io1::note("\nExclusive, default increment...");
+note("\nExclusive, default increment...");
 msg((100..!110));
 msg(("U"..!"Z"));
 msg((9..!9));
@@ -62,7 +60,7 @@ msg(("f"..!"a"));
 msg([1..!10]);
 msg([10..!1]);
 
-Io1::note("\nExclusive, explicit increment...");
+note("\nExclusive, explicit increment...");
 msg((0..!1000 by 200));
 msg(("a"..!"z" by 5));
 msg((10..!1 by -1));
@@ -70,11 +68,11 @@ msg(("F"..!"A" by -2));
 msg((9..!9 by 0));
 msg([0..!9 by 3]);
 
-Io1::note("\nOpen, default increment...");
+note("\nOpen, default increment...");
 msgTen((-10..));
 msgTen(("M"..));
 
-Io1::note("\nOpen, explicit increment...");
+note("\nOpen, explicit increment...");
 msgTen((99.. by -1));
 msgTen(("z".. by -2));
 

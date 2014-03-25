@@ -7,9 +7,6 @@
 ##
 
 def CodeGen = moduleLoad(["CodeGen"]);
-
-def Io1 = moduleLoad(["core", "Io1"]);
-
 def flatten = CodeGen::flatten;
 def indent = CodeGen::indent;
 
@@ -33,7 +30,7 @@ fn utf8Char(ch) {
     def value = toInt(ch);
 
     <> if (value < 0) {
-        Io1::die("Out of range for UTF-8 encoding: 0x\%x(value)");
+        die("Out of range for UTF-8 encoding: 0x\%x(value)");
     } else if (value < 0x80) {
         <> hexEscape(value)
     } else if (value < 0x800) {
@@ -76,7 +73,7 @@ fn utf8Char(ch) {
         def x6 = 0x80 ||| ( value         &&& 0x3f);
         <> hexEscape(x0, x1, x2, x3, x4, x5, x6)
     } else {
-        Io1::die("Out of range for UTF-8: 0x\%x(value)");
+        die("Out of range for UTF-8: 0x\%x(value)");
     }
 };
 
@@ -173,7 +170,7 @@ genericBind(convert, Type, Type_convert);
 ## that can be stringified with `indent`.
 fn Value_convert(value) {
     if (isOpaqueValue(value)) {
-        Io1::die("Cannot convert opaque non-data value: \%q(value)")
+        die("Cannot convert opaque non-data value: \%q(value)")
     };
 
     def type = convert(typeOf(value));
