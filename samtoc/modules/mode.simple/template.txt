@@ -19,7 +19,7 @@
 #include "type/Value.h"
 #include "util.h"
 
-/* Global context originally passed into `eval`. */
+/* Global environment originally passed into `eval`. */
 static zvalue GLOBALS = NULL;
 
 
@@ -28,7 +28,7 @@ static zvalue GLOBALS = NULL;
  */
 
 \(literalDeclarations)
-static void initLiterals(zvalue context) {
+static void initLiterals(zvalue env) {
 \(literalInits)}
 
 
@@ -50,12 +50,12 @@ static zvalue mainClosure(void) {
 /* Top-level evaluation result. */
 static zvalue EVAL_RESULT = NULL;
 
-zvalue eval(zvalue context) {
+zvalue eval(zvalue env) {
   if (GLOBALS == NULL) {
-    GLOBALS = context;
-    initLiterals(context);
-  } else if (!valEq(GLOBALS, context)) {
-    die("Cannot re-eval with different global context.");
+    GLOBALS = env;
+    initLiterals(env);
+  } else if (!valEq(GLOBALS, env)) {
+    die("Cannot re-eval with different global environment.");
   }
 
   if (EVAL_RESULT == NULL) {

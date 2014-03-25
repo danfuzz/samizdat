@@ -152,7 +152,7 @@ fn closureBody(cloIdx, clo, literals) {
 
 ## Constructs the top-level closure. This is similar to translating a
 ## `@closureRef` node, except that the closure state is initialized from
-## the global context and not from local or captured variables.
+## the global environment and not from local or captured variables.
 fn mainClosureMaker(node, interner) {
     def varRefs = node.varRefs;
     def ids = [ name in varRefs <> interner.intern(name) ];

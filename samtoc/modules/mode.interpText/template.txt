@@ -12,8 +12,8 @@
 #include "type/String.h"
 #include "util.h"
 
-static zvalue lookup(zvalue context, const char *name) {
-    zvalue result = collGet(context, stringFromUtf8(-1, name));
+static zvalue lookup(zvalue env, const char *name) {
+    zvalue result = collGet(env, stringFromUtf8(-1, name));
 
     if (result == NULL) {
         die("Binding missing: %s", name);
@@ -22,8 +22,8 @@ static zvalue lookup(zvalue context, const char *name) {
     return result;
 }
 
-zvalue eval(zvalue context) {
-    zvalue moduleLoad = lookup(context, "moduleLoad");
+zvalue eval(zvalue env) {
+    zvalue moduleLoad = lookup(env, "moduleLoad");
     zvalue langModule = FUN_CALL(
         moduleLoad,
         listFromArgs(
@@ -38,7 +38,7 @@ zvalue eval(zvalue context) {
     );
 
     zvalue progTree = FUN_CALL(parseProgramFn, progStr);
-    zvalue evalResult = FUN_CALL(evalFn, context, progTree);
+    zvalue evalResult = FUN_CALL(evalFn, env, progTree);
 
     return evalResult;
 }
