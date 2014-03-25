@@ -124,6 +124,7 @@ fn runModule(modulePath, args) {
         modulePath,
         moduleLoader(),
         Globals::fullEnvironment(),
+        modulePath,
         args*)
 };
 
