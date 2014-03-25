@@ -61,7 +61,7 @@ For example:
 ## => 0, 2, 4, 6, ...
 
 ## List of just the strings.
-[v in ["b", 10, "l", @foo, "o", "r", ["wow"], "t"] <> isString(v)]
+[v in ["b", 10, "l", @foo, "o", "r", ["wow"], "t"] <> hasType(v, String)]
 ## => ["b", "l", "o", "r", "t"]
 
 ## List of sum of corresponding pairs.

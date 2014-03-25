@@ -18,17 +18,11 @@ fn isOpaqueValue(value) {
 };
 
 ## Documented in spec.
-fn isString(value) {
-    <> hasType(value, String)
-};
-
-## Documented in spec.
 fn typeNameOf(value) {
     <> nameOf(typeOf(value))
 };
 
 <> {
     isOpaqueValue,
-    isString,
     typeNameOf
 }
