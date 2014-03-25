@@ -66,10 +66,6 @@ exist as a file.
 <br><br>
 ### In-Language Definitions
 
-#### `intraLoadMain(loader) <> . | void`
-
-This is a convenient wrapper which calls `intraLoad(loader, ["main"])`.
-
 #### `makeIntraLoader(path, moduleLoader, globals) <> IntraLoader`
 
 This creates and returns an intra-module file loader, for which the `intra*`
@@ -105,7 +101,7 @@ This is a convenient wrapper which is equivalent to:
 
 ```
 def loader = makeIntraLoader(path, moduleLoader, globals);
-def mainModule = intraLoadMain(loader);
+def mainModule = intraLoad(loader, ["main"]);
 <> mainModule::main(args*)
 ```
 

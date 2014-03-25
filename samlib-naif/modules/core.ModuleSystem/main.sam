@@ -189,6 +189,11 @@ fn makeModuleLoader(path, nextModuleLoader, globals) {
 ## TODO: This should be an opaque type.
 ##
 
+## Convenient helper which just loads a top-level `main`.
+fn intraLoadMain(loader) {
+    <> intraLoad(loader, ["main"])
+};
+
 ## Helper for `intraLoad` which does the actual loading.
 fn doLocalLoad(ml, path) {
     Io0_note(cat("        ", humanPath(path)));
@@ -323,11 +328,6 @@ fn makeIntraLoader(path, nextModuleLoader, globals) {
 ##
 
 ## Documented in spec.
-fn intraLoadMain(loader) {
-    <> intraLoad(loader, ["main"])
-};
-
-## Documented in spec.
 fn run(path, moduleLoader, globals, args*) {
     def loader = makeIntraLoader(path, moduleLoader, globals);
     def optMainModule = intraLoadMain(loader)?;
@@ -350,7 +350,6 @@ fn run(path, moduleLoader, globals, args*) {
 
 <> {
     intraLoad,
-    intraLoadMain,
     intraRead,
     intraExists,
     makeIntraLoader,
