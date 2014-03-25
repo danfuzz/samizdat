@@ -90,9 +90,9 @@ fn updateMapBox(box, key, value) {
 def moduleLoad = makeRegularGeneric("moduleLoad", 2, 2);
 
 ## Documented in spec.
-def intraLoad   = makeRegularGeneric("intraLoad", 2, 2);
-def intraRead   = makeRegularGeneric("intraRead", 2, 2);
-def intraExists = makeRegularGeneric("intraExists", 2, 2);
+def intraLoad     = makeRegularGeneric("intraLoad", 2, 2);
+def intraReadUtf8 = makeRegularGeneric("intraReadUtf8", 2, 2);
+def intraExists   = makeRegularGeneric("intraExists", 2, 2);
 
 
 ##
@@ -252,9 +252,9 @@ genericBind(
 
 ## Documented in spec.
 genericBind(
-    intraRead,
+    intraReadUtf8,
     @@IntraLoader,
-    fn IntraLoader_intraRead(ml, path) {
+    fn IntraLoader_intraReadUtf8(ml, path) {
         def data = dataOf(ml);
         def fullPath = flattenPath([data::basePath*, path*]);
 
@@ -285,17 +285,17 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
 
     fn module_intraExists(path)   { <> intraExists(result, path)      };
     fn module_intraLoad(path)     { <> intraLoad(result, path)        };
-    fn module_intraRead(path)     { <> intraRead(result, path)        };
+    fn module_intraReadUtf8(path) { <> intraReadUtf8(result, path)    };
     fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
     fn module_moduleLoader()      { <> moduleLoader                   };
 
     def fullGlobals = {
         globals*,
-        intraExists:       module_intraExists,
-        intraLoad:         module_intraLoad,
-        intraRead:         module_intraRead,
-        moduleLoad:        module_moduleLoad,
-        moduleLoader:      module_moduleLoader
+        intraExists:   module_intraExists,
+        intraLoad:     module_intraLoad,
+        intraReadUtf8: module_intraReadUtf8,
+        moduleLoad:    module_moduleLoad,
+        moduleLoader:  module_moduleLoader
     };
 
     def languageName = ifValueOr { <> get(moduleInfo, "language") }
@@ -350,7 +350,7 @@ fn run(path, globals, moduleLoader, args*) {
 
 <> {
     intraLoad,
-    intraRead,
+    intraReadUtf8,
     intraExists,
     makeIntraLoader,
     makeModuleLoader,

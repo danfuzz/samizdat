@@ -9,7 +9,7 @@
 ##
 
 def Template = moduleLoad(["Template"]);
-def templateText = intraRead(["template.txt"]);
+def templateText = intraReadUtf8(["template.txt"]);
 
 def Io1 = moduleLoad(["core", "Io1"]);
 
