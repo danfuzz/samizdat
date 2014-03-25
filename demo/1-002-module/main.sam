@@ -21,7 +21,8 @@ def Stuff2 = moduleLoad(["app", "Stuff"]);
 ifIs { <> ne(Stuff, Stuff2) }
     { Io1::die("Different modules!") };
 
-fn main(.*) {
+fn main(selfPath, .*) {
+    Io1::note(cat("I am: ", Format::source(selfPath)));
     Io1::note(Format::source(Stuff::STUFF));
     Io1::note(Format::source(Stuff::SUBSTUFF));
 };
