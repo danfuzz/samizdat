@@ -24,15 +24,15 @@ def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: @Null};
 ## on success.
 fn flattenModuleComponent(component) {
     ifIs { <> eq(component, "") }
-        { Io0_die("Invalid module path component: empty string") };
+        { die("Invalid module path component: empty string") };
     ifNot { <> hasType(component, String) }
-        { Io0_die("Invalid module path component: not a string") };
+        { die("Invalid module path component: not a string") };
 
     ## `collect` is used here as a "for each," ignoring the collected result.
     collect(component,
         { ch ->
             ifIs { <> get(INVALID_MODULE_CHARS, ch) }
-                { Io0_die("Invalid character in module path component.") }
+                { die("Invalid character in module path component.") }
         });
 
     <> cat(".", component)
@@ -43,9 +43,9 @@ fn flattenModuleComponent(component) {
 ## that the module could be found in.
 fn flattenModulePath(name) {
     ifIs { <> eq(name, []) }
-        { Io0_die("Invalid module path: empty list") };
+        { die("Invalid module path: empty list") };
     ifNot { <> hasType(name, List) }
-        { Io0_die("Invalid module path: not a list") };
+        { die("Invalid module path: not a list") };
 
     ## Validate each component, prefixing them with `.`. Concatenate them all
     ## together, and drop the leading `.`.
@@ -116,7 +116,7 @@ fn doModuleLoad(md, dotName) {
     def infoPath = flattenPath([modulePath*, "main.saminfo"]);
     <> ifIs { <> Io0_flatFileExists(infoPath) }
         {
-            Io0_note(cat("    ", dotName));
+            note(cat("    ", dotName));
             def loader = makeIntraLoader(modulePath, data::globals, md);
 
             ## A successful void module load result gets silently transformed
@@ -124,7 +124,7 @@ fn doModuleLoad(md, dotName) {
             def result = ifValueOr { <> intraLoadMain(loader) }
                 { <> {} };
 
-            Io0_note("        Done.");
+            note("        Done.");
             <> result
         }
 };
@@ -144,7 +144,7 @@ genericBind(
         ifValue { <> get(Box_fetch(loadedBox), dotName) }
             { found ->
                 ifIs { <> eq(found, "loading") }
-                    { Io0_die(cat("Module load loop: ", dotName)) };
+                    { die(cat("Module load loop: ", dotName)) };
                 return found*
             };
 
@@ -162,7 +162,7 @@ genericBind(
     moduleLoad,
     @@Null,
     fn Null_moduleLoad(md, path) {
-        Io0_die(cat("Module not found: ", flattenModulePath(path)))
+        die(cat("Module not found: ", flattenModulePath(path)))
     });
 
 ## Documented in spec.
@@ -196,7 +196,7 @@ fn intraLoadMain(loader) {
 
 ## Helper for `intraLoad` which does the actual loading.
 fn doLocalLoad(ml, path) {
-    Io0_note(cat("        ", humanPath(path)));
+    note(cat("        ", humanPath(path)));
     def data = dataOf(ml);
     def pathPrefix = [data::basePath*, path*];
 
@@ -217,7 +217,7 @@ fn doLocalLoad(ml, path) {
             return func()
         };
 
-    Io0_die(cat("Missing code: ", sourcePath));
+    die(cat("Missing code: ", sourcePath));
 };
 
 ## Documented in spec.
@@ -259,7 +259,7 @@ genericBind(
         def fullPath = flattenPath([data::basePath*, path*]);
 
         ifNot { <> Io0_flatFileExists(fullPath) }
-            { Io0_die(cat("Missing resource: ", fullPath)) };
+            { die(cat("Missing resource: ", fullPath)) };
 
         <> Io0_flatReadFileUtf8(fullPath)
     });
@@ -333,17 +333,17 @@ fn run(path, globals, moduleLoader, args*) {
     def optMainModule = intraLoadMain(loader)?;
 
     ifIs { <> eq(optMainModule, []) }
-        { Io0_die("No exports from module's `main`.") };
+        { die("No exports from module's `main`.") };
 
     def mainModule = optMainModule*;
 
     ifNot { <> hasType(mainModule, Map) }
-        { Io0_die("Non-map export from module's `main`.") };
+        { die("Non-map export from module's `main`.") };
 
     def optMain = mainModule::main?;
 
     ifIs { <> eq(optMain, []) }
-        { Io0_die("No `main` export from module's `main`.") };
+        { die("No `main` export from module's `main`.") };
 
     <> (optMain*)(args*)
 };

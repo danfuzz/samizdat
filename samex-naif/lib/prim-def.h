@@ -90,6 +90,7 @@ PRIM_DEF(Number_sub,              GFN_sub);
 
 // Primitive functions: directly exported.
 PRIM_FUNC(dataOf,                 1, 2);
+PRIM_FUNC(die,                    0, 1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(ge,                     2, 2);
 PRIM_FUNC(genericBind,            3, 3);
@@ -111,6 +112,7 @@ PRIM_FUNC(makeUnitypeGeneric,     2, 3);
 PRIM_FUNC(makeValue,              1, 2);
 PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(ne,                     2, 2);
+PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
 PRIM_FUNC(typeFromName,           1, 1);
 PRIM_FUNC(typeIsTransparentDerived, 1, 1);
@@ -126,8 +128,6 @@ PRIM_FUNC(Io0_flatFileExists,     1, 1);
 PRIM_FUNC(Io0_flatReadLink,       1, 1);
 PRIM_FUNC(Io0_flatReadFileUtf8,   1, 1);
 PRIM_FUNC(Io0_flatWriteFileUtf8,  2, 2);
-PRIM_FUNC(Io0_die,                0, 1);
-PRIM_FUNC(Io0_note,               1, 1);
 PRIM_FUNC(Lang0_eval,             2, 2);
 PRIM_FUNC(Lang0_evalBinary,       2, 2);
 PRIM_FUNC(Lang0_parseExpression,  1, 1);
