@@ -7,7 +7,6 @@
 ##
 ## Payload is `{size, value}`.
 
-def Box    = moduleLoad(["core", "Box"]);
 def Number = moduleLoad(["proto", "Number"]);
 
 def NullGenerator = intraLoad(["NullGenerator"]);

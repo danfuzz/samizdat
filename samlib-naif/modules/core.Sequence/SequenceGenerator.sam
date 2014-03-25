@@ -7,7 +7,6 @@
 ##
 ## Payload is `{seq: seq, index: int}`.
 
-def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["proto", "Collection"]);
 def Number     = moduleLoad(["proto", "Number"]);
 def Sequence   = moduleLoad(["proto", "Sequence"]);

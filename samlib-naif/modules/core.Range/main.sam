@@ -8,7 +8,6 @@
 ## `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 ## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
-def Box       = moduleLoad(["core", "Box"]);
 def Generator = moduleLoad(["core", "Generator"]);
 def Number    = moduleLoad(["proto", "Number"]);
 

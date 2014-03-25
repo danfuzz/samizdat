@@ -6,8 +6,6 @@
 ## `ValueGenerator` Type
 ##
 
-def Box = moduleLoad(["core", "Box"]);
-
 def unboundedCollect = intraLoad(["unboundedCollect"])::unboundedCollect;
 
 
