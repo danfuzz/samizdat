@@ -185,10 +185,6 @@ Returns the given `value` if it is an int. Returns void if not.
 
 Returns the given `value` if it is a list. Returns void if not.
 
-#### `isMap(value) <> logic`
-
-Returns the given `value` if it is a map. Returns void if not.
-
 #### `isOpaqueValue(value) <> logic`
 
 Returns `value` if it is an opaque value &mdash; that is, if it is

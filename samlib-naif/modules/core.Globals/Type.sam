@@ -22,11 +22,6 @@ fn isList(value) {
 };
 
 ## Documented in spec.
-fn isMap(value) {
-    <> hasType(value, Map)
-};
-
-## Documented in spec.
 fn isOpaqueValue(value) {
     <> ifNot { <> typeIsDerivedData(typeOf(value)) }
         { <> value }
@@ -50,7 +45,6 @@ fn typeNameOf(value) {
 <> {
     isInt,
     isList,
-    isMap,
     isOpaqueValue,
     isString,
     isUniqlet,
