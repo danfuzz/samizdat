@@ -95,3 +95,18 @@ is the global variable environment to use when evaluating source.
 
 **Note:** If this loader should not have a next module loader, then
 `nextModuleLoader` should be passed as `null`.
+
+#### `run(path, moduleLoader, globals, args*) <> . | void`
+
+This loads the `main` of the module at the given `path`, finds its
+`main` binding, and runs it, handing it the given `args`.
+
+This is a convenient wrapper which is equivalent to:
+
+```
+def loader = makeIntraLoader(path, moduleLoader, globals);
+def mainModule = intraLoadMain(loader);
+<> mainModule::main(args*)
+```
+
+except with more error checking.

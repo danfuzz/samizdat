@@ -327,6 +327,27 @@ fn intraLoadMain(loader) {
     <> intraLoad(loader, ["main"])
 };
 
+## Documented in spec.
+fn run(path, moduleLoader, globals, args*) {
+    def loader = makeIntraLoader(path, moduleLoader, globals);
+    def optMainModule = intraLoadMain(loader)?;
+
+    ifIs { <> eq(optMainModule, []) }
+        { Io0_die("No exports from module's `main`.") };
+
+    def mainModule = optMainModule*;
+
+    ifNot { <> hasType(mainModule, Map) }
+        { Io0_die("Non-map export from module's `main`.") };
+
+    def optMain = mainModule::main?;
+
+    ifIs { <> eq(optMain, []) }
+        { Io0_die("No `main` export from module's `main`.") };
+
+    <> (optMain*)(args*)
+};
+
 <> {
     intraLoad,
     intraLoadMain,
@@ -334,5 +355,6 @@ fn intraLoadMain(loader) {
     intraExists,
     makeIntraLoader,
     makeModuleLoader,
-    moduleLoad
+    moduleLoad,
+    run
 }
