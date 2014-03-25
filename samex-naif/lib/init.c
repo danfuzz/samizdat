@@ -114,19 +114,12 @@ static zvalue getLibrary(zvalue libraryFlatPath) {
 
     zvalue moduleSystem = FUN_CALL(moduleSystemFn);
 
-    // Make a module system loader for the core library.
-    zvalue makeIntraLoader = collGet(moduleSystem, STR_makeIntraLoader);
-    zvalue loader = FUN_CALL(makeIntraLoader,
-        libraryPath, TOK_Null, PRIMITIVE_CONTEXT);
-
-    // Use the module system instance to load the top-level `main` module
-    // definition file.
-    zvalue intraLoadMain = collGet(moduleSystem, STR_intraLoadMain);
-    zvalue mainModule = FUN_CALL(intraLoadMain, loader);
-
-    // Look up `main` in the loaded result, and call it as a function.
-    zvalue main = collGet(mainModule, STR_main);
-    zvalue result = FUN_CALL(main, PRIMITIVE_CONTEXT, libraryPath);
+    // Call `ModuleSystem::run` to load and evaluate the module, and call
+    // the `main` function bound in the result.
+    zvalue runFn = collGet(moduleSystem, STR_run);
+    zvalue result = FUN_CALL(runFn,
+        libraryPath, PRIMITIVE_CONTEXT, TOK_Null,
+        libraryPath, PRIMITIVE_CONTEXT);
 
     datFrameReturn(save, result);
     return result;
