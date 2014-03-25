@@ -28,7 +28,7 @@ fn msgAll(header, origGen) {
             def box = Box::makePromise();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGen ->
-                    msg(Box::fetch(box));
+                    msg(fetch(box));
                     gen := nextGen
                 }
                 { <done> }

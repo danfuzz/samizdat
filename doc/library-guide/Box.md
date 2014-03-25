@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Box / proto::Box
-----------------------
+core.Box / proto.Box
+--------------------
 
 A `Box` is a container for a single other value or for void.
 In terms of value comparison, all boxes should compare by identity,
@@ -12,6 +12,12 @@ calling mutating operations.
 
 The `Box` module provides the generic functions of the `Box` protocol,
 as well as related constructors and constants.
+
+The `Box` protocol is defined in a `proto.` module as one
+would expect. However, as a special case, the `Box` generics
+are also exported to the global variable environment. This is because
+they are so commonly used (sometimes overtly, and sometimes "behind the
+scenes").
 
 
 <br><br>
@@ -86,12 +92,3 @@ arrangement is done in order to make it easy to pass a box into functions
 that require one, but where the box value is never needed.
 
 It is defined as `@NullBox`.
-
-#### `update(box, updateFunction) <> . | void`
-
-Updates a box's value. This fetches the value out of `box` if any, passing
-it as an argument to `updateFunction` (or passing no arguments if `box` was
-empty). The return value from the call to `updateFunction` is then stored
-back to `box`; void is stored if `updateFunction` returned void.
-
-This function returns whatever the `store` call on `box` returns.

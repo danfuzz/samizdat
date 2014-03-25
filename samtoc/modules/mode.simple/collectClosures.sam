@@ -58,13 +58,13 @@ genericBind(
             ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
         };
 
-        def bodies = Box::fetch(bodiesBox);
+        def bodies = fetch(bodiesBox);
         if (def already = bodies[newNode]) {
             return already
         };
 
         def result = @closureRef{id: #bodies, varRefs};
-        Box::store(bodiesBox, {bodies*, (newNode): result});
+        store(bodiesBox, {bodies*, (newNode): result});
         <> result
     });
 
@@ -129,14 +129,14 @@ genericBind(
 fn collectClosures(node) {
     def bodiesBox = Box::makeCell({});
     def newNode = bodies(node, bodiesBox);
-    def bodiesMap = Box::fetch(bodiesBox);
+    def bodiesMap = fetch(bodiesBox);
 
     def bodiesBoxList = [ for #bodiesMap <> Box::makePromise() ];
     for (body in bodiesMap) {
         def index = dataOf(valueOf(body))::id;
-        Box::store(bodiesBoxList[index], keyOf(body))
+        store(bodiesBoxList[index], keyOf(body))
     };
-    def closures = [ box in bodiesBoxList <> Box::fetch(box) ];
+    def closures = [ box in bodiesBoxList <> fetch(box) ];
 
     <> { closures, node: newNode }
 };

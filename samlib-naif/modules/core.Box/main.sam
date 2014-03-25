@@ -15,13 +15,6 @@ def NullBox = intraLoad(["NullBox"]);
 ## Exported Definitions
 ##
 
-## Documented in spec.
-fn update(box, updateFunction) {
-    <> ifValue { <> Box_fetch(box) }
-        { value <> Box_store(box, updateFunction(value)) }
-        { <> Box_store(box, updateFunction()) }
-};
-
 <> {
     ## Re-exported from proto.
     canStore:    Box::canStore,
@@ -34,8 +27,5 @@ fn update(box, updateFunction) {
     ## Re-exported from primitive library.
     makeCell:    Box_makeCell,
     makePromise: Box_makePromise,
-    makeResult:  Box_makeResult,
-
-    ## Defined in this file.
-    update
+    makeResult:  Box_makeResult
 }

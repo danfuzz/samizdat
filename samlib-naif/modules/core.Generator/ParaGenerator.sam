@@ -45,10 +45,10 @@ fn ParaGenerator_nextValue(gen, box) {
         { gen ->
             def innerBox = Box::makePromise();
             <> ifValue { <> nextValue(gen, innerBox) }
-                { nextGenerator <> [Box::fetch(innerBox), nextGenerator] }
+                { nextGenerator <> [fetch(innerBox), nextGenerator] }
                 {
                     ## One of the sub-generators became voided.
-                    Box::store(box);
+                    store(box);
                     return
                 }
         });
@@ -58,7 +58,7 @@ fn ParaGenerator_nextValue(gen, box) {
     def nexts = collect(generatorCalls,
         { one <> Sequence::nth(one, 1) });
 
-    Box::store(box, yields);
+    store(box, yields);
     <> @ParaGenerator(nexts)
 };
 genericBind(nextValue, @@ParaGenerator, ParaGenerator_nextValue);

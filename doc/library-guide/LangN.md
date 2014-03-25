@@ -1,10 +1,10 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Lang*
------------
+core.Lang*
+----------
 
-The modules `core::Lang*` (where `*` is a digit) implement the variants
+The modules `core.Lang*` (where `*` is a digit) implement the variants
 of Samizdat language parsing and evaluation. There are modules for
 layers 0, 1, and 2.
 

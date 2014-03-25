@@ -35,12 +35,12 @@ note("\nGetter syntax");
 def get_size = Collection::sizeOf;
 msg([1, 2, 3].size);
 
-def get_value = Box::fetch;
+def get_value = fetch;
 def cell = Box::makeCell(100);
 msg(cell.value);
 
 note("\nSetter syntax");
-def set_value = Box::store;
+def set_value = store;
 msg(cell.value := 987);
 cell.value := 654;
 msg(cell.value);

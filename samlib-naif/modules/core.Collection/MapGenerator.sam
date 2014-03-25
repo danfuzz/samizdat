@@ -7,7 +7,6 @@
 ##
 ## Payload is `{map: map, index: int}`.
 
-def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["proto", "Collection"]);
 def Number     = moduleLoad(["proto", "Number"]);
 
@@ -23,12 +22,12 @@ fn MapGenerator_nextValue(gen, box) {
 
     <> ifValue { <> Collection::nthMapping(data::map, index) }
         { value ->
-            Box::store(box, value);
+            store(box, value);
             <> @MapGenerator{data*, index: Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).
-            Box::store(box)
+            store(box)
         }
 };
 genericBind(nextValue, @@MapGenerator, MapGenerator_nextValue);

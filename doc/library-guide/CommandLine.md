@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::CommandLine
------------------
+core.CommandLine
+----------------
 
 The `CommandLine` module provides, unsurprisingly, command-line processing
 functionality. For convenience, it exports `runCommandLine` to the default

@@ -38,7 +38,7 @@ def translate = makeRegularGeneric("translate", 2, 2);
 
 ## Common translation code for variable definition.
 fn varDefCommon(name, value, varsBox) {
-    def vars = Box::fetch(varsBox);
+    def vars = fetch(varsBox);
 
     if ((def found = vars[name]) & (found::kind != "free")) {
         die("Cannot redefine local variable: \%q(name).")
@@ -48,7 +48,7 @@ fn varDefCommon(name, value, varsBox) {
     def decl = localVarDecl(name, index);
     def binding = {name: localVarName(name, index), kind: "local"};
 
-    Box::store(varsBox, {vars*, (name): binding});
+    store(varsBox, {vars*, (name): binding});
     <> CodeGen::makeComment("\%q(name)", CodeGen::makeAssign(decl, value));
 };
 
@@ -83,7 +83,7 @@ genericBind(
     fn closureRef_translate(node, varsBox) {
         ## This passes each of the `varRefs` as an argument to the
         ## closure maker.
-        def vars = Box::fetch(varsBox);
+        def vars = fetch(varsBox);
         <> CodeGen::makeCall("makeClosure_\(node.id)",
             ( name in node.varRefs ->
                 <> vars[name]::name
@@ -115,7 +115,7 @@ genericBind(
     fn varBind_translate(node, varsBox) {
         def name = node.name;
         def value = translate(node.value, varsBox);
-        def vars = Box::fetch(varsBox);
+        def vars = fetch(varsBox);
         def binding = vars[name]
             | die("Bind of undefined variable: \%q(node.name)");
 
@@ -150,7 +150,7 @@ genericBind(
     @@varRef,
     fn varRef_translate(node, varsBox) {
         def name = node.name;
-        def vars = Box::fetch(varsBox);
+        def vars = fetch(varsBox);
         def binding = vars[name]
             | die("Reference of undefined variable: \%q(node.name)");
         <> CodeGen::makeCall("boxFetch", binding::name)

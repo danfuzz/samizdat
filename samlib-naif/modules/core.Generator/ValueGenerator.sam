@@ -6,8 +6,6 @@
 ## `ValueGenerator` Type
 ##
 
-def Box = moduleLoad(["core", "Box"]);
-
 def unboundedCollect = intraLoad(["unboundedCollect"])::unboundedCollect;
 
 
@@ -20,7 +18,7 @@ genericBind(collect, @@ValueGenerator, unboundedCollect);
 
 ## Documented in spec.
 fn ValueGenerator_nextValue(gen, box) {
-    Box::store(box, dataOf(gen));
+    store(box, dataOf(gen));
     <> gen
 };
 genericBind(nextValue, @@ValueGenerator, ValueGenerator_nextValue);

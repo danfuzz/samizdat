@@ -7,7 +7,6 @@
 ##
 ## Payload is `{seq: seq, index: int}`.
 
-def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["proto", "Collection"]);
 def Number     = moduleLoad(["proto", "Number"]);
 def Sequence   = moduleLoad(["proto", "Sequence"]);
@@ -24,12 +23,12 @@ fn SequenceGenerator_nextValue(gen, box) {
 
     <> ifValue { <> Sequence::nth(data::seq, index) }
         { value ->
-            Box::store(box, value);
+            store(box, value);
             <> @SequenceGenerator{data*, index: Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).
-            Box::store(box)
+            store(box)
         }
 };
 genericBind(nextValue, @@SequenceGenerator, SequenceGenerator_nextValue);

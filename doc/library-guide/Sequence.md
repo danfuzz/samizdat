@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-proto::Sequence
----------------
+proto.Sequence
+--------------
 
 The `Sequence` protocol is for collections keyed by zero-based int index.
 All `Sequence`s are also `Collection`s.

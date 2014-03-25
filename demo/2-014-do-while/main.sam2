@@ -14,32 +14,32 @@
 def box = Box::makeCell(0);
 
 do { <next> ->
-    Box::store(box, Box::fetch(box) + 1);
-    if (Box::fetch(box) == 5) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 5) {
         continue
-    } else if (Box::fetch(box) == 7) {
+    } else if (fetch(box) == 7) {
         <next>
     };
-    note("Value is \%q(Box::fetch(box)).")
-} while (Box::fetch(box) < 10);
+    note("Value is \%q(fetch(box)).")
+} while (fetch(box) < 10);
 
 def result1 = do {
-    Box::store(box, Box::fetch(box) + 1);
-    if (Box::fetch(box) == 13) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 13) {
         break "blort"
     };
-    note("Value is \%q(Box::fetch(box)).")
-} while (Box::fetch(box) < 15);
+    note("Value is \%q(fetch(box)).")
+} while (fetch(box) < 15);
 
 note("Result is \%q(result1).");
 
 def result2 = do <out> {
-    Box::store(box, Box::fetch(box) + 1);
-    if (Box::fetch(box) == 18) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 18) {
         <out> "frotz"
     };
-    note("Value is \%q(Box::fetch(box)).")
-} while (Box::fetch(box) < 20);
+    note("Value is \%q(fetch(box)).")
+} while (fetch(box) < 20);
 
 note("Result is \%q(result2).");
 

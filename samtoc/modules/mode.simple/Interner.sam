@@ -9,7 +9,7 @@ fn makeInterner() {
 
 fn intern(this, value) {
     def box = dataOf(this)::values;
-    def values = Box::fetch(box);
+    def values = fetch(box);
 
     if (def already = values[value]) {
         return already;
@@ -17,20 +17,20 @@ fn intern(this, value) {
 
     def result = #values;
 
-    Box::store(box, {values*, (value): result});
+    store(box, {values*, (value): result});
     <> result
 };
 
 fn get_interns(this) {
-    def map = Box::fetch(dataOf(this)::values);
+    def map = fetch(dataOf(this)::values);
     def boxList = [ n in (0..#map) <> Box::makePromise() ];
 
     for (mapping in map) {
         def id = valueOf(mapping);
-        Box::store(boxList[id], keyOf(mapping))
+        store(boxList[id], keyOf(mapping))
     };
 
-    <> [ box in boxList <> Box::fetch(box) ]
+    <> [ box in boxList <> fetch(box) ]
 };
 
 <> {

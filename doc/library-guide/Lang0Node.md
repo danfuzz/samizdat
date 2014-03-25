@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core::Lang0Node
----------------
+core.Lang0Node
+--------------
 
 These are a set of accessor and constructor functions for the various execution
 tree node types.

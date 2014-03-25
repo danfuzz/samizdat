@@ -77,8 +77,8 @@ fn humanPath(path) {
 ## Updates a map-containing box to have the given additional / replacement
 ## binding.
 fn updateMapBox(box, key, value) {
-    def newMap = { Box_fetch(box)*, (key): value };
-    Box_store(box, newMap)
+    def newMap = { fetch(box)*, (key): value };
+    store(box, newMap)
 };
 
 
@@ -141,7 +141,7 @@ genericBind(
         ## The loaded map maps paths to `"loading"` for a load-in-progress
         ## and to `[result]` for a successfully-loaded result.
 
-        ifValue { <> get(Box_fetch(loadedBox), dotName) }
+        ifValue { <> get(fetch(loadedBox), dotName) }
             { found ->
                 ifIs { <> eq(found, "loading") }
                     { die(cat("Module load loop: ", dotName)) };
@@ -242,7 +242,7 @@ genericBind(
         ## Local loads are allowed to return void, so we track a list of
         ## the result. That is, a void return ends up being `[]`.
 
-        ifValue { <> get(Box_fetch(loadedBox), path) }
+        ifValue { <> get(fetch(loadedBox), path) }
             { found -> return found* };
 
         def optResult = doLocalLoad(ml, path)?;
