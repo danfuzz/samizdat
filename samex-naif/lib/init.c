@@ -42,14 +42,14 @@ static void makePrimitiveEnvironment(void) {
         return;
     }
 
-    zvalue ctx = EMPTY_MAP;
+    zvalue env = EMPTY_MAP;
 
     // Bind all the primitive functions.
 
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
-            ctx = collPut(ctx, nameStr, \
+            env = collPut(env, nameStr, \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameStr)); \
         } while(0)
@@ -57,13 +57,13 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_DEF(name, value) \
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
-            ctx = collPut(ctx, nameStr, value); \
+            env = collPut(env, nameStr, value); \
         } while(0)
 
     #include "prim-def.h"
 
     // Set the final value, and make it immortal.
-    PRIMITIVE_ENVIRONMENT = ctx;
+    PRIMITIVE_ENVIRONMENT = env;
     datImmortalize(PRIMITIVE_ENVIRONMENT);
 }
 

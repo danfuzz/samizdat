@@ -14,10 +14,10 @@
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Lang0_eval) {
-    zvalue ctx = args[0];
+    zvalue env = args[0];
     zvalue expressionNode = args[1];
 
-    return langEval0(ctx, expressionNode);
+    return langEval0(env, expressionNode);
 }
 
 /* Documented in spec. */
