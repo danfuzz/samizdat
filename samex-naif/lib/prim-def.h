@@ -115,7 +115,7 @@ PRIM_FUNC(ne,                     2, 2);
 PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
 PRIM_FUNC(typeFromName,           1, 1);
-PRIM_FUNC(typeIsTransparentDerived, 1, 1);
+PRIM_FUNC(typeIsDerivedData,      1, 1);
 PRIM_FUNC(typeOf,                 1, 1);
 
 // Primitive functions: intended for modularization

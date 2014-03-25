@@ -13,7 +13,7 @@
 
 ## Prints out the values yielded by the given generator or list.
 fn msg(item) {
-    if (isList(item)) {
+    if (hasType(item, List)) {
         note("Got list: \%q(item)")
     } else {
         note("Got gen: \%q([item*])")

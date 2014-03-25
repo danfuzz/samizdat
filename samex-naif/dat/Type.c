@@ -298,7 +298,7 @@ bool typeIsSelfish(zvalue type) {
 }
 
 /* Documented in header. */
-bool typeIsTransparentDerived(zvalue type) {
+bool typeIsDerivedData(zvalue type) {
     assertHasTypeType(type);
 
     TypeInfo *info = getInfo(type);

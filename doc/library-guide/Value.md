@@ -177,31 +177,6 @@ of type `Type`.
 <br><br>
 ### In-Language Definitions
 
-#### `isInt(value) <> logic`
-
-Returns the given `value` if it is an int. Returns void if not.
-
-#### `isList(value) <> logic`
-
-Returns the given `value` if it is a list. Returns void if not.
-
-#### `isMap(value) <> logic`
-
-Returns the given `value` if it is a map. Returns void if not.
-
-#### `isOpaqueValue(value) <> logic`
-
-Returns `value` if it is an opaque value &mdash; that is, if it is
-*not* a transparent derived value &mdash; or void if not.
-
-#### `isString(value) <> logic`
-
-Returns the given `value` if it is a string. Returns void if not.
-
-#### `isUniqlet(value) <> logic`
-
-Returns the given `value` if it is a uniqlet. Returns void if not.
-
 #### `perGe(value1, value2) <> logic`
 
 Per-type comparison, which calls `perOrder(value1, value2)` to

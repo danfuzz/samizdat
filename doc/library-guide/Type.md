@@ -52,7 +52,7 @@ typically a string.
 
 **Note:** This is used in the translation of `@@(name)` forms.
 
-#### `typeIsTransparentDerived(type) <> type | void`
+#### `typeIsDerivedData(type) <> type | void`
 
 Returns boolean true (returning `type` itself) if `type` is a transparent
 derived type. Returns boolean false (void) if `type` is any other kind of
