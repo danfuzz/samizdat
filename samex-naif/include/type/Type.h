@@ -93,7 +93,7 @@ bool typeIsSelfish(zvalue type);
 /**
  * Returns true iff the given type is a transparent derived type.
  */
-bool typeIsTransparentDerived(zvalue type);
+bool typeIsDerivedData(zvalue type);
 
 /**
  * Gets the type of the given value. `value` must be a valid value (in

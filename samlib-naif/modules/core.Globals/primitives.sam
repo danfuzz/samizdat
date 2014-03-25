@@ -61,7 +61,7 @@
     totEq,
     totOrder,
     typeFromName,
-    typeIsTransparentDerived,
+    typeIsDerivedData,
     typeOf,
     valueOf
 }

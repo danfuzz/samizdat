@@ -28,7 +28,7 @@ fn isMap(value) {
 
 ## Documented in spec.
 fn isOpaqueValue(value) {
-    <> ifNot { <> typeIsTransparentDerived(typeOf(value)) }
+    <> ifNot { <> typeIsDerivedData(typeOf(value)) }
         { <> value }
 };
 

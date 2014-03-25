@@ -230,7 +230,7 @@ fn Type_sourceGeneral(type, adorn) {
 
     def name = nameOf(type);
 
-    ifNot { <> typeIsTransparentDerived(type) }
+    ifNot { <> typeIsDerivedData(type) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
     def body = ifIs { <> hasType(name, String) }
