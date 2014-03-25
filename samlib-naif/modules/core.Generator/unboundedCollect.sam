@@ -6,8 +6,6 @@
 ## `unboundedCollect` function
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Exported Definitions
@@ -15,7 +13,7 @@ def Io0 = moduleLoad(["core", "Io0"]);
 
 ## Documented in spec.
 fn unboundedCollect(gen, optFilterFunction?) {
-    Io0::die("Unbounded generator.");
+    die("Unbounded generator.");
 };
 
 <> {

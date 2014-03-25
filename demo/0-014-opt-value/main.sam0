@@ -6,15 +6,13 @@
 ## Optional-value operator demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn msg(value) {
-    Io0::note(cat("Got: ", Format::source(value)))
+    note(cat("Got: ", Format::source(value)))
 };
 
 fn getVoid() {

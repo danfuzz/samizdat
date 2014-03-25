@@ -6,15 +6,13 @@
 ## Type literal demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn msg(string) {
-    Io0::note(cat("Got: ", Format::source(string)))
+    note(cat("Got: ", Format::source(string)))
 };
 
 

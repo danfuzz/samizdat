@@ -6,8 +6,6 @@
 ## Generator function demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
@@ -15,21 +13,21 @@ def Io0 = moduleLoad(["core", "Io0"]);
 
 ## Prints the given value, indented slightly.
 fn msg(value) {
-    Io0::note(cat("  ", Format::source(value)))
+    note(cat("  ", Format::source(value)))
 };
 
 ## Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
-    Io0::note(header);
+    note(header);
     Generator::filterAll([gen*]) { elem -> msg(elem) };
-    Io0::note("  [fin]");
-    Io0::note(cat("  value: ", Format::source(gen)));
-    Io0::note("")
+    note("  [fin]");
+    note(cat("  value: ", Format::source(gen)));
+    note("")
 };
 
 ## Outputs ten generated values, with a header and a footer.
 fn msgTen(header, origGen) {
-    Io0::note(header);
+    note(header);
 
     var count = 10;
     var gen = origGen;
@@ -49,9 +47,9 @@ fn msgTen(header, origGen) {
         }
     }();
 
-    Io0::note("  [...]");
-    Io0::note(cat("  value: ", Format::source(origGen)));
-    Io0::note("")
+    note("  [...]");
+    note(cat("  value: ", Format::source(origGen)));
+    note("")
 };
 
 
@@ -74,7 +72,7 @@ msgTen("Open range (333, 0)",
 msgTen("Open range (\"!\", 0)",
     Range::makeOpenRange("!", 0));
 
-Io0::note("");
+note("");
 
 msgAll("Closed range (100, 7)",
     Range::makeClosedRange(100, 7));
@@ -88,7 +86,7 @@ msgAll("Closed range (3, 0, 10)",
 msgAll("Closed range (\"9\", 10, -1)",
     Range::makeClosedRange("9", 10, -1));
 
-Io0::note("");
+note("");
 
 msgAll("Inclusive range (5..10)",
     Range::makeInclusiveRange(5, 10));
@@ -108,7 +106,7 @@ msgAll("Zero-increment inclusive character range",
 msgAll("Empty inclusive range",
     Range::makeInclusiveRange(10, 9, 1));
 
-Io0::note("");
+note("");
 
 msgAll("Exclusive range (5..!10)",
     Range::makeExclusiveRange(5, 10));

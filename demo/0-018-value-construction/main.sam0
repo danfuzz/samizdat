@@ -6,8 +6,6 @@
 ## Demo of value construction
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
@@ -16,9 +14,9 @@ def Io0 = moduleLoad(["core", "Io0"]);
 ## Expects the two values to be `eq`.
 fn expectSame(v1, v2) {
     ifIs { <> eq(v1, v2) }
-        { Io0::note("Yes.") }
+        { note("Yes.") }
         {
-            Io0::note(cat("Different: ",
+            note(cat("Different: ",
                 Format::source(v1), ", ", Format::source(v2)))
         }
 };
@@ -26,8 +24,8 @@ fn expectSame(v1, v2) {
 ## Expects the two values to be `ne`.
 fn expectDifferent(v1, v2) {
     ifIs { <> ne(v1, v2) }
-        { Io0::note("Yes.") }
-        { Io0::note(cat("Same: ", Format::source(v1))) }
+        { note("Yes.") }
+        { note(cat("Same: ", Format::source(v1))) }
 };
 
 ## Expects the value to be a core value.
@@ -35,17 +33,17 @@ fn expectCore(v) {
     ifIs { <> isOpaqueValue(v) }
         {
             ifValue { <> dataOf(v) }
-                { data -> Io0::note(cat("Bad data: ", Format::source(data))) }
-                { Io0::note("Yes.") }
+                { data -> note(cat("Bad data: ", Format::source(data))) }
+                { note("Yes.") }
         }
-        { Io0::note(cat("Derived: ", Format::source(v))) }
+        { note(cat("Derived: ", Format::source(v))) }
 };
 
 ## Expects the value to be a derived value.
 fn expectDerived(v) {
     ifIs { <> isOpaqueValue(v) }
-        { Io0::note(cat("Opaque: ", Format::source(v))) }
-        { Io0::note("Yes.") }
+        { note(cat("Opaque: ", Format::source(v))) }
+        { note("Yes.") }
 };
 
 
@@ -57,7 +55,7 @@ fn expectDerived(v) {
 
 ## Int
 
-Io0::note("Int");
+note("Int");
 
 expectSame(0, 0);
 expectSame(100, 100);
@@ -77,7 +75,7 @@ expectCore(987654321);
 
 ## List
 
-Io0::note("\nList");
+note("\nList");
 
 expectSame([], []);
 expectSame([0], [0]);
@@ -98,7 +96,7 @@ expectCore([1, 2, [3, 4, 5]]);
 
 ## Map
 
-Io0::note("\nMap");
+note("\nMap");
 
 expectSame({}, {});
 expectSame({a: 10}, {a: 10});
@@ -124,7 +122,7 @@ expectCore({blort: "fizmo"});
 
 ## String
 
-Io0::note("\nString");
+note("\nString");
 
 expectSame("", "");
 expectSame("x", "x");
@@ -143,7 +141,7 @@ expectCore("muffins");
 
 ## Uniqlet
 
-Io0::note("\nUniqlet");
+note("\nUniqlet");
 
 def uniq1 = makeUniqlet();
 def uniq2 = makeUniqlet();
@@ -158,7 +156,7 @@ expectCore(uniq2);
 
 ## Function
 
-Io0::note("\nFunction");
+note("\nFunction");
 
 def fn1 = { x <> x };
 def fn2 = { x <> x };
@@ -173,7 +171,7 @@ expectCore(fn2);
 
 ## Derived values
 
-Io0::note("\nDerived values");
+note("\nDerived values");
 
 expectSame(@boo, @boo);
 expectSame(@boo, @"boo");

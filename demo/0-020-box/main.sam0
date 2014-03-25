@@ -6,8 +6,6 @@
 ## Box demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
@@ -23,7 +21,7 @@ fn msg(box) {
         { value <> Format::source(value) }
         { <> "(void)" };
 
-    Io0::note(cat(storeStr, fetchStr))
+    note(cat(storeStr, fetchStr))
 };
 
 
@@ -31,7 +29,7 @@ fn msg(box) {
 ## Main demos
 ##
 
-Io0::note("Mutable Box");
+note("Mutable Box");
 
 def box1 = Box::makeCell();
 msg(box1);
@@ -44,7 +42,7 @@ msg(box1);
 Box::store(box1);
 msg(box1);
 
-Io0::note("\nMutable Box, pre-set");
+note("\nMutable Box, pre-set");
 
 def box2 = Box::makeCell("blort");
 msg(box2);
@@ -53,37 +51,37 @@ msg(box2);
 Box::store(box2, "igram");
 msg(box2);
 
-Io0::note("\nYield Box");
+note("\nYield Box");
 
 def box3 = Box::makePromise();
 msg(box3);
 Box::store(box3, "fizmo");
 msg(box3);
 
-Io0::note("\nResult Box, void");
+note("\nResult Box, void");
 
 def box4 = Box::makeResult();
 msg(box4);
 
-Io0::note("\nResult Box, value");
+note("\nResult Box, value");
 
 def box5 = Box::makeResult("blort");
 msg(box5);
 
-Io0::note("\nnullBox");
+note("\nnullBox");
 
 msg(Box::nullBox);
 Box::store(Box::nullBox, "stuff");
 msg(Box::nullBox);
 
-Io0::note("\nUpdate mutable box");
+note("\nUpdate mutable box");
 def box6 = Box::makeCell();
 Box::update(box6, { args* <> Format::source(args) });
 msg(box6);
 Box::update(box6, { value <> cat("Yes: ", value) });
 msg(box6);
 
-Io0::note("\nUpdate yield box");
+note("\nUpdate yield box");
 def box7 = Box::makePromise();
 Box::update(box7, { args* <> Format::source(args) });
 msg(box7);

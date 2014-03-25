@@ -6,15 +6,13 @@
 ## Function statement demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn print(args*) {
-    Io0::note(Format::sourceUnadorned(args))
+    note(Format::sourceUnadorned(args))
 };
 
 
@@ -27,14 +25,14 @@ fn func1(x) {
     return "func1"
 };
 
-Io0::note(func1(10));
+note(func1(10));
 
 fn <out> func2(x*) {
     print("func2", x);
     <out> "func2"
 };
 
-Io0::note(func2(20, "twenty"));
+note(func2(20, "twenty"));
 
 ## Self-recursion.
 fn func3(x) {
@@ -46,7 +44,7 @@ fn func3(x) {
         }
 };
 
-Io0::note(func3(1));
+note(func3(1));
 
 ## Mutual recursion.
 fn recFunc1(x) {
@@ -63,6 +61,6 @@ fn recFunc2(x) {
         { recFunc1(Number::add(x, 1)) };
 };
 
-Io0::note(recFunc1(1));
+note(recFunc1(1));
 
 <> 0

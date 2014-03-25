@@ -6,60 +6,58 @@
 ## Demo of formal argument repeat specifiers, of unnamed (anonymous) arguments
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn uopt(.?) {
-    Io0::note("uopt()");
+    note("uopt()");
 };
 
 fn uplus(.+) {
-    Io0::note("uplus()");
+    note("uplus()");
 };
 
 fn ustar(.*) {
-    Io0::note("ustar()");
+    note("ustar()");
 };
 
 fn uargOpt(., arg?) {
-    Io0::note(cat("uargOpt() got: ", Format::source(arg)))
+    note(cat("uargOpt() got: ", Format::source(arg)))
 };
 
 fn uargPlus(., arg+) {
-    Io0::note(cat("uargPlus() got: ", Format::source(arg)))
+    note(cat("uargPlus() got: ", Format::source(arg)))
 };
 
 fn uargStar(., arg*) {
-    Io0::note(cat("uargStar() got: ", Format::source(arg)))
+    note(cat("uargStar() got: ", Format::source(arg)))
 };
 
 fn argUopt(arg, .?) {
-    Io0::note(cat("argUopt() got: ", Format::source(arg)))
+    note(cat("argUopt() got: ", Format::source(arg)))
 };
 
 fn argUplus(arg, .+) {
-    Io0::note(cat("argUplus() got: ", Format::source(arg)))
+    note(cat("argUplus() got: ", Format::source(arg)))
 };
 
 fn argUstar(arg, .*) {
-    Io0::note(cat("argUstar() got: ", Format::source(arg)))
+    note(cat("argUstar() got: ", Format::source(arg)))
 };
 
 fn argUoptStar(arg1, .?, arg2*) {
-    Io0::note("argUoptStar() got:");
-    Io0::note(cat("  ", Format::source(arg1)));
-    Io0::note(cat("  ", Format::source(arg2)));
+    note("argUoptStar() got:");
+    note(cat("  ", Format::source(arg1)));
+    note(cat("  ", Format::source(arg2)));
 };
 
 fn argUoptOptStar(arg1, .?, arg2?, arg3*) {
-    Io0::note("argUoptOptStar() got:");
-    Io0::note(cat("  ", Format::source(arg1)));
-    Io0::note(cat("  ", Format::source(arg2)));
-    Io0::note(cat("  ", Format::source(arg3)));
+    note("argUoptOptStar() got:");
+    note(cat("  ", Format::source(arg1)));
+    note(cat("  ", Format::source(arg2)));
+    note(cat("  ", Format::source(arg3)));
 };
 
 

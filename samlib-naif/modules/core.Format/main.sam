@@ -7,7 +7,6 @@
 ##
 
 def Generator = moduleLoad(["core", "Generator"]);
-def Io0       = moduleLoad(["core", "Io0"]);
 def Number    = moduleLoad(["proto", "Number"]);
 def Range     = moduleLoad(["core", "Range"]);
 def Sequence  = moduleLoad(["core", "Sequence"]);
@@ -325,10 +324,10 @@ fn int(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
     ifIs { <> lt(base, 2) }
-        { Io0::die("Invalid base for int.") };
+        { die("Invalid base for int.") };
 
     ifIs { <> gt(base, 36) }
-        { Io0::die("Invalid base for int.") };
+        { die("Invalid base for int.") };
 
     <> intWithBase(value, base)
 };
@@ -373,7 +372,7 @@ def FORMATTERS = {
 ## is defined in terms of other exported functions.
 fn formatterFor(formatSpec) {
     <> ifValueOr { <> get(FORMATTERS, formatSpec) }
-        { Io0::die(cat("Unrecognized format spec: ", source(formatSpec))) }
+        { die(cat("Unrecognized format spec: ", source(formatSpec))) }
 };
 
 

@@ -6,15 +6,13 @@
 ## Function expression demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn print(args*) {
-    Io0::note(Format::sourceUnadorned(args))
+    note(Format::sourceUnadorned(args))
 };
 
 
@@ -27,14 +25,14 @@ def func1 = fn (x) {
     return "func1"
 };
 
-Io0::note(func1(10));
+note(func1(10));
 
 def func2 = fn <out> (x*) {
     print("func2", x);
     <out> "func2"
 };
 
-Io0::note(func2(20, "twenty"));
+note(func2(20, "twenty"));
 
 ## Recursive call.
 def func3 = fn whee(x) {
@@ -46,6 +44,6 @@ def func3 = fn whee(x) {
         }
 };
 
-Io0::note(func3(1));
+note(func3(1));
 
 <> 0

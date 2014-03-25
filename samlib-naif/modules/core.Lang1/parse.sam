@@ -9,7 +9,6 @@
 def Collection = moduleLoad(["core", "Collection"]);
 def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
-def Io0        = moduleLoad(["core", "Io0"]);
 def Number     = moduleLoad(["proto", "Number"]);
 def Peg        = moduleLoad(["core", "Peg"]);
 def Range      = moduleLoad(["core", "Range"]);
@@ -50,12 +49,12 @@ def tokenize = intraLoad(["tokenize"])::tokenize;
 
 ## Reports the given list of pending tokens as part of error processing.
 fn reportError(pending) {
-    Io0::note("Pending tokens:");
+    note("Pending tokens:");
 
     Generator::filterPump(pending, Range::makeInclusiveRange(1, 50))
-        { token, . -> Io0::note(cat("    ", Format::source(token))) };
+        { token, . -> note(cat("    ", Format::source(token))) };
 
-    Io0::die("\nExtra tokens at end of program.")
+    die("\nExtra tokens at end of program.")
 };
 
 ## Set-like map of all lowercase identifier characters. Used to figure
@@ -191,7 +190,7 @@ def parNullaryClosure = Peg::makeMainSequence(
     Peg::makeCode { c ->
         def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
-            { Io0::die("Invalid formal argument in code block.") };
+            { die("Invalid formal argument in code block.") };
         <> c
     });
 
@@ -200,7 +199,7 @@ def parCodeOnlyClosure = Peg::makeMainSequence(
     parNullaryClosure,
     Peg::makeCode { c ->
         ifIs { <> get_yieldDef(c) }
-            { Io0::die("Invalid yield definition in code block.") };
+            { die("Invalid yield definition in code block.") };
         <> c
     });
 
@@ -352,7 +351,7 @@ def parListItem = Peg::makeMainChoice(
         parIdentifierString,
         Peg::makeToken(@@":"),
         Peg::makeCode { ., . ->
-            Io0::die(
+            die(
                 "Mapping syntax not valid as a list item or call argument.")
         }),
     parExpression);

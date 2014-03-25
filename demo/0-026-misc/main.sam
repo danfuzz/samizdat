@@ -6,8 +6,6 @@
 ## Demo / scratch code
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
@@ -15,7 +13,7 @@ def Io0 = moduleLoad(["core", "Io0"]);
 
 ## Demo of `+` argument repeat modifier.
 fn stuff(items+) {
-    Io0::note(cat("stuff: ", Format::source(items)))
+    note(cat("stuff: ", Format::source(items)))
 };
 
 ## Demo of formal argument repeat modifiers. Also of quoted identifiers.
@@ -25,7 +23,7 @@ fn blort(foo, bar?, \"weird name"?, more*) {
 
 ## Emits the stringified version of the given value to the console.
 fn process(value) {
-    Io0::note(Format::source(value));
+    note(Format::source(value));
 
     ## Test of explicit void yield.
     <>
@@ -40,8 +38,8 @@ fn main(selfPath, name?, rest*) {
     ## Be welcoming.
 
     ifIs { <> eq(name, ["danfuzz"]) }
-        { Io0::note("Hello, Danfuzz!\n") }
-        { Io0::note("Hello, Самиздат!\n") };
+        { note("Hello, Danfuzz!\n") }
+        { note("Hello, Самиздат!\n") };
 
     process(selfPath);
     process(rest);

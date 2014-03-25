@@ -10,7 +10,6 @@
 
 def Box       = moduleLoad(["core", "Box"]);
 def Generator = moduleLoad(["core", "Generator"]);
-def Io0       = moduleLoad(["core", "Io0"]);
 def Number    = moduleLoad(["proto", "Number"]);
 
 
@@ -41,7 +40,7 @@ fn makeClosedRange(firstValue, size, optIncrement?) {
     def increment = ifValueOr { <> optIncrement* } { <> 1 };
 
     ifNot { <> hasType(size, Int) }
-        { Io0::die("`size` must be an int.") };
+        { die("`size` must be an int.") };
 
     <> ifIs { <> gt(size, 0) }
         {

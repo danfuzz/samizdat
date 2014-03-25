@@ -6,15 +6,13 @@
 ## List / argument interpolation demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn msg(args*) {
-    Io0::note(cat("Got: ", Format::source(args)))
+    note(cat("Got: ", Format::source(args)))
 };
 
 fn ten() {
@@ -46,19 +44,19 @@ msg(Range::makeInclusiveRange("a", "m", 2)*);
 
 ifValue { <> yieldTest([]) }
     { value <> msg(value) }
-    { Io0::note("(void)") };
+    { note("(void)") };
 
 ifValue { <> nonlocalTest([]) }
     { value <> msg(value) }
-    { Io0::note("(void)") };
+    { note("(void)") };
 
 ifValue { <> yieldTest(["blort"]) }
     { value <> msg(value) }
-    { Io0::note("(void)") };
+    { note("(void)") };
 
 ifValue { <> nonlocalTest(["fizmo"]) }
     { value <> msg(value) }
-    { Io0::note("(void)") };
+    { note("(void)") };
 
 ## The extra parens here force the interpolated expression not to be considered
 ## at function argument level.

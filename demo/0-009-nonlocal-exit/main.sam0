@@ -6,19 +6,17 @@
 ## Demo of nonlocal exit
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn bad() {
-    Io0::die("Wrong!")
+    die("Wrong!")
 };
 
 fn good() {
-    Io0::note("Ok")
+    note("Ok")
 };
 
 fn returnVoid1() {
@@ -64,15 +62,15 @@ ifIs(returnVoid5, bad, good);
 ifIs(returnVoid6, bad, good);
 
 ifValue { <> returnArg1("woo") }
-    { v <> Io0::note(v) }
+    { v <> note(v) }
     { bad() };
 
 ifValue { <> returnArg2("woo") }
-    { v <> Io0::note(v) }
+    { v <> note(v) }
     { bad() };
 
 ifValue { <> returnArg3("woo") }
-    { v <> Io0::note(v) }
+    { v <> note(v) }
     { bad() };
 
 <> 0
