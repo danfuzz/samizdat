@@ -177,10 +177,6 @@ of type `Type`.
 <br><br>
 ### In-Language Definitions
 
-#### `isList(value) <> logic`
-
-Returns the given `value` if it is a list. Returns void if not.
-
 #### `isOpaqueValue(value) <> logic`
 
 Returns `value` if it is an opaque value &mdash; that is, if it is

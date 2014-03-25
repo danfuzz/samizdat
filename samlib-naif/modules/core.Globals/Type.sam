@@ -12,11 +12,6 @@
 ##
 
 ## Documented in spec.
-fn isList(value) {
-    <> hasType(value, List)
-};
-
-## Documented in spec.
 fn isOpaqueValue(value) {
     <> ifNot { <> typeIsDerivedData(typeOf(value)) }
         { <> value }
@@ -33,7 +28,6 @@ fn typeNameOf(value) {
 };
 
 <> {
-    isList,
     isOpaqueValue,
     isString,
     typeNameOf

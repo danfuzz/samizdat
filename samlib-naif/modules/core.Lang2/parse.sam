@@ -2101,7 +2101,7 @@ def parSwitchExpression = {:
         ## what `cat(map)` defines.
         def caseClauses = Generator::filterAll(cases) { case ->
             def keys = case::keys;
-            <> ifIs { <> isList(keys) }
+            <> ifIs { <> hasType(keys, List) }
                 { <> makeCallOrApply(REFS::makeValueMap, keys*, case::code) }
         };
         def caseMap = makeCallOrApply(REFS::cat,
