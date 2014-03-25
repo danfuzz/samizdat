@@ -100,7 +100,7 @@ opName <out> (expression) {
 ```
 
 This latter form is meant to make it easier to break out of
-a nested context in which there is an inner break context which
+a nested execution environment in which there is an inner break context which
 is to be skipped over.
 
 #### Early loop continuation

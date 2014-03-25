@@ -15,9 +15,9 @@ def Lang1 = moduleLoad(["core", "Lang1"]);
 ##
 
 ## Documented in spec.
-fn evalBinary(context, filePath) {
+fn evalBinary(env, filePath) {
     def flatPath = Io1::flatFromPath(filePath);
-    <> Lang1::evalBinary(context, flatPath)
+    <> Lang1::evalBinary(env, flatPath)
 };
 
 <> {

@@ -401,7 +401,7 @@ This is the protocol for function-like things, that is, things which can
 be applied to an argument list to produce a result.
 
 As with many other languages, at the highest level functions are generally
-defined in terms of source code and an execution context.
+defined in terms of source code and an execution environment.
 
 See the language guide section on functions and the library documentation
 for `Function` for more details.
