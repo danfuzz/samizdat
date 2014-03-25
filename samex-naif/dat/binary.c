@@ -46,11 +46,11 @@ static void *loadLibrary(const char *path) {
 
 /**
  * Runs the `eval` function defined by the given library, passing it the
- * given `context` argument. This function returns whatever the library's
+ * given `env` argument. This function returns whatever the library's
  * `eval` returns. If `eval` is not found, this terminates the runtime with
  * an error message.
  */
-static zvalue evalLibrary(void *libHandle, zvalue context) {
+static zvalue evalLibrary(void *libHandle, zvalue env) {
     // The circumlocution used to assign `evalFn` is required, because
     // directly assigning a `void *` to a function pointer type is
     // an undefined operation in ISO C. Reference:
@@ -62,7 +62,7 @@ static zvalue evalLibrary(void *libHandle, zvalue context) {
         die("Trouble looking up `eval`: %s\n", dlerror());
     }
 
-    return evalFn(context);
+    return evalFn(env);
 }
 
 
@@ -71,7 +71,7 @@ static zvalue evalLibrary(void *libHandle, zvalue context) {
  */
 
 /* Documented in header. */
-zvalue datEvalBinary(zvalue context, zvalue flatPath) {
+zvalue datEvalBinary(zvalue env, zvalue flatPath) {
     zint size = utf8SizeFromString(flatPath);
     char path[size + 1];
     utf8FromString(size + 1, path, flatPath);
@@ -81,7 +81,7 @@ zvalue datEvalBinary(zvalue context, zvalue flatPath) {
     }
 
     void *libHandle = loadLibrary(path);
-    return evalLibrary(libHandle, context);
+    return evalLibrary(libHandle, env);
 
     // Note: We intentionally do not `dlclose` the library, on the assumption
     // that whatever `evalLibrary` returns either directly or indirectly

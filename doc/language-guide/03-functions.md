@@ -7,8 +7,8 @@ Functions and Blocks
 Samizdat is a closure-forward language, in that almost any nontrivial
 piece of code will consist of multiple nested closures. Closures in the
 language are the typical sort, namely a function which captures elements
-from its execution context and which continues to be valid after its
-enclosing execution context has exited.
+from its execution environment and which continues to be valid after its
+enclosing execution environment has exited.
 
 There are two kinds of closure in the language, "functions" and "blocks,"
 which correspond to two different common use cases. Both forms have in
@@ -56,11 +56,10 @@ one of the following:
 * `+` &mdash; Any positive number of optional arguments (that is,
   at least one).
 
-If a repetition specifier is present on an argument, then in the context
-of the closure, the variable name associated with the argument will
-always be a list, consisting of the actual values bound to the argument.
-For example, an optional argument will always be a list of zero or one
-element.
+If a repetition specifier is present on an argument, then in the environment
+of the closure, the variable associated with the argument will always be a
+list, consisting of the actual values bound to the argument. For example, an
+optional argument will always be a list of zero or one element.
 
 When bound, repetition specifiers consistently cause "maximum greed" and
 no backtracking. As such, it does not make sense to list an unmarked argument
@@ -116,8 +115,8 @@ Two kinds of yield are applicable in all contexts:
   have yet yielded (including yielding void). It is a fatal error to try to
   yield from a closure that has already yielded.
 
-  If there is more than one closure in the lexical context that has the same
-  name, this form binds to the closest enclosing one.
+  If there is more than one closure in the lexical environment that has the
+  same name, this form binds to the closest enclosing one.
 
 One kind of yield is applicable in the context of a function definition
 (as defined in this section):
@@ -151,8 +150,7 @@ expression; these are known as "function expressions." There is no
 syntactic difference between these two forms, except that the statement
 form requires the function to have a name. There is no semantic
 difference between these two forms, except that the statement form
-binds the function to a variable outside the context of the execution
-of the function itself.
+binds the function in the lexical environment that the statement appears in,
 
 When used as a statement, the function's name is in effect declared at
 the top of the block it appears in, though the name only becomes *bound*

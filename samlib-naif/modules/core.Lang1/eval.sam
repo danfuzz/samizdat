@@ -16,9 +16,9 @@ def convertToLang0 = intraLoad(["convert"])::convertToLang0;
 ##
 
 ## Documented in spec.
-fn eval(context, expressionNode) {
+fn eval(env, expressionNode) {
     def convertedNode = convertToLang0(expressionNode);
-    <> Lang0::eval(context, convertedNode)
+    <> Lang0::eval(env, convertedNode)
 };
 
 <> {

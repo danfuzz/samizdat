@@ -102,7 +102,7 @@ def intraExists   = makeRegularGeneric("intraExists", 2, 2);
 ## * `next` -- next `ModuleLoader` to check when trying to find a module
 ## * `basePath` -- absolute path prefix for all loading. Relative subdirectory
 ##   paths correspond to modules
-## * `globals` -- global variable context to use when loading
+## * `globals` -- global variable environment to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
 ## TODO: This should be an opaque type.
@@ -182,7 +182,7 @@ fn makeModuleLoader(path, globals, nextModuleLoader) {
 ## Payload:
 ## * `moduleLoader` -- module loader
 ## * `basePath` -- absolute path prefix for all loading
-## * `globals` -- global variable context to use when loading
+## * `globals` -- global variable environment to use when loading
 ## * `languageModule` -- language module to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##

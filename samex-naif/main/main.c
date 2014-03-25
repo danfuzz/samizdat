@@ -22,7 +22,7 @@
  */
 
 /**
- * Main driver for Samizdat Layer 0. This makes a library context, and
+ * Main driver for Samizdat Layer 0. This makes a library environment, and
  * uses the `CommandLine::run` function defined therein to do all the
  * real work.
  */
@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     }
 
     char *libraryDir = getProgramDirectory(argv[0], "corelib");
-    zvalue context = libNewContext(libraryDir);
+    zvalue env = libNewEnvironment(libraryDir);
 
     utilFree(libraryDir);
 
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     }
     zvalue argsList = listFromArray(argc - 1, args);
 
-    zvalue runFunc = collGet(context, STR_runCommandLine);
+    zvalue runFunc = collGet(env, STR_runCommandLine);
     zvalue result = funApply(runFunc, argsList);
 
     if ((result != NULL) && (hasType(result, TYPE_Int))) {

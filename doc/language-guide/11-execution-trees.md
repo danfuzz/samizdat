@@ -105,7 +105,7 @@ value) is created, which binds as variables the names of all
 the formals to all the incoming actual arguments (as defined below),
 binds the `yieldDef` name if specified to a nonlocal-exit function,
 and binds all other variable names to whatever they already refer to in
-the lexical evaluation context. This closure function is the result of
+the lexical evaluation environment. This closure function is the result of
 evaluation.
 
 If a nonlocal-exit function is defined, then that function accepts zero
@@ -115,7 +115,7 @@ it (including void). It is an error (terminating the runtime) to use a
 nonlocal-exit function after the active function it was bound to has exit.
 
 When the closure function is actually called (e.g. by virtue of being the
-designated `function` in a `call` node), a fresh execution context is
+designated `function` in a `call` node), a fresh execution environment is
 created, in which the actual arguments are bound to the formals. If
 there are too few actual arguments, the call fails (terminating the
 runtime). After that, the `statements` are evaluated in
@@ -188,7 +188,7 @@ The result of evaluating this form is the same as the result of evaluating
 This represents a by-name variable reference.
 
 When run, this causes the `name` to be looked up in the current
-execution context. If a binding is found for it, then the bound value
+execution environment. If a binding is found for it, then the bound value
 is the result of evaluation. If a binding is not found for it, then
 evaluation fails (terminating the runtime).
 
@@ -203,7 +203,7 @@ of various expression nodes.
 * `name: name` (optional) &mdash; an arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
   formal. If omitted, then this indicates an unused argument which is
-  not bound to a variable in the context of the closure body.
+  not bound to a variable in the environment of the closure body.
 
 * `repeat: repeat` (optional) &mdash; indicates (if present) that the number
   of actual arguments bound by this formal is not necessarily exactly one.
@@ -242,7 +242,7 @@ closure body. Nodes of this type are valid within the `statements` list of
 a `closure` node.
 
 When run successfully, nodes of this type cause `name` to be bound in the
-current (topmost) execution context, to an immutable variable. That is,
+current (topmost) execution environment, to an immutable variable. That is,
 once the variable is bound to a value, it can never be re-bound. The
 behavior varies depending on if `value` is supplied in this node:
 
@@ -268,7 +268,7 @@ body. Nodes of this type are valid within the `statements` list of a `closure`
 node.
 
 When run successfully, nodes of this type cause `name` to be bound in the
-current (topmost) execution context, to a mutable variable. That is, the
+current (topmost) execution environment, to a mutable variable. That is, the
 variable may be bound and re-bound multiple times, by using `varBind` nodes.
 The behavior varies depending on if `value` is supplied in this node:
 

@@ -17,11 +17,11 @@ def Lang1 = moduleLoad(["core", "Lang1"]);
 ##
 
 ## Documented in spec.
-fn eval(context, expressionNode) {
-    <> Lang1::eval(context, expressionNode)
+fn eval(env, expressionNode) {
+    <> Lang1::eval(env, expressionNode)
     ## TODO
     ## def convertedNode = convertToLang0(expressionNode);
-    ## <> Lang0::eval(context, convertedNode)
+    ## <> Lang0::eval(env, convertedNode)
 };
 
 <> {
