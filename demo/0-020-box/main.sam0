@@ -74,16 +74,4 @@ msg(Box::nullBox);
 Box::store(Box::nullBox, "stuff");
 msg(Box::nullBox);
 
-note("\nUpdate mutable box");
-def box6 = Box::makeCell();
-Box::update(box6, { args* <> Format::source(args) });
-msg(box6);
-Box::update(box6, { value <> cat("Yes: ", value) });
-msg(box6);
-
-note("\nUpdate yield box");
-def box7 = Box::makePromise();
-Box::update(box7, { args* <> Format::source(args) });
-msg(box7);
-
 <> 0
