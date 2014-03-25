@@ -6,8 +6,6 @@
 ## Switch expression demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -55,46 +53,46 @@ fn namer(value) {
 ## Main Tests
 ##
 
-Io1::note("Power...");
-Io1::note(powerName(0));
-Io1::note(powerName(1));
-Io1::note(powerName(2));
-Io1::note(powerName(3));
-Io1::note(powerName(4));
-Io1::note(powerName(5));
-Io1::note(powerName(6));
-Io1::note(powerName(7));
-Io1::note(powerName("blort"));
+note("Power...");
+note(powerName(0));
+note(powerName(1));
+note(powerName(2));
+note(powerName(3));
+note(powerName(4));
+note(powerName(5));
+note(powerName(6));
+note(powerName(7));
+note(powerName("blort"));
 
-Io1::note("\nInterpolate...");
-Io1::note(interpolator(1, [1, 2, 3]));
-Io1::note(interpolator(2, [4..6]));
-Io1::note(interpolator(10, [8..18]));
-Io1::note(interpolator(11, [8..18]));
-Io1::note(interpolator(0, [0, 5]));
+note("\nInterpolate...");
+note(interpolator(1, [1, 2, 3]));
+note(interpolator(2, [4..6]));
+note(interpolator(10, [8..18]));
+note(interpolator(11, [8..18]));
+note(interpolator(0, [0, 5]));
 
-Io1::note("\nElse...");
-Io1::note(elser("blort"));
-Io1::note(elser("fizmo"));
-Io1::note(elser());
-Io1::note(Format::source(elser("igram")?)); ## `?` because we expect void.
+note("\nElse...");
+note(elser("blort"));
+note(elser("fizmo"));
+note(elser());
+note(Format::source(elser("igram")?)); ## `?` because we expect void.
 
-Io1::note("\nVoid yield...");
+note("\nVoid yield...");
 ifNot
     {
         <> switch (lt(2, 1)) {
-            default: { Io1::note("Huh?") }
+            default: { note("Huh?") }
         }
     }
-    { Io1::note("Yes, void.") };
+    { note("Yes, void.") };
 
-Io1::note("\nNames...");
-Io1::note(Format::source(namer(1)));
-Io1::note(Format::source(namer(2)));
-Io1::note(Format::source(namer(3)));
-Io1::note(Format::source(namer(4)));
-Io1::note(Format::source(namer(5)));
-Io1::note(Format::source(namer(6)));
-Io1::note(Format::source(namer(7)));
+note("\nNames...");
+note(Format::source(namer(1)));
+note(Format::source(namer(2)));
+note(Format::source(namer(3)));
+note(Format::source(namer(4)));
+note(Format::source(namer(5)));
+note(Format::source(namer(6)));
+note(Format::source(namer(7)));
 
 <> 0

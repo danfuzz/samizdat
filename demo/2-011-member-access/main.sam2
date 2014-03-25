@@ -6,8 +6,6 @@
 ## Method call demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -15,7 +13,7 @@ def Io1 = moduleLoad(["core", "Io1"]);
 
 ## Prints out the given value.
 fn msg(value) {
-    Io1::note("\%q(value)");
+    note("\%q(value)");
 };
 
 
@@ -26,14 +24,14 @@ fn msg(value) {
 def sizeOf = Collection::sizeOf;
 def nth = Sequence::nth;
 
-Io1::note("\nMethod call syntax");
+note("\nMethod call syntax");
 msg([1, 2].sizeOf());
 msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
 msg("".cat("Awesome", "tastic!"));
 
-Io1::note("\nGetter syntax");
+note("\nGetter syntax");
 def get_size = Collection::sizeOf;
 msg([1, 2, 3].size);
 
@@ -41,7 +39,7 @@ def get_value = Box::fetch;
 def cell = Box::makeCell(100);
 msg(cell.value);
 
-Io1::note("\nSetter syntax");
+note("\nSetter syntax");
 def set_value = Box::store;
 msg(cell.value := 987);
 cell.value := 654;

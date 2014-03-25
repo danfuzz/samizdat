@@ -6,8 +6,6 @@
 ## For loop expression demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -15,7 +13,7 @@ def Io1 = moduleLoad(["core", "Io1"]);
 
 ## Output the given values.
 fn print(values*) {
-    Io1::note("    \%Q(values)")
+    note("    \%Q(values)")
 };
 
 
@@ -23,67 +21,67 @@ fn print(values*) {
 ## Main Tests
 ##
 
-Io1::note("Empty content.");
+note("Empty content.");
 for (x in []) {
-    Io1::die("Shouldn't happen.");
+    die("Shouldn't happen.");
 };
 
-Io1::note("\nSingle element list.");
+note("\nSingle element list.");
 for (x in [1]) {
     print(x)
 };
 
-Io1::note("\nTwo element list.");
+note("\nTwo element list.");
 for (x in [@blort, @fizmo]) {
     print(x)
 };
 
-Io1::note("\nThree element list.");
+note("\nThree element list.");
 for (x in ["muffin", "biscuit", "scone"]) {
     print(x)
 };
 
-Io1::note("\nString.");
+note("\nString.");
 for (x in "Blort!") {
     print(x)
 };
 
-Io1::note("\nFive-element map, no name binding.");
+note("\nFive-element map, no name binding.");
 for (. in {a:1, b:2, c:3, d:4, e:5}) {
     print("(item)")
 };
 
-Io1::note("\nList and string in parallel.");
+note("\nList and string in parallel.");
 for (x in [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55], y in "fibonacci") {
     print(x, y)
 };
 
-Io1::note("\nExplicit generator.");
+note("\nExplicit generator.");
 for (value in Generator::makeFilterGenerator({ x <> x * x }, [1, 2, 3, 4])) {
     print(value)
 };
 
-Io1::note("\nUnnamed break.");
+note("\nUnnamed break.");
 def result1 = for (x in [1, 2, 3, 4, 5]) {
     if (x \== 3) { break 23 };
     print(x)
 };
-Io1::note("Result: \%q(result1)");
+note("Result: \%q(result1)");
 
-Io1::note("\nNamed break.");
+note("\nNamed break.");
 def result2 = for <out> (x in [1, 2, 3, 4, 5]) {
     if (x \== 3) { <out> 187 };
     print(x)
 };
-Io1::note("Result: \%q(result2)");
+note("Result: \%q(result2)");
 
-Io1::note("\nUnnamed continue.");
+note("\nUnnamed continue.");
 for (x in [1, 2, 3, 4, 5]) {
     if (x \== 3) { continue };
     print(x)
 };
 
-Io1::note("\nNamed continue.");
+note("\nNamed continue.");
 for (x in [1, 2, 3, 4, 5]) { <next> ->
     if (x \== 3) { <next> };
     print(x)

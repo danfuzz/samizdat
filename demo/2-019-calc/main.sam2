@@ -6,8 +6,6 @@
 ## Calculator Demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -163,7 +161,7 @@ def evalExpressions = {:
         ex = expression
         "\n"
         {
-            Io1::note("\%q(ex)");
+            note("\%q(ex)");
             ## Explicit yield here to indicate successful parsing.
             <> null
         }

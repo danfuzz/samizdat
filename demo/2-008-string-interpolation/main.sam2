@@ -6,15 +6,13 @@
 ## String interpolation demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn print(string) {
-    Io1::note(string)
+    note(string)
 };
 
 ##

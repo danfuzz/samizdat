@@ -6,8 +6,6 @@
 ## Unary operator demo
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
@@ -15,7 +13,7 @@ def Io1 = moduleLoad(["core", "Io1"]);
 
 ## Prints out the given value.
 fn msg(value) {
-    Io1::note(Format::source(value))
+    note(Format::source(value))
 };
 
 ## Something to call.
@@ -33,7 +31,7 @@ fn returnString() {
 ## Main Tests
 ##
 
-Io1::note("Ints and binary");
+note("Ints and binary");
 
 msg(-0);
 msg(-10);
@@ -47,7 +45,7 @@ msg(returnString());
 msg(returnVoid()?);
 msg(returnString()?);
 
-Io1::note("\nBoolean / logic conversion");
+note("\nBoolean / logic conversion");
 
 msg(returnVoid()??);
 msg(returnString()??);
@@ -56,7 +54,7 @@ msg(false??);   ## This one is the documented surprising result.
 msg((true**)?);
 msg((false**)?);
 
-Io1::note("\nLogic ops");
+note("\nLogic ops");
 
 msg((!returnVoid())?);
 msg((!returnString())?);
@@ -66,16 +64,16 @@ msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
 msg((! ! !@fizmo)?);
 
-Io1::note("\nCollections -- size");
+note("\nCollections -- size");
 msg(#"foo");
 msg(#[]);
 msg(#({a: 10, b: 20, c: 30, d:40}));
 
-Io1::note("\nCollections -- reverse");
+note("\nCollections -- reverse");
 msg(^"!sniffuM");
 msg(^[1000, 100, 10, 1]);
 
-Io1::note("\nCollections -- single value index");
+note("\nCollections -- single value index");
 msg(["blort", "fizmo", "igram"][0]);
 msg(["blort", "fizmo", "igram"][1]);
 msg(["blort", "fizmo", "igram"][3]?);
@@ -98,7 +96,7 @@ msg("frotz"["ztrof"]?);
 msg(returnString()[2]);
 msg((returnString()[99])?);
 
-Io1::note("\nSequences -- ranges");
+note("\nSequences -- ranges");
 msg("--Biscuits!---"[2..10]);
 msg("--Biscuits!---"[2..!11]);
 msg([-7, -6, -5, 1, 2, 3][3..]);
@@ -114,14 +112,14 @@ msg(([1, 2, 3][3..1])?); ## `?` since this should be a void return.
 msg(([][1..])?);         ## Ditto.
 msg(([][..!])?);         ## Ditto.
 
-Io1::note("\nSequences -- single value index from end");
+note("\nSequences -- single value index from end");
 msg([1, 2, 3][^-1]?);
 msg([1, 2, 3][^0]);
 msg([1, 2, 3][^1]);
 msg([1, 2, 3][^2]);
 msg([1, 2, 3][^3]?);
 
-Io1::note("\nSequences -- ranges including from-end");
+note("\nSequences -- ranges including from-end");
 msg("--blort-spaz-foo"[^2..]);
 msg("--blort-spaz-foo"[^2..!]);
 msg("--blort-spaz-foo"[^7..^4]);

@@ -64,7 +64,7 @@ def parError = {:
     word = parWord
     {
         def value = "\[stringFromTokens(ch1, ch2), word]";
-        Io1::note("Unknown option: \%q(value)");
+        note("Unknown option: \%q(value)");
         <> {error: true}
     }
 :};
@@ -83,7 +83,7 @@ def parArguments = {:
     {
         def options = {}.cat(optionList*);
         if (options::error) {
-            Io1::die("Invalid option(s).")
+            die("Invalid option(s).")
         };
         <> {options, args}
     }

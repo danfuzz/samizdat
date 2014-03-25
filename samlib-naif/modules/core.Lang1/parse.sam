@@ -98,7 +98,7 @@ def parParenExpression = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeToken(@@","),
             Peg::makeCode { ., . ->
-                Io1::die("Comma not allowed within parenthesized expression.")
+                die("Comma not allowed within parenthesized expression.")
             })),
     Peg::makeToken(@@")"),
     Peg::makeCode { ., ex, ., . <> withoutInterpolate(ex) });

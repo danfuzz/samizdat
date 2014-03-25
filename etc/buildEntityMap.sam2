@@ -94,7 +94,7 @@ def parFile = {:
         extras = [! "\n"]+
         {
             def string = stringFromTokenList(extras);
-            Io1::die("Unexpected line: \%q(string)")
+            die("Unexpected line: \%q(string)")
         }
     )?
 
@@ -103,7 +103,7 @@ def parFile = {:
 
 def inPath = [PATH[..!]*, "entity-map.txt"];
 def outPath = [PATH[..!]*, "entityMap.sam"];
-Io1::note("Processing file: \%q(inPath)");
+note("Processing file: \%q(inPath)");
 
 def text = Io1::readFileUtf8(inPath);
 def result = Peg::apply(parFile, text);

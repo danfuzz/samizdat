@@ -19,12 +19,12 @@ def Stuff = moduleLoad(["app", "Stuff"]);
 ## Ensure it's not re-evaluated.
 def Stuff2 = moduleLoad(["app", "Stuff"]);
 ifIs { <> ne(Stuff, Stuff2) }
-    { Io1::die("Different modules!") };
+    { die("Different modules!") };
 
 fn main(selfPath, .*) {
-    Io1::note(cat("I am: ", Format::source(selfPath)));
-    Io1::note(Format::source(Stuff::STUFF));
-    Io1::note(Format::source(Stuff::SUBSTUFF));
+    note(cat("I am: ", Format::source(selfPath)));
+    note(Format::source(Stuff::STUFF));
+    note(Format::source(Stuff::SUBSTUFF));
 };
 
 <> {main}

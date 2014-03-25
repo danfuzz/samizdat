@@ -52,7 +52,7 @@ fn doOne(modeModule, args, sourceName) {
     def sourcePath = getSourcePath(sourceName, args);
     def outputPath = getOutputPath(sourceName, args);
 
-    Io1::note("\
+    note("\
         \%q(sourcePath)
         -> \%q(outputPath)\n");
 
@@ -60,7 +60,7 @@ fn doOne(modeModule, args, sourceName) {
 };
 
 fn main(selfPath, rawArgs*) {
-    Io1::note("\n\
+    note("\n\
         Starting: \%q(selfPath)
         Raw args: \%q(rawArgs)\n");
 
@@ -68,18 +68,18 @@ fn main(selfPath, rawArgs*) {
     def sources = args::args;
     def modeName = MODE_MAP[args::options::mode | DEFAULT_MODE] |
         {
-            Io1::note("Unknown compilation mode: \%q(args::options::mode)");
+            note("Unknown compilation mode: \%q(args::options::mode)");
             return 1
         }();
     def modeModule = moduleLoad(["mode", modeName]);
 
     if (#sources == 0) {
-        Io1::note("No source files specified!");
+        note("No source files specified!");
         return 1
     };
 
     if (args::options::output & (#sources > 1)) {
-        Io1::note("Cannot use --output with more than one source!");
+        note("Cannot use --output with more than one source!");
         return 1
     };
 

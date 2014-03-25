@@ -6,15 +6,13 @@
 ## Int literal demo, Layer 2 specific
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
-
 
 ##
 ## Helper Definitions
 ##
 
 fn msg(v) {
-    Io1::note("Got: \%q(v)")
+    note("Got: \%q(v)")
 };
 
 
@@ -22,7 +20,7 @@ fn msg(v) {
 ## Main Tests
 ##
 
-Io1::note("Layer 0...");
+note("Layer 0...");
 
 msg(0);
 msg(-9);
@@ -30,7 +28,7 @@ msg(20);
 msg(98765);
 msg(-12345);
 
-Io1::note("\nLayer 2...");
+note("\nLayer 2...");
 
 msg(1_234_452);
 msg(0x1234abcd);            ## Decimal 305441741.

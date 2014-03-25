@@ -259,11 +259,6 @@ fn writeFileUtf8(path, text) {
 };
 
 <> {
-    ## Re-exported from Io0.
-    die:  die,
-    note: note,
-
-    ## Defined in this file.
     fileExists,
     flatFromPath,
     pathFromFlat,
