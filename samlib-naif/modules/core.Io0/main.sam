@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Modularization of primitive I/O functions
+## Simple I/O functions
 ##
 
 def Collection = moduleLoad(["core", "Collection"]);
