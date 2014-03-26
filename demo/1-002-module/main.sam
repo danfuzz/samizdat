@@ -11,7 +11,7 @@
 ##
 
 ## A known module (shouldn't cause any trouble).
-def Io1 = moduleLoad(["core", "Io1"]);
+moduleLoad(["core", "Format"]);
 
 ## A locally-defined module.
 def Stuff = moduleLoad(["app", "Stuff"]);
