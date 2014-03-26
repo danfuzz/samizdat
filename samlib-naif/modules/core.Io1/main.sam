@@ -77,31 +77,6 @@ def parPathString = {:
 
 
 ##
-## Private Definitions: `parPathList`
-##
-
-## Parses a path within a path list.
-def parOnePath = {:
-    chars = [! ":"]+
-    { <> Peg::stringFromTokenList(chars) }
-:};
-
-## Parses a flattened path list (e.g. the format for a Posix-style `PATH`
-## variable) into a list of strings (for further parsing).
-def parPathList = {:
-    ":"*
-    first = parOnePath
-    rest = (
-        ":"+
-        parOnePath
-    )*
-    ":"*
-
-    { <> [first, rest*] }
-:};
-
-
-##
 ## Private Definitions
 ##
 
@@ -226,15 +201,6 @@ fn pathFromFlat(string) {
 };
 
 ## Documented in spec.
-fn pathListFromFlat(string) {
-    ## Parse the given string into a list of flat paths.
-    def flats = Peg::apply(parPathList, string);
-
-    ## Call `pathFromFlat` on each element.
-    <> Generator::filterAll(pathFromFlat, flats)
-};
-
-## Documented in spec.
 fn readFileUtf8(path) {
     <> Io0::flatReadFileUtf8(flatFromPath(path))
 };
@@ -262,7 +228,6 @@ fn writeFileUtf8(path, text) {
     fileExists,
     flatFromPath,
     pathFromFlat,
-    pathListFromFlat,
     readFileUtf8,
     readLink,
     sandboxedReader,

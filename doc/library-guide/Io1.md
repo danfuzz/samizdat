@@ -25,7 +25,6 @@ such as might have been returned from `pathFromFlat`.
 This returns void if the file doesn't exist at all, or if it exists but
 is either a directory or a "special" file.
 
-
 #### `flatFromPath(path) <> flatPath`
 
 Converts the given path list to an absolute "Posix-style" flat string.
@@ -73,13 +72,6 @@ original path ended with a trailing slash.
 
 It is an error (terminating the runtime) if `string` is empty (`""`).
 
-#### `pathListFromFlat(flatPathList) <> [path*]`
-
-Converts the given path list string to a list (per se) of absolute
-internal-form paths. The given `flatPathList` is taken to be a colon-separated
-list of flat paths. It is split apart on colons, and each split path is
-processed as if by `pathFromFlat`.
-
 #### `readFileUtf8(path) <> string`
 
 Reads the named file, using the underlying OS's functionality,
@@ -98,7 +90,7 @@ real file (for example).
 If the path does not refer to a symbolic link, then this function returns
 void.
 
-`pathList` must be a list of the form described by `pathFromFlat`
+`path` must be a list of the form described by `pathFromFlat`
 (see which). See `readFileUtf8` for further discussion.
 
 #### `sandboxedReader(directory) <> function`

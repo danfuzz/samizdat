@@ -46,7 +46,6 @@ fn process(value) {
 process(Io1::pathFromFlat("///foo//////./bar/./../baz"));
 process(Io1::pathFromFlat("/a/b/x/y/z/../../../c/"));
 process(Io1::flatFromPath(["fizmo", "igram", "blort", ""]));
-process(Io1::pathListFromFlat("/foo:/foo/bar:baz/blort/"));
 
 sibling();
 fileExists();
