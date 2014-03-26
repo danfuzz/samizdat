@@ -6,16 +6,27 @@
 ## Modularization of primitive I/O functions
 ##
 
+
+##
+## Private Definitions
+##
+
+## Does a type / content check on `path`.
+fn checkPath(path) {
+    ifNot { <> hasType(path, String) }
+        { die("Invalid non-string path.") };
+    ifIs { <> eq(path, "") }
+        { die("Invalid empty path.") };
+};
+
+
 ##
 ## Exported Definitions
 ##
 
 ## Documented in spec.
 fn absolutePath(path, optBase?) {
-    ifNot { <> hasType(path, String) }
-        { die("Invalid non-string path.") };
-    ifIs { <> eq(path, "") }
-        { die("Invalid empty path.") };
+    checkPath(path);
 
     <> ifIs { <> eq(get(path, 0), "/") }
         { <> path }
@@ -23,6 +34,36 @@ fn absolutePath(path, optBase?) {
             def base = ifValueOr { <> optBase* } { <> flatCwd() };
             <> cat(base, "/", path)
         }
+};
+
+## Documented in spec.
+fn directoryOf(path) {
+    checkPath(path);
+
+    var at = Collection::sizeOf(path);
+
+    ## Back up over any path-final slashes. If we hit the start of the path,
+    ## then that means the path was all slashes, making the result be `"/"`.
+    { <out> ->
+        loop {
+            at := Number::sub(at, 1);
+
+            def ch = get(path, at);
+            ifIs { <> ne(ch, "/") } { <out> };
+            ifIs { <> eq(at, 0) } { return "/" };
+        }
+    }();
+
+    ## Back up until the next-final slash. If we hit the start of the path,
+    ## then that means there was no slash, making the result be `"."`.
+    loop {
+        ifIs { <> eq(at, 0) } { return "." };
+        at := Number::sub(at, 1);
+
+        def ch = get(path, at);
+        ifIs { <> eq(ch, "/") }
+            { return Sequence::sliceExclusive(path, 0, at) };
+    }
 };
 
 <> {
@@ -34,5 +75,6 @@ fn absolutePath(path, optBase?) {
     flatWriteFileUtf8: Io0_flatWriteFileUtf8,
 
     ## Defined in this file.
-    absolutePath
+    absolutePath,
+    directoryOf
 }
