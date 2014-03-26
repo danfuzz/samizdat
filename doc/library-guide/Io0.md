@@ -17,6 +17,19 @@ by the lowest layer of core library.
 <br><br>
 ### Function Definitions
 
+#### `absolutePath(path, optBase?) <> path`
+
+Returns an absolute filesystem path, based on the given `path` and optional
+base directory. If `path` is already absolute, then this returns it as-is.
+Otherwise, this prefixes it with either `optBase*` (if given) or the current
+directory (if not), followed by a slash.
+
+This function does not attempt to resolve symbolic links, nor does it
+"flatten" away any `.` or `..` path components.
+
+It is an error (terminating the runtime) if `path` is empty or is not a
+string.
+
 #### `flatCwd() <> flatPath`
 
 Returns the current working directory of the process, as a

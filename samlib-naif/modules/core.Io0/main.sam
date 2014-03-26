@@ -6,10 +6,33 @@
 ## Modularization of primitive I/O functions
 ##
 
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+fn absolutePath(path, optBase?) {
+    ifNot { <> hasType(path, String) }
+        { die("Invalid non-string path.") };
+    ifIs { <> eq(path, "") }
+        { die("Invalid empty path.") };
+
+    <> ifIs { <> eq(get(path, 0), "/") }
+        { <> path }
+        {
+            def base = ifValueOr { <> optBase* } { <> flatCwd() };
+            <> cat(base, "/", path)
+        }
+};
+
 <> {
+    ## Re-exported from primitives.
     flatCwd:           Io0_flatCwd,
     flatReadLink:      Io0_flatReadLink,
     flatFileExists:    Io0_flatFileExists,
     flatReadFileUtf8:  Io0_flatReadFileUtf8,
-    flatWriteFileUtf8: Io0_flatWriteFileUtf8
+    flatWriteFileUtf8: Io0_flatWriteFileUtf8,
+
+    ## Defined in this file.
+    absolutePath
 }
