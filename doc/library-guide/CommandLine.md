@@ -67,3 +67,8 @@ environment:
   by this function).
 
 * `SELF_PATH` &mdash; The filesystem path to the file being run.
+
+If the ultimate thing-to-run is a module, then its `main` binding is called
+as a function, passing it as arguments the path to the module, followed by
+the "additional arguments" (beyond the ones understood directly by this
+function).
