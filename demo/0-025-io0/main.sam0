@@ -68,7 +68,7 @@ msg(Io0::absolutePath("/", "x"));
 msg(Io0::absolutePath("/blort", "x"));
 msg(Io0::absolutePath("/blort/zorch", "x"));
 
-note("\nDirectories:");
+note("\nDirectory slicing:");
 msg(Io0::directoryOf("."));
 msg(Io0::directoryOf("blort"));
 msg(Io0::directoryOf("blort/"));
@@ -87,6 +87,26 @@ msg(Io0::directoryOf("/blort/zorch"));
 msg(Io0::directoryOf("/blort/zorch/"));
 msg(Io0::directoryOf("/blort/zorch//"));
 msg(Io0::directoryOf("/blort/zorch///"));
+
+note("\nFile slicing:");
+msg(Io0::fileOf("."));
+msg(Io0::fileOf("blort"));
+msg(Io0::fileOf("blort/"));
+msg(Io0::fileOf("blort//"));
+msg(Io0::fileOf("blort/zorch"));
+msg(Io0::fileOf("blort/zorch/"));
+msg(Io0::fileOf("blort/zorch//"));
+msg(Io0::fileOf("blort/zorch///"));
+msg(Io0::fileOf("/"));
+msg(Io0::fileOf("//"));
+msg(Io0::fileOf("///"));
+msg(Io0::fileOf("/blort"));
+msg(Io0::fileOf("/blort/"));
+msg(Io0::fileOf("/blort//"));
+msg(Io0::fileOf("/blort/zorch"));
+msg(Io0::fileOf("/blort/zorch/"));
+msg(Io0::fileOf("/blort/zorch//"));
+msg(Io0::fileOf("/blort/zorch///"));
 
 note("\nMisc:\n");
 sibling();
