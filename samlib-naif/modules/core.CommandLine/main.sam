@@ -9,6 +9,7 @@
 def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
 def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
 def Globals      = moduleLoad(["core", "Globals"]);
+def Io0          = moduleLoad(["core", "Io0"]);
 def Io1          = moduleLoad(["core", "Io1"]);
 def Lang2        = moduleLoad(["core", "Lang2"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
@@ -89,16 +90,17 @@ def parArguments = {:
     }
 :};
 
-## Gets the language layer suffix (or suffix-like-thing) from a file name.
-fn suffixFromName(name) {
-    def dotsAt = [index in (0..), elem in name <> (elem == ".") & index];
+## Gets the language layer suffix (or suffix-like-thing) from a file path.
+fn suffixFromPath(filePath) {
+    def finalName = Io1::pathFromFlat(filePath)[^0];
+    def dotsAt = [index in (0..), elem in finalName <> (elem == ".") & index];
 
     if (dotsAt == []) {
         ## No suffix on the name; assume it names a module directory.
         return "module"
     };
 
-    <> name[dotsAt[^0] + 1..]
+    <> finalName[dotsAt[^0] + 1..]
 };
 
 ## Makes a global environment, given file path and command-line arguments.
@@ -110,6 +112,7 @@ fn makeGlobals(filePath, args) {
         ## Special bindings for individual scripts.
         ARGUMENTS: args,
         SELF_PATH: filePath,
+        SELF_PATH_OLD: Io1::pathFromFlat(filePath),
 
         ## Use the system module loader.
         moduleLoad
@@ -131,7 +134,7 @@ fn runModule(modulePath, args) {
 ## the path to the file and the command-line arguments, respectively.
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
-    def programText = Io1::readFileUtf8(filePath);
+    def programText = Io0::flatReadFileUtf8(filePath);
     def langModule = moduleLoad(["core", cat("Lang", langLayer)]);
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(globals, parsedProgram);
@@ -143,7 +146,7 @@ fn runFile(langLayer, filePath, args) {
 ## same as for `runFile`.
 fn runBinary(filePath, args) {
     def globals = makeGlobals(filePath, args);
-    def evalled = Lang2::evalBinary(globals, filePath);
+    def evalled = Lang2::evalBinary(globals, Io1::pathFromFlat(filePath));
 
     <> evalled()
 };
@@ -168,11 +171,10 @@ fn runCommandLine(rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def fileName = argWords[0] | "/dev/stdin";
-    def filePath = Io1::pathFromFlat(fileName);
+    def filePath = argWords[0] | "/dev/stdin";
     def args = argWords[1..] | [];
 
-    def suffix = options::suffix | suffixFromName(filePath[^0]);
+    def suffix = options::suffix | suffixFromPath(filePath);
 
     if (suffix == "module") {
         return runModule(filePath, args)

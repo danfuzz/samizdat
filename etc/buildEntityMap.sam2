@@ -101,8 +101,8 @@ def parFile = {:
     { <> cat(lines*) }
 :};
 
-def inPath = [SELF_PATH[..!]*, "entity-map.txt"];
-def outPath = [SELF_PATH[..!]*, "entityMap.sam"];
+def inPath = [SELF_PATH_OLD[..!]*, "entity-map.txt"];
+def outPath = [SELF_PATH_OLD[..!]*, "entityMap.sam"];
 note("Processing file: \%q(inPath)");
 
 def text = Io1::readFileUtf8(inPath);

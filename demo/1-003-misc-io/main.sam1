@@ -15,7 +15,7 @@ def Io1 = moduleLoad(["core", "Io1"]);
 
 ## Demo of reading a sibling file.
 fn sibling() {
-    def selfDir = Sequence::sliceExclusive(SELF_PATH, 0);
+    def selfDir = Sequence::sliceExclusive(SELF_PATH_OLD, 0);
     def text = Io1::readFileUtf8([selfDir*, "sibling.txt"]);
     note(text);
 };
@@ -28,7 +28,7 @@ fn fileExists() {
             { note(cat("Does not exist: ", Format::source(path))) }
     };
 
-    def selfDir = Sequence::sliceExclusive(SELF_PATH, 0);
+    def selfDir = Sequence::sliceExclusive(SELF_PATH_OLD, 0);
     tryFile([selfDir*, "sibling.txt"]);
     tryFile([selfDir*, "non-sibling.txt"]);
 };
