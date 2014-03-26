@@ -25,7 +25,6 @@ such as might have been returned from `pathFromFlat`.
 This returns void if the file doesn't exist at all, or if it exists but
 is either a directory or a "special" file.
 
-
 #### `flatFromPath(path) <> flatPath`
 
 Converts the given path list to an absolute "Posix-style" flat string.
@@ -73,13 +72,6 @@ original path ended with a trailing slash.
 
 It is an error (terminating the runtime) if `string` is empty (`""`).
 
-#### `pathListFromFlat(flatPathList) <> [path*]`
-
-Converts the given path list string to a list (per se) of absolute
-internal-form paths. The given `flatPathList` is taken to be a colon-separated
-list of flat paths. It is split apart on colons, and each split path is
-processed as if by `pathFromFlat`.
-
 #### `readFileUtf8(path) <> string`
 
 Reads the named file, using the underlying OS's functionality,
@@ -98,21 +90,8 @@ real file (for example).
 If the path does not refer to a symbolic link, then this function returns
 void.
 
-`pathList` must be a list of the form described by `pathFromFlat`
+`path` must be a list of the form described by `pathFromFlat`
 (see which). See `readFileUtf8` for further discussion.
-
-#### `sandboxedReader(directory) <> function`
-
-Returns a file reader function which is limited to *only* reading
-files from underneath the named directory (a path-list as
-described in `pathFromFlat`). The return value from this call
-behaves like `flatReadFileUtf8`, as if the given directory is both the
-root of the filesystem and is the current working directory. Symbolic
-links are respected, but only if the link target is under the named
-directory.
-
-This function is meant to help enable a "supervisor" to build a sandbox
-from which untrusted code can read its own files.
 
 #### `writeFileUtf8(flatPath, text) <> void`
 

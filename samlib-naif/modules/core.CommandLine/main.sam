@@ -109,7 +109,7 @@ fn makeGlobals(filePath, args) {
 
         ## Special bindings for individual scripts.
         ARGUMENTS: args,
-        PATH:      filePath,
+        SELF_PATH: filePath,
 
         ## Use the system module loader.
         moduleLoad
@@ -127,7 +127,7 @@ fn runModule(modulePath, args) {
 
 ## Runs a simple-file-form command-line. In this case, the indicated file
 ## is read as a top-level program, and evaluated, passing it no arguments.
-## Its environment includes `PATH` and `ARGUMENTS` variables indicating
+## Its environment includes `SELF_PATH` and `ARGUMENTS` variables indicating
 ## the path to the file and the command-line arguments, respectively.
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);

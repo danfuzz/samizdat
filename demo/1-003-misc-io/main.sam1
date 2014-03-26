@@ -13,10 +13,10 @@ def Io1 = moduleLoad(["core", "Io1"]);
 ## Helper Definitions
 ##
 
-## Demo of reading a sibling file through a sandboxed reader.
+## Demo of reading a sibling file.
 fn sibling() {
-    def reader = Io1::sandboxedReader(Sequence::sliceExclusive(PATH, 0));
-    def text = reader(["sibling.txt"]);
+    def selfDir = Sequence::sliceExclusive(SELF_PATH, 0);
+    def text = Io1::readFileUtf8([selfDir*, "sibling.txt"]);
     note(text);
 };
 
@@ -28,9 +28,9 @@ fn fileExists() {
             { note(cat("Does not exist: ", Format::source(path))) }
     };
 
-    def base = Sequence::sliceExclusive(PATH, 0);
-    tryFile([base*, "sibling.txt"]);
-    tryFile([base*, "non-sibling.txt"]);
+    def selfDir = Sequence::sliceExclusive(SELF_PATH, 0);
+    tryFile([selfDir*, "sibling.txt"]);
+    tryFile([selfDir*, "non-sibling.txt"]);
 };
 
 ## Emits the stringified version of the given value to the console.
@@ -46,7 +46,6 @@ fn process(value) {
 process(Io1::pathFromFlat("///foo//////./bar/./../baz"));
 process(Io1::pathFromFlat("/a/b/x/y/z/../../../c/"));
 process(Io1::flatFromPath(["fizmo", "igram", "blort", ""]));
-process(Io1::pathListFromFlat("/foo:/foo/bar:baz/blort/"));
 
 sibling();
 fileExists();

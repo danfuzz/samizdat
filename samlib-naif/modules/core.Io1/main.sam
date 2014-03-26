@@ -11,7 +11,6 @@ def Collection = moduleLoad(["core", "Collection"]);
 def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
 def Io0        = moduleLoad(["core", "Io0"]);
-def Number     = moduleLoad(["proto", "Number"]);
 def Peg        = moduleLoad(["core", "Peg"]);
 def Range      = moduleLoad(["core", "Range"]);
 def Sequence   = moduleLoad(["core", "Sequence"]);
@@ -77,31 +76,6 @@ def parPathString = {:
 
 
 ##
-## Private Definitions: `parPathList`
-##
-
-## Parses a path within a path list.
-def parOnePath = {:
-    chars = [! ":"]+
-    { <> Peg::stringFromTokenList(chars) }
-:};
-
-## Parses a flattened path list (e.g. the format for a Posix-style `PATH`
-## variable) into a list of strings (for further parsing).
-def parPathList = {:
-    ":"*
-    first = parOnePath
-    rest = (
-        ":"+
-        parOnePath
-    )*
-    ":"*
-
-    { <> [first, rest*] }
-:};
-
-
-##
 ## Private Definitions
 ##
 
@@ -127,46 +101,9 @@ def parErrorFromPathComponent = {:
     )
 :};
 
-## Checks whether the given alleged prefix is actually a prefix of the
-## given path, or equal to it.
-fn isPrefix(prefix, path) {
-    def prefixSize = Collection::sizeOf(prefix);
-
-    ifIs { <> gt(prefixSize, Collection::sizeOf(path)) }
-        {
-            ## The "prefix" is longer than the path, so it can't actually be
-            ## a prefix.
-            return
-        };
-
-    <> eq(prefix, Sequence::sliceExclusive(path, 0, prefixSize))
-};
-
 ## Dies with the given message including the given path.
 fn dieWith(msg, path) {
     die(cat(msg, ": ", Format::source(path)))
-};
-
-## Helper for `sandboxedReader` which does symbolic link resolution,
-## respecting the sandbox directory.
-fn resolveLinks(sandboxDirectory, path) {
-    var result = path;
-    var limit = 50;
-
-    loop {
-        ifIs { <> perLe(limit, 0) }
-            { die("Too many links in symbolic link chain.") };
-
-        ifNot { <> isPrefix(sandboxDirectory, result) }
-            { die("Symbolic link escapes sandbox directory.") };
-
-        <> ifValue { <> readLink(result) }
-            { newPath ->
-                result := newPath;
-                limit := Number::sub(limit, 1)
-            }
-            { return result }
-    }
 };
 
 
@@ -226,15 +163,6 @@ fn pathFromFlat(string) {
 };
 
 ## Documented in spec.
-fn pathListFromFlat(string) {
-    ## Parse the given string into a list of flat paths.
-    def flats = Peg::apply(parPathList, string);
-
-    ## Call `pathFromFlat` on each element.
-    <> Generator::filterAll(pathFromFlat, flats)
-};
-
-## Documented in spec.
 fn readFileUtf8(path) {
     <> Io0::flatReadFileUtf8(flatFromPath(path))
 };
@@ -246,14 +174,6 @@ fn readLink(path) {
 };
 
 ## Documented in spec.
-fn sandboxedReader(directory) {
-    <> { path ->
-        def fullPath = resolveLinks(directory, [directory*, path*]);
-        <> readFileUtf8(fullPath);
-    }
-};
-
-## Documented in spec.
 fn writeFileUtf8(path, text) {
     <> Io0::flatWriteFileUtf8(flatFromPath(path), text)
 };
@@ -262,9 +182,7 @@ fn writeFileUtf8(path, text) {
     fileExists,
     flatFromPath,
     pathFromFlat,
-    pathListFromFlat,
     readFileUtf8,
     readLink,
-    sandboxedReader,
     writeFileUtf8
 }
