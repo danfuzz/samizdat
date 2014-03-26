@@ -64,14 +64,19 @@ fn directoryOf(path) {
     }();
 
     ## Back up until the next-final slash. If we hit the start of the path,
-    ## then that means there was no slash, making the result be `"."`.
+    ## then that means there was no slash, making the result be `"."`. If
+    ## the next-final slash is at the start of the path, then the result is
+    ## `"/"`.
     loop {
         ifIs { <> eq(at, 0) } { return "." };
         at := Number::sub(at, 1);
 
         def ch = get(path, at);
         ifIs { <> eq(ch, "/") }
-            { return Sequence::sliceExclusive(path, 0, at) };
+            {
+                ifIs { <> eq(at, 0) } { return "/" };
+                return Sequence::sliceExclusive(path, 0, at)
+            };
     }
 };
 
