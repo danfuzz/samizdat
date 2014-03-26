@@ -27,6 +27,9 @@ directory (if not), followed by a slash.
 This function does not attempt to resolve symbolic links, nor does it
 "flatten" away any `.` or `..` path components.
 
+If `optBase*` is used and is itself relative, then it is made absolute, as
+if by a recursive call to this function.
+
 It is an error (terminating the runtime) if `path` is empty or is not a
 string.
 
