@@ -57,3 +57,13 @@ Currently recognized command-line options:
   the file name. Used to override the default of which language layer is
   used for parsing and evaluation. Must be `sam`, `samb`, or `samN` where `N`
   is a digit.
+
+If the ultimate thing-to-run is a plain file (and not a module), then it
+gets evaluated with the following additional variables in its global
+environment:
+
+* `ARGUMENTS` &mdash; The list of string arguments that were passed to this
+  function as the "additional arguments" (beyond the ones understood directly
+  by this function).
+
+* `SELF_PATH` &mdash; The filesystem path to the file being run.
