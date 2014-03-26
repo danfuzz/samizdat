@@ -6,6 +6,10 @@
 ## Modularization of primitive I/O functions
 ##
 
+def Collection = moduleLoad(["core", "Collection"]);
+def Number     = moduleLoad(["proto", "Number"]);
+def Sequence   = moduleLoad(["core", "Sequence"]);
+
 
 ##
 ## Private Definitions
@@ -25,13 +29,18 @@ fn checkPath(path) {
 ##
 
 ## Documented in spec.
+def flatCwd = Io0_flatCwd;
+
+## Documented in spec.
 fn absolutePath(path, optBase?) {
     checkPath(path);
 
     <> ifIs { <> eq(get(path, 0), "/") }
         { <> path }
         {
-            def base = ifValueOr { <> optBase* } { <> flatCwd() };
+            def base = ifValue { <> optBase* }
+                { b <> absolutePath(b) }
+                { <> flatCwd() };
             <> cat(base, "/", path)
         }
 };
