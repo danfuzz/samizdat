@@ -122,9 +122,10 @@ fn makeGlobals(filePath, args) {
 ## loaded as a module. It is expected to export a `main()` function, which
 ## is called with the Posix-style command-line arguments.
 fn runModule(modulePath, args) {
+    def path = Io1::pathFromFlat(modulePath);
     <> ModuleSystem::run(
-        modulePath, Globals::fullEnvironment(), moduleLoader(),
-        modulePath, args*)
+        path, Globals::fullEnvironment(), moduleLoader(),
+        path, args*)
 };
 
 ## Runs a simple-file-form command-line. In this case, the indicated file
@@ -170,7 +171,7 @@ fn runCommandLine(rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def filePath = argWords[0] | "/dev/stdin";
+    def filePath = Io0::absolutePath(argWords[0]) | "/dev/stdin";
     def args = argWords[1..] | [];
 
     def suffix = options::suffix | suffixFromPath(filePath);
