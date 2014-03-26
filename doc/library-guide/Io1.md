@@ -93,7 +93,7 @@ void.
 `path` must be a list of the form described by `pathFromFlat`
 (see which). See `readFileUtf8` for further discussion.
 
-#### `writeFileUtf8(flatPath, text) <> void`
+#### `writeFileUtf8(path, text) <> void`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
