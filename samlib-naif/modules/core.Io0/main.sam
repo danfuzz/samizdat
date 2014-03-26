@@ -80,6 +80,44 @@ fn directoryOf(path) {
     }
 };
 
+## Documented in spec.
+fn fileOf(path) {
+    checkPath(path);
+
+    var at = Collection::sizeOf(path);
+
+    ## Back up over any path-final slashes. If we hit the start of the path,
+    ## then that means the path was all slashes, making the result be `"/"`.
+    { <out> ->
+        loop {
+            at := Number::sub(at, 1);
+
+            def ch = get(path, at);
+            ifIs { <> ne(ch, "/") } { <out> };
+            ifIs { <> eq(at, 0) } { return "/" };
+        }
+    }();
+
+    def endAt = at; ## The index of the final character of the result.
+
+    ## Back up until the next-final slash. If we hit the start of the path,
+    ## then that means there was no slash, making the result be the entire
+    ## `path` minus any path-final slashes.
+    loop {
+        ifIs { <> eq(at, 0) }
+            { return Sequence::sliceInclusive(path, 0, endAt) };
+
+        at := Number::sub(at, 1);
+
+        def ch = get(path, at);
+        ifIs { <> eq(ch, "/") }
+            {
+                at := Number::add(at, 1);
+                return Sequence::sliceInclusive(path, at, endAt)
+            };
+    }
+};
+
 <> {
     ## Re-exported from primitives.
     flatCwd:           Io0_flatCwd,
@@ -90,5 +128,6 @@ fn directoryOf(path) {
 
     ## Defined in this file.
     absolutePath,
-    directoryOf
+    directoryOf,
+    fileOf
 }

@@ -47,6 +47,20 @@ Returns the directory part of the given `path`. Cases:
 * Otherwise, the result is the prefix of the given `path` up to but not
   including the last slash.
 
+#### `fileOf(path) <> path`
+
+Returns the final component part of the given `path`. Cases:
+
+* It is an error (terminating the runtime) if `path` is either empty or is
+  not a string.
+* If `path` is just one or more slashes (`/`), this returns `"/"`.
+* Otherwise, if `path` ends with any number of slashes, then the result
+  is the same as if those slashes were removed.
+* If `path` is relative and does not contain a slash, then the result is
+  `path` itself.
+* Otherwise, the result is the suffix of the given `path` after but not
+  including the last slash.
+
 #### `flatCwd() <> flatPath`
 
 Returns the current working directory of the process, as a
