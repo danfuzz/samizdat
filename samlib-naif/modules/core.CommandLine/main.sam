@@ -112,7 +112,6 @@ fn makeGlobals(filePath, args) {
         ## Special bindings for individual scripts.
         ARGUMENTS: args,
         SELF_PATH: filePath,
-        SELF_PATH_OLD: Io1::pathFromFlat(filePath),
 
         ## Use the system module loader.
         moduleLoad
