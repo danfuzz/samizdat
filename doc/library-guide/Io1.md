@@ -93,19 +93,6 @@ void.
 `path` must be a list of the form described by `pathFromFlat`
 (see which). See `readFileUtf8` for further discussion.
 
-#### `sandboxedReader(directory) <> function`
-
-Returns a file reader function which is limited to *only* reading
-files from underneath the named directory (a path-list as
-described in `pathFromFlat`). The return value from this call
-behaves like `flatReadFileUtf8`, as if the given directory is both the
-root of the filesystem and is the current working directory. Symbolic
-links are respected, but only if the link target is under the named
-directory.
-
-This function is meant to help enable a "supervisor" to build a sandbox
-from which untrusted code can read its own files.
-
 #### `writeFileUtf8(flatPath, text) <> void`
 
 Writes out the given text to the named file, using the underlying OS's
