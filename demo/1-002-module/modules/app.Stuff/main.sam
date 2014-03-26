@@ -6,7 +6,7 @@ def Substuff = intraLoad(["Substuff"]);
 
 fn stuffFunc() {
     <> "Funky stuff."
-}
+};
 
 <> {
     STUFF:    "stuff",
