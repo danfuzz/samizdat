@@ -9,7 +9,7 @@
 ## (very large) map literal corresponding to its contents.
 ##
 
-def Io1 = moduleLoad(["core", "Io1"]);
+def Io0 = moduleLoad(["core", "Io0"]);
 
 
 ## Map of hex digit tokens to int values.
@@ -101,11 +101,12 @@ def parFile = {:
     { <> cat(lines*) }
 :};
 
-def inPath = [SELF_PATH_OLD[..!]*, "entity-map.txt"];
-def outPath = [SELF_PATH_OLD[..!]*, "entityMap.sam"];
+def selfDir = Io0::directoryOf(SELF_PATH);
+def inPath = "\(selfDir)/entity-map.txt";
+def outPath = "\(selfDir)/entityMap.sam";
 note("Processing file: \%q(inPath)");
 
-def text = Io1::readFileUtf8(inPath);
+def text = Io0::flatReadFileUtf8(inPath);
 def result = Peg::apply(parFile, text);
 
 ## This makes each result line *start* with `,\n`, to make it easy to just
@@ -138,6 +139,6 @@ def outText = "\
     <> { ENTITY_MAP }
     ";
 
-Io1::writeFileUtf8(outPath, outText);
+Io0::flatWriteFileUtf8(outPath, outText);
 
 <> 0
