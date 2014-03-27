@@ -56,7 +56,7 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `intraReadUtf8(loader, path) <> .`
+#### `intraReadUtf8(loader, path) <> string`
 
 This reads an intra-module file, interpreting it as UTF-8 encoded text. `path`
 is expected to be a string identifying a relative file path within the

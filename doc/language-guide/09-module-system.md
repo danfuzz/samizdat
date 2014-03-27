@@ -80,8 +80,13 @@ same module, they simply return the previously-stored value.
 ### Pedantic details
 
 Most of the description in this section is meant to be an "in practice"
-outline of what the module system looks like. The actual implementation is
-actually much simpler than the description might have you believe.
+outline of what the module system looks like. As such, it elides over a
+few details, which are discussed in this section.
+
+#### Module loading
+
+The implementation of module loading actually much simpler than the
+description might have you believe.
 
 There are two types which interplay to cause module loading to happen.
 
@@ -109,3 +114,28 @@ functions. These functions can be bound to other types, in order to
 provide other interesting and useful arrangements. For example, it is
 possible (and may eventually be desirable) to construct a module or
 intra-module loader which only depends on immutable data as input.
+
+#### Top-level variable environment in a module
+
+In addition to the normal global variable environment, a module file
+when evaluated has additional bindings to allow for a module to load
+itself as well as other modules.
+
+* `moduleLoad(path) <> module` &mdash; This loads the module indicated
+  by `path` in the same loader which loaded this module. `path` is a
+  "module path," that is, a list of strings which represents the fully-
+  qualified name of the module.
+
+* `moduleLoader` &mdash; This is a reference to the module loader which
+  loaded this module.
+
+* `intraExists(path) <> logic` &mdash; This checks for the existence of an
+  intra-module file named by the indicated relative path (a string). It
+  returns `path` itself if the file exists or void if not.
+
+* `intraLoad(path) <> . | void` &mdash; This loads and evaluates the
+  intra-module file named by the indicated relative path (a string).
+
+* `intraReadUtf8(path) <> string` &mdash; This reads the intra-module file
+  named by the indicated relative path, interpreting it as UTF-8 encoded
+  text.
