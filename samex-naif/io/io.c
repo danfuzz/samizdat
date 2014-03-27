@@ -25,6 +25,7 @@
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
 static FILE *openFile(zvalue flatPath, const char *mode) {
+    ioCheckPath(flatPath);
     zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
     utf8FromString(pathSize + 1, path, flatPath);
@@ -53,6 +54,7 @@ zvalue ioFlatCwd(void) {
 
 /* Documented in header. */
 bool ioFlatFileExists(zvalue flatPath) {
+    ioCheckPath(flatPath);
     zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
     utf8FromString(pathSize + 1, path, flatPath);
@@ -72,6 +74,7 @@ bool ioFlatFileExists(zvalue flatPath) {
 
 /* Documented in header. */
 zvalue ioFlatReadLink(zvalue flatPath) {
+    ioCheckPath(flatPath);
     zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
     utf8FromString(pathSize + 1, path, flatPath);

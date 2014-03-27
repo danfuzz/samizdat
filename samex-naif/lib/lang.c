@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "io.h"
 #include "lang.h"
 
 
@@ -22,7 +23,11 @@ FUN_IMPL_DECL(Lang0_eval) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Lang0_evalBinary) {
-    return datEvalBinary(args[0], args[1]);
+    zvalue env = args[0];
+    zvalue path = args[1];
+
+    ioCheckAbsolutePath(path);
+    return datEvalBinary(env, path);
 }
 
 /* Documented in spec. */

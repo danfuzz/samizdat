@@ -49,10 +49,16 @@ zvalue ioFlatReadFileUtf8(zvalue flatPath);
 void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text);
 
 /**
- * Splits an absolute flat path into an array of slash-separated components.
- * Does not do error checking beyond requiring a string that starts with a
- * slash.
+ * Checks an absolute filesystem path for validity. This fails (fatally)
+ * if `path` isn't a string, if it is empty, if it doesn't start with a
+ * slash, or if it contains any `\0` characters.
  */
-zvalue ioSplitAbsolutePath(zvalue flatPath);
+void ioCheckAbsolutePath(zvalue path);
+
+/**
+ * Checks a filesystem path for validity. This fails (fatally) if `path`
+ * isn't a string, if it is empty, or if it contains any `\0` characters.
+ */
+void ioCheckPath(zvalue path);
 
 #endif
