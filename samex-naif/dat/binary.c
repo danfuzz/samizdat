@@ -80,7 +80,7 @@ zvalue datEvalBinary(zvalue env, zvalue path) {
         die("Invalid path: %s", str);
     }
 
-    void *libHandle = loadLibrary(path);
+    void *libHandle = loadLibrary(str);
     return evalLibrary(libHandle, env);
 
     // Note: We intentionally do not `dlclose` the library, on the assumption
