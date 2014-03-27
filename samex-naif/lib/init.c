@@ -70,23 +70,23 @@ static void makePrimitiveEnvironment(void) {
 /**
  * Loads the named binary file if it exists.
  */
-static zvalue loadBinaryIfPossible(zvalue flatPath) {
-    if (!ioFlatFileExists(flatPath)) {
+static zvalue loadBinaryIfPossible(zvalue path) {
+    if (!ioFlatFileExists(path)) {
         return NULL;
     }
 
-    return datEvalBinary(PRIMITIVE_ENVIRONMENT, flatPath);
+    return datEvalBinary(PRIMITIVE_ENVIRONMENT, path);
 };
 
 /**
  * Reads and evaluates the named source file.
  */
-static zvalue loadSource(zvalue flatPath) {
-    if (!ioFlatFileExists(flatPath)) {
-        die("Missing bootstrap library file: %s", valDebugString(flatPath));
+static zvalue loadSource(zvalue path) {
+    if (!ioFlatFileExists(path)) {
+        die("Missing bootstrap library file: %s", valDebugString(path));
     }
 
-    zvalue text = ioFlatReadFileUtf8(flatPath);
+    zvalue text = ioFlatReadFileUtf8(path);
     zvalue tree = langParseProgram0(text);
     return langEval0(PRIMITIVE_ENVIRONMENT, tree);
 };
