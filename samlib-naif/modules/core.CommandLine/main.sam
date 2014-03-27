@@ -175,7 +175,9 @@ fn runCommandLine(rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def filePath = Io0::absolutePath(argWords[0]) | "/dev/stdin";
+    def filePath = (def p = argWords[0])
+        & FilePath::fixPath(p, Io0::cwd())
+        | "/dev/stdin";
     def args = argWords[1..] | [];
 
     def suffix = options::suffix | suffixFromPath(filePath);
