@@ -92,9 +92,14 @@ def parArguments = {:
 
 ## Gets the language layer suffix (or suffix-like-thing) from a file path.
 fn suffixFromPath(filePath) {
-    def finalName = Io1::pathFromFlat(filePath)[^0];
-    def dotsAt = [index in (0..), elem in finalName <> (elem == ".") & index];
+    def finalName = Io0::fileOf(filePath);
+    if (finalName == ".") {
+        ## Explicit "this directory" as the final path component; assume it
+        ## indicates a module directory.
+        return "module"
+    };
 
+    def dotsAt = [index in (0..), elem in finalName <> (elem == ".") & index];
     if (dotsAt == []) {
         ## No suffix on the name; assume it names a module directory.
         return "module"
