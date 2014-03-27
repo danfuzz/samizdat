@@ -19,13 +19,13 @@
 /**
  * Returns `getcwd()` as a string.
  */
-zvalue ioFlatCwd(void);
+zvalue ioCwd(void);
 
 /**
  * Returns `true` if there is a "regular" file at the given path, or
  * `false` if not.
  */
-bool ioFlatFileExists(zvalue flatPath);
+bool ioFileExists(zvalue path);
 
 /**
  * Gets symbolic link information about the file with the given name.
@@ -33,20 +33,20 @@ bool ioFlatFileExists(zvalue flatPath);
  * a simple string. If the file does not name a symbolic link, this returns
  * `NULL`.
  */
-zvalue ioFlatReadLink(zvalue flatPath);
+zvalue ioReadLink(zvalue path);
 
 /**
  * Reads the file with the given name in its entirety, interpreting
  * it as UTF-8. Returns a string (list of Unicode-representing
  * ints) of the contents.
  */
-zvalue ioFlatReadFileUtf8(zvalue flatPath);
+zvalue ioReadFileUtf8(zvalue path);
 
 /**
  * Writes the given string to the file with the given name, encoding
  * it as UTF-8.
  */
-void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text);
+void ioWriteFileUtf8(zvalue path, zvalue text);
 
 /**
  * Checks an absolute filesystem path for validity. This fails (fatally)

@@ -14,28 +14,28 @@
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Io0_flatCwd) {
-    return ioFlatCwd();
+    return ioCwd();
 }
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Io0_flatFileExists) {
     zvalue flatPath = args[0];
 
-    return ioFlatFileExists(flatPath) ? flatPath : NULL;
+    return ioFileExists(flatPath) ? flatPath : NULL;
 }
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Io0_flatReadFileUtf8) {
-    return ioFlatReadFileUtf8(args[0]);
+    return ioReadFileUtf8(args[0]);
 }
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Io0_flatReadLink) {
-    return ioFlatReadLink(args[0]);
+    return ioReadLink(args[0]);
 }
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Io0_flatWriteFileUtf8) {
-    ioFlatWriteFileUtf8(args[0], args[1]);
+    ioWriteFileUtf8(args[0], args[1]);
     return NULL;
 }
