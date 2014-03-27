@@ -64,18 +64,6 @@ fn checkAbsolutePath(path) {
         { die("Invalid file path: not absolute") }
 };
 
-## Flattens an absolute path to a simple name, optionally adding a suffix
-## to the final path component.
-##
-## **Note:** This function is a (low rent) duplicate of functionality in
-## `Io*` modules, because this function needs to be called before the `Io*`
-## modules are loaded.
-fn flattenPath(path, optSuffix?) {
-    ## Prefix each component with `/`, and concatenate them all together.
-    def withSlashes = collect(path, { elem <> cat("/", elem) });
-    <> cat(withSlashes*, optSuffix*);
-};
-
 ## Updates a map-containing box to have the given additional / replacement
 ## binding.
 fn updateMapBox(box, key, value) {
