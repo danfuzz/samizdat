@@ -19,9 +19,9 @@ FUN_IMPL_DECL(Io0_flatCwd) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Io0_flatFileExists) {
-    zvalue flatPath = args[0];
+    zvalue path = args[0];
 
-    return ioFileExists(flatPath) ? flatPath : NULL;
+    return ioFileExists(path) ? path : NULL;
 }
 
 /* Documented in spec. */
