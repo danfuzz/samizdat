@@ -1,0 +1,45 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Io0 demo
+##
+
+def FilePath = moduleLoad(["core", "FilePath"]);
+def Io0      = moduleLoad(["core", "Io0"]);
+
+
+##
+## Helper Definitions
+##
+
+## Demo of reading a sibling file.
+fn sibling() {
+    def selfDir = FilePath::directoryOf(SELF_PATH);
+    def text = Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
+    note(text);
+};
+
+## Demo of finding and non-finding files.
+fn fileExists() {
+    fn tryFile(path) {
+        ifIs { <> Io0::fileExists(path) }
+            { note(cat("Exists: ", Format::source(path))) }
+            { note(cat("Does not exist: ", Format::source(path))) }
+    };
+
+    def selfDir = FilePath::directoryOf(SELF_PATH);
+    tryFile(cat(selfDir, "/sibling.txt"));
+    tryFile(cat(selfDir, "/non-sibling.txt"))
+};
+
+
+##
+## Main Tests
+##
+
+sibling();
+fileExists();
+
+<> 0

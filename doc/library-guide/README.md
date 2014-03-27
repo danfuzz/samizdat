@@ -97,6 +97,7 @@ will be returned, or one of:
   * [core.CommandLine](CommandLine.md)
   * [core.EntityMap](EntityMap.md)
   * [core.Format (string formatting)](Format.md)
+  * [core.FilePath](FilePath.md)
   * [core.Generator](Generator.md)
   * [core.Globals](Globals.md)
   * [core.Io0](Io0.md)

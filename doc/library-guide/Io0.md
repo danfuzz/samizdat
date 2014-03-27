@@ -4,8 +4,7 @@ Samizdat Layer 0: Core Library
 core.Io0
 --------
 
-This module defines primitive I/O operations. It is only meant to be used
-by the lowest layer of core library.
+This module defines primitive filesystem I/O operations.
 
 
 <br><br>
@@ -17,42 +16,12 @@ by the lowest layer of core library.
 <br><br>
 ### Function Definitions
 
-#### `absolutePath(path, optBase?) <> path`
-
-Returns an absolute filesystem path, based on the given `path` and optional
-base directory. If `path` is already absolute, then this returns it as-is.
-Otherwise, this prefixes it with either `optBase*` (if given) or the current
-directory (if not), followed by a slash.
-
-This function does not attempt to resolve symbolic links, nor does it
-"flatten" away any `.` or `..` path components.
-
-If `optBase*` is used and is itself relative, then it is made absolute, as
-if by a recursive call to this function.
-
-It is an error (terminating the runtime) if `path` is empty or is not a
-string.
-
 #### `cwd() <> path`
 
 Returns the current working directory of the process, as a
 string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
-
-#### `directoryOf(path) <> path`
-
-Returns the directory part of the given `path`. Cases:
-
-* It is an error (terminating the runtime) if `path` is either empty or is
-  not a string.
-* If `path` is just one or more slashes (`/`), this returns `"/"`.
-* Otherwise, if `path` ends with any number of slashes, then the result
-  is the same as if those slashes were removed.
-* If `path` is relative and does not contain a slash, then the result is
-  `"."`.
-* Otherwise, the result is the prefix of the given `path` up to but not
-  including the last slash.
 
 #### `fileExists(path) <> logic`
 
@@ -61,20 +30,6 @@ Returns void if not a regular file.
 
 This returns void if the file doesn't exist at all, or if it exists but
 is either a directory or a "special" file.
-
-#### `fileOf(path) <> path`
-
-Returns the final component part of the given `path`. Cases:
-
-* It is an error (terminating the runtime) if `path` is either empty or is
-  not a string.
-* If `path` is just one or more slashes (`/`), this returns `"/"`.
-* Otherwise, if `path` ends with any number of slashes, then the result
-  is the same as if those slashes were removed.
-* If `path` is relative and does not contain a slash, then the result is
-  `path` itself.
-* Otherwise, the result is the suffix of the given `path` after but not
-  including the last slash.
 
 #### `readFileUtf8(path) <> string`
 
