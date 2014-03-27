@@ -121,9 +121,9 @@ fn fileOf(path) {
 <> {
     ## Re-exported from primitives.
     cwd:           Io0_cwd,
-    readLink:      Io0_readLink,
     fileExists:    Io0_fileExists,
     readFileUtf8:  Io0_readFileUtf8,
+    readLink:      Io0_readLink,
     writeFileUtf8: Io0_writeFileUtf8,
 
     ## Defined in this file.
