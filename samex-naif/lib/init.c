@@ -96,19 +96,18 @@ static zvalue loadSource(zvalue flatPath) {
  * return value from loading the top-level in-language library file `main`
  * and calling its `main` function.
  */
-static zvalue getLibrary(zvalue libraryFlatPath) {
+static zvalue getLibrary(zvalue libraryPath) {
     zstackPointer save = datFrameStart();
-    zvalue libraryPath = ioSplitAbsolutePath(libraryFlatPath);
 
     // Evaluate `ModuleSystem`. Works with either source or binary.
 
     zvalue moduleSystemFn = loadBinaryIfPossible(
-        GFN_CALL(cat, libraryFlatPath,
+        GFN_CALL(cat, libraryPath,
             stringFromUtf8(-1, "/modules/core.ModuleSystem/main.samb")));
 
     if (moduleSystemFn == NULL) {
         moduleSystemFn = loadSource(
-            GFN_CALL(cat, libraryFlatPath,
+            GFN_CALL(cat, libraryPath,
                 stringFromUtf8(-1, "/modules/core.ModuleSystem/main.sam")));
     }
 

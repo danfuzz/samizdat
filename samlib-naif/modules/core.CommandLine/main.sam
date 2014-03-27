@@ -127,9 +127,8 @@ fn makeGlobals(filePath, args) {
 ## loaded as a module. It is expected to export a `main()` function, which
 ## is called with the Posix-style command-line arguments.
 fn runModule(modulePath, args) {
-    def path = Io1::pathFromFlat(modulePath);
     <> ModuleSystem::run(
-        path, Globals::fullEnvironment(), moduleLoader(),
+        modulePath, Globals::fullEnvironment(), moduleLoader(),
         modulePath, args*)
 };
 

@@ -53,6 +53,17 @@ fn flattenModulePath(name) {
     <> Sequence_sliceInclusive(cat(withDots*), 1)
 };
 
+## Validates an absolute file path string. It must be a string and start with
+## `"/"`.
+fn checkAbsolutePath(path) {
+    ifIs { <> eq(path, "") }
+        { die("Invalid file path: empty string") };
+    ifNot { <> hasType(path, String) }
+        { die("Invalid file path: not a string") };
+    ifNot { <> eq(get(path, 0), "/") }
+        { die("Invalid file path: not absolute") }
+};
+
 ## Flattens an absolute path to a simple name, optionally adding a suffix
 ## to the final path component.
 ##
@@ -91,8 +102,8 @@ def intraExists   = makeRegularGeneric("intraExists", 2, 2);
 ##
 ## Payload:
 ## * `next` -- next `ModuleLoader` to check when trying to find a module
-## * `basePath` -- absolute path prefix for all loading. Relative subdirectory
-##   paths correspond to modules
+## * `basePath` -- absolute path prefix for all loading, with trailing `/`.
+##   Direct subdirectory names correspond to modules.
 ## * `globals` -- global variable environment to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
@@ -102,9 +113,9 @@ def intraExists   = makeRegularGeneric("intraExists", 2, 2);
 ## Helper for `moduleLoad` which does the actual loading.
 fn doModuleLoad(md, dotName) {
     def data = dataOf(md);
-    def modulePath = [data::basePath*, dotName];
+    def modulePath = cat(data::basePath, dotName);
 
-    def infoPath = flattenPath([modulePath*, "main.saminfo"]);
+    def infoPath = cat(modulePath, "/main.saminfo");
     <> ifIs { <> Io0_flatFileExists(infoPath) }
         {
             note(cat("    ", dotName));
@@ -158,10 +169,13 @@ genericBind(
 
 ## Documented in spec.
 fn makeModuleLoader(path, globals, nextModuleLoader) {
+    checkAbsolutePath(path);
+    def basePath = cat(path, "/");
+
     <> @ModuleLoader{
+        basePath,
         globals,
         next: nextModuleLoader,
-        basePath: path,
         loadedBox: Box_makeCell({})
     }
 };
@@ -172,7 +186,7 @@ fn makeModuleLoader(path, globals, nextModuleLoader) {
 ##
 ## Payload:
 ## * `moduleLoader` -- module loader
-## * `basePath` -- absolute path prefix for all loading
+## * `basePath` -- absolute path prefix for all loading, with trailing `/`
 ## * `globals` -- global variable environment to use when loading
 ## * `languageModule` -- language module to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
@@ -189,16 +203,16 @@ fn intraLoadMain(loader) {
 fn doLocalLoad(ml, path) {
     note(cat("        ", path));
     def data = dataOf(ml);
-    def pathPrefix = [data::basePath*, path];
+    def pathPrefix = cat(data::basePath, path);
 
-    def binPath = flattenPath(pathPrefix, ".samb");
+    def binPath = cat(pathPrefix, ".samb");
     ifIs { <> Io0_flatFileExists(binPath) }
         {
             def func = Lang0_evalBinary(data::globals, binPath);
             return func()
         };
 
-    def sourcePath = flattenPath(pathPrefix, ".sam");
+    def sourcePath = cat(pathPrefix, ".sam");
     ifIs { <> Io0_flatFileExists(sourcePath) }
         {
             def lang = data::languageModule;
@@ -217,7 +231,7 @@ genericBind(
     @@IntraLoader,
     fn IntraLoader_intraExists(ml, path) {
         def data = dataOf(ml);
-        def fullPath = flattenPath([data::basePath*, path]);
+        def fullPath = cat(data::basePath, path);
         <> ifIs { <> Io0_flatFileExists(fullPath) }
             { <> path }
     });
@@ -247,7 +261,7 @@ genericBind(
     @@IntraLoader,
     fn IntraLoader_intraReadUtf8(ml, path) {
         def data = dataOf(ml);
-        def fullPath = flattenPath([data::basePath*, path]);
+        def fullPath = cat(data::basePath, path);
 
         ifNot { <> Io0_flatFileExists(fullPath) }
             { die(cat("Missing resource: ", fullPath)) };
@@ -257,9 +271,12 @@ genericBind(
 
 ## Documented in spec.
 fn makeIntraLoader(path, globals, nextModuleLoader) {
+    checkAbsolutePath(path);
+    def basePath = cat(path, "/");
+
     ## If the module info file (`main.saminfo`) exists, it must evaluate to a
     ## map. If it does not exist, create minimal "anonymous" module info.
-    def infoPath = flattenPath([path*, "main.saminfo"]);
+    def infoPath = cat(basePath, "main.saminfo");
     def moduleInfo = ifIs { <> Io0_flatFileExists(infoPath) }
         {
             def text = Io0_flatReadFileUtf8(infoPath);
@@ -268,7 +285,7 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
         { <> {name: [], version: "0"} };
 
     def moduleLoader = makeModuleLoader(
-        [path*, "modules"], globals, nextModuleLoader);
+        cat(basePath, "modules"), globals, nextModuleLoader);
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
@@ -303,10 +320,10 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
         };
 
     result := @IntraLoader{
+        basePath,
         languageModule,
         moduleLoader,
         globals: fullGlobals,
-        basePath: path,
         loadedBox: Box_makeCell({})
     };
 
