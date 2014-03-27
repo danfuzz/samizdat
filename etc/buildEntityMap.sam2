@@ -9,7 +9,8 @@
 ## (very large) map literal corresponding to its contents.
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
+def FilePath = moduleLoad(["core", "FilePath"]);
+def Io0      = moduleLoad(["core", "Io0"]);
 
 
 ## Map of hex digit tokens to int values.
@@ -101,7 +102,7 @@ def parFile = {:
     { <> cat(lines*) }
 :};
 
-def selfDir = Io0::directoryOf(SELF_PATH);
+def selfDir = FilePath::directoryOf(SELF_PATH);
 def inPath = "\(selfDir)/entity-map.txt";
 def outPath = "\(selfDir)/entityMap.sam";
 note("Processing file: \%q(inPath)");

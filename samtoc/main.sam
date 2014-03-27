@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def CommandLine = moduleLoad(["core", "CommandLine"]);
-def Io0 = moduleLoad(["core", "Io0"]);
+def FilePath    = moduleLoad(["core", "FilePath"]);
 
 ## Default mode to use
 def DEFAULT_MODE = "simple";
@@ -42,8 +42,8 @@ fn getOutputPath(rawPath, args) {
         & "\(outDir)/\(rawPath)"
         | rawPath;
 
-    def dir = Io0::directoryOf(path);
-    def baseName = withoutSuffix(Io0::fileOf(path));
+    def dir = FilePath::directoryOf(path);
+    def baseName = withoutSuffix(FilePath::fileOf(path));
     return "\(dir)/\(baseName).c"
 };
 

@@ -6,6 +6,7 @@
 ## Command line interpreter
 ##
 
+def FilePath     = moduleLoad(["core", "FilePath"]);
 def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
 def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
 def Globals      = moduleLoad(["core", "Globals"]);
@@ -91,7 +92,7 @@ def parArguments = {:
 
 ## Gets the language layer suffix (or suffix-like-thing) from a file path.
 fn suffixFromPath(filePath) {
-    def finalName = Io0::fileOf(filePath);
+    def finalName = FilePath::fileOf(filePath);
     if (finalName == ".") {
         ## Explicit "this directory" as the final path component; assume it
         ## indicates a module directory.
