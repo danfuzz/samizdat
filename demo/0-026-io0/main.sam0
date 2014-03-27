@@ -6,21 +6,17 @@
 ## Io0 demo
 ##
 
-def Io0 = moduleLoad(["core", "Io0"]);
+def FilePath = moduleLoad(["core", "FilePath"]);
+def Io0      = moduleLoad(["core", "Io0"]);
 
 
 ##
 ## Helper Definitions
 ##
 
-## Print the given value.
-fn msg(value) {
-    note(cat("    ", Format::source(value)))
-};
-
 ## Demo of reading a sibling file.
 fn sibling() {
-    def selfDir = Io0::directoryOf(SELF_PATH);
+    def selfDir = FilePath::directoryOf(SELF_PATH);
     def text = Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
     note(text);
 };
@@ -33,14 +29,9 @@ fn fileExists() {
             { note(cat("Does not exist: ", Format::source(path))) }
     };
 
-    def selfDir = Io0::directoryOf(SELF_PATH);
+    def selfDir = FilePath::directoryOf(SELF_PATH);
     tryFile(cat(selfDir, "/sibling.txt"));
     tryFile(cat(selfDir, "/non-sibling.txt"))
-};
-
-## Emits the stringified version of the given value to the console.
-fn process(value) {
-    note(Format::source(value));
 };
 
 
@@ -48,67 +39,6 @@ fn process(value) {
 ## Main Tests
 ##
 
-note("Absolute Paths:");
-msg(Io0::absolutePath("."));
-msg(Io0::absolutePath("blort"));
-msg(Io0::absolutePath("blort/zorch"));
-msg(Io0::absolutePath("/"));
-msg(Io0::absolutePath("/blort"));
-msg(Io0::absolutePath("/blort/zorch"));
-msg(Io0::absolutePath(".", "/x"));
-msg(Io0::absolutePath("blort", "/x"));
-msg(Io0::absolutePath("blort/zorch", "/x"));
-msg(Io0::absolutePath("/", "/x"));
-msg(Io0::absolutePath("/blort", "/x"));
-msg(Io0::absolutePath("/blort/zorch", "/x"));
-msg(Io0::absolutePath(".", "x"));
-msg(Io0::absolutePath("blort", "x"));
-msg(Io0::absolutePath("blort/zorch", "x"));
-msg(Io0::absolutePath("/", "x"));
-msg(Io0::absolutePath("/blort", "x"));
-msg(Io0::absolutePath("/blort/zorch", "x"));
-
-note("\nDirectory slicing:");
-msg(Io0::directoryOf("."));
-msg(Io0::directoryOf("blort"));
-msg(Io0::directoryOf("blort/"));
-msg(Io0::directoryOf("blort//"));
-msg(Io0::directoryOf("blort/zorch"));
-msg(Io0::directoryOf("blort/zorch/"));
-msg(Io0::directoryOf("blort/zorch//"));
-msg(Io0::directoryOf("blort/zorch///"));
-msg(Io0::directoryOf("/"));
-msg(Io0::directoryOf("//"));
-msg(Io0::directoryOf("///"));
-msg(Io0::directoryOf("/blort"));
-msg(Io0::directoryOf("/blort/"));
-msg(Io0::directoryOf("/blort//"));
-msg(Io0::directoryOf("/blort/zorch"));
-msg(Io0::directoryOf("/blort/zorch/"));
-msg(Io0::directoryOf("/blort/zorch//"));
-msg(Io0::directoryOf("/blort/zorch///"));
-
-note("\nFile slicing:");
-msg(Io0::fileOf("."));
-msg(Io0::fileOf("blort"));
-msg(Io0::fileOf("blort/"));
-msg(Io0::fileOf("blort//"));
-msg(Io0::fileOf("blort/zorch"));
-msg(Io0::fileOf("blort/zorch/"));
-msg(Io0::fileOf("blort/zorch//"));
-msg(Io0::fileOf("blort/zorch///"));
-msg(Io0::fileOf("/"));
-msg(Io0::fileOf("//"));
-msg(Io0::fileOf("///"));
-msg(Io0::fileOf("/blort"));
-msg(Io0::fileOf("/blort/"));
-msg(Io0::fileOf("/blort//"));
-msg(Io0::fileOf("/blort/zorch"));
-msg(Io0::fileOf("/blort/zorch/"));
-msg(Io0::fileOf("/blort/zorch//"));
-msg(Io0::fileOf("/blort/zorch///"));
-
-note("\nMisc:\n");
 sibling();
 fileExists();
 
