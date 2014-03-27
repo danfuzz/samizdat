@@ -17,8 +17,8 @@ def Lang1 = moduleLoad(["core", "Lang1"]);
 ## `convertToLang0` which is a re-export from `Lang1`.
 <> {
     (intraLoad(["eval"]))*,
-    (intraLoad(["evalBinary"]))*,
     (intraLoad(["tokenize"]))*,
     (intraLoad(["parse"]))*,
-    convertToLang0: Lang1::convertToLang0
+    convertToLang0: Lang1::convertToLang0,
+    evalBinary:     Lang1::evalBinary
 }

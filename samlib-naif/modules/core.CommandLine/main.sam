@@ -151,7 +151,7 @@ fn runFile(langLayer, filePath, args) {
 ## same as for `runFile`.
 fn runBinary(filePath, args) {
     def globals = makeGlobals(filePath, args);
-    def evalled = Lang2::evalBinary(globals, Io1::pathFromFlat(filePath));
+    def evalled = Lang2::evalBinary(globals, filePath);
 
     <> evalled()
 };

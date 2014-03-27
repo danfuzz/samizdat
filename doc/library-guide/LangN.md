@@ -54,10 +54,6 @@ results from evaluating a program tree using `eval` (above).
 It is an error (terminating the runtime) if the file does not exist,
 is not a library file, or is missing necessary bindings.
 
-**Note:** The `Lang0` and `Lang1` versions of this function accept a
-platform-dependent flat path string as the `filePath` argument. Higher
-language layers accept standard structured paths (lists of path components).
-
 #### `parseExpression(expression) <> expressionNode`
 
 Parses the given `expression` as an expression in the language.
