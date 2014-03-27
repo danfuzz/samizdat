@@ -130,7 +130,7 @@ fn runModule(modulePath, args) {
     def path = Io1::pathFromFlat(modulePath);
     <> ModuleSystem::run(
         path, Globals::fullEnvironment(), moduleLoader(),
-        path, args*)
+        modulePath, args*)
 };
 
 ## Runs a simple-file-form command-line. In this case, the indicated file
