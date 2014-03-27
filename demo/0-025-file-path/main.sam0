@@ -1,0 +1,88 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## FilePath demo
+##
+
+def FilePath = moduleLoad(["core", "FilePath"]);
+
+
+##
+## Helper Definitions
+##
+
+## Print the given value.
+fn msg(value) {
+    note(cat("    ", Format::source(value)))
+};
+
+
+##
+## Main Tests
+##
+
+note("fixPath:");
+msg(FilePath::fixPath("."));
+msg(FilePath::fixPath("blort"));
+msg(FilePath::fixPath("blort/zorch"));
+msg(FilePath::fixPath("/"));
+msg(FilePath::fixPath("/blort"));
+msg(FilePath::fixPath("/blort/zorch"));
+msg(FilePath::fixPath(".", "/x"));
+msg(FilePath::fixPath("blort", "/x"));
+msg(FilePath::fixPath("blort/zorch", "/x"));
+msg(FilePath::fixPath("/", "/x"));
+msg(FilePath::fixPath("/blort", "/x"));
+msg(FilePath::fixPath("/blort/zorch", "/x"));
+msg(FilePath::fixPath(".", "x"));
+msg(FilePath::fixPath("blort", "x"));
+msg(FilePath::fixPath("blort/zorch", "x"));
+msg(FilePath::fixPath("/", "x"));
+msg(FilePath::fixPath("/blort", "x"));
+msg(FilePath::fixPath("/blort/zorch", "x"));
+msg(FilePath::fixPath("blort/zorch", "x/y", "/fizmo"));
+msg(FilePath::fixPath("blort/zorch", "/x/y", "/fizmo"));
+
+note("\ndirectoryOf:");
+msg(FilePath::directoryOf("."));
+msg(FilePath::directoryOf("blort"));
+msg(FilePath::directoryOf("blort/"));
+msg(FilePath::directoryOf("blort//"));
+msg(FilePath::directoryOf("blort/zorch"));
+msg(FilePath::directoryOf("blort/zorch/"));
+msg(FilePath::directoryOf("blort/zorch//"));
+msg(FilePath::directoryOf("blort/zorch///"));
+msg(FilePath::directoryOf("/"));
+msg(FilePath::directoryOf("//"));
+msg(FilePath::directoryOf("///"));
+msg(FilePath::directoryOf("/blort"));
+msg(FilePath::directoryOf("/blort/"));
+msg(FilePath::directoryOf("/blort//"));
+msg(FilePath::directoryOf("/blort/zorch"));
+msg(FilePath::directoryOf("/blort/zorch/"));
+msg(FilePath::directoryOf("/blort/zorch//"));
+msg(FilePath::directoryOf("/blort/zorch///"));
+
+note("\nfileOf:");
+msg(FilePath::fileOf("."));
+msg(FilePath::fileOf("blort"));
+msg(FilePath::fileOf("blort/"));
+msg(FilePath::fileOf("blort//"));
+msg(FilePath::fileOf("blort/zorch"));
+msg(FilePath::fileOf("blort/zorch/"));
+msg(FilePath::fileOf("blort/zorch//"));
+msg(FilePath::fileOf("blort/zorch///"));
+msg(FilePath::fileOf("/"));
+msg(FilePath::fileOf("//"));
+msg(FilePath::fileOf("///"));
+msg(FilePath::fileOf("/blort"));
+msg(FilePath::fileOf("/blort/"));
+msg(FilePath::fileOf("/blort//"));
+msg(FilePath::fileOf("/blort/zorch"));
+msg(FilePath::fileOf("/blort/zorch/"));
+msg(FilePath::fileOf("/blort/zorch//"));
+msg(FilePath::fileOf("/blort/zorch///"));
+
+<> 0
