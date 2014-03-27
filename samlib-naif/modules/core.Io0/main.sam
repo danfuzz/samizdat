@@ -29,7 +29,7 @@ fn checkPath(path) {
 ##
 
 ## Documented in spec.
-def flatCwd = Io0_flatCwd;
+def flatCwd = Io0_cwd;
 
 ## Documented in spec.
 fn absolutePath(path, optBase?) {
@@ -120,11 +120,11 @@ fn fileOf(path) {
 
 <> {
     ## Re-exported from primitives.
-    flatCwd:           Io0_flatCwd,
-    flatReadLink:      Io0_flatReadLink,
-    flatFileExists:    Io0_flatFileExists,
-    flatReadFileUtf8:  Io0_flatReadFileUtf8,
-    flatWriteFileUtf8: Io0_flatWriteFileUtf8,
+    flatCwd:           Io0_cwd,
+    flatReadLink:      Io0_readLink,
+    flatFileExists:    Io0_fileExists,
+    flatReadFileUtf8:  Io0_readFileUtf8,
+    flatWriteFileUtf8: Io0_writeFileUtf8,
 
     ## Defined in this file.
     absolutePath,

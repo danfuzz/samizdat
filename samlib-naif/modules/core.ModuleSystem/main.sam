@@ -104,7 +104,7 @@ fn doModuleLoad(md, dotName) {
     def modulePath = cat(data::basePath, dotName);
 
     def infoPath = cat(modulePath, "/main.saminfo");
-    <> ifIs { <> Io0_flatFileExists(infoPath) }
+    <> ifIs { <> Io0_fileExists(infoPath) }
         {
             note(cat("    ", dotName));
             def loader = makeIntraLoader(modulePath, data::globals, md);
@@ -194,17 +194,17 @@ fn doLocalLoad(ml, path) {
     def pathPrefix = cat(data::basePath, path);
 
     def binPath = cat(pathPrefix, ".samb");
-    ifIs { <> Io0_flatFileExists(binPath) }
+    ifIs { <> Io0_fileExists(binPath) }
         {
             def func = Lang0_evalBinary(data::globals, binPath);
             return func()
         };
 
     def sourcePath = cat(pathPrefix, ".sam");
-    ifIs { <> Io0_flatFileExists(sourcePath) }
+    ifIs { <> Io0_fileExists(sourcePath) }
         {
             def lang = data::languageModule;
-            def text = Io0_flatReadFileUtf8(sourcePath);
+            def text = Io0_readFileUtf8(sourcePath);
             def tree = lang::parseProgram(text);
             def func = lang::eval(data::globals, tree);
             return func()
@@ -220,7 +220,7 @@ genericBind(
     fn IntraLoader_intraExists(ml, path) {
         def data = dataOf(ml);
         def fullPath = cat(data::basePath, path);
-        <> ifIs { <> Io0_flatFileExists(fullPath) }
+        <> ifIs { <> Io0_fileExists(fullPath) }
             { <> path }
     });
 
@@ -251,10 +251,10 @@ genericBind(
         def data = dataOf(ml);
         def fullPath = cat(data::basePath, path);
 
-        ifNot { <> Io0_flatFileExists(fullPath) }
+        ifNot { <> Io0_fileExists(fullPath) }
             { die(cat("Missing resource: ", fullPath)) };
 
-        <> Io0_flatReadFileUtf8(fullPath)
+        <> Io0_readFileUtf8(fullPath)
     });
 
 ## Documented in spec.
@@ -265,9 +265,9 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## If the module info file (`main.saminfo`) exists, it must evaluate to a
     ## map. If it does not exist, create minimal "anonymous" module info.
     def infoPath = cat(basePath, "main.saminfo");
-    def moduleInfo = ifIs { <> Io0_flatFileExists(infoPath) }
+    def moduleInfo = ifIs { <> Io0_fileExists(infoPath) }
         {
-            def text = Io0_flatReadFileUtf8(infoPath);
+            def text = Io0_readFileUtf8(infoPath);
             <> Lang0_eval(globals, Lang0_parseExpression(text))
         }
         { <> {name: [], version: "0"} };
