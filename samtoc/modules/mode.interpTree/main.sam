@@ -14,16 +14,16 @@ def CodeGen = moduleLoad(["CodeGen"]);
 def DataCode = moduleLoad(["DataCode"]);
 def Template = moduleLoad(["Template"]);
 
-def Io1 = moduleLoad(["core", "Io1"]);
+def Io0 = moduleLoad(["core", "Io0"]);
 def Lang2 = moduleLoad(["core", "Lang2"]);
 
 fn compile(sourcePath, targetPath) {
-    def sourceText = Io1::readFileUtf8(sourcePath);
+    def sourceText = Io0::flatReadFileUtf8(sourcePath);
     def tree = Lang2::convertToLang0(Lang2::parseProgram(sourceText));
     def source = CodeGen::indent(DataCode::convert(tree), 2, 78);
     def outputText = Template::apply(templateText, {source});
 
-    Io1::writeFileUtf8(targetPath, outputText)
+    Io0::flatWriteFileUtf8(targetPath, outputText)
 };
 
 <> {compile}
