@@ -65,15 +65,6 @@ fn flattenPath(path, optSuffix?) {
     <> cat(withSlashes*, optSuffix*);
 };
 
-## Flattens a (presumably relative) path to a string, for use when emitting
-## messages to the console.
-fn humanPath(path) {
-    ## Prefix each component with `/`, concatenate them all together, and
-    ## drop the leading `/`.
-    def withSlashes = collect(path, { elem <> cat("/", elem) });
-    <> Sequence_sliceInclusive(cat(withSlashes*), 1)
-};
-
 ## Updates a map-containing box to have the given additional / replacement
 ## binding.
 fn updateMapBox(box, key, value) {
@@ -191,14 +182,14 @@ fn makeModuleLoader(path, globals, nextModuleLoader) {
 
 ## Convenient helper which just loads a top-level `main`.
 fn intraLoadMain(loader) {
-    <> intraLoad(loader, ["main"])
+    <> intraLoad(loader, "main")
 };
 
 ## Helper for `intraLoad` which does the actual loading.
 fn doLocalLoad(ml, path) {
-    note(cat("        ", humanPath(path)));
+    note(cat("        ", path));
     def data = dataOf(ml);
-    def pathPrefix = [data::basePath*, path*];
+    def pathPrefix = [data::basePath*, path];
 
     def binPath = flattenPath(pathPrefix, ".samb");
     ifIs { <> Io0_flatFileExists(binPath) }
@@ -226,7 +217,7 @@ genericBind(
     @@IntraLoader,
     fn IntraLoader_intraExists(ml, path) {
         def data = dataOf(ml);
-        def fullPath = flattenPath([data::basePath*, path*]);
+        def fullPath = flattenPath([data::basePath*, path]);
         <> ifIs { <> Io0_flatFileExists(fullPath) }
             { <> path }
     });
@@ -256,7 +247,7 @@ genericBind(
     @@IntraLoader,
     fn IntraLoader_intraReadUtf8(ml, path) {
         def data = dataOf(ml);
-        def fullPath = flattenPath([data::basePath*, path*]);
+        def fullPath = flattenPath([data::basePath*, path]);
 
         ifNot { <> Io0_flatFileExists(fullPath) }
             { die(cat("Missing resource: ", fullPath)) };

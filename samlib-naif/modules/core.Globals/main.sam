@@ -13,10 +13,10 @@
 ## All the early globals. This is evaluated eagerly at load time.
 def EARLY_GLOBALS = {
     ## Simple constant and function definitions.
-    (intraLoad(["constants"]))*,
-    (intraLoad(["primitives"]))*,
-    (intraLoad(["Value"]))*,
-    (intraLoad(["Type"]))*
+    (intraLoad("constants"))*,
+    (intraLoad("primitives"))*,
+    (intraLoad("Value"))*,
+    (intraLoad("Type"))*
 };
 
 

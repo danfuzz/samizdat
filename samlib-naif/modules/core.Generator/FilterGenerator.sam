@@ -11,7 +11,7 @@
 def Collection = moduleLoad(["core", "Collection"]);
 def Box        = moduleLoad(["core", "Box"]);
 
-def ParaGenerator = intraLoad(["ParaGenerator"]);
+def ParaGenerator = intraLoad("ParaGenerator");
 
 
 ##

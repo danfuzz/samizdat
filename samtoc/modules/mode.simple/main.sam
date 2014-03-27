@@ -7,13 +7,13 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
-def templateText = intraReadUtf8(["template.txt"]);
+def templateText = intraReadUtf8("template.txt");
 
-def Interner = intraLoad(["Interner"]);
-def collectClosures = intraLoad(["collectClosures"]);
-def internLiterals = intraLoad(["internLiterals"]);
-def translate = intraLoad(["translate"]);
-def vars = intraLoad(["vars"]);
+def Interner = intraLoad("Interner");
+def collectClosures = intraLoad("collectClosures");
+def internLiterals = intraLoad("internLiterals");
+def translate = intraLoad("translate");
+def vars = intraLoad("vars");
 
 def CodeGen = moduleLoad(["CodeGen"]);
 def DataCode = moduleLoad(["DataCode"]);

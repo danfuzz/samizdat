@@ -38,12 +38,15 @@ This indicates if the given intra-module file exists and is a regular
 (non-directory, non-special) file. It returns the given `path` for
 logical-true and void for logical-false.
 
+`path` is expected to be a string identifying a relative file path within the
+module's file hierarchy.
+
 #### `intraLoad(loader, path) <> . | void`
 
-This loads and evaluates an intra-module file. The `path` is expected to be
-a list of strings identifying a relative file path within the module's file
-hierarchy. The final name in `path` should *not* have a file suffix (such
-as `.sam` or `samb`).
+This loads and evaluates an intra-module file. `path` is expected to be a
+string identifying a relative file path within the module's file hierarchy.
+The final name component in `path` should *not* have a file suffix (such as
+`.sam` or `samb`).
 
 This function will only ever load a given path once. If the same path
 is requested more than once, whatever was returned the first time
@@ -55,9 +58,9 @@ if the indicated `path` failed to be loadable.
 
 #### `intraReadUtf8(loader, path) <> .`
 
-This reads an intra-module file, interpreting it as UTF-8 encoded text.
-The `path` is expected to be a list of strings identifying a relative file
-path within the module's file hierarchy.
+This reads an intra-module file, interpreting it as UTF-8 encoded text. `path`
+is expected to be a string identifying a relative file path within the
+module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
 exist as a file.
@@ -101,7 +104,7 @@ This is a convenient wrapper which is equivalent to:
 
 ```
 def loader = makeIntraLoader(path, globals, moduleLoader);
-def mainModule = intraLoad(loader, ["main"]);
+def mainModule = intraLoad(loader, "main");
 <> mainModule::main(args*)
 ```
 

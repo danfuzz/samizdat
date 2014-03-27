@@ -9,7 +9,7 @@
 def Collection = moduleLoad(["proto", "Collection"]);
 
 ## This just binds generics without adding exports.
-intraLoad(["MapGenerator"]);
+intraLoad("MapGenerator");
 
 
 ##

@@ -28,7 +28,7 @@ def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-def vars = intraLoad(["vars"]);
+def vars = intraLoad("vars");
 def localVarDecl = vars::localVarDecl;
 def localVarName = vars::localVarName;
 
