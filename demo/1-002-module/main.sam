@@ -11,7 +11,7 @@
 ##
 
 ## A known module (shouldn't cause any trouble).
-def Io1 = moduleLoad(["core", "Io1"]);
+moduleLoad(["core", "Format"]);
 
 ## A locally-defined module.
 def Stuff = moduleLoad(["app", "Stuff"]);
@@ -25,6 +25,7 @@ fn main(selfPath, .*) {
     note(cat("I am: ", Format::source(selfPath)));
     note(Format::source(Stuff::STUFF));
     note(Format::source(Stuff::SUBSTUFF));
+    note(Format::source(Stuff::stuffFunc()));
 };
 
 <> {main}

@@ -44,19 +44,9 @@ Command-line evaluator. This implements standardized top-level command-line
 parsing and evaluation. `args` are arbitrary arguments, which are parsed as
 optional command-line options, a program file name, and additional arguments.
 
-This parses the indicated file, as implied by its recognized suffix
-(or lack thereof), evaluates the result of parsing, and then calls that
-evaluated result as a function, passing it first the "componentized"
-path to itself (see `Io1::pathFromFlat`), and then any additional
-arguments that were passed to this function. This function returns whatever
-was returned by the inner function call (including void).
-
-Currently recognized command-line options:
-
-* `--suffix=name` &mdash; Provides a file name suffix to use when interpreting
-  the file name. Used to override the default of which language layer is
-  used for parsing and evaluation. Must be `sam`, `samb`, or `samN` where `N`
-  is a digit.
+This loads the indicated file or directory, as implied by its recognized
+suffix (or lack thereof), and runs it. This function returns whatever
+was returned by the run (including void).
 
 If the ultimate thing-to-run is a plain file (and not a module), then it
 gets evaluated with the following additional variables in its global
@@ -69,6 +59,13 @@ environment:
 * `SELF_PATH` &mdash; The filesystem path to the file being run.
 
 If the ultimate thing-to-run is a module, then its `main` binding is called
-as a function, passing it as arguments the path to the module, followed by
+as a function, passing it two arguments, the path to the module, followed by
 the "additional arguments" (beyond the ones understood directly by this
 function).
+
+Currently recognized command-line options:
+
+* `--suffix=name` &mdash; Provides a file name suffix to use when interpreting
+  the file name. Used to override the default of which language layer is
+  used for parsing and evaluation. Must be `sam`, `samb`, or `samN` where `N`
+  is a digit.

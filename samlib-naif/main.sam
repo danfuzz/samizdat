@@ -15,8 +15,8 @@ def Globals      = moduleLoad(["core", "Globals"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 
 ## Initializes the world, and returns the final global variable environment.
-## `libraryPath` is the filesystem path to the core library (as a list of
-## strings). `primitiveEnvironment` is the map of native bindings.
+## `libraryPath` is the filesystem path to the core library.
+## `primitiveEnvironment` is the map of native bindings.
 fn main(libraryPath, primitiveEnvironment) {
     def earlyGlobals = {
         primitiveEnvironment*,
@@ -27,7 +27,7 @@ fn main(libraryPath, primitiveEnvironment) {
 
     ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
     def loader = ModuleSystem::makeModuleLoader(
-        [libraryPath*, "modules"], earlyGlobals, @Null);
+        cat(libraryPath, "/modules"), earlyGlobals, @Null);
 
     def innerGlobals = ModuleSystem::moduleLoad(loader, ["core", "Globals"]);
     def result = innerGlobals::fullEnvironment();

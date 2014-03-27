@@ -16,9 +16,9 @@ def Lang0 = moduleLoad(["core", "Lang0"]);
 ## This just re-exports stuff defined in intramodule files, as well as
 ## `evalBinary` which is a re-export from `Lang0`.
 <> {
-    (intraLoad(["convert"]))*,
-    (intraLoad(["eval"]))*,
-    (intraLoad(["tokenize"]))*,
-    (intraLoad(["parse"]))*,
+    (intraLoad("convert"))*,
+    (intraLoad("eval"))*,
+    (intraLoad("tokenize"))*,
+    (intraLoad("parse"))*,
     evalBinary: Lang0::evalBinary
 }

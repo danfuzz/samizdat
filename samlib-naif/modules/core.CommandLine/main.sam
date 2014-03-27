@@ -9,7 +9,7 @@
 def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
 def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
 def Globals      = moduleLoad(["core", "Globals"]);
-def Io1          = moduleLoad(["core", "Io1"]);
+def Io0          = moduleLoad(["core", "Io0"]);
 def Lang2        = moduleLoad(["core", "Lang2"]);
 def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 def Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
@@ -89,16 +89,22 @@ def parArguments = {:
     }
 :};
 
-## Gets the language layer suffix (or suffix-like-thing) from a file name.
-fn suffixFromName(name) {
-    def dotsAt = [index in (0..), elem in name <> (elem == ".") & index];
+## Gets the language layer suffix (or suffix-like-thing) from a file path.
+fn suffixFromPath(filePath) {
+    def finalName = Io0::fileOf(filePath);
+    if (finalName == ".") {
+        ## Explicit "this directory" as the final path component; assume it
+        ## indicates a module directory.
+        return "module"
+    };
 
+    def dotsAt = [index in (0..), elem in finalName <> (elem == ".") & index];
     if (dotsAt == []) {
         ## No suffix on the name; assume it names a module directory.
         return "module"
     };
 
-    <> name[dotsAt[^0] + 1..]
+    <> finalName[dotsAt[^0] + 1..]
 };
 
 ## Makes a global environment, given file path and command-line arguments.
@@ -131,7 +137,7 @@ fn runModule(modulePath, args) {
 ## the path to the file and the command-line arguments, respectively.
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
-    def programText = Io1::readFileUtf8(filePath);
+    def programText = Io0::readFileUtf8(filePath);
     def langModule = moduleLoad(["core", cat("Lang", langLayer)]);
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(globals, parsedProgram);
@@ -168,11 +174,10 @@ fn runCommandLine(rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def fileName = argWords[0] | "/dev/stdin";
-    def filePath = Io1::pathFromFlat(fileName);
+    def filePath = Io0::absolutePath(argWords[0]) | "/dev/stdin";
     def args = argWords[1..] | [];
 
-    def suffix = options::suffix | suffixFromName(filePath[^0]);
+    def suffix = options::suffix | suffixFromPath(filePath);
 
     if (suffix == "module") {
         return runModule(filePath, args)

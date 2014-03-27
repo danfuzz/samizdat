@@ -24,14 +24,15 @@
  * Opens the file with the given name (a string), and with the
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
-static FILE *openFile(zvalue flatPath, const char *mode) {
-    zint pathSize = utf8SizeFromString(flatPath);
-    char path[pathSize + 1];
-    utf8FromString(pathSize + 1, path, flatPath);
+static FILE *openFile(zvalue path, const char *mode) {
+    ioCheckPath(path);
+    zint sz = utf8SizeFromString(path);
+    char str[sz + 1];
+    utf8FromString(sz + 1, str, path);
 
-    FILE *file = fopen(path, mode);
+    FILE *file = fopen(str, mode);
     if (file == NULL) {
-        die("Trouble opening file \"%s\": %s", path, strerror(errno));
+        die("Trouble opening file \"%s\": %s", str, strerror(errno));
     }
 
     return file;
@@ -43,7 +44,7 @@ static FILE *openFile(zvalue flatPath, const char *mode) {
  */
 
 /* Documented in header. */
-zvalue ioFlatCwd(void) {
+zvalue ioCwd(void) {
     char *dir = utilCwd();
     zvalue result = stringFromUtf8(-1, dir);
 
@@ -52,13 +53,14 @@ zvalue ioFlatCwd(void) {
 }
 
 /* Documented in header. */
-bool ioFlatFileExists(zvalue flatPath) {
-    zint pathSize = utf8SizeFromString(flatPath);
-    char path[pathSize + 1];
-    utf8FromString(pathSize + 1, path, flatPath);
+bool ioFileExists(zvalue path) {
+    ioCheckPath(path);
+    zint sz = utf8SizeFromString(path);
+    char str[sz + 1];
+    utf8FromString(sz + 1, str, path);
 
     struct stat statBuf;
-    if (stat(path, &statBuf) != 0) {
+    if (stat(str, &statBuf) != 0) {
         if ((errno == ENOENT) || (errno == ENOTDIR)) {
             // File not found or invalid component, neither of which
             // are really errors from the perspective of this function.
@@ -71,13 +73,14 @@ bool ioFlatFileExists(zvalue flatPath) {
 }
 
 /* Documented in header. */
-zvalue ioFlatReadLink(zvalue flatPath) {
-    zint pathSize = utf8SizeFromString(flatPath);
-    char path[pathSize + 1];
-    utf8FromString(pathSize + 1, path, flatPath);
+zvalue ioReadLink(zvalue path) {
+    ioCheckPath(path);
+    zint sz = utf8SizeFromString(path);
+    char str[sz + 1];
+    utf8FromString(sz + 1, str, path);
 
     struct stat statBuf;
-    if (lstat(path, &statBuf) != 0) {
+    if (lstat(str, &statBuf) != 0) {
         if ((errno == ENOENT) || (errno == ENOTDIR)) {
             // File not found or invalid component, neither of which
             // are really errors from the perspective of this function.
@@ -94,22 +97,22 @@ zvalue ioFlatReadLink(zvalue flatPath) {
     // The required link buffer size is determined per the (oblique)
     // recommendation in the Posix docs for `readlink`.
 
-    size_t linkSize = statBuf.st_size;
-    char linkPath[linkSize];
-    ssize_t linkResult = readlink(path, linkPath, linkSize);
+    size_t linkSz = statBuf.st_size;
+    char linkStr[linkSz];
+    ssize_t linkResult = readlink(str, linkStr, linkSz);
     if (linkResult < 0) {
         die("Trouble with readlink(): %s", strerror(errno));
-    } else if (linkResult != linkSize) {
+    } else if (linkResult != linkSz) {
         die("Strange readlink() result: %ld", (long) linkResult);
     }
 
-    return stringFromUtf8(linkSize, linkPath);
+    return stringFromUtf8(linkSz, linkStr);
 }
 
 /* Documented in header. */
-zvalue ioFlatReadFileUtf8(zvalue flatPath) {
+zvalue ioReadFileUtf8(zvalue path) {
     char buf[IO_MAX_FILE_SIZE];
-    FILE *in = openFile(flatPath, "r");
+    FILE *in = openFile(path, "r");
     size_t amt = fread(buf, 1, sizeof(buf), in);
 
     if (ferror(in)) {
@@ -126,12 +129,12 @@ zvalue ioFlatReadFileUtf8(zvalue flatPath) {
 }
 
 /* Documented in header. */
-void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text) {
+void ioWriteFileUtf8(zvalue path, zvalue text) {
     zint utfSize = utf8SizeFromString(text);
     char utf[utfSize + 1];
     utf8FromString(utfSize + 1, utf, text);
 
-    FILE *out = openFile(flatPath, "w");
+    FILE *out = openFile(path, "w");
     zint amt = fwrite(utf, 1, utfSize, out);
 
     if (amt != utfSize) {

@@ -8,7 +8,7 @@
 
 def Box = moduleLoad(["proto", "Box"]);
 
-def NullBox = intraLoad(["NullBox"]);
+def NullBox = intraLoad("NullBox");
 
 
 ##

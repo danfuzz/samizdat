@@ -100,7 +100,6 @@ will be returned, or one of:
   * [core.Generator](Generator.md)
   * [core.Globals](Globals.md)
   * [core.Io0](Io0.md)
-  * [core.Io1](Io1.md)
   * [core.Lang*](LangN.md)
   * [core.Lang0Node](Lang0Node.md)
   * [core.ModuleSystem](ModuleSystem.md)

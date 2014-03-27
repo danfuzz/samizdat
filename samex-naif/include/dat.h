@@ -43,10 +43,10 @@ void assertValidOrNull(zvalue value);
 /**
  * Loads and evaluates (runs) a native binary module, passing the given
  * `env` argument to its `eval` function. `path` indicates the filesystem
- * path to the module (as a flat string), which must be absolute. This
- * function returns whatever was returned by the `eval` function.
+ * path to the module. This function returns whatever was returned by the
+ * `eval` function.
  */
-zvalue datEvalBinary(zvalue env, zvalue flatPath);
+zvalue datEvalBinary(zvalue env, zvalue path);
 
 
 /*

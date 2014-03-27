@@ -6,7 +6,7 @@
 ## `ValueGenerator` Type
 ##
 
-def unboundedCollect = intraLoad(["unboundedCollect"])::unboundedCollect;
+def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 
 
 ##

@@ -71,16 +71,16 @@ static zvalue evalLibrary(void *libHandle, zvalue env) {
  */
 
 /* Documented in header. */
-zvalue datEvalBinary(zvalue env, zvalue flatPath) {
-    zint size = utf8SizeFromString(flatPath);
-    char path[size + 1];
-    utf8FromString(size + 1, path, flatPath);
+zvalue datEvalBinary(zvalue env, zvalue path) {
+    zint size = utf8SizeFromString(path);
+    char str[size + 1];
+    utf8FromString(size + 1, str, path);
 
-    if ((size == 0) || (path[0] != '/')) {
-        die("Invalid path: %s", path);
+    if ((size == 0) || (str[0] != '/')) {
+        die("Invalid path: %s", str);
     }
 
-    void *libHandle = loadLibrary(path);
+    void *libHandle = loadLibrary(str);
     return evalLibrary(libHandle, env);
 
     // Note: We intentionally do not `dlclose` the library, on the assumption

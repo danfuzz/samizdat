@@ -19,13 +19,13 @@
 /**
  * Returns `getcwd()` as a string.
  */
-zvalue ioFlatCwd(void);
+zvalue ioCwd(void);
 
 /**
  * Returns `true` if there is a "regular" file at the given path, or
  * `false` if not.
  */
-bool ioFlatFileExists(zvalue flatPath);
+bool ioFileExists(zvalue path);
 
 /**
  * Gets symbolic link information about the file with the given name.
@@ -33,26 +33,32 @@ bool ioFlatFileExists(zvalue flatPath);
  * a simple string. If the file does not name a symbolic link, this returns
  * `NULL`.
  */
-zvalue ioFlatReadLink(zvalue flatPath);
+zvalue ioReadLink(zvalue path);
 
 /**
  * Reads the file with the given name in its entirety, interpreting
  * it as UTF-8. Returns a string (list of Unicode-representing
  * ints) of the contents.
  */
-zvalue ioFlatReadFileUtf8(zvalue flatPath);
+zvalue ioReadFileUtf8(zvalue path);
 
 /**
  * Writes the given string to the file with the given name, encoding
  * it as UTF-8.
  */
-void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text);
+void ioWriteFileUtf8(zvalue path, zvalue text);
 
 /**
- * Splits an absolute flat path into an array of slash-separated components.
- * Does not do error checking beyond requiring a string that starts with a
- * slash.
+ * Checks an absolute filesystem path for validity. This fails (fatally)
+ * if `path` isn't a string, if it is empty, if it doesn't start with a
+ * slash, or if it contains any `\0` characters.
  */
-zvalue ioSplitAbsolutePath(zvalue flatPath);
+void ioCheckAbsolutePath(zvalue path);
+
+/**
+ * Checks a filesystem path for validity. This fails (fatally) if `path`
+ * isn't a string, if it is empty, or if it contains any `\0` characters.
+ */
+void ioCheckPath(zvalue path);
 
 #endif

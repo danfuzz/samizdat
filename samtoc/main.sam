@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def CommandLine = moduleLoad(["core", "CommandLine"]);
-def Io1 = moduleLoad(["core", "Io1"]);
+def Io0 = moduleLoad(["core", "Io0"]);
 
 ## Default mode to use
 def DEFAULT_MODE = "simple";
@@ -28,24 +28,23 @@ fn withoutSuffix(name) {
 };
 
 fn getSourcePath(rawPath, args) {
-    return Io1::pathFromFlat(
-        (def inDir = args::options::"in-dir")
+    return (def inDir = args::options::"in-dir")
         & "\(inDir)/\(rawPath)"
-        | rawPath);
+        | rawPath;
 };
 
 fn getOutputPath(rawPath, args) {
     if (def output = args::options::output) {
-        return Io1::pathFromFlat(output)
+        return output
     };
 
-    def path = Io1::pathFromFlat(
-        (def outDir = args::options::"out-dir")
+    def path = (def outDir = args::options::"out-dir")
         & "\(outDir)/\(rawPath)"
-        | rawPath);
+        | rawPath;
 
-    def baseName = withoutSuffix(path[^0]);
-    return [path[..!]*, "\(baseName).c"]
+    def dir = Io0::directoryOf(path);
+    def baseName = withoutSuffix(Io0::fileOf(path));
+    return "\(dir)/\(baseName).c"
 };
 
 fn doOne(modeModule, args, sourceName) {

@@ -9,15 +9,15 @@
 def Box        = moduleLoad(["core", "Box"]);
 def Collection = moduleLoad(["core", "Collection"]);
 
-def FilterGenerator   = intraLoad(["FilterGenerator"]);
-def ListWrapGenerator = intraLoad(["ListWrapGenerator"]);
-def NullGenerator     = intraLoad(["NullGenerator"]);
-def OptGenerator      = intraLoad(["OptGenerator"]);
-def ParaGenerator     = intraLoad(["ParaGenerator"]);
-def RepeatGenerator   = intraLoad(["RepeatGenerator"]);
-def SerialGenerator   = intraLoad(["SerialGenerator"]);
-def ValueGenerator    = intraLoad(["ValueGenerator"]);
-def unboundedCollect  = intraLoad(["unboundedCollect"]);
+def FilterGenerator   = intraLoad("FilterGenerator");
+def ListWrapGenerator = intraLoad("ListWrapGenerator");
+def NullGenerator     = intraLoad("NullGenerator");
+def OptGenerator      = intraLoad("OptGenerator");
+def ParaGenerator     = intraLoad("ParaGenerator");
+def RepeatGenerator   = intraLoad("RepeatGenerator");
+def SerialGenerator   = intraLoad("SerialGenerator");
+def ValueGenerator    = intraLoad("ValueGenerator");
+def unboundedCollect  = intraLoad("unboundedCollect");
 
 ##
 ## Exported Definitions

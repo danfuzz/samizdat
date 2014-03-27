@@ -7,13 +7,13 @@
 ##
 
 ## This just binds generics.
-intraLoad(["String"]);
+intraLoad("String");
 
 <> {
-    intraLoad(["Assign"])*,
-    intraLoad(["Call"])*,
-    intraLoad(["Comment"])*,
-    intraLoad(["Return"])*,
-    intraLoad(["Statement"])*,
-    intraLoad(["protocol"])*
+    intraLoad("Assign")*,
+    intraLoad("Call")*,
+    intraLoad("Comment")*,
+    intraLoad("Return")*,
+    intraLoad("Statement")*,
+    intraLoad("protocol")*
 }

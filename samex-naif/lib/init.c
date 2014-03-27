@@ -70,23 +70,23 @@ static void makePrimitiveEnvironment(void) {
 /**
  * Loads the named binary file if it exists.
  */
-static zvalue loadBinaryIfPossible(zvalue flatPath) {
-    if (!ioFlatFileExists(flatPath)) {
+static zvalue loadBinaryIfPossible(zvalue path) {
+    if (!ioFileExists(path)) {
         return NULL;
     }
 
-    return datEvalBinary(PRIMITIVE_ENVIRONMENT, flatPath);
+    return datEvalBinary(PRIMITIVE_ENVIRONMENT, path);
 };
 
 /**
  * Reads and evaluates the named source file.
  */
-static zvalue loadSource(zvalue flatPath) {
-    if (!ioFlatFileExists(flatPath)) {
-        die("Missing bootstrap library file: %s", valDebugString(flatPath));
+static zvalue loadSource(zvalue path) {
+    if (!ioFileExists(path)) {
+        die("Missing bootstrap library file: %s", valDebugString(path));
     }
 
-    zvalue text = ioFlatReadFileUtf8(flatPath);
+    zvalue text = ioReadFileUtf8(path);
     zvalue tree = langParseProgram0(text);
     return langEval0(PRIMITIVE_ENVIRONMENT, tree);
 };
@@ -96,19 +96,18 @@ static zvalue loadSource(zvalue flatPath) {
  * return value from loading the top-level in-language library file `main`
  * and calling its `main` function.
  */
-static zvalue getLibrary(zvalue libraryFlatPath) {
+static zvalue getLibrary(zvalue libraryPath) {
     zstackPointer save = datFrameStart();
-    zvalue libraryPath = ioSplitAbsolutePath(libraryFlatPath);
 
     // Evaluate `ModuleSystem`. Works with either source or binary.
 
     zvalue moduleSystemFn = loadBinaryIfPossible(
-        GFN_CALL(cat, libraryFlatPath,
+        GFN_CALL(cat, libraryPath,
             stringFromUtf8(-1, "/modules/core.ModuleSystem/main.samb")));
 
     if (moduleSystemFn == NULL) {
         moduleSystemFn = loadSource(
-            GFN_CALL(cat, libraryFlatPath,
+            GFN_CALL(cat, libraryPath,
                 stringFromUtf8(-1, "/modules/core.ModuleSystem/main.sam")));
     }
 

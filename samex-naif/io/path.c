@@ -12,46 +12,48 @@
 
 #include <string.h>
 
+/*
+ * Private Definitions
+ */
+
+/**
+ * Common code for checking paths.
+ */
+void checkPath0(zvalue path, bool isAbsolute) {
+    if (!hasType(path, TYPE_String)) {
+        die("Invalid path: not a string");
+    }
+
+    zint sz = utf8SizeFromString(path);
+    char str[sz + 1]; // `+1` for the null byte.
+
+    if (sz == 0) {
+        die("Invalid path: empty string");
+    }
+
+    utf8FromString(sz + 1, str, path);
+
+    if (isAbsolute && (str[0] != '/')) {
+        die("Invalid path: not absolute");
+    }
+
+    for (zint i = 0; i < sz; i++) {
+        if (str[i] == '\0') {
+            die("Invalid path: contains `\\0` character");
+        }
+    }
+}
 
 /*
  * Exported Definitions
  */
 
 /* Documented in header. */
-zvalue ioSplitAbsolutePath(zvalue flatPath) {
-    zint sz = utf8SizeFromString(flatPath);
-    char flat[sz + 1]; // `+1` for the null byte.
+void ioCheckAbsolutePath(zvalue path) {
+    checkPath0(path, true);
+}
 
-    if (sz == 0) {
-        die("Cannot convert empty `flatPath`.");
-    }
-
-    utf8FromString(sz + 1, flat, flatPath);
-
-    if (flat[0] != '/') {
-        die("`flatPath` is not absolute.");
-    }
-
-    zint resultSz = 0;
-    for (zint i = 0; i < sz; i++) {
-        if (flat[i] == '/') {
-            resultSz++;
-        }
-    }
-
-    zvalue result[resultSz];
-    for (zint i = 0, at = 0; flat[i]; /*empty*/) {
-        i++; // Skip the '/'.
-
-        zint end = i + 1;
-        while (flat[end] && (flat[end] != '/')) {
-            end++;
-        }
-
-        result[at] = stringFromUtf8(end - i, &flat[i]);
-        i = end;
-        at++;
-    }
-
-    return listFromArray(resultSz, result);
+/* Documented in header. */
+void ioCheckPath(zvalue path) {
+    checkPath0(path, false);
 }

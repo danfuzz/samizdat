@@ -13,29 +13,29 @@
  */
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Io0_flatCwd) {
-    return ioFlatCwd();
+FUN_IMPL_DECL(Io0_cwd) {
+    return ioCwd();
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Io0_flatFileExists) {
-    zvalue flatPath = args[0];
+FUN_IMPL_DECL(Io0_fileExists) {
+    zvalue path = args[0];
 
-    return ioFlatFileExists(flatPath) ? flatPath : NULL;
+    return ioFileExists(path) ? path : NULL;
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Io0_flatReadFileUtf8) {
-    return ioFlatReadFileUtf8(args[0]);
+FUN_IMPL_DECL(Io0_readFileUtf8) {
+    return ioReadFileUtf8(args[0]);
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Io0_flatReadLink) {
-    return ioFlatReadLink(args[0]);
+FUN_IMPL_DECL(Io0_readLink) {
+    return ioReadLink(args[0]);
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Io0_flatWriteFileUtf8) {
-    ioFlatWriteFileUtf8(args[0], args[1]);
+FUN_IMPL_DECL(Io0_writeFileUtf8) {
+    ioWriteFileUtf8(args[0], args[1]);
     return NULL;
 }

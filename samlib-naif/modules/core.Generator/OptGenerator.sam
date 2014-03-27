@@ -9,8 +9,8 @@
 
 def Box = moduleLoad(["core", "Box"]);
 
-def ValueGenerator   = intraLoad(["ValueGenerator"]);
-def unboundedCollect = intraLoad(["unboundedCollect"])::unboundedCollect;
+def ValueGenerator   = intraLoad("ValueGenerator");
+def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 
 
 ##
