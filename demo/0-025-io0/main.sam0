@@ -21,14 +21,14 @@ fn msg(value) {
 ## Demo of reading a sibling file.
 fn sibling() {
     def selfDir = Io0::directoryOf(SELF_PATH);
-    def text = Io0::flatReadFileUtf8(cat(selfDir, "/sibling.txt"));
+    def text = Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
     note(text);
 };
 
 ## Demo of finding and non-finding files.
 fn fileExists() {
     fn tryFile(path) {
-        ifIs { <> Io0::flatFileExists(path) }
+        ifIs { <> Io0::fileExists(path) }
             { note(cat("Exists: ", Format::source(path))) }
             { note(cat("Does not exist: ", Format::source(path))) }
     };

@@ -171,7 +171,7 @@ fn mainClosureMaker(node, interner) {
 };
 
 fn compile(sourcePath, targetPath) {
-    def sourceText = Io0::flatReadFileUtf8(sourcePath);
+    def sourceText = Io0::readFileUtf8(sourcePath);
 
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
@@ -224,7 +224,7 @@ fn compile(sourcePath, targetPath) {
 
     def outputText = Template::apply(templateText, replacements);
 
-    Io0::flatWriteFileUtf8(targetPath, outputText)
+    Io0::writeFileUtf8(targetPath, outputText)
 };
 
 <> {compile}

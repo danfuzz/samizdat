@@ -33,6 +33,13 @@ if by a recursive call to this function.
 It is an error (terminating the runtime) if `path` is empty or is not a
 string.
 
+#### `cwd() <> flatPath`
+
+Returns the current working directory of the process, as a
+string.
+
+This function is a thin veneer over the standard Posix call `getcwd()`.
+
 #### `directoryOf(path) <> path`
 
 Returns the directory part of the given `path`. Cases:
@@ -46,6 +53,14 @@ Returns the directory part of the given `path`. Cases:
   `"."`.
 * Otherwise, the result is the prefix of the given `path` up to but not
   including the last slash.
+
+#### `fileExists(flatPath) <> logic`
+
+Returns `flatPath` if it corresponds to an already-existing regular file.
+Returns void if not a regular file.
+
+This returns void if the file doesn't exist at all, or if it exists but
+is either a directory or a "special" file.
 
 #### `fileOf(path) <> path`
 
@@ -61,14 +76,13 @@ Returns the final component part of the given `path`. Cases:
 * Otherwise, the result is the suffix of the given `path` after but not
   including the last slash.
 
-#### `flatCwd() <> flatPath`
+#### `readFileUtf8(flatPath) <> string`
 
-Returns the current working directory of the process, as a
-string.
+Reads the named file, using the underlying OS's functionality,
+interpreting the contents as UTF-8 encoded text. Returns a string
+of the read and decoded text.
 
-This function is a thin veneer over the standard Posix call `getcwd()`.
-
-#### `flatReadLink(flatPath) <> flatPath | void`
+#### `readLink(flatPath) <> flatPath | void`
 
 Checks the filesystem to see if the given path (given as a flat string)
 refers to a symbolic link. If it does, then this returns the string which
@@ -81,21 +95,7 @@ void.
 
 This function is a thin veneer over the standard Posix call `readlink()`.
 
-#### `flatFileExists(flatPath) <> logic`
-
-Returns `flatPath` if it corresponds to an already-existing regular file.
-Returns void if not a regular file.
-
-This returns void if the file doesn't exist at all, or if it exists but
-is either a directory or a "special" file.
-
-#### `flatReadFileUtf8(flatPath) <> string`
-
-Reads the named file, using the underlying OS's functionality,
-interpreting the contents as UTF-8 encoded text. Returns a string
-of the read and decoded text.
-
-#### `flatWriteFileUtf8(flatPath, text) <> void`
+#### `writeFileUtf8(flatPath, text) <> void`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.

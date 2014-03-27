@@ -15,11 +15,11 @@ def Io0 = moduleLoad(["core", "Io0"]);
 
 fn compile(sourcePath, targetPath) {
     def replacements = {
-        source: Io0::flatReadFileUtf8(sourcePath)
+        source: Io0::readFileUtf8(sourcePath)
     };
 
     def outputText = Template::apply(templateText, replacements);
-    Io0::flatWriteFileUtf8(targetPath, outputText)
+    Io0::writeFileUtf8(targetPath, outputText)
 };
 
 <> {compile}

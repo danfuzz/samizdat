@@ -137,7 +137,7 @@ fn runModule(modulePath, args) {
 ## the path to the file and the command-line arguments, respectively.
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
-    def programText = Io0::flatReadFileUtf8(filePath);
+    def programText = Io0::readFileUtf8(filePath);
     def langModule = moduleLoad(["core", cat("Lang", langLayer)]);
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(globals, parsedProgram);
