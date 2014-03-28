@@ -119,9 +119,9 @@ to do:
 * Limit each pull request to addressing just one issue.
 
 * Test your patch. As of this writing, the most automated way to do that
-  is to run `demo/run-all --runtime=tot --build`, ensuring that no test
-  fails. However, beware that these tests are far from complete, and it is
-  also possible for them to produce incorrect output without a hard failure.
-  Therefore, it is particularly important to (a) make sure your patch is
-  covered by a test, and (b) inspect the output of that test "manually" for
-  correctness.
+  is to run `demo/run-all --runtime=tot --compiler=simple --build`, ensuring
+  that no test fails. However, beware that these tests are far from complete,
+  and it is also possible for them to produce incorrect output without a hard
+  failure. Therefore, it is particularly important to (a) make sure your
+  patch is covered by a test, and (b) inspect the output of that test
+  "manually" for correctness.
