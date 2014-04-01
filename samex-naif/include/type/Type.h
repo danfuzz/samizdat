@@ -21,13 +21,6 @@
 extern zvalue TYPE_Type;
 
 /**
- * Asserts that all the given arguments have the same type. If not, this
- * aborts the process with a diagnostic message. **Note:** This does not
- * do a validity check on the values.
- */
-void assertAllHaveSameType(zint argCount, const zvalue *args);
-
-/**
  * Asserts that the given value has the given type. If not, this aborts
  * the process with a diagnostic message. If given a non-`Type` value for
  * `type`, this takes it to name a transparent derived type. **Note:** This

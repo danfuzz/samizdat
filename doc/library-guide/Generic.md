@@ -73,11 +73,19 @@ may be passed; if not passed, there is no limit. If passed it must be
 #### `makeUnitypeGeneric(name, minArgs, maxArgs?) <> generic`
 
 Like `makeRegularGeneric` except that the resulting generic requires
-that all arguments passed to it in any given call must all be the
-same type. A non-conforming call is an error that terminates the runtime.
+that all arguments passed to it in any given call must all have the type
+(that is, be the type or a subtype) of the type to which the found function
+is bound. A non-conforming call is an error (terminating the runtime).
 
-This is the kind of generic used for functions such as
-`totEq` and `cat`.
+For example, let's say a generic function `foo()` of two arguments has a
+binding for type `DerivedData`. Calling it as `foo(@x, @y)` is valid and
+will find that binding. Calling it as `foo(@x, 5)` will fail, though, because
+the `DerivedData` binding will be found (based on the first argument, which
+is always the one used for the lookup), but `5` will not pass the test
+`hasType(5, DerivedData)`.
+
+**Note:** This is the kind of generic used for functions such as `totEq`
+and `cat`.
 
 
 <br><br>

@@ -53,15 +53,19 @@ static GenericInfo *getInfo(zvalue generic) {
 }
 
 /**
- * Find the function binding for a given type, including walking up the
- * parent type chain. Returns `NULL` if there is no binding.
+ * Finds the function binding for a given type, including walking up the
+ * parent type chain. Returns `NULL` if there is no binding. On success, also
+ * stores the bound type through `boundType` if passed as non-`NULL`.
  */
-static zvalue findByType(zvalue generic, zvalue type) {
+static zvalue findByType(zvalue generic, zvalue type, zvalue *boundType) {
     zvalue *functions = getInfo(generic)->functions;
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
         zvalue result = functions[typeIndexUnchecked(type)];
         if (result != NULL) {
+            if (boundType != NULL) {
+                *boundType = type;
+            }
             return result;
         }
     }
@@ -88,16 +92,23 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    zgenericFlags flags = info->flags;
-    if (flags & GFN_SAME_TYPE) {
-        assertAllHaveSameType(argCount, args);
-    }
-
-    zvalue function = findByType(generic, typeOf(args[0]));
+    // Note: The replacement `firstType` returned by `findByType` is only
+    // ever used for "same type" generics.
+    zvalue firstType = typeOf(args[0]);
+    zvalue function = findByType(generic, firstType, &firstType);
 
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
             valDebugString(generic), valDebugString(args[0]));
+    }
+
+    if (info->flags & GFN_SAME_TYPE) {
+        for (zint i = 1; i < argCount; i++) {
+            if (!hasType(args[i], firstType)) {
+                die("Type mysmatch on argument #%lld of: %s(%s, ...)",
+                    i, valDebugString(generic), valDebugString(args[0]));
+            }
+        }
     }
 
     return funCall(function, argCount, args);
@@ -189,7 +200,7 @@ METH_IMPL(Generic, canCall) {
     zvalue value = args[1];
     GenericInfo *info = getInfo(generic);
 
-    return (findByType(generic, typeOf(value)) != NULL) ? value : NULL;
+    return (findByType(generic, typeOf(value), NULL) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */

@@ -216,25 +216,6 @@ bool typeHasSecret(zvalue type, zvalue secret) {
  */
 
 /* Documented in header. */
-void assertAllHaveSameType(zint argCount, const zvalue *args) {
-    if (argCount == 0) {
-        // Trivially true.
-        return;
-    }
-
-    zvalue arg0 = args[0];
-    zvalue type0 = typeOf(arg0);
-
-    for (zint i = 1; i < argCount; i++) {
-        zvalue one = args[i];
-        if (!typeEq(type0, typeOf(one))) {
-            die("Mismatched types: %s, %s",
-                valDebugString(arg0), valDebugString(one));
-        }
-    }
-}
-
-/* Documented in header. */
 void assertHasType(zvalue value, zvalue type) {
     if (!hasType(value, type)) {
         die("Expected type %s; got %s.",
