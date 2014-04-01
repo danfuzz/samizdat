@@ -57,6 +57,11 @@ typically a string.
 Returns boolean true (returning `type` itself) if `type` is a derived data
 type. Returns boolean false (void) if `type` is any other kind of type.
 
+#### `typeParent(type) <> type | void`
+
+Returns the parent type (that is, the supertype) of the given type. This
+returns a type for all types except `Value`.
+
 
 <br><br>
 ### In-Language Definitions
