@@ -253,7 +253,7 @@ zvalue makeCoreType(zvalue name, zvalue parent, bool selfish) {
 }
 
 /* Documented in header. */
-zvalue typeFromName(zvalue name) {
+zvalue makeDerivedDataType(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {

@@ -157,8 +157,8 @@ and optional data payload value (an arbitrary value). These
 equivalences hold for Samizdat Layer 0 source code:
 
 ```
-@(type)         is equivalent to  v = makeValue(typeFromName(type));
-@(type)(value)  is equivalent to  v = makeValue(typeFromName(type), value);
+@(type)         is equivalent to  v = makeValue(makeDerivedDataType(type));
+@(type)(value)  is equivalent to  v = makeValue(makeDerivedDataType(type), value);
 ```
 
 **Syntax Note:** Used in the translation of `@(type)(value)`

@@ -52,7 +52,7 @@ zvalue makeCoreType(zvalue name, zvalue parent, bool selfish);
 /**
  * Returns the type value for the derived data type with the given name.
  */
-zvalue typeFromName(zvalue name);
+zvalue makeDerivedDataType(zvalue name);
 
 /**
  * Returns `true` if the given `type` has the indicated `secret`. `secret`

@@ -13,8 +13,8 @@
  */
 
 /* Documented in spec. */
-FUN_IMPL_DECL(typeFromName) {
-    return typeFromName(args[0]);
+FUN_IMPL_DECL(makeDerivedDataType) {
+    return makeDerivedDataType(args[0]);
 }
 
 /* Documented in spec. */

@@ -107,6 +107,7 @@ PRIM_FUNC(interpolate,            1, 1);
 PRIM_FUNC(le,                     2, 2);
 PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(lt,                     2, 2);
+PRIM_FUNC(makeDerivedDataType,    1, 1);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeRegularGeneric,     2, 3);
 PRIM_FUNC(makeUniqlet,            0, 0);
@@ -116,7 +117,6 @@ PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(ne,                     2, 2);
 PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
-PRIM_FUNC(typeFromName,           1, 1);
 PRIM_FUNC(typeOf,                 1, 1);
 PRIM_FUNC(typeParent,             1, 1);
 

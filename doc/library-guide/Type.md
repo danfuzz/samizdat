@@ -44,7 +44,7 @@ a type, which is typically (but not necessarily) a string.
 <br><br>
 ### Primitive Definitions
 
-#### `typeFromName(name) <> type`
+#### `makeDerivedDataType(name) <> type`
 
 Returns a `Type` instance which represents a derived data type
 with the given `name`. `name` can be an arbitrary value but is most

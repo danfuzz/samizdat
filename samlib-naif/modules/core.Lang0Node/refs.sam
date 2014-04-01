@@ -34,6 +34,7 @@ def NAMES = [
     "le",
     "loop",
     "lt",
+    "makeDerivedDataType",
     "makeList",
     "makeValue",
     "makeValueMap",
@@ -45,8 +46,7 @@ def NAMES = [
     "perLe",
     "perLt",
     "perNe",
-    "return",
-    "typeFromName"
+    "return"
 ];
 
 ## Module-scoped names.

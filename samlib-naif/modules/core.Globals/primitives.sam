@@ -46,6 +46,7 @@
     le,
     loop,
     lt,
+    makeDerivedDataType,
     makeList,
     makeRegularGeneric,
     makeUniqlet,
@@ -65,7 +66,6 @@
     toString,
     totEq,
     totOrder,
-    typeFromName,
     typeOf,
     typeParent,
     valueOf

@@ -501,14 +501,14 @@ def parList = {:
 
 ## Parses a type name, yielding a type value. If the name is a blatant
 ## literal, then the result of this rule is also a literal. If not, the
-## result of this rule is a call to `typeFromName`.
+## result of this rule is a call to `makeDerivedDataType`.
 def parTypeName = {:
     name = (parIdentifierString | parParenExpression)
 
     {
         <> ifIs { <> hasType(name, @@literal) }
             { <> makeLiteral(@@(get_value(name))) }
-            { <> makeCall(REFS::typeFromName, name) }
+            { <> makeCall(REFS::makeDerivedDataType, name) }
     }
 :};
 
