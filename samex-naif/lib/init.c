@@ -12,6 +12,8 @@
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Collection.h"
+#include "type/Data.h"
+#include "type/DerivedData.h"
 #include "type/Function.h"
 #include "type/Generator.h"
 #include "type/Generic.h"

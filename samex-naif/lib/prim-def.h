@@ -15,6 +15,8 @@
  */
 
 // Types.
+PRIM_DEF(Data,                    TYPE_Data);
+PRIM_DEF(DerivedData,             TYPE_DerivedData);
 PRIM_DEF(Int,                     TYPE_Int);
 PRIM_DEF(List,                    TYPE_List);
 PRIM_DEF(Map,                     TYPE_Map);

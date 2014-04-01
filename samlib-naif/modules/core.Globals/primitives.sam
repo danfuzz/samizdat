@@ -13,6 +13,8 @@
 ## These are all documented in Samizdat Layer 0 spec.
 
 <> {
+    Data,
+    DerivedData,
     Int,
     List,
     Map,
