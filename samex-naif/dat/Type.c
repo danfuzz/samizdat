@@ -44,7 +44,8 @@ static TypeInfo *getInfo(zvalue type) {
 }
 
 /**
- * Initializes a type value.
+ * Initializes a type value. The type is marked derived *unless* the given
+ * secret is `coreSecret`.
  */
 static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
         bool selfish) {
@@ -82,9 +83,10 @@ static zvalue allocType(void) {
  * Creates and returns a new type with the given name and secret. The type
  * is marked derived *unless* the given secret is `coreSecret`.
  */
-static zvalue makeType(zvalue name, zvalue secret, bool selfish) {
+static zvalue makeType(zvalue name, zvalue parent, zvalue secret,
+        bool selfish) {
     zvalue result = allocType();
-    typeInit(result, TYPE_Value, name, secret, selfish);
+    typeInit(result, parent, name, secret, selfish);
     return result;
 }
 
@@ -243,7 +245,7 @@ zvalue coreTypeFromName(zvalue name, bool selfish) {
     zvalue result = findType(name, coreSecret);
 
     if (result == NULL) {
-        result = makeType(name, coreSecret, selfish);
+        result = makeType(name, TYPE_Value, coreSecret, selfish);
     } else if (selfish != getInfo(result)->selfish) {
         die("Mismatch on `selfish`.");
     }
@@ -267,7 +269,7 @@ zvalue typeFromName(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = makeType(name, NULL, false);
+        result = makeType(name, TYPE_Value, NULL, false);
         derivBind(result);
     }
 
