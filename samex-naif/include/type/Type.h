@@ -57,7 +57,7 @@ bool hasType(zvalue value, zvalue type);
 bool haveSameType(zvalue v1, zvalue v2);
 
 /**
- * Returns the type value for the transparent type with the given name.
+ * Returns the type value for the derived data type with the given name.
  */
 zvalue typeFromName(zvalue name);
 
