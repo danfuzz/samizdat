@@ -266,7 +266,7 @@ zvalue typeFromName(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = makeType(name, TYPE_Value, NULL, false);
+        result = makeType(name, TYPE_Data, NULL, false);
         derivBind(result);
     }
 
@@ -401,7 +401,7 @@ MOD_INIT(typeSystem) {
     typeInit(TYPE_Builtin, TYPE_Value, stringFromUtf8(-1, "Builtin"), coreSecret, true);
     typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret, true);
     typeInit(TYPE_Jump,    TYPE_Value, stringFromUtf8(-1, "Jump"),    coreSecret, true);
-    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  coreSecret, false);
+    typeInit(TYPE_String,  TYPE_Data,  stringFromUtf8(-1, "String"),  coreSecret, false);
     typeInit(TYPE_Uniqlet, TYPE_Value, stringFromUtf8(-1, "Uniqlet"), coreSecret, true);
 
     // Make sure that the enum constants match up with what got assigned here.

@@ -6,6 +6,7 @@
 
 #include "impl.h"
 #include "type/Bitwise.h"
+#include "type/Data.h"
 #include "type/Int.h"
 #include "type/Number.h"
 #include "type/OneOff.h"
@@ -205,7 +206,7 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    TYPE_Int = makeCoreType(stringFromUtf8(-1, "Int"), TYPE_Value, false);
+    TYPE_Int = makeCoreType(stringFromUtf8(-1, "Int"), TYPE_Data, false);
 
     METH_BIND(Int, abs);
     METH_BIND(Int, add);

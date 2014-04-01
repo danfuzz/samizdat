@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Data.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -333,7 +334,7 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    TYPE_List = makeCoreType(stringFromUtf8(-1, "List"), TYPE_Value, false);
+    TYPE_List = makeCoreType(stringFromUtf8(-1, "List"), TYPE_Data, false);
 
     METH_BIND(List, cat);
     METH_BIND(List, del);
