@@ -83,11 +83,6 @@ bool typeIsDerived(zvalue type);
 bool typeIsSelfish(zvalue type);
 
 /**
- * Returns true iff the given type is a derived data type.
- */
-bool typeIsDerivedData(zvalue type);
-
-/**
  * Gets the type of the given value. `value` must be a valid value (in
  * particular, non-`NULL`). The return value is of type `Type`.
  */

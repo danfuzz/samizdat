@@ -18,12 +18,6 @@ FUN_IMPL_DECL(typeFromName) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(typeIsDerivedData) {
-    zvalue type = args[0];
-    return typeIsDerivedData(type) ? type : NULL;
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(typeOf) {
     return typeOf(args[0]);
 }

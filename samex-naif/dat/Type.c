@@ -287,14 +287,6 @@ bool typeIsSelfish(zvalue type) {
 }
 
 /* Documented in header. */
-bool typeIsDerivedData(zvalue type) {
-    assertHasTypeType(type);
-
-    TypeInfo *info = getInfo(type);
-    return info->derived && (info->secret == NULL);
-}
-
-/* Documented in header. */
 zvalue typeOf(zvalue value) {
     return value->type;
 }
