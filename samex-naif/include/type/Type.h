@@ -36,15 +36,6 @@ void assertAllHaveSameType(zint argCount, const zvalue *args);
 void assertHasType(zvalue value, zvalue type);
 
 /**
- * Gets a new core type, given its name. When given the same name twice, this
- * returns identical results. `selfish` indicates whether the type should
- * be considered "selfish." Values of an selfish type have unique identity
- * values which can be retrieved using `valSelfIdOf`. These values
- * are automatically used when comparing values of the same type.
- */
-zvalue coreTypeFromName(zvalue name, bool selfish);
-
-/**
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
  * is as given.
  */
@@ -55,6 +46,15 @@ bool hasType(zvalue value, zvalue type);
  * each) are the same.
  */
 bool haveSameType(zvalue v1, zvalue v2);
+
+/**
+ * Gets a new core type, given its name. `selfish` indicates whether the type
+ * should  be considered "selfish." Values of an selfish type have unique
+ * identity values which can be retrieved using `valSelfIdOf`. These values
+ * are automatically used when comparing values of the same type. It is a
+ * fatal error to call this function more than once with any given name.
+ */
+zvalue makeCoreType(zvalue name, bool selfish);
 
 /**
  * Returns the type value for the derived data type with the given name.

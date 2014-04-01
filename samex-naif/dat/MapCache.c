@@ -77,7 +77,7 @@ MOD_INIT(MapCache) {
     // gets marked immortal. Its `gcMark` method gets called during gc,
     // which we use as a trigger to clear the map cache.
     zvalue TYPE_MapCache =
-        coreTypeFromName(stringFromUtf8(-1, "MapCache"), true);
+        makeCoreType(stringFromUtf8(-1, "MapCache"), true);
     METH_BIND(MapCache, gcMark);
     datImmortalize(datAllocValue(TYPE_MapCache, 0));
 }

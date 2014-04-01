@@ -241,19 +241,6 @@ void assertHasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-zvalue coreTypeFromName(zvalue name, bool selfish) {
-    zvalue result = findType(name, coreSecret);
-
-    if (result == NULL) {
-        result = makeType(name, TYPE_Value, coreSecret, selfish);
-    } else if (selfish != getInfo(result)->selfish) {
-        die("Mismatch on `selfish`.");
-    }
-
-    return result;
-}
-
-/* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
     assertHasTypeType(type);
     return typeEq(typeOf(value), type);
@@ -262,6 +249,15 @@ bool hasType(zvalue value, zvalue type) {
 /* Documented in header. */
 bool haveSameType(zvalue v1, zvalue v2) {
     return typeEq(typeOf(v1), typeOf(v2));
+}
+
+/* Documented in header. */
+zvalue makeCoreType(zvalue name, bool selfish) {
+    if (findType(name, coreSecret) != NULL) {
+        die("Core type already created.");
+    }
+
+    return makeType(name, TYPE_Value, coreSecret, selfish);
 }
 
 /* Documented in header. */

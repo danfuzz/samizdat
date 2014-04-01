@@ -333,7 +333,7 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
+    TYPE_List = makeCoreType(stringFromUtf8(-1, "List"), false);
 
     METH_BIND(List, cat);
     METH_BIND(List, del);
