@@ -245,7 +245,16 @@ void assertHasType(zvalue value, zvalue type) {
 /* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
     assertHasTypeType(type);
-    return typeEq(typeOf(value), type);
+
+    for (zvalue valueType = typeOf(value);
+            valueType != NULL;
+            valueType = getInfo(valueType)->parent) {
+        if (typeEq(valueType, type)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /* Documented in header. */
@@ -430,7 +439,7 @@ MOD_INIT(typeSystem) {
 MOD_INIT(Type) {
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_Type`.
+    // Note: The `typeSystem` module (directly above) initializes `TYPE_Type`.
 
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);

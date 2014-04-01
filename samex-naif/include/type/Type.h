@@ -37,7 +37,7 @@ void assertHasType(zvalue value, zvalue type);
 
 /**
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
- * is as given.
+ * is either the given type or is a subtype of the given type.
  */
 bool hasType(zvalue value, zvalue type);
 

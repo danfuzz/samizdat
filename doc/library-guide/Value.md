@@ -35,7 +35,6 @@ The default implementation calls through to `totOrder` (see which).
 **Note:** This is the generic function which underlies the implementation
 of all per-type ordering functions.
 
-
 #### `totEq(value1, value2) <> . | void`
 
 Performs a type-specific equality comparison of the two given
@@ -130,6 +129,9 @@ returns void.
 #### `hasType(value, type) <> logic`
 
 Returns `value` if it has type `type`. Otherwise returns void.
+
+In order to "have the type," `value` must either be an instance of type
+`type` per se, or be an instance of a subtype of `type`.
 
 #### `le(value1, value2) <> logic`
 
