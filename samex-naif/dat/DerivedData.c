@@ -25,13 +25,13 @@
 typedef struct {
     /** Data payload. */
     zvalue data;
-} DerivInfo;
+} DerivedDataInfo;
 
 /**
  * Gets the info of a derived value.
  */
-static DerivInfo *getInfo(zvalue value) {
-    return (DerivInfo *) datPayload(value);
+static DerivedDataInfo *getInfo(zvalue value) {
+    return (DerivedDataInfo *) datPayload(value);
 }
 
 
@@ -59,8 +59,8 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
         die("Attempt to create derived value with incorrect secret.");
     }
 
-    zvalue result = datAllocValue(type, sizeof(DerivInfo));
-    ((DerivInfo *) datPayload(result))->data = data;
+    zvalue result = datAllocValue(type, sizeof(DerivedDataInfo));
+    ((DerivedDataInfo *) datPayload(result))->data = data;
 
     return result;
 }
