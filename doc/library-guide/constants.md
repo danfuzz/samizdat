@@ -19,6 +19,14 @@ elsewhere in the library documentation.
 <br><br>
 ### Primitive Definitions
 
+#### `Data`
+
+The common supertype of all pure data values.
+
+#### `DerivedData`
+
+The common supertype of all derived data values.
+
 #### `Int`
 
 The type of int values.
@@ -37,10 +45,7 @@ The type of string values.
 
 #### `Type`
 
-The type of opaque type values.
-
-**Note:** The type of a transparent derived type is a simple non-type
-value.
+The reified type of a value.
 
 #### `Uniqlet`
 
@@ -48,7 +53,7 @@ The type of uniqlet values.
 
 #### `Value`
 
-The common type of all values.
+The common supertype of all values.
 
 
 <br><br>

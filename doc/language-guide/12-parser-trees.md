@@ -72,7 +72,7 @@ This corresponds to the syntax `%expression`.
 
 Representation of a token-match terminal. This is also used for
 single-character matches in tokenizers. `type` must be a type (per se),
-and is typically a transparent derived type (e.g., `@@stuff`). This
+and is typically a derived data type (e.g., `@@stuff`). This
 indicates that a token of the given type is to be matched.
 
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes

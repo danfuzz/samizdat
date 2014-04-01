@@ -189,8 +189,9 @@ METH_IMPL(Value, totOrder) {
 MOD_INIT(Value) {
     MOD_USE(typeSystem);
 
-    // Initializing this type also initializes the rest of the core types.
+    // Initializing `Value` also initializes the rest of the core types.
     // This also gets all the protocols indirectly via their implementors.
+    MOD_USE_NEXT(Data);
     MOD_USE_NEXT(Type);
     MOD_USE_NEXT(String);
     MOD_USE_NEXT(Builtin);
@@ -199,7 +200,7 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Int);
     MOD_USE_NEXT(Uniqlet);
     MOD_USE_NEXT(List);
-    MOD_USE_NEXT(Deriv);   // Used for all derived types.
+    MOD_USE_NEXT(DerivedData);
 
     // Note: The `typeSystem` module initializes `TYPE_Value`.
 

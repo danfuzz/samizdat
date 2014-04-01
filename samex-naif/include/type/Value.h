@@ -56,7 +56,7 @@ extern zvalue GFN_totOrder;
 
 /**
  * Gets the data payload of the given value, if it is a value-bearing
- * transparent derived value. `value` must be a valid value (in particular,
+ * derived data value. `value` must be a valid value (in particular,
  * non-`NULL`). This is a convenient shorthand for calling
  * `valDataOf(value, NULL)`.
  */
@@ -67,7 +67,7 @@ zvalue dataOf(zvalue value);
  * optional data payload (`NULL` indicating a type-only value). `type` must
  * be a value of type `Type`, and the result is a value of the indicated type.
  * If `type` represents an opaque type, then `secret` must match the secret
- * known by `type`. If `type` is a transparent type, then `secret` must be
+ * known by `type`. If `type` is a derived data type, then `secret` must be
  * `NULL`.
  */
 zvalue makeValue(zvalue type, zvalue data, zvalue secret);
@@ -79,7 +79,7 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret);
  * * If `value` is a core value, this returns `NULL`.
  *
  * * If `value`'s type secret does not match the given secret, this returns
- *   `NULL`. Notably, if `value` is of a transparent derived type and `secret`
+ *   `NULL`. Notably, if `value` is of a derived data type and `secret`
  *   is *not* passed as `NULL`, this returns `NULL`.
  *
  * * If `value` does not have any payload data, this returns `NULL`.

@@ -890,9 +890,9 @@ DEF_PARSE(typeName) {
     if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
 
     if (hasType(name, TYPE_literal)) {
-        return makeLiteral(typeFromName(GET(value, name)));
+        return makeLiteral(makeDerivedDataType(GET(value, name)));
     } else {
-        return makeCall(REFS(typeFromName), listFrom1(name));
+        return makeCall(REFS(makeDerivedDataType), listFrom1(name));
     }
 }
 

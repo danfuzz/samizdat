@@ -7,6 +7,7 @@
 #include "const.h"
 #include "impl.h"
 #include "type/Box.h"
+#include "type/Data.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
 #include "type/Int.h"
@@ -573,7 +574,7 @@ MOD_INIT(Map) {
     MOD_USE(MapCache);
     MOD_USE(OneOff);
 
-    TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
+    TYPE_Map = makeCoreType(stringFromUtf8(-1, "Map"), TYPE_Data, false);
 
     METH_BIND(Map, cat);
     METH_BIND(Map, collect);

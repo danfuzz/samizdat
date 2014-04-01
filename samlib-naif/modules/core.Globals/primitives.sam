@@ -13,6 +13,8 @@
 ## These are all documented in Samizdat Layer 0 spec.
 
 <> {
+    Data,
+    DerivedData,
     Int,
     List,
     Map,
@@ -44,6 +46,7 @@
     le,
     loop,
     lt,
+    makeDerivedDataType,
     makeList,
     makeRegularGeneric,
     makeUniqlet,
@@ -63,8 +66,7 @@
     toString,
     totEq,
     totOrder,
-    typeFromName,
-    typeIsDerivedData,
     typeOf,
+    typeParent,
     valueOf
 }

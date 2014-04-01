@@ -15,6 +15,8 @@
  */
 
 // Types.
+PRIM_DEF(Data,                    TYPE_Data);
+PRIM_DEF(DerivedData,             TYPE_DerivedData);
 PRIM_DEF(Int,                     TYPE_Int);
 PRIM_DEF(List,                    TYPE_List);
 PRIM_DEF(Map,                     TYPE_Map);
@@ -105,6 +107,7 @@ PRIM_FUNC(interpolate,            1, 1);
 PRIM_FUNC(le,                     2, 2);
 PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(lt,                     2, 2);
+PRIM_FUNC(makeDerivedDataType,    1, 1);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeRegularGeneric,     2, 3);
 PRIM_FUNC(makeUniqlet,            0, 0);
@@ -114,9 +117,8 @@ PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(ne,                     2, 2);
 PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
-PRIM_FUNC(typeFromName,           1, 1);
-PRIM_FUNC(typeIsDerivedData,      1, 1);
 PRIM_FUNC(typeOf,                 1, 1);
+PRIM_FUNC(typeParent,             1, 1);
 
 // Primitive functions: intended for modularization
 PRIM_DEF(Generator_stdCollect,    FUN_Generator_stdCollect);

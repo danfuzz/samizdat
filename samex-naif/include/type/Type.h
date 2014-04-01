@@ -21,32 +21,15 @@
 extern zvalue TYPE_Type;
 
 /**
- * Asserts that all the given arguments have the same type. If not, this
- * aborts the process with a diagnostic message. **Note:** This does not
- * do a validity check on the values.
- */
-void assertAllHaveSameType(zint argCount, const zvalue *args);
-
-/**
  * Asserts that the given value has the given type. If not, this aborts
- * the process with a diagnostic message. If given a non-`Type` value for
- * `type`, this takes it to name a transparent derived type. **Note:** This
- * does not do a validity check on the given arguments.
+ * the process with a diagnostic message. **Note:** This does not do a
+ * validity check on the given arguments.
  */
 void assertHasType(zvalue value, zvalue type);
 
 /**
- * Gets a new core type, given its name. When given the same name twice, this
- * returns identical results. `selfish` indicates whether the type should
- * be considered "selfish." Values of an selfish type have unique identity
- * values which can be retrieved using `valSelfIdOf`. These values
- * are automatically used when comparing values of the same type.
- */
-zvalue coreTypeFromName(zvalue name, bool selfish);
-
-/**
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
- * is as given.
+ * is either the given type or is a subtype of the given type.
  */
 bool hasType(zvalue value, zvalue type);
 
@@ -57,9 +40,19 @@ bool hasType(zvalue value, zvalue type);
 bool haveSameType(zvalue v1, zvalue v2);
 
 /**
- * Returns the type value for the transparent type with the given name.
+ * Makes a new core type. `name` is the type's name. `parent` is its
+ * super-type. `selfish` indicates whether the type should  be considered
+ * "selfish." Values of a selfish type have unique identity values which
+ * can be retrieved using `valSelfIdOf`. These values are automatically
+ * used when comparing values of the same type. It is a fatal error to call
+ * this function more than once with any given name.
  */
-zvalue typeFromName(zvalue name);
+zvalue makeCoreType(zvalue name, zvalue parent, bool selfish);
+
+/**
+ * Returns the type value for the derived data type with the given name.
+ */
+zvalue makeDerivedDataType(zvalue name);
 
 /**
  * Returns `true` if the given `type` has the indicated `secret`. `secret`
@@ -78,8 +71,7 @@ zint typeIndex(zvalue type);
 zint typeIndexOf(zvalue value);
 
 /**
- * Returns true iff the given type is a derived type (whether opaque or
- * transparent).
+ * Returns true iff the given type is derived (whether pure data or not).
  */
 bool typeIsDerived(zvalue type);
 
@@ -89,11 +81,6 @@ bool typeIsDerived(zvalue type);
  * to `valSelfIdOf`.
  */
 bool typeIsSelfish(zvalue type);
-
-/**
- * Returns true iff the given type is a transparent derived type.
- */
-bool typeIsDerivedData(zvalue type);
 
 /**
  * Gets the type of the given value. `value` must be a valid value (in

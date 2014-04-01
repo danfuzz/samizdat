@@ -286,22 +286,22 @@ of type:
   value type named `String`.
 
 * The type of a data value created using the syntax `@(type)(value)`
-  is a transparent derived type, where the type's name is the `type` specified
+  is a derived data type, where the type's name is the `type` specified
   in the syntax. For example, the type of `@("stuff")([1, 2, 3])` is a
-  transparent type with name `"stuff"`. This is described more fully below
-  under "Derived types."
+  derived data type with name `"stuff"`. This is described more fully below
+  under "DerivedData."
 
-  There is a one-to-one correspondence between a value and a
-  transparent derived type with that value as its name.
+  There is a one-to-one correspondence between a value and a derived data type
+  with that value as its name.
 
-  A transparent derive type can be specified in code by indicating its name
+  A derived data type can be specified in code by indicating its name
   in parentheses, preceded by `@@`. If the name is a literal string, then
   the parentheses may be omitted. Furthermore, if the name is a literal
   string which abides by the syntax for identifiers in the language, then
   the double quotes may be omitted. For example, all of `@@("blort")`,
   `@@"blort"`, and `@@blort` refer to the same type.
 
-* TODO: The third kind of type is an "opaque derived" type. These have a
+* TODO: The third kind of type is an "derived opaque" type. These have a
   name and secret. The secret is used to prevent creation of values of the
   type beyond the scope of the type's trusted implementation.
 
@@ -313,12 +313,17 @@ useful as the type to use in order to bind a default method to a generic
 function.
 
 
-### Derived types
+#### Data
 
-A transparent derived value is one that is constructed with an explicit type
+This is the supertype of all "pure data" types in the language.
+
+
+### DerivedData (derived data types)
+
+A derived data value is one that is constructed with an explicit type
 tag and optional data payload.
 
-Transparent derived values are introduced with an at-sign (`@`). This is
+Derived data values are introduced with an at-sign (`@`). This is
 followed by a required type name and then an optional data payload. The type
 name and payload (if present) must each be surrounded by parentheses
 (separately), with the following exceptions:
@@ -358,6 +363,10 @@ name and payload (if present) must each be surrounded by parentheses
 @Boolean(0)                   ## the value usually just written as `false`
 @Boolean(1)                   ## the value usually just written as `true`
 ```
+
+**Note:** As a convenience, the `get` function works on derived data
+values by calling through to `get` on the derived data's payload value,
+if any. And it will always return void for payload-free derived data values.
 
 #### Boolean
 

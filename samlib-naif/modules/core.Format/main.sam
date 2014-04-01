@@ -91,16 +91,18 @@ def IDENTIFIER_CHARS = {
 
 ## Values with special conversions.
 def SPECIAL_VALUES = {
-    (Int):      "Int",
-    (List):     "List",
-    (Map):      "Map",
-    (String):   "String",
-    (Type):     "Type",
-    (Uniqlet):  "Uniqlet",
-    (Value):    "Value",
-    (false):    "false",
-    (null):     "null",
-    (true):     "true"
+    (Data):        "Data",
+    (DerivedData): "DerivedData",
+    (Int):         "Int",
+    (List):        "List",
+    (Map):         "Map",
+    (String):      "String",
+    (Type):        "Type",
+    (Uniqlet):     "Uniqlet",
+    (Value):       "Value",
+    (false):       "false",
+    (null):        "null",
+    (true):        "true"
 };
 
 ## Checks to see if the given value is a string with the form of an
@@ -230,7 +232,7 @@ fn Type_sourceGeneral(type, adorn) {
 
     def name = nameOf(type);
 
-    ifNot { <> typeIsDerivedData(type) }
+    ifNot { <> eq(typeParent(type), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
     def body = ifIs { <> hasType(name, String) }
@@ -259,7 +261,7 @@ fn Value_sourceGeneral(value, adorn) {
         }
         { <> typeStr };
 
-    ifNot { <> typeIsDerivedData(type) }
+    ifNot { <> eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
             def body = ifIs { <> canCall(nameOf, value) }
@@ -276,7 +278,7 @@ fn Value_sourceGeneral(value, adorn) {
 
     <> ifValue { <> dataOf(value) }
         { data ->
-            ## Transparent derived value with payload.
+            ## Derived data value with payload.
             return cat(prefix, "(", sourceGeneral(data, true), ")")
         }
         {

@@ -26,13 +26,6 @@
  */
 
 /**
- * Gets the `value` binding out of the given node's data payload.
- */
-static zvalue valueOf(zvalue node) {
-    return collGet(dataOf(node), STR_value);
-}
-
-/**
  * Executes an `expression` form, with the result never allowed to be
  * `void`.
  */
@@ -50,8 +43,6 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  * Executes an `apply` form.
  */
 static zvalue execApply(Frame *frame, zvalue apply) {
-    apply = dataOf(apply);
-
     zvalue functionExpr = collGet(apply, STR_function);
     zvalue actualsExpr = collGet(apply, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
@@ -64,8 +55,6 @@ static zvalue execApply(Frame *frame, zvalue apply) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    call = dataOf(call);
-
     zvalue functionExpr = collGet(call, STR_function);
     zvalue actualsExprs = collGet(call, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
@@ -88,8 +77,6 @@ static zvalue execCall(Frame *frame, zvalue call) {
 static void execJump(Frame *frame, zvalue jump)
     __attribute__((noreturn));
 static void execJump(Frame *frame, zvalue jump) {
-    jump = dataOf(jump);
-
     zvalue functionExpr = collGet(jump, STR_function);
     zvalue argExpr = collGet(jump, STR_value);
     zvalue function = execExpression(frame, functionExpr);
@@ -102,9 +89,8 @@ static void execJump(Frame *frame, zvalue jump) {
 
 /* Documented in header. */
 static zvalue execVarBind(Frame *frame, zvalue varBind) {
-    zvalue nameValue = dataOf(varBind);
-    zvalue name = collGet(nameValue, STR_name);
-    zvalue valueExpression = collGet(nameValue, STR_value);
+    zvalue name = collGet(varBind, STR_name);
+    zvalue valueExpression = collGet(varBind, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
     frameBind(frame, name, value);
@@ -116,9 +102,8 @@ static zvalue execVarBind(Frame *frame, zvalue varBind) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue nameValue = dataOf(varDef);
-    zvalue name = collGet(nameValue, STR_name);
-    zvalue valueExpression = collGet(nameValue, STR_value);
+    zvalue name = collGet(varDef, STR_name);
+    zvalue valueExpression = collGet(varDef, STR_value);
     zvalue value = valueExpression
         ? execExpression(frame, valueExpression)
         : NULL;
@@ -131,9 +116,8 @@ static void execVarDef(Frame *frame, zvalue varDef) {
  * as appropriate.
  */
 static void execVarDefMutable(Frame *frame, zvalue varDef) {
-    zvalue nameValue = dataOf(varDef);
-    zvalue name = collGet(nameValue, STR_name);
-    zvalue valueExpression = collGet(nameValue, STR_value);
+    zvalue name = collGet(varDef, STR_name);
+    zvalue valueExpression = collGet(varDef, STR_value);
     zvalue value = valueExpression
         ? execExpression(frame, valueExpression)
         : NULL;
@@ -145,7 +129,7 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = collGet(dataOf(varRef), STR_name);
+    zvalue name = collGet(varRef, STR_name);
     return frameGet(frame, name);
 }
 
@@ -161,7 +145,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_call:    return execCall(frame, e);
         case EVAL_closure: return execClosure(frame, e);
         case EVAL_jump:    execJump(frame, e);
-        case EVAL_literal: return valueOf(e);
+        case EVAL_literal: return collGet(e, STR_value);
         case EVAL_varBind: return execVarBind(frame, e);
         case EVAL_varRef:  return execVarRef(frame, e);
         default: {

@@ -84,19 +84,3 @@ FUN_IMPL_DECL(ne) {
 
     return valEq(v1, v2) ? NULL : v2;
 }
-
-/* Documented in spec. */
-FUN_IMPL_DECL(typeFromName) {
-    return typeFromName(args[0]);
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(typeIsDerivedData) {
-    zvalue type = args[0];
-    return typeIsDerivedData(type) ? type : NULL;
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(typeOf) {
-    return typeOf(args[0]);
-}

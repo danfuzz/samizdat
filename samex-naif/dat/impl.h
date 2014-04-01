@@ -23,13 +23,13 @@ enum {
     DAT_VALUE_ALIGNMENT = 8,
 
     /** The type index for type `Builtin`. */
-    DAT_INDEX_BUILTIN = 2,
+    DAT_INDEX_BUILTIN = 4,
 
     /** The type index for type `Generic`. */
-    DAT_INDEX_GENERIC = 3,
+    DAT_INDEX_GENERIC = 5,
 
     /** The type index for type `Jump`. */
-    DAT_INDEX_JUMP = 4
+    DAT_INDEX_JUMP = 6
 };
 
 /**
@@ -111,11 +111,6 @@ typedef struct {
     zint index;
 } MapCacheEntry;
 
-
-/**
- * Binds the standard methods for a derived type.
- */
-void derivBind(zvalue type);
 
 /**
  * Actual implementation of builtin function calling. This is where

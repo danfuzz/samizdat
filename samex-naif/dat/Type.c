@@ -6,7 +6,9 @@
 
 #include "impl.h"
 #include "type/Builtin.h"
+#include "type/DerivedData.h"
 #include "type/Generic.h"
+#include "type/Data.h"
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/OneOff.h"
@@ -44,7 +46,8 @@ static TypeInfo *getInfo(zvalue type) {
 }
 
 /**
- * Initializes a type value.
+ * Initializes a type value. The type is marked derived *unless* the given
+ * secret is `coreSecret`.
  */
 static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
         bool selfish) {
@@ -82,9 +85,10 @@ static zvalue allocType(void) {
  * Creates and returns a new type with the given name and secret. The type
  * is marked derived *unless* the given secret is `coreSecret`.
  */
-static zvalue makeType(zvalue name, zvalue secret, bool selfish) {
+static zvalue makeType(zvalue name, zvalue parent, zvalue secret,
+        bool selfish) {
     zvalue result = allocType();
-    typeInit(result, TYPE_Value, name, secret, selfish);
+    typeInit(result, parent, name, secret, selfish);
     return result;
 }
 
@@ -212,25 +216,6 @@ bool typeHasSecret(zvalue type, zvalue secret) {
  */
 
 /* Documented in header. */
-void assertAllHaveSameType(zint argCount, const zvalue *args) {
-    if (argCount == 0) {
-        // Trivially true.
-        return;
-    }
-
-    zvalue arg0 = args[0];
-    zvalue type0 = typeOf(arg0);
-
-    for (zint i = 1; i < argCount; i++) {
-        zvalue one = args[i];
-        if (!typeEq(type0, typeOf(one))) {
-            die("Mismatched types: %s, %s",
-                valDebugString(arg0), valDebugString(one));
-        }
-    }
-}
-
-/* Documented in header. */
 void assertHasType(zvalue value, zvalue type) {
     if (!hasType(value, type)) {
         die("Expected type %s; got %s.",
@@ -239,22 +224,18 @@ void assertHasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-zvalue coreTypeFromName(zvalue name, bool selfish) {
-    zvalue result = findType(name, coreSecret);
-
-    if (result == NULL) {
-        result = makeType(name, coreSecret, selfish);
-    } else if (selfish != getInfo(result)->selfish) {
-        die("Mismatch on `selfish`.");
-    }
-
-    return result;
-}
-
-/* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
     assertHasTypeType(type);
-    return typeEq(typeOf(value), type);
+
+    for (zvalue valueType = typeOf(value);
+            valueType != NULL;
+            valueType = getInfo(valueType)->parent) {
+        if (typeEq(valueType, type)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /* Documented in header. */
@@ -263,12 +244,20 @@ bool haveSameType(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zvalue typeFromName(zvalue name) {
+zvalue makeCoreType(zvalue name, zvalue parent, bool selfish) {
+    if (findType(name, coreSecret) != NULL) {
+        die("Core type already created.");
+    }
+
+    return makeType(name, parent, coreSecret, selfish);
+}
+
+/* Documented in header. */
+zvalue makeDerivedDataType(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = makeType(name, NULL, false);
-        derivBind(result);
+        result = makeType(name, TYPE_DerivedData, NULL, false);
     }
 
     return result;
@@ -295,14 +284,6 @@ bool typeIsDerived(zvalue type) {
 bool typeIsSelfish(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->selfish;
-}
-
-/* Documented in header. */
-bool typeIsDerivedData(zvalue type) {
-    assertHasTypeType(type);
-
-    TypeInfo *info = getInfo(type);
-    return info->derived && (info->secret == NULL);
 }
 
 /* Documented in header. */
@@ -382,23 +363,30 @@ MOD_INIT(typeSystem) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
 
-    TYPE_Value      = allocType();
-    TYPE_Builtin    = allocType();
-    TYPE_Generic    = allocType();
-    TYPE_Jump       = allocType();
-    TYPE_String     = allocType();
-    TYPE_Uniqlet    = allocType();
+    TYPE_Value       = allocType();
+    TYPE_Data        = allocType();
+    TYPE_DerivedData = allocType();
+
+    // The rest are in alphabetical order.
+    TYPE_Builtin     = allocType();
+    TYPE_Generic     = allocType();
+    TYPE_Jump        = allocType();
+    TYPE_String      = allocType();
+    TYPE_Uniqlet     = allocType();
 
     coreSecret = makeUniqlet();
     datImmortalize(coreSecret);
 
-    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret, false);
-    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret, false);
-    typeInit(TYPE_Builtin, TYPE_Value, stringFromUtf8(-1, "Builtin"), coreSecret, true);
-    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret, true);
-    typeInit(TYPE_Jump,    TYPE_Value, stringFromUtf8(-1, "Jump"),    coreSecret, true);
-    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  coreSecret, false);
-    typeInit(TYPE_Uniqlet, TYPE_Value, stringFromUtf8(-1, "Uniqlet"), coreSecret, true);
+    typeInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"),        coreSecret, false);
+    typeInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"),       coreSecret, false);
+    typeInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"),        coreSecret, false);
+    typeInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"), coreSecret, false);
+
+    typeInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"),     coreSecret, true);
+    typeInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"),     coreSecret, true);
+    typeInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"),        coreSecret, true);
+    typeInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"),      coreSecret, false);
+    typeInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"),     coreSecret, true);
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
@@ -423,7 +411,7 @@ MOD_INIT(typeSystem) {
 MOD_INIT(Type) {
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_Type`.
+    // Note: The `typeSystem` module (directly above) initializes `TYPE_Type`.
 
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);

@@ -9,7 +9,7 @@
  * have the usual guard macros.
  *
  * `STR(name, "string")` defines a string constant.
- * `TYP(name, "string")` defines a string and a transparent derived type.
+ * `TYP(name, "string")` defines a string and a derived data type.
  * `TOK(name, "string")` defines a string, a type, and a token constant.
  *
  * Token constants are type-only values whose types are the indicated strings.
@@ -65,28 +65,28 @@ TYP(varDef,            "varDef");
 TYP(varDefMutable,     "varDefMutable");
 TYP(varRef,            "varRef");
 
-STR(actuals,           "actuals");
-STR(cat,               "cat");
-STR(collect,           "collect");
-STR(formals,           "formals");
-STR(function,          "function");
-STR(get,               "get");
-STR(index,             "index");
-STR(interpolate,       "interpolate");
-STR(makeList,          "makeList");
-STR(makeValue,         "makeValue");
-STR(makeValueMap,      "makeValueMap");
-STR(main,              "main");
-STR(map,               "map");
-STR(name,              "name");
-STR(optValue,          "optValue");
-STR(repeat,            "repeat");
-STR(run,               "run");
-STR(runCommandLine,    "runCommandLine");
-STR(seq,               "seq");
-STR(statements,        "statements");
-STR(top,               "top");
-STR(typeFromName,      "typeFromName");
-STR(value,             "value");
-STR(yield,             "yield");
-STR(yieldDef,          "yieldDef");
+STR(actuals,             "actuals");
+STR(cat,                 "cat");
+STR(collect,             "collect");
+STR(formals,             "formals");
+STR(function,            "function");
+STR(get,                 "get");
+STR(index,               "index");
+STR(interpolate,         "interpolate");
+STR(makeDerivedDataType, "makeDerivedDataType");
+STR(makeList,            "makeList");
+STR(makeValue,           "makeValue");
+STR(makeValueMap,        "makeValueMap");
+STR(main,                "main");
+STR(map,                 "map");
+STR(name,                "name");
+STR(optValue,            "optValue");
+STR(repeat,              "repeat");
+STR(run,                 "run");
+STR(runCommandLine,      "runCommandLine");
+STR(seq,                 "seq");
+STR(statements,          "statements");
+STR(top,                 "top");
+STR(value,               "value");
+STR(yield,               "yield");
+STR(yieldDef,            "yieldDef");
