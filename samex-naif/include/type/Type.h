@@ -22,9 +22,8 @@ extern zvalue TYPE_Type;
 
 /**
  * Asserts that the given value has the given type. If not, this aborts
- * the process with a diagnostic message. If given a non-`Type` value for
- * `type`, this takes it to name a transparent derived type. **Note:** This
- * does not do a validity check on the given arguments.
+ * the process with a diagnostic message. **Note:** This does not do a
+ * validity check on the given arguments.
  */
 void assertHasType(zvalue value, zvalue type);
 
@@ -72,8 +71,7 @@ zint typeIndex(zvalue type);
 zint typeIndexOf(zvalue value);
 
 /**
- * Returns true iff the given type is a derived type (whether opaque or
- * transparent).
+ * Returns true iff the given type is derived (whether pure data or not).
  */
 bool typeIsDerived(zvalue type);
 
@@ -85,7 +83,7 @@ bool typeIsDerived(zvalue type);
 bool typeIsSelfish(zvalue type);
 
 /**
- * Returns true iff the given type is a transparent derived type.
+ * Returns true iff the given type is a derived data type.
  */
 bool typeIsDerivedData(zvalue type);
 

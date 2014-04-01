@@ -9,7 +9,7 @@
  * have the usual guard macros.
  *
  * `STR(name, "string")` defines a string constant.
- * `TYP(name, "string")` defines a string and a transparent derived type.
+ * `TYP(name, "string")` defines a string and a derived data type.
  * `TOK(name, "string")` defines a string, a type, and a token constant.
  *
  * Token constants are type-only values whose types are the indicated strings.

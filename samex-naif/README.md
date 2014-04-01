@@ -203,7 +203,7 @@ and functions:
 
 * `STR_valueOfString` &mdash; Identifies a value of type `String`.
 
-* `TOK_nameOfToken` &mdash; Identifies a payload-free transparent derived
+* `TOK_nameOfToken` &mdash; Identifies a payload-free derived data
   value whose type is `TYPE_nameOfToken`, where the type's name is
   `"nameOfToken"`.
 

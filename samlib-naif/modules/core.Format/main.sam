@@ -276,7 +276,7 @@ fn Value_sourceGeneral(value, adorn) {
 
     <> ifValue { <> dataOf(value) }
         { data ->
-            ## Transparent derived value with payload.
+            ## Derived data value with payload.
             return cat(prefix, "(", sourceGeneral(data, true), ")")
         }
         {

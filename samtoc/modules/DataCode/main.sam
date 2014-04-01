@@ -160,7 +160,7 @@ fn String_convert(string) {
 };
 genericBind(convert, String, String_convert);
 
-## Converts a type. Only works on transparent derived types.
+## Converts a type. Only works on derived data types.
 fn Type_convert(type) {
     <> CodeGen::makeCall("typeFromName", convert(nameOf(type)))
 };
