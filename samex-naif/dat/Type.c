@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "type/Builtin.h"
 #include "type/Generic.h"
+#include "type/Data.h"
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/OneOff.h"
@@ -381,6 +382,9 @@ MOD_INIT(typeSystem) {
     TYPE_Type->type = TYPE_Type;
 
     TYPE_Value      = allocType();
+    TYPE_Data       = allocType();
+
+    // The rest are in alphabetical order.
     TYPE_Builtin    = allocType();
     TYPE_Generic    = allocType();
     TYPE_Jump       = allocType();
@@ -392,6 +396,8 @@ MOD_INIT(typeSystem) {
 
     typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret, false);
     typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret, false);
+    typeInit(TYPE_Data,    TYPE_Value, stringFromUtf8(-1, "Data"),    coreSecret, false);
+
     typeInit(TYPE_Builtin, TYPE_Value, stringFromUtf8(-1, "Builtin"), coreSecret, true);
     typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret, true);
     typeInit(TYPE_Jump,    TYPE_Value, stringFromUtf8(-1, "Jump"),    coreSecret, true);
