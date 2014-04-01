@@ -364,6 +364,10 @@ name and payload (if present) must each be surrounded by parentheses
 @Boolean(1)                   ## the value usually just written as `true`
 ```
 
+**Note:** As a convenience, the `get` function works on derived data
+values by calling through to `get` on the derived data's payload value,
+if any. And it will always return void for payload-free derived data values.
+
 #### Boolean
 
 The two boolean values `true` and `false` represent truth values.
