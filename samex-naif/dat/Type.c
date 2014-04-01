@@ -252,12 +252,12 @@ bool haveSameType(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zvalue makeCoreType(zvalue name, bool selfish) {
+zvalue makeCoreType(zvalue name, zvalue parent, bool selfish) {
     if (findType(name, coreSecret) != NULL) {
         die("Core type already created.");
     }
 
-    return makeType(name, TYPE_Value, coreSecret, selfish);
+    return makeType(name, parent, coreSecret, selfish);
 }
 
 /* Documented in header. */

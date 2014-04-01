@@ -573,7 +573,7 @@ MOD_INIT(Map) {
     MOD_USE(MapCache);
     MOD_USE(OneOff);
 
-    TYPE_Map = makeCoreType(stringFromUtf8(-1, "Map"), false);
+    TYPE_Map = makeCoreType(stringFromUtf8(-1, "Map"), TYPE_Value, false);
 
     METH_BIND(Map, cat);
     METH_BIND(Map, collect);

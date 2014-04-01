@@ -48,13 +48,14 @@ bool hasType(zvalue value, zvalue type);
 bool haveSameType(zvalue v1, zvalue v2);
 
 /**
- * Gets a new core type, given its name. `selfish` indicates whether the type
- * should  be considered "selfish." Values of an selfish type have unique
- * identity values which can be retrieved using `valSelfIdOf`. These values
- * are automatically used when comparing values of the same type. It is a
- * fatal error to call this function more than once with any given name.
+ * Makes a new core type. `name` is the type's name. `parent` is its
+ * super-type. `selfish` indicates whether the type should  be considered
+ * "selfish." Values of a selfish type have unique identity values which
+ * can be retrieved using `valSelfIdOf`. These values are automatically
+ * used when comparing values of the same type. It is a fatal error to call
+ * this function more than once with any given name.
  */
-zvalue makeCoreType(zvalue name, bool selfish);
+zvalue makeCoreType(zvalue name, zvalue parent, bool selfish);
 
 /**
  * Returns the type value for the derived data type with the given name.
