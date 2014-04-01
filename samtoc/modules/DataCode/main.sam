@@ -172,7 +172,7 @@ fn Value_convert(value) {
     def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
     def type = typeOf(value);
 
-    if (!typeIsDerivedData(type)) {
+    if (!hasType(value, DerivedData)) {
         die("Cannot convert opaque non-data value: \%q(value)")
     };
 
