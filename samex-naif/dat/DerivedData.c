@@ -73,12 +73,6 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
  * methods are bound on many types.
  */
 
-/** Builtin for `Deriv.totEq`. */
-static zvalue BI_Deriv_totEq = NULL;
-
-/** Builtin for `Deriv.totOrder`. */
-static zvalue BI_Deriv_totOrder = NULL;
-
 /* Documented in header. */
 METH_IMPL(DerivedData, gcMark) {
     zvalue value = args[0];
@@ -87,7 +81,7 @@ METH_IMPL(DerivedData, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Deriv, totEq) {
+METH_IMPL(DerivedData, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -95,7 +89,7 @@ METH_IMPL(Deriv, totEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(Deriv, totOrder) {
+METH_IMPL(DerivedData, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zvalue data1 = getInfo(v1)->data;
@@ -110,12 +104,6 @@ METH_IMPL(Deriv, totOrder) {
     }
 }
 
-/* Documented in header. */
-void derivBind(zvalue type) {
-    genericBind(GFN_totEq,    type, BI_Deriv_totEq);
-    genericBind(GFN_totOrder, type, BI_Deriv_totOrder);
-}
-
 /** Initializes the module. */
 MOD_INIT(DerivedData) {
     MOD_USE(Data);
@@ -123,14 +111,8 @@ MOD_INIT(DerivedData) {
     // Note: The `typeSystem` module initializes `TYPE_DerivedData`.
 
     METH_BIND(DerivedData, gcMark);
-
-    BI_Deriv_totEq = makeBuiltin(2, 2, METH_NAME(Deriv, totEq), 0,
-        stringFromUtf8(-1, "Deriv.totEq"));
-    datImmortalize(BI_Deriv_totEq);
-
-    BI_Deriv_totOrder = makeBuiltin(2, 2, METH_NAME(Deriv, totOrder), 0,
-        stringFromUtf8(-1, "Deriv.totOrder"));
-    datImmortalize(BI_Deriv_totOrder);
+    METH_BIND(DerivedData, totEq);
+    METH_BIND(DerivedData, totOrder);
 }
 
 /* Documented in header. */

@@ -258,7 +258,6 @@ zvalue typeFromName(zvalue name) {
 
     if (result == NULL) {
         result = makeType(name, TYPE_DerivedData, NULL, false);
-        derivBind(result);
     }
 
     return result;

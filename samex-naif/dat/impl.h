@@ -113,11 +113,6 @@ typedef struct {
 
 
 /**
- * Binds the standard methods for a derived type.
- */
-void derivBind(zvalue type);
-
-/**
  * Actual implementation of builtin function calling. This is where
  * short-circuited generic function dispatch of `call` on type `Builtin`
  * lands.
