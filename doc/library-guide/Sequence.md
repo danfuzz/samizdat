@@ -86,7 +86,7 @@ index through the `end` index.
 The `start` is always an inclusive index. `style` indicates whether the
 end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
 
-Each of `start` and `end` must be a transparent derived value of type
+Each of `start` and `end` must be a derived data value of type
 `@fromStart` or `@fromEnd` with an int payload. The type indicates which
 end of the sequence is to be counted from.
 

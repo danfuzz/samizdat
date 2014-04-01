@@ -24,7 +24,7 @@ Compares two types. Two types are equal if they are the actual same type.
 Compares two types for order, as follows:
 
 * Core (primitive) types order earlier than all other types.
-* Transparent derived types order earlier than everything but core types.
+* Derived data types order earlier than everything but core types.
 * Opaque derived types order after all other types.
 
 Within each category, types are ordered by name. For two different types
@@ -46,7 +46,7 @@ a type, which is typically (but not necessarily) a string.
 
 #### `typeFromName(name) <> type`
 
-Returns a `Type` instance which represents a transparent derived type
+Returns a `Type` instance which represents a derived data type
 with the given `name`. `name` can be an arbitrary value but is most
 typically a string.
 
@@ -54,9 +54,8 @@ typically a string.
 
 #### `typeIsDerivedData(type) <> type | void`
 
-Returns boolean true (returning `type` itself) if `type` is a transparent
-derived type. Returns boolean false (void) if `type` is any other kind of
-type.
+Returns boolean true (returning `type` itself) if `type` is a derived data
+type. Returns boolean false (void) if `type` is any other kind of type.
 
 
 <br><br>

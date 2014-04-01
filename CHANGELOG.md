@@ -82,7 +82,7 @@ Version History
     * Removed void contagion (prefix operator `&`) and associated `voidable`
       execution tree type.
     * Reworked type system, so that type values are treated more consistently
-      and uniformly. New form `@@name` to refer to transparent derived types.
+      and uniformly. New form `@@name` to refer to derived data types.
 
   * Other notable semantics changes:
     * Got rid of the `reduce*` family of library functions, because mutable

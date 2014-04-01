@@ -25,7 +25,7 @@ tokens per se, that is, tokens whose type tag is taken to indicate a
 token type.
 
 The output of the functions named `Peg::make*` are all parsing rules. These
-are all transparent derived values with a type that binds the `parse`
+are all derived data values with a type that binds the `parse`
 generic. A `parse` method accepts at least two arguments, and may also
 accept additional arguments:
 
@@ -357,8 +357,8 @@ This is equivalent to the syntactic form `{: %term :}`.
 
 Makes and returns a parser rule which matches any token with the same
 type as given. `type` is an arbitrary type, which is typically (but not
-necessarily) a transparent derived type with a string as its
-name. Upon success, the rule consumes and yields the matched token.
+necessarily) a derived data type with a string as its name. Upon success,
+the rule consumes and yields the matched token.
 
 This is also used to match single characters in tokenizers.
 
@@ -370,7 +370,7 @@ This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 Makes and returns a parser rule which matches a token whose type
 matches that of any of the given types, consuming it upon success.
 Each argument is taken to be a token type, which is typically
-(but not necessarily) a transparent derived type with a string as its
+(but not necessarily) a derived data type with a string as its
 name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
@@ -380,14 +380,14 @@ This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 Makes and returns a parser rule which matches a token whose type
 matches none of any of the given tokens, consuming it upon success.
 Each argument is taken to be a token type, which is typically
-(but not necessarily) a transparent derived type with a string as its
+(but not necessarily) a derived data type with a string as its
 name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
 #### `stringFromTokenList(tokens) <> string`
 
-Takes a list of tokenizer-style character tokens (that is, transparent derived
+Takes a list of tokenizer-style character tokens (that is, derived data
 values whose type names are each a single-character string), returning the
 result of concatenating all the characters together in order.
 

@@ -46,10 +46,10 @@ The return value is either `value1` (or `value2` really) if the two values
 are in fact identical, or `void` if they are not.
 
 Each type specifies its own total-order equality check. See specific types for
-details. Transparent derived types all compare for equality by comparing
-both the payload value (if any). In addition, a default implementation
-checks directly for trivial sameness and calls through to `totOrder`
-for anything nontrivial.
+details. Derived data types all compare their values for equality by comparing
+the payload value (if any). In addition, a default implementation checks
+directly for trivial sameness and calls through to `totOrder` for anything
+nontrivial.
 
 **Note:** In order for the system to operate consistently, `totEq` must
 always behave consistently with `totOrder`, in that for a given pair of
@@ -77,7 +77,7 @@ each other, using the reasonably standard meaning of those values:
 * `1` &mdash; The first value orders after the second value.
 
 Each type specifies its own total-order ordering. See specific types for
-details. Transparent derived types all order by performing ordering
+details. Derived data types all order their values by performing ordering
 on the respective payload values, with a lack of payload counting as
 "before" any non-void payload. In addition, a default implementation
 checks directly for trivial sameness and compares identity ordering
@@ -96,7 +96,8 @@ of all cross-type ordering functions.
 Returns the data payload of the given arbitrary value, if any.
 For a type-only value, this returns void.
 
-For transparent, if `secret` is passed, then this function returns void.
+For derived data values, if `secret` is passed, then this function
+returns void.
 
 For opaque values (including most core values), the given `secret` must match
 the value's associated secret (associated with the type). If the secret
