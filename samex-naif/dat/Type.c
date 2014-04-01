@@ -6,6 +6,7 @@
 
 #include "impl.h"
 #include "type/Builtin.h"
+#include "type/DerivedData.h"
 #include "type/Generic.h"
 #include "type/Data.h"
 #include "type/Int.h"
@@ -266,7 +267,7 @@ zvalue typeFromName(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = makeType(name, TYPE_Data, NULL, false);
+        result = makeType(name, TYPE_DerivedData, NULL, false);
         derivBind(result);
     }
 
@@ -381,28 +382,30 @@ MOD_INIT(typeSystem) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
 
-    TYPE_Value      = allocType();
-    TYPE_Data       = allocType();
+    TYPE_Value       = allocType();
+    TYPE_Data        = allocType();
+    TYPE_DerivedData = allocType();
 
     // The rest are in alphabetical order.
-    TYPE_Builtin    = allocType();
-    TYPE_Generic    = allocType();
-    TYPE_Jump       = allocType();
-    TYPE_String     = allocType();
-    TYPE_Uniqlet    = allocType();
+    TYPE_Builtin     = allocType();
+    TYPE_Generic     = allocType();
+    TYPE_Jump        = allocType();
+    TYPE_String      = allocType();
+    TYPE_Uniqlet     = allocType();
 
     coreSecret = makeUniqlet();
     datImmortalize(coreSecret);
 
-    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret, false);
-    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret, false);
-    typeInit(TYPE_Data,    TYPE_Value, stringFromUtf8(-1, "Data"),    coreSecret, false);
+    typeInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"),        coreSecret, false);
+    typeInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"),       coreSecret, false);
+    typeInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"),        coreSecret, false);
+    typeInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"), coreSecret, false);
 
-    typeInit(TYPE_Builtin, TYPE_Value, stringFromUtf8(-1, "Builtin"), coreSecret, true);
-    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret, true);
-    typeInit(TYPE_Jump,    TYPE_Value, stringFromUtf8(-1, "Jump"),    coreSecret, true);
-    typeInit(TYPE_String,  TYPE_Data,  stringFromUtf8(-1, "String"),  coreSecret, false);
-    typeInit(TYPE_Uniqlet, TYPE_Value, stringFromUtf8(-1, "Uniqlet"), coreSecret, true);
+    typeInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"),     coreSecret, true);
+    typeInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"),     coreSecret, true);
+    typeInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"),        coreSecret, true);
+    typeInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"),      coreSecret, false);
+    typeInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"),     coreSecret, true);
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.

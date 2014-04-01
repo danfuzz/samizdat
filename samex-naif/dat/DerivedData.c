@@ -6,6 +6,7 @@
 
 #include "impl.h"
 #include "type/Builtin.h"
+#include "type/DerivedData.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
@@ -120,8 +121,9 @@ void derivBind(zvalue type) {
 }
 
 /** Initializes the module. */
-MOD_INIT(Deriv) {
-    MOD_USE(Value);
+MOD_INIT(DerivedData) {
+    // Note: The `typeSystem` module initializes `TYPE_DerivedData`.
+    MOD_USE(Data);
 
     BI_Deriv_gcMark = makeBuiltin(1, 1, METH_NAME(Deriv, gcMark), 0,
         stringFromUtf8(-1, "Deriv.gcMark"));
@@ -135,3 +137,6 @@ MOD_INIT(Deriv) {
         stringFromUtf8(-1, "Deriv.totOrder"));
     datImmortalize(BI_Deriv_totOrder);
 }
+
+/* Documented in header. */
+zvalue TYPE_DerivedData = NULL;

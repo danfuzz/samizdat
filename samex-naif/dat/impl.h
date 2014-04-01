@@ -23,13 +23,13 @@ enum {
     DAT_VALUE_ALIGNMENT = 8,
 
     /** The type index for type `Builtin`. */
-    DAT_INDEX_BUILTIN = 3,
+    DAT_INDEX_BUILTIN = 4,
 
     /** The type index for type `Generic`. */
-    DAT_INDEX_GENERIC = 4,
+    DAT_INDEX_GENERIC = 5,
 
     /** The type index for type `Jump`. */
-    DAT_INDEX_JUMP = 5
+    DAT_INDEX_JUMP = 6
 };
 
 /**

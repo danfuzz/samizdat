@@ -201,7 +201,7 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Int);
     MOD_USE_NEXT(Uniqlet);
     MOD_USE_NEXT(List);
-    MOD_USE_NEXT(Deriv);   // Used for all derived types.
+    MOD_USE_NEXT(DerivedData);
 
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     datImmortalize(GFN_debugString);
