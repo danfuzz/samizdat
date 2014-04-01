@@ -187,7 +187,6 @@ METH_IMPL(Value, totOrder) {
 
 /** Initializes the module. */
 MOD_INIT(Value) {
-    // Note: The `typeSystem` module initializes `TYPE_Value`.
     MOD_USE(typeSystem);
 
     // Initializing `Value` also initializes the rest of the core types.
@@ -202,6 +201,8 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Uniqlet);
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(DerivedData);
+
+    // Note: The `typeSystem` module initializes `TYPE_Value`.
 
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     datImmortalize(GFN_debugString);
