@@ -8,6 +8,7 @@
 #include "zlimits.h"
 
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -27,6 +28,9 @@ typedef struct Context {
 
 /* Documented in header. */
 UtilStackGiblet *utilStackTop = NULL;
+
+/* Whether death is currently in progress */
+static bool currentlyDying = false;
 
 
 /*
@@ -52,15 +56,23 @@ void die(const char *format, ...) {
     va_end(rest);
     fputs("\n", stderr);
 
-    // Use a local variable for the stack pointer, since the stringifiers
-    // will also manipulate the stack (and may have bugs in same!).
-    UtilStackGiblet *stackPtr = utilStackTop;
-    while ((stackPtr != NULL) && (stackPtr->magic == UTIL_GIBLET_MAGIC)) {
-        if (stackPtr->function != NULL) {
-            char *message = stackPtr->function(stackPtr->state);
-            fprintf(stderr, "    at %s\n", message);
+    // This check prevents infinite recursion in cases where the stack trace
+    // output ends up calling `die`.
+    if (currentlyDying) {
+        fprintf(stderr, "    ...while in the middle of dying. Eek!");
+    } else {
+        currentlyDying = true;
+
+        // Use a local variable for the stack pointer, since the stringifiers
+        // will also manipulate the stack (and may have bugs in same!).
+        UtilStackGiblet *stackPtr = utilStackTop;
+        while ((stackPtr != NULL) && (stackPtr->magic == UTIL_GIBLET_MAGIC)) {
+            if (stackPtr->function != NULL) {
+                char *message = stackPtr->function(stackPtr->state);
+                fprintf(stderr, "    at %s\n", message);
+            }
+            stackPtr = stackPtr->pop;
         }
-        stackPtr = stackPtr->pop;
     }
 
     exit(1);
