@@ -6,6 +6,7 @@
 
 #include "impl.h"
 #include "type/Builtin.h"
+#include "type/Collection.h"
 #include "type/DerivedData.h"
 #include "type/Generic.h"
 #include "type/Int.h"
@@ -81,6 +82,15 @@ METH_IMPL(DerivedData, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(DerivedData, get) {
+    zvalue value = args[0];
+    zvalue key = args[1];
+
+    zvalue data = getInfo(value)->data;
+    return (data == NULL) ? NULL : collGet(data, key);
+}
+
+/* Documented in header. */
 METH_IMPL(DerivedData, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -111,6 +121,7 @@ MOD_INIT(DerivedData) {
     // Note: The `typeSystem` module initializes `TYPE_DerivedData`.
 
     METH_BIND(DerivedData, gcMark);
+    METH_BIND(DerivedData, get);
     METH_BIND(DerivedData, totEq);
     METH_BIND(DerivedData, totOrder);
 }
