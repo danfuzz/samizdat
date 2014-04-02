@@ -321,9 +321,18 @@ bitwise xor of the two numbers.
 
 ### Comparison Infix Operators (Precedence 4)
 
+In general, comparison operators correspond to function calls to standard
+comparison functions. The contract of these functions is to return their
+first argument &mdash; the left-hand side &mdash; to represent logical
+true, and to return void to represent logical false.
+
 Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
 `(x < y) & (y <= z)` with the additional guarantee that `y` is only
 evaluated once.
+
+**Note:** A consequence of the abovementioned rules is that a logical true
+result from a chained comparison is the second-from-last value. E.g.,
+`x < y <= z` will either yield `y` or void.
 
 #### Same-type comparison &mdash; `== != < > <= >=`
 
