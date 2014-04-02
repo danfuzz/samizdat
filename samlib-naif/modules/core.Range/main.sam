@@ -108,11 +108,10 @@ fn makeInclusiveRange(firstValue, limit, optIncrement?) {
 
 ## Documented in spec.
 fn ClosedRange_nextValue(range, box) {
-    def data = dataOf(range);
-    <> ifValue { <> le(0, data::size) }
+    <> ifValue { <> le(0, range::size) }
         { size ->
-            def firstValue = data::firstValue;
-            def increment = data::increment;
+            def firstValue = range::firstValue;
+            def increment = range::increment;
             store(box, firstValue);
             <> makeClosedRange(
                 rangeAdd(firstValue, increment),
@@ -146,9 +145,8 @@ genericBind(collect, @@OpenRange, Generator::unboundedCollect);
 
 ## Documented in spec.
 fn OpenRange_nextValue(range, box) {
-    def data = dataOf(range);
-    def firstValue = data::firstValue;
-    def increment = data::increment;
+    def firstValue = range::firstValue;
+    def increment = range::increment;
 
     store(box, firstValue);
     <> makeOpenRange(rangeAdd(firstValue, increment), increment)
