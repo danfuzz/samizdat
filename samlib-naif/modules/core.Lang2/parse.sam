@@ -1047,6 +1047,7 @@ fn makeCompareCalls(firstEx, opExList) {
 
     <> makeCall(
         @closure{
+            formals: [],
             statements: [
                 makeVarDef(firstName, firstEx),
                 closure::statements*
