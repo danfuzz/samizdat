@@ -515,7 +515,7 @@ METH_IMPL(Map, totEq) {
         }
     }
 
-    return v2;
+    return v1;
 }
 
 /* Documented in header. */

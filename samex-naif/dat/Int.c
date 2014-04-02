@@ -181,7 +181,7 @@ METH_IMPL(Int, toString) {
 METH_IMPL(Int, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (zintValue(v1) == zintValue(v2)) ? v2 : NULL;
+    return (zintValue(v1) == zintValue(v2)) ? v1 : NULL;
 }
 
 /* Documented in header. */
