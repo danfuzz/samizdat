@@ -154,14 +154,31 @@ genericBind(
         <> safeIndexForNames(base, Lang0Node::get_name(node))
     });
 
-## Returns an unused variable name within `node`, either the given `base` or
-## `base` suffixed with an unsigned int.
-fn safeVarName(base, node) {
-    def index = safeIndex(node, base);
-
-    <> ifIs { <> perEq(index, -1) }
+## Makes a variable name by combining `base` with `index`. Handles the case
+## where `index` is `-1` consistently with the other functions exported here.
+fn makeVarName(base, index) {
+    <> ifIs { <> eq(index, -1) }
         { <> base }
         { <> cat(base, Format::int(index)) }
 };
 
-<> {safeVarName}
+## Returns an unused variable name within `node`, either the given `base` or
+## `base` suffixed with an unsigned int.
+fn safeVarName(base, node) {
+    <> makeVarName(base, safeIndex(node, base))
+};
+
+## Returns a safe index to be used within `node` to suffix the given `base`
+## variable name. Returns `-1` if `base` itself is unused. Any index at or
+## after the return value is safe to use.
+fn safeVarIndex(base, node) {
+    ## In addition to having the opposite argument order, this keeps the
+    ## generic function `safeIndex` private to this file.
+    <> safeIndex(node, base)
+};
+
+<> {
+    makeVarName,
+    safeVarName,
+    safeVarIndex
+}
