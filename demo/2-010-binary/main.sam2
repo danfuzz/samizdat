@@ -85,7 +85,7 @@ msg(([1] >= [2])??);
 note("\nPer-type Order 3");
 msg(1 < 20 < 200);
 msg(21 == 21 > 20);
-msg(23 >= 22 < 23); ## This will trip up a right-hand side being returned.
+msg(23 >= 22 < 23); ## This will (properly) fail if a right-hand is returned.
 msg(2 != 23 != 24);
 msg(9 < 10 < 11 < 24 != 25);
 msg((1 != 1 < 2)??);
@@ -98,7 +98,7 @@ msg((9 < 10 < 11) < 12 < 13 < 14);
 msg(9 < 10 < (11 < 14 < 15) < 16);
 msg(9 < 10 < 15 < (16 < 17 < 18));
 msg(9 < 10 < 16 < ((13 < 12 < 11) | 17));
-msg(9 < 10 < (11 < (12 < 13 < 17) < 15) < 18);
+msg(9 < 10 < (11 < (12 < 17 < 18) < 18) < 18);
 
 note("\nTotal Order 1");
 msg(1 \== 1);
