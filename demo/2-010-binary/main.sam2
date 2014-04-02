@@ -85,7 +85,7 @@ msg(([1] >= [2])??);
 note("\nPer-type Order 3");
 msg(1 < 20 < 200);
 msg(21 == 21 > 20);
-msg(23 >= 22 < 23);
+msg(23 >= 22 < 23); ## This will trip up a right-hand side being returned.
 msg(2 != 23 != 24);
 msg(9 < 10 < 11 < 24 != 25);
 msg((1 != 1 < 2)??);
@@ -93,7 +93,7 @@ msg((2 > 3 == 3)??);
 msg((4 < 5 == 6)??);
 msg((9 < 10 < 11 < 12 != 12)??);
 
-## These help validate the choice of hidden yield definition declarations.
+## These help validate the choice of synthetic variable declarations.
 msg((9 < 10 < 11) < 12 < 13 < 14);
 msg(9 < 10 < (11 < 14 < 15) < 16);
 msg(9 < 10 < 15 < (16 < 17 < 18));
