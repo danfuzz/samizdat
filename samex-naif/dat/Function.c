@@ -96,7 +96,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             // call to `funCall0` to avoid the stack/frame setup.
             zvalue callImpl = genericFindByIndex(GFN_call, index);
             if (callImpl == NULL) {
-                die("Attempt to call non-function.");
+                die("Cannot call non-function: %s", valDebugString(function));
             } else {
                 zvalue newArgs[argCount + 1];
                 newArgs[0] = function;
