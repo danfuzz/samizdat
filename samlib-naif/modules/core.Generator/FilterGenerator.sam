@@ -5,7 +5,7 @@
 ##
 ## `FilterGenerator` Type
 ##
-## Payload is a map `[filterFunction: function, generator: subGen]`.
+## Payload is a map `{filterFunction: function, generator: subGen}`.
 ## `subGen` is expected to produce lists of arguments to apply.
 
 def Collection = moduleLoad(["core", "Collection"]);
@@ -28,13 +28,12 @@ fn makeFilterGenerator(filterFunction, generators*) {
 
 ## Documented in spec.
 fn FilterGenerator_nextValue(gen, box) {
-    def payload = dataOf(gen);
-    def filterFunction = payload::filterFunction;
+    def filterFunction = gen::filterFunction;
 
     ## This loop handles the fact that the filter function is
     ## allowed to yield void to indicate a generated value is to
     ## be discarded.
-    var innerGen = payload::generator;
+    var innerGen = gen::generator;
     loop { <next> ->
         def innerBox = Box::makePromise();
 
@@ -44,7 +43,7 @@ fn FilterGenerator_nextValue(gen, box) {
                     { value ->
                         store(box, value);
                         return @FilterGenerator(
-                            Collection::put(payload, "generator", nextGen))
+                            {dataOf(gen)*, generator: nextGen})
                     }
                     {
                         ## The filter discarded the value. Iterate!

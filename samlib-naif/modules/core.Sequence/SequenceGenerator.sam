@@ -18,13 +18,12 @@ def Sequence   = moduleLoad(["proto", "Sequence"]);
 
 ## Generator used when iterating over lists and strings.
 fn SequenceGenerator_nextValue(gen, box) {
-    def data = dataOf(gen);
-    def index = data::index;
+    def index = gen::index;
 
-    <> ifValue { <> Sequence::nth(data::seq, index) }
+    <> ifValue { <> Sequence::nth(gen::seq, index) }
         { value ->
             store(box, value);
-            <> @SequenceGenerator{data*, index: Number::add(index, 1)}
+            <> @SequenceGenerator{dataOf(gen)*, index: Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).

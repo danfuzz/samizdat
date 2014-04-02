@@ -17,13 +17,12 @@ def Number     = moduleLoad(["proto", "Number"]);
 
 ## Generator used when iterating over maps.
 fn MapGenerator_nextValue(gen, box) {
-    def data = dataOf(gen);
-    def index = data::index;
+    def index = gen::index;
 
-    <> ifValue { <> Collection::nthMapping(data::map, index) }
+    <> ifValue { <> Collection::nthMapping(gen::map, index) }
         { value ->
             store(box, value);
-            <> @MapGenerator{data*, index: Number::add(index, 1)}
+            <> @MapGenerator{dataOf(gen)*, index: Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).

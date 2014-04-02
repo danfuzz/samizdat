@@ -12,32 +12,32 @@ def Number    = moduleLoad(["proto", "Number"]);
 
 ## Documented in spec.
 fn get_actuals(node) {
-    <> dataOf(node)::actuals
+    <> node::actuals
 };
 
 ## Documented in spec.
 fn get_formals(node) {
-    <> dataOf(node)::formals
+    <> node::formals
 };
 
 ## Documented in spec.
 fn get_function(node) {
-    <> dataOf(node)::function
+    <> node::function
 };
 
 ## Documented in spec.
 fn get_id(node) {
-    <> dataOf(node)::id
+    <> node::id
 };
 
 ## Documented in spec.
 fn get_interpolate(node) {
-    <> dataOf(node)::interpolate
+    <> node::interpolate
 };
 
 ## Documented in spec.
 fn get_lvalue(node) {
-    <> dataOf(node)::lvalue
+    <> node::lvalue
 };
 
 ## Documented in spec.
@@ -76,27 +76,27 @@ fn get_minArgs(node) {
 
 ## Documented in spec.
 fn get_name(node) {
-    <> dataOf(node)::name
+    <> node::name
 };
 
 ## Documented in spec.
 fn get_statements(node) {
-    <> dataOf(node)::statements
+    <> node::statements
 };
 
 ## Documented in spec.
 fn get_value(node) {
-    <> dataOf(node)::value
+    <> node::value
 };
 
 ## Documented in spec.
 fn get_yield(node) {
-    <> dataOf(node)::yield
+    <> node::yield
 };
 
 ## Documented in spec.
 fn get_yieldDef(node) {
-    <> dataOf(node)::yieldDef
+    <> node::yieldDef
 };
 
 <> {

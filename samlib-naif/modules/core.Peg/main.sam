@@ -123,8 +123,7 @@ genericBind(parse, @@PegOpt, PegOpt_parse);
 
 ## Documented in spec.
 fn PegRepeat_parse(peg, box, input, items*) {
-    def params = dataOf(peg);
-    def rule = params::rule;
+    def rule = peg::rule;
     var remainingInput = input;
     var results = []; ## Values that have been parsed by the inner rule.
 
@@ -138,7 +137,7 @@ fn PegRepeat_parse(peg, box, input, items*) {
             }
             {
                 ## Failed to parse the inner rule.
-                ifValue { <> params::minSize }
+                ifValue { <> peg::minSize }
                     { minSize ->
                         ifIs { <> lt(Collection::sizeOf(results), minSize) }
                             {
@@ -198,13 +197,12 @@ genericBind(parse, @@PegThunk, PegThunk_parse);
 
 ## Documented in spec.
 fn PegTokenSet_parse(peg, box, input, items*) {
-    def set = dataOf(peg);
     def innerBox = Box::makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifIs { <> get(set, typeOf(item)) }
+            ifIs { <> get(peg, typeOf(item)) }
                 {
                     store(box, item);
                     return newInput
@@ -218,13 +216,12 @@ genericBind(parse, @@PegTokenSet, PegTokenSet_parse);
 
 ## Documented in spec.
 fn PegTokenSetComplement_parse(peg, box, input, items*) {
-    def set = dataOf(peg);
     def innerBox = Box::makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifNot { <> get(set, typeOf(item)) }
+            ifNot { <> get(peg, typeOf(item)) }
                 {
                     store(box, item);
                     return newInput

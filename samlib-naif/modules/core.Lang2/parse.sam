@@ -702,12 +702,12 @@ parProgramBody := {:
         def tops = Generator::filterAll(rawStatements)
             { s ->
                 <> ifIs { <> hasType(s, @@topDeclaration) }
-                    { <> dataOf(s)::top }
+                    { <> s::top }
             };
         def mains = Generator::filterAll(rawStatements)
             { s ->
                 <> ifIs { <> hasType(s, @@topDeclaration) }
-                    { <> dataOf(s)::main }
+                    { <> s::main }
                     { <> s }
             };
         <> {last*, statements: [tops*, mains*]}

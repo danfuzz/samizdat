@@ -164,7 +164,7 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 #define REFS(name) (makeVarRef(STR_##name))
 
 /** Equivalent to `get_name(node)` in the spec. */
-#define GET(name, node) (collGet(dataOf((node)), STR_##name))
+#define GET(name, node) (collGet((node), STR_##name))
 
 /* Defined below.*/
 static zvalue makeVarRef(zvalue name);
@@ -1136,9 +1136,8 @@ DEF_PARSE(programBody) {
     for (zint i = 0; i < size; i++) {
         zvalue one = seqNth(rawStatements, i);
         if (hasType(one, TYPE_topDeclaration)) {
-            zvalue data = dataOf(one);
-            tops = listAppend(tops, collGet(data, STR_top));
-            mains = listAppend(mains, collGet(data, STR_main));
+            tops = listAppend(tops, collGet(one, STR_top));
+            mains = listAppend(mains, collGet(one, STR_main));
         } else {
             mains = listAppend(mains, one);
         }
