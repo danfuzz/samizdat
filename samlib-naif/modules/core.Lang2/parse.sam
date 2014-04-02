@@ -1028,7 +1028,7 @@ fn makeCompareCalls(firstEx, opExList) {
         def resolvedOp = get(BINARY_OPERATORS, typeOf(opEx::op));
 
         <> ifIs { <> eq(rest, []) }
-            { <> makeCall(resolvedOp, leftRef, opEx::expr) }
+            { <> makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
             {
                 def rightName = nextName();
                 def rightRef = makeVarRef(rightName);
