@@ -43,7 +43,7 @@ genericBind(
     get_varRefs,
     @@closure,
     fn closure_get_varRefs(node) {
-        if (def refs = dataOf(node)::varRefs) {
+        if (def refs = node::varRefs) {
             ## Already calculated for this node.
             return refs
         };
@@ -86,7 +86,7 @@ genericBind(
     get_varRefs,
     @@closureRef,
     fn closureRef_get_varRefs(node) {
-        <> dataOf(node)::varRefs
+        <> node::varRefs
     });
 
 genericBind(

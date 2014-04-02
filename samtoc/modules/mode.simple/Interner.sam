@@ -8,7 +8,7 @@ fn makeInterner() {
 };
 
 fn intern(this, value) {
-    def box = dataOf(this)::values;
+    def box = this::values;
     def values = fetch(box);
 
     if (def already = values[value]) {
@@ -22,7 +22,7 @@ fn intern(this, value) {
 };
 
 fn get_interns(this) {
-    def map = fetch(dataOf(this)::values);
+    def map = fetch(this::values);
     def boxList = [ n in (0..#map) <> Box::makePromise() ];
 
     for (mapping in map) {

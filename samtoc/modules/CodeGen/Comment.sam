@@ -26,27 +26,26 @@ genericBind(
     flatten,
     @@Comment,
     fn Comment_flatten(tree) {
-        <> dataOf(tree)::flat
+        <> tree::flat
     });
 
 genericBind(
     indent,
     @@Comment,
     fn Comment_indent(tree, level, maxColumns) {
-        def data = dataOf(tree);
         def prefix = indentation(level);
 
-        if ((#data::flat + #prefix) <= maxColumns) {
-            return "\[prefix, data::flat]"
+        if ((#tree::flat + #prefix) <= maxColumns) {
+            return "\[prefix, tree::flat]"
         };
 
-        <> if (def p = data::payload) {
+        <> if (def p = tree::payload) {
             <> "\[
-                prefix, "// ", data::text, "\n",
+                prefix, "// ", tree::text, "\n",
                 p.indent(level, maxColumns)
             ]"
         } else {
-            <> "\(prefix)/* \(data::text) */"
+            <> "\(prefix)/* \(tree::text) */"
         }
     });
 

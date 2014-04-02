@@ -20,20 +20,19 @@ genericBind(
     flatten,
     @@Statement,
     fn Statement_flatten(tree) {
-        <> dataOf(tree)::flat
+        <> tree::flat
     });
 
 genericBind(
     indent,
     @@Statement,
     fn Statement_indent(tree, level, maxColumns) {
-        def data = dataOf(tree);
         def prefix = indentation(level);
 
-        <> if ((#data::flat + #prefix) <= maxColumns) {
-            <> "\(prefix)\(data::flat)\n"
+        <> if ((#tree::flat + #prefix) <= maxColumns) {
+            <> "\(prefix)\(tree::flat)\n"
         } else {
-            <> "\(data::tree.indent(level, maxColumns));\n"
+            <> "\(tree::tree.indent(level, maxColumns));\n"
         }
     });
 

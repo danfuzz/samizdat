@@ -29,25 +29,24 @@ genericBind(
     flatten,
     @@Call,
     fn Call_flatten(tree) {
-        <> dataOf(tree)::flat
+        <> tree::flat
     });
 
 genericBind(
     indent,
     @@Call,
     fn Call_indent(tree, level, maxColumns) {
-        def data = dataOf(tree);
         def prefix = indentation(level);
 
-        if ((#data::flat + #prefix) <= maxColumns) {
-            return "\[prefix, data::flat]"
+        if ((#tree::flat + #prefix) <= maxColumns) {
+            return "\[prefix, tree::flat]"
         };
 
-        def args = data::args;
+        def args = tree::args;
         def nextLevel = level + 1;
 
         <> "\[
-            prefix, data::function.flatten(), "(\n",
+            prefix, tree::function.flatten(), "(\n",
             ( a in args, i in (#args.. by -1) ->
                 <> [
                     a.indent(nextLevel, maxColumns),
