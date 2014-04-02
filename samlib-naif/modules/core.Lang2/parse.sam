@@ -44,8 +44,8 @@ def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
 
-def safeVarName = intraLoad("safeVarName")::safeVarName;
-def tokenize    = intraLoad("tokenize")::tokenize;
+def safeVar  = intraLoad("safeVar");
+def tokenize = intraLoad("tokenize")::tokenize;
 
 
 ##
@@ -1020,7 +1020,7 @@ fn makeCompareCalls(firstEx, opExList) {
 
     ## Nontrivial case. We need to transform the inner first call arguments.
 
-    def yieldName = safeVarName("voided", baseResult);
+    def yieldName = safeVar::safeVarName("voided", baseResult);
     def yieldCall = makeThunk(makeJump(makeVarRef(yieldName)));
 
     fn transform(tree, layer) {
@@ -2112,7 +2112,7 @@ def parSwitchExpression = {:
         ## If there is no specified formal, then pick a safe one, that is,
         ## a name not referenced in the case clauses.
         def testVar = ifValueOr { <> testClause::formal::name }
-            { <> safeVarName("switchValue", caseMap) };
+            { <> safeVar::safeVarName("switchValue", caseMap) };
 
         def innerIf = makeCall(REFS::ifValue,
             makeThunk(makeGet(caseMap, makeVarRef(testVar))),
