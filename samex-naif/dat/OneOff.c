@@ -16,8 +16,8 @@
  */
 
 /* Documented in header. */
-zvalue get(zvalue coll, zvalue key) {
-    return GFN_CALL(get, coll, key);
+zvalue get(zvalue value, zvalue key) {
+    return GFN_CALL(get, value, key);
 }
 
 /* Documented in header. */
@@ -26,19 +26,28 @@ zvalue nameOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue nth(zvalue coll, zint index) {
-    return GFN_CALL(nth, coll, intFromZint(index));
+zvalue nameOfIfDefined(zvalue value) {
+    if (GFN_CALL(canCall, GFN_nameOf, value)) {
+        return nameOf(value);
+    }
+
+    return NULL;
 }
 
 /* Documented in header. */
-zint nthChar(zvalue coll, zint index) {
-    zvalue result = nth(coll, index);
+zvalue nth(zvalue value, zint index) {
+    return GFN_CALL(nth, value, intFromZint(index));
+}
+
+/* Documented in header. */
+zint nthChar(zvalue value, zint index) {
+    zvalue result = nth(value, index);
     return (result == NULL) ? -1 : zcharFromString(result);
 }
 
 /* Documented in header. */
-zint sizeOf(zvalue coll) {
-    return zintFromInt(GFN_CALL(sizeOf, coll));
+zint sizeOf(zvalue value) {
+    return zintFromInt(GFN_CALL(sizeOf, value));
 }
 
 /* Documented in header. */

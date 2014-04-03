@@ -54,9 +54,14 @@ zvalue get(zvalue coll, zvalue key);
 zvalue nameOf(zvalue value);
 
 /**
+ * Calls `nameOf` on the given value, if it is defined. If not, returns `NULL`.
+ */
+zvalue nameOfIfDefined(zvalue value);
+
+/**
  * Calls `nth`, converting the given `zint` index to an `Int` value.
  */
-zvalue nth(zvalue coll, zint index);
+zvalue nth(zvalue value, zint index);
 
 /**
  * Calls `nth`, converting the given `zint` index to an `Int` value, and
@@ -64,12 +69,12 @@ zvalue nth(zvalue coll, zint index);
  * `String` &mdash; to a `zint` in the range of a `zchar`. A void return
  * value gets converted to `-1`.
  */
-zint nthChar(zvalue coll, zint index);
+zint nthChar(zvalue value, zint index);
 
 /**
- * Calls `sizeOf` on the given collection, converting the result to a `zint`.
+ * Calls `sizeOf` on the given value, converting the result to a `zint`.
  */
-zint sizeOf(zvalue coll);
+zint sizeOf(zvalue value);
 
 /**
  * Calls `toString` on the given value, returning the result as a `char *`.
