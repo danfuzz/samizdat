@@ -4,7 +4,6 @@
 
 
 def Generator = moduleLoad(["core", "Generator"]);
-def Sequence  = moduleLoad(["core", "Sequence"]);
 
 def constructors1 = intraLoad("constructors1");
 def makeApply = constructors1::makeApply;
