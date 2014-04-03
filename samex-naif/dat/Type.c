@@ -308,16 +308,18 @@ METH_IMPL(Type, debugString) {
     TypeInfo *info = getInfo(type);
     zvalue extraString;
 
-    if (!info->derived) {
-        extraString = stringFromUtf8(-1, " /*core*/");
+    if (info->secret == coreSecret) {
+        return info->name;
     } else if (info->secret != NULL) {
-        extraString = stringFromUtf8(-1, " /*opaque*/");
-    } else {
+        extraString = stringFromUtf8(-1, " : opaque");
+    } else if (typeParent(type) == TYPE_DerivedData) {
         extraString = EMPTY_STRING;
+    } else {
+        die("Shouldn't happen: opaque type without secret.");
     }
 
     return GFN_CALL(cat,
-        stringFromUtf8(-1, "@(Type "),
+        stringFromUtf8(-1, "@@("),
         GFN_CALL(debugString, info->name),
         extraString,
         stringFromUtf8(-1, ")"));
