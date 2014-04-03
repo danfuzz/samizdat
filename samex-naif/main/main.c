@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     }
     zvalue argsList = listFromArray(argc - 1, args);
 
-    zvalue runFunc = collGet(env, STR_runCommandLine);
+    zvalue runFunc = get(env, STR_runCommandLine);
     zvalue result = funApply(runFunc, argsList);
 
     if ((result != NULL) && (hasType(result, TYPE_Int))) {

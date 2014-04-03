@@ -13,7 +13,7 @@
 #include "util.h"
 
 static zvalue lookup(zvalue env, const char *name) {
-    zvalue result = collGet(env, stringFromUtf8(-1, name));
+    zvalue result = get(env, stringFromUtf8(-1, name));
 
     if (result == NULL) {
         die("Binding missing: %s", name);

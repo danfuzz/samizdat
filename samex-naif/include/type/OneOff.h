@@ -46,7 +46,7 @@ extern zvalue GFN_valueOf;
 /**
  * Calls the `get` generic.
  */
-zvalue collGet(zvalue coll, zvalue key);
+zvalue get(zvalue coll, zvalue key);
 
 /**
  * Calls `sizeOf` on the given collection, converting the result to a `zint`.

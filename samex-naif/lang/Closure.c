@@ -112,7 +112,7 @@ static ClosureInfo *getInfo(zvalue closure) {
  * storage in the cache.
  */
 static zvalue buildCachedClosure(zvalue defMap) {
-    zvalue formals = collGet(defMap, STR_formals);
+    zvalue formals = get(defMap, STR_formals);
     zint formalsSize = sizeOf(formals);
 
     // Build out most of the result.
@@ -122,9 +122,9 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     info->defMap = defMap;
     info->formalsSize = formalsSize;
-    info->statements = collGet(defMap, STR_statements);
-    info->yield = collGet(defMap, STR_yield);
-    info->yieldDef = collGet(defMap, STR_yieldDef);
+    info->statements = get(defMap, STR_statements);
+    info->yield = get(defMap, STR_yield);
+    info->yieldDef = get(defMap, STR_yieldDef);
 
     // Validate and transform all the formals.
 
@@ -139,12 +139,12 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
-        zvalue name = collGet(formal, STR_name);
-        zvalue repeat = collGet(formal, STR_repeat);
+        zvalue name = get(formal, STR_name);
+        zvalue repeat = get(formal, STR_repeat);
         zrepeat rep;
 
         if (name != NULL) {
-            if (collGet(names, name) != NULL) {
+            if (get(names, name) != NULL) {
                 die("Duplicate formal name: %s", valDebugString(name));
             }
             names = collPut(names, name, name);
@@ -181,7 +181,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
  * Gets the cached `Closure` associated with the given node.
  */
 static zvalue getCachedClosure(zvalue node) {
-    zvalue result = collGet(nodeCache, node);
+    zvalue result = get(nodeCache, node);
 
     if (CHATTY_CACHEY) {
         static int hits = 0;
@@ -375,7 +375,7 @@ METH_IMPL(Closure, canCall) {
 /* Documented in header. */
 METH_IMPL(Closure, debugString) {
     zvalue closure = args[0];
-    zvalue name = collGet(getInfo(closure)->defMap, STR_name);
+    zvalue name = get(getInfo(closure)->defMap, STR_name);
     zvalue nameString = (name == NULL)
         ? stringFromUtf8(-1, "(unknown)")
         : GFN_CALL(debugString, name);
@@ -399,7 +399,7 @@ METH_IMPL(Closure, gcMark) {
 /* Documented in header. */
 METH_IMPL(Closure, nameOf) {
     zvalue closure = args[0];
-    return collGet(getInfo(closure)->defMap, STR_name);
+    return get(getInfo(closure)->defMap, STR_name);
 }
 
 /** Initializes the module. */

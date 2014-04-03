@@ -43,8 +43,8 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  * Executes an `apply` form.
  */
 static zvalue execApply(Frame *frame, zvalue apply) {
-    zvalue functionExpr = collGet(apply, STR_function);
-    zvalue actualsExpr = collGet(apply, STR_actuals);
+    zvalue functionExpr = get(apply, STR_function);
+    zvalue actualsExpr = get(apply, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
     zvalue actuals = execExpression(frame, actualsExpr);
 
@@ -55,8 +55,8 @@ static zvalue execApply(Frame *frame, zvalue apply) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    zvalue functionExpr = collGet(call, STR_function);
-    zvalue actualsExprs = collGet(call, STR_actuals);
+    zvalue functionExpr = get(call, STR_function);
+    zvalue actualsExprs = get(call, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
 
     zint argCount = sizeOf(actualsExprs);
@@ -77,8 +77,8 @@ static zvalue execCall(Frame *frame, zvalue call) {
 static void execJump(Frame *frame, zvalue jump)
     __attribute__((noreturn));
 static void execJump(Frame *frame, zvalue jump) {
-    zvalue functionExpr = collGet(jump, STR_function);
-    zvalue argExpr = collGet(jump, STR_value);
+    zvalue functionExpr = get(jump, STR_function);
+    zvalue argExpr = get(jump, STR_value);
     zvalue function = execExpression(frame, functionExpr);
     zvalue arg = (argExpr == NULL)
         ? NULL
@@ -89,8 +89,8 @@ static void execJump(Frame *frame, zvalue jump) {
 
 /* Documented in header. */
 static zvalue execVarBind(Frame *frame, zvalue varBind) {
-    zvalue name = collGet(varBind, STR_name);
-    zvalue valueExpression = collGet(varBind, STR_value);
+    zvalue name = get(varBind, STR_name);
+    zvalue valueExpression = get(varBind, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
     frameBind(frame, name, value);
@@ -102,8 +102,8 @@ static zvalue execVarBind(Frame *frame, zvalue varBind) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue name = collGet(varDef, STR_name);
-    zvalue valueExpression = collGet(varDef, STR_value);
+    zvalue name = get(varDef, STR_name);
+    zvalue valueExpression = get(varDef, STR_value);
     zvalue value = valueExpression
         ? execExpression(frame, valueExpression)
         : NULL;
@@ -116,8 +116,8 @@ static void execVarDef(Frame *frame, zvalue varDef) {
  * as appropriate.
  */
 static void execVarDefMutable(Frame *frame, zvalue varDef) {
-    zvalue name = collGet(varDef, STR_name);
-    zvalue valueExpression = collGet(varDef, STR_value);
+    zvalue name = get(varDef, STR_name);
+    zvalue valueExpression = get(varDef, STR_value);
     zvalue value = valueExpression
         ? execExpression(frame, valueExpression)
         : NULL;
@@ -129,7 +129,7 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = collGet(varRef, STR_name);
+    zvalue name = get(varRef, STR_name);
     return frameGet(frame, name);
 }
 
@@ -145,7 +145,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_call:    return execCall(frame, e);
         case EVAL_closure: return execClosure(frame, e);
         case EVAL_jump:    execJump(frame, e);
-        case EVAL_literal: return collGet(e, STR_value);
+        case EVAL_literal: return get(e, STR_value);
         case EVAL_varBind: return execVarBind(frame, e);
         case EVAL_varRef:  return execVarRef(frame, e);
         default: {

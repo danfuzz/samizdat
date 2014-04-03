@@ -87,7 +87,7 @@ METH_IMPL(DerivedData, get) {
     zvalue key = args[1];
 
     zvalue data = getInfo(value)->data;
-    return (data == NULL) ? NULL : collGet(data, key);
+    return (data == NULL) ? NULL : get(data, key);
 }
 
 /* Documented in header. */

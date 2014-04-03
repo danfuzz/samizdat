@@ -16,7 +16,7 @@
  */
 
 /* Documented in header. */
-zvalue collGet(zvalue coll, zvalue key) {
+zvalue get(zvalue coll, zvalue key) {
     return GFN_CALL(get, coll, key);
 }
 

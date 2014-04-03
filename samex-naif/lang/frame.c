@@ -25,7 +25,7 @@
  */
 static zvalue findBox(Frame *frame, zvalue name) {
     for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
-        zvalue result = collGet(frame->vars, name);
+        zvalue result = get(frame->vars, name);
 
         if (result != NULL) {
             return result;
