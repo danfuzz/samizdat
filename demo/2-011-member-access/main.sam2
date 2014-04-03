@@ -21,9 +21,6 @@ fn msg(value) {
 ## Main Tests
 ##
 
-def sizeOf = Collection::sizeOf;
-def nth = Sequence::nth;
-
 note("\nMethod call syntax");
 msg([1, 2].sizeOf());
 msg(["zero", "one", "two"].get(0));

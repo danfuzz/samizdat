@@ -54,9 +54,9 @@ fn ParaGenerator_nextValue(gen, box) {
         });
 
     def yields = collect(generatorCalls,
-        { one <> Sequence::nth(one, 0) });
+        { one <> nth(one, 0) });
     def nexts = collect(generatorCalls,
-        { one <> Sequence::nth(one, 1) });
+        { one <> nth(one, 1) });
 
     store(box, yields);
     <> @ParaGenerator(nexts)

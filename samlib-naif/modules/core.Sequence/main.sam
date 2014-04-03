@@ -22,7 +22,7 @@ intraLoad("SequenceGenerator");
 fn nthFromEnd(seq, n) {
     def index =
         Number::sub(Collection::sizeOf(seq), Number::add(n, 1));
-    <> Sequence::nth(seq, index)
+    <> nth(seq, index)
 };
 
 ## Documented in spec.

@@ -68,7 +68,7 @@ fn makeCallOrApply(function, actuals*) {
 
     addPendingToCooked();
 
-    <> ifIs { <> Sequence::nth(cookedActuals, 1) }
+    <> ifIs { <> nth(cookedActuals, 1) }
         {
             ## More than one actual. Use `cat`.
             <> makeApply(function,

@@ -397,7 +397,7 @@ def parIdentifierString = {:
         <> ifNot { <> dataOf(token) }
             {
                 def type = typeNameOf(token);
-                def firstCh = Sequence::nth(type, 0);
+                def firstCh = nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
@@ -1668,7 +1668,7 @@ def parLogicOrExpression = {:
         {
             ## Reverse, because we're building the result from the inside out.
             def exprs = Sequence::reverse([one, rest*]);
-            var result = Sequence::nth(exprs, 0);
+            var result = nth(exprs, 0);
 
             Generator::filterPump(Sequence::sliceInclusive(exprs, 1)) { ex ->
                 result := makeCallThunks(REFS::ifValueOr, ex, result)
