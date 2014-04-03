@@ -102,16 +102,8 @@ METH_IMPL(DerivedData, totEq) {
 METH_IMPL(DerivedData, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zvalue data1 = getInfo(v1)->data;
-    zvalue data2 = getInfo(v2)->data;
 
-    if (data1 == NULL) {
-        return (data2 == NULL) ? INT_0 : INT_NEG1;
-    } else if (data2 == NULL) {
-        return INT_1;
-    } else {
-        return intFromZint(valZorder(data1, data2));
-    }
+    return valOrderNullOk(getInfo(v1)->data, getInfo(v2)->data);
 }
 
 /** Initializes the module. */
