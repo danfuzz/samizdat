@@ -13,25 +13,25 @@
 
 ## Documented in spec.
 fn ge(value, other) {
-    <> ifNot { <> totEq(order(value, other), -1) }
+    <> ifNot { <> eq(order(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn gt(value, other) {
-    <> ifIs { <> totEq(order(value, other), 1) }
+    <> ifIs { <> eq(order(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn le(value, other) {
-    <> ifNot { <> totEq(order(value, other), 1) }
+    <> ifNot { <> eq(order(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn lt(value, other) {
-    <> ifIs { <> totEq(order(value, other), -1) }
+    <> ifIs { <> eq(order(value, other), -1) }
         { <> value }
 };
 
@@ -43,25 +43,25 @@ fn ne(value, other) {
 
 ## Documented in spec.
 fn perGe(value, other) {
-    <> ifNot { <> totEq(perOrder(value, other), -1) }
+    <> ifNot { <> eq(perOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn perGt(value, other) {
-    <> ifIs { <> totEq(perOrder(value, other), 1) }
+    <> ifIs { <> eq(perOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn perLe(value, other) {
-    <> ifNot { <> totEq(perOrder(value, other), 1) }
+    <> ifNot { <> eq(perOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn perLt(value, other) {
-    <> ifIs { <> totEq(perOrder(value, other), -1) }
+    <> ifIs { <> eq(perOrder(value, other), -1) }
         { <> value }
 };
 
@@ -73,25 +73,25 @@ fn perNe(value, other) {
 
 ## Documented in spec.
 fn totGe(value, other) {
-    <> ifNot { <> totEq(totOrder(value, other), -1) }
+    <> ifNot { <> eq(totOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn totGt(value, other) {
-    <> ifIs { <> totEq(totOrder(value, other), 1) }
+    <> ifIs { <> eq(totOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn totLe(value, other) {
-    <> ifNot { <> totEq(totOrder(value, other), 1) }
+    <> ifNot { <> eq(totOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
 fn totLt(value, other) {
-    <> ifIs { <> totEq(totOrder(value, other), -1) }
+    <> ifIs { <> eq(totOrder(value, other), -1) }
         { <> value }
 };
 
