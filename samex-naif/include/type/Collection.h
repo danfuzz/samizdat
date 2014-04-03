@@ -35,9 +35,6 @@ extern zvalue GFN_keyList;
 /** Generic `put(collection, key, value)`: Documented in spec. */
 extern zvalue GFN_put;
 
-/** Generic `sizeOf(collection)`: Documented in spec. */
-extern zvalue GFN_sizeOf;
-
 /**
  * Calls the `del` generic.
  */
@@ -47,10 +44,5 @@ zvalue collDel(zvalue coll, zvalue key);
  * Calls the `put` generic.
  */
 zvalue collPut(zvalue coll, zvalue key, zvalue value);
-
-/**
- * Calls `sizeOf` on the given collection, converting the result to a `zint`.
- */
-zint collSize(zvalue coll);
 
 #endif

@@ -61,7 +61,7 @@ check for the existence of `key` in the original.
 
 #### `sizeOf(collection) <> int`
 
-Returns the number of elements in the given collection.
+This is a predefined one-off generic (see documentation for which).
 
 
 <br><br>

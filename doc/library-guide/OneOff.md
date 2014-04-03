@@ -67,6 +67,11 @@ Some values have an associated name, or an optional associated name.
 This generic provides access to that name. There is no restriction
 on the composition (type, etc.) of a name.
 
+#### `sizeOf(value) <> int`
+
+Returns the number of elements in the given value. This function is intended
+for "collection-like" values which have constituent parts of some sort.
+
 #### `toInt(value) <> int`
 
 Some values have an obvious correspondence to an integer quantity. If

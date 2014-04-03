@@ -25,6 +25,9 @@ extern zvalue GFN_keyOf;
 /** Generic `nameOf(value)`: Documented in spec. */
 extern zvalue GFN_nameOf;
 
+/** Generic `sizeOf(collection)`: Documented in spec. */
+extern zvalue GFN_sizeOf;
+
 /** Generic `toInt(value)`: Documented in spec. */
 extern zvalue GFN_toInt;
 
@@ -41,6 +44,11 @@ extern zvalue GFN_valueOf;
  * Calls the `get` generic.
  */
 zvalue collGet(zvalue coll, zvalue key);
+
+/**
+ * Calls `sizeOf` on the given collection, converting the result to a `zint`.
+ */
+zint collSize(zvalue coll);
 
 /**
  * Calls `nameOf` on the given value.

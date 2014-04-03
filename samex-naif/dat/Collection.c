@@ -10,7 +10,6 @@
 
 #include "impl.h"
 #include "type/Collection.h"
-#include "type/Int.h"
 #include "type/String.h"
 #include "type/Type.h"
 
@@ -27,11 +26,6 @@ zvalue collDel(zvalue coll, zvalue key) {
 /* Documented in header. */
 zvalue collPut(zvalue coll, zvalue key, zvalue value) {
     return GFN_CALL(put, coll, key, value);
-}
-
-/* Documented in header. */
-zint collSize(zvalue coll) {
-    return zintFromInt(GFN_CALL(sizeOf, coll));
 }
 
 
@@ -55,9 +49,6 @@ MOD_INIT(Collection) {
 
     GFN_put = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "put"));
     datImmortalize(GFN_put);
-
-    GFN_sizeOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sizeOf"));
-    datImmortalize(GFN_sizeOf);
 }
 
 /* Documented in header. */
@@ -71,6 +62,3 @@ zvalue GFN_nthMapping = NULL;
 
 /* Documented in header. */
 zvalue GFN_put = NULL;
-
-/* Documented in header. */
-zvalue GFN_sizeOf = NULL;

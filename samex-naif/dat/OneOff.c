@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Int.h"
 #include "type/Generic.h"
 #include "type/OneOff.h"
 #include "type/String.h"
@@ -17,6 +18,11 @@
 /* Documented in header. */
 zvalue collGet(zvalue coll, zvalue key) {
     return GFN_CALL(get, coll, key);
+}
+
+/* Documented in header. */
+zint collSize(zvalue coll) {
+    return zintFromInt(GFN_CALL(sizeOf, coll));
 }
 
 /* Documented in header. */
@@ -59,6 +65,9 @@ MOD_INIT(OneOff) {
     GFN_nameOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "nameOf"));
     datImmortalize(GFN_nameOf);
 
+    GFN_sizeOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sizeOf"));
+    datImmortalize(GFN_sizeOf);
+
     GFN_toInt = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toInt"));
     datImmortalize(GFN_toInt);
 
@@ -83,6 +92,9 @@ zvalue GFN_keyOf = NULL;
 
 /* Documented in header. */
 zvalue GFN_nameOf = NULL;
+
+/* Documented in header. */
+zvalue GFN_sizeOf = NULL;
 
 /* Documented in header. */
 zvalue GFN_toInt = NULL;
