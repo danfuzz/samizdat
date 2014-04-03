@@ -72,11 +72,11 @@ zint valSelfIdOf(zvalue value) {
 
 /* Documented in header. */
 char *valDebugString(zvalue value) {
-    if (value != NULL) {
-        value = GFN_CALL(debugString, value);
+    if (value == NULL) {
+        return utilStrdup("(null)");
     }
 
-    return valToString(value);
+    return utf8DupFromString(GFN_CALL(debugString, value));
 }
 
 /* Documented in header. */
