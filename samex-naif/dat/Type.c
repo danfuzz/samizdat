@@ -114,7 +114,7 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
         return hasSecret2 ? ZLESS : ZMORE;
     }
 
-    zorder nameOrder = valOrder(name1, name2);
+    zorder nameOrder = valZorder(name1, name2);
 
     if ((nameOrder != ZSAME) || !hasSecret1) {
         return nameOrder;
@@ -122,7 +122,7 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
 
     // This is the case of two different opaque derived types with the
     // same name.
-    return valOrder(secret1, secret2);
+    return valZorder(secret1, secret2);
 }
 
 /**

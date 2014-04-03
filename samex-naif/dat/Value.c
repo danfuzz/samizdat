@@ -95,7 +95,7 @@ bool valEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder valOrder(zvalue v1, zvalue v2) {
+zorder valZorder(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return ZSAME;
     } else if (v1 == NULL) {
@@ -110,7 +110,7 @@ zorder valOrder(zvalue v1, zvalue v2) {
         datFrameReturn(save, NULL);
         return result;
     } else {
-        return valOrder(typeOf(v1), typeOf(v2));
+        return valZorder(typeOf(v1), typeOf(v2));
     }
 }
 

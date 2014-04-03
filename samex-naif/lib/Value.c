@@ -51,5 +51,5 @@ FUN_IMPL_DECL(order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return intFromZint(valOrder(v1, v2));
+    return intFromZint(valZorder(v1, v2));
 }

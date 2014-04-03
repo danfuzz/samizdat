@@ -110,7 +110,7 @@ METH_IMPL(DerivedData, totOrder) {
     } else if (data2 == NULL) {
         return INT_1;
     } else {
-        return intFromZint(valOrder(data1, data2));
+        return intFromZint(valZorder(data1, data2));
     }
 }
 

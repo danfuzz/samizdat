@@ -74,7 +74,7 @@ static zvalue makeMapping(zvalue key, zvalue value) {
  * the *second* value is used.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    zorder comp = valOrder(k1, k2);
+    zorder comp = valZorder(k1, k2);
 
     if (comp == ZSAME) {
         return makeMapping(k2, v2);
@@ -111,7 +111,7 @@ static zint mapFind(zvalue map, zvalue key) {
     switch (info->size) {
         case 0: return ~0;
         case 1: {
-            switch (valOrder(key, elems[0].key)) {
+            switch (valZorder(key, elems[0].key)) {
                 case ZLESS: return ~0;
                 case ZMORE: return ~1;
                 default:    return 0;
@@ -133,7 +133,7 @@ static zint mapFind(zvalue map, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (valOrder(key, elems[guess].key)) {
+        switch (valZorder(key, elems[guess].key)) {
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default: {
@@ -157,7 +157,7 @@ static zint mapFind(zvalue map, zvalue key) {
  * functions.
  */
 static int mappingOrder(const void *m1, const void *m2) {
-    return valOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
+    return valZorder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
 
@@ -531,7 +531,7 @@ METH_IMPL(Map, totOrder) {
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
-        zorder result = valOrder(e1[i].key, e2[i].key);
+        zorder result = valZorder(e1[i].key, e2[i].key);
         if (result != ZSAME) {
             return intFromZint(result);
         }
@@ -544,7 +544,7 @@ METH_IMPL(Map, totOrder) {
     }
 
     for (zint i = 0; i < size; i++) {
-        zorder result = valOrder(e1[i].value, e2[i].value);
+        zorder result = valZorder(e1[i].value, e2[i].value);
         if (result != ZSAME) {
             return intFromZint(result);
         }

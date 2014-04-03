@@ -108,8 +108,8 @@ char *valDebugString(zvalue value);
 
 /**
  * Compares two values for equality. This exists in addition to
- * `valOrder`, because it is possible for this function run much
- * quicker in the not-equal case. As with `valOrder`, this accepts
+ * `valZorder`, because it is possible for this function run much
+ * quicker in the not-equal case. As with `valZorder`, this accepts
  * `NULL` as a value, treating it as not the same as any other value.
  */
 bool valEq(zvalue v1, zvalue v2);
@@ -124,6 +124,6 @@ bool valEq(zvalue v1, zvalue v2);
  * If `NULL` is passed as an argument, it is accepted and treated as
  * being ordered earlier than any other value.
  */
-zorder valOrder(zvalue v1, zvalue v2);
+zorder valZorder(zvalue v1, zvalue v2);
 
 #endif
