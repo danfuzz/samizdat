@@ -5,9 +5,11 @@
 ##
 ## Sequence protocol. This is just a re-export from the primitive core library.
 ##
+## **Note:** `nth` is a re-exported one-off generic.
 
 <> {
-    nth:            Sequence_nth,
+    nth,
+
     reverse:        Sequence_reverse,
     sliceExclusive: Sequence_sliceExclusive,
     sliceInclusive: Sequence_sliceInclusive

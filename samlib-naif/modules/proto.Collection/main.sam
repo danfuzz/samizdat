@@ -6,17 +6,15 @@
 ## Collection protocol. This is just a re-export from the primitive core
 ## library.
 ##
-## **Note:** `cat` and `get` are special in that they are kept in the global
-## environment as well as becoming part of this module. See the spec for
-## details.
+## **Note:** `cat`, `get`, and `sizeOf` are re-exported one-off generics.
 
 <> {
     cat,
     get,
+    sizeOf,
 
     del:        Collection_del,
     keyList:    Collection_keyList,
     nthMapping: Collection_nthMapping,
-    put:        Collection_put,
-    sizeOf:     Collection_sizeOf
+    put:        Collection_put
 }
