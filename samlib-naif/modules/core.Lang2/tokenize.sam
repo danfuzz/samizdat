@@ -6,7 +6,6 @@
 ## Samizdat Layer 2 Tokenizer
 ##
 
-def Collection = moduleLoad(["core", "Collection"]);
 def ENTITY_MAP = moduleLoad(["core", "EntityMap"])::ENTITY_MAP;
 def Generator  = moduleLoad(["core", "Generator"]);
 def Number     = moduleLoad(["proto", "Number"]);
@@ -288,7 +287,7 @@ fn processStringParts(parts) {
     };
 
     ## Check for a simple result.
-    ifIs { <> eq(Collection::sizeOf(elems), 1) }
+    ifIs { <> eq(sizeOf(elems), 1) }
         {
             ifValue { <> hasType(elems*, String) }
                 { elem ->

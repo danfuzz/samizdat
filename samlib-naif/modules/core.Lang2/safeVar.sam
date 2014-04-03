@@ -2,7 +2,6 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def Collection = moduleLoad(["core", "Collection"]);
 def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
 def Lang0Node  = moduleLoad(["core", "Lang0Node"]);
@@ -43,10 +42,10 @@ fn maxOf(values*) {
 ## Returns a safe index for the given `base` that is safe with respect
 ## to all the other given `names`.
 fn safeIndexForNames(base, names*) {
-    def baseSz = Collection::sizeOf(base);
+    def baseSz = sizeOf(base);
 
     def indexes = Generator::filterAll(names) { <next> name ->
-        ifIs { <> perLt(Collection::sizeOf(name), baseSz) }
+        ifIs { <> perLt(sizeOf(name), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
                 <next>

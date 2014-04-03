@@ -6,7 +6,6 @@
 ## Samizdat Layer 1 tree parser
 ##
 
-def Collection = moduleLoad(["core", "Collection"]);
 def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
 def Number     = moduleLoad(["proto", "Number"]);
@@ -603,8 +602,8 @@ def parParserSetString = Peg::makeMainSequence(
                 def endChar = dataOf(end);
 
                 ## Reject non-single-character strings.
-                ifIs { <> ne(1, Collection::sizeOf(startChar)) } { <out> };
-                ifIs { <> ne(1, Collection::sizeOf(endChar)) } { <out> };
+                ifIs { <> ne(1, sizeOf(startChar)) } { <out> };
+                ifIs { <> ne(1, sizeOf(endChar)) } { <out> };
 
                 <> cat(Range::makeInclusiveRange(startChar, endChar)*)
             }),

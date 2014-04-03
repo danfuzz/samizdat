@@ -6,7 +6,6 @@
 ## Samizdat Layer 2 Tree Parser
 ##
 
-def Collection = moduleLoad(["core", "Collection"]);
 def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
 def Lang0      = moduleLoad(["core", "Lang0"]);
@@ -800,8 +799,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, Collection::sizeOf(startChar)) } { <out> };
-            ifIs { <> ne(1, Collection::sizeOf(endChar)) } { <out> };
+            ifIs { <> ne(1, sizeOf(startChar)) } { <out> };
+            ifIs { <> ne(1, sizeOf(endChar)) } { <out> };
 
             <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }
@@ -1005,7 +1004,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
 
-    ifIs { <> le(Collection::sizeOf(opExList), 1) }
+    ifIs { <> le(sizeOf(opExList), 1) }
         {
             ## Trivial case of zero or one operator. Just use the result of
             ## the call to `makeBinaryCalls`.
@@ -1604,7 +1603,7 @@ def parLogicAndExpression = {:
         { <> last }
     |
         ## Non-compound `&` expression.
-        { <> eq(Collection::sizeOf(most), 1) }
+        { <> eq(sizeOf(most), 1) }
         {
             def clause = most*;
             def formal = clause::formal;
@@ -1716,7 +1715,7 @@ def parMultiTest = {:
 
     (
         ## Single test. Will translate as either `ifValue` or `ifIs`.
-        { <> eq(Collection::sizeOf(clauses), 1) }
+        { <> eq(sizeOf(clauses), 1) }
         {
             def clause = clauses*;
             def formal = clause::formal;
@@ -2096,10 +2095,10 @@ def parSwitchExpression = {:
             <> ifIs { <> eq(case::keys, @else) } { <> case::code }
         };
 
-        ifIs { <> gt(Collection::sizeOf(optDefault), 1) }
+        ifIs { <> gt(sizeOf(optDefault), 1) }
             { die("Multiple default cases in switch.") };
 
-        ifIs { <> gt(Collection::sizeOf(optElse), 1) }
+        ifIs { <> gt(sizeOf(optElse), 1) }
             { die("Multiple else cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to

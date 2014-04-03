@@ -15,7 +15,6 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
-def Collection = moduleLoad(["core", "Collection"]);
 def Format     = moduleLoad(["core", "Format"]);
 def Generator  = moduleLoad(["core", "Generator"]);
 def Lang0      = moduleLoad(["core", "Lang0"]);
@@ -791,8 +790,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, Collection::sizeOf(startChar)) } { <out> };
-            ifIs { <> ne(1, Collection::sizeOf(endChar)) } { <out> };
+            ifIs { <> ne(1, sizeOf(startChar)) } { <out> };
+            ifIs { <> ne(1, sizeOf(endChar)) } { <out> };
 
             <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }

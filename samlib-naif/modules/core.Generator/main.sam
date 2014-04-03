@@ -6,8 +6,7 @@
 ## Generator functions
 ##
 
-def Box        = moduleLoad(["core", "Box"]);
-def Collection = moduleLoad(["core", "Collection"]);
+def Box = moduleLoad(["core", "Box"]);
 
 def FilterGenerator   = intraLoad("FilterGenerator");
 def ListWrapGenerator = intraLoad("ListWrapGenerator");
@@ -34,7 +33,7 @@ fn collectAsMap(generator) {
 
 ## Documented in spec.
 fn filterAll(filterFunction, generators*) {
-    <> ifIs { <> eq(Collection::sizeOf(generators), 1) }
+    <> ifIs { <> eq(sizeOf(generators), 1) }
         {
             ## We are filtering a single generator, so just use the
             ## special-case (and often more efficient) `collect`.
@@ -50,7 +49,7 @@ fn filterAll(filterFunction, generators*) {
 
 ## Documented in spec.
 fn filterPump(filterFunction, generators*) {
-    ifIs { <> eq(Collection::sizeOf(generators), 1) }
+    ifIs { <> eq(sizeOf(generators), 1) }
         {
             ## Handle a single generator as a special case to avoid a lot of
             ## unnecessary wrapping / unwrapping.
