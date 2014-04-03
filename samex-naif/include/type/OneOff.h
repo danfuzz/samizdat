@@ -76,11 +76,4 @@ zint nthChar(zvalue value, zint index);
  */
 zint sizeOf(zvalue value);
 
-/**
- * Calls `toString` on the given value, returning the result as a `char *`.
- * The caller is responsible for `free()`ing the result. As a convenience,
- * this converts `NULL` into `"(null)"`.
- */
-char *valToString(zvalue value);
-
 #endif
