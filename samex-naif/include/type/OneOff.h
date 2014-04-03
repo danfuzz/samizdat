@@ -51,7 +51,7 @@ zvalue collGet(zvalue coll, zvalue key);
 /**
  * Calls `sizeOf` on the given collection, converting the result to a `zint`.
  */
-zint collSize(zvalue coll);
+zint sizeOf(zvalue coll);
 
 /**
  * Calls `nameOf` on the given value.

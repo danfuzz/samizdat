@@ -21,7 +21,7 @@ zvalue collGet(zvalue coll, zvalue key) {
 }
 
 /* Documented in header. */
-zint collSize(zvalue coll) {
+zint sizeOf(zvalue coll) {
     return zintFromInt(GFN_CALL(sizeOf, coll));
 }
 

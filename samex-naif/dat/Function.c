@@ -114,7 +114,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 zvalue funApply(zvalue function, zvalue args) {
-    zint argCount = collSize(args);
+    zint argCount = sizeOf(args);
     zvalue argsArray[argCount];
 
     arrayFromList(argsArray, args);

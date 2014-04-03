@@ -84,7 +84,7 @@ typedef struct {
     /** The `"formals"` mapping of `defMap`, converted for easier use. */
     zformal formals[LANG_MAX_FORMALS];
 
-    /** The result of `collSize(formals)`. */
+    /** The result of `sizeOf(formals)`. */
     zint formalsSize;
 
     /** The number of actual names in `formals`, plus one for a `yieldDef`. */
@@ -113,7 +113,7 @@ static ClosureInfo *getInfo(zvalue closure) {
  */
 static zvalue buildCachedClosure(zvalue defMap) {
     zvalue formals = collGet(defMap, STR_formals);
-    zint formalsSize = collSize(formals);
+    zint formalsSize = sizeOf(formals);
 
     // Build out most of the result.
 
@@ -154,7 +154,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
         if (repeat == NULL) {
             rep = REP_NONE;
         } else {
-            if (collSize(repeat) != 1) {
+            if (sizeOf(repeat) != 1) {
                 die("Invalid repeat modifier: %s", valDebugString(repeat));
             }
             switch (nthChar(repeat, 0)) {
@@ -310,7 +310,7 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
     // Evaluate the statements, updating the frame as needed.
 
     zvalue statements = info->statements;
-    zint statementsSize = collSize(statements);
+    zint statementsSize = sizeOf(statements);
     zvalue statementsArr[statementsSize];
     arrayFromList(statementsArr, statements);
 
