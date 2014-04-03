@@ -207,7 +207,7 @@ extern inline zint typeIndexUnchecked(zvalue type);
 /* Documented in header. */
 bool typeHasSecret(zvalue type, zvalue secret) {
     assertHasTypeType(type);
-    return valEq(getInfo(type)->secret, secret);
+    return valEqNullOk(getInfo(type)->secret, secret);
 }
 
 

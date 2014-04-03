@@ -107,12 +107,18 @@ zint valSelfIdOf(zvalue value);
 char *valDebugString(zvalue value);
 
 /**
- * Compares two values for equality. This exists in addition to
- * `valZorder`, because it is possible for this function run much
- * quicker in the not-equal case. As with `valZorder`, this accepts
- * `NULL` as a value, treating it as not the same as any other value.
+ * Compares two values for equality, returning the first argument to
+ * represent logical-true or `NULL` for logical-false. This calls through
+ * to `totEq` given values of the same type. **Note:** It is invalid to
+ * pass `NULL` to this function.
  */
-bool valEq(zvalue v1, zvalue v2);
+zvalue valEq(zvalue v1, zvalue v2);
+
+/**
+ * Like `valEq`, except that `NULL`s are accepted as arguments, and the
+ * function returns a `bool`.
+ */
+bool valEqNullOk(zvalue v1, zvalue v2);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the

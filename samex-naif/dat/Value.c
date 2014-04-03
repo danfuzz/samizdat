@@ -80,17 +80,26 @@ char *valDebugString(zvalue value) {
 }
 
 /* Documented in header. */
-bool valEq(zvalue v1, zvalue v2) {
+zvalue valEq(zvalue v1, zvalue v2) {
+    if ((v1 == NULL) || (v2 == NULL)) {
+        die("Shouldn't happen: NULL argument passed to `valEq`.");
+    } else if (v1 == v2) {
+        return v1;
+    } else if (haveSameType(v1, v2)) {
+        return (GFN_CALL(totEq, v1, v2) != NULL) ? v1 : NULL;
+    } else {
+        return NULL;
+    }
+}
+
+/* Documented in header. */
+bool valEqNullOk(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return true;
     } else if ((v1 == NULL) || (v2 == NULL)) {
         return false;
-    }
-
-    if (haveSameType(v1, v2)) {
-        return (GFN_CALL(totEq, v1, v2) != NULL);
     } else {
-        return false;
+        return valEq(v1, v2) != NULL;
     }
 }
 
@@ -161,7 +170,7 @@ METH_IMPL(Value, totEq) {
     }
 
     zvalue result = GFN_CALL(totOrder, v1, v2);
-    return valEq(result, INT_0) ? v1 : NULL;
+    return (valEq(result, INT_0) != NULL) ? v1 : NULL;
 }
 
 /* Documented in header. */

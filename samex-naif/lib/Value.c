@@ -24,10 +24,10 @@ FUN_IMPL_DECL(dataOf) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(eq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    return valEq(v1, v2) ? v1 : NULL;
+    return valEq(value, other);
 }
 
 /* Documented in spec. */
@@ -48,8 +48,8 @@ FUN_IMPL_DECL(makeValue) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(order) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    return intFromZint(valZorder(v1, v2));
+    return intFromZint(valZorder(value, other));
 }
