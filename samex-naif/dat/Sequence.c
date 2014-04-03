@@ -87,17 +87,6 @@ zint seqNthIndexStrict(zint size, zvalue n) {
 }
 
 /* Documented in header. */
-zvalue seqNth(zvalue coll, zint index) {
-    return GFN_CALL(nth, coll, intFromZint(index));
-}
-
-/* Documented in header. */
-zint seqNthChar(zvalue coll, zint index) {
-    zvalue result = seqNth(coll, index);
-    return (result == NULL) ? -1 : zcharFromString(result);
-}
-
-/* Documented in header. */
 zint seqPutIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
@@ -243,9 +232,6 @@ MOD_INIT(Sequence) {
     MOD_USE(Collection);
     MOD_USE_NEXT(Generator);
 
-    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
-    datImmortalize(GFN_nth);
-
     GFN_reverse = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "reverse"));
     datImmortalize(GFN_reverse);
 
@@ -277,9 +263,6 @@ MOD_INIT(Sequence) {
         0, stringFromUtf8(-1, "Sequence.nthMapping"));
     datImmortalize(BI_Sequence_nthMapping);
 }
-
-/* Documented in header. */
-zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_reverse = NULL;

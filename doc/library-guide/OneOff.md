@@ -67,10 +67,22 @@ Some values have an associated name, or an optional associated name.
 This generic provides access to that name. There is no restriction
 on the composition (type, etc.) of a name.
 
+#### `nth(value, n) <> . | void`
+
+Returns the nth (zero-based) element of the given value.
+Returns void if `n < 0` or `n >= #value`. It is an error
+(terminating the runtime) if `n` is not an `Int`.
+
+This function is intended for "sequence-like" values which have
+strongly-ordered constituent parts of some sort.
+
 #### `sizeOf(value) <> int`
 
 Returns the number of elements in the given value. This function is intended
 for "collection-like" values which have constituent parts of some sort.
+
+**Syntax Note:** This is the function underlying the `#value` syntactic
+form (prefix `#` operator).
 
 #### `toInt(value) <> int`
 

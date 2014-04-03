@@ -25,6 +25,9 @@ extern zvalue GFN_keyOf;
 /** Generic `nameOf(value)`: Documented in spec. */
 extern zvalue GFN_nameOf;
 
+/** Generic `nth(sequence, n)`: Documented in spec. */
+extern zvalue GFN_nth;
+
 /** Generic `sizeOf(collection)`: Documented in spec. */
 extern zvalue GFN_sizeOf;
 
@@ -54,6 +57,19 @@ zint collSize(zvalue coll);
  * Calls `nameOf` on the given value.
  */
 zvalue nameOf(zvalue value);
+
+/**
+ * Calls `nth`, converting the given `zint` index to an `Int` value.
+ */
+zvalue seqNth(zvalue coll, zint index);
+
+/**
+ * Calls `nth`, converting the given `zint` index to an `Int` value, and
+ * converting a non-void return value &mdash; which must be a single-character
+ * `String` &mdash; to a `zint` in the range of a `zchar`. A void return
+ * value gets converted to `-1`.
+ */
+zint seqNthChar(zvalue coll, zint index);
 
 /**
  * Calls `toString` on the given value, returning the result as a `char *`.

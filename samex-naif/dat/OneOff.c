@@ -31,6 +31,17 @@ zvalue nameOf(zvalue value) {
 }
 
 /* Documented in header. */
+zvalue seqNth(zvalue coll, zint index) {
+    return GFN_CALL(nth, coll, intFromZint(index));
+}
+
+/* Documented in header. */
+zint seqNthChar(zvalue coll, zint index) {
+    zvalue result = seqNth(coll, index);
+    return (result == NULL) ? -1 : zcharFromString(result);
+}
+
+/* Documented in header. */
 char *valToString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");
@@ -65,6 +76,9 @@ MOD_INIT(OneOff) {
     GFN_nameOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "nameOf"));
     datImmortalize(GFN_nameOf);
 
+    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
+    datImmortalize(GFN_nth);
+
     GFN_sizeOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sizeOf"));
     datImmortalize(GFN_sizeOf);
 
@@ -92,6 +106,9 @@ zvalue GFN_keyOf = NULL;
 
 /* Documented in header. */
 zvalue GFN_nameOf = NULL;
+
+/* Documented in header. */
+zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_sizeOf = NULL;
