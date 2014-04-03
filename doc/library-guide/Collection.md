@@ -16,7 +16,9 @@ would expect.
 
 #### `cat(collection, more*) <> collection`
 
-This is a predefined one-off generic (see documentation for which).
+(Implementation of `OneOff` generic function.)
+
+Concatenates the given collections.
 
 #### `del(collection, key) <> collection`
 
@@ -30,7 +32,9 @@ collection.
 
 #### `get(collection, key) <> . | void`
 
-This is a predefined one-off generic (see documentation for which).
+(Implementation of `OneOff` generic function.)
+
+Gets the value in `collection` associated with the given `key`.
 
 #### `keyList(collection) <> list`
 
@@ -61,7 +65,9 @@ check for the existence of `key` in the original.
 
 #### `sizeOf(collection) <> int`
 
-This is a predefined one-off generic (see documentation for which).
+(Implementation of `OneOff` generic function.)
+
+Gets the size (element count) of the `collection`.
 
 
 <br><br>
