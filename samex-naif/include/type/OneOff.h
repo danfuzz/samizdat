@@ -13,6 +13,11 @@
 
 #include "dat.h"
 
+/** Generic `cat(value, more*)`: Documented in spec. */
+extern zvalue GFN_cat;
+
+/** Generic `get(value, key)`: Documented in spec. */
+extern zvalue GFN_get;
 
 /** Generic `keyOf(value)`: Documented in spec. */
 extern zvalue GFN_keyOf;
@@ -31,6 +36,11 @@ extern zvalue GFN_toString;
 
 /** Generic `valueOf(value)`: Documented in spec. */
 extern zvalue GFN_valueOf;
+
+/**
+ * Calls the `get` generic.
+ */
+zvalue collGet(zvalue coll, zvalue key);
 
 /**
  * Calls `nameOf` on the given value.

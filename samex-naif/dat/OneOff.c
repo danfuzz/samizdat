@@ -15,6 +15,11 @@
  */
 
 /* Documented in header. */
+zvalue collGet(zvalue coll, zvalue key) {
+    return GFN_CALL(get, coll, key);
+}
+
+/* Documented in header. */
 zvalue nameOf(zvalue value) {
     return GFN_CALL(nameOf, value);
 }
@@ -42,6 +47,12 @@ char *valToString(zvalue value) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
+    GFN_cat = makeGeneric(1, -1, GFN_SAME_TYPE, stringFromUtf8(-1, "cat"));
+    datImmortalize(GFN_cat);
+
+    GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
+    datImmortalize(GFN_get);
+
     GFN_keyOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyOf"));
     datImmortalize(GFN_keyOf);
 
@@ -60,6 +71,12 @@ MOD_INIT(OneOff) {
     GFN_valueOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "valueOf"));
     datImmortalize(GFN_valueOf);
 }
+
+/* Documented in header. */
+zvalue GFN_cat = NULL;
+
+/* Documented in header. */
+zvalue GFN_get = NULL;
 
 /* Documented in header. */
 zvalue GFN_keyOf = NULL;

@@ -9,36 +9,14 @@ a defined order of iteration. *Some* `Collection`s allow arbitrary
 keys.
 
 The `Collection` protocol is defined in a `proto.` module as one
-would expect. However, as a special case, two of the `Collection` generics
-are also exported to the global variable environment:
-
-* `get` is exported, since that is the generic that is used to access
-  the contents of modules.
-* `cat` is exported, since it's just so commonly used.
+would expect.
 
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
 #### `cat(collection, more*) <> collection`
 
-Returns the concatenation of all of the given collections. The collections
-must all be of the same type, and the result is the same type as the given
-type. It is an error (terminating the runtime) if one of the arguments is
-of a different type.
-
-To the extent that a collection is unconstrained in terms of its
-elements and their arrangement, the result of concatenation consists
-of the elements of all the original collections, in order, in the order
-of the arguments.
-
-For collections that have element constraints, a concatenation will
-not necessarily contain all the original elements, and the order may
-be different. See their docs for details.
-
-**Note:** To account for the possibility of passing *no* arguments to
-concatenate (e.g. when handling a list of arguments generically), include
-a first argument of the empty value of the desired type, e.g.
-`""` to ensure string concatenation.
+This is a predefined one-off generic (see documentation for which).
 
 #### `del(collection, key) <> collection`
 
@@ -52,10 +30,7 @@ collection.
 
 #### `get(collection, key) <> . | void`
 
-Returns the element of the collection that corresponds to the given
-`key`. `key` is an arbitrary value. Returns void if there is no unique
-corresponding value for the given `key` (including if `key` is not
-bound in the collection at all).
+This is a predefined one-off generic (see documentation for which).
 
 #### `keyList(collection) <> list`
 
