@@ -92,18 +92,19 @@ METH_IMPL(DerivedData, get) {
 
 /* Documented in header. */
 METH_IMPL(DerivedData, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    return valEqNullOk(getInfo(v1)->data, getInfo(v2)->data) ? v1 : NULL;
+    return valEqNullOk(getInfo(value)->data, getInfo(other)->data)
+        ? value : NULL;
 }
 
 /* Documented in header. */
 METH_IMPL(DerivedData, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    return valOrderNullOk(getInfo(v1)->data, getInfo(v2)->data);
+    return valOrderNullOk(getInfo(value)->data, getInfo(other)->data);
 }
 
 /** Initializes the module. */

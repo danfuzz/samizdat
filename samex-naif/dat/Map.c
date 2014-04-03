@@ -493,10 +493,10 @@ METH_IMPL(Map, sizeOf) {
 
 /* Documented in header. */
 METH_IMPL(Map, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    MapInfo *info1 = getInfo(v1);
-    MapInfo *info2 = getInfo(v2);
+    zvalue value = args[0];
+    zvalue other = args[1];
+    MapInfo *info1 = getInfo(value);
+    MapInfo *info2 = getInfo(other);
     zint size1 = info1->size;
     zint size2 = info2->size;
 
@@ -515,15 +515,15 @@ METH_IMPL(Map, totEq) {
         }
     }
 
-    return v1;
+    return value;
 }
 
 /* Documented in header. */
 METH_IMPL(Map, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    MapInfo *info1 = getInfo(v1);
-    MapInfo *info2 = getInfo(v2);
+    zvalue value = args[0];
+    zvalue other = args[1];
+    MapInfo *info1 = getInfo(value);
+    MapInfo *info2 = getInfo(other);
     zmapping *e1 = info1->elems;
     zmapping *e2 = info2->elems;
     zint size1 = info1->size;

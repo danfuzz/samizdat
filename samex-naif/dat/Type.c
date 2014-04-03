@@ -239,8 +239,8 @@ bool hasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-bool haveSameType(zvalue v1, zvalue v2) {
-    return typeEq(typeOf(v1), typeOf(v2));
+bool haveSameType(zvalue value, zvalue other) {
+    return typeEq(typeOf(value), typeOf(other));
 }
 
 /* Documented in header. */
@@ -346,16 +346,16 @@ METH_IMPL(Type, nameOf) {
 
 /* Documented in header. */
 METH_IMPL(Type, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    if (v1 == v2) {
+    if (value == other) {
         // Easy case to avoid decomposition and detailed tests.
         return INT_0;
     }
 
-    TypeInfo *info1 = getInfo(v1);
-    return intFromZint(typeCompare(info1->name, info1->secret, v2));
+    TypeInfo *info = getInfo(value);
+    return intFromZint(typeCompare(info->name, info->secret, other));
 }
 
 /**

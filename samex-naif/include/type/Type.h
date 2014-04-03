@@ -37,7 +37,7 @@ bool hasType(zvalue value, zvalue type);
  * Returns true iff the types of the given values (that is, `typeOf()` on
  * each) are the same.
  */
-bool haveSameType(zvalue v1, zvalue v2);
+bool haveSameType(zvalue value, zvalue other);
 
 /**
  * Makes a new core type. `name` is the type's name. `parent` is its

@@ -280,10 +280,10 @@ METH_IMPL(List, sliceInclusive) {
 
 /* Documented in header. */
 METH_IMPL(List, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    ListInfo *info1 = getInfo(v1);
-    ListInfo *info2 = getInfo(v2);
+    zvalue value = args[0];
+    zvalue other = args[1];
+    ListInfo *info1 = getInfo(value);
+    ListInfo *info2 = getInfo(other);
     zint size1 = info1->size;
     zint size2 = info2->size;
 
@@ -300,15 +300,15 @@ METH_IMPL(List, totEq) {
         }
     }
 
-    return v1;
+    return value;
 }
 
 /* Documented in header. */
 METH_IMPL(List, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    ListInfo *info1 = getInfo(v1);
-    ListInfo *info2 = getInfo(v2);
+    zvalue value = args[0];
+    zvalue other = args[1];
+    ListInfo *info1 = getInfo(value);
+    ListInfo *info2 = getInfo(other);
     zvalue *e1 = info1->elems;
     zvalue *e2 = info2->elems;
     zint size1 = info1->size;
