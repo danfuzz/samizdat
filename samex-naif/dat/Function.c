@@ -45,7 +45,7 @@ static char *callReporter(void *state) {
     zvalue name = nameOfIfDefined(value);
 
     if (name != NULL) {
-        return valToString(ensureString(name));
+        return utf8DupFromString(ensureString(name));
     }
 
     char *typeString = valDebugString(typeOf(value));
