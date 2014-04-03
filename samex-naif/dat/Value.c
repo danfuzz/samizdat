@@ -80,46 +80,46 @@ char *valDebugString(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue valEq(zvalue v1, zvalue v2) {
-    if ((v1 == NULL) || (v2 == NULL)) {
+zvalue valEq(zvalue value, zvalue other) {
+    if ((value == NULL) || (other == NULL)) {
         die("Shouldn't happen: NULL argument passed to `valEq`.");
-    } else if (v1 == v2) {
-        return v1;
-    } else if (haveSameType(v1, v2)) {
-        return (GFN_CALL(totEq, v1, v2) != NULL) ? v1 : NULL;
+    } else if (value == other) {
+        return value;
+    } else if (haveSameType(value, other)) {
+        return (GFN_CALL(totEq, value, other) != NULL) ? value : NULL;
     } else {
         return NULL;
     }
 }
 
 /* Documented in header. */
-bool valEqNullOk(zvalue v1, zvalue v2) {
-    if (v1 == v2) {
+bool valEqNullOk(zvalue value, zvalue other) {
+    if (value == other) {
         return true;
-    } else if ((v1 == NULL) || (v2 == NULL)) {
+    } else if ((value == NULL) || (other == NULL)) {
         return false;
     } else {
-        return valEq(v1, v2) != NULL;
+        return valEq(value, other) != NULL;
     }
 }
 
 /* Documented in header. */
-zorder valZorder(zvalue v1, zvalue v2) {
-    if (v1 == v2) {
+zorder valZorder(zvalue value, zvalue other) {
+    if (value == other) {
         return ZSAME;
-    } else if (v1 == NULL) {
+    } else if (value == NULL) {
         return ZLESS;
-    } else if (v2 == NULL) {
+    } else if (other == NULL) {
         return ZMORE;
     }
 
-    if (haveSameType(v1, v2)) {
+    if (haveSameType(value, other)) {
         zstackPointer save = datFrameStart();
-        zorder result = zintFromInt(GFN_CALL(totOrder, v1, v2));
+        zorder result = zintFromInt(GFN_CALL(totOrder, value, other));
         datFrameReturn(save, NULL);
         return result;
     } else {
-        return valZorder(typeOf(v1), typeOf(v2));
+        return valZorder(typeOf(value), typeOf(other));
     }
 }
 
@@ -162,28 +162,28 @@ METH_IMPL(Value, perOrder) {
 
 /* Documented in header. */
 METH_IMPL(Value, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    if (v1 == v2) {
-        return v2;
+    if (value == other) {
+        return other;
     }
 
-    zvalue result = GFN_CALL(totOrder, v1, v2);
-    return (valEq(result, INT_0) != NULL) ? v1 : NULL;
+    zvalue result = GFN_CALL(totOrder, value, other);
+    return (valEq(result, INT_0) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */
 METH_IMPL(Value, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    if (v1 == v2) {
+    if (value == other) {
         return INT_0;
     }
 
-    zint id1 = valSelfIdOf(v1);
-    zint id2 = valSelfIdOf(v2);
+    zint id1 = valSelfIdOf(value);
+    zint id2 = valSelfIdOf(other);
 
     if (id1 < id2) {
         return INT_NEG1;

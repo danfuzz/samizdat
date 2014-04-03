@@ -112,13 +112,13 @@ char *valDebugString(zvalue value);
  * to `totEq` given values of the same type. **Note:** It is invalid to
  * pass `NULL` to this function.
  */
-zvalue valEq(zvalue v1, zvalue v2);
+zvalue valEq(zvalue value, zvalue other);
 
 /**
  * Like `valEq`, except that `NULL`s are accepted as arguments, and the
  * function returns a `bool`.
  */
-bool valEqNullOk(zvalue v1, zvalue v2);
+bool valEqNullOk(zvalue value, zvalue other);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
@@ -130,6 +130,6 @@ bool valEqNullOk(zvalue v1, zvalue v2);
  * If `NULL` is passed as an argument, it is accepted and treated as
  * being ordered earlier than any other value.
  */
-zorder valZorder(zvalue v1, zvalue v2);
+zorder valZorder(zvalue value, zvalue other);
 
 #endif
