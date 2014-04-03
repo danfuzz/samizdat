@@ -314,7 +314,7 @@ static zvalue tokenizeOne(ParseState *state) {
 zvalue langTokenize0(zvalue string) {
     zstackPointer save = datFrameStart();
 
-    zint size = collSize(string);
+    zint size = sizeOf(string);
 
     if (size > LANG_MAX_TOKENS) {
         die("Too many characters for tokenization: %lld", size);

@@ -20,7 +20,7 @@ def Sequence   = moduleLoad(["proto", "Sequence"]);
 fn SequenceGenerator_nextValue(gen, box) {
     def index = gen::index;
 
-    <> ifValue { <> Sequence::nth(gen::seq, index) }
+    <> ifValue { <> nth(gen::seq, index) }
         { value ->
             store(box, value);
             <> @SequenceGenerator{dataOf(gen)*, index: Number::add(index, 1)}

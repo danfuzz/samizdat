@@ -8,7 +8,6 @@
 ## Payload is `[subGens*]`, a list of sub-generators.
 
 def Box        = moduleLoad(["core", "Box"]);
-def Collection = moduleLoad(["core", "Collection"]);
 def Sequence   = moduleLoad(["core", "Sequence"]);
 
 def NullGenerator = intraLoad("NullGenerator");
@@ -26,7 +25,7 @@ fn makeSerialGenerator(generators*) {
 
     ## Return the argument directly if we were only passed one.
     ## This saves some gratuitous call wrapping / double yields.
-    ifIs { <> eq(Collection::sizeOf(generators), 1) }
+    ifIs { <> eq(sizeOf(generators), 1) }
         { return generators* };
 
     <> @SerialGenerator(generators)

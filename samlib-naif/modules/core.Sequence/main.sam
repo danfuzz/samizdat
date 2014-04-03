@@ -6,7 +6,6 @@
 ## Sequence functions
 ##
 
-def Collection = moduleLoad(["core", "Collection"]);
 def Number     = moduleLoad(["proto", "Number"]);
 def Sequence   = moduleLoad(["proto", "Sequence"]);
 
@@ -21,13 +20,13 @@ intraLoad("SequenceGenerator");
 ## Documented in spec.
 fn nthFromEnd(seq, n) {
     def index =
-        Number::sub(Collection::sizeOf(seq), Number::add(n, 1));
-    <> Sequence::nth(seq, index)
+        Number::sub(sizeOf(seq), Number::add(n, 1));
+    <> nth(seq, index)
 };
 
 ## Documented in spec.
 fn sliceGeneral(seq, style, start, optEnd?) {
-    def limit = Number::sub(Collection::sizeOf(seq), 1);
+    def limit = Number::sub(sizeOf(seq), 1);
     def func = ifIs { <> eq(style, @exclusive) }
         { <> Sequence::sliceExclusive }
         { <> Sequence::sliceInclusive };

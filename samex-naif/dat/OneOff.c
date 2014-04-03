@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Int.h"
 #include "type/Generic.h"
 #include "type/OneOff.h"
 #include "type/String.h"
@@ -15,22 +16,38 @@
  */
 
 /* Documented in header. */
+zvalue get(zvalue value, zvalue key) {
+    return GFN_CALL(get, value, key);
+}
+
+/* Documented in header. */
 zvalue nameOf(zvalue value) {
     return GFN_CALL(nameOf, value);
 }
 
 /* Documented in header. */
-char *valToString(zvalue value) {
-    if (value == NULL) {
-        return utilStrdup("(null)");
+zvalue nameOfIfDefined(zvalue value) {
+    if (GFN_CALL(canCall, GFN_nameOf, value)) {
+        return nameOf(value);
     }
 
-    zvalue result = GFN_CALL(toString, value);
-    zint size = utf8SizeFromString(result);
-    char *str = utilAlloc(size + 1);
+    return NULL;
+}
 
-    utf8FromString(size + 1, str, result);
-    return str;
+/* Documented in header. */
+zvalue nth(zvalue value, zint index) {
+    return GFN_CALL(nth, value, intFromZint(index));
+}
+
+/* Documented in header. */
+zint nthChar(zvalue value, zint index) {
+    zvalue result = nth(value, index);
+    return (result == NULL) ? -1 : zcharFromString(result);
+}
+
+/* Documented in header. */
+zint sizeOf(zvalue value) {
+    return zintFromInt(GFN_CALL(sizeOf, value));
 }
 
 
@@ -42,11 +59,23 @@ char *valToString(zvalue value) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
+    GFN_cat = makeGeneric(1, -1, GFN_SAME_TYPE, stringFromUtf8(-1, "cat"));
+    datImmortalize(GFN_cat);
+
+    GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
+    datImmortalize(GFN_get);
+
     GFN_keyOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyOf"));
     datImmortalize(GFN_keyOf);
 
     GFN_nameOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "nameOf"));
     datImmortalize(GFN_nameOf);
+
+    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
+    datImmortalize(GFN_nth);
+
+    GFN_sizeOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sizeOf"));
+    datImmortalize(GFN_sizeOf);
 
     GFN_toInt = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toInt"));
     datImmortalize(GFN_toInt);
@@ -62,10 +91,22 @@ MOD_INIT(OneOff) {
 }
 
 /* Documented in header. */
+zvalue GFN_cat = NULL;
+
+/* Documented in header. */
+zvalue GFN_get = NULL;
+
+/* Documented in header. */
 zvalue GFN_keyOf = NULL;
 
 /* Documented in header. */
 zvalue GFN_nameOf = NULL;
+
+/* Documented in header. */
+zvalue GFN_nth = NULL;
+
+/* Documented in header. */
+zvalue GFN_sizeOf = NULL;
 
 /* Documented in header. */
 zvalue GFN_toInt = NULL;

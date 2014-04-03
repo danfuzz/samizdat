@@ -40,6 +40,12 @@ zvalue stringFromZchar(zchar value);
 zvalue stringFromZchars(zint size, const zchar *chars);
 
 /**
+ * Like `utf8FromString`, except this returns an allocated buffer containing
+ * the result.
+ */
+char *utf8DupFromString(zvalue string);
+
+/**
  * Encodes the given string as UTF-8 into the given buffer of the
  * given size in bytes. The buffer must be large enough to hold the entire
  * encoded result plus a terminating `'\0'` byte; if not, this function

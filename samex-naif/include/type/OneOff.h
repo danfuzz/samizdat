@@ -13,12 +13,23 @@
 
 #include "dat.h"
 
+/** Generic `cat(value, more*)`: Documented in spec. */
+extern zvalue GFN_cat;
+
+/** Generic `get(value, key)`: Documented in spec. */
+extern zvalue GFN_get;
 
 /** Generic `keyOf(value)`: Documented in spec. */
 extern zvalue GFN_keyOf;
 
 /** Generic `nameOf(value)`: Documented in spec. */
 extern zvalue GFN_nameOf;
+
+/** Generic `nth(sequence, n)`: Documented in spec. */
+extern zvalue GFN_nth;
+
+/** Generic `sizeOf(collection)`: Documented in spec. */
+extern zvalue GFN_sizeOf;
 
 /** Generic `toInt(value)`: Documented in spec. */
 extern zvalue GFN_toInt;
@@ -33,15 +44,36 @@ extern zvalue GFN_toString;
 extern zvalue GFN_valueOf;
 
 /**
+ * Calls the `get` generic.
+ */
+zvalue get(zvalue coll, zvalue key);
+
+/**
  * Calls `nameOf` on the given value.
  */
 zvalue nameOf(zvalue value);
 
 /**
- * Calls `toString` on the given value, returning the result as a `char *`.
- * The caller is responsible for `free()`ing the result. As a convenience,
- * this converts `NULL` into `"(null)"`.
+ * Calls `nameOf` on the given value, if it is defined. If not, returns `NULL`.
  */
-char *valToString(zvalue value);
+zvalue nameOfIfDefined(zvalue value);
+
+/**
+ * Calls `nth`, converting the given `zint` index to an `Int` value.
+ */
+zvalue nth(zvalue value, zint index);
+
+/**
+ * Calls `nth`, converting the given `zint` index to an `Int` value, and
+ * converting a non-void return value &mdash; which must be a single-character
+ * `String` &mdash; to a `zint` in the range of a `zchar`. A void return
+ * value gets converted to `-1`.
+ */
+zint nthChar(zvalue value, zint index);
+
+/**
+ * Calls `sizeOf` on the given value, converting the result to a `zint`.
+ */
+zint sizeOf(zvalue value);
 
 #endif

@@ -87,17 +87,6 @@ zint seqNthIndexStrict(zint size, zvalue n) {
 }
 
 /* Documented in header. */
-zvalue seqNth(zvalue coll, zint index) {
-    return GFN_CALL(nth, coll, intFromZint(index));
-}
-
-/* Documented in header. */
-zint seqNthChar(zvalue coll, zint index) {
-    zvalue result = seqNth(coll, index);
-    return (result == NULL) ? -1 : zcharFromString(result);
-}
-
-/* Documented in header. */
 zint seqPutIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
@@ -146,12 +135,12 @@ METH_IMPL(Sequence, collect) {
         return coll;
     }
 
-    zint size = collSize(coll);
+    zint size = sizeOf(coll);
     zvalue result[size];
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = seqNth(coll, i);
+        zvalue elem = nth(coll, i);
         zvalue one = (function == NULL)
             ? elem
             : FUN_CALL(function, elem);
@@ -181,7 +170,7 @@ METH_IMPL(Sequence, get) {
 METH_IMPL(Sequence, keyList) {
     zvalue seq = args[0];
 
-    zint size = collSize(seq);
+    zint size = sizeOf(seq);
     zvalue elems[size];
 
     for (zint i = 0; i < size; i++) {
@@ -197,7 +186,7 @@ METH_IMPL(Sequence, nextValue) {
     // `SequenceGenerator` value to represent the rest.
     zvalue seq = args[0];
     zvalue box = args[1];
-    zvalue first = seqNth(seq, 0);
+    zvalue first = nth(seq, 0);
 
     if (first == NULL) {
         // `seq` is empty.
@@ -243,9 +232,6 @@ MOD_INIT(Sequence) {
     MOD_USE(Collection);
     MOD_USE_NEXT(Generator);
 
-    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
-    datImmortalize(GFN_nth);
-
     GFN_reverse = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "reverse"));
     datImmortalize(GFN_reverse);
 
@@ -277,9 +263,6 @@ MOD_INIT(Sequence) {
         0, stringFromUtf8(-1, "Sequence.nthMapping"));
     datImmortalize(BI_Sequence_nthMapping);
 }
-
-/* Documented in header. */
-zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_reverse = NULL;

@@ -292,7 +292,7 @@ METH_IMPL(Map, cat) {
 METH_IMPL(Map, collect) {
     zvalue map = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
-    zint size = collSize(map);
+    zint size = sizeOf(map);
     zmapping mappings[size];
     zvalue result[size];
     zint at = 0;

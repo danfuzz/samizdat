@@ -31,9 +31,13 @@ PRIM_DEF(perOrder,                GFN_perOrder);
 PRIM_DEF(totEq,                   GFN_totEq);
 PRIM_DEF(totOrder,                GFN_totOrder);
 
-// Generic functions: One-Offs.
+// Generic functions: One-Offs, exported to the global environment.
+PRIM_DEF(cat,                     GFN_cat);
+PRIM_DEF(get,                     GFN_get);
 PRIM_DEF(keyOf,                   GFN_keyOf);
 PRIM_DEF(nameOf,                  GFN_nameOf);
+PRIM_DEF(nth,                     GFN_nth);
+PRIM_DEF(sizeOf,                  GFN_sizeOf);
 PRIM_DEF(toInt,                   GFN_toInt);
 PRIM_DEF(toNumber,                GFN_toNumber);
 PRIM_DEF(toString,                GFN_toString);
@@ -57,18 +61,13 @@ PRIM_DEF(store,                   GFN_store);
 PRIM_DEF(call,                    GFN_call);
 PRIM_DEF(canCall,                 GFN_canCall);
 
-// Generic functions: `Collection` protocol, intended for modularization,
-// with a couple exported to the global environment.
-PRIM_DEF(cat,                     GFN_cat);
+// Generic functions: `Collection` protocol, intended for modularization.
 PRIM_DEF(Collection_del,          GFN_del);
-PRIM_DEF(get,                     GFN_get);
 PRIM_DEF(Collection_keyList,      GFN_keyList);
 PRIM_DEF(Collection_nthMapping,   GFN_nthMapping);
 PRIM_DEF(Collection_put,          GFN_put);
-PRIM_DEF(Collection_sizeOf,       GFN_sizeOf);
 
 // Generic functions: `Sequence` protocol, intended for modularization.
-PRIM_DEF(Sequence_nth,            GFN_nth);
 PRIM_DEF(Sequence_reverse,        GFN_reverse);
 PRIM_DEF(Sequence_sliceExclusive, GFN_sliceExclusive);
 PRIM_DEF(Sequence_sliceInclusive, GFN_sliceInclusive);

@@ -22,9 +22,6 @@
 #include <stdbool.h>
 
 
-/** Generic `nth(sequence, n)`: Documented in spec. */
-extern zvalue GFN_nth;
-
 /** Generic `reverse(sequence)`: Documented in spec. */
 extern zvalue GFN_reverse;
 
@@ -59,19 +56,6 @@ zint seqNthIndexLenient(zvalue key);
  * blatantly-invalid `n`s (non-int) cause runtime termination.
  */
 zint seqNthIndexStrict(zint size, zvalue n);
-
-/**
- * Calls `nth`, converting the given `zint` index to an `Int` value.
- */
-zvalue seqNth(zvalue coll, zint index);
-
-/**
- * Calls `nth`, converting the given `zint` index to an `Int` value, and
- * converting a non-void return value &mdash; which must be a single-character
- * `String` &mdash; to a `zint` in the range of a `zchar`. A void return
- * value gets converted to `-1`.
- */
-zint seqNthChar(zvalue coll, zint index);
 
 /**
  * Returns an index to use for an `put` style function, given a collection

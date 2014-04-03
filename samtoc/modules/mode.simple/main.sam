@@ -163,7 +163,7 @@ fn mainClosureMaker(node, interner) {
                 ( name in varRefs, id in ids ->
                     <> CodeGen::makeComment("\%q(name)",
                         CodeGen::makeCall("makeResult",
-                            CodeGen::makeCall("collGet",
+                            CodeGen::makeCall("get",
                                 "GLOBALS", "LIT_\(id)")))
                 )*)));
 

@@ -33,14 +33,17 @@ given `n`.
 
 #### `nth(sequence, n) <> . | void`
 
+(Implementation of `OneOff` generic function.)
+
 Returns the nth (zero-based) element of the sequence.
-Returns void if `n < 0` or `n >= #sequence`. It is an error
-(terminating the runtime) if `n` is not an `Int`.
 
 #### `reverse(sequence) <> sequence`
 
 Returns a sequence just like the given one, except with elements in
 the opposite order.
+
+**Syntax Note:** This is the function that underlies the `^sequence`
+syntactic form (prefix `^` operator).
 
 #### `sliceExclusive(sequence, start, end?) <> sequence | void`
 

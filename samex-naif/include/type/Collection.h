@@ -20,16 +20,11 @@
 
 #include "dat.h"
 #include "type/Generic.h"
+#include "type/OneOff.h"
 
-
-/** Generic `cat(collection, more*)`: Documented in spec. */
-extern zvalue GFN_cat;
 
 /** Generic `del(collection, key)`: Documented in spec. */
 extern zvalue GFN_del;
-
-/** Generic `get(collection, key)`: Documented in spec. */
-extern zvalue GFN_get;
 
 /** Generic `nthMapping(collection, n)`: Documented in spec. */
 extern zvalue GFN_nthMapping;
@@ -40,27 +35,14 @@ extern zvalue GFN_keyList;
 /** Generic `put(collection, key, value)`: Documented in spec. */
 extern zvalue GFN_put;
 
-/** Generic `sizeOf(collection)`: Documented in spec. */
-extern zvalue GFN_sizeOf;
-
 /**
  * Calls the `del` generic.
  */
 zvalue collDel(zvalue coll, zvalue key);
 
 /**
- * Calls the `get` generic.
- */
-zvalue collGet(zvalue coll, zvalue key);
-
-/**
  * Calls the `put` generic.
  */
 zvalue collPut(zvalue coll, zvalue key, zvalue value);
-
-/**
- * Calls `sizeOf` on the given collection, converting the result to a `zint`.
- */
-zint collSize(zvalue coll);
 
 #endif

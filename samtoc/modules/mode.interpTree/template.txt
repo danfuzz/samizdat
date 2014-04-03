@@ -21,7 +21,7 @@ static zvalue programTree(void) {
 }
 
 static zvalue lookup(zvalue context, const char *name) {
-    return collGet(context, stringFromUtf8(-1, name));
+    return get(context, stringFromUtf8(-1, name));
 }
 
 zvalue eval(zvalue context) {

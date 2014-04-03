@@ -117,7 +117,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 
     // Call `ModuleSystem::run` to load and evaluate the module, and call
     // the `main` function bound in the result.
-    zvalue runFn = collGet(moduleSystem, STR_run);
+    zvalue runFn = get(moduleSystem, STR_run);
     zvalue result = FUN_CALL(runFn,
         libraryPath, PRIMITIVE_ENVIRONMENT, TOK_Null,
         libraryPath, PRIMITIVE_ENVIRONMENT);

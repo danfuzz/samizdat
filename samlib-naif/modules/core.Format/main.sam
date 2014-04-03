@@ -32,7 +32,7 @@ fn intBody(value, base) {
         ifIs { <> perEq(v, 0) }
             { return text };
 
-        def digit = Sequence::nth(DIGIT_CHARS, Number::mod(v, base));
+        def digit = nth(DIGIT_CHARS, Number::mod(v, base));
         text := cat(digit, text);
         v := Number::div(v, base)
     }
@@ -114,7 +114,7 @@ fn isIdentifier(string) {
     ifIs { <> eq(string, "") }
         { return };
 
-    ifNot { <> get(IDENTIFIER_STARTS, Sequence::nth(string, 0)) }
+    ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
     Generator::filterPump(string) { ch ->
@@ -253,7 +253,7 @@ fn Value_sourceGeneral(value, adorn) {
 
     def type = typeOf(value);
     def typeStr = sourceGeneral(type, true);
-    def prefix = ifIs { <> eq("@", Sequence::nth(typeStr, 0)) }
+    def prefix = ifIs { <> eq("@", nth(typeStr, 0)) }
         {
             ## The `sliceInclusive` gets rid of the first `@` from the type
             ## representation, which itself starts with `@@` (see above).

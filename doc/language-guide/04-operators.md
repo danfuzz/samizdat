@@ -219,8 +219,8 @@ inner expression's result.
 #### Collection size &mdash; `#expression`
 
 Placing a hash mark (also known as a number sign or pound sign) in front
-of an expression is equivalent to calling `Collection::sizeOf` on the
-evaluated result of that expression.
+of an expression is equivalent to calling `sizeOf` on the evaluated result
+of that expression.
 
 #### Sequence reverse &mdash; `^expression`
 

@@ -84,7 +84,7 @@ typedef struct {
     /** The `"formals"` mapping of `defMap`, converted for easier use. */
     zformal formals[LANG_MAX_FORMALS];
 
-    /** The result of `collSize(formals)`. */
+    /** The result of `sizeOf(formals)`. */
     zint formalsSize;
 
     /** The number of actual names in `formals`, plus one for a `yieldDef`. */
@@ -112,8 +112,8 @@ static ClosureInfo *getInfo(zvalue closure) {
  * storage in the cache.
  */
 static zvalue buildCachedClosure(zvalue defMap) {
-    zvalue formals = collGet(defMap, STR_formals);
-    zint formalsSize = collSize(formals);
+    zvalue formals = get(defMap, STR_formals);
+    zint formalsSize = sizeOf(formals);
 
     // Build out most of the result.
 
@@ -122,9 +122,9 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     info->defMap = defMap;
     info->formalsSize = formalsSize;
-    info->statements = collGet(defMap, STR_statements);
-    info->yield = collGet(defMap, STR_yield);
-    info->yieldDef = collGet(defMap, STR_yieldDef);
+    info->statements = get(defMap, STR_statements);
+    info->yield = get(defMap, STR_yield);
+    info->yieldDef = get(defMap, STR_yieldDef);
 
     // Validate and transform all the formals.
 
@@ -139,12 +139,12 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
-        zvalue name = collGet(formal, STR_name);
-        zvalue repeat = collGet(formal, STR_repeat);
+        zvalue name = get(formal, STR_name);
+        zvalue repeat = get(formal, STR_repeat);
         zrepeat rep;
 
         if (name != NULL) {
-            if (collGet(names, name) != NULL) {
+            if (get(names, name) != NULL) {
                 die("Duplicate formal name: %s", valDebugString(name));
             }
             names = collPut(names, name, name);
@@ -154,10 +154,10 @@ static zvalue buildCachedClosure(zvalue defMap) {
         if (repeat == NULL) {
             rep = REP_NONE;
         } else {
-            if (collSize(repeat) != 1) {
+            if (sizeOf(repeat) != 1) {
                 die("Invalid repeat modifier: %s", valDebugString(repeat));
             }
-            switch (seqNthChar(repeat, 0)) {
+            switch (nthChar(repeat, 0)) {
                 case '*': rep = REP_STAR;  break;
                 case '+': rep = REP_PLUS;  break;
                 case '?': rep = REP_QMARK; break;
@@ -181,7 +181,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
  * Gets the cached `Closure` associated with the given node.
  */
 static zvalue getCachedClosure(zvalue node) {
-    zvalue result = collGet(nodeCache, node);
+    zvalue result = get(nodeCache, node);
 
     if (CHATTY_CACHEY) {
         static int hits = 0;
@@ -310,7 +310,7 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
     // Evaluate the statements, updating the frame as needed.
 
     zvalue statements = info->statements;
-    zint statementsSize = collSize(statements);
+    zint statementsSize = sizeOf(statements);
     zvalue statementsArr[statementsSize];
     arrayFromList(statementsArr, statements);
 
@@ -375,7 +375,7 @@ METH_IMPL(Closure, canCall) {
 /* Documented in header. */
 METH_IMPL(Closure, debugString) {
     zvalue closure = args[0];
-    zvalue name = collGet(getInfo(closure)->defMap, STR_name);
+    zvalue name = get(getInfo(closure)->defMap, STR_name);
     zvalue nameString = (name == NULL)
         ? stringFromUtf8(-1, "(unknown)")
         : GFN_CALL(debugString, name);
@@ -399,7 +399,7 @@ METH_IMPL(Closure, gcMark) {
 /* Documented in header. */
 METH_IMPL(Closure, nameOf) {
     zvalue closure = args[0];
-    return collGet(getInfo(closure)->defMap, STR_name);
+    return get(getInfo(closure)->defMap, STR_name);
 }
 
 /** Initializes the module. */

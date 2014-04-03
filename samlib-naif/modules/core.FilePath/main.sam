@@ -6,7 +6,6 @@
 ## Path string utilities
 ##
 
-def Collection = moduleLoad(["core", "Collection"]);
 def Number     = moduleLoad(["proto", "Number"]);
 def Sequence   = moduleLoad(["core", "Sequence"]);
 
@@ -32,7 +31,7 @@ fn checkPath(path) {
 fn directoryOf(path) {
     checkPath(path);
 
-    var at = Collection::sizeOf(path);
+    var at = sizeOf(path);
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
@@ -67,7 +66,7 @@ fn directoryOf(path) {
 fn fileOf(path) {
     checkPath(path);
 
-    var at = Collection::sizeOf(path);
+    var at = sizeOf(path);
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.

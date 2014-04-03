@@ -26,18 +26,14 @@
  */
 
 /**
- * Gets the name of the given value if it has a name. Otherwise returns
- * the value.
+ * Returns `value` if it is a string; otherwise calls `debugString` on it.
  */
-static zvalue nameOrValue(zvalue value) {
-    if (GFN_CALL(canCall, GFN_nameOf, value)) {
-        zvalue name = GFN_CALL(nameOf, value);
-        if (name != NULL) {
-            return name;
-        }
+static zvalue ensureString(zvalue value) {
+    if (hasType(value, TYPE_String)) {
+        return value;
     }
 
-    return value;
+    return GFN_CALL(debugString, value);
 }
 
 /**
@@ -46,22 +42,14 @@ static zvalue nameOrValue(zvalue value) {
  */
 static char *callReporter(void *state) {
     zvalue value = state;
+    zvalue name = nameOfIfDefined(value);
 
-    value = nameOrValue(value);
-
-    if (GFN_CALL(canCall, GFN_toString, value)) {
-        return valToString(value);
+    if (name != NULL) {
+        return utf8DupFromString(ensureString(name));
     }
 
-    zvalue type = nameOrValue(typeOf(value));
-    char *typeString;
+    char *typeString = valDebugString(typeOf(value));
     char *result;
-
-    if (GFN_CALL(canCall, GFN_toString, value)) {
-        typeString = valToString(type);
-    } else {
-        typeString = valDebugString(type);
-    }
 
     asprintf(&result, "(anonymous %s)", typeString);
     free(typeString);
@@ -114,7 +102,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 zvalue funApply(zvalue function, zvalue args) {
-    zint argCount = collSize(args);
+    zint argCount = sizeOf(args);
     zvalue argsArray[argCount];
 
     arrayFromList(argsArray, args);

@@ -8,8 +8,49 @@ Some generic functions are effectivly protocols in and of themselves,
 in that binding to them doesn't particularly imply that a value binds
 to any others. This section describes those generics.
 
+All of these generics are available in the standard global environment.
+
+Note that some of these are also used as part of larger protocols, e.g.
+`get`. These are noted in the documentation for those protocols.
+
+
 <br><br>
 ### Generic Function Definitions: One-Offs
+
+#### `cat(value, more*) <> value`
+
+Returns the concatenation of all of the given values. The values
+must all be of the same type, and the result is expected to be of the same
+type as the given values. It is an error (terminating the runtime) if one of
+the arguments is of a different type. This function is intended for
+"collection-like" values which have constituent parts of some sort.
+
+To the extent that a value is unconstrained in terms of its constituent
+elements and their arrangement, the result of concatenation consists
+of the elements of all the original values, in order, in the order of the
+arguments.
+
+For values that have element constraints, a concatenation will not
+necessarily contain all the original constituent elements, and the order may
+be different. See individual implementation docs for details.
+
+**Note:** To account for the possibility of passing *no* arguments to
+concatenate (e.g. when handling a list of arguments generically), include
+a first argument of the empty value of the desired type, e.g.
+`""` to ensure string concatenation.
+
+**Note:** The argument type restriction is enforced by the generic function
+itself, which is a "unitype" generic.
+
+#### `get(value, key) <> . | void`
+
+Returns the constituent element of the value that corresponds to the given
+`key`. `key` is an arbitrary value. Returns void if there is no unique
+corresponding value for the given `key` (including if `key` is not
+bound in `value` at all).
+
+This function is intended for "collection-like" values which have constituent
+parts of some sort.
 
 #### `keyOf(value) <> .`
 
@@ -25,6 +66,23 @@ it is preferable to cause an error if it is bound but inapplicable.
 Some values have an associated name, or an optional associated name.
 This generic provides access to that name. There is no restriction
 on the composition (type, etc.) of a name.
+
+#### `nth(value, n) <> . | void`
+
+Returns the nth (zero-based) element of the given value.
+Returns void if `n < 0` or `n >= #value`. It is an error
+(terminating the runtime) if `n` is not an `Int`.
+
+This function is intended for "sequence-like" values which have
+strongly-ordered constituent parts of some sort.
+
+#### `sizeOf(value) <> int`
+
+Returns the number of elements in the given value. This function is intended
+for "collection-like" values which have constituent parts of some sort.
+
+**Syntax Note:** This is the function underlying the `#value` syntactic
+form (prefix `#` operator).
 
 #### `toInt(value) <> int`
 
