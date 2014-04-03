@@ -44,8 +44,8 @@ def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
 
-def safeVarName = intraLoad("safeVarName")::safeVarName;
-def tokenize    = intraLoad("tokenize")::tokenize;
+def safeVar  = intraLoad("safeVar");
+def tokenize = intraLoad("tokenize")::tokenize;
 
 
 ##
@@ -966,87 +966,94 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     Generator::filterPump(opExList) { opEx ->
-        def op = opEx::op;
-        def expr = opEx::expr;
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
-
-        result := makeCall(resolvedOp, result, expr)
+        def resolvedOp = get(BINARY_OPERATORS, typeOf(opEx::op));
+        result := makeCall(resolvedOp, result, opEx::expr)
     };
 
     <> result
 };
 
 ## Helper for parsing binary comparison operator expressions, which puts
-## together a sequence of function calls. This is like `makeBinaryCalls`,
-## except that a void comparison result (that is a logical-false result)
-## causes the overall call result to be void (and not become a hard failure).
-## This is done by wrapping the entire expression in a thunk-call, and
-## transforming each comparison other than the last into an `ifValueOr` where
-## the else clause is an exit of the thunk. For example:
+## together a sequence of function calls. When given no operators or just one
+## operator, this is the same as calling `makeBinaryCalls` (which is in fact
+## called to do the work). For more operators, the transformation is a bit
+## less straightforward, so as to enable the specified chained comparison
+## behavior. This is done by turning the entire expression into a thunk-call
+## of a nested `ifIs ...` calls, with local variable bindings for every term
+## to be tested other than the final one. For example:
 ##
 ## ```
 ## x < y <= z == q
 ## ```
 ## =>
 ## ```
-## eq(le(lt(x, y), z), q)
-## ```
-## =>
-## ```
-## { <voided> ->
-##     <> eq(
-##         ifValueOr
-##             { <> le(
-##                 ifValueOr { <> lt(x, y) } { <voided> },
-##                 z),
-##             }
-##             { <voided> }
-##         q)
+## {
+##     def v1 = x;
+##     def v2 = y;
+##     <> ifIs { <> lt(v1, v2) }
+##         {
+##             def v3 = z;
+##             <> ifIs { <> le(v2, v3) }
+##                 { <> eq(v3, q) }
+##         }
 ## }()
 ## ```
 fn makeCompareCalls(firstEx, opExList) {
-    ## Use `makeBinaryCalls` to do the initial processing. This avoids some
-    ## duplication of logic, and this result is what's used directly in the
-    ## simple cases.
+    ## Use `makeBinaryCalls` to do the initial processing. This result is
+    ## what's used directly in the simple cases. In other cases, this just
+    ## provides a convenient unified expression node to scrutinize for safe
+    ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
-    def opCount = Collection::sizeOf(opExList);
 
-    ifIs { <> perLe(opCount, 1) }
+    ifIs { <> le(Collection::sizeOf(opExList), 1) }
         {
-            ## Use the straightforward `makeBinaryCalls` if this turns out to
-            ## be a single-op expression or not a comparison expression at all.
+            ## Trivial case of zero or one operator. Just use the result of
+            ## the call to `makeBinaryCalls`.
             return baseResult
         };
 
-    ## Nontrivial case. We need to transform the inner first call arguments.
+    ## Nontrivial case. We recursively transform all the `opEx` pairs into
+    ## nested closures. We then tweak the outermost closure to have a
+    ## declaration for a variable binding the first expression, and make the
+    ## final result be a no-argument call of that closure.
 
-    def yieldName = safeVarName("voided", baseResult);
-    def yieldCall = makeThunk(makeJump(makeVarRef(yieldName)));
-
-    fn transform(tree, layer) {
-        ifIs { <> le(layer, 1) }
-            { return tree };
-
-        ## We are looking at `@call{function, actuals: [firstActual, ...]}`.
-        def actuals = get_actuals(tree);
-        def firstActual = makeCall(REFS::ifValueOr,
-            makeThunk(
-                transform(Sequence::nth(actuals, 0), Number::sub(layer, 1))),
-            yieldCall);
-
-        <> @call{
-            dataOf(tree)*,
-            actuals: [firstActual, Sequence::sliceInclusive(actuals, 1)*]
-        }
+    var varIndex = safeVar::safeVarIndex("compareValue", baseResult);
+    fn nextName() {
+        def result = safeVar::makeVarName("compareValue", varIndex);
+        varIndex := Number::add(varIndex, 1);
+        <> result
     };
+
+    fn transform(leftRef, opEx, rest*) {
+        def resolvedOp = get(BINARY_OPERATORS, typeOf(opEx::op));
+
+        <> ifIs { <> eq(rest, []) }
+            { <> makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
+            {
+                def rightName = nextName();
+                def rightRef = makeVarRef(rightName);
+                <> @closure{
+                    formals: [],
+                    statements: [makeVarDef(rightName, opEx::expr)],
+                    yield: makeCall(REFS::ifIs,
+                        makeThunk(makeCall(resolvedOp, leftRef, rightRef)),
+                        transform(rightRef, rest*))
+                }
+            }
+    };
+
+    def firstName = nextName();
+    def closure = transform(makeVarRef(firstName), opExList*);
 
     <> makeCall(
         @closure{
             formals: [],
-            yieldDef: yieldName,
-            statements: [],
-            yield: transform(baseResult, opCount)
-        });
+            statements: [
+                makeVarDef(firstName, firstEx),
+                closure::statements*
+            ],
+            yield: closure::yield
+        })
 };
 
 ## Helper for string interpolation: Parses the two kinds of interpolation,
@@ -2112,7 +2119,7 @@ def parSwitchExpression = {:
         ## If there is no specified formal, then pick a safe one, that is,
         ## a name not referenced in the case clauses.
         def testVar = ifValueOr { <> testClause::formal::name }
-            { <> safeVarName("switchValue", caseMap) };
+            { <> safeVar::safeVarName("switchValue", caseMap) };
 
         def innerIf = makeCall(REFS::ifValue,
             makeThunk(makeGet(caseMap, makeVarRef(testVar))),

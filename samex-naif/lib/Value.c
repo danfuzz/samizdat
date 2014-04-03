@@ -26,7 +26,7 @@ FUN_IMPL_DECL(eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return valEq(v1, v2) ? v2 : NULL;
+    return valEq(v1, v2) ? v1 : NULL;
 }
 
 /* Documented in spec. */
@@ -34,7 +34,7 @@ FUN_IMPL_DECL(ge) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return (valOrder(v1, v2) >= 0) ? v2 : NULL;
+    return (valOrder(v1, v2) >= 0) ? v1 : NULL;
 }
 
 /* Documented in spec. */
@@ -42,7 +42,7 @@ FUN_IMPL_DECL(gt) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return (valOrder(v1, v2) > 0) ? v2 : NULL;
+    return (valOrder(v1, v2) > 0) ? v1 : NULL;
 }
 
 /* Documented in spec. */
@@ -58,7 +58,7 @@ FUN_IMPL_DECL(le) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return (valOrder(v1, v2) <= 0) ? v2 : NULL;
+    return (valOrder(v1, v2) <= 0) ? v1 : NULL;
 }
 
 /* Documented in spec. */
@@ -66,7 +66,7 @@ FUN_IMPL_DECL(lt) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return (valOrder(v1, v2) < 0) ? v2 : NULL;
+    return (valOrder(v1, v2) < 0) ? v1 : NULL;
 }
 
 /* Documented in spec. */
@@ -82,5 +82,5 @@ FUN_IMPL_DECL(ne) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return valEq(v1, v2) ? NULL : v2;
+    return valEq(v1, v2) ? NULL : v1;
 }

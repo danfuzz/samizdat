@@ -95,7 +95,7 @@ METH_IMPL(DerivedData, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return valEq(getInfo(v1)->data, getInfo(v2)->data) ? v2 : NULL;
+    return valEq(getInfo(v1)->data, getInfo(v2)->data) ? v1 : NULL;
 }
 
 /* Documented in header. */

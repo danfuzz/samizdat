@@ -178,5 +178,5 @@ fn main(args*) {
     Peg::apply(evalExpressions, exprString);
 };
 
-def args = ([] != ARGUMENTS) | ["100+7*2-(8000/-10)"];
+def args = (ARGUMENTS != []) | ["100+7*2-(8000/-10)"];
 <> main(args*)

@@ -414,7 +414,7 @@ METH_IMPL(String, totEq) {
         }
     }
 
-    return v2;
+    return v1;
 }
 
 /* Documented in header. */

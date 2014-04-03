@@ -108,7 +108,7 @@ fn makeInclusiveRange(firstValue, limit, optIncrement?) {
 
 ## Documented in spec.
 fn ClosedRange_nextValue(range, box) {
-    <> ifValue { <> le(0, range::size) }
+    <> ifValue { <> ge(range::size, 0) }
         { size ->
             def firstValue = range::firstValue;
             def increment = range::increment;

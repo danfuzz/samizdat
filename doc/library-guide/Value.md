@@ -10,7 +10,7 @@ Value (the base type)
 #### `perEq(value, other) <> . | void`
 
 Performs a per-type equality comparison of the two given values, using the
-per-type order. This should return `value2` if the two values are to be
+per-type order. This should return `value` if the two values are to be
 considered "equal," return void if the two values are to be considered
 "unequal," or fail terminally if the two values are considered "incomparable."
 
@@ -20,6 +20,8 @@ calls through to `totEq` (see which).
 
 **Note:** This is the generic function which underlies the implementation
 of all per-type equality comparison functions.
+
+**Syntax Note:** Used in the translation of `expression == expression` forms.
 
 #### `perOrder(value, other) <> int`
 
@@ -35,14 +37,14 @@ The default implementation calls through to `totOrder` (see which).
 **Note:** This is the generic function which underlies the implementation
 of all per-type ordering functions.
 
-#### `totEq(value1, value2) <> . | void`
+#### `totEq(value, other) <> . | void`
 
 Performs a type-specific equality comparison of the two given
 values, using the "total value ordering" order. When called, the two values
 are guaranteed to be the same type. If a client calls with different-typed
 values, it is a fatal error (terminating the runtime).
 
-The return value is either `value1` (or `value2` really) if the two values
+The return value is either `value` (or `other` really) if the two values
 are in fact identical, or `void` if they are not.
 
 Each type specifies its own total-order equality check. See specific types for
@@ -60,7 +62,7 @@ equality much quicker than determining order.
 **Note:** This is the generic function which underlies the implementation
 of all cross-type equality comparison functions.
 
-#### `totOrder(value1, value2) <> int`
+#### `totOrder(value, other) <> int`
 
 Returns the type-specific order of the two given values, using the "total
 value ordering" order. When called, the two values are guaranteed to be the
@@ -104,25 +106,25 @@ the value's associated secret (associated with the type). If the secret
 does not match (including if it was not passed at all), then this function
 returns void.
 
-#### `eq(value1, value2) <> logic`
+#### `eq(value, other) <> logic`
 
-Checks for equality, using the total order of values. Returns `value2` if the
+Checks for equality, using the total order of values. Returns `value` if the
 two given values are identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
 
-#### `ge(value1, value2) <> logic`
+#### `ge(value, other) <> logic`
 
 Checks for a greater-than-or-equal relationship, using the total order of
-values. Returns `value2` if the first value orders after the second or is
+values. Returns `value` if the first value orders after the second or is
 identical to it. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \>= expression` forms.
 
-#### `gt(value1, value2) <> logic`
+#### `gt(value, other) <> logic`
 
 Checks for a greater-than relationship, using the total order of values.
-Returns `value2` if the first value orders after the second. Otherwise
+Returns `value` if the first value orders after the second. Otherwise
 returns void.
 
 **Syntax Note:** Used in the translation of `expression \> expression` forms.
@@ -134,18 +136,18 @@ Returns `value` if it has type `type`. Otherwise returns void.
 In order to "have the type," `value` must either be an instance of type
 `type` per se, or be an instance of a subtype of `type`.
 
-#### `le(value1, value2) <> logic`
+#### `le(value, other) <> logic`
 
 Checks for a less-than-or-equal relationship, using the total order of values.
-Returns `value2` if the first value orders before the second or is identical
+Returns `value` if the first value orders before the second or is identical
 to it. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \<= expression` forms.
 
-#### `lt(value1, value2) <> logic`
+#### `lt(value, other) <> logic`
 
 Checks for a less-than relationship, using the total order of values.
-Returns `value2` if the first value orders before the second. Otherwise
+Returns `value` if the first value orders before the second. Otherwise
 returns void.
 
 **Syntax Note:** Used in the translation of `expression \< expression` forms.
@@ -164,9 +166,9 @@ equivalences hold for Samizdat Layer 0 source code:
 **Syntax Note:** Used in the translation of `@(type)(value)`
 (and related) forms.
 
-#### `ne(value1, value2) <> logic`
+#### `ne(value, other) <> logic`
 
-Checks for inequality, using the total order of values. Returns `value2` if
+Checks for inequality, using the total order of values. Returns `value` if
 the two given values are not identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
@@ -180,65 +182,75 @@ of type `Type`.
 <br><br>
 ### In-Language Definitions
 
-#### `perGe(value1, value2) <> logic`
+#### `perGe(value, other) <> logic`
 
-Per-type comparison, which calls `perOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered greater than or equal
-to `value1`.
+Per-type comparison, which calls `perOrder(value, other)` to
+determine result. Returns `value` if it is considered greater than or equal
+to `other`.
 
-#### `perGt(value1, value2) <> logic`
+**Syntax Note:** Used in the translation of `expression >= expression` forms.
 
-Per-type comparison, which calls `perOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered greater than `value1`.
+#### `perGt(value, other) <> logic`
 
-#### `perLe(value1, value2) <> logic`
+Per-type comparison, which calls `perOrder(value, other)` to
+determine result. Returns `value` if it is considered greater than `other`.
 
-Per-type comparison, which calls `perOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered less than or equal
-to `value1`.
+**Syntax Note:** Used in the translation of `expression > expression` forms.
 
-#### `perLt(value1, value2) <> logic`
+#### `perLe(value, other) <> logic`
 
-Per-type comparison, which calls `perOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered less than `value1`.
+Per-type comparison, which calls `perOrder(value, other)` to
+determine result. Returns `value` if it is considered less than or equal
+to `other`.
 
-#### `perNe(value1, value2) <> logic`
+**Syntax Note:** Used in the translation of `expression <= expression` forms.
 
-Per-type comparison, which calls `perEq(value1, value2)` to
-determine result. Returns `value2` if it is *not* considered equal to `value1`.
+#### `perLt(value, other) <> logic`
 
-#### `totGe(value1, value2) <> logic`
+Per-type comparison, which calls `perOrder(value, other)` to
+determine result. Returns `value` if it is considered less than `other`.
 
-Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered greater than or equal
-to `value1`. It is a fatal error (terminating the runtime) if the two
+**Syntax Note:** Used in the translation of `expression < expression` forms.
+
+#### `perNe(value, other) <> logic`
+
+Per-type comparison, which calls `perEq(value, other)` to
+determine result. Returns `value` if it is *not* considered equal to `other`.
+
+**Syntax Note:** Used in the translation of `expression != expression` forms.
+
+#### `totGe(value, other) <> logic`
+
+Type-specific total-order comparison, which calls `totOrder(value, other)` to
+determine result. Returns `value` if it is considered greater than or equal
+to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different types.
 
-#### `totGt(value1, value2) <> logic`
+#### `totGt(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered greater than `value1`.
+Type-specific total-order comparison, which calls `totOrder(value, other)` to
+determine result. Returns `value` if it is considered greater than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
-#### `totLe(value1, value2) <> logic`
+#### `totLe(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered less than or equal
-to `value1`. It is a fatal error (terminating the runtime) if the two
+Type-specific total-order comparison, which calls `totOrder(value, other)` to
+determine result. Returns `value` if it is considered less than or equal
+to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different types.
 
-#### `totLt(value1, value2) <> logic`
+#### `totLt(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered less than `value1`.
+Type-specific total-order comparison, which calls `totOrder(value, other)` to
+determine result. Returns `value` if it is considered less than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
-#### `totNe(value1, value2) <> logic`
+#### `totNe(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totEq(value1, value2)` to
-determine result. Returns `value2` if it is *not* considered equal to `value1`.
+Type-specific total-order comparison, which calls `totEq(value, other)` to
+determine result. Returns `value` if it is *not* considered equal to `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
