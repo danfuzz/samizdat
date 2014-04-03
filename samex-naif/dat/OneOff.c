@@ -31,13 +31,13 @@ zvalue nameOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue seqNth(zvalue coll, zint index) {
+zvalue nth(zvalue coll, zint index) {
     return GFN_CALL(nth, coll, intFromZint(index));
 }
 
 /* Documented in header. */
 zint nthChar(zvalue coll, zint index) {
-    zvalue result = seqNth(coll, index);
+    zvalue result = nth(coll, index);
     return (result == NULL) ? -1 : zcharFromString(result);
 }
 

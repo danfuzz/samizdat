@@ -61,7 +61,7 @@ zvalue nameOf(zvalue value);
 /**
  * Calls `nth`, converting the given `zint` index to an `Int` value.
  */
-zvalue seqNth(zvalue coll, zint index);
+zvalue nth(zvalue coll, zint index);
 
 /**
  * Calls `nth`, converting the given `zint` index to an `Int` value, and

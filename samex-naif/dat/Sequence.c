@@ -140,7 +140,7 @@ METH_IMPL(Sequence, collect) {
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = seqNth(coll, i);
+        zvalue elem = nth(coll, i);
         zvalue one = (function == NULL)
             ? elem
             : FUN_CALL(function, elem);
@@ -186,7 +186,7 @@ METH_IMPL(Sequence, nextValue) {
     // `SequenceGenerator` value to represent the rest.
     zvalue seq = args[0];
     zvalue box = args[1];
-    zvalue first = seqNth(seq, 0);
+    zvalue first = nth(seq, 0);
 
     if (first == NULL) {
         // `seq` is empty.

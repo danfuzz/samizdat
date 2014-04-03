@@ -21,7 +21,7 @@ FUN_IMPL_DECL(interpolate) {
 
     switch (collSize(result)) {
         case 0: return NULL;
-        case 1: return seqNth(result, 0);
+        case 1: return nth(result, 0);
         default: {
             die("Attempt to interpolate multiple values.");
         }

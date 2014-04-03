@@ -46,7 +46,7 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    zvalue result = seqNth(state->tokens, state->at);
+    zvalue result = nth(state->tokens, state->at);
     state->at++;
 
     return result;
@@ -60,7 +60,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
         return NULL;
     }
 
-    zvalue result = seqNth(state->tokens, state->at);
+    zvalue result = nth(state->tokens, state->at);
 
     if (!hasType(result, type)) {
         return NULL;
@@ -214,7 +214,7 @@ static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     } while (0)
 
     for (zint i = 0; i < sz; i++) {
-        zvalue one = seqNth(actuals, i);
+        zvalue one = nth(actuals, i);
         zvalue node = GET(interpolate, one);
         if (node != NULL) {
             addPendingToCooked();
@@ -846,7 +846,7 @@ DEF_PARSE(map) {
 
     switch (collSize(mappings)) {
         case 0:  return makeLiteral(EMPTY_MAP);
-        case 1:  return seqNth(mappings, 0);
+        case 1:  return nth(mappings, 0);
         default: return makeCall(REFS(cat), mappings);
     }
 }
@@ -984,7 +984,7 @@ DEF_PARSE(unaryExpression) {
 
     zint size = collSize(postfixes);
     for (zint i = 0; i < size; i++) {
-        zvalue one = seqNth(postfixes, i);
+        zvalue one = nth(postfixes, i);
         if (hasType(one, TYPE_List)) {
             result = makeCallOrApply(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
@@ -1134,7 +1134,7 @@ DEF_PARSE(programBody) {
     zint size = collSize(rawStatements);
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = seqNth(rawStatements, i);
+        zvalue one = nth(rawStatements, i);
         if (hasType(one, TYPE_topDeclaration)) {
             tops = listAppend(tops, collGet(one, STR_top));
             mains = listAppend(mains, collGet(one, STR_main));
