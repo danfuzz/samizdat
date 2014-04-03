@@ -69,7 +69,7 @@ zvalue seqNth(zvalue coll, zint index);
  * `String` &mdash; to a `zint` in the range of a `zchar`. A void return
  * value gets converted to `-1`.
  */
-zint seqNthChar(zvalue coll, zint index);
+zint nthChar(zvalue coll, zint index);
 
 /**
  * Calls `toString` on the given value, returning the result as a `char *`.

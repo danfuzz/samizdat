@@ -36,7 +36,7 @@ zvalue seqNth(zvalue coll, zint index) {
 }
 
 /* Documented in header. */
-zint seqNthChar(zvalue coll, zint index) {
+zint nthChar(zvalue coll, zint index) {
     zvalue result = seqNth(coll, index);
     return (result == NULL) ? -1 : zcharFromString(result);
 }
