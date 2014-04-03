@@ -42,6 +42,9 @@ Returns the nth (zero-based) element of the sequence.
 Returns a sequence just like the given one, except with elements in
 the opposite order.
 
+**Syntax Note:** This is the function that underlies the `^sequence`
+syntactic form (prefix `^` operator).
+
 #### `sliceExclusive(sequence, start, end?) <> sequence | void`
 
 Returns a sequence of the same type as `sequence`, consisting of an
