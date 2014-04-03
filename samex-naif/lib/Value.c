@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Int.h"
 #include "type/Type.h"
 #include "type/Value.h"
 
@@ -83,4 +84,12 @@ FUN_IMPL_DECL(ne) {
     zvalue v2 = args[1];
 
     return valEq(v1, v2) ? NULL : v1;
+}
+
+/* Documented in spec. */
+FUN_IMPL_DECL(order) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return intFromZint(valOrder(v1, v2));
 }

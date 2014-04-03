@@ -59,6 +59,7 @@
     note,
     nth,
     optValue,
+    order,
     perEq,
     perOrder,
     sizeOf,

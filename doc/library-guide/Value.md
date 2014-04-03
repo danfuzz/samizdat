@@ -111,6 +111,12 @@ returns void.
 Checks for equality, using the total order of values. Returns `value` if the
 two given values are identical. Otherwise returns void.
 
+This works by first checking the types of the two values. If they are
+different, this returns void immediately. Otherwise, this calls `totEq` on
+the two arguments. In the latter case, this function doesn't "trust" a
+non-void return value of `totEq` and always returns the given `value`
+argument, per se, to represent logical-true.
+
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
 
 #### `ge(value, other) <> logic`
@@ -172,6 +178,20 @@ Checks for inequality, using the total order of values. Returns `value` if
 the two given values are not identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
+
+#### `order(value, other) <> int`
+
+Returns the order of the two given values, using the total order of values.
+
+The return value is one of `-1 0 1` indicating how the two values sort with
+each other, just like `perOrder` and `totOrder`.
+
+This function works by calling `totOrder` on the types of the two arguments
+if they are different, or by calling `totOrder` on the arguments themselves
+if they both have the same type.
+
+**Note:** This is the function which underlies the implementation
+of all cross-type ordering functions.
 
 #### `typeOf(value) <> type`
 
