@@ -131,7 +131,7 @@ zvalue valOrderNullOk(zvalue value, zvalue other) {
 
 /* Documented in header. */
 zorder valZorder(zvalue value, zvalue other) {
-    return zintFromInt(valOrderNullOk(value, other));
+    return zintFromInt(valOrder(value, other));
 }
 
 

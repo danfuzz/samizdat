@@ -136,9 +136,9 @@ zvalue valOrder(zvalue value, zvalue other);
 zvalue valOrderNullOk(zvalue value, zvalue other);
 
 /**
- * Like `valOrder`, except that `NULL`s are accepted as arguments (they are
- * considered "less than" any other value), and the return value is of type
- * `zorder`, so the constants `{ ZLESS, ZSAME, ZMORE }` can be used.
+ * Like `valOrder`, except that the return value is of type `zorder`. This
+ * means the constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking at
+ * results.
  */
 zorder valZorder(zvalue value, zvalue other);
 
