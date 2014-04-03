@@ -12,6 +12,36 @@
 ##
 
 ## Documented in spec.
+fn ge(v1, v2) {
+    <> ifNot { <> totEq(order(v1, v2), -1) }
+        { <> v1 }
+};
+
+## Documented in spec.
+fn gt(v1, v2) {
+    <> ifIs { <> totEq(order(v1, v2), 1) }
+        { <> v1 }
+};
+
+## Documented in spec.
+fn le(v1, v2) {
+    <> ifNot { <> totEq(order(v1, v2), 1) }
+        { <> v1 }
+};
+
+## Documented in spec.
+fn lt(v1, v2) {
+    <> ifIs { <> totEq(order(v1, v2), -1) }
+        { <> v1 }
+};
+
+## Documented in spec.
+fn ne(v1, v2) {
+    <> ifNot { <> eq(v1, v2) }
+        { <> v1 }
+};
+
+## Documented in spec.
 fn perGe(v1, v2) {
     <> ifNot { <> totEq(perOrder(v1, v2), -1) }
         { <> v1 }
@@ -72,6 +102,11 @@ fn totNe(v1, v2) {
 };
 
 <> {
+    ge,
+    gt,
+    le,
+    lt,
+    ne,
     perGe,
     perGt,
     perLe,

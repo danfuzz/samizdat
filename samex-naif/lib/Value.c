@@ -31,22 +31,6 @@ FUN_IMPL_DECL(eq) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(ge) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) >= 0) ? v1 : NULL;
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(gt) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) > 0) ? v1 : NULL;
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(hasType) {
     zvalue value = args[0];
     zvalue type = args[1];
@@ -55,35 +39,11 @@ FUN_IMPL_DECL(hasType) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(le) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) <= 0) ? v1 : NULL;
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(lt) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) < 0) ? v1 : NULL;
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(makeValue) {
     zvalue type = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
 
     return makeValue(type, value, NULL);
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(ne) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return valEq(v1, v2) ? NULL : v1;
 }
 
 /* Documented in spec. */

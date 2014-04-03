@@ -119,44 +119,12 @@ argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
 
-#### `ge(value, other) <> logic`
-
-Checks for a greater-than-or-equal relationship, using the total order of
-values. Returns `value` if the first value orders after the second or is
-identical to it. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \>= expression` forms.
-
-#### `gt(value, other) <> logic`
-
-Checks for a greater-than relationship, using the total order of values.
-Returns `value` if the first value orders after the second. Otherwise
-returns void.
-
-**Syntax Note:** Used in the translation of `expression \> expression` forms.
-
 #### `hasType(value, type) <> logic`
 
 Returns `value` if it has type `type`. Otherwise returns void.
 
 In order to "have the type," `value` must either be an instance of type
 `type` per se, or be an instance of a subtype of `type`.
-
-#### `le(value, other) <> logic`
-
-Checks for a less-than-or-equal relationship, using the total order of values.
-Returns `value` if the first value orders before the second or is identical
-to it. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \<= expression` forms.
-
-#### `lt(value, other) <> logic`
-
-Checks for a less-than relationship, using the total order of values.
-Returns `value` if the first value orders before the second. Otherwise
-returns void.
-
-**Syntax Note:** Used in the translation of `expression \< expression` forms.
 
 #### `makeValue(type, value?) <> .`
 
@@ -171,13 +139,6 @@ equivalences hold for Samizdat Layer 0 source code:
 
 **Syntax Note:** Used in the translation of `@(type)(value)`
 (and related) forms.
-
-#### `ne(value, other) <> logic`
-
-Checks for inequality, using the total order of values. Returns `value` if
-the two given values are not identical. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
 #### `order(value, other) <> int`
 
@@ -201,6 +162,45 @@ of type `Type`.
 
 <br><br>
 ### In-Language Definitions
+
+#### `ge(value, other) <> logic`
+
+Checks for a greater-than-or-equal relationship, using the total order of
+values. Returns `value` if the first value orders after the second or is
+identical to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \>= expression` forms.
+
+#### `gt(value, other) <> logic`
+
+Checks for a greater-than relationship, using the total order of values.
+Returns `value` if the first value orders after the second. Otherwise
+returns void.
+
+**Syntax Note:** Used in the translation of `expression \> expression` forms.
+
+#### `le(value, other) <> logic`
+
+Checks for a less-than-or-equal relationship, using the total order of values.
+Returns `value` if the first value orders before the second or is identical
+to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \<= expression` forms.
+
+#### `lt(value, other) <> logic`
+
+Checks for a less-than relationship, using the total order of values.
+Returns `value` if the first value orders before the second. Otherwise
+returns void.
+
+**Syntax Note:** Used in the translation of `expression \< expression` forms.
+
+#### `ne(value, other) <> logic`
+
+Checks for inequality, using the total order of values. Returns `value` if
+the two given values are not identical. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
 #### `perGe(value, other) <> logic`
 
