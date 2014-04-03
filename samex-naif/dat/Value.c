@@ -104,6 +104,19 @@ bool valEqNullOk(zvalue value, zvalue other) {
 }
 
 /* Documented in header. */
+zvalue valOrder(zvalue value, zvalue other) {
+    if ((value == NULL) || (other == NULL)) {
+        die("Shouldn't happen: NULL argument passed to `valOrder`.");
+    } else if (value == other) {
+        return INT_0;
+    } else if (haveSameType(value, other)) {
+        return GFN_CALL(totOrder, value, other);
+    } else {
+        return GFN_CALL(totOrder, typeOf(value), typeOf(other));
+    }
+}
+
+/* Documented in header. */
 zorder valZorder(zvalue value, zvalue other) {
     if (value == other) {
         return ZSAME;
@@ -111,15 +124,8 @@ zorder valZorder(zvalue value, zvalue other) {
         return ZLESS;
     } else if (other == NULL) {
         return ZMORE;
-    }
-
-    if (haveSameType(value, other)) {
-        zstackPointer save = datFrameStart();
-        zorder result = zintFromInt(GFN_CALL(totOrder, value, other));
-        datFrameReturn(save, NULL);
-        return result;
     } else {
-        return valZorder(typeOf(value), typeOf(other));
+        return zintFromInt(valOrder(value, other));
     }
 }
 

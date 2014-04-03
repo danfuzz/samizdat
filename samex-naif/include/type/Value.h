@@ -122,13 +122,16 @@ bool valEqNullOk(zvalue value, zvalue other);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
- * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
- * -1, 0, 1 }` respectively, with the usual comparison result meaning.
- * See `totOrder` in the Samizdat Layer 0 spec for more details about
- * value sorting.
- *
- * If `NULL` is passed as an argument, it is accepted and treated as
- * being ordered earlier than any other value.
+ * values `{ -1, 0, 1 }`, with the usual comparison result meaning.
+ * This calls through to `totOrder` given values of the same type. **Note:**
+ * It is invalid to pass `NULL` to this function.
+ */
+zvalue valOrder(zvalue value, zvalue other);
+
+/**
+ * Like `valOrder`, except that `NULL`s are accepted as arguments (they are
+ * considered "less than" any other value), and the return value is of type
+ * `zorder`, so the constants `{ ZLESS, ZSAME, ZMORE }` can be used.
  */
 zorder valZorder(zvalue value, zvalue other);
 
