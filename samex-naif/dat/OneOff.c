@@ -21,11 +21,6 @@ zvalue get(zvalue coll, zvalue key) {
 }
 
 /* Documented in header. */
-zint sizeOf(zvalue coll) {
-    return zintFromInt(GFN_CALL(sizeOf, coll));
-}
-
-/* Documented in header. */
 zvalue nameOf(zvalue value) {
     return GFN_CALL(nameOf, value);
 }
@@ -39,6 +34,11 @@ zvalue nth(zvalue coll, zint index) {
 zint nthChar(zvalue coll, zint index) {
     zvalue result = nth(coll, index);
     return (result == NULL) ? -1 : zcharFromString(result);
+}
+
+/* Documented in header. */
+zint sizeOf(zvalue coll) {
+    return zintFromInt(GFN_CALL(sizeOf, coll));
 }
 
 /* Documented in header. */

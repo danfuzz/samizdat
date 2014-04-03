@@ -49,11 +49,6 @@ extern zvalue GFN_valueOf;
 zvalue get(zvalue coll, zvalue key);
 
 /**
- * Calls `sizeOf` on the given collection, converting the result to a `zint`.
- */
-zint sizeOf(zvalue coll);
-
-/**
  * Calls `nameOf` on the given value.
  */
 zvalue nameOf(zvalue value);
@@ -70,6 +65,11 @@ zvalue nth(zvalue coll, zint index);
  * value gets converted to `-1`.
  */
 zint nthChar(zvalue coll, zint index);
+
+/**
+ * Calls `sizeOf` on the given collection, converting the result to a `zint`.
+ */
+zint sizeOf(zvalue coll);
 
 /**
  * Calls `toString` on the given value, returning the result as a `char *`.
