@@ -117,16 +117,21 @@ zvalue valOrder(zvalue value, zvalue other) {
 }
 
 /* Documented in header. */
-zorder valZorder(zvalue value, zvalue other) {
+zvalue valOrderNullOk(zvalue value, zvalue other) {
     if (value == other) {
-        return ZSAME;
+        return INT_0;
     } else if (value == NULL) {
-        return ZLESS;
+        return INT_NEG1;
     } else if (other == NULL) {
-        return ZMORE;
+        return INT_1;
     } else {
-        return zintFromInt(valOrder(value, other));
+        return valOrder(value, other);
     }
+}
+
+/* Documented in header. */
+zorder valZorder(zvalue value, zvalue other) {
+    return zintFromInt(valOrderNullOk(value, other));
 }
 
 

@@ -116,7 +116,8 @@ zvalue valEq(zvalue value, zvalue other);
 
 /**
  * Like `valEq`, except that `NULL`s are accepted as arguments, and the
- * function returns a `bool`.
+ * function returns a `bool` (of necessity, since a `zvalue` result would be
+ * ambiguous).
  */
 bool valEqNullOk(zvalue value, zvalue other);
 
@@ -127,6 +128,12 @@ bool valEqNullOk(zvalue value, zvalue other);
  * It is invalid to pass `NULL` to this function.
  */
 zvalue valOrder(zvalue value, zvalue other);
+
+/**
+ * Like `valOrder`, except that `NULL`s are accepted as arguments. `NULL` is
+ * considered "less than" any other value.
+ */
+zvalue valOrderNullOk(zvalue value, zvalue other);
 
 /**
  * Like `valOrder`, except that `NULL`s are accepted as arguments (they are
