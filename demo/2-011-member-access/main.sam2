@@ -32,14 +32,14 @@ note("\nGetter syntax");
 def get_size = sizeOf;
 msg([1, 2, 3].size);
 
-def get_value = fetch;
+def get_foo = fetch;
 def cell = Box::makeCell(100);
-msg(cell.value);
+msg(cell.foo);
 
 note("\nSetter syntax");
-def set_value = store;
-msg(cell.value := 987);
-cell.value := 654;
-msg(cell.value);
+def set_foo = store;
+msg(cell.foo := 987);
+cell.foo := 654;
+msg(cell.foo);
 
 <> 0
