@@ -12,66 +12,101 @@
 ##
 
 ## Documented in spec.
-fn perGe(v1, v2) {
-    <> ifNot { <> totEq(perOrder(v1, v2), -1) }
-        { <> v1 }
+fn ge(value, other) {
+    <> ifNot { <> eq(order(value, other), -1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn perGt(v1, v2) {
-    <> ifIs { <> totEq(perOrder(v1, v2), 1) }
-        { <> v1 }
+fn gt(value, other) {
+    <> ifIs { <> eq(order(value, other), 1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn perLe(v1, v2) {
-    <> ifNot { <> totEq(perOrder(v1, v2), 1) }
-        { <> v1 }
+fn le(value, other) {
+    <> ifNot { <> eq(order(value, other), 1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn perLt(v1, v2) {
-    <> ifIs { <> totEq(perOrder(v1, v2), -1) }
-        { <> v1 }
+fn lt(value, other) {
+    <> ifIs { <> eq(order(value, other), -1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn perNe(v1, v2) {
-    <> ifNot { <> perEq(v1, v2) }
-        { <> v1 }
+fn ne(value, other) {
+    <> ifNot { <> eq(value, other) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn totGe(v1, v2) {
-    <> ifNot { <> totEq(totOrder(v1, v2), -1) }
-        { <> v1 }
+fn perGe(value, other) {
+    <> ifNot { <> eq(perOrder(value, other), -1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn totGt(v1, v2) {
-    <> ifIs { <> totEq(totOrder(v1, v2), 1) }
-        { <> v1 }
+fn perGt(value, other) {
+    <> ifIs { <> eq(perOrder(value, other), 1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn totLe(v1, v2) {
-    <> ifNot { <> totEq(totOrder(v1, v2), 1) }
-        { <> v1 }
+fn perLe(value, other) {
+    <> ifNot { <> eq(perOrder(value, other), 1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn totLt(v1, v2) {
-    <> ifIs { <> totEq(totOrder(v1, v2), -1) }
-        { <> v1 }
+fn perLt(value, other) {
+    <> ifIs { <> eq(perOrder(value, other), -1) }
+        { <> value }
 };
 
 ## Documented in spec.
-fn totNe(v1, v2) {
-    <> ifNot { <> totEq(v1, v2) }
-        { <> v1 }
+fn perNe(value, other) {
+    <> ifNot { <> perEq(value, other) }
+        { <> value }
+};
+
+## Documented in spec.
+fn totGe(value, other) {
+    <> ifNot { <> eq(totOrder(value, other), -1) }
+        { <> value }
+};
+
+## Documented in spec.
+fn totGt(value, other) {
+    <> ifIs { <> eq(totOrder(value, other), 1) }
+        { <> value }
+};
+
+## Documented in spec.
+fn totLe(value, other) {
+    <> ifNot { <> eq(totOrder(value, other), 1) }
+        { <> value }
+};
+
+## Documented in spec.
+fn totLt(value, other) {
+    <> ifIs { <> eq(totOrder(value, other), -1) }
+        { <> value }
+};
+
+## Documented in spec.
+fn totNe(value, other) {
+    <> ifNot { <> totEq(value, other) }
+        { <> value }
 };
 
 <> {
+    ge,
+    gt,
+    le,
+    lt,
+    ne,
     perGe,
     perGt,
     perLe,

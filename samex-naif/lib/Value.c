@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Int.h"
 #include "type/Type.h"
 #include "type/Value.h"
 
@@ -23,26 +24,10 @@ FUN_IMPL_DECL(dataOf) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(eq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    return valEq(v1, v2) ? v1 : NULL;
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(ge) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) >= 0) ? v1 : NULL;
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(gt) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) > 0) ? v1 : NULL;
+    return valEq(value, other);
 }
 
 /* Documented in spec. */
@@ -54,22 +39,6 @@ FUN_IMPL_DECL(hasType) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(le) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) <= 0) ? v1 : NULL;
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(lt) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (valOrder(v1, v2) < 0) ? v1 : NULL;
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(makeValue) {
     zvalue type = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
@@ -78,9 +47,9 @@ FUN_IMPL_DECL(makeValue) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(ne) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+FUN_IMPL_DECL(order) {
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    return valEq(v1, v2) ? NULL : v1;
+    return valOrder(value, other);
 }

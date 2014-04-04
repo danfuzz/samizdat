@@ -290,8 +290,7 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
 
     def languageName = ifValueOr { <> get(moduleInfo, "language") }
         { <> "Lang2" };
-    def languageModule = ifIs { <> ne(languageName, "none") }
-        { <> module_moduleLoad(["core", languageName]) }
+    def languageModule = ifIs { <> eq(languageName, "none") }
         {
             ## Language `none`, a special case used when loading files before
             ## `Lang0` is defined.
@@ -299,7 +298,8 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
                 eval:         Lang0_eval,
                 parseProgram: Lang0_parseProgram
             }
-        };
+        }
+        { <> module_moduleLoad(["core", languageName]) };
 
     result := @IntraLoader{
         basePath,

@@ -403,10 +403,10 @@ METH_IMPL(String, toString) {
 
 /* Documented in header. */
 METH_IMPL(String, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    StringInfo *info1 = getInfo(v1);
-    StringInfo *info2 = getInfo(v2);
+    zvalue value = args[0];
+    zvalue other = args[1];
+    StringInfo *info1 = getInfo(value);
+    StringInfo *info2 = getInfo(other);
     zint size1 = info1->size;
     zint size2 = info2->size;
 
@@ -423,15 +423,15 @@ METH_IMPL(String, totEq) {
         }
     }
 
-    return v1;
+    return value;
 }
 
 /* Documented in header. */
 METH_IMPL(String, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    StringInfo *info1 = getInfo(v1);
-    StringInfo *info2 = getInfo(v2);
+    zvalue value = args[0];
+    zvalue other = args[1];
+    StringInfo *info1 = getInfo(value);
+    StringInfo *info2 = getInfo(other);
     zchar *e1 = info1->elems;
     zchar *e2 = info2->elems;
     zint size1 = info1->size;

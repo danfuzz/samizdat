@@ -179,17 +179,17 @@ METH_IMPL(Int, toString) {
 
 /* Documented in header. */
 METH_IMPL(Int, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    return (zintValue(v1) == zintValue(v2)) ? v1 : NULL;
+    zvalue value = args[0];
+    zvalue other = args[1];
+    return (zintValue(value) == zintValue(other)) ? value : NULL;
 }
 
 /* Documented in header. */
 METH_IMPL(Int, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    zint int1 = zintValue(v1);
-    zint int2 = zintValue(v2);
+    zvalue value = args[0];
+    zvalue other = args[1];
+    zint int1 = zintValue(value);
+    zint int2 = zintValue(other);
 
     if (int1 < int2) {
         return INT_NEG1;

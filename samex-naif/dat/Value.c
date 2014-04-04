@@ -80,38 +80,69 @@ char *valDebugString(zvalue value) {
 }
 
 /* Documented in header. */
-bool valEq(zvalue v1, zvalue v2) {
-    if (v1 == v2) {
-        return true;
-    } else if ((v1 == NULL) || (v2 == NULL)) {
-        return false;
-    }
-
-    if (haveSameType(v1, v2)) {
-        return (GFN_CALL(totEq, v1, v2) != NULL);
+zvalue valEq(zvalue value, zvalue other) {
+    if ((value == NULL) || (other == NULL)) {
+        die("Shouldn't happen: NULL argument passed to `valEq`.");
+    } else if (value == other) {
+        return value;
+    } else if (haveSameType(value, other)) {
+        return (GFN_CALL(totEq, value, other) != NULL) ? value : NULL;
     } else {
-        return false;
+        return NULL;
     }
 }
 
 /* Documented in header. */
-zorder valOrder(zvalue v1, zvalue v2) {
-    if (v1 == v2) {
-        return ZSAME;
-    } else if (v1 == NULL) {
-        return ZLESS;
-    } else if (v2 == NULL) {
-        return ZMORE;
+bool valEqNullOk(zvalue value, zvalue other) {
+    if (value == other) {
+        return true;
+    } else if ((value == NULL) || (other == NULL)) {
+        return false;
+    } else {
+        return valEq(value, other) != NULL;
     }
+}
 
-    if (haveSameType(v1, v2)) {
+/* Documented in header. */
+zvalue valOrder(zvalue value, zvalue other) {
+    if ((value == NULL) || (other == NULL)) {
+        die("Shouldn't happen: NULL argument passed to `valOrder`.");
+    } else if (value == other) {
+        return INT_0;
+    } else if (haveSameType(value, other)) {
+        // `totOrder` can get quite recursive, and without a frame around the
+        // call, it is easy for accumulated calls to blow past the limit on
+        // local references.
         zstackPointer save = datFrameStart();
-        zorder result = zintFromInt(GFN_CALL(totOrder, v1, v2));
-        datFrameReturn(save, NULL);
+        zvalue result = GFN_CALL(totOrder, value, other);
+        datFrameReturn(save, result);
         return result;
     } else {
-        return valOrder(typeOf(v1), typeOf(v2));
+        return GFN_CALL(totOrder, typeOf(value), typeOf(other));
     }
+}
+
+/* Documented in header. */
+zvalue valOrderNullOk(zvalue value, zvalue other) {
+    if (value == other) {
+        return INT_0;
+    } else if (value == NULL) {
+        return INT_NEG1;
+    } else if (other == NULL) {
+        return INT_1;
+    } else {
+        return valOrder(value, other);
+    }
+}
+
+/* Documented in header. */
+zorder valZorder(zvalue value, zvalue other) {
+    // This frame usage avoids having the `zvalue` result of the call pollute
+    // the stack. See note on `valOrder` for more color.
+    zstackPointer save = datFrameStart();
+    zorder result = zintFromInt(valOrder(value, other));
+    datFrameReturn(save, NULL);
+    return result;
 }
 
 
@@ -153,28 +184,28 @@ METH_IMPL(Value, perOrder) {
 
 /* Documented in header. */
 METH_IMPL(Value, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    if (v1 == v2) {
-        return v2;
+    if (value == other) {
+        return other;
     }
 
-    zvalue result = GFN_CALL(totOrder, v1, v2);
-    return valEq(result, INT_0) ? v1 : NULL;
+    zvalue result = GFN_CALL(totOrder, value, other);
+    return (valEq(result, INT_0) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */
 METH_IMPL(Value, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    if (v1 == v2) {
+    if (value == other) {
         return INT_0;
     }
 
-    zint id1 = valSelfIdOf(v1);
-    zint id2 = valSelfIdOf(v2);
+    zint id1 = valSelfIdOf(value);
+    zint id2 = valSelfIdOf(other);
 
     if (id1 < id2) {
         return INT_NEG1;

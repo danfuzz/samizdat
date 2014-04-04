@@ -21,7 +21,7 @@
  */
 
 /**
- * Payload data for all Deriv values.
+ * Payload data for all derived values.
  */
 typedef struct {
     /** Data payload. */
@@ -92,26 +92,19 @@ METH_IMPL(DerivedData, get) {
 
 /* Documented in header. */
 METH_IMPL(DerivedData, totEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    return valEq(getInfo(v1)->data, getInfo(v2)->data) ? v1 : NULL;
+    return valEqNullOk(getInfo(value)->data, getInfo(other)->data)
+        ? value : NULL;
 }
 
 /* Documented in header. */
 METH_IMPL(DerivedData, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    zvalue data1 = getInfo(v1)->data;
-    zvalue data2 = getInfo(v2)->data;
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    if (data1 == NULL) {
-        return (data2 == NULL) ? INT_0 : INT_NEG1;
-    } else if (data2 == NULL) {
-        return INT_1;
-    } else {
-        return intFromZint(valOrder(data1, data2));
-    }
+    return valOrderNullOk(getInfo(value)->data, getInfo(other)->data);
 }
 
 /** Initializes the module. */

@@ -114,7 +114,7 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
         return hasSecret2 ? ZLESS : ZMORE;
     }
 
-    zorder nameOrder = valOrder(name1, name2);
+    zorder nameOrder = valZorder(name1, name2);
 
     if ((nameOrder != ZSAME) || !hasSecret1) {
         return nameOrder;
@@ -122,7 +122,7 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
 
     // This is the case of two different opaque derived types with the
     // same name.
-    return valOrder(secret1, secret2);
+    return valZorder(secret1, secret2);
 }
 
 /**
@@ -207,7 +207,7 @@ extern inline zint typeIndexUnchecked(zvalue type);
 /* Documented in header. */
 bool typeHasSecret(zvalue type, zvalue secret) {
     assertHasTypeType(type);
-    return valEq(getInfo(type)->secret, secret);
+    return valEqNullOk(getInfo(type)->secret, secret);
 }
 
 
@@ -239,8 +239,8 @@ bool hasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-bool haveSameType(zvalue v1, zvalue v2) {
-    return typeEq(typeOf(v1), typeOf(v2));
+bool haveSameType(zvalue value, zvalue other) {
+    return typeEq(typeOf(value), typeOf(other));
 }
 
 /* Documented in header. */
@@ -346,16 +346,16 @@ METH_IMPL(Type, nameOf) {
 
 /* Documented in header. */
 METH_IMPL(Type, totOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
+    zvalue value = args[0];
+    zvalue other = args[1];
 
-    if (v1 == v2) {
+    if (value == other) {
         // Easy case to avoid decomposition and detailed tests.
         return INT_0;
     }
 
-    TypeInfo *info1 = getInfo(v1);
-    return intFromZint(typeCompare(info1->name, info1->secret, v2));
+    TypeInfo *info = getInfo(value);
+    return intFromZint(typeCompare(info->name, info->secret, other));
 }
 
 /**

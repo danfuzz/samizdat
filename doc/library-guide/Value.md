@@ -84,7 +84,7 @@ on the respective payload values, with a lack of payload counting as
 "before" any non-void payload. In addition, a default implementation
 checks directly for trivial sameness and compares identity ordering
 for anything nontrivial; this latter check will fail if the type of
-the values is not an "selfish" one.
+the values is not a "selfish" one.
 
 **Note:** This is the generic function which underlies the implementation
 of all cross-type ordering functions.
@@ -111,7 +111,57 @@ returns void.
 Checks for equality, using the total order of values. Returns `value` if the
 two given values are identical. Otherwise returns void.
 
+This works by first checking the types of the two values. If they are
+different, this returns void immediately. Otherwise, this calls `totEq` on
+the two arguments. In the latter case, this function doesn't "trust" a
+non-void return value of `totEq` and always returns the given `value`
+argument, per se, to represent logical-true.
+
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
+
+#### `hasType(value, type) <> logic`
+
+Returns `value` if it has type `type`. Otherwise returns void.
+
+In order to "have the type," `value` must either be an instance of type
+`type` per se, or be an instance of a subtype of `type`.
+
+#### `makeValue(type, value?) <> .`
+
+Returns a derived value with the given type (a value of type `Type`)
+and optional data payload value (an arbitrary value). These
+equivalences hold for Samizdat Layer 0 source code:
+
+```
+@(type)         is equivalent to  v = makeValue(makeDerivedDataType(type));
+@(type)(value)  is equivalent to  v = makeValue(makeDerivedDataType(type), value);
+```
+
+**Syntax Note:** Used in the translation of `@(type)(value)`
+(and related) forms.
+
+#### `order(value, other) <> int`
+
+Returns the order of the two given values, using the total order of values.
+
+The return value is one of `-1 0 1` indicating how the two values sort with
+each other, just like `perOrder` and `totOrder`.
+
+This function works by calling `totOrder` on the types of the two arguments
+if they are different, or by calling `totOrder` on the arguments themselves
+if they both have the same type.
+
+**Note:** This is the function which underlies the implementation
+of all cross-type ordering functions.
+
+#### `typeOf(value) <> type`
+
+Returns the type of the given arbitrary `value`. The return value is always
+of type `Type`.
+
+
+<br><br>
+### In-Language Definitions
 
 #### `ge(value, other) <> logic`
 
@@ -129,13 +179,6 @@ returns void.
 
 **Syntax Note:** Used in the translation of `expression \> expression` forms.
 
-#### `hasType(value, type) <> logic`
-
-Returns `value` if it has type `type`. Otherwise returns void.
-
-In order to "have the type," `value` must either be an instance of type
-`type` per se, or be an instance of a subtype of `type`.
-
 #### `le(value, other) <> logic`
 
 Checks for a less-than-or-equal relationship, using the total order of values.
@@ -152,35 +195,12 @@ returns void.
 
 **Syntax Note:** Used in the translation of `expression \< expression` forms.
 
-#### `makeValue(type, value?) <> .`
-
-Returns a derived value with the given type (a value of type `Type`)
-and optional data payload value (an arbitrary value). These
-equivalences hold for Samizdat Layer 0 source code:
-
-```
-@(type)         is equivalent to  v = makeValue(makeDerivedDataType(type));
-@(type)(value)  is equivalent to  v = makeValue(makeDerivedDataType(type), value);
-```
-
-**Syntax Note:** Used in the translation of `@(type)(value)`
-(and related) forms.
-
 #### `ne(value, other) <> logic`
 
 Checks for inequality, using the total order of values. Returns `value` if
 the two given values are not identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
-
-#### `typeOf(value) <> type`
-
-Returns the type of the given arbitrary `value`. The return value is always
-of type `Type`.
-
-
-<br><br>
-### In-Language Definitions
 
 #### `perGe(value, other) <> logic`
 

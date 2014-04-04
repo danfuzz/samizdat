@@ -107,23 +107,39 @@ zint valSelfIdOf(zvalue value);
 char *valDebugString(zvalue value);
 
 /**
- * Compares two values for equality. This exists in addition to
- * `valOrder`, because it is possible for this function run much
- * quicker in the not-equal case. As with `valOrder`, this accepts
- * `NULL` as a value, treating it as not the same as any other value.
+ * Compares two values for equality, returning the first argument to
+ * represent logical-true or `NULL` for logical-false. This calls through
+ * to `totEq` given values of the same type. **Note:** It is invalid to
+ * pass `NULL` to this function.
  */
-bool valEq(zvalue v1, zvalue v2);
+zvalue valEq(zvalue value, zvalue other);
+
+/**
+ * Like `valEq`, except that `NULL`s are accepted as arguments, and the
+ * function returns a `bool` (of necessity, since a `zvalue` result would be
+ * ambiguous).
+ */
+bool valEqNullOk(zvalue value, zvalue other);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
- * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
- * -1, 0, 1 }` respectively, with the usual comparison result meaning.
- * See `totOrder` in the Samizdat Layer 0 spec for more details about
- * value sorting.
- *
- * If `NULL` is passed as an argument, it is accepted and treated as
- * being ordered earlier than any other value.
+ * values `{ -1, 0, 1 }`, with the usual comparison result meaning.
+ * This calls through to `totOrder` given values of the same type. **Note:**
+ * It is invalid to pass `NULL` to this function.
  */
-zorder valOrder(zvalue v1, zvalue v2);
+zvalue valOrder(zvalue value, zvalue other);
+
+/**
+ * Like `valOrder`, except that `NULL`s are accepted as arguments. `NULL` is
+ * considered "less than" any other value.
+ */
+zvalue valOrderNullOk(zvalue value, zvalue other);
+
+/**
+ * Like `valOrder`, except that the return value is of type `zorder`. This
+ * means the constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking at
+ * results.
+ */
+zorder valZorder(zvalue value, zvalue other);
 
 #endif
