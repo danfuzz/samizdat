@@ -42,7 +42,7 @@ static zvalue ensureString(zvalue value) {
  */
 static char *callReporter(void *state) {
     zvalue value = state;
-    zvalue name = nameOfIfDefined(value);
+    zvalue name = get_nameIfDefined(value);
 
     if (name != NULL) {
         return utf8DupFromString(ensureString(name));

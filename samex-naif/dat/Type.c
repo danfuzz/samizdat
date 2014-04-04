@@ -332,7 +332,7 @@ METH_IMPL(Type, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Type, nameOf) {
+METH_IMPL(Type, get_name) {
     zvalue type = args[0];
     TypeInfo *info = getInfo(type);
 
@@ -412,7 +412,7 @@ MOD_INIT(Type) {
 
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);
-    METH_BIND(Type, nameOf);
+    METH_BIND(Type, get_name);
     METH_BIND(Type, totOrder);
 }
 

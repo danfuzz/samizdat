@@ -21,14 +21,14 @@ zvalue get(zvalue value, zvalue key) {
 }
 
 /* Documented in header. */
-zvalue nameOf(zvalue value) {
-    return GFN_CALL(nameOf, value);
+zvalue get_name(zvalue value) {
+    return GFN_CALL(get_name, value);
 }
 
 /* Documented in header. */
-zvalue nameOfIfDefined(zvalue value) {
-    if (GFN_CALL(canCall, GFN_nameOf, value)) {
-        return nameOf(value);
+zvalue get_nameIfDefined(zvalue value) {
+    if (GFN_CALL(canCall, GFN_get_name, value)) {
+        return get_name(value);
     }
 
     return NULL;
@@ -68,8 +68,8 @@ MOD_INIT(OneOff) {
     GFN_keyOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyOf"));
     datImmortalize(GFN_keyOf);
 
-    GFN_nameOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "nameOf"));
-    datImmortalize(GFN_nameOf);
+    GFN_get_name = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_name"));
+    datImmortalize(GFN_get_name);
 
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
     datImmortalize(GFN_nth);
@@ -100,7 +100,7 @@ zvalue GFN_get = NULL;
 zvalue GFN_keyOf = NULL;
 
 /* Documented in header. */
-zvalue GFN_nameOf = NULL;
+zvalue GFN_get_name = NULL;
 
 /* Documented in header. */
 zvalue GFN_nth = NULL;

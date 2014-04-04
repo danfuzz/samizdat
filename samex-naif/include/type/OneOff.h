@@ -22,8 +22,8 @@ extern zvalue GFN_get;
 /** Generic `keyOf(value)`: Documented in spec. */
 extern zvalue GFN_keyOf;
 
-/** Generic `nameOf(value)`: Documented in spec. */
-extern zvalue GFN_nameOf;
+/** Generic `get_name(value)`: Documented in spec. */
+extern zvalue GFN_get_name;
 
 /** Generic `nth(sequence, n)`: Documented in spec. */
 extern zvalue GFN_nth;
@@ -49,14 +49,14 @@ extern zvalue GFN_valueOf;
 zvalue get(zvalue coll, zvalue key);
 
 /**
- * Calls `nameOf` on the given value.
+ * Calls `get_name` on the given value.
  */
-zvalue nameOf(zvalue value);
+zvalue get_name(zvalue value);
 
 /**
- * Calls `nameOf` on the given value, if it is defined. If not, returns `NULL`.
+ * Calls `get_name` on the given value, if it is defined. If not, returns `NULL`.
  */
-zvalue nameOfIfDefined(zvalue value);
+zvalue get_nameIfDefined(zvalue value);
 
 /**
  * Calls `nth`, converting the given `zint` index to an `Int` value.

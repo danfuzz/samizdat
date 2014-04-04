@@ -279,4 +279,4 @@ different types.
 #### `typeNameOf(value) <> .`
 
 Returns the name of the given `value`'s type. This function is the equivalent
-to `nameOf(get_type(value))`.
+to `get_name(get_type(value))`.

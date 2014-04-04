@@ -61,7 +61,7 @@ hand-in-hand with `valueOf`.
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error if it is bound but inapplicable.
 
-#### `nameOf(value) <> . | void`
+#### `get_name(value) <> . | void`
 
 Some values have an associated name, or an optional associated name.
 This generic provides access to that name. There is no restriction

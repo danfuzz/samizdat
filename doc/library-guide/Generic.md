@@ -46,7 +46,7 @@ generic. Returns the `value` argument if so.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `nameOf(type) <> . | void`
+#### `get_name(type) <> . | void`
 
 Returns the name of the generic, if it has one. This is can be
 an arbitrary value, which is typically (but not necessarily) a string.

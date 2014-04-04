@@ -13,7 +13,7 @@
 
 ## Documented in spec.
 fn typeNameOf(value) {
-    <> nameOf(get_type(value))
+    <> get_name(get_type(value))
 };
 
 <> {
