@@ -85,10 +85,6 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret);
  * * If `value` does not have any payload data, this returns `NULL`.
  *
  * * Otherwise, this returns the payload data of `value`.
- *
- * **Note:** The function name reflects the fact that it will only possibly
- * return non-`NULL` for a derived value.
- *
  */
 zvalue valDataOf(zvalue value, zvalue secret);
 
