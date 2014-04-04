@@ -19,8 +19,8 @@ def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS                 = Lang0Node::REFS;
 def get_actuals          = Lang0Node::get_actuals;
 def get_function         = Lang0Node::get_function;
+def get_nodeValue        = Lang0Node::get_nodeValue;
 def get_statements       = Lang0Node::get_statements;
-def get_value            = Lang0Node::get_value;
 def get_yield            = Lang0Node::get_yield;
 def makeCall             = Lang0Node::makeCall;
 def makeCallLiterals     = Lang0Node::makeCallLiterals;
@@ -216,7 +216,7 @@ genericBind(convertPex, @@varRef, varRef_convertPex);
 ## Does parser conversion of a node whose payload is a map with an optional
 ## `value` binding to an arbitrary expression. Does not perform lvalue removal.
 fn convertValuePayload(node) {
-    <> ifValue { <> get_value(node) }
+    <> ifValue { <> get_nodeValue(node) }
         { value <> withBindings(node, {value: convertPexIn(value)}) }
         { <> node };
 };
@@ -253,7 +253,7 @@ genericBind(convertPexIn, @@closure, closure_convertPexIn);
 ## Does parser conversion of a `jump` node.
 fn jump_convertPexIn(node) {
     def function = convertPexIn(get_function(node));
-    def optValue = ifValue { <> get_value(node) }
+    def optValue = ifValue { <> get_nodeValue(node) }
         { value <> {value: convertPexIn(value)} }
         { <> {} };
 
@@ -272,7 +272,7 @@ genericBind(convertPexIn, @@literal, literal_convertPexIn);
 fn parser_convertPexIn(node) {
     ## `@x(...)` is done here to convert this node from an expression node
     ## form (with map payload) into a parser node form (with pex payload).
-    <> makeCallPex(REFS::Peg_makeMainSequence, @x(get_value(node)), [])
+    <> makeCallPex(REFS::Peg_makeMainSequence, @x(get_nodeValue(node)), [])
 };
 genericBind(convertPexIn, @@parser, parser_convertPexIn);
 

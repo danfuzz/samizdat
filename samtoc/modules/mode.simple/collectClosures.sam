@@ -14,9 +14,9 @@ def get_function   = Lang0Node::get_function;
 def get_id         = Lang0Node::get_id;
 def get_maxArgs    = Lang0Node::get_maxArgs;
 def get_minArgs    = Lang0Node::get_minArgs;
-def get_name       = Lang0Node::get_name;
+def get_nodeName   = Lang0Node::get_nodeName;
+def get_nodeValue  = Lang0Node::get_nodeValue;
 def get_statements = Lang0Node::get_statements;
-def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
@@ -51,7 +51,7 @@ genericBind(
 
         def newNode = @closure{
             formals: node.formals,
-            ((def name = node.name) & {name} | {})*,
+            ((def name = node.nodeName) & {name} | {})*,
             statements,
             varRefs,
             ((def yield = optYield*) & {yield} | {})*,
@@ -73,7 +73,7 @@ genericBind(
     @@jump,
     fn jump_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);
-        def optValue = (def v = node.value)
+        def optValue = (def v = node.nodeValue)
             & {value: bodies(v, bodiesBox)}
             | {};
 
@@ -91,35 +91,35 @@ genericBind(
     bodies,
     @@varBind,
     fn varBind_bodies(node, bodiesBox) {
-        def value = bodies(node.value, bodiesBox);
-        <> @varBind{name: node.name, value}
+        def value = bodies(node.nodeValue, bodiesBox);
+        <> @varBind{name: node.nodeName, value}
     });
 
 genericBind(
     bodies,
     @@varDef,
     fn varDef_bodies(node, bodiesBox) {
-        def value = ifValue { <> node.value }
+        def value = ifValue { <> node.nodeValue }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
-        <> @varDef{name: node.name, value*}
+        <> @varDef{name: node.nodeName, value*}
     });
 
 genericBind(
     bodies,
     @@varDefMutable,
     fn varDefMutable_bodies(node, bodiesBox) {
-        def value = ifValue { <> node.value }
+        def value = ifValue { <> node.nodeValue }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
-        <> @varDefMutable{name: node.name, value*}
+        <> @varDefMutable{name: node.nodeName, value*}
     });
 
 genericBind(
     bodies,
     @@varRef,
     fn varRef_bodies(node, bodiesBox) {
-        <> @varRef{name: node.name}
+        <> @varRef{name: node.nodeName}
     });
 
 ## Collects all closure nodes at or under the given one into a list.

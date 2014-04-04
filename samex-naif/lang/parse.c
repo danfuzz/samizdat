@@ -163,7 +163,7 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 /** Equivalent to `REFS::name` in the spec. */
 #define REFS(name) (makeVarRef(STR_##name))
 
-/** Equivalent to `get_name(node)` in the spec. */
+/** Equivalent to `get_nodeName(node)` in the spec. */
 #define GET(name, node) (get((node), STR_##name))
 
 /* Defined below.*/

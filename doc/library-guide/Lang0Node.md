@@ -80,20 +80,20 @@ could possibly accept. If there is no limit, this returns `-1`.
 Gets the minimum number of arguments that a given `closure` node
 requires.
 
-#### `get_name(node) <> . | void`
+#### `get_nodeName(node) <> . | void`
 
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `varBind`, `varDef`, `varDefMutable`, and `varRef`.
 
-#### `get_statements(node) <> [node*]`
-
-Gets the statement list of a `closure` node.
-
-#### `get_value(node) <> .`
+#### `get_nodeValue(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
 nodes of type `jump`, `literal`, `parser`, `varBind`, `varDef`, and
 `varDefMutable`.
+
+#### `get_statements(node) <> [node*]`
+
+Gets the statement list of a `closure` node.
 
 #### `get_yield(node) <> node | void`
 

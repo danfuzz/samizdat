@@ -94,7 +94,7 @@ genericBind(
     @@closure,
     fn closure_safeIndex(node, base) {
         def namesIndex = safeIndexForNames(base,
-            Lang0Node::get_name(node)?*,
+            Lang0Node::get_nodeName(node)?*,
             Lang0Node::get_yieldDef(node)?*);
         def nodesIndex = safeIndexForNodes(base,
             Lang0Node::get_statements(node)*,
@@ -109,7 +109,7 @@ genericBind(
     fn jump_safeIndex(node, base) {
         <> safeIndexForNodes(base,
             Lang0Node::get_function(node),
-            Lang0Node::get_value(node)?*);
+            Lang0Node::get_nodeValue(node)?*);
     });
 
 genericBind(
@@ -123,8 +123,8 @@ genericBind(
     safeIndex,
     @@varBind,
     fn varBind_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
-        def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node));
+        def nameIndex = safeIndexForNames(base, Lang0Node::get_nodeName(node));
+        def valueIndex = safeIndexForNodes(base, Lang0Node::get_nodeValue(node));
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -132,8 +132,8 @@ genericBind(
     safeIndex,
     @@varDef,
     fn varDef_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
-        def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node)?*);
+        def nameIndex = safeIndexForNames(base, Lang0Node::get_nodeName(node));
+        def valueIndex = safeIndexForNodes(base, Lang0Node::get_nodeValue(node)?*);
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -141,8 +141,8 @@ genericBind(
     safeIndex,
     @@varDefMutable,
     fn varDefMutable_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0Node::get_name(node));
-        def valueIndex = safeIndexForNodes(base, Lang0Node::get_value(node)?*);
+        def nameIndex = safeIndexForNames(base, Lang0Node::get_nodeName(node));
+        def valueIndex = safeIndexForNodes(base, Lang0Node::get_nodeValue(node)?*);
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -150,7 +150,7 @@ genericBind(
     safeIndex,
     @@varRef,
     fn varRef_safeIndex(node, base) {
-        <> safeIndexForNames(base, Lang0Node::get_name(node))
+        <> safeIndexForNames(base, Lang0Node::get_nodeName(node))
     });
 
 ## Makes a variable name by combining `base` with `index`. Handles the case
