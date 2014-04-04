@@ -85,15 +85,15 @@ requires.
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `varBind`, `varDef`, `varDefMutable`, and `varRef`.
 
-#### `get_statements(node) <> [node*]`
-
-Gets the statement list of a `closure` node.
-
 #### `get_nodeValue(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
 nodes of type `jump`, `literal`, `parser`, `varBind`, `varDef`, and
 `varDefMutable`.
+
+#### `get_statements(node) <> [node*]`
+
+Gets the statement list of a `closure` node.
 
 #### `get_yield(node) <> node | void`
 
