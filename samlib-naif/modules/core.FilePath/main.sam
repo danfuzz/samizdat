@@ -63,7 +63,7 @@ fn get_directory(path) {
 };
 
 ## Documented in spec.
-fn fileOf(path) {
+fn get_file(path) {
     checkPath(path);
 
     var at = get_size(path);
@@ -114,7 +114,7 @@ fn fixPath(path, basePaths*) {
 };
 
 <> {
-    fileOf,
     fixPath,
-    get_directory
+    get_directory,
+    get_file
 }

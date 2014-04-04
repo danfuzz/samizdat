@@ -42,7 +42,7 @@ Returns the directory part of the given `path`. Cases:
 * Otherwise, the result is the prefix of the given `path` up to but not
   including the last slash.
 
-#### `fileOf(path) <> path`
+#### `get_file(path) <> path`
 
 Returns the fila part (that is, the final component) of the given `path`.
 Cases:
