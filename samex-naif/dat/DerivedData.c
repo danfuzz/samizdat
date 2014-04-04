@@ -21,7 +21,7 @@
  */
 
 /**
- * Payload data for all Deriv values.
+ * Payload data for all derived values.
  */
 typedef struct {
     /** Data payload. */
