@@ -201,7 +201,11 @@ and functions:
 * `GFN_methodName` &mdash; Identifies a generic function (value of type
   `Generic`).
 
-* `STR_stringValue` &mdash; Identifies a value of type `String`.
+* `STR_stringValue` &mdash; Identifies a value of type `String` with content
+  `"stringValue"`. For strings with contents not directly representable in
+  identifiers, the name is designed to be suggestive of the content. In
+  particular, short sequences of nonalphabetic characters usually have
+  variable names of the form `STR_CH_CHARNAMES`.
 
 * `TOK_tokenName` &mdash; Identifies a payload-free derived data
   value whose type is `TYPE_tokenName`, where the type's name is
@@ -209,6 +213,9 @@ and functions:
 
 * `theName` (that is, `the` as a prefix) &mdash; Identifies a variable as
   static (file scope).
+
+* `get_fieldName` &mdash; Identifies a function which acts as a getter.
+  This is meant to parallel Samizdat's getter function syntax.
 
 * `MODULE_CONSTANT` (that is, `MODULE_` as a prefix) &mdash; Identifies the
   module to which a constant belongs.
