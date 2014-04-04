@@ -31,7 +31,7 @@ fn checkPath(path) {
 fn directoryOf(path) {
     checkPath(path);
 
-    var at = sizeOf(path);
+    var at = get_size(path);
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
@@ -66,7 +66,7 @@ fn directoryOf(path) {
 fn fileOf(path) {
     checkPath(path);
 
-    var at = sizeOf(path);
+    var at = get_size(path);
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.

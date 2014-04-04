@@ -81,7 +81,7 @@ for `key` to `value`. The result has a replacement for the existing
 mapping for `key` in `map` if such a one existed, or has an
 additional mapping in cases where `map` didn't already bind `key`.
 
-#### `sizeOf(map) <> int`
+#### `get_size(map) <> int`
 
 Returns the number of mappings in the map.
 

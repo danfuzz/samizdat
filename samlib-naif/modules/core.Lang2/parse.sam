@@ -799,8 +799,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, sizeOf(startChar)) } { <out> };
-            ifIs { <> ne(1, sizeOf(endChar)) } { <out> };
+            ifIs { <> ne(1, get_size(startChar)) } { <out> };
+            ifIs { <> ne(1, get_size(endChar)) } { <out> };
 
             <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }
@@ -925,7 +925,7 @@ fn closureWithFormals(closure, formals*) {
 ## references.
 def UNARY_OPERATORS = {
     @@"-":   REFS::Number_neg,
-    @@"#":   REFS::Collection_sizeOf,
+    @@"#":   REFS::Collection_get_size,
     @@"^":   REFS::Sequence_reverse,
     @@"!!!": REFS::Bitwise_not
 };
@@ -1004,7 +1004,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
 
-    ifIs { <> le(sizeOf(opExList), 1) }
+    ifIs { <> le(get_size(opExList), 1) }
         {
             ## Trivial case of zero or one operator. Just use the result of
             ## the call to `makeBinaryCalls`.
@@ -1603,7 +1603,7 @@ def parLogicAndExpression = {:
         { <> last }
     |
         ## Non-compound `&` expression.
-        { <> eq(sizeOf(most), 1) }
+        { <> eq(get_size(most), 1) }
         {
             def clause = most*;
             def formal = clause::formal;
@@ -1715,7 +1715,7 @@ def parMultiTest = {:
 
     (
         ## Single test. Will translate as either `ifValue` or `ifIs`.
-        { <> eq(sizeOf(clauses), 1) }
+        { <> eq(get_size(clauses), 1) }
         {
             def clause = clauses*;
             def formal = clause::formal;
@@ -2095,10 +2095,10 @@ def parSwitchExpression = {:
             <> ifIs { <> eq(case::keys, @else) } { <> case::code }
         };
 
-        ifIs { <> gt(sizeOf(optDefault), 1) }
+        ifIs { <> gt(get_size(optDefault), 1) }
             { die("Multiple default cases in switch.") };
 
-        ifIs { <> gt(sizeOf(optElse), 1) }
+        ifIs { <> gt(get_size(optElse), 1) }
             { die("Multiple else cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to

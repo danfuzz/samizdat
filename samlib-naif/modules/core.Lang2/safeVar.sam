@@ -42,10 +42,10 @@ fn maxOf(values*) {
 ## Returns a safe index for the given `base` that is safe with respect
 ## to all the other given `names`.
 fn safeIndexForNames(base, names*) {
-    def baseSz = sizeOf(base);
+    def baseSz = get_size(base);
 
     def indexes = Generator::filterAll(names) { <next> name ->
-        ifIs { <> perLt(sizeOf(name), baseSz) }
+        ifIs { <> perLt(get_size(name), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
                 <next>

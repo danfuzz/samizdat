@@ -6,12 +6,12 @@
 ## Collection protocol. This is just a re-export from the primitive core
 ## library.
 ##
-## **Note:** `cat`, `get`, and `sizeOf` are re-exported one-off generics.
+## **Note:** `cat`, `get`, and `get_size` are re-exported one-off generics.
 
 <> {
     cat,
     get,
-    sizeOf,
+    get_size,
 
     del:        Collection_del,
     keyList:    Collection_keyList,

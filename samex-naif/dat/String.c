@@ -352,7 +352,7 @@ METH_IMPL(String, reverse) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, sizeOf) {
+METH_IMPL(String, get_size) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
 }
@@ -469,7 +469,7 @@ MOD_INIT(String) {
     METH_BIND(String, nth);
     METH_BIND(String, put);
     METH_BIND(String, reverse);
-    METH_BIND(String, sizeOf);
+    METH_BIND(String, get_size);
     METH_BIND(String, sliceExclusive);
     METH_BIND(String, sliceInclusive);
     METH_BIND(String, toInt);

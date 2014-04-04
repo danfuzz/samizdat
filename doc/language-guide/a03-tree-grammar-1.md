@@ -790,8 +790,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, sizeOf(startChar)) } { <out> };
-            ifIs { <> ne(1, sizeOf(endChar)) } { <out> };
+            ifIs { <> ne(1, get_size(startChar)) } { <out> };
+            ifIs { <> ne(1, get_size(endChar)) } { <out> };
 
             <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }

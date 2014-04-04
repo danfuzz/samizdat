@@ -59,7 +59,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue actualsExprs = get(call, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
 
-    zint argCount = sizeOf(actualsExprs);
+    zint argCount = get_size(actualsExprs);
     zvalue args[argCount];
     arrayFromList(args, actualsExprs);
 
@@ -172,7 +172,7 @@ void execStatement(Frame *frame, zvalue statement) {
 zvalue langEval0(zvalue env, zvalue node) {
     Frame frame;
 
-    zint size = sizeOf(env);
+    zint size = get_size(env);
     zmapping mappings[size];
 
     arrayFromMap(mappings, env);

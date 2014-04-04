@@ -76,7 +76,7 @@ Returns void if `n < 0` or `n >= #value`. It is an error
 This function is intended for "sequence-like" values which have
 strongly-ordered constituent parts of some sort.
 
-#### `sizeOf(value) <> int`
+#### `get_size(value) <> int`
 
 Returns the number of elements in the given value. This function is intended
 for "collection-like" values which have constituent parts of some sort.

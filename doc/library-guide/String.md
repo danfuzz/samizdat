@@ -77,7 +77,7 @@ Gets the nth mapping of the string.
 #### `put(string, n, char) <> string`
 
 Returns a string like the given one, but with the `n`th character replaced
-with the given `char`, or added if `n == sizeOf(string)`. It is an error
+with the given `char`, or added if `n == get_size(string)`. It is an error
 if `char` is not a string of size `1`.
 
 #### `reverse(string) <> string`
@@ -85,7 +85,7 @@ if `char` is not a string of size `1`.
 Returns a string like the one given, except with characters in the opposite
 order.
 
-#### `sizeOf(string) <> int`
+#### `get_size(string) <> int`
 
 Returns the number of characters in the string.
 

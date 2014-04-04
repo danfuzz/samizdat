@@ -57,7 +57,7 @@ def MOD_NAMES = [
     {mod: "Bitwise",    name: "shl"},
     {mod: "Bitwise",    name: "shr"},
     {mod: "Bitwise",    name: "xor"},
-    {mod: "Collection", name: "sizeOf"},
+    {mod: "Collection", name: "get_size"},
     {mod: "Format",     name: "formatterFor"},
     {mod: "Format",     name: "usual"},
     {mod: "Generator",  name: "filterAll"},

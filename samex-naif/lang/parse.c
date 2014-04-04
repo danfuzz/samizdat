@@ -194,7 +194,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
  * of the corresponding code in `Lang0Node`.
  */
 static zvalue makeCallOrApply(zvalue function, zvalue actuals) {
-    zint sz = (actuals == NULL) ? 0 : sizeOf(actuals);
+    zint sz = (actuals == NULL) ? 0 : get_size(actuals);
     zvalue pending[sz];
     zvalue cookedActuals[sz];
     zint pendAt = 0;
@@ -368,7 +368,7 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
-    REJECT_IF(sizeOf(result) == 0);
+    REJECT_IF(get_size(result) == 0);
 
     return result;
 }
@@ -813,7 +813,7 @@ DEF_PARSE(mapping) {
     zvalue keys = PARSE_STAR(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    if (sizeOf(keys) == 0) {
+    if (get_size(keys) == 0) {
         // No keys were specified, so the value must be either a
         // whole-map interpolation or a variable-name-to-its-value
         // binding.
@@ -844,7 +844,7 @@ DEF_PARSE(map) {
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
     MATCH_OR_REJECT(CH_CCURLY);
 
-    switch (sizeOf(mappings)) {
+    switch (get_size(mappings)) {
         case 0:  return makeLiteral(EMPTY_MAP);
         case 1:  return nth(mappings, 0);
         default: return makeCall(REFS(cat), mappings);
@@ -877,7 +877,7 @@ DEF_PARSE(list) {
     zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return (sizeOf(expressions) == 0)
+    return (get_size(expressions) == 0)
         ? makeLiteral(EMPTY_LIST)
         : makeCallOrApply(REFS(makeList), expressions);
 }
@@ -982,7 +982,7 @@ DEF_PARSE(unaryExpression) {
     zvalue result = PARSE_OR_REJECT(term);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
-    zint size = sizeOf(postfixes);
+    zint size = get_size(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(postfixes, i);
         if (hasType(one, TYPE_List)) {
@@ -1131,7 +1131,7 @@ DEF_PARSE(programBody) {
 
     zvalue tops = EMPTY_LIST;
     zvalue mains = EMPTY_LIST;
-    zint size = sizeOf(rawStatements);
+    zint size = get_size(rawStatements);
 
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(rawStatements, i);
@@ -1163,7 +1163,7 @@ zvalue langParseExpression0(zvalue expression) {
         tokens = expression;
     }
 
-    ParseState state = { tokens, sizeOf(tokens), 0 };
+    ParseState state = { tokens, get_size(tokens), 0 };
     zvalue result = parse_expression(&state);
 
     if (!isEof(&state)) {
@@ -1183,7 +1183,7 @@ zvalue langParseProgram0(zvalue program) {
         tokens = program;
     }
 
-    ParseState state = { tokens, sizeOf(tokens), 0 };
+    ParseState state = { tokens, get_size(tokens), 0 };
     zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {

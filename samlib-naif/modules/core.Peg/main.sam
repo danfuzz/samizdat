@@ -138,7 +138,7 @@ fn PegRepeat_parse(peg, box, input, items*) {
                 ## Failed to parse the inner rule.
                 ifValue { <> peg::minSize }
                     { minSize ->
-                        ifIs { <> lt(sizeOf(results), minSize) }
+                        ifIs { <> lt(get_size(results), minSize) }
                             {
                                 ## Did not parse minimum required count.
                                 store(box);
@@ -286,7 +286,7 @@ fn makeChoice(rules*) {
         { return @PegFail };
 
     ## Trivial case: One rule. Return that rule directly.
-    ifIs { <> eq(sizeOf(rules), 1) }
+    ifIs { <> eq(get_size(rules), 1) }
         { return rules* };
 
     ## The general case.
@@ -344,7 +344,7 @@ fn makeSequence(rules*) {
         { return empty };
 
     ## Trivial case: One rule. Return that rule directly.
-    ifIs { <> eq(sizeOf(rules), 1) }
+    ifIs { <> eq(get_size(rules), 1) }
         { return rules* };
 
     ## The general case.
@@ -368,7 +368,7 @@ fn makeString(string) {
         { return @PegResult(@"") };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
-    ifIs { <> eq(sizeOf(string), 1) }
+    ifIs { <> eq(get_size(string), 1) }
         { return makeToken(@@(string)) };
 
     ## This is implemented as, in effect, `(@"1" @"2" ... { <> string })`,

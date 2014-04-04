@@ -247,7 +247,7 @@ METH_IMPL(List, reverse) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, sizeOf) {
+METH_IMPL(List, get_size) {
     zvalue list = args[0];
     return intFromZint(getInfo(list)->size);
 }
@@ -342,7 +342,7 @@ MOD_INIT(List) {
     METH_BIND(List, nth);
     METH_BIND(List, put);
     METH_BIND(List, reverse);
-    METH_BIND(List, sizeOf);
+    METH_BIND(List, get_size);
     METH_BIND(List, sliceExclusive);
     METH_BIND(List, sliceInclusive);
     METH_BIND(List, totEq);

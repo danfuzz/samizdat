@@ -59,7 +59,7 @@ Gets the nth mapping of the list.
 #### `put(list, n, value) <> list`
 
 Returns a list like the given one, but with the `n`th element replaced
-with the given `value`, or added if `n == sizeOf(list)`.
+with the given `value`, or added if `n == get_size(list)`.
 
 #### `reverse(list) <> list`
 
@@ -68,7 +68,7 @@ order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
 
-#### `sizeOf(list) <> int`
+#### `get_size(list) <> int`
 
 Returns the number of elements in the list.
 

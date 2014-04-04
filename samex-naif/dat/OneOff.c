@@ -46,8 +46,8 @@ zint nthChar(zvalue value, zint index) {
 }
 
 /* Documented in header. */
-zint sizeOf(zvalue value) {
-    return zintFromInt(GFN_CALL(sizeOf, value));
+zint get_size(zvalue value) {
+    return zintFromInt(GFN_CALL(get_size, value));
 }
 
 
@@ -74,8 +74,8 @@ MOD_INIT(OneOff) {
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
     datImmortalize(GFN_nth);
 
-    GFN_sizeOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sizeOf"));
-    datImmortalize(GFN_sizeOf);
+    GFN_get_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_size"));
+    datImmortalize(GFN_get_size);
 
     GFN_toInt = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toInt"));
     datImmortalize(GFN_toInt);
@@ -106,7 +106,7 @@ zvalue GFN_get_name = NULL;
 zvalue GFN_nth = NULL;
 
 /* Documented in header. */
-zvalue GFN_sizeOf = NULL;
+zvalue GFN_get_size = NULL;
 
 /* Documented in header. */
 zvalue GFN_toInt = NULL;

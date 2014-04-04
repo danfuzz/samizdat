@@ -57,13 +57,13 @@ It is an error (terminating the runtime) if the `key` or `value` is
 invalid for `collection`.
 
 **Note:** On sequence-like collections, the only valid keys are ints
-in the range `0..sizeOf(collection)` (inclusive of the size).
+in the range `0..get_size(collection)` (inclusive of the size).
 
 **Note:** To differentiate between adding a new mapping versus replacing
 a mapping, either check the sizes of the original and result, or
 check for the existence of `key` in the original.
 
-#### `sizeOf(collection) <> int`
+#### `get_size(collection) <> int`
 
 (Implementation of `OneOff` generic function.)
 

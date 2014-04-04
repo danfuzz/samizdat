@@ -28,8 +28,8 @@ extern zvalue GFN_get_name;
 /** Generic `nth(sequence, n)`: Documented in spec. */
 extern zvalue GFN_nth;
 
-/** Generic `sizeOf(collection)`: Documented in spec. */
-extern zvalue GFN_sizeOf;
+/** Generic `get_size(collection)`: Documented in spec. */
+extern zvalue GFN_get_size;
 
 /** Generic `toInt(value)`: Documented in spec. */
 extern zvalue GFN_toInt;
@@ -72,8 +72,8 @@ zvalue nth(zvalue value, zint index);
 zint nthChar(zvalue value, zint index);
 
 /**
- * Calls `sizeOf` on the given value, converting the result to a `zint`.
+ * Calls `get_size` on the given value, converting the result to a `zint`.
  */
-zint sizeOf(zvalue value);
+zint get_size(zvalue value);
 
 #endif

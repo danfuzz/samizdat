@@ -292,7 +292,7 @@ METH_IMPL(Map, cat) {
 METH_IMPL(Map, collect) {
     zvalue map = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
-    zint size = sizeOf(map);
+    zint size = get_size(map);
     zmapping mappings[size];
     zvalue result[size];
     zint at = 0;
@@ -486,7 +486,7 @@ METH_IMPL(Map, put) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, sizeOf) {
+METH_IMPL(Map, get_size) {
     zvalue map = args[0];
     return intFromZint(getInfo(map)->size);
 }
@@ -586,7 +586,7 @@ MOD_INIT(Map) {
     METH_BIND(Map, nextValue);
     METH_BIND(Map, nthMapping);
     METH_BIND(Map, put);
-    METH_BIND(Map, sizeOf);
+    METH_BIND(Map, get_size);
     METH_BIND(Map, totEq);
     METH_BIND(Map, totOrder);
     METH_BIND(Map, get_value);
