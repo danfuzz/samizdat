@@ -21,8 +21,8 @@ intraLoad("MapGenerator");
     cat:        Collection::cat,
     get:        Collection::get,
     del:        Collection::del,
+    get_size:   Collection::get_size,
     keyList:    Collection::keyList,
     nthMapping: Collection::nthMapping,
-    put:        Collection::put,
-    get_size:   Collection::get_size
+    put:        Collection::put
 }
