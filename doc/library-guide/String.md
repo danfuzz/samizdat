@@ -62,6 +62,10 @@ Returns a string like the given one, but without the `n`th character.
 
 Defined as per the `Sequence` protocol.
 
+#### `get_size(string) <> int`
+
+Returns the number of characters in the string.
+
 #### `keyList(string) <> list`
 
 Defined as per the `Sequence` protocol.
@@ -77,17 +81,13 @@ Gets the nth mapping of the string.
 #### `put(string, n, char) <> string`
 
 Returns a string like the given one, but with the `n`th character replaced
-with the given `char`, or added if `n == get_size(string)`. It is an error
+with the given `char`, or added if `n == #string`. It is an error
 if `char` is not a string of size `1`.
 
 #### `reverse(string) <> string`
 
 Returns a string like the one given, except with characters in the opposite
 order.
-
-#### `get_size(string) <> int`
-
-Returns the number of characters in the string.
 
 #### `sliceExclusive(string, start, end?) <> string`
 

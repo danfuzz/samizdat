@@ -28,6 +28,18 @@ I/O.
 <br><br>
 ### Function Definitions
 
+#### `fixPath(path, basePaths*) <> path`
+
+"Fixes" the given `path` if relative, making it *less* relative (and possibly
+absolute) by using the given `basePaths` (if any) as prefixes. Cases:
+
+* It is an error (terminating the runtime) if `path` is either empty or is
+  not a string.
+* If `path` is absolute, or if no `basePaths` are supplied, then this returns
+  `path` directly.
+* Otherwise, `fixPath(basePaths*)` is called. This function returns that
+  `fixPath` result, concatenated with `"/"` and the original `path`.
+
 #### `get_directory(path) <> path`
 
 Returns the directory part of the given `path`. Cases:
@@ -56,15 +68,3 @@ Cases:
   `path` itself.
 * Otherwise, the result is the suffix of the given `path` after but not
   including the last slash.
-
-#### `fixPath(path, basePaths*) <> path`
-
-"Fixes" the given `path` if relative, making it *less* relative (and possibly
-absolute) by using the given `basePaths` (if any) as prefixes. Cases:
-
-* It is an error (terminating the runtime) if `path` is either empty or is
-  not a string.
-* If `path` is absolute, or if no `basePaths` are supplied, then this returns
-  `path` directly.
-* Otherwise, `fixPath(basePaths*)` is called. This function returns that
-  `fixPath` result, concatenated with `"/"` and the original `path`.

@@ -67,6 +67,14 @@ Some values have an associated name, or an optional associated name.
 This generic provides access to that name. There is no restriction
 on the composition (type, etc.) of a name.
 
+#### `get_size(value) <> int`
+
+Returns the number of elements in the given value. This function is intended
+for "collection-like" values which have constituent parts of some sort.
+
+**Syntax Note:** This is the function underlying the `#value` syntactic
+form (prefix `#` operator).
+
 #### `nth(value, n) <> . | void`
 
 Returns the nth (zero-based) element of the given value.
@@ -75,14 +83,6 @@ Returns void if `n < 0` or `n >= #value`. It is an error
 
 This function is intended for "sequence-like" values which have
 strongly-ordered constituent parts of some sort.
-
-#### `get_size(value) <> int`
-
-Returns the number of elements in the given value. This function is intended
-for "collection-like" values which have constituent parts of some sort.
-
-**Syntax Note:** This is the function underlying the `#value` syntactic
-form (prefix `#` operator).
 
 #### `toInt(value) <> int`
 

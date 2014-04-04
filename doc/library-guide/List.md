@@ -44,6 +44,10 @@ Returns a list like the given one, but without the `n`th element.
 
 Defined as per the `Sequence` protocol.
 
+#### `get_size(list) <> int`
+
+Returns the number of elements in the list.
+
 #### `keyList(list, n) <> list`
 
 Defined as per the `Sequence` protocol.
@@ -67,10 +71,6 @@ Returns a list like the one given, except with elements in the opposite
 order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
-
-#### `get_size(list) <> int`
-
-Returns the number of elements in the list.
 
 #### `sliceExclusive(list, start, end?) <> list`
 
