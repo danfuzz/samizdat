@@ -925,7 +925,7 @@ fn closureWithFormals(closure, formals*) {
 ## references.
 def UNARY_OPERATORS = {
     @@"-":   REFS::Number_neg,
-    @@"#":   REFS::Collection_get_size,
+    @@"#":   REFS::get_size,
     @@"^":   REFS::Sequence_reverse,
     @@"!!!": REFS::Bitwise_not
 };
