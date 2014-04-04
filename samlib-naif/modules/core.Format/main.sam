@@ -209,7 +209,7 @@ fn Map_sourceGeneral(map, adorn) {
     def mapElems = Generator::filterAll(map)
         { mapping ->
             def key = keyString(get_key(mapping));
-            def value = sourceGeneral(valueOf(mapping), true);
+            def value = sourceGeneral(get_value(mapping), true);
             <> cat(", ", key, ": ", value)
         };
 

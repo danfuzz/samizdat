@@ -201,7 +201,7 @@ and functions:
 * `GFN_methodName` &mdash; Identifies a generic function (value of type
   `Generic`).
 
-* `STR_valueOfString` &mdash; Identifies a value of type `String`.
+* `STR_get_valueString` &mdash; Identifies a value of type `String`.
 
 * `TOK_tokenName` &mdash; Identifies a payload-free derived data
   value whose type is `TYPE_tokenName`, where the type's name is

@@ -86,8 +86,8 @@ MOD_INIT(OneOff) {
     GFN_toString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toString"));
     datImmortalize(GFN_toString);
 
-    GFN_valueOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "valueOf"));
-    datImmortalize(GFN_valueOf);
+    GFN_get_value = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_value"));
+    datImmortalize(GFN_get_value);
 }
 
 /* Documented in header. */
@@ -118,4 +118,4 @@ zvalue GFN_toNumber = NULL;
 zvalue GFN_toString = NULL;
 
 /* Documented in header. */
-zvalue GFN_valueOf = NULL;
+zvalue GFN_get_value = NULL;

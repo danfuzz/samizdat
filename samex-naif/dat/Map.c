@@ -554,7 +554,7 @@ METH_IMPL(Map, totOrder) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, valueOf) {
+METH_IMPL(Map, get_value) {
     zvalue map = args[0];
 
     MapInfo *info = getInfo(map);
@@ -589,7 +589,7 @@ MOD_INIT(Map) {
     METH_BIND(Map, sizeOf);
     METH_BIND(Map, totEq);
     METH_BIND(Map, totOrder);
-    METH_BIND(Map, valueOf);
+    METH_BIND(Map, get_value);
 
     EMPTY_MAP = allocMap(0);
     datImmortalize(EMPTY_MAP);

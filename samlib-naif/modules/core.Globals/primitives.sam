@@ -36,6 +36,7 @@
     get_key,
     get_name,
     get_type,
+    get_value,
     hasType,
     ifIs,
     ifNot,
@@ -65,6 +66,5 @@
     toString,
     totEq,
     totOrder,
-    typeParent,
-    valueOf
+    typeParent
 }

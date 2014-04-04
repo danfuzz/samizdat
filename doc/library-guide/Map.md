@@ -34,7 +34,7 @@ key order.
 Returns the sole key of the given map, which must be a single-mapping map.
 It is a terminal error if `map` does not contain exactly one mapping.
 
-#### `valueOf(map) <> .`
+#### `get_value(map) <> .`
 
 Returns the sole value of the given map, which must be a single-mapping map.
 It is a terminal error if `map` does not contain exactly one mapping.

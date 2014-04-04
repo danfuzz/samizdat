@@ -26,7 +26,7 @@ fn get_interns(this) {
     def boxList = [ n in (0..#map) <> Box::makePromise() ];
 
     for (mapping in map) {
-        def id = valueOf(mapping);
+        def id = get_value(mapping);
         store(boxList[id], get_key(mapping))
     };
 

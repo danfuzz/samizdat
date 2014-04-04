@@ -40,8 +40,8 @@ extern zvalue GFN_toNumber;
 /** Generic `toString(value)`: Documented in spec. */
 extern zvalue GFN_toString;
 
-/** Generic `valueOf(value)`: Documented in spec. */
-extern zvalue GFN_valueOf;
+/** Generic `get_value(value)`: Documented in spec. */
+extern zvalue GFN_get_value;
 
 /**
  * Calls the `get` generic.

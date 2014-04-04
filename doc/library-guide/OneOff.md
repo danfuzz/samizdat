@@ -56,7 +56,7 @@ parts of some sort.
 
 Some values have an associated "key" or "key-like" value.
 This generic provides access to that key. This generic often goes
-hand-in-hand with `valueOf`.
+hand-in-hand with `get_value`.
 
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error if it is bound but inapplicable.
@@ -112,7 +112,7 @@ it is preferable to cause an error.
 It is discouraged to use this generic for textual conversion of a value
 to a string (e.g. turning the int value 242 into the string `"242"`).
 
-#### `valueOf(value) <> .`
+#### `get_value(value) <> .`
 
 Some values have an associated "sub-value" or "inner value."
 This generic provides access to that value. This generic often goes
