@@ -102,7 +102,7 @@ def parFile = {:
     { <> cat(lines*) }
 :};
 
-def selfDir = FilePath::directoryOf(SELF_PATH);
+def selfDir = FilePath::get_directory(SELF_PATH);
 def inPath = "\(selfDir)/entity-map.txt";
 def outPath = "\(selfDir)/entityMap.sam";
 note("Processing file: \%q(inPath)");

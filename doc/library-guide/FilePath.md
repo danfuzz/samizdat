@@ -28,7 +28,7 @@ I/O.
 <br><br>
 ### Function Definitions
 
-#### `directoryOf(path) <> path`
+#### `get_directory(path) <> path`
 
 Returns the directory part of the given `path`. Cases:
 

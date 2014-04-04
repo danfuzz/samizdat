@@ -42,7 +42,7 @@ fn getOutputPath(rawPath, args) {
         & "\(outDir)/\(rawPath)"
         | rawPath;
 
-    def dir = FilePath::directoryOf(path);
+    def dir = FilePath::get_directory(path);
     def baseName = withoutSuffix(FilePath::fileOf(path));
     return "\(dir)/\(baseName).c"
 };
