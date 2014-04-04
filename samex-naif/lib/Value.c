@@ -31,6 +31,11 @@ FUN_IMPL_DECL(eq) {
 }
 
 /* Documented in spec. */
+FUN_IMPL_DECL(get_type) {
+    return get_type(args[0]);
+}
+
+/* Documented in spec. */
 FUN_IMPL_DECL(hasType) {
     zvalue value = args[0];
     zvalue type = args[1];

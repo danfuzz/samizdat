@@ -666,7 +666,7 @@ def parRepeatPex = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeTokenSet(@@"?", @@"*", @@"+"),
             Peg::makeCode { term, repeat ->
-                <> @(get(PEX_TYPES, typeOf(repeat)))(term)
+                <> @(get(PEX_TYPES, get_type(repeat)))(term)
             }),
         Peg::makeCode { term <> term }));
 
@@ -676,7 +676,7 @@ def parLookaheadPex = Peg::makeMainChoice(
         Peg::makeTokenSet(@@"&", @@"!"),
         parRepeatPex,
         Peg::makeCode { lookahead, pex ->
-            <> @(get(PEX_TYPES, typeOf(lookahead)))(pex)
+            <> @(get(PEX_TYPES, get_type(lookahead)))(pex)
         }),
     parRepeatPex);
 

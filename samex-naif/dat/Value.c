@@ -56,8 +56,13 @@ zvalue dataOf(zvalue value) {
 extern void *datPayload(zvalue value);
 
 /* Documented in header. */
+zvalue get_type(zvalue value) {
+    return value->type;
+}
+
+/* Documented in header. */
 zint valSelfIdOf(zvalue value) {
-    if (!typeIsSelfish(typeOf(value))) {
+    if (!typeIsSelfish(get_type(value))) {
         die("Attempt to use `valSelfIdOf` on non-selfish value.");
     }
 
@@ -118,7 +123,7 @@ zvalue valOrder(zvalue value, zvalue other) {
         datFrameReturn(save, result);
         return result;
     } else {
-        return GFN_CALL(totOrder, typeOf(value), typeOf(other));
+        return GFN_CALL(totOrder, get_type(value), get_type(other));
     }
 }
 
@@ -153,7 +158,7 @@ zorder valZorder(zvalue value, zvalue other) {
 /* Documented in header. */
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
-    zvalue type = typeOf(value);
+    zvalue type = get_type(value);
     char addrBuf[19]; // Includes room for `0x` and `\0`.
 
     sprintf(addrBuf, "%p", value);

@@ -176,7 +176,7 @@ static bool isType(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
-    return (typeOf(value) == TYPE_Type);
+    return (get_type(value) == TYPE_Type);
 }
 
 /**
@@ -227,7 +227,7 @@ void assertHasType(zvalue value, zvalue type) {
 bool hasType(zvalue value, zvalue type) {
     assertHasTypeType(type);
 
-    for (zvalue valueType = typeOf(value);
+    for (zvalue valueType = get_type(value);
             valueType != NULL;
             valueType = getInfo(valueType)->parent) {
         if (typeEq(valueType, type)) {
@@ -240,7 +240,7 @@ bool hasType(zvalue value, zvalue type) {
 
 /* Documented in header. */
 bool haveSameType(zvalue value, zvalue other) {
-    return typeEq(typeOf(value), typeOf(other));
+    return typeEq(get_type(value), get_type(other));
 }
 
 /* Documented in header. */
@@ -271,7 +271,7 @@ zint typeIndex(zvalue type) {
 
 /* Documented in header. */
 zint typeIndexOf(zvalue value) {
-    return typeIndexUnchecked(typeOf(value));
+    return typeIndexUnchecked(get_type(value));
 }
 
 /* Documented in header. */
@@ -284,11 +284,6 @@ bool typeIsDerived(zvalue type) {
 bool typeIsSelfish(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->selfish;
-}
-
-/* Documented in header. */
-zvalue typeOf(zvalue value) {
-    return value->type;
 }
 
 /* Documented in header. */

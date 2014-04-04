@@ -201,7 +201,7 @@ fn PegTokenSet_parse(peg, box, input, items*) {
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifIs { <> get(peg, typeOf(item)) }
+            ifIs { <> get(peg, get_type(item)) }
                 {
                     store(box, item);
                     return newInput
@@ -220,7 +220,7 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifNot { <> get(peg, typeOf(item)) }
+            ifNot { <> get(peg, get_type(item)) }
                 {
                     store(box, item);
                     return newInput

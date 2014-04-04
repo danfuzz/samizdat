@@ -94,6 +94,7 @@ PRIM_FUNC(dataOf,                 1, 2);
 PRIM_FUNC(die,                    0, 1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(genericBind,            3, 3);
+PRIM_FUNC(get_type,               1, 1);
 PRIM_FUNC(hasType,                2, 2);
 PRIM_FUNC(ifIs,                   2, 3);
 PRIM_FUNC(ifNot,                  2, 2);
@@ -112,7 +113,6 @@ PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
 PRIM_FUNC(order,                  2, 2);
-PRIM_FUNC(typeOf,                 1, 1);
 PRIM_FUNC(typeParent,             1, 1);
 
 // Primitive functions: intended for modularization

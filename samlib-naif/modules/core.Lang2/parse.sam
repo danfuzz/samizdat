@@ -865,7 +865,7 @@ def parRepeatPex = {:
     term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @(get(PEX_TYPES, typeOf(repeat)))(term) }
+        { <> @(get(PEX_TYPES, get_type(repeat)))(term) }
     |
         { <> term }
     )
@@ -877,7 +877,7 @@ def parLookaheadPex = {:
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @(get(PEX_TYPES, typeOf(lookahead)))(pex) }
+        { <> @(get(PEX_TYPES, get_type(lookahead)))(pex) }
     )
 |
     parRepeatPex
@@ -965,7 +965,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     Generator::filterPump(opExList) { opEx ->
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
@@ -1024,7 +1024,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     fn transform(leftRef, opEx, rest*) {
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
 
         <> ifIs { <> eq(rest, []) }
             { <> makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
@@ -1299,7 +1299,7 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = get(UNARY_OPERATORS, typeOf(operator));
+        def name = get(UNARY_OPERATORS, get_type(operator));
         <> { node <> makeCall(name, node) }
     }
 |
@@ -1360,13 +1360,13 @@ def parIndexPostfix = {:
 
                 def startNode =
                     makeCall(REFS::makeValue,
-                        makeLiteral(typeOf(start)),
+                        makeLiteral(get_type(start)),
                         dataOf(start));
 
                 def optEndNode = (ifValue { <> dataOf(end) }
                     { endData ->
                         <> makeCall(REFS::makeValue,
-                            makeLiteral(typeOf(end)),
+                            makeLiteral(get_type(end)),
                             endData)
                     })?;
 

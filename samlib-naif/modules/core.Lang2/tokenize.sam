@@ -390,7 +390,7 @@ def tokStringInterpolation;
 tokStringInterpolation := {:
     &["({["]
     open = tokToken
-    expectClose = { <> get(OPEN_CLOSE_MAP, typeOf(open)) }
+    expectClose = { <> get(OPEN_CLOSE_MAP, get_type(open)) }
 
     tokens = (
         tokWhitespace?

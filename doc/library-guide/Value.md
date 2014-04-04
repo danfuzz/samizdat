@@ -154,7 +154,7 @@ if they both have the same type.
 **Note:** This is the function which underlies the implementation
 of all cross-type ordering functions.
 
-#### `typeOf(value) <> type`
+#### `get_type(value) <> type`
 
 Returns the type of the given arbitrary `value`. The return value is always
 of type `Type`.
@@ -279,4 +279,4 @@ different types.
 #### `typeNameOf(value) <> .`
 
 Returns the name of the given `value`'s type. This function is the equivalent
-to `nameOf(typeOf(value))`.
+to `nameOf(get_type(value))`.

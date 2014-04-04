@@ -18,11 +18,6 @@ FUN_IMPL_DECL(makeDerivedDataType) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(typeOf) {
-    return typeOf(args[0]);
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(typeParent) {
     return typeParent(args[0]);
 }

@@ -33,6 +33,7 @@
     fetch,
     genericBind,
     get,
+    get_type,
     hasType,
     ifIs,
     ifNot,
@@ -64,7 +65,6 @@
     toString,
     totEq,
     totOrder,
-    typeOf,
     typeParent,
     valueOf
 }

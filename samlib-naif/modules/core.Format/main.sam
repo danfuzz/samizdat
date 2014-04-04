@@ -251,7 +251,7 @@ fn Value_sourceGeneral(value, adorn) {
     ifValue { <> get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def type = typeOf(value);
+    def type = get_type(value);
     def typeStr = sourceGeneral(type, true);
     def prefix = ifIs { <> eq("@", nth(typeStr, 0)) }
         {
