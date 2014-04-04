@@ -140,7 +140,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    switch (evalTypeOf(e)) {
+    switch (get_evalType(e)) {
         case EVAL_apply:   return execApply(frame, e);
         case EVAL_call:    return execCall(frame, e);
         case EVAL_closure: return execClosure(frame, e);
@@ -156,7 +156,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 
 /* Documented in header. */
 void execStatement(Frame *frame, zvalue statement) {
-    switch (evalTypeOf(statement)) {
+    switch (get_evalType(statement)) {
         case EVAL_varDef:        execVarDef(frame, statement);           break;
         case EVAL_varDefMutable: execVarDefMutable(frame, statement);    break;
         default:                 execExpressionVoidOk(frame, statement); break;
