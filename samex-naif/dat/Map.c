@@ -366,6 +366,38 @@ METH_IMPL(Map, get) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, get_key) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+
+    if (info->size != 1) {
+        die("Not a size 1 map.");
+    }
+
+    return info->elems[0].key;
+}
+
+/* Documented in header. */
+METH_IMPL(Map, get_size) {
+    zvalue map = args[0];
+    return intFromZint(getInfo(map)->size);
+}
+
+/* Documented in header. */
+METH_IMPL(Map, get_value) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+
+    if (info->size != 1) {
+        die("Not a size 1 map.");
+    }
+
+    return info->elems[0].value;
+}
+
+/* Documented in header. */
 METH_IMPL(Map, keyList) {
     zvalue map = args[0];
 
@@ -380,19 +412,6 @@ METH_IMPL(Map, keyList) {
     }
 
     return listFromArray(size, arr);
-}
-
-/* Documented in header. */
-METH_IMPL(Map, get_key) {
-    zvalue map = args[0];
-
-    MapInfo *info = getInfo(map);
-
-    if (info->size != 1) {
-        die("Not a size 1 map.");
-    }
-
-    return info->elems[0].key;
 }
 
 /* Documented in header. */
@@ -486,12 +505,6 @@ METH_IMPL(Map, put) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, get_size) {
-    zvalue map = args[0];
-    return intFromZint(getInfo(map)->size);
-}
-
-/* Documented in header. */
 METH_IMPL(Map, totEq) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -553,19 +566,6 @@ METH_IMPL(Map, totOrder) {
     return INT_0;
 }
 
-/* Documented in header. */
-METH_IMPL(Map, get_value) {
-    zvalue map = args[0];
-
-    MapInfo *info = getInfo(map);
-
-    if (info->size != 1) {
-        die("Not a size 1 map.");
-    }
-
-    return info->elems[0].value;
-}
-
 /** Initializes the module. */
 MOD_INIT(Map) {
     MOD_USE(Collection);
@@ -581,15 +581,15 @@ MOD_INIT(Map) {
     METH_BIND(Map, del);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
-    METH_BIND(Map, keyList);
     METH_BIND(Map, get_key);
+    METH_BIND(Map, get_size);
+    METH_BIND(Map, get_value);
+    METH_BIND(Map, keyList);
     METH_BIND(Map, nextValue);
     METH_BIND(Map, nthMapping);
     METH_BIND(Map, put);
-    METH_BIND(Map, get_size);
     METH_BIND(Map, totEq);
     METH_BIND(Map, totOrder);
-    METH_BIND(Map, get_value);
 
     EMPTY_MAP = allocMap(0);
     datImmortalize(EMPTY_MAP);

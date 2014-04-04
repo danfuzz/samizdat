@@ -25,11 +25,14 @@ extern zvalue GFN_get_key;
 /** Generic `get_name(value)`: Documented in spec. */
 extern zvalue GFN_get_name;
 
-/** Generic `nth(sequence, n)`: Documented in spec. */
-extern zvalue GFN_nth;
-
 /** Generic `get_size(collection)`: Documented in spec. */
 extern zvalue GFN_get_size;
+
+/** Generic `get_value(value)`: Documented in spec. */
+extern zvalue GFN_get_value;
+
+/** Generic `nth(sequence, n)`: Documented in spec. */
+extern zvalue GFN_nth;
 
 /** Generic `toInt(value)`: Documented in spec. */
 extern zvalue GFN_toInt;
@@ -39,9 +42,6 @@ extern zvalue GFN_toNumber;
 
 /** Generic `toString(value)`: Documented in spec. */
 extern zvalue GFN_toString;
-
-/** Generic `get_value(value)`: Documented in spec. */
-extern zvalue GFN_get_value;
 
 /**
  * Calls the `get` generic.

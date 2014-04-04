@@ -35,6 +35,11 @@ zvalue get_nameIfDefined(zvalue value) {
 }
 
 /* Documented in header. */
+zint get_size(zvalue value) {
+    return zintFromInt(GFN_CALL(get_size, value));
+}
+
+/* Documented in header. */
 zvalue nth(zvalue value, zint index) {
     return GFN_CALL(nth, value, intFromZint(index));
 }
@@ -43,11 +48,6 @@ zvalue nth(zvalue value, zint index) {
 zint nthChar(zvalue value, zint index) {
     zvalue result = nth(value, index);
     return (result == NULL) ? -1 : zcharFromString(result);
-}
-
-/* Documented in header. */
-zint get_size(zvalue value) {
-    return zintFromInt(GFN_CALL(get_size, value));
 }
 
 
@@ -71,11 +71,14 @@ MOD_INIT(OneOff) {
     GFN_get_name = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_name"));
     datImmortalize(GFN_get_name);
 
-    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
-    datImmortalize(GFN_nth);
-
     GFN_get_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_size"));
     datImmortalize(GFN_get_size);
+
+    GFN_get_value = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_value"));
+    datImmortalize(GFN_get_value);
+
+    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
+    datImmortalize(GFN_nth);
 
     GFN_toInt = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toInt"));
     datImmortalize(GFN_toInt);
@@ -85,9 +88,6 @@ MOD_INIT(OneOff) {
 
     GFN_toString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toString"));
     datImmortalize(GFN_toString);
-
-    GFN_get_value = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_value"));
-    datImmortalize(GFN_get_value);
 }
 
 /* Documented in header. */
@@ -103,10 +103,13 @@ zvalue GFN_get_key = NULL;
 zvalue GFN_get_name = NULL;
 
 /* Documented in header. */
-zvalue GFN_nth = NULL;
+zvalue GFN_get_size = NULL;
 
 /* Documented in header. */
-zvalue GFN_get_size = NULL;
+zvalue GFN_get_value = NULL;
+
+/* Documented in header. */
+zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_toInt = NULL;
@@ -116,6 +119,3 @@ zvalue GFN_toNumber = NULL;
 
 /* Documented in header. */
 zvalue GFN_toString = NULL;
-
-/* Documented in header. */
-zvalue GFN_get_value = NULL;

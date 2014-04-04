@@ -197,6 +197,12 @@ METH_IMPL(List, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, get_size) {
+    zvalue list = args[0];
+    return intFromZint(getInfo(list)->size);
+}
+
+/* Documented in header. */
 METH_IMPL(List, nth) {
     zvalue list = args[0];
     zvalue n = args[1];
@@ -244,12 +250,6 @@ METH_IMPL(List, reverse) {
     }
 
     return listFrom(size, arr, NULL, 0, NULL);
-}
-
-/* Documented in header. */
-METH_IMPL(List, get_size) {
-    zvalue list = args[0];
-    return intFromZint(getInfo(list)->size);
 }
 
 /* Documented in header. */
@@ -339,10 +339,10 @@ MOD_INIT(List) {
     METH_BIND(List, cat);
     METH_BIND(List, del);
     METH_BIND(List, gcMark);
+    METH_BIND(List, get_size);
     METH_BIND(List, nth);
     METH_BIND(List, put);
     METH_BIND(List, reverse);
-    METH_BIND(List, get_size);
     METH_BIND(List, sliceExclusive);
     METH_BIND(List, sliceInclusive);
     METH_BIND(List, totEq);
