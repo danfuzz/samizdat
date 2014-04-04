@@ -10,7 +10,7 @@ def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def get_actuals    = Lang0Node::get_actuals;
 def get_formals    = Lang0Node::get_formals;
 def get_function   = Lang0Node::get_function;
-def get_name       = Lang0Node::get_name;
+def get_nodeName   = Lang0Node::get_nodeName;
 def get_statements = Lang0Node::get_statements;
 def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
@@ -107,7 +107,7 @@ genericBind(
     get_varRefs,
     @@varBind,
     fn varBind_get_varRefs(node) {
-        <> [node.name, node.value.varRefs*]
+        <> [node.nodeName, node.value.varRefs*]
     });
 
 genericBind(
@@ -128,7 +128,7 @@ genericBind(
     get_varRefs,
     @@varRef,
     fn varRef_get_varRefs(node) {
-        <> [node.name]
+        <> [node.nodeName]
     });
 
 <> {get_varRefs}

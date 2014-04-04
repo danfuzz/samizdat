@@ -80,7 +80,7 @@ could possibly accept. If there is no limit, this returns `-1`.
 Gets the minimum number of arguments that a given `closure` node
 requires.
 
-#### `get_name(node) <> . | void`
+#### `get_nodeName(node) <> . | void`
 
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `varBind`, `varDef`, `varDefMutable`, and `varRef`.

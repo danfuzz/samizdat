@@ -27,7 +27,7 @@ def Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = Lang0Node::REFS;
 def get_formals        = Lang0Node::get_formals;
 def get_interpolate    = Lang0Node::get_interpolate;
-def get_name           = Lang0Node::get_name;
+def get_nodeName       = Lang0Node::get_nodeName;
 def get_statements     = Lang0Node::get_statements;
 def get_value          = Lang0Node::get_value;
 def get_yieldDef       = Lang0Node::get_yieldDef;
@@ -313,7 +313,7 @@ def parFnCommon = {:
 def parFnDef = {:
     closure = parFnCommon
 
-    name = { <> get_name(closure) }
+    name = { <> get_nodeName(closure) }
     {
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
@@ -342,7 +342,7 @@ parFnExpression := {:
     closure = parFnCommon
 
     (
-        name = { <> get_name(closure) }
+        name = { <> get_nodeName(closure) }
         {
             def mainClosure = @closure{
                 formals:    [],
@@ -422,7 +422,7 @@ def parMapping = {:
                 ifIs { <> hasType(value, @@varRef) }
                     {
                         <out> makeCall(REFS::makeValueMap,
-                            makeLiteral(get_name(value)), value)
+                            makeLiteral(get_nodeName(value)), value)
                     }
             }
             {
