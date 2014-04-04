@@ -144,7 +144,7 @@ def parFormal = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeTokenSet(@@"?", @@"*", @@"+"),
-            Peg::makeCode { ., r <> {repeat: typeNameOf(r)} }),
+            Peg::makeCode { ., r <> {repeat: get_typeName(r)} }),
         Peg::makeResult({})),
     Peg::makeCode { name, repeat <> {name*, repeat*} });
 
@@ -283,7 +283,7 @@ def parIdentifierString = Peg::makeMainChoice(
         Peg::makeCode { token ->
             <> ifNot { <> dataOf(token) }
                 {
-                    def type = typeNameOf(token);
+                    def type = get_typeName(token);
                     def firstCh = nth(type, 0);
                     <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                         { <> makeLiteral(type) }
@@ -485,7 +485,7 @@ def parNonlocalExit = Peg::makeMainSequence(
             Peg::makeCode { ., n, . <> n }),
         Peg::makeSequence(
             Peg::makeTokenSet(@@break, @@continue, @@return),
-            Peg::makeCode { op <> makeVarRef(typeNameOf(op)) })),
+            Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
     Peg::makeOpt(parExpression),
     Peg::makeCode { name, optValue <> makeJump(name, optValue*) });
 

@@ -167,7 +167,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> {repeat: typeNameOf(r)} }
+        { <> {repeat: get_typeName(r)} }
     |
         { <> {} }
     )
@@ -387,7 +387,7 @@ def parIdentifierString = {:
     {
         <> ifNot { <> dataOf(token) }
             {
-                def type = typeNameOf(token);
+                def type = get_typeName(token);
                 def firstCh = nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
@@ -646,7 +646,7 @@ def parNonlocalExit = {:
         { <> n }
     |
         op = [@break @continue @return]
-        { <> makeVarRef(typeNameOf(op)) }
+        { <> makeVarRef(get_typeName(op)) }
     )
 
     optValue = parExpression?

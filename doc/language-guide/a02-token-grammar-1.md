@@ -40,7 +40,7 @@ def INT_CHARS = {
 
 ## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> get(INT_CHARS, typeNameOf(ch))
+    <> get(INT_CHARS, get_typeName(ch))
 };
 
 ## Converts a list of digit values into an int, given the base.
@@ -177,7 +177,7 @@ def tokError = {:
     [! "\n"]*
 
     {
-        def msg = cat("Unrecognized character: ", typeNameOf(badCh));
+        def msg = cat("Unrecognized character: ", get_typeName(badCh));
         <> @error(msg)
     }
 :};

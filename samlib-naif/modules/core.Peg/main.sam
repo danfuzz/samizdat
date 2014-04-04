@@ -421,7 +421,7 @@ fn apply(rule, input) {
 
 ## Documented in spec.
 fn stringFromTokenList(tokens) {
-    <> cat("", collect(tokens, typeNameOf)*)
+    <> cat("", collect(tokens, get_typeName)*)
 };
 
 

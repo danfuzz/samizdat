@@ -276,7 +276,7 @@ different types.
 
 **Syntax Note:** Used in the translation of `expr**` forms.
 
-#### `typeNameOf(value) <> .`
+#### `get_typeName(value) <> .`
 
 Returns the name of the given `value`'s type. This function is the equivalent
 to `get_name(get_type(value))`.

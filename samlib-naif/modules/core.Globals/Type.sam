@@ -12,10 +12,10 @@
 ##
 
 ## Documented in spec.
-fn typeNameOf(value) {
+fn get_typeName(value) {
     <> get_name(get_type(value))
 };
 
 <> {
-    typeNameOf
+    get_typeName
 }

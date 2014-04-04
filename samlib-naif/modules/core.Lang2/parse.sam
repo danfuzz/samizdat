@@ -175,7 +175,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> {repeat: typeNameOf(r)} }
+        { <> {repeat: get_typeName(r)} }
     |
         { <> {} }
     )
@@ -395,7 +395,7 @@ def parIdentifierString = {:
     {
         <> ifNot { <> dataOf(token) }
             {
-                def type = typeNameOf(token);
+                def type = get_typeName(token);
                 def firstCh = nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
@@ -655,7 +655,7 @@ def parNonlocalExit = {:
         { <> n }
     |
         op = [@break @continue @return]
-        { <> makeVarRef(typeNameOf(op)) }
+        { <> makeVarRef(get_typeName(op)) }
     )
 
     optValue = parExpression?
@@ -1456,7 +1456,7 @@ parPostfixOperator2 := {:
             def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
-                <> @(typeNameOf(getterCall)){
+                <> @(get_typeName(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarRef(cat("set_", suffix));
