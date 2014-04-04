@@ -59,7 +59,7 @@ extern zvalue TYPE_Closure;
  * Gets the evaluation type (enumerated value) of the given node.
  */
 inline zevalType evalTypeOf(zvalue node) {
-    return langTypeMap[typeIndexOf(node)];
+    return langTypeMap[get_typeIndex(node)];
 }
 
 /**

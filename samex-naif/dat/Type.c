@@ -224,6 +224,11 @@ void assertHasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
+zint get_typeIndex(zvalue value) {
+    return typeIndexUnchecked(get_type(value));
+}
+
+/* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
     assertHasTypeType(type);
 
@@ -267,11 +272,6 @@ zvalue makeDerivedDataType(zvalue name) {
 zint typeIndex(zvalue type) {
     assertHasTypeType(type);
     return typeIndexUnchecked(type);
-}
-
-/* Documented in header. */
-zint typeIndexOf(zvalue value) {
-    return typeIndexUnchecked(get_type(value));
 }
 
 /* Documented in header. */

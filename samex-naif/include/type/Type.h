@@ -28,6 +28,11 @@ extern zvalue TYPE_Type;
 void assertHasType(zvalue value, zvalue type);
 
 /**
+ * Returns the unique index for the type of the given value.
+ */
+zint get_typeIndex(zvalue value);
+
+/**
  * Returns true iff the type of the given value (that is, `get_type(value)`)
  * is either the given type or is a subtype of the given type.
  */
@@ -64,11 +69,6 @@ bool typeHasSecret(zvalue type, zvalue secret);
  * Returns the unique index for the given type.
  */
 zint typeIndex(zvalue type);
-
-/**
- * Returns the unique index for the type of the given value.
- */
-zint typeIndexOf(zvalue value);
 
 /**
  * Returns true iff the given type is derived (whether pure data or not).

@@ -62,7 +62,7 @@ static char *callReporter(void *state) {
  * nor debug and local frame setup/teardown.
  */
 static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
-    zint index = typeIndexOf(function);
+    zint index = get_typeIndex(function);
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Function`, `Generic`, or
