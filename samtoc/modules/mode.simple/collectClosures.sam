@@ -133,8 +133,8 @@ fn collectClosures(node) {
 
     def bodiesBoxList = [ for #bodiesMap <> Box::makePromise() ];
     for (body in bodiesMap) {
-        def index = valueOf(body)::id;
-        store(bodiesBoxList[index], keyOf(body))
+        def index = get_value(body)::id;
+        store(bodiesBoxList[index], get_key(body))
     };
     def closures = [ box in bodiesBoxList <> fetch(box) ];
 

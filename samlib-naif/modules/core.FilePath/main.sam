@@ -28,10 +28,23 @@ fn checkPath(path) {
 ##
 
 ## Documented in spec.
-fn directoryOf(path) {
+fn fixPath(path, basePaths*) {
     checkPath(path);
 
-    var at = sizeOf(path);
+    <> ifIs { <> eq(get(path, 0), "/") }
+        { <> path }
+        {
+            <> ifIs { <> eq(basePaths, []) }
+                { <> path }
+                { <> cat(fixPath(basePaths*), "/", path) }
+        }
+};
+
+## Documented in spec.
+fn get_directory(path) {
+    checkPath(path);
+
+    var at = get_size(path);
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
@@ -63,10 +76,10 @@ fn directoryOf(path) {
 };
 
 ## Documented in spec.
-fn fileOf(path) {
+fn get_file(path) {
     checkPath(path);
 
-    var at = sizeOf(path);
+    var at = get_size(path);
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
@@ -100,21 +113,8 @@ fn fileOf(path) {
     }
 };
 
-## Documented in spec.
-fn fixPath(path, basePaths*) {
-    checkPath(path);
-
-    <> ifIs { <> eq(get(path, 0), "/") }
-        { <> path }
-        {
-            <> ifIs { <> eq(basePaths, []) }
-                { <> path }
-                { <> cat(fixPath(basePaths*), "/", path) }
-        }
-};
-
 <> {
-    directoryOf,
-    fileOf,
-    fixPath
+    fixPath,
+    get_directory,
+    get_file
 }

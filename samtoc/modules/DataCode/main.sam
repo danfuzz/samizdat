@@ -138,7 +138,7 @@ fn Map_convert(map) {
     };
 
     def mapPairs = [ mapping in map ->
-        <> [convert(keyOf(mapping)), convert(valueOf(mapping))]
+        <> [convert(get_key(mapping)), convert(get_value(mapping))]
     ];
 
     <> CodeGen::makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
@@ -162,7 +162,7 @@ genericBind(convert, String, String_convert);
 
 ## Converts a type. Only works on derived data types.
 fn Type_convert(type) {
-    <> CodeGen::makeCall("makeDerivedDataType", convert(nameOf(type)))
+    <> CodeGen::makeCall("makeDerivedDataType", convert(get_name(type)))
 };
 genericBind(convert, Type, Type_convert);
 
@@ -170,7 +170,7 @@ genericBind(convert, Type, Type_convert);
 ## that can be stringified with `indent`.
 fn Value_convert(value) {
     def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
-    def type = typeOf(value);
+    def type = get_type(value);
 
     if (!hasType(value, DerivedData)) {
         die("Cannot convert opaque non-data value: \%q(value)")

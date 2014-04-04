@@ -19,7 +19,7 @@
 FUN_IMPL_DECL(interpolate) {
     zvalue result = GFN_CALL(collect, args[0]);
 
-    switch (sizeOf(result)) {
+    switch (get_size(result)) {
         case 0: return NULL;
         case 1: return nth(result, 0);
         default: {

@@ -16,7 +16,7 @@ def Io0      = moduleLoad(["core", "Io0"]);
 
 ## Demo of reading a sibling file.
 fn sibling() {
-    def selfDir = FilePath::directoryOf(SELF_PATH);
+    def selfDir = FilePath::get_directory(SELF_PATH);
     def text = Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
     note(text);
 };
@@ -29,7 +29,7 @@ fn fileExists() {
             { note(cat("Does not exist: ", Format::source(path))) }
     };
 
-    def selfDir = FilePath::directoryOf(SELF_PATH);
+    def selfDir = FilePath::get_directory(SELF_PATH);
     tryFile(cat(selfDir, "/sibling.txt"));
     tryFile(cat(selfDir, "/non-sibling.txt"))
 };

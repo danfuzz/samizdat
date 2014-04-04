@@ -50,7 +50,7 @@ def INT_CHARS = {
 
 ## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> get(INT_CHARS, typeNameOf(ch))
+    <> get(INT_CHARS, get_typeName(ch))
 };
 
 ## Converts a list of digit values into an int, given the base.
@@ -197,7 +197,7 @@ def tokError = {:
     [! "\n"]*
 
     {
-        def msg = cat("Unrecognized character: ", typeNameOf(badCh));
+        def msg = cat("Unrecognized character: ", get_typeName(badCh));
         <> @error(msg)
     }
 :};
@@ -287,7 +287,7 @@ fn processStringParts(parts) {
     };
 
     ## Check for a simple result.
-    ifIs { <> eq(sizeOf(elems), 1) }
+    ifIs { <> eq(get_size(elems), 1) }
         {
             ifValue { <> hasType(elems*, String) }
                 { elem ->
@@ -390,7 +390,7 @@ def tokStringInterpolation;
 tokStringInterpolation := {:
     &["({["]
     open = tokToken
-    expectClose = { <> get(OPEN_CLOSE_MAP, typeOf(open)) }
+    expectClose = { <> get(OPEN_CLOSE_MAP, get_type(open)) }
 
     tokens = (
         tokWhitespace?

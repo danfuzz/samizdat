@@ -22,14 +22,14 @@ fn msg(value) {
 ##
 
 note("\nMethod call syntax");
-msg([1, 2].sizeOf());
+msg([1, 2].get_size());
 msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
 msg("".cat("Awesome", "tastic!"));
 
 note("\nGetter syntax");
-def get_size = sizeOf;
+def get_size = get_size;
 msg([1, 2, 3].size);
 
 def get_foo = fetch;

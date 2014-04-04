@@ -77,7 +77,7 @@ void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
     zvalue vars = frame->vars;
     zvalue newVars = collPut(vars, name, box);
 
-    if (sizeOf(vars) == sizeOf(newVars)) {
+    if (get_size(vars) == get_size(newVars)) {
         die("Variable already defined: %s", valDebugString(name));
     }
 

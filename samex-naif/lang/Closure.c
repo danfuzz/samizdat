@@ -84,7 +84,7 @@ typedef struct {
     /** The `"formals"` mapping of `defMap`, converted for easier use. */
     zformal formals[LANG_MAX_FORMALS];
 
-    /** The result of `sizeOf(formals)`. */
+    /** The result of `get_size(formals)`. */
     zint formalsSize;
 
     /** The number of actual names in `formals`, plus one for a `yieldDef`. */
@@ -113,7 +113,7 @@ static ClosureInfo *getInfo(zvalue closure) {
  */
 static zvalue buildCachedClosure(zvalue defMap) {
     zvalue formals = get(defMap, STR_formals);
-    zint formalsSize = sizeOf(formals);
+    zint formalsSize = get_size(formals);
 
     // Build out most of the result.
 
@@ -154,7 +154,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
         if (repeat == NULL) {
             rep = REP_NONE;
         } else {
-            if (sizeOf(repeat) != 1) {
+            if (get_size(repeat) != 1) {
                 die("Invalid repeat modifier: %s", valDebugString(repeat));
             }
             switch (nthChar(repeat, 0)) {
@@ -310,7 +310,7 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
     // Evaluate the statements, updating the frame as needed.
 
     zvalue statements = info->statements;
-    zint statementsSize = sizeOf(statements);
+    zint statementsSize = get_size(statements);
     zvalue statementsArr[statementsSize];
     arrayFromList(statementsArr, statements);
 
@@ -397,7 +397,7 @@ METH_IMPL(Closure, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Closure, nameOf) {
+METH_IMPL(Closure, get_name) {
     zvalue closure = args[0];
     return get(getInfo(closure)->defMap, STR_name);
 }
@@ -414,7 +414,7 @@ MOD_INIT(Closure) {
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugString);
-    METH_BIND(Closure, nameOf);
+    METH_BIND(Closure, get_name);
     METH_BIND(Closure, gcMark);
 
     nodeCache = EMPTY_MAP;

@@ -94,7 +94,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
 
     // Note: The replacement `firstType` returned by `findByType` is only
     // ever used for "same type" generics.
-    zvalue firstType = typeOf(args[0]);
+    zvalue firstType = get_type(args[0]);
     zvalue function = findByType(generic, firstType, &firstType);
 
     if (function == NULL) {
@@ -200,7 +200,7 @@ METH_IMPL(Generic, canCall) {
     zvalue value = args[1];
     GenericInfo *info = getInfo(generic);
 
-    return (findByType(generic, typeOf(value), NULL) != NULL) ? value : NULL;
+    return (findByType(generic, get_type(value), NULL) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */
@@ -231,7 +231,7 @@ METH_IMPL(Generic, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Generic, nameOf) {
+METH_IMPL(Generic, get_name) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
 
@@ -249,7 +249,7 @@ MOD_INIT(Generic) {
     METH_BIND(Generic, canCall);
     METH_BIND(Generic, debugString);
     METH_BIND(Generic, gcMark);
-    METH_BIND(Generic, nameOf);
+    METH_BIND(Generic, get_name);
 }
 
 /* Documented in header. */

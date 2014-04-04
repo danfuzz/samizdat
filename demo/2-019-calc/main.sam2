@@ -94,7 +94,7 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { <> toInt(typeNameOf(ch)) - toInt("0") }
+    { <> toInt(get_typeName(ch)) - toInt("0") }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.
@@ -125,7 +125,7 @@ def term = {:
 ## function.
 def unaryOp = {:
     op = ["+-"]
-    { <> UNARY_OPS[typeNameOf(op)] }
+    { <> UNARY_OPS[get_typeName(op)] }
 :};
 
 ## Parses a unary expression, that is, a series of unary operators followed
@@ -139,7 +139,7 @@ def unaryExpression = {:
 ## Parses a binary operation, yielding a map of precedence and function.
 def binaryOp = {:
     op = ["+-*/%"]
-    { <> BINARY_OPS[typeNameOf(op)] }
+    { <> BINARY_OPS[get_typeName(op)] }
 :};
 
 ## Parses a chained sequence of unary expressions separated by binary

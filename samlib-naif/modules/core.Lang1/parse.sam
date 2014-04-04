@@ -144,7 +144,7 @@ def parFormal = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeTokenSet(@@"?", @@"*", @@"+"),
-            Peg::makeCode { ., r <> {repeat: typeNameOf(r)} }),
+            Peg::makeCode { ., r <> {repeat: get_typeName(r)} }),
         Peg::makeResult({})),
     Peg::makeCode { name, repeat <> {name*, repeat*} });
 
@@ -283,7 +283,7 @@ def parIdentifierString = Peg::makeMainChoice(
         Peg::makeCode { token ->
             <> ifNot { <> dataOf(token) }
                 {
-                    def type = typeNameOf(token);
+                    def type = get_typeName(token);
                     def firstCh = nth(type, 0);
                     <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                         { <> makeLiteral(type) }
@@ -485,7 +485,7 @@ def parNonlocalExit = Peg::makeMainSequence(
             Peg::makeCode { ., n, . <> n }),
         Peg::makeSequence(
             Peg::makeTokenSet(@@break, @@continue, @@return),
-            Peg::makeCode { op <> makeVarRef(typeNameOf(op)) })),
+            Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
     Peg::makeOpt(parExpression),
     Peg::makeCode { name, optValue <> makeJump(name, optValue*) });
 
@@ -602,8 +602,8 @@ def parParserSetString = Peg::makeMainSequence(
                 def endChar = dataOf(end);
 
                 ## Reject non-single-character strings.
-                ifIs { <> ne(1, sizeOf(startChar)) } { <out> };
-                ifIs { <> ne(1, sizeOf(endChar)) } { <out> };
+                ifIs { <> ne(1, get_size(startChar)) } { <out> };
+                ifIs { <> ne(1, get_size(endChar)) } { <out> };
 
                 <> cat(Range::makeInclusiveRange(startChar, endChar)*)
             }),
@@ -666,7 +666,7 @@ def parRepeatPex = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeTokenSet(@@"?", @@"*", @@"+"),
             Peg::makeCode { term, repeat ->
-                <> @(get(PEX_TYPES, typeOf(repeat)))(term)
+                <> @(get(PEX_TYPES, get_type(repeat)))(term)
             }),
         Peg::makeCode { term <> term }));
 
@@ -676,7 +676,7 @@ def parLookaheadPex = Peg::makeMainChoice(
         Peg::makeTokenSet(@@"&", @@"!"),
         parRepeatPex,
         Peg::makeCode { lookahead, pex ->
-            <> @(get(PEX_TYPES, typeOf(lookahead)))(pex)
+            <> @(get(PEX_TYPES, get_type(lookahead)))(pex)
         }),
     parRepeatPex);
 

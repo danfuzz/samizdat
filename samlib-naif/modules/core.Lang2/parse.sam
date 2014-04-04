@@ -175,7 +175,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> {repeat: typeNameOf(r)} }
+        { <> {repeat: get_typeName(r)} }
     |
         { <> {} }
     )
@@ -395,7 +395,7 @@ def parIdentifierString = {:
     {
         <> ifNot { <> dataOf(token) }
             {
-                def type = typeNameOf(token);
+                def type = get_typeName(token);
                 def firstCh = nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
@@ -655,7 +655,7 @@ def parNonlocalExit = {:
         { <> n }
     |
         op = [@break @continue @return]
-        { <> makeVarRef(typeNameOf(op)) }
+        { <> makeVarRef(get_typeName(op)) }
     )
 
     optValue = parExpression?
@@ -799,8 +799,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, sizeOf(startChar)) } { <out> };
-            ifIs { <> ne(1, sizeOf(endChar)) } { <out> };
+            ifIs { <> ne(1, get_size(startChar)) } { <out> };
+            ifIs { <> ne(1, get_size(endChar)) } { <out> };
 
             <> cat(Range::makeInclusiveRange(startChar, endChar)*)
         }
@@ -865,7 +865,7 @@ def parRepeatPex = {:
     term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @(get(PEX_TYPES, typeOf(repeat)))(term) }
+        { <> @(get(PEX_TYPES, get_type(repeat)))(term) }
     |
         { <> term }
     )
@@ -877,7 +877,7 @@ def parLookaheadPex = {:
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @(get(PEX_TYPES, typeOf(lookahead)))(pex) }
+        { <> @(get(PEX_TYPES, get_type(lookahead)))(pex) }
     )
 |
     parRepeatPex
@@ -925,7 +925,7 @@ fn closureWithFormals(closure, formals*) {
 ## references.
 def UNARY_OPERATORS = {
     @@"-":   REFS::Number_neg,
-    @@"#":   REFS::Collection_sizeOf,
+    @@"#":   REFS::get_size,
     @@"^":   REFS::Sequence_reverse,
     @@"!!!": REFS::Bitwise_not
 };
@@ -965,7 +965,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     Generator::filterPump(opExList) { opEx ->
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
@@ -1004,7 +1004,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
 
-    ifIs { <> le(sizeOf(opExList), 1) }
+    ifIs { <> le(get_size(opExList), 1) }
         {
             ## Trivial case of zero or one operator. Just use the result of
             ## the call to `makeBinaryCalls`.
@@ -1024,7 +1024,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     fn transform(leftRef, opEx, rest*) {
-        def resolvedOp = get(BINARY_OPERATORS, typeOf(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
 
         <> ifIs { <> eq(rest, []) }
             { <> makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
@@ -1299,7 +1299,7 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = get(UNARY_OPERATORS, typeOf(operator));
+        def name = get(UNARY_OPERATORS, get_type(operator));
         <> { node <> makeCall(name, node) }
     }
 |
@@ -1360,13 +1360,13 @@ def parIndexPostfix = {:
 
                 def startNode =
                     makeCall(REFS::makeValue,
-                        makeLiteral(typeOf(start)),
+                        makeLiteral(get_type(start)),
                         dataOf(start));
 
                 def optEndNode = (ifValue { <> dataOf(end) }
                     { endData ->
                         <> makeCall(REFS::makeValue,
-                            makeLiteral(typeOf(end)),
+                            makeLiteral(get_type(end)),
                             endData)
                     })?;
 
@@ -1456,7 +1456,7 @@ parPostfixOperator2 := {:
             def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
-                <> @(typeNameOf(getterCall)){
+                <> @(get_typeName(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarRef(cat("set_", suffix));
@@ -1603,7 +1603,7 @@ def parLogicAndExpression = {:
         { <> last }
     |
         ## Non-compound `&` expression.
-        { <> eq(sizeOf(most), 1) }
+        { <> eq(get_size(most), 1) }
         {
             def clause = most*;
             def formal = clause::formal;
@@ -1715,7 +1715,7 @@ def parMultiTest = {:
 
     (
         ## Single test. Will translate as either `ifValue` or `ifIs`.
-        { <> eq(sizeOf(clauses), 1) }
+        { <> eq(get_size(clauses), 1) }
         {
             def clause = clauses*;
             def formal = clause::formal;
@@ -2095,10 +2095,10 @@ def parSwitchExpression = {:
             <> ifIs { <> eq(case::keys, @else) } { <> case::code }
         };
 
-        ifIs { <> gt(sizeOf(optDefault), 1) }
+        ifIs { <> gt(get_size(optDefault), 1) }
             { die("Multiple default cases in switch.") };
 
-        ifIs { <> gt(sizeOf(optElse), 1) }
+        ifIs { <> gt(get_size(optElse), 1) }
             { die("Multiple else cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to

@@ -42,7 +42,7 @@ static DerivedDataInfo *getInfo(zvalue value) {
 
 /* Documented in header. */
 zvalue valDataOf(zvalue value, zvalue secret) {
-    zvalue type = typeOf(value);
+    zvalue type = get_type(value);
 
     if (typeIsDerived(type) && typeHasSecret(type, secret)) {
         return getInfo(value)->data;

@@ -29,12 +29,12 @@ key order.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `keyOf(map) <> .`
+#### `get_key(map) <> .`
 
 Returns the sole key of the given map, which must be a single-mapping map.
 It is a terminal error if `map` does not contain exactly one mapping.
 
-#### `valueOf(map) <> .`
+#### `get_value(map) <> .`
 
 Returns the sole value of the given map, which must be a single-mapping map.
 It is a terminal error if `map` does not contain exactly one mapping.
@@ -66,6 +66,10 @@ not bind `key`, then this returns `map`.
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this returns void.
 
+#### `get_size(map) <> int`
+
+Returns the number of mappings in the map.
+
 #### `keyList(map) <> list`
 
 Returns a list of all the keys mapped by the given `map`, in sorted order.
@@ -80,10 +84,6 @@ Returns a map just like the given one, except with a new mapping
 for `key` to `value`. The result has a replacement for the existing
 mapping for `key` in `map` if such a one existed, or has an
 additional mapping in cases where `map` didn't already bind `key`.
-
-#### `sizeOf(map) <> int`
-
-Returns the number of mappings in the map.
 
 
 <br><br>

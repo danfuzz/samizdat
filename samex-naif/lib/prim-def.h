@@ -34,14 +34,14 @@ PRIM_DEF(totOrder,                GFN_totOrder);
 // Generic functions: One-Offs, exported to the global environment.
 PRIM_DEF(cat,                     GFN_cat);
 PRIM_DEF(get,                     GFN_get);
-PRIM_DEF(keyOf,                   GFN_keyOf);
-PRIM_DEF(nameOf,                  GFN_nameOf);
+PRIM_DEF(get_key,                 GFN_get_key);
+PRIM_DEF(get_name,                GFN_get_name);
+PRIM_DEF(get_size,                GFN_get_size);
+PRIM_DEF(get_value,               GFN_get_value);
 PRIM_DEF(nth,                     GFN_nth);
-PRIM_DEF(sizeOf,                  GFN_sizeOf);
 PRIM_DEF(toInt,                   GFN_toInt);
 PRIM_DEF(toNumber,                GFN_toNumber);
 PRIM_DEF(toString,                GFN_toString);
-PRIM_DEF(valueOf,                 GFN_valueOf);
 
 // Generic functions: `Bitwise` protocol, intended for modularization.
 PRIM_DEF(Bitwise_and,             GFN_and);
@@ -94,6 +94,7 @@ PRIM_FUNC(dataOf,                 1, 2);
 PRIM_FUNC(die,                    0, 1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(genericBind,            3, 3);
+PRIM_FUNC(get_type,               1, 1);
 PRIM_FUNC(hasType,                2, 2);
 PRIM_FUNC(ifIs,                   2, 3);
 PRIM_FUNC(ifNot,                  2, 2);
@@ -112,7 +113,6 @@ PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
 PRIM_FUNC(order,                  2, 2);
-PRIM_FUNC(typeOf,                 1, 1);
 PRIM_FUNC(typeParent,             1, 1);
 
 // Primitive functions: intended for modularization

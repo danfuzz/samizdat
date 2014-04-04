@@ -42,13 +42,13 @@ static zvalue ensureString(zvalue value) {
  */
 static char *callReporter(void *state) {
     zvalue value = state;
-    zvalue name = nameOfIfDefined(value);
+    zvalue name = get_nameIfDefined(value);
 
     if (name != NULL) {
         return utf8DupFromString(ensureString(name));
     }
 
-    char *typeString = valDebugString(typeOf(value));
+    char *typeString = valDebugString(get_type(value));
     char *result;
 
     asprintf(&result, "(anonymous %s)", typeString);
@@ -62,7 +62,7 @@ static char *callReporter(void *state) {
  * nor debug and local frame setup/teardown.
  */
 static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
-    zint index = typeIndexOf(function);
+    zint index = get_typeIndex(function);
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Function`, `Generic`, or
@@ -102,7 +102,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 zvalue funApply(zvalue function, zvalue args) {
-    zint argCount = sizeOf(args);
+    zint argCount = get_size(args);
     zvalue argsArray[argCount];
 
     arrayFromList(argsArray, args);

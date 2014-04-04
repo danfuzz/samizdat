@@ -28,13 +28,18 @@ extern zvalue TYPE_Type;
 void assertHasType(zvalue value, zvalue type);
 
 /**
- * Returns true iff the type of the given value (that is, `typeOf(value)`)
+ * Returns the unique index for the type of the given value.
+ */
+zint get_typeIndex(zvalue value);
+
+/**
+ * Returns true iff the type of the given value (that is, `get_type(value)`)
  * is either the given type or is a subtype of the given type.
  */
 bool hasType(zvalue value, zvalue type);
 
 /**
- * Returns true iff the types of the given values (that is, `typeOf()` on
+ * Returns true iff the types of the given values (that is, `get_type()` on
  * each) are the same.
  */
 bool haveSameType(zvalue value, zvalue other);
@@ -66,11 +71,6 @@ bool typeHasSecret(zvalue type, zvalue secret);
 zint typeIndex(zvalue type);
 
 /**
- * Returns the unique index for the type of the given value.
- */
-zint typeIndexOf(zvalue value);
-
-/**
  * Returns true iff the given type is derived (whether pure data or not).
  */
 bool typeIsDerived(zvalue type);
@@ -81,12 +81,6 @@ bool typeIsDerived(zvalue type);
  * to `valSelfIdOf`.
  */
 bool typeIsSelfish(zvalue type);
-
-/**
- * Gets the type of the given value. `value` must be a valid value (in
- * particular, non-`NULL`). The return value is of type `Type`.
- */
-zvalue typeOf(zvalue value);
 
 /**
  * Gets the parent type of the given type.

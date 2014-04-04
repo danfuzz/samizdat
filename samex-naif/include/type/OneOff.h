@@ -19,17 +19,20 @@ extern zvalue GFN_cat;
 /** Generic `get(value, key)`: Documented in spec. */
 extern zvalue GFN_get;
 
-/** Generic `keyOf(value)`: Documented in spec. */
-extern zvalue GFN_keyOf;
+/** Generic `get_key(value)`: Documented in spec. */
+extern zvalue GFN_get_key;
 
-/** Generic `nameOf(value)`: Documented in spec. */
-extern zvalue GFN_nameOf;
+/** Generic `get_name(value)`: Documented in spec. */
+extern zvalue GFN_get_name;
+
+/** Generic `get_size(collection)`: Documented in spec. */
+extern zvalue GFN_get_size;
+
+/** Generic `get_value(value)`: Documented in spec. */
+extern zvalue GFN_get_value;
 
 /** Generic `nth(sequence, n)`: Documented in spec. */
 extern zvalue GFN_nth;
-
-/** Generic `sizeOf(collection)`: Documented in spec. */
-extern zvalue GFN_sizeOf;
 
 /** Generic `toInt(value)`: Documented in spec. */
 extern zvalue GFN_toInt;
@@ -40,23 +43,20 @@ extern zvalue GFN_toNumber;
 /** Generic `toString(value)`: Documented in spec. */
 extern zvalue GFN_toString;
 
-/** Generic `valueOf(value)`: Documented in spec. */
-extern zvalue GFN_valueOf;
-
 /**
  * Calls the `get` generic.
  */
 zvalue get(zvalue coll, zvalue key);
 
 /**
- * Calls `nameOf` on the given value.
+ * Calls `get_name` on the given value.
  */
-zvalue nameOf(zvalue value);
+zvalue get_name(zvalue value);
 
 /**
- * Calls `nameOf` on the given value, if it is defined. If not, returns `NULL`.
+ * Calls `get_name` on the given value, if it is defined. If not, returns `NULL`.
  */
-zvalue nameOfIfDefined(zvalue value);
+zvalue get_nameIfDefined(zvalue value);
 
 /**
  * Calls `nth`, converting the given `zint` index to an `Int` value.
@@ -72,8 +72,8 @@ zvalue nth(zvalue value, zint index);
 zint nthChar(zvalue value, zint index);
 
 /**
- * Calls `sizeOf` on the given value, converting the result to a `zint`.
+ * Calls `get_size` on the given value, converting the result to a `zint`.
  */
-zint sizeOf(zvalue value);
+zint get_size(zvalue value);
 
 #endif

@@ -92,7 +92,7 @@ def parArguments = {:
 
 ## Gets the language layer suffix (or suffix-like-thing) from a file path.
 fn suffixFromPath(filePath) {
-    def finalName = FilePath::fileOf(filePath);
+    def finalName = FilePath::get_file(filePath);
     if (finalName == ".") {
         ## Explicit "this directory" as the final path component; assume it
         ## indicates a module directory.

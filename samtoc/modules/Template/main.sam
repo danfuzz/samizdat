@@ -33,7 +33,7 @@ def parItem = {:
         { <> "\\" }
     |
         ch = .
-        { die("Invalid escape sequence: \%q["\\", typeNameOf(ch)]") }
+        { die("Invalid escape sequence: \%q["\\", get_typeName(ch)]") }
     )
 |
     chars = [! "\\"]+

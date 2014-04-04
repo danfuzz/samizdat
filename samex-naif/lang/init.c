@@ -24,8 +24,8 @@
 /* Documented in header. */
 zevalType langTypeMap[DAT_MAX_TYPES];
 
-/* Documented in header. */
-extern zevalType evalTypeOf(zvalue node);
+/* This provides the non-inline version of this function. */
+extern zevalType get_evalType(zvalue node);
 
 /** Initializes the module. */
 MOD_INIT(lang) {

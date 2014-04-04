@@ -56,13 +56,6 @@ typedef struct Frame {
 extern zvalue TYPE_Closure;
 
 /**
- * Gets the evaluation type (enumerated value) of the given node.
- */
-inline zevalType evalTypeOf(zvalue node) {
-    return langTypeMap[typeIndexOf(node)];
-}
-
-/**
  * Executes a `closure` form.
  */
 zvalue execClosure(Frame *frame, zvalue closureNode);
@@ -112,5 +105,12 @@ zvalue frameGet(Frame *frame, zvalue name);
  * to be part of a heap-allocated structure.
  */
 void frameSnap(Frame *target, Frame *source);
+
+/**
+ * Gets the evaluation type (enumerated value) of the given node.
+ */
+inline zevalType get_evalType(zvalue node) {
+    return langTypeMap[get_typeIndex(node)];
+}
 
 #endif

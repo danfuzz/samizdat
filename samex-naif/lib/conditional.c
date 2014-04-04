@@ -63,7 +63,7 @@ FUN_IMPL_DECL(ifValues) {
     zvalue testFunctions = args[0];
     zvalue valueFunction = args[1];
     zvalue voidFunction = (argCount == 3) ? args[2] : NULL;
-    zint size = sizeOf(testFunctions);
+    zint size = get_size(testFunctions);
     zvalue testArr[size];
     zvalue results[size];
 

@@ -83,7 +83,7 @@ fn makeVarRefLvalue(name) {
 
 ## Documented in spec.
 fn withoutInterpolate(node) {
-    <> @(typeNameOf(node))(Collection::del(dataOf(node), "interpolate"))
+    <> @(get_typeName(node))(Collection::del(dataOf(node), "interpolate"))
 };
 
 ## Documented in spec.
@@ -92,7 +92,7 @@ fn withoutIntermediates(node) {
         Collection::del(dataOf(node), "lvalue"),
         "interpolate");
 
-    <> @(typeNameOf(node))(data)
+    <> @(get_typeName(node))(data)
 };
 
 <> {

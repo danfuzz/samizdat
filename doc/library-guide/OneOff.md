@@ -52,20 +52,28 @@ bound in `value` at all).
 This function is intended for "collection-like" values which have constituent
 parts of some sort.
 
-#### `keyOf(value) <> .`
+#### `get_key(value) <> .`
 
 Some values have an associated "key" or "key-like" value.
 This generic provides access to that key. This generic often goes
-hand-in-hand with `valueOf`.
+hand-in-hand with `get_value`.
 
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error if it is bound but inapplicable.
 
-#### `nameOf(value) <> . | void`
+#### `get_name(value) <> . | void`
 
 Some values have an associated name, or an optional associated name.
 This generic provides access to that name. There is no restriction
 on the composition (type, etc.) of a name.
+
+#### `get_size(value) <> int`
+
+Returns the number of elements in the given value. This function is intended
+for "collection-like" values which have constituent parts of some sort.
+
+**Syntax Note:** This is the function underlying the `#value` syntactic
+form (prefix `#` operator).
 
 #### `nth(value, n) <> . | void`
 
@@ -75,14 +83,6 @@ Returns void if `n < 0` or `n >= #value`. It is an error
 
 This function is intended for "sequence-like" values which have
 strongly-ordered constituent parts of some sort.
-
-#### `sizeOf(value) <> int`
-
-Returns the number of elements in the given value. This function is intended
-for "collection-like" values which have constituent parts of some sort.
-
-**Syntax Note:** This is the function underlying the `#value` syntactic
-form (prefix `#` operator).
 
 #### `toInt(value) <> int`
 
@@ -112,11 +112,11 @@ it is preferable to cause an error.
 It is discouraged to use this generic for textual conversion of a value
 to a string (e.g. turning the int value 242 into the string `"242"`).
 
-#### `valueOf(value) <> .`
+#### `get_value(value) <> .`
 
 Some values have an associated "sub-value" or "inner value."
 This generic provides access to that value. This generic often goes
-hand-in-hand with `keyOf`.
+hand-in-hand with `get_key`.
 
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error if it is bound but inapplicable.

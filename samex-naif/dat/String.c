@@ -293,6 +293,12 @@ METH_IMPL(String, debugString) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, get_size) {
+    zvalue string = args[0];
+    return intFromZint(getInfo(string)->size);
+}
+
+/* Documented in header. */
 METH_IMPL(String, nth) {
     zvalue string = args[0];
     zvalue n = args[1];
@@ -349,12 +355,6 @@ METH_IMPL(String, reverse) {
     zvalue result = stringFromZchars(size, arr);
     freeArray(arr);
     return result;
-}
-
-/* Documented in header. */
-METH_IMPL(String, sizeOf) {
-    zvalue string = args[0];
-    return intFromZint(getInfo(string)->size);
 }
 
 /* Documented in header. */
@@ -466,10 +466,10 @@ MOD_INIT(String) {
     METH_BIND(String, cat);
     METH_BIND(String, debugString);
     METH_BIND(String, del);
+    METH_BIND(String, get_size);
     METH_BIND(String, nth);
     METH_BIND(String, put);
     METH_BIND(String, reverse);
-    METH_BIND(String, sizeOf);
     METH_BIND(String, sliceExclusive);
     METH_BIND(String, sliceInclusive);
     METH_BIND(String, toInt);

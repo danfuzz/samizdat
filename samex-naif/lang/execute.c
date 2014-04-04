@@ -59,7 +59,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue actualsExprs = get(call, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
 
-    zint argCount = sizeOf(actualsExprs);
+    zint argCount = get_size(actualsExprs);
     zvalue args[argCount];
     arrayFromList(args, actualsExprs);
 
@@ -140,7 +140,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    switch (evalTypeOf(e)) {
+    switch (get_evalType(e)) {
         case EVAL_apply:   return execApply(frame, e);
         case EVAL_call:    return execCall(frame, e);
         case EVAL_closure: return execClosure(frame, e);
@@ -149,14 +149,14 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_varBind: return execVarBind(frame, e);
         case EVAL_varRef:  return execVarRef(frame, e);
         default: {
-            die("Invalid expression type: %s", valDebugString(typeOf(e)));
+            die("Invalid expression type: %s", valDebugString(get_type(e)));
         }
     }
 }
 
 /* Documented in header. */
 void execStatement(Frame *frame, zvalue statement) {
-    switch (evalTypeOf(statement)) {
+    switch (get_evalType(statement)) {
         case EVAL_varDef:        execVarDef(frame, statement);           break;
         case EVAL_varDefMutable: execVarDefMutable(frame, statement);    break;
         default:                 execExpressionVoidOk(frame, statement); break;
@@ -172,7 +172,7 @@ void execStatement(Frame *frame, zvalue statement) {
 zvalue langEval0(zvalue env, zvalue node) {
     Frame frame;
 
-    zint size = sizeOf(env);
+    zint size = get_size(env);
     zmapping mappings[size];
 
     arrayFromMap(mappings, env);

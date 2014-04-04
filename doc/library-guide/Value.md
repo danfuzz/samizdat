@@ -119,6 +119,11 @@ argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
 
+#### `get_type(value) <> type`
+
+Returns the type of the given arbitrary `value`. The return value is always
+of type `Type`.
+
 #### `hasType(value, type) <> logic`
 
 Returns `value` if it has type `type`. Otherwise returns void.
@@ -154,11 +159,6 @@ if they both have the same type.
 **Note:** This is the function which underlies the implementation
 of all cross-type ordering functions.
 
-#### `typeOf(value) <> type`
-
-Returns the type of the given arbitrary `value`. The return value is always
-of type `Type`.
-
 
 <br><br>
 ### In-Language Definitions
@@ -170,6 +170,11 @@ values. Returns `value` if the first value orders after the second or is
 identical to it. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \>= expression` forms.
+
+#### `get_typeName(value) <> .`
+
+Returns the name of the given `value`'s type. This function is the equivalent
+to `get_name(get_type(value))`.
 
 #### `gt(value, other) <> logic`
 
@@ -275,8 +280,3 @@ It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
 **Syntax Note:** Used in the translation of `expr**` forms.
-
-#### `typeNameOf(value) <> .`
-
-Returns the name of the given `value`'s type. This function is the equivalent
-to `nameOf(typeOf(value))`.

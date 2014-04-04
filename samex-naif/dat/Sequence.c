@@ -135,7 +135,7 @@ METH_IMPL(Sequence, collect) {
         return coll;
     }
 
-    zint size = sizeOf(coll);
+    zint size = get_size(coll);
     zvalue result[size];
     zint at = 0;
 
@@ -170,7 +170,7 @@ METH_IMPL(Sequence, get) {
 METH_IMPL(Sequence, keyList) {
     zvalue seq = args[0];
 
-    zint size = sizeOf(seq);
+    zint size = get_size(seq);
     zvalue elems[size];
 
     for (zint i = 0; i < size; i++) {
