@@ -15,8 +15,8 @@ def get_id         = Lang0Node::get_id;
 def get_maxArgs    = Lang0Node::get_maxArgs;
 def get_minArgs    = Lang0Node::get_minArgs;
 def get_nodeName   = Lang0Node::get_nodeName;
+def get_nodeValue  = Lang0Node::get_nodeValue;
 def get_statements = Lang0Node::get_statements;
-def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
@@ -73,7 +73,7 @@ genericBind(
     @@jump,
     fn jump_bodies(node, bodiesBox) {
         def function = bodies(node.function, bodiesBox);
-        def optValue = (def v = node.value)
+        def optValue = (def v = node.nodeValue)
             & {value: bodies(v, bodiesBox)}
             | {};
 
@@ -91,7 +91,7 @@ genericBind(
     bodies,
     @@varBind,
     fn varBind_bodies(node, bodiesBox) {
-        def value = bodies(node.value, bodiesBox);
+        def value = bodies(node.nodeValue, bodiesBox);
         <> @varBind{name: node.nodeName, value}
     });
 
@@ -99,7 +99,7 @@ genericBind(
     bodies,
     @@varDef,
     fn varDef_bodies(node, bodiesBox) {
-        def value = ifValue { <> node.value }
+        def value = ifValue { <> node.nodeValue }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
         <> @varDef{name: node.nodeName, value*}
@@ -109,7 +109,7 @@ genericBind(
     bodies,
     @@varDefMutable,
     fn varDefMutable_bodies(node, bodiesBox) {
-        def value = ifValue { <> node.value }
+        def value = ifValue { <> node.nodeValue }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
         <> @varDefMutable{name: node.nodeName, value*}

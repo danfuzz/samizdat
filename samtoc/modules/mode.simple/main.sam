@@ -32,8 +32,8 @@ def get_id         = Lang0Node::get_id;
 def get_maxArgs    = Lang0Node::get_maxArgs;
 def get_minArgs    = Lang0Node::get_minArgs;
 def get_nodeName   = Lang0Node::get_nodeName;
+def get_nodeValue  = Lang0Node::get_nodeValue;
 def get_statements = Lang0Node::get_statements;
-def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 

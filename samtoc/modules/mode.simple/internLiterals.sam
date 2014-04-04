@@ -17,8 +17,8 @@ def get_id         = Lang0Node::get_id;
 def get_maxArgs    = Lang0Node::get_maxArgs;
 def get_minArgs    = Lang0Node::get_minArgs;
 def get_nodeName   = Lang0Node::get_nodeName;
+def get_nodeValue  = Lang0Node::get_nodeValue;
 def get_statements = Lang0Node::get_statements;
-def get_value      = Lang0Node::get_value;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
@@ -69,7 +69,7 @@ genericBind(
     @@jump,
     fn jump_lits(node, interner) {
         def function = lits(node.function, interner);
-        def optValue = (def v = node.value)
+        def optValue = (def v = node.nodeValue)
             & {value: lits(v, interner)}
             | {};
 
@@ -80,7 +80,7 @@ genericBind(
     lits,
     @@literal,
     fn literal_lits(node, interner) {
-        <> @literalRef{id: interner.intern(node.value)}
+        <> @literalRef{id: interner.intern(node.nodeValue)}
     });
 
 genericBind(
@@ -89,7 +89,7 @@ genericBind(
     fn varBind_lits(node, interner) {
         <> @varBind{
             name: node.nodeName,
-            value: lits(node.value, interner)
+            value: lits(node.nodeValue, interner)
         }
     });
 
@@ -97,7 +97,7 @@ genericBind(
     lits,
     @@varDef,
     fn varDef_lits(node, interner) {
-        def value = ifValue { <> node.value }
+        def value = ifValue { <> node.nodeValue }
             { value <> {value: lits(value, interner)} }
             { <> {} };
         <> @varDef{name: node.nodeName, value*}
@@ -107,7 +107,7 @@ genericBind(
     lits,
     @@varDefMutable,
     fn varDefMutable_lits(node, interner) {
-        def value = ifValue { <> node.value }
+        def value = ifValue { <> node.nodeValue }
             { value <> {value: lits(value, interner)} }
             { <> {} };
         <> @varDefMutable{name: node.nodeName, value*}
