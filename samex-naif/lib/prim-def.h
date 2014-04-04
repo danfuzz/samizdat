@@ -34,8 +34,8 @@ PRIM_DEF(totOrder,                GFN_totOrder);
 // Generic functions: One-Offs, exported to the global environment.
 PRIM_DEF(cat,                     GFN_cat);
 PRIM_DEF(get,                     GFN_get);
+PRIM_DEF(get_key,                 GFN_get_key);
 PRIM_DEF(get_name,                GFN_get_name);
-PRIM_DEF(keyOf,                   GFN_keyOf);
 PRIM_DEF(nth,                     GFN_nth);
 PRIM_DEF(sizeOf,                  GFN_sizeOf);
 PRIM_DEF(toInt,                   GFN_toInt);

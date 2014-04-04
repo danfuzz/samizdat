@@ -19,8 +19,8 @@ extern zvalue GFN_cat;
 /** Generic `get(value, key)`: Documented in spec. */
 extern zvalue GFN_get;
 
-/** Generic `keyOf(value)`: Documented in spec. */
-extern zvalue GFN_keyOf;
+/** Generic `get_key(value)`: Documented in spec. */
+extern zvalue GFN_get_key;
 
 /** Generic `get_name(value)`: Documented in spec. */
 extern zvalue GFN_get_name;

@@ -29,7 +29,7 @@ key order.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `keyOf(map) <> .`
+#### `get_key(map) <> .`
 
 Returns the sole key of the given map, which must be a single-mapping map.
 It is a terminal error if `map` does not contain exactly one mapping.

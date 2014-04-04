@@ -65,8 +65,8 @@ MOD_INIT(OneOff) {
     GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
     datImmortalize(GFN_get);
 
-    GFN_keyOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyOf"));
-    datImmortalize(GFN_keyOf);
+    GFN_get_key = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_key"));
+    datImmortalize(GFN_get_key);
 
     GFN_get_name = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_name"));
     datImmortalize(GFN_get_name);
@@ -97,7 +97,7 @@ zvalue GFN_cat = NULL;
 zvalue GFN_get = NULL;
 
 /* Documented in header. */
-zvalue GFN_keyOf = NULL;
+zvalue GFN_get_key = NULL;
 
 /* Documented in header. */
 zvalue GFN_get_name = NULL;

@@ -27,7 +27,7 @@ fn get_interns(this) {
 
     for (mapping in map) {
         def id = valueOf(mapping);
-        store(boxList[id], keyOf(mapping))
+        store(boxList[id], get_key(mapping))
     };
 
     <> [ box in boxList <> fetch(box) ]

@@ -114,7 +114,7 @@ def result = Peg::apply(parFile, text);
 ## trim the first two characters off the beginning, yielding a valid comma-
 ## separated list of mappings.
 def resultLines = (mapping in result ->
-    <> ",\n    \%q(keyOf(mapping)): \%q(valueOf(mapping))"
+    <> ",\n    \%q(get_key(mapping)): \%q(valueOf(mapping))"
 );
 
 def resultText = cat(resultLines*)[2..];

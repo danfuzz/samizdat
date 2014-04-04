@@ -383,7 +383,7 @@ METH_IMPL(Map, keyList) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, keyOf) {
+METH_IMPL(Map, get_key) {
     zvalue map = args[0];
 
     MapInfo *info = getInfo(map);
@@ -582,7 +582,7 @@ MOD_INIT(Map) {
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, keyList);
-    METH_BIND(Map, keyOf);
+    METH_BIND(Map, get_key);
     METH_BIND(Map, nextValue);
     METH_BIND(Map, nthMapping);
     METH_BIND(Map, put);

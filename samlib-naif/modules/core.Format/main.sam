@@ -208,7 +208,7 @@ genericBind(sourceGeneral, List, List_sourceGeneral);
 fn Map_sourceGeneral(map, adorn) {
     def mapElems = Generator::filterAll(map)
         { mapping ->
-            def key = keyString(keyOf(mapping));
+            def key = keyString(get_key(mapping));
             def value = sourceGeneral(valueOf(mapping), true);
             <> cat(", ", key, ": ", value)
         };
