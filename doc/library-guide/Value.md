@@ -84,7 +84,7 @@ on the respective payload values, with a lack of payload counting as
 "before" any non-void payload. In addition, a default implementation
 checks directly for trivial sameness and compares identity ordering
 for anything nontrivial; this latter check will fail if the type of
-the values is not an "selfish" one.
+the values is not a "selfish" one.
 
 **Note:** This is the generic function which underlies the implementation
 of all cross-type ordering functions.
