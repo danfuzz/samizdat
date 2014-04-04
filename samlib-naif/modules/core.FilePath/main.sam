@@ -28,6 +28,19 @@ fn checkPath(path) {
 ##
 
 ## Documented in spec.
+fn fixPath(path, basePaths*) {
+    checkPath(path);
+
+    <> ifIs { <> eq(get(path, 0), "/") }
+        { <> path }
+        {
+            <> ifIs { <> eq(basePaths, []) }
+                { <> path }
+                { <> cat(fixPath(basePaths*), "/", path) }
+        }
+};
+
+## Documented in spec.
 fn get_directory(path) {
     checkPath(path);
 
@@ -98,19 +111,6 @@ fn get_file(path) {
                 return Sequence::sliceInclusive(path, at, endAt)
             };
     }
-};
-
-## Documented in spec.
-fn fixPath(path, basePaths*) {
-    checkPath(path);
-
-    <> ifIs { <> eq(get(path, 0), "/") }
-        { <> path }
-        {
-            <> ifIs { <> eq(basePaths, []) }
-                { <> path }
-                { <> cat(fixPath(basePaths*), "/", path) }
-        }
 };
 
 <> {
