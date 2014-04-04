@@ -110,7 +110,13 @@ zvalue valOrder(zvalue value, zvalue other) {
     } else if (value == other) {
         return INT_0;
     } else if (haveSameType(value, other)) {
-        return GFN_CALL(totOrder, value, other);
+        // `totOrder` can get quite recursive, and without a frame around the
+        // call, it is easy for accumulated calls to blow past the limit on
+        // local references.
+        zstackPointer save = datFrameStart();
+        zvalue result = GFN_CALL(totOrder, value, other);
+        datFrameReturn(save, result);
+        return result;
     } else {
         return GFN_CALL(totOrder, typeOf(value), typeOf(other));
     }
@@ -131,7 +137,12 @@ zvalue valOrderNullOk(zvalue value, zvalue other) {
 
 /* Documented in header. */
 zorder valZorder(zvalue value, zvalue other) {
-    return zintFromInt(valOrder(value, other));
+    // This frame usage avoids having the `zvalue` result of the call pollute
+    // the stack. See note on `valOrder` for more color.
+    zstackPointer save = datFrameStart();
+    zorder result = zintFromInt(valOrder(value, other));
+    datFrameReturn(save, NULL);
+    return result;
 }
 
 
