@@ -14,24 +14,10 @@ def Io0      = moduleLoad(["core", "Io0"]);
 ## Helper Definitions
 ##
 
-## Demo of reading a sibling file.
-fn sibling() {
-    def selfDir = FilePath::get_directory(SELF_PATH);
-    def text = Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
-    note(text);
-};
-
-## Demo of finding and non-finding files.
-fn fileExists() {
-    fn tryFile(path) {
-        ifIs { <> Io0::fileExists(path) }
-            { note(cat("Exists: ", Format::source(path))) }
-            { note(cat("Does not exist: ", Format::source(path))) }
-    };
-
-    def selfDir = FilePath::get_directory(SELF_PATH);
-    tryFile(cat(selfDir, "/sibling.txt"));
-    tryFile(cat(selfDir, "/non-sibling.txt"))
+## Checking file type / existence.
+fn tryFile(path) {
+    def result = ifValueOr { <> Io0::fileType(path) } { <> "(void)" };
+    note(cat("fileType(", Format::source(path), ") => ", result))
 };
 
 
@@ -39,7 +25,14 @@ fn fileExists() {
 ## Main Tests
 ##
 
-sibling();
-fileExists();
+def selfDir = FilePath::get_directory(SELF_PATH);
+
+def text = Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
+note(text);
+
+tryFile(cat(selfDir, "/sibling.txt"));
+tryFile(cat(selfDir, "/non-sibling.txt"));
+tryFile(cat(selfDir, "/nonexistent-directory/zorch.txt"));
+tryFile(selfDir);
 
 <> 0
