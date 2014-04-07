@@ -14,7 +14,7 @@
 
 <> {
     cwd:           Io0_cwd,
-    fileExists:    Io0_fileExists,
+    fileType:      Io0_fileType,
     readFileUtf8:  Io0_readFileUtf8,
     readLink:      Io0_readLink,
     writeFileUtf8: Io0_writeFileUtf8

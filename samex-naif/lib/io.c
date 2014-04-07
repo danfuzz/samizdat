@@ -18,10 +18,9 @@ FUN_IMPL_DECL(Io0_cwd) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Io0_fileExists) {
+FUN_IMPL_DECL(Io0_fileType) {
     zvalue path = args[0];
-
-    return ioFileExists(path) ? path : NULL;
+    return ioFileType(path);
 }
 
 /* Documented in spec. */

@@ -73,7 +73,7 @@ static void makePrimitiveEnvironment(void) {
  * Loads the named binary file if it exists.
  */
 static zvalue loadBinaryIfPossible(zvalue path) {
-    if (!ioFileExists(path)) {
+    if (!valEqNullOk(ioFileType(path), STR_file)) {
         return NULL;
     }
 
@@ -84,7 +84,7 @@ static zvalue loadBinaryIfPossible(zvalue path) {
  * Reads and evaluates the named source file.
  */
 static zvalue loadSource(zvalue path) {
-    if (!ioFileExists(path)) {
+    if (!valEqNullOk(ioFileType(path), STR_file)) {
         die("Missing bootstrap library file: %s", valDebugString(path));
     }
 

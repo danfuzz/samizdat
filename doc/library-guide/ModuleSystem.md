@@ -32,11 +32,11 @@ if `path` is not a valid module name path (list of strings).
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
 
-#### `intraExists(loader, path) <> path | void`
+#### `intraType(loader, path) <> string | void`
 
-This indicates if the given intra-module file exists and is a regular
-(non-directory, non-special) file. It returns the given `path` for
-logical-true and void for logical-false.
+This gets the type of an intra-module file named by the indicated relative
+`path`. The return values are the same as for `core.Io0::fileType`
+(see which).
 
 `path` is expected to be a string identifying a relative file path within the
 module's file hierarchy.

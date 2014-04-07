@@ -4,8 +4,10 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "io.h"
 #include "type/String.h"
+#include "type/Value.h"
 #include "util.h"
 #include "zlimits.h"
 
@@ -53,7 +55,7 @@ zvalue ioCwd(void) {
 }
 
 /* Documented in header. */
-bool ioFileExists(zvalue path) {
+zvalue ioFileType(zvalue path) {
     ioCheckPath(path);
     zint sz = utf8SizeFromString(path);
     char str[sz + 1];
@@ -69,7 +71,9 @@ bool ioFileExists(zvalue path) {
         die("Trouble with stat(): %s", strerror(errno));
     }
 
-    return S_ISREG(statBuf.st_mode);
+    if (S_ISREG(statBuf.st_mode))      { return STR_file;      }
+    else if (S_ISDIR(statBuf.st_mode)) { return STR_directory; }
+    else                               { return STR_other;     }
 }
 
 /* Documented in header. */

@@ -82,7 +82,7 @@ def moduleLoad = makeRegularGeneric("moduleLoad", 2, 2);
 ## Documented in spec.
 def intraLoad     = makeRegularGeneric("intraLoad", 2, 2);
 def intraReadUtf8 = makeRegularGeneric("intraReadUtf8", 2, 2);
-def intraExists   = makeRegularGeneric("intraExists", 2, 2);
+def intraType     = makeRegularGeneric("intraType", 2, 2);
 
 
 ##
@@ -101,9 +101,8 @@ def intraExists   = makeRegularGeneric("intraExists", 2, 2);
 ## Helper for `moduleLoad` which does the actual loading.
 fn doModuleLoad(md, dotName) {
     def modulePath = cat(md::basePath, dotName);
-    def infoPath = cat(modulePath, "/main.saminfo");
 
-    <> ifIs { <> Io0_fileExists(infoPath) }
+    <> ifIs { <> eq(Io0_fileType(modulePath)?, ["directory"]) }
         {
             note(cat("    ", dotName));
             def loader = makeIntraLoader(modulePath, md::globals, md);
@@ -191,14 +190,14 @@ fn doLocalLoad(ml, path) {
     def pathPrefix = cat(ml::basePath, path);
 
     def binPath = cat(pathPrefix, ".samb");
-    ifIs { <> Io0_fileExists(binPath) }
+    ifIs { <> eq(Io0_fileType(binPath)?, ["file"]) }
         {
             def func = Lang0_evalBinary(ml::globals, binPath);
             return func()
         };
 
     def sourcePath = cat(pathPrefix, ".sam");
-    ifIs { <> Io0_fileExists(sourcePath) }
+    ifIs { <> eq(Io0_fileType(sourcePath)?, ["file"]) }
         {
             def lang = ml::languageModule;
             def text = Io0_readFileUtf8(sourcePath);
@@ -212,12 +211,11 @@ fn doLocalLoad(ml, path) {
 
 ## Documented in spec.
 genericBind(
-    intraExists,
+    intraType,
     @@IntraLoader,
-    fn IntraLoader_intraExists(ml, path) {
+    fn IntraLoader_intraType(ml, path) {
         def fullPath = cat(ml::basePath, path);
-        <> ifIs { <> Io0_fileExists(fullPath) }
-            { <> path }
+        <> Io0_fileType(fullPath)
     });
 
 ## Documented in spec.
@@ -245,7 +243,7 @@ genericBind(
     fn IntraLoader_intraReadUtf8(ml, path) {
         def fullPath = cat(ml::basePath, path);
 
-        ifNot { <> Io0_fileExists(fullPath) }
+        ifNot { <> eq(Io0_fileType(fullPath)?, ["file"]) }
             { die(cat("Missing resource: ", fullPath)) };
 
         <> Io0_readFileUtf8(fullPath)
@@ -259,7 +257,7 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## If the module info file (`main.saminfo`) exists, it must evaluate to a
     ## map. If it does not exist, create minimal "anonymous" module info.
     def infoPath = cat(basePath, "main.saminfo");
-    def moduleInfo = ifIs { <> Io0_fileExists(infoPath) }
+    def moduleInfo = ifIs { <> eq(Io0_fileType(infoPath)?, ["file"]) }
         {
             def text = Io0_readFileUtf8(infoPath);
             <> Lang0_eval(globals, Lang0_parseExpression(text))
@@ -273,17 +271,17 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def result;
 
-    fn module_intraExists(path)   { <> intraExists(result, path)      };
     fn module_intraLoad(path)     { <> intraLoad(result, path)        };
     fn module_intraReadUtf8(path) { <> intraReadUtf8(result, path)    };
+    fn module_intraType(path)     { <> intraType(result, path)        };
     fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
     fn module_moduleLoader()      { <> moduleLoader                   };
 
     def fullGlobals = {
         globals*,
-        intraExists:   module_intraExists,
         intraLoad:     module_intraLoad,
         intraReadUtf8: module_intraReadUtf8,
+        intraType:     module_intraType,
         moduleLoad:    module_moduleLoad,
         moduleLoader:  module_moduleLoader
     };
@@ -341,7 +339,7 @@ fn run(path, globals, moduleLoader, args*) {
 <> {
     intraLoad,
     intraReadUtf8,
-    intraExists,
+    intraType,
     makeIntraLoader,
     makeModuleLoader,
     moduleLoad,
