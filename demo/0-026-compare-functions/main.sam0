@@ -1,0 +1,59 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Comparison functions / generics demo
+##
+
+
+##
+## Helper Definitions
+##
+
+## Print the given test results.
+fn test(func, v1, v2) {
+    def result = ifValue { <> func(v1, v2) }
+        { v <> Format::source(v) }
+        { <> "(void)" };
+
+    note(cat(
+        get_name(func),
+        "(",
+        Format::source(v1),
+        ", ",
+        Format::source(v2),
+        ") => ",
+        result));
+};
+
+
+##
+## Main Tests
+##
+
+test(perEq, 10, 10);
+test(perEq, 10, 20);
+test(perOrder, 10, 10);
+test(perOrder, 10, 20);
+test(perOrder, 20, 10);
+
+## Note: The `tot*` generics are unitype (that is, both arguments must match
+## the dispatch type). It's the non-generic `eq` and `order` which can deal
+## with two different-typed arguments.
+test(totEq, 10, 10);
+test(totEq, 10, 20);
+test(totOrder, 10, 10);
+test(totOrder, 10, 20);
+test(totOrder, 20, 10);
+
+test(eq, 10, 10);
+test(eq, 10, 20);
+test(eq, 10, "blort");
+test(order, 10, 10);
+test(order, 10, 20);
+test(order, 20, 10);
+test(order, 10, "blort");
+test(order, "blort", 10);
+
+<> 0

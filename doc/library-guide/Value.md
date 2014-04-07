@@ -7,6 +7,19 @@ Value (the base type)
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)
 
+#### `debugString(value) <> string`
+
+Returns a string representation of `value` meant to aid in debugging.
+This is in contrast to the functions in `core.Format` which are meant to
+help format values for more useful consumption.
+
+The type `Value` binds this to a function which returns a string consisting
+of the name and low-level identifier (e.g. a memory address) of the value.
+Various of the core types override this to provide more useful information.
+
+**Note:** In general, it is a bad idea to use this function for any
+purpose other than temporary debugging code.
+
 #### `perEq(value, other) <> . | void`
 
 Performs a per-type equality comparison of the two given values, using the
