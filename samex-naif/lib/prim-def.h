@@ -123,6 +123,7 @@ PRIM_FUNC(Box_makePromise,        0, 0);
 PRIM_FUNC(Box_makeResult,         0, 1);
 PRIM_FUNC(Io0_cwd,                0, 0);
 PRIM_FUNC(Io0_fileExists,         1, 1);
+PRIM_FUNC(Io0_fileType,           1, 1);
 PRIM_FUNC(Io0_readLink,           1, 1);
 PRIM_FUNC(Io0_readFileUtf8,       1, 1);
 PRIM_FUNC(Io0_writeFileUtf8,      2, 2);
