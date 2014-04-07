@@ -23,14 +23,6 @@ string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `fileExists(path) <> logic`
-
-Returns `path` if it corresponds to an already-existing regular file.
-Returns void if not a regular file.
-
-This returns void if the file doesn't exist at all, or if it exists but
-is either a directory or a "special" file.
-
 #### `fileType(path) <> string | void`
 
 Returns the type of the file whose `path` is as given. If the file doesn't
