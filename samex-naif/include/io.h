@@ -28,6 +28,18 @@ zvalue ioCwd(void);
 bool ioFileExists(zvalue path);
 
 /**
+ * Returns the file type of the file at the given path if it exists, or
+ * `NULL` if the file doesn't exist (including if one of the named directories
+ * in the path doesn't exist). Non-`NULL` return values are always in-model
+ * strings, one of:
+ *
+ * * `"file"` &mdash; regular file.
+ * * `"directory"` &mdash; directory.
+ * * `"other"` &mdash; anything else (e.g. named pipe).
+ */
+zvalue ioFileType(zvalue path);
+
+/**
  * Gets symbolic link information about the file with the given name.
  * It the file names a symbolic link, then this returns the linked path as
  * a simple string. If the file does not name a symbolic link, this returns
