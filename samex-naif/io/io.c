@@ -55,12 +55,6 @@ zvalue ioCwd(void) {
 }
 
 /* Documented in header. */
-bool ioFileExists(zvalue path) {
-    zvalue type = ioFileType(path);
-    return valEqNullOk(type, STR_file);
-}
-
-/* Documented in header. */
 zvalue ioFileType(zvalue path) {
     ioCheckPath(path);
     zint sz = utf8SizeFromString(path);

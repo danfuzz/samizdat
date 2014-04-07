@@ -22,12 +22,6 @@
 zvalue ioCwd(void);
 
 /**
- * Returns `true` if there is a "regular" file at the given path, or
- * `false` if not.
- */
-bool ioFileExists(zvalue path);
-
-/**
  * Returns the file type of the file at the given path if it exists, or
  * `NULL` if the file doesn't exist (including if one of the named directories
  * in the path doesn't exist). Non-`NULL` return values are always in-model
