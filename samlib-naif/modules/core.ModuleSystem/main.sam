@@ -191,14 +191,14 @@ fn doLocalLoad(ml, path) {
     def pathPrefix = cat(ml::basePath, path);
 
     def binPath = cat(pathPrefix, ".samb");
-    ifIs { <> Io0_fileExists(binPath) }
+    ifIs { <> eq(Io0_fileType(binPath)?, ["file"]) }
         {
             def func = Lang0_evalBinary(ml::globals, binPath);
             return func()
         };
 
     def sourcePath = cat(pathPrefix, ".sam");
-    ifIs { <> Io0_fileExists(sourcePath) }
+    ifIs { <> eq(Io0_fileType(sourcePath)?, ["file"]) }
         {
             def lang = ml::languageModule;
             def text = Io0_readFileUtf8(sourcePath);
@@ -245,7 +245,7 @@ genericBind(
     fn IntraLoader_intraReadUtf8(ml, path) {
         def fullPath = cat(ml::basePath, path);
 
-        ifNot { <> Io0_fileExists(fullPath) }
+        ifNot { <> eq(Io0_fileType(fullPath)?, ["file"]) }
             { die(cat("Missing resource: ", fullPath)) };
 
         <> Io0_readFileUtf8(fullPath)
@@ -259,7 +259,7 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## If the module info file (`main.saminfo`) exists, it must evaluate to a
     ## map. If it does not exist, create minimal "anonymous" module info.
     def infoPath = cat(basePath, "main.saminfo");
-    def moduleInfo = ifIs { <> Io0_fileExists(infoPath) }
+    def moduleInfo = ifIs { <> eq(Io0_fileType(infoPath)?, ["file"]) }
         {
             def text = Io0_readFileUtf8(infoPath);
             <> Lang0_eval(globals, Lang0_parseExpression(text))
