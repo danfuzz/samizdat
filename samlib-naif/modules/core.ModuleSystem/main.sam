@@ -101,9 +101,8 @@ def intraType     = makeRegularGeneric("intraType", 2, 2);
 ## Helper for `moduleLoad` which does the actual loading.
 fn doModuleLoad(md, dotName) {
     def modulePath = cat(md::basePath, dotName);
-    def infoPath = cat(modulePath, "/main.saminfo");
 
-    <> ifIs { <> Io0_fileExists(infoPath) }
+    <> ifIs { <> eq(Io0_fileType(modulePath)?, ["directory"]) }
         {
             note(cat("    ", dotName));
             def loader = makeIntraLoader(modulePath, md::globals, md);
