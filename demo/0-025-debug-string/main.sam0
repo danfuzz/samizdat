@@ -1,0 +1,38 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `debugString` demo
+##
+
+
+##
+## Helper Definitions
+##
+
+## Print the given value.
+fn msg(value) {
+    note(value)
+};
+
+
+##
+## Main Tests
+##
+
+msg(debugString("a String"));
+msg(debugString(10));
+msg(debugString([1, 2, 3]));
+msg(debugString({a: 1, b: 2}));
+msg(debugString(@blort));
+msg(debugString(@blort("zorch")));
+msg(debugString(Box::makeCell(10)));
+msg(debugString(makeUniqlet()));
+
+msg(debugString(Value));        ## a type
+msg(debugString(eq));           ## a builtin function
+msg(debugString(ne));           ## an in-language function
+msg(debugString(debugString));  ## a generic function
+
+<> 0
