@@ -82,7 +82,7 @@ def moduleLoad = makeRegularGeneric("moduleLoad", 2, 2);
 ## Documented in spec.
 def intraLoad     = makeRegularGeneric("intraLoad", 2, 2);
 def intraReadUtf8 = makeRegularGeneric("intraReadUtf8", 2, 2);
-def intraExists   = makeRegularGeneric("intraExists", 2, 2);
+def intraType     = makeRegularGeneric("intraType", 2, 2);
 
 
 ##
@@ -212,12 +212,11 @@ fn doLocalLoad(ml, path) {
 
 ## Documented in spec.
 genericBind(
-    intraExists,
+    intraType,
     @@IntraLoader,
-    fn IntraLoader_intraExists(ml, path) {
+    fn IntraLoader_intraType(ml, path) {
         def fullPath = cat(ml::basePath, path);
-        <> ifIs { <> Io0_fileExists(fullPath) }
-            { <> path }
+        <> Io0_fileType(fullPath)
     });
 
 ## Documented in spec.
@@ -273,17 +272,17 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def result;
 
-    fn module_intraExists(path)   { <> intraExists(result, path)      };
     fn module_intraLoad(path)     { <> intraLoad(result, path)        };
     fn module_intraReadUtf8(path) { <> intraReadUtf8(result, path)    };
+    fn module_intraType(path)     { <> intraType(result, path)        };
     fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
     fn module_moduleLoader()      { <> moduleLoader                   };
 
     def fullGlobals = {
         globals*,
-        intraExists:   module_intraExists,
         intraLoad:     module_intraLoad,
         intraReadUtf8: module_intraReadUtf8,
+        intraType:     module_intraType,
         moduleLoad:    module_moduleLoad,
         moduleLoader:  module_moduleLoader
     };
@@ -341,7 +340,7 @@ fn run(path, globals, moduleLoader, args*) {
 <> {
     intraLoad,
     intraReadUtf8,
-    intraExists,
+    intraType,
     makeIntraLoader,
     makeModuleLoader,
     moduleLoad,
