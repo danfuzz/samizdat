@@ -31,6 +31,17 @@ Returns void if not a regular file.
 This returns void if the file doesn't exist at all, or if it exists but
 is either a directory or a "special" file.
 
+#### `fileType(path) <> string | void`
+
+Returns the type of the file whose `path` is as given. If the file doesn't
+exist (including if one of the directories named in `path` doesn't exist),
+this returns void. For a non-void result, this function always returns a
+string, one of:
+
+* `"file"` &mdash; Indicates a regular file.
+* `"directory"` &mdash; Indicates a directory.
+* `"other"` &mdash; Any other existing file (e.g., a named pipe).
+
 #### `readFileUtf8(path) <> string`
 
 Reads the named file, using the underlying OS's functionality,
