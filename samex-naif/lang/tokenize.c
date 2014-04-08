@@ -100,7 +100,10 @@ static zvalue tokenizeInt(ParseState *state) {
     for (;;) {
         zint ch = peek(state);
 
-        if ((ch < '0') || (ch > '9')) {
+        if (ch == '_') {
+            read(state);
+            continue;
+        } else if ((ch < '0') || (ch > '9')) {
             break;
         }
 
