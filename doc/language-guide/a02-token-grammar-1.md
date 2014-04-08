@@ -14,6 +14,15 @@ list of all the tokens. Tokenization errors are represented in the
 result as tokens of type `error`.
 
 ```
+def Generator  = moduleLoad(["core", "Generator"]);
+def Number     = moduleLoad(["proto", "Number"]);
+def Peg        = moduleLoad(["core", "Peg"]);
+
+
+##
+## Private Definitions
+##
+
 ## Map of all the keywords, from their string name to valueless tokens. These
 ## are (to a first approximation) operators whose spellings match the
 ## tokenization syntax of identifiers.
@@ -54,6 +63,14 @@ fn intFromDigitList(base, digits) {
 
     <> result
 };
+
+
+##
+## Layer 0 Rules
+##
+## This section consists of the definitions required to implement Layer 0,
+## with comments indicating the "hooks" for higher layers.
+##
 
 ## Parses any amount of whitespace and comments (including nothing at all).
 ## **Note:** The yielded result is always ignored.

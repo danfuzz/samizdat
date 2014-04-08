@@ -23,6 +23,10 @@ def tokStringPart2;
 ## Layer 1 parsing, and the comments should be taken in light of that.
 ##
 
+##
+## Private Definitions
+##
+
 ## Map of all the keywords, from their string name to valueless tokens. These
 ## are (to a first approximation) operators whose spellings match the
 ## tokenization syntax of identifiers.
@@ -64,6 +68,14 @@ fn intFromDigitList(base, digits) {
 
     <> result
 };
+
+
+##
+## Layer 0 Rules
+##
+## This section consists of the definitions required to implement Layer 0,
+## with comments indicating the "hooks" for higher layers.
+##
 
 ## Parses a non-zero amount of whitespace and comments.
 ## **Note:** The yielded result is always ignored.
