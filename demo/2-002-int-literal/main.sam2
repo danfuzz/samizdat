@@ -25,12 +25,11 @@ note("Layer 0...");
 msg(0);
 msg(-9);
 msg(20);
-msg(98765);
-msg(-12345);
+msg(98_765);
+msg(-12_345);
 
 note("\nLayer 2...");
 
-msg(1_234_452);
 msg(0x1234abcd);            ## Decimal 305441741.
 msg(-0x_ABCDEF);            ## Decimal -11259375.
 msg(0b0);

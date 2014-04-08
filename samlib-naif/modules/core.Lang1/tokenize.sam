@@ -86,11 +86,13 @@ def tokPunctuation = Peg::makeMainSequence(
         Peg::any));
 
 ## Documented in spec.
+def tokDecDigit = Peg::makeMainSequence(
+    Peg::makeCharSet("_0123456789"),
+    Peg::makeCode(intFromDigitChar));
+
+## Documented in spec.
 def tokInt = Peg::makeMainSequence(
-    Peg::makePlus(
-        Peg::makeSequence(
-            Peg::makeCharSet("0123456789"),
-            Peg::makeCode(intFromDigitChar))),
+    Peg::makePlus(tokDecDigit),
     Peg::makeCode { digits <> @int(intFromDigitList(10, digits)) });
 
 ## Documented in spec.

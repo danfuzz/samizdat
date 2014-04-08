@@ -72,6 +72,13 @@ fn intFromDigitList(base, digits) {
 ## with comments indicating the "hooks" for higher layers.
 ##
 
+## Forward declarations required for layer 2. These are all add-ons to
+## layer 0 or 1 rules, used to expand the syntactic possibilities of the
+## indicated base forms.
+def tokInt2;
+def tokMultilineComment;
+def tokStringPart2;
+
 ## Parses any amount of whitespace and comments (including nothing at all).
 ## **Note:** The yielded result is always ignored.
 def tokWhitespace = {:
@@ -83,8 +90,10 @@ def tokWhitespace = {:
         [" \n"]+
     |
         "#" ["#!"] [! "\n"]*
-    ## |
-        ## Note: Layer 2 introduces additional definitions here.
+    |
+        ## Introduced in Layer 2.
+        &"#:" ## Avoid calling the rule unless we know it will match.
+        %tokMultilineComment
     )+
 :};
 
@@ -113,15 +122,19 @@ def tokPunctuation = {:
     )
 :};
 
-## Parses an integer literal.
-##
-## **Note:** This rule is rewritten in Layer 2.
-def tokInt = {:
-    digits = (
-        ch = ["0".."9"]
-        { <> intFromDigitChar(ch) }
-    )+
+## Parses a single decimal digit (or spacer), returning its value.
+def tokDecDigit = {:
+    ch = ["_" "0".."9"]
+    { <> intFromDigitChar(ch) }
+:};
 
+## Parses an integer literal.
+def tokInt = {:
+    ## Note: Introduced in Layer 2.
+    &"0" ## Avoid calling the rule unless we know it will match.
+    %tokInt2
+|
+    digits = tokDecDigit+
     { <> @int(intFromDigitList(10, digits)) }
 :};
 
@@ -150,8 +163,9 @@ def tokStringPart = {:
         "t"  { <> "\t" } |
         "0"  { <> "\0" }
     )
-## |
-    ## Layer 2 introduces additional definitions here.
+|
+    ## Introduced in Layer 2.
+    %tokStringPart2
 :};
 
 # Parses a quoted string.
@@ -223,4 +237,16 @@ def tokFile = {:
 
     { <> tokens }
 :};
+
+
+##
+## Layer 2 Rule Stubs
+##
+
+## In layer 2, these are all non-trivial, but here they are simply
+## always-fail.
+
+tokInt2             := {: !() :};
+tokMultilineComment := {: !() :};
+tokStringPart2      := {: !() :};
 ```

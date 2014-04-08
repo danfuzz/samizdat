@@ -50,9 +50,6 @@ In the surface syntax, base 10 is the only recognized form for int
 constants in Layer 0. Layer 2 introduces syntax for hexadecimal and
 binary int constants.
 
-In the Layer 0 surface syntax, underscores are not recognized as
-digit spacers in int literals. Layer 2 introduces this syntax.
-
 #### Strings
 
 In Layer 0, the only backslash escapes that are recognized are the
