@@ -12,10 +12,6 @@ def Number     = moduleLoad(["proto", "Number"]);
 def Peg        = moduleLoad(["core", "Peg"]);
 def Sequence   = moduleLoad(["core", "Sequence"]);
 
-## Forward declarations for Layer 2 definitions.
-def tokMultilineComment;
-def tokStringPart2;
-
 
 ##
 ## This section is meant to mirror the code in the spec for tokenization as
@@ -77,6 +73,13 @@ fn intFromDigitList(base, digits) {
 ## with comments indicating the "hooks" for higher layers.
 ##
 
+## Forward declarations required for layer 2. These are all add-ons to
+## layer 0 or 1 rules, used to expand the syntactic possibilities of the
+## indicated base forms.
+def tokInt2;
+def tokMultilineComment;
+def tokStringPart2;
+
 ## Parses a non-zero amount of whitespace and comments.
 ## **Note:** The yielded result is always ignored.
 def tokWhitespace = {:
@@ -134,10 +137,21 @@ def tokPunctuation = {:
     )
 :};
 
+## Parses a single decimal digit (or spacer), returning its value.
+def tokDecDigit = {:
+    ch = ["_" "0".."9"]
+    { <> intFromDigitChar(ch) }
+:};
+
 ## Parses an integer literal.
-##
-## **Note:** This rule is rewritten in Layer 2.
-def tokInt;
+def tokInt = {:
+    ## Note: Introduced in Layer 2.
+    &"0" ## Avoid calling the rule unless we know it will match.
+    %tokInt2
+|
+    digits = tokDecDigit+
+    { <> @int(intFromDigitList(10, digits)) }
+:};
 
 ## Parses a run of regular characters or an escape / special sequence,
 ## inside a quoted string.
@@ -224,9 +238,8 @@ def tokToken = {:
     tokPunctuation
 |
     ## This needs to be listed after the identifier rule, to prevent
-    ## an identifier-initial `_` from triggering this rule. (This is
-    ## only significant in Layer 2 and higher.)
-    %tokInt
+    ## an identifier-initial `_` from triggering this rule.
+    tokInt
 |
     tokError
 :};
@@ -334,12 +347,6 @@ def tokBinDigit = {:
     { <> intFromDigitChar(ch) }
 :};
 
-## Parses a single decimal digit (or spacer), returning its value.
-def tokDecDigit = {:
-    ch = ["_" "0".."9"]
-    { <> intFromDigitChar(ch) }
-:};
-
 ## Parses a single hexadecimal digit (or spacer), returning its value.
 def tokHexDigit = {:
     ch = ["_" "0".."9" "a".."f" "A".."F"]
@@ -347,27 +354,14 @@ def tokHexDigit = {:
 :};
 
 ## Parses an integer literal.
-tokInt := {:
-    base = (
-        "0x" { <> 16 }
-    |
-        "0b" { <> 2 }
-    |
-        { <> 10 }
-    )
-
-    digits = (
-        { <> eq(base, 10) }
-        tokDecDigit+
-    |
-        { <> eq(base, 16) }
-        tokHexDigit+
-    |
-        { <> eq(base, 2) }
-        tokBinDigit+
-    )
-
-    { <> @int(intFromDigitList(base, digits)) }
+tokInt2 := {:
+    "0x"
+    digits = tokHexDigit+
+    { <> @int(intFromDigitList(16, digits)) }
+|
+    "0b"
+    digits = tokBinDigit+
+    { <> @int(intFromDigitList(2, digits)) }
 :};
 
 ## Parses a single hexadecimal character. This is called during `\x...;`
