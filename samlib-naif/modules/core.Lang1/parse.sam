@@ -79,9 +79,13 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parFnExpression;
-def parOpExpression;
 def parProgramBody;
 def parUnaryExpression;
+
+## Forward declaration for the "top" rule which parses operator expressions.
+## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
+## it's different in Layer 2.
+def parOpExpression;
 
 ## Documented in spec.
 def parExpression = Peg::makeMainChoice(
@@ -456,11 +460,8 @@ parUnaryExpression := Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-parOpExpression := parUnaryExpression;
-
-## Documented in spec.
 parAssignExpression := Peg::makeMainSequence(
-    parOpExpression,
+    Peg::makeThunk { <> parOpExpression },
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken(@@":="),
@@ -704,6 +705,14 @@ parChoicePex := Peg::makeMainSequence(
             Peg::makeToken(@@"|"),
             parSequencePex)),
     Peg::makeCode { one, rest <> @choice[one, rest*] });
+
+
+##
+## Layer 2 Rule Stubs
+##
+
+## Documented in spec.
+parOpExpression := parUnaryExpression;
 
 
 ##

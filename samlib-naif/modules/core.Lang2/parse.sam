@@ -90,9 +90,13 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parFnExpression;
-def parOpExpression;
 def parProgramBody;
 def parUnaryExpression;
+
+## Forward declaration for the "top" rule which parses operator expressions.
+## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
+## it's different in Layer 2.
+def parOpExpression;
 
 ## Parses an expression in general.
 def parExpression = {:
@@ -610,12 +614,6 @@ parUnaryExpression := {:
         <> result
     }
 :};
-
-## Parses an operator-bearing expression (or simple term). This is a trivial
-## passthrough to `unaryExpression` in layer 0, but is expanded significantly
-## in layer 2.
-##
-## **Note:** Omitted here, as it is defined later.
 
 ## Parses an assignment expression, or passes through to parse a regular
 ## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
@@ -2147,7 +2145,8 @@ def parSwitchExpression = {:
     }
 :};
 
-## This is the top rule of the operator expression tree of rules.
+## This is the top rule of the operator expression tree of rules. For more
+## details, see the comment where `parOpExpression` is declared, above.
 parOpExpression := parLogicOrExpression;
 
 ## Layer 2 parser for a general expression.

@@ -4,11 +4,10 @@ Samizdat Language Guide
 Appendix: Layer 1 Tree Grammar
 ------------------------------
 
-The following is a nearly complete tree grammar for Samizdat Layer 1,
+The following is the complete tree grammar for Samizdat Layer 1,
 written in Samizdat Layer 1, with commentary calling out the parts
-that are needed specifically for Layer 1. Anything left unmarked is
-also needed for Layer 0. In addition, places where higher layers add
-or vary rules are noted in comments.
+that are needed specifically for Layer 1 as well as how Layer 2 hooks in.
+Anything left unmarked is also needed for Layer 0.
 
 A program is parsed by matching the `program` rule, which yields a
 `closure` node. For simple error handling, the rule `programOrError`
@@ -50,8 +49,18 @@ def withoutInterpolate = Lang0Node::withoutInterpolate;
 
 
 ##
-## Helper Definitions
+## Private Definitions
 ##
+
+## Reports the given list of pending tokens as part of error processing.
+fn reportError(pending) {
+    note("Pending tokens:");
+
+    Generator::filterPump(pending, Range::makeInclusiveRange(1, 50))
+        { token, . -> note(cat("    ", Format::source(token))) };
+
+    die("\nExtra tokens at end of program.")
+};
 
 ## Set-like map of all lowercase identifier characters. Used to figure
 ## out if we're looking at a keyword in the `identifierString` rule.
@@ -82,9 +91,14 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parFnExpression;
-def parOpExpression;
 def parProgramBody;
 def parUnaryExpression;
+
+## Forward declaration for the "top" rule which parses operator expressions.
+## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
+## it's different in Layer 2.
+def parOpExpression;
+
 
 ## Parses an expression in general.
 def parExpression = {:
@@ -603,11 +617,6 @@ parUnaryExpression := {:
     }
 :};
 
-## Parses an operator-bearing expression (or simple term). This is a trivial
-## passthrough to `unaryExpression` in layer 0, but is expanded significantly
-## in layer 2.
-parOpExpression := parUnaryExpression;
-
 ## Parses an assignment expression, or passes through to parse a regular
 ## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
 ## `opExpression` and then extracting the `lvalue` constructor out of it.
@@ -904,6 +913,9 @@ parChoicePex := {:
 ##
 ## Layer 2 Rule Stubs
 ##
+
+## For more details, see comment where `parOpExpression` is declared, above.
+parOpExpression := parUnaryExpression;
 
 ## In layer 2, these are all non-trivial, but here they are simply
 ## always-fail.
