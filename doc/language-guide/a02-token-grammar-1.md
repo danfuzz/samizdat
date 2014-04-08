@@ -4,10 +4,10 @@ Samizdat Language Guide
 Appendix: Layer 1 Token Grammar
 -------------------------------
 
-The following is a nearly complete token grammar for Samizdat Layer 1,
+The following is the complete token grammar for Samizdat Layer 1,
 written in Samizdat Layer 1, with commentary calling out the parts
-that are needed specifically for Layer 1. Anything left unmarked is
-needed for Layer 0.
+that are needed specifically for Layer 1 as well as how Layer 2 hooks in.
+Anything left unmarked is also needed for Layer 0.
 
 A program is tokenized by matching the `file` rule, resulting in a
 list of all the tokens. Tokenization errors are represented in the
