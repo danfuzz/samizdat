@@ -292,4 +292,7 @@ determine result. Returns `value` if it is *not* considered equal to `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
-**Syntax Note:** Used in the translation of `expr**` forms.
+**Syntax Note:** Used in the translation of `expr**` forms. This is used
+instead of `ne`, because the latter wouldn't result in an error when not
+passed a boolean value. This is used instead of `perNe`, as this is the
+more primitive operation.

@@ -1399,7 +1399,7 @@ def parIndexPostfix = {:
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {:
     @"**"
-    { <> { node <> makeCall(REFS::perNe, makeLiteral(false), node) } }
+    { <> { node <> makeCall(REFS::ne, node, makeLiteral(false)) } }
 |
     @"??"
     {
