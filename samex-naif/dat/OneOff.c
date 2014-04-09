@@ -74,7 +74,8 @@ MOD_INIT(OneOff) {
     GFN_get_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_size"));
     datImmortalize(GFN_get_size);
 
-    GFN_get_value = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_value"));
+    GFN_get_value =
+        makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_value"));
     datImmortalize(GFN_get_value);
 
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));

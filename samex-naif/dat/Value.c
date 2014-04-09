@@ -253,7 +253,8 @@ MOD_INIT(Value) {
 
     // Note: The `typeSystem` module initializes `TYPE_Value`.
 
-    GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
+    GFN_debugString =
+        makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     datImmortalize(GFN_debugString);
 
     GFN_gcMark = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "gcMark"));
@@ -265,10 +266,12 @@ MOD_INIT(Value) {
     GFN_perOrder = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "perOrder"));
     datImmortalize(GFN_perOrder);
 
-    GFN_totalEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalEq"));
+    GFN_totalEq =
+        makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalEq"));
     datImmortalize(GFN_totalEq);
 
-    GFN_totalOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalOrder"));
+    GFN_totalOrder =
+        makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalOrder"));
     datImmortalize(GFN_totalOrder);
 
     METH_BIND(Value, debugString);

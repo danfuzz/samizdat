@@ -43,8 +43,8 @@ extern zvalue GFN_perEq;
 extern zvalue GFN_perOrder;
 
 /**
- * Generic `totalEq(value, value)`: Compares two values for equality / sameness.
- * Documented in spec.
+ * Generic `totalEq(value, value)`: Compares two values for equality /
+ * sameness. Documented in spec.
  */
 extern zvalue GFN_totalEq;
 
