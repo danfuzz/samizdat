@@ -159,13 +159,26 @@ zorder valZorder(zvalue value, zvalue other) {
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = get_type(value);
+    zvalue name = get_nameIfDefined(value);
     char addrBuf[19]; // Includes room for `0x` and `\0`.
+
+    if (name == NULL) {
+        name = EMPTY_STRING;
+    } else if (!hasType(name, TYPE_String)) {
+        // Suppress a non-string name.
+        name = stringFromUtf8(-1, "(non-string name)");
+    } else {
+        name = GFN_CALL(cat,
+            stringFromUtf8(-1, " "),
+            GFN_CALL(debugString, name));
+    }
 
     sprintf(addrBuf, "%p", value);
 
     return GFN_CALL(cat,
         stringFromUtf8(-1, "@("),
         GFN_CALL(debugString, type),
+        name,
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),
         stringFromUtf8(-1, ")"));
