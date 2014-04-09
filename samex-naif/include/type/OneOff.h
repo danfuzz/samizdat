@@ -54,7 +54,8 @@ zvalue get(zvalue coll, zvalue key);
 zvalue get_name(zvalue value);
 
 /**
- * Calls `get_name` on the given value, if it is defined. If not, returns `NULL`.
+ * Calls `get_name` on the given value, if it is defined. If not, returns
+ * `NULL`.
  */
 zvalue get_nameIfDefined(zvalue value);
 

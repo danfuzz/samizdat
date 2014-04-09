@@ -65,7 +65,7 @@
     toInt,
     toNumber,
     toString,
-    totEq,
-    totOrder,
+    totalEq,
+    totalOrder,
     typeParent
 }

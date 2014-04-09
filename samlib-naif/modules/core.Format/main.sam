@@ -61,7 +61,7 @@ def sourceGeneral = makeRegularGeneric("sourceGeneral", 2, 2);
 
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    <> ifIs { <> totEq(adorn, true) }
+    <> ifIs { <> totalEq(adorn, true) }
         { <> cat(before, value, after) }
         { <> value }
 };
@@ -71,7 +71,7 @@ fn adornIf(adorn, before, value, after) {
 ## removes that prefix from the first element. As a special case, this returns
 ## `""` if given `[]` for `elems`.
 fn collectionBody(elems) {
-    ifIs { <> totEq(elems, []) }
+    ifIs { <> totalEq(elems, []) }
         { return "" };
 
     def one = Sequence::sliceInclusive(get(elems, 0), 2);

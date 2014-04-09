@@ -9,18 +9,18 @@ Uniqlet
 
 #### `perEq(uniqlet, other) <> uniqlet | void`
 
-Calls `totEq`.
+Calls `totalEq`.
 
 #### `perOrder(uniqlet, other) <> int`
 
-Calls `totOrder`.
+Calls `totalOrder`.
 
-#### `totEq(uniqlet1, uniqlet2) <> uniqlet | void`
+#### `totalEq(uniqlet1, uniqlet2) <> uniqlet | void`
 
 Performs an identity comparison. Two uniqlets are only equal if they are
 truly the same box.
 
-#### `totOrder(uniqlet1, uniqlet2) <> int`
+#### `totalOrder(uniqlet1, uniqlet2) <> int`
 
 Performs an identity comparison. Uniqlets have a consistent, transitive, and
 symmetric &mdash; but arbitrary &mdash; total order.

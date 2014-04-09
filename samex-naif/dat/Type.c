@@ -340,7 +340,7 @@ METH_IMPL(Type, get_name) {
 }
 
 /* Documented in header. */
-METH_IMPL(Type, totOrder) {
+METH_IMPL(Type, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
 
@@ -413,7 +413,7 @@ MOD_INIT(Type) {
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);
     METH_BIND(Type, get_name);
-    METH_BIND(Type, totOrder);
+    METH_BIND(Type, totalOrder);
 }
 
 /* Documented in header. */

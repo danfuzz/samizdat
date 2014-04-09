@@ -9,19 +9,19 @@ Generic
 
 #### `perEq(generic, other) <> generic | void`
 
-Calls `totEq`.
+Calls `totalEq`.
 
 #### `perOrder(generic, other) <> int`
 
-Calls `totOrder`.
+Calls `totalOrder`.
 
-#### `totEq(generic1, generic2) <> generic | void`
+#### `totalEq(generic1, generic2) <> generic | void`
 
 Performs an identity comparison. As generics have identity, no two
 generics are ever equal, so this only yields a value if the two arguments
 refer to the same generic.
 
-#### `totOrder(generic1, generic2) <> int`
+#### `totalOrder(generic1, generic2) <> int`
 
 Performs an identity comparison. Generics have a consistent, transitive, and
 symmetric &mdash; but arbitrary &mdash; total order.
@@ -84,7 +84,7 @@ the `DerivedData` binding will be found (based on the first argument, which
 is always the one used for the lookup), but `5` will not pass the test
 `hasType(5, DerivedData)`.
 
-**Note:** This is the kind of generic used for functions such as `totEq`
+**Note:** This is the kind of generic used for functions such as `totalEq`
 and `cat`.
 
 

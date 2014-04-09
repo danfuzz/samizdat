@@ -9,17 +9,17 @@ Int
 
 #### `perEq(int, other) <> int | void`
 
-Calls `totEq`.
+Calls `totalEq`.
 
 #### `perOrder(int, other) <> int`
 
-Calls `totOrder`.
+Calls `totalOrder`.
 
-#### `totEq(int1, int2) <> int | void`
+#### `totalEq(int1, int2) <> int | void`
 
 Compares the integer values of two ints.
 
-#### `totOrder(int1, int2) <> int`
+#### `totalOrder(int1, int2) <> int`
 
 Compares the integer values of two ints, ordering by value in the usual
 manner.

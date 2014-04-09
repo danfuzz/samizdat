@@ -91,7 +91,7 @@ METH_IMPL(DerivedData, get) {
 }
 
 /* Documented in header. */
-METH_IMPL(DerivedData, totEq) {
+METH_IMPL(DerivedData, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
 
@@ -100,7 +100,7 @@ METH_IMPL(DerivedData, totEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(DerivedData, totOrder) {
+METH_IMPL(DerivedData, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
 
@@ -115,8 +115,8 @@ MOD_INIT(DerivedData) {
 
     METH_BIND(DerivedData, gcMark);
     METH_BIND(DerivedData, get);
-    METH_BIND(DerivedData, totEq);
-    METH_BIND(DerivedData, totOrder);
+    METH_BIND(DerivedData, totalEq);
+    METH_BIND(DerivedData, totalOrder);
 }
 
 /* Documented in header. */

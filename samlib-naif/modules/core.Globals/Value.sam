@@ -72,32 +72,32 @@ fn perNe(value, other) {
 };
 
 ## Documented in spec.
-fn totGe(value, other) {
-    <> ifNot { <> eq(totOrder(value, other), -1) }
+fn totalGe(value, other) {
+    <> ifNot { <> eq(totalOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totGt(value, other) {
-    <> ifIs { <> eq(totOrder(value, other), 1) }
+fn totalGt(value, other) {
+    <> ifIs { <> eq(totalOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totLe(value, other) {
-    <> ifNot { <> eq(totOrder(value, other), 1) }
+fn totalLe(value, other) {
+    <> ifNot { <> eq(totalOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totLt(value, other) {
-    <> ifIs { <> eq(totOrder(value, other), -1) }
+fn totalLt(value, other) {
+    <> ifIs { <> eq(totalOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totNe(value, other) {
-    <> ifNot { <> totEq(value, other) }
+fn totalNe(value, other) {
+    <> ifNot { <> totalEq(value, other) }
         { <> value }
 };
 
@@ -112,9 +112,9 @@ fn totNe(value, other) {
     perLe,
     perLt,
     perNe,
-    totGe,
-    totGt,
-    totLe,
-    totLt,
-    totNe
+    totalGe,
+    totalGt,
+    totalLe,
+    totalLt,
+    totalNe
 }
