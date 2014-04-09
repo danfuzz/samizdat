@@ -14,8 +14,9 @@ This is in contrast to the functions in `core.Format` which are meant to
 help format values for more useful consumption.
 
 The type `Value` binds this to a function which returns a string consisting
-of the name and low-level identifier (e.g. a memory address) of the value.
-Various of the core types override this to provide more useful information.
+of the type name, name (result of call to `get_name()`), and low-level
+identifier (e.g. a memory address) of the value. Various of the core types
+override this to provide more useful information.
 
 **Note:** In general, it is a bad idea to use this function for any
 purpose other than temporary debugging code.
