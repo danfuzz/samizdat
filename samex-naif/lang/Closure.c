@@ -373,20 +373,6 @@ METH_IMPL(Closure, canCall) {
 }
 
 /* Documented in header. */
-METH_IMPL(Closure, debugString) {
-    zvalue closure = args[0];
-    zvalue name = get(getInfo(closure)->defMap, STR_name);
-    zvalue nameString = (name == NULL)
-        ? stringFromUtf8(-1, "(unknown)")
-        : GFN_CALL(debugString, name);
-
-    return GFN_CALL(cat,
-        stringFromUtf8(-1, "@(Closure "),
-        nameString,
-        stringFromUtf8(-1, ")"));
-}
-
-/* Documented in header. */
 METH_IMPL(Closure, gcMark) {
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
@@ -413,7 +399,6 @@ MOD_INIT(Closure) {
 
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
-    METH_BIND(Closure, debugString);
     METH_BIND(Closure, get_name);
     METH_BIND(Closure, gcMark);
 

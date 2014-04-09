@@ -139,20 +139,6 @@ METH_IMPL(Builtin, canCall) {
 }
 
 /* Documented in header. */
-METH_IMPL(Builtin, debugString) {
-    zvalue builtin = args[0];
-    BuiltinInfo *info = getInfo(builtin);
-    zvalue nameString = (info->name == NULL)
-        ? stringFromUtf8(-1, "(unknown)")
-        : GFN_CALL(debugString, info->name);
-
-    return GFN_CALL(cat,
-        stringFromUtf8(-1, "@(Builtin "),
-        nameString,
-        stringFromUtf8(-1, ")"));
-}
-
-/* Documented in header. */
 METH_IMPL(Builtin, gcMark) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
@@ -184,7 +170,6 @@ MOD_INIT(Builtin) {
 
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, canCall);
-    METH_BIND(Builtin, debugString);
     METH_BIND(Builtin, gcMark);
     METH_BIND(Builtin, get_name);
 }

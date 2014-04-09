@@ -204,20 +204,6 @@ METH_IMPL(Generic, canCall) {
 }
 
 /* Documented in header. */
-METH_IMPL(Generic, debugString) {
-    zvalue generic = args[0];
-    GenericInfo *info = getInfo(generic);
-    zvalue nameString = (info->name == NULL)
-        ? stringFromUtf8(-1, "(unknown)")
-        : GFN_CALL(debugString, info->name);
-
-    return GFN_CALL(cat,
-        stringFromUtf8(-1, "@(Generic "),
-        nameString,
-        stringFromUtf8(-1, ")"));
-}
-
-/* Documented in header. */
 METH_IMPL(Generic, gcMark) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
@@ -247,7 +233,6 @@ MOD_INIT(Generic) {
 
     METH_BIND(Generic, call);
     METH_BIND(Generic, canCall);
-    METH_BIND(Generic, debugString);
     METH_BIND(Generic, gcMark);
     METH_BIND(Generic, get_name);
 }
