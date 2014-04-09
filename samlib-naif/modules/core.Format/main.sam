@@ -278,8 +278,14 @@ fn Value_sourceGeneral(value, adorn) {
 
     <> ifValue { <> dataOf(value) }
         { data ->
-            ## Derived data value with payload.
-            return cat(prefix, "(", sourceGeneral(data, true), ")")
+            ## Derived data value with payload. List and map payloads don't
+            ## need parens around them.
+            def dataStr = sourceGeneral(data, true);
+            ifIs { <> hasType(data, List) }
+                { return cat(prefix, dataStr) };
+            ifIs { <> hasType(data, Map) }
+                { return cat(prefix, dataStr) };
+            return cat(prefix, "(", dataStr, ")")
         }
         {
             ## Type-only transparent derived value.
