@@ -402,7 +402,7 @@ METH_IMPL(String, toString) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, totEq) {
+METH_IMPL(String, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
     StringInfo *info1 = getInfo(value);
@@ -427,7 +427,7 @@ METH_IMPL(String, totEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, totOrder) {
+METH_IMPL(String, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
     StringInfo *info1 = getInfo(value);
@@ -475,8 +475,8 @@ MOD_INIT(String) {
     METH_BIND(String, toInt);
     METH_BIND(String, toNumber);
     METH_BIND(String, toString);
-    METH_BIND(String, totEq);
-    METH_BIND(String, totOrder);
+    METH_BIND(String, totalEq);
+    METH_BIND(String, totalOrder);
     seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);

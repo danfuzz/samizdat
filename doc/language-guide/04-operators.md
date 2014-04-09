@@ -357,7 +357,7 @@ with the usual correspondence between the operators and those names.
 Of these functions, `perEq` is a generic, and the rest are defined as
 regular functions in terms of `perEq` and another generic, `perOrder`.
 The default implementations of those generics is to call through to
-the generics `totEq` and `totOrder`.
+the generics `totalEq` and `totalOrder`.
 
 #### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
 
@@ -367,8 +367,8 @@ ordering.
 
 These expressions correspond to calls to the library functions
 `eq` `ne` `lt` `gt` `le` and `ge` (with the obvious mapping of operator
-to function), which bottom out in calls to the generic functions `totEq`
-or `totOrder`. See the definition of those functions for more details.
+to function), which bottom out in calls to the generic functions `totalEq`
+or `totalOrder`. See the definition of those functions for more details.
 
 **Note:** This can sometimes have surprising results, e.g. when comparing
 ints and floating point numbers.

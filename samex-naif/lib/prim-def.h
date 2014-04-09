@@ -29,8 +29,8 @@ PRIM_DEF(Value,                   TYPE_Value);
 PRIM_DEF(debugString,             GFN_debugString);
 PRIM_DEF(perEq,                   GFN_perEq);
 PRIM_DEF(perOrder,                GFN_perOrder);
-PRIM_DEF(totEq,                   GFN_totEq);
-PRIM_DEF(totOrder,                GFN_totOrder);
+PRIM_DEF(totalEq,                 GFN_totalEq);
+PRIM_DEF(totalOrder,              GFN_totalOrder);
 
 // Generic functions: One-Offs, exported to the global environment.
 PRIM_DEF(cat,                     GFN_cat);

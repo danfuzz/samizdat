@@ -9,17 +9,17 @@ Map
 
 #### `perEq(map, other) <> map | void`
 
-Calls `totEq`.
+Calls `totalEq`.
 
 #### `perOrder(map, other) <> int`
 
-Calls `totOrder`.
+Calls `totalOrder`.
 
-#### `totEq(map1, map2) <> map | void`
+#### `totalEq(map1, map2) <> map | void`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
-#### `totOrder(map1, map2) <> int`
+#### `totalOrder(map1, map2) <> int`
 
 Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal

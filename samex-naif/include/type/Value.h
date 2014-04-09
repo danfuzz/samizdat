@@ -43,16 +43,16 @@ extern zvalue GFN_perEq;
 extern zvalue GFN_perOrder;
 
 /**
- * Generic `totEq(value, value)`: Compares two values for equality / sameness.
+ * Generic `totalEq(value, value)`: Compares two values for equality / sameness.
  * Documented in spec.
  */
-extern zvalue GFN_totEq;
+extern zvalue GFN_totalEq;
 
 /**
- * Generic `totOrder(value, value)`: Compares two values with respect to the
+ * Generic `totalOrder(value, value)`: Compares two values with respect to the
  * total order of values. Documented in spec.
  */
-extern zvalue GFN_totOrder;
+extern zvalue GFN_totalOrder;
 
 /**
  * Gets the data payload of the given value, if it is a value-bearing
@@ -111,7 +111,7 @@ char *valDebugString(zvalue value);
 /**
  * Compares two values for equality, returning the first argument to
  * represent logical-true or `NULL` for logical-false. This calls through
- * to `totEq` given values of the same type. **Note:** It is invalid to
+ * to `totalEq` given values of the same type. **Note:** It is invalid to
  * pass `NULL` to this function.
  */
 zvalue valEq(zvalue value, zvalue other);
@@ -126,7 +126,7 @@ bool valEqNullOk(zvalue value, zvalue other);
 /**
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ -1, 0, 1 }`, with the usual comparison result meaning.
- * This calls through to `totOrder` given values of the same type. **Note:**
+ * This calls through to `totalOrder` given values of the same type. **Note:**
  * It is invalid to pass `NULL` to this function.
  */
 zvalue valOrder(zvalue value, zvalue other);

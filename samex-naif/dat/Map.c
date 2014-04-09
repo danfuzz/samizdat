@@ -505,7 +505,7 @@ METH_IMPL(Map, put) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, totEq) {
+METH_IMPL(Map, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
     MapInfo *info1 = getInfo(value);
@@ -532,7 +532,7 @@ METH_IMPL(Map, totEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, totOrder) {
+METH_IMPL(Map, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
     MapInfo *info1 = getInfo(value);
@@ -588,8 +588,8 @@ MOD_INIT(Map) {
     METH_BIND(Map, nextValue);
     METH_BIND(Map, nthMapping);
     METH_BIND(Map, put);
-    METH_BIND(Map, totEq);
-    METH_BIND(Map, totOrder);
+    METH_BIND(Map, totalEq);
+    METH_BIND(Map, totalOrder);
 
     EMPTY_MAP = allocMap(0);
     datImmortalize(EMPTY_MAP);

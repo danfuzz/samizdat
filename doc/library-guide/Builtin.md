@@ -13,18 +13,18 @@ of the system.
 
 #### `perEq(builtin, other) <> builtin | void`
 
-Calls `totEq`.
+Calls `totalEq`.
 
 #### `perOrder(builtin, other) <> int`
 
-Calls `totOrder`.
+Calls `totalOrder`.
 
-#### `totEq(builtin1, builtin2) <> builtin | void`
+#### `totalEq(builtin1, builtin2) <> builtin | void`
 
 Performs an identity comparison. Two builtins are only equal if they
 refer to the exact same functionality.
 
-#### `totOrder(builtin1, builtin2) <> int`
+#### `totalOrder(builtin1, builtin2) <> int`
 
 Performs an identity comparison. Builtins have a consistent, transitive, and
 symmetric &mdash; but arbitrary &mdash; total order.

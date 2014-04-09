@@ -9,17 +9,17 @@ Type
 
 #### `perEq(type, other) <> type | void`
 
-Calls `totEq`.
+Calls `totalEq`.
 
 #### `perOrder(type, other) <> int`
 
-Calls `totOrder`.
+Calls `totalOrder`.
 
-#### `totEq(type1, type2) <> map | void`
+#### `totalEq(type1, type2) <> map | void`
 
 Compares two types. Two types are equal if they are the actual same type.
 
-#### `totOrder(map1, map2) <> int`
+#### `totalOrder(map1, map2) <> int`
 
 Compares two types for order, as follows:
 

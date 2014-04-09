@@ -91,7 +91,7 @@ zvalue valEq(zvalue value, zvalue other) {
     } else if (value == other) {
         return value;
     } else if (haveSameType(value, other)) {
-        return (GFN_CALL(totEq, value, other) != NULL) ? value : NULL;
+        return (GFN_CALL(totalEq, value, other) != NULL) ? value : NULL;
     } else {
         return NULL;
     }
@@ -115,15 +115,15 @@ zvalue valOrder(zvalue value, zvalue other) {
     } else if (value == other) {
         return INT_0;
     } else if (haveSameType(value, other)) {
-        // `totOrder` can get quite recursive, and without a frame around the
+        // `totalOrder` can get quite recursive, and without a frame around the
         // call, it is easy for accumulated calls to blow past the limit on
         // local references.
         zstackPointer save = datFrameStart();
-        zvalue result = GFN_CALL(totOrder, value, other);
+        zvalue result = GFN_CALL(totalOrder, value, other);
         datFrameReturn(save, result);
         return result;
     } else {
-        return GFN_CALL(totOrder, get_type(value), get_type(other));
+        return GFN_CALL(totalOrder, get_type(value), get_type(other));
     }
 }
 
@@ -192,16 +192,16 @@ METH_IMPL(Value, gcMark) {
 
 /* Documented in header. */
 METH_IMPL(Value, perEq) {
-    return funCall(GFN_totEq, argCount, args);
+    return funCall(GFN_totalEq, argCount, args);
 }
 
 /* Documented in header. */
 METH_IMPL(Value, perOrder) {
-    return funCall(GFN_totOrder, argCount, args);
+    return funCall(GFN_totalOrder, argCount, args);
 }
 
 /* Documented in header. */
-METH_IMPL(Value, totEq) {
+METH_IMPL(Value, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
 
@@ -209,12 +209,12 @@ METH_IMPL(Value, totEq) {
         return other;
     }
 
-    zvalue result = GFN_CALL(totOrder, value, other);
+    zvalue result = GFN_CALL(totalOrder, value, other);
     return (valEq(result, INT_0) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */
-METH_IMPL(Value, totOrder) {
+METH_IMPL(Value, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
 
@@ -265,18 +265,18 @@ MOD_INIT(Value) {
     GFN_perOrder = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "perOrder"));
     datImmortalize(GFN_perOrder);
 
-    GFN_totEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totEq"));
-    datImmortalize(GFN_totEq);
+    GFN_totalEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalEq"));
+    datImmortalize(GFN_totalEq);
 
-    GFN_totOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totOrder"));
-    datImmortalize(GFN_totOrder);
+    GFN_totalOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalOrder"));
+    datImmortalize(GFN_totalOrder);
 
     METH_BIND(Value, debugString);
     METH_BIND(Value, gcMark);
     METH_BIND(Value, perEq);
     METH_BIND(Value, perOrder);
-    METH_BIND(Value, totEq);
-    METH_BIND(Value, totOrder);
+    METH_BIND(Value, totalEq);
+    METH_BIND(Value, totalOrder);
 }
 
 /* Documented in header. */
@@ -295,7 +295,7 @@ zvalue GFN_perEq = NULL;
 zvalue GFN_perOrder = NULL;
 
 /* Documented in header. */
-zvalue GFN_totEq = NULL;
+zvalue GFN_totalEq = NULL;
 
 /* Documented in header. */
-zvalue GFN_totOrder = NULL;
+zvalue GFN_totalOrder = NULL;

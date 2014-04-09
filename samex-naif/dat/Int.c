@@ -178,14 +178,14 @@ METH_IMPL(Int, toString) {
 }
 
 /* Documented in header. */
-METH_IMPL(Int, totEq) {
+METH_IMPL(Int, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
     return (zintValue(value) == zintValue(other)) ? value : NULL;
 }
 
 /* Documented in header. */
-METH_IMPL(Int, totOrder) {
+METH_IMPL(Int, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
     zint int1 = zintValue(value);
@@ -228,8 +228,8 @@ MOD_INIT(Int) {
     METH_BIND(Int, toInt);
     METH_BIND(Int, toNumber);
     METH_BIND(Int, toString);
-    METH_BIND(Int, totEq);
-    METH_BIND(Int, totOrder);
+    METH_BIND(Int, totalEq);
+    METH_BIND(Int, totalOrder);
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);

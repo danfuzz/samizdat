@@ -279,7 +279,7 @@ METH_IMPL(List, sliceInclusive) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, totEq) {
+METH_IMPL(List, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
     ListInfo *info1 = getInfo(value);
@@ -304,7 +304,7 @@ METH_IMPL(List, totEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, totOrder) {
+METH_IMPL(List, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
     ListInfo *info1 = getInfo(value);
@@ -345,8 +345,8 @@ MOD_INIT(List) {
     METH_BIND(List, reverse);
     METH_BIND(List, sliceExclusive);
     METH_BIND(List, sliceInclusive);
-    METH_BIND(List, totEq);
-    METH_BIND(List, totOrder);
+    METH_BIND(List, totalEq);
+    METH_BIND(List, totalOrder);
     seqBind(TYPE_List);
 
     EMPTY_LIST = allocList(0);

@@ -30,7 +30,7 @@ considered "equal," return void if the two values are to be considered
 
 Each type can specify its own per-type equality check, and the two arguments
 are notably *not* required to be of the same type. The default implementation
-calls through to `totEq` (see which).
+calls through to `totalEq` (see which).
 
 **Note:** This is the generic function which underlies the implementation
 of all per-type equality comparison functions.
@@ -40,18 +40,18 @@ of all per-type equality comparison functions.
 #### `perOrder(value, other) <> int`
 
 Performs an order comparison of the two given values, using the per-type
-order. Return values are the same as with `totOrder` (see which). As
+order. Return values are the same as with `totalOrder` (see which). As
 with `perEq`, the two values are not required to be of the same type, and
 should two arguments be considered "incomparable" this function should
 terminate the runtime with an error.
 
 Each type can specify its own per-type ordering comparison.
-The default implementation calls through to `totOrder` (see which).
+The default implementation calls through to `totalOrder` (see which).
 
 **Note:** This is the generic function which underlies the implementation
 of all per-type ordering functions.
 
-#### `totEq(value, other) <> . | void`
+#### `totalEq(value, other) <> . | void`
 
 Performs a type-specific equality comparison of the two given
 values, using the "total value ordering" order. When called, the two values
@@ -64,19 +64,19 @@ are in fact identical, or `void` if they are not.
 Each type specifies its own total-order equality check. See specific types for
 details. Derived data types all compare their values for equality by comparing
 the payload value (if any). In addition, a default implementation checks
-directly for trivial sameness and calls through to `totOrder` for anything
+directly for trivial sameness and calls through to `totalOrder` for anything
 nontrivial.
 
-**Note:** In order for the system to operate consistently, `totEq` must
-always behave consistently with `totOrder`, in that for a given pair of
-values, `totEq` must indicate equality if and only if `totOrder` would return
-`0`. `totEq` exists at all because it is often possible to determine
+**Note:** In order for the system to operate consistently, `totalEq` must
+always behave consistently with `totalOrder`, in that for a given pair of
+values, `totalEq` must indicate equality if and only if `totalOrder` would return
+`0`. `totalEq` exists at all because it is often possible to determine
 equality much quicker than determining order.
 
 **Note:** This is the generic function which underlies the implementation
 of all cross-type equality comparison functions.
 
-#### `totOrder(value, other) <> int`
+#### `totalOrder(value, other) <> int`
 
 Returns the type-specific order of the two given values, using the "total
 value ordering" order. When called, the two values are guaranteed to be the
@@ -126,9 +126,9 @@ Checks for equality, using the total order of values. Returns `value` if the
 two given values are identical. Otherwise returns void.
 
 This works by first checking the types of the two values. If they are
-different, this returns void immediately. Otherwise, this calls `totEq` on
+different, this returns void immediately. Otherwise, this calls `totalEq` on
 the two arguments. In the latter case, this function doesn't "trust" a
-non-void return value of `totEq` and always returns the given `value`
+non-void return value of `totalEq` and always returns the given `value`
 argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
@@ -164,10 +164,10 @@ equivalences hold for Samizdat Layer 0 source code:
 Returns the order of the two given values, using the total order of values.
 
 The return value is one of `-1 0 1` indicating how the two values sort with
-each other, just like `perOrder` and `totOrder`.
+each other, just like `perOrder` and `totalOrder`.
 
-This function works by calling `totOrder` on the types of the two arguments
-if they are different, or by calling `totOrder` on the arguments themselves
+This function works by calling `totalOrder` on the types of the two arguments
+if they are different, or by calling `totalOrder` on the arguments themselves
 if they both have the same type.
 
 **Note:** This is the function which underlies the implementation
@@ -258,37 +258,37 @@ determine result. Returns `value` if it is *not* considered equal to `other`.
 
 **Syntax Note:** Used in the translation of `expression != expression` forms.
 
-#### `totGe(value, other) <> logic`
+#### `totalGe(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totOrder(value, other)` to
+Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different types.
 
-#### `totGt(value, other) <> logic`
+#### `totalGt(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totOrder(value, other)` to
+Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
-#### `totLe(value, other) <> logic`
+#### `totalLe(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totOrder(value, other)` to
+Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered less than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different types.
 
-#### `totLt(value, other) <> logic`
+#### `totalLt(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totOrder(value, other)` to
+Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered less than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
 
-#### `totNe(value, other) <> logic`
+#### `totalNe(value, other) <> logic`
 
-Type-specific total-order comparison, which calls `totEq(value, other)` to
+Type-specific total-order comparison, which calls `totalEq(value, other)` to
 determine result. Returns `value` if it is *not* considered equal to `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.

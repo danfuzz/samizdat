@@ -9,18 +9,18 @@ String
 
 #### `perEq(string, other) <> string | void`
 
-Calls `totEq`.
+Calls `totalEq`.
 
 #### `perOrder(string, other) <> int`
 
-Calls `totOrder`.
+Calls `totalOrder`.
 
-#### `totEq(string1, string2) <> string | void`
+#### `totalEq(string1, string2) <> string | void`
 
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
 
-#### `totOrder(string1, string2) <> int`
+#### `totalOrder(string1, string2) <> int`
 
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
