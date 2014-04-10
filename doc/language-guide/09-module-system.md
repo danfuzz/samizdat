@@ -35,6 +35,29 @@ In Samizdat, all sorts of code is wrapped up into modules. In particular:
 * The core library is a module, which defines the recognizable library
   modules (such as `core.Format`) within itself.
 
+### Module naming
+
+Module names consist of a series of one or more components (each component
+adhering to the same syntax as identifiers / variable names), separated by
+dots (`.`). There are a couple of conventions for module names:
+
+* The initial components of a module name start with a lower case letter.
+* The final component of a module name is generally capitalized.
+* Modules that are purely internal to an application may have a name that
+  consists of a single capitalized component.
+* All published modules (non-internal modules) should have names with at
+  least two components (with details as follows).
+* All regular implementation modules in the core library have two components,
+  with first being `core`. For example, `core.Format`.
+* All protocol modules in the core library have two components, with the
+  first being `proto`. For example, `proto.Collection`.
+* All modules that are part of a published library should have a first
+  component that names the library in a manner that is intended to be concise
+  but unambiguous. If the library has no interesting structure, then it should
+  have a second component that is identical to the first, except that the
+  first letter is capitalized. For example, `funLib.FunLib` (a module with
+  no further structure) or `funLib.Constants` (a module with structure).
+
 ### Importing and exporting
 
 TODO. There is not yet any syntactic support either for importing modules,
