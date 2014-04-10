@@ -3,8 +3,8 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
-def Collection = moduleLoad(["core", "Collection"]);
-def Generator  = moduleLoad(["core", "Generator"]);
+def $Collection = moduleLoad(["core", "Collection"]);
+def $Generator  = moduleLoad(["core", "Generator"]);
 
 ##
 ## Exported definitions
@@ -22,13 +22,13 @@ fn makeCall(function, actuals*) {
 
 ## Documented in spec.
 fn makeCallLiterals(function, actuals*) {
-    def literals = Generator::filterAll(actuals) { one <> makeLiteral(one) };
+    def literals = $Generator::filterAll(actuals) { one <> makeLiteral(one) };
     <> makeCall(function, literals*)
 };
 
 ## Documented in spec.
 fn makeCallThunks(function, actuals*) {
-    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    def thunks = $Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeCall(function, thunks*)
 };
 
@@ -83,13 +83,13 @@ fn makeVarRefLvalue(name) {
 
 ## Documented in spec.
 fn withoutInterpolate(node) {
-    <> @(get_typeName(node))(Collection::del(dataOf(node), "interpolate"))
+    <> @(get_typeName(node))($Collection::del(dataOf(node), "interpolate"))
 };
 
 ## Documented in spec.
 fn withoutIntermediates(node) {
-    def data = Collection::del(
-        Collection::del(dataOf(node), "lvalue"),
+    def data = $Collection::del(
+        $Collection::del(dataOf(node), "lvalue"),
         "interpolate");
 
     <> @(get_typeName(node))(data)

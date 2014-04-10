@@ -2,11 +2,11 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def Format     = moduleLoad(["core", "Format"]);
-def Generator  = moduleLoad(["core", "Generator"]);
-def Lang0Node  = moduleLoad(["core", "Lang0Node"]);
-def Number     = moduleLoad(["proto", "Number"]);
-def Sequence   = moduleLoad(["core", "Sequence"]);
+def $Format     = moduleLoad(["core", "Format"]);
+def $Generator  = moduleLoad(["core", "Generator"]);
+def $Lang0Node  = moduleLoad(["core", "Lang0Node"]);
+def $Number     = moduleLoad(["proto", "Number"]);
+def $Sequence   = moduleLoad(["core", "Sequence"]);
 
 ## Int value of Unicode code point `0`.
 def CHAR_0 = toInt("0");
@@ -16,11 +16,11 @@ def CHAR_0 = toInt("0");
 fn intOrVoid(string) {
     var value = 0;
 
-    Generator::filterPump(string) { ch ->
+    $Generator::filterPump(string) { ch ->
         ifIs { <> perLt(ch, "0") } { return };
         ifIs { <> perGt(ch, "9") } { return };
-        def digit = Number::sub(toInt(ch), CHAR_0);
-        value := Number::add(Number::mul(value, 10), digit);
+        def digit = $Number::sub(toInt(ch), CHAR_0);
+        value := $Number::add($Number::mul(value, 10), digit);
     };
 
     <> value
@@ -31,7 +31,7 @@ fn intOrVoid(string) {
 fn maxOf(values*) {
     var max = -1;
 
-    Generator::filterPump(values) { v ->
+    $Generator::filterPump(values) { v ->
         ifIs { <> perGt(v, max) }
             { max := v }
     };
@@ -44,29 +44,29 @@ fn maxOf(values*) {
 fn safeIndexForNames(base, names*) {
     def baseSz = get_size(base);
 
-    def indexes = Generator::filterAll(names) { <next> name ->
+    def indexes = $Generator::filterAll(names) { <next> name ->
         ifIs { <> perLt(get_size(name), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
                 <next>
             };
         ifIs { <> perEq(base, name) } { <next> -1 };
-        ifIs { <> perEq(base, Sequence::sliceExclusive(name, 0, baseSz)) }
-            { <next> intOrVoid(Sequence::sliceInclusive(name, baseSz)) };
+        ifIs { <> perEq(base, $Sequence::sliceExclusive(name, 0, baseSz)) }
+            { <next> intOrVoid($Sequence::sliceInclusive(name, baseSz)) };
     };
 
     <> ifIs { <> perEq(indexes, []) }
         { <> -1 }
-        { <> Number::add(maxOf(indexes*), 1) }
+        { <> $Number::add(maxOf(indexes*), 1) }
 };
 
-## generic `safeIndex(node, base)`, returns a safe (unused) index for the given
-## `base` variable name, with regard to the contents of `node`.
+## Generic `safeIndex(node, base)`, returns a safe (unused) index for the
+## given `base` variable name, with regard to the contents of `node`.
 def safeIndex = makeRegularGeneric("safeIndex", 2, 2);
 
 ## Maps / reduces `safeIndex` over the given nodes.
 fn safeIndexForNodes(base, nodes*) {
-    def indexes = Generator::filterAll(nodes)
+    def indexes = $Generator::filterAll(nodes)
         { node <> safeIndex(node, base) };
     <> maxOf(indexes*)
 };
@@ -76,8 +76,8 @@ genericBind(
     @@apply,
     fn apply_safeIndex(node, base) {
         <> safeIndexForNodes(base,
-            Lang0Node::get_function(node),
-            Lang0Node::get_actuals(node));
+            $Lang0Node::get_function(node),
+            $Lang0Node::get_actuals(node));
     });
 
 genericBind(
@@ -85,8 +85,8 @@ genericBind(
     @@call,
     fn call_safeIndex(node, base) {
         <> safeIndexForNodes(base,
-            Lang0Node::get_function(node),
-            Lang0Node::get_actuals(node)*);
+            $Lang0Node::get_function(node),
+            $Lang0Node::get_actuals(node)*);
     });
 
 genericBind(
@@ -94,11 +94,11 @@ genericBind(
     @@closure,
     fn closure_safeIndex(node, base) {
         def namesIndex = safeIndexForNames(base,
-            Lang0Node::get_nodeName(node)?*,
-            Lang0Node::get_yieldDef(node)?*);
+            $Lang0Node::get_nodeName(node)?*,
+            $Lang0Node::get_yieldDef(node)?*);
         def nodesIndex = safeIndexForNodes(base,
-            Lang0Node::get_statements(node)*,
-            Lang0Node::get_yield(node)?*);
+            $Lang0Node::get_statements(node)*,
+            $Lang0Node::get_yield(node)?*);
 
         <> maxOf(namesIndex, nodesIndex)
     });
@@ -108,8 +108,8 @@ genericBind(
     @@jump,
     fn jump_safeIndex(node, base) {
         <> safeIndexForNodes(base,
-            Lang0Node::get_function(node),
-            Lang0Node::get_nodeValue(node)?*);
+            $Lang0Node::get_function(node),
+            $Lang0Node::get_nodeValue(node)?*);
     });
 
 genericBind(
@@ -123,9 +123,10 @@ genericBind(
     safeIndex,
     @@varBind,
     fn varBind_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0Node::get_nodeName(node));
+        def nameIndex =
+            safeIndexForNames(base, $Lang0Node::get_nodeName(node));
         def valueIndex =
-            safeIndexForNodes(base, Lang0Node::get_nodeValue(node));
+            safeIndexForNodes(base, $Lang0Node::get_nodeValue(node));
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -133,9 +134,10 @@ genericBind(
     safeIndex,
     @@varDef,
     fn varDef_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0Node::get_nodeName(node));
+        def nameIndex =
+            safeIndexForNames(base, $Lang0Node::get_nodeName(node));
         def valueIndex =
-            safeIndexForNodes(base, Lang0Node::get_nodeValue(node)?*);
+            safeIndexForNodes(base, $Lang0Node::get_nodeValue(node)?*);
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -143,9 +145,10 @@ genericBind(
     safeIndex,
     @@varDefMutable,
     fn varDefMutable_safeIndex(node, base) {
-        def nameIndex = safeIndexForNames(base, Lang0Node::get_nodeName(node));
+        def nameIndex =
+            safeIndexForNames(base, $Lang0Node::get_nodeName(node));
         def valueIndex =
-            safeIndexForNodes(base, Lang0Node::get_nodeValue(node)?*);
+            safeIndexForNodes(base, $Lang0Node::get_nodeValue(node)?*);
         <> maxOf(nameIndex, valueIndex)
     });
 
@@ -153,7 +156,7 @@ genericBind(
     safeIndex,
     @@varRef,
     fn varRef_safeIndex(node, base) {
-        <> safeIndexForNames(base, Lang0Node::get_nodeName(node))
+        <> safeIndexForNames(base, $Lang0Node::get_nodeName(node))
     });
 
 ## Makes a variable name by combining `base` with `index`. Handles the case
@@ -161,7 +164,7 @@ genericBind(
 fn makeVarName(base, index) {
     <> ifIs { <> eq(index, -1) }
         { <> base }
-        { <> cat(base, Format::int(index)) }
+        { <> cat(base, $Format::int(index)) }
 };
 
 ## Returns an unused variable name within `node`, either the given `base` or

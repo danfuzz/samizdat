@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
-def Generator = moduleLoad(["core", "Generator"]);
+def $Generator = moduleLoad(["core", "Generator"]);
 
 def $constructors1 = intraLoad("constructors1");
 def makeApply = $constructors1::makeApply;
@@ -48,7 +48,7 @@ fn makeCallOrApply(function, actuals*) {
             }
     };
 
-    Generator::filterPump(actuals) { actual ->
+    $Generator::filterPump(actuals) { actual ->
         ifValue { <> get_interpolate(actual) }
             { node ->
                 addPendingToCooked();

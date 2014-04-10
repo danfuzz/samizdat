@@ -6,7 +6,7 @@
 ## Samizdat Layer 1 Evaluation
 ##
 
-def Lang0 = moduleLoad(["core", "Lang0"]);
+def $Lang0 = moduleLoad(["core", "Lang0"]);
 
 def convertToLang0 = intraLoad("convert")::convertToLang0;
 
@@ -18,7 +18,7 @@ def convertToLang0 = intraLoad("convert")::convertToLang0;
 ## Documented in spec.
 fn eval(env, expressionNode) {
     def convertedNode = convertToLang0(expressionNode);
-    <> Lang0::eval(env, convertedNode)
+    <> $Lang0::eval(env, convertedNode)
 };
 
 <> {

@@ -9,7 +9,7 @@
 ## TODO
 ## def convertToLang0 = intraLoad("convert")::convertToLang0;
 
-def Lang1 = moduleLoad(["core", "Lang1"]);
+def $Lang1 = moduleLoad(["core", "Lang1"]);
 
 
 ##
@@ -18,10 +18,10 @@ def Lang1 = moduleLoad(["core", "Lang1"]);
 
 ## Documented in spec.
 fn eval(env, expressionNode) {
-    <> Lang1::eval(env, expressionNode)
+    <> $Lang1::eval(env, expressionNode)
     ## TODO
     ## def convertedNode = convertToLang0(expressionNode);
-    ## <> Lang0::eval(env, convertedNode)
+    ## <> $Lang1::eval(env, convertedNode)
 };
 
 <> {
