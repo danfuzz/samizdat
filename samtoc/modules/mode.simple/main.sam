@@ -7,15 +7,10 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
-def templateText = intraReadUtf8("template.txt");
-
-def Interner = intraLoad("Interner");
-def collectClosures = intraLoad("collectClosures");
-def internLiterals = intraLoad("internLiterals");
-def translate = intraLoad("translate");
-def vars = intraLoad("vars");
-
 def CodeGen = moduleLoad(["CodeGen"]);
+def flatten = CodeGen::flatten;
+def indent = CodeGen::indent;
+
 def DataCode = moduleLoad(["DataCode"]);
 def Template = moduleLoad(["Template"]);
 
@@ -40,11 +35,17 @@ def get_yieldDef   = Lang0Node::get_yieldDef;
 def Io0 = moduleLoad(["core", "Io0"]);
 def Lang2 = moduleLoad(["core", "Lang2"]);
 
-def flatten = CodeGen::flatten;
-def indent = CodeGen::indent;
+def collectClosures = intraLoad("collectClosures")::collectClosures;
+def internLiterals  = intraLoad("internLiterals")::internLiterals;
+def translate       = intraLoad("translate")::translate;
+def $vars           = intraLoad("vars");
 
+def $Interner = intraLoad("Interner");
 def get_interns = Interner::get_interns;
-def intern = Interner::intern;
+def intern      = Interner::intern;
+
+def templateText = intraReadUtf8("template.txt");
+
 
 ## Indent with the usual width column limit.
 fn usualIndent(tree, depth) {
@@ -57,7 +58,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
     def decl = CodeGen::makeCall(
         "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
-            <> CodeGen::makeComment("\%q(name)", vars::freeVarDecl(name, idx))
+            <> CodeGen::makeComment("\%q(name)", $vars::freeVarDecl(name, idx))
         )*);
 
     <> if (def ref = clo.nodeName) {
@@ -70,13 +71,13 @@ fn closureDeclaration(cloIdx, clo, literals) {
 ## Returns a full `makeClosure_*` definition, as as string.
 fn closureMaker(cloIdx, clo, literals) {
     def name = (def n = clo.nodeName)
-        & translate::translate(n, Box::nullBox).flatten()
+        & translate(n, Box::nullBox).flatten()
         | "NULL";
 
     def varRefs = clo.varRefs;
     def decl = closureDeclaration(cloIdx, clo, literals);
     def stateAssigns = [ idx in (0..), name in varRefs ->
-        def varName = vars::freeVarName(name, idx);
+        def varName = $vars::freeVarName(name, idx);
         def stat = CodeGen::makeStatement(
             CodeGen::makeAssign("state[\(idx)]", varName));
         <> stat.usualIndent(1)
@@ -115,7 +116,7 @@ fn makeYieldStatements(yield, cleanups) {
 ## Returns a function definition for the code for a closure, as a string.
 fn closureBody(cloIdx, clo, literals) {
     ## Set up the initial variable bindings.
-    def varInfo = vars::processVars(clo);
+    def varInfo = $vars::processVars(clo);
     def vars = varInfo::vars;
     def varNames = varInfo::names;
 
@@ -126,10 +127,10 @@ fn closureBody(cloIdx, clo, literals) {
 
     def varsBox = Box::makeCell(vars);
     def mainStats = [ s in clo.statements ->
-        <> translate::translate(s, varsBox)
+        <> translate(s, varsBox)
     ];
     def yield = (def y = clo.yield)
-        & translate::translate(y, varsBox)
+        & translate(y, varsBox)
         | "NULL";
     def yieldStats = makeYieldStatements(yield, varInfo::cleanups);
 
@@ -177,7 +178,7 @@ fn compile(sourcePath, targetPath) {
     ## type `closure`.
     def mainNode = Lang2::convertToLang0(Lang2::parseProgram(sourceText));
 
-    def interner = Interner::makeInterner();
+    def interner = $Interner::makeInterner();
     def litsNode = internLiterals(mainNode, interner);
     def partialLits = interner.interns; ## Needed for closure declarations.
 

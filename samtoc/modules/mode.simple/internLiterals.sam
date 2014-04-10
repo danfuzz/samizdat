@@ -2,8 +2,6 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def Interner = intraLoad("Interner");
-
 def VarCalc = moduleLoad(["VarCalc"]);
 def get_varRefs = VarCalc::get_varRefs;
 
@@ -22,7 +20,8 @@ def get_statements = Lang0Node::get_statements;
 def get_yield      = Lang0Node::get_yield;
 def get_yieldDef   = Lang0Node::get_yieldDef;
 
-def intern = Interner::intern;
+def $Interner = intraLoad("Interner");
+def intern = $Interner::intern;
 
 ## `lits(node, interner)`, implements one layer of literal interning.
 def lits = makeRegularGeneric("lits", 2, 2);
@@ -127,4 +126,4 @@ fn internLiterals(node, interner) {
     <> lits(node, interner);
 };
 
-<> internLiterals
+<> {internLiterals}

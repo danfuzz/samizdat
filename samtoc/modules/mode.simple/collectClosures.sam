@@ -141,4 +141,4 @@ fn collectClosures(node) {
     <> { closures, node: newNode }
 };
 
-<> collectClosures
+<> {collectClosures}

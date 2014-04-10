@@ -7,10 +7,10 @@
 ##
 
 def indentation = intraLoad("indentation")::indentation;
-def protocol = intraLoad("protocol");
 
-def flatten = protocol::flatten;
-def indent = protocol::indent;
+def $protocol = intraLoad("protocol");
+def flatten = $protocol::flatten;
+def indent = $protocol::indent;
 
 fn makeComment(text, optPayload?) {
     <> if (def payload = optPayload*) {
