@@ -267,7 +267,7 @@ Section and file banner comments take the form:
 Most other comments, including multi-line comments, are `//`-prefixed.
 
 Comment text is written using Markdown syntax, even when not marked `/**`.
-Code samples are delimited with triple-backticks (Github flavor).
+Code samples are delimited with triple-backticks (GitHub flavor).
 
 A general aim of commenting is to take a "DRY" (Don't Repeat Yourself)
 attitude, with specification files being the ultimate "source of truth" and
