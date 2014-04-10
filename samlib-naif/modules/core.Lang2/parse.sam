@@ -43,7 +43,7 @@ def makeVarRef         = Lang0Node::makeVarRef;
 def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
 def withoutInterpolate = Lang0Node::withoutInterpolate;
 
-def safeVar  = intraLoad("safeVar");
+def $safeVar = intraLoad("safeVar");
 def tokenize = intraLoad("tokenize")::tokenize;
 
 
@@ -1014,9 +1014,9 @@ fn makeCompareCalls(firstEx, opExList) {
     ## declaration for a variable binding the first expression, and make the
     ## final result be a no-argument call of that closure.
 
-    var varIndex = safeVar::safeVarIndex("compareValue", baseResult);
+    var varIndex = $safeVar::safeVarIndex("compareValue", baseResult);
     fn nextName() {
-        def result = safeVar::makeVarName("compareValue", varIndex);
+        def result = $safeVar::makeVarName("compareValue", varIndex);
         varIndex := Number::add(varIndex, 1);
         <> result
     };
@@ -2116,7 +2116,7 @@ def parSwitchExpression = {:
         ## If there is no specified formal, then pick a safe one, that is,
         ## a name not referenced in the case clauses.
         def testVar = ifValueOr { <> testClause::formal::name }
-            { <> safeVar::safeVarName("switchValue", caseMap) };
+            { <> $safeVar::safeVarName("switchValue", caseMap) };
 
         def innerIf = makeCall(REFS::ifValue,
             makeThunk(makeGet(caseMap, makeVarRef(testVar))),

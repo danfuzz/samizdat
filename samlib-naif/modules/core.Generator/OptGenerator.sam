@@ -9,7 +9,7 @@
 
 def Box = moduleLoad(["core", "Box"]);
 
-def ValueGenerator   = intraLoad("ValueGenerator");
+def $ValueGenerator  = intraLoad("ValueGenerator");
 def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 
 
@@ -37,7 +37,7 @@ fn OptGenerator_nextValue(gen, box) {
         }
         {
             <> nextValue(
-                ValueGenerator::makeValueGenerator([]),
+                $ValueGenerator::makeValueGenerator([]),
                 box)
         }
 };

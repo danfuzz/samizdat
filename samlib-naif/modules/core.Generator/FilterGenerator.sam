@@ -11,7 +11,7 @@
 def Collection = moduleLoad(["core", "Collection"]);
 def Box        = moduleLoad(["core", "Box"]);
 
-def ParaGenerator = intraLoad("ParaGenerator");
+def $ParaGenerator = intraLoad("ParaGenerator");
 
 
 ##
@@ -22,7 +22,7 @@ def ParaGenerator = intraLoad("ParaGenerator");
 fn makeFilterGenerator(filterFunction, generators*) {
     <> @FilterGenerator{
         filterFunction,
-        generator: ParaGenerator::makeParaGenerator(generators*)
+        generator: $ParaGenerator::makeParaGenerator(generators*)
     }
 };
 

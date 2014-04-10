@@ -8,15 +8,15 @@
 
 def Box = moduleLoad(["core", "Box"]);
 
-def FilterGenerator   = intraLoad("FilterGenerator");
-def ListWrapGenerator = intraLoad("ListWrapGenerator");
-def NullGenerator     = intraLoad("NullGenerator");
-def OptGenerator      = intraLoad("OptGenerator");
-def ParaGenerator     = intraLoad("ParaGenerator");
-def RepeatGenerator   = intraLoad("RepeatGenerator");
-def SerialGenerator   = intraLoad("SerialGenerator");
-def ValueGenerator    = intraLoad("ValueGenerator");
-def unboundedCollect  = intraLoad("unboundedCollect");
+def $FilterGenerator   = intraLoad("FilterGenerator");
+def $ListWrapGenerator = intraLoad("ListWrapGenerator");
+def $NullGenerator     = intraLoad("NullGenerator");
+def $OptGenerator      = intraLoad("OptGenerator");
+def $ParaGenerator     = intraLoad("ParaGenerator");
+def $RepeatGenerator   = intraLoad("RepeatGenerator");
+def $SerialGenerator   = intraLoad("SerialGenerator");
+def $ValueGenerator    = intraLoad("ValueGenerator");
+def $unboundedCollect  = intraLoad("unboundedCollect");
 
 ##
 ## Exported Definitions
@@ -42,7 +42,7 @@ fn filterAll(filterFunction, generators*) {
         {
             ## The general case.
             <> collect(
-                FilterGenerator::makeFilterGenerator(
+                $FilterGenerator::makeFilterGenerator(
                     filterFunction, generators*))
         }
 };
@@ -69,7 +69,7 @@ fn filterPump(filterFunction, generators*) {
         }
         {
             ## General case of multiple (or zero) generators.
-            var gen = ParaGenerator::makeParaGenerator(generators*);
+            var gen = $ParaGenerator::makeParaGenerator(generators*);
             loop {
                 def box = Box::makePromise();
                 ifValue { <> nextValue(gen, box) }
@@ -106,15 +106,15 @@ fn generatorPump(generator) {
     optValue,
 
     ## Re-exported from intramodule files.
-    makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
-    makeListWrapGenerator:   ListWrapGenerator::makeListWrapGenerator,
-    makeOptGenerator:        OptGenerator::makeOptGenerator,
-    makeParaGenerator:       ParaGenerator::makeParaGenerator,
-    makeRepeatGenerator:     RepeatGenerator::makeRepeatGenerator,
-    makeSerialGenerator:     SerialGenerator::makeSerialGenerator,
-    makeValueGenerator:      ValueGenerator::makeValueGenerator,
-    nullGenerator:           NullGenerator::nullGenerator,
-    unboundedCollect:        unboundedCollect::unboundedCollect,
+    makeFilterGenerator:     $FilterGenerator::makeFilterGenerator,
+    makeListWrapGenerator:   $ListWrapGenerator::makeListWrapGenerator,
+    makeOptGenerator:        $OptGenerator::makeOptGenerator,
+    makeParaGenerator:       $ParaGenerator::makeParaGenerator,
+    makeRepeatGenerator:     $RepeatGenerator::makeRepeatGenerator,
+    makeSerialGenerator:     $SerialGenerator::makeSerialGenerator,
+    makeValueGenerator:      $ValueGenerator::makeValueGenerator,
+    nullGenerator:           $NullGenerator::nullGenerator,
+    unboundedCollect:        $unboundedCollect::unboundedCollect,
 
     ## Defined in this file.
     collectAsMap,

@@ -9,7 +9,7 @@
 
 def Number = moduleLoad(["proto", "Number"]);
 
-def NullGenerator = intraLoad("NullGenerator");
+def $NullGenerator = intraLoad("NullGenerator");
 
 
 
@@ -23,7 +23,7 @@ fn makeRepeatGenerator(size, optValue?) {
         {
             ifIs { <> perLt(size, 0) }
                 { die("Invalid negative size for RepeatGenerator.") };
-            return NullGenerator::nullGenerator
+            return $NullGenerator::nullGenerator
         };
 
     def value = ifValueOr { <> optValue* } { <> null };

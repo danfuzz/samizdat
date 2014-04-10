@@ -9,8 +9,8 @@
 
 def Box        = moduleLoad(["core", "Box"]);
 
-def ListWrapGenerator = intraLoad("ListWrapGenerator");
-def NullGenerator     = intraLoad("NullGenerator");
+def $ListWrapGenerator = intraLoad("ListWrapGenerator");
+def $NullGenerator     = intraLoad("NullGenerator");
 
 
 ##
@@ -21,12 +21,12 @@ def NullGenerator     = intraLoad("NullGenerator");
 fn makeParaGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return NullGenerator::nullGenerator };
+        { return $NullGenerator::nullGenerator };
 
     ## Return a `ListWrapGenerator` if we were only passed one argument.
     ## This saves some overhead.
     ifIs { <> eq(get_size(generators), 1) }
-        { return ListWrapGenerator::makeListWrapGenerator(generators*) };
+        { return $ListWrapGenerator::makeListWrapGenerator(generators*) };
 
     <> @ParaGenerator(generators)
 };

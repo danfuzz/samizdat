@@ -10,7 +10,7 @@
 def Box        = moduleLoad(["core", "Box"]);
 def Sequence   = moduleLoad(["core", "Sequence"]);
 
-def NullGenerator = intraLoad("NullGenerator");
+def $NullGenerator = intraLoad("NullGenerator");
 
 
 ##
@@ -21,7 +21,7 @@ def NullGenerator = intraLoad("NullGenerator");
 fn makeSerialGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return NullGenerator::nullGenerator };
+        { return $NullGenerator::nullGenerator };
 
     ## Return the argument directly if we were only passed one.
     ## This saves some gratuitous call wrapping / double yields.

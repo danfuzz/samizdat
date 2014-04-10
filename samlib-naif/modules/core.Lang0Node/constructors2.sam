@@ -5,13 +5,13 @@
 
 def Generator = moduleLoad(["core", "Generator"]);
 
-def constructors1 = intraLoad("constructors1");
-def makeApply = constructors1::makeApply;
-def makeCall  = constructors1::makeCall;
-def makeThunk = constructors1::makeThunk;
+def $constructors1 = intraLoad("constructors1");
+def makeApply = $constructors1::makeApply;
+def makeCall  = $constructors1::makeCall;
+def makeThunk = $constructors1::makeThunk;
 
-def getters = intraLoad("getters");
-def get_interpolate = getters::get_interpolate;
+def $getters = intraLoad("getters");
+def get_interpolate = $getters::get_interpolate;
 
 def REFS = intraLoad("refs")::REFS;
 
