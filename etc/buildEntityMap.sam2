@@ -47,7 +47,7 @@ def parCodePoint = {:
 
     {
         var value = 0;
-        Generator::filterPump(digits) { digit ->
+        $Generator::filterPump(digits) { digit ->
             value := value * 16 + digit
         };
         <> toString(value);
@@ -68,7 +68,7 @@ def parDescription = {:
 ## Parses an entity name.
 def parName = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
-    { <> Peg::stringFromTokenList(chars) }
+    { <> $Peg::stringFromTokenList(chars) }
 :};
 
 ## Parses a single content line.
@@ -108,7 +108,7 @@ def outPath = "\(selfDir)/entityMap.sam";
 note("Processing file: \%q(inPath)");
 
 def text = $Io0::readFileUtf8(inPath);
-def result = Peg::apply(parFile, text);
+def result = $Peg::apply(parFile, text);
 
 ## This makes each result line *start* with `,\n`, to make it easy to just
 ## trim the first two characters off the beginning, yielding a valid comma-
