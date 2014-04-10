@@ -58,6 +58,12 @@ dots (`.`). There are a couple of conventions for module names:
   first letter is capitalized. For example, `funLib.FunLib` (a module with
   no further structure) or `funLib.Constants` (a module with structure).
 
+When referring to a module in code, it is typical for the module's
+bindings to be referenced as a variable whose name matches the final
+component of the module, prefixed with a dollar sign (`$`). For example,
+the module `core.Format` would typically be referred to as `$Format` in
+code.
+
 ### Importing and exporting
 
 TODO. There is not yet any syntactic support either for importing modules,
