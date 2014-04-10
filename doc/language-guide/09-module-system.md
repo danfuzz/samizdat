@@ -58,11 +58,15 @@ dots (`.`). There are a couple of conventions for module names:
   first letter is capitalized. For example, `funLib.FunLib` (a module with
   no further structure) or `funLib.Constants` (a module with structure).
 
-When referring to a module in code, it is typical for the module's
-bindings to be referenced as a variable whose name matches the final
+Intra-module names use a similar convention, except that the final
+component name is typically lower case.
+
+When referring to a module or intra-module file in code, it is typical for
+the bindings to be referenced as a variable whose name matches the final
 component of the module, prefixed with a dollar sign (`$`). For example,
 the module `core.Format` would typically be referred to as `$Format` in
-code.
+code, and the intra-module file `someDefs` would be referred to as
+`$someDefs`.
 
 ### Importing and exporting
 
