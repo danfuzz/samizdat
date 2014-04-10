@@ -6,9 +6,9 @@
 ## Convert data into C code that constructs that data.
 ##
 
-def CodeGen = moduleLoad(["CodeGen"]);
-def flatten = CodeGen::flatten;
-def indent = CodeGen::indent;
+def $CodeGen = moduleLoad(["CodeGen"]);
+def flatten = $CodeGen::flatten;
+def indent = $CodeGen::indent;
 
 
 ##
@@ -116,7 +116,7 @@ def convert = makeRegularGeneric("convert", 1, 1);
 
 ## Converts an int.
 fn Int_convert(int) {
-    <> CodeGen::makeCall("intFromZint", "\(int)")
+    <> $CodeGen::makeCall("intFromZint", "\(int)")
 };
 genericBind(convert, Int, Int_convert);
 
@@ -127,7 +127,7 @@ fn List_convert(list) {
     };
 
     def listElems = [ elem in list <> convert(elem) ];
-    <> CodeGen::makeCall("listFromArgs", listElems*, "NULL")
+    <> $CodeGen::makeCall("listFromArgs", listElems*, "NULL")
 };
 genericBind(convert, List, List_convert);
 
@@ -141,7 +141,7 @@ fn Map_convert(map) {
         <> [convert(get_key(mapping)), convert(get_value(mapping))]
     ];
 
-    <> CodeGen::makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
+    <> $CodeGen::makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
 };
 genericBind(convert, Map, Map_convert);
 
@@ -156,13 +156,13 @@ fn String_convert(string) {
     ## order to find the encoded length.
     def bodyChars = cat((ch in string <> stringChar(ch))*);
 
-    <> CodeGen::makeCall("stringFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
+    <> $CodeGen::makeCall("stringFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
 };
 genericBind(convert, String, String_convert);
 
 ## Converts a type. Only works on derived data types.
 fn Type_convert(type) {
-    <> CodeGen::makeCall("makeDerivedDataType", convert(get_name(type)))
+    <> $CodeGen::makeCall("makeDerivedDataType", convert(get_name(type)))
 };
 genericBind(convert, Type, Type_convert);
 
@@ -176,7 +176,7 @@ fn Value_convert(value) {
         die("Cannot convert opaque non-data value: \%q(value)")
     };
 
-    <> CodeGen::makeCall("makeValue", convert(type), data, "NULL")
+    <> $CodeGen::makeCall("makeValue", convert(type), data, "NULL")
 };
 genericBind(convert, Value, Value_convert);
 

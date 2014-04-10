@@ -6,8 +6,8 @@
 ## Path string utilities
 ##
 
-def Number     = moduleLoad(["proto", "Number"]);
-def Sequence   = moduleLoad(["core", "Sequence"]);
+def $Number     = moduleLoad(["proto", "Number"]);
+def $Sequence   = moduleLoad(["core", "Sequence"]);
 
 
 ##
@@ -50,7 +50,7 @@ fn get_directory(path) {
     ## then that means the path was all slashes, making the result be `"/"`.
     { <out> ->
         loop {
-            at := Number::sub(at, 1);
+            at := $Number::sub(at, 1);
 
             def ch = get(path, at);
             ifIs { <> ne(ch, "/") } { <out> };
@@ -64,13 +64,13 @@ fn get_directory(path) {
     ## `"/"`.
     loop {
         ifIs { <> eq(at, 0) } { return "." };
-        at := Number::sub(at, 1);
+        at := $Number::sub(at, 1);
 
         def ch = get(path, at);
         ifIs { <> eq(ch, "/") }
             {
                 ifIs { <> eq(at, 0) } { return "/" };
-                return Sequence::sliceExclusive(path, 0, at)
+                return $Sequence::sliceExclusive(path, 0, at)
             };
     }
 };
@@ -85,7 +85,7 @@ fn get_file(path) {
     ## then that means the path was all slashes, making the result be `"/"`.
     { <out> ->
         loop {
-            at := Number::sub(at, 1);
+            at := $Number::sub(at, 1);
 
             def ch = get(path, at);
             ifIs { <> ne(ch, "/") } { <out> };
@@ -100,15 +100,15 @@ fn get_file(path) {
     ## `path` minus any path-final slashes.
     loop {
         ifIs { <> eq(at, 0) }
-            { return Sequence::sliceInclusive(path, 0, endAt) };
+            { return $Sequence::sliceInclusive(path, 0, endAt) };
 
-        at := Number::sub(at, 1);
+        at := $Number::sub(at, 1);
 
         def ch = get(path, at);
         ifIs { <> eq(ch, "/") }
             {
-                at := Number::add(at, 1);
-                return Sequence::sliceInclusive(path, at, endAt)
+                at := $Number::add(at, 1);
+                return $Sequence::sliceInclusive(path, at, endAt)
             };
     }
 };

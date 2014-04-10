@@ -6,9 +6,9 @@
 ## PEG (Parsing Expression Grammar) support
 ##
 
-def Box       = moduleLoad(["core", "Box"]);
-def Generator = moduleLoad(["core", "Generator"]);
-def Sequence  = moduleLoad(["core", "Sequence"]);
+def $Box       = moduleLoad(["core", "Box"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Sequence  = moduleLoad(["core", "Sequence"]);
 
 
 ##
@@ -38,8 +38,8 @@ genericBind(parse, @@PegAny, PegAny_parse);
 
 ## Documented in spec.
 fn PegChoice_parse(peg, box, input, items*) {
-    Generator::filterPump(dataOf(peg)) { rule ->
-        def innerBox = Box::makePromise();
+    $Generator::filterPump(dataOf(peg)) { rule ->
+        def innerBox = $Box::makePromise();
         ifValue { <> parse(rule, innerBox, input, items*) }
             { newInput ->
                 store(box, fetch(innerBox));
@@ -65,7 +65,7 @@ genericBind(parse, @@PegCode, PegCode_parse);
 
 ## Documented in spec.
 fn PegEof_parse(peg, box, input, .*) {
-    <> ifIs { <> nextValue(input, Box::nullBox) }
+    <> ifIs { <> nextValue(input, $Box::nullBox) }
         { store(box) }
         {
             store(box, null);
@@ -82,7 +82,7 @@ genericBind(parse, @@PegFail, PegFail_parse);
 
 ## Documented in spec.
 fn PegLookaheadFailure_parse(peg, box, input, items*) {
-    <> ifIs { <> parse(dataOf(peg), Box::nullBox, input, items*) }
+    <> ifIs { <> parse(dataOf(peg), $Box::nullBox, input, items*) }
         { store(box) }
         {
             store(box, null);
@@ -107,7 +107,7 @@ genericBind(parse, @@PegMain, PegMain_parse);
 
 ## Documented in spec.
 fn PegOpt_parse(peg, box, input, items*) {
-    def innerBox = Box::makePromise();
+    def innerBox = $Box::makePromise();
     <> ifValue { <> parse(dataOf(peg), innerBox, input, items*) }
         { newInput ->
             store(box, [fetch(innerBox)]);
@@ -127,7 +127,7 @@ fn PegRepeat_parse(peg, box, input, items*) {
     var results = []; ## Values that have been parsed by the inner rule.
 
     loop {
-        def innerBox = Box::makePromise();
+        def innerBox = $Box::makePromise();
         ifValue { <> parse(rule, innerBox, remainingInput, items*) }
             { newInput ->
                 ## Successfully parsed the inner rule.
@@ -168,8 +168,8 @@ fn PegSequence_parse(peg, box, input, items*) {
     var results = items; ## Includes intial items and each parsed value.
 
     ## This is akin to `for (rule in dataOf(peg)) { ... }`.
-    Generator::filterPump(dataOf(peg)) { rule ->
-        def innerBox = Box::makePromise();
+    $Generator::filterPump(dataOf(peg)) { rule ->
+        def innerBox = $Box::makePromise();
         ifValue { <> parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
@@ -182,7 +182,7 @@ fn PegSequence_parse(peg, box, input, items*) {
             }
     };
 
-    store(box, Sequence::nthFromEnd(results, 0));
+    store(box, $Sequence::nthFromEnd(results, 0));
     <> remainingInput
 };
 genericBind(parse, @@PegSequence, PegSequence_parse);
@@ -196,7 +196,7 @@ genericBind(parse, @@PegThunk, PegThunk_parse);
 
 ## Documented in spec.
 fn PegTokenSet_parse(peg, box, input, items*) {
-    def innerBox = Box::makePromise();
+    def innerBox = $Box::makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
@@ -215,7 +215,7 @@ genericBind(parse, @@PegTokenSet, PegTokenSet_parse);
 
 ## Documented in spec.
 fn PegTokenSetComplement_parse(peg, box, input, items*) {
-    def innerBox = Box::makePromise();
+    def innerBox = $Box::makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
@@ -406,12 +406,12 @@ fn makeTokenSetComplement(tokens*) {
 
 ## Documented in spec.
 fn apply(rule, input) {
-    def box = Box::makePromise();
+    def box = $Box::makePromise();
     def generator = ifIs { <> hasType(input, String) }
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.
-            <> Generator::makeFilterGenerator(input) { ch <> @(ch) }
+            <> $Generator::makeFilterGenerator(input) { ch <> @(ch) }
         }
         { <> input };
 

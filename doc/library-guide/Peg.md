@@ -24,7 +24,7 @@ When building tree parsers, the input elements are expected to be
 tokens per se, that is, tokens whose type tag is taken to indicate a
 token type.
 
-The output of the functions named `Peg::make*` are all parsing rules. These
+The output of the functions named `$Peg::make*` are all parsing rules. These
 are all derived data values with a type that binds the `parse`
 generic. A `parse` method accepts at least two arguments, and may also
 accept additional arguments:

@@ -13,7 +13,7 @@
 
 ## Prints out the given value.
 fn msg(value) {
-    note(Format::source(value))
+    note($Format::source(value))
 };
 
 ## Something to call.

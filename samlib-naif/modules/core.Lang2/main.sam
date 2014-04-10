@@ -6,7 +6,7 @@
 ## Layer 2 parsing and evaluation functions
 ##
 
-def Lang1 = moduleLoad(["core", "Lang1"]);
+def $Lang1 = moduleLoad(["core", "Lang1"]);
 
 
 ##
@@ -19,6 +19,6 @@ def Lang1 = moduleLoad(["core", "Lang1"]);
     (intraLoad("eval"))*,
     (intraLoad("tokenize"))*,
     (intraLoad("parse"))*,
-    convertToLang0: Lang1::convertToLang0,
-    evalBinary:     Lang1::evalBinary
+    convertToLang0: $Lang1::convertToLang0,
+    evalBinary:     $Lang1::evalBinary
 }

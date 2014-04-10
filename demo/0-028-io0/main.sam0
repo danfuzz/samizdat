@@ -6,8 +6,8 @@
 ## Io0 demo
 ##
 
-def FilePath = moduleLoad(["core", "FilePath"]);
-def Io0      = moduleLoad(["core", "Io0"]);
+def $FilePath = moduleLoad(["core", "FilePath"]);
+def $Io0      = moduleLoad(["core", "Io0"]);
 
 
 ##
@@ -16,8 +16,8 @@ def Io0      = moduleLoad(["core", "Io0"]);
 
 ## Checking file type / existence.
 fn tryFile(path) {
-    def result = ifValueOr { <> Io0::fileType(path) } { <> "(void)" };
-    note(cat("fileType(", Format::source(path), ") => ", result))
+    def result = ifValueOr { <> $Io0::fileType(path) } { <> "(void)" };
+    note(cat("fileType(", $Format::source(path), ") => ", result))
 };
 
 
@@ -25,9 +25,9 @@ fn tryFile(path) {
 ## Main Tests
 ##
 
-def selfDir = FilePath::get_directory(SELF_PATH);
+def selfDir = $FilePath::get_directory(SELF_PATH);
 
-def text = Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
+def text = $Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
 note(text);
 
 tryFile(cat(selfDir, "/sibling.txt"));

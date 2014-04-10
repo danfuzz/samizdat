@@ -10,7 +10,7 @@ def parSubstitution = {:
     format = (
         "%"
         chars = [! "("]+
-        { <> Peg::stringFromTokenList(chars) }
+        { <> $Peg::stringFromTokenList(chars) }
     |
         { <> "s" }
     )
@@ -20,7 +20,7 @@ def parSubstitution = {:
     ")"
 
     {
-        <> {format, name: Peg::stringFromTokenList(name)}
+        <> {format, name: $Peg::stringFromTokenList(name)}
     }
 :};
 
@@ -37,7 +37,7 @@ def parItem = {:
     )
 |
     chars = [! "\\"]+
-    { <> Peg::stringFromTokenList(chars) }
+    { <> $Peg::stringFromTokenList(chars) }
 :};
 
 def parTemplate = {:
@@ -45,11 +45,11 @@ def parTemplate = {:
 :};
 
 fn apply(templateString, defs) {
-    def items = Peg::apply(parTemplate, templateString);
+    def items = $Peg::apply(parTemplate, templateString);
 
     def texts = [ item in items ->
         <> hasType(item, String) |
-            Format::formatterFor(item::format)(
+            $Format::formatterFor(item::format)(
                 defs[item::name] | "<MISSING \%q(item::name)>")
     ];
 

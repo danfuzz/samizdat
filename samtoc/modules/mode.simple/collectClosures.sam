@@ -2,23 +2,23 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def VarCalc = moduleLoad(["VarCalc"]);
-def get_varRefs = VarCalc::get_varRefs;
+def $VarCalc = moduleLoad(["VarCalc"]);
+def get_varRefs = $VarCalc::get_varRefs;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def Lang0Node = moduleLoad(["core", "Lang0Node"]);
-def get_actuals    = Lang0Node::get_actuals;
-def get_formals    = Lang0Node::get_formals;
-def get_function   = Lang0Node::get_function;
-def get_id         = Lang0Node::get_id;
-def get_maxArgs    = Lang0Node::get_maxArgs;
-def get_minArgs    = Lang0Node::get_minArgs;
-def get_nodeName   = Lang0Node::get_nodeName;
-def get_nodeValue  = Lang0Node::get_nodeValue;
-def get_statements = Lang0Node::get_statements;
-def get_yield      = Lang0Node::get_yield;
-def get_yieldDef   = Lang0Node::get_yieldDef;
+def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
+def get_actuals    = $Lang0Node::get_actuals;
+def get_formals    = $Lang0Node::get_formals;
+def get_function   = $Lang0Node::get_function;
+def get_id         = $Lang0Node::get_id;
+def get_maxArgs    = $Lang0Node::get_maxArgs;
+def get_minArgs    = $Lang0Node::get_minArgs;
+def get_nodeName   = $Lang0Node::get_nodeName;
+def get_nodeValue  = $Lang0Node::get_nodeValue;
+def get_statements = $Lang0Node::get_statements;
+def get_yield      = $Lang0Node::get_yield;
+def get_yieldDef   = $Lang0Node::get_yieldDef;
 
 ## `bodies(node, bodiesBox)`, implements one layer of body collection.
 def bodies = makeRegularGeneric("bodies", 2, 2);
@@ -127,11 +127,11 @@ genericBind(
 ## closures and `node` is a replacement for the original argument, in which
 ## `closure` nodes have been replaced by indexed closure references.
 fn collectClosures(node) {
-    def bodiesBox = Box::makeCell({});
+    def bodiesBox = $Box::makeCell({});
     def newNode = bodies(node, bodiesBox);
     def bodiesMap = fetch(bodiesBox);
 
-    def bodiesBoxList = [ for #bodiesMap <> Box::makePromise() ];
+    def bodiesBoxList = [ for #bodiesMap <> $Box::makePromise() ];
     for (body in bodiesMap) {
         def index = get_value(body)::id;
         store(bodiesBoxList[index], get_key(body))
@@ -141,4 +141,4 @@ fn collectClosures(node) {
     <> { closures, node: newNode }
 };
 
-<> collectClosures
+<> {collectClosures}

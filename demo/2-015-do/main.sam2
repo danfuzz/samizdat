@@ -11,7 +11,7 @@
 ## Main Tests
 ##
 
-def box = Box::makeCell(0);
+def box = $Box::makeCell(0);
 
 do {
     store(box, fetch(box) + 1);

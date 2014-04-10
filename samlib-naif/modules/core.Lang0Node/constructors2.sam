@@ -3,15 +3,15 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
-def Generator = moduleLoad(["core", "Generator"]);
+def $Generator = moduleLoad(["core", "Generator"]);
 
-def constructors1 = intraLoad("constructors1");
-def makeApply = constructors1::makeApply;
-def makeCall  = constructors1::makeCall;
-def makeThunk = constructors1::makeThunk;
+def $constructors1 = intraLoad("constructors1");
+def makeApply = $constructors1::makeApply;
+def makeCall  = $constructors1::makeCall;
+def makeThunk = $constructors1::makeThunk;
 
-def getters = intraLoad("getters");
-def get_interpolate = getters::get_interpolate;
+def $getters = intraLoad("getters");
+def get_interpolate = $getters::get_interpolate;
 
 def REFS = intraLoad("refs")::REFS;
 
@@ -48,7 +48,7 @@ fn makeCallOrApply(function, actuals*) {
             }
     };
 
-    Generator::filterPump(actuals) { actual ->
+    $Generator::filterPump(actuals) { actual ->
         ifValue { <> get_interpolate(actual) }
             { node ->
                 addPendingToCooked();

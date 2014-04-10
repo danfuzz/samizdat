@@ -135,9 +135,10 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         zint ch = peek(state);
 
         if (!((ch == '_') ||
-              ((ch >= '0') && (ch <= '9')) ||
+              (ch == '$') ||
               ((ch >= 'a') && (ch <= 'z')) ||
-              ((ch >= 'A') && (ch <= 'Z')))) {
+              ((ch >= 'A') && (ch <= 'Z')) ||
+              ((ch >= '0') && (ch <= '9')))) {
             break;
         } else if (size == LANG_MAX_IDENTIFIER_CHARS) {
             die("Overlong identifier token.");

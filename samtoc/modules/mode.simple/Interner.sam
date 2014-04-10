@@ -4,7 +4,7 @@
 
 
 fn makeInterner() {
-    <> @Interner{values: Box::makeCell({})}
+    <> @Interner{values: $Box::makeCell({})}
 };
 
 fn intern(this, value) {
@@ -23,7 +23,7 @@ fn intern(this, value) {
 
 fn get_interns(this) {
     def map = fetch(this::values);
-    def boxList = [ n in (0..#map) <> Box::makePromise() ];
+    def boxList = [ n in (0..#map) <> $Box::makePromise() ];
 
     for (mapping in map) {
         def id = get_value(mapping);

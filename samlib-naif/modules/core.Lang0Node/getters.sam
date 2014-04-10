@@ -2,8 +2,8 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def Generator = moduleLoad(["core", "Generator"]);
-def Number    = moduleLoad(["proto", "Number"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Number    = moduleLoad(["proto", "Number"]);
 
 
 ##
@@ -45,13 +45,13 @@ fn get_maxArgs(node) {
     def formals = get_formals(node);
     var maxArgs = 0;
 
-    Generator::filterPump(formals) { f ->
+    $Generator::filterPump(formals) { f ->
         ifValue { <> f::repeat }
             { rep ->
                 ifIs { <> eq(rep, "*") } { return -1 };
                 ifIs { <> eq(rep, "+") } { return -1 };
             };
-        maxArgs := Number::add(maxArgs, 1)
+        maxArgs := $Number::add(maxArgs, 1)
     };
 
     <> maxArgs
@@ -62,13 +62,13 @@ fn get_minArgs(node) {
     def formals = get_formals(node);
     var minArgs = 0;
 
-    Generator::filterPump(formals) { <next> f ->
+    $Generator::filterPump(formals) { <next> f ->
         ifValue { <> f::repeat }
             { rep ->
                 ifIs { <> eq(rep, "?") } { <next> };
                 ifIs { <> eq(rep, "*") } { <next> };
             };
-        minArgs := Number::add(minArgs, 1)
+        minArgs := $Number::add(minArgs, 1)
     };
 
     <> minArgs

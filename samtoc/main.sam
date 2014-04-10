@@ -2,8 +2,8 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def CommandLine = moduleLoad(["core", "CommandLine"]);
-def FilePath    = moduleLoad(["core", "FilePath"]);
+def $CommandLine = moduleLoad(["core", "CommandLine"]);
+def $FilePath    = moduleLoad(["core", "FilePath"]);
 
 ## Default mode to use
 def DEFAULT_MODE = "simple";
@@ -42,8 +42,8 @@ fn getOutputPath(rawPath, args) {
         & "\(outDir)/\(rawPath)"
         | rawPath;
 
-    def dir = FilePath::get_directory(path);
-    def baseName = withoutSuffix(FilePath::get_file(path));
+    def dir = $FilePath::get_directory(path);
+    def baseName = withoutSuffix($FilePath::get_file(path));
     return "\(dir)/\(baseName).c"
 };
 
@@ -63,7 +63,7 @@ fn main(selfPath, rawArgs*) {
         Starting: \%q(selfPath)
         Raw args: \%q(rawArgs)\n");
 
-    def args = CommandLine::parseArgs(rawArgs);
+    def args = $CommandLine::parseArgs(rawArgs);
     def sources = args::args;
     def modeName = MODE_MAP[args::options::mode | DEFAULT_MODE] |
         {

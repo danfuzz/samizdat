@@ -35,7 +35,7 @@ if `path` is not a valid module name path (list of strings).
 #### `intraType(loader, path) <> string | void`
 
 This gets the type of an intra-module file named by the indicated relative
-`path`. The return values are the same as for `core.Io0::fileType`
+`path`. The return values are the same as for `$Io0::fileType`
 (see which).
 
 `path` is expected to be a string identifying a relative file path within the

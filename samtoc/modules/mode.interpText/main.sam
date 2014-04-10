@@ -8,18 +8,18 @@
 ## underlying interpreter (hence the name's prefix).
 ##
 
-def Template = moduleLoad(["Template"]);
+def $Template = moduleLoad(["Template"]);
 def templateText = intraReadUtf8("template.txt");
 
-def Io0 = moduleLoad(["core", "Io0"]);
+def $Io0 = moduleLoad(["core", "Io0"]);
 
 fn compile(sourcePath, targetPath) {
     def replacements = {
-        source: Io0::readFileUtf8(sourcePath)
+        source: $Io0::readFileUtf8(sourcePath)
     };
 
-    def outputText = Template::apply(templateText, replacements);
-    Io0::writeFileUtf8(targetPath, outputText)
+    def outputText = $Template::apply(templateText, replacements);
+    $Io0::writeFileUtf8(targetPath, outputText)
 };
 
 <> {compile}

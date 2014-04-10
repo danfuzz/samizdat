@@ -11,23 +11,23 @@
 ## (at the end of parsing).
 ##
 
-def Generator = moduleLoad(["core", "Generator"]);
-def Range     = moduleLoad(["core", "Range"]);
-def Sequence  = moduleLoad(["core", "Sequence"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Range     = moduleLoad(["core", "Range"]);
+def $Sequence  = moduleLoad(["core", "Sequence"]);
 
-def Lang0Node = moduleLoad(["core", "Lang0Node"]);
-def REFS                 = Lang0Node::REFS;
-def get_actuals          = Lang0Node::get_actuals;
-def get_function         = Lang0Node::get_function;
-def get_nodeValue        = Lang0Node::get_nodeValue;
-def get_statements       = Lang0Node::get_statements;
-def get_yield            = Lang0Node::get_yield;
-def makeCall             = Lang0Node::makeCall;
-def makeCallLiterals     = Lang0Node::makeCallLiterals;
-def makeGet              = Lang0Node::makeGet;
-def makeLiteral          = Lang0Node::makeLiteral;
-def makeVarRef           = Lang0Node::makeVarRef;
-def withoutIntermediates = Lang0Node::withoutIntermediates;
+def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
+def REFS                 = $Lang0Node::REFS;
+def get_actuals          = $Lang0Node::get_actuals;
+def get_function         = $Lang0Node::get_function;
+def get_nodeValue        = $Lang0Node::get_nodeValue;
+def get_statements       = $Lang0Node::get_statements;
+def get_yield            = $Lang0Node::get_yield;
+def makeCall             = $Lang0Node::makeCall;
+def makeCallLiterals     = $Lang0Node::makeCallLiterals;
+def makeGet              = $Lang0Node::makeGet;
+def makeLiteral          = $Lang0Node::makeLiteral;
+def makeVarRef           = $Lang0Node::makeVarRef;
+def withoutIntermediates = $Lang0Node::withoutIntermediates;
 
 
 ##
@@ -44,7 +44,7 @@ def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
-    <> Generator::filterAll(nodes) { node <> convertPexIn(node) }
+    <> $Generator::filterAll(nodes) { node <> convertPexIn(node) }
 };
 
 ## Converts a pex to a function call on its converted inner pex.
@@ -77,7 +77,7 @@ genericBind(convertPex, @@any, any_convertPex);
 ## Converts a `choice` pex node.
 fn choice_convertPex(node, formals) {
     def pexes = dataOf(node);
-    def convertedPexes = Generator::filterAll(pexes)
+    def convertedPexes = $Generator::filterAll(pexes)
         { pex <> convertPex(pex, formals) };
     <> makeCall(REFS::Peg_makeChoice, convertedPexes*)
 };
@@ -130,7 +130,7 @@ fn sequence_convertPex(node, formals) {
     def pexes = dataOf(node);
 
     ## Extract the formals out of any `varDef` nodes.
-    def newFormals = Generator::filterAll(pexes) { pex ->
+    def newFormals = $Generator::filterAll(pexes) { pex ->
         <> ifIs { <> hasType(pex, @@varDef) }
             { <> {name: pex::name} }
             { <> {} }
@@ -139,13 +139,13 @@ fn sequence_convertPex(node, formals) {
     ## Convert all the pexes, passing in appropriately-extended formals
     ## lists to each conversion.
     def convertedPexes =
-        Generator::filterAll(Range::makeOpenRange(0), pexes)
+        $Generator::filterAll($Range::makeOpenRange(0), pexes)
             { n, pex ->
                 def subPex = ifIs { <> hasType(pex, @@varDef) }
                     { <> pex::value }
                     { <> pex };
                 <> convertPex(subPex,
-                    [formals*, Sequence::sliceExclusive(newFormals, 0, n)*])
+                    [formals*, $Sequence::sliceExclusive(newFormals, 0, n)*])
             };
 
     <> makeCall(REFS::Peg_makeSequence, convertedPexes*)

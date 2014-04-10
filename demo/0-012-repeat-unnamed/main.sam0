@@ -24,40 +24,40 @@ fn ustar(.*) {
 };
 
 fn uargOpt(., arg?) {
-    note(cat("uargOpt() got: ", Format::source(arg)))
+    note(cat("uargOpt() got: ", $Format::source(arg)))
 };
 
 fn uargPlus(., arg+) {
-    note(cat("uargPlus() got: ", Format::source(arg)))
+    note(cat("uargPlus() got: ", $Format::source(arg)))
 };
 
 fn uargStar(., arg*) {
-    note(cat("uargStar() got: ", Format::source(arg)))
+    note(cat("uargStar() got: ", $Format::source(arg)))
 };
 
 fn argUopt(arg, .?) {
-    note(cat("argUopt() got: ", Format::source(arg)))
+    note(cat("argUopt() got: ", $Format::source(arg)))
 };
 
 fn argUplus(arg, .+) {
-    note(cat("argUplus() got: ", Format::source(arg)))
+    note(cat("argUplus() got: ", $Format::source(arg)))
 };
 
 fn argUstar(arg, .*) {
-    note(cat("argUstar() got: ", Format::source(arg)))
+    note(cat("argUstar() got: ", $Format::source(arg)))
 };
 
 fn argUoptStar(arg1, .?, arg2*) {
     note("argUoptStar() got:");
-    note(cat("  ", Format::source(arg1)));
-    note(cat("  ", Format::source(arg2)));
+    note(cat("  ", $Format::source(arg1)));
+    note(cat("  ", $Format::source(arg2)));
 };
 
 fn argUoptOptStar(arg1, .?, arg2?, arg3*) {
     note("argUoptOptStar() got:");
-    note(cat("  ", Format::source(arg1)));
-    note(cat("  ", Format::source(arg2)));
-    note(cat("  ", Format::source(arg3)));
+    note(cat("  ", $Format::source(arg1)));
+    note(cat("  ", $Format::source(arg2)));
+    note(cat("  ", $Format::source(arg3)));
 };
 
 

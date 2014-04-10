@@ -7,9 +7,9 @@
 ##
 ## Payload is `subGen`, the sub-generator.
 
-def Box = moduleLoad(["core", "Box"]);
+def $Box = moduleLoad(["core", "Box"]);
 
-def ValueGenerator   = intraLoad("ValueGenerator");
+def $ValueGenerator  = intraLoad("ValueGenerator");
 def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 
 
@@ -28,7 +28,7 @@ genericBind(collect, @@OptGenerator, unboundedCollect);
 ## Documented in spec.
 fn OptGenerator_nextValue(gen, box) {
     def subGen = dataOf(gen);
-    def innerBox = Box::makePromise();
+    def innerBox = $Box::makePromise();
 
     <> ifValue { <> nextValue(subGen, innerBox) }
         { nextGen ->
@@ -37,7 +37,7 @@ fn OptGenerator_nextValue(gen, box) {
         }
         {
             <> nextValue(
-                ValueGenerator::makeValueGenerator([]),
+                $ValueGenerator::makeValueGenerator([]),
                 box)
         }
 };

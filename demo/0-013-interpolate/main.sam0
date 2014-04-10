@@ -12,7 +12,7 @@
 ##
 
 fn msg(args*) {
-    note(cat("Got: ", Format::source(args)))
+    note(cat("Got: ", $Format::source(args)))
 };
 
 fn ten() {
@@ -40,7 +40,7 @@ msg(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
 msg({[1, 2, 3]*: 6});
 msg("blort"*);
 msg({a: 10, b: "20"}*);
-msg(Range::makeInclusiveRange("a", "m", 2)*);
+msg($Range::makeInclusiveRange("a", "m", 2)*);
 
 ifValue { <> yieldTest([]) }
     { value <> msg(value) }

@@ -10,6 +10,7 @@
 		<string>sam2</string>
 		<string>sam3</string>
 		<string>sam4</string>
+		<string>saminfo</string>
 	</array>
 	<key>foldingStartMarker</key>
 	<string>\{:? *(##.*)?$</string>
@@ -176,7 +177,7 @@
 					<key>name</key>
 					<string>string.unquoted.samizdat</string>
 					<key>match</key>
-					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
+					<string>[_$a-zA-Z][_$a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -214,7 +215,7 @@
 					<key>name</key>
 					<string>constant.other.samizdat</string>
 					<key>match</key>
-					<string>@@?[_a-zA-Z][_a-zA-Z0-9]*</string>
+					<string>@@?[_$a-zA-Z][_$a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -443,7 +444,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:)(?![:=])</string>
+					<string>([_$a-zA-Z][_$a-zA-Z0-9]*) *(:)(?![:=])</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -460,7 +461,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(def|var)  *([_a-zA-Z][_a-zA-Z0-9]*)</string>
+					<string>(def|var)  *([_$a-zA-Z][_$a-zA-Z0-9]*)</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -477,7 +478,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:?=)(?!=)</string>
+					<string>([_$a-zA-Z][_$a-zA-Z0-9]*) *(:?=)(?!=)</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -494,13 +495,13 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([a-zA-Z_.][^:@"{}()\[\]]*) *(-&gt;|(?=&lt;&gt;))</string>
+					<string>([_$a-zA-Z.][^:@"{}()\[\]]*) *(-&gt;|(?=&lt;&gt;))</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>variable.other.dot-access.samizdat</string>
 					<key>match</key>
-					<string>\.[_a-zA-Z][_a-zA-Z0-9]*</string>
+					<string>\.[_$a-zA-Z][_$a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -527,7 +528,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(fn)  *([_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
+					<string>(fn)  *([_$a-zA-Z][_$a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
 				</dict>
 				<dict>
 					<key>begin</key>
@@ -541,7 +542,7 @@
 						</dict>
 					</dict>
 					<key>end</key>
-					<string>(?=[^"_a-zA-Z0-9])</string>
+					<string>(?=[^"_$a-zA-Z0-9])</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -589,19 +590,19 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([._a-zA-Z][._a-zA-Z0-9:]*)\b(?= *[\({])</string>
+					<string>([._$a-zA-Z][._$a-zA-Z0-9:]*)\b(?= *[\({])</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>variable.other.samizdat</string>
 					<key>match</key>
-					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
+					<string>[_$a-zA-Z][_$a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>variable.other.samizdat</string>
 					<key>match</key>
-					<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
+					<string>&lt;[_$a-zA-Z][_$a-zA-Z0-9]*&gt;</string>
 				</dict>
 				<dict>
 					<key>name</key>

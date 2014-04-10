@@ -6,7 +6,7 @@
 ## FilePath demo
 ##
 
-def FilePath = moduleLoad(["core", "FilePath"]);
+def $FilePath = moduleLoad(["core", "FilePath"]);
 
 
 ##
@@ -15,7 +15,7 @@ def FilePath = moduleLoad(["core", "FilePath"]);
 
 ## Print the given value.
 fn msg(value) {
-    note(cat("    ", Format::source(value)))
+    note(cat("    ", $Format::source(value)))
 };
 
 
@@ -24,65 +24,65 @@ fn msg(value) {
 ##
 
 note("fixPath:");
-msg(FilePath::fixPath("."));
-msg(FilePath::fixPath("blort"));
-msg(FilePath::fixPath("blort/zorch"));
-msg(FilePath::fixPath("/"));
-msg(FilePath::fixPath("/blort"));
-msg(FilePath::fixPath("/blort/zorch"));
-msg(FilePath::fixPath(".", "/x"));
-msg(FilePath::fixPath("blort", "/x"));
-msg(FilePath::fixPath("blort/zorch", "/x"));
-msg(FilePath::fixPath("/", "/x"));
-msg(FilePath::fixPath("/blort", "/x"));
-msg(FilePath::fixPath("/blort/zorch", "/x"));
-msg(FilePath::fixPath(".", "x"));
-msg(FilePath::fixPath("blort", "x"));
-msg(FilePath::fixPath("blort/zorch", "x"));
-msg(FilePath::fixPath("/", "x"));
-msg(FilePath::fixPath("/blort", "x"));
-msg(FilePath::fixPath("/blort/zorch", "x"));
-msg(FilePath::fixPath("blort/zorch", "x/y", "/fizmo"));
-msg(FilePath::fixPath("blort/zorch", "/x/y", "/fizmo"));
+msg($FilePath::fixPath("."));
+msg($FilePath::fixPath("blort"));
+msg($FilePath::fixPath("blort/zorch"));
+msg($FilePath::fixPath("/"));
+msg($FilePath::fixPath("/blort"));
+msg($FilePath::fixPath("/blort/zorch"));
+msg($FilePath::fixPath(".", "/x"));
+msg($FilePath::fixPath("blort", "/x"));
+msg($FilePath::fixPath("blort/zorch", "/x"));
+msg($FilePath::fixPath("/", "/x"));
+msg($FilePath::fixPath("/blort", "/x"));
+msg($FilePath::fixPath("/blort/zorch", "/x"));
+msg($FilePath::fixPath(".", "x"));
+msg($FilePath::fixPath("blort", "x"));
+msg($FilePath::fixPath("blort/zorch", "x"));
+msg($FilePath::fixPath("/", "x"));
+msg($FilePath::fixPath("/blort", "x"));
+msg($FilePath::fixPath("/blort/zorch", "x"));
+msg($FilePath::fixPath("blort/zorch", "x/y", "/fizmo"));
+msg($FilePath::fixPath("blort/zorch", "/x/y", "/fizmo"));
 
 note("\nget_directory:");
-msg(FilePath::get_directory("."));
-msg(FilePath::get_directory("blort"));
-msg(FilePath::get_directory("blort/"));
-msg(FilePath::get_directory("blort//"));
-msg(FilePath::get_directory("blort/zorch"));
-msg(FilePath::get_directory("blort/zorch/"));
-msg(FilePath::get_directory("blort/zorch//"));
-msg(FilePath::get_directory("blort/zorch///"));
-msg(FilePath::get_directory("/"));
-msg(FilePath::get_directory("//"));
-msg(FilePath::get_directory("///"));
-msg(FilePath::get_directory("/blort"));
-msg(FilePath::get_directory("/blort/"));
-msg(FilePath::get_directory("/blort//"));
-msg(FilePath::get_directory("/blort/zorch"));
-msg(FilePath::get_directory("/blort/zorch/"));
-msg(FilePath::get_directory("/blort/zorch//"));
-msg(FilePath::get_directory("/blort/zorch///"));
+msg($FilePath::get_directory("."));
+msg($FilePath::get_directory("blort"));
+msg($FilePath::get_directory("blort/"));
+msg($FilePath::get_directory("blort//"));
+msg($FilePath::get_directory("blort/zorch"));
+msg($FilePath::get_directory("blort/zorch/"));
+msg($FilePath::get_directory("blort/zorch//"));
+msg($FilePath::get_directory("blort/zorch///"));
+msg($FilePath::get_directory("/"));
+msg($FilePath::get_directory("//"));
+msg($FilePath::get_directory("///"));
+msg($FilePath::get_directory("/blort"));
+msg($FilePath::get_directory("/blort/"));
+msg($FilePath::get_directory("/blort//"));
+msg($FilePath::get_directory("/blort/zorch"));
+msg($FilePath::get_directory("/blort/zorch/"));
+msg($FilePath::get_directory("/blort/zorch//"));
+msg($FilePath::get_directory("/blort/zorch///"));
 
 note("\nget_file:");
-msg(FilePath::get_file("."));
-msg(FilePath::get_file("blort"));
-msg(FilePath::get_file("blort/"));
-msg(FilePath::get_file("blort//"));
-msg(FilePath::get_file("blort/zorch"));
-msg(FilePath::get_file("blort/zorch/"));
-msg(FilePath::get_file("blort/zorch//"));
-msg(FilePath::get_file("blort/zorch///"));
-msg(FilePath::get_file("/"));
-msg(FilePath::get_file("//"));
-msg(FilePath::get_file("///"));
-msg(FilePath::get_file("/blort"));
-msg(FilePath::get_file("/blort/"));
-msg(FilePath::get_file("/blort//"));
-msg(FilePath::get_file("/blort/zorch"));
-msg(FilePath::get_file("/blort/zorch/"));
-msg(FilePath::get_file("/blort/zorch//"));
-msg(FilePath::get_file("/blort/zorch///"));
+msg($FilePath::get_file("."));
+msg($FilePath::get_file("blort"));
+msg($FilePath::get_file("blort/"));
+msg($FilePath::get_file("blort//"));
+msg($FilePath::get_file("blort/zorch"));
+msg($FilePath::get_file("blort/zorch/"));
+msg($FilePath::get_file("blort/zorch//"));
+msg($FilePath::get_file("blort/zorch///"));
+msg($FilePath::get_file("/"));
+msg($FilePath::get_file("//"));
+msg($FilePath::get_file("///"));
+msg($FilePath::get_file("/blort"));
+msg($FilePath::get_file("/blort/"));
+msg($FilePath::get_file("/blort//"));
+msg($FilePath::get_file("/blort/zorch"));
+msg($FilePath::get_file("/blort/zorch/"));
+msg($FilePath::get_file("/blort/zorch//"));
+msg($FilePath::get_file("/blort/zorch///"));
 
 <> 0

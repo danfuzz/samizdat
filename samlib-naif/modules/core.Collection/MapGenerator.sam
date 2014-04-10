@@ -7,8 +7,8 @@
 ##
 ## Payload is `{map: map, index: int}`.
 
-def Collection = moduleLoad(["proto", "Collection"]);
-def Number     = moduleLoad(["proto", "Number"]);
+def $Collection = moduleLoad(["proto", "Collection"]);
+def $Number     = moduleLoad(["proto", "Number"]);
 
 
 ##
@@ -19,10 +19,10 @@ def Number     = moduleLoad(["proto", "Number"]);
 fn MapGenerator_nextValue(gen, box) {
     def index = gen::index;
 
-    <> ifValue { <> Collection::nthMapping(gen::map, index) }
+    <> ifValue { <> $Collection::nthMapping(gen::map, index) }
         { value ->
             store(box, value);
-            <> @MapGenerator{dataOf(gen)*, index: Number::add(index, 1)}
+            <> @MapGenerator{dataOf(gen)*, index: $Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).

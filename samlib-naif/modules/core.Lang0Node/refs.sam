@@ -3,12 +3,12 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
-def Generator = moduleLoad(["core", "Generator"]);
+def $Generator = moduleLoad(["core", "Generator"]);
 
-def constructors1 = intraLoad("constructors1");
-def makeCall    = constructors1::makeCall;
-def makeLiteral = constructors1::makeLiteral;
-def makeVarRef  = constructors1::makeVarRef;
+def $constructors1 = intraLoad("constructors1");
+def makeCall    = $constructors1::makeCall;
+def makeLiteral = $constructors1::makeLiteral;
+def makeVarRef  = $constructors1::makeVarRef;
 
 
 ##
@@ -109,14 +109,13 @@ def REF_get = makeVarRef("get");
 
 ## Documented in spec.
 def REFS = cat(
-    (Generator::filterAll(NAMES) { name <> {(name): makeVarRef(name)} })*,
-    (Generator::filterAll(MOD_NAMES) { modName ->
+    ($Generator::filterAll(NAMES) { name <> {(name): makeVarRef(name)} })*,
+    ($Generator::filterAll(MOD_NAMES) { modName ->
         def mod = modName::mod;
         def name = modName::name;
-        <> {
-            (cat(mod, "_", name)):
-                makeCall(REF_get, makeVarRef(mod), makeLiteral(name))
-        }
+        def modVar = makeVarRef(cat("$", mod));
+        def refKey = cat(mod, "_", name);
+        <> {(refKey): makeCall(REF_get, modVar, makeLiteral(name))}
     })*
 );
 

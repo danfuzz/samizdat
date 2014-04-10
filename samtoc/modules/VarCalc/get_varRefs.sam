@@ -2,19 +2,19 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def get_varDefs = intraLoad("get_varDefs")::get_varDefs;
-
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def Lang0Node = moduleLoad(["core", "Lang0Node"]);
-def get_actuals    = Lang0Node::get_actuals;
-def get_formals    = Lang0Node::get_formals;
-def get_function   = Lang0Node::get_function;
-def get_nodeName   = Lang0Node::get_nodeName;
-def get_nodeValue  = Lang0Node::get_nodeValue;
-def get_statements = Lang0Node::get_statements;
-def get_yield      = Lang0Node::get_yield;
-def get_yieldDef   = Lang0Node::get_yieldDef;
+def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
+def get_actuals    = $Lang0Node::get_actuals;
+def get_formals    = $Lang0Node::get_formals;
+def get_function   = $Lang0Node::get_function;
+def get_nodeName   = $Lang0Node::get_nodeName;
+def get_nodeValue  = $Lang0Node::get_nodeValue;
+def get_statements = $Lang0Node::get_statements;
+def get_yield      = $Lang0Node::get_yield;
+def get_yieldDef   = $Lang0Node::get_yieldDef;
+
+def get_varDefs = intraLoad("get_varDefs")::get_varDefs;
 
 ## generic `get_varRefs(node)`, returns free variable references of `node`,
 ## as list of names.
@@ -72,14 +72,14 @@ genericBind(
             def defs = baseLocals.cat(statementDefs[..!idx]*);
             var refs = {s.varRefs*: null};
             for (d in defs) {
-               refs := Collection::del(refs, d)
+               refs := $Collection::del(refs, d)
             };
             <> refs
         );
 
         ## The result of concatenating all the `statementRefs` is a map. The
         ## final result is the list of refs, that is, a list of all the keys.
-        <> Collection::keyList({}.cat(statementRefs*))
+        <> $Collection::keyList({}.cat(statementRefs*))
     });
 
 genericBind(

@@ -35,6 +35,39 @@ In Samizdat, all sorts of code is wrapped up into modules. In particular:
 * The core library is a module, which defines the recognizable library
   modules (such as `core.Format`) within itself.
 
+### Module naming
+
+Module names consist of a series of one or more components (each component
+adhering to the same syntax as identifiers / variable names), separated by
+dots (`.`). There are a couple of conventions for module names:
+
+* The initial components of a module name start with a lower case letter.
+* The final component of a module name is generally capitalized.
+* Modules that are purely internal to an application may have a name that
+  consists of a single capitalized component.
+* All published modules (non-internal modules) should have names with at
+  least two components (with details as follows).
+* All regular implementation modules in the core library have two components,
+  with first being `core`. For example, `core.Format`.
+* All protocol modules in the core library have two components, with the
+  first being `proto`. For example, `proto.Collection`.
+* All modules that are part of a published library should have a first
+  component that names the library in a manner that is intended to be concise
+  but unambiguous. If the library has no interesting structure, then it should
+  have a second component that is identical to the first, except that the
+  first letter is capitalized. For example, `funLib.FunLib` (a module with
+  no further structure) or `funLib.Constants` (a module with structure).
+
+Intra-module names use a similar convention, except that the final
+component name is typically lower case.
+
+When referring to a module or intra-module file in code, it is typical for
+the bindings to be referenced as a variable whose name matches the final
+component of the module, prefixed with a dollar sign (`$`). For example,
+the module `core.Format` would typically be referred to as `$Format` in
+code, and the intra-module file `someDefs` would be referred to as
+`$someDefs`.
+
 ### Importing and exporting
 
 TODO. There is not yet any syntactic support either for importing modules,
@@ -104,6 +137,7 @@ of *one* module, and (b) a reference to the "next" `ModuleLoader` to
 use. When instantiated, `IntraLoader` makes a `ModuleLoader` which points
 to a `modules` directory under its given filesystem path, and that
 `ModuleLoader` is the one that's used directly by the intra-module code.
+The `IntraLoader`'s filesystem path is used directly for intra-module files.
 
 The core library is loaded as an `IntraLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.
@@ -114,6 +148,25 @@ functions. These functions can be bound to other types, in order to
 provide other interesting and useful arrangements. For example, it is
 possible (and may eventually be desirable) to construct a module or
 intra-module loader which only depends on immutable data as input.
+
+#### Example filesystem layout
+
+```
+/path/to/castingApp
+  main.sam                   application's main file
+  appHelp.sam                intra-module file for the applicaton itself
+  modules/
+    Blort/                   application's `Blort` module
+      main.sam
+      darkness.sam           intra-module file for `Blort` module
+    Frotz/                   application's `Frotz` module
+      main.sam
+      modules/
+        Fizmo/               private `Fizmo` module used by `Frotz`
+          main.sam
+        Igram/               private `Igram` module used by `Frotz`
+          main.same
+```
 
 #### Top-level variable environment in a module
 
@@ -131,7 +184,7 @@ itself as well as other modules.
 
 * `intraType(path) <> string | void` &mdash; This gets the type of an
   intra-module file named by the indicated relative path (a string). The
-  return values are the same as for `core.Io0::fileType` (see which).
+  return values are the same as for `$Io0::fileType` (see which).
 
 * `intraLoad(path) <> . | void` &mdash; This loads and evaluates the
   intra-module file named by the indicated relative path (a string).

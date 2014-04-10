@@ -18,7 +18,7 @@ fn msg(box) {
         { <> "no-store  : " };
 
     def fetchStr = ifValue { <> fetch(box) }
-        { value <> Format::source(value) }
+        { value <> $Format::source(value) }
         { <> "(void)" };
 
     note(cat(storeStr, fetchStr))
@@ -31,7 +31,7 @@ fn msg(box) {
 
 note("Mutable Box");
 
-def box1 = Box::makeCell();
+def box1 = $Box::makeCell();
 msg(box1);
 store(box1);
 msg(box1);
@@ -44,7 +44,7 @@ msg(box1);
 
 note("\nMutable Box, pre-set");
 
-def box2 = Box::makeCell("blort");
+def box2 = $Box::makeCell("blort");
 msg(box2);
 store(box2);
 msg(box2);
@@ -53,25 +53,25 @@ msg(box2);
 
 note("\nYield Box");
 
-def box3 = Box::makePromise();
+def box3 = $Box::makePromise();
 msg(box3);
 store(box3, "fizmo");
 msg(box3);
 
 note("\nResult Box, void");
 
-def box4 = Box::makeResult();
+def box4 = $Box::makeResult();
 msg(box4);
 
 note("\nResult Box, value");
 
-def box5 = Box::makeResult("blort");
+def box5 = $Box::makeResult("blort");
 msg(box5);
 
 note("\nnullBox");
 
-msg(Box::nullBox);
-store(Box::nullBox, "stuff");
-msg(Box::nullBox);
+msg($Box::nullBox);
+store($Box::nullBox, "stuff");
+msg($Box::nullBox);
 
 <> 0

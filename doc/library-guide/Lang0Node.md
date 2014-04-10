@@ -20,7 +20,7 @@ Regular variable references are bound from their string name. For example,
 `"cat"` maps to a regular variable reference of the name `cat`.
 
 Module-scoped names are bound from a string of the form `Module_name`. For
-example, `"Number_add"` maps to a reference to `Number::add`.
+example, `"Number_add"` maps to a reference to `$Number::add`.
 
 For specific details on which names are mapped, refer to the source. (As of
 this writing, the set of things mapped in `REFS` is still undergoing

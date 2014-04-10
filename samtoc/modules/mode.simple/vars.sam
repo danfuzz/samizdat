@@ -2,14 +2,14 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def CodeGen = moduleLoad(["CodeGen"]);
+def $CodeGen = moduleLoad(["CodeGen"]);
 
-def VarCalc = moduleLoad(["VarCalc"]);
-def get_varRefs = VarCalc::get_varRefs;
+def $VarCalc = moduleLoad(["VarCalc"]);
+def get_varRefs = $VarCalc::get_varRefs;
 
-def Lang0Node = moduleLoad(["core", "Lang0Node"]);
-def get_formals  = Lang0Node::get_formals;
-def get_yieldDef = Lang0Node::get_yieldDef;
+def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
+def get_formals  = $Lang0Node::get_formals;
+def get_yieldDef = $Lang0Node::get_yieldDef;
 
 
 ##
@@ -51,7 +51,7 @@ def FORMAL_PARSERS = {
 ## unnamed formals.
 fn unnamedFormals(clo) {
     <> [ idx in (0..), f in clo.formals ->
-        <> (!f::name) & CodeGen::makeComment("Unnamed formal \(idx)")
+        <> (!f::name) & $CodeGen::makeComment("Unnamed formal \(idx)")
     ];
 };
 
@@ -69,10 +69,10 @@ fn processFormalsWithRepeat(clo, names) {
                 name,
                 origName,
                 preInit: [
-                    CodeGen::makeAssign("zvalue \(rawName)", parse::parse),
+                    $CodeGen::makeAssign("zvalue \(rawName)", parse::parse),
                     parse::update
                 ],
-                init: CodeGen::makeCall("makeResult", rawName)
+                init: $CodeGen::makeCall("makeResult", rawName)
             }
         } else {
             ## Note: Because we have to adjust `argAt` for unnamed formals, we
@@ -88,7 +88,7 @@ fn processFormalsWithRepeat(clo, names) {
 
     def vars = ( v in varList ->
         <> (def origName = v::origName)
-            & {(origName): Collection::del(v, "preInit")}
+            & {(origName): $Collection::del(v, "preInit")}
     );
 
     <> {names, preInits, cleanups: [], vars: {}.cat(vars*)}
@@ -111,7 +111,7 @@ fn processFormals(clo) {
                 origName: name,
                 kind: "arg",
                 name: safeName("arg", name, idx),
-                init: CodeGen::makeCall("makeResult", "args[\(idx)]")
+                init: $CodeGen::makeCall("makeResult", "args[\(idx)]")
             }}
     );
 
@@ -210,9 +210,9 @@ fn processVars(clo) {
     ## Make C local variable defintions for all the variables.
     def varStats = ( name in names ->
         def binding = vars[name];
-        <> CodeGen::makeComment(
+        <> $CodeGen::makeComment(
             "\%q(binding::origName)",
-            CodeGen::makeAssign("zvalue \(binding::name)", binding::init));
+            $CodeGen::makeAssign("zvalue \(binding::name)", binding::init));
     );
 
     <> {
