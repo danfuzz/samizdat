@@ -41,8 +41,8 @@ def translate       = intraLoad("translate")::translate;
 def $vars           = intraLoad("vars");
 
 def $Interner = intraLoad("Interner");
-def get_interns = Interner::get_interns;
-def intern      = Interner::intern;
+def get_interns = $Interner::get_interns;
+def intern      = $Interner::intern;
 
 def templateText = intraReadUtf8("template.txt");
 
