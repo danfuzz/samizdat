@@ -115,7 +115,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 
     zvalue moduleSystem = FUN_CALL(moduleSystemFn);
 
-    // Call `ModuleSystem::run` to load and evaluate the module, and call
+    // Call `$ModuleSystem::run` to load and evaluate the module, and call
     // the `main` function bound in the result.
     zvalue runFn = get(moduleSystem, STR_run);
     zvalue result = FUN_CALL(runFn,

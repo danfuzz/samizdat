@@ -23,8 +23,8 @@
 
 /**
  * Main driver for Samizdat Layer 0. This makes a library environment, and
- * uses the `CommandLine::run` function defined therein to do all the
- * real work.
+ * uses the `$CommandLine::runCommandLine` function defined therein to do
+ * all the real work.
  */
 int main(int argc, char **argv) {
     if (argc < 1) {
