@@ -13,7 +13,7 @@
 
 ## Prints out the given value.
 fn msg(value) {
-    note(Format::source(value))
+    note($Format::source(value))
 };
 
 ## Prints out the given value in hex.
@@ -168,7 +168,7 @@ msg(((1 == 2) & (2 == 2) & (3 == 3))??);
 msg(((1 == 1) & (2 == 2) & (3 == 4))??);
 
 msg((def x = 1) & -x);
-msg((def foo = 1) & (def bar = -foo) & Number::add(-foo, bar));
+msg((def foo = 1) & (def bar = -foo) & $Number::add(-foo, bar));
 msg((def blort = "th") & (1 == 1) & (def fizmo = "ree") & cat(blort, fizmo));
 
 note("\nLogic 2");

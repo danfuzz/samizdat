@@ -12,10 +12,10 @@
 ##
 
 def opt1 = optValue { <> };
-note(Format::source(opt1));
+note($Format::source(opt1));
 
 def opt2 = optValue { <> "Yes: opt" };
-note(Format::source(opt2));
+note($Format::source(opt2));
 
 def v1 = ifValue { <> "Yes." }
     { value ->
@@ -41,7 +41,7 @@ def v3 = ifValue { <> }
 note(v3);
 
 def v4 = optValue { <> ifValue { <> } { value -> die("No."); } };
-note(Format::source(v4));
+note($Format::source(v4));
 
 def v5 = ifIs { <> "Yes." }
     { <> "Yes: v5" };
@@ -58,10 +58,10 @@ def v7 = ifIs { <> }
 note(v7);
 
 def v8 = optValue { <> ifIs { <> } { die("No.") } };
-note(Format::source(v8));
+note($Format::source(v8));
 
 def v9 = optValue { <> ifNot { <> "Yes." } { die("No.") } };
-note(Format::source(v9));
+note($Format::source(v9));
 
 def v10 = ifNot { <> }
     { <> "Yes: v10" };
@@ -92,14 +92,14 @@ def v15 = ifValues(
     [
         { <> "Yes: v15" }
     ],
-    { args* <> Format::source(args) });
+    { args* <> $Format::source(args) });
 note(v15);
 
 def v16 = ifValues(
     [
         { <> "Yes: v16" }
     ],
-    { args* <> Format::source(args) },
+    { args* <> $Format::source(args) },
     { die("No.") });
 note(v16);
 
@@ -112,14 +112,14 @@ def v17 = ifValues(
 note(v17);
 
 def v18 = optValue { <> ifValues([ { <> } ], { x -> die("No.") }) };
-note(Format::source(v18));
+note($Format::source(v18));
 
 def v19 = ifValues(
     [
         { <> "1" },
         { x <> cat(x, "2") }
     ],
-    { args* <> Format::source(args) },
+    { args* <> $Format::source(args) },
     { die("No.") });
 note(v19);
 
@@ -139,7 +139,7 @@ def v21 = ifValues(
         { x, y <> cat(x, y, "3") },
         { x, y, z <> cat(x, y, z, "4") }
     ],
-    { args* <> Format::source(args) },
+    { args* <> $Format::source(args) },
     { die("No.") });
 note(v21);
 

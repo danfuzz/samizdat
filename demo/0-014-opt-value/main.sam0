@@ -12,7 +12,7 @@
 ##
 
 fn msg(value) {
-    note(cat("Got: ", Format::source(value)))
+    note(cat("Got: ", $Format::source(value)))
 };
 
 fn getVoid() {

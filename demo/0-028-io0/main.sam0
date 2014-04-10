@@ -17,7 +17,7 @@ def $Io0      = moduleLoad(["core", "Io0"]);
 ## Checking file type / existence.
 fn tryFile(path) {
     def result = ifValueOr { <> $Io0::fileType(path) } { <> "(void)" };
-    note(cat("fileType(", Format::source(path), ") => ", result))
+    note(cat("fileType(", $Format::source(path), ") => ", result))
 };
 
 

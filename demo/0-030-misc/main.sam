@@ -13,7 +13,7 @@
 
 ## Demo of `+` argument repeat modifier.
 fn stuff(items+) {
-    note(cat("stuff: ", Format::source(items)))
+    note(cat("stuff: ", $Format::source(items)))
 };
 
 ## Demo of formal argument repeat modifiers. Also of quoted identifiers.
@@ -23,7 +23,7 @@ fn blort(foo, bar?, \"weird name"?, more*) {
 
 ## Emits the stringified version of the given value to the console.
 fn process(value) {
-    note(Format::source(value));
+    note($Format::source(value));
 
     ## Test of explicit void yield.
     <>
@@ -43,24 +43,24 @@ fn main(selfPath, name?, rest*) {
 
     process(selfPath);
     process(rest);
-    process(Collection::del("mufxfins", 3));
-    process(Collection::del(["pie", "fishburgers", "croissants"], 1));
-    process(Collection::del({one: 1, two: 2, three: 3}, "two"));
-    process(Collection::put("bizcuits", 2, "s"));
-    process(Collection::put(["scones", "natto"], 1, "ice cream"));
-    process(Collection::put({one: 1, two: 2, three: 3}, "four", 4));
-    process(Collection::keyList([@a, @b, @c]));
-    process(Collection::keyList("abcde"));
-    process(Collection::keyList({a: "apple", b: "butter"}));
+    process($Collection::del("mufxfins", 3));
+    process($Collection::del(["pie", "fishburgers", "croissants"], 1));
+    process($Collection::del({one: 1, two: 2, three: 3}, "two"));
+    process($Collection::put("bizcuits", 2, "s"));
+    process($Collection::put(["scones", "natto"], 1, "ice cream"));
+    process($Collection::put({one: 1, two: 2, three: 3}, "four", 4));
+    process($Collection::keyList([@a, @b, @c]));
+    process($Collection::keyList("abcde"));
+    process($Collection::keyList({a: "apple", b: "butter"}));
     process(makeUniqlet());
     process(blort);
     process(cat);
     process(ne);
     process(String);
-    process(Format::int(71, 2));
-    process(Format::int(71, 10));
-    process(Format::int(71, 16));
-    process(Format::int(71, 36));
+    process($Format::int(71, 2));
+    process($Format::int(71, 10));
+    process($Format::int(71, 16));
+    process($Format::int(71, 36));
     process(cat(toString(1), toString(31), toString(127)));
 
     blort(1);

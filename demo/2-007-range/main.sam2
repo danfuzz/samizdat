@@ -22,7 +22,7 @@ fn msg(item) {
 
 ## Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
-    def values = Generator::makeFilterGenerator(generator, (1..10))
+    def values = $Generator::makeFilterGenerator(generator, (1..10))
         { v, . <> v };
     note("Got: \%q([values*])")
 };

@@ -15,7 +15,7 @@ def $FilePath = moduleLoad(["core", "FilePath"]);
 
 ## Print the given value.
 fn msg(value) {
-    note(cat("    ", Format::source(value)))
+    note(cat("    ", $Format::source(value)))
 };
 
 

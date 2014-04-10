@@ -17,7 +17,7 @@ fn expectSame(v1, v2) {
         { note("Yes.") }
         {
             note(cat("Different: ",
-                Format::source(v1), ", ", Format::source(v2)))
+                $Format::source(v1), ", ", $Format::source(v2)))
         }
 };
 
@@ -25,16 +25,16 @@ fn expectSame(v1, v2) {
 fn expectDifferent(v1, v2) {
     ifIs { <> ne(v1, v2) }
         { note("Yes.") }
-        { note(cat("Same: ", Format::source(v1))) }
+        { note(cat("Same: ", $Format::source(v1))) }
 };
 
 ## Expects the value to be a core value.
 fn expectCore(v) {
     ifIs { <> hasType(v, DerivedData) }
-        { note(cat("Derived: ", Format::source(v))) }
+        { note(cat("Derived: ", $Format::source(v))) }
         {
             ifValue { <> dataOf(v) }
-                { data -> note(cat("Bad data: ", Format::source(data))) }
+                { data -> note(cat("Bad data: ", $Format::source(data))) }
                 { note("Yes.") }
         }
 };
@@ -43,7 +43,7 @@ fn expectCore(v) {
 fn expectDerived(v) {
     ifIs { <> hasType(v, DerivedData) }
         { note("Yes.") }
-        { note(cat("Opaque: ", Format::source(v))) }
+        { note(cat("Opaque: ", $Format::source(v))) }
 };
 
 
@@ -62,8 +62,8 @@ expectSame(100, 100);
 expectSame(-1000, -1000);
 expectSame(12345678, 12345678);
 expectSame(0, -0);
-expectSame(Number::add(1, 10), 11);
-expectSame(Number::add(99998880, 8), 99998888);
+expectSame($Number::add(1, 10), 11);
+expectSame($Number::add(99998880, 8), 99998888);
 
 expectDifferent(0, 1);
 expectDifferent(99998888, -99998888);
@@ -84,7 +84,7 @@ expectSame([0, 0, 0], [0, 0, 0]);
 expectSame([[]*, 1], [1]);
 expectSame([1, 2, [3, 4]*], [1, [2, 3]*, 4]);
 expectSame(cat([9, 8, 7], [6, 5, 4]), [9, 8, 7, 6, 5, 4]);
-expectSame(Sequence::sliceInclusive([1], 1), []);
+expectSame($Sequence::sliceInclusive([1], 1), []);
 
 expectDifferent([], [[]]);
 expectDifferent([1], [2]);
@@ -106,7 +106,7 @@ expectSame({x: 5, y: 7}, {y: 7, x: 5});
 expectSame({["x", "y", "z"]*: "blort"}, {x: "blort", y: "blort", z: "blort"});
 expectSame({{a: 1}*, b: 2}, {a: 1, b: 2});
 expectSame(cat({10: 1}, {30: 3}, {20: 2}), {10: 1, 20: 2, 30: 3});
-expectSame(Collection::nthMapping({a: 10, b: 20}, 0), {a: 10});
+expectSame($Collection::nthMapping({a: 10, b: 20}, 0), {a: 10});
 
 expectDifferent({["x"]: "blort"}, {"x": "blort"});
 
@@ -182,7 +182,7 @@ expectSame(null, @("Null"));
 expectSame(false, @Boolean(0));
 expectSame(true, @Boolean(1));
 expectSame(@eek(10), @("eek")(10));
-expectSame(@eek(10), @eek(Number::add(5, 5)));
+expectSame(@eek(10), @eek($Number::add(5, 5)));
 expectSame(@eek(10), @(cat("ee", "k"))(10));
 
 expectDifferent(@x, @x(1));

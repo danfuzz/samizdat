@@ -14,7 +14,7 @@
 ## Prints generator or collection output.
 fn msg(header, gen) {
     note(header);
-    Generator::filterPump(gen) { item <> note("  \%q(item)") };
+    $Generator::filterPump(gen) { item <> note("  \%q(item)") };
     note("")
 };
 

@@ -13,17 +13,17 @@
 
 ## Map from binary operation names to precedece/function maps.
 def BINARY_OPS = {
-    "+": {function: Number::add, precedence: 1},
-    "-": {function: Number::sub, precedence: 1},
-    "*": {function: Number::mul, precedence: 2},
-    "/": {function: Number::div, precedence: 2},
-    "%": {function: Number::mod, precedence: 2}
+    "+": {function: $Number::add, precedence: 1},
+    "-": {function: $Number::sub, precedence: 1},
+    "*": {function: $Number::mul, precedence: 2},
+    "/": {function: $Number::div, precedence: 2},
+    "%": {function: $Number::mod, precedence: 2}
 };
 
 ## Map from unary operation names to functions.
 def UNARY_OPS = {
     "+": { x <> x },
-    "-": Number::neg
+    "-": $Number::neg
 };
 
 ## Takes an initial value and a list of one-argument functions, and
@@ -31,7 +31,7 @@ def UNARY_OPS = {
 fn applyAll(initialValue, functions) {
     var result = initialValue;
 
-    Generator::filterPump(functions) { function ->
+    $Generator::filterPump(functions) { function ->
         result := function(result)
     };
 
@@ -45,14 +45,14 @@ fn applyShuntingYard(initialValue, opValues) {
     ## top two values, and combines them by applying the top op, and places
     ## the result back at the top of the value stack.
     fn applyTop(ops, values) {
-        def valuesSizeM2 = Number::sub(get_size(values), 2);
-        def function = Sequence::nthFromEnd(ops, 0)::function;
+        def valuesSizeM2 = $Number::sub(get_size(values), 2);
+        def function = $Sequence::nthFromEnd(ops, 0)::function;
         def newValue =
-            function(Sequence::sliceInclusive(values, valuesSizeM2)*);
+            function($Sequence::sliceInclusive(values, valuesSizeM2)*);
         <> {
-            ops: Sequence::sliceExclusive(ops, 0),
+            ops: $Sequence::sliceExclusive(ops, 0),
             values:
-                [Sequence::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
+                [$Sequence::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
         }
     };
 
@@ -62,7 +62,7 @@ fn applyShuntingYard(initialValue, opValues) {
         var ops = origOps;
         var values = origValues;
         loop { <next> ->
-            ifValue { <> Sequence::nthFromEnd(ops, 0) }
+            ifValue { <> $Sequence::nthFromEnd(ops, 0) }
                 { lastOp ->
                     ifIs { <> ge(lastOp::precedence, precedence) }
                         {
@@ -79,7 +79,7 @@ fn applyShuntingYard(initialValue, opValues) {
     var ops = [];
     var values = [initialValue];
 
-    Generator::filterPump(opValues) { opValue ->
+    $Generator::filterPump(opValues) { opValue ->
         def op = opValue::op;
         def value = opValue::value;
         def opVal = reducePending(ops, values, op::precedence);
@@ -100,7 +100,7 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { <> Number::sub(toInt(get_typeName(ch)), toInt("0")) }
+    { <> $Number::sub(toInt(get_typeName(ch)), toInt("0")) }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.
@@ -108,8 +108,8 @@ def number = {:
     digits = digit+
     {
         var result = 0;
-        Generator::filterPump(digits) { digit ->
-            result := Number::add(digit, Number::mul(result, 10))
+        $Generator::filterPump(digits) { digit ->
+            result := $Number::add(digit, $Number::mul(result, 10))
         };
         <> result
     }
@@ -139,7 +139,7 @@ def unaryOp = {:
 def unaryExpression = {:
     ops = unaryOp*
     ex = term
-    { <> applyAll(ex, Sequence::reverse(ops)) }
+    { <> applyAll(ex, $Sequence::reverse(ops)) }
 :};
 
 ## Parses a binary operation, yielding a map of precedence and function.
@@ -167,7 +167,7 @@ def evalExpressions = {:
         ex = expression
         "\n"
         {
-            note(Format::source(ex));
+            note($Format::source(ex));
             ## Explicit yield here to indicate successful parsing.
             <> null
         }
@@ -180,10 +180,10 @@ def evalExpressions = {:
 ##
 
 fn main(args*) {
-    def argFilter = Generator::makeFilterGenerator(args)
+    def argFilter = $Generator::makeFilterGenerator(args)
         { arg <> cat(arg, "\n") };
     def exprString = cat(argFilter*);
-    Peg::apply(evalExpressions, exprString);
+    $Peg::apply(evalExpressions, exprString);
 };
 
 def args = ifValueOr { <> ne(ARGUMENTS, []) } { <> ["100+7*2-(8000/-10)"] };
