@@ -14,18 +14,18 @@
 moduleLoad(["core", "Format"]);
 
 ## A locally-defined module.
-def Stuff = moduleLoad(["app", "Stuff"]);
+def $Stuff = moduleLoad(["app", "Stuff"]);
 
 ## Ensure it's not re-evaluated.
-def Stuff2 = moduleLoad(["app", "Stuff"]);
-ifIs { <> ne(Stuff, Stuff2) }
+def $Stuff2 = moduleLoad(["app", "Stuff"]);
+ifIs { <> ne($Stuff, $Stuff2) }
     { die("Different modules!") };
 
 fn main(selfPath, .*) {
     note(cat("I am: ", Format::source(selfPath)));
-    note(Format::source(Stuff::STUFF));
-    note(Format::source(Stuff::SUBSTUFF));
-    note(Format::source(Stuff::stuffFunc()));
+    note(Format::source($Stuff::STUFF));
+    note(Format::source($Stuff::SUBSTUFF));
+    note(Format::source($Stuff::stuffFunc()));
 };
 
 <> {main}

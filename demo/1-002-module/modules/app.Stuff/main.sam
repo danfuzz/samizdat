@@ -2,7 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def Substuff = intraLoad("Substuff");
+def $Substuff = intraLoad("Substuff");
 
 fn stuffFunc() {
     <> "Funky stuff."
@@ -10,6 +10,6 @@ fn stuffFunc() {
 
 <> {
     STUFF:    "stuff",
-    SUBSTUFF: Substuff::SUBSTUFF,
+    SUBSTUFF: $Substuff::SUBSTUFF,
     stuffFunc
 }
