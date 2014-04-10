@@ -9,9 +9,9 @@
 ## the Samizdat Layer 0 and Samizdat Layer 1 specifications.
 ##
 
-def Generator = moduleLoad(["core", "Generator"]);
-def Number    = moduleLoad(["proto", "Number"]);
-def Peg       = moduleLoad(["core", "Peg"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Number    = moduleLoad(["proto", "Number"]);
+def $Peg       = moduleLoad(["core", "Peg"]);
 
 
 ##
@@ -22,8 +22,8 @@ def Peg       = moduleLoad(["core", "Peg"]);
 ## Map of all the keywords, from their string name to valueless tokens. These
 ## are (to a first approximation) operators whose spellings match the
 ## tokenization syntax of identifiers.
-def KEYWORDS = Generator::collectAsMap(
-    Generator::makeFilterGenerator([
+def KEYWORDS = $Generator::collectAsMap(
+    $Generator::makeFilterGenerator([
         "break", "continue", "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
         []*])
@@ -52,77 +52,78 @@ fn intFromDigitChar(ch) {
 fn intFromDigitList(base, digits) {
     var result = 0;
 
-    Generator::filterPump(digits) { digit ->
+    $Generator::filterPump(digits) { digit ->
         ifIs { <> perNe(digit, -1) }
-            { result := Number::add(Number::mul(result, base), digit) }
+            { result := $Number::add($Number::mul(result, base), digit) }
     };
 
     <> result
 };
 
 ## Documented in spec.
-def tokWhitespace = Peg::makeMainSequence(
-    Peg::makeLookaheadSuccess(Peg::makeCharSet("# \n")),
-    Peg::makePlus(
-        Peg::makeChoice(
-            Peg::makePlus(Peg::makeCharSet(" \n")),
-            Peg::makeSequence(
-                Peg::makeString("#"),
-                Peg::makeCharSet("#!"),
-                Peg::makeStar(Peg::makeCharSetComplement("\n"))))));
+def tokWhitespace = $Peg::makeMainSequence(
+    $Peg::makeLookaheadSuccess($Peg::makeCharSet("# \n")),
+    $Peg::makePlus(
+        $Peg::makeChoice(
+            $Peg::makePlus($Peg::makeCharSet(" \n")),
+            $Peg::makeSequence(
+                $Peg::makeString("#"),
+                $Peg::makeCharSet("#!"),
+                $Peg::makeStar($Peg::makeCharSetComplement("\n"))))));
 
 ## Documented in spec.
-def tokPunctuation = Peg::makeMainSequence(
-    Peg::makeLookaheadSuccess(Peg::makeCharSet("@:.,=-+?;*<>{}()[]", "&|!%")),
-    Peg::makeChoice(
-        Peg::makeString("->"),
-        Peg::makeString(":="),
-        Peg::makeString("::"),
-        Peg::makeString(".."),
-        Peg::makeString("<>"),
-        Peg::makeString("@@"),
-        Peg::makeString("{:"),
-        Peg::makeString(":}"),
-        Peg::any));
+def tokPunctuation = $Peg::makeMainSequence(
+    $Peg::makeLookaheadSuccess(
+        $Peg::makeCharSet("@:.,=-+?;*<>{}()[]", "&|!%")),
+    $Peg::makeChoice(
+        $Peg::makeString("->"),
+        $Peg::makeString(":="),
+        $Peg::makeString("::"),
+        $Peg::makeString(".."),
+        $Peg::makeString("<>"),
+        $Peg::makeString("@@"),
+        $Peg::makeString("{:"),
+        $Peg::makeString(":}"),
+        $Peg::any));
 
 ## Documented in spec.
-def tokDecDigit = Peg::makeMainSequence(
-    Peg::makeCharSet("_0123456789"),
-    Peg::makeCode(intFromDigitChar));
+def tokDecDigit = $Peg::makeMainSequence(
+    $Peg::makeCharSet("_0123456789"),
+    $Peg::makeCode(intFromDigitChar));
 
 ## Documented in spec.
-def tokInt = Peg::makeMainSequence(
-    Peg::makePlus(tokDecDigit),
-    Peg::makeCode { digits <> @int(intFromDigitList(10, digits)) });
+def tokInt = $Peg::makeMainSequence(
+    $Peg::makePlus(tokDecDigit),
+    $Peg::makeCode { digits <> @int(intFromDigitList(10, digits)) });
 
 ## Documented in spec.
-def tokStringPart = Peg::makeMainChoice(
-    Peg::makeSequence(
-        Peg::makePlus(Peg::makeCharSetComplement("\\\"\n")),
-        Peg::makeCode(Peg::stringFromTokenList)),
-    Peg::makeSequence(
-        Peg::makeString("\n"),
-        Peg::makeStar(Peg::makeString(" ")),
-        Peg::makeResult("\n")),
-    Peg::makeSequence(
-        Peg::makeString("\\"),
-        Peg::makeChoice(
-            Peg::makeSequence(Peg::makeString("\\"), Peg::makeResult("\\")),
-            Peg::makeSequence(Peg::makeString("\""), Peg::makeResult("\"")),
-            Peg::makeSequence(Peg::makeString("n"),  Peg::makeResult("\n")),
-            Peg::makeSequence(Peg::makeString("r"),  Peg::makeResult("\r")),
-            Peg::makeSequence(Peg::makeString("t"),  Peg::makeResult("\t")),
-            Peg::makeSequence(Peg::makeString("0"),  Peg::makeResult("\0")))));
+def tokStringPart = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        $Peg::makePlus($Peg::makeCharSetComplement("\\\"\n")),
+        $Peg::makeCode($Peg::stringFromTokenList)),
+    $Peg::makeSequence(
+        $Peg::makeString("\n"),
+        $Peg::makeStar($Peg::makeString(" ")),
+        $Peg::makeResult("\n")),
+    $Peg::makeSequence(
+        $Peg::makeString("\\"),
+        $Peg::makeChoice(
+            $Peg::makeSequence($Peg::makeString("\\"), $Peg::makeResult("\\")),
+            $Peg::makeSequence($Peg::makeString("\""), $Peg::makeResult("\"")),
+            $Peg::makeSequence($Peg::makeString("n"),  $Peg::makeResult("\n")),
+            $Peg::makeSequence($Peg::makeString("r"),  $Peg::makeResult("\r")),
+            $Peg::makeSequence($Peg::makeString("t"),  $Peg::makeResult("\t")),
+            $Peg::makeSequence($Peg::makeString("0"),  $Peg::makeResult("\0")))));
 
 ## Documented in spec.
-def tokString = Peg::makeMainSequence(
-    Peg::makeString("\""),
-    Peg::makeStar(tokStringPart),
-    Peg::makeChoice(
-        Peg::makeSequence(
-            Peg::makeString("\""),
-            Peg::makeCode { ., parts, . <> @string(cat("", parts*)) }),
-        Peg::makeCode { ., . <> @error("Unterminated string literal.") }));
+def tokString = $Peg::makeMainSequence(
+    $Peg::makeString("\""),
+    $Peg::makeStar(tokStringPart),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeString("\""),
+            $Peg::makeCode { ., parts, . <> @string(cat("", parts*)) }),
+        $Peg::makeCode { ., . <> @error("Unterminated string literal.") }));
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -132,32 +133,32 @@ def IDENTIFIER_START_CHARS =
 def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
 
 ## Documented in spec.
-def tokIdentifier = Peg::makeMainSequence(
-    Peg::makeCharSet(IDENTIFIER_START_CHARS),
-    Peg::makeStar(Peg::makeCharSet(IDENTIFIER_CHARS)),
-    Peg::makeCode { one, rest ->
-        def string = Peg::stringFromTokenList([one, rest*]);
+def tokIdentifier = $Peg::makeMainSequence(
+    $Peg::makeCharSet(IDENTIFIER_START_CHARS),
+    $Peg::makeStar($Peg::makeCharSet(IDENTIFIER_CHARS)),
+    $Peg::makeCode { one, rest ->
+        def string = $Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @identifier(string) }
     });
 
 ## Documented in spec.
-def tokQuotedIdentifier = Peg::makeMainSequence(
-    Peg::makeString("\\"),
+def tokQuotedIdentifier = $Peg::makeMainSequence(
+    $Peg::makeString("\\"),
     tokString,
-    Peg::makeCode { ., s <> @identifier(dataOf(s)) });
+    $Peg::makeCode { ., s <> @identifier(dataOf(s)) });
 
 ## Documented in spec.
-def tokError = Peg::makeMainSequence(
-    Peg::any,
-    Peg::makeStar(Peg::makeCharSetComplement("\n")),
-    Peg::makeCode { badCh, . ->
+def tokError = $Peg::makeMainSequence(
+    $Peg::any,
+    $Peg::makeStar($Peg::makeCharSetComplement("\n")),
+    $Peg::makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
         <> @error(msg)
     });
 
 ## Documented in spec.
-def tokToken = Peg::makeMainChoice(
+def tokToken = $Peg::makeMainChoice(
     tokString,
     tokIdentifier,
     tokQuotedIdentifier,
@@ -166,13 +167,13 @@ def tokToken = Peg::makeMainChoice(
     tokError);
 
 ## Documented in spec.
-def tokFile = Peg::makeMainSequence(
-    Peg::makeStar(
-        Peg::makeSequence(
-            Peg::makeOpt(tokWhitespace),
+def tokFile = $Peg::makeMainSequence(
+    $Peg::makeStar(
+        $Peg::makeSequence(
+            $Peg::makeOpt(tokWhitespace),
             tokToken)),
-    Peg::makeOpt(tokWhitespace),
-    Peg::makeCode { tokens, . <> tokens });
+    $Peg::makeOpt(tokWhitespace),
+    $Peg::makeCode { tokens, . <> tokens });
 
 
 ##
@@ -181,7 +182,7 @@ def tokFile = Peg::makeMainSequence(
 
 ## Documented in spec.
 fn tokenize(programText) {
-    <> Peg::apply(tokFile, programText)
+    <> $Peg::apply(tokFile, programText)
 };
 
 <> {

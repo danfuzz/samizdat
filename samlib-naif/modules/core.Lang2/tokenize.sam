@@ -2,15 +2,18 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+## FIXME: Needed during naming convention transition.
+def Peg = moduleLoad(["core", "Peg"]);
+
 ##
 ## Samizdat Layer 2 Tokenizer
 ##
 
 def ENTITY_MAP = moduleLoad(["core", "EntityMap"])::ENTITY_MAP;
-def Generator  = moduleLoad(["core", "Generator"]);
-def Number     = moduleLoad(["proto", "Number"]);
-def Peg        = moduleLoad(["core", "Peg"]);
-def Sequence   = moduleLoad(["core", "Sequence"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Number    = moduleLoad(["proto", "Number"]);
+def $Peg       = moduleLoad(["core", "Peg"]);
+def $Sequence  = moduleLoad(["core", "Sequence"]);
 
 
 ##
@@ -26,8 +29,8 @@ def Sequence   = moduleLoad(["core", "Sequence"]);
 ## Map of all the keywords, from their string name to valueless tokens. These
 ## are (to a first approximation) operators whose spellings match the
 ## tokenization syntax of identifiers.
-def KEYWORDS = Generator::collectAsMap(
-    Generator::makeFilterGenerator([
+def KEYWORDS = $Generator::collectAsMap(
+    $Generator::makeFilterGenerator([
         "break", "continue", "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
         "by", "default", "do", "else", "export", "for", "if", "import",
@@ -57,9 +60,9 @@ fn intFromDigitChar(ch) {
 fn intFromDigitList(base, digits) {
     var result = 0;
 
-    Generator::filterPump(digits) { digit ->
+    $Generator::filterPump(digits) { digit ->
         ifIs { <> perNe(digit, -1) }
-            { result := Number::add(Number::mul(result, base), digit) }
+            { result := $Number::add($Number::mul(result, base), digit) }
     };
 
     <> result
@@ -161,7 +164,7 @@ def tokInt = {:
 def tokStringPart = {:
     (
         chars = [! "\\" "\"" "\n"]+
-        { <> Peg::stringFromTokenList(chars) }
+        { <> $Peg::stringFromTokenList(chars) }
     )
 |
     ## This is the rule that ignores spaces after newlines.
@@ -202,7 +205,7 @@ def tokIdentifier = {:
     rest = ["_" "$" "a".."z" "A".."Z" "0".."9"]*
 
     {
-        def string = Peg::stringFromTokenList([one, rest*]);
+        def string = $Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @identifier(string) }
     }
@@ -279,7 +282,7 @@ fn processStringParts(parts) {
     ## `elems` list consisting of alternating multi-character strings and
     ## interpolation maps.
     var elems = [];
-    Generator::filterPump(parts) { <next> part ->
+    $Generator::filterPump(parts) { <next> part ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
         ifIs { <> hasType(part, @@error) }
@@ -295,13 +298,13 @@ fn processStringParts(parts) {
 
         ifIs { <> hasType(part, String) }
             {
-                def lastElem = Sequence::nthFromEnd(elems, 0);
+                def lastElem = $Sequence::nthFromEnd(elems, 0);
                 ifIs { <> hasType(lastElem, String) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
                         elems := [
-                            Sequence::sliceExclusive(elems, 0)*,
+                            $Sequence::sliceExclusive(elems, 0)*,
                             cat(lastElem, part)
                         ];
                         <next>
@@ -376,7 +379,7 @@ def tokHexChar = {:
 def tokNamedChar = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
-        def name = Peg::stringFromTokenList(chars);
+        def name = $Peg::stringFromTokenList(chars);
         <> get(ENTITY_MAP, name)
     }
 |
@@ -454,7 +457,7 @@ tokStringPart2 := {:
         format = (
             "%"
             chars = ["0".."9" "a".."z" "A".."Z" "+-."]*
-            { <> {format: Peg::stringFromTokenList(chars)} }
+            { <> {format: $Peg::stringFromTokenList(chars)} }
         |
             { <> {} }
         )
@@ -479,7 +482,7 @@ tokStringPart2 := {:
 
 ## Documented in spec.
 fn tokenize(programText) {
-    <> Peg::apply(tokFile, programText)
+    <> $Peg::apply(tokFile, programText)
 };
 
 <> {

@@ -14,38 +14,38 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
-def Format     = moduleLoad(["core", "Format"]);
-def Generator  = moduleLoad(["core", "Generator"]);
-def Lang0      = moduleLoad(["core", "Lang0"]);
-def Number     = moduleLoad(["proto", "Number"]);
-def Peg        = moduleLoad(["core", "Peg"]);
-def Range      = moduleLoad(["core", "Range"]);
-def Sequence   = moduleLoad(["core", "Sequence"]);
+def $Format     = moduleLoad(["core", "Format"]);
+def $Generator  = moduleLoad(["core", "Generator"]);
+def $Lang0      = moduleLoad(["core", "Lang0"]);
+def $Number     = moduleLoad(["proto", "Number"]);
+def $Peg        = moduleLoad(["core", "Peg"]);
+def $Range      = moduleLoad(["core", "Range"]);
+def $Sequence   = moduleLoad(["core", "Sequence"]);
 
-def Lang0Node = moduleLoad(["core", "Lang0Node"]);
-def REFS               = Lang0Node::REFS;
-def get_formals        = Lang0Node::get_formals;
-def get_interpolate    = Lang0Node::get_interpolate;
-def get_nodeName       = Lang0Node::get_nodeName;
-def get_nodeValue      = Lang0Node::get_nodeValue;
-def get_statements     = Lang0Node::get_statements;
-def get_yieldDef       = Lang0Node::get_yieldDef;
-def makeApply          = Lang0Node::makeApply;
-def makeCall           = Lang0Node::makeCall;
-def makeCallOrApply    = Lang0Node::makeCallOrApply;
-def makeCallThunks     = Lang0Node::makeCallThunks;
-def makeGet            = Lang0Node::makeGet;
-def makeInterpolate    = Lang0Node::makeInterpolate;
-def makeJump           = Lang0Node::makeJump;
-def makeLiteral        = Lang0Node::makeLiteral;
-def makeOptValue       = Lang0Node::makeOptValue;
-def makeThunk          = Lang0Node::makeThunk;
-def makeVarBind        = Lang0Node::makeVarBind;
-def makeVarDef         = Lang0Node::makeVarDef;
-def makeVarDefMutable  = Lang0Node::makeVarDefMutable;
-def makeVarRef         = Lang0Node::makeVarRef;
-def makeVarRefLvalue   = Lang0Node::makeVarRefLvalue;
-def withoutInterpolate = Lang0Node::withoutInterpolate;
+def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
+def REFS               = $Lang0Node::REFS;
+def get_formals        = $Lang0Node::get_formals;
+def get_interpolate    = $Lang0Node::get_interpolate;
+def get_nodeName       = $Lang0Node::get_nodeName;
+def get_nodeValue      = $Lang0Node::get_nodeValue;
+def get_statements     = $Lang0Node::get_statements;
+def get_yieldDef       = $Lang0Node::get_yieldDef;
+def makeApply          = $Lang0Node::makeApply;
+def makeCall           = $Lang0Node::makeCall;
+def makeCallOrApply    = $Lang0Node::makeCallOrApply;
+def makeCallThunks     = $Lang0Node::makeCallThunks;
+def makeGet            = $Lang0Node::makeGet;
+def makeInterpolate    = $Lang0Node::makeInterpolate;
+def makeJump           = $Lang0Node::makeJump;
+def makeLiteral        = $Lang0Node::makeLiteral;
+def makeOptValue       = $Lang0Node::makeOptValue;
+def makeThunk          = $Lang0Node::makeThunk;
+def makeVarBind        = $Lang0Node::makeVarBind;
+def makeVarDef         = $Lang0Node::makeVarDef;
+def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
+def makeVarRef         = $Lang0Node::makeVarRef;
+def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 
 ##
@@ -56,8 +56,8 @@ def withoutInterpolate = Lang0Node::withoutInterpolate;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    Generator::filterPump(pending, Range::makeInclusiveRange(1, 50))
-        { token, . -> note(cat("    ", Format::source(token))) };
+    $Generator::filterPump(pending, $Range::makeInclusiveRange(1, 50))
+        { token, . -> note(cat("    ", $Format::source(token))) };
 
     die("\nExtra tokens at end of program.")
 };
@@ -65,7 +65,7 @@ fn reportError(pending) {
 ## Set-like map of all lowercase identifier characters. Used to figure
 ## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    (Range::makeInclusiveRange("a", "z"))*: true
+    ($Range::makeInclusiveRange("a", "z"))*: true
 };
 
 
@@ -377,7 +377,7 @@ parFnExpression := {:
 def parInt = {:
     @"-"
     i = @int
-    { <> makeLiteral(Number::neg(dataOf(i))) }
+    { <> makeLiteral($Number::neg(dataOf(i))) }
 |
     i = @int
     { <> makeLiteral(dataOf(i)) }
@@ -602,7 +602,7 @@ parUnaryExpression := {:
         base = parTerm
         ## Reverse the `prefixes` list, so that prefixes are applied
         ## in outward order from the base term.
-        { <> {base, prefixes: Sequence::reverse(prefixes)} }
+        { <> {base, prefixes: $Sequence::reverse(prefixes)} }
     )
 
     postfixes = parPostfixOperator*
@@ -611,8 +611,8 @@ parUnaryExpression := {:
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
 
-        Generator::filterPump(postfixes) { op -> result := op(result) };
-        Generator::filterPump(prefixes) { op -> result := op(result) };
+        $Generator::filterPump(postfixes) { op -> result := op(result) };
+        $Generator::filterPump(prefixes) { op -> result := op(result) };
         <> result
     }
 :};
@@ -698,12 +698,12 @@ parProgramBody := {:
 
     {
         def rawStatements = [most*, last::statements*];
-        def tops = Generator::filterAll(rawStatements)
+        def tops = $Generator::filterAll(rawStatements)
             { s ->
                 <> ifIs { <> hasType(s, @@topDeclaration) }
                     { <> s::top }
             };
-        def mains = Generator::filterAll(rawStatements)
+        def mains = $Generator::filterAll(rawStatements)
             { s ->
                 <> ifIs { <> hasType(s, @@topDeclaration) }
                     { <> s::main }
@@ -802,7 +802,7 @@ def parParserSetString = {:
             ifIs { <> ne(1, get_size(startChar)) } { <out> };
             ifIs { <> ne(1, get_size(endChar)) } { <out> };
 
-            <> cat(Range::makeInclusiveRange(startChar, endChar)*)
+            <> cat($Range::makeInclusiveRange(startChar, endChar)*)
         }
     |
         { <> dataOf(s) }

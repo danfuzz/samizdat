@@ -14,9 +14,9 @@ list of all the tokens. Tokenization errors are represented in the
 result as tokens of type `error`.
 
 ```
-def Generator  = moduleLoad(["core", "Generator"]);
-def Number     = moduleLoad(["proto", "Number"]);
-def Peg        = moduleLoad(["core", "Peg"]);
+def $Generator  = moduleLoad(["core", "Generator"]);
+def $Number     = moduleLoad(["proto", "Number"]);
+def $Peg        = moduleLoad(["core", "Peg"]);
 
 
 ##
@@ -26,8 +26,8 @@ def Peg        = moduleLoad(["core", "Peg"]);
 ## Map of all the keywords, from their string name to valueless tokens. These
 ## are (to a first approximation) operators whose spellings match the
 ## tokenization syntax of identifiers.
-def KEYWORDS = Generator::collectAsMap(
-    Generator::makeFilterGenerator([
+def KEYWORDS = $Generator::collectAsMap(
+    $Generator::makeFilterGenerator([
         "break", "continue", "def", "fn", "return", "var",
         ## Layer 2 defines additional keywords here.
         []*])
@@ -56,9 +56,9 @@ fn intFromDigitChar(ch) {
 fn intFromDigitList(base, digits) {
     var result = 0;
 
-    Generator::filterPump(digits) { digit ->
+    $Generator::filterPump(digits) { digit ->
         ifIs { <> perNe(digit, -1) }
-            { result := Number::add(Number::mul(result, base), digit) }
+            { result := $Number::add($Number::mul(result, base), digit) }
     };
 
     <> result
@@ -146,7 +146,7 @@ def tokInt = {:
 def tokStringPart = {:
     (
         chars = [! "\\" "\"" "\n"]+
-        { <> Peg::stringFromTokenList(chars) }
+        { <> $Peg::stringFromTokenList(chars) }
     )
 |
     ## This is the rule that ignores spaces after newlines.
@@ -187,7 +187,7 @@ def tokIdentifier = {:
     rest = ["_" "$" "a".."z" "A".."Z" "0".."9"]*
 
     {
-        def string = Peg::stringFromTokenList([one, rest*]);
+        def string = $Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @identifier(string) }
     }
