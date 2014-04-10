@@ -126,7 +126,7 @@ def tokString = Peg::makeMainSequence(
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    "_$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 ## These are all the characters which are allowed to be in an identifier.
 def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");

@@ -183,8 +183,8 @@ def tokString = {:
 
 ## Parses an identifier (in the usual form). This also parses keywords.
 def tokIdentifier = {:
-    one = ["_" "a".."z" "A".."Z"]
-    rest = ["_" "a".."z" "A".."Z" "0".."9"]*
+    one = ["_" "$" "a".."z" "A".."Z"]
+    rest = ["_" "$" "a".."z" "A".."Z" "0".."9"]*
 
     {
         def string = Peg::stringFromTokenList([one, rest*]);
