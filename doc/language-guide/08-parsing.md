@@ -43,7 +43,7 @@ your own parser "manually." When using parser syntax, the language
 automatically generates parser values that abide by the expected contract.
 
 The easiest (and most typical) way of calling a parser from non-parser code
-is to use the utility function `Peg::apply(parser, input)`. This takes a
+is to use the utility function `$Peg::apply(parser, input)`. This takes a
 `parser` value and an `input` generator, and returns either the value
 successfully parsed by the parser or void if parsing was unsuccessful. See
 the `Peg` library section for more details.

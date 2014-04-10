@@ -184,7 +184,7 @@ itself as well as other modules.
 
 * `intraType(path) <> string | void` &mdash; This gets the type of an
   intra-module file named by the indicated relative path (a string). The
-  return values are the same as for `core.Io0::fileType` (see which).
+  return values are the same as for `$Io0::fileType` (see which).
 
 * `intraLoad(path) <> . | void` &mdash; This loads and evaluates the
   intra-module file named by the indicated relative path (a string).
