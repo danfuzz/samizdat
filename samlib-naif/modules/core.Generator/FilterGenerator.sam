@@ -8,8 +8,7 @@
 ## Payload is a map `{filterFunction: function, generator: subGen}`.
 ## `subGen` is expected to produce lists of arguments to apply.
 
-def Collection = moduleLoad(["core", "Collection"]);
-def Box        = moduleLoad(["core", "Box"]);
+def $Box = moduleLoad(["core", "Box"]);
 
 def $ParaGenerator = intraLoad("ParaGenerator");
 
@@ -35,7 +34,7 @@ fn FilterGenerator_nextValue(gen, box) {
     ## be discarded.
     var innerGen = gen::generator;
     loop { <next> ->
-        def innerBox = Box::makePromise();
+        def innerBox = $Box::makePromise();
 
         ifValue { <> nextValue(innerGen, innerBox) }
             { nextGen ->

@@ -7,7 +7,7 @@
 ##
 ## Payload is `{size, value}`.
 
-def Number = moduleLoad(["proto", "Number"]);
+def $Number = moduleLoad(["proto", "Number"]);
 
 def $NullGenerator = intraLoad("NullGenerator");
 
@@ -41,7 +41,7 @@ fn RepeatGenerator_nextValue(gen, box) {
         {
             def value = gen::value;
             store(box, value);
-            <> makeRepeatGenerator(Number::sub(size, 1), value)
+            <> makeRepeatGenerator($Number::sub(size, 1), value)
         }
         {
             ## Size is `0` or negative.

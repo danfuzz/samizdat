@@ -6,7 +6,7 @@
 ## Generator functions
 ##
 
-def Collection = moduleLoad(["proto", "Collection"]);
+def $Collection = moduleLoad(["proto", "Collection"]);
 
 ## This just binds generics without adding exports.
 intraLoad("MapGenerator");
@@ -18,11 +18,11 @@ intraLoad("MapGenerator");
 
 <> {
     ## Re-exported from proto module.
-    cat:        Collection::cat,
-    get:        Collection::get,
-    del:        Collection::del,
-    get_size:   Collection::get_size,
-    keyList:    Collection::keyList,
-    nthMapping: Collection::nthMapping,
-    put:        Collection::put
+    cat:        $Collection::cat,
+    get:        $Collection::get,
+    del:        $Collection::del,
+    get_size:   $Collection::get_size,
+    keyList:    $Collection::keyList,
+    nthMapping: $Collection::nthMapping,
+    put:        $Collection::put
 }

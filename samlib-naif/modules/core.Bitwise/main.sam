@@ -6,8 +6,8 @@
 ## Bitwise functions
 ##
 
-def Bitwise = moduleLoad(["proto", "Bitwise"]);
-def Number = moduleLoad(["proto", "Number"]);
+def $Bitwise = moduleLoad(["proto", "Bitwise"]);
+def $Number  = moduleLoad(["proto", "Number"]);
 
 
 ##
@@ -16,19 +16,19 @@ def Number = moduleLoad(["proto", "Number"]);
 
 ## Documented in spec.
 fn shr(bitwise, n) {
-    <> Bitwise::shl(bitwise, Number::neg(n))
+    <> $Bitwise::shl(bitwise, $Number::neg(n))
 };
 
 
 <> {
     ## Re-exported from proto.
-    and:     Bitwise::and,
-    bit:     Bitwise::bit,
-    bitSize: Bitwise::bitSize,
-    not:     Bitwise::not,
-    or:      Bitwise::or,
-    shl:     Bitwise::shl,
-    xor:     Bitwise::xor,
+    and:     $Bitwise::and,
+    bit:     $Bitwise::bit,
+    bitSize: $Bitwise::bitSize,
+    not:     $Bitwise::not,
+    or:      $Bitwise::or,
+    shl:     $Bitwise::shl,
+    xor:     $Bitwise::xor,
 
     ## Defined here.
     shr

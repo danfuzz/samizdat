@@ -7,8 +7,8 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
-def Box        = moduleLoad(["core", "Box"]);
-def Sequence   = moduleLoad(["core", "Sequence"]);
+def $Box      = moduleLoad(["core", "Box"]);
+def $Sequence = moduleLoad(["core", "Sequence"]);
 
 def $NullGenerator = intraLoad("NullGenerator");
 
@@ -37,8 +37,8 @@ fn SerialGenerator_nextValue(gen, box) {
 
     <> ifValue { <> get(subGens, 0) }
         { firstGen ->
-            def moreGens = Sequence::sliceInclusive(subGens, 1);
-            def innerBox = Box::makePromise();
+            def moreGens = $Sequence::sliceInclusive(subGens, 1);
+            def innerBox = $Box::makePromise();
 
             <> ifValue { <> nextValue(firstGen, innerBox) }
                 { nextGenerator ->

@@ -7,7 +7,7 @@
 ##
 ## Payload is `subGen`, the sub-generator.
 
-def Box = moduleLoad(["core", "Box"]);
+def $Box = moduleLoad(["core", "Box"]);
 
 
 ##
@@ -21,7 +21,7 @@ fn makeListWrapGenerator(generator) {
 
 ## Documented in spec.
 fn ListWrapGenerator_nextValue(gen, box) {
-    def innerBox = Box::makePromise();
+    def innerBox = $Box::makePromise();
 
     <> ifValue { <> nextValue(dataOf(gen), innerBox) }
         { nextGenerator ->

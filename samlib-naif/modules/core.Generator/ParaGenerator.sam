@@ -7,7 +7,7 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
-def Box        = moduleLoad(["core", "Box"]);
+def $Box = moduleLoad(["core", "Box"]);
 
 def $ListWrapGenerator = intraLoad("ListWrapGenerator");
 def $NullGenerator     = intraLoad("NullGenerator");
@@ -36,12 +36,12 @@ fn ParaGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
     ifIs { <> eq(subGens, []) }
-        { return nextValue(Box::nullBox, box) };
+        { return nextValue($Box::nullBox, box) };
 
     def generatorCalls = collect(
         subGens,
         { gen ->
-            def innerBox = Box::makePromise();
+            def innerBox = $Box::makePromise();
             <> ifValue { <> nextValue(gen, innerBox) }
                 { nextGenerator <> [fetch(innerBox), nextGenerator] }
                 {

@@ -2,21 +2,29 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+## FIXME: Needed during naming convention transition.
+def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
+def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
+def Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
+def Peg          = moduleLoad(["core", "Peg"]);        ## Implicitly used.
+def Range        = moduleLoad(["core", "Range"]);      ## Implicitly used.
+def Sequence     = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
+
 ##
 ## Command line interpreter
 ##
 
-def FilePath     = moduleLoad(["core", "FilePath"]);
-def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
-def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
-def Globals      = moduleLoad(["core", "Globals"]);
-def Io0          = moduleLoad(["core", "Io0"]);
-def Lang2        = moduleLoad(["core", "Lang2"]);
-def ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
-def Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
-def Peg          = moduleLoad(["core", "Peg"]);
-def Range        = moduleLoad(["core", "Range"]);      ## Implicitly used.
-def Sequence     = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
+def $FilePath     = moduleLoad(["core", "FilePath"]);
+def $Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
+def $Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
+def $Globals      = moduleLoad(["core", "Globals"]);
+def $Io0          = moduleLoad(["core", "Io0"]);
+def $Lang2        = moduleLoad(["core", "Lang2"]);
+def $ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
+def $Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
+def $Peg          = moduleLoad(["core", "Peg"]);        ## Implicitly used.
+def $Range        = moduleLoad(["core", "Range"]);      ## Implicitly used.
+def $Sequence     = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
 
 
 ##
@@ -27,13 +35,13 @@ def Sequence     = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
 def parWord = {:
     chars = [! "\0"]*
     "\0"
-    { <> Peg::stringFromTokenList(chars) }
+    { <> $Peg::stringFromTokenList(chars) }
 :};
 
 ## Parses a key prefix of a word, not including the ending `=`.
 def parKey = {:
     chars = [! "=\0"]+
-    { <> Peg::stringFromTokenList(chars) }
+    { <> $Peg::stringFromTokenList(chars) }
 :};
 
 ## Parses a key-value option word. Yields a single-mapping map of
@@ -92,7 +100,7 @@ def parArguments = {:
 
 ## Gets the language layer suffix (or suffix-like-thing) from a file path.
 fn suffixFromPath(filePath) {
-    def finalName = FilePath::get_file(filePath);
+    def finalName = $FilePath::get_file(filePath);
     if (finalName == ".") {
         ## Explicit "this directory" as the final path component; assume it
         ## indicates a module directory.
@@ -112,7 +120,7 @@ fn suffixFromPath(filePath) {
 fn makeGlobals(filePath, args) {
     <> {
         ## The standard global environment.
-        Globals::fullEnvironment()*,
+        $Globals::fullEnvironment()*,
 
         ## Special bindings for individual scripts.
         ARGUMENTS: args,
@@ -127,8 +135,8 @@ fn makeGlobals(filePath, args) {
 ## loaded as a module. It is expected to export a `main()` function, which
 ## is called with the Posix-style command-line arguments.
 fn runModule(modulePath, args) {
-    <> ModuleSystem::run(
-        modulePath, Globals::fullEnvironment(), moduleLoader(),
+    <> $ModuleSystem::run(
+        modulePath, $Globals::fullEnvironment(), moduleLoader(),
         modulePath, args*)
 };
 
@@ -138,7 +146,7 @@ fn runModule(modulePath, args) {
 ## the path to the file and the command-line arguments, respectively.
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
-    def programText = Io0::readFileUtf8(filePath);
+    def programText = $Io0::readFileUtf8(filePath);
     def langModule = moduleLoad(["core", cat("Lang", langLayer)]);
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(globals, parsedProgram);
@@ -166,7 +174,7 @@ fn parseArgs(args) {
     def argString = "\[ arg in args <> [arg, "\0"] ]";
 
     ## Use the peg grammar above to split the arguments back apart.
-    <> Peg::apply(parArguments, argString)
+    <> $Peg::apply(parArguments, argString)
 };
 
 ## Documented in spec.
@@ -176,7 +184,7 @@ fn runCommandLine(rawArgs*) {
     def argWords = parsedArgs::args;
 
     def filePath = (def p = argWords[0])
-        & FilePath::fixPath(p, Io0::cwd())
+        & $FilePath::fixPath(p, $Io0::cwd())
         | "/dev/stdin";
     def args = argWords[1..] | [];
 

@@ -6,7 +6,7 @@
 ## Box functions
 ##
 
-def Box = moduleLoad(["proto", "Box"]);
+def $Box = moduleLoad(["proto", "Box"]);
 
 def $NullBox = intraLoad("NullBox");
 
@@ -17,9 +17,9 @@ def $NullBox = intraLoad("NullBox");
 
 <> {
     ## Re-exported from proto.
-    canStore:    Box::canStore,
-    fetch:       Box::fetch,
-    store:       Box::store,
+    canStore:    $Box::canStore,
+    fetch:       $Box::fetch,
+    store:       $Box::store,
 
     ## Re-exported from `NullBox`.
     nullBox:     $NullBox::nullBox,

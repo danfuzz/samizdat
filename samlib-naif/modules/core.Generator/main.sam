@@ -6,7 +6,7 @@
 ## Generator functions
 ##
 
-def Box = moduleLoad(["core", "Box"]);
+def $Box = moduleLoad(["core", "Box"]);
 
 def $FilterGenerator   = intraLoad("FilterGenerator");
 def $ListWrapGenerator = intraLoad("ListWrapGenerator");
@@ -55,7 +55,7 @@ fn filterPump(filterFunction, generators*) {
             ## unnecessary wrapping / unwrapping.
             var gen = generators*;
             loop {
-                def box = Box::makePromise();
+                def box = $Box::makePromise();
                 ifValue { <> nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(fetch(box));
@@ -71,7 +71,7 @@ fn filterPump(filterFunction, generators*) {
             ## General case of multiple (or zero) generators.
             var gen = $ParaGenerator::makeParaGenerator(generators*);
             loop {
-                def box = Box::makePromise();
+                def box = $Box::makePromise();
                 ifValue { <> nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(fetch(box)*);
@@ -90,7 +90,7 @@ fn generatorPump(generator) {
     var gen = generator;
 
     loop {
-        gen := ifValueOr { <> nextValue(gen, Box::nullBox) }
+        gen := ifValueOr { <> nextValue(gen, $Box::nullBox) }
             { return }
     }
 };
