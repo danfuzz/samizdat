@@ -7,9 +7,7 @@
 ##
 ## Payload is `{seq: seq, index: int}`.
 
-def Collection = moduleLoad(["proto", "Collection"]);
-def Number     = moduleLoad(["proto", "Number"]);
-def Sequence   = moduleLoad(["proto", "Sequence"]);
+def $Number = moduleLoad(["proto", "Number"]);
 
 
 ##
@@ -23,7 +21,7 @@ fn SequenceGenerator_nextValue(gen, box) {
     <> ifValue { <> nth(gen::seq, index) }
         { value ->
             store(box, value);
-            <> @SequenceGenerator{dataOf(gen)*, index: Number::add(index, 1)}
+            <> @SequenceGenerator{dataOf(gen)*, index: $Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).

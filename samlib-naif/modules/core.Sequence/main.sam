@@ -6,8 +6,8 @@
 ## Sequence functions
 ##
 
-def Number     = moduleLoad(["proto", "Number"]);
-def Sequence   = moduleLoad(["proto", "Sequence"]);
+def $Number   = moduleLoad(["proto", "Number"]);
+def $Sequence = moduleLoad(["proto", "Sequence"]);
 
 ## This just binds generics without adding exports.
 intraLoad("SequenceGenerator");
@@ -20,24 +20,24 @@ intraLoad("SequenceGenerator");
 ## Documented in spec.
 fn nthFromEnd(seq, n) {
     def index =
-        Number::sub(get_size(seq), Number::add(n, 1));
+        $Number::sub(get_size(seq), $Number::add(n, 1));
     <> nth(seq, index)
 };
 
 ## Documented in spec.
 fn sliceGeneral(seq, style, start, optEnd?) {
-    def limit = Number::sub(get_size(seq), 1);
+    def limit = $Number::sub(get_size(seq), 1);
     def func = ifIs { <> eq(style, @exclusive) }
-        { <> Sequence::sliceExclusive }
-        { <> Sequence::sliceInclusive };
+        { <> $Sequence::sliceExclusive }
+        { <> $Sequence::sliceInclusive };
     def startIndex = ifIs { <> hasType(start, @@fromStart) }
         { <> dataOf(start) }
-        { <> Number::sub(limit, dataOf(start)) };
+        { <> $Number::sub(limit, dataOf(start)) };
     def optEndIndex = (ifValue { <> optEnd* }
         { end ->
             <> ifIs { <> hasType(end, @@fromStart) }
                 { <> dataOf(end) }
-                { <> Number::sub(limit, dataOf(end)) }
+                { <> $Number::sub(limit, dataOf(end)) }
         })?;
 
     <> func(seq, startIndex, optEndIndex*)
@@ -45,10 +45,10 @@ fn sliceGeneral(seq, style, start, optEnd?) {
 
 <> {
     ## Re-exported from proto.
-    nth:            Sequence::nth,
-    reverse:        Sequence::reverse,
-    sliceExclusive: Sequence::sliceExclusive,
-    sliceInclusive: Sequence::sliceInclusive,
+    nth:            $Sequence::nth,
+    reverse:        $Sequence::reverse,
+    sliceExclusive: $Sequence::sliceExclusive,
+    sliceInclusive: $Sequence::sliceInclusive,
 
     ## Defined in this file.
     nthFromEnd,

@@ -8,8 +8,8 @@
 ## `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 ## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
-def Generator = moduleLoad(["core", "Generator"]);
-def Number    = moduleLoad(["proto", "Number"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Number    = moduleLoad(["proto", "Number"]);
 
 
 ##
@@ -20,12 +20,12 @@ def Number    = moduleLoad(["proto", "Number"]);
 def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
 
 fn Int_rangeAdd(value, increment) {
-    <> Number::add(value, increment)
+    <> $Number::add(value, increment)
 };
 genericBind(rangeAdd, Int, Int_rangeAdd);
 
 fn String_rangeAdd(value, increment) {
-    <> toString(Number::add(toInt(value), increment))
+    <> toString($Number::add(toInt(value), increment))
 };
 genericBind(rangeAdd, String, String_rangeAdd);
 
@@ -45,7 +45,7 @@ fn makeClosedRange(firstValue, size, optIncrement?) {
         {
             <> @ClosedRange{firstValue, increment, size}
         }
-        { <> Generator::nullGenerator }
+        { <> $Generator::nullGenerator }
 };
 
 ## Documented in spec.
@@ -61,7 +61,7 @@ fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ifIs { <> totalEq(increment, 0) }
         {
             return ifIs { <> isEmpty* }
-                { <> Generator::nullGenerator }
+                { <> $Generator::nullGenerator }
                 { <> makeClosedRange(firstValue, 1, 0) }
         };
 
@@ -69,15 +69,15 @@ fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ## limit "pushes" the limit in the right direction to make the truncated
     ## division produce the correct result size.
     def size =
-        Number::add(1,
-            Number::div(
-                Number::sub(
-                    Number::sub(limitInt, firstInt),
-                    Number::sign(increment)),
+        $Number::add(1,
+            $Number::div(
+                $Number::sub(
+                    $Number::sub(limitInt, firstInt),
+                    $Number::sign(increment)),
                 increment));
 
     ifIs { <> le(size, 0) }
-        { return Generator::nullGenerator };
+        { return $Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);
 };
@@ -95,13 +95,13 @@ fn makeInclusiveRange(firstValue, limit, optIncrement?) {
 
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
-    def size = Number::add(1,
-        Number::div(
-            Number::sub(limitInt, firstInt),
+    def size = $Number::add(1,
+        $Number::div(
+            $Number::sub(limitInt, firstInt),
             increment));
 
     ifIs { <> le(size, 0) }
-        { return Generator::nullGenerator };
+        { return $Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);
 };
@@ -115,7 +115,7 @@ fn ClosedRange_nextValue(range, box) {
             store(box, firstValue);
             <> makeClosedRange(
                 rangeAdd(firstValue, increment),
-                Number::sub(size, 1),
+                $Number::sub(size, 1),
                 increment)
         }
         {
@@ -126,7 +126,7 @@ fn ClosedRange_nextValue(range, box) {
 genericBind(nextValue, @@ClosedRange, ClosedRange_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, @@ClosedRange, Generator::stdCollect);
+genericBind(collect, @@ClosedRange, $Generator::stdCollect);
 
 
 ##
@@ -141,7 +141,7 @@ fn makeOpenRange(firstValue, optIncrement?) {
 };
 
 ## Just use the standard "unbounded" implementation.
-genericBind(collect, @@OpenRange, Generator::unboundedCollect);
+genericBind(collect, @@OpenRange, $Generator::unboundedCollect);
 
 ## Documented in spec.
 fn OpenRange_nextValue(range, box) {
