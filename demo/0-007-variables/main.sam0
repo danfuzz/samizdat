@@ -59,6 +59,15 @@ fn igram(foo) {
 ## Main Tests
 ##
 
+## Check a few cases of identifier syntax.
+def _ = 1;
+def $ = 1;
+def x = 1;
+def _x = 1;
+def $x = 1;
+def x_ = 1;
+def x$ = 1;
+
 frotz("fizmo");
 zorch("blort");
 igram("fizmo");
