@@ -38,33 +38,33 @@ fn fullEnvironment() {
     ## This is just loaded to set up generic function bindings.
     moduleLoad(["core", "Boolean"]);
 
-    def Bitwise     = moduleLoad(["core", "Bitwise"]);
-    def Box         = moduleLoad(["core", "Box"]);
-    def Collection  = moduleLoad(["core", "Collection"]);
-    def CommandLine = moduleLoad(["core", "CommandLine"]);
-    def Format      = moduleLoad(["core", "Format"]);
-    def Generator   = moduleLoad(["core", "Generator"]);
-    def Number      = moduleLoad(["proto", "Number"]);
-    def Peg         = moduleLoad(["core", "Peg"]);
-    def Range       = moduleLoad(["core", "Range"]);
-    def Sequence    = moduleLoad(["core", "Sequence"]);
+    def $Bitwise     = moduleLoad(["core", "Bitwise"]);
+    def $Box         = moduleLoad(["core", "Box"]);
+    def $Collection  = moduleLoad(["core", "Collection"]);
+    def $CommandLine = moduleLoad(["core", "CommandLine"]);
+    def $Format      = moduleLoad(["core", "Format"]);
+    def $Generator   = moduleLoad(["core", "Generator"]);
+    def $Number      = moduleLoad(["proto", "Number"]);
+    def $Peg         = moduleLoad(["core", "Peg"]);
+    def $Range       = moduleLoad(["core", "Range"]);
+    def $Sequence    = moduleLoad(["core", "Sequence"]);
 
     <> {
         EARLY_GLOBALS*,
 
         ## Globally-exported modules.
-        Bitwise,
-        Box,
-        Collection,
-        Format,
-        Generator,
-        Number,
-        Peg,
-        Range,
-        Sequence,
+        $Bitwise,
+        $Box,
+        $Collection,
+        $Format,
+        $Generator,
+        $Number,
+        $Peg,
+        $Range,
+        $Sequence,
 
         ## The one higher-layer function that gets exported to the environment.
-        runCommandLine: CommandLine::runCommandLine
+        runCommandLine: $CommandLine::runCommandLine
     }
 };
 
