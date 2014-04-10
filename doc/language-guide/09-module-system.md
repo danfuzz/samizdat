@@ -137,6 +137,7 @@ of *one* module, and (b) a reference to the "next" `ModuleLoader` to
 use. When instantiated, `IntraLoader` makes a `ModuleLoader` which points
 to a `modules` directory under its given filesystem path, and that
 `ModuleLoader` is the one that's used directly by the intra-module code.
+The `IntraLoader`'s filesystem path is used directly for intra-module files.
 
 The core library is loaded as an `IntraLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.
@@ -147,6 +148,25 @@ functions. These functions can be bound to other types, in order to
 provide other interesting and useful arrangements. For example, it is
 possible (and may eventually be desirable) to construct a module or
 intra-module loader which only depends on immutable data as input.
+
+#### Example filesystem layout
+
+```
+/path/to/castingApp
+  main.sam                   application's main file
+  appHelp.sam                intra-module file for the applicaton itself
+  modules/
+    Blort/                   application's `Blort` module
+      main.sam
+      darkness.sam           intra-module file for `Blort` module
+    Frotz/                   application's `Frotz` module
+      main.sam
+      modules/
+        Fizmo/               private `Fizmo` module used by `Frotz`
+          main.sam
+        Igram/               private `Igram` module used by `Frotz`
+          main.same
+```
 
 #### Top-level variable environment in a module
 
