@@ -2,9 +2,6 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-## FIXME: Needed during naming convention transition.
-def Peg = moduleLoad(["core", "Peg"]);
-
 ##
 ## Samizdat Layer 2 Tree Parser
 ##

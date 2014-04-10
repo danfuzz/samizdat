@@ -2,14 +2,6 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-## FIXME: Needed during naming convention transition.
-def Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
-def Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
-def Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
-def Peg          = moduleLoad(["core", "Peg"]);        ## Implicitly used.
-def Range        = moduleLoad(["core", "Range"]);      ## Implicitly used.
-def Sequence     = moduleLoad(["core", "Sequence"]);   ## Implicitly used.
-
 ##
 ## Command line interpreter
 ##
