@@ -545,7 +545,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
     if (repeat != NULL) {
-        repeat = get_name(get_type(repeat));
+        repeat = typeName(get_type(repeat));
     }
 
     return mapFrom2(STR_name, name, STR_repeat, repeat);
@@ -742,7 +742,7 @@ DEF_PARSE(identifierString) {
 
     zvalue value = dataOf(result);
     if (value == NULL) {
-        value = get_name(get_type(result));
+        value = typeName(get_type(result));
     }
 
     return makeLiteral(value);
@@ -1052,7 +1052,7 @@ DEF_PARSE(nonlocalExit2) {
     if (result == NULL) { result = MATCH(return); }
     if (result == NULL) { return NULL; }
 
-    return makeVarRef(get_name(get_type(result)));
+    return makeVarRef(typeName(get_type(result)));
 }
 
 /* Documented in spec. */

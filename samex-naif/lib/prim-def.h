@@ -114,6 +114,7 @@ PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
 PRIM_FUNC(order,                  2, 2);
+PRIM_FUNC(typeName,               1, 1);
 PRIM_FUNC(typeParent,             1, 1);
 
 // Primitive functions: intended for modularization

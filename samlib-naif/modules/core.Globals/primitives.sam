@@ -67,5 +67,6 @@
     toString,
     totalEq,
     totalOrder,
+    typeName,
     typeParent
 }

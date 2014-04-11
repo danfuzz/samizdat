@@ -199,7 +199,7 @@ identical to it. Otherwise returns void.
 #### `get_typeName(value) <> .`
 
 Returns the name of the given `value`'s type. This function is the equivalent
-to `get_name(get_type(value))`.
+to `get_name(typeName(value))`.
 
 #### `gt(value, other) <> logic`
 

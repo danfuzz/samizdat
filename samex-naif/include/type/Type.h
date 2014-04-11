@@ -82,6 +82,11 @@ bool typeIsDerived(zvalue type);
 bool typeIsSelfish(zvalue type);
 
 /**
+ * Gets the name of the given type.
+ */
+zvalue typeName(zvalue type);
+
+/**
  * Gets the parent type of the given type.
  */
 zvalue typeParent(zvalue type);

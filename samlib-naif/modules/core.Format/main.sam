@@ -230,7 +230,7 @@ fn Type_sourceGeneral(this, adorn) {
     ifValue { <> get(SPECIAL_VALUES, this) }
         { string -> return string };
 
-    def name = get_name(this);
+    def name = typeName(this);
 
     ifNot { <> eq(typeParent(this), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
