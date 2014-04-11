@@ -27,11 +27,11 @@ fn returnVoid2() {
     return returnVoid1()
 };
 
-fn <out> returnVoid3() {
+fn returnVoid3() { <out> ->
     <out>
 };
 
-fn <out> returnVoid4() {
+fn returnVoid4() { <out> ->
     <out> returnVoid1()
 };
 
@@ -43,7 +43,7 @@ fn returnArg1(a) {
     return a
 };
 
-fn <out> returnArg2(a) {
+fn returnArg2(a) { <out> ->
     <out> a
 };
 
