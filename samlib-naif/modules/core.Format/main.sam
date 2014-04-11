@@ -190,14 +190,14 @@ fn stringChar(ch) {
 };
 
 ## Stringifies an int.
-fn Int_sourceGeneral(int, adorn) {
-    <> intWithBase(int, 10)
+fn Int_sourceGeneral(this, adorn) {
+    <> intWithBase(this, 10)
 };
 genericBind(sourceGeneral, Int, Int_sourceGeneral);
 
 ## Stringifies a list.
-fn List_sourceGeneral(list, adorn) {
-    def listElems = $Generator::filterAll(list)
+fn List_sourceGeneral(this, adorn) {
+    def listElems = $Generator::filterAll(this)
         { elem <> cat(", ", sourceGeneral(elem, true)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems), "]")
@@ -205,8 +205,8 @@ fn List_sourceGeneral(list, adorn) {
 genericBind(sourceGeneral, List, List_sourceGeneral);
 
 ## Stringifies a map.
-fn Map_sourceGeneral(map, adorn) {
-    def mapElems = $Generator::filterAll(map)
+fn Map_sourceGeneral(this, adorn) {
+    def mapElems = $Generator::filterAll(this)
         { mapping ->
             def key = keyString(get_key(mapping));
             def value = sourceGeneral(get_value(mapping), true);
@@ -218,21 +218,21 @@ fn Map_sourceGeneral(map, adorn) {
 genericBind(sourceGeneral, Map, Map_sourceGeneral);
 
 ## Stringifies a string.
-fn String_sourceGeneral(string, adorn) {
-    def bodyChars = $Generator::makeFilterGenerator(string)
+fn String_sourceGeneral(this, adorn) {
+    def bodyChars = $Generator::makeFilterGenerator(this)
         { ch <> stringChar(ch) };
     <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 genericBind(sourceGeneral, String, String_sourceGeneral);
 
 ## Stringifies a type.
-fn Type_sourceGeneral(type, adorn) {
-    ifValue { <> get(SPECIAL_VALUES, type) }
+fn Type_sourceGeneral(this, adorn) {
+    ifValue { <> get(SPECIAL_VALUES, this) }
         { string -> return string };
 
-    def name = get_name(type);
+    def name = get_name(this);
 
-    ifNot { <> eq(typeParent(type), DerivedData) }
+    ifNot { <> eq(typeParent(this), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
     def body = ifIs { <> hasType(name, String) }
@@ -247,11 +247,11 @@ fn Type_sourceGeneral(type, adorn) {
 genericBind(sourceGeneral, Type, Type_sourceGeneral);
 
 ## Stringifies a derived value or an opaque core value.
-fn Value_sourceGeneral(value, adorn) {
-    ifValue { <> get(SPECIAL_VALUES, value) }
+fn Value_sourceGeneral(this, adorn) {
+    ifValue { <> get(SPECIAL_VALUES, this) }
         { string -> return string };
 
-    def type = get_type(value);
+    def type = get_type(this);
     def typeStr = sourceGeneral(type, true);
     def prefix = ifIs { <> eq("@", nth(typeStr, 0)) }
         {
@@ -264,10 +264,10 @@ fn Value_sourceGeneral(value, adorn) {
     ifNot { <> eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifIs { <> canCall(get_name, value) }
+            def body = ifIs { <> canCall(get_name, this) }
                 {
                     ## It binds `get_name` but might not have a name.
-                    <> ifValue { <> get_name(value) }
+                    <> ifValue { <> get_name(this) }
                         { name <> keyString(name) }
                         { <> "..." }
                 }
@@ -276,7 +276,7 @@ fn Value_sourceGeneral(value, adorn) {
             return cat(prefix, "<", body, ">")
         };
 
-    <> ifValue { <> dataOf(value) }
+    <> ifValue { <> dataOf(this) }
         { data ->
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
@@ -304,22 +304,22 @@ def humanString = makeRegularGeneric("humanString", 1, 1);
 
 ## Human-stringifies a list, which recursively flattens it using
 ## `humanString`.
-fn List_humanString(list) {
-    def elems = $Generator::makeFilterGenerator(humanString, list);
+fn List_humanString(this) {
+    def elems = $Generator::makeFilterGenerator(humanString, this);
     <> cat("", elems*)
 };
 genericBind(humanString, List, List_humanString);
 
 ## Human-stringifies a string, which just returns the string as-is.
-fn String_humanString(string) {
-    <> string
+fn String_humanString(this) {
+    <> this
 };
 genericBind(humanString, String, String_humanString);
 
 ## Default human-stringifier, which just calls through to
 ## `sourceGeneral`.
-fn Value_humanString(value) {
-    <> sourceGeneral(value, true)
+fn Value_humanString(this) {
+    <> sourceGeneral(this, true)
 };
 genericBind(humanString, Value, Value_humanString);
 

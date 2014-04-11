@@ -34,11 +34,11 @@ def withoutIntermediates = $Lang0Node::withoutIntermediates;
 ## Private Definitions
 ##
 
-## `convertPex(node, formals)`, used to expand pex nodes into expression
+## `node.convertPex(formals)`, used to expand pex nodes into expression
 ## nodes.
 def convertPex = makeRegularGeneric("convertPex", 2, 2);
 
-## `convertPexIn(node)`, used to convert a layer 1 expression or statement
+## `node.convertPexIn()`, used to convert a layer 1 expression or statement
 ## node into an equivalent layer 0 node.
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
@@ -69,14 +69,14 @@ fn withFinalBindings(orig, more) {
 ##
 
 ## Converts an `any` pex node.
-fn any_convertPex(node, formals) {
+fn any_convertPex(this, formals) {
     <> REFS::Peg_any
 };
 genericBind(convertPex, @@any, any_convertPex);
 
 ## Converts a `choice` pex node.
-fn choice_convertPex(node, formals) {
-    def pexes = dataOf(node);
+fn choice_convertPex(this, formals) {
+    def pexes = dataOf(this);
     def convertedPexes = $Generator::filterAll(pexes)
         { pex <> convertPex(pex, formals) };
     <> makeCall(REFS::Peg_makeChoice, convertedPexes*)
@@ -84,11 +84,11 @@ fn choice_convertPex(node, formals) {
 genericBind(convertPex, @@choice, choice_convertPex);
 
 ## Converts a `code` pex node.
-fn code_convertPex(node, formals) {
+fn code_convertPex(this, formals) {
     ## Use the lexical `formals` context to make a regular closure node,
     ## and just convert that.
 
-    def closurePayload = {(dataOf(node))*, formals};
+    def closurePayload = {(dataOf(this))*, formals};
     def convertedClosure = convertPexIn(@closure(closurePayload));
 
     <> makeCall(REFS::Peg_makeCode, convertedClosure)
@@ -96,38 +96,38 @@ fn code_convertPex(node, formals) {
 genericBind(convertPex, @@code, code_convertPex);
 
 ## Converts an `empty` pex node.
-fn empty_convertPex(node, formals) {
+fn empty_convertPex(this, formals) {
     <> REFS::Peg_empty
 };
 genericBind(convertPex, @@empty, empty_convertPex);
 
 ## Converts a `lookaheadFailure` pex node.
-fn lookaheadFailure_convertPex(node, formals) {
-    <> makeCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
+fn lookaheadFailure_convertPex(this, formals) {
+    <> makeCallPex(REFS::Peg_makeLookaheadFailure, this, formals)
 };
 genericBind(convertPex, @@lookaheadFailure, lookaheadFailure_convertPex);
 
 ## Converts a `lookaheadSuccess` pex node.
-fn lookaheadSuccess_convertPex(node, formals) {
-    <> makeCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
+fn lookaheadSuccess_convertPex(this, formals) {
+    <> makeCallPex(REFS::Peg_makeLookaheadSuccess, this, formals)
 };
 genericBind(convertPex, @@lookaheadSuccess, lookaheadSuccess_convertPex);
 
 ## Converts an `opt` pex node.
-fn opt_convertPex(node, formals) {
-    <> makeCallPex(REFS::Peg_makeOpt, node, formals)
+fn opt_convertPex(this, formals) {
+    <> makeCallPex(REFS::Peg_makeOpt, this, formals)
 };
 genericBind(convertPex, @@opt, opt_convertPex);
 
 ## Converts a `plus` pex node.
-fn plus_convertPex(node, formals) {
-    <> makeCallPex(REFS::Peg_makePlus, node, formals)
+fn plus_convertPex(this, formals) {
+    <> makeCallPex(REFS::Peg_makePlus, this, formals)
 };
 genericBind(convertPex, @@plus, plus_convertPex);
 
 ## Converts a `sequence` pex node.
-fn sequence_convertPex(node, formals) {
-    def pexes = dataOf(node);
+fn sequence_convertPex(this, formals) {
+    def pexes = dataOf(this);
 
     ## Extract the formals out of any `varDef` nodes.
     def newFormals = $Generator::filterAll(pexes) { pex ->
@@ -153,26 +153,26 @@ fn sequence_convertPex(node, formals) {
 genericBind(convertPex, @@sequence, sequence_convertPex);
 
 ## Converts a `star` pex node.
-fn star_convertPex(node, formals) {
-    <> makeCallPex(REFS::Peg_makeStar, node, formals)
+fn star_convertPex(this, formals) {
+    <> makeCallPex(REFS::Peg_makeStar, this, formals)
 };
 genericBind(convertPex, @@star, star_convertPex);
 
 ## Converts a `string` pex node.
-fn string_convertPex(node, formals) {
-    <> makeCallLiterals(REFS::Peg_makeString, dataOf(node))
+fn string_convertPex(this, formals) {
+    <> makeCallLiterals(REFS::Peg_makeString, dataOf(this))
 };
 genericBind(convertPex, @@string, string_convertPex);
 
 ## Converts a `thunk` pex node.
-fn thunk_convertPex(node, formals) {
+fn thunk_convertPex(this, formals) {
     ## Use the lexical `formals` context to make a regular closure node,
     ## and just convert that.
 
     def closure = @closure{
         formals,
         statements: [],
-        yield: dataOf(node)
+        yield: dataOf(this)
     };
     def convertedClosure = convertPexIn(closure);
 
@@ -181,30 +181,30 @@ fn thunk_convertPex(node, formals) {
 genericBind(convertPex, @@thunk, thunk_convertPex);
 
 ## Converts a `token` pex node.
-fn token_convertPex(node, formals) {
-    <> makeCallLiterals(REFS::Peg_makeToken, dataOf(node))
+fn token_convertPex(this, formals) {
+    <> makeCallLiterals(REFS::Peg_makeToken, dataOf(this))
 };
 genericBind(convertPex, @@token, token_convertPex);
 
 ## Converts a `tokenSet` pex node.
-fn tokenSet_convertPex(node, formals) {
-    def types = dataOf(node);
+fn tokenSet_convertPex(this, formals) {
+    def types = dataOf(this);
     <> makeCallLiterals(REFS::Peg_makeTokenSet, types*)
 };
 genericBind(convertPex, @@tokenSet, tokenSet_convertPex);
 
 ## Converts a `tokenSetComplement` pex node.
-fn tokenSetComplement_convertPex(node, formals) {
-    def types = dataOf(node);
+fn tokenSetComplement_convertPex(this, formals) {
+    def types = dataOf(this);
     <> makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*);
 };
 genericBind(convertPex, @@tokenSetComplement, tokenSetComplement_convertPex);
 
 ## Converts a `varRef` pex node.
-fn varRef_convertPex(node, formals) {
+fn varRef_convertPex(this, formals) {
     ## `varRef` in the context of a pex just translates to the same `varRef`
     ## in the context of an expression / statement.
-    <> convertPexIn(node)
+    <> convertPexIn(this)
 };
 genericBind(convertPex, @@varRef, varRef_convertPex);
 
@@ -222,81 +222,81 @@ fn convertValuePayload(node) {
 };
 
 ## Does parser conversion of an `apply` node.
-fn apply_convertPexIn(node) {
-    def function = convertPexIn(get_function(node));
-    def actuals = convertPexIn(get_actuals(node));
+fn apply_convertPexIn(this) {
+    def function = convertPexIn(get_function(this));
+    def actuals = convertPexIn(get_actuals(this));
 
-    <> withFinalBindings(node, {function, actuals});
+    <> withFinalBindings(this, {function, actuals});
 };
 genericBind(convertPexIn, @@apply, apply_convertPexIn);
 
 ## Does parser conversion of a `call` node.
-fn call_convertPexIn(node) {
-    def function = convertPexIn(get_function(node));
-    def actuals = convertPexInList(get_actuals(node));
+fn call_convertPexIn(this) {
+    def function = convertPexIn(get_function(this));
+    def actuals = convertPexInList(get_actuals(this));
 
-    <> withFinalBindings(node, {function, actuals});
+    <> withFinalBindings(this, {function, actuals});
 };
 genericBind(convertPexIn, @@call, call_convertPexIn);
 
 ## Does parser conversion of a `closure` node.
-fn closure_convertPexIn(node) {
-    def statements = convertPexInList(get_statements(node));
-    def yield = ifValue { <> get_yield(node) }
+fn closure_convertPexIn(this) {
+    def statements = convertPexInList(get_statements(this));
+    def yield = ifValue { <> get_yield(this) }
         { yield <> {yield: convertPexIn(yield)} }
         { <> {} };
 
-    <> withBindings(node, {statements, yield*})
+    <> withBindings(this, {statements, yield*})
 };
 genericBind(convertPexIn, @@closure, closure_convertPexIn);
 
 ## Does parser conversion of a `jump` node.
-fn jump_convertPexIn(node) {
-    def function = convertPexIn(get_function(node));
-    def optValue = ifValue { <> get_nodeValue(node) }
+fn jump_convertPexIn(this) {
+    def function = convertPexIn(get_function(this));
+    def optValue = ifValue { <> get_nodeValue(this) }
         { value <> {value: convertPexIn(value)} }
         { <> {} };
 
-    <> withFinalBindings(node, {function, optValue*});
+    <> withFinalBindings(this, {function, optValue*});
 };
 genericBind(convertPexIn, @@jump, jump_convertPexIn);
 
 ## Does parser conversion of a `literal` node.
-fn literal_convertPexIn(node) {
-    <> node
+fn literal_convertPexIn(this) {
+    <> this
 };
 genericBind(convertPexIn, @@literal, literal_convertPexIn);
 
 ## Does parser conversion of a `parser` node. This is where the juicy stuff
 ## happens!
-fn parser_convertPexIn(node) {
+fn parser_convertPexIn(this) {
     ## `@x(...)` is done here to convert this node from an expression node
     ## form (with map payload) into a parser node form (with pex payload).
-    <> makeCallPex(REFS::Peg_makeMainSequence, @x(get_nodeValue(node)), [])
+    <> makeCallPex(REFS::Peg_makeMainSequence, @x(get_nodeValue(this)), [])
 };
 genericBind(convertPexIn, @@parser, parser_convertPexIn);
 
 ## Does parser conversion of a `varBind` node.
-fn varBind_convertPexIn(node) {
-    <> convertValuePayload(node)
+fn varBind_convertPexIn(this) {
+    <> convertValuePayload(this)
 };
 genericBind(convertPexIn, @@varBind, varBind_convertPexIn);
 
 ## Does parser conversion of a `varDef` node.
-fn varDef_convertPexIn(node) {
-    <> convertValuePayload(node)
+fn varDef_convertPexIn(this) {
+    <> convertValuePayload(this)
 };
 genericBind(convertPexIn, @@varDef, varDef_convertPexIn);
 
 ## Does parser conversion of a `varDefMutable` node.
-fn varDefMutable_convertPexIn(node) {
-    <> convertValuePayload(node)
+fn varDefMutable_convertPexIn(this) {
+    <> convertValuePayload(this)
 };
 genericBind(convertPexIn, @@varDefMutable, varDefMutable_convertPexIn);
 
 ## Does parser conversion of a `varRef` node.
-fn varRef_convertPexIn(node) {
-    <> withoutIntermediates(node)
+fn varRef_convertPexIn(this) {
+    <> withoutIntermediates(this)
 };
 genericBind(convertPexIn, @@varRef, varRef_convertPexIn);
 

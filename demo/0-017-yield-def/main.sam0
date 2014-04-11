@@ -30,19 +30,19 @@ def z = { <stuff> ->
 
 note(z);
 
-fn <blort> foo() {
+fn foo() { <blort> ->
     <blort> "goodbye"
 };
 
 note(foo());
 
-fn <blort> bar(arg) {
+fn bar(arg) { <blort> ->
     <blort> arg
 };
 
 note(bar("to"));
 
-fn <out> baz(foo) {
+fn baz(foo) { <out> ->
     ifIs { <> eq(foo, 1) }
         { <out> "you" }
         { <out> }

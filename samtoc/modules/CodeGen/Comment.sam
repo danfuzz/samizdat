@@ -25,27 +25,27 @@ fn makeComment(text, optPayload?) {
 genericBind(
     flatten,
     @@Comment,
-    fn Comment_flatten(tree) {
-        <> tree::flat
+    fn Comment_flatten(this) {
+        <> this::flat
     });
 
 genericBind(
     indent,
     @@Comment,
-    fn Comment_indent(tree, level, maxColumns) {
+    fn Comment_indent(this, level, maxColumns) {
         def prefix = indentation(level);
 
-        if ((#tree::flat + #prefix) <= maxColumns) {
-            return "\[prefix, tree::flat]"
+        if ((#this::flat + #prefix) <= maxColumns) {
+            return "\[prefix, this::flat]"
         };
 
-        <> if (def p = tree::payload) {
+        <> if (def p = this::payload) {
             <> "\[
-                prefix, "// ", tree::text, "\n",
+                prefix, "// ", this::text, "\n",
                 p.indent(level, maxColumns)
             ]"
         } else {
-            <> "\(prefix)/* \(tree::text) */"
+            <> "\(prefix)/* \(this::text) */"
         }
     });
 

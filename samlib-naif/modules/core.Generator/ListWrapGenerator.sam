@@ -20,10 +20,10 @@ fn makeListWrapGenerator(generator) {
 };
 
 ## Documented in spec.
-fn ListWrapGenerator_nextValue(gen, box) {
+fn ListWrapGenerator_nextValue(this, box) {
     def innerBox = $Box::makePromise();
 
-    <> ifValue { <> nextValue(dataOf(gen), innerBox) }
+    <> ifValue { <> nextValue(dataOf(this), innerBox) }
         { nextGenerator ->
             store(box, [fetch(innerBox)]);
             <> @ListWrapGenerator(nextGenerator)

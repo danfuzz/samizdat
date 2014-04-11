@@ -111,33 +111,33 @@ fn stringChar(ch) {
 ## Private defintions: `convert` generic
 ##
 
-## Generic function to perform the conversion.
+## `value.convert()`: Generic function to perform the conversion.
 def convert = makeRegularGeneric("convert", 1, 1);
 
 ## Converts an int.
-fn Int_convert(int) {
-    <> $CodeGen::makeCall("intFromZint", "\(int)")
+fn Int_convert(this) {
+    <> $CodeGen::makeCall("intFromZint", "\(this)")
 };
 genericBind(convert, Int, Int_convert);
 
 ## Converts a list.
-fn List_convert(list) {
-    if (list == []) {
+fn List_convert(this) {
+    if (this == []) {
         return "EMPTY_LIST"
     };
 
-    def listElems = [ elem in list <> convert(elem) ];
+    def listElems = [ elem in this <> convert(elem) ];
     <> $CodeGen::makeCall("listFromArgs", listElems*, "NULL")
 };
 genericBind(convert, List, List_convert);
 
 ## Converts a map.
-fn Map_convert(map) {
-    if (map == {}) {
+fn Map_convert(this) {
+    if (this == {}) {
         return "EMPTY_MAP"
     };
 
-    def mapPairs = [ mapping in map ->
+    def mapPairs = [ mapping in this ->
         <> [convert(get_key(mapping)), convert(get_value(mapping))]
     ];
 
@@ -146,34 +146,34 @@ fn Map_convert(map) {
 genericBind(convert, Map, Map_convert);
 
 ## Converts a string.
-fn String_convert(string) {
-    if (string == "") {
+fn String_convert(this) {
+    if (this == "") {
         return "EMPTY_STRING"
     };
 
     ## Each `stringChar()` call returns a list (each list element representing
     ## one byte), and we have to interpolate+concatenate them all together in
     ## order to find the encoded length.
-    def bodyChars = cat((ch in string <> stringChar(ch))*);
+    def bodyChars = cat((ch in this <> stringChar(ch))*);
 
     <> $CodeGen::makeCall("stringFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
 };
 genericBind(convert, String, String_convert);
 
 ## Converts a type. Only works on derived data types.
-fn Type_convert(type) {
-    <> $CodeGen::makeCall("makeDerivedDataType", convert(get_name(type)))
+fn Type_convert(this) {
+    <> $CodeGen::makeCall("makeDerivedDataType", convert(get_name(this)))
 };
 genericBind(convert, Type, Type_convert);
 
 ## Converts a derived value or an opaque core value, yielding a tree
 ## that can be stringified with `indent`.
-fn Value_convert(value) {
-    def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
-    def type = get_type(value);
+fn Value_convert(this) {
+    def data = (def dval = dataOf(this)) & convert(dval) | "NULL";
+    def type = get_type(this);
 
-    if (!hasType(value, DerivedData)) {
-        die("Cannot convert opaque non-data value: \%q(value)")
+    if (!hasType(this, DerivedData)) {
+        die("Cannot convert opaque non-data value: \%q(this)")
     };
 
     <> $CodeGen::makeCall("makeValue", convert(type), data, "NULL")

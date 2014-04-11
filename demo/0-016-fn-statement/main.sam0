@@ -27,7 +27,7 @@ fn func1(x) {
 
 note(func1(10));
 
-fn <out> func2(x*) {
+fn func2(x*) { <out> ->
     print("func2", x);
     <out> "func2"
 };

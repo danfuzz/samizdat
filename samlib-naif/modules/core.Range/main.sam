@@ -16,16 +16,16 @@ def $Number    = moduleLoad(["proto", "Number"]);
 ## Private Definitions
 ##
 
-## `rangeAdd` generic, used to increment ints and chars.
+## `value.rangeAdd(increment)` generic, used to increment ints and chars.
 def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
 
-fn Int_rangeAdd(value, increment) {
-    <> $Number::add(value, increment)
+fn Int_rangeAdd(this, increment) {
+    <> $Number::add(this, increment)
 };
 genericBind(rangeAdd, Int, Int_rangeAdd);
 
-fn String_rangeAdd(value, increment) {
-    <> toString($Number::add(toInt(value), increment))
+fn String_rangeAdd(this, increment) {
+    <> toString($Number::add(toInt(this), increment))
 };
 genericBind(rangeAdd, String, String_rangeAdd);
 
@@ -107,11 +107,11 @@ fn makeInclusiveRange(firstValue, limit, optIncrement?) {
 };
 
 ## Documented in spec.
-fn ClosedRange_nextValue(range, box) {
-    <> ifValue { <> ge(range::size, 0) }
+fn ClosedRange_nextValue(this, box) {
+    <> ifValue { <> ge(this::size, 0) }
         { size ->
-            def firstValue = range::firstValue;
-            def increment = range::increment;
+            def firstValue = this::firstValue;
+            def increment = this::increment;
             store(box, firstValue);
             <> makeClosedRange(
                 rangeAdd(firstValue, increment),
@@ -144,9 +144,9 @@ fn makeOpenRange(firstValue, optIncrement?) {
 genericBind(collect, @@OpenRange, $Generator::unboundedCollect);
 
 ## Documented in spec.
-fn OpenRange_nextValue(range, box) {
-    def firstValue = range::firstValue;
-    def increment = range::increment;
+fn OpenRange_nextValue(this, box) {
+    def firstValue = this::firstValue;
+    def increment = this::increment;
 
     store(box, firstValue);
     <> makeOpenRange(rangeAdd(firstValue, increment), increment)

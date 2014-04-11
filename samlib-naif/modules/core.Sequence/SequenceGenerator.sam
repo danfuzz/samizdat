@@ -15,13 +15,13 @@ def $Number = moduleLoad(["proto", "Number"]);
 ##
 
 ## Generator used when iterating over lists and strings.
-fn SequenceGenerator_nextValue(gen, box) {
-    def index = gen::index;
+fn SequenceGenerator_nextValue(this, box) {
+    def index = this::index;
 
-    <> ifValue { <> nth(gen::seq, index) }
+    <> ifValue { <> nth(this::seq, index) }
         { value ->
             store(box, value);
-            <> @SequenceGenerator{dataOf(gen)*, index: $Number::add(index, 1)}
+            <> @SequenceGenerator{dataOf(this)*, index: $Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).

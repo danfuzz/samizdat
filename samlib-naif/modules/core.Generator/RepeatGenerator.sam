@@ -34,12 +34,12 @@ fn makeRepeatGenerator(size, optValue?) {
 genericBind(collect, @@RepeatGenerator, Generator_stdCollect);
 
 ## Documented in spec.
-fn RepeatGenerator_nextValue(gen, box) {
-    def size = gen::size;
+fn RepeatGenerator_nextValue(this, box) {
+    def size = this::size;
 
     <> ifIs { <> perGt(size, 0) }
         {
-            def value = gen::value;
+            def value = this::value;
             store(box, value);
             <> makeRepeatGenerator($Number::sub(size, 1), value)
         }

@@ -17,9 +17,9 @@ def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 genericBind(collect, @@ValueGenerator, unboundedCollect);
 
 ## Documented in spec.
-fn ValueGenerator_nextValue(gen, box) {
-    store(box, dataOf(gen));
-    <> gen
+fn ValueGenerator_nextValue(this, box) {
+    store(box, dataOf(this));
+    <> this
 };
 genericBind(nextValue, @@ValueGenerator, ValueGenerator_nextValue);
 

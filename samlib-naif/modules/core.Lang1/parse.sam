@@ -197,31 +197,27 @@ def parNullaryClosure = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parCodeOnlyClosure = $Peg::makeMainSequence(
-    parNullaryClosure,
-    $Peg::makeCode { c ->
-        ifIs { <> get_yieldDef(c) }
-            { die("Invalid yield definition in code block.") };
-        <> c
-    });
-
-## Documented in spec.
 def parFnCommon = $Peg::makeMainSequence(
     $Peg::makeToken(@@fn),
-    $Peg::makeOpt(
-        $Peg::makeSequence(
-            parYieldDef,
-            $Peg::makeCode { ., y <> makeVarDef(y, REFS::return) })),
     $Peg::makeChoice(
         $Peg::makeSequence(
             $Peg::makeToken(@@identifier),
-            $Peg::makeCode { ., ., n <> {name: dataOf(n)} }),
+            $Peg::makeCode { ., n <> {name: dataOf(n)} }),
         $Peg::makeResult({})),
     $Peg::makeToken(@@"("),
     parFormalsList,
     $Peg::makeToken(@@")"),
-    parCodeOnlyClosure,
-    $Peg::makeCode { ., returnDef, name, ., formals, ., code ->
+    parNullaryClosure,
+    $Peg::makeCode { ., name, ., formals, ., code ->
+        def returnDef = ifValue { <> code::yieldDef }
+            { name ->
+                ## The closure has a yield def, but we need to also bind
+                ## it as `return`, so we add an extra local variable binding
+                ## here.
+                <> [makeVarDef(name, REFS::return)]
+            }
+            { <> [] };
+
         def statements = [returnDef*, get_statements(code)*];
         <> @closure{
             dataOf(code)*,

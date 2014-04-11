@@ -32,7 +32,7 @@ def $vars = intraLoad("vars");
 def localVarDecl = $vars::localVarDecl;
 def localVarName = $vars::localVarName;
 
-## Generic function to perform the translation.
+## `node.translate(varsBox)`: Generic function to perform the translation.
 def translate = makeRegularGeneric("translate", 2, 2);
 
 
@@ -55,37 +55,37 @@ fn varDefCommon(name, value, varsBox) {
 genericBind(
     translate,
     @@apply,
-    fn apply_translate(node, varsBox) {
+    fn apply_translate(this, varsBox) {
         <> $CodeGen::makeCall("funApply",
-            translate(node.function, varsBox),
-            translate(node.actuals, varsBox))
+            translate(this.function, varsBox),
+            translate(this.actuals, varsBox))
     });
 
 genericBind(
     translate,
     @@call,
-    fn call_translate(node, varsBox) {
-        def actuals = (a in node.actuals <> translate(a, varsBox));
+    fn call_translate(this, varsBox) {
+        def actuals = (a in this.actuals <> translate(a, varsBox));
         <> $CodeGen::makeCall("FUN_CALL",
-            translate(node.function, varsBox), actuals*)
+            translate(this.function, varsBox), actuals*)
     });
 
 genericBind(
     translate,
     @@closure,
-    fn closure_translate(node, varsBox) {
+    fn closure_translate(this, varsBox) {
         die("Cannot translate raw `closure` node.")
     });
 
 genericBind(
     translate,
     @@closureRef,
-    fn closureRef_translate(node, varsBox) {
+    fn closureRef_translate(this, varsBox) {
         ## This passes each of the `varRefs` as an argument to the
         ## closure maker.
         def vars = fetch(varsBox);
-        <> $CodeGen::makeCall("makeClosure_\(node.id)",
-            ( name in node.varRefs ->
+        <> $CodeGen::makeCall("makeClosure_\(this.id)",
+            ( name in this.varRefs ->
                 <> vars[name]::name
                     | die("Capture of undefined variable: \%q(name)");
             )*)
@@ -94,30 +94,30 @@ genericBind(
 genericBind(
     translate,
     @@jump,
-    fn call_translate(node, varsBox) {
-        def value = (def v = node.nodeValue)
+    fn call_translate(this, varsBox) {
+        def value = (def v = this.nodeValue)
             & translate(v, varsBox)
             | "NULL";
         <> $CodeGen::makeCall("funJump",
-            translate(node.function, varsBox), value)
+            translate(this.function, varsBox), value)
     });
 
 genericBind(
     translate,
     @@literalRef,
-    fn literalRef_translate(node, varsBox) {
-        <> "LIT_\(node.id)"
+    fn literalRef_translate(this, varsBox) {
+        <> "LIT_\(this.id)"
     });
 
 genericBind(
     translate,
     @@varBind,
-    fn varBind_translate(node, varsBox) {
-        def name = node.nodeName;
-        def value = translate(node.nodeValue, varsBox);
+    fn varBind_translate(this, varsBox) {
+        def name = this.nodeName;
+        def value = translate(this.nodeValue, varsBox);
         def vars = fetch(varsBox);
         def binding = vars[name]
-            | die("Bind of undefined variable: \%q(node.nodeName)");
+            | die("Bind of undefined variable: \%q(this.nodeName)");
 
         <> $CodeGen::makeCall("boxStore", binding::name, value)
     });
@@ -125,34 +125,34 @@ genericBind(
 genericBind(
     translate,
     @@varDef,
-    fn varDef_translate(node, varsBox) {
-        def value = (def v = node.nodeValue)
+    fn varDef_translate(this, varsBox) {
+        def value = (def v = this.nodeValue)
             & $CodeGen::makeCall("makeResult", translate(v, varsBox))
             | $CodeGen::makeCall("makePromise");
 
-        <> varDefCommon(node.nodeName, value, varsBox)
+        <> varDefCommon(this.nodeName, value, varsBox)
     });
 
 genericBind(
     translate,
     @@varDefMutable,
-    fn varDefMutable_translate(node, varsBox) {
-        def value = (def v = node.nodeValue)
+    fn varDefMutable_translate(this, varsBox) {
+        def value = (def v = this.nodeValue)
             & translate(v, varsBox)
             | "NULL";
 
         <> varDefCommon(
-            node.nodeName, $CodeGen::makeCall("makeCell", value), varsBox)
+            this.nodeName, $CodeGen::makeCall("makeCell", value), varsBox)
     });
 
 genericBind(
     translate,
     @@varRef,
-    fn varRef_translate(node, varsBox) {
-        def name = node.nodeName;
+    fn varRef_translate(this, varsBox) {
+        def name = this.nodeName;
         def vars = fetch(varsBox);
         def binding = vars[name]
-            | die("Reference of undefined variable: \%q(node.nodeName)");
+            | die("Reference of undefined variable: \%q(this.nodeName)");
         <> $CodeGen::makeCall("boxFetch", binding::name)
     });
 

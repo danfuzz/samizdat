@@ -32,8 +32,8 @@ fn makeSerialGenerator(generators*) {
 };
 
 ## Documented in spec.
-fn SerialGenerator_nextValue(gen, box) {
-    def subGens = dataOf(gen);
+fn SerialGenerator_nextValue(this, box) {
+    def subGens = dataOf(this);
 
     <> ifValue { <> get(subGens, 0) }
         { firstGen ->

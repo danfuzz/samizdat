@@ -163,8 +163,6 @@ inside curly braces.
 
 The declarations to a function consist of the following, in order:
 
-* The yield definition (optional). See "Yield Definition" above.
-
 * The name (optional, except if the function is being bound directly to a
   variable). This provides a name for the function, which serves three
   purposes:
@@ -183,7 +181,8 @@ The declarations to a function consist of the following, in order:
 
 Aside from the name binding, the one semantic difference between functions
 and blocks is that functions define the closure that a `return` statement
-will yield from. See "Yield Defintion" above.
+will yield from. It is also valid to define an explicit yield variable,
+as with non-function closures. See "Yield Defintion" above.
 
 Examples:
 
@@ -201,7 +200,7 @@ def fizmo = (fn (a+) { ... })
 # This is a function statement that includes a yield definition. Within
 # the body, `<out>` indicates a yield from `igram`. The function takes any
 # number of arguments (including zero).
-fn <out> igram(a*) { ... <out> ... }
+fn igram(a*) { <out> -> ... <out> ... }
 ```
 
 

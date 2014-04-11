@@ -621,33 +621,6 @@ DEF_PARSE(nullaryClosure) {
     return c;
 }
 
-/* Documented in spec. */
-DEF_PARSE(codeOnlyClosure) {
-    MARK();
-
-    zvalue c = PARSE_OR_REJECT(nullaryClosure);
-
-    if (GET(yieldDef, c) != NULL) {
-        die("Invalid yield definition in code block.");
-    }
-
-    return c;
-}
-
-/**
- * Helper for `fnCommon`: Parses `(yieldDef)?` with variable definition
- * and list wrapping.
- */
-DEF_PARSE(fnCommon1) {
-    zvalue result = PARSE(yieldDef);
-
-    if (result == NULL) {
-        return EMPTY_LIST;
-    }
-
-    return listFrom1(makeVarDef(result, REFS(return)));
-}
-
 /**
  * Helper for `fnCommon`: Parses `(@identifier | [:])` with appropriate map
  * wrapping.
@@ -668,13 +641,16 @@ DEF_PARSE(fnCommon) {
 
     MATCH_OR_REJECT(fn);
 
-    zvalue returnDef = PARSE(fnCommon1); // This never fails.
     zvalue name = PARSE(fnCommon2); // This never fails.
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList); // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
-    zvalue code = PARSE_OR_REJECT(codeOnlyClosure);
+    zvalue code = PARSE_OR_REJECT(nullaryClosure);
 
+    zvalue yieldDef = GET(yieldDef, code);
+    zvalue returnDef = (yieldDef == NULL)
+        ? EMPTY_LIST
+        : listFrom1(makeVarDef(yieldDef, REFS(return)));
     zvalue statements = GFN_CALL(cat, returnDef, GET(statements, code));
     zvalue closureMap = GFN_CALL(cat,
         dataOf(code),

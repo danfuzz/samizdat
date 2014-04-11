@@ -26,8 +26,8 @@ fn makeOptGenerator(generator) {
 genericBind(collect, @@OptGenerator, unboundedCollect);
 
 ## Documented in spec.
-fn OptGenerator_nextValue(gen, box) {
-    def subGen = dataOf(gen);
+fn OptGenerator_nextValue(this, box) {
+    def subGen = dataOf(this);
     def innerBox = $Box::makePromise();
 
     <> ifValue { <> nextValue(subGen, innerBox) }

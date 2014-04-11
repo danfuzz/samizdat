@@ -121,8 +121,8 @@ fn doModuleLoad(md, dotName) {
 genericBind(
     moduleLoad,
     @@ModuleLoader,
-    fn ModuleLoader_moduleLoad(md, path) {
-        def loadedBox = md::loadedBox;
+    fn ModuleLoader_moduleLoad(this, path) {
+        def loadedBox = this::loadedBox;
         def dotName = flattenModulePath(path);
 
         ## The loaded map maps paths to `"loading"` for a load-in-progress
@@ -137,8 +137,8 @@ genericBind(
 
         updateMapBox(loadedBox, dotName, "loading");
 
-        def result = ifValueOr { <> doModuleLoad(md, dotName) }
-            { <> moduleLoad(md::next, path) };
+        def result = ifValueOr { <> doModuleLoad(this, dotName) }
+            { <> moduleLoad(this::next, path) };
 
         updateMapBox(loadedBox, dotName, [result]);
         <> result
@@ -148,7 +148,7 @@ genericBind(
 genericBind(
     moduleLoad,
     @@Null,
-    fn Null_moduleLoad(md, path) {
+    fn Null_moduleLoad(this, path) {
         die(cat("Module not found: ", flattenModulePath(path)))
     });
 
@@ -213,8 +213,8 @@ fn doLocalLoad(ml, path) {
 genericBind(
     intraType,
     @@IntraLoader,
-    fn IntraLoader_intraType(ml, path) {
-        def fullPath = cat(ml::basePath, path);
+    fn IntraLoader_intraType(this, path) {
+        def fullPath = cat(this::basePath, path);
         <> Io0_fileType(fullPath)
     });
 
@@ -222,8 +222,8 @@ genericBind(
 genericBind(
     intraLoad,
     @@IntraLoader,
-    fn IntraLoader_intraLoad(ml, path) {
-        def loadedBox = ml::loadedBox;
+    fn IntraLoader_intraLoad(this, path) {
+        def loadedBox = this::loadedBox;
 
         ## Local loads are allowed to return void, so we track a list of
         ## the result. That is, a void return ends up being `[]`.
@@ -231,7 +231,7 @@ genericBind(
         ifValue { <> get(fetch(loadedBox), path) }
             { found -> return found* };
 
-        def optResult = doLocalLoad(ml, path)?;
+        def optResult = doLocalLoad(this, path)?;
         updateMapBox(loadedBox, path, optResult);
         <> optResult*
     });
@@ -240,8 +240,8 @@ genericBind(
 genericBind(
     intraReadUtf8,
     @@IntraLoader,
-    fn IntraLoader_intraReadUtf8(ml, path) {
-        def fullPath = cat(ml::basePath, path);
+    fn IntraLoader_intraReadUtf8(this, path) {
+        def fullPath = cat(this::basePath, path);
 
         ifNot { <> eq(Io0_fileType(fullPath)?, ["file"]) }
             { die(cat("Missing resource: ", fullPath)) };
