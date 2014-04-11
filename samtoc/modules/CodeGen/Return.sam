@@ -34,7 +34,7 @@ genericBind(
         } else {
             <> "\
             \(prefix)return
-            \(this::this.indent(level + 1, maxColumns))"
+            \(this::tree.indent(level + 1, maxColumns))"
         }
     });
 
