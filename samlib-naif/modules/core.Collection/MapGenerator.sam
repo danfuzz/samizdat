@@ -16,13 +16,13 @@ def $Number     = moduleLoad(["proto", "Number"]);
 ##
 
 ## Generator used when iterating over maps.
-fn MapGenerator_nextValue(gen, box) {
-    def index = gen::index;
+fn MapGenerator_nextValue(this, box) {
+    def index = this::index;
 
-    <> ifValue { <> $Collection::nthMapping(gen::map, index) }
+    <> ifValue { <> $Collection::nthMapping(this::map, index) }
         { value ->
             store(box, value);
-            <> @MapGenerator{dataOf(gen)*, index: $Number::add(index, 1)}
+            <> @MapGenerator{dataOf(this)*, index: $Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).
