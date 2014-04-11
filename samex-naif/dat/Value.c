@@ -169,6 +169,11 @@ zorder valZorder(zvalue value, zvalue other) {
  */
 
 /* Documented in header. */
+METH_IMPL(Value, get_name) {
+    return NULL;
+}
+
+/* Documented in header. */
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = get_type(value);
@@ -290,6 +295,7 @@ MOD_INIT(Value) {
         makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalOrder"));
     datImmortalize(GFN_totalOrder);
 
+    METH_BIND(Value, get_name);
     METH_BIND(Value, debugString);
     METH_BIND(Value, gcMark);
     METH_BIND(Value, perEq);
