@@ -1043,18 +1043,6 @@ fn makeCompareCalls(firstEx, opExList) {
         })
 };
 
-## Parses a closure which must have neither formal arguments nor a yield
-## definition. See `parseNullaryClosure`, above, for discussion.
-def parCodeOnlyClosure = {:
-    c = parNullaryClosure
-
-    {
-        ifIs { <> get_yieldDef(c) }
-            { die("Invalid yield definition in code block.") };
-        <> c
-    }
-:};
-
 ## Helper for string interpolation: Parses the two kinds of interpolation,
 ## yielding an appropriate expression node if syntactically valid, including
 ## verification that all input was consumed.
@@ -1805,17 +1793,17 @@ def parIfExpression = {:
     @if
     yieldDef = parOptYieldDef
     firstCondition = parMultiTest
-    firstThen = parCodeOnlyClosure
+    firstThen = parNullaryClosure
 
     elseIfThens = (
         @else
         @if
         condition = parMultiTest
-        then = parCodeOnlyClosure
+        then = parNullaryClosure
         { <> {maker: condition, then} }
     )*
 
-    optElse = (@else parCodeOnlyClosure)?
+    optElse = (@else parNullaryClosure)?
 
     {
         ## This builds the full expression from back to front (inner to outer).
@@ -2021,7 +2009,7 @@ def parSwitchCase = {:
         parKey+
     )
 
-    code = parCodeOnlyClosure
+    code = parNullaryClosure
 
     { <> {code, keys} }
 :};

@@ -37,17 +37,17 @@ if (1 \== 1) {
 };
 
 if (1 \== 2) {
-    note("1 is 2?!")
+    die("1 is 2?!")
 };
 
 if (1 \== 1) {
     note("1 is 1")
 } else {
-    note("1 is not 1?!")
+    die("1 is not 1?!")
 };
 
 if (1 \== 2) {
-    note("1 is 2?!")
+    die("1 is 2?!")
 } else {
     note("1 is not 2")
 };
@@ -55,35 +55,35 @@ if (1 \== 2) {
 if (1 \== 1) {
     note("1 is 1")
 } else if (1 \== 2) {
-    note("1 is 2?!")
+    die("1 is 2?!")
 };
 
 if (1 \== 2) {
-    note("1 is 2?!")
+    die("1 is 2?!")
 } else if (1 \== 3) {
-    note("1 is 3?!")
+    die("1 is 3?!")
 };
 
 if (1 \== 1) {
     note("1 is 1")
 } else if (1 \== 2) {
-    note("1 is 2?!")
+    die("1 is 2?!")
 } else {
-    note("1 is not 1?!")
+    die("1 is not 1?!")
 };
 
 if (1 \== 2) {
-    note("1 is 2?!")
+    die("1 is 2?!")
 } else if (1 \== 1) {
     note("1 is 1")
 } else {
-    note("1 is not 1?!")
+    die("1 is not 1?!")
 };
 
 if (1 \== 2) {
-    note("1 is 2?!")
+    die("1 is 2?!")
 } else if (1 \== 3) {
-    note("1 is 3?!")
+    die("1 is 3?!")
 } else {
     note("1 is not 2 or 3")
 };
@@ -91,19 +91,35 @@ if (1 \== 2) {
 def blort1 = if (1 \== 1) {
     <> "1 is 1"
 } else {
-    <> "1 is not 1?!"
+    die("1 is not 1?!")
 };
 
 note(blort1);
 
 def blort2 = if <out> (1 \== 2) {
-    <out> "1 is 2?!"
+    die("1 is 2?!")
 } else {
     <out> "1 is not 2"
 };
 
 note(blort2);
 
+def blort3 = if (1 \== 3) {
+    die("1 is 3?!")
+} else { <out> ->
+    <out> "1 is not 3"
+};
+
+note(blort3);
+
+def blort4 = if <extra> (4 \== 4) { <out> ->
+    <out> "4 is 4"
+} else {
+    die("4 is not 4?!")
+};
+
+note(blort4);
+
 if (def x = returnBlort()) {
     note(x)
 };
@@ -111,17 +127,17 @@ if (def x = returnBlort()) {
 if (def x = returnBlort()) {
     note(x)
 } else {
-    note("Um?!")
+    die("Um?!")
 };
 
 if (def x = returnVoid()) {
-    note("Um?!")
+    die("Um?!")
 } else {
     note("The expected void.")
 };
 
 if (def x = returnVoid()) {
-    note("Um?!")
+    die("Um?!")
 } else if (def y = returnFrotz()) {
     note(y)
 } else if (def x = returnIgram()) {
@@ -129,7 +145,7 @@ if (def x = returnVoid()) {
 };
 
 if (def x = returnVoid()) {
-    note("Um?!")
+    die("Um?!")
 } else if (def y = returnBlort()) {
     note(y)
 } else if (def y = returnFrotz()) {
@@ -139,9 +155,9 @@ if (def x = returnVoid()) {
 };
 
 if (def x = returnVoid()) {
-    note("Um?!")
+    die("Um?!")
 } else if (def y = returnVoid()) {
-    note("Um?!")
+    die("Um?!")
 } else if (def x = returnIgram()) {
     note(x)
 } else {
@@ -151,17 +167,17 @@ if (def x = returnVoid()) {
 if (def x = "fr", def y = "otz") {
     note(cat(x, y))
 } else {
-    note("Um?")
+    die("Um?")
 };
 
 if (def x = "x", def y = returnVoid()) {
-    note("Um?!")
+    die("Um?!")
 } else {
     note("Yes.")
 };
 
 if (def x = returnVoid(), def y = "y") {
-    note("Um?!")
+    die("Um?!")
 } else {
     note("Yes.")
 };
@@ -171,7 +187,7 @@ if (def x = "fr", "stuff", def y = "ot", def z = "z") {
 };
 
 if (def x = returnVoid()) {
-    note("Um?!")
+    die("Um?!")
 } else if (def x = "fi", "stuff", def y = "zm", def z = "o") {
     note(cat(x, y, z))
 };
