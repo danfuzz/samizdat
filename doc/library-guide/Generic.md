@@ -7,6 +7,11 @@ Generic
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `get_name(type) <> . | void`
+
+Returns the name of the generic, if it has one. This is can be
+an arbitrary value, which is typically (but not necessarily) a string.
+
 #### `perEq(generic, other) <> generic | void`
 
 Calls `totalEq`.
@@ -41,15 +46,6 @@ figure out which bound function to dispatch to.
 Returns `value` if it can be passed as the first argument to the given
 generic function, that is, whether `value`'s type is bound to the
 generic. Returns the `value` argument if so.
-
-
-<br><br>
-### Generic Function Definitions: One-Offs
-
-#### `get_name(type) <> . | void`
-
-Returns the name of the generic, if it has one. This is can be
-an arbitrary value, which is typically (but not necessarily) a string.
 
 
 <br><br>
