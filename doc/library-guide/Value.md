@@ -7,6 +7,14 @@ Value (the base type)
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)
 
+#### `get_name(value) <> . | void`
+
+Some values have an associated name, or an optional associated name.
+This generic provides access to that name. There is no restriction
+on the composition (type, etc.) of a name.
+
+The type `Value` binds this to a function which always returns void.
+
 #### `debugString(value) <> string`
 
 Returns a string representation of `value` meant to aid in debugging.
