@@ -1407,21 +1407,21 @@ parPostfixOperator2 := {:
     ## This translates as something like the following:
     ##
     ## ```
-    ## target.name(arg, ...)
+    ## target.ident(arg, ...)
     ## =>
-    ## name(target, arg, ...)
+    ## ident(target, arg, ...)
     ## ```
     ##
     ## ```
-    ## target.name
+    ## target.ident
     ## =>
-    ## get_name(target)
+    ## get_ident(target)
     ## ```
     ##
     ## ```
-    ## target.name := expression
+    ## target.ident := expression
     ## =>
-    ## set_name(target, expression)
+    ## set_ident(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
