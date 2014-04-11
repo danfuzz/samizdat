@@ -159,8 +159,7 @@ if (expression1) {
 
 There can be any number of `else if` clauses (including none), and the
 final `else` clause is optional. Each of the block bodies can contain
-any number of statements but must not have any argument declarations,
-nor may they have a yield definition.
+any number of statements but must not have any argument declarations.
 
 The expression is evaluated by first evaluating the initial test expression.
 If that yields logical-true, then the block `block1` is
@@ -204,8 +203,7 @@ There can be any number of test expressions (including none), and
 both the `default` and `else` blocks are optional. The `default`
 and `else` blocks can appear anywhere in the list of test cases.
 Each of the block bodies can contain any number of statements but
-must not have any argument declarations, nor may they have a yield
-definition.
+must not have any argument declarations.
 
 This is evaluated by first evaluating the `dispatchExpression`. If
 that yields void, then the `elseBlock` (if any) is evaluated, and
