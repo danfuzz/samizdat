@@ -268,7 +268,7 @@ def parCodeOnlyClosure = {:
 ## The translation is along these lines:
 ##
 ## ```
-## fn <out> name(arg1, arg2) { stat1; stat2 }
+## fn name(arg1, arg2) { <out> -> stat1; stat2 }
 ## ```
 ## =>
 ## ```
@@ -287,13 +287,6 @@ def parCodeOnlyClosure = {:
 def parFnCommon = {:
     @fn
 
-    ## This is a variable definition statement which binds the yield def
-    ## name to the `return` function, if there is in fact a yield def present.
-    returnDef = (
-        y = parYieldDef
-        { <> makeVarDef(y, REFS::return) }
-    )?
-
     name = (
         n = @identifier
         { <> {name: dataOf(n)} }
@@ -305,9 +298,18 @@ def parFnCommon = {:
     formals = parFormalsList
     @")"
 
-    code = parCodeOnlyClosure
+    code = parNullaryClosure
 
     {
+        def returnDef = ifValue { <> code::yieldDef }
+            { name ->
+                ## The closure has a yield def, but we need to also bind
+                ## it as `return`, so we add an extra local variable binding
+                ## here.
+                <> [makeVarDef(name, REFS::return)]
+            }
+            { <> [] };
+
         def statements = [returnDef*, get_statements(code)*];
         <> @closure{
             dataOf(code)*,
@@ -343,13 +345,13 @@ def parFnDef = {:
 ## following lines (so as to enable self-recursion):
 ##
 ## ```
-## fn <out> name ...
+## fn name ...
 ## ```
 ## =>
 ## ```
 ## {
 ##     def name;
-##     <> name := { <out> ... }
+##     <> name := { ... }
 ## }()
 ## ```
 parFnExpression := {:
