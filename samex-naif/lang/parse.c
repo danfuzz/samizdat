@@ -621,19 +621,6 @@ DEF_PARSE(nullaryClosure) {
     return c;
 }
 
-/* Documented in spec. */
-DEF_PARSE(codeOnlyClosure) {
-    MARK();
-
-    zvalue c = PARSE_OR_REJECT(nullaryClosure);
-
-    if (GET(yieldDef, c) != NULL) {
-        die("Invalid yield definition in code block.");
-    }
-
-    return c;
-}
-
 /**
  * Helper for `fnCommon`: Parses `(@identifier | [:])` with appropriate map
  * wrapping.

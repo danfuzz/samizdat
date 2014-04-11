@@ -197,15 +197,6 @@ def parNullaryClosure = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parCodeOnlyClosure = $Peg::makeMainSequence(
-    parNullaryClosure,
-    $Peg::makeCode { c ->
-        ifIs { <> get_yieldDef(c) }
-            { die("Invalid yield definition in code block.") };
-        <> c
-    });
-
-## Documented in spec.
 def parFnCommon = $Peg::makeMainSequence(
     $Peg::makeToken(@@fn),
     $Peg::makeChoice(

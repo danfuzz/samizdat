@@ -244,18 +244,6 @@ def parNullaryClosure = {:
     }
 :};
 
-## Parses a closure which must have neither formal arguments nor a yield
-## definition. See `parseNullaryClosure` above for discussion.
-def parCodeOnlyClosure = {:
-    c = parNullaryClosure
-
-    {
-        ifIs { <> get_yieldDef(c) }
-            { die("Invalid yield definition in code block.") };
-        <> c
-    }
-:};
-
 ## Common parsing for `fn` statements and expressions. The syntax for
 ## both is identical, except that the statement form requires that the
 ## function be named. The result of this rule is a map identical in form to
