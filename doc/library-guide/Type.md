@@ -33,15 +33,6 @@ types), the order is arbitrary but consistent.
 
 
 <br><br>
-### Generic Function Definitions: One-Offs
-
-#### `get_name(type) <> .`
-
-Returns the name of the type. This is an arbitrary value associated with
-a type, which is typically (but not necessarily) a string.
-
-
-<br><br>
 ### Primitive Definitions
 
 #### `makeDerivedDataType(name) <> type`
@@ -51,6 +42,11 @@ with the given `name`. `name` can be an arbitrary value but is most
 typically a string.
 
 **Note:** This is used in the translation of `@@(name)` forms.
+
+#### `typeName(type) <> . | void`
+
+Returns the name of the type. This is an arbitrary value associated with
+a type, which is typically (but not necessarily) a string.
 
 #### `typeParent(type) <> type | void`
 
