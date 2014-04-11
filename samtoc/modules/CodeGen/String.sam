@@ -15,13 +15,13 @@ def indent = $protocol::indent;
 genericBind(
     flatten,
     String,
-    fn String_flatten(tree) {
-        <> tree
+    fn String_flatten(this) {
+        <> this
     });
 
 genericBind(
     indent,
     String,
-    fn String_indent(tree, level, maxColumns) {
-        <> "\[indentation(level), tree]"
+    fn String_indent(this, level, maxColumns) {
+        <> "\[indentation(level), this]"
     });

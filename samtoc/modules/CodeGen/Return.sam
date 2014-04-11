@@ -19,22 +19,22 @@ fn makeReturn(tree) {
 genericBind(
     flatten,
     @@Return,
-    fn Return_flatten(tree) {
-        <> tree::flat
+    fn Return_flatten(this) {
+        <> this::flat
     });
 
 genericBind(
     indent,
     @@Return,
-    fn Return_indent(tree, level, maxColumns) {
+    fn Return_indent(this, level, maxColumns) {
         def prefix = indentation(level);
 
-        <> if ((#tree::flat + #prefix) <= maxColumns) {
-            <> "\(prefix)\(tree::flat)"
+        <> if ((#this::flat + #prefix) <= maxColumns) {
+            <> "\(prefix)\(this::flat)"
         } else {
             <> "\
             \(prefix)return
-            \(tree::tree.indent(level + 1, maxColumns))"
+            \(this::this.indent(level + 1, maxColumns))"
         }
     });
 

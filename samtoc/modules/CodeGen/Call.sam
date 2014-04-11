@@ -28,25 +28,25 @@ fn makeCall(function, args*) {
 genericBind(
     flatten,
     @@Call,
-    fn Call_flatten(tree) {
-        <> tree::flat
+    fn Call_flatten(this) {
+        <> this::flat
     });
 
 genericBind(
     indent,
     @@Call,
-    fn Call_indent(tree, level, maxColumns) {
+    fn Call_indent(this, level, maxColumns) {
         def prefix = indentation(level);
 
-        if ((#tree::flat + #prefix) <= maxColumns) {
-            return "\[prefix, tree::flat]"
+        if ((#this::flat + #prefix) <= maxColumns) {
+            return "\[prefix, this::flat]"
         };
 
-        def args = tree::args;
+        def args = this::args;
         def nextLevel = level + 1;
 
         <> "\[
-            prefix, tree::function.flatten(), "(\n",
+            prefix, this::function.flatten(), "(\n",
             ( a in args, i in (#args.. by -1) ->
                 <> [
                     a.indent(nextLevel, maxColumns),

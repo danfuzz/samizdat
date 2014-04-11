@@ -21,24 +21,24 @@ fn makeAssign(target, value) {
 genericBind(
     flatten,
     @@Assign,
-    fn Assign_flatten(tree) {
-        <> tree::flat
+    fn Assign_flatten(this) {
+        <> this::flat
     });
 
 genericBind(
     indent,
     @@Assign,
-    fn Assign_indent(tree, level, maxColumns) {
+    fn Assign_indent(this, level, maxColumns) {
         def prefix = indentation(level);
 
-        if ((#tree::flat + #prefix) <= maxColumns) {
-            return "\[prefix, tree::flat]"
+        if ((#this::flat + #prefix) <= maxColumns) {
+            return "\[prefix, this::flat]"
         };
 
         <> "\[
-            tree::target.indent(level, maxColumns),
+            this::target.indent(level, maxColumns),
             " =\n",
-            tree::value.indent(level + 1, maxColumns)
+            this::value.indent(level + 1, maxColumns)
         ]"
     });
 
