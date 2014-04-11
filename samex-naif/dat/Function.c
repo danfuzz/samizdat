@@ -51,7 +51,7 @@ static char *callReporter(void *state) {
     char *typeString = valDebugString(get_type(value));
     char *result;
 
-    asprintf(&result, "(anonymous %s)", typeString);
+    asprintf(&result, "anonymous %s", typeString);
     free(typeString);
 
     return result;
