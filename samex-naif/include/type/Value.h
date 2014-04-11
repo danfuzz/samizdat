@@ -64,12 +64,6 @@ zvalue dataOf(zvalue value);
 zvalue get_name(zvalue value);
 
 /**
- * Calls `get_name` on the given value, if it is defined. If not, returns
- * `NULL`.
- */
-zvalue get_nameIfDefined(zvalue value);
-
-/**
  * Gets the type of the given value. `value` must be a valid value (in
  * particular, non-`NULL`). The return value is of type `Type`.
  */

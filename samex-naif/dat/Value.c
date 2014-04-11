@@ -60,15 +60,6 @@ zvalue get_name(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue get_nameIfDefined(zvalue value) {
-    if (GFN_CALL(canCall, GFN_get_name, value)) {
-        return get_name(value);
-    }
-
-    return NULL;
-}
-
-/* Documented in header. */
 zvalue get_type(zvalue value) {
     return value->type;
 }
@@ -177,7 +168,7 @@ METH_IMPL(Value, get_name) {
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = get_type(value);
-    zvalue name = get_nameIfDefined(value);
+    zvalue name = get_name(value);
     char addrBuf[19]; // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
