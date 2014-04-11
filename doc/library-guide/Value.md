@@ -15,6 +15,9 @@ on the composition (type, etc.) of a name.
 
 The type `Value` binds this to a function which always returns void.
 
+**Note:** In general, it is a bad idea to use this function for any
+purpose other than temporary debugging code.
+
 #### `debugString(value) <> string`
 
 Returns a string representation of `value` meant to aid in debugging.
