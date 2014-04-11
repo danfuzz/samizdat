@@ -17,6 +17,9 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include <stdio.h>  // For `asprintf`.
+#include <stdlib.h> // For `free`.
+
 
 /*
  * Private Definitions
@@ -50,6 +53,22 @@ typedef struct {
  */
 static GenericInfo *getInfo(zvalue generic) {
     return datPayload(generic);
+}
+
+
+/**
+ * This is the function that handles emitting a context string for a call,
+ * when dumping the stack.
+ */
+static char *callReporter(void *state) {
+    zvalue type = state;
+    char *typeString = valDebugString(type);
+    char *result;
+
+    asprintf(&result, "type %s", typeString);
+    free(typeString);
+
+    return result;
 }
 
 /**
@@ -92,8 +111,8 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    // Note: The replacement `firstType` returned by `findByType` is only
-    // ever used for "same type" generics.
+    // Note: The replacement `firstType` returned by `findByType` is used
+    // both for "same type" generics and for stack trace reporting.
     zvalue firstType = get_type(args[0]);
     zvalue function = findByType(generic, firstType, &firstType);
 
@@ -111,7 +130,10 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
         }
     }
 
-    return funCall(function, argCount, args);
+    UTIL_TRACE_START(callReporter, firstType);
+    zvalue result = funCall(function, argCount, args);
+    UTIL_TRACE_END();
+    return result;
 }
 
 /* Documented in header. */
