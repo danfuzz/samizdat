@@ -32,8 +32,8 @@ fn makeParaGenerator(generators*) {
 };
 
 ## Documented in spec.
-fn ParaGenerator_nextValue(gen, box) {
-    def subGens = dataOf(gen);
+fn ParaGenerator_nextValue(this, box) {
+    def subGens = dataOf(this);
 
     ifIs { <> eq(subGens, []) }
         { return nextValue($Box::nullBox, box) };

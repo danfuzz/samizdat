@@ -12,7 +12,7 @@
 ##
 
 ## Documented in spec.
-fn unboundedCollect(gen, optFilterFunction?) {
+fn unboundedCollect(this, optFilterFunction?) {
     die("Unbounded generator.");
 };
 

@@ -12,13 +12,13 @@
 ##
 
 ## Documented in spec.
-fn NullGenerator_collect(gen, optFilterFunction?) {
+fn NullGenerator_collect(this, optFilterFunction?) {
     <> []
 };
 genericBind(collect, @@NullGenerator, NullGenerator_collect);
 
 ## Documented in spec.
-fn NullGenerator_nextValue(gen, box) {
+fn NullGenerator_nextValue(this, box) {
     store(box)
 };
 genericBind(nextValue, @@NullGenerator, NullGenerator_nextValue);

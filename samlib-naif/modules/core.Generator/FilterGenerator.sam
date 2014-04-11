@@ -26,13 +26,13 @@ fn makeFilterGenerator(filterFunction, generators*) {
 };
 
 ## Documented in spec.
-fn FilterGenerator_nextValue(gen, box) {
-    def filterFunction = gen::filterFunction;
+fn FilterGenerator_nextValue(this, box) {
+    def filterFunction = this::filterFunction;
 
     ## This loop handles the fact that the filter function is
     ## allowed to yield void to indicate a generated value is to
     ## be discarded.
-    var innerGen = gen::generator;
+    var innerGen = this::generator;
     loop { <next> ->
         def innerBox = $Box::makePromise();
 
@@ -42,7 +42,7 @@ fn FilterGenerator_nextValue(gen, box) {
                     { value ->
                         store(box, value);
                         return @FilterGenerator(
-                            {dataOf(gen)*, generator: nextGen})
+                            {dataOf(this)*, generator: nextGen})
                     }
                     {
                         ## The filter discarded the value. Iterate!
