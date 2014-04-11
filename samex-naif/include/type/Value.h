@@ -23,8 +23,8 @@
 /** Type value for in-model type `Value`. */
 extern zvalue TYPE_Value;
 
-/** Generic `get_name(value)`: Documented in spec. */
-extern zvalue GFN_get_name;
+/** Generic `debugName(value)`: Documented in spec. */
+extern zvalue GFN_debugName;
 
 /** Generic `debugString(value)`: Documented in spec. */
 extern zvalue GFN_debugString;
@@ -59,9 +59,9 @@ extern zvalue GFN_totalOrder;
 zvalue dataOf(zvalue value);
 
 /**
- * Calls `get_name` on the given value.
+ * Calls `debugName` on the given value.
  */
-zvalue get_name(zvalue value);
+zvalue debugName(zvalue value);
 
 /**
  * Gets the type of the given value. `value` must be a valid value (in

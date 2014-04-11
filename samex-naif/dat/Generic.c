@@ -238,7 +238,7 @@ METH_IMPL(Generic, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Generic, get_name) {
+METH_IMPL(Generic, debugName) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
 
@@ -255,7 +255,7 @@ MOD_INIT(Generic) {
     METH_BIND(Generic, call);
     METH_BIND(Generic, canCall);
     METH_BIND(Generic, gcMark);
-    METH_BIND(Generic, get_name);
+    METH_BIND(Generic, debugName);
 }
 
 /* Documented in header. */

@@ -7,7 +7,7 @@ Generic
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `get_name(type) <> . | void`
+#### `debugName(type) <> . | void`
 
 Returns the name of the generic, if it has one. This is can be
 an arbitrary value, which is typically (but not necessarily) a string.

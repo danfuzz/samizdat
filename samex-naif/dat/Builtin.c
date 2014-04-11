@@ -153,7 +153,7 @@ METH_IMPL(Builtin, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Builtin, get_name) {
+METH_IMPL(Builtin, debugName) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
 
@@ -170,7 +170,7 @@ MOD_INIT(Builtin) {
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, canCall);
     METH_BIND(Builtin, gcMark);
-    METH_BIND(Builtin, get_name);
+    METH_BIND(Builtin, debugName);
 }
 
 /* Documented in header. */

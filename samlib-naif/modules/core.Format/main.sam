@@ -264,7 +264,7 @@ fn Value_sourceGeneral(this, adorn) {
     ifNot { <> eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifValue { <> get_name(this) }
+            def body = ifValue { <> debugName(this) }
                 { name <> keyString(name) }
                 { <> "..." };
 

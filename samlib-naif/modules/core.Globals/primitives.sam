@@ -35,7 +35,7 @@
     genericBind,
     get,
     get_key,
-    get_name,
+    debugName,
     get_size,
     get_type,
     get_value,

@@ -382,7 +382,7 @@ METH_IMPL(Closure, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Closure, get_name) {
+METH_IMPL(Closure, debugName) {
     zvalue closure = args[0];
     return get(getInfo(closure)->defMap, STR_name);
 }
@@ -398,7 +398,7 @@ MOD_INIT(Closure) {
 
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
-    METH_BIND(Closure, get_name);
+    METH_BIND(Closure, debugName);
     METH_BIND(Closure, gcMark);
 
     nodeCache = EMPTY_MAP;
