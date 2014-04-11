@@ -138,6 +138,14 @@ METH_IMPL(Builtin, canCall) {
 }
 
 /* Documented in header. */
+METH_IMPL(Builtin, debugName) {
+    zvalue builtin = args[0];
+    BuiltinInfo *info = getInfo(builtin);
+
+    return info->name;
+}
+
+/* Documented in header. */
 METH_IMPL(Builtin, gcMark) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
@@ -152,14 +160,6 @@ METH_IMPL(Builtin, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
-METH_IMPL(Builtin, debugName) {
-    zvalue builtin = args[0];
-    BuiltinInfo *info = getInfo(builtin);
-
-    return info->name;
-}
-
 /** Initializes the module. */
 MOD_INIT(Builtin) {
     MOD_USE(Function);
@@ -169,8 +169,8 @@ MOD_INIT(Builtin) {
 
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, canCall);
-    METH_BIND(Builtin, gcMark);
     METH_BIND(Builtin, debugName);
+    METH_BIND(Builtin, gcMark);
 }
 
 /* Documented in header. */
