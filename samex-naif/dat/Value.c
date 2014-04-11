@@ -7,7 +7,6 @@
 #include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
-#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -54,6 +53,20 @@ zvalue dataOf(zvalue value) {
 
 /* Documented in header. */
 extern void *datPayload(zvalue value);
+
+/* Documented in header. */
+zvalue get_name(zvalue value) {
+    return GFN_CALL(get_name, value);
+}
+
+/* Documented in header. */
+zvalue get_nameIfDefined(zvalue value) {
+    if (GFN_CALL(canCall, GFN_get_name, value)) {
+        return get_name(value);
+    }
+
+    return NULL;
+}
 
 /* Documented in header. */
 zvalue get_type(zvalue value) {
@@ -253,6 +266,9 @@ MOD_INIT(Value) {
 
     // Note: The `typeSystem` module initializes `TYPE_Value`.
 
+    GFN_get_name = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_name"));
+    datImmortalize(GFN_get_name);
+
     GFN_debugString =
         makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     datImmortalize(GFN_debugString);
@@ -284,6 +300,9 @@ MOD_INIT(Value) {
 
 /* Documented in header. */
 zvalue TYPE_Value = NULL;
+
+/* Documented in header. */
+zvalue GFN_get_name = NULL;
 
 /* Documented in header. */
 zvalue GFN_debugString = NULL;

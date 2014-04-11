@@ -23,17 +23,13 @@
 /** Type value for in-model type `Value`. */
 extern zvalue TYPE_Value;
 
-/**
- * Generic `debugString(value)`: Returns a minimal string form of the
- * given value. Notably, functions and generics include their names.
- * The default implementation returns strings of the form
- * `@(TypeName @ address)`.
- */
+/** Generic `get_name(value)`: Documented in spec. */
+extern zvalue GFN_get_name;
+
+/** Generic `debugString(value)`: Documented in spec. */
 extern zvalue GFN_debugString;
 
-/**
- * Generic `gcMark(value)`: Does GC marking for the given value.
- */
+/** Generic `gcMark(value)`: Does GC marking for the given value. */
 extern zvalue GFN_gcMark;
 
 /** Generic `perEq(value, other)`: Documented in spec. */
@@ -61,6 +57,17 @@ extern zvalue GFN_totalOrder;
  * `valDataOf(value, NULL)`.
  */
 zvalue dataOf(zvalue value);
+
+/**
+ * Calls `get_name` on the given value.
+ */
+zvalue get_name(zvalue value);
+
+/**
+ * Calls `get_name` on the given value, if it is defined. If not, returns
+ * `NULL`.
+ */
+zvalue get_nameIfDefined(zvalue value);
 
 /**
  * Gets the type of the given value. `value` must be a valid value (in
