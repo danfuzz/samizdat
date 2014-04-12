@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
-def get_nodeName = $Lang0Node::get_nodeName;
+def get_name = $Lang0Node::get_name;
 
 ## `node.get_varDefs()`: Generic that returns list of variable names
 ## newly-defined by `node`. Result may have duplicates.
@@ -55,14 +55,14 @@ genericBind(
     get_varDefs,
     @@varDef,
     fn varDef_get_varDefs(this) {
-        <> [this.nodeName]
+        <> [this.name]
     });
 
 genericBind(
     get_varDefs,
     @@varDefMutable,
     fn varDefMutable_get_varDefs(this) {
-        <> [this.nodeName]
+        <> [this.name]
     });
 
 genericBind(

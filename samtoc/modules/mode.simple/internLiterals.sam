@@ -14,7 +14,7 @@ def get_function   = $Lang0Node::get_function;
 def get_id         = $Lang0Node::get_id;
 def get_maxArgs    = $Lang0Node::get_maxArgs;
 def get_minArgs    = $Lang0Node::get_minArgs;
-def get_nodeName   = $Lang0Node::get_nodeName;
+def get_name       = $Lang0Node::get_name;
 def get_nodeValue  = $Lang0Node::get_nodeValue;
 def get_statements = $Lang0Node::get_statements;
 def get_yield      = $Lang0Node::get_yield;
@@ -50,7 +50,7 @@ genericBind(
     lits,
     @@closure,
     fn closure_lits(this, interner) {
-        def name = (def value = this.nodeName)
+        def name = (def value = this.name)
             & {name: lits(@literal{value}, interner)}
             | {};
 
@@ -87,7 +87,7 @@ genericBind(
     @@varBind,
     fn varBind_lits(this, interner) {
         <> @varBind{
-            name: this.nodeName,
+            name: this.name,
             value: lits(this.nodeValue, interner)
         }
     });
@@ -99,7 +99,7 @@ genericBind(
         def value = ifValue { <> this.nodeValue }
             { value <> {value: lits(value, interner)} }
             { <> {} };
-        <> @varDef{name: this.nodeName, value*}
+        <> @varDef{name: this.name, value*}
     });
 
 genericBind(
@@ -109,7 +109,7 @@ genericBind(
         def value = ifValue { <> this.nodeValue }
             { value <> {value: lits(value, interner)} }
             { <> {} };
-        <> @varDefMutable{name: this.nodeName, value*}
+        <> @varDefMutable{name: this.name, value*}
     });
 
 genericBind(

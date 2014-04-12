@@ -17,7 +17,7 @@ def REFS               = $Lang0Node::REFS;
 def get_formals        = $Lang0Node::get_formals;
 def get_interpolate    = $Lang0Node::get_interpolate;
 def get_lvalue         = $Lang0Node::get_lvalue;
-def get_nodeName       = $Lang0Node::get_nodeName;
+def get_name           = $Lang0Node::get_name;
 def get_nodeValue      = $Lang0Node::get_nodeValue;
 def get_statements     = $Lang0Node::get_statements;
 def get_yieldDef       = $Lang0Node::get_yieldDef;
@@ -231,7 +231,7 @@ def parFnCommon = $Peg::makeMainSequence(
 ## Documented in spec.
 def parFnDef = $Peg::makeMainSequence(
     parFnCommon,
-    $Peg::makeCode { closure <> get_nodeName(closure) },
+    $Peg::makeCode { closure <> get_name(closure) },
     $Peg::makeCode { closure, name ->
         ## `@topDeclaration` is split apart in the `programBody` rule.
         <> @topDeclaration{
@@ -245,7 +245,7 @@ parFnExpression := $Peg::makeMainSequence(
     parFnCommon,
     $Peg::makeChoice(
         $Peg::makeSequence(
-            $Peg::makeCode { closure <> get_nodeName(closure) },
+            $Peg::makeCode { closure <> get_name(closure) },
             $Peg::makeCode { closure, name ->
                 def mainClosure = @closure{
                     formals:    [],
@@ -316,7 +316,7 @@ def parMapping = $Peg::makeMainSequence(
                 ifIs { <> hasType(value, @@varRef) }
                     {
                         <out> makeCall(REFS::makeValueMap,
-                            makeLiteral(get_nodeName(value)), value)
+                            makeLiteral(get_name(value)), value)
                     }
             }
             {
