@@ -55,14 +55,14 @@ genericBind(
     get_varDefs,
     @@varDef,
     fn varDef_get_varDefs(this) {
-        <> [this.nodeName]
+        <> [this.name]
     });
 
 genericBind(
     get_varDefs,
     @@varDefMutable,
     fn varDefMutable_get_varDefs(this) {
-        <> [this.nodeName]
+        <> [this.name]
     });
 
 genericBind(

@@ -50,7 +50,7 @@ genericBind(
     lits,
     @@closure,
     fn closure_lits(this, interner) {
-        def name = (def value = this.nodeName)
+        def name = (def value = this.name)
             & {name: lits(@literal{value}, interner)}
             | {};
 
@@ -87,7 +87,7 @@ genericBind(
     @@varBind,
     fn varBind_lits(this, interner) {
         <> @varBind{
-            name: this.nodeName,
+            name: this.name,
             value: lits(this.nodeValue, interner)
         }
     });
@@ -99,7 +99,7 @@ genericBind(
         def value = ifValue { <> this.nodeValue }
             { value <> {value: lits(value, interner)} }
             { <> {} };
-        <> @varDef{name: this.nodeName, value*}
+        <> @varDef{name: this.name, value*}
     });
 
 genericBind(
@@ -109,7 +109,7 @@ genericBind(
         def value = ifValue { <> this.nodeValue }
             { value <> {value: lits(value, interner)} }
             { <> {} };
-        <> @varDefMutable{name: this.nodeName, value*}
+        <> @varDefMutable{name: this.name, value*}
     });
 
 genericBind(

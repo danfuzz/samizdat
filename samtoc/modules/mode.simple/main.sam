@@ -63,7 +63,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
                 $vars::freeVarDecl(name, idx))
         )*);
 
-    <> if (def ref = clo.nodeName) {
+    <> if (def ref = clo.name) {
         <> $CodeGen::makeComment("\%q(literals[ref.id])", decl)
     } else {
         <> decl
@@ -72,7 +72,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
 
 ## Returns a full `makeClosure_*` definition, as as string.
 fn closureMaker(cloIdx, clo, literals) {
-    def name = (def n = clo.nodeName)
+    def name = (def n = clo.name)
         & translate(n, $Box::nullBox).flatten()
         | "NULL";
 
@@ -142,7 +142,7 @@ fn closureBody(cloIdx, clo, literals) {
         <> $CodeGen::makeStatement(s).usualIndent(1)
     ];
 
-    def nameLine = (def ref = clo.nodeName)
+    def nameLine = (def ref = clo.name)
         & "/* \%q(literals[ref.id]) */\n"
         | "";
 

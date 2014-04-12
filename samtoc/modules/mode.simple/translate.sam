@@ -113,11 +113,11 @@ genericBind(
     translate,
     @@varBind,
     fn varBind_translate(this, varsBox) {
-        def name = this.nodeName;
+        def name = this.name;
         def value = translate(this.nodeValue, varsBox);
         def vars = fetch(varsBox);
         def binding = vars[name]
-            | die("Bind of undefined variable: \%q(this.nodeName)");
+            | die("Bind of undefined variable: \%q(this.name)");
 
         <> $CodeGen::makeCall("boxStore", binding::name, value)
     });
@@ -130,7 +130,7 @@ genericBind(
             & $CodeGen::makeCall("makeResult", translate(v, varsBox))
             | $CodeGen::makeCall("makePromise");
 
-        <> varDefCommon(this.nodeName, value, varsBox)
+        <> varDefCommon(this.name, value, varsBox)
     });
 
 genericBind(
@@ -142,17 +142,17 @@ genericBind(
             | "NULL";
 
         <> varDefCommon(
-            this.nodeName, $CodeGen::makeCall("makeCell", value), varsBox)
+            this.name, $CodeGen::makeCall("makeCell", value), varsBox)
     });
 
 genericBind(
     translate,
     @@varRef,
     fn varRef_translate(this, varsBox) {
-        def name = this.nodeName;
+        def name = this.name;
         def vars = fetch(varsBox);
         def binding = vars[name]
-            | die("Reference of undefined variable: \%q(this.nodeName)");
+            | die("Reference of undefined variable: \%q(this.name)");
         <> $CodeGen::makeCall("boxFetch", binding::name)
     });
 

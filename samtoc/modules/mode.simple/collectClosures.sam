@@ -51,7 +51,7 @@ genericBind(
 
         def newNode = @closure{
             formals: this.formals,
-            ((def name = this.nodeName) & {name} | {})*,
+            ((def name = this.name) & {name} | {})*,
             statements,
             varRefs,
             ((def yield = optYield*) & {yield} | {})*,
@@ -92,7 +92,7 @@ genericBind(
     @@varBind,
     fn varBind_bodies(this, bodiesBox) {
         def value = bodies(this.nodeValue, bodiesBox);
-        <> @varBind{name: this.nodeName, value}
+        <> @varBind{name: this.name, value}
     });
 
 genericBind(
@@ -102,7 +102,7 @@ genericBind(
         def value = ifValue { <> this.nodeValue }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
-        <> @varDef{name: this.nodeName, value*}
+        <> @varDef{name: this.name, value*}
     });
 
 genericBind(
@@ -112,14 +112,14 @@ genericBind(
         def value = ifValue { <> this.nodeValue }
             { value <> {value: bodies(value, bodiesBox)} }
             { <> {} };
-        <> @varDefMutable{name: this.nodeName, value*}
+        <> @varDefMutable{name: this.name, value*}
     });
 
 genericBind(
     bodies,
     @@varRef,
     fn varRef_bodies(this, bodiesBox) {
-        <> @varRef{name: this.nodeName}
+        <> @varRef{name: this.name}
     });
 
 ## Collects all closure nodes at or under the given one into a list.
