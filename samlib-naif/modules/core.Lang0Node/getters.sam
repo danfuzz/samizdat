@@ -75,7 +75,7 @@ fn get_minArgs(node) {
 };
 
 ## Documented in spec.
-fn get_nodeName(node) {
+fn get_name(node) {
     <> node::name
 };
 
@@ -108,7 +108,7 @@ fn get_yieldDef(node) {
     get_lvalue,
     get_maxArgs,
     get_minArgs,
-    get_nodeName,
+    get_name,
     get_nodeValue,
     get_statements,
     get_yield,

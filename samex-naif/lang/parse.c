@@ -160,10 +160,10 @@ static zvalue listAppend(zvalue list, zvalue elem) {
     return GFN_CALL(cat, list, listFrom1(elem));
 }
 
-/** Equivalent to `REFS::name` in the spec. */
+/** Equivalent to `REFS::<name>` in the spec. */
 #define REFS(name) (makeVarRef(STR_##name))
 
-/** Equivalent to `get_nodeName(node)` in the spec. */
+/** Equivalent to `get_<name>(node)` in the spec. */
 #define GET(name, node) (get((node), STR_##name))
 
 /* Defined below.*/
