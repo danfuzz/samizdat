@@ -23,7 +23,7 @@
  * environment. Returns the evaluated value of the expression, which
  * will be `NULL` if the expression did not yield a value.
  *
- * See the Samizdat Layer 0 spec for details on expression nodes.
+ * See the spec for details on expression nodes.
  */
 zvalue langEval0(zvalue env, zvalue node);
 
@@ -34,7 +34,7 @@ zvalue langEval0(zvalue env, zvalue node);
  * in Samizdat Layer 0. The result is an expression node in the
  * Samizdat Layer 0 parse tree form.
  *
- * See the Samizdat Layer 0 spec for details about the grammar.
+ * See the spec for details about the grammar.
  */
 zvalue langParseExpression0(zvalue expression);
 
@@ -45,7 +45,7 @@ zvalue langParseExpression0(zvalue expression);
  * program in Samizdat Layer 0. The result is a `function` node in the
  * Samizdat Layer 0 parse tree form.
  *
- * See the Samizdat Layer 0 spec for details about the grammar.
+ * See the spec for details about the grammar.
  */
 zvalue langParseProgram0(zvalue program);
 
@@ -53,7 +53,7 @@ zvalue langParseProgram0(zvalue program);
  * Tokenizes the given program text into a list of tokens, suitable
  * for passing to `langParseProgram0()`.
  *
- * See the Samizdat Layer 0 spec for details about the grammar.
+ * See the spec for details about the grammar.
  */
 zvalue langTokenize0(zvalue programText);
 

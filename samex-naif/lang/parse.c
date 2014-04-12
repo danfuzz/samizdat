@@ -422,7 +422,7 @@ DEF_PARSE(optSemicolons) {
  * Samizdat 0 Tree Grammar
  *
  * The following is a near-direct transliterations of the tree syntax
- * rules from the Samizdat Layer 0 spec.
+ * rules from the spec.
  */
 
 /* Documented in spec. */
