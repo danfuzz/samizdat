@@ -11,6 +11,11 @@ of the system.
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `debugName(type) <> . | void`
+
+Returns the name of the builtin, if it has one. This is can be
+an arbitrary value, which is typically (but not necessarily) a string.
+
 #### `perEq(builtin, other) <> builtin | void`
 
 Calls `totalEq`.
@@ -28,15 +33,6 @@ refer to the exact same functionality.
 
 Performs an identity comparison. Builtins have a consistent, transitive, and
 symmetric &mdash; but arbitrary &mdash; total order.
-
-
-<br><br>
-### Generic Function Definitions: One-Offs
-
-#### `get_name(type) <> . | void`
-
-Returns the name of the builtin, if it has one. This is can be
-an arbitrary value, which is typically (but not necessarily) a string.
 
 
 <br><br>

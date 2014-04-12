@@ -61,12 +61,6 @@ hand-in-hand with `get_value`.
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error if it is bound but inapplicable.
 
-#### `get_name(value) <> . | void`
-
-Some values have an associated name, or an optional associated name.
-This generic provides access to that name. There is no restriction
-on the composition (type, etc.) of a name.
-
 #### `get_size(value) <> int`
 
 Returns the number of elements in the given value. This function is intended

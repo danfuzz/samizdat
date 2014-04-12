@@ -7,7 +7,6 @@
 #include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
-#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -54,6 +53,11 @@ zvalue dataOf(zvalue value) {
 
 /* Documented in header. */
 extern void *datPayload(zvalue value);
+
+/* Documented in header. */
+zvalue debugName(zvalue value) {
+    return GFN_CALL(debugName, value);
+}
 
 /* Documented in header. */
 zvalue get_type(zvalue value) {
@@ -156,10 +160,15 @@ zorder valZorder(zvalue value, zvalue other) {
  */
 
 /* Documented in header. */
+METH_IMPL(Value, debugName) {
+    return NULL;
+}
+
+/* Documented in header. */
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = get_type(value);
-    zvalue name = get_nameIfDefined(value);
+    zvalue name = debugName(value);
     char addrBuf[19]; // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
@@ -253,6 +262,9 @@ MOD_INIT(Value) {
 
     // Note: The `typeSystem` module initializes `TYPE_Value`.
 
+    GFN_debugName = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugName"));
+    datImmortalize(GFN_debugName);
+
     GFN_debugString =
         makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     datImmortalize(GFN_debugString);
@@ -274,6 +286,7 @@ MOD_INIT(Value) {
         makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalOrder"));
     datImmortalize(GFN_totalOrder);
 
+    METH_BIND(Value, debugName);
     METH_BIND(Value, debugString);
     METH_BIND(Value, gcMark);
     METH_BIND(Value, perEq);
@@ -284,6 +297,9 @@ MOD_INIT(Value) {
 
 /* Documented in header. */
 zvalue TYPE_Value = NULL;
+
+/* Documented in header. */
+zvalue GFN_debugName = NULL;
 
 /* Documented in header. */
 zvalue GFN_debugString = NULL;

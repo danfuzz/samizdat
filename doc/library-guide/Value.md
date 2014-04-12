@@ -7,6 +7,17 @@ Value (the base type)
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)
 
+#### `debugName(value) <> . | void`
+
+Some values have an associated name, or an optional associated name.
+This generic provides access to that name. There is no restriction
+on the composition (type, etc.) of a name.
+
+The type `Value` binds this to a function which always returns void.
+
+**Note:** In general, it is a bad idea to use this function for any
+purpose other than temporary debugging code.
+
 #### `debugString(value) <> string`
 
 Returns a string representation of `value` meant to aid in debugging.
@@ -14,7 +25,7 @@ This is in contrast to the functions in `core.Format` which are meant to
 help format values for more useful consumption.
 
 The type `Value` binds this to a function which returns a string consisting
-of the type name, name (result of call to `get_name()`), and low-level
+of the type name, name (result of call to `debugName()`), and low-level
 identifier (e.g. a memory address) of the value. Various of the core types
 override this to provide more useful information.
 
@@ -188,7 +199,7 @@ identical to it. Otherwise returns void.
 #### `get_typeName(value) <> .`
 
 Returns the name of the given `value`'s type. This function is the equivalent
-to `get_name(get_type(value))`.
+to `typeName(get_type(value))`.
 
 #### `gt(value, other) <> logic`
 

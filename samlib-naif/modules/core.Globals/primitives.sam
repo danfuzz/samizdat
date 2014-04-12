@@ -28,6 +28,7 @@
     cat,
     collect,
     dataOf,
+    debugName,
     debugString,
     die,
     eq,
@@ -35,7 +36,6 @@
     genericBind,
     get,
     get_key,
-    get_name,
     get_size,
     get_type,
     get_value,
@@ -67,5 +67,6 @@
     toString,
     totalEq,
     totalOrder,
+    typeName,
     typeParent
 }

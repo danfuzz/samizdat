@@ -22,9 +22,6 @@ extern zvalue GFN_get;
 /** Generic `get_key(value)`: Documented in spec. */
 extern zvalue GFN_get_key;
 
-/** Generic `get_name(value)`: Documented in spec. */
-extern zvalue GFN_get_name;
-
 /** Generic `get_size(collection)`: Documented in spec. */
 extern zvalue GFN_get_size;
 
@@ -47,17 +44,6 @@ extern zvalue GFN_toString;
  * Calls the `get` generic.
  */
 zvalue get(zvalue coll, zvalue key);
-
-/**
- * Calls `get_name` on the given value.
- */
-zvalue get_name(zvalue value);
-
-/**
- * Calls `get_name` on the given value, if it is defined. If not, returns
- * `NULL`.
- */
-zvalue get_nameIfDefined(zvalue value);
 
 /**
  * Calls `nth`, converting the given `zint` index to an `Int` value.

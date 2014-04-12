@@ -26,6 +26,7 @@ PRIM_DEF(Uniqlet,                 TYPE_Uniqlet);
 PRIM_DEF(Value,                   TYPE_Value);
 
 // Generic functions for all values.
+PRIM_DEF(debugName,               GFN_debugName);
 PRIM_DEF(debugString,             GFN_debugString);
 PRIM_DEF(perEq,                   GFN_perEq);
 PRIM_DEF(perOrder,                GFN_perOrder);
@@ -36,7 +37,6 @@ PRIM_DEF(totalOrder,              GFN_totalOrder);
 PRIM_DEF(cat,                     GFN_cat);
 PRIM_DEF(get,                     GFN_get);
 PRIM_DEF(get_key,                 GFN_get_key);
-PRIM_DEF(get_name,                GFN_get_name);
 PRIM_DEF(get_size,                GFN_get_size);
 PRIM_DEF(get_value,               GFN_get_value);
 PRIM_DEF(nth,                     GFN_nth);
@@ -114,6 +114,7 @@ PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(note,                   1, 1);
 PRIM_FUNC(optValue,               1, 1);
 PRIM_FUNC(order,                  2, 2);
+PRIM_FUNC(typeName,               1, 1);
 PRIM_FUNC(typeParent,             1, 1);
 
 // Primitive functions: intended for modularization

@@ -12,7 +12,6 @@
 #define _TYPE_TYPE_H_
 
 #include "dat.h"
-#include "type/OneOff.h"
 
 #include <stdbool.h>
 
@@ -81,6 +80,11 @@ bool typeIsDerived(zvalue type);
  * to `valSelfIdOf`.
  */
 bool typeIsSelfish(zvalue type);
+
+/**
+ * Gets the name of the given type.
+ */
+zvalue typeName(zvalue type);
 
 /**
  * Gets the parent type of the given type.

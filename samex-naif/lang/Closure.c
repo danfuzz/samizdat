@@ -15,7 +15,6 @@
 #include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"
-#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -373,6 +372,12 @@ METH_IMPL(Closure, canCall) {
 }
 
 /* Documented in header. */
+METH_IMPL(Closure, debugName) {
+    zvalue closure = args[0];
+    return get(getInfo(closure)->defMap, STR_name);
+}
+
+/* Documented in header. */
 METH_IMPL(Closure, gcMark) {
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
@@ -380,12 +385,6 @@ METH_IMPL(Closure, gcMark) {
     frameMark(&info->frame);
     datMark(info->defMap); // All the other bits are derived from this.
     return NULL;
-}
-
-/* Documented in header. */
-METH_IMPL(Closure, get_name) {
-    zvalue closure = args[0];
-    return get(getInfo(closure)->defMap, STR_name);
 }
 
 /** Initializes the module. */
@@ -399,7 +398,7 @@ MOD_INIT(Closure) {
 
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
-    METH_BIND(Closure, get_name);
+    METH_BIND(Closure, debugName);
     METH_BIND(Closure, gcMark);
 
     nodeCache = EMPTY_MAP;

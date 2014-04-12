@@ -11,7 +11,6 @@
 #include "type/Data.h"
 #include "type/Int.h"
 #include "type/Jump.h"
-#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Uniqlet.h"
@@ -287,6 +286,12 @@ bool typeIsSelfish(zvalue type) {
 }
 
 /* Documented in header. */
+zvalue typeName(zvalue type) {
+    assertHasTypeType(type);
+    return getInfo(type)->name;
+}
+
+/* Documented in header. */
 zvalue typeParent(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->parent;
@@ -329,14 +334,6 @@ METH_IMPL(Type, gcMark) {
     datMark(info->secret);
 
     return NULL;
-}
-
-/* Documented in header. */
-METH_IMPL(Type, get_name) {
-    zvalue type = args[0];
-    TypeInfo *info = getInfo(type);
-
-    return info->name;
 }
 
 /* Documented in header. */
@@ -412,7 +409,6 @@ MOD_INIT(Type) {
 
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);
-    METH_BIND(Type, get_name);
     METH_BIND(Type, totalOrder);
 }
 

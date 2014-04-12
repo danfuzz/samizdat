@@ -11,7 +11,6 @@
 #include "impl.h"
 #include "type/Builtin.h"
 #include "type/Generic.h"
-#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -226,6 +225,14 @@ METH_IMPL(Generic, canCall) {
 }
 
 /* Documented in header. */
+METH_IMPL(Generic, debugName) {
+    zvalue generic = args[0];
+    GenericInfo *info = getInfo(generic);
+
+    return info->name;
+}
+
+/* Documented in header. */
 METH_IMPL(Generic, gcMark) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
@@ -238,14 +245,6 @@ METH_IMPL(Generic, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
-METH_IMPL(Generic, get_name) {
-    zvalue generic = args[0];
-    GenericInfo *info = getInfo(generic);
-
-    return info->name;
-}
-
 /** Initializes the module. */
 MOD_INIT(Generic) {
     MOD_USE(Function);
@@ -255,8 +254,8 @@ MOD_INIT(Generic) {
 
     METH_BIND(Generic, call);
     METH_BIND(Generic, canCall);
+    METH_BIND(Generic, debugName);
     METH_BIND(Generic, gcMark);
-    METH_BIND(Generic, get_name);
 }
 
 /* Documented in header. */

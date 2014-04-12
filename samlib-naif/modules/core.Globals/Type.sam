@@ -13,7 +13,7 @@
 
 ## Documented in spec.
 fn get_typeName(value) {
-    <> get_name(get_type(value))
+    <> typeName(get_type(value))
 };
 
 <> {

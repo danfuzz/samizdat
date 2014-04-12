@@ -156,13 +156,14 @@ fn String_convert(this) {
     ## order to find the encoded length.
     def bodyChars = cat((ch in this <> stringChar(ch))*);
 
-    <> $CodeGen::makeCall("stringFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
+    <> $CodeGen::makeCall("stringFromUtf8",
+        "\(#bodyChars)", "\"\(bodyChars)\"")
 };
 genericBind(convert, String, String_convert);
 
 ## Converts a type. Only works on derived data types.
 fn Type_convert(this) {
-    <> $CodeGen::makeCall("makeDerivedDataType", convert(get_name(this)))
+    <> $CodeGen::makeCall("makeDerivedDataType", convert(typeName(this)))
 };
 genericBind(convert, Type, Type_convert);
 

@@ -230,7 +230,7 @@ fn Type_sourceGeneral(this, adorn) {
     ifValue { <> get(SPECIAL_VALUES, this) }
         { string -> return string };
 
-    def name = get_name(this);
+    def name = typeName(this);
 
     ifNot { <> eq(typeParent(this), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
@@ -264,13 +264,8 @@ fn Value_sourceGeneral(this, adorn) {
     ifNot { <> eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifIs { <> canCall(get_name, this) }
-                {
-                    ## It binds `get_name` but might not have a name.
-                    <> ifValue { <> get_name(this) }
-                        { name <> keyString(name) }
-                        { <> "..." }
-                }
+            def body = ifValue { <> debugName(this) }
+                { name <> keyString(name) }
                 { <> "..." };
 
             return cat(prefix, "<", body, ">")
