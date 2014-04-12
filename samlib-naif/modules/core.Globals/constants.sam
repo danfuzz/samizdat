@@ -10,7 +10,7 @@
 ## Exported Definitions
 ##
 
-## These are all documented in Samizdat Layer 0 spec.
+## These are all documented in the spec.
 
 <> {
     false: @Boolean(0),
