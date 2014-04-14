@@ -16,7 +16,7 @@ def $Number     = moduleLoad(["proto", "Number"]);
 ##
 
 ## Generator used when iterating over maps.
-fn MapGenerator_nextValue(this, box) {
+fn @@MapGenerator.nextValue(box) {
     def index = this::index;
 
     <> ifValue { <> $Collection::nthMapping(this::map, index) }
@@ -29,7 +29,8 @@ fn MapGenerator_nextValue(this, box) {
             store(box)
         }
 };
-genericBind(nextValue, @@MapGenerator, MapGenerator_nextValue);
 
 ## Just use the standard implementation.
-genericBind(collect, @@MapGenerator, Generator_stdCollect);
+fn @@MapGenerator.collect() {
+    <> Generator_stdCollect(this)
+};

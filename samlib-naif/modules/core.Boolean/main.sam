@@ -7,6 +7,13 @@
 ##
 
 def $Bitwise = moduleLoad(["core", "Bitwise"]);
+def and     = $Bitwise::and;
+def bit     = $Bitwise::bit;
+def bitSize = $Bitwise::bitSize;
+def not     = $Bitwise::not;
+def or      = $Bitwise::or;
+def shl     = $Bitwise::shl;
+def xor     = $Bitwise::xor;
 
 
 ##
@@ -14,58 +21,49 @@ def $Bitwise = moduleLoad(["core", "Bitwise"]);
 ##
 
 ## Documented in spec.
-fn Boolean_and(this, other) {
-    <> @Boolean($Bitwise::and(dataOf(this), dataOf(other)))
+fn @@Boolean.and(other) {
+    <> @Boolean(and(dataOf(this), dataOf(other)))
 };
-genericBind($Bitwise::and, @@Boolean, Boolean_and);
 
 ## Documented in spec.
-fn Boolean_bit(this, n) {
-    <> $Bitwise::bit(dataOf(this), n)
+fn @@Boolean.bit(n) {
+    <> bit(dataOf(this), n)
 };
-genericBind($Bitwise::bit, @@Boolean, Boolean_bit);
 
 ## Documented in spec.
-fn Boolean_bitSize(this) {
+fn @@Boolean.bitSize() {
     <> 1
 };
-genericBind($Bitwise::bitSize, @@Boolean, Boolean_bitSize);
 
 ## Documented in spec.
-fn Boolean_not(this) {
-    <> @Boolean($Bitwise::xor(dataOf(this), 1))
+fn @@Boolean.not() {
+    <> @Boolean(xor(dataOf(this), 1))
 };
-genericBind($Bitwise::not, @@Boolean, Boolean_not);
 
 ## Documented in spec.
-fn Boolean_or(this, other) {
-    <> @Boolean($Bitwise::or(dataOf(this), dataOf(other)))
+fn @@Boolean.or(other) {
+    <> @Boolean(or(dataOf(this), dataOf(other)))
 };
-genericBind($Bitwise::or, @@Boolean, Boolean_or);
 
 ## Documented in spec.
-fn Boolean_shl(this, n) {
-    def newValue = $Bitwise::shl(dataOf(this), n);
+fn @@Boolean.shl(n) {
+    def newValue = shl(dataOf(this), n);
 
     <> ifValueOr { <> get({0: false, 1: true}, newValue) }
         { die("Undefined boolean shift result.") }
 };
-genericBind($Bitwise::shl, @@Boolean, Boolean_shl);
 
 ## Documented in spec.
-fn Boolean_toInt(this) {
+fn @@Boolean.toInt() {
     <> dataOf(this)
 };
-genericBind(toInt, @@Boolean, Boolean_toInt);
 
 ## Documented in spec.
-fn Boolean_toNumber(this) {
+fn @@Boolean.toNumber() {
     <> dataOf(this)
 };
-genericBind(toNumber, @@Boolean, Boolean_toNumber);
 
 ## Documented in spec.
-fn Boolean_xor(this, other) {
-    <> @Boolean($Bitwise::xor(dataOf(this), dataOf(other)))
+fn @@Boolean.xor(other) {
+    <> @Boolean(xor(dataOf(this), dataOf(other)))
 };
-genericBind($Bitwise::xor, @@Boolean, Boolean_xor);
