@@ -82,6 +82,11 @@ fn makeVarRefLvalue(name) {
 };
 
 ## Documented in spec.
+fn withoutBind(node) {
+    <> @(get_typeName(node))($Collection::del(dataOf(node), "bind"))
+};
+
+## Documented in spec.
 fn withoutInterpolate(node) {
     <> @(get_typeName(node))($Collection::del(dataOf(node), "interpolate"))
 };
@@ -108,6 +113,7 @@ fn withoutIntermediates(node) {
     makeVarDefMutable,
     makeVarRef,
     makeVarRefLvalue,
+    withoutBind,
     withoutIntermediates,
     withoutInterpolate
 }

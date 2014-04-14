@@ -196,6 +196,13 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `withoutBind(node) <> node`
+
+Makes a node just like the given one, except without any binding
+for `bind`. This is used by parser code when processing generic function
+binding nodes, to prevent passing along a superfluous binding in `closure`
+nodes.
+
 #### `withoutIntermediates(node) <> node`
 
 Makes a node just like the given one, except without any "intermediate"
