@@ -18,28 +18,22 @@ fn makeAssign(target, value) {
     <> @Assign{target, value, flat}
 };
 
-genericBind(
-    flatten,
-    @@Assign,
-    fn Assign_flatten(this) {
-        <> this::flat
-    });
+fn @@Assign.flatten() {
+    <> this::flat
+};
 
-genericBind(
-    indent,
-    @@Assign,
-    fn Assign_indent(this, level, maxColumns) {
-        def prefix = indentation(level);
+fn @@Assign.indent(level, maxColumns) {
+    def prefix = indentation(level);
 
-        if ((#this::flat + #prefix) <= maxColumns) {
-            return "\[prefix, this::flat]"
-        };
+    if ((#this::flat + #prefix) <= maxColumns) {
+        return "\[prefix, this::flat]"
+    };
 
-        <> "\[
-            this::target.indent(level, maxColumns),
-            " =\n",
-            this::value.indent(level + 1, maxColumns)
-        ]"
-    });
+    <> "\[
+        this::target.indent(level, maxColumns),
+        " =\n",
+        this::value.indent(level + 1, maxColumns)
+    ]"
+};
 
 <> {makeAssign}

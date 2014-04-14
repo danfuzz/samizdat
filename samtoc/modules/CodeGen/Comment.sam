@@ -22,31 +22,25 @@ fn makeComment(text, optPayload?) {
     }
 };
 
-genericBind(
-    flatten,
-    @@Comment,
-    fn Comment_flatten(this) {
-        <> this::flat
-    });
+fn @@Comment.flatten() {
+    <> this::flat
+};
 
-genericBind(
-    indent,
-    @@Comment,
-    fn Comment_indent(this, level, maxColumns) {
-        def prefix = indentation(level);
+fn @@Comment.indent(level, maxColumns) {
+    def prefix = indentation(level);
 
-        if ((#this::flat + #prefix) <= maxColumns) {
-            return "\[prefix, this::flat]"
-        };
+    if ((#this::flat + #prefix) <= maxColumns) {
+        return "\[prefix, this::flat]"
+    };
 
-        <> if (def p = this::payload) {
-            <> "\[
-                prefix, "// ", this::text, "\n",
-                p.indent(level, maxColumns)
-            ]"
-        } else {
-            <> "\(prefix)/* \(this::text) */"
-        }
-    });
+    <> if (def p = this::payload) {
+        <> "\[
+            prefix, "// ", this::text, "\n",
+            p.indent(level, maxColumns)
+        ]"
+    } else {
+        <> "\(prefix)/* \(this::text) */"
+    }
+};
 
 <> {makeComment}
