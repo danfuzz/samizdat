@@ -190,22 +190,20 @@ fn stringChar(ch) {
 };
 
 ## Stringifies an int.
-fn Int_sourceGeneral(this, adorn) {
+fn Int.sourceGeneral(adorn) {
     <> intWithBase(this, 10)
 };
-genericBind(sourceGeneral, Int, Int_sourceGeneral);
 
 ## Stringifies a list.
-fn List_sourceGeneral(this, adorn) {
+fn List.sourceGeneral(adorn) {
     def listElems = $Generator::filterAll(this)
         { elem <> cat(", ", sourceGeneral(elem, true)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems), "]")
 };
-genericBind(sourceGeneral, List, List_sourceGeneral);
 
 ## Stringifies a map.
-fn Map_sourceGeneral(this, adorn) {
+fn Map.sourceGeneral(adorn) {
     def mapElems = $Generator::filterAll(this)
         { mapping ->
             def key = keyString(get_key(mapping));
@@ -215,18 +213,16 @@ fn Map_sourceGeneral(this, adorn) {
 
     <> adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
-genericBind(sourceGeneral, Map, Map_sourceGeneral);
 
 ## Stringifies a string.
-fn String_sourceGeneral(this, adorn) {
+fn String.sourceGeneral(adorn) {
     def bodyChars = $Generator::makeFilterGenerator(this)
         { ch <> stringChar(ch) };
     <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
-genericBind(sourceGeneral, String, String_sourceGeneral);
 
 ## Stringifies a type.
-fn Type_sourceGeneral(this, adorn) {
+fn Type.sourceGeneral(adorn) {
     ifValue { <> get(SPECIAL_VALUES, this) }
         { string -> return string };
 
@@ -244,10 +240,9 @@ fn Type_sourceGeneral(this, adorn) {
 
     <> adornIf(adorn, "@@", body, "")
 };
-genericBind(sourceGeneral, Type, Type_sourceGeneral);
 
 ## Stringifies a derived value or an opaque core value.
-fn Value_sourceGeneral(this, adorn) {
+fn Value.sourceGeneral(adorn) {
     ifValue { <> get(SPECIAL_VALUES, this) }
         { string -> return string };
 
@@ -287,7 +282,6 @@ fn Value_sourceGeneral(this, adorn) {
             <> prefix
         };
 };
-genericBind(sourceGeneral, Value, Value_sourceGeneral);
 
 
 ##
@@ -299,24 +293,21 @@ def humanString = makeRegularGeneric("humanString", 1, 1);
 
 ## Human-stringifies a list, which recursively flattens it using
 ## `humanString`.
-fn List_humanString(this) {
+fn List.humanString() {
     def elems = $Generator::makeFilterGenerator(humanString, this);
     <> cat("", elems*)
 };
-genericBind(humanString, List, List_humanString);
 
 ## Human-stringifies a string, which just returns the string as-is.
-fn String_humanString(this) {
+fn String.humanString() {
     <> this
 };
-genericBind(humanString, String, String_humanString);
 
 ## Default human-stringifier, which just calls through to
 ## `sourceGeneral`.
-fn Value_humanString(this) {
+fn Value.humanString() {
     <> sourceGeneral(this, true)
 };
-genericBind(humanString, Value, Value_humanString);
 
 
 ##
