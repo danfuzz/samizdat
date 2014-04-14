@@ -154,6 +154,14 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
 }
 
 /**
+ * Makes a 3 element list.
+ */
+static zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
+    zvalue elems[3] = { e1, e2, e3 };
+    return listFromArray(3, elems);
+}
+
+/**
  * Appends an element to a list.
  */
 static zvalue listAppend(zvalue list, zvalue elem) {
@@ -304,6 +312,22 @@ static zvalue makeVarRef(zvalue name) {
 /* Documented in spec. */
 static zvalue makeOptValue(zvalue expression) {
     return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
+}
+
+/* Documented in spec. */
+static zvalue withFormals(zvalue node, zvalue formals) {
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_formals, formals),
+        NULL);
+}
+
+/* Documented in spec. */
+static zvalue withoutBind(zvalue node) {
+    return makeValue(
+        get_type(node),
+        collDel(dataOf(node), STR_bind),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -818,17 +842,45 @@ DEF_PARSE(nullaryClosure) {
 }
 
 /**
- * Helper for `fnCommon`: Parses `(@identifier | [:])` with appropriate map
- * wrapping.
+ * Helper for `fnCommon`: Parses the first `name` alternate.
  */
-DEF_PARSE(fnCommon2) {
-    zvalue n = MATCH(identifier);
+DEF_PARSE(fnCommon1) {
+    MARK();
 
-    if (n == NULL) {
-        return EMPTY_MAP;
-    }
+    zvalue n = MATCH_OR_REJECT(identifier);
+    REJECT_IF(MATCH(CH_DOT));
 
     return mapFrom1(STR_name, dataOf(n));
+}
+
+/**
+ * Helper for `fnCommon`: Parses the second `name` alternate.
+ */
+DEF_PARSE(fnCommon2) {
+    MARK();
+
+    zvalue bind = NULL;
+    if (bind == NULL) { bind = PARSE(varRef); }
+    if (bind == NULL) { bind = PARSE(type); }
+    REJECT_IF(bind == NULL);
+
+    MATCH_OR_REJECT(CH_DOT);
+    zvalue n = PARSE_OR_REJECT(identifierString);
+
+    return mapFrom2(STR_bind, bind, STR_name, GET(value, n));
+}
+
+/**
+ * Helper for `fnCommon`: Parses the `name` sub-expression.
+ */
+DEF_PARSE(fnCommon3) {
+    zvalue name = NULL;
+
+    if (name == NULL) { name = PARSE(fnCommon1); }
+    if (name == NULL) { name = PARSE(fnCommon2); }
+    if (name == NULL) { name = EMPTY_MAP;        }
+
+    return name;
 }
 
 /* Documented in spec. */
@@ -837,7 +889,7 @@ DEF_PARSE(fnCommon) {
 
     MATCH_OR_REJECT(fn);
 
-    zvalue name = PARSE(fnCommon2); // This never fails.
+    zvalue name = PARSE(fnCommon3); // This never fails.
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList); // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
@@ -870,11 +922,22 @@ DEF_PARSE(fnDef) {
         return NULL;
     }
 
-    return makeValue(TYPE_topDeclaration,
-        mapFrom2(
-            STR_top,  makeVarDef(name, NULL),
-            STR_main, makeVarBind(name, closure)),
-        NULL);
+    zvalue bind = GET(bind, closure);
+
+    if (bind != NULL) {
+        zvalue formals = GFN_CALL(cat,
+            listFrom1(mapFrom1(STR_name, STR_this)),
+            GET(formals, closure));
+        zvalue finalClosure = withFormals(withoutBind(closure), formals);
+        return makeCall(REFS(genericBind),
+            listFrom3(makeVarRef(name), bind, finalClosure));
+    } else {
+        return makeValue(TYPE_topDeclaration,
+            mapFrom2(
+                STR_top,  makeVarDef(name, NULL),
+                STR_main, makeVarBind(name, closure)),
+            NULL);
+    }
 }
 
 /* Documented in spec. */
@@ -882,6 +945,7 @@ DEF_PARSE(fnExpression) {
     MARK();
 
     zvalue closure = PARSE_OR_REJECT(fnCommon);
+    REJECT_IF(GET(bind, closure) != NULL);
     zvalue name = GET(name, closure);
 
     if (name == NULL) {
