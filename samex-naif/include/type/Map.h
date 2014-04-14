@@ -29,7 +29,7 @@ typedef struct {
 /** Type value for in-model type `Map`. */
 extern zvalue TYPE_Map;
 
-/** The standard value `[:]`. */
+/** The standard value `{}`. */
 extern zvalue EMPTY_MAP;
 
 /**
