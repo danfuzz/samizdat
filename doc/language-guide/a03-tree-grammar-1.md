@@ -133,6 +133,168 @@ def parParenExpression = {:
     { <> withoutInterpolate(ex) }
 :};
 
+## Parses an integer literal. Note: This includes parsing a `-` prefix,
+## so that simple negative constants aren't turned into complicated function
+## calls.
+def parInt = {:
+    @"-"
+    i = @int
+    { <> makeLiteral($Number::neg(dataOf(i))) }
+|
+    i = @int
+    { <> makeLiteral(dataOf(i)) }
+:};
+
+## Parses a string literal.
+def parString = {:
+    s = @string
+    { <> makeLiteral(dataOf(s)) }
+:};
+
+## Parses an identifier, identifier-like keyword, or string literal,
+## returning a string literal in all cases.
+def parIdentifierString = {:
+    parString
+|
+    ident = @identifier
+    { <> makeLiteral(dataOf(ident)) }
+|
+    token = .
+    {
+        <> ifNot { <> dataOf(token) }
+            {
+                def type = get_typeName(token);
+                def firstCh = nth(type, 0);
+                <> ifIs { <> get(LOWER_ALPHA, firstCh) }
+                    { <> makeLiteral(type) }
+            }
+    }
+:};
+
+## Parses a map key.
+def parKey = {:
+    key = parIdentifierString
+    @":"
+    { <> key }
+|
+    key = parExpression
+    @":"
+    { <> key }
+:};
+
+## Parses a mapping (element of a map).
+def parMapping = {:
+    keys = parKey*
+    value = parExpression
+
+    {
+        <> ifIs { <> eq(keys, []) }
+            { <out> ->
+                ## No keys were specified, so the value must be either a
+                ## whole-map interpolation or a variable-name-to-its-value
+                ## binding.
+                ifValue { <> get_interpolate(value) }
+                    { interp -> <out> interp };
+                ifIs { <> hasType(value, @@varRef) }
+                    {
+                        <out> makeCall(REFS::makeValueMap,
+                            makeLiteral(get_name(value)), value)
+                    }
+            }
+            {
+                ## One or more keys.
+                <> makeCallOrApply(REFS::makeValueMap,
+                    keys*, withoutInterpolate(value))
+            }
+    }
+:};
+
+## Parses a map literal.
+def parMap = {:
+    @"{"
+
+    result = (
+        one = parMapping
+        rest = (@"," parMapping)*
+        {
+            <> ifIs { <> eq(rest, []) }
+                { <> one }
+                { <> makeCall(REFS::cat, one, rest*) }
+        }
+    |
+        { <> makeLiteral({}) }
+    )
+
+    @"}"
+
+    { <> result }
+:};
+
+## Parses a list item or function call argument. This handles all of:
+##
+## * accepting general expressions
+## * rejecting expressions that look like `key:value` mappings. This is
+##   effectively "reserved syntax" (for future expansion); rejecting this
+##   here means that `x:y` won't be mistaken for other valid syntax.
+def parListItem = {:
+    parIdentifierString
+    @":"
+    { die("Mapping syntax not valid as a list item or call argument.") }
+|
+    parExpression
+:};
+
+## Parses an "unadorned" (no bracketing) list. Yields a list (per se)
+## of contents.
+def parUnadornedList = {:
+    one = parListItem
+    rest = (@"," parListItem)*
+    { <> [one, rest*] }
+|
+    { <> [] }
+:};
+
+## Parses a list literal.
+def parList = {:
+    @"["
+    expressions = parUnadornedList
+    @"]"
+    {
+        <> ifIs { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> makeCallOrApply(REFS::makeList, expressions*) }
+    }
+:};
+
+## Parses a type name, yielding a type value. If the name is a blatant
+## literal, then the result of this rule is also a literal. If not, the
+## result of this rule is a call to `makeDerivedDataType`.
+def parTypeName = {:
+    name = (parIdentifierString | parParenExpression)
+
+    {
+        <> ifIs { <> hasType(name, @@literal) }
+            { <> makeLiteral(@@(get_nodeValue(name))) }
+            { <> makeCall(REFS::makeDerivedDataType, name) }
+    }
+:};
+
+## Parses a type literal form.
+def parType = {:
+    @"@@"
+    parTypeName
+:};
+
+## Parses a literal in derived value form.
+def parDeriv = {:
+    @"@"
+
+    type = parTypeName
+    value = (parParenExpression | parMap | parList)?
+
+    { <> makeCall(REFS::makeValue, type, value*) }
+:};
+
 ## Parses a variable reference.
 def parVarRef = {:
     name = @identifier
@@ -359,168 +521,6 @@ parFnExpression := {:
     |
         { <> closure }
     )
-:};
-
-## Parses an integer literal. Note: This includes parsing a `-` prefix,
-## so that simple negative constants aren't turned into complicated function
-## calls.
-def parInt = {:
-    @"-"
-    i = @int
-    { <> makeLiteral($Number::neg(dataOf(i))) }
-|
-    i = @int
-    { <> makeLiteral(dataOf(i)) }
-:};
-
-## Parses a string literal.
-def parString = {:
-    s = @string
-    { <> makeLiteral(dataOf(s)) }
-:};
-
-## Parses an identifier, identifier-like keyword, or string literal,
-## returning a string literal in all cases.
-def parIdentifierString = {:
-    parString
-|
-    ident = @identifier
-    { <> makeLiteral(dataOf(ident)) }
-|
-    token = .
-    {
-        <> ifNot { <> dataOf(token) }
-            {
-                def type = get_typeName(token);
-                def firstCh = nth(type, 0);
-                <> ifIs { <> get(LOWER_ALPHA, firstCh) }
-                    { <> makeLiteral(type) }
-            }
-    }
-:};
-
-## Parses a map key.
-def parKey = {:
-    key = parIdentifierString
-    @":"
-    { <> key }
-|
-    key = parExpression
-    @":"
-    { <> key }
-:};
-
-## Parses a mapping (element of a map).
-def parMapping = {:
-    keys = parKey*
-    value = parExpression
-
-    {
-        <> ifIs { <> eq(keys, []) }
-            { <out> ->
-                ## No keys were specified, so the value must be either a
-                ## whole-map interpolation or a variable-name-to-its-value
-                ## binding.
-                ifValue { <> get_interpolate(value) }
-                    { interp -> <out> interp };
-                ifIs { <> hasType(value, @@varRef) }
-                    {
-                        <out> makeCall(REFS::makeValueMap,
-                            makeLiteral(get_name(value)), value)
-                    }
-            }
-            {
-                ## One or more keys.
-                <> makeCallOrApply(REFS::makeValueMap,
-                    keys*, withoutInterpolate(value))
-            }
-    }
-:};
-
-## Parses a map literal.
-def parMap = {:
-    @"{"
-
-    result = (
-        one = parMapping
-        rest = (@"," parMapping)*
-        {
-            <> ifIs { <> eq(rest, []) }
-                { <> one }
-                { <> makeCall(REFS::cat, one, rest*) }
-        }
-    |
-        { <> makeLiteral({}) }
-    )
-
-    @"}"
-
-    { <> result }
-:};
-
-## Parses a list item or function call argument. This handles all of:
-##
-## * accepting general expressions
-## * rejecting expressions that look like `key:value` mappings. This is
-##   effectively "reserved syntax" (for future expansion); rejecting this
-##   here means that `x:y` won't be mistaken for other valid syntax.
-def parListItem = {:
-    parIdentifierString
-    @":"
-    { die("Mapping syntax not valid as a list item or call argument.") }
-|
-    parExpression
-:};
-
-## Parses an "unadorned" (no bracketing) list. Yields a list (per se)
-## of contents.
-def parUnadornedList = {:
-    one = parListItem
-    rest = (@"," parListItem)*
-    { <> [one, rest*] }
-|
-    { <> [] }
-:};
-
-## Parses a list literal.
-def parList = {:
-    @"["
-    expressions = parUnadornedList
-    @"]"
-    {
-        <> ifIs { <> eq(expressions, []) }
-            { <> makeLiteral([]) }
-            { <> makeCallOrApply(REFS::makeList, expressions*) }
-    }
-:};
-
-## Parses a type name, yielding a type value. If the name is a blatant
-## literal, then the result of this rule is also a literal. If not, the
-## result of this rule is a call to `makeDerivedDataType`.
-def parTypeName = {:
-    name = (parIdentifierString | parParenExpression)
-
-    {
-        <> ifIs { <> hasType(name, @@literal) }
-            { <> makeLiteral(@@(get_nodeValue(name))) }
-            { <> makeCall(REFS::makeDerivedDataType, name) }
-    }
-:};
-
-## Parses a type literal form.
-def parType = {:
-    @"@@"
-    parTypeName
-:};
-
-## Parses a literal in derived value form.
-def parDeriv = {:
-    @"@"
-
-    type = parTypeName
-    value = (parParenExpression | parMap | parList)?
-
-    { <> makeCall(REFS::makeValue, type, value*) }
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

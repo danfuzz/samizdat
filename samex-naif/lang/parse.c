@@ -461,6 +461,202 @@ DEF_PARSE(parenExpression) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(int) {
+    MARK();
+
+    zvalue neg = MATCH(CH_MINUS);
+    zvalue intToken = MATCH_OR_REJECT(int);
+
+    zvalue value = dataOf(intToken);
+    if (neg != NULL) {
+        value = GFN_CALL(neg, value);
+    }
+
+    return makeLiteral(value);
+}
+
+/* Documented in spec. */
+DEF_PARSE(string) {
+    MARK();
+
+    zvalue string = MATCH_OR_REJECT(string);
+
+    return makeLiteral(dataOf(string));
+}
+
+/* Documented in spec. */
+DEF_PARSE(identifierString) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = MATCH(string);     }
+    if (result == NULL) { result = MATCH(identifier); }
+    if (result == NULL) { result = MATCH(break);      }
+    if (result == NULL) { result = MATCH(continue);   }
+    if (result == NULL) { result = MATCH(def);        }
+    if (result == NULL) { result = MATCH(fn);         }
+    if (result == NULL) { result = MATCH(return);     }
+    if (result == NULL) { result = MATCH(var);        }
+    if (result == NULL) { return NULL; }
+
+    zvalue value = dataOf(result);
+    if (value == NULL) {
+        value = typeName(get_type(result));
+    }
+
+    return makeLiteral(value);
+}
+
+/**
+ * Helper for `key`: Parses `identifierString @":"`.
+ */
+DEF_PARSE(key1) {
+    MARK();
+
+    zvalue result = PARSE_OR_REJECT(identifierString);
+    MATCH_OR_REJECT(CH_COLON);
+
+    return result;
+}
+
+/**
+ * Helper for `key`: Parses `expression @":"`.
+ */
+DEF_PARSE(key2) {
+    MARK();
+
+    zvalue result = PARSE_OR_REJECT(expression);
+    MATCH_OR_REJECT(CH_COLON);
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(key) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(key1); }
+    if (result == NULL) { result = PARSE(key2); }
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(mapping) {
+    MARK();
+
+    zvalue keys = PARSE_STAR(key);
+    zvalue value = PARSE_OR_REJECT(expression);
+
+    if (get_size(keys) == 0) {
+        // No keys were specified, so the value must be either a
+        // whole-map interpolation or a variable-name-to-its-value
+        // binding.
+        zvalue interp = GET(interpolate, value);
+        if (interp != NULL) {
+            return interp;
+        } else if (hasType(value, TYPE_varRef)) {
+            return makeCall(REFS(makeValueMap),
+                listFrom2(makeLiteral(GET(name, value)), value));
+        }
+
+        REJECT();
+    }
+
+    // One or more keys.
+    return makeCallOrApply(REFS(makeValueMap),
+        listAppend(keys, withoutInterpolate(value)));
+}
+
+/* Documented in spec. */
+DEF_PARSE(map) {
+    MARK();
+
+    // This one isn't just a transliteration of the reference code, but the
+    // effect is the same.
+
+    MATCH_OR_REJECT(CH_OCURLY);
+    zvalue mappings = PARSE_COMMA_SEQ(mapping);
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    switch (get_size(mappings)) {
+        case 0:  return makeLiteral(EMPTY_MAP);
+        case 1:  return nth(mappings, 0);
+        default: return makeCall(REFS(cat), mappings);
+    }
+}
+
+/* Documented in spec. */
+DEF_PARSE(listItem) {
+    MARK();
+
+    if (PARSE(identifierString) && MATCH(CH_COLON)) {
+        die("Mapping syntax not valid as a list item or call argument.");
+    }
+
+    RESET();
+
+    return PARSE(expression);
+}
+
+/* Documented in spec. */
+DEF_PARSE(unadornedList) {
+    return PARSE_COMMA_SEQ(listItem);
+}
+
+/* Documented in spec. */
+DEF_PARSE(list) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    zvalue expressions = PARSE(unadornedList);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return (get_size(expressions) == 0)
+        ? makeLiteral(EMPTY_LIST)
+        : makeCallOrApply(REFS(makeList), expressions);
+}
+
+/* Documented in spec. */
+DEF_PARSE(typeName) {
+    MARK();
+
+    zvalue name = PARSE(identifierString);
+    if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
+
+    if (hasType(name, TYPE_literal)) {
+        return makeLiteral(makeDerivedDataType(GET(value, name)));
+    } else {
+        return makeCall(REFS(makeDerivedDataType), listFrom1(name));
+    }
+}
+
+/* Documented in spec. */
+DEF_PARSE(type) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_ATAT);
+    return PARSE_OR_REJECT(typeName);
+}
+
+/* Documented in spec. */
+DEF_PARSE(deriv) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_AT);
+
+    zvalue type = PARSE_OR_REJECT(typeName);
+
+    // Value is optional; these are allowed to all fail.
+    zvalue value = PARSE(parenExpression);
+    if (value == NULL) value = PARSE(map);
+    if (value == NULL) value = PARSE(list);
+
+    zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
+
+    return makeCall(REFS(makeValue), args);
+}
+
+/* Documented in spec. */
 DEF_PARSE(varRef) {
     MARK();
 
@@ -700,202 +896,6 @@ DEF_PARSE(fnExpression) {
         NULL);
 
     return makeCall(mainClosure, NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(int) {
-    MARK();
-
-    zvalue neg = MATCH(CH_MINUS);
-    zvalue intToken = MATCH_OR_REJECT(int);
-
-    zvalue value = dataOf(intToken);
-    if (neg != NULL) {
-        value = GFN_CALL(neg, value);
-    }
-
-    return makeLiteral(value);
-}
-
-/* Documented in spec. */
-DEF_PARSE(string) {
-    MARK();
-
-    zvalue string = MATCH_OR_REJECT(string);
-
-    return makeLiteral(dataOf(string));
-}
-
-/* Documented in spec. */
-DEF_PARSE(identifierString) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = MATCH(string);     }
-    if (result == NULL) { result = MATCH(identifier); }
-    if (result == NULL) { result = MATCH(break);      }
-    if (result == NULL) { result = MATCH(continue);   }
-    if (result == NULL) { result = MATCH(def);        }
-    if (result == NULL) { result = MATCH(fn);         }
-    if (result == NULL) { result = MATCH(return);     }
-    if (result == NULL) { result = MATCH(var);        }
-    if (result == NULL) { return NULL; }
-
-    zvalue value = dataOf(result);
-    if (value == NULL) {
-        value = typeName(get_type(result));
-    }
-
-    return makeLiteral(value);
-}
-
-/**
- * Helper for `key`: Parses `identifierString @":"`.
- */
-DEF_PARSE(key1) {
-    MARK();
-
-    zvalue result = PARSE_OR_REJECT(identifierString);
-    MATCH_OR_REJECT(CH_COLON);
-
-    return result;
-}
-
-/**
- * Helper for `key`: Parses `expression @":"`.
- */
-DEF_PARSE(key2) {
-    MARK();
-
-    zvalue result = PARSE_OR_REJECT(expression);
-    MATCH_OR_REJECT(CH_COLON);
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(key) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(key1); }
-    if (result == NULL) { result = PARSE(key2); }
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(mapping) {
-    MARK();
-
-    zvalue keys = PARSE_STAR(key);
-    zvalue value = PARSE_OR_REJECT(expression);
-
-    if (get_size(keys) == 0) {
-        // No keys were specified, so the value must be either a
-        // whole-map interpolation or a variable-name-to-its-value
-        // binding.
-        zvalue interp = GET(interpolate, value);
-        if (interp != NULL) {
-            return interp;
-        } else if (hasType(value, TYPE_varRef)) {
-            return makeCall(REFS(makeValueMap),
-                listFrom2(makeLiteral(GET(name, value)), value));
-        }
-
-        REJECT();
-    }
-
-    // One or more keys.
-    return makeCallOrApply(REFS(makeValueMap),
-        listAppend(keys, withoutInterpolate(value)));
-}
-
-/* Documented in spec. */
-DEF_PARSE(map) {
-    MARK();
-
-    // This one isn't just a transliteration of the reference code, but the
-    // effect is the same.
-
-    MATCH_OR_REJECT(CH_OCURLY);
-    zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    MATCH_OR_REJECT(CH_CCURLY);
-
-    switch (get_size(mappings)) {
-        case 0:  return makeLiteral(EMPTY_MAP);
-        case 1:  return nth(mappings, 0);
-        default: return makeCall(REFS(cat), mappings);
-    }
-}
-
-/* Documented in spec. */
-DEF_PARSE(listItem) {
-    MARK();
-
-    if (PARSE(identifierString) && MATCH(CH_COLON)) {
-        die("Mapping syntax not valid as a list item or call argument.");
-    }
-
-    RESET();
-
-    return PARSE(expression);
-}
-
-/* Documented in spec. */
-DEF_PARSE(unadornedList) {
-    return PARSE_COMMA_SEQ(listItem);
-}
-
-/* Documented in spec. */
-DEF_PARSE(list) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue expressions = PARSE(unadornedList);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return (get_size(expressions) == 0)
-        ? makeLiteral(EMPTY_LIST)
-        : makeCallOrApply(REFS(makeList), expressions);
-}
-
-/* Documented in spec. */
-DEF_PARSE(typeName) {
-    MARK();
-
-    zvalue name = PARSE(identifierString);
-    if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
-
-    if (hasType(name, TYPE_literal)) {
-        return makeLiteral(makeDerivedDataType(GET(value, name)));
-    } else {
-        return makeCall(REFS(makeDerivedDataType), listFrom1(name));
-    }
-}
-
-/* Documented in spec. */
-DEF_PARSE(type) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_ATAT);
-    return PARSE_OR_REJECT(typeName);
-}
-
-/* Documented in spec. */
-DEF_PARSE(deriv) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_AT);
-
-    zvalue type = PARSE_OR_REJECT(typeName);
-
-    // Value is optional; these are allowed to all fail.
-    zvalue value = PARSE(parenExpression);
-    if (value == NULL) value = PARSE(map);
-    if (value == NULL) value = PARSE(list);
-
-    zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
-
-    return makeCall(REFS(makeValue), args);
 }
 
 /* Documented in spec. */

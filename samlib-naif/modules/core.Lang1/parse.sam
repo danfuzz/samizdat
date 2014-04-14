@@ -106,6 +106,146 @@ def parParenExpression = $Peg::makeMainSequence(
     $Peg::makeCode { ., ex, ., . <> withoutInterpolate(ex) });
 
 ## Documented in spec.
+def parInt = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"-"),
+        $Peg::makeToken(@@int),
+        $Peg::makeCode { ., i <> makeLiteral($Number::neg(dataOf(i))) }),
+    $Peg::makeSequence(
+        $Peg::makeToken(@@int),
+        $Peg::makeCode { i <> makeLiteral(dataOf(i)) }));
+
+## Documented in spec.
+def parString = $Peg::makeMainSequence(
+    $Peg::makeToken(@@string),
+    $Peg::makeCode { s <> makeLiteral(dataOf(s)) });
+
+## Documented in spec.
+def parIdentifierString = $Peg::makeMainChoice(
+    parString,
+    $Peg::makeSequence(
+        $Peg::makeToken(@@identifier),
+        $Peg::makeCode { ident <> makeLiteral(dataOf(ident)) }),
+    $Peg::makeSequence(
+        $Peg::any,
+        $Peg::makeCode { token ->
+            <> ifNot { <> dataOf(token) }
+                {
+                    def type = get_typeName(token);
+                    def firstCh = nth(type, 0);
+                    <> ifIs { <> get(LOWER_ALPHA, firstCh) }
+                        { <> makeLiteral(type) }
+                }
+            }));
+
+## Documented in spec.
+def parKey = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parIdentifierString,
+        $Peg::makeToken(@@":"),
+        $Peg::makeCode { key, . <> key }),
+    $Peg::makeSequence(
+        parExpression,
+        $Peg::makeToken(@@":"),
+        $Peg::makeCode { key, . <> key }));
+
+## Documented in spec.
+def parMapping = $Peg::makeMainSequence(
+    $Peg::makeStar(parKey),
+    parExpression,
+    $Peg::makeCode { keys, value ->
+        <> ifIs { <> eq(keys, []) }
+            { <out> ->
+                ## No keys were specified, so the value must be either a
+                ## whole-map interpolation or a variable-name-to-its-value
+                ## binding.
+                ifValue { <> get_interpolate(value) }
+                    { interp -> <out> interp };
+                ifIs { <> hasType(value, @@varRef) }
+                    {
+                        <out> makeCall(REFS::makeValueMap,
+                            makeLiteral(get_name(value)), value)
+                    }
+            }
+            {
+                ## One or more keys.
+                <> makeCallOrApply(REFS::makeValueMap,
+                    keys*, withoutInterpolate(value))
+            }
+    });
+
+## Documented in spec.
+def parMap = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"{"),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            parMapping,
+            $Peg::makeStar(
+                $Peg::makeSequence($Peg::makeToken(@@","), parMapping)),
+            $Peg::makeCode { ., one, rest ->
+                <> ifIs { <> eq(rest, []) }
+                    { <> one }
+                    { <> makeCall(REFS::cat, one, rest*) }
+            }),
+        $Peg::makeCode { . <> makeLiteral({}) }),
+    $Peg::makeToken(@@"}"),
+    $Peg::makeCode { ., result, . <> result });
+
+## Documented in spec.
+def parListItem = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parIdentifierString,
+        $Peg::makeToken(@@":"),
+        $Peg::makeCode { ., . ->
+            die(
+                "Mapping syntax not valid as a list item or call argument.")
+        }),
+    parExpression);
+
+## Documented in spec.
+def parUnadornedList = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parListItem,
+        $Peg::makeStar(
+            $Peg::makeSequence($Peg::makeToken(@@","), parListItem)),
+        $Peg::makeCode { one, rest <> [one, rest*] }),
+    $Peg::makeResult([]));
+
+## Documented in spec.
+def parList = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"["),
+    parUnadornedList,
+    $Peg::makeToken(@@"]"),
+    $Peg::makeCode { ., expressions, . ->
+        <> ifIs { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> makeCallOrApply(REFS::makeList, expressions*) }
+    });
+
+## Documented in spec.
+def parTypeName = $Peg::makeMainSequence(
+    $Peg::makeChoice(parIdentifierString, parParenExpression),
+    $Peg::makeCode { name ->
+        <> ifIs { <> hasType(name, @@literal) }
+            { <> makeLiteral(@@(get_nodeValue(name))) }
+            { <> makeCall(REFS::makeDerivedDataType, name) }
+    });
+
+## Documented in spec.
+def parType = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"@@"),
+    parTypeName);
+
+## Documented in spec.
+def parDeriv = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"@"),
+    parTypeName,
+    $Peg::makeOpt($Peg::makeChoice(parParenExpression, parMap, parList)),
+    $Peg::makeCode { ., type, value ->
+        <> makeCall(REFS::makeValue, type, value*)
+    });
+
+## Documented in spec.
 def parVarRef = $Peg::makeMainSequence(
     $Peg::makeToken(@@identifier),
     $Peg::makeCode { name <> makeVarRefLvalue(dataOf(name)) });
@@ -256,146 +396,6 @@ parFnExpression := $Peg::makeMainSequence(
                 <> makeCall(mainClosure)
             }),
         $Peg::makeCode { closure <> closure }));
-
-## Documented in spec.
-def parInt = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"-"),
-        $Peg::makeToken(@@int),
-        $Peg::makeCode { ., i <> makeLiteral($Number::neg(dataOf(i))) }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@int),
-        $Peg::makeCode { i <> makeLiteral(dataOf(i)) }));
-
-## Documented in spec.
-def parString = $Peg::makeMainSequence(
-    $Peg::makeToken(@@string),
-    $Peg::makeCode { s <> makeLiteral(dataOf(s)) });
-
-## Documented in spec.
-def parIdentifierString = $Peg::makeMainChoice(
-    parString,
-    $Peg::makeSequence(
-        $Peg::makeToken(@@identifier),
-        $Peg::makeCode { ident <> makeLiteral(dataOf(ident)) }),
-    $Peg::makeSequence(
-        $Peg::any,
-        $Peg::makeCode { token ->
-            <> ifNot { <> dataOf(token) }
-                {
-                    def type = get_typeName(token);
-                    def firstCh = nth(type, 0);
-                    <> ifIs { <> get(LOWER_ALPHA, firstCh) }
-                        { <> makeLiteral(type) }
-                }
-            }));
-
-## Documented in spec.
-def parKey = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        parIdentifierString,
-        $Peg::makeToken(@@":"),
-        $Peg::makeCode { key, . <> key }),
-    $Peg::makeSequence(
-        parExpression,
-        $Peg::makeToken(@@":"),
-        $Peg::makeCode { key, . <> key }));
-
-## Documented in spec.
-def parMapping = $Peg::makeMainSequence(
-    $Peg::makeStar(parKey),
-    parExpression,
-    $Peg::makeCode { keys, value ->
-        <> ifIs { <> eq(keys, []) }
-            { <out> ->
-                ## No keys were specified, so the value must be either a
-                ## whole-map interpolation or a variable-name-to-its-value
-                ## binding.
-                ifValue { <> get_interpolate(value) }
-                    { interp -> <out> interp };
-                ifIs { <> hasType(value, @@varRef) }
-                    {
-                        <out> makeCall(REFS::makeValueMap,
-                            makeLiteral(get_name(value)), value)
-                    }
-            }
-            {
-                ## One or more keys.
-                <> makeCallOrApply(REFS::makeValueMap,
-                    keys*, withoutInterpolate(value))
-            }
-    });
-
-## Documented in spec.
-def parMap = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"{"),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            parMapping,
-            $Peg::makeStar(
-                $Peg::makeSequence($Peg::makeToken(@@","), parMapping)),
-            $Peg::makeCode { ., one, rest ->
-                <> ifIs { <> eq(rest, []) }
-                    { <> one }
-                    { <> makeCall(REFS::cat, one, rest*) }
-            }),
-        $Peg::makeCode { . <> makeLiteral({}) }),
-    $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., result, . <> result });
-
-## Documented in spec.
-def parListItem = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        parIdentifierString,
-        $Peg::makeToken(@@":"),
-        $Peg::makeCode { ., . ->
-            die(
-                "Mapping syntax not valid as a list item or call argument.")
-        }),
-    parExpression);
-
-## Documented in spec.
-def parUnadornedList = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        parListItem,
-        $Peg::makeStar(
-            $Peg::makeSequence($Peg::makeToken(@@","), parListItem)),
-        $Peg::makeCode { one, rest <> [one, rest*] }),
-    $Peg::makeResult([]));
-
-## Documented in spec.
-def parList = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"["),
-    parUnadornedList,
-    $Peg::makeToken(@@"]"),
-    $Peg::makeCode { ., expressions, . ->
-        <> ifIs { <> eq(expressions, []) }
-            { <> makeLiteral([]) }
-            { <> makeCallOrApply(REFS::makeList, expressions*) }
-    });
-
-## Documented in spec.
-def parTypeName = $Peg::makeMainSequence(
-    $Peg::makeChoice(parIdentifierString, parParenExpression),
-    $Peg::makeCode { name ->
-        <> ifIs { <> hasType(name, @@literal) }
-            { <> makeLiteral(@@(get_nodeValue(name))) }
-            { <> makeCall(REFS::makeDerivedDataType, name) }
-    });
-
-## Documented in spec.
-def parType = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"@@"),
-    parTypeName);
-
-## Documented in spec.
-def parDeriv = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"@"),
-    parTypeName,
-    $Peg::makeOpt($Peg::makeChoice(parParenExpression, parMap, parList)),
-    $Peg::makeCode { ., type, value ->
-        <> makeCall(REFS::makeValue, type, value*)
-    });
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
