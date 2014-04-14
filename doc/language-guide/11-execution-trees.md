@@ -78,7 +78,10 @@ to the function `interpolate`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$Lang0Node::makeInterpolate`.
 
-#### `closure` &mdash; `@closure{formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
+#### `closure` &mdash; `@closure{(bind: expression)?, formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
+
+* `bind: expression` (optional) &mdash; Generic function to bind to. Only
+  used during tree construction; not used at execution time.
 
 * `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
