@@ -6,14 +6,15 @@
 ## Samizdat Layer 1 tree parser
 ##
 
-def $Format     = moduleLoad(["core", "Format"]);
-def $Generator  = moduleLoad(["core", "Generator"]);
-def $Number     = moduleLoad(["proto", "Number"]);
-def $Peg        = moduleLoad(["core", "Peg"]);
-def $Range      = moduleLoad(["core", "Range"]);
+def $Format    = moduleLoad(["core", "Format"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Number    = moduleLoad(["proto", "Number"]);
+def $Peg       = moduleLoad(["core", "Peg"]);
+def $Range     = moduleLoad(["core", "Range"]);
 
 def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = $Lang0Node::REFS;
+def get_bind           = $Lang0Node::get_bind;
 def get_formals        = $Lang0Node::get_formals;
 def get_interpolate    = $Lang0Node::get_interpolate;
 def get_lvalue         = $Lang0Node::get_lvalue;
@@ -36,6 +37,8 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withFormals        = $Lang0Node::withFormals;
+def withoutBind        = $Lang0Node::withoutBind;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 def tokenize = intraLoad("tokenize")::tokenize;
@@ -342,7 +345,15 @@ def parFnCommon = $Peg::makeMainSequence(
     $Peg::makeChoice(
         $Peg::makeSequence(
             $Peg::makeToken(@@identifier),
-            $Peg::makeCode { ., n <> {name: dataOf(n)} }),
+            $Peg::makeLookaheadFailure($Peg::makeToken(@@".")),
+            $Peg::makeCode { ., n, . <> {name: dataOf(n)} }),
+        $Peg::makeSequence(
+            $Peg::makeChoice(parVarRef, parType),
+            $Peg::makeToken(@@"."),
+            parIdentifierString,
+            $Peg::makeCode { ., bind, ., n ->
+                <> {bind, name: get_nodeValue(n)}
+            }),
         $Peg::makeResult({})),
     $Peg::makeToken(@@"("),
     parFormalsList,
@@ -372,21 +383,35 @@ def parFnCommon = $Peg::makeMainSequence(
 def parFnDef = $Peg::makeMainSequence(
     parFnCommon,
     $Peg::makeCode { closure <> get_name(closure) },
-    $Peg::makeCode { closure, name ->
-        ## `@topDeclaration` is split apart in the `programBody` rule.
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, closure)
-        }
-    });
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeCode { closure, name <> get_bind(closure) },
+            $Peg::makeCode { closure, name, bind ->
+                def formals = [
+                    {name: "this"},
+                    get_formals(closure)*
+                ];
+                def finalClosure = withFormals(withoutBind(closure), formals);
+                <> makeCall(REFS::genericBind,
+                    makeVarRef(name), bind, finalClosure)
+            }),
+        $Peg::makeCode { closure, name ->
+            ## `@topDeclaration` is split apart in the `programBody` rule.
+            <> @topDeclaration{
+                top:  makeVarDef(name),
+                main: makeVarBind(name, closure)
+            }
+        }));
 
 ## Documented in spec.
 parFnExpression := $Peg::makeMainSequence(
     parFnCommon,
+    $Peg::makeLookaheadFailure(
+        $Peg::makeCode { closure <> get_bind(closure) }),
     $Peg::makeChoice(
         $Peg::makeSequence(
-            $Peg::makeCode { closure <> get_name(closure) },
-            $Peg::makeCode { closure, name ->
+            $Peg::makeCode { closure, . <> get_name(closure) },
+            $Peg::makeCode { closure, ., name ->
                 def mainClosure = @closure{
                     formals:    [],
                     statements: [makeVarDef(name)],
@@ -395,7 +420,7 @@ parFnExpression := $Peg::makeMainSequence(
 
                 <> makeCall(mainClosure)
             }),
-        $Peg::makeCode { closure <> closure }));
+        $Peg::makeCode { closure, . <> closure }));
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
