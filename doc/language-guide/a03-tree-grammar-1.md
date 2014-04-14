@@ -14,16 +14,17 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
-def $Format     = moduleLoad(["core", "Format"]);
-def $Generator  = moduleLoad(["core", "Generator"]);
-def $Lang0      = moduleLoad(["core", "Lang0"]);
-def $Number     = moduleLoad(["proto", "Number"]);
-def $Peg        = moduleLoad(["core", "Peg"]);
-def $Range      = moduleLoad(["core", "Range"]);
-def $Sequence   = moduleLoad(["core", "Sequence"]);
+def $Format    = moduleLoad(["core", "Format"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Lang0     = moduleLoad(["core", "Lang0"]);
+def $Number    = moduleLoad(["proto", "Number"]);
+def $Peg       = moduleLoad(["core", "Peg"]);
+def $Range     = moduleLoad(["core", "Range"]);
+def $Sequence  = moduleLoad(["core", "Sequence"]);
 
 def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = $Lang0Node::REFS;
+def get_bind           = $Lang0Node::get_bind;
 def get_formals        = $Lang0Node::get_formals;
 def get_interpolate    = $Lang0Node::get_interpolate;
 def get_name           = $Lang0Node::get_name;
@@ -45,6 +46,8 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withFormals        = $Lang0Node::withFormals;
+def withoutBind        = $Lang0Node::withoutBind;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 
@@ -432,14 +435,20 @@ def parNullaryClosure = {:
 ## with:
 ##
 ## * no yield def binding statement if an explicit yield def was not present.
-##
 ## * the key `name` bound to the function name, if a name was defined.
+## * the key `bind` bound to an expression of a type to bind, if the name was
+##   of the form `type.name`.
 def parFnCommon = {:
     @fn
 
     name = (
-        n = @identifier
+        n = @identifier !@"."
         { <> {name: dataOf(n)} }
+    |
+        bind = (parVarRef | parType)
+        @"."
+        n = parIdentifierString
+        { <> {bind, name: get_nodeValue(n)} }
     |
         { <> {} }
     )
@@ -480,19 +489,35 @@ def parFnDef = {:
     closure = parFnCommon
 
     name = { <> get_name(closure) }
-    {
-        ## `@topDeclaration` is split apart in the `programBody` rule.
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, closure)
+
+    (
+        ## It's a generic function binding.
+        bind = { <> get_bind(closure) }
+        {
+            def formals = [
+                {name: "this"},
+                get_formals(closure)*
+            ];
+            def finalClosure = withFormals(withoutBind(closure), formals);
+            <> makeCall(REFS::genericBind,
+                makeVarRef(name), bind, finalClosure)
         }
-    }
+    |
+        ## It's a regular function definition.
+        {
+            ## `@topDeclaration` is split apart in the `programBody` rule.
+            <> @topDeclaration{
+                top:  makeVarDef(name),
+                main: makeVarBind(name, closure)
+            }
+        }
+    )
 :};
 
-## Parses a `fn` (function with `return` binding) expression. The translation
-## is as described in `parFnCommon` (above) if the function is not given a
-## name. If the function *is* given a name, the translation is along the
-## following lines (so as to enable self-recursion):
+## Parses a `fn` expression (function with `return` binding, not being bound
+## to a generic). The translation is as described in `parFnCommon` (above) if
+## the function is not given a name. If the function *is* given a name, the
+## translation is along the following lines (so as to enable self-recursion):
 ##
 ## ```
 ## fn name ...
@@ -506,6 +531,8 @@ def parFnDef = {:
 ## ```
 parFnExpression := {:
     closure = parFnCommon
+
+    !{ <> get_bind(closure) } ## The expression form can't bind a generic.
 
     (
         name = { <> get_name(closure) }
