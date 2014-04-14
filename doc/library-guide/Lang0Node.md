@@ -196,6 +196,11 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `withFormals(node, [formal*]) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with `formals` (re)bound as given.
+
 #### `withoutBind(node) <> node`
 
 Makes a node just like the given one, except without any binding
