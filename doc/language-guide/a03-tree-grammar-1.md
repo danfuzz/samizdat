@@ -14,16 +14,17 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
-def $Format     = moduleLoad(["core", "Format"]);
-def $Generator  = moduleLoad(["core", "Generator"]);
-def $Lang0      = moduleLoad(["core", "Lang0"]);
-def $Number     = moduleLoad(["proto", "Number"]);
-def $Peg        = moduleLoad(["core", "Peg"]);
-def $Range      = moduleLoad(["core", "Range"]);
-def $Sequence   = moduleLoad(["core", "Sequence"]);
+def $Format    = moduleLoad(["core", "Format"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Lang0     = moduleLoad(["core", "Lang0"]);
+def $Number    = moduleLoad(["proto", "Number"]);
+def $Peg       = moduleLoad(["core", "Peg"]);
+def $Range     = moduleLoad(["core", "Range"]);
+def $Sequence  = moduleLoad(["core", "Sequence"]);
 
 def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = $Lang0Node::REFS;
+def get_bind           = $Lang0Node::get_bind;
 def get_formals        = $Lang0Node::get_formals;
 def get_interpolate    = $Lang0Node::get_interpolate;
 def get_name           = $Lang0Node::get_name;
@@ -45,6 +46,8 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withFormals        = $Lang0Node::withFormals;
+def withoutBind        = $Lang0Node::withoutBind;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 
@@ -131,234 +134,6 @@ def parParenExpression = {:
     @")"
 
     { <> withoutInterpolate(ex) }
-:};
-
-## Parses a variable reference.
-def parVarRef = {:
-    name = @identifier
-    { <> makeVarRefLvalue(dataOf(name)) }
-:};
-
-## Parses a variable definition or declaration.
-def parVarDef = {:
-    style = [@def @var]
-    name = @identifier
-    optExpr = (@"=" parExpression)?
-
-    {
-        def nameString = dataOf(name);
-        <> ifIs { <> hasType(style, @@def) }
-            { <> makeVarDef(nameString, optExpr*) }
-            { <> makeVarDefMutable(nameString, optExpr*) }
-    }
-:};
-
-## Parses a yield / nonlocal exit definition, yielding the def name.
-def parYieldDef = {:
-    @"<"
-    name = @identifier
-    @">"
-    { <> dataOf(name) }
-:};
-
-## Parses an optional yield / nonlocal exit definition, always yielding
-## a map (an empty map if no yield def was present).
-def parOptYieldDef = {:
-    y = parYieldDef
-    { <> {yieldDef: y} }
-|
-    { <> {} }
-:};
-
-## Parses a formal argument decalaration.
-def parFormal = {:
-    name = (
-        n = @identifier
-        { <> {name: dataOf(n)} }
-    |
-        @"." { <> {} }
-    )
-
-    repeat = (
-        r = [@"?" @"*" @"+"]
-        { <> {repeat: get_typeName(r)} }
-    |
-        { <> {} }
-    )
-
-    { <> {name*, repeat*} }
-:};
-
-## Parses a list of formal arguments, with no surrounding parentheses.
-def parFormalsList = {:
-    one = parFormal
-    rest = (@"," parFormal)*
-    { <> [one, rest*] }
-|
-    { <> [] }
-:};
-
-## Parses program / function declarations.
-def parProgramDeclarations = {:
-    yieldDef = parOptYieldDef
-    formals = parFormalsList
-
-    (@"->" | &@"<>")
-
-    { <> {formals, yieldDef*} }
-|
-    { <> {formals: []} }
-:};
-
-## Parses a program (top-level program or contents inside function braces).
-def parProgram = {:
-    decls = parProgramDeclarations
-    body = %parProgramBody
-    { <> @closure{decls*, body*} }
-:};
-
-## Parses a closure (in-line anonymous function, with no extra bindings).
-def parClosure = {:
-    @"{"
-    prog = parProgram
-    @"}"
-    { <> prog }
-:};
-
-## Parses a closure which must not define any formal arguments. This is done
-## by parsing an arbitrary closure and then verifying that it does not
-## declare formals. This is preferable to not-including formal argument
-## syntax, because (a) no rule wants to differentiate these cases (rules
-## either want an arbitrary closure or a specifically-constrained kind); (b)
-## it reduces redundancy in the syntax, and (c) the error case on the former
-## would be more obscure (as in just something like "unexpected token" on
-## the would-be formal argument).
-def parNullaryClosure = {:
-    c = parClosure
-
-    {
-        def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
-            { die("Invalid formal argument in code block.") };
-        <> c
-    }
-:};
-
-## Common parsing for `fn` statements and expressions. The syntax for
-## both is identical, except that the statement form requires that the
-## function be named. The result of this rule is a map identical in form to
-## what's required for a closure payload, except that `name` may also
-## be bound.
-##
-## The result of this rule is a `closure` node, with `name` possibly
-## (but not necssarily) bound in the payload.
-##
-## The translation is along these lines:
-##
-## ```
-## fn name(arg1, arg2) { <out> -> stat1; stat2 }
-## ```
-## =>
-## ```
-## { <\"return"> arg1, arg2 ->
-##     def out = \"return";
-##     stat1;
-##     stat2
-## }
-## ```
-##
-## with:
-##
-## * no yield def binding statement if an explicit yield def was not present.
-##
-## * the key `name` bound to the function name, if a name was defined.
-def parFnCommon = {:
-    @fn
-
-    name = (
-        n = @identifier
-        { <> {name: dataOf(n)} }
-    |
-        { <> {} }
-    )
-
-    @"("
-    formals = parFormalsList
-    @")"
-
-    code = parNullaryClosure
-
-    {
-        def returnDef = ifValue { <> code::yieldDef }
-            { name ->
-                ## The closure has a yield def, but we need to also bind
-                ## it as `return`, so we add an extra local variable binding
-                ## here.
-                <> [makeVarDef(name, REFS::return)]
-            }
-            { <> [] };
-
-        def statements = [returnDef*, get_statements(code)*];
-        <> @closure{
-            dataOf(code)*,
-            name*,
-            formals,
-            yieldDef: "return",
-            statements
-        }
-    }
-:};
-
-## Parses a `fn` definition statement. The syntax here is the same as
-## what's recognized by `parFnCommon`, except that the name is required.
-## We don't error out (terminate the runtime) on a missing name, though, as
-## that just means that we're looking at a legit `fn` expression, which will
-## get successfully parsed by the `expression` alternative of `statement`.
-def parFnDef = {:
-    closure = parFnCommon
-
-    name = { <> get_name(closure) }
-    {
-        ## `@topDeclaration` is split apart in the `programBody` rule.
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, closure)
-        }
-    }
-:};
-
-## Parses a `fn` (function with `return` binding) expression. The translation
-## is as described in `parFnCommon` (above) if the function is not given a
-## name. If the function *is* given a name, the translation is along the
-## following lines (so as to enable self-recursion):
-##
-## ```
-## fn name ...
-## ```
-## =>
-## ```
-## {
-##     def name;
-##     <> name := { ... }
-## }()
-## ```
-parFnExpression := {:
-    closure = parFnCommon
-
-    (
-        name = { <> get_name(closure) }
-        {
-            def mainClosure = @closure{
-                formals:    [],
-                statements: [makeVarDef(name)],
-                yield:      makeVarBind(name, closure)
-            };
-
-            <> makeCall(mainClosure)
-        }
-    |
-        { <> closure }
-    )
 :};
 
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,
@@ -521,6 +296,258 @@ def parDeriv = {:
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCall(REFS::makeValue, type, value*) }
+:};
+
+## Parses a variable reference.
+def parVarRef = {:
+    name = @identifier
+    { <> makeVarRefLvalue(dataOf(name)) }
+:};
+
+## Parses a variable definition or declaration.
+def parVarDef = {:
+    style = [@def @var]
+    name = @identifier
+    optExpr = (@"=" parExpression)?
+
+    {
+        def nameString = dataOf(name);
+        <> ifIs { <> hasType(style, @@def) }
+            { <> makeVarDef(nameString, optExpr*) }
+            { <> makeVarDefMutable(nameString, optExpr*) }
+    }
+:};
+
+## Parses a yield / nonlocal exit definition, yielding the def name.
+def parYieldDef = {:
+    @"<"
+    name = @identifier
+    @">"
+    { <> dataOf(name) }
+:};
+
+## Parses an optional yield / nonlocal exit definition, always yielding
+## a map (an empty map if no yield def was present).
+def parOptYieldDef = {:
+    y = parYieldDef
+    { <> {yieldDef: y} }
+|
+    { <> {} }
+:};
+
+## Parses a formal argument decalaration.
+def parFormal = {:
+    name = (
+        n = @identifier
+        { <> {name: dataOf(n)} }
+    |
+        @"." { <> {} }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> {repeat: get_typeName(r)} }
+    |
+        { <> {} }
+    )
+
+    { <> {name*, repeat*} }
+:};
+
+## Parses a list of formal arguments, with no surrounding parentheses.
+def parFormalsList = {:
+    one = parFormal
+    rest = (@"," parFormal)*
+    { <> [one, rest*] }
+|
+    { <> [] }
+:};
+
+## Parses program / function declarations.
+def parProgramDeclarations = {:
+    yieldDef = parOptYieldDef
+    formals = parFormalsList
+
+    (@"->" | &@"<>")
+
+    { <> {formals, yieldDef*} }
+|
+    { <> {formals: []} }
+:};
+
+## Parses a program (top-level program or contents inside function braces).
+def parProgram = {:
+    decls = parProgramDeclarations
+    body = %parProgramBody
+    { <> @closure{decls*, body*} }
+:};
+
+## Parses a closure (in-line anonymous function, with no extra bindings).
+def parClosure = {:
+    @"{"
+    prog = parProgram
+    @"}"
+    { <> prog }
+:};
+
+## Parses a closure which must not define any formal arguments. This is done
+## by parsing an arbitrary closure and then verifying that it does not
+## declare formals. This is preferable to not-including formal argument
+## syntax, because (a) no rule wants to differentiate these cases (rules
+## either want an arbitrary closure or a specifically-constrained kind); (b)
+## it reduces redundancy in the syntax, and (c) the error case on the former
+## would be more obscure (as in just something like "unexpected token" on
+## the would-be formal argument).
+def parNullaryClosure = {:
+    c = parClosure
+
+    {
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    }
+:};
+
+## Common parsing for `fn` statements and expressions. The syntax for
+## both is identical, except that the statement form requires that the
+## function be named. The result of this rule is a map identical in form to
+## what's required for a closure payload, except that `name` may also
+## be bound.
+##
+## The result of this rule is a `closure` node, with `name` possibly
+## (but not necssarily) bound in the payload.
+##
+## The translation is along these lines:
+##
+## ```
+## fn name(arg1, arg2) { <out> -> stat1; stat2 }
+## ```
+## =>
+## ```
+## { <\"return"> arg1, arg2 ->
+##     def out = \"return";
+##     stat1;
+##     stat2
+## }
+## ```
+##
+## with:
+##
+## * no yield def binding statement if an explicit yield def was not present.
+## * the key `name` bound to the function name, if a name was defined.
+## * the key `bind` bound to an expression of a type to bind, if the name was
+##   of the form `type.name`.
+def parFnCommon = {:
+    @fn
+
+    name = (
+        n = @identifier !@"."
+        { <> {name: dataOf(n)} }
+    |
+        bind = (parVarRef | parType)
+        @"."
+        n = parIdentifierString
+        { <> {bind, name: get_nodeValue(n)} }
+    |
+        { <> {} }
+    )
+
+    @"("
+    formals = parFormalsList
+    @")"
+
+    code = parNullaryClosure
+
+    {
+        def returnDef = ifValue { <> code::yieldDef }
+            { name ->
+                ## The closure has a yield def, but we need to also bind
+                ## it as `return`, so we add an extra local variable binding
+                ## here.
+                <> [makeVarDef(name, REFS::return)]
+            }
+            { <> [] };
+
+        def statements = [returnDef*, get_statements(code)*];
+        <> @closure{
+            dataOf(code)*,
+            name*,
+            formals,
+            yieldDef: "return",
+            statements
+        }
+    }
+:};
+
+## Parses a `fn` definition statement. The syntax here is the same as
+## what's recognized by `parFnCommon`, except that the name is required.
+## We don't error out (terminate the runtime) on a missing name, though, as
+## that just means that we're looking at a legit `fn` expression, which will
+## get successfully parsed by the `expression` alternative of `statement`.
+def parFnDef = {:
+    closure = parFnCommon
+
+    name = { <> get_name(closure) }
+
+    (
+        ## It's a generic function binding.
+        bind = { <> get_bind(closure) }
+        {
+            def formals = [
+                {name: "this"},
+                get_formals(closure)*
+            ];
+            def finalClosure = withFormals(withoutBind(closure), formals);
+            <> makeCall(REFS::genericBind,
+                makeVarRef(name), bind, finalClosure)
+        }
+    |
+        ## It's a regular function definition.
+        {
+            ## `@topDeclaration` is split apart in the `programBody` rule.
+            <> @topDeclaration{
+                top:  makeVarDef(name),
+                main: makeVarBind(name, closure)
+            }
+        }
+    )
+:};
+
+## Parses a `fn` expression (function with `return` binding, not being bound
+## to a generic). The translation is as described in `parFnCommon` (above) if
+## the function is not given a name. If the function *is* given a name, the
+## translation is along the following lines (so as to enable self-recursion):
+##
+## ```
+## fn name ...
+## ```
+## =>
+## ```
+## {
+##     def name;
+##     <> name := { ... }
+## }()
+## ```
+parFnExpression := {:
+    closure = parFnCommon
+
+    !{ <> get_bind(closure) } ## The expression form can't bind a generic.
+
+    (
+        name = { <> get_name(closure) }
+        {
+            def mainClosure = @closure{
+                formals:    [],
+                statements: [makeVarDef(name)],
+                yield:      makeVarBind(name, closure)
+            };
+
+            <> makeCall(mainClosure)
+        }
+    |
+        { <> closure }
+    )
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs

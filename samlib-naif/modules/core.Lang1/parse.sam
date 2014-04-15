@@ -6,14 +6,15 @@
 ## Samizdat Layer 1 tree parser
 ##
 
-def $Format     = moduleLoad(["core", "Format"]);
-def $Generator  = moduleLoad(["core", "Generator"]);
-def $Number     = moduleLoad(["proto", "Number"]);
-def $Peg        = moduleLoad(["core", "Peg"]);
-def $Range      = moduleLoad(["core", "Range"]);
+def $Format    = moduleLoad(["core", "Format"]);
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Number    = moduleLoad(["proto", "Number"]);
+def $Peg       = moduleLoad(["core", "Peg"]);
+def $Range     = moduleLoad(["core", "Range"]);
 
 def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = $Lang0Node::REFS;
+def get_bind           = $Lang0Node::get_bind;
 def get_formals        = $Lang0Node::get_formals;
 def get_interpolate    = $Lang0Node::get_interpolate;
 def get_lvalue         = $Lang0Node::get_lvalue;
@@ -36,6 +37,8 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withFormals        = $Lang0Node::withFormals;
+def withoutBind        = $Lang0Node::withoutBind;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 def tokenize = intraLoad("tokenize")::tokenize;
@@ -104,158 +107,6 @@ def parParenExpression = $Peg::makeMainSequence(
             })),
     $Peg::makeToken(@@")"),
     $Peg::makeCode { ., ex, ., . <> withoutInterpolate(ex) });
-
-## Documented in spec.
-def parVarRef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@identifier),
-    $Peg::makeCode { name <> makeVarRefLvalue(dataOf(name)) });
-
-## Documented in spec.
-def parVarDef = $Peg::makeMainSequence(
-    $Peg::makeTokenSet(@@def, @@var),
-    $Peg::makeToken(@@identifier),
-    $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
-    $Peg::makeCode { style, name, optExpr ->
-        def nameString = dataOf(name);
-        <> ifIs { <> hasType(style, @@def) }
-            { <> makeVarDef(nameString, optExpr*) }
-            { <> makeVarDefMutable(nameString, optExpr*) }
-    });
-
-## Documented in spec.
-def parYieldDef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"<"),
-    $Peg::makeToken(@@identifier),
-    $Peg::makeToken(@@">"),
-    $Peg::makeCode { ., name, . <> dataOf(name) });
-
-## Documented in spec.
-def parOptYieldDef = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        parYieldDef,
-        $Peg::makeCode { y <> {yieldDef: y} }),
-    $Peg::makeResult({}));
-
-## Documented in spec.
-def parFormal = $Peg::makeMainSequence(
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@identifier),
-            $Peg::makeCode { n <> {name: dataOf(n)} }),
-        $Peg::makeSequence(
-            $Peg::makeToken(@@"."),
-            $Peg::makeResult({}))),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeTokenSet(@@"?", @@"*", @@"+"),
-            $Peg::makeCode { ., r <> {repeat: get_typeName(r)} }),
-        $Peg::makeResult({})),
-    $Peg::makeCode { name, repeat <> {name*, repeat*} });
-
-## Documented in spec.
-def parFormalsList = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        parFormal,
-        $Peg::makeStar($Peg::makeSequence($Peg::makeToken(@@","), parFormal)),
-        $Peg::makeCode { one, rest <> [one, rest*] }),
-    $Peg::makeResult([]));
-
-## Documented in spec.
-def parProgramDeclarations = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        parOptYieldDef,
-        parFormalsList,
-        $Peg::makeChoice(
-            $Peg::makeToken(@@"->"),
-            $Peg::makeLookaheadSuccess($Peg::makeToken(@@"<>"))),
-        $Peg::makeCode { yieldDef, formals, . ->
-            <> {formals, yieldDef*}
-        }),
-    $Peg::makeResult({formals: []}));
-
-## Documented in spec.
-def parProgram = $Peg::makeMainSequence(
-    parProgramDeclarations,
-    $Peg::makeThunk { . <> parProgramBody },
-    $Peg::makeCode { decls, body <> @closure{decls*, body*} });
-
-## Documented in spec.
-def parClosure = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"{"),
-    parProgram,
-    $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., prog, . <> prog });
-
-## Documented in spec.
-def parNullaryClosure = $Peg::makeMainSequence(
-    parClosure,
-    $Peg::makeCode { c ->
-        def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
-            { die("Invalid formal argument in code block.") };
-        <> c
-    });
-
-## Documented in spec.
-def parFnCommon = $Peg::makeMainSequence(
-    $Peg::makeToken(@@fn),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@identifier),
-            $Peg::makeCode { ., n <> {name: dataOf(n)} }),
-        $Peg::makeResult({})),
-    $Peg::makeToken(@@"("),
-    parFormalsList,
-    $Peg::makeToken(@@")"),
-    parNullaryClosure,
-    $Peg::makeCode { ., name, ., formals, ., code ->
-        def returnDef = ifValue { <> code::yieldDef }
-            { name ->
-                ## The closure has a yield def, but we need to also bind
-                ## it as `return`, so we add an extra local variable binding
-                ## here.
-                <> [makeVarDef(name, REFS::return)]
-            }
-            { <> [] };
-
-        def statements = [returnDef*, get_statements(code)*];
-        <> @closure{
-            dataOf(code)*,
-            name*,
-            formals,
-            yieldDef: "return",
-            statements
-        }
-    });
-
-## Documented in spec.
-def parFnDef = $Peg::makeMainSequence(
-    parFnCommon,
-    $Peg::makeCode { closure <> get_name(closure) },
-    $Peg::makeCode { closure, name ->
-        ## `@topDeclaration` is split apart in the `programBody` rule.
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, closure)
-        }
-    });
-
-## Documented in spec.
-parFnExpression := $Peg::makeMainSequence(
-    parFnCommon,
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeCode { closure <> get_name(closure) },
-            $Peg::makeCode { closure, name ->
-                def mainClosure = @closure{
-                    formals:    [],
-                    statements: [makeVarDef(name)],
-                    yield:      makeVarBind(name, closure)
-                };
-
-                <> makeCall(mainClosure)
-            }),
-        $Peg::makeCode { closure <> closure }));
 
 ## Documented in spec.
 def parInt = $Peg::makeMainChoice(
@@ -396,6 +247,180 @@ def parDeriv = $Peg::makeMainSequence(
     $Peg::makeCode { ., type, value ->
         <> makeCall(REFS::makeValue, type, value*)
     });
+
+## Documented in spec.
+def parVarRef = $Peg::makeMainSequence(
+    $Peg::makeToken(@@identifier),
+    $Peg::makeCode { name <> makeVarRefLvalue(dataOf(name)) });
+
+## Documented in spec.
+def parVarDef = $Peg::makeMainSequence(
+    $Peg::makeTokenSet(@@def, @@var),
+    $Peg::makeToken(@@identifier),
+    $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
+    $Peg::makeCode { style, name, optExpr ->
+        def nameString = dataOf(name);
+        <> ifIs { <> hasType(style, @@def) }
+            { <> makeVarDef(nameString, optExpr*) }
+            { <> makeVarDefMutable(nameString, optExpr*) }
+    });
+
+## Documented in spec.
+def parYieldDef = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"<"),
+    $Peg::makeToken(@@identifier),
+    $Peg::makeToken(@@">"),
+    $Peg::makeCode { ., name, . <> dataOf(name) });
+
+## Documented in spec.
+def parOptYieldDef = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parYieldDef,
+        $Peg::makeCode { y <> {yieldDef: y} }),
+    $Peg::makeResult({}));
+
+## Documented in spec.
+def parFormal = $Peg::makeMainSequence(
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeToken(@@identifier),
+            $Peg::makeCode { n <> {name: dataOf(n)} }),
+        $Peg::makeSequence(
+            $Peg::makeToken(@@"."),
+            $Peg::makeResult({}))),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeTokenSet(@@"?", @@"*", @@"+"),
+            $Peg::makeCode { ., r <> {repeat: get_typeName(r)} }),
+        $Peg::makeResult({})),
+    $Peg::makeCode { name, repeat <> {name*, repeat*} });
+
+## Documented in spec.
+def parFormalsList = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parFormal,
+        $Peg::makeStar($Peg::makeSequence($Peg::makeToken(@@","), parFormal)),
+        $Peg::makeCode { one, rest <> [one, rest*] }),
+    $Peg::makeResult([]));
+
+## Documented in spec.
+def parProgramDeclarations = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parOptYieldDef,
+        parFormalsList,
+        $Peg::makeChoice(
+            $Peg::makeToken(@@"->"),
+            $Peg::makeLookaheadSuccess($Peg::makeToken(@@"<>"))),
+        $Peg::makeCode { yieldDef, formals, . ->
+            <> {formals, yieldDef*}
+        }),
+    $Peg::makeResult({formals: []}));
+
+## Documented in spec.
+def parProgram = $Peg::makeMainSequence(
+    parProgramDeclarations,
+    $Peg::makeThunk { . <> parProgramBody },
+    $Peg::makeCode { decls, body <> @closure{decls*, body*} });
+
+## Documented in spec.
+def parClosure = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"{"),
+    parProgram,
+    $Peg::makeToken(@@"}"),
+    $Peg::makeCode { ., prog, . <> prog });
+
+## Documented in spec.
+def parNullaryClosure = $Peg::makeMainSequence(
+    parClosure,
+    $Peg::makeCode { c ->
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    });
+
+## Documented in spec.
+def parFnCommon = $Peg::makeMainSequence(
+    $Peg::makeToken(@@fn),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeToken(@@identifier),
+            $Peg::makeLookaheadFailure($Peg::makeToken(@@".")),
+            $Peg::makeCode { ., n, . <> {name: dataOf(n)} }),
+        $Peg::makeSequence(
+            $Peg::makeChoice(parVarRef, parType),
+            $Peg::makeToken(@@"."),
+            parIdentifierString,
+            $Peg::makeCode { ., bind, ., n ->
+                <> {bind, name: get_nodeValue(n)}
+            }),
+        $Peg::makeResult({})),
+    $Peg::makeToken(@@"("),
+    parFormalsList,
+    $Peg::makeToken(@@")"),
+    parNullaryClosure,
+    $Peg::makeCode { ., name, ., formals, ., code ->
+        def returnDef = ifValue { <> code::yieldDef }
+            { name ->
+                ## The closure has a yield def, but we need to also bind
+                ## it as `return`, so we add an extra local variable binding
+                ## here.
+                <> [makeVarDef(name, REFS::return)]
+            }
+            { <> [] };
+
+        def statements = [returnDef*, get_statements(code)*];
+        <> @closure{
+            dataOf(code)*,
+            name*,
+            formals,
+            yieldDef: "return",
+            statements
+        }
+    });
+
+## Documented in spec.
+def parFnDef = $Peg::makeMainSequence(
+    parFnCommon,
+    $Peg::makeCode { closure <> get_name(closure) },
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeCode { closure, name <> get_bind(closure) },
+            $Peg::makeCode { closure, name, bind ->
+                def formals = [
+                    {name: "this"},
+                    get_formals(closure)*
+                ];
+                def finalClosure = withFormals(withoutBind(closure), formals);
+                <> makeCall(REFS::genericBind,
+                    makeVarRef(name), bind, finalClosure)
+            }),
+        $Peg::makeCode { closure, name ->
+            ## `@topDeclaration` is split apart in the `programBody` rule.
+            <> @topDeclaration{
+                top:  makeVarDef(name),
+                main: makeVarBind(name, closure)
+            }
+        }));
+
+## Documented in spec.
+parFnExpression := $Peg::makeMainSequence(
+    parFnCommon,
+    $Peg::makeLookaheadFailure(
+        $Peg::makeCode { closure <> get_bind(closure) }),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeCode { closure, . <> get_name(closure) },
+            $Peg::makeCode { closure, ., name ->
+                def mainClosure = @closure{
+                    formals:    [],
+                    statements: [makeVarDef(name)],
+                    yield:      makeVarBind(name, closure)
+                };
+
+                <> makeCall(mainClosure)
+            }),
+        $Peg::makeCode { closure, . <> closure }));
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(

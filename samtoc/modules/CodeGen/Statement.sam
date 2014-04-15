@@ -16,24 +16,18 @@ fn makeStatement(tree) {
     <> @Statement{tree, flat: "\(tree.flatten());"}
 };
 
-genericBind(
-    flatten,
-    @@Statement,
-    fn Statement_flatten(this) {
-        <> this::flat
-    });
+fn @@Statement.flatten() {
+    <> this::flat
+};
 
-genericBind(
-    indent,
-    @@Statement,
-    fn Statement_indent(this, level, maxColumns) {
-        def prefix = indentation(level);
+fn @@Statement.indent(level, maxColumns) {
+    def prefix = indentation(level);
 
-        <> if ((#this::flat + #prefix) <= maxColumns) {
-            <> "\(prefix)\(this::flat)\n"
-        } else {
-            <> "\(this::tree.indent(level, maxColumns));\n"
-        }
-    });
+    <> if ((#this::flat + #prefix) <= maxColumns) {
+        <> "\(prefix)\(this::flat)\n"
+    } else {
+        <> "\(this::tree.indent(level, maxColumns));\n"
+    }
+};
 
 <> {makeStatement}

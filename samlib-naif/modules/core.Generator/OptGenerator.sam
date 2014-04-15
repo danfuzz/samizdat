@@ -23,10 +23,13 @@ fn makeOptGenerator(generator) {
 };
 
 ## Documented in spec.
-genericBind(collect, @@OptGenerator, unboundedCollect);
+fn @@OptGenerator.collect(optFilterFunction?) {
+    ## It is an "unbounded collect" error to call this.
+    <> unboundedCollect(this)
+};
 
 ## Documented in spec.
-fn OptGenerator_nextValue(this, box) {
+fn @@OptGenerator.nextValue(box) {
     def subGen = dataOf(this);
     def innerBox = $Box::makePromise();
 
@@ -41,8 +44,5 @@ fn OptGenerator_nextValue(this, box) {
                 box)
         }
 };
-genericBind(nextValue, @@OptGenerator, OptGenerator_nextValue);
 
-<> {
-    makeOptGenerator
-}
+<> {makeOptGenerator}

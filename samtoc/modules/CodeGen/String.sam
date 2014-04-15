@@ -12,16 +12,10 @@ def $protocol = intraLoad("protocol");
 def flatten = $protocol::flatten;
 def indent  = $protocol::indent;
 
-genericBind(
-    flatten,
-    String,
-    fn String_flatten(this) {
-        <> this
-    });
+fn String.flatten() {
+    <> this
+};
 
-genericBind(
-    indent,
-    String,
-    fn String_indent(this, level, maxColumns) {
-        <> "\[indentation(level), this]"
-    });
+fn String.indent(level, maxColumns) {
+    <> "\[indentation(level), this]"
+};

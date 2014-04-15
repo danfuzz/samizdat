@@ -34,6 +34,11 @@ development.)
 
 Gets the actual arguments of an `apply` or `call` node.
 
+#### `get_bind(node) <> node | .`
+
+Gets the value (expected to be a generic function) being bound to, of
+a `closure` node.
+
 #### `get_formals(node) <> [formal*]`
 
 Gets the formal arguments of a `closure` node.
@@ -190,6 +195,18 @@ additional bindings.
 Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
+
+#### `withFormals(node, [formal*]) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with `formals` (re)bound as given.
+
+#### `withoutBind(node) <> node`
+
+Makes a node just like the given one, except without any binding
+for `bind`. This is used by parser code when processing generic function
+binding nodes, to prevent passing along a superfluous binding in `closure`
+nodes.
 
 #### `withoutIntermediates(node) <> node`
 

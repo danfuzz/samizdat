@@ -23,6 +23,7 @@ def NAMES = [
     "continue",
     "eq",
     "ge",
+    "genericBind",
     "get",
     "get_size",
     "gt",

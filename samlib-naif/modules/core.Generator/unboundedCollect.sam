@@ -13,9 +13,7 @@
 
 ## Documented in spec.
 fn unboundedCollect(this, optFilterFunction?) {
-    die("Unbounded generator.");
+    die("Cannot `collect` unbounded generator.");
 };
 
-<> {
-    unboundedCollect
-}
+<> {unboundedCollect}

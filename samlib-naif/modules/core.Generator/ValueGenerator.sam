@@ -14,20 +14,20 @@ def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 ##
 
 ## Documented in spec.
-genericBind(collect, @@ValueGenerator, unboundedCollect);
-
-## Documented in spec.
-fn ValueGenerator_nextValue(this, box) {
-    store(box, dataOf(this));
-    <> this
-};
-genericBind(nextValue, @@ValueGenerator, ValueGenerator_nextValue);
-
-## Documented in spec.
 fn makeValueGenerator(value) {
     <> @ValueGenerator(value)
 };
 
-<> {
-    makeValueGenerator
-}
+## Documented in spec.
+fn @@ValueGenerator.collect(optFilterFunction?) {
+    ## It is an "unbounded collect" error to call this.
+    <> unboundedCollect(this)
+};
+
+## Documented in spec.
+fn @@ValueGenerator.nextValue(box) {
+    store(box, dataOf(this));
+    <> this
+};
+
+<> {makeValueGenerator}

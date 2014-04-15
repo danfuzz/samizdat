@@ -470,7 +470,7 @@ METH_IMPL(Map, put) {
 
     switch (size) {
         case 0: {
-            // `put([:], ...)`
+            // `put({}, ...)`
             return makeMapping(key, value);
         }
         case 1: {

@@ -204,6 +204,37 @@ fn igram(a*) { <out> -> ... <out> ... }
 ```
 
 
+### Generic functions
+
+Generic functions are functions which know how to "dispatch" to particular
+other functions, based on the arguments given to the generic function.
+
+Samizdat includes generic functions which dispatch based on the type of
+the first argument.
+
+Generic functions are bound using a syntax similar to the regular function
+statement syntax (as described above). The difference is that instead of
+just a simple function name, the name consists of a type reference,
+followed by a dot (`.`), followed by the generic function name. For example:
+
+```
+fn Int.blort() { ... }      # Bind to the type `Int`.
+fn @@Fizmo.blort() { ... }  # Bind to the (derived value) type `@@Fizmo`.
+```
+
+Within the body of such a function, the local variable `this` refers to
+the target to which the function was applied, that is, `this` is the implicit
+name of the first formal parameter to the function. Any additional parameters
+are as specified within the parentheses. For example:
+
+```
+fn Int.blort(igram) {
+    this;  ## refers to the Int target of the function.
+    igram; ## refers to the second parameter to the function.
+}
+```
+
+
 ### Blocks
 
 Blocks are closures that generally serve as arguments to function calls
@@ -245,11 +276,13 @@ def ignatz = { <out> x, y?, z* -> ... <out> ... }
 def krazy = { x, y <> x + y }
 ```
 
+
 ### Special function shapes
 
 There are a few different "shapes" of function &mdash; what kinds and
 how many arguments they take, and what sort of things they return
 &mdash; that have particular uses in the language.
+
 
 #### Logic functions
 

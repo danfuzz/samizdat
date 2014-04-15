@@ -26,98 +26,71 @@ def intern = $Interner::intern;
 ## `node.lits(interner)`, implements one layer of literal interning.
 def lits = makeRegularGeneric("lits", 2, 2);
 
-genericBind(
-    lits,
-    @@apply,
-    fn apply_lits(this, interner) {
-        <> @apply{
-            function: lits(this.function, interner),
-            actuals: lits(this.actuals, interner)
-        }
-    });
+fn @@apply.lits(interner) {
+    <> @apply{
+        function: lits(this.function, interner),
+        actuals: lits(this.actuals, interner)
+    }
+};
 
-genericBind(
-    lits,
-    @@call,
-    fn call_lits(this, interner) {
-        <> @call{
-            function: lits(this.function, interner),
-            actuals: [ a in this.actuals <> lits(a, interner) ]
-        }
-    });
+fn @@call.lits(interner) {
+    <> @call{
+        function: lits(this.function, interner),
+        actuals: [ a in this.actuals <> lits(a, interner) ]
+    }
+};
 
-genericBind(
-    lits,
-    @@closure,
-    fn closure_lits(this, interner) {
-        def name = (def value = this.name)
-            & {name: lits(@literal{value}, interner)}
-            | {};
+fn @@closure.lits(interner) {
+    def name = (def value = this.name)
+        & {name: lits(@literal{value}, interner)}
+        | {};
 
-        <> @closure{
-            name*,
-            formals: this.formals,
-            statements: [ s in this.statements <> lits(s, interner) ],
-            ((def y = this.yield) & {yield: lits(y, interner)} | {})*,
-            ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
-        }
-    });
+    <> @closure{
+        name*,
+        formals: this.formals,
+        statements: [ s in this.statements <> lits(s, interner) ],
+        ((def y = this.yield) & {yield: lits(y, interner)} | {})*,
+        ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
+    }
+};
 
-genericBind(
-    lits,
-    @@jump,
-    fn jump_lits(this, interner) {
-        def function = lits(this.function, interner);
-        def optValue = (def v = this.nodeValue)
-            & {value: lits(v, interner)}
-            | {};
+fn @@jump.lits(interner) {
+    def function = lits(this.function, interner);
+    def optValue = (def v = this.nodeValue)
+        & {value: lits(v, interner)}
+        | {};
 
-        <> @jump{function, optValue*}
-    });
+    <> @jump{function, optValue*}
+};
 
-genericBind(
-    lits,
-    @@literal,
-    fn literal_lits(this, interner) {
-        <> @literalRef{id: interner.intern(this.nodeValue)}
-    });
+fn @@literal.lits(interner) {
+    <> @literalRef{id: interner.intern(this.nodeValue)}
+};
 
-genericBind(
-    lits,
-    @@varBind,
-    fn varBind_lits(this, interner) {
-        <> @varBind{
-            name: this.name,
-            value: lits(this.nodeValue, interner)
-        }
-    });
+fn @@varBind.lits(interner) {
+    <> @varBind{
+        name: this.name,
+        value: lits(this.nodeValue, interner)
+    }
+};
 
-genericBind(
-    lits,
-    @@varDef,
-    fn varDef_lits(this, interner) {
-        def value = ifValue { <> this.nodeValue }
-            { value <> {value: lits(value, interner)} }
-            { <> {} };
-        <> @varDef{name: this.name, value*}
-    });
+fn @@varDef.lits(interner) {
+    def value = ifValue { <> this.nodeValue }
+        { value <> {value: lits(value, interner)} }
+        { <> {} };
+    <> @varDef{name: this.name, value*}
+};
 
-genericBind(
-    lits,
-    @@varDefMutable,
-    fn varDefMutable_lits(this, interner) {
-        def value = ifValue { <> this.nodeValue }
-            { value <> {value: lits(value, interner)} }
-            { <> {} };
-        <> @varDefMutable{name: this.name, value*}
-    });
+fn @@varDefMutable.lits(interner) {
+    def value = ifValue { <> this.nodeValue }
+        { value <> {value: lits(value, interner)} }
+        { <> {} };
+    <> @varDefMutable{name: this.name, value*}
+};
 
-genericBind(
-    lits,
-    @@varRef,
-    fn varRef_lits(this, interner) {
-        <> this
-    });
+fn @@varRef.lits(interner) {
+    <> this
+};
 
 ## Interns all literal nodes at or under the given `node`, into the given
 ## `interner`. Returns a replacement for the original `node` argument, in

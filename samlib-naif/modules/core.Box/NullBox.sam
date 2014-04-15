@@ -12,28 +12,23 @@
 ##
 
 ## Documented in spec.
-fn NullBox_canStore(box) {
+fn @@NullBox.canStore() {
     ## Always succeeds.
-    <> box
+    <> this
 };
-genericBind(canStore, @@NullBox, NullBox_canStore);
 
 ## Documented in spec.
-fn NullBox_fetch(box) {
+fn @@NullBox.fetch() {
     ## Return void.
 };
-genericBind(fetch, @@NullBox, NullBox_fetch);
 
 ## Documented in spec.
-fn NullBox_store(box, value?) {
+fn @@NullBox.store(value?) {
     ## Return `value` but otherwise do nothing.
     <> value*
 };
-genericBind(store, @@NullBox, NullBox_store);
 
 ## Documented in spec.
 def nullBox = @NullBox;
 
-<> {
-    nullBox
-}
+<> {nullBox}

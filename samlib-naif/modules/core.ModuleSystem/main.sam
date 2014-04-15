@@ -118,39 +118,33 @@ fn doModuleLoad(md, dotName) {
 };
 
 ## Documented in spec.
-genericBind(
-    moduleLoad,
-    @@ModuleLoader,
-    fn ModuleLoader_moduleLoad(this, path) {
-        def loadedBox = this::loadedBox;
-        def dotName = flattenModulePath(path);
+fn @@ModuleLoader.moduleLoad(path) {
+    def loadedBox = this::loadedBox;
+    def dotName = flattenModulePath(path);
 
-        ## The loaded map maps paths to `"loading"` for a load-in-progress
-        ## and to `[result]` for a successfully-loaded result.
+    ## The loaded map maps paths to `"loading"` for a load-in-progress
+    ## and to `[result]` for a successfully-loaded result.
 
-        ifValue { <> get(fetch(loadedBox), dotName) }
-            { found ->
-                ifIs { <> eq(found, "loading") }
-                    { die(cat("Module load loop: ", dotName)) };
-                return found*
-            };
+    ifValue { <> get(fetch(loadedBox), dotName) }
+        { found ->
+            ifIs { <> eq(found, "loading") }
+                { die(cat("Module load loop: ", dotName)) };
+            return found*
+        };
 
-        updateMapBox(loadedBox, dotName, "loading");
+    updateMapBox(loadedBox, dotName, "loading");
 
-        def result = ifValueOr { <> doModuleLoad(this, dotName) }
-            { <> moduleLoad(this::next, path) };
+    def result = ifValueOr { <> doModuleLoad(this, dotName) }
+        { <> moduleLoad(this::next, path) };
 
-        updateMapBox(loadedBox, dotName, [result]);
-        <> result
-    });
+    updateMapBox(loadedBox, dotName, [result]);
+    <> result
+};
 
 ## Documented in spec.
-genericBind(
-    moduleLoad,
-    @@Null,
-    fn Null_moduleLoad(this, path) {
-        die(cat("Module not found: ", flattenModulePath(path)))
-    });
+fn @@Null.moduleLoad(path) {
+    die(cat("Module not found: ", flattenModulePath(path)))
+};
 
 ## Documented in spec.
 fn makeModuleLoader(path, globals, nextModuleLoader) {
@@ -210,44 +204,35 @@ fn doLocalLoad(ml, path) {
 };
 
 ## Documented in spec.
-genericBind(
-    intraType,
-    @@IntraLoader,
-    fn IntraLoader_intraType(this, path) {
-        def fullPath = cat(this::basePath, path);
-        <> Io0_fileType(fullPath)
-    });
+fn @@IntraLoader.intraType(path) {
+    def fullPath = cat(this::basePath, path);
+    <> Io0_fileType(fullPath)
+};
 
 ## Documented in spec.
-genericBind(
-    intraLoad,
-    @@IntraLoader,
-    fn IntraLoader_intraLoad(this, path) {
-        def loadedBox = this::loadedBox;
+fn @@IntraLoader.intraLoad(path) {
+    def loadedBox = this::loadedBox;
 
-        ## Local loads are allowed to return void, so we track a list of
-        ## the result. That is, a void return ends up being `[]`.
+    ## Local loads are allowed to return void, so we track a list of
+    ## the result. That is, a void return ends up being `[]`.
 
-        ifValue { <> get(fetch(loadedBox), path) }
-            { found -> return found* };
+    ifValue { <> get(fetch(loadedBox), path) }
+        { found -> return found* };
 
-        def optResult = doLocalLoad(this, path)?;
-        updateMapBox(loadedBox, path, optResult);
-        <> optResult*
-    });
+    def optResult = doLocalLoad(this, path)?;
+    updateMapBox(loadedBox, path, optResult);
+    <> optResult*
+};
 
 ## Documented in spec.
-genericBind(
-    intraReadUtf8,
-    @@IntraLoader,
-    fn IntraLoader_intraReadUtf8(this, path) {
-        def fullPath = cat(this::basePath, path);
+fn @@IntraLoader.intraReadUtf8(path) {
+    def fullPath = cat(this::basePath, path);
 
-        ifNot { <> eq(Io0_fileType(fullPath)?, ["file"]) }
-            { die(cat("Missing resource: ", fullPath)) };
+    ifNot { <> eq(Io0_fileType(fullPath)?, ["file"]) }
+        { die(cat("Missing resource: ", fullPath)) };
 
-        <> Io0_readFileUtf8(fullPath)
-    });
+    <> Io0_readFileUtf8(fullPath)
+};
 
 ## Documented in spec.
 fn makeIntraLoader(path, globals, nextModuleLoader) {

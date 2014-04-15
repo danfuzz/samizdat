@@ -9,6 +9,9 @@
 ## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
 def $Generator = moduleLoad(["core", "Generator"]);
+def stdCollect       = $Generator::stdCollect;
+def unboundedCollect = $Generator::unboundedCollect;
+
 def $Number    = moduleLoad(["proto", "Number"]);
 
 
@@ -19,15 +22,13 @@ def $Number    = moduleLoad(["proto", "Number"]);
 ## `value.rangeAdd(increment)` generic, used to increment ints and chars.
 def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
 
-fn Int_rangeAdd(this, increment) {
+fn Int.rangeAdd(increment) {
     <> $Number::add(this, increment)
 };
-genericBind(rangeAdd, Int, Int_rangeAdd);
 
-fn String_rangeAdd(this, increment) {
+fn String.rangeAdd(increment) {
     <> toString($Number::add(toInt(this), increment))
 };
-genericBind(rangeAdd, String, String_rangeAdd);
 
 
 ##
@@ -107,7 +108,13 @@ fn makeInclusiveRange(firstValue, limit, optIncrement?) {
 };
 
 ## Documented in spec.
-fn ClosedRange_nextValue(this, box) {
+fn @@ClosedRange.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    <> stdCollect(this, optFilterFunction*)
+};
+
+## Documented in spec.
+fn @@ClosedRange.nextValue(box) {
     <> ifValue { <> ge(this::size, 0) }
         { size ->
             def firstValue = this::firstValue;
@@ -123,10 +130,6 @@ fn ClosedRange_nextValue(this, box) {
             store(box);
         }
 };
-genericBind(nextValue, @@ClosedRange, ClosedRange_nextValue);
-
-## Just use the standard implementation.
-genericBind(collect, @@ClosedRange, $Generator::stdCollect);
 
 
 ##
@@ -140,18 +143,20 @@ fn makeOpenRange(firstValue, optIncrement?) {
     <> @OpenRange{firstValue, increment}
 };
 
-## Just use the standard "unbounded" implementation.
-genericBind(collect, @@OpenRange, $Generator::unboundedCollect);
+## Documented in spec.
+fn @@OpenRange.collect(optFilterFunction?) {
+    ## It is an "unbounded collect" error to call this.
+    <> unboundedCollect(this)
+};
 
 ## Documented in spec.
-fn OpenRange_nextValue(this, box) {
+fn @@OpenRange.nextValue(box) {
     def firstValue = this::firstValue;
     def increment = this::increment;
 
     store(box, firstValue);
     <> makeOpenRange(rangeAdd(firstValue, increment), increment)
 };
-genericBind(nextValue, @@OpenRange, OpenRange_nextValue);
 
 
 ##

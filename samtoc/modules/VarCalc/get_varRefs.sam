@@ -25,110 +25,80 @@ fn catVarRefs(nodes*) {
     <> [].cat(( n in nodes <> n.varRefs )*)
 };
 
-genericBind(
-    get_varRefs,
-    @@apply,
-    fn apply_get_varRefs(this) {
-        <> catVarRefs(this.function, this.actuals)
-    });
+fn @@apply.get_varRefs() {
+    <> catVarRefs(this.function, this.actuals)
+};
 
-genericBind(
-    get_varRefs,
-    @@call,
-    fn call_get_varRefs(this) {
-        <> catVarRefs(this.function, this.actuals*)
-    });
+fn @@call.get_varRefs() {
+    <> catVarRefs(this.function, this.actuals*)
+};
 
-genericBind(
-    get_varRefs,
-    @@closure,
-    fn closure_get_varRefs(this) {
-        if (def refs = this::varRefs) {
-            ## Already calculated for this node.
-            return refs
+fn @@closure.get_varRefs() {
+    if (def refs = this::varRefs) {
+        ## Already calculated for this node.
+        return refs
+    };
+
+    ## `baseLocals` is the list of all local variables defined at the
+    ## top of the closure, including formal arguments and a yield def
+    ## (if any).
+    def baseLocals = [
+        this.yieldDef?*,
+        ( f in this.formals <> f::name )*];
+
+    ## The extra element at the end is to represent the closure yield.
+    def statementDefs = [( s in this.statements <> s.varDefs )*, []];
+
+    ## What's happening here is that for each statement (and the yield at
+    ## the end), we get its variable references and remove from them refs
+    ## for any variables that are locally defined before the statement.
+    ## This produces the array `statementRefs` whose elements are merged,
+    ## producing the full set of free variables referenced by the closure
+    ## as a whole. Deletion from the list is achieved by converting the
+    ## refs to a map (refs as keys, values all `null`), and then doing
+    ## key deletion. The resulting `statmentRefs` is a list of these maps.
+    def statementRefs = (
+            s in [this.statements*, this.yield?*],
+            idx in (0..) ->
+        def defs = baseLocals.cat(statementDefs[..!idx]*);
+        var refs = {s.varRefs*: null};
+        for (d in defs) {
+           refs := $Collection::del(refs, d)
         };
+        <> refs
+    );
 
-        ## `baseLocals` is the list of all local variables defined at the
-        ## top of the closure, including formal arguments and a yield def
-        ## (if any).
-        def baseLocals = [
-            this.yieldDef?*,
-            ( f in this.formals <> f::name )*];
+    ## The result of concatenating all the `statementRefs` is a map. The
+    ## final result is the list of refs, that is, a list of all the keys.
+    <> $Collection::keyList({}.cat(statementRefs*))
+};
 
-        ## The extra element at the end is to represent the closure yield.
-        def statementDefs = [( s in this.statements <> s.varDefs )*, []];
+fn @@closureRef.get_varRefs() {
+    <> this::varRefs
+};
 
-        ## What's happening here is that for each statement (and the yield at
-        ## the end), we get its variable references and remove from them refs
-        ## for any variables that are locally defined before the statement.
-        ## This produces the array `statementRefs` whose elements are merged,
-        ## producing the full set of free variables referenced by the closure
-        ## as a whole. Deletion from the list is achieved by converting the
-        ## refs to a map (refs as keys, values all `null`), and then doing
-        ## key deletion. The resulting `statmentRefs` is a list of these maps.
-        def statementRefs = (
-                s in [this.statements*, this.yield?*],
-                idx in (0..) ->
-            def defs = baseLocals.cat(statementDefs[..!idx]*);
-            var refs = {s.varRefs*: null};
-            for (d in defs) {
-               refs := $Collection::del(refs, d)
-            };
-            <> refs
-        );
+fn @@jump.get_varRefs() {
+    <> catVarRefs(this.function, this.nodeValue?*)
+};
 
-        ## The result of concatenating all the `statementRefs` is a map. The
-        ## final result is the list of refs, that is, a list of all the keys.
-        <> $Collection::keyList({}.cat(statementRefs*))
-    });
+fn @@literalRef.get_varRefs() {
+    <> []
+};
 
-genericBind(
-    get_varRefs,
-    @@closureRef,
-    fn closureRef_get_varRefs(this) {
-        <> this::varRefs
-    });
+fn @@varBind.get_varRefs() {
+    <> [this.name, this.nodeValue.varRefs*]
+};
 
-genericBind(
-    get_varRefs,
-    @@jump,
-    fn jump_get_varRefs(this) {
-        <> catVarRefs(this.function, this.nodeValue?*)
-    });
+fn @@varDef.get_varRefs() {
+    <> (def v = this.nodeValue) & v.varRefs | []
+};
 
-genericBind(
-    get_varRefs,
-    @@literalRef,
-    fn literalRef_get_varRefs(this) {
-        <> []
-    });
+fn @@varDefMutable.get_varRefs() {
+    <> (def v = this.nodeValue) & v.varRefs | []
+};
 
-genericBind(
-    get_varRefs,
-    @@varBind,
-    fn varBind_get_varRefs(this) {
-        <> [this.name, this.nodeValue.varRefs*]
-    });
-
-genericBind(
-    get_varRefs,
-    @@varDef,
-    fn varDef_get_varRefs(this) {
-        <> (def v = this.nodeValue) & v.varRefs | []
-    });
-
-genericBind(
-    get_varRefs,
-    @@varDefMutable,
-    fn varDefMutable_get_varRefs(this) {
-        <> (def v = this.nodeValue) & v.varRefs | []
-    });
-
-genericBind(
-    get_varRefs,
-    @@varRef,
-    fn varRef_get_varRefs(this) {
-        <> [this.name]
-    });
+fn @@varRef.get_varRefs() {
+    <> [this.name]
+};
 
 <> {get_varRefs}

@@ -16,26 +16,20 @@ fn makeReturn(tree) {
     <> @Return{tree, flat: "return \(tree.flatten())"}
 };
 
-genericBind(
-    flatten,
-    @@Return,
-    fn Return_flatten(this) {
-        <> this::flat
-    });
+fn @@Return.flatten() {
+    <> this::flat
+};
 
-genericBind(
-    indent,
-    @@Return,
-    fn Return_indent(this, level, maxColumns) {
-        def prefix = indentation(level);
+fn @@Return.indent(level, maxColumns) {
+    def prefix = indentation(level);
 
-        <> if ((#this::flat + #prefix) <= maxColumns) {
-            <> "\(prefix)\(this::flat)"
-        } else {
-            <> "\
-            \(prefix)return
-            \(this::tree.indent(level + 1, maxColumns))"
-        }
-    });
+    <> if ((#this::flat + #prefix) <= maxColumns) {
+        <> "\(prefix)\(this::flat)"
+    } else {
+        <> "\
+        \(prefix)return
+        \(this::tree.indent(level + 1, maxColumns))"
+    }
+};
 
 <> {makeReturn}

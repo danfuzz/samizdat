@@ -31,13 +31,12 @@ def eof = @PegEof;
 def fail = @PegFail;
 
 ## Documented in spec.
-fn PegAny_parse(this, box, input, .*) {
+fn @@PegAny.parse(box, input, .*) {
     <> nextValue(input, box)
 };
-genericBind(parse, @@PegAny, PegAny_parse);
 
 ## Documented in spec.
-fn PegChoice_parse(this, box, input, items*) {
+fn @@PegChoice.parse(box, input, items*) {
     $Generator::filterPump(dataOf(this)) { rule ->
         def innerBox = $Box::makePromise();
         ifValue { <> parse(rule, innerBox, input, items*) }
@@ -50,10 +49,9 @@ fn PegChoice_parse(this, box, input, items*) {
     ## No rule succeeded.
     store(box)
 };
-genericBind(parse, @@PegChoice, PegChoice_parse);
 
 ## Documented in spec.
-fn PegCode_parse(this, box, input, items*) {
+fn @@PegCode.parse(box, input, items*) {
     <> ifValue { <> dataOf(this)(items*) }
         { result ->
             store(box, result);
@@ -61,10 +59,9 @@ fn PegCode_parse(this, box, input, items*) {
         }
         { store(box) };
 };
-genericBind(parse, @@PegCode, PegCode_parse);
 
 ## Documented in spec.
-fn PegEof_parse(this, box, input, .*) {
+fn @@PegEof.parse(box, input, .*) {
     <> ifIs { <> nextValue(input, $Box::nullBox) }
         { store(box) }
         {
@@ -72,16 +69,14 @@ fn PegEof_parse(this, box, input, .*) {
             <> input
         }
 };
-genericBind(parse, @@PegEof, PegEof_parse);
 
 ## Documented in spec.
-fn PegFail_parse(this, box, input, .*) {
+fn @@PegFail.parse(box, input, .*) {
     store(box)
 };
-genericBind(parse, @@PegFail, PegFail_parse);
 
 ## Documented in spec.
-fn PegLookaheadFailure_parse(this, box, input, items*) {
+fn @@PegLookaheadFailure.parse(box, input, items*) {
     <> ifIs { <> parse(dataOf(this), $Box::nullBox, input, items*) }
         { store(box) }
         {
@@ -89,24 +84,21 @@ fn PegLookaheadFailure_parse(this, box, input, items*) {
             <> input
         }
 };
-genericBind(parse, @@PegLookaheadFailure, PegLookaheadFailure_parse);
 
 ## Documented in spec.
-fn PegLookaheadSuccess_parse(this, box, input, items*) {
+fn @@PegLookaheadSuccess.parse(box, input, items*) {
     <> ifIs { <> parse(dataOf(this), box, input, items*) }
         { <> input }
 };
-genericBind(parse, @@PegLookaheadSuccess, PegLookaheadSuccess_parse);
 
 ## Documented in spec.
-fn PegMain_parse(this, box, input, .*) {
+fn @@PegMain.parse(box, input, .*) {
     ## The point of this implementation is to drop the `items` context.
     <> parse(dataOf(this), box, input)
 };
-genericBind(parse, @@PegMain, PegMain_parse);
 
 ## Documented in spec.
-fn PegOpt_parse(this, box, input, items*) {
+fn @@PegOpt.parse(box, input, items*) {
     def innerBox = $Box::makePromise();
     <> ifValue { <> parse(dataOf(this), innerBox, input, items*) }
         { newInput ->
@@ -118,10 +110,9 @@ fn PegOpt_parse(this, box, input, items*) {
             <> input
         }
 };
-genericBind(parse, @@PegOpt, PegOpt_parse);
 
 ## Documented in spec.
-fn PegRepeat_parse(this, box, input, items*) {
+fn @@PegRepeat.parse(box, input, items*) {
     def rule = this::rule;
     var remainingInput = input;
     var results = []; ## Values that have been parsed by the inner rule.
@@ -150,17 +141,15 @@ fn PegRepeat_parse(this, box, input, items*) {
             }
     }
 };
-genericBind(parse, @@PegRepeat, PegRepeat_parse);
 
 ## Documented in spec.
-fn PegResult_parse(this, box, input, .*) {
+fn @@PegResult.parse(box, input, .*) {
     store(box, dataOf(this));
     <> input
 };
-genericBind(parse, @@PegResult, PegResult_parse);
 
 ## Documented in spec.
-fn PegSequence_parse(this, box, input, items*) {
+fn @@PegSequence.parse(box, input, items*) {
     ## Each rule after the first gets passed as additional arguments
     ## the matched results of all the previous rules, in order.
 
@@ -185,17 +174,15 @@ fn PegSequence_parse(this, box, input, items*) {
     store(box, $Sequence::nthFromEnd(results, 0));
     <> remainingInput
 };
-genericBind(parse, @@PegSequence, PegSequence_parse);
 
 ## Documented in spec.
-fn PegThunk_parse(this, box, input, items*) {
+fn @@PegThunk.parse(box, input, items*) {
     <> ifValue { <> dataOf(this)(items*) }
         { thunkResult <> parse(thunkResult, box, input, items*) }
 };
-genericBind(parse, @@PegThunk, PegThunk_parse);
 
 ## Documented in spec.
-fn PegTokenSet_parse(this, box, input, items*) {
+fn @@PegTokenSet.parse(box, input, items*) {
     def innerBox = $Box::makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
@@ -211,10 +198,9 @@ fn PegTokenSet_parse(this, box, input, items*) {
     ## Either EOF or no match.
     store(box);
 };
-genericBind(parse, @@PegTokenSet, PegTokenSet_parse);
 
 ## Documented in spec.
-fn PegTokenSetComplement_parse(this, box, input, items*) {
+fn @@PegTokenSetComplement.parse(box, input, items*) {
     def innerBox = $Box::makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
@@ -230,7 +216,6 @@ fn PegTokenSetComplement_parse(this, box, input, items*) {
     ## Either EOF or no match.
     store(box);
 };
-genericBind(parse, @@PegTokenSetComplement, PegTokenSetComplement_parse);
 
 
 ##

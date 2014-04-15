@@ -26,7 +26,13 @@ fn makeFilterGenerator(filterFunction, generators*) {
 };
 
 ## Documented in spec.
-fn FilterGenerator_nextValue(this, box) {
+fn @@FilterGenerator.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    <> Generator_stdCollect(this, optFilterFunction*)
+};
+
+## Documented in spec.
+fn @@FilterGenerator.nextValue(box) {
     def filterFunction = this::filterFunction;
 
     ## This loop handles the fact that the filter function is
@@ -56,11 +62,5 @@ fn FilterGenerator_nextValue(this, box) {
         return
     }
 };
-genericBind(nextValue, @@FilterGenerator, FilterGenerator_nextValue);
 
-## Just use the standard implementation.
-genericBind(collect, @@FilterGenerator, Generator_stdCollect);
-
-<> {
-    makeFilterGenerator
-}
+<> {makeFilterGenerator}

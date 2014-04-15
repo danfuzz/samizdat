@@ -32,7 +32,13 @@ fn makeParaGenerator(generators*) {
 };
 
 ## Documented in spec.
-fn ParaGenerator_nextValue(this, box) {
+fn @@ParaGenerator.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    <> Generator_stdCollect(this, optFilterFunction*)
+};
+
+## Documented in spec.
+fn @@ParaGenerator.nextValue(box) {
     def subGens = dataOf(this);
 
     ifIs { <> eq(subGens, []) }
@@ -59,11 +65,5 @@ fn ParaGenerator_nextValue(this, box) {
     store(box, yields);
     <> @ParaGenerator(nexts)
 };
-genericBind(nextValue, @@ParaGenerator, ParaGenerator_nextValue);
 
-## Just use the standard implementation.
-genericBind(collect, @@ParaGenerator, Generator_stdCollect);
-
-<> {
-    makeParaGenerator
-}
+<> {makeParaGenerator}

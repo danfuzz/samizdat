@@ -23,104 +23,77 @@ def get_yieldDef   = $Lang0Node::get_yieldDef;
 ## `node.bodies(bodiesBox)`, implements one layer of body collection.
 def bodies = makeRegularGeneric("bodies", 2, 2);
 
-genericBind(
-    bodies,
-    @@apply,
-    fn apply_bodies(this, bodiesBox) {
-        def function = bodies(this.function, bodiesBox);
-        def actuals = bodies(this.actuals, bodiesBox);
-        <> @apply{function, actuals}
-    });
+fn @@apply.bodies(bodiesBox) {
+    def function = bodies(this.function, bodiesBox);
+    def actuals = bodies(this.actuals, bodiesBox);
+    <> @apply{function, actuals}
+};
 
-genericBind(
-    bodies,
-    @@call,
-    fn call_bodies(this, bodiesBox) {
-        def function = bodies(this.function, bodiesBox);
-        def actuals = [ a in this.actuals <> bodies(a, bodiesBox) ];
-        <> @call{function, actuals}
-    });
+fn @@call.bodies(bodiesBox) {
+    def function = bodies(this.function, bodiesBox);
+    def actuals = [ a in this.actuals <> bodies(a, bodiesBox) ];
+    <> @call{function, actuals}
+};
 
-genericBind(
-    bodies,
-    @@closure,
-    fn closure_bodies(this, bodiesBox) {
-        def statements = [ s in this.statements <> bodies(s, bodiesBox) ];
-        def optYield = ((def y = this.yield) & bodies(y, bodiesBox))?;
-        def varRefs = this.varRefs;
+fn @@closure.bodies(bodiesBox) {
+    def statements = [ s in this.statements <> bodies(s, bodiesBox) ];
+    def optYield = ((def y = this.yield) & bodies(y, bodiesBox))?;
+    def varRefs = this.varRefs;
 
-        def newNode = @closure{
-            formals: this.formals,
-            ((def name = this.name) & {name} | {})*,
-            statements,
-            varRefs,
-            ((def yield = optYield*) & {yield} | {})*,
-            ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
-        };
+    def newNode = @closure{
+        formals: this.formals,
+        ((def name = this.name) & {name} | {})*,
+        statements,
+        varRefs,
+        ((def yield = optYield*) & {yield} | {})*,
+        ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
+    };
 
-        def bodies = fetch(bodiesBox);
-        if (def already = bodies[newNode]) {
-            return already
-        };
+    def bodies = fetch(bodiesBox);
+    if (def already = bodies[newNode]) {
+        return already
+    };
 
-        def result = @closureRef{id: #bodies, varRefs};
-        store(bodiesBox, {bodies*, (newNode): result});
-        <> result
-    });
+    def result = @closureRef{id: #bodies, varRefs};
+    store(bodiesBox, {bodies*, (newNode): result});
+    <> result
+};
 
-genericBind(
-    bodies,
-    @@jump,
-    fn jump_bodies(this, bodiesBox) {
-        def function = bodies(this.function, bodiesBox);
-        def optValue = (def v = this.nodeValue)
-            & {value: bodies(v, bodiesBox)}
-            | {};
+fn @@jump.bodies(bodiesBox) {
+    def function = bodies(this.function, bodiesBox);
+    def optValue = (def v = this.nodeValue)
+        & {value: bodies(v, bodiesBox)}
+        | {};
 
-        <> @jump{function, optValue*}
-    });
+    <> @jump{function, optValue*}
+};
 
-genericBind(
-    bodies,
-    @@literalRef,
-    fn literalRef_bodies(this, bodiesBox) {
-        <> this
-    });
+fn @@literalRef.bodies(bodiesBox) {
+    <> this
+};
 
-genericBind(
-    bodies,
-    @@varBind,
-    fn varBind_bodies(this, bodiesBox) {
-        def value = bodies(this.nodeValue, bodiesBox);
-        <> @varBind{name: this.name, value}
-    });
+fn @@varBind.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    <> @varBind{name: this.name, value}
+};
 
-genericBind(
-    bodies,
-    @@varDef,
-    fn varDef_bodies(this, bodiesBox) {
-        def value = ifValue { <> this.nodeValue }
-            { value <> {value: bodies(value, bodiesBox)} }
-            { <> {} };
-        <> @varDef{name: this.name, value*}
-    });
+fn @@varDef.bodies(bodiesBox) {
+    def value = ifValue { <> this.nodeValue }
+        { value <> {value: bodies(value, bodiesBox)} }
+        { <> {} };
+    <> @varDef{name: this.name, value*}
+};
 
-genericBind(
-    bodies,
-    @@varDefMutable,
-    fn varDefMutable_bodies(this, bodiesBox) {
-        def value = ifValue { <> this.nodeValue }
-            { value <> {value: bodies(value, bodiesBox)} }
-            { <> {} };
-        <> @varDefMutable{name: this.name, value*}
-    });
+fn @@varDefMutable.bodies(bodiesBox) {
+    def value = ifValue { <> this.nodeValue }
+        { value <> {value: bodies(value, bodiesBox)} }
+        { <> {} };
+    <> @varDefMutable{name: this.name, value*}
+};
 
-genericBind(
-    bodies,
-    @@varRef,
-    fn varRef_bodies(this, bodiesBox) {
-        <> @varRef{name: this.name}
-    });
+fn @@varRef.bodies(bodiesBox) {
+    <> @varRef{name: this.name}
+};
 
 ## Collects all closure nodes at or under the given one into a list.
 ## Returns `{closures, node}`, where `closures` is a list of collected

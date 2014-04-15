@@ -154,6 +154,14 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
 }
 
 /**
+ * Makes a 3 element list.
+ */
+static zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
+    zvalue elems[3] = { e1, e2, e3 };
+    return listFromArray(3, elems);
+}
+
+/**
  * Appends an element to a list.
  */
 static zvalue listAppend(zvalue list, zvalue elem) {
@@ -304,6 +312,22 @@ static zvalue makeVarRef(zvalue name) {
 /* Documented in spec. */
 static zvalue makeOptValue(zvalue expression) {
     return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
+}
+
+/* Documented in spec. */
+static zvalue withFormals(zvalue node, zvalue formals) {
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_formals, formals),
+        NULL);
+}
+
+/* Documented in spec. */
+static zvalue withoutBind(zvalue node) {
+    return makeValue(
+        get_type(node),
+        collDel(dataOf(node), STR_bind),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -458,248 +482,6 @@ DEF_PARSE(parenExpression) {
     MATCH_OR_REJECT(CH_CPAREN);
 
     return withoutInterpolate(expression);
-}
-
-/* Documented in spec. */
-DEF_PARSE(varRef) {
-    MARK();
-
-    zvalue identifier = MATCH_OR_REJECT(identifier);
-
-    return makeVarRef(dataOf(identifier));
-}
-
-/* Documented in spec. */
-DEF_PARSE(varDef) {
-    MARK();
-
-    bool isMutable;
-
-    if (MATCH(def)) {
-        isMutable = false;
-    } else {
-        MATCH_OR_REJECT(var);
-        isMutable = true;
-    }
-
-    zvalue name = MATCH_OR_REJECT(identifier);
-
-    zvalue expr;
-    if (MATCH(CH_EQUAL)) {
-        expr = PARSE_OR_REJECT(expression);
-    } else {
-        expr = NULL;
-    }
-
-    if (isMutable) {
-        return makeVarDefMutable(dataOf(name), expr);
-    } else {
-        return makeVarDef(dataOf(name), expr);
-    }
-}
-
-/* Documented in spec. */
-DEF_PARSE(yieldDef) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_LT);
-    zvalue identifier = MATCH_OR_REJECT(identifier);
-    MATCH_OR_REJECT(CH_GT);
-
-    return dataOf(identifier);
-}
-
-/* Documented in spec. */
-DEF_PARSE(optYieldDef) {
-    zvalue result = PARSE(yieldDef);
-    return (result != NULL) ? mapFrom1(STR_yieldDef, result) : EMPTY_MAP;
-}
-
-/**
- * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns the parsed token,
- * or `NULL` to indicate that no alternate matched.
- */
-DEF_PARSE(formal1) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = MATCH(CH_QMARK); }
-    if (result == NULL) { result = MATCH(CH_STAR); }
-    if (result == NULL) { result = MATCH(CH_PLUS); }
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(formal) {
-    MARK();
-
-    zvalue name = MATCH(identifier);
-
-    if (name != NULL) {
-        name = dataOf(name);
-    } else {
-        // If there was no identifier, then the only valid form for a formal
-        // is if this is an unnamed / unused argument.
-        MATCH_OR_REJECT(CH_DOT);
-    }
-
-    zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
-    if (repeat != NULL) {
-        repeat = typeName(get_type(repeat));
-    }
-
-    return mapFrom2(STR_name, name, STR_repeat, repeat);
-}
-
-/* Documented in spec. */
-DEF_PARSE(formalsList) {
-    return PARSE_COMMA_SEQ(formal);
-}
-
-/**
- * Helper for `programDeclarations`: Parses the main part of the syntax.
- */
-DEF_PARSE(programDeclarations1) {
-    MARK();
-
-    // Both of these are always maps (possibly empty).
-    zvalue yieldDef = PARSE(optYieldDef);
-    zvalue formals = PARSE(formalsList);
-
-    if (PEEK(CH_DIAMOND) == NULL) {
-        MATCH_OR_REJECT(CH_RARROW);
-    }
-
-    return GFN_CALL(cat, mapFrom1(STR_formals, formals), yieldDef);
-}
-
-/* Documented in spec. */
-DEF_PARSE(programDeclarations) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(programDeclarations1); }
-    if (result == NULL) { result = mapFrom1(STR_formals, EMPTY_LIST); }
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(program) {
-    zvalue declarations = PARSE(programDeclarations); // This never fails.
-    zvalue body = PARSE(programBody); // This never fails.
-
-    return makeValue(TYPE_closure,
-        GFN_CALL(cat, declarations, body),
-        NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(closure) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OCURLY);
-
-    // This always succeeds. See note in `parseProgram` above.
-    zvalue result = PARSE(program);
-
-    MATCH_OR_REJECT(CH_CCURLY);
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(nullaryClosure) {
-    MARK();
-
-    zvalue c = PARSE_OR_REJECT(closure);
-
-    zvalue formals = GET(formals, c);
-    if (!valEq(formals, EMPTY_LIST)) {
-        die("Invalid formal argument in code block.");
-    }
-
-    return c;
-}
-
-/**
- * Helper for `fnCommon`: Parses `(@identifier | [:])` with appropriate map
- * wrapping.
- */
-DEF_PARSE(fnCommon2) {
-    zvalue n = MATCH(identifier);
-
-    if (n == NULL) {
-        return EMPTY_MAP;
-    }
-
-    return mapFrom1(STR_name, dataOf(n));
-}
-
-/* Documented in spec. */
-DEF_PARSE(fnCommon) {
-    MARK();
-
-    MATCH_OR_REJECT(fn);
-
-    zvalue name = PARSE(fnCommon2); // This never fails.
-    MATCH_OR_REJECT(CH_OPAREN);
-    zvalue formals = PARSE(formalsList); // This never fails.
-    MATCH_OR_REJECT(CH_CPAREN);
-    zvalue code = PARSE_OR_REJECT(nullaryClosure);
-
-    zvalue yieldDef = GET(yieldDef, code);
-    zvalue returnDef = (yieldDef == NULL)
-        ? EMPTY_LIST
-        : listFrom1(makeVarDef(yieldDef, REFS(return)));
-    zvalue statements = GFN_CALL(cat, returnDef, GET(statements, code));
-    zvalue closureMap = GFN_CALL(cat,
-        dataOf(code),
-        name,
-        mapFrom3(
-            STR_formals,    formals,
-            STR_yieldDef,   STR_return,
-            STR_statements, statements));
-
-    return makeValue(TYPE_closure, closureMap, NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(fnDef) {
-    MARK();
-
-    zvalue closure = PARSE_OR_REJECT(fnCommon);
-    zvalue name = GET(name, closure);
-
-    if (name == NULL) {
-        return NULL;
-    }
-
-    return makeValue(TYPE_topDeclaration,
-        mapFrom2(
-            STR_top,  makeVarDef(name, NULL),
-            STR_main, makeVarBind(name, closure)),
-        NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(fnExpression) {
-    MARK();
-
-    zvalue closure = PARSE_OR_REJECT(fnCommon);
-    zvalue name = GET(name, closure);
-
-    if (name == NULL) {
-        return closure;
-    }
-
-    zvalue mainClosure = makeValue(TYPE_closure,
-        mapFrom3(
-            STR_formals,    EMPTY_LIST,
-            STR_statements, listFrom1(makeVarDef(name, NULL)),
-            STR_yield,      makeVarBind(name, closure)),
-        NULL);
-
-    return makeCall(mainClosure, NULL);
 }
 
 /* Documented in spec. */
@@ -896,6 +678,288 @@ DEF_PARSE(deriv) {
     zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
 
     return makeCall(REFS(makeValue), args);
+}
+
+/* Documented in spec. */
+DEF_PARSE(varRef) {
+    MARK();
+
+    zvalue identifier = MATCH_OR_REJECT(identifier);
+
+    return makeVarRef(dataOf(identifier));
+}
+
+/* Documented in spec. */
+DEF_PARSE(varDef) {
+    MARK();
+
+    bool isMutable;
+
+    if (MATCH(def)) {
+        isMutable = false;
+    } else {
+        MATCH_OR_REJECT(var);
+        isMutable = true;
+    }
+
+    zvalue name = MATCH_OR_REJECT(identifier);
+
+    zvalue expr;
+    if (MATCH(CH_EQUAL)) {
+        expr = PARSE_OR_REJECT(expression);
+    } else {
+        expr = NULL;
+    }
+
+    if (isMutable) {
+        return makeVarDefMutable(dataOf(name), expr);
+    } else {
+        return makeVarDef(dataOf(name), expr);
+    }
+}
+
+/* Documented in spec. */
+DEF_PARSE(yieldDef) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_LT);
+    zvalue identifier = MATCH_OR_REJECT(identifier);
+    MATCH_OR_REJECT(CH_GT);
+
+    return dataOf(identifier);
+}
+
+/* Documented in spec. */
+DEF_PARSE(optYieldDef) {
+    zvalue result = PARSE(yieldDef);
+    return (result != NULL) ? mapFrom1(STR_yieldDef, result) : EMPTY_MAP;
+}
+
+/**
+ * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns the parsed token,
+ * or `NULL` to indicate that no alternate matched.
+ */
+DEF_PARSE(formal1) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = MATCH(CH_QMARK); }
+    if (result == NULL) { result = MATCH(CH_STAR); }
+    if (result == NULL) { result = MATCH(CH_PLUS); }
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(formal) {
+    MARK();
+
+    zvalue name = MATCH(identifier);
+
+    if (name != NULL) {
+        name = dataOf(name);
+    } else {
+        // If there was no identifier, then the only valid form for a formal
+        // is if this is an unnamed / unused argument.
+        MATCH_OR_REJECT(CH_DOT);
+    }
+
+    zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
+    if (repeat != NULL) {
+        repeat = typeName(get_type(repeat));
+    }
+
+    return mapFrom2(STR_name, name, STR_repeat, repeat);
+}
+
+/* Documented in spec. */
+DEF_PARSE(formalsList) {
+    return PARSE_COMMA_SEQ(formal);
+}
+
+/**
+ * Helper for `programDeclarations`: Parses the main part of the syntax.
+ */
+DEF_PARSE(programDeclarations1) {
+    MARK();
+
+    // Both of these are always maps (possibly empty).
+    zvalue yieldDef = PARSE(optYieldDef);
+    zvalue formals = PARSE(formalsList);
+
+    if (PEEK(CH_DIAMOND) == NULL) {
+        MATCH_OR_REJECT(CH_RARROW);
+    }
+
+    return GFN_CALL(cat, mapFrom1(STR_formals, formals), yieldDef);
+}
+
+/* Documented in spec. */
+DEF_PARSE(programDeclarations) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(programDeclarations1); }
+    if (result == NULL) { result = mapFrom1(STR_formals, EMPTY_LIST); }
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(program) {
+    zvalue declarations = PARSE(programDeclarations); // This never fails.
+    zvalue body = PARSE(programBody); // This never fails.
+
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat, declarations, body),
+        NULL);
+}
+
+/* Documented in spec. */
+DEF_PARSE(closure) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OCURLY);
+
+    // This always succeeds. See note in `parseProgram` above.
+    zvalue result = PARSE(program);
+
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(nullaryClosure) {
+    MARK();
+
+    zvalue c = PARSE_OR_REJECT(closure);
+
+    zvalue formals = GET(formals, c);
+    if (!valEq(formals, EMPTY_LIST)) {
+        die("Invalid formal argument in code block.");
+    }
+
+    return c;
+}
+
+/**
+ * Helper for `fnCommon`: Parses the first `name` alternate.
+ */
+DEF_PARSE(fnCommon1) {
+    MARK();
+
+    zvalue n = MATCH_OR_REJECT(identifier);
+    REJECT_IF(MATCH(CH_DOT));
+
+    return mapFrom1(STR_name, dataOf(n));
+}
+
+/**
+ * Helper for `fnCommon`: Parses the second `name` alternate.
+ */
+DEF_PARSE(fnCommon2) {
+    MARK();
+
+    zvalue bind = NULL;
+    if (bind == NULL) { bind = PARSE(varRef); }
+    if (bind == NULL) { bind = PARSE(type); }
+    REJECT_IF(bind == NULL);
+
+    MATCH_OR_REJECT(CH_DOT);
+    zvalue n = PARSE_OR_REJECT(identifierString);
+
+    return mapFrom2(STR_bind, bind, STR_name, GET(value, n));
+}
+
+/**
+ * Helper for `fnCommon`: Parses the `name` sub-expression.
+ */
+DEF_PARSE(fnCommon3) {
+    zvalue name = NULL;
+
+    if (name == NULL) { name = PARSE(fnCommon1); }
+    if (name == NULL) { name = PARSE(fnCommon2); }
+    if (name == NULL) { name = EMPTY_MAP;        }
+
+    return name;
+}
+
+/* Documented in spec. */
+DEF_PARSE(fnCommon) {
+    MARK();
+
+    MATCH_OR_REJECT(fn);
+
+    zvalue name = PARSE(fnCommon3); // This never fails.
+    MATCH_OR_REJECT(CH_OPAREN);
+    zvalue formals = PARSE(formalsList); // This never fails.
+    MATCH_OR_REJECT(CH_CPAREN);
+    zvalue code = PARSE_OR_REJECT(nullaryClosure);
+
+    zvalue yieldDef = GET(yieldDef, code);
+    zvalue returnDef = (yieldDef == NULL)
+        ? EMPTY_LIST
+        : listFrom1(makeVarDef(yieldDef, REFS(return)));
+    zvalue statements = GFN_CALL(cat, returnDef, GET(statements, code));
+    zvalue closureMap = GFN_CALL(cat,
+        dataOf(code),
+        name,
+        mapFrom3(
+            STR_formals,    formals,
+            STR_yieldDef,   STR_return,
+            STR_statements, statements));
+
+    return makeValue(TYPE_closure, closureMap, NULL);
+}
+
+/* Documented in spec. */
+DEF_PARSE(fnDef) {
+    MARK();
+
+    zvalue closure = PARSE_OR_REJECT(fnCommon);
+    zvalue name = GET(name, closure);
+
+    if (name == NULL) {
+        return NULL;
+    }
+
+    zvalue bind = GET(bind, closure);
+
+    if (bind != NULL) {
+        zvalue formals = GFN_CALL(cat,
+            listFrom1(mapFrom1(STR_name, STR_this)),
+            GET(formals, closure));
+        zvalue finalClosure = withFormals(withoutBind(closure), formals);
+        return makeCall(REFS(genericBind),
+            listFrom3(makeVarRef(name), bind, finalClosure));
+    } else {
+        return makeValue(TYPE_topDeclaration,
+            mapFrom2(
+                STR_top,  makeVarDef(name, NULL),
+                STR_main, makeVarBind(name, closure)),
+            NULL);
+    }
+}
+
+/* Documented in spec. */
+DEF_PARSE(fnExpression) {
+    MARK();
+
+    zvalue closure = PARSE_OR_REJECT(fnCommon);
+    REJECT_IF(GET(bind, closure) != NULL);
+    zvalue name = GET(name, closure);
+
+    if (name == NULL) {
+        return closure;
+    }
+
+    zvalue mainClosure = makeValue(TYPE_closure,
+        mapFrom3(
+            STR_formals,    EMPTY_LIST,
+            STR_statements, listFrom1(makeVarDef(name, NULL)),
+            STR_yield,      makeVarBind(name, closure)),
+        NULL);
+
+    return makeCall(mainClosure, NULL);
 }
 
 /* Documented in spec. */

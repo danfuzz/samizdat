@@ -14,8 +14,14 @@ def $Number = moduleLoad(["proto", "Number"]);
 ## Exported Definitions
 ##
 
-## Generator used when iterating over lists and strings.
-fn SequenceGenerator_nextValue(this, box) {
+## Documented in spec.
+fn @@SequenceGenerator.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    <> Generator_stdCollect(this, optFilterFunction*)
+};
+
+## Documented in spec.
+fn @@SequenceGenerator.nextValue(box) {
     def index = this::index;
 
     <> ifValue { <> nth(this::seq, index) }
@@ -28,7 +34,3 @@ fn SequenceGenerator_nextValue(this, box) {
             store(box)
         }
 };
-genericBind(nextValue, @@SequenceGenerator, SequenceGenerator_nextValue);
-
-## Just use the standard implementation.
-genericBind(collect, @@SequenceGenerator, Generator_stdCollect);

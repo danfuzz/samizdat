@@ -15,8 +15,14 @@ def $Number     = moduleLoad(["proto", "Number"]);
 ## Exported Definitions
 ##
 
+## Documented in spec.
+fn @@MapGenerator.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    <> Generator_stdCollect(this, optFilterFunction*)
+};
+
 ## Generator used when iterating over maps.
-fn MapGenerator_nextValue(this, box) {
+fn @@MapGenerator.nextValue(box) {
     def index = this::index;
 
     <> ifValue { <> $Collection::nthMapping(this::map, index) }
@@ -29,7 +35,3 @@ fn MapGenerator_nextValue(this, box) {
             store(box)
         }
 };
-genericBind(nextValue, @@MapGenerator, MapGenerator_nextValue);
-
-## Just use the standard implementation.
-genericBind(collect, @@MapGenerator, Generator_stdCollect);
