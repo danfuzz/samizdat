@@ -772,27 +772,57 @@ DEF_PARSE(formalsList) {
 }
 
 /**
- * Helper for `programDeclarations`: Parses the main part of the syntax.
+ * Helper for `programDeclarations`: Parses an optional name.
  */
 DEF_PARSE(programDeclarations1) {
+    zvalue n = MATCH(identifier);
+    return (n == NULL)
+        ? EMPTY_MAP
+        : mapFrom1(STR_name, dataOf(n));
+}
+
+/**
+ * Helper for `programDeclarations`: Parses the `rest` construct in the
+ * original spec.
+ */
+DEF_PARSE(programDeclarations2) {
+    MARK();
+
+    zvalue name = PARSE(programDeclarations1);  // This never fails.
+
+    if (MATCH(CH_OPAREN) != NULL) {
+        zvalue formals = PARSE(formalsList);    // This never fails.
+        MATCH_OR_REJECT(CH_CPAREN);
+        return GFN_CALL(cat, name, mapFrom1(STR_formals, formals));
+    } else {
+        RESET();
+        zvalue formals = PARSE(formalsList);    // This never fails.
+        return mapFrom1(STR_formals, formals);
+    }
+}
+
+/**
+ * Helper for `programDeclarations`: Parses the main part of the syntax.
+ */
+DEF_PARSE(programDeclarations3) {
     MARK();
 
     // Both of these are always maps (possibly empty).
     zvalue yieldDef = PARSE(optYieldDef);
-    zvalue formals = PARSE(formalsList);
+    zvalue rest = PARSE(programDeclarations2);
 
     if (PEEK(CH_DIAMOND) == NULL) {
         MATCH_OR_REJECT(CH_RARROW);
     }
 
-    return GFN_CALL(cat, mapFrom1(STR_formals, formals), yieldDef);
+    return GFN_CALL(cat, yieldDef, rest);
 }
 
 /* Documented in spec. */
 DEF_PARSE(programDeclarations) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(programDeclarations1); }
+    if (result == NULL) { result = PARSE(programDeclarations3); }
     if (result == NULL) { result = mapFrom1(STR_formals, EMPTY_LIST); }
 
     return result;
