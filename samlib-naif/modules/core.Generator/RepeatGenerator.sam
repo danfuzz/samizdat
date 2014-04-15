@@ -30,11 +30,14 @@ fn makeRepeatGenerator(size, optValue?) {
     <> @RepeatGenerator{size, value}
 };
 
-## Just use the standard implementation.
-genericBind(collect, @@RepeatGenerator, Generator_stdCollect);
+## Documented in spec.
+fn @@RepeatGenerator.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    <> Generator_stdCollect(this, optFilterFunction*)
+};
 
 ## Documented in spec.
-fn RepeatGenerator_nextValue(this, box) {
+fn @@RepeatGenerator.nextValue(box) {
     def size = this::size;
 
     <> ifIs { <> perGt(size, 0) }
@@ -48,9 +51,5 @@ fn RepeatGenerator_nextValue(this, box) {
             store(box)
         }
 };
-genericBind(nextValue, @@RepeatGenerator, RepeatGenerator_nextValue);
 
-
-<> {
-    makeRepeatGenerator
-}
+<> {makeRepeatGenerator}

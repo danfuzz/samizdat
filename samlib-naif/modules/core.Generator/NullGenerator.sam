@@ -12,20 +12,16 @@
 ##
 
 ## Documented in spec.
-fn NullGenerator_collect(this, optFilterFunction?) {
+fn @@NullGenerator.collect(optFilterFunction?) {
     <> []
 };
-genericBind(collect, @@NullGenerator, NullGenerator_collect);
 
 ## Documented in spec.
-fn NullGenerator_nextValue(this, box) {
+fn @@NullGenerator.nextValue(box) {
     store(box)
 };
-genericBind(nextValue, @@NullGenerator, NullGenerator_nextValue);
 
 ## Documented in spec.
 def nullGenerator = @NullGenerator;
 
-<> {
-    nullGenerator
-}
+<> {nullGenerator}
