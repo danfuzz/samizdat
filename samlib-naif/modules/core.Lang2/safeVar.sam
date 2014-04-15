@@ -71,93 +71,66 @@ fn safeIndexForNodes(base, nodes*) {
     <> maxOf(indexes*)
 };
 
-genericBind(
-    safeIndex,
-    @@apply,
-    fn apply_safeIndex(this, base) {
-        <> safeIndexForNodes(base,
-            $Lang0Node::get_function(this),
-            $Lang0Node::get_actuals(this));
-    });
+fn @@apply.safeIndex(base) {
+    <> safeIndexForNodes(base,
+        $Lang0Node::get_function(this),
+        $Lang0Node::get_actuals(this));
+};
 
-genericBind(
-    safeIndex,
-    @@call,
-    fn call_safeIndex(this, base) {
-        <> safeIndexForNodes(base,
-            $Lang0Node::get_function(this),
-            $Lang0Node::get_actuals(this)*);
-    });
+fn @@call.safeIndex(base) {
+    <> safeIndexForNodes(base,
+        $Lang0Node::get_function(this),
+        $Lang0Node::get_actuals(this)*);
+};
 
-genericBind(
-    safeIndex,
-    @@closure,
-    fn closure_safeIndex(this, base) {
-        def namesIndex = safeIndexForNames(base,
-            $Lang0Node::get_name(this)?*,
-            $Lang0Node::get_yieldDef(this)?*);
-        def nodesIndex = safeIndexForNodes(base,
-            $Lang0Node::get_statements(this)*,
-            $Lang0Node::get_yield(this)?*);
+fn @@closure.safeIndex(base) {
+    def namesIndex = safeIndexForNames(base,
+        $Lang0Node::get_name(this)?*,
+        $Lang0Node::get_yieldDef(this)?*);
+    def nodesIndex = safeIndexForNodes(base,
+        $Lang0Node::get_statements(this)*,
+        $Lang0Node::get_yield(this)?*);
 
-        <> maxOf(namesIndex, nodesIndex)
-    });
+    <> maxOf(namesIndex, nodesIndex)
+};
 
-genericBind(
-    safeIndex,
-    @@jump,
-    fn jump_safeIndex(this, base) {
-        <> safeIndexForNodes(base,
-            $Lang0Node::get_function(this),
-            $Lang0Node::get_nodeValue(this)?*);
-    });
+fn @@jump.safeIndex(base) {
+    <> safeIndexForNodes(base,
+        $Lang0Node::get_function(this),
+        $Lang0Node::get_nodeValue(this)?*);
+};
 
-genericBind(
-    safeIndex,
-    @@literal,
-    fn literal_safeIndex(this, base) {
-        <> -1
-    });
+fn @@literal.safeIndex(base) {
+    <> -1
+};
 
-genericBind(
-    safeIndex,
-    @@varBind,
-    fn varBind_safeIndex(this, base) {
-        def nameIndex =
-            safeIndexForNames(base, $Lang0Node::get_name(this));
-        def valueIndex =
-            safeIndexForNodes(base, $Lang0Node::get_nodeValue(this));
-        <> maxOf(nameIndex, valueIndex)
-    });
+fn @@varBind.safeIndex(base) {
+    def nameIndex =
+        safeIndexForNames(base, $Lang0Node::get_name(this));
+    def valueIndex =
+        safeIndexForNodes(base, $Lang0Node::get_nodeValue(this));
+    <> maxOf(nameIndex, valueIndex)
+};
 
-genericBind(
-    safeIndex,
-    @@varDef,
-    fn varDef_safeIndex(this, base) {
-        def nameIndex =
-            safeIndexForNames(base, $Lang0Node::get_name(this));
-        def valueIndex =
-            safeIndexForNodes(base, $Lang0Node::get_nodeValue(this)?*);
-        <> maxOf(nameIndex, valueIndex)
-    });
+fn @@varDef.safeIndex(base) {
+    def nameIndex =
+        safeIndexForNames(base, $Lang0Node::get_name(this));
+    def valueIndex =
+        safeIndexForNodes(base, $Lang0Node::get_nodeValue(this)?*);
+    <> maxOf(nameIndex, valueIndex)
+};
 
-genericBind(
-    safeIndex,
-    @@varDefMutable,
-    fn varDefMutable_safeIndex(this, base) {
-        def nameIndex =
-            safeIndexForNames(base, $Lang0Node::get_name(this));
-        def valueIndex =
-            safeIndexForNodes(base, $Lang0Node::get_nodeValue(this)?*);
-        <> maxOf(nameIndex, valueIndex)
-    });
+fn @@varDefMutable.safeIndex(base) {
+    def nameIndex =
+        safeIndexForNames(base, $Lang0Node::get_name(this));
+    def valueIndex =
+        safeIndexForNodes(base, $Lang0Node::get_nodeValue(this)?*);
+    <> maxOf(nameIndex, valueIndex)
+};
 
-genericBind(
-    safeIndex,
-    @@varRef,
-    fn varRef_safeIndex(this, base) {
-        <> safeIndexForNames(base, $Lang0Node::get_name(this))
-    });
+fn @@varRef.safeIndex(base) {
+    <> safeIndexForNames(base, $Lang0Node::get_name(this))
+};
 
 ## Makes a variable name by combining `base` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
