@@ -92,7 +92,6 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
-def parFnExpression;
 def parProgramBody;
 def parUnaryExpression;
 
@@ -106,10 +105,6 @@ def parExpression = {:
     ## This one's the top level "regular-looking" expression (in that it
     ## covers the territory of C-style expressions).
     %parAssignExpression
-|
-    ## This one is only nominally "regular-looking" (in that not many C
-    ## family languages have function expressions).
-    %parFnExpression
 |
     ## Note: Layer 2 adds additional rules here.
     %parExpression2
@@ -515,42 +510,6 @@ def parFnDef = {:
                 main: makeVarBind(name, closure)
             }
         }
-    )
-:};
-
-## Parses a `fn` expression (function with `return` binding, not being bound
-## to a generic). The translation is as described in `parFnCommon` (above) if
-## the function is not given a name. If the function *is* given a name, the
-## translation is along the following lines (so as to enable self-recursion):
-##
-## ```
-## fn name ...
-## ```
-## =>
-## ```
-## {
-##     def name;
-##     <> name := { ... }
-## }()
-## ```
-parFnExpression := {:
-    closure = parFnCommon
-
-    !{ <> get_bind(closure) } ## The expression form can't bind a generic.
-
-    (
-        name = { <> get_name(closure) }
-        {
-            def mainClosure = @closure{
-                formals:    [],
-                statements: [makeVarDef(name)],
-                yield:      makeVarBind(name, closure)
-            };
-
-            <> makeCall(mainClosure)
-        }
-    |
-        { <> closure }
     )
 :};
 

@@ -451,7 +451,6 @@ DEF_PARSE(optSemicolons) {
 
 /* Documented in spec. */
 DEF_PARSE(assignExpression);
-DEF_PARSE(fnExpression);
 DEF_PARSE(opExpression);
 DEF_PARSE(programBody);
 DEF_PARSE(unaryExpression);
@@ -459,10 +458,7 @@ DEF_PARSE(unaryExpression);
 /* Documented in spec. */
 DEF_PARSE(expression) {
     zstackPointer save = datFrameStart();
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(assignExpression); }
-    if (result == NULL) { result = PARSE(fnExpression); }
+    zvalue result = PARSE(assignExpression);
 
     datFrameReturn(save, result);
     return result;
@@ -963,28 +959,6 @@ DEF_PARSE(fnDef) {
                 STR_main, makeVarBind(name, closure)),
             NULL);
     }
-}
-
-/* Documented in spec. */
-DEF_PARSE(fnExpression) {
-    MARK();
-
-    zvalue closure = PARSE_OR_REJECT(fnCommon);
-    REJECT_IF(GET(bind, closure) != NULL);
-    zvalue name = GET(name, closure);
-
-    if (name == NULL) {
-        return closure;
-    }
-
-    zvalue mainClosure = makeValue(TYPE_closure,
-        mapFrom3(
-            STR_formals,    EMPTY_LIST,
-            STR_statements, listFrom1(makeVarDef(name, NULL)),
-            STR_yield,      makeVarBind(name, closure)),
-        NULL);
-
-    return makeCall(mainClosure, NULL);
 }
 
 /* Documented in spec. */

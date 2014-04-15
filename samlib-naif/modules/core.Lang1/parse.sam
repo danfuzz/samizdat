@@ -81,7 +81,6 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
-def parFnExpression;
 def parProgramBody;
 def parUnaryExpression;
 
@@ -92,8 +91,7 @@ def parOpExpression;
 
 ## Documented in spec.
 def parExpression = $Peg::makeMainChoice(
-    $Peg::makeThunk { <> parAssignExpression },
-    $Peg::makeThunk { <> parFnExpression });
+    $Peg::makeThunk { <> parAssignExpression });
 
 ## Documented in spec.
 def parParenExpression = $Peg::makeMainSequence(
@@ -409,25 +407,6 @@ def parFnDef = $Peg::makeMainSequence(
                 main: makeVarBind(name, closure)
             }
         }));
-
-## Documented in spec.
-parFnExpression := $Peg::makeMainSequence(
-    parFnCommon,
-    $Peg::makeLookaheadFailure(
-        $Peg::makeCode { closure <> get_bind(closure) }),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeCode { closure, . <> get_name(closure) },
-            $Peg::makeCode { closure, ., name ->
-                def mainClosure = @closure{
-                    formals:    [],
-                    statements: [makeVarDef(name)],
-                    yield:      makeVarBind(name, closure)
-                };
-
-                <> makeCall(mainClosure)
-            }),
-        $Peg::makeCode { closure, . <> closure }));
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
