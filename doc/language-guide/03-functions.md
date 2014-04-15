@@ -18,14 +18,16 @@ how their declarations look, and there are a couple of semantic differences
 as well, as detailed below.
 
 With the exception of the top level of a program, every closure has
-curly brace delimiters  (`{...}`), and with few exceptions curly braces
-are only used to indicate a closure of some form or another.
+curly brace delimiters  (`{...}`). Note that curly braces are *also*
+used to delimit map literals, which leads to a couple ambiguities; in
+general, ambiguities are resolved in favor of treating a construct as
+a map literal, not a closure.
 
-Every closure can be declared to take arguments, and every closure can
-yield (return) a value. With only one exception, curly braces in a
-code-containing context are *only* used in the definition of closures.
-(This is a departure from most languages in the C family, however it is
-similar to how Smalltalk defines its blocks.)
+Closures can be declared to take arguments, and closures can be defined
+either to yield (return) a value, or yield no value, sometimes determined
+at runtime. Finally, all closures can have a name; in some cases, the
+name is used for variable binding, while in others, only as debugging
+information.
 
 
 ### Argument Declarations
@@ -135,27 +137,21 @@ In order to disambiguate with the empty map, an otherwise empty function
 must contain at least an `->` or a `<>`, e.g. `{ <> }`.
 
 
-### Functions
+### Function statements
 
-Functions are closures that are meant to "stand alone" in some way. These
+Functions are closures that are meant to "stand alone." These
 correspond to functions as used by most languages in the C tradition.
-Most functions have a name and are bound to a variable (sometimes a local
+Functions have a name and get bound to a variable (sometimes a local
 variable, and sometimes a module variable) whose name matches the
 function name.
 
-Most typically functions are defined and bound to a variable within
-the same construct; these are known as "function statements." It is
-also possible to define a function as a component of an enclosing
-expression; these are known as "function expressions." There is no
-syntactic difference between these two forms, except that the statement
-form requires the function to have a name. There is no semantic
-difference between these two forms, except that the statement form
-binds the function in the lexical environment that the statement appears in,
-
-When used as a statement, the function's name is in effect declared at
-the top of the block it appears in, though the name only becomes *bound*
-when the statement is encountered. This arrangement is done to make
-common patterns of self- and mututal-recursion convenient.
+When a function statement is used, it is as if the variable naming the
+function is declared at the top of the block in which the statement
+appears, though it only becomes bound to the function when the statement
+is executed in the usual order. The upshot of this is that functions
+can generally be called from within other functions defined in the same
+block, and from within the function itself. (That is, both self- and
+mutual-recursion are possible and reasonably convenient.)
 
 Functions definitions are introduced with the `fn` keyword. The keyword
 is followed by declarations, and then followed by the main code body,
@@ -163,16 +159,13 @@ inside curly braces.
 
 The declarations to a function consist of the following, in order:
 
-* The name (optional, except if the function is being bound directly to a
-  variable). This provides a name for the function, which serves three
+* The name. This provides a name for the function, which serves three
   purposes:
 
-  * It provides a name that can be used when calling the function
-    self-recursively.
+  * It provides a name that can be used when calling the function.
   * It provides a name that is visible in some debugging contexts
     (such as when generating stack traces).
-  * In a function *statement*, it provides the name of the variable to
-    bind the function to.
+  * It provides the name of the variable to bind the function to.
 
 * The formal arguments. These consist of a comma-separated list of
   individual argument declarations, all enclosed within parentheses
@@ -187,21 +180,89 @@ as with non-function closures. See "Yield Defintion" above.
 Examples:
 
 ```
-# This is a function statement, which defines the function named `blort`,
-# binding it to a variable with the same name. The function can take one
-# or two arguments. `...` would be replaced with a full function body.
+## This is a function, which defines the function named `blort`, binding it
+## to a variable with the same name. The function can take one or two
+## arguments. `...` would be replaced with a full function body.
 fn blort(a, b?) { ... }
 
-# This is a function expression, of an anonymous (unnamed) function.
-# Note that this is a contrived example. The function takes one or more
-# arguments.
-def fizmo = (fn (a+) { ... })
+## This is a function expression, which defines the function named `fizmo`.
+## The function takes one or more arguments and returns the list of them
+## to its caller.
+fn fizmo(args+) { return args }
 
-# This is a function statement that includes a yield definition. Within
-# the body, `<out>` indicates a yield from `igram`. The function takes any
-# number of arguments (including zero).
+## This is a function that includes a yield definition. Within the body,
+## `<out>` indicates a yield from `igram`. The function takes any number of
+## arguments (including zero).
 fn igram(a*) { <out> -> ... <out> ... }
 ```
+
+
+### Blocks
+
+Blocks are closures that generally serve as arguments to function calls
+or as elements of complex expressions. These serve the same purpose as
+compound statements in most languages in the C tradition.
+
+Syntactically, blocks start with an open curly brace (`{`) and end with a
+close curly brace (`}`). Within the braces, blocks start with an optional
+declaration section and are followed by the main code body.
+
+The declaration section consists of the following, in order:
+
+* The yield definition (optional). See "Yield Definition" above.
+
+* The name (optional), in the form of an identifier in the language.
+  This name is only used for debugging purposes. That is, using a name
+  here does not cause any variable binding to take place, and particularly
+  *does not* provide a name for self-recursive calls.
+
+* The formal arguments. These consist of a comma-separated list of
+  individual argument declarations, enclosed in parentheses. If the
+  closure has no name, then the parentheses are optional. See "Argument
+  Declarations" above for more details.
+
+* The special token right-arrow (`->`), to indicate the end of
+  the declarations. If the entire body of the block is just a direct
+  yield (`<> ...`), then the right-arrow may be omitted.
+
+Examples:
+
+```
+## This is a block that takes no arguments.
+def borch = { ... }
+
+## This is a block that takes no arguments but does define a yield point.
+def frotz = { <leave> -> ... <leave> ... }
+
+## This is equivalent to the second example in the "Function Statements"
+## section, above.
+def fizmo = { <out> args+ -> <out> args }
+
+## This is one with everything. Note that the variable name (`ignatz` in this
+## case) does not have to match the closure name (`krazy` in this case).
+def ignatz = { <out> krazy(x, y?, z*) -> ... <out> ... }
+
+## Since the main body is just a yield, no right-arrow is required.
+def krazy = { x, y <> x + y }
+```
+
+
+### Special function shapes
+
+There are a few different "shapes" of function &mdash; what kinds and
+how many arguments they take, and what sort of things they return
+&mdash; that have particular uses in the language.
+
+
+#### Logic functions
+
+A logic function is one which is meant to be used, at least some of the
+time, as a logical predicate of some sort. In Samizdat, logical true
+is represented by a return value of any value at all, and logical false
+is represented by a void return. Logic functions, in general, may take
+any number of arguments (including none).
+
+See the introductory section "Logic operations" for more details.
 
 
 ### Generic functions
@@ -233,63 +294,3 @@ fn Int.blort(igram) {
     igram; ## refers to the second parameter to the function.
 }
 ```
-
-
-### Blocks
-
-Blocks are closures that generally serve as arguments to function calls
-or as elements of complex expressions. These serve the same purpose as
-compound statements in most languages in the C tradition.
-
-Syntactically, blocks start with an open curly brace (`{`) and end with a
-close curly brace (`}`). Within the braces, blocks start with an optional
-declaration section and are followed by the main code body.
-
-The declaration section consists of the following, in order:
-
-* The yield definition (optional). See "Yield Definition" above.
-
-* The formal arguments. These consist of a comma-separated list of
-  individual argument declarations (without any enclosing parentheses).
-  See "Argument Declarations" above.
-
-* The special token right-arrow (`->`), to indicate the end of
-  the declarations. If the entire body of the block is just a direct
-  yield (`<> ...`), then the right-arrow may be omitted.
-
-Examples:
-
-```
-# This is equivalent to the second example in the "Functions" section, above.
-def fizmo = { a+ -> ... }
-
-# This is a block that takes no arguments.
-def borch = { ... }
-
-# This is a block that takes no arguments but does define a yield point.
-def frotz = { <leave> -> ... <leave> ... }
-
-# This is one with everything.
-def ignatz = { <out> x, y?, z* -> ... <out> ... }
-
-# Since the main body is just a yield, no right-arrow is required.
-def krazy = { x, y <> x + y }
-```
-
-
-### Special function shapes
-
-There are a few different "shapes" of function &mdash; what kinds and
-how many arguments they take, and what sort of things they return
-&mdash; that have particular uses in the language.
-
-
-#### Logic functions
-
-A logic function is one which is meant to be used, at least some of the
-time, as a logical predicate of some sort. In Samizdat, logical true
-is represented by a return value of any value at all, and logical false
-is represented by a void return. Logic functions, in general, may take
-any number of arguments (including none).
-
-See the introductory section "Logic operations" for more details.
