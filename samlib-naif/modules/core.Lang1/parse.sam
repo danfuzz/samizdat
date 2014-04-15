@@ -301,12 +301,25 @@ def parFormalsList = $Peg::makeMainChoice(
 def parProgramDeclarations = $Peg::makeMainChoice(
     $Peg::makeSequence(
         parOptYieldDef,
-        parFormalsList,
+        $Peg::makeChoice(
+            $Peg::makeSequence(
+                $Peg::makeChoice(
+                    $Peg::makeSequence(
+                        $Peg::makeToken(@@identifier),
+                        $Peg::makeCode { ., n <> {name: dataOf(n)} }),
+                    $Peg::makeResult({})),
+                $Peg::makeToken(@@"("),
+                parFormalsList,
+                $Peg::makeToken(@@")"),
+                $Peg::makeCode { ., name, ., formals, . <> {name*, formals} }),
+            $Peg::makeSequence(
+                parFormalsList,
+                $Peg::makeCode { ., formals <> {formals} })),
         $Peg::makeChoice(
             $Peg::makeToken(@@"->"),
             $Peg::makeLookaheadSuccess($Peg::makeToken(@@"<>"))),
-        $Peg::makeCode { yieldDef, formals, . ->
-            <> {formals, yieldDef*}
+        $Peg::makeCode { yieldDef, rest, . ->
+            <> {yieldDef*, rest*}
         }),
     $Peg::makeResult({formals: []}));
 
