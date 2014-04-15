@@ -213,15 +213,36 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>constant.type.samizdat</string>
+					<key>match</key>
+					<string>@@[_$a-zA-Z][_$a-zA-Z0-9]*</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>constant.other.samizdat</string>
 					<key>match</key>
-					<string>@@?[_$a-zA-Z][_$a-zA-Z0-9]*</string>
+					<string>@[_$a-zA-Z][_$a-zA-Z0-9]*</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>constant.type.samizdat</string>
+					<key>begin</key>
+					<string>@@"</string>
+					<key>end</key>
+					<string>"</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#recursive-string-content</string>
+						</dict>
+					</array>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>constant.other.samizdat</string>
 					<key>begin</key>
-					<string>@@?"</string>
+					<string>@"</string>
 					<key>end</key>
 					<string>"</string>
 					<key>patterns</key>
@@ -258,7 +279,43 @@
 					<key>name</key>
 					<string>meta.parens.samizdat</string>
 					<key>begin</key>
-					<string>@@?(\()</string>
+					<string>@@(\()</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>constant.type.samizdat</string>
+						</dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.paren.open.samizdat</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>\)</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>constant.type.samizdat punctuation.paren.close.samizdat</string>
+						</dict>
+					</dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>meta.parens.samizdat</string>
+					<key>begin</key>
+					<string>@(\()</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>0</key>
@@ -528,7 +585,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(fn)  *([_$a-zA-Z][_$a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
+					<string>(fn)  *(@*[_$a-zA-Z][._$a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
 				</dict>
 				<dict>
 					<key>begin</key>
