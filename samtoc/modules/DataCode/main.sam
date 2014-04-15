@@ -115,13 +115,12 @@ fn stringChar(ch) {
 def convert = makeRegularGeneric("convert", 1, 1);
 
 ## Converts an int.
-fn Int_convert(this) {
+fn Int.convert() {
     <> $CodeGen::makeCall("intFromZint", "\(this)")
 };
-genericBind(convert, Int, Int_convert);
 
 ## Converts a list.
-fn List_convert(this) {
+fn List.convert() {
     if (this == []) {
         return "EMPTY_LIST"
     };
@@ -129,10 +128,9 @@ fn List_convert(this) {
     def listElems = [ elem in this <> convert(elem) ];
     <> $CodeGen::makeCall("listFromArgs", listElems*, "NULL")
 };
-genericBind(convert, List, List_convert);
 
 ## Converts a map.
-fn Map_convert(this) {
+fn Map.convert() {
     if (this == {}) {
         return "EMPTY_MAP"
     };
@@ -143,10 +141,9 @@ fn Map_convert(this) {
 
     <> $CodeGen::makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
 };
-genericBind(convert, Map, Map_convert);
 
 ## Converts a string.
-fn String_convert(this) {
+fn String.convert() {
     if (this == "") {
         return "EMPTY_STRING"
     };
@@ -159,17 +156,15 @@ fn String_convert(this) {
     <> $CodeGen::makeCall("stringFromUtf8",
         "\(#bodyChars)", "\"\(bodyChars)\"")
 };
-genericBind(convert, String, String_convert);
 
 ## Converts a type. Only works on derived data types.
-fn Type_convert(this) {
+fn Type.convert() {
     <> $CodeGen::makeCall("makeDerivedDataType", convert(typeName(this)))
 };
-genericBind(convert, Type, Type_convert);
 
 ## Converts a derived value or an opaque core value, yielding a tree
 ## that can be stringified with `indent`.
-fn Value_convert(this) {
+fn Value.convert() {
     def data = (def dval = dataOf(this)) & convert(dval) | "NULL";
     def type = get_type(this);
 
@@ -179,7 +174,6 @@ fn Value_convert(this) {
 
     <> $CodeGen::makeCall("makeValue", convert(type), data, "NULL")
 };
-genericBind(convert, Value, Value_convert);
 
 
 ##
