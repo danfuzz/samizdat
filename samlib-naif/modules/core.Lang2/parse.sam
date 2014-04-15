@@ -355,11 +355,26 @@ def parFormalsList = {:
 ## Parses program / function declarations.
 def parProgramDeclarations = {:
     yieldDef = parOptYieldDef
-    formals = parFormalsList
+
+    rest = (
+        name = (
+            n = @identifier
+            { <> {name: dataOf(n)} }
+        |
+            { <> {} }
+        )
+        @"("
+        formals = parFormalsList
+        @")"
+        { <> {name*, formals}}
+    |
+        formals = parFormalsList
+        { <> {formals} }
+    )
 
     (@"->" | &@"<>")
 
-    { <> {formals, yieldDef*} }
+    { <> {yieldDef*, rest*} }
 |
     { <> {formals: []} }
 :};
