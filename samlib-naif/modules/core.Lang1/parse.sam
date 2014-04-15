@@ -99,14 +99,8 @@ def parExpression = $Peg::makeMainChoice(
 def parParenExpression = $Peg::makeMainSequence(
     $Peg::makeToken(@@"("),
     parExpression,
-    $Peg::makeOpt(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@","),
-            $Peg::makeCode { ., . ->
-                die("Comma not allowed within parenthesized expression.")
-            })),
     $Peg::makeToken(@@")"),
-    $Peg::makeCode { ., ex, ., . <> withoutInterpolate(ex) });
+    $Peg::makeCode { ., ex, . <> withoutInterpolate(ex) });
 
 ## Documented in spec.
 def parInt = $Peg::makeMainChoice(
