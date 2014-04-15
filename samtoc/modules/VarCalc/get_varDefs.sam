@@ -9,67 +9,40 @@ def get_name = $Lang0Node::get_name;
 ## newly-defined by `node`. Result may have duplicates.
 def get_varDefs = makeRegularGeneric("get_varDefs", 1, 1);
 
-genericBind(
-    get_varDefs,
-    @@apply,
-    fn apply_get_varDefs(this) {
-        <> []
-    });
+fn @@apply.get_varDefs() {
+    <> []
+};
 
-genericBind(
-    get_varDefs,
-    @@call,
-    fn call_get_varDefs(this) {
-        <> []
-    });
+fn @@call.get_varDefs() {
+    <> []
+};
 
-genericBind(
-    get_varDefs,
-    @@closure,
-    fn closure_get_varDefs(this) {
-        <> []
-    });
+fn @@closure.get_varDefs() {
+    <> []
+};
 
-genericBind(
-    get_varDefs,
-    @@jump,
-    fn jump_get_varDefs(this) {
-        <> []
-    });
+fn @@jump.get_varDefs() {
+    <> []
+};
 
-genericBind(
-    get_varDefs,
-    @@literalRef,
-    fn literalRef_get_varDefs(this) {
-        <> []
-    });
+fn @@literalRef.get_varDefs() {
+    <> []
+};
 
-genericBind(
-    get_varDefs,
-    @@varBind,
-    fn varBind_get_varDefs(this) {
-        <> []
-    });
+fn @@varBind.get_varDefs() {
+    <> []
+};
 
-genericBind(
-    get_varDefs,
-    @@varDef,
-    fn varDef_get_varDefs(this) {
-        <> [this.name]
-    });
+fn @@varDef.get_varDefs() {
+    <> [this.name]
+};
 
-genericBind(
-    get_varDefs,
-    @@varDefMutable,
-    fn varDefMutable_get_varDefs(this) {
-        <> [this.name]
-    });
+fn @@varDefMutable.get_varDefs() {
+    <> [this.name]
+};
 
-genericBind(
-    get_varDefs,
-    @@varRef,
-    fn varRef_get_varDefs(this) {
-        <> []
-    });
+fn @@varRef.get_varDefs() {
+    <> []
+};
 
 <> {get_varDefs}
