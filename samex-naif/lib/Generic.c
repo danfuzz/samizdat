@@ -22,7 +22,7 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
         const zvalue *args) {
     zvalue name = args[0];
     zvalue minArgsVal = args[1];
-    zvalue maxArgsVal = (argCount == 3) ? args[1] : NULL;
+    zvalue maxArgsVal = (argCount == 3) ? args[2] : NULL;
 
     if (valEq(name, EMPTY_STRING)) {
         name = NULL;
