@@ -66,6 +66,9 @@ the first argument. `maxArgs` optionally lists the most arguments that
 may be passed; if not passed, there is no limit. If passed it must be
 `>= minArgs`.
 
+**Syntax Note:** This is one of the functions which underlie the generic
+function definition syntax.
+
 #### `makeUnitypeGeneric(name, minArgs, maxArgs?) <> generic`
 
 Like `makeRegularGeneric` except that the resulting generic requires
@@ -82,6 +85,9 @@ is always the one used for the lookup), but `5` will not pass the test
 
 **Note:** This is the kind of generic used for functions such as `totalEq`
 and `cat`.
+
+**Syntax Note:** This is one of the functions which underlie the generic
+function definition syntax.
 
 
 <br><br>
