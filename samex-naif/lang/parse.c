@@ -315,22 +315,6 @@ static zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
-static zvalue withFormals(zvalue node, zvalue formals) {
-    return makeValue(
-        get_type(node),
-        collPut(dataOf(node), STR_formals, formals),
-        NULL);
-}
-
-/* Documented in spec. */
-static zvalue withoutBind(zvalue node) {
-    return makeValue(
-        get_type(node),
-        collDel(dataOf(node), STR_bind),
-        NULL);
-}
-
-/* Documented in spec. */
 static zvalue withoutInterpolate(zvalue node) {
     return makeValue(
         get_type(node),
@@ -863,56 +847,32 @@ DEF_PARSE(nullaryClosure) {
 }
 
 /**
- * Helper for `fnCommon`: Parses the first `name` alternate.
+ * Helper for `fnDef`: Parses the `optBind` sub-expression. **Note:**
+ * This returns an unwrapped value, unlike the spec's `?` form.
  */
-DEF_PARSE(fnCommon1) {
+DEF_PARSE(fnDef1) {
     MARK();
 
-    zvalue n = MATCH_OR_REJECT(identifier);
-    REJECT_IF(MATCH(CH_DOT));
-
-    return mapFrom1(STR_name, dataOf(n));
-}
-
-/**
- * Helper for `fnCommon`: Parses the second `name` alternate.
- */
-DEF_PARSE(fnCommon2) {
-    MARK();
-
-    zvalue bind = NULL;
-    if (bind == NULL) { bind = PARSE(varRef); }
-    if (bind == NULL) { bind = PARSE(type); }
-    REJECT_IF(bind == NULL);
+    zvalue b = NULL;
+    if (b == NULL) { b = PARSE(varRef); }
+    if (b == NULL) { b = PARSE(type);   }
+    if (b == NULL) {
+        return NULL;
+    }
 
     MATCH_OR_REJECT(CH_DOT);
-    zvalue n = PARSE_OR_REJECT(identifierString);
-
-    return mapFrom2(STR_bind, bind, STR_name, GET(value, n));
-}
-
-/**
- * Helper for `fnCommon`: Parses the `name` sub-expression.
- */
-DEF_PARSE(fnCommon3) {
-    zvalue name = NULL;
-
-    if (name == NULL) { name = PARSE(fnCommon1); }
-    if (name == NULL) { name = PARSE(fnCommon2); }
-    if (name == NULL) { name = EMPTY_MAP;        }
-
-    return name;
+    return b;
 }
 
 /* Documented in spec. */
-DEF_PARSE(fnCommon) {
+DEF_PARSE(fnDef) {
     MARK();
 
     MATCH_OR_REJECT(fn);
-
-    zvalue name = PARSE(fnCommon3); // This never fails.
+    zvalue optBind = PARSE(fnDef1);       // This never fails.
+    zvalue nameIdent = MATCH_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_OPAREN);
-    zvalue formals = PARSE(formalsList); // This never fails.
+    zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(nullaryClosure);
 
@@ -920,39 +880,33 @@ DEF_PARSE(fnCommon) {
     zvalue returnDef = (yieldDef == NULL)
         ? EMPTY_LIST
         : listFrom1(makeVarDef(yieldDef, REFS(return)));
+
+    zvalue name = dataOf(nameIdent);
     zvalue statements = GFN_CALL(cat, returnDef, GET(statements, code));
     zvalue closureMap = GFN_CALL(cat,
         dataOf(code),
-        name,
         mapFrom3(
-            STR_formals,    formals,
+            STR_name,       name,
             STR_yieldDef,   STR_return,
             STR_statements, statements));
 
-    return makeValue(TYPE_closure, closureMap, NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(fnDef) {
-    MARK();
-
-    zvalue closure = PARSE_OR_REJECT(fnCommon);
-    zvalue name = GET(name, closure);
-
-    if (name == NULL) {
-        return NULL;
-    }
-
-    zvalue bind = GET(bind, closure);
-
-    if (bind != NULL) {
-        zvalue formals = GFN_CALL(cat,
+    if (optBind != NULL) {
+        zvalue fullFormals = GFN_CALL(cat,
             listFrom1(mapFrom1(STR_name, STR_this)),
-            GET(formals, closure));
-        zvalue finalClosure = withFormals(withoutBind(closure), formals);
+            formals);
+        zvalue closure = makeValue(TYPE_closure,
+            GFN_CALL(cat,
+                closureMap,
+                mapFrom1(STR_formals, fullFormals)),
+            NULL);
         return makeCall(REFS(genericBind),
-            listFrom3(makeVarRef(name), bind, finalClosure));
+            listFrom3(makeVarRef(name), optBind, closure));
     } else {
+        zvalue closure = makeValue(TYPE_closure,
+            GFN_CALL(cat,
+                closureMap,
+                mapFrom1(STR_formals, formals)),
+            NULL);
         return makeValue(TYPE_topDeclaration,
             mapFrom2(
                 STR_top,  makeVarDef(name, NULL),
