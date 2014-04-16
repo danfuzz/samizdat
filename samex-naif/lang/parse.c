@@ -847,10 +847,10 @@ DEF_PARSE(nullaryClosure) {
 }
 
 /**
- * Helper for `fnDef`: Parses the `optBind` sub-expression. **Note:**
+ * Helper for `functionDef`: Parses the `optBind` sub-expression. **Note:**
  * This returns an unwrapped value, unlike the spec's `?` form.
  */
-DEF_PARSE(fnDef1) {
+DEF_PARSE(functionDef1) {
     MARK();
 
     zvalue b = NULL;
@@ -865,11 +865,11 @@ DEF_PARSE(fnDef1) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(fnDef) {
+DEF_PARSE(functionDef) {
     MARK();
 
     MATCH_OR_REJECT(fn);
-    zvalue optBind = PARSE(fnDef1);       // This never fails.
+    zvalue optBind = PARSE(functionDef1);       // This never fails.
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
@@ -913,6 +913,21 @@ DEF_PARSE(fnDef) {
                 STR_main, makeVarBind(name, closure)),
             NULL);
     }
+}
+
+/* Documented in spec. */
+DEF_PARSE(genericDef) {
+    return NULL;
+}
+
+/* Documented in spec. */
+DEF_PARSE(fnStatement) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(functionDef); }
+    if (result == NULL) { result = PARSE(genericDef);  }
+
+    return result;
 }
 
 /* Documented in spec. */
@@ -1025,7 +1040,7 @@ DEF_PARSE(statement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varDef); }
-    if (result == NULL) { result = PARSE(fnDef); }
+    if (result == NULL) { result = PARSE(fnStatement); }
     if (result == NULL) { result = PARSE(expression); }
 
     datFrameReturn(save, result);
