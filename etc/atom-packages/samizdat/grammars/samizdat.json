@@ -208,7 +208,7 @@
           "name" : "variable.other.dot-access.samizdat"
         },
         {
-          "match" : "(fn)  *(@*[_$a-zA-Z][._$a-zA-Z0-9]*)? *\\(([^\\)]*)\\)",
+          "match" : "(fn)  *(\\*?\\.?@*[_$a-zA-Z][._$a-zA-Z0-9]*)? *\\(([^\\)]*)\\)",
           "captures" : {
             "3" : {
               "name" : "variable.parameter.samizdat"
