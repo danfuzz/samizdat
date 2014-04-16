@@ -77,12 +77,12 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-def moduleLoad = makeRegularGeneric("moduleLoad", 2, 2);
+fn .moduleLoad(path);
 
 ## Documented in spec.
-def intraLoad     = makeRegularGeneric("intraLoad", 2, 2);
-def intraReadUtf8 = makeRegularGeneric("intraReadUtf8", 2, 2);
-def intraType     = makeRegularGeneric("intraType", 2, 2);
+fn .intraLoad(path);
+fn .intraReadUtf8(path);
+fn .intraType(path);
 
 
 ##

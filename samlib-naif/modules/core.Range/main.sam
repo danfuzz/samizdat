@@ -20,7 +20,7 @@ def $Number    = moduleLoad(["proto", "Number"]);
 ##
 
 ## `value.rangeAdd(increment)` generic, used to increment ints and chars.
-def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
+fn .rangeAdd(increment);
 
 fn Int.rangeAdd(increment) {
     <> $Number::add(this, increment)

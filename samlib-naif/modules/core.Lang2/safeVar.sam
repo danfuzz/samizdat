@@ -62,7 +62,7 @@ fn safeIndexForNames(base, names*) {
 
 ## Generic `node.safeIndex(base)`, returns a safe (unused) index for the
 ## given `base` variable name, with regard to the contents of `node`.
-def safeIndex = makeRegularGeneric("safeIndex", 2, 2);
+fn .safeIndex(base);
 
 ## Maps / reduces `safeIndex` over the given nodes.
 fn safeIndexForNodes(base, nodes*) {

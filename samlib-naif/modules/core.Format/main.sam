@@ -57,7 +57,7 @@ fn intWithBase(int, base) {
 
 ## Common generic for the two `source*` variants, which takes an
 ## `adorn` flag.
-def sourceGeneral = makeRegularGeneric("sourceGeneral", 2, 2);
+fn .sourceGeneral(adorn);
 
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
@@ -288,8 +288,8 @@ fn Value.sourceGeneral(adorn) {
 ## `humanString`
 ##
 
-## `humanString(value)`: Produces a human-oriented string of the argument.
-def humanString = makeRegularGeneric("humanString", 1, 1);
+## Generic for producing a human-oriented string of the argument.
+fn .humanString();
 
 ## Human-stringifies a list, which recursively flattens it using
 ## `humanString`.
