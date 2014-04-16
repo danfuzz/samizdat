@@ -700,7 +700,33 @@ DEF_PARSE(functionDef) {
 
 /* Documented in spec. */
 DEF_PARSE(genericDef) {
-    return NULL;
+    MARK();
+
+    MATCH_OR_REJECT(fn);
+    zvalue optStar = MATCH(CH_STAR);      // Okay if this fails.
+    MATCH_OR_REJECT(CH_DOT);
+    zvalue nameIdent = MATCH_OR_REJECT(identifier);
+    MATCH_OR_REJECT(CH_OPAREN);
+    zvalue formals = PARSE(formalsList);  // This never fails.
+    MATCH_OR_REJECT(CH_CPAREN);
+
+    zvalue fullFormals = GFN_CALL(cat, listFrom1(EMPTY_MAP), formals);
+    zvalue name = dataOf(nameIdent);
+    zvalue func = (optStar == NULL)
+        ? REFS(makeRegularGeneric)
+        : REFS(makeUnitypeGeneric);
+    zvalue call = makeCall(
+        func,
+        listFrom3(
+            makeLiteral(name),
+            makeLiteral(formalsMinArgs(fullFormals)),
+            makeLiteral(formalsMaxArgs(fullFormals))));
+
+    return makeValue(TYPE_topDeclaration,
+        mapFrom2(
+            STR_top,  makeVarDef(name, NULL),
+            STR_main, makeVarBind(name, call)),
+        NULL);
 }
 
 /* Documented in spec. */

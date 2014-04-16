@@ -5,15 +5,10 @@
  */
 
 #include "const.h"
+#include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
- /*
-#include "type/Number.h"
-#include "type/String.h"
-#include "type/Type.h"
-#include "type/Value.h"
-#include "util.h"
-*/
+#include "type/OneOff.h"
 
 #include "helpers.h"
 
@@ -65,6 +60,42 @@ zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
 /* Documented in header. */
 zvalue listAppend(zvalue list, zvalue elem) {
     return GFN_CALL(cat, list, listFrom1(elem));
+}
+
+/* Documented in spec. */
+zvalue formalsMaxArgs(zvalue formals) {
+    zint maxArgs = 0;
+    zint sz = get_size(formals);
+
+    for (zint i = 0; i < sz; i++) {
+        zvalue one = nth(formals, i);
+        zvalue repeat = get(one, STR_repeat);
+        if (valEqNullOk(repeat, STR_CH_STAR)
+            || valEqNullOk(repeat, STR_CH_PLUS)) {
+            maxArgs = -1;
+            break;
+        }
+        maxArgs++;
+    }
+
+    return intFromZint(maxArgs);
+}
+
+/* Documented in spec. */
+zvalue formalsMinArgs(zvalue formals) {
+    zint minArgs = 0;
+    zint sz = get_size(formals);
+
+    for (zint i = 0; i < sz; i++) {
+        zvalue one = nth(formals, i);
+        zvalue repeat = get(one, STR_repeat);
+        if (!(valEqNullOk(repeat, STR_CH_QMARK)
+              || valEqNullOk(repeat, STR_CH_STAR))) {
+            minArgs++;
+        }
+    }
+
+    return intFromZint(minArgs);
 }
 
 /* Documented in spec. */

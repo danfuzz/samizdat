@@ -79,6 +79,8 @@ STR(index,               "index");
 STR(interpolate,         "interpolate");
 STR(makeDerivedDataType, "makeDerivedDataType");
 STR(makeList,            "makeList");
+STR(makeRegularGeneric,  "makeRegularGeneric");
+STR(makeUnitypeGeneric,  "makeUnitypeGeneric");
 STR(makeValue,           "makeValue");
 STR(makeValueMap,        "makeValueMap");
 STR(main,                "main");

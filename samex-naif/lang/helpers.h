@@ -57,6 +57,12 @@ zvalue listAppend(zvalue list, zvalue elem);
 #define GET(name, node) (get((node), STR_##name))
 
 /* Documented in spec. */
+zvalue formalsMaxArgs(zvalue formals);
+
+/* Documented in spec. */
+zvalue formalsMinArgs(zvalue formals);
+
+/* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
