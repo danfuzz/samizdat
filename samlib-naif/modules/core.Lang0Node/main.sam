@@ -15,6 +15,7 @@
 <> {
     (intraLoad("constructors1"))*,
     (intraLoad("constructors2"))*,
+    (intraLoad("formals"))*,
     (intraLoad("getters"))*,
     (intraLoad("refs"))*
 }

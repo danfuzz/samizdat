@@ -1,0 +1,48 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+def $Generator = moduleLoad(["core", "Generator"]);
+def $Number    = moduleLoad(["proto", "Number"]);
+
+
+##
+## Exported functions
+##
+
+## Documented in spec.
+fn formalsMaxArgs(formals) {
+    var maxArgs = 0;
+
+    $Generator::filterPump(formals) { f ->
+        ifValue { <> f::repeat }
+            { rep ->
+                ifIs { <> eq(rep, "*") } { return -1 };
+                ifIs { <> eq(rep, "+") } { return -1 };
+            };
+        maxArgs := $Number::add(maxArgs, 1)
+    };
+
+    <> maxArgs
+};
+
+## Documented in spec.
+fn formalsMinArgs(formals) {
+    var minArgs = 0;
+
+    $Generator::filterPump(formals) { <next> f ->
+        ifValue { <> f::repeat }
+            { rep ->
+                ifIs { <> eq(rep, "?") } { <next> };
+                ifIs { <> eq(rep, "*") } { <next> };
+            };
+        minArgs := $Number::add(minArgs, 1)
+    };
+
+    <> minArgs
+};
+
+<> {
+    formalsMaxArgs,
+    formalsMinArgs
+}
