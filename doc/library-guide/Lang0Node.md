@@ -34,11 +34,6 @@ development.)
 
 Gets the actual arguments of an `apply` or `call` node.
 
-#### `get_bind(node) <> node | .`
-
-Gets the value (expected to be a generic function) being bound to, of
-a `closure` node.
-
 #### `get_formals(node) <> [formal*]`
 
 Gets the formal arguments of a `closure` node.
