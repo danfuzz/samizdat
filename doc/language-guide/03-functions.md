@@ -271,7 +271,58 @@ Generic functions are functions which know how to "dispatch" to particular
 other functions, based on the arguments given to the generic function.
 
 Samizdat includes generic functions which dispatch based on the type of
-the first argument.
+the first argument, and which optionally require all arguments to be
+of similar type.
+
+A "regular" generic places no restrictions on arguments, other than minimum
+and (optional) maximum counts.
+
+A "unitype" generic places an additional restriction, that all arguments
+must pass a type check, where the type of the arguments must be the same
+as, or a subtype of, the type which was dispatched to. For example, if
+a generic function is bound on type `Data`, and the first argument passed
+is an `Int` (which is a subtype of `Data`), then all the rest of the arguments
+to the call must also be of type `Data` (including subtypes).
+
+#### Generic function definition statements
+
+The syntax to define a new generic function is similar to the declaration
+of a regular function.
+
+A generic function definition is introduced with the `fn` keyword, and
+continues as follows:
+
+* An optional "unitype" mark, `*`. If present, this indicates that all
+  of the arguments to the function must have the type that was dispatched
+  to (or a subtype thereof). This is not necessarily the same as the direct
+  type of the first arguemnt.
+
+* A dot, `.`.
+
+* The name. This provides a name for the function, which serves the same
+  purposes as with regular function definitions.
+
+* The formal arguments. This is identical in form to the formal arguments
+  of a regular function. Note, though, that the names of the arguments
+  don't matter for generic functions, as it is not possible to refer to
+  them. What matters are the minimum and maximum number of arguments
+  allowed by the formals.
+
+Examples:
+
+```
+## A regular generic which takes no arguments other than the target.
+fn .blort();
+
+## A regular generic which takes three to five arguments.
+fn .fizmo(a, b, x?, y?);
+
+## A unitype generic which takes any number of arguments in addition to
+## the target.
+fn *.igram(.*);
+```
+
+#### Binding generic functions
 
 Generic functions are bound using a syntax similar to the regular function
 statement syntax (as described above). The difference is that instead of
@@ -279,8 +330,8 @@ just a simple function name, the name consists of a type reference,
 followed by a dot (`.`), followed by the generic function name. For example:
 
 ```
-fn Int.blort() { ... }      # Bind to the type `Int`.
-fn @@Fizmo.blort() { ... }  # Bind to the (derived value) type `@@Fizmo`.
+fn Int.blort() { ... }      ## Bind to the type `Int`.
+fn @@Fizmo.blort() { ... }  ## Bind to the (derived value) type `@@Fizmo`.
 ```
 
 Within the body of such a function, the local variable `this` refers to
