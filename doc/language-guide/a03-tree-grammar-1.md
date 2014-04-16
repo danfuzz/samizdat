@@ -46,7 +46,6 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
-def withFormals        = $Lang0Node::withFormals;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 
