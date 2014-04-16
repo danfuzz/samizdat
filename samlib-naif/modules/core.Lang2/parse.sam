@@ -864,13 +864,6 @@ parChoicePex := {:
 ## Layer 2 Definitions and Rules
 ##
 
-## Returns a `closure` node like the one given, except with the `formals`
-## binding replaced with the given arguments. Each of the `formals`
-## must be a formal argument map as described in the execution tree spec.
-fn closureWithFormals(closure, formals*) {
-    <> @closure{(dataOf(closure))*, formals}
-};
-
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
@@ -1565,7 +1558,7 @@ def parLogicAndExpression = {:
                 {
                     <> makeCall(REFS::ifValue,
                         testThunk,
-                        closureWithFormals(resultThunk, formal))
+                        withFormals(resultThunk, [formal]))
                 }
         }
     |
@@ -1579,14 +1572,14 @@ def parLogicAndExpression = {:
                 $Generator::filterAll(most, $Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
-                        <> closureWithFormals(makeThunk(test),
-                            $Sequence::sliceExclusive(formals, 0, index)*)
+                        <> withFormals(makeThunk(test),
+                            $Sequence::sliceExclusive(formals, 0, index))
                     };
 
             ## Construct the overall `ifValues` call.
             <> makeCall(REFS::ifValues,
                 makeCall(REFS::makeList, testThunks*),
-                closureWithFormals(makeThunk(last), formals*))
+                withFormals(makeThunk(last), formals))
         }
     )
 :};
@@ -1679,7 +1672,7 @@ def parMultiTest = {:
                     {
                         <> makeCall(REFS::ifValue,
                             testThunk,
-                            closureWithFormals(thenThunk, formal),
+                            withFormals(thenThunk, [formal]),
                             elseThunk*)
                     }
             }
@@ -1695,15 +1688,15 @@ def parMultiTest = {:
                 $Generator::filterAll(clauses, $Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
-                        <> closureWithFormals(makeThunk(test),
-                            $Sequence::sliceExclusive(formals, 0, index)*)
+                        <> withFormals(makeThunk(test),
+                            $Sequence::sliceExclusive(formals, 0, index))
                     };
 
             ## Result function which constructs the overall `ifValues` call.
             <> { thenThunk, elseThunk? ->
                 <> makeCall(REFS::ifValues,
                     makeCall(REFS::makeList, testThunks*),
-                    closureWithFormals(thenThunk, formals*),
+                    withFormals(thenThunk, formals),
                     elseThunk*)
             }
         }
