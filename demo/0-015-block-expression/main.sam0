@@ -1,0 +1,53 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Closure / block expression demo
+##
+
+
+##
+## Helper Definitions
+##
+
+fn print(arg) {
+    note($Format::sourceUnadorned(arg))
+};
+
+
+##
+## Main Tests
+##
+
+print({ <> });
+print({ -> });
+print({ x <> });
+print({ x -> });
+print({ x, y <> });
+print({ x, . -> });
+print({ (x+) <> });
+print({ (a, b?, c*) -> });
+print({ stuff() <> });
+print({ stuff() -> });
+print({ stuff(a) <> });
+print({ stuff(a) -> });
+
+print({ <out> <> });
+print({ <out> -> });
+print({ <out> x <> });
+print({ <out> x -> });
+print({ <out> x, y <> });
+print({ <out> x, . -> });
+print({ <out> (x*) <> });
+print({ <out> (a, b?, c*) -> });
+print({ <out> stuff() <> });
+print({ <out> stuff() -> });
+print({ <out> stuff(a) <> });
+print({ <out> stuff(a) -> });
+
+print({ x, y <> cat(x, y) }("bl", "ort"));
+print({ <out> x, y -> <out> cat(x, y) }("fi", "zmo"));
+print({ yowza(args+) -> <> cat(args*) }("i", "gr", "am"));
+
+<> 0
