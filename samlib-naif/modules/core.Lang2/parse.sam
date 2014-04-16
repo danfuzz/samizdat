@@ -1435,19 +1435,19 @@ parPostfixOperator2 := {:
     ## getter expression.
     ##
     @"."
-    name = parIdentifierString
+    name = @identifier
 
     (
         ## `target.name(arg, ...)`
         actuals = parActualsList
         {
-            def funcRef = makeVarRef(get_nodeValue(name));
+            def funcRef = makeVarRef(dataOf(name));
             <> { node <> makeCallOrApply(funcRef, node, actuals*) }
         }
     |
         ## `target.name` (includes parsing of both getters and setters)
         {
-            def suffix = get_nodeValue(name);
+            def suffix = dataOf(name);
             def getterRef = makeVarRef(cat("get_", suffix));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
