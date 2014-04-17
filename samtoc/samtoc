@@ -89,9 +89,9 @@ else
     if [[ ${outputFile} == '' ]]; then
         if (( fullCompile )); then
             outputFile="${1%.sam*}.samb"
-        else
-            outputFile="${1%.sam*}.c"
         fi
+        # If not a "full compile," leave it as unspecified, and let the
+        # compiler decide on the output name.
     fi
 fi
 
