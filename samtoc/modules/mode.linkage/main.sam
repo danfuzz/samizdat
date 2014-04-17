@@ -1,0 +1,40 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Compilation mode "linkage" which generates `.saminfo` files.
+##
+
+def templateText = intraReadUtf8("template.txt");
+
+def $CodeGen = moduleLoad(["CodeGen"]);
+def $DataCode = moduleLoad(["DataCode"]);
+def $Template = moduleLoad(["Template"]);
+
+def $Io0 = moduleLoad(["core", "Io0"]);
+def $Lang2 = moduleLoad(["core", "Lang2"]);
+
+fn compile(sourcePath, targetPath) {
+    def sourceText = $Io0::readFileUtf8(sourcePath);
+    def tree = $Lang2::convertToLang0($Lang2::parseProgram(sourceText));
+
+    def infoMap = if (hasType(tree, @@module)) {
+        die("TODO: Figure out exports")
+    } else {
+        ## Default info.
+        <> {
+            version: "0"
+        }
+    };
+
+    def info = "\%q(infoMap)";
+    def outputText = $Template::apply(templateText, {info});
+
+    $Io0::writeFileUtf8(targetPath, outputText)
+};
+
+<> {
+    SUFFIX: "saminfo",
+    compile
+}

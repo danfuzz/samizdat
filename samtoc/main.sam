@@ -12,6 +12,7 @@ def DEFAULT_MODE = "simple";
 def MODE_MAP = {
     "interp-text": "interpText",
     "interp-tree": "interpTree",
+    "linkage":     "linkage",
     "simple":      "simple"
 };
 
