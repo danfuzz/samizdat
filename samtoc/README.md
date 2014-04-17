@@ -62,6 +62,11 @@ The salient difference between this mode and `text` mode is that this mode
 avoids the runtime steps of string tokenization and parsing a stream of tokens
 into a parse tree, as these steps are taken at "compile" time.
 
+### `--mode=linkage`
+
+The result of compilation is a `saminfo` file describing the input file's
+exported characteristics as a module.
+
 ### `--mode=simple`
 
 This is (approximately) the simplest possible "real" compilation of source.
