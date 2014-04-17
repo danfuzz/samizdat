@@ -7,7 +7,7 @@ def $Number    = moduleLoad(["proto", "Number"]);
 
 def $formals = intraLoad("formals");
 def formalsMaxArgs = $formals::formalsMaxArgs;
-def formalsMinArgs = $formals::formalsMaxArgs;
+def formalsMinArgs = $formals::formalsMinArgs;
 
 
 ##
