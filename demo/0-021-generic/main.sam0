@@ -6,7 +6,7 @@
 ## Generic function demo
 ##
 
-def whatIs = makeRegularGeneric("whatIs", 1, 1);
+fn .whatIs();
 
 fn Int.whatIs() {
     note("I am an int.")
@@ -24,7 +24,7 @@ fn Value.whatIs() {
     note("I am unknown.")
 };
 
-def whatAre = makeUnitypeGeneric("whatAre", 2);
+fn *.whatAre(.*);
 
 fn List.whatAre(.*) {
     note("We are lists.")

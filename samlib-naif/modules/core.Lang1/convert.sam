@@ -36,11 +36,11 @@ def withoutIntermediates = $Lang0Node::withoutIntermediates;
 
 ## `node.convertPex(formals)`, used to expand pex nodes into expression
 ## nodes.
-def convertPex = makeRegularGeneric("convertPex", 2, 2);
+fn .convertPex(formals);
 
 ## `node.convertPexIn()`, used to convert a layer 1 expression or statement
 ## node into an equivalent layer 0 node.
-def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
+fn .convertPexIn();
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {

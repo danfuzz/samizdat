@@ -30,14 +30,19 @@ development.)
 <br><br>
 ### Function Definitions
 
+#### `formalsMaxArgs([formal*]) <> int`
+
+Gets the maximum number of arguments that a given list of `formal`
+arguments could possibly accept. If there is no limit, this returns `-1`.
+
+#### `formalsMinArgs([formal*]) <> int`
+
+Gets the minimum number of arguments that a given list of `formal`
+arguments requires.
+
 #### `get_actuals(node) <> [node*]`
 
 Gets the actual arguments of an `apply` or `call` node.
-
-#### `get_bind(node) <> node | .`
-
-Gets the value (expected to be a generic function) being bound to, of
-a `closure` node.
 
 #### `get_formals(node) <> [formal*]`
 
@@ -77,13 +82,11 @@ a call into an interpolated form.
 
 #### `get_maxArgs(node) <> int`
 
-Gets the maximum number of arguments that a given `closure` node
-could possibly accept. If there is no limit, this returns `-1`.
+Convenient shorthand for `formalsMaxArgs(get_formals(node))`.
 
 #### `get_minArgs(node) <> int`
 
-Gets the minimum number of arguments that a given `closure` node
-requires.
+Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 
 #### `get_name(node) <> . | void`
 

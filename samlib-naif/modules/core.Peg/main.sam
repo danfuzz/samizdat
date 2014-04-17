@@ -16,7 +16,7 @@ def $Sequence  = moduleLoad(["core", "Sequence"]);
 ##
 
 ## `peg.parse(box, input, items*)`
-def parse = makeRegularGeneric("parse", 3);
+fn .parse(box, input, items*);
 
 ## Documented in spec.
 def any = @PegAny;

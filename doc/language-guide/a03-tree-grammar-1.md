@@ -24,7 +24,8 @@ def $Sequence  = moduleLoad(["core", "Sequence"]);
 
 def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = $Lang0Node::REFS;
-def get_bind           = $Lang0Node::get_bind;
+def formalsMaxArgs     = $Lang0Node::formalsMaxArgs;
+def formalsMinArgs     = $Lang0Node::formalsMinArgs;
 def get_formals        = $Lang0Node::get_formals;
 def get_interpolate    = $Lang0Node::get_interpolate;
 def get_name           = $Lang0Node::get_name;
@@ -429,7 +430,7 @@ def parNullaryClosure = {:
 ##
 ## except without a yield def binding statement if an explicit yield def was
 ## not present.
-def parFnDef = {:
+def parFunctionDef = {:
     @fn
 
     optBind = (
@@ -482,6 +483,57 @@ def parFnDef = {:
                 }
             }
     }
+:};
+
+## Parses a generic function definition. The translation is along these lines:
+##
+## ```
+## fn .name(arg1, arg2);
+## ```
+## =>
+## ```
+## def name = makeRegularGeneric("name", 2, 2);
+## ```
+##
+## with different numbers depending on the shape of the arguments, and with
+## the function `makeUnitypeGeneric` if a `*` precedes the `.name`.
+def parGenericDef = {:
+    @fn
+    optStar = @"*"?
+    @"."
+    nameIdent = @identifier
+    @"("
+    formals = parFormalsList
+    @")"
+
+    {
+        def fullFormals = [{}, formals*]; ## First one is `this`.
+        def name = dataOf(nameIdent);
+        def func = ifIs { <> eq(optStar, []) }
+            { <> REFS::makeRegularGeneric }
+            { <> REFS::makeUnitypeGeneric };
+        def call = makeCall(
+            func,
+            makeLiteral(name),
+            makeLiteral(formalsMinArgs(fullFormals)),
+            makeLiteral(formalsMaxArgs(fullFormals)));
+
+        ## See `parFunction` above about `@topDeclaration`.
+        <> @topDeclaration{
+            top:  makeVarDef(name),
+            main: makeVarBind(name, call)
+        }
+    }
+:};
+
+## Parses any of the `fn` statement forms.
+def parFnStatement = {:
+    &@fn
+    (
+        parFunctionDef
+    |
+        parGenericDef
+    )
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -588,7 +640,7 @@ parAssignExpression := {:
 
 ## Note: There are additional expression rules in Layer 2 and beyond.
 def parStatement = {:
-    parVarDef | parFnDef | parExpression
+    parVarDef | parFnStatement | parExpression
 |
     ## Note: Layer 2 adds additional rules here.
     %parStatement2

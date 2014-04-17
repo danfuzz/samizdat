@@ -38,6 +38,8 @@ def NAMES = [
     "lt",
     "makeDerivedDataType",
     "makeList",
+    "makeRegularGeneric",
+    "makeUnitypeGeneric",
     "makeValue",
     "makeValueMap",
     "ne",

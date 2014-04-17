@@ -5,6 +5,10 @@
 def $Generator = moduleLoad(["core", "Generator"]);
 def $Number    = moduleLoad(["proto", "Number"]);
 
+def $formals = intraLoad("formals");
+def formalsMaxArgs = $formals::formalsMaxArgs;
+def formalsMinArgs = $formals::formalsMinArgs;
+
 
 ##
 ## Exported functions
@@ -13,11 +17,6 @@ def $Number    = moduleLoad(["proto", "Number"]);
 ## Documented in spec.
 fn get_actuals(node) {
     <> node::actuals
-};
-
-## Documented in spec.
-fn get_bind(node) {
-    <> node::bind
 };
 
 ## Documented in spec.
@@ -47,36 +46,12 @@ fn get_lvalue(node) {
 
 ## Documented in spec.
 fn get_maxArgs(node) {
-    def formals = get_formals(node);
-    var maxArgs = 0;
-
-    $Generator::filterPump(formals) { f ->
-        ifValue { <> f::repeat }
-            { rep ->
-                ifIs { <> eq(rep, "*") } { return -1 };
-                ifIs { <> eq(rep, "+") } { return -1 };
-            };
-        maxArgs := $Number::add(maxArgs, 1)
-    };
-
-    <> maxArgs
+    <> formalsMaxArgs(get_formals(node))
 };
 
 ## Documented in spec.
 fn get_minArgs(node) {
-    def formals = get_formals(node);
-    var minArgs = 0;
-
-    $Generator::filterPump(formals) { <next> f ->
-        ifValue { <> f::repeat }
-            { rep ->
-                ifIs { <> eq(rep, "?") } { <next> };
-                ifIs { <> eq(rep, "*") } { <next> };
-            };
-        minArgs := $Number::add(minArgs, 1)
-    };
-
-    <> minArgs
+    <> formalsMinArgs(get_formals(node))
 };
 
 ## Documented in spec.
@@ -106,7 +81,6 @@ fn get_yieldDef(node) {
 
 <> {
     get_actuals,
-    get_bind,
     get_formals,
     get_function,
     get_id,

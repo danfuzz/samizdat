@@ -14,7 +14,8 @@ def $Range     = moduleLoad(["core", "Range"]);
 
 def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
 def REFS               = $Lang0Node::REFS;
-def get_bind           = $Lang0Node::get_bind;
+def formalsMaxArgs     = $Lang0Node::formalsMaxArgs;
+def formalsMinArgs     = $Lang0Node::formalsMinArgs;
 def get_formals        = $Lang0Node::get_formals;
 def get_interpolate    = $Lang0Node::get_interpolate;
 def get_lvalue         = $Lang0Node::get_lvalue;
@@ -344,7 +345,7 @@ def parNullaryClosure = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parFnDef = $Peg::makeMainSequence(
+def parFunctionDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@fn),
     $Peg::makeOpt(
         $Peg::makeSequence(
@@ -394,6 +395,39 @@ def parFnDef = $Peg::makeMainSequence(
                 }
             }
     });
+
+## Documented in spec.
+def parGenericDef = $Peg::makeMainSequence(
+    $Peg::makeToken(@@fn),
+    $Peg::makeOpt($Peg::makeToken(@@"*")),
+    $Peg::makeToken(@@"."),
+    $Peg::makeToken(@@identifier),
+    $Peg::makeToken(@@"("),
+    parFormalsList,
+    $Peg::makeToken(@@")"),
+    $Peg::makeCode { ., optStar, ., nameIdent, ., formals, . ->
+        def fullFormals = [{}, formals*]; ## First one is `this`.
+        def name = dataOf(nameIdent);
+        def func = ifIs { <> eq(optStar, []) }
+            { <> REFS::makeRegularGeneric }
+            { <> REFS::makeUnitypeGeneric };
+        def call = makeCall(
+            func,
+            makeLiteral(name),
+            makeLiteral(formalsMinArgs(fullFormals)),
+            makeLiteral(formalsMaxArgs(fullFormals)));
+
+        ## See `parFunction` above about `@topDeclaration`.
+        <> @topDeclaration{
+            top:  makeVarDef(name),
+            main: makeVarBind(name, call)
+        }
+    });
+
+## Documented in spec.
+def parFnStatement = $Peg::makeMainSequence(
+    $Peg::makeLookaheadSuccess($Peg::makeToken(@@fn)),
+    $Peg::makeChoice(parFunctionDef, parGenericDef));
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
@@ -467,7 +501,7 @@ parAssignExpression := $Peg::makeMainSequence(
 ## Documented in spec.
 def parStatement = $Peg::makeChoice(
     parVarDef,
-    parFnDef,
+    parFnStatement,
     parExpression);
 
 ## Documented in spec.
