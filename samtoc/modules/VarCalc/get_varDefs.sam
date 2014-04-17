@@ -7,7 +7,7 @@ def get_name = $Lang0Node::get_name;
 
 ## `node.get_varDefs()`: Generic that returns list of variable names
 ## newly-defined by `node`. Result may have duplicates.
-def get_varDefs = makeRegularGeneric("get_varDefs", 1, 1);
+fn .get_varDefs();
 
 fn @@apply.get_varDefs() {
     <> []

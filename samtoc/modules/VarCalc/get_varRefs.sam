@@ -18,7 +18,7 @@ def get_varDefs = intraLoad("get_varDefs")::get_varDefs;
 
 ## `node.get_varRefs()`: Generic that returns free variable references of
 ## `node`, as list of names.
-def get_varRefs = makeRegularGeneric("get_varRefs", 1, 1);
+fn .get_varRefs();
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {

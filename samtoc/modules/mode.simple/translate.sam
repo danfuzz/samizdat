@@ -33,7 +33,7 @@ def localVarDecl = $vars::localVarDecl;
 def localVarName = $vars::localVarName;
 
 ## `node.translate(varsBox)`: Generic function to perform the translation.
-def translate = makeRegularGeneric("translate", 2, 2);
+fn .translate(varsBox);
 
 
 ## Common translation code for variable definition.

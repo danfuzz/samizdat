@@ -112,7 +112,7 @@ fn stringChar(ch) {
 ##
 
 ## `value.convert()`: Generic function to perform the conversion.
-def convert = makeRegularGeneric("convert", 1, 1);
+fn .convert();
 
 ## Converts an int.
 fn Int.convert() {
