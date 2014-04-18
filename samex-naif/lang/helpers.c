@@ -236,6 +236,14 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
+zvalue withFormals(zvalue node, zvalue formals) {
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_formals, formals),
+        NULL);
+}
+
+/* Documented in spec. */
 zvalue withoutInterpolate(zvalue node) {
     return makeValue(
         get_type(node),
