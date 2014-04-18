@@ -648,30 +648,10 @@ DEF_PARSE(nullaryClosure) {
     return c;
 }
 
-/**
- * Helper for `functionDef`: Parses the `optBind` sub-expression. **Note:**
- * This returns an unwrapped value, unlike the spec's `?` form.
- */
-DEF_PARSE(functionDef1) {
-    MARK();
-
-    zvalue b = NULL;
-    if (b == NULL) { b = PARSE(varRef); }
-    if (b == NULL) { b = PARSE(type);   }
-    if (b == NULL) {
-        return NULL;
-    }
-
-    MATCH_OR_REJECT(CH_DOT);
-    return b;
-}
-
 /* Documented in spec. */
-DEF_PARSE(functionDef) {
+DEF_PARSE(functionCommon) {
     MARK();
 
-    MATCH_OR_REJECT(fn);
-    zvalue optBind = PARSE(functionDef1);       // This never fails.
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
@@ -683,38 +663,52 @@ DEF_PARSE(functionDef) {
         ? EMPTY_LIST
         : listFrom1(makeVarDef(yieldDef, REFS(return)));
 
-    zvalue name = dataOf(nameIdent);
-    zvalue statements = GFN_CALL(cat, returnDef, GET(statements, code));
     zvalue closureMap = GFN_CALL(cat,
         dataOf(code),
-        mapFrom3(
-            STR_name,       name,
+        mapFrom4(
+            STR_formals,    formals,
+            STR_name,       dataOf(nameIdent),
             STR_yieldDef,   STR_return,
-            STR_statements, statements));
+            STR_statements, GFN_CALL(cat, returnDef, GET(statements, code))));
+    return makeValue(TYPE_closure, closureMap, NULL);
+}
 
-    if (optBind != NULL) {
-        zvalue fullFormals = GFN_CALL(cat,
+/* Documented in spec. */
+DEF_PARSE(functionDef) {
+    MARK();
+
+    MATCH_OR_REJECT(fn);
+    zvalue closure = PARSE_OR_REJECT(functionCommon);
+
+    zvalue name = GET(name, closure);
+    return makeValue(TYPE_topDeclaration,
+        mapFrom2(
+            STR_top,  makeVarDef(name, NULL),
+            STR_main, makeVarBind(name, closure)),
+        NULL);
+}
+
+/* Documented in spec. */
+DEF_PARSE(genericBind) {
+    MARK();
+
+    MATCH_OR_REJECT(fn);
+
+    // `bind = (parVarRef | parType)`
+    zvalue bind = PARSE(varRef);
+    if (bind == NULL) { bind = PARSE_OR_REJECT(type); }
+
+    MATCH_OR_REJECT(CH_DOT);
+    zvalue closure = PARSE_OR_REJECT(functionCommon);
+
+    zvalue formals = GET(formals, closure);
+    zvalue name = GET(name, closure);
+    zvalue fullClosure = withFormals(closure,
+        GFN_CALL(cat,
             listFrom1(mapFrom1(STR_name, STR_this)),
-            formals);
-        zvalue closure = makeValue(TYPE_closure,
-            GFN_CALL(cat,
-                closureMap,
-                mapFrom1(STR_formals, fullFormals)),
-            NULL);
-        return makeCall(REFS(genericBind),
-            listFrom3(makeVarRef(name), optBind, closure));
-    } else {
-        zvalue closure = makeValue(TYPE_closure,
-            GFN_CALL(cat,
-                closureMap,
-                mapFrom1(STR_formals, formals)),
-            NULL);
-        return makeValue(TYPE_topDeclaration,
-            mapFrom2(
-                STR_top,  makeVarDef(name, NULL),
-                STR_main, makeVarBind(name, closure)),
-            NULL);
-    }
+            formals));
+    return makeCall(REFS(genericBind),
+        listFrom3(makeVarRef(name), bind, fullClosure));
 }
 
 /* Documented in spec. */
@@ -753,6 +747,7 @@ DEF_PARSE(fnStatement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(functionDef); }
+    if (result == NULL) { result = PARSE(genericBind); }
     if (result == NULL) { result = PARSE(genericDef);  }
 
     return result;
