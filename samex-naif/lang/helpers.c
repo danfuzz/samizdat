@@ -17,27 +17,33 @@
  * Node constructors and related helpers
  */
 
-/* Documented in header. */
-zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
-        zvalue k3, zvalue v3) {
-    zmapping elems[3];
+zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
+    zmapping elems[4];
     zint at = 0;
 
     if (v1 != NULL) { elems[at].key = k1; elems[at].value = v1; at++; }
     if (v2 != NULL) { elems[at].key = k2; elems[at].value = v2; at++; }
     if (v3 != NULL) { elems[at].key = k3; elems[at].value = v3; at++; }
+    if (v4 != NULL) { elems[at].key = k4; elems[at].value = v4; at++; }
 
-    return mapFromArray(at, elems);
+    return (at == 0) ? EMPTY_MAP : mapFromArray(at, elems);
+}
+
+/* Documented in header. */
+zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3) {
+    return mapFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
 }
 
 /* Documented in header. */
 zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return mapFrom3(k1, v1, k2, v2, NULL, NULL);
+    return mapFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
 }
 
 /* Documented in header. */
 zvalue mapFrom1(zvalue k1, zvalue v1) {
-    return mapFrom3(k1, v1, NULL, NULL, NULL, NULL);
+    return mapFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /* Documented in header. */
@@ -233,6 +239,14 @@ zvalue makeVarRef(zvalue name) {
 /* Documented in spec. */
 zvalue makeOptValue(zvalue expression) {
     return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
+}
+
+/* Documented in spec. */
+zvalue withFormals(zvalue node, zvalue formals) {
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_formals, formals),
+        NULL);
 }
 
 /* Documented in spec. */

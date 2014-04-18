@@ -408,15 +408,11 @@ def parNullaryClosure = {:
     }
 :};
 
-## Parses a `fn` definition statement or generic function binding. The
-## "interesting" result of this rule is a `@closure` node, which is wrapped
-## either in a `@topDeclaration` (regular function definition) or a `@call`
-## node (generic function binding).
-##
-## The `@closure` translation is along these lines:
+## Parses the common part of function definition and generic function binding.
+## The result of this rule is a `@closure` node, translated along these lines:
 ##
 ## ```
-## fn name(arg1, arg2) { <out> -> stat1; stat2 }
+## name(arg1, arg2) { <out> -> stat1; stat2 }
 ## ```
 ## =>
 ## ```
@@ -429,15 +425,7 @@ def parNullaryClosure = {:
 ##
 ## except without a yield def binding statement if an explicit yield def was
 ## not present.
-def parFunctionDef = {:
-    @fn
-
-    optBind = (
-        b = (parVarRef | parType)
-        @"."
-        { <> b }
-    )?
-
+def parFunctionCommon = {:
     nameIdent = @identifier
     @"("
     formals = parFormalsList
@@ -454,33 +442,49 @@ def parFunctionDef = {:
             }
             { <> [] };
 
-        def name = dataOf(nameIdent);
-        def closureMap = {
+        <> @closure{
             dataOf(code)*,
-            name,
+            formals,
+            name: dataOf(nameIdent),
             yieldDef: "return",
             statements: [returnDef*, get_statements(code)*]
-        };
+        }
+    }
+:};
 
-        <> ifValue { <> optBind* }
-            { bind ->
-                ## It's a generic function binding.
-                def fullFormals = [{name: "this"}, formals*];
-                def closure = @closure{
-                    closureMap*,
-                    formals: [{name: "this"}, formals*]
-                };
-                <> makeCall(REFS::genericBind, makeVarRef(name), bind, closure)
-            }
-            {
-                ## It's a regular function definition. The resulting
-                ## `@topDeclaration` is split apart in the `programBody` rule.
-                def closure = @closure{closureMap*, formals};
-                <> @topDeclaration{
-                    top:  makeVarDef(name),
-                    main: makeVarBind(name, closure)
-                }
-            }
+## Parses a `fn` definition statement. This wraps a `@closure` result of
+## `parFunctionCommon` in a `@topDeclaration`.
+##
+## **Note:** `@topDeclaration` nodes are split apart in the `parClosureBody`
+## rule.
+def parFunctionDef = {:
+    @fn
+    closure = parFunctionCommon
+
+    {
+        def name = get_name(closure);
+        <> @topDeclaration{
+            top:  makeVarDef(name),
+            main: makeVarBind(name, closure)
+        }
+    }
+:};
+
+
+## Parses a generic function binding. This wraps a `@closure` result of
+## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
+## formal argument.
+def parGenericBind = {:
+    @fn
+    bind = (parVarRef | parType)
+    @"."
+    closure = parFunctionCommon
+
+    {
+        def formals = get_formals(closure);
+        def name = get_name(closure);
+        def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
+        <> makeCall(REFS::genericBind, makeVarRef(name), bind, fullClosure)
     }
 :};
 
@@ -528,11 +532,7 @@ def parGenericDef = {:
 ## Parses any of the `fn` statement forms.
 def parFnStatement = {:
     &@fn
-    (
-        parFunctionDef
-    |
-        parGenericDef
-    )
+    (parFunctionDef | parGenericBind | parGenericDef)
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
