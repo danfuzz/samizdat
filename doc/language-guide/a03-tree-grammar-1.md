@@ -92,7 +92,7 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
-def parProgramBody;
+def parClosureBody;
 def parUnaryExpression;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
@@ -349,7 +349,7 @@ def parFormalsList = {:
 :};
 
 ## Parses program / function declarations.
-def parProgramDeclarations = {:
+def parClosureDeclarations = {:
     yieldDef = parOptYieldDef
 
     rest = (
@@ -377,9 +377,8 @@ def parProgramDeclarations = {:
 
 ## Parses a program (top-level program or contents inside function braces).
 def parProgram = {:
-    decls = parProgramDeclarations
-    body = %parProgramBody
-    { <> @closure{decls*, body*} }
+    body = %parClosureBody
+    { <> @closure{formals: [], body*} }
 :};
 
 ## Parses a closure (in-line anonymous function, with no extra bindings).
@@ -677,8 +676,8 @@ def parYield = {:
     )
 :};
 
-## Parses a program body (statements plus optional yield).
-parProgramBody := {:
+## Parses a closure body (statements plus optional yield).
+parClosureBody := {:
     @";"*
 
     most = (

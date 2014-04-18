@@ -92,7 +92,7 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
-def parProgramBody;
+def parClosureBody;
 def parUnaryExpression;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
@@ -348,7 +348,7 @@ def parFormalsList = {:
 :};
 
 ## Parses program / function declarations.
-def parProgramDeclarations = {:
+def parClosureDeclarations = {:
     yieldDef = parOptYieldDef
 
     rest = (
@@ -376,17 +376,17 @@ def parProgramDeclarations = {:
 
 ## Parses a program (top-level program or contents inside function braces).
 def parProgram = {:
-    decls = parProgramDeclarations
-    body = %parProgramBody
-    { <> @closure{decls*, body*} }
+    body = %parClosureBody
+    { <> @closure{formals: [], body*} }
 :};
 
 ## Parses a closure (in-line anonymous function, with no extra bindings).
 def parClosure = {:
     @"{"
-    prog = parProgram
+    decls = parClosureDeclarations
+    body = %parClosureBody
     @"}"
-    { <> prog }
+    { <> @closure{decls*, body*} }
 :};
 
 ## Parses a closure which must not define any formal arguments. This is done
@@ -676,8 +676,8 @@ def parYield = {:
     )
 :};
 
-## Parses a program body (statements plus optional yield).
-parProgramBody := {:
+## Parses a closure body (statements plus optional yield).
+parClosureBody := {:
     @";"*
 
     most = (
@@ -1175,7 +1175,7 @@ def parGeneratorList = {:
 def parComprehensionBody = {:
     genList = parGeneratorList
     (@"->" | &@"<>")
-    filterBody = parProgramBody
+    filterBody = parClosureBody
 
     {
         def genFormals = genList::formals;
@@ -2024,7 +2024,7 @@ def parSwitchCase = {:
 ## Tree for the second argument to the inner `ifValue` inside a `switch`
 ## translation. This expression is constant across all switches, and it's most
 ## easily constructed by using the built-in parser.
-def CALL_ARG = $Lang0::parseProgram("body <> body()");
+def CALL_ARG = $Lang0::parseExpression("{ body <> body() }");
 
 ## Parses a switch expression. The translation is along these lines:
 ##

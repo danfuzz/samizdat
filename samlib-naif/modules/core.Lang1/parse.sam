@@ -81,7 +81,7 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
-def parProgramBody;
+def parClosureBody;
 def parUnaryExpression;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
@@ -296,7 +296,7 @@ def parFormalsList = $Peg::makeMainChoice(
     $Peg::makeResult([]));
 
 ## Documented in spec.
-def parProgramDeclarations = $Peg::makeMainChoice(
+def parClosureDeclarations = $Peg::makeMainChoice(
     $Peg::makeSequence(
         parOptYieldDef,
         $Peg::makeChoice(
@@ -323,16 +323,16 @@ def parProgramDeclarations = $Peg::makeMainChoice(
 
 ## Documented in spec.
 def parProgram = $Peg::makeMainSequence(
-    parProgramDeclarations,
-    $Peg::makeThunk { . <> parProgramBody },
-    $Peg::makeCode { decls, body <> @closure{decls*, body*} });
+    $Peg::makeThunk { <> parClosureBody },
+    $Peg::makeCode { body <> @closure{formals: [], body*} });
 
 ## Documented in spec.
 def parClosure = $Peg::makeMainSequence(
     $Peg::makeToken(@@"{"),
-    parProgram,
+    parClosureDeclarations,
+    $Peg::makeThunk { ., . <> parClosureBody },
     $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., prog, . <> prog });
+    $Peg::makeCode { ., decls, body, . <> @closure{decls*, body*} });
 
 ## Documented in spec.
 def parNullaryClosure = $Peg::makeMainSequence(
@@ -528,7 +528,7 @@ def parYield = $Peg::makeMainSequence(
         $Peg::makeResult({})));
 
 ## Documented in spec.
-parProgramBody := $Peg::makeMainSequence(
+parClosureBody := $Peg::makeMainSequence(
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeStar(
         $Peg::makeMainSequence(

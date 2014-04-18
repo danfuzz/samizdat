@@ -105,6 +105,24 @@ static zvalue peekMatch(ParseState *state, zvalue type) {
     return result;
 }
 
+/**
+ * Dumps (some of) the pending tokens, as part of an error report.
+ */
+static void dumpState(ParseState *state) {
+    note("Pending tokens:");
+
+    for (zint i = 0; i < 25; i++) {
+        zvalue one = read(state);
+        if (one == NULL) {
+            break;
+        }
+
+        char *oneStr = valDebugString(one);
+        note("    %s", oneStr);
+        utilFree(oneStr);
+    }
+}
+
 
 /*
  * Parsing helper functions
@@ -219,7 +237,7 @@ DEF_PARSE(optSemicolons) {
 /* Documented in spec. */
 DEF_PARSE(assignExpression);
 DEF_PARSE(opExpression);
-DEF_PARSE(programBody);
+DEF_PARSE(closureBody);
 DEF_PARSE(unaryExpression);
 
 /* Documented in spec. */
@@ -535,9 +553,9 @@ DEF_PARSE(formalsList) {
 }
 
 /**
- * Helper for `programDeclarations`: Parses an optional name.
+ * Helper for `closureDeclarations`: Parses an optional name.
  */
-DEF_PARSE(programDeclarations1) {
+DEF_PARSE(closureDeclarations1) {
     zvalue n = MATCH(identifier);
     return (n == NULL)
         ? EMPTY_MAP
@@ -545,13 +563,13 @@ DEF_PARSE(programDeclarations1) {
 }
 
 /**
- * Helper for `programDeclarations`: Parses the `rest` construct in the
+ * Helper for `closureDeclarations`: Parses the `rest` construct in the
  * original spec.
  */
-DEF_PARSE(programDeclarations2) {
+DEF_PARSE(closureDeclarations2) {
     MARK();
 
-    zvalue name = PARSE(programDeclarations1);  // This never fails.
+    zvalue name = PARSE(closureDeclarations1);  // This never fails.
 
     if (MATCH(CH_OPAREN) != NULL) {
         zvalue formals = PARSE(formalsList);    // This never fails.
@@ -565,14 +583,14 @@ DEF_PARSE(programDeclarations2) {
 }
 
 /**
- * Helper for `programDeclarations`: Parses the main part of the syntax.
+ * Helper for `closureDeclarations`: Parses the main part of the syntax.
  */
-DEF_PARSE(programDeclarations3) {
+DEF_PARSE(closureDeclarations3) {
     MARK();
 
     // Both of these are always maps (possibly empty).
     zvalue yieldDef = PARSE(optYieldDef);
-    zvalue rest = PARSE(programDeclarations2);
+    zvalue rest = PARSE(closureDeclarations2);
 
     if (PEEK(CH_DIAMOND) == NULL) {
         MATCH_OR_REJECT(CH_RARROW);
@@ -582,10 +600,10 @@ DEF_PARSE(programDeclarations3) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(programDeclarations) {
+DEF_PARSE(closureDeclarations) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(programDeclarations3); }
+    if (result == NULL) { result = PARSE(closureDeclarations3); }
     if (result == NULL) { result = mapFrom1(STR_formals, EMPTY_LIST); }
 
     return result;
@@ -593,11 +611,10 @@ DEF_PARSE(programDeclarations) {
 
 /* Documented in spec. */
 DEF_PARSE(program) {
-    zvalue declarations = PARSE(programDeclarations); // This never fails.
-    zvalue body = PARSE(programBody); // This never fails.
+    zvalue body = PARSE(closureBody);  // This never fails.
 
     return makeValue(TYPE_closure,
-        GFN_CALL(cat, declarations, body),
+        GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
         NULL);
 }
 
@@ -607,12 +624,14 @@ DEF_PARSE(closure) {
 
     MATCH_OR_REJECT(CH_OCURLY);
 
-    // This always succeeds. See note in `parseProgram` above.
-    zvalue result = PARSE(program);
+    zvalue decls = PARSE(closureDeclarations);  // This never fails.
+    zvalue body = PARSE(closureBody);           // This never fails.
 
     MATCH_OR_REJECT(CH_CCURLY);
 
-    return result;
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat, decls, body),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -860,7 +879,7 @@ DEF_PARSE(statement) {
  * Documented in spec. This implementation differs from the
  * spec in that it will return `NULL` either if no diamond is present
  * or if it is a void yield. This is compensated for by matching changes to
- * the implementation of `programBody`, below.
+ * the implementation of `closureBody`, below.
  */
 DEF_PARSE(yield) {
     MARK();
@@ -909,7 +928,7 @@ DEF_PARSE(nonlocalExit) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(programBody) {
+DEF_PARSE(closureBody) {
     zvalue rawStatements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
@@ -984,6 +1003,7 @@ zvalue langParseExpression0(zvalue expression) {
     zvalue result = parse_expression(&state);
 
     if (!isEof(&state)) {
+        dumpState(&state);
         die("Extra tokens at end of expression.");
     }
 
@@ -1004,6 +1024,7 @@ zvalue langParseProgram0(zvalue program) {
     zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {
+        dumpState(&state);
         die("Extra tokens at end of program.");
     }
 
