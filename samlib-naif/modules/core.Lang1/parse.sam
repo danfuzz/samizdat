@@ -247,14 +247,20 @@ def parVarRef = $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parVarDef = $Peg::makeMainSequence(
-    $Peg::makeTokenSet(@@def, @@var),
+    $Peg::makeToken(@@def),
     $Peg::makeToken(@@identifier),
     $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
-    $Peg::makeCode { style, name, optExpr ->
-        def nameString = dataOf(name);
-        <> ifIs { <> hasType(style, @@def) }
-            { <> makeVarDef(nameString, optExpr*) }
-            { <> makeVarDefMutable(nameString, optExpr*) }
+    $Peg::makeCode { ., name, optExpr ->
+        <> makeVarDef(dataOf(name), optExpr*)
+    });
+
+## Documented in spec.
+def parVarDefMutable = $Peg::makeMainSequence(
+    $Peg::makeToken(@@var),
+    $Peg::makeToken(@@identifier),
+    $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
+    $Peg::makeCode { ., name, optExpr ->
+        <> makeVarDefMutable(dataOf(name), optExpr*)
     });
 
 ## Documented in spec.
@@ -429,7 +435,7 @@ def parExportableStatement = $Peg::makeMainChoice(
 
 ## Documented in spec.
 def parStatement = $Peg::makeMainChoice(
-    parExportableStatement, parGenericBind, parExpression);
+    parExportableStatement, parGenericBind, parVarDefMutable, parExpression);
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
