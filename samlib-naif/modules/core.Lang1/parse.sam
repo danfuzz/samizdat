@@ -424,9 +424,12 @@ def parGenericDef = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parFnStatement = $Peg::makeMainSequence(
-    $Peg::makeLookaheadSuccess($Peg::makeToken(@@fn)),
-    $Peg::makeChoice(parFunctionDef, parGenericBind, parGenericDef));
+def parStatement = $Peg::makeMainChoice(
+    $Peg::makeMainSequence(
+        $Peg::makeLookaheadSuccess($Peg::makeToken(@@fn)),
+        $Peg::makeChoice(parFunctionDef, parGenericBind, parGenericDef)),
+    parVarDef,
+    parExpression);
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
@@ -496,12 +499,6 @@ parAssignExpression := $Peg::makeMainSequence(
             parExpression,
             $Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
         $Peg::makeCode { base <> base }));
-
-## Documented in spec.
-def parStatement = $Peg::makeChoice(
-    parVarDef,
-    parFnStatement,
-    parExpression);
 
 ## Documented in spec.
 def parNonlocalExit = $Peg::makeMainSequence(
