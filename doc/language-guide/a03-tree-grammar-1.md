@@ -85,7 +85,6 @@ def LOWER_ALPHA = {
 def parExpression2;
 def parPostfixOperator2;
 def parPrefixOperator2;
-def parStatement2;
 def parTerm2;
 
 ## Forward declaration required for integrating layer 1 definitions.
@@ -290,18 +289,22 @@ def parVarRef = {:
     { <> makeVarRefLvalue(dataOf(name)) }
 :};
 
-## Parses a variable definition or declaration.
+## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
-    style = [@def @var]
+    @def
     name = @identifier
     optExpr = (@"=" parExpression)?
 
-    {
-        def nameString = dataOf(name);
-        <> ifIs { <> hasType(style, @@def) }
-            { <> makeVarDef(nameString, optExpr*) }
-            { <> makeVarDefMutable(nameString, optExpr*) }
-    }
+    { <> makeVarDef(dataOf(name), optExpr*) }
+:};
+
+## Parses a mutable variable definition, or forward declaration of same.
+def parVarDefMutable = {:
+    @var
+    name = @identifier
+    optExpr = (@"=" parExpression)?
+
+    { <> makeVarDefMutable(dataOf(name), optExpr*) }
 :};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
@@ -471,7 +474,6 @@ def parFunctionDef = {:
     }
 :};
 
-
 ## Parses a generic function binding. This wraps a `@closure` result of
 ## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
 ## formal argument.
@@ -530,10 +532,15 @@ def parGenericDef = {:
     }
 :};
 
-## Parses any of the `fn` statement forms.
-def parFnStatement = {:
-    &@fn
-    (parFunctionDef | parGenericBind | parGenericDef)
+## Parses a statement form that is `export`able.
+def parExportableStatement = {:
+    parFunctionDef | parGenericDef | parVarDef
+:};
+
+## Parses a statement form (direct closure / program element). This includes
+## all the `export`able statements and a few additional forms.
+def parStatement = {:
+    parExportableStatement | parGenericBind | parVarDefMutable | parExpression
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -636,14 +643,6 @@ parAssignExpression := {:
     |
         { <> base }
     )
-:};
-
-## Note: There are additional expression rules in Layer 2 and beyond.
-def parStatement = {:
-    parVarDef | parFnStatement | parExpression
-|
-    ## Note: Layer 2 adds additional rules here.
-    %parStatement2
 :};
 
 ## Parses a nonlocal exit / return. All of the forms matched by this rule
@@ -926,6 +925,5 @@ parOpExpression := parUnaryExpression;
 parExpression2      := {: !() :};
 parPostfixOperator2 := {: !() :};
 parPrefixOperator2  := {: !() :};
-parStatement2       := {: !() :};
 parTerm2            := {: !() :};
 ```

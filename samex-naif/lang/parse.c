@@ -469,15 +469,7 @@ DEF_PARSE(varRef) {
 DEF_PARSE(varDef) {
     MARK();
 
-    bool isMutable;
-
-    if (MATCH(def)) {
-        isMutable = false;
-    } else {
-        MATCH_OR_REJECT(var);
-        isMutable = true;
-    }
-
+    MATCH_OR_REJECT(def);
     zvalue name = MATCH_OR_REJECT(identifier);
 
     zvalue expr;
@@ -487,11 +479,24 @@ DEF_PARSE(varDef) {
         expr = NULL;
     }
 
-    if (isMutable) {
-        return makeVarDefMutable(dataOf(name), expr);
+    return makeVarDef(dataOf(name), expr);
+}
+
+/* Documented in spec. */
+DEF_PARSE(varDefMutable) {
+    MARK();
+
+    MATCH_OR_REJECT(var);
+    zvalue name = MATCH_OR_REJECT(identifier);
+
+    zvalue expr;
+    if (MATCH(CH_EQUAL)) {
+        expr = PARSE_OR_REJECT(expression);
     } else {
-        return makeVarDef(dataOf(name), expr);
+        expr = NULL;
     }
+
+    return makeVarDefMutable(dataOf(name), expr);
 }
 
 /* Documented in spec. */
@@ -743,13 +748,27 @@ DEF_PARSE(genericDef) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(fnStatement) {
+DEF_PARSE(exportableStatement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(functionDef); }
-    if (result == NULL) { result = PARSE(genericBind); }
     if (result == NULL) { result = PARSE(genericDef);  }
+    if (result == NULL) { result = PARSE(varDef);      }
 
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(statement) {
+    zstackPointer save = datFrameStart();
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(exportableStatement); }
+    if (result == NULL) { result = PARSE(genericBind);         }
+    if (result == NULL) { result = PARSE(varDefMutable);       }
+    if (result == NULL) { result = PARSE(expression);          }
+
+    datFrameReturn(save, result);
     return result;
 }
 
@@ -855,19 +874,6 @@ DEF_PARSE(assignExpression) {
     zvalue name = GET(name, base);
 
     return makeVarBind(name, ex);
-}
-
-/* Documented in spec. */
-DEF_PARSE(statement) {
-    zstackPointer save = datFrameStart();
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(varDef); }
-    if (result == NULL) { result = PARSE(fnStatement); }
-    if (result == NULL) { result = PARSE(expression); }
-
-    datFrameReturn(save, result);
-    return result;
 }
 
 /**
