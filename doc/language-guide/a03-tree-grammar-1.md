@@ -471,7 +471,6 @@ def parFunctionDef = {:
     }
 :};
 
-
 ## Parses a generic function binding. This wraps a `@closure` result of
 ## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
 ## formal argument.
@@ -530,10 +529,15 @@ def parGenericDef = {:
     }
 :};
 
-## Parses any of the `fn` statement forms.
-def parFnStatement = {:
-    &@fn
+## Parses any of the statement (direct closure / program element) forms.
+def parStatement = {:
+    &@fn  ## The lookahead helps avoid some pointless re-(re-...)parsing.
     (parFunctionDef | parGenericBind | parGenericDef)
+|
+    parVarDef | parExpression
+|
+    ## Note: Layer 2 adds additional rules here.
+    %parStatement2
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -636,14 +640,6 @@ parAssignExpression := {:
     |
         { <> base }
     )
-:};
-
-## Note: There are additional expression rules in Layer 2 and beyond.
-def parStatement = {:
-    parVarDef | parFnStatement | parExpression
-|
-    ## Note: Layer 2 adds additional rules here.
-    %parStatement2
 :};
 
 ## Parses a nonlocal exit / return. All of the forms matched by this rule
