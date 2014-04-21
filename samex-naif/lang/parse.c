@@ -743,13 +743,17 @@ DEF_PARSE(genericDef) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(fnStatement) {
+DEF_PARSE(statement) {
+    zstackPointer save = datFrameStart();
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(functionDef); }
     if (result == NULL) { result = PARSE(genericBind); }
     if (result == NULL) { result = PARSE(genericDef);  }
+    if (result == NULL) { result = PARSE(varDef);      }
+    if (result == NULL) { result = PARSE(expression);  }
 
+    datFrameReturn(save, result);
     return result;
 }
 
@@ -855,19 +859,6 @@ DEF_PARSE(assignExpression) {
     zvalue name = GET(name, base);
 
     return makeVarBind(name, ex);
-}
-
-/* Documented in spec. */
-DEF_PARSE(statement) {
-    zstackPointer save = datFrameStart();
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(varDef); }
-    if (result == NULL) { result = PARSE(fnStatement); }
-    if (result == NULL) { result = PARSE(expression); }
-
-    datFrameReturn(save, result);
-    return result;
 }
 
 /**
