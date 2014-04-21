@@ -424,12 +424,12 @@ def parGenericDef = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
+def parExportableStatement = $Peg::makeMainChoice(
+    parFunctionDef, parGenericDef, parVarDef);
+
+## Documented in spec.
 def parStatement = $Peg::makeMainChoice(
-    $Peg::makeMainSequence(
-        $Peg::makeLookaheadSuccess($Peg::makeToken(@@fn)),
-        $Peg::makeChoice(parFunctionDef, parGenericBind, parGenericDef)),
-    parVarDef,
-    parExpression);
+    parExportableStatement, parGenericBind, parExpression);
 
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
