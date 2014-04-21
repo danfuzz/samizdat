@@ -289,18 +289,22 @@ def parVarRef = {:
     { <> makeVarRefLvalue(dataOf(name)) }
 :};
 
-## Parses a variable definition or declaration.
+## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
-    style = [@def @var]
+    @def
     name = @identifier
     optExpr = (@"=" parExpression)?
 
-    {
-        def nameString = dataOf(name);
-        <> ifIs { <> hasType(style, @@def) }
-            { <> makeVarDef(nameString, optExpr*) }
-            { <> makeVarDefMutable(nameString, optExpr*) }
-    }
+    { <> makeVarDef(dataOf(name), optExpr*) }
+:};
+
+## Parses a mutable variable definition, or forward declaration of same.
+def parVarDefMutable = {:
+    @var
+    name = @identifier
+    optExpr = (@"=" parExpression)?
+
+    { <> makeVarDefMutable(dataOf(name), optExpr*) }
 :};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
@@ -533,9 +537,10 @@ def parExportableStatement = {:
     parFunctionDef | parGenericDef | parVarDef
 :};
 
-## Parses a statement form (direct closure / program element).
+## Parses a statement form (direct closure / program element). This includes
+## all the `export`able statements and a few additional forms.
 def parStatement = {:
-    parExportableStatement | parGenericBind | parExpression
+    parExportableStatement | parGenericBind | parVarDefMutable | parExpression
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
