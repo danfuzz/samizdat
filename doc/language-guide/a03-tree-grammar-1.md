@@ -85,7 +85,6 @@ def LOWER_ALPHA = {
 def parExpression2;
 def parPostfixOperator2;
 def parPrefixOperator2;
-def parStatement2;
 def parTerm2;
 
 ## Forward declaration required for integrating layer 1 definitions.
@@ -529,15 +528,14 @@ def parGenericDef = {:
     }
 :};
 
-## Parses any of the statement (direct closure / program element) forms.
+## Parses a statement form that is `export`able.
+def parExportableStatement = {:
+    parFunctionDef | parGenericDef | parVarDef
+:};
+
+## Parses a statement form (direct closure / program element).
 def parStatement = {:
-    &@fn  ## The lookahead helps avoid some pointless re-(re-...)parsing.
-    (parFunctionDef | parGenericBind | parGenericDef)
-|
-    parVarDef | parExpression
-|
-    ## Note: Layer 2 adds additional rules here.
-    %parStatement2
+    parExportableStatement | parGenericBind | parExpression
 :};
 
 ## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
@@ -922,6 +920,5 @@ parOpExpression := parUnaryExpression;
 parExpression2      := {: !() :};
 parPostfixOperator2 := {: !() :};
 parPrefixOperator2  := {: !() :};
-parStatement2       := {: !() :};
 parTerm2            := {: !() :};
 ```
