@@ -121,6 +121,13 @@ def parParenExpression = {:
     { <> withoutInterpolate(ex) }
 :};
 
+## Parses a "name" of some sort. This is just an identifier, but with the
+## result being the string payload (not wrapped in `@identifier(...)`).
+def parName = {:
+    nameIdent = @identifier
+    { <> dataOf(nameIdent) }
+:};
+
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,
 ## so that simple negative constants aren't turned into complicated function
 ## calls.
@@ -144,8 +151,8 @@ def parString = {:
 def parIdentifierString = {:
     parString
 |
-    ident = @identifier
-    { <> makeLiteral(dataOf(ident)) }
+    name = parName
+    { <> makeLiteral(name) }
 |
     token = .
     {
@@ -285,34 +292,34 @@ def parDeriv = {:
 
 ## Parses a variable reference.
 def parVarRef = {:
-    name = @identifier
-    { <> makeVarRefLvalue(dataOf(name)) }
+    name = parName
+    { <> makeVarRefLvalue(name) }
 :};
 
 ## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
     @def
-    name = @identifier
+    name = parName
     optExpr = (@"=" parExpression)?
 
-    { <> makeVarDef(dataOf(name), optExpr*) }
+    { <> makeVarDef(name, optExpr*) }
 :};
 
 ## Parses a mutable variable definition, or forward declaration of same.
 def parVarDefMutable = {:
     @var
-    name = @identifier
+    name = parName
     optExpr = (@"=" parExpression)?
 
-    { <> makeVarDefMutable(dataOf(name), optExpr*) }
+    { <> makeVarDefMutable(name, optExpr*) }
 :};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {:
     @"<"
-    name = @identifier
+    name = parName
     @">"
-    { <> dataOf(name) }
+    { <> name }
 :};
 
 ## Parses an optional yield / nonlocal exit definition, always yielding
@@ -327,8 +334,8 @@ def parOptYieldDef = {:
 ## Parses a formal argument decalaration.
 def parFormal = {:
     name = (
-        n = @identifier
-        { <> {name: dataOf(n)} }
+        n = parName
+        { <> {name: n} }
     |
         @"." { <> {} }
     )
@@ -358,8 +365,8 @@ def parClosureDeclarations = {:
 
     rest = (
         name = (
-            n = @identifier
-            { <> {name: dataOf(n)} }
+            n = parName
+            { <> {name: n} }
         |
             { <> {} }
         )
@@ -430,7 +437,7 @@ def parNullaryClosure = {:
 ## except without a yield def binding statement if an explicit yield def was
 ## not present.
 def parFunctionCommon = {:
-    nameIdent = @identifier
+    name = parName
     @"("
     formals = parFormalsList
     @")"
@@ -438,18 +445,18 @@ def parFunctionCommon = {:
 
     {
         def returnDef = ifValue { <> code::yieldDef }
-            { name ->
+            { yieldDef ->
                 ## The closure has a yield def, but we need to also bind
                 ## it as `return`, so we add an extra local variable binding
                 ## here.
-                <> [makeVarDef(name, REFS::return)]
+                <> [makeVarDef(yieldDef, REFS::return)]
             }
             { <> [] };
 
         <> @closure{
             dataOf(code)*,
             formals,
-            name: dataOf(nameIdent),
+            name,
             yieldDef: "return",
             statements: [returnDef*, get_statements(code)*]
         }
@@ -507,14 +514,13 @@ def parGenericDef = {:
     @fn
     optStar = @"*"?
     @"."
-    nameIdent = @identifier
+    name = parName
     @"("
     formals = parFormalsList
     @")"
 
     {
         def fullFormals = [{}, formals*]; ## First one is `this`.
-        def name = dataOf(nameIdent);
         def func = ifIs { <> eq(optStar, []) }
             { <> REFS::makeRegularGeneric }
             { <> REFS::makeUnitypeGeneric };
@@ -888,10 +894,10 @@ def parLookaheadPex = {:
 ## Parses a name (or not) parsing expression.
 def parNamePex = {:
     (
-        name = @identifier
+        name = parName
         @"="
         pex = parLookaheadPex
-        { <> @varDef{name: dataOf(name), value: pex} }
+        { <> @varDef{name, value: pex} }
     )
 |
     parLookaheadPex

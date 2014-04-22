@@ -261,6 +261,14 @@ DEF_PARSE(parenExpression) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(name) {
+    MARK();
+
+    zvalue nameIdent = MATCH_OR_REJECT(identifier);
+    return dataOf(nameIdent);
+}
+
+/* Documented in spec. */
 DEF_PARSE(int) {
     MARK();
 
@@ -286,17 +294,21 @@ DEF_PARSE(string) {
 
 /* Documented in spec. */
 DEF_PARSE(identifierString) {
-    zvalue result = NULL;
+    zvalue result;
 
-    if (result == NULL) { result = MATCH(string);     }
-    if (result == NULL) { result = MATCH(identifier); }
+    result = PARSE(string);
+    if (result != NULL) { return result; }
+
+    result = PARSE(name);
+    if (result != NULL) { return makeLiteral(result); }
+
     if (result == NULL) { result = MATCH(break);      }
     if (result == NULL) { result = MATCH(continue);   }
     if (result == NULL) { result = MATCH(def);        }
     if (result == NULL) { result = MATCH(fn);         }
     if (result == NULL) { result = MATCH(return);     }
     if (result == NULL) { result = MATCH(var);        }
-    if (result == NULL) { return NULL; }
+    if (result == NULL) { return NULL;                }
 
     zvalue value = dataOf(result);
     if (value == NULL) {
@@ -460,9 +472,8 @@ DEF_PARSE(deriv) {
 DEF_PARSE(varRef) {
     MARK();
 
-    zvalue identifier = MATCH_OR_REJECT(identifier);
-
-    return makeVarRef(dataOf(identifier));
+    zvalue name = PARSE_OR_REJECT(name);
+    return makeVarRef(name);
 }
 
 /* Documented in spec. */
@@ -470,7 +481,7 @@ DEF_PARSE(varDef) {
     MARK();
 
     MATCH_OR_REJECT(def);
-    zvalue name = MATCH_OR_REJECT(identifier);
+    zvalue name = PARSE_OR_REJECT(name);
 
     zvalue expr;
     if (MATCH(CH_EQUAL)) {
@@ -479,7 +490,7 @@ DEF_PARSE(varDef) {
         expr = NULL;
     }
 
-    return makeVarDef(dataOf(name), expr);
+    return makeVarDef(name, expr);
 }
 
 /* Documented in spec. */
@@ -487,7 +498,7 @@ DEF_PARSE(varDefMutable) {
     MARK();
 
     MATCH_OR_REJECT(var);
-    zvalue name = MATCH_OR_REJECT(identifier);
+    zvalue name = PARSE_OR_REJECT(name);
 
     zvalue expr;
     if (MATCH(CH_EQUAL)) {
@@ -496,7 +507,7 @@ DEF_PARSE(varDefMutable) {
         expr = NULL;
     }
 
-    return makeVarDefMutable(dataOf(name), expr);
+    return makeVarDefMutable(name, expr);
 }
 
 /* Documented in spec. */
@@ -504,10 +515,10 @@ DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
-    zvalue identifier = MATCH_OR_REJECT(identifier);
+    zvalue name = PARSE_OR_REJECT(name);
     MATCH_OR_REJECT(CH_GT);
 
-    return dataOf(identifier);
+    return name;
 }
 
 /* Documented in spec. */
@@ -534,12 +545,10 @@ DEF_PARSE(formal1) {
 DEF_PARSE(formal) {
     MARK();
 
-    zvalue name = MATCH(identifier);
+    zvalue name = PARSE(name);
 
-    if (name != NULL) {
-        name = dataOf(name);
-    } else {
-        // If there was no identifier, then the only valid form for a formal
+    if (name == NULL) {
+        // If there was no name, then the only valid form for a formal
         // is if this is an unnamed / unused argument.
         MATCH_OR_REJECT(CH_DOT);
     }
@@ -561,10 +570,8 @@ DEF_PARSE(formalsList) {
  * Helper for `closureDeclarations`: Parses an optional name.
  */
 DEF_PARSE(closureDeclarations1) {
-    zvalue n = MATCH(identifier);
-    return (n == NULL)
-        ? EMPTY_MAP
-        : mapFrom1(STR_name, dataOf(n));
+    zvalue n = PARSE(name);
+    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, n);
 }
 
 /**
@@ -657,7 +664,7 @@ DEF_PARSE(nullaryClosure) {
 DEF_PARSE(functionCommon) {
     MARK();
 
-    zvalue nameIdent = MATCH_OR_REJECT(identifier);
+    zvalue name = PARSE_OR_REJECT(name);
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
@@ -672,7 +679,7 @@ DEF_PARSE(functionCommon) {
         dataOf(code),
         mapFrom4(
             STR_formals,    formals,
-            STR_name,       dataOf(nameIdent),
+            STR_name,       name,
             STR_yieldDef,   STR_return,
             STR_statements, GFN_CALL(cat, returnDef, GET(statements, code))));
     return makeValue(TYPE_closure, closureMap, NULL);
@@ -723,13 +730,12 @@ DEF_PARSE(genericDef) {
     MATCH_OR_REJECT(fn);
     zvalue optStar = MATCH(CH_STAR);      // Okay if this fails.
     MATCH_OR_REJECT(CH_DOT);
-    zvalue nameIdent = MATCH_OR_REJECT(identifier);
+    zvalue name = PARSE_OR_REJECT(name);
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
 
     zvalue fullFormals = GFN_CALL(cat, listFrom1(EMPTY_MAP), formals);
-    zvalue name = dataOf(nameIdent);
     zvalue func = (optStar == NULL)
         ? REFS(makeRegularGeneric)
         : REFS(makeUnitypeGeneric);
