@@ -101,6 +101,11 @@ def parParenExpression = $Peg::makeMainSequence(
     $Peg::makeCode { ., ex, . <> withoutInterpolate(ex) });
 
 ## Documented in spec.
+def parName =  $Peg::makeMainSequence(
+    $Peg::makeToken(@@identifier),
+    $Peg::makeCode { nameIdent <> dataOf(nameIdent) });
+
+## Documented in spec.
 def parInt = $Peg::makeMainChoice(
     $Peg::makeSequence(
         $Peg::makeToken(@@"-"),
@@ -119,8 +124,8 @@ def parString = $Peg::makeMainSequence(
 def parIdentifierString = $Peg::makeMainChoice(
     parString,
     $Peg::makeSequence(
-        $Peg::makeToken(@@identifier),
-        $Peg::makeCode { ident <> makeLiteral(dataOf(ident)) }),
+        parName,
+        $Peg::makeCode { name <> makeLiteral(name) }),
     $Peg::makeSequence(
         $Peg::any,
         $Peg::makeCode { token ->
@@ -242,33 +247,33 @@ def parDeriv = $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parVarRef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@identifier),
-    $Peg::makeCode { name <> makeVarRefLvalue(dataOf(name)) });
+    parName,
+    $Peg::makeCode { name <> makeVarRefLvalue(name) });
 
 ## Documented in spec.
 def parVarDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@def),
-    $Peg::makeToken(@@identifier),
+    parName,
     $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
     $Peg::makeCode { ., name, optExpr ->
-        <> makeVarDef(dataOf(name), optExpr*)
+        <> makeVarDef(name, optExpr*)
     });
 
 ## Documented in spec.
 def parVarDefMutable = $Peg::makeMainSequence(
     $Peg::makeToken(@@var),
-    $Peg::makeToken(@@identifier),
+    parName,
     $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
     $Peg::makeCode { ., name, optExpr ->
-        <> makeVarDefMutable(dataOf(name), optExpr*)
+        <> makeVarDefMutable(name, optExpr*)
     });
 
 ## Documented in spec.
 def parYieldDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@"<"),
-    $Peg::makeToken(@@identifier),
+    parName,
     $Peg::makeToken(@@">"),
-    $Peg::makeCode { ., name, . <> dataOf(name) });
+    $Peg::makeCode { ., name, . <> name });
 
 ## Documented in spec.
 def parOptYieldDef = $Peg::makeMainChoice(
@@ -281,8 +286,8 @@ def parOptYieldDef = $Peg::makeMainChoice(
 def parFormal = $Peg::makeMainSequence(
     $Peg::makeChoice(
         $Peg::makeSequence(
-            $Peg::makeToken(@@identifier),
-            $Peg::makeCode { n <> {name: dataOf(n)} }),
+            parName,
+            $Peg::makeCode { n <> {name: n} }),
         $Peg::makeSequence(
             $Peg::makeToken(@@"."),
             $Peg::makeResult({}))),
@@ -309,8 +314,8 @@ def parClosureDeclarations = $Peg::makeMainChoice(
             $Peg::makeSequence(
                 $Peg::makeChoice(
                     $Peg::makeSequence(
-                        $Peg::makeToken(@@identifier),
-                        $Peg::makeCode { ., n <> {name: dataOf(n)} }),
+                        parName,
+                        $Peg::makeCode { ., n <> {name: n} }),
                     $Peg::makeResult({})),
                 $Peg::makeToken(@@"("),
                 parFormalsList,
@@ -352,25 +357,25 @@ def parNullaryClosure = $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parFunctionCommon = $Peg::makeMainSequence(
-    $Peg::makeToken(@@identifier),
+    parName,
     $Peg::makeToken(@@"("),
     parFormalsList,
     $Peg::makeToken(@@")"),
     parNullaryClosure,
-    $Peg::makeCode { nameIdent, ., formals, ., code ->
+    $Peg::makeCode { name, ., formals, ., code ->
         def returnDef = ifValue { <> code::yieldDef }
-            { name ->
+            { yieldDef ->
                 ## The closure has a yield def, but we need to also bind
                 ## it as `return`, so we add an extra local variable binding
                 ## here.
-                <> [makeVarDef(name, REFS::return)]
+                <> [makeVarDef(yieldDef, REFS::return)]
             }
             { <> [] };
 
         <> @closure{
             dataOf(code)*,
             formals,
-            name: dataOf(nameIdent),
+            name,
             yieldDef: "return",
             statements: [returnDef*, get_statements(code)*]
         }
@@ -406,13 +411,12 @@ def parGenericDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@fn),
     $Peg::makeOpt($Peg::makeToken(@@"*")),
     $Peg::makeToken(@@"."),
-    $Peg::makeToken(@@identifier),
+    parName,
     $Peg::makeToken(@@"("),
     parFormalsList,
     $Peg::makeToken(@@")"),
-    $Peg::makeCode { ., optStar, ., nameIdent, ., formals, . ->
+    $Peg::makeCode { ., optStar, ., name, ., formals, . ->
         def fullFormals = [{}, formals*]; ## First one is `this`.
-        def name = dataOf(nameIdent);
         def func = ifIs { <> eq(optStar, []) }
             { <> REFS::makeRegularGeneric }
             { <> REFS::makeUnitypeGeneric };
@@ -714,11 +718,11 @@ def parLookaheadPex = $Peg::makeMainChoice(
 ## Documented in spec.
 def parNamePex = $Peg::makeMainChoice(
     $Peg::makeSequence(
-        $Peg::makeToken(@@identifier),
+        parName,
         $Peg::makeToken(@@"="),
         parLookaheadPex,
         $Peg::makeCode { name, ., pex ->
-            <> @varDef{name: dataOf(name), value: pex}
+            <> @varDef{name, value: pex}
         }),
     parLookaheadPex);
 
