@@ -1444,14 +1444,14 @@ parPostfixOperator2 := {:
     name = parName
 
     (
-        ## `target.name(arg, ...)`
+        ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
             def funcRef = makeVarRef(name);
             <> { node <> makeCallOrApply(funcRef, node, actuals*) }
         }
     |
-        ## `target.name` (includes parsing of both getters and setters)
+        ## `target.memberName` (includes parsing of both getters and setters)
         {
             def getterRef = makeVarRef(cat("get_", name));
             <> { node ->
