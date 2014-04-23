@@ -81,6 +81,7 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
+def parClosure;
 def parClosureBody;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
@@ -250,6 +251,80 @@ def parVarRef = $Peg::makeMainSequence(
     $Peg::makeCode { name <> makeVarRefLvalue(name) });
 
 ## Documented in spec.
+def parClosureWithLookahead = $Peg::makeMainSequence(
+    $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
+    $Peg::makeThunk { . <> parClosure });
+
+## Documented in spec.
+def parTerm = $Peg::makeMainChoice(
+    parVarRef, parInt, parString, parMap, parList,
+    parDeriv, parType, parClosureWithLookahead, parParenExpression,
+    ## Defined by Samizdat Layer 1. The lookahead is just to make
+    ## it clear what is required to "jump into" Layer 1 parsing.
+    $Peg::makeSequence(
+        $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{:")),
+        $Peg::makeThunk { . <> parParser }));
+
+## Documented in spec.
+def parActualsList = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"("),
+        parUnadornedList,
+        $Peg::makeToken(@@")"),
+        $Peg::makeStar(parClosureWithLookahead),
+        $Peg::makeCode { ., normalActuals, ., closureActuals ->
+            <> [closureActuals*, normalActuals*]
+        }),
+    $Peg::makePlus(parClosureWithLookahead));
+
+## Documented in spec.
+def parPostfixOperator = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parActualsList,
+        $Peg::makeCode { actuals ->
+            <> { node <> makeCallOrApply(node, actuals*) }
+        }),
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"::"),
+        parIdentifierString,
+        $Peg::makeCode { ., key <> { node <> makeGet(node, key) } }),
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"*"),
+        $Peg::makeCode { . <> { node <> makeInterpolate(node) } }),
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"?"),
+        $Peg::makeCode { . <> { node <> makeOptValue(node) } }));
+
+## Documented in spec.
+def parUnaryExpression = $Peg::makeMainSequence(
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            parTerm,
+            $Peg::makeCode { base <> {base, prefixes: []} }),
+        ## This is a stub representing the layer 2 part of the rule.
+        $Peg::fail),
+    $Peg::makeStar(parPostfixOperator),
+    $Peg::makeCode { basePrefixes, postfixes ->
+        def prefixes = basePrefixes::prefixes;
+        var result = basePrefixes::base;
+
+        $Generator::filterPump(postfixes) { op -> result := op(result) };
+        $Generator::filterPump(prefixes) { op -> result := op(result) };
+        <> result
+    });
+
+## Documented in spec.
+parAssignExpression := $Peg::makeMainSequence(
+    $Peg::makeThunk { <> parOpExpression },
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeToken(@@":="),
+            $Peg::makeCode { base, . <> get_lvalue(base) },
+            parExpression,
+            $Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
+        $Peg::makeCode { base <> base }));
+
+## Documented in spec.
 def parVarDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@def),
     parName,
@@ -337,7 +412,7 @@ def parProgram = $Peg::makeMainSequence(
     $Peg::makeCode { body <> @closure{formals: [], body*} });
 
 ## Documented in spec.
-def parClosure = $Peg::makeMainSequence(
+parClosure := $Peg::makeMainSequence(
     $Peg::makeToken(@@"{"),
     parClosureDeclarations,
     $Peg::makeThunk { ., . <> parClosureBody },
@@ -439,75 +514,6 @@ def parExportableStatement = $Peg::makeMainChoice(
 ## Documented in spec.
 def parStatement = $Peg::makeMainChoice(
     parExportableStatement, parGenericBind, parVarDefMutable, parExpression);
-
-## Documented in spec.
-def parTerm = $Peg::makeMainChoice(
-    parVarRef, parInt, parString, parMap, parList,
-    parDeriv, parType, parClosure, parParenExpression,
-    ## Defined by Samizdat Layer 1. The lookahead is just to make
-    ## it clear what is required to "jump into" Layer 1 parsing.
-    $Peg::makeSequence(
-        $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{:")),
-        $Peg::makeThunk { . <> parParser }));
-
-## Documented in spec.
-def parActualsList = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"("),
-        parUnadornedList,
-        $Peg::makeToken(@@")"),
-        $Peg::makeStar(parClosure),
-        $Peg::makeCode { ., normalActuals, ., closureActuals ->
-            <> [closureActuals*, normalActuals*]
-        }),
-    $Peg::makePlus(parClosure));
-
-## Documented in spec.
-def parPostfixOperator = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        parActualsList,
-        $Peg::makeCode { actuals ->
-            <> { node <> makeCallOrApply(node, actuals*) }
-        }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"::"),
-        parIdentifierString,
-        $Peg::makeCode { ., key <> { node <> makeGet(node, key) } }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"*"),
-        $Peg::makeCode { . <> { node <> makeInterpolate(node) } }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"?"),
-        $Peg::makeCode { . <> { node <> makeOptValue(node) } }));
-
-## Documented in spec.
-def parUnaryExpression = $Peg::makeMainSequence(
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            parTerm,
-            $Peg::makeCode { base <> {base, prefixes: []} }),
-        ## This is a stub representing the layer 2 part of the rule.
-        $Peg::fail),
-    $Peg::makeStar(parPostfixOperator),
-    $Peg::makeCode { basePrefixes, postfixes ->
-        def prefixes = basePrefixes::prefixes;
-        var result = basePrefixes::base;
-
-        $Generator::filterPump(postfixes) { op -> result := op(result) };
-        $Generator::filterPump(prefixes) { op -> result := op(result) };
-        <> result
-    });
-
-## Documented in spec.
-parAssignExpression := $Peg::makeMainSequence(
-    $Peg::makeThunk { <> parOpExpression },
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@":="),
-            $Peg::makeCode { base, . <> get_lvalue(base) },
-            parExpression,
-            $Peg::makeCode { base, ., lvalue, ex <> lvalue(ex) }),
-        $Peg::makeCode { base <> base }));
 
 ## Documented in spec.
 def parNonlocalExit = $Peg::makeMainSequence(

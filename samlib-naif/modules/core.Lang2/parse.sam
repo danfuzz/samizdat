@@ -91,6 +91,7 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
+def parClosure;
 def parClosureBody;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
@@ -293,6 +294,113 @@ def parVarRef = {:
     { <> makeVarRefLvalue(name) }
 :};
 
+## Parses a closure, but with a lookahead to make it less likely we'll
+## have to do any heavier-weight parsing in failure cases.
+def parClosureWithLookahead = {:
+    &@"{"
+    %parClosure
+:};
+
+## Parses a term (basic expression unit).
+def parTerm = {:
+    parVarRef | parInt | parString | parMap | parList |
+    parDeriv | parType | parClosureWithLookahead | parParenExpression
+|
+    ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
+    ## that Layer 1 can only be "activated" with that one specific token.
+    &@"{:" %parParser
+|
+    ## Defined by Samizdat Layer 2.
+    &[@interpolatedString @"(" @"["] %parTerm2
+:};
+
+## Parses a list of "actual" (as opposed to formal) arguments to a function.
+## Yields a list of expression nodes.
+def parActualsList = {:
+    @"("
+    normalActuals = parUnadornedList
+    @")"
+    closureActuals = parClosureWithLookahead*
+    { <> [closureActuals*, normalActuals*] }
+|
+    parClosureWithLookahead+
+:};
+
+## Parses a unary postfix operator. This yields a function (per se) to call
+## in order to construct a node that represents the appropriate ultimate
+## function call.
+def parPostfixOperator = {:
+    actuals = parActualsList
+    { <> { node <> makeCallOrApply(node, actuals*) } }
+|
+    ## This is sorta-kinda a binary operator, but in terms of precedence it
+    ## fits better here.
+    @"::"
+    key = parIdentifierString
+    { <> { node <> makeGet(node, key) } }
+|
+    ## The lookahead failure here is to make the grammar prefer `*` to be
+    ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
+    ## but higher layers augment its meaning.)
+    @"*" !parExpression
+    { <> { node <> makeInterpolate(node) } }
+|
+    @"?"
+    { <> { node <> makeOptValue(node) } }
+|
+    ## Note: Layer 2 adds additional rules here.
+    %parPostfixOperator2
+:};
+
+## Parses a unary expression. This is a term, optionally surrounded on
+## either side by any number of unary operators. Postfix operators
+## take precedence over (are applied before) the prefix operators.
+def parUnaryExpression = {:
+    ## The rule is written this way in order to ensure that the `-`
+    ## in front of a numeric constant gets parsed as a term and not as
+    ## a unary expression.
+    basePrefixes = (
+        base = parTerm
+        { <> {base, prefixes: []} }
+    |
+        ## Note: Layer 2 adds prefix operator parsing here.
+        prefixes = (%parPrefixOperator2)*
+        base = parTerm
+        ## Reverse the `prefixes` list, so that prefixes are applied
+        ## in outward order from the base term.
+        { <> {base, prefixes: $Sequence::reverse(prefixes)} }
+    )
+
+    postfixes = parPostfixOperator*
+
+    {
+        def prefixes = basePrefixes::prefixes;
+        var result = basePrefixes::base;
+
+        $Generator::filterPump(postfixes) { op -> result := op(result) };
+        $Generator::filterPump(prefixes) { op -> result := op(result) };
+        <> result
+    }
+:};
+
+## Parses an assignment expression, or passes through to parse a regular
+## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
+## `opExpression` and then extracting the `lvalue` constructor out of it.
+## This fails (gracefully) if there is no `lvalue` to extract from a given
+## expression.
+parAssignExpression := {:
+    base = %parOpExpression
+
+    (
+        @":="
+        lvalue = { <> get_lvalue(base) }
+        ex = parExpression
+        { <> lvalue(ex) }
+    |
+        { <> base }
+    )
+:};
+
 ## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
     @def
@@ -390,7 +498,7 @@ def parProgram = {:
 :};
 
 ## Parses a closure (in-line anonymous function, with no extra bindings).
-def parClosure = {:
+parClosure := {:
     @"{"
     decls = parClosureDeclarations
     body = %parClosureBody
@@ -546,106 +654,6 @@ def parExportableStatement = {:
 ## all the `export`able statements and a few additional forms.
 def parStatement = {:
     parExportableStatement | parGenericBind | parVarDefMutable | parExpression
-:};
-
-## Parses a term (basic expression unit).
-def parTerm = {:
-    parVarRef | parInt | parString | parMap | parList |
-    parDeriv | parType | parClosure | parParenExpression
-|
-    ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
-    ## that Layer 1 can only be "activated" with that one specific token.
-    &@"{:" %parParser
-|
-    ## Defined by Samizdat Layer 2.
-    &[@interpolatedString @"(" @"["] %parTerm2
-:};
-
-## Parses a list of "actual" (as opposed to formal) arguments to a function.
-## Yields a list of expression nodes.
-def parActualsList = {:
-    @"("
-    normalActuals = parUnadornedList
-    @")"
-    closureActuals = parClosure*
-    { <> [closureActuals*, normalActuals*] }
-|
-    parClosure+
-:};
-
-## Parses a unary postfix operator. This yields a function (per se) to call
-## in order to construct a node that represents the appropriate ultimate
-## function call.
-def parPostfixOperator = {:
-    actuals = parActualsList
-    { <> { node <> makeCallOrApply(node, actuals*) } }
-|
-    ## This is sorta-kinda a binary operator, but in terms of precedence it
-    ## fits better here.
-    @"::"
-    key = parIdentifierString
-    { <> { node <> makeGet(node, key) } }
-|
-    ## The lookahead failure here is to make the grammar prefer `*` to be
-    ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
-    ## but higher layers augment its meaning.)
-    @"*" !parExpression
-    { <> { node <> makeInterpolate(node) } }
-|
-    @"?"
-    { <> { node <> makeOptValue(node) } }
-|
-    ## Note: Layer 2 adds additional rules here.
-    %parPostfixOperator2
-:};
-
-## Parses a unary expression. This is a term, optionally surrounded on
-## either side by any number of unary operators. Postfix operators
-## take precedence over (are applied before) the prefix operators.
-def parUnaryExpression = {:
-    ## The rule is written this way in order to ensure that the `-`
-    ## in front of a numeric constant gets parsed as a term and not as
-    ## a unary expression.
-    basePrefixes = (
-        base = parTerm
-        { <> {base, prefixes: []} }
-    |
-        ## Note: Layer 2 adds prefix operator parsing here.
-        prefixes = (%parPrefixOperator2)*
-        base = parTerm
-        ## Reverse the `prefixes` list, so that prefixes are applied
-        ## in outward order from the base term.
-        { <> {base, prefixes: $Sequence::reverse(prefixes)} }
-    )
-
-    postfixes = parPostfixOperator*
-
-    {
-        def prefixes = basePrefixes::prefixes;
-        var result = basePrefixes::base;
-
-        $Generator::filterPump(postfixes) { op -> result := op(result) };
-        $Generator::filterPump(prefixes) { op -> result := op(result) };
-        <> result
-    }
-:};
-
-## Parses an assignment expression, or passes through to parse a regular
-## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
-## `opExpression` and then extracting the `lvalue` constructor out of it.
-## This fails (gracefully) if there is no `lvalue` to extract from a given
-## expression.
-parAssignExpression := {:
-    base = %parOpExpression
-
-    (
-        @":="
-        lvalue = { <> get_lvalue(base) }
-        ex = parExpression
-        { <> lvalue(ex) }
-    |
-        { <> base }
-    )
 :};
 
 ## Parses a nonlocal exit / return. All of the forms matched by this rule
