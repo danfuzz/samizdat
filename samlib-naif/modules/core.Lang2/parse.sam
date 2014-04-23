@@ -429,6 +429,37 @@ parAssignExpression := {:
 ## Layer 0: Statements and yields
 ##
 
+## Parses a nonlocal exit / return. All of the forms matched by this rule
+## have the dual properties of (a) necessarily being at the end of a code
+## block, and (b) being represented as a `jump` call in the underlying
+## tree representation.
+def parNonlocalExit = {:
+    name = (
+        @"<"
+        n = parVarRef
+        @">"
+        { <> n }
+    |
+        op = [@break @continue @return]
+        { <> makeVarRef(get_typeName(op)) }
+    )
+
+    optValue = parExpression?
+
+    { <> makeJump(name, optValue*) }
+:};
+
+## Parses a local yield / return.
+def parYield = {:
+    @"<>"
+    (
+        ex = parExpression
+        { <> {yield: ex} }
+    |
+        { <> {} }
+    )
+:};
+
 ## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
     @def
@@ -648,37 +679,6 @@ def parExportableStatement = {:
 ## all the `export`able statements and a few additional forms.
 def parStatement = {:
     parExportableStatement | parGenericBind | parVarDefMutable | parExpression
-:};
-
-## Parses a nonlocal exit / return. All of the forms matched by this rule
-## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a `jump` call in the underlying
-## tree representation.
-def parNonlocalExit = {:
-    name = (
-        @"<"
-        n = parVarRef
-        @">"
-        { <> n }
-    |
-        op = [@break @continue @return]
-        { <> makeVarRef(get_typeName(op)) }
-    )
-
-    optValue = parExpression?
-
-    { <> makeJump(name, optValue*) }
-:};
-
-## Parses a local yield / return.
-def parYield = {:
-    @"<>"
-    (
-        ex = parExpression
-        { <> {yield: ex} }
-    |
-        { <> {} }
-    )
 :};
 
 ##

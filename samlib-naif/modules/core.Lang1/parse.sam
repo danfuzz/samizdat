@@ -334,6 +334,29 @@ parAssignExpression := $Peg::makeMainSequence(
         $Peg::makeCode { base <> base }));
 
 ## Documented in spec.
+def parNonlocalExit = $Peg::makeMainSequence(
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeToken(@@"<"),
+            parVarRef,
+            $Peg::makeToken(@@">"),
+            $Peg::makeCode { ., n, . <> n }),
+        $Peg::makeSequence(
+            $Peg::makeTokenSet(@@break, @@continue, @@return),
+            $Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
+    $Peg::makeOpt(parExpression),
+    $Peg::makeCode { name, optValue <> makeJump(name, optValue*) });
+
+## Documented in spec.
+def parYield = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"<>"),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            parExpression,
+            $Peg::makeCode { ., ex <> {yield: ex} }),
+        $Peg::makeResult({})));
+
+## Documented in spec.
 def parVarDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@def),
     parName,
@@ -500,29 +523,6 @@ def parExportableStatement = $Peg::makeMainChoice(
 ## Documented in spec.
 def parStatement = $Peg::makeMainChoice(
     parExportableStatement, parGenericBind, parVarDefMutable, parExpression);
-
-## Documented in spec.
-def parNonlocalExit = $Peg::makeMainSequence(
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@"<"),
-            parVarRef,
-            $Peg::makeToken(@@">"),
-            $Peg::makeCode { ., n, . <> n }),
-        $Peg::makeSequence(
-            $Peg::makeTokenSet(@@break, @@continue, @@return),
-            $Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
-    $Peg::makeOpt(parExpression),
-    $Peg::makeCode { name, optValue <> makeJump(name, optValue*) });
-
-## Documented in spec.
-def parYield = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"<>"),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            parExpression,
-            $Peg::makeCode { ., ex <> {yield: ex} }),
-        $Peg::makeResult({})));
 
 ## Documented in spec.
 def parClosureBody = $Peg::makeMainSequence(
