@@ -602,6 +602,58 @@ DEF_PARSE(assignExpression) {
     return makeVarBind(name, ex);
 }
 
+/**
+ * Helper for `nonlocalExit`: Parses `@"<" varRef @">"`.
+ */
+DEF_PARSE(nonlocalExit1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_LT);
+    zvalue name = PARSE_OR_REJECT(varRef);
+    MATCH_OR_REJECT(CH_GT);
+
+    return name;
+}
+
+/**
+ * Helper for `nonlocalExit`: Parses `@break | @continue | @return`.
+ */
+DEF_PARSE(nonlocalExit2) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = MATCH(break); }
+    if (result == NULL) { result = MATCH(continue); }
+    if (result == NULL) { result = MATCH(return); }
+    if (result == NULL) { return NULL; }
+
+    return makeVarRef(typeName(get_type(result)));
+}
+
+/* Documented in spec. */
+DEF_PARSE(nonlocalExit) {
+    zvalue name = NULL;
+
+    if (name == NULL) { name = PARSE(nonlocalExit1); }
+    if (name == NULL) { name = PARSE(nonlocalExit2); }
+    if (name == NULL) { return NULL; }
+
+    zvalue optValue = PARSE(expression); // It's okay for this to be `NULL`.
+    return makeJumpNode(name, optValue);
+}
+
+/**
+ * Documented in spec. This implementation differs from the
+ * spec in that it will return `NULL` either if no diamond is present
+ * or if it is a void yield. This is compensated for by matching changes to
+ * the implementation of `closureBody`, below.
+ */
+DEF_PARSE(yield) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_DIAMOND);
+    return PARSE(expression);
+}
+
 /* Documented in spec. */
 DEF_PARSE(varDef) {
     MARK();
@@ -863,58 +915,6 @@ DEF_PARSE(statement) {
 
     datFrameReturn(save, result);
     return result;
-}
-
-/**
- * Documented in spec. This implementation differs from the
- * spec in that it will return `NULL` either if no diamond is present
- * or if it is a void yield. This is compensated for by matching changes to
- * the implementation of `closureBody`, below.
- */
-DEF_PARSE(yield) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_DIAMOND);
-    return PARSE(expression);
-}
-
-/**
- * Helper for `nonlocalExit`: Parses `@"<" varRef @">"`.
- */
-DEF_PARSE(nonlocalExit1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_LT);
-    zvalue name = PARSE_OR_REJECT(varRef);
-    MATCH_OR_REJECT(CH_GT);
-
-    return name;
-}
-
-/**
- * Helper for `nonlocalExit`: Parses `@break | @continue | @return`.
- */
-DEF_PARSE(nonlocalExit2) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = MATCH(break); }
-    if (result == NULL) { result = MATCH(continue); }
-    if (result == NULL) { result = MATCH(return); }
-    if (result == NULL) { return NULL; }
-
-    return makeVarRef(typeName(get_type(result)));
-}
-
-/* Documented in spec. */
-DEF_PARSE(nonlocalExit) {
-    zvalue name = NULL;
-
-    if (name == NULL) { name = PARSE(nonlocalExit1); }
-    if (name == NULL) { name = PARSE(nonlocalExit2); }
-    if (name == NULL) { return NULL; }
-
-    zvalue optValue = PARSE(expression); // It's okay for this to be `NULL`.
-    return makeJumpNode(name, optValue);
 }
 
 /* Documented in spec. */
