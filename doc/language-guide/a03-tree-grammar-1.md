@@ -102,7 +102,7 @@ def parClosure;
 def parOpExpression;
 
 ##
-## Layer 0: Expressions
+## Layer 0: Terms and expressions
 ##
 
 ## Parses an expression in general.
@@ -426,6 +426,10 @@ parAssignExpression := {:
     )
 :};
 
+##
+## Layer 0: Statements and yields
+##
+
 ## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
     @def
@@ -677,6 +681,10 @@ def parYield = {:
     )
 :};
 
+##
+## Layer 0: Closures and programs
+##
+
 ## Parses a closure body (statements plus optional yield).
 def parClosureBody = {:
     @";"*
@@ -730,6 +738,10 @@ def parProgram = {:
     body = parClosureBody
     { <> @closure{formals: [], body*} }
 :};
+
+##
+## Layer 0: Entry points
+##
 
 ## Top-level rule to parse an expression with possible error afterwards.
 def parExpressionOrError = {:
