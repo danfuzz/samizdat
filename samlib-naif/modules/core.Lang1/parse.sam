@@ -256,6 +256,16 @@ def parClosureWithLookahead = $Peg::makeMainSequence(
     $Peg::makeThunk { . <> parClosure });
 
 ## Documented in spec.
+def parNullaryClosure = $Peg::makeMainSequence(
+    parClosureWithLookahead,
+    $Peg::makeCode { c ->
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    });
+
+## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
     parDeriv, parType, parClosureWithLookahead, parParenExpression,
@@ -418,16 +428,6 @@ parClosure := $Peg::makeMainSequence(
     $Peg::makeThunk { ., . <> parClosureBody },
     $Peg::makeToken(@@"}"),
     $Peg::makeCode { ., decls, body, . <> @closure{decls*, body*} });
-
-## Documented in spec.
-def parNullaryClosure = $Peg::makeMainSequence(
-    parClosure,
-    $Peg::makeCode { c ->
-        def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
-            { die("Invalid formal argument in code block.") };
-        <> c
-    });
 
 ## Documented in spec.
 def parFunctionCommon = $Peg::makeMainSequence(

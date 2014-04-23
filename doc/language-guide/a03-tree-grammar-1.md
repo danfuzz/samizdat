@@ -303,6 +303,25 @@ def parClosureWithLookahead = {:
     %parClosure
 :};
 
+## Parses a closure which must not define any formal arguments. This is done
+## by parsing an arbitrary closure and then verifying that it does not
+## declare formals. This is preferable to not-including formal argument
+## syntax, because (a) no rule wants to differentiate these cases (rules
+## either want an arbitrary closure or a specifically-constrained kind); (b)
+## it reduces redundancy in the syntax, and (c) the error case on the former
+## would be more obscure (as in just something like "unexpected token" on
+## the would-be formal argument).
+def parNullaryClosure = {:
+    c = parClosureWithLookahead
+
+    {
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    }
+:};
+
 ## Parses a term (basic expression unit).
 def parTerm = {:
     parVarRef | parInt | parString | parMap | parList |
@@ -505,25 +524,6 @@ parClosure := {:
     prog = parProgram
     @"}"
     { <> prog }
-:};
-
-## Parses a closure which must not define any formal arguments. This is done
-## by parsing an arbitrary closure and then verifying that it does not
-## declare formals. This is preferable to not-including formal argument
-## syntax, because (a) no rule wants to differentiate these cases (rules
-## either want an arbitrary closure or a specifically-constrained kind); (b)
-## it reduces redundancy in the syntax, and (c) the error case on the former
-## would be more obscure (as in just something like "unexpected token" on
-## the would-be formal argument).
-def parNullaryClosure = {:
-    c = parClosure
-
-    {
-        def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
-            { die("Invalid formal argument in code block.") };
-        <> c
-    }
 :};
 
 ## Parses the common part of function definition and generic function binding.

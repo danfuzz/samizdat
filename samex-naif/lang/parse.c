@@ -486,6 +486,20 @@ DEF_PARSE(closureWithLookahead) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(nullaryClosure) {
+    MARK();
+
+    zvalue c = PARSE_OR_REJECT(closureWithLookahead);
+
+    zvalue formals = GET(formals, c);
+    if (!valEq(formals, EMPTY_LIST)) {
+        die("Invalid formal argument in code block.");
+    }
+
+    return c;
+}
+
+/* Documented in spec. */
 DEF_PARSE(term) {
     zvalue result = NULL;
 
@@ -757,20 +771,6 @@ DEF_PARSE(closure) {
     return makeValue(TYPE_closure,
         GFN_CALL(cat, decls, body),
         NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(nullaryClosure) {
-    MARK();
-
-    zvalue c = PARSE_OR_REJECT(closure);
-
-    zvalue formals = GET(formals, c);
-    if (!valEq(formals, EMPTY_LIST)) {
-        die("Invalid formal argument in code block.");
-    }
-
-    return c;
 }
 
 /* Documented in spec. */
