@@ -549,9 +549,7 @@ def parStatement = {:
     parExportableStatement | parGenericBind | parVarDefMutable | parExpression
 :};
 
-## Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
-## to be done before `List`, since the latter rejects "map-like" syntax as a
-## fatal error.
+## Parses a term (basic expression unit).
 def parTerm = {:
     parVarRef | parInt | parString | parMap | parList |
     parDeriv | parType | parClosure | parParenExpression
