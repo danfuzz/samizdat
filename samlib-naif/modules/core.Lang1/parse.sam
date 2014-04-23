@@ -82,7 +82,6 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parClosure;
-def parClosureBody;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
 ## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
@@ -417,19 +416,6 @@ def parClosureDeclarations = $Peg::makeMainChoice(
     $Peg::makeResult({formals: []}));
 
 ## Documented in spec.
-def parProgram = $Peg::makeMainSequence(
-    $Peg::makeThunk { <> parClosureBody },
-    $Peg::makeCode { body <> @closure{formals: [], body*} });
-
-## Documented in spec.
-parClosure := $Peg::makeMainSequence(
-    $Peg::makeToken(@@"{"),
-    parClosureDeclarations,
-    $Peg::makeThunk { ., . <> parClosureBody },
-    $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., decls, body, . <> @closure{decls*, body*} });
-
-## Documented in spec.
 def parFunctionCommon = $Peg::makeMainSequence(
     parName,
     $Peg::makeToken(@@"("),
@@ -539,7 +525,7 @@ def parYield = $Peg::makeMainSequence(
         $Peg::makeResult({})));
 
 ## Documented in spec.
-parClosureBody := $Peg::makeMainSequence(
+def parClosureBody = $Peg::makeMainSequence(
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeStar(
         $Peg::makeMainSequence(
@@ -570,6 +556,19 @@ parClosureBody := $Peg::makeMainSequence(
             };
         <> {last*, statements: [tops*, mains*]}
     });
+
+## Documented in spec.
+parClosure := $Peg::makeMainSequence(
+    $Peg::makeToken(@@"{"),
+    parClosureDeclarations,
+    parClosureBody,
+    $Peg::makeToken(@@"}"),
+    $Peg::makeCode { ., decls, body, . <> @closure{decls*, body*} });
+
+## Documented in spec.
+def parProgram = $Peg::makeMainSequence(
+    parClosureBody,
+    $Peg::makeCode { body <> @closure{formals: [], body*} });
 
 ## Documented in spec.
 def parExpressionOrError = $Peg::makeMainSequence(

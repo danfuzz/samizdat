@@ -76,7 +76,9 @@ def LOWER_ALPHA = {
 ## Layer 0 Rules
 ##
 ## This section consists of the definitions required to implement Layer 0,
-## with comments indicating the "hooks" for higher layers.
+## with comments indicating the "hooks" for higher layers. Subsections are
+## used here to separate three related sets of rules (and hopefully make the
+## grammar easier to follow).
 ##
 
 ## Forward declarations required for layer 2. These are all add-ons to
@@ -93,13 +95,15 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parClosure;
-def parClosureBody;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
 ## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
 ## it's different in Layer 2.
 def parOpExpression;
 
+##
+## Layer 0: Expressions
+##
 
 ## Parses an expression in general.
 def parExpression = {:
@@ -512,20 +516,6 @@ def parClosureDeclarations = {:
     { <> {formals: []} }
 :};
 
-## Parses a program (top-level program or contents inside function braces).
-def parProgram = {:
-    body = %parClosureBody
-    { <> @closure{formals: [], body*} }
-:};
-
-## Parses a closure (in-line anonymous function, with no extra bindings).
-parClosure := {:
-    @"{"
-    prog = parProgram
-    @"}"
-    { <> prog }
-:};
-
 ## Parses the common part of function definition and generic function binding.
 ## The result of this rule is a `@closure` node, translated along these lines:
 ##
@@ -688,7 +678,7 @@ def parYield = {:
 :};
 
 ## Parses a closure body (statements plus optional yield).
-parClosureBody := {:
+def parClosureBody = {:
     @";"*
 
     most = (
@@ -724,6 +714,21 @@ parClosureBody := {:
             };
         <> {last*, statements: [tops*, mains*]}
     }
+:};
+
+## Parses a closure (in-line anonymous function, with no extra bindings).
+parClosure := {:
+    @"{"
+    decls = parClosureDeclarations
+    body = parClosureBody
+    @"}"
+    { <> @closure{decls*, body*} }
+:};
+
+## Parses a program (top-level program or contents inside function braces).
+def parProgram = {:
+    body = parClosureBody
+    { <> @closure{formals: [], body*} }
 :};
 
 ## Top-level rule to parse an expression with possible error afterwards.

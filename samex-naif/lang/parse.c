@@ -238,7 +238,6 @@ DEF_PARSE(optSemicolons) {
 DEF_PARSE(assignExpression);
 DEF_PARSE(opExpression);
 DEF_PARSE(closure);
-DEF_PARSE(closureBody);
 
 /* Documented in spec. */
 DEF_PARSE(expression) {
@@ -749,31 +748,6 @@ DEF_PARSE(closureDeclarations) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(program) {
-    zvalue body = PARSE(closureBody);  // This never fails.
-
-    return makeValue(TYPE_closure,
-        GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
-        NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(closure) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OCURLY);
-
-    zvalue decls = PARSE(closureDeclarations);  // This never fails.
-    zvalue body = PARSE(closureBody);           // This never fails.
-
-    MATCH_OR_REJECT(CH_CCURLY);
-
-    return makeValue(TYPE_closure,
-        GFN_CALL(cat, decls, body),
-        NULL);
-}
-
-/* Documented in spec. */
 DEF_PARSE(functionCommon) {
     MARK();
 
@@ -998,6 +972,31 @@ DEF_PARSE(closureBody) {
     zvalue statements = GFN_CALL(cat, tops, mains);
 
     return mapFrom2(STR_statements, statements, STR_yield, yield);
+}
+
+/* Documented in spec. */
+DEF_PARSE(closure) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OCURLY);
+
+    zvalue decls = PARSE(closureDeclarations);  // This never fails.
+    zvalue body = PARSE(closureBody);           // This never fails.
+
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat, decls, body),
+        NULL);
+}
+
+/* Documented in spec. */
+DEF_PARSE(program) {
+    zvalue body = PARSE(closureBody);  // This never fails.
+
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
+        NULL);
 }
 
 
