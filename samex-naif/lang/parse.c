@@ -238,7 +238,6 @@ DEF_PARSE(optSemicolons) {
 DEF_PARSE(assignExpression);
 DEF_PARSE(opExpression);
 DEF_PARSE(closureBody);
-DEF_PARSE(unaryExpression);
 
 /* Documented in spec. */
 DEF_PARSE(expression) {

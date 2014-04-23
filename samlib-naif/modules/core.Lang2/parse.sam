@@ -92,7 +92,6 @@ def parParser;
 ## Forward declarations.
 def parAssignExpression;
 def parClosureBody;
-def parUnaryExpression;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
 ## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
@@ -603,7 +602,7 @@ def parPostfixOperator = {:
 ## Parses a unary expression. This is a term, optionally surrounded on
 ## either side by any number of unary operators. Postfix operators
 ## take precedence over (are applied before) the prefix operators.
-parUnaryExpression := {:
+def parUnaryExpression = {:
     ## The rule is written this way in order to ensure that the `-`
     ## in front of a numeric constant gets parsed as a term and not as
     ## a unary expression.
