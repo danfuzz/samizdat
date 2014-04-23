@@ -237,8 +237,7 @@ DEF_PARSE(optSemicolons) {
 /* Documented in spec. */
 DEF_PARSE(assignExpression);
 DEF_PARSE(opExpression);
-DEF_PARSE(closureBody);
-DEF_PARSE(unaryExpression);
+DEF_PARSE(closure);
 
 /* Documented in spec. */
 DEF_PARSE(expression) {
@@ -477,6 +476,133 @@ DEF_PARSE(varRef) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(closureWithLookahead) {
+    if (PEEK(CH_OCURLY) == NULL) {
+        return NULL;
+    }
+
+    return PARSE(closure);
+}
+
+/* Documented in spec. */
+DEF_PARSE(nullaryClosure) {
+    MARK();
+
+    zvalue c = PARSE_OR_REJECT(closureWithLookahead);
+
+    zvalue formals = GET(formals, c);
+    if (!valEq(formals, EMPTY_LIST)) {
+        die("Invalid formal argument in code block.");
+    }
+
+    return c;
+}
+
+/* Documented in spec. */
+DEF_PARSE(term) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(varRef);               }
+    if (result == NULL) { result = PARSE(int);                  }
+    if (result == NULL) { result = PARSE(string);               }
+    if (result == NULL) { result = PARSE(map);                  }
+    if (result == NULL) { result = PARSE(list);                 }
+    if (result == NULL) { result = PARSE(deriv);                }
+    if (result == NULL) { result = PARSE(type);                 }
+    if (result == NULL) { result = PARSE(closureWithLookahead); }
+    if (result == NULL) { result = PARSE(parenExpression);      }
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(actualsList) {
+    MARK();
+
+    if (MATCH(CH_OPAREN)) {
+        zvalue normalActuals = PARSE(unadornedList);  // This never fails.
+        MATCH_OR_REJECT(CH_CPAREN);
+        zvalue closureActuals = PARSE_STAR(closureWithLookahead);
+        return GFN_CALL(cat, closureActuals, normalActuals);
+    }
+
+    return PARSE_PLUS(closureWithLookahead);
+}
+
+/* Documented in spec. */
+DEF_PARSE(postfixOperator) {
+    // We differ from the spec here, returning a payload or single token
+    // (`*` or `?`) directly. The corresponding `unaryExpression` code
+    // decodes these as appropriate.
+
+    MARK();
+
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(actualsList); }
+
+    if ((result == NULL) && (MATCH(CH_COLONCOLON) != NULL)) {
+        result = PARSE_OR_REJECT(identifierString);
+    }
+
+    if (result == NULL) { result = MATCH(CH_STAR); }
+    if (result == NULL) { result = MATCH(CH_QMARK); }
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(unaryExpression) {
+    MARK();
+
+    zvalue result = PARSE_OR_REJECT(term);
+    zvalue postfixes = PARSE_STAR(postfixOperator);
+
+    zint size = get_size(postfixes);
+    for (zint i = 0; i < size; i++) {
+        zvalue one = nth(postfixes, i);
+        if (hasType(one, TYPE_List)) {
+            result = makeCallOrApply(result, one);
+        } else if (valEq(one, TOK_CH_STAR)) {
+            result = makeInterpolate(result);
+        } else if (valEq(one, TOK_CH_QMARK)) {
+            result = makeOptValue(result);
+        } else if (hasType(one, TYPE_literal)) {
+            result = makeCallOrApply(REFS(get), listFrom2(result, one));
+        } else {
+            die("Unexpected postfix.");
+        }
+    }
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(opExpression) {
+    return PARSE(unaryExpression);
+}
+
+/* Documented in spec. */
+DEF_PARSE(assignExpression) {
+    MARK();
+
+    zvalue base = PARSE_OR_REJECT(opExpression);
+
+    if (!(hasType(base, TYPE_varRef) && MATCH(CH_COLONEQUAL))) {
+        return base;
+    }
+
+    // This code isn't parallel to the in-language code but has the
+    // same effect, given that the only valid lvalues are variable references.
+    // In this case, we ensured (above) that we've got a `varRef` and
+    // recombine it here into a `varBind`.
+    zvalue ex = PARSE_OR_REJECT(expression);
+    zvalue name = GET(name, base);
+
+    return makeVarBind(name, ex);
+}
+
+/* Documented in spec. */
 DEF_PARSE(varDef) {
     MARK();
 
@@ -622,45 +748,6 @@ DEF_PARSE(closureDeclarations) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(program) {
-    zvalue body = PARSE(closureBody);  // This never fails.
-
-    return makeValue(TYPE_closure,
-        GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
-        NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(closure) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OCURLY);
-
-    zvalue decls = PARSE(closureDeclarations);  // This never fails.
-    zvalue body = PARSE(closureBody);           // This never fails.
-
-    MATCH_OR_REJECT(CH_CCURLY);
-
-    return makeValue(TYPE_closure,
-        GFN_CALL(cat, decls, body),
-        NULL);
-}
-
-/* Documented in spec. */
-DEF_PARSE(nullaryClosure) {
-    MARK();
-
-    zvalue c = PARSE_OR_REJECT(closure);
-
-    zvalue formals = GET(formals, c);
-    if (!valEq(formals, EMPTY_LIST)) {
-        die("Invalid formal argument in code block.");
-    }
-
-    return c;
-}
-
-/* Documented in spec. */
 DEF_PARSE(functionCommon) {
     MARK();
 
@@ -778,110 +865,6 @@ DEF_PARSE(statement) {
     return result;
 }
 
-/* Documented in spec. */
-DEF_PARSE(term) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(varRef); }
-    if (result == NULL) { result = PARSE(int); }
-    if (result == NULL) { result = PARSE(string); }
-    if (result == NULL) { result = PARSE(map); }
-    if (result == NULL) { result = PARSE(list); }
-    if (result == NULL) { result = PARSE(deriv); }
-    if (result == NULL) { result = PARSE(type); }
-    if (result == NULL) { result = PARSE(closure); }
-    if (result == NULL) { result = PARSE(parenExpression); }
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(actualsList) {
-    MARK();
-
-    if (MATCH(CH_OPAREN)) {
-        zvalue normalActuals = PARSE(unadornedList); // This never fails.
-        MATCH_OR_REJECT(CH_CPAREN);
-        zvalue closureActuals = PARSE_STAR(closure); // This never fails.
-        return GFN_CALL(cat, closureActuals, normalActuals);
-    }
-
-    return PARSE_PLUS(closure);
-}
-
-/* Documented in spec. */
-DEF_PARSE(postfixOperator) {
-    // We differ from the spec here, returning a payload or single token
-    // (`*` or `?`) directly. The corresponding `unaryExpression` code
-    // decodes these as appropriate.
-
-    MARK();
-
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(actualsList); }
-
-    if ((result == NULL) && (MATCH(CH_COLONCOLON) != NULL)) {
-        result = PARSE_OR_REJECT(identifierString);
-    }
-
-    if (result == NULL) { result = MATCH(CH_STAR); }
-    if (result == NULL) { result = MATCH(CH_QMARK); }
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(unaryExpression) {
-    MARK();
-
-    zvalue result = PARSE_OR_REJECT(term);
-    zvalue postfixes = PARSE_STAR(postfixOperator);
-
-    zint size = get_size(postfixes);
-    for (zint i = 0; i < size; i++) {
-        zvalue one = nth(postfixes, i);
-        if (hasType(one, TYPE_List)) {
-            result = makeCallOrApply(result, one);
-        } else if (valEq(one, TOK_CH_STAR)) {
-            result = makeInterpolate(result);
-        } else if (valEq(one, TOK_CH_QMARK)) {
-            result = makeOptValue(result);
-        } else if (hasType(one, TYPE_literal)) {
-            result = makeCallOrApply(REFS(get), listFrom2(result, one));
-        } else {
-            die("Unexpected postfix.");
-        }
-    }
-
-    return result;
-}
-
-/* Documented in spec. */
-DEF_PARSE(opExpression) {
-    return PARSE(unaryExpression);
-}
-
-/* Documented in spec. */
-DEF_PARSE(assignExpression) {
-    MARK();
-
-    zvalue base = PARSE_OR_REJECT(opExpression);
-
-    if (!(hasType(base, TYPE_varRef) && MATCH(CH_COLONEQUAL))) {
-        return base;
-    }
-
-    // This code isn't parallel to the in-language code but has the
-    // same effect, given that the only valid lvalues are variable references.
-    // In this case, we ensured (above) that we've got a `varRef` and
-    // recombine it here into a `varBind`.
-    zvalue ex = PARSE_OR_REJECT(expression);
-    zvalue name = GET(name, base);
-
-    return makeVarBind(name, ex);
-}
-
 /**
  * Documented in spec. This implementation differs from the
  * spec in that it will return `NULL` either if no diamond is present
@@ -989,6 +972,31 @@ DEF_PARSE(closureBody) {
     zvalue statements = GFN_CALL(cat, tops, mains);
 
     return mapFrom2(STR_statements, statements, STR_yield, yield);
+}
+
+/* Documented in spec. */
+DEF_PARSE(closure) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OCURLY);
+
+    zvalue decls = PARSE(closureDeclarations);  // This never fails.
+    zvalue body = PARSE(closureBody);           // This never fails.
+
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat, decls, body),
+        NULL);
+}
+
+/* Documented in spec. */
+DEF_PARSE(program) {
+    zvalue body = PARSE(closureBody);  // This never fails.
+
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
+        NULL);
 }
 
 
