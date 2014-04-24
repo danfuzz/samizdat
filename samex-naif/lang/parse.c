@@ -831,12 +831,7 @@ DEF_PARSE(functionDef) {
     MATCH_OR_REJECT(fn);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    zvalue name = GET(name, closure);
-    return makeValue(TYPE_topDeclaration,
-        mapFrom2(
-            STR_top,  makeVarDef(name, NULL),
-            STR_main, makeVarBind(name, closure)),
-        NULL);
+    return withTop(makeVarDef(GET(name, closure), closure));
 }
 
 /* Documented in spec. */
@@ -885,11 +880,7 @@ DEF_PARSE(genericDef) {
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals))));
 
-    return makeValue(TYPE_topDeclaration,
-        mapFrom2(
-            STR_top,  makeVarDef(name, NULL),
-            STR_main, makeVarBind(name, call)),
-        NULL);
+    return withTop(makeVarDef(name, call));
 }
 
 /* Documented in spec. */
@@ -919,7 +910,7 @@ DEF_PARSE(statement) {
 
 /* Documented in spec. */
 DEF_PARSE(closureBody) {
-    zvalue rawStatements = EMPTY_LIST;
+    zvalue statements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
     PARSE(optSemicolons);
@@ -938,7 +929,7 @@ DEF_PARSE(closureBody) {
         }
 
         PARSE(optSemicolons);
-        rawStatements = listAppend(rawStatements, statement);
+        statements = listAppend(statements, statement);
     }
 
     zvalue statement = PARSE(statement);
@@ -948,28 +939,12 @@ DEF_PARSE(closureBody) {
     }
 
     if (statement != NULL) {
-        rawStatements = listAppend(rawStatements, statement);
+        statements = listAppend(statements, statement);
     } else {
         yield = PARSE(yield);
     }
 
     PARSE(optSemicolons);
-
-    zvalue tops = EMPTY_LIST;
-    zvalue mains = EMPTY_LIST;
-    zint size = get_size(rawStatements);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = nth(rawStatements, i);
-        if (hasType(one, TYPE_topDeclaration)) {
-            tops = listAppend(tops, get(one, STR_top));
-            mains = listAppend(mains, get(one, STR_main));
-        } else {
-            mains = listAppend(mains, one);
-        }
-    }
-
-    zvalue statements = GFN_CALL(cat, tops, mains);
 
     return mapFrom2(STR_statements, statements, STR_yield, yield);
 }
@@ -985,18 +960,20 @@ DEF_PARSE(closure) {
 
     MATCH_OR_REJECT(CH_CCURLY);
 
-    return makeValue(TYPE_closure,
+    zvalue closure = makeValue(TYPE_closure,
         GFN_CALL(cat, decls, body),
         NULL);
+    return withSimpleDefs(closure);
 }
 
 /* Documented in spec. */
 DEF_PARSE(program) {
     zvalue body = PARSE(closureBody);  // This never fails.
 
-    return makeValue(TYPE_closure,
+    zvalue closure = makeValue(TYPE_closure,
         GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
         NULL);
+    return withSimpleDefs(closure);
 }
 
 
