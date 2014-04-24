@@ -9,6 +9,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/Type.h"
 
 #include "helpers.h"
 
@@ -247,6 +248,42 @@ zvalue withFormals(zvalue node, zvalue formals) {
     return makeValue(
         get_type(node),
         collPut(dataOf(node), STR_formals, formals),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue withSimpleDefs(zvalue node) {
+    zvalue rawStatements = get(node, STR_statements);
+    zint size = get_size(rawStatements);
+    zvalue tops = EMPTY_LIST;
+    zvalue mains = EMPTY_LIST;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = nth(rawStatements, i);
+        if (hasType(one, TYPE_varDef) && (get(one, STR_top) != NULL)) {
+            zvalue name = get(one, STR_name);
+            zvalue value = get(one, STR_value);
+            tops = listAppend(tops, makeVarDef(name, NULL));
+            mains = listAppend(mains, makeVarBind(name, value));
+        } else {
+            mains = listAppend(mains, one);
+        }
+    }
+
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_statements, GFN_CALL(cat, tops, mains)),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue withTop(zvalue node) {
+    // Contrary to the spec, we bind to `EMPTY_LIST` and not `true`, because
+    // (a) the actual value doesn't matter, and (b) `true` isn't available
+    // in a straightforward way.
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_top, EMPTY_LIST),
         NULL);
 }
 

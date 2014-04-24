@@ -111,6 +111,12 @@ zvalue makeOptValue(zvalue expression);
 zvalue withFormals(zvalue node, zvalue formals);
 
 /* Documented in spec. */
+zvalue withSimpleDefs(zvalue node);
+
+/* Documented in spec. */
+zvalue withTop(zvalue node);
+
+/* Documented in spec. */
 zvalue withoutInterpolate(zvalue node);
 
 #endif
