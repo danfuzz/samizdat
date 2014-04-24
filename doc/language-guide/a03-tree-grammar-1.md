@@ -132,6 +132,12 @@ def parName = {:
     { <> dataOf(nameIdent) }
 :};
 
+## Parses a variable reference.
+def parVarRef = {:
+    name = parName
+    { <> makeVarRefLvalue(name) }
+:};
+
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,
 ## so that simple negative constants aren't turned into complicated function
 ## calls.
@@ -292,12 +298,6 @@ def parDeriv = {:
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCall(REFS::makeValue, type, value*) }
-:};
-
-## Parses a variable reference.
-def parVarRef = {:
-    name = parName
-    { <> makeVarRefLvalue(name) }
 :};
 
 ## Parses a closure, but with a lookahead to make it less likely we'll

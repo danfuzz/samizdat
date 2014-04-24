@@ -268,6 +268,14 @@ DEF_PARSE(name) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(varRef) {
+    MARK();
+
+    zvalue name = PARSE_OR_REJECT(name);
+    return makeVarRef(name);
+}
+
+/* Documented in spec. */
 DEF_PARSE(int) {
     MARK();
 
@@ -465,14 +473,6 @@ DEF_PARSE(deriv) {
     zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
 
     return makeCall(REFS(makeValue), args);
-}
-
-/* Documented in spec. */
-DEF_PARSE(varRef) {
-    MARK();
-
-    zvalue name = PARSE_OR_REJECT(name);
-    return makeVarRef(name);
 }
 
 /* Documented in spec. */

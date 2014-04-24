@@ -105,6 +105,11 @@ def parName =  $Peg::makeMainSequence(
     $Peg::makeCode { nameIdent <> dataOf(nameIdent) });
 
 ## Documented in spec.
+def parVarRef = $Peg::makeMainSequence(
+    parName,
+    $Peg::makeCode { name <> makeVarRefLvalue(name) });
+
+## Documented in spec.
 def parInt = $Peg::makeMainChoice(
     $Peg::makeSequence(
         $Peg::makeToken(@@"-"),
@@ -243,11 +248,6 @@ def parDeriv = $Peg::makeMainSequence(
     $Peg::makeCode { ., type, value ->
         <> makeCall(REFS::makeValue, type, value*)
     });
-
-## Documented in spec.
-def parVarRef = $Peg::makeMainSequence(
-    parName,
-    $Peg::makeCode { name <> makeVarRefLvalue(name) });
 
 ## Documented in spec.
 def parClosureWithLookahead = $Peg::makeMainSequence(
