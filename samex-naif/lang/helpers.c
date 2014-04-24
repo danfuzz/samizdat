@@ -17,6 +17,23 @@
  * Node constructors and related helpers
  */
 
+/* Documented in header. */
+zvalue mapFrom1(zvalue k1, zvalue v1) {
+    return mapFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+}
+
+/* Documented in header. */
+zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return mapFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+}
+
+/* Documented in header. */
+zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3) {
+    return mapFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
+}
+
+/* Documented in header. */
 zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
     zmapping elems[4];
@@ -28,22 +45,6 @@ zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
     if (v4 != NULL) { elems[at].key = k4; elems[at].value = v4; at++; }
 
     return (at == 0) ? EMPTY_MAP : mapFromArray(at, elems);
-}
-
-/* Documented in header. */
-zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
-        zvalue k3, zvalue v3) {
-    return mapFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
-}
-
-/* Documented in header. */
-zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return mapFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
-}
-
-/* Documented in header. */
-zvalue mapFrom1(zvalue k1, zvalue v1) {
-    return mapFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /* Documented in header. */
