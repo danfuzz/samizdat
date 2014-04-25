@@ -25,12 +25,12 @@ def EARLY_GLOBALS = {
 ##
 
 ## Documented in spec.
-fn earlyEnvironment() {
+export fn earlyEnvironment() {
     <> EARLY_GLOBALS
 };
 
 ## Documented in spec.
-fn fullEnvironment() {
+export fn fullEnvironment() {
     ## These `moduleLoad` calls are intentionally delayed, so that this
     ## file can be successfully loaded before most of the module system is
     ## ready.
@@ -67,8 +67,3 @@ fn fullEnvironment() {
         runCommandLine: $CommandLine::runCommandLine
     }
 };
-
-<> {
-    earlyEnvironment,
-    fullEnvironment
-}

@@ -11,11 +11,9 @@
 ## Exported Definitions
 ##
 
-<> {
-    ## Re-exported from primitive library.
-    eval:            Lang0_eval,
-    evalBinary:      Lang0_evalBinary,
-    parseExpression: Lang0_parseExpression,
-    parseProgram:    Lang0_parseProgram,
-    tokenize:        Lang0_tokenize
-}
+## Re-exported from primitive library.
+export def eval            = Lang0_eval;
+export def evalBinary      = Lang0_evalBinary;
+export def parseExpression = Lang0_parseExpression;
+export def parseProgram    = Lang0_parseProgram;
+export def tokenize        = Lang0_tokenize;

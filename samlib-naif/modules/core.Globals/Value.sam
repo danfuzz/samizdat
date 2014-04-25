@@ -12,109 +12,91 @@
 ##
 
 ## Documented in spec.
-fn ge(value, other) {
+export fn ge(value, other) {
     <> ifNot { <> eq(order(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn gt(value, other) {
+export fn gt(value, other) {
     <> ifIs { <> eq(order(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn le(value, other) {
+export fn le(value, other) {
     <> ifNot { <> eq(order(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn lt(value, other) {
+export fn lt(value, other) {
     <> ifIs { <> eq(order(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn ne(value, other) {
+export fn ne(value, other) {
     <> ifNot { <> eq(value, other) }
         { <> value }
 };
 
 ## Documented in spec.
-fn perGe(value, other) {
+export fn perGe(value, other) {
     <> ifNot { <> eq(perOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn perGt(value, other) {
+export fn perGt(value, other) {
     <> ifIs { <> eq(perOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn perLe(value, other) {
+export fn perLe(value, other) {
     <> ifNot { <> eq(perOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn perLt(value, other) {
+export fn perLt(value, other) {
     <> ifIs { <> eq(perOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn perNe(value, other) {
+export fn perNe(value, other) {
     <> ifNot { <> perEq(value, other) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totalGe(value, other) {
+export fn totalGe(value, other) {
     <> ifNot { <> eq(totalOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totalGt(value, other) {
+export fn totalGt(value, other) {
     <> ifIs { <> eq(totalOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totalLe(value, other) {
+export fn totalLe(value, other) {
     <> ifNot { <> eq(totalOrder(value, other), 1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totalLt(value, other) {
+export fn totalLt(value, other) {
     <> ifIs { <> eq(totalOrder(value, other), -1) }
         { <> value }
 };
 
 ## Documented in spec.
-fn totalNe(value, other) {
+export fn totalNe(value, other) {
     <> ifNot { <> totalEq(value, other) }
         { <> value }
 };
-
-<> {
-    ge,
-    gt,
-    le,
-    lt,
-    ne,
-    perGe,
-    perGt,
-    perLe,
-    perLt,
-    perNe,
-    totalGe,
-    totalGt,
-    totalLe,
-    totalLt,
-    totalNe
-}
