@@ -561,9 +561,20 @@ parClosure := $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parProgram = $Peg::makeMainSequence(
-    parClosureBody,
-    $Peg::makeCode { body ->
-        def closure = @closure{formals: [], body*};
+    $Peg::makeStar($Peg::makeToken(@@";")),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            parProgramStatement,
+            $Peg::makeStar(
+                $Peg::makeSequence(
+                    $Peg::makePlus($Peg::makeToken(@@";")),
+                    parProgramStatement)),
+            $Peg::makeCode { ., first, rest <> [first, rest*] }),
+        $Peg::makeResult([])),
+    $Peg::makeStar($Peg::makeToken(@@";")),
+    $Peg::makeChoice(parYield, $Peg::makeResult({})),  ## FIXME: Scaffolding.
+    $Peg::makeCode { ., statements, ., optYield ->
+        def closure = @closure{optYield*, formals: [], statements};
         <> withSimpleDefs(closure)
     });
 
