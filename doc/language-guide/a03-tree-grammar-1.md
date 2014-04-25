@@ -725,11 +725,25 @@ parClosure := {:
     }
 :};
 
-## Parses a program (top-level program or contents inside function braces).
+## Parses a program (list of statements, including possible exports).
 def parProgram = {:
-    body = parClosureBody
+    @";"*
+
+    statements = (
+        first = parProgramStatement
+        rest = (
+            @";"+
+            parProgramStatement
+        )*
+        { <> [first, rest*] }
+    |
+        { <> [] }
+    )
+
+    @";"*
+
     {
-        def closure = @closure{formals: [], body*};
+        def closure = @closure{formals: [], statements};
         <> withSimpleDefs(closure)
     }
 :};
