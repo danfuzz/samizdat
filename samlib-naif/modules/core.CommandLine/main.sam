@@ -123,6 +123,27 @@ fn makeGlobals(filePath, args) {
     }
 };
 
+## Runs a program which has been `eval`ed. This works for both text and
+## binary programs. This calls the given `programFunc`. If it returns
+## a map that binds `main`, then this in turn calls that `main`, returning
+## whatever that does. If not, this returns whatever the original function
+## call returned (including void).
+fn runProgram(programFunc, filePath, args) {
+    def optResult = programFunc()?;
+
+    if (optResult == []) {
+        return
+    };
+
+    def result = optResult*;
+
+    if (hasType(result, Map) & result::main) {
+        return result::main(filePath, args*)
+    } else {
+        return result
+    }
+};
+
 ## Runs a module-form command-line. In this case, a named directory is
 ## loaded as a module. It is expected to export a `main()` function, which
 ## is called with the Posix-style command-line arguments.
@@ -132,10 +153,11 @@ fn runModule(modulePath, args) {
         modulePath, args*)
 };
 
-## Runs a simple-file-form command-line. In this case, the indicated file
-## is read as a top-level program, and evaluated, passing it no arguments.
-## Its environment includes `SELF_PATH` and `ARGUMENTS` variables indicating
-## the path to the file and the command-line arguments, respectively.
+## Runs a simple-file-form command-line. The indicated file is read as a
+## top-level program, and evaluated. The (function) result of evaluation is
+## called with no arguments. The result of that call (including void) is
+## returned, *except* if the result is a map that binds `main`. In the latter
+## case, the `main` is called, passing it the usual `main()` arguments.
 fn runFile(langLayer, filePath, args) {
     def globals = makeGlobals(filePath, args);
     def programText = $Io0::readFileUtf8(filePath);
@@ -143,16 +165,16 @@ fn runFile(langLayer, filePath, args) {
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(globals, parsedProgram);
 
-    <> evalled()
+    <> runProgram(evalled, filePath, args)
 };
 
 ## Runs a binary library command-line. The global environment is set up the
-## same as for `runFile`.
+## same as for `runFile`, and it is called in the same manner.
 fn runBinary(filePath, args) {
     def globals = makeGlobals(filePath, args);
     def evalled = $Lang2::evalBinary(globals, filePath);
 
-    <> evalled()
+    <> runProgram(evalled, filePath, args)
 };
 
 
