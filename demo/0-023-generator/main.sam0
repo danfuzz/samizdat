@@ -41,7 +41,6 @@ fn msgAll(header, origGen) {
 };
 
 
-
 ##
 ## Main Tests
 ##
@@ -125,6 +124,3 @@ def outMap = $Generator::collectAsMap(
         });
 note(cat("    ", $Format::source(outMap)));
 note("");
-
-
-<> 0

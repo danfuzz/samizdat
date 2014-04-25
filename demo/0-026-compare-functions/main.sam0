@@ -55,5 +55,3 @@ test(order, 10, 20);
 test(order, 20, 10);
 test(order, 10, "blort");
 test(order, "blort", 10);
-
-<> 0

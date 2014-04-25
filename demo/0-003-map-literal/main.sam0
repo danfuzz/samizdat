@@ -39,5 +39,3 @@ msg({1: 2: 3: a: b: c: 10, 1: 3: b: 20});
 def axe = "Axe";
 def bazooka = "Bazooka";
 msg({axe, bazooka});
-
-<> 0

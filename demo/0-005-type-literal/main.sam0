@@ -43,5 +43,3 @@ msg(@@fn);
 
 ## Expressions can be used as names.
 msg(@@(cat("blo", "rt")));
-
-<> 0

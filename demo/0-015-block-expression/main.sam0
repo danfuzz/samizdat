@@ -49,5 +49,3 @@ print({ <out> stuff(a) -> });
 print({ x, y <> cat(x, y) }("bl", "ort"));
 print({ <out> x, y -> <out> cat(x, y) }("fi", "zmo"));
 print({ yowza(args+) -> <> cat(args*) }("i", "gr", "am"));
-
-<> 0

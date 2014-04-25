@@ -66,5 +66,3 @@ def five = list5()*;
 msg(five);
 
 msg({blort: list5()*});
-
-<> 0

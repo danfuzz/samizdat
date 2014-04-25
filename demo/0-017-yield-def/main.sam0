@@ -51,5 +51,3 @@ fn baz(foo) { <out> ->
 note(baz(1));
 ifNot { <> baz(2) }
     { note("too!"); };
-
-<> 0

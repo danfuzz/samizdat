@@ -31,5 +31,3 @@ fn getValue(x) {
 msg(getVoid()?);
 msg(getValue("yay")?);
 msg("stuff"?);
-
-<> 0

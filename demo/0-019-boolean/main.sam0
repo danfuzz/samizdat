@@ -83,5 +83,3 @@ expect("toNumber", 0, toNumber, false);
 expect("toNumber", 1, toNumber, true);
 
 note("All good.");
-
-<> 0

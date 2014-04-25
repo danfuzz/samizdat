@@ -34,7 +34,7 @@ fn process(value) {
 ## Main Tests
 ##
 
-fn main(selfPath, name?, rest*) {
+export fn main(selfPath, name?, rest*) {
     ## Be welcoming.
 
     ifIs { <> eq(name, ["danfuzz"]) }
@@ -70,6 +70,4 @@ fn main(selfPath, name?, rest*) {
     blort(1, 2, 3, 4, 5);
     stuff(1);
     stuff(1, 2);
-};
-
-<> {main}
+}

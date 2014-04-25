@@ -52,5 +52,3 @@ ifIs(yieldVoid4, bad, good);
 ifValue { <> yieldArg("woo") }
     { v <> note(v) }
     { bad() };
-
-<> 0

@@ -34,5 +34,3 @@ tryFile(cat(selfDir, "/sibling.txt"));
 tryFile(cat(selfDir, "/non-sibling.txt"));
 tryFile(cat(selfDir, "/nonexistent-directory/zorch.txt"));
 tryFile(selfDir);
-
-<> 0
