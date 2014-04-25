@@ -301,6 +301,8 @@ DEF_PARSE(string) {
 
 /* Documented in spec. */
 DEF_PARSE(identifierString) {
+    MARK();
+
     zvalue result;
 
     result = PARSE(string);
@@ -309,20 +311,14 @@ DEF_PARSE(identifierString) {
     result = PARSE(name);
     if (result != NULL) { return makeLiteral(result); }
 
-    if (result == NULL) { result = MATCH(break);      }
-    if (result == NULL) { result = MATCH(continue);   }
-    if (result == NULL) { result = MATCH(def);        }
-    if (result == NULL) { result = MATCH(fn);         }
-    if (result == NULL) { result = MATCH(return);     }
-    if (result == NULL) { result = MATCH(var);        }
-    if (result == NULL) { return NULL;                }
+    result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
+    REJECT_IF(dataOf(result) != NULL);
 
-    zvalue value = dataOf(result);
-    if (value == NULL) {
-        value = typeName(get_type(result));
-    }
+    zvalue type = typeName(get_type(result));
+    zchar firstCh = zcharFromString(nth(type, 0));
 
-    return makeLiteral(value);
+    REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
+    return makeLiteral(type);
 }
 
 /**
