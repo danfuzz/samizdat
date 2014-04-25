@@ -22,6 +22,4 @@ fn @@NullGenerator.nextValue(box) {
 };
 
 ## Documented in spec.
-def nullGenerator = @NullGenerator;
-
-<> {nullGenerator}
+export def nullGenerator = @NullGenerator;

@@ -18,7 +18,7 @@ def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 ##
 
 ## Documented in spec.
-fn makeOptGenerator(generator) {
+export fn makeOptGenerator(generator) {
     <> @OptGenerator(generator)
 };
 
@@ -44,5 +44,3 @@ fn @@OptGenerator.nextValue(box) {
                 box)
         }
 };
-
-<> {makeOptGenerator}

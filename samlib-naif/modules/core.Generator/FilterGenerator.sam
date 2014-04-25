@@ -18,7 +18,7 @@ def $ParaGenerator = intraLoad("ParaGenerator");
 ##
 
 ## Documented in spec.
-fn makeFilterGenerator(filterFunction, generators*) {
+export fn makeFilterGenerator(filterFunction, generators*) {
     <> @FilterGenerator{
         filterFunction,
         generator: $ParaGenerator::makeParaGenerator(generators*)
@@ -62,5 +62,3 @@ fn @@FilterGenerator.nextValue(box) {
         return
     }
 };
-
-<> {makeFilterGenerator}
