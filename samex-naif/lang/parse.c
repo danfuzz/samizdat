@@ -975,16 +975,46 @@ DEF_PARSE(closure) {
     return withSimpleDefs(closure);
 }
 
+/**
+ * Helper for `program`: Parses the `rest` construct in the original spec.
+ */
+DEF_PARSE(program1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_SEMICOLON);
+    PARSE(optSemicolons);
+    zvalue result = PARSE_OR_REJECT(programStatement);
+
+    return result;
+}
+
 /* Documented in spec. */
 DEF_PARSE(program) {
-    zvalue body = PARSE(closureBody);  // This never fails.
+    MARK();
+
+    PARSE(optSemicolons);
+
+    zvalue statements;
+
+    zvalue first = PARSE(programStatement);
+    if (first != NULL) {
+        zvalue rest = PARSE_STAR(program1);
+        statements = GFN_CALL(cat, listFrom1(first), rest);
+    } else {
+        statements = EMPTY_LIST;
+    }
+
+    PARSE(optSemicolons);
+    zvalue yield = PARSE(yield);  // FIXME: Scaffolding.
 
     zvalue closure = makeValue(TYPE_closure,
-        GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
+        mapFrom3(
+            STR_formals,    EMPTY_LIST,
+            STR_statements, statements,
+            STR_yield,      yield),
         NULL);
     return withSimpleDefs(closure);
 }
-
 
 /*
  * Exported Definitions
