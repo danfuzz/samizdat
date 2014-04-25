@@ -87,11 +87,6 @@ fn withFormals(node, formals) {
 };
 
 ## Documented in spec.
-fn withTop(node) {
-    <> @(get_typeName(node)){dataOf(node)*, top: true}
-};
-
-## Documented in spec.
 fn withoutInterpolate(node) {
     <> @(get_typeName(node))($Collection::del(dataOf(node), "interpolate"))
 };
@@ -119,7 +114,6 @@ fn withoutIntermediates(node) {
     makeVarRef,
     makeVarRefLvalue,
     withFormals,
-    withTop,
     withoutIntermediates,
     withoutInterpolate
 }

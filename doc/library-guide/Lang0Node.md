@@ -199,6 +199,12 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `withExport(node, optName?) <> node`
+
+Makes a node just like the given one (presumably a `varDef` node), except
+with the addition of an `export` binding. If given, the `optName*` is used
+for the binding. If not given, `node`'s pre-existing `name` is used.
+
 #### `withFormals(node, [formal*]) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except

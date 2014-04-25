@@ -230,12 +230,16 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDef` &mdash; `@varDef{name: name, value: expression, (top: true)?}`
+#### `varDef` &mdash; `@varDef{name: name, value: expression, (export: name)?, (top: true)?}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 
 * `value: expression` (optional) &mdash; Expression node representing the
   value that the variable should take on when defined.
+
+* `export: name` (optional) &mdash; If present, indicates the name of the
+  exported binding for this variable. This is typically, but not necessarily,
+  the same as the `name` binding.
 
 * `top: true` (optional) &mdash; If present, indicates that this definition
   should be promoted to the top of the closure in which it appears.
@@ -259,10 +263,11 @@ behavior varies depending on if `value` is supplied in this node:
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
   value becomes the permanently-bound value of the variable.
 
-The `top` binding, if present, has no effect at runtime. Instead, this is
-intended to be used as part of a pre-execution or pre-compliation
-transformation, used to produce a new `statements` list that incorporates
-the implied declaration.
+The `export` and `top` bindings, if present, have no effect at runtime.
+Instead, these are intended to be used as part of a pre-execution or
+pre-compliation transformation, used to produce a modified `closure` (with
+an altered `statements` list, and so on) that incorporates the implied
+declaration(s).
 
 #### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
 

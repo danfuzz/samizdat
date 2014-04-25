@@ -100,6 +100,12 @@ fn makeOptValue(node) {
 };
 
 ## Documented in spec.
+fn withExport(node, optName?) {
+    def name = ifValueOr { optName* } { get_name(node) };
+    <> @(get_typeName(node)){dataOf(node)*, export: name}
+};
+
+## Documented in spec.
 fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
     def tops = $Generator::filterAll(rawStatements)
@@ -126,10 +132,17 @@ fn withSimpleDefs(node) {
     }
 };
 
+## Documented in spec.
+fn withTop(node) {
+    <> @(get_typeName(node)){dataOf(node)*, top: true}
+};
+
 <> {
     makeCallOrApply,
     makeGet,
     makeInterpolate,
     makeOptValue,
-    withSimpleDefs
+    withExport,
+    withSimpleDefs,
+    withTop
 }
