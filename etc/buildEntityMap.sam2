@@ -102,44 +102,42 @@ def parFile = {:
     { <> cat(lines*) }
 :};
 
-def selfDir = $FilePath::get_directory(SELF_PATH);
-def inPath = "\(selfDir)/entity-map.txt";
-def outPath = "\(selfDir)/entityMap.sam";
-note("Processing file: \%q(inPath)");
+export fn main(selfPath, .*) {
+    def selfDir = $FilePath::get_directory(selfPath);
+    def inPath = "\(selfDir)/entity-map.txt";
+    def outPath = "\(selfDir)/entityMap.sam";
+    note("Processing file: \%q(inPath)");
 
-def text = $Io0::readFileUtf8(inPath);
-def result = $Peg::apply(parFile, text);
+    def text = $Io0::readFileUtf8(inPath);
+    def result = $Peg::apply(parFile, text);
 
-## This makes each result line *start* with `,\n`, to make it easy to just
-## trim the first two characters off the beginning, yielding a valid comma-
-## separated list of mappings.
-def resultLines = (mapping in result ->
-    <> ",\n    \%q(get_key(mapping)): \%q(get_value(mapping))"
-);
+    ## This makes each result line *start* with `,\n`, to make it easy to just
+    ## trim the first two characters off the beginning, yielding a valid comma-
+    ## separated list of mappings.
+    def resultLines = (mapping in result ->
+        <> ",\n    \%q(get_key(mapping)): \%q(get_value(mapping))"
+    );
 
-def resultText = cat(resultLines*)[2..];
+    def resultText = cat(resultLines*)[2..];
 
-def outText = "\
-    ## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
-    ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
-    ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
-    ##
-    ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
-    ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
-    ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
-    ##
-    ## This file was generated with the buildEntityMap program, using the
-    ## file entity-map.txt as input. Rerun that program should the contents
-    ## of this file need to be updated.
+    def outText = "\
+        ## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+        ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+        ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+        ##
+        ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+        ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+        ## GENERATED FILE. DO NOT MODIFY DIRECTLY.
+        ##
+        ## This file was generated with the buildEntityMap program, using the
+        ## file entity-map.txt as input. Rerun that program should the contents
+        ## of this file need to be updated.
 
-    ## Documented in spec.
-    def ENTITY_MAP = {
-    \(resultText)
-    };
+        ## Documented in spec.
+        export def ENTITY_MAP = {
+        \(resultText)
+        }
+        ";
 
-    <> { ENTITY_MAP }
-    ";
-
-$Io0::writeFileUtf8(outPath, outText);
-
-<> 0
+    $Io0::writeFileUtf8(outPath, outText);
+}
