@@ -38,6 +38,7 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withExport         = $Lang0Node::withExport;
 def withFormals        = $Lang0Node::withFormals;
 def withSimpleDefs     = $Lang0Node::withSimpleDefs;
 def withTop            = $Lang0Node::withTop;
@@ -517,6 +518,14 @@ def parExportableStatement = $Peg::makeMainChoice(
 ## Documented in spec.
 def parStatement = $Peg::makeMainChoice(
     parExportableStatement, parGenericBind, parVarDefMutable, parExpression);
+
+## Documented in spec.
+def parProgramStatement = $Peg::makeMainChoice(
+    parStatement,
+    $Peg::makeMainSequence(
+        $Peg::makeToken(@@export),
+        parExportableStatement,
+        $Peg::makeCode { ., stat <> withExport(stat, get_name(stat)) }));
 
 ## Documented in spec.
 def parClosureBody = $Peg::makeMainSequence(

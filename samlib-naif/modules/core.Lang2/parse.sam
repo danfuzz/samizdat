@@ -43,6 +43,7 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withExport         = $Lang0Node::withExport;
 def withFormals        = $Lang0Node::withFormals;
 def withSimpleDefs     = $Lang0Node::withSimpleDefs;
 def withTop            = $Lang0Node::withTop;
@@ -670,6 +671,16 @@ def parExportableStatement = {:
 ## all the `export`able statements and a few additional forms.
 def parStatement = {:
     parExportableStatement | parGenericBind | parVarDefMutable | parExpression
+:};
+
+## Parses a program statement form (including both regular and `export`
+## statements).
+def parProgramStatement = {:
+    parStatement
+|
+    @"export"
+    stat = parExportableStatement
+    { <> withExport(stat, get_name(stat)) }
 :};
 
 ##

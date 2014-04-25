@@ -905,6 +905,19 @@ DEF_PARSE(statement) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(programStatement) {
+    MARK();
+
+    zvalue result = PARSE(statement);
+    if (result != NULL) { return result; }
+
+    MATCH_OR_REJECT(export);
+    result = PARSE_OR_REJECT(exportableStatement);
+
+    return withExport(result);
+}
+
+/* Documented in spec. */
 DEF_PARSE(closureBody) {
     zvalue statements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
