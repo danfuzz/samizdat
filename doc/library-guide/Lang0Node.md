@@ -213,8 +213,12 @@ with `formals` (re)bound as given.
 #### `withSimpleDefs(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
-with any complex `varDef` nodes (i.e. ones with a `top` binding) transformed
-as implied by the extra bindings.
+with any complex `varDef` nodes (i.e. ones with `export` or `top` bindings)
+transformed as implied by the extra bindings.
+
+**Note:** It is invalid for a `closure` with a `yield` to have any `export`
+bindings in its `statements`. Attempting to transform such a node results
+in a fatal error.
 
 #### `withTop(node) <> node`
 
