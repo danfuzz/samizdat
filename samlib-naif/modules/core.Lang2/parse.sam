@@ -1547,10 +1547,10 @@ def parParenTestClause = {:
 def parParenTestClauseList = {:
     @"("
     first = parTestClause
-    more = (@"," parTestClause)*
+    rest = (@"," parTestClause)*
     @")"
 
-    { <> [first, more*] }
+    { <> [first, rest*] }
 :};
 
 ## Parses a clause in a logical-and expression. This is just like
