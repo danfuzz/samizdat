@@ -23,22 +23,16 @@ def neg = $Number::neg;
 ## Exported Definitions
 ##
 
+## Re-exported from proto.
+export and;
+export bit;
+export bitSize;
+export not;
+export or;
+export shl;
+export xor;
+
 ## Documented in spec.
-fn shr(bitwise, n) {
+export fn shr(bitwise, n) {
     <> shl(bitwise, neg(n))
-};
-
-
-<> {
-    ## Re-exported from proto.
-    and,
-    bit,
-    bitSize,
-    not,
-    or,
-    shl,
-    xor,
-
-    ## Defined here.
-    shr
 }
