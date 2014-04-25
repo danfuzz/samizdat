@@ -220,11 +220,12 @@ with `formals` (re)bound as given.
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any complex `varDef` nodes (i.e. ones with `export` or `top` bindings)
-transformed as implied by the extra bindings.
+transformed as implied by the extra bindings, and with `export` nodes
+similarly transformed away.
 
 **Note:** It is invalid for a `closure` with a `yield` to have any `export`
-bindings in its `statements`. Attempting to transform such a node results
-in a fatal error.
+nodes or bindings in its `statements`. Attempting to transform such a node
+results in a fatal error.
 
 #### `withTop(node) <> node`
 
