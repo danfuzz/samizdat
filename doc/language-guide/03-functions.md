@@ -177,6 +177,9 @@ and blocks is that functions define the closure that a `return` statement
 will yield from. It is also valid to define an explicit yield variable,
 as with non-function closures. See "Yield Defintion" above.
 
+Similar to immutable variables, functions may be exported from a module
+by prefixing the definition with `export`.
+
 Examples:
 
 ```
@@ -194,8 +197,10 @@ fn fizmo(args+) { return args }
 ## `<out>` indicates a yield from `igram`. The function takes any number of
 ## arguments (including zero).
 fn igram(a*) { <out> -> ... <out> ... }
-```
 
+## The same as the previous, exported from its module.
+export fn igram(a*) { <out> -> ... <out> ... }
+```
 
 ### Blocks
 
@@ -308,6 +313,10 @@ continues as follows:
   them. What matters are the minimum and maximum number of arguments
   allowed by the formals.
 
+As with regular function definitions, a generic function definition may
+be preceded by `export` to cause it to be exported from the module in which
+it is defined.
+
 Examples:
 
 ```
@@ -320,6 +329,9 @@ fn .fizmo(a, b, x?, y?);
 ## A unitype generic which takes any number of arguments in addition to
 ## the target.
 fn *.igram(.*);
+
+## The same as the previous, exported from its module.
+export fn *.igram(.*);
 ```
 
 #### Binding generic functions
