@@ -183,7 +183,7 @@ fn runBinary(filePath, args) {
 ##
 
 ## Documented in spec.
-fn parseArgs(args) {
+export fn parseArgs(args) {
     ## Make a unified string with each argument "\0"-terminated.
     def argString = "\[ arg in args <> [arg, "\0"] ]";
 
@@ -192,7 +192,7 @@ fn parseArgs(args) {
 };
 
 ## Documented in spec.
-fn runCommandLine(rawArgs*) {
+export fn runCommandLine(rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
@@ -214,8 +214,3 @@ fn runCommandLine(rawArgs*) {
 
     <> runFile(langLayer, filePath, args)
 };
-
-<> {
-    parseArgs,
-    runCommandLine
-}
