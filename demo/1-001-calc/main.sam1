@@ -179,13 +179,10 @@ def evalExpressions = {:
 ## Main Definition
 ##
 
-fn main(args*) {
+export fn main(selfPath, origArgs*) {
+    def args = ifValueOr { <> ne(origArgs, []) } { <> ["100+7*2-(8000/-10)"] };
     def argFilter = $Generator::makeFilterGenerator(args)
         { arg <> cat(arg, "\n") };
     def exprString = cat(argFilter*);
     $Peg::apply(evalExpressions, exprString);
 };
-
-def args = ifValueOr { <> ne(ARGUMENTS, []) } { <> ["100+7*2-(8000/-10)"] };
-
-<> main(args*)

@@ -4,12 +4,9 @@
 
 def $Substuff = intraLoad("Substuff");
 
-fn stuffFunc() {
+export fn stuffFunc() {
     <> "Funky stuff."
 };
 
-<> {
-    STUFF:    "stuff",
-    SUBSTUFF: $Substuff::SUBSTUFF,
-    stuffFunc
-}
+export def STUFF = "stuff";
+export def SUBSTUFF = $Substuff::SUBSTUFF;

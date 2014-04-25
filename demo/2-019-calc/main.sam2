@@ -173,10 +173,8 @@ def evalExpressions = {:
 ## Main Definition
 ##
 
-fn main(args*) {
+export fn main(selfPath, origArgs*) {
+    def args = (origArgs != []) | ["100+7*2-(8000/-10)"];
     def exprString = cat((arg in args <> "\(arg)\n")*);
     $Peg::apply(evalExpressions, exprString);
 };
-
-def args = (ARGUMENTS != []) | ["100+7*2-(8000/-10)"];
-<> main(args*)
