@@ -912,8 +912,11 @@ DEF_PARSE(programStatement) {
     if (result != NULL) { return result; }
 
     MATCH_OR_REJECT(export);
-    result = PARSE_OR_REJECT(exportableStatement);
 
+    result = PARSE(name);
+    if (result != NULL) { return makeExport(result); }
+
+    result = PARSE_OR_REJECT(exportableStatement);
     return withExport(result);
 }
 

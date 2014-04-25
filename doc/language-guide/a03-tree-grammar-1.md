@@ -36,6 +36,7 @@ def makeApply          = $Lang0Node::makeApply;
 def makeCall           = $Lang0Node::makeCall;
 def makeCallOrApply    = $Lang0Node::makeCallOrApply;
 def makeCallThunks     = $Lang0Node::makeCallThunks;
+def makeExport         = $Lang0Node::makeExport;
 def makeGet            = $Lang0Node::makeGet;
 def makeInterpolate    = $Lang0Node::makeInterpolate;
 def makeJump           = $Lang0Node::makeJump;
@@ -680,8 +681,13 @@ def parProgramStatement = {:
     parStatement
 |
     @"export"
-    stat = parExportableStatement
-    { <> withExport(stat, get_name(stat)) }
+    (
+        name = parName
+        { <> makeExport(name) }
+    |
+        stat = parExportableStatement
+        { <> withExport(stat, get_name(stat)) }
+    )
 :};
 
 ##
