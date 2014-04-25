@@ -6,12 +6,17 @@
 def $Generator = moduleLoad(["core", "Generator"]);
 
 def $constructors1 = intraLoad("constructors1");
-def makeApply = $constructors1::makeApply;
-def makeCall  = $constructors1::makeCall;
-def makeThunk = $constructors1::makeThunk;
+def makeApply   = $constructors1::makeApply;
+def makeCall    = $constructors1::makeCall;
+def makeThunk   = $constructors1::makeThunk;
+def makeVarBind = $constructors1::makeVarBind;
+def makeVarDef  = $constructors1::makeVarDef;
 
 def $getters = intraLoad("getters");
 def get_interpolate = $getters::get_interpolate;
+def get_name        = $getters::get_name;
+def get_nodeValue   = $getters::get_nodeValue;
+def get_statements  = $getters::get_statements;
 
 def REFS = intraLoad("refs")::REFS;
 
@@ -94,9 +99,37 @@ fn makeOptValue(node) {
     <> makeCall(REFS::optValue, makeThunk(node))
 };
 
+## Documented in spec.
+fn withSimpleDefs(node) {
+    def rawStatements = get_statements(node);
+    def tops = $Generator::filterAll(rawStatements)
+        { s ->
+            <> ifIs { <> hasType(s, @@varDef) }
+                {
+                    <> ifIs { <> s::top }
+                        { <> makeVarDef(get_name(s)) }
+                }
+        };
+    def mains = $Generator::filterAll(rawStatements)
+        { <out> s ->
+            ifIs { <> hasType(s, @@varDef) }
+                {
+                    ifIs { <> s::top }
+                        { <out> makeVarBind(get_name(s), get_nodeValue(s)) }
+                };
+            <> s
+        };
+
+    <> @(get_typeName(node)){
+        dataOf(node)*,
+        statements: [tops*, mains*]
+    }
+};
+
 <> {
     makeCallOrApply,
     makeGet,
     makeInterpolate,
-    makeOptValue
+    makeOptValue,
+    withSimpleDefs
 }

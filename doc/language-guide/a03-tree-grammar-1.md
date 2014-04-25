@@ -48,6 +48,8 @@ def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
 def withFormals        = $Lang0Node::withFormals;
+def withSimpleDefs     = $Lang0Node::withSimpleDefs;
+def withTop            = $Lang0Node::withTop;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 
@@ -130,6 +132,12 @@ def parParenExpression = {:
 def parName = {:
     nameIdent = @identifier
     { <> dataOf(nameIdent) }
+:};
+
+## Parses a variable reference.
+def parVarRef = {:
+    name = parName
+    { <> makeVarRefLvalue(name) }
 :};
 
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,
@@ -292,12 +300,6 @@ def parDeriv = {:
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCall(REFS::makeValue, type, value*) }
-:};
-
-## Parses a variable reference.
-def parVarRef = {:
-    name = parName
-    { <> makeVarRefLvalue(name) }
 :};
 
 ## Parses a closure, but with a lookahead to make it less likely we'll
@@ -596,22 +598,14 @@ def parFunctionCommon = {:
 :};
 
 ## Parses a `fn` definition statement. This wraps a `@closure` result of
-## `parFunctionCommon` in a `@topDeclaration`.
-##
-## **Note:** `@topDeclaration` nodes are split apart in the `parClosureBody`
-## rule.
+## `parFunctionCommon` in a top-declaring `@varDef`.
 def parFunctionDef = {:
     @fn
     closure = parFunctionCommon
 
-    {
-        def name = get_name(closure);
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, closure)
-        }
-    }
+    { <> withTop(makeVarDef(get_name(closure), closure)) }
 :};
+
 
 ## Parses a generic function binding. This wraps a `@closure` result of
 ## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
@@ -637,7 +631,9 @@ def parGenericBind = {:
 ## ```
 ## =>
 ## ```
-## def name = makeRegularGeneric("name", 2, 2);
+## def name;  ## At top of closure
+## ...
+## name := makeRegularGeneric("name", 2, 2);
 ## ```
 ##
 ## with different numbers depending on the shape of the arguments, and with
@@ -662,11 +658,7 @@ def parGenericDef = {:
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals)));
 
-        ## See `parFunction` above about `@topDeclaration`.
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, call)
-        }
+        <> withTop(makeVarDef(name, call))
     }
 :};
 
@@ -707,21 +699,7 @@ def parClosureBody = {:
 
     @";"*
 
-    {
-        def rawStatements = [most*, last::statements*];
-        def tops = $Generator::filterAll(rawStatements)
-            { s ->
-                <> ifIs { <> hasType(s, @@topDeclaration) }
-                    { <> s::top }
-            };
-        def mains = $Generator::filterAll(rawStatements)
-            { s ->
-                <> ifIs { <> hasType(s, @@topDeclaration) }
-                    { <> s::main }
-                    { <> s }
-            };
-        <> {last*, statements: [tops*, mains*]}
-    }
+    { <> {last*, statements: [most*, last::statements*]} }
 :};
 
 ## Parses a closure (in-line anonymous function, with no extra bindings).
@@ -730,13 +708,19 @@ parClosure := {:
     decls = parClosureDeclarations
     body = parClosureBody
     @"}"
-    { <> @closure{decls*, body*} }
+    {
+        def closure = @closure{decls*, body*};
+        <> withSimpleDefs(closure)
+    }
 :};
 
 ## Parses a program (top-level program or contents inside function braces).
 def parProgram = {:
     body = parClosureBody
-    { <> @closure{formals: [], body*} }
+    {
+        def closure = @closure{formals: [], body*};
+        <> withSimpleDefs(closure)
+    }
 :};
 
 ##

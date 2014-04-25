@@ -204,6 +204,17 @@ is bound to a one-argument function which takes a node and produces a
 Makes a node just like the given one (presumably a `closure` node), except
 with `formals` (re)bound as given.
 
+#### `withSimpleDefs(node) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with any complex `varDef` nodes (i.e. ones with a `top` binding) transformed
+as implied by the extra bindings.
+
+#### `withTop(node) <> node`
+
+Makes a node just like the given one (presumably a `varDef` node), except
+with the addition of a `top: true` binding.
+
 #### `withoutIntermediates(node) <> node`
 
 Makes a node just like the given one, except without any "intermediate"

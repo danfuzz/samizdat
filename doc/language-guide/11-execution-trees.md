@@ -230,12 +230,15 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDef` &mdash; `@varDef{name: name, value: expression}`
+#### `varDef` &mdash; `@varDef{name: name, value: expression, (top: true)?}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 
 * `value: expression` (optional) &mdash; Expression node representing the
   value that the variable should take on when defined.
+
+* `top: true` (optional) &mdash; If present, indicates that this definition
+  should be promoted to the top of the closure in which it appears.
 
 This represents an immutable variable definition statement as part of a
 closure body. Nodes of this type are valid within the `statements` list of
@@ -255,6 +258,11 @@ behavior varies depending on if `value` is supplied in this node:
 * With `value` supplied, said `value` is evaluated. If it evaluates to void,
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
   value becomes the permanently-bound value of the variable.
+
+The `top` binding, if present, has no effect at runtime. Instead, this is
+intended to be used as part of a pre-execution or pre-compliation
+transformation, used to produce a new `statements` list that incorporates
+the implied declaration.
 
 #### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
 

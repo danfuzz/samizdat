@@ -14,11 +14,14 @@
 #include "type/Value.h"
 
 /**
- * Makes a 0-4 mapping map. Values are allowed to be `NULL`, in
- * which case the corresponding key isn't included in the result.
+ * Makes a 0-1 mapping map.
  */
-zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
-        zvalue k3, zvalue v3, zvalue k4, zvalue v4);
+zvalue mapFrom1(zvalue k1, zvalue v1);
+
+/**
+ * Makes a 0-2 mapping map.
+ */
+zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2);
 
 /**
  * Makes a 0-3 mapping map.
@@ -27,14 +30,11 @@ zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3);
 
 /**
- * Makes a 0-2 mapping map.
+ * Makes a 0-4 mapping map. Values are allowed to be `NULL`, in
+ * which case the corresponding key isn't included in the result.
  */
-zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2);
-
-/**
- * Makes a 0-1 mapping map.
- */
-zvalue mapFrom1(zvalue k1, zvalue v1);
+zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3, zvalue k4, zvalue v4);
 
 /**
  * Makes a 1 element list.
@@ -109,6 +109,12 @@ zvalue makeOptValue(zvalue expression);
 
 /* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals);
+
+/* Documented in spec. */
+zvalue withSimpleDefs(zvalue node);
+
+/* Documented in spec. */
+zvalue withTop(zvalue node);
 
 /* Documented in spec. */
 zvalue withoutInterpolate(zvalue node);

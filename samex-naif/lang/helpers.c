@@ -9,6 +9,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/Type.h"
 
 #include "helpers.h"
 
@@ -17,6 +18,23 @@
  * Node constructors and related helpers
  */
 
+/* Documented in header. */
+zvalue mapFrom1(zvalue k1, zvalue v1) {
+    return mapFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+}
+
+/* Documented in header. */
+zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return mapFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+}
+
+/* Documented in header. */
+zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3) {
+    return mapFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
+}
+
+/* Documented in header. */
 zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
     zmapping elems[4];
@@ -28,22 +46,6 @@ zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
     if (v4 != NULL) { elems[at].key = k4; elems[at].value = v4; at++; }
 
     return (at == 0) ? EMPTY_MAP : mapFromArray(at, elems);
-}
-
-/* Documented in header. */
-zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
-        zvalue k3, zvalue v3) {
-    return mapFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
-}
-
-/* Documented in header. */
-zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return mapFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
-}
-
-/* Documented in header. */
-zvalue mapFrom1(zvalue k1, zvalue v1) {
-    return mapFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /* Documented in header. */
@@ -246,6 +248,42 @@ zvalue withFormals(zvalue node, zvalue formals) {
     return makeValue(
         get_type(node),
         collPut(dataOf(node), STR_formals, formals),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue withSimpleDefs(zvalue node) {
+    zvalue rawStatements = get(node, STR_statements);
+    zint size = get_size(rawStatements);
+    zvalue tops = EMPTY_LIST;
+    zvalue mains = EMPTY_LIST;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = nth(rawStatements, i);
+        if (hasType(one, TYPE_varDef) && (get(one, STR_top) != NULL)) {
+            zvalue name = get(one, STR_name);
+            zvalue value = get(one, STR_value);
+            tops = listAppend(tops, makeVarDef(name, NULL));
+            mains = listAppend(mains, makeVarBind(name, value));
+        } else {
+            mains = listAppend(mains, one);
+        }
+    }
+
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_statements, GFN_CALL(cat, tops, mains)),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue withTop(zvalue node) {
+    // Contrary to the spec, we bind to `EMPTY_LIST` and not `true`, because
+    // (a) the actual value doesn't matter, and (b) `true` isn't available
+    // in a straightforward way.
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_top, EMPTY_LIST),
         NULL);
 }
 

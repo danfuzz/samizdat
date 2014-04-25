@@ -39,6 +39,8 @@ def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
 def withFormals        = $Lang0Node::withFormals;
+def withSimpleDefs     = $Lang0Node::withSimpleDefs;
+def withTop            = $Lang0Node::withTop;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 def tokenize = intraLoad("tokenize")::tokenize;
@@ -103,6 +105,11 @@ def parParenExpression = $Peg::makeMainSequence(
 def parName =  $Peg::makeMainSequence(
     $Peg::makeToken(@@identifier),
     $Peg::makeCode { nameIdent <> dataOf(nameIdent) });
+
+## Documented in spec.
+def parVarRef = $Peg::makeMainSequence(
+    parName,
+    $Peg::makeCode { name <> makeVarRefLvalue(name) });
 
 ## Documented in spec.
 def parInt = $Peg::makeMainChoice(
@@ -243,11 +250,6 @@ def parDeriv = $Peg::makeMainSequence(
     $Peg::makeCode { ., type, value ->
         <> makeCall(REFS::makeValue, type, value*)
     });
-
-## Documented in spec.
-def parVarRef = $Peg::makeMainSequence(
-    parName,
-    $Peg::makeCode { name <> makeVarRefLvalue(name) });
 
 ## Documented in spec.
 def parClosureWithLookahead = $Peg::makeMainSequence(
@@ -469,11 +471,7 @@ def parFunctionDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@fn),
     parFunctionCommon,
     $Peg::makeCode { ., closure ->
-        def name = get_name(closure);
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, closure)
-        }
+        <> withTop(makeVarDef(get_name(closure), closure))
     });
 
 ## Documented in spec.
@@ -509,11 +507,7 @@ def parGenericDef = $Peg::makeMainSequence(
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals)));
 
-        ## See `parFunction` above about `@topDeclaration`.
-        <> @topDeclaration{
-            top:  makeVarDef(name),
-            main: makeVarBind(name, call)
-        }
+        <> withTop(makeVarDef(name, call))
     });
 
 ## Documented in spec.
@@ -542,19 +536,7 @@ def parClosureBody = $Peg::makeMainSequence(
         $Peg::makeResult({statements: []})),
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeCode { ., most, last, . ->
-        def rawStatements = [most*, last::statements*];
-        def tops = $Generator::filterAll(rawStatements)
-            { s ->
-                <> ifIs { <> hasType(s, @@topDeclaration) }
-                    { <> s::top }
-            };
-        def mains = $Generator::filterAll(rawStatements)
-            { s ->
-                <> ifIs { <> hasType(s, @@topDeclaration) }
-                    { <> s::main }
-                    { <> s }
-            };
-        <> {last*, statements: [tops*, mains*]}
+        <> {last*, statements: [most*, last::statements*]}
     });
 
 ## Documented in spec.
@@ -563,12 +545,18 @@ parClosure := $Peg::makeMainSequence(
     parClosureDeclarations,
     parClosureBody,
     $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., decls, body, . <> @closure{decls*, body*} });
+    $Peg::makeCode { ., decls, body, . ->
+        def closure = @closure{decls*, body*};
+        <> withSimpleDefs(closure)
+    });
 
 ## Documented in spec.
 def parProgram = $Peg::makeMainSequence(
     parClosureBody,
-    $Peg::makeCode { body <> @closure{formals: [], body*} });
+    $Peg::makeCode { body ->
+        def closure = @closure{formals: [], body*};
+        <> withSimpleDefs(closure)
+    });
 
 ## Documented in spec.
 def parExpressionOrError = $Peg::makeMainSequence(
