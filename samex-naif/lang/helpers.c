@@ -10,6 +10,7 @@
 #include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/Type.h"
+#include "util.h"
 
 #include "helpers.h"
 
@@ -152,7 +153,7 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 
     for (zint i = 0; i < sz; i++) {
         zvalue one = nth(actuals, i);
-        zvalue node = GET(interpolate, one);
+        zvalue node = get(one, STR_interpolate);
         if (node != NULL) {
             addPendingToCooked();
             addToCooked(makeCall(REFS(collect), listFrom1(node)));
@@ -267,11 +268,22 @@ zvalue withSimpleDefs(zvalue node) {
     zint size = get_size(rawStatements);
     zvalue tops = EMPTY_LIST;
     zvalue mains = EMPTY_LIST;
+    zvalue exports = EMPTY_LIST;
 
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(rawStatements, i);
-        if (hasType(one, TYPE_varDef) && (get(one, STR_top) != NULL)) {
-            zvalue name = get(one, STR_name);
+        zvalue exName = get(one, STR_export);
+        zvalue name = get(one, STR_name);
+        bool isVarDef = hasType(one, TYPE_varDef);
+
+        if (isVarDef && (exName != NULL)) {
+            exports = listAppend(
+                exports,
+                makeCall(makeVarRef(STR_makeValueMap),
+                    listFrom2(makeLiteral(exName), makeVarRef(name))));
+        }
+
+        if (isVarDef && (get(one, STR_top) != NULL)) {
             zvalue value = get(one, STR_value);
             tops = listAppend(tops, makeVarDef(name, NULL));
             mains = listAppend(mains, makeVarBind(name, value));
@@ -280,9 +292,21 @@ zvalue withSimpleDefs(zvalue node) {
         }
     }
 
+    zvalue yield = get(node, STR_yield);
+    if (get_size(exports) != 0) {
+        if (yield != NULL) {
+            die("Cannot mix `export` and `yield`.");
+        }
+        yield = makeCall(makeVarRef(STR_cat), exports);
+    }
+
     return makeValue(
         get_type(node),
-        collPut(dataOf(node), STR_statements, GFN_CALL(cat, tops, mains)),
+        GFN_CALL(cat,
+            dataOf(node),
+            mapFrom2(
+                STR_statements, GFN_CALL(cat, tops, mains),
+                STR_yield,      yield)),
         NULL);
 }
 
