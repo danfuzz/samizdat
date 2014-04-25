@@ -33,6 +33,12 @@ fn makeCallThunks(function, actuals*) {
 };
 
 ## Documented in spec.
+fn makeExport(name, optExport?) {
+    def exp = ifValueOr { <> optExport* } { <> name };
+    <> @export{name, export: exp}
+};
+
+## Documented in spec.
 fn makeJump(function, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @jump{function, value} }
@@ -105,6 +111,7 @@ fn withoutIntermediates(node) {
     makeCall,
     makeCallLiterals,
     makeCallThunks,
+    makeExport,
     makeJump,
     makeLiteral,
     makeThunk,

@@ -182,6 +182,16 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 }
 
 /* Documented in spec. */
+zvalue makeExport(zvalue name) {
+    // Contrary to the spec, we don't take an optional second argument.
+    return makeValue(TYPE_export,
+        mapFrom2(
+            STR_export, name,
+            STR_name,   name),
+        NULL);
+}
+
+/* Documented in spec. */
 zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_call,
         mapFrom3(
@@ -276,7 +286,7 @@ zvalue withSimpleDefs(zvalue node) {
         zvalue name = get(one, STR_name);
         bool isVarDef = hasType(one, TYPE_varDef);
 
-        if (isVarDef && (exName != NULL)) {
+        if ((isVarDef || hasType(one, TYPE_export)) && (exName != NULL)) {
             exports = listAppend(
                 exports,
                 makeCall(makeVarRef(STR_makeValueMap),

@@ -198,6 +198,22 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
+#### `export` &mdash; `@export{name: name, export: name}`
+
+* `name: name` &mdash; Variable name to export (typically a string).
+
+* `export: name` &mdash; Name to export the variable as (typically a string).
+
+Nodes of this type are valid in the `statements` list of a closure that
+defines a module, indicating that a particular variable is to be exported
+from the module.
+
+These nodes are not directly executable. Instead, these are intended to be
+used as part of a pre-execution or pre-compliation transformation, used to
+produce a modified `closure` (with an altered `statements` list, and so on)
+that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
+for more details.
+
 #### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
 
 * `name: name` (optional) &mdash; an arbitrary value (but typically a string),
@@ -264,10 +280,8 @@ behavior varies depending on if `value` is supplied in this node:
   value becomes the permanently-bound value of the variable.
 
 The `export` and `top` bindings, if present, have no effect at runtime.
-Instead, these are intended to be used as part of a pre-execution or
-pre-compliation transformation, used to produce a modified `closure` (with
-an altered `statements` list, and so on) that incorporates the implied
-declaration(s).
+Instead, these are expected to be treated similarly to `export` nodes
+(see above).
 
 #### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
 

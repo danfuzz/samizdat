@@ -146,6 +146,12 @@ arguments.
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
+#### `makeExport(name, optExport?) <> node`
+
+Makes an `export` node to export the variable with the given name `name`.
+If given, the `optExport*` is used for the export binding name. If not given,
+`name` is also used as the export binding name.
+
 #### `makeGet(collArg, keyArg) <> node`
 
 Makes a collection access (`get`) expression. This is a `call` node
@@ -199,10 +205,10 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
-#### `withExport(node, optName?) <> node`
+#### `withExport(node, optExport?) <> node`
 
 Makes a node just like the given one (presumably a `varDef` node), except
-with the addition of an `export` binding. If given, the `optName*` is used
+with the addition of an `export` binding. If given, the `optExport*` is used
 for the binding. If not given, `node`'s pre-existing `name` is used.
 
 #### `withFormals(node, [formal*]) <> node`

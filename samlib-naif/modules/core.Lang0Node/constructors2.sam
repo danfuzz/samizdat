@@ -103,9 +103,9 @@ fn makeOptValue(node) {
 };
 
 ## Documented in spec.
-fn withExport(node, optName?) {
-    def name = ifValueOr { <> optName* } { <> get_name(node) };
-    <> @(get_typeName(node)){dataOf(node)*, export: name}
+fn withExport(node, optExport?) {
+    def exp = ifValueOr { <> optExport* } { <> get_name(node) };
+    <> @(get_typeName(node)){dataOf(node)*, export: exp}
 };
 
 ## Documented in spec.
@@ -126,18 +126,22 @@ fn withSimpleDefs(node) {
                 ifIs { <> s::top }
                     { <out> makeVarBind(get_name(s), get_nodeValue(s)) }
             };
-        <> s
+        <> ifNot { <> hasType(s, @@export) }
+            { <> s }
     };
 
-    def exports = $Generator::filterAll(rawStatements) { s ->
-        <> ifIs { <> hasType(s, @@varDef) }
+    def exports = $Generator::filterAll(rawStatements) { <out> s ->
+        ifNot { <> hasType(s, @@varDef) }
             {
-                <> ifValue { <> s::export }
-                    { exp ->
-                        <> makeCall(REFS::makeValueMap,
-                            makeLiteral(exp), makeVarRef(s::name))
-                    }
-            }
+                ifNot { <> hasType(s, @@export) }
+                    { <out> }
+            };
+
+            <> ifValue { <> s::export }
+                { exp ->
+                    <> makeCall(REFS::makeValueMap,
+                        makeLiteral(exp), makeVarRef(s::name))
+                }
     };
 
     def optYield = ifIs { <> eq(exports, []) }
