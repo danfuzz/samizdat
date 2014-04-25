@@ -114,10 +114,6 @@ fn makeGlobals(filePath, args) {
         ## The standard global environment.
         $Globals::fullEnvironment()*,
 
-        ## Special bindings for individual scripts.
-        ARGUMENTS: args,
-        SELF_PATH: filePath,
-
         ## Use the system module loader.
         moduleLoad
     }

@@ -48,20 +48,15 @@ This loads the indicated file or directory, as implied by its recognized
 suffix (or lack thereof), and runs it. This function returns whatever
 was returned by the run (including void).
 
-If the ultimate thing-to-run is a plain file (and not a module), then it
-gets evaluated with the following additional variables in its global
-environment:
-
-* `ARGUMENTS` &mdash; The list of string arguments that were passed to this
-  function as the "additional arguments" (beyond the ones understood directly
-  by this function).
-
-* `SELF_PATH` &mdash; The filesystem path to the file being run.
-
 If the ultimate thing-to-run is a module, then its `main` binding is called
-as a function, passing it two arguments, the path to the module, followed by
-the "additional arguments" (beyond the ones understood directly by this
-function).
+as a function, passing it one or more arguments: first the path to the module,
+followed by the "additional arguments" (beyond the ones understood directly by
+this function).
+
+If the ultimate thing-to-run is a plain file (and not a module), then it
+gets evaluated similarly to a module. If it exports a `main`, then that is
+run in the same manner. If it does not export a main, then after evaluation
+this function simply returns void.
 
 Currently recognized command-line options:
 
