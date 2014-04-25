@@ -280,10 +280,6 @@ fn @@varRef.convertPexIn() {
 ##
 
 ## Documented in spec.
-fn convertToLang0(expressionNode) {
+export fn convertToLang0(expressionNode) {
     <> convertPexIn(expressionNode);
 };
-
-<> {
-    convertToLang0
-}

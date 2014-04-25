@@ -134,7 +134,7 @@ fn @@varRef.safeIndex(base) {
 
 ## Makes a variable name by combining `base` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
-fn makeVarName(base, index) {
+export fn makeVarName(base, index) {
     <> ifIs { <> eq(index, -1) }
         { <> base }
         { <> cat(base, $Format::int(index)) }
@@ -142,21 +142,15 @@ fn makeVarName(base, index) {
 
 ## Returns an unused variable name within `node`, either the given `base` or
 ## `base` suffixed with an unsigned int.
-fn safeVarName(base, node) {
+export fn safeVarName(base, node) {
     <> makeVarName(base, safeIndex(node, base))
 };
 
 ## Returns a safe index to be used within `node` to suffix the given `base`
 ## variable name. Returns `-1` if `base` itself is unused. Any index at or
 ## after the return value is safe to use.
-fn safeVarIndex(base, node) {
+export fn safeVarIndex(base, node) {
     ## In addition to having the opposite argument order, this keeps the
     ## generic function `safeIndex` private to this file.
     <> safeIndex(node, base)
 };
-
-<> {
-    makeVarName,
-    safeVarName,
-    safeVarIndex
-}

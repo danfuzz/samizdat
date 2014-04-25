@@ -29,7 +29,7 @@ def REFS = intraLoad("refs")::REFS;
 ##
 
 ## Documented in spec.
-fn makeCallOrApply(function, actuals*) {
+export fn makeCallOrApply(function, actuals*) {
     ifIs { <> perEq(actuals, []) }
         {
             ## No actuals. Easy out.
@@ -88,28 +88,28 @@ fn makeCallOrApply(function, actuals*) {
 };
 
 ## Documented in spec.
-fn makeGet(collArg, keyArg) {
+export fn makeGet(collArg, keyArg) {
     <> makeCall(REFS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
-fn makeInterpolate(node) {
+export fn makeInterpolate(node) {
     <> @call{function: REFS::interpolate, actuals: [node], interpolate: node}
 };
 
 ## Documented in spec.
-fn makeOptValue(node) {
+export fn makeOptValue(node) {
     <> makeCall(REFS::optValue, makeThunk(node))
 };
 
 ## Documented in spec.
-fn withExport(node, optExport?) {
+export fn withExport(node, optExport?) {
     def exp = ifValueOr { <> optExport* } { <> get_name(node) };
     <> @(get_typeName(node)){dataOf(node)*, export: exp}
 };
 
 ## Documented in spec.
-fn withSimpleDefs(node) {
+export fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
 
     def tops = $Generator::filterAll(rawStatements) { s ->
@@ -162,16 +162,6 @@ fn withSimpleDefs(node) {
 };
 
 ## Documented in spec.
-fn withTop(node) {
+export fn withTop(node) {
     <> @(get_typeName(node)){dataOf(node)*, top: true}
 };
-
-<> {
-    makeCallOrApply,
-    makeGet,
-    makeInterpolate,
-    makeOptValue,
-    withExport,
-    withSimpleDefs,
-    withTop
-}

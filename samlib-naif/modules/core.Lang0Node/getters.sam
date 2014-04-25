@@ -15,82 +15,66 @@ def formalsMinArgs = $formals::formalsMinArgs;
 ##
 
 ## Documented in spec.
-fn get_actuals(node) {
+export fn get_actuals(node) {
     <> node::actuals
 };
 
 ## Documented in spec.
-fn get_formals(node) {
+export fn get_formals(node) {
     <> node::formals
 };
 
 ## Documented in spec.
-fn get_function(node) {
+export fn get_function(node) {
     <> node::function
 };
 
 ## Documented in spec.
-fn get_id(node) {
+export fn get_id(node) {
     <> node::id
 };
 
 ## Documented in spec.
-fn get_interpolate(node) {
+export fn get_interpolate(node) {
     <> node::interpolate
 };
 
 ## Documented in spec.
-fn get_lvalue(node) {
+export fn get_lvalue(node) {
     <> node::lvalue
 };
 
 ## Documented in spec.
-fn get_maxArgs(node) {
+export fn get_maxArgs(node) {
     <> formalsMaxArgs(get_formals(node))
 };
 
 ## Documented in spec.
-fn get_minArgs(node) {
+export fn get_minArgs(node) {
     <> formalsMinArgs(get_formals(node))
 };
 
 ## Documented in spec.
-fn get_name(node) {
+export fn get_name(node) {
     <> node::name
 };
 
 ## Documented in spec.
-fn get_nodeValue(node) {
+export fn get_nodeValue(node) {
     <> node::value
 };
 
 ## Documented in spec.
-fn get_statements(node) {
+export fn get_statements(node) {
     <> node::statements
 };
 
 ## Documented in spec.
-fn get_yield(node) {
+export fn get_yield(node) {
     <> node::yield
 };
 
 ## Documented in spec.
-fn get_yieldDef(node) {
+export fn get_yieldDef(node) {
     <> node::yieldDef
 };
-
-<> {
-    get_actuals,
-    get_formals,
-    get_function,
-    get_id,
-    get_interpolate,
-    get_lvalue,
-    get_maxArgs,
-    get_minArgs,
-    get_name,
-    get_nodeValue,
-    get_statements,
-    get_yield,
-    get_yieldDef
-}

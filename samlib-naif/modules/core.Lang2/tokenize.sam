@@ -478,10 +478,6 @@ tokStringPart2 := {:
 ##
 
 ## Documented in spec.
-fn tokenize(programText) {
+export fn tokenize(programText) {
     <> $Peg::apply(tokFile, programText)
 };
-
-<> {
-    tokenize
-}

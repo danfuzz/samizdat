@@ -2204,7 +2204,7 @@ parExpression2 := {:
 ##
 
 ## Documented in spec.
-fn parseExpression(expression) {
+export fn parseExpression(expression) {
     def tokens = ifIs { <> hasType(expression, String) }
         { <> tokenize(expression) }
         { <> expression };
@@ -2213,15 +2213,10 @@ fn parseExpression(expression) {
 };
 
 ## Documented in spec.
-fn parseProgram(program) {
+export fn parseProgram(program) {
     def tokens = ifIs { <> hasType(program, String) }
         { <> tokenize(program) }
         { <> program };
 
     <> $Peg::apply(parProgramOrError, tokens)
 };
-
-<> {
-    parseExpression,
-    parseProgram
-}
