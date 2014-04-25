@@ -8,6 +8,7 @@ def $Generator = moduleLoad(["core", "Generator"]);
 def $constructors1 = intraLoad("constructors1");
 def makeApply   = $constructors1::makeApply;
 def makeCall    = $constructors1::makeCall;
+def makeLiteral = $constructors1::makeLiteral;
 def makeThunk   = $constructors1::makeThunk;
 def makeVarBind = $constructors1::makeVarBind;
 def makeVarDef  = $constructors1::makeVarDef;
@@ -103,7 +104,7 @@ fn makeOptValue(node) {
 
 ## Documented in spec.
 fn withExport(node, optName?) {
-    def name = ifValueOr { optName* } { get_name(node) };
+    def name = ifValueOr { <> optName* } { <> get_name(node) };
     <> @(get_typeName(node)){dataOf(node)*, export: name}
 };
 
