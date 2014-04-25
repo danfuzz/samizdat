@@ -45,7 +45,9 @@ TOK(Null,                "Null");
 TOK(break,               "break");
 TOK(continue,            "continue");
 TOK(def,                 "def");
+TOK(export,              "export");
 TOK(fn,                  "fn");
+TOK(import,              "import");
 TOK(return,              "return");
 TOK(var,                 "var");
 

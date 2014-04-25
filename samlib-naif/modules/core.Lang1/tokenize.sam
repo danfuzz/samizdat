@@ -24,7 +24,7 @@ def $Peg       = moduleLoad(["core", "Peg"]);
 ## tokenization syntax of identifiers.
 def KEYWORDS = $Generator::collectAsMap(
     $Generator::makeFilterGenerator([
-        "break", "continue", "def", "fn", "return", "var",
+        "break", "continue", "def", "export", "fn", "import", "return", "var",
         ## Layer 2 defines additional keywords here.
         []*])
         { name <> {(name): @(name)} });
