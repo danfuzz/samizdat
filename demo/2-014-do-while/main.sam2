@@ -42,5 +42,3 @@ def result2 = do <out> {
 } while (fetch(box) < 20);
 
 note("Result is \%q(result2).");
-
-<> 0

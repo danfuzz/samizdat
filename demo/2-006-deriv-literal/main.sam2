@@ -59,5 +59,3 @@ msg(@fn(100));
 note("\nLayer 2...");
 
 msg(@"\&mu;sec");
-
-<> 0

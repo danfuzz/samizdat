@@ -191,5 +191,3 @@ if (def x = returnVoid()) {
 } else if (def x = "fi", "stuff", def y = "zm", def z = "o") {
     note(cat(x, y, z))
 };
-
-<> 0

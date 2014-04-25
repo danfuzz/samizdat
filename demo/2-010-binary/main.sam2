@@ -182,5 +182,3 @@ msg(returnVoid() | returnVoid() | returnVoid() | 60);
 msg((returnVoid() | returnVoid())??);
 msg((returnVoid() | returnVoid() | returnVoid())??);
 msg((returnVoid() | returnVoid() | returnVoid() | returnVoid())??);
-
-<> 0

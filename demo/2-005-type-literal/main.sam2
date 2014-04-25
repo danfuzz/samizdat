@@ -49,5 +49,3 @@ msg(@@(cat("blo", "rt")));
 note("\nLayer 2...");
 
 msg(@@"\&mu;sec");
-
-<> 0

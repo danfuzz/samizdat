@@ -95,5 +95,3 @@ note($Format::source(namer(4)));
 note($Format::source(namer(5)));
 note($Format::source(namer(6)));
 note($Format::source(namer(7)));
-
-<> 0

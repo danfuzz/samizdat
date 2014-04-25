@@ -86,5 +86,3 @@ for (x in [1, 2, 3, 4, 5]) { <next> ->
     if (x \== 3) { <next> };
     print(x)
 };
-
-<> 0

@@ -49,5 +49,3 @@ print("\["a".."z"]");
 print("[\{}] [\%s{}] [\%q{}]");
 print("[\%Q(hasType(1, String))]");
 print("[\[]] [\%q[]]");
-
-<> 0
