@@ -1008,13 +1008,11 @@ DEF_PARSE(program) {
     }
 
     PARSE(optSemicolons);
-    zvalue yield = PARSE(yield);  // FIXME: Scaffolding.
 
     zvalue closure = makeValue(TYPE_closure,
-        mapFrom3(
+        mapFrom2(
             STR_formals,    EMPTY_LIST,
-            STR_statements, statements,
-            STR_yield,      yield),
+            STR_statements, statements),
         NULL);
     return withSimpleDefs(closure);
 }

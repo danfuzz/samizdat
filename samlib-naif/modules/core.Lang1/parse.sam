@@ -580,9 +580,8 @@ def parProgram = $Peg::makeMainSequence(
             $Peg::makeCode { ., first, rest <> [first, rest*] }),
         $Peg::makeResult([])),
     $Peg::makeStar($Peg::makeToken(@@";")),
-    $Peg::makeChoice(parYield, $Peg::makeResult({})),  ## FIXME: Scaffolding.
-    $Peg::makeCode { ., statements, ., optYield ->
-        def closure = @closure{optYield*, formals: [], statements};
+    $Peg::makeCode { ., statements, . ->
+        def closure = @closure{formals: [], statements};
         <> withSimpleDefs(closure)
     });
 

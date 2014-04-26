@@ -747,11 +747,8 @@ def parProgram = {:
 
     @";"*
 
-    ## FIXME: Remove this temporary scaffolding.
-    optYield = (parYield | { <> {} })
-
     {
-        def closure = @closure{optYield*, formals: [], statements};
+        def closure = @closure{formals: [], statements};
         <> withSimpleDefs(closure)
     }
 :};
