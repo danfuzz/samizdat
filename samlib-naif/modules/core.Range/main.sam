@@ -36,7 +36,7 @@ fn String.rangeAdd(increment) {
 ##
 
 ## Documented in spec.
-fn makeClosedRange(firstValue, size, optIncrement?) {
+export fn makeClosedRange(firstValue, size, optIncrement?) {
     def increment = ifValueOr { <> optIncrement* } { <> 1 };
 
     ifNot { <> hasType(size, Int) }
@@ -50,7 +50,7 @@ fn makeClosedRange(firstValue, size, optIncrement?) {
 };
 
 ## Documented in spec.
-fn makeExclusiveRange(firstValue, limit, optIncrement?) {
+export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ## `totalEq` ensures that `firstValue` and `limit` have the same type.
     ## `optValue({ <> x})` == `x?`.
     def isEmpty = optValue { <> totalEq(firstValue, limit) };
@@ -84,7 +84,7 @@ fn makeExclusiveRange(firstValue, limit, optIncrement?) {
 };
 
 ## Documented in spec.
-fn makeInclusiveRange(firstValue, limit, optIncrement?) {
+export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
     def increment = ifValueOr { <> optIncrement* } { <> 1 };
 
     ## This ensures that `firstValue` and `limit` have the same type.
@@ -137,7 +137,7 @@ fn @@ClosedRange.nextValue(box) {
 ##
 
 ## Documented in spec.
-fn makeOpenRange(firstValue, optIncrement?) {
+export fn makeOpenRange(firstValue, optIncrement?) {
     def increment = ifValueOr { <> optIncrement* } { <> 1 };
 
     <> @OpenRange{firstValue, increment}
@@ -157,15 +157,3 @@ fn @@OpenRange.nextValue(box) {
     store(box, firstValue);
     <> makeOpenRange(rangeAdd(firstValue, increment), increment)
 };
-
-
-##
-## Overall exports
-##
-
-<> {
-    makeClosedRange,
-    makeExclusiveRange,
-    makeInclusiveRange,
-    makeOpenRange
-}
