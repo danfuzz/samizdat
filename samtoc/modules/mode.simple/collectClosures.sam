@@ -99,7 +99,7 @@ fn @@varRef.bodies(bodiesBox) {
 ## Returns `{closures, node}`, where `closures` is a list of collected
 ## closures and `node` is a replacement for the original argument, in which
 ## `closure` nodes have been replaced by indexed closure references.
-fn collectClosures(node) {
+export fn collectClosures(node) {
     def bodiesBox = $Box::makeCell({});
     def newNode = bodies(node, bodiesBox);
     def bodiesMap = fetch(bodiesBox);
@@ -113,5 +113,3 @@ fn collectClosures(node) {
 
     <> { closures, node: newNode }
 };
-
-<> {collectClosures}

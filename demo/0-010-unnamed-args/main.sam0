@@ -38,5 +38,3 @@ anon("x");
 anonArg("x", "blort");
 argAnon("blort", "x");
 argAnonArg("blort", "x", "igram");
-
-<> 0

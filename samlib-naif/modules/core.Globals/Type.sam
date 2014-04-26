@@ -12,10 +12,6 @@
 ##
 
 ## Documented in spec.
-fn get_typeName(value) {
+export fn get_typeName(value) {
     <> typeName(get_type(value))
 };
-
-<> {
-    get_typeName
-}

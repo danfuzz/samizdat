@@ -159,7 +159,9 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'b': { if (valEq(string, STR_break))    return TOK_break;    }
         case 'c': { if (valEq(string, STR_continue)) return TOK_continue; }
         case 'd': { if (valEq(string, STR_def))      return TOK_def;      }
+        case 'e': { if (valEq(string, STR_export))   return TOK_export;   }
         case 'f': { if (valEq(string, STR_fn))       return TOK_fn;       }
+        case 'i': { if (valEq(string, STR_import))   return TOK_import;   }
         case 'r': { if (valEq(string, STR_return))   return TOK_return;   }
         case 'v': { if (valEq(string, STR_var))      return TOK_var;      }
     }

@@ -40,5 +40,3 @@ msg({ <> });        ## an anonymous in-language function
 { <out> ->
     msg(out);       ## a nonlocal exit function
 }();
-
-<> 0

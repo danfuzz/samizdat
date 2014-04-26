@@ -125,5 +125,3 @@ msgAll("Zero-increment exclusive character range",
 
 msgAll("Empty exclusive range",
     $Range::makeExclusiveRange(10, 9, 1));
-
-<> 0

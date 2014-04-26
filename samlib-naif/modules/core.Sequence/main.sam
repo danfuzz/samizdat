@@ -18,14 +18,14 @@ intraLoad("SequenceGenerator");
 ##
 
 ## Documented in spec.
-fn nthFromEnd(seq, n) {
+export fn nthFromEnd(seq, n) {
     def index =
         $Number::sub(get_size(seq), $Number::add(n, 1));
     <> nth(seq, index)
 };
 
 ## Documented in spec.
-fn sliceGeneral(seq, style, start, optEnd?) {
+export fn sliceGeneral(seq, style, start, optEnd?) {
     def limit = $Number::sub(get_size(seq), 1);
     def func = ifIs { <> eq(style, @exclusive) }
         { <> $Sequence::sliceExclusive }
@@ -43,16 +43,8 @@ fn sliceGeneral(seq, style, start, optEnd?) {
     <> func(seq, startIndex, optEndIndex*)
 };
 
-<> {
-    ## Re-exported from proto.
-    nth:            $Sequence::nth,
-    reverse:        $Sequence::reverse,
-    sliceExclusive: $Sequence::sliceExclusive,
-    sliceInclusive: $Sequence::sliceInclusive,
-
-    ## Defined in this file.
-    nthFromEnd,
-    sliceGeneral
-}
-
-
+## Re-exported from proto.
+export def nth            = $Sequence::nth;
+export def reverse        = $Sequence::reverse;
+export def sliceExclusive = $Sequence::sliceExclusive;
+export def sliceInclusive = $Sequence::sliceInclusive;

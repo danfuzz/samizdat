@@ -72,5 +72,3 @@ ifValue { <> returnArg2("woo") }
 ifValue { <> returnArg3("woo") }
     { v <> note(v) }
     { bad() };
-
-<> 0

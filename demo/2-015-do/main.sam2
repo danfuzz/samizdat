@@ -42,5 +42,3 @@ def result = do <out> {
 };
 
 note("Result is \%q(result).");
-
-<> 0

@@ -77,12 +77,12 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-fn .moduleLoad(path);
+export fn .moduleLoad(path);
 
 ## Documented in spec.
-fn .intraLoad(path);
-fn .intraReadUtf8(path);
-fn .intraType(path);
+export fn .intraLoad(path);
+export fn .intraReadUtf8(path);
+export fn .intraType(path);
 
 
 ##
@@ -147,7 +147,7 @@ fn @@Null.moduleLoad(path) {
 };
 
 ## Documented in spec.
-fn makeModuleLoader(path, globals, nextModuleLoader) {
+export fn makeModuleLoader(path, globals, nextModuleLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
 
@@ -179,7 +179,7 @@ fn intraLoadMain(loader) {
 };
 
 ## Helper for `intraLoad` which does the actual loading.
-fn doLocalLoad(ml, path) {
+fn doIntraLoad(ml, path) {
     note(cat("        ", path));
     def pathPrefix = cat(ml::basePath, path);
 
@@ -219,7 +219,7 @@ fn @@IntraLoader.intraLoad(path) {
     ifValue { <> get(fetch(loadedBox), path) }
         { found -> return found* };
 
-    def optResult = doLocalLoad(this, path)?;
+    def optResult = doIntraLoad(this, path)?;
     updateMapBox(loadedBox, path, optResult);
     <> optResult*
 };
@@ -235,7 +235,7 @@ fn @@IntraLoader.intraReadUtf8(path) {
 };
 
 ## Documented in spec.
-fn makeIntraLoader(path, globals, nextModuleLoader) {
+export fn makeIntraLoader(path, globals, nextModuleLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
 
@@ -301,7 +301,7 @@ fn makeIntraLoader(path, globals, nextModuleLoader) {
 ##
 
 ## Documented in spec.
-fn run(path, globals, moduleLoader, args*) {
+export fn run(path, globals, moduleLoader, args*) {
     def loader = makeIntraLoader(path, globals, moduleLoader);
     def optMainModule = intraLoadMain(loader)?;
 
@@ -320,13 +320,3 @@ fn run(path, globals, moduleLoader, args*) {
 
     <> (optMain*)(args*)
 };
-
-<> {
-    intraLoad,
-    intraReadUtf8,
-    intraType,
-    makeIntraLoader,
-    makeModuleLoader,
-    moduleLoad,
-    run
-}

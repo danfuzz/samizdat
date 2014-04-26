@@ -8,15 +8,18 @@ def $Generator = moduleLoad(["core", "Generator"]);
 def $constructors1 = intraLoad("constructors1");
 def makeApply   = $constructors1::makeApply;
 def makeCall    = $constructors1::makeCall;
+def makeLiteral = $constructors1::makeLiteral;
 def makeThunk   = $constructors1::makeThunk;
 def makeVarBind = $constructors1::makeVarBind;
 def makeVarDef  = $constructors1::makeVarDef;
+def makeVarRef  = $constructors1::makeVarRef;
 
 def $getters = intraLoad("getters");
 def get_interpolate = $getters::get_interpolate;
 def get_name        = $getters::get_name;
 def get_nodeValue   = $getters::get_nodeValue;
 def get_statements  = $getters::get_statements;
+def get_yield       = $getters::get_yield;
 
 def REFS = intraLoad("refs")::REFS;
 
@@ -26,7 +29,7 @@ def REFS = intraLoad("refs")::REFS;
 ##
 
 ## Documented in spec.
-fn makeCallOrApply(function, actuals*) {
+export fn makeCallOrApply(function, actuals*) {
     ifIs { <> perEq(actuals, []) }
         {
             ## No actuals. Easy out.
@@ -85,51 +88,80 @@ fn makeCallOrApply(function, actuals*) {
 };
 
 ## Documented in spec.
-fn makeGet(collArg, keyArg) {
+export fn makeGet(collArg, keyArg) {
     <> makeCall(REFS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
-fn makeInterpolate(node) {
+export fn makeInterpolate(node) {
     <> @call{function: REFS::interpolate, actuals: [node], interpolate: node}
 };
 
 ## Documented in spec.
-fn makeOptValue(node) {
+export fn makeOptValue(node) {
     <> makeCall(REFS::optValue, makeThunk(node))
 };
 
 ## Documented in spec.
-fn withSimpleDefs(node) {
+export fn withExport(node, optExport?) {
+    def exp = ifValueOr { <> optExport* } { <> get_name(node) };
+    <> @(get_typeName(node)){dataOf(node)*, export: exp}
+};
+
+## Documented in spec.
+export fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
-    def tops = $Generator::filterAll(rawStatements)
-        { s ->
-            <> ifIs { <> hasType(s, @@varDef) }
-                {
-                    <> ifIs { <> s::top }
-                        { <> makeVarDef(get_name(s)) }
+
+    def tops = $Generator::filterAll(rawStatements) { s ->
+        <> ifIs { <> hasType(s, @@varDef) }
+            {
+                <> ifIs { <> s::top }
+                    { <> makeVarDef(get_name(s)) }
+            }
+    };
+
+    def mains = $Generator::filterAll(rawStatements) { <out> s ->
+        ifIs { <> hasType(s, @@varDef) }
+            {
+                ifIs { <> s::top }
+                    { <out> makeVarBind(get_name(s), get_nodeValue(s)) }
+            };
+        <> ifNot { <> hasType(s, @@export) }
+            { <> s }
+    };
+
+    def exports = $Generator::filterAll(rawStatements) { <out> s ->
+        ifNot { <> hasType(s, @@varDef) }
+            {
+                ifNot { <> hasType(s, @@export) }
+                    { <out> }
+            };
+
+            <> ifValue { <> s::export }
+                { exp ->
+                    <> makeCall(REFS::makeValueMap,
+                        makeLiteral(exp), makeVarRef(s::name))
                 }
-        };
-    def mains = $Generator::filterAll(rawStatements)
-        { <out> s ->
-            ifIs { <> hasType(s, @@varDef) }
-                {
-                    ifIs { <> s::top }
-                        { <out> makeVarBind(get_name(s), get_nodeValue(s)) }
-                };
-            <> s
+    };
+
+    def optYield = ifIs { <> eq(exports, []) }
+        { <> {} }
+        {
+            ## Turn the `exports` into a yield, but also reject a node with
+            ## a pre-existing `yield` binding.
+            ifIs { get_yield(node) }
+                { die("Cannot mix `export` and `yield`.") };
+            <> {yield: makeCall(REFS::cat, exports*)}
         };
 
     <> @(get_typeName(node)){
         dataOf(node)*,
+        optYield*,
         statements: [tops*, mains*]
     }
 };
 
-<> {
-    makeCallOrApply,
-    makeGet,
-    makeInterpolate,
-    makeOptValue,
-    withSimpleDefs
-}
+## Documented in spec.
+export fn withTop(node) {
+    <> @(get_typeName(node)){dataOf(node)*, top: true}
+};

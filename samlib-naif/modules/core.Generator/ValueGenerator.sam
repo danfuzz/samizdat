@@ -14,7 +14,7 @@ def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 ##
 
 ## Documented in spec.
-fn makeValueGenerator(value) {
+export fn makeValueGenerator(value) {
     <> @ValueGenerator(value)
 };
 
@@ -29,5 +29,3 @@ fn @@ValueGenerator.nextValue(box) {
     store(box, dataOf(this));
     <> this
 };
-
-<> {makeValueGenerator}

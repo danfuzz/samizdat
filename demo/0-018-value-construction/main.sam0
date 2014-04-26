@@ -199,6 +199,3 @@ expectDerived(@fizmo("igram"));
 expectDerived(null);
 expectDerived(false);
 expectDerived(true);
-
-
-<> 0

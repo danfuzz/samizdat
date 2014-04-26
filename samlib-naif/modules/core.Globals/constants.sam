@@ -10,10 +10,11 @@
 ## Exported Definitions
 ##
 
-## These are all documented in the spec.
+## Documented in the spec.
+export def false = @Boolean(0);
 
-<> {
-    false: @Boolean(0),
-    true:  @Boolean(1),
-    null:  @Null
-}
+## Documented in the spec.
+export def true = @Boolean(1);
+
+## Documented in the spec.
+export def null = @Null;

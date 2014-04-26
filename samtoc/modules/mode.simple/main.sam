@@ -173,7 +173,7 @@ fn mainClosureMaker(node, interner) {
     <> stat.usualIndent(1)
 };
 
-fn compile(sourcePath, targetPath) {
+export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
 
     ## Note: The node resulting from a call to `parseProgram` is always of
@@ -230,7 +230,4 @@ fn compile(sourcePath, targetPath) {
     $Io0::writeFileUtf8(targetPath, outputText)
 };
 
-<> {
-    SUFFIX: "c",
-    compile
-}
+export def SUFFIX = "c";

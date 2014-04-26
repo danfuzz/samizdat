@@ -18,7 +18,7 @@ def $NullGenerator = intraLoad("NullGenerator");
 ##
 
 ## Documented in spec.
-fn makeSerialGenerator(generators*) {
+export fn makeSerialGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
         { return $NullGenerator::nullGenerator };
@@ -63,5 +63,3 @@ fn @@SerialGenerator.nextValue(box) {
             store(box)
         }
 };
-
-<> {makeSerialGenerator}

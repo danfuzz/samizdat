@@ -122,6 +122,24 @@ Variable definitions (but *not* `:=` assignments) as described in
 this section are some of the few statement forms in Samizdat. That is, these
 are not combining expressions.
 
+As part of a module definition, an immutable variable may be exported from
+the module by prefixing its definition with `export`:
+
+```
+export def name = value
+```
+
+It is also possible to export a previously-defined variable by just naming
+it directly:
+
+```
+export name
+```
+
+**Note:** This form can interact surprisingly with *mutable* variable
+definitions, because an `export` only exports a simple value and not a
+mutable binding.
+
 #### Formal arguments
 
 See the [Functions](03-functions.md) section for information about

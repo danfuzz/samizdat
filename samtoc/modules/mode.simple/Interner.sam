@@ -3,11 +3,11 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
-fn makeInterner() {
+export fn makeInterner() {
     <> @Interner{values: $Box::makeCell({})}
 };
 
-fn intern(this, value) {
+export fn intern(this, value) {
     def box = this::values;
     def values = fetch(box);
 
@@ -21,7 +21,7 @@ fn intern(this, value) {
     <> result
 };
 
-fn get_interns(this) {
+export fn get_interns(this) {
     def map = fetch(this::values);
     def boxList = [ n in (0..#map) <> $Box::makePromise() ];
 
@@ -32,9 +32,3 @@ fn get_interns(this) {
 
     <> [ box in boxList <> fetch(box) ]
 };
-
-<> {
-    get_interns,
-    intern,
-    makeInterner
-}

@@ -28,10 +28,10 @@ def $Sequence  = moduleLoad(["core", "Sequence"]);
 ## tokenization syntax of identifiers.
 def KEYWORDS = $Generator::collectAsMap(
     $Generator::makeFilterGenerator([
-        "break", "continue", "def", "fn", "return", "var",
+        "break", "continue", "def", "export", "fn", "import", "return", "var",
         ## Layer 2 defines additional keywords here.
-        "by", "default", "do", "else", "export", "for", "if", "import",
-        "in", "module", "switch", "while"])
+        "by", "default", "do", "else", "for", "if", "in", "module", "switch",
+        "while"])
         { name <> {(name): @(name)} });
 
 ## These are all the int digits, as a map from strings to digit values. This
@@ -478,10 +478,6 @@ tokStringPart2 := {:
 ##
 
 ## Documented in spec.
-fn tokenize(programText) {
+export fn tokenize(programText) {
     <> $Peg::apply(tokFile, programText)
 };
-
-<> {
-    tokenize
-}

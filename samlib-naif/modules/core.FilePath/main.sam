@@ -28,7 +28,7 @@ fn checkPath(path) {
 ##
 
 ## Documented in spec.
-fn fixPath(path, basePaths*) {
+export fn fixPath(path, basePaths*) {
     checkPath(path);
 
     <> ifIs { <> eq(get(path, 0), "/") }
@@ -41,7 +41,7 @@ fn fixPath(path, basePaths*) {
 };
 
 ## Documented in spec.
-fn get_directory(path) {
+export fn get_directory(path) {
     checkPath(path);
 
     var at = get_size(path);
@@ -76,7 +76,7 @@ fn get_directory(path) {
 };
 
 ## Documented in spec.
-fn get_file(path) {
+export fn get_file(path) {
     checkPath(path);
 
     var at = get_size(path);
@@ -112,9 +112,3 @@ fn get_file(path) {
             };
     }
 };
-
-<> {
-    fixPath,
-    get_directory,
-    get_file
-}

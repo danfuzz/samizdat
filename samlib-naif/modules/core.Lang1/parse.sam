@@ -27,6 +27,7 @@ def makeApply          = $Lang0Node::makeApply;
 def makeCall           = $Lang0Node::makeCall;
 def makeCallOrApply    = $Lang0Node::makeCallOrApply;
 def makeCallThunks     = $Lang0Node::makeCallThunks;
+def makeExport         = $Lang0Node::makeExport;
 def makeGet            = $Lang0Node::makeGet;
 def makeInterpolate    = $Lang0Node::makeInterpolate;
 def makeJump           = $Lang0Node::makeJump;
@@ -38,6 +39,7 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withExport         = $Lang0Node::withExport;
 def withFormals        = $Lang0Node::withFormals;
 def withSimpleDefs     = $Lang0Node::withSimpleDefs;
 def withTop            = $Lang0Node::withTop;
@@ -519,6 +521,21 @@ def parStatement = $Peg::makeMainChoice(
     parExportableStatement, parGenericBind, parVarDefMutable, parExpression);
 
 ## Documented in spec.
+def parProgramStatement = $Peg::makeMainChoice(
+    parStatement,
+    $Peg::makeSequence(
+        $Peg::makeToken(@@export),
+        $Peg::makeChoice(
+            $Peg::makeSequence(
+                parName,
+                $Peg::makeCode { ., name <> makeExport(name) }),
+            $Peg::makeSequence(
+                parExportableStatement,
+                $Peg::makeCode { ., stat ->
+                    <> withExport(stat, get_name(stat))
+                }))));
+
+## Documented in spec.
 def parClosureBody = $Peg::makeMainSequence(
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeStar(
@@ -552,9 +569,19 @@ parClosure := $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parProgram = $Peg::makeMainSequence(
-    parClosureBody,
-    $Peg::makeCode { body ->
-        def closure = @closure{formals: [], body*};
+    $Peg::makeStar($Peg::makeToken(@@";")),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            parProgramStatement,
+            $Peg::makeStar(
+                $Peg::makeSequence(
+                    $Peg::makePlus($Peg::makeToken(@@";")),
+                    parProgramStatement)),
+            $Peg::makeCode { ., first, rest <> [first, rest*] }),
+        $Peg::makeResult([])),
+    $Peg::makeStar($Peg::makeToken(@@";")),
+    $Peg::makeCode { ., statements, . ->
+        def closure = @closure{formals: [], statements};
         <> withSimpleDefs(closure)
     });
 
@@ -746,7 +773,7 @@ parOpExpression := parUnaryExpression;
 ##
 
 ## Documented in spec.
-fn parseExpression(expression) {
+export fn parseExpression(expression) {
     def tokens = ifIs { <> hasType(expression, String) }
         { <> tokenize(expression) }
         { <> expression };
@@ -755,15 +782,10 @@ fn parseExpression(expression) {
 };
 
 ## Documented in spec.
-fn parseProgram(program) {
+export fn parseProgram(program) {
     def tokens = ifIs { <> hasType(program, String) }
         { <> tokenize(program) }
         { <> program };
 
     <> $Peg::apply(parProgramOrError, tokens)
 };
-
-<> {
-    parseExpression,
-    parseProgram
-}

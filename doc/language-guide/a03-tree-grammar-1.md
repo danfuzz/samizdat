@@ -36,6 +36,7 @@ def makeApply          = $Lang0Node::makeApply;
 def makeCall           = $Lang0Node::makeCall;
 def makeCallOrApply    = $Lang0Node::makeCallOrApply;
 def makeCallThunks     = $Lang0Node::makeCallThunks;
+def makeExport         = $Lang0Node::makeExport;
 def makeGet            = $Lang0Node::makeGet;
 def makeInterpolate    = $Lang0Node::makeInterpolate;
 def makeJump           = $Lang0Node::makeJump;
@@ -47,6 +48,7 @@ def makeVarDef         = $Lang0Node::makeVarDef;
 def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
 def makeVarRef         = $Lang0Node::makeVarRef;
 def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
+def withExport         = $Lang0Node::withExport;
 def withFormals        = $Lang0Node::withFormals;
 def withSimpleDefs     = $Lang0Node::withSimpleDefs;
 def withTop            = $Lang0Node::withTop;
@@ -673,6 +675,21 @@ def parStatement = {:
     parExportableStatement | parGenericBind | parVarDefMutable | parExpression
 :};
 
+## Parses a program statement form (including both regular and `export`
+## statements).
+def parProgramStatement = {:
+    parStatement
+|
+    @"export"
+    (
+        name = parName
+        { <> makeExport(name) }
+    |
+        stat = parExportableStatement
+        { <> withExport(stat, get_name(stat)) }
+    )
+:};
+
 ##
 ## Layer 0: Closures and programs
 ##
@@ -714,11 +731,25 @@ parClosure := {:
     }
 :};
 
-## Parses a program (top-level program or contents inside function braces).
+## Parses a program (list of statements, including possible exports).
 def parProgram = {:
-    body = parClosureBody
+    @";"*
+
+    statements = (
+        first = parProgramStatement
+        rest = (
+            @";"+
+            parProgramStatement
+        )*
+        { <> [first, rest*] }
+    |
+        { <> [] }
+    )
+
+    @";"*
+
     {
-        def closure = @closure{formals: [], body*};
+        def closure = @closure{formals: [], statements};
         <> withSimpleDefs(closure)
     }
 :};

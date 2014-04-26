@@ -315,7 +315,7 @@ fn Value.humanString() {
 ##
 
 ## Documented in spec.
-fn int(value, optBase?) {
+export fn int(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
     ifIs { <> lt(base, 2) }
@@ -328,26 +328,26 @@ fn int(value, optBase?) {
 };
 
 ## Documented in spec.
-fn intHex(arg) {
+export fn intHex(arg) {
     <> intWithBase(arg, 16)
 };
 
 ## Documented in spec.
-fn source(value?) {
+export fn source(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, true) }
         { <> "void" }
 };
 
 ## Documented in spec.
-fn sourceUnadorned(value?) {
+export fn sourceUnadorned(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, false) }
         { <> "void" }
 };
 
 ## Documented in spec.
-fn usual(value?) {
+export fn usual(value?) {
     <> ifValue { <> value* }
         { value <> humanString(value) }
         { <> "" }
@@ -365,17 +365,7 @@ def FORMATTERS = {
 ##
 ## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 ## is defined in terms of other exported functions.
-fn formatterFor(formatSpec) {
+export fn formatterFor(formatSpec) {
     <> ifValueOr { <> get(FORMATTERS, formatSpec) }
         { die(cat("Unrecognized format spec: ", source(formatSpec))) }
 };
-
-
-<> {
-    formatterFor,
-    int,
-    intHex,
-    source,
-    sourceUnadorned,
-    usual
-}

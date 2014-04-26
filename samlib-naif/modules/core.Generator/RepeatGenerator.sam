@@ -18,7 +18,7 @@ def $NullGenerator = intraLoad("NullGenerator");
 ##
 
 ## Documented in spec.
-fn makeRepeatGenerator(size, optValue?) {
+export fn makeRepeatGenerator(size, optValue?) {
     ifIs { <> perLe(size, 0) }
         {
             ifIs { <> perLt(size, 0) }
@@ -51,5 +51,3 @@ fn @@RepeatGenerator.nextValue(box) {
             store(box)
         }
 };
-
-<> {makeRepeatGenerator}

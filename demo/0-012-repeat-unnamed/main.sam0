@@ -105,5 +105,3 @@ argUoptOptStar("zorch", "x");
 argUoptOptStar("zorch", "x", "blort");
 argUoptOptStar("zorch", "x", "blort", "igram");
 argUoptOptStar("zorch", "x", "blort", "igram", "fizmo");
-
-<> 0

@@ -18,7 +18,7 @@ def $NullGenerator     = intraLoad("NullGenerator");
 ##
 
 ## Documented in spec.
-fn makeParaGenerator(generators*) {
+export fn makeParaGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
         { return $NullGenerator::nullGenerator };
@@ -65,5 +65,3 @@ fn @@ParaGenerator.nextValue(box) {
     store(box, yields);
     <> @ParaGenerator(nexts)
 };
-
-<> {makeParaGenerator}

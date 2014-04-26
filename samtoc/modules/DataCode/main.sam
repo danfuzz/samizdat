@@ -108,11 +108,11 @@ fn stringChar(ch) {
 
 
 ##
-## Private defintions: `convert` generic
+## Exported: `convert` generic
 ##
 
 ## `value.convert()`: Generic function to perform the conversion.
-fn .convert();
+export fn .convert();
 
 ## Converts an int.
 fn Int.convert() {
@@ -174,10 +174,3 @@ fn Value.convert() {
 
     <> $CodeGen::makeCall("makeValue", convert(type), data, "NULL")
 };
-
-
-##
-## Exported definitions
-##
-
-<> {convert}

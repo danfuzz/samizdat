@@ -23,7 +23,7 @@ def $unboundedCollect  = intraLoad("unboundedCollect");
 ##
 
 ## Documented in spec.
-fn collectAsMap(generator) {
+export fn collectAsMap(generator) {
     ## Avoid pointless map->generator->map conversion.
     ifIs { <> hasType(generator, Map) }
         { return generator };
@@ -32,7 +32,7 @@ fn collectAsMap(generator) {
 };
 
 ## Documented in spec.
-fn filterAll(filterFunction, generators*) {
+export fn filterAll(filterFunction, generators*) {
     <> ifIs { <> eq(get_size(generators), 1) }
         {
             ## We are filtering a single generator, so just use the
@@ -48,7 +48,7 @@ fn filterAll(filterFunction, generators*) {
 };
 
 ## Documented in spec.
-fn filterPump(filterFunction, generators*) {
+export fn filterPump(filterFunction, generators*) {
     ifIs { <> eq(get_size(generators), 1) }
         {
             ## Handle a single generator as a special case to avoid a lot of
@@ -86,7 +86,7 @@ fn filterPump(filterFunction, generators*) {
 };
 
 ## Documented in spec.
-fn generatorPump(generator) {
+export fn generatorPump(generator) {
     var gen = generator;
 
     loop {
@@ -95,30 +95,22 @@ fn generatorPump(generator) {
     }
 };
 
-<> {
-    ## Re-exported from builtins.
-    stdCollect:              Generator_stdCollect,
+## Re-exported from globals (and proto module).
+export collect;
+export interpolate;
+export nextValue;
+export optValue;
 
-    ## Re-exported from globals (and proto module).
-    collect,
-    interpolate,
-    nextValue,
-    optValue,
+## Re-exported from builtins.
+export def stdCollect = Generator_stdCollect;
 
-    ## Re-exported from intramodule files.
-    makeFilterGenerator:     $FilterGenerator::makeFilterGenerator,
-    makeListWrapGenerator:   $ListWrapGenerator::makeListWrapGenerator,
-    makeOptGenerator:        $OptGenerator::makeOptGenerator,
-    makeParaGenerator:       $ParaGenerator::makeParaGenerator,
-    makeRepeatGenerator:     $RepeatGenerator::makeRepeatGenerator,
-    makeSerialGenerator:     $SerialGenerator::makeSerialGenerator,
-    makeValueGenerator:      $ValueGenerator::makeValueGenerator,
-    nullGenerator:           $NullGenerator::nullGenerator,
-    unboundedCollect:        $unboundedCollect::unboundedCollect,
-
-    ## Defined in this file.
-    collectAsMap,
-    filterAll,
-    filterPump,
-    generatorPump
-}
+## Re-exported from intramodule files.
+export def makeFilterGenerator   = $FilterGenerator::makeFilterGenerator;
+export def makeListWrapGenerator = $ListWrapGenerator::makeListWrapGenerator;
+export def makeOptGenerator      = $OptGenerator::makeOptGenerator;
+export def makeParaGenerator     = $ParaGenerator::makeParaGenerator;
+export def makeRepeatGenerator   = $RepeatGenerator::makeRepeatGenerator;
+export def makeSerialGenerator   = $SerialGenerator::makeSerialGenerator;
+export def makeValueGenerator    = $ValueGenerator::makeValueGenerator;
+export def nullGenerator         = $NullGenerator::nullGenerator;
+export def unboundedCollect      = $unboundedCollect::unboundedCollect;

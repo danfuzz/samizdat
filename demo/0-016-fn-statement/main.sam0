@@ -62,5 +62,3 @@ fn recFunc2(x) {
 };
 
 note(recFunc1(1));
-
-<> 0

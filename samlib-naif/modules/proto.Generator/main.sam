@@ -7,7 +7,5 @@
 ## library.
 ##
 
-<> {
-    collect,
-    nextValue
-}
+export collect;
+export nextValue;

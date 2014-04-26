@@ -25,14 +25,14 @@ fn tryFile(path) {
 ## Main Tests
 ##
 
-def selfDir = $FilePath::get_directory(SELF_PATH);
+export fn main(selfPath, .*) {
+    def selfDir = $FilePath::get_directory(selfPath);
 
-def text = $Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
-note(text);
+    def text = $Io0::readFileUtf8(cat(selfDir, "/sibling.txt"));
+    note(text);
 
-tryFile(cat(selfDir, "/sibling.txt"));
-tryFile(cat(selfDir, "/non-sibling.txt"));
-tryFile(cat(selfDir, "/nonexistent-directory/zorch.txt"));
-tryFile(selfDir);
-
-<> 0
+    tryFile(cat(selfDir, "/sibling.txt"));
+    tryFile(cat(selfDir, "/non-sibling.txt"));
+    tryFile(cat(selfDir, "/nonexistent-directory/zorch.txt"));
+    tryFile(selfDir);
+};

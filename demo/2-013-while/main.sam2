@@ -71,5 +71,3 @@ while (def value1 = fetch(box), def value2 = (55 > value1)) {
     store(box, value1 + 1);
     note("Value H is \%q(fetch(box)); \%q(value1) \%q(value2)");
 };
-
-<> 0

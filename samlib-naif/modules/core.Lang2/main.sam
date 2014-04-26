@@ -13,12 +13,17 @@ def $Lang1 = moduleLoad(["core", "Lang1"]);
 ## Exported Definitions
 ##
 
-## This just re-exports stuff defined in intramodule files, as well as
-## `convertToLang0` which is a re-export from `Lang1`.
-<> {
-    (intraLoad("eval"))*,
-    (intraLoad("tokenize"))*,
-    (intraLoad("parse"))*,
-    convertToLang0: $Lang1::convertToLang0,
-    evalBinary:     $Lang1::evalBinary
-}
+## This just re-exports stuff defined in intramodule files and `Lang1`.
+
+def $eval = intraLoad("eval");
+export def eval = $eval::eval;
+
+def $parse = intraLoad("parse");
+export def parseProgram    = $parse::parseProgram;
+export def parseExpression = $parse::parseExpression;
+
+def $tokenize = intraLoad("tokenize");
+export def tokenize = $tokenize::tokenize;
+
+export def convertToLang0 = $Lang1::convertToLang0;
+export def evalBinary     = $Lang1::evalBinary;

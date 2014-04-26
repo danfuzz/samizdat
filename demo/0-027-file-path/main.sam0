@@ -84,5 +84,3 @@ msg($FilePath::get_file("/blort/zorch"));
 msg($FilePath::get_file("/blort/zorch/"));
 msg($FilePath::get_file("/blort/zorch//"));
 msg($FilePath::get_file("/blort/zorch///"));
-
-<> 0

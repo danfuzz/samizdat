@@ -41,5 +41,3 @@ def set_foo = store;
 msg(cell.foo := 987);
 cell.foo := 654;
 msg(cell.foo);
-
-<> 0

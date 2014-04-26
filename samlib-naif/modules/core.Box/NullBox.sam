@@ -29,6 +29,4 @@ fn @@NullBox.store(value?) {
 };
 
 ## Documented in spec.
-def nullBox = @NullBox;
-
-<> {nullBox}
+export def nullBox = @NullBox;

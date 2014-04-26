@@ -17,7 +17,7 @@ def $Template = moduleLoad(["Template"]);
 def $Io0 = moduleLoad(["core", "Io0"]);
 def $Lang2 = moduleLoad(["core", "Lang2"]);
 
-fn compile(sourcePath, targetPath) {
+export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
     def tree = $Lang2::convertToLang0($Lang2::parseProgram(sourceText));
     def source = $CodeGen::indent($DataCode::convert(tree), 2, 78);
@@ -26,7 +26,4 @@ fn compile(sourcePath, targetPath) {
     $Io0::writeFileUtf8(targetPath, outputText)
 };
 
-<> {
-    SUFFIX: "c",
-    compile
-}
+export def SUFFIX = "c";

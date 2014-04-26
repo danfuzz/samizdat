@@ -15,7 +15,7 @@ def $Box = moduleLoad(["core", "Box"]);
 ##
 
 ## Documented in spec.
-fn makeListWrapGenerator(generator) {
+export fn makeListWrapGenerator(generator) {
     <> @ListWrapGenerator(generator)
 };
 
@@ -39,5 +39,3 @@ fn @@ListWrapGenerator.nextValue(box) {
             store(box);
         }
 };
-
-<> {makeListWrapGenerator}

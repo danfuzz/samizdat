@@ -16,19 +16,19 @@ def $Sequence  = moduleLoad(["core", "Sequence"]);
 ##
 
 ## `peg.parse(box, input, items*)`
-fn .parse(box, input, items*);
+export fn .parse(box, input, items*);
 
 ## Documented in spec.
-def any = @PegAny;
+export def any = @PegAny;
 
 ## Documented in spec.
-def empty = @PegResult(null);
+export def empty = @PegResult(null);
 
 ## Documented in spec.
-def eof = @PegEof;
+export def eof = @PegEof;
 
 ## Documented in spec.
-def fail = @PegFail;
+export def fail = @PegFail;
 
 ## Documented in spec.
 fn @@PegAny.parse(box, input, .*) {
@@ -247,25 +247,25 @@ fn genericMakeTokenSet(sense, types) {
 };
 
 ## Documented in spec.
-fn makeResult(value) {
+export fn makeResult(value) {
     <> @PegResult(value)
 };
 
 ## Documented in spec.
-fn makeCharSet(strings*) {
+export fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
     <> genericMakeTokenSet(true, typeListFromString(cat("", strings*)))
 };
 
 ## Documented in spec.
-fn makeCharSetComplement(strings*) {
+export fn makeCharSetComplement(strings*) {
     ## See comment in `makeCharSet`.
     <> genericMakeTokenSet(false, typeListFromString(cat("", strings*)))
 };
 
 ## Documented in spec.
-fn makeChoice(rules*) {
+export fn makeChoice(rules*) {
     ## Trivial case: No rules. Return the failure rule.
     ifIs { <> eq(rules, []) }
         { return @PegFail };
@@ -279,12 +279,12 @@ fn makeChoice(rules*) {
 };
 
 ## Documented in spec.
-fn makeCode(function) {
+export fn makeCode(function) {
     <> @PegCode(function)
 };
 
 ## Documented in spec.
-fn makeLookaheadFailure(rule) {
+export fn makeLookaheadFailure(rule) {
     ## Optimiziation: Representation of `!.`.
     ifIs { <> eq(rule, @PegAny) }
         { return @PegEof };
@@ -298,32 +298,32 @@ fn makeLookaheadFailure(rule) {
 };
 
 ## Documented in spec.
-fn makeLookaheadSuccess(rule) {
+export fn makeLookaheadSuccess(rule) {
     <> @PegLookaheadSuccess(rule)
 };
 
 ## Documented in spec.
-fn makeMainChoice(rules*) {
+export fn makeMainChoice(rules*) {
     <> @PegMain(makeChoice(rules*))
 };
 
 ## Documented in spec.
-fn makeMainSequence(rules*) {
+export fn makeMainSequence(rules*) {
     <> @PegMain(makeSequence(rules*))
 };
 
 ## Documented in spec.
-fn makeOpt(rule) {
+export fn makeOpt(rule) {
     <> @PegOpt(rule)
 };
 
 ## Documented in spec.
-fn makePlus(rule) {
+export fn makePlus(rule) {
     <> @PegRepeat{rule, minSize: 1}
 };
 
 ## Documented in spec.
-fn makeSequence(rules*) {
+export fn makeSequence(rules*) {
     ## Trivial case: No rules. Return the empty rule.
     ifIs { <> eq(rules, []) }
         { return empty };
@@ -337,17 +337,17 @@ fn makeSequence(rules*) {
 };
 
 ## Documented in spec.
-fn makeStar(rule) {
+export fn makeStar(rule) {
     <> @PegRepeat{rule}
 };
 
 ## Documented in spec.
-fn makeThunk(function) {
+export fn makeThunk(function) {
     <> @PegThunk(function)
 };
 
 ## Documented in spec.
-fn makeString(string) {
+export fn makeString(string) {
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { <> eq(string, "") }
         { return @PegResult(@"") };
@@ -367,7 +367,7 @@ fn makeString(string) {
 };
 
 ## Documented in spec.
-fn makeToken(type) {
+export fn makeToken(type) {
     ## This is just uses a single-item token set. The performance difference
     ## between that and doing a more special-case single item type check is
     ## probably negligible.
@@ -375,12 +375,12 @@ fn makeToken(type) {
 };
 
 ## Documented in spec.
-fn makeTokenSet(tokens*) {
+export fn makeTokenSet(tokens*) {
     <> genericMakeTokenSet(true, tokens)
 };
 
 ## Documented in spec.
-fn makeTokenSetComplement(tokens*) {
+export fn makeTokenSetComplement(tokens*) {
     <> genericMakeTokenSet(false, tokens)
 };
 
@@ -390,7 +390,7 @@ fn makeTokenSetComplement(tokens*) {
 ##
 
 ## Documented in spec.
-fn apply(rule, input) {
+export fn apply(rule, input) {
     def box = $Box::makePromise();
     def generator = ifIs { <> hasType(input, String) }
         {
@@ -405,39 +405,6 @@ fn apply(rule, input) {
 };
 
 ## Documented in spec.
-fn stringFromTokenList(tokens) {
+export fn stringFromTokenList(tokens) {
     <> cat("", collect(tokens, get_typeName)*)
 };
-
-
-##
-## Export mechanics
-##
-
-<> {
-    any,
-    apply,
-    empty,
-    eof,
-    fail,
-    makeCharSet,
-    makeCharSetComplement,
-    makeChoice,
-    makeCode,
-    makeLookaheadFailure,
-    makeLookaheadSuccess,
-    makeMainChoice,
-    makeMainSequence,
-    makeOpt,
-    makePlus,
-    makeResult,
-    makeSequence,
-    makeStar,
-    makeString,
-    makeThunk,
-    makeToken,
-    makeTokenSet,
-    makeTokenSetComplement,
-    parse,
-    stringFromTokenList
-}

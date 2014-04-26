@@ -21,11 +21,9 @@ def $Stuff2 = moduleLoad(["app", "Stuff"]);
 ifIs { <> ne($Stuff, $Stuff2) }
     { die("Different modules!") };
 
-fn main(selfPath, .*) {
+export fn main(selfPath, .*) {
     note(cat("I am: ", $Format::source(selfPath)));
     note($Format::source($Stuff::STUFF));
     note($Format::source($Stuff::SUBSTUFF));
     note($Format::source($Stuff::stuffFunc()));
 };
-
-<> {main}

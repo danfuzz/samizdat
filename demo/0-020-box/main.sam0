@@ -73,5 +73,3 @@ note("\nnullBox");
 msg($Box::nullBox);
 store($Box::nullBox, "stuff");
 msg($Box::nullBox);
-
-<> 0

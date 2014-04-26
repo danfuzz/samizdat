@@ -301,6 +301,8 @@ DEF_PARSE(string) {
 
 /* Documented in spec. */
 DEF_PARSE(identifierString) {
+    MARK();
+
     zvalue result;
 
     result = PARSE(string);
@@ -309,20 +311,14 @@ DEF_PARSE(identifierString) {
     result = PARSE(name);
     if (result != NULL) { return makeLiteral(result); }
 
-    if (result == NULL) { result = MATCH(break);      }
-    if (result == NULL) { result = MATCH(continue);   }
-    if (result == NULL) { result = MATCH(def);        }
-    if (result == NULL) { result = MATCH(fn);         }
-    if (result == NULL) { result = MATCH(return);     }
-    if (result == NULL) { result = MATCH(var);        }
-    if (result == NULL) { return NULL;                }
+    result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
+    REJECT_IF(dataOf(result) != NULL);
 
-    zvalue value = dataOf(result);
-    if (value == NULL) {
-        value = typeName(get_type(result));
-    }
+    zvalue type = typeName(get_type(result));
+    zchar firstCh = zcharFromString(nth(type, 0));
 
-    return makeLiteral(value);
+    REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
+    return makeLiteral(type);
 }
 
 /**
@@ -909,6 +905,22 @@ DEF_PARSE(statement) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(programStatement) {
+    MARK();
+
+    zvalue result = PARSE(statement);
+    if (result != NULL) { return result; }
+
+    MATCH_OR_REJECT(export);
+
+    result = PARSE(name);
+    if (result != NULL) { return makeExport(result); }
+
+    result = PARSE_OR_REJECT(exportableStatement);
+    return withExport(result);
+}
+
+/* Documented in spec. */
 DEF_PARSE(closureBody) {
     zvalue statements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
@@ -966,16 +978,44 @@ DEF_PARSE(closure) {
     return withSimpleDefs(closure);
 }
 
+/**
+ * Helper for `program`: Parses the `rest` construct in the original spec.
+ */
+DEF_PARSE(program1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_SEMICOLON);
+    PARSE(optSemicolons);
+    zvalue result = PARSE_OR_REJECT(programStatement);
+
+    return result;
+}
+
 /* Documented in spec. */
 DEF_PARSE(program) {
-    zvalue body = PARSE(closureBody);  // This never fails.
+    MARK();
+
+    PARSE(optSemicolons);
+
+    zvalue statements;
+
+    zvalue first = PARSE(programStatement);
+    if (first != NULL) {
+        zvalue rest = PARSE_STAR(program1);
+        statements = GFN_CALL(cat, listFrom1(first), rest);
+    } else {
+        statements = EMPTY_LIST;
+    }
+
+    PARSE(optSemicolons);
 
     zvalue closure = makeValue(TYPE_closure,
-        GFN_CALL(cat, mapFrom1(STR_formals, EMPTY_LIST), body),
+        mapFrom2(
+            STR_formals,    EMPTY_LIST,
+            STR_statements, statements),
         NULL);
     return withSimpleDefs(closure);
 }
-
 
 /*
  * Exported Definitions

@@ -116,5 +116,3 @@ fn msg(value) {
 msg(countDown(10));
 note("");
 msg(countDown2(5));
-
-<> 0

@@ -75,5 +75,3 @@ msgTen(("M"..));
 note("\nOpen, explicit increment...");
 msgTen((99.. by -1));
 msgTen(("z".. by -2));
-
-<> 0

@@ -175,31 +175,31 @@ fn safeName(prefix, name, optIndex?) {
 
 ## Gets the C variable declaration to use for the variable at the indicated
 ## index (into a list of free variables) and with the given original name.
-fn freeVarDecl(name, index) {
+export fn freeVarDecl(name, index) {
     <> safeName("zvalue free", name, index)
 };
 
 ## Gets the C variable name to use for the variable at the indicated
 ## index (into a list of free variables) and with the given original name.
-fn freeVarName(name, index) {
+export fn freeVarName(name, index) {
     <> safeName("free", name, index)
 };
 
 ## Gets the C variable declaration to use for the variable at the indicated
 ## index (into a list of local variables) and with the given original name.
-fn localVarDecl(name, index) {
+export fn localVarDecl(name, index) {
     <> safeName("zvalue local", name, index)
 };
 
 ## Gets the C variable name to use for the variable at the indicated
 ## index (into a list of local variables) and with the given original name.
-fn localVarName(name, index) {
+export fn localVarName(name, index) {
     <> safeName("local", name, index)
 };
 
 ## Returns `{names, vars, inits}` for all variables that are defined
 ## within the given closure.
-fn processVars(clo) {
+export fn processVars(clo) {
     def formals = processFormals(clo);
     def freeVars = processFreeVars(clo);
     def yieldDef = processYieldDef(clo);
@@ -231,11 +231,3 @@ fn processVars(clo) {
         vars
     }
 };
-
-<> {
-    freeVarDecl,
-    freeVarName,
-    localVarDecl,
-    localVarName,
-    processVars
-}

@@ -12,10 +12,53 @@
 ##
 
 ## This just re-exports stuff defined in intramodule files.
-<> {
-    (intraLoad("constructors1"))*,
-    (intraLoad("constructors2"))*,
-    (intraLoad("formals"))*,
-    (intraLoad("getters"))*,
-    (intraLoad("refs"))*
-}
+## **Note:** This highlights the need for some kind of 're-export' facility.
+
+def $constructors1 = intraLoad("constructors1");
+export def makeApply            = $constructors1::makeApply;
+export def makeCall             = $constructors1::makeCall;
+export def makeCallLiterals     = $constructors1::makeCallLiterals;
+export def makeCallThunks       = $constructors1::makeCallThunks;
+export def makeExport           = $constructors1::makeExport;
+export def makeJump             = $constructors1::makeJump;
+export def makeLiteral          = $constructors1::makeLiteral;
+export def makeThunk            = $constructors1::makeThunk;
+export def makeVarBind          = $constructors1::makeVarBind;
+export def makeVarDef           = $constructors1::makeVarDef;
+export def makeVarDefMutable    = $constructors1::makeVarDefMutable;
+export def makeVarRef           = $constructors1::makeVarRef;
+export def makeVarRefLvalue     = $constructors1::makeVarRefLvalue;
+export def withFormals          = $constructors1::withFormals;
+export def withoutIntermediates = $constructors1::withoutIntermediates;
+export def withoutInterpolate   = $constructors1::withoutInterpolate;
+
+def $constructors2 = intraLoad("constructors2");
+export def makeCallOrApply = $constructors2::makeCallOrApply;
+export def makeGet         = $constructors2::makeGet;
+export def makeInterpolate = $constructors2::makeInterpolate;
+export def makeOptValue    = $constructors2::makeOptValue;
+export def withExport      = $constructors2::withExport;
+export def withSimpleDefs  = $constructors2::withSimpleDefs;
+export def withTop         = $constructors2::withTop;
+
+def $formals = intraLoad("formals");
+export def formalsMaxArgs = $formals::formalsMaxArgs;
+export def formalsMinArgs = $formals::formalsMinArgs;
+
+def $getters = intraLoad("getters");
+export def get_actuals     = $getters::get_actuals;
+export def get_formals     = $getters::get_formals;
+export def get_function    = $getters::get_function;
+export def get_id          = $getters::get_id;
+export def get_interpolate = $getters::get_interpolate;
+export def get_lvalue      = $getters::get_lvalue;
+export def get_maxArgs     = $getters::get_maxArgs;
+export def get_minArgs     = $getters::get_minArgs;
+export def get_name        = $getters::get_name;
+export def get_nodeValue   = $getters::get_nodeValue;
+export def get_statements  = $getters::get_statements;
+export def get_yield       = $getters::get_yield;
+export def get_yieldDef    = $getters::get_yieldDef;
+
+def $refs = intraLoad("refs");
+export def REFS = $refs::REFS;

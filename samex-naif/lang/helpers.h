@@ -78,6 +78,9 @@ zvalue makeCall(zvalue function, zvalue actuals);
 zvalue makeCallOrApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
+zvalue makeExport(zvalue name);
+
+/* Documented in spec. */
 zvalue makeInterpolate(zvalue node);
 
 /**
@@ -106,6 +109,9 @@ zvalue makeVarRef(zvalue name);
 
 /* Documented in spec. */
 zvalue makeOptValue(zvalue expression);
+
+/* Documented in spec. */
+zvalue withExport(zvalue node);
 
 /* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals);

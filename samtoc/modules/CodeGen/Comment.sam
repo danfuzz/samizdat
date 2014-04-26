@@ -12,7 +12,7 @@ def $protocol = intraLoad("protocol");
 def flatten = $protocol::flatten;
 def indent  = $protocol::indent;
 
-fn makeComment(text, optPayload?) {
+export fn makeComment(text, optPayload?) {
     <> if (def payload = optPayload*) {
         def flat = "/* \(text) */ \(payload.flatten())";
         <> @Comment{payload, text, flat}
@@ -42,5 +42,3 @@ fn @@Comment.indent(level, maxColumns) {
         <> "\(prefix)/* \(this::text) */"
     }
 };
-
-<> {makeComment}

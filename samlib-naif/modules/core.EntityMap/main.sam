@@ -11,7 +11,7 @@
 ## of this file need to be updated.
 
 ## Documented in spec.
-def ENTITY_MAP = {
+export def ENTITY_MAP = {
     "AElig": "Æ",
     "AMP": "&",
     "Aacgr": "Ά",
@@ -2249,6 +2249,4 @@ def ENTITY_MAP = {
     "zscr": "𝓏",
     "zwj": "‍",
     "zwnj": "‌"
-};
-
-<> { ENTITY_MAP }
+}

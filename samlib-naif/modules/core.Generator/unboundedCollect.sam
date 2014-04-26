@@ -12,8 +12,6 @@
 ##
 
 ## Documented in spec.
-fn unboundedCollect(this, optFilterFunction?) {
+export fn unboundedCollect(this, optFilterFunction?) {
     die("Cannot `collect` unbounded generator.");
 };
-
-<> {unboundedCollect}

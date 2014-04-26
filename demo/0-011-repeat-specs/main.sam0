@@ -88,5 +88,3 @@ argOptStar("x");
 argOptStar("x", "blort");
 argOptStar("x", "blort", "igram");
 argOptStar("x", "blort", "igram", "fizmo");
-
-<> 0

@@ -11,70 +11,76 @@ def $Generator  = moduleLoad(["core", "Generator"]);
 ##
 
 ## Documented in spec.
-fn makeApply(function, actuals) {
+export fn makeApply(function, actuals) {
     <> @apply{function, actuals}
 };
 
 ## Documented in spec.
-fn makeCall(function, actuals*) {
+export fn makeCall(function, actuals*) {
     <> @call{function, actuals}
 };
 
 ## Documented in spec.
-fn makeCallLiterals(function, actuals*) {
+export fn makeCallLiterals(function, actuals*) {
     def literals = $Generator::filterAll(actuals) { one <> makeLiteral(one) };
     <> makeCall(function, literals*)
 };
 
 ## Documented in spec.
-fn makeCallThunks(function, actuals*) {
+export fn makeCallThunks(function, actuals*) {
     def thunks = $Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeCall(function, thunks*)
 };
 
 ## Documented in spec.
-fn makeJump(function, optValue?) {
+export fn makeExport(name, optExport?) {
+    def exp = ifValueOr { <> optExport* } { <> name };
+    <> @export{name, export: exp}
+};
+
+## Documented in spec.
+export fn makeJump(function, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @jump{function, value} }
         { <> @jump{function} }
 };
 
 ## Documented in spec.
-fn makeLiteral(value) {
+export fn makeLiteral(value) {
     <> @literal{value}
 };
 
 ## Documented in spec.
-fn makeThunk(expression) {
+export fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: expression}
 };
 
 ## Documented in spec.
-fn makeVarBind(name, value) {
+export fn makeVarBind(name, value) {
     <> @varBind{name, value}
 };
 
 ## Documented in spec.
-fn makeVarDef(name, optValue?) {
+export fn makeVarDef(name, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @varDef{name, value} }
         { <> @varDef{name} }
 };
 
 ## Documented in spec.
-fn makeVarDefMutable(name, optValue?) {
+export fn makeVarDefMutable(name, optValue?) {
     <> ifValue { <> optValue* }
         { value <> @varDefMutable{name, value} }
         { <> @varDefMutable{name} }
 };
 
 ## Documented in spec.
-fn makeVarRef(name) {
+export fn makeVarRef(name) {
     <> @varRef{name}
 };
 
 ## Documented in spec.
-fn makeVarRefLvalue(name) {
+export fn makeVarRefLvalue(name) {
     <> @varRef{
         name,
         lvalue: { node <> makeVarBind(name, node) }
@@ -82,44 +88,20 @@ fn makeVarRefLvalue(name) {
 };
 
 ## Documented in spec.
-fn withFormals(node, formals) {
+export fn withFormals(node, formals) {
     <> @(get_typeName(node)){dataOf(node)*, formals}
 };
 
 ## Documented in spec.
-fn withTop(node) {
-    <> @(get_typeName(node)){dataOf(node)*, top: true}
-};
-
-## Documented in spec.
-fn withoutInterpolate(node) {
+export fn withoutInterpolate(node) {
     <> @(get_typeName(node))($Collection::del(dataOf(node), "interpolate"))
 };
 
 ## Documented in spec.
-fn withoutIntermediates(node) {
+export fn withoutIntermediates(node) {
     def data = $Collection::del(
         $Collection::del(dataOf(node), "lvalue"),
         "interpolate");
 
     <> @(get_typeName(node))(data)
 };
-
-<> {
-    makeApply,
-    makeCall,
-    makeCallLiterals,
-    makeCallThunks,
-    makeJump,
-    makeLiteral,
-    makeThunk,
-    makeVarBind,
-    makeVarDef,
-    makeVarDefMutable,
-    makeVarRef,
-    makeVarRefLvalue,
-    withFormals,
-    withTop,
-    withoutIntermediates,
-    withoutInterpolate
-}

@@ -16,13 +16,11 @@ intraLoad("MapGenerator");
 ## Exported Definitions
 ##
 
-<> {
-    ## Re-exported from proto module.
-    cat:        $Collection::cat,
-    get:        $Collection::get,
-    del:        $Collection::del,
-    get_size:   $Collection::get_size,
-    keyList:    $Collection::keyList,
-    nthMapping: $Collection::nthMapping,
-    put:        $Collection::put
-}
+## Re-exported from proto module.
+export def cat        = $Collection::cat;
+export def get        = $Collection::get;
+export def del        = $Collection::del;
+export def get_size   = $Collection::get_size;
+export def keyList    = $Collection::keyList;
+export def nthMapping = $Collection::nthMapping;
+export def put        = $Collection::put;

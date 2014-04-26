@@ -12,7 +12,7 @@ def $protocol = intraLoad("protocol");
 def flatten = $protocol::flatten;
 def indent  = $protocol::indent;
 
-fn makeCall(function, args*) {
+export fn makeCall(function, args*) {
     def flat = "\[
         function.flatten(),
         "(",
@@ -49,5 +49,3 @@ fn @@Call.indent(level, maxColumns) {
         )*
     ]"
 };
-
-<> {makeCall}

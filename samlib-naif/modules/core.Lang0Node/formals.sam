@@ -11,7 +11,7 @@ def $Number    = moduleLoad(["proto", "Number"]);
 ##
 
 ## Documented in spec.
-fn formalsMaxArgs(formals) {
+export fn formalsMaxArgs(formals) {
     var maxArgs = 0;
 
     $Generator::filterPump(formals) { f ->
@@ -27,7 +27,7 @@ fn formalsMaxArgs(formals) {
 };
 
 ## Documented in spec.
-fn formalsMinArgs(formals) {
+export fn formalsMinArgs(formals) {
     var minArgs = 0;
 
     $Generator::filterPump(formals) { <next> f ->
@@ -41,8 +41,3 @@ fn formalsMinArgs(formals) {
 
     <> minArgs
 };
-
-<> {
-    formalsMaxArgs,
-    formalsMinArgs
-}
