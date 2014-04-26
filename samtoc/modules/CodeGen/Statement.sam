@@ -12,7 +12,7 @@ def $protocol = intraLoad("protocol");
 def flatten = $protocol::flatten;
 def indent  = $protocol::indent;
 
-fn makeStatement(tree) {
+export fn makeStatement(tree) {
     <> @Statement{tree, flat: "\(tree.flatten());"}
 };
 
@@ -29,5 +29,3 @@ fn @@Statement.indent(level, maxColumns) {
         <> "\(this::tree.indent(level, maxColumns));\n"
     }
 };
-
-<> {makeStatement}

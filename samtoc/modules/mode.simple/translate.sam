@@ -33,7 +33,7 @@ def localVarDecl = $vars::localVarDecl;
 def localVarName = $vars::localVarName;
 
 ## `node.translate(varsBox)`: Generic function to perform the translation.
-fn .translate(varsBox);
+export fn .translate(varsBox);
 
 
 ## Common translation code for variable definition.
@@ -125,5 +125,3 @@ fn @@varRef.translate(varsBox) {
         | die("Reference of undefined variable: \%q(this.name)");
     <> $CodeGen::makeCall("boxFetch", binding::name)
 };
-
-<> {translate}

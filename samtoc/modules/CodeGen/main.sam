@@ -9,11 +9,21 @@
 ## This just binds generics.
 intraLoad("String");
 
-<> {
-    intraLoad("Assign")*,
-    intraLoad("Call")*,
-    intraLoad("Comment")*,
-    intraLoad("Return")*,
-    intraLoad("Statement")*,
-    intraLoad("protocol")*
-}
+def $Assign = intraLoad("Assign");
+export def makeAssign = $Assign::makeAssign;
+
+def $Call = intraLoad("Call");
+export def makeCall = $Call::makeCall;
+
+def $Comment = intraLoad("Comment");
+export def makeComment = $Comment::makeComment;
+
+def $Return = intraLoad("Return");
+export def makeReturn = $Return::makeReturn;
+
+def $Statement = intraLoad("Statement");
+export def makeStatement = $Statement::makeStatement;
+
+def $protocol = intraLoad("protocol");
+export def flatten = $protocol::flatten;
+export def indent  = $protocol::indent;

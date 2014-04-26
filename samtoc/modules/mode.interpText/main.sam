@@ -13,7 +13,7 @@ def templateText = intraReadUtf8("template.txt");
 
 def $Io0 = moduleLoad(["core", "Io0"]);
 
-fn compile(sourcePath, targetPath) {
+export fn compile(sourcePath, targetPath) {
     def replacements = {
         source: $Io0::readFileUtf8(sourcePath)
     };
@@ -22,7 +22,4 @@ fn compile(sourcePath, targetPath) {
     $Io0::writeFileUtf8(targetPath, outputText)
 };
 
-<> {
-    SUFFIX: "c",
-    compile
-}
+export def SUFFIX = "c";

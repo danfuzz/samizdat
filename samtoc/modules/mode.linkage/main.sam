@@ -15,7 +15,7 @@ def $Template = moduleLoad(["Template"]);
 def $Io0 = moduleLoad(["core", "Io0"]);
 def $Lang2 = moduleLoad(["core", "Lang2"]);
 
-fn compile(sourcePath, targetPath) {
+export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
     def tree = $Lang2::convertToLang0($Lang2::parseProgram(sourceText));
 
@@ -34,7 +34,4 @@ fn compile(sourcePath, targetPath) {
     $Io0::writeFileUtf8(targetPath, outputText)
 };
 
-<> {
-    SUFFIX: "saminfo",
-    compile
-}
+export def SUFFIX = "saminfo";

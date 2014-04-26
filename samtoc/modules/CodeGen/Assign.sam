@@ -12,7 +12,7 @@ def $protocol = intraLoad("protocol");
 def flatten = $protocol::flatten;
 def indent  = $protocol::indent;
 
-fn makeAssign(target, value) {
+export fn makeAssign(target, value) {
     def flat = "\(target.flatten()) = \(value.flatten())";
 
     <> @Assign{target, value, flat}
@@ -35,5 +35,3 @@ fn @@Assign.indent(level, maxColumns) {
         this::value.indent(level + 1, maxColumns)
     ]"
 };
-
-<> {makeAssign}
