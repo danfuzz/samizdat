@@ -6,12 +6,10 @@
 ## Bitwise protocol. This is just a re-export from the primitive core library.
 ##
 
-<> {
-    and:     Bitwise_and,
-    bit:     Bitwise_bit,
-    bitSize: Bitwise_bitSize,
-    not:     Bitwise_not,
-    or:      Bitwise_or,
-    shl:     Bitwise_shl,
-    xor:     Bitwise_xor
-}
+export def and     = Bitwise_and;
+export def bit     = Bitwise_bit;
+export def bitSize = Bitwise_bitSize;
+export def not     = Bitwise_not;
+export def or      = Bitwise_or;
+export def shl     = Bitwise_shl;
+export def xor     = Bitwise_xor;

@@ -6,15 +6,13 @@
 ## Number protocol. This is just a re-export from the primitive core library.
 ##
 
-<> {
-    abs:   Number_abs,
-    add:   Number_add,
-    div:   Number_div,
-    divEu: Number_divEu,
-    mod:   Number_mod,
-    modEu: Number_modEu,
-    mul:   Number_mul,
-    neg:   Number_neg,
-    sign:  Number_sign,
-    sub:   Number_sub
-}
+export def abs   = Number_abs;
+export def add   = Number_add;
+export def div   = Number_div;
+export def divEu = Number_divEu;
+export def mod   = Number_mod;
+export def modEu = Number_modEu;
+export def mul   = Number_mul;
+export def neg   = Number_neg;
+export def sign  = Number_sign;
+export def sub   = Number_sub;

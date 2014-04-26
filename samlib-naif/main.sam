@@ -17,7 +17,7 @@ def $ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 ## Initializes the world, and returns the final global variable environment.
 ## `libraryPath` is the filesystem path to the core library.
 ## `primitiveEnvironment` is the map of native bindings.
-fn main(libraryPath, primitiveEnvironment) {
+export fn main(libraryPath, primitiveEnvironment) {
     def earlyGlobals = {
         primitiveEnvironment*,
         $Globals::earlyEnvironment()*
@@ -35,5 +35,3 @@ fn main(libraryPath, primitiveEnvironment) {
     note("    [fin]\n");
     <> result
 };
-
-<> {main}

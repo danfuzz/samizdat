@@ -6,8 +6,6 @@
 ## Box protocol. This is just a re-export from the primitive core library.
 ##
 
-<> {
-    canStore: canStore,
-    fetch:    fetch,
-    store:    store
-}
+export canStore;
+export fetch;
+export store;

@@ -8,13 +8,11 @@
 ##
 ## **Note:** `cat`, `get`, and `get_size` are re-exported one-off generics.
 
-<> {
-    cat,
-    get,
-    get_size,
+export cat;
+export get;
+export get_size;
 
-    del:        Collection_del,
-    keyList:    Collection_keyList,
-    nthMapping: Collection_nthMapping,
-    put:        Collection_put
-}
+export def del        = Collection_del;
+export def keyList    = Collection_keyList;
+export def nthMapping = Collection_nthMapping;
+export def put        = Collection_put;

@@ -7,10 +7,8 @@
 ##
 ## **Note:** `nth` is a re-exported one-off generic.
 
-<> {
-    nth,
+export nth;
 
-    reverse:        Sequence_reverse,
-    sliceExclusive: Sequence_sliceExclusive,
-    sliceInclusive: Sequence_sliceInclusive
-}
+export def reverse        = Sequence_reverse;
+export def sliceExclusive = Sequence_sliceExclusive;
+export def sliceInclusive = Sequence_sliceInclusive;
