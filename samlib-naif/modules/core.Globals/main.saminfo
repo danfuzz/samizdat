@@ -6,5 +6,5 @@
     name: ["core", "Globals"],
     version: "0.0.1",
 
-    language: "none"
+    language: "Lang0"
 }
