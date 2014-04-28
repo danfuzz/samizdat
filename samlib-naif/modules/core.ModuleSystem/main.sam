@@ -179,24 +179,24 @@ fn intraLoadMain(loader) {
 };
 
 ## Helper for `intraLoad` which does the actual loading.
-fn doIntraLoad(ml, path) {
+fn doIntraLoad(il, path) {
     note(cat("        ", path));
-    def pathPrefix = cat(ml::basePath, path);
+    def pathPrefix = cat(il::basePath, path);
 
     def binPath = cat(pathPrefix, ".samb");
     ifIs { <> eq(Io0_fileType(binPath)?, ["file"]) }
         {
-            def func = Lang0_evalBinary(ml::globals, binPath);
+            def func = Lang0_evalBinary(il::globals, binPath);
             return func()
         };
 
     def sourcePath = cat(pathPrefix, ".sam");
     ifIs { <> eq(Io0_fileType(sourcePath)?, ["file"]) }
         {
-            def lang = ml::languageModule;
+            def lang = il::languageModule;
             def text = Io0_readFileUtf8(sourcePath);
             def tree = lang::parseProgram(text);
-            def func = lang::eval(ml::globals, tree);
+            def func = lang::eval(il::globals, tree);
             return func()
         };
 
