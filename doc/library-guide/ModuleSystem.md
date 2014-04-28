@@ -9,6 +9,11 @@ This module is the module which knows how to load modules!
 It provides a couple different versions of loading, useful in a couple
 different contexts.
 
+**Note:** The constant `null` can be treated as a module loader. When used
+as such, it "knows" the two modules `core.Io0` and `core.Lang0`. These are
+set up as "bootstrap modules," as otherwise they would be their own
+dependencies.
+
 
 <br><br>
 ### Generic Function Definitions: `ModuleLoader` protocol
