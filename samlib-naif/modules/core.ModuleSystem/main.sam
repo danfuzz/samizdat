@@ -15,6 +15,27 @@
 ## Private definitions
 ##
 
+## Bootstrap modules `core.Io0` and `core.Lang0`. Bindings are all as
+## documented in the spec. These are set up here in order to avoid the
+## infinite regress of trying to load `core.Io0` and `core.Lang0` as their own
+## prerequisites.
+def BOOTSTRAP_MODULES = {
+    ["core", "Io0"]: {
+        cwd:           Io0_cwd,
+        fileType:      Io0_fileType,
+        readFileUtf8:  Io0_readFileUtf8,
+        readLink:      Io0_readLink,
+        writeFileUtf8: Io0_writeFileUtf8
+    },
+    ["core", "Lang0"]: {
+        eval:            Lang0_eval,
+        evalBinary:      Lang0_evalBinary,
+        parseExpression: Lang0_parseExpression,
+        parseProgram:    Lang0_parseProgram,
+        tokenize:        Lang0_tokenize
+    }
+};
+
 ## Set-like map of characters that are not allowed in module components.
 def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: @Null};
 
@@ -143,7 +164,8 @@ fn @@ModuleLoader.moduleLoad(path) {
 
 ## Documented in spec.
 fn @@Null.moduleLoad(path) {
-    die(cat("Module not found: ", flattenModulePath(path)))
+    <> ifValueOr { <> get(BOOTSTRAP_MODULES, path) }
+        { die(cat("Module not found: ", flattenModulePath(path))) }
 };
 
 ## Documented in spec.
