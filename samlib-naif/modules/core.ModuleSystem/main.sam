@@ -32,7 +32,7 @@ def $Lang0 = {
 };
 
 def BOOTSTRAP_MODULES = {
-    ["core", "Io0"]: $Io0,
+    ["core", "Io0"]:   $Io0,
     ["core", "Lang0"]: $Lang0
 };
 
