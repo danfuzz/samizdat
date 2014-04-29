@@ -82,35 +82,39 @@ static void reset(ParseState *state, zint mark) {
  */
 
 /**
- * Skips a single-line comment. Should only be called when
- * known to be looking at a `#`.
+ * Skips a single-line comment. Should only be called when known to be
+ * looking at a `#`. Returns `true` if a comment was parsed.
  */
-static void skipComment(ParseState *state) {
+static bool skipComment(ParseState *state) {
     zint at = cursor(state);
     read(state); // Skip the initial `#`.
 
     zint ch = read(state);
     if ((ch != '#') && (ch != '!')) {
         reset(state, at);
-        return;
+        return false;
     }
 
-    while (!isEof(state)) {
+    for (;;) {
         if (read(state) == '\n') {
             break;
         }
     }
+
+    return true;
 }
 
 /**
  * Skips whitespace and comments.
  */
 static void skipWhitespace(ParseState *state) {
-    while (!isEof(state)) {
+    for (;;) {
         zint ch = peek(state);
 
         if (ch == '#') {
-            skipComment(state);
+            if (!skipComment(state)) {
+                break;
+            }
         } else if ((ch == ' ') || (ch == '\n')) {
             read(state);
         } else {
