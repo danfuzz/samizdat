@@ -54,6 +54,12 @@ results from evaluating a program tree using `eval` (above).
 It is an error (terminating the runtime) if the file does not exist,
 is not a library file, or is missing necessary bindings.
 
+#### `languageOf(string) <> string | void`
+
+Finds and returns the language module directive in the given string,
+which is assumed to be a Samizdat program. If there is no directive
+present, this returns void.
+
 #### `parseExpression(expression) <> expressionNode`
 
 Parses the given `expression` as an expression in the language.

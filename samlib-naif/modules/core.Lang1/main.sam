@@ -30,3 +30,4 @@ def $tokenize = intraLoad("tokenize");
 export def tokenize = $tokenize::tokenize;
 
 export def evalBinary = $Lang0::evalBinary;
+export def languageOf = $Lang0::languageOf;

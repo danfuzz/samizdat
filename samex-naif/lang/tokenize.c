@@ -41,7 +41,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : state->str[state->at];
+    return isEof(state) ? (zint) -1 : state->str[state->at];
 }
 
 /**
@@ -74,7 +74,7 @@ static void skipComment(ParseState *state) {
 }
 
 /**
- * Skips whitespace.
+ * Skips whitespace and comments.
  */
 static void skipWhitespace(ParseState *state) {
     while (!isEof(state)) {
@@ -267,12 +267,16 @@ static zvalue tokenizeColon(ParseState *state) {
 }
 
 /**
- * Parses a single token, updating the given input position.
+ * Parses a single token, updating the given input position. This skips
+ * initial whitespace, if any.
  */
-static zvalue tokenizeOne(ParseState *state) {
+static zvalue tokenizeAnyToken(ParseState *state) {
+    skipWhitespace(state);
+
     zint ch = peek(state);
 
     switch (ch) {
+        case -1:                return NULL;
         case '}':  read(state); return TOK_CH_CCURLY;
         case ')':  read(state); return TOK_CH_CPAREN;
         case ']':  read(state); return TOK_CH_CSQUARE;
@@ -286,9 +290,9 @@ static zvalue tokenizeOne(ParseState *state) {
         case '+':  read(state); return TOK_CH_PLUS;
         case ';':  read(state); return TOK_CH_SEMICOLON;
         case '*':  read(state); return TOK_CH_STAR;
-        case '\"': return tokenizeString(state);
-        case '\\': return tokenizeQuotedIdentifier(state);
-        case ':':  return tokenizeColon(state);
+        case '\"':              return tokenizeString(state);
+        case '\\':              return tokenizeQuotedIdentifier(state);
+        case ':':               return tokenizeColon(state);
         case '-':
             return tokenizeOneOrTwo(state, '>', TOK_CH_MINUS, TOK_CH_RARROW);
         case '.':
@@ -317,29 +321,31 @@ static zvalue tokenizeOne(ParseState *state) {
  */
 
 /* Documented in header. */
+zvalue langLanguageOf0(zvalue string) {
+    // FIXME! To be implemented.
+    die("TODO");
+}
+
+/* Documented in header. */
 zvalue langTokenize0(zvalue string) {
     zstackPointer save = datFrameStart();
-
     zint size = get_size(string);
 
     if (size > LANG_MAX_TOKENS) {
         die("Too many characters for tokenization: %lld", size);
     }
 
-    zvalue result[LANG_MAX_TOKENS];
+    zvalue result[size];
     ParseState state = { .size = size, .at = 0 };
     zint out = 0;
 
     zcharsFromString(state.str, string);
 
     for (;;) {
-        skipWhitespace(&state);
-
-        if (isEof(&state)) {
+        zvalue one = tokenizeAnyToken(&state);
+        if (one == NULL) {
             break;
         }
-
-        zvalue one = tokenizeOne(&state);
 
         result[out] = one;
         out++;

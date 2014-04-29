@@ -27,3 +27,4 @@ export def tokenize = $tokenize::tokenize;
 
 export def convertToLang0 = $Lang1::convertToLang0;
 export def evalBinary     = $Lang1::evalBinary;
+export def languageOf     = $Lang1::languageOf;

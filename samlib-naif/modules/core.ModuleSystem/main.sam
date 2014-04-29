@@ -26,6 +26,7 @@ def $Io0 = {
 def $Lang0 = {
     eval:            Lang0_eval,
     evalBinary:      Lang0_evalBinary,
+    languageOf:      Lang0_languageOf,
     parseExpression: Lang0_parseExpression,
     parseProgram:    Lang0_parseProgram,
     tokenize:        Lang0_tokenize
