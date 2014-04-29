@@ -68,7 +68,7 @@ def tokWhitespace = $Peg::makeMainSequence(
             $Peg::makePlus($Peg::makeCharSet(" \n")),
             $Peg::makeSequence(
                 $Peg::makeString("#"),
-                $Peg::makeCharSet("#!"),
+                $Peg::makeCharSet("#!="),
                 $Peg::makeStar($Peg::makeCharSetComplement("\n"))))));
 
 ## Documented in spec.
