@@ -71,10 +71,10 @@ enum {
      */
     LANG_MAX_TOKENS = 100000,
 
-    /** Maximum number of characters in an identifier. */
-    LANG_MAX_IDENTIFIER_CHARS = 40,
-
-    /** Maximum number of characters in a tokenized string constant. */
+    /**
+     * Maximum number of characters in a tokenized string constant,
+     * identifier, or directive.
+     */
     LANG_MAX_STRING_CHARS = 200,
 
     /** Maximum number of active stack frames. */
