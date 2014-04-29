@@ -65,6 +65,8 @@ continues. :# thisIsNotCommentary
 ### Directives
 
 Samizdat has a simple syntax for single-line meta-program directives.
+Directives, if present, are ignored during regular parsing; they take
+effect *before* the main acts of tokenization and parsing are performed.
 
 A directive starts with `#=` (hash, equal) and continues to the end of the
 line it appears on. After the start mark and optional whitespace, an
