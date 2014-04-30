@@ -7,6 +7,8 @@
 ##
 ## Payload is `subGen`, the sub-generator.
 
+#= language core.Lang0
+
 def $Box = moduleLoad(["core", "Box"]);
 
 

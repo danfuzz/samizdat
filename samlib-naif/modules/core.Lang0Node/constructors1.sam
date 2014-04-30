@@ -2,6 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#= language core.Lang0
 
 def $Collection = moduleLoad(["core", "Collection"]);
 def $Generator  = moduleLoad(["core", "Generator"]);

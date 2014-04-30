@@ -9,6 +9,8 @@
 ## the Samizdat Layer 0 and Samizdat Layer 1 specifications.
 ##
 
+#= language core.Lang0
+
 def $Generator = moduleLoad(["core", "Generator"]);
 def $Number    = moduleLoad(["proto", "Number"]);
 def $Peg       = moduleLoad(["core", "Peg"]);

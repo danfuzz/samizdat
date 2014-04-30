@@ -6,6 +6,8 @@
 ## Samizdat Layer 2 Evaluation
 ##
 
+#= language core.Lang1
+
 ## TODO
 ## def convertToLang0 = intraLoad("convert")::convertToLang0;
 

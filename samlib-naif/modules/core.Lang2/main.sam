@@ -6,6 +6,8 @@
 ## Layer 2 parsing and evaluation functions
 ##
 
+#= language core.Lang1
+
 def $Lang1 = moduleLoad(["core", "Lang1"]);
 
 

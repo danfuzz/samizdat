@@ -11,6 +11,8 @@
 ## (at the end of parsing).
 ##
 
+#= language core.Lang0
+
 def $Generator = moduleLoad(["core", "Generator"]);
 def $Range     = moduleLoad(["core", "Range"]);
 def $Sequence  = moduleLoad(["core", "Sequence"]);

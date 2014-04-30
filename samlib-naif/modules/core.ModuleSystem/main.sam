@@ -2,14 +2,14 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#= language core.Lang0
-
 ##
 ## Module loading mechanism
 ##
 ## **Note:** When running fully interpreted, this file is loaded twice. The
 ## first time is before any other in-language definitions are made.
 ##
+
+#= language core.Lang0
 
 
 ## Bootstrap modules `core.Io0` and `core.Lang0`. Bindings are all as

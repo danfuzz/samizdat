@@ -6,6 +6,8 @@
 ## `ValueGenerator` Type
 ##
 
+#= language core.Lang0
+
 def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 
 

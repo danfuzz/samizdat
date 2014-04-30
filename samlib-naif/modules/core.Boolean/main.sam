@@ -2,11 +2,11 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#= language core.Lang0
-
 ##
 ## Booleans
 ##
+
+#= language core.Lang0
 
 def $Bitwise = moduleLoad(["core", "Bitwise"]);
 def and     = $Bitwise::and;

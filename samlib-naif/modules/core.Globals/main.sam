@@ -6,6 +6,9 @@
 ## Standard global environment
 ##
 
+#= language core.Lang0
+
+
 ##
 ## Private Definitions
 ##

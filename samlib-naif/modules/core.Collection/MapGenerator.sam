@@ -7,6 +7,8 @@
 ##
 ## Payload is `{map: map, index: int}`.
 
+#= language core.Lang0
+
 def $Collection = moduleLoad(["proto", "Collection"]);
 def $Number     = moduleLoad(["proto", "Number"]);
 

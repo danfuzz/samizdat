@@ -6,6 +6,8 @@
 ## Samizdat Layer 1 tree parser
 ##
 
+#= language core.Lang0
+
 def $Format    = moduleLoad(["core", "Format"]);
 def $Generator = moduleLoad(["core", "Generator"]);
 def $Number    = moduleLoad(["proto", "Number"]);
