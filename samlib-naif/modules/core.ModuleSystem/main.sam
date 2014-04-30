@@ -44,6 +44,9 @@ def BOOTSTRAP_MODULES = {
 ## Private definitions
 ##
 
+## Default language module to use, when language is unspecified.
+def DEFAULT_LANGUAGE = ["core", "Lang2"];
+
 ## Set-like map of characters that are not allowed in module components.
 def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: @Null};
 
@@ -80,6 +83,31 @@ fn flattenModulePath(name) {
     ## together, and drop the leading `.`.
     def withDots = collect(name, flattenModuleComponent);
     <> Sequence_sliceInclusive(cat(withDots*), 1)
+};
+
+## Splits a module name string into a list of component names. Does very
+## little error checking.
+fn splitModuleName(name) {
+    ifIs { <> eq(name, "") }
+        { die("Invalid module name: empty string") };
+    ifNot { <> hasType(name, String) }
+        { die("Invalid module name: not a string") };
+
+    var result = [];
+    var current = "";
+
+    ## This uses `collect` just for the filter function, ignoring the
+    ## collected result.
+    collect(name, { ch ->
+        ifIs { <> eq(ch, ".") }
+            {
+                result := [result*, current];
+                current := ""
+            }
+            { current := cat(current, ch) }
+    });
+
+    <> [result*, current]
 };
 
 ## Validates an absolute file path string. It must be a string and start with
@@ -197,7 +225,6 @@ export fn makeModuleLoader(path, globals, nextModuleLoader) {
 ## * `moduleLoader` -- module loader
 ## * `basePath` -- absolute path prefix for all loading, with trailing `/`
 ## * `globals` -- global variable environment to use when loading
-## * `languageModule` -- language module to use when loading
 ## * `loadedBox` -- map from partial paths to the results of loading
 ##
 ## TODO: This should be an opaque type.
@@ -213,12 +240,11 @@ fn doIntraLoad(il, path) {
     note(cat("        ", path));
 
     def pathPrefix = cat(il::basePath, path);
-    def lang = il::languageModule;
     def binPath = cat(pathPrefix, ".samb");
 
     ifIs { <> eq($Io0::fileType(binPath)?, ["file"]) }
         {
-            def func = lang::evalBinary(il::globals, binPath);
+            def func = $Lang0::evalBinary(il::globals, binPath);
             return func()
         };
 
@@ -226,6 +252,10 @@ fn doIntraLoad(il, path) {
     ifIs { <> eq($Io0::fileType(sourcePath)?, ["file"]) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
+            def languageName = ifValue { <> $Lang0::languageOf(text) }
+                { name <> splitModuleName(name) }
+                { <> DEFAULT_LANGUAGE };
+            def lang = moduleLoad(il::moduleLoader, languageName);
             def tree = lang::parseProgram(text);
             def func = lang::eval(il::globals, tree);
             return func()
@@ -302,13 +332,8 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
         moduleLoader:  module_moduleLoader
     };
 
-    def languageName = ifValueOr { <> get(moduleInfo, "language") }
-        { <> "Lang2" };
-    def languageModule = module_moduleLoad(["core", languageName]);
-
     result := @IntraLoader{
         basePath,
-        languageModule,
         moduleLoader,
         globals: fullGlobals,
         loadedBox: Box_makeCell({})
