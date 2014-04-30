@@ -332,6 +332,9 @@ static zvalue tokenizeDirective(ParseState *state) {
             break;
         } else if (size == LANG_MAX_STRING_CHARS) {
             die("Overlong directive token.");
+        } else if ((size == 0) && (ch == ' ')) {
+            // Skip initial spaces.
+            continue;
         }
 
         chars[size] = ch;
@@ -345,7 +348,7 @@ static zvalue tokenizeDirective(ParseState *state) {
 
     zvalue value = stringFromZchars(size, chars);
     return makeValue(TYPE_directive,
-        mapFrom2(STR_name, name, STR_value, value),
+        mapFrom2(STR_name, dataOf(name), STR_value, value),
         NULL);
 }
 
