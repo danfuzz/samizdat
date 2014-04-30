@@ -6,6 +6,8 @@
 ## Box protocol. This is just a re-export from the primitive core library.
 ##
 
+#= language core.Lang0
+
 export canStore;
 export fetch;
 export store;

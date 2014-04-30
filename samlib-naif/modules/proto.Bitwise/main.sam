@@ -6,6 +6,8 @@
 ## Bitwise protocol. This is just a re-export from the primitive core library.
 ##
 
+#= language core.Lang0
+
 export def and     = Bitwise_and;
 export def bit     = Bitwise_bit;
 export def bitSize = Bitwise_bitSize;

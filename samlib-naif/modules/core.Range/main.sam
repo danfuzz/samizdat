@@ -8,6 +8,8 @@
 ## `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 ## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
+#= language core.Lang0
+
 def $Generator = moduleLoad(["core", "Generator"]);
 def stdCollect       = $Generator::stdCollect;
 def unboundedCollect = $Generator::unboundedCollect;

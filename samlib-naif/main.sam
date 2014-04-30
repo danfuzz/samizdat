@@ -9,6 +9,8 @@
 ## the standard global variable environment.
 ##
 
+#= language core.Lang0
+
 note("\nLoading module system...");
 
 def $Globals      = moduleLoad(["core", "Globals"]);

@@ -7,6 +7,8 @@
 ##
 ## **Note:** `nth` is a re-exported one-off generic.
 
+#= language core.Lang0
+
 export nth;
 
 export def reverse        = Sequence_reverse;

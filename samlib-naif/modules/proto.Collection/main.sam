@@ -8,6 +8,8 @@
 ##
 ## **Note:** `cat`, `get`, and `get_size` are re-exported one-off generics.
 
+#= language core.Lang0
+
 export cat;
 export get;
 export get_size;
