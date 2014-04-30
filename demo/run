@@ -39,6 +39,9 @@ samexOpts=()
 # What compiler mode to use, if any.
 compilerMode=''
 
+# Whether the demo directory needs to be copied (for mutation, etc.).
+copyDemo=0
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
@@ -52,6 +55,7 @@ while [[ $1 != '' ]]; do
         exit
     elif [[ ${opt} =~ ^--compiler=(.*) ]]; then
         compilerMode="${BASH_REMATCH[1]}"
+        copyDemo=1
     elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
         buildOpts+=("${opt}")
     elif [[    ${opt} == '--profile' || ${opt} == '--time'
@@ -216,6 +220,17 @@ if [[ ${#buildOpts[@]} != 0 ]]; then
     echo ''
 fi
 
+# If we need to copy the demo, do so now. This creates a temporary directory
+# to hold the result.
+
+if (( copyDemo )); then
+    tmpSetup
+    tmpDemoDir="${TMP_DIR}/files"
+    cp -r "${demoDir}" "${tmpDemoDir}" || exit 1
+    demoDir="${tmpDemoDir}"
+    unset tmpDemoDir
+fi
+
 # If we're compiling, then copy the demo to a temporary directory, and
 # compile everything there.
 
@@ -223,22 +238,17 @@ if [[ ${compilerMode} != '' ]]; then
     echo "########## COMPILING: ${name}"
     echo ''
 
-    tmpSetup
-    runDir="${TMP_DIR}/files"
     cSrcDir="${TMP_DIR}/c-src"
 
-    cp -r "${demoDir}" "${runDir}" || exit 1
-    demoDir="${runDir}"
-
     files=($(
-        cd "${runDir}"
+        cd "${demoDir}"
         find . -name '*.sam' -o -name '*.sam[0-9]'
     ))
 
     for file in "${files[@]}"; do
         outFile="${cSrcDir}/${file}"
         mkdir -p "$(dirname "${outFile}")"
-        mv "${runDir}/${file}" "${outFile}"
+        mv "${demoDir}/${file}" "${outFile}"
     done
 
     "${binDir}/samtoc" \
@@ -253,8 +263,8 @@ if [[ ${compilerMode} != '' ]]; then
         "${binDir}/compile-samex-addon" \
             --output="${cSrcDir}/${outFile}" "${cFile}" \
             || handleError
-        cp "${cSrcDir}/${outFile}" "${runDir}/${outFile}"
-        rm -f "${runDir}/${file}"
+        cp "${cSrcDir}/${outFile}" "${demoDir}/${outFile}"
+        rm -f "${demoDir}/${file}"
     done
 
     if [[ ${mainFile} != '.' ]]; then
