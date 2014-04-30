@@ -119,3 +119,10 @@ def mainModule = intraLoad(loader, "main");
 ```
 
 except with more error checking.
+
+#### `splitModuleName(name) <> [name*]`
+
+This splits a module name string into a list of component names. It
+does no sanity checks beyond checking that `name` is a non-empty string
+containing all non-empty component names. It does *not* check for any
+other validity of component names.

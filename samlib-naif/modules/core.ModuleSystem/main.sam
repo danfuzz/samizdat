@@ -88,31 +88,6 @@ fn flattenModulePath(name) {
     <> Sequence_sliceInclusive(cat(withDots*), 1)
 };
 
-## Splits a module name string into a list of component names. Does very
-## little error checking.
-fn splitModuleName(name) {
-    ifIs { <> eq(name, "") }
-        { die("Invalid module name: empty string") };
-    ifNot { <> hasType(name, String) }
-        { die("Invalid module name: not a string") };
-
-    var result = [];
-    var current = "";
-
-    ## This uses `collect` just for the filter function, ignoring the
-    ## collected result.
-    collect(name, { ch ->
-        ifIs { <> eq(ch, ".") }
-            {
-                result := [result*, current];
-                current := ""
-            }
-            { current := cat(current, ch) }
-    });
-
-    <> [result*, current]
-};
-
 ## Validates an absolute file path string. It must be a string and start with
 ## `"/"`.
 fn checkAbsolutePath(path) {
@@ -370,4 +345,33 @@ export fn run(path, globals, moduleLoader, args*) {
         { die("No `main` export from module's `main`.") };
 
     <> (optMain*)(args*)
+};
+
+## Documented in spec.
+export fn splitModuleName(name) {
+    ifIs { <> eq(name, "") }
+        { die("Invalid module name: empty string") };
+    ifNot { <> hasType(name, String) }
+        { die("Invalid module name: not a string") };
+
+    var result = [];
+    var current = "";
+
+    fn addCurrentToResult() {
+        ifIs { <> eq(current, "") }
+            { die(cat("Invalid empty component in module name: ", name)) };
+        result := [result*, current];
+        current := ""
+    };
+
+    ## This uses `collect` just for the filter function, ignoring the
+    ## collected result.
+    collect(name, { ch ->
+        ifIs { <> eq(ch, ".") }
+            { addCurrentToResult() }
+            { current := cat(current, ch) }
+    });
+
+    addCurrentToResult();
+    <> result
 };
