@@ -9,6 +9,9 @@
 ## first time is before any other in-language definitions are made.
 ##
 
+## This directive only has an effect when the module system loads *itself*
+## in a chained loader. The primordial / bootstrap module system gets loaded
+## as a layer 0 file no matter what the directive says (or doesn't say).
 #= language core.Lang0
 
 
