@@ -31,6 +31,11 @@ FUN_IMPL_DECL(Lang0_evalBinary) {
 }
 
 /* Documented in spec. */
+FUN_IMPL_DECL(Lang0_languageOf) {
+    return langLanguageOf0(args[0]);
+}
+
+/* Documented in spec. */
 FUN_IMPL_DECL(Lang0_parseExpression) {
     return langParseExpression0(args[0]);
 }

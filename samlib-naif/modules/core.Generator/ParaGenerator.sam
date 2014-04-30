@@ -7,6 +7,8 @@
 ##
 ## Payload is `[subGens*]`, a list of sub-generators.
 
+#= language core.Lang0
+
 def $Box = moduleLoad(["core", "Box"]);
 
 def $ListWrapGenerator = intraLoad("ListWrapGenerator");

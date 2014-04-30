@@ -79,8 +79,8 @@ def tokInt2;
 def tokMultilineComment;
 def tokStringPart2;
 
-## Parses any amount of whitespace and comments (including nothing at all).
-## **Note:** The yielded result is always ignored.
+## Parses any amount of whitespace, comments, and directives (including
+## nothing at all). **Note:** The yielded result is always ignored.
 def tokWhitespace = {:
     ## The lookahead here is to avoid the bulk of this rule if there's
     ## no chance we're actually looking at whitespace.
@@ -89,7 +89,7 @@ def tokWhitespace = {:
     (
         [" \n"]+
     |
-        "#" ["#!"] [! "\n"]*
+        "#" ["#!="] [! "\n"]*
     |
         ## Introduced in Layer 2.
         &"#:" ## Avoid calling the rule unless we know it will match.

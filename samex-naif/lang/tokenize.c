@@ -5,6 +5,7 @@
  */
 
 #include "const.h"
+#include "helpers.h"
 #include "impl.h"
 #include "util.h"
 #include "type/Int.h"
@@ -15,7 +16,7 @@
 
 
 /*
- * Private Definitions
+ * ParseState definition and functions
  */
 
 /** State of tokenization in-progress. */
@@ -31,6 +32,13 @@ typedef struct {
 } ParseState;
 
 /**
+ * Gets the current read position.
+ */
+static zint cursor(ParseState *state) {
+    return state->at;
+}
+
+/**
  * Is the parse state at EOF?
  */
 static bool isEof(ParseState *state) {
@@ -41,7 +49,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : state->str[state->at];
+    return isEof(state) ? (zint) -1 : state->str[state->at];
 }
 
 /**
@@ -55,33 +63,58 @@ static zint read(ParseState *state) {
 }
 
 /**
- * Skips a single-line comment.
+ * Resets the current read position to the given one.
  */
-static void skipComment(ParseState *state) {
+static void reset(ParseState *state, zint mark) {
+    if (mark > state->at) {
+        die("Cannot reset forward: %lld > %lld", mark, state->at);
+    }
+
+    state->at = mark;
+}
+
+
+/*
+ * Samizdat 0 Tree Grammar
+ *
+ * This is *not* a direct transliteration of the spec's reference tokenizer,
+ * but it is nonetheless intended to implement the same grammar.
+ */
+
+/**
+ * Skips a single-line comment. Should only be called when known to be
+ * looking at a `#`. Returns `true` if a comment was parsed.
+ */
+static bool skipComment(ParseState *state) {
+    zint at = cursor(state);
     read(state); // Skip the initial `#`.
 
     zint ch = read(state);
-
     if ((ch != '#') && (ch != '!')) {
-        die("Invalid character after `#`: %c", (char) ch);
+        reset(state, at);
+        return false;
     }
 
-    while (!isEof(state)) {
+    for (;;) {
         if (read(state) == '\n') {
             break;
         }
     }
+
+    return true;
 }
 
 /**
- * Skips whitespace.
+ * Skips whitespace and comments.
  */
 static void skipWhitespace(ParseState *state) {
-    while (!isEof(state)) {
+    for (;;) {
         zint ch = peek(state);
 
         if (ch == '#') {
-            skipComment(state);
+            if (!skipComment(state)) {
+                break;
+            }
         } else if ((ch == ' ') || (ch == '\n')) {
             read(state);
         } else {
@@ -112,7 +145,7 @@ static zvalue tokenizeInt(ParseState *state) {
         value = (value * 10) + (ch - '0');
 
         if (value >= 0x80000000) {
-            die("Overlarge int token.");
+            die("Overvalue int token.");
         }
     }
 
@@ -129,7 +162,7 @@ static zvalue tokenizeInt(ParseState *state) {
  */
 static zvalue tokenizeIdentifier(ParseState *state) {
     zint size = 0;
-    zchar chars[LANG_MAX_IDENTIFIER_CHARS];
+    zchar chars[LANG_MAX_STRING_CHARS];
 
     for (;;) {
         zint ch = peek(state);
@@ -140,7 +173,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
               ((ch >= 'A') && (ch <= 'Z')) ||
               ((ch >= '0') && (ch <= '9')))) {
             break;
-        } else if (size == LANG_MAX_IDENTIFIER_CHARS) {
+        } else if (size == LANG_MAX_STRING_CHARS) {
             die("Overlong identifier token.");
         }
 
@@ -267,12 +300,69 @@ static zvalue tokenizeColon(ParseState *state) {
 }
 
 /**
- * Parses a single token, updating the given input position.
+ * Tokenizes a directive, if possible.
  */
-static zvalue tokenizeOne(ParseState *state) {
+static zvalue tokenizeDirective(ParseState *state) {
+    zint at = cursor(state);
+
+    // Validate the `#=` prefix.
+    if ((read(state) != '#') || (read(state) != '=')) {
+        reset(state, at);
+        return NULL;
+    }
+
+    // Skip spaces.
+    while (peek(state) == ' ') {
+        read(state);
+    }
+
+    zvalue name = tokenizeIdentifier(state);
+
+    if (name == NULL) {
+        die("Invalid directive name.");
+    }
+
+    zint size = 0;
+    zchar chars[LANG_MAX_STRING_CHARS];
+
+    for (;;) {
+        zint ch = read(state);
+
+        if ((ch == -1) || (ch == '\n')) {
+            break;
+        } else if (size == LANG_MAX_STRING_CHARS) {
+            die("Overlong directive token.");
+        } else if ((size == 0) && (ch == ' ')) {
+            // Skip initial spaces.
+            continue;
+        }
+
+        chars[size] = ch;
+        size++;
+    }
+
+    // Trim spaces at EOL.
+    while ((size > 0) && (chars[size - 1] == ' ')) {
+        size--;
+    }
+
+    zvalue value = stringFromZchars(size, chars);
+    return makeValue(TYPE_directive,
+        mapFrom2(STR_name, dataOf(name), STR_value, value),
+        NULL);
+}
+
+/**
+ * Parses a single token, updating the given input position. This skips
+ * initial whitespace, if any.
+ */
+static zvalue tokenizeAnyToken(ParseState *state) {
+    skipWhitespace(state);
+
     zint ch = peek(state);
 
     switch (ch) {
+        case -1:                return NULL;
         case '}':  read(state); return TOK_CH_CCURLY;
         case ')':  read(state); return TOK_CH_CPAREN;
         case ']':  read(state); return TOK_CH_CSQUARE;
@@ -286,9 +376,10 @@ static zvalue tokenizeOne(ParseState *state) {
         case '+':  read(state); return TOK_CH_PLUS;
         case ';':  read(state); return TOK_CH_SEMICOLON;
         case '*':  read(state); return TOK_CH_STAR;
-        case '\"': return tokenizeString(state);
-        case '\\': return tokenizeQuotedIdentifier(state);
-        case ':':  return tokenizeColon(state);
+        case '\"':              return tokenizeString(state);
+        case '\\':              return tokenizeQuotedIdentifier(state);
+        case ':':               return tokenizeColon(state);
+        case '#':               return tokenizeDirective(state);
         case '-':
             return tokenizeOneOrTwo(state, '>', TOK_CH_MINUS, TOK_CH_RARROW);
         case '.':
@@ -317,32 +408,45 @@ static zvalue tokenizeOne(ParseState *state) {
  */
 
 /* Documented in header. */
+zvalue langLanguageOf0(zvalue string) {
+    zint size = get_size(string);
+    ParseState state = { .size = size, .at = 0 };
+
+    zcharsFromString(state.str, string);
+    zvalue result = tokenizeAnyToken(&state);
+
+    if ((result != NULL)
+        && hasType(result, TYPE_directive)
+        && valEq(get(result, STR_name), STR_language)) {
+        return get(result, STR_value);
+    }
+
+    return NULL;
+}
+
+/* Documented in header. */
 zvalue langTokenize0(zvalue string) {
     zstackPointer save = datFrameStart();
-
     zint size = get_size(string);
 
     if (size > LANG_MAX_TOKENS) {
         die("Too many characters for tokenization: %lld", size);
     }
 
-    zvalue result[LANG_MAX_TOKENS];
+    zvalue result[size];
     ParseState state = { .size = size, .at = 0 };
     zint out = 0;
 
     zcharsFromString(state.str, string);
 
     for (;;) {
-        skipWhitespace(&state);
-
-        if (isEof(&state)) {
+        zvalue one = tokenizeAnyToken(&state);
+        if (one == NULL) {
             break;
+        } else if (!hasType(one, TYPE_directive)) {
+            result[out] = one;
+            out++;
         }
-
-        zvalue one = tokenizeOne(&state);
-
-        result[out] = one;
-        out++;
     }
 
     zvalue resultList = listFromArray(out, result);

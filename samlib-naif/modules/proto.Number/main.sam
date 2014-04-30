@@ -6,6 +6,8 @@
 ## Number protocol. This is just a re-export from the primitive core library.
 ##
 
+#= language core.Lang0
+
 export def abs   = Number_abs;
 export def add   = Number_add;
 export def div   = Number_div;

@@ -6,6 +6,8 @@
 ## Path string utilities
 ##
 
+#= language core.Lang0
+
 def $Number     = moduleLoad(["proto", "Number"]);
 def $Sequence   = moduleLoad(["core", "Sequence"]);
 

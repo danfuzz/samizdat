@@ -28,6 +28,13 @@
 zvalue langEval0(zvalue env, zvalue node);
 
 /**
+ * Gets the language directive in the given program text, if any.
+ *
+ * See the spec for details on language directives.
+ */
+zvalue langLanguageOf0(zvalue programText);
+
+/**
  * Compiles the given expression text into a parse tree form, suitable
  * for passing to `langEval0()`. `expression` must either
  * be a string or a list of tokens, and it must represent an expression

@@ -36,6 +36,12 @@
 					<string>#recursive-comment</string>
 				</dict>
 				<dict>
+					<key>name</key>
+					<string>meta.preprocessor.samizdat</string>
+					<key>match</key>
+					<string>#=.*$</string>
+				</dict>
+				<dict>
 					<key>captures</key>
 					<dict>
 						<key>0</key>

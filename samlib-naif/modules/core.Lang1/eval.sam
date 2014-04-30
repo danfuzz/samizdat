@@ -6,6 +6,8 @@
 ## Samizdat Layer 1 Evaluation
 ##
 
+#= language core.Lang0
+
 def $Lang0 = moduleLoad(["core", "Lang0"]);
 
 def convertToLang0 = intraLoad("convert")::convertToLang0;

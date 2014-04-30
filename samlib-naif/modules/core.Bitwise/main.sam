@@ -6,6 +6,8 @@
 ## Bitwise functions
 ##
 
+#= language core.Lang0
+
 def $Bitwise = moduleLoad(["proto", "Bitwise"]);
 def and     = $Bitwise::and;
 def bit     = $Bitwise::bit;

@@ -6,6 +6,8 @@
 ## Sequence functions
 ##
 
+#= language core.Lang0
+
 def $Number   = moduleLoad(["proto", "Number"]);
 def $Sequence = moduleLoad(["proto", "Sequence"]);
 

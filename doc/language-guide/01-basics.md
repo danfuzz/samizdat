@@ -30,6 +30,7 @@ the language &mdash; including those which look like "statements" from the
 C tradition &mdash; are in fact "expressions" that can be combined usefully
 with any other expressions in the language.
 
+
 ### Comments
 
 Samizdat has both single-line and multi-line comments.
@@ -59,6 +60,30 @@ to a matching colon-hash (`:#`). Multi-line comments nest.
 is commentary. #: This too. :# Commentary
 continues. :# thisIsNotCommentary
 ```
+
+
+### Directives
+
+Samizdat has a simple syntax for single-line meta-program directives.
+Directives, if present, are ignored during regular parsing; they take
+effect *before* the main acts of tokenization and parsing are performed.
+
+A directive starts with `#=` (hash then equal sign) at any column of a line
+(not just in the first column), and it continues to the end of the line it
+appears on. After the start mark and optional whitespace, an identifier
+(simple name) indicates the name of the directive. The rest of the line
+(trimmed of spaces on either side) is the "value" of the directive.
+
+Currently, only one directive is implemented:
+
+* `language fully.qualified.Name` &mdash; indicates the module name for
+  the parser to use to interpret (or compile) the source file in which it
+  appears. If present, this must be the first non-whitespace / non-comment
+  item in the file.
+
+  **Note:** This directive is mostly of use in the core library, which uses
+  a few different versions of the parser as part of its bootstrap process.
+
 
 ### Statements and Expressions
 

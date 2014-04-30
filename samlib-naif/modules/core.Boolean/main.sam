@@ -6,6 +6,8 @@
 ## Booleans
 ##
 
+#= language core.Lang0
+
 def $Bitwise = moduleLoad(["core", "Bitwise"]);
 def and     = $Bitwise::and;
 def bit     = $Bitwise::bit;

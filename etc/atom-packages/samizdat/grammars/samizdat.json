@@ -404,6 +404,10 @@
           "include" : "#recursive-comment"
         },
         {
+          "match" : "#=.*$",
+          "name" : "meta.preprocessor.samizdat"
+        },
+        {
           "match" : "(#!|###*).*$",
           "captures" : {
             "0" : {
