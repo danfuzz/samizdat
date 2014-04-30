@@ -68,10 +68,11 @@ Samizdat has a simple syntax for single-line meta-program directives.
 Directives, if present, are ignored during regular parsing; they take
 effect *before* the main acts of tokenization and parsing are performed.
 
-A directive starts with `#=` (hash, equal) and continues to the end of the
-line it appears on. After the start mark and optional whitespace, an
-identifier (simple name) indicates the name of the directive. The rest of
-the line (trimmed of spaces on either side) is the "value" of the directive.
+A directive starts with `#=` (hash then equal sign) at any column of a line
+(not just in the first column), and it continues to the end of the line it
+appears on. After the start mark and optional whitespace, an identifier
+(simple name) indicates the name of the directive. The rest of the line
+(trimmed of spaces on either side) is the "value" of the directive.
 
 Currently, only one directive is implemented:
 
