@@ -299,19 +299,8 @@ fn @@IntraLoader.intraReadUtf8(path) {
 export fn makeIntraLoader(path, globals, nextModuleLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
-
-    ## If the module info file (`main.saminfo`) exists, it must evaluate to a
-    ## map. If it does not exist, create minimal "anonymous" module info.
-    def infoPath = cat(basePath, "main.saminfo");
-    def moduleInfo = ifIs { <> eq($Io0::fileType(infoPath)?, ["file"]) }
-        {
-            def text = $Io0::readFileUtf8(infoPath);
-            <> $Lang0::eval(globals, $Lang0::parseExpression(text))
-        }
-        { <> {name: [], version: "0"} };
-
-    def moduleLoader = makeModuleLoader(
-        cat(basePath, "modules"), globals, nextModuleLoader);
+    def modulesDir = cat(basePath, "modules");
+    def moduleLoader = makeModuleLoader(modulesDir, globals, nextModuleLoader);
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
