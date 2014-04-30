@@ -168,9 +168,8 @@ if [[ ! (-r ${demoDir} && -d ${demoDir}) ]]; then
     exit 1
 fi
 
-# Find the "main" and/or "module" file.
+# Find the "main" file and/or "modules" directory.
 
-modulesFile="$(cd "${demoDir}"; find . -maxdepth 1 -name 'main.saminfo')"
 if [[ -d "${demoDir}/modules" ]]; then
     # If there's a modules directory, the path to pass is the directory.
     mainFile="."
