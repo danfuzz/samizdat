@@ -97,6 +97,11 @@ definition subdirectories. `nextModuleLoader` is the loader to use to find
 required modules that aren't defined within `path`'s hierarchy. `globals`
 is the global variable environment to use when evaluating source.
 
+If `path` does not exist, then as a special case, this function just returns
+`nextModuleLoader`. (This makes it easy to only construct a loader chain
+when needed.) If `path` exists but is not a directory, this function
+terminates with a fatal error.
+
 **Note:** If this loader should not have a next module loader, then
 `nextModuleLoader` should be passed as `null`.
 

@@ -207,10 +207,22 @@ fn @@Null.moduleLoad(path) {
 ## Documented in spec.
 export fn makeModuleLoader(path, globals, nextModuleLoader) {
     checkAbsolutePath(path);
-    def basePath = cat(path, "/");
+
+    ## Check for existence and directoriness.
+    def pathType = $Io0::fileType(path)?;
+    ifIs { <> eq(pathType, []) }
+        {
+            ## No such file or directory.
+            return nextModuleLoader
+        };
+    ifNot { <> eq(pathType*, "directory") }
+        {
+            die(cat("Module loader path exists but is not a directory: ",
+                path))
+        };
 
     <> @ModuleLoader{
-        basePath,
+        basePath: cat(path, "/"),
         globals,
         next: nextModuleLoader,
         loadedBox: Box_makeCell({})
