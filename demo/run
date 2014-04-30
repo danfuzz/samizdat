@@ -39,6 +39,9 @@ samexOpts=()
 # What compiler mode to use, if any.
 compilerMode=''
 
+# What language module to use (as an override), if any.
+language=''
+
 # Whether the demo directory needs to be copied (for mutation, etc.).
 copyDemo=0
 
@@ -55,6 +58,9 @@ while [[ $1 != '' ]]; do
         exit
     elif [[ ${opt} =~ ^--compiler=(.*) ]]; then
         compilerMode="${BASH_REMATCH[1]}"
+        copyDemo=1
+    elif [[ ${opt} =~ ^--language=(.*) ]]; then
+        language="${BASH_REMATCH[1]}"
         copyDemo=1
     elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
         buildOpts+=("${opt}")
@@ -220,14 +226,28 @@ if [[ ${#buildOpts[@]} != 0 ]]; then
 fi
 
 # If we need to copy the demo, do so now. This creates a temporary directory
-# to hold the result.
+# to hold the result. It also sets up the `${srcFiles}` variable.
 
 if (( copyDemo )); then
     tmpSetup
+
     tmpDemoDir="${TMP_DIR}/files"
     cp -r "${demoDir}" "${tmpDemoDir}" || exit 1
     demoDir="${tmpDemoDir}"
     unset tmpDemoDir
+
+    srcFiles=($(
+        cd "${demoDir}"
+        find . -name '*.sam' -o -name '*.sam[0-9]'
+    ))
+fi
+
+# If a `--language` override was specified, edit the appropriate directive
+# into all the source files.
+
+if [[ ${language} != '' ]]; then
+    echo "TODO!" 1>&2
+    exit 1
 fi
 
 # If we're compiling, then copy the demo to a temporary directory, and
@@ -239,12 +259,7 @@ if [[ ${compilerMode} != '' ]]; then
 
     cSrcDir="${TMP_DIR}/c-src"
 
-    files=($(
-        cd "${demoDir}"
-        find . -name '*.sam' -o -name '*.sam[0-9]'
-    ))
-
-    for file in "${files[@]}"; do
+    for file in "${srcFiles[@]}"; do
         outFile="${cSrcDir}/${file}"
         mkdir -p "$(dirname "${outFile}")"
         mv "${demoDir}/${file}" "${outFile}"
@@ -253,10 +268,10 @@ if [[ ${compilerMode} != '' ]]; then
     "${binDir}/samtoc" \
         --in-dir="${cSrcDir}" --out-dir="${cSrcDir}" \
         --mode="${compilerMode}" \
-        -- "${files[@]}" \
+        -- "${srcFiles[@]}" \
         || handleError
 
-    for file in "${files[@]}"; do
+    for file in "${srcFiles[@]}"; do
         outFile="${file%.sam*}.samb"
         cFile="${cSrcDir}/${file%.sam*}.c"
         "${binDir}/compile-samex-addon" \
