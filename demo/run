@@ -246,8 +246,28 @@ fi
 # into all the source files.
 
 if [[ ${language} != '' ]]; then
-    echo "TODO!" 1>&2
-    exit 1
+    for file in "${srcFiles[@]}"; do
+        inFile="${demoDir}/${file}"
+        outFile="${inFile}.new"
+        # Expect the first non-comment non-empty line to be the directive,
+        # when present. Either replaces it or adds it, as appropriate.
+        awk -v language="${language}" '
+        BEGIN { header = 1; }
+        header && (/^ *$/ || /^##/) {
+            print;
+            next;
+        }
+        header {
+            printf("#= language %s\n", language);
+            if ($0 !~ /^#= language /) {
+                print;
+            }
+            header = 0;
+            next;
+        }
+        { print; }
+        ' "${inFile}" > "${outFile}"
+    done
 fi
 
 # If we're compiling, then copy the demo to a temporary directory, and
