@@ -60,6 +60,9 @@ directories). If the file exports a `main`, then that is run in the same
 manner as a module's `main`. If it does not export a main, then after
 evaluation this function simply returns void.
 
+The two file suffixes recognized are `.sam` for Samizdat source text, and
+`.samb` for compiled Samizdat executables.
+
 Currently recognized command-line options:
 
 * None.
