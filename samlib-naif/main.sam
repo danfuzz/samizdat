@@ -5,7 +5,7 @@
 ##
 ## Samizdat Core Library Secondary Loader
 ##
-## This gets loaded from `boot.sam` and is responsible for returning
+## This gets loaded from the C `main` code and is responsible for returning
 ## the standard global variable environment.
 ##
 
