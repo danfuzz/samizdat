@@ -6,6 +6,8 @@
 ## The venerable Y Combinator and friends
 ##
 
+#= language core.Lang0
+
 
 ##
 ## Combinator Definitions

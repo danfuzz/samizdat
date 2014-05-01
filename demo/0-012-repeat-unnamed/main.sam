@@ -6,6 +6,8 @@
 ## Demo of formal argument repeat specifiers, of unnamed (anonymous) arguments
 ##
 
+#= language core.Lang0
+
 
 ##
 ## Helper Definitions
