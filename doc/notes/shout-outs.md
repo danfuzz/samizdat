@@ -24,9 +24,8 @@ Samizdat's syntax can be traced in part to
 [ALGOL](http://en.wikipedia.org/wiki/ALGOL), through
 [C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
 [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[JavaScript](http://en.wikipedia.org/wiki/JavaScript), and
-[E](http://en.wikipedia.org/wiki/E_%28programming_language%29). Its
-other syntactic influences include
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript), and E.
+Its other syntactic influences include
 [Smalltalk](http://en.wikipedia.org/wiki/Smalltalk),
 [Scala](https://en.wikipedia.org/wiki/Scala_%28programming_language%29),
 and traditional
