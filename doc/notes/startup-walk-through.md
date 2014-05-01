@@ -29,7 +29,7 @@ applies to both `samex-naif` and `samex-tot`.
     This is a map with a single binding of `"main"` to a function (which is
     the usual case for "application modules").
 
-6.  The `run` function tehn looks up the core library's `main` binding,
+6.  The `run` function then looks up the core library's `main` binding,
     and calls it as a function, passing it the primitive global environment
     and the filesystem path to the core library. These two arguments are
     what it was passed from `lib/init.c`.
