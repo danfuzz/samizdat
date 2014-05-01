@@ -4,10 +4,30 @@ Samizdat Layer 0: Core Library
 core.ModuleSystem
 -----------------
 
-This module is the module which knows how to load modules!
+This module is the module which knows how to load modules. It is also
+where much of the single-file loading logic resides, since that interacts
+tightly with module loading.
 
-It provides a couple different versions of loading, useful in a couple
-different contexts.
+When files are loaded using this system, they have access to a global
+variable environment which includes all the standard globals (as described
+within this spec), as well as several module-system-specific functions:
+
+* `moduleLoad(path)` &mdash; Loads the module indicated by the given
+  module path. A module path is a list of strings, such as
+  `["core", "Lang0"]`.
+
+* `moduleLoader()` &mdash; Returns the module loader instance to be used
+  to load modules. This is the one used by `moduleLoad` (above).
+
+* `intraLoad(path)` &mdash; Loads an intra-module file as indicated by
+  the given `path`. In this case, `path` is expected to be a relative
+  filesystem path string, such as `foo/bar`.
+
+* `intraReadUtf8(path)` &mdash; Reads an intra-module file, interpreting
+  it as a UTF-8 encoded byte stream. `path` is as with `intraLoad`.
+
+* `intraType(path)` &mdash; Gets the file type of an intra-module file.
+  `path` is as with `intraLoad`. The return value is as with `$Io0::fileType`.
 
 **Note:** The constant `null` can be treated as a module loader. When used
 as such, it "knows" the two modules `core.Io0` and `core.Lang0`. These are
@@ -37,15 +57,6 @@ if `path` is not a valid module name path (list of strings).
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
 
-#### `intraType(loader, path) <> string | void`
-
-This gets the type of an intra-module file named by the indicated relative
-`path`. The return values are the same as for `$Io0::fileType`
-(see which).
-
-`path` is expected to be a string identifying a relative file path within the
-module's file hierarchy.
-
 #### `intraLoad(loader, path) <> . | void`
 
 This loads and evaluates an intra-module file. `path` is expected to be a
@@ -69,6 +80,15 @@ module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
 exist as a file.
+
+#### `intraType(loader, path) <> string | void`
+
+This gets the type of an intra-module file named by the indicated relative
+`path`. The return values are the same as for `$Io0::fileType`
+(see which).
+
+`path` is expected to be a string identifying a relative file path within the
+module's file hierarchy.
 
 
 <br><br>
@@ -130,8 +150,8 @@ In the case of source text, an appropriate language module is loaded up
 from the given `moduleLoader`.
 
 In both cases, the global environment is created by loading `core.Globals`
-using `moduleLoader`, and augmenting it with a `moduleLoad` function that
-uses `moduleLoader`.
+using `moduleLoader`, and augmenting it with the functions `moduleLoad()`
+and `moduleLoader()`, which use / return the given `moduleLoader` argument.
 
 The direct result of evaluation of the file is a function of no arguments.
 This is called. If that returns a map, then `main` is looked up in it,
