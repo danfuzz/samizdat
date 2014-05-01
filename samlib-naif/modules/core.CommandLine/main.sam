@@ -11,7 +11,6 @@ def $Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
 def $Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
 def $Globals      = moduleLoad(["core", "Globals"]);
 def $Io0          = moduleLoad(["core", "Io0"]);
-def $Lang2        = moduleLoad(["core", "Lang2"]);
 def $ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 def $Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
 def $Peg          = moduleLoad(["core", "Peg"]);        ## Implicitly used.
