@@ -3,24 +3,18 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Optional-value operator demo
+## Int literal demo
 ##
+
+#= language core.Lang0
 
 
 ##
 ## Helper Definitions
 ##
 
-fn msg(value) {
-    note(cat("Got: ", $Format::source(value)))
-};
-
-fn getVoid() {
-    ## This space intentionally left blank.
-};
-
-fn getValue(x) {
-    <> x
+fn msg(string) {
+    note(cat("Got: ", $Format::source(string)))
 };
 
 
@@ -28,6 +22,8 @@ fn getValue(x) {
 ## Main Tests
 ##
 
-msg(getVoid()?);
-msg(getValue("yay")?);
-msg("stuff"?);
+msg(0);
+msg(-9);
+msg(20);
+msg(98_765);
+msg(-12_345)

@@ -6,6 +6,8 @@
 ## Generic function demo
 ##
 
+#= language core.Lang0
+
 fn .whatIs();
 
 fn Int.whatIs() {

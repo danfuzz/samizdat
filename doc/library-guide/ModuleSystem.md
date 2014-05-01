@@ -119,3 +119,31 @@ def mainModule = intraLoad(loader, "main");
 ```
 
 except with more error checking.
+
+#### `runFile(path, moduleLoader, args*) <> . | void`
+
+This runs a solo file at the given `path`. It works for both source text
+and binary files, switching based on the file name suffix, `.sam` for text
+and `.samb` for binary.
+
+In the case of source text, an appropriate language module is loaded up
+from the given `moduleLoader`.
+
+In both cases, the global environment is created by loading `core.Globals`
+using `moduleLoader`, and augmenting it with a `moduleLoad` function that
+uses `moduleLoader`.
+
+The direct result of evaluation of the file is a function of no arguments.
+This is called. If that returns a map, then `main` is looked up in it,
+and that `main` is called, passing it `args*`. The final result is whatever
+is returned by the call to `main`.
+
+If the initial function result is void, or isn't a map, or the map doesn't
+bind `main`, then this function simply returns void.
+
+#### `splitModuleName(name) <> [name*]`
+
+This splits a module name string into a list of component names. It
+does no sanity checks beyond checking that `name` is a non-empty string
+containing all non-empty component names. It does *not* check for any
+other validity of component names.

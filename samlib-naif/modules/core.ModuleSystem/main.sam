@@ -53,6 +53,36 @@ def DEFAULT_LANGUAGE = ["core", "Lang2"];
 ## Set-like map of characters that are not allowed in module components.
 def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: @Null};
 
+## Gets the file name suffix of the last component of the given path.
+## **Note:** This is written in a super-oddball way, because of how little
+## core library is actually available at this point.
+fn fileNameSuffix(path) {
+    var gotDot = 0;
+    var result = "";
+
+    ## `collect` is used here as a "for-each," ignoring the collected result.
+    collect(path,
+        { ch ->
+            ifIs { <> eq(ch, "/") }
+                {
+                    ## New path component.
+                    gotDot := 0;
+                }
+                {
+                    ifIs { <> eq(ch, ".") }
+                        {
+                            gotDot := 1;
+                            result := "";
+                        }
+                        { result := cat(result, ch) }
+                }
+        });
+
+    <> ifIs { <> eq(gotDot, 0) }
+        { <> "" }
+        { <> result }
+};
+
 ## Helper for `flattenModulePath`, which processes a single component. It
 ## rejects empty components and components with dots, slashes, or null
 ## characters (`\0`) in them. It returns the component prefixed with `.`
@@ -63,7 +93,7 @@ fn flattenModuleComponent(component) {
     ifNot { <> hasType(component, String) }
         { die("Invalid module path component: not a string") };
 
-    ## `collect` is used here as a "for each," ignoring the collected result.
+    ## `collect` is used here as a "for-each," ignoring the collected result.
     collect(component,
         { ch ->
             ifIs { <> get(INVALID_MODULE_CHARS, ch) }
@@ -86,31 +116,6 @@ fn flattenModulePath(name) {
     ## together, and drop the leading `.`.
     def withDots = collect(name, flattenModuleComponent);
     <> Sequence_sliceInclusive(cat(withDots*), 1)
-};
-
-## Splits a module name string into a list of component names. Does very
-## little error checking.
-fn splitModuleName(name) {
-    ifIs { <> eq(name, "") }
-        { die("Invalid module name: empty string") };
-    ifNot { <> hasType(name, String) }
-        { die("Invalid module name: not a string") };
-
-    var result = [];
-    var current = "";
-
-    ## This uses `collect` just for the filter function, ignoring the
-    ## collected result.
-    collect(name, { ch ->
-        ifIs { <> eq(ch, ".") }
-            {
-                result := [result*, current];
-                current := ""
-            }
-            { current := cat(current, ch) }
-    });
-
-    <> [result*, current]
 };
 
 ## Validates an absolute file path string. It must be a string and start with
@@ -348,6 +353,65 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 
 
 ##
+## Private Definitions: Single-file running
+##
+
+## Makes a global environment sufficient for evaluating a single file.
+fn makeFileGlobals(moduleLoader) {
+    fn file_moduleLoad(path) { <> moduleLoad(moduleLoader, path) };
+
+    <> {
+        ## The standard global environment.
+        moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment()*,
+
+        moduleLoad: file_moduleLoad
+    }
+};
+
+## Runs a program which has been `eval`ed. This works for both text and
+## binary programs. This calls the given `programFunc`. If it returns
+## a map that binds `main`, then this in turn calls that `main`, returning
+## whatever that does. If not, this returns whatever the original function
+## call returned (including void).
+fn runProgram(programFunc, args) {
+    def optResult = programFunc()?;
+
+    ifIs { <> eq(optResult, []) }
+        { return };
+
+    def result = optResult*;
+
+    ifIs { <> hasType(result, Map) }
+        {
+            ifValue { <> result::main }
+                { main -> return main(args*) }
+        };
+
+    return result;
+};
+
+fn runTextFile(path, moduleLoader, args) {
+    def globals = makeFileGlobals(moduleLoader);
+    def text = $Io0::readFileUtf8(path);
+    def languageName = ifValue { <> $Lang0::languageOf(text) }
+        { name <> splitModuleName(name) }
+        { <> DEFAULT_LANGUAGE };
+    def lang = moduleLoad(moduleLoader, languageName);
+    def tree = lang::parseProgram(text);
+    def func = lang::eval(globals, tree);
+
+    <> runProgram(func, args)
+};
+
+fn runBinaryFile(path, moduleLoader, args) {
+    def globals = makeFileGlobals(moduleLoader);
+    def func = $Lang0::evalBinary(globals, path);
+
+    <> runProgram(func, args)
+};
+
+
+##
 ## Exported Definitions
 ##
 
@@ -370,4 +434,46 @@ export fn run(path, globals, moduleLoader, args*) {
         { die("No `main` export from module's `main`.") };
 
     <> (optMain*)(args*)
+};
+
+## Documented in spec.
+export fn runFile(path, moduleLoader, args*) {
+    def suffix = fileNameSuffix(path);
+
+    ifIs { <> eq(suffix, "sam") }
+        { return runTextFile(path, moduleLoader, args) };
+
+    ifIs { <> eq(suffix, "samb") }
+        { return runBinaryFile(path, moduleLoader, args) };
+
+    die(cat("Unknown file name suffix: ", suffix))
+};
+
+## Documented in spec.
+export fn splitModuleName(name) {
+    ifIs { <> eq(name, "") }
+        { die("Invalid module name: empty string") };
+    ifNot { <> hasType(name, String) }
+        { die("Invalid module name: not a string") };
+
+    var result = [];
+    var current = "";
+
+    fn addCurrentToResult() {
+        ifIs { <> eq(current, "") }
+            { die(cat("Invalid empty component in module name: ", name)) };
+        result := [result*, current];
+        current := ""
+    };
+
+    ## This uses `collect` just for the filter function, ignoring the
+    ## collected result.
+    collect(name, { ch ->
+        ifIs { <> eq(ch, ".") }
+            { addCurrentToResult() }
+            { current := cat(current, ch) }
+    });
+
+    addCurrentToResult();
+    <> result
 };

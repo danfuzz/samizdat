@@ -6,6 +6,8 @@
 ## Demo of nonlocal exit
 ##
 
+#= language core.Lang0
+
 
 ##
 ## Helper Definitions

@@ -90,89 +90,6 @@ def parArguments = {:
     }
 :};
 
-## Gets the language layer suffix (or suffix-like-thing) from a file path.
-fn suffixFromPath(filePath) {
-    def finalName = $FilePath::get_file(filePath);
-    if (finalName == ".") {
-        ## Explicit "this directory" as the final path component; assume it
-        ## indicates a module directory.
-        return "module"
-    };
-
-    def dotsAt = [index in (0..), elem in finalName <> (elem == ".") & index];
-    if (dotsAt == []) {
-        ## No suffix on the name; assume it names a module directory.
-        return "module"
-    };
-
-    <> finalName[dotsAt[^0] + 1..]
-};
-
-## Makes a global environment, given file path and command-line arguments.
-fn makeGlobals(filePath, args) {
-    <> {
-        ## The standard global environment.
-        $Globals::fullEnvironment()*,
-
-        ## Use the system module loader.
-        moduleLoad
-    }
-};
-
-## Runs a program which has been `eval`ed. This works for both text and
-## binary programs. This calls the given `programFunc`. If it returns
-## a map that binds `main`, then this in turn calls that `main`, returning
-## whatever that does. If not, this returns whatever the original function
-## call returned (including void).
-fn runProgram(programFunc, filePath, args) {
-    def optResult = programFunc()?;
-
-    if (optResult == []) {
-        return
-    };
-
-    def result = optResult*;
-
-    if (hasType(result, Map) & result::main) {
-        return result::main(filePath, args*)
-    } else {
-        return result
-    }
-};
-
-## Runs a module-form command-line. In this case, a named directory is
-## loaded as a module. It is expected to export a `main()` function, which
-## is called with the Posix-style command-line arguments.
-fn runModule(modulePath, args) {
-    <> $ModuleSystem::run(
-        modulePath, $Globals::fullEnvironment(), moduleLoader(),
-        modulePath, args*)
-};
-
-## Runs a simple-file-form command-line. The indicated file is read as a
-## top-level program, and evaluated. The (function) result of evaluation is
-## called with no arguments. The result of that call (including void) is
-## returned, *except* if the result is a map that binds `main`. In the latter
-## case, the `main` is called, passing it the usual `main()` arguments.
-fn runFile(langLayer, filePath, args) {
-    def globals = makeGlobals(filePath, args);
-    def programText = $Io0::readFileUtf8(filePath);
-    def langModule = moduleLoad(["core", cat("Lang", langLayer)]);
-    def parsedProgram = langModule::parseProgram(programText);
-    def evalled = langModule::eval(globals, parsedProgram);
-
-    <> runProgram(evalled, filePath, args)
-};
-
-## Runs a binary library command-line. The global environment is set up the
-## same as for `runFile`, and it is called in the same manner.
-fn runBinary(filePath, args) {
-    def globals = makeGlobals(filePath, args);
-    def evalled = $Lang2::evalBinary(globals, filePath);
-
-    <> runProgram(evalled, filePath, args)
-};
-
 
 ##
 ## Exported Definitions
@@ -198,15 +115,16 @@ export fn runCommandLine(rawArgs*) {
         | "/dev/stdin";
     def args = argWords[1..] | [];
 
-    def suffix = options::suffix | suffixFromPath(filePath);
+    def type = $Io0::fileType(filePath)
+        | die("No such file or directory: \%q(filePath)");
 
-    if (suffix == "module") {
-        return runModule(filePath, args)
-    } else if (suffix == "samb") {
-        return runBinary(filePath, args)
-    };
-
-    def langLayer = (suffix == "sam") & "2" | suffix[^0];
-
-    <> runFile(langLayer, filePath, args)
+    <> if (type == "directory") {
+        <> $ModuleSystem::run(
+            filePath, $Globals::fullEnvironment(), moduleLoader(),
+            filePath, args*)
+    } else {
+        <> $ModuleSystem::runFile(
+            filePath, moduleLoader(),
+            filePath, args*)
+    }
 };

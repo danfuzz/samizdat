@@ -44,23 +44,25 @@ Command-line evaluator. This implements standardized top-level command-line
 parsing and evaluation. `args` are arbitrary arguments, which are parsed as
 optional command-line options, a program file name, and additional arguments.
 
-This loads the indicated file or directory, as implied by its recognized
-suffix (or lack thereof), and runs it. This function returns whatever
-was returned by the run (including void).
+This loads the indicated file or directory, and runs it. This function
+returns whatever was returned by the run (including void).
 
-If the ultimate thing-to-run is a module, then its `main` binding is called
-as a function, passing it one or more arguments: first the path to the module,
-followed by the "additional arguments" (beyond the ones understood directly by
-this function).
+If given a directory, this treats it as a module and expects there to be
+a `main` file which defines the primary exports, including in particular
+a `main` function. The `main` function is invoked, passing it one or more
+arguments: first the path to the module, followed by the "additional
+arguments" (beyond the ones understood directly by this function).
 
-If the ultimate thing-to-run is a plain file (and not a module), then it
-gets evaluated similarly to a module. If it exports a `main`, then that is
-run in the same manner. If it does not export a main, then after evaluation
-this function simply returns void.
+If given a plain file (and not a module directory), then that file gets
+evaluated similarly to a module, though it won't have available to it any
+submodules (that is, it won't get module-like access to sibling files or
+directories). If the file exports a `main`, then that is run in the same
+manner as a module's `main`. If it does not export a main, then after
+evaluation this function simply returns void.
+
+The two file suffixes recognized are `.sam` for Samizdat source text, and
+`.samb` for compiled Samizdat executables.
 
 Currently recognized command-line options:
 
-* `--suffix=name` &mdash; Provides a file name suffix to use when interpreting
-  the file name. Used to override the default of which language layer is
-  used for parsing and evaluation. Must be `sam`, `samb`, or `samN` where `N`
-  is a digit.
+* None.

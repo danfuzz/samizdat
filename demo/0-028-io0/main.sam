@@ -6,6 +6,8 @@
 ## Io0 demo
 ##
 
+#= language core.Lang0
+
 def $FilePath = moduleLoad(["core", "FilePath"]);
 def $Io0      = moduleLoad(["core", "Io0"]);
 
