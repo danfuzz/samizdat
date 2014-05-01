@@ -390,7 +390,7 @@ fn runProgram(programFunc, args) {
     return result;
 };
 
-fn runTextFile(path, globals, moduleLoader, args) {
+fn runTextFile(path, moduleLoader, args) {
     def globals = makeFileGlobals(moduleLoader);
     def text = $Io0::readFileUtf8(path);
     def languageName = ifValue { <> $Lang0::languageOf(text) }
@@ -403,7 +403,7 @@ fn runTextFile(path, globals, moduleLoader, args) {
     <> runProgram(func, args)
 };
 
-fn runBinaryFile(path, globals, moduleLoader, args) {
+fn runBinaryFile(path, moduleLoader, args) {
     def globals = makeFileGlobals(moduleLoader);
     def func = $Lang0::evalBinary(globals, path);
 
@@ -437,14 +437,14 @@ export fn run(path, globals, moduleLoader, args*) {
 };
 
 ## Documented in spec.
-export fn runFile(path, globals, moduleLoader, args*) {
+export fn runFile(path, moduleLoader, args*) {
     def suffix = fileNameSuffix(path);
 
     ifIs { <> eq(suffix, "sam") }
-        { return runTextFile(path, globals, moduleLoader, args) };
+        { return runTextFile(path, moduleLoader, args) };
 
     ifIs { <> eq(suffix, "samb") }
-        { return runBinaryFile(path, globals, moduleLoader, args) };
+        { return runBinaryFile(path, moduleLoader, args) };
 
     die(cat("Unknown file name suffix: ", suffix))
 };

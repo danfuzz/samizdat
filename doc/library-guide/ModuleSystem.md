@@ -120,7 +120,7 @@ def mainModule = intraLoad(loader, "main");
 
 except with more error checking.
 
-#### `runFile(path, globals, moduleLoader, args*) <> . | void`
+#### `runFile(path, moduleLoader, args*) <> . | void`
 
 This runs a solo file at the given `path`. It works for both source text
 and binary files, switching based on the file name suffix, `.sam` for text
