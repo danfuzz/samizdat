@@ -359,12 +359,14 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 ## Makes a global environment sufficient for evaluating a single file.
 fn makeFileGlobals(moduleLoader) {
     fn file_moduleLoad(path) { <> moduleLoad(moduleLoader, path) };
+    fn file_moduleLoader()   { <> moduleLoader                   };
 
     <> {
         ## The standard global environment.
         moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment()*,
 
-        moduleLoad: file_moduleLoad
+        moduleLoad:   file_moduleLoad,
+        moduleLoader: file_moduleLoader
     }
 };
 
