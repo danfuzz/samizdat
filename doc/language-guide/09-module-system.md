@@ -170,25 +170,32 @@ intra-module loader which only depends on immutable data as input.
 
 #### Top-level variable environment in a module
 
-In addition to the normal global variable environment, a module file
-when evaluated has additional bindings to allow for a module to load
-itself as well as other modules.
+In addition to the normal global variable environment as defined by the
+module `core.Globals`, a module file when evaluated has additional bindings
+to allow for a module to load the other parts of itself, as well as load
+other modules.
 
 * `moduleLoad(path) <> module` &mdash; This loads the module indicated
   by `path` in the same loader which loaded this module. `path` is a
   "module path," that is, a list of strings which represents the fully-
-  qualified name of the module.
+  qualified name of the module. For example, `["core", "Lang0"]`.
 
 * `moduleLoader` &mdash; This is a reference to the module loader which
   loaded this module.
 
-* `intraType(path) <> string | void` &mdash; This gets the type of an
-  intra-module file named by the indicated relative path (a string). The
-  return values are the same as for `$Io0::fileType` (see which).
-
 * `intraLoad(path) <> . | void` &mdash; This loads and evaluates the
-  intra-module file named by the indicated relative path (a string).
+  intra-module file as code. `path` is a string representing a relative
+  filesystem path, e.g. `foo/bar`. The final file name in `path` should
+  *not* have a suffix; the module system handles finding the
+  appropriately-suffixed file.
 
 * `intraReadUtf8(path) <> string` &mdash; This reads the intra-module file
   named by the indicated relative path, interpreting it as UTF-8 encoded
-  text.
+  text. `path` is as with `intraLoad`, except that the final file is left
+  as-is (and not suffixed automatically).
+
+* `intraType(path) <> string | void` &mdash; This gets the type of an
+  intra-module file named by the indicated relative path (a string).
+  `path` is as with `intraLoad`, except that the final file is left
+  as-is (and not suffixed automatically). The return value is the same
+  as for `$Io0::fileType` (see which).

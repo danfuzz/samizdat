@@ -8,27 +8,6 @@ This module is the module which knows how to load modules. It is also
 where much of the single-file loading logic resides, since that interacts
 tightly with module loading.
 
-When files are loaded using this system, they have access to a global
-variable environment which includes all the standard globals (as described
-within this spec), as well as several module-system-specific functions:
-
-* `moduleLoad(path)` &mdash; Loads the module indicated by the given
-  module path. A module path is a list of strings, such as
-  `["core", "Lang0"]`.
-
-* `moduleLoader()` &mdash; Returns the module loader instance to be used
-  to load modules. This is the one used by `moduleLoad` (above).
-
-* `intraLoad(path)` &mdash; Loads an intra-module file as indicated by
-  the given `path`. In this case, `path` is expected to be a relative
-  filesystem path string, such as `foo/bar`.
-
-* `intraReadUtf8(path)` &mdash; Reads an intra-module file, interpreting
-  it as a UTF-8 encoded byte stream. `path` is as with `intraLoad`.
-
-* `intraType(path)` &mdash; Gets the file type of an intra-module file.
-  `path` is as with `intraLoad`. The return value is as with `$Io0::fileType`.
-
 **Note:** The constant `null` can be treated as a module loader. When used
 as such, it "knows" the two modules `core.Io0` and `core.Lang0`. These are
 set up as "bootstrap modules," as otherwise they would be their own
@@ -140,6 +119,12 @@ def mainModule = intraLoad(loader, "main");
 
 except with more error checking.
 
+**Note:** By convention, the first argument passed to a file, when invoked
+from an interactive commandline or from a scripting environment, is the
+filesystem path to itself. This function does *not* automatically add this
+argument. Users of this function should add it to the given `args*` when
+appropriate.
+
 #### `runFile(path, moduleLoader, args*) <> . | void`
 
 This runs a solo file at the given `path`. It works for both source text
@@ -149,9 +134,9 @@ and `.samb` for binary.
 In the case of source text, an appropriate language module is loaded up
 from the given `moduleLoader`.
 
-In both cases, the global environment is created by loading `core.Globals`
-using `moduleLoader`, and augmenting it with the functions `moduleLoad()`
-and `moduleLoader()`, which use / return the given `moduleLoader` argument.
+In both cases, the global environment which the file is given is the
+same as is used when loading modules, except that none of the `intra*`
+functions are made available.
 
 The direct result of evaluation of the file is a function of no arguments.
 This is called. If that returns a map, then `main` is looked up in it,
@@ -160,6 +145,12 @@ is returned by the call to `main`.
 
 If the initial function result is void, or isn't a map, or the map doesn't
 bind `main`, then this function simply returns void.
+
+**Note:** By convention, the first argument passed to a file, when invoked
+from an interactive commandline or from a scripting environment, is the
+filesystem path to itself. This function does *not* automatically add this
+argument. Users of this function should add it to the given `args*` when
+appropriate.
 
 #### `splitModuleName(name) <> [name*]`
 
