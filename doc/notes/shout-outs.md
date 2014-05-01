@@ -5,18 +5,20 @@ Samizdat wouldn't exist without a lot of inspiring language work
 embodied in dozens of systems developed over the better part of the
 preceding century.
 
-The language came about as a second-order effect of the author's
-desire to explore the intersection of all of
+The language came about as a second-order effect of Dan's
+ongoing desire to explore the intersection of all of
 [promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
 [object-capability](http://en.wikipedia.org/wiki/Object-capability_model)
 computation, the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
 concurrency, maximally pure / immutable data models, and [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
-(STM). The Samizdat language has a mostly-immutable data model and
-generally has "capability nature," but it does not innately implement
-promises, actors, or STM (yet). It is intended to be a fertile
-substrate on which to explore these topics, while still being a
-practical and compelling language in its own right.
+(STM), having first learned of the power of this combination when working
+on [E](https://en.wikipedia.org/wiki/E_%28programming_language%29). The
+Samizdat language has a mostly-immutable data model and generally has
+"capability nature," but it does not innately implement promises, actors,
+or STM (yet). It is intended to be a fertile substrate on which to explore
+these topics, while still being a practical and compelling language in its
+own right.
 
 Samizdat's syntax can be traced in part to
 [ALGOL](http://en.wikipedia.org/wiki/ALGOL), through
