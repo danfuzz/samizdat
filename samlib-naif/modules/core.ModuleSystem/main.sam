@@ -390,6 +390,7 @@ fn runProgram(programFunc, args) {
     return result;
 };
 
+## Helper for `runFile`, which handles program text.
 fn runTextFile(path, moduleLoader, args) {
     def globals = makeFileGlobals(moduleLoader);
     def text = $Io0::readFileUtf8(path);
@@ -403,6 +404,7 @@ fn runTextFile(path, moduleLoader, args) {
     <> runProgram(func, args)
 };
 
+## Helper for `runFile`, which handles binaries.
 fn runBinaryFile(path, moduleLoader, args) {
     def globals = makeFileGlobals(moduleLoader);
     def func = $Lang0::evalBinary(globals, path);
