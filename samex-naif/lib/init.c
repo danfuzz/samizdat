@@ -107,14 +107,9 @@ static zvalue getLibrary(zvalue libraryPath) {
         GFN_CALL(cat, libraryPath,
             stringFromUtf8(-1, "/modules/core.ModuleSystem/main")));
 
-    // Call `ModuleSystem::run` to load and evaluate the module, and call
-    // the `main` function bound in the result.
-    zvalue runFn = get(moduleSystem, STR_run);
-    zvalue result = FUN_CALL(runFn,
-        libraryPath, PRIMITIVE_ENVIRONMENT, TOK_Null,
-        libraryPath, PRIMITIVE_ENVIRONMENT);
-
-    return result;
+    // Call `ModuleSystem::main` to load and evaluate the core library.
+    zvalue mainFn = get(moduleSystem, STR_main);
+    return FUN_CALL(mainFn, libraryPath, PRIMITIVE_ENVIRONMENT);
 }
 
 
