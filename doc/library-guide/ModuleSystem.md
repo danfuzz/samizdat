@@ -4,10 +4,9 @@ Samizdat Layer 0: Core Library
 core.ModuleSystem
 -----------------
 
-This module is the module which knows how to load modules!
-
-It provides a couple different versions of loading, useful in a couple
-different contexts.
+This module is the module which knows how to load modules. It is also
+where much of the single-file loading logic resides, since that interacts
+tightly with module loading.
 
 **Note:** The constant `null` can be treated as a module loader. When used
 as such, it "knows" the two modules `core.Io0` and `core.Lang0`. These are
@@ -37,15 +36,6 @@ if `path` is not a valid module name path (list of strings).
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
 
-#### `intraType(loader, path) <> string | void`
-
-This gets the type of an intra-module file named by the indicated relative
-`path`. The return values are the same as for `$Io0::fileType`
-(see which).
-
-`path` is expected to be a string identifying a relative file path within the
-module's file hierarchy.
-
 #### `intraLoad(loader, path) <> . | void`
 
 This loads and evaluates an intra-module file. `path` is expected to be a
@@ -69,6 +59,15 @@ module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
 exist as a file.
+
+#### `intraType(loader, path) <> string | void`
+
+This gets the type of an intra-module file named by the indicated relative
+`path`. The return values are the same as for `$Io0::fileType`
+(see which).
+
+`path` is expected to be a string identifying a relative file path within the
+module's file hierarchy.
 
 
 <br><br>
@@ -105,7 +104,20 @@ terminates with a fatal error.
 **Note:** If this loader should not have a next module loader, then
 `nextModuleLoader` should be passed as `null`.
 
-#### `run(path, globals, moduleLoader, args*) <> . | void`
+#### `main(libraryPath, primitiveGlobals) <> {globals*}`
+
+This is the main entrypoint for loading the entire system. As such, it's
+not that useful for most code.
+
+This constructs an intra-module loader for the given `libraryPath`, which is
+expected to be the path to a core library implementation. It then loads
+the `main` file of that library, and runs it, passing it the same two
+arguments given to this function.
+
+This returns whatever the library's `main` returns, which is generally
+expected to be the library's full global environment, as a map.
+
+#### `run(path, moduleLoader, args*) <> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
 `main` binding, and runs it, handing it the given `args`.
@@ -113,12 +125,19 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
+def globals = moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
 def loader = makeIntraLoader(path, globals, moduleLoader);
 def mainModule = intraLoad(loader, "main");
 <> mainModule::main(args*)
 ```
 
 except with more error checking.
+
+**Note:** By convention, the first argument passed to a file, when invoked
+from an interactive commandline or from a scripting environment, is the
+filesystem path to itself. This function does *not* automatically add this
+argument. Users of this function should add it to the given `args*` when
+appropriate.
 
 #### `runFile(path, moduleLoader, args*) <> . | void`
 
@@ -129,9 +148,9 @@ and `.samb` for binary.
 In the case of source text, an appropriate language module is loaded up
 from the given `moduleLoader`.
 
-In both cases, the global environment is created by loading `core.Globals`
-using `moduleLoader`, and augmenting it with a `moduleLoad` function that
-uses `moduleLoader`.
+In both cases, the global environment which the file is given is the
+same as is used when loading modules, except that none of the `intra*`
+functions are made available.
 
 The direct result of evaluation of the file is a function of no arguments.
 This is called. If that returns a map, then `main` is looked up in it,
@@ -140,6 +159,12 @@ is returned by the call to `main`.
 
 If the initial function result is void, or isn't a map, or the map doesn't
 bind `main`, then this function simply returns void.
+
+**Note:** By convention, the first argument passed to a file, when invoked
+from an interactive commandline or from a scripting environment, is the
+filesystem path to itself. This function does *not* automatically add this
+argument. Users of this function should add it to the given `args*` when
+appropriate.
 
 #### `splitModuleName(name) <> [name*]`
 

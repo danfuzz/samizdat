@@ -5,7 +5,7 @@
 ##
 ## Samizdat Core Library Secondary Loader
 ##
-## This gets loaded from `boot.sam` and is responsible for returning
+## This gets loaded from the C `main` code and is responsible for returning
 ## the standard global variable environment.
 ##
 
@@ -18,16 +18,17 @@ def $ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 
 ## Initializes the world, and returns the final global variable environment.
 ## `libraryPath` is the filesystem path to the core library.
-## `primitiveEnvironment` is the map of native bindings.
-export fn main(libraryPath, primitiveEnvironment) {
+## `primitiveGlobals` is the map of primitive-defined bindings (e.g., defined
+## in C code).
+export fn main(libraryPath, primitiveGlobals) {
     def earlyGlobals = {
-        primitiveEnvironment*,
+        primitiveGlobals*,
         $Globals::earlyEnvironment()*
     };
 
     note("\nLoading core library...");
 
-    ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
+    ## `null` isn't yet defined when this file is evaluated. Hence, `@Null`.
     def loader = $ModuleSystem::makeModuleLoader(
         cat(libraryPath, "/modules"), earlyGlobals, @Null);
 

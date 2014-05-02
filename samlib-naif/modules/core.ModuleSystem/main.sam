@@ -5,8 +5,10 @@
 ##
 ## Module loading mechanism
 ##
-## **Note:** When running fully interpreted, this file is loaded twice. The
-## first time is before any other in-language definitions are made.
+## **Note:** When running fully interpreted, this file is loaded three times.
+## The first time is before any other in-language definitions are made;
+## Notably, `null` isn't yet defined, so we manually define it early in the
+## file.
 ##
 
 ## This directive only has an effect when the module system loads *itself*
@@ -47,11 +49,14 @@ def BOOTSTRAP_MODULES = {
 ## Private definitions
 ##
 
+## See header comment.
+def null = @Null;
+
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = ["core", "Lang2"];
 
 ## Set-like map of characters that are not allowed in module components.
-def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: @Null};
+def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: null};
 
 ## Gets the file name suffix of the last component of the given path.
 ## **Note:** This is written in a super-oddball way, because of how little
@@ -359,12 +364,14 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 ## Makes a global environment sufficient for evaluating a single file.
 fn makeFileGlobals(moduleLoader) {
     fn file_moduleLoad(path) { <> moduleLoad(moduleLoader, path) };
+    fn file_moduleLoader()   { <> moduleLoader                   };
 
     <> {
         ## The standard global environment.
         moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment()*,
 
-        moduleLoad: file_moduleLoad
+        moduleLoad:   file_moduleLoad,
+        moduleLoader: file_moduleLoader
     }
 };
 
@@ -418,7 +425,17 @@ fn runBinaryFile(path, moduleLoader, args) {
 ##
 
 ## Documented in spec.
-export fn run(path, globals, moduleLoader, args*) {
+export fn main(libraryPath, primitiveGlobals) {
+    def loader = makeIntraLoader(libraryPath, primitiveGlobals, null);
+    def mainModule = intraLoadMain(loader);
+    def mainFunction = mainModule::main;
+    <> mainModule::main(libraryPath, primitiveGlobals)
+};
+
+## Documented in spec.
+export fn run(path, moduleLoader, args*) {
+    def globals =
+        moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
     def loader = makeIntraLoader(path, globals, moduleLoader);
     def optMainModule = intraLoadMain(loader)?;
 

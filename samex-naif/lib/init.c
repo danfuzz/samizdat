@@ -70,28 +70,31 @@ static void makePrimitiveEnvironment(void) {
 }
 
 /**
- * Loads the named binary file if it exists.
+ * Loads and evaluates the named file if it exists (or fail trying). This
+ * suffixes the name first with `.samb` to look for a binary file and then
+ * with `.sam` for a text source file.
  */
-static zvalue loadBinaryIfPossible(zvalue path) {
-    if (!valEqNullOk(ioFileType(path), STR_file)) {
-        return NULL;
+static zvalue loadFile(zvalue path) {
+    zvalue binPath = GFN_CALL(cat, path, stringFromUtf8(-1, ".samb"));
+    zvalue func;
+
+    if (valEqNullOk(ioFileType(binPath), STR_file)) {
+        // We found a binary file.
+        func = datEvalBinary(PRIMITIVE_ENVIRONMENT, binPath);
+    } else {
+        zvalue srcPath = GFN_CALL(cat, path, stringFromUtf8(-1, ".sam"));
+        if (valEqNullOk(ioFileType(srcPath), STR_file)) {
+            // We found a source text file.
+            zvalue text = ioReadFileUtf8(srcPath);
+            zvalue tree = langParseProgram0(text);
+            func = langEval0(PRIMITIVE_ENVIRONMENT, tree);
+        } else {
+            die("Missing bootstrap library file: %s", valDebugString(path));
+        }
     }
 
-    return datEvalBinary(PRIMITIVE_ENVIRONMENT, path);
-};
-
-/**
- * Reads and evaluates the named source file.
- */
-static zvalue loadSource(zvalue path) {
-    if (!valEqNullOk(ioFileType(path), STR_file)) {
-        die("Missing bootstrap library file: %s", valDebugString(path));
-    }
-
-    zvalue text = ioReadFileUtf8(path);
-    zvalue tree = langParseProgram0(text);
-    return langEval0(PRIMITIVE_ENVIRONMENT, tree);
-};
+    return FUN_CALL(func);
+}
 
 /**
  * Returns a map with all the core library bindings. This is the
@@ -99,31 +102,14 @@ static zvalue loadSource(zvalue path) {
  * and calling its `main` function.
  */
 static zvalue getLibrary(zvalue libraryPath) {
-    zstackPointer save = datFrameStart();
-
     // Evaluate `ModuleSystem`. Works with either source or binary.
-
-    zvalue moduleSystemFn = loadBinaryIfPossible(
+    zvalue moduleSystem = loadFile(
         GFN_CALL(cat, libraryPath,
-            stringFromUtf8(-1, "/modules/core.ModuleSystem/main.samb")));
+            stringFromUtf8(-1, "/modules/core.ModuleSystem/main")));
 
-    if (moduleSystemFn == NULL) {
-        moduleSystemFn = loadSource(
-            GFN_CALL(cat, libraryPath,
-                stringFromUtf8(-1, "/modules/core.ModuleSystem/main.sam")));
-    }
-
-    zvalue moduleSystem = FUN_CALL(moduleSystemFn);
-
-    // Call `$ModuleSystem::run` to load and evaluate the module, and call
-    // the `main` function bound in the result.
-    zvalue runFn = get(moduleSystem, STR_run);
-    zvalue result = FUN_CALL(runFn,
-        libraryPath, PRIMITIVE_ENVIRONMENT, TOK_Null,
-        libraryPath, PRIMITIVE_ENVIRONMENT);
-
-    datFrameReturn(save, result);
-    return result;
+    // Call `ModuleSystem::main` to load and evaluate the core library.
+    zvalue mainFn = get(moduleSystem, STR_main);
+    return FUN_CALL(mainFn, libraryPath, PRIMITIVE_ENVIRONMENT);
 }
 
 
