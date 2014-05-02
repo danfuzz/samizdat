@@ -104,6 +104,19 @@ terminates with a fatal error.
 **Note:** If this loader should not have a next module loader, then
 `nextModuleLoader` should be passed as `null`.
 
+#### `main(libraryPath, primitiveGlobals) <> {globals*}`
+
+This is the main entrypoint for loading the entire system. As such, it's
+not that useful for most code.
+
+This constructs an intra-module loader for the given `libraryPath`, which is
+expected to be the path to a core library implementation. It then loads
+the `main` file of that library, and runs it, passing it the same two
+arguments given to this function.
+
+This returns whatever the library's `main` returns, which is generally
+expected to be the library's full global environment, as a map.
+
 #### `run(path, globals, moduleLoader, args*) <> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
