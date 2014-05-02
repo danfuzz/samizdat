@@ -9,7 +9,6 @@
 def $FilePath     = moduleLoad(["core", "FilePath"]);
 def $Format       = moduleLoad(["core", "Format"]);     ## Implicitly used.
 def $Generator    = moduleLoad(["core", "Generator"]);  ## Implicitly used.
-def $Globals      = moduleLoad(["core", "Globals"]);
 def $Io0          = moduleLoad(["core", "Io0"]);
 def $ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
 def $Number       = moduleLoad(["proto", "Number"]);    ## Implicitly used.
@@ -118,12 +117,10 @@ export fn runCommandLine(rawArgs*) {
         | die("No such file or directory: \%q(filePath)");
 
     <> if (type == "directory") {
-        <> $ModuleSystem::run(
-            filePath, $Globals::fullEnvironment(), moduleLoader(),
+        <> $ModuleSystem::run(filePath, moduleLoader(),
             filePath, args*)
     } else {
-        <> $ModuleSystem::runFile(
-            filePath, moduleLoader(),
+        <> $ModuleSystem::runFile(filePath, moduleLoader(),
             filePath, args*)
     }
 };

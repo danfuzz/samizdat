@@ -432,7 +432,9 @@ export fn main(libraryPath, primitiveGlobals) {
 };
 
 ## Documented in spec.
-export fn run(path, globals, moduleLoader, args*) {
+export fn run(path, moduleLoader, args*) {
+    def globals =
+        moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
     def loader = makeIntraLoader(path, globals, moduleLoader);
     def optMainModule = intraLoadMain(loader)?;
 

@@ -117,7 +117,7 @@ arguments given to this function.
 This returns whatever the library's `main` returns, which is generally
 expected to be the library's full global environment, as a map.
 
-#### `run(path, globals, moduleLoader, args*) <> . | void`
+#### `run(path, moduleLoader, args*) <> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
 `main` binding, and runs it, handing it the given `args`.
@@ -125,6 +125,7 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
+def globals = moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
 def loader = makeIntraLoader(path, globals, moduleLoader);
 def mainModule = intraLoad(loader, "main");
 <> mainModule::main(args*)
