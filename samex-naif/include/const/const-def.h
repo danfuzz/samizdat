@@ -41,7 +41,6 @@ TOK(CH_SEMICOLON,        ";");
 TOK(CH_SLASH,            "/");
 TOK(CH_STAR,             "*");
 
-TOK(Null,                "Null");
 TOK(break,               "break");
 TOK(continue,            "continue");
 TOK(def,                 "def");
