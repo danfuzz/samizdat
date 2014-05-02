@@ -5,9 +5,10 @@
 ##
 ## Module loading mechanism
 ##
-## **Note:** When running fully interpreted, this file is loaded twice. The
-## first time is before any other in-language definitions are made. Notably,
-## `null` isn't yet defined, so we manually define it early in the file.
+## **Note:** When running fully interpreted, this file is loaded three times.
+## The first time is before any other in-language definitions are made;
+## Notably, `null` isn't yet defined, so we manually define it early in the
+## file.
 ##
 
 ## This directive only has an effect when the module system loads *itself*

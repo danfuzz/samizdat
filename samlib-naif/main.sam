@@ -28,7 +28,7 @@ export fn main(libraryPath, primitiveGlobals) {
 
     note("\nLoading core library...");
 
-    ## `null` isn't yet defined when this file is parsed. Hence, `@Null`.
+    ## `null` isn't yet defined when this file is evaluated. Hence, `@Null`.
     def loader = $ModuleSystem::makeModuleLoader(
         cat(libraryPath, "/modules"), earlyGlobals, @Null);
 
