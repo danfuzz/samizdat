@@ -37,6 +37,7 @@ export def withoutInterpolate   = $constructors1::withoutInterpolate;
 def $constructors2 = intraLoad("constructors2");
 export def makeCallOrApply = $constructors2::makeCallOrApply;
 export def makeGet         = $constructors2::makeGet;
+export def makeImport      = $constructors2::makeImport;
 export def makeInterpolate = $constructors2::makeInterpolate;
 export def makeOptValue    = $constructors2::makeOptValue;
 export def withExport      = $constructors2::withExport;

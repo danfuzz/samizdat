@@ -174,6 +174,27 @@ If given, the `optExport*` is used for the export binding name. If not given,
 Makes a collection access (`get`) expression. This is a `call` node
 of two arguments (a collection node and a key node).
 
+#### `makeImport(baseData) <> node`
+
+Makes an `@import*` node, based on `baseData`, which must be a map which
+includes a consistent set of bindings for one of the `@import` node types.
+
+See the tree grammar specification for most of the details on bindings.
+Beyond that:
+
+* To specify an `@importModuleBindings` node with a wildcard (import
+  everything) import, use the binding `select: @"*"` instead of omitting
+  `select`.
+
+* If the `name` binding for a whole-module or resource import is omitted,
+  then the name is automatically derived from the `source` binding.
+
+This function rejects invalid combinations of bindings, terminating the
+runtime with a message that indicates a plausible high-level reason for
+the rejection. This makes it safe to "optimistically" parse a generalized
+version of the `import` syntax, and use this function for a final
+validation.
+
 #### `makeInterpolate(expr) <> node`
 
 Makes an interpolation of the given expression node. The result is a

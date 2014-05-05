@@ -16,6 +16,7 @@ def makeVarDef  = $constructors1::makeVarDef;
 def makeVarRef  = $constructors1::makeVarRef;
 
 def $getters = intraLoad("getters");
+def get_baseName    = $getters::get_baseName;
 def get_interpolate = $getters::get_interpolate;
 def get_name        = $getters::get_name;
 def get_nodeValue   = $getters::get_nodeValue;
@@ -91,6 +92,46 @@ export fn makeCallOrApply(function, actuals*) {
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
     <> makeCall(REFS::get, collArg, keyArg)
+};
+
+## Documented in spec.
+export fn makeImport(baseData) {
+    var data = baseData;  ## Modified in some cases below.
+
+    ifValue { <> data::select }
+        { select ->
+            ## It's a module binding selection.
+
+            ifIs { <> data::name }
+                { die("Import selection name must be a prefix.") };
+            ifIs { <> data::type }
+                { die("Cannot import selection of resource.") };
+
+            ifIs { <> hasType(select, @@"*") }
+                {
+                    ## It's a wildcard import.
+                    data := $Collection::del(data, "select");
+                };
+
+            return @importModuleSelection(data)
+        };
+
+    ifNot { <> data::name }
+        {
+            ## No `name` provided, so figure out a default one.
+            data := {data*, name: cat("$", get_baseName(data::source))}
+        };
+
+    ifIs { <> data::type }
+        {
+            ## It's a resource.
+            ifIs { <> hasType(data::source, @@external) }
+                { die("Cannot import external resource.") };
+            return @importResource(data)
+        };
+
+    ## It's a whole-module import.
+    <> @importModule(data)
 };
 
 ## Documented in spec.
