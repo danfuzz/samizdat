@@ -193,10 +193,80 @@ is the result of evaluation. If a binding is not found for it, then
 evaluation fails (terminating the runtime).
 
 <br><br>
-### Other Nodes and Values
+### Statement Nodes
 
-These are nodes and values that appear within the data payloads
-of various expression nodes.
+These are nodes that are akin to expression nodes, but are limited to
+be used only as direct as elements of the `statements` list of a `closure`
+node.
+
+#### `varDef` &mdash; `@varDef{name: name, value: expression, (export: name)?, (top: true)?}`
+
+* `name: name` &mdash; Variable name to define (typically a string).
+
+* `value: expression` (optional) &mdash; Expression node representing the
+  value that the variable should take on when defined.
+
+* `export: name` (optional) &mdash; If present, indicates the name of the
+  exported binding for this variable. This is typically, but not necessarily,
+  the same as the `name` binding.
+
+* `top: true` (optional) &mdash; If present, indicates that this definition
+  should be promoted to the top of the closure in which it appears.
+
+This represents an immutable variable definition statement as part of a
+closure body.
+
+When run successfully, nodes of this type cause `name` to be bound in the
+current (topmost) execution environment, to an immutable variable. That is,
+once the variable is bound to a value, it can never be re-bound. The
+behavior varies depending on if `value` is supplied in this node:
+
+* Without a supplied `value`, this serves as a forward declaration. The
+  variable is defined, but it is unbound (i.e. bound to void). It is then
+  valid to bind the variable to a value *exactly once* by use of a
+  `varBind` node. Before such binding, it is invalid (terminating the runtime)
+  to refer to the variable.
+
+* With `value` supplied, said `value` is evaluated. If it evaluates to void,
+  then evaluation fails (terminating the runtime). Otherwise, the evaluated
+  value becomes the permanently-bound value of the variable.
+
+The `export` and `top` bindings, if present, have no effect at runtime.
+Instead, these are expected to be treated similarly to `export` nodes
+(see above).
+
+#### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
+
+* `name: name` &mdash; Variable name to define (typically a string).
+
+* `value: expression` (optional) &mdash; Expression node representing the
+  value that the variable should take on when defined.
+
+This represents a mutable variable definition statement as part of a closure
+body.
+
+When run successfully, nodes of this type cause `name` to be bound in the
+current (topmost) execution environment, to a mutable variable. That is, the
+variable may be bound and re-bound multiple times, by using `varBind` nodes.
+The behavior varies depending on if `value` is supplied in this node:
+
+* Without a supplied `value`, this serves as a forward declaration. The
+  variable is defined, but it is unbound (i.e. bound to void). After
+  definition and before binding (via `varBind`), it is invalid (terminating
+  the runtime) to refer to the variable.
+
+* With `value` supplied, said `value` is evaluated. If it evaluates to void,
+  then evaluation fails (terminating the runtime). Otherwise, the evaluated
+  value becomes the initially-bound value of the variable.
+
+
+<br><br>
+### Program Nodes
+
+These are nodes that are akin to expression or statement nodes, but are
+limited to be used only as direct as elements of the `statements` list of a
+`closure` node, and only for `closure` nodes which represet the outermost
+layer of a program.
 
 #### `export` &mdash; `@export{name: name, export: name}`
 
@@ -204,15 +274,19 @@ of various expression nodes.
 
 * `export: name` &mdash; Name to export the variable as (typically a string).
 
-Nodes of this type are valid in the `statements` list of a closure that
-defines a module, indicating that a particular variable is to be exported
-from the module.
+This represents the export of a named binding out of a program.
 
 These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
 for more details.
+
+
+<br><br>
+### Other Values
+
+These are values that appear within the data payloads of various nodes.
 
 #### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
 
@@ -245,65 +319,3 @@ for more details.
 If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
-
-#### `varDef` &mdash; `@varDef{name: name, value: expression, (export: name)?, (top: true)?}`
-
-* `name: name` &mdash; Variable name to define (typically a string).
-
-* `value: expression` (optional) &mdash; Expression node representing the
-  value that the variable should take on when defined.
-
-* `export: name` (optional) &mdash; If present, indicates the name of the
-  exported binding for this variable. This is typically, but not necessarily,
-  the same as the `name` binding.
-
-* `top: true` (optional) &mdash; If present, indicates that this definition
-  should be promoted to the top of the closure in which it appears.
-
-This represents an immutable variable definition statement as part of a
-closure body. Nodes of this type are valid within the `statements` list of
-a `closure` node.
-
-When run successfully, nodes of this type cause `name` to be bound in the
-current (topmost) execution environment, to an immutable variable. That is,
-once the variable is bound to a value, it can never be re-bound. The
-behavior varies depending on if `value` is supplied in this node:
-
-* Without a supplied `value`, this serves as a forward declaration. The
-  variable is defined, but it is unbound (i.e. bound to void). It is then
-  valid to bind the variable to a value *exactly once* by use of a
-  `varBind` node. Before such binding, it is invalid (terminating the runtime)
-  to refer to the variable.
-
-* With `value` supplied, said `value` is evaluated. If it evaluates to void,
-  then evaluation fails (terminating the runtime). Otherwise, the evaluated
-  value becomes the permanently-bound value of the variable.
-
-The `export` and `top` bindings, if present, have no effect at runtime.
-Instead, these are expected to be treated similarly to `export` nodes
-(see above).
-
-#### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
-
-* `name: name` &mdash; Variable name to define (typically a string).
-
-* `value: expression` (optional) &mdash; Expression node representing the
-  value that the variable should take on when defined.
-
-This represents a mutable variable definition statement as part of a closure
-body. Nodes of this type are valid within the `statements` list of a `closure`
-node.
-
-When run successfully, nodes of this type cause `name` to be bound in the
-current (topmost) execution environment, to a mutable variable. That is, the
-variable may be bound and re-bound multiple times, by using `varBind` nodes.
-The behavior varies depending on if `value` is supplied in this node:
-
-* Without a supplied `value`, this serves as a forward declaration. The
-  variable is defined, but it is unbound (i.e. bound to void). After
-  definition and before binding (via `varBind`), it is invalid (terminating
-  the runtime) to refer to the variable.
-
-* With `value` supplied, said `value` is evaluated. If it evaluates to void,
-  then evaluation fails (terminating the runtime). Otherwise, the evaluated
-  value becomes the initially-bound value of the variable.
