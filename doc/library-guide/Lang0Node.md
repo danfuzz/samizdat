@@ -44,6 +44,23 @@ arguments requires.
 
 Gets the actual arguments of an `apply` or `call` node.
 
+#### `get_baseName(taggedName) <> string`
+
+Gets the "base" name from a tagged name value. Operates on `@external`
+module name and `@internal` relative path values. For `@external` names,
+returns the final component name. For `@internal` paths, returns the
+final path component, minus the extension (if any).
+
+For example:
+
+```
+get_baseName(@external("Blort"))                    =>  "Blort"
+get_baseName(@external("core.Fizmo"))               =>  "Fizmo"
+get_baseName(@internal("frotz"))                    =>  "frotz"
+get_baseName(@internal("frotz.txt"))                =>  "frotz"
+get_baseName(@internal("frobozz/magic/frotz.txt"))  =>  "frotz"
+```
+
 #### `get_formals(node) <> [formal*]`
 
 Gets the formal arguments of a `closure` node.

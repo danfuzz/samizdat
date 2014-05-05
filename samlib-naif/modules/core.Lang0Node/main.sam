@@ -49,6 +49,7 @@ export def formalsMinArgs = $formals::formalsMinArgs;
 
 def $getters = intraLoad("getters");
 export def get_actuals     = $getters::get_actuals;
+export def get_baseName    = $getters::get_baseName;
 export def get_formals     = $getters::get_formals;
 export def get_function    = $getters::get_function;
 export def get_id          = $getters::get_id;
