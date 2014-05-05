@@ -282,20 +282,76 @@ produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
 for more details.
 
+#### `importModule` &mdash; `@importModule{name: name, source: source}`
+
+* `name: name` &mdash; Name of the variable to bind to (typically a string).
+
+* `source: source` &mdash; Name of the module. Must be either an `@external`
+  or `@internal` value (described below).
+
+This represents the import of a module, binding it to a named variable in
+the program's top-level environment.
+
+#### `importModuleSelection` &mdash; `@importModuleSelection{(prefix: name)?, (select: [name+])?, source: source}`
+
+* `prefix: name` (optional) &mdash; Prefix for variable names to bind. If
+  present, must be a string.
+
+* `select: [name+]` (optional) &mdash; List of module-exported bindings
+  to import. When absent, indicates that *all* of the module's exports are
+  to be imported.
+
+* `source: source` &mdash; Name of the module. Must be either an `@external`
+  or `@internal` value (described below).
+
+This represents the import of some or all of a module's bindings as individual
+variables in the program's top-level environment.
+
+#### `importResource` &mdash; `@importResource{name: name, source: source, type: type}`
+
+* `name: name` &mdash; Name of the variable to bind to (typically a string).
+
+* `source: source` &mdash; Name of the module. Must be either an `@external`
+  or `@internal` value (described below).
+
+* `type: type` &mdash; Type name which describes how to interpret the
+  resource (typically a string).
+
+This represents the import of a resource file, binding it to a named variable
+in the program's top-level environment. The `type` indicates how the raw
+data of the resource is to be interpreted.
+
 
 <br><br>
 ### Other Values
 
 These are values that appear within the data payloads of various nodes.
 
+#### `external` &mdash; `@external(name)`
+
+* `name` &mdash; String that represents an external module name. External
+  names must take the form of a dot-delimited list of identifiers.
+
+Used as the `source` binding for an `import*` node, this represents an
+*external* module reference, which is always in the form of a fully-qualified
+module name.
+
+Examples:
+
+```
+@external("Blort")
+@external("core.Blort")
+@external("core.potions.Blort")
+```
+
 #### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
 
-* `name: name` (optional) &mdash; an arbitrary value (but typically a string),
+* `name: name` (optional) &mdash; An arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
   formal. If omitted, then this indicates an unused argument which is
   not bound to a variable in the environment of the closure body.
 
-* `repeat: repeat` (optional) &mdash; indicates (if present) that the number
+* `repeat: repeat` (optional) &mdash; Indicates (if present) that the number
   of actual arguments bound by this formal is not necessarily exactly one.
   If present it must be one of:
 
@@ -319,3 +375,23 @@ These are values that appear within the data payloads of various nodes.
 If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
+
+#### `internal` &mdash; `@internal(name)`
+
+* `name` &mdash; String that represents an internal module name. Internal
+  names must take the form of a slash-delimited list of identifiers,
+  optionally suffixed with a dot and a final identifier.
+
+Used as the `source` binding for an `import*` node, this represents an
+*internal* module reference, which is always in the form of a relative
+path.
+
+Examples:
+
+```
+@internal("blort")
+@internal("blort.txt")
+@internal("potion/blort")
+@internal("potion/blort.txt")
+@internal("frobozz/potion/blort.txt")
+```
