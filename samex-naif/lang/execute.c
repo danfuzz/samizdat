@@ -72,6 +72,27 @@ static zvalue execCall(Frame *frame, zvalue call) {
 }
 
 /**
+ * Executes an `importModule` form.
+ */
+static void execImportModule(Frame *frame, zvalue import) {
+    die("TODO execImportModule");
+}
+
+/**
+ * Executes an `importModuleSelection` form.
+ */
+static void execImportModuleSelection(Frame *frame, zvalue import) {
+    die("TODO execImportModuleSelection");
+}
+
+/**
+ * Executes an `importResource` form.
+ */
+static void execImportResource(Frame *frame, zvalue import) {
+    die("TODO execImportResource");
+}
+
+/**
  * Executes a `jump` form.
  */
 static void execJump(Frame *frame, zvalue jump)
@@ -157,9 +178,12 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /* Documented in header. */
 void execStatement(Frame *frame, zvalue statement) {
     switch (get_evalType(statement)) {
-        case EVAL_varDef:        execVarDef(frame, statement);           break;
-        case EVAL_varDefMutable: execVarDefMutable(frame, statement);    break;
-        default:                 execExpressionVoidOk(frame, statement); break;
+        case EVAL_importModule:          execImportModule(frame, statement);          break;
+        case EVAL_importModuleSelection: execImportModuleSelection(frame, statement); break;
+        case EVAL_importResource:        execImportResource(frame, statement);        break;
+        case EVAL_varDef:                execVarDef(frame, statement);                break;
+        case EVAL_varDefMutable:         execVarDefMutable(frame, statement);         break;
+        default:                         execExpressionVoidOk(frame, statement);      break;
     }
 }
 
