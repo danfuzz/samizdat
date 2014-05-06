@@ -242,10 +242,44 @@ zvalue makeExport(zvalue name) {
 
 /* Documented in spec. */
 zvalue makeImport(zvalue baseData) {
-    zvalue source = get(baseData, STR_source);
-    zvalue baseName = get_baseName(source);
+    // Note: This is a near-transliteration of the equivalent code in
+    // `Lang0Node`.
+    zvalue data = baseData;  // Modified in some cases below.
 
-    die("TODO");
+    zvalue select = get(data, STR_select);
+    if (select != NULL) {
+        // It's a module binding selection.
+
+        if (get(data, STR_name) != NULL) {
+            die("Import selection name must be a prefix.");
+        } else if (get(data, STR_type) != NULL) {
+            die("Cannot import selection of resource.");
+        } else if (hasType(select, TYPE_CH_STAR)) {
+            // It's a wildcard import.
+            data = collDel(data, STR_select);
+        }
+
+        return makeValue(TYPE_importModuleSelection, data, NULL);
+    }
+
+    if (get(data, STR_name) == NULL) {
+        // No `name` provided, so figure out a default one.
+        zvalue name = GFN_CALL(cat,
+            STR_CH_DOLLAR,
+            get_baseName(get(baseData, STR_source)));
+        data = collPut(data, STR_name, name);
+    }
+
+    if (get(data, STR_type) != NULL) {
+        // It's a resource.
+        if (hasType(get(data, STR_source), TYPE_external)) {
+            die("Cannot import external resource.");
+        }
+        return makeValue(TYPE_importResource, data, NULL);
+    }
+
+    // It's a whole-module import.
+    return makeValue(TYPE_importModule, data, NULL);
 }
 
 /* Documented in spec. */
