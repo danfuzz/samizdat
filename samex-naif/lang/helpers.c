@@ -4,11 +4,16 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+/*
+ * Node constructors and related helpers
+ */
+
 #include "const.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/String.h"
 #include "type/Type.h"
 #include "util.h"
 
@@ -16,7 +21,35 @@
 
 
 /*
- * Node constructors and related helpers
+ * Private functions
+ */
+
+/** Splits a string into a list, separating at the given character. */
+static zvalue splitAtChar(zvalue string, zvalue chString) {
+    zchar ch = zcharFromString(chString);
+    zint size = get_size(string);
+    zchar chars[size];
+    zvalue result[size + 1];
+    zint resultAt = 0;
+
+    zcharsFromString(chars, string);
+
+    for (zint at = 0; at <= size; /*at*/) {
+        zint endAt = at;
+        while ((endAt < size) && chars[endAt] != ch) {
+            endAt++;
+        }
+        result[resultAt] = stringFromZchars(endAt - at, &chars[at]);
+        resultAt++;
+        at = endAt + 1;
+    }
+
+    return listFromArray(resultAt, result);
+}
+
+
+/*
+ * Module functions
  */
 
 /* Documented in header. */
@@ -108,6 +141,22 @@ zvalue formalsMinArgs(zvalue formals) {
 }
 
 /* Documented in spec. */
+zvalue get_baseName(zvalue thisPath) {
+    if (hasType(thisPath, TYPE_external)) {
+        zvalue path = dataOf(thisPath);
+        zvalue components = splitAtChar(dataOf(thisPath), STR_CH_DOT);
+        return nth(components, get_size(components) - 1);
+    } else if (hasType(thisPath, TYPE_internal)) {
+        zvalue components = splitAtChar(dataOf(thisPath), STR_CH_SLASH);
+        zvalue last = nth(components, get_size(components) - 1);
+        zvalue parts = splitAtChar(last, STR_CH_DOT);
+        return nth(parts, 0);
+    } else {
+        die("Bad type for `get_baseName`.");
+    }
+}
+
+/* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
@@ -193,6 +242,9 @@ zvalue makeExport(zvalue name) {
 
 /* Documented in spec. */
 zvalue makeImport(zvalue baseData) {
+    zvalue source = get(baseData, STR_source);
+    zvalue baseName = get_baseName(source);
+
     die("TODO");
 }
 

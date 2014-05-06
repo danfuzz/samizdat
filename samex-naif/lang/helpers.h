@@ -69,6 +69,9 @@ zvalue formalsMaxArgs(zvalue formals);
 zvalue formalsMinArgs(zvalue formals);
 
 /* Documented in spec. */
+zvalue get_baseName(zvalue name);
+
+/* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
