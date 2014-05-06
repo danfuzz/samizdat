@@ -110,8 +110,19 @@ fn flattenModuleComponent(component) {
 
 ## Flattens a module path (list of component names) to a simple string, which
 ## corresponds to both the "human" name of the module and the directory name
-## that the module could be found in.
+## that the module could be found in. If given a string, this just returns
+## it as-is.
+##
+## TODO: This function only exists at this point to help with the transition
+## from passing module names as lists to always passing them as "dot names."
+## It should be removed once all `moduleLoad` calls have been converted.
 fn flattenModulePath(name) {
+    ifIs { <> eq(name, "") }
+        { die("Invalid module name: empty string") };
+    ifIs { <> hasType(name, String) }
+        { return name };
+    ## TODO: More validation on the name.
+
     ifIs { <> eq(name, []) }
         { die("Invalid module path: empty list") };
     ifNot { <> hasType(name, List) }

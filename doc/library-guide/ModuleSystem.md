@@ -17,20 +17,21 @@ dependencies.
 <br><br>
 ### Generic Function Definitions: `ModuleLoader` protocol
 
-#### `moduleLoad(loader, path) <> .`
+#### `moduleLoad(loader, fqName) <> .`
 
-This loads the module named by `path`, which is expected to be a list of
-strings (e.g. `["core", "Format"]`). It returns whatever is exported by
-the module. If the module doesn't export anything, then this returns
-`{}` (the empty list).
+This loads the module named by `fqName`, which is expected to be a
+fully-qualified module name as a string (preferred, e.g. `"core.Format"`) or
+a list of strings (deprecated, e.g. `["core", "Format"]`). It returns
+whatever is exported by the module. If the module doesn't export anything,
+then this returns `{}` (the empty list).
 
-This function will only ever load a given path once. If the same path
+This function will only ever load a given module once. If the same name
 is requested more than once, whatever was returned the first time
 is returned again, without re-evaluating the module.
 
-It is an error (terminating the runtime) if `path` does not correspond to
+It is an error (terminating the runtime) if `fqName` does not correspond to
 a module known to this loader. It is also an error (terminating the runtime)
-if `path` is not a valid module name path (list of strings).
+if `fqName` is not a valid module name.
 
 
 <br><br>
