@@ -20,8 +20,7 @@ dependencies.
 #### `moduleLoad(loader, fqName) <> .`
 
 This loads the module named by `fqName`, which is expected to be a
-fully-qualified module name as a string (preferred, e.g. `"core.Format"`) or
-a list of strings (deprecated, e.g. `["core", "Format"]`). It returns
+fully-qualified module name as a string (e.g. `"core.Format"`). It returns
 whatever is exported by the module. If the module doesn't export anything,
 then this returns `{}` (the empty list).
 
