@@ -133,6 +133,7 @@ static void dumpState(ParseState *state) {
 #define TOKEN(type) TYPE_##type
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
 #define PARSE(name) RULE(name)(state)
+#define PARSE_OPT(name) parseOpt(RULE(name), state)
 #define PARSE_STAR(name) parseStar(RULE(name), state)
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define PARSE_DELIMITED_SEQ(name, type) \
@@ -153,6 +154,16 @@ static void dumpState(ParseState *state) {
 
 /* Function prototype for all parser functions */
 typedef zvalue (*parserFunction)(ParseState *);
+
+/**
+ * Parses `x?` for an arbitrary rule `x`. Returns a list of parsed `x` results
+ * (of size 0 or 1).
+ */
+zvalue parseOpt(parserFunction rule, ParseState *state) {
+    zvalue one = rule(state);
+
+    return (one == NULL) ? EMPTY_LIST : listFrom1(one);
+}
 
 /**
  * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed `x` results.
