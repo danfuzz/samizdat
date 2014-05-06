@@ -130,13 +130,15 @@ static void dumpState(ParseState *state) {
 
 /* Definitions to help avoid boilerplate in the parser functions. */
 #define RULE(name) parse_##name
+#define TOKEN(type) TYPE_##type
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
 #define PARSE(name) RULE(name)(state)
 #define PARSE_STAR(name) parseStar(RULE(name), state)
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
-#define PARSE_COMMA_SEQ(name) parseCommaSequence(RULE(name), state)
-#define MATCH(type) readMatch(state, (TYPE_##type))
-#define PEEK(type) peekMatch(state, (TYPE_##type))
+#define PARSE_DELIMITED_SEQ(name, type) \
+    parseDelimitedSequence(RULE(name), TOKEN(type), state)
+#define MATCH(type) readMatch(state, (TOKEN(type)))
+#define PEEK(type) peekMatch(state, (TOKEN(type)))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
 #define REJECT() do { RESET(); return NULL; } while (0)
@@ -183,10 +185,11 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
 }
 
 /**
- * Parses `(x (@"," x)*)?` for an arbitrary rule `x`. Returns a list of
- * parsed `x` results.
+ * Parses `(x (@y x)*)?` for an arbitrary rule `x` and token type `y`. Returns
+ * a list of parsed `x` results.
  */
-zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
+zvalue parseDelimitedSequence(parserFunction rule, zvalue tokenType,
+        ParseState *state) {
     zvalue item = rule(state);
 
     if (item == NULL) {
@@ -198,7 +201,7 @@ zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
     for (;;) {
         MARK();
 
-        if (! MATCH(CH_COMMA)) {
+        if (! readMatch(state, tokenType)) {
             break;
         }
 
@@ -390,7 +393,7 @@ DEF_PARSE(map) {
     // effect is the same.
 
     MATCH_OR_REJECT(CH_OCURLY);
-    zvalue mappings = PARSE_COMMA_SEQ(mapping);
+    zvalue mappings = PARSE_DELIMITED_SEQ(mapping, CH_COMMA);
     MATCH_OR_REJECT(CH_CCURLY);
 
     switch (get_size(mappings)) {
@@ -415,7 +418,7 @@ DEF_PARSE(listItem) {
 
 /* Documented in spec. */
 DEF_PARSE(unadornedList) {
-    return PARSE_COMMA_SEQ(listItem);
+    return PARSE_DELIMITED_SEQ(listItem, CH_COMMA);
 }
 
 /* Documented in spec. */
@@ -737,7 +740,7 @@ DEF_PARSE(formal) {
 
 /* Documented in spec. */
 DEF_PARSE(formalsList) {
-    return PARSE_COMMA_SEQ(formal);
+    return PARSE_DELIMITED_SEQ(formal, CH_COMMA);
 }
 
 /**
