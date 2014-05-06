@@ -893,6 +893,149 @@ DEF_PARSE(genericDef) {
     return withTop(makeVarDef(name, call));
 }
 
+/** Helper for `importName`: Parses the first alternate. */
+DEF_PARSE(importName1) {
+    MARK();
+
+    zvalue name = PARSE_OR_REJECT(name);
+    zvalue key = MATCH(CH_STAR) ? STR_prefix : STR_name;
+    MATCH_OR_REJECT(CH_EQUAL);
+
+    return mapFrom1(key, name);
+}
+
+/* Documented in spec. */
+DEF_PARSE(importName) {
+    zvalue result = PARSE(importName1);
+    return (result == NULL) ? EMPTY_MAP : result;
+}
+
+/** Helper for `importName`: Parses the first alternate. */
+DEF_PARSE(importType1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_AT);
+    zvalue t = PARSE_OR_REJECT(identifierString);
+    return mapFrom1(STR_type, dataOf(t));
+}
+
+/* Documented in spec. */
+DEF_PARSE(importType) {
+    zvalue result = PARSE(importType1);
+    return (result == NULL) ? EMPTY_MAP : result;
+}
+
+/**
+ * Helper for `importSource`: Parses `@"." name`, returning a combined
+ * string.
+ */
+DEF_PARSE(importSourceDotName) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_DOT);
+    zvalue name = PARSE_OR_REJECT(name);
+
+    return GFN_CALL(cat, STR_CH_DOT, name);
+}
+
+/**
+ * Helper for `importSource`: Parses `@"/" name`, returning a combined
+ * string.
+ */
+DEF_PARSE(importSourceSlashName) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_SLASH);
+    zvalue name = PARSE_OR_REJECT(name);
+
+    return GFN_CALL(cat, STR_CH_SLASH, name);
+}
+
+/** Helper for `importSource`: Parses the first alternate. */
+DEF_PARSE(importSource1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_DOT);
+    MATCH_OR_REJECT(CH_SLASH);
+    zvalue first = PARSE_OR_REJECT(name);
+    zvalue rest = PARSE_STAR(importSourceSlashName);
+    zvalue optSuffix = PARSE_OPT(importSourceDotName);
+
+    zvalue name = GFN_APPLY(cat,
+        GFN_CALL(cat, listFrom1(first), rest, optSuffix));
+    return makeValue(TYPE_internal, name, NULL);
+}
+
+/** Helper for `importSource`: Parses the second alternate. */
+DEF_PARSE(importSource2) {
+    MARK();
+
+    zvalue first = PARSE_OR_REJECT(name);
+    zvalue rest = PARSE_STAR(importSourceDotName);
+
+    zvalue name = GFN_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
+    return makeValue(TYPE_external, name, NULL);
+}
+
+/* Documented in spec. */
+DEF_PARSE(importSource) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(importSource1); }
+    if (result == NULL) { result = PARSE(importSource2); }
+
+    return result;
+}
+
+/** Helper for `importSelect`: Parses the first alternate. */
+DEF_PARSE(importSelect1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_COLONCOLON);
+    zvalue result = MATCH_OR_REJECT(CH_STAR);
+
+    return result;
+}
+
+/** Helper for `importSelect`: Parses the second alternate. */
+DEF_PARSE(importSelect2) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_COLONCOLON);
+    zvalue result = PARSE_DELIMITED_SEQ(name, CH_COMMA);
+    REJECT_IF(get_size(result) == 0);
+
+    return result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(importSelect) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(importSelect1); }
+    if (result == NULL) { result = PARSE(importSelect2); }
+
+    return (result == NULL) ? EMPTY_MAP : result;
+}
+
+/* Documented in spec. */
+DEF_PARSE(importStatement) {
+    MARK();
+
+    MATCH_OR_REJECT(import);
+    zvalue nameOrPrefix = PARSE(importName);  // Never fails.
+    zvalue type = PARSE(importType);          // Never fails.
+    zvalue source = PARSE_OR_REJECT(importSource);
+    zvalue select = PARSE(importSelect);      // Never fails.
+
+    zvalue data = GFN_CALL(cat,
+        nameOrPrefix,
+        type,
+        select,
+        mapFrom1(STR_source, source));
+    return makeImport(data);
+}
+
 /* Documented in spec. */
 DEF_PARSE(exportableStatement) {
     zvalue result = NULL;
@@ -922,7 +1065,9 @@ DEF_PARSE(statement) {
 DEF_PARSE(programStatement) {
     MARK();
 
-    zvalue result = PARSE(statement);
+    zvalue result = NULL;
+    if (result == NULL) { result = PARSE(statement);       }
+    if (result == NULL) { result = PARSE(importStatement); }
     if (result != NULL) { return result; }
 
     MATCH_OR_REJECT(export);
