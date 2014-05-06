@@ -36,6 +36,7 @@ def makeCallOrApply    = $Lang0Node::makeCallOrApply;
 def makeCallThunks     = $Lang0Node::makeCallThunks;
 def makeExport         = $Lang0Node::makeExport;
 def makeGet            = $Lang0Node::makeGet;
+def makeImport         = $Lang0Node::makeImport;
 def makeInterpolate    = $Lang0Node::makeInterpolate;
 def makeJump           = $Lang0Node::makeJump;
 def makeLiteral        = $Lang0Node::makeLiteral;
@@ -665,6 +666,102 @@ def parGenericDef = {:
     }
 :};
 
+## Parses an optional binding name or name prefix for an `import` statement.
+## This rule never fails. The result is always a map, empty if there was no
+## name / prefix, or binding one of `name` or `prefix`.
+def parImportName = {:
+    name = parName
+
+    key = (
+        @"*" { <> "prefix" }
+    |
+        { <> "name" }
+    )
+
+    @"="
+    { <> {(key): name} }
+|
+    { <> {} }
+:};
+
+## Parses an optional type name for an `import` statement. This rule never
+## fails. The result is always a map, empty if there was no type name, or
+## binding `type`.
+def parImportType = {:
+    @"@"
+    t = parIdentifierString
+    { <> {type: dataOf(t)} }
+|
+    { <> {} }
+:};
+
+## Parses the source for an `import` statement. The result is either a name
+## string as the payload of either an `@internal` or `@external` value.
+def parImportSource = {:
+    @"."
+    @"/"
+
+    first = parName
+    rest = (
+        @"/"
+        n = parName
+        { <> cat("/", n) }
+    )*
+    optSuffix = (
+        @"."
+        n = parName
+        { <> cat(".", n) }
+    )?
+
+    {
+        def name = cat(first, rest*, optSuffix*);
+        <> @internal(name)
+    }
+|
+    first = parName
+    rest = (
+        @"."
+        n = parName
+        { <> cat(".", n) }
+    )*
+
+    {
+        def name = cat(first, rest*);
+        <> @external(name)
+    }
+:};
+
+## Parses a list of binding names for an `import` statement. The result is
+## a list of strings, or `@"*"` to indicate a wildcard of all names.
+def parImportSelect = {:
+    @"::"
+    (
+        @"*"
+    |
+        first = parName
+        rest = (@"," parName)*
+        { <> [first, rest*] }
+    )
+|
+    { <> {} }
+:};
+
+## Parses an `import` statement. This works by first parsing a very general
+## version of the syntax which allows invalid combinations, and then checking
+## in code that the actual combination is valid.
+def parImportStatement = {:
+    @import
+    nameOrPrefix = parImportName
+    type = parImportType
+    source = parImportSource
+    select = parImportSelect
+
+    {
+        def data = {nameOrPrefix*, type*, select*, source};
+        <> makeImport(data)
+    }
+:};
+
 ## Parses a statement form that is `export`able.
 def parExportableStatement = {:
     parFunctionDef | parGenericDef | parVarDef
@@ -680,6 +777,8 @@ def parStatement = {:
 ## statements).
 def parProgramStatement = {:
     parStatement
+|
+    parImportStatement
 |
     @"export"
     (
