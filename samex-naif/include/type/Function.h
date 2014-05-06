@@ -91,6 +91,12 @@ zvalue funJump(zvalue function, zvalue optArg)
     DAT_CONCAT(funCallWith, argCount)(__VA_ARGS__)
 
 /**
+ * `GFN_APPLY(name, args)`: Calls a generic function by (unadorned) name,
+ * with a variable number of arguments passed as a list.
+ */
+#define GFN_APPLY(name, args) funApply(GFN_##name, args)
+
+/**
  * `GFN_CALL(name, arg, ...)`: Calls a generic function by (unadorned) name,
  * with a variable number of arguments passed in the usual C style.
  */

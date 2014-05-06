@@ -69,6 +69,9 @@ zvalue formalsMaxArgs(zvalue formals);
 zvalue formalsMinArgs(zvalue formals);
 
 /* Documented in spec. */
+zvalue get_baseName(zvalue name);
+
+/* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
@@ -79,6 +82,9 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
 zvalue makeExport(zvalue name);
+
+/* Documented in spec. */
+zvalue makeImport(zvalue baseData);
 
 /* Documented in spec. */
 zvalue makeInterpolate(zvalue node);

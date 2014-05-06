@@ -31,6 +31,7 @@ def makeCallOrApply    = $Lang0Node::makeCallOrApply;
 def makeCallThunks     = $Lang0Node::makeCallThunks;
 def makeExport         = $Lang0Node::makeExport;
 def makeGet            = $Lang0Node::makeGet;
+def makeImport         = $Lang0Node::makeImport;
 def makeInterpolate    = $Lang0Node::makeInterpolate;
 def makeJump           = $Lang0Node::makeJump;
 def makeLiteral        = $Lang0Node::makeLiteral;
@@ -515,6 +516,88 @@ def parGenericDef = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
+def parImportName = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        parName,
+        $Peg::makeChoice(
+            $Peg::makeSequence(
+                $Peg::makeToken(@@"*"),
+                $Peg::makeResult("prefix")),
+            $Peg::makeResult("name")),
+        $Peg::makeToken(@@"="),
+        $Peg::makeCode { name, key, . <> {(key): name} }),
+    $Peg::makeResult({}));
+
+## Documented in spec.
+def parImportType = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"@"),
+        parIdentifierString,
+        $Peg::makeCode { ., t <> {type: dataOf(t)} }),
+    $Peg::makeResult({}));
+
+## Documented in spec.
+def parImportSource = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"."),
+        $Peg::makeToken(@@"/"),
+        parName,
+        $Peg::makeStar(
+            $Peg::makeSequence(
+                $Peg::makeToken(@@"/"),
+                parName,
+                $Peg::makeCode { ., ., ., ., n <> cat("/", n) })),
+        $Peg::makeOpt(
+            $Peg::makeSequence(
+                $Peg::makeToken(@@"."),
+                parName,
+                $Peg::makeCode { ., ., ., ., ., n <> cat(".", n) })),
+        $Peg::makeCode { ., ., first, rest, optSuffix ->
+            def name = cat(first, rest*, optSuffix*);
+            <> @internal(name)
+        }),
+    $Peg::makeSequence(
+        parName,
+        $Peg::makeStar(
+            $Peg::makeSequence(
+                $Peg::makeToken(@@"."),
+                parName,
+                $Peg::makeCode { ., ., n <> cat(".", n) })),
+        $Peg::makeCode { first, rest ->
+            def name = cat(first, rest*);
+            <> @external(name)
+        }));
+
+## Documented in spec.
+def parImportSelect = $Peg::makeMainChoice(
+    $Peg::makeSequence(
+        $Peg::makeToken(@@"::"),
+        $Peg::makeChoice(
+            $Peg::makeSequence(
+                $Peg::makeToken(@@"*"),
+                $Peg::makeResult({select: @"*"})),
+            $Peg::makeSequence(
+                parName,
+                $Peg::makeStar(
+                    $Peg::makeSequence($Peg::makeToken(@@","), parName)),
+                $Peg::makeCode { ., first, rest ->
+                    <> {select: [first, rest*]}
+                }))),
+    $Peg::makeResult({}));
+
+## Documented in spec.
+def parImportStatement = $Peg::makeMainSequence(
+    $Peg::makeToken(@@import),
+    parImportName,
+    parImportType,
+    parImportSource,
+    parImportSelect,
+    $Peg::makeCode { ., nameOrPrefix, type, source, select ->
+        def data = {nameOrPrefix*, type*, select*, source};
+        <> makeImport(data)
+    });
+
+## Documented in spec.
 def parExportableStatement = $Peg::makeMainChoice(
     parFunctionDef, parGenericDef, parVarDef);
 
@@ -525,6 +608,7 @@ def parStatement = $Peg::makeMainChoice(
 ## Documented in spec.
 def parProgramStatement = $Peg::makeMainChoice(
     parStatement,
+    parImportStatement,
     $Peg::makeSequence(
         $Peg::makeToken(@@export),
         $Peg::makeChoice(

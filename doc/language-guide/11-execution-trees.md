@@ -193,58 +193,11 @@ is the result of evaluation. If a binding is not found for it, then
 evaluation fails (terminating the runtime).
 
 <br><br>
-### Other Nodes and Values
+### Statement Nodes
 
-These are nodes and values that appear within the data payloads
-of various expression nodes.
-
-#### `export` &mdash; `@export{name: name, export: name}`
-
-* `name: name` &mdash; Variable name to export (typically a string).
-
-* `export: name` &mdash; Name to export the variable as (typically a string).
-
-Nodes of this type are valid in the `statements` list of a closure that
-defines a module, indicating that a particular variable is to be exported
-from the module.
-
-These nodes are not directly executable. Instead, these are intended to be
-used as part of a pre-execution or pre-compliation transformation, used to
-produce a modified `closure` (with an altered `statements` list, and so on)
-that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
-for more details.
-
-#### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
-
-* `name: name` (optional) &mdash; an arbitrary value (but typically a string),
-  which indicates the name of the variable to be bound for this
-  formal. If omitted, then this indicates an unused argument which is
-  not bound to a variable in the environment of the closure body.
-
-* `repeat: repeat` (optional) &mdash; indicates (if present) that the number
-  of actual arguments bound by this formal is not necessarily exactly one.
-  If present it must be one of:
-
-  * `"?"` &mdash; indicates that this formal binds a single argument if
-    available, including none. As such, this only really makes sense if
-    only ever followed by other `?` formals and possibly a final `*` formal,
-    though the syntax will tolerate it being in any position. The bound
-    argument variable becomes a list, either of size one if an argument
-    was bound or of size zero if not.
-
-  * `"*"` &mdash; indicates that this formal binds as many actual
-    arguments as are available, including none. As such, this only really
-    makes sense as the `repeat` of the last formal, though the surface syntax
-    will tolerate it being in any position. The bound argument variable
-    becomes a list of all the passed actual arguments that were bound.
-
-  * `"+"` &mdash; indicates that this formal binds as many actual
-    arguments as are available, and it must bind at least one. Other than
-    the minumum of one, this is identical to the `"*"` modifier.
-
-If no `"repeat"` is specified, then the given formal binds exactly one
-actual argument. The argument variable as bound is the same as the
-actual argument as passed (no extra wrapping).
+These are nodes that are akin to expression nodes, but are limited to
+be used only as direct as elements of the `statements` list of a `closure`
+node.
 
 #### `varDef` &mdash; `@varDef{name: name, value: expression, (export: name)?, (top: true)?}`
 
@@ -261,8 +214,7 @@ actual argument as passed (no extra wrapping).
   should be promoted to the top of the closure in which it appears.
 
 This represents an immutable variable definition statement as part of a
-closure body. Nodes of this type are valid within the `statements` list of
-a `closure` node.
+closure body.
 
 When run successfully, nodes of this type cause `name` to be bound in the
 current (topmost) execution environment, to an immutable variable. That is,
@@ -291,8 +243,7 @@ Instead, these are expected to be treated similarly to `export` nodes
   value that the variable should take on when defined.
 
 This represents a mutable variable definition statement as part of a closure
-body. Nodes of this type are valid within the `statements` list of a `closure`
-node.
+body.
 
 When run successfully, nodes of this type cause `name` to be bound in the
 current (topmost) execution environment, to a mutable variable. That is, the
@@ -307,3 +258,140 @@ The behavior varies depending on if `value` is supplied in this node:
 * With `value` supplied, said `value` is evaluated. If it evaluates to void,
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
   value becomes the initially-bound value of the variable.
+
+
+<br><br>
+### Program Nodes
+
+These are nodes that are akin to expression or statement nodes, but are
+limited to be used only as direct as elements of the `statements` list of a
+`closure` node, and only for `closure` nodes which represet the outermost
+layer of a program.
+
+#### `export` &mdash; `@export{name: name, export: name}`
+
+* `name: name` &mdash; Variable name to export (typically a string).
+
+* `export: name` &mdash; Name to export the variable as (typically a string).
+
+This represents the export of a named binding out of a program.
+
+These nodes are not directly executable. Instead, these are intended to be
+used as part of a pre-execution or pre-compliation transformation, used to
+produce a modified `closure` (with an altered `statements` list, and so on)
+that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
+for more details.
+
+#### `importModule` &mdash; `@importModule{name: name, source: source}`
+
+* `name: name` &mdash; Name of the variable to bind to (typically a string).
+
+* `source: source` &mdash; Name of the module. Must be either an `@external`
+  or `@internal` value (described below).
+
+This represents the import of a module, binding it to a named variable in
+the program's top-level environment.
+
+#### `importModuleSelection` &mdash; `@importModuleSelection{(prefix: name)?, (select: [name+])?, source: source}`
+
+* `prefix: name` (optional) &mdash; Prefix for variable names to bind. If
+  present, must be a string.
+
+* `select: [name+]` (optional) &mdash; List of module-exported bindings
+  to import. When absent, indicates that *all* of the module's exports are
+  to be imported.
+
+* `source: source` &mdash; Name of the module. Must be either an `@external`
+  or `@internal` value (described below).
+
+This represents the import of some or all of a module's bindings as individual
+variables in the program's top-level environment.
+
+#### `importResource` &mdash; `@importResource{name: name, source: source, type: type}`
+
+* `name: name` &mdash; Name of the variable to bind to (typically a string).
+
+* `source: source` &mdash; Name of the module. Must be either an `@external`
+  or `@internal` value (described below).
+
+* `type: type` &mdash; Type name which describes how to interpret the
+  resource (typically a string).
+
+This represents the import of a resource file, binding it to a named variable
+in the program's top-level environment. The `type` indicates how the raw
+data of the resource is to be interpreted.
+
+
+<br><br>
+### Other Values
+
+These are values that appear within the data payloads of various nodes.
+
+#### `external` &mdash; `@external(name)`
+
+* `name` &mdash; String that represents an external module name. External
+  names must take the form of a dot-delimited list of identifiers.
+
+Used as the `source` binding for an `import*` node, this represents an
+*external* module reference, which is always in the form of a fully-qualified
+module name.
+
+Examples:
+
+```
+@external("Blort")
+@external("core.Blort")
+@external("core.potions.Blort")
+```
+
+#### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
+
+* `name: name` (optional) &mdash; An arbitrary value (but typically a string),
+  which indicates the name of the variable to be bound for this
+  formal. If omitted, then this indicates an unused argument which is
+  not bound to a variable in the environment of the closure body.
+
+* `repeat: repeat` (optional) &mdash; Indicates (if present) that the number
+  of actual arguments bound by this formal is not necessarily exactly one.
+  If present it must be one of:
+
+  * `"?"` &mdash; indicates that this formal binds a single argument if
+    available, including none. As such, this only really makes sense if
+    only ever followed by other `?` formals and possibly a final `*` formal,
+    though the syntax will tolerate it being in any position. The bound
+    argument variable becomes a list, either of size one if an argument
+    was bound or of size zero if not.
+
+  * `"*"` &mdash; indicates that this formal binds as many actual
+    arguments as are available, including none. As such, this only really
+    makes sense as the `repeat` of the last formal, though the surface syntax
+    will tolerate it being in any position. The bound argument variable
+    becomes a list of all the passed actual arguments that were bound.
+
+  * `"+"` &mdash; indicates that this formal binds as many actual
+    arguments as are available, and it must bind at least one. Other than
+    the minumum of one, this is identical to the `"*"` modifier.
+
+If no `"repeat"` is specified, then the given formal binds exactly one
+actual argument. The argument variable as bound is the same as the
+actual argument as passed (no extra wrapping).
+
+#### `internal` &mdash; `@internal(name)`
+
+* `name` &mdash; String that represents an internal module name. Internal
+  names must take the form of a slash-delimited list of identifiers,
+  optionally suffixed with a dot and a final identifier.
+
+Used as the `source` binding for an `import*` node, this represents an
+*internal* module reference, which is always in the form of a relative
+path.
+
+Examples:
+
+```
+@internal("blort")
+@internal("blort.txt")
+@internal("potion/blort")
+@internal("potion/blort.txt")
+@internal("frobozz/potion/blort.txt")
+```

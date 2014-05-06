@@ -6,10 +6,38 @@
 
 def $Generator = moduleLoad(["core", "Generator"]);
 def $Number    = moduleLoad(["proto", "Number"]);
+def $Sequence  = moduleLoad(["core", "Sequence"]);
 
 def $formals = intraLoad("formals");
 def formalsMaxArgs = $formals::formalsMaxArgs;
 def formalsMinArgs = $formals::formalsMinArgs;
+
+
+##
+## Private functions
+##
+
+## Splits a string into a list of strings, dividing on the given character.
+fn splitAtChar(s, ch) {
+    var result = [];
+    var current = "";
+
+    fn addCurrentToResult() {
+        result := [result*, current];
+        current := ""
+    };
+
+    ## This uses `collect` just for the filter function, ignoring the
+    ## collected result.
+    collect(s, { one ->
+        ifIs { <> eq(one, ch) }
+            { addCurrentToResult() }
+            { current := cat(current, one) }
+    });
+
+    addCurrentToResult();
+    <> result
+};
 
 
 ##
@@ -19,6 +47,24 @@ def formalsMinArgs = $formals::formalsMinArgs;
 ## Documented in spec.
 export fn get_actuals(node) {
     <> node::actuals
+};
+
+## Documented in spec.
+export fn .get_baseName();
+
+## Documented in spec.
+fn @@external.get_baseName() {
+    def components = splitAtChar(dataOf(this), ".");
+    <> $Sequence::nthFromEnd(components, 0)
+};
+
+## Documented in spec.
+fn @@internal.get_baseName() {
+    def components = splitAtChar(dataOf(this), "/");
+    def last = $Sequence::nthFromEnd(components, 0);
+    def parts = splitAtChar(last, ".");
+
+    <> get(parts, 0)
 };
 
 ## Documented in spec.
