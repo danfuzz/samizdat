@@ -192,6 +192,11 @@ zvalue makeExport(zvalue name) {
 }
 
 /* Documented in spec. */
+zvalue makeImport(zvalue baseData) {
+    die("TODO");
+}
+
+/* Documented in spec. */
 zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_call,
         mapFrom3(
