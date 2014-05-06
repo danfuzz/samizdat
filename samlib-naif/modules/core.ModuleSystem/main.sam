@@ -158,7 +158,7 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-export fn .moduleLoad(path);
+export fn .moduleLoad(fqName);
 
 ## Documented in spec.
 export fn .intraLoad(path);
@@ -180,12 +180,12 @@ export fn .intraType(path);
 ##
 
 ## Helper for `moduleLoad` which does the actual loading.
-fn doModuleLoad(md, dotName) {
-    def modulePath = cat(md::basePath, dotName);
+fn doModuleLoad(md, fqName) {
+    def modulePath = cat(md::basePath, fqName);
 
     <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
         {
-            note(cat("    ", dotName));
+            note(cat("    ", fqName));
             def loader = makeIntraLoader(modulePath, md::globals, md);
 
             ## A successful void module load result gets silently transformed
@@ -199,33 +199,33 @@ fn doModuleLoad(md, dotName) {
 };
 
 ## Documented in spec.
-fn @@ModuleLoader.moduleLoad(path) {
+fn @@ModuleLoader.moduleLoad(fqNameX) {
     def loadedBox = this::loadedBox;
-    def dotName = flattenModulePath(path);
+    def fqName = flattenModulePath(fqNameX);
 
     ## The loaded map maps paths to `"loading"` for a load-in-progress
     ## and to `[result]` for a successfully-loaded result.
 
-    ifValue { <> get(fetch(loadedBox), dotName) }
+    ifValue { <> get(fetch(loadedBox), fqName) }
         { found ->
             ifIs { <> eq(found, "loading") }
-                { die(cat("Module load loop: ", dotName)) };
+                { die(cat("Module load loop: ", fqName)) };
             return found*
         };
 
-    updateMapBox(loadedBox, dotName, "loading");
+    updateMapBox(loadedBox, fqName, "loading");
 
-    def result = ifValueOr { <> doModuleLoad(this, dotName) }
-        { <> moduleLoad(this::next, path) };
+    def result = ifValueOr { <> doModuleLoad(this, fqName) }
+        { <> moduleLoad(this::next, fqNameX) };
 
-    updateMapBox(loadedBox, dotName, [result]);
+    updateMapBox(loadedBox, fqName, [result]);
     <> result
 };
 
 ## Documented in spec.
-fn @@Null.moduleLoad(path) {
-    <> ifValueOr { <> get(BOOTSTRAP_MODULES, path) }
-        { die(cat("Module not found: ", flattenModulePath(path))) }
+fn @@Null.moduleLoad(fqName) {
+    <> ifValueOr { <> get(BOOTSTRAP_MODULES, fqName) }
+        { die(cat("Module not found: ", fqName)) }
 };
 
 ## Documented in spec.
