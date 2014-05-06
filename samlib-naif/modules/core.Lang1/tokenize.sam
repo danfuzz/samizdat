@@ -76,7 +76,7 @@ def tokWhitespace = $Peg::makeMainSequence(
 ## Documented in spec.
 def tokPunctuation = $Peg::makeMainSequence(
     $Peg::makeLookaheadSuccess(
-        $Peg::makeCharSet("@:.,=-+?;*<>{}()[]", "&|!%")),
+        $Peg::makeCharSet("@:.,=-+?;*/<>{}()[]", "&|!%")),
     $Peg::makeChoice(
         $Peg::makeString("->"),
         $Peg::makeString(":="),

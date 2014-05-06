@@ -375,6 +375,7 @@ static zvalue tokenizeAnyToken(ParseState *state) {
         case '?':  read(state); return TOK_CH_QMARK;
         case '+':  read(state); return TOK_CH_PLUS;
         case ';':  read(state); return TOK_CH_SEMICOLON;
+        case '/':  read(state); return TOK_CH_SLASH;
         case '*':  read(state); return TOK_CH_STAR;
         case '\"':              return tokenizeString(state);
         case '\\':              return tokenizeQuotedIdentifier(state);
