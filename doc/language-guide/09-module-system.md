@@ -314,10 +314,10 @@ module `core.Globals`, a module file when evaluated has additional bindings
 to allow for a module to load the other parts of itself, as well as load
 other modules.
 
-* `moduleLoad(path) <> module` &mdash; This loads the module indicated
-  by `path` in the same loader which loaded this module. `path` is a
-  "module path," that is, a list of strings which represents the fully-
-  qualified name of the module. For example, `["core", "Lang0"]`.
+* `moduleLoad(fqName) <> module` &mdash; This loads the module indicated
+  by `fqName` in the same loader which loaded this module. `fqName` is a
+  "fully-qualified module name," that is, a string of dot-separated module
+  component names. For example, `"core.Lang0"`.
 
 * `moduleLoader` &mdash; This is a reference to the module loader which
   loaded this module.
