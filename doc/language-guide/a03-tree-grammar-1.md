@@ -736,10 +736,11 @@ def parImportSelect = {:
     @"::"
     (
         @"*"
+        { <> {select: @"*"} }
     |
         first = parName
         rest = (@"," parName)*
-        { <> [first, rest*] }
+        { <> {select: [first, rest*]} }
     )
 |
     { <> {} }

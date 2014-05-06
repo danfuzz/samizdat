@@ -573,12 +573,16 @@ def parImportSelect = $Peg::makeMainChoice(
     $Peg::makeSequence(
         $Peg::makeToken(@@"::"),
         $Peg::makeChoice(
-            $Peg::makeToken(@@"*"),
+            $Peg::makeSequence(
+                $Peg::makeToken(@@"*"),
+                $Peg::makeResult({select: @"*"})),
             $Peg::makeSequence(
                 parName,
                 $Peg::makeStar(
                     $Peg::makeSequence($Peg::makeToken(@@","), parName)),
-                $Peg::makeCode { ., first, rest <> [first, rest*] }))),
+                $Peg::makeCode { ., first, rest ->
+                    <> {select: [first, rest*]}
+                }))),
     $Peg::makeResult({}));
 
 ## Documented in spec.

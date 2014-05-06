@@ -994,7 +994,7 @@ DEF_PARSE(importSelect1) {
     MATCH_OR_REJECT(CH_COLONCOLON);
     zvalue result = MATCH_OR_REJECT(CH_STAR);
 
-    return result;
+    return mapFrom1(STR_select, result);
 }
 
 /** Helper for `importSelect`: Parses the second alternate. */
@@ -1005,7 +1005,7 @@ DEF_PARSE(importSelect2) {
     zvalue result = PARSE_DELIMITED_SEQ(name, CH_COMMA);
     REJECT_IF(get_size(result) == 0);
 
-    return result;
+    return mapFrom1(STR_select, result);
 }
 
 /* Documented in spec. */
