@@ -159,7 +159,7 @@ typedef zvalue (*parserFunction)(ParseState *);
  * Parses `x?` for an arbitrary rule `x`. Returns a list of parsed `x` results
  * (of size 0 or 1).
  */
-zvalue parseOpt(parserFunction rule, ParseState *state) {
+static zvalue parseOpt(parserFunction rule, ParseState *state) {
     zvalue one = rule(state);
 
     return (one == NULL) ? EMPTY_LIST : listFrom1(one);
@@ -168,7 +168,7 @@ zvalue parseOpt(parserFunction rule, ParseState *state) {
 /**
  * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed `x` results.
  */
-zvalue parseStar(parserFunction rule, ParseState *state) {
+static zvalue parseStar(parserFunction rule, ParseState *state) {
     zvalue result = EMPTY_LIST;
 
     for (;;) {
@@ -186,7 +186,7 @@ zvalue parseStar(parserFunction rule, ParseState *state) {
 /**
  * Parses `x+` for an arbitrary rule `x`. Returns a list of parsed `x` results.
  */
-zvalue parsePlus(parserFunction rule, ParseState *state) {
+static zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
@@ -199,7 +199,7 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
  * Parses `(x (@y x)*)?` for an arbitrary rule `x` and token type `y`. Returns
  * a list of parsed `x` results.
  */
-zvalue parseDelimitedSequence(parserFunction rule, zvalue tokenType,
+static zvalue parseDelimitedSequence(parserFunction rule, zvalue tokenType,
         ParseState *state) {
     zvalue item = rule(state);
 
