@@ -65,6 +65,10 @@ get_baseName(@internal("frobozz/magic/frotz.txt"))  =>  "frotz"
 
 Gets the formal arguments of a `closure` node.
 
+#### `get_format(node) <> string`
+
+Gets the format of an `importResource` node.
+
 #### `get_function(node) <> node`
 
 Gets the function of an `apply`, `call`, or `jump` node.
@@ -120,6 +124,10 @@ nodes of type `jump`, `literal`, `parser`, `varBind`, `varDef`, and
 #### `get_prefix(node) <> string`
 
 Gets the name of an `importModuleSelection` node.
+
+#### `get_select(node) <> [name*]`
+
+Gets the binding selection of an `importModuleSelection` node.
 
 #### `get_source(node) <> source`
 
