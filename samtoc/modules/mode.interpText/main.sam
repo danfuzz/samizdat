@@ -9,7 +9,7 @@
 ##
 
 def $Template = moduleLoad("Template");
-def templateText = intraReadUtf8("template.txt");
+def templateText = intraRead("template.txt", "utf8");
 
 def $Io0 = moduleLoad("core.Io0");
 

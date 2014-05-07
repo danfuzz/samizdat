@@ -193,7 +193,7 @@ export fn .moduleLoad(fqName);
 
 ## Documented in spec.
 export fn .intraLoad(path);
-export fn .intraReadUtf8(path);
+export fn .intraRead(path, type);
 export fn .intraType(path);
 
 
@@ -355,12 +355,16 @@ fn @@IntraLoader.intraLoad(path) {
 };
 
 ## Documented in spec.
-fn @@IntraLoader.intraReadUtf8(path) {
+fn @@IntraLoader.intraRead(path, type) {
     checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
 
     ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
         { die(cat("Missing resource: ", fullPath)) };
+
+    ## The only supported type is `utf8`.
+    ifNot { <> eq(type, "utf8") }
+        { die(cat("Unsupported resource type: ", type)) };
 
     <> $Io0::readFileUtf8(fullPath)
 };
@@ -376,19 +380,19 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def result;
 
-    fn module_intraLoad(path)     { <> intraLoad(result, path)          };
-    fn module_intraReadUtf8(path) { <> intraReadUtf8(result, path)      };
-    fn module_intraType(path)     { <> intraType(result, path)          };
-    fn module_moduleLoad(fqName)  { <> moduleLoad(moduleLoader, fqName) };
-    fn module_moduleLoader()      { <> moduleLoader                     };
+    fn module_intraLoad(path)       { <> intraLoad(result, path)          };
+    fn module_intraRead(path, type) { <> intraRead(result, path, type)    };
+    fn module_intraType(path)       { <> intraType(result, path)          };
+    fn module_moduleLoad(fqName)    { <> moduleLoad(moduleLoader, fqName) };
+    fn module_moduleLoader()        { <> moduleLoader                     };
 
     def fullGlobals = {
         globals*,
-        intraLoad:     module_intraLoad,
-        intraReadUtf8: module_intraReadUtf8,
-        intraType:     module_intraType,
-        moduleLoad:    module_moduleLoad,
-        moduleLoader:  module_moduleLoader
+        intraLoad:    module_intraLoad,
+        intraRead:    module_intraRead,
+        intraType:    module_intraType,
+        moduleLoad:   module_moduleLoad,
+        moduleLoader: module_moduleLoader
     };
 
     result := @IntraLoader{

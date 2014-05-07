@@ -44,7 +44,7 @@ def $Interner = intraLoad("Interner");
 def get_interns = $Interner::get_interns;
 def intern      = $Interner::intern;
 
-def templateText = intraReadUtf8("template.txt");
+def templateText = intraRead("template.txt", "utf8");
 
 
 ## Indent with the usual width column limit.

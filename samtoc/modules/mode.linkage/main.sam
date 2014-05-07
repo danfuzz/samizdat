@@ -6,7 +6,7 @@
 ## Compilation mode "linkage" which generates `.saminfo` files.
 ##
 
-def templateText = intraReadUtf8("template.txt");
+def templateText = intraRead("template.txt", "utf8");
 
 def $CodeGen = moduleLoad("CodeGen");
 def $DataCode = moduleLoad("DataCode");
