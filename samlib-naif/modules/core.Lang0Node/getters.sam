@@ -4,9 +4,9 @@
 
 #= language core.Lang0
 
-def $Generator = moduleLoad(["core", "Generator"]);
-def $Number    = moduleLoad(["proto", "Number"]);
-def $Sequence  = moduleLoad(["core", "Sequence"]);
+def $Generator = moduleLoad("core.Generator");
+def $Number    = moduleLoad("proto.Number");
+def $Sequence  = moduleLoad("core.Sequence");
 
 def $formals = intraLoad("formals");
 def formalsMaxArgs = $formals::formalsMaxArgs;

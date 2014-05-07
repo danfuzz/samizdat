@@ -4,8 +4,8 @@
 
 #= language core.Lang0
 
-def $Generator = moduleLoad(["core", "Generator"]);
-def $Number    = moduleLoad(["proto", "Number"]);
+def $Generator = moduleLoad("core.Generator");
+def $Number    = moduleLoad("proto.Number");
 
 
 ##

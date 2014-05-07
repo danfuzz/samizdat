@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-def $Box = moduleLoad(["core", "Box"]);
+def $Box = moduleLoad("core.Box");
 
 def $FilterGenerator   = intraLoad("FilterGenerator");
 def $ListWrapGenerator = intraLoad("ListWrapGenerator");

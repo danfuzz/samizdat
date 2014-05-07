@@ -10,11 +10,11 @@
 
 #= language core.Lang0
 
-def $Generator = moduleLoad(["core", "Generator"]);
+def $Generator = moduleLoad("core.Generator");
 def stdCollect       = $Generator::stdCollect;
 def unboundedCollect = $Generator::unboundedCollect;
 
-def $Number    = moduleLoad(["proto", "Number"]);
+def $Number    = moduleLoad("proto.Number");
 
 
 ##

@@ -11,7 +11,7 @@
 def $Template = moduleLoad(["Template"]);
 def templateText = intraReadUtf8("template.txt");
 
-def $Io0 = moduleLoad(["core", "Io0"]);
+def $Io0 = moduleLoad("core.Io0");
 
 export fn compile(sourcePath, targetPath) {
     def replacements = {

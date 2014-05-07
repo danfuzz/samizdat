@@ -4,8 +4,8 @@
 
 #= language core.Lang0
 
-def $Collection = moduleLoad(["core", "Collection"]);
-def $Generator  = moduleLoad(["core", "Generator"]);
+def $Collection = moduleLoad("core.Collection");
+def $Generator  = moduleLoad("core.Generator");
 
 ##
 ## Exported definitions

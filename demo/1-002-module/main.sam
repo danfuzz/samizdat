@@ -14,13 +14,13 @@
 ##
 
 ## A known module (shouldn't cause any trouble).
-moduleLoad(["core", "Format"]);
+moduleLoad("core.Format");
 
 ## A locally-defined module.
-def $Stuff = moduleLoad(["app", "Stuff"]);
+def $Stuff = moduleLoad("app.Stuff");
 
 ## Ensure it's not re-evaluated.
-def $Stuff2 = moduleLoad(["app", "Stuff"]);
+def $Stuff2 = moduleLoad("app.Stuff");
 ifIs { <> ne($Stuff, $Stuff2) }
     { die("Different modules!") };
 

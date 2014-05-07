@@ -19,7 +19,7 @@ def get_varRefs = $VarCalc::get_varRefs;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def $Lang0Node = moduleLoad(["core", "Lang0Node"]);
+def $Lang0Node = moduleLoad("core.Lang0Node");
 def get_actuals    = $Lang0Node::get_actuals;
 def get_formals    = $Lang0Node::get_formals;
 def get_function   = $Lang0Node::get_function;
@@ -32,8 +32,8 @@ def get_statements = $Lang0Node::get_statements;
 def get_yield      = $Lang0Node::get_yield;
 def get_yieldDef   = $Lang0Node::get_yieldDef;
 
-def $Io0   = moduleLoad(["core", "Io0"]);
-def $Lang2 = moduleLoad(["core", "Lang2"]);
+def $Io0   = moduleLoad("core.Io0");
+def $Lang2 = moduleLoad("core.Lang2");
 
 def collectClosures = intraLoad("collectClosures")::collectClosures;
 def internLiterals  = intraLoad("internLiterals")::internLiterals;

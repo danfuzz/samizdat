@@ -8,7 +8,7 @@
 
 #= language core.Lang1
 
-def $Lang1 = moduleLoad(["core", "Lang1"]);
+def $Lang1 = moduleLoad("core.Lang1");
 
 
 ##

@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-def $FilePath = moduleLoad(["core", "FilePath"]);
+def $FilePath = moduleLoad("core.FilePath");
 
 
 ##
