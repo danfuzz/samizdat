@@ -51,14 +51,18 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `intraReadUtf8(loader, path) <> string`
+#### `intraRead(loader, path, type) <> string`
 
-This reads an intra-module file, interpreting it as UTF-8 encoded text. `path`
-is expected to be a string identifying a relative file path within the
-module's file hierarchy.
+This reads an intra-module file, interpreting it as the given `type` (a string
+type name). `path` is expected to be a string identifying a relative file
+path within the module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
-exist as a file.
+exist as a file, or if the given `type` is not recognized.
+
+Recognized types include:
+
+* `utf8` &mdash; Treat the file as UTF-8 encoded text, returning a string.
 
 #### `intraType(loader, path) <> string | void`
 

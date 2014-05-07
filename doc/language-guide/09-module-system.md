@@ -328,10 +328,11 @@ other modules.
   *not* have a suffix; the module system handles finding the
   appropriately-suffixed file.
 
-* `intraReadUtf8(path) <> string` &mdash; This reads the intra-module file
-  named by the indicated relative path, interpreting it as UTF-8 encoded
-  text. `path` is as with `intraLoad`, except that the final file is left
-  as-is (and not suffixed automatically).
+* `intraRead(path, type) <> string` &mdash; This reads the intra-module file
+  named by the indicated relative path, interpreting it as indicated by the
+  `type`. `path` is as with `intraLoad`, except that the final file is left
+  as-is (and not suffixed automatically). See "Resource import" above for
+  details about `type`.
 
 * `intraType(path) <> string | void` &mdash; This gets the type of an
   intra-module file named by the indicated relative path (a string).
