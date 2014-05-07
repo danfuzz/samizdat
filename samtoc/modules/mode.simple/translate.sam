@@ -6,10 +6,10 @@
 ## Translate execution trees into corresponding C code.
 ##
 
-def $VarCalc = moduleLoad(["VarCalc"]);
+def $VarCalc = moduleLoad("VarCalc");
 def get_varRefs = $VarCalc::get_varRefs;
 
-def $CodeGen = moduleLoad(["CodeGen"]);
+def $CodeGen = moduleLoad("CodeGen");
 def flatten = $CodeGen::flatten;
 def indent = $CodeGen::indent;
 

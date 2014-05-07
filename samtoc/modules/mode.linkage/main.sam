@@ -8,9 +8,9 @@
 
 def templateText = intraReadUtf8("template.txt");
 
-def $CodeGen = moduleLoad(["CodeGen"]);
-def $DataCode = moduleLoad(["DataCode"]);
-def $Template = moduleLoad(["Template"]);
+def $CodeGen = moduleLoad("CodeGen");
+def $DataCode = moduleLoad("DataCode");
+def $Template = moduleLoad("Template");
 
 def $Io0 = moduleLoad("core.Io0");
 def $Lang2 = moduleLoad("core.Lang2");

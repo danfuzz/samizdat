@@ -7,14 +7,14 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
-def $CodeGen = moduleLoad(["CodeGen"]);
+def $CodeGen = moduleLoad("CodeGen");
 def flatten = $CodeGen::flatten;
 def indent = $CodeGen::indent;
 
-def $DataCode = moduleLoad(["DataCode"]);
-def $Template = moduleLoad(["Template"]);
+def $DataCode = moduleLoad("DataCode");
+def $Template = moduleLoad("Template");
 
-def $VarCalc = moduleLoad(["VarCalc"]);
+def $VarCalc = moduleLoad("VarCalc");
 def get_varRefs = $VarCalc::get_varRefs;
 
 ## TODO: Ought to be able to do something like:
