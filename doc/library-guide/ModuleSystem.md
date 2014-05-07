@@ -125,7 +125,7 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
-def globals = moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
+def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
 def loader = makeIntraLoader(path, globals, moduleLoader);
 def mainModule = intraLoad(loader, "main");
 <> mainModule::main(args*)
