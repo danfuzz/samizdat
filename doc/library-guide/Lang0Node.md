@@ -108,7 +108,8 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 #### `get_name(node) <> . | void`
 
 Gets the name defined or used by the given node. This is applicable to
-nodes of type `closure`, `varBind`, `varDef`, `varDefMutable`, and `varRef`.
+nodes of type `closure`, `importModule`, `importResource`, `varBind`,
+`varDef`, `varDefMutable`, and `varRef`.
 
 #### `get_nodeValue(node) <> .`
 
