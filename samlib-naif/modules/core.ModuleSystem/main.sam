@@ -379,7 +379,7 @@ fn makeFileGlobals(moduleLoader) {
 
     <> {
         ## The standard global environment.
-        moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment()*,
+        moduleLoad(moduleLoader, "core.Globals")::fullEnvironment()*,
 
         moduleLoad:   file_moduleLoad,
         moduleLoader: file_moduleLoader
@@ -444,8 +444,7 @@ export fn main(libraryPath, primitiveGlobals) {
 
 ## Documented in spec.
 export fn run(path, moduleLoader, args*) {
-    def globals =
-        moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
+    def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
     def loader = makeIntraLoader(path, globals, moduleLoader);
     def optMainModule = intraLoadMain(loader)?;
 

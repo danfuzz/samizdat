@@ -32,7 +32,7 @@ export fn main(libraryPath, primitiveGlobals) {
     def loader = $ModuleSystem::makeModuleLoader(
         cat(libraryPath, "/modules"), earlyGlobals, @Null);
 
-    def innerGlobals = $ModuleSystem::moduleLoad(loader, ["core", "Globals"]);
+    def innerGlobals = $ModuleSystem::moduleLoad(loader, "core.Globals");
     def result = innerGlobals::fullEnvironment();
 
     note("    [fin]\n");
