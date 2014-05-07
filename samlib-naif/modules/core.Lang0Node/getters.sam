@@ -113,6 +113,16 @@ export fn get_nodeValue(node) {
 };
 
 ## Documented in spec.
+export fn get_prefix(node) {
+    <> node::prefix
+};
+
+## Documented in spec.
+export fn get_source(node) {
+    <> node::source
+};
+
+## Documented in spec.
 export fn get_statements(node) {
     <> node::statements
 };
