@@ -13,8 +13,8 @@
 
 note("\nLoading module system...");
 
-def $Globals      = moduleLoad(["core", "Globals"]);
-def $ModuleSystem = moduleLoad(["core", "ModuleSystem"]);
+def $Globals      = moduleLoad("core.Globals");
+def $ModuleSystem = moduleLoad("core.ModuleSystem");
 
 ## Initializes the world, and returns the final global variable environment.
 ## `libraryPath` is the filesystem path to the core library.
@@ -32,7 +32,7 @@ export fn main(libraryPath, primitiveGlobals) {
     def loader = $ModuleSystem::makeModuleLoader(
         cat(libraryPath, "/modules"), earlyGlobals, @Null);
 
-    def innerGlobals = $ModuleSystem::moduleLoad(loader, ["core", "Globals"]);
+    def innerGlobals = $ModuleSystem::moduleLoad(loader, "core.Globals");
     def result = innerGlobals::fullEnvironment();
 
     note("    [fin]\n");

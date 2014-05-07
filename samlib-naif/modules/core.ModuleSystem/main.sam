@@ -40,8 +40,8 @@ def $Lang0 = {
 };
 
 def BOOTSTRAP_MODULES = {
-    ["core", "Io0"]:   $Io0,
-    ["core", "Lang0"]: $Lang0
+    "core.Io0":   $Io0,
+    "core.Lang0": $Lang0
 };
 
 
@@ -53,10 +53,12 @@ def BOOTSTRAP_MODULES = {
 def null = @Null;
 
 ## Default language module to use, when language is unspecified.
-def DEFAULT_LANGUAGE = ["core", "Lang2"];
+def DEFAULT_LANGUAGE = "core.Lang2";
 
-## Set-like map of characters that are not allowed in module components.
-def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: null};
+## Set-like map of characters that are allowed in module and file components.
+def VALID_COMPONENT_CHARS = {
+    "_$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"*: null
+};
 
 ## Gets the file name suffix of the last component of the given path.
 ## **Note:** This is written in a super-oddball way, because of how little
@@ -88,50 +90,79 @@ fn fileNameSuffix(path) {
         { <> result }
 };
 
-## Helper for `flattenModulePath`, which processes a single component. It
-## rejects empty components and components with dots, slashes, or null
-## characters (`\0`) in them. It returns the component prefixed with `.`
-## on success.
-fn flattenModuleComponent(component) {
-    ifIs { <> eq(component, "") }
-        { die("Invalid module path component: empty string") };
-    ifNot { <> hasType(component, String) }
-        { die("Invalid module path component: not a string") };
+## Helper for `checkFqName`: Validates a character pair.
+fn checkFqNamePair(lastCh, ch) {
+    ifIs { <> eq(ch, ".") }
+        {
+            ifIs { <> eq(lastCh, ".") }
+                { die("Invalid module name: empty component") };
+            return
+        };
 
-    ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(component,
-        { ch ->
-            ifIs { <> get(INVALID_MODULE_CHARS, ch) }
-                { die("Invalid character in module path component.") }
-        });
-
-    <> cat(".", component)
+    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+        { die(cat("Invalid module name: bad character \"", ch, "\"")) }
 };
 
-## Flattens a module path (list of component names) to a simple string, which
-## corresponds to both the "human" name of the module and the directory name
-## that the module could be found in. If given a string, this just returns
-## it as-is.
-##
-## TODO: This function only exists at this point to help with the transition
-## from passing module names as lists to always passing them as "dot names."
-## It should be removed once all `moduleLoad` calls have been converted.
-fn flattenModulePath(name) {
-    ifIs { <> eq(name, "") }
+## Validates a fully-qualified module name.
+fn checkFqName(fqName) {
+    ifNot { <> hasType(fqName, String) }
+        { die("Invalid module name: not a string") };
+    ifIs { <> eq(fqName, "") }
         { die("Invalid module name: empty string") };
-    ifIs { <> hasType(name, String) }
-        { return name };
-    ## TODO: More validation on the name.
 
-    ifIs { <> eq(name, []) }
-        { die("Invalid module path: empty list") };
-    ifNot { <> hasType(name, List) }
-        { die("Invalid module path: not a list") };
+    var lastCh = ".";  ## Init to `"."` to make the first check work out.
 
-    ## Validate each component, prefixing them with `.`. Concatenate them all
-    ## together, and drop the leading `.`.
-    def withDots = collect(name, flattenModuleComponent);
-    <> Sequence_sliceInclusive(cat(withDots*), 1)
+    ## `collect` is used here as a "for-each," ignoring the collected result.
+    collect(fqName,
+        { ch ->
+            checkFqNamePair(lastCh, ch);
+            lastCh := ch
+        });
+
+    checkFqNamePair(lastCh, ".");
+};
+
+## Helper for `checkIntraPath`: Validates a character pair.
+fn checkIntraPathPair(lastCh, ch) {
+    ifIs { <> eq(ch, "/") }
+        {
+            ifIs { <> eq(lastCh, "/") }
+                { die("Invalid intra-module path: empty component") };
+            ifIs { <> eq(lastCh, ".") }
+                { die("Invalid intra-module path: empty suffix") };
+            return
+        };
+
+    ifIs { <> eq(ch, ".") }
+        {
+            ifIs { <> eq(lastCh, "/") }
+                { die("Invalid intra-module path: component-initial dot") };
+            ifIs { <> eq(lastCh, ".") }
+                { die("Invalid intra-module path: double dot") };
+            return
+        };
+
+    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+        { die(cat("Invalid intra-module path: bad character \"", ch, "\"")) }
+};
+
+## Validates an intra-module file path.
+fn checkIntraPath(path) {
+    ifNot { <> hasType(path, String) }
+        { die("Invalid intra-module path: not a string") };
+    ifIs { <> eq(path, "") }
+        { die("Invalid intra-module path: empty string") };
+
+    var lastCh = "/";  ## Init to `"/"` to make the first check work out.
+
+    ## `collect` is used here as a "for-each," ignoring the collected result.
+    collect(path,
+        { ch ->
+            checkIntraPathPair(lastCh, ch);
+            lastCh := ch;
+        });
+
+    checkIntraPathPair(lastCh, "/");
 };
 
 ## Validates an absolute file path string. It must be a string and start with
@@ -158,11 +189,11 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-export fn .moduleLoad(path);
+export fn .moduleLoad(fqName);
 
 ## Documented in spec.
 export fn .intraLoad(path);
-export fn .intraReadUtf8(path);
+export fn .intraRead(path, type);
 export fn .intraType(path);
 
 
@@ -180,12 +211,12 @@ export fn .intraType(path);
 ##
 
 ## Helper for `moduleLoad` which does the actual loading.
-fn doModuleLoad(md, dotName) {
-    def modulePath = cat(md::basePath, dotName);
+fn doModuleLoad(md, fqName) {
+    def modulePath = cat(md::basePath, fqName);
 
     <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
         {
-            note(cat("    ", dotName));
+            note(cat("    ", fqName));
             def loader = makeIntraLoader(modulePath, md::globals, md);
 
             ## A successful void module load result gets silently transformed
@@ -199,33 +230,34 @@ fn doModuleLoad(md, dotName) {
 };
 
 ## Documented in spec.
-fn @@ModuleLoader.moduleLoad(path) {
+fn @@ModuleLoader.moduleLoad(fqName) {
+    checkFqName(fqName);
     def loadedBox = this::loadedBox;
-    def dotName = flattenModulePath(path);
 
     ## The loaded map maps paths to `"loading"` for a load-in-progress
     ## and to `[result]` for a successfully-loaded result.
 
-    ifValue { <> get(fetch(loadedBox), dotName) }
+    ifValue { <> get(fetch(loadedBox), fqName) }
         { found ->
             ifIs { <> eq(found, "loading") }
-                { die(cat("Module load loop: ", dotName)) };
+                { die(cat("Module load loop: ", fqName)) };
             return found*
         };
 
-    updateMapBox(loadedBox, dotName, "loading");
+    updateMapBox(loadedBox, fqName, "loading");
 
-    def result = ifValueOr { <> doModuleLoad(this, dotName) }
-        { <> moduleLoad(this::next, path) };
+    def result = ifValueOr { <> doModuleLoad(this, fqName) }
+        { <> moduleLoad(this::next, fqName) };
 
-    updateMapBox(loadedBox, dotName, [result]);
+    updateMapBox(loadedBox, fqName, [result]);
     <> result
 };
 
 ## Documented in spec.
-fn @@Null.moduleLoad(path) {
-    <> ifValueOr { <> get(BOOTSTRAP_MODULES, path) }
-        { die(cat("Module not found: ", flattenModulePath(path))) }
+fn @@Null.moduleLoad(fqName) {
+    checkFqName(fqName);
+    <> ifValueOr { <> get(BOOTSTRAP_MODULES, fqName) }
+        { die(cat("Module not found: ", fqName)) }
 };
 
 ## Documented in spec.
@@ -288,8 +320,7 @@ fn doIntraLoad(il, path) {
     ifIs { <> eq($Io0::fileType(sourcePath)?, ["file"]) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
-            def languageName = ifValue { <> $Lang0::languageOf(text) }
-                { name <> splitModuleName(name) }
+            def languageName = ifValueOr { <> $Lang0::languageOf(text) }
                 { <> DEFAULT_LANGUAGE };
             def lang = moduleLoad(il::moduleLoader, languageName);
             def tree = lang::parseProgram(text);
@@ -302,12 +333,14 @@ fn doIntraLoad(il, path) {
 
 ## Documented in spec.
 fn @@IntraLoader.intraType(path) {
+    checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
     <> $Io0::fileType(fullPath)
 };
 
 ## Documented in spec.
 fn @@IntraLoader.intraLoad(path) {
+    checkIntraPath(path);
     def loadedBox = this::loadedBox;
 
     ## Local loads are allowed to return void, so we track a list of
@@ -322,11 +355,16 @@ fn @@IntraLoader.intraLoad(path) {
 };
 
 ## Documented in spec.
-fn @@IntraLoader.intraReadUtf8(path) {
+fn @@IntraLoader.intraRead(path, type) {
+    checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
 
     ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
         { die(cat("Missing resource: ", fullPath)) };
+
+    ## The only supported type is `utf8`.
+    ifNot { <> eq(type, "utf8") }
+        { die(cat("Unsupported resource type: ", type)) };
 
     <> $Io0::readFileUtf8(fullPath)
 };
@@ -342,19 +380,19 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def result;
 
-    fn module_intraLoad(path)     { <> intraLoad(result, path)        };
-    fn module_intraReadUtf8(path) { <> intraReadUtf8(result, path)    };
-    fn module_intraType(path)     { <> intraType(result, path)        };
-    fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
-    fn module_moduleLoader()      { <> moduleLoader                   };
+    fn module_intraLoad(path)       { <> intraLoad(result, path)          };
+    fn module_intraRead(path, type) { <> intraRead(result, path, type)    };
+    fn module_intraType(path)       { <> intraType(result, path)          };
+    fn module_moduleLoad(fqName)    { <> moduleLoad(moduleLoader, fqName) };
+    fn module_moduleLoader()        { <> moduleLoader                     };
 
     def fullGlobals = {
         globals*,
-        intraLoad:     module_intraLoad,
-        intraReadUtf8: module_intraReadUtf8,
-        intraType:     module_intraType,
-        moduleLoad:    module_moduleLoad,
-        moduleLoader:  module_moduleLoader
+        intraLoad:    module_intraLoad,
+        intraRead:    module_intraRead,
+        intraType:    module_intraType,
+        moduleLoad:   module_moduleLoad,
+        moduleLoader: module_moduleLoader
     };
 
     result := @IntraLoader{
@@ -374,12 +412,12 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 
 ## Makes a global environment sufficient for evaluating a single file.
 fn makeFileGlobals(moduleLoader) {
-    fn file_moduleLoad(path) { <> moduleLoad(moduleLoader, path) };
-    fn file_moduleLoader()   { <> moduleLoader                   };
+    fn file_moduleLoad(fqName) { <> moduleLoad(moduleLoader, fqName) };
+    fn file_moduleLoader()     { <> moduleLoader                     };
 
     <> {
         ## The standard global environment.
-        moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment()*,
+        moduleLoad(moduleLoader, "core.Globals")::fullEnvironment()*,
 
         moduleLoad:   file_moduleLoad,
         moduleLoader: file_moduleLoader
@@ -412,8 +450,7 @@ fn runProgram(programFunc, args) {
 fn runTextFile(path, moduleLoader, args) {
     def globals = makeFileGlobals(moduleLoader);
     def text = $Io0::readFileUtf8(path);
-    def languageName = ifValue { <> $Lang0::languageOf(text) }
-        { name <> splitModuleName(name) }
+    def languageName = ifValueOr { <> $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
     def lang = moduleLoad(moduleLoader, languageName);
     def tree = lang::parseProgram(text);
@@ -445,8 +482,7 @@ export fn main(libraryPath, primitiveGlobals) {
 
 ## Documented in spec.
 export fn run(path, moduleLoader, args*) {
-    def globals =
-        moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
+    def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
     def loader = makeIntraLoader(path, globals, moduleLoader);
     def optMainModule = intraLoadMain(loader)?;
 
@@ -477,33 +513,4 @@ export fn runFile(path, moduleLoader, args*) {
         { return runBinaryFile(path, moduleLoader, args) };
 
     die(cat("Unknown file name suffix: ", suffix))
-};
-
-## Documented in spec.
-export fn splitModuleName(name) {
-    ifIs { <> eq(name, "") }
-        { die("Invalid module name: empty string") };
-    ifNot { <> hasType(name, String) }
-        { die("Invalid module name: not a string") };
-
-    var result = [];
-    var current = "";
-
-    fn addCurrentToResult() {
-        ifIs { <> eq(current, "") }
-            { die(cat("Invalid empty component in module name: ", name)) };
-        result := [result*, current];
-        current := ""
-    };
-
-    ## This uses `collect` just for the filter function, ignoring the
-    ## collected result.
-    collect(name, { ch ->
-        ifIs { <> eq(ch, ".") }
-            { addCurrentToResult() }
-            { current := cat(current, ch) }
-    });
-
-    addCurrentToResult();
-    <> result
 };

@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-def $Box = moduleLoad(["proto", "Box"]);
+def $Box = moduleLoad("proto.Box");
 
 def $NullBox = intraLoad("NullBox");
 

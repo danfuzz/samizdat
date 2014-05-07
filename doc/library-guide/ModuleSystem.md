@@ -20,8 +20,7 @@ dependencies.
 #### `moduleLoad(loader, fqName) <> .`
 
 This loads the module named by `fqName`, which is expected to be a
-fully-qualified module name as a string (preferred, e.g. `"core.Format"`) or
-a list of strings (deprecated, e.g. `["core", "Format"]`). It returns
+fully-qualified module name as a string (e.g. `"core.Format"`). It returns
 whatever is exported by the module. If the module doesn't export anything,
 then this returns `{}` (the empty list).
 
@@ -52,14 +51,18 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `intraReadUtf8(loader, path) <> string`
+#### `intraRead(loader, path, type) <> string`
 
-This reads an intra-module file, interpreting it as UTF-8 encoded text. `path`
-is expected to be a string identifying a relative file path within the
-module's file hierarchy.
+This reads an intra-module file, interpreting it as the given `type` (a string
+type name). `path` is expected to be a string identifying a relative file
+path within the module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
-exist as a file.
+exist as a file, or if the given `type` is not recognized.
+
+Recognized types include:
+
+* `utf8` &mdash; Treat the file as UTF-8 encoded text, returning a string.
 
 #### `intraType(loader, path) <> string | void`
 
@@ -126,7 +129,7 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
-def globals = moduleLoad(moduleLoader, ["core", "Globals"])::fullEnvironment();
+def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
 def loader = makeIntraLoader(path, globals, moduleLoader);
 def mainModule = intraLoad(loader, "main");
 <> mainModule::main(args*)
@@ -166,10 +169,3 @@ from an interactive commandline or from a scripting environment, is the
 filesystem path to itself. This function does *not* automatically add this
 argument. Users of this function should add it to the given `args*` when
 appropriate.
-
-#### `splitModuleName(name) <> [name*]`
-
-This splits a module name string into a list of component names. It
-does no sanity checks beyond checking that `name` is a non-empty string
-containing all non-empty component names. It does *not* check for any
-other validity of component names.

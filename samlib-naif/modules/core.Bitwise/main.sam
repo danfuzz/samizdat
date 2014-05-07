@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-def $Bitwise = moduleLoad(["proto", "Bitwise"]);
+def $Bitwise = moduleLoad("proto.Bitwise");
 def and     = $Bitwise::and;
 def bit     = $Bitwise::bit;
 def bitSize = $Bitwise::bitSize;
@@ -17,7 +17,7 @@ def or      = $Bitwise::or;
 def shl     = $Bitwise::shl;
 def xor     = $Bitwise::xor;
 
-def $Number = moduleLoad(["proto", "Number"]);
+def $Number = moduleLoad("proto.Number");
 def neg = $Number::neg;
 
 

@@ -6,7 +6,7 @@
 ## Convert data into C code that constructs that data.
 ##
 
-def $CodeGen = moduleLoad(["CodeGen"]);
+def $CodeGen = moduleLoad("CodeGen");
 def flatten = $CodeGen::flatten;
 def indent = $CodeGen::indent;
 

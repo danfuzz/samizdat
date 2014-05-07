@@ -39,18 +39,18 @@ export fn fullEnvironment() {
     ## ready.
 
     ## This is just loaded to set up generic function bindings.
-    moduleLoad(["core", "Boolean"]);
+    moduleLoad("core.Boolean");
 
-    def $Bitwise     = moduleLoad(["core", "Bitwise"]);
-    def $Box         = moduleLoad(["core", "Box"]);
-    def $Collection  = moduleLoad(["core", "Collection"]);
-    def $CommandLine = moduleLoad(["core", "CommandLine"]);
-    def $Format      = moduleLoad(["core", "Format"]);
-    def $Generator   = moduleLoad(["core", "Generator"]);
-    def $Number      = moduleLoad(["proto", "Number"]);
-    def $Peg         = moduleLoad(["core", "Peg"]);
-    def $Range       = moduleLoad(["core", "Range"]);
-    def $Sequence    = moduleLoad(["core", "Sequence"]);
+    def $Bitwise     = moduleLoad("core.Bitwise");
+    def $Box         = moduleLoad("core.Box");
+    def $Collection  = moduleLoad("core.Collection");
+    def $CommandLine = moduleLoad("core.CommandLine");
+    def $Format      = moduleLoad("core.Format");
+    def $Generator   = moduleLoad("core.Generator");
+    def $Number      = moduleLoad("proto.Number");
+    def $Peg         = moduleLoad("core.Peg");
+    def $Range       = moduleLoad("core.Range");
+    def $Sequence    = moduleLoad("core.Sequence");
 
     <> {
         EARLY_GLOBALS*,

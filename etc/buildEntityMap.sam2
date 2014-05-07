@@ -9,8 +9,8 @@
 ## (very large) map literal corresponding to its contents.
 ##
 
-def $FilePath = moduleLoad(["core", "FilePath"]);
-def $Io0      = moduleLoad(["core", "Io0"]);
+def $FilePath = moduleLoad("core.FilePath");
+def $Io0      = moduleLoad("core.Io0");
 
 
 ## Map of hex digit tokens to int values.

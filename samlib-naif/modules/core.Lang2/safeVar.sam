@@ -4,11 +4,11 @@
 
 #= language core.Lang1
 
-def $Format     = moduleLoad(["core", "Format"]);
-def $Generator  = moduleLoad(["core", "Generator"]);
-def $Lang0Node  = moduleLoad(["core", "Lang0Node"]);
-def $Number     = moduleLoad(["proto", "Number"]);
-def $Sequence   = moduleLoad(["core", "Sequence"]);
+def $Format     = moduleLoad("core.Format");
+def $Generator  = moduleLoad("core.Generator");
+def $Lang0Node  = moduleLoad("core.Lang0Node");
+def $Number     = moduleLoad("proto.Number");
+def $Sequence   = moduleLoad("core.Sequence");
 
 ## Int value of Unicode code point `0`.
 def CHAR_0 = toInt("0");

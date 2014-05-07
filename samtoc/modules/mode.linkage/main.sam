@@ -6,14 +6,14 @@
 ## Compilation mode "linkage" which generates `.saminfo` files.
 ##
 
-def templateText = intraReadUtf8("template.txt");
+def templateText = intraRead("template.txt", "utf8");
 
-def $CodeGen = moduleLoad(["CodeGen"]);
-def $DataCode = moduleLoad(["DataCode"]);
-def $Template = moduleLoad(["Template"]);
+def $CodeGen = moduleLoad("CodeGen");
+def $DataCode = moduleLoad("DataCode");
+def $Template = moduleLoad("Template");
 
-def $Io0 = moduleLoad(["core", "Io0"]);
-def $Lang2 = moduleLoad(["core", "Lang2"]);
+def $Io0 = moduleLoad("core.Io0");
+def $Lang2 = moduleLoad("core.Lang2");
 
 export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);

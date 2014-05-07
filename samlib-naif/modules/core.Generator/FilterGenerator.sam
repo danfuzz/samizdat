@@ -10,7 +10,7 @@
 
 #= language core.Lang0
 
-def $Box = moduleLoad(["core", "Box"]);
+def $Box = moduleLoad("core.Box");
 
 def $ParaGenerator = intraLoad("ParaGenerator");
 

@@ -2,8 +2,8 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-def $CommandLine = moduleLoad(["core", "CommandLine"]);
-def $FilePath    = moduleLoad(["core", "FilePath"]);
+def $CommandLine = moduleLoad("core.CommandLine");
+def $FilePath    = moduleLoad("core.FilePath");
 
 ## Default mode to use
 def DEFAULT_MODE = "simple";
@@ -71,7 +71,7 @@ export fn main(selfPath, rawArgs*) {
             note("Unknown compilation mode: \%q(args::options::mode)");
             return 1
         }();
-    def modeModule = moduleLoad(["mode", modeName]);
+    def modeModule = moduleLoad("mode.\(modeName)");
 
     if (#sources == 0) {
         note("No source files specified!");
