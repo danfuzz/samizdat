@@ -342,11 +342,11 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def result;
 
-    fn module_intraLoad(path)     { <> intraLoad(result, path)        };
-    fn module_intraReadUtf8(path) { <> intraReadUtf8(result, path)    };
-    fn module_intraType(path)     { <> intraType(result, path)        };
-    fn module_moduleLoad(path)    { <> moduleLoad(moduleLoader, path) };
-    fn module_moduleLoader()      { <> moduleLoader                   };
+    fn module_intraLoad(path)     { <> intraLoad(result, path)          };
+    fn module_intraReadUtf8(path) { <> intraReadUtf8(result, path)      };
+    fn module_intraType(path)     { <> intraType(result, path)          };
+    fn module_moduleLoad(fqName)  { <> moduleLoad(moduleLoader, fqName) };
+    fn module_moduleLoader()      { <> moduleLoader                     };
 
     def fullGlobals = {
         globals*,
@@ -374,8 +374,8 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 
 ## Makes a global environment sufficient for evaluating a single file.
 fn makeFileGlobals(moduleLoader) {
-    fn file_moduleLoad(path) { <> moduleLoad(moduleLoader, path) };
-    fn file_moduleLoader()   { <> moduleLoader                   };
+    fn file_moduleLoad(fqName) { <> moduleLoad(moduleLoader, fqName) };
+    fn file_moduleLoader()     { <> moduleLoader                     };
 
     <> {
         ## The standard global environment.
