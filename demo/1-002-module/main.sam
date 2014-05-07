@@ -24,9 +24,13 @@ def $Stuff2 = moduleLoad("app.Stuff");
 ifIs { <> ne($Stuff, $Stuff2) }
     { die("Different modules!") };
 
+## A resource file.
+def $resource = intraRead("resource.txt", "utf8");
+
 export fn main(selfPath, .*) {
     note(cat("I am: ", $Format::source(selfPath)));
     note($Format::source($Stuff::STUFF));
     note($Format::source($Stuff::SUBSTUFF));
     note($Format::source($Stuff::stuffFunc()));
+    note($Format::source($resource));
 };
