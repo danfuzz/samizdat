@@ -55,8 +55,10 @@ def null = @Null;
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = "core.Lang2";
 
-## Set-like map of characters that are not allowed in module components.
-def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: null};
+## Set-like map of characters that are allowed in module components.
+def VALID_MODULE_CHARS = {
+    "._$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"*: null
+};
 
 ## Gets the file name suffix of the last component of the given path.
 ## **Note:** This is written in a super-oddball way, because of how little
@@ -88,35 +90,33 @@ fn fileNameSuffix(path) {
         { <> result }
 };
 
-## Helper for `flattenModulePath`, which processes a single component. It
-## rejects empty components and components with dots, slashes, or null
-## characters (`\0`) in them. It returns the component prefixed with `.`
-## on success.
-fn flattenModuleComponent(component) {
-    ifIs { <> eq(component, "") }
-        { die("Invalid module path component: empty string") };
-    ifNot { <> hasType(component, String) }
-        { die("Invalid module path component: not a string") };
-
-    ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(component,
-        { ch ->
-            ifIs { <> get(INVALID_MODULE_CHARS, ch) }
-                { die("Invalid character in module path component.") }
-        });
-
-    <> cat(".", component)
-};
-
 ## Validates a fully-qualified module name.
 fn checkFqName(fqName) {
     ifNot { <> hasType(fqName, String) }
-        { die("Invalid module path: not a string") };
+        { die("Invalid module name: not a string") };
     ifIs { <> eq(fqName, "") }
         { die("Invalid module name: empty string") };
 
-    ## TODO: More validation on the name.
-    <> fqName
+    var lastCh = ".";  ## Init to `"."` to make the first check work out.
+
+    ## `collect` is used here as a "for-each," ignoring the collected result.
+    collect(fqName,
+        { ch ->
+            ifIs { <> eq(ch, ".") }
+                {
+                    ifIs { <> eq(lastCh, ".") }
+                        { die("Invalid module name: empty component") }
+                };
+            ifNot { <> get(VALID_MODULE_CHARS, ch) }
+                {
+                    die(cat("Invalid module name: bad character \"", ch,
+                        "\""));
+                };
+            lastCh := ch;
+        });
+
+    ifIs { <> eq(lastCh, ".") }
+        { die("Invalid module name: empty component (at end)") };
 };
 
 ## Validates an absolute file path string. It must be a string and start with
