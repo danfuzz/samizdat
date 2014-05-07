@@ -90,6 +90,19 @@ fn fileNameSuffix(path) {
         { <> result }
 };
 
+## Helper for `checkFqName`: Validates a character pair.
+fn checkFqNamePair(lastCh, ch) {
+    ifIs { <> eq(ch, ".") }
+        {
+            ifIs { <> eq(lastCh, ".") }
+                { die("Invalid module name: empty component") };
+            return
+        };
+
+    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+        { die(cat("Invalid module name: bad character \"", ch, "\"")) }
+};
+
 ## Validates a fully-qualified module name.
 fn checkFqName(fqName) {
     ifNot { <> hasType(fqName, String) }
@@ -101,24 +114,12 @@ fn checkFqName(fqName) {
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
     collect(fqName,
-        { <next> ch ->
-            ifIs { <> eq(ch, ".") }
-                {
-                    ifIs { <> eq(lastCh, ".") }
-                        { die("Invalid module name: empty component") };
-                    lastCh := ".";
-                    <next>
-                };
-            ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
-                {
-                    die(cat("Invalid module name: bad character \"", ch,
-                        "\""));
-                };
-            lastCh := ch;
+        { ch ->
+            checkFqNamePair(lastCh, ch);
+            lastCh := ch
         });
 
-    ifIs { <> eq(lastCh, ".") }
-        { die("Invalid module name: empty component (at end)") };
+    checkFqNamePair(lastCh, ".");
 };
 
 ## Helper for `checkIntraPath`: Validates a character pair.
@@ -129,7 +130,7 @@ fn checkIntraPathPair(lastCh, ch) {
                 { die("Invalid intra-module path: empty component") };
             ifIs { <> eq(lastCh, ".") }
                 { die("Invalid intra-module path: empty suffix") };
-            return;
+            return
         };
 
     ifIs { <> eq(ch, ".") }
@@ -138,14 +139,11 @@ fn checkIntraPathPair(lastCh, ch) {
                 { die("Invalid intra-module path: component-initial dot") };
             ifIs { <> eq(lastCh, ".") }
                 { die("Invalid intra-module path: double dot") };
-            return;
+            return
         };
 
     ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
-        {
-            die(cat("Invalid intra-module path: bad character \"", ch,
-                "\""));
-        };
+        { die(cat("Invalid intra-module path: bad character \"", ch, "\"")) }
 };
 
 ## Validates an intra-module file path.
