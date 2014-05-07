@@ -108,30 +108,15 @@ fn flattenModuleComponent(component) {
     <> cat(".", component)
 };
 
-## Flattens a module path (list of component names) to a simple string, which
-## corresponds to both the "human" name of the module and the directory name
-## that the module could be found in. If given a string, this just returns
-## it as-is.
-##
-## TODO: This function only exists at this point to help with the transition
-## from passing module names as lists to always passing them as "dot names."
-## It should be removed once all `moduleLoad` calls have been converted.
-fn flattenModulePath(name) {
-    ifIs { <> eq(name, "") }
+## Validates a fully-qualified module name.
+fn checkFqName(fqName) {
+    ifNot { <> hasType(fqName, String) }
+        { die("Invalid module path: not a string") };
+    ifIs { <> eq(fqName, "") }
         { die("Invalid module name: empty string") };
-    ifIs { <> hasType(name, String) }
-        { return name };
+
     ## TODO: More validation on the name.
-
-    ifIs { <> eq(name, []) }
-        { die("Invalid module path: empty list") };
-    ifNot { <> hasType(name, List) }
-        { die("Invalid module path: not a list") };
-
-    ## Validate each component, prefixing them with `.`. Concatenate them all
-    ## together, and drop the leading `.`.
-    def withDots = collect(name, flattenModuleComponent);
-    <> Sequence_sliceInclusive(cat(withDots*), 1)
+    <> fqName
 };
 
 ## Validates an absolute file path string. It must be a string and start with
@@ -199,9 +184,9 @@ fn doModuleLoad(md, fqName) {
 };
 
 ## Documented in spec.
-fn @@ModuleLoader.moduleLoad(fqNameX) {
+fn @@ModuleLoader.moduleLoad(fqName) {
+    checkFqName(fqName);
     def loadedBox = this::loadedBox;
-    def fqName = flattenModulePath(fqNameX);
 
     ## The loaded map maps paths to `"loading"` for a load-in-progress
     ## and to `[result]` for a successfully-loaded result.
@@ -216,15 +201,15 @@ fn @@ModuleLoader.moduleLoad(fqNameX) {
     updateMapBox(loadedBox, fqName, "loading");
 
     def result = ifValueOr { <> doModuleLoad(this, fqName) }
-        { <> moduleLoad(this::next, fqNameX) };
+        { <> moduleLoad(this::next, fqName) };
 
     updateMapBox(loadedBox, fqName, [result]);
     <> result
 };
 
 ## Documented in spec.
-fn @@Null.moduleLoad(fqNameX) {
-    def fqName = flattenModulePath(fqNameX);
+fn @@Null.moduleLoad(fqName) {
+    checkFqName(fqName);
     <> ifValueOr { <> get(BOOTSTRAP_MODULES, fqName) }
         { die(cat("Module not found: ", fqName)) }
 };
