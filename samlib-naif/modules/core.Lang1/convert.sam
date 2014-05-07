@@ -233,6 +233,21 @@ fn @@closure.convertPexIn() {
     <> withBindings(this, {statements, yield*})
 };
 
+## Does parser conversion of an `importModule` node.
+fn @@importModule.convertPexIn() {
+    <> this
+};
+
+## Does parser conversion of an `importModuleSelection` node.
+fn @@importModuleSelection.convertPexIn() {
+    <> this
+};
+
+## Does parser conversion of an `importResource` node.
+fn @@importResource.convertPexIn() {
+    <> this
+};
+
 ## Does parser conversion of a `jump` node.
 fn @@jump.convertPexIn() {
     def function = convertPexIn(get_function(this));

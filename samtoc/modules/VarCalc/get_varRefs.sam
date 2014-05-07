@@ -10,6 +10,7 @@ def get_formals    = $Lang0Node::get_formals;
 def get_function   = $Lang0Node::get_function;
 def get_name       = $Lang0Node::get_name;
 def get_nodeValue  = $Lang0Node::get_nodeValue;
+def get_source     = $Lang0Node::get_source;
 def get_statements = $Lang0Node::get_statements;
 def get_yield      = $Lang0Node::get_yield;
 def get_yieldDef   = $Lang0Node::get_yieldDef;
@@ -75,6 +76,19 @@ fn @@closure.get_varRefs() {
 
 fn @@closureRef.get_varRefs() {
     <> this::varRefs
+};
+
+fn @@importModule.get_varRefs() {
+    <> [hasType(this.source, @@external) & "moduleLoad" | "intraLoad"]
+};
+
+fn @@importModuleSelection.get_varRefs() {
+    <> [hasType(this.source, @@external) & "moduleLoad" | "intraLoad"]
+};
+
+fn @@importResource.get_varRefs() {
+    ## Resources are always "internal."
+    <> ["intraRead"]
 };
 
 fn @@jump.get_varRefs() {

@@ -96,6 +96,23 @@ fn @@closure.safeIndex(base) {
     <> maxOf(namesIndex, nodesIndex)
 };
 
+fn @@importModule.safeIndex(base) {
+    <> safeIndexForNames(base, $Lang0Node::get_name(this));
+};
+
+fn @@importModuleSelection.safeIndex(base) {
+    ## I don't think this can come up in practice (nor the other `import*`
+    ## variants, really). So, just fail hard. Note: The only situation this
+    ## can't actually be made to work is on wildcard imports (since when this
+    ## is called, we don't necessarily know the full set of exports from a
+    ## module).
+    die("Cannot perform `safeIndex` on `importModuleSelection` node.")
+};
+
+fn @@importResource.safeIndex(base) {
+    <> safeIndexForNames(base, $Lang0Node::get_name(this));
+};
+
 fn @@jump.safeIndex(base) {
     <> safeIndexForNodes(base,
         $Lang0Node::get_function(this),

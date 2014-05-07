@@ -307,18 +307,18 @@ the program's top-level environment.
 This represents the import of some or all of a module's bindings as individual
 variables in the program's top-level environment.
 
-#### `importResource` &mdash; `@importResource{name: name, source: source, type: type}`
+#### `importResource` &mdash; `@importResource{name: name, source: source, format: format}`
 
 * `name: name` &mdash; Name of the variable to bind to (typically a string).
 
 * `source: source` &mdash; Name of the module. Must be either an `@external`
   or `@internal` value (described below).
 
-* `type: type` &mdash; Type name which describes how to interpret the
-  resource (typically a string).
+* `format: format` &mdash; Format name which describes how to interpret the
+  resource contents (typically a string).
 
 This represents the import of a resource file, binding it to a named variable
-in the program's top-level environment. The `type` indicates how the raw
+in the program's top-level environment. The `format` indicates how the raw
 data of the resource is to be interpreted.
 
 

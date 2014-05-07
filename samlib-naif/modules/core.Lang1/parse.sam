@@ -529,11 +529,11 @@ def parImportName = $Peg::makeMainChoice(
     $Peg::makeResult({}));
 
 ## Documented in spec.
-def parImportType = $Peg::makeMainChoice(
+def parImportFormat = $Peg::makeMainChoice(
     $Peg::makeSequence(
         $Peg::makeToken(@@"@"),
         parIdentifierString,
-        $Peg::makeCode { ., t <> {type: dataOf(t)} }),
+        $Peg::makeCode { ., f <> {format: dataOf(f)} }),
     $Peg::makeResult({}));
 
 ## Documented in spec.
@@ -589,11 +589,11 @@ def parImportSelect = $Peg::makeMainChoice(
 def parImportStatement = $Peg::makeMainSequence(
     $Peg::makeToken(@@import),
     parImportName,
-    parImportType,
+    parImportFormat,
     parImportSource,
     parImportSelect,
-    $Peg::makeCode { ., nameOrPrefix, type, source, select ->
-        def data = {nameOrPrefix*, type*, select*, source};
+    $Peg::makeCode { ., nameOrPrefix, format, source, select ->
+        def data = {nameOrPrefix*, format*, select*, source};
         <> makeImport(data)
     });
 

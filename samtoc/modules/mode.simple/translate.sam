@@ -79,6 +79,18 @@ fn @@closureRef.translate(varsBox) {
         )*)
 };
 
+fn @@importModule.translate(varsBox) {
+    die("TODO: importModule.translate");
+};
+
+fn @@importModuleSelection.translate(varsBox) {
+    die("TODO: importModuleSelection.translate");
+};
+
+fn @@importResource.translate(varsBox) {
+    die("TODO: importResource.translate");
+};
+
 fn @@jump.translate(varsBox) {
     def value = (def v = this.nodeValue)
         & translate(v, varsBox)

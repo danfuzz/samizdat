@@ -21,6 +21,20 @@ fn @@closure.get_varDefs() {
     <> []
 };
 
+fn @@importModule.get_varDefs() {
+    <> [this.name]
+};
+
+fn @@importModuleSelection.get_varDefs() {
+    ## TODO: In order to handle wildcard imports, this function will have to
+    ## be able to ask for the list of exports from arbitrary modules.
+    die("TODO `get_varDefs` on `importModuleSelection`.")
+};
+
+fn @@importResource.get_varDefs() {
+    <> [this.name]
+};
+
 fn @@jump.get_varDefs() {
     <> []
 };

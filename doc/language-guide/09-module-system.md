@@ -156,15 +156,15 @@ can only be defined as internal files. (That is, there is no such thing as
 an external resource, per se.)
 
 The syntax for importing resources is similar to that of importing internal
-modules, except that the type of file &mdash; that is, how to interpret the
+modules, except that the format of file &mdash; that is, how to interpret the
 contents &mdash; must be specified before the resource name, in the form
-`@typeName` (similar to a payload-free derived value).
+`@formatName` (similar to a payload-free derived value).
 
 As with the other imports, an explicit variable name to bind is optional.
 If no name is supplied, then the default is the final component name of
 the resource, minus any extension.
 
-The following types are understood by the system:
+The following formats are understood by the system:
 
 * `@utf8` &mdash; Interpret the resource file as UTF-8 encoded text.
 
@@ -328,11 +328,11 @@ other modules.
   *not* have a suffix; the module system handles finding the
   appropriately-suffixed file.
 
-* `intraRead(path, type) <> string` &mdash; This reads the intra-module file
+* `intraRead(path, format) <> string` &mdash; This reads the intra-module file
   named by the indicated relative path, interpreting it as indicated by the
-  `type`. `path` is as with `intraLoad`, except that the final file is left
+  `format`. `path` is as with `intraLoad`, except that the final file is left
   as-is (and not suffixed automatically). See "Resource import" above for
-  details about `type`.
+  details about `format`.
 
 * `intraType(path) <> string | void` &mdash; This gets the type of an
   intra-module file named by the indicated relative path (a string).

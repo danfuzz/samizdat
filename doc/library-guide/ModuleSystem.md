@@ -51,14 +51,14 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `intraRead(loader, path, type) <> string`
+#### `intraRead(loader, path, format) <> string`
 
-This reads an intra-module file, interpreting it as the given `type` (a string
-type name). `path` is expected to be a string identifying a relative file
+This reads an intra-module file, interpreting it as the given `format` (a
+string name). `path` is expected to be a string identifying a relative file
 path within the module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
-exist as a file, or if the given `type` is not recognized.
+exist as a file, or if the given `format` is not recognized.
 
 Recognized types include:
 
