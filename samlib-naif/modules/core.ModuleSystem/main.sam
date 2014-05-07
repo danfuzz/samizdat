@@ -53,7 +53,7 @@ def BOOTSTRAP_MODULES = {
 def null = @Null;
 
 ## Default language module to use, when language is unspecified.
-def DEFAULT_LANGUAGE = ["core", "Lang2"];
+def DEFAULT_LANGUAGE = "core.Lang2";
 
 ## Set-like map of characters that are not allowed in module components.
 def INVALID_MODULE_CHARS = {[".", "/", "\0"]*: null};
@@ -289,8 +289,7 @@ fn doIntraLoad(il, path) {
     ifIs { <> eq($Io0::fileType(sourcePath)?, ["file"]) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
-            def languageName = ifValue { <> $Lang0::languageOf(text) }
-                { name <> splitModuleName(name) }
+            def languageName = ifValueOr { <> $Lang0::languageOf(text) }
                 { <> DEFAULT_LANGUAGE };
             def lang = moduleLoad(il::moduleLoader, languageName);
             def tree = lang::parseProgram(text);
@@ -413,8 +412,7 @@ fn runProgram(programFunc, args) {
 fn runTextFile(path, moduleLoader, args) {
     def globals = makeFileGlobals(moduleLoader);
     def text = $Io0::readFileUtf8(path);
-    def languageName = ifValue { <> $Lang0::languageOf(text) }
-        { name <> splitModuleName(name) }
+    def languageName = ifValueOr { <> $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
     def lang = moduleLoad(moduleLoader, languageName);
     def tree = lang::parseProgram(text);
