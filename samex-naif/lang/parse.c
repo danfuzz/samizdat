@@ -910,18 +910,18 @@ DEF_PARSE(importName) {
     return (result == NULL) ? EMPTY_MAP : result;
 }
 
-/** Helper for `importName`: Parses the first alternate. */
-DEF_PARSE(importType1) {
+/** Helper for `importFormat`: Parses the first alternate. */
+DEF_PARSE(importFormat1) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
-    zvalue t = PARSE_OR_REJECT(identifierString);
-    return mapFrom1(STR_type, dataOf(t));
+    zvalue f = PARSE_OR_REJECT(identifierString);
+    return mapFrom1(STR_format, dataOf(f));
 }
 
 /* Documented in spec. */
-DEF_PARSE(importType) {
-    zvalue result = PARSE(importType1);
+DEF_PARSE(importFormat) {
+    zvalue result = PARSE(importFormat1);
     return (result == NULL) ? EMPTY_MAP : result;
 }
 
@@ -1024,13 +1024,13 @@ DEF_PARSE(importStatement) {
 
     MATCH_OR_REJECT(import);
     zvalue nameOrPrefix = PARSE(importName);  // Never fails.
-    zvalue type = PARSE(importType);          // Never fails.
+    zvalue format = PARSE(importFormat);      // Never fails.
     zvalue source = PARSE_OR_REJECT(importSource);
     zvalue select = PARSE(importSelect);      // Never fails.
 
     zvalue data = GFN_CALL(cat,
         nameOrPrefix,
-        type,
+        format,
         select,
         mapFrom1(STR_source, source));
     return makeImport(data);

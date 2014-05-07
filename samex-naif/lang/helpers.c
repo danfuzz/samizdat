@@ -252,7 +252,7 @@ zvalue makeImport(zvalue baseData) {
 
         if (get(data, STR_name) != NULL) {
             die("Import selection name must be a prefix.");
-        } else if (get(data, STR_type) != NULL) {
+        } else if (get(data, STR_format) != NULL) {
             die("Cannot import selection of resource.");
         } else if (hasType(select, TYPE_CH_STAR)) {
             // It's a wildcard import.
@@ -270,7 +270,7 @@ zvalue makeImport(zvalue baseData) {
         data = collPut(data, STR_name, name);
     }
 
-    if (get(data, STR_type) != NULL) {
+    if (get(data, STR_format) != NULL) {
         // It's a resource.
         if (hasType(get(data, STR_source), TYPE_external)) {
             die("Cannot import external resource.");

@@ -683,13 +683,13 @@ def parImportName = {:
     { <> {} }
 :};
 
-## Parses an optional type name for an `import` statement. This rule never
-## fails. The result is always a map, empty if there was no type name, or
-## binding `type`.
-def parImportType = {:
+## Parses an optional format name for an `import` statement. This rule never
+## fails. The result is always a map, empty if there was no format name, or
+## binding `format`.
+def parImportFormat = {:
     @"@"
-    t = parIdentifierString
-    { <> {type: dataOf(t)} }
+    f = parIdentifierString
+    { <> {format: dataOf(f)} }
 |
     { <> {} }
 :};

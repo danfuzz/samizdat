@@ -79,6 +79,7 @@ STR(collect,               "collect");
 STR(directory,             "directory");
 STR(file,                  "file");
 STR(formals,               "formals");
+STR(format,                "format");
 STR(function,              "function");
 STR(genericBind,           "genericBind");
 STR(get,                   "get");
