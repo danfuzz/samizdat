@@ -117,6 +117,15 @@ Gets the value (literal or node) used by the given node. This is applicable to
 nodes of type `jump`, `literal`, `parser`, `varBind`, `varDef`, and
 `varDefMutable`.
 
+#### `get_prefix(node) <> string`
+
+Gets the name of an `importModuleSelection` node.
+
+#### `get_source(node) <> source`
+
+Gets the source of an import. This is applicable to nodes of type
+`importModule`, `importModuleSelection`, and `importResource`.
+
 #### `get_statements(node) <> [node*]`
 
 Gets the statement list of a `closure` node.
@@ -183,7 +192,7 @@ includes a consistent set of bindings for one of the `@import` node types.
 See the tree grammar specification for most of the details on bindings.
 Beyond that:
 
-* To specify an `@importModuleBindings` node with a wildcard (import
+* To specify an `@importModuleSelection` node with a wildcard (import
   everything) import, use the binding `select: @"*"` instead of omitting
   `select`.
 
