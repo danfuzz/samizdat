@@ -55,9 +55,9 @@ def null = @Null;
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = "core.Lang2";
 
-## Set-like map of characters that are allowed in module components.
-def VALID_MODULE_CHARS = {
-    "._$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"*: null
+## Set-like map of characters that are allowed in module and file components.
+def VALID_COMPONENT_CHARS = {
+    "_$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"*: null
 };
 
 ## Gets the file name suffix of the last component of the given path.
@@ -101,13 +101,15 @@ fn checkFqName(fqName) {
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
     collect(fqName,
-        { ch ->
+        { <next> ch ->
             ifIs { <> eq(ch, ".") }
                 {
                     ifIs { <> eq(lastCh, ".") }
-                        { die("Invalid module name: empty component") }
+                        { die("Invalid module name: empty component") };
+                    lastCh := ".";
+                    <next>
                 };
-            ifNot { <> get(VALID_MODULE_CHARS, ch) }
+            ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
                 {
                     die(cat("Invalid module name: bad character \"", ch,
                         "\""));
@@ -117,6 +119,52 @@ fn checkFqName(fqName) {
 
     ifIs { <> eq(lastCh, ".") }
         { die("Invalid module name: empty component (at end)") };
+};
+
+## Helper for `checkIntraPath`: Validates a character pair.
+fn checkIntraPathPair(lastCh, ch) {
+    ifIs { <> eq(ch, "/") }
+        {
+            ifIs { <> eq(lastCh, "/") }
+                { die("Invalid intra-module path: empty component") };
+            ifIs { <> eq(lastCh, ".") }
+                { die("Invalid intra-module path: empty suffix") };
+            return;
+        };
+
+    ifIs { <> eq(ch, ".") }
+        {
+            ifIs { <> eq(lastCh, "/") }
+                { die("Invalid intra-module path: component-initial dot") };
+            ifIs { <> eq(lastCh, ".") }
+                { die("Invalid intra-module path: double dot") };
+            return;
+        };
+
+    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+        {
+            die(cat("Invalid intra-module path: bad character \"", ch,
+                "\""));
+        };
+};
+
+## Validates an intra-module file path.
+fn checkIntraPath(path) {
+    ifNot { <> hasType(path, String) }
+        { die("Invalid intra-module path: not a string") };
+    ifIs { <> eq(path, "") }
+        { die("Invalid intra-module path: empty string") };
+
+    var lastCh = "/";  ## Init to `"/"` to make the first check work out.
+
+    ## `collect` is used here as a "for-each," ignoring the collected result.
+    collect(path,
+        { ch ->
+            checkIntraPathPair(lastCh, ch);
+            lastCh := ch;
+        });
+
+    checkIntraPathPair(lastCh, "/");
 };
 
 ## Validates an absolute file path string. It must be a string and start with
@@ -287,12 +335,14 @@ fn doIntraLoad(il, path) {
 
 ## Documented in spec.
 fn @@IntraLoader.intraType(path) {
+    checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
     <> $Io0::fileType(fullPath)
 };
 
 ## Documented in spec.
 fn @@IntraLoader.intraLoad(path) {
+    checkIntraPath(path);
     def loadedBox = this::loadedBox;
 
     ## Local loads are allowed to return void, so we track a list of
@@ -308,6 +358,7 @@ fn @@IntraLoader.intraLoad(path) {
 
 ## Documented in spec.
 fn @@IntraLoader.intraReadUtf8(path) {
+    checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
 
     ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
