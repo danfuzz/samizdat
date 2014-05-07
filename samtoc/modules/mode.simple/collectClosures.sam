@@ -59,6 +59,18 @@ fn @@closure.bodies(bodiesBox) {
     <> result
 };
 
+fn @@importModule.bodies(bodiesBox) {
+    <> this
+};
+
+fn @@importModuleSelection.bodies(bodiesBox) {
+    <> this
+};
+
+fn @@importResource.bodies(bodiesBox) {
+    <> this
+};
+
 fn @@jump.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
     def optValue = (def v = this.nodeValue)
