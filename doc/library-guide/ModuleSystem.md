@@ -165,10 +165,3 @@ from an interactive commandline or from a scripting environment, is the
 filesystem path to itself. This function does *not* automatically add this
 argument. Users of this function should add it to the given `args*` when
 appropriate.
-
-#### `splitModuleName(name) <> [name*]`
-
-This splits a module name string into a list of component names. It
-does no sanity checks beyond checking that `name` is a non-empty string
-containing all non-empty component names. It does *not* check for any
-other validity of component names.

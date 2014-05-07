@@ -477,32 +477,3 @@ export fn runFile(path, moduleLoader, args*) {
 
     die(cat("Unknown file name suffix: ", suffix))
 };
-
-## Documented in spec.
-export fn splitModuleName(name) {
-    ifIs { <> eq(name, "") }
-        { die("Invalid module name: empty string") };
-    ifNot { <> hasType(name, String) }
-        { die("Invalid module name: not a string") };
-
-    var result = [];
-    var current = "";
-
-    fn addCurrentToResult() {
-        ifIs { <> eq(current, "") }
-            { die(cat("Invalid empty component in module name: ", name)) };
-        result := [result*, current];
-        current := ""
-    };
-
-    ## This uses `collect` just for the filter function, ignoring the
-    ## collected result.
-    collect(name, { ch ->
-        ifIs { <> eq(ch, ".") }
-            { addCurrentToResult() }
-            { current := cat(current, ch) }
-    });
-
-    addCurrentToResult();
-    <> result
-};
