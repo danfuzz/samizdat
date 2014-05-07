@@ -40,8 +40,8 @@ def $Lang0 = {
 };
 
 def BOOTSTRAP_MODULES = {
-    ["core", "Io0"]:   $Io0,
-    ["core", "Lang0"]: $Lang0
+    "core.Io0":   $Io0,
+    "core.Lang0": $Lang0
 };
 
 
@@ -223,7 +223,8 @@ fn @@ModuleLoader.moduleLoad(fqNameX) {
 };
 
 ## Documented in spec.
-fn @@Null.moduleLoad(fqName) {
+fn @@Null.moduleLoad(fqNameX) {
+    def fqName = flattenModulePath(fqNameX);
     <> ifValueOr { <> get(BOOTSTRAP_MODULES, fqName) }
         { die(cat("Module not found: ", fqName)) }
 };
