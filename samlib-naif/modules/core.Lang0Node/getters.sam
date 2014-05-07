@@ -73,6 +73,11 @@ export fn get_formals(node) {
 };
 
 ## Documented in spec.
+export fn get_format(node) {
+    <> node::format
+};
+
+## Documented in spec.
 export fn get_function(node) {
     <> node::function
 };
@@ -115,6 +120,11 @@ export fn get_nodeValue(node) {
 ## Documented in spec.
 export fn get_prefix(node) {
     <> node::prefix
+};
+
+## Documented in spec.
+export fn get_select(node) {
+    <> node::select
 };
 
 ## Documented in spec.
