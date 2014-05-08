@@ -17,9 +17,11 @@ def makeVarRef  = $constructors1::makeVarRef;
 
 def $getters = intraLoad("getters");
 def get_baseName    = $getters::get_baseName;
-def get_interpolate = $getters::get_interpolate;
 def get_name        = $getters::get_name;
+def get_interpolate = $getters::get_interpolate;
+def get_format      = $getters::get_format;
 def get_nodeValue   = $getters::get_nodeValue;
+def get_source      = $getters::get_source;
 def get_statements  = $getters::get_statements;
 def get_yield       = $getters::get_yield;
 
@@ -104,7 +106,21 @@ fn @@importModuleSelection.makeDynamicImport() {
 
 ## Documented in spec.
 fn @@importResource.makeDynamicImport() {
-    die("TODO: importResource.makeDynamicImport")
+    ## The translation is approximately `def name = intraRead(source, format)`.
+
+    def name = get_name(this);
+    def format = get_format(this);
+    def source = get_source(this);
+
+    ifIs { <> hasType(source, @@external) }
+        { die("Cannot import external resource.") };
+
+    <> [
+        makeVarDef(name,
+            makeCall(REFS::intraRead,
+                makeLiteral(dataOf(source)),
+                makeLiteral(format)))
+    ]
 };
 
 ## Documented in spec.
