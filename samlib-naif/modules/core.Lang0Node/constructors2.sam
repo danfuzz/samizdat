@@ -90,6 +90,24 @@ export fn makeCallOrApply(function, actuals*) {
 };
 
 ## Documented in spec.
+export fn .makeDynamicImport();
+
+## Documented in spec.
+fn @@importModule.makeDynamicImport() {
+    die("TODO: importModule.makeDynamicImport")
+};
+
+## Documented in spec.
+fn @@importModuleSelection.makeDynamicImport() {
+    die("TODO: importModuleSelection.makeDynamicImport")
+};
+
+## Documented in spec.
+fn @@importResource.makeDynamicImport() {
+    die("TODO: importResource.makeDynamicImport")
+};
+
+## Documented in spec.
 export fn makeGet(collArg, keyArg) {
     <> makeCall(REFS::get, collArg, keyArg)
 };

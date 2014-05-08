@@ -35,14 +35,15 @@ export def withoutIntermediates = $constructors1::withoutIntermediates;
 export def withoutInterpolate   = $constructors1::withoutInterpolate;
 
 def $constructors2 = intraLoad("constructors2");
-export def makeCallOrApply = $constructors2::makeCallOrApply;
-export def makeGet         = $constructors2::makeGet;
-export def makeImport      = $constructors2::makeImport;
-export def makeInterpolate = $constructors2::makeInterpolate;
-export def makeOptValue    = $constructors2::makeOptValue;
-export def withExport      = $constructors2::withExport;
-export def withSimpleDefs  = $constructors2::withSimpleDefs;
-export def withTop         = $constructors2::withTop;
+export def makeCallOrApply   = $constructors2::makeCallOrApply;
+export def makeDynamicImport = $constructors2::makeDynamicImport;
+export def makeGet           = $constructors2::makeGet;
+export def makeImport        = $constructors2::makeImport;
+export def makeInterpolate   = $constructors2::makeInterpolate;
+export def makeOptValue      = $constructors2::makeOptValue;
+export def withExport        = $constructors2::withExport;
+export def withSimpleDefs    = $constructors2::withSimpleDefs;
+export def withTop           = $constructors2::withTop;
 
 def $formals = intraLoad("formals");
 export def formalsMaxArgs = $formals::formalsMaxArgs;
