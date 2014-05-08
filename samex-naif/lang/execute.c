@@ -73,41 +73,10 @@ static zvalue execCall(Frame *frame, zvalue call) {
 }
 
 /**
- * Executes an `importModule` form.
+ * Executes an `import*` form.
  */
-static void execImportModule(Frame *frame, zvalue import) {
-    die("TODO execImportModule");
-}
-
-/**
- * Executes an `importModuleSelection` form.
- */
-static void execImportModuleSelection(Frame *frame, zvalue import) {
-    die("TODO execImportModuleSelection");
-}
-
-/**
- * Executes an `importResource` form.
- */
-static void execImportResource(Frame *frame, zvalue import) {
-    // Convert it to `def name = intraRead(source, format)`, and execute that.
-
-    zvalue name = get(import, STR_name);
-    zvalue format = get(import, STR_format);
-    zvalue source = get(import, STR_source);
-
-    if (hasType(source, TYPE_external)) {
-        die("Cannot import external resource.");
-    }
-
-    zvalue stat = makeVarDef(
-        name,
-        makeCall(REFS(intraRead),
-            listFrom2(
-                makeLiteral(dataOf(source)),
-                makeLiteral(format))));
-
-    execStatement(frame, stat);
+static void execImport(Frame *frame, zvalue import) {
+    execStatements(frame, makeDynamicImport(import));
 }
 
 /**
@@ -196,12 +165,12 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /* Documented in header. */
 void execStatement(Frame *frame, zvalue statement) {
     switch (get_evalType(statement)) {
-        case EVAL_importModule:          execImportModule(frame, statement);          break;
-        case EVAL_importModuleSelection: execImportModuleSelection(frame, statement); break;
-        case EVAL_importResource:        execImportResource(frame, statement);        break;
-        case EVAL_varDef:                execVarDef(frame, statement);                break;
-        case EVAL_varDefMutable:         execVarDefMutable(frame, statement);         break;
-        default:                         execExpressionVoidOk(frame, statement);      break;
+        case EVAL_importModule:          execImport(frame, statement);           break;
+        case EVAL_importModuleSelection: execImport(frame, statement);           break;
+        case EVAL_importResource:        execImport(frame, statement);           break;
+        case EVAL_varDef:                execVarDef(frame, statement);           break;
+        case EVAL_varDefMutable:         execVarDefMutable(frame, statement);    break;
+        default:                         execExpressionVoidOk(frame, statement); break;
     }
 }
 
