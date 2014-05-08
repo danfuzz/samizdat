@@ -689,7 +689,7 @@ def parImportName = {:
 def parImportFormat = {:
     @"@"
     f = parIdentifierString
-    { <> {format: dataOf(f)} }
+    { <> {format: get_nodeValue(f)} }
 |
     { <> {} }
 :};

@@ -916,7 +916,7 @@ DEF_PARSE(importFormat1) {
 
     MATCH_OR_REJECT(CH_AT);
     zvalue f = PARSE_OR_REJECT(identifierString);
-    return mapFrom1(STR_format, dataOf(f));
+    return mapFrom1(STR_format, GET(value, f));
 }
 
 /* Documented in spec. */
