@@ -9,6 +9,7 @@
  */
 
 #include "const.h"
+#include "helpers.h"
 #include "impl.h"
 #include "type/Box.h"
 #include "type/Function.h"
@@ -89,7 +90,24 @@ static void execImportModuleSelection(Frame *frame, zvalue import) {
  * Executes an `importResource` form.
  */
 static void execImportResource(Frame *frame, zvalue import) {
-    die("TODO execImportResource");
+    // Convert it to `def name = intraRead(source, format)`, and execute that.
+
+    zvalue name = get(import, STR_name);
+    zvalue format = get(import, STR_format);
+    zvalue source = get(import, STR_source);
+
+    if (hasType(source, TYPE_external)) {
+        die("Cannot import external resource.");
+    }
+
+    zvalue stat = makeVarDef(
+        name,
+        makeCall(REFS(intraRead),
+            listFrom2(
+                makeLiteral(dataOf(source)),
+                makeLiteral(format))));
+
+    execStatement(frame, stat);
 }
 
 /**
