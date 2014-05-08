@@ -101,6 +101,10 @@ fn @@importModule.makeDynamicImport() {
 
 ## Documented in spec.
 fn @@importModuleSelection.makeDynamicImport() {
+    ## TODO: In order to handle wildcard imports, this function will have to
+    ## be able to ask for the list of exports from arbitrary modules. This
+    ## will probably mean adding an argument to the generic function for a
+    ## "module oracle" of some sort.
     die("TODO: importModuleSelection.makeDynamicImport")
 };
 
