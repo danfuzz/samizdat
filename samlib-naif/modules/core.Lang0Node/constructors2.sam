@@ -183,6 +183,23 @@ export fn makeOptValue(node) {
 };
 
 ## Documented in spec.
+export fn withDynamicImports(node) {
+    def rawStatements = get_statements(node);
+    def converted = $Generator::filterAll(rawStatements) { <out> s ->
+        ifIs { <> hasType(s, @@importModule) }
+            { <out> makeDynamicImport(s) };
+        ifIs { <> hasType(s, @@importModuleSelection) }
+            { <out> makeDynamicImport(s) };
+        ifIs { <> hasType(s, @@importResource) }
+            { <out> makeDynamicImport(s) };
+        <> [s]
+    };
+
+    def statements = cat(converted*);
+    <> @(get_typeName(node)){dataOf(node)*, statements}
+};
+
+## Documented in spec.
 export fn withExport(node, optExport?) {
     def exp = ifValueOr { <> optExport* } { <> get_name(node) };
     <> @(get_typeName(node)){dataOf(node)*, export: exp}

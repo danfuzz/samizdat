@@ -275,6 +275,12 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `withDynamicImports(node) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with any `import*` nodes in the `statements` converted to their dynamic
+forms.
+
 #### `withExport(node, optExport?) <> node`
 
 Makes a node just like the given one (presumably a `varDef` node), except
