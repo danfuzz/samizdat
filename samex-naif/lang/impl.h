@@ -75,6 +75,11 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
 void execStatement(Frame *frame, zvalue statement);
 
 /**
+ * Executes a list of `statement` forms.
+ */
+void execStatements(Frame *frame, zvalue statements);
+
+/**
  * Initializes the given frame. The `frame` is assumed to live on the
  * C stack. The `parentFrame` if non-`NULL` must live on the heap.
  */

@@ -205,6 +205,17 @@ void execStatement(Frame *frame, zvalue statement) {
     }
 }
 
+/* Documented in header. */
+void execStatements(Frame *frame, zvalue statements) {
+    zint size = get_size(statements);
+    zvalue arr[size];
+    arrayFromList(arr, statements);
+
+    for (zint i = 0; i < size; i++) {
+        execStatement(frame, arr[i]);
+    }
+}
+
 
 /*
  * Exported Definitions
