@@ -25,7 +25,7 @@ ifIs { <> ne($Stuff, $Stuff2) }
     { die("Different modules!") };
 
 ## A resource file.
-def $resource = intraRead("resource.txt", "utf8");
+import @utf8 ./resource.txt;
 
 export fn main(selfPath, .*) {
     note(cat("I am: ", $Format::source(selfPath)));
