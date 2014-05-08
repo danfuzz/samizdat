@@ -6,7 +6,7 @@
 ## Throwaway demo of module mechanism
 ##
 
-#= language core.Lang1
+#= language core.Lang0
 
 
 ##
