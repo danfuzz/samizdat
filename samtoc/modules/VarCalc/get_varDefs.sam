@@ -3,11 +3,17 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 def $Lang0Node = moduleLoad("core.Lang0Node");
-def get_name = $Lang0Node::get_name;
+def get_name          = $Lang0Node::get_name;
+def makeDynamicImport = $Lang0Node::makeDynamicImport;
 
 ## `node.get_varDefs()`: Generic that returns list of variable names
 ## newly-defined by `node`. Result may have duplicates.
 export fn .get_varDefs();
+
+## Extracts and combines the `varDefs` of all the arguments.
+fn catVarDefs(nodes*) {
+    <> [].cat(( n in nodes <> n.varDefs )*)
+};
 
 fn @@apply.get_varDefs() {
     <> []
@@ -26,9 +32,8 @@ fn @@importModule.get_varDefs() {
 };
 
 fn @@importModuleSelection.get_varDefs() {
-    ## TODO: In order to handle wildcard imports, this function will have to
-    ## be able to ask for the list of exports from arbitrary modules.
-    die("TODO `get_varDefs` on `importModuleSelection`.")
+    def statements = makeDynamicImport(this);
+    <> catVarDefs(statements*)
 };
 
 fn @@importResource.get_varDefs() {
