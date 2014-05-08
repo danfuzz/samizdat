@@ -58,7 +58,7 @@ fn @@closure.lits(interner) {
 
 ## Bound as the `source` in `import*` nodes.
 fn @@external.lits(interner) {
-    <> @external(lits(dataOf(this), interner))
+    <> @external(interner.intern(dataOf(this)))
 };
 
 fn @@importModule.lits(interner) {
@@ -73,13 +73,13 @@ fn @@importModuleSelection.lits(interner) {
 
 fn @@importResource.lits(interner) {
     def source = lits(this.source, interner);
-    def format = lits(@literal(this.format), interner);
+    def format = interner.intern(this.format);
     <> @importResource{dataOf(this)*, source, format}
 };
 
 ## Bound as the `source` in `import*` nodes.
 fn @@internal.lits(interner) {
-    <> @internal(lits(dataOf(this), interner))
+    <> @internal(interner.intern(dataOf(this)))
 };
 
 fn @@jump.lits(interner) {
