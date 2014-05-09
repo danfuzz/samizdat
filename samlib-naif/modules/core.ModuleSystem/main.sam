@@ -217,12 +217,9 @@ fn doModuleLoad(md, fqName) {
     <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
         {
             note(cat("    ", fqName));
-            def loader = makeIntraLoader(modulePath, md::globals, md);
 
-            ## A successful void module load result gets silently transformed
-            ## to the empty map.
-            def result = ifValueOr { <> intraLoadMain(loader) }
-                { <> {} };
+            def loader = makeIntraLoader(modulePath, md::globals, md);
+            def result = intraLoadMain(loader);
 
             note("        Done.");
             <> result
@@ -343,15 +340,16 @@ fn @@IntraLoader.intraLoad(path) {
     checkIntraPath(path);
     def loadedBox = this::loadedBox;
 
-    ## Local loads are allowed to return void, so we track a list of
-    ## the result. That is, a void return ends up being `[]`.
-
     ifValue { <> get(fetch(loadedBox), path) }
-        { found -> return found* };
+        { found -> return found };
 
-    def optResult = doIntraLoad(this, path)?;
-    updateMapBox(loadedBox, path, optResult);
-    <> optResult*
+        ## A successfully-returned void gets silently transformed to the
+        ## empty map.
+        def result = ifValueOr { <> doIntraLoad(this, path) }
+            { <> {} };
+
+        updateMapBox(loadedBox, path, result);
+        <> result
 };
 
 ## Documented in spec.

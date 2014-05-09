@@ -22,7 +22,7 @@ dependencies.
 This loads the module named by `fqName`, which is expected to be a
 fully-qualified module name as a string (e.g. `"core.Format"`). It returns
 whatever is exported by the module. If the module doesn't export anything,
-then this returns `{}` (the empty list).
+then this returns `{}` (the empty map).
 
 This function will only ever load a given module once. If the same name
 is requested more than once, whatever was returned the first time
@@ -36,12 +36,15 @@ if `fqName` is not a valid module name.
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
 
-#### `intraLoad(loader, path) <> . | void`
+#### `intraLoad(loader, path) <> .`
 
-This loads and evaluates an intra-module file. `path` is expected to be a
-string identifying a relative file path within the module's file hierarchy.
-The final name component in `path` should *not* have a file suffix (such as
-`.sam` or `samb`).
+This loads and evaluates an internal module (an "intra-module module") file.
+`path` is expected to be a string identifying a relative file path within the
+(outer) module's file hierarchy. The final name component in `path` must
+*not* have a file suffix (such as `.sam` or `samb`).
+
+This returns the map of exports from the loaded module. If the module doesn't
+export anything, then this returns `{}` (the empty map).
 
 This function will only ever load a given path once. If the same path
 is requested more than once, whatever was returned the first time
@@ -53,9 +56,9 @@ if the indicated `path` failed to be loadable.
 
 #### `intraRead(loader, path, format) <> string`
 
-This reads an intra-module file, interpreting it as the given `format` (a
-string name). `path` is expected to be a string identifying a relative file
-path within the module's file hierarchy.
+This reads an intra-module resource file, interpreting it as the given
+`format` (a string name). `path` is expected to be a string identifying a
+relative file path within the module's file hierarchy.
 
 It is an error (terminating the runtime) if the indicated `path` does not
 exist as a file, or if the given `format` is not recognized.
@@ -66,8 +69,8 @@ Recognized types include:
 
 #### `intraType(loader, path) <> string | void`
 
-This gets the type of an intra-module file named by the indicated relative
-`path`. The return values are the same as for `$Io0::fileType`
+This gets the type of an intra-module resource file named by the indicated
+relative `path`. The return values are the same as for `$Io0::fileType`
 (see which).
 
 `path` is expected to be a string identifying a relative file path within the
