@@ -14,9 +14,9 @@ list of all the tokens. Tokenization errors are represented in the
 result as tokens of type `error`.
 
 ```
-def $Generator  = moduleLoad("core.Generator");
-def $Number     = moduleLoad("proto.Number");
-def $Peg        = moduleLoad("core.Peg");
+import core.Generator;
+import core.Peg;
+import proto.Number;
 
 
 ##

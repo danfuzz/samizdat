@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-def $Lang0 = moduleLoad("core.Lang0");
+import core.Lang0;
 
 
 ##
@@ -18,17 +18,17 @@ def $Lang0 = moduleLoad("core.Lang0");
 ## This just re-exports stuff defined in intramodule files, as well as
 ## `evalBinary` which is a re-export from `Lang0`.
 
-def $convert = intraLoad("convert");
+import ./convert;
 export def convertToLang0 = $convert::convertToLang0;
 
-def $eval = intraLoad("eval");
+import ./eval;
 export def eval = $eval::eval;
 
-def $parse = intraLoad("parse");
+import ./parse;
 export def parseProgram    = $parse::parseProgram;
 export def parseExpression = $parse::parseExpression;
 
-def $tokenize = intraLoad("tokenize");
+import ./tokenize;
 export def tokenize = $tokenize::tokenize;
 
 export def evalBinary = $Lang0::evalBinary;

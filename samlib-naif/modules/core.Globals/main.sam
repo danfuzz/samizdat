@@ -14,12 +14,17 @@
 ##
 
 ## All the early globals. This is evaluated eagerly at load time.
+
+import ./constants;
+import ./primitives;
+import ./Value;
+import ./Type;
+
 def EARLY_GLOBALS = {
-    ## Simple constant and function definitions.
-    (intraLoad("constants"))*,
-    (intraLoad("primitives"))*,
-    (intraLoad("Value"))*,
-    (intraLoad("Type"))*
+    $constants*,
+    $primitives*,
+    $Value*,
+    $Type*
 };
 
 
