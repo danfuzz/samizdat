@@ -10,12 +10,12 @@
 
 import @utf8 ./template.txt;
 
-def $CodeGen = moduleLoad("CodeGen");
-def $DataCode = moduleLoad("DataCode");
-def $Template = moduleLoad("Template");
+import CodeGen;
+import DataCode;
+import Template;
 
-def $Io0 = moduleLoad("core.Io0");
-def $Lang2 = moduleLoad("core.Lang2");
+import core.Io0;
+import core.Lang2;
 
 export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
