@@ -9,9 +9,9 @@
 
 #= language core.Lang0
 
-def $Number = moduleLoad("proto.Number");
+import proto.Number;
 
-def $NullGenerator = intraLoad("NullGenerator");
+import ./NullGenerator;
 
 
 
