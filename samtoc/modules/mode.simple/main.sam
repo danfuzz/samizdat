@@ -45,7 +45,7 @@ def $Interner = intraLoad("Interner");
 def get_interns = $Interner::get_interns;
 def intern      = $Interner::intern;
 
-def templateText = intraRead("template.txt", "utf8");
+import @utf8 ./template.txt;
 
 
 ## Indent with the usual width column limit.
@@ -227,7 +227,7 @@ export fn compile(sourcePath, targetPath) {
         mainClosure
     };
 
-    def outputText = $Template::apply(templateText, replacements);
+    def outputText = $Template::apply(template, replacements);
 
     $Io0::writeFileUtf8(targetPath, outputText)
 };

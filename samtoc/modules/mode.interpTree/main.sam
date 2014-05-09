@@ -8,7 +8,7 @@
 ## interpreter (hence the name's prefix).
 ##
 
-def templateText = intraRead("template.txt", "utf8");
+import @utf8 ./template.txt;
 
 def $CodeGen = moduleLoad("CodeGen");
 def $DataCode = moduleLoad("DataCode");
@@ -21,7 +21,7 @@ export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
     def tree = $Lang2::convertToLang0($Lang2::parseProgram(sourceText));
     def source = $CodeGen::indent($DataCode::convert(tree), 2, 78);
-    def outputText = $Template::apply(templateText, {source});
+    def outputText = $Template::apply(template, {source});
 
     $Io0::writeFileUtf8(targetPath, outputText)
 };
