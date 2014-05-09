@@ -291,7 +291,14 @@ zvalue makeImport(zvalue baseData) {
             die("Import selection name must be a prefix.");
         } else if (get(data, STR_format) != NULL) {
             die("Cannot import selection of resource.");
-        } else if (hasType(select, TYPE_CH_STAR)) {
+        }
+
+        if (get(data, STR_prefix) == NULL) {
+            // Default to empty string for `prefix`.
+            data = collPut(data, STR_prefix, EMPTY_STRING);
+        }
+
+        if (hasType(select, TYPE_CH_STAR)) {
             // It's a wildcard import.
             data = collDel(data, STR_select);
         }

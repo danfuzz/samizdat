@@ -22,7 +22,7 @@ def get_interpolate = $getters::get_interpolate;
 def get_format      = $getters::get_format;
 def get_nodeValue   = $getters::get_nodeValue;
 def get_prefix      = $getters::get_prefix;
-def get_selection   = $getters::get_selection;
+def get_select      = $getters::get_select;
 def get_source      = $getters::get_source;
 def get_statements  = $getters::get_statements;
 def get_yield       = $getters::get_yield;
@@ -98,8 +98,8 @@ export fn .makeDynamicImport();
 
 ## Documented in spec.
 fn @@importModule.makeDynamicImport() {
-    ## The translation is approximately `def name = load(source, format)`,
-    ## with `load` replaced by either `moduleLoad` or `intraLoad`.
+    ## The translation is approximately `def name = load(source)`, with `load`
+    ## replaced by either `moduleLoad` or `intraLoad`.
 
     def name = get_name(this);
     def source = get_source(this);
@@ -114,13 +114,14 @@ fn @@importModule.makeDynamicImport() {
 fn @@importModuleSelection.makeDynamicImport() {
     ## The translation is along the same lines as for `importModule`
     ## translations, except as a list of statements, one per binding being
-    ## imported.
+    ## imported, each one wrapped in a `get` call, e.g. `def name =
+    ## get(load(source), "name")`.
 
-    def prefix = ifValueOr { <> get_prefix(this) } { <> "" };
+    def prefix = get_prefix(this);
     def source = get_source(this);
 
-    def selection = ifValueOr
-        { <> get_selection(this) }
+    def select = ifValueOr
+        { <> get_select(this) }
         {
             ## TODO: In order to handle wildcard imports, this function will
             ## have to be able to ask for the list of exports from arbitrary
@@ -134,7 +135,7 @@ fn @@importModuleSelection.makeDynamicImport() {
         { <> REFS::intraLoad };
     def loadCall = makeCall(loadRef, makeLiteral(dataOf(source)));
 
-    <> $Generator::filterAll(selection) { name ->
+    <> $Generator::filterAll(select) { name ->
         <> makeVarDef(cat(prefix, name),
             makeCall(REFS::get, loadCall, makeLiteral(name)))
     };
@@ -176,6 +177,12 @@ export fn makeImport(baseData) {
                 { die("Import selection name must be a prefix.") };
             ifIs { <> data::format }
                 { die("Cannot import selection of resource.") };
+
+            ifNot { <> data::prefix }
+            {
+                ## Default to empty string for `prefix`.
+                data := {data*, prefix: ""}
+            };
 
             ifIs { <> hasType(select, @@"*") }
                 {
