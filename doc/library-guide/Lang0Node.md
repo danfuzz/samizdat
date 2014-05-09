@@ -181,6 +181,20 @@ arguments.
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
+#### `makeDynamicImport(node) <> [node+]`
+
+Converts an `import*` node to a list of statement nodes which perform an
+equivalent set of actions, dynamically.
+
+This can be used as part of a filter on the list of top-level statements of a
+module, when they are to be executed in an environment that performs
+dynamic (not static) importing.
+
+**Note:** This returns a list of replacement nodes and not just a single
+replacement node, because some `import*` forms must expand to multiple
+statements. Always returning a list makes it possible to treat all return
+values more uniformly.
+
 #### `makeExport(name, optExport?) <> node`
 
 Makes an `export` node to export the variable with the given name `name`.
@@ -260,6 +274,12 @@ additional bindings.
 Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
+
+#### `withDynamicImports(node) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with any `import*` nodes in the `statements` converted to their dynamic
+forms.
 
 #### `withExport(node, optExport?) <> node`
 

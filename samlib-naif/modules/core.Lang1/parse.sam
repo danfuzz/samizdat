@@ -533,7 +533,7 @@ def parImportFormat = $Peg::makeMainChoice(
     $Peg::makeSequence(
         $Peg::makeToken(@@"@"),
         parIdentifierString,
-        $Peg::makeCode { ., f <> {format: dataOf(f)} }),
+        $Peg::makeCode { ., f <> {format: get_nodeValue(f)} }),
     $Peg::makeResult({}));
 
 ## Documented in spec.

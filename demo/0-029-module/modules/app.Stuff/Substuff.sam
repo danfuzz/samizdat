@@ -2,13 +2,6 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#= language core.Lang1
+#= language core.Lang0
 
-def $Substuff = intraLoad("Substuff");
-
-export fn stuffFunc() {
-    <> "Funky stuff."
-};
-
-export def STUFF = "stuff";
-export def SUBSTUFF = $Substuff::SUBSTUFF;
+export def SUBSTUFF = "substuff";

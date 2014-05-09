@@ -20,17 +20,18 @@ def get_varRefs = $VarCalc::get_varRefs;
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
 def $Lang0Node = moduleLoad("core.Lang0Node");
-def get_actuals    = $Lang0Node::get_actuals;
-def get_formals    = $Lang0Node::get_formals;
-def get_function   = $Lang0Node::get_function;
-def get_id         = $Lang0Node::get_id;
-def get_maxArgs    = $Lang0Node::get_maxArgs;
-def get_minArgs    = $Lang0Node::get_minArgs;
-def get_name       = $Lang0Node::get_name;
-def get_nodeValue  = $Lang0Node::get_nodeValue;
-def get_statements = $Lang0Node::get_statements;
-def get_yield      = $Lang0Node::get_yield;
-def get_yieldDef   = $Lang0Node::get_yieldDef;
+def get_actuals        = $Lang0Node::get_actuals;
+def get_formals        = $Lang0Node::get_formals;
+def get_function       = $Lang0Node::get_function;
+def get_id             = $Lang0Node::get_id;
+def get_maxArgs        = $Lang0Node::get_maxArgs;
+def get_minArgs        = $Lang0Node::get_minArgs;
+def get_name           = $Lang0Node::get_name;
+def get_nodeValue      = $Lang0Node::get_nodeValue;
+def get_statements     = $Lang0Node::get_statements;
+def get_yield          = $Lang0Node::get_yield;
+def get_yieldDef       = $Lang0Node::get_yieldDef;
+def withDynamicImports = $Lang0Node::withDynamicImports;
 
 def $Io0   = moduleLoad("core.Io0");
 def $Lang2 = moduleLoad("core.Lang2");
@@ -44,7 +45,7 @@ def $Interner = intraLoad("Interner");
 def get_interns = $Interner::get_interns;
 def intern      = $Interner::intern;
 
-def templateText = intraRead("template.txt", "utf8");
+import @utf8 ./template.txt;
 
 
 ## Indent with the usual width column limit.
@@ -122,7 +123,7 @@ fn closureBody(cloIdx, clo, literals) {
     def vars = varInfo::vars;
     def varNames = varInfo::names;
 
-    ## Translate the statements and the yield. Note that the `statements`
+    ## Translate the statements and the yield. Note that the `mainStats`
     ## definition is a list constructor (not a generator), as its body has
     ## to run before `yield` is calculated (in order to have the correct
     ## set of vars defined in `varsBox`).
@@ -178,7 +179,8 @@ export fn compile(sourcePath, targetPath) {
 
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
-    def mainNode = $Lang2::convertToLang0($Lang2::parseProgram(sourceText));
+    def mainNode = withDynamicImports(
+        $Lang2::convertToLang0($Lang2::parseProgram(sourceText)));
 
     def interner = $Interner::makeInterner();
     def litsNode = internLiterals(mainNode, interner);
@@ -225,7 +227,7 @@ export fn compile(sourcePath, targetPath) {
         mainClosure
     };
 
-    def outputText = $Template::apply(templateText, replacements);
+    def outputText = $Template::apply($template, replacements);
 
     $Io0::writeFileUtf8(targetPath, outputText)
 };

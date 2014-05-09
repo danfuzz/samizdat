@@ -308,14 +308,7 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
 
     // Evaluate the statements, updating the frame as needed.
 
-    zvalue statements = info->statements;
-    zint statementsSize = get_size(statements);
-    zvalue statementsArr[statementsSize];
-    arrayFromList(statementsArr, statements);
-
-    for (zint i = 0; i < statementsSize; i++) {
-        execStatement(&frame, statementsArr[i]);
-    }
+    execStatements(&frame, info->statements);
 
     // Evaluate the yield expression if present, and return the final
     // result.

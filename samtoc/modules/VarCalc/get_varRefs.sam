@@ -5,15 +5,16 @@
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
 def $Lang0Node = moduleLoad("core.Lang0Node");
-def get_actuals    = $Lang0Node::get_actuals;
-def get_formals    = $Lang0Node::get_formals;
-def get_function   = $Lang0Node::get_function;
-def get_name       = $Lang0Node::get_name;
-def get_nodeValue  = $Lang0Node::get_nodeValue;
-def get_source     = $Lang0Node::get_source;
-def get_statements = $Lang0Node::get_statements;
-def get_yield      = $Lang0Node::get_yield;
-def get_yieldDef   = $Lang0Node::get_yieldDef;
+def get_actuals       = $Lang0Node::get_actuals;
+def get_formals       = $Lang0Node::get_formals;
+def get_function      = $Lang0Node::get_function;
+def get_name          = $Lang0Node::get_name;
+def get_nodeValue     = $Lang0Node::get_nodeValue;
+def get_source        = $Lang0Node::get_source;
+def get_statements    = $Lang0Node::get_statements;
+def get_yield         = $Lang0Node::get_yield;
+def get_yieldDef      = $Lang0Node::get_yieldDef;
+def makeDynamicImport = $Lang0Node::makeDynamicImport;
 
 def get_varDefs = intraLoad("get_varDefs")::get_varDefs;
 
@@ -79,20 +80,26 @@ fn @@closureRef.get_varRefs() {
 };
 
 fn @@importModule.get_varRefs() {
-    <> [hasType(this.source, @@external) & "moduleLoad" | "intraLoad"]
+    def statements = makeDynamicImport(this);
+    <> catVarRefs(statements*)
 };
 
 fn @@importModuleSelection.get_varRefs() {
-    <> [hasType(this.source, @@external) & "moduleLoad" | "intraLoad"]
+    def statements = makeDynamicImport(this);
+    <> catVarRefs(statements*)
 };
 
 fn @@importResource.get_varRefs() {
-    ## Resources are always "internal."
-    <> ["intraRead"]
+    def statements = makeDynamicImport(this);
+    <> catVarRefs(statements*)
 };
 
 fn @@jump.get_varRefs() {
     <> catVarRefs(this.function, this.nodeValue?*)
+};
+
+fn @@literal.get_varRefs() {
+    <> []
 };
 
 fn @@literalRef.get_varRefs() {

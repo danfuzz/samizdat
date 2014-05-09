@@ -80,14 +80,20 @@ fn @@closureRef.translate(varsBox) {
 };
 
 fn @@importModule.translate(varsBox) {
+    ## This is only needed once we move to a non-dynamic translation of
+    ## imports.
     die("TODO: importModule.translate");
 };
 
 fn @@importModuleSelection.translate(varsBox) {
+    ## This is only needed once we move to a non-dynamic translation of
+    ## imports.
     die("TODO: importModuleSelection.translate");
 };
 
 fn @@importResource.translate(varsBox) {
+    ## This is only needed once we move to a non-dynamic translation of
+    ## imports.
     die("TODO: importResource.translate");
 };
 

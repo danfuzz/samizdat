@@ -231,6 +231,36 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 }
 
 /* Documented in spec. */
+zvalue makeDynamicImport(zvalue node) {
+    zvalue format = get(node, STR_format);
+    zvalue name = get(node, STR_name);
+    zvalue prefix = get(node, STR_prefix);
+    zvalue select = get(node, STR_select);
+    zvalue source = get(node, STR_source);
+
+    if (hasType(node, TYPE_importModule)) {
+        die("TODO: @@importModule.makeDynamicImport");
+    } else if (hasType(node, TYPE_importModuleSelection)) {
+        die("TODO: @@importModuleSelection.makeDynamicImport");
+    } else if (hasType(node, TYPE_importResource)) {
+        if (hasType(source, TYPE_external)) {
+            die("Cannot import external resource.");
+        }
+
+        zvalue stat = makeVarDef(
+            name,
+            makeCall(REFS(intraRead),
+                listFrom2(
+                    makeLiteral(dataOf(source)),
+                    makeLiteral(format))));
+
+        return listFrom1(stat);
+    } else {
+        die("Bad node type for makeDynamicImport");
+    }
+}
+
+/* Documented in spec. */
 zvalue makeExport(zvalue name) {
     // Contrary to the spec, we don't take an optional second argument.
     return makeValue(TYPE_export,

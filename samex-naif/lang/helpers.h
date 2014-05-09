@@ -5,7 +5,9 @@
  */
 
 /*
- * Node constructors and related helpers
+ * Node constructors and related helpers. Other than the collection
+ * constructors, these functions are (near-)transliterations of the same-named
+ * functions in the module `core.Lang0Node`.
  */
 
 #ifndef _HELPERS_H_
@@ -79,6 +81,9 @@ zvalue makeCall(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
 zvalue makeCallOrApply(zvalue function, zvalue actuals);
+
+/* Documented in spec. */
+zvalue makeDynamicImport(zvalue node);
 
 /* Documented in spec. */
 zvalue makeExport(zvalue name);
