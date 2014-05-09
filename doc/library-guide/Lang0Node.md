@@ -221,6 +221,9 @@ Beyond that:
 * If the `name` binding for a whole-module or resource import is omitted,
   then the name is automatically derived from the `source` binding.
 
+* If the `prefix` binding for a selection import is omitted,
+  then the prefix is automatically bound to `""` (the empty string).
+
 This function rejects invalid combinations of bindings, terminating the
 runtime with a message that indicates a plausible high-level reason for
 the rejection. This makes it safe to "optimistically" parse a generalized
