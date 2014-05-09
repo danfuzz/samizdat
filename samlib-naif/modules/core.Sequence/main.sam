@@ -8,11 +8,11 @@
 
 #= language core.Lang0
 
-def $Number   = moduleLoad("proto.Number");
-def $Sequence = moduleLoad("proto.Sequence");
+import proto.Number;
+import proto.Sequence;
 
 ## This just binds generics without adding exports.
-intraLoad("SequenceGenerator");
+import ./SequenceGenerator;
 
 
 ##
