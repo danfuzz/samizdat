@@ -4,11 +4,14 @@
 
 #= language core.Lang0
 
-## An "internal" module.
+## An "internal" module, imported whole.
 import ./Substuff;
 
+## An "internal" module, only specific bindings imported.
+import ./moreStuff :: MORE_STUFF1, MORE_STUFF2;
+
 export fn stuffFunc() {
-    <> "Funky stuff."
+    <> cat("Funky stuff: ", MORE_STUFF1, " ", MORE_STUFF2)
 };
 
 export def STUFF = "stuff";
