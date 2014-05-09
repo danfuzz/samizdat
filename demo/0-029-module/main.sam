@@ -14,7 +14,7 @@
 ##
 
 ## A known module (shouldn't cause any trouble).
-import core.Format.
+import core.Format;
 
 ## A locally-defined (but still "external") module.
 import app.Stuff;
