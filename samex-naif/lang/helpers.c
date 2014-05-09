@@ -248,7 +248,28 @@ zvalue makeDynamicImport(zvalue node) {
 
         return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        die("TODO: @@importModuleSelection.makeDynamicImport");
+        if (select == NULL) {
+            // See TODO in Lang0Node implementation.
+            die("TODO: wildcard selection import");
+        }
+
+        zvalue loadRef = hasType(source, TYPE_external)
+            ? REFS(moduleLoad)
+            : REFS(intraLoad);
+        zvalue loadCall = makeCall(loadRef,
+            listFrom1(makeLiteral(dataOf(source))));
+
+        zint size = get_size(select);
+        zvalue stats[size];
+        for (zint i = 0; i < size; i++) {
+            zvalue name = nth(select, i);
+            stats[i] = makeVarDef(
+                GFN_CALL(cat, prefix, name),
+                makeCall(REFS(get),
+                    listFrom2(loadCall, makeLiteral(name))));
+        }
+
+        return listFromArray(size, stats);
     } else if (hasType(node, TYPE_importResource)) {
         if (hasType(source, TYPE_external)) {
             die("Cannot import external resource.");
