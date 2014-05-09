@@ -96,7 +96,16 @@ export fn .makeDynamicImport();
 
 ## Documented in spec.
 fn @@importModule.makeDynamicImport() {
-    die("TODO: importModule.makeDynamicImport")
+    ## The translation is approximately `def name = load(source, format)`,
+    ## with `load` replaced by either `moduleLoad` or `intraLoad`.
+
+    def name = get_name(this);
+    def source = get_source(this);
+    def loadRef = ifIs { <> hasType(source, @@external) }
+        { <> REFS::moduleLoad }
+        { <> REFS::intraLoad };
+
+    <> [makeVarDef(name, makeCall(loadRef, makeLiteral(dataOf(source))))]
 };
 
 ## Documented in spec.
