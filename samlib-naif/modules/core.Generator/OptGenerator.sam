@@ -9,9 +9,9 @@
 
 #= language core.Lang0
 
-def $Box = moduleLoad("core.Box");
+import core.Box;
 
-def $ValueGenerator  = intraLoad("ValueGenerator");
+import ./ValueGenerator;
 def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
 
 

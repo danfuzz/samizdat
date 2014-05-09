@@ -4,7 +4,7 @@
 
 #= language core.Lang0
 
-def $Generator = moduleLoad("core.Generator");
+import core.Generator;
 
 def $constructors1 = intraLoad("constructors1");
 def makeCall    = $constructors1::makeCall;

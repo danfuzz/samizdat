@@ -7,23 +7,23 @@
 ##
 
 ## This just binds generics.
-intraLoad("String");
+import ./String;
 
-def $Assign = intraLoad("Assign");
+import ./Assign;
 export def makeAssign = $Assign::makeAssign;
 
-def $Call = intraLoad("Call");
+import ./Call;
 export def makeCall = $Call::makeCall;
 
-def $Comment = intraLoad("Comment");
+import ./Comment;
 export def makeComment = $Comment::makeComment;
 
-def $Return = intraLoad("Return");
+import ./Return;
 export def makeReturn = $Return::makeReturn;
 
-def $Statement = intraLoad("Statement");
+import ./Statement;
 export def makeStatement = $Statement::makeStatement;
 
-def $protocol = intraLoad("protocol");
+import ./protocol;
 export def flatten = $protocol::flatten;
 export def indent  = $protocol::indent;

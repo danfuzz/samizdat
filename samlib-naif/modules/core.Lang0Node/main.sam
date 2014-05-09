@@ -16,7 +16,7 @@
 ## This just re-exports stuff defined in intramodule files.
 ## **Note:** This highlights the need for some kind of 're-export' facility.
 
-def $constructors1 = intraLoad("constructors1");
+import ./constructors1;
 export def makeApply            = $constructors1::makeApply;
 export def makeCall             = $constructors1::makeCall;
 export def makeCallLiterals     = $constructors1::makeCallLiterals;
@@ -34,7 +34,7 @@ export def withFormals          = $constructors1::withFormals;
 export def withoutIntermediates = $constructors1::withoutIntermediates;
 export def withoutInterpolate   = $constructors1::withoutInterpolate;
 
-def $constructors2 = intraLoad("constructors2");
+import ./constructors2;
 export def makeCallOrApply    = $constructors2::makeCallOrApply;
 export def makeDynamicImport  = $constructors2::makeDynamicImport;
 export def makeGet            = $constructors2::makeGet;
@@ -46,11 +46,11 @@ export def withExport         = $constructors2::withExport;
 export def withSimpleDefs     = $constructors2::withSimpleDefs;
 export def withTop            = $constructors2::withTop;
 
-def $formals = intraLoad("formals");
+import ./formals;
 export def formalsMaxArgs = $formals::formalsMaxArgs;
 export def formalsMinArgs = $formals::formalsMinArgs;
 
-def $getters = intraLoad("getters");
+import ./getters;
 export def get_actuals     = $getters::get_actuals;
 export def get_baseName    = $getters::get_baseName;
 export def get_format      = $getters::get_format;
@@ -70,5 +70,5 @@ export def get_statements  = $getters::get_statements;
 export def get_yield       = $getters::get_yield;
 export def get_yieldDef    = $getters::get_yieldDef;
 
-def $refs = intraLoad("refs");
+import ./refs;
 export def REFS = $refs::REFS;

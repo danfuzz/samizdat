@@ -8,10 +8,10 @@
 
 #= language core.Lang0
 
-def $Collection = moduleLoad("proto.Collection");
+import proto.Collection;
 
 ## This just binds generics without adding exports.
-intraLoad("MapGenerator");
+import ./MapGenerator;
 
 
 ##

@@ -7,19 +7,19 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
-def $CodeGen = moduleLoad("CodeGen");
+import CodeGen;
 def flatten = $CodeGen::flatten;
 def indent = $CodeGen::indent;
 
-def $DataCode = moduleLoad("DataCode");
-def $Template = moduleLoad("Template");
+import DataCode;
+import Template;
 
-def $VarCalc = moduleLoad("VarCalc");
+import VarCalc;
 def get_varRefs = $VarCalc::get_varRefs;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
-def $Lang0Node = moduleLoad("core.Lang0Node");
+import core.Lang0Node;
 def get_actuals        = $Lang0Node::get_actuals;
 def get_formals        = $Lang0Node::get_formals;
 def get_function       = $Lang0Node::get_function;
@@ -33,15 +33,15 @@ def get_yield          = $Lang0Node::get_yield;
 def get_yieldDef       = $Lang0Node::get_yieldDef;
 def withDynamicImports = $Lang0Node::withDynamicImports;
 
-def $Io0   = moduleLoad("core.Io0");
-def $Lang2 = moduleLoad("core.Lang2");
+import core.Io0;
+import core.Lang2;
 
 def collectClosures = intraLoad("collectClosures")::collectClosures;
 def internLiterals  = intraLoad("internLiterals")::internLiterals;
 def translate       = intraLoad("translate")::translate;
-def $vars           = intraLoad("vars");
+import ./vars;
 
-def $Interner = intraLoad("Interner");
+import ./Interner;
 def get_interns = $Interner::get_interns;
 def intern      = $Interner::intern;
 

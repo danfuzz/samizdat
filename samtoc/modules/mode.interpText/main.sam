@@ -8,10 +8,10 @@
 ## underlying interpreter (hence the name's prefix).
 ##
 
-def $Template = moduleLoad("Template");
+import Template;
 import @utf8 ./template.txt;
 
-def $Io0 = moduleLoad("core.Io0");
+import core.Io0;
 
 export fn compile(sourcePath, targetPath) {
     def replacements = {

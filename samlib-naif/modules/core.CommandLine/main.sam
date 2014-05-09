@@ -6,15 +6,15 @@
 ## Command line interpreter
 ##
 
-def $FilePath     = moduleLoad("core.FilePath");
-def $Format       = moduleLoad("core.Format");     ## Implicitly used.
-def $Generator    = moduleLoad("core.Generator");  ## Implicitly used.
-def $Io0          = moduleLoad("core.Io0");
-def $ModuleSystem = moduleLoad("core.ModuleSystem");
-def $Number       = moduleLoad("proto.Number");    ## Implicitly used.
-def $Peg          = moduleLoad("core.Peg");        ## Implicitly used.
-def $Range        = moduleLoad("core.Range");      ## Implicitly used.
-def $Sequence     = moduleLoad("core.Sequence");   ## Implicitly used.
+import core.FilePath;
+import core.Format;     ## Implicitly used.
+import core.Generator;  ## Implicitly used.
+import core.Io0;
+import core.ModuleSystem;
+import core.Peg;        ## Implicitly used.
+import core.Range;      ## Implicitly used.
+import core.Sequence;   ## Implicitly used.
+import proto.Number;    ## Implicitly used.
 
 
 ##

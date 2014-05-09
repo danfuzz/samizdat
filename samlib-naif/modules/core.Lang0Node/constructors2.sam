@@ -4,9 +4,9 @@
 
 #= language core.Lang0
 
-def $Generator = moduleLoad("core.Generator");
+import core.Generator;
 
-def $constructors1 = intraLoad("constructors1");
+import ./constructors1;
 def makeApply   = $constructors1::makeApply;
 def makeCall    = $constructors1::makeCall;
 def makeLiteral = $constructors1::makeLiteral;
@@ -15,7 +15,7 @@ def makeVarBind = $constructors1::makeVarBind;
 def makeVarDef  = $constructors1::makeVarDef;
 def makeVarRef  = $constructors1::makeVarRef;
 
-def $getters = intraLoad("getters");
+import ./getters;
 def get_baseName    = $getters::get_baseName;
 def get_name        = $getters::get_name;
 def get_interpolate = $getters::get_interpolate;
@@ -96,7 +96,16 @@ export fn .makeDynamicImport();
 
 ## Documented in spec.
 fn @@importModule.makeDynamicImport() {
-    die("TODO: importModule.makeDynamicImport")
+    ## The translation is approximately `def name = load(source, format)`,
+    ## with `load` replaced by either `moduleLoad` or `intraLoad`.
+
+    def name = get_name(this);
+    def source = get_source(this);
+    def loadRef = ifIs { <> hasType(source, @@external) }
+        { <> REFS::moduleLoad }
+        { <> REFS::intraLoad };
+
+    <> [makeVarDef(name, makeCall(loadRef, makeLiteral(dataOf(source))))]
 };
 
 ## Documented in spec.

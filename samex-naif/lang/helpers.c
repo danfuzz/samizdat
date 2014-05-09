@@ -239,7 +239,14 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue source = get(node, STR_source);
 
     if (hasType(node, TYPE_importModule)) {
-        die("TODO: @@importModule.makeDynamicImport");
+        zvalue loadRef = hasType(source, TYPE_external)
+            ? REFS(moduleLoad)
+            : REFS(intraLoad);
+        zvalue stat = makeVarDef(
+            name,
+            makeCall(loadRef, listFrom1(makeLiteral(dataOf(source)))));
+
+        return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
         die("TODO: @@importModuleSelection.makeDynamicImport");
     } else if (hasType(node, TYPE_importResource)) {

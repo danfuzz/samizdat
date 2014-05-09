@@ -14,15 +14,15 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
-def $Format    = moduleLoad("core.Format");
-def $Generator = moduleLoad("core.Generator");
-def $Lang0     = moduleLoad("core.Lang0");
-def $Number    = moduleLoad("proto.Number");
-def $Peg       = moduleLoad("core.Peg");
-def $Range     = moduleLoad("core.Range");
-def $Sequence  = moduleLoad("core.Sequence");
+import core.Format;
+import core.Generator;
+import core.Lang0;
+import core.Peg;
+import core.Range;
+import core.Sequence;
+import proto.Number;
 
-def $Lang0Node = moduleLoad("core.Lang0Node");
+import core.Lang0Node;
 def REFS               = $Lang0Node::REFS;
 def formalsMaxArgs     = $Lang0Node::formalsMaxArgs;
 def formalsMinArgs     = $Lang0Node::formalsMinArgs;

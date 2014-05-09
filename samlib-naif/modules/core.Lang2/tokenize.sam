@@ -9,10 +9,10 @@
 #= language core.Lang1
 
 def ENTITY_MAP = moduleLoad("core.EntityMap")::ENTITY_MAP;
-def $Generator = moduleLoad("core.Generator");
-def $Number    = moduleLoad("proto.Number");
-def $Peg       = moduleLoad("core.Peg");
-def $Sequence  = moduleLoad("core.Sequence");
+import core.Generator;
+import core.Peg;
+import core.Sequence;
+import proto.Number;
 
 
 ##

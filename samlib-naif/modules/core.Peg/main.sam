@@ -8,9 +8,9 @@
 
 #= language core.Lang0
 
-def $Box       = moduleLoad("core.Box");
-def $Generator = moduleLoad("core.Generator");
-def $Sequence  = moduleLoad("core.Sequence");
+import core.Box;
+import core.Generator;
+import core.Sequence;
 
 
 ##

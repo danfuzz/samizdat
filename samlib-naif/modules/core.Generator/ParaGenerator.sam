@@ -9,10 +9,10 @@
 
 #= language core.Lang0
 
-def $Box = moduleLoad("core.Box");
+import core.Box;
 
-def $ListWrapGenerator = intraLoad("ListWrapGenerator");
-def $NullGenerator     = intraLoad("NullGenerator");
+import ./ListWrapGenerator;
+import ./NullGenerator;
 
 
 ##

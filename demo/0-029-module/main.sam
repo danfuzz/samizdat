@@ -14,13 +14,14 @@
 ##
 
 ## A known module (shouldn't cause any trouble).
-moduleLoad("core.Format");
+import core.Format;
 
-## A locally-defined module.
-def $Stuff = moduleLoad("app.Stuff");
+## A locally-defined (but still "external") module.
+import app.Stuff;
 
 ## Ensure it's not re-evaluated.
-def $Stuff2 = moduleLoad("app.Stuff");
+import $Stuff2 = app.Stuff;
+
 ifIs { <> ne($Stuff, $Stuff2) }
     { die("Different modules!") };
 

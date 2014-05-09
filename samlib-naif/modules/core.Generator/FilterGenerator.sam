@@ -10,9 +10,9 @@
 
 #= language core.Lang0
 
-def $Box = moduleLoad("core.Box");
+import core.Box;
 
-def $ParaGenerator = intraLoad("ParaGenerator");
+import ./ParaGenerator;
 
 
 ##
