@@ -22,7 +22,7 @@ def get_statements = $Lang0Node::get_statements;
 def get_yield      = $Lang0Node::get_yield;
 def get_yieldDef   = $Lang0Node::get_yieldDef;
 
-def $Interner = intraLoad("Interner");
+import ./Interner;
 def intern = $Interner::intern;
 
 ## `node.lits(interner)`, implements one layer of literal interning.

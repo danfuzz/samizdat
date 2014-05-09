@@ -39,9 +39,9 @@ import core.Lang2;
 def collectClosures = intraLoad("collectClosures")::collectClosures;
 def internLiterals  = intraLoad("internLiterals")::internLiterals;
 def translate       = intraLoad("translate")::translate;
-def $vars           = intraLoad("vars");
+import ./vars;
 
-def $Interner = intraLoad("Interner");
+import ./Interner;
 def get_interns = $Interner::get_interns;
 def intern      = $Interner::intern;
 

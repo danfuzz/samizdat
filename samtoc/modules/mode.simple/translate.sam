@@ -28,7 +28,7 @@ def get_nodeValue  = $Lang0Node::get_nodeValue;
 def get_yield      = $Lang0Node::get_yield;
 def get_yieldDef   = $Lang0Node::get_yieldDef;
 
-def $vars = intraLoad("vars");
+import ./vars;
 def localVarDecl = $vars::localVarDecl;
 def localVarName = $vars::localVarName;
 

@@ -8,7 +8,7 @@
 
 def indentation = intraLoad("indentation")::indentation;
 
-def $protocol = intraLoad("protocol");
+import ./protocol;
 def flatten = $protocol::flatten;
 def indent  = $protocol::indent;
 
