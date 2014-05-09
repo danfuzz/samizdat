@@ -15,4 +15,4 @@ export fn stuffFunc() {
 };
 
 export def STUFF = "stuff";
-export def SUBSTUFF = $Substuff::SUBSTUFF;
+export def SUBSTUFF = $substuff::SUBSTUFF;
