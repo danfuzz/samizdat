@@ -5,7 +5,7 @@
 #= language core.Lang0
 
 ## An "internal" module, imported whole.
-import ./Substuff;
+import ./substuff;
 
 ## An "internal" module, only specific bindings imported.
 import ./moreStuff :: MORE_STUFF1, MORE_STUFF2;
