@@ -98,6 +98,10 @@ fn @@jump.get_varRefs() {
     <> catVarRefs(this.function, this.nodeValue?*)
 };
 
+fn @@literal.get_varRefs() {
+    <> []
+};
+
 fn @@literalRef.get_varRefs() {
     <> []
 };
