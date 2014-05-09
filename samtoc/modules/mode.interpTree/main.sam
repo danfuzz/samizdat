@@ -21,7 +21,7 @@ export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
     def tree = $Lang2::convertToLang0($Lang2::parseProgram(sourceText));
     def source = $CodeGen::indent($DataCode::convert(tree), 2, 78);
-    def outputText = $Template::apply(template, {source});
+    def outputText = $Template::apply($template, {source});
 
     $Io0::writeFileUtf8(targetPath, outputText)
 };

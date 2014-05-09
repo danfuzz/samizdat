@@ -18,7 +18,7 @@ export fn compile(sourcePath, targetPath) {
         source: $Io0::readFileUtf8(sourcePath)
     };
 
-    def outputText = $Template::apply(template, replacements);
+    def outputText = $Template::apply($template, replacements);
     $Io0::writeFileUtf8(targetPath, outputText)
 };
 

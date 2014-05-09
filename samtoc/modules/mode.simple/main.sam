@@ -227,7 +227,7 @@ export fn compile(sourcePath, targetPath) {
         mainClosure
     };
 
-    def outputText = $Template::apply(template, replacements);
+    def outputText = $Template::apply($template, replacements);
 
     $Io0::writeFileUtf8(targetPath, outputText)
 };
