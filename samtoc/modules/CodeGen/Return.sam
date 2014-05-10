@@ -7,10 +7,7 @@
 ##
 
 import ./indentation :: indentation;
-
-import ./protocol;
-def flatten = $protocol::flatten;
-def indent  = $protocol::indent;
+import ./protocol :: flatten, indent;
 
 export fn makeReturn(tree) {
     <> @Return{tree, flat: "return \(tree.flatten())"}
