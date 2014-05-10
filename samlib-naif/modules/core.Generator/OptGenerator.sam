@@ -12,7 +12,7 @@
 import core.Box;
 
 import ./ValueGenerator;
-def unboundedCollect = intraLoad("unboundedCollect")::unboundedCollect;
+import ./unboundedCollect :: unboundedCollect;
 
 
 ##
