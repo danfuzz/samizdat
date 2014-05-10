@@ -36,9 +36,9 @@ def withDynamicImports = $Lang0Node::withDynamicImports;
 import core.Io0;
 import core.Lang2;
 
-def collectClosures = intraLoad("collectClosures")::collectClosures;
-def internLiterals  = intraLoad("internLiterals")::internLiterals;
-def translate       = intraLoad("translate")::translate;
+import ./collectClosures :: collectClosures;
+import ./internLiterals :: internLiterals;
+import ./translate :: translate;
 import ./vars;
 
 import ./Interner;
