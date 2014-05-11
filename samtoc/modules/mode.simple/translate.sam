@@ -27,9 +27,7 @@ def get_nodeValue  = $Lang0Node::get_nodeValue;
 def get_yield      = $Lang0Node::get_yield;
 def get_yieldDef   = $Lang0Node::get_yieldDef;
 
-import ./vars;
-def localVarDecl = $vars::localVarDecl;
-def localVarName = $vars::localVarName;
+import ./vars :: localVarDecl, localVarName;
 
 ## `node.translate(varsBox)`: Generic function to perform the translation.
 export fn .translate(varsBox);

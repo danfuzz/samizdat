@@ -6,24 +6,24 @@
 ## Convert data into C code that constructs that data.
 ##
 
+import ./Assign :: makeAssign;
+export makeAssign;
+
+import ./Call :: makeCall;
+export makeCall;
+
+import ./Comment :: makeComment;
+export makeComment;
+
+import ./Return :: makeReturn;
+export makeReturn;
+
+import ./Statement :: makeStatement;
+export makeStatement;
+
 ## This just binds generics.
 import ./String;
 
-import ./Assign;
-export def makeAssign = $Assign::makeAssign;
-
-import ./Call;
-export def makeCall = $Call::makeCall;
-
-import ./Comment;
-export def makeComment = $Comment::makeComment;
-
-import ./Return;
-export def makeReturn = $Return::makeReturn;
-
-import ./Statement;
-export def makeStatement = $Statement::makeStatement;
-
-import ./protocol;
-export def flatten = $protocol::flatten;
-export def indent  = $protocol::indent;
+import ./protocol :: flatten, indent;
+export flatten;
+export indent;
