@@ -2,8 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-import VarCalc;
-def get_varRefs = $VarCalc::get_varRefs;
+import VarCalc :: get_varRefs;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;

@@ -6,9 +6,10 @@
 ## Convert data into C code that constructs that data.
 ##
 
-import CodeGen;
-def flatten = $CodeGen::flatten;
-def indent = $CodeGen::indent;
+import CodeGen ::
+    flatten,
+    indent,
+    makeCall;
 
 
 ##
@@ -116,7 +117,7 @@ export fn .convert();
 
 ## Converts an int.
 fn Int.convert() {
-    <> $CodeGen::makeCall("intFromZint", "\(this)")
+    <> makeCall("intFromZint", "\(this)")
 };
 
 ## Converts a list.
@@ -126,7 +127,7 @@ fn List.convert() {
     };
 
     def listElems = [ elem in this <> convert(elem) ];
-    <> $CodeGen::makeCall("listFromArgs", listElems*, "NULL")
+    <> makeCall("listFromArgs", listElems*, "NULL")
 };
 
 ## Converts a map.
@@ -139,7 +140,7 @@ fn Map.convert() {
         <> [convert(get_key(mapping)), convert(get_value(mapping))]
     ];
 
-    <> $CodeGen::makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
+    <> makeCall("mapFromArgs", cat(mapPairs*)*, "NULL")
 };
 
 ## Converts a string.
@@ -153,13 +154,13 @@ fn String.convert() {
     ## order to find the encoded length.
     def bodyChars = cat((ch in this <> stringChar(ch))*);
 
-    <> $CodeGen::makeCall("stringFromUtf8",
+    <> makeCall("stringFromUtf8",
         "\(#bodyChars)", "\"\(bodyChars)\"")
 };
 
 ## Converts a type. Only works on derived data types.
 fn Type.convert() {
-    <> $CodeGen::makeCall("makeDerivedDataType", convert(typeName(this)))
+    <> makeCall("makeDerivedDataType", convert(typeName(this)))
 };
 
 ## Converts a derived value or an opaque core value, yielding a tree
@@ -172,5 +173,5 @@ fn Value.convert() {
         die("Cannot convert opaque non-data value: \%q(this)")
     };
 
-    <> $CodeGen::makeCall("makeValue", convert(type), data, "NULL")
+    <> makeCall("makeValue", convert(type), data, "NULL")
 };
