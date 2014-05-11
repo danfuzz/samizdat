@@ -6,8 +6,7 @@
 ## Translate execution trees into corresponding C code.
 ##
 
-import VarCalc;
-def get_varRefs = $VarCalc::get_varRefs;
+import VarCalc :: get_varRefs;
 
 import CodeGen;
 def flatten = $CodeGen::flatten;
