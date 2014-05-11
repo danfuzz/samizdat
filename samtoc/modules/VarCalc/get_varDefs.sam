@@ -2,9 +2,9 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-import core.Lang0Node;
-def get_name          = $Lang0Node::get_name;
-def makeDynamicImport = $Lang0Node::makeDynamicImport;
+import core.Lang0Node ::
+    get_name,
+    makeDynamicImport;
 
 ## `node.get_varDefs()`: Generic that returns list of variable names
 ## newly-defined by `node`. Result may have duplicates.

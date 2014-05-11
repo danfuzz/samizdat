@@ -10,7 +10,7 @@
 
 import core.Lang0;
 
-def convertToLang0 = intraLoad("convert")::convertToLang0;
+import ./convert :: convertToLang0;
 
 
 ##

@@ -14,8 +14,7 @@ def indent = $CodeGen::indent;
 import DataCode;
 import Template;
 
-import VarCalc;
-def get_varRefs = $VarCalc::get_varRefs;
+import VarCalc :: get_varRefs;
 
 ## TODO: Ought to be able to do something like:
 ##     use Lang0Node *;
@@ -36,14 +35,15 @@ def withDynamicImports = $Lang0Node::withDynamicImports;
 import core.Io0;
 import core.Lang2;
 
-def collectClosures = intraLoad("collectClosures")::collectClosures;
-def internLiterals  = intraLoad("internLiterals")::internLiterals;
-def translate       = intraLoad("translate")::translate;
+import ./collectClosures :: collectClosures;
+import ./internLiterals :: internLiterals;
+import ./translate :: translate;
 import ./vars;
 
-import ./Interner;
-def get_interns = $Interner::get_interns;
-def intern      = $Interner::intern;
+import ./Interner ::
+    get_interns,
+    intern,
+    makeInterner;
 
 import @utf8 ./template.txt;
 
@@ -182,7 +182,7 @@ export fn compile(sourcePath, targetPath) {
     def mainNode = withDynamicImports(
         $Lang2::convertToLang0($Lang2::parseProgram(sourceText)));
 
-    def interner = $Interner::makeInterner();
+    def interner = makeInterner();
     def litsNode = internLiterals(mainNode, interner);
     def partialLits = interner.interns; ## Needed for closure declarations.
 

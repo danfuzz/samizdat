@@ -54,7 +54,7 @@ def withTop            = $Lang0Node::withTop;
 def withoutInterpolate = $Lang0Node::withoutInterpolate;
 
 def $safeVar = intraLoad("safeVar");
-def tokenize = intraLoad("tokenize")::tokenize;
+import ./tokenize :: tokenize;
 
 
 ##

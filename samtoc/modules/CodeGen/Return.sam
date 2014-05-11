@@ -6,11 +6,8 @@
 ## Return tree.
 ##
 
-def indentation = intraLoad("indentation")::indentation;
-
-import ./protocol;
-def flatten = $protocol::flatten;
-def indent  = $protocol::indent;
+import ./indentation :: indentation;
+import ./protocol :: flatten, indent;
 
 export fn makeReturn(tree) {
     <> @Return{tree, flat: "return \(tree.flatten())"}

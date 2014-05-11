@@ -8,8 +8,7 @@
 
 #= language core.Lang1
 
-## TODO
-## def convertToLang0 = intraLoad("convert")::convertToLang0;
+## TODO: import ./convert :: convertToLang0;
 
 import core.Lang1;
 
@@ -21,7 +20,7 @@ import core.Lang1;
 ## Documented in spec.
 export fn eval(env, expressionNode) {
     <> $Lang1::eval(env, expressionNode)
-    ## TODO
+    ## TODO:
     ## def convertedNode = convertToLang0(expressionNode);
     ## <> $Lang1::eval(env, convertedNode)
 };

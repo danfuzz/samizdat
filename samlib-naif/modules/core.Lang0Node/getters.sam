@@ -5,8 +5,8 @@
 #= language core.Lang0
 
 import core.Generator;
-import proto.Number;
 import core.Sequence;
+import proto.Number;
 
 import ./formals;
 def formalsMaxArgs = $formals::formalsMaxArgs;

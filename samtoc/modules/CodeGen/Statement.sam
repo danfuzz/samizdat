@@ -6,11 +6,8 @@
 ## Statement tree.
 ##
 
-def indentation = intraLoad("indentation")::indentation;
-
-import ./protocol;
-def flatten = $protocol::flatten;
-def indent  = $protocol::indent;
+import ./indentation :: indentation;
+import ./protocol :: flatten, indent;
 
 export fn makeStatement(tree) {
     <> @Statement{tree, flat: "\(tree.flatten());"}

@@ -2,13 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-##
-## Exported Definitions
-##
+#= language core.Lang0
 
-## This just re-exports stuff defined in submodules.
-import ./get_varDefs :: get_varDefs;
-export get_varDefs;
-
-import ./get_varRefs :: get_varRefs;
-export get_varRefs;
+export def MORE_STUFF1 = "More stuff!";
+export def MORE_STUFF2 = "Yet more stuff, again!";

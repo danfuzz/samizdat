@@ -8,7 +8,7 @@
 
 #= language core.Lang1
 
-def ENTITY_MAP = moduleLoad("core.EntityMap")::ENTITY_MAP;
+import core.EntityMap :: ENTITY_MAP;
 import core.Generator;
 import core.Peg;
 import core.Sequence;

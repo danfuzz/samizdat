@@ -6,11 +6,8 @@
 ## Protocol bindings for type String.
 ##
 
-def indentation = intraLoad("indentation")::indentation;
-
-import ./protocol;
-def flatten = $protocol::flatten;
-def indent  = $protocol::indent;
+import ./indentation :: indentation;
+import ./protocol :: flatten, indent;
 
 fn String.flatten() {
     <> this
