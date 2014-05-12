@@ -83,9 +83,6 @@ A top-level module definition is allowed to import a few different things.
 Import statements begin with an `import` keyword; beyond that, the syntax
 depends on what is being imported.
 
-TODO: The syntax for `import` is complete, but there is no semantic
-implementation, yet.
-
 #### Full module import
 
 To import a module as a whole, indicate the name of the module after the
@@ -148,6 +145,9 @@ import pot_* = zork.potions :: *;
 pot_quaff(pot_blort);
 pot_quaff(pot_frotz);
 ```
+
+TODO: The syntax for wildcard `import` is complete, but there is no semantic
+implementation, yet. (Other forms of selection import work as advertised.)
 
 #### Resource import
 
