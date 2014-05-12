@@ -294,14 +294,6 @@ export fn withSimpleDefs(node) {
                     };
                 die("TODO: export import ... :: ...")
             };
-
-        ifIs { <> hasType(s, @@varDef) }
-            {
-                ifValue { <> s::export } { exp ->
-                    <out> [makeCall(REFS::makeValueMap,
-                        makeLiteral(exp), makeVarRef(s::name))]
-                }
-            };
     };
 
     def optYield = ifIs { <> eq(exports, []) }

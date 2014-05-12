@@ -466,18 +466,8 @@ zvalue withSimpleDefs(zvalue node) {
             // And fall through, to handle `top` and emit inner statement.
         }
 
-        zvalue exName = get(one, STR_export);
-        zvalue name = get(one, STR_name);
-        bool isVarDef = hasType(one, TYPE_varDef);
-
-        if (isVarDef && (exName != NULL)) {
-            exports = listAppend(
-                exports,
-                makeCall(makeVarRef(STR_makeValueMap),
-                    listFrom2(makeLiteral(exName), makeVarRef(name))));
-        }
-
-        if (isVarDef && (get(one, STR_top) != NULL)) {
+        if (hasType(one, TYPE_varDef) && (get(one, STR_top) != NULL)) {
+            zvalue name = get(one, STR_name);
             zvalue value = get(one, STR_value);
             tops = listAppend(tops, makeVarDef(name, NULL));
             mains = listAppend(mains, makeVarBind(name, value));
