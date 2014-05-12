@@ -266,8 +266,8 @@ if [[ ${language} != '' ]]; then
         }
         { print; }
         ' "${inFile}" > "${outFile}"
+        mv "${outFile}" "${inFile}"
     done
-    mv "${outFile}" "${inFile}"
 fi
 
 # If we're compiling, then copy the demo to a temporary directory, and
