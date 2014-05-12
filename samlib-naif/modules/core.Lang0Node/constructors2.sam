@@ -6,26 +6,26 @@
 
 import core.Generator;
 
-import ./constructors1;
-def makeApply   = $constructors1::makeApply;
-def makeCall    = $constructors1::makeCall;
-def makeLiteral = $constructors1::makeLiteral;
-def makeThunk   = $constructors1::makeThunk;
-def makeVarBind = $constructors1::makeVarBind;
-def makeVarDef  = $constructors1::makeVarDef;
-def makeVarRef  = $constructors1::makeVarRef;
+import ./constructors1 ::
+    makeApply,
+    makeCall,
+    makeLiteral,
+    makeThunk,
+    makeVarBind,
+    makeVarDef,
+    makeVarRef;
 
-import ./getters;
-def get_baseName    = $getters::get_baseName;
-def get_name        = $getters::get_name;
-def get_interpolate = $getters::get_interpolate;
-def get_format      = $getters::get_format;
-def get_nodeValue   = $getters::get_nodeValue;
-def get_prefix      = $getters::get_prefix;
-def get_select      = $getters::get_select;
-def get_source      = $getters::get_source;
-def get_statements  = $getters::get_statements;
-def get_yield       = $getters::get_yield;
+import ./getters ::
+    get_baseName,
+    get_name,
+    get_interpolate,
+    get_format,
+    get_nodeValue,
+    get_prefix,
+    get_select,
+    get_source,
+    get_statements,
+    get_yield;
 
 import ./refs :: REFS;
 
