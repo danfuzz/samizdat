@@ -10,9 +10,10 @@
 
 #= language core.Lang0
 
-import core.Generator;
-def stdCollect       = $Generator::stdCollect;
-def unboundedCollect = $Generator::unboundedCollect;
+import core.Generator ::
+    nullGenerator,
+    stdCollect,
+    unboundedCollect;
 
 import proto.Number;
 
@@ -48,7 +49,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
         {
             <> @ClosedRange{firstValue, increment, size}
         }
-        { <> $Generator::nullGenerator }
+        { <> nullGenerator }
 };
 
 ## Documented in spec.
@@ -64,7 +65,7 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ifIs { <> totalEq(increment, 0) }
         {
             return ifIs { <> isEmpty* }
-                { <> $Generator::nullGenerator }
+                { <> nullGenerator }
                 { <> makeClosedRange(firstValue, 1, 0) }
         };
 
@@ -80,7 +81,7 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
                 increment));
 
     ifIs { <> le(size, 0) }
-        { return $Generator::nullGenerator };
+        { return nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);
 };
@@ -104,7 +105,7 @@ export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
             increment));
 
     ifIs { <> le(size, 0) }
-        { return $Generator::nullGenerator };
+        { return nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);
 };
