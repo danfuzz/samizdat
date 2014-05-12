@@ -192,8 +192,8 @@ the "cell" containing a variable. So, it is generally a bad idea to export
 a variable that was defined with `var` and not `def`.
 
 As a conveniend short-hand, `export` may be used as a prefix on immutable
-variable definitions and function definitions (both regular and generic
-functions) to export the variables so-defined.
+variable definitions, function definitions (both regular and generic
+functions), and `import` statements, to export the variables so-defined.
 
 Examples:
 
@@ -210,6 +210,20 @@ export fn blort() { ... };
 
 ## Define and export a generic function, together.
 export fn .blort() { ... };
+
+## Export a whole imported module. It is exported as `$submodule`.
+export import ./submodule;
+
+## Export a whole imported module. It is exported as `blort`.
+export blort = import ./submodule;
+
+## Export some bindings from another module. The exported names are the same
+## as the imported ones.
+export import ./submodule :: fizmo, frotz;
+
+## Export all the bindings from another module. The exported names are the
+## same as the imported ones.
+export import ./submodule :: *;
 ```
 
 ### Finding a module
