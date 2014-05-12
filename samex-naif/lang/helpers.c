@@ -457,9 +457,13 @@ zvalue withSimpleDefs(zvalue node) {
                         listFrom2(makeLiteral(name), makeVarRef(name))));
             }
             continue;
-        } else if (hasType(one, TYPE_export)) {
-            zvalue one = get(one, STR_value);
+        }
+
+        if (hasType(one, TYPE_export)) {
+            one = get(one, STR_value);  // Re-set `one` to the inner statement.
+
             zvalue name = get(one, STR_name);
+
             if (name != NULL) {
                 exports = listAppend(
                     exports,
@@ -469,7 +473,7 @@ zvalue withSimpleDefs(zvalue node) {
                 die("TODO: export import ... :: ...");
             }
 
-            // Fall through and handle the case of exporting a `top`.
+            // And fall through, to handle `top` and emit inner statement.
         }
 
         zvalue exName = get(one, STR_export);
