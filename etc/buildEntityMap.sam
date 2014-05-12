@@ -9,8 +9,8 @@
 ## (very large) map literal corresponding to its contents.
 ##
 
-def $FilePath = moduleLoad("core.FilePath");
-def $Io0      = moduleLoad("core.Io0");
+import core.FilePath;
+import core.Io0;
 
 
 ## Map of hex digit tokens to int values.
@@ -132,6 +132,8 @@ export fn main(selfPath, .*) {
         ## This file was generated with the buildEntityMap program, using the
         ## file entity-map.txt as input. Rerun that program should the contents
         ## of this file need to be updated.
+
+        #= language core.Lang0
 
         ## Documented in spec.
         export def ENTITY_MAP = {

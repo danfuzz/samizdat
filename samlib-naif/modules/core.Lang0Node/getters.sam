@@ -8,9 +8,9 @@ import core.Generator;
 import core.Sequence;
 import proto.Number;
 
-import ./formals;
-def formalsMaxArgs = $formals::formalsMaxArgs;
-def formalsMinArgs = $formals::formalsMinArgs;
+import ./formals ::
+    formalsMaxArgs,
+    formalsMinArgs;
 
 
 ##

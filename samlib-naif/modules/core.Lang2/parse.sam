@@ -16,44 +16,44 @@ import core.Range;
 import core.Sequence;
 import proto.Number;
 
-import core.Lang0Node;
-def REFS               = $Lang0Node::REFS;
-def formalsMaxArgs     = $Lang0Node::formalsMaxArgs;
-def formalsMinArgs     = $Lang0Node::formalsMinArgs;
-def get_actuals        = $Lang0Node::get_actuals;
-def get_formals        = $Lang0Node::get_formals;
-def get_function       = $Lang0Node::get_function;
-def get_interpolate    = $Lang0Node::get_interpolate;
-def get_lvalue         = $Lang0Node::get_lvalue;
-def get_name           = $Lang0Node::get_name;
-def get_nodeValue      = $Lang0Node::get_nodeValue;
-def get_statements     = $Lang0Node::get_statements;
-def get_yield          = $Lang0Node::get_yield;
-def get_yieldDef       = $Lang0Node::get_yieldDef;
-def makeApply          = $Lang0Node::makeApply;
-def makeCall           = $Lang0Node::makeCall;
-def makeCallOrApply    = $Lang0Node::makeCallOrApply;
-def makeCallThunks     = $Lang0Node::makeCallThunks;
-def makeExport         = $Lang0Node::makeExport;
-def makeGet            = $Lang0Node::makeGet;
-def makeImport         = $Lang0Node::makeImport;
-def makeInterpolate    = $Lang0Node::makeInterpolate;
-def makeJump           = $Lang0Node::makeJump;
-def makeLiteral        = $Lang0Node::makeLiteral;
-def makeOptValue       = $Lang0Node::makeOptValue;
-def makeThunk          = $Lang0Node::makeThunk;
-def makeVarBind        = $Lang0Node::makeVarBind;
-def makeVarDef         = $Lang0Node::makeVarDef;
-def makeVarDefMutable  = $Lang0Node::makeVarDefMutable;
-def makeVarRef         = $Lang0Node::makeVarRef;
-def makeVarRefLvalue   = $Lang0Node::makeVarRefLvalue;
-def withExport         = $Lang0Node::withExport;
-def withFormals        = $Lang0Node::withFormals;
-def withSimpleDefs     = $Lang0Node::withSimpleDefs;
-def withTop            = $Lang0Node::withTop;
-def withoutInterpolate = $Lang0Node::withoutInterpolate;
+import core.Lang0Node ::
+    REFS,
+    formalsMaxArgs,
+    formalsMinArgs,
+    get_actuals,
+    get_formals,
+    get_function,
+    get_interpolate,
+    get_lvalue,
+    get_name,
+    get_nodeValue,
+    get_statements,
+    get_yield,
+    get_yieldDef,
+    makeApply,
+    makeCall,
+    makeCallOrApply,
+    makeCallThunks,
+    makeExport,
+    makeGet,
+    makeImport,
+    makeInterpolate,
+    makeJump,
+    makeLiteral,
+    makeOptValue,
+    makeThunk,
+    makeVarBind,
+    makeVarDef,
+    makeVarDefMutable,
+    makeVarRef,
+    makeVarRefLvalue,
+    withExport,
+    withFormals,
+    withSimpleDefs,
+    withTop,
+    withoutInterpolate;
 
-def $safeVar = intraLoad("safeVar");
+import ./safeVar;
 import ./tokenize :: tokenize;
 
 

@@ -8,14 +8,14 @@
 
 #= language core.Lang0
 
-import core.Bitwise;
-def and     = $Bitwise::and;
-def bit     = $Bitwise::bit;
-def bitSize = $Bitwise::bitSize;
-def not     = $Bitwise::not;
-def or      = $Bitwise::or;
-def shl     = $Bitwise::shl;
-def xor     = $Bitwise::xor;
+import core.Bitwise ::
+    and,
+    bit,
+    bitSize,
+    not,
+    or,
+    shl,
+    xor;
 
 
 ##

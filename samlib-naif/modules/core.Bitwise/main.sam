@@ -8,17 +8,16 @@
 
 #= language core.Lang0
 
-import proto.Bitwise;
-def and     = $Bitwise::and;
-def bit     = $Bitwise::bit;
-def bitSize = $Bitwise::bitSize;
-def not     = $Bitwise::not;
-def or      = $Bitwise::or;
-def shl     = $Bitwise::shl;
-def xor     = $Bitwise::xor;
+import proto.Bitwise ::
+    and,
+    bit,
+    bitSize,
+    not,
+    or,
+    shl,
+    xor;
 
-import proto.Number;
-def neg = $Number::neg;
+import proto.Number :: neg;
 
 
 ##
