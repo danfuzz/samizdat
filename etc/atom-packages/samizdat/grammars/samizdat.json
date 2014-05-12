@@ -239,6 +239,20 @@
           ]
         },
         {
+          "end" : ";",
+          "begin" : "import(?=[^_$a-zA-Z0-9])",
+          "beginCaptures" : {
+            "0" : {
+              "name" : "keyword.definition.samizdat"
+            }
+          },
+          "patterns" : [
+            {
+              "include" : "#import-list"
+            }
+          ]
+        },
+        {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tbreak|continue|default|do|else|\n\t\t\t\t\t\tfor|if|return|switch|while\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
           "name" : "keyword.control.samizdat"
         },
@@ -316,6 +330,34 @@
         },
         {
           "include" : "#recursive-string"
+        }
+      ]
+    },
+    "import-list" : {
+      "patterns" : [
+        {
+          "match" : "\\.\/[.\/_$a-zA-Z0-9]*",
+          "name" : "string.unquoted.samizdat"
+        },
+        {
+          "match" : "[$a-zA-Z0-9]+\\.[.\/_$a-zA-Z0-9]+",
+          "name" : "string.unquoted.samizdat"
+        },
+        {
+          "match" : "@[$a-zA-Z0-9]+",
+          "name" : "constant.other.samizdat"
+        },
+        {
+          "match" : "[_$a-zA-Z0-9]+",
+          "name" : "variable.definition.samizdat"
+        },
+        {
+          "match" : "::",
+          "name" : "keyword.operator.samizdat"
+        },
+        {
+          "match" : "=",
+          "name" : "keyword.operator.samizdat"
         }
       ]
     },
