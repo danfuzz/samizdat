@@ -294,8 +294,8 @@ export fn withSimpleDefs(node) {
 
         <> ifValue { <> s::export }
             { exp ->
-                <> makeCall(REFS::makeValueMap,
-                    makeLiteral(exp), makeVarRef(s::name))
+                <> [makeCall(REFS::makeValueMap,
+                    makeLiteral(exp), makeVarRef(s::name))]
             }
     };
 
@@ -306,7 +306,7 @@ export fn withSimpleDefs(node) {
             ## a pre-existing `yield` binding.
             ifIs { get_yield(node) }
                 { die("Cannot mix `export` and `yield`.") };
-            <> {yield: makeCall(REFS::cat, exports*)}
+            <> {yield: makeCall(REFS::cat, cat(exports*)*)}
         };
 
     <> @(get_typeName(node)){
