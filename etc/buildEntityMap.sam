@@ -133,6 +133,8 @@ export fn main(selfPath, .*) {
         ## file entity-map.txt as input. Rerun that program should the contents
         ## of this file need to be updated.
 
+        #= language core.Lang0
+
         ## Documented in spec.
         export def ENTITY_MAP = {
         \(resultText)
