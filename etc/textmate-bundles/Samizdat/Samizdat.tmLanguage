@@ -197,6 +197,12 @@
 			<array>
 				<dict>
 					<key>name</key>
+					<string>variable.definition.samizdat</string>
+					<key>match</key>
+					<string>[_$a-zA-Z0-9]+\*?(?= *[=,;])</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>string.unquoted.samizdat</string>
 					<key>match</key>
 					<string>\./[./_$a-zA-Z0-9]*</string>
@@ -205,7 +211,7 @@
 					<key>name</key>
 					<string>string.unquoted.samizdat</string>
 					<key>match</key>
-					<string>[$a-zA-Z0-9]+\.[./_$a-zA-Z0-9]+</string>
+					<string>[./_$a-zA-Z0-9]+</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -215,21 +221,15 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>variable.definition.samizdat</string>
+					<string>keyword.operator.samizdat</string>
 					<key>match</key>
-					<string>[_$a-zA-Z0-9]+</string>
+					<string>=</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>keyword.operator.samizdat</string>
 					<key>match</key>
 					<string>::</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>keyword.operator.samizdat</string>
-					<key>match</key>
-					<string>=</string>
 				</dict>
 			</array>
 		</dict>
@@ -664,7 +664,7 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.definition.samizdat</string>
+							<string>keyword.control.import.samizdat</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -676,6 +676,18 @@
 							<string>#import-list</string>
 						</dict>
 					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>keyword.control.import.samizdat</string>
+					<key>match</key>
+					<string>\bimport\b</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>keyword.control.export.samizdat</string>
+					<key>match</key>
+					<string>\bexport\b</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -694,7 +706,7 @@
 					<key>match</key>
 					<string>(?x)
 						\b(
-						by|def|export|fn|import|in|module|var
+						by|def|fn|in|module|var
 						)\b
 					</string>
 				</dict>

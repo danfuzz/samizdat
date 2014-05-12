@@ -4,20 +4,19 @@
 
 import VarCalc :: get_varRefs;
 
-## TODO: Ought to be able to do something like:
-##     use Lang0Node *;
-import core.Lang0Node;
-def get_actuals    = $Lang0Node::get_actuals;
-def get_formals    = $Lang0Node::get_formals;
-def get_function   = $Lang0Node::get_function;
-def get_id         = $Lang0Node::get_id;
-def get_maxArgs    = $Lang0Node::get_maxArgs;
-def get_minArgs    = $Lang0Node::get_minArgs;
-def get_name       = $Lang0Node::get_name;
-def get_nodeValue  = $Lang0Node::get_nodeValue;
-def get_statements = $Lang0Node::get_statements;
-def get_yield      = $Lang0Node::get_yield;
-def get_yieldDef   = $Lang0Node::get_yieldDef;
+## TODO: Replace with `import core.Lang0Node :: *`, once available.
+import core.Lang0Node ::
+    get_actuals,
+    get_formals,
+    get_function,
+    get_id,
+    get_maxArgs,
+    get_minArgs,
+    get_name,
+    get_nodeValue,
+    get_statements,
+    get_yield,
+    get_yieldDef;
 
 ## `node.bodies(bodiesBox)`, implements one layer of body collection.
 fn .bodies(bodiesBox);

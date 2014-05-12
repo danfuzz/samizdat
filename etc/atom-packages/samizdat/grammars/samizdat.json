@@ -243,7 +243,7 @@
           "begin" : "import(?=[^_$a-zA-Z0-9])",
           "beginCaptures" : {
             "0" : {
-              "name" : "keyword.definition.samizdat"
+              "name" : "keyword.control.import.samizdat"
             }
           },
           "patterns" : [
@@ -253,11 +253,19 @@
           ]
         },
         {
+          "match" : "\\bimport\\b",
+          "name" : "keyword.control.import.samizdat"
+        },
+        {
+          "match" : "\\bexport\\b",
+          "name" : "keyword.control.export.samizdat"
+        },
+        {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tbreak|continue|default|do|else|\n\t\t\t\t\t\tfor|if|return|switch|while\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
           "name" : "keyword.control.samizdat"
         },
         {
-          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tby|def|export|fn|import|in|module|var\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tby|def|fn|in|module|var\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
           "name" : "keyword.definition.samizdat"
         },
         {
@@ -336,11 +344,15 @@
     "import-list" : {
       "patterns" : [
         {
+          "match" : "[_$a-zA-Z0-9]+\\*?(?= *[=,;])",
+          "name" : "variable.definition.samizdat"
+        },
+        {
           "match" : "\\.\/[.\/_$a-zA-Z0-9]*",
           "name" : "string.unquoted.samizdat"
         },
         {
-          "match" : "[$a-zA-Z0-9]+\\.[.\/_$a-zA-Z0-9]+",
+          "match" : "[.\/_$a-zA-Z0-9]+",
           "name" : "string.unquoted.samizdat"
         },
         {
@@ -348,15 +360,11 @@
           "name" : "constant.other.samizdat"
         },
         {
-          "match" : "[_$a-zA-Z0-9]+",
-          "name" : "variable.definition.samizdat"
-        },
-        {
-          "match" : "::",
+          "match" : "=",
           "name" : "keyword.operator.samizdat"
         },
         {
-          "match" : "=",
+          "match" : "::",
           "name" : "keyword.operator.samizdat"
         }
       ]
