@@ -127,7 +127,8 @@ Gets the name of an `importModuleSelection` node.
 
 #### `get_select(node) <> [name*]`
 
-Gets the binding selection of an `importModuleSelection` node.
+Gets the binding selection of an `importModuleSelection` or `exportSelection`
+node.
 
 #### `get_source(node) <> source`
 
