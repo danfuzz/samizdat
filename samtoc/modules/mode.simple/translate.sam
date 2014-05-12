@@ -12,8 +12,7 @@ import CodeGen;
 def flatten = $CodeGen::flatten;
 def indent = $CodeGen::indent;
 
-## TODO: Ought to be able to do something like:
-##     use Lang0Node *;
+## TODO: Replace with `import core.Lang0Node :: *`, once available.
 import core.Lang0Node;
 def get_actuals    = $Lang0Node::get_actuals;
 def get_formals    = $Lang0Node::get_formals;
