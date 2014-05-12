@@ -1076,7 +1076,7 @@ DEF_PARSE(programStatement) {
     if (result != NULL) { return makeExportSelection(listFrom1(result)); }
 
     result = PARSE_OR_REJECT(exportableStatement);
-    return withExport(result);
+    return makeExport(result);
 }
 
 /* Documented in spec. */

@@ -36,6 +36,7 @@ import core.Lang0Node ::
     makeCall,
     makeCallOrApply,
     makeCallThunks,
+    makeExport,
     makeExportSelection,
     makeGet,
     makeImport,
@@ -49,7 +50,6 @@ import core.Lang0Node ::
     makeVarDefMutable,
     makeVarRef,
     makeVarRefLvalue,
-    withExport,
     withFormals,
     withSimpleDefs,
     withTop,
@@ -786,7 +786,7 @@ def parProgramStatement = {:
         { <> makeExportSelection(name) }
     |
         stat = parExportableStatement
-        { <> withExport(stat, get_name(stat)) }
+        { <> makeExport(stat) }
     )
 :};
 
