@@ -273,8 +273,7 @@ export fn withSimpleDefs(node) {
         ifIs { <> hasType(s, @@exportSelection) }
             { <out> };
 
-        <> ifNot { <> hasType(s, @@export) }
-            { <> s }
+        <> s
     };
 
     def exports = $Generator::filterAll(rawStatements) { <out> s ->
@@ -286,17 +285,13 @@ export fn withSimpleDefs(node) {
                 }
             };
 
-        ifNot { <> hasType(s, @@varDef) }
+        ifIs { <> hasType(s, @@varDef) }
             {
-                ifNot { <> hasType(s, @@export) }
-                    { <out> }
+                ifValue { <> s::export } { exp ->
+                    <out> [makeCall(REFS::makeValueMap,
+                        makeLiteral(exp), makeVarRef(s::name))]
+                }
             };
-
-        <> ifValue { <> s::export }
-            { exp ->
-                <> [makeCall(REFS::makeValueMap,
-                    makeLiteral(exp), makeVarRef(s::name))]
-            }
     };
 
     def optYield = ifIs { <> eq(exports, []) }

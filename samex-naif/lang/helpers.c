@@ -455,9 +455,8 @@ zvalue withSimpleDefs(zvalue node) {
         zvalue exName = get(one, STR_export);
         zvalue name = get(one, STR_name);
         bool isVarDef = hasType(one, TYPE_varDef);
-        bool isExport = hasType(one, TYPE_export);
 
-        if ((isVarDef || isExport) && (exName != NULL)) {
+        if (isVarDef && (exName != NULL)) {
             exports = listAppend(
                 exports,
                 makeCall(makeVarRef(STR_makeValueMap),
@@ -468,7 +467,7 @@ zvalue withSimpleDefs(zvalue node) {
             zvalue value = get(one, STR_value);
             tops = listAppend(tops, makeVarDef(name, NULL));
             mains = listAppend(mains, makeVarBind(name, value));
-        } else if (!isExport) {
+        } else {
             mains = listAppend(mains, one);
         }
     }
