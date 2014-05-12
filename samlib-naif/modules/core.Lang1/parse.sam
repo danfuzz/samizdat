@@ -616,10 +616,8 @@ def parProgramStatement = $Peg::makeMainChoice(
                 parName,
                 $Peg::makeCode { ., name <> makeExportSelection(name) }),
             $Peg::makeSequence(
-                parExportableStatement,
-                $Peg::makeCode { ., stat ->
-                    <> makeExport(stat)
-                }))));
+                $Peg::makeChoice(parExportableStatement, parImportStatement),
+                $Peg::makeCode { ., stat <> makeExport(stat) }))));
 
 ## Documented in spec.
 def parClosureBody = $Peg::makeMainSequence(
