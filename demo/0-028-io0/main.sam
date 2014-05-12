@@ -8,8 +8,8 @@
 
 #= language core.Lang0
 
-def $FilePath = moduleLoad("core.FilePath");
-def $Io0      = moduleLoad("core.Io0");
+import core.FilePath;
+import core.Io0;
 
 
 ##
