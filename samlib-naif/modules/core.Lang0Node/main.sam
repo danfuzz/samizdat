@@ -43,7 +43,6 @@ export def makeImport         = $constructors2::makeImport;
 export def makeInterpolate    = $constructors2::makeInterpolate;
 export def makeOptValue       = $constructors2::makeOptValue;
 export def withDynamicImports = $constructors2::withDynamicImports;
-export def withExport         = $constructors2::withExport;
 export def withSimpleDefs     = $constructors2::withSimpleDefs;
 export def withTop            = $constructors2::withTop;
 

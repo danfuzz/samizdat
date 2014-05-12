@@ -415,16 +415,6 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
-zvalue withExport(zvalue node) {
-    // Contrary to the spec, we don't take an optional second argument.
-    zvalue name = get(node, STR_name);
-    return makeValue(
-        get_type(node),
-        collPut(dataOf(node), STR_export, name),
-        NULL);
-}
-
-/* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeValue(
         get_type(node),

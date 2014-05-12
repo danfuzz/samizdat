@@ -246,12 +246,6 @@ export fn withDynamicImports(node) {
 };
 
 ## Documented in spec.
-export fn withExport(node, optExport?) {
-    def exp = ifValueOr { <> optExport* } { <> get_name(node) };
-    <> @(get_typeName(node)){dataOf(node)*, export: exp}
-};
-
-## Documented in spec.
 export fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
 

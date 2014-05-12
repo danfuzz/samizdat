@@ -290,12 +290,6 @@ Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` nodes in the `statements` converted to their dynamic
 forms.
 
-#### `withExport(node, optExport?) <> node`
-
-Makes a node just like the given one (presumably a `varDef` node), except
-with the addition of an `export` binding. If given, the `optExport*` is used
-for the binding. If not given, `node`'s pre-existing `name` is used.
-
 #### `withFormals(node, [formal*]) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
