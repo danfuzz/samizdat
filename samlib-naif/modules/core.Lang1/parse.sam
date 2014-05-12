@@ -29,7 +29,7 @@ import core.Lang0Node ::
     makeCall,
     makeCallOrApply,
     makeCallThunks,
-    makeExport,
+    makeExportSelection,
     makeGet,
     makeImport,
     makeInterpolate,
@@ -614,7 +614,7 @@ def parProgramStatement = $Peg::makeMainChoice(
         $Peg::makeChoice(
             $Peg::makeSequence(
                 parName,
-                $Peg::makeCode { ., name <> makeExport(name) }),
+                $Peg::makeCode { ., name <> makeExportSelection(name) }),
             $Peg::makeSequence(
                 parExportableStatement,
                 $Peg::makeCode { ., stat ->

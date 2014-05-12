@@ -196,11 +196,10 @@ replacement node, because some `import*` forms must expand to multiple
 statements. Always returning a list makes it possible to treat all return
 values more uniformly.
 
-#### `makeExport(name, optExport?) <> node`
+#### `makeExportSelection(names+) <> node`
 
-Makes an `export` node to export the variable with the given name `name`.
-If given, the `optExport*` is used for the export binding name. If not given,
-`name` is also used as the export binding name.
+Makes an `exportSelection` node to export the variables with the given
+`names`.
 
 #### `makeGet(collArg, keyArg) <> node`
 
