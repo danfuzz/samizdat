@@ -457,6 +457,19 @@ zvalue withSimpleDefs(zvalue node) {
                         listFrom2(makeLiteral(name), makeVarRef(name))));
             }
             continue;
+        } else if (hasType(one, TYPE_export)) {
+            zvalue inner = get(one, STR_value);
+            zvalue name = get(inner, STR_name);
+            if (name != NULL) {
+                exports = listAppend(
+                    exports,
+                    makeCall(makeVarRef(STR_makeValueMap),
+                        listFrom2(makeLiteral(name), makeVarRef(name))));
+            } else {
+                die("TODO: export import ... :: ...");
+            }
+            mains = listAppend(mains, inner);
+            continue;
         }
 
         zvalue exName = get(one, STR_export);
