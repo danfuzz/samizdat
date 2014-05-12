@@ -10,6 +10,9 @@ import ./substuff;
 ## An "internal" module, only specific bindings imported.
 import ./moreStuff :: MORE_STUFF1, MORE_STUFF2;
 
+## An "internal" module, re-exported.
+export import ./reexport;
+
 export fn stuffFunc() {
     <> cat("Funky stuff: ", MORE_STUFF1, " ", MORE_STUFF2)
 };
