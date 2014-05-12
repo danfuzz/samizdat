@@ -269,22 +269,34 @@ export fn withSimpleDefs(node) {
                 ifIs { <> s::top }
                     { <out> makeVarBind(get_name(s), get_nodeValue(s)) }
             };
+
+        ifIs { <> hasType(s, @@exportSelection) }
+            { <out> };
+
         <> ifNot { <> hasType(s, @@export) }
             { <> s }
     };
 
     def exports = $Generator::filterAll(rawStatements) { <out> s ->
+        ifIs { <> hasType(s, @@exportSelection) }
+            {
+                <out> $Generator::filterAll(get_select(s)) { name ->
+                    <> makeCall(REFS::makeValueMap,
+                        makeLiteral(name), makeVarRef(name))
+                }
+            };
+
         ifNot { <> hasType(s, @@varDef) }
             {
                 ifNot { <> hasType(s, @@export) }
                     { <out> }
             };
 
-            <> ifValue { <> s::export }
-                { exp ->
-                    <> makeCall(REFS::makeValueMap,
-                        makeLiteral(exp), makeVarRef(s::name))
-                }
+        <> ifValue { <> s::export }
+            { exp ->
+                <> makeCall(REFS::makeValueMap,
+                    makeLiteral(exp), makeVarRef(s::name))
+            }
     };
 
     def optYield = ifIs { <> eq(exports, []) }
