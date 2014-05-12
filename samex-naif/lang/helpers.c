@@ -458,8 +458,8 @@ zvalue withSimpleDefs(zvalue node) {
             }
             continue;
         } else if (hasType(one, TYPE_export)) {
-            zvalue inner = get(one, STR_value);
-            zvalue name = get(inner, STR_name);
+            zvalue one = get(one, STR_value);
+            zvalue name = get(one, STR_name);
             if (name != NULL) {
                 exports = listAppend(
                     exports,
@@ -468,8 +468,8 @@ zvalue withSimpleDefs(zvalue node) {
             } else {
                 die("TODO: export import ... :: ...");
             }
-            mains = listAppend(mains, inner);
-            continue;
+
+            // Fall through and handle the case of exporting a `top`.
         }
 
         zvalue exName = get(one, STR_export);

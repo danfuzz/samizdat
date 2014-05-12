@@ -256,19 +256,21 @@ export fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
 
     def tops = $Generator::filterAll(rawStatements) { s ->
-        <> ifIs { <> hasType(s, @@varDef) }
-            {
-                <> ifIs { <> s::top }
-                    { <> makeVarDef(get_name(s)) }
-            }
+        def defNode = ifIs { hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        <> ifIs { <> defNode::top }
+            { <> makeVarDef(get_name(defNode)) }
     };
 
     def mains = $Generator::filterAll(rawStatements) { <out> s ->
-        ifIs { <> hasType(s, @@varDef) }
-            {
-                ifIs { <> s::top }
-                    { <out> makeVarBind(get_name(s), get_nodeValue(s)) }
-            };
+        def defNode = ifIs { hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        ifIs { <> defNode::top }
+            { <out> makeVarBind(get_name(defNode), get_nodeValue(defNode)) };
 
         ifIs { <> hasType(s, @@export) }
             { <out> get_nodeValue(s) };
