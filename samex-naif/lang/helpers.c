@@ -289,12 +289,9 @@ zvalue makeDynamicImport(zvalue node) {
 }
 
 /* Documented in spec. */
-zvalue makeExport(zvalue name) {
-    // Contrary to the spec, we don't take an optional second argument.
-    return makeValue(TYPE_export,
-        mapFrom2(
-            STR_export, name,
-            STR_name,   name),
+zvalue makeExportSelection(zvalue names) {
+    return makeValue(TYPE_exportSelection,
+        mapFrom1(STR_select, names),
         NULL);
 }
 
@@ -430,6 +427,9 @@ zvalue withFormals(zvalue node, zvalue formals) {
 
 /* Documented in spec. */
 zvalue withSimpleDefs(zvalue node) {
+    // This implementation isn't as close a transliteration as other functions
+    // in this file, but the end result should be the same.
+
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
     zvalue tops = EMPTY_LIST;
@@ -438,6 +438,20 @@ zvalue withSimpleDefs(zvalue node) {
 
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(rawStatements, i);
+
+        if (hasType(one, TYPE_exportSelection)) {
+            zvalue select = get(one, STR_select);
+            zint selectSize = get_size(select);
+            for (zint j = 0; j < selectSize; j++) {
+                zvalue name = nth(select, j);
+                exports = listAppend(
+                    exports,
+                    makeCall(makeVarRef(STR_makeValueMap),
+                        listFrom2(makeLiteral(name), makeVarRef(name))));
+            }
+            continue;
+        }
+
         zvalue exName = get(one, STR_export);
         zvalue name = get(one, STR_name);
         bool isVarDef = hasType(one, TYPE_varDef);

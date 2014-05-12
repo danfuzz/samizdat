@@ -57,6 +57,7 @@ TYP(apply,                 "apply");
 TYP(call,                  "call");
 TYP(closure,               "closure");
 TYP(directive,             "directive");
+TYP(exportSelection,       "exportSelection");
 TYP(external,              "external");
 TYP(identifier,            "identifier");
 TYP(importModule,          "importModule");
