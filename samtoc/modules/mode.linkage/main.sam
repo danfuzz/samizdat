@@ -6,7 +6,7 @@
 ## Compilation mode "linkage" which generates `.saminfo` files.
 ##
 
-def templateText = intraRead("template.txt", "utf8");
+import @utf8 ./template.txt;
 
 import CodeGen;
 import DataCode;
@@ -29,7 +29,7 @@ export fn compile(sourcePath, targetPath) {
     };
 
     def info = "\%q(infoMap)";
-    def outputText = $Template::apply(templateText, {info});
+    def outputText = $Template::apply($template, {info});
 
     $Io0::writeFileUtf8(targetPath, outputText)
 };
