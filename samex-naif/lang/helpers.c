@@ -289,6 +289,13 @@ zvalue makeDynamicImport(zvalue node) {
 }
 
 /* Documented in spec. */
+zvalue makeExport(zvalue node) {
+    return makeValue(TYPE_export,
+        mapFrom1(STR_value, node),
+        NULL);
+}
+
+/* Documented in spec. */
 zvalue makeExportSelection(zvalue names) {
     return makeValue(TYPE_exportSelection,
         mapFrom1(STR_select, names),

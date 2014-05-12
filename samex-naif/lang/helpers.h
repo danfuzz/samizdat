@@ -86,6 +86,9 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals);
 zvalue makeDynamicImport(zvalue node);
 
 /* Documented in spec. */
+zvalue makeExport(zvalue node);
+
+/* Documented in spec. */
 zvalue makeExportSelection(zvalue names);
 
 /* Documented in spec. */

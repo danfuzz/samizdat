@@ -35,6 +35,11 @@ export fn makeCallThunks(function, actuals*) {
 };
 
 ## Documented in spec.
+export fn makeExport(node) {
+    <> @export{value: node}
+};
+
+## Documented in spec.
 export fn makeExportSelection(names+) {
     <> @exportSelection{select: names}
 };
