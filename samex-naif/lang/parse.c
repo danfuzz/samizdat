@@ -751,7 +751,7 @@ DEF_PARSE(formal) {
         MATCH_OR_REJECT(CH_DOT);
     }
 
-    zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
+    zvalue repeat = PARSE(formal1);  // Okay for it to be `NULL`.
     if (repeat != NULL) {
         repeat = typeName(get_type(repeat));
     }
@@ -1031,6 +1031,7 @@ DEF_PARSE(importSelect) {
 DEF_PARSE(importStatement) {
     MARK();
 
+    zvalue optExport = MATCH(export);         // Okay if this fails.
     MATCH_OR_REJECT(import);
     zvalue nameOrPrefix = PARSE(importName);  // Never fails.
     zvalue format = PARSE(importFormat);      // Never fails.
@@ -1042,7 +1043,10 @@ DEF_PARSE(importStatement) {
         format,
         select,
         mapFrom1(STR_source, source));
-    return makeImport(data);
+
+    return (optExport != NULL)
+        ? makeExport(makeImport(data))
+        : makeImport(data);
 }
 
 /* Documented in spec. */
@@ -1074,9 +1078,7 @@ DEF_PARSE(statement) {
 DEF_PARSE(programStatement) {
     MARK();
 
-    zvalue result = NULL;
-    if (result == NULL) { result = PARSE(statement);       }
-    if (result == NULL) { result = PARSE(importStatement); }
+    zvalue result = PARSE(statement);  // Okay for this to fail.
     if (result != NULL) { return result; }
 
     MATCH_OR_REJECT(export);
@@ -1084,10 +1086,7 @@ DEF_PARSE(programStatement) {
     result = PARSE(nameList);
     if (result != NULL) { return makeExportSelection(result); }
 
-    if (result == NULL) { result = PARSE(exportableStatement); }
-    if (result == NULL) { result = PARSE(importStatement);     }
-    REJECT_IF(result == NULL);
-
+    result = PARSE_OR_REJECT(exportableStatement);
     return makeExport(result);
 }
 
@@ -1149,33 +1148,40 @@ DEF_PARSE(closure) {
     return withSimpleDefs(closure);
 }
 
-/**
- * Helper for `program`: Parses the `rest` construct in the original spec.
- */
-DEF_PARSE(program1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_SEMICOLON);
-    PARSE(optSemicolons);
-    zvalue result = PARSE_OR_REJECT(programStatement);
-
-    return result;
-}
-
 /* Documented in spec. */
 DEF_PARSE(program) {
-    MARK();
+    // Note: This isn't structured the same way as the spec, as it's a bit
+    // more awkward to do that at this layer; but the result should be the
+    // same.
 
-    PARSE(optSemicolons);
+    zvalue statements = EMPTY_LIST;
+    bool any = false;
+    bool importOkay = true;
 
-    zvalue statements;
+    for (;;) {
+        if (any && (MATCH(CH_SEMICOLON) == NULL)) {
+            break;
+        }
+        PARSE(optSemicolons);
 
-    zvalue first = PARSE(programStatement);
-    if (first != NULL) {
-        zvalue rest = PARSE_STAR(program1);
-        statements = GFN_CALL(cat, listFrom1(first), rest);
-    } else {
-        statements = EMPTY_LIST;
+        zvalue one = NULL;
+
+        if (importOkay) {
+            one = PARSE(importStatement);
+            if (one == NULL) {
+                importOkay = false;
+            }
+        }
+
+        if (one == NULL) {
+            one = PARSE(programStatement);
+            if (one == NULL) {
+                break;
+            }
+        }
+
+        statements = listAppend(statements, one);
+        any = true;
     }
 
     PARSE(optSemicolons);

@@ -589,14 +589,17 @@ def parImportSelect = $Peg::makeMainChoice(
 
 ## Documented in spec.
 def parImportStatement = $Peg::makeMainSequence(
+    $Peg::makeOpt($Peg::makeToken(@@export)),
     $Peg::makeToken(@@import),
     parImportName,
     parImportFormat,
     parImportSource,
     parImportSelect,
-    $Peg::makeCode { ., nameOrPrefix, format, source, select ->
+    $Peg::makeCode { optExport, ., nameOrPrefix, format, source, select ->
         def data = {nameOrPrefix*, format*, select*, source};
-        <> makeImport(data)
+        <> ifIs { <> optExport* }
+            { <> makeExport(makeImport(data)) }
+            { <> makeImport(data) }
     });
 
 ## Documented in spec.
@@ -610,7 +613,6 @@ def parStatement = $Peg::makeMainChoice(
 ## Documented in spec.
 def parProgramStatement = $Peg::makeMainChoice(
     parStatement,
-    parImportStatement,
     $Peg::makeSequence(
         $Peg::makeToken(@@export),
         $Peg::makeChoice(
@@ -618,7 +620,7 @@ def parProgramStatement = $Peg::makeMainChoice(
                 parNameList,
                 $Peg::makeCode { ., select <> makeExportSelection(select*) }),
             $Peg::makeSequence(
-                $Peg::makeChoice(parExportableStatement, parImportStatement),
+                parExportableStatement,
                 $Peg::makeCode { ., stat <> makeExport(stat) }))));
 
 ## Documented in spec.
@@ -655,19 +657,33 @@ parClosure := $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parProgram = $Peg::makeMainSequence(
-    $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeChoice(
         $Peg::makeSequence(
+            $Peg::makeStar($Peg::makeToken(@@";")),
+            parImportStatement,
+            $Peg::makeStar(
+                $Peg::makeSequence(
+                    $Peg::makePlus($Peg::makeToken(@@";")),
+                    parImportStatement)),
+            $Peg::makeCode { ., first, rest <> [first, rest*] }),
+        $Peg::makeResult([])),
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            $Peg::makeChoice(
+                $Peg::makeSequence(
+                    $Peg::makeCode { imports <> ne(imports, []) },
+                    $Peg::makePlus($Peg::makeToken(@@";"))),
+                $Peg::makeStar($Peg::makeToken(@@";"))),
             parProgramStatement,
             $Peg::makeStar(
                 $Peg::makeSequence(
                     $Peg::makePlus($Peg::makeToken(@@";")),
                     parProgramStatement)),
-            $Peg::makeCode { ., first, rest <> [first, rest*] }),
+            $Peg::makeCode { ., ., first, rest <> [first, rest*] }),
         $Peg::makeResult([])),
     $Peg::makeStar($Peg::makeToken(@@";")),
-    $Peg::makeCode { ., statements, . ->
-        def closure = @closure{formals: [], statements};
+    $Peg::makeCode { imports, body, . ->
+        def closure = @closure{formals: [], statements: [imports*, body*]};
         <> withSimpleDefs(closure)
     });
 

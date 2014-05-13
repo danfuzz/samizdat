@@ -757,15 +757,18 @@ def parImportSelect = {:
 ## version of the syntax which allows invalid combinations, and then checking
 ## in code that the actual combination is valid.
 def parImportStatement = {:
+    optExport = @export?
     @import
     nameOrPrefix = parImportName
-    type = parImportType
+    format = parImportFormat
     source = parImportSource
     select = parImportSelect
 
     {
-        def data = {nameOrPrefix*, type*, select*, source};
-        <> makeImport(data)
+        def data = {nameOrPrefix*, format*, select*, source};
+        <> ifIs { <> optExport* }
+            { <> makeExport(makeImport(data)) }
+            { <> makeImport(data) }
     }
 :};
 
@@ -781,19 +784,17 @@ def parStatement = {:
     parExportableStatement | parGenericBind | parVarDefMutable | parExpression
 :};
 
-## Parses a program statement form, including both regular executable
-## statements, `export` statements, and `import` statements.
+## Parses a program body statement form, including both regular executable
+## statements and `export` statements (but not `import` statements).
 def parProgramStatement = {:
     parStatement
 |
-    parImportStatement
-|
-    @"export"
+    @export
     (
         select = parNameList
         { <> makeExportSelection(select*) }
     |
-        stat = (parExportableStatement | parImportStatement)
+        stat = parExportableStatement
         { <> makeExport(stat) }
     )
 :};
@@ -841,14 +842,27 @@ parClosure := {:
 
 ## Parses a program (list of statements, including imports and exports).
 def parProgram = {:
-    @";"*
+    imports = (
+        @";"*
+        first = parImportStatement
+        rest = (@";"+ parImportStatement)*
+        { <> [first, rest*] }
+    |
+        { <> [] }
+    )
 
-    statements = (
-        first = parProgramStatement
-        rest = (
+    body = (
+        (
+            ## There was at least one import, so there needs to be at least
+            ## one semicolon between the final import and first statement.
+            { <> ne(imports, []) }
             @";"+
-            parProgramStatement
-        )*
+        |
+            @";"*
+        )
+
+        first = parProgramStatement
+        rest = (@";"+ parProgramStatement)*
         { <> [first, rest*] }
     |
         { <> [] }
@@ -857,7 +871,7 @@ def parProgram = {:
     @";"*
 
     {
-        def closure = @closure{formals: [], statements};
+        def closure = @closure{formals: [], statements: [imports*, body*]};
         <> withSimpleDefs(closure)
     }
 :};
