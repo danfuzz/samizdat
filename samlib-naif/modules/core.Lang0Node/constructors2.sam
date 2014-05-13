@@ -29,6 +29,8 @@ import ./getters ::
 
 import ./refs :: REFS;
 
+import ./select :: resolveSelection;
+
 
 ##
 ## Exported definitions
@@ -117,27 +119,18 @@ fn @@importModuleSelection.makeDynamicImport() {
     ## imported, each one wrapped in a `get` call, e.g. `def name =
     ## get(load(source), "name")`.
 
-    def prefix = get_prefix(this);
     def source = get_source(this);
-
-    def select = ifValueOr
-        { <> get_select(this) }
-        {
-            ## TODO: In order to handle wildcard imports, this function will
-            ## have to be able to ask for the list of exports from arbitrary
-            ## modules. This will probably mean adding an argument to the
-            ## generic function for a "module oracle" of some sort.
-            die("TODO: wildcard selection import")
-        };
-
+    def selection = resolveSelection(this);
     def loadRef = ifIs { <> hasType(source, @@external) }
         { <> REFS::moduleLoad }
         { <> REFS::intraLoad };
     def loadCall = makeCall(loadRef, makeLiteral(dataOf(source)));
 
-    <> $Generator::filterAll(select) { name ->
-        <> makeVarDef(cat(prefix, name),
-            makeCall(REFS::get, loadCall, makeLiteral(name)))
+    <> $Generator::filterAll(select) { mapping ->
+        def targetName = get_key(mapping);
+        def sourceName = get_value(mapping);
+        <> makeVarDef(targetName,
+            makeCall(REFS::get, loadCall, makeLiteral(sourceName)))
     };
 };
 
