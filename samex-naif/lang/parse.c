@@ -282,6 +282,16 @@ DEF_PARSE(name) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(nameList) {
+    MARK();
+
+    zvalue result = PARSE_DELIMITED_SEQ(name, CH_COMMA);
+    REJECT_IF(get_size(result) == 0);
+
+    return result;
+}
+
+/* Documented in spec. */
 DEF_PARSE(varRef) {
     MARK();
 
@@ -1002,10 +1012,9 @@ DEF_PARSE(importSelect2) {
     MARK();
 
     MATCH_OR_REJECT(CH_COLONCOLON);
-    zvalue result = PARSE_DELIMITED_SEQ(name, CH_COMMA);
-    REJECT_IF(get_size(result) == 0);
+    zvalue select = PARSE_OR_REJECT(nameList);
 
-    return mapFrom1(STR_select, result);
+    return mapFrom1(STR_select, select);
 }
 
 /* Documented in spec. */
@@ -1072,8 +1081,8 @@ DEF_PARSE(programStatement) {
 
     MATCH_OR_REJECT(export);
 
-    result = PARSE(name);
-    if (result != NULL) { return makeExportSelection(listFrom1(result)); }
+    result = PARSE(nameList);
+    if (result != NULL) { return makeExportSelection(result); }
 
     if (result == NULL) { result = PARSE(exportableStatement); }
     if (result == NULL) { result = PARSE(importStatement);     }
