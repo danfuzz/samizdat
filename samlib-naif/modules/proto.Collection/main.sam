@@ -10,9 +10,10 @@
 
 #= language core.Lang0
 
-export cat;
-export get;
-export get_size;
+export
+    cat,
+    get,
+    get_size;
 
 export def del        = Collection_del;
 export def keyList    = Collection_keyList;

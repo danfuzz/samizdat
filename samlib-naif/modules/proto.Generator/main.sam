@@ -9,5 +9,6 @@
 
 #= language core.Lang0
 
-export collect;
-export nextValue;
+export
+    collect,
+    nextValue;
