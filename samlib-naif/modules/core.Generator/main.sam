@@ -8,22 +8,34 @@
 
 #= language core.Lang0
 
-import core.Box;
+import core.Box ::
+    makePromise,
+    nullBox;
 
-import ./FilterGenerator;
-import ./ListWrapGenerator;
-import ./NullGenerator;
-import ./OptGenerator;
-import ./ParaGenerator;
-import ./RepeatGenerator;
-import ./SerialGenerator;
-import ./ValueGenerator;
-import ./unboundedCollect;
+export import ./FilterGenerator :: makeFilterGenerator;
+export import ./ListWrapGenerator :: makeListWrapGenerator;
+export import ./NullGenerator :: nullGenerator;
+export import ./OptGenerator :: makeOptGenerator;
+export import ./ParaGenerator :: makeParaGenerator;
+export import ./RepeatGenerator :: makeRepeatGenerator;
+export import ./SerialGenerator :: makeSerialGenerator;
+export import ./ValueGenerator :: makeValueGenerator;
+export import ./unboundedCollect :: unboundedCollect;
 
 
 ##
 ## Exported Definitions
 ##
+
+## Re-exported from globals (and proto module). Documented in spec.
+export
+    collect,
+    interpolate,
+    nextValue,
+    optValue;
+
+## Re-exported from builtins. Documented in spec.
+export def stdCollect = Generator_stdCollect;
 
 ## Documented in spec.
 export fn collectAsMap(generator) {
@@ -44,9 +56,7 @@ export fn filterAll(filterFunction, generators*) {
         }
         {
             ## The general case.
-            <> collect(
-                $FilterGenerator::makeFilterGenerator(
-                    filterFunction, generators*))
+            <> collect(makeFilterGenerator(filterFunction, generators*))
         }
 };
 
@@ -58,7 +68,7 @@ export fn filterPump(filterFunction, generators*) {
             ## unnecessary wrapping / unwrapping.
             var gen = generators*;
             loop {
-                def box = $Box::makePromise();
+                def box = makePromise();
                 ifValue { <> nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(fetch(box));
@@ -72,9 +82,9 @@ export fn filterPump(filterFunction, generators*) {
         }
         {
             ## General case of multiple (or zero) generators.
-            var gen = $ParaGenerator::makeParaGenerator(generators*);
+            var gen = makeParaGenerator(generators*);
             loop {
-                def box = $Box::makePromise();
+                def box = makePromise();
                 ifValue { <> nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(fetch(box)*);
@@ -93,27 +103,7 @@ export fn generatorPump(generator) {
     var gen = generator;
 
     loop {
-        gen := ifValueOr { <> nextValue(gen, $Box::nullBox) }
+        gen := ifValueOr { <> nextValue(gen, nullBox) }
             { return }
     }
 };
-
-## Re-exported from globals (and proto module).
-export collect;
-export interpolate;
-export nextValue;
-export optValue;
-
-## Re-exported from builtins.
-export def stdCollect = Generator_stdCollect;
-
-## Re-exported from intramodule files.
-export def makeFilterGenerator   = $FilterGenerator::makeFilterGenerator;
-export def makeListWrapGenerator = $ListWrapGenerator::makeListWrapGenerator;
-export def makeOptGenerator      = $OptGenerator::makeOptGenerator;
-export def makeParaGenerator     = $ParaGenerator::makeParaGenerator;
-export def makeRepeatGenerator   = $RepeatGenerator::makeRepeatGenerator;
-export def makeSerialGenerator   = $SerialGenerator::makeSerialGenerator;
-export def makeValueGenerator    = $ValueGenerator::makeValueGenerator;
-export def nullGenerator         = $NullGenerator::nullGenerator;
-export def unboundedCollect      = $unboundedCollect::unboundedCollect;

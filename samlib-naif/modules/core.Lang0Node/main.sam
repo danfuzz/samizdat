@@ -8,70 +8,62 @@
 ## Execution tree node helpers
 ##
 
-
-##
-## Exported Definitions
-##
-
 ## This just re-exports stuff defined in intramodule files.
-## **Note:** This highlights the need for some kind of 're-export' facility.
 
-import ./constructors1;
-export def makeApply            = $constructors1::makeApply;
-export def makeCall             = $constructors1::makeCall;
-export def makeCallLiterals     = $constructors1::makeCallLiterals;
-export def makeCallThunks       = $constructors1::makeCallThunks;
-export def makeExport           = $constructors1::makeExport;
-export def makeExportSelection  = $constructors1::makeExportSelection;
-export def makeJump             = $constructors1::makeJump;
-export def makeLiteral          = $constructors1::makeLiteral;
-export def makeThunk            = $constructors1::makeThunk;
-export def makeVarBind          = $constructors1::makeVarBind;
-export def makeVarDef           = $constructors1::makeVarDef;
-export def makeVarDefMutable    = $constructors1::makeVarDefMutable;
-export def makeVarRef           = $constructors1::makeVarRef;
-export def makeVarRefLvalue     = $constructors1::makeVarRefLvalue;
-export def withFormals          = $constructors1::withFormals;
-export def withoutIntermediates = $constructors1::withoutIntermediates;
-export def withoutInterpolate   = $constructors1::withoutInterpolate;
+export import ./constructors1 ::
+    makeApply,
+    makeCall,
+    makeCallLiterals,
+    makeCallThunks,
+    makeExport,
+    makeExportSelection,
+    makeJump,
+    makeLiteral,
+    makeThunk,
+    makeVarBind,
+    makeVarDef,
+    makeVarDefMutable,
+    makeVarRef,
+    makeVarRefLvalue,
+    withFormals,
+    withoutIntermediates,
+    withoutInterpolate;
 
-import ./constructors2;
-export def makeCallOrApply    = $constructors2::makeCallOrApply;
-export def makeDynamicImport  = $constructors2::makeDynamicImport;
-export def makeGet            = $constructors2::makeGet;
-export def makeImport         = $constructors2::makeImport;
-export def makeInterpolate    = $constructors2::makeInterpolate;
-export def makeOptValue       = $constructors2::makeOptValue;
-export def withDynamicImports = $constructors2::withDynamicImports;
-export def withSimpleDefs     = $constructors2::withSimpleDefs;
-export def withTop            = $constructors2::withTop;
+export import ./constructors2 ::
+    makeCallOrApply,
+    makeDynamicImport,
+    makeGet,
+    makeImport,
+    makeInterpolate,
+    makeOptValue,
+    withDynamicImports,
+    withSimpleDefs,
+    withTop;
 
-import ./formals;
-export def formalsMaxArgs = $formals::formalsMaxArgs;
-export def formalsMinArgs = $formals::formalsMinArgs;
+export import ./formals ::
+    formalsMaxArgs,
+    formalsMinArgs;
 
-import ./getters;
-export def get_actuals     = $getters::get_actuals;
-export def get_baseName    = $getters::get_baseName;
-export def get_format      = $getters::get_format;
-export def get_formals     = $getters::get_formals;
-export def get_function    = $getters::get_function;
-export def get_id          = $getters::get_id;
-export def get_interpolate = $getters::get_interpolate;
-export def get_lvalue      = $getters::get_lvalue;
-export def get_maxArgs     = $getters::get_maxArgs;
-export def get_minArgs     = $getters::get_minArgs;
-export def get_name        = $getters::get_name;
-export def get_nodeValue   = $getters::get_nodeValue;
-export def get_prefix      = $getters::get_prefix;
-export def get_select      = $getters::get_select;
-export def get_source      = $getters::get_source;
-export def get_statements  = $getters::get_statements;
-export def get_yield       = $getters::get_yield;
-export def get_yieldDef    = $getters::get_yieldDef;
+export import ./getters ::
+    get_actuals,
+    get_baseName,
+    get_format,
+    get_formals,
+    get_function,
+    get_id,
+    get_interpolate,
+    get_lvalue,
+    get_maxArgs,
+    get_minArgs,
+    get_name,
+    get_nodeValue,
+    get_prefix,
+    get_select,
+    get_source,
+    get_statements,
+    get_yield,
+    get_yieldDef;
 
-import ./refs;
-export def REFS = $refs::REFS;
+export import ./refs :: REFS;
 
-import ./select;
-export def resolveSelection = $select::resolveSelection;
+export import ./select :: resolveSelection;

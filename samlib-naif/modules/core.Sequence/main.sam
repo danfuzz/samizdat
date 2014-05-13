@@ -9,7 +9,13 @@
 #= language core.Lang0
 
 import proto.Number;
-import proto.Sequence;
+
+## Re-export. Documented in spec.
+export import proto.Sequence ::
+    nth,
+    reverse,
+    sliceExclusive,
+    sliceInclusive;
 
 ## This just binds generics without adding exports.
 import ./SequenceGenerator;
@@ -30,8 +36,8 @@ export fn nthFromEnd(seq, n) {
 export fn sliceGeneral(seq, style, start, optEnd?) {
     def limit = $Number::sub(get_size(seq), 1);
     def func = ifIs { <> eq(style, @exclusive) }
-        { <> $Sequence::sliceExclusive }
-        { <> $Sequence::sliceInclusive };
+        { <> sliceExclusive }
+        { <> sliceInclusive };
     def startIndex = ifIs { <> hasType(start, @@fromStart) }
         { <> dataOf(start) }
         { <> $Number::sub(limit, dataOf(start)) };
@@ -44,9 +50,3 @@ export fn sliceGeneral(seq, style, start, optEnd?) {
 
     <> func(seq, startIndex, optEndIndex*)
 };
-
-## Re-exported from proto.
-export def nth            = $Sequence::nth;
-export def reverse        = $Sequence::reverse;
-export def sliceExclusive = $Sequence::sliceExclusive;
-export def sliceInclusive = $Sequence::sliceInclusive;
