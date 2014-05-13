@@ -126,7 +126,7 @@ fn @@importModuleSelection.makeDynamicImport() {
         { <> REFS::intraLoad };
     def loadCall = makeCall(loadRef, makeLiteral(dataOf(source)));
 
-    <> $Generator::filterAll(select) { mapping ->
+    <> $Generator::filterAll(selection) { mapping ->
         def targetName = get_key(mapping);
         def sourceName = get_value(mapping);
         <> makeVarDef(targetName,
