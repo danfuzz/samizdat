@@ -137,6 +137,14 @@ def parName = {:
     { <> dataOf(nameIdent) }
 :};
 
+## Parses a non-empty comma-separated list of "names." A "name" is as per
+## `parName` above. The result is a list of strings (per se).
+def parNameList = {:
+    first = parName
+    rest = (@"," parName)*
+    { <> [first, rest*] }
+:};
+
 ## Parses a variable reference.
 def parVarRef = {:
     name = parName
@@ -738,9 +746,8 @@ def parImportSelect = {:
         @"*"
         { <> {select: @"*"} }
     |
-        first = parName
-        rest = (@"," parName)*
-        { <> {select: [first, rest*]} }
+        select = parNameList
+        { <> {select} }
     )
 |
     { <> {} }

@@ -282,6 +282,16 @@ DEF_PARSE(name) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(nameList) {
+    MARK();
+
+    zvalue result = PARSE_DELIMITED_SEQ(name, CH_COMMA);
+    REJECT_IF(get_size(result) == 0);
+
+    return result;
+}
+
+/* Documented in spec. */
 DEF_PARSE(varRef) {
     MARK();
 
@@ -1002,10 +1012,9 @@ DEF_PARSE(importSelect2) {
     MARK();
 
     MATCH_OR_REJECT(CH_COLONCOLON);
-    zvalue result = PARSE_DELIMITED_SEQ(name, CH_COMMA);
-    REJECT_IF(get_size(result) == 0);
+    zvalue select = PARSE_OR_REJECT(nameList);
 
-    return mapFrom1(STR_select, result);
+    return mapFrom1(STR_select, select);
 }
 
 /* Documented in spec. */

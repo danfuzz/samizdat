@@ -112,6 +112,12 @@ def parName =  $Peg::makeMainSequence(
     $Peg::makeCode { nameIdent <> dataOf(nameIdent) });
 
 ## Documented in spec.
+def parNameList = $Peg::makeMainSequence(
+    parName,
+    $Peg::makeStar($Peg::makeSequence($Peg::makeToken(@@","), parName)),
+    $Peg::makeCode { first, rest <> [first, rest*] });
+
+## Documented in spec.
 def parVarRef = $Peg::makeMainSequence(
     parName,
     $Peg::makeCode { name <> makeVarRefLvalue(name) });
@@ -577,12 +583,8 @@ def parImportSelect = $Peg::makeMainChoice(
                 $Peg::makeToken(@@"*"),
                 $Peg::makeResult({select: @"*"})),
             $Peg::makeSequence(
-                parName,
-                $Peg::makeStar(
-                    $Peg::makeSequence($Peg::makeToken(@@","), parName)),
-                $Peg::makeCode { ., first, rest ->
-                    <> {select: [first, rest*]}
-                }))),
+                parNameList,
+                $Peg::makeCode { ., select <> {select} }))),
     $Peg::makeResult({}));
 
 ## Documented in spec.
