@@ -47,6 +47,16 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
     return listFromArray(resultAt, result);
 }
 
+/**
+ * Appends a name->variable binding map to the given list (of presumed
+ * same).
+ */
+static zvalue appendNameBinding(zvalue list, zvalue name) {
+    return listAppend(list,
+        makeCall(makeVarRef(STR_makeValueMap),
+            listFrom2(makeLiteral(name), makeVarRef(name))));
+}
+
 
 /*
  * Module functions
@@ -441,10 +451,7 @@ zvalue withSimpleDefs(zvalue node) {
             zint selectSize = get_size(select);
             for (zint j = 0; j < selectSize; j++) {
                 zvalue name = nth(select, j);
-                exports = listAppend(
-                    exports,
-                    makeCall(makeVarRef(STR_makeValueMap),
-                        listFrom2(makeLiteral(name), makeVarRef(name))));
+                exports = appendNameBinding(exports, name);
             }
             continue;
         }
@@ -455,12 +462,11 @@ zvalue withSimpleDefs(zvalue node) {
             zvalue name = get(one, STR_name);
 
             if (name != NULL) {
-                exports = listAppend(
-                    exports,
-                    makeCall(makeVarRef(STR_makeValueMap),
-                        listFrom2(makeLiteral(name), makeVarRef(name))));
-            } else {
+                exports = appendNameBinding(exports, name);
+            } else if (hasType(one, TYPE_importModuleSelection)) {
                 die("TODO: export import ... :: ...");
+            } else {
+                die("Bad `export` payload.");
             }
 
             // And fall through, to handle `top` and emit inner statement.
