@@ -839,7 +839,7 @@ parClosure := {:
     }
 :};
 
-## Parses a program (list of statements, including possible exports).
+## Parses a program (list of statements, including imports and exports).
 def parProgram = {:
     @";"*
 
