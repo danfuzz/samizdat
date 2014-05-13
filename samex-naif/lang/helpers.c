@@ -484,7 +484,15 @@ zvalue withSimpleDefs(zvalue node) {
             if (name != NULL) {
                 exports = appendNameBinding(exports, name);
             } else if (hasType(one, TYPE_importModuleSelection)) {
-                die("TODO: export import ... :: ...");
+                zvalue selection = resolveSelection(one);
+                zint size = get_size(selection);
+                zmapping mappings[size];
+                arrayFromMap(mappings, selection);
+
+                for (zint i = 0; i < size; i++) {
+                    zvalue name = mappings[i].key;
+                    exports = appendNameBinding(exports, name);
+                }
             } else {
                 die("Bad `export` payload.");
             }
