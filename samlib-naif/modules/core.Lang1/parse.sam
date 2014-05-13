@@ -615,8 +615,8 @@ def parProgramStatement = $Peg::makeMainChoice(
         $Peg::makeToken(@@export),
         $Peg::makeChoice(
             $Peg::makeSequence(
-                parName,
-                $Peg::makeCode { ., name <> makeExportSelection(name) }),
+                parNameList,
+                $Peg::makeCode { ., select <> makeExportSelection(select*) }),
             $Peg::makeSequence(
                 $Peg::makeChoice(parExportableStatement, parImportStatement),
                 $Peg::makeCode { ., stat <> makeExport(stat) }))));

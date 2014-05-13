@@ -1081,8 +1081,8 @@ DEF_PARSE(programStatement) {
 
     MATCH_OR_REJECT(export);
 
-    result = PARSE(name);
-    if (result != NULL) { return makeExportSelection(listFrom1(result)); }
+    result = PARSE(nameList);
+    if (result != NULL) { return makeExportSelection(result); }
 
     if (result == NULL) { result = PARSE(exportableStatement); }
     if (result == NULL) { result = PARSE(importStatement);     }

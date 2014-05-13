@@ -790,8 +790,8 @@ def parProgramStatement = {:
 |
     @"export"
     (
-        name = parName
-        { <> makeExportSelection(name) }
+        select = parNameList
+        { <> makeExportSelection(select*) }
     |
         stat = (parExportableStatement | parImportStatement)
         { <> makeExport(stat) }
