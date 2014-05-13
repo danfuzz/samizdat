@@ -16,9 +16,11 @@ export import ./reexport;
 ## An "internal" module, with re-exported bindings.
 export import ./reexportSelect :: reBind1, reBind2;
 
+## Multiple variable export.
+def STUFF = "stuff";
+def SUBSTUFF = $substuff::SUBSTUFF;
+export STUFF, SUBSTUFF;
+
 export fn stuffFunc() {
     <> cat("Funky stuff: ", MORE_STUFF1, " ", MORE_STUFF2)
 };
-
-export def STUFF = "stuff";
-export def SUBSTUFF = $substuff::SUBSTUFF;
