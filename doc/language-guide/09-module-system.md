@@ -83,9 +83,6 @@ A top-level module definition is allowed to import a few different things.
 Import statements begin with an `import` keyword; beyond that, the syntax
 depends on what is being imported.
 
-TODO: The syntax for `import` is complete, but there is no semantic
-implementation, yet.
-
 #### Full module import
 
 To import a module as a whole, indicate the name of the module after the
@@ -149,6 +146,9 @@ pot_quaff(pot_blort);
 pot_quaff(pot_frotz);
 ```
 
+TODO: The syntax for wildcard `import` is complete, but there is no semantic
+implementation, yet. (Other forms of selection import work as advertised.)
+
 #### Resource import
 
 Resources are arbitrary files that are bundled with a module. Resources
@@ -192,8 +192,8 @@ the "cell" containing a variable. So, it is generally a bad idea to export
 a variable that was defined with `var` and not `def`.
 
 As a conveniend short-hand, `export` may be used as a prefix on immutable
-variable definitions and function definitions (both regular and generic
-functions) to export the variables so-defined.
+variable definitions, function definitions (both regular and generic
+functions), and `import` statements, to export the variables so-defined.
 
 Examples:
 
@@ -210,6 +210,20 @@ export fn blort() { ... };
 
 ## Define and export a generic function, together.
 export fn .blort() { ... };
+
+## Export a whole imported module. It is exported as `$submodule`.
+export import ./submodule;
+
+## Export a whole imported module. It is exported as `blort`.
+export blort = import ./submodule;
+
+## Export some bindings from another module. The exported names are the same
+## as the imported ones.
+export import ./submodule :: fizmo, frotz;
+
+## Export all the bindings from another module. The exported names are the
+## same as the imported ones.
+export import ./submodule :: *;
 ```
 
 ### Finding a module

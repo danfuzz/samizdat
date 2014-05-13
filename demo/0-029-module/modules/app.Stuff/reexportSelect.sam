@@ -1,0 +1,8 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#= language core.Lang0
+
+export def reBind1 = "Reexported binding 1.";
+export def reBind2 = "Reexported binding 2.";

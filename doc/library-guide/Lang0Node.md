@@ -127,7 +127,8 @@ Gets the name of an `importModuleSelection` node.
 
 #### `get_select(node) <> [name*]`
 
-Gets the binding selection of an `importModuleSelection` node.
+Gets the binding selection of an `importModuleSelection` or `exportSelection`
+node.
 
 #### `get_source(node) <> source`
 
@@ -195,11 +196,16 @@ replacement node, because some `import*` forms must expand to multiple
 statements. Always returning a list makes it possible to treat all return
 values more uniformly.
 
-#### `makeExport(name, optExport?) <> node`
+#### `makeExport(node) <> node`
 
-Makes an `export` node to export the variable with the given name `name`.
-If given, the `optExport*` is used for the export binding name. If not given,
-`name` is also used as the export binding name.
+Makes an `export` node, indicating that the given `node`'s definitions
+are to be exported. `node` must be valid to export, e.g. (but not limited
+to) a `varDef` node.
+
+#### `makeExportSelection(names+) <> node`
+
+Makes an `exportSelection` node to export the variables with the given
+`names`.
 
 #### `makeGet(collArg, keyArg) <> node`
 
@@ -278,17 +284,17 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `resolveSelection(node) <> {(name: sourceName)+}`
+
+Resolves the selection of a `importModuleSelection` node. This returns a
+map from names to bind (the keys) to the corresponding source names to
+import from (the values).
+
 #### `withDynamicImports(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` nodes in the `statements` converted to their dynamic
 forms.
-
-#### `withExport(node, optExport?) <> node`
-
-Makes a node just like the given one (presumably a `varDef` node), except
-with the addition of an `export` binding. If given, the `optExport*` is used
-for the binding. If not given, `node`'s pre-existing `name` is used.
 
 #### `withFormals(node, [formal*]) <> node`
 
@@ -298,13 +304,23 @@ with `formals` (re)bound as given.
 #### `withSimpleDefs(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
-with any complex `varDef` nodes (i.e. ones with `export` or `top` bindings)
-transformed as implied by the extra bindings, and with `export` nodes
-similarly transformed away.
+with simpler definitions in the `statements` list. This includes the
+following transformations:
+
+* All `varDef` nodes with `top` bindings are "split" into an early forward
+  declaration (`varDef` with no `value`) and a `varBind` in the original
+  position.
+
+* All `export` nodes are replaced with their `value` payloads.
+
+* All `exportSelection` nodes are removed entirely.
+
+* If there are any `export` or `exportSelection` nodes, a `yield` node
+  is built up to contain all of the defined bindings.
 
 **Note:** It is invalid for a `closure` with a `yield` to have any `export`
-nodes or bindings in its `statements`. Attempting to transform such a node
-results in a fatal error.
+or `exportSelection` nodes its `statements`. Attempting to transform such
+a node results in a fatal error.
 
 #### `withTop(node) <> node`
 

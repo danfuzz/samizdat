@@ -29,6 +29,8 @@ import ./getters ::
 
 import ./refs :: REFS;
 
+import ./select :: resolveSelection;
+
 
 ##
 ## Exported definitions
@@ -117,27 +119,18 @@ fn @@importModuleSelection.makeDynamicImport() {
     ## imported, each one wrapped in a `get` call, e.g. `def name =
     ## get(load(source), "name")`.
 
-    def prefix = get_prefix(this);
     def source = get_source(this);
-
-    def select = ifValueOr
-        { <> get_select(this) }
-        {
-            ## TODO: In order to handle wildcard imports, this function will
-            ## have to be able to ask for the list of exports from arbitrary
-            ## modules. This will probably mean adding an argument to the
-            ## generic function for a "module oracle" of some sort.
-            die("TODO: wildcard selection import")
-        };
-
+    def selection = resolveSelection(this);
     def loadRef = ifIs { <> hasType(source, @@external) }
         { <> REFS::moduleLoad }
         { <> REFS::intraLoad };
     def loadCall = makeCall(loadRef, makeLiteral(dataOf(source)));
 
-    <> $Generator::filterAll(select) { name ->
-        <> makeVarDef(cat(prefix, name),
-            makeCall(REFS::get, loadCall, makeLiteral(name)))
+    <> $Generator::filterAll(selection) { mapping ->
+        def targetName = get_key(mapping);
+        def sourceName = get_value(mapping);
+        <> makeVarDef(targetName,
+            makeCall(REFS::get, loadCall, makeLiteral(sourceName)))
     };
 };
 
@@ -246,45 +239,63 @@ export fn withDynamicImports(node) {
 };
 
 ## Documented in spec.
-export fn withExport(node, optExport?) {
-    def exp = ifValueOr { <> optExport* } { <> get_name(node) };
-    <> @(get_typeName(node)){dataOf(node)*, export: exp}
-};
-
-## Documented in spec.
 export fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
 
     def tops = $Generator::filterAll(rawStatements) { s ->
-        <> ifIs { <> hasType(s, @@varDef) }
-            {
-                <> ifIs { <> s::top }
-                    { <> makeVarDef(get_name(s)) }
-            }
+        def defNode = ifIs { <> hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        <> ifIs { <> defNode::top }
+            { <> makeVarDef(get_name(defNode)) }
     };
 
     def mains = $Generator::filterAll(rawStatements) { <out> s ->
-        ifIs { <> hasType(s, @@varDef) }
-            {
-                ifIs { <> s::top }
-                    { <out> makeVarBind(get_name(s), get_nodeValue(s)) }
-            };
-        <> ifNot { <> hasType(s, @@export) }
-            { <> s }
+        def defNode = ifIs { <> hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        ifIs { <> defNode::top }
+            { <out> makeVarBind(get_name(defNode), get_nodeValue(defNode)) };
+
+        ifIs { <> hasType(s, @@export) }
+            { <out> get_nodeValue(s) };
+
+        ifIs { <> hasType(s, @@exportSelection) }
+            { <out> };
+
+        <> s
     };
 
     def exports = $Generator::filterAll(rawStatements) { <out> s ->
-        ifNot { <> hasType(s, @@varDef) }
+        ifIs { <> hasType(s, @@exportSelection) }
             {
-                ifNot { <> hasType(s, @@export) }
-                    { <out> }
+                <out> $Generator::filterAll(get_select(s)) { name ->
+                    <> makeCall(REFS::makeValueMap,
+                        makeLiteral(name), makeVarRef(name))
+                }
             };
 
-            <> ifValue { <> s::export }
-                { exp ->
-                    <> makeCall(REFS::makeValueMap,
-                        makeLiteral(exp), makeVarRef(s::name))
-                }
+        ifIs { <> hasType(s, @@export) }
+            {
+                def inner = get_nodeValue(s);
+                ifValue { <> get_name(inner) }
+                    { name ->
+                        <out> [makeCall(REFS::makeValueMap,
+                            makeLiteral(name), makeVarRef(name))]
+                    };
+                ifIs { <> hasType(inner, @@importModuleSelection) }
+                    {
+                        <out> $Generator::filterAll(resolveSelection(inner))
+                            { mapping ->
+                                def name = get_key(mapping);
+                                <> makeCall(REFS::makeValueMap,
+                                    makeLiteral(name), makeVarRef(name))
+                            }
+                    };
+                die("Bad `export` payload.");
+            };
     };
 
     def optYield = ifIs { <> eq(exports, []) }
@@ -294,7 +305,7 @@ export fn withSimpleDefs(node) {
             ## a pre-existing `yield` binding.
             ifIs { get_yield(node) }
                 { die("Cannot mix `export` and `yield`.") };
-            <> {yield: makeCall(REFS::cat, exports*)}
+            <> {yield: makeCall(REFS::cat, cat(exports*)*)}
         };
 
     <> @(get_typeName(node)){

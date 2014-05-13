@@ -47,6 +47,16 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
     return listFromArray(resultAt, result);
 }
 
+/**
+ * Appends a name->variable binding map to the given list (of presumed
+ * same).
+ */
+static zvalue appendNameBinding(zvalue list, zvalue name) {
+    return listAppend(list,
+        makeCall(makeVarRef(STR_makeValueMap),
+            listFrom2(makeLiteral(name), makeVarRef(name))));
+}
+
 
 /*
  * Module functions
@@ -234,8 +244,6 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, STR_format);
     zvalue name = get(node, STR_name);
-    zvalue prefix = get(node, STR_prefix);
-    zvalue select = get(node, STR_select);
     zvalue source = get(node, STR_source);
 
     if (hasType(node, TYPE_importModule)) {
@@ -248,10 +256,10 @@ zvalue makeDynamicImport(zvalue node) {
 
         return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        if (select == NULL) {
-            // See TODO in Lang0Node implementation.
-            die("TODO: wildcard selection import");
-        }
+        zvalue selection = resolveSelection(node);
+        zint size = get_size(selection);
+        zmapping mappings[size];
+        arrayFromMap(mappings, selection);
 
         zvalue loadRef = hasType(source, TYPE_external)
             ? REFS(moduleLoad)
@@ -259,14 +267,14 @@ zvalue makeDynamicImport(zvalue node) {
         zvalue loadCall = makeCall(loadRef,
             listFrom1(makeLiteral(dataOf(source))));
 
-        zint size = get_size(select);
         zvalue stats[size];
         for (zint i = 0; i < size; i++) {
-            zvalue name = nth(select, i);
+            zvalue targetName = mappings[i].key;
+            zvalue sourceName = mappings[i].value;
             stats[i] = makeVarDef(
-                GFN_CALL(cat, prefix, name),
+                targetName,
                 makeCall(REFS(get),
-                    listFrom2(loadCall, makeLiteral(name))));
+                    listFrom2(loadCall, makeLiteral(sourceName))));
         }
 
         return listFromArray(size, stats);
@@ -289,12 +297,16 @@ zvalue makeDynamicImport(zvalue node) {
 }
 
 /* Documented in spec. */
-zvalue makeExport(zvalue name) {
-    // Contrary to the spec, we don't take an optional second argument.
+zvalue makeExport(zvalue node) {
     return makeValue(TYPE_export,
-        mapFrom2(
-            STR_export, name,
-            STR_name,   name),
+        mapFrom1(STR_value, node),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue makeExportSelection(zvalue names) {
+    return makeValue(TYPE_exportSelection,
+        mapFrom1(STR_select, names),
         NULL);
 }
 
@@ -411,13 +423,25 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
-zvalue withExport(zvalue node) {
-    // Contrary to the spec, we don't take an optional second argument.
-    zvalue name = get(node, STR_name);
-    return makeValue(
-        get_type(node),
-        collPut(dataOf(node), STR_export, name),
-        NULL);
+zvalue resolveSelection(zvalue node) {
+    zvalue prefix = get(node, STR_prefix);
+    zvalue select = get(node, STR_select);
+
+    if (select == NULL) {
+        // See TODO in Lang0Node implementation.
+        die("TODO: wildcard selection import");
+    }
+
+    zint size = get_size(select);
+    zmapping bindings[size];
+
+    for (zint i = 0; i < size; i++) {
+        zvalue name = nth(select, i);
+        bindings[i].key = GFN_CALL(cat, prefix, name);
+        bindings[i].value = name;
+    }
+
+    return mapFromArray(size, bindings);
 }
 
 /* Documented in spec. */
@@ -430,6 +454,9 @@ zvalue withFormals(zvalue node, zvalue formals) {
 
 /* Documented in spec. */
 zvalue withSimpleDefs(zvalue node) {
+    // This implementation isn't as close a transliteration as other functions
+    // in this file, but the end result should be the same.
+
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
     zvalue tops = EMPTY_LIST;
@@ -438,23 +465,47 @@ zvalue withSimpleDefs(zvalue node) {
 
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(rawStatements, i);
-        zvalue exName = get(one, STR_export);
-        zvalue name = get(one, STR_name);
-        bool isVarDef = hasType(one, TYPE_varDef);
-        bool isExport = hasType(one, TYPE_export);
 
-        if ((isVarDef || isExport) && (exName != NULL)) {
-            exports = listAppend(
-                exports,
-                makeCall(makeVarRef(STR_makeValueMap),
-                    listFrom2(makeLiteral(exName), makeVarRef(name))));
+        if (hasType(one, TYPE_exportSelection)) {
+            zvalue select = get(one, STR_select);
+            zint selectSize = get_size(select);
+            for (zint j = 0; j < selectSize; j++) {
+                zvalue name = nth(select, j);
+                exports = appendNameBinding(exports, name);
+            }
+            continue;
         }
 
-        if (isVarDef && (get(one, STR_top) != NULL)) {
+        if (hasType(one, TYPE_export)) {
+            one = get(one, STR_value);  // Re-set `one` to the inner statement.
+
+            zvalue name = get(one, STR_name);
+
+            if (name != NULL) {
+                exports = appendNameBinding(exports, name);
+            } else if (hasType(one, TYPE_importModuleSelection)) {
+                zvalue selection = resolveSelection(one);
+                zint size = get_size(selection);
+                zmapping mappings[size];
+                arrayFromMap(mappings, selection);
+
+                for (zint i = 0; i < size; i++) {
+                    zvalue name = mappings[i].key;
+                    exports = appendNameBinding(exports, name);
+                }
+            } else {
+                die("Bad `export` payload.");
+            }
+
+            // And fall through, to handle `top` and emit inner statement.
+        }
+
+        if (hasType(one, TYPE_varDef) && (get(one, STR_top) != NULL)) {
+            zvalue name = get(one, STR_name);
             zvalue value = get(one, STR_value);
             tops = listAppend(tops, makeVarDef(name, NULL));
             mains = listAppend(mains, makeVarBind(name, value));
-        } else if (!isExport) {
+        } else {
             mains = listAppend(mains, one);
         }
     }

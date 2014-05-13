@@ -199,16 +199,12 @@ These are nodes that are akin to expression nodes, but are limited to
 be used only as direct as elements of the `statements` list of a `closure`
 node.
 
-#### `varDef` &mdash; `@varDef{name: name, value: expression, (export: name)?, (top: true)?}`
+#### `varDef` &mdash; `@varDef{name: name, value: expression, (top: true)?}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 
 * `value: expression` (optional) &mdash; Expression node representing the
   value that the variable should take on when defined.
-
-* `export: name` (optional) &mdash; If present, indicates the name of the
-  exported binding for this variable. This is typically, but not necessarily,
-  the same as the `name` binding.
 
 * `top: true` (optional) &mdash; If present, indicates that this definition
   should be promoted to the top of the closure in which it appears.
@@ -231,9 +227,9 @@ behavior varies depending on if `value` is supplied in this node:
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
   value becomes the permanently-bound value of the variable.
 
-The `export` and `top` bindings, if present, have no effect at runtime.
-Instead, these are expected to be treated similarly to `export` nodes
-(see above).
+The `top` binding, if present, has no effect at runtime. Instead, this is
+expected to be used during definition simplification. See
+`Lang0Node::withSimpleDefs` for more details.
 
 #### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
 
@@ -268,13 +264,29 @@ limited to be used only as direct as elements of the `statements` list of a
 `closure` node, and only for `closure` nodes which represet the outermost
 layer of a program.
 
-#### `export` &mdash; `@export{name: name, export: name}`
+#### `export` &mdash; `@export{value: node}`
 
-* `name: name` &mdash; Variable name to export (typically a string).
+* `value: node` &mdash; Node representing definition to export.
 
-* `export: name` &mdash; Name to export the variable as (typically a string).
+This represents the export of one or more named bindings out of a module.
+`node` must be of a statement type that is valid to be exported. This includes
+types `@importModule`, `@importModuleSelection`, `@importResource`, and
+`@varDef`.
 
-This represents the export of a named binding out of a program.
+These nodes are not directly executable. Instead, these are intended to be
+used as part of a pre-execution or pre-compliation transformation, used to
+produce a modified `closure` (with an altered `statements` list, and so on)
+that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
+for more details.
+
+#### `exportSelection` &mdash; `@exportSelection{select: [name+]}`
+
+* `select: [name+]` &mdash; Selection of variable names to export (each
+  element typically a string).
+
+This represents the export of a set of named bindings out of a module. Each
+of the `names` must have been defined earlier in the list of statements in
+which this node appears.
 
 These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to

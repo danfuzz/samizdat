@@ -30,6 +30,7 @@ import core.Lang0Node ::
     makeCallOrApply,
     makeCallThunks,
     makeExport,
+    makeExportSelection,
     makeGet,
     makeImport,
     makeInterpolate,
@@ -42,7 +43,6 @@ import core.Lang0Node ::
     makeVarDefMutable,
     makeVarRef,
     makeVarRefLvalue,
-    withExport,
     withFormals,
     withSimpleDefs,
     withTop,
@@ -614,12 +614,10 @@ def parProgramStatement = $Peg::makeMainChoice(
         $Peg::makeChoice(
             $Peg::makeSequence(
                 parName,
-                $Peg::makeCode { ., name <> makeExport(name) }),
+                $Peg::makeCode { ., name <> makeExportSelection(name) }),
             $Peg::makeSequence(
-                parExportableStatement,
-                $Peg::makeCode { ., stat ->
-                    <> withExport(stat, get_name(stat))
-                }))));
+                $Peg::makeChoice(parExportableStatement, parImportStatement),
+                $Peg::makeCode { ., stat <> makeExport(stat) }))));
 
 ## Documented in spec.
 def parClosureBody = $Peg::makeMainSequence(

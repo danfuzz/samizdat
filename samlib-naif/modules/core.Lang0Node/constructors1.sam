@@ -35,9 +35,13 @@ export fn makeCallThunks(function, actuals*) {
 };
 
 ## Documented in spec.
-export fn makeExport(name, optExport?) {
-    def exp = ifValueOr { <> optExport* } { <> name };
-    <> @export{name, export: exp}
+export fn makeExport(node) {
+    <> @export{value: node}
+};
+
+## Documented in spec.
+export fn makeExportSelection(names+) {
+    <> @exportSelection{select: names}
 };
 
 ## Documented in spec.

@@ -1073,10 +1073,13 @@ DEF_PARSE(programStatement) {
     MATCH_OR_REJECT(export);
 
     result = PARSE(name);
-    if (result != NULL) { return makeExport(result); }
+    if (result != NULL) { return makeExportSelection(listFrom1(result)); }
 
-    result = PARSE_OR_REJECT(exportableStatement);
-    return withExport(result);
+    if (result == NULL) { result = PARSE(exportableStatement); }
+    if (result == NULL) { result = PARSE(importStatement);     }
+    REJECT_IF(result == NULL);
+
+    return makeExport(result);
 }
 
 /* Documented in spec. */

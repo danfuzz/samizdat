@@ -22,6 +22,7 @@ export def makeCall             = $constructors1::makeCall;
 export def makeCallLiterals     = $constructors1::makeCallLiterals;
 export def makeCallThunks       = $constructors1::makeCallThunks;
 export def makeExport           = $constructors1::makeExport;
+export def makeExportSelection  = $constructors1::makeExportSelection;
 export def makeJump             = $constructors1::makeJump;
 export def makeLiteral          = $constructors1::makeLiteral;
 export def makeThunk            = $constructors1::makeThunk;
@@ -42,7 +43,6 @@ export def makeImport         = $constructors2::makeImport;
 export def makeInterpolate    = $constructors2::makeInterpolate;
 export def makeOptValue       = $constructors2::makeOptValue;
 export def withDynamicImports = $constructors2::withDynamicImports;
-export def withExport         = $constructors2::withExport;
 export def withSimpleDefs     = $constructors2::withSimpleDefs;
 export def withTop            = $constructors2::withTop;
 
@@ -72,3 +72,6 @@ export def get_yieldDef    = $getters::get_yieldDef;
 
 import ./refs;
 export def REFS = $refs::REFS;
+
+import ./select;
+export def resolveSelection = $select::resolveSelection;

@@ -37,6 +37,7 @@ import core.Lang0Node ::
     makeCallOrApply,
     makeCallThunks,
     makeExport,
+    makeExportSelection,
     makeGet,
     makeImport,
     makeInterpolate,
@@ -49,7 +50,6 @@ import core.Lang0Node ::
     makeVarDefMutable,
     makeVarRef,
     makeVarRefLvalue,
-    withExport,
     withFormals,
     withSimpleDefs,
     withTop,
@@ -762,19 +762,20 @@ def parImportStatement = {:
     }
 :};
 
-## Parses a statement form that is `export`able.
+## Parses an executable statement form that is `export`able. This does *not*
+## include `import` statements.
 def parExportableStatement = {:
     parFunctionDef | parGenericDef | parVarDef
 :};
 
-## Parses a statement form (direct closure / program element). This includes
-## all the `export`able statements and a few additional forms.
+## Parses an executable statement form (direct closure / program element).
+## This includes all the `export`able statements and a few additional forms.
 def parStatement = {:
     parExportableStatement | parGenericBind | parVarDefMutable | parExpression
 :};
 
-## Parses a program statement form (including both regular and `export`
-## statements).
+## Parses a program statement form, including both regular executable
+## statements, `export` statements, and `import` statements.
 def parProgramStatement = {:
     parStatement
 |
@@ -783,10 +784,10 @@ def parProgramStatement = {:
     @"export"
     (
         name = parName
-        { <> makeExport(name) }
+        { <> makeExportSelection(name) }
     |
-        stat = parExportableStatement
-        { <> withExport(stat, get_name(stat)) }
+        stat = (parExportableStatement | parImportStatement)
+        { <> makeExport(stat) }
     )
 :};
 
