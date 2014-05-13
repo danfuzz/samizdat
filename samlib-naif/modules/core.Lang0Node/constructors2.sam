@@ -287,7 +287,12 @@ export fn withSimpleDefs(node) {
                     };
                 ifIs { <> hasType(inner, @@importModuleSelection) }
                     {
-                        die("TODO: export import ... :: ...")
+                        <out> $Generator::filterAll(resolveSelection(inner))
+                            { mapping ->
+                                def name = get_key(mapping);
+                                <> makeCall(REFS::makeValueMap,
+                                    makeLiteral(name), makeVarRef(name))
+                            }
                     };
                 die("Bad `export` payload.");
             };

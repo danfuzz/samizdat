@@ -19,7 +19,7 @@ import ./getters ::
 export fn resolveSelection(node) {
     def prefix = get_prefix(node);
     def select = ifValueOr
-        { <> get_select(this) }
+        { <> get_select(node) }
         {
             ## TODO: In order to handle wildcard imports, this function will
             ## have to be able to ask for the list of exports from arbitrary
