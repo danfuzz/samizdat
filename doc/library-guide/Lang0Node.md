@@ -284,6 +284,12 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `resolveSelection(node) <> {(name: sourceName)+}`
+
+Resolves the selection of a `importModuleSelection` node. This returns a
+map from names to bind (the keys) to the corresponding source names to
+import from (the values).
+
 #### `withDynamicImports(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except

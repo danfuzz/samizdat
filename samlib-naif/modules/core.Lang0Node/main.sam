@@ -72,3 +72,6 @@ export def get_yieldDef    = $getters::get_yieldDef;
 
 import ./refs;
 export def REFS = $refs::REFS;
+
+import ./select;
+export def resolveSelection = $select::resolveSelection;
