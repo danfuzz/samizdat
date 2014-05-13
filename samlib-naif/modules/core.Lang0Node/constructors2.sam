@@ -292,7 +292,11 @@ export fn withSimpleDefs(node) {
                         <out> [makeCall(REFS::makeValueMap,
                             makeLiteral(name), makeVarRef(name))]
                     };
-                die("TODO: export import ... :: ...")
+                ifIs { <> hasType(inner, @@importModuleSelection) }
+                    {
+                        die("TODO: export import ... :: ...")
+                    };
+                die("Bad `export` payload.");
             };
     };
 
