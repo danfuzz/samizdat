@@ -88,7 +88,7 @@ The main body of a closure is a sequence of statements. The last
 statement of a closure may optionally be one of several possible
 yield (return) statements.
 
-Statements are separated from each other with semicolons `;`. In addition
+Statements are separated from each other with semicolons (`;`). In addition
 (TODO), there is implicit statement separation based on the indentation
 level of adjacent lines.
 

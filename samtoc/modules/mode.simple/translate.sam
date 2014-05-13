@@ -8,9 +8,14 @@
 
 import VarCalc :: get_varRefs;
 
-import CodeGen;
-def flatten = $CodeGen::flatten;
-def indent = $CodeGen::indent;
+import CodeGen ::
+    flatten,
+    indent,
+    makeAssign,
+    makeCall,
+    makeComment,
+    makeReturn,
+    makeStatement;
 
 ## TODO: Replace with `import core.Lang0Node :: *`, once available.
 import core.Lang0Node ::
@@ -45,18 +50,18 @@ fn varDefCommon(name, value, varsBox) {
     def binding = {name: localVarName(name, index), kind: "local"};
 
     store(varsBox, {vars*, (name): binding});
-    <> $CodeGen::makeComment("\%q(name)", $CodeGen::makeAssign(decl, value));
+    <> makeComment("\%q(name)", makeAssign(decl, value));
 };
 
 fn @@apply.translate(varsBox) {
-    <> $CodeGen::makeCall("funApply",
+    <> makeCall("funApply",
         translate(this.function, varsBox),
         translate(this.actuals, varsBox))
 };
 
 fn @@call.translate(varsBox) {
     def actuals = (a in this.actuals <> translate(a, varsBox));
-    <> $CodeGen::makeCall("FUN_CALL",
+    <> makeCall("FUN_CALL",
         translate(this.function, varsBox), actuals*)
 };
 
@@ -68,7 +73,7 @@ fn @@closureRef.translate(varsBox) {
     ## This passes each of the `varRefs` as an argument to the
     ## closure maker.
     def vars = fetch(varsBox);
-    <> $CodeGen::makeCall("makeClosure_\(this.id)",
+    <> makeCall("makeClosure_\(this.id)",
         ( name in this.varRefs ->
             <> vars[name]::name
                 | die("Capture of undefined variable: \%q(name)");
@@ -97,7 +102,7 @@ fn @@jump.translate(varsBox) {
     def value = (def v = this.nodeValue)
         & translate(v, varsBox)
         | "NULL";
-    <> $CodeGen::makeCall("funJump",
+    <> makeCall("funJump",
         translate(this.function, varsBox), value)
 };
 
@@ -112,13 +117,13 @@ fn @@varBind.translate(varsBox) {
     def binding = vars[name]
         | die("Bind of undefined variable: \%q(this.name)");
 
-    <> $CodeGen::makeCall("boxStore", binding::name, value)
+    <> makeCall("boxStore", binding::name, value)
 };
 
 fn @@varDef.translate(varsBox) {
     def value = (def v = this.nodeValue)
-        & $CodeGen::makeCall("makeResult", translate(v, varsBox))
-        | $CodeGen::makeCall("makePromise");
+        & makeCall("makeResult", translate(v, varsBox))
+        | makeCall("makePromise");
 
     <> varDefCommon(this.name, value, varsBox)
 };
@@ -129,7 +134,7 @@ fn @@varDefMutable.translate(varsBox) {
         | "NULL";
 
     <> varDefCommon(
-        this.name, $CodeGen::makeCall("makeCell", value), varsBox)
+        this.name, makeCall("makeCell", value), varsBox)
 };
 
 fn @@varRef.translate(varsBox) {
@@ -137,5 +142,5 @@ fn @@varRef.translate(varsBox) {
     def vars = fetch(varsBox);
     def binding = vars[name]
         | die("Reference of undefined variable: \%q(this.name)");
-    <> $CodeGen::makeCall("boxFetch", binding::name)
+    <> makeCall("boxFetch", binding::name)
 };

@@ -19,14 +19,15 @@ import core.Format;
 ## A locally-defined (but still "external") module.
 import app.Stuff;
 
-## Ensure it's not re-evaluated.
+## Ensure it's not re-evaluated (see below).
 import $Stuff2 = app.Stuff;
-
-ifIs { <> ne($Stuff, $Stuff2) }
-    { die("Different modules!") };
 
 ## A resource file.
 import @utf8 ./resource.txt;
+
+## Check modules.
+ifIs { <> ne($Stuff, $Stuff2) }
+    { die("Different modules!") };
 
 export fn main(selfPath, .*) {
     note(cat("I am: ", $Format::source(selfPath)));

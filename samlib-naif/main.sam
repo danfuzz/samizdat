@@ -11,8 +11,6 @@
 
 #= language core.Lang0
 
-note("\nLoading module system...");
-
 import core.Globals;
 import core.ModuleSystem;
 
