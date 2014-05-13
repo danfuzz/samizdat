@@ -83,6 +83,9 @@ A top-level module definition is allowed to import a few different things.
 Import statements begin with an `import` keyword; beyond that, the syntax
 depends on what is being imported.
 
+`import` statements must always be the first statements in a file, before
+any other definitions.
+
 #### Full module import
 
 To import a module as a whole, indicate the name of the module after the
