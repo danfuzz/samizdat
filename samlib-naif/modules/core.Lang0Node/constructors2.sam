@@ -243,7 +243,7 @@ export fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
 
     def tops = $Generator::filterAll(rawStatements) { s ->
-        def defNode = ifIs { hasType(s, @@export) }
+        def defNode = ifIs { <> hasType(s, @@export) }
             { <> get_nodeValue(s) }
             { <> s };
 
@@ -252,7 +252,7 @@ export fn withSimpleDefs(node) {
     };
 
     def mains = $Generator::filterAll(rawStatements) { <out> s ->
-        def defNode = ifIs { hasType(s, @@export) }
+        def defNode = ifIs { <> hasType(s, @@export) }
             { <> get_nodeValue(s) }
             { <> s };
 
