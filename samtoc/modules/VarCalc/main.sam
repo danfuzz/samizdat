@@ -7,8 +7,5 @@
 ##
 
 ## This just re-exports stuff defined in submodules.
-import ./get_varDefs :: get_varDefs;
-export get_varDefs;
-
-import ./get_varRefs :: get_varRefs;
-export get_varRefs;
+export import ./get_varDefs :: get_varDefs;
+export import ./get_varRefs :: get_varRefs;
