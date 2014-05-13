@@ -185,15 +185,17 @@ note($template);
 A top-level module definition can indicate bindings to export by using the
 `export` keyword.
 
-The basic form is just `export varName`, to cause the contents of the variable
-named `varName` to be exported from the module, bound to the key `"varName"`.
-**Note:** The thing that is exported is the value of a variable, and not
-the "cell" containing a variable. So, it is generally a bad idea to export
-a variable that was defined with `var` and not `def`.
+The basic form is just `export varName1, varName2, ...`, to cause the contents
+of the variables named `varName1`, `varName2`, and so on, to be exported from
+the module, bound to the key `"varName"`.
 
 As a conveniend short-hand, `export` may be used as a prefix on immutable
 variable definitions, function definitions (both regular and generic
 functions), and `import` statements, to export the variables so-defined.
+
+**Note:** The thing that is exported is the value of a variable, and not
+the "cell" containing a variable. So, it is generally a bad idea to export
+a variable that was defined with `var` and not `def`.
 
 Examples:
 
@@ -201,6 +203,11 @@ Examples:
 ## Export a previously-defined variable.
 def blort = ...;
 export blort;
+
+## Export a couple previously-defined variables.
+def blort = ...;
+def frotz = ...;
+export blort, frotz;
 
 ## Define and export a variable, together.
 export def blort = ...;
