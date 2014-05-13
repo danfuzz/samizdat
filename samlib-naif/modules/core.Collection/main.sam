@@ -8,21 +8,15 @@
 
 #= language core.Lang0
 
-import proto.Collection;
+## Re-export. Documented in spec.
+export import proto.Collection ::
+    cat,
+    get,
+    del,
+    get_size,
+    keyList,
+    nthMapping,
+    put;
 
 ## This just binds generics without adding exports.
 import ./MapGenerator;
-
-
-##
-## Exported Definitions
-##
-
-## Re-exported from proto module.
-export def cat        = $Collection::cat;
-export def get        = $Collection::get;
-export def del        = $Collection::del;
-export def get_size   = $Collection::get_size;
-export def keyList    = $Collection::keyList;
-export def nthMapping = $Collection::nthMapping;
-export def put        = $Collection::put;

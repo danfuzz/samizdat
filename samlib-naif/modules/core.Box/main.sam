@@ -8,22 +8,19 @@
 
 #= language core.Lang0
 
-import proto.Box;
+## Re-export. Documented in spec.
+export import proto.Box ::
+    canStore,
+    fetch,
+    store;
 
-import ./NullBox;
+## Re-export. Documented in spec.
+export import ./NullBox :: nullBox;
 
 
 ##
 ## Exported Definitions
 ##
-
-## Re-exported from proto.
-export def canStore = $Box::canStore;
-export def fetch    = $Box::fetch;
-export def store    = $Box::store;
-
-## Re-exported from `NullBox`.
-export def nullBox = $NullBox::nullBox;
 
 ## Re-exported from primitive library.
 export def makeCell    = Box_makeCell;

@@ -8,7 +8,8 @@
 
 #= language core.Lang0
 
-import proto.Bitwise ::
+## Re-export. Documented in spec.
+export import proto.Bitwise ::
     and,
     bit,
     bitSize,
@@ -23,15 +24,6 @@ import proto.Number :: neg;
 ##
 ## Exported Definitions
 ##
-
-## Re-exported from proto.
-export and;
-export bit;
-export bitSize;
-export not;
-export or;
-export shl;
-export xor;
 
 ## Documented in spec.
 export fn shr(bitwise, n) {
