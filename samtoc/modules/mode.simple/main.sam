@@ -7,9 +7,14 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
-import CodeGen;
-def flatten = $CodeGen::flatten;
-def indent = $CodeGen::indent;
+import CodeGen ::
+    flatten,
+    indent,
+    makeAssign,
+    makeCall,
+    makeComment,
+    makeReturn,
+    makeStatement;
 
 import DataCode;
 import Template;
@@ -55,16 +60,16 @@ fn usualIndent(tree, depth) {
 ## Returns a `makeClosure_*` declaration, as a code tree.
 fn closureDeclaration(cloIdx, clo, literals) {
     def varRefs = clo.varRefs;
-    def decl = $CodeGen::makeCall(
+    def decl = makeCall(
         "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
-            <> $CodeGen::makeComment(
+            <> makeComment(
                 "\%q(name)",
                 $vars::freeVarDecl(name, idx))
         )*);
 
     <> if (def ref = clo.name) {
-        <> $CodeGen::makeComment("\%q(literals[ref.id])", decl)
+        <> makeComment("\%q(literals[ref.id])", decl)
     } else {
         <> decl
     }
@@ -80,13 +85,13 @@ fn closureMaker(cloIdx, clo, literals) {
     def decl = closureDeclaration(cloIdx, clo, literals);
     def stateAssigns = [ idx in (0..), name in varRefs ->
         def varName = $vars::freeVarName(name, idx);
-        def stat = $CodeGen::makeStatement(
-            $CodeGen::makeAssign("state[\(idx)]", varName));
+        def stat = makeStatement(
+            makeAssign("state[\(idx)]", varName));
         <> stat.usualIndent(1)
     ];
-    def resultAssign = $CodeGen::makeAssign(
+    def resultAssign = makeAssign(
         "zvalue result",
-        $CodeGen::makeCall(
+        makeCall(
             "makeBuiltin", "\(clo.minArgs)", "\(clo.maxArgs)",
             "FUN_IMPL_NAME(\(cloIdx))", "\(#varRefs)", name));
 
@@ -103,14 +108,14 @@ fn closureMaker(cloIdx, clo, literals) {
 ## performing any given `cleanups`.
 fn makeYieldStatements(yield, cleanups) {
     <> if (yield \== "NULL") {
-        <> [cleanups*, $CodeGen::makeReturn(yield)]
+        <> [cleanups*, makeReturn(yield)]
     } else if (cleanups == []) {
-        <> [$CodeGen::makeReturn(yield)]
+        <> [makeReturn(yield)]
     } else {
         <> [
-            $CodeGen::makeAssign("zvalue result", yield),
+            makeAssign("zvalue result", yield),
             cleanups*,
-            $CodeGen::makeReturn("result")
+            makeReturn("result")
         ]
     }
 };
@@ -139,7 +144,7 @@ fn closureBody(cloIdx, clo, literals) {
     ## Process all the statements, producing source code.
 
     def allStats = [ s in [varInfo::inits*, mainStats*, yieldStats*] ->
-        <> $CodeGen::makeStatement(s).usualIndent(1)
+        <> makeStatement(s).usualIndent(1)
     ];
 
     def nameLine = (def ref = clo.name)
@@ -160,14 +165,13 @@ fn mainClosureMaker(node, interner) {
     def varRefs = node.varRefs;
     def ids = [ name in varRefs <> interner.intern(name) ];
 
-    def stat = $CodeGen::makeStatement(
-        $CodeGen::makeReturn(
-            $CodeGen::makeCall("makeClosure_\(node.id)",
+    def stat = makeStatement(
+        makeReturn(
+            makeCall("makeClosure_\(node.id)",
                 ( name in varRefs, id in ids ->
-                    <> $CodeGen::makeComment("\%q(name)",
-                        $CodeGen::makeCall("makeResult",
-                            $CodeGen::makeCall("get",
-                                "GLOBALS", "LIT_\(id)")))
+                    <> makeComment("\%q(name)",
+                        makeCall("makeResult",
+                            makeCall("get", "GLOBALS", "LIT_\(id)")))
                 )*)));
 
     <> stat.usualIndent(1)
@@ -189,7 +193,7 @@ export fn compile(sourcePath, targetPath) {
     def closures = closuresNode::closures;
     def closureDeclarations = cat(
         ( idx in (0..), clo in closures ->
-            def stat = $CodeGen::makeStatement(
+            def stat = makeStatement(
                 closureDeclaration(idx, clo, partialLits));
             <> "\(stat.usualIndent(0))\n"
         )*);
@@ -210,10 +214,9 @@ export fn compile(sourcePath, targetPath) {
         )*);
     def literalInits = cat(
         ( index in (0..), lit in literals ->
-            def init = $CodeGen::makeStatement(
-                $CodeGen::makeCall("datImmortalize",
-                    $CodeGen::makeAssign("LIT_\(index)",
-                        $DataCode::convert(lit))));
+            def init = makeStatement(
+                makeCall("datImmortalize",
+                    makeAssign("LIT_\(index)", $DataCode::convert(lit))));
             <> init.usualIndent(2)
         )*);
 
