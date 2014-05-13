@@ -472,6 +472,7 @@ fn runBinaryFile(path, moduleLoader, args) {
 
 ## Documented in spec.
 export fn main(libraryPath, primitiveGlobals) {
+    note("\nLoading core library `main`...");
     def loader = makeIntraLoader(libraryPath, primitiveGlobals, null);
     def mainModule = intraLoadMain(loader);
     def mainFunction = mainModule::main;
