@@ -125,6 +125,9 @@ zvalue makeVarRef(zvalue name);
 zvalue makeOptValue(zvalue expression);
 
 /* Documented in spec. */
+zvalue resolveSelection(zvalue node);
+
+/* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals);
 
 /* Documented in spec. */

@@ -244,8 +244,6 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, STR_format);
     zvalue name = get(node, STR_name);
-    zvalue prefix = get(node, STR_prefix);
-    zvalue select = get(node, STR_select);
     zvalue source = get(node, STR_source);
 
     if (hasType(node, TYPE_importModule)) {
@@ -258,10 +256,10 @@ zvalue makeDynamicImport(zvalue node) {
 
         return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        if (select == NULL) {
-            // See TODO in Lang0Node implementation.
-            die("TODO: wildcard selection import");
-        }
+        zvalue selection = resolveSelection(node);
+        zint size = get_size(selection);
+        zmapping mappings[size];
+        arrayFromMap(mappings, selection);
 
         zvalue loadRef = hasType(source, TYPE_external)
             ? REFS(moduleLoad)
@@ -269,14 +267,14 @@ zvalue makeDynamicImport(zvalue node) {
         zvalue loadCall = makeCall(loadRef,
             listFrom1(makeLiteral(dataOf(source))));
 
-        zint size = get_size(select);
         zvalue stats[size];
         for (zint i = 0; i < size; i++) {
-            zvalue name = nth(select, i);
+            zvalue targetName = mappings[i].key;
+            zvalue sourceName = mappings[i].value;
             stats[i] = makeVarDef(
-                GFN_CALL(cat, prefix, name),
+                targetName,
                 makeCall(REFS(get),
-                    listFrom2(loadCall, makeLiteral(name))));
+                    listFrom2(loadCall, makeLiteral(sourceName))));
         }
 
         return listFromArray(size, stats);
@@ -422,6 +420,28 @@ zvalue makeVarRef(zvalue name) {
 /* Documented in spec. */
 zvalue makeOptValue(zvalue expression) {
     return makeCall(REFS(optValue), listFrom1(makeThunk(expression)));
+}
+
+/* Documented in spec. */
+zvalue resolveSelection(zvalue node) {
+    zvalue prefix = get(node, STR_prefix);
+    zvalue select = get(node, STR_select);
+
+    if (select == NULL) {
+        // See TODO in Lang0Node implementation.
+        die("TODO: wildcard selection import");
+    }
+
+    zint size = get_size(select);
+    zmapping bindings[size];
+
+    for (zint i = 0; i < size; i++) {
+        zvalue name = nth(select, i);
+        bindings[i].key = GFN_CALL(cat, prefix, name);
+        bindings[i].value = name;
+    }
+
+    return mapFromArray(size, bindings);
 }
 
 /* Documented in spec. */
