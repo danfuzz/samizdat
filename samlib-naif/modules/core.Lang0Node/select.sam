@@ -4,16 +4,69 @@
 
 #= language core.Lang0
 
+import core.Collection;
 import core.Generator;
 
 import ./getters ::
     get_prefix,
-    get_select;
+    get_select,
+    get_source;
 
 
 ##
 ## Exported functions
 ##
+
+## Documented in spec.
+export fn resolveInfo(node) {
+    def statements = get_statements(node);
+
+    def imports = $Generator::filterAll(statements) { <out> s ->
+        def defNode = ifIs { <> hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        ifIs { <> hasType(s, @@importModule) }
+            { <out> $Collection::del(s, "name") };
+        ifIs { <> hasType(s, @@importModuleSelection) }
+            {
+                <out> @importModuleSelection{
+                    select: valueList(resolveSelection(s)),
+                    source: get_source(s)
+                }
+            };
+        ifIs { <> hasType(s, @@importResource) }
+            { <out> $Collection::del(s, "name") };
+    };
+
+    def exports = $Generator::filterAll(statements) { <out> s ->
+        ifIs { <> hasType(s, @@exportSelection) }
+            {
+                def names = $Generator::filterAll(get_select(s))
+                    { name <> {(name): name} };
+                <out> cat(names*)
+            };
+        ifIs { <> hasType(s, @@export) }
+            {
+                def defNode = get_nodeValue(s);
+                ifValue { <> get_name(defNode) }
+                    { name <> {(name): name} };
+                ifIs { <> hasType(defNode, @@importModuleSelection) }
+                    {
+                        def names =
+                            $Generator::filterAll(resolveSelection(defNode))
+                            { mapping ->
+                                def name = get_key(mapping);
+                                <> {(name): name}
+                            };
+                        <out> cat(names*)
+                    };
+                die("Bad `export` payload.");
+            };
+    };
+
+    <> {imports, exports: keyList(cat({}, exports))}
+};
 
 ## Documented in spec.
 export fn resolveSelection(node) {
