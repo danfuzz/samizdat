@@ -29,6 +29,7 @@ import core.Lang0Node ::
     makeGet,
     makeLiteral,
     makeVarRef,
+    withSimpleDefs,
     withoutIntermediates;
 
 
@@ -233,6 +234,17 @@ fn @@closure.convertPexIn() {
     <> withBindings(this, {statements, yield*})
 };
 
+## Does parser conversion of an `export` node.
+fn @@export.convertPexIn() {
+    def value = convertPexIn(get_nodeValue(this));
+    <> withBindings(this, {value})
+};
+
+## Does parser conversion of an `exportSelection` node.
+fn @@exportSelection.convertPexIn() {
+    <> this
+};
+
 ## Does parser conversion of an `importModule` node.
 fn @@importModule.convertPexIn() {
     <> this
@@ -298,5 +310,9 @@ fn @@varRef.convertPexIn() {
 
 ## Documented in spec.
 export fn simplify(expressionNode) {
-    <> convertPexIn(expressionNode);
+    def converted = convertPexIn(expressionNode);
+
+    <> ifIs { <> hasType(converted, @@closure) }
+        { <> withSimpleDefs(converted) }
+        { <> converted }
 };
