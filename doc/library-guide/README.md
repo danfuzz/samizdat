@@ -93,6 +93,7 @@ will be returned, or one of:
 * Implementation Modules
   * [core.Bitwise](Bitwise.md)
   * [core.Box](Box.md)
+  * [core.Code](Code.md)
   * [core.Collection](Collection.md)
   * [core.CommandLine](CommandLine.md)
   * [core.EntityMap](EntityMap.md)
