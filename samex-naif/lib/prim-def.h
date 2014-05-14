@@ -67,6 +67,7 @@ PRIM_DEF(Collection_del,          GFN_del);
 PRIM_DEF(Collection_keyList,      GFN_keyList);
 PRIM_DEF(Collection_nthMapping,   GFN_nthMapping);
 PRIM_DEF(Collection_put,          GFN_put);
+PRIM_DEF(Collection_valueList,    GFN_valueList);
 
 // Generic functions: `Sequence` protocol, intended for modularization.
 PRIM_DEF(Sequence_reverse,        GFN_reverse);

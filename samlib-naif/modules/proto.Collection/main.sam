@@ -19,3 +19,4 @@ export def del        = Collection_del;
 export def keyList    = Collection_keyList;
 export def nthMapping = Collection_nthMapping;
 export def put        = Collection_put;
+export def valueList  = Collection_valueList;

@@ -16,7 +16,8 @@ export import proto.Collection ::
     get_size,
     keyList,
     nthMapping,
-    put;
+    put,
+    valueList;
 
 ## This just binds generics without adding exports.
 import ./MapGenerator;
