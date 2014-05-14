@@ -13,21 +13,14 @@ import DataCode;
 import Template;
 
 import core.Io0;
+import core.Lang0Node;
 import core.Lang2;
 
 export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
     def tree = $Lang2::convertToLang0($Lang2::parseProgram(sourceText));
 
-    def infoMap = if (hasType(tree, @@module)) {
-        die("TODO: Figure out exports")
-    } else {
-        ## Default info.
-        <> {
-            version: "0"
-        }
-    };
-
+    def infoMap = $Lang0Node::resolveInfo(tree);
     def info = "\%q(infoMap)";
     def outputText = $Template::apply($template, {info});
 
