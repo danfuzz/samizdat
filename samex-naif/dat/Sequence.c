@@ -285,8 +285,8 @@ MOD_INIT(Sequence) {
         0, stringFromUtf8(-1, "Sequence.nthMapping"));
     datImmortalize(BI_Sequence_nthMapping);
 
-    BI_Sequence_valueList = makeBuiltin(1, 1, METH_NAME(Sequence, valueList), 0,
-        stringFromUtf8(-1, "Sequence.valueList"));
+    BI_Sequence_valueList = makeBuiltin(1, 1, METH_NAME(Sequence, valueList),
+        0, stringFromUtf8(-1, "Sequence.valueList"));
     datImmortalize(BI_Sequence_valueList);
 }
 
