@@ -49,8 +49,8 @@ Converts and simplifies the given node into a form usable by
 `core.Code::eval`.
 
 In `Lang0`, this is a no-op on everything but top-level program nodes.
-For program node, it simplifies `top` declarations and collates `export`s
-into a properly yielded result.
+For program node, it simplifies `top` declarations and converts `export*`
+nodes into a `yield`ed result.
 
 In `Lang1` and `Lang2`, in addition to the above, this converts parser
 expression nodes into appropriate calls to `Peg` functions.
