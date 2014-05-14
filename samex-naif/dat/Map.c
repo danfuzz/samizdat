@@ -566,6 +566,23 @@ METH_IMPL(Map, totalOrder) {
     return INT_0;
 }
 
+/* Documented in header. */
+METH_IMPL(Map, valueList) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+    zint size = info->size;
+    zmapping *elems = info->elems;
+    zmapping mappings[size];
+    zvalue arr[size];
+
+    for (zint i = 0; i < size; i++) {
+        arr[i] = elems[i].value;
+    }
+
+    return listFromArray(size, arr);
+}
+
 /** Initializes the module. */
 MOD_INIT(Map) {
     MOD_USE(Collection);
@@ -590,6 +607,7 @@ MOD_INIT(Map) {
     METH_BIND(Map, put);
     METH_BIND(Map, totalEq);
     METH_BIND(Map, totalOrder);
+    METH_BIND(Map, valueList);
 
     EMPTY_MAP = allocMap(0);
     datImmortalize(EMPTY_MAP);

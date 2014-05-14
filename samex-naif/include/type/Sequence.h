@@ -70,7 +70,7 @@ zint seqPutIndexStrict(zint size, zvalue n);
  * Binds the standard methods for a `Sequence` type. That is, this
  * is for collections whose keys form a zero-based `Int` sequence.
  * In particular, this binds `collect`, `get`, `keyList`, `nextValue`,
- * and `nthMapping`.
+ * `nthMapping`, and `valueList`.
  */
 void seqBind(zvalue type);
 
