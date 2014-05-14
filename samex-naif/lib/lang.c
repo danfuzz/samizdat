@@ -13,11 +13,6 @@
  */
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Lang0_convertToLang0) {
-    return langSimplify0(args[0]);
-}
-
-/* Documented in spec. */
 FUN_IMPL_DECL(Lang0_languageOf) {
     return langLanguageOf0(args[0]);
 }
@@ -30,6 +25,11 @@ FUN_IMPL_DECL(Lang0_parseExpression) {
 /* Documented in spec. */
 FUN_IMPL_DECL(Lang0_parseProgram) {
     return langParseProgram0(args[0]);
+}
+
+/* Documented in spec. */
+FUN_IMPL_DECL(Lang0_simplify) {
+    return langSimplify0(args[0]);
 }
 
 /* Documented in spec. */

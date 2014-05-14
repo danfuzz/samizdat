@@ -8,7 +8,7 @@
 
 #= language core.Lang1
 
-## TODO: import ./convert :: convertToLang0;
+## TODO: import ./simplify :: simplify;
 
 import core.Lang1;
 
@@ -21,6 +21,6 @@ import core.Lang1;
 export fn eval(env, expressionNode) {
     <> $Lang1::eval(env, expressionNode)
     ## TODO:
-    ## def convertedNode = convertToLang0(expressionNode);
+    ## def convertedNode = simplify(expressionNode);
     ## <> $Lang1::eval(env, convertedNode)
 };

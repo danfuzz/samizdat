@@ -20,4 +20,4 @@ export import ./eval :: eval;
 export import ./parse :: parseExpression, parseProgram;
 export import ./tokenize :: tokenize;
 
-export import core.Lang1 :: convertToLang0, evalBinary, languageOf;
+export import core.Lang1 :: evalBinary, languageOf, simplify;

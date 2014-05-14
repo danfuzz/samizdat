@@ -10,7 +10,7 @@
 
 import core.Lang0;
 
-import ./convert :: convertToLang0;
+import ./simplify :: simplify;
 
 
 ##
@@ -19,6 +19,6 @@ import ./convert :: convertToLang0;
 
 ## Documented in spec.
 export fn eval(env, expressionNode) {
-    def convertedNode = convertToLang0(expressionNode);
+    def convertedNode = simplify(expressionNode);
     <> $Lang0::eval(env, convertedNode)
 };

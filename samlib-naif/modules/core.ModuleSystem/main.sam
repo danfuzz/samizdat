@@ -38,7 +38,7 @@ def $Io0 = {
 def $Lang0 = {
     eval:            Code_eval,
     evalBinary:      Code_evalBinary,
-    convertToLang0:  Lang0_convertToLang0,
+    simplify:  Lang0_simplify,
     languageOf:      Lang0_languageOf,
     parseExpression: Lang0_parseExpression,
     parseProgram:    Lang0_parseProgram,
@@ -327,7 +327,7 @@ fn doIntraLoad(il, path) {
             def languageName = ifValueOr { <> $Lang0::languageOf(text) }
                 { <> DEFAULT_LANGUAGE };
             def lang = moduleLoad(il::moduleLoader, languageName);
-            def tree = lang::convertToLang0(lang::parseProgram(text));
+            def tree = lang::simplify(lang::parseProgram(text));
             def func = $Code::eval(il::globals, tree);
             return func()
         };
@@ -458,7 +458,7 @@ fn runTextFile(path, moduleLoader, args) {
     def languageName = ifValueOr { <> $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
     def lang = moduleLoad(moduleLoader, languageName);
-    def tree = lang::convertToLang0(lang::parseProgram(text));
+    def tree = lang::simplify(lang::parseProgram(text));
     def func = $Code::eval(globals, tree);
 
     <> runProgram(func, args)

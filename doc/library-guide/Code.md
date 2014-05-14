@@ -20,13 +20,13 @@ Samizdat.
 
 Returns the evaluation result of executing the given expression node,
 which is a parse tree as specified in this document, converted for
-execution by a call to `convertToLang0()` or similar.
+execution by a call to `simplify()` or similar.
 
 It is valid for the expression to yield void, in which case this function
 returns void. Evaluation is performed in an execution environment that
 includes all of the variable bindings indicated by `env`, which must be a map.
 
-Very notably, the result of calling `convertToLang0(parseProgram(code))` is
+Very notably, the result of calling `simplify(parseProgram(code))` is
 valid as the `expressionNode` argument here.
 
 It is recommended (but not required) that the given `env` include

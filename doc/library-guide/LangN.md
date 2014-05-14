@@ -17,14 +17,6 @@ layers 0, 1, and 2.
 <br><br>
 ### Function Definitions
 
-#### `convertToLang0(expressionNode) <> expressionNode`
-
-Converts any higher-layer node types within the given expression into
-Layer 0 forms.
-
-In `Lang0`, this is a no-op. In `Lang1` and `Lang2` this converts parser
-expression nodes into appropriate calls to `Peg` functions.
-
 #### `languageOf(string) <> string | void`
 
 Finds and returns the language module directive in the given string,
@@ -50,6 +42,14 @@ list of tokens.
 
 Returns a `function` node, as defined by the corresponding parse tree
 semantics, that represents the parsed program.
+
+#### `simplify(expressionNode) <> expressionNode`
+
+Converts and simplifies the given node into a form usable by
+`core.Code::eval`.
+
+In `Lang0`, this is a no-op. In `Lang1` and `Lang2` this converts parser
+expression nodes into appropriate calls to `Peg` functions.
 
 #### `tokenize(string) <> [token*]`
 
