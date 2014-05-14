@@ -66,4 +66,4 @@ export import ./getters ::
 
 export import ./refs :: REFS;
 
-export import ./select :: resolveSelection;
+export import ./resolve :: resolveSelection;
