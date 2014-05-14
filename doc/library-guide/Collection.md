@@ -69,6 +69,10 @@ in the range `0..#collection` (inclusive of the size).
 a mapping, either check the sizes of the original and result, or
 check for the existence of `key` in the original.
 
+#### `valueList(collection) <> list`
+
+Returns the list of values mapped by the collection.
+
 
 <br><br>
 ### Primitive Definitions

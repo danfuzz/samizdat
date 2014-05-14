@@ -48,7 +48,7 @@ Defined as per the `Sequence` protocol.
 
 Returns the number of elements in the list.
 
-#### `keyList(list, n) <> list`
+#### `keyList(list) <> list`
 
 Defined as per the `Sequence` protocol.
 
@@ -79,6 +79,12 @@ Returns an end-exclusive slice of the given list.
 #### `sliceInclusive(list, start, end?) <> list`
 
 Returns an end-inclusive slice of the given list.
+
+#### `valueList(list) <> list`
+
+Defined as per the `Sequence` protocol. In this case, this function always
+returns the given `list`, directly.
+
 
 
 <br><br>
