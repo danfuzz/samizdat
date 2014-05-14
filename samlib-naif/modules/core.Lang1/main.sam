@@ -16,9 +16,8 @@
 ## This just re-exports stuff defined in intramodule files, as well as
 ## a couple items from `Lang0`.
 
-export import ./eval :: eval;
 export import ./parse :: parseExpression, parseProgram;
 export import ./simplify :: simplify;
 export import ./tokenize :: tokenize;
 
-export import core.Lang0 :: evalBinary, languageOf;
+export import core.Lang0 :: languageOf;

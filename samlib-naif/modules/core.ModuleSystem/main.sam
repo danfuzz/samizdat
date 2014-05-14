@@ -23,8 +23,8 @@
 ## own prerequisites.
 
 def $Code = {
-    eval:            Code_eval,
-    evalBinary:      Code_evalBinary
+    eval:       Code_eval,
+    evalBinary: Code_evalBinary
 };
 
 def $Io0 = {
@@ -36,12 +36,10 @@ def $Io0 = {
 };
 
 def $Lang0 = {
-    eval:            Code_eval,
-    evalBinary:      Code_evalBinary,
-    simplify:  Lang0_simplify,
     languageOf:      Lang0_languageOf,
     parseExpression: Lang0_parseExpression,
     parseProgram:    Lang0_parseProgram,
+    simplify:        Lang0_simplify,
     tokenize:        Lang0_tokenize
 };
 
