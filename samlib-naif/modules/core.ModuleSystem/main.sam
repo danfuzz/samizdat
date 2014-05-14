@@ -17,10 +17,15 @@
 #= language core.Lang0
 
 
-## Bootstrap modules `core.Io0` and `core.Lang0`. Bindings are all as
-## documented in the spec. These are set up here in order to avoid the
-## infinite regress of trying to load `core.Io0` and `core.Lang0` as their own
-## prerequisites.
+## Bootstrap modules `core.Code`, `core.Io0`, and `core.Lang0`. Bindings
+## are all as documented in the spec. These are set up here in order to
+## avoid the infinite regress of trying to load these modules as their
+## own prerequisites.
+
+def $Code = {
+    eval:            Code_eval,
+    evalBinary:      Code_evalBinary
+};
 
 def $Io0 = {
     cwd:           Io0_cwd,
@@ -31,8 +36,9 @@ def $Io0 = {
 };
 
 def $Lang0 = {
-    eval:            Lang0_eval,
-    evalBinary:      Lang0_evalBinary,
+    eval:            Code_eval,
+    evalBinary:      Code_evalBinary,
+    convertToLang0:  Lang0_convertToLang0,
     languageOf:      Lang0_languageOf,
     parseExpression: Lang0_parseExpression,
     parseProgram:    Lang0_parseProgram,
@@ -40,6 +46,7 @@ def $Lang0 = {
 };
 
 def BOOTSTRAP_MODULES = {
+    "core.Code":  $Code,
     "core.Io0":   $Io0,
     "core.Lang0": $Lang0
 };
@@ -309,7 +316,7 @@ fn doIntraLoad(il, path) {
 
     ifIs { <> eq($Io0::fileType(binPath)?, ["file"]) }
         {
-            def func = $Lang0::evalBinary(il::globals, binPath);
+            def func = $Code::evalBinary(il::globals, binPath);
             return func()
         };
 
@@ -320,8 +327,8 @@ fn doIntraLoad(il, path) {
             def languageName = ifValueOr { <> $Lang0::languageOf(text) }
                 { <> DEFAULT_LANGUAGE };
             def lang = moduleLoad(il::moduleLoader, languageName);
-            def tree = lang::parseProgram(text);
-            def func = lang::eval(il::globals, tree);
+            def tree = lang::convertToLang0(lang::parseProgram(text));
+            def func = $Code::eval(il::globals, tree);
             return func()
         };
 
@@ -451,8 +458,8 @@ fn runTextFile(path, moduleLoader, args) {
     def languageName = ifValueOr { <> $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
     def lang = moduleLoad(moduleLoader, languageName);
-    def tree = lang::parseProgram(text);
-    def func = lang::eval(globals, tree);
+    def tree = lang::convertToLang0(lang::parseProgram(text));
+    def func = $Code::eval(globals, tree);
 
     <> runProgram(func, args)
 };
@@ -460,7 +467,7 @@ fn runTextFile(path, moduleLoader, args) {
 ## Helper for `runFile`, which handles binaries.
 fn runBinaryFile(path, moduleLoader, args) {
     def globals = makeFileGlobals(moduleLoader);
-    def func = $Lang0::evalBinary(globals, path);
+    def func = $Code::evalBinary(globals, path);
 
     <> runProgram(func, args)
 };

@@ -14,7 +14,7 @@
  */
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Lang0_eval) {
+FUN_IMPL_DECL(Code_eval) {
     zvalue env = args[0];
     zvalue expressionNode = args[1];
 
@@ -22,12 +22,20 @@ FUN_IMPL_DECL(Lang0_eval) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(Lang0_evalBinary) {
+FUN_IMPL_DECL(Code_evalBinary) {
     zvalue env = args[0];
     zvalue path = args[1];
 
     ioCheckAbsolutePath(path);
     return datEvalBinary(env, path);
+}
+
+/* Documented in spec. */
+FUN_IMPL_DECL(Lang0_convertToLang0) {
+    zvalue node = args[0];
+
+    // TODO: Probably do `withSimpleDefs` here.
+    return node;
 }
 
 /* Documented in spec. */
