@@ -51,7 +51,7 @@ export fn resolveInfo(node) {
             {
                 def defNode = get_nodeValue(s);
                 ifValue { <> get_name(defNode) }
-                    { name <> {(name): name} };
+                    { name -> <out> {(name): name} };
                 ifIs { <> hasType(defNode, @@importModuleSelection) }
                     {
                         def names =
