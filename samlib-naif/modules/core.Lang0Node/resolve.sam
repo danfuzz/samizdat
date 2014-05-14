@@ -10,7 +10,8 @@ import core.Generator;
 import ./getters ::
     get_prefix,
     get_select,
-    get_source;
+    get_source,
+    get_statements;
 
 
 ##
@@ -31,7 +32,7 @@ export fn resolveInfo(node) {
         ifIs { <> hasType(s, @@importModuleSelection) }
             {
                 <out> @importModuleSelection{
-                    select: valueList(resolveSelection(s)),
+                    select: $Collection::valueList(resolveSelection(s)),
                     source: get_source(s)
                 }
             };
@@ -65,7 +66,7 @@ export fn resolveInfo(node) {
             };
     };
 
-    <> {imports, exports: keyList(cat({}, exports))}
+    <> {imports, exports: $Collection::keyList(cat({}, exports*))}
 };
 
 ## Documented in spec.
