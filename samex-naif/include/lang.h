@@ -36,7 +36,7 @@ zvalue langLanguageOf0(zvalue programText);
 
 /**
  * Compiles the given expression text into a parse tree form, suitable
- * for passing to `langEval0()`. `expression` must either
+ * for passing to `langSimplify0()`. `expression` must either
  * be a string or a list of tokens, and it must represent an expression
  * in Samizdat Layer 0. The result is an expression node in the
  * Samizdat Layer 0 parse tree form.
@@ -47,7 +47,7 @@ zvalue langParseExpression0(zvalue expression);
 
 /**
  * Compiles the given program text into a parse tree form, suitable
- * for passing to `langEval0()`. `program` must either
+ * for passing to `langSimplify0()`. `program` must either
  * be a string or a list of tokens, and it must represent a top-level
  * program in Samizdat Layer 0. The result is a `function` node in the
  * Samizdat Layer 0 parse tree form.
@@ -55,6 +55,14 @@ zvalue langParseExpression0(zvalue expression);
  * See the spec for details about the grammar.
  */
 zvalue langParseProgram0(zvalue program);
+
+/**
+ * Simplifies the given expression node to a form that is suitable for
+ * passing to `langEval0`.
+ *
+ * See the spec for details about the grammar.
+ */
+zvalue langSimplify0(zvalue node);
 
 /**
  * Tokenizes the given program text into a list of tokens, suitable

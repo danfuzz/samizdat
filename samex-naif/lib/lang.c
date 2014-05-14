@@ -14,10 +14,7 @@
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Lang0_convertToLang0) {
-    zvalue node = args[0];
-
-    // TODO: Probably do `withSimpleDefs` here.
-    return node;
+    return langSimplify0(args[0]);
 }
 
 /* Documented in spec. */

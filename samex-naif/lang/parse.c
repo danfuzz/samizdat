@@ -1239,3 +1239,9 @@ zvalue langParseProgram0(zvalue program) {
 
     return result;
 }
+
+/* Documented in header. */
+zvalue langSimplify0(zvalue node) {
+    // TODO: Probably do `withSimpleDefs` here.
+    return node;
+}
