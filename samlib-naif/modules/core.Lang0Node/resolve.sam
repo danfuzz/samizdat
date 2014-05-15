@@ -22,7 +22,7 @@ import ./getters ::
 ## binding for `name` in the payload.
 fn withoutName(node) {
     def data = $Collection::del(dataOf(node), "name");
-    <> @(get_type(node))(data)
+    <> @(get_typeName(node))(data)
 };
 
 
