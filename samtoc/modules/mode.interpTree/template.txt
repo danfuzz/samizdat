@@ -26,20 +26,20 @@ static zvalue lookup(zvalue context, const char *name) {
 }
 
 zvalue eval(zvalue context) {
-    zvalue evalFn = lookup(context, "Lang0_eval");
+    zvalue evalFn = lookup(context, "Code_eval");
 
     if (evalFn == NULL) {
         zvalue moduleLoad = lookup(context, "moduleLoad");
         if (moduleLoad == NULL) {
-            die("Binding missing: moduleLoad or Lang0_eval");
+            die("Binding missing: moduleLoad or Code_eval");
         }
 
         zvalue langModule = FUN_CALL(moduleLoad,
-            stringFromUtf8(-1, "core.Lang0"));
+            stringFromUtf8(-1, "core.Code"));
 
         evalFn = lookup(langModule, "eval");
         if (evalFn == NULL) {
-            die("Binding missing: core.Lang0::eval");
+            die("Binding missing: core.Code::eval");
         }
     }
 
