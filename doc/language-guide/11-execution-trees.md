@@ -229,7 +229,7 @@ behavior varies depending on if `value` is supplied in this node:
 
 The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
-`Lang0Node::withSimpleDefs` for more details.
+`LangN::simplify` and `Lang0Node::withSimpleDefs` for more details.
 
 #### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
 
@@ -276,8 +276,8 @@ types `@importModule`, `@importModuleSelection`, `@importResource`, and
 These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
-that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
-for more details.
+that incorporates the implied declaration(s). See `LangN::simplify` and
+`Lang0Node::withSimpleDefs` for more details.
 
 #### `exportSelection` &mdash; `@exportSelection{select: [name+]}`
 
@@ -291,8 +291,8 @@ which this node appears.
 These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
-that incorporates the implied declaration(s). See `Lang0Node::withSimpleDefs`
-for more details.
+that incorporates the implied declaration(s). See `LangN::simplify` and
+`Lang0Node::withSimpleDefs` for more details.
 
 #### `importModule` &mdash; `@importModule{name: name, source: source}`
 

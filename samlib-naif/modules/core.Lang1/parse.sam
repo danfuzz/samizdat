@@ -683,8 +683,7 @@ def parProgram = $Peg::makeMainSequence(
         $Peg::makeResult([])),
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeCode { imports, body, . ->
-        def closure = @closure{formals: [], statements: [imports*, body*]};
-        <> withSimpleDefs(closure)
+        <> @closure{formals: [], statements: [imports*, body*]}
     });
 
 ## Documented in spec.

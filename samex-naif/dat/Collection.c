@@ -49,6 +49,10 @@ MOD_INIT(Collection) {
 
     GFN_put = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "put"));
     datImmortalize(GFN_put);
+
+    GFN_valueList =
+        makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "valueList"));
+    datImmortalize(GFN_valueList);
 }
 
 /* Documented in header. */
@@ -62,3 +66,6 @@ zvalue GFN_nthMapping = NULL;
 
 /* Documented in header. */
 zvalue GFN_put = NULL;
+
+/* Documented in header. */
+zvalue GFN_valueList = NULL;

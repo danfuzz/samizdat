@@ -86,7 +86,7 @@ static zvalue loadFile(zvalue path) {
         if (valEqNullOk(ioFileType(srcPath), STR_file)) {
             // We found a source text file.
             zvalue text = ioReadFileUtf8(srcPath);
-            zvalue tree = langParseProgram0(text);
+            zvalue tree = langSimplify0(langParseProgram0(text));
             func = langEval0(PRIMITIVE_ENVIRONMENT, tree);
         } else {
             die("Missing bootstrap library file: %s", valDebugString(path));

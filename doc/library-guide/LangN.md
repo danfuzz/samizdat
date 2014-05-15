@@ -17,43 +17,6 @@ layers 0, 1, and 2.
 <br><br>
 ### Function Definitions
 
-#### `convertToLang0(expressionNode) <> expressionNode`
-
-Converts any higher-layer node types within the given expression into
-Layer 0 forms.
-
-In `Lang0`, this is a no-op. In `Lang1` and `Lang2` this converts parser
-expression nodes into appropriate calls to `Peg` functions.
-
-#### `eval(env, expressionNode) <> . | void`
-
-Returns the evaluation result of executing the given expression node,
-which is a parse tree as specified in this document. It is valid for the
-expression to yield void, in which case this function returns void.
-Evaluation is performed in an execution environment that includes all of
-the variable bindings indicated by `env`, which must be a map.
-
-Very notably, the result of calling `parseProgram` is valid as the
-`expressionNode` argument here.
-
-It is recommended (but not required) that the given `env` include
-bindings for all of the library functions specified by this document.
-
-#### `evalBinary(env, filePath) <> . | void`
-
-Evaluates the named compiled file. `filePath` is expected to name
-a file in the (platform-dependent) binary library format. The file
-is loaded, and its `eval` function is called, passing it the given
-`env`. The return value of this function is the result of the `eval`
-call.
-
-The usual case is for a binary to evaluate to a function definition,
-most typically one that takes no arguments. This is parallel to what
-results from evaluating a program tree using `eval` (above).
-
-It is an error (terminating the runtime) if the file does not exist,
-is not a library file, or is missing necessary bindings.
-
 #### `languageOf(string) <> string | void`
 
 Finds and returns the language module directive in the given string,
@@ -79,6 +42,18 @@ list of tokens.
 
 Returns a `function` node, as defined by the corresponding parse tree
 semantics, that represents the parsed program.
+
+#### `simplify(expressionNode) <> expressionNode`
+
+Converts and simplifies the given node into a form usable by
+`core.Code::eval`.
+
+In `Lang0`, this is a no-op on everything but top-level program nodes.
+For program node, it simplifies `top` declarations and converts `export*`
+nodes into a `yield`ed result.
+
+In `Lang1` and `Lang2`, in addition to the above, this converts parser
+expression nodes into appropriate calls to `Peg` functions.
 
 #### `tokenize(string) <> [token*]`
 

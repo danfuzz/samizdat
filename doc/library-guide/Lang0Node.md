@@ -284,6 +284,11 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `resolveInfo(node) <> {exports: [name+], imports: [name+]}`
+
+Resolves the metainformation a `closure` node that represents a top-level
+module. This returns a map that binds `exports` and `imports`.
+
 #### `resolveSelection(node) <> {(name: sourceName)+}`
 
 Resolves the selection of a `importModuleSelection` node. This returns a

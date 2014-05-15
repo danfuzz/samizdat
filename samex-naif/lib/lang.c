@@ -5,30 +5,12 @@
  */
 
 #include "impl.h"
-#include "io.h"
 #include "lang.h"
 
 
 /*
  * Exported Definitions
  */
-
-/* Documented in spec. */
-FUN_IMPL_DECL(Lang0_eval) {
-    zvalue env = args[0];
-    zvalue expressionNode = args[1];
-
-    return langEval0(env, expressionNode);
-}
-
-/* Documented in spec. */
-FUN_IMPL_DECL(Lang0_evalBinary) {
-    zvalue env = args[0];
-    zvalue path = args[1];
-
-    ioCheckAbsolutePath(path);
-    return datEvalBinary(env, path);
-}
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Lang0_languageOf) {
@@ -43,6 +25,11 @@ FUN_IMPL_DECL(Lang0_parseExpression) {
 /* Documented in spec. */
 FUN_IMPL_DECL(Lang0_parseProgram) {
     return langParseProgram0(args[0]);
+}
+
+/* Documented in spec. */
+FUN_IMPL_DECL(Lang0_simplify) {
+    return langSimplify0(args[0]);
 }
 
 /* Documented in spec. */

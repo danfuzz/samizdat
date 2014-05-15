@@ -39,6 +39,9 @@ gotOutDir=0
 # Whether to compile to binary.
 fullCompile=0
 
+# Arguments to pass to `samex`.
+samexArgs=()
+
 # Additional arguments passed to the program.
 moreArgs=()
 
@@ -48,8 +51,9 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--in-dir=<dir>] [--out-dir=<dir> | --output=<path>]"
-        echo "    [--binary] [--mode=<mode>]"
+        echo "${progName} [--runtime=<name>] [--in-dir=<dir>]"
+        echo "    [--out-dir=<dir> | --output=<path>] [--binary]"
+        echo "    [--mode=<mode>]"
         echo "    <source-path> ..."
         exit
     elif [[ ${opt} == '--binary' ]]; then
@@ -62,6 +66,8 @@ while [[ $1 != '' ]]; do
         gotOutDir=1
     elif [[ ${opt} =~ ^--output=(.*) ]]; then
         outputFile="${BASH_REMATCH[1]}"
+    elif [[ ${opt} =~ ^--runtime= ]]; then
+        samexArgs+=("${opt}")
     elif [[ ${opt} =~ ^- ]]; then
         echo "Unknown option: ${opt}" 1>&2
         exit 1
@@ -113,7 +119,7 @@ if [[ ${outputFile} != '' ]]; then
     moreArgs+=("--output=${outputFile}")
 fi
 
-"${progDir}/samex" "${baseDir}/lib/${progName}" \
+"${progDir}/samex" "${samexArgs[@]}" "${baseDir}/lib/${progName}" \
     "${moreArgs[@]}" -- "$@" \
 || exit 1
 

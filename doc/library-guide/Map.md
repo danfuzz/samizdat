@@ -85,6 +85,11 @@ for `key` to `value`. The result has a replacement for the existing
 mapping for `key` in `map` if such a one existed, or has an
 additional mapping in cases where `map` didn't already bind `key`.
 
+#### `valueList(map) <> list`
+
+Returns a list of all the values mapped by the given `map`, in order of the
+sorted keys.
+
 
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.

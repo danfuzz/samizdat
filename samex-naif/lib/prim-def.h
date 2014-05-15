@@ -67,6 +67,7 @@ PRIM_DEF(Collection_del,          GFN_del);
 PRIM_DEF(Collection_keyList,      GFN_keyList);
 PRIM_DEF(Collection_nthMapping,   GFN_nthMapping);
 PRIM_DEF(Collection_put,          GFN_put);
+PRIM_DEF(Collection_valueList,    GFN_valueList);
 
 // Generic functions: `Sequence` protocol, intended for modularization.
 PRIM_DEF(Sequence_reverse,        GFN_reverse);
@@ -122,14 +123,15 @@ PRIM_DEF(Generator_stdCollect,    FUN_Generator_stdCollect);
 PRIM_FUNC(Box_makeCell,           0, 1);
 PRIM_FUNC(Box_makePromise,        0, 0);
 PRIM_FUNC(Box_makeResult,         0, 1);
+PRIM_FUNC(Code_eval,              2, 2);
+PRIM_FUNC(Code_evalBinary,        2, 2);
 PRIM_FUNC(Io0_cwd,                0, 0);
 PRIM_FUNC(Io0_fileType,           1, 1);
 PRIM_FUNC(Io0_readLink,           1, 1);
 PRIM_FUNC(Io0_readFileUtf8,       1, 1);
 PRIM_FUNC(Io0_writeFileUtf8,      2, 2);
-PRIM_FUNC(Lang0_eval,             2, 2);
-PRIM_FUNC(Lang0_evalBinary,       2, 2);
 PRIM_FUNC(Lang0_languageOf,       1, 1);
 PRIM_FUNC(Lang0_parseExpression,  1, 1);
 PRIM_FUNC(Lang0_parseProgram,     1, 1);
+PRIM_FUNC(Lang0_simplify,         1, 1);
 PRIM_FUNC(Lang0_tokenize,         1, 1);

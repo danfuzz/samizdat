@@ -124,6 +124,9 @@ static zvalue BI_Sequence_nextValue = NULL;
 /** Builtin for `Sequence.nthMapping`. */
 static zvalue BI_Sequence_nthMapping = NULL;
 
+/** Builtin for `Sequence.valueList`. */
+static zvalue BI_Sequence_valueList = NULL;
+
 /* Documented in header. */
 METH_IMPL(Sequence, collect) {
     zvalue coll = args[0];
@@ -219,12 +222,31 @@ METH_IMPL(Sequence, nthMapping) {
 }
 
 /* Documented in header. */
+METH_IMPL(Sequence, valueList) {
+    zvalue seq = args[0];
+
+    if (hasType(seq, TYPE_List)) {
+        return seq;
+    }
+
+    zint size = get_size(seq);
+    zvalue elems[size];
+
+    for (zint i = 0; i < size; i++) {
+        elems[i] = nth(seq, i);
+    }
+
+    return listFromArray(size, elems);
+}
+
+/* Documented in header. */
 void seqBind(zvalue type) {
     genericBind(GFN_collect,    type, BI_Sequence_collect);
     genericBind(GFN_get,        type, BI_Sequence_get);
     genericBind(GFN_keyList,    type, BI_Sequence_keyList);
     genericBind(GFN_nextValue,  type, BI_Sequence_nextValue);
     genericBind(GFN_nthMapping, type, BI_Sequence_nthMapping);
+    genericBind(GFN_valueList,  type, BI_Sequence_valueList);
 }
 
 /** Initializes the module. */
@@ -262,6 +284,10 @@ MOD_INIT(Sequence) {
     BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
         0, stringFromUtf8(-1, "Sequence.nthMapping"));
     datImmortalize(BI_Sequence_nthMapping);
+
+    BI_Sequence_valueList = makeBuiltin(1, 1, METH_NAME(Sequence, valueList),
+        0, stringFromUtf8(-1, "Sequence.valueList"));
+    datImmortalize(BI_Sequence_valueList);
 }
 
 /* Documented in header. */

@@ -70,6 +70,12 @@ must both be ints. `end` defaults to `#sequence - 1` if omitted.
 
 This is equivalent to calling `sliceExclusive(sequence, start, end + 1)`.
 
+#### `valueList(sequence) <> list`
+
+(Refinement of `Collection` protocol.)
+
+Returns the elements of `sequence`, always as a list per se.
+
 
 <br><br>
 ### In-Language Definitions

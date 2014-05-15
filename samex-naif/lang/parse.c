@@ -1186,12 +1186,11 @@ DEF_PARSE(program) {
 
     PARSE(optSemicolons);
 
-    zvalue closure = makeValue(TYPE_closure,
+    return makeValue(TYPE_closure,
         mapFrom2(
             STR_formals,    EMPTY_LIST,
             STR_statements, statements),
         NULL);
-    return withSimpleDefs(closure);
 }
 
 /*
@@ -1238,4 +1237,13 @@ zvalue langParseProgram0(zvalue program) {
     }
 
     return result;
+}
+
+/* Documented in header. */
+zvalue langSimplify0(zvalue node) {
+    if (hasType(node, TYPE_closure)) {
+        return withSimpleDefs(node);
+    }
+
+    return node;
 }

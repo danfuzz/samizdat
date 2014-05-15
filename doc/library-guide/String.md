@@ -97,6 +97,10 @@ Returns an end-exclusive slice of the given string.
 
 Returns an end-inclusive slice of the given string.
 
+#### `valueList(list, n) <> list`
+
+Defined as per the `Sequence` protocol.
+
 
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.

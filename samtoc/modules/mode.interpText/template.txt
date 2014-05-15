@@ -23,9 +23,10 @@ static zvalue lookup(zvalue env, const char *name) {
 
 zvalue eval(zvalue env) {
     zvalue moduleLoad = lookup(env, "moduleLoad");
+    zvalue codeModule = FUN_CALL(moduleLoad, stringFromUtf8(-1, "core.Code"));
+    zvalue evalFn = lookup(codeModule, "eval");
     zvalue langModule = FUN_CALL(moduleLoad, stringFromUtf8(-1, "core.Lang2"));
     zvalue parseProgramFn = lookup(langModule, "parseProgram");
-    zvalue evalFn = lookup(langModule, "eval");
 
     zvalue progStr = stringFromUtf8(-1,
         \%q(source)

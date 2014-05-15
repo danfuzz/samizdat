@@ -1,0 +1,90 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#= language core.Lang0
+
+import core.Collection;
+import core.Generator;
+
+import ./getters ::
+    get_prefix,
+    get_select,
+    get_source,
+    get_statements;
+
+
+##
+## Exported functions
+##
+
+## Documented in spec.
+export fn resolveInfo(node) {
+    def statements = get_statements(node);
+
+    def imports = $Generator::filterAll(statements) { <out> s ->
+        def defNode = ifIs { <> hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        ifIs { <> hasType(s, @@importModule) }
+            { <out> $Collection::del(s, "name") };
+        ifIs { <> hasType(s, @@importModuleSelection) }
+            {
+                <out> @importModuleSelection{
+                    select: $Collection::valueList(resolveSelection(s)),
+                    source: get_source(s)
+                }
+            };
+        ifIs { <> hasType(s, @@importResource) }
+            { <out> $Collection::del(s, "name") };
+    };
+
+    def exports = $Generator::filterAll(statements) { <out> s ->
+        ifIs { <> hasType(s, @@exportSelection) }
+            {
+                def names = $Generator::filterAll(get_select(s))
+                    { name <> {(name): name} };
+                <out> cat(names*)
+            };
+        ifIs { <> hasType(s, @@export) }
+            {
+                def defNode = get_nodeValue(s);
+                ifValue { <> get_name(defNode) }
+                    { name -> <out> {(name): name} };
+                ifIs { <> hasType(defNode, @@importModuleSelection) }
+                    {
+                        def names =
+                            $Generator::filterAll(resolveSelection(defNode))
+                            { mapping ->
+                                def name = get_key(mapping);
+                                <> {(name): name}
+                            };
+                        <out> cat(names*)
+                    };
+                die("Bad `export` payload.");
+            };
+    };
+
+    <> {imports, exports: $Collection::keyList(cat({}, exports*))}
+};
+
+## Documented in spec.
+export fn resolveSelection(node) {
+    def prefix = get_prefix(node);
+    def select = ifValueOr
+        { <> get_select(node) }
+        {
+            ## TODO: In order to handle wildcard imports, this function will
+            ## have to be able to ask for the list of exports from arbitrary
+            ## modules. This will probably mean adding an argument for a
+            ## "module oracle" of some sort.
+            die("TODO: wildcard selection import")
+        };
+
+    def bindings = $Generator::filterAll(select) { name ->
+        <> {cat(prefix, name): name}
+    };
+
+    <> cat({}, bindings*)
+};

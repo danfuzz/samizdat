@@ -34,6 +34,9 @@ takes the following options:
 
 * `--mode=<name>` &mdash; Specifies the compilation mode to use. See below.
 
+* `--runtime=<name>` &mdash; Specifies which `samex` runtime to use. See
+  `samex` docs for more details.
+
 * `--` &mdash; Indicates the end of options. Any further arguments are taken
   to be file names.
 

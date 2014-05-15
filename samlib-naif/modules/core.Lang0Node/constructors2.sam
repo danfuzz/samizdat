@@ -29,7 +29,7 @@ import ./getters ::
 
 import ./refs :: REFS;
 
-import ./select :: resolveSelection;
+import ./resolve :: resolveSelection;
 
 
 ##

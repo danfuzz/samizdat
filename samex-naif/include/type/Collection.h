@@ -35,6 +35,9 @@ extern zvalue GFN_keyList;
 /** Generic `put(collection, key, value)`: Documented in spec. */
 extern zvalue GFN_put;
 
+/** Generic `valueList(collection)`: Documented in spec. */
+extern zvalue GFN_valueList;
+
 /**
  * Calls the `del` generic.
  */

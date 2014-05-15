@@ -183,7 +183,7 @@ export fn compile(sourcePath, targetPath) {
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
     def mainNode = withDynamicImports(
-        $Lang2::convertToLang0($Lang2::parseProgram(sourceText)));
+        $Lang2::simplify($Lang2::parseProgram(sourceText)));
 
     def interner = makeInterner();
     def litsNode = internLiterals(mainNode, interner);
