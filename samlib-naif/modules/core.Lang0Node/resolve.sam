@@ -8,24 +8,13 @@ import core.Collection;
 import core.Generator;
 
 import ./getters ::
+    get_format,
     get_name,
     get_nodeValue,
     get_prefix,
     get_select,
     get_source,
     get_statements;
-
-
-##
-## Private definitions
-##
-
-## Return a derived value just like the given one, except without a
-## binding for `name` in the payload.
-fn withoutName(node) {
-    def data = $Collection::del(dataOf(node), "name");
-    <> @(get_typeName(node))(data)
-};
 
 
 ##
@@ -36,55 +25,72 @@ fn withoutName(node) {
 export fn resolveInfo(node) {
     def statements = get_statements(node);
 
-    def imports = $Generator::filterAll(statements) { <out> s ->
-        def defNode = ifIs { <> hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s };
+    var exports = {};
+    var imports = {};
+    var resources = {};
 
-        ifIs { <> hasType(defNode, @@importModule) }
-            { <out> withoutName(defNode) };
-        ifIs { <> hasType(defNode, @@importModuleSelection) }
-            {
-                <out> @importModuleSelection{
-                    select: $Collection::valueList(resolveSelection(defNode)),
-                    source: get_source(defNode)
-                }
-            };
-        ifIs { <> hasType(defNode, @@importResource) }
-            { <out> withoutName(defNode) };
+    ## Adds all the names (a list of strings) to the `exports` map.
+    fn addToExports(names) {
+        exports := {exports*, names*: Value};
     };
 
-    def exports = $Generator::filterAll(statements) { <out> s ->
-        ifIs { <> hasType(s, @@exportSelection) }
+    ## Adds or revises an element in the `imports` map.
+    fn addToImports(source, names) {
+        def orig = ifValueOr { <> get(imports, source) } { <> {} };
+        def revised = {orig*, names*: Value};
+        imports := {imports*, (source): revised};
+    };
+
+    ## Adds or revises an element in the `resources` map.
+    fn addToResources(source, format) {
+        ## This bounces through a map to uniquify the formats list.
+        def orig = ifValueOr { <> get(resources, source) } { <> [] };
+        def revised = $Collection::keyList({orig*: null, format: null});
+        resources := {resources*, (source): revised};
+    };
+
+    ## Handles any `import*` node type. Ignores other types.
+    fn handleImport(s) {
+        ifIs { <> hasType(s, @@importModule) }
+            { addToImports(get_source(s), [@module]) };
+        ifIs { <> hasType(s, @@importModuleSelection) }
             {
-                def names = $Generator::filterAll(get_select(s))
-                    { name <> {(name): name} };
-                <out> cat(names*)
+                def names = $Collection::valueList(resolveSelection(s));
+                addToImports(get_source(s), names)
             };
+        ifIs { <> hasType(s, @@importResource) }
+            { addToResources(get_source(s), get_format(s)) };
+    };
+
+    ## The filter is just being used as a for-each loop. The direct
+    ## result is ignored.
+    $Generator::filterAll(statements) { s ->
+        ifIs { <> hasType(s, @@exportSelection) }
+            { addToExports(get_select(s)) };
         ifIs { <> hasType(s, @@export) }
             {
                 def defNode = get_nodeValue(s);
                 ifValue { <> get_name(defNode) }
-                    { name -> <out> {(name): name} };
-                ifIs { <> hasType(defNode, @@importModuleSelection) }
+                    { name -> addToExports([name]) }
                     {
+                        ## Must be @@importModuleSelection.
                         def names =
-                            $Generator::filterAll(resolveSelection(defNode))
-                            { mapping ->
-                                def name = get_key(mapping);
-                                <> {(name): name}
-                            };
-                        <out> cat(names*)
+                            $Collection::keyList(resolveSelection(defNode));
+                        addToExports(names)
                     };
-                die("Bad `export` payload.");
+                handleImport(defNode)
             };
+        handleImport(s)
     };
 
-    <> {imports, exports: $Collection::keyList(cat({}, exports*))}
+    <> {exports, imports, resources}
 };
 
 ## Documented in spec.
 export fn resolveSelection(node) {
+    ifNot { <> hasType(node, @@importModuleSelection) }
+        { die("Bad type for `resolveSelection`.") };
+
     def prefix = get_prefix(node);
     def select = ifValueOr
         { <> get_select(node) }
