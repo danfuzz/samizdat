@@ -19,6 +19,7 @@ Contents:
 * [Actors](10-actors.md)
 * [Execution Trees](11-execution-trees.md)
 * [Parser Trees](12-parser-trees.md)
+* [Module Metainformation](13-module-metainfo.md)
 
 Appendix:
 
