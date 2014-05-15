@@ -15,6 +15,18 @@ import ./getters ::
 
 
 ##
+## Private definitions
+##
+
+## Return a derived value just like the given one, except without a
+## binding for `name` in the payload.
+fn withoutName(node) {
+    def data = $Collection::del(dataOf(node), "name");
+    <> @(get_type(node))(data)
+};
+
+
+##
 ## Exported functions
 ##
 
@@ -28,7 +40,7 @@ export fn resolveInfo(node) {
             { <> s };
 
         ifIs { <> hasType(s, @@importModule) }
-            { <out> $Collection::del(s, "name") };
+            { <out> withoutName(s) };
         ifIs { <> hasType(s, @@importModuleSelection) }
             {
                 <out> @importModuleSelection{
@@ -37,7 +49,7 @@ export fn resolveInfo(node) {
                 }
             };
         ifIs { <> hasType(s, @@importResource) }
-            { <out> $Collection::del(s, "name") };
+            { <out> withoutName(s) };
     };
 
     def exports = $Generator::filterAll(statements) { <out> s ->
