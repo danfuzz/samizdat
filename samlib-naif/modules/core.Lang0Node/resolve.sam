@@ -8,10 +8,24 @@ import core.Collection;
 import core.Generator;
 
 import ./getters ::
+    get_name,
+    get_nodeValue,
     get_prefix,
     get_select,
     get_source,
     get_statements;
+
+
+##
+## Private definitions
+##
+
+## Return a derived value just like the given one, except without a
+## binding for `name` in the payload.
+fn withoutName(node) {
+    def data = $Collection::del(dataOf(node), "name");
+    <> @(get_typeName(node))(data)
+};
 
 
 ##
@@ -27,17 +41,17 @@ export fn resolveInfo(node) {
             { <> get_nodeValue(s) }
             { <> s };
 
-        ifIs { <> hasType(s, @@importModule) }
-            { <out> $Collection::del(s, "name") };
-        ifIs { <> hasType(s, @@importModuleSelection) }
+        ifIs { <> hasType(defNode, @@importModule) }
+            { <out> withoutName(defNode) };
+        ifIs { <> hasType(defNode, @@importModuleSelection) }
             {
                 <out> @importModuleSelection{
-                    select: $Collection::valueList(resolveSelection(s)),
-                    source: get_source(s)
+                    select: $Collection::valueList(resolveSelection(defNode)),
+                    source: get_source(defNode)
                 }
             };
-        ifIs { <> hasType(s, @@importResource) }
-            { <out> $Collection::del(s, "name") };
+        ifIs { <> hasType(defNode, @@importResource) }
+            { <out> withoutName(defNode) };
     };
 
     def exports = $Generator::filterAll(statements) { <out> s ->
