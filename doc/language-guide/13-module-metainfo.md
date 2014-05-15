@@ -59,8 +59,9 @@ module as a whole is to be imported.
 ### `resources`
 
 The `resources` section describes the resources imported into the module.
-It is a map from path references to format names. Resource path references
-must always be `@internal`.
+It is a map from path references to lists of format names. (It is a list
+because it is valid to import a resource multiple times using different
+formats.) Resource path references must always be `@internal`.
 
 Format names are strings, with the same meanings as for the resource `import`
 syntax.
