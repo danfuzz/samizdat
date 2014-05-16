@@ -243,32 +243,19 @@ export fn withDynamicImports(node) {
 export fn withSimpleDefs(node) {
     def rawStatements = get_statements(node);
 
-    def tops = $Generator::filterAll(rawStatements) { s ->
-        def defNode = ifIs { <> hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s };
-
-        <> ifIs { <> defNode::top }
-            { <> makeVarDef(get_name(defNode)) }
-    };
-
-    def mains = $Generator::filterAll(rawStatements) { <out> s ->
-        def defNode = ifIs { <> hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s };
-
-        ifIs { <> defNode::top }
-            { <out> makeVarBind(get_name(defNode), get_nodeValue(defNode)) };
-
-        ifIs { <> hasType(s, @@export) }
-            { <out> get_nodeValue(s) };
-
+    ## This is a one-for-one list of replacements for the original
+    ## `statements`.
+    def statements = $Generator::filterAll(rawStatements) { <out> s ->
         ifIs { <> hasType(s, @@exportSelection) }
             { <out> };
 
-        <> s
+        <> ifIs { <> hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s }
     };
 
+    ## This is a list of lists of mappings which, when combined, is a map
+    ## of all exports.
     def exports = $Generator::filterAll(rawStatements) { <out> s ->
         ifIs { <> hasType(s, @@exportSelection) }
             {
@@ -312,7 +299,7 @@ export fn withSimpleDefs(node) {
     <> @(get_type(node)){
         dataOf(node)*,
         optYield*,
-        statements: [tops*, mains*]
+        statements
     }
 };
 

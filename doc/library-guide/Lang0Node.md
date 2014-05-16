@@ -312,10 +312,6 @@ Makes a node just like the given one (presumably a `closure` node), except
 with simpler definitions in the `statements` list. This includes the
 following transformations:
 
-* All `varDef` nodes with `top` bindings are "split" into an early forward
-  declaration (`varDef` with no `value`) and a `varBind` in the original
-  position.
-
 * All `export` nodes are replaced with their `value` payloads.
 
 * All `exportSelection` nodes are removed entirely.
