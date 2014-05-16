@@ -872,7 +872,10 @@ def parProgram = {:
 
     @";"*
 
-    { <> @closure{formals: [], statements: [imports*, body*]} }
+    {
+        def closure = @closure{formals: [], statements: [imports*, body*]};
+        <> withoutTops(closure)
+    }
 :};
 
 ##
