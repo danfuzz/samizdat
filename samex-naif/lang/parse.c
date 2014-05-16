@@ -456,25 +456,21 @@ DEF_PARSE(list) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(typeName) {
+DEF_PARSE(type) {
     MARK();
 
+    MATCH_OR_REJECT(CH_ATAT);
+
     zvalue name = PARSE(identifierString);
-    if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
+    if (name == NULL) {
+        name = PARSE_OR_REJECT(parenExpression);
+    }
 
     if (hasType(name, TYPE_literal)) {
         return makeLiteral(makeDerivedDataType(GET(value, name)));
     } else {
         return makeCall(REFS(makeDerivedDataType), listFrom1(name));
     }
-}
-
-/* Documented in spec. */
-DEF_PARSE(type) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_ATAT);
-    return PARSE_OR_REJECT(typeName);
 }
 
 /* Documented in spec. */

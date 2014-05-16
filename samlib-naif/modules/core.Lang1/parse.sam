@@ -240,18 +240,14 @@ def parList = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parTypeName = $Peg::makeMainSequence(
+def parType = $Peg::makeMainSequence(
+    $Peg::makeToken(@@"@@"),
     $Peg::makeChoice(parIdentifierString, parParenExpression),
-    $Peg::makeCode { name ->
+    $Peg::makeCode { ., name ->
         <> ifIs { <> hasType(name, @@literal) }
             { <> makeLiteral(@@(get_nodeValue(name))) }
             { <> makeCall(REFS::makeDerivedDataType, name) }
     });
-
-## Documented in spec.
-def parType = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"@@"),
-    parTypeName);
 
 ## Documented in spec.
 def parDeriv = $Peg::makeMainSequence(
