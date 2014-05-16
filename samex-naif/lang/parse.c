@@ -1147,7 +1147,7 @@ DEF_PARSE(closure) {
     zvalue closure = makeValue(TYPE_closure,
         GFN_CALL(cat, decls, body),
         NULL);
-    return withSimpleDefs(closure);
+    return withoutTops(closure);
 }
 
 /* Documented in spec. */

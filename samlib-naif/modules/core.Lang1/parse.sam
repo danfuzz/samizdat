@@ -44,9 +44,9 @@ import core.Lang0Node ::
     makeVarRef,
     makeVarRefLvalue,
     withFormals,
-    withSimpleDefs,
     withTop,
-    withoutInterpolate;
+    withoutInterpolate,
+    withoutTops;
 
 import ./tokenize :: tokenize;
 
@@ -654,7 +654,7 @@ parClosure := $Peg::makeMainSequence(
     $Peg::makeToken(@@"}"),
     $Peg::makeCode { ., decls, body, . ->
         def closure = @closure{decls*, body*};
-        <> withSimpleDefs(closure)
+        <> withoutTops(closure)
     });
 
 ## Documented in spec.

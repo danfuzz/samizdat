@@ -51,9 +51,9 @@ import core.Lang0Node ::
     makeVarRef,
     makeVarRefLvalue,
     withFormals,
-    withSimpleDefs,
     withTop,
-    withoutInterpolate;
+    withoutInterpolate,
+    withoutTops;
 
 
 ##
@@ -838,7 +838,7 @@ parClosure := {:
     @"}"
     {
         def closure = @closure{decls*, body*};
-        <> withSimpleDefs(closure)
+        <> withoutTops(closure)
     }
 :};
 

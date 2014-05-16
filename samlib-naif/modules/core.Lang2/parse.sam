@@ -49,9 +49,9 @@ import core.Lang0Node ::
     makeVarRef,
     makeVarRefLvalue,
     withFormals,
-    withSimpleDefs,
     withTop,
-    withoutInterpolate;
+    withoutInterpolate,
+    withoutTops;
 
 import ./safeVar;
 import ./tokenize :: tokenize;
@@ -839,7 +839,7 @@ parClosure := {:
     @"}"
     {
         def closure = @closure{decls*, body*};
-        <> withSimpleDefs(closure)
+        <> withoutTops(closure)
     }
 :};
 
