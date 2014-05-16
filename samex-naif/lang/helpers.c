@@ -546,3 +546,65 @@ zvalue withoutInterpolate(zvalue node) {
         collDel(dataOf(node), STR_interpolate),
         NULL);
 }
+
+/* Documented in spec. */
+zvalue withoutTops(zvalue node) {
+    zvalue rawStatements = get(node, STR_statements);
+    zint size = get_size(rawStatements);
+
+    zvalue tops = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(rawStatements, i);
+        zvalue defNode = hasType(s, TYPE_export)
+            ? get(s, STR_value)
+            : s;
+
+        if (get(defNode, STR_top) != NULL) {
+            tops = listAppend(tops,
+                makeVarDef(get(defNode, STR_name), NULL));
+        }
+    }
+
+    zvalue mains = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(rawStatements, i);
+        zvalue defNode = hasType(s, TYPE_export)
+            ? get(s, STR_value)
+            : s;
+
+        if (get(defNode, STR_top) != NULL) {
+            mains = listAppend(mains,
+                makeVarBind(get(defNode, STR_name), get(defNode, STR_value)));
+        } else {
+            mains = listAppend(mains, s);
+        }
+    }
+
+    zvalue exports = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(rawStatements, i);
+
+        if (!hasType(s, TYPE_export)) {
+            continue;
+        }
+
+        zvalue defNode = get(s, STR_value);
+        if (get(defNode, STR_top) == NULL) {
+            continue;
+        }
+
+        exports = listAppend(exports, get(defNode, STR_name));
+    };
+
+    zvalue optSelection = (get_size(exports) == 0)
+        ? EMPTY_LIST
+        : listFrom1(makeExportSelection(exports));
+
+    return makeValue(
+        get_type(node),
+        GFN_CALL(cat,
+            dataOf(node),
+            mapFrom1(
+                STR_statements, GFN_CALL(cat, tops, mains, optSelection))),
+        NULL);
+}

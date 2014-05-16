@@ -344,3 +344,14 @@ This includes `lvalue` and `interpolate`.
 Makes a node just like the given one, except without any binding
 for `interpolate`. This is used by parser code to preventing argument
 interpolation from applying to parenthesized expressions.
+
+#### `withoutTops(node) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with no `top` decalarations in the `statements` list.
+
+More specifically, for each variable defined to be `top`, a forward-declaring
+`varDef` is added at the top of the `statements` list. The original `varDef`
+is replaced with an equivalent `varBind`. If any so-transformed variables
+were `export`ed, then an `exportSelection` node is added to the end of the
+`statements` list referencing all such variables.

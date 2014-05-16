@@ -139,4 +139,7 @@ zvalue withTop(zvalue node);
 /* Documented in spec. */
 zvalue withoutInterpolate(zvalue node);
 
+/* Documented in spec. */
+zvalue withoutTops(zvalue node);
+
 #endif

@@ -9,6 +9,7 @@ import core.Generator;
 import ./constructors1 ::
     makeApply,
     makeCall,
+    makeExportSelection,
     makeLiteral,
     makeThunk,
     makeVarBind,
@@ -312,6 +313,53 @@ export fn withSimpleDefs(node) {
         dataOf(node)*,
         optYield*,
         statements: [tops*, mains*]
+    }
+};
+
+## Documented in spec.
+export fn withoutTops(node) {
+    def rawStatements = get_statements(node);
+
+    ## This is a collation of all the forward declarations.
+    def tops = $Generator::filterAll(rawStatements) { s ->
+        def defNode = ifIs { <> hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        <> ifIs { <> defNode::top }
+            { <> makeVarDef(get_name(defNode)) }
+    };
+
+    ## These are the one-for-one replacements for the original `statements`.
+    def mains = $Generator::filterAll(rawStatements) { <out> s ->
+        def defNode = ifIs { <> hasType(s, @@export) }
+            { <> get_nodeValue(s) }
+            { <> s };
+
+        <> ifIs { <> defNode::top }
+            { <> makeVarBind(get_name(defNode), get_nodeValue(defNode)) }
+            { <> s }
+    };
+
+    ## This lists all the exported variables that were transformed above.
+    def exports = $Generator::filterAll(rawStatements) { <out> s ->
+        ifNot { <> hasType(s, @@export) }
+            { <out> };
+
+        def defNode = get_nodeValue(s);
+        ifNot { <> defNode::top }
+            { <out> };
+
+        <> get_name(defNode)
+    };
+
+    def optSelection = ifIs { <> eq(exports, []) }
+        { <> [] }
+        { <> [makeExportSelection(exports*)] };
+
+    <> @(get_type(node)){
+        dataOf(node)*,
+        statements: [tops*, mains*, optSelection*]
     }
 };
 
