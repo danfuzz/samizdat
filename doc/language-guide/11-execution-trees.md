@@ -229,7 +229,7 @@ behavior varies depending on if `value` is supplied in this node:
 
 The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
-`LangN::simplify` and `Lang0Node::withSimpleDefs` for more details.
+`Lang0Node::withoutTops` for more details.
 
 **Note:** Though there are no restrictions on the `name` in general, if
 a node of this type represents a variable being exported from a module,
