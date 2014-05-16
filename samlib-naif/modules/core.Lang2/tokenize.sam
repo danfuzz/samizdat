@@ -34,7 +34,7 @@ def KEYWORDS = $Generator::collectAsMap(
         ## Layer 2 defines additional keywords here.
         "by", "default", "do", "else", "for", "if", "in", "module", "switch",
         "while"])
-        { name <> {(name): @(name)} });
+        { name <> {(name): @(@@(name))} });
 
 ## These are all the int digits, as a map from strings to digit values. This
 ## includes hex digits as well, in both lower and upper case. Finally, this

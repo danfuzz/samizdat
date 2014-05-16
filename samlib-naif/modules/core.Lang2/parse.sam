@@ -308,7 +308,13 @@ def parType = {:
 def parDeriv = {:
     @"@"
 
-    type = parTypeName
+    type = (
+        name = parIdentifierString
+        { <> makeLiteral(@@(get_nodeValue(name))) }
+    |
+        parParenExpression
+    )
+
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCall(REFS::makeValue, type, value*) }
@@ -915,11 +921,11 @@ def parChoicePex;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
-    @@"&": "lookaheadSuccess",
-    @@"!": "lookaheadFailure",
-    @@"?": "opt",
-    @@"*": "star",
-    @@"+": "plus"
+    @@"&": @@lookaheadSuccess,
+    @@"!": @@lookaheadFailure,
+    @@"?": @@opt,
+    @@"*": @@star,
+    @@"+": @@plus
 };
 
 ## Parses a parser function.
@@ -979,9 +985,9 @@ def parParserSet = {:
     @"["
 
     type = (
-        @"!" { <> "tokenSetComplement" }
+        @"!" { <> @@tokenSetComplement }
     |
-        { <> "tokenSet" }
+        { <> @@tokenSet }
     )
 
     terminals = (
@@ -1613,7 +1619,7 @@ parPostfixOperator2 := {:
             def getterRef = makeVarRef(cat("get_", name));
             <> { node ->
                 def getterCall = makeCall(getterRef, node);
-                <> @(get_typeName(getterCall)){
+                <> @(get_type(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarRef(cat("set_", name));

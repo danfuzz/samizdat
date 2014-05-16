@@ -307,7 +307,13 @@ def parType = {:
 def parDeriv = {:
     @"@"
 
-    type = parTypeName
+    type = (
+        name = parIdentifierString
+        { <> makeLiteral(@@(get_nodeValue(name))) }
+    |
+        parParenExpression
+    )
+
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCall(REFS::makeValue, type, value*) }
@@ -914,11 +920,11 @@ def parChoicePex;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
-    @@"&": "lookaheadSuccess",
-    @@"!": "lookaheadFailure",
-    @@"?": "opt",
-    @@"*": "star",
-    @@"+": "plus"
+    @@"&": @@lookaheadSuccess,
+    @@"!": @@lookaheadFailure,
+    @@"?": @@opt,
+    @@"*": @@star,
+    @@"+": @@plus
 };
 
 ## Parses a parser function.
@@ -978,9 +984,9 @@ def parParserSet = {:
     @"["
 
     type = (
-        @"!" { <> "tokenSetComplement" }
+        @"!" { <> @@tokenSetComplement }
     |
-        { <> "tokenSet" }
+        { <> @@tokenSet }
     )
 
     terminals = (

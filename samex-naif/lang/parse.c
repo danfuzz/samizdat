@@ -483,7 +483,13 @@ DEF_PARSE(deriv) {
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue type = PARSE_OR_REJECT(typeName);
+    zvalue type;
+    zvalue name = PARSE(identifierString);
+    if (name != NULL) {
+        type = makeLiteral(makeDerivedDataType(GET(value, name)));
+    } else {
+        type = PARSE_OR_REJECT(parenExpression);
+    }
 
     // Value is optional; these are allowed to all fail.
     zvalue value = PARSE(parenExpression);

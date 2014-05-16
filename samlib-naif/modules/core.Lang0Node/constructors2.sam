@@ -235,7 +235,7 @@ export fn withDynamicImports(node) {
     };
 
     def statements = cat(converted*);
-    <> @(get_typeName(node)){dataOf(node)*, statements}
+    <> @(get_type(node)){dataOf(node)*, statements}
 };
 
 ## Documented in spec.
@@ -308,7 +308,7 @@ export fn withSimpleDefs(node) {
             <> {yield: makeCall(REFS::cat, cat(exports*)*)}
         };
 
-    <> @(get_typeName(node)){
+    <> @(get_type(node)){
         dataOf(node)*,
         optYield*,
         statements: [tops*, mains*]
@@ -317,5 +317,5 @@ export fn withSimpleDefs(node) {
 
 ## Documented in spec.
 export fn withTop(node) {
-    <> @(get_typeName(node)){dataOf(node)*, top: true}
+    <> @(get_type(node)){dataOf(node)*, top: true}
 };

@@ -256,7 +256,13 @@ def parType = $Peg::makeMainSequence(
 ## Documented in spec.
 def parDeriv = $Peg::makeMainSequence(
     $Peg::makeToken(@@"@"),
-    parTypeName,
+    $Peg::makeChoice(
+        $Peg::makeSequence(
+            parIdentifierString,
+            $Peg::makeCode { ., name ->
+                <> makeLiteral(@@(get_nodeValue(name)))
+            }),
+        parParenExpression),
     $Peg::makeOpt($Peg::makeChoice(parParenExpression, parMap, parList)),
     $Peg::makeCode { ., type, value ->
         <> makeCall(REFS::makeValue, type, value*)
@@ -714,11 +720,11 @@ def parChoicePex;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
-    @@"&": "lookaheadSuccess",
-    @@"!": "lookaheadFailure",
-    @@"?": "opt",
-    @@"*": "star",
-    @@"+": "plus"
+    @@"&": @@lookaheadSuccess,
+    @@"!": @@lookaheadFailure,
+    @@"?": @@opt,
+    @@"*": @@star,
+    @@"+": @@plus
 };
 
 ## Documented in spec.
@@ -770,8 +776,8 @@ def parParserSet = $Peg::makeMainSequence(
     $Peg::makeChoice(
         $Peg::makeSequence(
             $Peg::makeToken(@@"!"),
-            $Peg::makeResult("tokenSetComplement")),
-        $Peg::makeResult("tokenSet")),
+            $Peg::makeResult(@@tokenSetComplement)),
+        $Peg::makeResult(@@tokenSet)),
     $Peg::makeChoice(
         $Peg::makeMainSequence(
             $Peg::makePlus(parParserSetString),

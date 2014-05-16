@@ -365,7 +365,7 @@ export fn makeString(string) {
     def types = typeListFromString(string);
     def chars = collect(types, makeToken);
 
-    <> @PegSequence[chars*, @PegResult(@(string))]
+    <> @PegSequence[chars*, @PegResult(@(@@(string)))]
 };
 
 ## Documented in spec.
@@ -398,7 +398,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.
-            <> $Generator::makeFilterGenerator(input) { ch <> @(ch) }
+            <> $Generator::makeFilterGenerator(input) { ch <> @(@@(ch)) }
         }
         { <> input };
 
