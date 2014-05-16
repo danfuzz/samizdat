@@ -284,10 +284,12 @@ def parList = {:
     }
 :};
 
-## Parses a type name, yielding a type value. If the name is a blatant
-## literal, then the result of this rule is also a literal. If not, the
-## result of this rule is a call to `makeDerivedDataType`.
-def parTypeName = {:
+## Parses a type literal form, yielding an expression node that produces a
+## type value. If the name is a blatant literal, then the result of this rule
+## is also a literal. If not, the result of this rule is a call to
+## `makeDerivedDataType`.
+def parType = {:
+    @"@@"
     name = (parIdentifierString | parParenExpression)
 
     {
@@ -297,17 +299,17 @@ def parTypeName = {:
     }
 :};
 
-## Parses a type literal form.
-def parType = {:
-    @"@@"
-    parTypeName
-:};
-
 ## Parses a literal in derived value form.
 def parDeriv = {:
     @"@"
 
-    type = parTypeName
+    type = (
+        name = parIdentifierString
+        { <> makeLiteral(@@(get_nodeValue(name))) }
+    |
+        parParenExpression
+    )
+
     value = (parParenExpression | parMap | parList)?
 
     { <> makeCall(REFS::makeValue, type, value*) }
@@ -914,11 +916,11 @@ def parChoicePex;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
-    @@"&": "lookaheadSuccess",
-    @@"!": "lookaheadFailure",
-    @@"?": "opt",
-    @@"*": "star",
-    @@"+": "plus"
+    @@"&": @@lookaheadSuccess,
+    @@"!": @@lookaheadFailure,
+    @@"?": @@opt,
+    @@"*": @@star,
+    @@"+": @@plus
 };
 
 ## Parses a parser function.
@@ -978,9 +980,9 @@ def parParserSet = {:
     @"["
 
     type = (
-        @"!" { <> "tokenSetComplement" }
+        @"!" { <> @@tokenSetComplement }
     |
-        { <> "tokenSet" }
+        { <> @@tokenSet }
     )
 
     terminals = (

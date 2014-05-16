@@ -249,14 +249,18 @@ fn Value.sourceGeneral(adorn) {
         { string -> return string };
 
     def type = get_type(this);
-    def typeStr = sourceGeneral(type, true);
-    def prefix = ifIs { <> eq("@", nth(typeStr, 0)) }
+    def name = typeName(type);
+    def typeStr = ifIs { <> hasType(name, String) }
         {
-            ## The `sliceInclusive` gets rid of the first `@` from the type
-            ## representation, which itself starts with `@@` (see above).
-            <> $Sequence::sliceInclusive(typeStr, 1)
+            ## The type is a string.
+            <> ifValueOr { <> isIdentifier(name) }
+                { <> sourceGeneral(name, true) }
         }
-        { <> typeStr };
+        {
+            ## General case for type.
+            <> cat("(", sourceGeneral(type, true), ")")
+        };
+    def prefix = cat("@", typeStr);
 
     ifNot { <> eq(typeParent(type), DerivedData) }
         {

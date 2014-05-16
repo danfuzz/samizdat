@@ -28,10 +28,10 @@ import proto.Number;
 ## tokenization syntax of identifiers.
 def KEYWORDS = $Generator::collectAsMap(
     $Generator::makeFilterGenerator([
-        "break", "continue", "def", "fn", "return", "var",
+        "break", "continue", "def", "export", "fn", "import", "return", "var",
         ## Layer 2 defines additional keywords here.
         []*])
-        { name <> {(name): @(name)} });
+        { name <> {(name): @(@@(name))} });
 
 ## These are all the int digits, as a map from strings to digit values. This
 ## includes hex digits as well, in both lower and upper case. Finally, this

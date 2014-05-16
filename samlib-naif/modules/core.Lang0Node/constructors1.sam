@@ -95,12 +95,12 @@ export fn makeVarRefLvalue(name) {
 
 ## Documented in spec.
 export fn withFormals(node, formals) {
-    <> @(get_typeName(node)){dataOf(node)*, formals}
+    <> @(get_type(node)){dataOf(node)*, formals}
 };
 
 ## Documented in spec.
 export fn withoutInterpolate(node) {
-    <> @(get_typeName(node))($Collection::del(dataOf(node), "interpolate"))
+    <> @(get_type(node))($Collection::del(dataOf(node), "interpolate"))
 };
 
 ## Documented in spec.
@@ -109,5 +109,5 @@ export fn withoutIntermediates(node) {
         $Collection::del(dataOf(node), "lvalue"),
         "interpolate");
 
-    <> @(get_typeName(node))(data)
+    <> @(get_type(node))(data)
 };

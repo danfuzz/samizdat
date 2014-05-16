@@ -57,7 +57,7 @@ fn makeCallPex(function, node, formals) {
 
 ## Makes a node with additional / replacement bindings from the original.
 fn withBindings(orig, more) {
-    <> @(get_typeName(orig))({dataOf(orig)*, more*})
+    <> @(get_type(orig))({dataOf(orig)*, more*})
 };
 
 ## Makes a node with additional / replacement bindings from the original,

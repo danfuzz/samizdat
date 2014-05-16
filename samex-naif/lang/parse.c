@@ -456,11 +456,15 @@ DEF_PARSE(list) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(typeName) {
+DEF_PARSE(type) {
     MARK();
 
+    MATCH_OR_REJECT(CH_ATAT);
+
     zvalue name = PARSE(identifierString);
-    if (name == NULL) { name = PARSE_OR_REJECT(parenExpression); }
+    if (name == NULL) {
+        name = PARSE_OR_REJECT(parenExpression);
+    }
 
     if (hasType(name, TYPE_literal)) {
         return makeLiteral(makeDerivedDataType(GET(value, name)));
@@ -470,20 +474,18 @@ DEF_PARSE(typeName) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(type) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_ATAT);
-    return PARSE_OR_REJECT(typeName);
-}
-
-/* Documented in spec. */
 DEF_PARSE(deriv) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue type = PARSE_OR_REJECT(typeName);
+    zvalue type;
+    zvalue name = PARSE(identifierString);
+    if (name != NULL) {
+        type = makeLiteral(makeDerivedDataType(GET(value, name)));
+    } else {
+        type = PARSE_OR_REJECT(parenExpression);
+    }
 
     // Value is optional; these are allowed to all fail.
     zvalue value = PARSE(parenExpression);
