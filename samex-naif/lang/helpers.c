@@ -454,37 +454,41 @@ zvalue withFormals(zvalue node, zvalue formals) {
 
 /* Documented in spec. */
 zvalue withSimpleDefs(zvalue node) {
-    // This implementation isn't as close a transliteration as other functions
-    // in this file, but the end result should be the same.
-
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
-    zvalue tops = EMPTY_LIST;
-    zvalue mains = EMPTY_LIST;
-    zvalue exports = EMPTY_LIST;
 
+    zvalue statements = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
-        zvalue one = nth(rawStatements, i);
+        zvalue s = nth(rawStatements, i);
 
-        if (hasType(one, TYPE_exportSelection)) {
-            zvalue select = get(one, STR_select);
+        if (hasType(s, TYPE_exportSelection)) {
+            continue;
+        } else if (hasType(s, TYPE_export)) {
+            s = get(s, STR_value);
+        }
+
+        statements = listAppend(statements, s);
+    }
+
+    zvalue exports = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(rawStatements, i);
+
+        if (hasType(s, TYPE_exportSelection)) {
+            zvalue select = get(s, STR_select);
             zint selectSize = get_size(select);
             for (zint j = 0; j < selectSize; j++) {
                 zvalue name = nth(select, j);
                 exports = appendNameBinding(exports, name);
             }
-            continue;
-        }
-
-        if (hasType(one, TYPE_export)) {
-            one = get(one, STR_value);  // Re-set `one` to the inner statement.
-
-            zvalue name = get(one, STR_name);
+        } else if (hasType(s, TYPE_export)) {
+            zvalue inner = get(s, STR_value);
+            zvalue name = get(inner, STR_name);
 
             if (name != NULL) {
                 exports = appendNameBinding(exports, name);
-            } else if (hasType(one, TYPE_importModuleSelection)) {
-                zvalue selection = resolveSelection(one);
+            } else if (hasType(inner, TYPE_importModuleSelection)) {
+                zvalue selection = resolveSelection(inner);
                 zint size = get_size(selection);
                 zmapping mappings[size];
                 arrayFromMap(mappings, selection);
@@ -496,17 +500,6 @@ zvalue withSimpleDefs(zvalue node) {
             } else {
                 die("Bad `export` payload.");
             }
-
-            // And fall through, to handle `top` and emit inner statement.
-        }
-
-        if (hasType(one, TYPE_varDef) && (get(one, STR_top) != NULL)) {
-            zvalue name = get(one, STR_name);
-            zvalue value = get(one, STR_value);
-            tops = listAppend(tops, makeVarDef(name, NULL));
-            mains = listAppend(mains, makeVarBind(name, value));
-        } else {
-            mains = listAppend(mains, one);
         }
     }
 
@@ -523,7 +516,7 @@ zvalue withSimpleDefs(zvalue node) {
         GFN_CALL(cat,
             dataOf(node),
             mapFrom2(
-                STR_statements, GFN_CALL(cat, tops, mains),
+                STR_statements, statements,
                 STR_yield,      yield)),
         NULL);
 }
@@ -544,5 +537,67 @@ zvalue withoutInterpolate(zvalue node) {
     return makeValue(
         get_type(node),
         collDel(dataOf(node), STR_interpolate),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue withoutTops(zvalue node) {
+    zvalue rawStatements = get(node, STR_statements);
+    zint size = get_size(rawStatements);
+
+    zvalue tops = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(rawStatements, i);
+        zvalue defNode = hasType(s, TYPE_export)
+            ? get(s, STR_value)
+            : s;
+
+        if (get(defNode, STR_top) != NULL) {
+            tops = listAppend(tops,
+                makeVarDef(get(defNode, STR_name), NULL));
+        }
+    }
+
+    zvalue mains = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(rawStatements, i);
+        zvalue defNode = hasType(s, TYPE_export)
+            ? get(s, STR_value)
+            : s;
+
+        if (get(defNode, STR_top) != NULL) {
+            mains = listAppend(mains,
+                makeVarBind(get(defNode, STR_name), get(defNode, STR_value)));
+        } else {
+            mains = listAppend(mains, s);
+        }
+    }
+
+    zvalue exports = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(rawStatements, i);
+
+        if (!hasType(s, TYPE_export)) {
+            continue;
+        }
+
+        zvalue defNode = get(s, STR_value);
+        if (get(defNode, STR_top) == NULL) {
+            continue;
+        }
+
+        exports = listAppend(exports, get(defNode, STR_name));
+    };
+
+    zvalue optSelection = (get_size(exports) == 0)
+        ? EMPTY_LIST
+        : listFrom1(makeExportSelection(exports));
+
+    return makeValue(
+        get_type(node),
+        GFN_CALL(cat,
+            dataOf(node),
+            mapFrom1(
+                STR_statements, GFN_CALL(cat, tops, mains, optSelection))),
         NULL);
 }

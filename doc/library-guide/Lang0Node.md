@@ -312,10 +312,6 @@ Makes a node just like the given one (presumably a `closure` node), except
 with simpler definitions in the `statements` list. This includes the
 following transformations:
 
-* All `varDef` nodes with `top` bindings are "split" into an early forward
-  declaration (`varDef` with no `value`) and a `varBind` in the original
-  position.
-
 * All `export` nodes are replaced with their `value` payloads.
 
 * All `exportSelection` nodes are removed entirely.
@@ -344,3 +340,14 @@ This includes `lvalue` and `interpolate`.
 Makes a node just like the given one, except without any binding
 for `interpolate`. This is used by parser code to preventing argument
 interpolation from applying to parenthesized expressions.
+
+#### `withoutTops(node) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with no `top` decalarations in the `statements` list.
+
+More specifically, for each variable defined to be `top`, a forward-declaring
+`varDef` is added at the top of the `statements` list. The original `varDef`
+is replaced with an equivalent `varBind`. If any so-transformed variables
+were `export`ed, then an `exportSelection` node is added to the end of the
+`statements` list referencing all such variables.

@@ -1147,7 +1147,7 @@ DEF_PARSE(closure) {
     zvalue closure = makeValue(TYPE_closure,
         GFN_CALL(cat, decls, body),
         NULL);
-    return withSimpleDefs(closure);
+    return withoutTops(closure);
 }
 
 /* Documented in spec. */
@@ -1188,11 +1188,12 @@ DEF_PARSE(program) {
 
     PARSE(optSemicolons);
 
-    return makeValue(TYPE_closure,
+    zvalue closure = makeValue(TYPE_closure,
         mapFrom2(
             STR_formals,    EMPTY_LIST,
             STR_statements, statements),
         NULL);
+    return withoutTops(closure);
 }
 
 /*
