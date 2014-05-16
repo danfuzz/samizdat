@@ -53,12 +53,13 @@ while [[ $1 != '' ]]; do
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--runtime=<name>] [--in-dir=<dir>]"
         echo "    [--out-dir=<dir> | --output=<path>] [--binary]"
-        echo "    [--mode=<mode>]"
+        echo "    [--mode=<mode>] [--link-paths=<path>:<path>...]"
         echo "    <source-path> ..."
         exit
     elif [[ ${opt} == '--binary' ]]; then
         fullCompile=1
     elif [[    ${opt} =~ ^--mode=
+            || ${opt} =~ ^--link-paths=
             || ${opt} =~ ^--in-dir= ]]; then
         moreArgs+=("${opt}")
     elif [[ ${opt} =~ ^--out-dir= ]]; then
