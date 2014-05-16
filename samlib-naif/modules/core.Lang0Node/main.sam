@@ -38,7 +38,8 @@ export import ./constructors2 ::
     makeOptValue,
     withDynamicImports,
     withSimpleDefs,
-    withTop;
+    withTop,
+    withoutTops;
 
 export import ./formals ::
     formalsMaxArgs,

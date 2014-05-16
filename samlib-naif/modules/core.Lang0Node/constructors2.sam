@@ -331,7 +331,7 @@ export fn withoutTops(node) {
     };
 
     ## These are the one-for-one replacements for the original `statements`.
-    def mains = $Generator::filterAll(rawStatements) { <out> s ->
+    def mains = $Generator::filterAll(rawStatements) { s ->
         def defNode = ifIs { <> hasType(s, @@export) }
             { <> get_nodeValue(s) }
             { <> s };
