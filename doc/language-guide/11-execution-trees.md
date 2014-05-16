@@ -231,6 +231,10 @@ The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
 `LangN::simplify` and `Lang0Node::withSimpleDefs` for more details.
 
+**Note:** Though there are no restrictions on the `name` in general, if
+a node of this type represents a variable being exported from a module,
+then it must be a string.
+
 #### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
@@ -281,8 +285,8 @@ that incorporates the implied declaration(s). See `LangN::simplify` and
 
 #### `exportSelection` &mdash; `@exportSelection{select: [name+]}`
 
-* `select: [name+]` &mdash; Selection of variable names to export (each
-  element typically a string).
+* `select: [name+]` &mdash; Selection of variable names to export, where
+  each element must be a string.
 
 This represents the export of a set of named bindings out of a module. Each
 of the `names` must have been defined earlier in the list of statements in
@@ -296,7 +300,7 @@ that incorporates the implied declaration(s). See `LangN::simplify` and
 
 #### `importModule` &mdash; `@importModule{name: name, source: source}`
 
-* `name: name` &mdash; Name of the variable to bind to (typically a string).
+* `name: name` &mdash; Name of the variable to bind to. Must be a string.
 
 * `source: source` &mdash; Name of the module. Must be either an `@external`
   or `@internal` value (described below).
@@ -306,12 +310,13 @@ the program's top-level environment.
 
 #### `importModuleSelection` &mdash; `@importModuleSelection{prefix: name, (select: [name+])?, source: source}`
 
-* `prefix: name` &mdash; Prefix for variable names to bind. Allowed to be
-  the empty string (`""`) to indicate no prefixing should be done.
+* `prefix: name` &mdash; Prefix for variable names to bind. Must be a string.
+  Allowed to be the empty string (`""`) to indicate no prefixing should be
+  done.
 
 * `select: [name+]` (optional) &mdash; List of module-exported bindings
-  to import. When absent, indicates that *all* of the module's exports are
-  to be imported.
+  to import. Elements must be strings. When absent, indicates that *all* of
+  the module's exports are to be imported.
 
 * `source: source` &mdash; Name of the module. Must be either an `@external`
   or `@internal` value (described below).
@@ -321,7 +326,7 @@ variables in the program's top-level environment.
 
 #### `importResource` &mdash; `@importResource{name: name, source: source, format: format}`
 
-* `name: name` &mdash; Name of the variable to bind to (typically a string).
+* `name: name` &mdash; Name of the variable to bind to. Must be a string.
 
 * `source: source` &mdash; Name of the module. Must be either an `@external`
   or `@internal` value (described below).
