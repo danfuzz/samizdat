@@ -285,14 +285,11 @@ of type:
   type name. For example, the global reference `String` refers to the core
   value type named `String`.
 
-* The type of a data value created using the syntax `@(type)(value)`
-  is a derived data type, where the type's name is the `type` specified
-  in the syntax. For example, the type of `@("stuff")([1, 2, 3])` is a
-  derived data type with name `"stuff"`. This is described more fully below
-  under "DerivedData."
-
-  There is a one-to-one correspondence between a value and a derived data type
-  with that value as its name.
+* Arbitrary data is allowed to be tagged with a an arbitrary type name,
+  using the syntax `@...` described under "DerivedData," below. The type of
+  this tagged data is a "derived data type." There is a one-to-one
+  correspondence between a value and a derived data type with that value as
+  its name.
 
   A derived data type can be specified in code by indicating its name
   in parentheses, preceded by `@@`. If the name is a literal string, then
@@ -318,22 +315,22 @@ function.
 This is the supertype of all "pure data" types in the language.
 
 
-### DerivedData (derived data types)
+### DerivedData (derived data values)
 
-A derived data value is one that is constructed with an explicit type
-tag and optional data payload.
+A derived data value is one that is constructed with an explicit derived
+data type and optional data payload.
 
 Derived data values are introduced with an at-sign (`@`). This is
-followed by a required type name and then an optional data payload. The type
-name and payload (if present) must each be surrounded by parentheses
+followed by a required type and then an optional data payload. The type
+and payload (if present) must each be surrounded by parentheses
 (separately), with the following exceptions:
 
-* If the type name is a literal string which abides by the syntax for
-  identifiers in the language, then it may be represented directly, with
-  no parentheses or quoting required.
+* If the type name is a literal string in general (`"..."`), then it may be
+  represented directly after the `@`, with no parentheses required.
 
-* If the type name is a literal string form (`"..."`), then it may be
-  represented without parentheses.
+* If the type name is a literal string and in addition abides by the syntax
+  for identifiers in the language, then it may be represented directly after
+  the `@`, with no parentheses or quoting required.
 
 * If the data payload is a map form (`{...}`), then it may be represented
   without parentheses.
@@ -342,11 +339,11 @@ name and payload (if present) must each be surrounded by parentheses
   without parentheses.
 
 ```
-@("lozenge")                  ## a payload-free value of type `"lozenge"`
+@(@@lozenge)                  ## a payload-free value of type `"lozenge"`
 @"lozenge"                    ## shorthand for same
 @lozenge                      ## shorthand for same
 
-@("heartState")("pure")       ## a "heart state" value, with string payload
+@(@@heartState)("pure")       ## a "heart state" value, with string payload
 @"heartState"("pure")         ## shorthand for same
 @heartState("pure")           ## shorthand for same
 
@@ -356,9 +353,10 @@ name and payload (if present) must each be surrounded by parentheses
 @utensils(["fork", "knife", "spoon"])                  ## a list payload
 @utensils["fork", "knife", "spoon"]                    ## shorthand for same
 
-@("Null")                     ## the value usually just written as `null`
+@(@@"Null")                   ## the value usually just written as `null`
+@(@@Null)                     ## same as above
 @Null                         ## same as above
-@(null)                       ## a type-only value with type `null`
+@(@@(null))                   ## a type-only value with type `null`
 
 @Boolean(0)                   ## the value usually just written as `false`
 @Boolean(1)                   ## the value usually just written as `true`
