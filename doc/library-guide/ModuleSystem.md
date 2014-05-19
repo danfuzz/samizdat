@@ -54,27 +54,18 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `intraRead(loader, path, format) <> string`
+#### `intraRead(loader, path, format) <> . | void`
 
-This reads an intra-module resource file, interpreting it as the given
-`format` (a string name). `path` is expected to be a string identifying a
-relative file path within the module's file hierarchy.
+This reads and/or processes an intra-module resource file, interpreting it as
+the given `format` (a string name). `path` is expected to be a string
+identifying a relative file path within the module's file hierarchy.
 
-It is an error (terminating the runtime) if the indicated `path` does not
-exist as a file, or if the given `format` is not recognized.
+It is an error (terminating the runtime) if the given `format` is not
+recognized. For all `format`s other than `"type"`, it is an error
+(terminating the runtime) if the indicated `path` does not exist as a file.
 
-Recognized types include:
-
-* `utf8` &mdash; Treat the file as UTF-8 encoded text, returning a string.
-
-#### `intraType(loader, path) <> string | void`
-
-This gets the type of an intra-module resource file named by the indicated
-relative `path`. The return values are the same as for `$Io0::fileType`
-(see which).
-
-`path` is expected to be a string identifying a relative file path within the
-module's file hierarchy.
+See "Resource Import" in the language guide for more details on the
+available `format`s.
 
 
 <br><br>

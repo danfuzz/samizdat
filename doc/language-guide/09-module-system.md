@@ -169,6 +169,9 @@ the resource, minus any extension.
 
 The following formats are understood by the system:
 
+* `type` &mdash; Identify the file type of the resource. Return values are
+  the same as for `core.Io0::fileType` (see which for details).
+
 * `@utf8` &mdash; Interpret the resource file as UTF-8 encoded text.
 
 Examples:
@@ -352,14 +355,8 @@ other modules.
   *not* have a suffix; the module system handles finding the
   appropriately-suffixed file.
 
-* `intraRead(path, format) <> string` &mdash; This reads the intra-module file
-  named by the indicated relative path, interpreting it as indicated by the
-  `format`. `path` is as with `intraLoad`, except that the final file is left
-  as-is (and not suffixed automatically). See "Resource import" above for
-  details about `format`.
-
-* `intraType(path) <> string | void` &mdash; This gets the type of an
-  intra-module file named by the indicated relative path (a string).
-  `path` is as with `intraLoad`, except that the final file is left
-  as-is (and not suffixed automatically). The return value is the same
-  as for `$Io0::fileType` (see which).
+* `intraRead(path, format) <> . | void` &mdash; This reads and/or processes
+  the intra-module file named by the indicated relative path, interpreting it
+  as indicated by the `format`. `path` is as with `intraLoad`, except that the
+  final file is left as-is (and not suffixed automatically). See "Resource
+  import" above for details about `format`.
