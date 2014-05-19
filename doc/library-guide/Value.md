@@ -160,11 +160,13 @@ In order to "have the type," `value` must either be an instance of type
 
 Returns a derived value with the given type (a value of type `Type`)
 and optional data payload value (an arbitrary value). These
-equivalences hold for Samizdat Layer 0 source code:
+equivalences hold for Samizdat source code:
 
 ```
-@(type)         is equivalent to  v = makeValue(makeDerivedDataType(type));
-@(type)(value)  is equivalent to  v = makeValue(makeDerivedDataType(type), value);
+@type           is equivalent to  makeValue(@@type)
+@type(value)    is equivalent to  makeValue(@@type, value)
+@(type)         is equivalent to  makeValue(type)
+@(type)(value)  is equivalent to  makeValue(type, value)
 ```
 
 **Syntax Note:** Used in the translation of `@(type)(value)`
