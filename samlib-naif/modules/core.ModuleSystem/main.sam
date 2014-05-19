@@ -43,10 +43,22 @@ def $Lang0 = {
     tokenize:        Lang0_tokenize
 };
 
+## Makes an entry for `BOOTSTRAP_MODULES`.
+fn makeBootstrapEntry(exports) {
+    <> @module{
+        exports,
+        info: {
+            exports:   {Collection_keyList(exports)*: Value},
+            imports:   {},
+            resources: {}
+        }
+    }
+};
+
 def BOOTSTRAP_MODULES = {
-    "core.Code":  $Code,
-    "core.Io0":   $Io0,
-    "core.Lang0": $Lang0
+    "core.Code":  makeBootstrapEntry($Code),
+    "core.Io0":   makeBootstrapEntry($Io0),
+    "core.Lang0": makeBootstrapEntry($Lang0)
 };
 
 
@@ -194,12 +206,13 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-export fn .moduleLoad(fqName);
+export fn .moduleResolve(fqName);
 
 ## Documented in spec.
-export fn .intraLoad(path);
+export fn .intraResolve(path);
+
+## Documented in spec.
 export fn .intraRead(path, format);
-export fn .intraType(path);
 
 
 ##
@@ -215,16 +228,16 @@ export fn .intraType(path);
 ## TODO: This should be an opaque type.
 ##
 
-## Helper for `moduleLoad` which does the actual loading.
-fn doModuleLoad(md, fqName) {
-    def modulePath = cat(md::basePath, fqName);
+## Helper for `moduleResolve` which does the actual resolution / loading.
+fn doModuleResolve(ml, fqName) {
+    def modulePath = cat(ml::basePath, fqName);
 
     <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
         {
             note(cat("    ", fqName));
 
-            def loader = makeIntraLoader(modulePath, md::globals, md);
-            def result = intraLoadMain(loader);
+            def loader = makeIntraLoader(modulePath, ml::globals, ml);
+            def result = intraResolveMain(loader);
 
             note("        Done.");
             <> result
@@ -232,7 +245,7 @@ fn doModuleLoad(md, fqName) {
 };
 
 ## Documented in spec.
-fn @@ModuleLoader.moduleLoad(fqName) {
+fn @@ModuleLoader.moduleResolve(fqName) {
     checkFqName(fqName);
     def loadedBox = this::loadedBox;
 
@@ -248,18 +261,17 @@ fn @@ModuleLoader.moduleLoad(fqName) {
 
     updateMapBox(loadedBox, fqName, "loading");
 
-    def result = ifValueOr { <> doModuleLoad(this, fqName) }
-        { <> moduleLoad(this::next, fqName) };
+    def result = ifValueOr { <> doModuleResolve(this, fqName) }
+        { <> moduleResolve(this::next, fqName) };
 
     updateMapBox(loadedBox, fqName, [result]);
     <> result
 };
 
 ## Documented in spec.
-fn @@Null.moduleLoad(fqName) {
+fn @@Null.moduleResolve(fqName) {
     checkFqName(fqName);
-    <> ifValueOr { <> get(BOOTSTRAP_MODULES, fqName) }
-        { die(cat("Module not found: ", fqName)) }
+    <> get(BOOTSTRAP_MODULES, fqName)
 };
 
 ## Documented in spec.
@@ -287,6 +299,14 @@ export fn makeModuleLoader(path, globals, nextModuleLoader) {
     }
 };
 
+## Documented in spec.
+export fn moduleLoad(ml, fqName) {
+    <> ifValue { <> moduleResolve(ml, fqName) }
+        { resolved <> resolved::exports }
+        { die(cat("Module not found: ", fqName)) }
+};
+
+
 
 ##
 ## Type Definition: `IntraLoader`
@@ -300,13 +320,13 @@ export fn makeModuleLoader(path, globals, nextModuleLoader) {
 ## TODO: This should be an opaque type.
 ##
 
-## Convenient helper which just loads a top-level `main`.
-fn intraLoadMain(loader) {
-    <> intraLoad(loader, "main")
+## Convenient helper which just resolves a top-level `main` file.
+fn intraResolveMain(loader) {
+    <> intraResolve(loader, "main")
 };
 
-## Helper for `intraLoad` which does the actual loading.
-fn doIntraLoad(il, path) {
+## Helper for `intraResolve` which does the actual resolution / loading.
+fn doIntraResolve(il, path) {
     note(cat("        ", path));
 
     def pathPrefix = cat(il::basePath, path);
@@ -327,34 +347,44 @@ fn doIntraLoad(il, path) {
             def lang = moduleLoad(il::moduleLoader, languageName);
             def tree = lang::simplify(lang::parseProgram(text));
             def func = $Code::eval(il::globals, tree);
-            return func()
+
+            return ifValueOr { <> func() }
+                { die(cat("No result from module: ", sourcePath)) }
         };
 
     die(cat("Missing code: ", sourcePath));
 };
 
 ## Documented in spec.
-fn @@IntraLoader.intraType(path) {
-    checkIntraPath(path);
-    def fullPath = cat(this::basePath, path);
-    <> $Io0::fileType(fullPath)
-};
-
-## Documented in spec.
-fn @@IntraLoader.intraLoad(path) {
+fn @@IntraLoader.intraResolve(path) {
     checkIntraPath(path);
     def loadedBox = this::loadedBox;
 
     ifValue { <> get(fetch(loadedBox), path) }
         { found -> return found };
 
-        ## A successfully-returned void gets silently transformed to the
-        ## empty map.
-        def result = ifValueOr { <> doIntraLoad(this, path) }
-            { <> {} };
+    def result = doIntraResolve(this, path);
+    updateMapBox(loadedBox, path, result);
+    <> result
+};
 
-        updateMapBox(loadedBox, path, result);
-        <> result
+## `intraRead` implementation for format `type`.
+fn intraRead_type(fullPath) {
+    <> $Io0::fileType(fullPath)
+};
+
+## `intraRead` implementation for format `utf8`.
+fn intraRead_utf8(fullPath) {
+    ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
+        { die(cat("Missing resource: ", fullPath)) };
+
+    <> $Io0::readFileUtf8(fullPath)
+};
+
+## Map from format names to corresponding `intraRead` implementations.
+def INTRA_READERS = {
+    type: intraRead_type,
+    utf8: intraRead_utf8
 };
 
 ## Documented in spec.
@@ -362,14 +392,9 @@ fn @@IntraLoader.intraRead(path, format) {
     checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
 
-    ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
-        { die(cat("Missing resource: ", fullPath)) };
-
-    ## The only supported format is `utf8`.
-    ifNot { <> eq(format, "utf8") }
-        { die(cat("Unsupported resource format: ", format)) };
-
-    <> $Io0::readFileUtf8(fullPath)
+    <> ifValue { <> get(INTRA_READERS, format) }
+        { reader <> reader(fullPath) }
+        { die(cat("Unsupported resource format: ", format)) }
 };
 
 ## Documented in spec.
@@ -384,16 +409,16 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     def result;
 
     fn module_intraLoad(path)         { <> intraLoad(result, path)          };
+    fn module_intraLoader()           { <> result                           };
     fn module_intraRead(path, format) { <> intraRead(result, path, format)  };
-    fn module_intraType(path)         { <> intraType(result, path)          };
     fn module_moduleLoad(fqName)      { <> moduleLoad(moduleLoader, fqName) };
     fn module_moduleLoader()          { <> moduleLoader                     };
 
     def fullGlobals = {
         globals*,
         intraLoad:    module_intraLoad,
+        intraLoader:  module_intraLoader,
         intraRead:    module_intraRead,
-        intraType:    module_intraType,
         moduleLoad:   module_moduleLoad,
         moduleLoader: module_moduleLoader
     };
@@ -406,6 +431,13 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     };
 
     <> result
+};
+
+## Documented in spec.
+export fn intraLoad(il, path) {
+    <> ifValue { <> intraResolve(il, path) }
+        { resolved <> resolved::exports }
+        { die(cat("Module not found: ./", path)) }
 };
 
 
@@ -479,7 +511,7 @@ fn runBinaryFile(path, moduleLoader, args) {
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
     def loader = makeIntraLoader(libraryPath, primitiveGlobals, null);
-    def mainModule = intraLoadMain(loader);
+    def mainModule = intraResolveMain(loader)::exports;
     def mainFunction = mainModule::main;
     <> mainModule::main(libraryPath, primitiveGlobals)
 };
@@ -488,16 +520,7 @@ export fn main(libraryPath, primitiveGlobals) {
 export fn run(path, moduleLoader, args*) {
     def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
     def loader = makeIntraLoader(path, globals, moduleLoader);
-    def optMainModule = intraLoadMain(loader)?;
-
-    ifIs { <> eq(optMainModule, []) }
-        { die("No exports from module's `main`.") };
-
-    def mainModule = optMainModule*;
-
-    ifNot { <> hasType(mainModule, Map) }
-        { die("Non-map export from module's `main`.") };
-
+    def mainModule = intraResolveMain(loader)::exports;
     def optMain = mainModule::main?;
 
     ifIs { <> eq(optMain, []) }

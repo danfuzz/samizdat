@@ -306,22 +306,31 @@ forms.
 Makes a node just like the given one (presumably a `closure` node), except
 with `formals` (re)bound as given.
 
-#### `withSimpleDefs(node) <> node`
+#### `withModuleDefs(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
-with simpler definitions in the `statements` list. This includes the
-following transformations:
+with an `statements` and `yield` processed to make the node appropriate
+for use as a top-level module definition. This includes the following
+transformations:
 
 * All `export` nodes are replaced with their `value` payloads.
 
 * All `exportSelection` nodes are removed entirely.
 
-* If there are any `export` or `exportSelection` nodes, a `yield` node
-  is built up to contain all of the defined bindings.
+* A `yield` is added, of a `@module` value with a map payload that binds
+  `exports` and `info`.
 
-**Note:** It is invalid for a `closure` with a `yield` to have any `export`
-or `exportSelection` nodes its `statements`. Attempting to transform such
-a node results in a fatal error.
+  * If there are any `export` or `exportSelection` nodes, the `exports`
+    binding is built up to contain all of the defined exported bindings.
+
+  * If there are no `export` or `exportSelection` nodes, the `exports`
+    binding is arranged to be `{}` (the empty map).
+
+  * The `info` binding is set up to be the defined metainformation of the
+    module. TODO: This is always an empty map right now.
+
+It is invalid (terminating the runtime) to call this function
+on a `closure` with a `yield`.
 
 #### `withTop(node) <> node`
 

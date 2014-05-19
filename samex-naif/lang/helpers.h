@@ -131,7 +131,7 @@ zvalue resolveSelection(zvalue node);
 zvalue withFormals(zvalue node, zvalue formals);
 
 /* Documented in spec. */
-zvalue withSimpleDefs(zvalue node);
+zvalue withModuleDefs(zvalue node);
 
 /* Documented in spec. */
 zvalue withTop(zvalue node);

@@ -17,36 +17,34 @@ dependencies.
 <br><br>
 ### Generic Function Definitions: `ModuleLoader` protocol
 
-#### `moduleLoad(loader, fqName) <> .`
+#### `moduleResolve(loader, fqName) <> . | void`
 
-This loads the module named by `fqName`, which is expected to be a
-fully-qualified module name as a string (e.g. `"core.Format"`). It returns
-whatever is exported by the module. If the module doesn't export anything,
-then this returns `{}` (the empty map).
+This resolves and loads the external module named by `fqName`, which is
+expected to be a fully-qualified module name as a string
+(e.g. `"core.Format"`). It returns a `@module` value with a payload of
+`{exports: {...}, info: {...}}`, representing the module result.
 
 This function will only ever load a given module once. If the same name
 is requested more than once, whatever was returned the first time
 is returned again, without re-evaluating the module.
 
-It is an error (terminating the runtime) if `fqName` does not correspond to
-a module known to this loader. It is also an error (terminating the runtime)
-if `fqName` is not a valid module name.
+It is an error (terminating the runtime) if `fqName` is not a valid module
+name.
 
 
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
 
-#### `intraLoad(loader, path) <> .`
+#### `intraResolve(loader, fqName) <> . | void`
 
-This loads and evaluates an internal module (an "intra-module module") file.
-`path` is expected to be a string identifying a relative file path within the
-(outer) module's file hierarchy. The final name component in `path` must
-*not* have a file suffix (such as `.sam` or `samb`).
+This resolves and loads the internal module (an "intra-module module")
+named by `path`. `path` is expected to be a string identifying a relative
+file path within the (outer) module's file hierarchy. The final name
+component in `path` must *not* have a file suffix (such as `.sam` or `samb`).
+This function returns a `@module` value with a payload of
+`{exports: {...}, info: {...}}`, representing the module result.
 
-This returns the map of exports from the loaded module. If the module doesn't
-export anything, then this returns `{}` (the empty map).
-
-This function will only ever load a given path once. If the same path
+This function will only ever load a given module once. If the same name
 is requested more than once, whatever was returned the first time
 is returned again, without re-evaluating the module.
 
@@ -54,31 +52,30 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `intraRead(loader, path, format) <> string`
+#### `intraRead(loader, path, format) <> . | void`
 
-This reads an intra-module resource file, interpreting it as the given
-`format` (a string name). `path` is expected to be a string identifying a
-relative file path within the module's file hierarchy.
+This reads and/or processes an intra-module resource file, interpreting it as
+the given `format` (a string name). `path` is expected to be a string
+identifying a relative file path within the module's file hierarchy.
 
-It is an error (terminating the runtime) if the indicated `path` does not
-exist as a file, or if the given `format` is not recognized.
+It is an error (terminating the runtime) if the given `format` is not
+recognized. For all `format`s other than `"type"`, it is an error
+(terminating the runtime) if the indicated `path` does not exist as a file.
 
-Recognized types include:
-
-* `utf8` &mdash; Treat the file as UTF-8 encoded text, returning a string.
-
-#### `intraType(loader, path) <> string | void`
-
-This gets the type of an intra-module resource file named by the indicated
-relative `path`. The return values are the same as for `$Io0::fileType`
-(see which).
-
-`path` is expected to be a string identifying a relative file path within the
-module's file hierarchy.
+See "Resource Import" in the language guide for more details on the
+available `format`s.
 
 
 <br><br>
 ### In-Language Definitions
+
+#### `intraLoad(intraLoader, path) <> .`
+
+This loads the internal module named by `path`, returning its `exports` map.
+
+It is an error (terminating the runtime) if `path` does not correspond to
+a module known to `intraLoader`. It is also an error (terminating the runtime)
+if `path` is not a valid internal module name.
 
 #### `makeIntraLoader(path, globals, moduleLoader) <> IntraLoader`
 
@@ -123,6 +120,15 @@ arguments given to this function.
 
 This returns whatever the library's `main` returns, which is generally
 expected to be the library's full global environment, as a map.
+
+#### `moduleLoad(moduleLoader, fqName) <> .`
+
+This loads the module named by `fqName`, returning its `exports` map.
+
+It is an error (terminating the runtime) if `fqName` does not correspond to
+a module known to `moduleLoader`. It is also an error (terminating the runtime)
+if `fqName` is not a valid module name.
+
 
 #### `run(path, moduleLoader, args*) <> . | void`
 

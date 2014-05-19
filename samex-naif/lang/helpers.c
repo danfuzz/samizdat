@@ -453,7 +453,11 @@ zvalue withFormals(zvalue node, zvalue formals) {
 }
 
 /* Documented in spec. */
-zvalue withSimpleDefs(zvalue node) {
+zvalue withModuleDefs(zvalue node) {
+    if (get(node, STR_yield) != NULL) {
+        die("Invalid node for `withModuleDefs` (has `yield`).");
+    }
+
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
 
@@ -503,13 +507,19 @@ zvalue withSimpleDefs(zvalue node) {
         }
     }
 
-    zvalue yield = get(node, STR_yield);
-    if (get_size(exports) != 0) {
-        if (yield != NULL) {
-            die("Cannot mix `export` and `yield`.");
-        }
-        yield = makeCall(makeVarRef(STR_cat), exports);
-    }
+    zvalue yieldExports = (get_size(exports) == 0)
+        ? makeLiteral(EMPTY_MAP)
+        : makeCall(makeVarRef(STR_cat), exports);
+    zvalue yieldInfo = makeLiteral(EMPTY_MAP);
+    zvalue yield = makeCall(REFS(makeValue),
+        listFrom2(
+            makeLiteral(TYPE_module),
+            makeCall(REFS(cat),
+                listFrom2(
+                    makeCall(REFS(makeValueMap),
+                        listFrom2(makeLiteral(STR_exports), yieldExports)),
+                    makeCall(REFS(makeValueMap),
+                        listFrom2(makeLiteral(STR_info), yieldInfo))))));
 
     return makeValue(
         get_type(node),
@@ -525,7 +535,7 @@ zvalue withSimpleDefs(zvalue node) {
 zvalue withTop(zvalue node) {
     // Contrary to the spec, we bind to `EMPTY_LIST` and not `true`, because
     // (a) the actual value doesn't matter, and (b) `true` isn't available
-    // in a straightforward way.
+    // here in a straightforward way.
     return makeValue(
         get_type(node),
         collPut(dataOf(node), STR_top, EMPTY_LIST),

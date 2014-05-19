@@ -37,7 +37,7 @@ export import ./constructors2 ::
     makeInterpolate,
     makeOptValue,
     withDynamicImports,
-    withSimpleDefs,
+    withModuleDefs,
     withTop,
     withoutTops;
 
