@@ -241,6 +241,9 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
+    ifIs { get_yield(node) }
+        { die("Invalid node for `withModuleDefs` (has `yield`).") };
+
     def rawStatements = get_statements(node);
 
     ## This is a one-for-one list of replacements for the original
@@ -286,19 +289,13 @@ export fn withModuleDefs(node) {
             };
     };
 
-    def optYield = ifIs { <> eq(exports, []) }
-        { <> {} }
-        {
-            ## Turn the `exports` into a yield, but also reject a node with
-            ## a pre-existing `yield` binding.
-            ifIs { get_yield(node) }
-                { die("Cannot mix `export` and `yield`.") };
-            <> {yield: makeCall(REFS::cat, cat(exports*)*)}
-        };
+    def yield = ifIs { <> eq(exports, []) }
+        { <> makeLiteral({}) }
+        { <> makeCall(REFS::cat, cat(exports*)*) };
 
     <> @(get_type(node)){
         dataOf(node)*,
-        optYield*,
+        yield,
         statements
     }
 };

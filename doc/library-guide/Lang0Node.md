@@ -320,9 +320,11 @@ transformations:
 * If there are any `export` or `exportSelection` nodes, a `yield` node
   is built up to contain all of the defined bindings.
 
-**Note:** It is invalid for a `closure` with a `yield` to have any `export`
-or `exportSelection` nodes its `statements`. Attempting to transform such
-a node results in a fatal error.
+* If there are no `export` or `exportSelection` nodes, a `yield` of `{}`
+  (the empty map) is set up.
+
+It is invalid (terminating the runtime) to call this function
+on a `closure` with a `yield`.
 
 #### `withTop(node) <> node`
 
