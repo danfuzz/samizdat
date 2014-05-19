@@ -317,11 +317,17 @@ transformations:
 
 * All `exportSelection` nodes are removed entirely.
 
-* If there are any `export` or `exportSelection` nodes, a `yield` node
-  is built up to contain all of the defined bindings.
+* A `yield` is added, of a `@module` value with a map payload that binds
+  `exports` and `info`.
 
-* If there are no `export` or `exportSelection` nodes, a `yield` of `{}`
-  (the empty map) is set up.
+  * If there are any `export` or `exportSelection` nodes, the `exports`
+    binding is built up to contain all of the defined exported bindings.
+
+  * If there are no `export` or `exportSelection` nodes, the `exports`
+    binding is arranged to be `{}` (the empty map).
+
+  * The `info` binding is set up to be the defined metainformation of the
+    module. TODO: This is always an empty map right now.
 
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield`.

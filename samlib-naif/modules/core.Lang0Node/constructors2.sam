@@ -289,9 +289,15 @@ export fn withModuleDefs(node) {
             };
     };
 
-    def yield = ifIs { <> eq(exports, []) }
+    def yieldExports = ifIs { <> eq(exports, []) }
         { <> makeLiteral({}) }
         { <> makeCall(REFS::cat, cat(exports*)*) };
+    def yieldInfo = makeLiteral({});  ## TODO: Supply real `info`.
+    def yield = makeCall(REFS::makeValue,
+        makeLiteral(@@module),
+        makeCall(REFS::cat,
+            makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
+            makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 
     <> @(get_type(node)){
         dataOf(node)*,

@@ -348,12 +348,8 @@ fn doIntraResolve(il, path) {
             def tree = lang::simplify(lang::parseProgram(text));
             def func = $Code::eval(il::globals, tree);
 
-            ## A successfully-returned void gets silently transformed to the
-            ## empty map.
-            def exports = ifValueOr { <> func() } { <> {} };
-
-            ## TODO: Provide real `info`.
-            return @module{exports, info: {}}
+            return ifValueOr { <> func() }
+                { die(cat("No result from module: ", sourcePath)) }
         };
 
     die(cat("Missing code: ", sourcePath));

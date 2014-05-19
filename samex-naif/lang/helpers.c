@@ -507,9 +507,19 @@ zvalue withModuleDefs(zvalue node) {
         }
     }
 
-    zvalue yield = (get_size(exports) == 0)
+    zvalue yieldExports = (get_size(exports) == 0)
         ? makeLiteral(EMPTY_MAP)
         : makeCall(makeVarRef(STR_cat), exports);
+    zvalue yieldInfo = makeLiteral(EMPTY_MAP);
+    zvalue yield = makeCall(REFS(makeValue),
+        listFrom2(
+            makeLiteral(TYPE_module),
+            makeCall(REFS(cat),
+                listFrom2(
+                    makeCall(REFS(makeValueMap),
+                        listFrom2(makeLiteral(STR_exports), yieldExports)),
+                    makeCall(REFS(makeValueMap),
+                        listFrom2(makeLiteral(STR_info), yieldInfo))))));
 
     return makeValue(
         get_type(node),
