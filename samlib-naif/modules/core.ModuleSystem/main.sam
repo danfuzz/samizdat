@@ -199,7 +199,6 @@ export fn .moduleLoad(fqName);
 ## Documented in spec.
 export fn .intraLoad(path);
 export fn .intraRead(path, format);
-export fn .intraType(path);
 
 
 ##
@@ -334,13 +333,6 @@ fn doIntraLoad(il, path) {
 };
 
 ## Documented in spec.
-fn @@IntraLoader.intraType(path) {
-    checkIntraPath(path);
-    def fullPath = cat(this::basePath, path);
-    <> $Io0::fileType(fullPath)
-};
-
-## Documented in spec.
 fn @@IntraLoader.intraLoad(path) {
     checkIntraPath(path);
     def loadedBox = this::loadedBox;
@@ -357,19 +349,33 @@ fn @@IntraLoader.intraLoad(path) {
         <> result
 };
 
+## `intraRead` implementation for format `type`.
+fn intraRead_type(fullPath) {
+    <> $Io0::fileType(fullPath)
+};
+
+## `intraRead` implementation for format `utf8`.
+fn intraRead_utf8(fullPath) {
+    ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
+        { die(cat("Missing resource: ", fullPath)) };
+
+    <> $Io0::readFileUtf8(fullPath)
+};
+
+## Map from format names to corresponding `intraRead` implementations.
+def INTRA_READERS = {
+    type: intraRead_type,
+    utf8: intraRead_utf8
+};
+
 ## Documented in spec.
 fn @@IntraLoader.intraRead(path, format) {
     checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
 
-    ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
-        { die(cat("Missing resource: ", fullPath)) };
-
-    ## The only supported format is `utf8`.
-    ifNot { <> eq(format, "utf8") }
-        { die(cat("Unsupported resource format: ", format)) };
-
-    <> $Io0::readFileUtf8(fullPath)
+    <> ifValue { <> get(INTRA_READERS, format) }
+        { reader <> reader(fullPath) }
+        { die(cat("Unsupported resource format: ", format)) }
 };
 
 ## Documented in spec.
@@ -385,7 +391,6 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 
     fn module_intraLoad(path)         { <> intraLoad(result, path)          };
     fn module_intraRead(path, format) { <> intraRead(result, path, format)  };
-    fn module_intraType(path)         { <> intraType(result, path)          };
     fn module_moduleLoad(fqName)      { <> moduleLoad(moduleLoader, fqName) };
     fn module_moduleLoader()          { <> moduleLoader                     };
 
@@ -393,7 +398,6 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
         globals*,
         intraLoad:    module_intraLoad,
         intraRead:    module_intraRead,
-        intraType:    module_intraType,
         moduleLoad:   module_moduleLoad,
         moduleLoader: module_moduleLoader
     };
