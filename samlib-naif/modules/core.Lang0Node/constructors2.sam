@@ -240,7 +240,7 @@ export fn withDynamicImports(node) {
 };
 
 ## Documented in spec.
-export fn withSimpleDefs(node) {
+export fn withModuleDefs(node) {
     def rawStatements = get_statements(node);
 
     ## This is a one-for-one list of replacements for the original

@@ -281,7 +281,7 @@ These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `LangN::simplify` and
-`Lang0Node::withSimpleDefs` for more details.
+`Lang0Node::withModuleDefs` for more details.
 
 #### `exportSelection` &mdash; `@exportSelection{select: [name+]}`
 
@@ -296,7 +296,7 @@ These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `LangN::simplify` and
-`Lang0Node::withSimpleDefs` for more details.
+`Lang0Node::withModuleDefs` for more details.
 
 #### `importModule` &mdash; `@importModule{name: name, source: source}`
 

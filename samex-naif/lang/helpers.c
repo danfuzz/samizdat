@@ -453,7 +453,7 @@ zvalue withFormals(zvalue node, zvalue formals) {
 }
 
 /* Documented in spec. */
-zvalue withSimpleDefs(zvalue node) {
+zvalue withModuleDefs(zvalue node) {
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
 

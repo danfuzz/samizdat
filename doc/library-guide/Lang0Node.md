@@ -306,11 +306,12 @@ forms.
 Makes a node just like the given one (presumably a `closure` node), except
 with `formals` (re)bound as given.
 
-#### `withSimpleDefs(node) <> node`
+#### `withModuleDefs(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
-with simpler definitions in the `statements` list. This includes the
-following transformations:
+with an `statements` and `yield` processed to make the node appropriate
+for use as a top-level module definition. This includes the following
+transformations:
 
 * All `export` nodes are replaced with their `value` payloads.
 
