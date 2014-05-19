@@ -473,7 +473,7 @@ zvalue resolveInfo(zvalue node) {
             zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
                 zvalue name = nth(select, j);
-                addTypeBinding(exports, name);
+                exports = addTypeBinding(exports, name);
             }
         } else if (hasType(s, TYPE_export)) {
             zvalue defNode = get(s, STR_value);
@@ -485,7 +485,7 @@ zvalue resolveInfo(zvalue node) {
                 zint sz = get_size(selection);
                 zmapping mappings[sz];
                 arrayFromMap(mappings, selection);
-                for (zint j = 0; j < size; j++) {
+                for (zint j = 0; j < sz; j++) {
                     zvalue name = mappings[j].key;
                     exports = addTypeBinding(exports, name);
                 }
@@ -508,7 +508,7 @@ zvalue resolveInfo(zvalue node) {
             arrayFromMap(mappings, selection);
             for (zint j = 0; j < size; j++) {
                 zvalue name = mappings[j].value;
-                exports = addImportBinding(imports, source, name);
+                imports = addImportBinding(imports, source, name);
             }
         } else if (hasType(s, TYPE_importResource)) {
             resources = addResourceBinding(resources,
