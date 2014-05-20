@@ -55,11 +55,6 @@ zvalue dataOf(zvalue value) {
 extern void *datPayload(zvalue value);
 
 /* Documented in header. */
-zvalue debugName(zvalue value) {
-    return GFN_CALL(debugName, value);
-}
-
-/* Documented in header. */
 zvalue get_type(zvalue value) {
     return value->type;
 }
@@ -168,7 +163,7 @@ METH_IMPL(Value, debugName) {
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = get_type(value);
-    zvalue name = debugName(value);
+    zvalue name = GFN_CALL(debugName, value);
     char addrBuf[19]; // Includes room for `0x` and `\0`.
 
     if (name == NULL) {

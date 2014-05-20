@@ -59,11 +59,6 @@ extern zvalue GFN_totalOrder;
 zvalue dataOf(zvalue value);
 
 /**
- * Calls `debugName` on the given value.
- */
-zvalue debugName(zvalue value);
-
-/**
  * Gets the type of the given value. `value` must be a valid value (in
  * particular, non-`NULL`). The return value is of type `Type`.
  */
