@@ -516,15 +516,15 @@ export fn makeInternalLoader(path, globals, nextLoader) {
 
 ## Makes a global environment sufficient for evaluating a single file.
 fn makeFileGlobals(loader) {
-    fn file_moduleLoad(fqName) { <> moduleLoad(loader, fqName) };
-    fn file_moduleLoader()     { <> loader                     };
+    fn glo_loadModule(source) { <> loadModule(loader, source) };
+    fn glo_thisLoader()       { <> loader                     };
 
     <> {
         ## The standard global environment.
         moduleLoad(loader, "core.Globals")::fullEnvironment()*,
 
-        moduleLoad:   file_moduleLoad,
-        moduleLoader: file_moduleLoader
+        loadModule: glo_loadModule,
+        thisLoader: glo_thisLoader
     }
 };
 
