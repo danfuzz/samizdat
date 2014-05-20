@@ -237,10 +237,10 @@ export fn loadModule(loader, source) {
 
 
 ##
-## Type Definition: `ModuleLoader`
+## Type Definition: `ExternalLoader`
 ##
 ## Payload:
-## * `next` -- next `ModuleLoader` to check when trying to find a module
+## * `next` -- next `ExternalLoader` to check when trying to find a module
 ## * `basePath` -- absolute path prefix for all loading, with trailing `/`.
 ##   Direct subdirectory names correspond to modules.
 ## * `globals` -- global variable environment to use when loading
@@ -266,7 +266,7 @@ fn doModuleResolve(ml, fqName) {
 };
 
 ## Documented in spec.
-fn @@ModuleLoader.moduleResolve(fqName) {
+fn @@ExternalLoader.moduleResolve(fqName) {
     checkFqName(fqName);
     def loadedBox = this::loadedBox;
 
@@ -296,7 +296,7 @@ fn @@Null.moduleResolve(fqName) {
 };
 
 ## Documented in spec.
-export fn makeModuleLoader(path, globals, nextModuleLoader) {
+export fn makeExternalLoader(path, globals, nextExternalLoader) {
     checkAbsolutePath(path);
 
     ## Check for existence and directoriness.
@@ -304,7 +304,7 @@ export fn makeModuleLoader(path, globals, nextModuleLoader) {
     ifIs { <> eq(pathType, []) }
         {
             ## No such file or directory.
-            return nextModuleLoader
+            return nextExternalLoader
         };
     ifNot { <> eq(pathType*, "directory") }
         {
@@ -312,10 +312,10 @@ export fn makeModuleLoader(path, globals, nextModuleLoader) {
                 path))
         };
 
-    <> @ModuleLoader{
+    <> @ExternalLoader{
         basePath: cat(path, "/"),
         globals,
-        next: nextModuleLoader,
+        next: nextExternalLoader,
         loadedBox: Box_makeCell({})
     }
 };
@@ -419,11 +419,11 @@ fn @@InternalLoader.readResource(path, format) {
 };
 
 ## Documented in spec.
-export fn makeInternalLoader(path, globals, nextModuleLoader) {
+export fn makeInternalLoader(path, globals, nextExternalLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
     def modulesDir = cat(basePath, "modules");
-    def moduleLoader = makeModuleLoader(modulesDir, globals, nextModuleLoader);
+    def moduleLoader = makeExternalLoader(modulesDir, globals, nextExternalLoader);
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.

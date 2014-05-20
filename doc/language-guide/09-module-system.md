@@ -289,20 +289,20 @@ description might have you believe.
 
 There are two types which interplay to cause module loading to happen.
 
-One type is `ModuleLoader`, which gets instantiated with two main
+One type is `ExternalLoader`, which gets instantiated with two main
 pieces of information, (a) a filesystem path to a directory containing
-module definitions, and (b) a reference to the "next" `ModuleLoader` to
-use. `ModuleLoader` defines a `moduleLoad` method, which is the thing that
+module definitions, and (b) a reference to the "next" `ExternalLoader` to
+use. `ExternalLoader` defines a `moduleLoad` method, which is the thing that
 looks for a module in its designated directory, and then calls on the
 "next" loader if that fails. The recursion bottoms out in a definition of
 `moduleLoad` on `null`, which always fails.
 
 The other type is `InternalLoader`, which gets instantiated with two pieces
 of information, (a) a filesystem path to a directory containing the definition
-of *one* module, and (b) a reference to the "next" `ModuleLoader` to
-use. When instantiated, `InternalLoader` makes a `ModuleLoader` which points
+of *one* module, and (b) a reference to the "next" `ExternalLoader` to
+use. When instantiated, `InternalLoader` makes a `ExternalLoader` which points
 to a `modules` directory under its given filesystem path, and that
-`ModuleLoader` is the one that's used directly by the intra-module code.
+`ExternalLoader` is the one that's used directly by the intra-module code.
 The `InternalLoader`'s filesystem path is used directly for intra-module files.
 
 The core library is loaded as an `InternalLoader`, as are application modules.
