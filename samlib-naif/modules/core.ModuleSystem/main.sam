@@ -441,24 +441,6 @@ fn doInternalResolve(loader, source) {
     die(cat("Missing code: ", sourcePath));
 };
 
-## Documented in spec.
-fn @@InternalLoader.resolve(source) {
-    ifNot { <> checkInternalSource(source) }
-        {
-            ## Not an internal source, so punt to the next loader.
-            return resolve(this::nextLoader, source)
-        };
-
-    def loadedBox = this::loadedBox;
-
-    ifValue { <> get(fetch(loadedBox), source) }
-        { found -> return found };
-
-    def result = doInternalResolve(this, source);
-    updateMapBox(loadedBox, source, result);
-    <> result
-};
-
 ## `readResource` implementation for format `type`.
 fn readResource_type(fullPath) {
     <> $Io0::fileType(fullPath)
@@ -491,6 +473,24 @@ fn @@InternalLoader.readResource(source, format) {
     <> ifValue { <> get(INTERNAL_READERS, format) }
         { reader <> reader(fullPath) }
         { die(cat("Unsupported resource format: ", format)) }
+};
+
+## Documented in spec.
+fn @@InternalLoader.resolve(source) {
+    ifNot { <> checkInternalSource(source) }
+        {
+            ## Not an internal source, so punt to the next loader.
+            return resolve(this::nextLoader, source)
+        };
+
+    def loadedBox = this::loadedBox;
+
+    ifValue { <> get(fetch(loadedBox), source) }
+        { found -> return found };
+
+    def result = doInternalResolve(this, source);
+    updateMapBox(loadedBox, source, result);
+    <> result
 };
 
 ## Documented in spec.
