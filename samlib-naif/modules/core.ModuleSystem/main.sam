@@ -107,8 +107,8 @@ fn fileNameSuffix(path) {
         { <> result }
 };
 
-## Helper for `checkFqName`: Validates a character pair.
-fn checkFqNamePair(lastCh, ch) {
+## Helper for `checkExternalSource`: Validates a character pair.
+fn checkExternalSourcePair(lastCh, ch) {
     ifIs { <> eq(ch, ".") }
         {
             ifIs { <> eq(lastCh, ".") }
@@ -120,66 +120,66 @@ fn checkFqNamePair(lastCh, ch) {
         { die(cat("Invalid module name: bad character \"", ch, "\"")) }
 };
 
-## Validates a fully-qualified module name.
-fn checkFqName(fqName) {
-    ifNot { <> hasType(fqName, String) }
+## Validates an external `source`.
+fn checkExternalSource(source) {
+    ifNot { <> hasType(source, String) }
         { die("Invalid module name: not a string") };
-    ifIs { <> eq(fqName, "") }
+    ifIs { <> eq(source, "") }
         { die("Invalid module name: empty string") };
 
     var lastCh = ".";  ## Init to `"."` to make the first check work out.
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(fqName,
+    collect(source,
         { ch ->
-            checkFqNamePair(lastCh, ch);
+            checkExternalSourcePair(lastCh, ch);
             lastCh := ch
         });
 
-    checkFqNamePair(lastCh, ".");
+    checkExternalSourcePair(lastCh, ".");
 };
 
-## Helper for `checkIntraPath`: Validates a character pair.
-fn checkIntraPathPair(lastCh, ch) {
+## Helper for `checkInternalSource`: Validates a character pair.
+fn checkInternalSourcePair(lastCh, ch) {
     ifIs { <> eq(ch, "/") }
         {
             ifIs { <> eq(lastCh, "/") }
-                { die("Invalid intra-module path: empty component") };
+                { die("Invalid internal source: empty component") };
             ifIs { <> eq(lastCh, ".") }
-                { die("Invalid intra-module path: empty suffix") };
+                { die("Invalid internal source: empty suffix") };
             return
         };
 
     ifIs { <> eq(ch, ".") }
         {
             ifIs { <> eq(lastCh, "/") }
-                { die("Invalid intra-module path: component-initial dot") };
+                { die("Invalid internal source: component-initial dot") };
             ifIs { <> eq(lastCh, ".") }
-                { die("Invalid intra-module path: double dot") };
+                { die("Invalid internal source: double dot") };
             return
         };
 
     ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
-        { die(cat("Invalid intra-module path: bad character \"", ch, "\"")) }
+        { die(cat("Invalid internal source: bad character \"", ch, "\"")) }
 };
 
-## Validates an intra-module file path.
-fn checkIntraPath(path) {
-    ifNot { <> hasType(path, String) }
-        { die("Invalid intra-module path: not a string") };
-    ifIs { <> eq(path, "") }
-        { die("Invalid intra-module path: empty string") };
+## Validates an internal `source`.
+fn checkInternalSource(source) {
+    ifNot { <> hasType(source, String) }
+        { die("Invalid internal source: not a string") };
+    ifIs { <> eq(source, "") }
+        { die("Invalid internal source: empty string") };
 
     var lastCh = "/";  ## Init to `"/"` to make the first check work out.
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(path,
+    collect(source,
         { ch ->
-            checkIntraPathPair(lastCh, ch);
+            checkInternalSourcePair(lastCh, ch);
             lastCh := ch;
         });
 
-    checkIntraPathPair(lastCh, "/");
+    checkInternalSourcePair(lastCh, "/");
 };
 
 ## Validates an absolute file path string. It must be a string and start with
@@ -250,7 +250,7 @@ export fn loadModule(loader, source) {
 ##
 
 ## Helper for `moduleResolve` which does the actual resolution / loading.
-fn doModuleResolve(ml, fqName) {
+fn doExternalResolve(ml, fqName) {
     def modulePath = cat(ml::basePath, fqName);
 
     <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
@@ -267,7 +267,7 @@ fn doModuleResolve(ml, fqName) {
 
 ## Documented in spec.
 fn @@ExternalLoader.moduleResolve(fqName) {
-    checkFqName(fqName);
+    checkExternalSource(fqName);
     def loadedBox = this::loadedBox;
 
     ## The loaded map maps paths to `"loading"` for a load-in-progress
@@ -282,7 +282,7 @@ fn @@ExternalLoader.moduleResolve(fqName) {
 
     updateMapBox(loadedBox, fqName, "loading");
 
-    def result = ifValueOr { <> doModuleResolve(this, fqName) }
+    def result = ifValueOr { <> doExternalResolve(this, fqName) }
         { <> moduleResolve(this::nextLoader, fqName) };
 
     updateMapBox(loadedBox, fqName, [result]);
@@ -291,7 +291,7 @@ fn @@ExternalLoader.moduleResolve(fqName) {
 
 ## Documented in spec.
 fn @@Null.moduleResolve(fqName) {
-    checkFqName(fqName);
+    checkExternalSource(fqName);
     <> get(BOOTSTRAP_MODULES, fqName)
 };
 
@@ -347,7 +347,7 @@ fn resolveMain(loader) {
 };
 
 ## Helper for `resolve` which does the actual resolution / loading.
-fn doIntraResolve(il, path) {
+fn doInternalResolve(il, path) {
     note(cat("        ", path));
 
     def pathPrefix = cat(il::basePath, path);
@@ -378,13 +378,13 @@ fn doIntraResolve(il, path) {
 
 ## Documented in spec.
 fn @@InternalLoader.resolve(path) {
-    checkIntraPath(path);
+    checkInternalSource(path);
     def loadedBox = this::loadedBox;
 
     ifValue { <> get(fetch(loadedBox), path) }
         { found -> return found };
 
-    def result = doIntraResolve(this, path);
+    def result = doInternalResolve(this, path);
     updateMapBox(loadedBox, path, result);
     <> result
 };
@@ -410,7 +410,7 @@ def INTRA_READERS = {
 
 ## Documented in spec.
 fn @@InternalLoader.readResource(path, format) {
-    checkIntraPath(path);
+    checkInternalSource(path);
     def fullPath = cat(this::basePath, path);
 
     <> ifValue { <> get(INTRA_READERS, format) }
