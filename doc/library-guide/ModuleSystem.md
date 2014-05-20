@@ -15,6 +15,25 @@ be their own dependencies.
 
 
 <br><br>
+### Generic Function Definitions: `Loader` protocol
+
+#### `readResource(loader, source, format) <> . | void`
+
+This reads and/or processes a resource file, interpreting it as the given
+`format` (a string name). `source` is expected to be a source specifier,
+identifying the location of the resource.
+
+It is an error (terminating the runtime) if the given `format` is not
+recognized.
+
+This returns void if the `source` is not found or if `format` does not
+indicate a valid way to process the source.
+
+See "Resource Import" in the language guide for more details on the
+available `format`s.
+
+
+<br><br>
 ### Generic Function Definitions: `ExternalLoader` protocol
 
 #### `moduleResolve(loader, fqName) <> . | void`
@@ -52,19 +71,6 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `readResource(loader, path, format) <> . | void`
-
-This reads and/or processes an intra-module resource file, interpreting it as
-the given `format` (a string name). `path` is expected to be a string
-identifying a relative file path within the module's file hierarchy.
-
-It is an error (terminating the runtime) if the given `format` is not
-recognized. For all `format`s other than `"type"`, it is an error
-(terminating the runtime) if the indicated `path` does not exist as a file.
-
-See "Resource Import" in the language guide for more details on the
-available `format`s.
-
 
 <br><br>
 ### In-Language Definitions
@@ -77,7 +83,7 @@ It is an error (terminating the runtime) if `path` does not correspond to
 a module known to `loader`. It is also an error (terminating the runtime)
 if `path` is not a valid internal module name.
 
-#### `loadResource(loader, source, format) <> . | void`
+#### `loadResource(loader, source, format) <> .`
 
 This reads and/or processes a resource file, interpreting it as the given
 `format` (a string name). `source` is expected to be a source specifier.

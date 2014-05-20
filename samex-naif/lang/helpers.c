@@ -303,16 +303,10 @@ zvalue makeDynamicImport(zvalue node) {
 
         return listFromArray(size, stats);
     } else if (hasType(node, TYPE_importResource)) {
-        if (hasType(source, TYPE_external)) {
-            die("Cannot import external resource.");
-        }
-
         zvalue stat = makeVarDef(
             name,
             makeCall(REFS(loadResource),
-                listFrom2(
-                    makeLiteral(dataOf(source)),
-                    makeLiteral(format))));
+                listFrom2(makeLiteral(source), makeLiteral(format))));
 
         return listFrom1(stat);
     } else {

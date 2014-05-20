@@ -338,6 +338,12 @@ fn @@ExternalLoader.moduleResolve(fqName) {
 };
 
 ## Documented in spec.
+fn @@ExternalLoader.readResource(source, format) {
+    ## Always just defer to the next loader.
+    <> readResource(this::nextLoader, source, format)
+};
+
+## Documented in spec.
 export fn makeExternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
 
@@ -446,18 +452,22 @@ fn readResource_utf8(fullPath) {
 };
 
 ## Map from format names to corresponding `readResource` implementations.
-def INTRA_READERS = {
+def INTERNAL_READERS = {
     type: readResource_type,
     utf8: readResource_utf8
 };
 
 ## Documented in spec.
-fn @@InternalLoader.readResource(path, format) {
-    def source = @internal(path);
-    checkInternalSource(source);
-    def fullPath = cat(this::basePath, path);
+fn @@InternalLoader.readResource(source, format) {
+    ifNot { <> checkInternalSource(source) }
+        {
+            ## Not an internal source, so punt to the next loader.
+            return readResource(this::nextLoader, source, format)
+        };
 
-    <> ifValue { <> get(INTRA_READERS, format) }
+    def fullPath = cat(this::basePath, dataOf(source));
+
+    <> ifValue { <> get(INTERNAL_READERS, format) }
         { reader <> reader(fullPath) }
         { die(cat("Unsupported resource format: ", format)) }
 };

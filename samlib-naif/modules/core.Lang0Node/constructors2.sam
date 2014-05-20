@@ -146,14 +146,10 @@ fn @@importResource.makeDynamicImport() {
     def format = get_format(this);
     def source = get_source(this);
 
-    ifIs { <> hasType(source, @@external) }
-        { die("Cannot import external resource.") };
-
     <> [
         makeVarDef(name,
             makeCall(REFS::loadResource,
-                makeLiteral(dataOf(source)),
-                makeLiteral(format)))
+                makeLiteral(source), makeLiteral(format)))
     ]
 };
 
