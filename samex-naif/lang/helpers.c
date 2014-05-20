@@ -506,7 +506,7 @@ zvalue resolveInfo(zvalue node) {
             zint sz = get_size(selection);
             zmapping mappings[sz];
             arrayFromMap(mappings, selection);
-            for (zint j = 0; j < size; j++) {
+            for (zint j = 0; j < sz; j++) {
                 zvalue name = mappings[j].value;
                 imports = addImportBinding(imports, source, name);
             }
