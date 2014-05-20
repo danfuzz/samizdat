@@ -221,6 +221,20 @@ fn sourceString(source) {
     die("Bad module / resource `source`.")
 };
 
+## Loads the standard global environment using the given `loader`.
+fn loadGlobals(loader) {
+    <> loadModule(loader, @external("core.Globals"))::fullEnvironment()
+};
+
+## Given source text, returns a parsed tree form, using the given `loader`
+## to find the apprpriate parser.
+fn treeFromText(loader, text) {
+    def languageName = ifValueOr { <> $Lang0::languageOf(text) }
+        { <> DEFAULT_LANGUAGE };
+    def lang = loadModule(loader, @external(languageName));
+    <> lang::simplify(lang::parseProgram(text));
+};
+
 ## Updates a map-containing box to have the given additional / replacement
 ## binding.
 fn updateMapBox(box, key, value) {
@@ -408,10 +422,7 @@ fn doInternalResolve(loader, source) {
     ifIs { <> eq($Io0::fileType(sourcePath)?, ["file"]) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
-            def languageName = ifValueOr { <> $Lang0::languageOf(text) }
-                { <> DEFAULT_LANGUAGE };
-            def lang = moduleLoad(loader::nextLoader, languageName);
-            def tree = lang::simplify(lang::parseProgram(text));
+            def tree = treeFromText(loader::nextLoader, text);
             def func = $Code::eval(loader::globals, tree);
 
             return ifValueOr { <> func() }
@@ -518,9 +529,7 @@ fn makeFileGlobals(loader) {
     fn glo_thisLoader()       { <> loader                     };
 
     <> {
-        ## The standard global environment.
-        moduleLoad(loader, "core.Globals")::fullEnvironment()*,
-
+        loadGlobals(loader)*,
         loadModule: glo_loadModule,
         thisLoader: glo_thisLoader
     }
@@ -552,10 +561,7 @@ fn runProgram(programFunc, args) {
 fn runTextFile(path, loader, args) {
     def globals = makeFileGlobals(loader);
     def text = $Io0::readFileUtf8(path);
-    def languageName = ifValueOr { <> $Lang0::languageOf(text) }
-        { <> DEFAULT_LANGUAGE };
-    def lang = moduleLoad(loader, languageName);
-    def tree = lang::simplify(lang::parseProgram(text));
+    def tree = treeFromText(loader, text);
     def func = $Code::eval(globals, tree);
 
     <> runProgram(func, args)
@@ -585,7 +591,7 @@ export fn main(libraryPath, primitiveGlobals) {
 
 ## Documented in spec.
 export fn run(path, loader, args*) {
-    def globals = moduleLoad(loader, "core.Globals")::fullEnvironment();
+    def globals = loadGlobals(loader);
     def mainLoader = makeInternalLoader(path, globals, loader);
     def mainModule = resolveMain(mainLoader)::exports;
     def optMain = mainModule::main?;
