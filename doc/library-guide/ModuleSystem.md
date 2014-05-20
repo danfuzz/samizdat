@@ -167,7 +167,7 @@ same as is used when loading modules, except that none of the provided
 functions will handle module-internal sources.
 
 The direct result of evaluation of the file is a function of no arguments.
-This is called. If that returns a map, then `main` is looked up in it,
+This is called. If that returns a module, then `main` is looked up in it,
 and that `main` is called, passing it `args*`. The final result is whatever
 is returned by the call to `main`.
 
