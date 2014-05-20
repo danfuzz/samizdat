@@ -346,17 +346,18 @@ module `core.Globals`, a module file when evaluated has additional bindings
 to allow for a module to load the other parts of itself, as well as load
 other modules.
 
-* `loadModule(path) <> map` &mdash; This loads and evaluates the indicated
-  internal module, returning the `exports` map. `path` is a string
-  representing a relative filesystem path, e.g. `foo/bar`. The final file
-  name in `path` should *not* have a suffix; the module system handles
-  finding the appropriately-suffixed file.
+* `loadModule(source) <> map` &mdash; This loads and evaluates the indicated
+  module, returning the `exports` map. `source` is a source specifier
+  (either an `@external` or `@internal` value) representing the origin of
+  the module. For an `@internal` source, the final file name component
+  must *not* have a suffix; the module system handles finding the
+  appropriately-suffixed file.
 
 * `loadResource(source, format) <> . | void` &mdash; This reads and/or
   processes the resource file named by the indicated `source`, interpreting it
   as indicated by the `format`. `source` is as with `loadModule`, except that
-  the final file is left as-is (and not suffixed automatically). See "Resource
-  import" above for details about `format`.
+  the final file component is left as-is (and not suffixed automatically).
+  See "Resource import" above for details about `format`.
 
 * `thisLoader()` &mdash; This is a function which returns a reference to
   the internal module loader which loaded this module.
