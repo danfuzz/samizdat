@@ -530,9 +530,9 @@ fn makeFileGlobals(loader) {
 
 ## Runs a program which has been `eval`ed. This works for both text and
 ## binary programs. This calls the given `programFunc`. If it returns
-## a map that binds `main`, then this in turn calls that `main`, returning
-## whatever that does. If not, this returns whatever the original function
-## call returned (including void).
+## a module that exports `main`, then this in turn calls that `main`,
+## returning whatever that does. If not, this returns whatever the original
+## function call returned (including void).
 fn runProgram(programFunc, args) {
     def optResult = programFunc()?;
 
@@ -541,9 +541,9 @@ fn runProgram(programFunc, args) {
 
     def result = optResult*;
 
-    ifIs { <> hasType(result, Map) }
+    ifIs { <> hasType(result, @@module) }
         {
-            ifValue { <> result::main }
+            ifValue { <> result::exports::main }
                 { main -> return main(args*) }
         };
 
