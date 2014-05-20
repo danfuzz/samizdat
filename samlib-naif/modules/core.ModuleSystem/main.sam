@@ -238,9 +238,6 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-export fn .moduleResolve(fqName);
-
-## Documented in spec.
 export fn .resolve(source);
 
 ## Documented in spec.
@@ -269,20 +266,13 @@ export fn loadResource(loader, source, format) {
 ##
 
 ## Documented in spec.
-fn @@Null.moduleResolve(fqName) {
-    def source = @external(fqName);
-    checkExternalSource(source);
-    <> get(BOOTSTRAP_MODULES, source)
-};
-
-## Documented in spec.
 fn @@Null.readResource(source, format) {
     ## Returns void, always.
 };
 
 ## Documented in spec.
 fn @@Null.resolve(source) {
-    ifIs { <> checkExternalSource(source) }
+    <> ifIs { <> checkExternalSource(source) }
         { <> get(BOOTSTRAP_MODULES, source) }
 };
 
@@ -300,13 +290,13 @@ fn @@Null.resolve(source) {
 ## TODO: This should be an opaque type.
 ##
 
-## Helper for `moduleResolve` which does the actual resolution / loading.
-fn doExternalResolve(loader, fqName) {
-    def modulePath = cat(loader::basePath, fqName);
+## Helper for `resolve` which does the actual resolution / loading.
+fn doExternalResolve(loader, source) {
+    def modulePath = cat(loader::basePath, dataOf(source));
 
     <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
         {
-            note(cat("    ", fqName));
+            note(cat("    ", sourceString(source)));
 
             def loader =
                 makeInternalLoader(modulePath, loader::globals, loader);
@@ -315,31 +305,6 @@ fn doExternalResolve(loader, fqName) {
             note("        Done.");
             <> result
         }
-};
-
-## Documented in spec.
-fn @@ExternalLoader.moduleResolve(fqName) {
-    def source = @external(fqName);
-    checkExternalSource(source);
-    def loadedBox = this::loadedBox;
-
-    ## The loaded map maps paths to `"loading"` for a load-in-progress
-    ## and to `[result]` for a successfully-loaded result.
-
-    ifValue { <> get(fetch(loadedBox), fqName) }
-        { found ->
-            ifIs { <> eq(found, "loading") }
-                { die(cat("Module load loop: ", fqName)) };
-            return found*
-        };
-
-    updateMapBox(loadedBox, fqName, "loading");
-
-    def result = ifValueOr { <> doExternalResolve(this, fqName) }
-        { <> moduleResolve(this::nextLoader, fqName) };
-
-    updateMapBox(loadedBox, fqName, [result]);
-    <> result
 };
 
 ## Documented in spec.
@@ -356,8 +321,33 @@ fn @@ExternalLoader.resolve(source) {
             return resolve(this::nextLoader, source)
         };
 
-    ## TODO: Replace this scaffolding.
-    <> moduleResolve(this, dataOf(source));
+    def loadedBox = this::loadedBox;
+
+    ## The loaded map maps paths to `"loading"` for a load-in-progress,
+    ## `"notFound"` for a known-missing module, and to a `@module` for
+    ## a successfully-loaded result.
+    ifValue { <> get(fetch(loadedBox), source) }
+        { found ->
+            ifIs { <> hasType(found, @@module) }
+                { return found };
+            ifIs { <> eq(found, "notFound") }
+                { return };
+            ifIs { <> eq(found, "loading") }
+                { die(cat("Module load loop: ", sourceString(source))) };
+        };
+
+    updateMapBox(loadedBox, source, "loading");
+
+    def result = ifValueOr { <> doExternalResolve(this, source) }
+        {
+            <> ifValueOr { <> resolve(this::nextLoader, source) }
+                { <> "notFound" }
+        };
+
+    updateMapBox(loadedBox, source, result);
+
+    <> ifNot { <> eq(result, "notFound") }
+        { <> result }
 };
 
 ## Documented in spec.
@@ -387,9 +377,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 
 ## Documented in spec.
 export fn moduleLoad(loader, fqName) {
-    <> ifValue { <> moduleResolve(loader, fqName) }
-        { resolved <> resolved::exports }
-        { die(cat("Module not found: ", fqName)) }
+    <> loadModule(loader, @external(fqName))
 };
 
 
