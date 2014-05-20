@@ -114,7 +114,10 @@ to use when evaluating source.
 #### `makeExternalLoader(path, globals, nextLoader) <> ExternalLoader`
 
 This creates an external module loader, which knows how to load modules
-identified by "external" sources.
+identified by "external" sources. An external loader will defer to the
+given `nextLoader` for any module or resource requests it cannot find
+directly. Notably, external loaders will never directly return any
+resources, ever.
 
 `path` is the absolute filesystem path to a directory containing module
 definition subdirectories. `nextLoader` is the loader to use to find
