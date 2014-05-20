@@ -116,11 +116,11 @@ export fn runCommandLine(rawArgs*) {
     def type = $Io0::fileType(filePath)
         | die("No such file or directory: \%q(filePath)");
 
+    ## TODO: These probably don't actually want to refer to `thisLoader`,
+    ## as it includes the possibility of loading module-internal files.
     <> if (type == "directory") {
-        <> $ModuleSystem::run(filePath, moduleLoader(),
-            filePath, args*)
+        <> $ModuleSystem::run(filePath, thisLoader(), filePath, args*)
     } else {
-        <> $ModuleSystem::runFile(filePath, moduleLoader(),
-            filePath, args*)
+        <> $ModuleSystem::runFile(filePath, thisLoader(), filePath, args*)
     }
 };

@@ -486,7 +486,6 @@ export fn makeInternalLoader(path, globals, nextLoader) {
 
     fn glo_loadModule(source)           { <> loadModule(loader, source)           };
     fn glo_moduleLoad(fqName)           { <> moduleLoad(externLoader, fqName)     };
-    fn glo_moduleLoader()               { <> externLoader                         };
     fn glo_loadResource(source, format) { <> loadResource(loader, source, format) };
     fn glo_thisLoader()                 { <> loader                               };
 
@@ -495,7 +494,6 @@ export fn makeInternalLoader(path, globals, nextLoader) {
         loadModule:   glo_loadModule,
         loadResource: glo_loadResource,
         moduleLoad:   glo_moduleLoad,
-        moduleLoader: glo_moduleLoader,
         thisLoader:   glo_thisLoader
     };
 
