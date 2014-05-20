@@ -69,12 +69,12 @@ available `format`s.
 <br><br>
 ### In-Language Definitions
 
-#### `intraLoad(intraLoader, path) <> .`
+#### `intraLoad(loader, path) <> .`
 
 This loads the internal module named by `path`, returning its `exports` map.
 
 It is an error (terminating the runtime) if `path` does not correspond to
-a module known to `intraLoader`. It is also an error (terminating the runtime)
+a module known to `loader`. It is also an error (terminating the runtime)
 if `path` is not a valid internal module name.
 
 #### `makeIntraLoader(path, globals, moduleLoader) <> IntraLoader`

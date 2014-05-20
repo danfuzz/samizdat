@@ -355,7 +355,7 @@ other modules.
   name in `path` should *not* have a suffix; the module system handles
   finding the appropriately-suffixed file.
 
-* `intraLoader()` &mdash; This is a function which returns a reference to
+* `thisLoader()` &mdash; This is a function which returns a reference to
   the internal module loader which loaded this module.
 
 * `readResource(path, format) <> . | void` &mdash; This reads and/or processes
