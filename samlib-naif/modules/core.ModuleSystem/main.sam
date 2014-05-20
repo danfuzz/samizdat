@@ -218,10 +218,6 @@ fn sourceString(source) {
     ifIs { <> hasType(source, @@external) }
         { return cat("external ", dataOf(source)) };
 
-    ## TODO: Remove this temporary scaffolding.
-    ifIs { <> hasType(source, String) }
-        { return cat("legacy ", source) };
-
     die("Bad module / resource `source`.")
 };
 
@@ -245,10 +241,6 @@ export fn .readResource(source, format);
 
 ## Documented in spec.
 export fn loadModule(loader, source) {
-    ## TODO: Remove this scaffolding.
-    ifIs { <> hasType(source, String) }
-        { return loadModule(loader, @external(source)) };
-
     <> ifValue { <> resolve(loader, source) }
         { resolved <> resolved::exports }
         { die(cat("Module not found: ", sourceString(source))) }
