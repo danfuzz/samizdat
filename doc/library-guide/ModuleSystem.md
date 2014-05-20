@@ -125,15 +125,6 @@ arguments given to this function.
 This returns whatever the library's `main` returns, which is generally
 expected to be the library's full global environment, as a map.
 
-#### `moduleLoad(loader, fqName) <> .`
-
-This loads the module named by `fqName`, returning its `exports` map.
-
-It is an error (terminating the runtime) if `fqName` does not correspond to
-a module known to `loader`. It is also an error (terminating the runtime)
-if `fqName` is not a valid module name.
-
-
 #### `run(path, loader, args*) <> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
@@ -142,7 +133,7 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
-def globals = moduleLoad(loader, "core.Globals")::fullEnvironment();
+def globals = loadModule(loader, @external("core.Globals"))::fullEnvironment();
 def mainLoader = makeInternalLoader(path, globals, loader);
 def mainModule = resolveMain(mainLoader)::exports;
 <> mainModule::main(args*)
