@@ -64,6 +64,9 @@ It is an error (terminating the runtime) if `source` does not correspond to
 a module known to `loader`. It is also an error (terminating the runtime)
 if `source` is not a valid source specifier.
 
+**Note:** This function is implemented in terms of the `resolve()` generic
+function.
+
 #### `loadResource(loader, source, format) <> .`
 
 This reads and/or processes a resource file, interpreting it as the given
@@ -76,6 +79,9 @@ most part it is an error if `source` does not exist as a file.
 
 See "Resource Import" in the language guide for more details on the
 available `format`s.
+
+**Note:** This function is implemented in terms of the `readResource()`
+generic function.
 
 #### `makeInternalLoader(path, globals, nextLoader) <> InternalLoader`
 
