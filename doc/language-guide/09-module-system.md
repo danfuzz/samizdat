@@ -360,4 +360,4 @@ other modules.
   See "Resource import" above for details about `format`.
 
 * `thisLoader()` &mdash; This is a function which returns a reference to
-  the internal module loader which loaded this module.
+  the module loader which loaded this module.
