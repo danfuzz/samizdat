@@ -69,7 +69,7 @@ available `format`s.
 <br><br>
 ### In-Language Definitions
 
-#### `intraLoad(loader, path) <> .`
+#### `loadModule(loader, path) <> .`
 
 This loads the internal module named by `path`, returning its `exports` map.
 
@@ -140,7 +140,7 @@ This is a convenient wrapper which is equivalent to:
 ```
 def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
 def loader = makeIntraLoader(path, globals, moduleLoader);
-def mainModule = intraLoad(loader, "main");
+def mainModule = loadModule(loader, "main");
 <> mainModule::main(args*)
 ```
 

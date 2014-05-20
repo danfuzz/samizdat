@@ -104,13 +104,13 @@ export fn .makeDynamicImport();
 ## Documented in spec.
 fn @@importModule.makeDynamicImport() {
     ## The translation is approximately `def name = load(source)`, with `load`
-    ## replaced by either `moduleLoad` or `intraLoad`.
+    ## replaced by either `moduleLoad` or `loadModule`.
 
     def name = get_name(this);
     def source = get_source(this);
     def loadRef = ifIs { <> hasType(source, @@external) }
         { <> REFS::moduleLoad }
-        { <> REFS::intraLoad };
+        { <> REFS::loadModule };
 
     <> [makeVarDef(name, makeCall(loadRef, makeLiteral(dataOf(source))))]
 };
@@ -126,7 +126,7 @@ fn @@importModuleSelection.makeDynamicImport() {
     def selection = resolveSelection(this);
     def loadRef = ifIs { <> hasType(source, @@external) }
         { <> REFS::moduleLoad }
-        { <> REFS::intraLoad };
+        { <> REFS::loadModule };
     def loadCall = makeCall(loadRef, makeLiteral(dataOf(source)));
 
     <> $Generator::filterAll(selection) { mapping ->

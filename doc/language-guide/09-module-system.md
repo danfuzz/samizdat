@@ -349,7 +349,7 @@ other modules.
 * `moduleLoader()` &mdash; This is a function which returns a reference to
   the module loader which loaded this module.
 
-* `intraLoad(path) <> map` &mdash; This loads and evaluates the indicated
+* `loadModule(path) <> map` &mdash; This loads and evaluates the indicated
   internal module, returning the `exports` map. `path` is a string
   representing a relative filesystem path, e.g. `foo/bar`. The final file
   name in `path` should *not* have a suffix; the module system handles
@@ -360,6 +360,6 @@ other modules.
 
 * `readResource(path, format) <> . | void` &mdash; This reads and/or processes
   the intra-module file named by the indicated relative path, interpreting it
-  as indicated by the `format`. `path` is as with `intraLoad`, except that the
+  as indicated by the `format`. `path` is as with `loadModule`, except that the
   final file is left as-is (and not suffixed automatically). See "Resource
   import" above for details about `format`.

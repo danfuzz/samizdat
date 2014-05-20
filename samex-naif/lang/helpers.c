@@ -273,7 +273,7 @@ zvalue makeDynamicImport(zvalue node) {
     if (hasType(node, TYPE_importModule)) {
         zvalue loadRef = hasType(source, TYPE_external)
             ? REFS(moduleLoad)
-            : REFS(intraLoad);
+            : REFS(loadModule);
         zvalue stat = makeVarDef(
             name,
             makeCall(loadRef, listFrom1(makeLiteral(dataOf(source)))));
@@ -287,7 +287,7 @@ zvalue makeDynamicImport(zvalue node) {
 
         zvalue loadRef = hasType(source, TYPE_external)
             ? REFS(moduleLoad)
-            : REFS(intraLoad);
+            : REFS(loadModule);
         zvalue loadCall = makeCall(loadRef,
             listFrom1(makeLiteral(dataOf(source))));
 

@@ -408,7 +408,7 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def result;
 
-    fn module_intraLoad(path)            { <> intraLoad(result, path)            };
+    fn module_loadModule(path)           { <> loadModule(result, path)           };
     fn module_moduleLoad(fqName)         { <> moduleLoad(moduleLoader, fqName)   };
     fn module_moduleLoader()             { <> moduleLoader                       };
     fn module_readResource(path, format) { <> readResource(result, path, format) };
@@ -416,7 +416,7 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 
     def fullGlobals = {
         globals*,
-        intraLoad:    module_intraLoad,
+        loadModule:   module_loadModule,
         moduleLoad:   module_moduleLoad,
         moduleLoader: module_moduleLoader,
         readResource: module_readResource,
@@ -434,7 +434,7 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 };
 
 ## Documented in spec.
-export fn intraLoad(loader, path) {
+export fn loadModule(loader, path) {
     <> ifValue { <> resolve(loader, path) }
         { resolved <> resolved::exports }
         { die(cat("Module not found: ./", path)) }
