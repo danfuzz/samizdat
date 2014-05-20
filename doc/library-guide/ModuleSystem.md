@@ -90,23 +90,23 @@ to use when evaluating source.
 **Note:** If this loader should not have a module loader, then
 `moduleLoader` should be passed as `null`.
 
-#### `makeExternalLoader(path, globals, nextExternalLoader) <> ExternalLoader`
+#### `makeExternalLoader(path, globals, nextLoader) <> ExternalLoader`
 
 This creates a module loader, for which the `moduleLoad` function produces
 useful results.
 
 `path` is the absolute filesystem path to a directory containing module
-definition subdirectories. `nextExternalLoader` is the loader to use to find
+definition subdirectories. `nextLoader` is the loader to use to find
 required modules that aren't defined within `path`'s hierarchy. `globals`
 is the global variable environment to use when evaluating source.
 
 If `path` does not exist, then as a special case, this function just returns
-`nextExternalLoader`. (This makes it easy to only construct a loader chain
+`nextLoader`. (This makes it easy to only construct a loader chain
 when needed.) If `path` exists but is not a directory, this function
 terminates with a fatal error.
 
 **Note:** If this loader should not have a next module loader, then
-`nextExternalLoader` should be passed as `null`.
+`nextLoader` should be passed as `null`.
 
 #### `main(libraryPath, primitiveGlobals) <> {globals*}`
 

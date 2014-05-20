@@ -240,11 +240,11 @@ export fn loadModule(loader, source) {
 ## Type Definition: `ExternalLoader`
 ##
 ## Payload:
-## * `next` -- next `ExternalLoader` to check when trying to find a module
+## * `nextLoader` -- next loader to check when trying to find a module.
 ## * `basePath` -- absolute path prefix for all loading, with trailing `/`.
 ##   Direct subdirectory names correspond to modules.
-## * `globals` -- global variable environment to use when loading
-## * `loadedBox` -- map from partial paths to the results of loading
+## * `globals` -- global variable environment to use when loading.
+## * `loadedBox` -- map from partial paths to the results of loading.
 ##
 ## TODO: This should be an opaque type.
 ##
@@ -283,7 +283,7 @@ fn @@ExternalLoader.moduleResolve(fqName) {
     updateMapBox(loadedBox, fqName, "loading");
 
     def result = ifValueOr { <> doModuleResolve(this, fqName) }
-        { <> moduleResolve(this::next, fqName) };
+        { <> moduleResolve(this::nextLoader, fqName) };
 
     updateMapBox(loadedBox, fqName, [result]);
     <> result
@@ -296,7 +296,7 @@ fn @@Null.moduleResolve(fqName) {
 };
 
 ## Documented in spec.
-export fn makeExternalLoader(path, globals, nextExternalLoader) {
+export fn makeExternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
 
     ## Check for existence and directoriness.
@@ -304,7 +304,7 @@ export fn makeExternalLoader(path, globals, nextExternalLoader) {
     ifIs { <> eq(pathType, []) }
         {
             ## No such file or directory.
-            return nextExternalLoader
+            return nextLoader
         };
     ifNot { <> eq(pathType*, "directory") }
         {
@@ -315,7 +315,7 @@ export fn makeExternalLoader(path, globals, nextExternalLoader) {
     <> @ExternalLoader{
         basePath: cat(path, "/"),
         globals,
-        next: nextExternalLoader,
+        nextLoader,
         loadedBox: Box_makeCell({})
     }
 };
@@ -333,10 +333,10 @@ export fn moduleLoad(ml, fqName) {
 ## Type Definition: `InternalLoader`
 ##
 ## Payload:
-## * `moduleLoader` -- module loader
-## * `basePath` -- absolute path prefix for all loading, with trailing `/`
-## * `globals` -- global variable environment to use when loading
-## * `loadedBox` -- map from partial paths to the results of loading
+## * `nextLoader` -- next loader to check when trying to find a module.
+## * `basePath` -- absolute path prefix for all loading, with trailing `/`.
+## * `globals` -- global variable environment to use when loading.
+## * `loadedBox` -- map from partial paths to the results of loading.
 ##
 ## TODO: This should be an opaque type.
 ##
@@ -365,7 +365,7 @@ fn doIntraResolve(il, path) {
             def text = $Io0::readFileUtf8(sourcePath);
             def languageName = ifValueOr { <> $Lang0::languageOf(text) }
                 { <> DEFAULT_LANGUAGE };
-            def lang = moduleLoad(il::moduleLoader, languageName);
+            def lang = moduleLoad(il::nextLoader, languageName);
             def tree = lang::simplify(lang::parseProgram(text));
             def func = $Code::eval(il::globals, tree);
 
@@ -419,11 +419,11 @@ fn @@InternalLoader.readResource(path, format) {
 };
 
 ## Documented in spec.
-export fn makeInternalLoader(path, globals, nextExternalLoader) {
+export fn makeInternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
     def modulesDir = cat(basePath, "modules");
-    def moduleLoader = makeExternalLoader(modulesDir, globals, nextExternalLoader);
+    def moduleLoader = makeExternalLoader(modulesDir, globals, nextLoader);
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
@@ -446,7 +446,7 @@ export fn makeInternalLoader(path, globals, nextExternalLoader) {
 
     loader := @InternalLoader{
         basePath,
-        moduleLoader,
+        nextLoader: moduleLoader,
         globals: fullGlobals,
         loadedBox: Box_makeCell({})
     };
