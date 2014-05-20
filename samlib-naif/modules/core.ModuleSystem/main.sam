@@ -56,9 +56,9 @@ fn makeBootstrapEntry(exports) {
 };
 
 def BOOTSTRAP_MODULES = {
-    "core.Code":  makeBootstrapEntry($Code),
-    "core.Io0":   makeBootstrapEntry($Io0),
-    "core.Lang0": makeBootstrapEntry($Lang0)
+    @external("core.Code"):  makeBootstrapEntry($Code),
+    @external("core.Io0"):   makeBootstrapEntry($Io0),
+    @external("core.Lang0"): makeBootstrapEntry($Lang0)
 };
 
 
@@ -112,31 +112,40 @@ fn checkExternalSourcePair(lastCh, ch) {
     ifIs { <> eq(ch, ".") }
         {
             ifIs { <> eq(lastCh, ".") }
-                { die("Invalid module name: empty component") };
+                { die("Invalid external source: empty component") };
             return
         };
 
     ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
-        { die(cat("Invalid module name: bad character \"", ch, "\"")) }
+        { die(cat("Invalid external source: bad character \"", ch, "\"")) }
 };
 
-## Validates an external `source`.
+## Validates an external `source`. This returns the given `source` if it
+## is a valid external source, or void if it is some other kind of source.
+## If `source` is marked `@external` but is improperly-formed, this dies
+## with an error.
 fn checkExternalSource(source) {
-    ifNot { <> hasType(source, String) }
-        { die("Invalid module name: not a string") };
-    ifIs { <> eq(source, "") }
-        { die("Invalid module name: empty string") };
+    ifNot { <> hasType(source, @@external) }
+        { return };
+
+    def name = dataOf(source);
+
+    ifNot { <> hasType(name, String) }
+        { die("Invalid external source: not a string") };
+    ifIs { <> eq(name, "") }
+        { die("Invalid external source: empty string") };
 
     var lastCh = ".";  ## Init to `"."` to make the first check work out.
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(source,
+    collect(name,
         { ch ->
             checkExternalSourcePair(lastCh, ch);
             lastCh := ch
         });
 
     checkExternalSourcePair(lastCh, ".");
+    <> source
 };
 
 ## Helper for `checkInternalSource`: Validates a character pair.
@@ -163,23 +172,32 @@ fn checkInternalSourcePair(lastCh, ch) {
         { die(cat("Invalid internal source: bad character \"", ch, "\"")) }
 };
 
-## Validates an internal `source`.
+## Validates an internal `source`. This returns the given `source` if it
+## is a valid internal source, or void if it is some other kind of source.
+## If `source` is marked `@internal` but is improperly-formed, this dies
+## with an error.
 fn checkInternalSource(source) {
-    ifNot { <> hasType(source, String) }
+    ifNot { <> hasType(source, @@internal) }
+        { return };
+
+    def path = dataOf(source);
+
+    ifNot { <> hasType(path, String) }
         { die("Invalid internal source: not a string") };
-    ifIs { <> eq(source, "") }
+    ifIs { <> eq(path, "") }
         { die("Invalid internal source: empty string") };
 
     var lastCh = "/";  ## Init to `"/"` to make the first check work out.
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(source,
+    collect(path,
         { ch ->
             checkInternalSourcePair(lastCh, ch);
             lastCh := ch;
         });
 
     checkInternalSourcePair(lastCh, "/");
+    <> source
 };
 
 ## Validates an absolute file path string. It must be a string and start with
@@ -243,6 +261,29 @@ export fn loadResource(loader, source, format) {
 
 
 ##
+## Type Definition: `null` as a `Loader`
+##
+
+## Documented in spec.
+fn @@Null.moduleResolve(fqName) {
+    def source = @external(fqName);
+    checkExternalSource(source);
+    <> get(BOOTSTRAP_MODULES, source)
+};
+
+## Documented in spec.
+fn @@Null.readResource(source, format) {
+    ## Returns void, always.
+};
+
+## Documented in spec.
+fn @@Null.resolve(source) {
+    ifIs { <> checkExternalSource(source) }
+        { <> get(BOOTSTRAP_MODULES, source) }
+};
+
+
+##
 ## Type Definition: `ExternalLoader`
 ##
 ## Payload:
@@ -273,7 +314,8 @@ fn doExternalResolve(ml, fqName) {
 
 ## Documented in spec.
 fn @@ExternalLoader.moduleResolve(fqName) {
-    checkExternalSource(fqName);
+    def source = @external(fqName);
+    checkExternalSource(source);
     def loadedBox = this::loadedBox;
 
     ## The loaded map maps paths to `"loading"` for a load-in-progress
@@ -293,12 +335,6 @@ fn @@ExternalLoader.moduleResolve(fqName) {
 
     updateMapBox(loadedBox, fqName, [result]);
     <> result
-};
-
-## Documented in spec.
-fn @@Null.moduleResolve(fqName) {
-    checkExternalSource(fqName);
-    <> get(BOOTSTRAP_MODULES, fqName)
 };
 
 ## Documented in spec.
@@ -384,7 +420,8 @@ fn doInternalResolve(il, path) {
 
 ## Documented in spec.
 fn @@InternalLoader.resolve(path) {
-    checkInternalSource(path);
+    def source = @internal(path);
+    checkInternalSource(source);
     def loadedBox = this::loadedBox;
 
     ifValue { <> get(fetch(loadedBox), path) }
@@ -416,7 +453,8 @@ def INTRA_READERS = {
 
 ## Documented in spec.
 fn @@InternalLoader.readResource(path, format) {
-    checkInternalSource(path);
+    def source = @internal(path);
+    checkInternalSource(source);
     def fullPath = cat(this::basePath, path);
 
     <> ifValue { <> get(INTRA_READERS, format) }
