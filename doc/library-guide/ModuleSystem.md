@@ -41,27 +41,28 @@ available `format`s.
 #### `resolve(loader, source) <> . | void`
 
 This resolves and loads the module (either an internal or external module)
-named by `source`. `source` is expected to be a source specifier.
+named by `source`. `source` is expected to be a source specifier. This
+returns a `@module` representing the loaded module, or void if `source`
+did not correspond to a known module.
 
 This function will only ever load a given module once. If the same name
 is requested more than once, whatever was returned the first time
 is returned again, without re-evaluating the module.
 
-It is an error (terminating the runtime) if the indicated `source` does not
-correspond to an existing module. It is also an error (terminating the
-runtime) if the indicated `source` failed to be loadable.
+It is an error (terminating the runtime) if the indicated `source` correspends
+to a known module but, for some reason, failed to be successfully loaded.
 
 
 <br><br>
 ### In-Language Definitions
 
-#### `loadModule(loader, path) <> .`
+#### `loadModule(loader, source) <> .`
 
-This loads the internal module named by `path`, returning its `exports` map.
+This loads the module named by `source`, returning its `exports` map.
 
-It is an error (terminating the runtime) if `path` does not correspond to
+It is an error (terminating the runtime) if `source` does not correspond to
 a module known to `loader`. It is also an error (terminating the runtime)
-if `path` is not a valid internal module name.
+if `source` is not a valid source specifier.
 
 #### `loadResource(loader, source, format) <> .`
 
@@ -75,7 +76,6 @@ most part it is an error if `source` does not exist as a file.
 
 See "Resource Import" in the language guide for more details on the
 available `format`s.
-
 
 #### `makeInternalLoader(path, globals, nextLoader) <> InternalLoader`
 
