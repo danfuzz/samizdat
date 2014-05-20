@@ -33,7 +33,7 @@ name.
 
 
 <br><br>
-### Generic Function Definitions: `IntraLoader` protocol
+### Generic Function Definitions: `InternalLoader` protocol
 
 #### `resolve(loader, fqName) <> . | void`
 
@@ -77,7 +77,7 @@ It is an error (terminating the runtime) if `path` does not correspond to
 a module known to `loader`. It is also an error (terminating the runtime)
 if `path` is not a valid internal module name.
 
-#### `makeIntraLoader(path, globals, moduleLoader) <> IntraLoader`
+#### `makeInternalLoader(path, globals, moduleLoader) <> InternalLoader`
 
 This creates and returns an intra-module file loader, for which the `intra*`
 family of functions produces useful results.
@@ -139,7 +139,7 @@ This is a convenient wrapper which is equivalent to:
 
 ```
 def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
-def loader = makeIntraLoader(path, globals, moduleLoader);
+def loader = makeInternalLoader(path, globals, moduleLoader);
 def mainModule = loadModule(loader, "main");
 <> mainModule::main(args*)
 ```

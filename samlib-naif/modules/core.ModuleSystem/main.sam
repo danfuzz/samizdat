@@ -257,7 +257,7 @@ fn doModuleResolve(ml, fqName) {
         {
             note(cat("    ", fqName));
 
-            def loader = makeIntraLoader(modulePath, ml::globals, ml);
+            def loader = makeInternalLoader(modulePath, ml::globals, ml);
             def result = resolveMain(loader);
 
             note("        Done.");
@@ -330,7 +330,7 @@ export fn moduleLoad(ml, fqName) {
 
 
 ##
-## Type Definition: `IntraLoader`
+## Type Definition: `InternalLoader`
 ##
 ## Payload:
 ## * `moduleLoader` -- module loader
@@ -377,7 +377,7 @@ fn doIntraResolve(il, path) {
 };
 
 ## Documented in spec.
-fn @@IntraLoader.resolve(path) {
+fn @@InternalLoader.resolve(path) {
     checkIntraPath(path);
     def loadedBox = this::loadedBox;
 
@@ -409,7 +409,7 @@ def INTRA_READERS = {
 };
 
 ## Documented in spec.
-fn @@IntraLoader.readResource(path, format) {
+fn @@InternalLoader.readResource(path, format) {
     checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
 
@@ -419,7 +419,7 @@ fn @@IntraLoader.readResource(path, format) {
 };
 
 ## Documented in spec.
-export fn makeIntraLoader(path, globals, nextModuleLoader) {
+export fn makeInternalLoader(path, globals, nextModuleLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
     def modulesDir = cat(basePath, "modules");
@@ -444,7 +444,7 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
         thisLoader:   glo_thisLoader
     };
 
-    loader := @IntraLoader{
+    loader := @InternalLoader{
         basePath,
         moduleLoader,
         globals: fullGlobals,
@@ -524,7 +524,7 @@ fn runBinaryFile(path, moduleLoader, args) {
 ## Documented in spec.
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
-    def loader = makeIntraLoader(libraryPath, primitiveGlobals, null);
+    def loader = makeInternalLoader(libraryPath, primitiveGlobals, null);
     def mainModule = resolveMain(loader)::exports;
     def mainFunction = mainModule::main;
     <> mainModule::main(libraryPath, primitiveGlobals)
@@ -533,7 +533,7 @@ export fn main(libraryPath, primitiveGlobals) {
 ## Documented in spec.
 export fn run(path, moduleLoader, args*) {
     def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
-    def loader = makeIntraLoader(path, globals, moduleLoader);
+    def loader = makeInternalLoader(path, globals, moduleLoader);
     def mainModule = resolveMain(loader)::exports;
     def optMain = mainModule::main?;
 

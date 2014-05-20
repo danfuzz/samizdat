@@ -297,15 +297,15 @@ looks for a module in its designated directory, and then calls on the
 "next" loader if that fails. The recursion bottoms out in a definition of
 `moduleLoad` on `null`, which always fails.
 
-The other type is `IntraLoader`, which gets instantiated with two pieces
+The other type is `InternalLoader`, which gets instantiated with two pieces
 of information, (a) a filesystem path to a directory containing the definition
 of *one* module, and (b) a reference to the "next" `ModuleLoader` to
-use. When instantiated, `IntraLoader` makes a `ModuleLoader` which points
+use. When instantiated, `InternalLoader` makes a `ModuleLoader` which points
 to a `modules` directory under its given filesystem path, and that
 `ModuleLoader` is the one that's used directly by the intra-module code.
-The `IntraLoader`'s filesystem path is used directly for intra-module files.
+The `InternalLoader`'s filesystem path is used directly for intra-module files.
 
-The core library is loaded as an `IntraLoader`, as are application modules.
+The core library is loaded as an `InternalLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.
 
 As a final note, though the default module system is implemented in terms
