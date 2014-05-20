@@ -9,9 +9,9 @@ where much of the single-file loading logic resides, since that interacts
 tightly with module loading.
 
 **Note:** The constant `null` can be treated as a module loader. When used
-as such, it "knows" the two modules `core.Io0` and `core.Lang0`. These are
-set up as "bootstrap modules," as otherwise they would be their own
-dependencies.
+as such, it "knows" the modules `core.Code`, `core.Io0`, and `core.Lang0`.
+These are set up as "bootstrap modules," as otherwise they would, in effect,
+be their own dependencies.
 
 
 <br><br>
