@@ -48,13 +48,37 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
 }
 
 /**
- * Appends a name->variable binding map to the given list (of presumed
- * same).
+ * Adds a `{(name): Value}` binding to the given map.
  */
-static zvalue appendNameBinding(zvalue list, zvalue name) {
-    return listAppend(list,
-        makeCall(makeVarRef(STR_makeValueMap),
-            listFrom2(makeLiteral(name), makeVarRef(name))));
+static zvalue addTypeBinding(zvalue map, zvalue name) {
+    return collPut(map, name, TYPE_Value);
+}
+
+/**
+ * Adds a type binding (per above) to a source binding for a given map. This
+ * is used to build up metainformation about imports.
+ */
+static zvalue addImportBinding(zvalue map, zvalue source, zvalue name) {
+    zvalue names = get(map, source);
+
+    names = addTypeBinding((names == NULL) ? EMPTY_MAP : names, name);
+    return collPut(map, source, names);
+}
+
+/**
+ * Adds a format to a list of same in a resource source map. This
+ * is used to build up metainformation about resources.
+ */
+static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
+    zvalue formats = get(map, source);
+
+    if (formats == NULL) {
+        formats = EMPTY_LIST;
+    }
+
+    // Unlike the `Lang0Node` version, this one doesn't de-duplicate formats.
+    formats = listAppend(formats, format);
+    return collPut(map, source, formats);
 }
 
 
@@ -423,6 +447,72 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
+zvalue resolveInfo(zvalue node) {
+    zvalue statements = get(node, STR_statements);
+    zint size = get_size(statements);
+
+    zvalue exports = EMPTY_MAP;
+    zvalue imports = EMPTY_MAP;
+    zvalue resources = EMPTY_MAP;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(statements, i);
+
+        if (hasType(s, TYPE_exportSelection)) {
+            zvalue select = get(s, STR_select);
+            zint sz = get_size(select);
+            for (zint j = 0; j < sz; j++) {
+                zvalue name = nth(select, j);
+                exports = addTypeBinding(exports, name);
+            }
+        } else if (hasType(s, TYPE_export)) {
+            zvalue defNode = get(s, STR_value);
+            zvalue name = get(defNode, STR_name);
+            if (name != NULL) {
+                exports = addTypeBinding(exports, name);
+            } else if (hasType(defNode, TYPE_importModuleSelection)) {
+                zvalue selection = resolveSelection(defNode);
+                zint sz = get_size(selection);
+                zmapping mappings[sz];
+                arrayFromMap(mappings, selection);
+                for (zint j = 0; j < sz; j++) {
+                    zvalue name = mappings[j].key;
+                    exports = addTypeBinding(exports, name);
+                }
+            } else {
+                die("Bad `export` payload.");
+            }
+            // And fall through to handle an `import*` payload, if any.
+            s = defNode;
+        }
+
+        // *Not* `else if` (see above).
+        if (hasType(s, TYPE_importModule)) {
+            imports =
+                addImportBinding(imports, get(s, STR_source), TYPE_module);
+        } else if (hasType(s, TYPE_importModuleSelection)) {
+            zvalue source = get(s, STR_source);
+            zvalue selection = resolveSelection(s);
+            zint sz = get_size(selection);
+            zmapping mappings[sz];
+            arrayFromMap(mappings, selection);
+            for (zint j = 0; j < sz; j++) {
+                zvalue name = mappings[j].value;
+                imports = addImportBinding(imports, source, name);
+            }
+        } else if (hasType(s, TYPE_importResource)) {
+            resources = addResourceBinding(resources,
+                get(s, STR_source), get(s, STR_format));
+        }
+    }
+
+    return mapFrom3(
+        STR_exports,   exports,
+        STR_imports,   imports,
+        STR_resources, resources);
+}
+
+/* Documented in spec. */
 zvalue resolveSelection(zvalue node) {
     zvalue prefix = get(node, STR_prefix);
     zvalue select = get(node, STR_select);
@@ -458,9 +548,10 @@ zvalue withModuleDefs(zvalue node) {
         die("Invalid node for `withModuleDefs` (has `yield`).");
     }
 
+    zvalue info = resolveInfo(node);
+
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
-
     zvalue statements = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
@@ -474,43 +565,22 @@ zvalue withModuleDefs(zvalue node) {
         statements = listAppend(statements, s);
     }
 
-    zvalue exports = EMPTY_LIST;
-    for (zint i = 0; i < size; i++) {
-        zvalue s = nth(rawStatements, i);
-
-        if (hasType(s, TYPE_exportSelection)) {
-            zvalue select = get(s, STR_select);
-            zint selectSize = get_size(select);
-            for (zint j = 0; j < selectSize; j++) {
-                zvalue name = nth(select, j);
-                exports = appendNameBinding(exports, name);
-            }
-        } else if (hasType(s, TYPE_export)) {
-            zvalue inner = get(s, STR_value);
-            zvalue name = get(inner, STR_name);
-
-            if (name != NULL) {
-                exports = appendNameBinding(exports, name);
-            } else if (hasType(inner, TYPE_importModuleSelection)) {
-                zvalue selection = resolveSelection(inner);
-                zint size = get_size(selection);
-                zmapping mappings[size];
-                arrayFromMap(mappings, selection);
-
-                for (zint i = 0; i < size; i++) {
-                    zvalue name = mappings[i].key;
-                    exports = appendNameBinding(exports, name);
-                }
-            } else {
-                die("Bad `export` payload.");
-            }
-        }
+    zvalue exportValues = EMPTY_LIST;
+    zvalue exportInfo = get(info, STR_exports);
+    zint exSize = get_size(exportInfo);
+    zmapping mappings[exSize];
+    arrayFromMap(mappings, exportInfo);
+    for (zint i = 0; i < exSize; i++) {
+        zvalue name = mappings[i].key;
+        exportValues = listAppend(exportValues,
+            makeCall(REFS(makeValueMap),
+                listFrom2(makeLiteral(name), makeVarRef(name))));
     }
 
-    zvalue yieldExports = (get_size(exports) == 0)
+    zvalue yieldExports = (get_size(exportValues) == 0)
         ? makeLiteral(EMPTY_MAP)
-        : makeCall(makeVarRef(STR_cat), exports);
-    zvalue yieldInfo = makeLiteral(EMPTY_MAP);
+        : makeCall(REFS(cat), exportValues);
+    zvalue yieldInfo = makeLiteral(info);
     zvalue yield = makeCall(REFS(makeValue),
         listFrom2(
             makeLiteral(TYPE_module),
