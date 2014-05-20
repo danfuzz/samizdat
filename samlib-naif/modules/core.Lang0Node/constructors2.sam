@@ -30,7 +30,9 @@ import ./getters ::
 
 import ./refs :: REFS;
 
-import ./resolve :: resolveSelection;
+import ./resolve ::
+    resolveInfo,
+    resolveSelection;
 
 
 ##
@@ -244,6 +246,12 @@ export fn withModuleDefs(node) {
     ifIs { get_yield(node) }
         { die("Invalid node for `withModuleDefs` (has `yield`).") };
 
+    ## This is the metainformation of the module. In addition to being
+    ## represented directly in the final `yield`, the (informational)
+    ## `exports` in this is what's used to produce the top-level `exports`
+    ## map.
+    def info = resolveInfo(node);
+
     def rawStatements = get_statements(node);
 
     ## This is a one-for-one list of replacements for the original
@@ -259,40 +267,15 @@ export fn withModuleDefs(node) {
 
     ## This is a list of lists of mappings which, when combined, is a map
     ## of all exports.
-    def exports = $Generator::filterAll(rawStatements) { <out> s ->
-        ifIs { <> hasType(s, @@exportSelection) }
-            {
-                <out> $Generator::filterAll(get_select(s)) { name ->
-                    <> makeCall(REFS::makeValueMap,
-                        makeLiteral(name), makeVarRef(name))
-                }
-            };
-
-        ifIs { <> hasType(s, @@export) }
-            {
-                def inner = get_nodeValue(s);
-                ifValue { <> get_name(inner) }
-                    { name ->
-                        <out> [makeCall(REFS::makeValueMap,
-                            makeLiteral(name), makeVarRef(name))]
-                    };
-                ifIs { <> hasType(inner, @@importModuleSelection) }
-                    {
-                        <out> $Generator::filterAll(resolveSelection(inner))
-                            { mapping ->
-                                def name = get_key(mapping);
-                                <> makeCall(REFS::makeValueMap,
-                                    makeLiteral(name), makeVarRef(name))
-                            }
-                    };
-                die("Bad `export` payload.");
-            };
+    def exportValues = $Generator::filterAll(info::exports) { mapping ->
+        def name = get_key(mapping);
+        <> makeCall(REFS::makeValueMap, makeLiteral(name), makeVarRef(name))
     };
 
-    def yieldExports = ifIs { <> eq(exports, []) }
+    def yieldExports = ifIs { <> eq(exportValues, []) }
         { <> makeLiteral({}) }
-        { <> makeCall(REFS::cat, cat(exports*)*) };
-    def yieldInfo = makeLiteral({});  ## TODO: Supply real `info`.
+        { <> makeCall(REFS::cat, exportValues*) };
+    def yieldInfo = makeLiteral(info);
     def yield = makeCall(REFS::makeValue,
         makeLiteral(@@module),
         makeCall(REFS::cat,
