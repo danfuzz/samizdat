@@ -423,15 +423,15 @@ export fn makeInternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
     def modulesDir = cat(basePath, "modules");
-    def moduleLoader = makeExternalLoader(modulesDir, globals, nextLoader);
+    def externLoader = makeExternalLoader(modulesDir, globals, nextLoader);
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
     def loader;
 
     fn glo_loadModule(source)           { <> loadModule(loader, source)           };
-    fn glo_moduleLoad(fqName)           { <> moduleLoad(moduleLoader, fqName)     };
-    fn glo_moduleLoader()               { <> moduleLoader                         };
+    fn glo_moduleLoad(fqName)           { <> moduleLoad(externLoader, fqName)     };
+    fn glo_moduleLoader()               { <> externLoader                         };
     fn glo_readResource(source, format) { <> readResource(loader, source, format) };
     fn glo_thisLoader()                 { <> loader                               };
 
@@ -446,9 +446,9 @@ export fn makeInternalLoader(path, globals, nextLoader) {
 
     loader := @InternalLoader{
         basePath,
-        nextLoader: moduleLoader,
-        globals: fullGlobals,
-        loadedBox: Box_makeCell({})
+        nextLoader: externLoader,
+        globals:    fullGlobals,
+        loadedBox:  Box_makeCell({})
     };
 
     <> loader
