@@ -406,31 +406,31 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
-    def result;
+    def loader;
 
-    fn module_loadModule(path)           { <> loadModule(result, path)           };
-    fn module_moduleLoad(fqName)         { <> moduleLoad(moduleLoader, fqName)   };
-    fn module_moduleLoader()             { <> moduleLoader                       };
-    fn module_readResource(path, format) { <> readResource(result, path, format) };
-    fn module_thisLoader()               { <> result                             };
+    fn glo_loadModule(path)           { <> loadModule(loader, path)           };
+    fn glo_moduleLoad(fqName)         { <> moduleLoad(moduleLoader, fqName)   };
+    fn glo_moduleLoader()             { <> moduleLoader                       };
+    fn glo_readResource(path, format) { <> readResource(loader, path, format) };
+    fn glo_thisLoader()               { <> loader                             };
 
     def fullGlobals = {
         globals*,
-        loadModule:   module_loadModule,
-        moduleLoad:   module_moduleLoad,
-        moduleLoader: module_moduleLoader,
-        readResource: module_readResource,
-        thisLoader:   module_thisLoader
+        loadModule:   glo_loadModule,
+        moduleLoad:   glo_moduleLoad,
+        moduleLoader: glo_moduleLoader,
+        readResource: glo_readResource,
+        thisLoader:   glo_thisLoader
     };
 
-    result := @IntraLoader{
+    loader := @IntraLoader{
         basePath,
         moduleLoader,
         globals: fullGlobals,
         loadedBox: Box_makeCell({})
     };
 
-    <> result
+    <> loader
 };
 
 ## Documented in spec.
