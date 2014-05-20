@@ -235,6 +235,12 @@ export fn loadModule(loader, source) {
         { die(cat("Module not found: ", sourceString(source))) }
 };
 
+## Documented in spec.
+export fn loadResource(loader, source, format) {
+    <> ifValueOr { <> readResource(loader, source, format) }
+        { die(cat("Resource not found: ", sourceString(source))) }
+};
+
 
 ##
 ## Type Definition: `ExternalLoader`
@@ -432,15 +438,15 @@ export fn makeInternalLoader(path, globals, nextLoader) {
     fn glo_loadModule(source)           { <> loadModule(loader, source)           };
     fn glo_moduleLoad(fqName)           { <> moduleLoad(externLoader, fqName)     };
     fn glo_moduleLoader()               { <> externLoader                         };
-    fn glo_readResource(source, format) { <> readResource(loader, source, format) };
+    fn glo_loadResource(source, format) { <> loadResource(loader, source, format) };
     fn glo_thisLoader()                 { <> loader                               };
 
     def fullGlobals = {
         globals*,
         loadModule:   glo_loadModule,
+        loadResource: glo_loadResource,
         moduleLoad:   glo_moduleLoad,
         moduleLoader: glo_moduleLoader,
-        readResource: glo_readResource,
         thisLoader:   glo_thisLoader
     };
 

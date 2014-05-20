@@ -36,6 +36,7 @@ def NAMES = [
     "interpolate",
     "le",
     "loadModule",
+    "loadResource",
     "loop",
     "lt",
     "makeDerivedDataType",
@@ -53,7 +54,6 @@ def NAMES = [
     "perLe",
     "perLt",
     "perNe",
-    "readResource",
     "return",
     "totalNe"
 ];

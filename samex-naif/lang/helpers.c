@@ -309,7 +309,7 @@ zvalue makeDynamicImport(zvalue node) {
 
         zvalue stat = makeVarDef(
             name,
-            makeCall(REFS(readResource),
+            makeCall(REFS(loadResource),
                 listFrom2(
                     makeLiteral(dataOf(source)),
                     makeLiteral(format))));

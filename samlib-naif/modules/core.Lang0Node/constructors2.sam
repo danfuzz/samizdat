@@ -140,7 +140,7 @@ fn @@importModuleSelection.makeDynamicImport() {
 ## Documented in spec.
 fn @@importResource.makeDynamicImport() {
     ## The translation is approximately
-    ## `def name = readResource(source, format)`.
+    ## `def name = loadResource(source, format)`.
 
     def name = get_name(this);
     def format = get_format(this);
@@ -151,7 +151,7 @@ fn @@importResource.makeDynamicImport() {
 
     <> [
         makeVarDef(name,
-            makeCall(REFS::readResource,
+            makeCall(REFS::loadResource,
                 makeLiteral(dataOf(source)),
                 makeLiteral(format)))
     ]

@@ -77,6 +77,20 @@ It is an error (terminating the runtime) if `path` does not correspond to
 a module known to `loader`. It is also an error (terminating the runtime)
 if `path` is not a valid internal module name.
 
+#### `loadResource(loader, source, format) <> . | void`
+
+This reads and/or processes a resource file, interpreting it as the given
+`format` (a string name). `source` is expected to be a source specifier.
+
+It is an error (terminating the runtime) if the given `format` is not
+recognized. It is also an error (terminating the runtime) if the indicated
+`source` cannot be processed per the indicated `format`. Notably, for the
+most part it is an error if `source` does not exist as a file.
+
+See "Resource Import" in the language guide for more details on the
+available `format`s.
+
+
 #### `makeInternalLoader(path, globals, nextLoader) <> InternalLoader`
 
 This creates and returns an intra-module file loader, for which the `intra*`
