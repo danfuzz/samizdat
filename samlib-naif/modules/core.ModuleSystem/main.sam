@@ -193,6 +193,20 @@ fn checkAbsolutePath(path) {
         { die("Invalid file path: not absolute") }
 };
 
+## Returns a human-oriented string name for a source.
+fn sourceString(source) {
+    ifIs { <> hasType(source, @@internal) }
+        { <> cat("internal ./", dataOf(source)) };
+    ifIs { <> hasType(source, @@external) }
+        { <> cat("external ", dataOf(source)) };
+
+    ## TODO: Remove this temporary scaffolding.
+    ifIs { <> hasType(source, String) }
+        { <> cat("legacy ", source) };
+
+    die("Bad module / resource `source`.")
+};
+
 ## Updates a map-containing box to have the given additional / replacement
 ## binding.
 fn updateMapBox(box, key, value) {
@@ -202,17 +216,24 @@ fn updateMapBox(box, key, value) {
 
 
 ##
-## Generic functions
+## Type definition: `Loader` protocol
 ##
 
 ## Documented in spec.
 export fn .moduleResolve(fqName);
 
 ## Documented in spec.
-export fn .resolve(path);
+export fn .resolve(source);
 
 ## Documented in spec.
-export fn .readResource(path, format);
+export fn .readResource(source, format);
+
+## Documented in spec.
+export fn loadModule(loader, source) {
+    <> ifValue { <> resolve(loader, source) }
+        { resolved <> resolved::exports }
+        { die(cat("Module not found: ", sourceString(source))) }
+};
 
 
 ##
@@ -408,11 +429,11 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def loader;
 
-    fn glo_loadModule(path)           { <> loadModule(loader, path)           };
-    fn glo_moduleLoad(fqName)         { <> moduleLoad(moduleLoader, fqName)   };
-    fn glo_moduleLoader()             { <> moduleLoader                       };
-    fn glo_readResource(path, format) { <> readResource(loader, path, format) };
-    fn glo_thisLoader()               { <> loader                             };
+    fn glo_loadModule(source)           { <> loadModule(loader, source)           };
+    fn glo_moduleLoad(fqName)           { <> moduleLoad(moduleLoader, fqName)     };
+    fn glo_moduleLoader()               { <> moduleLoader                         };
+    fn glo_readResource(source, format) { <> readResource(loader, source, format) };
+    fn glo_thisLoader()                 { <> loader                               };
 
     def fullGlobals = {
         globals*,
@@ -431,13 +452,6 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     };
 
     <> loader
-};
-
-## Documented in spec.
-export fn loadModule(loader, path) {
-    <> ifValue { <> resolve(loader, path) }
-        { resolved <> resolved::exports }
-        { die(cat("Module not found: ./", path)) }
 };
 
 
