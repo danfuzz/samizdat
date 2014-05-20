@@ -52,7 +52,7 @@ It is an error (terminating the runtime) if the indicated `path` does not
 correspond to an existing file. It is also an error (terminating the runtime)
 if the indicated `path` failed to be loadable.
 
-#### `intraRead(loader, path, format) <> . | void`
+#### `readResource(loader, path, format) <> . | void`
 
 This reads and/or processes an intra-module resource file, interpreting it as
 the given `format` (a string name). `path` is expected to be a string

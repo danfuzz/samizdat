@@ -212,7 +212,7 @@ export fn .moduleResolve(fqName);
 export fn .resolve(path);
 
 ## Documented in spec.
-export fn .intraRead(path, format);
+export fn .readResource(path, format);
 
 
 ##
@@ -368,27 +368,27 @@ fn @@IntraLoader.resolve(path) {
     <> result
 };
 
-## `intraRead` implementation for format `type`.
-fn intraRead_type(fullPath) {
+## `readResource` implementation for format `type`.
+fn readResource_type(fullPath) {
     <> $Io0::fileType(fullPath)
 };
 
-## `intraRead` implementation for format `utf8`.
-fn intraRead_utf8(fullPath) {
+## `readResource` implementation for format `utf8`.
+fn readResource_utf8(fullPath) {
     ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
         { die(cat("Missing resource: ", fullPath)) };
 
     <> $Io0::readFileUtf8(fullPath)
 };
 
-## Map from format names to corresponding `intraRead` implementations.
+## Map from format names to corresponding `readResource` implementations.
 def INTRA_READERS = {
-    type: intraRead_type,
-    utf8: intraRead_utf8
+    type: readResource_type,
+    utf8: readResource_utf8
 };
 
 ## Documented in spec.
-fn @@IntraLoader.intraRead(path, format) {
+fn @@IntraLoader.readResource(path, format) {
     checkIntraPath(path);
     def fullPath = cat(this::basePath, path);
 
@@ -408,19 +408,19 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
     ## functions immediately below.
     def result;
 
-    fn module_intraLoad(path)         { <> intraLoad(result, path)          };
-    fn module_intraLoader()           { <> result                           };
-    fn module_intraRead(path, format) { <> intraRead(result, path, format)  };
-    fn module_moduleLoad(fqName)      { <> moduleLoad(moduleLoader, fqName) };
-    fn module_moduleLoader()          { <> moduleLoader                     };
+    fn module_intraLoad(path)            { <> intraLoad(result, path)            };
+    fn module_intraLoader()              { <> result                             };
+    fn module_moduleLoad(fqName)         { <> moduleLoad(moduleLoader, fqName)   };
+    fn module_moduleLoader()             { <> moduleLoader                       };
+    fn module_readResource(path, format) { <> readResource(result, path, format) };
 
     def fullGlobals = {
         globals*,
         intraLoad:    module_intraLoad,
         intraLoader:  module_intraLoader,
-        intraRead:    module_intraRead,
         moduleLoad:   module_moduleLoad,
-        moduleLoader: module_moduleLoader
+        moduleLoader: module_moduleLoader,
+        readResource: module_readResource
     };
 
     result := @IntraLoader{
