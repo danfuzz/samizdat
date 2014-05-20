@@ -214,9 +214,9 @@ fn checkAbsolutePath(path) {
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
     ifIs { <> hasType(source, @@internal) }
-        { return cat("internal ./", dataOf(source)) };
+        { return cat("./", dataOf(source)) };
     ifIs { <> hasType(source, @@external) }
-        { return cat("external ", dataOf(source)) };
+        { return dataOf(source) };
 
     die("Bad module / resource `source`.")
 };
