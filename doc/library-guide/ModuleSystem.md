@@ -77,18 +77,18 @@ It is an error (terminating the runtime) if `path` does not correspond to
 a module known to `loader`. It is also an error (terminating the runtime)
 if `path` is not a valid internal module name.
 
-#### `makeInternalLoader(path, globals, moduleLoader) <> InternalLoader`
+#### `makeInternalLoader(path, globals, nextLoader) <> InternalLoader`
 
 This creates and returns an intra-module file loader, for which the `intra*`
 family of functions produces useful results.
 
 `path` is the absolute filesystem path to the main module directory.
-`moduleLoader` is the loader to use to find required modules that aren't
+`nextLoader` is the loader to use to find required modules that aren't
 defined within this module. `globals` is the global variable environment
 to use when evaluating source.
 
 **Note:** If this loader should not have a module loader, then
-`moduleLoader` should be passed as `null`.
+`nextLoader` should be passed as `null`.
 
 #### `makeExternalLoader(path, globals, nextLoader) <> ExternalLoader`
 
@@ -121,16 +121,16 @@ arguments given to this function.
 This returns whatever the library's `main` returns, which is generally
 expected to be the library's full global environment, as a map.
 
-#### `moduleLoad(moduleLoader, fqName) <> .`
+#### `moduleLoad(loader, fqName) <> .`
 
 This loads the module named by `fqName`, returning its `exports` map.
 
 It is an error (terminating the runtime) if `fqName` does not correspond to
-a module known to `moduleLoader`. It is also an error (terminating the runtime)
+a module known to `loader`. It is also an error (terminating the runtime)
 if `fqName` is not a valid module name.
 
 
-#### `run(path, moduleLoader, args*) <> . | void`
+#### `run(path, loader, args*) <> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
 `main` binding, and runs it, handing it the given `args`.
@@ -138,9 +138,9 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
-def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
-def loader = makeInternalLoader(path, globals, moduleLoader);
-def mainModule = loadModule(loader, "main");
+def globals = moduleLoad(loader, "core.Globals")::fullEnvironment();
+def mainLoader = makeInternalLoader(path, globals, loader);
+def mainModule = resolveMain(mainLoader)::exports;
 <> mainModule::main(args*)
 ```
 
@@ -152,14 +152,14 @@ filesystem path to itself. This function does *not* automatically add this
 argument. Users of this function should add it to the given `args*` when
 appropriate.
 
-#### `runFile(path, moduleLoader, args*) <> . | void`
+#### `runFile(path, loader, args*) <> . | void`
 
 This runs a solo file at the given `path`. It works for both source text
 and binary files, switching based on the file name suffix, `.sam` for text
 and `.samb` for binary.
 
 In the case of source text, an appropriate language module is loaded up
-from the given `moduleLoader`.
+from the given `loader`.
 
 In both cases, the global environment which the file is given is the
 same as is used when loading modules, except that none of the `intra*`

@@ -460,13 +460,13 @@ export fn makeInternalLoader(path, globals, nextLoader) {
 ##
 
 ## Makes a global environment sufficient for evaluating a single file.
-fn makeFileGlobals(moduleLoader) {
-    fn file_moduleLoad(fqName) { <> moduleLoad(moduleLoader, fqName) };
-    fn file_moduleLoader()     { <> moduleLoader                     };
+fn makeFileGlobals(loader) {
+    fn file_moduleLoad(fqName) { <> moduleLoad(loader, fqName) };
+    fn file_moduleLoader()     { <> loader                     };
 
     <> {
         ## The standard global environment.
-        moduleLoad(moduleLoader, "core.Globals")::fullEnvironment()*,
+        moduleLoad(loader, "core.Globals")::fullEnvironment()*,
 
         moduleLoad:   file_moduleLoad,
         moduleLoader: file_moduleLoader
@@ -496,12 +496,12 @@ fn runProgram(programFunc, args) {
 };
 
 ## Helper for `runFile`, which handles program text.
-fn runTextFile(path, moduleLoader, args) {
-    def globals = makeFileGlobals(moduleLoader);
+fn runTextFile(path, loader, args) {
+    def globals = makeFileGlobals(loader);
     def text = $Io0::readFileUtf8(path);
     def languageName = ifValueOr { <> $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
-    def lang = moduleLoad(moduleLoader, languageName);
+    def lang = moduleLoad(loader, languageName);
     def tree = lang::simplify(lang::parseProgram(text));
     def func = $Code::eval(globals, tree);
 
@@ -509,8 +509,8 @@ fn runTextFile(path, moduleLoader, args) {
 };
 
 ## Helper for `runFile`, which handles binaries.
-fn runBinaryFile(path, moduleLoader, args) {
-    def globals = makeFileGlobals(moduleLoader);
+fn runBinaryFile(path, loader, args) {
+    def globals = makeFileGlobals(loader);
     def func = $Code::evalBinary(globals, path);
 
     <> runProgram(func, args)
@@ -531,10 +531,10 @@ export fn main(libraryPath, primitiveGlobals) {
 };
 
 ## Documented in spec.
-export fn run(path, moduleLoader, args*) {
-    def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
-    def loader = makeInternalLoader(path, globals, moduleLoader);
-    def mainModule = resolveMain(loader)::exports;
+export fn run(path, loader, args*) {
+    def globals = moduleLoad(loader, "core.Globals")::fullEnvironment();
+    def mainLoader = makeInternalLoader(path, globals, loader);
+    def mainModule = resolveMain(mainLoader)::exports;
     def optMain = mainModule::main?;
 
     ifIs { <> eq(optMain, []) }
@@ -544,14 +544,14 @@ export fn run(path, moduleLoader, args*) {
 };
 
 ## Documented in spec.
-export fn runFile(path, moduleLoader, args*) {
+export fn runFile(path, loader, args*) {
     def suffix = fileNameSuffix(path);
 
     ifIs { <> eq(suffix, "sam") }
-        { return runTextFile(path, moduleLoader, args) };
+        { return runTextFile(path, loader, args) };
 
     ifIs { <> eq(suffix, "samb") }
-        { return runBinaryFile(path, moduleLoader, args) };
+        { return runBinaryFile(path, loader, args) };
 
     die(cat("Unknown file name suffix: ", suffix))
 };
