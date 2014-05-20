@@ -271,12 +271,8 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue source = get(node, STR_source);
 
     if (hasType(node, TYPE_importModule)) {
-        zvalue loadRef = hasType(source, TYPE_external)
-            ? REFS(moduleLoad)
-            : REFS(loadModule);
-        zvalue stat = makeVarDef(
-            name,
-            makeCall(loadRef, listFrom1(makeLiteral(dataOf(source)))));
+        zvalue stat = makeVarDef(name,
+            makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
 
         return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
@@ -285,11 +281,8 @@ zvalue makeDynamicImport(zvalue node) {
         zmapping mappings[size];
         arrayFromMap(mappings, selection);
 
-        zvalue loadRef = hasType(source, TYPE_external)
-            ? REFS(moduleLoad)
-            : REFS(loadModule);
-        zvalue loadCall = makeCall(loadRef,
-            listFrom1(makeLiteral(dataOf(source))));
+        zvalue loadCall = makeCall(REFS(loadModule),
+            listFrom1(makeLiteral(source)));
 
         zvalue stats[size];
         for (zint i = 0; i < size; i++) {

@@ -289,14 +289,15 @@ The implementation of module loading actually much simpler than the
 description might have you believe.
 
 There are two types which interplay to cause module loading to happen.
+Both types bind a generic function `resolve`.
 
 One type is `ExternalLoader`, which gets instantiated with two main
 pieces of information, (a) a filesystem path to a directory containing
 module definitions, and (b) a reference to the "next" `ExternalLoader` to
-use. `ExternalLoader` defines a `moduleLoad` method, which is the thing that
+use. `ExternalLoader` defines a `resolve` method, which is the thing that
 looks for a module in its designated directory, and then calls on the
 "next" loader if that fails. The recursion bottoms out in a definition of
-`moduleLoad` on `null`, which always fails.
+`resolve` on `null`, which always fails.
 
 The other type is `InternalLoader`, which gets instantiated with two pieces
 of information, (a) a filesystem path to a directory containing the definition
@@ -306,6 +307,8 @@ loader typically being an `ExternalLoader`). When instantiated,
 directory under its given filesystem path, and that `ExternalLoader` is the
 one that's used directly by the `InternalLoader` implementation. The
 `InternalLoader`'s filesystem path is used directly for module-internal files.
+`InternalLoader` defines a `resolve` method, which handles internal sources
+directly and defers to its "next" loader for all other requests.
 
 The core library is loaded as an `InternalLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.

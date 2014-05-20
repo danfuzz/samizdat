@@ -101,7 +101,6 @@ STR(makeUnitypeGeneric,    "makeUnitypeGeneric");
 STR(makeValue,             "makeValue");
 STR(makeValueMap,          "makeValueMap");
 STR(map,                   "map");
-STR(moduleLoad,            "moduleLoad");
 STR(name,                  "name");
 STR(optValue,              "optValue");
 STR(other,                 "other");

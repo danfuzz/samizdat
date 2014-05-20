@@ -214,13 +214,13 @@ fn checkAbsolutePath(path) {
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
     ifIs { <> hasType(source, @@internal) }
-        { <> cat("internal ./", dataOf(source)) };
+        { return cat("internal ./", dataOf(source)) };
     ifIs { <> hasType(source, @@external) }
-        { <> cat("external ", dataOf(source)) };
+        { return cat("external ", dataOf(source)) };
 
     ## TODO: Remove this temporary scaffolding.
     ifIs { <> hasType(source, String) }
-        { <> cat("legacy ", source) };
+        { return cat("legacy ", source) };
 
     die("Bad module / resource `source`.")
 };
@@ -248,6 +248,10 @@ export fn .readResource(source, format);
 
 ## Documented in spec.
 export fn loadModule(loader, source) {
+    ## TODO: Remove this scaffolding.
+    ifIs { <> hasType(source, String) }
+        { return loadModule(loader, @external(source)) };
+
     <> ifValue { <> resolve(loader, source) }
         { resolved <> resolved::exports }
         { die(cat("Module not found: ", sourceString(source))) }
@@ -345,6 +349,18 @@ fn @@ExternalLoader.readResource(source, format) {
 };
 
 ## Documented in spec.
+fn @@ExternalLoader.resolve(source) {
+    ifNot { <> checkExternalSource(source) }
+        {
+            ## Not an external source, so punt to the next loader.
+            return resolve(this::nextLoader, source)
+        };
+
+    ## TODO: Replace this scaffolding.
+    <> moduleResolve(this, dataOf(source));
+};
+
+## Documented in spec.
 export fn makeExternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
 
@@ -392,14 +408,14 @@ export fn moduleLoad(loader, fqName) {
 
 ## Convenient helper which just resolves a top-level `main` file.
 fn resolveMain(loader) {
-    <> resolve(loader, "main")
+    <> resolve(loader, @internal("main"))
 };
 
 ## Helper for `resolve` which does the actual resolution / loading.
-fn doInternalResolve(loader, path) {
-    note(cat("        ", path));
+fn doInternalResolve(loader, source) {
+    note(cat("        ", sourceString(source)));
 
-    def pathPrefix = cat(loader::basePath, path);
+    def pathPrefix = cat(loader::basePath, dataOf(source));
     def binPath = cat(pathPrefix, ".samb");
 
     ifIs { <> eq($Io0::fileType(binPath)?, ["file"]) }
@@ -426,16 +442,20 @@ fn doInternalResolve(loader, path) {
 };
 
 ## Documented in spec.
-fn @@InternalLoader.resolve(path) {
-    def source = @internal(path);
-    checkInternalSource(source);
+fn @@InternalLoader.resolve(source) {
+    ifNot { <> checkInternalSource(source) }
+        {
+            ## Not an internal source, so punt to the next loader.
+            return resolve(this::nextLoader, source)
+        };
+
     def loadedBox = this::loadedBox;
 
-    ifValue { <> get(fetch(loadedBox), path) }
+    ifValue { <> get(fetch(loadedBox), source) }
         { found -> return found };
 
-    def result = doInternalResolve(this, path);
-    updateMapBox(loadedBox, path, result);
+    def result = doInternalResolve(this, source);
+    updateMapBox(loadedBox, source, result);
     <> result
 };
 

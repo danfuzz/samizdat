@@ -8,6 +8,12 @@ This module is the module which knows how to load modules. It is also
 where much of the single-file loading logic resides, since that interacts
 tightly with module loading.
 
+Several of the functions in this module take a parameter called `source`.
+A "source" identifies the name of an external module, a relative path
+to an internal module, or a relative path to a resource. Sources must
+be derived values of type `@external` or `@internal` with a string payload,
+as described in the "Execution Trees" section of the language guide.
+
 **Note:** The constant `null` can be treated as a module loader. When used
 as such, it "knows" the modules `core.Code`, `core.Io0`, and `core.Lang0`.
 These are set up as "bootstrap modules," as otherwise they would, in effect,
@@ -32,44 +38,18 @@ indicate a valid way to process the source.
 See "Resource Import" in the language guide for more details on the
 available `format`s.
 
+#### `resolve(loader, source) <> . | void`
 
-<br><br>
-### Generic Function Definitions: `ExternalLoader` protocol
-
-#### `moduleResolve(loader, fqName) <> . | void`
-
-This resolves and loads the external module named by `fqName`, which is
-expected to be a fully-qualified module name as a string
-(e.g. `"core.Format"`). It returns a `@module` value with a payload of
-`{exports: {...}, info: {...}}`, representing the module result.
+This resolves and loads the module (either an internal or external module)
+named by `source`. `source` is expected to be a source specifier.
 
 This function will only ever load a given module once. If the same name
 is requested more than once, whatever was returned the first time
 is returned again, without re-evaluating the module.
 
-It is an error (terminating the runtime) if `fqName` is not a valid module
-name.
-
-
-<br><br>
-### Generic Function Definitions: `InternalLoader` protocol
-
-#### `resolve(loader, fqName) <> . | void`
-
-This resolves and loads the internal module (an "module-internal module")
-named by `path`. `path` is expected to be a string identifying a relative
-file path within the (outer) module's file hierarchy. The final name
-component in `path` must *not* have a file suffix (such as `.sam` or `samb`).
-This function returns a `@module` value with a payload of
-`{exports: {...}, info: {...}}`, representing the module result.
-
-This function will only ever load a given module once. If the same name
-is requested more than once, whatever was returned the first time
-is returned again, without re-evaluating the module.
-
-It is an error (terminating the runtime) if the indicated `path` does not
-correspond to an existing file. It is also an error (terminating the runtime)
-if the indicated `path` failed to be loadable.
+It is an error (terminating the runtime) if the indicated `source` does not
+correspond to an existing module. It is also an error (terminating the
+runtime) if the indicated `source` failed to be loadable.
 
 
 <br><br>

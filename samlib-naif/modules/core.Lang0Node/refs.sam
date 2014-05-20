@@ -45,7 +45,6 @@ def NAMES = [
     "makeUnitypeGeneric",
     "makeValue",
     "makeValueMap",
-    "moduleLoad",
     "ne",
     "optValue",
     "perEq",
