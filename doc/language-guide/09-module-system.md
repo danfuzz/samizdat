@@ -20,9 +20,10 @@ In terms of code in files, a module consists of a directory which contains
 at least one file, called `main`. The `main` file is responsible for
 exporting whatever it is that the module exports.
 
-The module directory optionally contains additional "intra-module" files
-in an arbitrary subdirectory hierarchy. Intra-module files may be either
-internal modules (single files of code) or resources.
+The module directory optionally contains additional module-internal files
+in an arbitrary subdirectory hierarchy. Module-internal files may be either
+internal modules (single files of code, which aren't exposed externally) or
+resources.
 
 In addition, the module directory optionally contains additional *external*
 module definitions (which take the form as external modules in other contexts).
@@ -299,11 +300,12 @@ looks for a module in its designated directory, and then calls on the
 
 The other type is `InternalLoader`, which gets instantiated with two pieces
 of information, (a) a filesystem path to a directory containing the definition
-of *one* module, and (b) a reference to the "next" `ExternalLoader` to
-use. When instantiated, `InternalLoader` makes a `ExternalLoader` which points
-to a `modules` directory under its given filesystem path, and that
-`ExternalLoader` is the one that's used directly by the intra-module code.
-The `InternalLoader`'s filesystem path is used directly for intra-module files.
+of *one* module, and (b) a reference to the "next" loader to use (said next
+loader typically being an `ExternalLoader`). When instantiated,
+`InternalLoader` makes a `ExternalLoader` which points to a `modules`
+directory under its given filesystem path, and that `ExternalLoader` is the
+one that's used directly by the `InternalLoader` implementation. The
+`InternalLoader`'s filesystem path is used directly for module-internal files.
 
 The core library is loaded as an `InternalLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.
@@ -312,19 +314,19 @@ As a final note, though the default module system is implemented in terms
 of the filesystem, all of the behavior of the system is based on generic
 functions. These functions can be bound to other types, in order to
 provide other interesting and useful arrangements. For example, it is
-possible (and may eventually be desirable) to construct a module or
-intra-module loader which only depends on immutable data as input.
+possible (and may eventually be desirable) to construct a loader which
+depends only upon immutable data as input.
 
 #### Example filesystem layout
 
 ```
 /path/to/castingApp
   main.sam                   application's main file
-  appHelp.sam                intra-module file for the applicaton itself
+  appHelp.sam                internal module for the applicaton itself
   modules/
     Blort/                   application's `Blort` module
       main.sam
-      darkness.sam           intra-module file for `Blort` module
+      darkness.sam           internal module file for `Blort` module
     Frotz/                   application's `Frotz` module
       main.sam
       modules/

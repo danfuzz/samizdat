@@ -56,7 +56,7 @@ name.
 
 #### `resolve(loader, fqName) <> . | void`
 
-This resolves and loads the internal module (an "intra-module module")
+This resolves and loads the internal module (an "module-internal module")
 named by `path`. `path` is expected to be a string identifying a relative
 file path within the (outer) module's file hierarchy. The final name
 component in `path` must *not* have a file suffix (such as `.sam` or `samb`).
@@ -99,8 +99,9 @@ available `format`s.
 
 #### `makeInternalLoader(path, globals, nextLoader) <> InternalLoader`
 
-This creates and returns an intra-module file loader, for which the `intra*`
-family of functions produces useful results.
+This creates and returns a module-internal file loader, which knows how
+to load internal modules (private implementation files) and resource
+files.
 
 `path` is the absolute filesystem path to the main module directory.
 `nextLoader` is the loader to use to find required modules that aren't
@@ -112,8 +113,8 @@ to use when evaluating source.
 
 #### `makeExternalLoader(path, globals, nextLoader) <> ExternalLoader`
 
-This creates a module loader, for which the `moduleLoad` function produces
-useful results.
+This creates an external module loader, which knows how to load modules
+identified by "external" sources.
 
 `path` is the absolute filesystem path to a directory containing module
 definition subdirectories. `nextLoader` is the loader to use to find
@@ -133,7 +134,7 @@ terminates with a fatal error.
 This is the main entrypoint for loading the entire system. As such, it's
 not that useful for most code.
 
-This constructs an intra-module loader for the given `libraryPath`, which is
+This constructs `InternalLoader` for the given `libraryPath`, which is
 expected to be the path to a core library implementation. It then loads
 the `main` file of that library, and runs it, passing it the same two
 arguments given to this function.
@@ -182,8 +183,8 @@ In the case of source text, an appropriate language module is loaded up
 from the given `loader`.
 
 In both cases, the global environment which the file is given is the
-same as is used when loading modules, except that none of the `intra*`
-functions are made available.
+same as is used when loading modules, except that none of the provided
+functions will handle module-internal sources.
 
 The direct result of evaluation of the file is a function of no arguments.
 This is called. If that returns a map, then `main` is looked up in it,

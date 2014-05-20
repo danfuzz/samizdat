@@ -13,7 +13,7 @@
 ## Exported Definitions
 ##
 
-## This just re-exports stuff defined in intramodule files, as well as
+## This just re-exports stuff defined in module-internal files, as well as
 ## a couple items from `Lang0`.
 
 export import ./parse :: parseExpression, parseProgram;
