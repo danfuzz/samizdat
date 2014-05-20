@@ -297,14 +297,15 @@ fn @@Null.resolve(source) {
 ##
 
 ## Helper for `moduleResolve` which does the actual resolution / loading.
-fn doExternalResolve(ml, fqName) {
-    def modulePath = cat(ml::basePath, fqName);
+fn doExternalResolve(loader, fqName) {
+    def modulePath = cat(loader::basePath, fqName);
 
     <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
         {
             note(cat("    ", fqName));
 
-            def loader = makeInternalLoader(modulePath, ml::globals, ml);
+            def loader =
+                makeInternalLoader(modulePath, loader::globals, loader);
             def result = resolveMain(loader);
 
             note("        Done.");
@@ -369,8 +370,8 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 };
 
 ## Documented in spec.
-export fn moduleLoad(ml, fqName) {
-    <> ifValue { <> moduleResolve(ml, fqName) }
+export fn moduleLoad(loader, fqName) {
+    <> ifValue { <> moduleResolve(loader, fqName) }
         { resolved <> resolved::exports }
         { die(cat("Module not found: ", fqName)) }
 };
@@ -395,15 +396,15 @@ fn resolveMain(loader) {
 };
 
 ## Helper for `resolve` which does the actual resolution / loading.
-fn doInternalResolve(il, path) {
+fn doInternalResolve(loader, path) {
     note(cat("        ", path));
 
-    def pathPrefix = cat(il::basePath, path);
+    def pathPrefix = cat(loader::basePath, path);
     def binPath = cat(pathPrefix, ".samb");
 
     ifIs { <> eq($Io0::fileType(binPath)?, ["file"]) }
         {
-            def func = $Code::evalBinary(il::globals, binPath);
+            def func = $Code::evalBinary(loader::globals, binPath);
             return func()
         };
 
@@ -413,9 +414,9 @@ fn doInternalResolve(il, path) {
             def text = $Io0::readFileUtf8(sourcePath);
             def languageName = ifValueOr { <> $Lang0::languageOf(text) }
                 { <> DEFAULT_LANGUAGE };
-            def lang = moduleLoad(il::nextLoader, languageName);
+            def lang = moduleLoad(loader::nextLoader, languageName);
             def tree = lang::simplify(lang::parseProgram(text));
-            def func = $Code::eval(il::globals, tree);
+            def func = $Code::eval(loader::globals, tree);
 
             return ifValueOr { <> func() }
                 { die(cat("No result from module: ", sourcePath)) }
