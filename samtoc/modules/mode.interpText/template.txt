@@ -24,7 +24,7 @@ static zvalue lookup(zvalue env, const char *name) {
 static zvalue externalSource(const char *name) {
     zvalue type = makeDerivedDataType(stringFromUtf8(-1, "external"));
     zvalue data = stringFromUtf8(-1, name);
-    return makeValue(type, name, NULL);
+    return makeValue(type, data, NULL);
 }
 
 zvalue eval(zvalue env) {
