@@ -35,7 +35,7 @@ name.
 <br><br>
 ### Generic Function Definitions: `IntraLoader` protocol
 
-#### `intraResolve(loader, fqName) <> . | void`
+#### `resolve(loader, fqName) <> . | void`
 
 This resolves and loads the internal module (an "intra-module module")
 named by `path`. `path` is expected to be a string identifying a relative

@@ -209,7 +209,7 @@ fn updateMapBox(box, key, value) {
 export fn .moduleResolve(fqName);
 
 ## Documented in spec.
-export fn .intraResolve(path);
+export fn .resolve(path);
 
 ## Documented in spec.
 export fn .intraRead(path, format);
@@ -237,7 +237,7 @@ fn doModuleResolve(ml, fqName) {
             note(cat("    ", fqName));
 
             def loader = makeIntraLoader(modulePath, ml::globals, ml);
-            def result = intraResolveMain(loader);
+            def result = resolveMain(loader);
 
             note("        Done.");
             <> result
@@ -321,11 +321,11 @@ export fn moduleLoad(ml, fqName) {
 ##
 
 ## Convenient helper which just resolves a top-level `main` file.
-fn intraResolveMain(loader) {
-    <> intraResolve(loader, "main")
+fn resolveMain(loader) {
+    <> resolve(loader, "main")
 };
 
-## Helper for `intraResolve` which does the actual resolution / loading.
+## Helper for `resolve` which does the actual resolution / loading.
 fn doIntraResolve(il, path) {
     note(cat("        ", path));
 
@@ -356,7 +356,7 @@ fn doIntraResolve(il, path) {
 };
 
 ## Documented in spec.
-fn @@IntraLoader.intraResolve(path) {
+fn @@IntraLoader.resolve(path) {
     checkIntraPath(path);
     def loadedBox = this::loadedBox;
 
@@ -435,7 +435,7 @@ export fn makeIntraLoader(path, globals, nextModuleLoader) {
 
 ## Documented in spec.
 export fn intraLoad(il, path) {
-    <> ifValue { <> intraResolve(il, path) }
+    <> ifValue { <> resolve(il, path) }
         { resolved <> resolved::exports }
         { die(cat("Module not found: ./", path)) }
 };
@@ -511,7 +511,7 @@ fn runBinaryFile(path, moduleLoader, args) {
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
     def loader = makeIntraLoader(libraryPath, primitiveGlobals, null);
-    def mainModule = intraResolveMain(loader)::exports;
+    def mainModule = resolveMain(loader)::exports;
     def mainFunction = mainModule::main;
     <> mainModule::main(libraryPath, primitiveGlobals)
 };
@@ -520,7 +520,7 @@ export fn main(libraryPath, primitiveGlobals) {
 export fn run(path, moduleLoader, args*) {
     def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
     def loader = makeIntraLoader(path, globals, moduleLoader);
-    def mainModule = intraResolveMain(loader)::exports;
+    def mainModule = resolveMain(loader)::exports;
     def optMain = mainModule::main?;
 
     ifIs { <> eq(optMain, []) }
