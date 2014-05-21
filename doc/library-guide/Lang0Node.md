@@ -284,6 +284,18 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
+#### `resolveImport(node) <> node`
+
+Returns a node just like the given one (which must be an `import*` node),
+except that it is resolved. Resolution means validating it and replacing
+wildcard selections with explicit names.
+
+This only actually causes `importModuleSelection` nodes to be altered.
+Everything else just passes through as-is, if valid.
+
+It is a fatal error (terminating the runtime) if `node` is found to be
+invalid.
+
 #### `resolveInfo(node) <> {exports: [name+], imports: [name+]}`
 
 Resolves the metainformation a `closure` node that represents a top-level
@@ -338,9 +350,8 @@ Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` or `export(import*)`nodes in the `statements` list
 transformed, as follows:
 
-* Each `importSelection` node with a wildcard selection (import of all
-  bindings) gets transformed into one where all the bindings are named
-  explicitly. This uses `resolveSelection()`.
+* Each `import*` node is resolved using `resolveImport()`. The resolved
+  version replaces the original.
 
 * Each `export(import*)` node gets transformed into a pair of nodes,
   a "naked" `import*` followed by an `exportSelection` of the variables
