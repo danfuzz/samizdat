@@ -22,6 +22,26 @@ import ./getters ::
 ##
 
 ## Documented in spec.
+export fn .resolveImport();
+
+## Documented in spec.
+fn @@importModule.resolveImport() {
+    ## No need to do anything.
+    <> this
+};
+
+## Documented in spec.
+fn @@importModuleSelection.resolveImport() {
+    die("TODO")
+};
+
+## Documented in spec.
+fn @@importResource.resolveImport() {
+    ## No need to do anything.
+    <> this
+};
+
+## Documented in spec.
 export fn resolveInfo(node) {
     def statements = get_statements(node);
 
