@@ -219,13 +219,16 @@ export fn withDynamicImports(node) {
         };
 
     def converted = $Generator::filterAll(rawStatements) { <out> s ->
-        ifIs { <> hasType(s, @@importModule) }
-            { <out> makeDynamicImport(s) };
-        ifIs { <> hasType(s, @@importModuleSelection) }
-            { <out> makeDynamicImport(s) };
-        ifIs { <> hasType(s, @@importResource) }
-            { <out> makeDynamicImport(s) };
-        <> [s]
+        ifValueOr
+            { <> hasType(s, @@importModule) }
+            { <> hasType(s, @@importModuleSelection) }
+            { <> hasType(s, @@importResource) }
+            {
+                ## Not an `import*`.
+                <out> [s]
+            };
+
+        <out> makeDynamicImport(s)
     };
 
     def statements = cat(converted*);
