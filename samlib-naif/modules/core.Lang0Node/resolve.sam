@@ -117,29 +117,6 @@ export fn resolveInfo(node) {
 };
 
 ## Documented in spec.
-export fn resolveSelection(node) {
-    ifNot { <> hasType(node, @@importModuleSelection) }
-        { die("Bad type for `resolveSelection`.") };
-
-    def prefix = get_prefix(node);
-    def select = ifValueOr
-        { <> get_select(node) }
-        {
-            ## TODO: In order to handle wildcard imports, this function will
-            ## have to be able to ask for the list of exports from arbitrary
-            ## modules. This will probably mean adding an argument for a
-            ## "module oracle" of some sort.
-            die("TODO: wildcard selection import")
-        };
-
-    def bindings = $Generator::filterAll(select) { name ->
-        <> {cat(prefix, name): name}
-    };
-
-    <> cat({}, bindings*)
-};
-
-## Documented in spec.
 export fn withResolvedImports(node) {
     def rawStatements = get_statements(node);
 

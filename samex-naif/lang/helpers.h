@@ -134,9 +134,6 @@ zvalue resolveImport(zvalue node);
 zvalue resolveInfo(zvalue node);
 
 /* Documented in spec. */
-zvalue resolveSelection(zvalue node);
-
-/* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals);
 
 /* Documented in spec. */

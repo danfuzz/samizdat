@@ -317,12 +317,6 @@ top-level module. This returns a map that binds `exports`, `imports`, and
 `withResolvedImports()`. It is a fatal error to call this on a node with
 any unresolved wildcard imports.
 
-#### `resolveSelection(node) <> {(name: sourceName)+}`
-
-Resolves the selection of a `importModuleSelection` node. This returns a
-map from names to bind (the keys) to the corresponding source names to
-import from (the values).
-
 #### `withDynamicImports(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except

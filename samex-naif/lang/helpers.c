@@ -540,28 +540,6 @@ zvalue resolveInfo(zvalue node) {
 }
 
 /* Documented in spec. */
-zvalue resolveSelection(zvalue node) {
-    zvalue prefix = get(node, STR_prefix);
-    zvalue select = get(node, STR_select);
-
-    if (select == NULL) {
-        // See TODO in Lang0Node implementation.
-        die("TODO: wildcard selection import");
-    }
-
-    zint size = get_size(select);
-    zmapping bindings[size];
-
-    for (zint i = 0; i < size; i++) {
-        zvalue name = nth(select, i);
-        bindings[i].key = GFN_CALL(cat, prefix, name);
-        bindings[i].value = name;
-    }
-
-    return mapFromArray(size, bindings);
-}
-
-/* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeValue(
         get_type(node),

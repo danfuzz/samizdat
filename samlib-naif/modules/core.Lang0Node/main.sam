@@ -71,5 +71,4 @@ export import ./refs :: REFS;
 export import ./resolve ::
     resolveImport,
     resolveInfo,
-    resolveSelection,
     withResolvedImports;
