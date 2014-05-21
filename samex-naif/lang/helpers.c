@@ -589,6 +589,11 @@ zvalue withModuleDefs(zvalue node) {
 }
 
 /* Documented in spec. */
+zvalue withResolvedImports(zvalue node) {
+    die("TODO");
+}
+
+/* Documented in spec. */
 zvalue withTop(zvalue node) {
     // Contrary to the spec, we bind to `EMPTY_LIST` and not `true`, because
     // (a) the actual value doesn't matter, and (b) `true` isn't available

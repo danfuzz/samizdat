@@ -69,4 +69,5 @@ export import ./refs :: REFS;
 
 export import ./resolve ::
     resolveInfo,
-    resolveSelection;
+    resolveSelection,
+    withResolvedImports;

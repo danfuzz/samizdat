@@ -108,3 +108,8 @@ export fn resolveSelection(node) {
 
     <> cat({}, bindings*)
 };
+
+## Documented in spec.
+export fn withResolvedImports(node) {
+    die("TODO")
+};

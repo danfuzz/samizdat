@@ -137,6 +137,9 @@ zvalue withFormals(zvalue node, zvalue formals);
 zvalue withModuleDefs(zvalue node);
 
 /* Documented in spec. */
+zvalue withResolvedImports(zvalue node);
+
+/* Documented in spec. */
 zvalue withTop(zvalue node);
 
 /* Documented in spec. */
