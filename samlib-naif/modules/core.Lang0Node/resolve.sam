@@ -12,6 +12,7 @@ import ./constructors1 ::
 
 import ./getters ::
     get_format,
+    get_definedNames,
     get_name,
     get_nodeValue,
     get_prefix,
@@ -105,16 +106,8 @@ export fn resolveInfo(node) {
             { addToExports(get_select(s)) };
         ifIs { <> hasType(s, @@export) }
             {
-                def defNode = get_nodeValue(s);
-                ifValue { <> get_name(defNode) }
-                    { name -> addToExports([name]) }
-                    {
-                        ## Must be @@importModuleSelection.
-                        def names =
-                            $Collection::keyList(resolveSelection(defNode));
-                        addToExports(names)
-                    };
-                handleImport(defNode)
+                addToExports(get_definedNames(s));
+                handleImport(get_nodeValue(s))
             };
         handleImport(s)
     };

@@ -506,24 +506,14 @@ zvalue resolveInfo(zvalue node) {
                 exports = addTypeBinding(exports, name);
             }
         } else if (hasType(s, TYPE_export)) {
-            zvalue defNode = get(s, STR_value);
-            zvalue name = get(defNode, STR_name);
-            if (name != NULL) {
+            zvalue names = get_definedNames(s);
+            zint sz = get_size(names);
+            for (zint j = 0; j < sz; j++) {
+                zvalue name = nth(names, j);
                 exports = addTypeBinding(exports, name);
-            } else if (hasType(defNode, TYPE_importModuleSelection)) {
-                zvalue selection = resolveSelection(defNode);
-                zint sz = get_size(selection);
-                zmapping mappings[sz];
-                arrayFromMap(mappings, selection);
-                for (zint j = 0; j < sz; j++) {
-                    zvalue name = mappings[j].key;
-                    exports = addTypeBinding(exports, name);
-                }
-            } else {
-                die("Bad `export` payload.");
             }
             // And fall through to handle an `import*` payload, if any.
-            s = defNode;
+            s = get(s, STR_value);
         }
 
         // *Not* `else if` (see above).
