@@ -348,14 +348,7 @@ on a `closure` with a `yield`.
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` or `export(import*)`nodes in the `statements` list
-transformed, as follows:
-
-* Each `import*` node is resolved using `resolveImport()`. The resolved
-  version replaces the original.
-
-* Each `export(import*)` node gets transformed into a pair of nodes,
-  a "naked" `import*` followed by an `exportSelection` of the variables
-  defined by the import.
+validated and transformed, by calling `resolveImport()`.
 
 #### `withTop(node) <> node`
 
