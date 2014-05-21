@@ -309,9 +309,9 @@ with `formals` (re)bound as given.
 #### `withModuleDefs(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
-with an `statements` and `yield` processed to make the node appropriate
-for use as a top-level module definition. This includes the following
-transformations:
+with `statements` and `yield` bindings processed to make the node
+appropriate for use as a top-level module definition. This includes the
+following transformations:
 
 * All `export` nodes are replaced with their `value` payloads.
 
@@ -331,6 +331,20 @@ transformations:
 
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield`.
+
+#### `withResolvedImports(node) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with any `import*` or `export(import*)`nodes in the `statements` list
+transformed, as follows:
+
+* Each `importSelection` node with a wildcard selection (import of all
+  bindings) gets transformed into one where all the bindings are named
+  explicitly. This uses `resolveSelection()`.
+
+* Each `export(import*)` node gets transformed into a pair of nodes,
+  a "naked" `import*` followed by an `exportSelection` of the variables
+  defined by the import.
 
 #### `withTop(node) <> node`
 
