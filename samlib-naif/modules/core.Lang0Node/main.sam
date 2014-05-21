@@ -8,7 +8,7 @@
 ## Execution tree node helpers
 ##
 
-## This just re-exports stuff defined in intramodule files.
+## This just re-exports stuff defined in module-internal files.
 
 export import ./constructors1 ::
     makeApply,

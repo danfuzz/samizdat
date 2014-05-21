@@ -25,18 +25,22 @@ static zvalue lookup(zvalue context, const char *name) {
     return get(context, stringFromUtf8(-1, name));
 }
 
+static zvalue externalSource(const char *name) {
+    zvalue type = makeDerivedDataType(stringFromUtf8(-1, "external"));
+    zvalue data = stringFromUtf8(-1, name);
+    return makeValue(type, data, NULL);
+}
+
 zvalue eval(zvalue context) {
     zvalue evalFn = lookup(context, "Code_eval");
 
     if (evalFn == NULL) {
-        zvalue moduleLoad = lookup(context, "moduleLoad");
-        if (moduleLoad == NULL) {
-            die("Binding missing: moduleLoad or Code_eval");
+        zvalue loadModule = lookup(context, "loadModule");
+        if (loadModule == NULL) {
+            die("Binding missing: loadModule or Code_eval");
         }
 
-        zvalue langModule = FUN_CALL(moduleLoad,
-            stringFromUtf8(-1, "core.Code"));
-
+        zvalue langModule = FUN_CALL(loadModule, externalSource("core.Code"));
         evalFn = lookup(langModule, "eval");
         if (evalFn == NULL) {
             die("Binding missing: core.Code::eval");

@@ -271,12 +271,8 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue source = get(node, STR_source);
 
     if (hasType(node, TYPE_importModule)) {
-        zvalue loadRef = hasType(source, TYPE_external)
-            ? REFS(moduleLoad)
-            : REFS(intraLoad);
-        zvalue stat = makeVarDef(
-            name,
-            makeCall(loadRef, listFrom1(makeLiteral(dataOf(source)))));
+        zvalue stat = makeVarDef(name,
+            makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
 
         return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
@@ -285,11 +281,8 @@ zvalue makeDynamicImport(zvalue node) {
         zmapping mappings[size];
         arrayFromMap(mappings, selection);
 
-        zvalue loadRef = hasType(source, TYPE_external)
-            ? REFS(moduleLoad)
-            : REFS(intraLoad);
-        zvalue loadCall = makeCall(loadRef,
-            listFrom1(makeLiteral(dataOf(source))));
+        zvalue loadCall = makeCall(REFS(loadModule),
+            listFrom1(makeLiteral(source)));
 
         zvalue stats[size];
         for (zint i = 0; i < size; i++) {
@@ -303,16 +296,10 @@ zvalue makeDynamicImport(zvalue node) {
 
         return listFromArray(size, stats);
     } else if (hasType(node, TYPE_importResource)) {
-        if (hasType(source, TYPE_external)) {
-            die("Cannot import external resource.");
-        }
-
         zvalue stat = makeVarDef(
             name,
-            makeCall(REFS(intraRead),
-                listFrom2(
-                    makeLiteral(dataOf(source)),
-                    makeLiteral(format))));
+            makeCall(REFS(loadResource),
+                listFrom2(makeLiteral(source), makeLiteral(format))));
 
         return listFrom1(stat);
     } else {

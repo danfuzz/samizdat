@@ -103,16 +103,13 @@ export fn .makeDynamicImport();
 
 ## Documented in spec.
 fn @@importModule.makeDynamicImport() {
-    ## The translation is approximately `def name = load(source)`, with `load`
-    ## replaced by either `moduleLoad` or `intraLoad`.
+    ## The translation is approximately `def name = loadModule(source)`.
 
     def name = get_name(this);
     def source = get_source(this);
-    def loadRef = ifIs { <> hasType(source, @@external) }
-        { <> REFS::moduleLoad }
-        { <> REFS::intraLoad };
 
-    <> [makeVarDef(name, makeCall(loadRef, makeLiteral(dataOf(source))))]
+    <> [makeVarDef(name,
+            makeCall(REFS::loadModule, makeLiteral(source)))]
 };
 
 ## Documented in spec.
@@ -124,10 +121,7 @@ fn @@importModuleSelection.makeDynamicImport() {
 
     def source = get_source(this);
     def selection = resolveSelection(this);
-    def loadRef = ifIs { <> hasType(source, @@external) }
-        { <> REFS::moduleLoad }
-        { <> REFS::intraLoad };
-    def loadCall = makeCall(loadRef, makeLiteral(dataOf(source)));
+    def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
     <> $Generator::filterAll(selection) { mapping ->
         def targetName = get_key(mapping);
@@ -139,20 +133,17 @@ fn @@importModuleSelection.makeDynamicImport() {
 
 ## Documented in spec.
 fn @@importResource.makeDynamicImport() {
-    ## The translation is approximately `def name = intraRead(source, format)`.
+    ## The translation is approximately
+    ## `def name = loadResource(source, format)`.
 
     def name = get_name(this);
     def format = get_format(this);
     def source = get_source(this);
 
-    ifIs { <> hasType(source, @@external) }
-        { die("Cannot import external resource.") };
-
     <> [
         makeVarDef(name,
-            makeCall(REFS::intraRead,
-                makeLiteral(dataOf(source)),
-                makeLiteral(format)))
+            makeCall(REFS::loadResource,
+                makeLiteral(source), makeLiteral(format)))
     ]
 };
 

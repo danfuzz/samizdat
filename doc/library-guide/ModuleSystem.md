@@ -8,112 +8,122 @@ This module is the module which knows how to load modules. It is also
 where much of the single-file loading logic resides, since that interacts
 tightly with module loading.
 
+Several of the functions in this module take a parameter called `source`.
+A "source" identifies the name of an external module, a relative path
+to an internal module, or a relative path to a resource. Sources must
+be derived values of type `@external` or `@internal` with a string payload,
+as described in the "Execution Trees" section of the language guide.
+
 **Note:** The constant `null` can be treated as a module loader. When used
-as such, it "knows" the two modules `core.Io0` and `core.Lang0`. These are
-set up as "bootstrap modules," as otherwise they would be their own
-dependencies.
+as such, it "knows" the modules `core.Code`, `core.Io0`, and `core.Lang0`.
+These are set up as "bootstrap modules," as otherwise they would, in effect,
+be their own dependencies.
 
 
 <br><br>
-### Generic Function Definitions: `ModuleLoader` protocol
+### Generic Function Definitions: `Loader` protocol
 
-#### `moduleResolve(loader, fqName) <> . | void`
+#### `readResource(loader, source, format) <> . | void`
 
-This resolves and loads the external module named by `fqName`, which is
-expected to be a fully-qualified module name as a string
-(e.g. `"core.Format"`). It returns a `@module` value with a payload of
-`{exports: {...}, info: {...}}`, representing the module result.
-
-This function will only ever load a given module once. If the same name
-is requested more than once, whatever was returned the first time
-is returned again, without re-evaluating the module.
-
-It is an error (terminating the runtime) if `fqName` is not a valid module
-name.
-
-
-<br><br>
-### Generic Function Definitions: `IntraLoader` protocol
-
-#### `intraResolve(loader, fqName) <> . | void`
-
-This resolves and loads the internal module (an "intra-module module")
-named by `path`. `path` is expected to be a string identifying a relative
-file path within the (outer) module's file hierarchy. The final name
-component in `path` must *not* have a file suffix (such as `.sam` or `samb`).
-This function returns a `@module` value with a payload of
-`{exports: {...}, info: {...}}`, representing the module result.
-
-This function will only ever load a given module once. If the same name
-is requested more than once, whatever was returned the first time
-is returned again, without re-evaluating the module.
-
-It is an error (terminating the runtime) if the indicated `path` does not
-correspond to an existing file. It is also an error (terminating the runtime)
-if the indicated `path` failed to be loadable.
-
-#### `intraRead(loader, path, format) <> . | void`
-
-This reads and/or processes an intra-module resource file, interpreting it as
-the given `format` (a string name). `path` is expected to be a string
-identifying a relative file path within the module's file hierarchy.
+This reads and/or processes a resource file, interpreting it as the given
+`format` (a string name). `source` is expected to be a source specifier,
+identifying the location of the resource.
 
 It is an error (terminating the runtime) if the given `format` is not
-recognized. For all `format`s other than `"type"`, it is an error
-(terminating the runtime) if the indicated `path` does not exist as a file.
+recognized.
+
+This returns void if the `source` is not found or if `format` does not
+indicate a valid way to process the source.
 
 See "Resource Import" in the language guide for more details on the
 available `format`s.
+
+#### `resolve(loader, source) <> . | void`
+
+This resolves and loads the module (either an internal or external module)
+named by `source`. `source` is expected to be a source specifier. This
+returns a `@module` representing the loaded module, or void if `source`
+did not correspond to a known module.
+
+This function will only ever load a given module once. If the same name
+is requested more than once, whatever was returned the first time
+is returned again, without re-evaluating the module.
+
+It is an error (terminating the runtime) if the indicated `source` correspends
+to a known module but, for some reason, failed to be successfully loaded.
 
 
 <br><br>
 ### In-Language Definitions
 
-#### `intraLoad(intraLoader, path) <> .`
+#### `loadModule(loader, source) <> .`
 
-This loads the internal module named by `path`, returning its `exports` map.
+This loads the module named by `source`, returning its `exports` map.
 
-It is an error (terminating the runtime) if `path` does not correspond to
-a module known to `intraLoader`. It is also an error (terminating the runtime)
-if `path` is not a valid internal module name.
+It is an error (terminating the runtime) if `source` does not correspond to
+a module known to `loader`. It is also an error (terminating the runtime)
+if `source` is not a valid source specifier.
 
-#### `makeIntraLoader(path, globals, moduleLoader) <> IntraLoader`
+**Note:** This function is implemented in terms of the `resolve()` generic
+function.
 
-This creates and returns an intra-module file loader, for which the `intra*`
-family of functions produces useful results.
+#### `loadResource(loader, source, format) <> .`
+
+This reads and/or processes a resource file, interpreting it as the given
+`format` (a string name). `source` is expected to be a source specifier.
+
+It is an error (terminating the runtime) if the given `format` is not
+recognized. It is also an error (terminating the runtime) if the indicated
+`source` cannot be processed per the indicated `format`. Notably, for the
+most part it is an error if `source` does not exist as a file.
+
+See "Resource Import" in the language guide for more details on the
+available `format`s.
+
+**Note:** This function is implemented in terms of the `readResource()`
+generic function.
+
+#### `makeInternalLoader(path, globals, nextLoader) <> InternalLoader`
+
+This creates and returns a module-internal file loader, which knows how
+to load internal modules (private implementation files) and resource
+files.
 
 `path` is the absolute filesystem path to the main module directory.
-`moduleLoader` is the loader to use to find required modules that aren't
+`nextLoader` is the loader to use to find required modules that aren't
 defined within this module. `globals` is the global variable environment
 to use when evaluating source.
 
 **Note:** If this loader should not have a module loader, then
-`moduleLoader` should be passed as `null`.
+`nextLoader` should be passed as `null`.
 
-#### `makeModuleLoader(path, globals, nextModuleLoader) <> ModuleLoader`
+#### `makeExternalLoader(path, globals, nextLoader) <> ExternalLoader`
 
-This creates a module loader, for which the `moduleLoad` function produces
-useful results.
+This creates an external module loader, which knows how to load modules
+identified by "external" sources. An external loader will defer to the
+given `nextLoader` for any module or resource requests it cannot find
+directly. Notably, external loaders will never directly return any
+resources, ever.
 
 `path` is the absolute filesystem path to a directory containing module
-definition subdirectories. `nextModuleLoader` is the loader to use to find
+definition subdirectories. `nextLoader` is the loader to use to find
 required modules that aren't defined within `path`'s hierarchy. `globals`
 is the global variable environment to use when evaluating source.
 
 If `path` does not exist, then as a special case, this function just returns
-`nextModuleLoader`. (This makes it easy to only construct a loader chain
+`nextLoader`. (This makes it easy to only construct a loader chain
 when needed.) If `path` exists but is not a directory, this function
 terminates with a fatal error.
 
 **Note:** If this loader should not have a next module loader, then
-`nextModuleLoader` should be passed as `null`.
+`nextLoader` should be passed as `null`.
 
 #### `main(libraryPath, primitiveGlobals) <> {globals*}`
 
 This is the main entrypoint for loading the entire system. As such, it's
 not that useful for most code.
 
-This constructs an intra-module loader for the given `libraryPath`, which is
+This constructs `InternalLoader` for the given `libraryPath`, which is
 expected to be the path to a core library implementation. It then loads
 the `main` file of that library, and runs it, passing it the same two
 arguments given to this function.
@@ -121,16 +131,7 @@ arguments given to this function.
 This returns whatever the library's `main` returns, which is generally
 expected to be the library's full global environment, as a map.
 
-#### `moduleLoad(moduleLoader, fqName) <> .`
-
-This loads the module named by `fqName`, returning its `exports` map.
-
-It is an error (terminating the runtime) if `fqName` does not correspond to
-a module known to `moduleLoader`. It is also an error (terminating the runtime)
-if `fqName` is not a valid module name.
-
-
-#### `run(path, moduleLoader, args*) <> . | void`
+#### `run(path, loader, args*) <> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
 `main` binding, and runs it, handing it the given `args`.
@@ -138,9 +139,9 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
-def globals = moduleLoad(moduleLoader, "core.Globals")::fullEnvironment();
-def loader = makeIntraLoader(path, globals, moduleLoader);
-def mainModule = intraLoad(loader, "main");
+def globals = loadModule(loader, @external("core.Globals"))::fullEnvironment();
+def mainLoader = makeInternalLoader(path, globals, loader);
+def mainModule = resolveMain(mainLoader)::exports;
 <> mainModule::main(args*)
 ```
 
@@ -152,21 +153,21 @@ filesystem path to itself. This function does *not* automatically add this
 argument. Users of this function should add it to the given `args*` when
 appropriate.
 
-#### `runFile(path, moduleLoader, args*) <> . | void`
+#### `runFile(path, loader, args*) <> . | void`
 
 This runs a solo file at the given `path`. It works for both source text
 and binary files, switching based on the file name suffix, `.sam` for text
 and `.samb` for binary.
 
 In the case of source text, an appropriate language module is loaded up
-from the given `moduleLoader`.
+from the given `loader`.
 
 In both cases, the global environment which the file is given is the
-same as is used when loading modules, except that none of the `intra*`
-functions are made available.
+same as is used when loading modules, except that none of the provided
+functions will handle module-internal sources.
 
 The direct result of evaluation of the file is a function of no arguments.
-This is called. If that returns a map, then `main` is looked up in it,
+This is called. If that returns a module, then `main` is looked up in it,
 and that `main` is called, passing it `args*`. The final result is whatever
 is returned by the call to `main`.
 

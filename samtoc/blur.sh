@@ -134,4 +134,5 @@ rule rm \
     --id=clean \
     -- \
     "${FINAL_LIB}" \
-    "${FINAL_BIN}/${binName}"
+    "${FINAL_BIN}/${binName}" \
+    "${INTERMED}"

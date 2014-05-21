@@ -20,9 +20,10 @@ In terms of code in files, a module consists of a directory which contains
 at least one file, called `main`. The `main` file is responsible for
 exporting whatever it is that the module exports.
 
-The module directory optionally contains additional "intra-module" files
-in an arbitrary subdirectory hierarchy. Intra-module files may be either
-internal modules (single files of code) or resources.
+The module directory optionally contains additional module-internal files
+in an arbitrary subdirectory hierarchy. Module-internal files may be either
+internal modules (single files of code, which aren't exposed externally) or
+resources.
 
 In addition, the module directory optionally contains additional *external*
 module definitions (which take the form as external modules in other contexts).
@@ -288,43 +289,47 @@ The implementation of module loading actually much simpler than the
 description might have you believe.
 
 There are two types which interplay to cause module loading to happen.
+Both types bind a generic function `resolve`.
 
-One type is `ModuleLoader`, which gets instantiated with two main
+One type is `ExternalLoader`, which gets instantiated with two main
 pieces of information, (a) a filesystem path to a directory containing
-module definitions, and (b) a reference to the "next" `ModuleLoader` to
-use. `ModuleLoader` defines a `moduleLoad` method, which is the thing that
+module definitions, and (b) a reference to the "next" `ExternalLoader` to
+use. `ExternalLoader` defines a `resolve` method, which is the thing that
 looks for a module in its designated directory, and then calls on the
 "next" loader if that fails. The recursion bottoms out in a definition of
-`moduleLoad` on `null`, which always fails.
+`resolve` on `null`, which always fails.
 
-The other type is `IntraLoader`, which gets instantiated with two pieces
+The other type is `InternalLoader`, which gets instantiated with two pieces
 of information, (a) a filesystem path to a directory containing the definition
-of *one* module, and (b) a reference to the "next" `ModuleLoader` to
-use. When instantiated, `IntraLoader` makes a `ModuleLoader` which points
-to a `modules` directory under its given filesystem path, and that
-`ModuleLoader` is the one that's used directly by the intra-module code.
-The `IntraLoader`'s filesystem path is used directly for intra-module files.
+of *one* module, and (b) a reference to the "next" loader to use (said next
+loader typically being an `ExternalLoader`). When instantiated,
+`InternalLoader` makes a `ExternalLoader` which points to a `modules`
+directory under its given filesystem path, and that `ExternalLoader` is the
+one that's used directly by the `InternalLoader` implementation. The
+`InternalLoader`'s filesystem path is used directly for module-internal files.
+`InternalLoader` defines a `resolve` method, which handles internal sources
+directly and defers to its "next" loader for all other requests.
 
-The core library is loaded as an `IntraLoader`, as are application modules.
+The core library is loaded as an `InternalLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.
 
 As a final note, though the default module system is implemented in terms
 of the filesystem, all of the behavior of the system is based on generic
 functions. These functions can be bound to other types, in order to
 provide other interesting and useful arrangements. For example, it is
-possible (and may eventually be desirable) to construct a module or
-intra-module loader which only depends on immutable data as input.
+possible (and may eventually be desirable) to construct a loader which
+depends only upon immutable data as input.
 
 #### Example filesystem layout
 
 ```
 /path/to/castingApp
   main.sam                   application's main file
-  appHelp.sam                intra-module file for the applicaton itself
+  appHelp.sam                internal module for the applicaton itself
   modules/
     Blort/                   application's `Blort` module
       main.sam
-      darkness.sam           intra-module file for `Blort` module
+      darkness.sam           internal module file for `Blort` module
     Frotz/                   application's `Frotz` module
       main.sam
       modules/
@@ -341,25 +346,18 @@ module `core.Globals`, a module file when evaluated has additional bindings
 to allow for a module to load the other parts of itself, as well as load
 other modules.
 
-* `moduleLoad(fqName) <> map` &mdash; This loads the module indicated
-  by `fqName` in the same loader which loaded this module, returning the
-  `exports` map. `fqName` is a "fully-qualified module name," that is, a
-  string of dot-separated module component names. For example, `"core.Lang0"`.
+* `loadModule(source) <> map` &mdash; This loads and evaluates the indicated
+  module, returning the `exports` map. `source` is a source specifier
+  (either an `@external` or `@internal` value) representing the origin of
+  the module. For an `@internal` source, the final file name component
+  must *not* have a suffix; the module system handles finding the
+  appropriately-suffixed file.
 
-* `moduleLoader()` &mdash; This is a function which returns a reference to
+* `loadResource(source, format) <> . | void` &mdash; This reads and/or
+  processes the resource file named by the indicated `source`, interpreting it
+  as indicated by the `format`. `source` is as with `loadModule`, except that
+  the final file component is left as-is (and not suffixed automatically).
+  See "Resource import" above for details about `format`.
+
+* `thisLoader()` &mdash; This is a function which returns a reference to
   the module loader which loaded this module.
-
-* `intraLoad(path) <> map` &mdash; This loads and evaluates the indicated
-  internal module, returning the `exports` map. `path` is a string
-  representing a relative filesystem path, e.g. `foo/bar`. The final file
-  name in `path` should *not* have a suffix; the module system handles
-  finding the appropriately-suffixed file.
-
-* `intraLoader()` &mdash; This is a function which returns a reference to
-  the internal module loader which loaded this module.
-
-* `intraRead(path, format) <> . | void` &mdash; This reads and/or processes
-  the intra-module file named by the indicated relative path, interpreting it
-  as indicated by the `format`. `path` is as with `intraLoad`, except that the
-  final file is left as-is (and not suffixed automatically). See "Resource
-  import" above for details about `format`.

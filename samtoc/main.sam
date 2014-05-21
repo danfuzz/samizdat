@@ -71,7 +71,7 @@ export fn main(selfPath, rawArgs*) {
             note("Unknown compilation mode: \%q(args::options::mode)");
             return 1
         }();
-    def modeModule = moduleLoad("mode.\(modeName)");
+    def modeModule = loadModule(@external("mode.\(modeName)"));
 
     if (#sources == 0) {
         note("No source files specified!");

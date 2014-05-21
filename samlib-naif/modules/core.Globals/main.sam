@@ -39,23 +39,23 @@ export fn earlyEnvironment() {
 
 ## Documented in spec.
 export fn fullEnvironment() {
-    ## These `moduleLoad` calls are intentionally delayed, so that this
-    ## file can be successfully loaded before most of the module system is
-    ## ready.
+    ## These `loadModule` calls are intentionally delayed (that is, done here
+    ## instead of using top-level `import`s), so that this file can be
+    ## successfully loaded before most of the module system is ready.
 
     ## This is just loaded to set up generic function bindings.
-    moduleLoad("core.Boolean");
+    loadModule(@external("core.Boolean"));
 
-    def $Bitwise     = moduleLoad("core.Bitwise");
-    def $Box         = moduleLoad("core.Box");
-    def $Collection  = moduleLoad("core.Collection");
-    def $CommandLine = moduleLoad("core.CommandLine");
-    def $Format      = moduleLoad("core.Format");
-    def $Generator   = moduleLoad("core.Generator");
-    def $Number      = moduleLoad("proto.Number");
-    def $Peg         = moduleLoad("core.Peg");
-    def $Range       = moduleLoad("core.Range");
-    def $Sequence    = moduleLoad("core.Sequence");
+    def $Bitwise     = loadModule(@external("core.Bitwise"));
+    def $Box         = loadModule(@external("core.Box"));
+    def $Collection  = loadModule(@external("core.Collection"));
+    def $CommandLine = loadModule(@external("core.CommandLine"));
+    def $Format      = loadModule(@external("core.Format"));
+    def $Generator   = loadModule(@external("core.Generator"));
+    def $Number      = loadModule(@external("proto.Number"));
+    def $Peg         = loadModule(@external("core.Peg"));
+    def $Range       = loadModule(@external("core.Range"));
+    def $Sequence    = loadModule(@external("core.Sequence"));
 
     <> {
         EARLY_GLOBALS*,
