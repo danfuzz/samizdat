@@ -434,6 +434,11 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
+zvalue resolveImport(zvalue node) {
+    die("TODO");
+}
+
+/* Documented in spec. */
 zvalue resolveInfo(zvalue node) {
     zvalue statements = get(node, STR_statements);
     zint size = get_size(statements);
