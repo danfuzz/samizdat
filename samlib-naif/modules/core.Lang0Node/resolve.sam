@@ -7,13 +7,12 @@
 import core.Collection;
 import core.Generator;
 
+import ./constructors1 ::
+    makeExport;
+
 import ./getters ::
-    get_format,
-    get_name,
     get_nodeValue,
-    get_prefix,
     get_select,
-    get_source,
     get_statements;
 
 
@@ -22,89 +21,66 @@ import ./getters ::
 ##
 
 ## Documented in spec.
-export fn resolveInfo(node) {
-    def statements = get_statements(node);
+export fn .resolveImport();
 
-    var exports = {};
-    var imports = {};
-    var resources = {};
-
-    ## Adds all the names (a list of strings) to the `exports` map.
-    fn addToExports(names) {
-        exports := {exports*, names*: Value};
-    };
-
-    ## Adds or revises an element in the `imports` map.
-    fn addToImports(source, names) {
-        def orig = ifValueOr { <> get(imports, source) } { <> {} };
-        def revised = {orig*, names*: Value};
-        imports := {imports*, (source): revised};
-    };
-
-    ## Adds or revises an element in the `resources` map.
-    fn addToResources(source, format) {
-        ## This bounces through a map to uniquify the formats list.
-        def orig = ifValueOr { <> get(resources, source) } { <> [] };
-        def revised = $Collection::keyList({orig*: null, format: null});
-        resources := {resources*, (source): revised};
-    };
-
-    ## Handles any `import*` node type. Ignores other types.
-    fn handleImport(s) {
-        ifIs { <> hasType(s, @@importModule) }
-            { addToImports(get_source(s), [@module]) };
-        ifIs { <> hasType(s, @@importModuleSelection) }
-            {
-                def names = $Collection::valueList(resolveSelection(s));
-                addToImports(get_source(s), names)
-            };
-        ifIs { <> hasType(s, @@importResource) }
-            { addToResources(get_source(s), get_format(s)) };
-    };
-
-    ## The filter is just being used as a for-each loop. The direct
-    ## result is ignored.
-    $Generator::filterAll(statements) { s ->
-        ifIs { <> hasType(s, @@exportSelection) }
-            { addToExports(get_select(s)) };
-        ifIs { <> hasType(s, @@export) }
-            {
-                def defNode = get_nodeValue(s);
-                ifValue { <> get_name(defNode) }
-                    { name -> addToExports([name]) }
-                    {
-                        ## Must be @@importModuleSelection.
-                        def names =
-                            $Collection::keyList(resolveSelection(defNode));
-                        addToExports(names)
-                    };
-                handleImport(defNode)
-            };
-        handleImport(s)
-    };
-
-    <> {exports, imports, resources}
+## Documented in spec.
+fn @@importModule.resolveImport() {
+    ## No need to modify, just validate. TODO: Validate.
+    <> this
 };
 
 ## Documented in spec.
-export fn resolveSelection(node) {
-    ifNot { <> hasType(node, @@importModuleSelection) }
-        { die("Bad type for `resolveSelection`.") };
-
-    def prefix = get_prefix(node);
-    def select = ifValueOr
-        { <> get_select(node) }
+fn @@importModuleSelection.resolveImport() {
+    ifIs { <> get_select(this) }
         {
-            ## TODO: In order to handle wildcard imports, this function will
-            ## have to be able to ask for the list of exports from arbitrary
-            ## modules. This will probably mean adding an argument for a
-            ## "module oracle" of some sort.
-            die("TODO: wildcard selection import")
+            ## Explicit selection; so no need to modify, just validate.
+            ## TODO: Validate.
+            return this
         };
 
-    def bindings = $Generator::filterAll(select) { name ->
-        <> {cat(prefix, name): name}
+    ## TODO: In order to handle wildcard imports, this function will
+    ## have to be able to ask for the list of exports from arbitrary
+    ## modules. This will probably mean adding an argument for a
+    ## "module oracle" of some sort.
+    def select = die("TODO: wildcard selection import");
+
+    <> @(get_type(this)){dataOf(this)*, select}
+};
+
+## Documented in spec.
+fn @@importResource.resolveImport() {
+    ## No need to modify, just validate. TODO: Validate.
+    <> this
+};
+
+## Documented in spec.
+export fn withResolvedImports(node) {
+    def rawStatements = get_statements(node);
+
+    def converted = $Generator::filterAll(rawStatements) { <out> s ->
+        var exported = false;
+        var defNode = s;
+        ifIs { <> hasType(s, @@export) }
+            {
+                exported := true;
+                defNode := get_nodeValue(s)
+            };
+
+        ifValueOr
+            { <> hasType(defNode, @@importModule) }
+            { <> hasType(defNode, @@importModuleSelection) }
+            { <> hasType(defNode, @@importResource) }
+            {
+                ## Not an `import*` node.
+                <out> s
+            };
+
+        def resolved = resolveImport(defNode);
+
+        <> ifIs { <> eq(exported, true) }
+            { <> makeExport(resolved) }
+            { <> resolved }
     };
 
-    <> cat({}, bindings*)
+    <> @(get_type(node)){dataOf(node)*, statements: [converted*]}
 };

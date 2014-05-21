@@ -71,7 +71,10 @@ zvalue formalsMaxArgs(zvalue formals);
 zvalue formalsMinArgs(zvalue formals);
 
 /* Documented in spec. */
-zvalue get_baseName(zvalue name);
+zvalue get_baseName(zvalue source);
+
+/* Documented in spec. */
+zvalue get_definedNames(zvalue node);
 
 /* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals);
@@ -93,6 +96,9 @@ zvalue makeExportSelection(zvalue names);
 
 /* Documented in spec. */
 zvalue makeImport(zvalue baseData);
+
+/* Documented in spec. */
+zvalue makeInfoMap(zvalue node);
 
 /* Documented in spec. */
 zvalue makeInterpolate(zvalue node);
@@ -125,16 +131,16 @@ zvalue makeVarRef(zvalue name);
 zvalue makeOptValue(zvalue expression);
 
 /* Documented in spec. */
-zvalue resolveInfo(zvalue node);
-
-/* Documented in spec. */
-zvalue resolveSelection(zvalue node);
+zvalue resolveImport(zvalue node);
 
 /* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals);
 
 /* Documented in spec. */
 zvalue withModuleDefs(zvalue node);
+
+/* Documented in spec. */
+zvalue withResolvedImports(zvalue node);
 
 /* Documented in spec. */
 zvalue withTop(zvalue node);

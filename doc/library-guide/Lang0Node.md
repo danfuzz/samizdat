@@ -61,6 +61,14 @@ get_baseName(@internal("frotz.txt"))                =>  "frotz"
 get_baseName(@internal("frobozz/magic/frotz.txt"))  =>  "frotz"
 ```
 
+#### `get_definedNames(node) <> [name*]`
+
+Gets a list of the names of all variables defined by the given `node`.
+If `node` defines no names, this returns `[]` (the empty list).
+
+It is a fatal error to call this on an *unresolved* wildcard
+`importModuleSelection` node.
+
 #### `get_formals(node) <> [formal*]`
 
 Gets the formal arguments of a `closure` node.
@@ -191,6 +199,9 @@ This can be used as part of a filter on the list of top-level statements of a
 module, when they are to be executed in an environment that performs
 dynamic (not static) importing.
 
+It is a fatal error to call this on an `importModuleSelection` with
+a wildcard selection.
+
 **Note:** This returns a list of replacement nodes and not just a single
 replacement node, because some `import*` forms must expand to multiple
 statements. Always returning a list makes it possible to treat all return
@@ -235,6 +246,16 @@ runtime with a message that indicates a plausible high-level reason for
 the rejection. This makes it safe to "optimistically" parse a generalized
 version of the `import` syntax, and use this function for a final
 validation.
+
+#### `makeInfoMap(node) <> {exports: {...}, imports: {...}, resources: {...}}`
+
+Constructs the metainformation from a `closure` node that represents a
+top-level module. This returns a map that binds `exports`, `imports`, and
+`resources`.
+
+`node` must be resolved, e.g. the result of having called
+`withResolvedImports()`. It is a fatal error to call this on a node with
+any unresolved wildcard imports.
 
 #### `makeInterpolate(expr) <> node`
 
@@ -284,16 +305,17 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
-#### `resolveInfo(node) <> {exports: [name+], imports: [name+]}`
+#### `resolveImport(node) <> node`
 
-Resolves the metainformation a `closure` node that represents a top-level
-module. This returns a map that binds `exports` and `imports`.
+Returns a node just like the given one (which must be an `import*` node),
+except that it is resolved. Resolution means validating it and replacing
+wildcard selections with explicit names.
 
-#### `resolveSelection(node) <> {(name: sourceName)+}`
+This only actually causes `importModuleSelection` nodes to be altered.
+Everything else just passes through as-is, if valid.
 
-Resolves the selection of a `importModuleSelection` node. This returns a
-map from names to bind (the keys) to the corresponding source names to
-import from (the values).
+It is a fatal error (terminating the runtime) if `node` is found to be
+invalid.
 
 #### `withDynamicImports(node) <> node`
 
@@ -309,9 +331,9 @@ with `formals` (re)bound as given.
 #### `withModuleDefs(node) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
-with an `statements` and `yield` processed to make the node appropriate
-for use as a top-level module definition. This includes the following
-transformations:
+with `statements` and `yield` bindings processed to make the node
+appropriate for use as a top-level module definition. This includes the
+following transformations:
 
 * All `export` nodes are replaced with their `value` payloads.
 
@@ -331,6 +353,12 @@ transformations:
 
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield`.
+
+#### `withResolvedImports(node) <> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with any `import*` or `export(import*)`nodes in the `statements` list
+validated and transformed, by calling `resolveImport()`.
 
 #### `withTop(node) <> node`
 

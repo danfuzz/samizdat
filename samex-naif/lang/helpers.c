@@ -175,18 +175,48 @@ zvalue formalsMinArgs(zvalue formals) {
 }
 
 /* Documented in spec. */
-zvalue get_baseName(zvalue thisPath) {
-    if (hasType(thisPath, TYPE_external)) {
-        zvalue path = dataOf(thisPath);
-        zvalue components = splitAtChar(dataOf(thisPath), STR_CH_DOT);
+zvalue get_baseName(zvalue source) {
+    if (hasType(source, TYPE_external)) {
+        zvalue path = dataOf(source);
+        zvalue components = splitAtChar(dataOf(source), STR_CH_DOT);
         return nth(components, get_size(components) - 1);
-    } else if (hasType(thisPath, TYPE_internal)) {
-        zvalue components = splitAtChar(dataOf(thisPath), STR_CH_SLASH);
+    } else if (hasType(source, TYPE_internal)) {
+        zvalue components = splitAtChar(dataOf(source), STR_CH_SLASH);
         zvalue last = nth(components, get_size(components) - 1);
         zvalue parts = splitAtChar(last, STR_CH_DOT);
         return nth(parts, 0);
     } else {
         die("Bad type for `get_baseName`.");
+    }
+}
+
+/* Documented in spec. */
+zvalue get_definedNames(zvalue node) {
+    if (hasType(node, TYPE_export)) {
+        return get_definedNames(get(node, STR_value));
+    } else if (   hasType(node, TYPE_importModule)
+               || hasType(node, TYPE_importResource)
+               || hasType(node, TYPE_varDef)
+               || hasType(node, TYPE_varDefMutable)) {
+        return listFrom1(get(node, STR_name));
+    } else if (hasType(node, TYPE_importModuleSelection)) {
+        zvalue prefix = get(node, STR_prefix);
+        zvalue select = get(node, STR_select);
+        if (select == NULL) {
+            die("Cannot call `get_definedNames` on unresolved import.");
+        }
+
+        zint size = get_size(select);
+        zvalue arr[size];
+        arrayFromList(arr, select);
+
+        for (zint i = 0; i < size; i++) {
+            arr[i] = GFN_CALL(cat, prefix, arr[i]);
+        }
+
+        return listFromArray(size, arr);
+    } else {
+        return EMPTY_LIST;
     }
 }
 
@@ -268,6 +298,7 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, STR_format);
     zvalue name = get(node, STR_name);
+    zvalue select = get(node, STR_select);
     zvalue source = get(node, STR_source);
 
     if (hasType(node, TYPE_importModule)) {
@@ -276,22 +307,17 @@ zvalue makeDynamicImport(zvalue node) {
 
         return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        zvalue selection = resolveSelection(node);
-        zint size = get_size(selection);
-        zmapping mappings[size];
-        arrayFromMap(mappings, selection);
-
+        zvalue names = get_definedNames(node);
+        zint size = get_size(names);
         zvalue loadCall = makeCall(REFS(loadModule),
             listFrom1(makeLiteral(source)));
 
         zvalue stats[size];
         for (zint i = 0; i < size; i++) {
-            zvalue targetName = mappings[i].key;
-            zvalue sourceName = mappings[i].value;
-            stats[i] = makeVarDef(
-                targetName,
-                makeCall(REFS(get),
-                    listFrom2(loadCall, makeLiteral(sourceName))));
+            zvalue name = nth(names, i);
+            zvalue sel = nth(select, i);
+            stats[i] = makeVarDef(name,
+                makeCall(REFS(get), listFrom2(loadCall, makeLiteral(sel))));
         }
 
         return listFromArray(size, stats);
@@ -371,6 +397,63 @@ zvalue makeImport(zvalue baseData) {
 }
 
 /* Documented in spec. */
+zvalue makeInfoMap(zvalue node) {
+    zvalue statements = get(node, STR_statements);
+    zint size = get_size(statements);
+
+    zvalue exports = EMPTY_MAP;
+    zvalue imports = EMPTY_MAP;
+    zvalue resources = EMPTY_MAP;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue s = nth(statements, i);
+
+        if (hasType(s, TYPE_exportSelection)) {
+            zvalue select = get(s, STR_select);
+            zint sz = get_size(select);
+            for (zint j = 0; j < sz; j++) {
+                zvalue name = nth(select, j);
+                exports = addTypeBinding(exports, name);
+            }
+        } else if (hasType(s, TYPE_export)) {
+            zvalue names = get_definedNames(s);
+            zint sz = get_size(names);
+            for (zint j = 0; j < sz; j++) {
+                zvalue name = nth(names, j);
+                exports = addTypeBinding(exports, name);
+            }
+            // And fall through to handle an `import*` payload, if any.
+            s = get(s, STR_value);
+        }
+
+        // *Not* `else if` (see above).
+        if (hasType(s, TYPE_importModule)) {
+            imports =
+                addImportBinding(imports, get(s, STR_source), TYPE_module);
+        } else if (hasType(s, TYPE_importModuleSelection)) {
+            zvalue source = get(s, STR_source);
+            zvalue select = get(s, STR_select);
+            zint sz = get_size(select);
+            if (sz == 0) {
+                die("Cannot call `makeInfoMap` on unresolved import.");
+            }
+            for (zint j = 0; j < sz; j++) {
+                zvalue name = nth(select, j);
+                imports = addImportBinding(imports, source, name);
+            }
+        } else if (hasType(s, TYPE_importResource)) {
+            resources = addResourceBinding(resources,
+                get(s, STR_source), get(s, STR_format));
+        }
+    }
+
+    return mapFrom3(
+        STR_exports,   exports,
+        STR_imports,   imports,
+        STR_resources, resources);
+}
+
+/* Documented in spec. */
 zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_call,
         mapFrom3(
@@ -434,91 +517,26 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
-zvalue resolveInfo(zvalue node) {
-    zvalue statements = get(node, STR_statements);
-    zint size = get_size(statements);
+zvalue resolveImport(zvalue node) {
+    zvalue name = get(node, STR_name);
+    zvalue source = get(node, STR_source);
 
-    zvalue exports = EMPTY_MAP;
-    zvalue imports = EMPTY_MAP;
-    zvalue resources = EMPTY_MAP;
-
-    for (zint i = 0; i < size; i++) {
-        zvalue s = nth(statements, i);
-
-        if (hasType(s, TYPE_exportSelection)) {
-            zvalue select = get(s, STR_select);
-            zint sz = get_size(select);
-            for (zint j = 0; j < sz; j++) {
-                zvalue name = nth(select, j);
-                exports = addTypeBinding(exports, name);
-            }
-        } else if (hasType(s, TYPE_export)) {
-            zvalue defNode = get(s, STR_value);
-            zvalue name = get(defNode, STR_name);
-            if (name != NULL) {
-                exports = addTypeBinding(exports, name);
-            } else if (hasType(defNode, TYPE_importModuleSelection)) {
-                zvalue selection = resolveSelection(defNode);
-                zint sz = get_size(selection);
-                zmapping mappings[sz];
-                arrayFromMap(mappings, selection);
-                for (zint j = 0; j < sz; j++) {
-                    zvalue name = mappings[j].key;
-                    exports = addTypeBinding(exports, name);
-                }
-            } else {
-                die("Bad `export` payload.");
-            }
-            // And fall through to handle an `import*` payload, if any.
-            s = defNode;
+    if (hasType(node, TYPE_importModule)) {
+        // No conversion, just validation. TODO: Validate.
+        return node;
+    } else if (hasType(node, TYPE_importModuleSelection)) {
+        zvalue select = get(node, STR_select);
+        if (get_size(select) != 0) {
+            // No conversion, just validation. TODO: Validate.
+            return node;
         }
-
-        // *Not* `else if` (see above).
-        if (hasType(s, TYPE_importModule)) {
-            imports =
-                addImportBinding(imports, get(s, STR_source), TYPE_module);
-        } else if (hasType(s, TYPE_importModuleSelection)) {
-            zvalue source = get(s, STR_source);
-            zvalue selection = resolveSelection(s);
-            zint sz = get_size(selection);
-            zmapping mappings[sz];
-            arrayFromMap(mappings, selection);
-            for (zint j = 0; j < sz; j++) {
-                zvalue name = mappings[j].value;
-                imports = addImportBinding(imports, source, name);
-            }
-        } else if (hasType(s, TYPE_importResource)) {
-            resources = addResourceBinding(resources,
-                get(s, STR_source), get(s, STR_format));
-        }
-    }
-
-    return mapFrom3(
-        STR_exports,   exports,
-        STR_imports,   imports,
-        STR_resources, resources);
-}
-
-/* Documented in spec. */
-zvalue resolveSelection(zvalue node) {
-    zvalue prefix = get(node, STR_prefix);
-    zvalue select = get(node, STR_select);
-
-    if (select == NULL) {
-        // See TODO in Lang0Node implementation.
         die("TODO: wildcard selection import");
+    } else if (hasType(node, TYPE_importResource)) {
+        // No conversion, just validation. TODO: Validate.
+        return node;
+    } else {
+        die("Bad node type for `resolveImport`");
     }
-
-    zint size = get_size(select);
-    zmapping bindings[size];
-
-    for (zint i = 0; i < size; i++) {
-        zvalue name = nth(select, i);
-        bindings[i].key = GFN_CALL(cat, prefix, name);
-        bindings[i].value = name;
-    }
-
-    return mapFromArray(size, bindings);
 }
 
 /* Documented in spec. */
@@ -535,7 +553,7 @@ zvalue withModuleDefs(zvalue node) {
         die("Invalid node for `withModuleDefs` (has `yield`).");
     }
 
-    zvalue info = resolveInfo(node);
+    zvalue info = makeInfoMap(node);
 
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
@@ -585,6 +603,48 @@ zvalue withModuleDefs(zvalue node) {
             mapFrom2(
                 STR_statements, statements,
                 STR_yield,      yield)),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue withResolvedImports(zvalue node) {
+    zvalue rawStatements = get(node, STR_statements);
+    zint size = get_size(rawStatements);
+    zvalue arr[size];
+    arrayFromList(arr, rawStatements);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue s = arr[i];
+        bool exported = false;
+        zvalue defNode = s;
+
+        if (hasType(s, TYPE_export)) {
+            exported = true;
+            defNode = get(s, STR_value);
+        }
+
+        if (!(   hasType(defNode, TYPE_importModule)
+              || hasType(defNode, TYPE_importModuleSelection)
+              || hasType(defNode, TYPE_importResource))) {
+            continue;
+        }
+
+        zvalue resolved = resolveImport(defNode);
+
+        if (exported) {
+            resolved = makeExport(resolved);
+        }
+
+        arr[i] = resolved;
+    }
+
+    zvalue converted = listFromArray(size, arr);
+
+    return makeValue(
+        get_type(node),
+        GFN_CALL(cat,
+            dataOf(node),
+            mapFrom1(STR_statements, converted)),
         NULL);
 }
 

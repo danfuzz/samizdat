@@ -34,6 +34,7 @@ export import ./constructors2 ::
     makeDynamicImport,
     makeGet,
     makeImport,
+    makeInfoMap,
     makeInterpolate,
     makeOptValue,
     withDynamicImports,
@@ -48,6 +49,7 @@ export import ./formals ::
 export import ./getters ::
     get_actuals,
     get_baseName,
+    get_definedNames,
     get_format,
     get_formals,
     get_function,
@@ -68,5 +70,5 @@ export import ./getters ::
 export import ./refs :: REFS;
 
 export import ./resolve ::
-    resolveInfo,
-    resolveSelection;
+    resolveImport,
+    withResolvedImports;

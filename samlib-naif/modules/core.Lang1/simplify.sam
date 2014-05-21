@@ -30,6 +30,7 @@ import core.Lang0Node ::
     makeLiteral,
     makeVarRef,
     withModuleDefs,
+    withResolvedImports,
     withoutIntermediates;
 
 
@@ -313,6 +314,6 @@ export fn simplify(expressionNode) {
     def converted = convertPexIn(expressionNode);
 
     <> ifIs { <> hasType(converted, @@closure) }
-        { <> withModuleDefs(converted) }
+        { <> withModuleDefs(withResolvedImports(converted)) }
         { <> converted }
 };
