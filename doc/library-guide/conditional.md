@@ -55,16 +55,12 @@ this function calls the consequent function with an argument, whereas
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
 
-#### `ifValueOr(testFunction, voidFunction) <> . | void`
+#### `ifValueOr(functions+) <> . | void`
 
-This is identical to `ifValue`, except that the `valueFunction` is
-omitted and taken to be the identity function, and the `voidFunction`
-is required (not an optional argument). That is, `ifValueOr(x, y)` is the
-same as `ifValue(x, { value <> value }, y)`.
-
-The reason `voidFunction` is required is because it is pointless to omit it,
-in that `ifValueOr(x)` would mean the same thing as `x()`, and
-`ifValueOr({ <> x })` would mean the same thing as just `x`.
+Primitive logic conditional. This calls each of the given `functions` in
+order with no arguments, until one of them returns non-void. When a non-void
+result is obtained, this function returns that value. Otherwise (that is,
+if all the `functions` returned void) this function returns void.
 
 This function is meant as the primitive that higher-layer logical-or
 expressions bottom out into, hence the name.

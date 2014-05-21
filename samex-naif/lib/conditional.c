@@ -49,13 +49,14 @@ FUN_IMPL_DECL(ifValue) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(ifValueOr) {
-    zvalue result = FUN_CALL(args[0]);
-
-    if (result != NULL) {
-        return result;
-    } else {
-        return FUN_CALL(args[1]);
+    for (zint i = 0; i < argCount; i++) {
+        zvalue result = FUN_CALL(args[i]);
+        if (result != NULL) {
+            return result;
+        }
     }
+
+    return NULL;
 }
 
 /* Documented in spec. */
