@@ -98,6 +98,9 @@ zvalue makeExportSelection(zvalue names);
 zvalue makeImport(zvalue baseData);
 
 /* Documented in spec. */
+zvalue makeInfoMap(zvalue node);
+
+/* Documented in spec. */
 zvalue makeInterpolate(zvalue node);
 
 /**
@@ -129,9 +132,6 @@ zvalue makeOptValue(zvalue expression);
 
 /* Documented in spec. */
 zvalue resolveImport(zvalue node);
-
-/* Documented in spec. */
-zvalue resolveInfo(zvalue node);
 
 /* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals);

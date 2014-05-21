@@ -34,6 +34,7 @@ export import ./constructors2 ::
     makeDynamicImport,
     makeGet,
     makeImport,
+    makeInfoMap,
     makeInterpolate,
     makeOptValue,
     withDynamicImports,
@@ -70,5 +71,4 @@ export import ./refs :: REFS;
 
 export import ./resolve ::
     resolveImport,
-    resolveInfo,
     withResolvedImports;

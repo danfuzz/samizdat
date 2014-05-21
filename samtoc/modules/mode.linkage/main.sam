@@ -22,7 +22,7 @@ export fn compile(sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
     def tree = $Lang2::parseProgram(sourceText);
 
-    def infoMap = $Lang0Node::resolveInfo(tree);
+    def infoMap = $Lang0Node::makeInfoMap(tree);
     def info = "\%q(infoMap)";
     def outputText = $Template::apply($template, {info});
 

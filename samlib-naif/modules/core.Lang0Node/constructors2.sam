@@ -19,9 +19,9 @@ import ./constructors1 ::
 import ./getters ::
     get_baseName,
     get_definedNames,
-    get_name,
     get_interpolate,
     get_format,
+    get_name,
     get_nodeValue,
     get_prefix,
     get_select,
@@ -30,9 +30,6 @@ import ./getters ::
     get_yield;
 
 import ./refs :: REFS;
-
-import ./resolve ::
-    resolveInfo;
 
 
 ##
@@ -197,6 +194,64 @@ export fn makeImport(baseData) {
 };
 
 ## Documented in spec.
+export fn makeInfoMap(node) {
+    def statements = get_statements(node);
+
+    var exports = {};
+    var imports = {};
+    var resources = {};
+
+    ## Adds all the names (a list of strings) to the `exports` map.
+    fn addToExports(names) {
+        exports := {exports*, names*: Value};
+    };
+
+    ## Adds or revises an element in the `imports` map.
+    fn addToImports(source, names) {
+        def orig = ifValueOr { <> get(imports, source) } { <> {} };
+        def revised = {orig*, names*: Value};
+        imports := {imports*, (source): revised};
+    };
+
+    ## Adds or revises an element in the `resources` map.
+    fn addToResources(source, format) {
+        ## This bounces through a map to uniquify the formats list.
+        def orig = ifValueOr { <> get(resources, source) } { <> [] };
+        def revised = $Collection::keyList({orig*: null, format: null});
+        resources := {resources*, (source): revised};
+    };
+
+    ## Handles any `import*` node type. Ignores other types.
+    fn handleImport(s) {
+        ifIs { <> hasType(s, @@importModule) }
+            { addToImports(get_source(s), [@module]) };
+        ifIs { <> hasType(s, @@importModuleSelection) }
+            {
+                def names = ifValueOr { <> get_select(s) }
+                    { die("Cannot call `makeInfoMap` on unresolved import.") };
+                addToImports(get_source(s), names)
+            };
+        ifIs { <> hasType(s, @@importResource) }
+            { addToResources(get_source(s), get_format(s)) };
+    };
+
+    ## The filter is just being used as a for-each loop. The direct
+    ## result is ignored.
+    $Generator::filterAll(statements) { s ->
+        ifIs { <> hasType(s, @@exportSelection) }
+            { addToExports(get_select(s)) };
+        ifIs { <> hasType(s, @@export) }
+            {
+                addToExports(get_definedNames(s));
+                handleImport(get_nodeValue(s))
+            };
+        handleImport(s)
+    };
+
+    <> {exports, imports, resources}
+};
+
+## Documented in spec.
 export fn makeInterpolate(node) {
     <> @call{function: REFS::interpolate, actuals: [node], interpolate: node}
 };
@@ -242,7 +297,7 @@ export fn withModuleDefs(node) {
     ## represented directly in the final `yield`, the (informational)
     ## `exports` in this is what's used to produce the top-level `exports`
     ## map.
-    def info = resolveInfo(node);
+    def info = makeInfoMap(node);
 
     def rawStatements = get_statements(node);
 
