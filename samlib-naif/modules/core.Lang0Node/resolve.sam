@@ -92,7 +92,8 @@ export fn resolveInfo(node) {
             { addToImports(get_source(s), [@module]) };
         ifIs { <> hasType(s, @@importModuleSelection) }
             {
-                def names = $Collection::valueList(resolveSelection(s));
+                def names = ifValueOr { <> get_select(s) }
+                    { die("Cannot call `resolveInfo` on unresolved import.") };
                 addToImports(get_source(s), names)
             };
         ifIs { <> hasType(s, @@importResource) }

@@ -522,12 +522,13 @@ zvalue resolveInfo(zvalue node) {
                 addImportBinding(imports, get(s, STR_source), TYPE_module);
         } else if (hasType(s, TYPE_importModuleSelection)) {
             zvalue source = get(s, STR_source);
-            zvalue selection = resolveSelection(s);
-            zint sz = get_size(selection);
-            zmapping mappings[sz];
-            arrayFromMap(mappings, selection);
+            zvalue select = get(s, STR_select);
+            zint sz = get_size(select);
+            if (sz == 0) {
+                die("Cannot call `resolveInfo` on unresolved import.");
+            }
             for (zint j = 0; j < sz; j++) {
-                zvalue name = mappings[j].value;
+                zvalue name = nth(select, j);
                 imports = addImportBinding(imports, source, name);
             }
         } else if (hasType(s, TYPE_importResource)) {
