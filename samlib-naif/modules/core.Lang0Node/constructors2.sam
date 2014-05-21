@@ -4,6 +4,7 @@
 
 #= language core.Lang0
 
+import core.Collection;
 import core.Generator;
 
 import ./constructors1 ::
