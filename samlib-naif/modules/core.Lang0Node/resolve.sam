@@ -29,18 +29,31 @@ export fn .resolveImport();
 
 ## Documented in spec.
 fn @@importModule.resolveImport() {
-    ## No need to do anything.
+    ## No need to modify, just validate. TODO: Validate.
     <> this
 };
 
 ## Documented in spec.
 fn @@importModuleSelection.resolveImport() {
-    die("TODO")
+    ifIs { <> get_select(node) }
+        {
+            ## Explicit selection; so no need to modify, just validate.
+            ## TODO: Validate.
+            return this
+        };
+
+    ## TODO: In order to handle wildcard imports, this function will
+    ## have to be able to ask for the list of exports from arbitrary
+    ## modules. This will probably mean adding an argument for a
+    ## "module oracle" of some sort.
+    def select = die("TODO: wildcard selection import");
+
+    <> @(get_type(node)){dataOf(node)*, select}
 };
 
 ## Documented in spec.
 fn @@importResource.resolveImport() {
-    ## No need to do anything.
+    ## No need to modify, just validate. TODO: Validate.
     <> this
 };
 
