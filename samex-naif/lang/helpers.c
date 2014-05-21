@@ -595,7 +595,8 @@ zvalue withModuleDefs(zvalue node) {
 
 /* Documented in spec. */
 zvalue withResolvedImports(zvalue node) {
-    die("TODO");
+    note("TODO: withResolvedImports");
+    return node;
 }
 
 /* Documented in spec. */

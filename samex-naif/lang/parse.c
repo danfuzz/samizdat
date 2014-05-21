@@ -1245,6 +1245,7 @@ zvalue langParseProgram0(zvalue program) {
 /* Documented in header. */
 zvalue langSimplify0(zvalue node) {
     if (hasType(node, TYPE_closure)) {
+        node = withResolvedImports(node);
         return withModuleDefs(node);
     }
 
