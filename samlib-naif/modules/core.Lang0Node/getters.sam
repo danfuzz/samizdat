@@ -68,6 +68,48 @@ fn @@internal.get_baseName() {
 };
 
 ## Documented in spec.
+export fn .get_definedNames();
+
+## Documented in spec.
+fn @@export.get_definedNames() {
+    <> get_definedNames(get_nodeValue(this))
+};
+
+## Documented in spec.
+fn @@importModule.get_definedNames() {
+    <> [get_name(this)]
+};
+
+## Documented in spec.
+fn @@importModuleSelection.get_definedNames() {
+    def prefix = get_prefix(this);
+    def select = ifValueOr { <> get_select(this) }
+        { die("Cannot call `get_definedNames` on unresolved import.") };
+
+    <> $Generator::filterAll(select) { name <> cat(prefix, name) }
+};
+
+## Documented in spec.
+fn @@importResource.get_definedNames() {
+    <> [get_name(this)]
+};
+
+## Documented in spec.
+fn @@varDef.get_definedNames() {
+    <> [get_name(this)]
+};
+
+## Documented in spec.
+fn @@varDefMutable.get_definedNames() {
+    <> [get_name(this)]
+};
+
+## Documented in spec.
+fn Value.get_definedNames() {
+    <> []
+};
+
+## Documented in spec.
 export fn get_formals(node) {
     <> node::formals
 };

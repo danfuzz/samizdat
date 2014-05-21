@@ -175,18 +175,48 @@ zvalue formalsMinArgs(zvalue formals) {
 }
 
 /* Documented in spec. */
-zvalue get_baseName(zvalue thisPath) {
-    if (hasType(thisPath, TYPE_external)) {
-        zvalue path = dataOf(thisPath);
-        zvalue components = splitAtChar(dataOf(thisPath), STR_CH_DOT);
+zvalue get_baseName(zvalue source) {
+    if (hasType(source, TYPE_external)) {
+        zvalue path = dataOf(source);
+        zvalue components = splitAtChar(dataOf(source), STR_CH_DOT);
         return nth(components, get_size(components) - 1);
-    } else if (hasType(thisPath, TYPE_internal)) {
-        zvalue components = splitAtChar(dataOf(thisPath), STR_CH_SLASH);
+    } else if (hasType(source, TYPE_internal)) {
+        zvalue components = splitAtChar(dataOf(source), STR_CH_SLASH);
         zvalue last = nth(components, get_size(components) - 1);
         zvalue parts = splitAtChar(last, STR_CH_DOT);
         return nth(parts, 0);
     } else {
         die("Bad type for `get_baseName`.");
+    }
+}
+
+/* Documented in spec. */
+zvalue get_definedNames(zvalue node) {
+    if (hasType(node, TYPE_export)) {
+        return get_definedNames(get(node, STR_value));
+    } else if (   hasType(node, TYPE_importModule)
+               || hasType(node, TYPE_importResource)
+               || hasType(node, TYPE_varDef)
+               || hasType(node, TYPE_varDefMutable)) {
+        return listFrom1(get(node, STR_name));
+    } else if (hasType(node, TYPE_importModuleSelection)) {
+        zvalue prefix = get(node, STR_prefix);
+        zvalue select = get(node, STR_select);
+        if (select == NULL) {
+            die("Cannot call `get_definedNames` on unresolved import.");
+        }
+
+        zint size = get_size(select);
+        zvalue arr[size];
+        arrayFromList(arr, select);
+
+        for (zint i = 0; i < size; i++) {
+            arr[i] = GFN_CALL(cat, prefix, arr[i]);
+        }
+
+        return listFromArray(size, arr);
+    } else {
+        return EMPTY_LIST;
     }
 }
 

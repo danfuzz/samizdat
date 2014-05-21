@@ -61,6 +61,14 @@ get_baseName(@internal("frotz.txt"))                =>  "frotz"
 get_baseName(@internal("frobozz/magic/frotz.txt"))  =>  "frotz"
 ```
 
+#### `get_definedNames(node) <> [name*]`
+
+Gets a list of the names of all variables defined by the given `node`.
+If `node` defines no names, this returns `[]` (the empty list).
+
+It is a fatal error to call this on an *unresolved* wildcard
+`importModuleSelection` node.
+
 #### `get_formals(node) <> [formal*]`
 
 Gets the formal arguments of a `closure` node.

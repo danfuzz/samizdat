@@ -71,7 +71,10 @@ zvalue formalsMaxArgs(zvalue formals);
 zvalue formalsMinArgs(zvalue formals);
 
 /* Documented in spec. */
-zvalue get_baseName(zvalue name);
+zvalue get_baseName(zvalue source);
+
+/* Documented in spec. */
+zvalue get_definedNames(zvalue node);
 
 /* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals);
