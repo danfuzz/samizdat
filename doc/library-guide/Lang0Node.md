@@ -327,7 +327,7 @@ transformations:
     binding is arranged to be `{}` (the empty map).
 
   * The `info` binding is set up to be the defined metainformation of the
-    module. TODO: This is always an empty map right now.
+    module.
 
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield`.
