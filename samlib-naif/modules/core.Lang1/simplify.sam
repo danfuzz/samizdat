@@ -314,6 +314,10 @@ export fn simplify(expressionNode) {
     def converted = convertPexIn(expressionNode);
 
     <> ifIs { <> hasType(converted, @@closure) }
-        { <> withModuleDefs(withResolvedImports(converted)) }
+        {
+            ## TODO: Pass through a `resolveFn`.
+            def resolveFn = { . <> };
+            <> withModuleDefs(withResolvedImports(converted, resolveFn))
+        }
         { <> converted }
 };

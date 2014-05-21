@@ -517,7 +517,7 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
-zvalue resolveImport(zvalue node) {
+zvalue resolveImport(zvalue node, zvalue resolveFn) {
     zvalue name = get(node, STR_name);
     zvalue source = get(node, STR_source);
 
@@ -607,7 +607,7 @@ zvalue withModuleDefs(zvalue node) {
 }
 
 /* Documented in spec. */
-zvalue withResolvedImports(zvalue node) {
+zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
     zvalue arr[size];
@@ -629,7 +629,7 @@ zvalue withResolvedImports(zvalue node) {
             continue;
         }
 
-        zvalue resolved = resolveImport(defNode);
+        zvalue resolved = resolveImport(defNode, resolveFn);
 
         if (exported) {
             resolved = makeExport(resolved);

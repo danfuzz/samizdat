@@ -21,16 +21,16 @@ import ./getters ::
 ##
 
 ## Documented in spec.
-export fn .resolveImport();
+export fn .resolveImport(resolveFn);
 
 ## Documented in spec.
-fn @@importModule.resolveImport() {
+fn @@importModule.resolveImport(resolveFn) {
     ## No need to modify, just validate. TODO: Validate.
     <> this
 };
 
 ## Documented in spec.
-fn @@importModuleSelection.resolveImport() {
+fn @@importModuleSelection.resolveImport(resolveFn) {
     ifIs { <> get_select(this) }
         {
             ## Explicit selection; so no need to modify, just validate.
@@ -48,13 +48,13 @@ fn @@importModuleSelection.resolveImport() {
 };
 
 ## Documented in spec.
-fn @@importResource.resolveImport() {
+fn @@importResource.resolveImport(resolveFn) {
     ## No need to modify, just validate. TODO: Validate.
     <> this
 };
 
 ## Documented in spec.
-export fn withResolvedImports(node) {
+export fn withResolvedImports(node, resolveFn) {
     def rawStatements = get_statements(node);
 
     def converted = $Generator::filterAll(rawStatements) { <out> s ->
@@ -75,7 +75,7 @@ export fn withResolvedImports(node) {
                 <out> s
             };
 
-        def resolved = resolveImport(defNode);
+        def resolved = resolveImport(defNode, resolveFn);
 
         <> ifIs { <> eq(exported, true) }
             { <> makeExport(resolved) }
