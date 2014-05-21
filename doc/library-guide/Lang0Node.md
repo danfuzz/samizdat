@@ -304,10 +304,15 @@ Everything else just passes through as-is, if valid.
 It is a fatal error (terminating the runtime) if `node` is found to be
 invalid.
 
-#### `resolveInfo(node) <> {exports: [name+], imports: [name+]}`
+#### `resolveInfo(node) <> {exports: {...}, imports: {...}, resources: {...}}`
 
-Resolves the metainformation a `closure` node that represents a top-level
-module. This returns a map that binds `exports` and `imports`.
+Constructs the metainformation from a `closure` node that represents a
+top-level module. This returns a map that binds `exports`, `imports`, and
+`resources`.
+
+`node` must be resolved, e.g. the result of having called
+`withResolvedImports()`. It is a fatal error to call this on a node with
+any unresolved wildcard imports.
 
 #### `resolveSelection(node) <> {(name: sourceName)+}`
 
