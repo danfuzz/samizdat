@@ -7,6 +7,13 @@ core.Lang0Node
 These are a set of accessor and constructor functions for the various execution
 tree node types.
 
+A few functions in this module take an argument named `resolveFn`. Such an
+argument is expected to be a function which behaves similarly to
+`core.ModuleSystem::resolve()`, as described in the sections on the module
+system. This function, though, is allowed to *not* actually load any code,
+as when used here it is only the resolved metainformation that gets used.
+
+
 <br><br>
 ### Constnants
 
