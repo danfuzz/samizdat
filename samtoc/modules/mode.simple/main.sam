@@ -52,6 +52,11 @@ import ./Interner ::
 import @utf8 ./template.txt;
 
 
+## TODO: Provide a real `resolveFn` here.
+fn resolver(source) {
+    <>
+};
+
 ## Indent with the usual width column limit.
 fn usualIndent(tree, depth) {
     <> indent(tree, depth, 78)
@@ -183,7 +188,7 @@ export fn compile(sourcePath, targetPath) {
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
     def mainNode = withDynamicImports(
-        $Lang2::simplify($Lang2::parseProgram(sourceText)));
+        $Lang2::simplify($Lang2::parseProgram(sourceText), resolver));
 
     def interner = makeInterner();
     def litsNode = internLiterals(mainNode, interner);

@@ -1243,10 +1243,7 @@ zvalue langParseProgram0(zvalue program) {
 }
 
 /* Documented in header. */
-zvalue langSimplify0(zvalue node) {
-    // TODO: Pass through a `resolveFn`.
-    zvalue resolveFn = NULL;
-
+zvalue langSimplify0(zvalue node, zvalue resolveFn) {
     if (hasType(node, TYPE_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);

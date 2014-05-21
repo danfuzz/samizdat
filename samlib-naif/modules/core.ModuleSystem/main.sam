@@ -232,7 +232,10 @@ fn treeFromText(loader, text) {
     def languageName = ifValueOr { <> $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
     def lang = loadModule(loader, @external(languageName));
-    <> lang::simplify(lang::parseProgram(text));
+
+    ## TODO: Provide a real `resolveFn` here.
+    def resolveFn = { . <> };
+    <> lang::simplify(lang::parseProgram(text), resolveFn);
 };
 
 ## Updates a map-containing box to have the given additional / replacement

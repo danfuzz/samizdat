@@ -58,11 +58,11 @@ zvalue langParseProgram0(zvalue program);
 
 /**
  * Simplifies the given expression node to a form that is suitable for
- * passing to `langEval0`.
+ * passing to `langEval0`. `resolveFn` is allowed to be `NULL`.
  *
  * See the spec for details about the grammar.
  */
-zvalue langSimplify0(zvalue node);
+zvalue langSimplify0(zvalue node, zvalue resolveFn);
 
 /**
  * Tokenizes the given program text into a list of tokens, suitable
