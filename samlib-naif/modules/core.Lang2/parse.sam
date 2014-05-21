@@ -1811,32 +1811,17 @@ def parLogicAndExpression = {:
 ## ```
 ## =>
 ## ```
-## ifValueOr { <> expr1 }
-##     { ifValueOr { <> expr2 } { <> expr3 } }
+## ifValueOr { <> expr1 } { <> expr2 } { <> expr3 }
 ## ```
 def parLogicOrExpression = {:
     one = parLogicAndExpression
-    rest = (@"|" parLogicAndExpression)*
 
     (
-        ## This handles the case of not actually being a logical-or
-        ## expression.
-        {
-            <> ifIs { <> eq(rest, []) }
-                { <> one }
-        }
+        rest = (@"|" parLogicAndExpression)+
+        { <> makeCallThunks(REFS::ifValueOr, one, rest*) }
     |
-        {
-            ## Reverse, because we're building the result from the inside out.
-            def exprs = $Sequence::reverse([one, rest*]);
-            var result = nth(exprs, 0);
-
-            $Generator::filterPump($Sequence::sliceInclusive(exprs, 1)) { ex ->
-                result := makeCallThunks(REFS::ifValueOr, ex, result)
-            };
-
-            <> result
-        }
+        ## It's not actually a logical-or expression.
+        { <> one }
     )
 :};
 
