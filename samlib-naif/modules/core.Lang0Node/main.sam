@@ -48,6 +48,7 @@ export import ./formals ::
 export import ./getters ::
     get_actuals,
     get_baseName,
+    get_definedNames,
     get_format,
     get_formals,
     get_function,
