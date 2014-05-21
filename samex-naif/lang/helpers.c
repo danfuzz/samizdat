@@ -435,7 +435,25 @@ zvalue makeOptValue(zvalue expression) {
 
 /* Documented in spec. */
 zvalue resolveImport(zvalue node) {
-    die("TODO");
+    zvalue name = get(node, STR_name);
+    zvalue source = get(node, STR_source);
+
+    if (hasType(node, TYPE_importModule)) {
+        // No conversion, just validation. TODO: Validate.
+        return node;
+    } else if (hasType(node, TYPE_importModuleSelection)) {
+        zvalue select = get(node, STR_select);
+        if (get_size(select) != 0) {
+            // No conversion, just validation. TODO: Validate.
+            return node;
+        }
+        die("TODO: wildcard selection import");
+    } else if (hasType(node, TYPE_importResource)) {
+        // No conversion, just validation. TODO: Validate.
+        return node;
+    } else {
+        die("Bad node type for `resolveImport`");
+    }
 }
 
 /* Documented in spec. */
@@ -595,8 +613,44 @@ zvalue withModuleDefs(zvalue node) {
 
 /* Documented in spec. */
 zvalue withResolvedImports(zvalue node) {
-    note("TODO: withResolvedImports");
-    return node;
+    zvalue rawStatements = get(node, STR_statements);
+    zint size = get_size(rawStatements);
+    zvalue arr[size];
+    arrayFromList(arr, rawStatements);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue s = arr[i];
+        bool exported = false;
+        zvalue defNode = s;
+
+        if (hasType(s, TYPE_export)) {
+            exported = true;
+            defNode = get(s, STR_value);
+        }
+
+        if (!(   hasType(defNode, TYPE_importModule)
+              || hasType(defNode, TYPE_importModuleSelection)
+              || hasType(defNode, TYPE_importResource))) {
+            continue;
+        }
+
+        zvalue resolved = resolveImport(defNode);
+
+        if (exported) {
+            resolved = makeExport(resolved);
+        }
+
+        arr[i] = resolved;
+    }
+
+    zvalue converted = listFromArray(size, arr);
+
+    return makeValue(
+        get_type(node),
+        GFN_CALL(cat,
+            dataOf(node),
+            mapFrom1(STR_statements, converted)),
+        NULL);
 }
 
 /* Documented in spec. */
