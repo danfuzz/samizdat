@@ -35,7 +35,7 @@ fn @@importModule.resolveImport() {
 
 ## Documented in spec.
 fn @@importModuleSelection.resolveImport() {
-    ifIs { <> get_select(node) }
+    ifIs { <> get_select(this) }
         {
             ## Explicit selection; so no need to modify, just validate.
             ## TODO: Validate.
@@ -48,7 +48,7 @@ fn @@importModuleSelection.resolveImport() {
     ## "module oracle" of some sort.
     def select = die("TODO: wildcard selection import");
 
-    <> @(get_type(node)){dataOf(node)*, select}
+    <> @(get_type(this)){dataOf(this)*, select}
 };
 
 ## Documented in spec.
