@@ -150,7 +150,7 @@ export fn withResolvedImports(node) {
             { <> hasType(defNode, @@importModuleSelection) }
             { <> hasType(defNode, @@importResource) }
             {
-                ## Not an `import`.
+                ## Not an `import*` node.
                 <out> s
             };
 
