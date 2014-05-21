@@ -43,10 +43,11 @@ list of tokens.
 Returns a `function` node, as defined by the corresponding parse tree
 semantics, that represents the parsed program.
 
-#### `simplify(expressionNode) <> expressionNode`
+#### `simplify(expressionNode, resolveFn) <> expressionNode`
 
 Converts and simplifies the given node into a form usable by
-`core.Code::eval`.
+`core.Code::eval`. This will call `resolveFn` to resolve the imports
+found in any encountered `import*` nodes.
 
 In `Lang0`, this is a no-op on everything but top-level program nodes.
 On program nodes, it resolves imports and converts all `export*`
