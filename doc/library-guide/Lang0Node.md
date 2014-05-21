@@ -199,6 +199,9 @@ This can be used as part of a filter on the list of top-level statements of a
 module, when they are to be executed in an environment that performs
 dynamic (not static) importing.
 
+It is a fatal error to call this on an `importModuleSelection` with
+a wildcard selection.
+
 **Note:** This returns a list of replacement nodes and not just a single
 replacement node, because some `import*` forms must expand to multiple
 statements. Always returning a list makes it possible to treat all return

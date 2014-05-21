@@ -18,6 +18,7 @@ import ./constructors1 ::
 
 import ./getters ::
     get_baseName,
+    get_definedNames,
     get_name,
     get_interpolate,
     get_format,
@@ -120,14 +121,12 @@ fn @@importModuleSelection.makeDynamicImport() {
     ## get(load(source), "name")`.
 
     def source = get_source(this);
-    def selection = resolveSelection(this);
+    def names = get_definedNames(this);
+    def select = get_select(this);
     def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
-    <> $Generator::filterAll(selection) { mapping ->
-        def targetName = get_key(mapping);
-        def sourceName = get_value(mapping);
-        <> makeVarDef(targetName,
-            makeCall(REFS::get, loadCall, makeLiteral(sourceName)))
+    <> $Generator::filterAll(names, select) { name, sel ->
+        <> makeVarDef(name, makeCall(REFS::get, loadCall, makeLiteral(sel)))
     };
 };
 

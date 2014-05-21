@@ -298,6 +298,7 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, STR_format);
     zvalue name = get(node, STR_name);
+    zvalue select = get(node, STR_select);
     zvalue source = get(node, STR_source);
 
     if (hasType(node, TYPE_importModule)) {
@@ -306,22 +307,17 @@ zvalue makeDynamicImport(zvalue node) {
 
         return listFrom1(stat);
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        zvalue selection = resolveSelection(node);
-        zint size = get_size(selection);
-        zmapping mappings[size];
-        arrayFromMap(mappings, selection);
-
+        zvalue names = get_definedNames(node);
+        zint size = get_size(names);
         zvalue loadCall = makeCall(REFS(loadModule),
             listFrom1(makeLiteral(source)));
 
         zvalue stats[size];
         for (zint i = 0; i < size; i++) {
-            zvalue targetName = mappings[i].key;
-            zvalue sourceName = mappings[i].value;
-            stats[i] = makeVarDef(
-                targetName,
-                makeCall(REFS(get),
-                    listFrom2(loadCall, makeLiteral(sourceName))));
+            zvalue name = nth(names, i);
+            zvalue sel = nth(select, i);
+            stats[i] = makeVarDef(name,
+                makeCall(REFS(get), listFrom2(loadCall, makeLiteral(sel))));
         }
 
         return listFromArray(size, stats);
