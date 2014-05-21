@@ -312,11 +312,12 @@ Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
-#### `resolveImport(node) <> node`
+#### `resolveImport(node, resolveFn) <> node`
 
 Returns a node just like the given one (which must be an `import*` node),
-except that it is resolved. Resolution means validating it and replacing
-wildcard selections with explicit names.
+except that it is resolved, using `resolveFn` to resolve any references.
+Resolution means validating it and replacing wildcard selections with explicit
+names.
 
 This only actually causes `importModuleSelection` nodes to be altered.
 Everything else just passes through as-is, if valid.
@@ -361,11 +362,11 @@ following transformations:
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield`.
 
-#### `withResolvedImports(node) <> node`
+#### `withResolvedImports(node, resolveFn) <> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` or `export(import*)`nodes in the `statements` list
-validated and transformed, by calling `resolveImport()`.
+validated and transformed, by calling `resolveImport(node, resolveFn)`.
 
 #### `withTop(node) <> node`
 
