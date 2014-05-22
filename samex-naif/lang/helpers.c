@@ -433,10 +433,10 @@ zvalue makeInfoMap(zvalue node) {
         } else if (hasType(s, TYPE_importModuleSelection)) {
             zvalue source = get(s, STR_source);
             zvalue select = get(s, STR_select);
-            zint sz = get_size(select);
-            if (sz == 0) {
+            if (select == NULL) {
                 die("Cannot call `makeInfoMap` on unresolved import.");
             }
+            zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
                 zvalue name = nth(select, j);
                 imports = addImportBinding(imports, source, name);
@@ -533,9 +533,10 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         // When given a `NULL` resolver, this acts as if all sources resolve
         // to an empty export list. So if this is a selection import, it
         // won't actually end up binding anything.
-        zvalue select = (resolved == NULL)
-            ? EMPTY_LIST
+        zvalue exports = (resolved == NULL)
+            ? EMPTY_MAP
             : get(get(resolved, STR_info), STR_exports);
+        zvalue select = GFN_CALL(keyList, exports);
         return makeValue(
             TYPE_importModuleSelection,
             collPut(dataOf(node), STR_select, select),

@@ -48,8 +48,7 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
         {
             ## It's a wildcard import, so grab all the exported names,
             ## and put them into the result.
-            def select = $Collection::filterAll(resolved::info::exports)
-                { mapping <> get_key(mapping) };
+            def select = $Collection::keyList(resolved::info::exports);
             <> @importModuleSelection{dataOf(this)*, select}
         }
 };
