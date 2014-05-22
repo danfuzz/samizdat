@@ -11,9 +11,10 @@
 ##
 
 export import ./external ::
-    makeExternalResolver;
+    makeExternalResolver,
+    makeResolverChain;
 
-export import ./external ::
+export import ./internal ::
     makeInternalResolver;
 
 export import ./protocol ::
