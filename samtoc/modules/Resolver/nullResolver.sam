@@ -9,5 +9,7 @@
 import ./protocol :: resolve;
 
 fn @@Null.resolve(source) {
-    <> ## Returns void, always
+    ## TODO: Something!
+    ## Just succeed trivially, for now.
+    <> {}
 };
