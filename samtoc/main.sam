@@ -75,9 +75,12 @@ export fn main(selfPath, rawArgs*) {
         }();
     def modeModule = loadModule(@external("mode.\(modeName)"));
 
-    def resolver = (def paths = args::options::"link-paths")
-        & Resolver::makeResolverChain(paths)
+    def externalResolver = (def dirs = args::options::"external-dirs")
+        & Resolver::makeResolverChain(dirs)
         | null;
+    def resolver = (def dir = args::options::"internal-dir")
+        & Resolver::makeInternalResolver(dir, externalResolver)
+        | externalResolver;
 
     if (#sources == 0) {
         note("No source files specified!");

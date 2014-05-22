@@ -21,15 +21,26 @@ takes the following options:
 * `--binary` &mdash; Compile all the way to a `.samb` binary addon library.
   This is only valid if a single source file is specified.
 
+* `--external-dirs=<dir-name>:<dir-name>...` &mdash; Indicate what directories
+  should be searched within when looking for external module linkage
+  metainformation.
+
+  Each listed directory should contain within it subdirectories each of which
+  defines a module (with the subdirectory name as the module name), and/or
+  contain module info files with names of the form
+  `fully.qualified.name.saminfo`.
+
 * `--in-dir=<dir-name>` &mdash; Indicate that all source files should be taken
   to be relative to the indicated directory.
 
-* `--link-paths=<path>:<path>...` &mdash; Indicate what directories should
-  be searched within when looking for module linkage information. Each
-  listed directory should contain within it subdirectories each of which
-  defines a module (with the subdirectory name as the module name), or
-  contain module info files with names of the form
-  `fully.qualified.name.saminfo`.
+* `--internal-dir=<dir-name>` &mdash; Indicate a directory which should be
+  considered the base when looking for internal module linkage
+  metainformation.
+
+  This should be used when compiling a standalone module. It indicates the
+  base directory of the module being compiled. The contents of the directory
+  are expected to be the source and resource files of the module's
+  implementation.
 
 * `--mode=<name>` &mdash; Specifies the compilation mode to use. See below.
 
