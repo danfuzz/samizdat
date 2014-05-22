@@ -7,8 +7,9 @@
 ## An "internal" module, imported whole.
 import ./substuff;
 
-## An "internal" module, only specific bindings imported.
-import ./moreStuff :: MORE_STUFF1, MORE_STUFF2;
+## An "internal" module, wildcard import. This ends up defining `MORE_STUFF1`
+## and `MORE_STUFF2`.
+import ./moreStuff :: *;
 
 ## An "internal" module, re-exported.
 export import ./reexport;
