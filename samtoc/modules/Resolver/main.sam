@@ -1,0 +1,23 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Module file resolver
+##
+## This defines two types, that mirror the equivalent in the module system,
+## one which does "internal" resolution and one which does "external"
+## resolution.
+##
+
+export import ./external ::
+    makeExternalResolver;
+
+export import ./external ::
+    makeInternalResolver;
+
+export import ./protocol ::
+    resolve;
+
+## This just causes method bindings to be made.
+import ./nullResolver;
