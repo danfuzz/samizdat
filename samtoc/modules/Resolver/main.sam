@@ -10,15 +10,48 @@
 ## resolution.
 ##
 
-export import ./external ::
-    makeExternalResolver,
-    makeResolverChain;
-
-export import ./internal ::
-    makeInternalResolver;
-
-export import ./protocol ::
-    resolve;
+export import ./external :: makeExternalResolver;
+export import ./internal :: makeInternalResolver;
+export import ./protocol :: resolve;
 
 ## This just causes method bindings to be made.
 import ./nullResolver;
+
+
+##
+## Private definitions
+##
+
+## Helper for `splitPaths` which does the actual splitting.
+def parPathList = {:
+    (
+        chars = [! ":"]*
+        (":" | !())
+
+        { <> $Peg::stringFromTokenList(chars) }
+    )*
+:};
+
+## Parses a colon-separated string into a list.
+fn splitPaths(paths) {
+    <> $Peg::apply(parPathList, paths)
+};
+
+
+##
+## Exported definitions
+##
+
+## Makes a chain of external resolvers corresponding to the given `paths`
+## string. `paths` must be a colon-separated list of `modules`-style
+## directories.
+export fn makeResolverChain(paths) {
+    def pathList = splitPaths(paths);
+
+    for (one in pathList) {
+        note("=== %q(one)")
+    };
+
+    ## TODO: Something real.
+    <> makeExternalResolver(pathList[0], null)
+}
