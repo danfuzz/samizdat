@@ -11,6 +11,9 @@ import ./substuff;
 ## and `MORE_STUFF2`.
 import ./moreStuff :: *;
 
+## Same as above, except with prefixes.
+import stu_* = ./moreStuff :: *;
+
 ## An "internal" module, re-exported.
 export import ./reexport;
 
@@ -22,6 +25,10 @@ def STUFF = "stuff";
 def SUBSTUFF = $substuff::SUBSTUFF;
 export STUFF, SUBSTUFF;
 
-export fn stuffFunc() {
+export fn stuffFunc1() {
     <> cat("Funky stuff: ", MORE_STUFF1, " ", MORE_STUFF2)
+};
+
+export fn stuffFunc2() {
+    <> cat("Funky stuff: ", stu_MORE_STUFF1, " ", stu_MORE_STUFF2)
 };

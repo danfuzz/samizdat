@@ -36,6 +36,7 @@ export fn main(selfPath, .*) {
     note($Format::source($Stuff::$reexport));
     note($Format::source($Stuff::reBind1));
     note($Format::source($Stuff::reBind2));
-    note($Format::source($Stuff::stuffFunc()));
+    note($Format::source($Stuff::stuffFunc1()));
+    note($Format::source($Stuff::stuffFunc2()));
     note($Format::source($resource));
 };
