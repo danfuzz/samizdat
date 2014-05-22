@@ -13,7 +13,7 @@ import @utf8 ./template.txt;
 
 import core.Io0;
 
-export fn compile(sourcePath, targetPath) {
+export fn compile(resolver, sourcePath, targetPath) {
     def replacements = {
         source: $Io0::readFileUtf8(sourcePath)
     };

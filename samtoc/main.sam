@@ -50,7 +50,7 @@ fn getOutputPath(rawPath, args, defaultSuffix) {
     return "\(dir)/\(baseName).\(defaultSuffix)"
 };
 
-fn doOne(modeModule, args, sourceName) {
+fn doOne(modeModule, resolver, args, sourceName) {
     def sourcePath = getSourcePath(sourceName, args);
     def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
 
@@ -58,7 +58,7 @@ fn doOne(modeModule, args, sourceName) {
         \%q(sourcePath)
         -> \%q(outputPath)\n");
 
-    modeModule::compile(sourcePath, outputPath);
+    modeModule::compile(resolver, sourcePath, outputPath);
 };
 
 export fn main(selfPath, rawArgs*) {
@@ -90,6 +90,6 @@ export fn main(selfPath, rawArgs*) {
     };
 
     for (s in sources) {
-        doOne(modeModule, args, s)
+        doOne(modeModule, resolver, args, s)
     };
 };

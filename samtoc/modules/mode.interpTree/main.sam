@@ -17,12 +17,8 @@ import Template;
 import core.Io0;
 import core.Lang2;
 
-## TODO: Provide a real `resolveFn` here.
-fn resolver(source) {
-    <> {}
-};
 
-export fn compile(sourcePath, targetPath) {
+export fn compile(resolver, sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
     def tree = $Lang2::simplify($Lang2::parseProgram(sourceText), resolver);
     def source = $CodeGen::indent($DataCode::convert(tree), 2, 78);

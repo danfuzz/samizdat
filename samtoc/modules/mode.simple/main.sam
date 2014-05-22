@@ -52,11 +52,6 @@ import ./Interner ::
 import @utf8 ./template.txt;
 
 
-## TODO: Provide a real `resolveFn` here.
-fn resolver(source) {
-    <> {}
-};
-
 ## Indent with the usual width column limit.
 fn usualIndent(tree, depth) {
     <> indent(tree, depth, 78)
@@ -182,7 +177,7 @@ fn mainClosureMaker(node, interner) {
     <> stat.usualIndent(1)
 };
 
-export fn compile(sourcePath, targetPath) {
+export fn compile(resolver, sourcePath, targetPath) {
     def sourceText = $Io0::readFileUtf8(sourcePath);
 
     ## Note: The node resulting from a call to `parseProgram` is always of

@@ -13,7 +13,9 @@
 import ./protocol :: resolve;
 
 fn @@ExternalResolver.resolve(source) {
-    die("TODO")
+    ## TODO: Something!
+    ## Just succeed trivially, for now.
+    <> {}
 };
 
 export fn makeExternalResolver(path, nextResolver) {
