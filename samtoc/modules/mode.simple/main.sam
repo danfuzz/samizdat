@@ -54,7 +54,7 @@ import @utf8 ./template.txt;
 
 ## TODO: Provide a real `resolveFn` here.
 fn resolver(source) {
-    <>
+    <> {}
 };
 
 ## Indent with the usual width column limit.

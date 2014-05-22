@@ -19,7 +19,7 @@ import core.Lang2;
 
 ## TODO: Provide a real `resolveFn` here.
 fn resolver(source) {
-    <>
+    <> {}
 };
 
 export fn compile(sourcePath, targetPath) {
