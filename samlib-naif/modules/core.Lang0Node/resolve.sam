@@ -13,6 +13,7 @@ import ./constructors1 ::
 import ./getters ::
     get_nodeValue,
     get_select,
+    get_source,
     get_statements;
 
 
@@ -25,31 +26,40 @@ export fn .resolveImport(resolveFn);
 
 ## Documented in spec.
 fn @@importModule.resolveImport(resolveFn) {
-    ## No need to modify, just validate. TODO: Validate.
+    ## No need to modify, just validate.
+    ifNot { <> resolveFn(get_source(this)) }
+        { die("Could not resolve module import.") };
+
     <> this
 };
 
 ## Documented in spec.
 fn @@importModuleSelection.resolveImport(resolveFn) {
-    ifIs { <> get_select(this) }
+    ## May need to grab the resolved innards, so keep the resolved value
+    ## (unlike the other related functions).
+    def resolved = ifValueOr { <> resolveFn(get_source(this)) }
+        { die("Could not resolve module selection import.") };
+
+    <> ifIs { <> get_select(this) }
         {
-            ## Explicit selection; so no need to modify, just validate.
-            ## TODO: Validate.
-            return this
-        };
-
-    ## TODO: In order to handle wildcard imports, this function will
-    ## have to be able to ask for the list of exports from arbitrary
-    ## modules. This will probably mean adding an argument for a
-    ## "module oracle" of some sort.
-    def select = die("TODO: wildcard selection import");
-
-    <> @(get_type(this)){dataOf(this)*, select}
+            ## Explicit selection, so no need to return a modified result.
+            <> this
+        }
+        {
+            ## It's a wildcard import, so grab all the exported names,
+            ## and put them into the result.
+            def select = $Collection::filterAll(resolved::info::exports)
+                { mapping <> get_key(mapping) };
+            <> @importModuleSelection{dataOf(this)*, select}
+        }
 };
 
 ## Documented in spec.
 fn @@importResource.resolveImport(resolveFn) {
-    ## No need to modify, just validate. TODO: Validate.
+    ## No need to modify, just validate.
+    ifNot { <> resolveFn(get_source(this)) }
+        { die("Could not resolve resource import.") };
+
     <> this
 };
 

@@ -518,24 +518,33 @@ zvalue makeOptValue(zvalue expression) {
 
 /* Documented in spec. */
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
-    zvalue name = get(node, STR_name);
     zvalue source = get(node, STR_source);
+    zvalue resolved =
+        (resolveFn == NULL) ? NULL : FUN_CALL(resolveFn, source);
 
     if (hasType(node, TYPE_importModule)) {
-        // No conversion, just validation. TODO: Validate.
+        // No conversion, just validation.
         return node;
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        zvalue select = get(node, STR_select);
-        if (get_size(select) != 0) {
-            // No conversion, just validation. TODO: Validate.
+        if (get(node, STR_select) != NULL) {
+            // No conversion, just validation.
             return node;
         }
-        die("TODO: wildcard selection import");
+        // When given a `NULL` resolver, this acts as if all sources resolve
+        // to an empty export list. So if this is a selection import, it
+        // won't actually end up binding anything.
+        zvalue select = (resolved == NULL)
+            ? EMPTY_LIST
+            : get(get(resolved, STR_info), STR_exports);
+        return makeValue(
+            TYPE_importModuleSelection,
+            collPut(dataOf(node), STR_select, select),
+            NULL);
     } else if (hasType(node, TYPE_importResource)) {
-        // No conversion, just validation. TODO: Validate.
+        // No conversion, just validation.
         return node;
     } else {
-        die("Bad node type for `resolveImport`");
+        die("Bad node type for `resolveImport`.");
     }
 }
 
