@@ -5,6 +5,8 @@
 import core.CommandLine;
 import core.FilePath;
 
+import Resolver;
+
 ## Default mode to use
 def DEFAULT_MODE = "simple";
 
@@ -72,6 +74,10 @@ export fn main(selfPath, rawArgs*) {
             return 1
         }();
     def modeModule = loadModule(@external("mode.\(modeName)"));
+
+    def resolver = (def paths = args::options::"link-paths")
+        & Resolver::makeResolverChain(paths)
+        | null;
 
     if (#sources == 0) {
         note("No source files specified!");
