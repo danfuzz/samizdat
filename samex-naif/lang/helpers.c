@@ -518,6 +518,14 @@ zvalue makeOptValue(zvalue expression) {
 
 /* Documented in spec. */
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
+    if (hasType(node, TYPE_importResource)) {
+        // No conversion, just validation. TODO: Validate.
+        //
+        // **Note:** This clause is at the top so as to avoid the call to
+        // `resolveFn()` below, which is inappropriate to do on resources.
+        return node;
+    }
+
     zvalue source = get(node, STR_source);
     zvalue resolved =
         (resolveFn == NULL) ? NULL : FUN_CALL(resolveFn, source);
@@ -541,9 +549,6 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             TYPE_importModuleSelection,
             collPut(dataOf(node), STR_select, select),
             NULL);
-    } else if (hasType(node, TYPE_importResource)) {
-        // No conversion, just validation.
-        return node;
     } else {
         die("Bad node type for `resolveImport`.");
     }

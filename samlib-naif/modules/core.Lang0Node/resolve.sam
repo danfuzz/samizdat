@@ -55,10 +55,7 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
 
 ## Documented in spec.
 fn @@importResource.resolveImport(resolveFn) {
-    ## No need to modify, just validate.
-    ifNot { <> resolveFn(get_source(this)) }
-        { die("Could not resolve resource import.") };
-
+    ## No need to modify, just validate. TODO: Validate.
     <> this
 };
 
