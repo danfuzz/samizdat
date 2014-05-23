@@ -37,4 +37,7 @@ export fn main(selfPath, .*) {
     tryFile(cat(selfDir, "/non-sibling.txt"));
     tryFile(cat(selfDir, "/nonexistent-directory/zorch.txt"));
     tryFile(selfDir);
+
+    note("");
+    note($Format::source($Io0::readDirectory(selfDir)));
 };
