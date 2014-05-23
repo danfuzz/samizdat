@@ -13,6 +13,7 @@
 
 #include <dirent.h>
 #include <errno.h>
+#include <string.h>
 
 
 /*
@@ -46,6 +47,13 @@ zvalue ioReadDirectory(zvalue path) {
         } else if (entryPtr == NULL) {
             // End-of-directory is indicated by setting `entryPtr` to `NULL`.
             break;
+        }
+
+        if ((entry.d_namlen < 3)
+            && (   (strcmp(entry.d_name, ".") == 0)
+                || (strcmp(entry.d_name, "..") == 0))) {
+            // Skip the entries for "this directory" and "parent directory."
+            continue;
         }
 
         zvalue name = stringFromUtf8(entry.d_namlen, entry.d_name);
