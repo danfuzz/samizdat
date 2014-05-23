@@ -68,9 +68,15 @@ export fn main(selfPath, rawArgs*) {
     for (arg in rawArgs) {
         note("    \%q(arg)");
     };
-    note("");
 
     def args = $CommandLine::parseArgs(rawArgs);
+
+    note("Options:");
+    for (opt in args::options) {
+        note("    \%q(opt)");
+    };
+    note("");
+
     def sources = args::args;
     def modeName = MODE_MAP[args::options::mode | DEFAULT_MODE] |
         {
