@@ -13,9 +13,9 @@
 import ./protocol :: resolve;
 
 fn @@InternalResolver.resolve(source) {
-    ## TODO: Something!
-    ## Just succeed trivially, for now.
-    <> {}
+    ## TODO: Try doing something with `path`.
+
+    <> (this::nextResolver).resolve(source)
 };
 
 export fn makeInternalResolver(path, nextResolver) {

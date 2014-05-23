@@ -9,7 +9,8 @@
 import ./protocol :: resolve;
 
 fn @@Null.resolve(source) {
-    ## TODO: Something!
+    ## TODO: Should probably fail, once the other resolvers work sensibly.
     ## Just succeed trivially, for now.
+    note("=== would resolve: \%q(source)");
     <> {}
 };

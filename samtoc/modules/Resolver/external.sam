@@ -18,10 +18,9 @@ import ./protocol :: resolve;
 ##
 
 fn @@ExternalResolver.resolve(source) {
-    ## TODO: Something!
-    ## Just succeed trivially, for now.
-    ## note("=== would resolve: \%q(source)");
-    <> {}
+    ## TODO: Try doing something with `path`.
+
+    <> (this::nextResolver).resolve(source)
 };
 
 export fn makeExternalResolver(path, nextResolver) {
