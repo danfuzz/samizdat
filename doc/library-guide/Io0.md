@@ -34,6 +34,20 @@ string, one of:
 * `"directory"` &mdash; Indicates a directory.
 * `"other"` &mdash; Any other existing file (e.g., a named pipe).
 
+#### `readDirectory(path) <> map | void`
+
+Reads the contents of the indicated directory, using the underlying OS's
+functionality. Returns a map from names (strings) to types (also strings).
+Types are as with `fileType`, with the addition of:
+
+* `"symlink"` &mdash; Indicates a symbolic link.
+
+If `path` is not an existing directory (e.g. if it doesn't exist, period, or
+it exists but is not a directory), then this function returns void.
+
+**Note:** The result map will not contain mappings for `"."` (directory
+self-reference) or `".."` (parent directory reference).
+
 #### `readFileUtf8(path) <> string`
 
 Reads the named file, using the underlying OS's functionality,

@@ -34,6 +34,14 @@ zvalue ioCwd(void);
 zvalue ioFileType(zvalue path);
 
 /**
+ * Gets the contents of the directory at the given path. If the path does not
+ * name a directory, this returns `NULL`. A successful result is a map from
+ * string names to file types (as strings). Types are as with `ioFileType`,
+ * with the addition of `"symlink"` as a possibility.
+ */
+zvalue ioReadDirectory(zvalue path);
+
+/**
  * Gets symbolic link information about the file with the given name.
  * It the file names a symbolic link, then this returns the linked path as
  * a simple string. If the file does not name a symbolic link, this returns

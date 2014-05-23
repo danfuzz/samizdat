@@ -30,6 +30,7 @@ def $Code = {
 def $Io0 = {
     cwd:           Io0_cwd,
     fileType:      Io0_fileType,
+    readDirectory: Io0_readDirectory,
     readFileUtf8:  Io0_readFileUtf8,
     readLink:      Io0_readLink,
     writeFileUtf8: Io0_writeFileUtf8
