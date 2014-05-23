@@ -310,10 +310,10 @@ fn @@varRef.convertPexIn() {
 ##
 
 ## Documented in spec.
-export fn simplify(expressionNode) {
+export fn simplify(expressionNode, resolveFn) {
     def converted = convertPexIn(expressionNode);
 
     <> ifIs { <> hasType(converted, @@closure) }
-        { <> withModuleDefs(withResolvedImports(converted)) }
+        { <> withModuleDefs(withResolvedImports(converted, resolveFn)) }
         { <> converted }
 };

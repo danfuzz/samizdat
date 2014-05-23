@@ -1,0 +1,57 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Module file resolver
+##
+## This defines two types, that mirror the equivalent in the module system,
+## one which does "internal" resolution and one which does "external"
+## resolution.
+##
+
+export import ./external :: makeExternalResolver;
+export import ./internal :: makeInternalResolver;
+export import ./protocol :: resolve;
+
+## This just causes method bindings to be made.
+import ./nullResolver;
+
+
+##
+## Private definitions
+##
+
+## Helper for `splitPaths` which does the actual splitting.
+def parPathList = {:
+    (
+        chars = [! ":"]*
+        (":" | !())
+
+        { <> $Peg::stringFromTokenList(chars) }
+    )*
+:};
+
+## Parses a colon-separated string into a list.
+fn splitPaths(paths) {
+    <> $Peg::apply(parPathList, paths)
+};
+
+
+##
+## Exported definitions
+##
+
+## Makes a chain of external resolvers corresponding to the given `paths`
+## string. `paths` must be a colon-separated list of `modules`-style
+## directories.
+export fn makeResolverChain(paths) {
+    def pathList = splitPaths(paths);
+
+    for (one in pathList) {
+        note("=== %q(one)")
+    };
+
+    ## TODO: Something real.
+    <> makeExternalResolver(pathList[0], null)
+}

@@ -1,0 +1,29 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Type definition: ExternalResolver
+##
+## Payload:
+## * nextResolver -- resolver to defer to when this one fails to resolve.
+## * path -- filesystem path to a directory of modules
+##
+
+import ./protocol :: resolve;
+
+
+##
+## Exported definitions
+##
+
+fn @@ExternalResolver.resolve(source) {
+    ## TODO: Something!
+    ## Just succeed trivially, for now.
+    ## note("=== would resolve: \%q(source)");
+    <> {}
+};
+
+export fn makeExternalResolver(path, nextResolver) {
+    <> @ExternalResolver{nextResolver, path}
+};

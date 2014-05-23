@@ -131,7 +131,7 @@ zvalue makeVarRef(zvalue name);
 zvalue makeOptValue(zvalue expression);
 
 /* Documented in spec. */
-zvalue resolveImport(zvalue node);
+zvalue resolveImport(zvalue node, zvalue resolveFn);
 
 /* Documented in spec. */
 zvalue withFormals(zvalue node, zvalue formals);
@@ -140,7 +140,7 @@ zvalue withFormals(zvalue node, zvalue formals);
 zvalue withModuleDefs(zvalue node);
 
 /* Documented in spec. */
-zvalue withResolvedImports(zvalue node);
+zvalue withResolvedImports(zvalue node, zvalue resolveFn);
 
 /* Documented in spec. */
 zvalue withTop(zvalue node);

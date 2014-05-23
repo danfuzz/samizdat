@@ -5,6 +5,7 @@
 #= language core.Lang0
 
 import core.Collection;
+import core.Format;
 import core.Generator;
 
 import ./constructors1 ::
@@ -13,7 +14,25 @@ import ./constructors1 ::
 import ./getters ::
     get_nodeValue,
     get_select,
+    get_source,
     get_statements;
+
+
+##
+## Private definitions
+##
+
+## Gets a printable human string form for the given `source`. This is
+## intentionally more verbose than the equivalent (internal) function
+## in `core.ModuleSystem`.
+fn sourceString(source) {
+    ifIs { <> hasType(source, @@internal) }
+        { return cat("internal ./", dataOf(source)) };
+    ifIs { <> hasType(source, @@external) }
+        { return cat("external ", dataOf(source)) };
+
+    <> cat("weird source ", $Format::source(source))
+};
 
 
 ##
@@ -21,40 +40,57 @@ import ./getters ::
 ##
 
 ## Documented in spec.
-export fn .resolveImport();
+export fn .resolveImport(resolveFn);
 
 ## Documented in spec.
-fn @@importModule.resolveImport() {
-    ## No need to modify, just validate. TODO: Validate.
-    <> this
-};
-
-## Documented in spec.
-fn @@importModuleSelection.resolveImport() {
-    ifIs { <> get_select(this) }
+fn @@importModule.resolveImport(resolveFn) {
+    ## No need to modify, just validate.
+    ifNot { <> resolveFn(get_source(this)) }
         {
-            ## Explicit selection; so no need to modify, just validate.
-            ## TODO: Validate.
-            return this
+            die(cat(
+                "Could not resolve module import: ",
+                sourceString(source)))
         };
 
-    ## TODO: In order to handle wildcard imports, this function will
-    ## have to be able to ask for the list of exports from arbitrary
-    ## modules. This will probably mean adding an argument for a
-    ## "module oracle" of some sort.
-    def select = die("TODO: wildcard selection import");
-
-    <> @(get_type(this)){dataOf(this)*, select}
+    <> this
 };
 
 ## Documented in spec.
-fn @@importResource.resolveImport() {
+fn @@importModuleSelection.resolveImport(resolveFn) {
+    ## May need to grab the resolved innards, so keep the resolved value
+    ## (unlike the other related functions).
+    def resolved = ifValueOr { <> resolveFn(get_source(this)) }
+        {
+            die(cat(
+                "Could not resolve module selection import:",
+                sourceString(source)))
+        };
+
+    <> ifIs { <> get_select(this) }
+        {
+            ## Explicit selection, so no need to return a modified result.
+            <> this
+        }
+        {
+            ## It's a wildcard import, so grab all the exported names,
+            ## and put them into the result. **Note:** If `info::exports` is
+            ## not available, this treats it as an empty map (so, nothing
+            ## gets selected).
+            def info = ifValueOr { <> resolved::info } { <> {} };
+            def exports = ifValueOr { <> info::exports } { <> {} };
+            def select = $Collection::keyList(exports);
+            <> @importModuleSelection{dataOf(this)*, select}
+        }
+};
+
+## Documented in spec.
+fn @@importResource.resolveImport(resolveFn) {
     ## No need to modify, just validate. TODO: Validate.
     <> this
 };
 
 ## Documented in spec.
-export fn withResolvedImports(node) {
+export fn withResolvedImports(node, resolveFn) {
     def rawStatements = get_statements(node);
 
     def converted = $Generator::filterAll(rawStatements) { <out> s ->
@@ -75,7 +111,7 @@ export fn withResolvedImports(node) {
                 <out> s
             };
 
-        def resolved = resolveImport(defNode);
+        def resolved = resolveImport(defNode, resolveFn);
 
         <> ifIs { <> eq(exported, true) }
             { <> makeExport(resolved) }

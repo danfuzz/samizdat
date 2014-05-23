@@ -133,5 +133,5 @@ PRIM_FUNC(Io0_writeFileUtf8,      2, 2);
 PRIM_FUNC(Lang0_languageOf,       1, 1);
 PRIM_FUNC(Lang0_parseExpression,  1, 1);
 PRIM_FUNC(Lang0_parseProgram,     1, 1);
-PRIM_FUNC(Lang0_simplify,         1, 1);
+PRIM_FUNC(Lang0_simplify,         2, 2);
 PRIM_FUNC(Lang0_tokenize,         1, 1);

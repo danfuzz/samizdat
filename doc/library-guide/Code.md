@@ -26,8 +26,8 @@ It is valid for the expression to yield void, in which case this function
 returns void. Evaluation is performed in an execution environment that
 includes all of the variable bindings indicated by `env`, which must be a map.
 
-Very notably, the result of calling `simplify(parseProgram(code))` is
-valid as the `expressionNode` argument here.
+Very notably, the result of calling `simplify(parseProgram(code), resolveFn)`
+is valid as the `expressionNode` argument here.
 
 It is recommended (but not required) that the given `env` include
 bindings for all of the library functions specified by this document.

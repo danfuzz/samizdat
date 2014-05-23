@@ -16,7 +16,7 @@ import core.Io0;
 import core.Lang0Node;
 import core.Lang2;
 
-export fn compile(sourcePath, targetPath) {
+export fn compile(resolver, sourcePath, targetPath) {
     ## Note: We *don't* call `simplify` on the parsed program tree, as that
     ## would erase salient info about the exports.
     def sourceText = $Io0::readFileUtf8(sourcePath);

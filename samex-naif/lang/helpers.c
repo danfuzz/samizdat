@@ -433,10 +433,10 @@ zvalue makeInfoMap(zvalue node) {
         } else if (hasType(s, TYPE_importModuleSelection)) {
             zvalue source = get(s, STR_source);
             zvalue select = get(s, STR_select);
-            zint sz = get_size(select);
-            if (sz == 0) {
+            if (select == NULL) {
                 die("Cannot call `makeInfoMap` on unresolved import.");
             }
+            zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
                 zvalue name = nth(select, j);
                 imports = addImportBinding(imports, source, name);
@@ -517,25 +517,49 @@ zvalue makeOptValue(zvalue expression) {
 }
 
 /* Documented in spec. */
-zvalue resolveImport(zvalue node) {
-    zvalue name = get(node, STR_name);
-    zvalue source = get(node, STR_source);
+zvalue resolveImport(zvalue node, zvalue resolveFn) {
+    if (hasType(node, TYPE_importResource)) {
+        // No conversion, just validation. TODO: Validate.
+        //
+        // **Note:** This clause is at the top so as to avoid the call to
+        // `resolveFn()` below, which is inappropriate to do on resources.
+        return node;
+    }
+
+    zvalue resolved = EMPTY_MAP;
+    if (resolveFn != NULL) {
+        zvalue source = get(node, STR_source);
+        resolved = FUN_CALL(resolveFn, source);
+        if (resolved == NULL) {
+            die("Could not resolve `import*`.");
+        }
+    }
 
     if (hasType(node, TYPE_importModule)) {
-        // No conversion, just validation. TODO: Validate.
+        // No conversion, just validation.
         return node;
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        zvalue select = get(node, STR_select);
-        if (get_size(select) != 0) {
-            // No conversion, just validation. TODO: Validate.
+        if (get(node, STR_select) != NULL) {
+            // No conversion, just validation.
             return node;
         }
-        die("TODO: wildcard selection import");
-    } else if (hasType(node, TYPE_importResource)) {
-        // No conversion, just validation. TODO: Validate.
-        return node;
+        // When given a `NULL` `resolveFn`, this acts as if all sources
+        // resolve to an empty export map. So if this is a selection import,
+        // it won't actually end up binding anything.
+        zvalue select = EMPTY_LIST;
+        zvalue info = get(resolved, STR_info);
+        if (info != NULL) {
+            zvalue exports = get(info, STR_exports);
+            if (exports != NULL) {
+                select = GFN_CALL(keyList, exports);
+            }
+        }
+        return makeValue(
+            TYPE_importModuleSelection,
+            collPut(dataOf(node), STR_select, select),
+            NULL);
     } else {
-        die("Bad node type for `resolveImport`");
+        die("Bad node type for `resolveImport`.");
     }
 }
 
@@ -607,7 +631,7 @@ zvalue withModuleDefs(zvalue node) {
 }
 
 /* Documented in spec. */
-zvalue withResolvedImports(zvalue node) {
+zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
     zvalue arr[size];
@@ -629,7 +653,7 @@ zvalue withResolvedImports(zvalue node) {
             continue;
         }
 
-        zvalue resolved = resolveImport(defNode);
+        zvalue resolved = resolveImport(defNode, resolveFn);
 
         if (exported) {
             resolved = makeExport(resolved);

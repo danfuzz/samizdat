@@ -227,12 +227,17 @@ fn loadGlobals(loader) {
 };
 
 ## Given source text, returns a parsed tree form, using the given `loader`
-## to find the apprpriate parser.
+## to find the apprpriate parser and to do any required module resolution.
 fn treeFromText(loader, text) {
     def languageName = ifValueOr { <> $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
     def lang = loadModule(loader, @external(languageName));
-    <> lang::simplify(lang::parseProgram(text));
+
+    fn resolver(source) {
+        <> resolve(loader, source)
+    };
+
+    <> lang::simplify(lang::parseProgram(text), resolver);
 };
 
 ## Updates a map-containing box to have the given additional / replacement
@@ -416,7 +421,7 @@ fn doInternalResolve(loader, source) {
     ifIs { <> eq($Io0::fileType(sourcePath)?, ["file"]) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
-            def tree = treeFromText(loader::nextLoader, text);
+            def tree = treeFromText(loader, text);
             def func = $Code::eval(loader::globals, tree);
 
             return ifValueOr { <> func() }

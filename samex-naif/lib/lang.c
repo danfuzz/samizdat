@@ -29,7 +29,7 @@ FUN_IMPL_DECL(Lang0_parseProgram) {
 
 /* Documented in spec. */
 FUN_IMPL_DECL(Lang0_simplify) {
-    return langSimplify0(args[0]);
+    return langSimplify0(args[0], args[1]);
 }
 
 /* Documented in spec. */

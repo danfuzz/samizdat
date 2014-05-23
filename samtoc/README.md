@@ -21,18 +21,36 @@ takes the following options:
 * `--binary` &mdash; Compile all the way to a `.samb` binary addon library.
   This is only valid if a single source file is specified.
 
-* `--output=<file-name>` &mdash; Specify the name of the output file. This is
-  only valid if a single source file is given. `-` indicates that
-  standard-output should be used.
+* `--external-dirs=<dir-name>:<dir-name>...` &mdash; Indicate what directories
+  should be searched within when looking for external module linkage
+  metainformation.
+
+  Each listed directory should contain within it subdirectories each of which
+  defines a module (with the subdirectory name as the module name), and/or
+  contain module info files with names of the form
+  `fully.qualified.name.saminfo`.
 
 * `--in-dir=<dir-name>` &mdash; Indicate that all source files should be taken
   to be relative to the indicated directory.
+
+* `--internal-dir=<dir-name>` &mdash; Indicate a directory which should be
+  considered the base when looking for internal module linkage
+  metainformation.
+
+  This should be used when compiling a standalone module. It indicates the
+  base directory of the module being compiled. The contents of the directory
+  are expected to be the source and resource files of the module's
+  implementation.
+
+* `--mode=<name>` &mdash; Specifies the compilation mode to use. See below.
 
 * `--out-dir=<dir-name>` &mdash; Indicate that all output should be made
   under the indicated directory. Output names use the same relative paths as
   input names.
 
-* `--mode=<name>` &mdash; Specifies the compilation mode to use. See below.
+* `--output=<file-name>` &mdash; Specify the name of the output file. This is
+  only valid if a single source file is given. `-` indicates that
+  standard-output should be used.
 
 * `--runtime=<name>` &mdash; Specifies which `samex` runtime to use. See
   `samex` docs for more details.

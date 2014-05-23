@@ -12,14 +12,20 @@ import @utf8 ./template.txt;
 
 import CodeGen;
 import DataCode;
+import Resolver :: resolve;
 import Template;
 
 import core.Io0;
 import core.Lang2;
 
-export fn compile(sourcePath, targetPath) {
+
+export fn compile(resolver, sourcePath, targetPath) {
+    fn resolveFn(source) {
+        <> resolver.resolve(source)
+    };
+
     def sourceText = $Io0::readFileUtf8(sourcePath);
-    def tree = $Lang2::simplify($Lang2::parseProgram(sourceText));
+    def tree = $Lang2::simplify($Lang2::parseProgram(sourceText), resolveFn);
     def source = $CodeGen::indent($DataCode::convert(tree), 2, 78);
     def outputText = $Template::apply($template, {source});
 

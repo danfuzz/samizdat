@@ -17,8 +17,8 @@ import CodeGen ::
     makeStatement;
 
 import DataCode;
+import Resolver :: resolve;
 import Template;
-
 import VarCalc :: get_varRefs;
 
 ## TODO: Replace with `import core.Lang0Node :: *`, once available.
@@ -177,13 +177,17 @@ fn mainClosureMaker(node, interner) {
     <> stat.usualIndent(1)
 };
 
-export fn compile(sourcePath, targetPath) {
+export fn compile(resolver, sourcePath, targetPath) {
+    fn resolveFn(source) {
+        <> resolver.resolve(source)
+    };
+
     def sourceText = $Io0::readFileUtf8(sourcePath);
 
     ## Note: The node resulting from a call to `parseProgram` is always of
     ## type `closure`.
     def mainNode = withDynamicImports(
-        $Lang2::simplify($Lang2::parseProgram(sourceText)));
+        $Lang2::simplify($Lang2::parseProgram(sourceText), resolveFn));
 
     def interner = makeInterner();
     def litsNode = internLiterals(mainNode, interner);
