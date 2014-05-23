@@ -64,7 +64,11 @@ fn doOne(modeModule, resolver, args, sourceName) {
 export fn main(selfPath, rawArgs*) {
     note("\n\
         Starting: \%q(selfPath)
-        Raw args: \%q(rawArgs)\n");
+        Arguments:");
+    for (arg in rawArgs) {
+        note("    \%q(arg)");
+    };
+    note("");
 
     def args = $CommandLine::parseArgs(rawArgs);
     def sources = args::args;
