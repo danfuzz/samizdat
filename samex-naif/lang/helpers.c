@@ -526,9 +526,14 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         return node;
     }
 
-    zvalue source = get(node, STR_source);
-    zvalue resolved =
-        (resolveFn == NULL) ? NULL : FUN_CALL(resolveFn, source);
+    zvalue resolved = EMPTY_MAP;
+    if (resolveFn != NULL) {
+        zvalue source = get(node, STR_source);
+        resolved = FUN_CALL(resolveFn, source);
+        if (resolved == NULL) {
+            die("Could not resolve `import*`.");
+        }
+    }
 
     if (hasType(node, TYPE_importModule)) {
         // No conversion, just validation.
@@ -538,13 +543,17 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             // No conversion, just validation.
             return node;
         }
-        // When given a `NULL` resolver, this acts as if all sources resolve
-        // to an empty export list. So if this is a selection import, it
-        // won't actually end up binding anything.
-        zvalue exports = (resolved == NULL)
-            ? EMPTY_MAP
-            : get(get(resolved, STR_info), STR_exports);
-        zvalue select = GFN_CALL(keyList, exports);
+        // When given a `NULL` `resolveFn`, this acts as if all sources
+        // resolve to an empty export map. So if this is a selection import,
+        // it won't actually end up binding anything.
+        zvalue select = EMPTY_LIST;
+        zvalue info = get(resolved, STR_info);
+        if (info != NULL) {
+            zvalue exports = get(info, STR_exports);
+            if (exports != NULL) {
+                select = GFN_CALL(keyList, exports);
+            }
+        }
         return makeValue(
             TYPE_importModuleSelection,
             collPut(dataOf(node), STR_select, select),
