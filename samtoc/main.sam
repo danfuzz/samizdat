@@ -76,10 +76,10 @@ export fn main(selfPath, rawArgs*) {
     def modeModule = loadModule(@external("mode.\(modeName)"));
 
     def externalResolver = (def dirs = args::options::"external-dirs")
-        & Resolver::makeResolverChain(dirs)
+        & $Resolver::makeResolverChain(dirs)
         | null;
     def resolver = (def dir = args::options::"internal-dir")
-        & Resolver::makeInternalResolver(dir, externalResolver)
+        & $Resolver::makeInternalResolver(dir, externalResolver)
         | externalResolver;
 
     if (#sources == 0) {
