@@ -47,11 +47,11 @@ fn splitPaths(paths) {
 ## directories.
 export fn makeResolverChain(paths) {
     def pathList = splitPaths(paths);
+    var result = null;
 
     for (one in pathList) {
-        note("=== %q(one)")
+        result := makeExternalResolver(one, result)
     };
 
-    ## TODO: Something real.
-    <> makeExternalResolver(pathList[0], null)
-}
+    <> result
+};
