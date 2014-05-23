@@ -1,0 +1,69 @@
+/*
+ * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+ * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+ * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+ */
+
+#include "const.h"
+#include "io.h"
+#include "type/Map.h"
+#include "type/String.h"
+#include "type/Value.h"
+#include "util.h"
+
+#include <dirent.h>
+#include <errno.h>
+
+
+/*
+ * Exported Definitions
+ */
+
+/* Documented in header. */
+zvalue ioReadDirectory(zvalue path) {
+    ioCheckPath(path);
+    zint sz = utf8SizeFromString(path);
+    char str[sz + 1];
+    utf8FromString(sz + 1, str, path);
+
+    zvalue type = ioFileType(path);
+    if (!valEq(type, STR_directory)) {
+        return NULL;
+    }
+
+    DIR *dir = opendir(str);
+    if (dir == NULL) {
+        die("Trouble opening directory \"%s\": %s", str, strerror(errno));
+    }
+
+    zvalue result = EMPTY_MAP;
+    struct dirent entry;
+    struct dirent *entryPtr;
+
+    for (;;) {
+        if (readdir_r(dir, &entry, &entryPtr) != 0) {
+            die("Trouble reading directory \"%s\": %s", str, strerror(errno));
+        } else if (entryPtr == NULL) {
+            // End-of-directory is indicated by setting `entryPtr` to `NULL`.
+            break;
+        }
+
+        zvalue name = stringFromUtf8(entry.d_namlen, entry.d_name);
+        zvalue type;
+
+        switch (entry.d_type) {
+            case DT_REG: { type = STR_file;      break; }
+            case DT_DIR: { type = STR_directory; break; }
+            case DT_LNK: { type = STR_symlink;   break; }
+            default:     { type = STR_other;     break; }
+        }
+
+        result = collPut(result, name, type);
+    }
+
+    if (closedir(dir) != 0) {
+        die("Trouble closing directory \"%s\": %s", str, strerror(errno));
+    }
+
+    return result;
+}

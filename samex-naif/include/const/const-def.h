@@ -112,6 +112,7 @@ STR(select,                "select");
 STR(seq,                   "seq");
 STR(source,                "source");
 STR(statements,            "statements");
+STR(symlink,               "symlink");
 STR(this,                  "this");
 STR(top,                   "top");
 STR(type,                  "type");
