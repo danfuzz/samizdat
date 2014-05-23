@@ -24,6 +24,11 @@ FUN_IMPL_DECL(Io0_fileType) {
 }
 
 /* Documented in spec. */
+FUN_IMPL_DECL(Io0_readDirectory) {
+    return ioReadDirectory(args[0]);
+}
+
+/* Documented in spec. */
 FUN_IMPL_DECL(Io0_readFileUtf8) {
     return ioReadFileUtf8(args[0]);
 }
