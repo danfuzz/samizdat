@@ -77,6 +77,25 @@ zvalue ioFileType(zvalue path) {
 }
 
 /* Documented in header. */
+zvalue ioReadFileUtf8(zvalue path) {
+    char buf[IO_MAX_FILE_SIZE];
+    FILE *in = openFile(path, "r");
+    size_t amt = fread(buf, 1, sizeof(buf), in);
+
+    if (ferror(in)) {
+        die("Trouble reading file: %s", strerror(errno));
+    }
+
+    if (!feof(in)) {
+        die("Overlong file: %s", strerror(errno));
+    }
+
+    fclose(in);
+
+    return stringFromUtf8(amt, buf);
+}
+
+/* Documented in header. */
 zvalue ioReadLink(zvalue path) {
     ioCheckPath(path);
     zint sz = utf8SizeFromString(path);
@@ -111,25 +130,6 @@ zvalue ioReadLink(zvalue path) {
     }
 
     return stringFromUtf8(linkSz, linkStr);
-}
-
-/* Documented in header. */
-zvalue ioReadFileUtf8(zvalue path) {
-    char buf[IO_MAX_FILE_SIZE];
-    FILE *in = openFile(path, "r");
-    size_t amt = fread(buf, 1, sizeof(buf), in);
-
-    if (ferror(in)) {
-        die("Trouble reading file: %s", strerror(errno));
-    }
-
-    if (!feof(in)) {
-        die("Overlong file: %s", strerror(errno));
-    }
-
-    fclose(in);
-
-    return stringFromUtf8(amt, buf);
 }
 
 /* Documented in header. */
