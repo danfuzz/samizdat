@@ -25,8 +25,9 @@ import ./nullResolver;
 ## Helper for `splitPaths` which does the actual splitting.
 def parPathList = {:
     (
+        &.
         chars = [! ":"]*
-        (":" | !())
+        (":" | !.)
 
         { <> $Peg::stringFromTokenList(chars) }
     )*
