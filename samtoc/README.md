@@ -13,8 +13,8 @@ convenience), or it can limit itself to producing C code. The
 scripts, can be used to perform compilation of C code in the proper manner
 (and is in fact what `samtoc` itself uses when asked to fully compile code).
 
-As a command-line tool, `samtoc` accepts any number of files to process and
-takes the following options:
+As a command-line tool, `samtoc` accepts any number of files or directories
+to process and takes the following options:
 
 * `--help` &mdash; Emit a short help message.
 
@@ -57,6 +57,19 @@ takes the following options:
 
 * `--` &mdash; Indicates the end of options. Any further arguments are taken
   to be file names.
+
+Files (per se) are taken to be Samizdat source code. Directories are
+expected to be in one of two forms:
+
+* A single module implementation, consisting of:
+  * A top-level `main.sam` file.
+  * Zero or more helper internal sources, as siblings with `main.sam` or
+    under arbitrary subdirectories.
+  * An optional `modules` directory (in a form per the next bullet item).
+
+* A `modules` directory, consisting of one or more directories that name
+  external modules. Each such directory should take the form of a
+  single module implementation (described in the previous bullet item).
 
 
 Compilation Modes
