@@ -35,12 +35,10 @@ fn directResolve(self, source) {
 
     <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
         ## We found a prefab info file. Read it!
-        note("=== info \%q(source)");
         def info = $Reader::readEvalExpression0(infoPath);
         <> {info}
     } else if (($Io0::fileType(sourcePath) | "notFound") == "file") {
         ## We found a source file. Read it and resolve!
-        note("=== source \%q(source)");
         fn resolveFn(source) { <> self.resolve(source) };
         def tree = $Reader::readProgram(sourcePath, resolveFn);
         def info = $Lang0Node::makeInfoMap(tree);
@@ -56,7 +54,6 @@ fn directResolve(self, source) {
 fn @@InternalResolver.resolve(source) {
     if (def found = $cache::cacheGet(this::cache, source)) {
         ## `found` is always a list. See comment below.
-        note("=== found internal \%q(source)");
         return found*
     };
 
@@ -71,7 +68,6 @@ fn @@InternalResolver.resolve(source) {
     ## Cache the result, so we don't bother with a search the next time.
     $cache::cachePut(this::cache, source, result);
 
-    note("=== cached internal \%q(source)");
     <> result
 };
 
