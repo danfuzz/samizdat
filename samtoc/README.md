@@ -27,6 +27,10 @@ to process and takes the following options:
   the indicated files are processed. This option is meant to make it easier
   to implement partial module compilation in a build system.
 
+  **Note:** In order to be recognized, the selection names must match
+  the directory exactly as given, and must have no internal `.` or `..`
+  components.
+
 * `--external-dirs=<dir-name>:<dir-name>...` &mdash; Indicate what directories
   should be searched within when looking for external module linkage
   metainformation.
