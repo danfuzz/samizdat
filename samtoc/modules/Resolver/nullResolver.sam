@@ -11,6 +11,6 @@ import ./protocol :: resolve;
 fn @@Null.resolve(source) {
     ## TODO: Should probably fail, once the other resolvers work sensibly.
     ## Just succeed trivially, for now.
-    note("=== would resolve: \%q(source)");
+    note("=== should fail to resolve: \%q(source)");
     <> {}
 };
