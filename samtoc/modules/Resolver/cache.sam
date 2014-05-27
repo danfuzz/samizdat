@@ -23,7 +23,7 @@ export fn cacheGet(cache, source) {
     <> fetch(cache::box)[source]
 };
 
-export fn cachePut(cache, source, info) {
-    def newMap = {fetch(cache::box)*, (source): info};
+export fn cachePut(cache, source, resolved) {
+    def newMap = {fetch(cache::box)*, (source): resolved};
     store(cache::box, newMap)
 };
