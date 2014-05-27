@@ -1,0 +1,47 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## File reading and parsing
+##
+
+import core.Code;
+import core.Globals;
+import core.Io0;
+import core.Lang0;
+
+
+##
+## Private definitions
+##
+
+## The default language module to use.
+def DEFAULT_LANGUAGE = "core.Lang2";
+
+
+##
+## Exported definitions
+##
+
+## Reads the given file, parsing it as a layer 0 expression, and returning
+## the result of evaluating it.
+export fn readEvalExpression0(path) {
+    def text = $Io0::readFileUtf8(path);
+    def tree = $Lang0::parseExpression(text);
+    <> $Code::eval($Globals::fullEnvironment(), tree)
+};
+
+## Reads the given file, parsing it as a program according to whatever
+## `language` directive it might (or might not) have. If given a
+## resolver (`optResolveFn*`), then this also performs resolution.
+export fn readProgram(path, optResolveFn?) {
+    def text = $Io0::readFileUtf8(path);
+    def languageName = $Lang0::languageOf(text) | DEFAULT_LANGUAGE;
+    def lang = loadModule(@external(languageName));
+    def tree = lang::parseProgram(text);
+
+    <> (def resolveFn = optResolveFn*)
+        & lang::simplify(tree, resolveFn)
+        | tree
+};
