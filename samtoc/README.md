@@ -21,6 +21,12 @@ to process and takes the following options:
 * `--binary` &mdash; Compile all the way to a `.samb` binary addon library.
   This is only valid if a single source file is specified.
 
+* `--dir-selection` &mdash; Indicates that the file arguments take the form
+  of (first argument) a directory whose contents are to be compiled, followed
+  by (rest of the arguments) any number of files under the directory. Only
+  the indicated files are processed. This option is meant to make it easier
+  to implement partial module compilation in a build system.
+
 * `--external-dirs=<dir-name>:<dir-name>...` &mdash; Indicate what directories
   should be searched within when looking for external module linkage
   metainformation.
