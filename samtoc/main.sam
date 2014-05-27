@@ -48,7 +48,7 @@ fn getSourcePath(rawPath, args) {
         | rawPath;
 };
 
-fn getOutputPath(rawPath, args, defaultSuffix) {
+fn getOutputPath(rawPath, args) {
     if (def output = args::options::output) {
         return output
     };
@@ -59,10 +59,11 @@ fn getOutputPath(rawPath, args, defaultSuffix) {
 
     def dir = $FilePath::get_directory(path);
     def baseName = withoutSuffix($FilePath::get_file(path));
-    return "\(dir)/\(baseName).\(defaultSuffix)"
+    def suffix = args::modeModule::SUFFIX;
+    return "\(dir)/\(baseName).\(suffix)"
 };
 
-fn doFile(modeModule, resolver, args, sourceName, sourcePath) {
+fn doFile(args, sourceName, sourcePath) {
     if (def selection = args::selection) {
         if (!selection[sourcePath]) {
             note("Skip: \(sourcePath)");
@@ -70,13 +71,16 @@ fn doFile(modeModule, resolver, args, sourceName, sourcePath) {
         }
     };
 
-    def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
+    def outputPath = getOutputPath(sourceName, args);
+
     note("File: \(sourcePath)\n    -> \(outputPath)");
-    modeModule::compile(resolver, sourcePath, outputPath)
+    args::modeModule::compile(args::resolver, sourcePath, outputPath)
 };
 
 ## Handles processing of directories.
-fn doDirectory(modeModule, resolver, args, sourcePath) {
+fn doDirectory(args, sourcePath) {
+    def resolver = args::resolver;
+
     note("Directory: \(sourcePath)");
 
     if (($Io0::fileType("\(sourcePath)/main.sam") | "notFound") == "file") {
@@ -92,17 +96,19 @@ fn doDirectory(modeModule, resolver, args, sourcePath) {
         if (resolver != subResolver) {
             ## There's a captive `modules` directory. Iterate over its
             ## subdirectories.
+            def subArgs = {args*, resolver: subResolver};
             def files = $Io0::readDirectory(captiveDir);
             for (one in files) {
                 if (one.value == "directory") {
                     def path = "\(captiveDir)/\(one.key)";
-                    doDirectory(modeModule, subResolver, args, path)
+                    doDirectory(subArgs, path)
                 }
             }
         };
 
         def internalResolver =
             $Resolver::makeInternalResolver(sourcePath, subResolver);
+        def internalArgs = {args*, resolver: internalResolver};
 
         ## Helper to process an internal directory (including the top-level
         ## internal directory).
@@ -115,7 +121,7 @@ fn doDirectory(modeModule, resolver, args, sourcePath) {
                         doInternalDir(path)
                     }
                 } else if (isSourceName(path)) {
-                    doOne(modeModule, internalResolver, args, path)
+                    doOne(internalArgs, path)
                 }
             };
         };
@@ -128,26 +134,27 @@ fn doDirectory(modeModule, resolver, args, sourcePath) {
         ## subdirectories.
         def subResolver =
             $Resolver::makeExternalResolver(sourcePath, resolver);
+        def subArgs = {args*, resolver: subResolver};
         def files = $Io0::readDirectory(sourcePath);
         for (one in files) {
             if (one.value == "directory") {
                 def path = "\(sourcePath)/\(one.key)";
-                doDirectory(modeModule, subResolver, args, path)
+                doDirectory(subArgs, path)
             }
         }
     }
 };
 
 ## Processes a single file or directory.
-fn doOne(modeModule, resolver, args, sourceName) {
+fn doOne(args, sourceName) {
     def sourcePath = getSourcePath(sourceName, args);
 
     switch (def type = $Io0::fileType(sourcePath)) {
         file: {
-            doFile(modeModule, resolver, args, sourceName, sourcePath)
+            doFile(args, sourceName, sourcePath)
         };
         directory: {
-            doDirectory(modeModule, resolver, args, sourcePath)
+            doDirectory(args, sourcePath)
         };
         default: {
             die("Cannot handle file type \%q(type).")
@@ -223,6 +230,6 @@ export fn main(selfPath, rawArgs*) {
     };
 
     for (s in args::sources) {
-        doOne(modeModule, resolver, args, s)
+        doOne(args, s)
     }
 };
