@@ -88,14 +88,17 @@ if [[ -x "${FINAL_BIN}/samtoc" ]]; then
 else
     samtocCmdStart="$(quote "${FINAL_BIN}/samex" .)"
 fi
-samtocCmdStart+=" $(quote --out-dir="${INTERMED}" --mode=interp-tree \
+samtocCmdStart+=" $(quote \
+    --out-dir="${INTERMED}" \
+    --mode=interp-tree \
+    --dir-selection \
     --external-dirs="${SAMLIB_MODULES_DIR}")"
 
 rule body \
     "${groups[@]}" \
     -- \
     --cmd='printf "Will compile: %s\n" "${VALUES[@]}"' \
-    --cmd="${samtocCmdStart}"' "${VALUES[@]}"'
+    --cmd="${samtocCmdStart}"' . "${VALUES[@]}"'
 
 # Rules to compile each C source file.
 
