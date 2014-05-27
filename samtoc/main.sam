@@ -64,16 +64,21 @@ fn getOutputPath(rawPath, args, defaultSuffix) {
 
 fn doFile(modeModule, resolver, args, sourceName, sourcePath) {
     def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
-    note("-> \%q(outputPath)\n");
+    note("File \%q(sourcePath)\n    -> \%q(outputPath)");
+
+    if (def selection = args::selection) {
+        if (!selection[sourcePath]) {
+            note("=== skip compilation!");
+            return
+        }
+    };
+
     modeModule::compile(resolver, sourcePath, outputPath)
 };
 
 ## Handles processing of directories.
 fn doDirectory(modeModule, resolver, args, sourcePath) {
-    if (($Io0::fileType(sourcePath) | "notFound") != "directory") {
-        ## No such directory. Ignore it, per the header comment.
-        return
-    };
+    note("Directory \%q(sourcePath)\n");
 
     if (($Io0::fileType("\(sourcePath)/main.sam") | "notFound") == "file") {
         ## There's a `main.sam` in the directory. Treat it as a module
@@ -138,8 +143,6 @@ fn doDirectory(modeModule, resolver, args, sourcePath) {
 fn doOne(modeModule, resolver, args, sourceName) {
     def sourcePath = getSourcePath(sourceName, args);
 
-    note("\%q(sourcePath)");
-
     switch (def type = $Io0::fileType(sourcePath)) {
         file: {
             doFile(modeModule, resolver, args, sourceName, sourcePath)
@@ -164,7 +167,7 @@ export fn main(selfPath, rawArgs*) {
         note("    \%q(arg)");
     };
 
-    def args = $CommandLine::parseArgs(rawArgs);
+    var args = $CommandLine::parseArgs(rawArgs);
 
     note("Options:");
     for (opt in args::options) {
@@ -172,7 +175,6 @@ export fn main(selfPath, rawArgs*) {
     };
     note("");
 
-    def sources = args::args;
     def modeName = MODE_MAP[args::options::mode | DEFAULT_MODE] |
         {
             note("Unknown compilation mode: \%q(args::options::mode)");
@@ -187,17 +189,41 @@ export fn main(selfPath, rawArgs*) {
         & $Resolver::makeInternalResolver(dir, externalResolver)
         | externalResolver;
 
-    if (#sources == 0) {
-        note("No source files specified!");
+    if (#args::args == 0) {
+        note("No source files specified.");
         return 1
     };
 
-    if (args::options::output & (#sources > 1)) {
-        note("Cannot use --output with more than one source!");
+    ## Figure out the sources and selection.
+    def sourcesAndSelection = if (args::options::"dir-selection") {
+        def files = args::args;
+        if (#args::args < 2) {
+            note("No selection specified.");
+            return 1
+        };
+
+        <> {
+            sources: [files[0]],
+            selection: {files[1..]*: true}
+        }
+    } else {
+        <> {sources: args::args}
+    };
+
+    ## Add more structure to `args`.
+    args := {
+        args*,
+        sourcesAndSelection*,
+        modeModule,
+        resolver
+    };
+
+    if (args::options::output & (#args::sources > 1)) {
+        note("Cannot use --output with more than one source.");
         return 1
     };
 
-    for (s in sources) {
+    for (s in args::sources) {
         doOne(modeModule, resolver, args, s)
     }
 };
