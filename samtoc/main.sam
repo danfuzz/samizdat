@@ -63,22 +63,21 @@ fn getOutputPath(rawPath, args, defaultSuffix) {
 };
 
 fn doFile(modeModule, resolver, args, sourceName, sourcePath) {
-    def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
-    note("File \%q(sourcePath)\n    -> \%q(outputPath)");
-
     if (def selection = args::selection) {
         if (!selection[sourcePath]) {
-            note("=== skip compilation!");
+            note("Skip: \(sourcePath)");
             return
         }
     };
 
+    def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
+    note("File: \(sourcePath)\n    -> \(outputPath)");
     modeModule::compile(resolver, sourcePath, outputPath)
 };
 
 ## Handles processing of directories.
 fn doDirectory(modeModule, resolver, args, sourcePath) {
-    note("Directory \%q(sourcePath)\n");
+    note("Directory: \(sourcePath)");
 
     if (($Io0::fileType("\(sourcePath)/main.sam") | "notFound") == "file") {
         ## There's a `main.sam` in the directory. Treat it as a module
