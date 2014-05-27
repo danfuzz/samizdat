@@ -8,8 +8,11 @@ import core.Io0;
 
 import Resolver;
 
-## Default mode to use
+## Default mode to use.
 def DEFAULT_MODE = "simple";
+
+## Suffix for normal source files.
+def SOURCE_SUFFIX = ".sam";
 
 ## Map from `--mode` values to module names.
 def MODE_MAP = {
@@ -29,6 +32,14 @@ fn withoutSuffix(name) {
     } else {
         return name[..!dotsAt[^0]]
     }
+};
+
+## Returns `name` iff the given name has the proper suffix for a source
+## file.
+fn isSourceName(name) {
+    <> (#name > #SOURCE_SUFFIX)
+        & (name[^(#SOURCE_SUFFIX - 1)..] == SOURCE_SUFFIX)
+        & name
 };
 
 fn getSourcePath(rawPath, args) {
@@ -51,6 +62,79 @@ fn getOutputPath(rawPath, args, defaultSuffix) {
     return "\(dir)/\(baseName).\(defaultSuffix)"
 };
 
+fn doFile(modeModule, resolver, args, sourceName, sourcePath) {
+    def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
+    note("-> \%q(outputPath)\n");
+    modeModule::compile(resolver, sourcePath, outputPath)
+};
+
+## Handles processing of directories.
+fn doDirectory(modeModule, resolver, args, sourcePath) {
+    if (($Io0::fileType(sourcePath) | "notFound") != "directory") {
+        ## No such directory. Ignore it, per the header comment.
+        return
+    };
+
+    if (($Io0::fileType("\(sourcePath)/main.sam") | "notFound") == "file") {
+        ## There's a `main.sam` in the directory. Treat it as a module
+        ## implementation. First handle a "captive" `modules` directory
+        ## (if any), then handle the main implementation files.
+        def captiveDir = "\(sourcePath)/modules";
+        def subResolver =
+            (($Io0::fileType(captiveDir) | "notFound") == "directory")
+            & $Resolver::makeExternalResolver(captiveDir, resolver)
+            | resolver;
+
+        if (resolver != subResolver) {
+            ## There's a captive `modules` directory. Iterate over its
+            ## subdirectories.
+            def files = $Io0::readDirectory(captiveDir);
+            for (one in files) {
+                if (one.value == "directory") {
+                    def path = "\(captiveDir)/\(one.key)";
+                    doDirectory(modeModule, subResolver, args, path)
+                }
+            }
+        };
+
+        def internalResolver =
+            $Resolver::makeInternalResolver(sourcePath, subResolver);
+
+        ## Helper to process an internal directory (including the top-level
+        ## internal directory).
+        fn doInternalDir(dir) {
+            def files = $Io0::readDirectory(dir);
+            for (one in files) {
+                def path = "\(dir)/\(one.key)";
+                if (one.value == "directory") {
+                    if (path != captiveDir) {
+                        doInternalDir(path)
+                    }
+                } else if (isSourceName(path)) {
+                    doOne(modeModule, internalResolver, args, path)
+                }
+            };
+        };
+
+        ## Process the rest of the files (skipping `modules`).
+        doInternalDir(sourcePath)
+    } else {
+        ## No `main.sam`. Treat it as a `modules` directory. Make an external
+        ## resolver for the given directory, and recursively process all
+        ## subdirectories.
+        def subResolver =
+            $Resolver::makeExternalResolver(sourcePath, resolver);
+        def files = $Io0::readDirectory(sourcePath);
+        for (one in files) {
+            if (one.value == "directory") {
+                def path = "\(sourcePath)/\(one.key)";
+                doDirectory(modeModule, subResolver, args, path)
+            }
+        }
+    }
+};
+
+## Processes a single file or directory.
 fn doOne(modeModule, resolver, args, sourceName) {
     def sourcePath = getSourcePath(sourceName, args);
 
@@ -58,13 +142,10 @@ fn doOne(modeModule, resolver, args, sourceName) {
 
     switch (def type = $Io0::fileType(sourcePath)) {
         file: {
-            def outputPath =
-                getOutputPath(sourceName, args, modeModule::SUFFIX);
-            note("-> \%q(outputPath)\n");
-            modeModule::compile(resolver, sourcePath, outputPath)
+            doFile(modeModule, resolver, args, sourceName, sourcePath)
         };
         directory: {
-            note("=== would process directory")
+            doDirectory(modeModule, resolver, args, sourcePath)
         };
         default: {
             die("Cannot handle file type \%q(type).")
@@ -72,7 +153,7 @@ fn doOne(modeModule, resolver, args, sourceName) {
         else: {
             die("File not found: \%q(sourcePath)")
         }
-    };
+    }
 };
 
 export fn main(selfPath, rawArgs*) {
@@ -118,5 +199,5 @@ export fn main(selfPath, rawArgs*) {
 
     for (s in sources) {
         doOne(modeModule, resolver, args, s)
-    };
+    }
 };
