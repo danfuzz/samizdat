@@ -47,7 +47,8 @@ to process and takes the following options:
   considered the base when looking for internal module linkage
   metainformation.
 
-  This should be used when compiling a standalone module. It indicates the
+  This should be used when compiling a standalone module and naming its
+  files explicitly (as opposed to just naming the directory). It indicates the
   base directory of the module being compiled. The contents of the directory
   are expected to be the source and resource files of the module's
   implementation.
