@@ -4,6 +4,7 @@
 
 import core.CommandLine;
 import core.FilePath;
+import core.Io0;
 
 import Resolver;
 
@@ -52,13 +53,26 @@ fn getOutputPath(rawPath, args, defaultSuffix) {
 
 fn doOne(modeModule, resolver, args, sourceName) {
     def sourcePath = getSourcePath(sourceName, args);
-    def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
 
-    note("\
-        \%q(sourcePath)
-        -> \%q(outputPath)\n");
+    note("\%q(sourcePath)");
 
-    modeModule::compile(resolver, sourcePath, outputPath);
+    switch (def type = $Io0::fileType(sourcePath)) {
+        file: {
+            def outputPath =
+                getOutputPath(sourceName, args, modeModule::SUFFIX);
+            note("-> \%q(outputPath)\n");
+            modeModule::compile(resolver, sourcePath, outputPath)
+        };
+        directory: {
+            note("=== would process directory")
+        };
+        default: {
+            die("Cannot handle file type \%q(type).")
+        };
+        else: {
+            die("File not found: \%q(sourcePath)")
+        }
+    };
 };
 
 export fn main(selfPath, rawArgs*) {
