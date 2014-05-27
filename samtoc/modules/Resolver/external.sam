@@ -11,10 +11,43 @@
 ## * path -- filesystem path to a directory of modules
 ##
 
+import core.Code;
+import core.Globals;
 import core.Io0;
+import core.Lang0;
 
 import ./cache;
+import ./internal :: makeInternalResolver;
 import ./protocol :: resolve;
+
+
+##
+## Private definitions
+##
+
+## Does direct resolution on the given `source`. Only ever called when
+## `source` is known to be `external` and so *might* be found directly
+## in this resolver's directory of modules.
+fn directResolve(self, source) {
+    def name = dataOf(source);
+    def dirPath = "\(self::path)/\(name)";
+    def infoPath = "\(dirPath).saminfo";
+
+    <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
+        ## We found a prefab info file. Read it!
+        note("=== info \%q(source)");
+        def infoText = $Io0::readFileUtf8(infoPath);
+        def infoTree = $Lang0::parseExpression(infoText);
+        def info = $Code::eval($Globals::fullEnvironment(), infoTree);
+        <> {info}
+    } else if (($Io0::fileType(dirPath) | "notFound") == "directory") {
+        ## We found a source directory for a module. Make an internal resolver
+        ## for it, and use that to resolve its `main`.
+        note("=== module \%q(source)");
+        def subResolver = makeInternalResolver(dirPath, self);
+        <> subResolver.resolve(@internal("main"))
+    }
+};
 
 
 ##
@@ -22,26 +55,25 @@ import ./protocol :: resolve;
 ##
 
 fn @@ExternalResolver.resolve(source) {
-    if (!hasType(source, @@external)) {
-        ## Not external, so just punt to the next one.
-        return (this::nextResolver).resolve(source)
-    } else if (def found = $cache::cacheGet(this::cache, source)) {
-        return found
+    if (def found = $cache::cacheGet(this::cache, source)) {
+        ## `found` is always a list. See comment below.
+        note("=== found \%q(source)");
+        return found*
     };
 
-    def name = dataOf(source);
-    def dirPath = "\(this::path)/\(name)";
-    def infoPath = "\(dirPath).saminfo";
+    ## The result is always a list, so that we can cache a not-found result
+    ## as the empty list.
+    def result = (
+        hasType(source, @@external)
+            & this.directResolve(source)
+            | (this::nextResolver).resolve(source)
+    )?;
 
-    if (($Io0::fileType(infoPath) | "notFound") == "file") {
-        ## TODO: What is says.
-        note("=== would read info file: \%q(infoPath)");
-    } else if (($Io0::fileType(dirPath) | "notFound") == "directory") {
-        ## TODO: What is says.
-        note("=== would resolve main in: \%q(dirPath)");
-    };
+    ## Cache the result, so we don't bother with a search the next time.
+    $cache::cachePut(this::cache, source, result);
 
-    <> (this::nextResolver).resolve(source)
+    note("=== cached \%q(source)");
+    <> result
 };
 
 export fn makeExternalResolver(path, nextResolver) {
