@@ -11,10 +11,9 @@
 ## * path -- filesystem path to a directory of modules
 ##
 
-import core.Code;
-import core.Globals;
 import core.Io0;
-import core.Lang0;
+
+import Reader;
 
 import ./cache;
 import ./internal :: makeInternalResolver;
@@ -36,9 +35,7 @@ fn directResolve(self, source) {
     <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
         ## We found a prefab info file. Read it!
         note("=== info \%q(source)");
-        def infoText = $Io0::readFileUtf8(infoPath);
-        def infoTree = $Lang0::parseExpression(infoText);
-        def info = $Code::eval($Globals::fullEnvironment(), infoTree);
+        def info = $Reader::readEvalExpression0(infoPath);
         <> {info}
     } else if (($Io0::fileType(dirPath) | "notFound") == "directory") {
         ## We found a source directory for a module. Make an internal resolver
