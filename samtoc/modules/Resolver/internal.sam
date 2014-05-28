@@ -36,13 +36,13 @@ fn directResolve(self, source) {
     <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
         ## We found a prefab info file. Read it!
         def info = $Reader::readEvalExpression0(infoPath);
-        <> {info}
+        <> @module{info}
     } else if (($Io0::fileType(sourcePath) | "notFound") == "file") {
         ## We found a source file. Read it and resolve!
         fn resolveFn(source) { <> self.resolve(source) };
         def tree = $Reader::readProgram(sourcePath, resolveFn);
         def info = $Lang0Node::makeInfoMap(tree);
-        <> {info}
+        <> @module{info}
     }
 };
 
