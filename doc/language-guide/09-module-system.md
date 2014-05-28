@@ -331,16 +331,16 @@ depends only upon immutable data as input.
   main.sam                   application's main file
   appHelp.sam                internal module for the applicaton itself
   modules/
-    Blort/                   application's `Blort` module
+    Blort/                   application's captive `Blort` module
       main.sam
       darkness.sam           internal module file for `Blort` module
-    Frotz/                   application's `Frotz` module
+    Frotz/                   application's captive `Frotz` module
       main.sam
       modules/
-        Fizmo/               private `Fizmo` module used by `Frotz`
+        Fizmo/               `Frotz`'s captive `Fizmo` module
           main.sam
-        Igram/               private `Igram` module used by `Frotz`
-          main.same
+        Igram/               `Frotz`'s captive `Igram` module
+          main.sam
 ```
 
 #### Top-level variable environment in a module
