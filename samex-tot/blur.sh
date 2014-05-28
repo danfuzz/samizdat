@@ -118,6 +118,7 @@ samtocCmdStart="$(quote \
     "${OUT}/final/bin/samtoc" \
     --in-dir="../samlib-naif" \
     --out-dir="${INTERMED}" \
+    --dir-selection \
     --mode=interp-tree \
     --
 )"
@@ -126,7 +127,7 @@ rule body \
     "${groups[@]}" \
     -- \
     --cmd='printf "Will compile: %s\n" "${VALUES[@]}"' \
-    --cmd="${samtocCmdStart}"' "${VALUES[@]}"'
+    --cmd="${samtocCmdStart}"' . "${VALUES[@]}"'
 
 # Rules to compile each C source file.
 
