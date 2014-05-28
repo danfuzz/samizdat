@@ -33,7 +33,7 @@ init-prog
 # Output file name.
 outputFile=''
 
-# Did we get `--core-dir`?
+# Did we get `--core-dir` or `--no-core-dir`?
 gotCoreDir=0
 
 # Did we get `--out-dir`?
@@ -56,7 +56,7 @@ while [[ $1 != '' ]]; do
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--runtime=<name>] [--in-dir=<dir>]"
         echo "    [--out-dir=<dir> | --output=<path>] [--binary]"
-        echo "    [--mode=<mode>] [--core-dir=<dir>]"
+        echo "    [--mode=<mode>] [--core-dir=<dir> | --no-core-dir]"
         echo "    [--external-dirs=<dir>:<dir>...]"
         echo "    [--internal-dir=<dir>] [--dir-selection]"
         echo "    <source-path> ..."
@@ -71,6 +71,8 @@ while [[ $1 != '' ]]; do
         moreArgs+=("${opt}")
     elif [[ ${opt} =~ ^--core-dir= ]]; then
         moreArgs+=("${opt}")
+        gotCoreDir=1
+    elif [[ ${opt} == --no-core-dir ]]; then
         gotCoreDir=1
     elif [[ ${opt} =~ ^--out-dir= ]]; then
         moreArgs+=("${opt}")

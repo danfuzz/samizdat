@@ -21,14 +21,17 @@ to process and takes the following options:
 * `--binary` &mdash; Compile all the way to a `.samb` binary addon library.
   This is only valid if a single source file is specified.
 
-* `--core-dir=<dir-name>` &mdash; Indicate where to find the core library.
-  This is what is searched when asked to import / resolve a module which is
-  otherwise not found. This directory should be the "single module" directory
-  of a core library. See below for details; e.g. it should point at
-  `.../corelib` and *not* `.../corelib/modules`.
+* `--core-dir=<dir-name>`, `--no-core-dir` &mdash; Indicates where to find the
+  core library. This is what is searched when asked to import / resolve a
+  module which is otherwise not found. This directory should be the "single
+  module" directory of a core library. See below for details; e.g. it should
+  point at `.../corelib` and *not* `.../corelib/modules`.
 
-  If not provided, this defaults to an appropriate directory for the
-  runtime being compiled for.
+  If `--no-core-dir` is specified, this suppresses any setting of the core
+  library directory.
+
+  If neither option is provided, this defaults to an appropriate directory for
+  the runtime being compiled for.
 
 * `--dir-selection` &mdash; Indicates that the file arguments take the form
   of (first argument) a directory whose contents are to be compiled, followed
