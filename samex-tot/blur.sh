@@ -25,9 +25,28 @@ FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 
-# This skips top-level `boot` file and the `EntityMap` module. The latter is
-# because it its hugeness makes for a slow `samtoc` run, and compiling it
-# doesn't really speed it up anyway.
+# Names of all the modules defined in the core library.
+MODULE_NAMES=(
+    $(
+        cd ../samlib-naif/modules
+        find . \
+            -depth 1 \
+            '(' \
+                '(' -type d -print ')' -o \
+                '(' -type f -name '*.saminfo' -print ')' \
+            ')' \
+        | awk '
+        {
+            name = substr($0, 3);
+            if (match(name, /\.saminfo$/)) {
+                name = substr(1, length(name) - 8);
+            }
+            print name;
+        }'
+    ))
+
+# This skips the `EntityMap` module, because its hugeness makes for a slow
+# `samtoc` run, and compiling it doesn't really speed it up anyway.
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
@@ -151,6 +170,11 @@ for file in "${SOURCE_FILES[@]}"; do
         --cmd="$(quote "${FINAL_BIN}/compile-samex-addon" \
             --runtime=naif --output="${outFile}" "${inFile}")"
 done
+
+# Similar to the C compilation rules above, this set of rules arranges for
+# linkage metainfo to be produced.
+#
+# TODO: Write this!
 
 # Default build rules
 
