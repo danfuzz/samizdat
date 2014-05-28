@@ -12,11 +12,11 @@ import @utf8 ./template.txt;
 
 import CodeGen;
 import DataCode;
+import Reader;
 import Resolver :: resolve;
 import Template;
 
 import core.Io0;
-import core.Lang2;
 
 
 ## Compiles a single file.
@@ -25,8 +25,7 @@ export fn compile(resolver, sourcePath, targetPath) {
         <> resolver.resolve(source)
     };
 
-    def sourceText = $Io0::readFileUtf8(sourcePath);
-    def tree = $Lang2::simplify($Lang2::parseProgram(sourceText), resolveFn);
+    def tree = $Reader::readProgram(sourcePath, resolveFn);
     def source = $CodeGen::indent($DataCode::convert(tree), 2, 78);
     def outputText = $Template::apply($template, {source});
 

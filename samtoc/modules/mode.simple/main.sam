@@ -17,6 +17,7 @@ import CodeGen ::
     makeStatement;
 
 import DataCode;
+import Reader;
 import Resolver :: resolve;
 import Template;
 import VarCalc :: get_varRefs;
@@ -37,7 +38,6 @@ import core.Lang0Node ::
     withDynamicImports;
 
 import core.Io0;
-import core.Lang2;
 
 import ./collectClosures :: collectClosures;
 import ./internLiterals :: internLiterals;
@@ -183,12 +183,10 @@ export fn compile(resolver, sourcePath, targetPath) {
         <> resolver.resolve(source)
     };
 
-    def sourceText = $Io0::readFileUtf8(sourcePath);
-
-    ## Note: The node resulting from a call to `parseProgram` is always of
+    ## Note: The node resulting from a call to `readProgram` is always of
     ## type `closure`.
-    def mainNode = withDynamicImports(
-        $Lang2::simplify($Lang2::parseProgram(sourceText), resolveFn));
+    def sourceTree = $Reader::readProgram(sourcePath, resolveFn);
+    def mainNode = withDynamicImports(sourceTree);
 
     def interner = makeInterner();
     def litsNode = internLiterals(mainNode, interner);
