@@ -533,7 +533,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         if (resolved == NULL) {
             die("Could not resolve `import*`.");
         } else if (!hasType(resolved, TYPE_module)) {
-            die("Invalid resolution result (not a `@@module`)");
+            die("Invalid resolution result (not a `@module`)");
         }
     }
 
