@@ -118,6 +118,7 @@ samtocCmdStart="$(quote \
     "${OUT}/final/bin/samtoc" \
     --in-dir="../samlib-naif" \
     --out-dir="${INTERMED}" \
+    --no-core-dir \
     --dir-selection \
     --mode=interp-tree \
     --
