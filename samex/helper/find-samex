@@ -95,7 +95,7 @@ case "${output}" in
         echo "${baseDir}/lib/${found}/${binName}"
         ;;
     (core)
-        echo "${baseDir}/lib/${found}/corelib/modules"
+        echo "${baseDir}/lib/${found}/corelib"
         ;;
     (include)
         echo "${baseDir}/include/${found}"
