@@ -101,7 +101,8 @@ fn doDirectory(args, sourcePath) {
 
         if (def compileModule = args::modeModule::compileModule) {
             ## The mode wants to handle whole-module compilation itself.
-            def outputPath = getOutputPath(sourcePath, args);
+            ## The `.x` is to give `getOutputPath` a suffix to remove.
+            def outputPath = getOutputPath("\(sourcePath).x", args);
             note("    -> \(outputPath)");
             compileModule(args::resolver, sourcePath, outputPath);
             return
