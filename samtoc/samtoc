@@ -33,6 +33,9 @@ init-prog
 # Output file name.
 outputFile=''
 
+# Did we get `--core-dir`?
+gotCoreDir=0
+
 # Did we get `--out-dir`?
 gotOutDir=0
 
@@ -53,7 +56,8 @@ while [[ $1 != '' ]]; do
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--runtime=<name>] [--in-dir=<dir>]"
         echo "    [--out-dir=<dir> | --output=<path>] [--binary]"
-        echo "    [--mode=<mode>] [--external-dirs=<dir>:<dir>...]"
+        echo "    [--mode=<mode>] [--core-dir=<dir>]"
+        echo "    [--external-dirs=<dir>:<dir>...]"
         echo "    [--internal-dir=<dir>] [--dir-selection]"
         echo "    <source-path> ..."
         exit
@@ -65,6 +69,9 @@ while [[ $1 != '' ]]; do
             || ${opt} =~ ^--internal-dir=
             || ${opt} == --dir-selection ]]; then
         moreArgs+=("${opt}")
+    elif [[ ${opt} =~ ^--core-dir= ]]; then
+        moreArgs+=("${opt}")
+        gotCoreDir=1
     elif [[ ${opt} =~ ^--out-dir= ]]; then
         moreArgs+=("${opt}")
         gotOutDir=1
@@ -113,6 +120,15 @@ fi
 #
 # Main script
 #
+
+if (( !gotCoreDir )); then
+    # No `--core-dir` specified, so determine and use the default.
+    coreDir="$("${baseDir}/helper/find-samex" --core)"
+    if [[ $? != 0 ]]; then
+        exit 1
+    fi
+    moreArgs+=("--core-dir=${coreDir}")
+fi
 
 if (( fullCompile )); then
     compiledFile="${outputFile}"

@@ -27,7 +27,7 @@ FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
 # Used for linking.
-SAMLIB_MODULES_DIR="${BASE_DIR}/samlib-naif/modules"
+SAMLIB_CORE_DIR="${BASE_DIR}/samlib-naif"
 
 SOURCE_FILES=($(find . -type f -name '*.sam'))
 EXTRA_FILES=($(find modules -type f '!' -name '*.sam'))
@@ -92,7 +92,7 @@ samtocCmdStart+=" $(quote \
     --out-dir="${INTERMED}" \
     --mode=interp-tree \
     --dir-selection \
-    --external-dirs="${SAMLIB_MODULES_DIR}")"
+    --core-dir="${SAMLIB_CORE_DIR}")"
 
 rule body \
     "${groups[@]}" \

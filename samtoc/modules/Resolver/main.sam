@@ -46,9 +46,9 @@ fn splitPaths(paths) {
 ## Makes a chain of external resolvers corresponding to the given `paths`
 ## string. `paths` must be a colon-separated list of `modules`-style
 ## directories.
-export fn makeResolverChain(paths) {
+export fn makeResolverChain(paths, next) {
     def pathList = splitPaths(paths);
-    var result = null;
+    var result = next;
 
     for (one in pathList) {
         result := makeExternalResolver(one, result)

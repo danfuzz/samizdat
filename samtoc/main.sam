@@ -198,9 +198,12 @@ export fn main(selfPath, rawArgs*) {
         }();
     def modeModule = loadModule(@external("mode.\(modeName)"));
 
-    def externalResolver = (def dirs = args::options::"external-dirs")
-        & $Resolver::makeResolverChain(dirs)
+    def topResolver = (def coreDir = args::options::"core-dir")
+        & $Resolver::makeExternalResolver("\(coreDir)/modules", null)
         | null;
+    def externalResolver = (def dirs = args::options::"external-dirs")
+        & $Resolver::makeResolverChain(dirs, topResolver)
+        | topResolver;
     def resolver = (def dir = args::options::"internal-dir")
         & $Resolver::makeInternalResolver(dir, externalResolver)
         | externalResolver;
