@@ -95,7 +95,14 @@ case "${output}" in
         echo "${baseDir}/lib/${found}/${binName}"
         ;;
     (core)
-        echo "${baseDir}/include/${found}/modules"
+        result="${baseDir}/include/${found}"
+        if [[ -d "${result}/modules" ]]; then
+            echo "${result}"
+        else
+            # No generated metainfo. Assume it's fully interpreted, and
+            # point at the source.
+            echo "${baseDir}/lib/${found}/corelib"
+        fi
         ;;
     (include)
         echo "${baseDir}/include/${found}"

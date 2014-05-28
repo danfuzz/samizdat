@@ -24,8 +24,10 @@ to process and takes the following options:
 * `--core-dir=<dir-name>`, `--no-core-dir` &mdash; Indicates where to find the
   core library. This is what is searched when asked to import / resolve a
   module which is otherwise not found. This directory should be the "single
-  module" directory of a core library. See below for details; e.g. it should
-  point at `.../corelib` and *not* `.../corelib/modules`.
+  module" directory of a core library or the `include` directory of a
+  distribution. See below for details; e.g. it should point at
+  `.../corelib` or `.../include/name` and *not* `.../corelib/modules` or
+  `.../include/name/modules`.
 
   If `--no-core-dir` is specified, this suppresses any setting of the core
   library directory.
