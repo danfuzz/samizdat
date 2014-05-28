@@ -45,13 +45,11 @@ MODULE_NAMES=(
         }'
     ))
 
-# This skips the `EntityMap` module, because its hugeness makes for a slow
-# `samtoc` run, and compiling it doesn't really speed it up anyway.
+# Names of all the source files in the core library.
 SOURCE_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
-        '(' '!' -path '*/core.EntityMap/*' ')' \
-        '(' -name '*.sam' ')' \
+        -name '*.sam' \
         -print
     ))
 
@@ -61,10 +59,7 @@ SOURCE_FILES=(
 EXTRA_FILES=(
     $(cd ../samlib-naif; find . \
         -type f \
-        '(' \
-            '(' -path '*/core.EntityMap/*' ')' -o \
-            '(' '!' -name '*.sam' ')' \
-        ')' \
+        '(' '!' -name '*.sam' ')' \
         -print
     ))
 
