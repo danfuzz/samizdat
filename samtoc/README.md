@@ -21,6 +21,15 @@ to process and takes the following options:
 * `--binary` &mdash; Compile all the way to a `.samb` binary addon library.
   This is only valid if a single source file is specified.
 
+* `--core-dir=<dir-name>` &mdash; Indicate where to find the core library.
+  This is what is searched when asked to import / resolve a module which is
+  otherwise not found. This directory should be the "single module" directory
+  of a core library. See below for details; e.g. it should point at
+  `.../corelib` and *not* `.../corelib/modules`.
+
+  If not provided, this defaults to an appropriate directory for the
+  runtime being compiled for.
+
 * `--dir-selection` &mdash; Indicates that the file arguments take the form
   of (first argument) a directory whose contents are to be compiled, followed
   by (rest of the arguments) any number of files under the directory. Only
@@ -33,7 +42,8 @@ to process and takes the following options:
 
 * `--external-dirs=<dir-name>:<dir-name>...` &mdash; Indicate what directories
   should be searched within when looking for external module linkage
-  metainformation.
+  metainformation. These are searched after any captive modules directories
+  and before the core library directory.
 
   Each listed directory should contain within it subdirectories each of which
   defines a module (with the subdirectory name as the module name), and/or
