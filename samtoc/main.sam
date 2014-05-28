@@ -113,9 +113,7 @@ fn doDirectory(args, sourcePath) {
         ## handle the main implementation files.
         def captiveDir = "\(sourcePath)/modules";
         def captiveResolver =
-            (($Io0::fileType(captiveDir) | "notFound") == "directory")
-            & $Resolver::makeExternalResolver(captiveDir, resolver)
-            | resolver;
+            $Resolver::makeExternalResolver(captiveDir, resolver);
 
         if (resolver != captiveResolver) {
             ## There's a captive `modules` directory. Iterate over its
