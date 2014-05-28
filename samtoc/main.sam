@@ -100,26 +100,26 @@ fn doDirectory(args, sourcePath) {
         ## implementation. First handle a "captive" `modules` directory
         ## (if any), then handle the main implementation files.
         def captiveDir = "\(sourcePath)/modules";
-        def subResolver =
+        def captiveResolver =
             (($Io0::fileType(captiveDir) | "notFound") == "directory")
             & $Resolver::makeExternalResolver(captiveDir, resolver)
             | resolver;
 
-        if (resolver != subResolver) {
+        if (resolver != captiveResolver) {
             ## There's a captive `modules` directory. Iterate over its
             ## subdirectories.
-            def subArgs = {args*, resolver: subResolver};
+            def captiveArgs = {args*, resolver: captiveResolver};
             def files = $Io0::readDirectory(captiveDir);
             for (one in files) {
                 if (one.value == "directory") {
                     def path = "\(captiveDir)/\(one.key)";
-                    doDirectory(subArgs, path)
+                    doDirectory(captiveArgs, path)
                 }
             }
         };
 
         def internalResolver =
-            $Resolver::makeInternalResolver(sourcePath, subResolver);
+            $Resolver::makeInternalResolver(sourcePath, captiveResolver);
         def internalArgs = {args*, resolver: internalResolver};
 
         ## Helper to process an internal directory (including the top-level
@@ -144,9 +144,9 @@ fn doDirectory(args, sourcePath) {
         ## No `main.sam`. Treat it as a `modules` directory. Make an external
         ## resolver for the given directory, and recursively process all
         ## subdirectories.
-        def subResolver =
+        def externalResolver =
             $Resolver::makeExternalResolver(sourcePath, resolver);
-        def subArgs = {args*, resolver: subResolver};
+        def subArgs = {args*, resolver: externalResolver};
         def files = $Io0::readDirectory(sourcePath);
         for (one in files) {
             if (one.value == "directory") {
