@@ -77,6 +77,8 @@ expected to be in one of two forms:
   * Zero or more helper internal sources, as siblings with `main.sam` or
     under arbitrary subdirectories.
   * An optional `modules` directory (in a form per the next bullet item).
+    These are the "captive" external modules of the indicated single
+    module.
 
 * A `modules` directory, consisting of one or more directories that name
   external modules. Each such directory should take the form of a

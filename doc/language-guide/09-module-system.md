@@ -255,14 +255,17 @@ case where `ModA` is a library module, then the other modules of the
 library are its "sibling" modules.
 
 The first step in loading `ModB` is to look at the modules defined
-by `ModA`, per se. That is, `ModA` may itself contain a module library.
-In terms of directory hierarchy, if `ModA` is in `/x/y/modules/ModA`, then the
-system will look for `/x/y/modules/ModA/modules/ModB`.
+by `ModA`, per se. That is, `ModA` may itself contain a module library; this
+is `ModA`'s "captive" module library, in that the library is not visible
+beyond the definition of `ModA`. In terms of directory hierarchy, if `ModA` is
+in `/x/y/modules/ModA`, then the system will look for a captive module in
+`/x/y/modules/ModA/modules/ModB`.
 
-If `ModA` doesn't define `ModB` directly, then the system will look
-for a sibling definition of `ModB` if applicable (that is, if `ModA` is
-part of a library). In terms of directory hierarchy, if `ModA` is in
-`/x/y/modules/ModA`, then the system will look for `/x/y/modules/ModB`.
+If `ModA` doesn't define `ModB` directly as a captive module, then the system
+will look for a sibling definition of `ModB` if applicable (that is, if
+`ModA` is part of a library). In terms of directory hierarchy, if `ModA` is in
+`/x/y/modules/ModA`, then the system will look for a sibling module
+in `/x/y/modules/ModB`.
 
 If the sibling search fails (or wasn't applicable), then the next loader
 to be checked is the one which was "in scope" when `ModA`'s module loader was
@@ -305,10 +308,11 @@ of *one* module, and (b) a reference to the "next" loader to use (said next
 loader typically being an `ExternalLoader`). When instantiated,
 `InternalLoader` makes a `ExternalLoader` which points to a `modules`
 directory under its given filesystem path, and that `ExternalLoader` is the
-one that's used directly by the `InternalLoader` implementation. The
-`InternalLoader`'s filesystem path is used directly for module-internal files.
-`InternalLoader` defines a `resolve` method, which handles internal sources
-directly and defers to its "next" loader for all other requests.
+one that's used directly by the `InternalLoader` implementation to find
+captive external modules. The `InternalLoader`'s filesystem path is used
+directly for module-internal files. `InternalLoader` defines a `resolve`
+method, which handles internal sources directly and defers to its "next"
+loader for all other requests.
 
 The core library is loaded as an `InternalLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.
