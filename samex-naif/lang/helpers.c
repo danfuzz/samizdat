@@ -608,7 +608,7 @@ zvalue withModuleDefs(zvalue node) {
                 listFrom2(makeLiteral(name), makeVarRef(name))));
     }
 
-    zvalue yieldExports = (get_size(exportValues) == 0)
+    zvalue yieldExports = (exSize == 0)
         ? makeLiteral(EMPTY_MAP)
         : makeCall(REFS(cat), exportValues);
     zvalue yieldInfo = makeLiteral(info);
