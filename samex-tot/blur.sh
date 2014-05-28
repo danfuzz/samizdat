@@ -169,4 +169,4 @@ rule body \
 rule rm \
     --id=clean \
     -- \
-    "${FINAL_LIB}" "${FINAL_INCLUDE}"
+    "${INTERMED}" "${FINAL_LIB}" "${FINAL_INCLUDE}"
