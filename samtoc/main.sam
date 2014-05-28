@@ -97,8 +97,20 @@ fn doDirectory(args, sourcePath) {
 
     if (($Io0::fileType("\(sourcePath)/main.sam") | "notFound") == "file") {
         ## There's a `main.sam` in the directory. Treat it as a module
-        ## implementation. First handle a "captive" `modules` directory
-        ## (if any), then handle the main implementation files.
+        ## implementation.
+
+        if (def compileModule = args::modeModule::compileModule) {
+            ## The mode wants to handle whole-module compilation itself.
+            def outputPath = getOutputPath(sourcePath, args);
+            note("    -> \(outputPath)");
+            compileModule(args::resolver, sourcePath, outputPath);
+            return
+        };
+
+        ## No dedicated whole-module compiler for the mode...
+
+        ## First handle a "captive" `modules` directory (if any), then
+        ## handle the main implementation files.
         def captiveDir = "\(sourcePath)/modules";
         def captiveResolver =
             (($Io0::fileType(captiveDir) | "notFound") == "directory")

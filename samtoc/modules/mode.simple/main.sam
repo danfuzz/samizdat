@@ -177,6 +177,7 @@ fn mainClosureMaker(node, interner) {
     <> stat.usualIndent(1)
 };
 
+## Compiles a single file.
 export fn compile(resolver, sourcePath, targetPath) {
     fn resolveFn(source) {
         <> resolver.resolve(source)

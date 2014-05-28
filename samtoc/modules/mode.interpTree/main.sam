@@ -19,6 +19,7 @@ import core.Io0;
 import core.Lang2;
 
 
+## Compiles a single file.
 export fn compile(resolver, sourcePath, targetPath) {
     fn resolveFn(source) {
         <> resolver.resolve(source)

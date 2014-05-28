@@ -16,6 +16,7 @@ import core.Io0;
 import core.Lang0Node;
 import core.Lang2;
 
+## Compiles a single file.
 export fn compile(resolver, sourcePath, targetPath) {
     ## Note: We *don't* call `simplify` on the parsed program tree, as that
     ## would erase salient info about the exports.
@@ -27,6 +28,11 @@ export fn compile(resolver, sourcePath, targetPath) {
     def outputText = $Template::apply($template, {info});
 
     $Io0::writeFileUtf8(targetPath, outputText)
+};
+
+## Compiles a module en masse. `sourcePath` is a directory.
+export fn compileModule(resolver, sourcePath, targetPath) {
+    note("=== Would compile whole module: \%q(sourcePath)");
 };
 
 export def SUFFIX = "saminfo";
