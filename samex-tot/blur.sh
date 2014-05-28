@@ -41,7 +41,7 @@ MODULE_NAMES=(
         {
             name = substr($0, 3);
             if (match(name, /\.saminfo$/)) {
-                name = substr(1, length(name) - 8);
+                name = substr(name, 1, length(name) - 8);
             }
             print name;
         }'
@@ -170,8 +170,6 @@ done
 
 # Similar to the C compilation rules above, this set of rules arranges for
 # linkage metainfo to be produced.
-#
-# TODO: Write this!
 
 inDir="${LIB_SOURCE_DIR}/modules"
 outDir="${FINAL_INCLUDE}/modules"
