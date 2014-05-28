@@ -45,7 +45,8 @@ export fn .resolveImport(resolveFn);
 ## Documented in spec.
 fn @@importModule.resolveImport(resolveFn) {
     ## No need to modify, just validate.
-    ifNot { <> resolveFn(get_source(this)) }
+    def source = get_source(this);
+    ifNot { <> resolveFn(source) }
         {
             die(cat(
                 "Could not resolve module import: ",
@@ -59,7 +60,8 @@ fn @@importModule.resolveImport(resolveFn) {
 fn @@importModuleSelection.resolveImport(resolveFn) {
     ## May need to grab the resolved innards, so keep the resolved value
     ## (unlike the other related functions).
-    def resolved = ifValueOr { <> resolveFn(get_source(this)) }
+    def source = get_source(this);
+    def resolved = ifValueOr { <> resolveFn(source) }
         {
             die(cat(
                 "Could not resolve module selection import:",
