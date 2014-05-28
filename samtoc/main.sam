@@ -42,12 +42,18 @@ fn isSourceName(name) {
         & name
 };
 
+## Gets the full source path for the given `rawPath`. This takes care of
+## prepending the specified `--in-dir`, if any.
 fn getSourcePath(rawPath, args) {
     return (def inDir = args::options::"in-dir")
         & "\(inDir)/\(rawPath)"
         | rawPath;
 };
 
+## Gets the full output path for thte given `rawPath`. If `--output` was
+## specified, this function just returns that. Otherwise, this replaces
+## the file suffix as defined by the processing mode, and prepends the
+## specified `--out-dir`, if any.
 fn getOutputPath(rawPath, args) {
     if (def output = args::options::output) {
         return output
@@ -63,6 +69,7 @@ fn getOutputPath(rawPath, args) {
     return "\(dir)/\(baseName).\(suffix)"
 };
 
+## Handles processing of a single file (regular file, not a directory).
 fn doFile(args, sourceName, sourcePath) {
     if (def selection = args::selection) {
         if (!selection[sourcePath]) {
@@ -77,7 +84,7 @@ fn doFile(args, sourceName, sourcePath) {
     args::modeModule::compile(args::resolver, sourcePath, outputPath)
 };
 
-## Handles processing of directories.
+## Handles processing of of a single directory.
 fn doDirectory(args, sourcePath) {
     def resolver = args::resolver;
 
@@ -203,14 +210,16 @@ export fn main(selfPath, rawArgs*) {
     ## Figure out the sources and selection.
     def sourcesAndSelection = if (args::options::"dir-selection") {
         def files = args::args;
-        if (#args::args < 2) {
+        if (#files < 2) {
             note("No selection specified.");
             return 1
         };
 
+        def selection = ( f in files[1..] <> getSourcePath(f, args) );
+
         <> {
             sources: [files[0]],
-            selection: {files[1..]*: true}
+            selection: {selection*: true}
         }
     } else {
         <> {sources: args::args}
