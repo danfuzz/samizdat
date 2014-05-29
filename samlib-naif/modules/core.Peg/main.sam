@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import core.Box;
+import core.Box :: makePromise, nullBox;
 import core.Generator;
 import core.Sequence;
 
@@ -40,7 +40,7 @@ fn @@PegAny.parse(box, input, .*) {
 ## Documented in spec.
 fn @@PegChoice.parse(box, input, items*) {
     $Generator::filterPump(dataOf(this)) { rule ->
-        def innerBox = $Box::makePromise();
+        def innerBox = makePromise();
         ifValue { <> parse(rule, innerBox, input, items*) }
             { newInput ->
                 store(box, fetch(innerBox));
@@ -64,7 +64,7 @@ fn @@PegCode.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegEof.parse(box, input, .*) {
-    <> ifIs { <> nextValue(input, $Box::nullBox) }
+    <> ifIs { <> nextValue(input, nullBox) }
         { store(box) }
         {
             store(box, null);
@@ -79,7 +79,7 @@ fn @@PegFail.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegLookaheadFailure.parse(box, input, items*) {
-    <> ifIs { <> parse(dataOf(this), $Box::nullBox, input, items*) }
+    <> ifIs { <> parse(dataOf(this), nullBox, input, items*) }
         { store(box) }
         {
             store(box, null);
@@ -101,7 +101,7 @@ fn @@PegMain.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegOpt.parse(box, input, items*) {
-    def innerBox = $Box::makePromise();
+    def innerBox = makePromise();
     <> ifValue { <> parse(dataOf(this), innerBox, input, items*) }
         { newInput ->
             store(box, [fetch(innerBox)]);
@@ -120,7 +120,7 @@ fn @@PegRepeat.parse(box, input, items*) {
     var results = []; ## Values that have been parsed by the inner rule.
 
     loop {
-        def innerBox = $Box::makePromise();
+        def innerBox = makePromise();
         ifValue { <> parse(rule, innerBox, remainingInput, items*) }
             { newInput ->
                 ## Successfully parsed the inner rule.
@@ -160,7 +160,7 @@ fn @@PegSequence.parse(box, input, items*) {
 
     ## This is akin to `for (rule in dataOf(this)) { ... }`.
     $Generator::filterPump(dataOf(this)) { rule ->
-        def innerBox = $Box::makePromise();
+        def innerBox = makePromise();
         ifValue { <> parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
@@ -185,7 +185,7 @@ fn @@PegThunk.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegTokenSet.parse(box, input, items*) {
-    def innerBox = $Box::makePromise();
+    def innerBox = makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
@@ -203,7 +203,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegTokenSetComplement.parse(box, input, items*) {
-    def innerBox = $Box::makePromise();
+    def innerBox = makePromise();
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
@@ -393,7 +393,7 @@ export fn makeTokenSetComplement(tokens*) {
 
 ## Documented in spec.
 export fn apply(rule, input) {
-    def box = $Box::makePromise();
+    def box = makePromise();
     def generator = ifIs { <> hasType(input, String) }
         {
             ## This converts generated characters into tokens with the
