@@ -429,7 +429,7 @@ fn doInternalResolve(loader, source) {
                 { die(cat("No result from module: ", sourcePath)) }
         };
 
-    die(cat("Missing code: ", sourcePath));
+    die("Missing code: ", sourcePath);
 };
 
 ## `readResource` implementation for format `type`.
@@ -610,5 +610,5 @@ export fn runFile(path, loader, args*) {
     ifIs { <> eq(suffix, "samb") }
         { return runBinaryFile(path, loader, args) };
 
-    die(cat("Unknown file name suffix: ", suffix))
+    die("Unknown file name suffix: ", suffix)
 };

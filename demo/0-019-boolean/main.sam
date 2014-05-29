@@ -19,7 +19,7 @@ fn expect(name, result, func, args*) {
     ifNot { <> eq(got, result) }
         {
             note("Unexpected result: ", $Format::source(got));
-            die(cat("For: ", name, " ", $Format::source(args)));
+            die("For: ", name, " ", $Format::source(args));
         }
 };
 
