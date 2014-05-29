@@ -150,9 +150,6 @@ pot_quaff(pot_blort);
 pot_quaff(pot_frotz);
 ```
 
-TODO: The syntax for wildcard `import` is complete, but there is no semantic
-implementation, yet. (Other forms of selection import work as advertised.)
-
 #### Resource import
 
 Resources are arbitrary files that are bundled with a module. Resources
