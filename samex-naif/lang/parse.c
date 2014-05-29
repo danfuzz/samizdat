@@ -588,7 +588,7 @@ DEF_PARSE(unaryExpression) {
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
-            result = makeOptValue(result);
+            result = makeMaybeValue(result);
         } else if (hasType(one, TYPE_literal)) {
             result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {

@@ -517,7 +517,7 @@ zvalue makeVarRef(zvalue name) {
 }
 
 /* Documented in spec. */
-zvalue makeOptValue(zvalue expression) {
+zvalue makeMaybeValue(zvalue expression) {
     return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
 }
 
