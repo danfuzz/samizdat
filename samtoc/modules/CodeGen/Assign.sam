@@ -6,8 +6,8 @@
 ## Variable assignment tree.
 ##
 
-import ./indentation :: indentation;
-import ./protocol :: flatten, indent;
+import ./indentation :: *;
+import ./protocol :: *;
 
 
 ##
