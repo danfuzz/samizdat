@@ -1,0 +1,23 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#= language core.Lang0
+
+import proto.Number :: add;
+
+
+##
+## Exported Definitions
+##
+
+## `value.rangeAdd(amount)` generic, used to increment ints and chars.
+export fn .rangeAdd(amount);
+
+fn Int.rangeAdd(amount) {
+    <> add(this, amount)
+};
+
+fn String.rangeAdd(amount) {
+    <> toString(add(toInt(this), amount))
+};

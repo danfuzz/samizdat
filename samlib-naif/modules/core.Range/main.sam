@@ -10,28 +10,10 @@
 
 #= language core.Lang0
 
+import core.Generator :: nullGenerator, stdCollect, unboundedCollect;
 import proto.Number;
 
-import core.Generator ::
-    nullGenerator,
-    stdCollect,
-    unboundedCollect;
-
-
-##
-## Private Definitions
-##
-
-## `value.rangeAdd(increment)` generic, used to increment ints and chars.
-fn .rangeAdd(increment);
-
-fn Int.rangeAdd(increment) {
-    <> $Number::add(this, increment)
-};
-
-fn String.rangeAdd(increment) {
-    <> toString($Number::add(toInt(this), increment))
-};
+import ./rangeAdd :: *;
 
 
 ##
