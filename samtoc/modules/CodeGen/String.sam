@@ -6,8 +6,13 @@
 ## Protocol bindings for type String.
 ##
 
-import ./indentation :: indentation;
-import ./protocol :: flatten, indent;
+import ./indentation :: *;
+import ./protocol :: *;
+
+
+##
+## Exported definitions
+##
 
 fn String.flatten() {
     <> this

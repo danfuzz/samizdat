@@ -8,7 +8,7 @@
 ## interpreter (hence the name's prefix).
 ##
 
-import @utf8 ./template.txt;
+import core.Io0;
 
 import CodeGen;
 import DataCode;
@@ -16,8 +16,12 @@ import Reader;
 import Resolver :: resolve;
 import Template;
 
-import core.Io0;
+import @utf8 ./template.txt;
 
+
+##
+## Exported definitions
+##
 
 ## Compiles a single file.
 export fn compile(resolver, sourcePath, targetPath) {

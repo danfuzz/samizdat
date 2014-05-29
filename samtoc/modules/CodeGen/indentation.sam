@@ -6,8 +6,17 @@
 ## Indentation helper.
 ##
 
+##
+## Private definitions
+##
+
 ## List of indentation prefixes (index is level of indentation).
 def INDENTATION = [ n in (0..100) <> "\[for n <> "  "]" ];
+
+
+##
+## Exported definitions
+##
 
 export fn indentation(level) {
     <> INDENTATION[level]

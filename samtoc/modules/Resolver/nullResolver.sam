@@ -8,6 +8,11 @@
 
 import ./protocol :: resolve;
 
+
+##
+## Exported definitions
+##
+
 fn @@Null.resolve(source) {
     ## Return `void`, that is, fail to resolve. If we hit this point, then
     ## there is probably something actually wrong (e.g. insufficient entries

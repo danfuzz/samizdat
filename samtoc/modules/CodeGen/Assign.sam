@@ -6,8 +6,13 @@
 ## Variable assignment tree.
 ##
 
-import ./indentation :: indentation;
-import ./protocol :: flatten, indent;
+import ./indentation :: *;
+import ./protocol :: *;
+
+
+##
+## Exported definitions
+##
 
 export fn genAssign(target, value) {
     def flat = "\(target.flatten()) = \(value.flatten())";

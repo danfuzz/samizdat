@@ -6,8 +6,13 @@
 ## Statement tree.
 ##
 
-import ./indentation :: indentation;
-import ./protocol :: flatten, indent;
+import ./indentation :: *;
+import ./protocol :: *;
+
+
+##
+## Exported definitions
+##
 
 export fn genStatement(tree) {
     <> @Statement{tree, flat: "\(tree.flatten());"}

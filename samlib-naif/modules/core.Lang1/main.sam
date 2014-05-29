@@ -16,8 +16,8 @@
 ## This just re-exports stuff defined in module-internal files, as well as
 ## an item from `Lang0`.
 
+export import core.Lang0 :: languageOf;
+
 export import ./parse :: *;
 export import ./simplify :: *;
 export import ./tokenize :: *;
-
-export import core.Lang0 :: languageOf;

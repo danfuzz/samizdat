@@ -10,12 +10,12 @@
 
 #= language core.Lang0
 
+import proto.Number;
+
 import core.Generator ::
     nullGenerator,
     stdCollect,
     unboundedCollect;
-
-import proto.Number;
 
 
 ##

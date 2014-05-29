@@ -8,6 +8,11 @@ import core.Io0;
 
 import Resolver;
 
+
+##
+## Private definitions
+##
+
 ## Default mode to use.
 def DEFAULT_MODE = "simple";
 
@@ -198,6 +203,11 @@ fn doOne(args, sourcePath) {
         }
     }
 };
+
+
+##
+## Exported definitions
+##
 
 export fn main(selfPath, rawArgs*) {
     note("\n\

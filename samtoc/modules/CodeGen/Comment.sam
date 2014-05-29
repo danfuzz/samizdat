@@ -6,8 +6,13 @@
 ## Comment tree.
 ##
 
-import ./indentation :: indentation;
-import ./protocol :: flatten, indent;
+import ./indentation :: *;
+import ./protocol :: *;
+
+
+##
+## Exported definitions
+##
 
 export fn genComment(text, optPayload?) {
     <> if (def payload = optPayload*) {

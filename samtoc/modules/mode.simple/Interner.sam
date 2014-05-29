@@ -3,6 +3,10 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 
+##
+## Exported definitions
+##
+
 export fn makeInterner() {
     <> @Interner{values: $Box::makeCell({})}
 };

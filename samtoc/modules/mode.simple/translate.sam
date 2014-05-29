@@ -6,16 +6,25 @@
 ## Translate execution trees into corresponding C code.
 ##
 
+import core.Lang0Node :: *;
+
 import CodeGen :: *;
 import VarCalc :: get_varRefs;
 
-import core.Lang0Node :: *;
-
 import ./vars :: localVarDecl, localVarName;
+
+
+##
+## Exported generics
+##
 
 ## `node.translate(varsBox)`: Generic function to perform the translation.
 export fn .translate(varsBox);
 
+
+##
+## Private definitions
+##
 
 ## Common translation code for variable definition.
 fn varDefCommon(name, value, varsBox) {
@@ -63,19 +72,19 @@ fn @@closureRef.translate(varsBox) {
 fn @@importModule.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("TODO: importModule.translate");
+    die("Cannot translate `@importModule`.");
 };
 
 fn @@importModuleSelection.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("TODO: importModuleSelection.translate");
+    die("Cannot translate `@importModuleSelection`.");
 };
 
 fn @@importResource.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("TODO: importResource.translate");
+    die("Cannot translate `@importResource`.");
 };
 
 fn @@jump.translate(varsBox) {

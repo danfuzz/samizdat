@@ -6,8 +6,13 @@
 ## Return tree.
 ##
 
-import ./indentation :: indentation;
-import ./protocol :: flatten, indent;
+import ./indentation :: *;
+import ./protocol :: *;
+
+
+##
+## Exported definitions
+##
 
 export fn genReturn(tree) {
     <> @Return{tree, flat: "return \(tree.flatten())"}

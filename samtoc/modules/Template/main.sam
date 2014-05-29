@@ -6,6 +6,10 @@
 ## Simple template substitution facility
 ##
 
+##
+## Private definitions
+##
+
 def parSubstitution = {:
     format = (
         "%"
@@ -43,6 +47,11 @@ def parItem = {:
 def parTemplate = {:
     parItem*
 :};
+
+
+##
+## Exported definitions
+##
 
 export fn apply(templateString, defs) {
     def items = $Peg::apply(parTemplate, templateString);
