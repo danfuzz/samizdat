@@ -16,7 +16,6 @@ def SOURCE_SUFFIX = ".sam";
 
 ## Map from `--mode` values to module names.
 def MODE_MAP = {
-    "interp-text": "interpText",
     "interp-tree": "interpTree",
     "linkage":     "linkage",
     "simple":      "simple"

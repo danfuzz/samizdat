@@ -106,13 +106,6 @@ Compilation Modes
 `samtoc` implements the following compilation modes (ordered from simplest
 to most complicated):
 
-### `--mode=interp-text`
-
-The result of compilation is the original source text embedded in
-a string in the output. When run, the string is passed to the parser and
-then evaluated in a manner identical to how the file would have been procesed
-had it not been "compiled" at all.
-
 ### `--mode=interp-tree`
 
 The result of compilation is a tree of function calls which reproduces the
