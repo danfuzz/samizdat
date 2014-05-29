@@ -6,16 +6,25 @@
 ## Translate execution trees into corresponding C code.
 ##
 
+import core.Lang0Node :: *;
+
 import CodeGen :: *;
 import VarCalc :: get_varRefs;
 
-import core.Lang0Node :: *;
-
 import ./vars :: localVarDecl, localVarName;
+
+
+##
+## Exported generics
+##
 
 ## `node.translate(varsBox)`: Generic function to perform the translation.
 export fn .translate(varsBox);
 
+
+##
+## Private definitions
+##
 
 ## Common translation code for variable definition.
 fn varDefCommon(name, value, varsBox) {

@@ -7,15 +7,15 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
+import core.Io0;
+import core.Lang0Node :: *;
+
 import CodeGen :: *;
 import DataCode;
 import Reader;
 import Resolver :: resolve;
 import Template;
 import VarCalc :: get_varRefs;
-
-import core.Io0;
-import core.Lang0Node :: *;
 
 import ./collectClosures :: collectClosures;
 import ./internLiterals :: internLiterals;
@@ -29,6 +29,10 @@ import ./Interner ::
 
 import @utf8 ./template.txt;
 
+
+##
+## Private definitions
+##
 
 ## Indent with the usual width column limit.
 fn usualIndent(tree, depth) {
@@ -154,6 +158,11 @@ fn mainClosureMaker(node, interner) {
 
     <> stat.usualIndent(1)
 };
+
+
+##
+## Exported definitions
+##
 
 ## Compiles a single file.
 export fn compile(resolver, sourcePath, targetPath) {

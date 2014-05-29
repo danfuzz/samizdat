@@ -6,14 +6,28 @@ import core.Lang0Node :: *;
 
 import ./get_varDefs :: get_varDefs;
 
+##
+## Exported generics
+##
+
 ## `node.get_varRefs()`: Generic that returns free variable references of
 ## `node`, as list of names.
 export fn .get_varRefs();
+
+
+##
+## Private definitions
+##
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
     <> [].cat(( n in nodes <> n.varRefs )*)
 };
+
+
+##
+## Exported definitions
+##
 
 fn @@apply.get_varRefs() {
     <> catVarRefs(this.function, this.actuals)

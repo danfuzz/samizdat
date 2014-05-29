@@ -2,11 +2,16 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-import VarCalc :: get_varRefs;
-
 import core.Lang0Node :: *;
 
+import VarCalc :: get_varRefs;
+
 import ./Interner :: intern;
+
+
+##
+## Private definitions
+##
 
 ## `node.lits(interner)`, implements one layer of literal interning.
 fn .lits(interner);
@@ -102,6 +107,11 @@ fn @@varDefMutable.lits(interner) {
 fn @@varRef.lits(interner) {
     <> this
 };
+
+
+##
+## Exported definitions
+##
 
 ## Interns all literal nodes at or under the given `node`, into the given
 ## `interner`. Returns a replacement for the original `node` argument, in

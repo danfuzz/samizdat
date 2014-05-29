@@ -6,14 +6,29 @@ import core.Lang0Node ::
     get_name,
     makeDynamicImport;
 
+
+##
+## Exported generics
+##
+
 ## `node.get_varDefs()`: Generic that returns list of variable names
 ## newly-defined by `node`. Result may have duplicates.
 export fn .get_varDefs();
+
+
+##
+## Private definitions
+##
 
 ## Extracts and combines the `varDefs` of all the arguments.
 fn catVarDefs(nodes*) {
     <> [].cat(( n in nodes <> n.varDefs )*)
 };
+
+
+##
+## Exported definitions
+##
 
 fn @@apply.get_varDefs() {
     <> []
