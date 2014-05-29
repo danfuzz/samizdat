@@ -6,30 +6,10 @@
 ## Translate execution trees into corresponding C code.
 ##
 
+import CodeGen :: *;
 import VarCalc :: get_varRefs;
 
-import CodeGen ::
-    flatten,
-    indent,
-    genAssign,
-    genCall,
-    genComment,
-    genReturn,
-    genStatement;
-
-## TODO: Replace with `import core.Lang0Node :: *`, once available.
-import core.Lang0Node ::
-    get_actuals,
-    get_formals,
-    get_function,
-    get_id,
-    get_maxArgs,
-    get_minArgs,
-    get_name,
-    get_statements,
-    get_nodeValue,
-    get_yield,
-    get_yieldDef;
+import core.Lang0Node :: *;
 
 import ./vars :: localVarDecl, localVarName;
 

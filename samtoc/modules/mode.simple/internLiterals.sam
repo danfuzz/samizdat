@@ -4,21 +4,7 @@
 
 import VarCalc :: get_varRefs;
 
-## TODO: Replace with `import core.Lang0Node :: *`, once available.
-import core.Lang0Node ::
-    get_actuals,
-    get_formals,
-    get_format,
-    get_function,
-    get_id,
-    get_maxArgs,
-    get_minArgs,
-    get_name,
-    get_nodeValue,
-    get_source,
-    get_statements,
-    get_yield,
-    get_yieldDef;
+import core.Lang0Node :: *;
 
 import ./Interner :: intern;
 

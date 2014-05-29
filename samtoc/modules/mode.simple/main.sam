@@ -7,37 +7,15 @@
 ## source into C code that *does not* rely on an interpreter when run.
 ##
 
-import CodeGen ::
-    flatten,
-    indent,
-    genAssign,
-    genCall,
-    genComment,
-    genReturn,
-    genStatement;
-
+import CodeGen :: *;
 import DataCode;
 import Reader;
 import Resolver :: resolve;
 import Template;
 import VarCalc :: get_varRefs;
 
-## TODO: Replace with `import core.Lang0Node :: *`, once available.
-import core.Lang0Node ::
-    get_actuals,
-    get_formals,
-    get_function,
-    get_id,
-    get_maxArgs,
-    get_minArgs,
-    get_name,
-    get_nodeValue,
-    get_statements,
-    get_yield,
-    get_yieldDef,
-    withDynamicImports;
-
 import core.Io0;
+import core.Lang0Node :: *;
 
 import ./collectClosures :: collectClosures;
 import ./internLiterals :: internLiterals;
