@@ -26,27 +26,27 @@ fn ustar(.*) {
 };
 
 fn uargOpt(., arg?) {
-    note(cat("uargOpt() got: ", $Format::source(arg)))
+    note("uargOpt() got: ", $Format::source(arg))
 };
 
 fn uargPlus(., arg+) {
-    note(cat("uargPlus() got: ", $Format::source(arg)))
+    note("uargPlus() got: ", $Format::source(arg))
 };
 
 fn uargStar(., arg*) {
-    note(cat("uargStar() got: ", $Format::source(arg)))
+    note("uargStar() got: ", $Format::source(arg))
 };
 
 fn argUopt(arg, .?) {
-    note(cat("argUopt() got: ", $Format::source(arg)))
+    note("argUopt() got: ", $Format::source(arg))
 };
 
 fn argUplus(arg, .+) {
-    note(cat("argUplus() got: ", $Format::source(arg)))
+    note("argUplus() got: ", $Format::source(arg))
 };
 
 fn argUstar(arg, .*) {
-    note(cat("argUstar() got: ", $Format::source(arg)))
+    note("argUstar() got: ", $Format::source(arg))
 };
 
 fn argUoptStar(arg1, .?, arg2*) {

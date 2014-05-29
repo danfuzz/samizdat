@@ -15,7 +15,7 @@
 
 ## Prints the given value, indented slightly.
 fn msg(value) {
-    note(cat("  ", $Format::source(value)))
+    note("  ", $Format::source(value))
 };
 
 ## Outputs all generated values, with a header and a footer.

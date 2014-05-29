@@ -17,7 +17,7 @@ import core.FilePath;
 
 ## Print the given value.
 fn msg(value) {
-    note(cat("    ", $Format::source(value)))
+    note("    ", $Format::source(value))
 };
 
 

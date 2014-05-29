@@ -165,7 +165,7 @@ if (def x = returnVoid()) {
 };
 
 if (def x = "fr", def y = "otz") {
-    note(cat(x, y))
+    note(x, y)
 } else {
     die("Um?")
 };
@@ -183,11 +183,11 @@ if (def x = returnVoid(), def y = "y") {
 };
 
 if (def x = "fr", "stuff", def y = "ot", def z = "z") {
-    note(cat(x, y, z))
+    note(x, y, z)
 };
 
 if (def x = returnVoid()) {
     die("Um?!")
 } else if (def x = "fi", "stuff", def y = "zm", def z = "o") {
-    note(cat(x, y, z))
+    note(x, y, z)
 };

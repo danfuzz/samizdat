@@ -14,7 +14,7 @@
 ##
 
 fn msg(string) {
-    note(cat("Got: ", $Format::source(string)))
+    note("Got: ", $Format::source(string))
 };
 
 

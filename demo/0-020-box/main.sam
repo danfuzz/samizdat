@@ -23,7 +23,7 @@ fn msg(box) {
         { value <> $Format::source(value) }
         { <> "(void)" };
 
-    note(cat(storeStr, fetchStr))
+    note(storeStr, fetchStr)
 };
 
 

@@ -14,7 +14,7 @@
 ##
 
 fn msg(args*) {
-    note(cat("Got: ", $Format::source(args)))
+    note("Got: ", $Format::source(args))
 };
 
 fn ten() {

@@ -15,7 +15,7 @@
 
 ## Demo of `+` argument repeat modifier.
 fn stuff(items+) {
-    note(cat("stuff: ", $Format::source(items)))
+    note("stuff: ", $Format::source(items))
 };
 
 ## Demo of formal argument repeat modifiers. Also of quoted identifiers.
