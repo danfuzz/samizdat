@@ -10,14 +10,16 @@ of speaking.
 <br><br>
 ### Primitive Definitions
 
-#### `die(string?) <> n/a ## Terminates the runtime.`
+#### `die(strings*) <> n/a ## Terminates the runtime.`
 
-Prints the given string to the system console (as if with `note`)
-if supplied, and terminates the runtime with a failure status code (`1`).
+Prints the given strings to the system console (as if by calling
+`note(strings*`), and terminates the runtime with a failure status code (`1`).
 
-#### `note(string) <> void`
+#### `note(strings*) <> void`
 
-Writes out a newline-terminated note to the system console or equivalent.
+Writes out a newline-terminated note to the system console or equivalent,
+by concatenating all the strings together (with no separators).
+
 This is intended for debugging, and as such this will generally end up
 emitting to (something akin to) a standard-error stream.
 
