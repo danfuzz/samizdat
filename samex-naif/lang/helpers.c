@@ -398,6 +398,11 @@ zvalue makeImport(zvalue baseData) {
 
 /* Documented in spec. */
 zvalue makeInfoMap(zvalue node) {
+    zvalue info = get(node, STR_info);
+    if (info != NULL) {
+        return info;
+    }
+
     zvalue statements = get(node, STR_statements);
     zint size = get_size(statements);
 
@@ -626,7 +631,8 @@ zvalue withModuleDefs(zvalue node) {
         get_type(node),
         GFN_CALL(cat,
             dataOf(node),
-            mapFrom2(
+            mapFrom3(
+                STR_info,       info,
                 STR_statements, statements,
                 STR_yield,      yield)),
         NULL);

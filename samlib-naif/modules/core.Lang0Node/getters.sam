@@ -130,6 +130,11 @@ export fn get_id(node) {
 };
 
 ## Documented in spec.
+export fn get_info(node) {
+    <> node::info
+};
+
+## Documented in spec.
 export fn get_interpolate(node) {
     <> node::interpolate
 };

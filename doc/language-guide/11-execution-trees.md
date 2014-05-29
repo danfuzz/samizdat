@@ -78,17 +78,18 @@ to the function `interpolate`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$Lang0Node::makeInterpolate`.
 
-#### `closure` &mdash; `formals: [formal+], (name: name)?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?}`
+#### `closure` &mdash; `formals: [formal+], (info: map)?, (name: name)?,` `statements: [statement*], (yield: expression)?, (yieldDef: name)?}`
 
 * `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
 
+* `info: map` (optional) &mdash; The metainformation of the closure. Only
+  present in nodes which represent top-level module definitions that have
+  been fully resolved.
+
 * `name: name` (optional) &mdash; The function name of the closure. Only
   used for producing debugging info (e.g. stack traces).
-
-* `yieldDef: name` (optional) &mdash; A name (typically a string) to
-  bind as the nonlocal-exit function.
 
 * `statements: [statement*]` (required) &mdash; A list of statement
   nodes. A statement node must be either an expression node, or one of the
@@ -97,6 +98,9 @@ produced by the function `$Lang0Node::makeInterpolate`.
 
 * `yield: expression` (optional) &mdash; An expression node representing
   the (local) result value for a call.
+
+* `yieldDef: name` (optional) &mdash; A name (typically a string) to
+  bind as the nonlocal-exit function.
 
 This represents a closure (anonymous function) definition.
 
