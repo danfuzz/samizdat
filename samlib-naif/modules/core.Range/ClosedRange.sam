@@ -1,0 +1,115 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `ClosedRange` Type
+##
+## Payload: `{start: intOrChar, increment: int, size: int}`
+
+#= language core.Lang0
+
+import core.Generator :: nullGenerator, stdCollect;
+import proto.Number :: *;
+
+import ./rangeAdd :: *;
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+fn @@ClosedRange.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    <> stdCollect(this, optFilterFunction*)
+};
+
+## Documented in spec.
+fn @@ClosedRange.nextValue(box) {
+    <> ifValue { <> ge(this::size, 0) }
+        { size ->
+            def firstValue = this::firstValue;
+            def increment = this::increment;
+            store(box, firstValue);
+            <> makeClosedRange(
+                rangeAdd(firstValue, increment),
+                sub(size, 1),
+                increment)
+        }
+        {
+            ## Voided.
+            store(box);
+        }
+};
+
+## Documented in spec.
+export fn makeClosedRange(firstValue, size, optIncrement?) {
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+
+    ifNot { <> hasType(size, Int) }
+        { die("`size` must be an int.") };
+
+    <> ifIs { <> gt(size, 0) }
+        {
+            <> @ClosedRange{firstValue, increment, size}
+        }
+        { <> nullGenerator }
+};
+
+## Documented in spec.
+export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
+    ## `totalEq` ensures that `firstValue` and `limit` have the same type.
+    def isEmpty = totalEq(firstValue, limit)?;
+    def firstInt = toInt(firstValue);
+    def limitInt = toInt(limit);
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+
+    ## `totalEq` ensures that `increment` is an int.
+    ifIs { <> totalEq(increment, 0) }
+        {
+            return ifIs { <> isEmpty* }
+                { <> nullGenerator }
+                { <> makeClosedRange(firstValue, 1, 0) }
+        };
+
+    ## `sign(increment)` is either `-1` or `+1`, which when subtracted from
+    ## limit "pushes" the limit in the right direction to make the truncated
+    ## division produce the correct result size.
+    def size =
+        add(1,
+            div(
+                sub(
+                    sub(limitInt, firstInt),
+                    sign(increment)),
+                increment));
+
+    ifIs { <> le(size, 0) }
+        { return nullGenerator };
+
+    <> makeClosedRange(firstValue, size, increment);
+};
+
+## Documented in spec.
+export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
+    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+
+    ## This ensures that `firstValue` and `limit` have the same type.
+    totalEq(firstValue, limit);
+
+    ## `totalEq` ensures that `increment` is an int.
+    ifIs { <> totalEq(increment, 0) }
+        { return makeClosedRange(firstValue, 1, 0) };
+
+    def firstInt = toInt(firstValue);
+    def limitInt = toInt(limit);
+    def size = add(1,
+        div(
+            sub(limitInt, firstInt),
+            increment));
+
+    ifIs { <> le(size, 0) }
+        { return nullGenerator };
+
+    <> makeClosedRange(firstValue, size, increment);
+};
