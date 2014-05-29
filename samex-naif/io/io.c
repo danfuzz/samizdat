@@ -66,7 +66,7 @@ zvalue ioFileType(zvalue path) {
         if ((errno == ENOENT) || (errno == ENOTDIR)) {
             // File not found or invalid component, neither of which
             // are really errors from the perspective of this function.
-            return NULL;
+            return STR_absent;
         }
         die("Trouble with stat(): %s", strerror(errno));
     }

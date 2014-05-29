@@ -94,7 +94,7 @@ fn doDirectory(args, sourcePath) {
 
     note("Directory: \(sourcePath)");
 
-    if (($Io0::fileType("\(sourcePath)/main.sam") | "notFound") == "file") {
+    if ($Io0::fileType("\(sourcePath)/main.sam") == "file") {
         ## There's a `main.sam` in the directory. Treat it as a module
         ## implementation.
 
@@ -170,6 +170,9 @@ fn doDirectory(args, sourcePath) {
 ## Processes a single file or directory.
 fn doOne(args, sourcePath) {
     switch (def type = $Io0::fileType(sourcePath)) {
+        absent: {
+            die("File not found: \%q(sourcePath)")
+        };
         file: {
             doFile(args, sourcePath)
         };
@@ -178,9 +181,6 @@ fn doOne(args, sourcePath) {
         };
         default: {
             die("Cannot handle file type \%q(type).")
-        };
-        else: {
-            die("File not found: \%q(sourcePath)")
         }
     }
 };

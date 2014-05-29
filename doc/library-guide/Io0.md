@@ -23,13 +23,13 @@ string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `fileType(path) <> string | void`
+#### `fileType(path) <> string`
 
-Returns the type of the file whose `path` is as given. If the file doesn't
-exist (including if one of the directories named in `path` doesn't exist),
-this returns void. For a non-void result, this function always returns a
-string, one of:
+Returns the type of the file whose `path` is as given. This function always
+returns a string, one of:
 
+* `"absent"` &mdash; Indicates a nonexistent path (including a nonexistent
+  non-final path component).
 * `"file"` &mdash; Indicates a regular file.
 * `"directory"` &mdash; Indicates a directory.
 * `"other"` &mdash; Any other existing file (e.g., a named pipe).

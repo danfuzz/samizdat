@@ -32,11 +32,11 @@ fn directResolve(self, source) {
     def dirPath = "\(self::path)/\(name)";
     def infoPath = "\(dirPath).saminfo";
 
-    <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
+    <> if ($Io0::fileType(infoPath) == "file") {
         ## We found a prefab info file. Read it!
         def info = $Reader::readEvalExpression0(infoPath);
         <> @module{info}
-    } else if (($Io0::fileType(dirPath) | "notFound") == "directory") {
+    } else if ($Io0::fileType(dirPath) == "directory") {
         ## We found a source directory for a module. Make an internal resolver
         ## for it, and use that to resolve its `main`.
         def subResolver = makeInternalResolver(dirPath, self);
@@ -74,7 +74,7 @@ fn @@ExternalResolver.resolve(source) {
 ## This means you can call this function on an optional captive modules
 ## directory and get sensible behavior.
 export fn makeExternalResolver(path, nextResolver) {
-    if (($Io0::fileType(path) | "notFound") != "directory") {
+    if ($Io0::fileType(path) != "directory") {
         return nextResolver
     };
 

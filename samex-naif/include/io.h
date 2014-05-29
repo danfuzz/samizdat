@@ -23,13 +23,9 @@ zvalue ioCwd(void);
 
 /**
  * Returns the file type of the file at the given path if it exists, or
- * `NULL` if the file doesn't exist (including if one of the named directories
- * in the path doesn't exist). Non-`NULL` return values are always in-model
- * strings, one of:
- *
- * * `"file"` &mdash; regular file.
- * * `"directory"` &mdash; directory.
- * * `"other"` &mdash; anything else (e.g. named pipe).
+ * `"absent"` if the file doesn't exist (including if one of the named
+ * directories in the path doesn't exist). Types are the same as for
+ * `core.Io0::fileType` (see which).
  */
 zvalue ioFileType(zvalue path);
 

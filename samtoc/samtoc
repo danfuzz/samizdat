@@ -95,7 +95,7 @@ if (( $# == 0 )); then
     echo 'Missing source file name.' 1>&2
     exit 1
 elif (( $# > 1 && fullCompile )); then
-    echo 'Cannoy specify --binary with multiple sources.' 1>&2
+    echo 'Cannot specify --binary with multiple sources.' 1>&2
     exit 1
 elif (( $# > 1 || gotOutDir )); then
     # Multiple source files or `--out-dir` specified.

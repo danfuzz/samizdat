@@ -74,6 +74,7 @@ TYP(varDef,                "varDef");
 TYP(varDefMutable,         "varDefMutable");
 TYP(varRef,                "varRef");
 
+STR(absent,                "absent");
 STR(actuals,               "actuals");
 STR(bind,                  "bind");
 STR(cat,                   "cat");

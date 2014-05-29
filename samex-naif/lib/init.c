@@ -78,12 +78,12 @@ static zvalue loadFile(zvalue path) {
     zvalue binPath = GFN_CALL(cat, path, stringFromUtf8(-1, ".samb"));
     zvalue func;
 
-    if (valEqNullOk(ioFileType(binPath), STR_file)) {
+    if (valEq(ioFileType(binPath), STR_file)) {
         // We found a binary file.
         func = datEvalBinary(PRIMITIVE_ENVIRONMENT, binPath);
     } else {
         zvalue srcPath = GFN_CALL(cat, path, stringFromUtf8(-1, ".sam"));
-        if (valEqNullOk(ioFileType(srcPath), STR_file)) {
+        if (valEq(ioFileType(srcPath), STR_file)) {
             // We found a source text file.
             zvalue text = ioReadFileUtf8(srcPath);
             zvalue tree = langSimplify0(langParseProgram0(text), NULL);
