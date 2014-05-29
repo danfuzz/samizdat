@@ -55,8 +55,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
 ## Documented in spec.
 export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ## `totalEq` ensures that `firstValue` and `limit` have the same type.
-    ## `optValue({ <> x})` == `x?`.
-    def isEmpty = optValue { <> totalEq(firstValue, limit) };
+    def isEmpty = totalEq(firstValue, limit)?;
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
     def increment = ifValueOr { <> optIncrement* } { <> 1 };
