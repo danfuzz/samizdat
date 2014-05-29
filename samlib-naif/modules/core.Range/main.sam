@@ -3,9 +3,8 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `ClosedRange` and `OpenRange` Types
+## Range-of-value types
 ##
-## `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 ## `OpenRange` payload: `{start: intOrChar, increment: int}`
 
 #= language core.Lang0
@@ -15,105 +14,7 @@ import proto.Number;
 
 import ./rangeAdd :: *;
 
-
-##
-## Exported Definitions: `ClosedRange`
-##
-
-## Documented in spec.
-export fn makeClosedRange(firstValue, size, optIncrement?) {
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
-
-    ifNot { <> hasType(size, Int) }
-        { die("`size` must be an int.") };
-
-    <> ifIs { <> gt(size, 0) }
-        {
-            <> @ClosedRange{firstValue, increment, size}
-        }
-        { <> nullGenerator }
-};
-
-## Documented in spec.
-export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
-    ## `totalEq` ensures that `firstValue` and `limit` have the same type.
-    def isEmpty = totalEq(firstValue, limit)?;
-    def firstInt = toInt(firstValue);
-    def limitInt = toInt(limit);
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
-
-    ## `totalEq` ensures that `increment` is an int.
-    ifIs { <> totalEq(increment, 0) }
-        {
-            return ifIs { <> isEmpty* }
-                { <> nullGenerator }
-                { <> makeClosedRange(firstValue, 1, 0) }
-        };
-
-    ## `sign(increment)` is either `-1` or `+1`, which when subtracted from
-    ## limit "pushes" the limit in the right direction to make the truncated
-    ## division produce the correct result size.
-    def size =
-        $Number::add(1,
-            $Number::div(
-                $Number::sub(
-                    $Number::sub(limitInt, firstInt),
-                    $Number::sign(increment)),
-                increment));
-
-    ifIs { <> le(size, 0) }
-        { return nullGenerator };
-
-    <> makeClosedRange(firstValue, size, increment);
-};
-
-## Documented in spec.
-export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
-
-    ## This ensures that `firstValue` and `limit` have the same type.
-    totalEq(firstValue, limit);
-
-    ## `totalEq` ensures that `increment` is an int.
-    ifIs { <> totalEq(increment, 0) }
-        { return makeClosedRange(firstValue, 1, 0) };
-
-    def firstInt = toInt(firstValue);
-    def limitInt = toInt(limit);
-    def size = $Number::add(1,
-        $Number::div(
-            $Number::sub(limitInt, firstInt),
-            increment));
-
-    ifIs { <> le(size, 0) }
-        { return nullGenerator };
-
-    <> makeClosedRange(firstValue, size, increment);
-};
-
-## Documented in spec.
-fn @@ClosedRange.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    <> stdCollect(this, optFilterFunction*)
-};
-
-## Documented in spec.
-fn @@ClosedRange.nextValue(box) {
-    <> ifValue { <> ge(this::size, 0) }
-        { size ->
-            def firstValue = this::firstValue;
-            def increment = this::increment;
-            store(box, firstValue);
-            <> makeClosedRange(
-                rangeAdd(firstValue, increment),
-                $Number::sub(size, 1),
-                increment)
-        }
-        {
-            ## Voided.
-            store(box);
-        }
-};
+export import ./ClosedRange :: *;
 
 
 ##
