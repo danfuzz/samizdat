@@ -10,66 +10,9 @@
 
 ## This just re-exports stuff defined in module-internal files.
 
-export import ./constructors1 ::
-    makeApply,
-    makeCall,
-    makeCallLiterals,
-    makeCallThunks,
-    makeExport,
-    makeExportSelection,
-    makeJump,
-    makeLiteral,
-    makeThunk,
-    makeVarBind,
-    makeVarDef,
-    makeVarDefMutable,
-    makeVarRef,
-    makeVarRefLvalue,
-    withFormals,
-    withoutIntermediates,
-    withoutInterpolate;
-
-export import ./constructors2 ::
-    makeCallOrApply,
-    makeDynamicImport,
-    makeGet,
-    makeImport,
-    makeInfoMap,
-    makeInterpolate,
-    makeOptValue,
-    withDynamicImports,
-    withModuleDefs,
-    withTop,
-    withoutTops;
-
-export import ./formals ::
-    formalsMaxArgs,
-    formalsMinArgs;
-
-export import ./getters ::
-    get_actuals,
-    get_baseName,
-    get_definedNames,
-    get_format,
-    get_formals,
-    get_function,
-    get_id,
-    get_info,
-    get_interpolate,
-    get_lvalue,
-    get_maxArgs,
-    get_minArgs,
-    get_name,
-    get_nodeValue,
-    get_prefix,
-    get_select,
-    get_source,
-    get_statements,
-    get_yield,
-    get_yieldDef;
-
-export import ./refs :: REFS;
-
-export import ./resolve ::
-    resolveImport,
-    withResolvedImports;
+export import ./constructors1 :: *;
+export import ./constructors2 :: *;
+export import ./formals :: *;
+export import ./getters :: *;
+export import ./refs :: *;
+export import ./resolve :: *;

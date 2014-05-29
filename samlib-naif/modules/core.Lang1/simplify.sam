@@ -14,24 +14,10 @@
 #= language core.Lang0
 
 import core.Generator;
+import core.Lang0Node :: *;
 import core.Range;
 import core.Sequence;
 
-import core.Lang0Node ::
-    REFS,
-    get_actuals,
-    get_function,
-    get_nodeValue,
-    get_statements,
-    get_yield,
-    makeCall,
-    makeCallLiterals,
-    makeGet,
-    makeLiteral,
-    makeVarRef,
-    withModuleDefs,
-    withResolvedImports,
-    withoutIntermediates;
 
 
 ##

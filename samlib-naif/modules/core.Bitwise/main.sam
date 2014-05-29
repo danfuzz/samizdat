@@ -9,14 +9,7 @@
 #= language core.Lang0
 
 ## Re-export. Documented in spec.
-export import proto.Bitwise ::
-    and,
-    bit,
-    bitSize,
-    not,
-    or,
-    shl,
-    xor;
+export import proto.Bitwise :: *;
 
 import proto.Number :: neg;
 

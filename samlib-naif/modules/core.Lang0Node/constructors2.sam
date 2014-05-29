@@ -7,30 +7,8 @@
 import core.Collection;
 import core.Generator;
 
-import ./constructors1 ::
-    makeApply,
-    makeCall,
-    makeExportSelection,
-    makeLiteral,
-    makeThunk,
-    makeVarBind,
-    makeVarDef,
-    makeVarRef;
-
-import ./getters ::
-    get_baseName,
-    get_definedNames,
-    get_interpolate,
-    get_format,
-    get_info,
-    get_name,
-    get_nodeValue,
-    get_prefix,
-    get_select,
-    get_source,
-    get_statements,
-    get_yield;
-
+import ./constructors1 :: *;
+import ./getters :: *;
 import ./refs :: REFS;
 
 

@@ -8,14 +8,8 @@ import core.Collection;
 import core.Format;
 import core.Generator;
 
-import ./constructors1 ::
-    makeExport;
-
-import ./getters ::
-    get_nodeValue,
-    get_select,
-    get_source,
-    get_statements;
+import ./constructors1 :: makeExport;
+import ./getters :: *;
 
 
 ##

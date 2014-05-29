@@ -17,43 +17,11 @@ can be used.
 import core.Format;
 import core.Generator;
 import core.Lang0;
+import core.Lang0Node :: *;
 import core.Peg;
 import core.Range;
 import core.Sequence;
 import proto.Number;
-
-import core.Lang0Node ::
-    REFS,
-    formalsMaxArgs,
-    formalsMinArgs,
-    get_formals,
-    get_interpolate,
-    get_name,
-    get_nodeValue,
-    get_statements,
-    get_yieldDef,
-    makeApply,
-    makeCall,
-    makeCallOrApply,
-    makeCallThunks,
-    makeExport,
-    makeExportSelection,
-    makeGet,
-    makeImport,
-    makeInterpolate,
-    makeJump,
-    makeLiteral,
-    makeOptValue,
-    makeThunk,
-    makeVarBind,
-    makeVarDef,
-    makeVarDefMutable,
-    makeVarRef,
-    makeVarRefLvalue,
-    withFormals,
-    withTop,
-    withoutInterpolate,
-    withoutTops;
 
 
 ##
