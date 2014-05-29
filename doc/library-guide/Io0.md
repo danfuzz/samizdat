@@ -23,7 +23,7 @@ string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `fileType(path) <> string | void`
+#### `fileType(path) <> string`
 
 Returns the type of the file whose `path` is as given. This function always
 returns a string, one of:
