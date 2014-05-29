@@ -8,7 +8,7 @@ import core.Lang0Node ::
 
 
 ##
-## Exported generics
+## Exported Generics
 ##
 
 ## `node.get_varDefs()`: Generic that returns list of variable names
