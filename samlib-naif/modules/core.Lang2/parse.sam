@@ -17,7 +17,6 @@ import core.Range;
 import core.Sequence;
 import proto.Number;
 
-
 import ./safeVar;
 import ./tokenize :: tokenize;
 

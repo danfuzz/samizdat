@@ -10,6 +10,11 @@ import core.Lang0Node;
 import core.Sequence;
 import proto.Number;
 
+
+##
+## Private definitions
+##
+
 ## Int value of Unicode code point `0`.
 def CHAR_0 = toInt("0");
 
@@ -150,6 +155,11 @@ fn @@varDefMutable.safeIndex(base) {
 fn @@varRef.safeIndex(base) {
     <> safeIndexForNames(base, $Lang0Node::get_name(this))
 };
+
+
+##
+## Exported definitions
+##
 
 ## Makes a variable name by combining `base` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
