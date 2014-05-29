@@ -72,19 +72,19 @@ fn @@closureRef.translate(varsBox) {
 fn @@importModule.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("TODO: importModule.translate");
+    die("Cannot translate `@importModule`.");
 };
 
 fn @@importModuleSelection.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("TODO: importModuleSelection.translate");
+    die("Cannot translate `@importModuleSelection`.");
 };
 
 fn @@importResource.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("TODO: importResource.translate");
+    die("Cannot translate `@importResource`.");
 };
 
 fn @@jump.translate(varsBox) {
