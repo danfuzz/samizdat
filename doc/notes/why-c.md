@@ -32,6 +32,9 @@ language which fits all the above criteria is C. Building Samizdat from
 source *only* requires a C compiler and linker. The code uses some extensions
 to C which are available both with the Clang and Gnu C compilers, on
 the theory that these extensions are available widely enough to be reasonably
-used. As a practical matter, there are also shell scripts (written in Bash)
-that are used to help automate the build; however, these aren't strictly
-necessary.
+used. As a practical matter, there are also shell scripts (written in Bash,
+and using standard / widely available shell utilities) that are used to help
+automate the build; however, these aren't strictly necessary. That is,
+the shell stuff is a convenience that helps avoid what would be a lot of
+compilation drudgery, but there's no real "implementation semantics" in the
+scripts.
