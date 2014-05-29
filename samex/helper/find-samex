@@ -42,14 +42,14 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--runtime=<name>] [--name] [--bin] [--include]"
+        echo "${progName} [--runtime=<name>]" \
+            "[--bin | --core | --include | --name]"
         exit
-    elif [[ ${opt} == '--name' ]]; then
-        output='name'
-    elif [[ ${opt} == '--bin' ]]; then
-        output='bin'
-    elif [[ ${opt} == '--include' ]]; then
-        output='include'
+    elif [[    ${opt} == '--bin'
+            || ${opt} == '--core'
+            || ${opt} == '--include'
+            || ${opt} == '--name' ]]; then
+        output="${opt:2}"
     elif [[ ${opt} =~ ^--runtime=(.*) ]]; then
         runtime="${BASH_REMATCH[1]}"
     elif [[ ${opt} =~ ^- ]]; then
@@ -91,14 +91,24 @@ if [[ ${found} == '' ]]; then
 fi
 
 case "${output}" in
-    (name)
-        echo "${found}"
-        ;;
     (bin)
         echo "${baseDir}/lib/${found}/${binName}"
         ;;
+    (core)
+        result="${baseDir}/include/${found}"
+        if [[ -d "${result}/modules" ]]; then
+            echo "${result}"
+        else
+            # No generated metainfo. Assume it's fully interpreted, and
+            # point at the source.
+            echo "${baseDir}/lib/${found}/corelib"
+        fi
+        ;;
     (include)
         echo "${baseDir}/include/${found}"
+        ;;
+    (name)
+        echo "${found}"
         ;;
     (*)
         echo "Unknown output option: ${output}" 1>&2

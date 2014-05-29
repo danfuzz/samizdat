@@ -95,6 +95,12 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
+#### `get_info(node) <> map`
+
+Gets the metainformation map for the given node (presumably a closure).
+This is only defined on closure nodes which have been processed by
+`withModuleDefs()` or equivalent.
+
 #### `get_lvalue(node) <> function | .`
 
 Gets the `lvalue` binding for a node, if any. This is non-void for
@@ -264,6 +270,9 @@ top-level module. This returns a map that binds `exports`, `imports`, and
 `withResolvedImports()`. It is a fatal error to call this on a node with
 any unresolved wildcard imports.
 
+**Note:** If `node` already has an `info` binding, then this function
+just returns that.
+
 #### `makeInterpolate(expr) <> node`
 
 Makes an interpolation of the given expression node. The result is a
@@ -340,8 +349,8 @@ with `formals` (re)bound as given.
 
 Makes a node just like the given one (presumably a `closure` node), except
 with `statements` and `yield` bindings processed to make the node
-appropriate for use as a top-level module definition. This includes the
-following transformations:
+appropriate for use as a top-level module definition, and with an `info`
+binding for the metainformation. This includes the following transformations:
 
 * All `export` nodes are replaced with their `value` payloads.
 
@@ -357,7 +366,8 @@ following transformations:
     binding is arranged to be `{}` (the empty map).
 
   * The `info` binding is set up to be the defined metainformation of the
-    module.
+    module. This value is the same as the resulting node's direct `info`
+    binding.
 
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield`.

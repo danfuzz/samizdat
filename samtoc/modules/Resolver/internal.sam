@@ -6,18 +6,75 @@
 ## Type definition: InternalResolver
 ##
 ## Payload:
+## * cache -- cache of resolved results
 ## * nextResolver -- resolver to defer to when this one fails to resolve.
 ## * path -- filesystem path to a directory of internal-access files.
 ##
 
+import core.Io0;
+import core.Lang0Node;
+
+import Reader;
+
+import ./cache;
 import ./protocol :: resolve;
 
+
+##
+## Private definitions
+##
+
+## Does direct resolution on the given `source`. Only ever called when
+## `source` is known to be `internal` and so *might* be found directly
+## in or under this resolver's directory.
+fn directResolve(self, source) {
+    def subPath = dataOf(source);
+    def basePath = "\(self::path)/\(subPath)";
+    def infoPath = "\(basePath).saminfo";
+    def sourcePath = "\(basePath).sam";
+
+    <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
+        ## We found a prefab info file. Read it!
+        def info = $Reader::readEvalExpression0(infoPath);
+        <> @module{info}
+    } else if (($Io0::fileType(sourcePath) | "notFound") == "file") {
+        ## We found a source file. Read it and resolve!
+        fn resolveFn(source) { <> self.resolve(source) };
+        def tree = $Reader::readProgram(sourcePath, resolveFn);
+        def info = $Lang0Node::makeInfoMap(tree);
+        <> @module{info}
+    }
+};
+
+
+##
+## Exported definitions
+##
+
 fn @@InternalResolver.resolve(source) {
-    ## TODO: Something!
-    ## Just succeed trivially, for now.
-    <> {}
+    if (def found = $cache::cacheGet(this::cache, source)) {
+        ## `found` is always a list. See comment below.
+        return found*
+    };
+
+    ## The result is always a list, so that we can cache a not-found result
+    ## as the empty list.
+    def result = (
+        hasType(source, @@internal)
+            & this.directResolve(source)
+            | (this::nextResolver).resolve(source)
+    )?;
+
+    ## Cache the result, so we don't bother with a search the next time.
+    $cache::cachePut(this::cache, source, result);
+
+    <> result*
 };
 
 export fn makeInternalResolver(path, nextResolver) {
-    <> @InternalResolver{nextResolver, path}
+    <> @InternalResolver{
+        cache: $cache::makeCache(),
+        nextResolver,
+        path
+    }
 };

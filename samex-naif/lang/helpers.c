@@ -398,6 +398,11 @@ zvalue makeImport(zvalue baseData) {
 
 /* Documented in spec. */
 zvalue makeInfoMap(zvalue node) {
+    zvalue info = get(node, STR_info);
+    if (info != NULL) {
+        return info;
+    }
+
     zvalue statements = get(node, STR_statements);
     zint size = get_size(statements);
 
@@ -532,6 +537,8 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
             die("Could not resolve `import*`.");
+        } else if (!hasType(resolved, TYPE_module)) {
+            die("Invalid resolution result (not a `@module`)");
         }
     }
 
@@ -606,7 +613,7 @@ zvalue withModuleDefs(zvalue node) {
                 listFrom2(makeLiteral(name), makeVarRef(name))));
     }
 
-    zvalue yieldExports = (get_size(exportValues) == 0)
+    zvalue yieldExports = (exSize == 0)
         ? makeLiteral(EMPTY_MAP)
         : makeCall(REFS(cat), exportValues);
     zvalue yieldInfo = makeLiteral(info);
@@ -624,7 +631,8 @@ zvalue withModuleDefs(zvalue node) {
         get_type(node),
         GFN_CALL(cat,
             dataOf(node),
-            mapFrom2(
+            mapFrom3(
+                STR_info,       info,
                 STR_statements, statements,
                 STR_yield,      yield)),
         NULL);

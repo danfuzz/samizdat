@@ -1,0 +1,20 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## core.Code: Metainformation
+##
+## This is a manually-managed metainformation file, which is needed because
+## there's no "normal" source for this module. (It's built into
+## `core.ModuleSystem`.)
+##
+
+{
+    exports: {
+        eval:       Value,
+        evalBinary: Value
+    },
+    imports: {},
+    resources: {}
+}

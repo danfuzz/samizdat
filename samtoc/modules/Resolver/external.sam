@@ -6,11 +6,43 @@
 ## Type definition: ExternalResolver
 ##
 ## Payload:
+## * cache -- cache of resolved results
 ## * nextResolver -- resolver to defer to when this one fails to resolve.
 ## * path -- filesystem path to a directory of modules
 ##
 
+import core.Io0;
+
+import Reader;
+
+import ./cache;
+import ./internal :: makeInternalResolver;
 import ./protocol :: resolve;
+
+
+##
+## Private definitions
+##
+
+## Does direct resolution on the given `source`. Only ever called when
+## `source` is known to be `external` and so *might* be found directly
+## in this resolver's directory of modules.
+fn directResolve(self, source) {
+    def name = dataOf(source);
+    def dirPath = "\(self::path)/\(name)";
+    def infoPath = "\(dirPath).saminfo";
+
+    <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
+        ## We found a prefab info file. Read it!
+        def info = $Reader::readEvalExpression0(infoPath);
+        <> @module{info}
+    } else if (($Io0::fileType(dirPath) | "notFound") == "directory") {
+        ## We found a source directory for a module. Make an internal resolver
+        ## for it, and use that to resolve its `main`.
+        def subResolver = makeInternalResolver(dirPath, self);
+        <> subResolver.resolve(@internal("main"))
+    }
+};
 
 
 ##
@@ -18,12 +50,37 @@ import ./protocol :: resolve;
 ##
 
 fn @@ExternalResolver.resolve(source) {
-    ## TODO: Something!
-    ## Just succeed trivially, for now.
-    ## note("=== would resolve: \%q(source)");
-    <> {}
+    if (def found = $cache::cacheGet(this::cache, source)) {
+        ## `found` is always a list. See comment below.
+        return found*
+    };
+
+    ## The result is always a list, so that we can cache a not-found result
+    ## as the empty list.
+    def result = (
+        hasType(source, @@external)
+            & this.directResolve(source)
+            | (this::nextResolver).resolve(source)
+    )?;
+
+    ## Cache the result, so we don't bother with a search the next time.
+    $cache::cachePut(this::cache, source, result);
+
+    <> result*
 };
 
+## Makes an external resolver. As a handy convenience, if the `path`
+## isn't an existing directory, this just returns the given `nextResolver`.
+## This means you can call this function on an optional captive modules
+## directory and get sensible behavior.
 export fn makeExternalResolver(path, nextResolver) {
-    <> @ExternalResolver{nextResolver, path}
+    if (($Io0::fileType(path) | "notFound") != "directory") {
+        return nextResolver
+    };
+
+    <> @ExternalResolver{
+        cache: $cache::makeCache(),
+        nextResolver,
+        path
+    }
 };

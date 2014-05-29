@@ -1,0 +1,29 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Type definition: ResolveCache
+##
+## Payload:
+## * box -- box for map of source->info bindings
+##
+
+
+
+##
+## Exported definitions
+##
+
+export fn makeCache() {
+    <> @ResolveCache{box: $Box::makeCell({})}
+};
+
+export fn cacheGet(cache, source) {
+    <> fetch(cache::box)[source]
+};
+
+export fn cachePut(cache, source, resolved) {
+    def newMap = {fetch(cache::box)*, (source): resolved};
+    store(cache::box, newMap)
+};

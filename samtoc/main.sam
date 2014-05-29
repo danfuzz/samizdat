@@ -4,15 +4,18 @@
 
 import core.CommandLine;
 import core.FilePath;
+import core.Io0;
 
 import Resolver;
 
-## Default mode to use
+## Default mode to use.
 def DEFAULT_MODE = "simple";
+
+## Suffix for normal source files.
+def SOURCE_SUFFIX = ".sam";
 
 ## Map from `--mode` values to module names.
 def MODE_MAP = {
-    "interp-text": "interpText",
     "interp-tree": "interpTree",
     "linkage":     "linkage",
     "simple":      "simple"
@@ -30,44 +33,174 @@ fn withoutSuffix(name) {
     }
 };
 
+## Returns `name` iff the given name has the proper suffix for a source
+## file.
+fn isSourceName(name) {
+    <> (#name > #SOURCE_SUFFIX)
+        & (name[^(#SOURCE_SUFFIX - 1)..] == SOURCE_SUFFIX)
+        & name
+};
+
+## Gets the full source path for the given `rawPath`. This takes care of
+## prepending the specified `--in-dir` (if any).
 fn getSourcePath(rawPath, args) {
     return (def inDir = args::options::"in-dir")
         & "\(inDir)/\(rawPath)"
         | rawPath;
 };
 
-fn getOutputPath(rawPath, args, defaultSuffix) {
+## Gets the full output path for thte given `rawPath`. If `--output` was
+## specified, this function just returns that. Otherwise, this replaces
+## the file suffix as defined by the processing mode, removes the `--in-dir`
+## prefix (if any) and prepends the specified `--out-dir` (if any).
+fn getOutputPath(rawPath, args) {
     if (def output = args::options::output) {
         return output
     };
 
+    ## The `+ 1` is to also handle the `/` after the prefix.
+    def withoutInDir = (def inDir = args::options::"in-dir")
+        & rawPath[(#inDir + 1)..]
+        | rawPath;
+
     def path = (def outDir = args::options::"out-dir")
-        & "\(outDir)/\(rawPath)"
+        & "\(outDir)/\(withoutInDir)"
         | rawPath;
 
     def dir = $FilePath::get_directory(path);
     def baseName = withoutSuffix($FilePath::get_file(path));
-    return "\(dir)/\(baseName).\(defaultSuffix)"
+    def suffix = args::modeModule::SUFFIX;
+    return "\(dir)/\(baseName).\(suffix)"
 };
 
-fn doOne(modeModule, resolver, args, sourceName) {
-    def sourcePath = getSourcePath(sourceName, args);
-    def outputPath = getOutputPath(sourceName, args, modeModule::SUFFIX);
+## Handles processing of a single file (regular file, not a directory).
+fn doFile(args, sourcePath) {
+    if (def selection = args::selection) {
+        if (!selection[sourcePath]) {
+            note("Skip: \(sourcePath)");
+            return
+        }
+    };
 
-    note("\
-        \%q(sourcePath)
-        -> \%q(outputPath)\n");
+    def outputPath = getOutputPath(sourcePath, args);
 
-    modeModule::compile(resolver, sourcePath, outputPath);
+    note("File: \(sourcePath)\n    -> \(outputPath)");
+    args::modeModule::compile(args::resolver, sourcePath, outputPath)
+};
+
+## Handles processing of of a single directory.
+fn doDirectory(args, sourcePath) {
+    def resolver = args::resolver;
+
+    note("Directory: \(sourcePath)");
+
+    if (($Io0::fileType("\(sourcePath)/main.sam") | "notFound") == "file") {
+        ## There's a `main.sam` in the directory. Treat it as a module
+        ## implementation.
+
+        if (def compileModule = args::modeModule::compileModule) {
+            ## The mode wants to handle whole-module compilation itself.
+            ## The `.x` is to give `getOutputPath` a suffix to remove.
+            def outputPath = getOutputPath("\(sourcePath).x", args);
+            note("    -> \(outputPath)");
+            compileModule(args::resolver, sourcePath, outputPath);
+            return
+        };
+
+        ## No dedicated whole-module compiler for the mode...
+
+        ## First handle a "captive" `modules` directory (if any), then
+        ## handle the main implementation files.
+        def captiveDir = "\(sourcePath)/modules";
+        def captiveResolver =
+            $Resolver::makeExternalResolver(captiveDir, resolver);
+
+        if (resolver != captiveResolver) {
+            ## There's a captive `modules` directory. Iterate over its
+            ## subdirectories.
+            def captiveArgs = {args*, resolver: captiveResolver};
+            def files = $Io0::readDirectory(captiveDir);
+            for (one in files) {
+                if (one.value == "directory") {
+                    def path = "\(captiveDir)/\(one.key)";
+                    doDirectory(captiveArgs, path)
+                }
+            }
+        };
+
+        def internalResolver =
+            $Resolver::makeInternalResolver(sourcePath, captiveResolver);
+        def internalArgs = {args*, resolver: internalResolver};
+
+        ## Helper to process an internal directory (including the top-level
+        ## internal directory).
+        fn doInternalDir(dir) {
+            def files = $Io0::readDirectory(dir);
+            for (one in files) {
+                def path = "\(dir)/\(one.key)";
+                if (one.value == "directory") {
+                    if (path != captiveDir) {
+                        doInternalDir(path)
+                    }
+                } else if (isSourceName(path)) {
+                    doOne(internalArgs, path)
+                }
+            };
+        };
+
+        ## Process the rest of the files (skipping `modules`).
+        doInternalDir(sourcePath)
+    } else {
+        ## No `main.sam`. Treat it as a `modules` directory. Make an external
+        ## resolver for the given directory, and recursively process all
+        ## subdirectories.
+        def externalResolver =
+            $Resolver::makeExternalResolver(sourcePath, resolver);
+        def subArgs = {args*, resolver: externalResolver};
+        def files = $Io0::readDirectory(sourcePath);
+        for (one in files) {
+            if (one.value == "directory") {
+                def path = "\(sourcePath)/\(one.key)";
+                doDirectory(subArgs, path)
+            }
+        }
+    }
+};
+
+## Processes a single file or directory.
+fn doOne(args, sourcePath) {
+    switch (def type = $Io0::fileType(sourcePath)) {
+        file: {
+            doFile(args, sourcePath)
+        };
+        directory: {
+            doDirectory(args, sourcePath)
+        };
+        default: {
+            die("Cannot handle file type \%q(type).")
+        };
+        else: {
+            die("File not found: \%q(sourcePath)")
+        }
+    }
 };
 
 export fn main(selfPath, rawArgs*) {
     note("\n\
         Starting: \%q(selfPath)
-        Raw args: \%q(rawArgs)\n");
+        Arguments:");
+    for (arg in rawArgs) {
+        note("    \%q(arg)");
+    };
 
-    def args = $CommandLine::parseArgs(rawArgs);
-    def sources = args::args;
+    var args = $CommandLine::parseArgs(rawArgs);
+
+    note("Options:");
+    for (opt in args::options) {
+        note("    \%q(opt)");
+    };
+    note("");
+
     def modeName = MODE_MAP[args::options::mode | DEFAULT_MODE] |
         {
             note("Unknown compilation mode: \%q(args::options::mode)");
@@ -75,24 +208,54 @@ export fn main(selfPath, rawArgs*) {
         }();
     def modeModule = loadModule(@external("mode.\(modeName)"));
 
-    def externalResolver = (def dirs = args::options::"external-dirs")
-        & Resolver::makeResolverChain(dirs)
+    def topResolver = (def coreDir = args::options::"core-dir")
+        & $Resolver::makeExternalResolver("\(coreDir)/modules", null)
         | null;
+    def externalResolver = (def dirs = args::options::"external-dirs")
+        & $Resolver::makeResolverChain(dirs, topResolver)
+        | topResolver;
     def resolver = (def dir = args::options::"internal-dir")
-        & Resolver::makeInternalResolver(dir, externalResolver)
+        & $Resolver::makeInternalResolver(dir, externalResolver)
         | externalResolver;
 
-    if (#sources == 0) {
-        note("No source files specified!");
+    if (#args::args == 0) {
+        note("No source files specified.");
         return 1
     };
 
-    if (args::options::output & (#sources > 1)) {
-        note("Cannot use --output with more than one source!");
+    ## Set up the `files` as appropriately-prefixed versions of the passed
+    ## arguments.
+    def files = [ f in args::args <> getSourcePath(f, args) ];
+
+    ## Figure out the sources and selection.
+    def sourcesAndSelection = if (args::options::"dir-selection") {
+        if (#files < 2) {
+            note("No selection specified.");
+            return 1
+        };
+
+        <> {
+            sources: [files[0]],
+            selection: {files[1..]*: true}
+        }
+    } else {
+        <> {sources: files}
+    };
+
+    ## Add more structure to `args`.
+    args := {
+        args*,
+        sourcesAndSelection*,
+        modeModule,
+        resolver
+    };
+
+    if (args::options::output & (#args::sources > 1)) {
+        note("Cannot use --output with more than one source.");
         return 1
     };
 
-    for (s in sources) {
-        doOne(modeModule, resolver, args, s)
-    };
+    for (s in args::sources) {
+        doOne(args, s)
+    }
 };
