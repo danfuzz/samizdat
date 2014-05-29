@@ -308,7 +308,7 @@ fn doExternalResolve(loader, source) {
 
     <> ifIs { <> eq($Io0::fileType(modulePath), "directory") }
         {
-            note(cat("    ", sourceString(source)));
+            note("    ", sourceString(source));
 
             def loader =
                 makeInternalLoader(modulePath, loader::globals, loader);
@@ -407,7 +407,7 @@ fn resolveMain(loader) {
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doInternalResolve(loader, source) {
-    note(cat("        ", sourceString(source)));
+    note("        ", sourceString(source));
 
     def pathPrefix = cat(loader::basePath, dataOf(source));
     def binPath = cat(pathPrefix, ".samb");

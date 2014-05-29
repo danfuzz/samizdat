@@ -23,7 +23,7 @@ fn msgAll(header, gen) {
     note(header);
     $Generator::filterAll([gen*]) { elem -> msg(elem) };
     note("  [fin]");
-    note(cat("  value: ", $Format::source(gen)));
+    note("  value: ", $Format::source(gen));
     note()
 };
 
@@ -50,7 +50,7 @@ fn msgTen(header, origGen) {
     }();
 
     note("  [...]");
-    note(cat("  value: ", $Format::source(origGen)));
+    note("  value: ", $Format::source(origGen));
     note()
 };
 

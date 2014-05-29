@@ -27,8 +27,8 @@ fn argAnon(arg, .) {
 
 fn argAnonArg(arg1, ., arg2) {
     note("argAnonArg() got");
-    note(cat("  ", $Format::source(arg1)));
-    note(cat("  ", $Format::source(arg2)));
+    note("  ", $Format::source(arg1));
+    note("  ", $Format::source(arg2));
 };
 
 

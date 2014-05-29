@@ -18,7 +18,7 @@ fn expect(name, result, func, args*) {
     def got = func(args*);
     ifNot { <> eq(got, result) }
         {
-            note(cat("Unexpected result: ", $Format::source(got)));
+            note("Unexpected result: ", $Format::source(got));
             die(cat("For: ", name, " ", $Format::source(args)));
         }
 };

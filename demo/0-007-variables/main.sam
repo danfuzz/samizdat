@@ -44,7 +44,7 @@ fn igram(foo) {
     ifIs { <> eq(fizmo, "fizmo") }
         { fizmo := "Yes, fizmo." };
 
-    note(cat("    ", fizmo));
+    note("    ", fizmo);
     fizmo := foo;
 
     ifIs { <> eq(fizmo, "fizmo") }
@@ -53,7 +53,7 @@ fn igram(foo) {
                 { fizmo := "Yes yes, fizmo." }
         };
 
-    note(cat("    ", fizmo));
+    note("    ", fizmo);
 };
 
 

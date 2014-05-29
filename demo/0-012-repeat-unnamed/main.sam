@@ -51,15 +51,15 @@ fn argUstar(arg, .*) {
 
 fn argUoptStar(arg1, .?, arg2*) {
     note("argUoptStar() got:");
-    note(cat("  ", $Format::source(arg1)));
-    note(cat("  ", $Format::source(arg2)));
+    note("  ", $Format::source(arg1));
+    note("  ", $Format::source(arg2));
 };
 
 fn argUoptOptStar(arg1, .?, arg2?, arg3*) {
     note("argUoptOptStar() got:");
-    note(cat("  ", $Format::source(arg1)));
-    note(cat("  ", $Format::source(arg2)));
-    note(cat("  ", $Format::source(arg3)));
+    note("  ", $Format::source(arg1));
+    note("  ", $Format::source(arg2));
+    note("  ", $Format::source(arg3));
 };
 
 

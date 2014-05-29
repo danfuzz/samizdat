@@ -124,5 +124,5 @@ def outMap = $Generator::collectAsMap(
         { value ->
             <> {(value): value, ($Number::add(value, 1)): value, blort: value}
         });
-note(cat("    ", $Format::source(outMap)));
+note("    ", $Format::source(outMap));
 note();
