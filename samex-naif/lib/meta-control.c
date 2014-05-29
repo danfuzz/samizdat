@@ -33,6 +33,7 @@ static char *unifiedString(zint argCount, const zvalue *args,
     char *result = utilAlloc(size);
     for (zint i = 0, at = 0; i < argCount; i++) {
         at += utf8FromString(size - at, &result[at], args[i]);
+        at--;  // Back up over the terminal null byte.
     }
 
     return result;
