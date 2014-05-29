@@ -536,35 +536,46 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         zvalue source = get(node, STR_source);
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
-            die("Could not resolve `import*`.");
+            die("Could not resolve import.");
         } else if (!hasType(resolved, TYPE_module)) {
             die("Invalid resolution result (not a `@module`)");
         }
     }
 
     if (hasType(node, TYPE_importModule)) {
-        // No conversion, just validation.
+        // No conversion, just validation (done above).
         return node;
     } else if (hasType(node, TYPE_importModuleSelection)) {
-        if (get(node, STR_select) != NULL) {
-            // No conversion, just validation.
-            return node;
-        }
-        // When given a `NULL` `resolveFn`, this acts as if all sources
-        // resolve to an empty export map. So if this is a selection import,
-        // it won't actually end up binding anything.
-        zvalue select = EMPTY_LIST;
+        // Get the exports. When given a `NULL` `resolveFn`, this acts as if
+        // all sources resolve to an empty export map, and hence this node
+        // won't bind anything.
+        zvalue exports = EMPTY_LIST;
         zvalue info = get(resolved, STR_info);
         if (info != NULL) {
-            zvalue exports = get(info, STR_exports);
-            if (exports != NULL) {
-                select = GFN_CALL(keyList, exports);
-            }
+            exports = get(info, STR_exports);
         }
-        return makeValue(
-            TYPE_importModuleSelection,
-            collPut(dataOf(node), STR_select, select),
-            NULL);
+
+        zvalue select = get(node, STR_select);
+        if (select != NULL) {
+            // The selection is specified. So no modification needs to be
+            // done to the node, just validation, including of the import in
+            // general (above) and the particular selection (here).
+            zint size = get_size(select);
+            for (zint i = 0; i < size; i++) {
+                zvalue one = nth(select, i);
+                if (get(exports, one) == NULL) {
+                    die("Could not resolve import selection.");
+                }
+            }
+            return node;
+        } else {
+            // It's a wildcard select.
+            select = GFN_CALL(keyList, exports);
+            return makeValue(
+                TYPE_importModuleSelection,
+                collPut(dataOf(node), STR_select, select),
+                NULL);
+        }
     } else {
         die("Bad node type for `resolveImport`.");
     }
