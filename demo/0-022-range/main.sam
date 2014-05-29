@@ -24,7 +24,7 @@ fn msgAll(header, gen) {
     $Generator::filterAll([gen*]) { elem -> msg(elem) };
     note("  [fin]");
     note(cat("  value: ", $Format::source(gen)));
-    note("")
+    note()
 };
 
 ## Outputs ten generated values, with a header and a footer.
@@ -51,7 +51,7 @@ fn msgTen(header, origGen) {
 
     note("  [...]");
     note(cat("  value: ", $Format::source(origGen)));
-    note("")
+    note()
 };
 
 
@@ -74,7 +74,7 @@ msgTen("Open range (333, 0)",
 msgTen("Open range (\"!\", 0)",
     $Range::makeOpenRange("!", 0));
 
-note("");
+note();
 
 msgAll("Closed range (100, 7)",
     $Range::makeClosedRange(100, 7));
@@ -88,7 +88,7 @@ msgAll("Closed range (3, 0, 10)",
 msgAll("Closed range (\"9\", 10, -1)",
     $Range::makeClosedRange("9", 10, -1));
 
-note("");
+note();
 
 msgAll("Inclusive range (5..10)",
     $Range::makeInclusiveRange(5, 10));
@@ -108,7 +108,7 @@ msgAll("Zero-increment inclusive character range",
 msgAll("Empty inclusive range",
     $Range::makeInclusiveRange(10, 9, 1));
 
-note("");
+note();
 
 msgAll("Exclusive range (5..!10)",
     $Range::makeExclusiveRange(5, 10));

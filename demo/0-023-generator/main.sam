@@ -39,7 +39,7 @@ fn msgAll(header, origGen) {
 
     note("  [all]");
     msg(collect(origGen));
-    note("")
+    note()
 };
 
 
@@ -93,7 +93,7 @@ note("generatorPump on FilterGenerator");
 $Generator::generatorPump(
     $Generator::makeFilterGenerator([1, 2, 3, 4])
         { value -> note(cat("    Yay ", $Format::source(value))) });
-note("");
+note();
 
 msgAll("ParaGenerator with open ranges",
     $Generator::makeParaGenerator(
@@ -125,4 +125,4 @@ def outMap = $Generator::collectAsMap(
             <> {(value): value, ($Number::add(value, 1)): value, blort: value}
         });
 note(cat("    ", $Format::source(outMap)));
-note("");
+note();

@@ -38,6 +38,6 @@ export fn main(selfPath, .*) {
     tryFile(cat(selfDir, "/nonexistent-directory/zorch.txt"));
     tryFile(selfDir);
 
-    note("");
+    note();
     note($Format::source($Io0::readDirectory(selfDir)));
 };

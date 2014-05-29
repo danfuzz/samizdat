@@ -116,5 +116,5 @@ fn msg(value) {
 };
 
 msg(countDown(10));
-note("");
+note();
 msg(countDown2(5));

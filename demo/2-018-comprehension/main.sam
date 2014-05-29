@@ -15,7 +15,7 @@
 fn msg(header, gen) {
     note(header);
     $Generator::filterPump(gen) { item <> note("  \%q(item)") };
-    note("")
+    note()
 };
 
 
