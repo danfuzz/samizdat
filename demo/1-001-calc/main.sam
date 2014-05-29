@@ -10,7 +10,7 @@
 
 
 ##
-## Helper Definitions
+## Private Definitions
 ##
 
 ## Map from binary operation names to precedece/function maps.

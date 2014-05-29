@@ -13,7 +13,7 @@ import ./getters :: *;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Calls the given `resolveFn` on the indicated `source`. Complains if the
@@ -42,7 +42,7 @@ fn sourceString(source) {
 
 
 ##
-## Exported functions
+## Exported Definitions
 ##
 
 ## Documented in spec.

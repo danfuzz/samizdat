@@ -10,7 +10,7 @@ import ./Interner :: intern;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## `node.lits(interner)`, implements one layer of literal interning.
@@ -110,7 +110,7 @@ fn @@varRef.lits(interner) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 ## Interns all literal nodes at or under the given `node`, into the given

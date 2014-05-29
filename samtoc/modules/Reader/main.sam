@@ -13,7 +13,7 @@ import core.Lang0;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## The default language module to use.
@@ -21,7 +21,7 @@ def DEFAULT_LANGUAGE = "core.Lang2";
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 ## Reads the given file, parsing it as a layer 0 expression, and returning

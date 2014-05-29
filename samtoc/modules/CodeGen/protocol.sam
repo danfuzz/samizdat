@@ -7,7 +7,7 @@
 ##
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 ## `tree.indent(level, maxColumns)`: Converts the tree to a string, indented

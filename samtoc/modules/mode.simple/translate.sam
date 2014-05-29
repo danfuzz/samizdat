@@ -15,7 +15,7 @@ import ./vars :: localVarDecl, localVarName;
 
 
 ##
-## Exported generics
+## Exported Generics
 ##
 
 ## `node.translate(varsBox)`: Generic function to perform the translation.
@@ -23,7 +23,7 @@ export fn .translate(varsBox);
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Common translation code for variable definition.

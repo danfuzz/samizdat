@@ -13,7 +13,7 @@ import ./constructors1 ::
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Global variable names / regular variable references.
@@ -110,7 +110,7 @@ def REF_get = makeVarRef("get");
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 ## Documented in spec.

@@ -7,7 +7,7 @@
 ##
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 def parSubstitution = {:
@@ -50,7 +50,7 @@ def parTemplate = {:
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 export fn apply(templateString, defs) {

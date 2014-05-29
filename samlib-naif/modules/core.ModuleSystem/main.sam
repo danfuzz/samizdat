@@ -64,7 +64,7 @@ def BOOTSTRAP_MODULES = {
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## See header comment.

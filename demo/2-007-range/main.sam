@@ -8,7 +8,7 @@
 
 
 ##
-## Helper Definitions
+## Private Definitions
 ##
 
 ## Prints out the values yielded by the given generator or list.

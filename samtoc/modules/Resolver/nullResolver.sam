@@ -10,7 +10,7 @@ import ./protocol :: resolve;
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 fn @@Null.resolve(source) {

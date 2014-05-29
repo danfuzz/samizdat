@@ -21,7 +21,7 @@ import ./protocol :: resolve;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Does direct resolution on the given `source`. Only ever called when
@@ -46,7 +46,7 @@ fn directResolve(self, source) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 fn @@ExternalResolver.resolve(source) {

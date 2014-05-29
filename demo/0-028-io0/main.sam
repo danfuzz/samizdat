@@ -13,7 +13,7 @@ import core.Io0;
 
 
 ##
-## Helper Definitions
+## Private Definitions
 ##
 
 ## Checking file type / existence.

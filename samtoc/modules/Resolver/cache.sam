@@ -11,7 +11,7 @@
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 export fn makeCache() {

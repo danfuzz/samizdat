@@ -11,7 +11,7 @@ import ./protocol :: *;
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 export fn genReturn(tree) {
