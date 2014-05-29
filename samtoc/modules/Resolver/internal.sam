@@ -33,11 +33,11 @@ fn directResolve(self, source) {
     def infoPath = "\(basePath).saminfo";
     def sourcePath = "\(basePath).sam";
 
-    <> if (($Io0::fileType(infoPath) | "notFound") == "file") {
+    <> if ($Io0::fileType(infoPath) == "file") {
         ## We found a prefab info file. Read it!
         def info = $Reader::readEvalExpression0(infoPath);
         <> @module{info}
-    } else if (($Io0::fileType(sourcePath) | "notFound") == "file") {
+    } else if ($Io0::fileType(sourcePath) == "file") {
         ## We found a source file. Read it and resolve!
         fn resolveFn(source) { <> self.resolve(source) };
         def tree = $Reader::readProgram(sourcePath, resolveFn);
