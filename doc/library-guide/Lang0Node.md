@@ -288,10 +288,11 @@ expression argument `value`.
 
 Makes a `literal` node.
 
-#### `makeOptValue(node) <> node`
+#### `makeMaybeValue(node) <> node`
 
-Makes an optional-value expression for the given `node`. This effectively
-returns `node?`, or equivalently and more expanded, `optValue { <> node }`.
+Makes a maybe-value expression for the given `node`. This effectively
+returns a node representing `node?` (for the original `node`), or
+equivalently and more expanded, `maybeValue { <> node }`.
 
 #### `makeThunk(node) <> node`
 

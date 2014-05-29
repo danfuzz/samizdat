@@ -149,25 +149,25 @@ sequence of all but the last element of `expression`. `expression[..]` per se
 is somewhat pointless (asserts that `expression` is a sequence and
 returns it) but still allowed.
 
-#### Convert Value-or-void to list &mdash; `expression?`
+#### Maybe value &mdash; `expression?`
 
 In case an expression might legitimately result in a value or void, that
 inner expression can be converted into a list by appending a question mark to
-it. If the inner expression results in a value, the outer expression results
-in a single-element list of the result. If the inner expression results in
-void, the outer expression results in the empty list.
+it. If the inner expression results in a value `v`, then the outer expression
+results in a single-element list of the result `[v]`. If the inner expression
+results in void, the outer expression results in `[]` (the empty list).
 
 #### Interpolate generator or value &mdash; `expression*`
 
-The star postfix operator is, in a way, the converse of the question mark
-postfix operator (above). It takes an expression whose value must be a
+The star postfix operator is, in a way, the converse of the maybe value
+operator (`expression?`, above). It takes an expression whose value must be a
 generator or collection value (list, map, or string) of either zero or one
 element, and results in the sole value or void (the latter given a voided
 generator or an empty collection).
 
 It is valid to use this operator to possibly-yield a value (that is, yield
-either a value or void) from a function. Inside expressions, a void
-interpolation causes the entire expression to evaluate to void.
+either a value or void) from a function. Inside an expression, a void
+interpolation is generally invalid (resulting in terminal error).
 
 **Note:** A postfix star expression as an element of a function call
 argument list, as a collection index, as a list literal element, or as

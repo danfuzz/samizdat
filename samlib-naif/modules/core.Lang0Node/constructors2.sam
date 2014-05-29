@@ -239,8 +239,8 @@ export fn makeInterpolate(node) {
 };
 
 ## Documented in spec.
-export fn makeOptValue(node) {
-    <> makeCall(REFS::optValue, makeThunk(node))
+export fn makeMaybeValue(node) {
+    <> makeCall(REFS::maybeValue, makeThunk(node))
 };
 
 ## Documented in spec.

@@ -284,7 +284,7 @@ def parPostfixOperator = $Peg::makeMainChoice(
         $Peg::makeCode { . <> { node <> makeInterpolate(node) } }),
     $Peg::makeSequence(
         $Peg::makeToken(@@"?"),
-        $Peg::makeCode { . <> { node <> makeOptValue(node) } }));
+        $Peg::makeCode { . <> { node <> makeMaybeValue(node) } }));
 
 ## Documented in spec.
 def parUnaryExpression = $Peg::makeMainSequence(

@@ -31,8 +31,8 @@ export import ./unboundedCollect :: *;
 export
     collect,
     interpolate,
-    nextValue,
-    optValue;
+    maybeValue,
+    nextValue;
 
 ## Re-exported from builtins. Documented in spec.
 export def stdCollect = Generator_stdCollect;

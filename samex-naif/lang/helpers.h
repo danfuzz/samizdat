@@ -128,7 +128,7 @@ zvalue makeVarDefMutable(zvalue name, zvalue value);
 zvalue makeVarRef(zvalue name);
 
 /* Documented in spec. */
-zvalue makeOptValue(zvalue expression);
+zvalue makeMaybeValue(zvalue expression);
 
 /* Documented in spec. */
 zvalue resolveImport(zvalue node, zvalue resolveFn);

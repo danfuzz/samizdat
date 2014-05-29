@@ -15,7 +15,7 @@ exported to the standard global variable environment:
 
 * `collect`
 * `interpolate`
-* `optValue`
+* `maybeValue`
 * `nextValue`
 
 
@@ -79,18 +79,18 @@ fn interpolate(generator) {
 are *not* collection constructor or function call arguments.
 
 
-#### `optValue(function) <> list`
+#### `maybeValue(function) <> list`
 
 Function call helper, to deal with value-or-void situations. This calls
 `function` with no arguments, wrapping its return value in a list and in
 turn returning that list. That is, if `function` returns `value`, then this
-function returns `[value]`, and if `function` returns void, then this
-function returns `[]`.
+function returns `[value]` (a single-element list), and if `function` returns
+void, then this function returns `[]` (the empty list).
 
 This function could be implemented as:
 
 ```
-fn optValue(function) {
+fn maybeValue(function) {
     <> (def v = function()) & [v] | []
 }
 ```
@@ -98,7 +98,7 @@ fn optValue(function) {
 or more primitively as:
 
 ```
-fn optValue(function) {
+fn maybeValue(function) {
     <> ifValue(function, { v <> [v] }, { <> [] })
 }
 ```
