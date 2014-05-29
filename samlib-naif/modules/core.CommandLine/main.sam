@@ -113,14 +113,17 @@ export fn runCommandLine(rawArgs*) {
         | "/dev/stdin";
     def args = argWords[1..] | [];
 
-    def type = $Io0::fileType(filePath)
-        | die("No such file or directory: \%q(filePath)");
-
     ## TODO: These probably don't actually want to refer to `thisLoader`,
     ## as it includes the possibility of loading module-internal files.
-    <> if (type == "directory") {
-        <> $ModuleSystem::run(filePath, thisLoader(), filePath, args*)
-    } else {
-        <> $ModuleSystem::runFile(filePath, thisLoader(), filePath, args*)
+    <> switch ($Io0::fileType(filePath)) {
+        absent: {
+            die("No such file or directory: \%q(filePath)")
+        };
+        directory: {
+            <> $ModuleSystem::run(filePath, thisLoader(), filePath, args*)
+        };
+        default: {
+            <> $ModuleSystem::runFile(filePath, thisLoader(), filePath, args*)
+        }
     }
 };

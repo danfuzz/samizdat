@@ -306,7 +306,7 @@ fn @@Null.resolve(source) {
 fn doExternalResolve(loader, source) {
     def modulePath = cat(loader::basePath, dataOf(source));
 
-    <> ifIs { <> eq($Io0::fileType(modulePath)?, ["directory"]) }
+    <> ifIs { <> eq($Io0::fileType(modulePath), "directory") }
         {
             note(cat("    ", sourceString(source)));
 
@@ -367,13 +367,13 @@ export fn makeExternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
 
     ## Check for existence and directoriness.
-    def pathType = $Io0::fileType(path)?;
-    ifIs { <> eq(pathType, []) }
+    def pathType = $Io0::fileType(path);
+    ifIs { <> eq(pathType, "absent") }
         {
             ## No such file or directory.
             return nextLoader
         };
-    ifNot { <> eq(pathType*, "directory") }
+    ifNot { <> eq(pathType, "directory") }
         {
             die(cat("Module loader path exists but is not a directory: ",
                 path))
@@ -412,14 +412,14 @@ fn doInternalResolve(loader, source) {
     def pathPrefix = cat(loader::basePath, dataOf(source));
     def binPath = cat(pathPrefix, ".samb");
 
-    ifIs { <> eq($Io0::fileType(binPath)?, ["file"]) }
+    ifIs { <> eq($Io0::fileType(binPath), "file") }
         {
             def func = $Code::evalBinary(loader::globals, binPath);
             return func()
         };
 
     def sourcePath = cat(pathPrefix, ".sam");
-    ifIs { <> eq($Io0::fileType(sourcePath)?, ["file"]) }
+    ifIs { <> eq($Io0::fileType(sourcePath), "file") }
         {
             def text = $Io0::readFileUtf8(sourcePath);
             def tree = treeFromText(loader, text);
@@ -439,7 +439,7 @@ fn readResource_type(fullPath) {
 
 ## `readResource` implementation for format `utf8`.
 fn readResource_utf8(fullPath) {
-    ifNot { <> eq($Io0::fileType(fullPath)?, ["file"]) }
+    ifNot { <> eq($Io0::fileType(fullPath), "file") }
         { die(cat("Missing resource: ", fullPath)) };
 
     <> $Io0::readFileUtf8(fullPath)
