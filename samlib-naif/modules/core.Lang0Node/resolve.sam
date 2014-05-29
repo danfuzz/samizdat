@@ -42,7 +42,7 @@ fn sourceString(source) {
 
 
 ##
-## Exported functions
+## Exported Definitions
 ##
 
 ## Documented in spec.

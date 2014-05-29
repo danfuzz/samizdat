@@ -14,7 +14,7 @@ import ./formals ::
 
 
 ##
-## Private functions
+## Private Definitions
 ##
 
 ## Splits a string into a list of strings, dividing on the given character.
@@ -41,7 +41,7 @@ fn splitAtChar(s, ch) {
 
 
 ##
-## Exported functions
+## Exported Definitions
 ##
 
 ## Documented in spec.
