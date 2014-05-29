@@ -31,7 +31,7 @@ import @utf8 ./template.txt;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Indent with the usual width column limit.
@@ -161,7 +161,7 @@ fn mainClosureMaker(node, interner) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 ## Compiles a single file.

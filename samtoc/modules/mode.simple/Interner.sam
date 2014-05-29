@@ -4,7 +4,7 @@
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 export fn makeInterner() {

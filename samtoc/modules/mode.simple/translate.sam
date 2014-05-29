@@ -23,7 +23,7 @@ export fn .translate(varsBox);
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Common translation code for variable definition.

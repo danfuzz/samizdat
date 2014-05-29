@@ -17,7 +17,7 @@ export fn .get_varDefs();
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Extracts and combines the `varDefs` of all the arguments.
@@ -27,7 +27,7 @@ fn catVarDefs(nodes*) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 fn @@apply.get_varDefs() {

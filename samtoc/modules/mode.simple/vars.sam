@@ -10,7 +10,7 @@ import VarCalc :: get_varRefs;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Set-like map of valid C identifier characters.
@@ -167,7 +167,7 @@ fn safeName(prefix, name, optIndex?) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 ## Gets the C variable declaration to use for the variable at the indicated

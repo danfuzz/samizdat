@@ -16,7 +16,7 @@ export fn .get_varRefs();
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Extracts and combines the `varRefs` of all the arguments.
@@ -26,7 +26,7 @@ fn catVarRefs(nodes*) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 fn @@apply.get_varRefs() {

@@ -9,7 +9,7 @@ import VarCalc :: get_varRefs;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## `node.bodies(bodiesBox)`, implements one layer of body collection.
@@ -101,7 +101,7 @@ fn @@varRef.bodies(bodiesBox) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 ## Collects all closure nodes at or under the given one into a list.

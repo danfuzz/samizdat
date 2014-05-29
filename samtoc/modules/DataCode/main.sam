@@ -13,7 +13,7 @@ import CodeGen ::
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Encode the given values as a list of C-style `\xNN` escapes.

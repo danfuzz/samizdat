@@ -13,7 +13,7 @@ import ./getters :: *;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Calls the given `resolveFn` on the indicated `source`. Complains if the

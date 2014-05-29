@@ -10,7 +10,7 @@ import Resolver;
 
 
 ##
-## Private definitions
+## Private Definitions
 ##
 
 ## Default mode to use.
@@ -206,7 +206,7 @@ fn doOne(args, sourcePath) {
 
 
 ##
-## Exported definitions
+## Exported Definitions
 ##
 
 export fn main(selfPath, rawArgs*) {
