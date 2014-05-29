@@ -25,14 +25,33 @@ FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 
-# This skips top-level `boot` file and the `EntityMap` module. The latter is
-# because it its hugeness makes for a slow `samtoc` run, and compiling it
-# doesn't really speed it up anyway.
+LIB_SOURCE_DIR='../samlib-naif'
+
+# Names of all the modules defined in the core library.
+MODULE_NAMES=(
+    $(
+        cd "${LIB_SOURCE_DIR}/modules"
+        find . \
+            -depth 1 \
+            '(' \
+                '(' -type d -print ')' -o \
+                '(' -type f -name '*.saminfo' -print ')' \
+            ')' \
+        | awk '
+        {
+            name = substr($0, 3);
+            if (match(name, /\.saminfo$/)) {
+                name = substr(name, 1, length(name) - 8);
+            }
+            print name;
+        }'
+    ))
+
+# Names of all the source files in the core library.
 SOURCE_FILES=(
-    $(cd ../samlib-naif; find . \
+    $(cd "${LIB_SOURCE_DIR}"; find . \
         -type f \
-        '(' '!' -path '*/core.EntityMap/*' ')' \
-        '(' -name '*.sam' ')' \
+        -name '*.sam' \
         -print
     ))
 
@@ -40,12 +59,9 @@ SOURCE_FILES=(
 # everything in the library source directory not covered by `SOURCE_FILES`,
 # above.
 EXTRA_FILES=(
-    $(cd ../samlib-naif; find . \
+    $(cd "${LIB_SOURCE_DIR}"; find . \
         -type f \
-        '(' \
-            '(' -path '*/core.EntityMap/*' ')' -o \
-            '(' '!' -name '*.sam' ')' \
-        ')' \
+        '(' '!' -name '*.sam' ')' \
         -print
     ))
 
@@ -62,7 +78,7 @@ C_SOURCE_FILES=("${C_SOURCE_FILES[@]/#/${INTERMED}/}") # Add directory prefix.
 
 rule copy \
     --id=copy-files \
-    --in-dir="../samlib-naif" \
+    --in-dir="${LIB_SOURCE_DIR}" \
     --out-dir="${FINAL_LIB}/corelib" \
     -- "${EXTRA_FILES[@]}"
 
@@ -107,7 +123,7 @@ for (( i = 0; i < ${#SOURCE_FILES[@]}; i++ )); do
     groups+=(
         '('
         --req="${outDir}"
-        --req="../samlib-naif/${inFile}"
+        --req="${LIB_SOURCE_DIR}/${inFile}"
         --target="${outFile}"
         --value="${inFile}"
         ')'
@@ -116,8 +132,10 @@ done
 
 samtocCmdStart="$(quote \
     "${OUT}/final/bin/samtoc" \
-    --in-dir="../samlib-naif" \
+    --in-dir="${LIB_SOURCE_DIR}" \
     --out-dir="${INTERMED}" \
+    --no-core-dir \
+    --dir-selection \
     --mode=interp-tree \
     --
 )"
@@ -126,7 +144,7 @@ rule body \
     "${groups[@]}" \
     -- \
     --cmd='printf "Will compile: %s\n" "${VALUES[@]}"' \
-    --cmd="${samtocCmdStart}"' "${VALUES[@]}"'
+    --cmd="${samtocCmdStart}"' . "${VALUES[@]}"'
 
 # Rules to compile each C source file.
 
@@ -150,6 +168,58 @@ for file in "${SOURCE_FILES[@]}"; do
             --runtime=naif --output="${outFile}" "${inFile}")"
 done
 
+# Similar to the C compilation rules above, this set of rules arranges for
+# linkage metainfo to be produced.
+
+inDir="${LIB_SOURCE_DIR}/modules"
+outDir="${FINAL_INCLUDE}/modules"
+
+rule mkdir -- "${outDir}"
+
+groups=()
+for name in "${MODULE_NAMES[@]}"; do
+    inFile="${inDir}/${name}"
+    outFile="${outDir}/${name}.saminfo"
+
+    if [[ -r "${inFile}.saminfo" ]]; then
+        # It's a prefab info file. Arrange for it to get copied.
+        rule copy \
+            --id=make-linkage \
+            --req="${outDir}" \
+            --in-dir="${inDir}" \
+            --out-dir="${outDir}" \
+            -- "${name}.saminfo"
+    else
+        # It's a regular module.
+        groups+=(
+            '('
+            --req="${outDir}"
+            --req="${inFile}/main.sam"
+            --target="${outFile}"
+            --value="${inFile}"
+            ')'
+        )
+    fi
+done
+
+samtocCmdStart="$(quote \
+    "${OUT}/final/bin/samtoc" \
+    --in-dir="${inDir}" \
+    --out-dir="${outDir}" \
+    --no-core-dir \
+    --dir-selection \
+    --mode=linkage \
+    --
+)"
+
+rule body \
+    --id=make-linkage \
+    "${groups[@]}" \
+    -- \
+    --cmd='printf "Need linkage: %s\n" "${VALUES[@]}"' \
+    --cmd="${samtocCmdStart}"' . "${VALUES[@]}"'
+
+
 # Default build rules
 
 rule body \
@@ -160,11 +230,12 @@ rule body \
     --id=build \
     --req-id=external-reqs \
     --req-id=compile-libs \
-    --req-id=copy-files
+    --req-id=copy-files \
+    --req-id=make-linkage
 
 # Rules for cleaning
 
 rule rm \
     --id=clean \
     -- \
-    "${FINAL_LIB}" "${FINAL_INCLUDE}"
+    "${INTERMED}" "${FINAL_LIB}" "${FINAL_INCLUDE}"

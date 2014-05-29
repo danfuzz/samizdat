@@ -25,8 +25,9 @@ import ./nullResolver;
 ## Helper for `splitPaths` which does the actual splitting.
 def parPathList = {:
     (
+        &.
         chars = [! ":"]*
-        (":" | !())
+        (":" | !.)
 
         { <> $Peg::stringFromTokenList(chars) }
     )*
@@ -45,13 +46,13 @@ fn splitPaths(paths) {
 ## Makes a chain of external resolvers corresponding to the given `paths`
 ## string. `paths` must be a colon-separated list of `modules`-style
 ## directories.
-export fn makeResolverChain(paths) {
+export fn makeResolverChain(paths, next) {
     def pathList = splitPaths(paths);
+    var result = next;
 
     for (one in pathList) {
-        note("=== %q(one)")
+        result := makeExternalResolver(one, result)
     };
 
-    ## TODO: Something real.
-    <> makeExternalResolver(pathList[0], null)
-}
+    <> result
+};

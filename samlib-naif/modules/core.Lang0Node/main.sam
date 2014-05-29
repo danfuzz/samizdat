@@ -54,6 +54,7 @@ export import ./getters ::
     get_formals,
     get_function,
     get_id,
+    get_info,
     get_interpolate,
     get_lvalue,
     get_maxArgs,

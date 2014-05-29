@@ -270,8 +270,8 @@ if [[ ${language} != '' ]]; then
     done
 fi
 
-# If we're compiling, then copy the demo to a temporary directory, and
-# compile everything there.
+# If we're compiling, then now's when the compiling gets done, in the
+# temporary directory.
 
 if [[ ${compilerMode} != '' ]]; then
     echo "########## COMPILING: ${name}"
@@ -288,7 +288,7 @@ if [[ ${compilerMode} != '' ]]; then
     "${binDir}/samtoc" \
         --in-dir="${cSrcDir}" --out-dir="${cSrcDir}" \
         --mode="${compilerMode}" \
-        -- "${srcFiles[@]}" \
+        -- . \
         || handleError
 
     for file in "${srcFiles[@]}"; do

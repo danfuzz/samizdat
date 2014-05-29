@@ -22,6 +22,7 @@ import ./getters ::
     get_definedNames,
     get_interpolate,
     get_format,
+    get_info,
     get_name,
     get_nodeValue,
     get_prefix,
@@ -196,8 +197,10 @@ export fn makeImport(baseData) {
 
 ## Documented in spec.
 export fn makeInfoMap(node) {
-    def statements = get_statements(node);
+    ifValue { <> get_info(node) }
+        { info -> return info };
 
+    def statements = get_statements(node);
     var exports = {};
     var imports = {};
     var resources = {};
@@ -218,7 +221,7 @@ export fn makeInfoMap(node) {
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
         def orig = ifValueOr { <> get(resources, source) } { <> [] };
-        def revised = $Collection::keyList({orig*: null, format: null});
+        def revised = $Collection::keyList({orig*: null, (format): null});
         resources := {resources*, (source): revised};
     };
 
@@ -332,6 +335,7 @@ export fn withModuleDefs(node) {
 
     <> @(get_type(node)){
         dataOf(node)*,
+        info,
         yield,
         statements
     }

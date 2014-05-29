@@ -26,6 +26,9 @@ INTERMED="${OUT}/intermed/${PROJECT_NAME}"
 FINAL_BIN="${FINAL}/bin"
 FINAL_LIB="${FINAL}/lib/${binName}"
 
+# Used for linking.
+SAMLIB_CORE_DIR="${BASE_DIR}/samlib-naif"
+
 SOURCE_FILES=($(find . -type f -name '*.sam'))
 EXTRA_FILES=($(find modules -type f '!' -name '*.sam'))
 
@@ -85,13 +88,17 @@ if [[ -x "${FINAL_BIN}/samtoc" ]]; then
 else
     samtocCmdStart="$(quote "${FINAL_BIN}/samex" .)"
 fi
-samtocCmdStart+=" $(quote --out-dir="${INTERMED}" --mode=interp-tree)"
+samtocCmdStart+=" $(quote \
+    --out-dir="${INTERMED}" \
+    --mode=interp-tree \
+    --dir-selection \
+    --core-dir="${SAMLIB_CORE_DIR}")"
 
 rule body \
     "${groups[@]}" \
     -- \
     --cmd='printf "Will compile: %s\n" "${VALUES[@]}"' \
-    --cmd="${samtocCmdStart}"' "${VALUES[@]}"'
+    --cmd="${samtocCmdStart}"' . "${VALUES[@]}"'
 
 # Rules to compile each C source file.
 

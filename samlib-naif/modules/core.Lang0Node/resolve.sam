@@ -22,6 +22,18 @@ import ./getters ::
 ## Private definitions
 ##
 
+## Calls the given `resolveFn` on the indicated `source`. Complains if the
+## result is void. If the result is non-void, validate that it is a `@module`.
+fn resolveAndCheck(resolveFn, source) {
+    <> ifValue { <> resolveFn(source) }
+        { result ->
+            ifNot { <> hasType(result, @@module) }
+                { die("Invalid resolution result (not a `@module`)") };
+            <> result
+        }
+        { die(cat("Could not resolve import: ", sourceString(source))) }
+};
+
 ## Gets a printable human string form for the given `source`. This is
 ## intentionally more verbose than the equivalent (internal) function
 ## in `core.ModuleSystem`.
@@ -45,12 +57,8 @@ export fn .resolveImport(resolveFn);
 ## Documented in spec.
 fn @@importModule.resolveImport(resolveFn) {
     ## No need to modify, just validate.
-    ifNot { <> resolveFn(get_source(this)) }
-        {
-            die(cat(
-                "Could not resolve module import: ",
-                sourceString(source)))
-        };
+    def source = get_source(this);
+    resolveAndCheck(resolveFn, source);
 
     <> this
 };
@@ -59,12 +67,8 @@ fn @@importModule.resolveImport(resolveFn) {
 fn @@importModuleSelection.resolveImport(resolveFn) {
     ## May need to grab the resolved innards, so keep the resolved value
     ## (unlike the other related functions).
-    def resolved = ifValueOr { <> resolveFn(get_source(this)) }
-        {
-            die(cat(
-                "Could not resolve module selection import:",
-                sourceString(source)))
-        };
+    def source = get_source(this);
+    def resolved = resolveAndCheck(resolveFn, source);
 
     <> ifIs { <> get_select(this) }
         {
