@@ -11,11 +11,10 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
-#include "ztype.h"
-
 #include <stdbool.h>
 #include <string.h>
 
+#include "ztype.h"
 
 #include "util/zint.h"    // Int-related declarations.
 

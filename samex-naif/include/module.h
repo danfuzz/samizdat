@@ -11,7 +11,6 @@
 #ifndef _MODULE_H_
 #define _MODULE_H_
 
-
 /*
  * Private definitions
  */

@@ -4,6 +4,8 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include <stdarg.h>
+
 #include "impl.h"
 #include "type/Data.h"
 #include "type/Generic.h"
@@ -13,8 +15,6 @@
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
-
-#include <stdarg.h>
 
 
 /*

@@ -14,10 +14,10 @@
 #ifndef _TYPE_VALUE_H_
 #define _TYPE_VALUE_H_
 
-#include "dat.h"
-
 #include <stdbool.h>
 #include <stddef.h>
+
+#include "dat.h"
 
 
 /** Type value for in-model type `Value`. */

@@ -11,11 +11,11 @@
 #ifndef _TYPE_JUMP_H_
 #define _TYPE_JUMP_H_
 
-#include "dat.h"
-#include "type/Function.h"
-
 #include <setjmp.h>
 #include <stdbool.h>
+
+#include "dat.h"
+#include "type/Function.h"
 
 
 /** Type value for in-model type `Jump`. */

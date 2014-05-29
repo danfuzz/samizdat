@@ -11,9 +11,9 @@
 #ifndef _TYPE_FUNCTION_H_
 #define _TYPE_FUNCTION_H_
 
-#include "dat.h"
-
 #include <stddef.h>
+
+#include "dat.h"
 
 
 /**

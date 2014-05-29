@@ -13,6 +13,7 @@
 
 #include "dat.h"
 
+
 /** Generic `cat(value, more*)`: Documented in spec. */
 extern zvalue GFN_cat;
 
