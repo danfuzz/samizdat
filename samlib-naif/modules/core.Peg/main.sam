@@ -17,7 +17,7 @@ import core.Sequence;
 ## Type Definitions
 ##
 
-## `peg.parse(box, input, items*)`
+## Documented in spec.
 export fn .parse(box, input, items*);
 
 ## Documented in spec.
