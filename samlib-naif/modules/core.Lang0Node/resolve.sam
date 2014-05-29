@@ -59,23 +59,33 @@ fn @@importModule.resolveImport(resolveFn) {
 
 ## Documented in spec.
 fn @@importModuleSelection.resolveImport(resolveFn) {
-    ## May need to grab the resolved innards, so keep the resolved value
+    ## We need to inspect the resolved innards, so keep the resolved value
     ## (unlike the other related functions).
     def source = get_source(this);
     def resolved = resolveAndCheck(resolveFn, source);
 
-    <> ifIs { <> get_select(this) }
-        {
+    ## Get the `info::exports` out of the resolved result. Default to `{}`
+    ## if not present.
+    def info = ifValueOr { <> resolved::info } { <> {} };
+    def exports = ifValueOr { <> info::exports } { <> {} };
+
+    <> ifValue { <> get_select(this) }
+        { select ->
             ## Explicit selection, so no need to return a modified result.
+            ## Just validate that all selected names are available for import.
+            $Generator::filterAll(select) { one ->
+                ifNot { <> get(exports, one) }
+                    {
+                        die(cat(
+                            "Could not resolve import: ",
+                            sourceString(source), " :: ", one))
+                    }
+            };
             <> this
         }
         {
-            ## It's a wildcard import, so grab all the exported names,
-            ## and put them into the result. **Note:** If `info::exports` is
-            ## not available, this treats it as an empty map (so, nothing
-            ## gets selected).
-            def info = ifValueOr { <> resolved::info } { <> {} };
-            def exports = ifValueOr { <> info::exports } { <> {} };
+            ## It's a wildcard import, so return a modified node that lists
+            ## all the exported names.
             def select = $Collection::keyList(exports);
             <> @importModuleSelection{dataOf(this)*, select}
         }
