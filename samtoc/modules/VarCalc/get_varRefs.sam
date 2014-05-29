@@ -2,18 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-## TODO: Replace with `import core.Lang0Node :: *`, once available.
-import core.Lang0Node ::
-    get_actuals,
-    get_formals,
-    get_function,
-    get_name,
-    get_nodeValue,
-    get_source,
-    get_statements,
-    get_yield,
-    get_yieldDef,
-    makeDynamicImport;
+import core.Lang0Node :: *;
 
 import ./get_varDefs :: get_varDefs;
 

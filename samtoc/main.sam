@@ -73,13 +73,22 @@ fn getOutputPath(rawPath, args) {
     return "\(dir)/\(baseName).\(suffix)"
 };
 
-## Handles processing of a single file (regular file, not a directory).
-fn doFile(args, sourcePath) {
+## Checks whether the given `sourcePath` should be processed, based on the
+## "selection" arguments (if any). Returns non-void if the file should be
+## skipped.
+fn shouldSkip(sourcePath, args) {
     if (def selection = args::selection) {
         if (!selection[sourcePath]) {
             note("Skip: \(sourcePath)");
-            return
+            return true
         }
+    };
+};
+
+## Handles processing of a single file (regular file, not a directory).
+fn doFile(args, sourcePath) {
+    if (shouldSkip(sourcePath, args)) {
+        return
     };
 
     def outputPath = getOutputPath(sourcePath, args);
@@ -100,8 +109,13 @@ fn doDirectory(args, sourcePath) {
 
         if (def compileModule = args::modeModule::compileModule) {
             ## The mode wants to handle whole-module compilation itself.
+            if (shouldSkip(sourcePath, args)) {
+                return
+            };
+
             ## The `.x` is to give `getOutputPath` a suffix to remove.
             def outputPath = getOutputPath("\(sourcePath).x", args);
+
             note("    -> \(outputPath)");
             compileModule(args::resolver, sourcePath, outputPath);
             return

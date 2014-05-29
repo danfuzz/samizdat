@@ -9,10 +9,7 @@
 #= language core.Lang0
 
 ## Re-export. Documented in spec.
-export import proto.Box ::
-    canStore,
-    fetch,
-    store;
+export import proto.Box :: *;
 
 ## Re-export. Documented in spec.
 export import ./NullBox :: nullBox;

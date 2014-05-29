@@ -12,15 +12,15 @@ import core.Box ::
     makePromise,
     nullBox;
 
-export import ./FilterGenerator :: makeFilterGenerator;
-export import ./ListWrapGenerator :: makeListWrapGenerator;
-export import ./NullGenerator :: nullGenerator;
-export import ./OptGenerator :: makeOptGenerator;
-export import ./ParaGenerator :: makeParaGenerator;
-export import ./RepeatGenerator :: makeRepeatGenerator;
-export import ./SerialGenerator :: makeSerialGenerator;
-export import ./ValueGenerator :: makeValueGenerator;
-export import ./unboundedCollect :: unboundedCollect;
+export import ./FilterGenerator :: *;
+export import ./ListWrapGenerator :: *;
+export import ./NullGenerator :: *;
+export import ./OptGenerator :: *;
+export import ./ParaGenerator :: *;
+export import ./RepeatGenerator :: *;
+export import ./SerialGenerator :: *;
+export import ./ValueGenerator :: *;
+export import ./unboundedCollect :: *;
 
 
 ##

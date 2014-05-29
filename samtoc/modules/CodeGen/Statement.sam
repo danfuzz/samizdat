@@ -9,7 +9,7 @@
 import ./indentation :: indentation;
 import ./protocol :: flatten, indent;
 
-export fn makeStatement(tree) {
+export fn genStatement(tree) {
     <> @Statement{tree, flat: "\(tree.flatten());"}
 };
 

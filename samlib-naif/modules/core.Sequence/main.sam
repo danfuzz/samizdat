@@ -11,11 +11,7 @@
 import proto.Number;
 
 ## Re-export. Documented in spec.
-export import proto.Sequence ::
-    nth,
-    reverse,
-    sliceExclusive,
-    sliceInclusive;
+export import proto.Sequence :: *;
 
 ## This just binds generics without adding exports.
 import ./SequenceGenerator;

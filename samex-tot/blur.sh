@@ -196,7 +196,7 @@ for name in "${MODULE_NAMES[@]}"; do
             --req="${outDir}"
             --req="${inFile}/main.sam"
             --target="${outFile}"
-            --value="${inFile}"
+            --value="./${name}"
             ')'
         )
     fi
