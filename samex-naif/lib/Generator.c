@@ -29,7 +29,7 @@ FUN_IMPL_DECL(interpolate) {
 }
 
 /* Documented in spec. */
-FUN_IMPL_DECL(optValue) {
+FUN_IMPL_DECL(maybeValue) {
     zvalue function = args[0];
     zvalue value = FUN_CALL(function);
 
