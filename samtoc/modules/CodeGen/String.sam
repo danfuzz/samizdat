@@ -9,6 +9,11 @@
 import ./indentation :: indentation;
 import ./protocol :: flatten, indent;
 
+
+##
+## Exported definitions
+##
+
 fn String.flatten() {
     <> this
 };

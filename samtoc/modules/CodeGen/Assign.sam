@@ -9,6 +9,11 @@
 import ./indentation :: indentation;
 import ./protocol :: flatten, indent;
 
+
+##
+## Exported definitions
+##
+
 export fn genAssign(target, value) {
     def flat = "\(target.flatten()) = \(value.flatten())";
 

@@ -9,6 +9,11 @@
 import ./indentation :: indentation;
 import ./protocol :: flatten, indent;
 
+
+##
+## Exported definitions
+##
+
 export fn genComment(text, optPayload?) {
     <> if (def payload = optPayload*) {
         def flat = "/* \(text) */ \(payload.flatten())";

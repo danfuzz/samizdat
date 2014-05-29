@@ -9,6 +9,11 @@
 import ./indentation :: indentation;
 import ./protocol :: flatten, indent;
 
+
+##
+## Exported definitions
+##
+
 export fn genCall(function, args*) {
     def flat = "\[
         function.flatten(),

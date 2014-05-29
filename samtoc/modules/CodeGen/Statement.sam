@@ -9,6 +9,11 @@
 import ./indentation :: indentation;
 import ./protocol :: flatten, indent;
 
+
+##
+## Exported definitions
+##
+
 export fn genStatement(tree) {
     <> @Statement{tree, flat: "\(tree.flatten());"}
 };
