@@ -47,16 +47,17 @@ char *utf8DupFromString(zvalue string);
 
 /**
  * Encodes the given string as UTF-8 into the given buffer of the
- * given size in bytes. The buffer must be large enough to hold the entire
- * encoded result plus a terminating `'\0'` byte; if not, this function
- * will complain and exit the runtime. To be clear, the result *is*
- * `'\0'`-terminated.
+ * given size in bytes, returning the number of bytes written to. The buffer
+ * must be large enough to hold the entire encoded result plus a terminating
+ * `'\0'` byte; if not, this function will complain and exit the runtime.
+ * To be clear, the result *is* `'\0'`-terminated, and the `'\0'` is included
+ * in the result count.
  *
  * **Note:** If the given string possibly contains any `U+0` code points,
  * then the only "safe" way to use the result is as an explicitly-sized
  * buffer. (For example, `strlen()` might "lie.")
  */
-void utf8FromString(zint resultSize, char *result, zvalue string);
+zint utf8FromString(zint resultSize, char *result, zvalue string);
 
 /**
  * Gets the number of bytes required to encode the given string

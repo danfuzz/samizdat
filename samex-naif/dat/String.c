@@ -177,7 +177,7 @@ char *utf8DupFromString(zvalue string) {
 }
 
 /* Documented in header. */
-void utf8FromString(zint resultSize, char *result, zvalue string) {
+zint utf8FromString(zint resultSize, char *result, zvalue string) {
     assertString(string);
 
     StringInfo *info = getInfo(string);
@@ -192,9 +192,13 @@ void utf8FromString(zint resultSize, char *result, zvalue string) {
     *out = '\0';
     out++;
 
-    if ((out - result) > resultSize) {
+    zint finalSize = out - result;
+
+    if (finalSize > resultSize) {
         die("Buffer too small for utf8-encoded string.");
     }
+
+    return finalSize;
 }
 
 /* Documented in header. */
