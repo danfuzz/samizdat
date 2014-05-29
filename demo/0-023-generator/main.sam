@@ -15,7 +15,7 @@
 
 ## Prints the given value, indented slightly.
 fn msg(value) {
-    note(cat("  ", $Format::source(value)))
+    note("  ", $Format::source(value))
 };
 
 ## Outputs all generated values, with an initial header, followed by
@@ -39,7 +39,7 @@ fn msgAll(header, origGen) {
 
     note("  [all]");
     msg(collect(origGen));
-    note("")
+    note()
 };
 
 
@@ -92,8 +92,8 @@ msgAll("FilterGenerator (square even numbers)",
 note("generatorPump on FilterGenerator");
 $Generator::generatorPump(
     $Generator::makeFilterGenerator([1, 2, 3, 4])
-        { value -> note(cat("    Yay ", $Format::source(value))) });
-note("");
+        { value -> note("    Yay ", $Format::source(value)) });
+note();
 
 msgAll("ParaGenerator with open ranges",
     $Generator::makeParaGenerator(
@@ -124,5 +124,5 @@ def outMap = $Generator::collectAsMap(
         { value ->
             <> {(value): value, ($Number::add(value, 1)): value, blort: value}
         });
-note(cat("    ", $Format::source(outMap)));
-note("");
+note("    ", $Format::source(outMap));
+note();

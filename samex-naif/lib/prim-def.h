@@ -93,7 +93,7 @@ PRIM_DEF(Number_sub,              GFN_sub);
 
 // Primitive functions: directly exported.
 PRIM_FUNC(dataOf,                 1, 2);
-PRIM_FUNC(die,                    0, 1);
+PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(genericBind,            3, 3);
 PRIM_FUNC(get_type,               1, 1);
@@ -113,7 +113,7 @@ PRIM_FUNC(makeUnitypeGeneric,     2, 3);
 PRIM_FUNC(makeValue,              1, 2);
 PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(maybeValue,             1, 1);
-PRIM_FUNC(note,                   1, 1);
+PRIM_FUNC(note,                   0, -1);
 PRIM_FUNC(order,                  2, 2);
 PRIM_FUNC(typeName,               1, 1);
 PRIM_FUNC(typeParent,             1, 1);

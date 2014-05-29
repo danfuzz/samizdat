@@ -373,5 +373,5 @@ def FORMATTERS = {
 ## is defined in terms of other exported functions.
 export fn formatterFor(formatSpec) {
     <> ifValueOr { <> get(FORMATTERS, formatSpec) }
-        { die(cat("Unrecognized format spec: ", source(formatSpec))) }
+        { die("Unrecognized format spec: ", source(formatSpec)) }
 };

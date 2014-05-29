@@ -118,7 +118,7 @@ fn checkExternalSourcePair(lastCh, ch) {
         };
 
     ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
-        { die(cat("Invalid external source: bad character \"", ch, "\"")) }
+        { die("Invalid external source: bad character \"", ch, "\"") }
 };
 
 ## Validates an external `source`. This returns the given `source` if it
@@ -170,7 +170,7 @@ fn checkInternalSourcePair(lastCh, ch) {
         };
 
     ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
-        { die(cat("Invalid internal source: bad character \"", ch, "\"")) }
+        { die("Invalid internal source: bad character \"", ch, "\"") }
 };
 
 ## Validates an internal `source`. This returns the given `source` if it
@@ -263,13 +263,13 @@ export fn .readResource(source, format);
 export fn loadModule(loader, source) {
     <> ifValue { <> resolve(loader, source) }
         { resolved <> resolved::exports }
-        { die(cat("Module not found: ", sourceString(source))) }
+        { die("Module not found: ", sourceString(source)) }
 };
 
 ## Documented in spec.
 export fn loadResource(loader, source, format) {
     <> ifValueOr { <> readResource(loader, source, format) }
-        { die(cat("Resource not found: ", sourceString(source))) }
+        { die("Resource not found: ", sourceString(source)) }
 };
 
 
@@ -308,7 +308,7 @@ fn doExternalResolve(loader, source) {
 
     <> ifIs { <> eq($Io0::fileType(modulePath), "directory") }
         {
-            note(cat("    ", sourceString(source)));
+            note("    ", sourceString(source));
 
             def loader =
                 makeInternalLoader(modulePath, loader::globals, loader);
@@ -345,7 +345,7 @@ fn @@ExternalLoader.resolve(source) {
             ifIs { <> eq(found, "notFound") }
                 { return };
             ifIs { <> eq(found, "loading") }
-                { die(cat("Module load loop: ", sourceString(source))) };
+                { die("Module load loop: ", sourceString(source)) };
         };
 
     updateMapBox(loadedBox, source, "loading");
@@ -374,10 +374,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
             return nextLoader
         };
     ifNot { <> eq(pathType, "directory") }
-        {
-            die(cat("Module loader path exists but is not a directory: ",
-                path))
-        };
+        { die("Module loader path exists but is not a directory: ", path) };
 
     <> @ExternalLoader{
         basePath: cat(path, "/"),
@@ -407,7 +404,7 @@ fn resolveMain(loader) {
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doInternalResolve(loader, source) {
-    note(cat("        ", sourceString(source)));
+    note("        ", sourceString(source));
 
     def pathPrefix = cat(loader::basePath, dataOf(source));
     def binPath = cat(pathPrefix, ".samb");
@@ -426,10 +423,10 @@ fn doInternalResolve(loader, source) {
             def func = $Code::eval(loader::globals, tree);
 
             return ifValueOr { <> func() }
-                { die(cat("No result from module: ", sourcePath)) }
+                { die("No result from module: ", sourcePath) }
         };
 
-    die(cat("Missing code: ", sourcePath));
+    die("Missing code: ", sourcePath);
 };
 
 ## `readResource` implementation for format `type`.
@@ -440,7 +437,7 @@ fn readResource_type(fullPath) {
 ## `readResource` implementation for format `utf8`.
 fn readResource_utf8(fullPath) {
     ifNot { <> eq($Io0::fileType(fullPath), "file") }
-        { die(cat("Missing resource: ", fullPath)) };
+        { die("Missing resource: ", fullPath) };
 
     <> $Io0::readFileUtf8(fullPath)
 };
@@ -463,7 +460,7 @@ fn @@InternalLoader.readResource(source, format) {
 
     <> ifValue { <> get(INTERNAL_READERS, format) }
         { reader <> reader(fullPath) }
-        { die(cat("Unsupported resource format: ", format)) }
+        { die("Unsupported resource format: ", format) }
 };
 
 ## Documented in spec.
@@ -610,5 +607,5 @@ export fn runFile(path, loader, args*) {
     ifIs { <> eq(suffix, "samb") }
         { return runBinaryFile(path, loader, args) };
 
-    die(cat("Unknown file name suffix: ", suffix))
+    die("Unknown file name suffix: ", suffix)
 };

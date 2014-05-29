@@ -18,17 +18,17 @@ fn anon(.) {
 };
 
 fn anonArg(., arg) {
-    note(cat("anonArg() got: ", $Format::source(arg)))
+    note("anonArg() got: ", $Format::source(arg))
 };
 
 fn argAnon(arg, .) {
-    note(cat("argAnon() got: ", $Format::source(arg)))
+    note("argAnon() got: ", $Format::source(arg))
 };
 
 fn argAnonArg(arg1, ., arg2) {
     note("argAnonArg() got");
-    note(cat("  ", $Format::source(arg1)));
-    note(cat("  ", $Format::source(arg2)));
+    note("  ", $Format::source(arg1));
+    note("  ", $Format::source(arg2));
 };
 
 

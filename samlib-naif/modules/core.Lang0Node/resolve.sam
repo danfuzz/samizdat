@@ -25,7 +25,7 @@ fn resolveAndCheck(resolveFn, source) {
                 { die("Invalid resolution result (not a `@module`)") };
             <> result
         }
-        { die(cat("Could not resolve import: ", sourceString(source))) }
+        { die("Could not resolve import: ", sourceString(source)) }
 };
 
 ## Gets a printable human string form for the given `source`. This is
@@ -76,9 +76,8 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
             $Generator::filterAll(select) { one ->
                 ifNot { <> get(exports, one) }
                     {
-                        die(cat(
-                            "Could not resolve import: ",
-                            sourceString(source), " :: ", one))
+                        die("Could not resolve import: ",
+                            sourceString(source), " :: ", one)
                     }
             };
             <> this

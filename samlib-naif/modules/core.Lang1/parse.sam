@@ -27,7 +27,7 @@ fn reportError(pending) {
     note("Pending tokens:");
 
     $Generator::filterPump(pending, $Range::makeInclusiveRange(1, 50))
-        { token, . -> note(cat("    ", $Format::source(token))) };
+        { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
 };
@@ -181,8 +181,7 @@ def parListItem = $Peg::makeMainChoice(
         parIdentifierString,
         $Peg::makeToken(@@":"),
         $Peg::makeCode { ., . ->
-            die(
-                "Mapping syntax not valid as a list item or call argument.")
+            die("Mapping syntax not valid as a list item or call argument.")
         }),
     parExpression);
 

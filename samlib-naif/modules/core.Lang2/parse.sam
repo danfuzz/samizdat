@@ -30,7 +30,7 @@ fn reportError(pending) {
     note("Pending tokens:");
 
     $Generator::filterPump(pending, $Range::makeInclusiveRange(1, 50))
-        { token, . -> note(cat("    ", $Format::source(token))) };
+        { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
 };
@@ -1241,10 +1241,7 @@ def parInterpolatedString = {:
 
                     def call = ifValueOr
                         { <> $Peg::apply(parStringInterpolation, tokens) }
-                        {
-                            die(
-                                "Invalid syntax in string interpolation.")
-                        };
+                        { die("Invalid syntax in string interpolation.") };
 
                     <> makeCallOrApply(formatter,
                         makeInterpolate(makeMaybeValue(call)))
