@@ -19,14 +19,14 @@ fn test(func, v1, v2) {
         { v <> $Format::source(v) }
         { <> "(void)" };
 
-    note(cat(
+    note(
         debugName(func),
         "(",
         $Format::source(v1),
         ", ",
         $Format::source(v2),
         ") => ",
-        result));
+        result);
 };
 
 

@@ -18,8 +18,8 @@ fn expectSame(v1, v2) {
     ifIs { <> eq(v1, v2) }
         { note("Yes.") }
         {
-            note(cat("Different: ",
-                $Format::source(v1), ", ", $Format::source(v2)))
+            note("Different: ",
+                $Format::source(v1), ", ", $Format::source(v2))
         }
 };
 
@@ -27,16 +27,16 @@ fn expectSame(v1, v2) {
 fn expectDifferent(v1, v2) {
     ifIs { <> ne(v1, v2) }
         { note("Yes.") }
-        { note(cat("Same: ", $Format::source(v1))) }
+        { note("Same: ", $Format::source(v1)) }
 };
 
 ## Expects the value to be a core value.
 fn expectCore(v) {
     ifIs { <> hasType(v, DerivedData) }
-        { note(cat("Derived: ", $Format::source(v))) }
+        { note("Derived: ", $Format::source(v)) }
         {
             ifValue { <> dataOf(v) }
-                { data -> note(cat("Bad data: ", $Format::source(data))) }
+                { data -> note("Bad data: ", $Format::source(data)) }
                 { note("Yes.") }
         }
 };
@@ -45,7 +45,7 @@ fn expectCore(v) {
 fn expectDerived(v) {
     ifIs { <> hasType(v, DerivedData) }
         { note("Yes.") }
-        { note(cat("Opaque: ", $Format::source(v))) }
+        { note("Opaque: ", $Format::source(v)) }
 };
 
 
