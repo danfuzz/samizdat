@@ -115,8 +115,8 @@ the usual order for sections:
 
 * Header &mdash; This starts with the standard copyright boilerplate and
   is followed by a comment that describes the general purpose of the
-  file (usually a one-liner). After that are `#includes`, with `"local"`
-  includes before `<system>` includes (separated by a blank line), and
+  file (usually a one-liner). After that are `#includes`, with `<system>`
+  includes before `"local"` includes (separated by a blank line), and
   alphabetized in each subsection.
 
 * Private code, labeled "Private Definitions" &mdash; This is all
