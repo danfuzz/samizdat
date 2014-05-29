@@ -9,7 +9,7 @@
 import ./indentation :: indentation;
 import ./protocol :: flatten, indent;
 
-export fn makeComment(text, optPayload?) {
+export fn genComment(text, optPayload?) {
     <> if (def payload = optPayload*) {
         def flat = "/* \(text) */ \(payload.flatten())";
         <> @Comment{payload, text, flat}

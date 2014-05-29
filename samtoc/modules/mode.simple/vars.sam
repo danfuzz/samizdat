@@ -50,7 +50,7 @@ def FORMAL_PARSERS = {
 ## unnamed formals.
 fn unnamedFormals(clo) {
     <> [ idx in (0..), f in clo.formals ->
-        <> (!f::name) & $CodeGen::makeComment("Unnamed formal \(idx)")
+        <> (!f::name) & $CodeGen::genComment("Unnamed formal \(idx)")
     ];
 };
 
@@ -68,10 +68,10 @@ fn processFormalsWithRepeat(clo, names) {
                 name,
                 origName,
                 preInit: [
-                    $CodeGen::makeAssign("zvalue \(rawName)", parse::parse),
+                    $CodeGen::genAssign("zvalue \(rawName)", parse::parse),
                     parse::update
                 ],
-                init: $CodeGen::makeCall("makeResult", rawName)
+                init: $CodeGen::genCall("makeResult", rawName)
             }
         } else {
             ## Note: Because we have to adjust `argAt` for unnamed formals, we
@@ -110,7 +110,7 @@ fn processFormals(clo) {
                 origName: name,
                 kind: "arg",
                 name: safeName("arg", name, idx),
-                init: $CodeGen::makeCall("makeResult", "args[\(idx)]")
+                init: $CodeGen::genCall("makeResult", "args[\(idx)]")
             }}
     );
 
@@ -209,9 +209,9 @@ export fn processVars(clo) {
     ## Make C local variable defintions for all the variables.
     def varStats = ( name in names ->
         def binding = vars[name];
-        <> $CodeGen::makeComment(
+        <> $CodeGen::genComment(
             "\%q(binding::origName)",
-            $CodeGen::makeAssign("zvalue \(binding::name)", binding::init));
+            $CodeGen::genAssign("zvalue \(binding::name)", binding::init));
     );
 
     <> {
