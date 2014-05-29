@@ -1241,10 +1241,7 @@ def parInterpolatedString = {:
 
                     def call = ifValueOr
                         { <> $Peg::apply(parStringInterpolation, tokens) }
-                        {
-                            die(
-                                "Invalid syntax in string interpolation.")
-                        };
+                        { die("Invalid syntax in string interpolation.") };
 
                     <> makeCallOrApply(formatter,
                         makeInterpolate(makeMaybeValue(call)))

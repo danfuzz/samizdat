@@ -181,8 +181,7 @@ def parListItem = $Peg::makeMainChoice(
         parIdentifierString,
         $Peg::makeToken(@@":"),
         $Peg::makeCode { ., . ->
-            die(
-                "Mapping syntax not valid as a list item or call argument.")
+            die("Mapping syntax not valid as a list item or call argument.")
         }),
     parExpression);
 
