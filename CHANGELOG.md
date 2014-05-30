@@ -96,3 +96,31 @@ Version History
     * Switched to `{: ... :}` for delimiting parser blocks.
 
   * Now built using a "real" build system (Blur).
+
+* 0.7.0 &mdash; 30-may-2014 "Import-Export Business"
+
+  * **Milestone:** Module system rewritten and fully fleshed out. This
+    includes a fairly straightforward semantic model and a set of `import`
+    and `export` statement forms used to get things hooked up.
+
+  * Reworked the `fn` syntax, which is now only used as a statement and can
+    now be used to define and bind generic functions. Expanded the `{ ... }`
+    block syntax to handle the otherwise-orphaned use cases.
+
+  * Progress on the type system. Derived data values are now defined in
+    a saner way, and their respective types have better usability in the
+    language, with the new `@@name` / `@@(name)` syntax.
+
+  * Introduced the concept of and syntax for "directives" in the tokenizer.
+    This is now used instead of filename suffixes to control what language
+    layer is used to parse files.
+
+  * Made the comparison operators return their left-hand side, which is
+    less surprising than the former right-hand side behavior. (The latter
+    made it easier to implement chained comparisons, but that turned out
+    not to be a great thing to optimize for.)
+
+  * File I/O functions reworked to take string paths, just like every other
+    language in the world.
+
+  * Lots of miscellaneous tweaks and additions to the core library.
