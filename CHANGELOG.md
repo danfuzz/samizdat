@@ -56,7 +56,7 @@ Version History
 
   * Docs improvements, and minor cleanup.
 
-* 0.5.0 &mdash; 27-jan-2014 "Scratching the Surface"
+* 0.5.0 &mdash; 27-jan-2014 &mdash; "Scratching the Surface"
 
   * **Milestone:** First round of syntax and semantics changes prompted by
     "real world" experience (in particular, of starting to build `samtoc`).
@@ -70,7 +70,7 @@ Version History
 
   * New semantics for (local) variable binding.
 
-* 0.6.0 &mdash; 14-mar-2014 "Birthday Pi"
+* 0.6.0 &mdash; 14-mar-2014  &mdash; "Birthday Pi"
 
   * **Milestone:** The Samizdat project is now one year old.
 
@@ -97,7 +97,7 @@ Version History
 
   * Now built using a "real" build system (Blur).
 
-* 0.7.0 &mdash; 30-may-2014 "Import-Export Business"
+* 0.7.0 &mdash; 30-may-2014  &mdash; "Import-Export Business"
 
   * **Milestone:** Module system rewritten and fully fleshed out. This
     includes a fairly straightforward semantic model and a set of `import`
