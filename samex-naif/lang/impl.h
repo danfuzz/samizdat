@@ -11,11 +11,12 @@
 #ifndef _IMPL_H_
 #define _IMPL_H_
 
+#include <stdbool.h>
+
 #include "lang.h"
 #include "type/Type.h"
 #include "zlimits.h"
 
-#include <stdbool.h>
 
 /** Simple enumeration for all the evaluable node types. */
 typedef enum {

@@ -8,10 +8,11 @@
  * I/O Functions
  */
 
-#include "util.h"
-
 #include <errno.h>
 #include <unistd.h>
+
+#include "util.h"
+
 
 /*
  * Exported Definitions

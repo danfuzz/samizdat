@@ -8,15 +8,15 @@
  * Figures out the directory where the executable resides.
  */
 
-#include "impl.h"
-#include "util.h"
-
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include "impl.h"
+#include "util.h"
 
 
 /*

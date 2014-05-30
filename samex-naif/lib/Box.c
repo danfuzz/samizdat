@@ -4,10 +4,10 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include <stddef.h>
+
 #include "impl.h"
 #include "type/Box.h"
-
-#include <stddef.h>
 
 
 /*

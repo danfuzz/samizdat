@@ -14,6 +14,7 @@
 #include "lib.h"
 #include "type/Function.h"
 
+
 /* Declarations for all the primitive functions */
 #define PRIM_DEF(name, value) /*empty*/
 #define PRIM_FUNC(name, minArgs, maxArgs) FUN_IMPL_DECL(name)
