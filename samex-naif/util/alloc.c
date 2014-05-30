@@ -4,12 +4,12 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "util.h"
-#include "zlimits.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "util.h"
+#include "zlimits.h"
 
 
 /*

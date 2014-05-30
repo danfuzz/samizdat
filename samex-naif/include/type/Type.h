@@ -11,9 +11,9 @@
 #ifndef _TYPE_TYPE_H_
 #define _TYPE_TYPE_H_
 
-#include "dat.h"
-
 #include <stdbool.h>
+
+#include "dat.h"
 
 
 /** Type value for in-model type `Type`. */

@@ -4,6 +4,8 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include <stdlib.h>
+
 #include "const.h"
 #include "impl.h"
 #include "lib.h"
@@ -13,8 +15,6 @@
 #include "type/String.h"
 #include "type/Type.h"
 #include "util.h"
-
-#include <stdlib.h>
 
 
 /*

@@ -4,12 +4,12 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include <time.h> // Used for "chatty gc."
+
 #include "impl.h"
 #include "type/Function.h"
 #include "type/Value.h"
 #include "zlimits.h"
-
-#include <time.h> // Used for "chatty gc."
 
 
 /*

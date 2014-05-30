@@ -8,13 +8,12 @@
  * Initialization
  */
 
-#include "const.h"
-#include "impl.h"
-#include "type/Type.h"
-
 #include <stddef.h>
 #include <string.h>
 
+#include "const.h"
+#include "impl.h"
+#include "type/Type.h"
 
 
 /*

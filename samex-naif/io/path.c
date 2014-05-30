@@ -4,13 +4,14 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include <string.h>
+
 #include "type/List.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "io.h"
 #include "util.h"
 
-#include <string.h>
 
 /*
  * Private Definitions

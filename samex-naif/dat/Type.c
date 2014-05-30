@@ -4,6 +4,8 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include <stdlib.h>
+
 #include "impl.h"
 #include "type/Builtin.h"
 #include "type/DerivedData.h"
@@ -16,8 +18,6 @@
 #include "type/Uniqlet.h"
 #include "type/Value.h"
 #include "zlimits.h"
-
-#include <stdlib.h>
 
 
 /*

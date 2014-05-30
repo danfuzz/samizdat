@@ -16,10 +16,10 @@
 #ifndef _TYPE_SEQUENCE_H_
 #define _TYPE_SEQUENCE_H_
 
+#include <stdbool.h>
+
 #include "dat.h"
 #include "type/Collection.h" // Because all sequences are collections.
-
-#include <stdbool.h>
 
 
 /** Generic `reverse(sequence)`: Documented in spec. */

@@ -4,12 +4,12 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include <stddef.h>
+
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
-
-#include <stddef.h>
 
 
 /*
