@@ -26,7 +26,7 @@ do { /next ->
     if (fetch(box) == 10) {
         continue
     } else if (fetch(box) == 12) {
-        <next>
+        yield /next
     } else if (fetch(box) == 15) {
         break
     };
@@ -36,7 +36,7 @@ do { /next ->
 def result = do /out {
     store(box, fetch(box) + 1);
     if (fetch(box) == 20) {
-        <out> "igram"
+        yield /out "igram"
     };
     note("Value is \%q(fetch(box)).")
 };

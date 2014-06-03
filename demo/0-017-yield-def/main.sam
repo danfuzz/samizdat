@@ -14,40 +14,40 @@
 ##
 
 def x = { /outx ->
-    <outx> "Hello"
+    yield /outx "Hello"
 }();
 
 note(x);
 
 def y = { arg /outx ->
-    <outx> arg
+    yield /outx arg
 }("and");
 
 note(y);
 
 def z = { /stuff ->
     ifValue { <> "also" }
-        { value -> <stuff> value }
+        { value -> yield /stuff value }
 }();
 
 note(z);
 
 fn foo() { /blort ->
-    <blort> "goodbye"
+    yield /blort "goodbye"
 };
 
 note(foo());
 
 fn bar(arg) { /blort ->
-    <blort> arg
+    yield /blort arg
 };
 
 note(bar("to"));
 
 fn baz(foo) { /out ->
     ifIs { <> eq(foo, 1) }
-        { <out> "you" }
-        { <out> }
+        { yield /out "you" }
+        { yield /out }
 };
 
 note(baz(1));

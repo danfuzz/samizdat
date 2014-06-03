@@ -33,7 +33,7 @@ fn msgAll(header, origGen) {
                     msg(fetch(box));
                     gen := nextGen
                 }
-                { <done> }
+                { yield /done }
         }
     }();
 

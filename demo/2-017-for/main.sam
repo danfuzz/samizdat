@@ -70,7 +70,7 @@ note("Result: \%q(result1)");
 
 note("\nNamed break.");
 def result2 = for /out (x in [1, 2, 3, 4, 5]) {
-    if (x \== 3) { <out> 187 };
+    if (x \== 3) { yield /out 187 };
     print(x)
 };
 note("Result: \%q(result2)");
@@ -83,6 +83,6 @@ for (x in [1, 2, 3, 4, 5]) {
 
 note("\nNamed continue.");
 for (x in [1, 2, 3, 4, 5]) { /next ->
-    if (x \== 3) { <next> };
+    if (x \== 3) { yield /next };
     print(x)
 };

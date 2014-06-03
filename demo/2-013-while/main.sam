@@ -29,7 +29,7 @@ while (fetch(box) < 15) {
 while (fetch(box) < 30) { /next ->
     store(box, fetch(box) + 1);
     if (fetch(box) < 25) {
-        <next>
+        yield /next
     };
     note("Value C is \%q(fetch(box)).")
 };
@@ -47,7 +47,7 @@ note("Result 1 is \%q(result1).");
 def result2 = while /out (fetch(box) < 40) {
     store(box, fetch(box) + 1);
     if (fetch(box) == 38) {
-        <out> "fizmo"
+        yield /out "fizmo"
     };
     note("Value E is \%q(fetch(box)).")
 };

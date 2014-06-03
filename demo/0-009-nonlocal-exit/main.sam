@@ -30,26 +30,26 @@ fn returnVoid2() {
 };
 
 fn returnVoid3() { /out ->
-    <out>
+    yield /out
 };
 
 fn returnVoid4() { /out ->
-    <out> returnVoid1()
+    yield /out returnVoid1()
 };
 
-def returnVoid5 = { /out -> <out> };
+def returnVoid5 = { /out -> yield /out };
 
-def returnVoid6 = { /out -> <out> returnVoid1() };
+def returnVoid6 = { /out -> yield /out returnVoid1() };
 
 fn returnArg1(a) {
     return a
 };
 
 fn returnArg2(a) { /out ->
-    <out> a
+    yield /out a
 };
 
-def returnArg3 = { a /out -> <out> a };
+def returnArg3 = { a /out -> yield /out a };
 
 
 ##

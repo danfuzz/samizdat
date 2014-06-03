@@ -63,7 +63,7 @@ fn applyShuntingYard(initialValue, opValues) {
                 def opVal = applyTop(ops, values);
                 ops := opVal::ops;
                 values := opVal::values;
-                <next>
+                yield /next
             };
             return {ops, values}
         }
