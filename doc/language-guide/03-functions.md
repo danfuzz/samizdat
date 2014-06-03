@@ -110,7 +110,7 @@ Two kinds of yield are applicable in all contexts:
   present at all, so the only reason to use `<>` without an
   expression is in order to be stylisticly unambiguous.
 
-* `<name>` &mdash; Yield from named closure. The `name` must match
+* `yield /name` &mdash; Yield from named yield point. The `name` must match
   the yield definition name of an enclosing closure. (See "Yield Definitions,"
   above.) In addition, the so-named enclosing closure must still be
   in the middle of executing; that is, the enclosing closure must not
@@ -118,7 +118,7 @@ Two kinds of yield are applicable in all contexts:
   yield from a closure that has already yielded.
 
   If there is more than one closure in the lexical environment that has the
-  same name, this form binds to the closest enclosing one.
+  same yield definition name, this form binds to the closest enclosing one.
 
 One kind of yield is applicable in the context of a function definition
 (as defined in this section):
@@ -194,12 +194,12 @@ fn blort(a, b?) { ... }
 fn fizmo(args+) { return args }
 
 ## This is a function that includes a yield definition. Within the body,
-## `<out>` indicates a yield from `igram`. The function takes any number of
-## arguments (including zero).
-fn igram(a*) { /out -> ... <out> ... }
+## `yield /out` indicates a yield from `igram`. The function takes any number
+## of arguments (including zero).
+fn igram(a*) { /out -> ... yield /out ... }
 
 ## The same as the previous, exported from its module.
-export fn igram(a*) { /out -> ... <out> ... }
+export fn igram(a*) { /out -> ... yield /out ... }
 ```
 
 ### Blocks
@@ -237,15 +237,15 @@ Examples:
 def borch = { ... }
 
 ## This is a block that takes no arguments but does define a yield point.
-def frotz = { /leave -> ... <leave> ... }
+def frotz = { /leave -> ... yield /leave ... }
 
 ## This is equivalent to the second example in the "Function Statements"
 ## section, above.
-def fizmo = { args+ /out -> <out> args }
+def fizmo = { args+ /out -> yield /out args }
 
 ## This is one with everything. Note that the variable name (`ignatz` in this
 ## case) does not have to match the closure name (`krazy` in this case).
-def ignatz = { krazy(x, y?, z*) /out -> ... <out> ... }
+def ignatz = { krazy(x, y?, z*) /out -> ... yield /out ... }
 
 ## Since the main body is just a yield, no right-arrow is required.
 def krazy = { x, y <> x + y }

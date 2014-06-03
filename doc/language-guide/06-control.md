@@ -94,7 +94,7 @@ For example:
 ```
 opName /out (expression) {
     ...
-    <out> resultExpression
+    yield /out resultExpression
     ...
 }
 ```
@@ -131,7 +131,7 @@ For example:
 ```
 opName (expression) { /next ->
     ...
-    <next>
+    yield /next
     ...
 }
 ```

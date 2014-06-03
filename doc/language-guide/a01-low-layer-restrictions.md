@@ -78,7 +78,7 @@ The only operators recognized in Layer 0 are:
 Parsing expression operator syntax is implemented in Layer 1.
 Full expression operator syntax is implemented in Layer 2.
 
-**Note:** All yield statements (`<>`, `<out>`, `break`, `continue`, and
+**Note:** All yield statements (`<>`, `yield /name`, `break`, `continue`, and
 `return`) are available at all layers, though `break` and `continue` aren't
 particularly useful in layers 0 or 1.
 

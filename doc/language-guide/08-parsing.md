@@ -309,7 +309,7 @@ For example:
 * The parser `{: f=@foo { <> [[[f]]] } :}` will match the input `[@foo @bar]`,
   resulting in the yielded value `[[[@foo]]]` and a remainder of `[@bar]`.
 
-* The parser `{: f=@foo { /out -> <out> [[[f]]] } :}` is just like the
+* The parser `{: f=@foo { /out -> yield /out [[[f]]] } :}` is just like the
   previous example, except it is written with an explicit yield definition.
 
 #### Running code to produce a parser value
