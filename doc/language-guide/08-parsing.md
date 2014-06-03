@@ -159,7 +159,7 @@ To override the default precedence of the syntax, a parsing expression
 can be placed between parentheses (`( ... )`). The result of a parenthesized
 expression is the same as result of the expression so parenthesized.
 
-For example*
+For example:
 
 * The parser `{: (@foo @bar) :}` is equivalent to the parser
   `{: @foo @bar :}`.
