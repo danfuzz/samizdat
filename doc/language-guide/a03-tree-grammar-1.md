@@ -508,7 +508,7 @@ def parFormalsList = {:
 
 ## Parses program / function declarations.
 def parClosureDeclarations = {:
-    rest = (
+    most = (
         name = (
             n = parName
             { <> {name: n} }
@@ -528,7 +528,7 @@ def parClosureDeclarations = {:
 
     (@"->" | &@"<>")
 
-    { <> {yieldDef*, rest*} }
+    { <> {most*, yieldDef*} }
 |
     { <> {formals: []} }
 :};
