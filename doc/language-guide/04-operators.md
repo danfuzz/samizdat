@@ -159,7 +159,7 @@ results in void, the outer expression results in `[]` (the empty list).
 
 #### Interpolate generator or value &mdash; `expression*`
 
-The star postfix operator is, in a way, the converse of the maybe value
+The star postfix operator is, in a way, the inverse of the maybe value
 operator (`expression?`, above). It takes an expression whose value must be a
 generator or collection value (list, map, or string) of either zero or one
 element, and results in the sole value or void (the latter given a voided
@@ -198,7 +198,7 @@ the runtime).
 It is valid to use this operator to possibly-yield a value (that is, yield
 either a value or void) from a function.
 
-This operator, which is essentially the converse of the double-question
+This operator, which is essentially the inverse of the double-question
 postfix operator, is useful in order to perform conditional operations
 on a boolean variable or data structure element. For example, it can be
 used to take a flag value and incorporate it into a logical
