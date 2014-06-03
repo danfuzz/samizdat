@@ -69,7 +69,7 @@ For example:
 ## => [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
 ## Sum of three ranges.
-[a in (0..4), b in (50..90 by 10), c in (300..700 by 100) =>
+[a in (0..4), b in (50..90 by 10), c in (300..700 by 100) ->
     def sum = a + b + c;
     <> sum
 ]
