@@ -102,7 +102,7 @@ detail in later sections of this guide.
 ### Variables
 
 The most convenient way to name a variable in code is as a regular
-"identifier." An regular identifier consists of an initial ASCII alphabetic
+"identifier." A regular identifier consists of an initial ASCII alphabetic
 character (either lower- or upper-case), underscore (`_`), or dollar sign
 (`$`); followed by zero or more other ASCII alphabetic characters,
 underscores, dollar signs, or ASCII decimal digits.
