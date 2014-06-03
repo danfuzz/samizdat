@@ -78,8 +78,8 @@ than the one that directly contains the yield in question. As with
 argument declarations, functions and blocks differ in where the yield
 definition is placed syntactically.
 
-A yield definition consists of a variable name enclosed in angle
-brackets (`<...>`).
+A yield definition consists of a variable name preceded by a slash
+(`/name`).
 
 
 ### Body
@@ -196,10 +196,10 @@ fn fizmo(args+) { return args }
 ## This is a function that includes a yield definition. Within the body,
 ## `<out>` indicates a yield from `igram`. The function takes any number of
 ## arguments (including zero).
-fn igram(a*) { <out> -> ... <out> ... }
+fn igram(a*) { /out -> ... <out> ... }
 
 ## The same as the previous, exported from its module.
-export fn igram(a*) { <out> -> ... <out> ... }
+export fn igram(a*) { /out -> ... <out> ... }
 ```
 
 ### Blocks
@@ -214,8 +214,6 @@ declaration section and are followed by the main code body.
 
 The declaration section consists of the following, in order:
 
-* The yield definition (optional). See "Yield Definition" above.
-
 * The name (optional), in the form of an identifier in the language.
   This name is only used for debugging purposes. That is, using a name
   here does not cause any variable binding to take place, and particularly
@@ -225,6 +223,8 @@ The declaration section consists of the following, in order:
   individual argument declarations, enclosed in parentheses. If the
   closure has no name, then the parentheses are optional. See "Argument
   Declarations" above for more details.
+
+* The yield definition (optional). See "Yield Definition" above.
 
 * The special token right-arrow (`->`), to indicate the end of
   the declarations. If the entire body of the block is just a direct
@@ -237,15 +237,15 @@ Examples:
 def borch = { ... }
 
 ## This is a block that takes no arguments but does define a yield point.
-def frotz = { <leave> -> ... <leave> ... }
+def frotz = { /leave -> ... <leave> ... }
 
 ## This is equivalent to the second example in the "Function Statements"
 ## section, above.
-def fizmo = { <out> args+ -> <out> args }
+def fizmo = { args+ /out -> <out> args }
 
 ## This is one with everything. Note that the variable name (`ignatz` in this
 ## case) does not have to match the closure name (`krazy` in this case).
-def ignatz = { <out> krazy(x, y?, z*) -> ... <out> ... }
+def ignatz = { krazy(x, y?, z*) /out -> ... <out> ... }
 
 ## Since the main body is just a yield, no right-arrow is required.
 def krazy = { x, y <> x + y }

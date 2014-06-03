@@ -151,7 +151,7 @@ the call `actuals`. The differences are:
   causes the evaluated `function` to be called with no arguments.
 * It is a fatal error (terminating the runtime) if the called function returns.
 
-This is used in the translation of `break`s, `return`s, `<named>` exits, and
+This is used in the translation of `break`s, `return`s, `/named` yields, and
 other nonlocal exit calls.
 
 #### `literal` &mdash; `@literal{value: value}`

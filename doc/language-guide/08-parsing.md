@@ -290,7 +290,7 @@ sets, such as for example `[whitespace punctuation "z"]`.
 
 To cause arbitrary code to run in the context of parsing, place that code
 between regular braces (`{ ... }`). This is a variant of the anonymous
-function syntax, where it is valid to define a yield variable (`<name>`)
+function syntax, where it is valid to define a yield variable (`/name`)
 but not any formal arguments. In order for parsing to succeed, the code must
 yield a value, which then interacts with the rest of the parsing rules as
 would any other parsing result.
@@ -309,7 +309,7 @@ For example:
 * The parser `{: f=@foo { <> [[[f]]] } :}` will match the input `[@foo @bar]`,
   resulting in the yielded value `[[[@foo]]]` and a remainder of `[@bar]`.
 
-* The parser `{: f=@foo { <out> -> <out> [[[f]]] } :}` is just like the
+* The parser `{: f=@foo { /out -> <out> [[[f]]] } :}` is just like the
   previous example, except it is written with an explicit yield definition.
 
 #### Running code to produce a parser value

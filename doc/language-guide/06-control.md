@@ -84,15 +84,15 @@ opName (expression) {
 ```
 
 In addition, all control constructs (including `if`) allow explicit
-yield definition. To do so, place the yield name between angle brackets
-immediately after the control operator name. With this done, the defined
+yield definition. To do so, immediately after the control operator name,
+place a slash followed by the yield name. With this done, the defined
 yield name can be used in nonlocal exit statements to exit from the
 control construct.
 
 For example:
 
 ```
-opName <out> (expression) {
+opName /out (expression) {
     ...
     <out> resultExpression
     ...
@@ -129,7 +129,7 @@ yield name can be used in nonlocal exit statements to continue the loop.
 For example:
 
 ```
-opName (expression) { <next> ->
+opName (expression) { /next ->
     ...
     <next>
     ...
@@ -186,13 +186,13 @@ a `switch` expression. It takes the following form:
 switch (dispatchExpression) {
     testExpression1: {
         block1
-    }
+    };
     testExpression2: {
         block2
-    }
+    };
     default: {
         defaultBlock
-    }
+    };
     else: {
         elseBlock
     }
