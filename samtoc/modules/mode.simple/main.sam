@@ -118,7 +118,7 @@ fn closureBody(cloIdx, clo, literals) {
     def mainStats = [ s in clo.statements ->
         <> translate(s, varsBox)
     ];
-    def yieldNode = (def y = clo.yield)
+    def yieldNode = (def y = clo.yieldNode)
         & translate(y, varsBox)
         | "NULL";
     def yieldStats = makeYieldStatements(yieldNode, varInfo::cleanups);

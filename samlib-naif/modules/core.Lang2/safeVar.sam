@@ -96,7 +96,7 @@ fn @@closure.safeIndex(base) {
         $Lang0Node::get_yieldDef(this)?*);
     def nodesIndex = safeIndexForNodes(base,
         $Lang0Node::get_statements(this)*,
-        $Lang0Node::get_yield(this)?*);
+        $Lang0Node::get_yieldNode(this)?*);
 
     <> maxOf(namesIndex, nodesIndex)
 };

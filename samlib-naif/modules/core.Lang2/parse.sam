@@ -1946,7 +1946,7 @@ def parIfExpression = {:
         ## unwrap it into a straight call, depending on if the original `if`
         ## has a yield def or not.
         <> ifIs { <> eq(yieldDef, {}) }
-            { <> get_yield(mainThunk) }
+            { <> get_yieldNode(mainThunk) }
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.

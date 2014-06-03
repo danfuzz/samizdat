@@ -29,7 +29,7 @@ fn @@call.bodies(bodiesBox) {
 
 fn @@closure.bodies(bodiesBox) {
     def statements = [ s in this.statements <> bodies(s, bodiesBox) ];
-    def optYield = ((def y = this.yield) & bodies(y, bodiesBox))?;
+    def optYield = ((def y = this.yieldNode) & bodies(y, bodiesBox))?;
     def varRefs = this.varRefs;
 
     def newNode = @closure{
