@@ -464,9 +464,8 @@ def parVarDefMutable = {:
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {:
-    @"<"
+    @"/"
     name = parName
-    @">"
     { <> name }
 :};
 
@@ -509,8 +508,6 @@ def parFormalsList = {:
 
 ## Parses program / function declarations.
 def parClosureDeclarations = {:
-    yieldDef = parOptYieldDef
-
     rest = (
         name = (
             n = parName
@@ -526,6 +523,8 @@ def parClosureDeclarations = {:
         formals = parFormalsList
         { <> {formals} }
     )
+
+    yieldDef = parOptYieldDef
 
     (@"->" | &@"<>")
 
