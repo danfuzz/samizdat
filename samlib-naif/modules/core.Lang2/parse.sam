@@ -412,14 +412,13 @@ parAssignExpression := {:
 
 ## Parses a nonlocal exit / return. All of the forms matched by this rule
 ## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a `jump` call in the underlying
+## block, and (b) being represented as a `jump` node in the underlying
 ## tree representation.
 def parNonlocalExit = {:
     name = (
-        @"<"
-        n = parVarRef
-        @">"
-        { <> n }
+        @yield
+        @"/"
+        parVarRef
     |
         op = [@break @continue @return]
         { <> makeVarRef(get_typeName(op)) }
