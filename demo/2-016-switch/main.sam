@@ -12,11 +12,11 @@
 ##
 
 fn powerName(value) {
-    <> switch <out> (value) {
+    <> switch /out (value) {
         1:           { <> "one" };
         2:           { <out> "two" };
         4:           { return "four" };
-        8:           { <outie> -> <outie> "eight" };
+        8:           { /outie -> <outie> "eight" };
         (1..4)*:     { <> "um..." };
         5: 6: blort: { <> "wha?" };
         default:     { <> "uh..." }
@@ -26,7 +26,7 @@ fn powerName(value) {
 fn interpolator(value, keys) {
     <> switch (value) {
         10: 11:      { <> "Constant override" };
-        (value * 0): { <out> -> <out> "Calculated override" };
+        (value * 0): { /out -> <out> "Calculated override" };
         keys*:       { <> "Yes" };
         default:     { <> "No" }
     }

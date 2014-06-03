@@ -21,7 +21,7 @@ do {
     note("Value is \%q(fetch(box)).")
 };
 
-do { <next> ->
+do { /next ->
     store(box, fetch(box) + 1);
     if (fetch(box) == 10) {
         continue
@@ -33,7 +33,7 @@ do { <next> ->
     note("Value is \%q(fetch(box)).")
 };
 
-def result = do <out> {
+def result = do /out {
     store(box, fetch(box) + 1);
     if (fetch(box) == 20) {
         <out> "igram"

@@ -39,6 +39,6 @@ msg(debugString);   ## a generic function
 msg(msg);           ## a named in-language function
 msg({ <> });        ## an anonymous in-language function
 
-{ <out> ->
+{ /out ->
     msg(out);       ## a nonlocal exit function
 }();

@@ -33,7 +33,7 @@ fn msgTen(header, origGen) {
 
     var count = 10;
     var gen = origGen;
-    { <done> ->
+    { /done ->
         loop {
             count := $Number::sub(count, 1);
             ifIs { <> lt(count, 0) }

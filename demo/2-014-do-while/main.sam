@@ -13,7 +13,7 @@
 
 def box = $Box::makeCell(0);
 
-do { <next> ->
+do { /next ->
     store(box, fetch(box) + 1);
     if (fetch(box) == 5) {
         continue
@@ -33,7 +33,7 @@ def result1 = do {
 
 note("Result is \%q(result1).");
 
-def result2 = do <out> {
+def result2 = do /out {
     store(box, fetch(box) + 1);
     if (fetch(box) == 18) {
         <out> "frotz"

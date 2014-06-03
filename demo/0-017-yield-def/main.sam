@@ -13,38 +13,38 @@
 ## Main Tests
 ##
 
-def x = { <outx> ->
+def x = { /outx ->
     <outx> "Hello"
 }();
 
 note(x);
 
-def y = { <outx> arg ->
+def y = { arg /outx ->
     <outx> arg
 }("and");
 
 note(y);
 
-def z = { <stuff> ->
+def z = { /stuff ->
     ifValue { <> "also" }
         { value -> <stuff> value }
 }();
 
 note(z);
 
-fn foo() { <blort> ->
+fn foo() { /blort ->
     <blort> "goodbye"
 };
 
 note(foo());
 
-fn bar(arg) { <blort> ->
+fn bar(arg) { /blort ->
     <blort> arg
 };
 
 note(bar("to"));
 
-fn baz(foo) { <out> ->
+fn baz(foo) { /out ->
     ifIs { <> eq(foo, 1) }
         { <out> "you" }
         { <out> }
