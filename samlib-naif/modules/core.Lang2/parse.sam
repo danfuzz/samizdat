@@ -538,7 +538,7 @@ def parClosureDeclarations = {:
 ## ```
 ## =>
 ## ```
-## { name(arg1, arg2) /return ->
+## { name(arg1, arg2) /\"return" ->
 ##     def out = \"return";
 ##     stat1;
 ##     stat2
@@ -1973,9 +1973,9 @@ def parOptBreakDef = {:
 ## ```
 ## =>
 ## ```
-## { /break ->
+## { /\"break" ->
 ##     def out = \"break";
-##     loop { /continue ->
+##     loop { /\"continue" ->
 ##         ifValue { <> test }
 ##             { name /next -> stat1; stat2 }
 ##             { <break> }
@@ -2019,9 +2019,9 @@ def parWhileExpression = {:
 ## ```
 ## =>
 ## ```
-## { /break ->
+## { /\"break" ->
 ##     def out = \"break";
-##     loop { /continue ->
+##     loop { /\"continue" ->
 ##         { /next -> stat1; stat2 }();
 ##         ifNot { <> expr }
 ##             { <\"break"> }
@@ -2068,9 +2068,9 @@ def parDoExpression = {:
 ## ```
 ## =>
 ## ```
-## { /break ->
+## { /\"break" ->
 ##     def out = \"break";
-##     $Generator::filterPump(expr1, expr2) { name1, name2 /continue ->
+##     $Generator::filterPump(expr1, expr2) { name1, name2 /\"continue" ->
 ##         def next = \"continue";
 ##         stat1; stat2
 ##     }
@@ -2150,7 +2150,7 @@ def CALL_ARG = $Lang0::parseExpression("{ body <> body() }");
 ## ```
 ## =>
 ## ```
-## { /break ->
+## { /\"break" ->
 ##     def out = \"break";
 ##     <> ifValue { <> testExpr }
 ##         { name ->

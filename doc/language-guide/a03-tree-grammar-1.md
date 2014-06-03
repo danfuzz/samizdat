@@ -541,7 +541,7 @@ def parClosureDeclarations = {:
 ## ```
 ## =>
 ## ```
-## { name(arg1, arg2) /return ->
+## { name(arg1, arg2) /\"return" ->
 ##     def out = \"return";
 ##     stat1;
 ##     stat2
