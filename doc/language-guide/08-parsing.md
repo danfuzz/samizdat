@@ -186,10 +186,9 @@ For example:
 #### Matching a single token (terminal)
 
 Tokens are the basic terminals in the context of tree parsing. When
-performing tree parsing, tokens are represented &mdash; hopefully
-unsurprisingly &mdash; as values of the Samizdat type `token`, with the
-token type indicating the parsed type of the token, and the token value
-optionally indicating a data payload.
+performing tree parsing, tokens are represented as derived data values,
+with the derived value type indicating the parsed type of the token, and the
+payload optionall used to hold the token's value.
 
 To match a single token, name the token in one of the shorthand
 token forms `@type` or `@"type"`. This will succeed in matching any
