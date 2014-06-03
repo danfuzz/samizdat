@@ -139,7 +139,7 @@ def parMapping = $Peg::makeMainSequence(
     parExpression,
     $Peg::makeCode { keys, value ->
         <> ifIs { <> eq(keys, []) }
-            { <out> ->
+            { /out ->
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
@@ -720,7 +720,7 @@ def parParserSetString = $Peg::makeMainSequence(
         $Peg::makeSequence(
             $Peg::makeToken(@@".."),
             $Peg::makeToken(@@string),
-            $Peg::makeCode { <out> s, ., end ->
+            $Peg::makeCode { s, ., end /out ->
                 def startChar = dataOf(s);
                 def endChar = dataOf(end);
 

@@ -50,7 +50,7 @@ export fn get_directory(path) {
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
-    { <out> ->
+    { /out ->
         loop {
             at := $Number::sub(at, 1);
 
@@ -85,7 +85,7 @@ export fn get_file(path) {
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
-    { <out> ->
+    { /out ->
         loop {
             at := $Number::sub(at, 1);
 

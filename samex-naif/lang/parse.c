@@ -714,9 +714,8 @@ DEF_PARSE(varDefMutable) {
 DEF_PARSE(yieldDef) {
     MARK();
 
-    MATCH_OR_REJECT(CH_LT);
+    MATCH_OR_REJECT(CH_SLASH);
     zvalue name = PARSE_OR_REJECT(name);
-    MATCH_OR_REJECT(CH_GT);
 
     return name;
 }
@@ -801,14 +800,14 @@ DEF_PARSE(closureDeclarations3) {
     MARK();
 
     // Both of these are always maps (possibly empty).
+    zvalue most = PARSE(closureDeclarations2);
     zvalue yieldDef = PARSE(optYieldDef);
-    zvalue rest = PARSE(closureDeclarations2);
 
     if (PEEK(CH_DIAMOND) == NULL) {
         MATCH_OR_REJECT(CH_RARROW);
     }
 
-    return GFN_CALL(cat, yieldDef, rest);
+    return GFN_CALL(cat, most, yieldDef);
 }
 
 /* Documented in spec. */

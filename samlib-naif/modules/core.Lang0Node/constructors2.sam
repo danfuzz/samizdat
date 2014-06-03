@@ -253,7 +253,7 @@ export fn withDynamicImports(node) {
             return node
         };
 
-    def converted = $Generator::filterAll(rawStatements) { <out> s ->
+    def converted = $Generator::filterAll(rawStatements) { s /out ->
         ifValueOr
             { <> hasType(s, @@importModule) }
             { <> hasType(s, @@importModuleSelection) }
@@ -285,7 +285,7 @@ export fn withModuleDefs(node) {
 
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
-    def statements = $Generator::filterAll(rawStatements) { <out> s ->
+    def statements = $Generator::filterAll(rawStatements) { s /out ->
         ifIs { <> hasType(s, @@exportSelection) }
             { <out> };
 
@@ -345,7 +345,7 @@ export fn withoutTops(node) {
     };
 
     ## This lists all the exported variables that were transformed above.
-    def exports = $Generator::filterAll(rawStatements) { <out> s ->
+    def exports = $Generator::filterAll(rawStatements) { s /out ->
         ifNot { <> hasType(s, @@export) }
             { <out> };
 

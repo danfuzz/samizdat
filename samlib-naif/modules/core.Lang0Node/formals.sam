@@ -32,7 +32,7 @@ export fn formalsMaxArgs(formals) {
 export fn formalsMinArgs(formals) {
     var minArgs = 0;
 
-    $Generator::filterPump(formals) { <next> f ->
+    $Generator::filterPump(formals) { f /next ->
         ifValue { <> f::repeat }
             { rep ->
                 ifIs { <> eq(rep, "?") } { <next> };
