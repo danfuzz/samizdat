@@ -182,6 +182,17 @@
           }
         },
         {
+          "match" : "(yield)  *(\/[_$a-zA-Z][_$a-zA-Z0-9]*)",
+          "captures" : {
+            "1" : {
+              "name" : "keyword.control.samizdat"
+            },
+            "2" : {
+              "name" : "variable.other.samizdat"
+            }
+          }
+        },
+        {
           "match" : "([_$a-zA-Z][_$a-zA-Z0-9]*) *(:?=)(?!=)",
           "captures" : {
             "1" : {
@@ -193,7 +204,7 @@
           }
         },
         {
-          "match" : "([_$a-zA-Z.][^:@\"{}()\\[\\]]*) *(->|(?=<>))",
+          "match" : "([_$a-zA-Z.\/][^:@\"{}()\\[\\]]*) *(->|(?=<>))",
           "captures" : {
             "1" : {
               "name" : "variable.parameter.samizdat"
@@ -261,7 +272,7 @@
           "name" : "keyword.control.export.samizdat"
         },
         {
-          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tbreak|continue|default|do|else|\n\t\t\t\t\t\tfor|if|return|switch|while\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tbreak|continue|default|do|else|\n\t\t\t\t\t\tfor|if|return|switch|while|yield\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
           "name" : "keyword.control.samizdat"
         },
         {
@@ -282,10 +293,6 @@
         },
         {
           "match" : "[_$a-zA-Z][_$a-zA-Z0-9]*",
-          "name" : "variable.other.samizdat"
-        },
-        {
-          "match" : "<[_$a-zA-Z][_$a-zA-Z0-9]*>",
           "name" : "variable.other.samizdat"
         },
         {
