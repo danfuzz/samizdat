@@ -264,13 +264,13 @@ This asserts that both expressions result in numbers, and results in the
 remainder after division of the two numbers (first over second), using
 a truncated division definition.
 
-#### Euclidean Division &mdash; `expression / expression`
+#### Euclidean Division &mdash; `expression // expression`
 
 This asserts that both expressions result in numbers, and results in the
 quotient of the two numbers (first over second), using Euclidean
 division.
 
-#### Euclidean Modulo &mdash; `expression % expression`
+#### Euclidean Modulo &mdash; `expression %% expression`
 
 This asserts that both expressions result in numbers, and results in the
 remainder after division of the two numbers (first over second), using
