@@ -208,7 +208,7 @@ strings.
 To match a single literal character, write the character as a regular
 string literal. To match a sequence of two or more characters, write the
 character list as a multi-character string literal. In both cases, a
-successful match will result in a *single* token (token) whose type
+successful match will result in a *single* token whose type
 tag is the matched string.
 
 For example:
