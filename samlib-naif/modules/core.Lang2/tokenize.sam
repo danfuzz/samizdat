@@ -281,7 +281,7 @@ fn processStringParts(parts) {
     ## `elems` list consisting of alternating multi-character strings and
     ## interpolation maps.
     var elems = [];
-    $Generator::filterPump(parts) { <next> part ->
+    $Generator::filterPump(parts) { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
         ifIs { <> hasType(part, @@error) }

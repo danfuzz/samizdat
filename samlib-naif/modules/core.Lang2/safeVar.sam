@@ -51,7 +51,7 @@ fn maxOf(values*) {
 fn safeIndexForNames(base, names*) {
     def baseSz = get_size(base);
 
-    def indexes = $Generator::filterAll(names) { <next> name ->
+    def indexes = $Generator::filterAll(names) { name /next ->
         ifIs { <> perLt(get_size(name), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.

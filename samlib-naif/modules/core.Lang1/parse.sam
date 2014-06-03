@@ -357,10 +357,9 @@ def parVarDefMutable = $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parYieldDef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"<"),
+    $Peg::makeToken(@@"/"),
     parName,
-    $Peg::makeToken(@@">"),
-    $Peg::makeCode { ., name, . <> name });
+    $Peg::makeCode { ., name <> name });
 
 ## Documented in spec.
 def parOptYieldDef = $Peg::makeMainChoice(
@@ -396,26 +395,26 @@ def parFormalsList = $Peg::makeMainChoice(
 ## Documented in spec.
 def parClosureDeclarations = $Peg::makeMainChoice(
     $Peg::makeSequence(
-        parOptYieldDef,
         $Peg::makeChoice(
             $Peg::makeSequence(
                 $Peg::makeChoice(
                     $Peg::makeSequence(
                         parName,
-                        $Peg::makeCode { ., n <> {name: n} }),
+                        $Peg::makeCode { n <> {name: n} }),
                     $Peg::makeResult({})),
                 $Peg::makeToken(@@"("),
                 parFormalsList,
                 $Peg::makeToken(@@")"),
-                $Peg::makeCode { ., name, ., formals, . <> {name*, formals} }),
+                $Peg::makeCode { name, ., formals, . <> {name*, formals} }),
             $Peg::makeSequence(
                 parFormalsList,
-                $Peg::makeCode { ., formals <> {formals} })),
+                $Peg::makeCode { formals <> {formals} })),
+        parOptYieldDef,
         $Peg::makeChoice(
             $Peg::makeToken(@@"->"),
             $Peg::makeLookaheadSuccess($Peg::makeToken(@@"<>"))),
-        $Peg::makeCode { yieldDef, rest, . ->
-            <> {yieldDef*, rest*}
+        $Peg::makeCode { most, yieldDef, . ->
+            <> {most*, yieldDef*}
         }),
     $Peg::makeResult({formals: []}));
 
