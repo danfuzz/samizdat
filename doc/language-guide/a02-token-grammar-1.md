@@ -28,7 +28,8 @@ import proto.Number;
 ## tokenization syntax of identifiers.
 def KEYWORDS = $Generator::collectAsMap(
     $Generator::makeFilterGenerator([
-        "break", "continue", "def", "export", "fn", "import", "return", "var",
+        "break", "continue", "def", "export", "fn", "import", "return",
+        "var", "yield",
         ## Layer 2 defines additional keywords here.
         []*])
         { name <> {(name): @(@@(name))} });

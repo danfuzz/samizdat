@@ -197,6 +197,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'i': { if (valEq(string, STR_import))   return TOK_import;   }
         case 'r': { if (valEq(string, STR_return))   return TOK_return;   }
         case 'v': { if (valEq(string, STR_var))      return TOK_var;      }
+        case 'y': { if (valEq(string, STR_yield))    return TOK_yield;    }
     }
 
     return makeValue(TYPE_identifier, string, NULL);
