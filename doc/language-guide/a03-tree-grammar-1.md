@@ -180,10 +180,10 @@ def parMapping = {:
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
                 ifValue { <> get_interpolate(value) }
-                    { interp -> <out> interp };
+                    { interp -> yield /out interp };
                 ifIs { <> hasType(value, @@varRef) }
                     {
-                        <out> makeCall(REFS::makeValueMap,
+                        yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
                     }
             }
@@ -934,8 +934,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, get_size(startChar)) } { <out> };
-            ifIs { <> ne(1, get_size(endChar)) } { <out> };
+            ifIs { <> ne(1, get_size(startChar)) } { yield /out };
+            ifIs { <> ne(1, get_size(endChar)) } { yield /out };
 
             <> cat($Range::makeInclusiveRange(startChar, endChar)*)
         }

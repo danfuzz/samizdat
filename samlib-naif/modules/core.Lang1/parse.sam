@@ -318,10 +318,9 @@ parAssignExpression := $Peg::makeMainSequence(
 def parNonlocalExit = $Peg::makeMainSequence(
     $Peg::makeChoice(
         $Peg::makeSequence(
-            $Peg::makeToken(@@"<"),
-            parVarRef,
-            $Peg::makeToken(@@">"),
-            $Peg::makeCode { ., n, . <> n }),
+            $Peg::makeToken(@@yield),
+            $Peg::makeToken(@@"/"),
+            parVarRef),
         $Peg::makeSequence(
             $Peg::makeTokenSet(@@break, @@continue, @@return),
             $Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),

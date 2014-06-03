@@ -55,11 +55,11 @@ fn safeIndexForNames(base, names*) {
         ifIs { <> perLt(get_size(name), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
-                <next>
+                yield /next
             };
-        ifIs { <> perEq(base, name) } { <next> -1 };
+        ifIs { <> perEq(base, name) } { yield /next -1 };
         ifIs { <> perEq(base, $Sequence::sliceExclusive(name, 0, baseSz)) }
-            { <next> intOrVoid($Sequence::sliceInclusive(name, baseSz)) };
+            { yield /next intOrVoid($Sequence::sliceInclusive(name, baseSz)) }
     };
 
     <> ifIs { <> perEq(indexes, []) }

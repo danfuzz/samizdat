@@ -293,7 +293,7 @@ fn processStringParts(parts) {
                 ## First element. No possibility to coalesce, so special-case
                 ## it.
                 elems := [part];
-                <next>
+                yield /next
             };
 
         ifIs { <> hasType(part, String) }
@@ -307,7 +307,7 @@ fn processStringParts(parts) {
                             $Sequence::sliceExclusive(elems, 0)*,
                             cat(lastElem, part)
                         ];
-                        <next>
+                        yield /next
                     }
             };
 
