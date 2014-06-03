@@ -1094,7 +1094,7 @@ DEF_PARSE(programStatement) {
 /* Documented in spec. */
 DEF_PARSE(closureBody) {
     zvalue statements = EMPTY_LIST;
-    zvalue yield = NULL; // `NULL` is ok, as it's optional.
+    zvalue yieldNode = NULL; // `NULL` is ok, as it's optional.
 
     PARSE(optSemicolons);
 
@@ -1124,12 +1124,12 @@ DEF_PARSE(closureBody) {
     if (statement != NULL) {
         statements = listAppend(statements, statement);
     } else {
-        yield = PARSE(yield);
+        yieldNode = PARSE(yield);
     }
 
     PARSE(optSemicolons);
 
-    return mapFrom2(STR_statements, statements, STR_yield, yield);
+    return mapFrom2(STR_statements, statements, STR_yield, yieldNode);
 }
 
 /* Documented in spec. */

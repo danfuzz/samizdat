@@ -37,7 +37,7 @@ fn @@closure.bodies(bodiesBox) {
         ((def name = this.name) & {name} | {})*,
         statements,
         varRefs,
-        ((def yield = optYield*) & {yield} | {})*,
+        ((def yieldNode = optYield*) & {yield: yieldNode} | {})*,
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
     };
 

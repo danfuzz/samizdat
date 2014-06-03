@@ -305,7 +305,7 @@ export fn withModuleDefs(node) {
         { <> makeLiteral({}) }
         { <> makeCall(REFS::cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
-    def yield = makeCall(REFS::makeValue,
+    def yieldNode = makeCall(REFS::makeValue,
         makeLiteral(@@module),
         makeCall(REFS::cat,
             makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
@@ -314,7 +314,7 @@ export fn withModuleDefs(node) {
     <> @(get_type(node)){
         dataOf(node)*,
         info,
-        yield,
+        yield: yieldNode,
         statements
     }
 };
