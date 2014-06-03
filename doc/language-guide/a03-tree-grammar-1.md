@@ -175,7 +175,7 @@ def parMapping = {:
 
     {
         <> ifIs { <> eq(keys, []) }
-            { <out> ->
+            { /out ->
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
@@ -537,11 +537,11 @@ def parClosureDeclarations = {:
 ## The result of this rule is a `@closure` node, translated along these lines:
 ##
 ## ```
-## name(arg1, arg2) { <out> -> stat1; stat2 }
+## name(arg1, arg2) { /out -> stat1; stat2 }
 ## ```
 ## =>
 ## ```
-## { <\"return"> name(arg1, arg2) ->
+## { name(arg1, arg2) /return ->
 ##     def out = \"return";
 ##     stat1;
 ##     stat2
@@ -930,7 +930,7 @@ def parParserSetString = {:
         @".."
         end = @string
 
-        { <out> ->
+        { /out ->
             def startChar = dataOf(s);
             def endChar = dataOf(end);
 
