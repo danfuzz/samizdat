@@ -22,7 +22,8 @@ defined using this syntax with ones defined more "manually."
 ### Details
 
 The following list of parser forms. With respect to the
-expression forms, they are is in precedence, from loosest to tightest.
+expression forms, they are listed in precedence order, from loosest to
+tightest.
 
 #### Parser values
 
