@@ -574,6 +574,23 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
+							<string>keyword.control.samizdat</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>variable.other.samizdat</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(yield)  *(/[_$a-zA-Z][_$a-zA-Z0-9]*)</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
 							<string>variable.definition.samizdat</string>
 						</dict>
 						<key>2</key>
@@ -600,7 +617,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([_$a-zA-Z.][^:@"{}()\[\]]*) *(-&gt;|(?=&lt;&gt;))</string>
+					<string>([_$a-zA-Z./][^:@"{}()\[\]]*) *(-&gt;|(?=&lt;&gt;))</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -696,7 +713,7 @@
 					<string>(?x)
 						\b(
 						break|continue|default|do|else|
-						for|if|return|switch|while
+						for|if|return|switch|while|yield
 						)\b
 					</string>
 				</dict>
@@ -735,12 +752,6 @@
 					<string>variable.other.samizdat</string>
 					<key>match</key>
 					<string>[_$a-zA-Z][_$a-zA-Z0-9]*</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>variable.other.samizdat</string>
-					<key>match</key>
-					<string>&lt;[_$a-zA-Z][_$a-zA-Z0-9]*&gt;</string>
 				</dict>
 				<dict>
 					<key>name</key>
