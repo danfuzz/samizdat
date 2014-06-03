@@ -35,8 +35,8 @@ export fn formalsMinArgs(formals) {
     $Generator::filterPump(formals) { f /next ->
         ifValue { <> f::repeat }
             { rep ->
-                ifIs { <> eq(rep, "?") } { <next> };
-                ifIs { <> eq(rep, "*") } { <next> };
+                ifIs { <> eq(rep, "?") } { yield /next };
+                ifIs { <> eq(rep, "*") } { yield /next };
             };
         minArgs := $Number::add(minArgs, 1)
     };

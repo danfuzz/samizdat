@@ -625,14 +625,14 @@ DEF_PARSE(assignExpression) {
 }
 
 /**
- * Helper for `nonlocalExit`: Parses `@"<" varRef @">"`.
+ * Helper for `nonlocalExit`: Parses `@yield @"/" varRef`.
  */
 DEF_PARSE(nonlocalExit1) {
     MARK();
 
-    MATCH_OR_REJECT(CH_LT);
+    MATCH_OR_REJECT(yield);
+    MATCH_OR_REJECT(CH_SLASH);
     zvalue name = PARSE_OR_REJECT(varRef);
-    MATCH_OR_REJECT(CH_GT);
 
     return name;
 }

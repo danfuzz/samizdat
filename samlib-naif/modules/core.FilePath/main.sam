@@ -55,7 +55,7 @@ export fn get_directory(path) {
             at := $Number::sub(at, 1);
 
             def ch = get(path, at);
-            ifIs { <> ne(ch, "/") } { <out> };
+            ifIs { <> ne(ch, "/") } { yield /out };
             ifIs { <> eq(at, 0) } { return "/" };
         }
     }();
@@ -90,7 +90,7 @@ export fn get_file(path) {
             at := $Number::sub(at, 1);
 
             def ch = get(path, at);
-            ifIs { <> ne(ch, "/") } { <out> };
+            ifIs { <> ne(ch, "/") } { yield /out };
             ifIs { <> eq(at, 0) } { return "/" };
         }
     }();

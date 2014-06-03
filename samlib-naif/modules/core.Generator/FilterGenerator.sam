@@ -55,7 +55,7 @@ fn @@FilterGenerator.nextValue(box) {
                     {
                         ## The filter discarded the value. Iterate!
                         innerGen := nextGen;
-                        <next>
+                        yield /next
                     }
             };
 

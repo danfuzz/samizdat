@@ -260,10 +260,10 @@ export fn withDynamicImports(node) {
             { <> hasType(s, @@importResource) }
             {
                 ## Not an `import*`.
-                <out> [s]
+                yield /out [s]
             };
 
-        <out> makeDynamicImport(s)
+        yield /out makeDynamicImport(s)
     };
 
     def statements = cat(converted*);
@@ -287,7 +287,7 @@ export fn withModuleDefs(node) {
     ## `statements`.
     def statements = $Generator::filterAll(rawStatements) { s /out ->
         ifIs { <> hasType(s, @@exportSelection) }
-            { <out> };
+            { yield /out };
 
         <> ifIs { <> hasType(s, @@export) }
             { <> get_nodeValue(s) }
@@ -347,11 +347,11 @@ export fn withoutTops(node) {
     ## This lists all the exported variables that were transformed above.
     def exports = $Generator::filterAll(rawStatements) { s /out ->
         ifNot { <> hasType(s, @@export) }
-            { <out> };
+            { yield /out };
 
         def defNode = get_nodeValue(s);
         ifNot { <> defNode::top }
-            { <out> };
+            { yield /out };
 
         <> get_name(defNode)
     };
