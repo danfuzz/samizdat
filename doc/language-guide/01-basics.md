@@ -205,7 +205,7 @@ syntax per se.
 
 Relatedly, a result that is a value but without any further specifics is
 written as `.`. If a function can possibly return a value *or* return void,
-that is written as `type | void` or `. | void`. Again, While not proper
+that is written as `type | void` or `. | void`. Again, while not proper
 syntax in the language per se, these are meant to be suggestive of the
 syntax used in function argument declaration and in defining parsers.
 
