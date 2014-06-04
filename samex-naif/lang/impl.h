@@ -28,6 +28,7 @@ typedef enum {
     EVAL_importResource,
     EVAL_jump,
     EVAL_literal,
+    EVAL_maybe,
     EVAL_varBind,
     EVAL_varDef,
     EVAL_varDefMutable,
