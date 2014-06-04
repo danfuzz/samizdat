@@ -66,6 +66,13 @@ extern zvalue TYPE_Closure;
 zvalue execClosure(Frame *frame, zvalue closureNode);
 
 /**
+ * Executes an `expression` form, with `@maybe` nodes allowed. Returns the
+ * evaluated result. Only returns void (represented as `NULL`) if given
+ * a `@maybe` node which evaluated to void.
+ */
+zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
+
+/**
  * Executes an `expression` form, with the result possibly being
  * `void` (represented as `NULL`).
  */

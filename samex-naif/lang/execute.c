@@ -101,6 +101,14 @@ static void execJump(Frame *frame, zvalue jump) {
     funJump(function, arg);
 }
 
+/**
+ * Executes a `maybe` form.
+ */
+static zvalue execMaybe(Frame *frame, zvalue maybe) {
+    zvalue valueExpression = get(maybe, STR_value);
+    return execExpressionVoidOk(frame, valueExpression);
+}
+
 /* Documented in header. */
 static zvalue execVarBind(Frame *frame, zvalue varBind) {
     zvalue name = get(varBind, STR_name);
@@ -151,6 +159,13 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 /*
  * Module Definitions
  */
+
+/* Documented in header. */
+zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
+    return (get_evalType(e) == EVAL_maybe)
+        ? execMaybe(frame, e)
+        : execExpression(frame, e);
+}
 
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
