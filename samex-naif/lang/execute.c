@@ -47,13 +47,15 @@ static zvalue execApply(Frame *frame, zvalue apply) {
     zvalue functionExpr = get(apply, STR_function);
     zvalue actualsExpr = get(apply, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
+    zvalue actuals = (actualsExpr == NULL)
+        ? NULL :
+        execExpressionOrMaybe(frame, actualsExpr);
 
-    if (actualsExpr == NULL) {
-        // If `actuals` isn't present, then it turns into a simple
-        // no-argument function call.
+    if (actuals == NULL) {
+        // If `actuals` isn't present or evaluated to void, then evaluation
+        // becomes a simple no-argument function call.
         return funCall(function, 0, NULL);
     } else {
-        zvalue actuals = execExpression(frame, actualsExpr);
         return funApply(function, actuals);
     }
 }
