@@ -429,7 +429,7 @@ def parNonlocalExit = {:
 
     optValue = parExpression?
 
-    { <> makeJump(name, optValue*) }
+    { <> {yield: makeJump(name, optValue*)} }
 :};
 
 ## Parses a local yield / return.
@@ -782,10 +782,10 @@ def parClosureBody = {:
     )*
 
     last = (
-        s = (parStatement | parNonlocalExit)
+        s = parStatement
         { <> {statements: [s]} }
     |
-        y = parYield
+        y = (parNonlocalExit | parYield)
         { <> {statements: [], y*} }
     |
         { <> {statements: []} }

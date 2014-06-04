@@ -325,7 +325,7 @@ def parNonlocalExit = $Peg::makeMainSequence(
             $Peg::makeTokenSet(@@break, @@continue, @@return),
             $Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
     $Peg::makeOpt(parExpression),
-    $Peg::makeCode { name, optValue <> makeJump(name, optValue*) });
+    $Peg::makeCode { name, optValue <> {yield: makeJump(name, optValue*)} });
 
 ## Documented in spec.
 def parYield = $Peg::makeMainSequence(
@@ -599,10 +599,10 @@ def parClosureBody = $Peg::makeMainSequence(
             $Peg::makeCode { s, . <> s })),
     $Peg::makeChoice(
         $Peg::makeMainSequence(
-            $Peg::makeChoice(parStatement, parNonlocalExit),
+            parStatement,
             $Peg::makeCode { s <> {statements: [s]} }),
         $Peg::makeMainSequence(
-            parYield,
+            $Peg::makeChoice(parNonlocalExit, parYield),
             $Peg::makeCode { y <> {statements: [], y*} }),
         $Peg::makeResult({statements: []})),
     $Peg::makeStar($Peg::makeToken(@@";")),
