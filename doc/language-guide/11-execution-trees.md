@@ -265,12 +265,12 @@ The behavior varies depending on if `value` is supplied in this node:
 
 
 <br><br>
-### Program Nodes
+### Module / Program Nodes
 
 These are nodes that are akin to expression or statement nodes, but are
 limited to be used only as direct as elements of the `statements` list of a
 `closure` node, and only for `closure` nodes which represet the outermost
-layer of a program.
+layer of a module definition (including of a full program definition).
 
 #### `export` &mdash; `@export{value: node}`
 
