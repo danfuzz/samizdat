@@ -47,7 +47,7 @@ fn @@apply.translate(varsBox) {
 
     <> if (def a = this.actuals) {
         def actuals = translate(a, varsBox);
-        if (hasType(a, @@maybe)) {
+        <> if (hasType(a, @@maybe)) {
             <> genCall("funApply", function, actuals)
         } else {
             ## If it's not wrapped in a `@maybe`, we need to guarantee
