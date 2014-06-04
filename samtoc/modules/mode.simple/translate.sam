@@ -43,9 +43,13 @@ fn varDefCommon(name, value, varsBox) {
 };
 
 fn @@apply.translate(varsBox) {
-    <> genCall("funApply",
-        translate(this.function, varsBox),
-        translate(this.actuals, varsBox))
+    def function = translate(this.function, varsBox);
+
+    ## An `@apply` with no `actuals` binding just devolves into a
+    ## zero-argument (but otherwise regular) function call.
+    <> (def a = this.actuals)
+        & genCall("funApply", function, translate(a, varsBox))
+        | genCall("FUN_CALL", function)
 };
 
 fn @@call.translate(varsBox) {

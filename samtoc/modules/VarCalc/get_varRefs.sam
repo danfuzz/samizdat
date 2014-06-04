@@ -30,7 +30,7 @@ fn catVarRefs(nodes*) {
 ##
 
 fn @@apply.get_varRefs() {
-    <> catVarRefs(this.function, this.actuals)
+    <> catVarRefs(this.function, this.actuals?*)
 };
 
 fn @@call.get_varRefs() {

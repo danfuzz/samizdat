@@ -81,7 +81,7 @@ fn safeIndexForNodes(base, nodes*) {
 fn @@apply.safeIndex(base) {
     <> safeIndexForNodes(base,
         $Lang0Node::get_function(this),
-        $Lang0Node::get_actuals(this));
+        $Lang0Node::get_actuals(this)?*);
 };
 
 fn @@call.safeIndex(base) {

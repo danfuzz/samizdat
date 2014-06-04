@@ -17,8 +17,11 @@ fn .bodies(bodiesBox);
 
 fn @@apply.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
-    def actuals = bodies(this.actuals, bodiesBox);
-    <> @apply{function, actuals}
+    def actualsMap = (def a = this.actuals)
+        & {actuals: bodies(a, bodiesBox)}
+        | {};
+
+    <> @apply{actualsMap*, function}
 };
 
 fn @@call.bodies(bodiesBox) {

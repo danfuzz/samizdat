@@ -198,9 +198,11 @@ fn convertValuePayload(node) {
 ## Does parser conversion of an `apply` node.
 fn @@apply.convertPexIn() {
     def function = convertPexIn(get_function(this));
-    def actuals = convertPexIn(get_actuals(this));
+    def actualsMap = ifValue { <> get_actuals(this) }
+        { a <> {actuals: convertPexIn(a)} }
+        { <> {} };
 
-    <> withFinalBindings(this, {function, actuals});
+    <> withFinalBindings(this, {actualsMap*, function});
 };
 
 ## Does parser conversion of a `call` node.

@@ -17,10 +17,12 @@ import ./Interner :: intern;
 fn .lits(interner);
 
 fn @@apply.lits(interner) {
-    <> @apply{
-        function: lits(this.function, interner),
-        actuals: lits(this.actuals, interner)
-    }
+    def function = lits(this.function, interner);
+    def actualsMap = (def a = this.actuals)
+        & {actuals: lits(a, interner)}
+        | {};
+
+    <> @apply{actualsMap*, function}
 };
 
 fn @@call.lits(interner) {
