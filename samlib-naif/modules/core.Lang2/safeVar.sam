@@ -6,7 +6,7 @@
 
 import core.Format;
 import core.Generator;
-import core.Lang0Node;
+import core.Lang0Node :: *;
 import core.Sequence;
 import proto.Number;
 
@@ -80,29 +80,29 @@ fn safeIndexForNodes(base, nodes*) {
 
 fn @@apply.safeIndex(base) {
     <> safeIndexForNodes(base,
-        $Lang0Node::get_function(this),
-        $Lang0Node::get_actuals(this)?*);
+        get_function(this),
+        get_actuals(this)?*);
 };
 
 fn @@call.safeIndex(base) {
     <> safeIndexForNodes(base,
-        $Lang0Node::get_function(this),
-        $Lang0Node::get_actuals(this)*);
+        get_function(this),
+        get_actuals(this)*);
 };
 
 fn @@closure.safeIndex(base) {
     def namesIndex = safeIndexForNames(base,
-        $Lang0Node::get_name(this)?*,
-        $Lang0Node::get_yieldDef(this)?*);
+        get_name(this)?*,
+        get_yieldDef(this)?*);
     def nodesIndex = safeIndexForNodes(base,
-        $Lang0Node::get_statements(this)*,
-        $Lang0Node::get_yieldNode(this)?*);
+        get_statements(this)*,
+        get_yieldNode(this)?*);
 
     <> maxOf(namesIndex, nodesIndex)
 };
 
 fn @@importModule.safeIndex(base) {
-    <> safeIndexForNames(base, $Lang0Node::get_name(this));
+    <> safeIndexForNames(base, get_name(this));
 };
 
 fn @@importModuleSelection.safeIndex(base) {
@@ -115,13 +115,13 @@ fn @@importModuleSelection.safeIndex(base) {
 };
 
 fn @@importResource.safeIndex(base) {
-    <> safeIndexForNames(base, $Lang0Node::get_name(this));
+    <> safeIndexForNames(base, get_name(this));
 };
 
 fn @@jump.safeIndex(base) {
     <> safeIndexForNodes(base,
-        $Lang0Node::get_function(this),
-        $Lang0Node::get_nodeValue(this)?*);
+        get_function(this),
+        get_nodeValue(this)?*);
 };
 
 fn @@literal.safeIndex(base) {
@@ -129,35 +129,35 @@ fn @@literal.safeIndex(base) {
 };
 
 fn @@maybe.safeIndex(base) {
-    <> safeIndexForNodes(base, $Lang0Node::get_nodeValue(this))
+    <> safeIndexForNodes(base, get_nodeValue(this))
 };
 
 fn @@varBind.safeIndex(base) {
     def nameIndex =
-        safeIndexForNames(base, $Lang0Node::get_name(this));
+        safeIndexForNames(base, get_name(this));
     def valueIndex =
-        safeIndexForNodes(base, $Lang0Node::get_nodeValue(this));
+        safeIndexForNodes(base, get_nodeValue(this));
     <> maxOf(nameIndex, valueIndex)
 };
 
 fn @@varDef.safeIndex(base) {
     def nameIndex =
-        safeIndexForNames(base, $Lang0Node::get_name(this));
+        safeIndexForNames(base, get_name(this));
     def valueIndex =
-        safeIndexForNodes(base, $Lang0Node::get_nodeValue(this)?*);
+        safeIndexForNodes(base, get_nodeValue(this)?*);
     <> maxOf(nameIndex, valueIndex)
 };
 
 fn @@varDefMutable.safeIndex(base) {
     def nameIndex =
-        safeIndexForNames(base, $Lang0Node::get_name(this));
+        safeIndexForNames(base, get_name(this));
     def valueIndex =
-        safeIndexForNodes(base, $Lang0Node::get_nodeValue(this)?*);
+        safeIndexForNodes(base, get_nodeValue(this)?*);
     <> maxOf(nameIndex, valueIndex)
 };
 
 fn @@varRef.safeIndex(base) {
-    <> safeIndexForNames(base, $Lang0Node::get_name(this))
+    <> safeIndexForNames(base, get_name(this))
 };
 
 
