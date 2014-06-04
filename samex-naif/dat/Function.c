@@ -101,12 +101,14 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 zvalue funApply(zvalue function, zvalue args) {
-    zint argCount = get_size(args);
-    zvalue argsArray[argCount];
-
-    arrayFromList(argsArray, args);
-
-    return funCall(function, argCount, argsArray);
+    if (args == NULL) {
+        return funCall(function, 0, NULL);
+    } else {
+        zint argCount = get_size(args);
+        zvalue argsArray[argCount];
+        arrayFromList(argsArray, args);
+        return funCall(function, argCount, argsArray);
+    }
 }
 
 /* Documented in header. */

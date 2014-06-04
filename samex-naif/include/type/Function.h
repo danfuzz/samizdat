@@ -48,7 +48,8 @@ extern zvalue GFN_canCall;
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a function (regular or generic), and `args` must be a list.
+ * a function (regular or generic), and `args` must be a list or `NULL`
+ * (the latter treated like an empty list).
  */
 zvalue funApply(zvalue function, zvalue args);
 
