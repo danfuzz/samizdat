@@ -54,6 +54,15 @@ fn @@closure.bodies(bodiesBox) {
     <> result
 };
 
+fn @@export.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    <> @export{value}
+};
+
+fn @@exportSelection.bodies(bodiesBox) {
+    <> this
+};
+
 fn @@importModule.bodies(bodiesBox) {
     <> this
 };

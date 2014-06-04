@@ -46,6 +46,15 @@ fn @@closure.lits(interner) {
     }
 };
 
+fn @@export.lits(interner) {
+    def value = lits(this.nodeValue, interner);
+    <> @export{value}
+};
+
+fn @@exportSelection.lits(interner) {
+    <> this
+};
+
 ## Used as the `source` in `import*` nodes.
 fn @@external.lits(interner) {
     <> @external(interner.intern(dataOf(this)))

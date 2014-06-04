@@ -4,6 +4,7 @@
 
 import core.Lang0Node ::
     get_name,
+    get_nodeValue,
     makeDynamicImport;
 
 
@@ -39,6 +40,14 @@ fn @@call.get_varDefs() {
 };
 
 fn @@closure.get_varDefs() {
+    <> []
+};
+
+fn @@export.get_varDefs() {
+    <> this.nodeValue.varDefs
+};
+
+fn @@exportSelection.get_varDefs() {
     <> []
 };
 

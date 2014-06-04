@@ -101,6 +101,14 @@ fn @@closure.safeIndex(base) {
     <> maxOf(namesIndex, nodesIndex)
 };
 
+fn @@export.safeIndex(base) {
+    <> safeIndex(get_nodeValue(this), base)
+};
+
+fn @@exportSelection.safeIndex(base) {
+    <> safeIndexForNames(base, get_select(this)*)
+};
+
 fn @@importModule.safeIndex(base) {
     <> safeIndexForNames(base, get_name(this));
 };

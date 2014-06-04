@@ -82,6 +82,18 @@ fn @@closureRef.translate(varsBox) {
         )*)
 };
 
+fn @@export.translate(varsBox) {
+    ## This is only needed once we move to a non-dynamic translation of
+    ## imports.
+    die("Cannot translate `@export`.")
+};
+
+fn @@exportSelection.translate(varsBox) {
+    ## This is only needed once we move to a non-dynamic translation of
+    ## imports.
+    die("Cannot translate `@exportSelection`.")
+};
+
 fn @@importModule.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
