@@ -88,14 +88,14 @@ fn closureMaker(cloIdx, clo, literals) {
 
 ## Returns the statements needed to return the given `yield` value, first
 ## performing any given `cleanups`.
-fn makeYieldStatements(yield, cleanups) {
-    <> if (yield \== "NULL") {
-        <> [cleanups*, genReturn(yield)]
+fn makeYieldStatements(yieldValue, cleanups) {
+    <> if (yieldValue \== "NULL") {
+        <> [cleanups*, genReturn(yieldValue)]
     } else if (cleanups == []) {
-        <> [genReturn(yield)]
+        <> [genReturn(yieldValue)]
     } else {
         <> [
-            genAssign("zvalue result", yield),
+            genAssign("zvalue result", yieldValue),
             cleanups*,
             genReturn("result")
         ]
@@ -118,10 +118,10 @@ fn closureBody(cloIdx, clo, literals) {
     def mainStats = [ s in clo.statements ->
         <> translate(s, varsBox)
     ];
-    def yield = (def y = clo.yield)
+    def yieldNode = (def y = clo.yieldNode)
         & translate(y, varsBox)
         | "NULL";
-    def yieldStats = makeYieldStatements(yield, varInfo::cleanups);
+    def yieldStats = makeYieldStatements(yieldNode, varInfo::cleanups);
 
     ## Process all the statements, producing source code.
 

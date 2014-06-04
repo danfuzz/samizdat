@@ -214,11 +214,11 @@ fn @@call.convertPexIn() {
 ## Does parser conversion of a `closure` node.
 fn @@closure.convertPexIn() {
     def statements = convertPexInList(get_statements(this));
-    def yield = ifValue { <> get_yield(this) }
-        { yield <> {yield: convertPexIn(yield)} }
+    def yieldNode = ifValue { <> get_yieldNode(this) }
+        { y <> {yield: convertPexIn(y)} }
         { <> {} };
 
-    <> withBindings(this, {statements, yield*})
+    <> withBindings(this, {statements, yieldNode*})
 };
 
 ## Does parser conversion of an `export` node.

@@ -253,17 +253,17 @@ export fn withDynamicImports(node) {
             return node
         };
 
-    def converted = $Generator::filterAll(rawStatements) { <out> s ->
+    def converted = $Generator::filterAll(rawStatements) { s /out ->
         ifValueOr
             { <> hasType(s, @@importModule) }
             { <> hasType(s, @@importModuleSelection) }
             { <> hasType(s, @@importResource) }
             {
                 ## Not an `import*`.
-                <out> [s]
+                yield /out [s]
             };
 
-        <out> makeDynamicImport(s)
+        yield /out makeDynamicImport(s)
     };
 
     def statements = cat(converted*);
@@ -272,7 +272,7 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifIs { get_yield(node) }
+    ifIs { get_yieldNode(node) }
         { die("Invalid node for `withModuleDefs` (has `yield`).") };
 
     ## This is the metainformation of the module. In addition to being
@@ -285,9 +285,9 @@ export fn withModuleDefs(node) {
 
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
-    def statements = $Generator::filterAll(rawStatements) { <out> s ->
+    def statements = $Generator::filterAll(rawStatements) { s /out ->
         ifIs { <> hasType(s, @@exportSelection) }
-            { <out> };
+            { yield /out };
 
         <> ifIs { <> hasType(s, @@export) }
             { <> get_nodeValue(s) }
@@ -305,7 +305,7 @@ export fn withModuleDefs(node) {
         { <> makeLiteral({}) }
         { <> makeCall(REFS::cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
-    def yield = makeCall(REFS::makeValue,
+    def yieldNode = makeCall(REFS::makeValue,
         makeLiteral(@@module),
         makeCall(REFS::cat,
             makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
@@ -314,7 +314,7 @@ export fn withModuleDefs(node) {
     <> @(get_type(node)){
         dataOf(node)*,
         info,
-        yield,
+        yield: yieldNode,
         statements
     }
 };
@@ -345,13 +345,13 @@ export fn withoutTops(node) {
     };
 
     ## This lists all the exported variables that were transformed above.
-    def exports = $Generator::filterAll(rawStatements) { <out> s ->
+    def exports = $Generator::filterAll(rawStatements) { s /out ->
         ifNot { <> hasType(s, @@export) }
-            { <out> };
+            { yield /out };
 
         def defNode = get_nodeValue(s);
         ifNot { <> defNode::top }
-            { <out> };
+            { yield /out };
 
         <> get_name(defNode)
     };

@@ -30,7 +30,8 @@ import proto.Number;
 ## tokenization syntax of identifiers.
 def KEYWORDS = $Generator::collectAsMap(
     $Generator::makeFilterGenerator([
-        "break", "continue", "def", "export", "fn", "import", "return", "var",
+        "break", "continue", "def", "export", "fn", "import", "return",
+        "var", "yield",
         ## Layer 2 defines additional keywords here.
         "by", "default", "do", "else", "for", "if", "in", "module", "switch",
         "while"])
@@ -281,7 +282,7 @@ fn processStringParts(parts) {
     ## `elems` list consisting of alternating multi-character strings and
     ## interpolation maps.
     var elems = [];
-    $Generator::filterPump(parts) { <next> part ->
+    $Generator::filterPump(parts) { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
         ifIs { <> hasType(part, @@error) }
@@ -292,7 +293,7 @@ fn processStringParts(parts) {
                 ## First element. No possibility to coalesce, so special-case
                 ## it.
                 elems := [part];
-                <next>
+                yield /next
             };
 
         ifIs { <> hasType(part, String) }
@@ -306,7 +307,7 @@ fn processStringParts(parts) {
                             $Sequence::sliceExclusive(elems, 0)*,
                             cat(lastElem, part)
                         ];
-                        <next>
+                        yield /next
                     }
             };
 

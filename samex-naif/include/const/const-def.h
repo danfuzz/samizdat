@@ -50,6 +50,7 @@ TOK(fn,                    "fn");
 TOK(import,                "import");
 TOK(return,                "return");
 TOK(var,                   "var");
+TOK(yield,                 "yield");
 
 TYP(MapGenerator,          "MapGenerator");
 TYP(SequenceGenerator,     "SequenceGenerator");
@@ -118,5 +119,4 @@ STR(this,                  "this");
 STR(top,                   "top");
 STR(type,                  "type");
 STR(value,                 "value");
-STR(yield,                 "yield");
 STR(yieldDef,              "yieldDef");

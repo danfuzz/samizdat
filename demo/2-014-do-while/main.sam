@@ -13,12 +13,12 @@
 
 def box = $Box::makeCell(0);
 
-do { <next> ->
+do { /next ->
     store(box, fetch(box) + 1);
     if (fetch(box) == 5) {
         continue
     } else if (fetch(box) == 7) {
-        <next>
+        yield /next
     };
     note("Value is \%q(fetch(box)).")
 } while (fetch(box) < 10);
@@ -33,10 +33,10 @@ def result1 = do {
 
 note("Result is \%q(result1).");
 
-def result2 = do <out> {
+def result2 = do /out {
     store(box, fetch(box) + 1);
     if (fetch(box) == 18) {
-        <out> "frotz"
+        yield /out "frotz"
     };
     note("Value is \%q(fetch(box)).")
 } while (fetch(box) < 20);

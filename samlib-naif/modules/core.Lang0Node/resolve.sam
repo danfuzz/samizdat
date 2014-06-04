@@ -100,7 +100,7 @@ fn @@importResource.resolveImport(resolveFn) {
 export fn withResolvedImports(node, resolveFn) {
     def rawStatements = get_statements(node);
 
-    def converted = $Generator::filterAll(rawStatements) { <out> s ->
+    def converted = $Generator::filterAll(rawStatements) { s /out ->
         var exported = false;
         var defNode = s;
         ifIs { <> hasType(s, @@export) }
@@ -115,7 +115,7 @@ export fn withResolvedImports(node, resolveFn) {
             { <> hasType(defNode, @@importResource) }
             {
                 ## Not an `import*` node.
-                <out> s
+                yield /out s
             };
 
         def resolved = resolveImport(defNode, resolveFn);

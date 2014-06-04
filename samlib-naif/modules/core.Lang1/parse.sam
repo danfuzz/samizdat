@@ -139,15 +139,15 @@ def parMapping = $Peg::makeMainSequence(
     parExpression,
     $Peg::makeCode { keys, value ->
         <> ifIs { <> eq(keys, []) }
-            { <out> ->
+            { /out ->
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
                 ifValue { <> get_interpolate(value) }
-                    { interp -> <out> interp };
+                    { interp -> yield /out interp };
                 ifIs { <> hasType(value, @@varRef) }
                     {
-                        <out> makeCall(REFS::makeValueMap,
+                        yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
                     }
             }
@@ -318,10 +318,9 @@ parAssignExpression := $Peg::makeMainSequence(
 def parNonlocalExit = $Peg::makeMainSequence(
     $Peg::makeChoice(
         $Peg::makeSequence(
-            $Peg::makeToken(@@"<"),
-            parVarRef,
-            $Peg::makeToken(@@">"),
-            $Peg::makeCode { ., n, . <> n }),
+            $Peg::makeToken(@@yield),
+            $Peg::makeToken(@@"/"),
+            parVarRef),
         $Peg::makeSequence(
             $Peg::makeTokenSet(@@break, @@continue, @@return),
             $Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
@@ -357,10 +356,9 @@ def parVarDefMutable = $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parYieldDef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"<"),
+    $Peg::makeToken(@@"/"),
     parName,
-    $Peg::makeToken(@@">"),
-    $Peg::makeCode { ., name, . <> name });
+    $Peg::makeCode { ., name <> name });
 
 ## Documented in spec.
 def parOptYieldDef = $Peg::makeMainChoice(
@@ -396,26 +394,26 @@ def parFormalsList = $Peg::makeMainChoice(
 ## Documented in spec.
 def parClosureDeclarations = $Peg::makeMainChoice(
     $Peg::makeSequence(
-        parOptYieldDef,
         $Peg::makeChoice(
             $Peg::makeSequence(
                 $Peg::makeChoice(
                     $Peg::makeSequence(
                         parName,
-                        $Peg::makeCode { ., n <> {name: n} }),
+                        $Peg::makeCode { n <> {name: n} }),
                     $Peg::makeResult({})),
                 $Peg::makeToken(@@"("),
                 parFormalsList,
                 $Peg::makeToken(@@")"),
-                $Peg::makeCode { ., name, ., formals, . <> {name*, formals} }),
+                $Peg::makeCode { name, ., formals, . <> {name*, formals} }),
             $Peg::makeSequence(
                 parFormalsList,
-                $Peg::makeCode { ., formals <> {formals} })),
+                $Peg::makeCode { formals <> {formals} })),
+        parOptYieldDef,
         $Peg::makeChoice(
             $Peg::makeToken(@@"->"),
             $Peg::makeLookaheadSuccess($Peg::makeToken(@@"<>"))),
-        $Peg::makeCode { yieldDef, rest, . ->
-            <> {yieldDef*, rest*}
+        $Peg::makeCode { most, yieldDef, . ->
+            <> {most*, yieldDef*}
         }),
     $Peg::makeResult({formals: []}));
 
@@ -721,13 +719,13 @@ def parParserSetString = $Peg::makeMainSequence(
         $Peg::makeSequence(
             $Peg::makeToken(@@".."),
             $Peg::makeToken(@@string),
-            $Peg::makeCode { <out> s, ., end ->
+            $Peg::makeCode { s, ., end /out ->
                 def startChar = dataOf(s);
                 def endChar = dataOf(end);
 
                 ## Reject non-single-character strings.
-                ifIs { <> ne(1, get_size(startChar)) } { <out> };
-                ifIs { <> ne(1, get_size(endChar)) } { <out> };
+                ifIs { <> ne(1, get_size(startChar)) } { yield /out };
+                ifIs { <> ne(1, get_size(endChar)) } { yield /out };
 
                 <> cat($Range::makeInclusiveRange(startChar, endChar)*)
             }),

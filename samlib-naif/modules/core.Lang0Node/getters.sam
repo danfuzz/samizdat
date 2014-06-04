@@ -185,7 +185,7 @@ export fn get_statements(node) {
 };
 
 ## Documented in spec.
-export fn get_yield(node) {
+export fn get_yieldNode(node) {
     <> node::yield
 };
 

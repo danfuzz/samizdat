@@ -625,14 +625,14 @@ DEF_PARSE(assignExpression) {
 }
 
 /**
- * Helper for `nonlocalExit`: Parses `@"<" varRef @">"`.
+ * Helper for `nonlocalExit`: Parses `@yield @"/" varRef`.
  */
 DEF_PARSE(nonlocalExit1) {
     MARK();
 
-    MATCH_OR_REJECT(CH_LT);
+    MATCH_OR_REJECT(yield);
+    MATCH_OR_REJECT(CH_SLASH);
     zvalue name = PARSE_OR_REJECT(varRef);
-    MATCH_OR_REJECT(CH_GT);
 
     return name;
 }
@@ -714,9 +714,8 @@ DEF_PARSE(varDefMutable) {
 DEF_PARSE(yieldDef) {
     MARK();
 
-    MATCH_OR_REJECT(CH_LT);
+    MATCH_OR_REJECT(CH_SLASH);
     zvalue name = PARSE_OR_REJECT(name);
-    MATCH_OR_REJECT(CH_GT);
 
     return name;
 }
@@ -801,14 +800,14 @@ DEF_PARSE(closureDeclarations3) {
     MARK();
 
     // Both of these are always maps (possibly empty).
+    zvalue most = PARSE(closureDeclarations2);
     zvalue yieldDef = PARSE(optYieldDef);
-    zvalue rest = PARSE(closureDeclarations2);
 
     if (PEEK(CH_DIAMOND) == NULL) {
         MATCH_OR_REJECT(CH_RARROW);
     }
 
-    return GFN_CALL(cat, yieldDef, rest);
+    return GFN_CALL(cat, most, yieldDef);
 }
 
 /* Documented in spec. */
@@ -1095,7 +1094,7 @@ DEF_PARSE(programStatement) {
 /* Documented in spec. */
 DEF_PARSE(closureBody) {
     zvalue statements = EMPTY_LIST;
-    zvalue yield = NULL; // `NULL` is ok, as it's optional.
+    zvalue yieldNode = NULL; // `NULL` is ok, as it's optional.
 
     PARSE(optSemicolons);
 
@@ -1125,12 +1124,12 @@ DEF_PARSE(closureBody) {
     if (statement != NULL) {
         statements = listAppend(statements, statement);
     } else {
-        yield = PARSE(yield);
+        yieldNode = PARSE(yield);
     }
 
     PARSE(optSemicolons);
 
-    return mapFrom2(STR_statements, statements, STR_yield, yield);
+    return mapFrom2(STR_statements, statements, STR_yield, yieldNode);
 }
 
 /* Documented in spec. */

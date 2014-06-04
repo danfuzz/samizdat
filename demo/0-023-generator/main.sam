@@ -25,7 +25,7 @@ fn msgAll(header, origGen) {
     note(header);
 
     var gen = origGen;
-    { <done> ->
+    { /done ->
         loop {
             def box = $Box::makePromise();
             <> ifValue { <> nextValue(gen, box) }
@@ -33,7 +33,7 @@ fn msgAll(header, origGen) {
                     msg(fetch(box));
                     gen := nextGen
                 }
-                { <done> }
+                { yield /done }
         }
     }();
 

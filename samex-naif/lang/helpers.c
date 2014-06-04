@@ -628,7 +628,7 @@ zvalue withModuleDefs(zvalue node) {
         ? makeLiteral(EMPTY_MAP)
         : makeCall(REFS(cat), exportValues);
     zvalue yieldInfo = makeLiteral(info);
-    zvalue yield = makeCall(REFS(makeValue),
+    zvalue yieldNode = makeCall(REFS(makeValue),
         listFrom2(
             makeLiteral(TYPE_module),
             makeCall(REFS(cat),
@@ -645,7 +645,7 @@ zvalue withModuleDefs(zvalue node) {
             mapFrom3(
                 STR_info,       info,
                 STR_statements, statements,
-                STR_yield,      yield)),
+                STR_yield,      yieldNode)),
         NULL);
 }
 

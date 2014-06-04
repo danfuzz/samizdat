@@ -29,9 +29,9 @@ fn func1(x) {
 
 note(func1(10));
 
-fn func2(x*) { <out> ->
+fn func2(x*) { /out ->
     print("func2", x);
-    <out> "func2"
+    yield /out "func2"
 };
 
 note(func2(20, "twenty"));

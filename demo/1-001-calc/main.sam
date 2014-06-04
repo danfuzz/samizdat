@@ -63,7 +63,7 @@ fn applyShuntingYard(initialValue, opValues) {
     fn reducePending(origOps, origValues, precedence) {
         var ops = origOps;
         var values = origValues;
-        loop { <next> ->
+        loop { /next ->
             ifValue { <> $Sequence::nthFromEnd(ops, 0) }
                 { lastOp ->
                     ifIs { <> ge(lastOp::precedence, precedence) }
@@ -71,7 +71,7 @@ fn applyShuntingYard(initialValue, opValues) {
                             def opVal = applyTop(ops, values);
                             ops := opVal::ops;
                             values := opVal::values;
-                            <next>
+                            yield /next
                         }
                 };
             return {ops, values}

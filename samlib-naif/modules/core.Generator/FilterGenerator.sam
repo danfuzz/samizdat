@@ -41,7 +41,7 @@ fn @@FilterGenerator.nextValue(box) {
     ## allowed to yield void to indicate a generated value is to
     ## be discarded.
     var innerGen = this::generator;
-    loop { <next> ->
+    loop { /next ->
         def innerBox = $Box::makePromise();
 
         ifValue { <> nextValue(innerGen, innerBox) }
@@ -55,7 +55,7 @@ fn @@FilterGenerator.nextValue(box) {
                     {
                         ## The filter discarded the value. Iterate!
                         innerGen := nextGen;
-                        <next>
+                        yield /next
                     }
             };
 

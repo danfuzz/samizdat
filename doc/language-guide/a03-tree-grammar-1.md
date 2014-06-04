@@ -175,15 +175,15 @@ def parMapping = {:
 
     {
         <> ifIs { <> eq(keys, []) }
-            { <out> ->
+            { /out ->
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
                 ifValue { <> get_interpolate(value) }
-                    { interp -> <out> interp };
+                    { interp -> yield /out interp };
                 ifIs { <> hasType(value, @@varRef) }
                     {
-                        <out> makeCall(REFS::makeValueMap,
+                        yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
                     }
             }
@@ -415,14 +415,13 @@ parAssignExpression := {:
 
 ## Parses a nonlocal exit / return. All of the forms matched by this rule
 ## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a `jump` call in the underlying
+## block, and (b) being represented as a `jump` node in the underlying
 ## tree representation.
 def parNonlocalExit = {:
     name = (
-        @"<"
-        n = parVarRef
-        @">"
-        { <> n }
+        @yield
+        @"/"
+        parVarRef
     |
         op = [@break @continue @return]
         { <> makeVarRef(get_typeName(op)) }
@@ -464,9 +463,8 @@ def parVarDefMutable = {:
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {:
-    @"<"
+    @"/"
     name = parName
-    @">"
     { <> name }
 :};
 
@@ -509,9 +507,7 @@ def parFormalsList = {:
 
 ## Parses program / function declarations.
 def parClosureDeclarations = {:
-    yieldDef = parOptYieldDef
-
-    rest = (
+    most = (
         name = (
             n = parName
             { <> {name: n} }
@@ -527,9 +523,11 @@ def parClosureDeclarations = {:
         { <> {formals} }
     )
 
+    yieldDef = parOptYieldDef
+
     (@"->" | &@"<>")
 
-    { <> {yieldDef*, rest*} }
+    { <> {most*, yieldDef*} }
 |
     { <> {formals: []} }
 :};
@@ -538,11 +536,11 @@ def parClosureDeclarations = {:
 ## The result of this rule is a `@closure` node, translated along these lines:
 ##
 ## ```
-## name(arg1, arg2) { <out> -> stat1; stat2 }
+## name(arg1, arg2) { /out -> stat1; stat2 }
 ## ```
 ## =>
 ## ```
-## { <\"return"> name(arg1, arg2) ->
+## { name(arg1, arg2) /\"return" ->
 ##     def out = \"return";
 ##     stat1;
 ##     stat2
@@ -931,13 +929,13 @@ def parParserSetString = {:
         @".."
         end = @string
 
-        { <out> ->
+        { /out ->
             def startChar = dataOf(s);
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, get_size(startChar)) } { <out> };
-            ifIs { <> ne(1, get_size(endChar)) } { <out> };
+            ifIs { <> ne(1, get_size(startChar)) } { yield /out };
+            ifIs { <> ne(1, get_size(endChar)) } { yield /out };
 
             <> cat($Range::makeInclusiveRange(startChar, endChar)*)
         }

@@ -160,9 +160,12 @@ Gets the source of an import. This is applicable to nodes of type
 
 Gets the statement list of a `closure` node.
 
-#### `get_yield(node) <> node | void`
+#### `get_yieldNode(node) <> node | void`
 
 Gets the yield of a `closure` node, if any.
+
+**Note:** This is named `yieldNode` and not just `yield` to avoid conflict
+with the token of the latter name.
 
 #### `get_yieldDef(node) <> . | void`
 
