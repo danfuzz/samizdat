@@ -179,6 +179,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_literal: return get(e, STR_value);
         case EVAL_varBind: return execVarBind(frame, e);
         case EVAL_varRef:  return execVarRef(frame, e);
+        case EVAL_void:    return NULL;
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }

@@ -75,6 +75,7 @@ TYP(varBind,               "varBind");
 TYP(varDef,                "varDef");
 TYP(varDefMutable,         "varDefMutable");
 TYP(varRef,                "varRef");
+TYP(void,                  "void");
 
 STR(absent,                "absent");
 STR(actuals,               "actuals");
