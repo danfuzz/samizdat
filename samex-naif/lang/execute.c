@@ -225,5 +225,5 @@ zvalue langEval0(zvalue env, zvalue node) {
     env = mapFromArray(size, mappings);
 
     frameInit(&frame, NULL, NULL, env);
-    return execExpressionVoidOk(&frame, node);
+    return execExpressionOrMaybe(&frame, node);
 }

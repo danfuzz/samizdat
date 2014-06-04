@@ -21,7 +21,8 @@
 /**
  * Evaluates the given expression node in the given variable
  * environment. Returns the evaluated value of the expression, which
- * will be `NULL` if the expression did not yield a value.
+ * will be `NULL` if the expression evaluated to void (only possible when
+ * given a `@maybe` node).
  *
  * See the spec for details on expression nodes.
  */
