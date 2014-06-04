@@ -45,11 +45,20 @@ fn varDefCommon(name, value, varsBox) {
 fn @@apply.translate(varsBox) {
     def function = translate(this.function, varsBox);
 
-    ## An `@apply` with no `actuals` binding just devolves into a
-    ## zero-argument (but otherwise regular) function call.
-    <> (def a = this.actuals)
-        & genCall("funApply", function, translate(a, varsBox))
-        | genCall("FUN_CALL", function)
+    <> if (def a = this.actuals) {
+        def actuals = translate(a, varsBox);
+        if (hasType(a, @@maybe)) {
+            <> genCall("funApply", function, actuals)
+        } else {
+            ## If it's not wrapped in a `@maybe`, we need to guarantee
+            ## non-void.
+            <> genCall("funApply", function, genCall("datNonVoid", actuals))
+        }
+    } else {
+        ## No `actuals` binding. It just devolves into a no-argument (but
+        ## otherwise regular) function call.
+        <> genCall("FUN_CALL", function)
+    }
 };
 
 fn @@call.translate(varsBox) {
@@ -76,19 +85,19 @@ fn @@closureRef.translate(varsBox) {
 fn @@importModule.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("Cannot translate `@importModule`.");
+    die("Cannot translate `@importModule`.")
 };
 
 fn @@importModuleSelection.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("Cannot translate `@importModuleSelection`.");
+    die("Cannot translate `@importModuleSelection`.")
 };
 
 fn @@importResource.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("Cannot translate `@importResource`.");
+    die("Cannot translate `@importResource`.")
 };
 
 fn @@jump.translate(varsBox) {
@@ -101,6 +110,13 @@ fn @@jump.translate(varsBox) {
 
 fn @@literalRef.translate(varsBox) {
     <> "LIT_\(this.id)"
+};
+
+fn @@maybe.translate(varsBox) {
+    ## We should never encounter one of these. They should all end up
+    ## getting handled as special cases on the node types where a `@maybe`
+    ## is valid.
+    die("Invalid use of `@maybe`.")
 };
 
 fn @@varBind.translate(varsBox) {
