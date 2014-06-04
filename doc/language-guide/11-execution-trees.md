@@ -23,31 +23,34 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `apply` &mdash; `@apply{function: expression, actuals: expression}`
+#### `apply` &mdash; `@apply{function: expression, (actuals: expression)?}`
 
 * `function: expression` (required) &mdash; An expression node that must
   evaluate to a function.
 
-* `actuals: expression` (required) &mdash; An expression node that must
+* `actuals: expression` (optional) &mdash; An expression node that must
   evaluate to a list.
 
 This represents a function call.
 
-When run, first `function` and then `actuals` are evaluated. If `function`
-evaluates to something other than a function, the call fails (terminating
-the runtime). If `actuals` evaluates to anything but a list, the call fails
-(terminating the runtime).
+When run, first `function` and then `actuals` (if present) are evaluated.
+If `function` evaluates to something other than a function, the call fails
+(terminating the runtime). If `actuals` is present and evaluates to anything
+but void or a list, the call fails (terminating the runtime). `actuals` is
+allowed to evaluate to void *only* if it is a `@maybe` node; any other void
+evaluation is a fatal error.
 
 If there are too few actual arguments for the function (e.g., the
 function requires at least three arguments, but only two are passed),
 then the call fails (terminating the runtime).
 
 With all the above prerequisites passed, the function is applied to
-the evaluated actuals as its arguments, and the result of evaluation
+the evaluated actuals as its arguments (applied with no arguments if
+`actuals` evaluated to void), and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-**Note:** The difference between this and `call` is that the latter
+**Note:** The main difference between this and `call` is that the latter
 takes its `actuals` as a list in the node itself.
 
 #### `call` &mdash; `@call{function: expression, actuals: [expression*], (interpolate: expression)?}`
@@ -125,8 +128,8 @@ there are too few actual arguments, the call fails (terminating the
 runtime). After that, the `statements` are evaluated in
 order. Finally, if there is a `yield`, then that is evaluated. The
 result of the call is the same as the result of the `yield` evaluation
-(including possibly void) if a `yield` was present, or void if
-there was no `yield` to evaluate.
+(including possibly void if the node is a `@maybe`) if a `yield` was present,
+or void if there was no `yield` to evaluate.
 
 **Note:** As a possible clarification about nonlocal-exit functions: Defining
 and using these amounts to something along the lines of `try` / `catch` in
@@ -147,8 +150,8 @@ This represents a call to a function which is not expected to return.
 When run, this behaves very nearly like a `call` node with the `value` as
 the call `actuals`. The differences are:
 
-* The `value` expression is allowed to evaluate to void, which in turn
-  causes the evaluated `function` to be called with no arguments.
+* The `value` expression is taken to be a single argument to pass, not a
+  list.
 * It is a fatal error (terminating the runtime) if the called function returns.
 
 This is used in the translation of `break`s, `return`s, `/named` yields, and
@@ -195,6 +198,30 @@ When run, this causes the `name` to be looked up in the current
 execution environment. If a binding is found for it, then the bound value
 is the result of evaluation. If a binding is not found for it, then
 evaluation fails (terminating the runtime).
+
+<br><br>
+### Limited Context Expression Nodes
+
+These are expression nodes that have some additional restrictions on where
+they can appear.
+
+#### `maybe` &mdash; `@maybe{value: expression}`
+
+* `value: expression` &mdash; Expression node representing the
+  result value.
+
+This wraps an arbitrary other expression node, indicating that it should
+be allowed to evaluate to void.
+
+Nodes of this type are only allowed to appear in the following contexts:
+
+* As the `value` binding of an `apply` node.
+* As the `yield` binding of a `closure` node.
+* As the `value` binding of a `jump` node.
+* As the node passed as an argument to `$Code::eval`.
+
+If a `maybe` node is *not* used in those contexts, then it is a fatal error
+for the node in question to evaluate to void.
 
 <br><br>
 ### Statement Nodes
