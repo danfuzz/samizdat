@@ -291,6 +291,14 @@ expression argument `value`.
 
 Makes a `literal` node.
 
+#### `makeMaybe(value) <> node`
+
+Makes a raw `maybe` node. These are only valid to use in limited contexts.
+See the expression node specification for details.
+
+**Note:** This is different than `makeMaybeValue` in that
+the latter produces an expression node which always evaluates to a list.
+
 #### `makeMaybeValue(node) <> node`
 
 Makes a maybe-value expression for the given `node`. This effectively

@@ -481,6 +481,16 @@ zvalue makeLiteral(zvalue value) {
 }
 
 /* Documented in spec. */
+zvalue makeMaybe(zvalue value) {
+    return makeValue(TYPE_maybe, mapFrom1(STR_value, value), NULL);
+}
+
+/* Documented in spec. */
+zvalue makeMaybeValue(zvalue expression) {
+    return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+}
+
+/* Documented in spec. */
 zvalue makeThunk(zvalue expression) {
     return makeValue(TYPE_closure,
         mapFrom3(
@@ -514,11 +524,6 @@ zvalue makeVarDefMutable(zvalue name, zvalue value) {
 /* Documented in spec. */
 zvalue makeVarRef(zvalue name) {
     return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
-}
-
-/* Documented in spec. */
-zvalue makeMaybeValue(zvalue expression) {
-    return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
 }
 
 /* Documented in spec. */

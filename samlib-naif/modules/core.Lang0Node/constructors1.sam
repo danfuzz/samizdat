@@ -57,6 +57,11 @@ export fn makeLiteral(value) {
 };
 
 ## Documented in spec.
+export fn makeMaybe(value) {
+    <> @maybe{value}
+};
+
+## Documented in spec.
 export fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: expression}
 };
