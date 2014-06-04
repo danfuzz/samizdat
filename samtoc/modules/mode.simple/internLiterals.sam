@@ -85,6 +85,11 @@ fn @@literal.lits(interner) {
     <> @literalRef{id: interner.intern(this.nodeValue)}
 };
 
+fn @@maybe.lits(interner) {
+    def value = lits(this.nodeValue, interner);
+    <> @maybe{value}
+};
+
 fn @@varBind.lits(interner) {
     <> @varBind{
         name: this.name,

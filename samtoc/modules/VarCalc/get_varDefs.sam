@@ -67,6 +67,10 @@ fn @@literalRef.get_varDefs() {
     <> []
 };
 
+fn @@maybe.get_varDefs() {
+    <> []
+};
+
 fn @@varBind.get_varDefs() {
     <> []
 };

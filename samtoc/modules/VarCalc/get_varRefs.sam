@@ -108,6 +108,10 @@ fn @@literalRef.get_varRefs() {
     <> []
 };
 
+fn @@maybe.get_varRefs() {
+    <> this.nodeValue.varRefs
+};
+
 fn @@varBind.get_varRefs() {
     <> [this.name, this.nodeValue.varRefs*]
 };

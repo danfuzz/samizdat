@@ -79,6 +79,11 @@ fn @@literalRef.bodies(bodiesBox) {
     <> this
 };
 
+fn @@maybe.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    <> @maybe{value}
+};
+
 fn @@varBind.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
     <> @varBind{name: this.name, value}

@@ -128,6 +128,10 @@ fn @@literal.safeIndex(base) {
     <> -1
 };
 
+fn @@maybe.safeIndex(base) {
+    <> safeIndexForNodes(base, $Lang0Node::get_nodeValue(this))
+};
+
 fn @@varBind.safeIndex(base) {
     def nameIndex =
         safeIndexForNames(base, $Lang0Node::get_name(this));
