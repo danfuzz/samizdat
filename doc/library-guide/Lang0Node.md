@@ -412,7 +412,7 @@ binding for the metainformation. This includes the following transformations:
     binding.
 
 It is invalid (terminating the runtime) to call this function
-on a `closure` with a `yield`.
+on a `closure` with a `yield` that is anything but `@void`.
 
 #### `withResolvedImports(node, resolveFn) <> node`
 

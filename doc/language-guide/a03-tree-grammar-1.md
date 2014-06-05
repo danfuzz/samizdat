@@ -839,7 +839,10 @@ def parProgram = {:
     @";"*
 
     {
-        def closure = makeBasicClosure({statements: [imports*, body*]});
+        def closure = makeFullClosure({
+            statements: [imports*, body*],
+            yield:      @void
+        });
         <> withoutTops(closure)
     }
 :};

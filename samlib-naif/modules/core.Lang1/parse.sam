@@ -651,7 +651,10 @@ def parProgram = $Peg::makeMainSequence(
         $Peg::makeResult([])),
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeCode { imports, body, . ->
-        def closure = makeBasicClosure({statements: [imports*, body*]});
+        def closure = makeFullClosure({
+            statements: [imports*, body*],
+            yield:      @void
+        });
         <> withoutTops(closure)
     });
 

@@ -633,8 +633,8 @@ zvalue withFormals(zvalue node, zvalue formals) {
 
 /* Documented in spec. */
 zvalue withModuleDefs(zvalue node) {
-    if (get(node, STR_yield) != NULL) {
-        die("Invalid node for `withModuleDefs` (has `yield`).");
+    if (!valEqNullOk(get(node, STR_yield), TOK_void)) {
+        die("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 
     zvalue info = makeInfoMap(node);

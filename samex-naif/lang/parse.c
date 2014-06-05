@@ -1186,7 +1186,8 @@ DEF_PARSE(program) {
 
     PARSE(optSemicolons);
 
-    zvalue closure = makeBasicClosure(mapFrom1(STR_statements, statements));
+    zvalue closure = makeFullClosure(
+        mapFrom2(STR_statements, statements, STR_yield, TOK_void));
     return withoutTops(closure);
 }
 

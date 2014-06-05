@@ -280,8 +280,8 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifIs { get_yieldNode(node) }
-        { die("Invalid node for `withModuleDefs` (has `yield`).") };
+    ifNot { <> eq(get_yieldNode(node), @void) }
+        { die("Invalid node for `withModuleDefs` (has non-void `yield`).") };
 
     ## This is the metainformation of the module. In addition to being
     ## represented directly in the final `yield`, the (informational)
