@@ -434,7 +434,7 @@ def parYield = {:
     @"<>"
     (
         ex = parExpression
-        { <> {yield: ex} }
+        { <> {yield: makeMaybe(ex)} }
     |
         { <> {} }
     )
@@ -1943,9 +1943,10 @@ def parIfExpression = {:
 
         ## Either add a yield def to the thunk and wrap it in a call, or
         ## unwrap it into a straight call, depending on if the original `if`
-        ## has a yield def or not.
+        ## has a yield def or not. Note that the `yield` in a thunk is always
+        ## a `maybe`, which also needs to be unwrapped.
         <> ifIs { <> eq(yieldDef, {}) }
-            { <> get_yieldNode(mainThunk) }
+            { <> get_nodeValue(get_yieldNode(mainThunk)) }
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
@@ -2234,7 +2235,7 @@ def parSwitchExpression = {:
         def mainBody = @closure{
             formals: [{name: testVar}],
             statements: [],
-            yield: innerIf
+            yield: makeMaybe(innerIf)
         };
 
         def outerIf = makeCall(REFS::ifValue,
@@ -2246,7 +2247,7 @@ def parSwitchExpression = {:
             formals: [],
             yieldDef: "break",
             statements: [breakDef*],
-            yield: outerIf
+            yield: makeMaybe(outerIf)
         };
 
         <> makeCall(mainClosure)

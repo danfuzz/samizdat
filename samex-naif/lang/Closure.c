@@ -314,7 +314,7 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
     // result.
 
     zvalue yield = info->yield;
-    return (yield == NULL) ? NULL : execExpressionVoidOk(&frame, yield);
+    return (yield == NULL) ? NULL : execExpressionOrMaybe(&frame, yield);
 }
 
 

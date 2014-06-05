@@ -437,7 +437,7 @@ def parYield = {:
     @"<>"
     (
         ex = parExpression
-        { <> {yield: ex} }
+        { <> {yield: makeMaybe(ex)} }
     |
         { <> {} }
     )

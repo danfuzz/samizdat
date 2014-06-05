@@ -151,7 +151,7 @@ fn @@thunk.convertPex(formals) {
     def closure = @closure{
         formals,
         statements: [],
-        yield: dataOf(this)
+        yield: makeMaybe(dataOf(this))
     };
     def convertedClosure = convertPexIn(closure);
 

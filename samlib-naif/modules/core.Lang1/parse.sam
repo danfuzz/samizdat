@@ -333,7 +333,7 @@ def parYield = $Peg::makeMainSequence(
     $Peg::makeChoice(
         $Peg::makeSequence(
             parExpression,
-            $Peg::makeCode { ., ex <> {yield: ex} }),
+            $Peg::makeCode { ., ex <> {yield: makeMaybe(ex)} }),
         $Peg::makeResult({})));
 
 ## Documented in spec.

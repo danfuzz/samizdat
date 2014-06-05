@@ -307,8 +307,8 @@ equivalently and more expanded, `maybeValue { <> node }`.
 
 #### `makeThunk(node) <> node`
 
-Makes a thunk (no-argument function) that evaluates the given node. That is,
-this returns `{ <> node }`.
+Makes a thunk (no-argument function) that evaluates the given node, allowing
+it to evaluate to void. That is, this returns `{ <> node }`.
 
 #### `makeVarBind(name, value) <> node`
 

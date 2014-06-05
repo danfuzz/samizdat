@@ -496,7 +496,7 @@ zvalue makeThunk(zvalue expression) {
         mapFrom3(
             STR_formals,    EMPTY_LIST,
             STR_statements, EMPTY_LIST,
-            STR_yield,      expression),
+            STR_yield,      makeMaybe(expression)),
         NULL);
 }
 

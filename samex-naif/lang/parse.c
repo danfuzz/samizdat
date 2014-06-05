@@ -670,7 +670,9 @@ DEF_PARSE(yield) {
     MATCH_OR_REJECT(CH_DIAMOND);
     zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
 
-    return mapFrom1(STR_yield, optValue);
+    return (optValue == NULL)
+        ? EMPTY_MAP
+        : mapFrom1(STR_yield, makeMaybe(optValue));
 }
 
 /* Documented in spec. */

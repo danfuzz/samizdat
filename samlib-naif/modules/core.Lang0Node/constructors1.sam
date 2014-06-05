@@ -63,7 +63,7 @@ export fn makeMaybe(value) {
 
 ## Documented in spec.
 export fn makeThunk(expression) {
-    <> @closure{formals: [], statements: [], yield: expression}
+    <> @closure{formals: [], statements: [], yield: makeMaybe(expression)}
 };
 
 ## Documented in spec.
