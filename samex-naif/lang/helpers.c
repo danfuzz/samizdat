@@ -470,8 +470,10 @@ zvalue makeInterpolate(zvalue node) {
 
 /* Documented in spec. */
 zvalue makeJumpNode(zvalue function, zvalue optValue) {
+    zvalue value = (optValue == NULL) ? TOK_void : makeMaybe(optValue);
+
     return makeValue(TYPE_jump,
-        mapFrom2(STR_function, function, STR_value, optValue),
+        mapFrom2(STR_function, function, STR_value, value),
         NULL);
 }
 

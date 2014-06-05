@@ -86,9 +86,7 @@ static void execJump(Frame *frame, zvalue jump) {
     zvalue functionExpr = get(jump, STR_function);
     zvalue argExpr = get(jump, STR_value);
     zvalue function = execExpression(frame, functionExpr);
-    zvalue arg = (argExpr == NULL)
-        ? NULL
-        : execExpressionVoidOk(frame, argExpr);
+    zvalue arg = execExpressionOrMaybe(frame, argExpr);
 
     funJump(function, arg);
 }
