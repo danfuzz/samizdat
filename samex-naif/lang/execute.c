@@ -37,9 +37,7 @@ static zvalue execApply(Frame *frame, zvalue apply) {
     zvalue functionExpr = get(apply, STR_function);
     zvalue actualsExpr = get(apply, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
-    zvalue actuals = (actualsExpr == NULL)
-        ? NULL :
-        execExpressionOrMaybe(frame, actualsExpr);
+    zvalue actuals = execExpressionOrMaybe(frame, actualsExpr);
 
     if (actuals == NULL) {
         // If `actuals` isn't present or evaluated to void, then evaluation
