@@ -285,7 +285,8 @@ binding in the data payload. See `makeCallOrApply` for more details.
 #### `makeJump(function, optValue?) <> node`
 
 Makes a `jump` node, for calling the given `function` with optional
-expression argument `value`.
+expression argument `optValue*`. If `optValue` is passed, then it is
+allowed to evaluate to void.
 
 #### `makeLiteral(value) <> node`
 
