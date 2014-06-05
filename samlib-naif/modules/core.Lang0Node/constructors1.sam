@@ -36,6 +36,15 @@ export fn makeCallThunks(function, actuals*) {
 };
 
 ## Documented in spec.
+export fn makeClosure(map) {
+    <> @closure{
+        formals: [],
+        statements: [],
+        map*
+    }
+};
+
+## Documented in spec.
 export fn makeExport(node) {
     <> @export{value: node}
 };

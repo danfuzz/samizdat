@@ -87,6 +87,9 @@ zvalue makeCall(zvalue function, zvalue actuals);
 zvalue makeCallOrApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
+zvalue makeClosure(zvalue map);
+
+/* Documented in spec. */
 zvalue makeDynamicImport(zvalue node);
 
 /* Documented in spec. */

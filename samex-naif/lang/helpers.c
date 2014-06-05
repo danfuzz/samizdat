@@ -299,6 +299,15 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 }
 
 /* Documented in spec. */
+zvalue makeClosure(zvalue map) {
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat,
+            mapFrom2(STR_formals, EMPTY_LIST, STR_statements, EMPTY_LIST),
+            map),
+        NULL);
+}
+
+/* Documented in spec. */
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, STR_format);
     zvalue name = get(node, STR_name);

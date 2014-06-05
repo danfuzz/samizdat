@@ -210,6 +210,17 @@ arguments.
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
+#### `makeClosure(map) <> node`
+
+Makes a `closure` node, using the bindings of `map` as a basis, and adding
+in sensible defaults for any missing pieces. The defaults include:
+
+* `formals: []` &mdash; An empty formals list.
+* `statements: []` &mdash; An empty statements list.
+
+**Note:** No default is provided for `yield`, as it is optional. TODO: This
+should be changed.
+
 #### `makeDynamicImport(node) <> [node+]`
 
 Converts an `import*` node to a list of statement nodes which perform an
