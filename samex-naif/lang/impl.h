@@ -74,12 +74,6 @@ zvalue execClosure(Frame *frame, zvalue closureNode);
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
 
 /**
- * Executes an `expression` form, with the result possibly being
- * `void` (represented as `NULL`).
- */
-zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
-
-/**
  * Executes a `statement` form.
  */
 void execStatement(Frame *frame, zvalue statement);

@@ -26,19 +26,9 @@
  * Private Definitions
  */
 
-/**
- * Executes an `expression` form, with the result never allowed to be
- * `void`.
- */
-static zvalue execExpression(Frame *frame, zvalue expression) {
-    zvalue result = execExpressionVoidOk(frame, expression);
-
-    if (result == NULL) {
-        die("Invalid use of void expression result.");
-    }
-
-    return result;
-}
+// Both of these are defined at the bottom of this section.
+static zvalue execExpression(Frame *frame, zvalue expression);
+static zvalue execExpressionVoidOk(Frame *frame, zvalue e);
 
 /**
  * Executes an `apply` form.
@@ -157,22 +147,25 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
     return frameGet(frame, name);
 }
 
-
-/*
- * Module Definitions
+/**
+ * Executes an `expression` form, with the result never allowed to be
+ * `void`.
  */
+static zvalue execExpression(Frame *frame, zvalue expression) {
+    zvalue result = execExpressionVoidOk(frame, expression);
 
-/* Documented in header. */
-zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
-    switch (get_evalType(e)) {
-        case EVAL_maybe: return execMaybe(frame, e);
-        case EVAL_void:  return NULL;
-        default:         return execExpression(frame, e);
+    if (result == NULL) {
+        die("Invalid use of void expression result.");
     }
+
+    return result;
 }
 
-/* Documented in header. */
-zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
+/**
+ * Executes an `expression` form, with the result possibly being
+ * `void` (represented as `NULL`).
+ */
+static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (get_evalType(e)) {
         case EVAL_apply:   return execApply(frame, e);
         case EVAL_call:    return execCall(frame, e);
@@ -184,6 +177,20 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }
+    }
+}
+
+
+/*
+ * Module Definitions
+ */
+
+/* Documented in header. */
+zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
+    switch (get_evalType(e)) {
+        case EVAL_maybe: return execMaybe(frame, e);
+        case EVAL_void:  return NULL;
+        default:         return execExpression(frame, e);
     }
 }
 
