@@ -240,6 +240,12 @@ def parBasicClosure = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
+def parFullClosure = $Peg::makeMainSequence(
+    $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
+    parBasicClosure,
+    $Peg::makeCode { ., basic <> makeFullClosure(dataOf(basic)) });
+
+## Documented in spec.
 def parNullaryClosure = $Peg::makeMainSequence(
     parBasicClosure,
     $Peg::makeCode { c ->
@@ -252,7 +258,7 @@ def parNullaryClosure = $Peg::makeMainSequence(
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
-    parDeriv, parType, parBasicClosure, parParenExpression,
+    parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     $Peg::makeSequence(
@@ -265,11 +271,11 @@ def parActualsList = $Peg::makeMainChoice(
         $Peg::makeToken(@@"("),
         parUnadornedList,
         $Peg::makeToken(@@")"),
-        $Peg::makeStar(parBasicClosure),
+        $Peg::makeStar(parFullClosure),
         $Peg::makeCode { ., normalActuals, ., closureActuals ->
             <> [closureActuals*, normalActuals*]
         }),
-    $Peg::makePlus(parBasicClosure));
+    $Peg::makePlus(parFullClosure));
 
 ## Documented in spec.
 def parPostfixOperator = $Peg::makeMainChoice(

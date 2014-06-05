@@ -512,6 +512,19 @@ DEF_PARSE(basicClosure) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(fullClosure) {
+    MARK();
+
+    if (PEEK(CH_OCURLY) == NULL) {
+        return NULL;
+    }
+
+    zvalue basic = PARSE_OR_REJECT(basicClosure);
+
+    return makeFullClosure(dataOf(basic));
+}
+
+/* Documented in spec. */
 DEF_PARSE(nullaryClosure) {
     MARK();
 

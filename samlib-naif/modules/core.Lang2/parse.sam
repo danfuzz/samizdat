@@ -294,6 +294,13 @@ def parBasicClosure = {:
     }
 :};
 
+## Parses a closure, resulting in one that *always* has a `yield` binding.
+def parFullClosure = {:
+    &@"{"  ## Lookahead for same reason as above.
+    basic = parBasicClosure
+    { <> makeFullClosure(dataOf(basic)) }
+:};
+
 ## Parses a closure which must not define any formal arguments. This is done
 ## by parsing an arbitrary closure and then verifying that it does not
 ## declare formals. This is preferable to not-including formal argument
@@ -316,7 +323,7 @@ def parNullaryClosure = {:
 ## Parses a term (basic expression unit).
 def parTerm = {:
     parVarRef | parInt | parString | parMap | parList |
-    parDeriv | parType | parBasicClosure | parParenExpression
+    parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
@@ -332,10 +339,10 @@ def parActualsList = {:
     @"("
     normalActuals = parUnadornedList
     @")"
-    closureActuals = parBasicClosure*
+    closureActuals = parFullClosure*
     { <> [closureActuals*, normalActuals*] }
 |
-    parBasicClosure+
+    parFullClosure+
 :};
 
 ## Parses a unary postfix operator. This yields a function (per se) to call
