@@ -23,22 +23,22 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `apply` &mdash; `@apply{function: expression, actuals?: expression}`
+#### `apply` &mdash; `@apply{function: expression, actuals: expression}`
 
 * `function: expression` &mdash; An expression node that must
   evaluate to a function.
 
-* `actuals: expression` (optional) &mdash; An expression node that must
+* `actuals: expression` &mdash; An expression node that must
   evaluate to a list.
 
 This represents a function call.
 
-When run, first `function` and then `actuals` (if present) are evaluated.
-If `function` evaluates to something other than a function, the call fails
-(terminating the runtime). If `actuals` is present and evaluates to anything
-but void or a list, the call fails (terminating the runtime). `actuals` is
-allowed to evaluate to void *only* if it is a `@maybe` or `@void` node; any
-other void evaluation is a fatal error.
+When run, first `function` and then `actuals` is evaluated. If `function`
+evaluates to something other than a function, the call fails (terminating
+the runtime). If `actuals` evaluates to anything but void or a list, the
+call fails (terminating the runtime). `actuals` is allowed to evaluate to
+void *only* if it is a `@maybe` or `@void` node; any other void evaluation
+is a fatal error.
 
 If there are too few actual arguments for the function (e.g., the
 function requires at least three arguments, but only two are passed),
