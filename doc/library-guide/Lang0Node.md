@@ -139,8 +139,8 @@ nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 #### `get_nodeValue(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `jump`, `literal`, `maybe`, `parser`, `varBind`, `varDef`, and
-`varDefMutable`.
+nodes of type `jump`, `literal`, `maybe`, `noYield`, `parser`, `varBind`,
+`varDef`, and `varDefMutable`.
 
 #### `get_prefix(node) <> string`
 
