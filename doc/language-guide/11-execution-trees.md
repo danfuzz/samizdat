@@ -168,6 +168,23 @@ The data `value` is the result of evaluation,
 When a `literal` node is run, the result of evaluation is `value`.
 Evaluation never fails.
 
+#### `noYield` &mdash; `@noYield{value: value}`
+
+* `value: expression` &mdash; Expression node representing the
+  result value.
+
+This wraps an arbitrary other expression node, indicating that it must
+never yield. That is, it must not produce a result, including a value
+*or* void.
+
+Nodes of this type are used to indicate positively that the flow of
+control will never return directly. In particular, these are used to
+wrap the calls that represent nonlocal exits.
+
+When run, `value` is evaluated. Should control ever return directly
+(to the `noYield` evaluator), it will result in a fatal error (terminating
+the runtime).
+
 #### `varBind` &mdash; `@varBind{name: name, value: expression}`
 
 * `name: name` &mdash; Variable name to bind (typically a string).

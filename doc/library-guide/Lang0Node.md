@@ -306,6 +306,10 @@ Makes a maybe-value expression for the given `node`. This effectively
 returns a node representing `node?` (for the original `node`), or
 equivalently and more expanded, `maybeValue { <> node }`.
 
+#### `makeNoYield(value) <> node`
+
+Makes a `noYield` node.
+
 #### `makeThunk(node) <> node`
 
 Makes a thunk (no-argument function) that evaluates the given node, allowing
