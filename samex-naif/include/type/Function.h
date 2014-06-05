@@ -61,14 +61,6 @@ zvalue funApply(zvalue function, zvalue args);
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Calls a "jump" function with the given argument, or with no arguments if
- * `optArg` is `NULL`. `function` must be a `Function`, which must not return
- * to the caller.
- */
-zvalue funJump(zvalue function, zvalue optArg)
-    __attribute__((noreturn));
-
-/**
  * `FUN_CALL(function, arg, ...)`: Calls a function, with a variable number
  * of arguments passed in the usual C style.
  *
