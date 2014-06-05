@@ -168,6 +168,10 @@ fn @@varRef.safeIndex(base) {
     <> safeIndexForNames(base, get_name(this))
 };
 
+fn @@void.safeIndex(base) {
+    <> -1
+};
+
 
 ##
 ## Exported Definitions

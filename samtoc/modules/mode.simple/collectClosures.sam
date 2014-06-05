@@ -116,6 +116,10 @@ fn @@varRef.bodies(bodiesBox) {
     <> @varRef{name: this.name}
 };
 
+fn @@void.bodies(bodiesBox) {
+    <> this
+};
+
 
 ##
 ## Exported Definitions

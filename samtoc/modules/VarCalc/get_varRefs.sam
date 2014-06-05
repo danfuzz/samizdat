@@ -127,3 +127,7 @@ fn @@varDefMutable.get_varRefs() {
 fn @@varRef.get_varRefs() {
     <> [this.name]
 };
+
+fn @@void.get_varRefs() {
+    <> []
+};

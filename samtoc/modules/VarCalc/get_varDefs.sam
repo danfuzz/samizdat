@@ -95,3 +95,7 @@ fn @@varDefMutable.get_varDefs() {
 fn @@varRef.get_varDefs() {
     <> []
 };
+
+fn @@void.get_varDefs() {
+    <> []
+};

@@ -165,3 +165,8 @@ fn @@varRef.translate(varsBox) {
         | die("Reference of undefined variable: \%q(this.name)");
     <> genCall("boxFetch", binding::name)
 };
+
+fn @@void.translate(varsBox) {
+    ## We should never encounter one of these. See `@maybe`, above.
+    die("Invalid use of `@void`.")
+};

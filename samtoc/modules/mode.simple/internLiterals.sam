@@ -124,6 +124,10 @@ fn @@varRef.lits(interner) {
     <> this
 };
 
+fn @@void.lits(interner) {
+    <> this
+};
+
 
 ##
 ## Exported Definitions

@@ -298,6 +298,11 @@ fn @@varRef.convertPexIn() {
     <> withoutIntermediates(this)
 };
 
+## Does parser conversion of a `void` node.
+fn @@void.convertPexIn() {
+    <> this
+};
+
 
 ##
 ## Exported Definitions
