@@ -126,17 +126,15 @@ fn @@importResource.safeIndex(base) {
     <> safeIndexForNames(base, get_name(this));
 };
 
-fn @@jump.safeIndex(base) {
-    <> safeIndexForNodes(base,
-        get_function(this),
-        get_nodeValue(this)?*);
-};
-
 fn @@literal.safeIndex(base) {
     <> -1
 };
 
 fn @@maybe.safeIndex(base) {
+    <> safeIndexForNodes(base, get_nodeValue(this))
+};
+
+fn @@noYield.safeIndex(base) {
     <> safeIndexForNodes(base, get_nodeValue(this))
 };
 

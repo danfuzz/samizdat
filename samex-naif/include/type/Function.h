@@ -61,14 +61,6 @@ zvalue funApply(zvalue function, zvalue args);
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Calls a "jump" function with the given argument, or with no arguments if
- * `optArg` is `NULL`. `function` must be a `Function`, which must not return
- * to the caller.
- */
-zvalue funJump(zvalue function, zvalue optArg)
-    __attribute__((noreturn));
-
-/**
  * `FUN_CALL(function, arg, ...)`: Calls a function, with a variable number
  * of arguments passed in the usual C style.
  *
@@ -272,5 +264,17 @@ inline zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
     };
     return funCall(function, 19, args);
 }
+
+/**
+ * Function which should never get called. This is used to wrap calls which
+ * aren't allowed to return. Should they return, this function gets called
+ * and promptly dies with a fatal error.
+ *
+ * **Note:** This function is typed to return a `zvalue` (and not void),
+ * so that it can be used in contexts that require a return value. This is
+ * a quirk of the `noreturn` extension to C, which this function uses.
+ */
+zvalue mustNotYield(zvalue value)
+    __attribute__((noreturn));
 
 #endif

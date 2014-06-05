@@ -130,17 +130,6 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     return result;
 }
 
-/* Documented in header. */
-zvalue funJump(zvalue function, zvalue optArg) {
-    if (optArg == NULL) {
-        funCall(function, 0, NULL);
-    } else {
-        funCall(function, 1, &optArg);
-    }
-
-    die("Improper return from jump.");
-}
-
 // All documented in header.
 extern zvalue funCallWith0(zvalue function);
 extern zvalue funCallWith1(zvalue function, zvalue arg0);
@@ -202,6 +191,10 @@ extern zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
     zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
     zvalue arg16, zvalue arg17, zvalue arg18);
 
+/* Documented in header. */
+zvalue mustNotYield(zvalue value) {
+    die("Improper yield from `noYield` expression.");
+}
 
 /*
  * Type Definition

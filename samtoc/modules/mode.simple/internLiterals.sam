@@ -81,15 +81,6 @@ fn @@internal.lits(interner) {
     <> @internal(interner.intern(dataOf(this)))
 };
 
-fn @@jump.lits(interner) {
-    def function = lits(this.function, interner);
-    def optValue = (def v = this.nodeValue)
-        & {value: lits(v, interner)}
-        | {};
-
-    <> @jump{function, optValue*}
-};
-
 fn @@literal.lits(interner) {
     <> @literalRef{id: interner.intern(this.nodeValue)}
 };
@@ -97,6 +88,11 @@ fn @@literal.lits(interner) {
 fn @@maybe.lits(interner) {
     def value = lits(this.nodeValue, interner);
     <> @maybe{value}
+};
+
+fn @@noYield.lits(interner) {
+    def value = lits(this.nodeValue, interner);
+    <> @noYield{value}
 };
 
 fn @@varBind.lits(interner) {

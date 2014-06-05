@@ -64,10 +64,6 @@ fn @@importResource.get_varDefs() {
     <> [this.name]
 };
 
-fn @@jump.get_varDefs() {
-    <> []
-};
-
 fn @@literal.get_varDefs() {
     <> []
 };
@@ -77,6 +73,10 @@ fn @@literalRef.get_varDefs() {
 };
 
 fn @@maybe.get_varDefs() {
+    <> []
+};
+
+fn @@noYield.get_varDefs() {
     <> []
 };
 

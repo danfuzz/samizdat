@@ -469,15 +469,6 @@ zvalue makeInterpolate(zvalue node) {
 }
 
 /* Documented in spec. */
-zvalue makeJumpNode(zvalue function, zvalue optValue) {
-    zvalue value = (optValue == NULL) ? TOK_void : makeMaybe(optValue);
-
-    return makeValue(TYPE_jump,
-        mapFrom2(STR_function, function, STR_value, value),
-        NULL);
-}
-
-/* Documented in spec. */
 zvalue makeLiteral(zvalue value) {
     return makeValue(TYPE_literal, mapFrom1(STR_value, value), NULL);
 }
@@ -490,6 +481,25 @@ zvalue makeMaybe(zvalue value) {
 /* Documented in spec. */
 zvalue makeMaybeValue(zvalue expression) {
     return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+}
+
+/* Documented in spec. */
+zvalue makeNoYield(zvalue value) {
+    return makeValue(TYPE_noYield, mapFrom1(STR_value, value), NULL);
+}
+
+/* Documented in spec. */
+zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
+    zvalue exitCall;
+
+    if (optValue != NULL) {
+        zvalue actuals = makeInterpolate(makeMaybeValue(optValue));
+        exitCall = makeCallOrApply(function, listFrom1(actuals));
+    } else {
+        exitCall = makeCall(function, NULL);
+    }
+
+    return makeNoYield(exitCall);
 }
 
 /* Documented in spec. */

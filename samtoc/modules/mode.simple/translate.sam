@@ -112,23 +112,6 @@ fn @@importResource.translate(varsBox) {
     die("Cannot translate `@importResource`.")
 };
 
-fn @@jump.translate(varsBox) {
-    def function = translate(this.function, varsBox);
-    def value = this.nodeValue;
-
-    <> if (hasType(value, @@maybe)) {
-        def vTrans = translate(value.nodeValue, varsBox);
-        <> genCall("funJump", function, vTrans)
-    } else if (hasType(value, @@void)) {
-        <> genCall("funJump", function, "NULL")
-    } else {
-        ## If it's not wrapped in a `@maybe`, we need to guarantee
-        ## non-void.
-        def vTrans = translate(value, varsBox);
-        <> genCall("funJump", function, genCall("datNonVoid", vTrans))
-    }
-};
-
 fn @@literalRef.translate(varsBox) {
     <> "LIT_\(this.id)"
 };
@@ -138,6 +121,11 @@ fn @@maybe.translate(varsBox) {
     ## getting handled as special cases on the node types where a `@maybe`
     ## is valid.
     die("Invalid use of `@maybe`.")
+};
+
+fn @@noYield.translate(varsBox) {
+    def value = translate(this.nodeValue, varsBox);
+    <> genCall("mustNotYield", value)
 };
 
 fn @@varBind.translate(varsBox) {

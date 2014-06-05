@@ -75,15 +75,6 @@ fn @@importResource.bodies(bodiesBox) {
     <> this
 };
 
-fn @@jump.bodies(bodiesBox) {
-    def function = bodies(this.function, bodiesBox);
-    def optValue = (def v = this.nodeValue)
-        & {value: bodies(v, bodiesBox)}
-        | {};
-
-    <> @jump{function, optValue*}
-};
-
 fn @@literalRef.bodies(bodiesBox) {
     <> this
 };
@@ -91,6 +82,11 @@ fn @@literalRef.bodies(bodiesBox) {
 fn @@maybe.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
     <> @maybe{value}
+};
+
+fn @@noYield.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    <> @noYield{value}
 };
 
 fn @@varBind.bodies(bodiesBox) {

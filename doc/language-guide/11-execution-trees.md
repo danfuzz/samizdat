@@ -138,25 +138,6 @@ along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
 facility is an implementation of downward-passed / upward-called
 continuations.
 
-#### `jump` &mdash; `@jump{function: expression, (value: expression)?}`
-
-* `function: expression` (required) &mdash; An expression node that must
-  evaluate to a function.
-
-* `value: expression` (required) &mdash; An expression node, which is allowed
-  to evaluate to void (if a `@maybe` or `@void`).
-
-This represents a call to a function which is not expected to return.
-When run, this behaves very nearly like a `call` node with `[value?*]` as
-the call's `actuals`. The differences are:
-
-* The `value` expression is taken to be a single (and possibly void)
-  argument to pass, not a list.
-* It is a fatal error (terminating the runtime) if the called function returns.
-
-This is used in the translation of `break`s, `return`s, `/name`d yields, and
-other nonlocal exit calls.
-
 #### `literal` &mdash; `@literal{value: value}`
 
 * `value: value` (required) &mdash; Arbitrary data value.
@@ -167,6 +148,23 @@ The data `value` is the result of evaluation,
 
 When a `literal` node is run, the result of evaluation is `value`.
 Evaluation never fails.
+
+#### `noYield` &mdash; `@noYield{value: value}`
+
+* `value: expression` &mdash; Expression node representing the
+  result value.
+
+This wraps an arbitrary other expression node, indicating that it must
+never yield. That is, it must not produce a result, including a value
+*or* void.
+
+Nodes of this type are used to indicate positively that the flow of
+control will never return directly. In particular, these are used to
+wrap the calls that represent nonlocal exits.
+
+When run, `value` is evaluated. Should control ever return directly
+(to the `noYield` evaluator), it will result in a fatal error (terminating
+the runtime).
 
 #### `varBind` &mdash; `@varBind{name: name, value: expression}`
 
@@ -217,7 +215,6 @@ Nodes of this type are only allowed to appear in the following contexts:
 
 * As the `value` binding of an `apply` node.
 * As the `yield` binding of a `closure` node.
-* As the `value` binding of a `jump` node.
 * As the node passed as an argument to `$Code::eval`.
 
 If a `maybe` node is *not* used in those contexts, then it is a fatal error

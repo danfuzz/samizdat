@@ -244,6 +244,14 @@ export fn makeMaybeValue(node) {
 };
 
 ## Documented in spec.
+export fn makeNonlocalExit(function, optValue?) {
+    def exitCall = ifValue { <> optValue* }
+        { v <> makeCallOrApply(function, makeInterpolate(makeMaybeValue(v))) }
+        { <> makeCall(function) };
+    <> makeNoYield(exitCall)
+};
+
+## Documented in spec.
 export fn withDynamicImports(node) {
     def rawStatements = get_statements(node);
 

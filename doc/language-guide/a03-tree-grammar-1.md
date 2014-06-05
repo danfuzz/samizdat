@@ -415,7 +415,7 @@ parAssignExpression := {:
 
 ## Parses a nonlocal exit / return. All of the forms matched by this rule
 ## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a `jump` node in the underlying
+## block, and (b) being represented as a `noYield` node in the underlying
 ## tree representation.
 def parNonlocalExit = {:
     name = (
@@ -429,7 +429,7 @@ def parNonlocalExit = {:
 
     optValue = parExpression?
 
-    { <> {yield: makeJump(name, optValue*)} }
+    { <> {yield: makeNonlocalExit(name, optValue*)} }
 :};
 
 ## Parses a local yield / return.

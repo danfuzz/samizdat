@@ -660,7 +660,7 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { return NULL; }
 
     zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
-    return mapFrom1(STR_yield, makeJumpNode(name, optValue));
+    return mapFrom1(STR_yield, makeNonlocalExit(name, optValue));
 }
 
 /** Documented in spec. */

@@ -325,7 +325,9 @@ def parNonlocalExit = $Peg::makeMainSequence(
             $Peg::makeTokenSet(@@break, @@continue, @@return),
             $Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
     $Peg::makeOpt(parExpression),
-    $Peg::makeCode { name, optValue <> {yield: makeJump(name, optValue*)} });
+    $Peg::makeCode { name, optValue ->
+        <> {yield: makeNonlocalExit(name, optValue*)}
+    });
 
 ## Documented in spec.
 def parYield = $Peg::makeMainSequence(
