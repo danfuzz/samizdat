@@ -29,7 +29,7 @@ Representation of the "match anything" rule.
 
 This corresponds to the syntax `.`.
 
-#### `@code{(yieldDef: name)?, statements: [statement*], (yield: expression)?}`
+#### `@code{yieldDef?: name, statements: [statement*], yield?: expression}`
 
 Representation of a code expression.
 

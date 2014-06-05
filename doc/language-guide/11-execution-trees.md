@@ -23,7 +23,7 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `apply` &mdash; `@apply{function: expression, (actuals: expression)?}`
+#### `apply` &mdash; `@apply{function: expression, actuals?: expression}`
 
 * `function: expression` &mdash; An expression node that must
   evaluate to a function.
@@ -53,7 +53,7 @@ void).
 **Note:** The main difference between this and `call` is that the latter
 takes its `actuals` as a list in the node itself.
 
-#### `call` &mdash; `@call{function: expression, actuals: [expression*], (interpolate: expression)?}`
+#### `call` &mdash; `@call{function: expression, actuals: [expression*], interpolate?: expression}`
 
 * `function: expression` &mdash; An expression node that must
   evaluate to a function.
@@ -81,7 +81,7 @@ to the function `interpolate`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$Lang0Node::makeInterpolate`.
 
-#### `closure` &mdash; `formals: [formal+], (info: map)?, (name: name)?,` `statements: [statement*], (yield: expression)?, (yieldDef: name)?}`
+#### `closure` &mdash; `formals: [formal+], info?: map, name?: name,` `statements: [statement*], yield?: expression, yieldDef?: name}`
 
 * `formals: [formal+]` &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
@@ -233,7 +233,7 @@ These are nodes that are akin to expression nodes, but are limited to
 be used only as direct as elements of the `statements` list of a `closure`
 node.
 
-#### `varDef` &mdash; `@varDef{name: name, value: expression, (top: true)?}`
+#### `varDef` &mdash; `@varDef{name: name, value?: expression, top?: true}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 
@@ -269,7 +269,7 @@ expected to be used during definition simplification. See
 a node of this type represents a variable being exported from a module,
 then it must be a string.
 
-#### `varDefMutable` &mdash; `@varDef{name: name, (value: expression)?}`
+#### `varDefMutable` &mdash; `@varDef{name: name, value?: expression}`
 
 * `name: name` &mdash; Variable name to define (typically a string).
 
@@ -342,7 +342,7 @@ that incorporates the implied declaration(s). See `LangN::simplify` and
 This represents the import of a module, binding it to a named variable in
 the program's top-level environment.
 
-#### `importModuleSelection` &mdash; `@importModuleSelection{prefix: name, (select: [name+])?, source: source}`
+#### `importModuleSelection` &mdash; `@importModuleSelection{prefix: name, select?: [name+], source: source}`
 
 * `prefix: name` &mdash; Prefix for variable names to bind. Must be a string.
   Allowed to be the empty string (`""`) to indicate no prefixing should be
@@ -395,7 +395,7 @@ Examples:
 @external("core.potions.Blort")
 ```
 
-#### `formal` &mdash; `{(name: name)?, (repeat: repeat)?}`
+#### `formal` &mdash; `{name?: name, repeat?: repeat}`
 
 * `name: name` (optional) &mdash; An arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
