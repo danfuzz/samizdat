@@ -125,7 +125,7 @@ fn @@maybe.translate(varsBox) {
 
 fn @@noYield.translate(varsBox) {
     def value = translate(this.nodeValue, varsBox);
-    <> genCall("improperYield", value)
+    <> genCall("mustNotYield", value)
 };
 
 fn @@varBind.translate(varsBox) {
