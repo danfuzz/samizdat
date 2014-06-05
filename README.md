@@ -203,6 +203,34 @@ You can also run the various demo / test cases, with the scripts
 Each lives in a directory named with its number along with a suggestive
 summary, e.g. `0-001-string-literal`.
 
+#### Quick-turnaround partial build
+
+Building just the "pure interpreter" runtime only takes a few seconds.
+The downside to this build is that it takes somewhere in the neighborhood
+of 30 seconds to a minute after starting, before it will read in a
+program. Even so, it can be useful to run in many cases, such as when
+making modifications to the core runtime.
+
+To make this build, just run Blur in the directory `samex-naif`.
+
+```shell
+$ cd samizdat
+$ blur --in-dir=samex-naif
+[...]
+$
+```
+
+#### Combining building and demo running.
+
+The options `--runtime=name --build` can be added to any demo `run` or
+`run-all` command, to cause the named runtime to be built before running
+the demo. Supported names are `naif` (pure interpreter) and `tot`
+(tree-compiled library).
+
+In addition, the option `--compiler=name` can be added to any demo `run` or
+`run-all` command, to cause the demo to be compiled with the named compiler
+mode. See `samtoc` documentation for a list of modes.
+
 
 More Info
 ---------
