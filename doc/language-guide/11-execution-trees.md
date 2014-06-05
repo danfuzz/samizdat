@@ -37,8 +37,8 @@ When run, first `function` and then `actuals` (if present) are evaluated.
 If `function` evaluates to something other than a function, the call fails
 (terminating the runtime). If `actuals` is present and evaluates to anything
 but void or a list, the call fails (terminating the runtime). `actuals` is
-allowed to evaluate to void *only* if it is a `@maybe` node; any other void
-evaluation is a fatal error.
+allowed to evaluate to void *only* if it is a `@maybe` or `@void` node; any
+other void evaluation is a fatal error.
 
 If there are too few actual arguments for the function (e.g., the
 function requires at least three arguments, but only two are passed),
@@ -128,8 +128,8 @@ there are too few actual arguments, the call fails (terminating the
 runtime). After that, the `statements` are evaluated in
 order. Finally, if there is a `yield`, then that is evaluated. The
 result of the call is the same as the result of the `yield` evaluation
-(including possibly void if the node is a `@maybe`) if a `yield` was present,
-or void if there was no `yield` to evaluate.
+(including possibly void if the node is a `@maybe` or `@void`) if a `yield`
+was present, or void if there was no `yield` to evaluate.
 
 **Note:** As a possible clarification about nonlocal-exit functions: Defining
 and using these amounts to something along the lines of `try` / `catch` in
