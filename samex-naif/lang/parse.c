@@ -498,6 +498,20 @@ DEF_PARSE(deriv) {
 }
 
 /* Documented in spec. */
+DEF_PARSE(fullClosure) {
+    MARK();
+
+    if (PEEK(CH_OCURLY) == NULL) {
+        return NULL;
+    }
+
+    zvalue raw = PARSE_OR_REJECT(rawClosure);
+
+    zvalue closure = makeFullClosure(raw);
+    return withoutTops(closure);
+}
+
+/* Documented in spec. */
 DEF_PARSE(basicClosure) {
     MARK();
 
@@ -509,19 +523,6 @@ DEF_PARSE(basicClosure) {
 
     zvalue closure = makeBasicClosure(raw);
     return withoutTops(closure);
-}
-
-/* Documented in spec. */
-DEF_PARSE(fullClosure) {
-    MARK();
-
-    if (PEEK(CH_OCURLY) == NULL) {
-        return NULL;
-    }
-
-    zvalue basic = PARSE_OR_REJECT(basicClosure);
-
-    return makeFullClosure(dataOf(basic));
 }
 
 /* Documented in spec. */

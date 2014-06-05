@@ -283,25 +283,29 @@ def parDeriv = {:
     { <> makeCall(REFS::makeValue, type, value*) }
 :};
 
-## Parses a closure, resulting in one that does *not* necessarily have
-## a `yield` binding.
-def parBasicClosure = {:
+## Parses a closure, resulting in one that *always* has a `yield` binding.
+def parFullClosure = {:
     ## The lookahead to makes it so we don't have to do any heavier-weight
     ## parsing in easy-failure cases.
     &@"{"
     raw = %parRawClosure
 
     {
-        def closure = makeBasicClosure(raw);
+        def closure = makeFullClosure(raw);
         <> withoutTops(closure)
     }
 :};
 
-## Parses a closure, resulting in one that *always* has a `yield` binding.
-def parFullClosure = {:
+## Parses a closure, resulting in one that does *not* necessarily have
+## a `yield` binding.
+def parBasicClosure = {:
     &@"{"  ## Lookahead for same reason as above.
-    basic = parBasicClosure
-    { <> makeFullClosure(dataOf(basic)) }
+    raw = %parRawClosure
+
+    {
+        def closure = makeBasicClosure(raw);
+        <> withoutTops(closure)
+    }
 :};
 
 ## Parses a closure which must not define any formal arguments. This is done

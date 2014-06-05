@@ -231,6 +231,15 @@ def parDeriv = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
+def parFullClosure = $Peg::makeMainSequence(
+    $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
+    $Peg::makeThunk { . <> parRawClosure },
+    $Peg::makeCode { ., raw ->
+        def closure = makeFullClosure(raw);
+        <> withoutTops(closure)
+    });
+
+## Documented in spec.
 def parBasicClosure = $Peg::makeMainSequence(
     $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
     $Peg::makeThunk { . <> parRawClosure },
@@ -238,12 +247,6 @@ def parBasicClosure = $Peg::makeMainSequence(
         def closure = makeBasicClosure(raw);
         <> withoutTops(closure)
     });
-
-## Documented in spec.
-def parFullClosure = $Peg::makeMainSequence(
-    $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
-    parBasicClosure,
-    $Peg::makeCode { ., basic <> makeFullClosure(dataOf(basic)) });
 
 ## Documented in spec.
 def parNullaryClosure = $Peg::makeMainSequence(
