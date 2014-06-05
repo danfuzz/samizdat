@@ -528,6 +528,20 @@ DEF_PARSE(fullClosure) {
 DEF_PARSE(nullaryClosure) {
     MARK();
 
+    zvalue c = PARSE_OR_REJECT(fullClosure);
+
+    zvalue formals = GET(formals, c);
+    if (!valEq(formals, EMPTY_LIST)) {
+        die("Invalid formal argument in code block.");
+    }
+
+    return c;
+}
+
+/* Documented in spec. */
+DEF_PARSE(basicNullaryClosure) {
+    MARK();
+
     zvalue c = PARSE_OR_REJECT(basicClosure);
 
     zvalue formals = GET(formals, c);
@@ -845,7 +859,7 @@ DEF_PARSE(functionCommon) {
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
-    zvalue code = PARSE_OR_REJECT(nullaryClosure);
+    zvalue code = PARSE_OR_REJECT(basicNullaryClosure);
 
     zvalue yieldDef = GET(yieldDef, code);
     zvalue returnDef = (yieldDef == NULL)

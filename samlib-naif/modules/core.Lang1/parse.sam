@@ -247,6 +247,16 @@ def parFullClosure = $Peg::makeMainSequence(
 
 ## Documented in spec.
 def parNullaryClosure = $Peg::makeMainSequence(
+    parFullClosure,
+    $Peg::makeCode { c ->
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    });
+
+## Documented in spec.
+def parBasicNullaryClosure = $Peg::makeMainSequence(
     parBasicClosure,
     $Peg::makeCode { c ->
         def formals = get_formals(c);
@@ -435,7 +445,7 @@ def parFunctionCommon = $Peg::makeMainSequence(
     $Peg::makeToken(@@"("),
     parFormalsList,
     $Peg::makeToken(@@")"),
-    parNullaryClosure,
+    parBasicNullaryClosure,
     $Peg::makeCode { name, ., formals, ., code ->
         def returnDef = ifValue { <> code::yieldDef }
             { yieldDef ->

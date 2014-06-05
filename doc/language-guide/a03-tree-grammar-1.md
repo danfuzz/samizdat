@@ -313,6 +313,19 @@ def parFullClosure = {:
 ## would be more obscure (as in just something like "unexpected token" on
 ## the would-be formal argument).
 def parNullaryClosure = {:
+    c = parFullClosure
+
+    {
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    }
+:};
+
+## Like, `parNullaryClosure` (above), except returning a basic (no
+## required `yield`) closure node.
+def parBasicNullaryClosure = {:
     c = parBasicClosure
 
     {
@@ -568,7 +581,7 @@ def parFunctionCommon = {:
     @"("
     formals = parFormalsList
     @")"
-    code = parNullaryClosure
+    code = parBasicNullaryClosure
 
     {
         def returnDef = ifValue { <> code::yieldDef }
