@@ -1159,9 +1159,10 @@ fn makeCompareCalls(firstEx, opExList) {
                 <> @closure{
                     formals: [],
                     statements: [makeVarDef(rightName, opEx::expr)],
-                    yield: makeCall(REFS::ifIs,
-                        makeThunk(makeCall(resolvedOp, leftRef, rightRef)),
-                        transform(rightRef, rest*))
+                    yield: makeMaybe(
+                        makeCall(REFS::ifIs,
+                            makeThunk(makeCall(resolvedOp, leftRef, rightRef)),
+                            transform(rightRef, rest*)))
                 }
             }
     };
