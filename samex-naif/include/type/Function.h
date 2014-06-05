@@ -273,4 +273,12 @@ inline zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
     return funCall(function, 19, args);
 }
 
+/**
+ * Function which should never get called. This is used to wrap calls which
+ * aren't allowed to return. Should they return, this function gets called
+ * and promptly dies with a fatal error.
+ */
+void mustNotYield(zvalue value)
+    __attribute__((noreturn));
+
 #endif

@@ -202,6 +202,10 @@ extern zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
     zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
     zvalue arg16, zvalue arg17, zvalue arg18);
 
+/* Documented in header. */
+void mustNotYield(zvalue value) {
+    die("Improper yield from `noYield` expression.");
+}
 
 /*
  * Type Definition

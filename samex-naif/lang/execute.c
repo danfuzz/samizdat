@@ -106,9 +106,7 @@ static void execNoYield(Frame *frame, zvalue noYield)
     __attribute__((noreturn));
 static void execNoYield(Frame *frame, zvalue noYield) {
     zvalue valueExpression = get(noYield, STR_value);
-    execExpression(frame, valueExpression);
-
-    die("Improper yield from `noYield` node.");
+    mustNotYield(execExpression(frame, valueExpression));
 }
 
 /* Documented in header. */
