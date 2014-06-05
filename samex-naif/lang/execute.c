@@ -164,9 +164,11 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 
 /* Documented in header. */
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
-    return (get_evalType(e) == EVAL_maybe)
-        ? execMaybe(frame, e)
-        : execExpression(frame, e);
+    switch (get_evalType(e)) {
+        case EVAL_maybe: return execMaybe(frame, e);
+        case EVAL_void:  return NULL;
+        default:         return execExpression(frame, e);
+    }
 }
 
 /* Documented in header. */
@@ -179,7 +181,6 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_literal: return get(e, STR_value);
         case EVAL_varBind: return execVarBind(frame, e);
         case EVAL_varRef:  return execVarRef(frame, e);
-        case EVAL_void:    return NULL;
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }
