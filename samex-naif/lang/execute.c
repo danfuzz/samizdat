@@ -78,20 +78,6 @@ static void execImport(Frame *frame, zvalue import) {
 }
 
 /**
- * Executes a `jump` form.
- */
-static void execJump(Frame *frame, zvalue jump)
-    __attribute__((noreturn));
-static void execJump(Frame *frame, zvalue jump) {
-    zvalue functionExpr = get(jump, STR_function);
-    zvalue argExpr = get(jump, STR_value);
-    zvalue function = execExpression(frame, functionExpr);
-    zvalue arg = execExpressionOrMaybe(frame, argExpr);
-
-    funJump(function, arg);
-}
-
-/**
  * Executes a `maybe` form.
  */
 static zvalue execMaybe(Frame *frame, zvalue maybe) {
@@ -178,7 +164,6 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_apply:   return execApply(frame, e);
         case EVAL_call:    return execCall(frame, e);
         case EVAL_closure: return execClosure(frame, e);
-        case EVAL_jump:    execJump(frame, e);
         case EVAL_literal: return get(e, STR_value);
         case EVAL_noYield: execNoYield(frame, e);
         case EVAL_varBind: return execVarBind(frame, e);

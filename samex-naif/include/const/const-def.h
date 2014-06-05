@@ -67,7 +67,6 @@ TYP(importModuleSelection, "importModuleSelection");
 TYP(importResource,        "importResource");
 TYP(int,                   "int");
 TYP(internal,              "internal");
-TYP(jump,                  "jump");
 TYP(literal,               "literal");
 TYP(maybe,                 "maybe");
 TYP(module,                "module");

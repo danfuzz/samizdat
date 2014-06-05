@@ -26,7 +26,6 @@ typedef enum {
     EVAL_importModule,
     EVAL_importModuleSelection,
     EVAL_importResource,
-    EVAL_jump,
     EVAL_literal,
     EVAL_maybe,
     EVAL_noYield,
