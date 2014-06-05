@@ -549,7 +549,7 @@ fn runProgram(programFunc, args) {
                 { main -> return main(args*) }
         };
 
-    return result;
+    return result
 };
 
 ## Helper for `runFile`, which handles program text.

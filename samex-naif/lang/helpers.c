@@ -490,8 +490,15 @@ zvalue makeNoYield(zvalue value) {
 
 /* Documented in spec. */
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
-    zvalue actuals = (optValue == NULL) ? EMPTY_LIST : listFrom1(optValue);
-    zvalue exitCall = makeCallOrApply(function, actuals);
+    zvalue exitCall;
+
+    if (optValue != NULL) {
+        zvalue actuals = makeInterpolate(makeMaybeValue(optValue));
+        exitCall = makeCallOrApply(function, listFrom1(actuals));
+    } else {
+        exitCall = makeCall(function, NULL);
+    }
+
     return makeNoYield(exitCall);
 }
 
