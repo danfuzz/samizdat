@@ -177,6 +177,18 @@ Makes an `apply` node, with the given `function` (an expression node)
 being applied to the given `actuals` (an expression node). If `optActuals`
 is not passed, it defaults to `@void`.
 
+#### `makeBasicClosure(map) <> node`
+
+Makes a `closure` node, using the bindings of `map` as a basis, and adding
+in sensible defaults for `formals` and `statements` if missing:
+
+* `formals: []` &mdash; An empty formals list.
+* `statements: []` &mdash; An empty statements list.
+
+No default is provided for `yield`, as it is not always possible to
+figure out a default for it at the points where `closure` nodes need to
+be produced de novo. See `makeFullClosure()` for more detail.
+
 #### `makeCall(function, actuals*) <> node`
 
 Makes a `call` node, where `function` (an expression node) is called
@@ -210,17 +222,6 @@ arguments.
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
-#### `makeClosure(map) <> node`
-
-Makes a `closure` node, using the bindings of `map` as a basis, and adding
-in sensible defaults for any missing pieces. The defaults include:
-
-* `formals: []` &mdash; An empty formals list.
-* `statements: []` &mdash; An empty statements list.
-
-**Note:** No default is provided for `yield`, as it is optional. TODO: This
-should be changed.
-
 #### `makeDynamicImport(node) <> [node+]`
 
 Converts an `import*` node to a list of statement nodes which perform an
@@ -248,6 +249,14 @@ to) a `varDef` node.
 
 Makes an `exportSelection` node to export the variables with the given
 `names`.
+
+#### `makeFullClosure(map) <> node`
+
+Makes a `closure` node, using the bindings of `map` as a basis, adding
+in defaults like `makeBasicClosure()` (see which), as well as for `yield`.
+
+In particular, if `yield` is not specified, the result includes a binding
+of `yield` to `@void`.
 
 #### `makeGet(collArg, keyArg) <> node`
 

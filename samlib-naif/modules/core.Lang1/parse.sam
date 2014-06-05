@@ -436,7 +436,7 @@ def parFunctionCommon = $Peg::makeMainSequence(
             }
             { <> [] };
 
-        <> makeClosure({
+        <> makeFullClosure({
             dataOf(code)*,
             formals,
             name,
@@ -619,7 +619,7 @@ parClosure := $Peg::makeMainSequence(
     parClosureBody,
     $Peg::makeToken(@@"}"),
     $Peg::makeCode { ., decls, body, . ->
-        def closure = makeClosure({decls*, body*});
+        def closure = makeBasicClosure({decls*, body*});
         <> withoutTops(closure)
     });
 
@@ -651,7 +651,7 @@ def parProgram = $Peg::makeMainSequence(
         $Peg::makeResult([])),
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeCode { imports, body, . ->
-        def closure = makeClosure({statements: [imports*, body*]});
+        def closure = makeBasicClosure({statements: [imports*, body*]});
         <> withoutTops(closure)
     });
 

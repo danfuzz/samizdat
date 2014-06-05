@@ -81,13 +81,13 @@ zvalue get_definedNames(zvalue node);
 zvalue makeApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
+zvalue makeBasicClosure(zvalue map);
+
+/* Documented in spec. */
 zvalue makeCall(zvalue function, zvalue actuals);
 
 /* Documented in spec. */
 zvalue makeCallOrApply(zvalue function, zvalue actuals);
-
-/* Documented in spec. */
-zvalue makeClosure(zvalue map);
 
 /* Documented in spec. */
 zvalue makeDynamicImport(zvalue node);
@@ -97,6 +97,9 @@ zvalue makeExport(zvalue node);
 
 /* Documented in spec. */
 zvalue makeExportSelection(zvalue names);
+
+/* Documented in spec. */
+zvalue makeFullClosure(zvalue map);
 
 /* Documented in spec. */
 zvalue makeImport(zvalue baseData);

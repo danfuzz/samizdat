@@ -231,6 +231,15 @@ zvalue makeApply(zvalue function, zvalue actuals) {
 }
 
 /* Documented in spec. */
+zvalue makeBasicClosure(zvalue map) {
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat,
+            mapFrom2(STR_formals, EMPTY_LIST, STR_statements, EMPTY_LIST),
+            map),
+        NULL);
+}
+
+/* Documented in spec. */
 zvalue makeCall(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
@@ -299,15 +308,6 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 }
 
 /* Documented in spec. */
-zvalue makeClosure(zvalue map) {
-    return makeValue(TYPE_closure,
-        GFN_CALL(cat,
-            mapFrom2(STR_formals, EMPTY_LIST, STR_statements, EMPTY_LIST),
-            map),
-        NULL);
-}
-
-/* Documented in spec. */
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, STR_format);
     zvalue name = get(node, STR_name);
@@ -357,6 +357,18 @@ zvalue makeExport(zvalue node) {
 zvalue makeExportSelection(zvalue names) {
     return makeValue(TYPE_exportSelection,
         mapFrom1(STR_select, names),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue makeFullClosure(zvalue map) {
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat,
+            mapFrom3(
+                STR_formals,    EMPTY_LIST,
+                STR_statements, EMPTY_LIST,
+                STR_yield,      TOK_void),
+            map),
         NULL);
 }
 

@@ -841,7 +841,7 @@ DEF_PARSE(functionCommon) {
             STR_name,       name,
             STR_yieldDef,   STR_return,
             STR_statements, GFN_CALL(cat, returnDef, GET(statements, code))));
-    return makeClosure(closureMap);
+    return makeFullClosure(closureMap);
 }
 
 /* Documented in spec. */
@@ -1144,7 +1144,7 @@ DEF_PARSE(closure) {
 
     MATCH_OR_REJECT(CH_CCURLY);
 
-    zvalue closure = makeClosure(GFN_CALL(cat, decls, body));
+    zvalue closure = makeBasicClosure(GFN_CALL(cat, decls, body));
     return withoutTops(closure);
 }
 
@@ -1186,7 +1186,7 @@ DEF_PARSE(program) {
 
     PARSE(optSemicolons);
 
-    zvalue closure = makeClosure(mapFrom1(STR_statements, statements));
+    zvalue closure = makeBasicClosure(mapFrom1(STR_statements, statements));
     return withoutTops(closure);
 }
 

@@ -563,7 +563,7 @@ def parFunctionCommon = {:
             }
             { <> [] };
 
-        <> makeClosure({
+        <> makeFullClosure({
             dataOf(code)*,
             formals,
             name,
@@ -800,7 +800,7 @@ parClosure := {:
     body = parClosureBody
     @"}"
     {
-        def closure = makeClosure({decls*, body*});
+        def closure = makeBasicClosure({decls*, body*});
         <> withoutTops(closure)
     }
 :};
@@ -836,7 +836,7 @@ def parProgram = {:
     @";"*
 
     {
-        def closure = makeClosure({statements: [imports*, body*]});
+        def closure = makeBasicClosure({statements: [imports*, body*]});
         <> withoutTops(closure)
     }
 :};
@@ -1156,7 +1156,7 @@ fn makeCompareCalls(firstEx, opExList) {
             {
                 def rightName = nextName();
                 def rightRef = makeVarRef(rightName);
-                <> makeClosure({
+                <> makeFullClosure({
                     statements: [makeVarDef(rightName, opEx::expr)],
                     yield: makeMaybe(
                         makeCall(REFS::ifIs,
@@ -1170,7 +1170,7 @@ fn makeCompareCalls(firstEx, opExList) {
     def closure = transform(makeVarRef(firstName), opExList*);
 
     <> makeCall(
-        makeClosure({
+        makeFullClosure({
             statements: [
                 makeVarDef(firstName, firstEx),
                 closure::statements*
@@ -1307,7 +1307,7 @@ def parComprehensionBody = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        <> [makeClosure({filterBody*, formals: genFormals}), genInits*]
+        <> [makeFullClosure({filterBody*, formals: genFormals}), genInits*]
     }
 :};
 
@@ -1949,7 +1949,7 @@ def parIfExpression = {:
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                <> makeCall(makeClosure({dataOf(mainThunk)*, yieldDef*}))
+                <> makeCall(makeFullClosure({dataOf(mainThunk)*, yieldDef*}))
             }
     }
 :};
@@ -1995,14 +1995,14 @@ def parWhileExpression = {:
     code = parNullaryClosure
 
     {
-        def loopClosure = makeClosure({
+        def loopClosure = makeFullClosure({
             yieldDef: "continue",
             statements: [
                 testMaker(code, makeThunk(makeNonlocalExit(REFS::break)))
             ]
         });
 
-        def mainClosure = makeClosure({
+        def mainClosure = makeFullClosure({
             yieldDef: "break",
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
@@ -2042,12 +2042,12 @@ def parDoExpression = {:
     )?
 
     {
-        def loopClosure = makeClosure({
+        def loopClosure = makeFullClosure({
             yieldDef: "continue",
             statements: [makeCall(code), condition*]
         });
 
-        def mainClosure = makeClosure({
+        def mainClosure = makeFullClosure({
             yieldDef: "break",
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
@@ -2091,13 +2091,13 @@ def parForExpression = {:
             { name <> [makeVarDef(name, REFS::continue)] }
             { <> [] };
 
-        def loopClosure = makeClosure({
+        def loopClosure = makeFullClosure({
             formals: genFormals,
             yieldDef: "continue",
             statements: [continueDef*, get_statements(code)*]
         });
 
-        def mainClosure = makeClosure({
+        def mainClosure = makeFullClosure({
             yieldDef: "break",
             statements: [
                 breakDef*,
@@ -2226,7 +2226,7 @@ def parSwitchExpression = {:
             CALL_ARG,
             optDefault*);
 
-        def mainBody = makeClosure({
+        def mainBody = makeFullClosure({
             formals: [{name: testVar}],
             yield: makeMaybe(innerIf)
         });
@@ -2236,7 +2236,7 @@ def parSwitchExpression = {:
             mainBody,
             optElse*);
 
-        def mainClosure = makeClosure({
+        def mainClosure = makeFullClosure({
             yieldDef: "break",
             statements: [breakDef*],
             yield: makeMaybe(outerIf)

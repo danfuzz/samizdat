@@ -19,6 +19,15 @@ export fn makeApply(function, optActuals?) {
 };
 
 ## Documented in spec.
+export fn makeBasicClosure(map) {
+    <> @closure{
+        formals:    [],
+        statements: [],
+        map*
+    }
+};
+
+## Documented in spec.
 export fn makeCall(function, actuals*) {
     <> @call{function, actuals}
 };
@@ -36,15 +45,6 @@ export fn makeCallThunks(function, actuals*) {
 };
 
 ## Documented in spec.
-export fn makeClosure(map) {
-    <> @closure{
-        formals: [],
-        statements: [],
-        map*
-    }
-};
-
-## Documented in spec.
 export fn makeExport(node) {
     <> @export{value: node}
 };
@@ -52,6 +52,16 @@ export fn makeExport(node) {
 ## Documented in spec.
 export fn makeExportSelection(names+) {
     <> @exportSelection{select: names}
+};
+
+## Documented in spec.
+export fn makeFullClosure(map) {
+    <> @closure{
+        formals:    [],
+        statements: [],
+        yield:      @void,
+        map*
+    }
 };
 
 ## Documented in spec.

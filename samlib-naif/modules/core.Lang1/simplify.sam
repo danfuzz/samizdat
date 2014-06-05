@@ -77,7 +77,7 @@ fn @@code.convertPex(formals) {
     ## and just convert that.
 
     def closurePayload = {(dataOf(this))*, formals};
-    def convertedClosure = convertPexIn(makeClosure(closurePayload));
+    def convertedClosure = convertPexIn(makeFullClosure(closurePayload));
 
     <> makeCall(REFS::Peg_makeCode, convertedClosure)
 };
@@ -148,7 +148,7 @@ fn @@thunk.convertPex(formals) {
     ## Use the lexical `formals` context to make a regular closure node,
     ## and just convert that.
 
-    def closure = makeClosure({
+    def closure = makeFullClosure({
         formals,
         yield: makeMaybe(dataOf(this))
     });

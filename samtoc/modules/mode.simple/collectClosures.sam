@@ -33,7 +33,7 @@ fn @@closure.bodies(bodiesBox) {
     def optYield = ((def y = this.yieldNode) & bodies(y, bodiesBox))?;
     def varRefs = this.varRefs;
 
-    def newNode = makeClosure({
+    def newNode = makeFullClosure({
         formals: this.formals,
         ((def name = this.name) & {name} | {})*,
         statements,

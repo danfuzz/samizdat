@@ -35,7 +35,7 @@ fn @@closure.lits(interner) {
         & {name: lits(@literal{value}, interner)}
         | {};
 
-    <> makeClosure({
+    <> makeFullClosure({
         name*,
         formals: this.formals,
         statements: [ s in this.statements <> lits(s, interner) ],
