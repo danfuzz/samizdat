@@ -113,11 +113,20 @@ fn @@importResource.translate(varsBox) {
 };
 
 fn @@jump.translate(varsBox) {
-    def value = (def v = this.nodeValue)
-        & translate(v, varsBox)
-        | "NULL";
-    <> genCall("funJump",
-        translate(this.function, varsBox), value)
+    def function = translate(this.function, varsBox);
+    def value = this.nodeValue;
+
+    <> if (hasType(value, @@maybe)) {
+        def vTrans = translate(value.nodeValue, varsBox);
+        <> genCall("funJump", function, vTrans)
+    } else if (hasType(value, @@void)) {
+        <> genCall("funJump", function, "NULL")
+    } else {
+        ## If it's not wrapped in a `@maybe`, we need to guarantee
+        ## non-void.
+        def vTrans = translate(value, varsBox);
+        <> genCall("funJump", function, genCall("datNonVoid", vTrans))
+    }
 };
 
 fn @@literalRef.translate(varsBox) {
