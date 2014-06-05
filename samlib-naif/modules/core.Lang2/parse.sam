@@ -563,13 +563,13 @@ def parFunctionCommon = {:
             }
             { <> [] };
 
-        <> @closure{
+        <> makeClosure({
             dataOf(code)*,
             formals,
             name,
             yieldDef: "return",
             statements: [returnDef*, get_statements(code)*]
-        }
+        })
     }
 :};
 
@@ -800,7 +800,7 @@ parClosure := {:
     body = parClosureBody
     @"}"
     {
-        def closure = @closure{decls*, body*};
+        def closure = makeClosure({decls*, body*});
         <> withoutTops(closure)
     }
 :};
@@ -836,7 +836,7 @@ def parProgram = {:
     @";"*
 
     {
-        def closure = @closure{formals: [], statements: [imports*, body*]};
+        def closure = makeClosure({statements: [imports*, body*]});
         <> withoutTops(closure)
     }
 :};
@@ -1156,14 +1156,13 @@ fn makeCompareCalls(firstEx, opExList) {
             {
                 def rightName = nextName();
                 def rightRef = makeVarRef(rightName);
-                <> @closure{
-                    formals: [],
+                <> makeClosure({
                     statements: [makeVarDef(rightName, opEx::expr)],
                     yield: makeMaybe(
                         makeCall(REFS::ifIs,
                             makeThunk(makeCall(resolvedOp, leftRef, rightRef)),
                             transform(rightRef, rest*)))
-                }
+                })
             }
     };
 
@@ -1171,14 +1170,13 @@ fn makeCompareCalls(firstEx, opExList) {
     def closure = transform(makeVarRef(firstName), opExList*);
 
     <> makeCall(
-        @closure{
-            formals: [],
+        makeClosure({
             statements: [
                 makeVarDef(firstName, firstEx),
                 closure::statements*
             ],
             yield: closure::yield
-        })
+        }))
 };
 
 ## Helper for string interpolation: Parses the two kinds of interpolation,
@@ -1309,7 +1307,7 @@ def parComprehensionBody = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        <> [@closure{filterBody*, formals: genFormals}, genInits*]
+        <> [makeClosure({filterBody*, formals: genFormals}), genInits*]
     }
 :};
 
@@ -1951,7 +1949,7 @@ def parIfExpression = {:
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                <> makeCall(@closure{dataOf(mainThunk)*, yieldDef*})
+                <> makeCall(makeClosure({dataOf(mainThunk)*, yieldDef*}))
             }
     }
 :};
@@ -1997,19 +1995,17 @@ def parWhileExpression = {:
     code = parNullaryClosure
 
     {
-        def loopClosure = @closure{
-            formals: [],
+        def loopClosure = makeClosure({
             yieldDef: "continue",
             statements: [
                 testMaker(code, makeThunk(makeNonlocalExit(REFS::break)))
             ]
-        };
+        });
 
-        def mainClosure = @closure{
-            formals: [],
+        def mainClosure = makeClosure({
             yieldDef: "break",
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
-        };
+        });
 
         <> makeCall(mainClosure)
     }
@@ -2046,17 +2042,15 @@ def parDoExpression = {:
     )?
 
     {
-        def loopClosure = @closure{
-            formals: [],
+        def loopClosure = makeClosure({
             yieldDef: "continue",
             statements: [makeCall(code), condition*]
-        };
+        });
 
-        def mainClosure = @closure{
-            formals: [],
+        def mainClosure = makeClosure({
             yieldDef: "break",
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
-        };
+        });
 
         <> makeCall(mainClosure)
     }
@@ -2097,21 +2091,20 @@ def parForExpression = {:
             { name <> [makeVarDef(name, REFS::continue)] }
             { <> [] };
 
-        def loopClosure = @closure{
+        def loopClosure = makeClosure({
             formals: genFormals,
             yieldDef: "continue",
             statements: [continueDef*, get_statements(code)*]
-        };
+        });
 
-        def mainClosure = @closure{
-            formals: [],
+        def mainClosure = makeClosure({
             yieldDef: "break",
             statements: [
                 breakDef*,
                 makeCall(REFS::Generator_filterPump,
                     loopClosure, genInits*)
             ]
-        };
+        });
 
         <> makeCall(mainClosure)
     }
@@ -2233,23 +2226,21 @@ def parSwitchExpression = {:
             CALL_ARG,
             optDefault*);
 
-        def mainBody = @closure{
+        def mainBody = makeClosure({
             formals: [{name: testVar}],
-            statements: [],
             yield: makeMaybe(innerIf)
-        };
+        });
 
         def outerIf = makeCall(REFS::ifValue,
             makeThunk(testClause::test),
             mainBody,
             optElse*);
 
-        def mainClosure = @closure{
-            formals: [],
+        def mainClosure = makeClosure({
             yieldDef: "break",
             statements: [breakDef*],
             yield: makeMaybe(outerIf)
-        };
+        });
 
         <> makeCall(mainClosure)
     }

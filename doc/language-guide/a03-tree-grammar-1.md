@@ -566,13 +566,13 @@ def parFunctionCommon = {:
             }
             { <> [] };
 
-        <> @closure{
+        <> makeClosure({
             dataOf(code)*,
             formals,
             name,
             yieldDef: "return",
             statements: [returnDef*, get_statements(code)*]
-        }
+        })
     }
 :};
 
@@ -803,7 +803,7 @@ parClosure := {:
     body = parClosureBody
     @"}"
     {
-        def closure = @closure{decls*, body*};
+        def closure = makeClosure({decls*, body*});
         <> withoutTops(closure)
     }
 :};
@@ -839,7 +839,7 @@ def parProgram = {:
     @";"*
 
     {
-        def closure = @closure{formals: [], statements: [imports*, body*]};
+        def closure = makeClosure({statements: [imports*, body*]});
         <> withoutTops(closure)
     }
 :};
