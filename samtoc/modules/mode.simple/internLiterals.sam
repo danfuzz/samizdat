@@ -18,11 +18,9 @@ fn .lits(interner);
 
 fn @@apply.lits(interner) {
     def function = lits(this.function, interner);
-    def actualsMap = (def a = this.actuals)
-        & {actuals: lits(a, interner)}
-        | {};
+    def actuals = lits(this.actuals, interner);
 
-    <> @apply{actualsMap*, function}
+    <> @apply{actuals, function}
 };
 
 fn @@call.lits(interner) {

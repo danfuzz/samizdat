@@ -81,7 +81,7 @@ fn safeIndexForNodes(base, nodes*) {
 fn @@apply.safeIndex(base) {
     <> safeIndexForNodes(base,
         get_function(this),
-        get_actuals(this)?*);
+        get_actuals(this));
 };
 
 fn @@call.safeIndex(base) {
