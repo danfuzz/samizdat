@@ -45,15 +45,6 @@ export fn makeExportSelection(names+) {
 };
 
 ## Documented in spec.
-export fn makeNonlocalExit(function, optValue?) {
-    def value = ifValue { <> optValue* }
-        { v <> makeMaybe(v) }
-        { <> @void };
-
-    <> @jump{function, value}
-};
-
-## Documented in spec.
 export fn makeLiteral(value) {
     <> @literal{value}
 };

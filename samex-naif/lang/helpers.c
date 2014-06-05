@@ -490,11 +490,9 @@ zvalue makeNoYield(zvalue value) {
 
 /* Documented in spec. */
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
-    zvalue value = (optValue == NULL) ? TOK_void : makeMaybe(optValue);
-
-    return makeValue(TYPE_jump,
-        mapFrom2(STR_function, function, STR_value, value),
-        NULL);
+    zvalue actuals = (optValue == NULL) ? EMPTY_LIST : listFrom1(optValue);
+    zvalue exitCall = makeCallOrApply(function, actuals);
+    return makeNoYield(exitCall);
 }
 
 /* Documented in spec. */
