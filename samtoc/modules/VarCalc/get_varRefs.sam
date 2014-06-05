@@ -96,10 +96,6 @@ fn @@importResource.get_varRefs() {
     <> catVarRefs(statements*)
 };
 
-fn @@jump.get_varRefs() {
-    <> catVarRefs(this.function, this.nodeValue?*)
-};
-
 fn @@literal.get_varRefs() {
     <> []
 };

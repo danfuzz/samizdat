@@ -249,16 +249,6 @@ fn @@importResource.convertPexIn() {
     <> this
 };
 
-## Does parser conversion of a `jump` node.
-fn @@jump.convertPexIn() {
-    def function = convertPexIn(get_function(this));
-    def optValue = ifValue { <> get_nodeValue(this) }
-        { value <> {value: convertPexIn(value)} }
-        { <> {} };
-
-    <> withFinalBindings(this, {function, optValue*});
-};
-
 ## Does parser conversion of a `literal` node.
 fn @@literal.convertPexIn() {
     <> this

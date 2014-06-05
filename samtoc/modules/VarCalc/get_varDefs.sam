@@ -64,10 +64,6 @@ fn @@importResource.get_varDefs() {
     <> [this.name]
 };
 
-fn @@jump.get_varDefs() {
-    <> []
-};
-
 fn @@literal.get_varDefs() {
     <> []
 };
