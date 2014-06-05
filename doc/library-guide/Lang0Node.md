@@ -86,7 +86,7 @@ Gets the format of an `importResource` node.
 
 #### `get_function(node) <> node`
 
-Gets the function of an `apply`, `call`, or `jump` node.
+Gets the function of an `apply`, or `call` node.
 
 #### `get_id(node) <> int`
 
@@ -139,7 +139,7 @@ nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 #### `get_nodeValue(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `jump`, `literal`, `maybe`, `noYield`, `parser`, `varBind`,
+nodes of type `literal`, `maybe`, `noYield`, `parser`, `varBind`,
 `varDef`, and `varDefMutable`.
 
 #### `get_prefix(node) <> string`
