@@ -25,7 +25,7 @@ is called for.
 
 #### `apply` &mdash; `@apply{function: expression, (actuals: expression)?}`
 
-* `function: expression` (required) &mdash; An expression node that must
+* `function: expression` &mdash; An expression node that must
   evaluate to a function.
 
 * `actuals: expression` (optional) &mdash; An expression node that must
@@ -55,10 +55,10 @@ takes its `actuals` as a list in the node itself.
 
 #### `call` &mdash; `@call{function: expression, actuals: [expression*], (interpolate: expression)?}`
 
-* `function: expression` (required) &mdash; An expression node that must
+* `function: expression` &mdash; An expression node that must
   evaluate to a function.
 
-* `actuals: [expression*]` (required) &mdash; A list of arbitrary
+* `actuals: [expression*]` &mdash; A list of arbitrary
   expression nodes, each of which must evaluate to a non-void value.
 
 * `interpolate: expression` (optional) &mdash; Expression to use when treating
@@ -83,7 +83,7 @@ produced by the function `$Lang0Node::makeInterpolate`.
 
 #### `closure` &mdash; `formals: [formal+], (info: map)?, (name: name)?,` `statements: [statement*], (yield: expression)?, (yieldDef: name)?}`
 
-* `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
+* `formals: [formal+]` &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
 
@@ -94,7 +94,7 @@ produced by the function `$Lang0Node::makeInterpolate`.
 * `name: name` (optional) &mdash; The function name of the closure. Only
   used for producing debugging info (e.g. stack traces).
 
-* `statements: [statement*]` (required) &mdash; A list of statement
+* `statements: [statement*]` &mdash; A list of statement
   nodes. A statement node must be either an expression node, or one of the
   various variable definition nodes (as defined below). This defines the bulk
   of the code to execute.
@@ -140,7 +140,7 @@ continuations.
 
 #### `literal` &mdash; `@literal{value: value}`
 
-* `value: value` (required) &mdash; Arbitrary data value.
+* `value: value` &mdash; Arbitrary data value.
 
 This represents arbitrary literal data.
 
@@ -188,7 +188,7 @@ The result of evaluating this form is the same as the result of evaluating
 
 #### `varRef` &mdash; `@varRef{name: name}`
 
-* `name: name` (required) &mdash; Name of a variable (typically a string).
+* `name: name` &mdash; Name of a variable (typically a string).
 
 This represents a by-name variable reference.
 
