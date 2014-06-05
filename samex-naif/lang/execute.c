@@ -99,6 +99,18 @@ static zvalue execMaybe(Frame *frame, zvalue maybe) {
     return execExpressionVoidOk(frame, valueExpression);
 }
 
+/**
+ * Executes a `noYield` form.
+ */
+static void execNoYield(Frame *frame, zvalue noYield)
+    __attribute__((noreturn));
+static void execNoYield(Frame *frame, zvalue noYield) {
+    zvalue valueExpression = get(noYield, STR_value);
+    execExpression(frame, valueExpression);
+
+    die("Improper yield from `noYield` node.");
+}
+
 /* Documented in header. */
 static zvalue execVarBind(Frame *frame, zvalue varBind) {
     zvalue name = get(varBind, STR_name);
@@ -170,6 +182,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_closure: return execClosure(frame, e);
         case EVAL_jump:    execJump(frame, e);
         case EVAL_literal: return get(e, STR_value);
+        case EVAL_noYield: execNoYield(frame, e);
         case EVAL_varBind: return execVarBind(frame, e);
         case EVAL_varRef:  return execVarRef(frame, e);
         default: {
