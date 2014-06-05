@@ -33,14 +33,14 @@ fn @@closure.bodies(bodiesBox) {
     def optYield = ((def y = this.yieldNode) & bodies(y, bodiesBox))?;
     def varRefs = this.varRefs;
 
-    def newNode = @closure{
+    def newNode = makeClosure({
         formals: this.formals,
         ((def name = this.name) & {name} | {})*,
         statements,
         varRefs,
         ((def yieldNode = optYield*) & {yield: yieldNode} | {})*,
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
-    };
+    });
 
     def bodies = fetch(bodiesBox);
     if (def already = bodies[newNode]) {
