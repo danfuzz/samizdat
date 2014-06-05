@@ -26,19 +26,9 @@
  * Private Definitions
  */
 
-/**
- * Executes an `expression` form, with the result never allowed to be
- * `void`.
- */
-static zvalue execExpression(Frame *frame, zvalue expression) {
-    zvalue result = execExpressionVoidOk(frame, expression);
-
-    if (result == NULL) {
-        die("Invalid use of void expression result.");
-    }
-
-    return result;
-}
+// Both of these are defined at the bottom of this section.
+static zvalue execExpression(Frame *frame, zvalue expression);
+static zvalue execExpressionVoidOk(Frame *frame, zvalue e);
 
 /**
  * Executes an `apply` form.
@@ -47,9 +37,17 @@ static zvalue execApply(Frame *frame, zvalue apply) {
     zvalue functionExpr = get(apply, STR_function);
     zvalue actualsExpr = get(apply, STR_actuals);
     zvalue function = execExpression(frame, functionExpr);
-    zvalue actuals = execExpression(frame, actualsExpr);
+    zvalue actuals = (actualsExpr == NULL)
+        ? NULL :
+        execExpressionOrMaybe(frame, actualsExpr);
 
-    return funApply(function, actuals);
+    if (actuals == NULL) {
+        // If `actuals` isn't present or evaluated to void, then evaluation
+        // becomes a simple no-argument function call.
+        return funCall(function, 0, NULL);
+    } else {
+        return funApply(function, actuals);
+    }
 }
 
 /**
@@ -88,11 +86,17 @@ static void execJump(Frame *frame, zvalue jump) {
     zvalue functionExpr = get(jump, STR_function);
     zvalue argExpr = get(jump, STR_value);
     zvalue function = execExpression(frame, functionExpr);
-    zvalue arg = (argExpr == NULL)
-        ? NULL
-        : execExpressionVoidOk(frame, argExpr);
+    zvalue arg = execExpressionOrMaybe(frame, argExpr);
 
     funJump(function, arg);
+}
+
+/**
+ * Executes a `maybe` form.
+ */
+static zvalue execMaybe(Frame *frame, zvalue maybe) {
+    zvalue valueExpression = get(maybe, STR_value);
+    return execExpressionVoidOk(frame, valueExpression);
 }
 
 /* Documented in header. */
@@ -141,13 +145,25 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
     return frameGet(frame, name);
 }
 
-
-/*
- * Module Definitions
+/**
+ * Executes an `expression` form, with the result never allowed to be
+ * `void`.
  */
+static zvalue execExpression(Frame *frame, zvalue expression) {
+    zvalue result = execExpressionVoidOk(frame, expression);
 
-/* Documented in header. */
-zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
+    if (result == NULL) {
+        die("Invalid use of void expression result.");
+    }
+
+    return result;
+}
+
+/**
+ * Executes an `expression` form, with the result possibly being
+ * `void` (represented as `NULL`).
+ */
+static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (get_evalType(e)) {
         case EVAL_apply:   return execApply(frame, e);
         case EVAL_call:    return execCall(frame, e);
@@ -159,6 +175,20 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }
+    }
+}
+
+
+/*
+ * Module Definitions
+ */
+
+/* Documented in header. */
+zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
+    switch (get_evalType(e)) {
+        case EVAL_maybe: return execMaybe(frame, e);
+        case EVAL_void:  return NULL;
+        default:         return execExpression(frame, e);
     }
 }
 
@@ -204,5 +234,5 @@ zvalue langEval0(zvalue env, zvalue node) {
     env = mapFromArray(size, mappings);
 
     frameInit(&frame, NULL, NULL, env);
-    return execExpressionVoidOk(&frame, node);
+    return execExpressionOrMaybe(&frame, node);
 }

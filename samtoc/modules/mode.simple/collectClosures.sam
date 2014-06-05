@@ -17,8 +17,11 @@ fn .bodies(bodiesBox);
 
 fn @@apply.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
-    def actuals = bodies(this.actuals, bodiesBox);
-    <> @apply{function, actuals}
+    def actualsMap = (def a = this.actuals)
+        & {actuals: bodies(a, bodiesBox)}
+        | {};
+
+    <> @apply{actualsMap*, function}
 };
 
 fn @@call.bodies(bodiesBox) {
@@ -51,6 +54,15 @@ fn @@closure.bodies(bodiesBox) {
     <> result
 };
 
+fn @@export.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    <> @export{value}
+};
+
+fn @@exportSelection.bodies(bodiesBox) {
+    <> this
+};
+
 fn @@importModule.bodies(bodiesBox) {
     <> this
 };
@@ -76,6 +88,11 @@ fn @@literalRef.bodies(bodiesBox) {
     <> this
 };
 
+fn @@maybe.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    <> @maybe{value}
+};
+
 fn @@varBind.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
     <> @varBind{name: this.name, value}
@@ -97,6 +114,10 @@ fn @@varDefMutable.bodies(bodiesBox) {
 
 fn @@varRef.bodies(bodiesBox) {
     <> @varRef{name: this.name}
+};
+
+fn @@void.bodies(bodiesBox) {
+    <> this
 };
 
 

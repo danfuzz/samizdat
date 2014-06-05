@@ -79,6 +79,16 @@ void datImmortalize(zvalue value);
 void datMark(zvalue value);
 
 /**
+ * Checks that the given argument is non-void (that is not `NULL`), returning
+ * it unmodified if non-void, or terminating the runtime with an error if it
+ * is void.
+ *
+ * **Note:** This is not an `assert`, since it's meant to be used in a
+ * full "production" type build.
+ */
+zvalue datNonVoid(zvalue value);
+
+/**
  * Gets a pointer to the data payload of a `zvalue`.
  */
 inline void *datPayload(zvalue value) {

@@ -659,21 +659,20 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { name = PARSE(nonlocalExit2); }
     if (name == NULL) { return NULL; }
 
-    zvalue optValue = PARSE(expression); // It's okay for this to be `NULL`.
-    return makeJumpNode(name, optValue);
+    zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
+    return mapFrom1(STR_yield, makeJumpNode(name, optValue));
 }
 
-/**
- * Documented in spec. This implementation differs from the
- * spec in that it will return `NULL` either if no diamond is present
- * or if it is a void yield. This is compensated for by matching changes to
- * the implementation of `closureBody`, below.
- */
+/** Documented in spec. */
 DEF_PARSE(yield) {
     MARK();
 
     MATCH_OR_REJECT(CH_DIAMOND);
-    return PARSE(expression);
+    zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
+
+    return (optValue == NULL)
+        ? EMPTY_MAP
+        : mapFrom1(STR_yield, makeMaybe(optValue));
 }
 
 /* Documented in spec. */
@@ -1094,7 +1093,7 @@ DEF_PARSE(programStatement) {
 /* Documented in spec. */
 DEF_PARSE(closureBody) {
     zvalue statements = EMPTY_LIST;
-    zvalue yieldNode = NULL; // `NULL` is ok, as it's optional.
+    zvalue yieldMap = EMPTY_MAP;
 
     PARSE(optSemicolons);
 
@@ -1117,19 +1116,21 @@ DEF_PARSE(closureBody) {
 
     zvalue statement = PARSE(statement);
 
-    if (statement == NULL) {
-        statement = PARSE(nonlocalExit);
-    }
-
     if (statement != NULL) {
         statements = listAppend(statements, statement);
     } else {
-        yieldNode = PARSE(yield);
+        yieldMap = PARSE(nonlocalExit);
+        if (yieldMap == NULL) {
+            yieldMap = PARSE(yield);
+            if (yieldMap == NULL) {
+                yieldMap = EMPTY_MAP;
+            }
+        }
     }
 
     PARSE(optSemicolons);
 
-    return mapFrom2(STR_statements, statements, STR_yield, yieldNode);
+    return GFN_CALL(cat, mapFrom1(STR_statements, statements), yieldMap);
 }
 
 /* Documented in spec. */

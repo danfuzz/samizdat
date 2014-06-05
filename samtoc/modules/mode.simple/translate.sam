@@ -43,9 +43,22 @@ fn varDefCommon(name, value, varsBox) {
 };
 
 fn @@apply.translate(varsBox) {
-    <> genCall("funApply",
-        translate(this.function, varsBox),
-        translate(this.actuals, varsBox))
+    def function = translate(this.function, varsBox);
+    def actuals = this.actuals | @void;
+
+    <> if (hasType(actuals, @@maybe)) {
+        def acTrans = translate(actuals.nodeValue, varsBox);
+        <> genCall("funApply", function, acTrans)
+    } else if (hasType(actuals, @@void)) {
+        ## A void `actuals` binding just devolves into a no-argument (but
+        ## otherwise regular) function call.
+        <> genCall("FUN_CALL", function)
+    } else {
+        ## If it's not wrapped in a `@maybe`, we need to guarantee
+        ## non-void.
+        def acTrans = translate(actuals, varsBox);
+        <> genCall("funApply", function, genCall("datNonVoid", acTrans))
+    }
 };
 
 fn @@call.translate(varsBox) {
@@ -69,34 +82,62 @@ fn @@closureRef.translate(varsBox) {
         )*)
 };
 
+fn @@export.translate(varsBox) {
+    ## This is only needed once we move to a non-dynamic translation of
+    ## imports.
+    die("Cannot translate `@export`.")
+};
+
+fn @@exportSelection.translate(varsBox) {
+    ## This is only needed once we move to a non-dynamic translation of
+    ## imports.
+    die("Cannot translate `@exportSelection`.")
+};
+
 fn @@importModule.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("Cannot translate `@importModule`.");
+    die("Cannot translate `@importModule`.")
 };
 
 fn @@importModuleSelection.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("Cannot translate `@importModuleSelection`.");
+    die("Cannot translate `@importModuleSelection`.")
 };
 
 fn @@importResource.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
-    die("Cannot translate `@importResource`.");
+    die("Cannot translate `@importResource`.")
 };
 
 fn @@jump.translate(varsBox) {
-    def value = (def v = this.nodeValue)
-        & translate(v, varsBox)
-        | "NULL";
-    <> genCall("funJump",
-        translate(this.function, varsBox), value)
+    def function = translate(this.function, varsBox);
+    def value = this.nodeValue;
+
+    <> if (hasType(value, @@maybe)) {
+        def vTrans = translate(value.nodeValue, varsBox);
+        <> genCall("funJump", function, vTrans)
+    } else if (hasType(value, @@void)) {
+        <> genCall("funJump", function, "NULL")
+    } else {
+        ## If it's not wrapped in a `@maybe`, we need to guarantee
+        ## non-void.
+        def vTrans = translate(value, varsBox);
+        <> genCall("funJump", function, genCall("datNonVoid", vTrans))
+    }
 };
 
 fn @@literalRef.translate(varsBox) {
     <> "LIT_\(this.id)"
+};
+
+fn @@maybe.translate(varsBox) {
+    ## We should never encounter one of these. They should all end up
+    ## getting handled as special cases on the node types where a `@maybe`
+    ## is valid.
+    die("Invalid use of `@maybe`.")
 };
 
 fn @@varBind.translate(varsBox) {
@@ -132,4 +173,9 @@ fn @@varRef.translate(varsBox) {
     def binding = vars[name]
         | die("Reference of undefined variable: \%q(this.name)");
     <> genCall("boxFetch", binding::name)
+};
+
+fn @@void.translate(varsBox) {
+    ## We should never encounter one of these. See `@maybe`, above.
+    die("Invalid use of `@void`.")
 };

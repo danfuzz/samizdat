@@ -426,7 +426,7 @@ def parNonlocalExit = {:
 
     optValue = parExpression?
 
-    { <> makeJump(name, optValue*) }
+    { <> {yield: makeJump(name, optValue*)} }
 :};
 
 ## Parses a local yield / return.
@@ -434,7 +434,7 @@ def parYield = {:
     @"<>"
     (
         ex = parExpression
-        { <> {yield: ex} }
+        { <> {yield: makeMaybe(ex)} }
     |
         { <> {} }
     )
@@ -779,10 +779,10 @@ def parClosureBody = {:
     )*
 
     last = (
-        s = (parStatement | parNonlocalExit)
+        s = parStatement
         { <> {statements: [s]} }
     |
-        y = parYield
+        y = (parNonlocalExit | parYield)
         { <> {statements: [], y*} }
     |
         { <> {statements: []} }
@@ -1159,9 +1159,10 @@ fn makeCompareCalls(firstEx, opExList) {
                 <> @closure{
                     formals: [],
                     statements: [makeVarDef(rightName, opEx::expr)],
-                    yield: makeCall(REFS::ifIs,
-                        makeThunk(makeCall(resolvedOp, leftRef, rightRef)),
-                        transform(rightRef, rest*))
+                    yield: makeMaybe(
+                        makeCall(REFS::ifIs,
+                            makeThunk(makeCall(resolvedOp, leftRef, rightRef)),
+                            transform(rightRef, rest*)))
                 }
             }
     };
@@ -1943,9 +1944,10 @@ def parIfExpression = {:
 
         ## Either add a yield def to the thunk and wrap it in a call, or
         ## unwrap it into a straight call, depending on if the original `if`
-        ## has a yield def or not.
+        ## has a yield def or not. Note that the `yield` in a thunk is always
+        ## a `maybe`, which also needs to be unwrapped.
         <> ifIs { <> eq(yieldDef, {}) }
-            { <> get_yieldNode(mainThunk) }
+            { <> get_nodeValue(get_yieldNode(mainThunk)) }
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
@@ -2234,7 +2236,7 @@ def parSwitchExpression = {:
         def mainBody = @closure{
             formals: [{name: testVar}],
             statements: [],
-            yield: innerIf
+            yield: makeMaybe(innerIf)
         };
 
         def outerIf = makeCall(REFS::ifValue,
@@ -2246,7 +2248,7 @@ def parSwitchExpression = {:
             formals: [],
             yieldDef: "break",
             statements: [breakDef*],
-            yield: outerIf
+            yield: makeMaybe(outerIf)
         };
 
         <> makeCall(mainClosure)

@@ -30,7 +30,7 @@ fn catVarRefs(nodes*) {
 ##
 
 fn @@apply.get_varRefs() {
-    <> catVarRefs(this.function, this.actuals)
+    <> catVarRefs(this.function, this.actuals?*)
 };
 
 fn @@call.get_varRefs() {
@@ -108,6 +108,10 @@ fn @@literalRef.get_varRefs() {
     <> []
 };
 
+fn @@maybe.get_varRefs() {
+    <> this.nodeValue.varRefs
+};
+
 fn @@varBind.get_varRefs() {
     <> [this.name, this.nodeValue.varRefs*]
 };
@@ -122,4 +126,8 @@ fn @@varDefMutable.get_varRefs() {
 
 fn @@varRef.get_varRefs() {
     <> [this.name]
+};
+
+fn @@void.get_varRefs() {
+    <> []
 };

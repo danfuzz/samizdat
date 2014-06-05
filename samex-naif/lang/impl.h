@@ -28,10 +28,12 @@ typedef enum {
     EVAL_importResource,
     EVAL_jump,
     EVAL_literal,
+    EVAL_maybe,
     EVAL_varBind,
     EVAL_varDef,
     EVAL_varDefMutable,
-    EVAL_varRef
+    EVAL_varRef,
+    EVAL_void
 } zevalType;
 
 /** Mapping from `Type` index to corresponding `zevalType`. */
@@ -65,10 +67,11 @@ extern zvalue TYPE_Closure;
 zvalue execClosure(Frame *frame, zvalue closureNode);
 
 /**
- * Executes an `expression` form, with the result possibly being
- * `void` (represented as `NULL`).
+ * Executes an `expression` form, with `@maybe` and `@void` nodes allowed.
+ * Returns the evaluated result. Only returns void (represented as `NULL`)
+ * if given a `@maybe` node which evaluated to void, or a `@void` node.
  */
-zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
+zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
 
 /**
  * Executes a `statement` form.

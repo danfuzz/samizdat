@@ -139,7 +139,7 @@ nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 #### `get_nodeValue(node) <> .`
 
 Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `jump`, `literal`, `parser`, `varBind`, `varDef`, and
+nodes of type `jump`, `literal`, `maybe`, `parser`, `varBind`, `varDef`, and
 `varDefMutable`.
 
 #### `get_prefix(node) <> string`
@@ -285,11 +285,20 @@ binding in the data payload. See `makeCallOrApply` for more details.
 #### `makeJump(function, optValue?) <> node`
 
 Makes a `jump` node, for calling the given `function` with optional
-expression argument `value`.
+expression argument `optValue*`. If `optValue` is passed, then it is
+allowed to evaluate to void.
 
 #### `makeLiteral(value) <> node`
 
 Makes a `literal` node.
+
+#### `makeMaybe(value) <> node`
+
+Makes a raw `maybe` node. These are only valid to use in limited contexts.
+See the expression node specification for details.
+
+**Note:** This is different than `makeMaybeValue` in that
+the latter produces an expression node which always evaluates to a list.
 
 #### `makeMaybeValue(node) <> node`
 
@@ -299,8 +308,8 @@ equivalently and more expanded, `maybeValue { <> node }`.
 
 #### `makeThunk(node) <> node`
 
-Makes a thunk (no-argument function) that evaluates the given node. That is,
-this returns `{ <> node }`.
+Makes a thunk (no-argument function) that evaluates the given node, allowing
+it to evaluate to void. That is, this returns `{ <> node }`.
 
 #### `makeVarBind(name, value) <> node`
 

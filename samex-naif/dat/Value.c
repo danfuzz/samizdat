@@ -47,12 +47,21 @@ static zint nextSelfId(void) {
  */
 
 /* Documented in header. */
-zvalue dataOf(zvalue value) {
-    return valDataOf(value, NULL);
+zvalue datNonVoid(zvalue value) {
+    if (value == NULL) {
+        die("Attempt to use void in non-void context.");
+    }
+
+    return value;
 }
 
 /* Documented in header. */
 extern void *datPayload(zvalue value);
+
+/* Documented in header. */
+zvalue dataOf(zvalue value) {
+    return valDataOf(value, NULL);
+}
 
 /* Documented in header. */
 zvalue get_type(zvalue value) {

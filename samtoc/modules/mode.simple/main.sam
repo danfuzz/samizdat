@@ -118,9 +118,17 @@ fn closureBody(cloIdx, clo, literals) {
     def mainStats = [ s in clo.statements ->
         <> translate(s, varsBox)
     ];
-    def yieldNode = (def y = clo.yieldNode)
-        & translate(y, varsBox)
-        | "NULL";
+
+    def rawYield = clo.yieldNode | @void;
+    def yieldNode = if (hasType(rawYield, @@maybe)) {
+        <> translate(rawYield.nodeValue, varsBox);
+    } else if (hasType(rawYield, @@void)) {
+        <> "NULL"
+    } else {
+        ## If it's not wrapped in a `@maybe`, we need to guarantee
+        ## non-void.
+        <> genCall("datNonVoid", translate(rawYield, varsBox))
+    };
     def yieldStats = makeYieldStatements(yieldNode, varInfo::cleanups);
 
     ## Process all the statements, producing source code.

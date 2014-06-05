@@ -4,6 +4,7 @@
 
 import core.Lang0Node ::
     get_name,
+    get_nodeValue,
     makeDynamicImport;
 
 
@@ -42,6 +43,14 @@ fn @@closure.get_varDefs() {
     <> []
 };
 
+fn @@export.get_varDefs() {
+    <> this.nodeValue.varDefs
+};
+
+fn @@exportSelection.get_varDefs() {
+    <> []
+};
+
 fn @@importModule.get_varDefs() {
     <> [this.name]
 };
@@ -67,6 +76,10 @@ fn @@literalRef.get_varDefs() {
     <> []
 };
 
+fn @@maybe.get_varDefs() {
+    <> []
+};
+
 fn @@varBind.get_varDefs() {
     <> []
 };
@@ -80,5 +93,9 @@ fn @@varDefMutable.get_varDefs() {
 };
 
 fn @@varRef.get_varDefs() {
+    <> []
+};
+
+fn @@void.get_varDefs() {
     <> []
 };

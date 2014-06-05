@@ -114,6 +114,12 @@ zvalue makeJumpNode(zvalue function, zvalue optValue);
 zvalue makeLiteral(zvalue value);
 
 /* Documented in spec. */
+zvalue makeMaybe(zvalue value);
+
+/* Documented in spec. */
+zvalue makeMaybeValue(zvalue expression);
+
+/* Documented in spec. */
 zvalue makeThunk(zvalue expression);
 
 /* Documented in spec. */
@@ -127,9 +133,6 @@ zvalue makeVarDefMutable(zvalue name, zvalue value);
 
 /* Documented in spec. */
 zvalue makeVarRef(zvalue name);
-
-/* Documented in spec. */
-zvalue makeMaybeValue(zvalue expression);
 
 /* Documented in spec. */
 zvalue resolveImport(zvalue node, zvalue resolveFn);

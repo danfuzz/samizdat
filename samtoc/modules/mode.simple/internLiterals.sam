@@ -17,10 +17,12 @@ import ./Interner :: intern;
 fn .lits(interner);
 
 fn @@apply.lits(interner) {
-    <> @apply{
-        function: lits(this.function, interner),
-        actuals: lits(this.actuals, interner)
-    }
+    def function = lits(this.function, interner);
+    def actualsMap = (def a = this.actuals)
+        & {actuals: lits(a, interner)}
+        | {};
+
+    <> @apply{actualsMap*, function}
 };
 
 fn @@call.lits(interner) {
@@ -42,6 +44,15 @@ fn @@closure.lits(interner) {
         ((def y = this.yieldNode) & {yield: lits(y, interner)} | {})*,
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
     }
+};
+
+fn @@export.lits(interner) {
+    def value = lits(this.nodeValue, interner);
+    <> @export{value}
+};
+
+fn @@exportSelection.lits(interner) {
+    <> this
 };
 
 ## Used as the `source` in `import*` nodes.
@@ -83,6 +94,11 @@ fn @@literal.lits(interner) {
     <> @literalRef{id: interner.intern(this.nodeValue)}
 };
 
+fn @@maybe.lits(interner) {
+    def value = lits(this.nodeValue, interner);
+    <> @maybe{value}
+};
+
 fn @@varBind.lits(interner) {
     <> @varBind{
         name: this.name,
@@ -105,6 +121,10 @@ fn @@varDefMutable.lits(interner) {
 };
 
 fn @@varRef.lits(interner) {
+    <> this
+};
+
+fn @@void.lits(interner) {
     <> this
 };
 

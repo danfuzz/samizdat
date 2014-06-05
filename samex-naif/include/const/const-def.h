@@ -50,6 +50,7 @@ TOK(fn,                    "fn");
 TOK(import,                "import");
 TOK(return,                "return");
 TOK(var,                   "var");
+TOK(void,                  "void");
 TOK(yield,                 "yield");
 
 TYP(MapGenerator,          "MapGenerator");
@@ -68,6 +69,7 @@ TYP(int,                   "int");
 TYP(internal,              "internal");
 TYP(jump,                  "jump");
 TYP(literal,               "literal");
+TYP(maybe,                 "maybe");
 TYP(module,                "module");
 TYP(string,                "string");
 TYP(varBind,               "varBind");

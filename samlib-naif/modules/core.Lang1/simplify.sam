@@ -151,7 +151,7 @@ fn @@thunk.convertPex(formals) {
     def closure = @closure{
         formals,
         statements: [],
-        yield: dataOf(this)
+        yield: makeMaybe(dataOf(this))
     };
     def convertedClosure = convertPexIn(closure);
 
@@ -198,9 +198,11 @@ fn convertValuePayload(node) {
 ## Does parser conversion of an `apply` node.
 fn @@apply.convertPexIn() {
     def function = convertPexIn(get_function(this));
-    def actuals = convertPexIn(get_actuals(this));
+    def actualsMap = ifValue { <> get_actuals(this) }
+        { a <> {actuals: convertPexIn(a)} }
+        { <> {} };
 
-    <> withFinalBindings(this, {function, actuals});
+    <> withFinalBindings(this, {actualsMap*, function});
 };
 
 ## Does parser conversion of a `call` node.
@@ -262,6 +264,12 @@ fn @@literal.convertPexIn() {
     <> this
 };
 
+## Does parser conversion of a `maybe` node.
+fn @@maybe.convertPexIn() {
+    def value = convertPexIn(get_nodeValue(this));
+    <> withBindings(this, {value})
+};
+
 ## Does parser conversion of a `parser` node. This is where the juicy stuff
 ## happens!
 fn @@parser.convertPexIn() {
@@ -288,6 +296,11 @@ fn @@varDefMutable.convertPexIn() {
 ## Does parser conversion of a `varRef` node.
 fn @@varRef.convertPexIn() {
     <> withoutIntermediates(this)
+};
+
+## Does parser conversion of a `void` node.
+fn @@void.convertPexIn() {
+    <> this
 };
 
 

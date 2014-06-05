@@ -46,9 +46,11 @@ export fn makeExportSelection(names+) {
 
 ## Documented in spec.
 export fn makeJump(function, optValue?) {
-    <> ifValue { <> optValue* }
-        { value <> @jump{function, value} }
-        { <> @jump{function} }
+    def value = ifValue { <> optValue* }
+        { v <> makeMaybe(v) }
+        { <> @void };
+
+    <> @jump{function, value}
 };
 
 ## Documented in spec.
@@ -57,8 +59,13 @@ export fn makeLiteral(value) {
 };
 
 ## Documented in spec.
+export fn makeMaybe(value) {
+    <> @maybe{value}
+};
+
+## Documented in spec.
 export fn makeThunk(expression) {
-    <> @closure{formals: [], statements: [], yield: expression}
+    <> @closure{formals: [], statements: [], yield: makeMaybe(expression)}
 };
 
 ## Documented in spec.
