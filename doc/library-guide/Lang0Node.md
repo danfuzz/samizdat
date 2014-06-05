@@ -171,10 +171,11 @@ with the token of the latter name.
 
 Gets the yield definition name of a `closure` node, if any.
 
-#### `makeApply(function, actuals) <> node`
+#### `makeApply(function, optActuals?) <> node`
 
 Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `actuals` (an expression node).
+being applied to the given `actuals` (an expression node). If `optActuals`
+is not passed, it defaults to `@void`.
 
 #### `makeCall(function, actuals*) <> node`
 
@@ -196,6 +197,9 @@ order.
 If any of the `actuals` is an `interpolate` node, this converts the
 call into a form where the interpolated nodes have their usual
 surface-language effect. The end result is an `apply` node.
+
+If there are no arguments at all, the end result is a straightforward
+`apply` node with `@void` for the arguments.
 
 If there are no `interpolate` nodes in `actuals`, the end result is a
 straightforward `call` node, the same as calling `makeCall` on the same

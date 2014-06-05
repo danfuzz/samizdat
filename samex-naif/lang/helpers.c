@@ -223,7 +223,7 @@ zvalue get_definedNames(zvalue node) {
 /* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
-        actuals = EMPTY_LIST;
+        actuals = TOK_void;
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
@@ -250,6 +250,10 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     zvalue cookedActuals[sz];
     zint pendAt = 0;
     zint cookAt = 0;
+
+    if (sz == 0) {
+        return makeApply(function, NULL);
+    }
 
     #define addToCooked(actual) do { \
         cookedActuals[cookAt] = (actual); \

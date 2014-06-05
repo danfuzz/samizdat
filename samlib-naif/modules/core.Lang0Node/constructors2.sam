@@ -21,7 +21,7 @@ export fn makeCallOrApply(function, actuals*) {
     ifIs { <> perEq(actuals, []) }
         {
             ## No actuals. Easy out.
-            return makeCall(function)
+            return makeApply(function)
         };
 
     ## Convert the actuals as if interpolation needs to be handled. If in the
