@@ -225,13 +225,8 @@ for the node in question to evaluate to void.
 
 #### `void` &mdash; `@void`
 
-This is an expression node which always evaluates to void. Technically,
-it can occur anywhere any other expression node might be used, but as a
-practical matter it is only possibly valid as the `value` binding of a
-`maybe` node.
-
-**Note:** Internal to the parsing code, `void` nodes can show up in
-intermediate forms in places other than `maybe` payloads.
+This is an expression node which always evaluates to void. Nodes of this
+type are only allowed to appear in the contexts where `maybe` nodes are valid.
 
 
 <br><br>
