@@ -270,6 +270,12 @@ fn @@maybe.convertPexIn() {
     <> withBindings(this, {value})
 };
 
+## Does parser conversion of a `noYield` node.
+fn @@noYield.convertPexIn() {
+    def value = convertPexIn(get_nodeValue(this));
+    <> withBindings(this, {value})
+};
+
 ## Does parser conversion of a `parser` node. This is where the juicy stuff
 ## happens!
 fn @@parser.convertPexIn() {

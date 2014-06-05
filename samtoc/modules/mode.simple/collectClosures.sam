@@ -93,6 +93,11 @@ fn @@maybe.bodies(bodiesBox) {
     <> @maybe{value}
 };
 
+fn @@noYield.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    <> @noYield{value}
+};
+
 fn @@varBind.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
     <> @varBind{name: this.name, value}

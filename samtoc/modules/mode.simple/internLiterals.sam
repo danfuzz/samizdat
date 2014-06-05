@@ -99,6 +99,11 @@ fn @@maybe.lits(interner) {
     <> @maybe{value}
 };
 
+fn @@noYield.lits(interner) {
+    def value = lits(this.nodeValue, interner);
+    <> @noYield{value}
+};
+
 fn @@varBind.lits(interner) {
     <> @varBind{
         name: this.name,

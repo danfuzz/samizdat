@@ -140,6 +140,11 @@ fn @@maybe.translate(varsBox) {
     die("Invalid use of `@maybe`.")
 };
 
+fn @@noYield.translate(varsBox) {
+    def value = translate(this.nodeValue, varsBox);
+    <> genCall("improperYield", value)
+};
+
 fn @@varBind.translate(varsBox) {
     def name = this.name;
     def value = translate(this.nodeValue, varsBox);

@@ -140,6 +140,10 @@ fn @@maybe.safeIndex(base) {
     <> safeIndexForNodes(base, get_nodeValue(this))
 };
 
+fn @@noYield.safeIndex(base) {
+    <> safeIndexForNodes(base, get_nodeValue(this))
+};
+
 fn @@varBind.safeIndex(base) {
     def nameIndex =
         safeIndexForNames(base, get_name(this));

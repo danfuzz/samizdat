@@ -80,6 +80,10 @@ fn @@maybe.get_varDefs() {
     <> []
 };
 
+fn @@noYield.get_varDefs() {
+    <> []
+};
+
 fn @@varBind.get_varDefs() {
     <> []
 };
