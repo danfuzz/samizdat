@@ -493,6 +493,11 @@ zvalue makeMaybeValue(zvalue expression) {
 }
 
 /* Documented in spec. */
+zvalue makeNoYield(zvalue value) {
+    return makeValue(TYPE_noYield, mapFrom1(STR_value, value), NULL);
+}
+
+/* Documented in spec. */
 zvalue makeThunk(zvalue expression) {
     return makeValue(TYPE_closure,
         mapFrom3(

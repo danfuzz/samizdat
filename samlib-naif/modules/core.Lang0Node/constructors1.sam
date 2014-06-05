@@ -64,6 +64,11 @@ export fn makeMaybe(value) {
 };
 
 ## Documented in spec.
+export fn makeNoYield(value) {
+    <> @noYield{value}
+};
+
+## Documented in spec.
 export fn makeThunk(expression) {
     <> @closure{formals: [], statements: [], yield: makeMaybe(expression)}
 };

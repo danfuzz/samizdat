@@ -120,6 +120,9 @@ zvalue makeMaybe(zvalue value);
 zvalue makeMaybeValue(zvalue expression);
 
 /* Documented in spec. */
+zvalue makeNoYield(zvalue value);
+
+/* Documented in spec. */
 zvalue makeThunk(zvalue expression);
 
 /* Documented in spec. */
