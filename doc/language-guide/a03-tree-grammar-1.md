@@ -429,7 +429,7 @@ def parNonlocalExit = {:
 
     optValue = parExpression?
 
-    { <> {yield: makeJump(name, optValue*)} }
+    { <> {yield: makeNonlocalExit(name, optValue*)} }
 :};
 
 ## Parses a local yield / return.

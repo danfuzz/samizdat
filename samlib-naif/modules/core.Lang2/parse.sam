@@ -426,7 +426,7 @@ def parNonlocalExit = {:
 
     optValue = parExpression?
 
-    { <> {yield: makeJump(name, optValue*)} }
+    { <> {yield: makeNonlocalExit(name, optValue*)} }
 :};
 
 ## Parses a local yield / return.
@@ -2000,7 +2000,9 @@ def parWhileExpression = {:
         def loopClosure = @closure{
             formals: [],
             yieldDef: "continue",
-            statements: [testMaker(code, makeThunk(makeJump(REFS::break)))]
+            statements: [
+                testMaker(code, makeThunk(makeNonlocalExit(REFS::break)))
+            ]
         };
 
         def mainClosure = @closure{
@@ -2040,9 +2042,7 @@ def parDoExpression = {:
     condition = (
         @while
         ex = parParenExpression
-        {
-            <> makeCallThunks(REFS::ifNot, ex, makeJump(REFS::break))
-        }
+        { <> makeCallThunks(REFS::ifNot, ex, makeNonlocalExit(REFS::break)) }
     )?
 
     {

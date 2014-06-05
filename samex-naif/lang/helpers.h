@@ -104,12 +104,6 @@ zvalue makeInfoMap(zvalue node);
 /* Documented in spec. */
 zvalue makeInterpolate(zvalue node);
 
-/**
- * Documented in spec. Called `makeJumpNode` instead of `makeJump` to avoid
- * conflict with the `dat` export.
- */
-zvalue makeJumpNode(zvalue function, zvalue optValue);
-
 /* Documented in spec. */
 zvalue makeLiteral(zvalue value);
 
@@ -121,6 +115,9 @@ zvalue makeMaybeValue(zvalue expression);
 
 /* Documented in spec. */
 zvalue makeNoYield(zvalue value);
+
+/** Documented in spec. */
+zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 
 /* Documented in spec. */
 zvalue makeThunk(zvalue expression);

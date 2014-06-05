@@ -282,12 +282,6 @@ Makes an interpolation of the given expression node. The result is a
 `call` to the function `interpolate`, but with an additional `interpolate`
 binding in the data payload. See `makeCallOrApply` for more details.
 
-#### `makeJump(function, optValue?) <> node`
-
-Makes a `jump` node, for calling the given `function` with optional
-expression argument `optValue*`. If `optValue` is passed, then it is
-allowed to evaluate to void.
-
 #### `makeLiteral(value) <> node`
 
 Makes a `literal` node.
@@ -309,6 +303,13 @@ equivalently and more expanded, `maybeValue { <> node }`.
 #### `makeNoYield(value) <> node`
 
 Makes a `noYield` node.
+
+#### `makeNonlocalExit(function, optValue?) <> node`
+
+Makes a node representing a nonlocal exit, for calling the given `function`
+with optional expression argument `optValue*`. If `optValue` is passed, then
+it is allowed to evaluate to void. The resulting node is a `noYield`, since
+nonlocal exits are never supposed to return to their direct callers.
 
 #### `makeThunk(node) <> node`
 
