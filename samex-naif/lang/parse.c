@@ -251,7 +251,7 @@ DEF_PARSE(optSemicolons) {
 /* Documented in spec. */
 DEF_PARSE(assignExpression);
 DEF_PARSE(opExpression);
-DEF_PARSE(closure);
+DEF_PARSE(rawClosure);
 
 /* Documented in spec. */
 DEF_PARSE(expression) {
@@ -498,19 +498,24 @@ DEF_PARSE(deriv) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(closureWithLookahead) {
+DEF_PARSE(basicClosure) {
+    MARK();
+
     if (PEEK(CH_OCURLY) == NULL) {
         return NULL;
     }
 
-    return PARSE(closure);
+    zvalue raw = PARSE_OR_REJECT(rawClosure);
+
+    zvalue closure = makeBasicClosure(raw);
+    return withoutTops(closure);
 }
 
 /* Documented in spec. */
 DEF_PARSE(nullaryClosure) {
     MARK();
 
-    zvalue c = PARSE_OR_REJECT(closureWithLookahead);
+    zvalue c = PARSE_OR_REJECT(basicClosure);
 
     zvalue formals = GET(formals, c);
     if (!valEq(formals, EMPTY_LIST)) {
@@ -524,15 +529,15 @@ DEF_PARSE(nullaryClosure) {
 DEF_PARSE(term) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(varRef);               }
-    if (result == NULL) { result = PARSE(int);                  }
-    if (result == NULL) { result = PARSE(string);               }
-    if (result == NULL) { result = PARSE(map);                  }
-    if (result == NULL) { result = PARSE(list);                 }
-    if (result == NULL) { result = PARSE(deriv);                }
-    if (result == NULL) { result = PARSE(type);                 }
-    if (result == NULL) { result = PARSE(closureWithLookahead); }
-    if (result == NULL) { result = PARSE(parenExpression);      }
+    if (result == NULL) { result = PARSE(varRef);          }
+    if (result == NULL) { result = PARSE(int);             }
+    if (result == NULL) { result = PARSE(string);          }
+    if (result == NULL) { result = PARSE(map);             }
+    if (result == NULL) { result = PARSE(list);            }
+    if (result == NULL) { result = PARSE(deriv);           }
+    if (result == NULL) { result = PARSE(type);            }
+    if (result == NULL) { result = PARSE(basicClosure);    }
+    if (result == NULL) { result = PARSE(parenExpression); }
 
     return result;
 }
@@ -544,11 +549,11 @@ DEF_PARSE(actualsList) {
     if (MATCH(CH_OPAREN)) {
         zvalue normalActuals = PARSE(unadornedList);  // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        zvalue closureActuals = PARSE_STAR(closureWithLookahead);
+        zvalue closureActuals = PARSE_STAR(basicClosure);
         return GFN_CALL(cat, closureActuals, normalActuals);
     }
 
-    return PARSE_PLUS(closureWithLookahead);
+    return PARSE_PLUS(basicClosure);
 }
 
 /* Documented in spec. */
@@ -1134,7 +1139,7 @@ DEF_PARSE(closureBody) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(closure) {
+DEF_PARSE(rawClosure) {
     MARK();
 
     MATCH_OR_REJECT(CH_OCURLY);
@@ -1144,8 +1149,7 @@ DEF_PARSE(closure) {
 
     MATCH_OR_REJECT(CH_CCURLY);
 
-    zvalue closure = makeBasicClosure(GFN_CALL(cat, decls, body));
-    return withoutTops(closure);
+    return GFN_CALL(cat, decls, body);
 }
 
 /* Documented in spec. */
