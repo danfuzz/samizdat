@@ -81,7 +81,7 @@ to the function `interpolate`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$Lang0Node::makeInterpolate`.
 
-#### `closure` &mdash; `formals: [formal+], info?: map, name?: name,` `statements: [statement*], yield?: expression, yieldDef?: name}`
+#### `closure` &mdash; `formals: [formal+], info?: map, name?: name,` `statements: [statement*], yield: expression, yieldDef?: name}`
 
 * `formals: [formal+]` &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
@@ -99,8 +99,9 @@ produced by the function `$Lang0Node::makeInterpolate`.
   various variable definition nodes (as defined below). This defines the bulk
   of the code to execute.
 
-* `yield: expression` (optional) &mdash; An expression node representing
-  the (local) result value for a call.
+* `yield: expression` &mdash; An expression node representing
+  the (local) result value for a call. Allowed to be a `maybe` or `void`
+  node.
 
 * `yieldDef: name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
