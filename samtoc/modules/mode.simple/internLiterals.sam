@@ -18,11 +18,9 @@ fn .lits(interner);
 
 fn @@apply.lits(interner) {
     def function = lits(this.function, interner);
-    def actualsMap = (def a = this.actuals)
-        & {actuals: lits(a, interner)}
-        | {};
+    def actuals = lits(this.actuals, interner);
 
-    <> @apply{actualsMap*, function}
+    <> @apply{actuals, function}
 };
 
 fn @@call.lits(interner) {
@@ -37,13 +35,13 @@ fn @@closure.lits(interner) {
         & {name: lits(@literal{value}, interner)}
         | {};
 
-    <> @closure{
+    <> makeFullClosure({
         name*,
         formals: this.formals,
         statements: [ s in this.statements <> lits(s, interner) ],
-        ((def y = this.yieldNode) & {yield: lits(y, interner)} | {})*,
+        yield: lits(this.yieldNode, interner),
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
-    }
+    })
 };
 
 fn @@export.lits(interner) {

@@ -55,7 +55,7 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
-def parClosure;
+def parRawClosure;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
 ## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
@@ -231,13 +231,36 @@ def parDeriv = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parClosureWithLookahead = $Peg::makeMainSequence(
+def parFullClosure = $Peg::makeMainSequence(
     $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
-    $Peg::makeThunk { . <> parClosure });
+    $Peg::makeThunk { . <> parRawClosure },
+    $Peg::makeCode { ., raw ->
+        def closure = makeFullClosure(raw);
+        <> withoutTops(closure)
+    });
+
+## Documented in spec.
+def parBasicClosure = $Peg::makeMainSequence(
+    $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
+    $Peg::makeThunk { . <> parRawClosure },
+    $Peg::makeCode { ., raw ->
+        def closure = makeBasicClosure(raw);
+        <> withoutTops(closure)
+    });
 
 ## Documented in spec.
 def parNullaryClosure = $Peg::makeMainSequence(
-    parClosureWithLookahead,
+    parFullClosure,
+    $Peg::makeCode { c ->
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    });
+
+## Documented in spec.
+def parBasicNullaryClosure = $Peg::makeMainSequence(
+    parBasicClosure,
     $Peg::makeCode { c ->
         def formals = get_formals(c);
         ifIs { <> ne(formals, []) }
@@ -248,7 +271,7 @@ def parNullaryClosure = $Peg::makeMainSequence(
 ## Documented in spec.
 def parTerm = $Peg::makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
-    parDeriv, parType, parClosureWithLookahead, parParenExpression,
+    parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     $Peg::makeSequence(
@@ -261,11 +284,11 @@ def parActualsList = $Peg::makeMainChoice(
         $Peg::makeToken(@@"("),
         parUnadornedList,
         $Peg::makeToken(@@")"),
-        $Peg::makeStar(parClosureWithLookahead),
+        $Peg::makeStar(parFullClosure),
         $Peg::makeCode { ., normalActuals, ., closureActuals ->
             <> [closureActuals*, normalActuals*]
         }),
-    $Peg::makePlus(parClosureWithLookahead));
+    $Peg::makePlus(parFullClosure));
 
 ## Documented in spec.
 def parPostfixOperator = $Peg::makeMainChoice(
@@ -425,7 +448,7 @@ def parFunctionCommon = $Peg::makeMainSequence(
     $Peg::makeToken(@@"("),
     parFormalsList,
     $Peg::makeToken(@@")"),
-    parNullaryClosure,
+    parBasicNullaryClosure,
     $Peg::makeCode { name, ., formals, ., code ->
         def returnDef = ifValue { <> code::yieldDef }
             { yieldDef ->
@@ -436,13 +459,13 @@ def parFunctionCommon = $Peg::makeMainSequence(
             }
             { <> [] };
 
-        <> @closure{
+        <> makeFullClosure({
             dataOf(code)*,
             formals,
             name,
             yieldDef: "return",
             statements: [returnDef*, get_statements(code)*]
-        }
+        })
     });
 
 ## Documented in spec.
@@ -613,15 +636,12 @@ def parClosureBody = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-parClosure := $Peg::makeMainSequence(
+parRawClosure := $Peg::makeMainSequence(
     $Peg::makeToken(@@"{"),
     parClosureDeclarations,
     parClosureBody,
     $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., decls, body, . ->
-        def closure = @closure{decls*, body*};
-        <> withoutTops(closure)
-    });
+    $Peg::makeCode { ., decls, body, . <> {decls*, body*} });
 
 ## Documented in spec.
 def parProgram = $Peg::makeMainSequence(
@@ -651,7 +671,10 @@ def parProgram = $Peg::makeMainSequence(
         $Peg::makeResult([])),
     $Peg::makeStar($Peg::makeToken(@@";")),
     $Peg::makeCode { imports, body, . ->
-        def closure = @closure{formals: [], statements: [imports*, body*]};
+        def closure = makeFullClosure({
+            statements: [imports*, body*],
+            yield:      @void
+        });
         <> withoutTops(closure)
     });
 

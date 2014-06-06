@@ -251,7 +251,7 @@ DEF_PARSE(optSemicolons) {
 /* Documented in spec. */
 DEF_PARSE(assignExpression);
 DEF_PARSE(opExpression);
-DEF_PARSE(closure);
+DEF_PARSE(rawClosure);
 
 /* Documented in spec. */
 DEF_PARSE(expression) {
@@ -498,19 +498,52 @@ DEF_PARSE(deriv) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(closureWithLookahead) {
+DEF_PARSE(fullClosure) {
+    MARK();
+
     if (PEEK(CH_OCURLY) == NULL) {
         return NULL;
     }
 
-    return PARSE(closure);
+    zvalue raw = PARSE_OR_REJECT(rawClosure);
+
+    zvalue closure = makeFullClosure(raw);
+    return withoutTops(closure);
+}
+
+/* Documented in spec. */
+DEF_PARSE(basicClosure) {
+    MARK();
+
+    if (PEEK(CH_OCURLY) == NULL) {
+        return NULL;
+    }
+
+    zvalue raw = PARSE_OR_REJECT(rawClosure);
+
+    zvalue closure = makeBasicClosure(raw);
+    return withoutTops(closure);
 }
 
 /* Documented in spec. */
 DEF_PARSE(nullaryClosure) {
     MARK();
 
-    zvalue c = PARSE_OR_REJECT(closureWithLookahead);
+    zvalue c = PARSE_OR_REJECT(fullClosure);
+
+    zvalue formals = GET(formals, c);
+    if (!valEq(formals, EMPTY_LIST)) {
+        die("Invalid formal argument in code block.");
+    }
+
+    return c;
+}
+
+/* Documented in spec. */
+DEF_PARSE(basicNullaryClosure) {
+    MARK();
+
+    zvalue c = PARSE_OR_REJECT(basicClosure);
 
     zvalue formals = GET(formals, c);
     if (!valEq(formals, EMPTY_LIST)) {
@@ -524,15 +557,15 @@ DEF_PARSE(nullaryClosure) {
 DEF_PARSE(term) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(varRef);               }
-    if (result == NULL) { result = PARSE(int);                  }
-    if (result == NULL) { result = PARSE(string);               }
-    if (result == NULL) { result = PARSE(map);                  }
-    if (result == NULL) { result = PARSE(list);                 }
-    if (result == NULL) { result = PARSE(deriv);                }
-    if (result == NULL) { result = PARSE(type);                 }
-    if (result == NULL) { result = PARSE(closureWithLookahead); }
-    if (result == NULL) { result = PARSE(parenExpression);      }
+    if (result == NULL) { result = PARSE(varRef);          }
+    if (result == NULL) { result = PARSE(int);             }
+    if (result == NULL) { result = PARSE(string);          }
+    if (result == NULL) { result = PARSE(map);             }
+    if (result == NULL) { result = PARSE(list);            }
+    if (result == NULL) { result = PARSE(deriv);           }
+    if (result == NULL) { result = PARSE(type);            }
+    if (result == NULL) { result = PARSE(fullClosure);     }
+    if (result == NULL) { result = PARSE(parenExpression); }
 
     return result;
 }
@@ -544,11 +577,11 @@ DEF_PARSE(actualsList) {
     if (MATCH(CH_OPAREN)) {
         zvalue normalActuals = PARSE(unadornedList);  // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        zvalue closureActuals = PARSE_STAR(closureWithLookahead);
+        zvalue closureActuals = PARSE_STAR(fullClosure);
         return GFN_CALL(cat, closureActuals, normalActuals);
     }
 
-    return PARSE_PLUS(closureWithLookahead);
+    return PARSE_PLUS(fullClosure);
 }
 
 /* Documented in spec. */
@@ -827,7 +860,7 @@ DEF_PARSE(functionCommon) {
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
-    zvalue code = PARSE_OR_REJECT(nullaryClosure);
+    zvalue code = PARSE_OR_REJECT(basicNullaryClosure);
 
     zvalue yieldDef = GET(yieldDef, code);
     zvalue returnDef = (yieldDef == NULL)
@@ -841,7 +874,7 @@ DEF_PARSE(functionCommon) {
             STR_name,       name,
             STR_yieldDef,   STR_return,
             STR_statements, GFN_CALL(cat, returnDef, GET(statements, code))));
-    return makeValue(TYPE_closure, closureMap, NULL);
+    return makeFullClosure(closureMap);
 }
 
 /* Documented in spec. */
@@ -1134,7 +1167,7 @@ DEF_PARSE(closureBody) {
 }
 
 /* Documented in spec. */
-DEF_PARSE(closure) {
+DEF_PARSE(rawClosure) {
     MARK();
 
     MATCH_OR_REJECT(CH_OCURLY);
@@ -1144,10 +1177,7 @@ DEF_PARSE(closure) {
 
     MATCH_OR_REJECT(CH_CCURLY);
 
-    zvalue closure = makeValue(TYPE_closure,
-        GFN_CALL(cat, decls, body),
-        NULL);
-    return withoutTops(closure);
+    return GFN_CALL(cat, decls, body);
 }
 
 /* Documented in spec. */
@@ -1188,11 +1218,8 @@ DEF_PARSE(program) {
 
     PARSE(optSemicolons);
 
-    zvalue closure = makeValue(TYPE_closure,
-        mapFrom2(
-            STR_formals,    EMPTY_LIST,
-            STR_statements, statements),
-        NULL);
+    zvalue closure = makeFullClosure(
+        mapFrom2(STR_statements, statements, STR_yield, TOK_void));
     return withoutTops(closure);
 }
 

@@ -223,11 +223,20 @@ zvalue get_definedNames(zvalue node) {
 /* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
-        actuals = EMPTY_LIST;
+        actuals = TOK_void;
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
     return makeValue(TYPE_apply, value, NULL);
+}
+
+/* Documented in spec. */
+zvalue makeBasicClosure(zvalue map) {
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat,
+            mapFrom2(STR_formals, EMPTY_LIST, STR_statements, EMPTY_LIST),
+            map),
+        NULL);
 }
 
 /* Documented in spec. */
@@ -250,6 +259,10 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     zvalue cookedActuals[sz];
     zint pendAt = 0;
     zint cookAt = 0;
+
+    if (sz == 0) {
+        return makeApply(function, NULL);
+    }
 
     #define addToCooked(actual) do { \
         cookedActuals[cookAt] = (actual); \
@@ -344,6 +357,18 @@ zvalue makeExport(zvalue node) {
 zvalue makeExportSelection(zvalue names) {
     return makeValue(TYPE_exportSelection,
         mapFrom1(STR_select, names),
+        NULL);
+}
+
+/* Documented in spec. */
+zvalue makeFullClosure(zvalue map) {
+    return makeValue(TYPE_closure,
+        GFN_CALL(cat,
+            mapFrom3(
+                STR_formals,    EMPTY_LIST,
+                STR_statements, EMPTY_LIST,
+                STR_yield,      TOK_void),
+            map),
         NULL);
 }
 
@@ -608,8 +633,8 @@ zvalue withFormals(zvalue node, zvalue formals) {
 
 /* Documented in spec. */
 zvalue withModuleDefs(zvalue node) {
-    if (get(node, STR_yield) != NULL) {
-        die("Invalid node for `withModuleDefs` (has `yield`).");
+    if (!valEqNullOk(get(node, STR_yield), TOK_void)) {
+        die("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 
     zvalue info = makeInfoMap(node);

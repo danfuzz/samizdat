@@ -17,11 +17,9 @@ fn .bodies(bodiesBox);
 
 fn @@apply.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
-    def actualsMap = (def a = this.actuals)
-        & {actuals: bodies(a, bodiesBox)}
-        | {};
+    def actuals = bodies(this.actuals, bodiesBox);
 
-    <> @apply{actualsMap*, function}
+    <> @apply{actuals, function}
 };
 
 fn @@call.bodies(bodiesBox) {
@@ -32,17 +30,17 @@ fn @@call.bodies(bodiesBox) {
 
 fn @@closure.bodies(bodiesBox) {
     def statements = [ s in this.statements <> bodies(s, bodiesBox) ];
-    def optYield = ((def y = this.yieldNode) & bodies(y, bodiesBox))?;
+    def yieldNode = bodies(this.yieldNode, bodiesBox);
     def varRefs = this.varRefs;
 
-    def newNode = @closure{
+    def newNode = makeFullClosure({
         formals: this.formals,
         ((def name = this.name) & {name} | {})*,
         statements,
         varRefs,
-        ((def yieldNode = optYield*) & {yield: yieldNode} | {})*,
+        yield: yieldNode,
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
-    };
+    });
 
     def bodies = fetch(bodiesBox);
     if (def already = bodies[newNode]) {

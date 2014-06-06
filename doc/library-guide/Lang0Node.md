@@ -47,9 +47,10 @@ arguments could possibly accept. If there is no limit, this returns `-1`.
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
 
-#### `get_actuals(node) <> [node*]`
+#### `get_actuals(node) <> node | [node*]`
 
-Gets the actual arguments of an `apply` or `call` node.
+Gets the actual arguments of an `apply` node (resulting in an expression node)
+or `call` node (resulting in a list of expression nodes).
 
 #### `get_baseName(taggedName) <> string`
 
@@ -160,9 +161,9 @@ Gets the source of an import. This is applicable to nodes of type
 
 Gets the statement list of a `closure` node.
 
-#### `get_yieldNode(node) <> node | void`
+#### `get_yieldNode(node) <> node`
 
-Gets the yield of a `closure` node, if any.
+Gets the yield of a `closure` node.
 
 **Note:** This is named `yieldNode` and not just `yield` to avoid conflict
 with the token of the latter name.
@@ -171,10 +172,23 @@ with the token of the latter name.
 
 Gets the yield definition name of a `closure` node, if any.
 
-#### `makeApply(function, actuals) <> node`
+#### `makeApply(function, optActuals?) <> node`
 
 Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `actuals` (an expression node).
+being applied to the given `actuals` (an expression node). If `optActuals`
+is not passed, it defaults to `@void`.
+
+#### `makeBasicClosure(map) <> node`
+
+Makes a `closure` node, using the bindings of `map` as a basis, and adding
+in sensible defaults for `formals` and `statements` if missing:
+
+* `formals: []` &mdash; An empty formals list.
+* `statements: []` &mdash; An empty statements list.
+
+No default is provided for `yield`, as it is not always possible to
+figure out a default for it at the points where `closure` nodes need to
+be produced de novo. See `makeFullClosure()` for more detail.
 
 #### `makeCall(function, actuals*) <> node`
 
@@ -196,6 +210,9 @@ order.
 If any of the `actuals` is an `interpolate` node, this converts the
 call into a form where the interpolated nodes have their usual
 surface-language effect. The end result is an `apply` node.
+
+If there are no arguments at all, the end result is a straightforward
+`apply` node with `@void` for the arguments.
 
 If there are no `interpolate` nodes in `actuals`, the end result is a
 straightforward `call` node, the same as calling `makeCall` on the same
@@ -233,6 +250,14 @@ to) a `varDef` node.
 
 Makes an `exportSelection` node to export the variables with the given
 `names`.
+
+#### `makeFullClosure(map) <> node`
+
+Makes a `closure` node, using the bindings of `map` as a basis, adding
+in defaults like `makeBasicClosure()` (see which), as well as for `yield`.
+
+In particular, if `yield` is not specified, the result includes a binding
+of `yield` to `@void`.
 
 #### `makeGet(collArg, keyArg) <> node`
 
@@ -388,7 +413,7 @@ binding for the metainformation. This includes the following transformations:
     binding.
 
 It is invalid (terminating the runtime) to call this function
-on a `closure` with a `yield`.
+on a `closure` with a `yield` that is anything but `@void`.
 
 #### `withResolvedImports(node, resolveFn) <> node`
 

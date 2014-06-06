@@ -44,7 +44,7 @@ fn varDefCommon(name, value, varsBox) {
 
 fn @@apply.translate(varsBox) {
     def function = translate(this.function, varsBox);
-    def actuals = this.actuals | @void;
+    def actuals = this.actuals;
 
     <> if (hasType(actuals, @@maybe)) {
         def acTrans = translate(actuals.nodeValue, varsBox);

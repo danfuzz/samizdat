@@ -29,7 +29,7 @@ Representation of the "match anything" rule.
 
 This corresponds to the syntax `.`.
 
-#### `@code{yieldDef?: name, statements: [statement*], yield?: expression}`
+#### `@code{yieldDef?: name, statements: [statement*], yield: expression}`
 
 Representation of a code expression.
 
@@ -39,7 +39,7 @@ Representation of a code expression.
 * `statements: [statement*]` &mdash; A list of statement nodes.
   Statement nodes are as defined by the Samizdat Layer 0 specification.
 
-* `yield: expression` (optional) &mdash; An expression node representing the
+* `yield: expression` &mdash; An expression node representing the
   (local) result value for the code. Expression nodes are as defined
   by the Samizdat Layer 0 specification.
 

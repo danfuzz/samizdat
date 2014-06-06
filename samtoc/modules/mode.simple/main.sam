@@ -119,7 +119,7 @@ fn closureBody(cloIdx, clo, literals) {
         <> translate(s, varsBox)
     ];
 
-    def rawYield = clo.yieldNode | @void;
+    def rawYield = clo.yieldNode;
     def yieldNode = if (hasType(rawYield, @@maybe)) {
         <> translate(rawYield.nodeValue, varsBox);
     } else if (hasType(rawYield, @@void)) {

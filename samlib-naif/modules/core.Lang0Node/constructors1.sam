@@ -13,8 +13,18 @@ import core.Generator;
 ##
 
 ## Documented in spec.
-export fn makeApply(function, actuals) {
+export fn makeApply(function, optActuals?) {
+    def actuals = ifValueOr { <> optActuals* } { <> @void };
     <> @apply{function, actuals}
+};
+
+## Documented in spec.
+export fn makeBasicClosure(map) {
+    <> @closure{
+        formals:    [],
+        statements: [],
+        map*
+    }
 };
 
 ## Documented in spec.
@@ -42,6 +52,16 @@ export fn makeExport(node) {
 ## Documented in spec.
 export fn makeExportSelection(names+) {
     <> @exportSelection{select: names}
+};
+
+## Documented in spec.
+export fn makeFullClosure(map) {
+    <> @closure{
+        formals:    [],
+        statements: [],
+        yield:      @void,
+        map*
+    }
 };
 
 ## Documented in spec.

@@ -307,14 +307,10 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
     frameInit(&frame, &info->frame, closure, argMap);
 
     // Evaluate the statements, updating the frame as needed.
-
     execStatements(&frame, info->statements);
 
-    // Evaluate the yield expression if present, and return the final
-    // result.
-
-    zvalue yield = info->yield;
-    return (yield == NULL) ? NULL : execExpressionOrMaybe(&frame, yield);
+    // Evaluate the yield expression, and return the final result.
+    return execExpressionOrMaybe(&frame, info->yield);
 }
 
 

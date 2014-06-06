@@ -67,7 +67,7 @@ def parParser;
 
 ## Forward declarations.
 def parAssignExpression;
-def parClosure;
+def parRawClosure;
 
 ## Forward declaration for the "top" rule which parses operator expressions.
 ## This gets bound to `parUnaryExpression` in the Layer 0 and 1 grammars, but
@@ -283,11 +283,29 @@ def parDeriv = {:
     { <> makeCall(REFS::makeValue, type, value*) }
 :};
 
-## Parses a closure, but with a lookahead to make it less likely we'll
-## have to do any heavier-weight parsing in failure cases.
-def parClosureWithLookahead = {:
+## Parses a closure, resulting in one that *always* has a `yield` binding.
+def parFullClosure = {:
+    ## The lookahead to makes it so we don't have to do any heavier-weight
+    ## parsing in easy-failure cases.
     &@"{"
-    %parClosure
+    raw = %parRawClosure
+
+    {
+        def closure = makeFullClosure(raw);
+        <> withoutTops(closure)
+    }
+:};
+
+## Parses a closure, resulting in one that does *not* necessarily have
+## a `yield` binding.
+def parBasicClosure = {:
+    &@"{"  ## Lookahead for same reason as above.
+    raw = %parRawClosure
+
+    {
+        def closure = makeBasicClosure(raw);
+        <> withoutTops(closure)
+    }
 :};
 
 ## Parses a closure which must not define any formal arguments. This is done
@@ -299,7 +317,20 @@ def parClosureWithLookahead = {:
 ## would be more obscure (as in just something like "unexpected token" on
 ## the would-be formal argument).
 def parNullaryClosure = {:
-    c = parClosureWithLookahead
+    c = parFullClosure
+
+    {
+        def formals = get_formals(c);
+        ifIs { <> ne(formals, []) }
+            { die("Invalid formal argument in code block.") };
+        <> c
+    }
+:};
+
+## Like, `parNullaryClosure` (above), except returning a basic (no
+## required `yield`) closure node.
+def parBasicNullaryClosure = {:
+    c = parBasicClosure
 
     {
         def formals = get_formals(c);
@@ -312,7 +343,7 @@ def parNullaryClosure = {:
 ## Parses a term (basic expression unit).
 def parTerm = {:
     parVarRef | parInt | parString | parMap | parList |
-    parDeriv | parType | parClosureWithLookahead | parParenExpression
+    parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
@@ -328,10 +359,10 @@ def parActualsList = {:
     @"("
     normalActuals = parUnadornedList
     @")"
-    closureActuals = parClosureWithLookahead*
+    closureActuals = parFullClosure*
     { <> [closureActuals*, normalActuals*] }
 |
-    parClosureWithLookahead+
+    parFullClosure+
 :};
 
 ## Parses a unary postfix operator. This yields a function (per se) to call
@@ -554,7 +585,7 @@ def parFunctionCommon = {:
     @"("
     formals = parFormalsList
     @")"
-    code = parNullaryClosure
+    code = parBasicNullaryClosure
 
     {
         def returnDef = ifValue { <> code::yieldDef }
@@ -566,13 +597,13 @@ def parFunctionCommon = {:
             }
             { <> [] };
 
-        <> @closure{
+        <> makeFullClosure({
             dataOf(code)*,
             formals,
             name,
             yieldDef: "return",
             statements: [returnDef*, get_statements(code)*]
-        }
+        })
     }
 :};
 
@@ -797,15 +828,13 @@ def parClosureBody = {:
 :};
 
 ## Parses a closure (in-line anonymous function, with no extra bindings).
-parClosure := {:
+## This results in a simple map of bindings.
+parRawClosure := {:
     @"{"
     decls = parClosureDeclarations
     body = parClosureBody
     @"}"
-    {
-        def closure = @closure{decls*, body*};
-        <> withoutTops(closure)
-    }
+    { <> {decls*, body*} }
 :};
 
 ## Parses a program (list of statements, including imports and exports).
@@ -839,7 +868,10 @@ def parProgram = {:
     @";"*
 
     {
-        def closure = @closure{formals: [], statements: [imports*, body*]};
+        def closure = makeFullClosure({
+            statements: [imports*, body*],
+            yield:      @void
+        });
         <> withoutTops(closure)
     }
 :};
