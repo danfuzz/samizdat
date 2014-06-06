@@ -2024,7 +2024,7 @@ def parWhileExpression = {:
     @while
     breakDef = parOptBreakDef
     testMaker = parMultiTest
-    code = parBasicNullaryClosure
+    code = parNullaryClosure
 
     {
         def loopClosure = makeFullClosure({
@@ -2066,7 +2066,7 @@ def parWhileExpression = {:
 def parDoExpression = {:
     @do
     breakDef = parOptBreakDef
-    code = parBasicNullaryClosure
+    code = parNullaryClosure
     condition = (
         @while
         ex = parParenExpression
