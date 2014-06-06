@@ -47,9 +47,10 @@ arguments could possibly accept. If there is no limit, this returns `-1`.
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
 
-#### `get_actuals(node) <> [node*]`
+#### `get_actuals(node) <> node | [node*]`
 
-Gets the actual arguments of an `apply` or `call` node.
+Gets the actual arguments of an `apply` node (resulting in an expression node)
+or `call` node (resulting in a list of expression nodes).
 
 #### `get_baseName(taggedName) <> string`
 
@@ -160,9 +161,9 @@ Gets the source of an import. This is applicable to nodes of type
 
 Gets the statement list of a `closure` node.
 
-#### `get_yieldNode(node) <> node | void`
+#### `get_yieldNode(node) <> node`
 
-Gets the yield of a `closure` node, if any.
+Gets the yield of a `closure` node.
 
 **Note:** This is named `yieldNode` and not just `yield` to avoid conflict
 with the token of the latter name.
