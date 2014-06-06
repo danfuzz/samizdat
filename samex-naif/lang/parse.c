@@ -564,7 +564,7 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(list);            }
     if (result == NULL) { result = PARSE(deriv);           }
     if (result == NULL) { result = PARSE(type);            }
-    if (result == NULL) { result = PARSE(basicClosure);    }
+    if (result == NULL) { result = PARSE(fullClosure);     }
     if (result == NULL) { result = PARSE(parenExpression); }
 
     return result;
@@ -577,11 +577,11 @@ DEF_PARSE(actualsList) {
     if (MATCH(CH_OPAREN)) {
         zvalue normalActuals = PARSE(unadornedList);  // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        zvalue closureActuals = PARSE_STAR(basicClosure);
+        zvalue closureActuals = PARSE_STAR(fullClosure);
         return GFN_CALL(cat, closureActuals, normalActuals);
     }
 
-    return PARSE_PLUS(basicClosure);
+    return PARSE_PLUS(fullClosure);
 }
 
 /* Documented in spec. */
