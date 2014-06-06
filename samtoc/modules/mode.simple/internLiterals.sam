@@ -39,7 +39,7 @@ fn @@closure.lits(interner) {
         name*,
         formals: this.formals,
         statements: [ s in this.statements <> lits(s, interner) ],
-        ((def y = this.yieldNode) & {yield: lits(y, interner)} | {})*,
+        yield: lits(this.yieldNode, interner),
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
     })
 };

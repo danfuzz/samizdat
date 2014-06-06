@@ -62,7 +62,7 @@ fn @@closure.get_varRefs() {
     ## refs to a map (refs as keys, values all `null`), and then doing
     ## key deletion. The resulting `statmentRefs` is a list of these maps.
     def statementRefs = (
-            s in [this.statements*, this.yieldNode?*],
+            s in [this.statements*, this.yieldNode],
             idx in (0..) ->
         def defs = baseLocals.cat(statementDefs[..!idx]*);
         var refs = {s.varRefs*: null};

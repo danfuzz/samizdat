@@ -30,7 +30,7 @@ fn @@call.bodies(bodiesBox) {
 
 fn @@closure.bodies(bodiesBox) {
     def statements = [ s in this.statements <> bodies(s, bodiesBox) ];
-    def optYield = ((def y = this.yieldNode) & bodies(y, bodiesBox))?;
+    def yieldNode = bodies(this.yieldNode, bodiesBox);
     def varRefs = this.varRefs;
 
     def newNode = makeFullClosure({
@@ -38,7 +38,7 @@ fn @@closure.bodies(bodiesBox) {
         ((def name = this.name) & {name} | {})*,
         statements,
         varRefs,
-        ((def yieldNode = optYield*) & {yield: yieldNode} | {})*,
+        yield: yieldNode,
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
     });
 

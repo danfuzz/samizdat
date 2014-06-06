@@ -96,7 +96,7 @@ fn @@closure.safeIndex(base) {
         get_yieldDef(this)?*);
     def nodesIndex = safeIndexForNodes(base,
         get_statements(this)*,
-        get_yieldNode(this)?*);
+        get_yieldNode(this));
 
     <> maxOf(namesIndex, nodesIndex)
 };
