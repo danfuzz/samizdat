@@ -693,7 +693,7 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { return NULL; }
 
     zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
-    return mapFrom1(STR_yield, makeNonlocalExit(name, optValue));
+    return makeNonlocalExit(name, optValue);
 }
 
 /** Documented in spec. */
@@ -703,9 +703,7 @@ DEF_PARSE(yield) {
     MATCH_OR_REJECT(CH_DIAMOND);
     zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
 
-    return (optValue == NULL)
-        ? EMPTY_MAP
-        : mapFrom1(STR_yield, makeMaybe(optValue));
+    return (optValue == NULL) ? TOK_void : makeMaybe(optValue);
 }
 
 /* Documented in spec. */
@@ -1126,7 +1124,7 @@ DEF_PARSE(programStatement) {
 /* Documented in spec. */
 DEF_PARSE(closureBody) {
     zvalue statements = EMPTY_LIST;
-    zvalue yieldMap = EMPTY_MAP;
+    zvalue yieldNode = NULL;
 
     PARSE(optSemicolons);
 
@@ -1152,18 +1150,17 @@ DEF_PARSE(closureBody) {
     if (statement != NULL) {
         statements = listAppend(statements, statement);
     } else {
-        yieldMap = PARSE(nonlocalExit);
-        if (yieldMap == NULL) {
-            yieldMap = PARSE(yield);
-            if (yieldMap == NULL) {
-                yieldMap = EMPTY_MAP;
-            }
+        yieldNode = PARSE(nonlocalExit);
+        if (yieldNode == NULL) {
+            yieldNode = PARSE(yield);
         }
     }
 
     PARSE(optSemicolons);
 
-    return GFN_CALL(cat, mapFrom1(STR_statements, statements), yieldMap);
+    return mapFrom2(
+        STR_statements, statements,
+        STR_yield,      yieldNode);
 }
 
 /* Documented in spec. */
