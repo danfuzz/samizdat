@@ -18,6 +18,7 @@
 #include "util.h"
 
 #include "helpers.h"
+#include "impl.h"
 
 
 /*
@@ -221,6 +222,22 @@ zvalue get_definedNames(zvalue node) {
 }
 
 /* Documented in spec. */
+bool isExpression(zvalue node) {
+    switch (get_evalType(node)) {
+        case EVAL_apply:   return true;
+        case EVAL_call:    return true;
+        case EVAL_closure: return true;
+        case EVAL_literal: return true;
+        case EVAL_noYield: return true;
+        case EVAL_varBind: return true;
+        case EVAL_varRef:  return true;
+        default: {
+            return false;
+        }
+    }
+}
+
+/* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = TOK_void;
@@ -362,13 +379,40 @@ zvalue makeExportSelection(zvalue names) {
 
 /* Documented in spec. */
 zvalue makeFullClosure(zvalue map) {
+    zvalue formals = get(map, STR_formals);
+    zvalue statements = get(map, STR_statements);
+    zint statSz = (statements == NULL) ? 0 : get_size(statements);
+    zvalue yieldNode = get(map, STR_yield);
+
+    if (formals == NULL) {
+        formals = EMPTY_LIST;
+    }
+
+    if (statements == NULL) {
+        statements = EMPTY_LIST;
+    }
+
+    if (       (yieldNode == NULL)
+            && (statSz != 0)
+            && (get(map, STR_yieldDef) == NULL)) {
+        zvalue lastStat = nth(statements, statSz - 1);
+        if (isExpression(lastStat)) {
+            yieldNode = makeMaybe(lastStat);
+            statements = GFN_CALL(sliceExclusive, statements, intFromZint(0));
+        }
+    }
+
+    if (yieldNode == NULL) {
+        yieldNode = TOK_void;
+    }
+
     return makeValue(TYPE_closure,
         GFN_CALL(cat,
+            map,
             mapFrom3(
-                STR_formals,    EMPTY_LIST,
-                STR_statements, EMPTY_LIST,
-                STR_yield,      TOK_void),
-            map),
+                STR_formals,    formals,
+                STR_statements, statements,
+                STR_yield,      yieldNode)),
         NULL);
 }
 
