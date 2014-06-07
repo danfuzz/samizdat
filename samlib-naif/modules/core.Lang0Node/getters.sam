@@ -8,7 +8,7 @@ import core.Generator;
 import core.Sequence;
 import proto.Number;
 
-import ./formals ::
+import ./misc ::
     formalsMaxArgs,
     formalsMinArgs;
 

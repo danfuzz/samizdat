@@ -9,6 +9,19 @@ import proto.Number;
 
 
 ##
+## Private Definitions
+##
+
+## The set of expression node types.
+def EXPRESSION_TYPES = {
+    [
+        @@apply, @@call, @@closure, @@literal, @@noYield,
+        @@varBind, @@varRef
+    ]*: true
+};
+
+
+##
 ## Exported Definitions
 ##
 
@@ -42,4 +55,10 @@ export fn formalsMinArgs(formals) {
     };
 
     <> minArgs
+};
+
+## Documented in spec.
+export fn isExpression(node) {
+    <> ifIs { <> get(EXPRESSION_TYPES, get_type(node)) }
+        { <> node }
 };
