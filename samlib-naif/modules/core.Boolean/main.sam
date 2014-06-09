@@ -17,48 +17,48 @@ import core.Bitwise :: *;
 
 ## Documented in spec.
 fn @@Boolean.and(other) {
-    <> @Boolean(and(dataOf(this), dataOf(other)))
+    return @Boolean(and(dataOf(this), dataOf(other)))
 };
 
 ## Documented in spec.
 fn @@Boolean.bit(n) {
-    <> bit(dataOf(this), n)
+    return bit(dataOf(this), n)
 };
 
 ## Documented in spec.
 fn @@Boolean.bitSize() {
-    <> 1
+    return 1
 };
 
 ## Documented in spec.
 fn @@Boolean.not() {
-    <> @Boolean(xor(dataOf(this), 1))
+    return @Boolean(xor(dataOf(this), 1))
 };
 
 ## Documented in spec.
 fn @@Boolean.or(other) {
-    <> @Boolean(or(dataOf(this), dataOf(other)))
+    return @Boolean(or(dataOf(this), dataOf(other)))
 };
 
 ## Documented in spec.
 fn @@Boolean.shl(n) {
     def newValue = shl(dataOf(this), n);
 
-    <> ifValueOr { get({0: false, 1: true}, newValue) }
+    return ifValueOr { get({0: false, 1: true}, newValue) }
         { die("Undefined boolean shift result.") }
 };
 
 ## Documented in spec.
 fn @@Boolean.toInt() {
-    <> dataOf(this)
+    return dataOf(this)
 };
 
 ## Documented in spec.
 fn @@Boolean.toNumber() {
-    <> dataOf(this)
+    return dataOf(this)
 };
 
 ## Documented in spec.
 fn @@Boolean.xor(other) {
-    <> @Boolean(xor(dataOf(this), dataOf(other)))
+    return @Boolean(xor(dataOf(this), dataOf(other)))
 };
