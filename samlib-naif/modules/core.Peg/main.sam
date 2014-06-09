@@ -238,9 +238,7 @@ fn genericMakeTokenSet(sense, types) {
     ifIs { <> eq(set, {}) }
         {
             ## Trivial case: Empty set. Return an appropriate absolute rule.
-            return ifIs { <> eq(sense, true) }
-                { <> fail }
-                { <> any }
+            return ifIs { <> eq(sense, true) } { <> fail } { <> any }
         };
 
     <> ifIs { <> eq(sense, true) }
