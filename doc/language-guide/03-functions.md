@@ -106,9 +106,6 @@ Two kinds of yield are applicable in all contexts:
 
 * `<>` &mdash; Direct yield from closure. This yields a
   value from the closure that this statement appears directly in.
-  Note that yield-of-void is the default if no yield statement is
-  present at all, so the only reason to use `<>` without an
-  expression is in order to be stylisticly unambiguous.
 
 * `yield /name` &mdash; Yield from named yield point. The `name` must match
   the yield definition name of an enclosing closure. (See "Yield Definitions,"
@@ -130,6 +127,20 @@ One kind of yield is applicable in the context of a function definition
 The remaining forms of yield are associated with looping constructs
 and are described along with those constructs.
 
+#### Default yield
+
+In many, but not all, cases, a block that does not end with an explicit
+yield (of some sort) defaults to yielding void.
+
+As a way to strike the balance between total safety and practical
+convenience, in cases where an unintentionally "leaked" value is unlikely
+to cause harm, a block-final expression is treated as the yield of
+the block.
+
+In particular, this is only the case when the block in question does *not*
+bind a named (`/name`) or implicit (e.g. `return` binding) nonlocal
+exit. In such contexts, if you want to yield void, you have to do so
+explicitly.
 
 ### The empty closure
 
