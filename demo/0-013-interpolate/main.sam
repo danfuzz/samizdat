@@ -18,15 +18,15 @@ fn msg(args*) {
 };
 
 fn ten() {
-    <> 10
+    yield 10
 };
 
 fn list5() {
-    <> [5]
+    yield [5]
 };
 
 fn yieldTest(x) {
-    <> x*
+    yield? x*
 };
 
 fn nonlocalTest(x) {

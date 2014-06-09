@@ -23,7 +23,7 @@ fn returnVoid() {
 
 ## Something to call.
 fn returnString() {
-    <> "Fun times!"
+    return "Fun times!"
 };
 
 

@@ -22,7 +22,7 @@ fn getVoid() {
 };
 
 fn getValue(x) {
-    <> x
+    yield x
 };
 
 

@@ -52,7 +52,7 @@ fn yCombinator(function) {
     ## `applicator` doesn't directly refer to the variable `applicator`.
 
     fn applicator(selfRef) {
-        <> { args* <> function(uCombinator(selfRef))(args*) }
+        return { args* <> function(uCombinator(selfRef))(args*) }
     };
 
     <> uCombinator(applicator);

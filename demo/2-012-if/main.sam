@@ -12,15 +12,15 @@
 ##
 
 fn returnBlort() {
-    <> "blort"
+    return "blort"
 };
 
 fn returnFrotz() {
-    <> "frotz"
+    return "frotz"
 };
 
 fn returnIgram() {
-    <> "igram"
+    return "igram"
 };
 
 fn returnVoid() {
