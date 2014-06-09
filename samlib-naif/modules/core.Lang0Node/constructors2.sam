@@ -127,8 +127,8 @@ fn @@importResource.makeDynamicImport() {
 
 ## Documented in spec.
 export fn makeFullClosure(map) {
-    def formals = ifValueOr { <> get_formals(map) } { <> [] };
-    var statements = ifValueOr { <> get_statements(map) } { <> [] };
+    def formals = ifValueOr { get_formals(map) } { <> [] };
+    var statements = ifValueOr { get_statements(map) } { <> [] };
     def statSz = get_size(statements);
 
     def yieldNode = ifValueOr
@@ -221,7 +221,7 @@ export fn makeInfoMap(node) {
 
     ## Adds or revises an element in the `imports` map.
     fn addToImports(source, names) {
-        def orig = ifValueOr { <> get(imports, source) } { <> {} };
+        def orig = ifValueOr { get(imports, source) } { <> {} };
         def revised = {orig*, names*: Value};
         imports := {imports*, (source): revised};
     };
@@ -229,7 +229,7 @@ export fn makeInfoMap(node) {
     ## Adds or revises an element in the `resources` map.
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
-        def orig = ifValueOr { <> get(resources, source) } { <> [] };
+        def orig = ifValueOr { get(resources, source) } { <> [] };
         def revised = $Collection::keyList({orig*: null, (format): null});
         resources := {resources*, (source): revised};
     };
@@ -240,7 +240,7 @@ export fn makeInfoMap(node) {
             { addToImports(get_source(s), [@module]) };
         ifIs { hasType(s, @@importModuleSelection) }
             {
-                def names = ifValueOr { <> get_select(s) }
+                def names = ifValueOr { get_select(s) }
                     { die("Cannot call `makeInfoMap` on unresolved import.") };
                 addToImports(get_source(s), names)
             };
@@ -276,7 +276,7 @@ export fn makeMaybeValue(node) {
 
 ## Documented in spec.
 export fn makeNonlocalExit(function, optValue?) {
-    def value = ifValueOr { <> optValue* } { <> @void };
+    def value = ifValueOr { optValue* } { <> @void };
     def exitCall = ifValueOr
         {
             <> ifIs { hasType(value, @@void) }

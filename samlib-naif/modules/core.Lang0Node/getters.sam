@@ -83,7 +83,7 @@ fn @@importModule.get_definedNames() {
 ## Documented in spec.
 fn @@importModuleSelection.get_definedNames() {
     def prefix = get_prefix(this);
-    def select = ifValueOr { <> get_select(this) }
+    def select = ifValueOr { get_select(this) }
         { die("Cannot call `get_definedNames` on unresolved import.") };
 
     <> $Generator::filterAll(select) { name <> cat(prefix, name) }

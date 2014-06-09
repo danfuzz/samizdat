@@ -1821,7 +1821,7 @@ def parLogicAndExpression = {:
 ## ```
 ## =>
 ## ```
-## ifValueOr { <> expr1 } { <> expr2 } { <> expr3 }
+## ifValueOr { expr1 } { <> expr2 } { <> expr3 }
 ## ```
 def parLogicOrExpression = {:
     one = parLogicAndExpression
@@ -2270,7 +2270,7 @@ def parSwitchExpression = {:
 
         ## If there is no specified formal, then pick a safe one, that is,
         ## a name not referenced in the case clauses.
-        def testVar = ifValueOr { <> testClause::formal::name }
+        def testVar = ifValueOr { testClause::formal::name }
             { <> $safeVar::safeVarName("switchValue", caseMap) };
 
         def innerIf = makeCall(REFS::ifValue,

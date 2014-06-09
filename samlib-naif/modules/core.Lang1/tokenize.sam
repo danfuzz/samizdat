@@ -141,7 +141,7 @@ def tokIdentifier = $Peg::makeMainSequence(
     $Peg::makeStar($Peg::makeCharSet(IDENTIFIER_CHARS)),
     $Peg::makeCode { one, rest ->
         def string = $Peg::stringFromTokenList([one, rest*]);
-        <> ifValueOr { <> get(KEYWORDS, string) }
+        <> ifValueOr { get(KEYWORDS, string) }
             { <> @identifier(string) }
     });
 

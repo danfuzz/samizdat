@@ -66,8 +66,8 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
 
     ## Get the `info::exports` out of the resolved result. Default to `{}`
     ## if not present.
-    def info = ifValueOr { <> resolved::info } { <> {} };
-    def exports = ifValueOr { <> info::exports } { <> {} };
+    def info = ifValueOr { resolved::info } { <> {} };
+    def exports = ifValueOr { info::exports } { <> {} };
 
     <> ifValue { get_select(this) }
         { select ->

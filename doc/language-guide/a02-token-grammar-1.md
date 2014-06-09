@@ -189,7 +189,7 @@ def tokIdentifier = {:
 
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
-        <> ifValueOr { <> get(KEYWORDS, string) }
+        <> ifValueOr { get(KEYWORDS, string) }
             { <> @identifier(string) }
     }
 :};

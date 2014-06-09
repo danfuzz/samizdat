@@ -44,7 +44,7 @@ fn @@Boolean.or(other) {
 fn @@Boolean.shl(n) {
     def newValue = shl(dataOf(this), n);
 
-    <> ifValueOr { <> get({0: false, 1: true}, newValue) }
+    <> ifValueOr { get({0: false, 1: true}, newValue) }
         { die("Undefined boolean shift result.") }
 };
 

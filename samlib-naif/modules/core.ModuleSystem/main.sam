@@ -230,7 +230,7 @@ fn loadGlobals(loader) {
 ## Given source text, returns a parsed tree form, using the given `loader`
 ## to find the apprpriate parser and to do any required module resolution.
 fn treeFromText(loader, text) {
-    def languageName = ifValueOr { <> $Lang0::languageOf(text) }
+    def languageName = ifValueOr { $Lang0::languageOf(text) }
         { <> DEFAULT_LANGUAGE };
     def lang = loadModule(loader, @external(languageName));
 
@@ -268,7 +268,7 @@ export fn loadModule(loader, source) {
 
 ## Documented in spec.
 export fn loadResource(loader, source, format) {
-    <> ifValueOr { <> readResource(loader, source, format) }
+    <> ifValueOr { readResource(loader, source, format) }
         { die("Resource not found: ", sourceString(source)) }
 };
 
@@ -350,9 +350,9 @@ fn @@ExternalLoader.resolve(source) {
 
     updateMapBox(loadedBox, source, "loading");
 
-    def result = ifValueOr { <> doExternalResolve(this, source) }
+    def result = ifValueOr { doExternalResolve(this, source) }
         {
-            <> ifValueOr { <> resolve(this::nextLoader, source) }
+            <> ifValueOr { resolve(this::nextLoader, source) }
                 { <> "notFound" }
         };
 
@@ -412,7 +412,7 @@ fn doInternalResolve(loader, source) {
     ifIs { eq($Io0::fileType(binPath), "file") }
         {
             def func = $Code::evalBinary(loader::globals, binPath);
-            return ifValueOr { <> func() }
+            return ifValueOr { func() }
                 { die("No result from binary module: ", sourcePath) }
         };
 
@@ -423,7 +423,7 @@ fn doInternalResolve(loader, source) {
             def tree = treeFromText(loader, text);
             def func = $Code::eval(loader::globals, tree);
 
-            return ifValueOr { <> func() }
+            return ifValueOr { func() }
                 { die("No result from module: ", sourcePath) }
         };
 

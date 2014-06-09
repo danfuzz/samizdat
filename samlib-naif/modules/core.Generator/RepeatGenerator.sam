@@ -28,7 +28,7 @@ export fn makeRepeatGenerator(size, optValue?) {
             return $NullGenerator::nullGenerator
         };
 
-    def value = ifValueOr { <> optValue* } { <> null };
+    def value = ifValueOr { optValue* } { <> null };
     <> @RepeatGenerator{size, value}
 };
 

@@ -103,7 +103,7 @@ export fn generatorPump(generator) {
     var gen = generator;
 
     loop {
-        gen := ifValueOr { <> nextValue(gen, nullBox) }
+        gen := ifValueOr { nextValue(gen, nullBox) }
             { return }
     }
 };

@@ -14,7 +14,7 @@ import core.Generator;
 
 ## Documented in spec.
 export fn makeApply(function, optActuals?) {
-    def actuals = ifValueOr { <> optActuals* } { <> @void };
+    def actuals = ifValueOr { optActuals* } { <> @void };
     <> @apply{function, actuals}
 };
 

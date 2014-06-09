@@ -235,7 +235,7 @@ fn Type.sourceGeneral(adorn) {
 
     def body = ifIs { hasType(name, String) }
         {
-            <> ifValueOr { <> isIdentifier(name) }
+            <> ifValueOr { isIdentifier(name) }
                 { <> sourceGeneral(name, true) }
         }
         { <> cat("(", sourceGeneral(name, true), ")") };
@@ -253,7 +253,7 @@ fn Value.sourceGeneral(adorn) {
     def typeStr = ifIs { hasType(name, String) }
         {
             ## The type is a string.
-            <> ifValueOr { <> isIdentifier(name) }
+            <> ifValueOr { isIdentifier(name) }
                 { <> sourceGeneral(name, true) }
         }
         {
@@ -322,7 +322,7 @@ fn Value.humanString() {
 
 ## Documented in spec.
 export fn int(value, optBase?) {
-    def base = ifValueOr { <> optBase* } { <> 10 };
+    def base = ifValueOr { optBase* } { <> 10 };
 
     ifIs { lt(base, 2) }
         { die("Invalid base for int.") };
@@ -372,6 +372,6 @@ def FORMATTERS = {
 ## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 ## is defined in terms of other exported functions.
 export fn formatterFor(formatSpec) {
-    <> ifValueOr { <> get(FORMATTERS, formatSpec) }
+    <> ifValueOr { get(FORMATTERS, formatSpec) }
         { die("Unrecognized format spec: ", source(formatSpec)) }
 };

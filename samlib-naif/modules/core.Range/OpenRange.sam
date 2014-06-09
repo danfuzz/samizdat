@@ -20,7 +20,7 @@ import ./rangeAdd :: *;
 
 ## Documented in spec.
 export fn makeOpenRange(firstValue, optIncrement?) {
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { <> 1 };
 
     <> @OpenRange{firstValue, increment}
 };

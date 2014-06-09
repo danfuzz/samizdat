@@ -45,7 +45,7 @@ fn @@ClosedRange.nextValue(box) {
 
 ## Documented in spec.
 export fn makeClosedRange(firstValue, size, optIncrement?) {
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { <> 1 };
 
     ifNot { <> hasType(size, Int) }
         { die("`size` must be an int.") };
@@ -63,7 +63,7 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     def isEmpty = totalEq(firstValue, limit)?;
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { <> 1 };
 
     ## `totalEq` ensures that `increment` is an int.
     ifIs { totalEq(increment, 0) }
@@ -92,7 +92,7 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
 
 ## Documented in spec.
 export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { <> 1 };
 
     ## This ensures that `firstValue` and `limit` have the same type.
     totalEq(firstValue, limit);
