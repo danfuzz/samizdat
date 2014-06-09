@@ -126,7 +126,7 @@ implementation (without sacrificing clarity) &mdash; it makes sense to
 keep this defined as a core primitive:
 
 ```
-fn makeList(elems*) { <> elems };
+fn makeList(elems*) { return elems };
 ```
 
 **Syntax Note:** Used in the translation of `[item, ...]`,

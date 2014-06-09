@@ -26,7 +26,9 @@
 ## writing a call to it (instead just "manually" expanding it where needed).
 ## It is included and used here, specifically so that the common structure
 ## between the two Y combinator variants is more obvious.
-fn uCombinator(function) { <> function(function) };
+fn uCombinator(function) {
+    return function(function)
+};
 
 ## The U* combinator. This is like the U combinator, except expanded to
 ## work for multiple function arguments, in this case both passed and
@@ -40,7 +42,7 @@ fn uCombinator(function) { <> function(function) };
 ## `Y*`. That is, the Y combinator uses the U combinator in the same way
 ## that the Y* combinator uses this function.
 fn uStarCombinator(functions) {
-    <> collect(functions, { function <> function(functions*) })
+    return collect(functions, { function <> function(functions*) })
 };
 
 ## Documented in associated README file.

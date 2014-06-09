@@ -493,9 +493,9 @@ export fn makeInternalLoader(path, globals, nextLoader) {
     ## functions immediately below.
     def loader;
 
-    fn glo_loadModule(source)           { <> loadModule(loader, source)           };
-    fn glo_loadResource(source, format) { <> loadResource(loader, source, format) };
-    fn glo_thisLoader()                 { <> loader                               };
+    fn glo_loadModule(source)     { return loadModule(loader, source)     };
+    fn glo_loadResource(src, fmt) { return loadResource(loader, src, fmt) };
+    fn glo_thisLoader()           { return loader                         };
 
     def fullGlobals = {
         globals*,
@@ -521,8 +521,8 @@ export fn makeInternalLoader(path, globals, nextLoader) {
 
 ## Makes a global environment sufficient for evaluating a single file.
 fn makeFileGlobals(loader) {
-    fn glo_loadModule(source) { <> loadModule(loader, source) };
-    fn glo_thisLoader()       { <> loader                     };
+    fn glo_loadModule(source) { return loadModule(loader, source) };
+    fn glo_thisLoader()       { return loader                     };
 
     <> {
         loadGlobals(loader)*,
