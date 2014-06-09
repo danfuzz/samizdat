@@ -692,8 +692,14 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { name = PARSE(nonlocalExit2); }
     if (name == NULL) { return NULL; }
 
-    zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
-    return makeNonlocalExit(name, optValue);
+    zvalue value = PARSE(expression);  // It's okay for this to be `NULL`.
+    if (value != NULL) {
+        value = makeMaybe(value);
+    } else {
+        value = TOK_void;
+    }
+
+    return makeNonlocalExit(name, value);
 }
 
 /** Documented in spec. */

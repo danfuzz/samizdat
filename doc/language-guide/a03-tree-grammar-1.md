@@ -458,9 +458,14 @@ def parNonlocalExit = {:
         { <> makeVarRef(get_typeName(op)) }
     )
 
-    optValue = parExpression?
+    value = (
+        v = parExpression
+        { <> makeMaybe(v) }
+    |
+        { <> @void }
+    )
 
-    { <> makeNonlocalExit(name, optValue*) }
+    { <> makeNonlocalExit(name, value) }
 :};
 
 ## Parses a local yield / return.
