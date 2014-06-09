@@ -70,23 +70,11 @@ successfully bound). It also only makes sense to only ever use one of
 `+` or `*`, and only on the final argument.
 
 
-### Yield Definitions
-
-Every closure can define a name to use within its body to yield (return)
-from the closure. This allows code to cause an exit out of a closure other
-than the one that directly contains the yield in question. As with
-argument declarations, functions and blocks differ in where the yield
-definition is placed syntactically.
-
-A yield definition consists of a variable name preceded by a slash
-(`/name`).
-
-
 ### Body
 
 The main body of a closure is a sequence of statements. The last
 statement of a closure may optionally be one of several possible
-yield (return) statements.
+yield (return) statements. See below for details.
 
 Statements are separated from each other with semicolons (`;`). In addition
 (TODO), there is implicit statement separation based on the indentation
@@ -97,15 +85,35 @@ Aside from yields, a statement can be either an arbitrary expression
 definition statements. The `fn` statement is described in this section.
 Other statements are described elsewhere.
 
-There are several kinds of yield statement. All of them consist of
-a yield indicator of some form, optionally followed by an arbitrary
+
+### Yield / return
+
+Every closure has the potential to yield (return) a value to its caller. There
+are several ways to represent this in code, with various meanings.
+
+#### Yield Definitions
+
+Every closure can optionally define an explicit name to use within its
+body to yield from the closure. This allows code to cause an exit out of a
+closure other than the one that directly contains the yield in question.
+
+A yield definition consists of a slash (`/`) followed by a variable name.
+When present, a yield definition occurs just before the first statement
+of a closure.
+
+#### Yield statements
+
+The final statement of a closure can optionally be a yield statement
+of some form. There are several kinds of yield statement. Most of them
+consist of one of the yield operators, optionally followed by an arbitrary
 expression. If an expression is not supplied, this indicates that the
 yield value is void.
 
 Two kinds of yield are applicable in all contexts:
 
-* `<>` &mdash; Direct yield from closure. This yields a
+* `yield` &mdash; Direct yield from closure. This yields a
   value from the closure that this statement appears directly in.
+  `<>` is a deprecated synonym for `yield`.
 
 * `yield /name` &mdash; Yield from named yield point. The `name` must match
   the yield definition name of an enclosing closure. (See "Yield Definitions,"
@@ -127,25 +135,38 @@ One kind of yield is applicable in the context of a function definition
 The remaining forms of yield are associated with looping constructs
 and are described along with those constructs.
 
+#### Maybe yield
+
+The base yield statement syntax is always explicit about whether a value
+or void is being yielded; if a value expression is present, then it must
+evaluate to a value (not void).
+
+In contexts where it is not the case that the yield expression necessarily
+evaluate to a value, then the base yield operator can be followed by a
+question mark (`?`). This indicates that the expression is allowed to
+evaluate to void, and if it does, for the closure itself to yield void.
+
+TODO: All yields are treated as maybe-yields right now, regardless of the
+presence or absence of a `?`.
+
 #### Default yield
 
-In many, but not all, cases, a block that does not end with an explicit
-yield (of some sort) defaults to yielding void.
+In many (but not all) cases, an unmarked expression at the end of a
+closure is treated as if it were preceded by `yield?`, that is, it is
+treated as a maybe-yield. This is done as a way to strike a balance
+between total safety and practical convenience, in cases where an
+unintentionally "leaked" value is unlikely to cause harm.
 
-As a way to strike the balance between total safety and practical
-convenience, in cases where an unintentionally "leaked" value is unlikely
-to cause harm, a block-final expression is treated as the yield of
-the block.
-
-In particular, this is only the case when the block in question does *not*
+In particular, this is only the case when the closure in question does *not*
 bind a named (`/name`) or implicit (e.g. `return` binding) nonlocal
 exit. In such contexts, if you want to yield void, you have to do so
 explicitly.
 
+
 ### The empty closure
 
 In order to disambiguate with the empty map, an otherwise empty function
-must contain at least an `->` or a `<>`, e.g. `{ <> }`.
+must contain at least an `->` or a `<>`, e.g. `{ -> }`.
 
 
 ### Function statements
@@ -268,7 +289,6 @@ def krazy = { x, y <> x + y }
 There are a few different "shapes" of function &mdash; what kinds and
 how many arguments they take, and what sort of things they return
 &mdash; that have particular uses in the language.
-
 
 #### Logic functions
 
