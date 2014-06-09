@@ -6,9 +6,12 @@
 
 import core.Collection;
 import core.Generator;
+import core.Sequence;
+import proto.Number;
 
 import ./constructors1 :: *;
 import ./getters :: *;
+import ./misc :: isExpression;
 import ./refs :: REFS;
 
 
@@ -120,6 +123,34 @@ fn @@importResource.makeDynamicImport() {
             makeCall(REFS::loadResource,
                 makeLiteral(source), makeLiteral(format)))
     ]
+};
+
+## Documented in spec.
+export fn makeFullClosure(map) {
+    def formals = ifValueOr { <> get_formals(map) } { <> [] };
+    var statements = ifValueOr { <> get_statements(map) } { <> [] };
+    def statSz = get_size(statements);
+
+    def yieldNode = ifValueOr
+        { <> get_yieldNode(map) }
+        { <> ifIs { <> get_yieldDef(map) } { <> @void } }
+        { <> ifIs { <> eq(statSz, 0) } { <> @void } }
+        {
+            def lastStat = nth(statements, $Number::sub(statSz, 1));
+            <> ifIs { <> isExpression(lastStat) }
+                {
+                    statements := $Sequence::sliceExclusive(statements, 0);
+                    <> makeMaybe(lastStat)
+                }
+        }
+        { <> @void };
+
+    <> @closure{
+        map*,
+        formals:    formals,
+        statements: statements,
+        yield:      yieldNode
+    }
 };
 
 ## Documented in spec.

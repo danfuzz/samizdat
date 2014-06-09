@@ -460,7 +460,7 @@ def parNonlocalExit = {:
 
     optValue = parExpression?
 
-    { <> {yield: makeNonlocalExit(name, optValue*)} }
+    { <> makeNonlocalExit(name, optValue*) }
 :};
 
 ## Parses a local yield / return.
@@ -468,9 +468,9 @@ def parYield = {:
     @"<>"
     (
         ex = parExpression
-        { <> {yield: makeMaybe(ex)} }
+        { <> makeMaybe(ex) }
     |
-        { <> {} }
+        { <> @void }
     )
 :};
 
@@ -817,7 +817,7 @@ def parClosureBody = {:
         { <> {statements: [s]} }
     |
         y = (parNonlocalExit | parYield)
-        { <> {statements: [], y*} }
+        { <> {statements: [], yield: y} }
     |
         { <> {statements: []} }
     )

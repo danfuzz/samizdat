@@ -78,6 +78,9 @@ zvalue get_baseName(zvalue source);
 zvalue get_definedNames(zvalue node);
 
 /* Documented in spec. */
+bool isExpression(zvalue node);
+
+/* Documented in spec. */
 zvalue makeApply(zvalue function, zvalue actuals);
 
 /* Documented in spec. */

@@ -55,16 +55,6 @@ export fn makeExportSelection(names+) {
 };
 
 ## Documented in spec.
-export fn makeFullClosure(map) {
-    <> @closure{
-        formals:    [],
-        statements: [],
-        yield:      @void,
-        map*
-    }
-};
-
-## Documented in spec.
 export fn makeLiteral(value) {
     <> @literal{value}
 };

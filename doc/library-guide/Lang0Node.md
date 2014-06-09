@@ -172,6 +172,12 @@ with the token of the latter name.
 
 Gets the yield definition name of a `closure` node, if any.
 
+#### `isExpression(node) <> node | void`
+
+Indicates whether `node` is a full expression node type (as opposed to,
+notably, a restricted expression node type or a statement node type).
+Returns `node` to indicate logic-true.
+
 #### `makeApply(function, optActuals?) <> node`
 
 Makes an `apply` node, with the given `function` (an expression node)
@@ -256,8 +262,17 @@ Makes an `exportSelection` node to export the variables with the given
 Makes a `closure` node, using the bindings of `map` as a basis, adding
 in defaults like `makeBasicClosure()` (see which), as well as for `yield`.
 
-In particular, if `yield` is not specified, the result includes a binding
-of `yield` to `@void`.
+In the result, `yield` is bound to `@void` unless all of the following are
+true of the input `map`:
+
+* The map does *not* include a binding for `yieldDef`. That is, it does not
+  have a named or implicit nonlocal exit.
+* It has a binding for `statements`, with length of at least 1.
+* The final element of `statements` is a non-statement expression node.
+
+If all of those are true, then in the result, the final element of
+`statements` is removed and gets wrapped in a `@maybe`. That `@maybe`
+becomes the binding for `yield` in the result.
 
 #### `makeGet(collArg, keyArg) <> node`
 
