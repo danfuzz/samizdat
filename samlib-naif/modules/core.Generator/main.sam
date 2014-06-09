@@ -69,7 +69,7 @@ export fn filterPump(filterFunction, generators*) {
             var gen = generators*;
             loop {
                 def box = makePromise();
-                ifValue { <> nextValue(gen, box) }
+                ifValue { nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(fetch(box));
                         gen := nextGen
@@ -85,7 +85,7 @@ export fn filterPump(filterFunction, generators*) {
             var gen = makeParaGenerator(generators*);
             loop {
                 def box = makePromise();
-                ifValue { <> nextValue(gen, box) }
+                ifValue { nextValue(gen, box) }
                     { nextGen ->
                         filterFunction(fetch(box)*);
                         gen := nextGen

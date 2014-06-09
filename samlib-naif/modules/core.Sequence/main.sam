@@ -38,7 +38,7 @@ export fn sliceGeneral(seq, style, start, optEnd?) {
     def startIndex = ifIs { hasType(start, @@fromStart) }
         { <> dataOf(start) }
         { <> $Number::sub(limit, dataOf(start)) };
-    def optEndIndex = (ifValue { <> optEnd* }
+    def optEndIndex = (ifValue { optEnd* }
         { end ->
             <> ifIs { hasType(end, @@fromStart) }
                 { <> dataOf(end) }

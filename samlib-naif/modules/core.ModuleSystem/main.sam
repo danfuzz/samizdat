@@ -261,7 +261,7 @@ export fn .readResource(source, format);
 
 ## Documented in spec.
 export fn loadModule(loader, source) {
-    <> ifValue { <> resolve(loader, source) }
+    <> ifValue { resolve(loader, source) }
         { resolved <> resolved::exports }
         { die("Module not found: ", sourceString(source)) }
 };
@@ -338,7 +338,7 @@ fn @@ExternalLoader.resolve(source) {
     ## The loaded map maps paths to `"loading"` for a load-in-progress,
     ## `"notFound"` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
-    ifValue { <> get(fetch(loadedBox), source) }
+    ifValue { get(fetch(loadedBox), source) }
         { found ->
             ifIs { hasType(found, @@module) }
                 { return found };
@@ -459,7 +459,7 @@ fn @@InternalLoader.readResource(source, format) {
 
     def fullPath = cat(this::basePath, dataOf(source));
 
-    <> ifValue { <> get(INTERNAL_READERS, format) }
+    <> ifValue { get(INTERNAL_READERS, format) }
         { reader <> reader(fullPath) }
         { die("Unsupported resource format: ", format) }
 };
@@ -474,7 +474,7 @@ fn @@InternalLoader.resolve(source) {
 
     def loadedBox = this::loadedBox;
 
-    ifValue { <> get(fetch(loadedBox), source) }
+    ifValue { get(fetch(loadedBox), source) }
         { found -> return found };
 
     def result = doInternalResolve(this, source);
@@ -546,7 +546,7 @@ fn runProgram(programFunc, args) {
 
     ifIs { hasType(result, @@module) }
         {
-            ifValue { <> result::exports::main }
+            ifValue { result::exports::main }
                 { main -> return? main(args*) }
         };
 

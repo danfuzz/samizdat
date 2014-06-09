@@ -189,7 +189,7 @@ fn @@varRef.convertPex(formals) {
 ## Does parser conversion of a node whose payload is a map with an optional
 ## `value` binding to an arbitrary expression. Does not perform lvalue removal.
 fn convertValuePayload(node) {
-    <> ifValue { <> get_nodeValue(node) }
+    <> ifValue { get_nodeValue(node) }
         { value <> withBindings(node, {value: convertPexIn(value)}) }
         { <> node };
 };

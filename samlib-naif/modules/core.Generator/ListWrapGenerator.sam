@@ -31,7 +31,7 @@ fn @@ListWrapGenerator.collect(optFilterFunction?) {
 fn @@ListWrapGenerator.nextValue(box) {
     def innerBox = $Box::makePromise();
 
-    <> ifValue { <> nextValue(dataOf(this), innerBox) }
+    <> ifValue { nextValue(dataOf(this), innerBox) }
         { nextGenerator ->
             store(box, [fetch(innerBox)]);
             <> @ListWrapGenerator(nextGenerator)

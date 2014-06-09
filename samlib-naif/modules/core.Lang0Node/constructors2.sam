@@ -48,7 +48,7 @@ export fn makeCallOrApply(function, actuals*) {
     };
 
     $Generator::filterPump(actuals) { actual ->
-        ifValue { <> get_interpolate(actual) }
+        ifValue { get_interpolate(actual) }
             { node ->
                 addPendingToCooked();
                 addToCooked(makeCall(REFS::collect, node))
@@ -162,7 +162,7 @@ export fn makeGet(collArg, keyArg) {
 export fn makeImport(baseData) {
     var data = baseData;  ## Modified in some cases below.
 
-    ifValue { <> data::select }
+    ifValue { data::select }
         { select ->
             ## It's a module binding selection.
 
@@ -206,7 +206,7 @@ export fn makeImport(baseData) {
 
 ## Documented in spec.
 export fn makeInfoMap(node) {
-    ifValue { <> get_info(node) }
+    ifValue { get_info(node) }
         { info -> return info };
 
     def statements = get_statements(node);

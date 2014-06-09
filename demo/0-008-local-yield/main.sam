@@ -51,6 +51,6 @@ ifIs(yieldVoid2, bad, good);
 ifIs(yieldVoid3, bad, good);
 ifIs(yieldVoid4, bad, good);
 
-ifValue { <> yieldArg("woo") }
+ifValue { yieldArg("woo") }
     { v <> note(v) }
     { bad() };

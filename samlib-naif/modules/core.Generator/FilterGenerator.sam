@@ -44,9 +44,9 @@ fn @@FilterGenerator.nextValue(box) {
     loop { /next ->
         def innerBox = $Box::makePromise();
 
-        ifValue { <> nextValue(innerGen, innerBox) }
+        ifValue { nextValue(innerGen, innerBox) }
             { nextGen ->
-                ifValue { <> filterFunction(fetch(innerBox)*) }
+                ifValue { filterFunction(fetch(innerBox)*) }
                     { value ->
                         store(box, value);
                         return @FilterGenerator(

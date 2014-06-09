@@ -176,7 +176,7 @@ def parMapping = {:
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
-                ifValue { <> get_interpolate(value) }
+                ifValue { get_interpolate(value) }
                     { interp -> yield /out interp };
                 ifIs { hasType(value, @@varRef) }
                     {
@@ -605,7 +605,7 @@ def parFunctionCommon = {:
     code = parBasicNullaryClosure
 
     {
-        def returnDef = ifValue { <> code::yieldDef }
+        def returnDef = ifValue { code::yieldDef }
             { yieldDef ->
                 ## The closure has a yield def, but we need to also bind
                 ## it as `return`, so we add an extra local variable binding
@@ -1281,7 +1281,7 @@ def parInterpolatedString = {:
                 {
                     def tokens = elem::tokens;
 
-                    def formatter = ifValue { <> elem::format }
+                    def formatter = ifValue { elem::format }
                         { format ->
                             <> makeCall(REFS::Format_formatterFor,
                                 makeLiteral(format))
@@ -1426,7 +1426,7 @@ def parRangeBody = {:
                     firstValue, optLimit*, optIncrement*)
             }
             {
-                <> ifValue { <> optLimit* }
+                <> ifValue { optLimit* }
                     { limit ->
                         <> makeCall(
                             REFS::Range_makeInclusiveRange,
@@ -1536,7 +1536,7 @@ def parIndexPostfix = {:
                         makeLiteral(get_type(start)),
                         dataOf(start));
 
-                def optEndNode = (ifValue { <> dataOf(end) }
+                def optEndNode = (ifValue { dataOf(end) }
                     { endData ->
                         <> makeCall(REFS::makeValue,
                             makeLiteral(get_type(end)),
@@ -1742,7 +1742,7 @@ def parLogicAndClause = {:
 ## ```
 ## (def var1 = expr1) & expr2
 ## =>
-## ifValue { <> expr1 } { var1 <> expr2 }
+## ifValue { expr1 } { var1 <> expr2 }
 ## ```
 ##
 ## ```
@@ -1851,7 +1851,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (def name = boundExpr)
 ## =>
-## ifValue { <> boundExpr }
+## ifValue { boundExpr }
 ##     { name -> ... then ... }
 ##     { ... else ... }
 ## ```
@@ -1933,7 +1933,7 @@ def parMultiTest = {:
 ## =>
 ## ```
 ## { /out ->
-##     <> ifValue { <> expr1 }
+##     <> ifValue { expr1 }
 ##         { name1 -> thenStat1 }
 ##         {
 ##             <> ifIs { expr2 }
@@ -2027,7 +2027,7 @@ def parOptBreakDef = {:
 ## { /\"break" ->
 ##     def out = \"break";
 ##     loop { /\"continue" ->
-##         ifValue { <> test }
+##         ifValue { test }
 ##             { name /next -> stat1; stat2 }
 ##             { yield /\"break" }
 ##     }
@@ -2139,7 +2139,7 @@ def parForExpression = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        def continueDef = ifValue { <> get_yieldDef(code) }
+        def continueDef = ifValue { get_yieldDef(code) }
             { name <> [makeVarDef(name, REFS::continue)] }
             { <> [] };
 
@@ -2198,7 +2198,7 @@ def CALL_ARG = $Lang0::parseExpression("{ body <> body() }");
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     <> ifValue { <> testExpr }
+##     <> ifValue { testExpr }
 ##         { name ->
 ##             <> ifValue
 ##                 { <> get({(ex1): {s1a; s1b}, (ex2): {s2a; s2b}}, name) }

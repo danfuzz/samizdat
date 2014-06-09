@@ -35,7 +35,7 @@ fn @@OptGenerator.nextValue(box) {
     def subGen = dataOf(this);
     def innerBox = $Box::makePromise();
 
-    <> ifValue { <> nextValue(subGen, innerBox) }
+    <> ifValue { nextValue(subGen, innerBox) }
         { nextGen ->
             store(box, [fetch(innerBox)]);
             <> @OptGenerator(nextGen)

@@ -179,7 +179,7 @@ def parMapping = {:
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
-                ifValue { <> get_interpolate(value) }
+                ifValue { get_interpolate(value) }
                     { interp -> yield /out interp };
                 ifIs { hasType(value, @@varRef) }
                     {
@@ -608,7 +608,7 @@ def parFunctionCommon = {:
     code = parBasicNullaryClosure
 
     {
-        def returnDef = ifValue { <> code::yieldDef }
+        def returnDef = ifValue { code::yieldDef }
             { yieldDef ->
                 ## The closure has a yield def, but we need to also bind
                 ## it as `return`, so we add an extra local variable binding

@@ -93,14 +93,14 @@ fn @@varBind.bodies(bodiesBox) {
 };
 
 fn @@varDef.bodies(bodiesBox) {
-    def value = ifValue { <> this.nodeValue }
+    def value = ifValue { this.nodeValue }
         { value <> {value: bodies(value, bodiesBox)} }
         { <> {} };
     <> @varDef{name: this.name, value*}
 };
 
 fn @@varDefMutable.bodies(bodiesBox) {
-    def value = ifValue { <> this.nodeValue }
+    def value = ifValue { this.nodeValue }
         { value <> {value: bodies(value, bodiesBox)} }
         { <> {} };
     <> @varDefMutable{name: this.name, value*}

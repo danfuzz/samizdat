@@ -81,14 +81,14 @@ export fn makeVarBind(name, value) {
 
 ## Documented in spec.
 export fn makeVarDef(name, optValue?) {
-    <> ifValue { <> optValue* }
+    <> ifValue { optValue* }
         { value <> @varDef{name, value} }
         { <> @varDef{name} }
 };
 
 ## Documented in spec.
 export fn makeVarDefMutable(name, optValue?) {
-    <> ifValue { <> optValue* }
+    <> ifValue { optValue* }
         { value <> @varDefMutable{name, value} }
         { <> @varDefMutable{name} }
 };

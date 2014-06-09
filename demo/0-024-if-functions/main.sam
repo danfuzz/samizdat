@@ -19,14 +19,14 @@ note($Format::source(maybe1));
 def maybe2 = maybeValue { <> "Yes: opt" };
 note($Format::source(maybe2));
 
-def v1 = ifValue { <> "Yes." }
+def v1 = ifValue { "Yes." }
     { value ->
         note(value);
         <> "Yes: v1"
     };
 note(v1);
 
-def v2 = ifValue { <> "Yes." }
+def v2 = ifValue { "Yes." }
     { value ->
         note(value);
         <> "Yes: v2"

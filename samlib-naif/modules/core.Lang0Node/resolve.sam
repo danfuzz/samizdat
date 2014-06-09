@@ -19,7 +19,7 @@ import ./getters :: *;
 ## Calls the given `resolveFn` on the indicated `source`. Complains if the
 ## result is void. If the result is non-void, validate that it is a `@module`.
 fn resolveAndCheck(resolveFn, source) {
-    <> ifValue { <> resolveFn(source) }
+    <> ifValue { resolveFn(source) }
         { result ->
             ifNot { <> hasType(result, @@module) }
                 { die("Invalid resolution result (not a `@module`)") };
@@ -69,7 +69,7 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
     def info = ifValueOr { <> resolved::info } { <> {} };
     def exports = ifValueOr { <> info::exports } { <> {} };
 
-    <> ifValue { <> get_select(this) }
+    <> ifValue { get_select(this) }
         { select ->
             ## Explicit selection, so no need to return a modified result.
             ## Just validate that all selected names are available for import.

@@ -41,7 +41,7 @@ fn @@PegAny.parse(box, input, .*) {
 fn @@PegChoice.parse(box, input, items*) {
     $Generator::filterPump(dataOf(this)) { rule ->
         def innerBox = makePromise();
-        ifValue { <> parse(rule, innerBox, input, items*) }
+        ifValue { parse(rule, innerBox, input, items*) }
             { newInput ->
                 store(box, fetch(innerBox));
                 return newInput
@@ -54,7 +54,7 @@ fn @@PegChoice.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegCode.parse(box, input, items*) {
-    <> ifValue { <> dataOf(this)(items*) }
+    <> ifValue { dataOf(this)(items*) }
         { result ->
             store(box, result);
             <> input
@@ -102,7 +102,7 @@ fn @@PegMain.parse(box, input, .*) {
 ## Documented in spec.
 fn @@PegOpt.parse(box, input, items*) {
     def innerBox = makePromise();
-    <> ifValue { <> parse(dataOf(this), innerBox, input, items*) }
+    <> ifValue { parse(dataOf(this), innerBox, input, items*) }
         { newInput ->
             store(box, [fetch(innerBox)]);
             <> newInput
@@ -121,7 +121,7 @@ fn @@PegRepeat.parse(box, input, items*) {
 
     loop {
         def innerBox = makePromise();
-        ifValue { <> parse(rule, innerBox, remainingInput, items*) }
+        ifValue { parse(rule, innerBox, remainingInput, items*) }
             { newInput ->
                 ## Successfully parsed the inner rule.
                 remainingInput := newInput;
@@ -129,7 +129,7 @@ fn @@PegRepeat.parse(box, input, items*) {
             }
             {
                 ## Failed to parse the inner rule.
-                ifValue { <> this::minSize }
+                ifValue { this::minSize }
                     { minSize ->
                         ifIs { lt(get_size(results), minSize) }
                             {
@@ -161,7 +161,7 @@ fn @@PegSequence.parse(box, input, items*) {
     ## This is akin to `for (rule in dataOf(this)) { ... }`.
     $Generator::filterPump(dataOf(this)) { rule ->
         def innerBox = makePromise();
-        ifValue { <> parse(rule, innerBox, remainingInput, results*) }
+        ifValue { parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
                 results := [results*, fetch(innerBox)]
@@ -179,7 +179,7 @@ fn @@PegSequence.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegThunk.parse(box, input, items*) {
-    <> ifValue { <> dataOf(this)(items*) }
+    <> ifValue { dataOf(this)(items*) }
         { thunkResult <> parse(thunkResult, box, input, items*) }
 };
 
@@ -187,7 +187,7 @@ fn @@PegThunk.parse(box, input, items*) {
 fn @@PegTokenSet.parse(box, input, items*) {
     def innerBox = makePromise();
 
-    ifValue { <> nextValue(input, innerBox) }
+    ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
             ifIs { get(this, get_type(item)) }
@@ -205,7 +205,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
 fn @@PegTokenSetComplement.parse(box, input, items*) {
     def innerBox = makePromise();
 
-    ifValue { <> nextValue(input, innerBox) }
+    ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
             ifNot { <> get(this, get_type(item)) }

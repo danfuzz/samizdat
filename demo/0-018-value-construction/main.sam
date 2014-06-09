@@ -35,7 +35,7 @@ fn expectCore(v) {
     ifIs { hasType(v, DerivedData) }
         { note("Derived: ", $Format::source(v)) }
         {
-            ifValue { <> dataOf(v) }
+            ifValue { dataOf(v) }
                 { data -> note("Bad data: ", $Format::source(data)) }
                 { note("Yes.") }
         }

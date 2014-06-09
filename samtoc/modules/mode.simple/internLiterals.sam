@@ -101,14 +101,14 @@ fn @@varBind.lits(interner) {
 };
 
 fn @@varDef.lits(interner) {
-    def value = ifValue { <> this.nodeValue }
+    def value = ifValue { this.nodeValue }
         { value <> {value: lits(value, interner)} }
         { <> {} };
     <> @varDef{name: this.name, value*}
 };
 
 fn @@varDefMutable.lits(interner) {
-    def value = ifValue { <> this.nodeValue }
+    def value = ifValue { this.nodeValue }
         { value <> {value: lits(value, interner)} }
         { <> {} };
     <> @varDefMutable{name: this.name, value*}

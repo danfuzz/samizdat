@@ -317,7 +317,7 @@ fn processStringParts(parts) {
     ## Check for a simple result.
     ifIs { eq(get_size(elems), 1) }
         {
-            ifValue { <> hasType(elems*, String) }
+            ifValue { hasType(elems*, String) }
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.

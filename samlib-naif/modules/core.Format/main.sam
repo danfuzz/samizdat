@@ -132,7 +132,7 @@ fn keyString(key) {
     ifIs { isIdentifier(key) }
         { return key };
 
-    ifValue { <> get(SPECIAL_VALUES, key) }
+    ifValue { get(SPECIAL_VALUES, key) }
         { string -> return cat("(", string, ")") };
 
     <> sourceGeneral(key, true)
@@ -173,7 +173,7 @@ fn hexStringChar(ch) {
 ## Helper for stringifying strings: Returns the converted form of the
 ## given character.
 fn stringChar(ch) {
-    ifValue { <> get(SPECIAL_CHARS, ch) }
+    ifValue { get(SPECIAL_CHARS, ch) }
         { special ->
             ifIs { eq(special, "x") }
                 { return hexStringChar(ch) }
@@ -225,7 +225,7 @@ fn String.sourceGeneral(adorn) {
 
 ## Stringifies a type.
 fn Type.sourceGeneral(adorn) {
-    ifValue { <> get(SPECIAL_VALUES, this) }
+    ifValue { get(SPECIAL_VALUES, this) }
         { string -> return string };
 
     def name = typeName(this);
@@ -245,7 +245,7 @@ fn Type.sourceGeneral(adorn) {
 
 ## Stringifies a derived value or an opaque core value.
 fn Value.sourceGeneral(adorn) {
-    ifValue { <> get(SPECIAL_VALUES, this) }
+    ifValue { get(SPECIAL_VALUES, this) }
         { string -> return string };
 
     def type = get_type(this);
@@ -265,14 +265,14 @@ fn Value.sourceGeneral(adorn) {
     ifNot { <> eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifValue { <> debugName(this) }
+            def body = ifValue { debugName(this) }
                 { name <> keyString(name) }
                 { <> "..." };
 
             return cat(prefix, "<", body, ">")
         };
 
-    <> ifValue { <> dataOf(this) }
+    <> ifValue { dataOf(this) }
         { data ->
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
@@ -340,21 +340,21 @@ export fn intHex(arg) {
 
 ## Documented in spec.
 export fn source(value?) {
-    <> ifValue { <> value* }
+    <> ifValue { value* }
         { value <> sourceGeneral(value, true) }
         { <> "void" }
 };
 
 ## Documented in spec.
 export fn sourceUnadorned(value?) {
-    <> ifValue { <> value* }
+    <> ifValue { value* }
         { value <> sourceGeneral(value, false) }
         { <> "void" }
 };
 
 ## Documented in spec.
 export fn usual(value?) {
-    <> ifValue { <> value* }
+    <> ifValue { value* }
         { value <> humanString(value) }
         { <> "" }
 };

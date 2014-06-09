@@ -44,19 +44,19 @@ msg("blort"*);
 msg({a: 10, b: "20"}*);
 msg($Range::makeInclusiveRange("a", "m", 2)*);
 
-ifValue { <> yieldTest([]) }
+ifValue { yieldTest([]) }
     { value <> msg(value) }
     { note("(void)") };
 
-ifValue { <> nonlocalTest([]) }
+ifValue { nonlocalTest([]) }
     { value <> msg(value) }
     { note("(void)") };
 
-ifValue { <> yieldTest(["blort"]) }
+ifValue { yieldTest(["blort"]) }
     { value <> msg(value) }
     { note("(void)") };
 
-ifValue { <> nonlocalTest(["fizmo"]) }
+ifValue { nonlocalTest(["fizmo"]) }
     { value <> msg(value) }
     { note("(void)") };
 

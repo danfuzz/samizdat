@@ -63,14 +63,14 @@ ifIs(returnVoid4, bad, good);
 ifIs(returnVoid5, bad, good);
 ifIs(returnVoid6, bad, good);
 
-ifValue { <> returnArg1("woo") }
+ifValue { returnArg1("woo") }
     { v <> note(v) }
     { bad() };
 
-ifValue { <> returnArg2("woo") }
+ifValue { returnArg2("woo") }
     { v <> note(v) }
     { bad() };
 
-ifValue { <> returnArg3("woo") }
+ifValue { returnArg3("woo") }
     { v <> note(v) }
     { bad() };

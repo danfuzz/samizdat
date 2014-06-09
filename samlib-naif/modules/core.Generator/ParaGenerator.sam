@@ -50,7 +50,7 @@ fn @@ParaGenerator.nextValue(box) {
         subGens,
         { gen ->
             def innerBox = $Box::makePromise();
-            <> ifValue { <> nextValue(gen, innerBox) }
+            <> ifValue { nextValue(gen, innerBox) }
                 { nextGenerator <> [fetch(innerBox), nextGenerator] }
                 {
                     ## One of the sub-generators became voided.

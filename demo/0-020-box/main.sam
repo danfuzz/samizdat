@@ -19,7 +19,7 @@ fn msg(box) {
         { <> "can-store : " }
         { <> "no-store  : " };
 
-    def fetchStr = ifValue { <> fetch(box) }
+    def fetchStr = ifValue { fetch(box) }
         { value <> $Format::source(value) }
         { <> "(void)" };
 

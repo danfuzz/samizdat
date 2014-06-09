@@ -26,7 +26,7 @@ fn @@SequenceGenerator.collect(optFilterFunction?) {
 fn @@SequenceGenerator.nextValue(box) {
     def index = this::index;
 
-    <> ifValue { <> nth(this::seq, index) }
+    <> ifValue { nth(this::seq, index) }
         { value ->
             store(box, value);
             <> @SequenceGenerator{dataOf(this)*, index: $Number::add(index, 1)}

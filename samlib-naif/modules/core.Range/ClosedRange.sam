@@ -27,7 +27,7 @@ fn @@ClosedRange.collect(optFilterFunction?) {
 
 ## Documented in spec.
 fn @@ClosedRange.nextValue(box) {
-    <> ifValue { <> ge(this::size, 0) }
+    <> ifValue { ge(this::size, 0) }
         { size ->
             def firstValue = this::firstValue;
             def increment = this::increment;

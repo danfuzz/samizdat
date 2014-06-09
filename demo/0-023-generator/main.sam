@@ -28,7 +28,7 @@ fn msgAll(header, origGen) {
     { /done ->
         loop {
             def box = $Box::makePromise();
-            <> ifValue { <> nextValue(gen, box) }
+            <> ifValue { nextValue(gen, box) }
                 { nextGen ->
                     msg(fetch(box));
                     gen := nextGen

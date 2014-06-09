@@ -27,7 +27,7 @@ fn @@MapGenerator.collect(optFilterFunction?) {
 fn @@MapGenerator.nextValue(box) {
     def index = this::index;
 
-    <> ifValue { <> $Collection::nthMapping(this::map, index) }
+    <> ifValue { $Collection::nthMapping(this::map, index) }
         { value ->
             store(box, value);
             <> @MapGenerator{dataOf(this)*, index: $Number::add(index, 1)}
