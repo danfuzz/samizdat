@@ -34,12 +34,12 @@ fn returnVoid3() { /out ->
 };
 
 fn returnVoid4() { /out ->
-    yield /out returnVoid1()
+    yield? /out returnVoid1()
 };
 
 def returnVoid5 = { /out -> yield /out };
 
-def returnVoid6 = { /out -> yield /out returnVoid1() };
+def returnVoid6 = { /out -> yield? /out returnVoid1() };
 
 fn returnArg1(a) {
     return a
