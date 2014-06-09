@@ -91,7 +91,7 @@ This function could be implemented as:
 
 ```
 fn maybeValue(function) {
-    <> (def v = function()) & [v] | []
+    return (def v = function()) & [v] | []
 }
 ```
 
@@ -99,7 +99,7 @@ or more primitively as:
 
 ```
 fn maybeValue(function) {
-    <> ifValue(function, { v <> [v] }, { <> [] })
+    return ifValue(function, { v <> [v] }, { <> [] })
 }
 ```
 
