@@ -67,10 +67,10 @@ This function could be implemented as something like:
 ```
 fn interpolate(generator) {
     def list = [generator*];
-    <> if (list[1]) {
+    if (list[1]) {
         ## Die with error.
     } else {
-        <> list[0]
+        return list[0]
     }
 }
 ```
@@ -99,7 +99,7 @@ or more primitively as:
 
 ```
 fn maybeValue(function) {
-    return ifValue(function, { v <> [v] }, { <> [] })
+    return ifValue(function, { v -> [v] }, { -> [] })
 }
 ```
 
