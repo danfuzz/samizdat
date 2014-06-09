@@ -34,7 +34,7 @@ def EARLY_GLOBALS = {
 
 ## Documented in spec.
 export fn earlyEnvironment() {
-    <> EARLY_GLOBALS
+    return EARLY_GLOBALS
 };
 
 ## Documented in spec.
@@ -57,7 +57,7 @@ export fn fullEnvironment() {
     def $Range       = loadModule(@external("core.Range"));
     def $Sequence    = loadModule(@external("core.Sequence"));
 
-    <> {
+    return {
         EARLY_GLOBALS*,
 
         ## Globally-exported modules.
