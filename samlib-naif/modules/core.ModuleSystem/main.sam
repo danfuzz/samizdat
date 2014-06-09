@@ -117,7 +117,7 @@ fn checkExternalSourcePair(lastCh, ch) {
             return
         };
 
-    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { get(VALID_COMPONENT_CHARS, ch) }
         { die("Invalid external source: bad character \"", ch, "\"") }
 };
 
@@ -126,12 +126,12 @@ fn checkExternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@external` but is improperly-formed, this dies
 ## with an error.
 fn checkExternalSource(source) {
-    ifNot { <> hasType(source, @@external) }
+    ifNot { hasType(source, @@external) }
         { return };
 
     def name = dataOf(source);
 
-    ifNot { <> hasType(name, String) }
+    ifNot { hasType(name, String) }
         { die("Invalid external source: not a string") };
     ifIs { eq(name, "") }
         { die("Invalid external source: empty string") };
@@ -169,7 +169,7 @@ fn checkInternalSourcePair(lastCh, ch) {
             return
         };
 
-    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { get(VALID_COMPONENT_CHARS, ch) }
         { die("Invalid internal source: bad character \"", ch, "\"") }
 };
 
@@ -178,12 +178,12 @@ fn checkInternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@internal` but is improperly-formed, this dies
 ## with an error.
 fn checkInternalSource(source) {
-    ifNot { <> hasType(source, @@internal) }
+    ifNot { hasType(source, @@internal) }
         { return };
 
     def path = dataOf(source);
 
-    ifNot { <> hasType(path, String) }
+    ifNot { hasType(path, String) }
         { die("Invalid internal source: not a string") };
     ifIs { eq(path, "") }
         { die("Invalid internal source: empty string") };
@@ -206,9 +206,9 @@ fn checkInternalSource(source) {
 fn checkAbsolutePath(path) {
     ifIs { eq(path, "") }
         { die("Invalid file path: empty string") };
-    ifNot { <> hasType(path, String) }
+    ifNot { hasType(path, String) }
         { die("Invalid file path: not a string") };
-    ifNot { <> eq(get(path, 0), "/") }
+    ifNot { eq(get(path, 0), "/") }
         { die("Invalid file path: not absolute") }
 };
 
@@ -327,7 +327,7 @@ fn @@ExternalLoader.readResource(source, format) {
 
 ## Documented in spec.
 fn @@ExternalLoader.resolve(source) {
-    ifNot { <> checkExternalSource(source) }
+    ifNot { checkExternalSource(source) }
         {
             ## Not an external source, so punt to the next loader.
             return? resolve(this::nextLoader, source)
@@ -358,7 +358,7 @@ fn @@ExternalLoader.resolve(source) {
 
     updateMapBox(loadedBox, source, result);
 
-    <> ifNot { <> eq(result, "notFound") }
+    <> ifNot { eq(result, "notFound") }
         { <> result }
 };
 
@@ -373,7 +373,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
             ## No such file or directory.
             return nextLoader
         };
-    ifNot { <> eq(pathType, "directory") }
+    ifNot { eq(pathType, "directory") }
         { die("Module loader path exists but is not a directory: ", path) };
 
     <> @ExternalLoader{
@@ -437,7 +437,7 @@ fn readResource_type(fullPath) {
 
 ## `readResource` implementation for format `utf8`.
 fn readResource_utf8(fullPath) {
-    ifNot { <> eq($Io0::fileType(fullPath), "file") }
+    ifNot { eq($Io0::fileType(fullPath), "file") }
         { die("Missing resource: ", fullPath) };
 
     <> $Io0::readFileUtf8(fullPath)
@@ -451,7 +451,7 @@ def INTERNAL_READERS = {
 
 ## Documented in spec.
 fn @@InternalLoader.readResource(source, format) {
-    ifNot { <> checkInternalSource(source) }
+    ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
             return? readResource(this::nextLoader, source, format)
@@ -466,7 +466,7 @@ fn @@InternalLoader.readResource(source, format) {
 
 ## Documented in spec.
 fn @@InternalLoader.resolve(source) {
-    ifNot { <> checkInternalSource(source) }
+    ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
             return? resolve(this::nextLoader, source)

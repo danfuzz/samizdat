@@ -15,7 +15,7 @@
 
 ## Documented in spec.
 export fn ge(value, other) {
-    <> ifNot { <> eq(order(value, other), -1) }
+    <> ifNot { eq(order(value, other), -1) }
         { <> value }
 };
 
@@ -27,7 +27,7 @@ export fn gt(value, other) {
 
 ## Documented in spec.
 export fn le(value, other) {
-    <> ifNot { <> eq(order(value, other), 1) }
+    <> ifNot { eq(order(value, other), 1) }
         { <> value }
 };
 
@@ -39,13 +39,13 @@ export fn lt(value, other) {
 
 ## Documented in spec.
 export fn ne(value, other) {
-    <> ifNot { <> eq(value, other) }
+    <> ifNot { eq(value, other) }
         { <> value }
 };
 
 ## Documented in spec.
 export fn perGe(value, other) {
-    <> ifNot { <> eq(perOrder(value, other), -1) }
+    <> ifNot { eq(perOrder(value, other), -1) }
         { <> value }
 };
 
@@ -57,7 +57,7 @@ export fn perGt(value, other) {
 
 ## Documented in spec.
 export fn perLe(value, other) {
-    <> ifNot { <> eq(perOrder(value, other), 1) }
+    <> ifNot { eq(perOrder(value, other), 1) }
         { <> value }
 };
 
@@ -69,13 +69,13 @@ export fn perLt(value, other) {
 
 ## Documented in spec.
 export fn perNe(value, other) {
-    <> ifNot { <> perEq(value, other) }
+    <> ifNot { perEq(value, other) }
         { <> value }
 };
 
 ## Documented in spec.
 export fn totalGe(value, other) {
-    <> ifNot { <> eq(totalOrder(value, other), -1) }
+    <> ifNot { eq(totalOrder(value, other), -1) }
         { <> value }
 };
 
@@ -87,7 +87,7 @@ export fn totalGt(value, other) {
 
 ## Documented in spec.
 export fn totalLe(value, other) {
-    <> ifNot { <> eq(totalOrder(value, other), 1) }
+    <> ifNot { eq(totalOrder(value, other), 1) }
         { <> value }
 };
 
@@ -99,6 +99,6 @@ export fn totalLt(value, other) {
 
 ## Documented in spec.
 export fn totalNe(value, other) {
-    <> ifNot { <> totalEq(value, other) }
+    <> ifNot { totalEq(value, other) }
         { <> value }
 };

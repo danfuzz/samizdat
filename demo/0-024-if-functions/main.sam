@@ -62,7 +62,7 @@ note(v7);
 def v8 = maybeValue { <> ifIs { } { die("No.") } };
 note($Format::source(v8));
 
-def v9 = maybeValue { <> ifNot { <> "Yes." } { die("No.") } };
+def v9 = maybeValue { <> ifNot { "Yes." } { die("No.") } };
 note($Format::source(v9));
 
 def v10 = ifNot { -> }

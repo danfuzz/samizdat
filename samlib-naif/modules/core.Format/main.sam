@@ -110,17 +110,17 @@ def SPECIAL_VALUES = {
 ## Checks to see if the given value is a string with the form of an
 ## in-language identifier. Returns the given `string` if so.
 fn isIdentifier(string) {
-    ifNot { <> hasType(string, String) }
+    ifNot { hasType(string, String) }
         { return };
 
     ifIs { eq(string, "") }
         { return };
 
-    ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
+    ifNot { get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
     $Generator::filterPump(string) { ch ->
-        ifNot { <> get(IDENTIFIER_CHARS, ch) }
+        ifNot { get(IDENTIFIER_CHARS, ch) }
             { return }
     };
 
@@ -230,7 +230,7 @@ fn Type.sourceGeneral(adorn) {
 
     def name = typeName(this);
 
-    ifNot { <> eq(typeParent(this), DerivedData) }
+    ifNot { eq(typeParent(this), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
     def body = ifIs { hasType(name, String) }
@@ -262,7 +262,7 @@ fn Value.sourceGeneral(adorn) {
         };
     def prefix = cat("@", typeStr);
 
-    ifNot { <> eq(typeParent(type), DerivedData) }
+    ifNot { eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
             def body = ifValue { debugName(this) }

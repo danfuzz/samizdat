@@ -147,7 +147,7 @@ def parIdentifierString = {:
 |
     token = .
     {
-        <> ifNot { <> dataOf(token) }
+        <> ifNot { dataOf(token) }
             {
                 def type = get_typeName(token);
                 def firstCh = nth(type, 0);
@@ -473,7 +473,7 @@ def parYieldOrNonlocal = {:
         v = parExpression
         { <> ifIs { optQuest* } { <> makeMaybe(v) } { <> v } }
     |
-        { <> ifNot { <> optQuest* } { <> @void } }
+        { <> ifNot { optQuest* } { <> @void } }
     )
 
     {

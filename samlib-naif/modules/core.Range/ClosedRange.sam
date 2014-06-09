@@ -47,7 +47,7 @@ fn @@ClosedRange.nextValue(box) {
 export fn makeClosedRange(firstValue, size, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { <> 1 };
 
-    ifNot { <> hasType(size, Int) }
+    ifNot { hasType(size, Int) }
         { die("`size` must be an int.") };
 
     <> ifIs { gt(size, 0) }

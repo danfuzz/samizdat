@@ -208,7 +208,7 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
     ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifNot { <> get(this, get_type(item)) }
+            ifNot { get(this, get_type(item)) }
                 {
                     store(box, item);
                     return newInput

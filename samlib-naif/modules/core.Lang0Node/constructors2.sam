@@ -171,7 +171,7 @@ export fn makeImport(baseData) {
             ifIs { data::format }
                 { die("Cannot import selection of resource.") };
 
-            ifNot { <> data::prefix }
+            ifNot { data::prefix }
             {
                 ## Default to empty string for `prefix`.
                 data := {data*, prefix: ""}
@@ -186,7 +186,7 @@ export fn makeImport(baseData) {
             return @importModuleSelection(data)
         };
 
-    ifNot { <> data::name }
+    ifNot { data::name }
         {
             ## No `name` provided, so figure out a default one.
             data := {data*, name: cat("$", get_baseName(data::source))}
@@ -323,7 +323,7 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifNot { <> eq(get_yieldNode(node), @void) }
+    ifNot { eq(get_yieldNode(node), @void) }
         { die("Invalid node for `withModuleDefs` (has non-void `yield`).") };
 
     ## This is the metainformation of the module. In addition to being
@@ -397,11 +397,11 @@ export fn withoutTops(node) {
 
     ## This lists all the exported variables that were transformed above.
     def exports = $Generator::filterAll(rawStatements) { s /out ->
-        ifNot { <> hasType(s, @@export) }
+        ifNot { hasType(s, @@export) }
             { yield /out };
 
         def defNode = get_nodeValue(s);
-        ifNot { <> defNode::top }
+        ifNot { defNode::top }
             { yield /out };
 
         <> get_name(defNode)

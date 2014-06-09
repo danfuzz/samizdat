@@ -21,7 +21,7 @@ import ./getters :: *;
 fn resolveAndCheck(resolveFn, source) {
     <> ifValue { resolveFn(source) }
         { result ->
-            ifNot { <> hasType(result, @@module) }
+            ifNot { hasType(result, @@module) }
                 { die("Invalid resolution result (not a `@module`)") };
             <> result
         }
@@ -74,7 +74,7 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
             ## Explicit selection, so no need to return a modified result.
             ## Just validate that all selected names are available for import.
             $Generator::filterAll(select) { one ->
-                ifNot { <> get(exports, one) }
+                ifNot { get(exports, one) }
                     {
                         die("Could not resolve import: ",
                             sourceString(source), " :: ", one)
