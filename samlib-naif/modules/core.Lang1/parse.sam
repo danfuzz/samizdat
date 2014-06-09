@@ -352,8 +352,7 @@ def parYieldOrNonlocal = $Peg::makeMainSequence(
         $Peg::makeSequence(
             parExpression,
             $Peg::makeCode { ., optQuest, ., v ->
-                ## TODO: <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v }
-                <> makeMaybe(v)
+                <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v }
             }),
         $Peg::makeCode { ., optQuest, . ->
             <> ifNot { <> optQuest* } { <> @void }

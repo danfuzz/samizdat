@@ -30,7 +30,7 @@ fn yieldTest(x) {
 };
 
 fn nonlocalTest(x) {
-    return x*
+    return? x*
 };
 
 

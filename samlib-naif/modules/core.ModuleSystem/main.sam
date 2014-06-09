@@ -330,7 +330,7 @@ fn @@ExternalLoader.resolve(source) {
     ifNot { <> checkExternalSource(source) }
         {
             ## Not an external source, so punt to the next loader.
-            return resolve(this::nextLoader, source)
+            return? resolve(this::nextLoader, source)
         };
 
     def loadedBox = this::loadedBox;
@@ -412,7 +412,8 @@ fn doInternalResolve(loader, source) {
     ifIs { <> eq($Io0::fileType(binPath), "file") }
         {
             def func = $Code::evalBinary(loader::globals, binPath);
-            return func()
+            return ifValueOr { <> func() }
+                { die("No result from binary module: ", sourcePath) }
         };
 
     def sourcePath = cat(pathPrefix, ".sam");
@@ -453,7 +454,7 @@ fn @@InternalLoader.readResource(source, format) {
     ifNot { <> checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
-            return readResource(this::nextLoader, source, format)
+            return? readResource(this::nextLoader, source, format)
         };
 
     def fullPath = cat(this::basePath, dataOf(source));
@@ -468,7 +469,7 @@ fn @@InternalLoader.resolve(source) {
     ifNot { <> checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
-            return resolve(this::nextLoader, source)
+            return? resolve(this::nextLoader, source)
         };
 
     def loadedBox = this::loadedBox;
@@ -546,7 +547,7 @@ fn runProgram(programFunc, args) {
     ifIs { <> hasType(result, @@module) }
         {
             ifValue { <> result::exports::main }
-                { main -> return main(args*) }
+                { main -> return? main(args*) }
         };
 
     return result
@@ -602,10 +603,10 @@ export fn runFile(path, loader, args*) {
     def suffix = fileNameSuffix(path);
 
     ifIs { <> eq(suffix, "sam") }
-        { return runTextFile(path, loader, args) };
+        { return? runTextFile(path, loader, args) };
 
     ifIs { <> eq(suffix, "samb") }
-        { return runBinaryFile(path, loader, args) };
+        { return? runBinaryFile(path, loader, args) };
 
     die("Unknown file name suffix: ", suffix)
 };

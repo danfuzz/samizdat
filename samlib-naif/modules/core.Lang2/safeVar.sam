@@ -59,7 +59,7 @@ fn safeIndexForNames(base, names*) {
             };
         ifIs { <> perEq(base, name) } { yield /next -1 };
         ifIs { <> perEq(base, $Sequence::sliceExclusive(name, 0, baseSz)) }
-            { yield /next intOrVoid($Sequence::sliceInclusive(name, baseSz)) }
+            { yield? /next intOrVoid($Sequence::sliceInclusive(name, baseSz)) }
     };
 
     <> ifIs { <> perEq(indexes, []) }

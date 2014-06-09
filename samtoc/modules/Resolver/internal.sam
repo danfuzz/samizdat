@@ -54,7 +54,7 @@ fn directResolve(self, source) {
 fn @@InternalResolver.resolve(source) {
     if (def found = $cache::cacheGet(this::cache, source)) {
         ## `found` is always a list. See comment below.
-        return found*
+        return? found*
     };
 
     ## The result is always a list, so that we can cache a not-found result

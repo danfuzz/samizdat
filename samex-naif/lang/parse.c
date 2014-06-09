@@ -705,8 +705,9 @@ DEF_PARSE(yieldOrNonlocal) {
 
     zvalue value = PARSE(expression);   // It's okay for this to be `NULL`.
     if (value != NULL) {
-        // TODO: See corresponding comment in layer 2 code.
-        value = makeMaybe(value);
+        if (optQuest != NULL) {
+            value = makeMaybe(value);
+        }
     } else {
         REJECT_IF(optQuest != NULL);
         value = TOK_void;

@@ -471,8 +471,7 @@ def parYieldOrNonlocal = {:
     ## operator. Otherwise, it's optional.
     value = (
         v = parExpression
-        ## TODO: { <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v } }
-        { <> makeMaybe(v) }
+        { <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v } }
     |
         { <> ifNot { <> optQuest* } { <> @void } }
     )

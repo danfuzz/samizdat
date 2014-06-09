@@ -44,7 +44,7 @@ fn @@ParaGenerator.nextValue(box) {
     def subGens = dataOf(this);
 
     ifIs { <> eq(subGens, []) }
-        { return nextValue($Box::nullBox, box) };
+        { return? nextValue($Box::nullBox, box) };
 
     def generatorCalls = collect(
         subGens,
