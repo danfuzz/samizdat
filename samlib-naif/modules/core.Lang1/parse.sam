@@ -338,20 +338,34 @@ parAssignExpression := $Peg::makeMainSequence(
         $Peg::makeCode { base <> base }));
 
 ## Documented in spec.
-def parNonlocalExit = $Peg::makeMainSequence(
+def parYieldOrNonlocal = $Peg::makeMainSequence(
+    $Peg::makeTokenSet(@@break, @@continue, @@return, @@yield),
+    $Peg::makeOpt($Peg::makeToken(@@"?")),
     $Peg::makeChoice(
         $Peg::makeSequence(
-            $Peg::makeToken(@@yield),
-            $Peg::makeToken(@@"/"),
-            parVarRef),
+            $Peg::makeCode { op, . <> hasType(op, @@yield) },
+            $Peg::makeChoice(
+                $Peg::makeSequence($Peg::makeToken(@@"/"), parVarRef),
+                $Peg::makeResult(@yield))),
+        $Peg::makeCode { op, . <> makeVarRef(get_typeName(op)) }),
+    $Peg::makeChoice(
         $Peg::makeSequence(
-            $Peg::makeTokenSet(@@break, @@continue, @@return),
-            $Peg::makeCode { op <> makeVarRef(get_typeName(op)) })),
-    $Peg::makeOpt(parExpression),
-    $Peg::makeCode { name, optValue <> makeNonlocalExit(name, optValue*) });
+            parExpression,
+            $Peg::makeCode { ., optQuest, ., v ->
+                ## TODO: <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v }
+                <> makeMaybe(v)
+            }),
+        $Peg::makeCode { ., optQuest, . ->
+            <> ifNot { <> optQuest* } { <> @void }
+        }),
+    $Peg::makeCode { ., ., name, value ->
+        <> ifIs { <> eq(name, @yield) }
+            { <> value }
+            { <> makeNonlocalExit(name, value) }
+    });
 
 ## Documented in spec.
-def parYield = $Peg::makeMainSequence(
+def parOldYield = $Peg::makeMainSequence(
     $Peg::makeToken(@@"<>"),
     $Peg::makeChoice(
         $Peg::makeSequence(
@@ -625,7 +639,7 @@ def parClosureBody = $Peg::makeMainSequence(
             parStatement,
             $Peg::makeCode { s <> {statements: [s]} }),
         $Peg::makeMainSequence(
-            $Peg::makeChoice(parNonlocalExit, parYield),
+            $Peg::makeChoice(parYieldOrNonlocal, parOldYield),
             $Peg::makeCode { y <> {statements: [], yield: y} }),
         $Peg::makeResult({statements: []})),
     $Peg::makeStar($Peg::makeToken(@@";")),

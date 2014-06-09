@@ -347,9 +347,12 @@ Makes a `noYield` node.
 #### `makeNonlocalExit(function, optValue?) <> node`
 
 Makes a node representing a nonlocal exit, for calling the given `function`
-with optional expression argument `optValue*`. If `optValue` is passed, then
-it is allowed to evaluate to void. The resulting node is a `noYield`, since
-nonlocal exits are never supposed to return to their direct callers.
+with optional expression argument `optValue*`. `optValue*` is allowed
+to be a `maybe` or `void` node. If `optValue` is not passed, it is
+treated as if it were specified as `@void`.
+
+The resulting node is a `noYield`, since nonlocal exits are never supposed
+to return to their direct callers.
 
 #### `makeThunk(node) <> node`
 

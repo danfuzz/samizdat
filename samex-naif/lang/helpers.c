@@ -559,13 +559,16 @@ zvalue makeNoYield(zvalue value) {
 
 /* Documented in spec. */
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
+    zvalue value = (optValue == NULL) ? TOK_void : optValue;
     zvalue exitCall;
 
-    if (optValue != NULL) {
-        zvalue actuals = makeInterpolate(makeMaybeValue(optValue));
-        exitCall = makeCallOrApply(function, listFrom1(actuals));
-    } else {
+    if (hasType(value, TYPE_void)) {
         exitCall = makeCall(function, NULL);
+    } else if (hasType(value, TYPE_maybe)) {
+        zvalue arg = makeInterpolate(makeMaybeValue(get(value, STR_value)));
+        exitCall = makeCallOrApply(function, listFrom1(arg));
+    } else {
+        exitCall = makeCall(function, listFrom1(value));
     }
 
     return makeNoYield(exitCall);
