@@ -113,7 +113,7 @@ Two kinds of yield are applicable in all contexts:
 
 * `yield` &mdash; Direct yield from closure. This yields a
   value from the closure that this statement appears directly in.
-  `<>` is a deprecated synonym for `yield`.
+  `<>` is a deprecated synonym for `yield`. TODO: Remove `<>`.
 
 * `yield /name` &mdash; Yield from named yield point. The `name` must match
   the yield definition name of an enclosing closure. (See "Yield Definitions,"
@@ -142,7 +142,7 @@ or void is being yielded; if a value expression is present, then it must
 evaluate to a value (not void).
 
 In contexts where it is not the case that the yield expression necessarily
-evaluate to a value, then the base yield operator can be followed by a
+evaluates to a value, then the base yield operator can be followed by a
 question mark (`?`). This indicates that the expression is allowed to
 evaluate to void, and if it does, for the closure itself to yield void.
 
