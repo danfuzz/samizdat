@@ -33,13 +33,10 @@ fn checkPath(path) {
 export fn fixPath(path, basePaths*) {
     checkPath(path);
 
-    <> ifIs { eq(get(path, 0), "/") }
-        { <> path }
-        {
-            <> ifIs { eq(basePaths, []) }
-                { <> path }
-                { <> cat(fixPath(basePaths*), "/", path) }
-        }
+    return ifValueOr
+        { ifIs { eq(get(path, 0), "/") } { path } }
+        { ifIs { eq(basePaths, []) } { path } }
+        { cat(fixPath(basePaths*), "/", path) }
 };
 
 ## Documented in spec.
