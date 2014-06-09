@@ -113,7 +113,7 @@ fn @@sequence.convertPex(formals) {
 
     ## Extract the formals out of any `varDef` nodes.
     def newFormals = $Generator::filterAll(pexes) { pex ->
-        <> ifIs { <> hasType(pex, @@varDef) }
+        <> ifIs { hasType(pex, @@varDef) }
             { <> {name: pex::name} }
             { <> {} }
     };
@@ -123,7 +123,7 @@ fn @@sequence.convertPex(formals) {
     def convertedPexes =
         $Generator::filterAll($Range::makeOpenRange(0), pexes)
             { n, pex ->
-                def subPex = ifIs { <> hasType(pex, @@varDef) }
+                def subPex = ifIs { hasType(pex, @@varDef) }
                     { <> pex::value }
                     { <> pex };
                 <> convertPex(subPex,
@@ -303,7 +303,7 @@ fn @@void.convertPexIn() {
 export fn simplify(expressionNode, resolveFn) {
     def converted = convertPexIn(expressionNode);
 
-    <> ifIs { <> hasType(converted, @@closure) }
+    <> ifIs { hasType(converted, @@closure) }
         { <> withModuleDefs(withResolvedImports(converted, resolveFn)) }
         { <> converted }
 };

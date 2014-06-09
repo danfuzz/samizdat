@@ -64,7 +64,7 @@ fn @@PegCode.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegEof.parse(box, input, .*) {
-    <> ifIs { <> nextValue(input, nullBox) }
+    <> ifIs { nextValue(input, nullBox) }
         { store(box) }
         {
             store(box, null);
@@ -79,7 +79,7 @@ fn @@PegFail.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegLookaheadFailure.parse(box, input, items*) {
-    <> ifIs { <> parse(dataOf(this), nullBox, input, items*) }
+    <> ifIs { parse(dataOf(this), nullBox, input, items*) }
         { store(box) }
         {
             store(box, null);
@@ -89,7 +89,7 @@ fn @@PegLookaheadFailure.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegLookaheadSuccess.parse(box, input, items*) {
-    <> ifIs { <> parse(dataOf(this), box, input, items*) }
+    <> ifIs { parse(dataOf(this), box, input, items*) }
         { <> input }
 };
 
@@ -131,7 +131,7 @@ fn @@PegRepeat.parse(box, input, items*) {
                 ## Failed to parse the inner rule.
                 ifValue { <> this::minSize }
                     { minSize ->
-                        ifIs { <> lt(get_size(results), minSize) }
+                        ifIs { lt(get_size(results), minSize) }
                             {
                                 ## Did not parse minimum required count.
                                 store(box);
@@ -190,7 +190,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifIs { <> get(this, get_type(item)) }
+            ifIs { get(this, get_type(item)) }
                 {
                     store(box, item);
                     return newInput
@@ -235,13 +235,13 @@ fn typeListFromString(string) {
 fn genericMakeTokenSet(sense, types) {
     def set = {types*: true}; ## A set-like map of all the token types.
 
-    ifIs { <> eq(set, {}) }
+    ifIs { eq(set, {}) }
         {
             ## Trivial case: Empty set. Return an appropriate absolute rule.
-            return ifIs { <> eq(sense, true) } { <> fail } { <> any }
+            return ifIs { eq(sense, true) } { <> fail } { <> any }
         };
 
-    <> ifIs { <> eq(sense, true) }
+    <> ifIs { eq(sense, true) }
         { <> @PegTokenSet(set) }
         { <> @PegTokenSetComplement(set) }
 };
@@ -267,11 +267,11 @@ export fn makeCharSetComplement(strings*) {
 ## Documented in spec.
 export fn makeChoice(rules*) {
     ## Trivial case: No rules. Return the failure rule.
-    ifIs { <> eq(rules, []) }
+    ifIs { eq(rules, []) }
         { return @PegFail };
 
     ## Trivial case: One rule. Return that rule directly.
-    ifIs { <> eq(get_size(rules), 1) }
+    ifIs { eq(get_size(rules), 1) }
         { return rules* };
 
     ## The general case.
@@ -286,11 +286,11 @@ export fn makeCode(function) {
 ## Documented in spec.
 export fn makeLookaheadFailure(rule) {
     ## Optimiziation: Representation of `!.`.
-    ifIs { <> eq(rule, @PegAny) }
+    ifIs { eq(rule, @PegAny) }
         { return @PegEof };
 
     ## Optimization: Representation of `!()`.
-    ifIs { <> eq(rule, empty) }
+    ifIs { eq(rule, empty) }
         { return @PegFail };
 
     ## The general case.
@@ -325,11 +325,11 @@ export fn makePlus(rule) {
 ## Documented in spec.
 export fn makeSequence(rules*) {
     ## Trivial case: No rules. Return the empty rule.
-    ifIs { <> eq(rules, []) }
+    ifIs { eq(rules, []) }
         { return empty };
 
     ## Trivial case: One rule. Return that rule directly.
-    ifIs { <> eq(get_size(rules), 1) }
+    ifIs { eq(get_size(rules), 1) }
         { return rules* };
 
     ## The general case.
@@ -349,11 +349,11 @@ export fn makeThunk(function) {
 ## Documented in spec.
 export fn makeString(string) {
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
-    ifIs { <> eq(string, "") }
+    ifIs { eq(string, "") }
         { return @PegResult(@"") };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
-    ifIs { <> eq(get_size(string), 1) }
+    ifIs { eq(get_size(string), 1) }
         { return makeToken(@@(string)) };
 
     ## This is implemented as, in effect, `(@"1" @"2" ... { <> string })`,
@@ -392,7 +392,7 @@ export fn makeTokenSetComplement(tokens*) {
 ## Documented in spec.
 export fn apply(rule, input) {
     def box = makePromise();
-    def generator = ifIs { <> hasType(input, String) }
+    def generator = ifIs { hasType(input, String) }
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.
@@ -400,7 +400,7 @@ export fn apply(rule, input) {
         }
         { <> input };
 
-    <> ifIs { <> parse(rule, box, generator) }
+    <> ifIs { parse(rule, box, generator) }
         { <> fetch(box) }
 };
 

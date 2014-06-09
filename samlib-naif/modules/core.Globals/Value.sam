@@ -21,7 +21,7 @@ export fn ge(value, other) {
 
 ## Documented in spec.
 export fn gt(value, other) {
-    <> ifIs { <> eq(order(value, other), 1) }
+    <> ifIs { eq(order(value, other), 1) }
         { <> value }
 };
 
@@ -33,7 +33,7 @@ export fn le(value, other) {
 
 ## Documented in spec.
 export fn lt(value, other) {
-    <> ifIs { <> eq(order(value, other), -1) }
+    <> ifIs { eq(order(value, other), -1) }
         { <> value }
 };
 
@@ -51,7 +51,7 @@ export fn perGe(value, other) {
 
 ## Documented in spec.
 export fn perGt(value, other) {
-    <> ifIs { <> eq(perOrder(value, other), 1) }
+    <> ifIs { eq(perOrder(value, other), 1) }
         { <> value }
 };
 
@@ -63,7 +63,7 @@ export fn perLe(value, other) {
 
 ## Documented in spec.
 export fn perLt(value, other) {
-    <> ifIs { <> eq(perOrder(value, other), -1) }
+    <> ifIs { eq(perOrder(value, other), -1) }
         { <> value }
 };
 
@@ -81,7 +81,7 @@ export fn totalGe(value, other) {
 
 ## Documented in spec.
 export fn totalGt(value, other) {
-    <> ifIs { <> eq(totalOrder(value, other), 1) }
+    <> ifIs { eq(totalOrder(value, other), 1) }
         { <> value }
 };
 
@@ -93,7 +93,7 @@ export fn totalLe(value, other) {
 
 ## Documented in spec.
 export fn totalLt(value, other) {
-    <> ifIs { <> eq(totalOrder(value, other), -1) }
+    <> ifIs { eq(totalOrder(value, other), -1) }
         { <> value }
 };
 

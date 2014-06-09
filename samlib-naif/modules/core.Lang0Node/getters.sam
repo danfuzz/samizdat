@@ -30,7 +30,7 @@ fn splitAtChar(s, ch) {
     ## This uses `collect` just for the filter function, ignoring the
     ## collected result.
     collect(s, { one ->
-        ifIs { <> eq(one, ch) }
+        ifIs { eq(one, ch) }
             { addCurrentToResult() }
             { current := cat(current, one) }
     });

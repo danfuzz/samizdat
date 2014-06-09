@@ -50,7 +50,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
     ifNot { <> hasType(size, Int) }
         { die("`size` must be an int.") };
 
-    <> ifIs { <> gt(size, 0) }
+    <> ifIs { gt(size, 0) }
         {
             <> @ClosedRange{firstValue, increment, size}
         }
@@ -66,9 +66,9 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     def increment = ifValueOr { <> optIncrement* } { <> 1 };
 
     ## `totalEq` ensures that `increment` is an int.
-    ifIs { <> totalEq(increment, 0) }
+    ifIs { totalEq(increment, 0) }
         {
-            return ifIs { <> isEmpty* }
+            return ifIs { isEmpty* }
                 { <> nullGenerator }
                 { <> makeClosedRange(firstValue, 1, 0) }
         };
@@ -84,7 +84,7 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
                     sign(increment)),
                 increment));
 
-    ifIs { <> le(size, 0) }
+    ifIs { le(size, 0) }
         { return nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);
@@ -98,7 +98,7 @@ export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
     totalEq(firstValue, limit);
 
     ## `totalEq` ensures that `increment` is an int.
-    ifIs { <> totalEq(increment, 0) }
+    ifIs { totalEq(increment, 0) }
         { return makeClosedRange(firstValue, 1, 0) };
 
     def firstInt = toInt(firstValue);
@@ -108,7 +108,7 @@ export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
             sub(limitInt, firstInt),
             increment));
 
-    ifIs { <> le(size, 0) }
+    ifIs { le(size, 0) }
         { return nullGenerator };
 
     <> makeClosedRange(firstValue, size, increment);

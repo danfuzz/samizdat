@@ -21,9 +21,9 @@ import ./NullGenerator;
 
 ## Documented in spec.
 export fn makeRepeatGenerator(size, optValue?) {
-    ifIs { <> perLe(size, 0) }
+    ifIs { perLe(size, 0) }
         {
-            ifIs { <> perLt(size, 0) }
+            ifIs { perLt(size, 0) }
                 { die("Invalid negative size for RepeatGenerator.") };
             return $NullGenerator::nullGenerator
         };
@@ -42,7 +42,7 @@ fn @@RepeatGenerator.collect(optFilterFunction?) {
 fn @@RepeatGenerator.nextValue(box) {
     def size = this::size;
 
-    <> ifIs { <> perGt(size, 0) }
+    <> ifIs { perGt(size, 0) }
         {
             def value = this::value;
             store(box, value);

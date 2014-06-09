@@ -15,7 +15,7 @@
 
 ## Prints box info.
 fn msg(box) {
-    def storeStr = ifIs { <> canStore(box) }
+    def storeStr = ifIs { canStore(box) }
         { <> "can-store : " }
         { <> "no-store  : " };
 

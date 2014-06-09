@@ -85,7 +85,7 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
 msgAll("FilterGenerator (square even numbers)",
     $Generator::makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
-            <> ifIs { <> eq($Number::mod(value, 2), 0) }
+            <> ifIs { eq($Number::mod(value, 2), 0) }
                 { <> $Number::mul(value, value) }
         });
 

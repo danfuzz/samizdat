@@ -45,21 +45,21 @@ note(v3);
 def v4 = maybeValue { <> ifValue { <> } { value -> die("No."); } };
 note($Format::source(v4));
 
-def v5 = ifIs { <> "Yes." }
+def v5 = ifIs { "Yes." }
     { <> "Yes: v5" };
 note(v5);
 
-def v6 = ifIs { <> "Yes." }
+def v6 = ifIs { "Yes." }
     { <> "Yes: v6" }
     { die("No.") };
 note(v6);
 
-def v7 = ifIs { <> }
+def v7 = ifIs { }
     { die("No.") }
     { <> "Yes: v7" };
 note(v7);
 
-def v8 = maybeValue { <> ifIs { <> } { die("No.") } };
+def v8 = maybeValue { <> ifIs { } { die("No.") } };
 note($Format::source(v8));
 
 def v9 = maybeValue { <> ifNot { <> "Yes." } { die("No.") } };

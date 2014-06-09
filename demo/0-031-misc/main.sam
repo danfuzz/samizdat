@@ -39,7 +39,7 @@ fn process(value) {
 export fn main(selfPath, name?, rest*) {
     ## Be welcoming.
 
-    ifIs { <> eq(name, ["danfuzz"]) }
+    ifIs { eq(name, ["danfuzz"]) }
         { note("Hello, Danfuzz!\n") }
         { note("Hello, Самиздат!\n") };
 

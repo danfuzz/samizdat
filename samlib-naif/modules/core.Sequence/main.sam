@@ -32,15 +32,15 @@ export fn nthFromEnd(seq, n) {
 ## Documented in spec.
 export fn sliceGeneral(seq, style, start, optEnd?) {
     def limit = $Number::sub(get_size(seq), 1);
-    def func = ifIs { <> eq(style, @exclusive) }
+    def func = ifIs { eq(style, @exclusive) }
         { <> sliceExclusive }
         { <> sliceInclusive };
-    def startIndex = ifIs { <> hasType(start, @@fromStart) }
+    def startIndex = ifIs { hasType(start, @@fromStart) }
         { <> dataOf(start) }
         { <> $Number::sub(limit, dataOf(start)) };
     def optEndIndex = (ifValue { <> optEnd* }
         { end ->
-            <> ifIs { <> hasType(end, @@fromStart) }
+            <> ifIs { hasType(end, @@fromStart) }
                 { <> dataOf(end) }
                 { <> $Number::sub(limit, dataOf(end)) }
         })?;

@@ -22,12 +22,12 @@ import ./NullGenerator;
 ## Documented in spec.
 export fn makeSerialGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
-    ifIs { <> eq(generators, []) }
+    ifIs { eq(generators, []) }
         { return $NullGenerator::nullGenerator };
 
     ## Return the argument directly if we were only passed one.
     ## This saves some gratuitous call wrapping / double yields.
-    ifIs { <> eq(get_size(generators), 1) }
+    ifIs { eq(get_size(generators), 1) }
         { return generators* };
 
     <> @SerialGenerator(generators)

@@ -26,7 +26,7 @@ import $Stuff2 = app.Stuff;
 import @utf8 ./resource.txt;
 
 ## Check modules.
-ifIs { <> ne($Stuff, $Stuff2) }
+ifIs { ne($Stuff, $Stuff2) }
     { die("Different modules!") };
 
 export fn main(selfPath, .*) {

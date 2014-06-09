@@ -151,7 +151,7 @@ def parIdentifierString = {:
             {
                 def type = get_typeName(token);
                 def firstCh = nth(type, 0);
-                <> ifIs { <> get(LOWER_ALPHA, firstCh) }
+                <> ifIs { get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
     }
@@ -174,14 +174,14 @@ def parMapping = {:
     value = parExpression
 
     {
-        <> ifIs { <> eq(keys, []) }
+        <> ifIs { eq(keys, []) }
             { /out ->
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
                 ifValue { <> get_interpolate(value) }
                     { interp -> yield /out interp };
-                ifIs { <> hasType(value, @@varRef) }
+                ifIs { hasType(value, @@varRef) }
                     {
                         yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
@@ -203,7 +203,7 @@ def parMap = {:
         one = parMapping
         rest = (@"," parMapping)*
         {
-            <> ifIs { <> eq(rest, []) }
+            <> ifIs { eq(rest, []) }
                 { <> one }
                 { <> makeCall(REFS::cat, one, rest*) }
         }
@@ -246,7 +246,7 @@ def parList = {:
     expressions = parUnadornedList
     @"]"
     {
-        <> ifIs { <> eq(expressions, []) }
+        <> ifIs { eq(expressions, []) }
             { <> makeLiteral([]) }
             { <> makeCallOrApply(REFS::makeList, expressions*) }
     }
@@ -261,7 +261,7 @@ def parType = {:
     name = (parIdentifierString | parParenExpression)
 
     {
-        <> ifIs { <> hasType(name, @@literal) }
+        <> ifIs { hasType(name, @@literal) }
             { <> makeLiteral(@@(get_nodeValue(name))) }
             { <> makeCall(REFS::makeDerivedDataType, name) }
     }
@@ -321,7 +321,7 @@ def parNullaryClosure = {:
 
     {
         def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
+        ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
         <> c
     }
@@ -334,7 +334,7 @@ def parBasicNullaryClosure = {:
 
     {
         def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
+        ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
         <> c
     }
@@ -471,13 +471,13 @@ def parYieldOrNonlocal = {:
     ## operator. Otherwise, it's optional.
     value = (
         v = parExpression
-        { <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v } }
+        { <> ifIs { optQuest* } { <> makeMaybe(v) } { <> v } }
     |
         { <> ifNot { <> optQuest* } { <> @void } }
     )
 
     {
-        <> ifIs { <> eq(name, @yield) }
+        <> ifIs { eq(name, @yield) }
             { <> value }
             { <> makeNonlocalExit(name, value) }
     }
@@ -679,7 +679,7 @@ def parGenericDef = {:
 
     {
         def fullFormals = [{}, formals*]; ## First one is `this`.
-        def func = ifIs { <> eq(optStar, []) }
+        def func = ifIs { eq(optStar, []) }
             { <> REFS::makeRegularGeneric }
             { <> REFS::makeUnitypeGeneric };
         def call = makeCall(
@@ -785,7 +785,7 @@ def parImportStatement = {:
 
     {
         def data = {nameOrPrefix*, format*, select*, source};
-        <> ifIs { <> optExport* }
+        <> ifIs { optExport* }
             { <> makeExport(makeImport(data)) }
             { <> makeImport(data) }
     }
@@ -986,8 +986,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, get_size(startChar)) } { yield /out };
-            ifIs { <> ne(1, get_size(endChar)) } { yield /out };
+            ifIs { ne(1, get_size(startChar)) } { yield /out };
+            ifIs { ne(1, get_size(endChar)) } { yield /out };
 
             <> cat($Range::makeInclusiveRange(startChar, endChar)*)
         }

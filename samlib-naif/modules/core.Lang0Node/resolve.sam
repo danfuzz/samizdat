@@ -32,9 +32,9 @@ fn resolveAndCheck(resolveFn, source) {
 ## intentionally more verbose than the equivalent (internal) function
 ## in `core.ModuleSystem`.
 fn sourceString(source) {
-    ifIs { <> hasType(source, @@internal) }
+    ifIs { hasType(source, @@internal) }
         { return cat("internal ./", dataOf(source)) };
-    ifIs { <> hasType(source, @@external) }
+    ifIs { hasType(source, @@external) }
         { return cat("external ", dataOf(source)) };
 
     <> cat("weird source ", $Format::source(source))
@@ -103,7 +103,7 @@ export fn withResolvedImports(node, resolveFn) {
     def converted = $Generator::filterAll(rawStatements) { s /out ->
         var exported = false;
         var defNode = s;
-        ifIs { <> hasType(s, @@export) }
+        ifIs { hasType(s, @@export) }
             {
                 exported := true;
                 defNode := get_nodeValue(s)
@@ -120,7 +120,7 @@ export fn withResolvedImports(node, resolveFn) {
 
         def resolved = resolveImport(defNode, resolveFn);
 
-        <> ifIs { <> eq(exported, true) }
+        <> ifIs { eq(exported, true) }
             { <> makeExport(resolved) }
             { <> resolved }
     };

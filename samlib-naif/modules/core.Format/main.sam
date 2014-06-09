@@ -31,7 +31,7 @@ fn intBody(value, base) {
     var v = value;
 
     loop {
-        ifIs { <> perEq(v, 0) }
+        ifIs { perEq(v, 0) }
             { return text };
 
         def digit = nth(DIGIT_CHARS, $Number::mod(v, base));
@@ -63,7 +63,7 @@ fn .sourceGeneral(adorn);
 
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    <> ifIs { <> totalEq(adorn, true) }
+    <> ifIs { totalEq(adorn, true) }
         { <> cat(before, value, after) }
         { <> value }
 };
@@ -73,7 +73,7 @@ fn adornIf(adorn, before, value, after) {
 ## removes that prefix from the first element. As a special case, this returns
 ## `""` if given `[]` for `elems`.
 fn collectionBody(elems) {
-    ifIs { <> totalEq(elems, []) }
+    ifIs { totalEq(elems, []) }
         { return "" };
 
     def one = $Sequence::sliceInclusive(get(elems, 0), 2);
@@ -113,7 +113,7 @@ fn isIdentifier(string) {
     ifNot { <> hasType(string, String) }
         { return };
 
-    ifIs { <> eq(string, "") }
+    ifIs { eq(string, "") }
         { return };
 
     ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
@@ -129,7 +129,7 @@ fn isIdentifier(string) {
 
 ## Stringifies a key (or derived value name).
 fn keyString(key) {
-    ifIs { <> isIdentifier(key) }
+    ifIs { isIdentifier(key) }
         { return key };
 
     ifValue { <> get(SPECIAL_VALUES, key) }
@@ -175,18 +175,18 @@ fn hexStringChar(ch) {
 fn stringChar(ch) {
     ifValue { <> get(SPECIAL_CHARS, ch) }
         { special ->
-            ifIs { <> eq(special, "x") }
+            ifIs { eq(special, "x") }
                 { return hexStringChar(ch) }
                 { return special }
         };
 
-    ifIs { <> lt(ch, CHAR_SURROGATE_START) }
+    ifIs { lt(ch, CHAR_SURROGATE_START) }
         { return ch };
 
-    ifIs { <> le(ch, CHAR_SURROGATE_END) }
+    ifIs { le(ch, CHAR_SURROGATE_END) }
         { return hexStringChar(ch) };
 
-    <> ifIs { <> le(ch, CHAR_UNICODE_END) }
+    <> ifIs { le(ch, CHAR_UNICODE_END) }
         { <> ch }
         { <> hexStringChar(ch) }
 };
@@ -233,7 +233,7 @@ fn Type.sourceGeneral(adorn) {
     ifNot { <> eq(typeParent(this), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
-    def body = ifIs { <> hasType(name, String) }
+    def body = ifIs { hasType(name, String) }
         {
             <> ifValueOr { <> isIdentifier(name) }
                 { <> sourceGeneral(name, true) }
@@ -250,7 +250,7 @@ fn Value.sourceGeneral(adorn) {
 
     def type = get_type(this);
     def name = typeName(type);
-    def typeStr = ifIs { <> hasType(name, String) }
+    def typeStr = ifIs { hasType(name, String) }
         {
             ## The type is a string.
             <> ifValueOr { <> isIdentifier(name) }
@@ -277,9 +277,9 @@ fn Value.sourceGeneral(adorn) {
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
             def dataStr = sourceGeneral(data, true);
-            ifIs { <> hasType(data, List) }
+            ifIs { hasType(data, List) }
                 { return cat(prefix, dataStr) };
-            ifIs { <> hasType(data, Map) }
+            ifIs { hasType(data, Map) }
                 { return cat(prefix, dataStr) };
             return cat(prefix, "(", dataStr, ")")
         }
@@ -324,10 +324,10 @@ fn Value.humanString() {
 export fn int(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
-    ifIs { <> lt(base, 2) }
+    ifIs { lt(base, 2) }
         { die("Invalid base for int.") };
 
-    ifIs { <> gt(base, 36) }
+    ifIs { gt(base, 36) }
         { die("Invalid base for int.") };
 
     <> intWithBase(value, base)
