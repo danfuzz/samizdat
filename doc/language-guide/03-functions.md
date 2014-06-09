@@ -146,9 +146,6 @@ evaluate to a value, then the base yield operator can be followed by a
 question mark (`?`). This indicates that the expression is allowed to
 evaluate to void, and if it does, for the closure itself to yield void.
 
-TODO: All yields are treated as maybe-yields right now, regardless of the
-presence or absence of a `?`.
-
 #### Default yield
 
 In many (but not all) cases, an unmarked expression at the end of a
