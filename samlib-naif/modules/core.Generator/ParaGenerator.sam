@@ -30,13 +30,13 @@ export fn makeParaGenerator(generators*) {
     ifIs { eq(get_size(generators), 1) }
         { return $ListWrapGenerator::makeListWrapGenerator(generators*) };
 
-    <> @ParaGenerator(generators)
+    return @ParaGenerator(generators)
 };
 
 ## Documented in spec.
 fn @@ParaGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
@@ -50,8 +50,8 @@ fn @@ParaGenerator.nextValue(box) {
         subGens,
         { gen ->
             def innerBox = $Box::makePromise();
-            <> ifValue { nextValue(gen, innerBox) }
-                { nextGenerator <> [fetch(innerBox), nextGenerator] }
+            ifValue { nextValue(gen, innerBox) }
+                { nextGenerator -> [fetch(innerBox), nextGenerator] }
                 {
                     ## One of the sub-generators became voided.
                     store(box);
@@ -60,10 +60,10 @@ fn @@ParaGenerator.nextValue(box) {
         });
 
     def yields = collect(generatorCalls,
-        { one <> nth(one, 0) });
+        { one -> nth(one, 0) });
     def nexts = collect(generatorCalls,
-        { one <> nth(one, 1) });
+        { one -> nth(one, 1) });
 
     store(box, yields);
-    <> @ParaGenerator(nexts)
+    return @ParaGenerator(nexts)
 };

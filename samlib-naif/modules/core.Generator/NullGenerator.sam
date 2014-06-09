@@ -15,7 +15,7 @@
 
 ## Documented in spec.
 fn @@NullGenerator.collect(optFilterFunction?) {
-    <> []
+    return []
 };
 
 ## Documented in spec.

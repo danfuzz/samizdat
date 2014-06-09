@@ -40,23 +40,22 @@ export def stdCollect = Generator_stdCollect;
 ## Documented in spec.
 export fn collectAsMap(generator) {
     ## Avoid pointless map->generator->map conversion.
-    ifIs { hasType(generator, Map) }
-        { return generator };
-
-    <> cat({}, generator*)
+    return ifIs { hasType(generator, Map) }
+        { generator }
+        { cat({}, generator*) }
 };
 
 ## Documented in spec.
 export fn filterAll(filterFunction, generators*) {
-    <> ifIs { eq(get_size(generators), 1) }
+    return ifIs { eq(get_size(generators), 1) }
         {
             ## We are filtering a single generator, so just use the
             ## special-case (and often more efficient) `collect`.
-            <> collect(generators*, filterFunction)
+            collect(generators*, filterFunction)
         }
         {
             ## The general case.
-            <> collect(makeFilterGenerator(filterFunction, generators*))
+            collect(makeFilterGenerator(filterFunction, generators*))
         }
 };
 

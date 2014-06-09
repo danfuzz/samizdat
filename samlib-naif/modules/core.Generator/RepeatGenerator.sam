@@ -29,24 +29,24 @@ export fn makeRepeatGenerator(size, optValue?) {
         };
 
     def value = ifValueOr { optValue* } { <> null };
-    <> @RepeatGenerator{size, value}
+    return @RepeatGenerator{size, value}
 };
 
 ## Documented in spec.
 fn @@RepeatGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
 fn @@RepeatGenerator.nextValue(box) {
     def size = this::size;
 
-    <> ifIs { perGt(size, 0) }
+    return? ifIs { perGt(size, 0) }
         {
             def value = this::value;
             store(box, value);
-            <> makeRepeatGenerator($Number::sub(size, 1), value)
+            makeRepeatGenerator($Number::sub(size, 1), value)
         }
         {
             ## Size is `0` or negative.

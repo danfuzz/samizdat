@@ -30,34 +30,32 @@ export fn makeSerialGenerator(generators*) {
     ifIs { eq(get_size(generators), 1) }
         { return generators* };
 
-    <> @SerialGenerator(generators)
+    return @SerialGenerator(generators)
 };
 
 ## Documented in spec.
 fn @@SerialGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
 fn @@SerialGenerator.nextValue(box) {
     def subGens = dataOf(this);
 
-    <> ifValue { get(subGens, 0) }
+    return? ifValue { get(subGens, 0) }
         { firstGen ->
             def moreGens = $Sequence::sliceInclusive(subGens, 1);
             def innerBox = $Box::makePromise();
 
-            <> ifValue { nextValue(firstGen, innerBox) }
+            ifValue { nextValue(firstGen, innerBox) }
                 { nextGenerator ->
                     store(box, fetch(innerBox));
-                    <> @SerialGenerator[nextGenerator, moreGens*]
+                    @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
                     ## First generator was voided.
-                    <> nextValue(
-                        makeSerialGenerator(moreGens*),
-                        box)
+                    nextValue(makeSerialGenerator(moreGens*), box)
                 }
         }
         {
