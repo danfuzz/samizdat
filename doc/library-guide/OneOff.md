@@ -17,7 +17,7 @@ Note that some of these are also used as part of larger protocols, e.g.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `cat(value, more*) <> value`
+#### `cat(value, more*) -> value`
 
 Returns the concatenation of all of the given values. The values
 must all be of the same type, and the result is expected to be of the same
@@ -42,7 +42,7 @@ a first argument of the empty value of the desired type, e.g.
 **Note:** The argument type restriction is enforced by the generic function
 itself, which is a "unitype" generic.
 
-#### `get(value, key) <> . | void`
+#### `get(value, key) -> . | void`
 
 Returns the constituent element of the value that corresponds to the given
 `key`. `key` is an arbitrary value. Returns void if there is no unique
@@ -52,7 +52,7 @@ bound in `value` at all).
 This function is intended for "collection-like" values which have constituent
 parts of some sort.
 
-#### `get_key(value) <> .`
+#### `get_key(value) -> .`
 
 Some values have an associated "key" or "key-like" value.
 This generic provides access to that key. This generic often goes
@@ -61,7 +61,7 @@ hand-in-hand with `get_value`.
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error if it is bound but inapplicable.
 
-#### `get_size(value) <> int`
+#### `get_size(value) -> int`
 
 Returns the number of elements in the given value. This function is intended
 for "collection-like" values which have constituent parts of some sort.
@@ -69,7 +69,7 @@ for "collection-like" values which have constituent parts of some sort.
 **Syntax Note:** This is the function underlying the `#value` syntactic
 form (prefix `#` operator).
 
-#### `nth(value, n) <> . | void`
+#### `nth(value, n) -> . | void`
 
 Returns the nth (zero-based) element of the given value.
 Returns void if `n < 0` or `n >= #value`. It is an error
@@ -78,7 +78,7 @@ Returns void if `n < 0` or `n >= #value`. It is an error
 This function is intended for "sequence-like" values which have
 strongly-ordered constituent parts of some sort.
 
-#### `toInt(value) <> int`
+#### `toInt(value) -> int`
 
 Some values have an obvious correspondence to an integer quantity. If
 so, then this generic can be used to access it.
@@ -88,14 +88,14 @@ it is preferable to cause an error.
 
 It is also discouraged to use this generic for lossy conversion.
 
-#### `toNumber(value) <> number`
+#### `toNumber(value) -> number`
 
 Some values have an obvious correspondence to a numeric quantity. If
 so, then this generic can be used to access it. It is discouraged to
 bind this to a function that sometimes returns void; it is preferable
 to cause an error.
 
-#### `toString(value) <> string`
+#### `toString(value) -> string`
 
 Some values have an obvious correspondence to a string value. If
 so, then this generic can be used to access it.
@@ -106,7 +106,7 @@ it is preferable to cause an error.
 It is discouraged to use this generic for textual conversion of a value
 to a string (e.g. turning the int value 242 into the string `"242"`).
 
-#### `get_value(value) <> .`
+#### `get_value(value) -> .`
 
 Some values have an associated "sub-value" or "inner value."
 This generic provides access to that value. This generic often goes

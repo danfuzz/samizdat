@@ -1,7 +1,7 @@
 Y Combinator and Friends
 ========================
 
-#### `yCombinator(function) <> function`
+#### `yCombinator(function) -> function`
 
 The Y combinator, in a form suitable for use in Samizdat Layer 0 when
 defining self-recursive functions.
@@ -66,7 +66,7 @@ U = λx.x x
 Y_sam = λf . U (λs . (λa . (f (U s)) a))
 ```
 
-#### `yStarCombinator(functions*) <> [functions*]`
+#### `yStarCombinator(functions*) -> [functions*]`
 
 The Y* combinator, in a form suitable for use in Samizdat Layer 0 when
 defining sets of mutually-recursive functions.

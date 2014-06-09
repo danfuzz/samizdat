@@ -7,19 +7,19 @@ Int
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(int, other) <> int | void`
+#### `perEq(int, other) -> int | void`
 
 Calls `totalEq`.
 
-#### `perOrder(int, other) <> int`
+#### `perOrder(int, other) -> int`
 
 Calls `totalOrder`.
 
-#### `totalEq(int1, int2) <> int | void`
+#### `totalEq(int1, int2) -> int | void`
 
 Compares the integer values of two ints.
 
-#### `totalOrder(int1, int2) <> int`
+#### `totalOrder(int1, int2) -> int`
 
 Compares the integer values of two ints, ordering by value in the usual
 manner.
@@ -28,15 +28,15 @@ manner.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `toInt(int) <> int`
+#### `toInt(int) -> int`
 
 Returns the given argument.
 
-#### `toNumber(int) <> int`
+#### `toNumber(int) -> int`
 
 Returns the given argument.
 
-#### `toString(int) <> string`
+#### `toString(int) -> string`
 
 Returns a single-character string whose code point is the
 value is as given. If the value is out of the range of a 32-bit
@@ -46,33 +46,33 @@ unsigned integer, this terminates the runtime with an error.
 <br><br>
 ### Generic Function Definitions: `Bitwise` protocol
 
-#### `and(int1, int2) <> int`
+#### `and(int1, int2) -> int`
 
 Straightforward protocol implementation.
 
-#### `bit(int1, int2) <> int`
+#### `bit(int1, int2) -> int`
 
 Straightforward protocol implementation.
 
 **Note**: Bits at or beyond `bitSize(int1)` are considered to be the
 same as `bit(int1, bitSize(int1) - 1)`.
 
-#### `bitSize(bitwise) <> int`
+#### `bitSize(bitwise) -> int`
 
 Straightforward protocol implementation.
 
 **Note:** The minimum size of an int is `1`, which is the size of
 both `0` and `-1`.
 
-#### `not(bitwise) <> bitwise`
+#### `not(bitwise) -> bitwise`
 
 Straightforward protocol implementation.
 
-#### `or(bitwise1, bitwise2) <> bitwise`
+#### `or(bitwise1, bitwise2) -> bitwise`
 
 Straightforward protocol implementation.
 
-#### `shl(bitwise, int) <> bitwise`
+#### `shl(bitwise, int) -> bitwise`
 
 Straightforward protocol implementation.
 
@@ -82,7 +82,7 @@ in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
 non-negative ints.
 
-#### `xor(bitwise1, bitwise2) <> bitwise`
+#### `xor(bitwise1, bitwise2) -> bitwise`
 
 Straightforward protocol implementation.
 
@@ -90,29 +90,29 @@ Straightforward protocol implementation.
 <br><br>
 ### Generic Function Definitions: `Number` protocol
 
-#### `abs(int) <> int`
+#### `abs(int) -> int`
 
 Straightforward protocol implementation.
 
-#### `add(int1, int2) <> int`
+#### `add(int1, int2) -> int`
 
 Straightforward protocol implementation.
 
-#### `div(int1, int2) <> int`
+#### `div(int1, int2) -> int`
 
 Straightforward protocol implementation, using truncated division.
 
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the type.
 
-#### `divEu(int1, int2) <> int`
+#### `divEu(int1, int2) -> int`
 
 Straightforward protocol implementation, using truncated Euclidean division.
 
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the type.
 
-#### `mod(int1, int2) <> int`
+#### `mod(int1, int2) -> int`
 
 Straightforward protocol implementation. The truncated modulo operation
 `x % y` can be defined in terms of truncated division as `x - (x / y) * y`.
@@ -120,7 +120,7 @@ Straightforward protocol implementation. The truncated modulo operation
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the type.
 
-#### `modEu(int1, int2) <> int`
+#### `modEu(int1, int2) -> int`
 
 Straightforward protocol implementation. The truncated Euclidean modulo
 operation `x %% y` can be defined in terms of truncated Euclidean division
@@ -129,19 +129,19 @@ as `x - (x // y) * y`.
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the type.
 
-#### `mul(int1, int2) <> int`
+#### `mul(int1, int2) -> int`
 
 Straightforward protocol implementation.
 
-#### `neg(int) <> int`
+#### `neg(int) -> int`
 
 Straightforward protocol implementation.
 
-#### `sign(int) <> int`
+#### `sign(int) -> int`
 
 Straightforward protocol implementation.
 
-#### `sub(int1, int2) <> number`
+#### `sub(int1, int2) -> number`
 
 Straightforward protocol implementation.
 

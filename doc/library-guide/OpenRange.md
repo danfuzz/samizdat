@@ -11,11 +11,11 @@ either numeric or character values.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(range) <> list`
+#### `collect(range) -> list`
 
 Reports a fatal error, as `OpenRange` values are unbounded generators.
 
-#### `nextValue(range, box) <> range | void`
+#### `nextValue(range, box) -> range | void`
 
 Yields the first element of the range, and returns a range representing
 the remaining elements.
@@ -30,7 +30,7 @@ the remaining elements.
 <br><br>
 ### In-Language Definitions: `Range` module
 
-#### `makeOpenRange(firstValue, optIncrement?) <> range`
+#### `makeOpenRange(firstValue, optIncrement?) -> range`
 
 Creates an open (never voided) range generator for numbers or single-character
 strings. `firstValue` must be either a number or a single-character string.

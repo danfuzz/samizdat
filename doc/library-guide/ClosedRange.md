@@ -11,11 +11,11 @@ character values, with a finite size.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(range) <> list`
+#### `collect(range) -> list`
 
 Returns all the elements of the range as a list.
 
-#### `nextValue(range, box) <> range | void`
+#### `nextValue(range, box) -> range | void`
 
 Yields the first element of the range, and returns either a range representing
 the remaining elements (if there are any) or `nullGenerator` if there are
@@ -34,7 +34,7 @@ return void, but with normal usage, this never happens.
 <br><br>
 ### In-Language Definitions: `Range` module
 
-#### `makeClosedRange(firstValue, size, optIncrement?) <> range | nullGenerator`
+#### `makeClosedRange(firstValue, size, optIncrement?) -> range | nullGenerator`
 
 Creates a closed range. `firstValue` must be either a number or
 a single-character string. `size` must be a non-negative int.
@@ -43,7 +43,7 @@ a single-character string. `size` must be a non-negative int.
 If `size` is positive, this returns a `ClosedRange`. Otherwise
 (`size` is `0`), this returns `nullGenerator`.
 
-#### `makeExclusiveRange(firstValue, limit, optIncrement?) <> range`
+#### `makeExclusiveRange(firstValue, limit, optIncrement?) -> range`
 
 End-exclusive range generator for int or single-character strings.
 This is a convenient wrapper for `makeClosedRange`.
@@ -67,7 +67,7 @@ Special cases:
 **Syntax Note:** Used in the translation of `(expression..!expression)`
 forms.
 
-#### `makeInclusiveRange(firstValue, limit, optIncrement?) <> range`
+#### `makeInclusiveRange(firstValue, limit, optIncrement?) -> range`
 
 End-inclusive range generator for int or single-character strings.
 This is a convenient wrapper for `makeClosedRange`.

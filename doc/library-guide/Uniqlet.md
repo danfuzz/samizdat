@@ -7,20 +7,20 @@ Uniqlet
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(uniqlet, other) <> uniqlet | void`
+#### `perEq(uniqlet, other) -> uniqlet | void`
 
 Calls `totalEq`.
 
-#### `perOrder(uniqlet, other) <> int`
+#### `perOrder(uniqlet, other) -> int`
 
 Calls `totalOrder`.
 
-#### `totalEq(uniqlet1, uniqlet2) <> uniqlet | void`
+#### `totalEq(uniqlet1, uniqlet2) -> uniqlet | void`
 
 Performs an identity comparison. Two uniqlets are only equal if they are
 truly the same box.
 
-#### `totalOrder(uniqlet1, uniqlet2) <> int`
+#### `totalOrder(uniqlet1, uniqlet2) -> int`
 
 Performs an identity comparison. Uniqlets have a consistent, transitive, and
 symmetric &mdash; but arbitrary &mdash; total order.
@@ -29,7 +29,7 @@ symmetric &mdash; but arbitrary &mdash; total order.
 <br><br>
 ### Primitive Definitions
 
-#### `makeUniqlet() <> uniqlet`
+#### `makeUniqlet() -> uniqlet`
 
 Returns a uniqlet that has never before been returned from this
 function (nor from any other uniqlet-producing source, should such a

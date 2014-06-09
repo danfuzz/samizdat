@@ -23,7 +23,7 @@ global variable environment.
 <br><br>
 ### In-Language Definitions
 
-#### `parseArgs(args) <> map`
+#### `parseArgs(args) -> map`
 
 Simple argument parser. This accepts a list of strings, taken to be
 command-line arguments, and parses them into options and other arguments,
@@ -38,7 +38,7 @@ not an option.
 
 **Note:** This function rejects options that start with only a single dash.
 
-#### `runCommandLine(args*) <> . | void`
+#### `runCommandLine(args*) -> . | void`
 
 Command-line evaluator. This implements standardized top-level command-line
 parsing and evaluation. `args` are arbitrary arguments, which are parsed as

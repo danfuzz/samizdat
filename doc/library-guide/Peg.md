@@ -169,7 +169,7 @@ Otherwise fails, yielding and returning void.
 <br><br>
 ### Generic Function Definitions: `Parser` protocol
 
-#### `parse(box, input, items*) <> newInput`
+#### `parse(box, input, items*) -> newInput`
 
 Performs a parse of `input` (a generator) with the trailing sequence
 context of `[items*]`. If parsing is successful, stores into `box` the
@@ -187,7 +187,7 @@ into `box` and returns void.
 <br><br>
 ### In-Language Definitions
 
-#### `apply(rule, input) <> . | void`
+#### `apply(rule, input) -> . | void`
 
 Applies a parser rule to the given input, yielding whatever result the
 rule yields on the input.
@@ -196,7 +196,7 @@ rule yields on the input.
 If it is a string, this function automatically treats it as a generator of
 character-as-token values.
 
-#### `makeCharSet(strings*) <> rule`
+#### `makeCharSet(strings*) -> rule`
 
 Makes and returns a parser rule which matches any character of any of
 the given strings, consuming it upon success. Each argument must be
@@ -210,7 +210,7 @@ which).
 
 This is equivalent to the syntactic form `{: ["string1" "string2" "etc"] :}`.
 
-#### `makeCharSetComplement(string*) <> rule`
+#### `makeCharSetComplement(string*) -> rule`
 
 Makes and returns a parser rule which matches any character *except*
 one found in any of the given strings, consuming it upon success.
@@ -225,7 +225,7 @@ it is merely a convenient wrapper for a call to `makeTokenSetComplement`
 This is equivalent to the syntactic form
 `{: [! "string1" "string2" "etc."] :}`.
 
-#### `makeChoice(rules*) <> rule`
+#### `makeChoice(rules*) -> rule`
 
 Makes and returns a parser rule which performs an ordered choice amongst
 the given rules. Upon success, it passes back the yield and replacement
@@ -233,7 +233,7 @@ state of whichever alternate rule succeeded.
 
 This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
 
-#### `makeCode(function) <> rule`
+#### `makeCode(function) -> rule`
 
 Makes and returns a parser rule which runs the given function. `function`
 must be a function. When called, it is passed as arguments all the
@@ -244,7 +244,7 @@ input.
 
 This is equivalent to the syntactic form `{: ... { arg1 arg2 etc -> code } :}`.
 
-#### `makeLookaheadFailure(rule) <> rule`
+#### `makeLookaheadFailure(rule) -> rule`
 
 Makes and returns a parser rule which runs a given other rule, suppressing
 its usual yield and state update behavior. Instead, if the other rule
@@ -253,7 +253,7 @@ yielding `null` and consuming no input.
 
 This is equivalent to the syntactic form `{: !rule :}`.
 
-#### `makeLookaheadSuccess(rule) <> rule`
+#### `makeLookaheadSuccess(rule) -> rule`
 
 Makes and returns a parser rule which runs a given other rule, suppressing
 its usual state update behavior. Instead, if the other rule succeeds, this
@@ -261,7 +261,7 @@ rule also succeeds, yielding the same value but *not* consuming any input.
 
 This is equivalent to the syntactic form `{: &rule :}`.
 
-#### `makeMainChoice(rules*) <> rule`
+#### `makeMainChoice(rules*) -> rule`
 
 Makes and returns a parser rule which tries the given rules in order until
 one succeeds. This is identical to `makeChoice` (see which), except that
@@ -269,7 +269,7 @@ it provides a fresh (empty) parsed item scope.
 
 This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
 
-#### `makeMainSequence(rules*) <> rule`
+#### `makeMainSequence(rules*) -> rule`
 
 Makes and returns a parser rule which runs a sequence of given other rules
 (in order). This is identical to `makeSequence` (see which), except that
@@ -277,7 +277,7 @@ it provides a fresh (empty) parsed item scope.
 
 This is equivalent to the syntactic form `{: rule1 rule2 etc :}`.
 
-#### `makeOpt(rule) <> rule`
+#### `makeOpt(rule) -> rule`
 
 Makes and returns a parser rule which optionally matches a given rule.
 When called, the given other rule is matched whenever possible. This
@@ -288,7 +288,7 @@ rule fails, this one yields an empty list and does not consume any input.
 
 This is equivalent to the syntactic form `{: rule? :}`.
 
-#### `makePlus(rule) <> rule`
+#### `makePlus(rule) -> rule`
 
 Makes and returns a parser rule which matches a given rule repeatedly.
 When called, the given other rule is matched as many times as possible.
@@ -298,7 +298,7 @@ This rule will succeed only if the given rule is matched at least once.
 
 This is equivalent to the syntactic form `{: rule+ :}`.
 
-#### `makeResult(value) <> rule`
+#### `makeResult(value) -> rule`
 
 Makes and returns a parser rule which always succeeds, yielding the
 given result `value`, and never consuming any input.
@@ -306,7 +306,7 @@ given result `value`, and never consuming any input.
 This is equivalent to the syntactic form `{: { <> value } :}` assuming
 that `value` is a constant expression.
 
-#### `makeSequence(rules*) <> rule`
+#### `makeSequence(rules*) -> rule`
 
 Makes and returns a parser rule which runs a sequence of given other rules
 (in order). This rule is successful only when all the given rules
@@ -319,7 +319,7 @@ first result from the "closest" enclosing main sequence.
 
 This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
 
-#### `makeStar(rule) <> rule`
+#### `makeStar(rule) -> rule`
 
 Makes and returns a parser rule which matches a given rule repeatedly.
 When called, the given other rule is matched as many times as possible.
@@ -330,7 +330,7 @@ in which case this rule yields the empty list.
 
 This is equivalent to the syntactic form `{: rule* :}`.
 
-#### `makeString(string) <> rule`
+#### `makeString(string) -> rule`
 
 Makes and returns a parser rule which matches a sequence of characters
 exactly, consuming them from the input upon success. `string` must be a
@@ -339,7 +339,7 @@ string. The result of successful parsing is a valueless token with
 
 This is equivalent to the syntactic form `{: "string" :}`.
 
-#### `makeThunk(function) <> rule`
+#### `makeThunk(function) -> rule`
 
 Makes and returns a parser rule which runs the given function to produce
 a parser, which is then called to do the actual parsing. `function`
@@ -353,7 +353,7 @@ failed.
 
 This is equivalent to the syntactic form `{: %term :}`.
 
-#### `makeToken(type) <> rule`
+#### `makeToken(type) -> rule`
 
 Makes and returns a parser rule which matches any token with the same
 type as given. `type` is an arbitrary type, which is typically (but not
@@ -365,7 +365,7 @@ This is also used to match single characters in tokenizers.
 This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 (where `ch` represents a single character).
 
-#### `makeTokenSet(types*) <> rule`
+#### `makeTokenSet(types*) -> rule`
 
 Makes and returns a parser rule which matches a token whose type
 matches that of any of the given types, consuming it upon success.
@@ -375,7 +375,7 @@ name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 
-#### `makeTokenSetComplement(types*) <> rule`
+#### `makeTokenSetComplement(types*) -> rule`
 
 Makes and returns a parser rule which matches a token whose type
 matches none of any of the given tokens, consuming it upon success.
@@ -385,7 +385,7 @@ name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
-#### `stringFromTokenList(tokens) <> string`
+#### `stringFromTokenList(tokens) -> string`
 
 Takes a list of tokenizer-style character tokens (that is, derived data
 values whose type names are each a single-character string), returning the
