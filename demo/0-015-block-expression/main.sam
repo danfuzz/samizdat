@@ -22,7 +22,6 @@ fn print(arg) {
 ## Main Tests
 ##
 
-print({ <> });
 print({ -> });
 print({ x <> });
 print({ x -> });

@@ -37,7 +37,7 @@ msg(@@blort);       ## a derived value type
 msg(eq);            ## a builtin function
 msg(debugString);   ## a generic function
 msg(msg);           ## a named in-language function
-msg({ <> });        ## an anonymous in-language function
+msg({ -> });        ## an anonymous in-language function
 
 { /out ->
     msg(out);       ## a nonlocal exit function

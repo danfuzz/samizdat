@@ -13,7 +13,7 @@
 ## Main demos
 ##
 
-def maybe1 = maybeValue { <> };
+def maybe1 = maybeValue { -> };
 note($Format::source(maybe1));
 
 def maybe2 = maybeValue { <> "Yes: opt" };
@@ -34,7 +34,7 @@ def v2 = ifValue { <> "Yes." }
     { die("No.") };
 note(v2);
 
-def v3 = ifValue { <> }
+def v3 = ifValue { -> }
     { value -> die("No.") }
     {
         note("Yes.");
@@ -42,7 +42,7 @@ def v3 = ifValue { <> }
     };
 note(v3);
 
-def v4 = maybeValue { <> ifValue { <> } { value -> die("No."); } };
+def v4 = maybeValue { <> ifValue { -> } { value -> die("No."); } };
 note($Format::source(v4));
 
 def v5 = ifIs { "Yes." }
@@ -65,7 +65,7 @@ note($Format::source(v8));
 def v9 = maybeValue { <> ifNot { <> "Yes." } { die("No.") } };
 note($Format::source(v9));
 
-def v10 = ifNot { <> }
+def v10 = ifNot { -> }
     { <> "Yes: v10" };
 note(v10);
 
@@ -75,7 +75,7 @@ def v11 = ifValueOr
 note(v11);
 
 def v12 = ifValueOr
-    { <> }
+    { -> }
     { <> "Yes: v12" };
 note(v12);
 
@@ -107,13 +107,13 @@ note(v16);
 
 def v17 = ifValues(
     [
-        { <> }
+        { -> }
     ],
     { x -> die("No.") },
     { <> "Yes: v17" });
 note(v17);
 
-def v18 = maybeValue { <> ifValues([ { <> } ], { x -> die("No.") }) };
+def v18 = maybeValue { <> ifValues([ { -> } ], { x -> die("No.") }) };
 note($Format::source(v18));
 
 def v19 = ifValues(
