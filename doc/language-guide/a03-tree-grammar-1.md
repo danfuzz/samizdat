@@ -444,32 +444,48 @@ parAssignExpression := {:
 ## Layer 0: Statements and yields
 ##
 
-## Parses a nonlocal exit / return. All of the forms matched by this rule
-## have the dual properties of (a) necessarily being at the end of a code
-## block, and (b) being represented as a `noYield` node in the underlying
-## tree representation.
-def parNonlocalExit = {:
+## Parses a yield or a nonlocal exit (named or implicit). All of the forms
+## matched by this rule necessarily appear at the end of a block and are
+## expected to be placed in a `yield` binding of a `closure` node. The
+## nonlocal exit forms all end up being represented as a `noYield` node, so
+## it's sorta funny that they hang off of `yield` (because they never actually
+## yield, per se).
+def parYieldOrNonlocal = {:
+    op = [@break @continue @return @yield]
+    optQuest = @"?"?
+
     name = (
-        @yield
-        @"/"
-        parVarRef
+        { <> hasType(op, @@yield) }
+        (
+            @"/"
+            parVarRef
+        |
+            ## Indicate that this is a regular (local) yield. Checked below.
+            { <> @yield }
+        )
     |
-        op = [@break @continue @return]
         { <> makeVarRef(get_typeName(op)) }
     )
 
+    ## A value expression is mandatory if there is a `?` after the
+    ## operator. Otherwise, it's optional.
     value = (
         v = parExpression
+        ## TODO: { <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v } }
         { <> makeMaybe(v) }
     |
-        { <> @void }
+        { <> ifNot { <> optQuest* } { <> @void } }
     )
 
-    { <> makeNonlocalExit(name, value) }
+    {
+        <> ifIs { <> eq(name, @yield) }
+            { <> value }
+            { <> makeNonlocalExit(name, value) }
+    }
 :};
 
-## Parses a local yield / return.
-def parYield = {:
+## Parses a local yield / return. TODO: Remove!
+def parOldYield = {:
     @"<>"
     (
         ex = parExpression
@@ -821,7 +837,7 @@ def parClosureBody = {:
         s = parStatement
         { <> {statements: [s]} }
     |
-        y = (parNonlocalExit | parYield)
+        y = (parYieldOrNonlocal | parOldYield)
         { <> {statements: [], yield: y} }
     |
         { <> {statements: []} }

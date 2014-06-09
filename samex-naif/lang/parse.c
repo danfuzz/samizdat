@@ -658,52 +658,65 @@ DEF_PARSE(assignExpression) {
 }
 
 /**
- * Helper for `nonlocalExit`: Parses `@yield @"/" varRef`.
+ * Helper for `yieldOrNonlocal`: Parses the `op` assignment.
  */
-DEF_PARSE(nonlocalExit1) {
-    MARK();
+DEF_PARSE(yieldOrNonlocal1) {
+    zvalue result = NULL;
 
-    MATCH_OR_REJECT(yield);
-    MATCH_OR_REJECT(CH_SLASH);
-    zvalue name = PARSE_OR_REJECT(varRef);
+    if (result == NULL) { result = MATCH(break);    }
+    if (result == NULL) { result = MATCH(continue); }
+    if (result == NULL) { result = MATCH(return);   }
+    if (result == NULL) { result = MATCH(yield);    }
 
-    return name;
+    return result;
 }
 
 /**
- * Helper for `nonlocalExit`: Parses `@break | @continue | @return`.
+ * Helper for `yieldOrNonlocal`: Parses the first alternate of the `name`
+ * assignment.
  */
-DEF_PARSE(nonlocalExit2) {
-    zvalue result = NULL;
+DEF_PARSE(yieldOrNonlocal2) {
+    MARK();
 
-    if (result == NULL) { result = MATCH(break); }
-    if (result == NULL) { result = MATCH(continue); }
-    if (result == NULL) { result = MATCH(return); }
-    if (result == NULL) { return NULL; }
+    if (MATCH(CH_SLASH)) {
+        zvalue result = PARSE(varRef);
+        if (result != NULL) {
+            return result;
+        }
+        RESET();
+    }
 
-    return makeVarRef(typeName(get_type(result)));
+    return TOK_yield;
 }
 
 /* Documented in spec. */
-DEF_PARSE(nonlocalExit) {
-    zvalue name = NULL;
+DEF_PARSE(yieldOrNonlocal) {
+    MARK();
 
-    if (name == NULL) { name = PARSE(nonlocalExit1); }
-    if (name == NULL) { name = PARSE(nonlocalExit2); }
-    if (name == NULL) { return NULL; }
+    zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
+    zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue value = PARSE(expression);  // It's okay for this to be `NULL`.
+    zvalue name = hasType(op, TYPE_yield)
+        ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
+        : NULL;
+    if (name == NULL) {
+        name = makeVarRef(typeName(get_type(op)));
+    }
+
+    zvalue value = PARSE(expression);   // It's okay for this to be `NULL`.
     if (value != NULL) {
+        // TODO: See corresponding comment in layer 2 code.
         value = makeMaybe(value);
     } else {
+        REJECT_IF(optQuest != NULL);
         value = TOK_void;
     }
 
-    return makeNonlocalExit(name, value);
+    return valEq(name, TOK_yield) ? value : makeNonlocalExit(name, value);
 }
 
 /** Documented in spec. */
-DEF_PARSE(yield) {
+DEF_PARSE(oldYield) {
     MARK();
 
     MATCH_OR_REJECT(CH_DIAMOND);
@@ -1156,9 +1169,9 @@ DEF_PARSE(closureBody) {
     if (statement != NULL) {
         statements = listAppend(statements, statement);
     } else {
-        yieldNode = PARSE(nonlocalExit);
+        yieldNode = PARSE(yieldOrNonlocal);
         if (yieldNode == NULL) {
-            yieldNode = PARSE(yield);
+            yieldNode = PARSE(oldYield);
         }
     }
 
