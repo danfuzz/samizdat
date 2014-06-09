@@ -120,10 +120,10 @@ export fn runCommandLine(rawArgs*) {
             die("No such file or directory: \%q(filePath)")
         };
         directory: {
-            return run(filePath, thisLoader(), filePath, args*)
+            return? run(filePath, thisLoader(), filePath, args*)
         };
         default: {
-            return runFile(filePath, thisLoader(), filePath, args*)
+            return? runFile(filePath, thisLoader(), filePath, args*)
         }
     }
 };
