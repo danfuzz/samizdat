@@ -42,7 +42,7 @@ def parCodePoint = {:
     "0"*
     digits = (
         ch = ["0".."9" "A".."F"]
-        { <> DIGIT_VALUES[ch] }
+        { DIGIT_VALUES[ch] }
     )+
 
     {
@@ -50,14 +50,14 @@ def parCodePoint = {:
         $Generator::filterPump(digits) { digit ->
             value := value * 16 + digit
         };
-        <> toString(value);
+        toString(value);
     }
 :};
 
 ## Parses a list of code points, yielding a converted string of them.
 def parCodePoints = {:
     codes = parCodePoint+
-    { <> cat(codes*) }
+    { cat(codes*) }
 :};
 
 ## Parses an entry description.
@@ -68,7 +68,7 @@ def parDescription = {:
 ## Parses an entity name.
 def parName = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
-    { <> $Peg::stringFromTokenList(chars) }
+    { $Peg::stringFromTokenList(chars) }
 :};
 
 ## Parses a single content line.
@@ -77,7 +77,7 @@ def parContentLine = {:
     parComma
     parDescription
     names = (parComma parName)+
-    { <> {names*: string} }
+    { {names*: string} }
 :};
 
 ## Parses the entire file.
@@ -99,7 +99,7 @@ def parFile = {:
         }
     )?
 
-    { <> cat(lines*) }
+    { cat(lines*) }
 :};
 
 export fn main(selfPath, .*) {
@@ -115,7 +115,7 @@ export fn main(selfPath, .*) {
     ## trim the first two characters off the beginning, yielding a valid comma-
     ## separated list of mappings.
     def resultLines = (mapping in result ->
-        <> ",\n    \%q(get_key(mapping)): \%q(get_value(mapping))"
+        ",\n    \%q(get_key(mapping)): \%q(get_value(mapping))"
     );
 
     def resultText = cat(resultLines*)[2..];

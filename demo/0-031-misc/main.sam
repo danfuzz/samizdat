@@ -28,7 +28,7 @@ fn process(value) {
     note($Format::source(value));
 
     ## Test of explicit void yield.
-    <>
+    yield
 };
 
 
