@@ -142,7 +142,7 @@ This is a convenient wrapper which is equivalent to:
 def globals = loadModule(loader, @external("core.Globals"))::fullEnvironment();
 def mainLoader = makeInternalLoader(path, globals, loader);
 def mainModule = resolveMain(mainLoader)::exports;
-<> mainModule::main(args*)
+return mainModule::main(args*)
 ```
 
 except with more error checking.

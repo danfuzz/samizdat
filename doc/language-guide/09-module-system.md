@@ -347,14 +347,14 @@ module `core.Globals`, a module file when evaluated has additional bindings
 to allow for a module to load the other parts of itself, as well as load
 other modules.
 
-* `loadModule(source) <> map` &mdash; This loads and evaluates the indicated
+* `loadModule(source) -> map` &mdash; This loads and evaluates the indicated
   module, returning the `exports` map. `source` is a source specifier
   (either an `@external` or `@internal` value) representing the origin of
   the module. For an `@internal` source, the final file name component
   must *not* have a suffix; the module system handles finding the
   appropriately-suffixed file.
 
-* `loadResource(source, format) <> . | void` &mdash; This reads and/or
+* `loadResource(source, format) -> . | void` &mdash; This reads and/or
   processes the resource file named by the indicated `source`, interpreting it
   as indicated by the `format`. `source` is as with `loadModule`, except that
   the final file component is left as-is (and not suffixed automatically).

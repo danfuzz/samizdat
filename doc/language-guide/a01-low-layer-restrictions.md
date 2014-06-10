@@ -78,9 +78,9 @@ The only operators recognized in Layer 0 are:
 Parsing expression operator syntax is implemented in Layer 1.
 Full expression operator syntax is implemented in Layer 2.
 
-**Note:** All yield statements (`<>`, `yield /name`, `break`, `continue`, and
-`return`) are available at all layers, though `break` and `continue` aren't
-particularly useful in layers 0 or 1.
+**Note:** All yield statements (`yield`, `yield /name`, `break`, `continue`,
+and `return`) are available at all layers, though `break` and `continue`
+aren't particularly useful in layers 0 or 1.
 
 **Note:** Negative int constants (e.g. `-1`) are recognized in all layers,
 but unary negation as an operator is only introduced in Layer 2.

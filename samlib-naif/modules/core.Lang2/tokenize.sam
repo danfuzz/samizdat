@@ -35,7 +35,7 @@ def KEYWORDS = $Generator::collectAsMap(
         ## Layer 2 defines additional keywords here.
         "by", "default", "do", "else", "for", "if", "in", "module", "switch",
         "while"])
-        { name <> {(name): @(@@(name))} });
+        { name -> {(name): @(@@(name))} });
 
 ## These are all the int digits, as a map from strings to digit values. This
 ## includes hex digits as well, in both lower and upper case. Finally, this
@@ -53,7 +53,7 @@ def INT_CHARS = {
 
 ## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> get(INT_CHARS, get_typeName(ch))
+    return get(INT_CHARS, get_typeName(ch))
 };
 
 ## Converts a list of digit values into an int, given the base.
@@ -65,7 +65,7 @@ fn intFromDigitList(base, digits) {
             { result := $Number::add($Number::mul(result, base), digit) }
     };
 
-    <> result
+    return result
 };
 
 
@@ -133,7 +133,7 @@ def tokPunctuation = {:
         ## where we're parsing other punctuation. This is clean but a little
         ## non-obvious, hence this comment.
         "#:" .*
-        { <> @error("Unterminated comment.") }
+        { @error("Unterminated comment.") }
     |
         ## Single-character punctuation / operator.
         .
@@ -143,7 +143,7 @@ def tokPunctuation = {:
 ## Parses a single decimal digit (or spacer), returning its value.
 def tokDecDigit = {:
     ch = ["_" "0".."9"]
-    { <> intFromDigitChar(ch) }
+    { intFromDigitChar(ch) }
 :};
 
 ## Parses an integer literal.
@@ -153,7 +153,7 @@ def tokInt = {:
     %tokInt2
 |
     digits = tokDecDigit+
-    { <> @int(intFromDigitList(10, digits)) }
+    { @int(intFromDigitList(10, digits)) }
 :};
 
 ## Parses a run of regular characters or an escape / special sequence,
@@ -164,22 +164,22 @@ def tokInt = {:
 def tokStringPart = {:
     (
         chars = [! "\\" "\"" "\n"]+
-        { <> $Peg::stringFromTokenList(chars) }
+        { $Peg::stringFromTokenList(chars) }
     )
 |
     ## This is the rule that ignores spaces after newlines.
     "\n"
     " "*
-    { <> "\n" }
+    { "\n" }
 |
     "\\"
     (
-        "\\" { <> "\\" } |
-        "\"" { <> "\"" } |
-        "n"  { <> "\n" } |
-        "r"  { <> "\r" } |
-        "t"  { <> "\t" } |
-        "0"  { <> "\0" }
+        "\\" { "\\" } |
+        "\"" { "\"" } |
+        "n"  { "\n" } |
+        "r"  { "\r" } |
+        "t"  { "\t" } |
+        "0"  { "\0" }
     )
 |
     ## Introduced in Layer 2.
@@ -193,9 +193,9 @@ def tokString = {:
 
     (
         "\""
-        { <> processStringParts(parts) }
+        { processStringParts(parts) }
     |
-        { <> @error("Unterminated string literal.") }
+        { @error("Unterminated string literal.") }
     )
 :};
 
@@ -206,8 +206,8 @@ def tokIdentifier = {:
 
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
-        <> ifValueOr { get(KEYWORDS, string) }
-            { <> @identifier(string) }
+        ifValueOr { get(KEYWORDS, string) }
+            { @identifier(string) }
     }
 :};
 
@@ -216,7 +216,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { <> @identifier(dataOf(s)) }
+    { @identifier(dataOf(s)) }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further
@@ -227,7 +227,7 @@ def tokError = {:
 
     {
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        <> @error(msg)
+        @error(msg)
     }
 :};
 
@@ -252,7 +252,7 @@ def tokFile = {:
     tokens = (tokWhitespace? tokToken)*
     tokWhitespace?
 
-    { <> tokens }
+    { tokens }
 :};
 
 
@@ -326,7 +326,7 @@ fn processStringParts(parts) {
         };
 
     ## At this point, we have a valid interpolation.
-    <> @interpolatedString(elems)
+    return @interpolatedString(elems)
 };
 
 ## Parses a `#: ... :#` comment, with nesting.
@@ -347,31 +347,31 @@ tokMultilineComment := {:
 ## Parses a single binary digit (or spacer), returning its value.
 def tokBinDigit = {:
     ch = ["_01"]
-    { <> intFromDigitChar(ch) }
+    { intFromDigitChar(ch) }
 :};
 
 ## Parses a single hexadecimal digit (or spacer), returning its value.
 def tokHexDigit = {:
     ch = ["_" "0".."9" "a".."f" "A".."F"]
-    { <> intFromDigitChar(ch) }
+    { intFromDigitChar(ch) }
 :};
 
 ## Parses an integer literal.
 tokInt2 := {:
     "0x"
     digits = tokHexDigit+
-    { <> @int(intFromDigitList(16, digits)) }
+    { @int(intFromDigitList(16, digits)) }
 |
     "0b"
     digits = tokBinDigit+
-    { <> @int(intFromDigitList(2, digits)) }
+    { @int(intFromDigitList(2, digits)) }
 :};
 
 ## Parses a single hexadecimal character. This is called during `\x...;`
 ## parsing.
 def tokHexChar = {:
     digits = tokHexDigit+
-    { <> toString(intFromDigitList(16, digits)) }
+    { toString(intFromDigitList(16, digits)) }
 :};
 
 ## Parses a single entity-named character. This is called during `\&...;`
@@ -380,16 +380,16 @@ def tokNamedChar = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
         def name = $Peg::stringFromTokenList(chars);
-        <> get(ENTITY_MAP, name)
+        get(ENTITY_MAP, name)
     }
 |
     "#x"
     digits = tokHexDigit+
-    { <> toString(intFromDigitList(16, digits)) }
+    { toString(intFromDigitList(16, digits)) }
 |
     "#"
     digits = tokDecDigit+
-    { <> toString(intFromDigitList(10, digits)) }
+    { toString(intFromDigitList(10, digits)) }
 :};
 
 ## Parses the inner portion of a string interpolation expression. This
@@ -399,7 +399,7 @@ def tokStringInterpolation;
 tokStringInterpolation := {:
     &["({["]
     open = tokToken
-    expectClose = { <> get(OPEN_CLOSE_MAP, get_type(open)) }
+    expectClose = { get(OPEN_CLOSE_MAP, get_type(open)) }
 
     tokens = (
         tokWhitespace?
@@ -407,7 +407,7 @@ tokStringInterpolation := {:
             !["(){}[]"]
             !":}"
             t = tokToken
-            { <> [t] }
+            { [t] }
         |
             %tokStringInterpolation
         )
@@ -417,8 +417,8 @@ tokStringInterpolation := {:
     close = tokToken
 
     {
-        <> ifIs { hasType(close, expectClose) }
-            { <> [open, cat([], tokens*)*, close] }
+        ifIs { hasType(close, expectClose) }
+            { [open, cat([], tokens*)*, close] }
     }
 :};
 
@@ -426,22 +426,22 @@ tokStringInterpolation := {:
 tokStringPart2 := {:
     "\\"
     (
-        "/"  { <> "" }
+        "/"  { "" }
     |
         ## This is the rule that ignores an escaped newline, followed by
         ## any number of spaces.
         "\n"
         " "*
-        { <> "" }
+        { "" }
     |
         "x"
         (
             one = tokHexChar
             rest = ("," tokHexChar)*
             ";"
-            { <> cat(one, rest*) }
+            { cat(one, rest*) }
         |
-            { <> @error("Invalid hexadecimal character literal.") }
+            { @error("Invalid hexadecimal character literal.") }
         )
     |
         "&"
@@ -449,29 +449,29 @@ tokStringPart2 := {:
             one = tokNamedChar
             rest = ("," tokNamedChar)*
             ";"
-            { <> cat(one, rest*) }
+            { cat(one, rest*) }
         |
-            { <> @error("Invalid named character literal.") }
+            { @error("Invalid named character literal.") }
         )
     |
         format = (
             "%"
             chars = ["0".."9" "a".."z" "A".."Z" "+-."]*
-            { <> {format: $Peg::stringFromTokenList(chars)} }
+            { {format: $Peg::stringFromTokenList(chars)} }
         |
-            { <> {} }
+            { {} }
         )
 
         &["({["]
 
         (
             tokens = tokStringInterpolation
-            { <> {format*, tokens} }
+            { {format*, tokens} }
         |
-            { <> @error("Unbalanced string interpolation.") }
+            { @error("Unbalanced string interpolation.") }
         )
     |
-        { <> @error("Invalid character literal escape sequence.") }
+        { @error("Invalid character literal escape sequence.") }
     )
 :};
 
@@ -482,5 +482,5 @@ tokStringPart2 := {:
 
 ## Documented in spec.
 export fn tokenize(programText) {
-    <> $Peg::apply(tokFile, programText)
+    return $Peg::apply(tokFile, programText)
 };

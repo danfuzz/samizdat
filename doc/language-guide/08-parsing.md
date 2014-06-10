@@ -300,13 +300,13 @@ code block are available to be used in the code block.
 
 For example:
 
-* The parser `{: { <> 23 } :}` will always succeed, yielding the int
+* The parser `{: { 23 } :}` will always succeed, yielding the int
   value `23` and consuming no input.
 
 * The parser `{: { "stuff" } :}` will always fail, since the code block never
   yields a value.
 
-* The parser `{: f=@foo { <> [[[f]]] } :}` will match the input `[@foo @bar]`,
+* The parser `{: f=@foo { [[[f]]] } :}` will match the input `[@foo @bar]`,
   resulting in the yielded value `[[[@foo]]]` and a remainder of `[@bar]`.
 
 * The parser `{: f=@foo { /out -> yield /out [[[f]]] } :}` is just like the

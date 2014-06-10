@@ -163,7 +163,8 @@ explicitly.
 ### The empty closure
 
 In order to disambiguate with the empty map, an otherwise empty function
-must contain at least an `->` or a `<>`, e.g. `{ -> }`.
+must contain a right-arrow (`->`), e.g. `{ -> }`. This is only required
+in contexts where both closures and maps are valid.
 
 
 ### Function statements
@@ -256,8 +257,8 @@ The declaration section consists of the following, in order:
 * The yield definition (optional). See "Yield Definition" above.
 
 * The special token right-arrow (`->`), to indicate the end of
-  the declarations. If the entire body of the block is just a direct
-  yield (`<> ...`), then the right-arrow may be omitted.
+  the declarations. If there are no declarations, then the right-arrow can
+  be omitted.
 
 Examples:
 
@@ -277,7 +278,7 @@ def fizmo = { args+ /out -> yield /out args }
 def ignatz = { krazy(x, y?, z*) /out -> ... yield /out ... }
 
 ## Since the main body is just a yield, no right-arrow is required.
-def krazy = { x, y <> x + y }
+def krazy = { x, y -> x + y }
 ```
 
 

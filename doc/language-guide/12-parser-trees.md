@@ -44,7 +44,7 @@ Representation of a code expression.
   by the Samizdat Layer 0 specification.
 
 This corresponds to the syntax `{ <yieldDef> -> statement1; statement2;
-etc; <> yield }`.
+etc; yieldExpression }`.
 
 #### `@empty`
 
