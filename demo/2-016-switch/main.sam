@@ -34,7 +34,7 @@ fn interpolator(value, keys) {
 
 ## TODO: Ought to be able to use implicit yields here.
 fn elser(item?) {
-    return switch (item*) {
+    return? switch (item*) {
         blort: { yield "See in the dark." };
         fizmo: { yield "Unclog pipes." };
         else:  { yield "Mysterious non-item." }
