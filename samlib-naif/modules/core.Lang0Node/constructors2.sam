@@ -66,15 +66,15 @@ export fn makeCallOrApply(function, actuals*) {
 
     addPendingToCooked();
 
-    <> ifIs { nth(cookedActuals, 1) }
+    return ifIs { nth(cookedActuals, 1) }
         {
             ## More than one actual. Use `cat`.
-            <> makeApply(function,
+            makeApply(function,
                 makeCall(REFS::cat, cookedActuals*))
         }
         {
             ## Only one. Use it directly as the actuals for the `apply` node.
-            <> makeApply(function, cookedActuals*)
+            makeApply(function, cookedActuals*)
         }
 };
 
@@ -88,7 +88,7 @@ fn @@importModule.makeDynamicImport() {
     def name = get_name(this);
     def source = get_source(this);
 
-    <> [makeVarDef(name,
+    return [makeVarDef(name,
             makeCall(REFS::loadModule, makeLiteral(source)))]
 };
 
@@ -104,8 +104,8 @@ fn @@importModuleSelection.makeDynamicImport() {
     def select = get_select(this);
     def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
-    <> $Generator::filterAll(names, select) { name, sel ->
-        <> makeVarDef(name, makeCall(REFS::get, loadCall, makeLiteral(sel)))
+    return $Generator::filterAll(names, select) { name, sel ->
+        makeVarDef(name, makeCall(REFS::get, loadCall, makeLiteral(sel)))
     };
 };
 
@@ -118,7 +118,7 @@ fn @@importResource.makeDynamicImport() {
     def format = get_format(this);
     def source = get_source(this);
 
-    <> [
+    return [
         makeVarDef(name,
             makeCall(REFS::loadResource,
                 makeLiteral(source), makeLiteral(format)))
@@ -261,22 +261,26 @@ export fn makeInfoMap(node) {
         handleImport(s)
     };
 
-    <> {exports, imports, resources}
+    return {exports, imports, resources}
 };
 
 ## Documented in spec.
 export fn makeInterpolate(node) {
-    <> @call{function: REFS::interpolate, actuals: [node], interpolate: node}
+    return @call{
+        function: REFS::interpolate,
+        actuals: [node],
+        interpolate: node
+    }
 };
 
 ## Documented in spec.
 export fn makeMaybeValue(node) {
-    <> makeCall(REFS::maybeValue, makeThunk(node))
+    return makeCall(REFS::maybeValue, makeThunk(node))
 };
 
 ## Documented in spec.
 export fn makeNonlocalExit(function, optValue?) {
-    def value = ifValueOr { optValue* } { <> @void };
+    def value = ifValueOr { optValue* } { @void };
     def exitCall = ifValueOr
         {
             <> ifIs { hasType(value, @@void) }
@@ -285,13 +289,13 @@ export fn makeNonlocalExit(function, optValue?) {
         {
             <> ifIs { hasType(value, @@maybe) }
                 {
-                    <> makeCallOrApply(function,
+                    makeCallOrApply(function,
                         makeInterpolate(makeMaybeValue(get_nodeValue(value))))
                 }
         }
-        { <> makeCall(function, value) };
+        { makeCall(function, value) };
 
-    <> makeNoYield(exitCall)
+    return makeNoYield(exitCall)
 };
 
 ## Documented in spec.
@@ -349,12 +353,12 @@ export fn withModuleDefs(node) {
     ## of all exports.
     def exportValues = $Generator::filterAll(info::exports) { mapping ->
         def name = get_key(mapping);
-        <> makeCall(REFS::makeValueMap, makeLiteral(name), makeVarRef(name))
+        makeCall(REFS::makeValueMap, makeLiteral(name), makeVarRef(name))
     };
 
     def yieldExports = ifIs { eq(exportValues, []) }
-        { <> makeLiteral({}) }
-        { <> makeCall(REFS::cat, exportValues*) };
+        { makeLiteral({}) }
+        { makeCall(REFS::cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeValue,
         makeLiteral(@@module),
@@ -377,22 +381,22 @@ export fn withoutTops(node) {
     ## This is a collation of all the forward declarations.
     def tops = $Generator::filterAll(rawStatements) { s ->
         def defNode = ifIs { hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s };
+            { get_nodeValue(s) }
+            { s };
 
-        <> ifIs { defNode::top }
-            { <> makeVarDef(get_name(defNode)) }
+        ifIs { defNode::top }
+            { makeVarDef(get_name(defNode)) }
     };
 
     ## These are the one-for-one replacements for the original `statements`.
     def mains = $Generator::filterAll(rawStatements) { s ->
         def defNode = ifIs { hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s };
+            { get_nodeValue(s) }
+            { s };
 
-        <> ifIs { defNode::top }
-            { <> makeVarBind(get_name(defNode), get_nodeValue(defNode)) }
-            { <> s }
+        ifIs { defNode::top }
+            { makeVarBind(get_name(defNode), get_nodeValue(defNode)) }
+            { s }
     };
 
     ## This lists all the exported variables that were transformed above.
