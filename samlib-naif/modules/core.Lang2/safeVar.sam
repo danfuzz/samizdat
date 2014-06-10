@@ -30,7 +30,7 @@ fn intOrVoid(string) {
         value := $Number::add($Number::mul(value, 10), digit);
     };
 
-    <> value
+    return value
 };
 
 ## Returns the maximum of the given values. Returns `-1` if given no values,
@@ -43,7 +43,7 @@ fn maxOf(values*) {
             { max := v }
     };
 
-    <> max
+    return max
 };
 
 ## Returns a safe index for the given `base` that is safe with respect
@@ -62,9 +62,9 @@ fn safeIndexForNames(base, names*) {
             { yield? /next intOrVoid($Sequence::sliceInclusive(name, baseSz)) }
     };
 
-    <> ifIs { perEq(indexes, []) }
-        { <> -1 }
-        { <> $Number::add(maxOf(indexes*), 1) }
+    return ifIs { perEq(indexes, []) }
+        { -1 }
+        { $Number::add(maxOf(indexes*), 1) }
 };
 
 ## Generic `node.safeIndex(base)`, returns a safe (unused) index for the
@@ -74,18 +74,18 @@ fn .safeIndex(base);
 ## Maps / reduces `safeIndex` over the given nodes.
 fn safeIndexForNodes(base, nodes*) {
     def indexes = $Generator::filterAll(nodes)
-        { node <> safeIndex(node, base) };
-    <> maxOf(indexes*)
+        { node -> safeIndex(node, base) };
+    return maxOf(indexes*)
 };
 
 fn @@apply.safeIndex(base) {
-    <> safeIndexForNodes(base,
+    return safeIndexForNodes(base,
         get_function(this),
         get_actuals(this));
 };
 
 fn @@call.safeIndex(base) {
-    <> safeIndexForNodes(base,
+    return safeIndexForNodes(base,
         get_function(this),
         get_actuals(this)*);
 };
@@ -98,19 +98,19 @@ fn @@closure.safeIndex(base) {
         get_statements(this)*,
         get_yieldNode(this));
 
-    <> maxOf(namesIndex, nodesIndex)
+    return maxOf(namesIndex, nodesIndex)
 };
 
 fn @@export.safeIndex(base) {
-    <> safeIndex(get_nodeValue(this), base)
+    return safeIndex(get_nodeValue(this), base)
 };
 
 fn @@exportSelection.safeIndex(base) {
-    <> safeIndexForNames(base, get_select(this)*)
+    return safeIndexForNames(base, get_select(this)*)
 };
 
 fn @@importModule.safeIndex(base) {
-    <> safeIndexForNames(base, get_name(this));
+    return safeIndexForNames(base, get_name(this));
 };
 
 fn @@importModuleSelection.safeIndex(base) {
@@ -123,19 +123,19 @@ fn @@importModuleSelection.safeIndex(base) {
 };
 
 fn @@importResource.safeIndex(base) {
-    <> safeIndexForNames(base, get_name(this));
+    return safeIndexForNames(base, get_name(this));
 };
 
 fn @@literal.safeIndex(base) {
-    <> -1
+    return -1
 };
 
 fn @@maybe.safeIndex(base) {
-    <> safeIndexForNodes(base, get_nodeValue(this))
+    return safeIndexForNodes(base, get_nodeValue(this))
 };
 
 fn @@noYield.safeIndex(base) {
-    <> safeIndexForNodes(base, get_nodeValue(this))
+    return safeIndexForNodes(base, get_nodeValue(this))
 };
 
 fn @@varBind.safeIndex(base) {
@@ -143,7 +143,7 @@ fn @@varBind.safeIndex(base) {
         safeIndexForNames(base, get_name(this));
     def valueIndex =
         safeIndexForNodes(base, get_nodeValue(this));
-    <> maxOf(nameIndex, valueIndex)
+    return maxOf(nameIndex, valueIndex)
 };
 
 fn @@varDef.safeIndex(base) {
@@ -151,7 +151,7 @@ fn @@varDef.safeIndex(base) {
         safeIndexForNames(base, get_name(this));
     def valueIndex =
         safeIndexForNodes(base, get_nodeValue(this)?*);
-    <> maxOf(nameIndex, valueIndex)
+    return maxOf(nameIndex, valueIndex)
 };
 
 fn @@varDefMutable.safeIndex(base) {
@@ -159,15 +159,15 @@ fn @@varDefMutable.safeIndex(base) {
         safeIndexForNames(base, get_name(this));
     def valueIndex =
         safeIndexForNodes(base, get_nodeValue(this)?*);
-    <> maxOf(nameIndex, valueIndex)
+    return maxOf(nameIndex, valueIndex)
 };
 
 fn @@varRef.safeIndex(base) {
-    <> safeIndexForNames(base, get_name(this))
+    return safeIndexForNames(base, get_name(this))
 };
 
 fn @@void.safeIndex(base) {
-    <> -1
+    return -1
 };
 
 
@@ -178,15 +178,15 @@ fn @@void.safeIndex(base) {
 ## Makes a variable name by combining `base` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
 export fn makeVarName(base, index) {
-    <> ifIs { eq(index, -1) }
-        { <> base }
-        { <> cat(base, $Format::int(index)) }
+    return ifIs { eq(index, -1) }
+        { base }
+        { cat(base, $Format::int(index)) }
 };
 
 ## Returns an unused variable name within `node`, either the given `base` or
 ## `base` suffixed with an unsigned int.
 export fn safeVarName(base, node) {
-    <> makeVarName(base, safeIndex(node, base))
+    return makeVarName(base, safeIndex(node, base))
 };
 
 ## Returns a safe index to be used within `node` to suffix the given `base`
@@ -195,5 +195,5 @@ export fn safeVarName(base, node) {
 export fn safeVarIndex(base, node) {
     ## In addition to having the opposite argument order, this keeps the
     ## generic function `safeIndex` private to this file.
-    <> safeIndex(node, base)
+    return safeIndex(node, base)
 };

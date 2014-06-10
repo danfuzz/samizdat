@@ -34,23 +34,23 @@ fn .convertPexIn();
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
-    <> $Generator::filterAll(nodes) { node <> convertPexIn(node) }
+    return $Generator::filterAll(nodes) { node -> convertPexIn(node) }
 };
 
 ## Converts a pex to a function call on its converted inner pex.
 fn makeCallPex(function, node, formals) {
-    <> makeCall(function, convertPex(dataOf(node), formals))
+    return makeCall(function, convertPex(dataOf(node), formals))
 };
 
 ## Makes a node with additional / replacement bindings from the original.
 fn withBindings(orig, more) {
-    <> @(get_type(orig))({dataOf(orig)*, more*})
+    return @(get_type(orig))({dataOf(orig)*, more*})
 };
 
 ## Makes a node with additional / replacement bindings from the original,
 ## but *without* intermediate bindings.
 fn withFinalBindings(orig, more) {
-    <> withBindings(withoutIntermediates(orig), more)
+    return withBindings(withoutIntermediates(orig), more)
 };
 
 
@@ -60,15 +60,15 @@ fn withFinalBindings(orig, more) {
 
 ## Converts an `any` pex node.
 fn @@any.convertPex(formals) {
-    <> REFS::Peg_any
+    return REFS::Peg_any
 };
 
 ## Converts a `choice` pex node.
 fn @@choice.convertPex(formals) {
     def pexes = dataOf(this);
     def convertedPexes = $Generator::filterAll(pexes)
-        { pex <> convertPex(pex, formals) };
-    <> makeCall(REFS::Peg_makeChoice, convertedPexes*)
+        { pex -> convertPex(pex, formals) };
+    return makeCall(REFS::Peg_makeChoice, convertedPexes*)
 };
 
 ## Converts a `code` pex node.
@@ -79,32 +79,32 @@ fn @@code.convertPex(formals) {
     def closurePayload = {(dataOf(this))*, formals};
     def convertedClosure = convertPexIn(makeFullClosure(closurePayload));
 
-    <> makeCall(REFS::Peg_makeCode, convertedClosure)
+    return makeCall(REFS::Peg_makeCode, convertedClosure)
 };
 
 ## Converts an `empty` pex node.
 fn @@empty.convertPex(formals) {
-    <> REFS::Peg_empty
+    return REFS::Peg_empty
 };
 
 ## Converts a `lookaheadFailure` pex node.
 fn @@lookaheadFailure.convertPex(formals) {
-    <> makeCallPex(REFS::Peg_makeLookaheadFailure, this, formals)
+    return makeCallPex(REFS::Peg_makeLookaheadFailure, this, formals)
 };
 
 ## Converts a `lookaheadSuccess` pex node.
 fn @@lookaheadSuccess.convertPex(formals) {
-    <> makeCallPex(REFS::Peg_makeLookaheadSuccess, this, formals)
+    return makeCallPex(REFS::Peg_makeLookaheadSuccess, this, formals)
 };
 
 ## Converts an `opt` pex node.
 fn @@opt.convertPex(formals) {
-    <> makeCallPex(REFS::Peg_makeOpt, this, formals)
+    return makeCallPex(REFS::Peg_makeOpt, this, formals)
 };
 
 ## Converts a `plus` pex node.
 fn @@plus.convertPex(formals) {
-    <> makeCallPex(REFS::Peg_makePlus, this, formals)
+    return makeCallPex(REFS::Peg_makePlus, this, formals)
 };
 
 ## Converts a `sequence` pex node.
@@ -113,9 +113,9 @@ fn @@sequence.convertPex(formals) {
 
     ## Extract the formals out of any `varDef` nodes.
     def newFormals = $Generator::filterAll(pexes) { pex ->
-        <> ifIs { hasType(pex, @@varDef) }
-            { <> {name: pex::name} }
-            { <> {} }
+        ifIs { hasType(pex, @@varDef) }
+            { {name: pex::name} }
+            { {} }
     };
 
     ## Convert all the pexes, passing in appropriately-extended formals
@@ -124,23 +124,23 @@ fn @@sequence.convertPex(formals) {
         $Generator::filterAll($Range::makeOpenRange(0), pexes)
             { n, pex ->
                 def subPex = ifIs { hasType(pex, @@varDef) }
-                    { <> pex::value }
-                    { <> pex };
-                <> convertPex(subPex,
+                    { pex::value }
+                    { pex };
+                convertPex(subPex,
                     [formals*, $Sequence::sliceExclusive(newFormals, 0, n)*])
             };
 
-    <> makeCall(REFS::Peg_makeSequence, convertedPexes*)
+    return makeCall(REFS::Peg_makeSequence, convertedPexes*)
 };
 
 ## Converts a `star` pex node.
 fn @@star.convertPex(formals) {
-    <> makeCallPex(REFS::Peg_makeStar, this, formals)
+    return makeCallPex(REFS::Peg_makeStar, this, formals)
 };
 
 ## Converts a `string` pex node.
 fn @@string.convertPex(formals) {
-    <> makeCallLiterals(REFS::Peg_makeString, dataOf(this))
+    return makeCallLiterals(REFS::Peg_makeString, dataOf(this))
 };
 
 ## Converts a `thunk` pex node.
@@ -154,31 +154,31 @@ fn @@thunk.convertPex(formals) {
     });
     def convertedClosure = convertPexIn(closure);
 
-    <> makeCall(REFS::Peg_makeThunk, convertedClosure)
+    return makeCall(REFS::Peg_makeThunk, convertedClosure)
 };
 
 ## Converts a `token` pex node.
 fn @@token.convertPex(formals) {
-    <> makeCallLiterals(REFS::Peg_makeToken, dataOf(this))
+    return makeCallLiterals(REFS::Peg_makeToken, dataOf(this))
 };
 
 ## Converts a `tokenSet` pex node.
 fn @@tokenSet.convertPex(formals) {
     def types = dataOf(this);
-    <> makeCallLiterals(REFS::Peg_makeTokenSet, types*)
+    return makeCallLiterals(REFS::Peg_makeTokenSet, types*)
 };
 
 ## Converts a `tokenSetComplement` pex node.
 fn @@tokenSetComplement.convertPex(formals) {
     def types = dataOf(this);
-    <> makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*);
+    return makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*);
 };
 
 ## Converts a `varRef` pex node.
 fn @@varRef.convertPex(formals) {
     ## `varRef` in the context of a pex just translates to the same `varRef`
     ## in the context of an expression / statement.
-    <> convertPexIn(this)
+    return convertPexIn(this)
 };
 
 
@@ -189,9 +189,9 @@ fn @@varRef.convertPex(formals) {
 ## Does parser conversion of a node whose payload is a map with an optional
 ## `value` binding to an arbitrary expression. Does not perform lvalue removal.
 fn convertValuePayload(node) {
-    <> ifValue { get_nodeValue(node) }
-        { value <> withBindings(node, {value: convertPexIn(value)}) }
-        { <> node };
+    return ifValue { get_nodeValue(node) }
+        { value -> withBindings(node, {value: convertPexIn(value)}) }
+        { node };
 };
 
 ## Does parser conversion of an `apply` node.
@@ -199,7 +199,7 @@ fn @@apply.convertPexIn() {
     def function = convertPexIn(get_function(this));
     def actuals = convertPexIn(get_actuals(this));
 
-    <> withFinalBindings(this, {actuals, function});
+    return withFinalBindings(this, {actuals, function});
 };
 
 ## Does parser conversion of a `call` node.
@@ -207,7 +207,7 @@ fn @@call.convertPexIn() {
     def function = convertPexIn(get_function(this));
     def actuals = convertPexInList(get_actuals(this));
 
-    <> withFinalBindings(this, {function, actuals});
+    return withFinalBindings(this, {function, actuals});
 };
 
 ## Does parser conversion of a `closure` node.
@@ -215,50 +215,50 @@ fn @@closure.convertPexIn() {
     def statements = convertPexInList(get_statements(this));
     def yieldNode = convertPexIn(get_yieldNode(this));
 
-    <> withBindings(this, {statements, yield: yieldNode})
+    return withBindings(this, {statements, yield: yieldNode})
 };
 
 ## Does parser conversion of an `export` node.
 fn @@export.convertPexIn() {
     def value = convertPexIn(get_nodeValue(this));
-    <> withBindings(this, {value})
+    return withBindings(this, {value})
 };
 
 ## Does parser conversion of an `exportSelection` node.
 fn @@exportSelection.convertPexIn() {
-    <> this
+    return this
 };
 
 ## Does parser conversion of an `importModule` node.
 fn @@importModule.convertPexIn() {
-    <> this
+    return this
 };
 
 ## Does parser conversion of an `importModuleSelection` node.
 fn @@importModuleSelection.convertPexIn() {
-    <> this
+    return this
 };
 
 ## Does parser conversion of an `importResource` node.
 fn @@importResource.convertPexIn() {
-    <> this
+    return this
 };
 
 ## Does parser conversion of a `literal` node.
 fn @@literal.convertPexIn() {
-    <> this
+    return this
 };
 
 ## Does parser conversion of a `maybe` node.
 fn @@maybe.convertPexIn() {
     def value = convertPexIn(get_nodeValue(this));
-    <> withBindings(this, {value})
+    return withBindings(this, {value})
 };
 
 ## Does parser conversion of a `noYield` node.
 fn @@noYield.convertPexIn() {
     def value = convertPexIn(get_nodeValue(this));
-    <> withBindings(this, {value})
+    return withBindings(this, {value})
 };
 
 ## Does parser conversion of a `parser` node. This is where the juicy stuff
@@ -266,32 +266,32 @@ fn @@noYield.convertPexIn() {
 fn @@parser.convertPexIn() {
     ## `@x(...)` is done here to convert this node from an expression node
     ## form (with map payload) into a parser node form (with pex payload).
-    <> makeCallPex(REFS::Peg_makeMainSequence, @x(get_nodeValue(this)), [])
+    return makeCallPex(REFS::Peg_makeMainSequence, @x(get_nodeValue(this)), [])
 };
 
 ## Does parser conversion of a `varBind` node.
 fn @@varBind.convertPexIn() {
-    <> convertValuePayload(this)
+    return convertValuePayload(this)
 };
 
 ## Does parser conversion of a `varDef` node.
 fn @@varDef.convertPexIn() {
-    <> convertValuePayload(this)
+    return convertValuePayload(this)
 };
 
 ## Does parser conversion of a `varDefMutable` node.
 fn @@varDefMutable.convertPexIn() {
-    <> convertValuePayload(this)
+    return convertValuePayload(this)
 };
 
 ## Does parser conversion of a `varRef` node.
 fn @@varRef.convertPexIn() {
-    <> withoutIntermediates(this)
+    return withoutIntermediates(this)
 };
 
 ## Does parser conversion of a `void` node.
 fn @@void.convertPexIn() {
-    <> this
+    return this
 };
 
 
@@ -303,7 +303,7 @@ fn @@void.convertPexIn() {
 export fn simplify(expressionNode, resolveFn) {
     def converted = convertPexIn(expressionNode);
 
-    <> ifIs { hasType(converted, @@closure) }
-        { <> withModuleDefs(withResolvedImports(converted, resolveFn)) }
-        { <> converted }
+    return ifIs { hasType(converted, @@closure) }
+        { withModuleDefs(withResolvedImports(converted, resolveFn)) }
+        { converted }
 };
