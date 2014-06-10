@@ -113,7 +113,6 @@ Two kinds of yield are applicable in all contexts:
 
 * `yield` &mdash; Direct yield from closure. This yields a
   value from the closure that this statement appears directly in.
-  `<>` is a deprecated synonym for `yield`. TODO: Remove `<>`.
 
 * `yield /name` &mdash; Yield from named yield point. The `name` must match
   the yield definition name of an enclosing closure. (See "Yield Definitions,"
