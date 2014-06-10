@@ -1341,7 +1341,7 @@ def parGeneratorList = {:
 ## `makeFilterGenerator` or `filterAll`.
 def parComprehensionBody = {:
     genList = parGeneratorList
-    (@"->" | &@"<>")
+    @"->"
     filterBody = parClosureBody
 
     {
