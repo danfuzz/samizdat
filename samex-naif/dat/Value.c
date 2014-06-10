@@ -47,12 +47,11 @@ static zint nextSelfId(void) {
  */
 
 /* Documented in header. */
-zvalue datNonVoid(zvalue value) {
-    if (value == NULL) {
-        die("Attempt to use void in non-void context.");
-    }
+extern zvalue datNonVoid(zvalue value);
 
-    return value;
+/* Documented in header. */
+void datNonVoidError(void) {
+    die("Attempt to use void in non-void context.");
 }
 
 /* Documented in header. */
