@@ -1166,10 +1166,10 @@ fn makeBinaryCalls(firstEx, opExList) {
 ## {
 ##     def v1 = x;
 ##     def v2 = y;
-##     <> ifIs { lt(v1, v2) }
+##     ifIs { lt(v1, v2) }
 ##         {
 ##             def v3 = z;
-##             <> ifIs { le(v2, v3) }
+##             ifIs { le(v2, v3) }
 ##                 { eq(v3, q) }
 ##         }
 ## }()
@@ -1208,7 +1208,7 @@ fn makeCompareCalls(firstEx, opExList) {
             {
                 def rightName = nextName();
                 def rightRef = makeVarRef(rightName);
-                <> makeFullClosure({
+                makeFullClosure({
                     statements: [makeVarDef(rightName, opEx::expr)],
                     yield: makeMaybe(
                         makeCall(REFS::ifIs,
@@ -1221,7 +1221,7 @@ fn makeCompareCalls(firstEx, opExList) {
     def firstName = nextName();
     def closure = transform(makeVarRef(firstName), opExList*);
 
-    <> makeCall(
+    makeCall(
         makeFullClosure({
             statements: [
                 makeVarDef(firstName, firstEx),
@@ -1276,14 +1276,14 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = $Generator::filterAll(dataOf(token)) { elem ->
-            <> ifIs { hasType(elem, String) }
+            ifIs { hasType(elem, String) }
                 { makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
 
                     def formatter = ifValue { elem::format }
                         { format ->
-                            <> makeCall(REFS::Format_formatterFor,
+                            makeCall(REFS::Format_formatterFor,
                                 makeLiteral(format))
                         }
                         { REFS::Format_usual };
@@ -1292,12 +1292,12 @@ def parInterpolatedString = {:
                         { $Peg::apply(parStringInterpolation, tokens) }
                         { die("Invalid syntax in string interpolation.") };
 
-                    <> makeCallOrApply(formatter,
+                    makeCallOrApply(formatter,
                         makeInterpolate(makeMaybeValue(call)))
                 }
         };
 
-        <> makeCall(REFS::cat, elems*)
+        makeCall(REFS::cat, elems*)
     }
 :};
 
@@ -1324,7 +1324,7 @@ def parGeneratorDef = {:
 
     {
         def init = makeCall(REFS::Generator_makeRepeatGenerator, size);
-        <> {formal: {}, init}
+        {formal: {}, init}
     }
 :};
 
@@ -1343,7 +1343,7 @@ def parGeneratorList = {:
         def formals = $Generator::filterAll(gens) { gen -> gen::formal };
         def inits = $Generator::filterAll(gens) { gen -> gen::init };
 
-        <> {formals, inits}
+        {formals, inits}
     }
 :};
 
@@ -1359,7 +1359,7 @@ def parComprehensionBody = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        <> [makeFullClosure({filterBody*, formals: genFormals}), genInits*]
+        [makeFullClosure({filterBody*, formals: genFormals}), genInits*]
     }
 :};
 
@@ -1411,7 +1411,7 @@ def parRangeBody = {:
     |
         ## The limit is mandatory for exclusive ranges.
         {
-            <> ifIs { eq(op, @"..") }
+            ifIs { eq(op, @"..") }
                 { [] }
         }
     )
@@ -1419,21 +1419,21 @@ def parRangeBody = {:
     optIncrement = (@by parExpression)?
 
     {
-        <> ifIs { eq(op, @"..!") }
+        ifIs { eq(op, @"..!") }
             {
-                <> makeCall(
+                makeCall(
                     REFS::Range_makeExclusiveRange,
                     firstValue, optLimit*, optIncrement*)
             }
             {
-                <> ifValue { optLimit* }
+                ifValue { optLimit* }
                     { limit ->
-                        <> makeCall(
+                        makeCall(
                             REFS::Range_makeInclusiveRange,
                             firstValue, limit, optIncrement*)
                     }
                     {
-                        <> makeCall(
+                        makeCall(
                             REFS::Range_makeOpenRange,
                             firstValue, optIncrement*)
                     }
@@ -1473,7 +1473,7 @@ parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, get_type(operator));
-        <> { node -> makeCall(name, node) }
+        { node -> makeCall(name, node) }
     }
 |
     ## This one is specially converted, since it's a control construct,
@@ -1518,8 +1518,8 @@ def parIndexPostfix = {:
                     { REFS::Sequence_sliceInclusive }
                     { REFS::Sequence_sliceExclusive };
 
-                <> { node ->
-                    <> makeCall(funcRef,
+                { node ->
+                    makeCall(funcRef,
                         node, dataOf(start), dataOf(end)?*)
                 }
             }
@@ -1538,13 +1538,13 @@ def parIndexPostfix = {:
 
                 def optEndNode = (ifValue { dataOf(end) }
                     { endData ->
-                        <> makeCall(REFS::makeValue,
+                        makeCall(REFS::makeValue,
                             makeLiteral(get_type(end)),
                             endData)
                     })?;
 
-                <> { node ->
-                    <> makeCall(REFS::Sequence_sliceGeneral,
+                { node ->
+                    makeCall(REFS::Sequence_sliceGeneral,
                         node,
                         style,
                         startNode,
@@ -1564,7 +1564,7 @@ def parIndexPostfix = {:
                 { REFS::get }
                 { REFS::Sequence_nthFromEnd };
 
-            <> { node -> makeCall(funcRef, node, dataOf(index)) }
+            { node -> makeCall(funcRef, node, dataOf(index)) }
         }
     )
 :};
@@ -1578,8 +1578,8 @@ parPostfixOperator2 := {:
 |
     @"??"
     {
-        <> { node ->
-            <> makeCallThunks(REFS::ifIs,
+        { node ->
+            makeCallThunks(REFS::ifIs,
                 node, makeLiteral(true), makeLiteral(false))
         }
     }
@@ -1620,19 +1620,19 @@ parPostfixOperator2 := {:
         actuals = parActualsList
         {
             def funcRef = makeVarRef(name);
-            <> { node -> makeCallOrApply(funcRef, node, actuals*) }
+            { node -> makeCallOrApply(funcRef, node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
         {
             def getterRef = makeVarRef(cat("get_", name));
-            <> { node ->
+            { node ->
                 def getterCall = makeCall(getterRef, node);
-                <> @(get_type(getterCall)){
+                @(get_type(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarRef(cat("set_", name));
-                        <> makeCall(setterRef, node, expr)
+                        makeCall(setterRef, node, expr)
                     }
                 }
             }
@@ -1782,10 +1782,10 @@ def parLogicAndExpression = {:
             def testThunk = makeThunk(clause::test);
             def resultThunk = makeThunk(last);
 
-            <> ifIs { eq(formal, {}) }
+            ifIs { eq(formal, {}) }
                 { makeCall(REFS::ifIs, testThunk, resultThunk) }
                 {
-                    <> makeCall(REFS::ifValue,
+                    makeCall(REFS::ifValue,
                         testThunk,
                         withFormals(resultThunk, [formal]))
                 }
@@ -1801,12 +1801,12 @@ def parLogicAndExpression = {:
                 $Generator::filterAll(most, $Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
-                        <> withFormals(makeThunk(test),
+                        withFormals(makeThunk(test),
                             $Sequence::sliceExclusive(formals, 0, index))
                     };
 
             ## Construct the overall `ifValues` call.
-            <> makeCall(REFS::ifValues,
+            makeCall(REFS::ifValues,
                 makeCall(REFS::makeList, testThunks*),
                 withFormals(makeThunk(last), formals))
         }
@@ -1877,14 +1877,14 @@ def parMultiTest = {:
             def clause = clauses*;
             def formal = clause::formal;
             def testThunk = makeThunk(clause::test);
-            <> { thenThunk, elseThunk? ->
-                <> ifIs { eq(formal, {}) }
+            { thenThunk, elseThunk? ->
+                ifIs { eq(formal, {}) }
                     {
-                        <> makeCall(REFS::ifIs,
+                        makeCall(REFS::ifIs,
                             testThunk, thenThunk, elseThunk*)
                     }
                     {
-                        <> makeCall(REFS::ifValue,
+                        makeCall(REFS::ifValue,
                             testThunk,
                             withFormals(thenThunk, [formal]),
                             elseThunk*)
@@ -1902,13 +1902,13 @@ def parMultiTest = {:
                 $Generator::filterAll(clauses, $Range::makeOpenRange(0))
                     { clause, index ->
                         def test = clause::test;
-                        <> withFormals(makeThunk(test),
+                        withFormals(makeThunk(test),
                             $Sequence::sliceExclusive(formals, 0, index))
                     };
 
             ## Result function which constructs the overall `ifValues` call.
-            <> { thenThunk, elseThunk? ->
-                <> makeCall(REFS::ifValues,
+            { thenThunk, elseThunk? ->
+                makeCall(REFS::ifValues,
                     makeCall(REFS::makeList, testThunks*),
                     withFormals(thenThunk, formals),
                     elseThunk*)
@@ -1933,13 +1933,13 @@ def parMultiTest = {:
 ## =>
 ## ```
 ## { /out ->
-##     <> ifValue { expr1 }
+##     ifValue { expr1 }
 ##         { name1 -> thenStat1 }
 ##         {
-##             <> ifIs { expr2 }
+##             ifIs { expr2 }
 ##                 { name2 -> thenStat2 }
 ##                 {
-##                     <> ifValues(
+##                     ifValues(
 ##                         makeList(
 ##                             { expr3 },
 ##                             { name3 -> expr4 }),
@@ -1996,12 +1996,12 @@ def parIfExpression = {:
         ## unwrap it into a straight call, depending on if the original `if`
         ## has a yield def or not. Note that the `yield` in a thunk is always
         ## a `maybe`, which also needs to be unwrapped.
-        <> ifIs { eq(yieldDef, {}) }
+        ifIs { eq(yieldDef, {}) }
             { get_nodeValue(get_yieldNode(mainThunk)) }
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                <> makeCall(makeFullClosure({dataOf(mainThunk)*, yieldDef*}))
+                makeCall(makeFullClosure({dataOf(mainThunk)*, yieldDef*}))
             }
     }
 :};
@@ -2059,7 +2059,7 @@ def parWhileExpression = {:
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
 
-        <> makeCall(mainClosure)
+        makeCall(mainClosure)
     }
 :};
 
@@ -2104,7 +2104,7 @@ def parDoExpression = {:
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
 
-        <> makeCall(mainClosure)
+        makeCall(mainClosure)
     }
 :};
 
@@ -2158,7 +2158,7 @@ def parForExpression = {:
             ]
         });
 
-        <> makeCall(mainClosure)
+        makeCall(mainClosure)
     }
 :};
 
@@ -2198,9 +2198,9 @@ def CALL_ARG = $Lang0::parseExpression("{ body -> body() }");
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     <> ifValue { testExpr }
+##     ifValue { testExpr }
 ##         { name ->
-##             <> ifValue
+##             ifValue
 ##                 { get({(ex1): {s1a; s1b}, (ex2): {s2a; s2b}}, name) }
 ##                 { body -> body() }
 ##                 { statDefault }
@@ -2241,11 +2241,11 @@ def parSwitchExpression = {:
 
     {
         def optDefault = $Generator::filterAll(cases) { case ->
-            <> ifIs { eq(case::keys, @default) } { case::code }
+            ifIs { eq(case::keys, @default) } { case::code }
         };
 
         def optElse = $Generator::filterAll(cases) { case ->
-            <> ifIs { eq(case::keys, @else) } { case::code }
+            ifIs { eq(case::keys, @else) } { case::code }
         };
 
         ifIs { gt(get_size(optDefault), 1) }
@@ -2260,7 +2260,7 @@ def parSwitchExpression = {:
         ## what `cat(map)` defines.
         def caseClauses = $Generator::filterAll(cases) { case ->
             def keys = case::keys;
-            <> ifIs { hasType(keys, List) }
+            ifIs { hasType(keys, List) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, case::code) }
         };
         def caseMap = makeCallOrApply(REFS::cat,
@@ -2294,7 +2294,7 @@ def parSwitchExpression = {:
             yield: makeMaybe(outerIf)
         });
 
-        <> makeCall(mainClosure)
+        makeCall(mainClosure)
     }
 :};
 
