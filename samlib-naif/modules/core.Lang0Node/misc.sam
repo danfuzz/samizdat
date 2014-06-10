@@ -38,7 +38,7 @@ export fn formalsMaxArgs(formals) {
         maxArgs := $Number::add(maxArgs, 1)
     };
 
-    <> maxArgs
+    return maxArgs
 };
 
 ## Documented in spec.
@@ -54,11 +54,11 @@ export fn formalsMinArgs(formals) {
         minArgs := $Number::add(minArgs, 1)
     };
 
-    <> minArgs
+    return minArgs
 };
 
 ## Documented in spec.
 export fn isExpression(node) {
-    <> ifIs { get(EXPRESSION_TYPES, get_type(node)) }
-        { <> node }
+    return ifIs { get(EXPRESSION_TYPES, get_type(node)) }
+        { node }
 };
