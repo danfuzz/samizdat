@@ -96,13 +96,22 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
-#### `get_info(node) -> map`
+#### `get_info(node) -> map | void`
 
-Gets the metainformation map for the given node (presumably a closure).
-This is only defined on closure nodes which have been processed by
+Gets the metainformation map for the given node (presumably a closure),
+if any. This is only defined on closure nodes which have been processed by
 `withModuleDefs()` or equivalent.
 
-#### `get_lvalue(node) -> function | .`
+#### `get_interpolate(node) -> node | void`
+
+Gets the interpolated node, if any, of a `call` node. This is non-void
+when a `call` node was created by virtue of a call to `makeInterpolate`
+and is in turn used by `makeCallOrApply` to detect when to translate
+a call into an interpolated form.
+
+**Note**: `interpolate` bindings aren't used during execution.
+
+#### `get_lvalue(node) -> function | void`
 
 Gets the `lvalue` binding for a node, if any. This is non-void for
 `varRef` nodes created with `makeVarRefLvalue` or for any node in general
@@ -113,15 +122,6 @@ a tree of one) of one node argument, which can be called to produce a tree
 representing an assignment of the lvalue-bearing node to the given node.
 
 **Note**: `lvalue` bindings aren't used during execution.
-
-#### `get_interpolate(node) -> node | .`
-
-Gets the interpolated node, if any, of a `call` node. This is non-void
-when a `call` node was created by virtue of a call to `makeInterpolate`
-and is in turn used by `makeCallOrApply` to detect when to translate
-a call into an interpolated form.
-
-**Note**: `interpolate` bindings aren't used during execution.
 
 #### `get_maxArgs(node) -> int`
 
@@ -137,17 +137,17 @@ Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 `varDef`, `varDefMutable`, and `varRef`.
 
-#### `get_nodeValue(node) -> .`
+#### `get_nodeValue(node) -> . | void`
 
-Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `literal`, `maybe`, `noYield`, `parser`, `varBind`,
-`varDef`, and `varDefMutable`.
+Gets the value (literal or node) used by the given node, if any. This is
+applicable to nodes of type `literal`, `maybe`, `noYield`, `parser`,
+`varBind`, `varDef`, and `varDefMutable`.
 
 #### `get_prefix(node) -> string`
 
 Gets the name of an `importModuleSelection` node.
 
-#### `get_select(node) -> [name*]`
+#### `get_select(node) -> [name*] | void`
 
 Gets the binding selection of an `importModuleSelection` or `exportSelection`
 node.
@@ -161,9 +161,10 @@ Gets the source of an import. This is applicable to nodes of type
 
 Gets the statement list of a `closure` node.
 
-#### `get_yieldNode(node) -> node`
+#### `get_yieldNode(node) -> node | void`
 
-Gets the yield of a `closure` node.
+Gets the yield of a `closure` node, if any. Full closures are required to
+have a yield node, but basic closures are not.
 
 **Note:** This is named `yieldNode` and not just `yield` to avoid conflict
 with the token of the latter name.
