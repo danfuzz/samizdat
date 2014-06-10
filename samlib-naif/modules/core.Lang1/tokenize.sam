@@ -141,7 +141,7 @@ def tokIdentifier = $Peg::makeMainSequence(
     $Peg::makeStar($Peg::makeCharSet(IDENTIFIER_CHARS)),
     $Peg::makeCode { one, rest ->
         def string = $Peg::stringFromTokenList([one, rest*]);
-        <> ifValueOr { get(KEYWORDS, string) }
+        ifValueOr { get(KEYWORDS, string) }
             { @identifier(string) }
     });
 
@@ -157,7 +157,7 @@ def tokError = $Peg::makeMainSequence(
     $Peg::makeStar($Peg::makeCharSetComplement("\n")),
     $Peg::makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        <> @error(msg)
+        @error(msg)
     });
 
 ## Documented in spec.

@@ -189,7 +189,7 @@ def tokIdentifier = {:
 
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
-        <> ifValueOr { get(KEYWORDS, string) }
+        ifValueOr { get(KEYWORDS, string) }
             { @identifier(string) }
     }
 :};
@@ -210,7 +210,7 @@ def tokError = {:
 
     {
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        <> @error(msg)
+        @error(msg)
     }
 :};
 

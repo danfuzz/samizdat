@@ -206,7 +206,7 @@ def tokIdentifier = {:
 
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
-        <> ifValueOr { get(KEYWORDS, string) }
+        ifValueOr { get(KEYWORDS, string) }
             { @identifier(string) }
     }
 :};
@@ -227,7 +227,7 @@ def tokError = {:
 
     {
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        <> @error(msg)
+        @error(msg)
     }
 :};
 
@@ -380,7 +380,7 @@ def tokNamedChar = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
         def name = $Peg::stringFromTokenList(chars);
-        <> get(ENTITY_MAP, name)
+        get(ENTITY_MAP, name)
     }
 |
     "#x"
@@ -417,7 +417,7 @@ tokStringInterpolation := {:
     close = tokToken
 
     {
-        <> ifIs { hasType(close, expectClose) }
+        ifIs { hasType(close, expectClose) }
             { [open, cat([], tokens*)*, close] }
     }
 :};
