@@ -32,7 +32,7 @@ fn directResolve(self, source) {
     def dirPath = "\(self::path)/\(name)";
     def infoPath = "\(dirPath).saminfo";
 
-    return if ($Io0::fileType(infoPath) == "file") {
+    return? if ($Io0::fileType(infoPath) == "file") {
         ## We found a prefab info file. Read it!
         def info = $Reader::readEvalExpression0(infoPath);
         @module{info}
