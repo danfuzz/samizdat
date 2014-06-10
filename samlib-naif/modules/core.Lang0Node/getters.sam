@@ -36,7 +36,7 @@ fn splitAtChar(s, ch) {
     });
 
     addCurrentToResult();
-    <> result
+    return result
 };
 
 
@@ -46,7 +46,7 @@ fn splitAtChar(s, ch) {
 
 ## Documented in spec.
 export fn get_actuals(node) {
-    <> node::actuals
+    return node::actuals
 };
 
 ## Documented in spec.
@@ -55,7 +55,7 @@ export fn .get_baseName();
 ## Documented in spec.
 fn @@external.get_baseName() {
     def components = splitAtChar(dataOf(this), ".");
-    <> $Sequence::nthFromEnd(components, 0)
+    return $Sequence::nthFromEnd(components, 0)
 };
 
 ## Documented in spec.
@@ -64,7 +64,7 @@ fn @@internal.get_baseName() {
     def last = $Sequence::nthFromEnd(components, 0);
     def parts = splitAtChar(last, ".");
 
-    <> get(parts, 0)
+    return get(parts, 0)
 };
 
 ## Documented in spec.
@@ -72,12 +72,12 @@ export fn .get_definedNames();
 
 ## Documented in spec.
 fn @@export.get_definedNames() {
-    <> get_definedNames(get_nodeValue(this))
+    return get_definedNames(get_nodeValue(this))
 };
 
 ## Documented in spec.
 fn @@importModule.get_definedNames() {
-    <> [get_name(this)]
+    return [get_name(this)]
 };
 
 ## Documented in spec.
@@ -86,110 +86,110 @@ fn @@importModuleSelection.get_definedNames() {
     def select = ifValueOr { get_select(this) }
         { die("Cannot call `get_definedNames` on unresolved import.") };
 
-    <> $Generator::filterAll(select) { name <> cat(prefix, name) }
+    return $Generator::filterAll(select) { name -> cat(prefix, name) }
 };
 
 ## Documented in spec.
 fn @@importResource.get_definedNames() {
-    <> [get_name(this)]
+    return [get_name(this)]
 };
 
 ## Documented in spec.
 fn @@varDef.get_definedNames() {
-    <> [get_name(this)]
+    return [get_name(this)]
 };
 
 ## Documented in spec.
 fn @@varDefMutable.get_definedNames() {
-    <> [get_name(this)]
+    return [get_name(this)]
 };
 
 ## Documented in spec.
 fn Value.get_definedNames() {
-    <> []
+    return []
 };
 
 ## Documented in spec.
 export fn get_formals(node) {
-    <> node::formals
+    return node::formals
 };
 
 ## Documented in spec.
 export fn get_format(node) {
-    <> node::format
+    return node::format
 };
 
 ## Documented in spec.
 export fn get_function(node) {
-    <> node::function
+    return node::function
 };
 
 ## Documented in spec.
 export fn get_id(node) {
-    <> node::id
+    return node::id
 };
 
 ## Documented in spec.
 export fn get_info(node) {
-    <> node::info
+    return? node::info
 };
 
 ## Documented in spec.
 export fn get_interpolate(node) {
-    <> node::interpolate
+    return? node::interpolate
 };
 
 ## Documented in spec.
 export fn get_lvalue(node) {
-    <> node::lvalue
+    return? node::lvalue
 };
 
 ## Documented in spec.
 export fn get_maxArgs(node) {
-    <> formalsMaxArgs(get_formals(node))
+    return formalsMaxArgs(get_formals(node))
 };
 
 ## Documented in spec.
 export fn get_minArgs(node) {
-    <> formalsMinArgs(get_formals(node))
+    return formalsMinArgs(get_formals(node))
 };
 
 ## Documented in spec.
 export fn get_name(node) {
-    <> node::name
+    return? node::name
 };
 
 ## Documented in spec.
 export fn get_nodeValue(node) {
-    <> node::value
+    return? node::value
 };
 
 ## Documented in spec.
 export fn get_prefix(node) {
-    <> node::prefix
+    return node::prefix
 };
 
 ## Documented in spec.
 export fn get_select(node) {
-    <> node::select
+    return? node::select
 };
 
 ## Documented in spec.
 export fn get_source(node) {
-    <> node::source
+    return node::source
 };
 
 ## Documented in spec.
 export fn get_statements(node) {
-    <> node::statements
+    return node::statements
 };
 
 ## Documented in spec.
 export fn get_yieldNode(node) {
-    <> node::yield
+    return? node::yield
 };
 
 ## Documented in spec.
 export fn get_yieldDef(node) {
-    <> node::yieldDef
+    return? node::yieldDef
 };

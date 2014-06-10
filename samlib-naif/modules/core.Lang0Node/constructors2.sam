@@ -127,25 +127,25 @@ fn @@importResource.makeDynamicImport() {
 
 ## Documented in spec.
 export fn makeFullClosure(map) {
-    def formals = ifValueOr { get_formals(map) } { <> [] };
-    var statements = ifValueOr { get_statements(map) } { <> [] };
+    def formals = ifValueOr { map::formals } { [] };
+    var statements = ifValueOr { map::statements } { [] };
     def statSz = get_size(statements);
 
     def yieldNode = ifValueOr
-        { <> get_yieldNode(map) }
-        { <> ifIs { get_yieldDef(map) } { <> @void } }
-        { <> ifIs { eq(statSz, 0) } { <> @void } }
+        { map::yield }
+        { ifIs { map::yieldDef } { @void } }
+        { ifIs { eq(statSz, 0) } { @void } }
         {
             def lastStat = nth(statements, $Number::sub(statSz, 1));
-            <> ifIs { isExpression(lastStat) }
+            ifIs { isExpression(lastStat) }
                 {
                     statements := $Sequence::sliceExclusive(statements, 0);
-                    <> makeMaybe(lastStat)
+                    makeMaybe(lastStat)
                 }
         }
-        { <> @void };
+        { @void };
 
-    <> @closure{
+    return @closure{
         map*,
         formals:    formals,
         statements: statements,
@@ -155,7 +155,7 @@ export fn makeFullClosure(map) {
 
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
-    <> makeCall(REFS::get, collArg, keyArg)
+    return makeCall(REFS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
@@ -201,7 +201,7 @@ export fn makeImport(baseData) {
         };
 
     ## It's a whole-module import.
-    <> @importModule(data)
+    return @importModule(data)
 };
 
 ## Documented in spec.
@@ -221,7 +221,7 @@ export fn makeInfoMap(node) {
 
     ## Adds or revises an element in the `imports` map.
     fn addToImports(source, names) {
-        def orig = ifValueOr { get(imports, source) } { <> {} };
+        def orig = ifValueOr { get(imports, source) } { {} };
         def revised = {orig*, names*: Value};
         imports := {imports*, (source): revised};
     };
@@ -229,7 +229,7 @@ export fn makeInfoMap(node) {
     ## Adds or revises an element in the `resources` map.
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
-        def orig = ifValueOr { get(resources, source) } { <> [] };
+        def orig = ifValueOr { get(resources, source) } { [] };
         def revised = $Collection::keyList({orig*: null, (format): null});
         resources := {resources*, (source): revised};
     };
@@ -306,9 +306,9 @@ export fn withDynamicImports(node) {
 
     def converted = $Generator::filterAll(rawStatements) { s /out ->
         ifValueOr
-            { <> hasType(s, @@importModule) }
-            { <> hasType(s, @@importModuleSelection) }
-            { <> hasType(s, @@importResource) }
+            { hasType(s, @@importModule) }
+            { hasType(s, @@importModuleSelection) }
+            { hasType(s, @@importResource) }
             {
                 ## Not an `import*`.
                 yield /out [s]
@@ -318,7 +318,7 @@ export fn withDynamicImports(node) {
     };
 
     def statements = cat(converted*);
-    <> @(get_type(node)){dataOf(node)*, statements}
+    return @(get_type(node)){dataOf(node)*, statements}
 };
 
 ## Documented in spec.
@@ -362,7 +362,7 @@ export fn withModuleDefs(node) {
             makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
             makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 
-    <> @(get_type(node)){
+    return @(get_type(node)){
         dataOf(node)*,
         info,
         yield: yieldNode,
@@ -419,5 +419,5 @@ export fn withoutTops(node) {
 
 ## Documented in spec.
 export fn withTop(node) {
-    <> @(get_type(node)){dataOf(node)*, top: true}
+    return @(get_type(node)){dataOf(node)*, top: true}
 };
