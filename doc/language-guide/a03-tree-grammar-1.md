@@ -483,17 +483,6 @@ def parYieldOrNonlocal = {:
     }
 :};
 
-## Parses a local yield / return. TODO: Remove!
-def parOldYield = {:
-    @"<>"
-    (
-        ex = parExpression
-        { makeMaybe(ex) }
-    |
-        { @void }
-    )
-:};
-
 ## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
     @def
@@ -836,7 +825,7 @@ def parClosureBody = {:
         s = parStatement
         { {statements: [s]} }
     |
-        y = (parYieldOrNonlocal | parOldYield)
+        y = parYieldOrNonlocal
         { {statements: [], yield: y} }
     |
         { {statements: []} }

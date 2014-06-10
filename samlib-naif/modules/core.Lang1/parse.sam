@@ -364,15 +364,6 @@ def parYieldOrNonlocal = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parOldYield = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"<>"),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            parExpression,
-            $Peg::makeCode { ., ex -> makeMaybe(ex) }),
-        $Peg::makeResult(@void)));
-
-## Documented in spec.
 def parVarDef = $Peg::makeMainSequence(
     $Peg::makeToken(@@def),
     parName,
@@ -638,7 +629,7 @@ def parClosureBody = $Peg::makeMainSequence(
             parStatement,
             $Peg::makeCode { s -> {statements: [s]} }),
         $Peg::makeMainSequence(
-            $Peg::makeChoice(parYieldOrNonlocal, parOldYield),
+            parYieldOrNonlocal,
             $Peg::makeCode { y -> {statements: [], yield: y} }),
         $Peg::makeResult({statements: []})),
     $Peg::makeStar($Peg::makeToken(@@";")),
