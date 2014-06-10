@@ -19,17 +19,17 @@ import proto.Number;
 ## Documented in spec.
 fn @@SequenceGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
 fn @@SequenceGenerator.nextValue(box) {
     def index = this::index;
 
-    <> ifValue { nth(this::seq, index) }
+    return? ifValue { nth(this::seq, index) }
         { value ->
             store(box, value);
-            <> @SequenceGenerator{dataOf(this)*, index: $Number::add(index, 1)}
+            @SequenceGenerator{dataOf(this)*, index: $Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).

@@ -35,5 +35,5 @@ export fn main(libraryPath, primitiveGlobals) {
     def result = innerGlobals::fullEnvironment();
 
     note("    [fin]\n");
-    <> result
+    return result
 };

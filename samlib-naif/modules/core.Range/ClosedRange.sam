@@ -22,17 +22,17 @@ import ./rangeAdd :: *;
 ## Documented in spec.
 fn @@ClosedRange.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> stdCollect(this, optFilterFunction*)
+    return stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
 fn @@ClosedRange.nextValue(box) {
-    <> ifValue { ge(this::size, 0) }
+    return? ifValue { ge(this::size, 0) }
         { size ->
             def firstValue = this::firstValue;
             def increment = this::increment;
             store(box, firstValue);
-            <> makeClosedRange(
+            makeClosedRange(
                 rangeAdd(firstValue, increment),
                 sub(size, 1),
                 increment)
@@ -45,16 +45,14 @@ fn @@ClosedRange.nextValue(box) {
 
 ## Documented in spec.
 export fn makeClosedRange(firstValue, size, optIncrement?) {
-    def increment = ifValueOr { optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { 1 };
 
     ifNot { hasType(size, Int) }
         { die("`size` must be an int.") };
 
-    <> ifIs { gt(size, 0) }
-        {
-            <> @ClosedRange{firstValue, increment, size}
-        }
-        { <> nullGenerator }
+    return ifIs { gt(size, 0) }
+        { @ClosedRange{firstValue, increment, size} }
+        { nullGenerator }
 };
 
 ## Documented in spec.
@@ -63,14 +61,14 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     def isEmpty = totalEq(firstValue, limit)?;
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
-    def increment = ifValueOr { optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { 1 };
 
     ## `totalEq` ensures that `increment` is an int.
     ifIs { totalEq(increment, 0) }
         {
             return ifIs { isEmpty* }
-                { <> nullGenerator }
-                { <> makeClosedRange(firstValue, 1, 0) }
+                { nullGenerator }
+                { makeClosedRange(firstValue, 1, 0) }
         };
 
     ## `sign(increment)` is either `-1` or `+1`, which when subtracted from
@@ -87,12 +85,12 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ifIs { le(size, 0) }
         { return nullGenerator };
 
-    <> makeClosedRange(firstValue, size, increment);
+    return makeClosedRange(firstValue, size, increment);
 };
 
 ## Documented in spec.
 export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
-    def increment = ifValueOr { optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { 1 };
 
     ## This ensures that `firstValue` and `limit` have the same type.
     totalEq(firstValue, limit);
@@ -111,5 +109,5 @@ export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
     ifIs { le(size, 0) }
         { return nullGenerator };
 
-    <> makeClosedRange(firstValue, size, increment);
+    return makeClosedRange(firstValue, size, increment);
 };
