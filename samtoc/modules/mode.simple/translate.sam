@@ -62,9 +62,11 @@ fn @@apply.translate(varsBox) {
 };
 
 fn @@call.translate(varsBox) {
-    def actuals = (a in this.actuals <> translate(a, varsBox));
-    <> genCall("FUN_CALL",
-        translate(this.function, varsBox), actuals*)
+    def actuals = (a in this.actuals ->
+        genCall("datNonVoid", translate(a, varsBox))
+    );
+
+    <> genCall("FUN_CALL", translate(this.function, varsBox), actuals*)
 };
 
 fn @@closure.translate(varsBox) {
