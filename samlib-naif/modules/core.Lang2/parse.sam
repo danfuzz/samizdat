@@ -1221,7 +1221,7 @@ fn makeCompareCalls(firstEx, opExList) {
     def firstName = nextName();
     def closure = transform(makeVarRef(firstName), opExList*);
 
-    makeCall(
+    return makeCall(
         makeFullClosure({
             statements: [
                 makeVarDef(firstName, firstEx),
