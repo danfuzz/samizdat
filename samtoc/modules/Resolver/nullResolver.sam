@@ -18,5 +18,5 @@ fn @@Null.resolve(source) {
     ## there is probably something actually wrong (e.g. insufficient entries
     ## on the `externals` link path), and it will probably end up percolating
     ## back up as an error.
-    <>
+    return
 };

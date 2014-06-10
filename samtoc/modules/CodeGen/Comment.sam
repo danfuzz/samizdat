@@ -15,17 +15,17 @@ import ./protocol :: *;
 ##
 
 export fn genComment(text, optPayload?) {
-    <> if (def payload = optPayload*) {
+    return if (def payload = optPayload*) {
         def flat = "/* \(text) */ \(payload.flatten())";
-        <> @Comment{payload, text, flat}
+        @Comment{payload, text, flat}
     } else {
         def flat = "/* \(text) */";
-        <> @Comment{text, flat}
+        @Comment{text, flat}
     }
 };
 
 fn @@Comment.flatten() {
-    <> this::flat
+    return this::flat
 };
 
 fn @@Comment.indent(level, maxColumns) {
@@ -35,12 +35,12 @@ fn @@Comment.indent(level, maxColumns) {
         return "\[prefix, this::flat]"
     };
 
-    <> if (def p = this::payload) {
-        <> "\[
+    return if (def p = this::payload) {
+        "\[
             prefix, "// ", this::text, "\n",
             p.indent(level, maxColumns)
         ]"
     } else {
-        <> "\(prefix)/* \(this::text) */"
+        "\(prefix)/* \(this::text) */"
     }
 };

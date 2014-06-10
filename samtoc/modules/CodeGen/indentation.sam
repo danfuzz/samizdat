@@ -11,7 +11,7 @@
 ##
 
 ## List of indentation prefixes (index is level of indentation).
-def INDENTATION = [ n in (0..100) <> "\[for n <> "  "]" ];
+def INDENTATION = [ n in (0..100) -> "\[for n -> "  "]" ];
 
 
 ##
@@ -19,5 +19,5 @@ def INDENTATION = [ n in (0..100) <> "\[for n <> "  "]" ];
 ##
 
 export fn indentation(level) {
-    <> INDENTATION[level]
+    return INDENTATION[level]
 };

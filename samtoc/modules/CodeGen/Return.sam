@@ -15,20 +15,20 @@ import ./protocol :: *;
 ##
 
 export fn genReturn(tree) {
-    <> @Return{tree, flat: "return \(tree.flatten())"}
+    return @Return{tree, flat: "return \(tree.flatten())"}
 };
 
 fn @@Return.flatten() {
-    <> this::flat
+    return this::flat
 };
 
 fn @@Return.indent(level, maxColumns) {
     def prefix = indentation(level);
 
-    <> if ((#this::flat + #prefix) <= maxColumns) {
-        <> "\(prefix)\(this::flat)"
+    return if ((#this::flat + #prefix) <= maxColumns) {
+        "\(prefix)\(this::flat)"
     } else {
-        <> "\
+        "\
         \(prefix)return
         \(this::tree.indent(level + 1, maxColumns))"
     }

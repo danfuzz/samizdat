@@ -15,11 +15,11 @@
 ##
 
 export fn makeCache() {
-    <> @ResolveCache{box: $Box::makeCell({})}
+    return @ResolveCache{box: $Box::makeCell({})}
 };
 
 export fn cacheGet(cache, source) {
-    <> fetch(cache::box)[source]
+    return fetch(cache::box)[source]
 };
 
 export fn cachePut(cache, source, resolved) {
