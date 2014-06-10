@@ -370,22 +370,22 @@ def parActualsList = {:
 ## function call.
 def parPostfixOperator = {:
     actuals = parActualsList
-    { { node <> makeCallOrApply(node, actuals*) } }
+    { { node -> makeCallOrApply(node, actuals*) } }
 |
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
     @"::"
     key = parIdentifierString
-    { { node <> makeGet(node, key) } }
+    { { node -> makeGet(node, key) } }
 |
     ## The lookahead failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
     ## but higher layers augment its meaning.)
     @"*" !parExpression
-    { { node <> makeInterpolate(node) } }
+    { { node -> makeInterpolate(node) } }
 |
     @"?"
-    { { node <> makeMaybeValue(node) } }
+    { { node -> makeMaybeValue(node) } }
 |
     ## Note: Layer 2 adds additional rules here.
     %parPostfixOperator2
@@ -1008,7 +1008,7 @@ def parParserSet = {:
 
     terminals = (
         strings = parParserSetString+
-        { collect(cat(strings*), { ch <> @@(ch) }) }
+        { collect(cat(strings*), { ch -> @@(ch) }) }
     |
         tokens = parParserToken+
         { collect(tokens, dataOf) }

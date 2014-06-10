@@ -367,22 +367,22 @@ def parActualsList = {:
 ## function call.
 def parPostfixOperator = {:
     actuals = parActualsList
-    { { node <> makeCallOrApply(node, actuals*) } }
+    { { node -> makeCallOrApply(node, actuals*) } }
 |
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
     @"::"
     key = parIdentifierString
-    { { node <> makeGet(node, key) } }
+    { { node -> makeGet(node, key) } }
 |
     ## The lookahead failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
     ## but higher layers augment its meaning.)
     @"*" !parExpression
-    { { node <> makeInterpolate(node) } }
+    { { node -> makeInterpolate(node) } }
 |
     @"?"
-    { { node <> makeMaybeValue(node) } }
+    { { node -> makeMaybeValue(node) } }
 |
     ## Note: Layer 2 adds additional rules here.
     %parPostfixOperator2
@@ -1005,7 +1005,7 @@ def parParserSet = {:
 
     terminals = (
         strings = parParserSetString+
-        { collect(cat(strings*), { ch <> @@(ch) }) }
+        { collect(cat(strings*), { ch -> @@(ch) }) }
     |
         tokens = parParserToken+
         { collect(tokens, dataOf) }
@@ -1340,8 +1340,8 @@ def parGeneratorList = {:
 
     {
         def gens = [one, rest*];
-        def formals = $Generator::filterAll(gens) { gen <> gen::formal };
-        def inits = $Generator::filterAll(gens) { gen <> gen::init };
+        def formals = $Generator::filterAll(gens) { gen -> gen::formal };
+        def inits = $Generator::filterAll(gens) { gen -> gen::init };
 
         <> {formals, inits}
     }
@@ -1473,13 +1473,13 @@ parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, get_type(operator));
-        <> { node <> makeCall(name, node) }
+        <> { node -> makeCall(name, node) }
     }
 |
     ## This one is specially converted, since it's a control construct,
     ## not just a simple function application.
     @"!"
-    { { node <> makeCallThunks(REFS::ifNot, node, makeLiteral(true)) } }
+    { { node -> makeCallThunks(REFS::ifNot, node, makeLiteral(true)) } }
 :};
 
 ## Parses an index expression (inside a collection indexing postfix form).
@@ -1564,7 +1564,7 @@ def parIndexPostfix = {:
                 { REFS::get }
                 { REFS::Sequence_nthFromEnd };
 
-            <> { node <> makeCall(funcRef, node, dataOf(index)) }
+            <> { node -> makeCall(funcRef, node, dataOf(index)) }
         }
     )
 :};
@@ -1574,7 +1574,7 @@ def parIndexPostfix = {:
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {:
     @"**"
-    { { node <> makeCall(REFS::ne, node, makeLiteral(false)) } }
+    { { node -> makeCall(REFS::ne, node, makeLiteral(false)) } }
 |
     @"??"
     {
@@ -1620,7 +1620,7 @@ parPostfixOperator2 := {:
         actuals = parActualsList
         {
             def funcRef = makeVarRef(name);
-            <> { node <> makeCallOrApply(funcRef, node, actuals*) }
+            <> { node -> makeCallOrApply(funcRef, node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
@@ -1742,7 +1742,7 @@ def parLogicAndClause = {:
 ## ```
 ## (def var1 = expr1) & expr2
 ## =>
-## ifValue { expr1 } { var1 <> expr2 }
+## ifValue { expr1 } { var1 -> expr2 }
 ## ```
 ##
 ## ```
@@ -1751,9 +1751,9 @@ def parLogicAndClause = {:
 ## ifValues(
 ##     makeList(
 ##         { expr1 },
-##         { var1 <> expr2 },
-##         { var1, . <> expr3 }),
-##     { var1, ., var3 <> expr4 }
+##         { var1 -> expr2 },
+##         { var1, . -> expr3 }),
+##     { var1, ., var3 -> expr4 }
 ## ```
 ##
 ## That is, a single `ifIs` or `ifValue` call if there's only one `&`, or an
@@ -1796,7 +1796,7 @@ def parLogicAndExpression = {:
             ## Make a version of the test clauses, as thunks with formals
             ## lists.
             def formals =
-                $Generator::filterAll(most) { clause <> clause::formal };
+                $Generator::filterAll(most) { clause -> clause::formal };
             def testThunks =
                 $Generator::filterAll(most, $Range::makeOpenRange(0))
                     { clause, index ->
@@ -1862,8 +1862,8 @@ def parLogicOrExpression = {:
 ## ifValues(
 ##     makeList(
 ##         { expr1 },
-##         { name1 <> unboundExpr },
-##         { name1, . <> expr3 }),
+##         { name1 -> unboundExpr },
+##         { name1, . -> expr3 }),
 ##     { name1, ., name3 -> ... then ... }
 ##     { ... else ... })
 ## ```
@@ -1897,7 +1897,7 @@ def parMultiTest = {:
             ## Make a version of the test clauses, as thunks with formals
             ## lists.
             def formals =
-                $Generator::filterAll(clauses) { clause <> clause::formal };
+                $Generator::filterAll(clauses) { clause -> clause::formal };
             def testThunks =
                 $Generator::filterAll(clauses, $Range::makeOpenRange(0))
                     { clause, index ->
@@ -1942,7 +1942,7 @@ def parMultiTest = {:
 ##                     <> ifValues(
 ##                         makeList(
 ##                             { expr3 },
-##                             { name3 <> expr4 }),
+##                             { name3 -> expr4 }),
 ##                         { name3, name4 -> thenStat34 },
 ##                         { elseStat })
 ##                 }
@@ -2140,7 +2140,7 @@ def parForExpression = {:
         def genInits = genList::inits;
 
         def continueDef = ifValue { get_yieldDef(code) }
-            { name <> [makeVarDef(name, REFS::continue)] }
+            { name -> [makeVarDef(name, REFS::continue)] }
             { [] };
 
         def loopClosure = makeFullClosure({
@@ -2182,7 +2182,7 @@ def parSwitchCase = {:
 ## Tree for the second argument to the inner `ifValue` inside a `switch`
 ## translation. This expression is constant across all switches, and it's most
 ## easily constructed by using the built-in parser.
-def CALL_ARG = $Lang0::parseExpression("{ body <> body() }");
+def CALL_ARG = $Lang0::parseExpression("{ body -> body() }");
 
 ## Parses a switch expression. The translation is along these lines:
 ##
@@ -2202,7 +2202,7 @@ def CALL_ARG = $Lang0::parseExpression("{ body <> body() }");
 ##         { name ->
 ##             <> ifValue
 ##                 { get({(ex1): {s1a; s1b}, (ex2): {s2a; s2b}}, name) }
-##                 { body <> body() }
+##                 { body -> body() }
 ##                 { statDefault }
 ##         }
 ##         { statElse }
