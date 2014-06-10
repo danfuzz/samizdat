@@ -282,12 +282,9 @@ export fn makeMaybeValue(node) {
 export fn makeNonlocalExit(function, optValue?) {
     def value = ifValueOr { optValue* } { @void };
     def exitCall = ifValueOr
+        { ifIs { hasType(value, @@void) } { makeCall(function) } }
         {
-            <> ifIs { hasType(value, @@void) }
-                { <> makeCall(function) }
-        }
-        {
-            <> ifIs { hasType(value, @@maybe) }
+            ifIs { hasType(value, @@maybe) }
                 {
                     makeCallOrApply(function,
                         makeInterpolate(makeMaybeValue(get_nodeValue(value))))
@@ -344,9 +341,9 @@ export fn withModuleDefs(node) {
         ifIs { hasType(s, @@exportSelection) }
             { yield /out };
 
-        <> ifIs { hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s }
+        yield ifIs { hasType(s, @@export) }
+            { get_nodeValue(s) }
+            { s }
     };
 
     ## This is a list of lists of mappings which, when combined, is a map
@@ -408,14 +405,14 @@ export fn withoutTops(node) {
         ifNot { defNode::top }
             { yield /out };
 
-        <> get_name(defNode)
+        yield get_name(defNode)
     };
 
     def optSelection = ifIs { eq(exports, []) }
-        { <> [] }
-        { <> [makeExportSelection(exports*)] };
+        { [] }
+        { [makeExportSelection(exports*)] };
 
-    <> @(get_type(node)){
+    return @(get_type(node)){
         dataOf(node)*,
         statements: [tops*, mains*, optSelection*]
     }
