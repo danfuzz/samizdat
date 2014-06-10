@@ -303,7 +303,7 @@ This is equivalent to the syntactic form `{: rule+ :}`.
 Makes and returns a parser rule which always succeeds, yielding the
 given result `value`, and never consuming any input.
 
-This is equivalent to the syntactic form `{: { <> value } :}` assuming
+This is equivalent to the syntactic form `{: { value } :}` assuming
 that `value` is a constant expression.
 
 #### `makeSequence(rules*) -> rule`

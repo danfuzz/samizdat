@@ -46,7 +46,7 @@ to the indicated (or implied) formatter, producing the string to include.
 For example:
 
 ```
-"I have \{ def x = 5; <> x * x } muffins."
+"I have \{ def x = 5; -> x * x } muffins."
 
 =>
 

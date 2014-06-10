@@ -46,32 +46,29 @@ or included in the result list). If the filtering expression yields void,
 then there is no corresponding comprehension yield for that particular set
 of values.
 
-If the body *only* consists of a single local-yield statement (`<> ...`),
-then the `->` may be omitted.
-
 For example:
 
 ```
 ## Infinite generator of even whole numbers, by multiplying by 2.
-(x in (0..) <> x * 2)
+(x in (0..) -> x * 2)
 ## => 0, 2, 4, 6, ...
 
 ## Infinite generator of even whole numbers, by filtering out odd ones.
-(x in (0..) <> ((x % 2) == 0) & x)
+(x in (0..) -> ((x % 2) == 0) & x)
 ## => 0, 2, 4, 6, ...
 
 ## List of just the strings.
-[v in ["b", 10, "l", @foo, "o", "r", ["wow"], "t"] <> hasType(v, String)]
+[v in ["b", 10, "l", @foo, "o", "r", ["wow"], "t"] -> hasType(v, String)]
 ## => ["b", "l", "o", "r", "t"]
 
 ## List of sum of corresponding pairs.
-[n1 in (1..9), n2 in (100.. by 100) <> n1 + n2]
+[n1 in (1..9), n2 in (100.. by 100) -> n1 + n2]
 ## => [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
 ## Sum of three ranges.
 [a in (0..4), b in (50..90 by 10), c in (300..700 by 100) ->
     def sum = a + b + c;
-    <> sum
+    sum
 ]
 ## => [350, 461, 572, 683, 794]
 ```
@@ -91,7 +88,7 @@ on the number of values yielded by a comprehension.
 For example:
 
 ```
-[for 5 <> "Yay!"]
+[for 5 -> "Yay!"]
 ## => ["Yay!", "Yay!", "Yay!", "Yay!", "Yay!"]
 
 [x in (0..), for 7]
