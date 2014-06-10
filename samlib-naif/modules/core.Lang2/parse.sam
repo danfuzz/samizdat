@@ -986,7 +986,7 @@ def parParserSetString = {:
             ifIs { ne(1, get_size(startChar)) } { yield /out };
             ifIs { ne(1, get_size(endChar)) } { yield /out };
 
-            <> cat($Range::makeInclusiveRange(startChar, endChar)*)
+            yield cat($Range::makeInclusiveRange(startChar, endChar)*)
         }
     |
         { dataOf(s) }
