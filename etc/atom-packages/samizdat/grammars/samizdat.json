@@ -171,7 +171,7 @@
           }
         },
         {
-          "match" : "(def|var)  *([_$a-zA-Z][_$a-zA-Z0-9]*)",
+          "match" : "\\b(def|var)  *([_$a-zA-Z][_$a-zA-Z0-9]*)",
           "captures" : {
             "1" : {
               "name" : "keyword.operator.samizdat"
@@ -182,13 +182,24 @@
           }
         },
         {
-          "match" : "(yield)  *(\/[_$a-zA-Z][_$a-zA-Z0-9]*)",
+          "match" : "\\b(yield\\??)  *(\/[_$a-zA-Z][_$a-zA-Z0-9]*)",
           "captures" : {
             "1" : {
               "name" : "keyword.control.samizdat"
             },
             "2" : {
-              "name" : "variable.other.samizdat"
+              "name" : "keyword.control.samizdat"
+            }
+          }
+        },
+        {
+          "match" : "\\b(if|do|for|switch|while)  *(\/[_$a-zA-Z][_$a-zA-Z0-9]*)",
+          "captures" : {
+            "1" : {
+              "name" : "keyword.control.samizdat"
+            },
+            "2" : {
+              "name" : "variable.definition.samizdat"
             }
           }
         },
@@ -272,11 +283,11 @@
           "name" : "keyword.control.export.samizdat"
         },
         {
-          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tbreak|continue|default|do|else|\n\t\t\t\t\t\tfor|if|return|switch|while|yield\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(break|continue|return|yield)\\b\\??\n\t\t\t\t\t\t|\n\t\t\t\t\t\t\\b(default|do|else|for|if|switch|while)\\b\n\t\t\t\t\t",
           "name" : "keyword.control.samizdat"
         },
         {
-          "match" : "(?x)\n\t\t\t\t\t\t\\b(\n\t\t\t\t\t\tby|def|fn|in|module|var\n\t\t\t\t\t\t)\\b\n\t\t\t\t\t",
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(by|def|fn|in|module|var)\\b\n\t\t\t\t\t",
           "name" : "keyword.definition.samizdat"
         },
         {
@@ -332,7 +343,7 @@
           "name" : "keyword.operator.samizdat"
         },
         {
-          "match" : ":",
+          "match" : "(?x) : | ->",
           "name" : "punctuation.definition.samizdat"
         }
       ]

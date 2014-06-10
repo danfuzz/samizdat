@@ -11,6 +11,8 @@
 #ifndef _DAT_H_
 #define _DAT_H_
 
+#include <stddef.h>
+
 #include "module.h"
 #include "ztype.h"
 
@@ -79,6 +81,13 @@ void datImmortalize(zvalue value);
 void datMark(zvalue value);
 
 /**
+ * Issues a fatal error about a void where a value was expected. This is used
+ * by `datNonVoid()`.
+ */
+void datNonVoidError(void)
+    __attribute__((noreturn));
+
+/**
  * Checks that the given argument is non-void (that is not `NULL`), returning
  * it unmodified if non-void, or terminating the runtime with an error if it
  * is void.
@@ -86,7 +95,13 @@ void datMark(zvalue value);
  * **Note:** This is not an `assert`, since it's meant to be used in a
  * full "production" type build.
  */
-zvalue datNonVoid(zvalue value);
+inline zvalue datNonVoid(zvalue value) {
+    if (value == NULL) {
+        datNonVoidError();
+    }
+
+    return value;
+}
 
 /**
  * Gets a pointer to the data payload of a `zvalue`.
