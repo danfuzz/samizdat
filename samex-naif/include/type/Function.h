@@ -56,7 +56,13 @@ zvalue funApply(zvalue function, zvalue args);
 /**
  * Calls a function with the given list of arguments. `function` must be
  * a `Function`, and `argCount` must be non-negative. If `argCount` is
- * positive, then `args` must not be `NULL`.
+ * positive, then `args` must not be `NULL`. In addition all elements of
+ * `args` must be non-`NULL`.
+ *
+ * **Note:** Since in the vast majority of cases it's statically known that
+ * `args[*]` is non-`NULL`, those checks are not performed here. If the
+ * checks in question need to be performed, then they need to be done on
+ * the caller side, e.g. with calls to `datNonVoid()`.
  */
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
