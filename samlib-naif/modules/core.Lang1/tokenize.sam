@@ -30,7 +30,7 @@ def KEYWORDS = $Generator::collectAsMap(
         "var", "yield",
         ## Layer 2 defines additional keywords here.
         []*])
-        { name <> {(name): @(@@(name))} });
+        { name -> {(name): @(@@(name))} });
 
 ## These are all the int digits, as a map from strings to digit values. This
 ## includes hex digits as well, in both lower and upper case. Finally, this
@@ -97,7 +97,7 @@ def tokDecDigit = $Peg::makeMainSequence(
 ## Documented in spec.
 def tokInt = $Peg::makeMainSequence(
     $Peg::makePlus(tokDecDigit),
-    $Peg::makeCode { digits <> @int(intFromDigitList(10, digits)) });
+    $Peg::makeCode { digits -> @int(intFromDigitList(10, digits)) });
 
 ## Documented in spec.
 def tokStringPart = $Peg::makeMainChoice(
@@ -125,8 +125,8 @@ def tokString = $Peg::makeMainSequence(
     $Peg::makeChoice(
         $Peg::makeSequence(
             $Peg::makeString("\""),
-            $Peg::makeCode { ., parts, . <> @string(cat("", parts*)) }),
-        $Peg::makeCode { ., . <> @error("Unterminated string literal.") }));
+            $Peg::makeCode { ., parts, . -> @string(cat("", parts*)) }),
+        $Peg::makeCode { ., . -> @error("Unterminated string literal.") }));
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -142,14 +142,14 @@ def tokIdentifier = $Peg::makeMainSequence(
     $Peg::makeCode { one, rest ->
         def string = $Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { get(KEYWORDS, string) }
-            { <> @identifier(string) }
+            { @identifier(string) }
     });
 
 ## Documented in spec.
 def tokQuotedIdentifier = $Peg::makeMainSequence(
     $Peg::makeString("\\"),
     tokString,
-    $Peg::makeCode { ., s <> @identifier(dataOf(s)) });
+    $Peg::makeCode { ., s -> @identifier(dataOf(s)) });
 
 ## Documented in spec.
 def tokError = $Peg::makeMainSequence(
@@ -176,7 +176,7 @@ def tokFile = $Peg::makeMainSequence(
             $Peg::makeOpt(tokWhitespace),
             tokToken)),
     $Peg::makeOpt(tokWhitespace),
-    $Peg::makeCode { tokens, . <> tokens });
+    $Peg::makeCode { tokens, . -> tokens });
 
 
 ##
