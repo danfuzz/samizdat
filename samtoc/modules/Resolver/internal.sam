@@ -68,7 +68,7 @@ fn @@InternalResolver.resolve(source) {
     ## Cache the result, so we don't bother with a search the next time.
     $cache::cachePut(this::cache, source, result);
 
-    return result*
+    return? result*
 };
 
 export fn makeInternalResolver(path, nextResolver) {
