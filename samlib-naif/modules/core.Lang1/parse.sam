@@ -882,7 +882,7 @@ export fn parseExpression(expression) {
         { tokenize(expression) }
         { expression };
 
-    <> $Peg::apply(parExpressionOrError, tokens)
+    return $Peg::apply(parExpressionOrError, tokens)
 };
 
 ## Documented in spec.
@@ -891,5 +891,5 @@ export fn parseProgram(program) {
         { tokenize(program) }
         { program };
 
-    <> $Peg::apply(parProgramOrError, tokens)
+    return $Peg::apply(parProgramOrError, tokens)
 };

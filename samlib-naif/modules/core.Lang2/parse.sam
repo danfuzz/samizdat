@@ -92,14 +92,14 @@ def parParenExpression = {:
     ex = parExpression
     @")"
 
-    {  withoutInterpolate(ex) }
+    { withoutInterpolate(ex) }
 :};
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
 ## result being the string payload (not wrapped in `@identifier(...)`).
 def parName = {:
     nameIdent = @identifier
-    {  dataOf(nameIdent) }
+    { dataOf(nameIdent) }
 :};
 
 ## Parses a non-empty comma-separated list of "names." A "name" is as per
@@ -107,13 +107,13 @@ def parName = {:
 def parNameList = {:
     first = parName
     rest = (@"," parName)*
-    {  [first, rest*] }
+    { [first, rest*] }
 :};
 
 ## Parses a variable reference.
 def parVarRef = {:
     name = parName
-    {  makeVarRefLvalue(name) }
+    { makeVarRefLvalue(name) }
 :};
 
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,
@@ -122,16 +122,16 @@ def parVarRef = {:
 def parInt = {:
     @"-"
     i = @int
-    {  makeLiteral($Number::neg(dataOf(i))) }
+    { makeLiteral($Number::neg(dataOf(i))) }
 |
     i = @int
-    {  makeLiteral(dataOf(i)) }
+    { makeLiteral(dataOf(i)) }
 :};
 
 ## Parses a string literal.
 def parString = {:
     s = @string
-    {  makeLiteral(dataOf(s)) }
+    { makeLiteral(dataOf(s)) }
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,
@@ -140,7 +140,7 @@ def parIdentifierString = {:
     parString
 |
     name = parName
-    {  makeLiteral(name) }
+    { makeLiteral(name) }
 |
     token = .
     {
@@ -149,7 +149,7 @@ def parIdentifierString = {:
                 def type = get_typeName(token);
                 def firstCh = nth(type, 0);
                 <> ifIs { get(LOWER_ALPHA, firstCh) }
-                    {  makeLiteral(type) }
+                    { makeLiteral(type) }
             }
     }
 :};
@@ -158,11 +158,11 @@ def parIdentifierString = {:
 def parKey = {:
     key = parIdentifierString
     @":"
-    {  key }
+    { key }
 |
     key = parExpression
     @":"
-    {  key }
+    { key }
 :};
 
 ## Parses a mapping (element of a map).
@@ -201,16 +201,16 @@ def parMap = {:
         rest = (@"," parMapping)*
         {
             <> ifIs { eq(rest, []) }
-                {  one }
-                {  makeCall(REFS::cat, one, rest*) }
+                { one }
+                { makeCall(REFS::cat, one, rest*) }
         }
     |
-        {  makeLiteral({}) }
+        { makeLiteral({}) }
     )
 
     @"}"
 
-    {  result }
+    { result }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -1146,7 +1146,7 @@ fn makeBinaryCalls(firstEx, opExList) {
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
-    <> result
+    return result
 };
 
 ## Helper for parsing binary comparison operator expressions, which puts
@@ -1197,13 +1197,13 @@ fn makeCompareCalls(firstEx, opExList) {
     fn nextName() {
         def result = $safeVar::makeVarName("compareValue", varIndex);
         varIndex := $Number::add(varIndex, 1);
-        <> result
+        return result
     };
 
     fn transform(leftRef, opEx, rest*) {
         def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
 
-        <> ifIs { eq(rest, []) }
+        return ifIs { eq(rest, []) }
             { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
             {
                 def rightName = nextName();
@@ -2321,7 +2321,7 @@ export fn parseExpression(expression) {
         { tokenize(expression) }
         { expression };
 
-    <> $Peg::apply(parExpressionOrError, tokens)
+    return $Peg::apply(parExpressionOrError, tokens)
 };
 
 ## Documented in spec.
@@ -2330,5 +2330,5 @@ export fn parseProgram(program) {
         { tokenize(program) }
         { program };
 
-    <> $Peg::apply(parProgramOrError, tokens)
+    return $Peg::apply(parProgramOrError, tokens)
 };
