@@ -843,9 +843,7 @@ DEF_PARSE(closureDeclarations3) {
     zvalue most = PARSE(closureDeclarations2);
     zvalue yieldDef = PARSE(optYieldDef);
 
-    if (PEEK(CH_DIAMOND) == NULL) {
-        MATCH_OR_REJECT(CH_RARROW);
-    }
+    MATCH_OR_REJECT(CH_RARROW);
 
     return GFN_CALL(cat, most, yieldDef);
 }

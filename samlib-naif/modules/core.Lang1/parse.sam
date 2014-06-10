@@ -436,12 +436,8 @@ def parClosureDeclarations = $Peg::makeMainChoice(
                 parFormalsList,
                 $Peg::makeCode { formals -> {formals} })),
         parOptYieldDef,
-        $Peg::makeChoice(
-            $Peg::makeToken(@@"->"),
-            $Peg::makeLookaheadSuccess($Peg::makeToken(@@"<>"))),
-        $Peg::makeCode { most, yieldDef, . ->
-            {most*, yieldDef*}
-        }),
+        $Peg::makeToken(@@"->"),
+        $Peg::makeCode { most, yieldDef, . -> {most*, yieldDef*} }),
     $Peg::makeResult({formals: []}));
 
 ## Documented in spec.

@@ -565,7 +565,7 @@ def parClosureDeclarations = {:
 
     yieldDef = parOptYieldDef
 
-    (@"->" | &@"<>")
+    @"->"
 
     { {most*, yieldDef*} }
 |
