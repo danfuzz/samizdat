@@ -41,7 +41,7 @@ fn withoutSuffix(name) {
 ## Returns `name` iff the given name has the proper suffix for a source
 ## file.
 fn isSourceName(name) {
-    return (#name > #SOURCE_SUFFIX)
+    return? (#name > #SOURCE_SUFFIX)
         & (name[^(#SOURCE_SUFFIX - 1)..] == SOURCE_SUFFIX)
         & name
 };
