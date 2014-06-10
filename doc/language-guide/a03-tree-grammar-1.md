@@ -147,11 +147,11 @@ def parIdentifierString = {:
 |
     token = .
     {
-        <> ifNot { dataOf(token) }
+        ifNot { dataOf(token) }
             {
                 def type = get_typeName(token);
                 def firstCh = nth(type, 0);
-                <> ifIs { get(LOWER_ALPHA, firstCh) }
+                ifIs { get(LOWER_ALPHA, firstCh) }
                     { makeLiteral(type) }
             }
     }
@@ -174,7 +174,7 @@ def parMapping = {:
     value = parExpression
 
     {
-        <> ifIs { eq(keys, []) }
+        ifIs { eq(keys, []) }
             { /out ->
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
@@ -189,7 +189,7 @@ def parMapping = {:
             }
             {
                 ## One or more keys.
-                <> makeCallOrApply(REFS::makeValueMap,
+                makeCallOrApply(REFS::makeValueMap,
                     keys*, withoutInterpolate(value))
             }
     }
@@ -203,7 +203,7 @@ def parMap = {:
         one = parMapping
         rest = (@"," parMapping)*
         {
-            <> ifIs { eq(rest, []) }
+            ifIs { eq(rest, []) }
                 { one }
                 { makeCall(REFS::cat, one, rest*) }
         }
@@ -246,7 +246,7 @@ def parList = {:
     expressions = parUnadornedList
     @"]"
     {
-        <> ifIs { eq(expressions, []) }
+        ifIs { eq(expressions, []) }
             { makeLiteral([]) }
             { makeCallOrApply(REFS::makeList, expressions*) }
     }
@@ -261,7 +261,7 @@ def parType = {:
     name = (parIdentifierString | parParenExpression)
 
     {
-        <> ifIs { hasType(name, @@literal) }
+        ifIs { hasType(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
             { makeCall(REFS::makeDerivedDataType, name) }
     }
@@ -292,7 +292,7 @@ def parFullClosure = {:
 
     {
         def closure = makeFullClosure(raw);
-        <> withoutTops(closure)
+        withoutTops(closure)
     }
 :};
 
@@ -304,7 +304,7 @@ def parBasicClosure = {:
 
     {
         def closure = makeBasicClosure(raw);
-        <> withoutTops(closure)
+        withoutTops(closure)
     }
 :};
 
@@ -323,7 +323,7 @@ def parNullaryClosure = {:
         def formals = get_formals(c);
         ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
-        <> c
+        c
     }
 :};
 
@@ -336,7 +336,7 @@ def parBasicNullaryClosure = {:
         def formals = get_formals(c);
         ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
-        <> c
+        c
     }
 :};
 
@@ -418,7 +418,7 @@ def parUnaryExpression = {:
 
         $Generator::filterPump(postfixes) { op -> result := op(result) };
         $Generator::filterPump(prefixes) { op -> result := op(result) };
-        <> result
+        result
     }
 :};
 
@@ -477,7 +477,7 @@ def parYieldOrNonlocal = {:
     )
 
     {
-        <> ifIs { eq(name, @yield) }
+        ifIs { eq(name, @yield) }
             { value }
             { makeNonlocalExit(name, value) }
     }
@@ -613,11 +613,11 @@ def parFunctionCommon = {:
                 ## The closure has a yield def, but we need to also bind
                 ## it as `return`, so we add an extra local variable binding
                 ## here.
-                <> [makeVarDef(yieldDef, REFS::return)]
+                [makeVarDef(yieldDef, REFS::return)]
             }
             { [] };
 
-        <> makeFullClosure({
+        makeFullClosure({
             dataOf(code)*,
             formals,
             name,
@@ -650,7 +650,7 @@ def parGenericBind = {:
         def formals = get_formals(closure);
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        <> makeCall(REFS::genericBind, makeVarRef(name), bind, fullClosure)
+        makeCall(REFS::genericBind, makeVarRef(name), bind, fullClosure)
     }
 :};
 
@@ -688,7 +688,7 @@ def parGenericDef = {:
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals)));
 
-        <> withTop(makeVarDef(name, call))
+        withTop(makeVarDef(name, call))
     }
 :};
 
@@ -741,7 +741,7 @@ def parImportSource = {:
 
     {
         def name = cat(first, rest*, optSuffix*);
-        <> @internal(name)
+        @internal(name)
     }
 |
     first = parName
@@ -753,7 +753,7 @@ def parImportSource = {:
 
     {
         def name = cat(first, rest*);
-        <> @external(name)
+        @external(name)
     }
 :};
 
@@ -785,7 +785,7 @@ def parImportStatement = {:
 
     {
         def data = {nameOrPrefix*, format*, select*, source};
-        <> ifIs { optExport* }
+        ifIs { optExport* }
             { makeExport(makeImport(data)) }
             { makeImport(data) }
     }
@@ -892,7 +892,7 @@ def parProgram = {:
             statements: [imports*, body*],
             yield:      @void
         });
-        <> withoutTops(closure)
+        withoutTops(closure)
     }
 :};
 
