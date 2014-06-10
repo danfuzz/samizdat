@@ -83,7 +83,6 @@ def tokPunctuation = $Peg::makeMainSequence(
         $Peg::makeString(":="),
         $Peg::makeString("::"),
         $Peg::makeString(".."),
-        $Peg::makeString("<>"),
         $Peg::makeString("@@"),
         $Peg::makeString("{:"),
         $Peg::makeString(":}"),
