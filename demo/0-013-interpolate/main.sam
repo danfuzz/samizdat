@@ -18,15 +18,15 @@ fn msg(args*) {
 };
 
 fn ten() {
-    <> 10
+    yield 10
 };
 
 fn list5() {
-    <> [5]
+    yield [5]
 };
 
 fn yieldTest(x) {
-    <> x*
+    yield? x*
 };
 
 fn nonlocalTest(x) {
@@ -44,20 +44,20 @@ msg("blort"*);
 msg({a: 10, b: "20"}*);
 msg($Range::makeInclusiveRange("a", "m", 2)*);
 
-ifValue { <> yieldTest([]) }
-    { value <> msg(value) }
+ifValue { yieldTest([]) }
+    { value -> msg(value) }
     { note("(void)") };
 
-ifValue { <> nonlocalTest([]) }
-    { value <> msg(value) }
+ifValue { nonlocalTest([]) }
+    { value -> msg(value) }
     { note("(void)") };
 
-ifValue { <> yieldTest(["blort"]) }
-    { value <> msg(value) }
+ifValue { yieldTest(["blort"]) }
+    { value -> msg(value) }
     { note("(void)") };
 
-ifValue { <> nonlocalTest(["fizmo"]) }
-    { value <> msg(value) }
+ifValue { nonlocalTest(["fizmo"]) }
+    { value -> msg(value) }
     { note("(void)") };
 
 ## The extra parens here force the interpolated expression not to be considered

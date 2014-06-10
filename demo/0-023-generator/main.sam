@@ -28,7 +28,7 @@ fn msgAll(header, origGen) {
     { /done ->
         loop {
             def box = $Box::makePromise();
-            <> ifValue { <> nextValue(gen, box) }
+            ifValue { nextValue(gen, box) }
                 { nextGen ->
                     msg(fetch(box));
                     gen := nextGen
@@ -85,8 +85,8 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
 msgAll("FilterGenerator (square even numbers)",
     $Generator::makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
-            <> ifIs { <> eq($Number::mod(value, 2), 0) }
-                { <> $Number::mul(value, value) }
+            ifIs { eq($Number::mod(value, 2), 0) }
+                { $Number::mul(value, value) }
         });
 
 note("generatorPump on FilterGenerator");
@@ -122,7 +122,7 @@ note("collectAsMap on a FilterGenerator");
 def outMap = $Generator::collectAsMap(
     $Generator::makeFilterGenerator($Range::makeInclusiveRange(0, 4, 2))
         { value ->
-            <> {(value): value, ($Number::add(value, 1)): value, blort: value}
+            {(value): value, ($Number::add(value, 1)): value, blort: value}
         });
 note("    ", $Format::source(outMap));
 note();

@@ -9,11 +9,11 @@ A `Boolean` is both a truth value and a single-bit `Bitwise` value.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `toInt(boolean) <> int`
+#### `toInt(boolean) -> int`
 
 Returns `0` given `false`, or `1` given `true`.
 
-#### `toNumber(boolean) <> int`
+#### `toNumber(boolean) -> int`
 
 Same as `toInt`.
 
@@ -21,28 +21,28 @@ Same as `toInt`.
 <br><br>
 ### Generic Function Definitions: `Bitwise` protocol
 
-#### `and(boolean1, boolean2) <> boolean`
+#### `and(boolean1, boolean2) -> boolean`
 
 Straightforward protocol implementation.
 
-#### `bit(boolean, int) <> int`
+#### `bit(boolean, int) -> int`
 
 Returns `1` if called as `bit(true, 0)`. Returns `0` for any other
 valid pair of arguments.
 
-#### `bitSize(boolean) <> int`
+#### `bitSize(boolean) -> int`
 
 Returns `1`, always.
 
-#### `not(boolean) <> boolean`
+#### `not(boolean) -> boolean`
 
 Straightforward protocol implementation.
 
-#### `or(boolean1, boolean2) <> boolean`
+#### `or(boolean1, boolean2) -> boolean`
 
 Straightforward protocol implementation.
 
-#### `shl(boolean, int) <> boolean`
+#### `shl(boolean, int) -> boolean`
 
 Returns the given argument if shifted by `0`, or if `false` is shifted
 by any amount. Returns `false` if `true` is right-shifted by any
@@ -50,7 +50,7 @@ amount.
 
 It is a terminal error to try to shift `true` left by any amount.
 
-#### `xor(boolean1, boolean2) <> boolean`
+#### `xor(boolean1, boolean2) -> boolean`
 
 Straightforward protocol implementation.
 

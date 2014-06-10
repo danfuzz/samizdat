@@ -15,9 +15,9 @@
 
 ## Print the given test results.
 fn test(func, v1, v2) {
-    def result = ifValue { <> func(v1, v2) }
-        { v <> $Format::source(v) }
-        { <> "(void)" };
+    def result = ifValue { func(v1, v2) }
+        { v -> $Format::source(v) }
+        { "(void)" };
 
     note(
         debugName(func),

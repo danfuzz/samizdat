@@ -31,7 +31,7 @@ fn intBody(value, base) {
     var v = value;
 
     loop {
-        ifIs { <> perEq(v, 0) }
+        ifIs { perEq(v, 0) }
             { return text };
 
         def digit = nth(DIGIT_CHARS, $Number::mod(v, base));
@@ -42,14 +42,14 @@ fn intBody(value, base) {
 
 ## Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = {
-    -1: { int, base <> cat("-", intBody($Number::neg(int), base)) },
-    0:  { int, base <> "0" },
-    1:  { int, base <> intBody(int, base) }
+    -1: { int, base -> cat("-", intBody($Number::neg(int), base)) },
+    0:  { int, base -> "0" },
+    1:  { int, base -> intBody(int, base) }
 };
 
 ## Stringifies an int using the given base.
 fn intWithBase(int, base) {
-    <> get(INT_SIGNS, $Number::sign(int))(int, base)
+    return get(INT_SIGNS, $Number::sign(int))(int, base)
 };
 
 
@@ -63,9 +63,9 @@ fn .sourceGeneral(adorn);
 
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    <> ifIs { <> totalEq(adorn, true) }
-        { <> cat(before, value, after) }
-        { <> value }
+    return ifIs { totalEq(adorn, true) }
+        { cat(before, value, after) }
+        { value }
 };
 
 ## Helper which concatenates a list of list or map element stringifications.
@@ -73,11 +73,11 @@ fn adornIf(adorn, before, value, after) {
 ## removes that prefix from the first element. As a special case, this returns
 ## `""` if given `[]` for `elems`.
 fn collectionBody(elems) {
-    ifIs { <> totalEq(elems, []) }
+    ifIs { totalEq(elems, []) }
         { return "" };
 
     def one = $Sequence::sliceInclusive(get(elems, 0), 2);
-    <> cat(one, $Sequence::sliceInclusive(elems, 1)*)
+    return cat(one, $Sequence::sliceInclusive(elems, 1)*)
 };
 
 ## These are all the characters which are allowed to start an identifier.
@@ -110,32 +110,32 @@ def SPECIAL_VALUES = {
 ## Checks to see if the given value is a string with the form of an
 ## in-language identifier. Returns the given `string` if so.
 fn isIdentifier(string) {
-    ifNot { <> hasType(string, String) }
+    ifNot { hasType(string, String) }
         { return };
 
-    ifIs { <> eq(string, "") }
+    ifIs { eq(string, "") }
         { return };
 
-    ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
+    ifNot { get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
     $Generator::filterPump(string) { ch ->
-        ifNot { <> get(IDENTIFIER_CHARS, ch) }
+        ifNot { get(IDENTIFIER_CHARS, ch) }
             { return }
     };
 
-    <> string
+    return string
 };
 
 ## Stringifies a key (or derived value name).
 fn keyString(key) {
-    ifIs { <> isIdentifier(key) }
+    ifIs { isIdentifier(key) }
         { return key };
 
-    ifValue { <> get(SPECIAL_VALUES, key) }
+    ifValue { get(SPECIAL_VALUES, key) }
         { string -> return cat("(", string, ")") };
 
-    <> sourceGeneral(key, true)
+    return sourceGeneral(key, true)
 };
 
 ## The first Unicode surrogate code point.
@@ -164,7 +164,7 @@ def SPECIAL_CHARS = {
 
 ## Does hex character conversion.
 fn hexStringChar(ch) {
-    <> cat(
+    return cat(
         "\\x",
         intWithBase(toInt(ch), 16),
         ";")
@@ -173,35 +173,35 @@ fn hexStringChar(ch) {
 ## Helper for stringifying strings: Returns the converted form of the
 ## given character.
 fn stringChar(ch) {
-    ifValue { <> get(SPECIAL_CHARS, ch) }
+    ifValue { get(SPECIAL_CHARS, ch) }
         { special ->
-            ifIs { <> eq(special, "x") }
+            ifIs { eq(special, "x") }
                 { return hexStringChar(ch) }
                 { return special }
         };
 
-    ifIs { <> lt(ch, CHAR_SURROGATE_START) }
+    ifIs { lt(ch, CHAR_SURROGATE_START) }
         { return ch };
 
-    ifIs { <> le(ch, CHAR_SURROGATE_END) }
+    ifIs { le(ch, CHAR_SURROGATE_END) }
         { return hexStringChar(ch) };
 
-    <> ifIs { <> le(ch, CHAR_UNICODE_END) }
-        { <> ch }
-        { <> hexStringChar(ch) }
+    return ifIs { le(ch, CHAR_UNICODE_END) }
+        { ch }
+        { hexStringChar(ch) }
 };
 
 ## Stringifies an int.
 fn Int.sourceGeneral(adorn) {
-    <> intWithBase(this, 10)
+    return intWithBase(this, 10)
 };
 
 ## Stringifies a list.
 fn List.sourceGeneral(adorn) {
     def listElems = $Generator::filterAll(this)
-        { elem <> cat(", ", sourceGeneral(elem, true)) };
+        { elem -> cat(", ", sourceGeneral(elem, true)) };
 
-    <> adornIf(adorn, "[", collectionBody(listElems), "]")
+    return adornIf(adorn, "[", collectionBody(listElems), "]")
 };
 
 ## Stringifies a map.
@@ -210,82 +210,78 @@ fn Map.sourceGeneral(adorn) {
         { mapping ->
             def key = keyString(get_key(mapping));
             def value = sourceGeneral(get_value(mapping), true);
-            <> cat(", ", key, ": ", value)
+            cat(", ", key, ": ", value)
         };
 
-    <> adornIf(adorn, "{", collectionBody(mapElems), "}");
+    return adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
 
 ## Stringifies a string.
 fn String.sourceGeneral(adorn) {
     def bodyChars = $Generator::makeFilterGenerator(this)
-        { ch <> stringChar(ch) };
-    <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
+        { ch -> stringChar(ch) };
+    return adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 
 ## Stringifies a type.
 fn Type.sourceGeneral(adorn) {
-    ifValue { <> get(SPECIAL_VALUES, this) }
+    ifValue { get(SPECIAL_VALUES, this) }
         { string -> return string };
 
     def name = typeName(this);
 
-    ifNot { <> eq(typeParent(this), DerivedData) }
+    ifNot { eq(typeParent(this), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
-    def body = ifIs { <> hasType(name, String) }
-        {
-            <> ifValueOr { <> isIdentifier(name) }
-                { <> sourceGeneral(name, true) }
-        }
-        { <> cat("(", sourceGeneral(name, true), ")") };
+    def body = ifIs { hasType(name, String) }
+        { ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) } }
+        { cat("(", sourceGeneral(name, true), ")") };
 
-    <> adornIf(adorn, "@@", body, "")
+    return adornIf(adorn, "@@", body, "")
 };
 
 ## Stringifies a derived value or an opaque core value.
 fn Value.sourceGeneral(adorn) {
-    ifValue { <> get(SPECIAL_VALUES, this) }
+    ifValue { get(SPECIAL_VALUES, this) }
         { string -> return string };
 
     def type = get_type(this);
     def name = typeName(type);
-    def typeStr = ifIs { <> hasType(name, String) }
+    def typeStr = ifIs { hasType(name, String) }
         {
             ## The type is a string.
-            <> ifValueOr { <> isIdentifier(name) }
-                { <> sourceGeneral(name, true) }
+            ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) }
         }
         {
             ## General case for type.
-            <> cat("(", sourceGeneral(type, true), ")")
+            cat("(", sourceGeneral(type, true), ")")
         };
     def prefix = cat("@", typeStr);
 
-    ifNot { <> eq(typeParent(type), DerivedData) }
+    ifNot { eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifValue { <> debugName(this) }
-                { name <> keyString(name) }
-                { <> "..." };
+            def body = ifValue { debugName(this) }
+                { name -> keyString(name) }
+                { "..." };
 
             return cat(prefix, "<", body, ">")
         };
 
-    <> ifValue { <> dataOf(this) }
+    return ifValue { dataOf(this) }
         { data ->
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
             def dataStr = sourceGeneral(data, true);
-            ifIs { <> hasType(data, List) }
+            ifIs { hasType(data, List) }
                 { return cat(prefix, dataStr) };
-            ifIs { <> hasType(data, Map) }
+            ifIs { hasType(data, Map) }
                 { return cat(prefix, dataStr) };
-            return cat(prefix, "(", dataStr, ")")
+            cat(prefix, "(", dataStr, ")")
         }
         {
             ## Type-only transparent derived value.
-            <> prefix
+            prefix
         };
 };
 
@@ -301,18 +297,18 @@ fn .humanString();
 ## `humanString`.
 fn List.humanString() {
     def elems = $Generator::makeFilterGenerator(humanString, this);
-    <> cat("", elems*)
+    return cat("", elems*)
 };
 
 ## Human-stringifies a string, which just returns the string as-is.
 fn String.humanString() {
-    <> this
+    return this
 };
 
 ## Default human-stringifier, which just calls through to
 ## `sourceGeneral`.
 fn Value.humanString() {
-    <> sourceGeneral(this, true)
+    return sourceGeneral(this, true)
 };
 
 
@@ -322,41 +318,41 @@ fn Value.humanString() {
 
 ## Documented in spec.
 export fn int(value, optBase?) {
-    def base = ifValueOr { <> optBase* } { <> 10 };
+    def base = ifValueOr { optBase* } { 10 };
 
-    ifIs { <> lt(base, 2) }
+    ifIs { lt(base, 2) }
         { die("Invalid base for int.") };
 
-    ifIs { <> gt(base, 36) }
+    ifIs { gt(base, 36) }
         { die("Invalid base for int.") };
 
-    <> intWithBase(value, base)
+    return intWithBase(value, base)
 };
 
 ## Documented in spec.
 export fn intHex(arg) {
-    <> intWithBase(arg, 16)
+    return intWithBase(arg, 16)
 };
 
 ## Documented in spec.
 export fn source(value?) {
-    <> ifValue { <> value* }
-        { value <> sourceGeneral(value, true) }
-        { <> "void" }
+    return ifValue { value* }
+        { value -> sourceGeneral(value, true) }
+        { "void" }
 };
 
 ## Documented in spec.
 export fn sourceUnadorned(value?) {
-    <> ifValue { <> value* }
-        { value <> sourceGeneral(value, false) }
-        { <> "void" }
+    return ifValue { value* }
+        { value -> sourceGeneral(value, false) }
+        { "void" }
 };
 
 ## Documented in spec.
 export fn usual(value?) {
-    <> ifValue { <> value* }
-        { value <> humanString(value) }
-        { <> "" }
+    return ifValue { value* }
+        { value -> humanString(value) }
+        { "" }
 };
 
 ## Mapping from format escape characters to their respective handler functions.
@@ -372,6 +368,6 @@ def FORMATTERS = {
 ## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 ## is defined in terms of other exported functions.
 export fn formatterFor(formatSpec) {
-    <> ifValueOr { <> get(FORMATTERS, formatSpec) }
+    return ifValueOr { get(FORMATTERS, formatSpec) }
         { die("Unrecognized format spec: ", source(formatSpec)) }
 };

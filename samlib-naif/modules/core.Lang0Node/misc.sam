@@ -30,15 +30,15 @@ export fn formalsMaxArgs(formals) {
     var maxArgs = 0;
 
     $Generator::filterPump(formals) { f ->
-        ifValue { <> f::repeat }
+        ifValue { f::repeat }
             { rep ->
-                ifIs { <> eq(rep, "*") } { return -1 };
-                ifIs { <> eq(rep, "+") } { return -1 };
+                ifIs { eq(rep, "*") } { return -1 };
+                ifIs { eq(rep, "+") } { return -1 };
             };
         maxArgs := $Number::add(maxArgs, 1)
     };
 
-    <> maxArgs
+    return maxArgs
 };
 
 ## Documented in spec.
@@ -46,19 +46,19 @@ export fn formalsMinArgs(formals) {
     var minArgs = 0;
 
     $Generator::filterPump(formals) { f /next ->
-        ifValue { <> f::repeat }
+        ifValue { f::repeat }
             { rep ->
-                ifIs { <> eq(rep, "?") } { yield /next };
-                ifIs { <> eq(rep, "*") } { yield /next };
+                ifIs { eq(rep, "?") } { yield /next };
+                ifIs { eq(rep, "*") } { yield /next };
             };
         minArgs := $Number::add(minArgs, 1)
     };
 
-    <> minArgs
+    return minArgs
 };
 
 ## Documented in spec.
 export fn isExpression(node) {
-    <> ifIs { <> get(EXPRESSION_TYPES, get_type(node)) }
-        { <> node }
+    return ifIs { get(EXPRESSION_TYPES, get_type(node)) }
+        { node }
 };

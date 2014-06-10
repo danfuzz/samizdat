@@ -58,7 +58,7 @@ fn intFromDigitList(base, digits) {
     var result = 0;
 
     $Generator::filterPump(digits) { digit ->
-        ifIs { <> perNe(digit, -1) }
+        ifIs { perNe(digit, -1) }
             { result := $Number::add($Number::mul(result, base), digit) }
     };
 
@@ -189,7 +189,7 @@ def tokIdentifier = {:
 
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
-        <> ifValueOr { <> get(KEYWORDS, string) }
+        <> ifValueOr { get(KEYWORDS, string) }
             { <> @identifier(string) }
     }
 :};

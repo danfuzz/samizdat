@@ -20,5 +20,5 @@ import proto.Number :: neg;
 
 ## Documented in spec.
 export fn shr(bitwise, n) {
-    <> shl(bitwise, neg(n))
+    return shl(bitwise, neg(n))
 }

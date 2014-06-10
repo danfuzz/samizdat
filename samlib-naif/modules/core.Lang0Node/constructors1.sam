@@ -14,13 +14,13 @@ import core.Generator;
 
 ## Documented in spec.
 export fn makeApply(function, optActuals?) {
-    def actuals = ifValueOr { <> optActuals* } { <> @void };
-    <> @apply{function, actuals}
+    def actuals = ifValueOr { optActuals* } { @void };
+    return @apply{function, actuals}
 };
 
 ## Documented in spec.
 export fn makeBasicClosure(map) {
-    <> @closure{
+    return @closure{
         formals:    [],
         statements: [],
         map*
@@ -29,91 +29,91 @@ export fn makeBasicClosure(map) {
 
 ## Documented in spec.
 export fn makeCall(function, actuals*) {
-    <> @call{function, actuals}
+    return @call{function, actuals}
 };
 
 ## Documented in spec.
 export fn makeCallLiterals(function, actuals*) {
-    def literals = $Generator::filterAll(actuals) { one <> makeLiteral(one) };
-    <> makeCall(function, literals*)
+    def literals = $Generator::filterAll(actuals) { one -> makeLiteral(one) };
+    return makeCall(function, literals*)
 };
 
 ## Documented in spec.
 export fn makeCallThunks(function, actuals*) {
-    def thunks = $Generator::filterAll(actuals) { one <> makeThunk(one) };
-    <> makeCall(function, thunks*)
+    def thunks = $Generator::filterAll(actuals) { one -> makeThunk(one) };
+    return makeCall(function, thunks*)
 };
 
 ## Documented in spec.
 export fn makeExport(node) {
-    <> @export{value: node}
+    return @export{value: node}
 };
 
 ## Documented in spec.
 export fn makeExportSelection(names+) {
-    <> @exportSelection{select: names}
+    return @exportSelection{select: names}
 };
 
 ## Documented in spec.
 export fn makeLiteral(value) {
-    <> @literal{value}
+    return @literal{value}
 };
 
 ## Documented in spec.
 export fn makeMaybe(value) {
-    <> @maybe{value}
+    return @maybe{value}
 };
 
 ## Documented in spec.
 export fn makeNoYield(value) {
-    <> @noYield{value}
+    return @noYield{value}
 };
 
 ## Documented in spec.
 export fn makeThunk(expression) {
-    <> @closure{formals: [], statements: [], yield: makeMaybe(expression)}
+    return @closure{formals: [], statements: [], yield: makeMaybe(expression)}
 };
 
 ## Documented in spec.
 export fn makeVarBind(name, value) {
-    <> @varBind{name, value}
+    return @varBind{name, value}
 };
 
 ## Documented in spec.
 export fn makeVarDef(name, optValue?) {
-    <> ifValue { <> optValue* }
-        { value <> @varDef{name, value} }
-        { <> @varDef{name} }
+    return ifValue { optValue* }
+        { value -> @varDef{name, value} }
+        { @varDef{name} }
 };
 
 ## Documented in spec.
 export fn makeVarDefMutable(name, optValue?) {
-    <> ifValue { <> optValue* }
-        { value <> @varDefMutable{name, value} }
-        { <> @varDefMutable{name} }
+    return ifValue { optValue* }
+        { value -> @varDefMutable{name, value} }
+        { -> @varDefMutable{name} }
 };
 
 ## Documented in spec.
 export fn makeVarRef(name) {
-    <> @varRef{name}
+    return @varRef{name}
 };
 
 ## Documented in spec.
 export fn makeVarRefLvalue(name) {
-    <> @varRef{
+    return @varRef{
         name,
-        lvalue: { node <> makeVarBind(name, node) }
+        lvalue: { node -> makeVarBind(name, node) }
     }
 };
 
 ## Documented in spec.
 export fn withFormals(node, formals) {
-    <> @(get_type(node)){dataOf(node)*, formals}
+    return @(get_type(node)){dataOf(node)*, formals}
 };
 
 ## Documented in spec.
 export fn withoutInterpolate(node) {
-    <> @(get_type(node))($Collection::del(dataOf(node), "interpolate"))
+    return @(get_type(node))($Collection::del(dataOf(node), "interpolate"))
 };
 
 ## Documented in spec.
@@ -122,5 +122,5 @@ export fn withoutIntermediates(node) {
         $Collection::del(dataOf(node), "lvalue"),
         "interpolate");
 
-    <> @(get_type(node))(data)
+    return @(get_type(node))(data)
 };

@@ -18,9 +18,9 @@ import proto.Number;
 
 ## Does a type / content check on `path`.
 fn checkPath(path) {
-    ifNot { <> hasType(path, String) }
+    ifNot { hasType(path, String) }
         { die("Invalid non-string path.") };
-    ifIs { <> eq(path, "") }
+    ifIs { eq(path, "") }
         { die("Invalid empty path.") };
 };
 
@@ -33,13 +33,10 @@ fn checkPath(path) {
 export fn fixPath(path, basePaths*) {
     checkPath(path);
 
-    <> ifIs { <> eq(get(path, 0), "/") }
-        { <> path }
-        {
-            <> ifIs { <> eq(basePaths, []) }
-                { <> path }
-                { <> cat(fixPath(basePaths*), "/", path) }
-        }
+    return ifValueOr
+        { ifIs { eq(get(path, 0), "/") } { path } }
+        { ifIs { eq(basePaths, []) } { path } }
+        { cat(fixPath(basePaths*), "/", path) }
 };
 
 ## Documented in spec.
@@ -55,8 +52,8 @@ export fn get_directory(path) {
             at := $Number::sub(at, 1);
 
             def ch = get(path, at);
-            ifIs { <> ne(ch, "/") } { yield /out };
-            ifIs { <> eq(at, 0) } { return "/" };
+            ifIs { ne(ch, "/") } { yield /out };
+            ifIs { eq(at, 0) } { return "/" };
         }
     }();
 
@@ -65,13 +62,13 @@ export fn get_directory(path) {
     ## the next-final slash is at the start of the path, then the result is
     ## `"/"`.
     loop {
-        ifIs { <> eq(at, 0) } { return "." };
+        ifIs { eq(at, 0) } { return "." };
         at := $Number::sub(at, 1);
 
         def ch = get(path, at);
-        ifIs { <> eq(ch, "/") }
+        ifIs { eq(ch, "/") }
             {
-                ifIs { <> eq(at, 0) } { return "/" };
+                ifIs { eq(at, 0) } { return "/" };
                 return $Sequence::sliceExclusive(path, 0, at)
             };
     }
@@ -90,8 +87,8 @@ export fn get_file(path) {
             at := $Number::sub(at, 1);
 
             def ch = get(path, at);
-            ifIs { <> ne(ch, "/") } { yield /out };
-            ifIs { <> eq(at, 0) } { return "/" };
+            ifIs { ne(ch, "/") } { yield /out };
+            ifIs { eq(at, 0) } { return "/" };
         }
     }();
 
@@ -101,13 +98,13 @@ export fn get_file(path) {
     ## then that means there was no slash, making the result be the entire
     ## `path` minus any path-final slashes.
     loop {
-        ifIs { <> eq(at, 0) }
+        ifIs { eq(at, 0) }
             { return $Sequence::sliceInclusive(path, 0, endAt) };
 
         at := $Number::sub(at, 1);
 
         def ch = get(path, at);
-        ifIs { <> eq(ch, "/") }
+        ifIs { eq(ch, "/") }
             {
                 at := $Number::add(at, 1);
                 return $Sequence::sliceInclusive(path, at, endAt)

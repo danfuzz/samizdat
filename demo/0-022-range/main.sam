@@ -36,11 +36,11 @@ fn msgTen(header, origGen) {
     { /done ->
         loop {
             count := $Number::sub(count, 1);
-            ifIs { <> lt(count, 0) }
+            ifIs { lt(count, 0) }
                 { yield /done };
 
             def box = $Box::makePromise();
-            <> ifValue { <> nextValue(gen, box) }
+            ifValue { nextValue(gen, box) }
                 { nextGen ->
                     msg(fetch(box));
                     gen := nextGen

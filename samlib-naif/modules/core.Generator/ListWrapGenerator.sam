@@ -18,23 +18,23 @@ import core.Box;
 
 ## Documented in spec.
 export fn makeListWrapGenerator(generator) {
-    <> @ListWrapGenerator(generator)
+    return @ListWrapGenerator(generator)
 };
 
 ## Documented in spec.
 fn @@ListWrapGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
 fn @@ListWrapGenerator.nextValue(box) {
     def innerBox = $Box::makePromise();
 
-    <> ifValue { <> nextValue(dataOf(this), innerBox) }
+    return? ifValue { nextValue(dataOf(this), innerBox) }
         { nextGenerator ->
             store(box, [fetch(innerBox)]);
-            <> @ListWrapGenerator(nextGenerator)
+            @ListWrapGenerator(nextGenerator)
         }
         {
             ## It became voided.

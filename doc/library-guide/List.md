@@ -9,20 +9,20 @@ A `List` is a kind of `Sequence`.
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(list, other) <> list | void`
+#### `perEq(list, other) -> list | void`
 
 Calls `totalEq`.
 
-#### `perOrder(list, other) <> int`
+#### `perOrder(list, other) -> int`
 
 Calls `totalOrder`.
 
-#### `totalEq(list1, list2) <> list | void`
+#### `totalEq(list1, list2) -> list | void`
 
 Compares two lists. Two lists are equal if they have equal elements in
 identical orders.
 
-#### `totalOrder(list1, list2) <> int`
+#### `totalOrder(list1, list2) -> int`
 
 Compares two lists for order. Lists order by pairwise corresponding-element
 comparison, with a strict prefix always ordering before its longer brethren.
@@ -31,56 +31,56 @@ comparison, with a strict prefix always ordering before its longer brethren.
 <br><br>
 ### Generic Function Definitions: `Collection` and `Sequence` protocols
 
-#### `cat(list, more*) <> int`
+#### `cat(list, more*) -> int`
 
 Returns a list consisting of the concatenation of the elements
 of all the argument lists, in argument order.
 
-#### `del(list, n) <> list`
+#### `del(list, n) -> list`
 
 Returns a list like the given one, but without the `n`th element.
 
-#### `get(list, key) <> . | void`
+#### `get(list, key) -> . | void`
 
 Defined as per the `Sequence` protocol.
 
-#### `get_size(list) <> int`
+#### `get_size(list) -> int`
 
 Returns the number of elements in the list.
 
-#### `keyList(list) <> list`
+#### `keyList(list) -> list`
 
 Defined as per the `Sequence` protocol.
 
-#### `nth(list, n) <> . | void`
+#### `nth(list, n) -> . | void`
 
 Gets the nth element of the string.
 
-#### `nthMapping(list, n) <> map | void`
+#### `nthMapping(list, n) -> map | void`
 
 Gets the nth mapping of the list.
 
-#### `put(list, n, value) <> list`
+#### `put(list, n, value) -> list`
 
 Returns a list like the given one, but with the `n`th element replaced
 with the given `value`, or added if `n == get_size(list)`.
 
-#### `reverse(list) <> list`
+#### `reverse(list) -> list`
 
 Returns a list like the one given, except with elements in the opposite
 order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
 
-#### `sliceExclusive(list, start, end?) <> list`
+#### `sliceExclusive(list, start, end?) -> list`
 
 Returns an end-exclusive slice of the given list.
 
-#### `sliceInclusive(list, start, end?) <> list`
+#### `sliceInclusive(list, start, end?) -> list`
 
 Returns an end-inclusive slice of the given list.
 
-#### `valueList(list) <> list`
+#### `valueList(list) -> list`
 
 Defined as per the `Sequence` protocol. In this case, this function always
 returns the given `list`, directly.
@@ -90,12 +90,12 @@ returns the given `list`, directly.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(list, optFilterFunction?) <> list`
+#### `collect(list, optFilterFunction?) -> list`
 
 Filters the elements of `list` using the given filter function if supplied,
 or just returns `list` if there is no filter function.
 
-#### `nextValue(list, box) <> generator | void`
+#### `nextValue(list, box) -> generator | void`
 
 On a non-empty list, calls `store(box, list[0])` and returns
 `list[1..]`. On an empty list, calls `store(box)` and returns void.
@@ -104,7 +104,7 @@ On a non-empty list, calls `store(box, list[0])` and returns
 <br><br>
 ### Primitive Definitions
 
-#### `makeList(elems*) <> list`
+#### `makeList(elems*) -> list`
 
 Returns a list with the given elements (in argument order).
 These equivalences hold for Samizdat Layer 0 source code:
@@ -126,7 +126,7 @@ implementation (without sacrificing clarity) &mdash; it makes sense to
 keep this defined as a core primitive:
 
 ```
-fn makeList(elems*) { <> elems };
+fn makeList(elems*) { return elems };
 ```
 
 **Syntax Note:** Used in the translation of `[item, ...]`,

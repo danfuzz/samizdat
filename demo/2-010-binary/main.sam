@@ -23,7 +23,7 @@ fn msgHex(value) {
 
 ## Returns void.
 fn returnVoid() {
-    <>
+    return
 };
 
 

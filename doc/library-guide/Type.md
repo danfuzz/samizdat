@@ -7,19 +7,19 @@ Type
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(type, other) <> type | void`
+#### `perEq(type, other) -> type | void`
 
 Calls `totalEq`.
 
-#### `perOrder(type, other) <> int`
+#### `perOrder(type, other) -> int`
 
 Calls `totalOrder`.
 
-#### `totalEq(type1, type2) <> map | void`
+#### `totalEq(type1, type2) -> map | void`
 
 Compares two types. Two types are equal if they are the actual same type.
 
-#### `totalOrder(map1, map2) <> int`
+#### `totalOrder(map1, map2) -> int`
 
 Compares two types for order, as follows:
 
@@ -35,7 +35,7 @@ types), the order is arbitrary but consistent.
 <br><br>
 ### Primitive Definitions
 
-#### `makeDerivedDataType(name) <> type`
+#### `makeDerivedDataType(name) -> type`
 
 Returns a `Type` instance which represents a derived data type
 with the given `name`. `name` can be an arbitrary value but is most
@@ -49,12 +49,12 @@ source code:
 
 **Note:** This is used in the translation of `@@name` and `@@(name)`forms.
 
-#### `typeName(type) <> . | void`
+#### `typeName(type) -> . | void`
 
 Returns the name of the type. This is an arbitrary value associated with
 a type, which is typically (but not necessarily) a string.
 
-#### `typeParent(type) <> type | void`
+#### `typeParent(type) -> type | void`
 
 Returns the parent type (that is, the supertype) of the given type. This
 returns a type for all types except `Value`.

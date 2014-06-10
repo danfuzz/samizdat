@@ -15,7 +15,7 @@
 
 ## Expects the two values to be `eq`.
 fn expectSame(v1, v2) {
-    ifIs { <> eq(v1, v2) }
+    ifIs { eq(v1, v2) }
         { note("Yes.") }
         {
             note("Different: ",
@@ -25,17 +25,17 @@ fn expectSame(v1, v2) {
 
 ## Expects the two values to be `ne`.
 fn expectDifferent(v1, v2) {
-    ifIs { <> ne(v1, v2) }
+    ifIs { ne(v1, v2) }
         { note("Yes.") }
         { note("Same: ", $Format::source(v1)) }
 };
 
 ## Expects the value to be a core value.
 fn expectCore(v) {
-    ifIs { <> hasType(v, DerivedData) }
+    ifIs { hasType(v, DerivedData) }
         { note("Derived: ", $Format::source(v)) }
         {
-            ifValue { <> dataOf(v) }
+            ifValue { dataOf(v) }
                 { data -> note("Bad data: ", $Format::source(data)) }
                 { note("Yes.") }
         }
@@ -43,7 +43,7 @@ fn expectCore(v) {
 
 ## Expects the value to be a derived data value.
 fn expectDerived(v) {
-    ifIs { <> hasType(v, DerivedData) }
+    ifIs { hasType(v, DerivedData) }
         { note("Yes.") }
         { note("Opaque: ", $Format::source(v)) }
 };
@@ -160,8 +160,8 @@ expectCore(uniq2);
 
 note("\nFunction");
 
-def fn1 = { x <> x };
-def fn2 = { x <> x };
+def fn1 = { x -> x };
+def fn2 = { x -> x };
 
 expectSame(fn1, fn1);
 expectSame(fn2, fn2);

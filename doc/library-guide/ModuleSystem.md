@@ -23,7 +23,7 @@ be their own dependencies.
 <br><br>
 ### Generic Function Definitions: `Loader` protocol
 
-#### `readResource(loader, source, format) <> . | void`
+#### `readResource(loader, source, format) -> . | void`
 
 This reads and/or processes a resource file, interpreting it as the given
 `format` (a string name). `source` is expected to be a source specifier,
@@ -38,7 +38,7 @@ indicate a valid way to process the source.
 See "Resource Import" in the language guide for more details on the
 available `format`s.
 
-#### `resolve(loader, source) <> . | void`
+#### `resolve(loader, source) -> . | void`
 
 This resolves and loads the module (either an internal or external module)
 named by `source`. `source` is expected to be a source specifier. This
@@ -56,7 +56,7 @@ to a known module but, for some reason, failed to be successfully loaded.
 <br><br>
 ### In-Language Definitions
 
-#### `loadModule(loader, source) <> .`
+#### `loadModule(loader, source) -> .`
 
 This loads the module named by `source`, returning its `exports` map.
 
@@ -67,7 +67,7 @@ if `source` is not a valid source specifier.
 **Note:** This function is implemented in terms of the `resolve()` generic
 function.
 
-#### `loadResource(loader, source, format) <> .`
+#### `loadResource(loader, source, format) -> .`
 
 This reads and/or processes a resource file, interpreting it as the given
 `format` (a string name). `source` is expected to be a source specifier.
@@ -83,7 +83,7 @@ available `format`s.
 **Note:** This function is implemented in terms of the `readResource()`
 generic function.
 
-#### `makeInternalLoader(path, globals, nextLoader) <> InternalLoader`
+#### `makeInternalLoader(path, globals, nextLoader) -> InternalLoader`
 
 This creates and returns a module-internal file loader, which knows how
 to load internal modules (private implementation files) and resource
@@ -97,7 +97,7 @@ to use when evaluating source.
 **Note:** If this loader should not have a module loader, then
 `nextLoader` should be passed as `null`.
 
-#### `makeExternalLoader(path, globals, nextLoader) <> ExternalLoader`
+#### `makeExternalLoader(path, globals, nextLoader) -> ExternalLoader`
 
 This creates an external module loader, which knows how to load modules
 identified by "external" sources. An external loader will defer to the
@@ -118,7 +118,7 @@ terminates with a fatal error.
 **Note:** If this loader should not have a next module loader, then
 `nextLoader` should be passed as `null`.
 
-#### `main(libraryPath, primitiveGlobals) <> {globals*}`
+#### `main(libraryPath, primitiveGlobals) -> {globals*}`
 
 This is the main entrypoint for loading the entire system. As such, it's
 not that useful for most code.
@@ -131,7 +131,7 @@ arguments given to this function.
 This returns whatever the library's `main` returns, which is generally
 expected to be the library's full global environment, as a map.
 
-#### `run(path, loader, args*) <> . | void`
+#### `run(path, loader, args*) -> . | void`
 
 This loads the `main` of the module at the given `path`, finds its
 `main` binding, and runs it, handing it the given `args`.
@@ -153,7 +153,7 @@ filesystem path to itself. This function does *not* automatically add this
 argument. Users of this function should add it to the given `args*` when
 appropriate.
 
-#### `runFile(path, loader, args*) <> . | void`
+#### `runFile(path, loader, args*) -> . | void`
 
 This runs a solo file at the given `path`. It works for both source text
 and binary files, switching based on the file name suffix, `.sam` for text

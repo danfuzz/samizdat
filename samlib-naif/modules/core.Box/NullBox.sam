@@ -16,7 +16,7 @@
 ## Documented in spec.
 fn @@NullBox.canStore() {
     ## Always succeeds.
-    <> this
+    return this
 };
 
 ## Documented in spec.
@@ -27,7 +27,7 @@ fn @@NullBox.fetch() {
 ## Documented in spec.
 fn @@NullBox.store(value?) {
     ## Return `value` but otherwise do nothing.
-    <> value*
+    return? value*
 };
 
 ## Documented in spec.

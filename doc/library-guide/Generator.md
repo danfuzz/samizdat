@@ -22,7 +22,7 @@ exported to the standard global variable environment:
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(generator, optFilterFunction?) <> list`
+#### `collect(generator, optFilterFunction?) -> list`
 
 Collects all the elements yielded by the generator into a list. Returns
 the list. If a filter function is given, calls it with each element (as
@@ -41,7 +41,7 @@ results.
 **Note:** The function `filterAll` is a multi-generator generalization
 of this function.
 
-#### `nextValue(generator, box) <> generator | void`
+#### `nextValue(generator, box) -> generator | void`
 
 Generates the next item in `generator`, if any. If there is a generated
 element, calls `store(box, elem)` and returns a generator which can
@@ -52,7 +52,7 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### Primitive Definitions
 
-#### `interpolate(generator) <> . | void`
+#### `interpolate(generator) -> . | void`
 
 Interpolation helper. This takes a generator, `collect`s it, and then does
 the following based on the size of the collected result:
@@ -67,10 +67,10 @@ This function could be implemented as something like:
 ```
 fn interpolate(generator) {
     def list = [generator*];
-    <> if (list[1]) {
+    if (list[1]) {
         ## Die with error.
     } else {
-        <> list[0]
+        return list[0]
     }
 }
 ```
@@ -79,7 +79,7 @@ fn interpolate(generator) {
 are *not* collection constructor or function call arguments.
 
 
-#### `maybeValue(function) <> list`
+#### `maybeValue(function) -> list`
 
 Function call helper, to deal with value-or-void situations. This calls
 `function` with no arguments, wrapping its return value in a list and in
@@ -91,7 +91,7 @@ This function could be implemented as:
 
 ```
 fn maybeValue(function) {
-    <> (def v = function()) & [v] | []
+    return (def v = function()) & [v] | []
 }
 ```
 
@@ -99,20 +99,20 @@ or more primitively as:
 
 ```
 fn maybeValue(function) {
-    <> ifValue(function, { v <> [v] }, { <> [] })
+    return ifValue(function, { v -> [v] }, { -> [] })
 }
 ```
 
 **Syntax Note:** Used in the translation of string interpolation and
 `expression?` forms.
 
-#### `stdCollect(generator, optFilterFunction?) <> list`
+#### `stdCollect(generator, optFilterFunction?) -> list`
 
 "Standard" implementation of `collect`, in terms of `nextValue`. This
 function is provided as a convenient thing to bind to `collect` for
 types that don't have anything fancier to do.
 
-#### `unboundedCollect(generator, optFilterFunction?) <>  n/a ## Terminates the runtime.`
+#### `unboundedCollect(generator, optFilterFunction?) ->  n/a ## Terminates the runtime.`
 
 Handy implementation of `collect` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
@@ -127,7 +127,7 @@ appropriate types.
 A generator which is perennially voided. It is defined as `@NullGenerator`,
 along with generator method bindings for that type.
 
-#### `collectAsMap(generator) <> map`
+#### `collectAsMap(generator) -> map`
 
 Takes a generator which must yield map values, and collects all of its
 generated results, in generated order, by building up an overall map,
@@ -136,7 +136,7 @@ as if by calling `cat({}, map1, map2, ...)` on all the results.
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.
 
-#### `filterAll(filterFunction, generators*) <> list`
+#### `filterAll(filterFunction, generators*) -> list`
 
 Creates a filter generator over the indicated generators, and collects
 the results of running it into a list.
@@ -149,7 +149,7 @@ This is a convenient and idiomatic shorthand for saying something like:
 
 **Syntax Note:** Used in the translation of comprehension forms.
 
-#### `filterPump(filterFunction, generators*) <> void`
+#### `filterPump(filterFunction, generators*) -> void`
 
 Iterates over the given generators, calling the given `filterFunction`
 on generated items, iterating until at least one of the generators
@@ -166,7 +166,7 @@ generatorPump(makeFilterGenerator(generator, ...) { ... code ... })
 
 **Syntax Note:** Used in the translation of `for` forms.
 
-#### `generatorPump(generator) <> void`
+#### `generatorPump(generator) -> void`
 
 Generator iterator, ignoring results. This takes a generator, calling
 it repeatedly until it becomes voided. All results yielded by the
@@ -174,7 +174,7 @@ generator are ignored.
 
 This function always returns void.
 
-#### `makeFilterGenerator(filterFunction, generators*) <> generator`
+#### `makeFilterGenerator(filterFunction, generators*) -> generator`
 
 Filtering generator constructor. This takes any number of arbitrary
 generators, and returns a generator which filters the generated results
@@ -197,7 +197,7 @@ as the payload. That type has appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of comprehension forms.
 
-#### `makeListWrapGenerator(generator) <> generator`
+#### `makeListWrapGenerator(generator) -> generator`
 
 List wrapping generator combination constructor. This takes a single
 generator, and returns a generator that yields single-element lists.
@@ -212,7 +212,7 @@ generators is voided.
 with `generator` as the payload. That type has appropriate `Generator`
 method bindings.
 
-#### `makeOptGenerator(generator) <> generator`
+#### `makeOptGenerator(generator) -> generator`
 
 "Optional" generator constructor. This takes an arbitrary generator,
 returning a new generator that always yields lists and never
@@ -225,7 +225,7 @@ list, and will continue doing so ad infinitum.
 the given `generator` as the payload. That type has
 appropriate `Generator` method bindings.
 
-#### `makeParaGenerator(generators*) <> generator`
+#### `makeParaGenerator(generators*) -> generator`
 
 Parallel generator combination constructor. This takes an arbitrary number of
 generators, and returns a generator that yields lists.
@@ -246,7 +246,7 @@ appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of `for` forms.
 
-#### `makeRepeatGenerator(size, optValue?) <> generator`
+#### `makeRepeatGenerator(size, optValue?) -> generator`
 
 Repeated-value generator. This takes a size, which must be a non-negative
 int, and an optional value, producing a generator that yields the given
@@ -262,7 +262,7 @@ appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of `for` and comprehension forms.
 
-#### `makeSerialGenerator(generators*) <> generator`
+#### `makeSerialGenerator(generators*) -> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
 of generators, and returns a generator that yields from each of
@@ -282,7 +282,7 @@ Special cases:
 `"SerialGenerator"` with `[generators*]` as the payload. That type has
 appropriate `Generator` method bindings.
 
-#### `makeValueGenerator(value) <> generator`
+#### `makeValueGenerator(value) -> generator`
 
 Creates an unnbounded generator (one with infinite elements) which always
 yields the given `value` upon `nextValue()` call.

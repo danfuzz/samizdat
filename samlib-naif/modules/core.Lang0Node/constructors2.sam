@@ -21,7 +21,7 @@ import ./refs :: REFS;
 
 ## Documented in spec.
 export fn makeCallOrApply(function, actuals*) {
-    ifIs { <> perEq(actuals, []) }
+    ifIs { perEq(actuals, []) }
         {
             ## No actuals. Easy out.
             return makeApply(function)
@@ -40,7 +40,7 @@ export fn makeCallOrApply(function, actuals*) {
     };
 
     fn addPendingToCooked() {
-        ifIs { <> perNe(pending, []) }
+        ifIs { perNe(pending, []) }
             {
                 addToCooked(makeCall(REFS::makeList, pending*));
                 pending := [];
@@ -48,7 +48,7 @@ export fn makeCallOrApply(function, actuals*) {
     };
 
     $Generator::filterPump(actuals) { actual ->
-        ifValue { <> get_interpolate(actual) }
+        ifValue { get_interpolate(actual) }
             { node ->
                 addPendingToCooked();
                 addToCooked(makeCall(REFS::collect, node))
@@ -56,7 +56,7 @@ export fn makeCallOrApply(function, actuals*) {
             { pending := [pending*, actual] }
     };
 
-    ifIs { <> perEq(cookedActuals, []) }
+    ifIs { perEq(cookedActuals, []) }
         {
             ## There were no interpolated arguments.
             return makeCall(function, actuals*)
@@ -66,15 +66,15 @@ export fn makeCallOrApply(function, actuals*) {
 
     addPendingToCooked();
 
-    <> ifIs { <> nth(cookedActuals, 1) }
+    return ifIs { nth(cookedActuals, 1) }
         {
             ## More than one actual. Use `cat`.
-            <> makeApply(function,
+            makeApply(function,
                 makeCall(REFS::cat, cookedActuals*))
         }
         {
             ## Only one. Use it directly as the actuals for the `apply` node.
-            <> makeApply(function, cookedActuals*)
+            makeApply(function, cookedActuals*)
         }
 };
 
@@ -88,7 +88,7 @@ fn @@importModule.makeDynamicImport() {
     def name = get_name(this);
     def source = get_source(this);
 
-    <> [makeVarDef(name,
+    return [makeVarDef(name,
             makeCall(REFS::loadModule, makeLiteral(source)))]
 };
 
@@ -104,8 +104,8 @@ fn @@importModuleSelection.makeDynamicImport() {
     def select = get_select(this);
     def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
-    <> $Generator::filterAll(names, select) { name, sel ->
-        <> makeVarDef(name, makeCall(REFS::get, loadCall, makeLiteral(sel)))
+    return $Generator::filterAll(names, select) { name, sel ->
+        makeVarDef(name, makeCall(REFS::get, loadCall, makeLiteral(sel)))
     };
 };
 
@@ -118,7 +118,7 @@ fn @@importResource.makeDynamicImport() {
     def format = get_format(this);
     def source = get_source(this);
 
-    <> [
+    return [
         makeVarDef(name,
             makeCall(REFS::loadResource,
                 makeLiteral(source), makeLiteral(format)))
@@ -127,25 +127,25 @@ fn @@importResource.makeDynamicImport() {
 
 ## Documented in spec.
 export fn makeFullClosure(map) {
-    def formals = ifValueOr { <> get_formals(map) } { <> [] };
-    var statements = ifValueOr { <> get_statements(map) } { <> [] };
+    def formals = ifValueOr { map::formals } { [] };
+    var statements = ifValueOr { map::statements } { [] };
     def statSz = get_size(statements);
 
     def yieldNode = ifValueOr
-        { <> get_yieldNode(map) }
-        { <> ifIs { <> get_yieldDef(map) } { <> @void } }
-        { <> ifIs { <> eq(statSz, 0) } { <> @void } }
+        { map::yield }
+        { ifIs { map::yieldDef } { @void } }
+        { ifIs { eq(statSz, 0) } { @void } }
         {
             def lastStat = nth(statements, $Number::sub(statSz, 1));
-            <> ifIs { <> isExpression(lastStat) }
+            ifIs { isExpression(lastStat) }
                 {
                     statements := $Sequence::sliceExclusive(statements, 0);
-                    <> makeMaybe(lastStat)
+                    makeMaybe(lastStat)
                 }
         }
-        { <> @void };
+        { @void };
 
-    <> @closure{
+    return @closure{
         map*,
         formals:    formals,
         statements: statements,
@@ -155,29 +155,29 @@ export fn makeFullClosure(map) {
 
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
-    <> makeCall(REFS::get, collArg, keyArg)
+    return makeCall(REFS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
 export fn makeImport(baseData) {
     var data = baseData;  ## Modified in some cases below.
 
-    ifValue { <> data::select }
+    ifValue { data::select }
         { select ->
             ## It's a module binding selection.
 
-            ifIs { <> data::name }
+            ifIs { data::name }
                 { die("Import selection name must be a prefix.") };
-            ifIs { <> data::format }
+            ifIs { data::format }
                 { die("Cannot import selection of resource.") };
 
-            ifNot { <> data::prefix }
+            ifNot { data::prefix }
             {
                 ## Default to empty string for `prefix`.
                 data := {data*, prefix: ""}
             };
 
-            ifIs { <> hasType(select, @@"*") }
+            ifIs { hasType(select, @@"*") }
                 {
                     ## It's a wildcard import.
                     data := $Collection::del(data, "select");
@@ -186,27 +186,27 @@ export fn makeImport(baseData) {
             return @importModuleSelection(data)
         };
 
-    ifNot { <> data::name }
+    ifNot { data::name }
         {
             ## No `name` provided, so figure out a default one.
             data := {data*, name: cat("$", get_baseName(data::source))}
         };
 
-    ifIs { <> data::format }
+    ifIs { data::format }
         {
             ## It's a resource.
-            ifIs { <> hasType(data::source, @@external) }
+            ifIs { hasType(data::source, @@external) }
                 { die("Cannot import external resource.") };
             return @importResource(data)
         };
 
     ## It's a whole-module import.
-    <> @importModule(data)
+    return @importModule(data)
 };
 
 ## Documented in spec.
 export fn makeInfoMap(node) {
-    ifValue { <> get_info(node) }
+    ifValue { get_info(node) }
         { info -> return info };
 
     def statements = get_statements(node);
@@ -221,7 +221,7 @@ export fn makeInfoMap(node) {
 
     ## Adds or revises an element in the `imports` map.
     fn addToImports(source, names) {
-        def orig = ifValueOr { <> get(imports, source) } { <> {} };
+        def orig = ifValueOr { get(imports, source) } { {} };
         def revised = {orig*, names*: Value};
         imports := {imports*, (source): revised};
     };
@@ -229,31 +229,31 @@ export fn makeInfoMap(node) {
     ## Adds or revises an element in the `resources` map.
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
-        def orig = ifValueOr { <> get(resources, source) } { <> [] };
+        def orig = ifValueOr { get(resources, source) } { [] };
         def revised = $Collection::keyList({orig*: null, (format): null});
         resources := {resources*, (source): revised};
     };
 
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
-        ifIs { <> hasType(s, @@importModule) }
+        ifIs { hasType(s, @@importModule) }
             { addToImports(get_source(s), [@module]) };
-        ifIs { <> hasType(s, @@importModuleSelection) }
+        ifIs { hasType(s, @@importModuleSelection) }
             {
-                def names = ifValueOr { <> get_select(s) }
+                def names = ifValueOr { get_select(s) }
                     { die("Cannot call `makeInfoMap` on unresolved import.") };
                 addToImports(get_source(s), names)
             };
-        ifIs { <> hasType(s, @@importResource) }
+        ifIs { hasType(s, @@importResource) }
             { addToResources(get_source(s), get_format(s)) };
     };
 
     ## The filter is just being used as a for-each loop. The direct
     ## result is ignored.
     $Generator::filterAll(statements) { s ->
-        ifIs { <> hasType(s, @@exportSelection) }
+        ifIs { hasType(s, @@exportSelection) }
             { addToExports(get_select(s)) };
-        ifIs { <> hasType(s, @@export) }
+        ifIs { hasType(s, @@export) }
             {
                 addToExports(get_definedNames(s));
                 handleImport(get_nodeValue(s))
@@ -261,44 +261,45 @@ export fn makeInfoMap(node) {
         handleImport(s)
     };
 
-    <> {exports, imports, resources}
+    return {exports, imports, resources}
 };
 
 ## Documented in spec.
 export fn makeInterpolate(node) {
-    <> @call{function: REFS::interpolate, actuals: [node], interpolate: node}
+    return @call{
+        function: REFS::interpolate,
+        actuals: [node],
+        interpolate: node
+    }
 };
 
 ## Documented in spec.
 export fn makeMaybeValue(node) {
-    <> makeCall(REFS::maybeValue, makeThunk(node))
+    return makeCall(REFS::maybeValue, makeThunk(node))
 };
 
 ## Documented in spec.
 export fn makeNonlocalExit(function, optValue?) {
-    def value = ifValueOr { <> optValue* } { <> @void };
+    def value = ifValueOr { optValue* } { @void };
     def exitCall = ifValueOr
+        { ifIs { hasType(value, @@void) } { makeCall(function) } }
         {
-            <> ifIs { <> hasType(value, @@void) }
-                { <> makeCall(function) }
-        }
-        {
-            <> ifIs { <> hasType(value, @@maybe) }
+            ifIs { hasType(value, @@maybe) }
                 {
-                    <> makeCallOrApply(function,
+                    makeCallOrApply(function,
                         makeInterpolate(makeMaybeValue(get_nodeValue(value))))
                 }
         }
-        { <> makeCall(function, value) };
+        { makeCall(function, value) };
 
-    <> makeNoYield(exitCall)
+    return makeNoYield(exitCall)
 };
 
 ## Documented in spec.
 export fn withDynamicImports(node) {
     def rawStatements = get_statements(node);
 
-    ifIs { <> eq(rawStatements, []) }
+    ifIs { eq(rawStatements, []) }
         {
             ## Nothing to convert. Easy out!
             return node
@@ -306,9 +307,9 @@ export fn withDynamicImports(node) {
 
     def converted = $Generator::filterAll(rawStatements) { s /out ->
         ifValueOr
-            { <> hasType(s, @@importModule) }
-            { <> hasType(s, @@importModuleSelection) }
-            { <> hasType(s, @@importResource) }
+            { hasType(s, @@importModule) }
+            { hasType(s, @@importModuleSelection) }
+            { hasType(s, @@importResource) }
             {
                 ## Not an `import*`.
                 yield /out [s]
@@ -318,12 +319,12 @@ export fn withDynamicImports(node) {
     };
 
     def statements = cat(converted*);
-    <> @(get_type(node)){dataOf(node)*, statements}
+    return @(get_type(node)){dataOf(node)*, statements}
 };
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifNot { <> eq(get_yieldNode(node), @void) }
+    ifNot { eq(get_yieldNode(node), @void) }
         { die("Invalid node for `withModuleDefs` (has non-void `yield`).") };
 
     ## This is the metainformation of the module. In addition to being
@@ -337,24 +338,24 @@ export fn withModuleDefs(node) {
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
     def statements = $Generator::filterAll(rawStatements) { s /out ->
-        ifIs { <> hasType(s, @@exportSelection) }
+        ifIs { hasType(s, @@exportSelection) }
             { yield /out };
 
-        <> ifIs { <> hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s }
+        yield ifIs { hasType(s, @@export) }
+            { get_nodeValue(s) }
+            { s }
     };
 
     ## This is a list of lists of mappings which, when combined, is a map
     ## of all exports.
     def exportValues = $Generator::filterAll(info::exports) { mapping ->
         def name = get_key(mapping);
-        <> makeCall(REFS::makeValueMap, makeLiteral(name), makeVarRef(name))
+        makeCall(REFS::makeValueMap, makeLiteral(name), makeVarRef(name))
     };
 
-    def yieldExports = ifIs { <> eq(exportValues, []) }
-        { <> makeLiteral({}) }
-        { <> makeCall(REFS::cat, exportValues*) };
+    def yieldExports = ifIs { eq(exportValues, []) }
+        { makeLiteral({}) }
+        { makeCall(REFS::cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeValue,
         makeLiteral(@@module),
@@ -362,7 +363,7 @@ export fn withModuleDefs(node) {
             makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
             makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 
-    <> @(get_type(node)){
+    return @(get_type(node)){
         dataOf(node)*,
         info,
         yield: yieldNode,
@@ -376,42 +377,42 @@ export fn withoutTops(node) {
 
     ## This is a collation of all the forward declarations.
     def tops = $Generator::filterAll(rawStatements) { s ->
-        def defNode = ifIs { <> hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s };
+        def defNode = ifIs { hasType(s, @@export) }
+            { get_nodeValue(s) }
+            { s };
 
-        <> ifIs { <> defNode::top }
-            { <> makeVarDef(get_name(defNode)) }
+        ifIs { defNode::top }
+            { makeVarDef(get_name(defNode)) }
     };
 
     ## These are the one-for-one replacements for the original `statements`.
     def mains = $Generator::filterAll(rawStatements) { s ->
-        def defNode = ifIs { <> hasType(s, @@export) }
-            { <> get_nodeValue(s) }
-            { <> s };
+        def defNode = ifIs { hasType(s, @@export) }
+            { get_nodeValue(s) }
+            { s };
 
-        <> ifIs { <> defNode::top }
-            { <> makeVarBind(get_name(defNode), get_nodeValue(defNode)) }
-            { <> s }
+        ifIs { defNode::top }
+            { makeVarBind(get_name(defNode), get_nodeValue(defNode)) }
+            { s }
     };
 
     ## This lists all the exported variables that were transformed above.
     def exports = $Generator::filterAll(rawStatements) { s /out ->
-        ifNot { <> hasType(s, @@export) }
+        ifNot { hasType(s, @@export) }
             { yield /out };
 
         def defNode = get_nodeValue(s);
-        ifNot { <> defNode::top }
+        ifNot { defNode::top }
             { yield /out };
 
-        <> get_name(defNode)
+        yield get_name(defNode)
     };
 
-    def optSelection = ifIs { <> eq(exports, []) }
-        { <> [] }
-        { <> [makeExportSelection(exports*)] };
+    def optSelection = ifIs { eq(exports, []) }
+        { [] }
+        { [makeExportSelection(exports*)] };
 
-    <> @(get_type(node)){
+    return @(get_type(node)){
         dataOf(node)*,
         statements: [tops*, mains*, optSelection*]
     }
@@ -419,5 +420,5 @@ export fn withoutTops(node) {
 
 ## Documented in spec.
 export fn withTop(node) {
-    <> @(get_type(node)){dataOf(node)*, top: true}
+    return @(get_type(node)){dataOf(node)*, top: true}
 };

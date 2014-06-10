@@ -22,32 +22,20 @@ fn print(arg) {
 ## Main Tests
 ##
 
-print({ <> });
 print({ -> });
-print({ x <> });
 print({ x -> });
-print({ x, y <> });
 print({ x, . -> });
-print({ (x+) <> });
 print({ (a, b?, c*) -> });
-print({ stuff() <> });
 print({ stuff() -> });
-print({ stuff(a) <> });
 print({ stuff(a) -> });
 
-print({ /out <> });
 print({ /out -> });
-print({ x /out <> });
 print({ x /out -> });
-print({ x, y /out <> });
 print({ x, . /out -> });
-print({ (x*) /out <> });
 print({ (a, b?, c*) /out -> });
-print({ stuff() /out <> });
 print({ stuff() /out -> });
-print({ stuff(a) /out <> });
 print({ stuff(a) /out -> });
 
-print({ x, y <> cat(x, y) }("bl", "ort"));
+print({ x, y -> cat(x, y) }("bl", "ort"));
 print({ x, y /out -> yield /out cat(x, y) }("fi", "zmo"));
-print({ yowza(args+) -> <> cat(args*) }("i", "gr", "am"));
+print({ yowza(args+) -> cat(args*) }("i", "gr", "am"));

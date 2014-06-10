@@ -20,7 +20,7 @@ fn print(string) {
 ##
 
 print("\("Hello.")");
-print("\{ <> "Greetings." }");
+print("\{ "Greetings." }");
 print("One \("1") two \(2) three \(@three).");
 print("Handy: \($Format::source(["blort", "fizmo", "igram"]))");
 print("I like \([@muffins, @scones]).");
@@ -29,14 +29,14 @@ print("\
     I like \{
         ## A small sampling of foods.
         def foods = {icky: "sardines", yummy: "muffins"};
-        <> foods::yummy
+        foods::yummy
     }!");
 
 print("\
     I also like \{ /out ->
         #: A couple more foods here. :#
         def foods = {icky: "natto", yummy: "biscuits"};
-        ifValue { <> foods::yummy }
+        ifValue { foods::yummy }
             { food -> yield /out food }
     }!");
 

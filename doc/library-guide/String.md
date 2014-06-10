@@ -7,20 +7,20 @@ String
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(string, other) <> string | void`
+#### `perEq(string, other) -> string | void`
 
 Calls `totalEq`.
 
-#### `perOrder(string, other) <> int`
+#### `perOrder(string, other) -> int`
 
 Calls `totalOrder`.
 
-#### `totalEq(string1, string2) <> string | void`
+#### `totalEq(string1, string2) -> string | void`
 
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
 
-#### `totalOrder(string1, string2) <> int`
+#### `totalOrder(string1, string2) -> int`
 
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
@@ -29,17 +29,17 @@ before its longer brethren.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `toInt(string) <> int`
+#### `toInt(string) -> int`
 
 Given a single-character string, returns the character code
 of its sole character, as an int. It is an error (terminating
 the runtime) if `string` is not a string of size 1.
 
-#### `toNumber(string) <> int`
+#### `toNumber(string) -> int`
 
 Same as `toInt(string)`.
 
-#### `toString(string) <> string`
+#### `toString(string) -> string`
 
 Returns the argument.
 
@@ -47,57 +47,57 @@ Returns the argument.
 <br><br>
 ### Generic Function Definitions: `Collection` and `Sequence` protocols
 
-#### `cat(string, more*) <> string`
+#### `cat(string, more*) -> string`
 
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
 
-#### `del(string, n) <> string`
+#### `del(string, n) -> string`
 
 Returns a string like the given one, but without the `n`th character.
 
-#### `get(string, key) <> . | void`
+#### `get(string, key) -> . | void`
 
 Defined as per the `Sequence` protocol.
 
-#### `get_size(string) <> int`
+#### `get_size(string) -> int`
 
 Returns the number of characters in the string.
 
-#### `keyList(string) <> list`
+#### `keyList(string) -> list`
 
 Defined as per the `Sequence` protocol.
 
-#### `nth(string, n) <> . | void`
+#### `nth(string, n) -> . | void`
 
 Gets the nth character of the string, as a single-element string.
 
-#### `nthMapping(string, n) <> map | void`
+#### `nthMapping(string, n) -> map | void`
 
 Gets the nth mapping of the string.
 
-#### `put(string, n, char) <> string`
+#### `put(string, n, char) -> string`
 
 Returns a string like the given one, but with the `n`th character replaced
 with the given `char`, or added if `n == #string`. It is an error
 if `char` is not a string of size `1`.
 
-#### `reverse(string) <> string`
+#### `reverse(string) -> string`
 
 Returns a string like the one given, except with characters in the opposite
 order.
 
-#### `sliceExclusive(string, start, end?) <> string`
+#### `sliceExclusive(string, start, end?) -> string`
 
 Returns an end-exclusive slice of the given string.
 
-#### `sliceInclusive(string, start, end?) <> string`
+#### `sliceInclusive(string, start, end?) -> string`
 
 Returns an end-inclusive slice of the given string.
 
-#### `valueList(list, n) <> list`
+#### `valueList(list, n) -> list`
 
 Defined as per the `Sequence` protocol.
 
@@ -105,11 +105,11 @@ Defined as per the `Sequence` protocol.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(string, filterFunction) <> list`
+#### `collect(string, filterFunction) -> list`
 
 Collects or filters the characters of `string`.
 
-#### `nextValue(string, box) <> generator | void`
+#### `nextValue(string, box) -> generator | void`
 
 On a non-empty string, calls `store(box, string[0])` and returns
 `string[1..]`. On an empty string, calls `store(box)` and returns void.

@@ -15,9 +15,9 @@ import proto.Number :: add;
 export fn .rangeAdd(amount);
 
 fn Int.rangeAdd(amount) {
-    <> add(this, amount)
+    return add(this, amount)
 };
 
 fn String.rangeAdd(amount) {
-    <> toString(add(toInt(this), amount))
+    return toString(add(toInt(this), amount))
 };

@@ -20,15 +20,15 @@ import ./rangeAdd :: *;
 
 ## Documented in spec.
 export fn makeOpenRange(firstValue, optIncrement?) {
-    def increment = ifValueOr { <> optIncrement* } { <> 1 };
+    def increment = ifValueOr { optIncrement* } { 1 };
 
-    <> @OpenRange{firstValue, increment}
+    return @OpenRange{firstValue, increment}
 };
 
 ## Documented in spec.
 fn @@OpenRange.collect(optFilterFunction?) {
     ## It is an "unbounded collect" error to call this.
-    <> unboundedCollect(this)
+    unboundedCollect(this)
 };
 
 ## Documented in spec.
@@ -37,5 +37,5 @@ fn @@OpenRange.nextValue(box) {
     def increment = this::increment;
 
     store(box, firstValue);
-    <> makeOpenRange(rangeAdd(firstValue, increment), increment)
+    return makeOpenRange(rangeAdd(firstValue, increment), increment)
 };

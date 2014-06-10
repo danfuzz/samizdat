@@ -21,13 +21,13 @@ import ./unboundedCollect :: unboundedCollect;
 
 ## Documented in spec.
 export fn makeOptGenerator(generator) {
-    <> @OptGenerator(generator)
+    return @OptGenerator(generator)
 };
 
 ## Documented in spec.
 fn @@OptGenerator.collect(optFilterFunction?) {
     ## It is an "unbounded collect" error to call this.
-    <> unboundedCollect(this)
+    return unboundedCollect(this)
 };
 
 ## Documented in spec.
@@ -35,14 +35,10 @@ fn @@OptGenerator.nextValue(box) {
     def subGen = dataOf(this);
     def innerBox = $Box::makePromise();
 
-    <> ifValue { <> nextValue(subGen, innerBox) }
+    return ifValue { nextValue(subGen, innerBox) }
         { nextGen ->
             store(box, [fetch(innerBox)]);
-            <> @OptGenerator(nextGen)
+            @OptGenerator(nextGen)
         }
-        {
-            <> nextValue(
-                $ValueGenerator::makeValueGenerator([]),
-                box)
-        }
+        { nextValue($ValueGenerator::makeValueGenerator([]), box) }
 };

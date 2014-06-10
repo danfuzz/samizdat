@@ -39,7 +39,7 @@ fn directResolve(self, source) {
         <> @module{info}
     } else if ($Io0::fileType(sourcePath) == "file") {
         ## We found a source file. Read it and resolve!
-        fn resolveFn(source) { <> self.resolve(source) };
+        fn resolveFn(source) { return self.resolve(source) };
         def tree = $Reader::readProgram(sourcePath, resolveFn);
         def info = $Lang0Node::makeInfoMap(tree);
         <> @module{info}

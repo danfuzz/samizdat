@@ -20,17 +20,17 @@ import proto.Number;
 ## Documented in spec.
 fn @@MapGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Generator used when iterating over maps.
 fn @@MapGenerator.nextValue(box) {
     def index = this::index;
 
-    <> ifValue { <> $Collection::nthMapping(this::map, index) }
+    ifValue { $Collection::nthMapping(this::map, index) }
         { value ->
             store(box, value);
-            <> @MapGenerator{dataOf(this)*, index: $Number::add(index, 1)}
+            return @MapGenerator{dataOf(this)*, index: $Number::add(index, 1)}
         }
         {
             ## Voided (out of elements).

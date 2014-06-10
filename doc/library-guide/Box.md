@@ -23,16 +23,16 @@ scenes").
 <br><br>
 ### Generic Function Definitions: `Box` protocol
 
-#### `canStore(box) <> logic`
+#### `canStore(box) -> logic`
 
 Returns `box` if the `box` can be stored to. Otherwise returns void.
 
-#### `fetch(box) <> . | void`
+#### `fetch(box) -> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has
 been set to void, this returns void.
 
-#### `store(box, value?) <> . | void`
+#### `store(box, value?) -> . | void`
 
 Sets the value of a box to the given value, or to void if `value` is
 not supplied. This function always returns `value` (or void if `value` is
@@ -45,7 +45,7 @@ which `store` has already been called.
 <br><br>
 ### Primitive Definitions
 
-#### `makeCell(optValue?) <> cell`
+#### `makeCell(optValue?) -> cell`
 
 Creates a cell (a mutable box), with optional pre-set value. The result of
 a call to this function is a cell which can be set any number of times using
@@ -61,7 +61,7 @@ variables. It is hoped that this facility will be used as minimally as
 possible, so as to not preclude the system from performing functional-style
 optimizations.
 
-#### `makePromise() <> promise`
+#### `makePromise() -> promise`
 
 Creates a promise (set-at-most-once box). The result of a call to this
 function is a box which can be stored to at most once, using `store`.
@@ -73,7 +73,7 @@ This function is meant to be the primary way to capture the yielded values
 from functions (such as object service functions and parser functions) which
 expect to yield values by calling a function.
 
-#### `makeResult(optValue?) <> promise`
+#### `makeResult(optValue?) -> promise`
 
 Creates a permanently-set or permanently valueless box. The result of a call
 to this function is a box which cannot be stored to, and which will always

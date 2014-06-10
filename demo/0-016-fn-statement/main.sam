@@ -39,7 +39,7 @@ note(func2(20, "twenty"));
 ## Self-recursion.
 fn func3(x) {
     print("func3", x);
-    ifIs { <> lt(x, 5) }
+    ifIs { lt(x, 5) }
         {
             func3($Number::add(x, 1));
             return "func3"
@@ -51,7 +51,7 @@ note(func3(1));
 ## Mutual recursion.
 fn recFunc1(x) {
     print("recFunc1", x);
-    ifIs { <> lt(x, 5) }
+    ifIs { lt(x, 5) }
         { recFunc2($Number::add(x, 1)) };
 
     return "recFunc1"
@@ -59,7 +59,7 @@ fn recFunc1(x) {
 
 fn recFunc2(x) {
     print("recFunc2", x);
-    ifIs { <> lt(x, 5) }
+    ifIs { lt(x, 5) }
         { recFunc1($Number::add(x, 1)) };
 };
 

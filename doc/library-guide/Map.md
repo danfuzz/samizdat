@@ -7,19 +7,19 @@ Map
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(map, other) <> map | void`
+#### `perEq(map, other) -> map | void`
 
 Calls `totalEq`.
 
-#### `perOrder(map, other) <> int`
+#### `perOrder(map, other) -> int`
 
 Calls `totalOrder`.
 
-#### `totalEq(map1, map2) <> map | void`
+#### `totalEq(map1, map2) -> map | void`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
-#### `totalOrder(map1, map2) <> int`
+#### `totalOrder(map1, map2) -> int`
 
 Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal
@@ -29,12 +29,12 @@ key order.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `get_key(map) <> .`
+#### `get_key(map) -> .`
 
 Returns the sole key of the given map, which must be a single-mapping map.
 It is a terminal error if `map` does not contain exactly one mapping.
 
-#### `get_value(map) <> .`
+#### `get_value(map) -> .`
 
 Returns the sole value of the given map, which must be a single-mapping map.
 It is a terminal error if `map` does not contain exactly one mapping.
@@ -43,7 +43,7 @@ It is a terminal error if `map` does not contain exactly one mapping.
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
-#### `cat(map, more*) <> map`
+#### `cat(map, more*) -> map`
 
 Returns a map consisting of the combination of the mappings of the
 argument maps. For any keys in common between the maps,
@@ -55,37 +55,37 @@ and uniqueness constraints.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `del(map, key) <> map`
+#### `del(map, key) -> map`
 
 Returns a map just like the one given as an argument, except that
 the result does not have a mapping for the given `key`. If `map` does
 not bind `key`, then this returns `map`.
 
-#### `get(map, key) <> . | void`
+#### `get(map, key) -> . | void`
 
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this returns void.
 
-#### `get_size(map) <> int`
+#### `get_size(map) -> int`
 
 Returns the number of mappings in the map.
 
-#### `keyList(map) <> list`
+#### `keyList(map) -> list`
 
 Returns a list of all the keys mapped by the given `map`, in sorted order.
 
-#### `nthMapping(map, n) <> map | void`
+#### `nthMapping(map, n) -> map | void`
 
 Gets the nth mapping of the given map.
 
-#### `put(map, key, value) <> map`
+#### `put(map, key, value) -> map`
 
 Returns a map just like the given one, except with a new mapping
 for `key` to `value`. The result has a replacement for the existing
 mapping for `key` in `map` if such a one existed, or has an
 additional mapping in cases where `map` didn't already bind `key`.
 
-#### `valueList(map) <> list`
+#### `valueList(map) -> list`
 
 Returns a list of all the values mapped by the given `map`, in order of the
 sorted keys.
@@ -94,11 +94,11 @@ sorted keys.
 <br><br>
 ### Generic Function Definitions: `Generator` protocol.
 
-#### `collect(map, optFilterFunction?) <> list`
+#### `collect(map, optFilterFunction?) -> list`
 
 Collects or filters the mappings of `map`.
 
-#### `nextValue(map, box) <> generator | void`
+#### `nextValue(map, box) -> generator | void`
 
 On a non-empty map, calls `store(box, mapping)` where `mapping` is
 the first mapping in the map in its iteration order, and returns
@@ -109,7 +109,7 @@ returns void.
 <br><br>
 ### Primitive Definitions
 
-#### `makeValueMap(keys*, value) <> map`
+#### `makeValueMap(keys*, value) -> map`
 
 This makes a map which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns

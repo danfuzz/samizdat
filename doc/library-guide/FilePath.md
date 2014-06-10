@@ -28,7 +28,7 @@ I/O.
 <br><br>
 ### Function Definitions
 
-#### `fixPath(path, basePaths*) <> path`
+#### `fixPath(path, basePaths*) -> path`
 
 "Fixes" the given `path` if relative, making it *less* relative (and possibly
 absolute) by using the given `basePaths` (if any) as prefixes. Cases:
@@ -40,7 +40,7 @@ absolute) by using the given `basePaths` (if any) as prefixes. Cases:
 * Otherwise, `fixPath(basePaths*)` is called. This function returns that
   `fixPath` result, concatenated with `"/"` and the original `path`.
 
-#### `get_directory(path) <> path`
+#### `get_directory(path) -> path`
 
 Returns the directory part of the given `path`. Cases:
 
@@ -54,7 +54,7 @@ Returns the directory part of the given `path`. Cases:
 * Otherwise, the result is the prefix of the given `path` up to but not
   including the last slash.
 
-#### `get_file(path) <> path`
+#### `get_file(path) -> path`
 
 Returns the fila part (that is, the final component) of the given `path`.
 Cases:

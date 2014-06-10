@@ -21,7 +21,7 @@ import ./ParaGenerator;
 
 ## Documented in spec.
 export fn makeFilterGenerator(filterFunction, generators*) {
-    <> @FilterGenerator{
+    return @FilterGenerator{
         filterFunction,
         generator: $ParaGenerator::makeParaGenerator(generators*)
     }
@@ -30,7 +30,7 @@ export fn makeFilterGenerator(filterFunction, generators*) {
 ## Documented in spec.
 fn @@FilterGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
@@ -44,9 +44,9 @@ fn @@FilterGenerator.nextValue(box) {
     loop { /next ->
         def innerBox = $Box::makePromise();
 
-        ifValue { <> nextValue(innerGen, innerBox) }
+        ifValue { nextValue(innerGen, innerBox) }
             { nextGen ->
-                ifValue { <> filterFunction(fetch(innerBox)*) }
+                ifValue { filterFunction(fetch(innerBox)*) }
                     { value ->
                         store(box, value);
                         return @FilterGenerator(

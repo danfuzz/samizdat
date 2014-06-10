@@ -46,7 +46,7 @@ def $Lang0 = {
 
 ## Makes an entry for `BOOTSTRAP_MODULES`.
 fn makeBootstrapEntry(exports) {
-    <> @module{
+    return @module{
         exports,
         info: {
             exports:   {Collection_keyList(exports)*: Value},
@@ -88,13 +88,13 @@ fn fileNameSuffix(path) {
     ## `collect` is used here as a "for-each," ignoring the collected result.
     collect(path,
         { ch ->
-            ifIs { <> eq(ch, "/") }
+            ifIs { eq(ch, "/") }
                 {
                     ## New path component.
                     gotDot := 0;
                 }
                 {
-                    ifIs { <> eq(ch, ".") }
+                    ifIs { eq(ch, ".") }
                         {
                             gotDot := 1;
                             result := "";
@@ -103,21 +103,21 @@ fn fileNameSuffix(path) {
                 }
         });
 
-    <> ifIs { <> eq(gotDot, 0) }
-        { <> "" }
-        { <> result }
+    return ifIs { eq(gotDot, 0) }
+        { "" }
+        { result }
 };
 
 ## Helper for `checkExternalSource`: Validates a character pair.
 fn checkExternalSourcePair(lastCh, ch) {
-    ifIs { <> eq(ch, ".") }
+    ifIs { eq(ch, ".") }
         {
-            ifIs { <> eq(lastCh, ".") }
+            ifIs { eq(lastCh, ".") }
                 { die("Invalid external source: empty component") };
             return
         };
 
-    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { get(VALID_COMPONENT_CHARS, ch) }
         { die("Invalid external source: bad character \"", ch, "\"") }
 };
 
@@ -126,14 +126,14 @@ fn checkExternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@external` but is improperly-formed, this dies
 ## with an error.
 fn checkExternalSource(source) {
-    ifNot { <> hasType(source, @@external) }
+    ifNot { hasType(source, @@external) }
         { return };
 
     def name = dataOf(source);
 
-    ifNot { <> hasType(name, String) }
+    ifNot { hasType(name, String) }
         { die("Invalid external source: not a string") };
-    ifIs { <> eq(name, "") }
+    ifIs { eq(name, "") }
         { die("Invalid external source: empty string") };
 
     var lastCh = ".";  ## Init to `"."` to make the first check work out.
@@ -146,30 +146,30 @@ fn checkExternalSource(source) {
         });
 
     checkExternalSourcePair(lastCh, ".");
-    <> source
+    return source
 };
 
 ## Helper for `checkInternalSource`: Validates a character pair.
 fn checkInternalSourcePair(lastCh, ch) {
-    ifIs { <> eq(ch, "/") }
+    ifIs { eq(ch, "/") }
         {
-            ifIs { <> eq(lastCh, "/") }
+            ifIs { eq(lastCh, "/") }
                 { die("Invalid internal source: empty component") };
-            ifIs { <> eq(lastCh, ".") }
+            ifIs { eq(lastCh, ".") }
                 { die("Invalid internal source: empty suffix") };
             return
         };
 
-    ifIs { <> eq(ch, ".") }
+    ifIs { eq(ch, ".") }
         {
-            ifIs { <> eq(lastCh, "/") }
+            ifIs { eq(lastCh, "/") }
                 { die("Invalid internal source: component-initial dot") };
-            ifIs { <> eq(lastCh, ".") }
+            ifIs { eq(lastCh, ".") }
                 { die("Invalid internal source: double dot") };
             return
         };
 
-    ifNot { <> get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { get(VALID_COMPONENT_CHARS, ch) }
         { die("Invalid internal source: bad character \"", ch, "\"") }
 };
 
@@ -178,14 +178,14 @@ fn checkInternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@internal` but is improperly-formed, this dies
 ## with an error.
 fn checkInternalSource(source) {
-    ifNot { <> hasType(source, @@internal) }
+    ifNot { hasType(source, @@internal) }
         { return };
 
     def path = dataOf(source);
 
-    ifNot { <> hasType(path, String) }
+    ifNot { hasType(path, String) }
         { die("Invalid internal source: not a string") };
-    ifIs { <> eq(path, "") }
+    ifIs { eq(path, "") }
         { die("Invalid internal source: empty string") };
 
     var lastCh = "/";  ## Init to `"/"` to make the first check work out.
@@ -198,25 +198,25 @@ fn checkInternalSource(source) {
         });
 
     checkInternalSourcePair(lastCh, "/");
-    <> source
+    return source
 };
 
 ## Validates an absolute file path string. It must be a string and start with
 ## `"/"`.
 fn checkAbsolutePath(path) {
-    ifIs { <> eq(path, "") }
+    ifIs { eq(path, "") }
         { die("Invalid file path: empty string") };
-    ifNot { <> hasType(path, String) }
+    ifNot { hasType(path, String) }
         { die("Invalid file path: not a string") };
-    ifNot { <> eq(get(path, 0), "/") }
+    ifNot { eq(get(path, 0), "/") }
         { die("Invalid file path: not absolute") }
 };
 
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
-    ifIs { <> hasType(source, @@internal) }
+    ifIs { hasType(source, @@internal) }
         { return cat("./", dataOf(source)) };
-    ifIs { <> hasType(source, @@external) }
+    ifIs { hasType(source, @@external) }
         { return dataOf(source) };
 
     die("Bad module / resource `source`.")
@@ -224,21 +224,21 @@ fn sourceString(source) {
 
 ## Loads the standard global environment using the given `loader`.
 fn loadGlobals(loader) {
-    <> loadModule(loader, @external("core.Globals"))::fullEnvironment()
+    return loadModule(loader, @external("core.Globals"))::fullEnvironment()
 };
 
 ## Given source text, returns a parsed tree form, using the given `loader`
 ## to find the apprpriate parser and to do any required module resolution.
 fn treeFromText(loader, text) {
-    def languageName = ifValueOr { <> $Lang0::languageOf(text) }
-        { <> DEFAULT_LANGUAGE };
+    def languageName = ifValueOr { $Lang0::languageOf(text) }
+        { DEFAULT_LANGUAGE };
     def lang = loadModule(loader, @external(languageName));
 
     fn resolver(source) {
-        <> resolve(loader, source)
+        return resolve(loader, source)
     };
 
-    <> lang::simplify(lang::parseProgram(text), resolver);
+    return lang::simplify(lang::parseProgram(text), resolver);
 };
 
 ## Updates a map-containing box to have the given additional / replacement
@@ -261,14 +261,14 @@ export fn .readResource(source, format);
 
 ## Documented in spec.
 export fn loadModule(loader, source) {
-    <> ifValue { <> resolve(loader, source) }
-        { resolved <> resolved::exports }
+    return ifValue { resolve(loader, source) }
+        { resolved -> resolved::exports }
         { die("Module not found: ", sourceString(source)) }
 };
 
 ## Documented in spec.
 export fn loadResource(loader, source, format) {
-    <> ifValueOr { <> readResource(loader, source, format) }
+    return ifValueOr { readResource(loader, source, format) }
         { die("Resource not found: ", sourceString(source)) }
 };
 
@@ -284,8 +284,8 @@ fn @@Null.readResource(source, format) {
 
 ## Documented in spec.
 fn @@Null.resolve(source) {
-    <> ifIs { <> checkExternalSource(source) }
-        { <> get(BOOTSTRAP_MODULES, source) }
+    return? ifIs { checkExternalSource(source) }
+        { get(BOOTSTRAP_MODULES, source) }
 };
 
 
@@ -306,7 +306,7 @@ fn @@Null.resolve(source) {
 fn doExternalResolve(loader, source) {
     def modulePath = cat(loader::basePath, dataOf(source));
 
-    <> ifIs { <> eq($Io0::fileType(modulePath), "directory") }
+    return? ifIs { eq($Io0::fileType(modulePath), "directory") }
         {
             note("    ", sourceString(source));
 
@@ -315,19 +315,19 @@ fn doExternalResolve(loader, source) {
             def result = resolveMain(loader);
 
             note("        Done.");
-            <> result
+            result
         }
 };
 
 ## Documented in spec.
 fn @@ExternalLoader.readResource(source, format) {
     ## Always just defer to the next loader.
-    <> readResource(this::nextLoader, source, format)
+    return? readResource(this::nextLoader, source, format)
 };
 
 ## Documented in spec.
 fn @@ExternalLoader.resolve(source) {
-    ifNot { <> checkExternalSource(source) }
+    ifNot { checkExternalSource(source) }
         {
             ## Not an external source, so punt to the next loader.
             return? resolve(this::nextLoader, source)
@@ -338,28 +338,28 @@ fn @@ExternalLoader.resolve(source) {
     ## The loaded map maps paths to `"loading"` for a load-in-progress,
     ## `"notFound"` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
-    ifValue { <> get(fetch(loadedBox), source) }
+    ifValue { get(fetch(loadedBox), source) }
         { found ->
-            ifIs { <> hasType(found, @@module) }
+            ifIs { hasType(found, @@module) }
                 { return found };
-            ifIs { <> eq(found, "notFound") }
+            ifIs { eq(found, "notFound") }
                 { return };
-            ifIs { <> eq(found, "loading") }
+            ifIs { eq(found, "loading") }
                 { die("Module load loop: ", sourceString(source)) };
         };
 
     updateMapBox(loadedBox, source, "loading");
 
-    def result = ifValueOr { <> doExternalResolve(this, source) }
+    def result = ifValueOr { doExternalResolve(this, source) }
         {
-            <> ifValueOr { <> resolve(this::nextLoader, source) }
-                { <> "notFound" }
+            ifValueOr { resolve(this::nextLoader, source) }
+                { "notFound" }
         };
 
     updateMapBox(loadedBox, source, result);
 
-    <> ifNot { <> eq(result, "notFound") }
-        { <> result }
+    return? ifNot { eq(result, "notFound") }
+        { result }
 };
 
 ## Documented in spec.
@@ -368,15 +368,15 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 
     ## Check for existence and directoriness.
     def pathType = $Io0::fileType(path);
-    ifIs { <> eq(pathType, "absent") }
+    ifIs { eq(pathType, "absent") }
         {
             ## No such file or directory.
             return nextLoader
         };
-    ifNot { <> eq(pathType, "directory") }
+    ifNot { eq(pathType, "directory") }
         { die("Module loader path exists but is not a directory: ", path) };
 
-    <> @ExternalLoader{
+    return @ExternalLoader{
         basePath: cat(path, "/"),
         globals,
         nextLoader,
@@ -399,7 +399,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 
 ## Convenient helper which just resolves a top-level `main` file.
 fn resolveMain(loader) {
-    <> resolve(loader, @internal("main"))
+    return? resolve(loader, @internal("main"))
 };
 
 ## Helper for `resolve` which does the actual resolution / loading.
@@ -409,21 +409,21 @@ fn doInternalResolve(loader, source) {
     def pathPrefix = cat(loader::basePath, dataOf(source));
     def binPath = cat(pathPrefix, ".samb");
 
-    ifIs { <> eq($Io0::fileType(binPath), "file") }
+    ifIs { eq($Io0::fileType(binPath), "file") }
         {
             def func = $Code::evalBinary(loader::globals, binPath);
-            return ifValueOr { <> func() }
+            return ifValueOr { func() }
                 { die("No result from binary module: ", sourcePath) }
         };
 
     def sourcePath = cat(pathPrefix, ".sam");
-    ifIs { <> eq($Io0::fileType(sourcePath), "file") }
+    ifIs { eq($Io0::fileType(sourcePath), "file") }
         {
             def text = $Io0::readFileUtf8(sourcePath);
             def tree = treeFromText(loader, text);
             def func = $Code::eval(loader::globals, tree);
 
-            return ifValueOr { <> func() }
+            return ifValueOr { func() }
                 { die("No result from module: ", sourcePath) }
         };
 
@@ -432,15 +432,15 @@ fn doInternalResolve(loader, source) {
 
 ## `readResource` implementation for format `type`.
 fn readResource_type(fullPath) {
-    <> $Io0::fileType(fullPath)
+    return $Io0::fileType(fullPath)
 };
 
 ## `readResource` implementation for format `utf8`.
 fn readResource_utf8(fullPath) {
-    ifNot { <> eq($Io0::fileType(fullPath), "file") }
+    ifNot { eq($Io0::fileType(fullPath), "file") }
         { die("Missing resource: ", fullPath) };
 
-    <> $Io0::readFileUtf8(fullPath)
+    return $Io0::readFileUtf8(fullPath)
 };
 
 ## Map from format names to corresponding `readResource` implementations.
@@ -451,7 +451,7 @@ def INTERNAL_READERS = {
 
 ## Documented in spec.
 fn @@InternalLoader.readResource(source, format) {
-    ifNot { <> checkInternalSource(source) }
+    ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
             return? readResource(this::nextLoader, source, format)
@@ -459,14 +459,14 @@ fn @@InternalLoader.readResource(source, format) {
 
     def fullPath = cat(this::basePath, dataOf(source));
 
-    <> ifValue { <> get(INTERNAL_READERS, format) }
-        { reader <> reader(fullPath) }
+    return ifValue { get(INTERNAL_READERS, format) }
+        { reader -> reader(fullPath) }
         { die("Unsupported resource format: ", format) }
 };
 
 ## Documented in spec.
 fn @@InternalLoader.resolve(source) {
-    ifNot { <> checkInternalSource(source) }
+    ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
             return? resolve(this::nextLoader, source)
@@ -474,12 +474,12 @@ fn @@InternalLoader.resolve(source) {
 
     def loadedBox = this::loadedBox;
 
-    ifValue { <> get(fetch(loadedBox), source) }
+    ifValue { get(fetch(loadedBox), source) }
         { found -> return found };
 
     def result = doInternalResolve(this, source);
     updateMapBox(loadedBox, source, result);
-    <> result
+    return result
 };
 
 ## Documented in spec.
@@ -493,9 +493,9 @@ export fn makeInternalLoader(path, globals, nextLoader) {
     ## functions immediately below.
     def loader;
 
-    fn glo_loadModule(source)           { <> loadModule(loader, source)           };
-    fn glo_loadResource(source, format) { <> loadResource(loader, source, format) };
-    fn glo_thisLoader()                 { <> loader                               };
+    fn glo_loadModule(source)     { return loadModule(loader, source)     };
+    fn glo_loadResource(src, fmt) { return loadResource(loader, src, fmt) };
+    fn glo_thisLoader()           { return loader                         };
 
     def fullGlobals = {
         globals*,
@@ -511,7 +511,7 @@ export fn makeInternalLoader(path, globals, nextLoader) {
         loadedBox:  Box_makeCell({})
     };
 
-    <> loader
+    return loader
 };
 
 
@@ -521,10 +521,10 @@ export fn makeInternalLoader(path, globals, nextLoader) {
 
 ## Makes a global environment sufficient for evaluating a single file.
 fn makeFileGlobals(loader) {
-    fn glo_loadModule(source) { <> loadModule(loader, source) };
-    fn glo_thisLoader()       { <> loader                     };
+    fn glo_loadModule(source) { return loadModule(loader, source) };
+    fn glo_thisLoader()       { return loader                     };
 
-    <> {
+    return {
         loadGlobals(loader)*,
         loadModule: glo_loadModule,
         thisLoader: glo_thisLoader
@@ -539,14 +539,14 @@ fn makeFileGlobals(loader) {
 fn runProgram(programFunc, args) {
     def optResult = programFunc()?;
 
-    ifIs { <> eq(optResult, []) }
+    ifIs { eq(optResult, []) }
         { return };
 
     def result = optResult*;
 
-    ifIs { <> hasType(result, @@module) }
+    ifIs { hasType(result, @@module) }
         {
-            ifValue { <> result::exports::main }
+            ifValue { result::exports::main }
                 { main -> return? main(args*) }
         };
 
@@ -560,7 +560,7 @@ fn runTextFile(path, loader, args) {
     def tree = treeFromText(loader, text);
     def func = $Code::eval(globals, tree);
 
-    <> runProgram(func, args)
+    return? runProgram(func, args)
 };
 
 ## Helper for `runFile`, which handles binaries.
@@ -568,7 +568,7 @@ fn runBinaryFile(path, loader, args) {
     def globals = makeFileGlobals(loader);
     def func = $Code::evalBinary(globals, path);
 
-    <> runProgram(func, args)
+    return? runProgram(func, args)
 };
 
 
@@ -582,7 +582,7 @@ export fn main(libraryPath, primitiveGlobals) {
     def loader = makeInternalLoader(libraryPath, primitiveGlobals, null);
     def mainModule = resolveMain(loader)::exports;
     def mainFunction = mainModule::main;
-    <> mainModule::main(libraryPath, primitiveGlobals)
+    return mainModule::main(libraryPath, primitiveGlobals)
 };
 
 ## Documented in spec.
@@ -592,20 +592,20 @@ export fn run(path, loader, args*) {
     def mainModule = resolveMain(mainLoader)::exports;
     def optMain = mainModule::main?;
 
-    ifIs { <> eq(optMain, []) }
+    ifIs { eq(optMain, []) }
         { die("No `main` export from module's `main`.") };
 
-    <> (optMain*)(args*)
+    return? (optMain*)(args*)
 };
 
 ## Documented in spec.
 export fn runFile(path, loader, args*) {
     def suffix = fileNameSuffix(path);
 
-    ifIs { <> eq(suffix, "sam") }
+    ifIs { eq(suffix, "sam") }
         { return? runTextFile(path, loader, args) };
 
-    ifIs { <> eq(suffix, "samb") }
+    ifIs { eq(suffix, "samb") }
         { return? runBinaryFile(path, loader, args) };
 
     die("Unknown file name suffix: ", suffix)

@@ -24,8 +24,8 @@ fn intOrVoid(string) {
     var value = 0;
 
     $Generator::filterPump(string) { ch ->
-        ifIs { <> perLt(ch, "0") } { return };
-        ifIs { <> perGt(ch, "9") } { return };
+        ifIs { perLt(ch, "0") } { return };
+        ifIs { perGt(ch, "9") } { return };
         def digit = $Number::sub(toInt(ch), CHAR_0);
         value := $Number::add($Number::mul(value, 10), digit);
     };
@@ -39,7 +39,7 @@ fn maxOf(values*) {
     var max = -1;
 
     $Generator::filterPump(values) { v ->
-        ifIs { <> perGt(v, max) }
+        ifIs { perGt(v, max) }
             { max := v }
     };
 
@@ -52,17 +52,17 @@ fn safeIndexForNames(base, names*) {
     def baseSz = get_size(base);
 
     def indexes = $Generator::filterAll(names) { name /next ->
-        ifIs { <> perLt(get_size(name), baseSz) }
+        ifIs { perLt(get_size(name), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
                 yield /next
             };
-        ifIs { <> perEq(base, name) } { yield /next -1 };
-        ifIs { <> perEq(base, $Sequence::sliceExclusive(name, 0, baseSz)) }
+        ifIs { perEq(base, name) } { yield /next -1 };
+        ifIs { perEq(base, $Sequence::sliceExclusive(name, 0, baseSz)) }
             { yield? /next intOrVoid($Sequence::sliceInclusive(name, baseSz)) }
     };
 
-    <> ifIs { <> perEq(indexes, []) }
+    <> ifIs { perEq(indexes, []) }
         { <> -1 }
         { <> $Number::add(maxOf(indexes*), 1) }
 };
@@ -178,7 +178,7 @@ fn @@void.safeIndex(base) {
 ## Makes a variable name by combining `base` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
 export fn makeVarName(base, index) {
-    <> ifIs { <> eq(index, -1) }
+    <> ifIs { eq(index, -1) }
         { <> base }
         { <> cat(base, $Format::int(index)) }
 };

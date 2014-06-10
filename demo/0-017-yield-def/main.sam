@@ -26,7 +26,7 @@ def y = { arg /outx ->
 note(y);
 
 def z = { /stuff ->
-    ifValue { <> "also" }
+    ifValue { "also" }
         { value -> yield /stuff value }
 }();
 
@@ -45,11 +45,11 @@ fn bar(arg) { /blort ->
 note(bar("to"));
 
 fn baz(foo) { /out ->
-    ifIs { <> eq(foo, 1) }
+    ifIs { eq(foo, 1) }
         { yield /out "you" }
         { yield /out }
 };
 
 note(baz(1));
-ifNot { <> baz(2) }
+ifNot { baz(2) }
     { note("too!"); };

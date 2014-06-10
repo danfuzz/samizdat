@@ -144,11 +144,11 @@ def parIdentifierString = {:
 |
     token = .
     {
-        <> ifNot { <> dataOf(token) }
+        <> ifNot { dataOf(token) }
             {
                 def type = get_typeName(token);
                 def firstCh = nth(type, 0);
-                <> ifIs { <> get(LOWER_ALPHA, firstCh) }
+                <> ifIs { get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
     }
@@ -171,14 +171,14 @@ def parMapping = {:
     value = parExpression
 
     {
-        <> ifIs { <> eq(keys, []) }
+        <> ifIs { eq(keys, []) }
             { /out ->
                 ## No keys were specified, so the value must be either a
                 ## whole-map interpolation or a variable-name-to-its-value
                 ## binding.
-                ifValue { <> get_interpolate(value) }
+                ifValue { get_interpolate(value) }
                     { interp -> yield /out interp };
-                ifIs { <> hasType(value, @@varRef) }
+                ifIs { hasType(value, @@varRef) }
                     {
                         yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
@@ -200,7 +200,7 @@ def parMap = {:
         one = parMapping
         rest = (@"," parMapping)*
         {
-            <> ifIs { <> eq(rest, []) }
+            <> ifIs { eq(rest, []) }
                 { <> one }
                 { <> makeCall(REFS::cat, one, rest*) }
         }
@@ -243,7 +243,7 @@ def parList = {:
     expressions = parUnadornedList
     @"]"
     {
-        <> ifIs { <> eq(expressions, []) }
+        <> ifIs { eq(expressions, []) }
             { <> makeLiteral([]) }
             { <> makeCallOrApply(REFS::makeList, expressions*) }
     }
@@ -258,7 +258,7 @@ def parType = {:
     name = (parIdentifierString | parParenExpression)
 
     {
-        <> ifIs { <> hasType(name, @@literal) }
+        <> ifIs { hasType(name, @@literal) }
             { <> makeLiteral(@@(get_nodeValue(name))) }
             { <> makeCall(REFS::makeDerivedDataType, name) }
     }
@@ -318,7 +318,7 @@ def parNullaryClosure = {:
 
     {
         def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
+        ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
         <> c
     }
@@ -331,7 +331,7 @@ def parBasicNullaryClosure = {:
 
     {
         def formals = get_formals(c);
-        ifIs { <> ne(formals, []) }
+        ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
         <> c
     }
@@ -468,13 +468,13 @@ def parYieldOrNonlocal = {:
     ## operator. Otherwise, it's optional.
     value = (
         v = parExpression
-        { <> ifIs { <> optQuest* } { <> makeMaybe(v) } { <> v } }
+        { <> ifIs { optQuest* } { <> makeMaybe(v) } { <> v } }
     |
-        { <> ifNot { <> optQuest* } { <> @void } }
+        { <> ifNot { optQuest* } { <> @void } }
     )
 
     {
-        <> ifIs { <> eq(name, @yield) }
+        <> ifIs { eq(name, @yield) }
             { <> value }
             { <> makeNonlocalExit(name, value) }
     }
@@ -605,7 +605,7 @@ def parFunctionCommon = {:
     code = parBasicNullaryClosure
 
     {
-        def returnDef = ifValue { <> code::yieldDef }
+        def returnDef = ifValue { code::yieldDef }
             { yieldDef ->
                 ## The closure has a yield def, but we need to also bind
                 ## it as `return`, so we add an extra local variable binding
@@ -676,7 +676,7 @@ def parGenericDef = {:
 
     {
         def fullFormals = [{}, formals*]; ## First one is `this`.
-        def func = ifIs { <> eq(optStar, []) }
+        def func = ifIs { eq(optStar, []) }
             { <> REFS::makeRegularGeneric }
             { <> REFS::makeUnitypeGeneric };
         def call = makeCall(
@@ -782,7 +782,7 @@ def parImportStatement = {:
 
     {
         def data = {nameOrPrefix*, format*, select*, source};
-        <> ifIs { <> optExport* }
+        <> ifIs { optExport* }
             { <> makeExport(makeImport(data)) }
             { <> makeImport(data) }
     }
@@ -983,8 +983,8 @@ def parParserSetString = {:
             def endChar = dataOf(end);
 
             ## Reject non-single-character strings.
-            ifIs { <> ne(1, get_size(startChar)) } { yield /out };
-            ifIs { <> ne(1, get_size(endChar)) } { yield /out };
+            ifIs { ne(1, get_size(startChar)) } { yield /out };
+            ifIs { ne(1, get_size(endChar)) } { yield /out };
 
             <> cat($Range::makeInclusiveRange(startChar, endChar)*)
         }
@@ -1166,10 +1166,10 @@ fn makeBinaryCalls(firstEx, opExList) {
 ## {
 ##     def v1 = x;
 ##     def v2 = y;
-##     <> ifIs { <> lt(v1, v2) }
+##     <> ifIs { lt(v1, v2) }
 ##         {
 ##             def v3 = z;
-##             <> ifIs { <> le(v2, v3) }
+##             <> ifIs { le(v2, v3) }
 ##                 { <> eq(v3, q) }
 ##         }
 ## }()
@@ -1181,7 +1181,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
 
-    ifIs { <> le(get_size(opExList), 1) }
+    ifIs { le(get_size(opExList), 1) }
         {
             ## Trivial case of zero or one operator. Just use the result of
             ## the call to `makeBinaryCalls`.
@@ -1203,7 +1203,7 @@ fn makeCompareCalls(firstEx, opExList) {
     fn transform(leftRef, opEx, rest*) {
         def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
 
-        <> ifIs { <> eq(rest, []) }
+        <> ifIs { eq(rest, []) }
             { <> makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
             {
                 def rightName = nextName();
@@ -1276,12 +1276,12 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = $Generator::filterAll(dataOf(token)) { elem ->
-            <> ifIs { <> hasType(elem, String) }
+            <> ifIs { hasType(elem, String) }
                 { <> makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
 
-                    def formatter = ifValue { <> elem::format }
+                    def formatter = ifValue { elem::format }
                         { format ->
                             <> makeCall(REFS::Format_formatterFor,
                                 makeLiteral(format))
@@ -1411,7 +1411,7 @@ def parRangeBody = {:
     |
         ## The limit is mandatory for exclusive ranges.
         {
-            <> ifIs { <> eq(op, @"..") }
+            <> ifIs { eq(op, @"..") }
                 { <> [] }
         }
     )
@@ -1419,14 +1419,14 @@ def parRangeBody = {:
     optIncrement = (@by parExpression)?
 
     {
-        <> ifIs { <> eq(op, @"..!") }
+        <> ifIs { eq(op, @"..!") }
             {
                 <> makeCall(
                     REFS::Range_makeExclusiveRange,
                     firstValue, optLimit*, optIncrement*)
             }
             {
-                <> ifValue { <> optLimit* }
+                <> ifValue { optLimit* }
                     { limit ->
                         <> makeCall(
                             REFS::Range_makeInclusiveRange,
@@ -1514,7 +1514,7 @@ def parIndexPostfix = {:
             !{ <> hasType(end, @@fromEnd) }
 
             {
-                def funcRef = ifIs { <> eq(op, @"..") }
+                def funcRef = ifIs { eq(op, @"..") }
                     { <> REFS::Sequence_sliceInclusive }
                     { <> REFS::Sequence_sliceExclusive };
 
@@ -1527,7 +1527,7 @@ def parIndexPostfix = {:
             ## At least one of start or end is `fromEnd`, so we have to
             ## use an intermediate function call.
             {
-                def style = ifIs { <> eq(op, @"..") }
+                def style = ifIs { eq(op, @"..") }
                     { <> makeLiteral(@inclusive) }
                     { <> makeLiteral(@exclusive) };
 
@@ -1536,7 +1536,7 @@ def parIndexPostfix = {:
                         makeLiteral(get_type(start)),
                         dataOf(start));
 
-                def optEndNode = (ifValue { <> dataOf(end) }
+                def optEndNode = (ifValue { dataOf(end) }
                     { endData ->
                         <> makeCall(REFS::makeValue,
                             makeLiteral(get_type(end)),
@@ -1560,7 +1560,7 @@ def parIndexPostfix = {:
         index = { <> optStart* }
 
         {
-            def funcRef = ifIs { <> hasType(index, @@fromStart) }
+            def funcRef = ifIs { hasType(index, @@fromStart) }
                 { <> REFS::get }
                 { <> REFS::Sequence_nthFromEnd };
 
@@ -1736,13 +1736,13 @@ def parLogicAndClause = {:
 ## ```
 ## expr1 & expr2
 ## =>
-## ifIs { <> expr1 } { <> expr2 }
+## ifIs { expr1 } { <> expr2 }
 ## ```
 ##
 ## ```
 ## (def var1 = expr1) & expr2
 ## =>
-## ifValue { <> expr1 } { var1 <> expr2 }
+## ifValue { expr1 } { var1 <> expr2 }
 ## ```
 ##
 ## ```
@@ -1782,7 +1782,7 @@ def parLogicAndExpression = {:
             def testThunk = makeThunk(clause::test);
             def resultThunk = makeThunk(last);
 
-            <> ifIs { <> eq(formal, {}) }
+            <> ifIs { eq(formal, {}) }
                 { <> makeCall(REFS::ifIs, testThunk, resultThunk) }
                 {
                     <> makeCall(REFS::ifValue,
@@ -1821,7 +1821,7 @@ def parLogicAndExpression = {:
 ## ```
 ## =>
 ## ```
-## ifValueOr { <> expr1 } { <> expr2 } { <> expr3 }
+## ifValueOr { expr1 } { <> expr2 } { <> expr3 }
 ## ```
 def parLogicOrExpression = {:
     one = parLogicAndExpression
@@ -1843,7 +1843,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (nonBoundExpr)
 ## =>
-## ifIs { <> nonBoundExpr }
+## ifIs { nonBoundExpr }
 ##     { ... then ... }
 ##     { ... else ... }
 ## ```
@@ -1851,7 +1851,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (def name = boundExpr)
 ## =>
-## ifValue { <> boundExpr }
+## ifValue { boundExpr }
 ##     { name -> ... then ... }
 ##     { ... else ... }
 ## ```
@@ -1933,10 +1933,10 @@ def parMultiTest = {:
 ## =>
 ## ```
 ## { /out ->
-##     <> ifValue { <> expr1 }
+##     <> ifValue { expr1 }
 ##         { name1 -> thenStat1 }
 ##         {
-##             <> ifIs { <> expr2 }
+##             <> ifIs { expr2 }
 ##                 { name2 -> thenStat2 }
 ##                 {
 ##                     <> ifValues(
@@ -1996,7 +1996,7 @@ def parIfExpression = {:
         ## unwrap it into a straight call, depending on if the original `if`
         ## has a yield def or not. Note that the `yield` in a thunk is always
         ## a `maybe`, which also needs to be unwrapped.
-        <> ifIs { <> eq(yieldDef, {}) }
+        <> ifIs { eq(yieldDef, {}) }
             { <> get_nodeValue(get_yieldNode(mainThunk)) }
             {
                 ## There was a yield def. Add the yield def to the thunk,
@@ -2027,7 +2027,7 @@ def parOptBreakDef = {:
 ## { /\"break" ->
 ##     def out = \"break";
 ##     loop { /\"continue" ->
-##         ifValue { <> test }
+##         ifValue { test }
 ##             { name /next -> stat1; stat2 }
 ##             { yield /\"break" }
 ##     }
@@ -2074,7 +2074,7 @@ def parWhileExpression = {:
 ##     def out = \"break";
 ##     loop { /\"continue" ->
 ##         { /next -> stat1; stat2 }();
-##         ifNot { <> expr }
+##         ifNot { expr }
 ##             { yield /\"break" }
 ##     }
 ## }()
@@ -2139,7 +2139,7 @@ def parForExpression = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        def continueDef = ifValue { <> get_yieldDef(code) }
+        def continueDef = ifValue { get_yieldDef(code) }
             { name <> [makeVarDef(name, REFS::continue)] }
             { <> [] };
 
@@ -2198,7 +2198,7 @@ def CALL_ARG = $Lang0::parseExpression("{ body <> body() }");
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     <> ifValue { <> testExpr }
+##     <> ifValue { testExpr }
 ##         { name ->
 ##             <> ifValue
 ##                 { <> get({(ex1): {s1a; s1b}, (ex2): {s2a; s2b}}, name) }
@@ -2241,17 +2241,17 @@ def parSwitchExpression = {:
 
     {
         def optDefault = $Generator::filterAll(cases) { case ->
-            <> ifIs { <> eq(case::keys, @default) } { <> case::code }
+            <> ifIs { eq(case::keys, @default) } { <> case::code }
         };
 
         def optElse = $Generator::filterAll(cases) { case ->
-            <> ifIs { <> eq(case::keys, @else) } { <> case::code }
+            <> ifIs { eq(case::keys, @else) } { <> case::code }
         };
 
-        ifIs { <> gt(get_size(optDefault), 1) }
+        ifIs { gt(get_size(optDefault), 1) }
             { die("Multiple default cases in switch.") };
 
-        ifIs { <> gt(get_size(optElse), 1) }
+        ifIs { gt(get_size(optElse), 1) }
             { die("Multiple else cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to
@@ -2260,7 +2260,7 @@ def parSwitchExpression = {:
         ## what `cat(map)` defines.
         def caseClauses = $Generator::filterAll(cases) { case ->
             def keys = case::keys;
-            <> ifIs { <> hasType(keys, List) }
+            <> ifIs { hasType(keys, List) }
                 { <> makeCallOrApply(REFS::makeValueMap, keys*, case::code) }
         };
         def caseMap = makeCallOrApply(REFS::cat,
@@ -2270,7 +2270,7 @@ def parSwitchExpression = {:
 
         ## If there is no specified formal, then pick a safe one, that is,
         ## a name not referenced in the case clauses.
-        def testVar = ifValueOr { <> testClause::formal::name }
+        def testVar = ifValueOr { testClause::formal::name }
             { <> $safeVar::safeVarName("switchValue", caseMap) };
 
         def innerIf = makeCall(REFS::ifValue,
@@ -2317,7 +2317,7 @@ parExpression2 := {:
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { <> hasType(expression, String) }
+    def tokens = ifIs { hasType(expression, String) }
         { <> tokenize(expression) }
         { <> expression };
 
@@ -2326,7 +2326,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { <> hasType(program, String) }
+    def tokens = ifIs { hasType(program, String) }
         { <> tokenize(program) }
         { <> program };
 

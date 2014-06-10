@@ -7,7 +7,7 @@ Conditionals And Iteration
 <br><br>
 ### Primitive Definitions
 
-#### `ifIs(testFunction, isFunction, notFunction?) <> . | void`
+#### `ifIs(testFunction, isFunction, notFunction?) -> . | void`
 
 Primitive logic conditional. This calls the given `testFunction` with no
 arguments, taking note of its return value or lack thereof.
@@ -28,13 +28,13 @@ this function calls the consequent function with no arguments, whereas
 and `expression & expression` forms.
 
 
-#### `ifNot(testFunction, notFunction) <> . | void`
+#### `ifNot(testFunction, notFunction) -> . | void`
 
 This is identical to `ifIs`, except that the `isFunction` argument is omitted.
 
 **Syntax Note:** Used in the translation of `do` and `!expression` forms.
 
-#### `ifValue(testFunction, valueFunction, voidFunction?) <> . | void`
+#### `ifValue(testFunction, valueFunction, voidFunction?) -> . | void`
 
 Primitive logic conditional. This calls the given `testFunction` with no
 arguments, taking note of its return value or lack thereof.
@@ -55,7 +55,7 @@ this function calls the consequent function with an argument, whereas
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
 
-#### `ifValueOr(functions+) <> . | void`
+#### `ifValueOr(functions+) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions` in
 order with no arguments, until one of them returns non-void. When a non-void
@@ -67,7 +67,7 @@ expressions bottom out into, hence the name.
 
 **Syntax Note:** Used in the translation of `expression | expression` forms.
 
-#### `ifValues([testFunctions*], valueFunction, voidFunction?) <> . | void`
+#### `ifValues([testFunctions*], valueFunction, voidFunction?) -> . | void`
 
 Primitive logic conditional. This calls each of the given `testFunctions`
 in order, as long as each returns a value (not void). The list of previous
@@ -83,7 +83,7 @@ was called, this returns void.
 **Syntax Note:** Used in the translation of some `&` forms and
 multiple-binding `if` forms.
 
-#### `loop(function) <> void`
+#### `loop(function) -> void`
 
 Primitive unconditional loop construct. This repeatedly calls the given
 function with no arguments.

@@ -37,22 +37,22 @@ development.)
 <br><br>
 ### Function Definitions
 
-#### `formalsMaxArgs([formal*]) <> int`
+#### `formalsMaxArgs([formal*]) -> int`
 
 Gets the maximum number of arguments that a given list of `formal`
 arguments could possibly accept. If there is no limit, this returns `-1`.
 
-#### `formalsMinArgs([formal*]) <> int`
+#### `formalsMinArgs([formal*]) -> int`
 
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
 
-#### `get_actuals(node) <> node | [node*]`
+#### `get_actuals(node) -> node | [node*]`
 
 Gets the actual arguments of an `apply` node (resulting in an expression node)
 or `call` node (resulting in a list of expression nodes).
 
-#### `get_baseName(taggedName) <> string`
+#### `get_baseName(taggedName) -> string`
 
 Gets the "base" name from a tagged name value. Operates on `@external`
 module name and `@internal` relative path values. For `@external` names,
@@ -69,7 +69,7 @@ get_baseName(@internal("frotz.txt"))                =>  "frotz"
 get_baseName(@internal("frobozz/magic/frotz.txt"))  =>  "frotz"
 ```
 
-#### `get_definedNames(node) <> [name*]`
+#### `get_definedNames(node) -> [name*]`
 
 Gets a list of the names of all variables defined by the given `node`.
 If `node` defines no names, this returns `[]` (the empty list).
@@ -77,32 +77,41 @@ If `node` defines no names, this returns `[]` (the empty list).
 It is a fatal error to call this on an *unresolved* wildcard
 `importModuleSelection` node.
 
-#### `get_formals(node) <> [formal*]`
+#### `get_formals(node) -> [formal*]`
 
 Gets the formal arguments of a `closure` node.
 
-#### `get_format(node) <> string`
+#### `get_format(node) -> string`
 
 Gets the format of an `importResource` node.
 
-#### `get_function(node) <> node`
+#### `get_function(node) -> node`
 
 Gets the function of an `apply`, or `call` node.
 
-#### `get_id(node) <> int`
+#### `get_id(node) -> int`
 
 Gets the identifier of a reference node.
 
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
-#### `get_info(node) <> map`
+#### `get_info(node) -> map | void`
 
-Gets the metainformation map for the given node (presumably a closure).
-This is only defined on closure nodes which have been processed by
+Gets the metainformation map for the given node (presumably a closure),
+if any. This is only defined on closure nodes which have been processed by
 `withModuleDefs()` or equivalent.
 
-#### `get_lvalue(node) <> function | .`
+#### `get_interpolate(node) -> node | void`
+
+Gets the interpolated node, if any, of a `call` node. This is non-void
+when a `call` node was created by virtue of a call to `makeInterpolate`
+and is in turn used by `makeCallOrApply` to detect when to translate
+a call into an interpolated form.
+
+**Note**: `interpolate` bindings aren't used during execution.
+
+#### `get_lvalue(node) -> function | void`
 
 Gets the `lvalue` binding for a node, if any. This is non-void for
 `varRef` nodes created with `makeVarRefLvalue` or for any node in general
@@ -114,77 +123,69 @@ representing an assignment of the lvalue-bearing node to the given node.
 
 **Note**: `lvalue` bindings aren't used during execution.
 
-#### `get_interpolate(node) <> node | .`
-
-Gets the interpolated node, if any, of a `call` node. This is non-void
-when a `call` node was created by virtue of a call to `makeInterpolate`
-and is in turn used by `makeCallOrApply` to detect when to translate
-a call into an interpolated form.
-
-**Note**: `interpolate` bindings aren't used during execution.
-
-#### `get_maxArgs(node) <> int`
+#### `get_maxArgs(node) -> int`
 
 Convenient shorthand for `formalsMaxArgs(get_formals(node))`.
 
-#### `get_minArgs(node) <> int`
+#### `get_minArgs(node) -> int`
 
 Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 
-#### `get_name(node) <> . | void`
+#### `get_name(node) -> . | void`
 
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 `varDef`, `varDefMutable`, and `varRef`.
 
-#### `get_nodeValue(node) <> .`
+#### `get_nodeValue(node) -> . | void`
 
-Gets the value (literal or node) used by the given node. This is applicable to
-nodes of type `literal`, `maybe`, `noYield`, `parser`, `varBind`,
-`varDef`, and `varDefMutable`.
+Gets the value (literal or node) used by the given node, if any. This is
+applicable to nodes of type `literal`, `maybe`, `noYield`, `parser`,
+`varBind`, `varDef`, and `varDefMutable`.
 
-#### `get_prefix(node) <> string`
+#### `get_prefix(node) -> string`
 
 Gets the name of an `importModuleSelection` node.
 
-#### `get_select(node) <> [name*]`
+#### `get_select(node) -> [name*] | void`
 
 Gets the binding selection of an `importModuleSelection` or `exportSelection`
 node.
 
-#### `get_source(node) <> source`
+#### `get_source(node) -> source`
 
 Gets the source of an import. This is applicable to nodes of type
 `importModule`, `importModuleSelection`, and `importResource`.
 
-#### `get_statements(node) <> [node*]`
+#### `get_statements(node) -> [node*]`
 
 Gets the statement list of a `closure` node.
 
-#### `get_yieldNode(node) <> node`
+#### `get_yieldNode(node) -> node | void`
 
-Gets the yield of a `closure` node.
+Gets the yield of a `closure` node, if any. Full closures are required to
+have a yield node, but basic closures are not.
 
 **Note:** This is named `yieldNode` and not just `yield` to avoid conflict
 with the token of the latter name.
 
-#### `get_yieldDef(node) <> . | void`
+#### `get_yieldDef(node) -> . | void`
 
 Gets the yield definition name of a `closure` node, if any.
 
-#### `isExpression(node) <> node | void`
+#### `isExpression(node) -> node | void`
 
 Indicates whether `node` is a full expression node type (as opposed to,
 notably, a restricted expression node type or a statement node type).
 Returns `node` to indicate logic-true.
 
-#### `makeApply(function, optActuals?) <> node`
+#### `makeApply(function, optActuals?) -> node`
 
 Makes an `apply` node, with the given `function` (an expression node)
 being applied to the given `actuals` (an expression node). If `optActuals`
 is not passed, it defaults to `@void`.
 
-#### `makeBasicClosure(map) <> node`
+#### `makeBasicClosure(map) -> node`
 
 Makes a `closure` node, using the bindings of `map` as a basis, and adding
 in sensible defaults for `formals` and `statements` if missing:
@@ -196,18 +197,18 @@ No default is provided for `yield`, as it is not always possible to
 figure out a default for it at the points where `closure` nodes need to
 be produced de novo. See `makeFullClosure()` for more detail.
 
-#### `makeCall(function, actuals*) <> node`
+#### `makeCall(function, actuals*) -> node`
 
 Makes a `call` node, where `function` (an expression node) is called
 with each of the `actuals` (each an expression node) as arguments, in
 order.
 
-#### `makeCallLiterals(function, actuals*) <> node`
+#### `makeCallLiterals(function, actuals*) -> node`
 
 Like `makeCall`, except that each of the `actuals` is made to be a literal
 value.
 
-#### `makeCallOrApply(function, actuals*) <> node`
+#### `makeCallOrApply(function, actuals*) -> node`
 
 Returns a function call node, where `function` (an expression node) is called
 with each of the `actuals` (each an expression node) as arguments, in
@@ -224,12 +225,12 @@ If there are no `interpolate` nodes in `actuals`, the end result is a
 straightforward `call` node, the same as calling `makeCall` on the same
 arguments.
 
-#### `makeCallThunks(function, actuals*) <> node`
+#### `makeCallThunks(function, actuals*) -> node`
 
 Like `makeCall`, except that each of the `actuals` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
-#### `makeDynamicImport(node) <> [node+]`
+#### `makeDynamicImport(node) -> [node+]`
 
 Converts an `import*` node to a list of statement nodes which perform an
 equivalent set of actions, dynamically.
@@ -246,18 +247,18 @@ replacement node, because some `import*` forms must expand to multiple
 statements. Always returning a list makes it possible to treat all return
 values more uniformly.
 
-#### `makeExport(node) <> node`
+#### `makeExport(node) -> node`
 
 Makes an `export` node, indicating that the given `node`'s definitions
 are to be exported. `node` must be valid to export, e.g. (but not limited
 to) a `varDef` node.
 
-#### `makeExportSelection(names+) <> node`
+#### `makeExportSelection(names+) -> node`
 
 Makes an `exportSelection` node to export the variables with the given
 `names`.
 
-#### `makeFullClosure(map) <> node`
+#### `makeFullClosure(map) -> node`
 
 Makes a `closure` node, using the bindings of `map` as a basis, adding
 in defaults like `makeBasicClosure()` (see which), as well as for `yield`.
@@ -274,12 +275,12 @@ If all of those are true, then in the result, the final element of
 `statements` is removed and gets wrapped in a `@maybe`. That `@maybe`
 becomes the binding for `yield` in the result.
 
-#### `makeGet(collArg, keyArg) <> node`
+#### `makeGet(collArg, keyArg) -> node`
 
 Makes a collection access (`get`) expression. This is a `call` node
 of two arguments (a collection node and a key node).
 
-#### `makeImport(baseData) <> node`
+#### `makeImport(baseData) -> node`
 
 Makes an `@import*` node, based on `baseData`, which must be a map which
 includes a consistent set of bindings for one of the `@import` node types.
@@ -303,7 +304,7 @@ the rejection. This makes it safe to "optimistically" parse a generalized
 version of the `import` syntax, and use this function for a final
 validation.
 
-#### `makeInfoMap(node) <> {exports: {...}, imports: {...}, resources: {...}}`
+#### `makeInfoMap(node) -> {exports: {...}, imports: {...}, resources: {...}}`
 
 Constructs the metainformation from a `closure` node that represents a
 top-level module. This returns a map that binds `exports`, `imports`, and
@@ -316,17 +317,17 @@ any unresolved wildcard imports.
 **Note:** If `node` already has an `info` binding, then this function
 just returns that.
 
-#### `makeInterpolate(expr) <> node`
+#### `makeInterpolate(expr) -> node`
 
 Makes an interpolation of the given expression node. The result is a
 `call` to the function `interpolate`, but with an additional `interpolate`
 binding in the data payload. See `makeCallOrApply` for more details.
 
-#### `makeLiteral(value) <> node`
+#### `makeLiteral(value) -> node`
 
 Makes a `literal` node.
 
-#### `makeMaybe(value) <> node`
+#### `makeMaybe(value) -> node`
 
 Makes a raw `maybe` node. These are only valid to use in limited contexts.
 See the expression node specification for details.
@@ -334,17 +335,17 @@ See the expression node specification for details.
 **Note:** This is different than `makeMaybeValue` in that
 the latter produces an expression node which always evaluates to a list.
 
-#### `makeMaybeValue(node) <> node`
+#### `makeMaybeValue(node) -> node`
 
 Makes a maybe-value expression for the given `node`. This effectively
 returns a node representing `node?` (for the original `node`), or
 equivalently and more expanded, `maybeValue { <> node }`.
 
-#### `makeNoYield(value) <> node`
+#### `makeNoYield(value) -> node`
 
 Makes a `noYield` node.
 
-#### `makeNonlocalExit(function, optValue?) <> node`
+#### `makeNonlocalExit(function, optValue?) -> node`
 
 Makes a node representing a nonlocal exit, for calling the given `function`
 with optional expression argument `optValue*`. `optValue*` is allowed
@@ -354,35 +355,35 @@ treated as if it were specified as `@void`.
 The resulting node is a `noYield`, since nonlocal exits are never supposed
 to return to their direct callers.
 
-#### `makeThunk(node) <> node`
+#### `makeThunk(node) -> node`
 
 Makes a thunk (no-argument function) that evaluates the given node, allowing
 it to evaluate to void. That is, this returns `{ <> node }`.
 
-#### `makeVarBind(name, value) <> node`
+#### `makeVarBind(name, value) -> node`
 
 Makes a `varBind` node.
 
-#### `makeVarDef(name, optValue?) <> node`
+#### `makeVarDef(name, optValue?) -> node`
 
 Makes a `varDef` statement node.
 
-#### `makeVarDefMutable(name, optValue?) <> node`
+#### `makeVarDefMutable(name, optValue?) -> node`
 
 Makes a `varDefMutable` statement node.
 
-#### `makeVarRef(name) <> node`
+#### `makeVarRef(name) -> node`
 
 Makes a `varRef` node. The result is a direct `varRef` node, with no
 additional bindings.
 
-#### `makeVarRefLvalue(name) <> node`
+#### `makeVarRefLvalue(name) -> node`
 
 Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varBind` node representing an assignment of the variable.
 
-#### `resolveImport(node, resolveFn) <> node`
+#### `resolveImport(node, resolveFn) -> node`
 
 Returns a node just like the given one (which must be an `import*` node),
 except that it is resolved, using `resolveFn` to resolve any references.
@@ -395,18 +396,18 @@ Everything else just passes through as-is, if valid.
 It is a fatal error (terminating the runtime) if `node` is found to be
 invalid.
 
-#### `withDynamicImports(node) <> node`
+#### `withDynamicImports(node) -> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` nodes in the `statements` converted to their dynamic
 forms.
 
-#### `withFormals(node, [formal*]) <> node`
+#### `withFormals(node, [formal*]) -> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with `formals` (re)bound as given.
 
-#### `withModuleDefs(node) <> node`
+#### `withModuleDefs(node) -> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with `statements` and `yield` bindings processed to make the node
@@ -433,31 +434,31 @@ binding for the metainformation. This includes the following transformations:
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield` that is anything but `@void`.
 
-#### `withResolvedImports(node, resolveFn) <> node`
+#### `withResolvedImports(node, resolveFn) -> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` or `export(import*)`nodes in the `statements` list
 validated and transformed, by calling `resolveImport(node, resolveFn)`.
 
-#### `withTop(node) <> node`
+#### `withTop(node) -> node`
 
 Makes a node just like the given one (presumably a `varDef` node), except
 with the addition of a `top: true` binding.
 
-#### `withoutIntermediates(node) <> node`
+#### `withoutIntermediates(node) -> node`
 
 Makes a node just like the given one, except without any "intermediate"
 data payload bindings. These are bindings which are incidentally used
 during typical tree node construction but which are not used for execution.
 This includes `lvalue` and `interpolate`.
 
-#### `withoutInterpolate(node) <> node`
+#### `withoutInterpolate(node) -> node`
 
 Makes a node just like the given one, except without any binding
 for `interpolate`. This is used by parser code to preventing argument
 interpolation from applying to parenthesized expressions.
 
-#### `withoutTops(node) <> node`
+#### `withoutTops(node) -> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with no `top` decalarations in the `statements` list.

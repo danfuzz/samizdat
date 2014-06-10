@@ -16,7 +16,7 @@ Samizdat.
 <br><br>
 ### Function Definitions
 
-#### `eval(env, expressionNode) <> . | void`
+#### `eval(env, expressionNode) -> . | void`
 
 Returns the evaluation result of executing the given expression node,
 which is a parse tree as specified in this document, converted for
@@ -35,7 +35,7 @@ a fatal error (terminating the runtime).
 Very notably, the result of calling `simplify(parseProgram(code), resolveFn)`
 is valid as the `expressionNode` argument here.
 
-#### `evalBinary(env, filePath) <> . | void`
+#### `evalBinary(env, filePath) -> . | void`
 
 Evaluates the named compiled file. `filePath` is expected to name
 a file in the (platform-dependent) binary library format. The file

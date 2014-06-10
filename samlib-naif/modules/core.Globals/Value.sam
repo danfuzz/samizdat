@@ -15,90 +15,90 @@
 
 ## Documented in spec.
 export fn ge(value, other) {
-    <> ifNot { <> eq(order(value, other), -1) }
-        { <> value }
+    return? ifNot { eq(order(value, other), -1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn gt(value, other) {
-    <> ifIs { <> eq(order(value, other), 1) }
-        { <> value }
+    return? ifIs { eq(order(value, other), 1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn le(value, other) {
-    <> ifNot { <> eq(order(value, other), 1) }
-        { <> value }
+    return? ifNot { eq(order(value, other), 1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn lt(value, other) {
-    <> ifIs { <> eq(order(value, other), -1) }
-        { <> value }
+    return? ifIs { eq(order(value, other), -1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn ne(value, other) {
-    <> ifNot { <> eq(value, other) }
-        { <> value }
+    return? ifNot { eq(value, other) }
+        { value }
 };
 
 ## Documented in spec.
 export fn perGe(value, other) {
-    <> ifNot { <> eq(perOrder(value, other), -1) }
-        { <> value }
+    return? ifNot { eq(perOrder(value, other), -1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn perGt(value, other) {
-    <> ifIs { <> eq(perOrder(value, other), 1) }
-        { <> value }
+    return? ifIs { eq(perOrder(value, other), 1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn perLe(value, other) {
-    <> ifNot { <> eq(perOrder(value, other), 1) }
-        { <> value }
+    return? ifNot { eq(perOrder(value, other), 1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn perLt(value, other) {
-    <> ifIs { <> eq(perOrder(value, other), -1) }
-        { <> value }
+    return? ifIs { eq(perOrder(value, other), -1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn perNe(value, other) {
-    <> ifNot { <> perEq(value, other) }
-        { <> value }
+    return? ifNot { perEq(value, other) }
+        { value }
 };
 
 ## Documented in spec.
 export fn totalGe(value, other) {
-    <> ifNot { <> eq(totalOrder(value, other), -1) }
-        { <> value }
+    return? ifNot { eq(totalOrder(value, other), -1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn totalGt(value, other) {
-    <> ifIs { <> eq(totalOrder(value, other), 1) }
-        { <> value }
+    return? ifIs { eq(totalOrder(value, other), 1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn totalLe(value, other) {
-    <> ifNot { <> eq(totalOrder(value, other), 1) }
-        { <> value }
+    return? ifNot { eq(totalOrder(value, other), 1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn totalLt(value, other) {
-    <> ifIs { <> eq(totalOrder(value, other), -1) }
-        { <> value }
+    return? ifIs { eq(totalOrder(value, other), -1) }
+        { value }
 };
 
 ## Documented in spec.
 export fn totalNe(value, other) {
-    <> ifNot { <> totalEq(value, other) }
-        { <> value }
+    return? ifNot { totalEq(value, other) }
+        { value }
 };

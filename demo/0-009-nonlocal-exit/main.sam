@@ -26,7 +26,7 @@ fn returnVoid1() {
 };
 
 fn returnVoid2() {
-    return returnVoid1()
+    return? returnVoid1()
 };
 
 fn returnVoid3() { /out ->
@@ -63,14 +63,14 @@ ifIs(returnVoid4, bad, good);
 ifIs(returnVoid5, bad, good);
 ifIs(returnVoid6, bad, good);
 
-ifValue { <> returnArg1("woo") }
-    { v <> note(v) }
+ifValue { returnArg1("woo") }
+    { v -> note(v) }
     { bad() };
 
-ifValue { <> returnArg2("woo") }
-    { v <> note(v) }
+ifValue { returnArg2("woo") }
+    { v -> note(v) }
     { bad() };
 
-ifValue { <> returnArg3("woo") }
-    { v <> note(v) }
+ifValue { returnArg3("woo") }
+    { v -> note(v) }
     { bad() };

@@ -22,42 +22,40 @@ import ./NullGenerator;
 ## Documented in spec.
 export fn makeSerialGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
-    ifIs { <> eq(generators, []) }
+    ifIs { eq(generators, []) }
         { return $NullGenerator::nullGenerator };
 
     ## Return the argument directly if we were only passed one.
     ## This saves some gratuitous call wrapping / double yields.
-    ifIs { <> eq(get_size(generators), 1) }
+    ifIs { eq(get_size(generators), 1) }
         { return generators* };
 
-    <> @SerialGenerator(generators)
+    return @SerialGenerator(generators)
 };
 
 ## Documented in spec.
 fn @@SerialGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
-    <> Generator_stdCollect(this, optFilterFunction*)
+    return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
 fn @@SerialGenerator.nextValue(box) {
     def subGens = dataOf(this);
 
-    <> ifValue { <> get(subGens, 0) }
+    return? ifValue { get(subGens, 0) }
         { firstGen ->
             def moreGens = $Sequence::sliceInclusive(subGens, 1);
             def innerBox = $Box::makePromise();
 
-            <> ifValue { <> nextValue(firstGen, innerBox) }
+            ifValue { nextValue(firstGen, innerBox) }
                 { nextGenerator ->
                     store(box, fetch(innerBox));
-                    <> @SerialGenerator[nextGenerator, moreGens*]
+                    @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
                     ## First generator was voided.
-                    <> nextValue(
-                        makeSerialGenerator(moreGens*),
-                        box)
+                    nextValue(makeSerialGenerator(moreGens*), box)
                 }
         }
         {

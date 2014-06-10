@@ -115,12 +115,12 @@ def REF_get = makeVarRef("get");
 
 ## Documented in spec.
 export def REFS = cat(
-    ($Generator::filterAll(NAMES) { name <> {(name): makeVarRef(name)} })*,
+    ($Generator::filterAll(NAMES) { name -> {(name): makeVarRef(name)} })*,
     ($Generator::filterAll(MOD_NAMES) { modName ->
         def mod = modName::mod;
         def name = modName::name;
         def modVar = makeVarRef(cat("$", mod));
         def refKey = cat(mod, "_", name);
-        <> {(refKey): makeCall(REF_get, modVar, makeLiteral(name))}
+        {(refKey): makeCall(REF_get, modVar, makeLiteral(name))}
     })*
 );
