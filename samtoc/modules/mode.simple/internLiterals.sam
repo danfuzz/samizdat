@@ -20,13 +20,13 @@ fn @@apply.lits(interner) {
     def function = lits(this.function, interner);
     def actuals = lits(this.actuals, interner);
 
-    <> @apply{actuals, function}
+    return @apply{actuals, function}
 };
 
 fn @@call.lits(interner) {
-    <> @call{
+    return @call{
         function: lits(this.function, interner),
-        actuals: [ a in this.actuals <> lits(a, interner) ]
+        actuals: [ a in this.actuals -> lits(a, interner) ]
     }
 };
 
@@ -35,10 +35,10 @@ fn @@closure.lits(interner) {
         & {name: lits(@literal{value}, interner)}
         | {};
 
-    <> makeFullClosure({
+    return makeFullClosure({
         name*,
         formals: this.formals,
-        statements: [ s in this.statements <> lits(s, interner) ],
+        statements: [ s in this.statements -> lits(s, interner) ],
         yield: lits(this.yieldNode, interner),
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
     })
@@ -46,55 +46,55 @@ fn @@closure.lits(interner) {
 
 fn @@export.lits(interner) {
     def value = lits(this.nodeValue, interner);
-    <> @export{value}
+    return @export{value}
 };
 
 fn @@exportSelection.lits(interner) {
-    <> this
+    return this
 };
 
 ## Used as the `source` in `import*` nodes.
 fn @@external.lits(interner) {
-    <> @external(interner.intern(dataOf(this)))
+    return @external(interner.intern(dataOf(this)))
 };
 
 fn @@importModule.lits(interner) {
     def source = lits(this.source, interner);
-    <> @importModule{dataOf(this)*, source}
+    return @importModule{dataOf(this)*, source}
 };
 
 fn @@importModuleSelection.lits(interner) {
     def source = lits(this.source, interner);
-    <> @importModuleSelection{dataOf(this)*, source}
+    return @importModuleSelection{dataOf(this)*, source}
 };
 
 fn @@importResource.lits(interner) {
     def source = lits(this.source, interner);
     def format = interner.intern(this.format);
-    <> @importResource{dataOf(this)*, source, format}
+    return @importResource{dataOf(this)*, source, format}
 };
 
 ## Used as the `source` in `import*` nodes.
 fn @@internal.lits(interner) {
-    <> @internal(interner.intern(dataOf(this)))
+    return @internal(interner.intern(dataOf(this)))
 };
 
 fn @@literal.lits(interner) {
-    <> @literalRef{id: interner.intern(this.nodeValue)}
+    return @literalRef{id: interner.intern(this.nodeValue)}
 };
 
 fn @@maybe.lits(interner) {
     def value = lits(this.nodeValue, interner);
-    <> @maybe{value}
+    return @maybe{value}
 };
 
 fn @@noYield.lits(interner) {
     def value = lits(this.nodeValue, interner);
-    <> @noYield{value}
+    return @noYield{value}
 };
 
 fn @@varBind.lits(interner) {
-    <> @varBind{
+    return @varBind{
         name: this.name,
         value: lits(this.nodeValue, interner)
     }
@@ -102,24 +102,24 @@ fn @@varBind.lits(interner) {
 
 fn @@varDef.lits(interner) {
     def value = ifValue { this.nodeValue }
-        { value <> {value: lits(value, interner)} }
-        { <> {} };
-    <> @varDef{name: this.name, value*}
+        { value -> {value: lits(value, interner)} }
+        { {} };
+    return @varDef{name: this.name, value*}
 };
 
 fn @@varDefMutable.lits(interner) {
     def value = ifValue { this.nodeValue }
-        { value <> {value: lits(value, interner)} }
-        { <> {} };
-    <> @varDefMutable{name: this.name, value*}
+        { value -> {value: lits(value, interner)} }
+        { {} };
+    return @varDefMutable{name: this.name, value*}
 };
 
 fn @@varRef.lits(interner) {
-    <> this
+    return this
 };
 
 fn @@void.lits(interner) {
-    <> this
+    return this
 };
 
 
@@ -131,5 +131,5 @@ fn @@void.lits(interner) {
 ## `interner`. Returns a replacement for the original `node` argument, in
 ## which literals have been replaced by indexed references to same.
 export fn internLiterals(node, interner) {
-    <> lits(node, interner);
+    return lits(node, interner)
 };

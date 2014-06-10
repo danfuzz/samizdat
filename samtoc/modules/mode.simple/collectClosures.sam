@@ -19,17 +19,17 @@ fn @@apply.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
     def actuals = bodies(this.actuals, bodiesBox);
 
-    <> @apply{actuals, function}
+    return @apply{actuals, function}
 };
 
 fn @@call.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
-    def actuals = [ a in this.actuals <> bodies(a, bodiesBox) ];
-    <> @call{function, actuals}
+    def actuals = [ a in this.actuals -> bodies(a, bodiesBox) ];
+    return @call{function, actuals}
 };
 
 fn @@closure.bodies(bodiesBox) {
-    def statements = [ s in this.statements <> bodies(s, bodiesBox) ];
+    def statements = [ s in this.statements -> bodies(s, bodiesBox) ];
     def yieldNode = bodies(this.yieldNode, bodiesBox);
     def varRefs = this.varRefs;
 
@@ -49,69 +49,69 @@ fn @@closure.bodies(bodiesBox) {
 
     def result = @closureRef{id: #bodies, varRefs};
     store(bodiesBox, {bodies*, (newNode): result});
-    <> result
+    return result
 };
 
 fn @@export.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
-    <> @export{value}
+    return @export{value}
 };
 
 fn @@exportSelection.bodies(bodiesBox) {
-    <> this
+    return this
 };
 
 fn @@importModule.bodies(bodiesBox) {
-    <> this
+    return this
 };
 
 fn @@importModuleSelection.bodies(bodiesBox) {
-    <> this
+    return this
 };
 
 fn @@importResource.bodies(bodiesBox) {
-    <> this
+    return this
 };
 
 fn @@literalRef.bodies(bodiesBox) {
-    <> this
+    return this
 };
 
 fn @@maybe.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
-    <> @maybe{value}
+    return @maybe{value}
 };
 
 fn @@noYield.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
-    <> @noYield{value}
+    return @noYield{value}
 };
 
 fn @@varBind.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
-    <> @varBind{name: this.name, value}
+    return @varBind{name: this.name, value}
 };
 
 fn @@varDef.bodies(bodiesBox) {
     def value = ifValue { this.nodeValue }
-        { value <> {value: bodies(value, bodiesBox)} }
-        { <> {} };
-    <> @varDef{name: this.name, value*}
+        { value -> {value: bodies(value, bodiesBox)} }
+        { {} };
+    return @varDef{name: this.name, value*}
 };
 
 fn @@varDefMutable.bodies(bodiesBox) {
     def value = ifValue { this.nodeValue }
-        { value <> {value: bodies(value, bodiesBox)} }
-        { <> {} };
-    <> @varDefMutable{name: this.name, value*}
+        { value -> {value: bodies(value, bodiesBox)} }
+        { {} };
+    return @varDefMutable{name: this.name, value*}
 };
 
 fn @@varRef.bodies(bodiesBox) {
-    <> @varRef{name: this.name}
+    return @varRef{name: this.name}
 };
 
 fn @@void.bodies(bodiesBox) {
-    <> this
+    return this
 };
 
 
@@ -128,12 +128,12 @@ export fn collectClosures(node) {
     def newNode = bodies(node, bodiesBox);
     def bodiesMap = fetch(bodiesBox);
 
-    def bodiesBoxList = [ for #bodiesMap <> $Box::makePromise() ];
+    def bodiesBoxList = [ for #bodiesMap -> $Box::makePromise() ];
     for (body in bodiesMap) {
         def index = get_value(body)::id;
         store(bodiesBoxList[index], get_key(body))
     };
-    def closures = [ box in bodiesBoxList <> fetch(box) ];
+    def closures = [ box in bodiesBoxList -> fetch(box) ];
 
-    <> { closures, node: newNode }
+    return { closures, node: newNode }
 };

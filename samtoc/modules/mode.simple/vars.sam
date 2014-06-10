@@ -47,8 +47,8 @@ def FORMAL_PARSERS = {
 ## Helper for `processFormals*` which produces the helpful commentary about
 ## unnamed formals.
 fn unnamedFormals(clo) {
-    <> [ idx in (0..), f in clo.formals ->
-        <> (!f::name) & $CodeGen::genComment("Unnamed formal \(idx)")
+    return [ idx in (0..), f in clo.formals ->
+        (!f::name) & $CodeGen::genComment("Unnamed formal \(idx)")
     ];
 };
 
@@ -58,10 +58,10 @@ fn processFormalsWithRepeat(clo, names) {
     def varList = [ idx in (0..), f in clo.formals ->
         def parse = FORMAL_PARSERS[f::repeat | "."];
 
-        <> if (def origName = f::name) {
+        if (def origName = f::name) {
             def name = safeName("arg", origName, idx);
             def rawName = "raw_\(name)";
-            <> {
+            {
                 kind: "arg",
                 name,
                 origName,
@@ -74,27 +74,27 @@ fn processFormalsWithRepeat(clo, names) {
         } else {
             ## Note: Because we have to adjust `argAt` for unnamed formals, we
             ## can't just skip the formal entirely.
-            <> {preInit: [parse::update]}
+            {preInit: [parse::update]}
         };
     ];
 
     def preInits = [
         "zint argAt = 0",
-        cat(( v in varList <> v::preInit )*)*
+        cat(( v in varList -> v::preInit )*)*
     ];
 
     def vars = ( v in varList ->
-        <> (def origName = v::origName)
+        (def origName = v::origName)
             & {(origName): $Collection::del(v, "preInit")}
     );
 
-    <> {names, preInits, cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits, cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the formal arguments to the
 ## given closure, if any.
 fn processFormals(clo) {
-    def names = [ f in clo.formals <> f::name ];
+    def names = [ f in clo.formals -> f::name ];
 
     def vars = ( idx in (0..), f in clo.formals ->
         if (f::repeat) {
@@ -103,7 +103,7 @@ fn processFormals(clo) {
             return processFormalsWithRepeat(clo, names)
         };
 
-        <> (def name = f::name) &
+        (def name = f::name) &
             {(name): {
                 origName: name,
                 kind: "arg",
@@ -112,14 +112,14 @@ fn processFormals(clo) {
             }}
     );
 
-    <> {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the yield definition of the given
 ## closure, if any.
 fn processYieldDef(clo) {
-    <> if (def name = clo.yieldDef) {
-        <> {
+    return if (def name = clo.yieldDef) {
+        {
             names: [name],
             preInits: [
                 "zvalue jump = makeJump()",
@@ -134,7 +134,7 @@ fn processYieldDef(clo) {
                 }}
         }
     } else {
-        <> {names: [], preInits: [], cleanups: [], vars: {}}
+        {names: [], preInits: [], cleanups: [], vars: {}}
     }
 };
 
@@ -143,7 +143,7 @@ fn processYieldDef(clo) {
 fn processFreeVars(clo) {
     def names = clo.varRefs;
     def vars = ( idx in (0..), name in names ->
-        <> {(name): {
+        {(name): {
             origName: name,
             kind: "free",
             name: freeVarName(name, idx),
@@ -151,7 +151,7 @@ fn processFreeVars(clo) {
         }}
     );
 
-    <> {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Makes a "safe" (syntactically correct C) variable name, given a `prefix`
@@ -159,10 +159,10 @@ fn processFreeVars(clo) {
 ## (an unsigned int).
 fn safeName(prefix, name, optIndex?) {
     def nameStr = hasType(name, String) | "\(name)";
-    def chars = ( ch in nameStr <> C_IDENT_CHARS[ch] & ch | "_" );
+    def chars = ( ch in nameStr -> C_IDENT_CHARS[ch] & ch | "_" );
     def index = (def i = optIndex*) & [i, "_"] | "";
 
-    <> "\(prefix)_\(index)\[chars*]"
+    return "\(prefix)_\(index)\[chars*]"
 };
 
 
@@ -173,25 +173,25 @@ fn safeName(prefix, name, optIndex?) {
 ## Gets the C variable declaration to use for the variable at the indicated
 ## index (into a list of free variables) and with the given original name.
 export fn freeVarDecl(name, index) {
-    <> safeName("zvalue free", name, index)
+    return safeName("zvalue free", name, index)
 };
 
 ## Gets the C variable name to use for the variable at the indicated
 ## index (into a list of free variables) and with the given original name.
 export fn freeVarName(name, index) {
-    <> safeName("free", name, index)
+    return safeName("free", name, index)
 };
 
 ## Gets the C variable declaration to use for the variable at the indicated
 ## index (into a list of local variables) and with the given original name.
 export fn localVarDecl(name, index) {
-    <> safeName("zvalue local", name, index)
+    return safeName("zvalue local", name, index)
 };
 
 ## Gets the C variable name to use for the variable at the indicated
 ## index (into a list of local variables) and with the given original name.
 export fn localVarName(name, index) {
-    <> safeName("local", name, index)
+    return safeName("local", name, index)
 };
 
 ## Returns `{names, vars, inits}` for all variables that are defined
@@ -207,12 +207,12 @@ export fn processVars(clo) {
     ## Make C local variable defintions for all the variables.
     def varStats = ( name in names ->
         def binding = vars[name];
-        <> $CodeGen::genComment(
+        $CodeGen::genComment(
             "\%q(binding::origName)",
             $CodeGen::genAssign("zvalue \(binding::name)", binding::init));
     );
 
-    <> {
+    return {
         cleanups: [
             formals::cleanups*,
             freeVars::cleanups*,
