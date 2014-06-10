@@ -64,13 +64,13 @@ ifIs(returnVoid5, bad, good);
 ifIs(returnVoid6, bad, good);
 
 ifValue { returnArg1("woo") }
-    { v <> note(v) }
+    { v -> note(v) }
     { bad() };
 
 ifValue { returnArg2("woo") }
-    { v <> note(v) }
+    { v -> note(v) }
     { bad() };
 
 ifValue { returnArg3("woo") }
-    { v <> note(v) }
+    { v -> note(v) }
     { bad() };

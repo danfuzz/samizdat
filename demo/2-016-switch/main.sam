@@ -83,7 +83,7 @@ note($Format::source(elser("igram")?)); ## `?` because we expect void.
 note("\nVoid yield...");
 ifNot
     {
-        <> switch (lt(2, 1)) {
+        switch (lt(2, 1)) {
             default: { note("Huh?") }
         }
     }

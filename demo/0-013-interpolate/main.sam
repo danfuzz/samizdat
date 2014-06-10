@@ -45,19 +45,19 @@ msg({a: 10, b: "20"}*);
 msg($Range::makeInclusiveRange("a", "m", 2)*);
 
 ifValue { yieldTest([]) }
-    { value <> msg(value) }
+    { value -> msg(value) }
     { note("(void)") };
 
 ifValue { nonlocalTest([]) }
-    { value <> msg(value) }
+    { value -> msg(value) }
     { note("(void)") };
 
 ifValue { yieldTest(["blort"]) }
-    { value <> msg(value) }
+    { value -> msg(value) }
     { note("(void)") };
 
 ifValue { nonlocalTest(["fizmo"]) }
-    { value <> msg(value) }
+    { value -> msg(value) }
     { note("(void)") };
 
 ## The extra parens here force the interpolated expression not to be considered

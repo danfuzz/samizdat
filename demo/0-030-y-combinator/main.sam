@@ -42,7 +42,7 @@ fn uCombinator(function) {
 ## `Y*`. That is, the Y combinator uses the U combinator in the same way
 ## that the Y* combinator uses this function.
 fn uStarCombinator(functions) {
-    return collect(functions, { function <> function(functions*) })
+    return collect(functions, { function -> function(functions*) })
 };
 
 ## Documented in associated README file.
@@ -52,10 +52,10 @@ fn yCombinator(function) {
     ## `applicator` doesn't directly refer to the variable `applicator`.
 
     fn applicator(selfRef) {
-        return { args* <> function(uCombinator(selfRef))(args*) }
+        return { args* -> function(uCombinator(selfRef))(args*) }
     };
 
-    <> uCombinator(applicator);
+    return uCombinator(applicator);
 };
 
 ## Documented in associated README file.
@@ -68,12 +68,12 @@ fn yStarCombinator(functions*) {
     def applicators = collect(
         functions,
         { function ->
-            <> { selfRefs* ->
-                <> { args* <> function(uStarCombinator(selfRefs)*)(args*) }
+            { selfRefs* ->
+                { args* -> function(uStarCombinator(selfRefs)*)(args*) }
             }
         });
 
-    <> uStarCombinator(applicators);
+    return uStarCombinator(applicators);
 };
 
 
@@ -90,10 +90,10 @@ fn yStarCombinator(functions*) {
 ## in an outer function layer, whose argument is used to achieve
 ## recursion.
 def countDown = yCombinator { countDown ->
-    <> { n ->
-        <> ifIs { ge(n, 0) }
-            { <> [n, countDown($Number::sub(n, 1))*] }
-            { <> [] }
+    { n ->
+        ifIs { ge(n, 0) }
+            { [n, countDown($Number::sub(n, 1))*] }
+            { [] }
     }
 };
 
@@ -101,14 +101,14 @@ def countDown = yCombinator { countDown ->
 ## above.
 def countDowns = yStarCombinator
     { f1, f2 ->
-        <> { n ->
-            <> ifIs { gt(n, 0) }
-                { <> [n, f2($Number::sub(n, 1))*] }
-                { <> [0] }
+        { n ->
+            ifIs { gt(n, 0) }
+                { [n, f2($Number::sub(n, 1))*] }
+                { [0] }
         }
     }
     { f1, f2 ->
-        <> { n <> ["and", f1(n)*] }
+        { n -> ["and", f1(n)*] }
     };
 def countDown2 = nth(countDowns, 0);
 

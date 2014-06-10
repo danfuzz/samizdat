@@ -160,8 +160,8 @@ expectCore(uniq2);
 
 note("\nFunction");
 
-def fn1 = { x <> x };
-def fn2 = { x <> x };
+def fn1 = { x -> x };
+def fn2 = { x -> x };
 
 expectSame(fn1, fn1);
 expectSame(fn2, fn2);

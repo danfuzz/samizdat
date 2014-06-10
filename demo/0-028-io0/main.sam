@@ -18,7 +18,7 @@ import core.Io0;
 
 ## Checking file type / existence.
 fn tryFile(path) {
-    def result = ifValueOr { $Io0::fileType(path) } { <> "(void)" };
+    def result = ifValueOr { $Io0::fileType(path) } { "(void)" };
     note("fileType(", $Format::source(path), ") => ", result)
 };
 

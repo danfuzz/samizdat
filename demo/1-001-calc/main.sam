@@ -24,7 +24,7 @@ def BINARY_OPS = {
 
 ## Map from unary operation names to functions.
 def UNARY_OPS = {
-    "+": { x <> x },
+    "+": { x -> x },
     "-": $Number::neg
 };
 
@@ -37,7 +37,7 @@ fn applyAll(initialValue, functions) {
         result := function(result)
     };
 
-    <> result
+    return result
 };
 
 ## Takes an initial value and a list of maps of `{op, value}`,
@@ -51,7 +51,7 @@ fn applyShuntingYard(initialValue, opValues) {
         def function = $Sequence::nthFromEnd(ops, 0)::function;
         def newValue =
             function($Sequence::sliceInclusive(values, valuesSizeM2)*);
-        <> {
+        return {
             ops: $Sequence::sliceExclusive(ops, 0),
             values:
                 [$Sequence::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
@@ -102,7 +102,7 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { <> $Number::sub(toInt(get_typeName(ch)), toInt("0")) }
+    { $Number::sub(toInt(get_typeName(ch)), toInt("0")) }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.
@@ -113,7 +113,7 @@ def number = {:
         $Generator::filterPump(digits) { digit ->
             result := $Number::add(digit, $Number::mul(result, 10))
         };
-        <> result
+        result
     }
 :};
 
@@ -126,14 +126,14 @@ def term = {:
     "("
     ex = %expression
     ")"
-    { <> ex }
+    { ex }
 :};
 
 ## Parses a unary (in this case, prefix) operation, yielding its corresponding
 ## function.
 def unaryOp = {:
     op = ["+-"]
-    { <> get(UNARY_OPS, get_typeName(op)) }
+    { get(UNARY_OPS, get_typeName(op)) }
 :};
 
 ## Parses a unary expression, that is, a series of unary operators followed
@@ -141,13 +141,13 @@ def unaryOp = {:
 def unaryExpression = {:
     ops = unaryOp*
     ex = term
-    { <> applyAll(ex, $Sequence::reverse(ops)) }
+    { applyAll(ex, $Sequence::reverse(ops)) }
 :};
 
 ## Parses a binary operation, yielding a map of precedence and function.
 def binaryOp = {:
     op = ["+-*/%"]
-    { <> get(BINARY_OPS, get_typeName(op)) }
+    { get(BINARY_OPS, get_typeName(op)) }
 :};
 
 ## Parses a chained sequence of unary expressions separated by binary
@@ -157,9 +157,9 @@ expression := {:
     opValues = (
         op = binaryOp
         value = unaryExpression
-        { <> {op, value} }
+        { {op, value} }
     )*
-    { <> applyShuntingYard(firstValue, opValues) }
+    { applyShuntingYard(firstValue, opValues) }
 :};
 
 ## Evaluates all the expressions passed to it, printing the evaluated results
@@ -171,7 +171,7 @@ def evalExpressions = {:
         {
             note($Format::source(ex));
             ## Explicit yield here to indicate successful parsing.
-            <> null
+            null
         }
     )*
 :};
@@ -182,9 +182,9 @@ def evalExpressions = {:
 ##
 
 export fn main(selfPath, origArgs*) {
-    def args = ifValueOr { ne(origArgs, []) } { <> ["100+7*2-(8000/-10)"] };
+    def args = ifValueOr { ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
     def argFilter = $Generator::makeFilterGenerator(args)
-        { arg <> cat(arg, "\n") };
+        { arg -> cat(arg, "\n") };
     def exprString = cat(argFilter*);
     $Peg::apply(evalExpressions, exprString);
 };
