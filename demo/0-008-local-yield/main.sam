@@ -30,7 +30,7 @@ fn yieldVoid2() {
 };
 
 fn yieldVoid3() {
-    yield yieldVoid1()
+    yield? yieldVoid1()
 };
 
 fn yieldVoid4() {
