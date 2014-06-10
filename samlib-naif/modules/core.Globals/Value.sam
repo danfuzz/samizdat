@@ -57,7 +57,7 @@ export fn perGt(value, other) {
 
 ## Documented in spec.
 export fn perLe(value, other) {
-    return ifNot { eq(perOrder(value, other), 1) }
+    return? ifNot { eq(perOrder(value, other), 1) }
         { value }
 };
 
