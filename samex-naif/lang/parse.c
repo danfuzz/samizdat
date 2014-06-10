@@ -716,16 +716,6 @@ DEF_PARSE(yieldOrNonlocal) {
     return valEq(name, TOK_yield) ? value : makeNonlocalExit(name, value);
 }
 
-/** Documented in spec. */
-DEF_PARSE(oldYield) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_DIAMOND);
-    zvalue optValue = PARSE(expression);  // It's okay for this to be `NULL`.
-
-    return (optValue == NULL) ? TOK_void : makeMaybe(optValue);
-}
-
 /* Documented in spec. */
 DEF_PARSE(varDef) {
     MARK();
@@ -853,9 +843,7 @@ DEF_PARSE(closureDeclarations3) {
     zvalue most = PARSE(closureDeclarations2);
     zvalue yieldDef = PARSE(optYieldDef);
 
-    if (PEEK(CH_DIAMOND) == NULL) {
-        MATCH_OR_REJECT(CH_RARROW);
-    }
+    MATCH_OR_REJECT(CH_RARROW);
 
     return GFN_CALL(cat, most, yieldDef);
 }
@@ -1171,9 +1159,6 @@ DEF_PARSE(closureBody) {
         statements = listAppend(statements, statement);
     } else {
         yieldNode = PARSE(yieldOrNonlocal);
-        if (yieldNode == NULL) {
-            yieldNode = PARSE(oldYield);
-        }
     }
 
     PARSE(optSemicolons);

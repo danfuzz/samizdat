@@ -59,6 +59,6 @@ export fn formalsMinArgs(formals) {
 
 ## Documented in spec.
 export fn isExpression(node) {
-    return ifIs { get(EXPRESSION_TYPES, get_type(node)) }
+    return? ifIs { get(EXPRESSION_TYPES, get_type(node)) }
         { node }
 };

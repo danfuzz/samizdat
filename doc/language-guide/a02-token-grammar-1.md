@@ -111,7 +111,7 @@ def tokPunctuation = {:
     (
         ## Layer 2 introduces additional definitions here.
     ## |
-        "->" | ":=" | "::" | ".." | "<>" | "@@"
+        "->" | ":=" | "::" | ".." | "@@"
     |
         ## These are introduced in Layer 1.
         "{:" | ":}"

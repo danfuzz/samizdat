@@ -634,7 +634,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([_$a-zA-Z./][^:@"{}()\[\]]*) *(-&gt;|(?=&lt;&gt;))</string>
+					<string>([_$a-zA-Z./][^:@"{}()\[\]]*) *(-&gt;)</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -822,7 +822,7 @@
 					<string>(?x)
 						&amp;&amp;?&amp;? | \|\|?\|? | \^\^?\^? |
 						\\?&lt;&lt;?&lt;? | \\?&gt;&gt;?&gt;? | !!?!? |
-						:[:=] | \\?[!&lt;&gt;]?==? | &lt;&gt; |
+						:[:=] | \\?[!&lt;&gt;]?==? |
 						\.\.!? | \+ | - | \* | //? | %%? | \? | \#
 					</string>
 				</dict>

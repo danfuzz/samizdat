@@ -369,7 +369,6 @@ static zvalue tokenizeAnyToken(ParseState *state) {
         case ']':  read(state); return TOK_CH_CSQUARE;
         case ',':  read(state); return TOK_CH_COMMA;
         case '=':  read(state); return TOK_CH_EQUAL;
-        case '>':  read(state); return TOK_CH_GT;
         case '{':  read(state); return TOK_CH_OCURLY;
         case '(':  read(state); return TOK_CH_OPAREN;
         case '[':  read(state); return TOK_CH_OSQUARE;
@@ -386,8 +385,6 @@ static zvalue tokenizeAnyToken(ParseState *state) {
             return tokenizeOneOrTwo(state, '>', TOK_CH_MINUS, TOK_CH_RARROW);
         case '.':
             return tokenizeOneOrTwo(state, '.', TOK_CH_DOT,   TOK_CH_DOTDOT);
-        case '<':
-            return tokenizeOneOrTwo(state, '>', TOK_CH_LT,    TOK_CH_DIAMOND);
         case '@':
             return tokenizeOneOrTwo(state, '@', TOK_CH_AT,    TOK_CH_ATAT);
         case '0': case '1': case '2': case '3': case '4':
