@@ -50,7 +50,7 @@ def INT_CHARS = {
 
 ## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> get(INT_CHARS, get_typeName(ch))
+    return get(INT_CHARS, get_typeName(ch))
 };
 
 ## Converts a list of digit values into an int, given the base.
@@ -62,7 +62,7 @@ fn intFromDigitList(base, digits) {
             { result := $Number::add($Number::mul(result, base), digit) }
     };
 
-    <> result
+    return result
 };
 
 
@@ -126,7 +126,7 @@ def tokPunctuation = {:
 ## Parses a single decimal digit (or spacer), returning its value.
 def tokDecDigit = {:
     ch = ["_" "0".."9"]
-    { <> intFromDigitChar(ch) }
+    { intFromDigitChar(ch) }
 :};
 
 ## Parses an integer literal.
@@ -136,7 +136,7 @@ def tokInt = {:
     %tokInt2
 |
     digits = tokDecDigit+
-    { <> @int(intFromDigitList(10, digits)) }
+    { @int(intFromDigitList(10, digits)) }
 :};
 
 ## Parses a run of regular characters or an escape / special sequence,
@@ -147,22 +147,22 @@ def tokInt = {:
 def tokStringPart = {:
     (
         chars = [! "\\" "\"" "\n"]+
-        { <> $Peg::stringFromTokenList(chars) }
+        { $Peg::stringFromTokenList(chars) }
     )
 |
     ## This is the rule that ignores spaces after newlines.
     "\n"
     " "*
-    { <> "\n" }
+    { "\n" }
 |
     "\\"
     (
-        "\\" { <> "\\" } |
-        "\"" { <> "\"" } |
-        "n"  { <> "\n" } |
-        "r"  { <> "\r" } |
-        "t"  { <> "\t" } |
-        "0"  { <> "\0" }
+        "\\" { "\\" } |
+        "\"" { "\"" } |
+        "n"  { "\n" } |
+        "r"  { "\r" } |
+        "t"  { "\t" } |
+        "0"  { "\0" }
     )
 |
     ## Introduced in Layer 2.
@@ -176,9 +176,9 @@ def tokString = {:
 
     (
         "\""
-        { <> @string(cat("", parts*)) }
+        { @string(cat("", parts*)) }
     |
-        { <> @error("Unterminated string literal.") }
+        { @error("Unterminated string literal.") }
     )
 :};
 
@@ -190,7 +190,7 @@ def tokIdentifier = {:
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { get(KEYWORDS, string) }
-            { <> @identifier(string) }
+            { @identifier(string) }
     }
 :};
 
@@ -199,7 +199,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { <> @identifier(dataOf(s)) }
+    { @identifier(dataOf(s)) }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further
@@ -236,7 +236,7 @@ def tokFile = {:
     tokens = (tokWhitespace? tokToken)*
     tokWhitespace?
 
-    { <> tokens }
+    { tokens }
 :};
 
 
