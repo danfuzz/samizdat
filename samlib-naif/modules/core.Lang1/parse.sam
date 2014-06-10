@@ -64,7 +64,7 @@ def parOpExpression;
 
 ## Documented in spec.
 def parExpression = $Peg::makeMainChoice(
-    $Peg::makeThunk { <> parAssignExpression });
+    $Peg::makeThunk { parAssignExpression });
 
 ## Documented in spec.
 def parParenExpression = $Peg::makeMainSequence(
@@ -118,7 +118,7 @@ def parIdentifierString = $Peg::makeMainChoice(
                     def type = get_typeName(token);
                     def firstCh = nth(type, 0);
                     <> ifIs { get(LOWER_ALPHA, firstCh) }
-                        { <> makeLiteral(type) }
+                        { makeLiteral(type) }
                 }
             }));
 
@@ -168,8 +168,8 @@ def parMap = $Peg::makeMainSequence(
                 $Peg::makeSequence($Peg::makeToken(@@","), parMapping)),
             $Peg::makeCode { ., one, rest ->
                 <> ifIs { eq(rest, []) }
-                    { <> one }
-                    { <> makeCall(REFS::cat, one, rest*) }
+                    { one }
+                    { makeCall(REFS::cat, one, rest*) }
             }),
         $Peg::makeCode { . <> makeLiteral({}) }),
     $Peg::makeToken(@@"}"),
@@ -201,8 +201,8 @@ def parList = $Peg::makeMainSequence(
     $Peg::makeToken(@@"]"),
     $Peg::makeCode { ., expressions, . ->
         <> ifIs { eq(expressions, []) }
-            { <> makeLiteral([]) }
-            { <> makeCallOrApply(REFS::makeList, expressions*) }
+            { makeLiteral([]) }
+            { makeCallOrApply(REFS::makeList, expressions*) }
     });
 
 ## Documented in spec.
@@ -211,8 +211,8 @@ def parType = $Peg::makeMainSequence(
     $Peg::makeChoice(parIdentifierString, parParenExpression),
     $Peg::makeCode { ., name ->
         <> ifIs { hasType(name, @@literal) }
-            { <> makeLiteral(@@(get_nodeValue(name))) }
-            { <> makeCall(REFS::makeDerivedDataType, name) }
+            { makeLiteral(@@(get_nodeValue(name))) }
+            { makeCall(REFS::makeDerivedDataType, name) }
     });
 
 ## Documented in spec.
@@ -328,7 +328,7 @@ def parUnaryExpression = $Peg::makeMainSequence(
 
 ## Documented in spec.
 parAssignExpression := $Peg::makeMainSequence(
-    $Peg::makeThunk { <> parOpExpression },
+    $Peg::makeThunk { parOpExpression },
     $Peg::makeChoice(
         $Peg::makeSequence(
             $Peg::makeToken(@@":="),
@@ -352,15 +352,15 @@ def parYieldOrNonlocal = $Peg::makeMainSequence(
         $Peg::makeSequence(
             parExpression,
             $Peg::makeCode { ., optQuest, ., v ->
-                <> ifIs { optQuest* } { <> makeMaybe(v) } { <> v }
+                <> ifIs { optQuest* } { makeMaybe(v) } { v }
             }),
         $Peg::makeCode { ., optQuest, . ->
-            <> ifNot { optQuest* } { <> @void }
+            <> ifNot { optQuest* } { @void }
         }),
     $Peg::makeCode { ., ., name, value ->
         <> ifIs { eq(name, @yield) }
-            { <> value }
-            { <> makeNonlocalExit(name, value) }
+            { value }
+            { makeNonlocalExit(name, value) }
     });
 
 ## Documented in spec.
@@ -468,7 +468,7 @@ def parFunctionCommon = $Peg::makeMainSequence(
                 ## here.
                 <> [makeVarDef(yieldDef, REFS::return)]
             }
-            { <> [] };
+            { [] };
 
         <> makeFullClosure({
             dataOf(code)*,
@@ -512,8 +512,8 @@ def parGenericDef = $Peg::makeMainSequence(
     $Peg::makeCode { ., optStar, ., name, ., formals, . ->
         def fullFormals = [{}, formals*]; ## First one is `this`.
         def func = ifIs { eq(optStar, []) }
-            { <> REFS::makeRegularGeneric }
-            { <> REFS::makeUnitypeGeneric };
+            { REFS::makeRegularGeneric }
+            { REFS::makeUnitypeGeneric };
         def call = makeCall(
             func,
             makeLiteral(name),
@@ -600,8 +600,8 @@ def parImportStatement = $Peg::makeMainSequence(
     $Peg::makeCode { optExport, ., nameOrPrefix, format, source, select ->
         def data = {nameOrPrefix*, format*, select*, source};
         <> ifIs { optExport* }
-            { <> makeExport(makeImport(data)) }
-            { <> makeImport(data) }
+            { makeExport(makeImport(data)) }
+            { makeImport(data) }
     });
 
 ## Documented in spec.
@@ -879,8 +879,8 @@ parOpExpression := parUnaryExpression;
 ## Documented in spec.
 export fn parseExpression(expression) {
     def tokens = ifIs { hasType(expression, String) }
-        { <> tokenize(expression) }
-        { <> expression };
+        { tokenize(expression) }
+        { expression };
 
     <> $Peg::apply(parExpressionOrError, tokens)
 };
@@ -888,8 +888,8 @@ export fn parseExpression(expression) {
 ## Documented in spec.
 export fn parseProgram(program) {
     def tokens = ifIs { hasType(program, String) }
-        { <> tokenize(program) }
-        { <> program };
+        { tokenize(program) }
+        { program };
 
     <> $Peg::apply(parProgramOrError, tokens)
 };
