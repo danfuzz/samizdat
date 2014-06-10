@@ -26,7 +26,7 @@ import @utf8 ./template.txt;
 ## Compiles a single file.
 export fn compile(resolver, sourcePath, targetPath) {
     fn resolveFn(source) {
-        <> resolver.resolve(source)
+        return resolver.resolve(source)
     };
 
     def tree = $Reader::readProgram(sourcePath, resolveFn);

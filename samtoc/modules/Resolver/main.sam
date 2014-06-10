@@ -29,13 +29,13 @@ def parPathList = {:
         chars = [! ":"]*
         (":" | !.)
 
-        { <> $Peg::stringFromTokenList(chars) }
+        { $Peg::stringFromTokenList(chars) }
     )*
 :};
 
 ## Parses a colon-separated string into a list.
 fn splitPaths(paths) {
-    <> $Peg::apply(parPathList, paths)
+    return $Peg::apply(parPathList, paths)
 };
 
 
@@ -54,5 +54,5 @@ export fn makeResolverChain(paths, next) {
         result := makeExternalResolver(one, result)
     };
 
-    <> result
+    return result
 };

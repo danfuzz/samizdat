@@ -23,7 +23,7 @@ export fn .get_varDefs();
 
 ## Extracts and combines the `varDefs` of all the arguments.
 fn catVarDefs(nodes*) {
-    <> [].cat(( n in nodes <> n.varDefs )*)
+    return [].cat(( n in nodes -> n.varDefs )*)
 };
 
 
@@ -32,70 +32,70 @@ fn catVarDefs(nodes*) {
 ##
 
 fn @@apply.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@call.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@closure.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@export.get_varDefs() {
-    <> this.nodeValue.varDefs
+    return this.nodeValue.varDefs
 };
 
 fn @@exportSelection.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@importModule.get_varDefs() {
-    <> [this.name]
+    return [this.name]
 };
 
 fn @@importModuleSelection.get_varDefs() {
     def statements = makeDynamicImport(this);
-    <> catVarDefs(statements*)
+    return catVarDefs(statements*)
 };
 
 fn @@importResource.get_varDefs() {
-    <> [this.name]
+    return [this.name]
 };
 
 fn @@literal.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@literalRef.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@maybe.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@noYield.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@varBind.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@varDef.get_varDefs() {
-    <> [this.name]
+    return [this.name]
 };
 
 fn @@varDefMutable.get_varDefs() {
-    <> [this.name]
+    return [this.name]
 };
 
 fn @@varRef.get_varDefs() {
-    <> []
+    return []
 };
 
 fn @@void.get_varDefs() {
-    <> []
+    return []
 };

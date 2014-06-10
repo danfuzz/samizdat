@@ -15,9 +15,9 @@ import ./protocol :: *;
 ##
 
 fn String.flatten() {
-    <> this
+    return this
 };
 
 fn String.indent(level, maxColumns) {
-    <> "\[indentation(level), this]"
+    return "\[indentation(level), this]"
 };

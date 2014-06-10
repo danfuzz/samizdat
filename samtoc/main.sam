@@ -28,7 +28,7 @@ def MODE_MAP = {
 
 ## Removes the `.*` suffix from `name`.
 fn withoutSuffix(name) {
-    def dotsAt = [ index in (0..), ch in name <> (ch == ".") & index ];
+    def dotsAt = [ index in (0..), ch in name -> (ch == ".") & index ];
 
     if (dotsAt == []) {
         ## No suffix on the name.
@@ -41,7 +41,7 @@ fn withoutSuffix(name) {
 ## Returns `name` iff the given name has the proper suffix for a source
 ## file.
 fn isSourceName(name) {
-    <> (#name > #SOURCE_SUFFIX)
+    return (#name > #SOURCE_SUFFIX)
         & (name[^(#SOURCE_SUFFIX - 1)..] == SOURCE_SUFFIX)
         & name
 };
@@ -249,7 +249,7 @@ export fn main(selfPath, rawArgs*) {
 
     ## Set up the `files` as appropriately-prefixed versions of the passed
     ## arguments.
-    def files = [ f in args::args <> getSourcePath(f, args) ];
+    def files = [ f in args::args -> getSourcePath(f, args) ];
 
     ## Figure out the sources and selection.
     def sourcesAndSelection = if (args::options::"dir-selection") {
@@ -258,12 +258,12 @@ export fn main(selfPath, rawArgs*) {
             return 1
         };
 
-        <> {
+        {
             sources: [files[0]],
             selection: {files[1..]*: true}
         }
     } else {
-        <> {sources: files}
+        {sources: files}
     };
 
     ## Add more structure to `args`.

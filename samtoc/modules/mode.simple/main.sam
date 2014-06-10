@@ -36,7 +36,7 @@ import @utf8 ./template.txt;
 
 ## Indent with the usual width column limit.
 fn usualIndent(tree, depth) {
-    <> indent(tree, depth, 78)
+    return indent(tree, depth, 78)
 };
 
 ## Returns a `makeClosure_*` declaration, as a code tree.
@@ -45,15 +45,15 @@ fn closureDeclaration(cloIdx, clo, literals) {
     def decl = genCall(
         "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
-            <> genComment(
+            genComment(
                 "\%q(name)",
                 $vars::freeVarDecl(name, idx))
         )*);
 
-    <> if (def ref = clo.name) {
-        <> genComment("\%q(literals[ref.id])", decl)
+    return if (def ref = clo.name) {
+        genComment("\%q(literals[ref.id])", decl)
     } else {
-        <> decl
+        decl
     }
 };
 
@@ -69,7 +69,7 @@ fn closureMaker(cloIdx, clo, literals) {
         def varName = $vars::freeVarName(name, idx);
         def stat = genStatement(
             genAssign("state[\(idx)]", varName));
-        <> stat.usualIndent(1)
+        stat.usualIndent(1)
     ];
     def resultAssign = genAssign(
         "zvalue result",
@@ -77,7 +77,7 @@ fn closureMaker(cloIdx, clo, literals) {
             "makeBuiltin", "\(clo.minArgs)", "\(clo.maxArgs)",
             "FUN_IMPL_NAME(\(cloIdx))", "\(#varRefs)", name));
 
-    <> "\
+    return "\
     \/\(decl.usualIndent(0)) {
     \/\(resultAssign.usualIndent(1));
     \/  zvalue *state = builtinGetState(result).arr;
@@ -89,12 +89,12 @@ fn closureMaker(cloIdx, clo, literals) {
 ## Returns the statements needed to return the given `yield` value, first
 ## performing any given `cleanups`.
 fn makeYieldStatements(yieldValue, cleanups) {
-    <> if (yieldValue \== "NULL") {
-        <> [cleanups*, genReturn(yieldValue)]
+    return if (yieldValue \== "NULL") {
+        [cleanups*, genReturn(yieldValue)]
     } else if (cleanups == []) {
-        <> [genReturn(yieldValue)]
+        [genReturn(yieldValue)]
     } else {
-        <> [
+        [
             genAssign("zvalue result", yieldValue),
             cleanups*,
             genReturn("result")
@@ -116,32 +116,32 @@ fn closureBody(cloIdx, clo, literals) {
 
     def varsBox = $Box::makeCell(vars);
     def mainStats = [ s in clo.statements ->
-        <> translate(s, varsBox)
+        translate(s, varsBox)
     ];
 
     def rawYield = clo.yieldNode;
     def yieldNode = if (hasType(rawYield, @@maybe)) {
-        <> translate(rawYield.nodeValue, varsBox);
+        translate(rawYield.nodeValue, varsBox);
     } else if (hasType(rawYield, @@void)) {
-        <> "NULL"
+        "NULL"
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        <> genCall("datNonVoid", translate(rawYield, varsBox))
+        genCall("datNonVoid", translate(rawYield, varsBox))
     };
     def yieldStats = makeYieldStatements(yieldNode, varInfo::cleanups);
 
     ## Process all the statements, producing source code.
 
     def allStats = [ s in [varInfo::inits*, mainStats*, yieldStats*] ->
-        <> genStatement(s).usualIndent(1)
+        genStatement(s).usualIndent(1)
     ];
 
     def nameLine = (def ref = clo.name)
         & "/* \%q(literals[ref.id]) */\n"
         | "";
 
-    <> "\
+    return "\
     \/\(nameLine)\
     \/static FUN_IMPL_DECL(\(cloIdx)) {
     \/  zvalue *state = builtinGetState(thisFunction).arr;
@@ -153,18 +153,18 @@ fn closureBody(cloIdx, clo, literals) {
 ## the global environment and not from local or captured variables.
 fn mainClosureMaker(node, interner) {
     def varRefs = node.varRefs;
-    def ids = [ name in varRefs <> interner.intern(name) ];
+    def ids = [ name in varRefs -> interner.intern(name) ];
 
     def stat = genStatement(
         genReturn(
             genCall("makeClosure_\(node.id)",
                 ( name in varRefs, id in ids ->
-                    <> genComment("\%q(name)",
+                    genComment("\%q(name)",
                         genCall("makeResult",
                             genCall("get", "GLOBALS", "LIT_\(id)")))
                 )*)));
 
-    <> stat.usualIndent(1)
+    return stat.usualIndent(1)
 };
 
 
@@ -175,7 +175,7 @@ fn mainClosureMaker(node, interner) {
 ## Compiles a single file.
 export fn compile(resolver, sourcePath, targetPath) {
     fn resolveFn(source) {
-        <> resolver.resolve(source)
+        return resolver.resolve(source)
     };
 
     ## Note: The node resulting from a call to `readProgram` is always of
@@ -193,29 +193,29 @@ export fn compile(resolver, sourcePath, targetPath) {
         ( idx in (0..), clo in closures ->
             def stat = genStatement(
                 closureDeclaration(idx, clo, partialLits));
-            <> "\(stat.usualIndent(0))\n"
+            "\(stat.usualIndent(0))\n"
         )*);
     def closureMakers = cat(
         ( idx in (0..), clo in closures ->
-            <> closureMaker(idx, clo, partialLits)
+            closureMaker(idx, clo, partialLits)
         )*);
     def closureBodies = cat(
         ( idx in (0..), clo in closures ->
-            <> closureBody(idx, clo, partialLits)
+            closureBody(idx, clo, partialLits)
         )*);
     def mainClosure = mainClosureMaker(closuresNode::node, interner);
 
     def literals = interner.interns;
     def literalDeclarations = cat(
         ( index in (0..!#literals) ->
-            <> "static zvalue LIT_\(index) = NULL;\n"
+            "static zvalue LIT_\(index) = NULL;\n"
         )*);
     def literalInits = cat(
         ( index in (0..), lit in literals ->
             def init = genStatement(
                 genCall("datImmortalize",
                     genAssign("LIT_\(index)", $DataCode::convert(lit))));
-            <> init.usualIndent(2)
+            init.usualIndent(2)
         )*);
 
     def replacements = {

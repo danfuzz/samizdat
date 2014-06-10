@@ -39,25 +39,25 @@ fn varDefCommon(name, value, varsBox) {
     def binding = {name: localVarName(name, index), kind: "local"};
 
     store(varsBox, {vars*, (name): binding});
-    <> genComment("\%q(name)", genAssign(decl, value));
+    return genComment("\%q(name)", genAssign(decl, value));
 };
 
 fn @@apply.translate(varsBox) {
     def function = translate(this.function, varsBox);
     def actuals = this.actuals;
 
-    <> if (hasType(actuals, @@maybe)) {
+    return if (hasType(actuals, @@maybe)) {
         def acTrans = translate(actuals.nodeValue, varsBox);
-        <> genCall("funApply", function, acTrans)
+        genCall("funApply", function, acTrans)
     } else if (hasType(actuals, @@void)) {
         ## A void `actuals` binding just devolves into a no-argument (but
         ## otherwise regular) function call.
-        <> genCall("FUN_CALL", function)
+        genCall("FUN_CALL", function)
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
         def acTrans = translate(actuals, varsBox);
-        <> genCall("funApply", function, genCall("datNonVoid", acTrans))
+        genCall("funApply", function, genCall("datNonVoid", acTrans))
     }
 };
 
@@ -66,7 +66,7 @@ fn @@call.translate(varsBox) {
         genCall("datNonVoid", translate(a, varsBox))
     );
 
-    <> genCall("FUN_CALL", translate(this.function, varsBox), actuals*)
+    return genCall("FUN_CALL", translate(this.function, varsBox), actuals*)
 };
 
 fn @@closure.translate(varsBox) {
@@ -77,9 +77,9 @@ fn @@closureRef.translate(varsBox) {
     ## This passes each of the `varRefs` as an argument to the
     ## closure maker.
     def vars = fetch(varsBox);
-    <> genCall("makeClosure_\(this.id)",
+    return genCall("makeClosure_\(this.id)",
         ( name in this.varRefs ->
-            <> vars[name]::name
+            vars[name]::name
                 | die("Capture of undefined variable: \%q(name)");
         )*)
 };
@@ -115,7 +115,7 @@ fn @@importResource.translate(varsBox) {
 };
 
 fn @@literalRef.translate(varsBox) {
-    <> "LIT_\(this.id)"
+    return "LIT_\(this.id)"
 };
 
 fn @@maybe.translate(varsBox) {
@@ -127,7 +127,7 @@ fn @@maybe.translate(varsBox) {
 
 fn @@noYield.translate(varsBox) {
     def value = translate(this.nodeValue, varsBox);
-    <> genCall("mustNotYield", value)
+    return genCall("mustNotYield", value)
 };
 
 fn @@varBind.translate(varsBox) {
@@ -137,7 +137,7 @@ fn @@varBind.translate(varsBox) {
     def binding = vars[name]
         | die("Bind of undefined variable: \%q(this.name)");
 
-    <> genCall("boxStore", binding::name, value)
+    return genCall("boxStore", binding::name, value)
 };
 
 fn @@varDef.translate(varsBox) {
@@ -145,7 +145,7 @@ fn @@varDef.translate(varsBox) {
         & genCall("makeResult", translate(v, varsBox))
         | genCall("makePromise");
 
-    <> varDefCommon(this.name, value, varsBox)
+    return varDefCommon(this.name, value, varsBox)
 };
 
 fn @@varDefMutable.translate(varsBox) {
@@ -153,7 +153,7 @@ fn @@varDefMutable.translate(varsBox) {
         & translate(v, varsBox)
         | "NULL";
 
-    <> varDefCommon(
+    return varDefCommon(
         this.name, genCall("makeCell", value), varsBox)
 };
 
@@ -162,7 +162,7 @@ fn @@varRef.translate(varsBox) {
     def vars = fetch(varsBox);
     def binding = vars[name]
         | die("Reference of undefined variable: \%q(this.name)");
-    <> genCall("boxFetch", binding::name)
+    return genCall("boxFetch", binding::name)
 };
 
 fn @@void.translate(varsBox) {

@@ -21,7 +21,7 @@ export fn .get_varRefs();
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
-    <> [].cat(( n in nodes <> n.varRefs )*)
+    return [].cat(( n in nodes -> n.varRefs )*)
 };
 
 
@@ -30,11 +30,11 @@ fn catVarRefs(nodes*) {
 ##
 
 fn @@apply.get_varRefs() {
-    <> catVarRefs(this.function, this.actuals)
+    return catVarRefs(this.function, this.actuals)
 };
 
 fn @@call.get_varRefs() {
-    <> catVarRefs(this.function, this.actuals*)
+    return catVarRefs(this.function, this.actuals*)
 };
 
 fn @@closure.get_varRefs() {
@@ -48,10 +48,10 @@ fn @@closure.get_varRefs() {
     ## (if any).
     def baseLocals = [
         this.yieldDef?*,
-        ( f in this.formals <> f::name )*];
+        ( f in this.formals -> f::name )*];
 
     ## The extra element at the end is to represent the closure yield.
-    def statementDefs = [( s in this.statements <> s.varDefs )*, []];
+    def statementDefs = [( s in this.statements -> s.varDefs )*, []];
 
     ## What's happening here is that for each statement (and the yield at
     ## the end), we get its variable references and remove from them refs
@@ -69,65 +69,65 @@ fn @@closure.get_varRefs() {
         for (d in defs) {
            refs := $Collection::del(refs, d)
         };
-        <> refs
+        refs
     );
 
     ## The result of concatenating all the `statementRefs` is a map. The
     ## final result is the list of refs, that is, a list of all the keys.
-    <> $Collection::keyList({}.cat(statementRefs*))
+    return $Collection::keyList({}.cat(statementRefs*))
 };
 
 fn @@closureRef.get_varRefs() {
-    <> this::varRefs
+    return this::varRefs
 };
 
 fn @@importModule.get_varRefs() {
     def statements = makeDynamicImport(this);
-    <> catVarRefs(statements*)
+    return catVarRefs(statements*)
 };
 
 fn @@importModuleSelection.get_varRefs() {
     def statements = makeDynamicImport(this);
-    <> catVarRefs(statements*)
+    return catVarRefs(statements*)
 };
 
 fn @@importResource.get_varRefs() {
     def statements = makeDynamicImport(this);
-    <> catVarRefs(statements*)
+    return catVarRefs(statements*)
 };
 
 fn @@literal.get_varRefs() {
-    <> []
+    return []
 };
 
 fn @@literalRef.get_varRefs() {
-    <> []
+    return []
 };
 
 fn @@maybe.get_varRefs() {
-    <> this.nodeValue.varRefs
+    return this.nodeValue.varRefs
 };
 
 fn @@noYield.get_varRefs() {
-    <> this.nodeValue.varRefs
+    return this.nodeValue.varRefs
 };
 
 fn @@varBind.get_varRefs() {
-    <> [this.name, this.nodeValue.varRefs*]
+    return [this.name, this.nodeValue.varRefs*]
 };
 
 fn @@varDef.get_varRefs() {
-    <> (def v = this.nodeValue) & v.varRefs | []
+    return (def v = this.nodeValue) & v.varRefs | []
 };
 
 fn @@varDefMutable.get_varRefs() {
-    <> (def v = this.nodeValue) & v.varRefs | []
+    return (def v = this.nodeValue) & v.varRefs | []
 };
 
 fn @@varRef.get_varRefs() {
-    <> [this.name]
+    return [this.name]
 };
 
 fn @@void.get_varRefs() {
-    <> []
+    return []
 };

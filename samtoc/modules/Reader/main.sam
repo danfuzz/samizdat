@@ -29,7 +29,7 @@ def DEFAULT_LANGUAGE = "core.Lang2";
 export fn readEvalExpression0(path) {
     def text = $Io0::readFileUtf8(path);
     def tree = $Lang0::parseExpression(text);
-    <> $Code::eval($Globals::fullEnvironment(), tree)
+    return $Code::eval($Globals::fullEnvironment(), tree)
 };
 
 ## Reads the given file, parsing it as a program according to whatever
@@ -41,7 +41,7 @@ export fn readProgram(path, optResolveFn?) {
     def lang = loadModule(@external(languageName));
     def tree = lang::parseProgram(text);
 
-    <> (def resolveFn = optResolveFn*)
+    return (def resolveFn = optResolveFn*)
         & lang::simplify(tree, resolveFn)
         | tree
 };

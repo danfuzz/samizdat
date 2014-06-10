@@ -15,19 +15,19 @@ import ./protocol :: *;
 ##
 
 export fn genStatement(tree) {
-    <> @Statement{tree, flat: "\(tree.flatten());"}
+    return @Statement{tree, flat: "\(tree.flatten());"}
 };
 
 fn @@Statement.flatten() {
-    <> this::flat
+    return this::flat
 };
 
 fn @@Statement.indent(level, maxColumns) {
     def prefix = indentation(level);
 
-    <> if ((#this::flat + #prefix) <= maxColumns) {
-        <> "\(prefix)\(this::flat)\n"
+    return if ((#this::flat + #prefix) <= maxColumns) {
+        "\(prefix)\(this::flat)\n"
     } else {
-        <> "\(this::tree.indent(level, maxColumns));\n"
+        "\(this::tree.indent(level, maxColumns));\n"
     }
 };

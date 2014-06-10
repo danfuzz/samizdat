@@ -8,7 +8,7 @@
 ##
 
 export fn makeInterner() {
-    <> @Interner{values: $Box::makeCell({})}
+    return @Interner{values: $Box::makeCell({})}
 };
 
 export fn intern(this, value) {
@@ -22,17 +22,17 @@ export fn intern(this, value) {
     def result = #values;
 
     store(box, {values*, (value): result});
-    <> result
+    return result
 };
 
 export fn get_interns(this) {
     def map = fetch(this::values);
-    def boxList = [ n in (0..#map) <> $Box::makePromise() ];
+    def boxList = [ n in (0..#map) -> $Box::makePromise() ];
 
     for (mapping in map) {
         def id = get_value(mapping);
         store(boxList[id], get_key(mapping))
     };
 
-    <> [ box in boxList <> fetch(box) ]
+    return [ box in boxList -> fetch(box) ]
 };

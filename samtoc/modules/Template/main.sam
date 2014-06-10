@@ -14,9 +14,9 @@ def parSubstitution = {:
     format = (
         "%"
         chars = [! "("]+
-        { <> $Peg::stringFromTokenList(chars) }
+        { $Peg::stringFromTokenList(chars) }
     |
-        { <> "s" }
+        { "s" }
     )
 
     "("
@@ -24,7 +24,7 @@ def parSubstitution = {:
     ")"
 
     {
-        <> {format, name: $Peg::stringFromTokenList(name)}
+        {format, name: $Peg::stringFromTokenList(name)}
     }
 :};
 
@@ -34,14 +34,14 @@ def parItem = {:
         parSubstitution
     |
         "\\"
-        { <> "\\" }
+        { "\\" }
     |
         ch = .
         { die("Invalid escape sequence: \%q["\\", get_typeName(ch)]") }
     )
 |
     chars = [! "\\"]+
-    { <> $Peg::stringFromTokenList(chars) }
+    { $Peg::stringFromTokenList(chars) }
 :};
 
 def parTemplate = {:
@@ -57,10 +57,10 @@ export fn apply(templateString, defs) {
     def items = $Peg::apply(parTemplate, templateString);
 
     def texts = [ item in items ->
-        <> hasType(item, String) |
+        hasType(item, String) |
             $Format::formatterFor(item::format)(
                 defs[item::name] | "<MISSING \%q(item::name)>")
     ];
 
-    <> "\[texts*]"
+    return "\[texts*]"
 };
