@@ -566,7 +566,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(def|var)  *([_$a-zA-Z][_$a-zA-Z0-9]*)</string>
+					<string>\b(def|var)  *([_$a-zA-Z][_$a-zA-Z0-9]*)</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -579,11 +579,28 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>variable.other.samizdat</string>
+							<string>keyword.control.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(yield)  *(/[_$a-zA-Z][_$a-zA-Z0-9]*)</string>
+					<string>\b(yield\??)  *(/[_$a-zA-Z][_$a-zA-Z0-9]*)</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.control.samizdat</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>variable.definition.samizdat</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>\b(if|do|for|switch|while)  *(/[_$a-zA-Z][_$a-zA-Z0-9]*)</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -711,10 +728,9 @@
 					<string>keyword.control.samizdat</string>
 					<key>match</key>
 					<string>(?x)
-						\b(
-						break|continue|default|do|else|
-						for|if|return|switch|while|yield
-						)\b
+						\b(break|continue|return|yield)\b\??
+						|
+						\b(default|do|else|for|if|switch|while)\b
 					</string>
 				</dict>
 				<dict>
@@ -722,9 +738,7 @@
 					<string>keyword.definition.samizdat</string>
 					<key>match</key>
 					<string>(?x)
-						\b(
-						by|def|fn|in|module|var
-						)\b
+						\b(by|def|fn|in|module|var)\b
 					</string>
 				</dict>
 				<dict>
@@ -816,7 +830,7 @@
 					<key>name</key>
 					<string>punctuation.definition.samizdat</string>
 					<key>match</key>
-					<string>:</string>
+					<string>(?x) : | -&gt;</string>
 				</dict>
 			</array>
 		</dict>
