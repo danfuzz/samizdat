@@ -19,11 +19,11 @@ import ./getters :: *;
 ## Calls the given `resolveFn` on the indicated `source`. Complains if the
 ## result is void. If the result is non-void, validate that it is a `@module`.
 fn resolveAndCheck(resolveFn, source) {
-    <> ifValue { resolveFn(source) }
+    return ifValue { resolveFn(source) }
         { result ->
             ifNot { hasType(result, @@module) }
                 { die("Invalid resolution result (not a `@module`)") };
-            <> result
+            result
         }
         { die("Could not resolve import: ", sourceString(source)) }
 };
@@ -37,7 +37,7 @@ fn sourceString(source) {
     ifIs { hasType(source, @@external) }
         { return cat("external ", dataOf(source)) };
 
-    <> cat("weird source ", $Format::source(source))
+    return cat("weird source ", $Format::source(source))
 };
 
 
@@ -54,7 +54,7 @@ fn @@importModule.resolveImport(resolveFn) {
     def source = get_source(this);
     resolveAndCheck(resolveFn, source);
 
-    <> this
+    return this
 };
 
 ## Documented in spec.
@@ -66,10 +66,10 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
 
     ## Get the `info::exports` out of the resolved result. Default to `{}`
     ## if not present.
-    def info = ifValueOr { resolved::info } { <> {} };
-    def exports = ifValueOr { info::exports } { <> {} };
+    def info = ifValueOr { resolved::info } { {} };
+    def exports = ifValueOr { info::exports } { {} };
 
-    <> ifValue { get_select(this) }
+    return ifValue { get_select(this) }
         { select ->
             ## Explicit selection, so no need to return a modified result.
             ## Just validate that all selected names are available for import.
@@ -80,20 +80,20 @@ fn @@importModuleSelection.resolveImport(resolveFn) {
                             sourceString(source), " :: ", one)
                     }
             };
-            <> this
+            this
         }
         {
             ## It's a wildcard import, so return a modified node that lists
             ## all the exported names.
             def select = $Collection::keyList(exports);
-            <> @importModuleSelection{dataOf(this)*, select}
+            @importModuleSelection{dataOf(this)*, select}
         }
 };
 
 ## Documented in spec.
 fn @@importResource.resolveImport(resolveFn) {
     ## No need to modify, just validate. TODO: Validate.
-    <> this
+    return this
 };
 
 ## Documented in spec.
@@ -110,9 +110,9 @@ export fn withResolvedImports(node, resolveFn) {
             };
 
         ifValueOr
-            { <> hasType(defNode, @@importModule) }
-            { <> hasType(defNode, @@importModuleSelection) }
-            { <> hasType(defNode, @@importResource) }
+            { hasType(defNode, @@importModule) }
+            { hasType(defNode, @@importModuleSelection) }
+            { hasType(defNode, @@importResource) }
             {
                 ## Not an `import*` node.
                 yield /out s
@@ -120,10 +120,10 @@ export fn withResolvedImports(node, resolveFn) {
 
         def resolved = resolveImport(defNode, resolveFn);
 
-        <> ifIs { eq(exported, true) }
-            { <> makeExport(resolved) }
-            { <> resolved }
+        yield ifIs { eq(exported, true) }
+            { makeExport(resolved) }
+            { resolved }
     };
 
-    <> @(get_type(node)){dataOf(node)*, statements: [converted*]}
+    return @(get_type(node)){dataOf(node)*, statements: [converted*]}
 };
