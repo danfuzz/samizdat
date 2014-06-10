@@ -24,9 +24,8 @@ export import proto.Sequence :: *;
 
 ## Documented in spec.
 export fn nthFromEnd(seq, n) {
-    def index =
-        $Number::sub(get_size(seq), $Number::add(n, 1));
-    return nth(seq, index)
+    def index = $Number::sub(get_size(seq), $Number::add(n, 1));
+    return? nth(seq, index)
 };
 
 ## Documented in spec.
