@@ -48,7 +48,7 @@ def INT_CHARS = {
 
 ## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> get(INT_CHARS, get_typeName(ch))
+    return get(INT_CHARS, get_typeName(ch))
 };
 
 ## Converts a list of digit values into an int, given the base.
@@ -60,7 +60,7 @@ fn intFromDigitList(base, digits) {
             { result := $Number::add($Number::mul(result, base), digit) }
     };
 
-    <> result
+    return result
 };
 
 ## Documented in spec.
@@ -185,5 +185,5 @@ def tokFile = $Peg::makeMainSequence(
 
 ## Documented in spec.
 export fn tokenize(programText) {
-    <> $Peg::apply(tokFile, programText)
+    return $Peg::apply(tokFile, programText)
 };

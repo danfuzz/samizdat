@@ -53,7 +53,7 @@ def INT_CHARS = {
 
 ## Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> get(INT_CHARS, get_typeName(ch))
+    return get(INT_CHARS, get_typeName(ch))
 };
 
 ## Converts a list of digit values into an int, given the base.
@@ -65,7 +65,7 @@ fn intFromDigitList(base, digits) {
             { result := $Number::add($Number::mul(result, base), digit) }
     };
 
-    <> result
+    return result
 };
 
 
@@ -326,7 +326,7 @@ fn processStringParts(parts) {
         };
 
     ## At this point, we have a valid interpolation.
-    <> @interpolatedString(elems)
+    return @interpolatedString(elems)
 };
 
 ## Parses a `#: ... :#` comment, with nesting.
@@ -482,5 +482,5 @@ tokStringPart2 := {:
 
 ## Documented in spec.
 export fn tokenize(programText) {
-    <> $Peg::apply(tokFile, programText)
+    return $Peg::apply(tokFile, programText)
 };
