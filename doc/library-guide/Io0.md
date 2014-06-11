@@ -59,7 +59,7 @@ of the read and decoded text.
 Checks the filesystem to see if the given filesystem path refers to a symbolic
 link. If it does, then this returns the string which represents the direct
 resolution of that link. It does not try to re-resolve the result iteratively,
-so the result may not actually refer to a real file (for example).
+so the result might not actually refer to a real file (for example).
 
 If the path does not refer to a symbolic link, then this function returns
 void.

@@ -58,12 +58,12 @@ It is an error (terminating the runtime) if `type` has already been bound.
 
 #### `makeRegularGeneric(name, minArgs, maxArgs?) -> generic`
 
-Makes and returns a new generic function. `name` may be passed as `""`
+Makes and returns a new generic function. `name` can be passed as `""`
 (the empty string) to indicate an anonymous generic. `minArgs` is the
 minimum number of arguments that must be passed to the generic when
 calling; must be at least `1`, since generic dispatch is performed on
 the first argument. `maxArgs` optionally lists the most arguments that
-may be passed; if not passed, there is no limit. If passed it must be
+can be passed; if not passed, there is no limit. If passed it must be
 `>= minArgs`.
 
 **Syntax Note:** This is one of the functions which underlie the generic

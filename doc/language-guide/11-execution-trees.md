@@ -282,7 +282,7 @@ body.
 
 When run successfully, nodes of this type cause `name` to be bound in the
 current (topmost) execution environment, to a mutable variable. That is, the
-variable may be bound and re-bound multiple times, by using `varBind` nodes.
+variable can be bound and re-bound multiple times, by using `varBind` nodes.
 The behavior varies depending on if `value` is supplied in this node:
 
 * Without a supplied `value`, this serves as a forward declaration. The

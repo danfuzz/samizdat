@@ -73,7 +73,7 @@ successfully bound). It also only makes sense to only ever use one of
 ### Body
 
 The main body of a closure is a sequence of statements. The last
-statement of a closure may optionally be one of several possible
+statement of a closure can optionally be one of several possible
 yield (return) statements. See below for details.
 
 Statements are separated from each other with semicolons (`;`). In addition
@@ -206,7 +206,7 @@ and blocks is that functions define the closure that a `return` statement
 will yield from. It is also valid to define an explicit yield variable,
 as with non-function closures. See "Yield Defintion" above.
 
-Similar to immutable variables, functions may be exported from a module
+Similar to immutable variables, functions can be exported from a module,
 by prefixing the definition with `export`.
 
 Examples:
@@ -292,7 +292,7 @@ how many arguments they take, and what sort of things they return
 A logic function is one which is meant to be used, at least some of the
 time, as a logical predicate of some sort. In Samizdat, logical true
 is represented by a return value of any value at all, and logical false
-is represented by a void return. Logic functions, in general, may take
+is represented by a void return. Logic functions, in general, can take
 any number of arguments (including none).
 
 See the introductory section "Logic operations" for more details.
@@ -341,9 +341,9 @@ continues as follows:
   them. What matters are the minimum and maximum number of arguments
   allowed by the formals.
 
-As with regular function definitions, a generic function definition may
-be preceded by `export` to cause it to be exported from the module in which
-it is defined.
+As with regular function definitions, a generic function definition can
+be preceded by `export` in order to cause it to be exported from the module
+in which it is defined.
 
 Examples:
 

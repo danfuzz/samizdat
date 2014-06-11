@@ -269,11 +269,11 @@ do {
 ```
 
 The block can have any number of statements, but it must not declare
-any arguments. It *may* have a yield definition, which serves as
+any arguments. It *can* have a yield definition, which serves as
 an explicit continuation name (as described above).
 
 This form is evaluated by evaluating the given block, ignoring any
-result it may yield, and then evaluating the block again, ad infinitum.
+result it yields, and then evaluating the block again, ad infinitum.
 
 Unconditional `do` expressions support explicit yield definition
 and define both break and continue contexts.
@@ -287,7 +287,7 @@ a value is by explicit `break` or nonlocal exit.
 
 ### Conditional loop &mdash; `while`
 
-Loops may be iterated conditionally with a `while` expression.
+Loops can be iterated conditionally with a `while` expression.
 These are a straightforward extension of the `do` loop,
 described above, replacing `do` with `while (expression)`:
 

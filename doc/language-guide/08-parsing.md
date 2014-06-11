@@ -283,7 +283,7 @@ For example:
 * The parser `{: [! @foo @bar] :}` will match any terminal but a `@foo`
   or a `@bar` token.
 
-Future direction: It may become possible to name symbolic character
+Future direction: It might become possible to name symbolic character
 sets, such as for example `[whitespace punctuation "z"]`.
 
 #### Running arbitrary code instead of consuming input (terminal)

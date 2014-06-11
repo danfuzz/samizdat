@@ -26,9 +26,9 @@ value, followed by an optional base specifier &mdash; `0x` for hexadecimal
 or `0b` for binary &mdash; and finally followed by one or more digits in the
 indicated (or implied) base.
 
-Underscores (`_`) may be placed freely after any digit in an int literal
+Underscores (`_`) can be placed freely after any digit in an int literal
 without changing the meaning. If a base specifier is present, underscores
-may also be placed before the first digit. This feature is intended
+can also be placed before the first digit. This feature is intended
 to aid in the readability of longer constants.
 
 **Note:** In many contexts, a minus sign is a separate operator token,
@@ -71,7 +71,7 @@ The following are the character substitution escape sequences:
 * `\xNNNN;` &mdash; Arbitrary character escape. `NNNN` represents one
   or more hexadecimal digits. Additional adjacent hexadecimal character
   specifiers can be included by separating them with commas. As with int
-  literals, underscores are ignored and may be used for readability.
+  literals, underscores are ignored and can be used for readability.
 * `\&name;` &mdash; XML entity name. `name` represents any of the standard
   XML entity names. As with hexadecimal escapes, multiple entity names
   can be included by separating them with commas. This form also accepts
@@ -154,11 +154,11 @@ Syntactically, keys are "terms," that is, simple values, collection literals,
 or parenthesized expressions. As a short-hand, a string key with the same
 form as an identifier can be written without the quotes.
 
-A collection of values may be mapped as a key to a single value, using the
+A collection of values can be mapped as keys to a single value, using the
 same postfix `*` interpolation syntax that is used with lists, e.g.
 `{foo*: value}`.
 
-In addition, explicitly listed keys may be mapped to the same value by
+In addition, explicitly listed keys can be mapped to the same value by
 omitting the value after all but the last of the list, e.g.
 `{foo: bar: commonValue}`.
 
@@ -293,9 +293,9 @@ of type:
 
   A derived data type can be specified in code by indicating its name
   in parentheses, preceded by `@@`. If the name is a literal string, then
-  the parentheses may be omitted. Furthermore, if the name is a literal
+  the parentheses can be omitted. Furthermore, if the name is a literal
   string which abides by the syntax for identifiers in the language, then
-  the double quotes may be omitted. For example, all of `@@("blort")`,
+  the double quotes can be omitted. For example, all of `@@("blort")`,
   `@@"blort"`, and `@@blort` refer to the same type.
 
 * TODO: The third kind of type is an "derived opaque" type. These have a
@@ -325,17 +325,17 @@ followed by a required type and then an optional data payload. The type
 and payload (if present) must each be surrounded by parentheses
 (separately), with the following exceptions:
 
-* If the type name is a literal string in general (`"..."`), then it may be
+* If the type name is a literal string in general (`"..."`), then it can be
   represented directly after the `@`, with no parentheses required.
 
 * If the type name is a literal string and in addition abides by the syntax
-  for identifiers in the language, then it may be represented directly after
+  for identifiers in the language, then it can be represented directly after
   the `@`, with no parentheses or quoting required.
 
-* If the data payload is a map form (`{...}`), then it may be represented
+* If the data payload is a map form (`{...}`), then it can be represented
   without parentheses.
 
-* If the data payload is a list form (`[...]`), then it may be represented
+* If the data payload is a list form (`[...]`), then it can be represented
   without parentheses.
 
 ```

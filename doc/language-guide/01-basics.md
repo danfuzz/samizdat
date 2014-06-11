@@ -147,8 +147,8 @@ Variable definitions (but *not* `:=` assignments) as described in
 this section are some of the few statement forms in Samizdat. That is, these
 are not combining expressions.
 
-As part of a module definition, an immutable variable may be exported from
-the module by prefixing its definition with `export`:
+As part of a module definition, an immutable variable can be exported from
+the module, by prefixing its definition with `export`:
 
 ```
 export def name = value
@@ -181,7 +181,7 @@ For example, it is possible for functions in Samizdat to return without
 yielding a value. Such functions are referred to as "void functions," and
 one can say that such a function "returns void" or "returns a void result."
 
-There are three major restrictions on how voids may be used:
+There are three major restrictions on how voids can be used:
 
 * A void cannot be stored in a variable.
 

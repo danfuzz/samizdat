@@ -26,8 +26,8 @@ token type.
 
 The output of the functions named `$Peg::make*` are all parsing rules. These
 are all derived data values with a type that binds the `parse`
-generic. A `parse` method accepts at least two arguments, and may also
-accept additional arguments:
+generic. A `parse` method accepts at least two arguments, and will also
+accept additional arguments depending on context:
 
 * `box` &mdash; The first argument is a `box` into which the result of
   parsing is to be `store`d, or to which void is stored in case of
@@ -108,7 +108,7 @@ then this rule also fails.
 #### `@PegMain(rule).parse(...)`
 
 Parses the given `rule` but does not hand it any `items*` that this rule
-may have been passed. That is, this rule provides a new "main context"
+might have been passed. That is, this rule provides a new "main context"
 for parsing. The yield and result of this rule is the same as that of
 the embedded `rule`.
 

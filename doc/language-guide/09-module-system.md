@@ -21,7 +21,7 @@ at least one file, called `main`. The `main` file is responsible for
 exporting whatever it is that the module exports.
 
 The module directory optionally contains additional module-internal files
-in an arbitrary subdirectory hierarchy. Module-internal files may be either
+in an arbitrary subdirectory hierarchy. Module-internal files can be either
 internal modules (single files of code, which aren't exposed externally) or
 resources.
 
@@ -47,7 +47,7 @@ separated by dots (`.`). There are a couple of conventions for these names:
 * The initial components of a module name start with a lower case letter.
 * The final component of a module name is generally capitalized.
 * Modules that are not independently published (e.g. are only used within
-  a particular application) may have a name that consists of just a single
+  a particular application) can have a name that consists of just a single
   capitalized component.
 * All independently published modules should have names with at least two
   components (with details as follows).
@@ -65,7 +65,7 @@ separated by dots (`.`). There are a couple of conventions for these names:
 Internal modules and resource files are named as partial paths, with
 components separated by slashes (`/`), and always introduced with a dot-slash
 (`./`). Unlike normal (Posix-like) filesystem paths, components must adhere
-to identifier syntax, except for the last component of a resource, which may
+to identifier syntax, except for the last component of a resource, which can
 optionally take the form of a pair of identifiers separated by a dot (`.`).
 
 By convention, the final component of internal module names and resource
@@ -193,7 +193,7 @@ The basic form is just `export varName1, varName2, ...`, to cause the contents
 of the variables named `varName1`, `varName2`, and so on, to be exported from
 the module, bound to the key `"varName"`.
 
-As a conveniend short-hand, `export` may be used as a prefix on immutable
+As a conveniend short-hand, `export` can be used as a prefix on immutable
 variable definitions, function definitions (both regular and generic
 functions), and `import` statements, to export the variables so-defined.
 
@@ -252,7 +252,7 @@ case where `ModA` is a library module, then the other modules of the
 library are its "sibling" modules.
 
 The first step in loading `ModB` is to look at the modules defined
-by `ModA`, per se. That is, `ModA` may itself contain a module library; this
+by `ModA`, per se. That is, `ModA` might itself contain a module library; this
 is `ModA`'s "captive" module library, in that the library is not visible
 beyond the definition of `ModA`. In terms of directory hierarchy, if `ModA` is
 in `/x/y/modules/ModA`, then the system will look for a captive module in
@@ -318,7 +318,7 @@ As a final note, though the default module system is implemented in terms
 of the filesystem, all of the behavior of the system is based on generic
 functions. These functions can be bound to other types, in order to
 provide other interesting and useful arrangements. For example, it is
-possible (and may eventually be desirable) to construct a loader which
+possible (and might eventually be desirable) to construct a loader which
 depends only upon immutable data as input.
 
 #### Example filesystem layout
