@@ -15,6 +15,47 @@ import ./refs :: REFS;
 
 
 ##
+## Private Definitions
+##
+
+## Expands the `yield` binding of `map` if it is `nonlocalExit`, including
+## eliding the actual nonlocal exit when the `map` defines the matching
+## yield definition name. Just returns the `yield` directly in
+## non-`nonlocalExit` cases.
+fn expandYield(map) {
+    def yieldNode = ifValueOr { map::yield } { return };
+
+    ifNot { hasType(yieldNode, @@nonlocalExit) } { return yieldNode };
+
+    def function = get_function(yieldNode);
+    def value = get_nodeValue(yieldNode);
+
+    ## If the exit's `function` is a ref to the same variable as this node's
+    ## yield name, then skip the expansion and just return the exit's `value`.
+    ifValues(
+        [
+            { -> hasType(function, @@varRef) },
+            { . -> map::yieldDef },
+            { ., yieldDef -> eq(get_name(function), yieldDef) }
+        ],
+        { ., ., . -> return value });
+
+    def exitCall = ifValueOr
+        { ifIs { hasType(value, @@void) } { makeCall(function) } }
+        {
+            ifIs { hasType(value, @@maybe) }
+                {
+                    makeCallOrApply(function,
+                        makeInterpolate(makeMaybeValue(get_nodeValue(value))))
+                }
+        }
+        { makeCall(function, value) };
+
+    return makeNoYield(exitCall)
+};
+
+
+##
 ## Exported Definitions
 ##
 
@@ -131,7 +172,7 @@ export fn makeFullClosure(map) {
     def statSz = get_size(statements);
 
     def yieldNode = ifValueOr
-        { map::yield }
+        { expandYield(map) }
         { ifIs { map::yieldDef } { @void } }
         { ifIs { eq(statSz, 0) } { @void } }
         {
@@ -275,23 +316,6 @@ export fn makeInterpolate(node) {
 ## Documented in spec.
 export fn makeMaybeValue(node) {
     return makeCall(REFS::maybeValue, makeThunk(node))
-};
-
-## Documented in spec.
-export fn makeNonlocalExit(function, optValue?) {
-    def value = ifValueOr { optValue* } { @void };
-    def exitCall = ifValueOr
-        { ifIs { hasType(value, @@void) } { makeCall(function) } }
-        {
-            ifIs { hasType(value, @@maybe) }
-                {
-                    makeCallOrApply(function,
-                        makeInterpolate(makeMaybeValue(get_nodeValue(value))))
-                }
-        }
-        { makeCall(function, value) };
-
-    return makeNoYield(exitCall)
 };
 
 ## Documented in spec.

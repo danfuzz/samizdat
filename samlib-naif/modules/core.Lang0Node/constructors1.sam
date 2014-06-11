@@ -70,6 +70,12 @@ export fn makeNoYield(value) {
 };
 
 ## Documented in spec.
+export fn makeNonlocalExit(function, optValue?) {
+    def value = ifValueOr { optValue* } { @void };
+    return @nonlocalExit{function, value}
+};
+
+## Documented in spec.
 export fn makeThunk(expression) {
     return @closure{formals: [], statements: [], yield: makeMaybe(expression)}
 };
