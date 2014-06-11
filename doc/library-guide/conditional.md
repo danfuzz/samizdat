@@ -80,6 +80,12 @@ The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
+**Note:** There is a key difference between the final element of
+`testFunctions` and the `valueFunction`: If the last `testFunctions`
+element returns void, then the `voidFunction` will get called. However,
+if the `valueFunction` returns void, then the `voidFunction` will *not*
+get called.
+
 **Syntax Note:** Used in the translation of some `&` forms and
 multiple-binding `if` forms.
 
