@@ -1,20 +1,19 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Map.h"
 #include "type/Value.h"
 #include "util.h"
 
+#include "impl.h"
 
-/*
- * Exported Definitions
- */
 
-/* Documented in spec. */
+//
+// Exported Definitions
+//
+
+// Documented in spec.
 FUN_IMPL_DECL(makeValueMap) {
     zint size = argCount - 1;
     zvalue value = args[size];

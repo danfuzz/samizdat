@@ -1,10 +1,7 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Bitwise.h"
 #include "type/Data.h"
 #include "type/Int.h"
@@ -14,10 +11,12 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 enum {
     /** Count of cached small int value. */
@@ -55,11 +54,11 @@ zvalue intFrom(zint value) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue intFromZint(zint value) {
     if ((value >= DAT_SMALL_INT_MIN) && (value < DAT_SMALL_INT_MAX)) {
         return SMALL_INTS[value - DAT_SMALL_INT_MIN];
@@ -68,24 +67,24 @@ zvalue intFromZint(zint value) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zint zintFromInt(zvalue intval) {
     assertHasType(intval, TYPE_Int);
     return zintValue(intval);
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue INT_0 = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue INT_1 = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue INT_NEG1 = NULL;
 
 /**
@@ -150,19 +149,19 @@ BINARY_IMPL_INT(shl,   zintShl);
 BINARY_IMPL_UNI(sub,   zintSub);
 BINARY_IMPL_UNI(xor,   zintXor);
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Int, toInt) {
     zvalue intval = args[0];
     return intval;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Int, toNumber) {
     zvalue intval = args[0];
     return intval;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Int, toString) {
     zvalue intval = args[0];
 
@@ -176,14 +175,14 @@ METH_IMPL(Int, toString) {
     return stringFromZchar(result);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Int, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
     return (zintValue(value) == zintValue(other)) ? value : NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Int, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -240,5 +239,5 @@ MOD_INIT(Int) {
     INT_NEG1 = intFromZint(-1);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Int = NULL;

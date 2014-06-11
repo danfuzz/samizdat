@@ -11,9 +11,10 @@ elsewhere.
 
 ### Intra-file Arrangement
 
-Every file starts with a standard license header, and is followed by a
-file header, then imports, and then a number of code sections. Each section
-starts with a section header of the form:
+Every file starts with a standard license header &mdash; which is always
+mandatory &mdash; and is followed by a file header, then imports, and then
+a number of code sections. Each section starts with a section header of the
+form:
 
 ```
 ##
@@ -35,9 +36,9 @@ This is also the form of file headers.
 
 Sections are separated from each other with *two* blank lines.
 
-As an exception to all of the above, files of under 60 lines may omit section
-headers, and if the purpose of a short file is *particularly* obvious, it
-may omit the file header as well (but not the license header).
+As an exception to all of the above, files of under 60 lines do not
+require section headers, and if the purpose of a short file is *particularly*
+obvious, the file header is also optional.
 
 **Rationale:** If a file is small enough to fit on a page, then there's
 not much point in providing the heavy-weight visual anchors.

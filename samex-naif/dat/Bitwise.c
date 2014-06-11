@@ -1,18 +1,17 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Bitwise.h"
 #include "type/Generic.h"
 #include "type/String.h"
 
+#include "impl.h"
 
-/*
- * Type Definition
- */
+
+//
+// Type Definition
+//
 
 /** Initializes the module. */
 MOD_INIT(Bitwise) {
@@ -40,23 +39,23 @@ MOD_INIT(Bitwise) {
     datImmortalize(GFN_xor);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_and = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_bit = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_bitSize = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_not = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_or = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_shl = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_xor = NULL;

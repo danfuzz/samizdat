@@ -1,8 +1,6 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdarg.h>
 #include <stdbool.h>
@@ -13,9 +11,9 @@
 #include "zlimits.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Death context stack element. */
 typedef struct Context {
@@ -26,18 +24,18 @@ typedef struct Context {
     void *state;
 } Context;
 
-/* Documented in header. */
+// Documented in header.
 UtilStackGiblet *utilStackTop = NULL;
 
-/* Whether death is currently in progress */
+/** Whether death is currently in progress. */
 static bool currentlyDying = false;
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 void note(const char *format, ...) {
     va_list rest;
 
@@ -47,7 +45,7 @@ void note(const char *format, ...) {
     fputs("\n", stderr);
 }
 
-/* Documented in header. */
+// Documented in header.
 void die(const char *format, ...) {
     va_list rest;
 

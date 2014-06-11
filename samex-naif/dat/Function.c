@@ -1,14 +1,14 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Function values
- */
+//
+// Function values
+//
 
-#include "impl.h"
+#include <stdio.h>   // For `asprintf`.
+#include <stdlib.h>  // For `free`.
+
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/List.h"
@@ -16,13 +16,12 @@
 #include "type/Type.h"
 #include "type/Value.h"
 
-#include <stdio.h>  // For `asprintf`.
-#include <stdlib.h> // For `free`.
+#include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Returns `value` if it is a string; otherwise calls `debugString` on it.
@@ -95,11 +94,11 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue funApply(zvalue function, zvalue args) {
     if (args == NULL) {
         return funCall(function, 0, NULL);
@@ -111,7 +110,7 @@ zvalue funApply(zvalue function, zvalue args) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
@@ -191,14 +190,14 @@ extern zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
     zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
     zvalue arg16, zvalue arg17, zvalue arg18);
 
-/* Documented in header. */
+// Documented in header.
 zvalue mustNotYield(zvalue value) {
     die("Improper yield from `noYield` expression.");
 }
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /** Initializes the module. */
 MOD_INIT(Function) {
@@ -211,8 +210,8 @@ MOD_INIT(Function) {
     datImmortalize(GFN_canCall);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_call = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_canCall = NULL;

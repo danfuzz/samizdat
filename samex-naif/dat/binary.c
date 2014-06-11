@@ -1,19 +1,18 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <dlfcn.h>
 
-#include "impl.h"
 #include "type/String.h"
 #include "util.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /**
  * This is the type of `eval` functions defined by native code libraries.
@@ -66,11 +65,11 @@ static zvalue evalLibrary(void *libHandle, zvalue env) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue datEvalBinary(zvalue env, zvalue path) {
     zint size = utf8SizeFromString(path);
     char str[size + 1];

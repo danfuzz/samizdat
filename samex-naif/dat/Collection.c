@@ -1,37 +1,36 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Collection values
- */
+//
+// Collection values
+//
 
-#include "impl.h"
 #include "type/Collection.h"
 #include "type/String.h"
 #include "type/Type.h"
 
+#include "impl.h"
 
-/*
- * Exported Definitions
- */
 
-/* Documented in header. */
+//
+// Exported Definitions
+//
+
+// Documented in header.
 zvalue collDel(zvalue coll, zvalue key) {
     return GFN_CALL(del, coll, key);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue collPut(zvalue coll, zvalue key, zvalue value) {
     return GFN_CALL(put, coll, key, value);
 }
 
 
-/*
- * Type Definition: `Collection`
- */
+//
+// Type Definition: `Collection`
+//
 
 /** Initializes the module. */
 MOD_INIT(Collection) {
@@ -55,17 +54,17 @@ MOD_INIT(Collection) {
     datImmortalize(GFN_valueList);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_del = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_keyList = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_nthMapping = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_put = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_valueList = NULL;

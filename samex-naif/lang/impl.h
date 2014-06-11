@@ -1,12 +1,10 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Private implementation details
- */
+//
+// Private implementation details
+//
 
 #ifndef _IMPL_H_
 #define _IMPL_H_
@@ -20,7 +18,7 @@
 
 /** Simple enumeration for all the evaluable node types. */
 typedef enum {
-    EVAL_apply = 1, // 1, so that it won't be a "sneaky default."
+    EVAL_apply = 1,  // 1, so that it won't be a "sneaky default."
     EVAL_call,
     EVAL_closure,
     EVAL_importModule,

@@ -30,7 +30,7 @@ If an argument evaluates to void, then this causes an immmediate error
 (terminating the runtime).
 
 In order to make it convenient to define control-structure-like functions,
-any number of block closure literals may follow the closing parenthesis. All
+any number of block closure literals can follow the closing parenthesis. All
 such closures are taken to be additional *initial* arguments to the function.
 For example, `foo(bar) { baz }` means the same thing as `foo({ baz }, bar)`.
 This ordering is done based on the principal that for functions which take
@@ -135,7 +135,7 @@ specifying it as `#expression - 1` (that is, one less than the size of
 the sequence).
 
 As with single-value indexing, either/both of the start and end expressions
-may be prefixed with `^` to indicate indexing by position from the end
+can be prefixed with `^` to indicate indexing by position from the end
 of the sequence.
 
 A slice expression using `..` is equivalent to calling

@@ -1,15 +1,12 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Sequence values
- */
+//
+// Sequence values
+//
 
 #include "const.h"
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Sequence.h"
@@ -22,12 +19,14 @@
 #include "type/Type.h"
 #include "type/Value.h"
 
+#include "impl.h"
 
-/*
- * Exported Definitions
- */
 
-/* Documented in header. */
+//
+// Exported Definitions
+//
+
+// Documented in header.
 void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
         zint size, zint argCount, const zvalue *args) {
     if (argCount < 2) {
@@ -66,7 +65,7 @@ void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zint seqNthIndexLenient(zvalue key) {
     if (hasType(key, TYPE_Int)) {
         zint index = zintFromInt(key);
@@ -76,7 +75,7 @@ zint seqNthIndexLenient(zvalue key) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zint seqNthIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
@@ -86,7 +85,7 @@ zint seqNthIndexStrict(zint size, zvalue n) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zint seqPutIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
@@ -102,12 +101,12 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 }
 
 
-/*
- * Type Definition: `Sequence`
- *
- * **Note:** This isn't the usual form of type definition, since these
- * methods are bound on many types.
- */
+//
+// Type Definition: `Sequence`
+//
+// **Note:** This isn't the usual form of type definition, since these
+// methods are bound on many types.
+//
 
 /** Builtin for `Sequence.collect`. */
 static zvalue BI_Sequence_collect = NULL;
@@ -127,7 +126,7 @@ static zvalue BI_Sequence_nthMapping = NULL;
 /** Builtin for `Sequence.valueList`. */
 static zvalue BI_Sequence_valueList = NULL;
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Sequence, collect) {
     zvalue coll = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
@@ -157,7 +156,7 @@ METH_IMPL(Sequence, collect) {
     return listFromArray(at, result);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Sequence, get) {
     zvalue seq = args[0];
     zvalue key = args[1];
@@ -169,7 +168,7 @@ METH_IMPL(Sequence, get) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Sequence, keyList) {
     zvalue seq = args[0];
 
@@ -183,7 +182,7 @@ METH_IMPL(Sequence, keyList) {
     return listFromArray(size, elems);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Sequence, nextValue) {
     // This yields the first element directly (if any), and returns a
     // `SequenceGenerator` value to represent the rest.
@@ -207,7 +206,7 @@ METH_IMPL(Sequence, nextValue) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Sequence, nthMapping) {
     zvalue seq = args[0];
     zvalue n = args[1];
@@ -221,7 +220,7 @@ METH_IMPL(Sequence, nthMapping) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Sequence, valueList) {
     zvalue seq = args[0];
 
@@ -239,7 +238,7 @@ METH_IMPL(Sequence, valueList) {
     return listFromArray(size, elems);
 }
 
-/* Documented in header. */
+// Documented in header.
 void seqBind(zvalue type) {
     genericBind(GFN_collect,    type, BI_Sequence_collect);
     genericBind(GFN_get,        type, BI_Sequence_get);
@@ -290,11 +289,11 @@ MOD_INIT(Sequence) {
     datImmortalize(BI_Sequence_valueList);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_reverse = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_sliceExclusive = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_sliceInclusive = NULL;

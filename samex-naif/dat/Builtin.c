@@ -1,24 +1,23 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Builtin Functions
- */
+//
+// Builtin Functions
+//
 
-#include "impl.h"
 #include "type/Builtin.h"
 #include "type/Generic.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /**
  * Builtin function structure.
@@ -51,11 +50,11 @@ static BuiltinInfo *getInfo(zvalue builtin) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
     BuiltinInfo *info = getInfo(builtin);
 
@@ -71,11 +70,11 @@ zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
         zint stateSize, zvalue name) {
     if ((minArgs < 0) ||
@@ -100,7 +99,7 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 BuiltinState builtinGetState(zvalue builtin) {
     assertHasType(builtin, TYPE_Builtin);
 
@@ -117,18 +116,18 @@ BuiltinState builtinGetState(zvalue builtin) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Builtin, call) {
     // The first argument is the builtin per se, and the rest are the
     // arguments to call it with.
     return builtinCall(args[0], argCount - 1, &args[1]);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Builtin, canCall) {
     zvalue builtin = args[0];
     zvalue value = args[1];
@@ -137,7 +136,7 @@ METH_IMPL(Builtin, canCall) {
     return (info->maxArgs >= 1) ? value : NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Builtin, debugName) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
@@ -145,7 +144,7 @@ METH_IMPL(Builtin, debugName) {
     return info->name;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Builtin, gcMark) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
@@ -173,5 +172,5 @@ MOD_INIT(Builtin) {
     METH_BIND(Builtin, gcMark);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Builtin = NULL;

@@ -1,12 +1,10 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Lowest-level utilities
- */
+//
+// Lowest-level utilities
+//
 
 #ifndef _UTIL_H_
 #define _UTIL_H_
@@ -19,9 +17,9 @@
 #include "util/zint.h"    // Int-related declarations.
 
 
-/*
- * Message Declarations
- */
+//
+// Message Declarations
+//
 
 enum {
     /** Magic value used to identify stack giblets. */
@@ -93,9 +91,9 @@ void die(const char *format, ...)
     __attribute__((format (printf, 1, 2)));
 
 
-/*
- * Allocation Declarations
- */
+//
+// Allocation Declarations
+//
 
 /**
  * Allocates zeroed-out memory of the indicated size (in bytes).
@@ -120,9 +118,9 @@ bool utilIsHeapAllocated(void *memory);
 char *utilStrdup(const char *string);
 
 
-/*
- * UTF-8 Declarations
- */
+//
+// UTF-8 Declarations
+//
 
 /**
  * Gets the decoded size (the number of encoded Unicode code points)
@@ -149,9 +147,9 @@ void utf8DecodeCharsFromString(zchar *result,
 char *utf8EncodeOne(char *result, zint ch);
 
 
-/*
- * I/O Declarations
- */
+//
+// I/O Declarations
+//
 
 /**
  * Gets the current directory into an allocated buffer.
@@ -159,9 +157,9 @@ char *utf8EncodeOne(char *result, zint ch);
 char *utilCwd(void);
 
 
-/*
- * Miscellaneous Declarations
- */
+//
+// Miscellaneous Declarations
+//
 
 /**
  * Like `memcpy`, except that the last argument indicates an element

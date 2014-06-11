@@ -1,19 +1,18 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Function.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "util.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /**
  * Concatenates all the arguments into a unified string, returning that
@@ -40,17 +39,17 @@ static char *unifiedString(zint argCount, const zvalue *args,
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(die) {
     char *str = unifiedString(argCount, args, "Alas.");
     die("%s", str);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(note) {
     char *str = unifiedString(argCount, args, NULL);
 

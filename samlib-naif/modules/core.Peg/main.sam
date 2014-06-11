@@ -9,8 +9,7 @@
 #= language core.Lang0
 
 import core.Box :: makePromise, nullBox;
-import core.Generator;
-import core.Sequence;
+import core.Generator :: filterPump, makeFilterGenerator;
 
 
 ##
@@ -39,7 +38,7 @@ fn @@PegAny.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegChoice.parse(box, input, items*) {
-    $Generator::filterPump(dataOf(this)) { rule ->
+    filterPump(dataOf(this)) { rule ->
         def innerBox = makePromise();
         ifValue { parse(rule, innerBox, input, items*) }
             { newInput ->
@@ -117,7 +116,7 @@ fn @@PegOpt.parse(box, input, items*) {
 fn @@PegRepeat.parse(box, input, items*) {
     def rule = this::rule;
     var remainingInput = input;
-    var results = []; ## Values that have been parsed by the inner rule.
+    var results = [];  ## Values that have been parsed by the inner rule.
 
     loop {
         def innerBox = makePromise();
@@ -156,15 +155,17 @@ fn @@PegSequence.parse(box, input, items*) {
     ## the matched results of all the previous rules, in order.
 
     var remainingInput = input;
-    var results = items; ## Includes intial items and each parsed value.
+    var results = items;  ## Includes intial items and each parsed value.
+    var lastResult = null;
 
     ## This is akin to `for (rule in dataOf(this)) { ... }`.
-    $Generator::filterPump(dataOf(this)) { rule ->
+    filterPump(dataOf(this)) { rule ->
         def innerBox = makePromise();
         ifValue { parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
-                results := [results*, fetch(innerBox)]
+                lastResult := fetch(innerBox);
+                results := [results*, lastResult]
             }
             {
                 ## Propagate the failure.
@@ -173,7 +174,7 @@ fn @@PegSequence.parse(box, input, items*) {
             }
     };
 
-    store(box, $Sequence::nthFromEnd(results, 0));
+    store(box, lastResult);
     return remainingInput
 };
 
@@ -233,7 +234,7 @@ fn typeListFromString(string) {
 ## Private helper for `make*Set*`, which takes a `sense` argument and
 ## produces the desired rule.
 fn genericMakeTokenSet(sense, types) {
-    def set = {types*: true}; ## A set-like map of all the token types.
+    def set = {types*: true};  ## A set-like map of all the token types.
 
     ifIs { eq(set, {}) }
         {
@@ -318,6 +319,11 @@ export fn makeOpt(rule) {
 };
 
 ## Documented in spec.
+export fn makeParserThunk(function) {
+    return @PegThunk(function)
+};
+
+## Documented in spec.
 export fn makePlus(rule) {
     return @PegRepeat{rule, minSize: 1}
 };
@@ -339,11 +345,6 @@ export fn makeSequence(rules*) {
 ## Documented in spec.
 export fn makeStar(rule) {
     return @PegRepeat{rule}
-};
-
-## Documented in spec.
-export fn makeThunk(function) {
-    return @PegThunk(function)
 };
 
 ## Documented in spec.
@@ -396,7 +397,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.
-            $Generator::makeFilterGenerator(input) { ch -> @(@@(ch)) }
+            makeFilterGenerator(input) { ch -> @(@@(ch)) }
         }
         { input };
 

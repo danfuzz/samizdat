@@ -1,15 +1,12 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Closure construction and execution
- */
+//
+// Closure construction and execution
+//
 
 #include "const.h"
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Generic.h"
 #include "type/Jump.h"
@@ -21,10 +18,12 @@
 #include "util.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 enum {
     /** Whether to spew to the console about cache behavior. */
@@ -314,11 +313,11 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue execClosure(Frame *frame, zvalue closureNode) {
     zvalue result = buildClosure(closureNode);
 
@@ -327,11 +326,11 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, call) {
     // The first argument is the closure itself. The rest are the arguments
     // it is being called with, hence `argCount--` and `args++` below.
@@ -352,7 +351,7 @@ METH_IMPL(Closure, call) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, canCall) {
     zvalue closure = args[0];
     zvalue value = args[1];
@@ -360,19 +359,19 @@ METH_IMPL(Closure, canCall) {
     return (getInfo(closure)->formalsSize == 0) ? NULL : value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, debugName) {
     zvalue closure = args[0];
     return get(getInfo(closure)->defMap, STR_name);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, gcMark) {
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
 
     frameMark(&info->frame);
-    datMark(info->defMap); // All the other bits are derived from this.
+    datMark(info->defMap);  // All the other bits are derived from this.
     return NULL;
 }
 
@@ -395,5 +394,5 @@ MOD_INIT(Closure) {
     datImmortalize(nodeCacheBox);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Closure = NULL;

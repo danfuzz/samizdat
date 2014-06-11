@@ -1,16 +1,12 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Node evaluation / execution
- */
+//
+// Node evaluation / execution
+//
 
 #include "const.h"
-#include "helpers.h"
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Function.h"
 #include "type/Generator.h"
@@ -21,10 +17,13 @@
 #include "type/Value.h"
 #include "util.h"
 
+#include "impl.h"
+#include "lang0node.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 // Both of these are defined at the bottom of this section.
 static zvalue execExpression(Frame *frame, zvalue expression);
@@ -93,7 +92,7 @@ static void execNoYield(Frame *frame, zvalue noYield) {
     mustNotYield(execExpression(frame, valueExpression));
 }
 
-/* Documented in header. */
+// Documented in header.
 static zvalue execVarBind(Frame *frame, zvalue varBind) {
     zvalue name = get(varBind, STR_name);
     zvalue valueExpression = get(varBind, STR_value);
@@ -173,11 +172,11 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
     switch (get_evalType(e)) {
         case EVAL_maybe: return execMaybe(frame, e);
@@ -186,7 +185,7 @@ zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void execStatement(Frame *frame, zvalue statement) {
     switch (get_evalType(statement)) {
         case EVAL_importModule:          execImport(frame, statement);           break;
@@ -198,7 +197,7 @@ void execStatement(Frame *frame, zvalue statement) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void execStatements(Frame *frame, zvalue statements) {
     zint size = get_size(statements);
     zvalue arr[size];
@@ -210,11 +209,11 @@ void execStatements(Frame *frame, zvalue statements) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue langEval0(zvalue env, zvalue node) {
     Frame frame;
 

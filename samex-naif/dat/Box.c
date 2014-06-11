@@ -1,14 +1,11 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Box manipulation
- */
+//
+// Box manipulation
+//
 
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Generic.h"
 #include "type/String.h"
@@ -16,10 +13,12 @@
 #include "type/Value.h"
 #include "util.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /**
  * Box state.
@@ -78,23 +77,23 @@ static zvalue doStore(zvalue box, zvalue value) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue boxFetch(zvalue box) {
     assertHasType(box, TYPE_Box);
     return doFetch(box);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue boxStore(zvalue box, zvalue value) {
     assertHasType(box, TYPE_Box);
     return doStore(box, value);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeCell(zvalue value) {
     zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
@@ -106,7 +105,7 @@ zvalue makeCell(zvalue value) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue makePromise(void) {
     zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
@@ -118,7 +117,7 @@ zvalue makePromise(void) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeResult(zvalue value) {
     zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
@@ -131,35 +130,35 @@ zvalue makeResult(zvalue value) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Box = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_canStore;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_fetch;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_store;
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Box, canStore) {
     zvalue box = args[0];
     return getInfo(box)->canStore ? box : NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Box, fetch) {
     zvalue box = args[0];
     return doFetch(box);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Box, gcMark) {
     zvalue box = args[0];
     BoxInfo *info = getInfo(box);
@@ -168,7 +167,7 @@ METH_IMPL(Box, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Box, store) {
     zvalue box = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;

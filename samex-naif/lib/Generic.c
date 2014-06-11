@@ -1,19 +1,18 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Value.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /**
  * Does most of the work of generic construction.
@@ -34,11 +33,11 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
     return makeGeneric(minArgs, maxArgs, flags, name);
 }
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(genericBind) {
     zvalue generic = args[0];
     zvalue type = args[1];
@@ -48,12 +47,12 @@ FUN_IMPL_DECL(genericBind) {
     return NULL;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeRegularGeneric) {
     return doMakeGeneric(GFN_NONE, argCount, args);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeUnitypeGeneric) {
     return doMakeGeneric(GFN_SAME_TYPE, argCount, args);
 }

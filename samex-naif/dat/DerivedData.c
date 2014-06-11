@@ -1,10 +1,7 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Builtin.h"
 #include "type/Collection.h"
 #include "type/DerivedData.h"
@@ -15,10 +12,12 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /**
  * Payload data for all derived values.
@@ -36,11 +35,11 @@ static DerivedDataInfo *getInfo(zvalue value) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue valDataOf(zvalue value, zvalue secret) {
     zvalue type = get_type(value);
 
@@ -51,7 +50,7 @@ zvalue valDataOf(zvalue value, zvalue secret) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
     assertValidOrNull(data);
     assertValidOrNull(secret);
@@ -67,21 +66,21 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
 }
 
 
-/*
- * Type Definition
- *
- * **Note:** This isn't the usual form of type definition, since these
- * methods are bound on many types.
- */
+//
+// Type Definition
+//
+// **Note:** This isn't the usual form of type definition, since these
+// methods are bound on many types.
+//
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(DerivedData, gcMark) {
     zvalue value = args[0];
     datMark(getInfo(value)->data);
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(DerivedData, get) {
     zvalue value = args[0];
     zvalue key = args[1];
@@ -90,7 +89,7 @@ METH_IMPL(DerivedData, get) {
     return (data == NULL) ? NULL : get(data, key);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(DerivedData, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -99,7 +98,7 @@ METH_IMPL(DerivedData, totalEq) {
         ? value : NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(DerivedData, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -119,5 +118,5 @@ MOD_INIT(DerivedData) {
     METH_BIND(DerivedData, totalOrder);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_DerivedData = NULL;

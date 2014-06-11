@@ -9,9 +9,9 @@
 #= language core.Lang0
 
 import core.Format;
-import core.Generator;
+import core.Generator :: filterPump;
 import core.Lang0Node :: *;
-import core.Peg;
+import core.Peg :: *;
 import core.Range;
 import proto.Number;
 
@@ -26,7 +26,7 @@ import ./tokenize :: tokenize;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    $Generator::filterPump(pending, $Range::makeInclusiveRange(1, 50))
+    filterPump(pending, $Range::makeInclusiveRange(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -63,56 +63,56 @@ def parRawClosure;
 def parOpExpression;
 
 ## Documented in spec.
-def parExpression = $Peg::makeMainChoice(
-    $Peg::makeThunk { parAssignExpression });
+def parExpression = makeMainChoice(
+    makeParserThunk { parAssignExpression });
 
 ## Documented in spec.
-def parParenExpression = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"("),
+def parParenExpression = makeMainSequence(
+    makeToken(@@"("),
     parExpression,
-    $Peg::makeToken(@@")"),
-    $Peg::makeCode { ., ex, . -> withoutInterpolate(ex) });
+    makeToken(@@")"),
+    makeCode { ., ex, . -> withoutInterpolate(ex) });
 
 ## Documented in spec.
-def parName =  $Peg::makeMainSequence(
-    $Peg::makeToken(@@identifier),
-    $Peg::makeCode { nameIdent -> dataOf(nameIdent) });
+def parName =  makeMainSequence(
+    makeToken(@@identifier),
+    makeCode { nameIdent -> dataOf(nameIdent) });
 
 ## Documented in spec.
-def parNameList = $Peg::makeMainSequence(
+def parNameList = makeMainSequence(
     parName,
-    $Peg::makeStar($Peg::makeSequence($Peg::makeToken(@@","), parName)),
-    $Peg::makeCode { first, rest -> [first, rest*] });
+    makeStar(makeSequence(makeToken(@@","), parName)),
+    makeCode { first, rest -> [first, rest*] });
 
 ## Documented in spec.
-def parVarRef = $Peg::makeMainSequence(
+def parVarRef = makeMainSequence(
     parName,
-    $Peg::makeCode { name -> makeVarRefLvalue(name) });
+    makeCode { name -> makeVarRefLvalue(name) });
 
 ## Documented in spec.
-def parInt = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"-"),
-        $Peg::makeToken(@@int),
-        $Peg::makeCode { ., i -> makeLiteral($Number::neg(dataOf(i))) }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@int),
-        $Peg::makeCode { i -> makeLiteral(dataOf(i)) }));
+def parInt = makeMainChoice(
+    makeSequence(
+        makeToken(@@"-"),
+        makeToken(@@int),
+        makeCode { ., i -> makeLiteral($Number::neg(dataOf(i))) }),
+    makeSequence(
+        makeToken(@@int),
+        makeCode { i -> makeLiteral(dataOf(i)) }));
 
 ## Documented in spec.
-def parString = $Peg::makeMainSequence(
-    $Peg::makeToken(@@string),
-    $Peg::makeCode { s -> makeLiteral(dataOf(s)) });
+def parString = makeMainSequence(
+    makeToken(@@string),
+    makeCode { s -> makeLiteral(dataOf(s)) });
 
 ## Documented in spec.
-def parIdentifierString = $Peg::makeMainChoice(
+def parIdentifierString = makeMainChoice(
     parString,
-    $Peg::makeSequence(
+    makeSequence(
         parName,
-        $Peg::makeCode { name -> makeLiteral(name) }),
-    $Peg::makeSequence(
-        $Peg::any,
-        $Peg::makeCode { token ->
+        makeCode { name -> makeLiteral(name) }),
+    makeSequence(
+        any,
+        makeCode { token ->
             ifNot { dataOf(token) }
                 {
                     def type = get_typeName(token);
@@ -123,21 +123,21 @@ def parIdentifierString = $Peg::makeMainChoice(
             }));
 
 ## Documented in spec.
-def parKey = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parKey = makeMainChoice(
+    makeSequence(
         parIdentifierString,
-        $Peg::makeToken(@@":"),
-        $Peg::makeCode { key, . -> key }),
-    $Peg::makeSequence(
+        makeToken(@@":"),
+        makeCode { key, . -> key }),
+    makeSequence(
         parExpression,
-        $Peg::makeToken(@@":"),
-        $Peg::makeCode { key, . -> key }));
+        makeToken(@@":"),
+        makeCode { key, . -> key }));
 
 ## Documented in spec.
-def parMapping = $Peg::makeMainSequence(
-    $Peg::makeStar(parKey),
+def parMapping = makeMainSequence(
+    makeStar(parKey),
     parExpression,
-    $Peg::makeCode { keys, value ->
+    makeCode { keys, value ->
         ifIs { eq(keys, []) }
             { /out ->
                 ## No keys were specified, so the value must be either a
@@ -159,99 +159,99 @@ def parMapping = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parMap = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"{"),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
+def parMap = makeMainSequence(
+    makeToken(@@"{"),
+    makeChoice(
+        makeSequence(
             parMapping,
-            $Peg::makeStar(
-                $Peg::makeSequence($Peg::makeToken(@@","), parMapping)),
-            $Peg::makeCode { ., one, rest ->
+            makeStar(
+                makeSequence(makeToken(@@","), parMapping)),
+            makeCode { ., one, rest ->
                 ifIs { eq(rest, []) }
                     { one }
                     { makeCall(REFS::cat, one, rest*) }
             }),
-        $Peg::makeCode { . -> makeLiteral({}) }),
-    $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., result, . -> result });
+        makeCode { . -> makeLiteral({}) }),
+    makeToken(@@"}"),
+    makeCode { ., result, . -> result });
 
 ## Documented in spec.
-def parListItem = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parListItem = makeMainChoice(
+    makeSequence(
         parIdentifierString,
-        $Peg::makeToken(@@":"),
-        $Peg::makeCode { ., . ->
+        makeToken(@@":"),
+        makeCode { ., . ->
             die("Mapping syntax not valid as a list item or call argument.")
         }),
     parExpression);
 
 ## Documented in spec.
-def parUnadornedList = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parUnadornedList = makeMainChoice(
+    makeSequence(
         parListItem,
-        $Peg::makeStar(
-            $Peg::makeSequence($Peg::makeToken(@@","), parListItem)),
-        $Peg::makeCode { one, rest -> [one, rest*] }),
-    $Peg::makeResult([]));
+        makeStar(
+            makeSequence(makeToken(@@","), parListItem)),
+        makeCode { one, rest -> [one, rest*] }),
+    makeResult([]));
 
 ## Documented in spec.
-def parList = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"["),
+def parList = makeMainSequence(
+    makeToken(@@"["),
     parUnadornedList,
-    $Peg::makeToken(@@"]"),
-    $Peg::makeCode { ., expressions, . ->
+    makeToken(@@"]"),
+    makeCode { ., expressions, . ->
         ifIs { eq(expressions, []) }
             { makeLiteral([]) }
             { makeCallOrApply(REFS::makeList, expressions*) }
     });
 
 ## Documented in spec.
-def parType = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"@@"),
-    $Peg::makeChoice(parIdentifierString, parParenExpression),
-    $Peg::makeCode { ., name ->
+def parType = makeMainSequence(
+    makeToken(@@"@@"),
+    makeChoice(parIdentifierString, parParenExpression),
+    makeCode { ., name ->
         ifIs { hasType(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
             { makeCall(REFS::makeDerivedDataType, name) }
     });
 
 ## Documented in spec.
-def parDeriv = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"@"),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
+def parDeriv = makeMainSequence(
+    makeToken(@@"@"),
+    makeChoice(
+        makeSequence(
             parIdentifierString,
-            $Peg::makeCode { ., name ->
+            makeCode { ., name ->
                 makeLiteral(@@(get_nodeValue(name)))
             }),
         parParenExpression),
-    $Peg::makeOpt($Peg::makeChoice(parParenExpression, parMap, parList)),
-    $Peg::makeCode { ., type, value ->
+    makeOpt(makeChoice(parParenExpression, parMap, parList)),
+    makeCode { ., type, value ->
         makeCall(REFS::makeValue, type, value*)
     });
 
 ## Documented in spec.
-def parFullClosure = $Peg::makeMainSequence(
-    $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
-    $Peg::makeThunk { . -> parRawClosure },
-    $Peg::makeCode { ., raw ->
+def parFullClosure = makeMainSequence(
+    makeLookaheadSuccess(makeToken(@@"{")),
+    makeParserThunk { . -> parRawClosure },
+    makeCode { ., raw ->
         def closure = makeFullClosure(raw);
         withoutTops(closure)
     });
 
 ## Documented in spec.
-def parBasicClosure = $Peg::makeMainSequence(
-    $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
-    $Peg::makeThunk { . -> parRawClosure },
-    $Peg::makeCode { ., raw ->
+def parBasicClosure = makeMainSequence(
+    makeLookaheadSuccess(makeToken(@@"{")),
+    makeParserThunk { . -> parRawClosure },
+    makeCode { ., raw ->
         def closure = makeBasicClosure(raw);
         withoutTops(closure)
     });
 
 ## Documented in spec.
-def parNullaryClosure = $Peg::makeMainSequence(
+def parNullaryClosure = makeMainSequence(
     parFullClosure,
-    $Peg::makeCode { c ->
+    makeCode { c ->
         def formals = get_formals(c);
         ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
@@ -259,9 +259,9 @@ def parNullaryClosure = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parBasicNullaryClosure = $Peg::makeMainSequence(
+def parBasicNullaryClosure = makeMainSequence(
     parBasicClosure,
-    $Peg::makeCode { c ->
+    makeCode { c ->
         def formals = get_formals(c);
         ifIs { ne(formals, []) }
             { die("Invalid formal argument in code block.") };
@@ -269,185 +269,185 @@ def parBasicNullaryClosure = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parTerm = $Peg::makeMainChoice(
+def parTerm = makeMainChoice(
     parVarRef, parInt, parString, parMap, parList,
     parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
-    $Peg::makeSequence(
-        $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{:")),
-        $Peg::makeThunk { . -> parParser }));
+    makeSequence(
+        makeLookaheadSuccess(makeToken(@@"{:")),
+        makeParserThunk { . -> parParser }));
 
 ## Documented in spec.
-def parActualsList = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"("),
+def parActualsList = makeMainChoice(
+    makeSequence(
+        makeToken(@@"("),
         parUnadornedList,
-        $Peg::makeToken(@@")"),
-        $Peg::makeStar(parFullClosure),
-        $Peg::makeCode { ., normalActuals, ., closureActuals ->
+        makeToken(@@")"),
+        makeStar(parFullClosure),
+        makeCode { ., normalActuals, ., closureActuals ->
             [closureActuals*, normalActuals*]
         }),
-    $Peg::makePlus(parFullClosure));
+    makePlus(parFullClosure));
 
 ## Documented in spec.
-def parPostfixOperator = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parPostfixOperator = makeMainChoice(
+    makeSequence(
         parActualsList,
-        $Peg::makeCode { actuals ->
+        makeCode { actuals ->
             { node -> makeCallOrApply(node, actuals*) }
         }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"::"),
+    makeSequence(
+        makeToken(@@"::"),
         parIdentifierString,
-        $Peg::makeCode { ., key -> { node -> makeGet(node, key) } }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"*"),
-        $Peg::makeCode { . -> { node -> makeInterpolate(node) } }),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"?"),
-        $Peg::makeCode { . -> { node -> makeMaybeValue(node) } }));
+        makeCode { ., key -> { node -> makeGet(node, key) } }),
+    makeSequence(
+        makeToken(@@"*"),
+        makeCode { . -> { node -> makeInterpolate(node) } }),
+    makeSequence(
+        makeToken(@@"?"),
+        makeCode { . -> { node -> makeMaybeValue(node) } }));
 
 ## Documented in spec.
-def parUnaryExpression = $Peg::makeMainSequence(
-    $Peg::makeChoice(
-        $Peg::makeSequence(
+def parUnaryExpression = makeMainSequence(
+    makeChoice(
+        makeSequence(
             parTerm,
-            $Peg::makeCode { base -> {base, prefixes: []} }),
+            makeCode { base -> {base, prefixes: []} }),
         ## This is a stub representing the layer 2 part of the rule.
-        $Peg::fail),
-    $Peg::makeStar(parPostfixOperator),
-    $Peg::makeCode { basePrefixes, postfixes ->
+        fail),
+    makeStar(parPostfixOperator),
+    makeCode { basePrefixes, postfixes ->
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
 
-        $Generator::filterPump(postfixes) { op -> result := op(result) };
-        $Generator::filterPump(prefixes) { op -> result := op(result) };
+        filterPump(postfixes) { op -> result := op(result) };
+        filterPump(prefixes) { op -> result := op(result) };
         result
     });
 
 ## Documented in spec.
-parAssignExpression := $Peg::makeMainSequence(
-    $Peg::makeThunk { parOpExpression },
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@":="),
-            $Peg::makeCode { base, . -> get_lvalue(base) },
+parAssignExpression := makeMainSequence(
+    makeParserThunk { parOpExpression },
+    makeChoice(
+        makeSequence(
+            makeToken(@@":="),
+            makeCode { base, . -> get_lvalue(base) },
             parExpression,
-            $Peg::makeCode { base, ., lvalue, ex -> lvalue(ex) }),
-        $Peg::makeCode { base -> base }));
+            makeCode { base, ., lvalue, ex -> lvalue(ex) }),
+        makeCode { base -> base }));
 
 ## Documented in spec.
-def parYieldOrNonlocal = $Peg::makeMainSequence(
-    $Peg::makeTokenSet(@@break, @@continue, @@return, @@yield),
-    $Peg::makeOpt($Peg::makeToken(@@"?")),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeCode { op, . -> hasType(op, @@yield) },
-            $Peg::makeChoice(
-                $Peg::makeSequence($Peg::makeToken(@@"/"), parVarRef),
-                $Peg::makeResult(@yield))),
-        $Peg::makeCode { op, . -> makeVarRef(get_typeName(op)) }),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
+def parYieldOrNonlocal = makeMainSequence(
+    makeTokenSet(@@break, @@continue, @@return, @@yield),
+    makeOpt(makeToken(@@"?")),
+    makeChoice(
+        makeSequence(
+            makeCode { op, . -> hasType(op, @@yield) },
+            makeChoice(
+                makeSequence(makeToken(@@"/"), parVarRef),
+                makeResult(@yield))),
+        makeCode { op, . -> makeVarRef(get_typeName(op)) }),
+    makeChoice(
+        makeSequence(
             parExpression,
-            $Peg::makeCode { ., optQuest, ., v ->
+            makeCode { ., optQuest, ., v ->
                 ifIs { optQuest* } { makeMaybe(v) } { v }
             }),
-        $Peg::makeCode { ., optQuest, . ->
+        makeCode { ., optQuest, . ->
             ifNot { optQuest* } { @void }
         }),
-    $Peg::makeCode { ., ., name, value ->
+    makeCode { ., ., name, value ->
         ifIs { eq(name, @yield) }
             { value }
             { makeNonlocalExit(name, value) }
     });
 
 ## Documented in spec.
-def parVarDef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@def),
+def parVarDef = makeMainSequence(
+    makeToken(@@def),
     parName,
-    $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
-    $Peg::makeCode { ., name, optExpr ->
+    makeOpt(makeSequence(makeToken(@@"="), parExpression)),
+    makeCode { ., name, optExpr ->
         makeVarDef(name, optExpr*)
     });
 
 ## Documented in spec.
-def parVarDefMutable = $Peg::makeMainSequence(
-    $Peg::makeToken(@@var),
+def parVarDefMutable = makeMainSequence(
+    makeToken(@@var),
     parName,
-    $Peg::makeOpt($Peg::makeSequence($Peg::makeToken(@@"="), parExpression)),
-    $Peg::makeCode { ., name, optExpr ->
+    makeOpt(makeSequence(makeToken(@@"="), parExpression)),
+    makeCode { ., name, optExpr ->
         makeVarDefMutable(name, optExpr*)
     });
 
 ## Documented in spec.
-def parYieldDef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"/"),
+def parYieldDef = makeMainSequence(
+    makeToken(@@"/"),
     parName,
-    $Peg::makeCode { ., name -> name });
+    makeCode { ., name -> name });
 
 ## Documented in spec.
-def parOptYieldDef = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parOptYieldDef = makeMainChoice(
+    makeSequence(
         parYieldDef,
-        $Peg::makeCode { y -> {yieldDef: y} }),
-    $Peg::makeResult({}));
+        makeCode { y -> {yieldDef: y} }),
+    makeResult({}));
 
 ## Documented in spec.
-def parFormal = $Peg::makeMainSequence(
-    $Peg::makeChoice(
-        $Peg::makeSequence(
+def parFormal = makeMainSequence(
+    makeChoice(
+        makeSequence(
             parName,
-            $Peg::makeCode { n -> {name: n} }),
-        $Peg::makeSequence(
-            $Peg::makeToken(@@"."),
-            $Peg::makeResult({}))),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeTokenSet(@@"?", @@"*", @@"+"),
-            $Peg::makeCode { ., r -> {repeat: get_typeName(r)} }),
-        $Peg::makeResult({})),
-    $Peg::makeCode { name, repeat -> {name*, repeat*} });
+            makeCode { n -> {name: n} }),
+        makeSequence(
+            makeToken(@@"."),
+            makeResult({}))),
+    makeChoice(
+        makeSequence(
+            makeTokenSet(@@"?", @@"*", @@"+"),
+            makeCode { ., r -> {repeat: get_typeName(r)} }),
+        makeResult({})),
+    makeCode { name, repeat -> {name*, repeat*} });
 
 ## Documented in spec.
-def parFormalsList = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parFormalsList = makeMainChoice(
+    makeSequence(
         parFormal,
-        $Peg::makeStar($Peg::makeSequence($Peg::makeToken(@@","), parFormal)),
-        $Peg::makeCode { one, rest -> [one, rest*] }),
-    $Peg::makeResult([]));
+        makeStar(makeSequence(makeToken(@@","), parFormal)),
+        makeCode { one, rest -> [one, rest*] }),
+    makeResult([]));
 
 ## Documented in spec.
-def parClosureDeclarations = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeChoice(
-            $Peg::makeSequence(
-                $Peg::makeChoice(
-                    $Peg::makeSequence(
+def parClosureDeclarations = makeMainChoice(
+    makeSequence(
+        makeChoice(
+            makeSequence(
+                makeChoice(
+                    makeSequence(
                         parName,
-                        $Peg::makeCode { n -> {name: n} }),
-                    $Peg::makeResult({})),
-                $Peg::makeToken(@@"("),
+                        makeCode { n -> {name: n} }),
+                    makeResult({})),
+                makeToken(@@"("),
                 parFormalsList,
-                $Peg::makeToken(@@")"),
-                $Peg::makeCode { name, ., formals, . -> {name*, formals} }),
-            $Peg::makeSequence(
+                makeToken(@@")"),
+                makeCode { name, ., formals, . -> {name*, formals} }),
+            makeSequence(
                 parFormalsList,
-                $Peg::makeCode { formals -> {formals} })),
+                makeCode { formals -> {formals} })),
         parOptYieldDef,
-        $Peg::makeToken(@@"->"),
-        $Peg::makeCode { most, yieldDef, . -> {most*, yieldDef*} }),
-    $Peg::makeResult({formals: []}));
+        makeToken(@@"->"),
+        makeCode { most, yieldDef, . -> {most*, yieldDef*} }),
+    makeResult({formals: []}));
 
 ## Documented in spec.
-def parFunctionCommon = $Peg::makeMainSequence(
+def parFunctionCommon = makeMainSequence(
     parName,
-    $Peg::makeToken(@@"("),
+    makeToken(@@"("),
     parFormalsList,
-    $Peg::makeToken(@@")"),
+    makeToken(@@")"),
     parBasicNullaryClosure,
-    $Peg::makeCode { name, ., formals, ., code ->
+    makeCode { name, ., formals, ., code ->
         def returnDef = ifValue { code::yieldDef }
             { yieldDef ->
                 ## The closure has a yield def, but we need to also bind
@@ -467,20 +467,20 @@ def parFunctionCommon = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parFunctionDef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@fn),
+def parFunctionDef = makeMainSequence(
+    makeToken(@@fn),
     parFunctionCommon,
-    $Peg::makeCode { ., closure ->
+    makeCode { ., closure ->
         withTop(makeVarDef(get_name(closure), closure))
     });
 
 ## Documented in spec.
-def parGenericBind = $Peg::makeMainSequence(
-    $Peg::makeToken(@@fn),
-    $Peg::makeChoice(parVarRef, parType),
-    $Peg::makeToken(@@"."),
+def parGenericBind = makeMainSequence(
+    makeToken(@@fn),
+    makeChoice(parVarRef, parType),
+    makeToken(@@"."),
     parFunctionCommon,
-    $Peg::makeCode { ., bind, ., closure ->
+    makeCode { ., bind, ., closure ->
         def formals = get_formals(closure);
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
@@ -488,16 +488,16 @@ def parGenericBind = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parGenericDef = $Peg::makeMainSequence(
-    $Peg::makeToken(@@fn),
-    $Peg::makeOpt($Peg::makeToken(@@"*")),
-    $Peg::makeToken(@@"."),
+def parGenericDef = makeMainSequence(
+    makeToken(@@fn),
+    makeOpt(makeToken(@@"*")),
+    makeToken(@@"."),
     parName,
-    $Peg::makeToken(@@"("),
+    makeToken(@@"("),
     parFormalsList,
-    $Peg::makeToken(@@")"),
-    $Peg::makeCode { ., optStar, ., name, ., formals, . ->
-        def fullFormals = [{}, formals*]; ## First one is `this`.
+    makeToken(@@")"),
+    makeCode { ., optStar, ., name, ., formals, . ->
+        def fullFormals = [{}, formals*];  ## First one is `this`.
         def func = ifIs { eq(optStar, []) }
             { REFS::makeRegularGeneric }
             { REFS::makeUnitypeGeneric };
@@ -511,80 +511,80 @@ def parGenericDef = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parImportName = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parImportName = makeMainChoice(
+    makeSequence(
         parName,
-        $Peg::makeChoice(
-            $Peg::makeSequence(
-                $Peg::makeToken(@@"*"),
-                $Peg::makeResult("prefix")),
-            $Peg::makeResult("name")),
-        $Peg::makeToken(@@"="),
-        $Peg::makeCode { name, key, . -> {(key): name} }),
-    $Peg::makeResult({}));
+        makeChoice(
+            makeSequence(
+                makeToken(@@"*"),
+                makeResult("prefix")),
+            makeResult("name")),
+        makeToken(@@"="),
+        makeCode { name, key, . -> {(key): name} }),
+    makeResult({}));
 
 ## Documented in spec.
-def parImportFormat = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"@"),
+def parImportFormat = makeMainChoice(
+    makeSequence(
+        makeToken(@@"@"),
         parIdentifierString,
-        $Peg::makeCode { ., f -> {format: get_nodeValue(f)} }),
-    $Peg::makeResult({}));
+        makeCode { ., f -> {format: get_nodeValue(f)} }),
+    makeResult({}));
 
 ## Documented in spec.
-def parImportSource = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"."),
-        $Peg::makeToken(@@"/"),
+def parImportSource = makeMainChoice(
+    makeSequence(
+        makeToken(@@"."),
+        makeToken(@@"/"),
         parName,
-        $Peg::makeStar(
-            $Peg::makeSequence(
-                $Peg::makeToken(@@"/"),
+        makeStar(
+            makeSequence(
+                makeToken(@@"/"),
                 parName,
-                $Peg::makeCode { ., ., ., ., n -> cat("/", n) })),
-        $Peg::makeOpt(
-            $Peg::makeSequence(
-                $Peg::makeToken(@@"."),
+                makeCode { ., ., ., ., n -> cat("/", n) })),
+        makeOpt(
+            makeSequence(
+                makeToken(@@"."),
                 parName,
-                $Peg::makeCode { ., ., ., ., ., n -> cat(".", n) })),
-        $Peg::makeCode { ., ., first, rest, optSuffix ->
+                makeCode { ., ., ., ., ., n -> cat(".", n) })),
+        makeCode { ., ., first, rest, optSuffix ->
             def name = cat(first, rest*, optSuffix*);
             @internal(name)
         }),
-    $Peg::makeSequence(
+    makeSequence(
         parName,
-        $Peg::makeStar(
-            $Peg::makeSequence(
-                $Peg::makeToken(@@"."),
+        makeStar(
+            makeSequence(
+                makeToken(@@"."),
                 parName,
-                $Peg::makeCode { ., ., n -> cat(".", n) })),
-        $Peg::makeCode { first, rest ->
+                makeCode { ., ., n -> cat(".", n) })),
+        makeCode { first, rest ->
             def name = cat(first, rest*);
             @external(name)
         }));
 
 ## Documented in spec.
-def parImportSelect = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"::"),
-        $Peg::makeChoice(
-            $Peg::makeSequence(
-                $Peg::makeToken(@@"*"),
-                $Peg::makeResult({select: @"*"})),
-            $Peg::makeSequence(
+def parImportSelect = makeMainChoice(
+    makeSequence(
+        makeToken(@@"::"),
+        makeChoice(
+            makeSequence(
+                makeToken(@@"*"),
+                makeResult({select: @"*"})),
+            makeSequence(
                 parNameList,
-                $Peg::makeCode { ., select -> {select} }))),
-    $Peg::makeResult({}));
+                makeCode { ., select -> {select} }))),
+    makeResult({}));
 
 ## Documented in spec.
-def parImportStatement = $Peg::makeMainSequence(
-    $Peg::makeOpt($Peg::makeToken(@@export)),
-    $Peg::makeToken(@@import),
+def parImportStatement = makeMainSequence(
+    makeOpt(makeToken(@@export)),
+    makeToken(@@import),
     parImportName,
     parImportFormat,
     parImportSource,
     parImportSelect,
-    $Peg::makeCode { optExport, ., nameOrPrefix, format, source, select ->
+    makeCode { optExport, ., nameOrPrefix, format, source, select ->
         def data = {nameOrPrefix*, format*, select*, source};
         ifIs { optExport* }
             { makeExport(makeImport(data)) }
@@ -592,83 +592,83 @@ def parImportStatement = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parExportableStatement = $Peg::makeMainChoice(
+def parExportableStatement = makeMainChoice(
     parFunctionDef, parGenericDef, parVarDef);
 
 ## Documented in spec.
-def parStatement = $Peg::makeMainChoice(
+def parStatement = makeMainChoice(
     parExportableStatement, parGenericBind, parVarDefMutable, parExpression);
 
 ## Documented in spec.
-def parProgramStatement = $Peg::makeMainChoice(
+def parProgramStatement = makeMainChoice(
     parStatement,
-    $Peg::makeSequence(
-        $Peg::makeToken(@@export),
-        $Peg::makeChoice(
-            $Peg::makeSequence(
+    makeSequence(
+        makeToken(@@export),
+        makeChoice(
+            makeSequence(
                 parNameList,
-                $Peg::makeCode { ., select -> makeExportSelection(select*) }),
-            $Peg::makeSequence(
+                makeCode { ., select -> makeExportSelection(select*) }),
+            makeSequence(
                 parExportableStatement,
-                $Peg::makeCode { ., stat -> makeExport(stat) }))));
+                makeCode { ., stat -> makeExport(stat) }))));
 
 ## Documented in spec.
-def parClosureBody = $Peg::makeMainSequence(
-    $Peg::makeStar($Peg::makeToken(@@";")),
-    $Peg::makeStar(
-        $Peg::makeMainSequence(
+def parClosureBody = makeMainSequence(
+    makeStar(makeToken(@@";")),
+    makeStar(
+        makeMainSequence(
             parStatement,
-            $Peg::makePlus($Peg::makeToken(@@";")),
-            $Peg::makeCode { s, . -> s })),
-    $Peg::makeChoice(
-        $Peg::makeMainSequence(
+            makePlus(makeToken(@@";")),
+            makeCode { s, . -> s })),
+    makeChoice(
+        makeMainSequence(
             parStatement,
-            $Peg::makeCode { s -> {statements: [s]} }),
-        $Peg::makeMainSequence(
+            makeCode { s -> {statements: [s]} }),
+        makeMainSequence(
             parYieldOrNonlocal,
-            $Peg::makeCode { y -> {statements: [], yield: y} }),
-        $Peg::makeResult({statements: []})),
-    $Peg::makeStar($Peg::makeToken(@@";")),
-    $Peg::makeCode { ., most, last, . ->
+            makeCode { y -> {statements: [], yield: y} }),
+        makeResult({statements: []})),
+    makeStar(makeToken(@@";")),
+    makeCode { ., most, last, . ->
         {last*, statements: [most*, last::statements*]}
     });
 
 ## Documented in spec.
-parRawClosure := $Peg::makeMainSequence(
-    $Peg::makeToken(@@"{"),
+parRawClosure := makeMainSequence(
+    makeToken(@@"{"),
     parClosureDeclarations,
     parClosureBody,
-    $Peg::makeToken(@@"}"),
-    $Peg::makeCode { ., decls, body, . -> {decls*, body*} });
+    makeToken(@@"}"),
+    makeCode { ., decls, body, . -> {decls*, body*} });
 
 ## Documented in spec.
-def parProgram = $Peg::makeMainSequence(
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeStar($Peg::makeToken(@@";")),
+def parProgram = makeMainSequence(
+    makeChoice(
+        makeSequence(
+            makeStar(makeToken(@@";")),
             parImportStatement,
-            $Peg::makeStar(
-                $Peg::makeSequence(
-                    $Peg::makePlus($Peg::makeToken(@@";")),
+            makeStar(
+                makeSequence(
+                    makePlus(makeToken(@@";")),
                     parImportStatement)),
-            $Peg::makeCode { ., first, rest -> [first, rest*] }),
-        $Peg::makeResult([])),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeChoice(
-                $Peg::makeSequence(
-                    $Peg::makeCode { imports -> ne(imports, []) },
-                    $Peg::makePlus($Peg::makeToken(@@";"))),
-                $Peg::makeStar($Peg::makeToken(@@";"))),
+            makeCode { ., first, rest -> [first, rest*] }),
+        makeResult([])),
+    makeChoice(
+        makeSequence(
+            makeChoice(
+                makeSequence(
+                    makeCode { imports -> ne(imports, []) },
+                    makePlus(makeToken(@@";"))),
+                makeStar(makeToken(@@";"))),
             parProgramStatement,
-            $Peg::makeStar(
-                $Peg::makeSequence(
-                    $Peg::makePlus($Peg::makeToken(@@";")),
+            makeStar(
+                makeSequence(
+                    makePlus(makeToken(@@";")),
                     parProgramStatement)),
-            $Peg::makeCode { ., ., first, rest -> [first, rest*] }),
-        $Peg::makeResult([])),
-    $Peg::makeStar($Peg::makeToken(@@";")),
-    $Peg::makeCode { imports, body, . ->
+            makeCode { ., ., first, rest -> [first, rest*] }),
+        makeResult([])),
+    makeStar(makeToken(@@";")),
+    makeCode { imports, body, . ->
         def closure = makeFullClosure({
             statements: [imports*, body*],
             yield:      @void
@@ -677,22 +677,22 @@ def parProgram = $Peg::makeMainSequence(
     });
 
 ## Documented in spec.
-def parExpressionOrError = $Peg::makeMainSequence(
+def parExpressionOrError = makeMainSequence(
     parExpression,
-    $Peg::makeOpt(
-        $Peg::makeMainSequence(
-            $Peg::makePlus($Peg::any),
-            $Peg::makeCode { pending -> reportError(pending) })),
-    $Peg::makeCode { ex, . -> ex });
+    makeOpt(
+        makeMainSequence(
+            makePlus(any),
+            makeCode { pending -> reportError(pending) })),
+    makeCode { ex, . -> ex });
 
 ## Documented in spec.
-def parProgramOrError = $Peg::makeMainSequence(
+def parProgramOrError = makeMainSequence(
     parProgram,
-    $Peg::makeOpt(
-        $Peg::makeMainSequence(
-            $Peg::makePlus($Peg::any),
-            $Peg::makeCode { pending -> reportError(pending) })),
-    $Peg::makeCode { prog, . -> prog });
+    makeOpt(
+        makeMainSequence(
+            makePlus(any),
+            makeCode { pending -> reportError(pending) })),
+    makeCode { prog, . -> prog });
 
 
 ##
@@ -712,37 +712,37 @@ def PEX_TYPES = {
 };
 
 ## Documented in spec.
-parParser := $Peg::makeMainSequence(
-    $Peg::makeToken(@@"{:"),
-    $Peg::makeThunk { . -> parChoicePex },
-    $Peg::makeToken(@@":}"),
-    $Peg::makeCode { ., pex, . -> @parser{value: pex} });
+parParser := makeMainSequence(
+    makeToken(@@"{:"),
+    makeParserThunk { . -> parChoicePex },
+    makeToken(@@":}"),
+    makeCode { ., pex, . -> @parser{value: pex} });
 
 ## Documented in spec.
-def parParenPex = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"("),
-    $Peg::makeThunk { . -> parChoicePex },
-    $Peg::makeToken(@@")"),
-    $Peg::makeCode { ., pex, . -> pex });
+def parParenPex = makeMainSequence(
+    makeToken(@@"("),
+    makeParserThunk { . -> parChoicePex },
+    makeToken(@@")"),
+    makeCode { ., pex, . -> pex });
 
 ## Documented in spec.
-def parParserString = $Peg::makeMainSequence(
-    $Peg::makeToken(@@string));
+def parParserString = makeMainSequence(
+    makeToken(@@string));
 
 ## Documented in spec.
-def parParserToken = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"@"),
+def parParserToken = makeMainSequence(
+    makeToken(@@"@"),
     parIdentifierString,
-    $Peg::makeCode { ., type -> @token(@@(get_nodeValue(type))) });
+    makeCode { ., type -> @token(@@(get_nodeValue(type))) });
 
 ## Documented in spec.
-def parParserSetString = $Peg::makeMainSequence(
-    $Peg::makeToken(@@string),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@".."),
-            $Peg::makeToken(@@string),
-            $Peg::makeCode { s, ., end /out ->
+def parParserSetString = makeMainSequence(
+    makeToken(@@string),
+    makeChoice(
+        makeSequence(
+            makeToken(@@".."),
+            makeToken(@@string),
+            makeCode { s, ., end /out ->
                 def startChar = dataOf(s);
                 def endChar = dataOf(end);
 
@@ -752,50 +752,50 @@ def parParserSetString = $Peg::makeMainSequence(
 
                 yield cat($Range::makeInclusiveRange(startChar, endChar)*)
             }),
-        $Peg::makeCode { s -> dataOf(s) }));
+        makeCode { s -> dataOf(s) }));
 
 ## Documented in spec.
-def parParserSet = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"["),
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@"!"),
-            $Peg::makeResult(@@tokenSetComplement)),
-        $Peg::makeResult(@@tokenSet)),
-    $Peg::makeChoice(
-        $Peg::makeMainSequence(
-            $Peg::makePlus(parParserSetString),
-            $Peg::makeCode { strings ->
+def parParserSet = makeMainSequence(
+    makeToken(@@"["),
+    makeChoice(
+        makeSequence(
+            makeToken(@@"!"),
+            makeResult(@@tokenSetComplement)),
+        makeResult(@@tokenSet)),
+    makeChoice(
+        makeMainSequence(
+            makePlus(parParserSetString),
+            makeCode { strings ->
                 collect(cat(strings*), { ch -> @@(ch) })
             }),
-        $Peg::makeMainSequence(
-            $Peg::makePlus(parParserToken),
-            $Peg::makeCode { tokens -> collect(tokens, dataOf) }),
-        $Peg::makeResult([])),
-    $Peg::makeToken(@@"]"),
-    $Peg::makeCode { ., type, terminals, . -> @(type)(terminals) });
+        makeMainSequence(
+            makePlus(parParserToken),
+            makeCode { tokens -> collect(tokens, dataOf) }),
+        makeResult([])),
+    makeToken(@@"]"),
+    makeCode { ., type, terminals, . -> @(type)(terminals) });
 
 ## Documented in spec.
-def parParserCode = $Peg::makeMainSequence(
+def parParserCode = makeMainSequence(
     parNullaryClosure,
-    $Peg::makeCode { closure -> @code(dataOf(closure)) });
+    makeCode { closure -> @code(dataOf(closure)) });
 
 
 ## Documented in spec.
-def parParserThunk = $Peg::makeMainSequence(
-    $Peg::makeToken(@@"%"),
+def parParserThunk = makeMainSequence(
+    makeToken(@@"%"),
     parTerm,
-    $Peg::makeCode { ., term -> @thunk(term) });
+    makeCode { ., term -> @thunk(term) });
 
 ## Documented in spec.
-def parParserTerm = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"."),
-        $Peg::makeResult(@any)),
-    $Peg::makeSequence(
-        $Peg::makeToken(@@"("),
-        $Peg::makeToken(@@")"),
-        $Peg::makeResult(@empty)),
+def parParserTerm = makeMainChoice(
+    makeSequence(
+        makeToken(@@"."),
+        makeResult(@any)),
+    makeSequence(
+        makeToken(@@"("),
+        makeToken(@@")"),
+        makeResult(@empty)),
     parVarRef,
     parParserString,
     parParserToken,
@@ -805,50 +805,50 @@ def parParserTerm = $Peg::makeMainChoice(
     parParenPex);
 
 ## Documented in spec.
-def parRepeatPex = $Peg::makeMainSequence(
+def parRepeatPex = makeMainSequence(
     parParserTerm,
-    $Peg::makeChoice(
-        $Peg::makeSequence(
-            $Peg::makeTokenSet(@@"?", @@"*", @@"+"),
-            $Peg::makeCode { term, repeat ->
+    makeChoice(
+        makeSequence(
+            makeTokenSet(@@"?", @@"*", @@"+"),
+            makeCode { term, repeat ->
                 @(get(PEX_TYPES, get_type(repeat)))(term)
             }),
-        $Peg::makeCode { term -> term }));
+        makeCode { term -> term }));
 
 ## Documented in spec.
-def parLookaheadPex = $Peg::makeMainChoice(
-    $Peg::makeSequence(
-        $Peg::makeTokenSet(@@"&", @@"!"),
+def parLookaheadPex = makeMainChoice(
+    makeSequence(
+        makeTokenSet(@@"&", @@"!"),
         parRepeatPex,
-        $Peg::makeCode { lookahead, pex ->
+        makeCode { lookahead, pex ->
             @(get(PEX_TYPES, get_type(lookahead)))(pex)
         }),
     parRepeatPex);
 
 ## Documented in spec.
-def parNamePex = $Peg::makeMainChoice(
-    $Peg::makeSequence(
+def parNamePex = makeMainChoice(
+    makeSequence(
         parName,
-        $Peg::makeToken(@@"="),
+        makeToken(@@"="),
         parLookaheadPex,
-        $Peg::makeCode { name, ., pex ->
+        makeCode { name, ., pex ->
             @varDef{name, value: pex}
         }),
     parLookaheadPex);
 
 ## Documented in spec.
-def parSequencePex = $Peg::makeMainSequence(
-    $Peg::makePlus(parNamePex),
-    $Peg::makeCode { items -> @sequence(items) });
+def parSequencePex = makeMainSequence(
+    makePlus(parNamePex),
+    makeCode { items -> @sequence(items) });
 
 ## Documented in spec.
-parChoicePex := $Peg::makeMainSequence(
+parChoicePex := makeMainSequence(
     parSequencePex,
-    $Peg::makeStar(
-        $Peg::makeSequence(
-            $Peg::makeToken(@@"|"),
+    makeStar(
+        makeSequence(
+            makeToken(@@"|"),
             parSequencePex)),
-    $Peg::makeCode { one, rest -> @choice[one, rest*] });
+    makeCode { one, rest -> @choice[one, rest*] });
 
 
 ##
@@ -869,7 +869,7 @@ export fn parseExpression(expression) {
         { tokenize(expression) }
         { expression };
 
-    return $Peg::apply(parExpressionOrError, tokens)
+    return apply(parExpressionOrError, tokens)
 };
 
 ## Documented in spec.
@@ -878,5 +878,5 @@ export fn parseProgram(program) {
         { tokenize(program) }
         { program };
 
-    return $Peg::apply(parProgramOrError, tokens)
+    return apply(parProgramOrError, tokens)
 };

@@ -1,29 +1,28 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Initialization
- */
+//
+// Initialization
+//
 
 #include <stddef.h>
 #include <string.h>
 
 #include "const.h"
-#include "impl.h"
 #include "type/Type.h"
 
+#include "impl.h"
 
-/*
- * Module Definitions
- */
 
-/* Documented in header. */
+//
+// Module Definitions
+//
+
+// Documented in header.
 zevalType langTypeMap[DAT_MAX_TYPES];
 
-/* This provides the non-inline version of this function. */
+// This provides the non-inline version of this function.
 extern zevalType get_evalType(zvalue node);
 
 /** Initializes the module. */

@@ -164,27 +164,26 @@ Variables, functions, types, and elements of structures all have
 documentation comments that start with `/**` as the usual indication
 that they are intended to be "published" documentation.
 
+Other comments, including multi-line comments, are `//`-prefixed.
+
 Section and file banner comments take the form:
 
 ```
-/*                            /*
- * Title Goes Here             * Title Goes Here
- */                    or      *
-                               * Sometimes, additional notes will
-                               * go here.
-                               */
+//                            //
+// Title Goes Here            // Title Goes Here
+//                     or     //
+                              // Sometimes, additional notes will
+                              // go here.
+                              //
 ```
-
-Most other comments, including multi-line comments, are `//`-prefixed.
-
 Comment text is written using Markdown syntax, even when not marked `/**`.
 Code samples are delimited with triple-backticks (GitHub flavor).
 
 A general aim of commenting is to take a "DRY" (Don't Repeat Yourself)
 attitude, with specification files being the ultimate "source of truth" and
 header files being more authoritative than (non-header) source files.
-Comments of the form `/* Documented in header. */` and
-`/* Documented in spec. */` are used liberally as an explicit indication
+Function header comments of the form `// Documented in header.` and
+`// Documented in spec.` are used liberally as an explicit indication
 that the so-marked item does in fact have documentation elsewhere. (That is,
 it is an unintentional oversight for an item to *not* have such a comment.)
 

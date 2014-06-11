@@ -1,15 +1,13 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Asserts that the given `zint` value is valid as a Unicode
@@ -17,8 +15,7 @@
  */
 static void assertValidCodePoint(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
-        die("Invalid occurrence of surrogate code point: %#04x",
-               (int) value);
+        die("Invalid occurrence of surrogate code point: %#04x", (int) value);
     } else if (value == 0xfffe) {
         die("Invalid occurrence of reversed-BOM.");
     } else if (value == 0xffff) {
@@ -58,7 +55,7 @@ static const char *justDecode(zchar *result,
     }
 
     unsigned char ch = *string;
-    zint value; // `zint` and not `zchar` is for saner overflow detection.
+    zint value;  // `zint` and not `zchar` is for saner overflow detection.
     int extraBytes;
     zint minValue;
 
@@ -183,11 +180,11 @@ static const char *decodeValid(zchar *result,
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zint utf8DecodeStringSize(zint stringBytes, const char *string) {
     const char *stringEnd = getStringEnd(stringBytes, string);
     zint result = 0;
@@ -200,7 +197,7 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 void utf8DecodeCharsFromString(zchar *result,
         zint stringBytes, const char *string) {
     const char *stringEnd = getStringEnd(stringBytes, string);
@@ -211,7 +208,7 @@ void utf8DecodeCharsFromString(zchar *result,
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 char *utf8EncodeOne(char *result, zint ch) {
     if (ch < 0) {
         die("Out of range for UTF-8: %#llx", ch);

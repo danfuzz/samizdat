@@ -1,8 +1,6 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stddef.h>
 
@@ -12,9 +10,9 @@
 #include "zlimits.h"
 
 
-/*
- * Define globals for all of the constants.
- */
+//
+// Define globals for all of the constants.
+//
 
 #define STR(name, str) zvalue STR_##name = NULL
 
@@ -33,9 +31,9 @@
 #undef TYP
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /** Initializes the module. */
 MOD_INIT(const) {

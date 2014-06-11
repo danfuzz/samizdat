@@ -1,12 +1,8 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
-#include "helpers.h"
-#include "impl.h"
 #include "util.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -14,10 +10,13 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "helpers.h"
+#include "impl.h"
 
-/*
- * ParseState definition and functions
- */
+
+//
+// ParseState definition and functions
+//
 
 /** State of tokenization in-progress. */
 typedef struct {
@@ -74,12 +73,12 @@ static void reset(ParseState *state, zint mark) {
 }
 
 
-/*
- * Samizdat 0 Tree Grammar
- *
- * This is *not* a direct transliteration of the spec's reference tokenizer,
- * but it is nonetheless intended to implement the same grammar.
- */
+//
+// Samizdat 0 Tree Grammar
+//
+// This is *not* a direct transliteration of the spec's reference tokenizer,
+// but it is nonetheless intended to implement the same grammar.
+//
 
 /**
  * Skips a single-line comment. Should only be called when known to be
@@ -87,7 +86,7 @@ static void reset(ParseState *state, zint mark) {
  */
 static bool skipComment(ParseState *state) {
     zint at = cursor(state);
-    read(state); // Skip the initial `#`.
+    read(state);  // Skip the initial `#`.
 
     zint ch = read(state);
     if ((ch != '#') && (ch != '!')) {
@@ -291,7 +290,7 @@ static zvalue tokenizeOneOrTwo(ParseState *state, zint ch2,
  * Tokenizes `:`, `::`, or `:=`.
  */
 static zvalue tokenizeColon(ParseState *state) {
-    read(state); // Skip the `:`
+    read(state);  // Skip the `:`
 
     switch (peek(state)) {
         case ':': read(state); return TOK_CH_COLONCOLON;
@@ -402,11 +401,11 @@ static zvalue tokenizeAnyToken(ParseState *state) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue langLanguageOf0(zvalue string) {
     zint size = get_size(string);
     ParseState state = { .size = size, .at = 0 };
@@ -423,7 +422,7 @@ zvalue langLanguageOf0(zvalue string) {
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue langTokenize0(zvalue string) {
     zstackPointer save = datFrameStart();
     zint size = get_size(string);

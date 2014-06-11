@@ -1,12 +1,10 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Private implementation details
- */
+//
+// Private implementation details
+//
 
 #ifndef _IMPL_H_
 #define _IMPL_H_
@@ -15,7 +13,7 @@
 #include "type/Function.h"
 
 
-/* Declarations for all the primitive functions */
+// Declarations for all the primitive functions.
 #define PRIM_DEF(name, value) /*empty*/
 #define PRIM_FUNC(name, minArgs, maxArgs) FUN_IMPL_DECL(name)
 #include "prim-def.h"

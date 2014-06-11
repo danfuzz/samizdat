@@ -1,20 +1,19 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include <time.h> // Used for "chatty gc."
+#include <time.h>  // Used for "chatty gc."
 
-#include "impl.h"
 #include "type/Function.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 enum {
     /** Whether to spew to the console during gc. */
@@ -139,7 +138,7 @@ static void enlist(DatHeader *head, zvalue value) {
  * Main garbage collection function.
  */
 static void doGc(void) {
-    zint counter; // Used throughout.
+    zint counter;  // Used throughout.
 
     if (GFN_totalEq == NULL) {
         die("`dat` module not yet initialized.");
@@ -230,11 +229,11 @@ static void doGc(void) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue datAllocValue(zvalue type, zint extraBytes) {
     if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
         datGc();
@@ -254,7 +253,7 @@ zvalue datAllocValue(zvalue type, zint extraBytes) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 void assertValid(zvalue value) {
     if (value == NULL) {
         die("Null value.");
@@ -269,14 +268,14 @@ void assertValid(zvalue value) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void assertValidOrNull(zvalue value) {
     if (value != NULL) {
         assertValid(value);
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void datGc(void) {
     allocationCount = 0;
 
@@ -293,7 +292,7 @@ void datGc(void) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void datImmortalize(zvalue value) {
     if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
@@ -305,7 +304,7 @@ void datImmortalize(zvalue value) {
     immortalsSize++;
 }
 
-/* Documented in header. */
+// Documented in header.
 void datMark(zvalue value) {
     if ((value == NULL) || value->marked) {
         return;

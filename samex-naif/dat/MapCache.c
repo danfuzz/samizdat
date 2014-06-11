@@ -1,22 +1,21 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <string.h>
 
-#include "impl.h"
 #include "type/Generic.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 enum {
     /** Whether to spew to the console about map cache hits. */
@@ -27,11 +26,11 @@ enum {
 static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
     hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
@@ -59,11 +58,11 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(MapCache, gcMark) {
     memset(mapCache, 0, sizeof(mapCache));
     return NULL;

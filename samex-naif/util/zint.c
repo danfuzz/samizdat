@@ -1,30 +1,28 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Safe integer functions
- *
- * This file just serves to define the non-inline versions of all the
- * functions.
- */
+//
+// Safe integer functions
+//
+// This file just serves to define the non-inline versions of all the
+// functions.
+//
 
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 // Documented in header.
 extern bool zintCanDiv(zint x, zint y);
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 // All documented in header.
 extern bool zcharFromZint(zchar *result, zint value);

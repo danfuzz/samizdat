@@ -1,8 +1,6 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdlib.h>
 #include <string.h>
@@ -12,9 +10,9 @@
 #include "zlimits.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 enum {
     /**
@@ -128,11 +126,11 @@ static void addPages(void *start, void *end) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 void *utilAlloc(zint size) {
     if (size < 0) {
         die("Invalid allocation size: %lld", size);
@@ -151,12 +149,12 @@ void *utilAlloc(zint size) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 void utilFree(void *memory) {
     free(memory);
 }
 
-/* Documented in header. */
+// Documented in header.
 bool utilIsHeapAllocated(void *memory) {
     if (!THEYRE_OUT_TO_GET_ME) {
         return memory != NULL;
@@ -186,7 +184,7 @@ bool utilIsHeapAllocated(void *memory) {
     return false;
 }
 
-/* Documented in header. */
+// Documented in header.
 char *utilStrdup(const char *string) {
     zint len = strlen(string);
     char *result = utilAlloc(len + 1);

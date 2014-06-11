@@ -1,20 +1,18 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Frame (stack references) management
- */
+//
+// Frame (stack references) management
+//
 
 #ifndef _DAT_FRAME_H_
 #define _DAT_FRAME_H_
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Base of the stack (builds forward in memory). */
 extern zstackPointer frameStackBase;
@@ -29,9 +27,9 @@ extern zstackPointer frameStackLimit;
 void datFrameError(const char *message);
 
 
-/*
- * Public Definitions
- */
+//
+// Public Definitions
+//
 
 /**
  * Adds an item to the current frame. This is only necessary to call when

@@ -31,7 +31,7 @@ of the elements of all the original values, in order, in the order of the
 arguments.
 
 For values that have element constraints, a concatenation will not
-necessarily contain all the original constituent elements, and the order may
+necessarily contain all the original constituent elements, and the order might
 be different. See individual implementation docs for details.
 
 **Note:** To account for the possibility of passing *no* arguments to

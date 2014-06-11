@@ -1,8 +1,6 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
 #include "impl.h"
@@ -29,9 +27,9 @@
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Globals map (environment) containing all the primitive definitions. */
 static zvalue PRIMITIVE_ENVIRONMENT = NULL;
@@ -113,11 +111,11 @@ static zvalue getLibrary(zvalue libraryPath) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue libNewEnvironment(const char *libraryPath) {
     MOD_USE(const);
     MOD_USE(Box);

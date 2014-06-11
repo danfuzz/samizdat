@@ -1,14 +1,11 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Generator protocol
- */
+//
+// Generator protocol
+//
 
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Generator.h"
@@ -19,10 +16,12 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Type Definition: `Generator`
- */
+
+//
+// Type Definition: `Generator`
+//
 
 /** "Standard" `collect` implementation. Documented in spec. */
 METH_IMPL(Generator, stdCollect) {
@@ -102,11 +101,11 @@ MOD_INIT(Generator) {
     datImmortalize(FUN_Generator_stdCollect);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_collect = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_nextValue = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue FUN_Generator_stdCollect = NULL;

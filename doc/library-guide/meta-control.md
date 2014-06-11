@@ -10,7 +10,7 @@ of speaking.
 <br><br>
 ### Primitive Definitions
 
-#### `die(strings*) -> n/a ## Terminates the runtime.`
+#### `die(strings*) -> n/a  ## Terminates the runtime.`
 
 Prints the given strings to the system console (as if by calling
 `note(strings*`), and terminates the runtime with a failure status code (`1`).

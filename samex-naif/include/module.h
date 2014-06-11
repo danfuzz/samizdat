@@ -1,19 +1,17 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Simple C-based module system
- */
+//
+// Simple C-based module system
+//
 
 #ifndef _MODULE_H_
 #define _MODULE_H_
 
-/*
- * Private definitions
- */
+//
+// Private definitions
+//
 
 /** Prototype for a module initialization function. */
 typedef void (*zmodInitFunction)(void);
@@ -46,9 +44,9 @@ void modUseNext(const char *name, zmodStatus *status, zmodInitFunction func);
     } while(0)
 
 
-/*
- * Public definitions
- */
+//
+// Public definitions
+//
 
 /**
  * Defines a module inititialization function. Use this instead of

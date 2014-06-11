@@ -1,20 +1,18 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Simple C Module System
- */
+//
+// Simple C Module System
+//
 
 #include "module.h"
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Record of a pending initialization. First three members are the same as the
@@ -83,7 +81,7 @@ static void servicePendingInits(void) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void modUseNext(const char *name, zmodStatus *status, zmodInitFunction func) {
     if (*status != MOD_UNINITIALIZED) {
         // It's already initialized or in-progress.
@@ -100,7 +98,7 @@ void modUseNext(const char *name, zmodStatus *status, zmodInitFunction func) {
     one->prev->next = one;
 }
 
-/* Documented in header. */
+// Documented in header.
 void modUse(const char *name, zmodStatus *status, zmodInitFunction func) {
     // Save off the current pending init queue.
     PendingInit saveHead = thePendingHead;

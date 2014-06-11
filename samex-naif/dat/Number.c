@@ -1,18 +1,17 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Number.h"
 #include "type/Generic.h"
 #include "type/String.h"
 
+#include "impl.h"
 
-/*
- * Type Definition
- */
+
+//
+// Type Definition
+//
 
 /** Initializes the module. */
 MOD_INIT(Number) {
@@ -49,32 +48,32 @@ MOD_INIT(Number) {
     datImmortalize(GFN_sub);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_abs = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_add = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_div = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_divEu = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_mod = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_modEu = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_mul = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_neg = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_sign = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_sub = NULL;

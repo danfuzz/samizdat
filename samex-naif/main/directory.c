@@ -1,12 +1,10 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Figures out the directory where the executable resides.
- */
+//
+// Figures out the directory where the executable resides.
+//
 
 #include <errno.h>
 #include <limits.h>
@@ -15,22 +13,23 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "impl.h"
 #include "util.h"
 
+#include "impl.h"
 
-/*
- * Private Defintions
- */
+
+//
+// Private Defintions
+//
 
 /**
  * Names of proc-type files to try, when determining the executable path.
  */
 static const char *PROC_SELF_FILES[] = {
-    "/proc/self/exe",        // Linux
-    "/proc/curproc/file",    // FreeBSD and some other BSD variants
-    "/proc/curproc/exe",     // NetBSD
-    "/proc/self/path/a.out", // Solaris and variants
+    "/proc/self/exe",         // Linux
+    "/proc/curproc/file",     // FreeBSD and some other BSD variants
+    "/proc/curproc/exe",      // NetBSD
+    "/proc/self/path/a.out",  // Solaris and variants
     NULL
 };
 
@@ -146,11 +145,11 @@ static char *resolveArgv0(const char *argv0) {
 }
 
 
-/*
- * Module Defintions
- */
+//
+// Module Defintions
+//
 
-/* Documented in header. */
+// Documented in header.
 char *getProgramDirectory(const char *argv0, const char *suffix) {
     char *execPath = NULL;
 

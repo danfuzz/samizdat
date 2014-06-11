@@ -41,7 +41,7 @@ following, with the indicated meaning:
 #### `int(value, optBase?) -> string`
 
 Converts an int into a string form, in the given base which defaults to
-10. If specified, base may be any int in the range `2..36`.
+10. If specified, `optBase*` can be any int in the range `(2..36)`.
 
 #### `intHex(value) -> string`
 

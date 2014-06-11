@@ -1,10 +1,7 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/OneOff.h"
@@ -13,10 +10,12 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /** Array of single-character strings, for low character codes. */
 static zvalue CACHED_CHARS[DAT_MAX_CACHED_CHAR + 1];
@@ -101,11 +100,11 @@ static void freeArray(zchar *array) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue stringFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
@@ -132,7 +131,7 @@ zvalue stringFromUtf8(zint stringBytes, const char *string) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue stringFromZchar(zchar value) {
     if (value <= DAT_MAX_CACHED_CHAR) {
         zvalue result = CACHED_CHARS[value];
@@ -152,7 +151,7 @@ zvalue stringFromZchar(zchar value) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue stringFromZchars(zint size, const zchar *chars) {
     // Deal with special cases. This calls into `stringFromZchar` since that's
     // what handles caching of single-character strings.
@@ -167,16 +166,16 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 char *utf8DupFromString(zvalue string) {
-    zint size = utf8SizeFromString(string) + 1; // `+1` for the final `\0`.
+    zint size = utf8SizeFromString(string) + 1;  // `+1` for the final `\0`.
     char *result = utilAlloc(size);
 
     utf8FromString(size, result, string);
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zint utf8FromString(zint resultSize, char *result, zvalue string) {
     assertString(string);
 
@@ -201,7 +200,7 @@ zint utf8FromString(zint resultSize, char *result, zvalue string) {
     return finalSize;
 }
 
-/* Documented in header. */
+// Documented in header.
 zint utf8SizeFromString(zvalue string) {
     assertString(string);
 
@@ -217,7 +216,7 @@ zint utf8SizeFromString(zvalue string) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zchar zcharFromString(zvalue string) {
     assertStringSize1(string);
 
@@ -225,7 +224,7 @@ zchar zcharFromString(zvalue string) {
     return info->elems[0];
 }
 
-/* Documented in header. */
+// Documented in header.
 void zcharsFromString(zchar *result, zvalue string) {
     assertString(string);
 
@@ -235,14 +234,14 @@ void zcharsFromString(zchar *result, zvalue string) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 zvalue EMPTY_STRING = NULL;
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, cat) {
     if (argCount == 1) {
         return args[0];
@@ -266,7 +265,7 @@ METH_IMPL(String, cat) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, del) {
     zvalue string = args[0];
     zvalue n = args[1];
@@ -288,7 +287,7 @@ METH_IMPL(String, del) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
@@ -296,13 +295,13 @@ METH_IMPL(String, debugString) {
     return GFN_CALL(cat, quote, string, quote);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, get_size) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, nth) {
     zvalue string = args[0];
     zvalue n = args[1];
@@ -317,7 +316,7 @@ METH_IMPL(String, nth) {
     return stringFromZchar(info->elems[index]);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, put) {
     zvalue string = args[0];
     zvalue n = args[1];
@@ -343,7 +342,7 @@ METH_IMPL(String, put) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, reverse) {
     zvalue string = args[0];
 
@@ -361,7 +360,7 @@ METH_IMPL(String, reverse) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     zvalue string = args[0];
     StringInfo *info = getInfo(string);
@@ -377,35 +376,35 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, sliceExclusive) {
     return doSlice(false, argCount, args);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, sliceInclusive) {
     return doSlice(true, argCount, args);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, toInt) {
     zvalue string = args[0];
     return intFromZint(zcharFromString(string));
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, toNumber) {
     zvalue string = args[0];
     return intFromZint(zcharFromString(string));
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, toString) {
     zvalue string = args[0];
     return string;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -430,7 +429,7 @@ METH_IMPL(String, totalEq) {
     return value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(String, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -487,5 +486,5 @@ MOD_INIT(String) {
     datImmortalize(EMPTY_STRING);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_String = NULL;

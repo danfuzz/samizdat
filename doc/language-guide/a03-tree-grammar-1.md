@@ -15,7 +15,7 @@ can be used.
 
 ```
 import core.Format;
-import core.Generator;
+import core.Generator :: filterPump;
 import core.Lang0;
 import core.Lang0Node :: *;
 import core.Peg;
@@ -32,7 +32,7 @@ import proto.Number;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    $Generator::filterPump(pending, $Range::makeInclusiveRange(1, 50))
+    filterPump(pending, $Range::makeInclusiveRange(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -416,8 +416,8 @@ def parUnaryExpression = {:
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
 
-        $Generator::filterPump(postfixes) { op -> result := op(result) };
-        $Generator::filterPump(prefixes) { op -> result := op(result) };
+        filterPump(postfixes) { op -> result := op(result) };
+        filterPump(prefixes) { op -> result := op(result) };
         result
     }
 :};
@@ -667,7 +667,7 @@ def parGenericDef = {:
     @")"
 
     {
-        def fullFormals = [{}, formals*]; ## First one is `this`.
+        def fullFormals = [{}, formals*];  ## First one is `this`.
         def func = ifIs { eq(optStar, []) }
             { REFS::makeRegularGeneric }
             { REFS::makeUnitypeGeneric };

@@ -26,8 +26,8 @@ token type.
 
 The output of the functions named `$Peg::make*` are all parsing rules. These
 are all derived data values with a type that binds the `parse`
-generic. A `parse` method accepts at least two arguments, and may also
-accept additional arguments:
+generic. A `parse` method accepts at least two arguments, and will also
+accept additional arguments depending on context:
 
 * `box` &mdash; The first argument is a `box` into which the result of
   parsing is to be `store`d, or to which void is stored in case of
@@ -108,7 +108,7 @@ then this rule also fails.
 #### `@PegMain(rule).parse(...)`
 
 Parses the given `rule` but does not hand it any `items*` that this rule
-may have been passed. That is, this rule provides a new "main context"
+might have been passed. That is, this rule provides a new "main context"
 for parsing. The yield and result of this rule is the same as that of
 the embedded `rule`.
 
@@ -144,6 +144,9 @@ If any of the rules fail, then this rule also fails, consuming no input.
 
 In addition to the original `items*` passed in to this rule, each sub-rule
 receives the results of all the previous sub-rules as additional `items*`.
+
+As an edge case, if `rules` is empty, then this equivalent to `@PegEmpty`,
+succeeding, consuming no input, and yielding `null`.
 
 #### `@PegThunk(function).parse(...)`
 
@@ -288,6 +291,20 @@ rule fails, this one yields an empty list and does not consume any input.
 
 This is equivalent to the syntactic form `{: rule? :}`.
 
+#### `makeParserThunk(function) -> rule`
+
+Makes and returns a parser rule which runs the given function to produce
+a parser, which is then called to do the actual parsing. `function`
+must be a function. When called, it is passed as arguments all the
+in-scope matched results from the current sequence context. Whatever it
+returns is expected to be a parser, and that parser is then called upon
+to perform parsing.
+
+If the called function returns void, then the rule is considered to have
+failed.
+
+This is equivalent to the syntactic form `{: %term :}`.
+
 #### `makePlus(rule) -> rule`
 
 Makes and returns a parser rule which matches a given rule repeatedly.
@@ -338,20 +355,6 @@ string. The result of successful parsing is a valueless token with
 `string` as its type tag.
 
 This is equivalent to the syntactic form `{: "string" :}`.
-
-#### `makeThunk(function) -> rule`
-
-Makes and returns a parser rule which runs the given function to produce
-a parser, which is then called to do the actual parsing. `function`
-must be a function. When called, it is passed as arguments all the
-in-scope matched results from the current sequence context. Whatever it
-returns is expected to be a parser, and that parser is then called upon
-to perform parsing.
-
-If the called function returns void, then the rule is considered to have
-failed.
-
-This is equivalent to the syntactic form `{: %term :}`.
 
 #### `makeToken(type) -> rule`
 

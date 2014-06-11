@@ -1,12 +1,9 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdlib.h>
 
-#include "impl.h"
 #include "type/Builtin.h"
 #include "type/DerivedData.h"
 #include "type/Generic.h"
@@ -19,10 +16,12 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /** Next type sequence number to assign. */
 static zint theNextTypeId = 0;
@@ -196,25 +195,25 @@ static bool typeEq(zvalue type1, zvalue type2) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 extern inline zint typeIndexUnchecked(zvalue type);
 
-/* Documented in header. */
+// Documented in header.
 bool typeHasSecret(zvalue type, zvalue secret) {
     assertHasTypeType(type);
     return valEqNullOk(getInfo(type)->secret, secret);
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 void assertHasType(zvalue value, zvalue type) {
     if (!hasType(value, type)) {
         die("Expected type %s; got %s.",
@@ -222,12 +221,12 @@ void assertHasType(zvalue value, zvalue type) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zint get_typeIndex(zvalue value) {
     return typeIndexUnchecked(get_type(value));
 }
 
-/* Documented in header. */
+// Documented in header.
 bool hasType(zvalue value, zvalue type) {
     assertHasTypeType(type);
 
@@ -242,12 +241,12 @@ bool hasType(zvalue value, zvalue type) {
     return false;
 }
 
-/* Documented in header. */
+// Documented in header.
 bool haveSameType(zvalue value, zvalue other) {
     return typeEq(get_type(value), get_type(other));
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeCoreType(zvalue name, zvalue parent, bool selfish) {
     if (findType(name, coreSecret) != NULL) {
         die("Core type already created.");
@@ -256,7 +255,7 @@ zvalue makeCoreType(zvalue name, zvalue parent, bool selfish) {
     return makeType(name, parent, coreSecret, selfish);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeDerivedDataType(zvalue name) {
     zvalue result = findType(name, NULL);
 
@@ -267,42 +266,42 @@ zvalue makeDerivedDataType(zvalue name) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zint typeIndex(zvalue type) {
     assertHasTypeType(type);
     return typeIndexUnchecked(type);
 }
 
-/* Documented in header. */
+// Documented in header.
 bool typeIsDerived(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->derived;
 }
 
-/* Documented in header. */
+// Documented in header.
 bool typeIsSelfish(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->selfish;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue typeName(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->name;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue typeParent(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->parent;
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Type, debugString) {
     zvalue type = args[0];
     TypeInfo *info = getInfo(type);
@@ -325,7 +324,7 @@ METH_IMPL(Type, debugString) {
         stringFromUtf8(-1, ")"));
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Type, gcMark) {
     zvalue type = args[0];
     TypeInfo *info = getInfo(type);
@@ -336,7 +335,7 @@ METH_IMPL(Type, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Type, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -412,5 +411,5 @@ MOD_INIT(Type) {
     METH_BIND(Type, totalOrder);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Type = NULL;

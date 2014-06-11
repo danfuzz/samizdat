@@ -1,23 +1,22 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdio.h>
 #include <string.h>
 
-#include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
 
+#include "impl.h"
 
-/*
- * Private Definitions
- */
+
+//
+// Private Definitions
+//
 
 /**
  * The next identity value to return. This starts at `1`, because `0` is
@@ -42,32 +41,32 @@ static zint nextSelfId(void) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 extern zvalue datNonVoid(zvalue value);
 
-/* Documented in header. */
+// Documented in header.
 void datNonVoidError(void) {
     die("Attempt to use void in non-void context.");
 }
 
-/* Documented in header. */
+// Documented in header.
 extern void *datPayload(zvalue value);
 
-/* Documented in header. */
+// Documented in header.
 zvalue dataOf(zvalue value) {
     return valDataOf(value, NULL);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue get_type(zvalue value) {
     return value->type;
 }
 
-/* Documented in header. */
+// Documented in header.
 zint valSelfIdOf(zvalue value) {
     if (!typeIsSelfish(get_type(value))) {
         die("Attempt to use `valSelfIdOf` on non-selfish value.");
@@ -82,7 +81,7 @@ zint valSelfIdOf(zvalue value) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 char *valDebugString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");
@@ -91,7 +90,7 @@ char *valDebugString(zvalue value) {
     return utf8DupFromString(GFN_CALL(debugString, value));
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue valEq(zvalue value, zvalue other) {
     if ((value == NULL) || (other == NULL)) {
         die("Shouldn't happen: NULL argument passed to `valEq`.");
@@ -104,7 +103,7 @@ zvalue valEq(zvalue value, zvalue other) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 bool valEqNullOk(zvalue value, zvalue other) {
     if (value == other) {
         return true;
@@ -115,7 +114,7 @@ bool valEqNullOk(zvalue value, zvalue other) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue valOrder(zvalue value, zvalue other) {
     if ((value == NULL) || (other == NULL)) {
         die("Shouldn't happen: NULL argument passed to `valOrder`.");
@@ -134,7 +133,7 @@ zvalue valOrder(zvalue value, zvalue other) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue valOrderNullOk(zvalue value, zvalue other) {
     if (value == other) {
         return INT_0;
@@ -147,7 +146,7 @@ zvalue valOrderNullOk(zvalue value, zvalue other) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zorder valZorder(zvalue value, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack. See note on `valOrder` for more color.
@@ -158,21 +157,21 @@ zorder valZorder(zvalue value, zvalue other) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Value, debugName) {
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = get_type(value);
     zvalue name = GFN_CALL(debugName, value);
-    char addrBuf[19]; // Includes room for `0x` and `\0`.
+    char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
         name = EMPTY_STRING;
@@ -196,23 +195,23 @@ METH_IMPL(Value, debugString) {
         stringFromUtf8(-1, ")"));
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Value, gcMark) {
     // Nothing to do.
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Value, perEq) {
     return funCall(GFN_totalEq, argCount, args);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Value, perOrder) {
     return funCall(GFN_totalOrder, argCount, args);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Value, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -225,7 +224,7 @@ METH_IMPL(Value, totalEq) {
     return (valEq(result, INT_0) != NULL) ? value : NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Value, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -298,26 +297,26 @@ MOD_INIT(Value) {
     METH_BIND(Value, totalOrder);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Value = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_debugName = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_debugString = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_gcMark = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_perEq = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_perOrder = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_totalEq = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_totalOrder = NULL;

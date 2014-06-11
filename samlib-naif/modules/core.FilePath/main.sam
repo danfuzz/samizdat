@@ -92,7 +92,7 @@ export fn get_file(path) {
         }
     }();
 
-    def endAt = at; ## The index of the final character of the result.
+    def endAt = at;  ## The index of the final character of the result.
 
     ## Back up until the next-final slash. If we hit the start of the path,
     ## then that means there was no slash, making the result be the entire

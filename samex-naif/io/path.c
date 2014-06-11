@@ -1,8 +1,6 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <string.h>
 
@@ -13,9 +11,9 @@
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Common code for checking paths.
@@ -26,7 +24,7 @@ void checkPath0(zvalue path, bool isAbsolute) {
     }
 
     zint sz = utf8SizeFromString(path);
-    char str[sz + 1]; // `+1` for the null byte.
+    char str[sz + 1];  // `+1` for the null byte.
 
     if (sz == 0) {
         die("Invalid path: empty string");
@@ -45,16 +43,16 @@ void checkPath0(zvalue path, bool isAbsolute) {
     }
 }
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
-/* Documented in header. */
+// Documented in header.
 void ioCheckAbsolutePath(zvalue path) {
     checkPath0(path, true);
 }
 
-/* Documented in header. */
+// Documented in header.
 void ioCheckPath(zvalue path) {
     checkPath0(path, false);
 }

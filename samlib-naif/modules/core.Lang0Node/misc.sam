@@ -4,8 +4,8 @@
 
 #= language core.Lang0
 
-import core.Generator;
-import proto.Number;
+import core.Generator :: filterPump;
+import proto.Number :: add, mul;
 
 
 ##
@@ -20,6 +20,25 @@ def EXPRESSION_TYPES = {
     ]*: true
 };
 
+## These are all the int digits, as a map from strings to digit values. This
+## includes hex digits as well, in both lower and upper case. Finally, this
+## includes a mapping of `"_"` to `-1` for the implementation of the
+## "digit space" syntax.
+##
+## **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
+def INT_CHARS = {
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
+    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
+    "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
+    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
+    "_": -1
+};
+
+## Given a digit token, returns the digit value as an int.
+fn intFromDigitToken(ch) {
+    return get(INT_CHARS, get_typeName(ch))
+};
+
 
 ##
 ## Exported Definitions
@@ -29,13 +48,13 @@ def EXPRESSION_TYPES = {
 export fn formalsMaxArgs(formals) {
     var maxArgs = 0;
 
-    $Generator::filterPump(formals) { f ->
+    filterPump(formals) { f ->
         ifValue { f::repeat }
             { rep ->
                 ifIs { eq(rep, "*") } { return -1 };
                 ifIs { eq(rep, "+") } { return -1 };
             };
-        maxArgs := $Number::add(maxArgs, 1)
+        maxArgs := add(maxArgs, 1)
     };
 
     return maxArgs
@@ -45,16 +64,30 @@ export fn formalsMaxArgs(formals) {
 export fn formalsMinArgs(formals) {
     var minArgs = 0;
 
-    $Generator::filterPump(formals) { f /next ->
+    filterPump(formals) { f /next ->
         ifValue { f::repeat }
             { rep ->
                 ifIs { eq(rep, "?") } { yield /next };
                 ifIs { eq(rep, "*") } { yield /next };
             };
-        minArgs := $Number::add(minArgs, 1)
+        minArgs := add(minArgs, 1)
     };
 
     return minArgs
+};
+
+## Documented in spec.
+## Converts a list of digit character tokens into an int, given the base.
+export fn intFromDigits(base, digits) {
+    var result = 0;
+
+    filterPump(digits) { digit ->
+        def value = intFromDigitToken(digit);
+        ifIs { perNe(value, -1) }
+            { result := add(mul(result, base), value) }
+    };
+
+    return result
 };
 
 ## Documented in spec.

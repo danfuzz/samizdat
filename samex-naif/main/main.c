@@ -1,13 +1,10 @@
-/*
- * Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
- * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
- * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
- */
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdlib.h>
 
 #include "const.h"
-#include "impl.h"
 #include "lib.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -16,10 +13,12 @@
 #include "type/Type.h"
 #include "util.h"
 
+#include "impl.h"
 
-/*
- * Main program
- */
+
+//
+// Main program
+//
 
 /**
  * Main driver for Samizdat Layer 0. This makes a library environment, and

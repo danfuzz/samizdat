@@ -32,8 +32,8 @@ export fn makeCallOrApply(function, actuals*) {
     ## runs of non-interpolated actuals to `makeList(ac, ac, ...)`, which
     ## converts cleanly at runtime as part of the ultimate call to `cat`.
 
-    var pending = [];       ## Non-interpolated actuals, to be `makeList`ed.
-    var cookedActuals = []; ## Fully-processed actuals (of either type).
+    var pending = [];        ## Non-interpolated actuals, to be `makeList`ed.
+    var cookedActuals = [];  ## Fully-processed actuals (of either type).
 
     fn addToCooked(actual) {
         cookedActuals := [cookedActuals*, actual];

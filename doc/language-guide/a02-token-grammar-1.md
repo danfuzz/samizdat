@@ -15,8 +15,8 @@ result as tokens of type `error`.
 
 ```
 import core.Generator;
+import core.Lang0Node :: intFromDigits;
 import core.Peg;
-import proto.Number;
 
 
 ##
@@ -33,37 +33,6 @@ def KEYWORDS = $Generator::collectAsMap(
         ## Layer 2 defines additional keywords here.
         []*])
         { name -> {(name): @(@@(name))} });
-
-## These are all the int digits, as a map from strings to digit values. This
-## includes hex digits as well, in both lower and upper case. Finally, this
-## includes a mapping of `"_"` to `-1` for the implementation of the
-## "digit space" syntax.
-##
-## **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
-def INT_CHARS = {
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
-    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
-    "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
-    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
-    "_": -1
-};
-
-## Given a decimal digit, returns the digit value.
-fn intFromDigitChar(ch) {
-    return get(INT_CHARS, get_typeName(ch))
-};
-
-## Converts a list of digit values into an int, given the base.
-fn intFromDigitList(base, digits) {
-    var result = 0;
-
-    $Generator::filterPump(digits) { digit ->
-        ifIs { perNe(digit, -1) }
-            { result := $Number::add($Number::mul(result, base), digit) }
-    };
-
-    return result
-};
 
 
 ##
@@ -93,7 +62,7 @@ def tokWhitespace = {:
         "#" ["#!="] [! "\n"]*
     |
         ## Introduced in Layer 2.
-        &"#:" ## Avoid calling the rule unless we know it will match.
+        &"#:"  ## Avoid calling the rule unless we know it will match.
         %tokMultilineComment
     )+
 :};
@@ -126,17 +95,16 @@ def tokPunctuation = {:
 ## Parses a single decimal digit (or spacer), returning its value.
 def tokDecDigit = {:
     ch = ["_" "0".."9"]
-    { intFromDigitChar(ch) }
 :};
 
 ## Parses an integer literal.
 def tokInt = {:
     ## Note: Introduced in Layer 2.
-    &"0" ## Avoid calling the rule unless we know it will match.
+    &"0"  ## Avoid calling the rule unless we know it will match.
     %tokInt2
 |
     digits = tokDecDigit+
-    { @int(intFromDigitList(10, digits)) }
+    { @int(intFromDigits(10, digits)) }
 :};
 
 ## Parses a run of regular characters or an escape / special sequence,
