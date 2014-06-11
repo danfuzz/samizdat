@@ -30,11 +30,14 @@ init-prog
 # Argument parsing
 #
 
+# Build options.
+buildOpts=()
+
 # Runtime / compiler selection options.
 runtimeOpts=()
 
-# Build options.
-buildOpts=()
+# Whether to time the run.
+timeRun=0
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -42,11 +45,15 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--build] [--no-optimize] [--runtime=<name>]" \
-            "[--compiler=<mode>]"
+        echo "${progName} [--runtime=<name>] [--compiler=<mode>]"
+        echo '    [--build] [--clean-build] [--no-optimize] [--time]'
         exit
-    elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
+    elif [[    ${opt} == '--build'
+            || ${opt} == '--clean-build'
+            || ${opt} == '--no-optimize' ]]; then
         buildOpts+=("${opt}")
+    elif [[ ${opt} == '--time' ]]; then
+        timeRun=1
     elif [[ ${opt} =~ ^--runtime= || ${opt} =~ ^--compiler= ]]; then
         runtimeOpts+=("${opt}")
     elif [[ ${opt} =~ ^- ]]; then
@@ -63,6 +70,12 @@ unset opt
 #
 # Main script
 #
+
+# Start timing, if asked.
+
+if (( timeRun )); then
+    startTime="$(date '+%s')"
+fi
 
 # Find all the demo directories.
 
@@ -83,6 +96,8 @@ for name in "${allNames[@]}"; do
     buildOpts=()
 done
 
+# Produce the final report.
+
 echo ''
 
 if [[ ${#errorNames[@]} == 0 ]]; then
@@ -92,4 +107,13 @@ else
     for name in "${errorNames[@]}"; do
         echo "    ${name}"
     done
+fi
+
+if (( timeRun )); then
+    endTime="$(date '+%s')"
+    (( totalSecs = endTime - startTime ))
+    (( totalMins = totalSecs / 60 ))
+    (( totalSecs = totalSecs - totalMins * 60 ))
+    echo ''
+    printf 'Elapsed time: %dm %02ds\n' "${totalMins}" "${totalSecs}"
 fi
