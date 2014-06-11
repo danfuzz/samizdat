@@ -8,12 +8,13 @@
  * Nonlocal jump (exit / yield) functions
  */
 
-#include "impl.h"
 #include "type/Generic.h"
 #include "type/Jump.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
+
+#include "impl.h"
 
 
 /*

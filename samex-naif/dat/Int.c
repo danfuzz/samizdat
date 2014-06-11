@@ -4,7 +4,6 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "impl.h"
 #include "type/Bitwise.h"
 #include "type/Data.h"
 #include "type/Int.h"
@@ -13,6 +12,8 @@
 #include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
+
+#include "impl.h"
 
 
 /*

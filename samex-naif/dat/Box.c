@@ -8,13 +8,14 @@
  * Box manipulation
  */
 
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Generic.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
 #include "util.h"
+
+#include "impl.h"
 
 
 /*

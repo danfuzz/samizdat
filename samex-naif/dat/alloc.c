@@ -6,10 +6,11 @@
 
 #include <time.h> // Used for "chatty gc."
 
-#include "impl.h"
 #include "type/Function.h"
 #include "type/Value.h"
 #include "zlimits.h"
+
+#include "impl.h"
 
 
 /*

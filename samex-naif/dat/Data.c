@@ -8,8 +8,9 @@
  * `Data` data type
  */
 
-#include "impl.h"
 #include "type/Data.h"
+
+#include "impl.h"
 
 
 /*

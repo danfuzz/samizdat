@@ -9,7 +9,6 @@
  */
 
 #include "const.h"
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Sequence.h"
@@ -21,6 +20,8 @@
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
+
+#include "impl.h"
 
 
 /*

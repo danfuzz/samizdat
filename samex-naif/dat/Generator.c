@@ -8,7 +8,6 @@
  * Generator protocol
  */
 
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Generator.h"
@@ -18,6 +17,8 @@
 #include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
+
+#include "impl.h"
 
 
 /*

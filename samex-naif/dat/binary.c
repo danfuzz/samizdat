@@ -6,9 +6,10 @@
 
 #include <dlfcn.h>
 
-#include "impl.h"
 #include "type/String.h"
 #include "util.h"
+
+#include "impl.h"
 
 
 /*

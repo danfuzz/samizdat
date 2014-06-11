@@ -6,7 +6,6 @@
 
 #include <stdlib.h>
 
-#include "impl.h"
 #include "type/Builtin.h"
 #include "type/DerivedData.h"
 #include "type/Generic.h"
@@ -18,6 +17,8 @@
 #include "type/Uniqlet.h"
 #include "type/Value.h"
 #include "zlimits.h"
+
+#include "impl.h"
 
 
 /*

@@ -8,7 +8,9 @@
  * Function values
  */
 
-#include "impl.h"
+#include <stdio.h>  // For `asprintf`.
+#include <stdlib.h> // For `free`.
+
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/List.h"
@@ -16,8 +18,7 @@
 #include "type/Type.h"
 #include "type/Value.h"
 
-#include <stdio.h>  // For `asprintf`.
-#include <stdlib.h> // For `free`.
+#include "impl.h"
 
 
 /*

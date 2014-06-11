@@ -8,7 +8,6 @@
 #include <stdlib.h>
 
 #include "const.h"
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Data.h"
 #include "type/Generator.h"
@@ -21,6 +20,8 @@
 #include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
+
+#include "impl.h"
 
 
 /*
