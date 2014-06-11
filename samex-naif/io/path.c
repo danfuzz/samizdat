@@ -47,12 +47,12 @@ void checkPath0(zvalue path, bool isAbsolute) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 void ioCheckAbsolutePath(zvalue path) {
     checkPath0(path, true);
 }
 
-/* Documented in header. */
+// Documented in header.
 void ioCheckPath(zvalue path) {
     checkPath0(path, false);
 }

@@ -69,7 +69,7 @@ static zvalue evalLibrary(void *libHandle, zvalue env) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue datEvalBinary(zvalue env, zvalue path) {
     zint size = utf8SizeFromString(path);
     char str[size + 1];

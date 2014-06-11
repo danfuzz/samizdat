@@ -82,7 +82,7 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 // Module functions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue formalsMaxArgs(zvalue formals) {
     zint maxArgs = 0;
     zint sz = get_size(formals);
@@ -101,7 +101,7 @@ zvalue formalsMaxArgs(zvalue formals) {
     return intFromZint(maxArgs);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue formalsMinArgs(zvalue formals) {
     zint minArgs = 0;
     zint sz = get_size(formals);
@@ -118,7 +118,7 @@ zvalue formalsMinArgs(zvalue formals) {
     return intFromZint(minArgs);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue get_baseName(zvalue source) {
     if (hasType(source, TYPE_external)) {
         zvalue path = dataOf(source);
@@ -134,7 +134,7 @@ zvalue get_baseName(zvalue source) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue get_definedNames(zvalue node) {
     if (hasType(node, TYPE_export)) {
         return get_definedNames(get(node, STR_value));
@@ -164,7 +164,7 @@ zvalue get_definedNames(zvalue node) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 bool isExpression(zvalue node) {
     switch (get_evalType(node)) {
         case EVAL_apply:   return true;
@@ -180,7 +180,7 @@ bool isExpression(zvalue node) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeApply(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = TOK_void;
@@ -190,7 +190,7 @@ zvalue makeApply(zvalue function, zvalue actuals) {
     return makeValue(TYPE_apply, value, NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeBasicClosure(zvalue map) {
     return makeValue(TYPE_closure,
         GFN_CALL(cat,
@@ -199,7 +199,7 @@ zvalue makeBasicClosure(zvalue map) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeCall(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
@@ -209,7 +209,7 @@ zvalue makeCall(zvalue function, zvalue actuals) {
     return makeValue(TYPE_call, value, NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     // This is a fairly direct (but not exact) transliteration
     // of the corresponding code in `Lang0Node`.
@@ -267,7 +267,7 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     #undef addPendingToCooked
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, STR_format);
     zvalue name = get(node, STR_name);
@@ -306,21 +306,21 @@ zvalue makeDynamicImport(zvalue node) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeExport(zvalue node) {
     return makeValue(TYPE_export,
         mapFrom1(STR_value, node),
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeExportSelection(zvalue names) {
     return makeValue(TYPE_exportSelection,
         mapFrom1(STR_select, names),
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeFullClosure(zvalue map) {
     zvalue formals = get(map, STR_formals);
     zvalue statements = get(map, STR_statements);
@@ -359,7 +359,7 @@ zvalue makeFullClosure(zvalue map) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeImport(zvalue baseData) {
     // Note: This is a near-transliteration of the equivalent code in
     // `Lang0Node`.
@@ -408,7 +408,7 @@ zvalue makeImport(zvalue baseData) {
     return makeValue(TYPE_importModule, data, NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeInfoMap(zvalue node) {
     zvalue info = get(node, STR_info);
     if (info != NULL) {
@@ -470,7 +470,7 @@ zvalue makeInfoMap(zvalue node) {
         STR_resources, resources);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_call,
         mapFrom3(
@@ -480,27 +480,27 @@ zvalue makeInterpolate(zvalue node) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeLiteral(zvalue value) {
     return makeValue(TYPE_literal, mapFrom1(STR_value, value), NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeMaybe(zvalue value) {
     return makeValue(TYPE_maybe, mapFrom1(STR_value, value), NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeMaybeValue(zvalue expression) {
     return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeNoYield(zvalue value) {
     return makeValue(TYPE_noYield, mapFrom1(STR_value, value), NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
     zvalue exitCall;
@@ -517,7 +517,7 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     return makeNoYield(exitCall);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeThunk(zvalue expression) {
     return makeValue(TYPE_closure,
         mapFrom3(
@@ -527,33 +527,33 @@ zvalue makeThunk(zvalue expression) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarBind(zvalue name, zvalue value) {
     return makeValue(TYPE_varBind,
         mapFrom2(STR_name, name, STR_value, value),
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
     return makeValue(TYPE_varDef,
         mapFrom2(STR_name, name, STR_value, value),
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
     return makeValue(TYPE_varDefMutable,
         mapFrom2(STR_name, name, STR_value, value),
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarRef(zvalue name) {
     return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
     if (hasType(node, TYPE_importResource)) {
         // No conversion, just validation. TODO: Validate.
@@ -613,7 +613,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeValue(
         get_type(node),
@@ -621,7 +621,7 @@ zvalue withFormals(zvalue node, zvalue formals) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withModuleDefs(zvalue node) {
     if (!valEqNullOk(get(node, STR_yield), TOK_void)) {
         die("Invalid node for `withModuleDefs` (has non-void `yield`).");
@@ -681,7 +681,7 @@ zvalue withModuleDefs(zvalue node) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);
@@ -723,7 +723,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withTop(zvalue node) {
     // Contrary to the spec, we bind to `EMPTY_LIST` and not `true`, because
     // (a) the actual value doesn't matter, and (b) `true` isn't available
@@ -734,7 +734,7 @@ zvalue withTop(zvalue node) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
     return makeValue(
         get_type(node),
@@ -742,7 +742,7 @@ zvalue withoutInterpolate(zvalue node) {
         NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withoutTops(zvalue node) {
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);

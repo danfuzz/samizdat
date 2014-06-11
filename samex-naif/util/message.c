@@ -24,7 +24,7 @@ typedef struct Context {
     void *state;
 } Context;
 
-/* Documented in header. */
+// Documented in header.
 UtilStackGiblet *utilStackTop = NULL;
 
 /* Whether death is currently in progress */
@@ -35,7 +35,7 @@ static bool currentlyDying = false;
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 void note(const char *format, ...) {
     va_list rest;
 
@@ -45,7 +45,7 @@ void note(const char *format, ...) {
     fputs("\n", stderr);
 }
 
-/* Documented in header. */
+// Documented in header.
 void die(const char *format, ...) {
     va_list rest;
 

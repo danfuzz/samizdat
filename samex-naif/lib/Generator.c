@@ -14,7 +14,7 @@
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(interpolate) {
     zvalue result = GFN_CALL(collect, args[0]);
 
@@ -27,7 +27,7 @@ FUN_IMPL_DECL(interpolate) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(maybeValue) {
     zvalue function = args[0];
     zvalue value = FUN_CALL(function);

@@ -17,12 +17,12 @@
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue collDel(zvalue coll, zvalue key) {
     return GFN_CALL(del, coll, key);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue collPut(zvalue coll, zvalue key, zvalue value) {
     return GFN_CALL(put, coll, key, value);
 }
@@ -54,17 +54,17 @@ MOD_INIT(Collection) {
     datImmortalize(GFN_valueList);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_del = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_keyList = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_nthMapping = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_put = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_valueList = NULL;

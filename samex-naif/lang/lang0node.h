@@ -20,103 +20,103 @@
 /** Equivalent to `get_<name>(node)` in the spec. */
 #define GET(name, node) (get((node), STR_##name))
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue formalsMaxArgs(zvalue formals);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue formalsMinArgs(zvalue formals);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue get_baseName(zvalue source);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue get_definedNames(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 bool isExpression(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeApply(zvalue function, zvalue actuals);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeBasicClosure(zvalue map);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeCall(zvalue function, zvalue actuals);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeCallOrApply(zvalue function, zvalue actuals);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeDynamicImport(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeExport(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeExportSelection(zvalue names);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeFullClosure(zvalue map);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeImport(zvalue baseData);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeInfoMap(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeInterpolate(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeLiteral(zvalue value);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeMaybe(zvalue value);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeMaybeValue(zvalue expression);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeNoYield(zvalue value);
 
 /** Documented in spec. */
 zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeThunk(zvalue expression);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarBind(zvalue name, zvalue value);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue makeVarRef(zvalue name);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withModuleDefs(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withResolvedImports(zvalue node, zvalue resolveFn);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withTop(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withoutInterpolate(zvalue node);
 
-/* Documented in spec. */
+// Documented in spec.
 zvalue withoutTops(zvalue node);
 
 #endif

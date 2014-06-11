@@ -37,7 +37,7 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(genericBind) {
     zvalue generic = args[0];
     zvalue type = args[1];
@@ -47,12 +47,12 @@ FUN_IMPL_DECL(genericBind) {
     return NULL;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeRegularGeneric) {
     return doMakeGeneric(GFN_NONE, argCount, args);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeUnitypeGeneric) {
     return doMakeGeneric(GFN_SAME_TYPE, argCount, args);
 }

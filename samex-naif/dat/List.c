@@ -87,7 +87,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 void arrayFromList(zvalue *result, zvalue list) {
     assertHasType(list, TYPE_List);
 
@@ -96,7 +96,7 @@ void arrayFromList(zvalue *result, zvalue list) {
     utilCpy(zvalue, result, info->elems, info->size);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue listFromArgs(zvalue first, ...) {
     if (first == NULL) {
         return EMPTY_LIST;
@@ -126,7 +126,7 @@ zvalue listFromArgs(zvalue first, ...) {
     return listFromArray(size, values);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         assertValid(values[i]);
@@ -140,10 +140,10 @@ zvalue listFromArray(zint size, const zvalue *values) {
 // Type Definition
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue EMPTY_LIST = NULL;
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, cat) {
     if (argCount == 1) {
         return args[0];
@@ -165,7 +165,7 @@ METH_IMPL(List, cat) {
     return listFrom(size, elems, NULL, 0, NULL);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, del) {
     zvalue list = args[0];
     zvalue n = args[1];
@@ -182,7 +182,7 @@ METH_IMPL(List, del) {
     return listFrom(index, elems, NULL, size - index - 1, &elems[index + 1]);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, gcMark) {
     zvalue list = args[0];
     ListInfo *info = getInfo(list);
@@ -196,13 +196,13 @@ METH_IMPL(List, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, get_size) {
     zvalue list = args[0];
     return intFromZint(getInfo(list)->size);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, nth) {
     zvalue list = args[0];
     zvalue n = args[1];
@@ -217,7 +217,7 @@ METH_IMPL(List, nth) {
     return info->elems[index];
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, put) {
     zvalue list = args[0];
     zvalue n = args[1];
@@ -236,7 +236,7 @@ METH_IMPL(List, put) {
     return listFrom(index, elems, value, size - index - 1, &elems[index + 1]);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, reverse) {
     zvalue list = args[0];
 
@@ -252,7 +252,7 @@ METH_IMPL(List, reverse) {
     return listFrom(size, arr, NULL, 0, NULL);
 }
 
-/* Documented in header. */
+// Documented in header.
 static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     zvalue list = args[0];
     ListInfo *info = getInfo(list);
@@ -268,17 +268,17 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, sliceExclusive) {
     return doSlice(false, argCount, args);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, sliceInclusive) {
     return doSlice(true, argCount, args);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -303,7 +303,7 @@ METH_IMPL(List, totalEq) {
     return value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(List, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -353,5 +353,5 @@ MOD_INIT(List) {
     datImmortalize(EMPTY_LIST);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_List = NULL;

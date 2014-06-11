@@ -19,7 +19,7 @@
 // Module Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zevalType langTypeMap[DAT_MAX_TYPES];
 
 /* This provides the non-inline version of this function. */

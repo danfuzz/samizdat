@@ -39,7 +39,7 @@ static zvalue findBox(Frame *frame, zvalue name) {
 // Module Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
         zvalue vars) {
     assertValidOrNull(parentClosure);
@@ -55,13 +55,13 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
     frame->onHeap = false;
 }
 
-/* Documented in header. */
+// Documented in header.
 void frameMark(Frame *frame) {
     datMark(frame->vars);
     datMark(frame->parentClosure);  // This will mark `parentFrame`.
 }
 
-/* Documented in header. */
+// Documented in header.
 void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
     zvalue box;
 
@@ -83,13 +83,13 @@ void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
     frame->vars = newVars;
 }
 
-/* Documented in header. */
+// Documented in header.
 void frameBind(Frame *frame, zvalue name, zvalue value) {
     zvalue box = findBox(frame, name);
     boxStore(box, value);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue frameGet(Frame *frame, zvalue name) {
     zvalue box = findBox(frame, name);
     zvalue result = boxFetch(box);
@@ -101,7 +101,7 @@ zvalue frameGet(Frame *frame, zvalue name) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 void frameSnap(Frame *target, Frame *source) {
     assertValidOrNull(source->parentClosure);
     assertValid(source->vars);

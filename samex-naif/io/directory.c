@@ -18,7 +18,7 @@
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue ioReadDirectory(zvalue path) {
     ioCheckPath(path);
     zint sz = utf8SizeFromString(path);

@@ -247,12 +247,12 @@ DEF_PARSE(optSemicolons) {
 // rules from the spec.
 //
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(assignExpression);
 DEF_PARSE(opExpression);
 DEF_PARSE(rawClosure);
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(expression) {
     zstackPointer save = datFrameStart();
     zvalue result = PARSE(assignExpression);
@@ -261,7 +261,7 @@ DEF_PARSE(expression) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(parenExpression) {
     MARK();
 
@@ -272,7 +272,7 @@ DEF_PARSE(parenExpression) {
     return withoutInterpolate(expression);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(name) {
     MARK();
 
@@ -280,7 +280,7 @@ DEF_PARSE(name) {
     return dataOf(nameIdent);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(nameList) {
     MARK();
 
@@ -290,7 +290,7 @@ DEF_PARSE(nameList) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(varRef) {
     MARK();
 
@@ -298,7 +298,7 @@ DEF_PARSE(varRef) {
     return makeVarRef(name);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(int) {
     MARK();
 
@@ -313,7 +313,7 @@ DEF_PARSE(int) {
     return makeLiteral(value);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(string) {
     MARK();
 
@@ -322,7 +322,7 @@ DEF_PARSE(string) {
     return makeLiteral(dataOf(string));
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(identifierString) {
     MARK();
 
@@ -368,7 +368,7 @@ DEF_PARSE(key2) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(key) {
     zvalue result = NULL;
 
@@ -378,7 +378,7 @@ DEF_PARSE(key) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(mapping) {
     MARK();
 
@@ -405,7 +405,7 @@ DEF_PARSE(mapping) {
         listAppend(keys, withoutInterpolate(value)));
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(map) {
     MARK();
 
@@ -423,7 +423,7 @@ DEF_PARSE(map) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(listItem) {
     MARK();
 
@@ -436,12 +436,12 @@ DEF_PARSE(listItem) {
     return PARSE(expression);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(unadornedList) {
     return PARSE_DELIMITED_SEQ(listItem, CH_COMMA);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(list) {
     MARK();
 
@@ -454,7 +454,7 @@ DEF_PARSE(list) {
         : makeCallOrApply(REFS(makeList), expressions);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(type) {
     MARK();
 
@@ -472,7 +472,7 @@ DEF_PARSE(type) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(deriv) {
     MARK();
 
@@ -496,7 +496,7 @@ DEF_PARSE(deriv) {
     return makeCall(REFS(makeValue), args);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(fullClosure) {
     MARK();
 
@@ -510,7 +510,7 @@ DEF_PARSE(fullClosure) {
     return withoutTops(closure);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(basicClosure) {
     MARK();
 
@@ -524,7 +524,7 @@ DEF_PARSE(basicClosure) {
     return withoutTops(closure);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(nullaryClosure) {
     MARK();
 
@@ -538,7 +538,7 @@ DEF_PARSE(nullaryClosure) {
     return c;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(basicNullaryClosure) {
     MARK();
 
@@ -552,7 +552,7 @@ DEF_PARSE(basicNullaryClosure) {
     return c;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(term) {
     zvalue result = NULL;
 
@@ -569,7 +569,7 @@ DEF_PARSE(term) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(actualsList) {
     MARK();
 
@@ -583,7 +583,7 @@ DEF_PARSE(actualsList) {
     return PARSE_PLUS(fullClosure);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(postfixOperator) {
     // We differ from the spec here, returning a payload or single token
     // (`*` or `?`) directly. The corresponding `unaryExpression` code
@@ -605,7 +605,7 @@ DEF_PARSE(postfixOperator) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(unaryExpression) {
     MARK();
 
@@ -631,12 +631,12 @@ DEF_PARSE(unaryExpression) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(opExpression) {
     return PARSE(unaryExpression);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(assignExpression) {
     MARK();
 
@@ -688,7 +688,7 @@ DEF_PARSE(yieldOrNonlocal2) {
     return TOK_yield;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(yieldOrNonlocal) {
     MARK();
 
@@ -715,7 +715,7 @@ DEF_PARSE(yieldOrNonlocal) {
     return valEq(name, TOK_yield) ? value : makeNonlocalExit(name, value);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(varDef) {
     MARK();
 
@@ -732,7 +732,7 @@ DEF_PARSE(varDef) {
     return makeVarDef(name, expr);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(varDefMutable) {
     MARK();
 
@@ -749,7 +749,7 @@ DEF_PARSE(varDefMutable) {
     return makeVarDefMutable(name, expr);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(yieldDef) {
     MARK();
 
@@ -759,7 +759,7 @@ DEF_PARSE(yieldDef) {
     return name;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(optYieldDef) {
     zvalue result = PARSE(yieldDef);
     return (result != NULL) ? mapFrom1(STR_yieldDef, result) : EMPTY_MAP;
@@ -779,7 +779,7 @@ DEF_PARSE(formal1) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(formal) {
     MARK();
 
@@ -799,7 +799,7 @@ DEF_PARSE(formal) {
     return mapFrom2(STR_name, name, STR_repeat, repeat);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(formalsList) {
     return PARSE_DELIMITED_SEQ(formal, CH_COMMA);
 }
@@ -847,7 +847,7 @@ DEF_PARSE(closureDeclarations3) {
     return GFN_CALL(cat, most, yieldDef);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(closureDeclarations) {
     zvalue result = NULL;
 
@@ -857,7 +857,7 @@ DEF_PARSE(closureDeclarations) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(functionCommon) {
     MARK();
 
@@ -882,7 +882,7 @@ DEF_PARSE(functionCommon) {
     return makeFullClosure(closureMap);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(functionDef) {
     MARK();
 
@@ -892,7 +892,7 @@ DEF_PARSE(functionDef) {
     return withTop(makeVarDef(GET(name, closure), closure));
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(genericBind) {
     MARK();
 
@@ -915,7 +915,7 @@ DEF_PARSE(genericBind) {
         listFrom3(makeVarRef(name), bind, fullClosure));
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(genericDef) {
     MARK();
 
@@ -952,7 +952,7 @@ DEF_PARSE(importName1) {
     return mapFrom1(key, name);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(importName) {
     zvalue result = PARSE(importName1);
     return (result == NULL) ? EMPTY_MAP : result;
@@ -967,7 +967,7 @@ DEF_PARSE(importFormat1) {
     return mapFrom1(STR_format, GET(value, f));
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(importFormat) {
     zvalue result = PARSE(importFormat1);
     return (result == NULL) ? EMPTY_MAP : result;
@@ -1025,7 +1025,7 @@ DEF_PARSE(importSource2) {
     return makeValue(TYPE_external, name, NULL);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(importSource) {
     zvalue result = NULL;
 
@@ -1055,7 +1055,7 @@ DEF_PARSE(importSelect2) {
     return mapFrom1(STR_select, select);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(importSelect) {
     zvalue result = NULL;
 
@@ -1065,7 +1065,7 @@ DEF_PARSE(importSelect) {
     return (result == NULL) ? EMPTY_MAP : result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(importStatement) {
     MARK();
 
@@ -1087,7 +1087,7 @@ DEF_PARSE(importStatement) {
         : makeImport(data);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(exportableStatement) {
     zvalue result = NULL;
 
@@ -1098,7 +1098,7 @@ DEF_PARSE(exportableStatement) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(statement) {
     zstackPointer save = datFrameStart();
     zvalue result = NULL;
@@ -1112,7 +1112,7 @@ DEF_PARSE(statement) {
     return result;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(programStatement) {
     MARK();
 
@@ -1128,7 +1128,7 @@ DEF_PARSE(programStatement) {
     return makeExport(result);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(closureBody) {
     zvalue statements = EMPTY_LIST;
     zvalue yieldNode = NULL;
@@ -1167,7 +1167,7 @@ DEF_PARSE(closureBody) {
         STR_yield,      yieldNode);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(rawClosure) {
     MARK();
 
@@ -1181,7 +1181,7 @@ DEF_PARSE(rawClosure) {
     return GFN_CALL(cat, decls, body);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 DEF_PARSE(program) {
     // Note: This isn't structured the same way as the spec, as it's a bit
     // more awkward to do that at this layer; but the result should be the
@@ -1228,7 +1228,7 @@ DEF_PARSE(program) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue langParseExpression0(zvalue expression) {
     zvalue tokens;
 
@@ -1249,7 +1249,7 @@ zvalue langParseExpression0(zvalue expression) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue langParseProgram0(zvalue program) {
     zvalue tokens;
 
@@ -1270,7 +1270,7 @@ zvalue langParseProgram0(zvalue program) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
     if (hasType(node, TYPE_closure)) {
         node = withResolvedImports(node, resolveFn);

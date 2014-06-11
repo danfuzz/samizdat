@@ -92,7 +92,7 @@ static void execNoYield(Frame *frame, zvalue noYield) {
     mustNotYield(execExpression(frame, valueExpression));
 }
 
-/* Documented in header. */
+// Documented in header.
 static zvalue execVarBind(Frame *frame, zvalue varBind) {
     zvalue name = get(varBind, STR_name);
     zvalue valueExpression = get(varBind, STR_value);
@@ -176,7 +176,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 // Module Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
     switch (get_evalType(e)) {
         case EVAL_maybe: return execMaybe(frame, e);
@@ -185,7 +185,7 @@ zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void execStatement(Frame *frame, zvalue statement) {
     switch (get_evalType(statement)) {
         case EVAL_importModule:          execImport(frame, statement);           break;
@@ -197,7 +197,7 @@ void execStatement(Frame *frame, zvalue statement) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void execStatements(Frame *frame, zvalue statements) {
     zint size = get_size(statements);
     zvalue arr[size];
@@ -213,7 +213,7 @@ void execStatements(Frame *frame, zvalue statements) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue langEval0(zvalue env, zvalue node) {
     Frame frame;
 

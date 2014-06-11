@@ -101,11 +101,11 @@ MOD_INIT(Generator) {
     datImmortalize(FUN_Generator_stdCollect);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_collect = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_nextValue = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue FUN_Generator_stdCollect = NULL;

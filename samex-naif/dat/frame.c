@@ -14,16 +14,16 @@
 /** Actual stack memory. */
 static zvalue theStack[DAT_MAX_STACK];
 
-/* Documented in header. */
+// Documented in header.
 zstackPointer frameStackBase = theStack;
 
-/* Documented in header. */
+// Documented in header.
 zstackPointer frameStackTop = theStack;
 
-/* Documented in header. */
+// Documented in header.
 zstackPointer frameStackLimit = &theStack[DAT_MAX_STACK];
 
-/* Documented in header. */
+// Documented in header.
 void datFrameError(const char *msg) {
     // As a hail-mary, do a forced gc and then clear the value stack, in
     // the hope that a gc won't end up being done while producing the
@@ -54,14 +54,14 @@ zint markFrameStack(void) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 extern zstackPointer datFrameStart(void);
 
-/* Documented in header. */
+// Documented in header.
 extern void datFrameAdd(zvalue value);
 
-/* Documented in header. */
+// Documented in header.
 extern void datFrameReset(zstackPointer savedStack, zvalue stackedValue);
 
-/* Documented in header. */
+// Documented in header.
 extern void datFrameReturn(zstackPointer savedStack, zvalue returnValue);

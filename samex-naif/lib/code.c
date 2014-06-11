@@ -12,7 +12,7 @@
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(Code_eval) {
     zvalue env = args[0];
     zvalue expressionNode = args[1];
@@ -20,7 +20,7 @@ FUN_IMPL_DECL(Code_eval) {
     return langEval0(env, expressionNode);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(Code_evalBinary) {
     zvalue env = args[0];
     zvalue path = args[1];

@@ -23,5 +23,5 @@ MOD_INIT(Data) {
     // So, there's nothing to do here, at least for now.
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Data = NULL;

@@ -149,7 +149,7 @@ static char *resolveArgv0(const char *argv0) {
 // Module Defintions
 //
 
-/* Documented in header. */
+// Documented in header.
 char *getProgramDirectory(const char *argv0, const char *suffix) {
     char *execPath = NULL;
 

@@ -115,7 +115,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue libNewEnvironment(const char *libraryPath) {
     MOD_USE(const);
     MOD_USE(Box);

@@ -48,32 +48,32 @@ MOD_INIT(Number) {
     datImmortalize(GFN_sub);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_abs = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_add = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_div = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_divEu = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_mod = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_modEu = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_mul = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_neg = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_sign = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_sub = NULL;

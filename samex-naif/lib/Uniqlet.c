@@ -11,7 +11,7 @@
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeUniqlet) {
     return makeUniqlet();
 }

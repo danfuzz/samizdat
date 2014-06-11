@@ -30,7 +30,7 @@ static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
 // Module Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
     hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
@@ -62,7 +62,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
 // Type Definition
 //
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(MapCache, gcMark) {
     memset(mapCache, 0, sizeof(mapCache));
     return NULL;

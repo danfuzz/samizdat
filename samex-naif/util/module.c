@@ -81,7 +81,7 @@ static void servicePendingInits(void) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 void modUseNext(const char *name, zmodStatus *status, zmodInitFunction func) {
     if (*status != MOD_UNINITIALIZED) {
         // It's already initialized or in-progress.
@@ -98,7 +98,7 @@ void modUseNext(const char *name, zmodStatus *status, zmodInitFunction func) {
     one->prev->next = one;
 }
 
-/* Documented in header. */
+// Documented in header.
 void modUse(const char *name, zmodStatus *status, zmodInitFunction func) {
     // Save off the current pending init queue.
     PendingInit saveHead = thePendingHead;

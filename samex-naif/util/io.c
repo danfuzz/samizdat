@@ -16,7 +16,7 @@
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 char *utilCwd(void) {
     // The maximum buffer size is determined per the recommendation
     // in the Posix docs for `getcwd`.

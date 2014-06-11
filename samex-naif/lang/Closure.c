@@ -317,7 +317,7 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
 // Module Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue execClosure(Frame *frame, zvalue closureNode) {
     zvalue result = buildClosure(closureNode);
 
@@ -330,7 +330,7 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 // Type Definition
 //
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, call) {
     // The first argument is the closure itself. The rest are the arguments
     // it is being called with, hence `argCount--` and `args++` below.
@@ -351,7 +351,7 @@ METH_IMPL(Closure, call) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, canCall) {
     zvalue closure = args[0];
     zvalue value = args[1];
@@ -359,13 +359,13 @@ METH_IMPL(Closure, canCall) {
     return (getInfo(closure)->formalsSize == 0) ? NULL : value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, debugName) {
     zvalue closure = args[0];
     return get(getInfo(closure)->defMap, STR_name);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Closure, gcMark) {
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
@@ -394,5 +394,5 @@ MOD_INIT(Closure) {
     datImmortalize(nodeCacheBox);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Closure = NULL;

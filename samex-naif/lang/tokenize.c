@@ -405,7 +405,7 @@ static zvalue tokenizeAnyToken(ParseState *state) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue langLanguageOf0(zvalue string) {
     zint size = get_size(string);
     ParseState state = { .size = size, .at = 0 };
@@ -422,7 +422,7 @@ zvalue langLanguageOf0(zvalue string) {
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue langTokenize0(zvalue string) {
     zstackPointer save = datFrameStart();
     zint size = get_size(string);

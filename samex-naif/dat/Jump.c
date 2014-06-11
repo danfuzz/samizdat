@@ -31,7 +31,7 @@ static JumpInfo *getInfo(zvalue jump) {
 // Module Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
     JumpInfo *info = getInfo(jump);
 
@@ -54,7 +54,7 @@ zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeJump(void) {
     zvalue result = datAllocValue(TYPE_Jump, sizeof(JumpInfo));
     JumpInfo *info = getInfo(result);
@@ -68,14 +68,14 @@ zvalue makeJump(void) {
 // Type Definition
 //
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Jump, call) {
     // The first argument is the jump per se, and the rest are the
     // arguments to call it with.
     return jumpCall(args[0], argCount - 1, &args[1]);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Jump, canCall) {
     zvalue jump = args[0];
     zvalue value = args[1];
@@ -84,7 +84,7 @@ METH_IMPL(Jump, canCall) {
     return value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Jump, debugString) {
     zvalue jump = args[0];
     JumpInfo *info = getInfo(jump);
@@ -96,7 +96,7 @@ METH_IMPL(Jump, debugString) {
         stringFromUtf8(-1, "valid)"));
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Jump, gcMark) {
     zvalue jump = args[0];
     JumpInfo *info = getInfo(jump);
@@ -117,5 +117,5 @@ MOD_INIT(Jump) {
     METH_BIND(Jump, gcMark);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Jump = NULL;

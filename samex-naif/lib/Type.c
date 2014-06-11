@@ -11,17 +11,17 @@
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeDerivedDataType) {
     return makeDerivedDataType(args[0]);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(typeName) {
     return typeName(args[0]);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(typeParent) {
     return typeParent(args[0]);
 }

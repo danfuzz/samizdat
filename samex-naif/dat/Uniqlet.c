@@ -11,7 +11,7 @@
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeUniqlet(void) {
     return datAllocValue(TYPE_Uniqlet, 0);
 }
@@ -31,5 +31,5 @@ MOD_INIT(Uniqlet) {
     // is nothing to do.
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Uniqlet = NULL;

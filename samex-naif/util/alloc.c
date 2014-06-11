@@ -130,7 +130,7 @@ static void addPages(void *start, void *end) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 void *utilAlloc(zint size) {
     if (size < 0) {
         die("Invalid allocation size: %lld", size);
@@ -149,12 +149,12 @@ void *utilAlloc(zint size) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 void utilFree(void *memory) {
     free(memory);
 }
 
-/* Documented in header. */
+// Documented in header.
 bool utilIsHeapAllocated(void *memory) {
     if (!THEYRE_OUT_TO_GET_ME) {
         return memory != NULL;
@@ -184,7 +184,7 @@ bool utilIsHeapAllocated(void *memory) {
     return false;
 }
 
-/* Documented in header. */
+// Documented in header.
 char *utilStrdup(const char *string) {
     zint len = strlen(string);
     char *result = utilAlloc(len + 1);

@@ -43,13 +43,13 @@ static char *unifiedString(zint argCount, const zvalue *args,
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(die) {
     char *str = unifiedString(argCount, args, "Alas.");
     die("%s", str);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(note) {
     char *str = unifiedString(argCount, args, NULL);
 

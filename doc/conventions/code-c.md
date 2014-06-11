@@ -182,8 +182,8 @@ Code samples are delimited with triple-backticks (GitHub flavor).
 A general aim of commenting is to take a "DRY" (Don't Repeat Yourself)
 attitude, with specification files being the ultimate "source of truth" and
 header files being more authoritative than (non-header) source files.
-Comments of the form `/* Documented in header. */` and
-`/* Documented in spec. */` are used liberally as an explicit indication
+Function header comments of the form `// Documented in header.` and
+`// Documented in spec.` are used liberally as an explicit indication
 that the so-marked item does in fact have documentation elsewhere. (That is,
 it is an unintentional oversight for an item to *not* have such a comment.)
 

@@ -43,7 +43,7 @@ static FILE *openFile(zvalue path, const char *mode) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue ioCwd(void) {
     char *dir = utilCwd();
     zvalue result = stringFromUtf8(-1, dir);
@@ -52,7 +52,7 @@ zvalue ioCwd(void) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue ioFileType(zvalue path) {
     ioCheckPath(path);
     zint sz = utf8SizeFromString(path);
@@ -74,7 +74,7 @@ zvalue ioFileType(zvalue path) {
     else                               { return STR_other;     }
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue ioReadFileUtf8(zvalue path) {
     char buf[IO_MAX_FILE_SIZE];
     FILE *in = openFile(path, "r");
@@ -93,7 +93,7 @@ zvalue ioReadFileUtf8(zvalue path) {
     return stringFromUtf8(amt, buf);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue ioReadLink(zvalue path) {
     ioCheckPath(path);
     zint sz = utf8SizeFromString(path);
@@ -130,7 +130,7 @@ zvalue ioReadLink(zvalue path) {
     return stringFromUtf8(linkSz, linkStr);
 }
 
-/* Documented in header. */
+// Documented in header.
 void ioWriteFileUtf8(zvalue path, zvalue text) {
     zint utfSize = utf8SizeFromString(text);
     char utf[utfSize + 1];

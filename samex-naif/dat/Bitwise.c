@@ -39,23 +39,23 @@ MOD_INIT(Bitwise) {
     datImmortalize(GFN_xor);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_and = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_bit = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_bitSize = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_not = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_or = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_shl = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_xor = NULL;

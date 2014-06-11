@@ -12,7 +12,7 @@
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeList) {
     return listFromArray(argCount, args);
 }

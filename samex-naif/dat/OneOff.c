@@ -14,22 +14,22 @@
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue get(zvalue value, zvalue key) {
     return GFN_CALL(get, value, key);
 }
 
-/* Documented in header. */
+// Documented in header.
 zint get_size(zvalue value) {
     return zintFromInt(GFN_CALL(get_size, value));
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue nth(zvalue value, zint index) {
     return GFN_CALL(nth, value, intFromZint(index));
 }
 
-/* Documented in header. */
+// Documented in header.
 zint nthChar(zvalue value, zint index) {
     zvalue result = nth(value, index);
     return (result == NULL) ? -1 : zcharFromString(result);
@@ -73,29 +73,29 @@ MOD_INIT(OneOff) {
     datImmortalize(GFN_toString);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_cat = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_get = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_get_key = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_get_size = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_get_value = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_nth = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_toInt = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_toNumber = NULL;
 
-/* Documented in header. */
+// Documented in header.
 zvalue GFN_toString = NULL;

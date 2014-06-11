@@ -134,7 +134,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue genericFindByIndex(zvalue generic, zint index) {
     return getInfo(generic)->functions[index];
 }
@@ -144,7 +144,7 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 void genericBind(zvalue generic, zvalue type, zvalue function) {
     assertHasType(generic, TYPE_Generic);
 
@@ -161,7 +161,7 @@ void genericBind(zvalue generic, zvalue type, zvalue function) {
     info->functions[index] = function;
 }
 
-/* Documented in header. */
+// Documented in header.
 void genericBindPrim(zvalue generic, zvalue type, zfunction function,
         const char *builtinName) {
     assertHasType(generic, TYPE_Generic);
@@ -176,13 +176,13 @@ void genericBindPrim(zvalue generic, zvalue type, zfunction function,
     genericBind(generic, type, builtin);
 }
 
-/* Documented in header. */
+// Documented in header.
 void genericSeal(zvalue generic) {
     assertHasType(generic, TYPE_Generic);
     getInfo(generic)->sealed = true;
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
         zvalue name) {
     if ((minArgs < 1) ||
@@ -207,14 +207,14 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
 // Type Definition
 //
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Generic, call) {
     // The first argument is the generic per se, and the rest are the
     // arguments to call it with.
     return genericCall(args[0], argCount - 1, &args[1]);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Generic, canCall) {
     zvalue generic = args[0];
     zvalue value = args[1];
@@ -223,7 +223,7 @@ METH_IMPL(Generic, canCall) {
     return (findByType(generic, get_type(value), NULL) != NULL) ? value : NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Generic, debugName) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
@@ -231,7 +231,7 @@ METH_IMPL(Generic, debugName) {
     return info->name;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Generic, gcMark) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
@@ -257,5 +257,5 @@ MOD_INIT(Generic) {
     METH_BIND(Generic, gcMark);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Generic = NULL;

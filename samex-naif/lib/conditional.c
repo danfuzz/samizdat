@@ -13,7 +13,7 @@
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(ifIs) {
     if (FUN_CALL(args[0]) != NULL) {
         return FUN_CALL(args[1]);
@@ -24,7 +24,7 @@ FUN_IMPL_DECL(ifIs) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(ifNot) {
     if (FUN_CALL(args[0]) == NULL) {
         return FUN_CALL(args[1]);
@@ -33,7 +33,7 @@ FUN_IMPL_DECL(ifNot) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(ifValue) {
     zvalue result = FUN_CALL(args[0]);
 
@@ -46,7 +46,7 @@ FUN_IMPL_DECL(ifValue) {
     }
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(ifValueOr) {
     for (zint i = 0; i < argCount; i++) {
         zvalue result = FUN_CALL(args[i]);
@@ -58,7 +58,7 @@ FUN_IMPL_DECL(ifValueOr) {
     return NULL;
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(ifValues) {
     zvalue testFunctions = args[0];
     zvalue valueFunction = args[1];
@@ -79,7 +79,7 @@ FUN_IMPL_DECL(ifValues) {
     return funCall(valueFunction, size, results);
 }
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(loop) {
     zvalue function = args[0];
     for (;;) {

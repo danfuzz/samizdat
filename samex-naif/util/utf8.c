@@ -184,7 +184,7 @@ static const char *decodeValid(zchar *result,
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 zint utf8DecodeStringSize(zint stringBytes, const char *string) {
     const char *stringEnd = getStringEnd(stringBytes, string);
     zint result = 0;
@@ -197,7 +197,7 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 void utf8DecodeCharsFromString(zchar *result,
         zint stringBytes, const char *string) {
     const char *stringEnd = getStringEnd(stringBytes, string);
@@ -208,7 +208,7 @@ void utf8DecodeCharsFromString(zchar *result,
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 char *utf8EncodeOne(char *result, zint ch) {
     if (ch < 0) {
         die("Out of range for UTF-8: %#llx", ch);

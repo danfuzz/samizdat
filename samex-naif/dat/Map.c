@@ -164,7 +164,7 @@ static int mappingOrder(const void *m1, const void *m2) {
 // Exported Definitions
 //
 
-/* Documented in header. */
+// Documented in header.
 void arrayFromMap(zmapping *result, zvalue map) {
     assertHasType(map, TYPE_Map);
 
@@ -172,7 +172,7 @@ void arrayFromMap(zmapping *result, zvalue map) {
     utilCpy(zmapping, result, info->elems, info->size);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue mapFromArgs(zvalue first, ...) {
     if (first == NULL) {
         return EMPTY_MAP;
@@ -208,7 +208,7 @@ zvalue mapFromArgs(zvalue first, ...) {
     return mapFromArray(size, mappings);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue mapFromArray(zint size, zmapping *mappings) {
     // Handle special cases that are particularly easy.
     switch (size) {
@@ -262,10 +262,10 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 // Type Definition
 //
 
-/* Documented in header. */
+// Documented in header.
 zvalue EMPTY_MAP = NULL;
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, cat) {
     if (argCount == 1) {
         return args[0];
@@ -287,7 +287,7 @@ METH_IMPL(Map, cat) {
     return mapFromArray(size, elems);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, collect) {
     zvalue map = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
@@ -313,7 +313,7 @@ METH_IMPL(Map, collect) {
     return listFromArray(at, result);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, del) {
     zvalue map = args[0];
     zvalue key = args[1];
@@ -340,7 +340,7 @@ METH_IMPL(Map, del) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, gcMark) {
     zvalue map = args[0];
     MapInfo *info = getInfo(map);
@@ -355,7 +355,7 @@ METH_IMPL(Map, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, get) {
     zvalue map = args[0];
     zvalue key = args[1];
@@ -364,7 +364,7 @@ METH_IMPL(Map, get) {
     return (index < 0) ? NULL : getInfo(map)->elems[index].value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, get_key) {
     zvalue map = args[0];
 
@@ -377,13 +377,13 @@ METH_IMPL(Map, get_key) {
     return info->elems[0].key;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, get_size) {
     zvalue map = args[0];
     return intFromZint(getInfo(map)->size);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, get_value) {
     zvalue map = args[0];
 
@@ -396,7 +396,7 @@ METH_IMPL(Map, get_value) {
     return info->elems[0].value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, keyList) {
     zvalue map = args[0];
 
@@ -413,7 +413,7 @@ METH_IMPL(Map, keyList) {
     return listFromArray(size, arr);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, nextValue) {
     // This yields the first element directly (if any), and returns a
     // `SequenceGenerator` value to represent the rest.
@@ -437,7 +437,7 @@ METH_IMPL(Map, nextValue) {
     }
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, nthMapping) {
     zvalue map = args[0];
     zvalue n = args[1];
@@ -457,7 +457,7 @@ METH_IMPL(Map, nthMapping) {
     return makeMapping(m->key, m->value);
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, put) {
     zvalue map = args[0];
     zvalue key = args[1];
@@ -503,7 +503,7 @@ METH_IMPL(Map, put) {
     return result;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -530,7 +530,7 @@ METH_IMPL(Map, totalEq) {
     return value;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
@@ -565,7 +565,7 @@ METH_IMPL(Map, totalOrder) {
     return INT_0;
 }
 
-/* Documented in header. */
+// Documented in header.
 METH_IMPL(Map, valueList) {
     zvalue map = args[0];
 
@@ -612,5 +612,5 @@ MOD_INIT(Map) {
     datImmortalize(EMPTY_MAP);
 }
 
-/* Documented in header. */
+// Documented in header.
 zvalue TYPE_Map = NULL;

@@ -13,7 +13,7 @@
 // Exported Definitions
 //
 
-/* Documented in spec. */
+// Documented in spec.
 FUN_IMPL_DECL(makeValueMap) {
     zint size = argCount - 1;
     zvalue value = args[size];
