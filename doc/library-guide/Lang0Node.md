@@ -173,6 +173,12 @@ with the token of the latter name.
 
 Gets the yield definition name of a `closure` node, if any.
 
+#### `intFromDigits(base, digits) -> int`
+
+Converts a list of digit character tokens into an int, given the base.
+`base` is allowed to be any value in the range `(2..16)`. A digit character
+of `"_"` is allowed but otherwise ignored.
+
 #### `isExpression(node) -> node | void`
 
 Indicates whether `node` is a full expression node type (as opposed to,

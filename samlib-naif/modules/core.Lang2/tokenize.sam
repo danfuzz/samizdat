@@ -10,6 +10,7 @@
 
 import core.EntityMap :: ENTITY_MAP;
 import core.Generator;
+import core.Lang0Node :: intFromDigits;
 import core.Peg;
 import core.Sequence;
 import proto.Number;
@@ -36,37 +37,6 @@ def KEYWORDS = $Generator::collectAsMap(
         "by", "default", "do", "else", "for", "if", "in", "module", "switch",
         "while"])
         { name -> {(name): @(@@(name))} });
-
-## These are all the int digits, as a map from strings to digit values. This
-## includes hex digits as well, in both lower and upper case. Finally, this
-## includes a mapping of `"_"` to `-1` for the implementation of the
-## "digit space" syntax.
-##
-## **Note:** Only the decimal digits matter in Layer 0 and Layer 1.
-def INT_CHARS = {
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
-    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
-    "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
-    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
-    "_": -1
-};
-
-## Given a decimal digit, returns the digit value.
-fn intFromDigitChar(ch) {
-    return get(INT_CHARS, get_typeName(ch))
-};
-
-## Converts a list of digit values into an int, given the base.
-fn intFromDigitList(base, digits) {
-    var result = 0;
-
-    $Generator::filterPump(digits) { digit ->
-        ifIs { perNe(digit, -1) }
-            { result := $Number::add($Number::mul(result, base), digit) }
-    };
-
-    return result
-};
 
 
 ##
@@ -142,8 +112,7 @@ def tokPunctuation = {:
 
 ## Parses a single decimal digit (or spacer), returning its value.
 def tokDecDigit = {:
-    ch = ["_" "0".."9"]
-    { intFromDigitChar(ch) }
+    ["_" "0".."9"]
 :};
 
 ## Parses an integer literal.
@@ -153,7 +122,7 @@ def tokInt = {:
     %tokInt2
 |
     digits = tokDecDigit+
-    { @int(intFromDigitList(10, digits)) }
+    { @int(intFromDigits(10, digits)) }
 :};
 
 ## Parses a run of regular characters or an escape / special sequence,
@@ -347,31 +316,29 @@ tokMultilineComment := {:
 ## Parses a single binary digit (or spacer), returning its value.
 def tokBinDigit = {:
     ch = ["_01"]
-    { intFromDigitChar(ch) }
 :};
 
 ## Parses a single hexadecimal digit (or spacer), returning its value.
 def tokHexDigit = {:
     ch = ["_" "0".."9" "a".."f" "A".."F"]
-    { intFromDigitChar(ch) }
 :};
 
 ## Parses an integer literal.
 tokInt2 := {:
     "0x"
     digits = tokHexDigit+
-    { @int(intFromDigitList(16, digits)) }
+    { @int(intFromDigits(16, digits)) }
 |
     "0b"
     digits = tokBinDigit+
-    { @int(intFromDigitList(2, digits)) }
+    { @int(intFromDigits(2, digits)) }
 :};
 
 ## Parses a single hexadecimal character. This is called during `\x...;`
 ## parsing.
 def tokHexChar = {:
     digits = tokHexDigit+
-    { toString(intFromDigitList(16, digits)) }
+    { toString(intFromDigits(16, digits)) }
 :};
 
 ## Parses a single entity-named character. This is called during `\&...;`
@@ -385,11 +352,11 @@ def tokNamedChar = {:
 |
     "#x"
     digits = tokHexDigit+
-    { toString(intFromDigitList(16, digits)) }
+    { toString(intFromDigits(16, digits)) }
 |
     "#"
     digits = tokDecDigit+
-    { toString(intFromDigitList(10, digits)) }
+    { toString(intFromDigits(10, digits)) }
 :};
 
 ## Parses the inner portion of a string interpolation expression. This
