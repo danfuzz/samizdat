@@ -6,8 +6,7 @@
 
 import core.Collection;
 import core.Generator;
-import core.Sequence;
-import proto.Number;
+import core.Sequence :: nthFromEnd, sliceExclusive;
 
 import ./constructors1 :: *;
 import ./getters :: *;
@@ -136,10 +135,10 @@ export fn makeFullClosure(map) {
         { ifIs { map::yieldDef } { @void } }
         { ifIs { eq(statSz, 0) } { @void } }
         {
-            def lastStat = nth(statements, $Number::sub(statSz, 1));
+            def lastStat = nthFromEnd(statements, 0);
             ifIs { isExpression(lastStat) }
                 {
-                    statements := $Sequence::sliceExclusive(statements, 0);
+                    statements := sliceExclusive(statements, 0);
                     makeMaybe(lastStat)
                 }
         }
