@@ -11,9 +11,9 @@
 import core.EntityMap :: ENTITY_MAP;
 import core.Generator;
 import core.Lang0Node :: intFromDigits;
-import core.Peg;
+import core.Peg;  ## Used implicitly.
+import core.Peg :: apply, stringFromTokenList;
 import core.Sequence;
-import proto.Number;
 
 
 ##
@@ -133,7 +133,7 @@ def tokInt = {:
 def tokStringPart = {:
     (
         chars = [! "\\" "\"" "\n"]+
-        { $Peg::stringFromTokenList(chars) }
+        { stringFromTokenList(chars) }
     )
 |
     ## This is the rule that ignores spaces after newlines.
@@ -174,7 +174,7 @@ def tokIdentifier = {:
     rest = ["_" "$" "a".."z" "A".."Z" "0".."9"]*
 
     {
-        def string = $Peg::stringFromTokenList([one, rest*]);
+        def string = stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
             { @identifier(string) }
     }
@@ -346,7 +346,7 @@ def tokHexChar = {:
 def tokNamedChar = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
-        def name = $Peg::stringFromTokenList(chars);
+        def name = stringFromTokenList(chars);
         get(ENTITY_MAP, name)
     }
 |
@@ -424,7 +424,7 @@ tokStringPart2 := {:
         format = (
             "%"
             chars = ["0".."9" "a".."z" "A".."Z" "+-."]*
-            { {format: $Peg::stringFromTokenList(chars)} }
+            { {format: stringFromTokenList(chars)} }
         |
             { {} }
         )
@@ -449,5 +449,5 @@ tokStringPart2 := {:
 
 ## Documented in spec.
 export fn tokenize(programText) {
-    return $Peg::apply(tokFile, programText)
+    return apply(tokFile, programText)
 };
