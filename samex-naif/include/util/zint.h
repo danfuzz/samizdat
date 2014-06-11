@@ -192,8 +192,8 @@ inline zint zintBitSize(zint value) {
     // built-in "count leading zeroes" function, but we're aiming
     // for portability here.
 
-    zint result = 1; // +1 in that we want size, not zero-based bit number.
-    uint64_t uv = (uint64_t) value; // Use `uint` to account for `-ZINT_MAX`.
+    zint result = 1;  // +1 in that we want size, not zero-based bit number.
+    uint64_t uv = (uint64_t) value;  // Use `uint` to account for `-ZINT_MAX`.
 
     if (uv >= ((uint64_t) 1 << 32)) { result += 32; uv >>= 32; }
     if (uv >= ((uint64_t) 1 << 16)) { result += 16; uv >>= 16; }

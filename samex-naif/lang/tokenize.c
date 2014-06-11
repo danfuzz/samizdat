@@ -86,7 +86,7 @@ static void reset(ParseState *state, zint mark) {
  */
 static bool skipComment(ParseState *state) {
     zint at = cursor(state);
-    read(state); // Skip the initial `#`.
+    read(state);  // Skip the initial `#`.
 
     zint ch = read(state);
     if ((ch != '#') && (ch != '!')) {
@@ -290,7 +290,7 @@ static zvalue tokenizeOneOrTwo(ParseState *state, zint ch2,
  * Tokenizes `:`, `::`, or `:=`.
  */
 static zvalue tokenizeColon(ParseState *state) {
-    read(state); // Skip the `:`
+    read(state);  // Skip the `:`
 
     switch (peek(state)) {
         case ':': read(state); return TOK_CH_COLONCOLON;

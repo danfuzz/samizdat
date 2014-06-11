@@ -371,7 +371,7 @@ METH_IMPL(Closure, gcMark) {
     ClosureInfo *info = getInfo(closure);
 
     frameMark(&info->frame);
-    datMark(info->defMap); // All the other bits are derived from this.
+    datMark(info->defMap);  // All the other bits are derived from this.
     return NULL;
 }
 

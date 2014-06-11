@@ -171,7 +171,7 @@ METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = get_type(value);
     zvalue name = GFN_CALL(debugName, value);
-    char addrBuf[19]; // Includes room for `0x` and `\0`.
+    char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
         name = EMPTY_STRING;

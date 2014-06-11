@@ -58,7 +58,7 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
 /* Documented in header. */
 void frameMark(Frame *frame) {
     datMark(frame->vars);
-    datMark(frame->parentClosure); // This will mark `parentFrame`.
+    datMark(frame->parentClosure);  // This will mark `parentFrame`.
 }
 
 /* Documented in header. */

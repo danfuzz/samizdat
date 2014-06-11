@@ -56,7 +56,7 @@ static const char *justDecode(zchar *result,
     }
 
     unsigned char ch = *string;
-    zint value; // `zint` and not `zchar` is for saner overflow detection.
+    zint value;  // `zint` and not `zchar` is for saner overflow detection.
     int extraBytes;
     zint minValue;
 

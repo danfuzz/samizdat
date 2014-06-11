@@ -26,10 +26,10 @@
  * Names of proc-type files to try, when determining the executable path.
  */
 static const char *PROC_SELF_FILES[] = {
-    "/proc/self/exe",        // Linux
-    "/proc/curproc/file",    // FreeBSD and some other BSD variants
-    "/proc/curproc/exe",     // NetBSD
-    "/proc/self/path/a.out", // Solaris and variants
+    "/proc/self/exe",         // Linux
+    "/proc/curproc/file",     // FreeBSD and some other BSD variants
+    "/proc/curproc/exe",      // NetBSD
+    "/proc/self/path/a.out",  // Solaris and variants
     NULL
 };
 

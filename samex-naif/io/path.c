@@ -24,7 +24,7 @@ void checkPath0(zvalue path, bool isAbsolute) {
     }
 
     zint sz = utf8SizeFromString(path);
-    char str[sz + 1]; // `+1` for the null byte.
+    char str[sz + 1];  // `+1` for the null byte.
 
     if (sz == 0) {
         die("Invalid path: empty string");

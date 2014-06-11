@@ -6,8 +6,8 @@
  * Function values
  */
 
-#include <stdio.h>  // For `asprintf`.
-#include <stdlib.h> // For `free`.
+#include <stdio.h>   // For `asprintf`.
+#include <stdlib.h>  // For `free`.
 
 #include "type/Function.h"
 #include "type/Generic.h"

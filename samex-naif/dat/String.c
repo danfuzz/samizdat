@@ -168,7 +168,7 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 
 /* Documented in header. */
 char *utf8DupFromString(zvalue string) {
-    zint size = utf8SizeFromString(string) + 1; // `+1` for the final `\0`.
+    zint size = utf8SizeFromString(string) + 1;  // `+1` for the final `\0`.
     char *result = utilAlloc(size);
 
     utf8FromString(size, result, string);

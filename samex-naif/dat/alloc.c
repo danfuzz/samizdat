@@ -2,7 +2,7 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include <time.h> // Used for "chatty gc."
+#include <time.h>  // Used for "chatty gc."
 
 #include "type/Function.h"
 #include "type/Value.h"
@@ -138,7 +138,7 @@ static void enlist(DatHeader *head, zvalue value) {
  * Main garbage collection function.
  */
 static void doGc(void) {
-    zint counter; // Used throughout.
+    zint counter;  // Used throughout.
 
     if (GFN_totalEq == NULL) {
         die("`dat` module not yet initialized.");
