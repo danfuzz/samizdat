@@ -6,8 +6,9 @@
 
 #include <stddef.h>
 
-#include "impl.h"
 #include "type/Box.h"
+
+#include "impl.h"
 
 
 /*

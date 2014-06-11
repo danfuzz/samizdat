@@ -7,7 +7,6 @@
 #include <stdlib.h>
 
 #include "const.h"
-#include "impl.h"
 #include "lib.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -15,6 +14,8 @@
 #include "type/String.h"
 #include "type/Type.h"
 #include "util.h"
+
+#include "impl.h"
 
 
 /*

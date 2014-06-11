@@ -15,8 +15,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "impl.h"
 #include "util.h"
+
+#include "impl.h"
 
 
 /*

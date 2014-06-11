@@ -4,11 +4,12 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Value.h"
+
+#include "impl.h"
 
 
 /*
