@@ -111,9 +111,9 @@ fi
 
 if (( timeRun )); then
     endTime="$(date '+%s')"
-    echo ''
     (( totalSecs = endTime - startTime ))
     (( totalMins = totalSecs / 60 ))
     (( totalSecs = totalSecs - totalMins * 60 ))
+    echo ''
     printf 'Elapsed time: %dm %02ds\n' "${totalMins}" "${totalSecs}"
 fi
