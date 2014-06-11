@@ -9,7 +9,7 @@
 #= language core.Lang1
 
 import core.Format;
-import core.Generator;
+import core.Generator :: filterAll, filterPump;
 import core.Lang0;
 import core.Lang0Node :: *;
 import core.Peg;
@@ -29,7 +29,7 @@ import ./tokenize :: tokenize;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    $Generator::filterPump(pending, $Range::makeInclusiveRange(1, 50))
+    filterPump(pending, $Range::makeInclusiveRange(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -413,8 +413,8 @@ def parUnaryExpression = {:
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
 
-        $Generator::filterPump(postfixes) { op -> result := op(result) };
-        $Generator::filterPump(prefixes) { op -> result := op(result) };
+        filterPump(postfixes) { op -> result := op(result) };
+        filterPump(prefixes) { op -> result := op(result) };
         result
     }
 :};
@@ -1130,7 +1130,7 @@ def BINARY_OPERATORS = {
 fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
-    $Generator::filterPump(opExList) { opEx ->
+    filterPump(opExList) { opEx ->
         def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
         result := makeCall(resolvedOp, result, opEx::expr)
     };
@@ -1264,7 +1264,7 @@ def parInterpolatedString = {:
         ## Convert each of the payload items into the proper form.
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
-        def elems = $Generator::filterAll(dataOf(token)) { elem ->
+        def elems = filterAll(dataOf(token)) { elem ->
             ifIs { hasType(elem, String) }
                 { makeLiteral(elem) }
                 {
@@ -1329,8 +1329,8 @@ def parGeneratorList = {:
 
     {
         def gens = [one, rest*];
-        def formals = $Generator::filterAll(gens) { gen -> gen::formal };
-        def inits = $Generator::filterAll(gens) { gen -> gen::init };
+        def formals = filterAll(gens) { gen -> gen::formal };
+        def inits = filterAll(gens) { gen -> gen::init };
 
         {formals, inits}
     }
@@ -1784,10 +1784,9 @@ def parLogicAndExpression = {:
         {
             ## Make a version of the test clauses, as thunks with formals
             ## lists.
-            def formals =
-                $Generator::filterAll(most) { clause -> clause::formal };
+            def formals = filterAll(most) { clause -> clause::formal };
             def testThunks =
-                $Generator::filterAll(most, $Range::makeOpenRange(0))
+                filterAll(most, $Range::makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             $Sequence::sliceExclusive(formals, 0, index))
@@ -1884,10 +1883,9 @@ def parMultiTest = {:
         {
             ## Make a version of the test clauses, as thunks with formals
             ## lists.
-            def formals =
-                $Generator::filterAll(clauses) { clause -> clause::formal };
+            def formals = filterAll(clauses) { clause -> clause::formal };
             def testThunks =
-                $Generator::filterAll(clauses, $Range::makeOpenRange(0))
+                filterAll(clauses, $Range::makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             $Sequence::sliceExclusive(formals, 0, index))
@@ -1972,7 +1970,7 @@ def parIfExpression = {:
         ## `reduction*` (which also handles the case of a missing final
         ## `else`).
         var reduction = optElse;
-        $Generator::filterPump(clauses) { clause ->
+        filterPump(clauses) { clause ->
             reduction := [makeThunk(clause::maker(clause::then, reduction*))]
         };
 
@@ -2227,11 +2225,11 @@ def parSwitchExpression = {:
     @"}"
 
     {
-        def optDefault = $Generator::filterAll(cases) { case ->
+        def optDefault = filterAll(cases) { case ->
             ifIs { eq(case::keys, @default) } { case::code }
         };
 
-        def optElse = $Generator::filterAll(cases) { case ->
+        def optElse = filterAll(cases) { case ->
             ifIs { eq(case::keys, @else) } { case::code }
         };
 
@@ -2245,7 +2243,7 @@ def parSwitchExpression = {:
         ## preserve the left-to-right evaluation order of the apparent text,
         ## even though the key/case override semantics is the opposite of
         ## what `cat(map)` defines.
-        def caseClauses = $Generator::filterAll(cases) { case ->
+        def caseClauses = filterAll(cases) { case ->
             def keys = case::keys;
             ifIs { hasType(keys, List) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, case::code) }
