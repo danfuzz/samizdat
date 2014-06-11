@@ -10,9 +10,9 @@
 #include "impl.h"
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue get(zvalue value, zvalue key) {
@@ -36,9 +36,9 @@ zint nthChar(zvalue value, zint index) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /** Initializes the module. */
 MOD_INIT(OneOff) {

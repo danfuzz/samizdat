@@ -5,9 +5,9 @@
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Asserts that the given `zint` value is valid as a Unicode
@@ -180,9 +180,9 @@ static const char *decodeValid(zchar *result,
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zint utf8DecodeStringSize(zint stringBytes, const char *string) {

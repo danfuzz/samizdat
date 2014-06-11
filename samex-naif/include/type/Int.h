@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `Int` data type
- */
+//
+// `Int` data type
+//
 
 #ifndef _TYPE_INT_H_
 #define _TYPE_INT_H_

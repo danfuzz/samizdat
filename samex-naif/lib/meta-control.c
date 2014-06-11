@@ -10,9 +10,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Concatenates all the arguments into a unified string, returning that
@@ -39,9 +39,9 @@ static char *unifiedString(zint argCount, const zvalue *args,
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in spec. */
 FUN_IMPL_DECL(die) {

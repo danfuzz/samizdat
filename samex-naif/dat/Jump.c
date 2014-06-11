@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Nonlocal jump (exit / yield) functions
- */
+//
+// Nonlocal jump (exit / yield) functions
+//
 
 #include "type/Generic.h"
 #include "type/Jump.h"
@@ -15,9 +15,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Gets a pointer to the value's info.
@@ -27,9 +27,9 @@ static JumpInfo *getInfo(zvalue jump) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
@@ -50,9 +50,9 @@ zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue makeJump(void) {
@@ -64,9 +64,9 @@ zvalue makeJump(void) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 METH_IMPL(Jump, call) {

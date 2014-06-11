@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Builtin Functions
- */
+//
+// Builtin Functions
+//
 
 #include "type/Builtin.h"
 #include "type/Generic.h"
@@ -15,9 +15,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Builtin function structure.
@@ -50,9 +50,9 @@ static BuiltinInfo *getInfo(zvalue builtin) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
@@ -70,9 +70,9 @@ zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
@@ -116,9 +116,9 @@ BuiltinState builtinGetState(zvalue builtin) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 METH_IMPL(Builtin, call) {

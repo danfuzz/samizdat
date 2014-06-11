@@ -16,9 +16,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * List structure.
@@ -83,9 +83,9 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void arrayFromList(zvalue *result, zvalue list) {
@@ -136,9 +136,9 @@ zvalue listFromArray(zint size, const zvalue *values) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 zvalue EMPTY_LIST = NULL;

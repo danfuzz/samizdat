@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `Box` data type.
- */
+//
+// `Box` data type.
+//
 
 #ifndef _TYPE_BOX_H_
 #define _TYPE_BOX_H_

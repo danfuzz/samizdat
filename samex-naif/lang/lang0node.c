@@ -16,9 +16,9 @@
 #include "impl.h"
 
 
-/*
- * Private functions
- */
+//
+// Private functions
+//
 
 /** Splits a string into a list, separating at the given character. */
 static zvalue splitAtChar(zvalue string, zvalue chString) {
@@ -78,9 +78,9 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 }
 
 
-/*
- * Module functions
- */
+//
+// Module functions
+//
 
 /* Documented in spec. */
 zvalue formalsMaxArgs(zvalue formals) {

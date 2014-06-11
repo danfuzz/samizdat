@@ -15,9 +15,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Payload data for all derived values.
@@ -35,9 +35,9 @@ static DerivedDataInfo *getInfo(zvalue value) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue valDataOf(zvalue value, zvalue secret) {

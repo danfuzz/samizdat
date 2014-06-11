@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Function values
- */
+//
+// Function values
+//
 
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
@@ -19,9 +19,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Returns `value` if it is a string; otherwise calls `debugString` on it.
@@ -94,9 +94,9 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue funApply(zvalue function, zvalue args) {
@@ -195,9 +195,9 @@ zvalue mustNotYield(zvalue value) {
     die("Improper yield from `noYield` expression.");
 }
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /** Initializes the module. */
 MOD_INIT(Function) {

@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Collection constructor utilities.
- */
+//
+// Collection constructor utilities.
+//
 
 #ifndef _HELPERS_H_
 #define _HELPERS_H_

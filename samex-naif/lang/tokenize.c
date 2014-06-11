@@ -14,9 +14,9 @@
 #include "impl.h"
 
 
-/*
- * ParseState definition and functions
- */
+//
+// ParseState definition and functions
+//
 
 /** State of tokenization in-progress. */
 typedef struct {
@@ -401,9 +401,9 @@ static zvalue tokenizeAnyToken(ParseState *state) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue langLanguageOf0(zvalue string) {

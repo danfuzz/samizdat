@@ -16,9 +16,9 @@
 #include "zlimits.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Opens the file with the given name (a string), and with the
@@ -39,9 +39,9 @@ static FILE *openFile(zvalue path, const char *mode) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue ioCwd(void) {

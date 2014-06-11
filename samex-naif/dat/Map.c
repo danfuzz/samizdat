@@ -22,9 +22,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Map structure.
@@ -160,9 +160,9 @@ static int mappingOrder(const void *m1, const void *m2) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void arrayFromMap(zmapping *result, zvalue map) {
@@ -258,9 +258,9 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 zvalue EMPTY_MAP = NULL;

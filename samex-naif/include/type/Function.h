@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `Function` protocol
- */
+//
+// `Function` protocol
+//
 
 #ifndef _TYPE_FUNCTION_H_
 #define _TYPE_FUNCTION_H_

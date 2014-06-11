@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `List` data type
- */
+//
+// `List` data type
+//
 
 #ifndef _TYPE_LIST_H_
 #define _TYPE_LIST_H_

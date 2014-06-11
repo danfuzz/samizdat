@@ -9,9 +9,9 @@
 #include "impl.h"
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /** Initializes the module. */
 MOD_INIT(Bitwise) {

@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Samizdat Layer 0 language implementation
- */
+//
+// Samizdat Layer 0 language implementation
+//
 
 #ifndef _LANG_H_
 #define _LANG_H_
@@ -12,9 +12,9 @@
 #include "dat.h"
 
 
-/*
- * Compilation
- */
+//
+// Compilation
+//
 
 /**
  * Evaluates the given expression node in the given variable

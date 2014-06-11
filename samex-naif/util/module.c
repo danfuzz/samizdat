@@ -2,17 +2,17 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Simple C Module System
- */
+//
+// Simple C Module System
+//
 
 #include "module.h"
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Record of a pending initialization. First three members are the same as the

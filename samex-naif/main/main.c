@@ -16,9 +16,9 @@
 #include "impl.h"
 
 
-/*
- * Main program
- */
+//
+// Main program
+//
 
 /**
  * Main driver for Samizdat Layer 0. This makes a library environment, and

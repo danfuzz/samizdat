@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Closure construction and execution
- */
+//
+// Closure construction and execution
+//
 
 #include "const.h"
 #include "type/Box.h"
@@ -21,9 +21,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 enum {
     /** Whether to spew to the console about cache behavior. */
@@ -313,9 +313,9 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 zvalue execClosure(Frame *frame, zvalue closureNode) {
@@ -326,9 +326,9 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 METH_IMPL(Closure, call) {

@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Collection values
- */
+//
+// Collection values
+//
 
 #include "type/Collection.h"
 #include "type/String.h"
@@ -13,9 +13,9 @@
 #include "impl.h"
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue collDel(zvalue coll, zvalue key) {
@@ -28,9 +28,9 @@ zvalue collPut(zvalue coll, zvalue key, zvalue value) {
 }
 
 
-/*
- * Type Definition: `Collection`
- */
+//
+// Type Definition: `Collection`
+//
 
 /** Initializes the module. */
 MOD_INIT(Collection) {

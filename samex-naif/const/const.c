@@ -10,9 +10,9 @@
 #include "zlimits.h"
 
 
-/*
- * Define globals for all of the constants.
- */
+//
+// Define globals for all of the constants.
+//
 
 #define STR(name, str) zvalue STR_##name = NULL
 
@@ -31,9 +31,9 @@
 #undef TYP
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /** Initializes the module. */
 MOD_INIT(const) {

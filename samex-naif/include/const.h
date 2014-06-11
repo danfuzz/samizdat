@@ -2,18 +2,18 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Commonly-used in-model constants.
- */
+//
+// Commonly-used in-model constants.
+//
 
 #ifndef _CONST_H_
 #define _CONST_H_
 
 #include "dat.h"
 
-/*
- * Declare globals for all of the constants.
- */
+//
+// Declare globals for all of the constants.
+//
 
 #define STR(name, str) extern zvalue STR_##name
 

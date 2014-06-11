@@ -55,9 +55,9 @@
 #include <stddef.h>
 
 
-/*
- * Private definitions
- */
+//
+// Private definitions
+//
 
 /**
  * Common check for `zintDiv*` functions.
@@ -77,9 +77,9 @@ inline bool zintCanDiv(zint x, zint y) {
 }
 
 
-/*
- * Public definitions
- */
+//
+// Public definitions
+//
 
 /**
  * Converts a `zint` to a `zchar`, detecting overflow. Returns

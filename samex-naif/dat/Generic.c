@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * In-model Generic Functions
- */
+//
+// In-model Generic Functions
+//
 
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
@@ -19,9 +19,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Generic function structure.
@@ -91,9 +91,9 @@ static zvalue findByType(zvalue generic, zvalue type, zvalue *boundType) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /**
  * Actual implementation of generic function dispatch.
@@ -140,9 +140,9 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void genericBind(zvalue generic, zvalue type, zvalue function) {
@@ -203,9 +203,9 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 METH_IMPL(Generic, call) {

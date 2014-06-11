@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Generator protocol
- */
+//
+// Generator protocol
+//
 
 #include "type/Box.h"
 #include "type/Builtin.h"
@@ -19,9 +19,9 @@
 #include "impl.h"
 
 
-/*
- * Type Definition: `Generator`
- */
+//
+// Type Definition: `Generator`
+//
 
 /** "Standard" `collect` implementation. Documented in spec. */
 METH_IMPL(Generator, stdCollect) {

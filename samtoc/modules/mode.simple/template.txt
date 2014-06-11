@@ -1,11 +1,9 @@
-/*
- * GENERATED CODE!
- * GENERATED CODE!
- * GENERATED CODE!
- *
- * This code *might* be derived from a copyrighted source. Proceed with
- * caution!
- */
+// GENERATED CODE!
+// GENERATED CODE!
+// GENERATED CODE!
+//
+// This code *might* be derived from a copyrighted source. Proceed with
+// caution!
 
 #include "type/Box.h"
 #include "type/Builtin.h"
@@ -23,18 +21,18 @@
 static zvalue GLOBALS = NULL;
 
 
-/*
- * Literal values
- */
+//
+// Literal values
+//
 
 \(literalDeclarations)
 static void initLiterals(zvalue env) {
 \(literalInits)}
 
 
-/*
- * Closure definitions
- */
+//
+// Closure definitions
+//
 
 \(closureDeclarations)
 \(closureBodies)
@@ -43,9 +41,9 @@ static zvalue mainClosure(void) {
 \(mainClosure)}
 
 
-/*
- * Main entry point
- */
+//
+// Main entry point
+//
 
 /* Top-level evaluation result. */
 static zvalue EVAL_RESULT = NULL;

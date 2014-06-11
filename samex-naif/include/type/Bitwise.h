@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `Bitwise` protocol
- */
+//
+// `Bitwise` protocol
+//
 
 #ifndef _TYPE_BITWISE_H_
 #define _TYPE_BITWISE_H_

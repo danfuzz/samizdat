@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Box manipulation
- */
+//
+// Box manipulation
+//
 
 #include "type/Box.h"
 #include "type/Generic.h"
@@ -16,9 +16,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Box state.
@@ -77,9 +77,9 @@ static zvalue doStore(zvalue box, zvalue value) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue boxFetch(zvalue box) {
@@ -130,9 +130,9 @@ zvalue makeResult(zvalue value) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 zvalue TYPE_Box = NULL;

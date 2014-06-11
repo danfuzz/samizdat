@@ -14,9 +14,9 @@
 #include "util.h"
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue ioReadDirectory(zvalue path) {

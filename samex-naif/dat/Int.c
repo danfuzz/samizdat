@@ -14,9 +14,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 enum {
     /** Count of cached small int value. */
@@ -54,9 +54,9 @@ zvalue intFrom(zint value) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue intFromZint(zint value) {
@@ -74,9 +74,9 @@ zint zintFromInt(zvalue intval) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 zvalue INT_0 = NULL;

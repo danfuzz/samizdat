@@ -12,17 +12,17 @@
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 // Documented in header.
 extern bool zintCanDiv(zint x, zint y);
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 // All documented in header.
 extern bool zcharFromZint(zchar *result, zint value);

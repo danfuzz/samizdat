@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Lowest-layer plumbing and data structures
- */
+//
+// Lowest-layer plumbing and data structures
+//
 
 #ifndef _DAT_H_
 #define _DAT_H_
@@ -18,9 +18,9 @@
 #include "dat/frame.h"  // Frame (stack reference) management.
 
 
-/*
- * Assertion Declarations
- */
+//
+// Assertion Declarations
+//
 
 /**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
@@ -36,9 +36,9 @@ void assertValid(zvalue value);
 void assertValidOrNull(zvalue value);
 
 
-/*
- * Code Loading Declarations
- */
+//
+// Code Loading Declarations
+//
 
 /**
  * Loads and evaluates (runs) a native binary module, passing the given
@@ -49,9 +49,9 @@ void assertValidOrNull(zvalue value);
 zvalue datEvalBinary(zvalue env, zvalue path);
 
 
-/*
- * Memory Management Declarations
- */
+//
+// Memory Management Declarations
+//
 
 /**
  * Allocates a value, assigning it the given type, and sizing the memory

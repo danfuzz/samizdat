@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Execution frames
- */
+//
+// Execution frames
+//
 
 #include "type/Box.h"
 #include "type/Map.h"
@@ -14,9 +14,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Finds the variable with the given name, returning the box it is bound
@@ -35,9 +35,9 @@ static zvalue findBox(Frame *frame, zvalue name) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,

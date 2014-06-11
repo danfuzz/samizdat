@@ -9,9 +9,9 @@
 #include "impl.h"
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in spec. */
 FUN_IMPL_DECL(dataOf) {

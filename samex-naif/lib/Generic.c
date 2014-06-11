@@ -10,9 +10,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Does most of the work of generic construction.
@@ -33,9 +33,9 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
     return makeGeneric(minArgs, maxArgs, flags, name);
 }
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in spec. */
 FUN_IMPL_DECL(genericBind) {

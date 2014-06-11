@@ -19,9 +19,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Next type sequence number to assign. */
 static zint theNextTypeId = 0;
@@ -195,9 +195,9 @@ static bool typeEq(zvalue type1, zvalue type2) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 extern inline zint typeIndexUnchecked(zvalue type);
@@ -209,9 +209,9 @@ bool typeHasSecret(zvalue type, zvalue secret) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void assertHasType(zvalue value, zvalue type) {
@@ -297,9 +297,9 @@ zvalue typeParent(zvalue type) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 METH_IMPL(Type, debugString) {

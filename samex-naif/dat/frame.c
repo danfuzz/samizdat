@@ -7,9 +7,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Actual stack memory. */
 static zvalue theStack[DAT_MAX_STACK];
@@ -35,9 +35,9 @@ void datFrameError(const char *msg) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 zint markFrameStack(void) {
     zint stackSize = frameStackTop - frameStackBase;
@@ -50,9 +50,9 @@ zint markFrameStack(void) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 extern zstackPointer datFrameStart(void);

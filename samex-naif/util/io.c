@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * I/O Functions
- */
+//
+// I/O Functions
+//
 
 #include <errno.h>
 #include <unistd.h>
@@ -12,9 +12,9 @@
 #include "util.h"
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 char *utilCwd(void) {

@@ -8,9 +8,9 @@
 #include "helpers.h"
 
 
-/*
- * Module functions
- */
+//
+// Module functions
+//
 
 /* Documented in header. */
 zvalue mapFrom1(zvalue k1, zvalue v1) {

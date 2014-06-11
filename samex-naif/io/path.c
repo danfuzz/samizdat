@@ -11,9 +11,9 @@
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * Common code for checking paths.
@@ -43,9 +43,9 @@ void checkPath0(zvalue path, bool isAbsolute) {
     }
 }
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void ioCheckAbsolutePath(zvalue path) {

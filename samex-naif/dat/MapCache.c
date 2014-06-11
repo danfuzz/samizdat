@@ -13,9 +13,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 enum {
     /** Whether to spew to the console about map cache hits. */
@@ -26,9 +26,9 @@ enum {
 static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
@@ -58,9 +58,9 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 METH_IMPL(MapCache, gcMark) {

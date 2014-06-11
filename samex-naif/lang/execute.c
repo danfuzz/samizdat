@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Node evaluation / execution
- */
+//
+// Node evaluation / execution
+//
 
 #include "const.h"
 #include "type/Box.h"
@@ -21,9 +21,9 @@
 #include "lang0node.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 // Both of these are defined at the bottom of this section.
 static zvalue execExpression(Frame *frame, zvalue expression);
@@ -172,9 +172,9 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 }
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
@@ -209,9 +209,9 @@ void execStatements(Frame *frame, zvalue statements) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue langEval0(zvalue env, zvalue node) {

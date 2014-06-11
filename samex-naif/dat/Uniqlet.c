@@ -7,9 +7,9 @@
 #include "impl.h"
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue makeUniqlet(void) {
@@ -17,9 +17,9 @@ zvalue makeUniqlet(void) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /** Initializes the module. */
 MOD_INIT(Uniqlet) {

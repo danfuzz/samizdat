@@ -13,9 +13,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Array of single-character strings, for low character codes. */
 static zvalue CACHED_CHARS[DAT_MAX_CACHED_CHAR + 1];
@@ -100,9 +100,9 @@ static void freeArray(zchar *array) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue stringFromUtf8(zint stringBytes, const char *string) {
@@ -234,9 +234,9 @@ void zcharsFromString(zchar *result, zvalue string) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 zvalue EMPTY_STRING = NULL;

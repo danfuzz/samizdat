@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Initialization
- */
+//
+// Initialization
+//
 
 #include <stddef.h>
 #include <string.h>
@@ -15,9 +15,9 @@
 #include "impl.h"
 
 
-/*
- * Module Definitions
- */
+//
+// Module Definitions
+//
 
 /* Documented in header. */
 zevalType langTypeMap[DAT_MAX_TYPES];

@@ -14,9 +14,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * The next identity value to return. This starts at `1`, because `0` is
@@ -41,9 +41,9 @@ static zint nextSelfId(void) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 extern zvalue datNonVoid(zvalue value);
@@ -157,9 +157,9 @@ zorder valZorder(zvalue value, zvalue other) {
 }
 
 
-/*
- * Type Definition
- */
+//
+// Type Definition
+//
 
 /* Documented in header. */
 METH_IMPL(Value, debugName) {

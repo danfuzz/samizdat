@@ -11,9 +11,9 @@
 #include "zlimits.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Death context stack element. */
 typedef struct Context {
@@ -31,9 +31,9 @@ UtilStackGiblet *utilStackTop = NULL;
 static bool currentlyDying = false;
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void note(const char *format, ...) {

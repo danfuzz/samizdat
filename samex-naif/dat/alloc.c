@@ -11,9 +11,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 enum {
     /** Whether to spew to the console during gc. */
@@ -229,9 +229,9 @@ static void doGc(void) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue datAllocValue(zvalue type, zint extraBytes) {

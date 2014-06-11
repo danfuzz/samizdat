@@ -16,9 +16,9 @@
 #include "lang0node.h"
 
 
-/*
- * ParseState definition and functions
- */
+//
+// ParseState definition and functions
+//
 
 /** State of parsing in-progress. */
 typedef struct {
@@ -123,9 +123,9 @@ static void dumpState(ParseState *state) {
 }
 
 
-/*
- * Parsing helper functions
- */
+//
+// Parsing helper functions
+//
 
 /* Definitions to help avoid boilerplate in the parser functions. */
 #define RULE(name) parse_##name
@@ -1224,9 +1224,9 @@ DEF_PARSE(program) {
     return withoutTops(closure);
 }
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue langParseExpression0(zvalue expression) {

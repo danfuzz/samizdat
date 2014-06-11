@@ -10,9 +10,9 @@
 #include "impl.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /**
  * This is the type of `eval` functions defined by native code libraries.
@@ -65,9 +65,9 @@ static zvalue evalLibrary(void *libHandle, zvalue env) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue datEvalBinary(zvalue env, zvalue path) {

@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Lowest level type definitions
- */
+//
+// Lowest level type definitions
+//
 
 #ifndef _ZTYPE_H_
 #define _ZTYPE_H_

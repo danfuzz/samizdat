@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Sequence values
- */
+//
+// Sequence values
+//
 
 #include "const.h"
 #include "type/Box.h"
@@ -22,9 +22,9 @@
 #include "impl.h"
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,

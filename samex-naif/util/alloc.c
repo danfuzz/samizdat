@@ -10,9 +10,9 @@
 #include "zlimits.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 enum {
     /**
@@ -126,9 +126,9 @@ static void addPages(void *start, void *end) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 void *utilAlloc(zint size) {

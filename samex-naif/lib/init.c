@@ -27,9 +27,9 @@
 #include "util.h"
 
 
-/*
- * Private Definitions
- */
+//
+// Private Definitions
+//
 
 /** Globals map (environment) containing all the primitive definitions. */
 static zvalue PRIMITIVE_ENVIRONMENT = NULL;
@@ -111,9 +111,9 @@ static zvalue getLibrary(zvalue libraryPath) {
 }
 
 
-/*
- * Exported Definitions
- */
+//
+// Exported Definitions
+//
 
 /* Documented in header. */
 zvalue libNewEnvironment(const char *libraryPath) {
