@@ -154,7 +154,7 @@ fn @@thunk.convertPex(formals) {
     });
     def convertedClosure = convertPexIn(closure);
 
-    return makeCall(REFS::Peg_makeThunk, convertedClosure)
+    return makeCall(REFS::Peg_makeParserThunk, convertedClosure)
 };
 
 ## Converts a `token` pex node.

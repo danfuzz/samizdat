@@ -318,6 +318,11 @@ export fn makeOpt(rule) {
 };
 
 ## Documented in spec.
+export fn makeParserThunk(function) {
+    return @PegThunk(function)
+};
+
+## Documented in spec.
 export fn makePlus(rule) {
     return @PegRepeat{rule, minSize: 1}
 };
@@ -339,11 +344,6 @@ export fn makeSequence(rules*) {
 ## Documented in spec.
 export fn makeStar(rule) {
     return @PegRepeat{rule}
-};
-
-## Documented in spec.
-export fn makeThunk(function) {
-    return @PegThunk(function)
 };
 
 ## Documented in spec.

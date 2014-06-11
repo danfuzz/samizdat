@@ -288,6 +288,20 @@ rule fails, this one yields an empty list and does not consume any input.
 
 This is equivalent to the syntactic form `{: rule? :}`.
 
+#### `makeParserThunk(function) -> rule`
+
+Makes and returns a parser rule which runs the given function to produce
+a parser, which is then called to do the actual parsing. `function`
+must be a function. When called, it is passed as arguments all the
+in-scope matched results from the current sequence context. Whatever it
+returns is expected to be a parser, and that parser is then called upon
+to perform parsing.
+
+If the called function returns void, then the rule is considered to have
+failed.
+
+This is equivalent to the syntactic form `{: %term :}`.
+
 #### `makePlus(rule) -> rule`
 
 Makes and returns a parser rule which matches a given rule repeatedly.
@@ -338,20 +352,6 @@ string. The result of successful parsing is a valueless token with
 `string` as its type tag.
 
 This is equivalent to the syntactic form `{: "string" :}`.
-
-#### `makeThunk(function) -> rule`
-
-Makes and returns a parser rule which runs the given function to produce
-a parser, which is then called to do the actual parsing. `function`
-must be a function. When called, it is passed as arguments all the
-in-scope matched results from the current sequence context. Whatever it
-returns is expected to be a parser, and that parser is then called upon
-to perform parsing.
-
-If the called function returns void, then the rule is considered to have
-failed.
-
-This is equivalent to the syntactic form `{: %term :}`.
 
 #### `makeToken(type) -> rule`
 

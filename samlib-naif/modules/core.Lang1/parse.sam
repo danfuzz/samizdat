@@ -64,7 +64,7 @@ def parOpExpression;
 
 ## Documented in spec.
 def parExpression = $Peg::makeMainChoice(
-    $Peg::makeThunk { parAssignExpression });
+    $Peg::makeParserThunk { parAssignExpression });
 
 ## Documented in spec.
 def parParenExpression = $Peg::makeMainSequence(
@@ -233,7 +233,7 @@ def parDeriv = $Peg::makeMainSequence(
 ## Documented in spec.
 def parFullClosure = $Peg::makeMainSequence(
     $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
-    $Peg::makeThunk { . -> parRawClosure },
+    $Peg::makeParserThunk { . -> parRawClosure },
     $Peg::makeCode { ., raw ->
         def closure = makeFullClosure(raw);
         withoutTops(closure)
@@ -242,7 +242,7 @@ def parFullClosure = $Peg::makeMainSequence(
 ## Documented in spec.
 def parBasicClosure = $Peg::makeMainSequence(
     $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{")),
-    $Peg::makeThunk { . -> parRawClosure },
+    $Peg::makeParserThunk { . -> parRawClosure },
     $Peg::makeCode { ., raw ->
         def closure = makeBasicClosure(raw);
         withoutTops(closure)
@@ -276,7 +276,7 @@ def parTerm = $Peg::makeMainChoice(
     ## it clear what is required to "jump into" Layer 1 parsing.
     $Peg::makeSequence(
         $Peg::makeLookaheadSuccess($Peg::makeToken(@@"{:")),
-        $Peg::makeThunk { . -> parParser }));
+        $Peg::makeParserThunk { . -> parParser }));
 
 ## Documented in spec.
 def parActualsList = $Peg::makeMainChoice(
@@ -328,7 +328,7 @@ def parUnaryExpression = $Peg::makeMainSequence(
 
 ## Documented in spec.
 parAssignExpression := $Peg::makeMainSequence(
-    $Peg::makeThunk { parOpExpression },
+    $Peg::makeParserThunk { parOpExpression },
     $Peg::makeChoice(
         $Peg::makeSequence(
             $Peg::makeToken(@@":="),
@@ -714,14 +714,14 @@ def PEX_TYPES = {
 ## Documented in spec.
 parParser := $Peg::makeMainSequence(
     $Peg::makeToken(@@"{:"),
-    $Peg::makeThunk { . -> parChoicePex },
+    $Peg::makeParserThunk { . -> parChoicePex },
     $Peg::makeToken(@@":}"),
     $Peg::makeCode { ., pex, . -> @parser{value: pex} });
 
 ## Documented in spec.
 def parParenPex = $Peg::makeMainSequence(
     $Peg::makeToken(@@"("),
-    $Peg::makeThunk { . -> parChoicePex },
+    $Peg::makeParserThunk { . -> parChoicePex },
     $Peg::makeToken(@@")"),
     $Peg::makeCode { ., pex, . -> pex });
 
