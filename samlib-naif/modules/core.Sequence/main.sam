@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import proto.Number;
+import proto.Number :: add, sub;
 
 ## This just binds generics without adding exports.
 import ./SequenceGenerator;
@@ -24,24 +24,24 @@ export import proto.Sequence :: *;
 
 ## Documented in spec.
 export fn nthFromEnd(seq, n) {
-    def index = $Number::sub(get_size(seq), $Number::add(n, 1));
+    def index = sub(get_size(seq), add(n, 1));
     return? nth(seq, index)
 };
 
 ## Documented in spec.
 export fn sliceGeneral(seq, style, start, optEnd?) {
-    def limit = $Number::sub(get_size(seq), 1);
+    def limit = sub(get_size(seq), 1);
     def func = ifIs { eq(style, @exclusive) }
         { sliceExclusive }
         { sliceInclusive };
     def startIndex = ifIs { hasType(start, @@fromStart) }
         { dataOf(start) }
-        { $Number::sub(limit, dataOf(start)) };
+        { sub(limit, dataOf(start)) };
     def optEndIndex = (ifValue { optEnd* }
         { end ->
             ifIs { hasType(end, @@fromStart) }
                 { dataOf(end) }
-                { $Number::sub(limit, dataOf(end)) }
+                { sub(limit, dataOf(end)) }
         })?;
 
     return? func(seq, startIndex, optEndIndex*)
