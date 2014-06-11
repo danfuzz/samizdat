@@ -66,12 +66,12 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
 }
 
 
-/*
- * Type Definition
- *
- * **Note:** This isn't the usual form of type definition, since these
- * methods are bound on many types.
- */
+//
+// Type Definition
+//
+// **Note:** This isn't the usual form of type definition, since these
+// methods are bound on many types.
+//
 
 /* Documented in header. */
 METH_IMPL(DerivedData, gcMark) {

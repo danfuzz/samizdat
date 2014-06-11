@@ -2,11 +2,11 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * A grab-bag of various implementation limits / limitations and
- * generally tweakable implementation constants. The prefix on each
- * value's name indicates which module "owns" it.
- */
+//
+// A grab-bag of various implementation limits / limitations and
+// generally tweakable implementation constants. The prefix on each
+// value's name indicates which module "owns" it.
+//
 
 #ifndef _ZLIMITS_H_
 #define _ZLIMITS_H_

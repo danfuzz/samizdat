@@ -65,6 +65,23 @@ zvalue funApply(zvalue function, zvalue args);
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
+ * Function which should never get called. This is used to wrap calls which
+ * aren't allowed to return. Should they return, this function gets called
+ * and promptly dies with a fatal error.
+ *
+ * **Note:** This function is typed to return a `zvalue` (and not void),
+ * so that it can be used in contexts that require a return value. This is
+ * a quirk of the `noreturn` extension to C, which this function uses.
+ */
+zvalue mustNotYield(zvalue value)
+    __attribute__((noreturn));
+
+
+//
+// Function calling macros
+//
+
+/**
  * `FUN_CALL(function, arg, ...)`: Calls a function, with a variable number
  * of arguments passed in the usual C style.
  *
@@ -99,10 +116,11 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args);
  */
 #define GFN_CALL(name, ...) FUN_CALL(GFN_##name, __VA_ARGS__)
 
-/*
- * Helpers for `FUN_CALL` and `GFN_CALL`. Each of these calls a given
- * function with a  different number of (particular) arguments.
- */
+
+//
+// Helpers for `FUN_CALL` and `GFN_CALL`. Each of these calls a given
+// function with a  different number of (particular) arguments.
+//
 
 inline zvalue funCallWith0(zvalue function) {
     return funCall(function, 0, NULL);
@@ -268,17 +286,5 @@ inline zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
     };
     return funCall(function, 19, args);
 }
-
-/**
- * Function which should never get called. This is used to wrap calls which
- * aren't allowed to return. Should they return, this function gets called
- * and promptly dies with a fatal error.
- *
- * **Note:** This function is typed to return a `zvalue` (and not void),
- * so that it can be used in contexts that require a return value. This is
- * a quirk of the `noreturn` extension to C, which this function uses.
- */
-zvalue mustNotYield(zvalue value)
-    __attribute__((noreturn));
 
 #endif

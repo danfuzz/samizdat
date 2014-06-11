@@ -73,12 +73,12 @@ static void reset(ParseState *state, zint mark) {
 }
 
 
-/*
- * Samizdat 0 Tree Grammar
- *
- * This is *not* a direct transliteration of the spec's reference tokenizer,
- * but it is nonetheless intended to implement the same grammar.
- */
+//
+// Samizdat 0 Tree Grammar
+//
+// This is *not* a direct transliteration of the spec's reference tokenizer,
+// but it is nonetheless intended to implement the same grammar.
+//
 
 /**
  * Skips a single-line comment. Should only be called when known to be

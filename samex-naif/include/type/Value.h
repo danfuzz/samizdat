@@ -2,12 +2,12 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `Value` data type
- *
- * **Note:** As a slight concession to conciseness, the name prefix used for
- * this type is `val` and not `value`.
- */
+//
+// `Value` data type
+//
+// **Note:** As a slight concession to conciseness, the name prefix used for
+// this type is `val` and not `value`.
+//
 
 #ifndef _TYPE_VALUE_H_
 #define _TYPE_VALUE_H_

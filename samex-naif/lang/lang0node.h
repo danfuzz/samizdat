@@ -2,16 +2,17 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Node constructors and related helpers. These functions are
- * (near-)transliterations of the same-named functions in the module
- * `core.Lang0Node`.
- */
+//
+// Node constructors and related helpers. These functions are
+// (near-)transliterations of the same-named functions in the module
+// `core.Lang0Node`.
+//
 
 #ifndef _LANG0NODE_H_
 #define _LANG0NODE_H_
 
 #include "type/Value.h"
+
 
 /** Equivalent to `REFS::<name>` in the spec. */
 #define REFS(name) (makeVarRef(STR_##name))

@@ -240,12 +240,12 @@ DEF_PARSE(optSemicolons) {
 }
 
 
-/*
- * Samizdat 0 Tree Grammar
- *
- * The following is a near-direct transliterations of the tree syntax
- * rules from the spec.
- */
+//
+// Samizdat 0 Tree Grammar
+//
+// The following is a near-direct transliterations of the tree syntax
+// rules from the spec.
+//
 
 /* Documented in spec. */
 DEF_PARSE(assignExpression);

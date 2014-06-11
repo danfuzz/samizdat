@@ -2,15 +2,15 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `PRIM_DEF(name, value)` binds a name to a pre-existing value.
- *
- * `PRIM_FUNC(name, minArgs, maxArgs)` defines a primitive function with the
- * given name and argument restrictions.
- *
- * **Note:** This file gets `#include`d multiple times, and so does not
- * have the usual guard macros.
- */
+//
+// `PRIM_DEF(name, value)` binds a name to a pre-existing value.
+//
+// `PRIM_FUNC(name, minArgs, maxArgs)` defines a primitive function with the
+// given name and argument restrictions.
+//
+// **Note:** This file gets `#include`d multiple times, and so does not
+// have the usual guard macros.
+//
 
 // Types.
 PRIM_DEF(Data,                    TYPE_Data);

@@ -2,16 +2,16 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * `Collection` protocol
- *
- * **Note:** There is no in-model value `Collection`. There are a few
- * different subsets of collection-like functionality which may eventually
- * be represented as protocols or similar.
- *
- * **Note:** Because `collection` per se is an awkward prefix, instead the
- * suggestive prefix `coll` is used.
- */
+//
+// `Collection` protocol
+//
+// **Note:** There is no in-model value `Collection`. There are a few
+// different subsets of collection-like functionality which may eventually
+// be represented as protocols or similar.
+//
+// **Note:** Because `collection` per se is an awkward prefix, instead the
+// suggestive prefix `coll` is used.
+//
 
 #ifndef _TYPE_COLLECTION_H_
 #define _TYPE_COLLECTION_H_

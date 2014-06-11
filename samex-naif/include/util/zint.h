@@ -2,52 +2,52 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-/*
- * Safe integer functions
- *
- * Notes
- * -----
- *
- * With regard to detecting overflow, C compilers are allowed to optimize
- * overflowing operations in surprising ways. Therefore, the usual
- * recommendation for portable code is to detect overflow by inspection of
- * operands, not results. The choices for what to detect here are informed by,
- * but not exactly the same as, the CERT "AIR" recommendations.
- *
- * With regard to division and modulo, this file implements both
- * traditional truncating division and Euclidean division, each with its
- * corresponding modulo operation. These are implemented to assume the C99
- * definition of division and remainder, in particular that division is
- * truncating and that the sign of a modulo result is the same as the sign
- * of the dividend (the left-hand argument).
- *
- * This file is implemented *almost* entirely without assuming an underlying
- * int representation, not for its own sake but instead because that's what's
- * most readable (and is also not horrendously inefficient). In a couple
- * cases, though, the code does assume that ints are represented as
- * twos-complement binary values, since that makes the code easier to
- * understand.
- *
- * References:
- *
- * * [As-If Infinitely Ranged Integer Model, Second
- *   Edition](http://www.cert.org/archive/pdf/10tn008.pdf)
- *
- * * [CERT C Secure Coding
- *   Standard](https://www.securecoding.cert.org/confluence/display/
- *   seccode/CERT+C+Secure+Coding+Standard)
- *
- * * [Division and Modulus for Computer
- *   Scientists](http://legacy.cs.uu.nl/daan/download/papers/divmodnote.pdf)
- *
- * * [The Euclidean Definition of the Functions div and
- *   mod](https://biblio.ugent.be/publication/314490/file/452146.pdf)
- *
- * * [Modulo operation
- *   (Wikipedia)](http://en.wikipedia.org/wiki/Modulo_operation)
- *
- * * [Safe IOP Library](https://code.google.com/p/safe-iop/)
- */
+//
+// Safe integer functions
+//
+// Notes
+// -----
+//
+// With regard to detecting overflow, C compilers are allowed to optimize
+// overflowing operations in surprising ways. Therefore, the usual
+// recommendation for portable code is to detect overflow by inspection of
+// operands, not results. The choices for what to detect here are informed by,
+// but not exactly the same as, the CERT "AIR" recommendations.
+//
+// With regard to division and modulo, this file implements both
+// traditional truncating division and Euclidean division, each with its
+// corresponding modulo operation. These are implemented to assume the C99
+// definition of division and remainder, in particular that division is
+// truncating and that the sign of a modulo result is the same as the sign
+// of the dividend (the left-hand argument).
+//
+// This file is implemented *almost* entirely without assuming an underlying
+// int representation, not for its own sake but instead because that's what's
+// most readable (and is also not horrendously inefficient). In a couple
+// cases, though, the code does assume that ints are represented as
+// twos-complement binary values, since that makes the code easier to
+// understand.
+//
+// References:
+//
+// * [As-If Infinitely Ranged Integer Model, Second
+//   Edition](http://www.cert.org/archive/pdf/10tn008.pdf)
+//
+// * [CERT C Secure Coding
+//   Standard](https://www.securecoding.cert.org/confluence/display/
+//   seccode/CERT+C+Secure+Coding+Standard)
+//
+// * [Division and Modulus for Computer
+//   Scientists](http://legacy.cs.uu.nl/daan/download/papers/divmodnote.pdf)
+//
+// * [The Euclidean Definition of the Functions div and
+//   mod](https://biblio.ugent.be/publication/314490/file/452146.pdf)
+//
+// * [Modulo operation
+//   (Wikipedia)](http://en.wikipedia.org/wiki/Modulo_operation)
+//
+// * [Safe IOP Library](https://code.google.com/p/safe-iop/)
+//
 
 #ifndef _UTIL_ZINT_H_
 #define _UTIL_ZINT_H_
