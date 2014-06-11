@@ -185,7 +185,7 @@ export fn compile(resolver, sourcePath, targetPath) {
 
     def interner = makeInterner();
     def litsNode = internLiterals(mainNode, interner);
-    def partialLits = interner.interns; ## Needed for closure declarations.
+    def partialLits = interner.interns;  ## Needed for closure declarations.
 
     def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;

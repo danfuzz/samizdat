@@ -664,7 +664,7 @@ def parGenericDef = {:
     @")"
 
     {
-        def fullFormals = [{}, formals*]; ## First one is `this`.
+        def fullFormals = [{}, formals*];  ## First one is `this`.
         def func = ifIs { eq(optStar, []) }
             { REFS::makeRegularGeneric }
             { REFS::makeUnitypeGeneric };
@@ -1486,7 +1486,7 @@ def parIndexPostfix = {:
     optStart = parIndexExpression?
     optOp = [@".." @"..!"]?
     end = (
-        { optOp* } ## End can only be parsed if there was a slice op.
+        { optOp* }  ## End can only be parsed if there was a slice op.
         parIndexExpression
     |
         { @endIndex }

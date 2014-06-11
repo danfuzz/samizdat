@@ -116,7 +116,7 @@ fn @@PegOpt.parse(box, input, items*) {
 fn @@PegRepeat.parse(box, input, items*) {
     def rule = this::rule;
     var remainingInput = input;
-    var results = []; ## Values that have been parsed by the inner rule.
+    var results = [];  ## Values that have been parsed by the inner rule.
 
     loop {
         def innerBox = makePromise();
@@ -234,7 +234,7 @@ fn typeListFromString(string) {
 ## Private helper for `make*Set*`, which takes a `sense` argument and
 ## produces the desired rule.
 fn genericMakeTokenSet(sense, types) {
-    def set = {types*: true}; ## A set-like map of all the token types.
+    def set = {types*: true};  ## A set-like map of all the token types.
 
     ifIs { eq(set, {}) }
         {

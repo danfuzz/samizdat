@@ -66,7 +66,7 @@ def tokWhitespace = {:
         "#" ["#!="] [! "\n"]*
     |
         ## Introduced in Layer 2.
-        &"#:" ## Avoid calling the rule unless we know it will match.
+        &"#:"  ## Avoid calling the rule unless we know it will match.
         %tokMultilineComment
     )+
 :};
@@ -118,7 +118,7 @@ def tokDecDigit = {:
 ## Parses an integer literal.
 def tokInt = {:
     ## Note: Introduced in Layer 2.
-    &"0" ## Avoid calling the rule unless we know it will match.
+    &"0"  ## Avoid calling the rule unless we know it will match.
     %tokInt2
 |
     digits = tokDecDigit+
