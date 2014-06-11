@@ -42,10 +42,12 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--build] [--no-optimize] [--runtime=<name>]" \
-            "[--compiler=<mode>]"
+        echo "${progName} [--runtime=<name>] [--compiler=<mode>]"
+        echo '    [--build] [--clean-build] [--no-optimize]'
         exit
-    elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
+    elif [[    ${opt} == '--build'
+            || ${opt} == '--clean-build'
+            || ${opt} == '--no-optimize' ]]; then
         buildOpts+=("${opt}")
     elif [[ ${opt} =~ ^--runtime= || ${opt} =~ ^--compiler= ]]; then
         runtimeOpts+=("${opt}")

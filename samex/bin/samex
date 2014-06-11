@@ -30,17 +30,20 @@ init-prog
 # Argument parsing
 #
 
-# Preferred runtime name option.
-runtimeName=''
+# Whether to build a binary.
+build=0
+
+# Whether to clean before building.
+clean=0
 
 # Whether to just build (and not run).
 justBuild=0
 
-# Whether to build a binary.
-build=0
-
 # Whether to build with optimization, when building.
 optimize=1
+
+# Preferred runtime name option.
+runtimeName=''
 
 # Whether to time the run.
 timeRun=0
@@ -55,11 +58,14 @@ while [[ $1 != '' ]]; do
         break
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--runtime=<name>]"
-        echo '    [--just-build] [--build] [--no-optimize]' \
-            '[--time | --profile]'
+        echo '    [--build] [--clean-build] [--just-build] [--no-optimize]'
+        echo '    [--time | --profile]'
         exit
     elif [[ ${opt} == '--build' ]]; then
         build=1
+    elif [[ ${opt} == '--clean-build' ]]; then
+        build=1
+        clean=1
     elif [[ ${opt} == '--just-build' ]]; then
         build=1
         justBuild=1
@@ -108,6 +114,10 @@ if (( build )); then
 
     if (( !optimize )); then
         buildOpts=(--no-optimize)
+    fi
+
+    if (( clean )); then
+        rm -rf "${sourceDir}/out" || exit 1
     fi
 
     "${sourceDir}/blur/blur" \

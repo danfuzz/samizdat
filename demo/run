@@ -52,7 +52,8 @@ while [[ $1 != '' ]]; do
         break
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--runtime=<name>] [--compiler=<mode>]"
-        echo '    [--build] [--no-optimize] [--time | --profile]'
+        echo '    [--build] [--clean-build] [--no-optimize]'
+        echo '    [--time | --profile]'
         echo '    demo-name arg...'
         exit
     elif [[ ${opt} =~ ^--compiler=(.*) ]]; then
@@ -61,7 +62,9 @@ while [[ $1 != '' ]]; do
     elif [[ ${opt} =~ ^--language=(.*) ]]; then
         language="${BASH_REMATCH[1]}"
         copyDemo=1
-    elif [[ ${opt} == '--build' || ${opt} == '--no-optimize' ]]; then
+    elif [[    ${opt} == '--build'
+            || ${opt} == '--clean-build'
+            || ${opt} == '--no-optimize' ]]; then
         buildOpts+=("${opt}")
     elif [[    ${opt} == '--profile' || ${opt} == '--time'
             || ${opt} =~ ^--runtime= ]]; then
