@@ -1672,9 +1672,9 @@ def parCompareExpression = {:
 :};
 
 ## Parses a single test clause with optional assignment, yielding a map of
-## the form `{formal: ..., test: ...}`, with `formal` bound to a formal
-## argument declaration and `test` bound to the test expression. If no formal
-## was parsed, `formal` is bound to `{}`.
+## the form `{formal: ..., testThunk: ...}`, with `formal` bound to a formal
+## argument declaration and `testThunk` bound to a thunk for the test
+## expression. If no formal was parsed, `formal` is bound to `{}`.
 def parTestClause = {:
     formal = (
         @def
@@ -1687,7 +1687,7 @@ def parTestClause = {:
 
     test = parExpression
 
-    { {formal, test} }
+    { {formal, testThunk: makeThunk(test)} }
 :};
 
 ## Parses a single parenthesized test clause.
@@ -1716,7 +1716,7 @@ def parLogicAndClause = {:
     parParenTestClause
 |
     test = parCompareExpression
-    { {formal: {}, test} }
+    { {formal: {}, testThunk: makeThunk(test)} }
 :};
 
 ## Parses a short-circuit logical-and expression. The translation is along
@@ -1768,7 +1768,7 @@ def parLogicAndExpression = {:
         {
             def clause = most*;
             def formal = clause::formal;
-            def testThunk = makeThunk(clause::test);
+            def testThunk = clause::testThunk;
             def resultThunk = makeThunk(last);
 
             ifIs { eq(formal, {}) }
@@ -1789,8 +1789,7 @@ def parLogicAndExpression = {:
             def testThunks =
                 $Generator::filterAll(most, $Range::makeOpenRange(0))
                     { clause, index ->
-                        def test = clause::test;
-                        withFormals(makeThunk(test),
+                        withFormals(clause::testThunk,
                             $Sequence::sliceExclusive(formals, 0, index))
                     };
 
@@ -1865,7 +1864,7 @@ def parMultiTest = {:
         {
             def clause = clauses*;
             def formal = clause::formal;
-            def testThunk = makeThunk(clause::test);
+            def testThunk = clause::testThunk;
             { thenThunk, elseThunk? ->
                 ifIs { eq(formal, {}) }
                     {
@@ -1890,8 +1889,7 @@ def parMultiTest = {:
             def testThunks =
                 $Generator::filterAll(clauses, $Range::makeOpenRange(0))
                     { clause, index ->
-                        def test = clause::test;
-                        withFormals(makeThunk(test),
+                        withFormals(clause::testThunk,
                             $Sequence::sliceExclusive(formals, 0, index))
                     };
 
@@ -2273,7 +2271,7 @@ def parSwitchExpression = {:
         });
 
         def outerIf = makeCall(REFS::ifValue,
-            makeThunk(testClause::test),
+            testClause::testThunk,
             mainBody,
             optElse*);
 
