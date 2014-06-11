@@ -30,11 +30,11 @@ init-prog
 # Argument parsing
 #
 
-# Runtime / compiler selection options.
-runtimeOpts=()
-
 # Build options.
 buildOpts=()
+
+# Runtime / compiler selection options.
+runtimeOpts=()
 
 while [[ $1 != '' ]]; do
     opt="$1"

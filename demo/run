@@ -33,17 +33,17 @@ init-prog
 # Build options to pass to `samex`.
 buildOpts=()
 
-# Extra options to pass to `samex`.
-samexOpts=()
-
 # What compiler mode to use, if any.
 compilerMode=''
+
+# Whether the demo directory needs to be copied (for mutation, etc.).
+copyDemo=0
 
 # What language module to use (as an override), if any.
 language=''
 
-# Whether the demo directory needs to be copied (for mutation, etc.).
-copyDemo=0
+# Extra options to pass to `samex`.
+samexOpts=()
 
 while [[ $1 != '' ]]; do
     opt="$1"
