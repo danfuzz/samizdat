@@ -142,7 +142,14 @@ fi
 cmd=("${name}" "$@")
 
 if (( timeRun )); then
-    time -p "${cmd[@]}"
+    startTime="$(date '+%s')"
+    "${cmd[@]}"
+    endTime="$(date '+%s')"
+    (( totalSecs = endTime - startTime ))
+    (( totalMins = totalSecs / 60 ))
+    (( totalSecs = totalSecs - totalMins * 60 ))
+    echo ''
+    printf 'Elapsed time: %dm %02ds\n' "${totalMins}" "${totalSecs}"
 elif (( profileRun )); then
     # May also want to use the -allocations option.
     iprofiler -T 20s -timeprofiler "${cmd[@]}"
