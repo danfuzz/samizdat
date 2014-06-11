@@ -145,6 +145,9 @@ If any of the rules fail, then this rule also fails, consuming no input.
 In addition to the original `items*` passed in to this rule, each sub-rule
 receives the results of all the previous sub-rules as additional `items*`.
 
+As an edge case, if `rules` is empty, then this equivalent to `@PegEmpty`,
+succeeding, consuming no input, and yielding `null`.
+
 #### `@PegThunk(function).parse(...)`
 
 Calls the given function, which is expected to return a parser. Then
