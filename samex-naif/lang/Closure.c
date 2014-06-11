@@ -9,7 +9,6 @@
  */
 
 #include "const.h"
-#include "impl.h"
 #include "type/Box.h"
 #include "type/Generic.h"
 #include "type/Jump.h"
@@ -20,6 +19,8 @@
 #include "type/Value.h"
 #include "util.h"
 #include "zlimits.h"
+
+#include "impl.h"
 
 
 /*
