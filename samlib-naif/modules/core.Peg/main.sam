@@ -9,7 +9,7 @@
 #= language core.Lang0
 
 import core.Box :: makePromise, nullBox;
-import core.Generator;
+import core.Generator :: filterPump, makeFilterGenerator;
 
 
 ##
@@ -38,7 +38,7 @@ fn @@PegAny.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegChoice.parse(box, input, items*) {
-    $Generator::filterPump(dataOf(this)) { rule ->
+    filterPump(dataOf(this)) { rule ->
         def innerBox = makePromise();
         ifValue { parse(rule, innerBox, input, items*) }
             { newInput ->
@@ -159,7 +159,7 @@ fn @@PegSequence.parse(box, input, items*) {
     var lastResult = null;
 
     ## This is akin to `for (rule in dataOf(this)) { ... }`.
-    $Generator::filterPump(dataOf(this)) { rule ->
+    filterPump(dataOf(this)) { rule ->
         def innerBox = makePromise();
         ifValue { parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
@@ -397,7 +397,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.
-            $Generator::makeFilterGenerator(input) { ch -> @(@@(ch)) }
+            makeFilterGenerator(input) { ch -> @(@@(ch)) }
         }
         { input };
 
