@@ -15,8 +15,7 @@
  */
 static void assertValidCodePoint(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
-        die("Invalid occurrence of surrogate code point: %#04x",
-               (int) value);
+        die("Invalid occurrence of surrogate code point: %#04x", (int) value);
     } else if (value == 0xfffe) {
         die("Invalid occurrence of reversed-BOM.");
     } else if (value == 0xffff) {
