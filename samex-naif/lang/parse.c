@@ -127,7 +127,7 @@ static void dumpState(ParseState *state) {
 // Parsing helper functions
 //
 
-/* Definitions to help avoid boilerplate in the parser functions. */
+// Definitions to help avoid boilerplate in the parser functions.
 #define RULE(name) parse_##name
 #define TOKEN(type) TYPE_##type
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
@@ -151,7 +151,7 @@ static void dumpState(ParseState *state) {
     tempResult = PARSE(name); \
     REJECT_IF(tempResult == NULL)
 
-/* Function prototype for all parser functions */
+/** Function prototype for all parser functions. */
 typedef zvalue (*parserFunction)(ParseState *);
 
 /**

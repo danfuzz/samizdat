@@ -17,7 +17,7 @@
 #include "type/Value.h"
 #include "util.h"
 
-/* Global environment originally passed into `eval`. */
+/** Global environment originally passed into `eval`. */
 static zvalue GLOBALS = NULL;
 
 
@@ -45,7 +45,7 @@ static zvalue mainClosure(void) {
 // Main entry point
 //
 
-/* Top-level evaluation result. */
+/** Top-level evaluation result. */
 static zvalue EVAL_RESULT = NULL;
 
 zvalue eval(zvalue env) {

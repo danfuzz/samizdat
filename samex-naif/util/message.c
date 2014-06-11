@@ -27,7 +27,7 @@ typedef struct Context {
 // Documented in header.
 UtilStackGiblet *utilStackTop = NULL;
 
-/* Whether death is currently in progress */
+/** Whether death is currently in progress. */
 static bool currentlyDying = false;
 
 
