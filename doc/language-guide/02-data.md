@@ -172,17 +172,17 @@ the common case of putting together a map of current variable definitions.
 `{}` denotes the empty map.
 
 ```
-{}                           ## the empty map
+{}                            ## the empty map
 {1: "number one"}
-{two: 2}                     ## the same as {"two": 2}
-{true: "yes"}                ## the same as {"true": "yes"}
-{(true): "yes"}              ## key is (the boolean value) `true`, not a string
+{two: 2}                      ## the same as {"two": 2}
+{true: "yes"}                 ## the same as {"true": "yes"}
+{(true): "yes"}               ## key is (the boolean) `true`, not a string
 {favorites: ["biscuits", "muffins"]}
 
 def blort = "B";
 def zorch = "Z";
-{blort, zorch}               ## shorthand to reference active variables
-{blort: blort, zorch: zorch} ## longhand of the above
+{blort, zorch}                ## shorthand to reference active variables
+{blort: blort, zorch: zorch}  ## longhand of the above
 
 {
     "blort":  "potion; the ability to see in the dark",
@@ -347,11 +347,11 @@ and payload (if present) must each be surrounded by parentheses
 @"heartState"("pure")         ## shorthand for same
 @heartState("pure")           ## shorthand for same
 
-@spell({name: "frotz", purpose: "cause item to glow"}) ## a map payload
-@spell{name: "frotz", purpose: "cause item to glow"}   ## shorthand for same
+@spell({name: "frotz", purpose: "cause item to glow"})  ## a map payload
+@spell{name: "frotz", purpose: "cause item to glow"}    ## shorthand for same
 
-@utensils(["fork", "knife", "spoon"])                  ## a list payload
-@utensils["fork", "knife", "spoon"]                    ## shorthand for same
+@utensils(["fork", "knife", "spoon"])                   ## a list payload
+@utensils["fork", "knife", "spoon"]                     ## shorthand for same
 
 @(@@"Null")                   ## the value usually just written as `null`
 @(@@Null)                     ## same as above

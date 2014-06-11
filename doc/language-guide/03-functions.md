@@ -381,7 +381,7 @@ are as specified within the parentheses. For example:
 
 ```
 fn Int.blort(igram) {
-    this;  ## refers to the Int target of the function.
-    igram; ## refers to the second parameter to the function.
+    this;   ## refers to the Int target of the function.
+    igram;  ## refers to the second parameter to the function.
 }
 ```

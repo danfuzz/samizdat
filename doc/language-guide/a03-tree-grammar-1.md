@@ -667,7 +667,7 @@ def parGenericDef = {:
     @")"
 
     {
-        def fullFormals = [{}, formals*]; ## First one is `this`.
+        def fullFormals = [{}, formals*];  ## First one is `this`.
         def func = ifIs { eq(optStar, []) }
             { REFS::makeRegularGeneric }
             { REFS::makeUnitypeGeneric };
