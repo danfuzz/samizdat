@@ -30,10 +30,10 @@ msg(-12_345);
 
 note("\nLayer 2...");
 
-msg(0x1234abcd);            ## Decimal 305441741.
-msg(-0x_ABCDEF);            ## Decimal -11259375.
+msg(0x1234abcd);             ## Decimal 305441741.
+msg(-0x_ABCDEF);             ## Decimal -11259375.
 msg(0b0);
 msg(0b1);
 msg(-0b1);
-msg(-0b11);                 ## Decimal -3.
-msg(0b1011_0111_1110_1111); ## Decimal 47087.
+msg(-0b11);                  ## Decimal -3.
+msg(0b1011_0111_1110_1111);  ## Decimal 47087.

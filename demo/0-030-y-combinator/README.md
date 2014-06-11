@@ -84,8 +84,8 @@ myRecursiveFunctions = yStarCombinator
         ## Inner function.
         { myArg1, myArg2, ... ->
             ... my code ...
-            selfCall1(args, ...) ## Call this function self-recursively.
-            selfCall2(args, ...) ## Call the other function.
+            selfCall1(args, ...)  ## Call this function self-recursively.
+            selfCall2(args, ...)  ## Call the other function.
             ... my code ...
         }
     }
@@ -93,8 +93,8 @@ myRecursiveFunctions = yStarCombinator
         ## Inner function.
         { myArg1, myArg2, ... ->
             ... my code ...
-            selfCall1(args, ...) ## Call the other function.
-            selfCall2(args, ...) ## Call this function self-recursively.
+            selfCall1(args, ...)  ## Call the other function.
+            selfCall2(args, ...)  ## Call this function self-recursively.
             ... my code ...
         }
     };

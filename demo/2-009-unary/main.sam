@@ -50,7 +50,7 @@ note("\nBoolean / logic conversion");
 msg(returnVoid()??);
 msg(returnString()??);
 msg(true??);
-msg(false??);   ## This one is the documented surprising result.
+msg(false??);  ## This one is the documented surprising result.
 msg((true**)?);
 msg((false**)?);
 
@@ -108,9 +108,9 @@ msg([1, 2, 3, 4, 5, 6][..!]);
 msg([1, 2, 3][5..!5]);
 msg([1, 2, 3][4..3]);
 msg([1, 2, 3][-10..20]);
-msg(([1, 2, 3][3..1])?); ## `?` since this should be a void return.
-msg(([][1..])?);         ## Ditto.
-msg(([][..!])?);         ## Ditto.
+msg(([1, 2, 3][3..1])?);  ## `?` since this should be a void return.
+msg(([][1..])?);          ## Ditto.
+msg(([][..!])?);          ## Ditto.
 
 note("\nSequences -- single value index from end");
 msg([1, 2, 3][^-1]?);
