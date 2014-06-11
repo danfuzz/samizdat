@@ -267,10 +267,17 @@ Makes an `exportSelection` node to export the variables with the given
 #### `makeFullClosure(map) -> node`
 
 Makes a `closure` node, using the bindings of `map` as a basis, adding
-in defaults like `makeBasicClosure()` (see which), as well as for `yield`.
+in defaults like `makeBasicClosure()` (see which), and also performing
+expansion and defaulting for the `yield` binding.
 
-In the result, `yield` is bound to `@void` unless all of the following are
-true of the input `map`:
+If `map` binds `yield`, then that binding is reflected in the result. If
+the binding is to a `nonlocalExit` node, then that node is expanded
+into an appropriate function call. As a special case, if it binds a
+`nonlocalExit` which would call the `yieldDef` defined in the `map`, then
+the function call is elided.
+
+If `map` does *not* bind `yield`, then in the result, `yield` is bound to
+`@void` unless all of the following are true of the input `map`:
 
 * The map does *not* include a binding for `yieldDef`. That is, it does not
   have a named or implicit nonlocal exit.

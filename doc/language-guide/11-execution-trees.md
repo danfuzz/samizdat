@@ -101,7 +101,7 @@ produced by the function `$Lang0Node::makeInterpolate`.
 
 * `yield: expression` &mdash; An expression node representing
   the (local) result value for a call. Allowed to be a `maybe` or `void`
-  node.
+  node. In intermediate forms, also allowed to be a `nonlocalExit` node.
 
 * `yieldDef: name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
@@ -215,11 +215,29 @@ be allowed to evaluate to void.
 Nodes of this type are only allowed to appear in the following contexts:
 
 * As the `value` binding of an `apply` node.
-* As the `yield` binding of a `closure` node.
+* As the `value` binding of a `nonlocalExit` node.
+* As the `yield` binding of a `closure` node, but only during intermediate
+  processing.
 * As the node passed as an argument to `$Code::eval`.
 
 If a `maybe` node is *not* used in those contexts, then it is a fatal error
 for the node in question to evaluate to void.
+
+#### `nonlocalExit` &mdash; `@nonlocalExit{function: expression, value: expression}`
+
+* `function: expression` &mdash; An expression node that must
+  evaluate to a function.
+
+* `value: expression` &mdash; An expression node representing
+  the argument value for a call. Allowed to be a `maybe` or `void`
+  node.
+
+This is a representation of a nonlocal exit call.
+
+Nodes of this type are not ever executed. Instead, they are allowed to
+appear in intermediate trees as the `yield` binding of a `closure` node.
+The function `Lang0Node::makeFullClosure()` converts these into other
+forms. See the docs of that function for more details.
 
 #### `void` &mdash; `@void`
 
