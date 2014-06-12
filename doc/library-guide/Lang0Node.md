@@ -365,8 +365,8 @@ with optional expression argument `optValue*`. `optValue*` is allowed
 to be a `maybe` or `void` node. If `optValue` is not passed, it is
 treated as if it were specified as `@void`.
 
-The resulting node is a `noYield`, since nonlocal exits are never supposed
-to return to their direct callers.
+This produces a `nonlocalExit` node per se, which must eventually be
+processed via `makeFullClosure()` or similar.
 
 #### `makeThunk(node) -> node`
 
