@@ -10,7 +10,6 @@
 
 import core.Format;
 import core.Generator :: filterAll, filterPump;
-import core.Lang0;
 import core.Lang0Node :: *;
 import core.Peg;
 import core.Range;
@@ -2184,9 +2183,11 @@ fn finishSwitchCase(map, yieldDef) {
 };
 
 ## Tree for the second argument to the inner `ifValue` inside a `switch`
-## translation. This expression is constant across all switches, and it's most
-## easily constructed by using the built-in parser.
-def CALL_ARG = $Lang0::parseExpression("{ body -> body() }");
+## translation. This expression is constant across all switches.
+def CALL_ARG = makeFullClosure({
+    formals: [{name: "body"}],
+    yield:   makeMaybe(makeCall(makeVarRef("body")))
+});
 
 ## Parses a switch expression. The translation is along these lines:
 ##
