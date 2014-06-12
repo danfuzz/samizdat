@@ -77,6 +77,39 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
     return collPut(map, source, formats);
 }
 
+// Documented in `Lang0Node` source.
+static zvalue expandYield(zvalue map) {
+    zvalue yieldNode = get(map, STR_yield);
+
+    if (     (yieldNode == NULL)
+          || !hasType(yieldNode, TYPE_nonlocalExit)) {
+        return yieldNode;
+    }
+
+    zvalue function = get(yieldNode, STR_function);
+    zvalue value = get(yieldNode, STR_value);
+    zvalue yieldDef = get(map, STR_yieldDef);
+
+    if (     hasType(function, TYPE_varRef)
+          && (yieldDef != NULL)
+          && valEq(get(function, STR_name), yieldDef)) {
+        return value;
+    }
+
+    zvalue exitCall;
+
+    if (hasType(value, TYPE_void)) {
+        exitCall = makeCall(function, NULL);
+    } else if (hasType(value, TYPE_maybe)) {
+        zvalue arg = makeInterpolate(makeMaybeValue(get(value, STR_value)));
+        exitCall = makeCallOrApply(function, listFrom1(arg));
+    } else {
+        exitCall = makeCall(function, listFrom1(value));
+    }
+
+    return makeNoYield(exitCall);
+};
+
 
 //
 // Module functions
@@ -325,7 +358,7 @@ zvalue makeFullClosure(zvalue map) {
     zvalue formals = get(map, STR_formals);
     zvalue statements = get(map, STR_statements);
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
-    zvalue yieldNode = get(map, STR_yield);
+    zvalue yieldNode = expandYield(map);
 
     if (formals == NULL) {
         formals = EMPTY_LIST;
@@ -503,28 +536,18 @@ zvalue makeNoYield(zvalue value) {
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    zvalue exitCall;
-
-    if (hasType(value, TYPE_void)) {
-        exitCall = makeCall(function, NULL);
-    } else if (hasType(value, TYPE_maybe)) {
-        zvalue arg = makeInterpolate(makeMaybeValue(get(value, STR_value)));
-        exitCall = makeCallOrApply(function, listFrom1(arg));
-    } else {
-        exitCall = makeCall(function, listFrom1(value));
-    }
-
-    return makeNoYield(exitCall);
+    return makeValue(TYPE_nonlocalExit,
+        mapFrom2(STR_function, function, STR_value, value),
+        NULL);
 }
 
 // Documented in spec.
 zvalue makeThunk(zvalue expression) {
-    return makeValue(TYPE_closure,
-        mapFrom3(
-            STR_formals,    EMPTY_LIST,
-            STR_statements, EMPTY_LIST,
-            STR_yield,      makeMaybe(expression)),
-        NULL);
+    zvalue yieldNode = isExpression(expression)
+        ? makeMaybe(expression)
+        : expression;
+
+    return makeFullClosure(mapFrom1(STR_yield, yieldNode));
 }
 
 // Documented in spec.

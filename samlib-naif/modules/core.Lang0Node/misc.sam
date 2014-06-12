@@ -12,7 +12,7 @@ import proto.Number :: add, mul;
 ## Private Definitions
 ##
 
-## The set of expression node types.
+## The set of expression-per-se node types.
 def EXPRESSION_TYPES = {
     [
         @@apply, @@call, @@closure, @@literal, @@noYield,

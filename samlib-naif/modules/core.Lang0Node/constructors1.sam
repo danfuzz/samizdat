@@ -39,12 +39,6 @@ export fn makeCallLiterals(function, actuals*) {
 };
 
 ## Documented in spec.
-export fn makeCallThunks(function, actuals*) {
-    def thunks = $Generator::filterAll(actuals) { one -> makeThunk(one) };
-    return makeCall(function, thunks*)
-};
-
-## Documented in spec.
 export fn makeExport(node) {
     return @export{value: node}
 };
@@ -70,8 +64,9 @@ export fn makeNoYield(value) {
 };
 
 ## Documented in spec.
-export fn makeThunk(expression) {
-    return @closure{formals: [], statements: [], yield: makeMaybe(expression)}
+export fn makeNonlocalExit(function, optValue?) {
+    def value = ifValueOr { optValue* } { @void };
+    return @nonlocalExit{function, value}
 };
 
 ## Documented in spec.

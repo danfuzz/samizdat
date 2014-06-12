@@ -66,6 +66,7 @@ TYP(literal,               "literal");
 TYP(maybe,                 "maybe");
 TYP(module,                "module");
 TYP(noYield,               "noYield");
+TYP(nonlocalExit,          "nonlocalExit");
 TYP(string,                "string");
 TYP(varBind,               "varBind");
 TYP(varDef,                "varDef");
