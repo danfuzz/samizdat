@@ -371,7 +371,10 @@ processed via `makeFullClosure()` or similar.
 #### `makeThunk(node) -> node`
 
 Makes a thunk (no-argument function) that evaluates the given node, allowing
-it to evaluate to void. That is, this returns `{ -> node }`.
+it to evaluate to void. That is, this returns `{ -> node }`. If given
+any regular expression node, the result has a `maybe` node for the `yield`.
+For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
+result contains the given `node` as the `yield`, directly.
 
 #### `makeVarBind(name, value) -> node`
 
