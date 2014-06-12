@@ -1947,17 +1947,24 @@ def parIfExpression = {:
     @if
     yieldDef = parOptYieldDef
     firstCondition = parMultiTest
-    firstThen = parNullaryClosure
+    firstThen = parBasicNullaryClosure
 
     elseIfThens = (
         @else
         @if
         condition = parMultiTest
-        then = parNullaryClosure
+        then = parBasicNullaryClosure
         { {maker: condition, then} }
     )*
 
-    optElse = (@else parNullaryClosure)?
+    optElse = (
+        @else
+        clause = parBasicNullaryClosure
+        ## We include the `yieldDef` (if any) here and in the `filterPump`
+        ## below, so that we get the proper application of the implicit
+        ## yield rule.
+        { makeFullClosure({yieldDef*, dataOf(clause)*}) }
+    )?
 
     {
         ## This builds the full expression from back to front (inner to outer).
@@ -1971,7 +1978,9 @@ def parIfExpression = {:
         ## `else`).
         var reduction = optElse;
         filterPump(clauses) { clause ->
-            reduction := [makeThunk(clause::maker(clause::then, reduction*))]
+            ## See above about `yieldDef`.
+            def closure = makeFullClosure({yieldDef*, dataOf(clause::then)*});
+            reduction := [makeThunk(clause::maker(closure, reduction*))]
         };
 
         ## Unwrap the single-element `reduction` result list;
