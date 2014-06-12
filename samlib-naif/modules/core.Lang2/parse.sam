@@ -2168,10 +2168,20 @@ def parSwitchCase = {:
         parKey+
     )
 
-    code = parNullaryClosure
+    code = parBasicNullaryClosure
 
     { {code, keys} }
 :};
+
+## Helper for switch expressions, which inserts a `yieldDef` into the
+## code for a case and always turns it into a full closure. See the
+## discussion in the parser for `if` for rationale.
+fn finishSwitchCase(map, yieldDef) {
+    return {
+        code: makeFullClosure({yieldDef*, dataOf(map::code)*}),
+        keys: map::keys
+    }
+};
 
 ## Tree for the second argument to the inner `ifValue` inside a `switch`
 ## translation. This expression is constant across all switches, and it's most
@@ -2221,10 +2231,13 @@ def parSwitchExpression = {:
         most = (
             c = parSwitchCase
             @";"+
-            { c }
+            { finishSwitchCase(c, yieldDef) }
         )*
 
-        last = parSwitchCase?
+        last = (
+            c = parSwitchCase
+            { finishSwitchCase(c, yieldDef) }
+        )?
 
         { [most*, last*] }
     )
