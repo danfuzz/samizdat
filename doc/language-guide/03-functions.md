@@ -160,13 +160,6 @@ exit. This includes named yields from control constructs (e.g.,
 have to do so explicitly.
 
 
-### The empty closure
-
-In order to disambiguate with the empty map, an otherwise empty function
-must contain a right-arrow (`->`), e.g. `{ -> }`. This is only required
-in contexts where both closures and maps are valid.
-
-
 ### Function statements
 
 Functions are closures that are meant to "stand alone." These
@@ -280,6 +273,12 @@ def ignatz = { krazy(x, y?, z*) /out -> ... yield /out ... }
 ## Since the main body is just a yield, no right-arrow is required.
 def krazy = { x, y -> x + y }
 ```
+
+#### The empty block
+
+In order to disambiguate with the empty map, an otherwise empty block
+must contain a right-arrow (`->`), e.g. `{ -> }`. This is only required
+in contexts where both blocks and maps are valid.
 
 
 ### Special function shapes
