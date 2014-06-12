@@ -25,28 +25,26 @@ fn powerName(value) {
 
 fn interpolator(value, keys) {
     return switch (value) {
-        10: 11:      { yield "Constant override" };
+        10: 11:      { "Constant override" };
         (value * 0): { /out -> yield /out "Calculated override" };
-        keys*:       { yield "Yes" };
-        default:     { yield "No" }
+        keys*:       { "Yes" };
+        default:     { "No" }
     }
 };
 
-## TODO: Ought to be able to use implicit yields here.
 fn elser(item?) {
     return? switch (item*) {
-        blort: { yield "See in the dark." };
-        fizmo: { yield "Unclog pipes." };
-        else:  { yield "Mysterious non-item." }
+        blort: { "See in the dark." };
+        fizmo: { "Unclog pipes." };
+        else:  { "Mysterious non-item." }
     }
 };
 
-## TODO: Ought to be able to use implicit yields here.
 fn namer(value) {
     return switch (def x = value) {
-        1: 2: 3: { yield x * 10   };
-        4: 5: 6: { yield x * 100  };
-        default: { yield x * 1000 }
+        1: 2: 3: { x * 10   };
+        4: 5: 6: { x * 100  };
+        default: { x * 1000 }
     }
 };
 
