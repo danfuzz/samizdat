@@ -191,3 +191,21 @@ if (def x = returnVoid()) {
 } else if (def x = "fi", "stuff", def y = "zm", def z = "o") {
     note(x, y, z)
 };
+
+var wantVoid = (
+    if /out (true) { "x" }
+)?;
+if (!eq(wantVoid, [])) { die("Bad void 1.") };
+
+wantVoid := (
+    if /out (returnVoid()) { "x" }
+    else { "y" }
+)?;
+if (!eq(wantVoid, [])) { die("Bad void 2.") };
+
+wantVoid := (
+    if /out (returnVoid()) { "x" }
+    else if (returnVoid()) { "y" }
+    else { "z" }
+)?;
+if (!eq(wantVoid, [])) { die("Bad void 3.") };
