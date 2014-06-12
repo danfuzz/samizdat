@@ -119,6 +119,12 @@ export fn makeCallOrApply(function, actuals*) {
 };
 
 ## Documented in spec.
+export fn makeCallThunks(function, actuals*) {
+    def thunks = $Generator::filterAll(actuals) { one -> makeThunk(one) };
+    return makeCall(function, thunks*)
+};
+
+## Documented in spec.
 export fn .makeDynamicImport();
 
 ## Documented in spec.
@@ -316,6 +322,14 @@ export fn makeInterpolate(node) {
 ## Documented in spec.
 export fn makeMaybeValue(node) {
     return makeCall(REFS::maybeValue, makeThunk(node))
+};
+
+## Documented in spec.
+export fn makeThunk(expression) {
+    def yieldNode = ifIs { isExpression(expression) }
+        { makeMaybe(expression) }
+        { expression };
+    return makeFullClosure({yield: yieldNode})
 };
 
 ## Documented in spec.

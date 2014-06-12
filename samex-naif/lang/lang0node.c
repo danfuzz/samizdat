@@ -543,12 +543,11 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
 
 // Documented in spec.
 zvalue makeThunk(zvalue expression) {
-    return makeValue(TYPE_closure,
-        mapFrom3(
-            STR_formals,    EMPTY_LIST,
-            STR_statements, EMPTY_LIST,
-            STR_yield,      makeMaybe(expression)),
-        NULL);
+    zvalue yieldNode = isExpression(expression)
+        ? makeMaybe(expression)
+        : expression;
+
+    return makeFullClosure(mapFrom1(STR_yield, expression));
 }
 
 // Documented in spec.
