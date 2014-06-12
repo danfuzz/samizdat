@@ -66,78 +66,62 @@ opName (def varName1 = someExpression1, def varName2 = someExpression2) {
 
 #### Nonlocal yield
 
-Most control constructs (all but `if`) implicitly define a "break
-context" that goes with a special `break` keyword. This keyword can be used in
-yield context (that is, as the last statement of a block).
-`break expression` causes the control construct to immediately yield
-the evaluated value of the given expression. `break` with no expression
-causes the control construct to immediately yield void.
-
-For example:
-
-```
-opName (expression) {
-    ...
-    break resultExpression
-    ...
-}
-```
-
-In addition, all control constructs (including `if`) allow explicit
-yield definition. To do so, immediately after the control operator name,
-place a slash followed by the yield name. With this done, the defined
-yield name can be used in nonlocal exit statements to exit from the
-control construct.
+All control constructs (both loops and non-loops) allow for optional
+overall yield definition naming. When invoked, these cause the overall
+construct to terminate, yielding the indicated value (or void).
 
 For example:
 
 ```
 opName /out (expression) {
     ...
-    yield /out resultExpression
+    if (...) {
+        yield /out resultExpression  # Immediately terminates the construct.
+    };
     ...
 }
 ```
 
-This latter form is meant to make it easier to break out of
-a nested execution environment in which there is an inner break context which
-is to be skipped over.
+All control constructs also allow for optional per-block yield
+definition naming. For non-looping constructs, this behaves identically
+to an overall yield definition (except that it can help avoid a bit of
+duplicated text). For looping constructs, this causes the loop to start
+a new iteration.
 
-#### Early loop continuation
-
-All the looping control constructs define a "continue context" that goes
-with a special `continue` keyword. This keyword can be used in
-yield context (that is, as the last statement of a block). Calling `continue`
-causes the loop to restart at its top. It is valid to pass an expression to
-`continue`, though the value is often ignored in practice.
-
-For example:
-
-```
-loopOp (expression) {
-    ...
-    continue
-    ...
-}
-```
-
-In addition, all the looping control constructs allow explicit
-continuation yield definition. To do so, place the yield name in the
-usual block definition position. With this done, the defined
-yield name can be used in nonlocal exit statements to continue the loop.
-
-For example:
+For example, assuming `opName` is a loop keyword:
 
 ```
 opName (expression) { /next ->
     ...
-    yield /next
+    if (...) {
+        yield /next  # Immediately starts the next iteration.
+    };
     ...
 }
 ```
 
-This latter form is meant to make it easier to continue a
-loop in which other loops are nested.
+In addition, loop constructs (but not the other control constructs)
+implicitly bind nonlocal exits that pair with the keywords `break`
+and `continue`. These can be used in the same contexts as a `yield`
+keyword, and they always refer to the closest-enclosing loop.
+`break` acts as an overall yield, and `continue` acts as a per-iteration
+yield.
+
+As with `yield`, both of these are allowed to take a value, and they can
+be followed by `?` and an expression to allow for yielding of value-or-void.
+
+For example:
+
+```
+opName (expression) {
+    if (...) {
+        continue            ## The loop starts a new iteration.
+    };
+    ...
+    break resultExpression  ## The loop terminates, yielding a result.
+    ...
+}
+```
 
 ### Conditional expression &mdash; `if...else`
 
@@ -175,7 +159,7 @@ consequent block is evaluated, the overall expression result is void.
 `if` expressions support explicit yield definition,
 test expression name binding, and multiple test expressions.
 
-`if` expressions do *not* define a break or continue context.
+`if` expressions do *not* define a loop context.
 
 ### Value dispatch &mdash; `switch`
 
@@ -249,14 +233,16 @@ switch (expression) {
 test expression name binding. `switch` expressions define a break
 context.
 
-`switch` expressions do *not* define a continue context, and do not
-allow multiple test expressions.
+`if` expressions do *not* define a loop context.
 
 **Note:** Unlike other languages in the C tradition, Samizdat does
-not allow consequent blocks to fall through. So, a block-final
-`break` isn't ever necessary. If there is partial code in common
+not allow consequent blocks to fall through in a `switch`; a block-final
+`break` is never necessary. If there is partial code in common
 between cases, the thing to do is factor it out into a separate
-function.
+function. In addition, `break` is not even bound by `switch`, so `break`
+appearing in a `switch` refers not to the `switch` but instead to the
+closest-enclosing loop that the `switch` appears in.
+
 
 ### Unconditional loop &mdash; `do`
 
