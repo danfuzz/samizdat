@@ -547,7 +547,7 @@ zvalue makeThunk(zvalue expression) {
         ? makeMaybe(expression)
         : expression;
 
-    return makeFullClosure(mapFrom1(STR_yield, expression));
+    return makeFullClosure(mapFrom1(STR_yield, yieldNode));
 }
 
 // Documented in spec.
