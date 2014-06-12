@@ -155,8 +155,9 @@ unintentionally "leaked" value is unlikely to cause harm.
 
 In particular, this is only the case when the closure in question does *not*
 bind a named (`/name`) or implicit (e.g. `return` binding) nonlocal
-exit. In such contexts, if you want to yield void, you have to do so
-explicitly.
+exit. This includes named yields from control constructs (e.g.,
+`if /name ...`). In all of these contexts, if you want to yield void, you
+have to do so explicitly.
 
 
 ### The empty closure
