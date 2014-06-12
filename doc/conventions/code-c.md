@@ -82,7 +82,7 @@ Here are a couple snippets to indicate areas of potential ambiguity:
 Function prototype continuation lines are double-indented to keep the
 prototype and code visually separate:
 
-```
+```c
 void lotsOfParametersHere(zvalue arg1, zvalue arg2, zvalue arg3, zvalue arg4,
         zvalue arg5, zvalue arg6) {
     body();
@@ -93,7 +93,7 @@ void lotsOfParametersHere(zvalue arg1, zvalue arg2, zvalue arg3, zvalue arg4,
 
 `switch` cases are indented a full level:
 
-```
+```c
 switch (something) {
     case THING1: {
         stuff();
@@ -108,7 +108,7 @@ switch (something) {
 
 Table-like code and other runs of similar lines are horizontally aligned:
 
-```
+```c
 DEF(blort,  POTION, "see in the dark");
 DEF(borch,  SPELL,  "insect soporific");
 DEF(fizmo,  SPELL,  "unclogs pipes");
@@ -168,7 +168,7 @@ Other comments, including multi-line comments, are `//`-prefixed.
 
 Section and file banner comments take the form:
 
-```
+```c
 //                            //
 // Title Goes Here            // Title Goes Here
 //                     or     //

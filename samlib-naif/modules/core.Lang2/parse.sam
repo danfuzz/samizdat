@@ -2181,8 +2181,7 @@ def CALL_ARG = $Lang0::parseExpression("{ body -> body() }");
 ## ```
 ## =>
 ## ```
-## { /\"break" ->
-##     def out = \"break";
+## { /out ->
 ##     ifValue { testExpr }
 ##         { name ->
 ##             ifValue
@@ -2195,7 +2194,7 @@ def CALL_ARG = $Lang0::parseExpression("{ body -> body() }");
 ## ```
 ##
 ## with:
-## * the initial break assignment omitted if there is no yield def.
+## * the outer thunk-call omitted if there was no yield definition.
 ## * overrides of map keys switched around so the *first* key wins.
 ## * the `statElse` block omitted if there is no `else` clause.
 ## * the `statDefault` block omitted if there is no `default` clause.
@@ -2203,7 +2202,7 @@ def CALL_ARG = $Lang0::parseExpression("{ body -> body() }");
 ##   name, if no variable name was specified.
 def parSwitchExpression = {:
     @switch
-    breakDef = parOptBreakDef
+    yieldDef = parOptYieldDef
     testClause = parParenTestClause
 
     @"{"
@@ -2273,13 +2272,17 @@ def parSwitchExpression = {:
             mainBody,
             optElse*);
 
-        def mainClosure = makeFullClosure({
-            yieldDef: "break",
-            statements: [breakDef*],
-            yield: makeMaybe(outerIf)
-        });
-
-        makeCall(mainClosure)
+        ## If there's a yield def, then wrap `outerIf` in a thunk-call.
+        ## If not, then `outerIf` is the result.
+        ifIs { eq(yieldDef, {}) }
+            { outerIf }
+            {
+                def outerClosure = makeFullClosure({
+                    yield: makeMaybe(outerIf),
+                    yieldDef*
+                });
+                makeCall(outerClosure)
+            }
     }
 :};
 
