@@ -122,7 +122,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     if (info->flags & GFN_SAME_TYPE) {
         for (zint i = 1; i < argCount; i++) {
             if (!hasType(args[i], firstType)) {
-                die("Type mysmatch on argument #%lld of: %s(%s, ...)",
+                die("Type mismatch on argument #%lld of: %s(%s, ...)",
                     i, valDebugString(generic), valDebugString(args[0]));
             }
         }
