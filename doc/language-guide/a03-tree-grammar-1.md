@@ -21,7 +21,7 @@ import core.Lang0Node :: *;
 import core.Peg;
 import core.Range;
 import core.Sequence;
-import proto.Number;
+import proto.Number :: neg;
 
 
 ##
@@ -125,7 +125,7 @@ def parVarRef = {:
 def parInt = {:
     @"-"
     i = @int
-    { makeLiteral($Number::neg(dataOf(i))) }
+    { makeLiteral(neg(dataOf(i))) }
 |
     i = @int
     { makeLiteral(dataOf(i)) }

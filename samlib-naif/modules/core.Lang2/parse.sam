@@ -14,7 +14,7 @@ import core.Lang0Node :: *;
 import core.Peg;
 import core.Range;
 import core.Sequence;
-import proto.Number;
+import proto.Number :: add, neg;
 
 import ./safeVar;
 import ./tokenize :: tokenize;
@@ -121,7 +121,7 @@ def parVarRef = {:
 def parInt = {:
     @"-"
     i = @int
-    { makeLiteral($Number::neg(dataOf(i))) }
+    { makeLiteral(neg(dataOf(i))) }
 |
     i = @int
     { makeLiteral(dataOf(i)) }
@@ -1184,7 +1184,7 @@ fn makeCompareCalls(firstEx, opExList) {
     var varIndex = $safeVar::safeVarIndex("compareValue", baseResult);
     fn nextName() {
         def result = $safeVar::makeVarName("compareValue", varIndex);
-        varIndex := $Number::add(varIndex, 1);
+        varIndex := add(varIndex, 1);
         return result
     };
 

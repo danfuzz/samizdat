@@ -13,7 +13,7 @@ import core.Generator :: filterPump;
 import core.Lang0Node :: *;
 import core.Peg :: *;
 import core.Range;
-import proto.Number;
+import proto.Number :: neg;
 
 import ./tokenize :: tokenize;
 
@@ -94,7 +94,7 @@ def parInt = makeMainChoice(
     makeSequence(
         makeToken(@@"-"),
         makeToken(@@int),
-        makeCode { ., i -> makeLiteral($Number::neg(dataOf(i))) }),
+        makeCode { ., i -> makeLiteral(neg(dataOf(i))) }),
     makeSequence(
         makeToken(@@int),
         makeCode { i -> makeLiteral(dataOf(i)) }));
