@@ -19,7 +19,7 @@ import core.Generator :: filterPump;
 import core.Lang0;
 import core.Lang0Node :: *;
 import core.Peg;
-import core.Range;
+import core.Range :: makeInclusiveRange;
 import core.Sequence;
 import proto.Number :: neg;
 
@@ -32,7 +32,7 @@ import proto.Number :: neg;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, $Range::makeInclusiveRange(1, 50))
+    filterPump(pending, makeInclusiveRange(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -41,7 +41,7 @@ fn reportError(pending) {
 ## Set-like map of all lowercase identifier characters. Used to figure
 ## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    ($Range::makeInclusiveRange("a", "z"))*: true
+    makeInclusiveRange("a", "z")*: true
 };
 
 

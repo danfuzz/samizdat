@@ -12,7 +12,7 @@ import core.Format;
 import core.Generator :: filterPump;
 import core.Lang0Node :: *;
 import core.Peg :: *;
-import core.Range;
+import core.Range :: makeInclusiveRange;
 import proto.Number :: neg;
 
 import ./tokenize :: tokenize;
@@ -26,7 +26,7 @@ import ./tokenize :: tokenize;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, $Range::makeInclusiveRange(1, 50))
+    filterPump(pending, makeInclusiveRange(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -35,7 +35,7 @@ fn reportError(pending) {
 ## Set-like map of all lowercase identifier characters. Used to figure
 ## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    ($Range::makeInclusiveRange("a", "z"))*: true
+    makeInclusiveRange("a", "z")*: true
 };
 
 
@@ -750,7 +750,7 @@ def parParserSetString = makeMainSequence(
                 ifIs { ne(1, get_size(startChar)) } { yield /out };
                 ifIs { ne(1, get_size(endChar)) } { yield /out };
 
-                yield cat($Range::makeInclusiveRange(startChar, endChar)*)
+                yield cat(makeInclusiveRange(startChar, endChar)*)
             }),
         makeCode { s -> dataOf(s) }));
 
