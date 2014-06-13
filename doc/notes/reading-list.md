@@ -69,6 +69,9 @@ Languages
   * The Common Lisp Object System: An Overview &mdash;
     <http://www.dreamsongs.com/Files/ECOOP.pdf>
 
+* Nimrod
+  * Nimrod language &mdash; <http://nimrod-lang.org/>
+
 * OCaml
   * Bitstring implementation (Erlang-inspired) &mdash;
     <https://code.google.com/p/bitstring/>
@@ -86,8 +89,8 @@ Languages
   * Back to the future: the story of Squeak, a practical Smalltalk written in
     itself &mdash; <http://ftp.squeak.org/docs/OOPSLA.Squeak.html>
 
-* Subtext language &mdash;
-  <http://www.subtext-lang.org/>
+* Subtext
+  * Subtext language &mdash; <http://www.subtext-lang.org/>
 
 Topics
 ------
