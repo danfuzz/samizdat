@@ -350,11 +350,10 @@ fn @@ExternalLoader.resolve(source) {
 
     updateMapBox(loadedBox, source, "loading");
 
-    def result = ifValueOr { doExternalResolve(this, source) }
-        {
-            ifValueOr { resolve(this::nextLoader, source) }
-                { "notFound" }
-        };
+    def result = ifValueOr
+        { doExternalResolve(this, source) }
+        { resolve(this::nextLoader, source) }
+        { "notFound" };
 
     updateMapBox(loadedBox, source, result);
 
