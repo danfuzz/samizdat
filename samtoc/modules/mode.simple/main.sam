@@ -19,7 +19,7 @@ import VarCalc :: get_varRefs;
 
 import ./collectClosures :: collectClosures;
 import ./internLiterals :: internLiterals;
-import ./translate :: translate;
+import ./translate :: translate, translateStatement;
 import ./vars;
 
 import ./Interner ::
@@ -115,9 +115,7 @@ fn closureBody(cloIdx, clo, literals) {
     ## set of vars defined in `varsBox`).
 
     def varsBox = $Box::makeCell(vars);
-    def mainStats = [ s in clo.statements ->
-        translate(s, varsBox)
-    ];
+    def mainStats = [ s in clo.statements -> translateStatement(s, varsBox) ];
 
     def rawYield = clo.yieldNode;
     def yieldNode = if (hasType(rawYield, @@maybe)) {
