@@ -426,7 +426,8 @@ fn doInternalResolve(loader, source) {
                 { die("No result from module: ", sourcePath) }
         };
 
-    die("Missing code: ", sourcePath);
+    ## No matching file found. Return void.
+    return
 };
 
 ## `readResource` implementation for format `type`.
@@ -473,12 +474,29 @@ fn @@InternalLoader.resolve(source) {
 
     def loadedBox = this::loadedBox;
 
+    ## Mappings are the same as those in `ExternalLoader` (above).
     ifValue { get(fetch(loadedBox), source) }
-        { found -> return found };
+        { found ->
+            ifIs { hasType(found, @@module) }
+                { return found };
+            ifIs { eq(found, "notFound") }
+                { return };
+            ifIs { eq(found, "loading") }
+                { die("Module load loop: ", sourceString(source)) };
+        };
 
-    def result = doInternalResolve(this, source);
+    updateMapBox(loadedBox, source, "loading");
+
+    ## Unlike `ExternalLoader` we don't recurse to the parent here. Either
+    ## we have the file directly, or we don't at all.
+    def result = ifValueOr
+        { doInternalResolve(this, source) }
+        { "notFound" };
+
     updateMapBox(loadedBox, source, result);
-    return result
+
+    return? ifNot { eq(result, "notFound") }
+        { result }
 };
 
 ## Documented in spec.
