@@ -469,7 +469,7 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.parser.open.samizdat</string>
+							<string>punctuation.definition.parser.begin.samizdat</string>
 						</dict>
 					</dict>
 					<key>endCaptures</key>
@@ -477,7 +477,7 @@
 						<key>0</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.parser.close.samizdat</string>
+							<string>punctuation.definition.parser.end.samizdat</string>
 						</dict>
 					</dict>
 					<key>patterns</key>
@@ -545,7 +545,7 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.samizdat</string>
+							<string>punctuation.definition.binding.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -630,7 +630,7 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.samizdat</string>
+							<string>punctuation.definition.function.samizdat</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -769,13 +769,13 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>punctuation.parser.open.samizdat</string>
+					<string>punctuation.definition.parser.begin.samizdat</string>
 					<key>match</key>
 					<string>\{:</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>punctuation.parser.close.samizdat</string>
+					<string>punctuation.definition.parser.end.samizdat</string>
 					<key>match</key>
 					<string>:\}</string>
 				</dict>
@@ -817,6 +817,18 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>punctuation.definition.binding.samizdat</string>
+					<key>match</key>
+					<string>:</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.function.samizdat</string>
+					<key>match</key>
+					<string>-&gt;</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>keyword.operator.samizdat</string>
 					<key>match</key>
 					<string>(?x)
@@ -825,12 +837,6 @@
 						:[:=] | \\?[!&lt;&gt;]?==? |
 						\.\.!? | \+ | - | \* | //? | %%? | \? | \#
 					</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.samizdat</string>
-					<key>match</key>
-					<string>(?x) : | -&gt;</string>
 				</dict>
 			</array>
 		</dict>

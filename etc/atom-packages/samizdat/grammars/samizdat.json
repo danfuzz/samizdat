@@ -114,7 +114,7 @@
           "begin" : "\\{:",
           "beginCaptures" : {
             "0" : {
-              "name" : "punctuation.parser.open.samizdat"
+              "name" : "punctuation.definition.parser.begin.samizdat"
             }
           },
           "patterns" : [
@@ -125,7 +125,7 @@
           "name" : "meta.block.parser.samizdat",
           "endCaptures" : {
             "0" : {
-              "name" : "punctuation.parser.close.samizdat"
+              "name" : "punctuation.definition.parser.end.samizdat"
             }
           }
         },
@@ -166,7 +166,7 @@
               "name" : "string.unquoted.samizdat"
             },
             "2" : {
-              "name" : "punctuation.definition.samizdat"
+              "name" : "punctuation.definition.binding.samizdat"
             }
           }
         },
@@ -221,7 +221,7 @@
               "name" : "variable.parameter.samizdat"
             },
             "2" : {
-              "name" : "punctuation.definition.samizdat"
+              "name" : "punctuation.definition.function.samizdat"
             }
           }
         },
@@ -308,11 +308,11 @@
         },
         {
           "match" : "\\{:",
-          "name" : "punctuation.parser.open.samizdat"
+          "name" : "punctuation.definition.parser.begin.samizdat"
         },
         {
           "match" : ":\\}",
-          "name" : "punctuation.parser.close.samizdat"
+          "name" : "punctuation.definition.parser.end.samizdat"
         },
         {
           "match" : "\\{",
@@ -339,12 +339,16 @@
           "name" : "punctuation.paren.close.samizdat"
         },
         {
-          "match" : "(?x)\n\t\t\t\t\t\t&&?&? | \\|\\|?\\|? | \\^\\^?\\^? |\n\t\t\t\t\t\t\\\\?<<?<? | \\\\?>>?>? | !!?!? |\n\t\t\t\t\t\t:[:=] | \\\\?[!<>]?==? |\n\t\t\t\t\t\t\\.\\.!? | \\+ | - | \\* | \/\/? | %%? | \\? | \\#\n\t\t\t\t\t",
-          "name" : "keyword.operator.samizdat"
+          "match" : ":",
+          "name" : "punctuation.definition.binding.samizdat"
         },
         {
-          "match" : "(?x) : | ->",
-          "name" : "punctuation.definition.samizdat"
+          "match" : "->",
+          "name" : "punctuation.definition.function.samizdat"
+        },
+        {
+          "match" : "(?x)\n\t\t\t\t\t\t&&?&? | \\|\\|?\\|? | \\^\\^?\\^? |\n\t\t\t\t\t\t\\\\?<<?<? | \\\\?>>?>? | !!?!? |\n\t\t\t\t\t\t:[:=] | \\\\?[!<>]?==? |\n\t\t\t\t\t\t\\.\\.!? | \\+ | - | \\* | \/\/? | %%? | \\? | \\#\n\t\t\t\t\t",
+          "name" : "keyword.operator.samizdat"
         }
       ]
     },
