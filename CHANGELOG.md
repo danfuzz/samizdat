@@ -124,3 +124,23 @@ Version History
     language in the world.
 
   * Lots of miscellaneous tweaks and additions to the core library.
+
+* 0.8.0 &mdash; 13-jun-2014  &mdash; "Many Happy Returns"
+
+  * **Milestone:** Major rework of closure yield / return syntax and
+    semantics.
+
+    * No more `<>` operator; it's replaced by `yield`. But in
+      many cases direct yield is now unmarked (in particular, when returning
+      from "semantically lightweight" closures).
+
+    * No more `<name>` syntax, replaced by `/name`.
+
+    * Addition of "maybe yield" syntax with postfix `?` on the yield
+      keywords, and made the unmarked variants *not* accept expressions
+      that evaluate to void.
+
+  * Added a few new execution tree node types (`maybe`, `noYield`,
+    `nonlocalExit`, and `void`) and removed one (`jump`). Tweaked the
+    definitions of a couple more (`apply`, `call`, and `closure`) to
+    use `void` nodes for bindings instead of having optional bindings.
