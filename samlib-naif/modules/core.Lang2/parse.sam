@@ -10,12 +10,11 @@
 
 import core.Format;
 import core.Generator :: filterAll, filterPump;
-import core.Lang0;
 import core.Lang0Node :: *;
 import core.Peg;
-import core.Range;
+import core.Range :: makeInclusiveRange, makeOpenRange;
 import core.Sequence;
-import proto.Number;
+import proto.Number :: add, neg;
 
 import ./safeVar;
 import ./tokenize :: tokenize;
@@ -29,7 +28,7 @@ import ./tokenize :: tokenize;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, $Range::makeInclusiveRange(1, 50))
+    filterPump(pending, makeInclusiveRange(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -38,7 +37,7 @@ fn reportError(pending) {
 ## Set-like map of all lowercase identifier characters. Used to figure
 ## out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    ($Range::makeInclusiveRange("a", "z"))*: true
+    makeInclusiveRange("a", "z")*: true
 };
 
 
@@ -122,7 +121,7 @@ def parVarRef = {:
 def parInt = {:
     @"-"
     i = @int
-    { makeLiteral($Number::neg(dataOf(i))) }
+    { makeLiteral(neg(dataOf(i))) }
 |
     i = @int
     { makeLiteral(dataOf(i)) }
@@ -975,7 +974,7 @@ def parParserSetString = {:
             ifIs { ne(1, get_size(startChar)) } { yield /out };
             ifIs { ne(1, get_size(endChar)) } { yield /out };
 
-            yield cat($Range::makeInclusiveRange(startChar, endChar)*)
+            yield cat(makeInclusiveRange(startChar, endChar)*)
         }
     |
         { dataOf(s) }
@@ -1185,7 +1184,7 @@ fn makeCompareCalls(firstEx, opExList) {
     var varIndex = $safeVar::safeVarIndex("compareValue", baseResult);
     fn nextName() {
         def result = $safeVar::makeVarName("compareValue", varIndex);
-        varIndex := $Number::add(varIndex, 1);
+        varIndex := add(varIndex, 1);
         return result
     };
 
@@ -1786,7 +1785,7 @@ def parLogicAndExpression = {:
             ## lists.
             def formals = filterAll(most) { clause -> clause::formal };
             def testThunks =
-                filterAll(most, $Range::makeOpenRange(0))
+                filterAll(most, makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             $Sequence::sliceExclusive(formals, 0, index))
@@ -1885,7 +1884,7 @@ def parMultiTest = {:
             ## lists.
             def formals = filterAll(clauses) { clause -> clause::formal };
             def testThunks =
-                filterAll(clauses, $Range::makeOpenRange(0))
+                filterAll(clauses, makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             $Sequence::sliceExclusive(formals, 0, index))
@@ -2184,9 +2183,11 @@ fn finishSwitchCase(map, yieldDef) {
 };
 
 ## Tree for the second argument to the inner `ifValue` inside a `switch`
-## translation. This expression is constant across all switches, and it's most
-## easily constructed by using the built-in parser.
-def CALL_ARG = $Lang0::parseExpression("{ body -> body() }");
+## translation. This expression is constant across all switches.
+def CALL_ARG = makeFullClosure({
+    formals: [{name: "body"}],
+    yield:   makeMaybe(makeCall(makeVarRef("body")))
+});
 
 ## Parses a switch expression. The translation is along these lines:
 ##
