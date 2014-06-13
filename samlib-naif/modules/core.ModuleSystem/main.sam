@@ -212,6 +212,30 @@ fn checkAbsolutePath(path) {
         { die("Invalid file path: not absolute") }
 };
 
+## Helper for `resolve` methods, which does most of the work of `loaded`
+## map management.
+fn resolveHelper(loadedBox, source, resolveFn) {
+    ## The loaded map maps paths to `"loading"` for a load-in-progress,
+    ## `"notFound"` for a known-missing module, and to a `@module` for
+    ## a successfully-loaded result.
+    ifValue { get(fetch(loadedBox), source) }
+        { found ->
+            ifIs { hasType(found, @@module) }
+                { return found };
+            ifIs { eq(found, "notFound") }
+                { return };
+            ifIs { eq(found, "loading") }
+                { die("Module load loop: ", sourceString(source)) };
+        };
+
+    updateMapBox(loadedBox, source, "loading");
+    def result = ifValueOr { resolveFn() } { "notFound" };
+    updateMapBox(loadedBox, source, result);
+
+    return? ifNot { eq(result, "notFound") }
+        { result }
+};
+
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
     ifIs { hasType(source, @@internal) }
@@ -333,32 +357,13 @@ fn @@ExternalLoader.resolve(source) {
             return? resolve(this::nextLoader, source)
         };
 
-    def loadedBox = this::loadedBox;
+    fn externalResolve() {
+        return? ifValueOr
+            { doExternalResolve(this, source) }
+            { resolve(this::nextLoader, source) }
+    };
 
-    ## The loaded map maps paths to `"loading"` for a load-in-progress,
-    ## `"notFound"` for a known-missing module, and to a `@module` for
-    ## a successfully-loaded result.
-    ifValue { get(fetch(loadedBox), source) }
-        { found ->
-            ifIs { hasType(found, @@module) }
-                { return found };
-            ifIs { eq(found, "notFound") }
-                { return };
-            ifIs { eq(found, "loading") }
-                { die("Module load loop: ", sourceString(source)) };
-        };
-
-    updateMapBox(loadedBox, source, "loading");
-
-    def result = ifValueOr
-        { doExternalResolve(this, source) }
-        { resolve(this::nextLoader, source) }
-        { "notFound" };
-
-    updateMapBox(loadedBox, source, result);
-
-    return? ifNot { eq(result, "notFound") }
-        { result }
+    return? resolveHelper(this::loadedBox, source, externalResolve)
 };
 
 ## Documented in spec.
@@ -472,31 +477,14 @@ fn @@InternalLoader.resolve(source) {
             return? resolve(this::nextLoader, source)
         };
 
-    def loadedBox = this::loadedBox;
+    ## Unlike with `ExternalLoader`, we don't walk up the parent chain if
+    ## resolution fails, as that would break the semantic model. (We don't
+    ## want to end up finding a parent loader's internal file.)
+    fn internalResolve() {
+        return? doInternalResolve(this, source)
+    };
 
-    ## Mappings are the same as those in `ExternalLoader` (above).
-    ifValue { get(fetch(loadedBox), source) }
-        { found ->
-            ifIs { hasType(found, @@module) }
-                { return found };
-            ifIs { eq(found, "notFound") }
-                { return };
-            ifIs { eq(found, "loading") }
-                { die("Module load loop: ", sourceString(source)) };
-        };
-
-    updateMapBox(loadedBox, source, "loading");
-
-    ## Unlike `ExternalLoader` we don't recurse to the parent here. Either
-    ## we have the file directly, or we don't at all.
-    def result = ifValueOr
-        { doInternalResolve(this, source) }
-        { "notFound" };
-
-    updateMapBox(loadedBox, source, result);
-
-    return? ifNot { eq(result, "notFound") }
-        { result }
+    return? resolveHelper(this::loadedBox, source, internalResolve)
 };
 
 ## Documented in spec.
