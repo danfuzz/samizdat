@@ -47,8 +47,8 @@ fn @@Comment.indent(level, maxColumns) {
 
 fn @@Comment.prefersFlat() {
     return? (#this::text < 30)
-        & ((def payload = this::payload)
-            & payload.prefersFlat()
-            | true)
+        & (((def payload = this::payload)
+            & payload.prefersFlat()?
+            | true?)*)
         & this
 };
