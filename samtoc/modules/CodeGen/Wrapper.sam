@@ -39,7 +39,7 @@ fn @@Wrapper.indent(level, maxColumns) {
         }
     };
 
-    return indent(tree, maxColumns)
+    return tree.indent(level, maxColumns)
 };
 
 fn @@Wrapper.prefersFlat() {
