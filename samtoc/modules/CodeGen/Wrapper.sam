@@ -34,8 +34,8 @@ fn @@Wrapper.indent(level, maxColumns) {
     if (tree.prefersFlat()) {
         def flat = this.flatten();
         def prefix = indentation(level);
-        if ((#this::flat + #prefix) <= maxColumns) {
-            return "\(prefix)\(this::flat)"
+        if ((#flat + #prefix) <= maxColumns) {
+            return cat(prefix, flat)
         }
     };
 
