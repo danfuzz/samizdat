@@ -10,6 +10,7 @@
 ## * flatBox -- box containing the flattened version, if created
 ##
 
+import ./indentation :: *;
 import ./protocol :: *;
 
 
