@@ -24,11 +24,11 @@ fn @@Assign.flatten() {
 };
 
 fn @@Assign.indent(level, maxColumns) {
-    return "\[
+    return cat(
         this::target.indent(level, maxColumns),
         " =\n",
         this::value.indent(level + 1, maxColumns)
-    ]"
+    )
 };
 
 fn @@Assign.prefersFlat() {

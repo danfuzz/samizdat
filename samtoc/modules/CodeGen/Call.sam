@@ -33,14 +33,14 @@ export fn genCall(function, args*) {
 fn @@Call.flatten() {
     def args = this::args;
 
-    return "\[
+    return cat(
         this::function.flatten(),
         "(",
         ( a in args, i in (#args.. by -1) ->
-            [a.flatten(), (i == 1) & "" | ", "]
+            cat(a.flatten(), (i == 1) & "" | ", ")
         )*,
         ")"
-    ]"
+    )
 };
 
 fn @@Call.indent(level, maxColumns) {
@@ -48,15 +48,14 @@ fn @@Call.indent(level, maxColumns) {
     def args = this::args;
     def nextLevel = level + 1;
 
-    return "\[
-        prefix, this::function.flatten(), "(\n",
+    return cat(
+        prefix, this::function.flatten(),
+        "(\n",
         ( a in args, i in (#args.. by -1) ->
-            [
-                a.indent(nextLevel, maxColumns),
-                (i == 1) & ")" | ",\n"
-            ]
-        )*
-    ]"
+            cat(a.indent(nextLevel, maxColumns), (i == 1) & "" | ",\n")
+        )*,
+        ")"
+    )
 };
 
 fn @@Call.prefersFlat() {
