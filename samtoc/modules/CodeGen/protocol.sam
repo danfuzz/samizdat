@@ -20,4 +20,4 @@ export fn .flatten();
 
 ## `tree.prefersFlat()`: Returns `tree` if it "likes" to be flattened, or
 ## void if not.
-export fn. prefersFlat();
+export fn .prefersFlat();
