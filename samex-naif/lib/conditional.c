@@ -5,6 +5,7 @@
 #include "const.h"
 #include "type/Function.h"
 #include "type/List.h"
+#include "type/Map.h"
 
 #include "impl.h"
 
@@ -31,6 +32,32 @@ FUN_IMPL_DECL(ifNot) {
     } else {
         return NULL;
     }
+}
+
+// Documented in spec.
+FUN_IMPL_DECL(ifSwitch) {
+    zvalue testFunction = args[0];
+    zvalue valueFunctions = args[1];
+    zvalue defaultFunction = (argCount >= 3) ? args[2] : NULL;
+    zvalue voidFunction = (argCount >= 4) ? args[3] : NULL;
+
+    zvalue value = FUN_CALL(testFunction);
+
+    if (value == NULL) {
+        return (voidFunction == NULL)
+            ? NULL
+            : FUN_CALL(voidFunction);
+    }
+
+    zvalue consequentFunction = get(valueFunctions, value);
+
+    if (consequentFunction != NULL) {
+        return FUN_CALL(consequentFunction, value);
+    }
+
+    return (defaultFunction == NULL)
+        ? NULL
+        : FUN_CALL(defaultFunction, value);
 }
 
 // Documented in spec.
