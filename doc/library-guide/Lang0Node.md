@@ -461,6 +461,16 @@ validated and transformed, by calling `resolveImport(node, resolveFn)`.
 Makes a node just like the given one (presumably a `varDef` node), except
 with the addition of a `top: true` binding.
 
+#### `withYieldDef(node, name) -> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with the addition of a yield definition binding for the given `name`.
+
+If the given `node` already has a yield definition, then this does not
+replace it. Instead, this adds an initial variable definition statement
+to the `statements` in the result, which binds the given name to the original
+`yieldDef` name.
+
 #### `withoutIntermediates(node) -> node`
 
 Makes a node just like the given one, except without any "intermediate"
