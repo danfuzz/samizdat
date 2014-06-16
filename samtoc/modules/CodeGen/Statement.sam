@@ -6,6 +6,7 @@
 ## Statement tree.
 ##
 
+import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
 
@@ -15,21 +16,15 @@ import ./protocol :: *;
 ##
 
 export fn genStatement(tree) {
-    return @Statement{tree, flat: "\(tree.flatten());"}
+    return genWrapper(@Statement{tree})
 };
 
 fn @@Statement.flatten() {
-    return this::flat
+    return "\(this::tree.flatten());"
 };
 
 fn @@Statement.indent(level, maxColumns) {
-    def prefix = indentation(level);
-
-    return if ((#this::flat + #prefix) <= maxColumns) {
-        "\(prefix)\(this::flat)\n"
-    } else {
-        "\(this::tree.indent(level, maxColumns));\n"
-    }
+    return "\(this::tree.indent(level, maxColumns));\n"
 };
 
 fn @@Statement.prefersFlat() {

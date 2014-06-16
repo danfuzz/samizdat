@@ -6,6 +6,7 @@
 ## Return tree.
 ##
 
+import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
 
@@ -15,26 +16,22 @@ import ./protocol :: *;
 ##
 
 export fn genReturn(tree) {
-    return @Return{tree, flat: "return \(tree.flatten())"}
+    return genWrapper(@Return{tree})
 };
 
 fn @@Return.flatten() {
-    return this::flat
+    return "return \(this::tree.flatten())"
 };
 
 fn @@Return.indent(level, maxColumns) {
     def prefix = indentation(level);
 
-    return if ((#this::flat + #prefix) <= maxColumns) {
-        "\(prefix)\(this::flat)"
-    } else {
-        "\
+    return "\
         \(prefix)return
         \(this::tree.indent(level + 1, maxColumns))"
-    }
 };
 
 fn @@Return.prefersFlat() {
-    return? this::value.prefersFlat()
+    return? this::tree.prefersFlat()
         & this
 };
