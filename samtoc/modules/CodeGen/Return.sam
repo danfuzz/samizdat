@@ -35,6 +35,6 @@ fn @@Return.indent(level, maxColumns) {
 };
 
 fn @@Return.prefersFlat() {
-    return? prefersFlat(this::tree)
+    return? this::value.prefersFlat()
         & this
 };

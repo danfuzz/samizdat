@@ -39,7 +39,7 @@ fn @@Assign.indent(level, maxColumns) {
 };
 
 fn @@Assign.prefersFlat() {
-    return? prefersFlat(this::target)
-        & prefersFlat(this::value)
+    return? this::target.prefersFlat()
+        & this::value.prefersFlat()
         & this
 };

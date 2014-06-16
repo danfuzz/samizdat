@@ -25,14 +25,14 @@ fn @@Wrapper.flatten() {
     def flatBox = this::flatBox;
 
     return fetch(flatBox)
-        | store(flatBox, flatten(this::tree))
+        | store(flatBox, this::tree.flatten())
 };
 
 fn @@Wrapper.indent(level, maxColumns) {
     def tree = this::tree;
 
-    if (prefersFlat(tree)) {
-        def flat = flatten(this);
+    if (tree.prefersFlat()) {
+        def flat = this.flatten();
         def prefix = indentation(level);
         if ((#this::flat + #prefix) <= maxColumns) {
             return "\(prefix)\(this::flat)"
@@ -43,5 +43,5 @@ fn @@Wrapper.indent(level, maxColumns) {
 };
 
 fn @@Wrapper.prefersFlat() {
-    return? prefersFlat(this::tree)
+    return? this::tree.prefersFlat()
 };
