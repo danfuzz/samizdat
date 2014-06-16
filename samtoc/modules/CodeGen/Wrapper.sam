@@ -17,7 +17,7 @@ import ./protocol :: *;
 ## Exported Definitions
 ##
 
-export fn genWrapper(gen) {
+export fn genWrapper(tree) {
     return @Wrapper{tree, flatBox: $Box::makeCell()}
 };
 
