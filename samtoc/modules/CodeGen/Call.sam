@@ -6,6 +6,7 @@
 ## Function call tree.
 ##
 
+import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
 
@@ -15,15 +16,6 @@ import ./protocol :: *;
 ##
 
 export fn genCall(function, args*) {
-    def flat = "\[
-        function.flatten(),
-        "(",
-        ( a in args, i in (#args.. by -1) ->
-            [a.flatten(), (i == 1) & "" | ", "]
-        )*,
-        ")"
-    ]";
-
     var flatOk = false;
     if ((#args < 5) & function.prefersFlat()) {
         flatOk := true;
@@ -35,20 +27,24 @@ export fn genCall(function, args*) {
         }
     };
 
-    return @Call{function, args, flat, flatOk}
+    return genWrapper(@Call{function, args, flatOk})
 };
 
 fn @@Call.flatten() {
-    return this::flat
+    def args = this::args;
+
+    return "\[
+        this::function.flatten(),
+        "(",
+        ( a in args, i in (#args.. by -1) ->
+            [a.flatten(), (i == 1) & "" | ", "]
+        )*,
+        ")"
+    ]"
 };
 
 fn @@Call.indent(level, maxColumns) {
     def prefix = indentation(level);
-
-    if ((#this::flat + #prefix) <= maxColumns) {
-        return "\[prefix, this::flat]"
-    };
-
     def args = this::args;
     def nextLevel = level + 1;
 

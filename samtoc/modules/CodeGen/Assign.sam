@@ -6,6 +6,7 @@
 ## Variable assignment tree.
 ##
 
+import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
 
@@ -15,22 +16,14 @@ import ./protocol :: *;
 ##
 
 export fn genAssign(target, value) {
-    def flat = "\(target.flatten()) = \(value.flatten())";
-
-    return @Assign{target, value, flat}
+    return genWrapper(@Assign{target, value})
 };
 
 fn @@Assign.flatten() {
-    return this::flat
+    return "\(this::target.flatten()) = \(this::value.flatten())"
 };
 
 fn @@Assign.indent(level, maxColumns) {
-    def prefix = indentation(level);
-
-    if ((#this::flat + #prefix) <= maxColumns) {
-        return "\[prefix, this::flat]"
-    };
-
     return "\[
         this::target.indent(level, maxColumns),
         " =\n",
