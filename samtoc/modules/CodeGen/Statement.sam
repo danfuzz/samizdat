@@ -31,3 +31,8 @@ fn @@Statement.indent(level, maxColumns) {
         "\(this::tree.indent(level, maxColumns));\n"
     }
 };
+
+fn @@Statement.prefersFlat() {
+    return prefersFlat(this::tree)
+        & this
+};

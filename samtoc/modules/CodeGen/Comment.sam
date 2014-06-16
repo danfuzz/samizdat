@@ -44,3 +44,11 @@ fn @@Comment.indent(level, maxColumns) {
         "\(prefix)/* \(this::text) */"
     }
 };
+
+fn @@Comment.prefersFlat() {
+    return (#this::text < 30)
+        & ((def payload = this::optPayload*)
+            & prefersFlat(payload)
+            | true)
+        & this
+};

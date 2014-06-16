@@ -24,7 +24,18 @@ export fn genCall(function, args*) {
         ")"
     ]";
 
-    return @Call{function, args, flat}
+    var flatOk = false;
+    if ((#args < 5) & prefersFlat(function)) {
+        flatOk := true;
+        for (a in args) {
+            if (!prefersFlat(a)) {
+                flatOk := false;
+                break
+            }
+        }
+    };
+
+    return @Call{function, args, flat, flatOk}
 };
 
 fn @@Call.flatten() {
@@ -50,4 +61,8 @@ fn @@Call.indent(level, maxColumns) {
             ]
         )*
     ]"
+};
+
+fn @@Call.prefersFlat() {
+    return this::flatOk** & this;
 };

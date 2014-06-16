@@ -33,3 +33,8 @@ fn @@Return.indent(level, maxColumns) {
         \(this::tree.indent(level + 1, maxColumns))"
     }
 };
+
+fn @@Return.prefersFlat() {
+    return prefersFlat(this::tree)
+        & this
+};
