@@ -27,12 +27,33 @@ this function calls the consequent function with no arguments, whereas
 **Syntax Note:** Used in the translation of `if`, `expression??`,
 and `expression & expression` forms.
 
-
 #### `ifNot(testFunction, notFunction) -> . | void`
 
 This is identical to `ifIs`, except that the `isFunction` argument is omitted.
 
 **Syntax Note:** Used in the translation of `do` and `!expression` forms.
+
+#### `ifSwitch(testFunction, valueFunctions, optDefaultFunction?, optVoidFunction?) -> . | void`
+
+Case-switched conditional. This calls the given `testFunction` with
+no arguments, taking note of its return value (hereafter, the "test result")
+or lack thereof.
+
+If `testFunction()` returns a value, then the value is looked up as a key in
+the given `valueFunctions`, which must be a map which binds to functions as
+its values. If a binding is found, then that function is called, passing it
+the test result as the sole argument. If a binding is *not* found, then the
+`optDefaultFunction*` (if passed) is called, again with the test result as
+the sole argument.
+
+If `testFunction()` returns void, then the `optVoidFunction*` (if passed) is
+called, with no arguments.
+
+The return value of this function is the same as the result of whatever
+consequent function was called, if any. If no consequent function was called,
+this function returns void.
+
+**Syntax Note:** Used in the translation of `switch` forms.
 
 #### `ifValue(testFunction, valueFunction, voidFunction?) -> . | void`
 
