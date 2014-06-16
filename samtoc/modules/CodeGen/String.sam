@@ -19,5 +19,9 @@ fn String.flatten() {
 };
 
 fn String.indent(level, maxColumns) {
-    return "\[indentation(level), this]"
+    return cat(indentation(level), this)
+};
+
+fn String.prefersFlat() {
+    return this
 };

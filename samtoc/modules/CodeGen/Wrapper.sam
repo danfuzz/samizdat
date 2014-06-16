@@ -1,0 +1,48 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Outer wrapper for code-gen nodes.
+##
+## Payload:
+## * tree -- the main tree node
+## * flatBox -- box containing the flattened version, if created
+##
+
+import ./indentation :: *;
+import ./protocol :: *;
+
+
+##
+## Exported Definitions
+##
+
+export fn genWrapper(tree) {
+    return @Wrapper{tree, flatBox: $Box::makeCell()}
+};
+
+fn @@Wrapper.flatten() {
+    def flatBox = this::flatBox;
+
+    return fetch(flatBox)
+        | store(flatBox, this::tree.flatten())
+};
+
+fn @@Wrapper.indent(level, maxColumns) {
+    def tree = this::tree;
+
+    if (tree.prefersFlat()) {
+        def flat = this.flatten();
+        def prefix = indentation(level);
+        if ((#flat + #prefix) <= maxColumns) {
+            return cat(prefix, flat)
+        }
+    };
+
+    return tree.indent(level, maxColumns)
+};
+
+fn @@Wrapper.prefersFlat() {
+    return? this::tree.prefersFlat()
+};

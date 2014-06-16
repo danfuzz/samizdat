@@ -6,6 +6,7 @@
 ## Comment tree.
 ##
 
+import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
 
@@ -16,31 +17,37 @@ import ./protocol :: *;
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        def flat = "/* \(text) */ \(payload.flatten())";
-        @Comment{payload, text, flat}
+        genWrapper(@Comment{payload, text})
     } else {
-        def flat = "/* \(text) */";
-        @Comment{text, flat}
+        genWrapper(@Comment{text})
     }
 };
 
 fn @@Comment.flatten() {
-    return this::flat
+    def text = this::text;
+
+    return (def payload = this::payload)
+        & "/* \(text) */ \(payload.flatten())"
+        | "/* \(text) */"
 };
 
 fn @@Comment.indent(level, maxColumns) {
     def prefix = indentation(level);
 
-    if ((#this::flat + #prefix) <= maxColumns) {
-        return "\[prefix, this::flat]"
-    };
-
     return if (def p = this::payload) {
-        "\[
+        cat(
             prefix, "// ", this::text, "\n",
             p.indent(level, maxColumns)
-        ]"
+        )
     } else {
         "\(prefix)/* \(this::text) */"
     }
+};
+
+fn @@Comment.prefersFlat() {
+    return? (#this::text < 30)
+        & (((def payload = this::payload)
+            & payload.prefersFlat()?
+            | true?)*)
+        & this
 };
