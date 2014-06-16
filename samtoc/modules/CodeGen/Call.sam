@@ -64,5 +64,5 @@ fn @@Call.indent(level, maxColumns) {
 };
 
 fn @@Call.prefersFlat() {
-    return this::flatOk** & this;
+    return? this::flatOk** & this;
 };

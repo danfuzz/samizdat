@@ -43,5 +43,5 @@ fn @@Wrapper.indent(level, maxColumns) {
 };
 
 fn @@Wrapper.prefersFlat() {
-    return prefersFlat(this::tree)
+    return? prefersFlat(this::tree)
 };

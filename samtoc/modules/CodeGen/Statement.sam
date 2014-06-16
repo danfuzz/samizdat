@@ -33,6 +33,6 @@ fn @@Statement.indent(level, maxColumns) {
 };
 
 fn @@Statement.prefersFlat() {
-    return prefersFlat(this::tree)
+    return? prefersFlat(this::tree)
         & this
 };
