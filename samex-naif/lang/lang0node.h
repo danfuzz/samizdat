@@ -114,6 +114,9 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn);
 zvalue withTop(zvalue node);
 
 // Documented in spec.
+zvalue withYieldDef(zvalue node, zvalue name);
+
+// Documented in spec.
 zvalue withoutInterpolate(zvalue node);
 
 // Documented in spec.

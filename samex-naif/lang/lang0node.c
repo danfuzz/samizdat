@@ -757,6 +757,27 @@ zvalue withTop(zvalue node) {
         NULL);
 }
 
+
+// Documented in spec.
+zvalue withYieldDef(zvalue node, zvalue name) {
+    zvalue map = dataOf(node);
+    zvalue yieldDef = get(map, STR_yieldDef);
+    zvalue newBindings;
+
+    if (yieldDef != NULL) {
+        zvalue defStat = makeVarDef(name, makeVarRef(yieldDef));
+        newBindings = mapFrom1(
+            STR_statements, listPrepend(defStat, get(node, STR_statements)));
+    } else {
+        newBindings = mapFrom1(STR_yieldDef, name);
+    }
+
+    return makeValue(
+        get_type(node),
+        GFN_CALL(cat, map, newBindings),
+        NULL);
+};
+
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
     return makeValue(
