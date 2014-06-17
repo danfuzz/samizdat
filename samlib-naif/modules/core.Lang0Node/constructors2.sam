@@ -172,7 +172,8 @@ fn @@importResource.makeDynamicImport() {
 };
 
 ## Documented in spec.
-export fn makeFullClosure(map) {
+export fn makeFullClosure(nodeOrMap) {
+    def map = ifValueOr { hasType(nodeOrMap, Map) } { dataOf(nodeOrMap) };
     def formals = ifValueOr { map::formals } { [] };
     var statements = ifValueOr { map::statements } { [] };
     def statSz = get_size(statements);
