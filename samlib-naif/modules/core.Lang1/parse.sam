@@ -454,7 +454,7 @@ def parFunctionCommon = makeMainSequence(
                 formals),
             name);
 
-        makeFullClosure(dataOf(basic))
+        makeFullClosure(basic)
     });
 
 ## Documented in spec.

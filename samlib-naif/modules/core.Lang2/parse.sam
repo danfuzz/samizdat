@@ -599,7 +599,7 @@ def parFunctionCommon = {:
                 formals),
             name);
 
-        makeFullClosure(dataOf(basic))
+        makeFullClosure(basic)
     }
 :};
 
@@ -2075,7 +2075,7 @@ def parSwitchExpression = {:
                 { withFormals(case::code, [testClause::formal]) };
             ifValue { yieldDef::yieldDef }
                 { y -> fullCode := withYieldDefIfAbsent(fullCode, y) };
-            return makeFullClosure(dataOf(fullCode))
+            return makeFullClosure(fullCode)
         };
 
         def optElse = filterAll(cases) { case ->

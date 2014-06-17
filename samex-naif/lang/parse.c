@@ -873,7 +873,7 @@ DEF_PARSE(functionCommon) {
             formals),
         name);
 
-    return makeFullClosure(dataOf(basic));
+    return makeFullClosure(basic);
 }
 
 // Documented in spec.
