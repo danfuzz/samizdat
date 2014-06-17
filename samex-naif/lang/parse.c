@@ -867,14 +867,13 @@ DEF_PARSE(functionCommon) {
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(basicNullaryClosure);
 
-    zvalue basic = withFormals(
-        withYieldDef(code, STR_return),
-        formals);
-    zvalue closureMap = GFN_CALL(cat,
-        dataOf(basic),
-        mapFrom1(STR_name, name));
+    zvalue basic = withName(
+        withFormals(
+            withYieldDef(code, STR_return),
+            formals),
+        name);
 
-    return makeFullClosure(closureMap);
+    return makeFullClosure(dataOf(basic));
 }
 
 // Documented in spec.

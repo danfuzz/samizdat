@@ -597,11 +597,13 @@ def parFunctionCommon = {:
     code = parBasicNullaryClosure
 
     {
-        def basic = withFormals(
-            withYieldDef(code, "return"),
-            formals);
+        def basic = withName(
+            withFormals(
+                withYieldDef(code, "return"),
+                formals),
+            name);
 
-        makeFullClosure({dataOf(basic)*, name})
+        makeFullClosure(dataOf(basic))
     }
 :};
 

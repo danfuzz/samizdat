@@ -448,11 +448,13 @@ def parFunctionCommon = makeMainSequence(
     makeToken(@@")"),
     parBasicNullaryClosure,
     makeCode { name, ., formals, ., code ->
-        def basic = withFormals(
-            withYieldDef(code, "return"),
-            formals);
+        def basic = withName(
+            withFormals(
+                withYieldDef(code, "return"),
+                formals),
+            name);
 
-        makeFullClosure({dataOf(basic)*, name})
+        makeFullClosure(dataOf(basic))
     });
 
 ## Documented in spec.
