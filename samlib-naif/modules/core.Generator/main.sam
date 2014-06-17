@@ -61,6 +61,8 @@ export fn filterAll(filterFunction, generators*) {
 
 ## Documented in spec.
 export fn filterPump(filterFunction, generators*) {
+    var result = [];
+
     ifIs { eq(get_size(generators), 1) }
         {
             ## Handle a single generator as a special case to avoid a lot of
@@ -70,12 +72,13 @@ export fn filterPump(filterFunction, generators*) {
                 def box = makePromise();
                 ifValue { nextValue(gen, box) }
                     { nextGen ->
-                        filterFunction(fetch(box));
+                        ifValue { filterFunction(fetch(box)) }
+                            { value -> result := [value] };
                         gen := nextGen
                     }
                     {
                         ## The generator was voided.
-                        return
+                        return? result*
                     }
             }
         }
@@ -86,12 +89,13 @@ export fn filterPump(filterFunction, generators*) {
                 def box = makePromise();
                 ifValue { nextValue(gen, box) }
                     { nextGen ->
-                        filterFunction(fetch(box)*);
+                        ifValue { filterFunction(fetch(box)*) }
+                            { value -> result := [value] };
                         gen := nextGen
                     }
                     {
                         ## The inner generator was voided.
-                        return
+                        return? result*
                     }
             }
         }
