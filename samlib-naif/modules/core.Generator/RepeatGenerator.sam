@@ -48,8 +48,4 @@ fn @@RepeatGenerator.nextValue(box) {
             store(box, value);
             makeRepeatGenerator($Number::sub(size, 1), value)
         }
-        {
-            ## Size is `0` or negative.
-            store(box)
-        }
 };

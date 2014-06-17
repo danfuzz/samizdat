@@ -423,7 +423,6 @@ METH_IMPL(Map, nextValue) {
 
     if (first == NULL) {
         // `map` is empty.
-        boxStore(box, NULL);
         return NULL;
     } else {
         boxStore(box, first);

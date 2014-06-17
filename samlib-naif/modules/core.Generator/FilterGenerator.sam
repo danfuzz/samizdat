@@ -60,7 +60,6 @@ fn @@FilterGenerator.nextValue(box) {
             };
 
         ## The inner generator was voided.
-        store(box);
         return
     }
 };

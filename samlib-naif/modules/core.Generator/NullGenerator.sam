@@ -20,7 +20,7 @@ fn @@NullGenerator.collect(optFilterFunction?) {
 
 ## Documented in spec.
 fn @@NullGenerator.nextValue(box) {
-    store(box)
+    ## Do nothing. Return void.
 };
 
 ## Documented in spec.

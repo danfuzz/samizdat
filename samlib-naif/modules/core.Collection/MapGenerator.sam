@@ -32,8 +32,4 @@ fn @@MapGenerator.nextValue(box) {
             store(box, value);
             return @MapGenerator{dataOf(this)*, index: $Number::add(index, 1)}
         }
-        {
-            ## Voided (out of elements).
-            store(box)
-        }
 };

@@ -54,7 +54,6 @@ fn @@ParaGenerator.nextValue(box) {
                 { nextGenerator -> [fetch(innerBox), nextGenerator] }
                 {
                     ## One of the sub-generators became voided.
-                    store(box);
                     return
                 }
         });

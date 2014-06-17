@@ -31,8 +31,4 @@ fn @@SequenceGenerator.nextValue(box) {
             store(box, value);
             @SequenceGenerator{dataOf(this)*, index: $Number::add(index, 1)}
         }
-        {
-            ## Voided (out of elements).
-            store(box)
-        }
 };

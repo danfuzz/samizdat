@@ -192,7 +192,6 @@ METH_IMPL(Sequence, nextValue) {
 
     if (first == NULL) {
         // `seq` is empty.
-        boxStore(box, NULL);
         return NULL;
     } else {
         boxStore(box, first);

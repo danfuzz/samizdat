@@ -36,8 +36,4 @@ fn @@ListWrapGenerator.nextValue(box) {
             store(box, [fetch(innerBox)]);
             @ListWrapGenerator(nextGenerator)
         }
-        {
-            ## It became voided.
-            store(box);
-        }
 };

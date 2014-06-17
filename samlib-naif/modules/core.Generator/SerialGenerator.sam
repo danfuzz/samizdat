@@ -58,8 +58,4 @@ fn @@SerialGenerator.nextValue(box) {
                     nextValue(makeSerialGenerator(moreGens*), box)
                 }
         }
-        {
-            ## Totally voided.
-            store(box)
-        }
 };
