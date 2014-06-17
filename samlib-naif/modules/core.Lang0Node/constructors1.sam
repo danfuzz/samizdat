@@ -126,6 +126,13 @@ export fn withYieldDef(node, name) {
 };
 
 ## Documented in spec.
+export fn withYieldDefIfAbsent(node, name) {
+    return ifIs { node::yieldDef }
+        { node }
+        { withYieldDef(node, name) }
+};
+
+## Documented in spec.
 export fn withoutInterpolate(node) {
     return @(get_type(node))($Collection::del(dataOf(node), "interpolate"))
 };

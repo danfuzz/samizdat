@@ -477,6 +477,17 @@ replace it. Instead, this adds an initial variable definition statement
 to the `statements` in the result, which binds the given name to the original
 `yieldDef` name.
 
+#### `withYieldDefIfAbsent(node, name) -> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with the addition of a yield definition binding for the given `name`, but
+only if `node` does not already have a yield definition. If `node` *does*
+have a yield definition, then this just returns `node`.
+
+This function is useful for propagating an outer yield definition into an
+inner closure, especially with regards to providing the expected behavior
+around implicit yielding of the final statement of a closure.
+
 #### `withoutIntermediates(node) -> node`
 
 Makes a node just like the given one, except without any "intermediate"
