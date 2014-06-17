@@ -49,8 +49,9 @@ fn @@FilterGenerator.nextValue(box) {
                 ifValue { filterFunction(fetch(innerBox)*) }
                     { value ->
                         store(box, value);
-                        return @FilterGenerator(
-                            {dataOf(this)*, generator: nextGen})
+                        return @FilterGenerator{
+                            filterFunction,
+                            generator: nextGen}
                     }
                     {
                         ## The filter discarded the value. Iterate!
