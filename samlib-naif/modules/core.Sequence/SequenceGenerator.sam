@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import proto.Number;
+import proto.Number :: add;
 
 
 ##
@@ -25,10 +25,11 @@ fn @@SequenceGenerator.collect(optFilterFunction?) {
 ## Documented in spec.
 fn @@SequenceGenerator.nextValue(box) {
     def index = this::index;
+    def seq = this::seq;
 
-    return? ifValue { nth(this::seq, index) }
+    return? ifValue { nth(seq, index) }
         { value ->
             store(box, value);
-            @SequenceGenerator{dataOf(this)*, index: $Number::add(index, 1)}
+            @SequenceGenerator{index: add(index, 1), seq}
         }
 };
