@@ -100,9 +100,12 @@ export fn filterPump(filterFunction, generators*) {
 ## Documented in spec.
 export fn generatorPump(generator) {
     var gen = generator;
+    var result = [];
 
     loop {
-        gen := ifValueOr { nextValue(gen, nullBox) }
-            { return }
+        def box = makePromise();
+        gen := ifValueOr { nextValue(gen, box) }
+            { return? result* };
+        result := [fetch(box)];
     }
 };
