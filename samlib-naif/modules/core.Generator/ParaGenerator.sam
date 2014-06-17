@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import core.Box :: nullBox, makePromise;
+import core.Box :: makeCell, nullBox;
 
 import ./ListWrapGenerator :: makeListWrapGenerator;
 import ./NullGenerator :: nullGenerator;
@@ -46,10 +46,10 @@ fn @@ParaGenerator.nextValue(box) {
     ifIs { eq(subGens, []) }
         { return? nextValue(nullBox, box) };
 
+    def innerBox = makeCell();
     def generatorCalls = collect(
         subGens,
         { gen ->
-            def innerBox = makePromise();
             ifValue { nextValue(gen, innerBox) }
                 { nextGenerator -> [fetch(innerBox), nextGenerator] }
                 {
