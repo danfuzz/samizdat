@@ -344,6 +344,11 @@ to one element from its corresponding generator. The block is called
 once per set of elements. The loop terminates when *any* of the generators
 becomes voided.
 
+This construct yields the last value (not void) yielded by its inner
+block. If the block never yields a value, then this construct yields
+void. In addition, if `break` or a named yield is used, then this construct
+of course yields the indicated value (or void).
+
 `for` expressions support explicit yield definition, and they define both
 break and continue contexts.
 

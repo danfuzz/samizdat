@@ -2255,7 +2255,7 @@ def parDoExpression = {:
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     $Generator::filterPump(expr1, expr2) { name1, name2 /next ->
+##     yield? $Generator::filterPump(expr1, expr2) { name1, name2 /next ->
 ##         def \"continue" = next;
 ##         stat1; stat2
 ##     }
@@ -2277,20 +2277,14 @@ def parForExpression = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        def continueDef = ifValue { get_yieldDef(code) }
-            { name -> [makeVarDef(name, REFS::continue)] }
-            { [] };
-
         def loopClosure = makeFullClosure(
             withYieldDef(withFormals(code, genFormals), "continue"));
 
         def mainClosure = makeFullClosure({
             yieldDef: "break",
-            statements: [
-                breakDef*,
-                makeCall(REFS::Generator_filterPump,
-                    loopClosure, genInits*)
-            ]
+            statements: [breakDef*],
+            yield: makeMaybe(
+                makeCall(REFS::Generator_filterPump, loopClosure, genInits*))
         });
 
         makeCall(mainClosure)
