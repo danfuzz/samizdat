@@ -48,7 +48,7 @@ fn @@PegChoice.parse(box, input, items*) {
     };
 
     ## No rule succeeded.
-    store(box)
+    return
 };
 
 ## Documented in spec.
@@ -58,13 +58,11 @@ fn @@PegCode.parse(box, input, items*) {
             store(box, result);
             input
         }
-        { store(box) };
 };
 
 ## Documented in spec.
 fn @@PegEof.parse(box, input, .*) {
-    return? ifIs { nextValue(input, nullBox) }
-        { store(box) }
+    return? ifNot { nextValue(input, nullBox) }
         {
             store(box, null);
             input
@@ -73,13 +71,12 @@ fn @@PegEof.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegFail.parse(box, input, .*) {
-    store(box)
+    ## Do nothing, and return void.
 };
 
 ## Documented in spec.
 fn @@PegLookaheadFailure.parse(box, input, items*) {
-    return? ifIs { parse(dataOf(this), nullBox, input, items*) }
-        { store(box) }
+    return? ifNot { parse(dataOf(this), nullBox, input, items*) }
         {
             store(box, null);
             input
@@ -133,7 +130,6 @@ fn @@PegRepeat.parse(box, input, items*) {
                         ifIs { lt(get_size(results), minSize) }
                             {
                                 ## Did not parse minimum required count.
-                                store(box);
                                 return
                             }
                     };
@@ -169,7 +165,6 @@ fn @@PegSequence.parse(box, input, items*) {
             }
             {
                 ## Propagate the failure.
-                store(box);
                 return
             }
     };
@@ -199,7 +194,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
         };
 
     ## Either EOF or no match.
-    store(box);
+    return
 };
 
 ## Documented in spec.
@@ -217,7 +212,7 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
         };
 
     ## Either EOF or no match.
-    store(box);
+    return
 };
 
 
