@@ -2066,18 +2066,15 @@ def parSwitchExpression = {:
     {
         ## This function combines the given original code with the overall
         ## yield def (if specified) and test formal (except not for an
-        ## `else`), yielding a full closure. The yield def binding is only
-        ## done to get the right "implicit yield" behavior; see the
+        ## `else`), yielding a full closure. The yield def binding here is
+        ## only done to get the right "implicit yield" behavior. See the
         ## discussion in the `if` implementation for more info.
         fn finishCode(case, isElse?) {
             var fullCode = ifIs { isElse* }
                 { case::code }
                 { withFormals(case::code, [testClause::formal]) };
             ifValue { yieldDef::yieldDef }
-                { name ->
-                    ifNot { fullCode::yieldDef }
-                        { fullCode := withYieldDef(fullCode, name) }
-                };
+                { y -> fullCode := withYieldDefIfAbsent(fullCode, y) };
             return makeFullClosure(dataOf(fullCode))
         };
 
