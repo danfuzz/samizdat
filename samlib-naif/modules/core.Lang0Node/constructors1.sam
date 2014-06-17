@@ -118,7 +118,7 @@ export fn withYieldDef(node, name) {
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
-            {statements: [makeVarDef(yieldDef, makeVarRef(origName))]}
+            {statements: [makeVarDef(name, makeVarRef(origName))]}
         }
         { {yieldDef: name} };
 
