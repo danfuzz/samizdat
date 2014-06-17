@@ -30,6 +30,7 @@ def NAMES = [
     "gt",
     "ifIs",
     "ifNot",
+    "ifSwitch",
     "ifValue",
     "ifValueOr",
     "ifValues",

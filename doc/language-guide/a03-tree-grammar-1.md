@@ -597,22 +597,13 @@ def parFunctionCommon = {:
     code = parBasicNullaryClosure
 
     {
-        def returnDef = ifValue { code::yieldDef }
-            { yieldDef ->
-                ## The closure has a yield def, but we need to also bind
-                ## it as `return`, so we add an extra local variable binding
-                ## here.
-                [makeVarDef(yieldDef, REFS::return)]
-            }
-            { [] };
+        def basic = withName(
+            withFormals(
+                withYieldDef(code, "return"),
+                formals),
+            name);
 
-        makeFullClosure({
-            dataOf(code)*,
-            formals,
-            name,
-            yieldDef: "return",
-            statements: [returnDef*, get_statements(code)*]
-        })
+        makeFullClosure(dataOf(basic))
     }
 :};
 

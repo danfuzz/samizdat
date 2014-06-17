@@ -55,4 +55,9 @@ zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3);
  */
 zvalue listAppend(zvalue list, zvalue elem);
 
+/**
+ * Prepends an element to a list.
+ */
+zvalue listPrepend(zvalue elem, zvalue list);
+
 #endif

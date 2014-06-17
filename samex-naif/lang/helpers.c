@@ -63,3 +63,8 @@ zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
 zvalue listAppend(zvalue list, zvalue elem) {
     return GFN_CALL(cat, list, listFrom1(elem));
 }
+
+// Documented in header.
+zvalue listPrepend(zvalue elem, zvalue list) {
+    return GFN_CALL(cat, listFrom1(elem), list);
+}

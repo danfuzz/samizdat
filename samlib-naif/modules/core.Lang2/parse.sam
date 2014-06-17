@@ -593,22 +593,13 @@ def parFunctionCommon = {:
     code = parBasicNullaryClosure
 
     {
-        def returnDef = ifValue { code::yieldDef }
-            { yieldDef ->
-                ## The closure has a yield def, but we need to also bind
-                ## it as `return`, so we add an extra local variable binding
-                ## here.
-                [makeVarDef(yieldDef, REFS::return)]
-            }
-            { [] };
+        def basic = withName(
+            withFormals(
+                withYieldDef(code, "return"),
+                formals),
+            name);
 
-        makeFullClosure({
-            dataOf(code)*,
-            formals,
-            name,
-            yieldDef: "return",
-            statements: [returnDef*, get_statements(code)*]
-        })
+        makeFullClosure(dataOf(basic))
     }
 :};
 
@@ -2172,23 +2163,6 @@ def parSwitchCase = {:
     { {code, keys} }
 :};
 
-## Helper for switch expressions, which inserts a `yieldDef` into the
-## code for a case and always turns it into a full closure. See the
-## discussion in the parser for `if` for rationale.
-fn finishSwitchCase(map, yieldDef) {
-    return {
-        code: makeFullClosure({yieldDef*, dataOf(map::code)*}),
-        keys: map::keys
-    }
-};
-
-## Tree for the second argument to the inner `ifValue` inside a `switch`
-## translation. This expression is constant across all switches.
-def CALL_ARG = makeFullClosure({
-    formals: [{name: "body"}],
-    yield:   makeMaybe(makeCall(makeVarRef("body")))
-});
-
 ## Parses a switch expression. The translation is along these lines:
 ##
 ## ```
@@ -2202,24 +2176,26 @@ def CALL_ARG = makeFullClosure({
 ## =>
 ## ```
 ## { /out ->
-##     ifValue { testExpr }
-##         { name ->
-##             ifValue
-##                 { get({(ex1): {s1a; s1b}, (ex2): {s2a; s2b}}, name) }
-##                 { body -> body() }
-##                 { statDefault }
-##         }
-##         { statElse }
+##     ifSwitch(
+##         { testExpr },
+##         {
+##             (ex1): { name /out -> s1a; s1b },
+##             (ex2): { name /out -> s2a; s2b }
+##         },
+##         { name /out -> statDefault },
+##         { /out -> statElse })
 ## }()
 ## ```
 ##
 ## with:
-## * the outer thunk-call omitted if there was no yield definition.
+## * no outer thunk-call, nor per-clause `/out` binding, if there was no
+##   yield definition.
+## * `.` instead of `name` argument definitions if there was no name binding
+##   on the test expression.
 ## * overrides of map keys switched around so the *first* key wins.
+## * the `statDefault` block omitted if there is no `default` clause. If
+##   no `default` but there is an `else`, `{ -> }` is used.
 ## * the `statElse` block omitted if there is no `else` clause.
-## * the `statDefault` block omitted if there is no `default` clause.
-## * the test expression variable binding changed to a safe (otherwise unused)
-##   name, if no variable name was specified.
 def parSwitchExpression = {:
     @switch
     yieldDef = parOptYieldDef
@@ -2232,13 +2208,10 @@ def parSwitchExpression = {:
         most = (
             c = parSwitchCase
             @";"+
-            { finishSwitchCase(c, yieldDef) }
+            { c }
         )*
 
-        last = (
-            c = parSwitchCase
-            { finishSwitchCase(c, yieldDef) }
-        )?
+        last = parSwitchCase?
 
         { [most*, last*] }
     )
@@ -2247,13 +2220,41 @@ def parSwitchExpression = {:
     @"}"
 
     {
-        def optDefault = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @default) } { case::code }
+        ## This function combines the given original code with the overall
+        ## yield def (if specified) and test formal (except not for an
+        ## `else`), yielding a full closure. The yield def binding is only
+        ## done to get the right "implicit yield" behavior; see the
+        ## discussion in the `if` implementation for more info.
+        fn finishCode(case, isElse?) {
+            var fullCode = ifIs { isElse* }
+                { case::code }
+                { withFormals(case::code, [testClause::formal]) };
+            ifValue { yieldDef::yieldDef }
+                { name ->
+                    ifNot { fullCode::yieldDef }
+                        { fullCode := withYieldDef(fullCode, name) }
+                };
+            return makeFullClosure(dataOf(fullCode))
         };
 
         def optElse = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @else) } { case::code }
+            ifIs { eq(case::keys, @else) } { finishCode(case, true) }
         };
+
+        var optDefault = filterAll(cases) { case ->
+            ifIs { eq(case::keys, @default) } { finishCode(case) }
+        };
+
+        ## If there's an `else` but no `default`, we have to create a
+        ## no-op default, so to be able to call `ifSwitch` properly.
+        ifValues(
+            [
+                { ne(optElse, []) },
+                { . -> eq(optDefault, []) }
+            ],
+            { ., . ->
+                optDefault := [finishCode({code: makeBasicClosure({})})]
+            });
 
         ifIs { gt(get_size(optDefault), 1) }
             { die("Multiple default cases in switch.") };
@@ -2267,41 +2268,29 @@ def parSwitchExpression = {:
         ## what `cat(map)` defines.
         def caseClauses = filterAll(cases) { case ->
             def keys = case::keys;
+            def code = finishCode(case);
             ifIs { hasType(keys, List) }
-                { makeCallOrApply(REFS::makeValueMap, keys*, case::code) }
+                { makeCallOrApply(REFS::makeValueMap, keys*, code) }
         };
         def caseMap = makeCallOrApply(REFS::cat,
+            makeLiteral({}),
             makeInterpolate(
                 makeCall(REFS::Sequence_reverse,
                     makeCallOrApply(REFS::makeList, caseClauses*))));
 
-        ## If there is no specified formal, then pick a safe one, that is,
-        ## a name not referenced in the case clauses.
-        def testVar = ifValueOr { testClause::formal::name }
-            { $safeVar::safeVarName("switchValue", caseMap) };
-
-        def innerIf = makeCall(REFS::ifValue,
-            makeThunk(makeGet(caseMap, makeVarRef(testVar))),
-            CALL_ARG,
-            optDefault*);
-
-        def mainBody = makeFullClosure({
-            formals: [{name: testVar}],
-            yield: makeMaybe(innerIf)
-        });
-
-        def outerIf = makeCall(REFS::ifValue,
+        def ifCall = makeCall(REFS::ifSwitch,
             testClause::testThunk,
-            mainBody,
+            caseMap,
+            optDefault*,
             optElse*);
 
-        ## If there's a yield def, then wrap `outerIf` in a thunk-call.
-        ## If not, then `outerIf` is the result.
+        ## If there's a yield def, then wrap `ifCall` in a thunk-call.
+        ## If not, then `ifCall` is the result.
         ifIs { eq(yieldDef, {}) }
-            { outerIf }
+            { ifCall }
             {
                 def outerClosure = makeFullClosure({
-                    yield: makeMaybe(outerIf),
+                    yield: makeMaybe(ifCall),
                     yieldDef*
                 });
                 makeCall(outerClosure)

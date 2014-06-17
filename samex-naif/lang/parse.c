@@ -867,19 +867,13 @@ DEF_PARSE(functionCommon) {
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(basicNullaryClosure);
 
-    zvalue yieldDef = GET(yieldDef, code);
-    zvalue returnDef = (yieldDef == NULL)
-        ? EMPTY_LIST
-        : listFrom1(makeVarDef(yieldDef, REFS(return)));
+    zvalue basic = withName(
+        withFormals(
+            withYieldDef(code, STR_return),
+            formals),
+        name);
 
-    zvalue closureMap = GFN_CALL(cat,
-        dataOf(code),
-        mapFrom4(
-            STR_formals,    formals,
-            STR_name,       name,
-            STR_yieldDef,   STR_return,
-            STR_statements, GFN_CALL(cat, returnDef, GET(statements, code))));
-    return makeFullClosure(closureMap);
+    return makeFullClosure(dataOf(basic));
 }
 
 // Documented in spec.

@@ -107,6 +107,25 @@ export fn withFormals(node, formals) {
 };
 
 ## Documented in spec.
+export fn withName(node, name) {
+    return @(get_type(node)){dataOf(node)*, name}
+};
+
+## Documented in spec.
+export fn withYieldDef(node, name) {
+    def map = dataOf(node);
+    def newBindings = ifValue { map::yieldDef }
+        { origName ->
+            ## There's already a `yieldDef`. Prepend a variable definition
+            ## statement instead of clobbering the existing binding.
+            {statements: [makeVarDef(yieldDef, makeVarRef(origName))]}
+        }
+        { {yieldDef: name} };
+
+    return @(get_type(node)){map*, newBindings*}
+};
+
+## Documented in spec.
 export fn withoutInterpolate(node) {
     return @(get_type(node))($Collection::del(dataOf(node), "interpolate"))
 };

@@ -108,10 +108,16 @@ zvalue withFormals(zvalue node, zvalue formals);
 zvalue withModuleDefs(zvalue node);
 
 // Documented in spec.
+zvalue withName(zvalue node, zvalue name);
+
+// Documented in spec.
 zvalue withResolvedImports(zvalue node, zvalue resolveFn);
 
 // Documented in spec.
 zvalue withTop(zvalue node);
+
+// Documented in spec.
+zvalue withYieldDef(zvalue node, zvalue name);
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node);
