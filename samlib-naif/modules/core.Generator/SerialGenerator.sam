@@ -46,11 +46,9 @@ fn @@SerialGenerator.nextValue(box) {
     return? ifValue { get(subGens, 0) }
         { firstGen ->
             def moreGens = sliceInclusive(subGens, 1);
-            def innerBox = makePromise();
 
-            ifValue { nextValue(firstGen, innerBox) }
+            ifValue { nextValue(firstGen, box) }
                 { nextGenerator ->
-                    store(box, fetch(innerBox));
                     @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
