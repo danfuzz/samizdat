@@ -57,7 +57,7 @@ zvalue makeExport(zvalue node);
 zvalue makeExportSelection(zvalue names);
 
 // Documented in spec.
-zvalue makeFullClosure(zvalue map);
+zvalue makeFullClosure(zvalue nodeOrMap);
 
 // Documented in spec.
 zvalue makeImport(zvalue baseData);

@@ -603,7 +603,7 @@ def parFunctionCommon = {:
                 formals),
             name);
 
-        makeFullClosure(dataOf(basic))
+        makeFullClosure(basic)
     }
 :};
 

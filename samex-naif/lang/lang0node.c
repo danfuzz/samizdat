@@ -354,7 +354,8 @@ zvalue makeExportSelection(zvalue names) {
 }
 
 // Documented in spec.
-zvalue makeFullClosure(zvalue map) {
+zvalue makeFullClosure(zvalue nodeOrMap) {
+    zvalue map = hasType(nodeOrMap, TYPE_Map) ? nodeOrMap : dataOf(nodeOrMap);
     zvalue formals = get(map, STR_formals);
     zvalue statements = get(map, STR_statements);
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
@@ -368,9 +369,9 @@ zvalue makeFullClosure(zvalue map) {
         statements = EMPTY_LIST;
     }
 
-    if (       (yieldNode == NULL)
-            && (statSz != 0)
-            && (get(map, STR_yieldDef) == NULL)) {
+    if (     (yieldNode == NULL)
+          && (statSz != 0)
+          && (get(map, STR_yieldDef) == NULL)) {
         zvalue lastStat = nth(statements, statSz - 1);
         if (isExpression(lastStat)) {
             yieldNode = makeMaybe(lastStat);

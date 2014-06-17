@@ -260,6 +260,8 @@ an explicit continuation name (as described above).
 
 This form is evaluated by evaluating the given block, ignoring any
 result it yields, and then evaluating the block again, ad infinitum.
+This construct will only ever yield a value if it is explicitly yielded
+(via `break` or a named yield).
 
 Unconditional `do` expressions support explicit yield definition
 and define both break and continue contexts.
@@ -286,6 +288,8 @@ while (expression) {
 With this form, `expression` is evaluated at the start of each iteration,
 and the block is only evaluated if the expression evaluates to
 logical-true. If not, the outer expression terminates, yielding void.
+This construct will only ever yield a value if it is explicitly yielded
+(via `break` or a named yield).
 
 `while` expressions support explicit yield definition, test expression
 name binding, and multple test expressions; and they define both break
@@ -301,6 +305,12 @@ do {
     block
 } while (expression)
 ```
+
+With this form, the block is always run at least once. `expression` is
+evaluated at the *end* of each iteration, and the block is only re-evaluated
+if the expression evaluates to logical-true. As with `while`, this construct
+will only ever yield a value if it is explicitly yielded (via `break` or a
+named yield).
 
 `do...while` expressions support explicit yield definition,
 and define both break and continue contexts.
@@ -327,13 +337,17 @@ for (name1 in generatorExpression1, name2 in generatorExpression2) {
 `for` accepts one or more comma-separated generator binding expressions in
 parentheses. Each one is of the form `name in expression`, where `name`
 is an arbitrary variable name, and `expression` is an arbitrary expression,
-except that it must yield either a generator (including possibly a
-collection).
+except that it must yield a generator (including possibly a collection).
 
 Within the block body of a `for`, each of the named variables is bound
 to one element from its corresponding generator. The block is called
 once per set of elements. The loop terminates when *any* of the generators
 becomes voided.
+
+This construct yields the last value (not void) yielded by its inner
+block. If the block never yields a value, then this construct yields
+void. In addition, if `break` or a named yield is used, then this construct
+of course yields the indicated value (or void).
 
 `for` expressions support explicit yield definition, and they define both
 break and continue contexts.

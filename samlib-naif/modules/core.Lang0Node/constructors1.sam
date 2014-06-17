@@ -118,11 +118,18 @@ export fn withYieldDef(node, name) {
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
-            {statements: [makeVarDef(yieldDef, makeVarRef(origName))]}
+            {statements: [makeVarDef(name, makeVarRef(origName))]}
         }
         { {yieldDef: name} };
 
     return @(get_type(node)){map*, newBindings*}
+};
+
+## Documented in spec.
+export fn withYieldDefIfAbsent(node, name) {
+    return ifIs { node::yieldDef }
+        { node }
+        { withYieldDef(node, name) }
 };
 
 ## Documented in spec.

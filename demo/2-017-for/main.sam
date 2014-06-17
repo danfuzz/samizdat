@@ -86,3 +86,23 @@ for (x in [1, 2, 3, 4, 5]) { /next ->
     if (x \== 3) { yield /next };
     print(x)
 };
+
+note("\nVoid yield.");
+var got = (
+    for (x in [1, 2, 3, 4, 5]) {
+        ## This space intentionally left blank.
+    }
+)?;
+if (got != []) {
+    die("Bad non-void!");
+};
+
+note("\nNon-void yield.");
+got := (
+    for (x in [1, 2, 3, 4, 5]) {
+        if (x < 4) {
+            continue x
+        }
+    }
+);
+note("Got: \%q(got)")

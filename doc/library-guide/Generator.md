@@ -153,8 +153,9 @@ This is a convenient and idiomatic shorthand for saying something like:
 
 Iterates over the given generators, calling the given `filterFunction`
 on generated items, iterating until at least one of the generators
-is voided. The results from calling the `filterFunction` (if any) are
-discarded. This function always returns void.
+is voided. This function returns the last non-void value yielded by
+`filterFunction`. If `filterFunction` never yields a value, then this
+function returns void.
 
 This is equivalent to calling `generatorPump` on a filter generator
 constructed with the same arguments as a call to this function,
@@ -169,10 +170,10 @@ generatorPump(makeFilterGenerator(generator, ...) { ... code ... })
 #### `generatorPump(generator) -> void`
 
 Generator iterator, ignoring results. This takes a generator, calling
-it repeatedly until it becomes voided. All results yielded by the
-generator are ignored.
+it repeatedly until it becomes voided.
 
-This function always returns void.
+This function returns the last value yielded by the generator. If the
+generator never yielded a value, this function returns void.
 
 #### `makeFilterGenerator(filterFunction, generators*) -> generator`
 

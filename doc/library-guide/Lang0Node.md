@@ -264,20 +264,20 @@ to) a `varDef` node.
 Makes an `exportSelection` node to export the variables with the given
 `names`.
 
-#### `makeFullClosure(map) -> node`
+#### `makeFullClosure(nodeOrMap) -> node`
 
-Makes a `closure` node, using the bindings of `map` as a basis, adding
+Makes a `closure` node, using the bindings of `nodeOrMap` as a basis, adding
 in defaults like `makeBasicClosure()` (see which), and also performing
 expansion and defaulting for the `yield` binding.
 
 If `map` binds `yield`, then that binding is reflected in the result. If
 the binding is to a `nonlocalExit` node, then that node is expanded
 into an appropriate function call. As a special case, if it binds a
-`nonlocalExit` which would call the `yieldDef` defined in the `map`, then
+`nonlocalExit` which would call the `yieldDef` defined in `nodeOrMap`, then
 the function call is elided.
 
-If `map` does *not* bind `yield`, then in the result, `yield` is bound to
-`@void` unless all of the following are true of the input `map`:
+If `nodeOrMap` does *not* bind `yield`, then in the result, `yield` is bound
+to `@void` unless all of the following are true of `nodeOrMap`:
 
 * The map does *not* include a binding for `yieldDef`. That is, it does not
   have a named or implicit nonlocal exit.
@@ -476,6 +476,17 @@ If the given `node` already has a yield definition, then this does not
 replace it. Instead, this adds an initial variable definition statement
 to the `statements` in the result, which binds the given name to the original
 `yieldDef` name.
+
+#### `withYieldDefIfAbsent(node, name) -> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with the addition of a yield definition binding for the given `name`, but
+only if `node` does not already have a yield definition. If `node` *does*
+have a yield definition, then this just returns `node`.
+
+This function is useful for propagating an outer yield definition into an
+inner closure, especially with regards to providing the expected behavior
+around implicit yielding of the final statement of a closure.
 
 #### `withoutIntermediates(node) -> node`
 

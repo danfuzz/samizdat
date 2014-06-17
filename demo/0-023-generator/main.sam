@@ -90,10 +90,32 @@ msgAll("FilterGenerator (square even numbers)",
         });
 
 note("generatorPump on FilterGenerator");
-$Generator::generatorPump(
+var pumped = $Generator::generatorPump(
     $Generator::makeFilterGenerator([1, 2, 3, 4])
-        { value -> note("    Yay ", $Format::source(value)) });
-note();
+        { value ->
+            note("    Yay ", $Format::source(value));
+            ifIs { eq(value, 3) }
+                { $Number::add(value, 100) }
+        });
+note("Got: ", $Format::source(pumped), "\n");
+
+note("filterPump (one generator)");
+pumped := $Generator::filterPump([1, 2, 3, 4])
+    { value ->
+        note("    Yay ", $Format::source(value));
+        ifIs { le(value, 3) }
+            { $Number::add(value, 100) }
+    };
+note("Got: ", $Format::source(pumped), "\n");
+
+note("filterPump (two generators)");
+pumped := $Generator::filterPump("abcdefg", [1, 2, 3, 4])
+    { ch, value ->
+        note("    Yay ", ch, " ", $Format::source(value));
+        ifIs { eq(value, 3) }
+            { $Number::add(value, 100) }
+    };
+note("Got: ", $Format::source(pumped), "\n");
 
 msgAll("ParaGenerator with open ranges",
     $Generator::makeParaGenerator(

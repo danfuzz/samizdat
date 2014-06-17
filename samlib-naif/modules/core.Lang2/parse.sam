@@ -599,7 +599,7 @@ def parFunctionCommon = {:
                 formals),
             name);
 
-        makeFullClosure(dataOf(basic))
+        makeFullClosure(basic)
     }
 :};
 
@@ -2066,19 +2066,16 @@ def parSwitchExpression = {:
     {
         ## This function combines the given original code with the overall
         ## yield def (if specified) and test formal (except not for an
-        ## `else`), yielding a full closure. The yield def binding is only
-        ## done to get the right "implicit yield" behavior; see the
+        ## `else`), yielding a full closure. The yield def binding here is
+        ## only done to get the right "implicit yield" behavior. See the
         ## discussion in the `if` implementation for more info.
         fn finishCode(case, isElse?) {
             var fullCode = ifIs { isElse* }
                 { case::code }
                 { withFormals(case::code, [testClause::formal]) };
             ifValue { yieldDef::yieldDef }
-                { name ->
-                    ifNot { fullCode::yieldDef }
-                        { fullCode := withYieldDef(fullCode, name) }
-                };
-            return makeFullClosure(dataOf(fullCode))
+                { y -> fullCode := withYieldDefIfAbsent(fullCode, y) };
+            return makeFullClosure(fullCode)
         };
 
         def optElse = filterAll(cases) { case ->
@@ -2180,13 +2177,16 @@ def parWhileExpression = {:
     @while
     breakDef = parOptBreakDef
     testMaker = parMultiTest
-    code = parNullaryClosure
+    code = parBasicNullaryClosure
 
     {
+        ## The yield definition on `fullCode` is for proper implicit yield
+        ## behavior. See discussion in the code for `if` for more info.
+        def fullCode = makeFullClosure(withYieldDefIfAbsent(code, "continue"));
         def loopClosure = makeFullClosure({
             yieldDef: "continue",
             statements: [
-                testMaker(code, makeThunk(makeNonlocalExit(REFS::break)))
+                testMaker(fullCode, makeThunk(makeNonlocalExit(REFS::break)))
             ]
         });
 
@@ -2222,7 +2222,7 @@ def parWhileExpression = {:
 def parDoExpression = {:
     @do
     breakDef = parOptBreakDef
-    code = parNullaryClosure
+    code = parBasicNullaryClosure
     condition = (
         @while
         ex = parParenExpression
@@ -2230,11 +2230,13 @@ def parDoExpression = {:
     )?
 
     {
+        ## The yield definition on `fullCode` is for proper implicit yield
+        ## behavior. See discussion in the code for `if` for more info.
+        def fullCode = makeFullClosure(withYieldDefIfAbsent(code, "continue"));
         def loopClosure = makeFullClosure({
             yieldDef: "continue",
-            statements: [makeCall(code), condition*]
+            statements: [makeCall(fullCode), condition*]
         });
-
         def mainClosure = makeFullClosure({
             yieldDef: "break",
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
@@ -2253,8 +2255,8 @@ def parDoExpression = {:
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     $Generator::filterPump(expr1, expr2) { name1, name2 /\"continue" ->
-##         def next = \"continue";
+##     yield? $Generator::filterPump(expr1, expr2) { name1, name2 /next ->
+##         def \"continue" = next;
 ##         stat1; stat2
 ##     }
 ## }()
@@ -2262,7 +2264,7 @@ def parDoExpression = {:
 ##
 ## with:
 ## * the break assignment omitted if there is no outer yield def.
-## * the continue assignment omitted if there is no inner yield def
+## * the continue binding made more directly if there is no inner yield def.
 def parForExpression = {:
     @for
     breakDef = parOptBreakDef
@@ -2275,23 +2277,14 @@ def parForExpression = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        def continueDef = ifValue { get_yieldDef(code) }
-            { name -> [makeVarDef(name, REFS::continue)] }
-            { [] };
-
-        def loopClosure = makeFullClosure({
-            formals: genFormals,
-            yieldDef: "continue",
-            statements: [continueDef*, get_statements(code)*]
-        });
+        def loopClosure = makeFullClosure(
+            withYieldDef(withFormals(code, genFormals), "continue"));
 
         def mainClosure = makeFullClosure({
             yieldDef: "break",
-            statements: [
-                breakDef*,
-                makeCall(REFS::Generator_filterPump,
-                    loopClosure, genInits*)
-            ]
+            statements: [breakDef*],
+            yield: makeMaybe(
+                makeCall(REFS::Generator_filterPump, loopClosure, genInits*))
         });
 
         makeCall(mainClosure)
