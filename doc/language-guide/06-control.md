@@ -260,6 +260,8 @@ an explicit continuation name (as described above).
 
 This form is evaluated by evaluating the given block, ignoring any
 result it yields, and then evaluating the block again, ad infinitum.
+This construct will only ever yield a value if it is explicitly yielded
+(via `break` or a named yield).
 
 Unconditional `do` expressions support explicit yield definition
 and define both break and continue contexts.
@@ -286,6 +288,8 @@ while (expression) {
 With this form, `expression` is evaluated at the start of each iteration,
 and the block is only evaluated if the expression evaluates to
 logical-true. If not, the outer expression terminates, yielding void.
+This construct will only ever yield a value if it is explicitly yielded
+(via `break` or a named yield).
 
 `while` expressions support explicit yield definition, test expression
 name binding, and multple test expressions; and they define both break
@@ -301,6 +305,12 @@ do {
     block
 } while (expression)
 ```
+
+With this form, the block is always run at least once. `expression` is
+evaluated at the *end* of each iteration, and the block is only re-evaluated
+if the expression evaluates to logical-true. As with `while`, this construct
+will only ever yield a value if it is explicitly yielded (via `break` or a
+named yield).
 
 `do...while` expressions support explicit yield definition,
 and define both break and continue contexts.
