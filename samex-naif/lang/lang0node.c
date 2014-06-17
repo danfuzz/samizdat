@@ -705,6 +705,14 @@ zvalue withModuleDefs(zvalue node) {
 }
 
 // Documented in spec.
+zvalue withName(zvalue node, zvalue name) {
+    return makeValue(
+        get_type(node),
+        collPut(dataOf(node), STR_name, name),
+        NULL);
+}
+
+// Documented in spec.
 zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue rawStatements = get(node, STR_statements);
     zint size = get_size(rawStatements);

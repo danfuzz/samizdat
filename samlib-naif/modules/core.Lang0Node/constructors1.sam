@@ -107,6 +107,11 @@ export fn withFormals(node, formals) {
 };
 
 ## Documented in spec.
+export fn withName(node, name) {
+    return @(get_type(node)){dataOf(node)*, name}
+};
+
+## Documented in spec.
 export fn withYieldDef(node, name) {
     def map = dataOf(node);
     def newBindings = ifValue { map::yieldDef }

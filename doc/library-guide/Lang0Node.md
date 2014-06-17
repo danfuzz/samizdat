@@ -450,6 +450,12 @@ binding for the metainformation. This includes the following transformations:
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield` that is anything but `@void`.
 
+#### `withName(node, name) -> node`
+
+Makes a node just like the given one (presumably a `closure` node), except
+with the `name` binding as given. If the original `node` already had a
+`name` binding, this replaces it in the result.
+
 #### `withResolvedImports(node, resolveFn) -> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
