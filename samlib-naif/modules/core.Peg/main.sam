@@ -39,12 +39,8 @@ fn @@PegAny.parse(box, input, .*) {
 ## Documented in spec.
 fn @@PegChoice.parse(box, input, items*) {
     filterPump(dataOf(this)) { rule ->
-        def innerBox = makePromise();
-        ifValue { parse(rule, innerBox, input, items*) }
-            { newInput ->
-                store(box, fetch(innerBox));
-                return newInput
-            }
+        ifValue { parse(rule, box, input, items*) }
+            { newInput -> return newInput }
     };
 
     ## No rule succeeded.
