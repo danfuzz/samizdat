@@ -29,9 +29,8 @@ are all derived data values with a type that binds the `parse`
 generic. A `parse` method accepts at least two arguments, and will also
 accept additional arguments depending on context:
 
-* `box` &mdash; The first argument is a `box` into which the result of
-  parsing is to be `store`d, or to which void is stored in case of
-  parsing failure.
+* `box` &mdash; The first argument is a `box` into which a successful
+  result of parsing is to be `store`d.
 
 * `input` &mdash; The second argument is a generator of input tokens to
   be parsed (usually *partially* parsed).
@@ -50,9 +49,8 @@ by the parsing (including none). If the parsing function consumed all of
 its given input, then it must return a voided generator (that is, one which
 yields and returns void when called).
 
-A parsing function, upon failure when called, must do two things: It must
-call its yield `box` with no argument to indicate a void result of parsing.
-Then, it must also return void.
+A parsing function, upon failure when called, must do one thing, namely
+return void. It must *not*, upon failure, call `store` on its given `box`.
 
 In the following descriptions, code shorthands use the Samizdat parsing
 syntax for explanatory purposes.
@@ -177,8 +175,8 @@ Otherwise fails, yielding and returning void.
 Performs a parse of `input` (a generator) with the trailing sequence
 context of `[items*]`. If parsing is successful, stores into `box` the
 parsed result and returns a replacement for `input` that reflects the
-consumption of tokens that were used. If parsing fails, stores void
-into `box` and returns void.
+consumption of tokens that were used. If parsing fails, does not
+store anything into `box` and returns void.
 
 
 <br><br>

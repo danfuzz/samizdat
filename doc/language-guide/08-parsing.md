@@ -36,7 +36,7 @@ The result of calling a parser's `parse` method is the same as the result of
 the expression it contains.
 
 The `parse` method takes two fixed arguments, a promise to hold the result
-of parsing and a generator used to produce input to parse. In addition
+of parsing and a generator used to produce input to parse. In addition,
 the method should accept a set of additional arguments representing the
 items that have already been parsed (in the context of where the parser
 is called). **Note:** These details are only important if you are writing
