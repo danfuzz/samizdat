@@ -10,9 +10,9 @@
 
 #= language core.Lang0
 
-import core.Box;
+import core.Box :: makePromise;
 
-import ./ParaGenerator;
+import ./ParaGenerator :: makeParaGenerator;
 
 
 ##
@@ -23,7 +23,7 @@ import ./ParaGenerator;
 export fn makeFilterGenerator(filterFunction, generators*) {
     return @FilterGenerator{
         filterFunction,
-        generator: $ParaGenerator::makeParaGenerator(generators*)
+        generator: makeParaGenerator(generators*)
     }
 };
 
@@ -42,7 +42,7 @@ fn @@FilterGenerator.nextValue(box) {
     ## be discarded.
     var innerGen = this::generator;
     loop { /next ->
-        def innerBox = $Box::makePromise();
+        def innerBox = makePromise();
 
         ifValue { nextValue(innerGen, innerBox) }
             { nextGen ->

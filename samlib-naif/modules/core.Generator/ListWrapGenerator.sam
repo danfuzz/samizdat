@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import core.Box;
+import core.Box :: makePromise;
 
 
 ##
@@ -29,7 +29,7 @@ fn @@ListWrapGenerator.collect(optFilterFunction?) {
 
 ## Documented in spec.
 fn @@ListWrapGenerator.nextValue(box) {
-    def innerBox = $Box::makePromise();
+    def innerBox = makePromise();
 
     return? ifValue { nextValue(dataOf(this), innerBox) }
         { nextGenerator ->
