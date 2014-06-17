@@ -1990,6 +1990,158 @@ def parIfExpression = {:
     }
 :};
 
+## Helper for switch expressions: Parse a single case, including
+## `default` and `else` cases. Returns a map that binds `keys` and
+## `code`.
+def parSwitchCase = {:
+    keys = (
+        special = [@default @else]
+        @":"
+        { special }
+    |
+        parKey+
+    )
+
+    code = parBasicNullaryClosure
+
+    { {code, keys} }
+:};
+
+## Parses a switch expression. The translation is along these lines:
+##
+## ```
+## switch /out (def name = testExpr) {
+##     ex1: { s1a; s1b }
+##     ex2: { s2a; s2b }
+##     default: { statDefault }
+##     else: { statElse }
+## }
+## ```
+## =>
+## ```
+## { /out ->
+##     ifSwitch(
+##         { testExpr },
+##         {
+##             (ex1): { name /out -> s1a; s1b },
+##             (ex2): { name /out -> s2a; s2b }
+##         },
+##         { name /out -> statDefault },
+##         { /out -> statElse })
+## }()
+## ```
+##
+## with:
+## * no outer thunk-call, nor per-clause `/out` binding, if there was no
+##   yield definition.
+## * `.` instead of `name` argument definitions if there was no name binding
+##   on the test expression.
+## * overrides of map keys switched around so the *first* key wins.
+## * the `statDefault` block omitted if there is no `default` clause. If
+##   no `default` but there is an `else`, `{ -> }` is used.
+## * the `statElse` block omitted if there is no `else` clause.
+def parSwitchExpression = {:
+    @switch
+    yieldDef = parOptYieldDef
+    testClause = parParenTestClause
+
+    @"{"
+    @";"*
+
+    cases = (
+        most = (
+            c = parSwitchCase
+            @";"+
+            { c }
+        )*
+
+        last = parSwitchCase?
+
+        { [most*, last*] }
+    )
+
+    @";"*
+    @"}"
+
+    {
+        ## This function combines the given original code with the overall
+        ## yield def (if specified) and test formal (except not for an
+        ## `else`), yielding a full closure. The yield def binding is only
+        ## done to get the right "implicit yield" behavior; see the
+        ## discussion in the `if` implementation for more info.
+        fn finishCode(case, isElse?) {
+            var fullCode = ifIs { isElse* }
+                { case::code }
+                { withFormals(case::code, [testClause::formal]) };
+            ifValue { yieldDef::yieldDef }
+                { name ->
+                    ifNot { fullCode::yieldDef }
+                        { fullCode := withYieldDef(fullCode, name) }
+                };
+            return makeFullClosure(dataOf(fullCode))
+        };
+
+        def optElse = filterAll(cases) { case ->
+            ifIs { eq(case::keys, @else) } { finishCode(case, true) }
+        };
+
+        var optDefault = filterAll(cases) { case ->
+            ifIs { eq(case::keys, @default) } { finishCode(case) }
+        };
+
+        ## If there's an `else` but no `default`, we have to create a
+        ## no-op default, so to be able to call `ifSwitch` properly.
+        ifValues(
+            [
+                { ne(optElse, []) },
+                { . -> eq(optDefault, []) }
+            ],
+            { ., . ->
+                optDefault := [finishCode({code: makeBasicClosure({})})]
+            });
+
+        ifIs { gt(get_size(optDefault), 1) }
+            { die("Multiple default cases in switch.") };
+
+        ifIs { gt(get_size(optElse), 1) }
+            { die("Multiple else cases in switch.") };
+
+        ## The `reverse` in the case construction code is done in order to
+        ## preserve the left-to-right evaluation order of the apparent text,
+        ## even though the key/case override semantics is the opposite of
+        ## what `cat(map)` defines.
+        def caseClauses = filterAll(cases) { case ->
+            def keys = case::keys;
+            def code = finishCode(case);
+            ifIs { hasType(keys, List) }
+                { makeCallOrApply(REFS::makeValueMap, keys*, code) }
+        };
+        def caseMap = makeCallOrApply(REFS::cat,
+            makeLiteral({}),
+            makeInterpolate(
+                makeCall(REFS::Sequence_reverse,
+                    makeCallOrApply(REFS::makeList, caseClauses*))));
+
+        def ifCall = makeCall(REFS::ifSwitch,
+            testClause::testThunk,
+            caseMap,
+            optDefault*,
+            optElse*);
+
+        ## If there's a yield def, then wrap `ifCall` in a thunk-call.
+        ## If not, then `ifCall` is the result.
+        ifIs { eq(yieldDef, {}) }
+            { ifCall }
+            {
+                def outerClosure = makeFullClosure({
+                    yield: makeMaybe(ifCall),
+                    yieldDef*
+                });
+                makeCall(outerClosure)
+            }
+    }
+:};
+
 ## Parses the optional yield definition that's associated with the `break`
 ## exit of a loop. This always results in a list, which is empty if there
 ## is no yield definition present, or is a single-element list of an
@@ -2143,158 +2295,6 @@ def parForExpression = {:
         });
 
         makeCall(mainClosure)
-    }
-:};
-
-## Helper for switch expressions: Parse a single case, including
-## `default` and `else` cases. Returns a map that binds `keys` and
-## `code`.
-def parSwitchCase = {:
-    keys = (
-        special = [@default @else]
-        @":"
-        { special }
-    |
-        parKey+
-    )
-
-    code = parBasicNullaryClosure
-
-    { {code, keys} }
-:};
-
-## Parses a switch expression. The translation is along these lines:
-##
-## ```
-## switch /out (def name = testExpr) {
-##     ex1: { s1a; s1b }
-##     ex2: { s2a; s2b }
-##     default: { statDefault }
-##     else: { statElse }
-## }
-## ```
-## =>
-## ```
-## { /out ->
-##     ifSwitch(
-##         { testExpr },
-##         {
-##             (ex1): { name /out -> s1a; s1b },
-##             (ex2): { name /out -> s2a; s2b }
-##         },
-##         { name /out -> statDefault },
-##         { /out -> statElse })
-## }()
-## ```
-##
-## with:
-## * no outer thunk-call, nor per-clause `/out` binding, if there was no
-##   yield definition.
-## * `.` instead of `name` argument definitions if there was no name binding
-##   on the test expression.
-## * overrides of map keys switched around so the *first* key wins.
-## * the `statDefault` block omitted if there is no `default` clause. If
-##   no `default` but there is an `else`, `{ -> }` is used.
-## * the `statElse` block omitted if there is no `else` clause.
-def parSwitchExpression = {:
-    @switch
-    yieldDef = parOptYieldDef
-    testClause = parParenTestClause
-
-    @"{"
-    @";"*
-
-    cases = (
-        most = (
-            c = parSwitchCase
-            @";"+
-            { c }
-        )*
-
-        last = parSwitchCase?
-
-        { [most*, last*] }
-    )
-
-    @";"*
-    @"}"
-
-    {
-        ## This function combines the given original code with the overall
-        ## yield def (if specified) and test formal (except not for an
-        ## `else`), yielding a full closure. The yield def binding is only
-        ## done to get the right "implicit yield" behavior; see the
-        ## discussion in the `if` implementation for more info.
-        fn finishCode(case, isElse?) {
-            var fullCode = ifIs { isElse* }
-                { case::code }
-                { withFormals(case::code, [testClause::formal]) };
-            ifValue { yieldDef::yieldDef }
-                { name ->
-                    ifNot { fullCode::yieldDef }
-                        { fullCode := withYieldDef(fullCode, name) }
-                };
-            return makeFullClosure(dataOf(fullCode))
-        };
-
-        def optElse = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @else) } { finishCode(case, true) }
-        };
-
-        var optDefault = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @default) } { finishCode(case) }
-        };
-
-        ## If there's an `else` but no `default`, we have to create a
-        ## no-op default, so to be able to call `ifSwitch` properly.
-        ifValues(
-            [
-                { ne(optElse, []) },
-                { . -> eq(optDefault, []) }
-            ],
-            { ., . ->
-                optDefault := [finishCode({code: makeBasicClosure({})})]
-            });
-
-        ifIs { gt(get_size(optDefault), 1) }
-            { die("Multiple default cases in switch.") };
-
-        ifIs { gt(get_size(optElse), 1) }
-            { die("Multiple else cases in switch.") };
-
-        ## The `reverse` in the case construction code is done in order to
-        ## preserve the left-to-right evaluation order of the apparent text,
-        ## even though the key/case override semantics is the opposite of
-        ## what `cat(map)` defines.
-        def caseClauses = filterAll(cases) { case ->
-            def keys = case::keys;
-            def code = finishCode(case);
-            ifIs { hasType(keys, List) }
-                { makeCallOrApply(REFS::makeValueMap, keys*, code) }
-        };
-        def caseMap = makeCallOrApply(REFS::cat,
-            makeLiteral({}),
-            makeInterpolate(
-                makeCall(REFS::Sequence_reverse,
-                    makeCallOrApply(REFS::makeList, caseClauses*))));
-
-        def ifCall = makeCall(REFS::ifSwitch,
-            testClause::testThunk,
-            caseMap,
-            optDefault*,
-            optElse*);
-
-        ## If there's a yield def, then wrap `ifCall` in a thunk-call.
-        ## If not, then `ifCall` is the result.
-        ifIs { eq(yieldDef, {}) }
-            { ifCall }
-            {
-                def outerClosure = makeFullClosure({
-                    yield: makeMaybe(ifCall),
-                    yieldDef*
-                });
-                makeCall(outerClosure)
-            }
     }
 :};
 
