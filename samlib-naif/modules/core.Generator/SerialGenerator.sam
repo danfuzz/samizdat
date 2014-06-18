@@ -9,10 +9,10 @@
 
 #= language core.Lang0
 
-import core.Box;
-import core.Sequence;
+import core.Box :: makePromise;
+import core.Sequence :: sliceInclusive;
 
-import ./NullGenerator;
+import ./NullGenerator :: nullGenerator;
 
 
 ##
@@ -23,7 +23,7 @@ import ./NullGenerator;
 export fn makeSerialGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { eq(generators, []) }
-        { return $NullGenerator::nullGenerator };
+        { return nullGenerator };
 
     ## Return the argument directly if we were only passed one.
     ## This saves some gratuitous call wrapping / double yields.
@@ -45,21 +45,15 @@ fn @@SerialGenerator.nextValue(box) {
 
     return? ifValue { get(subGens, 0) }
         { firstGen ->
-            def moreGens = $Sequence::sliceInclusive(subGens, 1);
-            def innerBox = $Box::makePromise();
+            def moreGens = sliceInclusive(subGens, 1);
 
-            ifValue { nextValue(firstGen, innerBox) }
+            ifValue { nextValue(firstGen, box) }
                 { nextGenerator ->
-                    store(box, fetch(innerBox));
                     @SerialGenerator[nextGenerator, moreGens*]
                 }
                 {
                     ## First generator was voided.
                     nextValue(makeSerialGenerator(moreGens*), box)
                 }
-        }
-        {
-            ## Totally voided.
-            store(box)
         }
 };

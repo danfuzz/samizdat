@@ -46,7 +46,8 @@ of this function.
 Generates the next item in `generator`, if any. If there is a generated
 element, calls `store(box, elem)` and returns a generator which can
 generate the remainder of the elements. If there is no generated element,
-calls `store(box)` (storing void), and returns void.
+does nothing (in particular, does not make a `store` call on `box`), and
+returns void.
 
 
 <br><br>

@@ -9,9 +9,9 @@
 
 #= language core.Lang0
 
-import core.Box;
+import core.Box :: makePromise;
 
-import ./ValueGenerator;
+import ./ValueGenerator :: makeValueGenerator;
 import ./unboundedCollect :: unboundedCollect;
 
 
@@ -33,12 +33,12 @@ fn @@OptGenerator.collect(optFilterFunction?) {
 ## Documented in spec.
 fn @@OptGenerator.nextValue(box) {
     def subGen = dataOf(this);
-    def innerBox = $Box::makePromise();
+    def innerBox = makePromise();
 
     return ifValue { nextValue(subGen, innerBox) }
         { nextGen ->
             store(box, [fetch(innerBox)]);
             @OptGenerator(nextGen)
         }
-        { nextValue($ValueGenerator::makeValueGenerator([]), box) }
+        { nextValue(makeValueGenerator([]), box) }
 };

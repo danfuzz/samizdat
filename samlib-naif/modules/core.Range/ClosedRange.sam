@@ -37,10 +37,6 @@ fn @@ClosedRange.nextValue(box) {
                 sub(size, 1),
                 increment)
         }
-        {
-            ## Voided.
-            store(box);
-        }
 };
 
 ## Documented in spec.

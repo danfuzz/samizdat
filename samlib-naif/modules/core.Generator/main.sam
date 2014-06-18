@@ -8,9 +8,7 @@
 
 #= language core.Lang0
 
-import core.Box ::
-    makePromise,
-    nullBox;
+import core.Box :: makeCell, nullBox;
 
 export import ./FilterGenerator :: *;
 export import ./ListWrapGenerator :: *;
@@ -61,6 +59,7 @@ export fn filterAll(filterFunction, generators*) {
 
 ## Documented in spec.
 export fn filterPump(filterFunction, generators*) {
+    def box = makeCell();
     var result = [];
 
     ifIs { eq(get_size(generators), 1) }
@@ -69,7 +68,6 @@ export fn filterPump(filterFunction, generators*) {
             ## unnecessary wrapping / unwrapping.
             var gen = generators*;
             loop {
-                def box = makePromise();
                 ifValue { nextValue(gen, box) }
                     { nextGen ->
                         ifValue { filterFunction(fetch(box)) }
@@ -86,7 +84,6 @@ export fn filterPump(filterFunction, generators*) {
             ## General case of multiple (or zero) generators.
             var gen = makeParaGenerator(generators*);
             loop {
-                def box = makePromise();
                 ifValue { nextValue(gen, box) }
                     { nextGen ->
                         ifValue { filterFunction(fetch(box)*) }
@@ -103,13 +100,11 @@ export fn filterPump(filterFunction, generators*) {
 
 ## Documented in spec.
 export fn generatorPump(generator) {
+    def box = makeCell();
     var gen = generator;
-    var result = [];
 
     loop {
-        def box = makePromise();
         gen := ifValueOr { nextValue(gen, box) }
-            { return? result* };
-        result := [fetch(box)];
+            { return? fetch(box) }
     }
 };

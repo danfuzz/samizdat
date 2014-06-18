@@ -9,10 +9,10 @@
 
 #= language core.Lang0
 
-import core.Box;
+import core.Box :: makeCell, nullBox;
 
-import ./ListWrapGenerator;
-import ./NullGenerator;
+import ./ListWrapGenerator :: makeListWrapGenerator;
+import ./NullGenerator :: nullGenerator;
 
 
 ##
@@ -23,12 +23,12 @@ import ./NullGenerator;
 export fn makeParaGenerator(generators*) {
     ## Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { eq(generators, []) }
-        { return $NullGenerator::nullGenerator };
+        { return nullGenerator };
 
     ## Return a `ListWrapGenerator` if we were only passed one argument.
     ## This saves some overhead.
     ifIs { eq(get_size(generators), 1) }
-        { return $ListWrapGenerator::makeListWrapGenerator(generators*) };
+        { return makeListWrapGenerator(generators*) };
 
     return @ParaGenerator(generators)
 };
@@ -44,17 +44,16 @@ fn @@ParaGenerator.nextValue(box) {
     def subGens = dataOf(this);
 
     ifIs { eq(subGens, []) }
-        { return? nextValue($Box::nullBox, box) };
+        { return };
 
+    def innerBox = makeCell();
     def generatorCalls = collect(
         subGens,
         { gen ->
-            def innerBox = $Box::makePromise();
             ifValue { nextValue(gen, innerBox) }
                 { nextGenerator -> [fetch(innerBox), nextGenerator] }
                 {
                     ## One of the sub-generators became voided.
-                    store(box);
                     return
                 }
         });

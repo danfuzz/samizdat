@@ -9,8 +9,8 @@
 
 #= language core.Lang0
 
-import proto.Collection;
-import proto.Number;
+import proto.Collection :: nthMapping;
+import proto.Number :: add;
 
 
 ##
@@ -26,14 +26,11 @@ fn @@MapGenerator.collect(optFilterFunction?) {
 ## Generator used when iterating over maps.
 fn @@MapGenerator.nextValue(box) {
     def index = this::index;
+    def map = this::map;
 
-    ifValue { $Collection::nthMapping(this::map, index) }
+    return? ifValue { nthMapping(map, index) }
         { value ->
             store(box, value);
-            return @MapGenerator{dataOf(this)*, index: $Number::add(index, 1)}
-        }
-        {
-            ## Voided (out of elements).
-            store(box)
+            @MapGenerator{index: add(index, 1), map}
         }
 };

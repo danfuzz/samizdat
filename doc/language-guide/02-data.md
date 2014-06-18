@@ -448,15 +448,15 @@ The contract is as follows:
 * When a generator has yielded its final element, it returns a voided
   generator.
 
-* When `nextValue` is called on a voided generator, it does these two things:
+* When `nextValue` is called on a voided generator, it does one thing:
 
-  * It calls `store(promise)` (with no payload argument) on its argument
-    in order to yield void.
   * It returns void.
+  * In particular, it does *not* call `store` on the given `promise`.
 
 **Note:** Clients of generators should rely primarily on the return value
 from `nextValue` to determine whether the generator has been voided, rather
-than on what gets done to the promise passed in as the first argument.
+than on what gets done (or not) to the promise passed in as the first
+argument.
 
 Generators also bind a couple other generic functions. See the library
 specification for `Generator` for more details.

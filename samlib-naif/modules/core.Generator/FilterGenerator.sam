@@ -10,9 +10,9 @@
 
 #= language core.Lang0
 
-import core.Box;
+import core.Box :: makeCell;
 
-import ./ParaGenerator;
+import ./ParaGenerator :: makeParaGenerator;
 
 
 ##
@@ -23,7 +23,7 @@ import ./ParaGenerator;
 export fn makeFilterGenerator(filterFunction, generators*) {
     return @FilterGenerator{
         filterFunction,
-        generator: $ParaGenerator::makeParaGenerator(generators*)
+        generator: makeParaGenerator(generators*)
     }
 };
 
@@ -35,22 +35,23 @@ fn @@FilterGenerator.collect(optFilterFunction?) {
 
 ## Documented in spec.
 fn @@FilterGenerator.nextValue(box) {
+    var innerGen = this::generator;
     def filterFunction = this::filterFunction;
+    def innerBox = makeCell();
 
     ## This loop handles the fact that the filter function is
     ## allowed to yield void to indicate a generated value is to
     ## be discarded.
-    var innerGen = this::generator;
     loop { /next ->
-        def innerBox = $Box::makePromise();
 
         ifValue { nextValue(innerGen, innerBox) }
             { nextGen ->
                 ifValue { filterFunction(fetch(innerBox)*) }
                     { value ->
                         store(box, value);
-                        return @FilterGenerator(
-                            {dataOf(this)*, generator: nextGen})
+                        return @FilterGenerator{
+                            filterFunction,
+                            generator: nextGen}
                     }
                     {
                         ## The filter discarded the value. Iterate!
@@ -60,7 +61,6 @@ fn @@FilterGenerator.nextValue(box) {
             };
 
         ## The inner generator was voided.
-        store(box);
         return
     }
 };
