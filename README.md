@@ -181,8 +181,9 @@ $ blur
 $
 ```
 
-As of this writing, the full build can take up to something like an hour on
-mid-range personal computing hardware. Among its steps, the build consists of:
+As of this writing, the full build can take up to something like half an
+hour on mid-range personal computing hardware. Among its steps, the build
+consists of:
 
 * Compilation of the core runtime, into an executable binary.
 * Compilation of the Samizdat compiler, into a collection of loadable
@@ -224,7 +225,8 @@ $
 
 The options `--runtime=name --build` can be added to any demo `run` or
 `run-all` command, to cause the named runtime to be built before running
-the demo. Supported names are `naif` (pure interpreter) and `tot`
+the demo. Instead of `--build`, `--clean-build` causes the build to be
+made from scratch. Supported names are `naif` (pure interpreter) and `tot`
 (tree-compiled library).
 
 In addition, the option `--compiler=name` can be added to any demo `run` or
