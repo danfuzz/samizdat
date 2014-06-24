@@ -110,23 +110,18 @@ might have been passed. That is, this rule provides a new "main context"
 for parsing. The yield and result of this rule is the same as that of
 the embedded `rule`.
 
-#### `@PegOpt{rule}.parse(...)`
-
-Tries to parse the input using `rule`. If it succeeds, then this rule
-also succeeds, yielding a single-element list of the result.
-If it fails, then this rule succeeds, consuming no input and yielding
-`[]`.
-
-#### `@PegRepeat{rule: rule, (minSize: n)?}.parse(...)`
+#### `@PegRepeat{rule: rule, maxSize?: n, minSize?: n}.parse(...)`
 
 Tries to parse the input using `rule`, iterating until `rule` is no longer
 able to be parsed. Yields a list of all the parsed results, and returns
 the final input state. If `rule` was never found to apply, this yields
 `[]` and returns the original input. If `minSize` is specified, then
-this rule fails unless the size of the yielded list is at least `n`.
+this rule fails unless the size of the yielded list is at least `n`. If
+`maxSize` is specified, then this rule will only ever match at most `n`
+repetitions.
 
-**Note:** This is used as the type underlying both `expr*` and `expr+`
-expressions.
+**Note:** This is used as the type underlying all `expr?`, `expr*`, and
+`expr+` expressions.
 
 #### `@PegResult{value}.parse(...)`
 

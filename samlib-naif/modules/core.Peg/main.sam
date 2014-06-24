@@ -92,47 +92,52 @@ fn @@PegMain.parse(box, input, .*) {
 };
 
 ## Documented in spec.
-fn @@PegOpt.parse(box, input, items*) {
-    def innerBox = makePromise();
-    return? ifValue { parse(this::rule, innerBox, input, items*) }
-        { newInput ->
-            store(box, [fetch(innerBox)]);
-            newInput
-        }
-        {
-            store(box, []);
-            input
-        }
-};
-
-## Documented in spec.
 fn @@PegRepeat.parse(box, input, items*) {
-    def rule = this::rule;
-    def innerBox = makeCell();
     var remainingInput = input;
     var results = [];  ## Values that have been parsed by the inner rule.
 
-    loop {
-        ifValue { parse(rule, innerBox, remainingInput, items*) }
-            { newInput ->
-                ## Successfully parsed the inner rule.
-                remainingInput := newInput;
-                results := [results*, fetch(innerBox)]
+    fn doLoop() { /out ->
+        def rule = this::rule;
+        def innerBox = makeCell();
+
+        def maxCheck = ifValue { this::maxSize }
+            { maxSize ->
+                { ->
+                    ifIs { eq(get_size(results), maxSize) }
+                        { yield /out }
+                }
             }
-            {
-                ## Failed to parse the inner rule.
-                ifValue { this::minSize }
-                    { minSize ->
-                        ifIs { lt(get_size(results), minSize) }
-                            {
-                                ## Did not parse minimum required count.
-                                return
-                            }
-                    };
-                store(box, results);
-                return remainingInput
-            }
-    }
+            { {->} };
+
+        loop {
+            ifValue { parse(rule, innerBox, remainingInput, items*) }
+                { newInput ->
+                    ## Successfully parsed the inner rule.
+                    remainingInput := newInput;
+                    results := [results*, fetch(innerBox)];
+                    maxCheck()
+                }
+                {
+                    ## Failed to parse the inner rule.
+                    yield /out
+                }
+        }
+    };
+
+    doLoop();
+
+    ## Check for minimum match count, if appropriate.
+    ifValue { this::minSize }
+        { minSize ->
+            ifIs { lt(get_size(results), minSize) }
+                {
+                    ## Did not parse minimum required count.
+                    return
+                }
+        };
+
+    store(box, results);
+    return remainingInput
 };
 
 ## Documented in spec.
@@ -306,7 +311,7 @@ export fn makeMainSequence(rules*) {
 
 ## Documented in spec.
 export fn makeOpt(rule) {
-    return @PegOpt{rule}
+    return @PegRepeat{rule, minSize: 0, maxSize: 1}
 };
 
 ## Documented in spec.
