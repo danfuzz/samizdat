@@ -72,7 +72,7 @@ fn @@PegFail.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegLookaheadFailure.parse(box, input, items*) {
-    return? ifNot { parse(dataOf(this), nullBox, input, items*) }
+    return? ifNot { parse(this::rule, nullBox, input, items*) }
         {
             store(box, null);
             input
@@ -81,20 +81,20 @@ fn @@PegLookaheadFailure.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegLookaheadSuccess.parse(box, input, items*) {
-    return? ifIs { parse(dataOf(this), box, input, items*) }
+    return? ifIs { parse(this::rule, box, input, items*) }
         { input }
 };
 
 ## Documented in spec.
 fn @@PegMain.parse(box, input, .*) {
     ## The point of this implementation is to drop the `items` context.
-    return? parse(dataOf(this), box, input)
+    return? parse(this::rule, box, input)
 };
 
 ## Documented in spec.
 fn @@PegOpt.parse(box, input, items*) {
     def innerBox = makePromise();
-    return? ifValue { parse(dataOf(this), innerBox, input, items*) }
+    return? ifValue { parse(this::rule, innerBox, input, items*) }
         { newInput ->
             store(box, [fetch(innerBox)]);
             newInput
@@ -286,27 +286,27 @@ export fn makeLookaheadFailure(rule) {
         { return @PegFail };
 
     ## The general case.
-    return @PegLookaheadFailure(rule)
+    return @PegLookaheadFailure{rule}
 };
 
 ## Documented in spec.
 export fn makeLookaheadSuccess(rule) {
-    return @PegLookaheadSuccess(rule)
+    return @PegLookaheadSuccess{rule}
 };
 
 ## Documented in spec.
 export fn makeMainChoice(rules*) {
-    return @PegMain(makeChoice(rules*))
+    return @PegMain{rule: makeChoice(rules*)}
 };
 
 ## Documented in spec.
 export fn makeMainSequence(rules*) {
-    return @PegMain(makeSequence(rules*))
+    return @PegMain{rule: makeSequence(rules*)}
 };
 
 ## Documented in spec.
 export fn makeOpt(rule) {
-    return @PegOpt(rule)
+    return @PegOpt{rule}
 };
 
 ## Documented in spec.
