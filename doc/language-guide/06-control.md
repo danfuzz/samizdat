@@ -335,9 +335,11 @@ for (name1 in generatorExpression1, name2 in generatorExpression2) {
 ```
 
 `for` accepts one or more comma-separated generator binding expressions in
-parentheses. Each one is of the form `name in expression`, where `name`
-is an arbitrary variable name, and `expression` is an arbitrary expression,
-except that it must yield a generator (including possibly a collection).
+parentheses. A generator binding form takes the same syntax as with
+standalone generators, and is most typically of the form `name in expression`,
+where `name` is an arbitrary variable name, and `expression` is an
+expression that must yield a generator (including possibly a collection).
+See the section on generators for more info.
 
 Within the block body of a `for`, each of the named variables is bound
 to one element from its corresponding generator. The block is called
