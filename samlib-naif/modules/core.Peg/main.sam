@@ -23,7 +23,7 @@ export fn .parse(box, input, items*);
 export def any = @PegAny;
 
 ## Documented in spec.
-export def empty = @PegResult(null);
+export def empty = @PegResult{value: null};
 
 ## Documented in spec.
 export def eof = @PegEof;
@@ -137,7 +137,7 @@ fn @@PegRepeat.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegResult.parse(box, input, .*) {
-    store(box, dataOf(this));
+    store(box, this::value);
     return input
 };
 
@@ -240,7 +240,7 @@ fn genericMakeTokenSet(sense, types) {
 
 ## Documented in spec.
 export fn makeResult(value) {
-    return @PegResult(value)
+    return @PegResult{value}
 };
 
 ## Documented in spec.
@@ -342,7 +342,7 @@ export fn makeStar(rule) {
 export fn makeString(string) {
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }
-        { return @PegResult(@"") };
+        { return @PegResult{value: @""} };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { eq(get_size(string), 1) }
@@ -355,7 +355,7 @@ export fn makeString(string) {
     def types = typeListFromString(string);
     def chars = collect(types, makeToken);
 
-    return @PegSequence[chars*, @PegResult(@(@@(string)))]
+    return @PegSequence[chars*, @PegResult{value: @(@@(string))}]
 };
 
 ## Documented in spec.
