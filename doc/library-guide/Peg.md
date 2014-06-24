@@ -65,13 +65,13 @@ data payload they use and what it means to call `parse` on them.
 
 Consumes and yields a single token if available.
 
-#### `@PegChoice[rules*].parse(...)`
+#### `@PegChoice{rules:[.*]}.parse(...)`
 
 Tries to parse the input using each of the given `rules` in order.
 Yields a value and returns replacement input based on the first one
 that succeeds. Fails if none of the rules succeeds.
 
-#### `@PegCode(function).parse(...)`
+#### `@PegCode{function}.parse(...)`
 
 Calls the given `function`, passing it the current sequential input
 context. Yields whatever value it returns. Upon success (non-void
@@ -91,26 +91,26 @@ void and returns void).
 
 Always yields void and returns void.
 
-#### `@PegLookaheadFailure(rule).parse(...)`
+#### `@PegLookaheadFailure{rule}.parse(...)`
 
 Tries to parse the input using `rule`. If it succeeds, then this rule
 fails. If it fails, then this rule succeeds, consuming no input and
 yielding `null`.
 
-#### `@PegLookaheadSuccess(rule).parse(...)`
+#### `@PegLookaheadSuccess{rule}.parse(...)`
 
 Tries to parse the input using `rule`. If it succeeds, then this rule
 also succeeds, yielding the same result but consuming no input. If it fails,
 then this rule also fails.
 
-#### `@PegMain(rule).parse(...)`
+#### `@PegMain{rule}.parse(...)`
 
 Parses the given `rule` but does not hand it any `items*` that this rule
 might have been passed. That is, this rule provides a new "main context"
 for parsing. The yield and result of this rule is the same as that of
 the embedded `rule`.
 
-#### `@PegOpt(rule).parse(...)`
+#### `@PegOpt{rule}.parse(...)`
 
 Tries to parse the input using `rule`. If it succeeds, then this rule
 also succeeds, yielding a single-element list of the result.
@@ -128,11 +128,11 @@ this rule fails unless the size of the yielded list is at least `n`.
 **Note:** This is used as the type underlying both `expr*` and `expr+`
 expressions.
 
-#### `@PegResult(value).parse(...)`
+#### `@PegResult{value}.parse(...)`
 
 Always yields the given `value`, consuming no input.
 
-#### `@PegSequence[rules*].parse(...)`
+#### `@PegSequence{rules:[.*]}.parse(...)`
 
 Tries to parse the given rules one after the other. Succeeds if all of
 the rules were successfully applied, yielding the result of the *final*
@@ -146,20 +146,20 @@ receives the results of all the previous sub-rules as additional `items*`.
 As an edge case, if `rules` is empty, then this equivalent to `@PegEmpty`,
 succeeding, consuming no input, and yielding `null`.
 
-#### `@PegThunk(function).parse(...)`
+#### `@PegThunk{function}.parse(...)`
 
 Calls the given function, which is expected to return a parser. Then
 calls the so-returned parser, passing it the remaining arguments to
 this call, returing whatever that call returns (including void).
 
-#### `@PegTokenSet{types*: null}.parse(...)`
+#### `@PegTokenSet{types: {.*: null}}.parse(...)`
 
 If there is any input available, checks the type of the first input
 token against the given set of types (map where only the keys matter).
 If the type is found in the set, then yields and consumes the token.
 Otherwise fails, yielding and returning void.
 
-#### `@PegTokenSetComplement{types*: null}.parse(...)`
+#### `@PegTokenSetComplement{types: {.*: null}}.parse(...)`
 
 If there is any input available, checks the type of the first input
 token against the given set of types (map where only the keys matter).
