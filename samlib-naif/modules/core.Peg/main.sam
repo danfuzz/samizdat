@@ -49,7 +49,7 @@ fn @@PegChoice.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegCode.parse(box, input, items*) {
-    return? ifValue { dataOf(this)(items*) }
+    return? ifValue { this::function(items*) }
         { result ->
             store(box, result);
             input
@@ -171,7 +171,7 @@ fn @@PegSequence.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegThunk.parse(box, input, items*) {
-    return? ifValue { dataOf(this)(items*) }
+    return? ifValue { this::function(items*) }
         { thunkResult -> parse(thunkResult, box, input, items*) }
 };
 
@@ -272,7 +272,7 @@ export fn makeChoice(rules*) {
 
 ## Documented in spec.
 export fn makeCode(function) {
-    return @PegCode(function)
+    return @PegCode{function}
 };
 
 ## Documented in spec.
@@ -311,7 +311,7 @@ export fn makeOpt(rule) {
 
 ## Documented in spec.
 export fn makeParserThunk(function) {
-    return @PegThunk(function)
+    return @PegThunk{function}
 };
 
 ## Documented in spec.
