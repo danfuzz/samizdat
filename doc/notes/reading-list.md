@@ -85,6 +85,10 @@ Languages
   * PyPy STM design (blog post) &mdash;
     <http://morepypy.blogspot.com/2013/06/stm-on-drawing-board.html>
 
+* Scala
+  * In Defense of Pattern Matching (blog post) &mdash;
+    <http://www.artima.com/weblogs/viewpost.jsp?thread=166742>
+
 * Smalltalk
   * Back to the future: the story of Squeak, a practical Smalltalk written in
     itself &mdash; <http://ftp.squeak.org/docs/OOPSLA.Squeak.html>
