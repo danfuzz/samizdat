@@ -33,18 +33,25 @@ to introduce the body, one or more body statements, and a closing delimeter.
 With the delimiters `(...)`, the result is a generator. With the delimiters
 `[...]`, the result is a list.
 
-The generator expressions are similar to those used in `for` expressions,
-consisting of an optional name (either an identifier, or `.` to indicate
-an anonymous item), the keyword `in`, and an expression which must
-evaluate to either a "generatable value" (such as a list or map) or to
-a generator.
+There are a number of different generator expressions, as described in
+the subsections immediately below.
 
 The body is evaluated on sets of corresponding elements from the generator
 expressions. If the body yields a (non-void) value, then that value gets
 included in the resulting comprehension yield (either as a generated value
-or included in the result list). If the filtering expression yields void,
+or included in the result list). If the body yields void for an iteration,
 then there is no corresponding comprehension yield for that particular set
-of values.
+of generated values.
+
+#### Generator collection iteration
+
+The most common type of generator expression is one which directly
+iterates over the contents of a generator.
+
+These consist of an optional name (either an identifier, or `.` to indicate
+an anonymous item), the keyword `in`, and an expression which must evaluate
+to a generator, including possibly a "generatable value" such as a list or
+map.
 
 For example:
 
@@ -73,16 +80,14 @@ For example:
 ## => [350, 461, 572, 683, 794]
 ```
 
+#### Simple repetition counts
 
-### Simple repetition counts
+If a comprehension is just to have a fixed number of iterations (fixed at
+evaluation time), then that can be expressed with the generator expression
+`for expression`, where `expression` evaluates to an integer value.
+This indicates that the comprehension is only to be run that many times.
 
-If a comprehension is just to be a fixed-size (fixed at evaluation time)
-repeatedly-evaluated expression, or a repetition of a constant, then
-the shorthand `for expression` can be used instead of a `var in expression`
-form. `expression` is an arbitrary expression, which must evaluate to a
-non-negative int.
-
-This can be combined with other generator forms to place an upper limit
+This is typically combined with other generator forms to place an upper limit
 on the number of values yielded by a comprehension.
 
 For example:
