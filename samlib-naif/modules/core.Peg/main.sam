@@ -38,7 +38,7 @@ fn @@PegAny.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegChoice.parse(box, input, items*) {
-    filterPump(dataOf(this)) { rule ->
+    filterPump(this::rules) { rule ->
         ifValue { parse(rule, box, input, items*) }
             { newInput -> return newInput }
     };
@@ -152,7 +152,7 @@ fn @@PegSequence.parse(box, input, items*) {
     var lastResult = null;
 
     ## This is akin to `for (rule in dataOf(this)) { ... }`.
-    filterPump(dataOf(this)) { rule ->
+    filterPump(this::rules) { rule ->
         ifValue { parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
@@ -267,7 +267,7 @@ export fn makeChoice(rules*) {
         { return rules* };
 
     ## The general case.
-    return @PegChoice(rules)
+    return @PegChoice{rules}
 };
 
 ## Documented in spec.
@@ -330,7 +330,7 @@ export fn makeSequence(rules*) {
         { return rules* };
 
     ## The general case.
-    return @PegSequence(rules)
+    return @PegSequence{rules}
 };
 
 ## Documented in spec.
@@ -355,7 +355,7 @@ export fn makeString(string) {
     def types = typeListFromString(string);
     def chars = collect(types, makeToken);
 
-    return @PegSequence[chars*, @PegResult{value: @(@@(string))}]
+    return @PegSequence{rules: [chars*, @PegResult{value: @(@@(string))}]}
 };
 
 ## Documented in spec.
