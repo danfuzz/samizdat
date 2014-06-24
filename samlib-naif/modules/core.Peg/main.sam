@@ -182,7 +182,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
     ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifIs { get(this, get_type(item)) }
+            ifIs { get(this::types, get_type(item)) }
                 {
                     store(box, item);
                     return newInput
@@ -200,7 +200,7 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
     ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifNot { get(this, get_type(item)) }
+            ifNot { get(this::types, get_type(item)) }
                 {
                     store(box, item);
                     return newInput
@@ -234,8 +234,8 @@ fn genericMakeTokenSet(sense, types) {
         };
 
     return ifIs { eq(sense, true) }
-        { @PegTokenSet(set) }
-        { @PegTokenSetComplement(set) }
+        { @PegTokenSet{types: set} }
+        { @PegTokenSetComplement{types: set} }
 };
 
 ## Documented in spec.
@@ -363,7 +363,7 @@ export fn makeToken(type) {
     ## This is just uses a single-item token set. The performance difference
     ## between that and doing a more special-case single item type check is
     ## probably negligible.
-    return @PegTokenSet{(type): null}
+    return makeTokenSet(type)
 };
 
 ## Documented in spec.
