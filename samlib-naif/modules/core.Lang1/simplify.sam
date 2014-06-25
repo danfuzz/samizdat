@@ -164,13 +164,13 @@ fn @@token.convertPex(formals) {
 
 ## Converts a `tokenSet` pex node.
 fn @@tokenSet.convertPex(formals) {
-    def types = dataOf(this);
+    def types = get_values(this);
     return makeCallLiterals(REFS::Peg_makeTokenSet, types*)
 };
 
 ## Converts a `tokenSetComplement` pex node.
 fn @@tokenSetComplement.convertPex(formals) {
-    def types = dataOf(this);
+    def types = get_values(this);
     return makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*);
 };
 

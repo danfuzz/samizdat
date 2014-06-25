@@ -768,7 +768,7 @@ def parParserSet = makeMainSequence(
             makeCode { tokens -> collect(tokens, get_nodeValue) }),
         makeResult([])),
     makeToken(@@"]"),
-    makeCode { ., type, terminals, . -> @(type)(terminals) });
+    makeCode { ., type, terminals, . -> @(type){values: terminals} });
 
 ## Documented in spec.
 def parParserCode = makeMainSequence(

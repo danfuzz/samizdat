@@ -995,7 +995,7 @@ def parParserSet = {:
 
     @"]"
 
-    { @(type)(terminals) }
+    { @(type){values: terminals} }
 :};
 
 ## Parses a code block parsing expression.
