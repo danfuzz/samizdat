@@ -110,15 +110,14 @@ might have been passed. That is, this rule provides a new "main context"
 for parsing. The yield and result of this rule is the same as that of
 the embedded `rule`.
 
-#### `@PegRepeat{rule: rule, maxSize?: n, minSize?: n}.parse(...)`
+#### `@PegRepeat{rule: rule, maxSize?: n, minSize: n}.parse(...)`
 
 Tries to parse the input using `rule`, iterating until `rule` is no longer
 able to be parsed. Yields a list of all the parsed results, and returns
 the final input state. If `rule` was never found to apply, this yields
-`[]` and returns the original input. If `minSize` is specified, then
-this rule fails unless the size of the yielded list is at least `n`. If
-`maxSize` is specified, then this rule will only ever match at most `n`
-repetitions.
+`[]` and returns the original input. If the size of the matched list is
+less than `minSize`, then this rule fails. If `maxSize` is specified, then
+this rule will only ever match at most `n` repetitions.
 
 **Note:** This is used as the type underlying all `expr?`, `expr*`, and
 `expr+` expressions.
@@ -287,13 +286,13 @@ failed.
 
 This is equivalent to the syntactic form `{: %term :}`.
 
-#### `makeRepeat(rule, minSize?, maxSize?) -> rule`
+#### `makeRepeat(rule, optMinSize?, optMaxSize?) -> rule`
 
 Makes and returns a parser rule which matches another `rule` multiple
-times, yielding a list of resulting matches. If `minSize` is specified,
-then this rule fails unless the size of the yielded list is at least
-`minSize`. If `maxSize` is specified, then this rule will only ever match at
-most `maxSize` repetitions.
+times, yielding a list of resulting matches. If `optMinSize*` is specified,
+then this rule fails unless the size of the yielded list is at least as
+given. If `optMaxSize*` is specified, then this rule will only ever match at
+most that many repetitions.
 
 These syntactic equivalences hold:
 

@@ -126,18 +126,13 @@ fn @@PegRepeat.parse(box, input, items*) {
 
     doLoop();
 
-    ## Check for minimum match count, if appropriate.
-    ifValue { this::minSize }
-        { minSize ->
-            ifIs { lt(get_size(results), minSize) }
-                {
-                    ## Did not parse minimum required count.
-                    return
-                }
-        };
-
-    store(box, results);
-    return remainingInput
+    ## Check for minimum match count. Store result and return success if
+    ## appropriate.
+    return? ifIs { ge(get_size(results), this::minSize) }
+        {
+            store(box, results);
+            remainingInput
+        }
 };
 
 ## Documented in spec.
@@ -309,10 +304,10 @@ export fn makeParserThunk(function) {
 };
 
 ## Documented in spec.
-export fn makeRepeat(rule, minSize?, maxSize?) {
-    def minMap = ifValue { minSize* } { sz -> {minSize: sz} } { {} };
-    def maxMap = ifValue { maxSize* } { sz -> {maxSize: sz} } { {} };
-    return @PegRepeat{maxMap*, minMap*, rule}
+export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
+    def minSize = ifValueOr { optMinSize* } { 0 };
+    def maxMap = ifValue { optMaxSize* } { sz -> {maxSize: sz} } { {} };
+    return @PegRepeat{maxMap*, minSize, rule}
 };
 
 ## Documented in spec.
