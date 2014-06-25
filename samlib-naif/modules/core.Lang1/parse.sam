@@ -710,7 +710,7 @@ parParser := makeMainSequence(
     makeToken(@@"{:"),
     makeParserThunk { . -> parChoicePex },
     makeToken(@@":}"),
-    makeCode { ., pex, . -> @parser{value: pex} });
+    makeCode { ., pex, . -> @parser{pex} });
 
 ## Documented in spec.
 def parParenPex = makeMainSequence(
@@ -804,10 +804,10 @@ def parRepeatPex = makeMainSequence(
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
-            makeCode { term, repeat ->
-                @(get(PEX_TYPES, get_type(repeat)))(term)
+            makeCode { pex, repeat ->
+                @(get(PEX_TYPES, get_type(repeat))){pex}
             }),
-        makeCode { term -> term }));
+        makeCode { pex -> pex }));
 
 ## Documented in spec.
 def parLookaheadPex = makeMainChoice(
@@ -815,7 +815,7 @@ def parLookaheadPex = makeMainChoice(
         makeTokenSet(@@"&", @@"!"),
         parRepeatPex,
         makeCode { lookahead, pex ->
-            @(get(PEX_TYPES, get_type(lookahead)))(pex)
+            @(get(PEX_TYPES, get_type(lookahead))){pex}
         }),
     parRepeatPex);
 
@@ -833,7 +833,7 @@ def parNamePex = makeMainChoice(
 ## Documented in spec.
 def parSequencePex = makeMainSequence(
     makeRepeat(parNamePex, 1),
-    makeCode { items -> @sequence(items) });
+    makeCode { pexes -> @sequence{pexes} });
 
 ## Documented in spec.
 parChoicePex := makeMainSequence(
@@ -842,7 +842,7 @@ parChoicePex := makeMainSequence(
         makeSequence(
             makeToken(@@"|"),
             parSequencePex)),
-    makeCode { one, rest -> @choice[one, rest*] });
+    makeCode { one, rest -> @choice{pexes: [one, rest*]} });
 
 
 ##

@@ -165,6 +165,16 @@ export fn get_nodeValue(node) {
 };
 
 ## Documented in spec.
+export fn get_pex(node) {
+    return node::pex
+};
+
+## Documented in spec.
+export fn get_pexes(node) {
+    return node::pexes
+};
+
+## Documented in spec.
 export fn get_prefix(node) {
     return node::prefix
 };

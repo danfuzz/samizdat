@@ -925,7 +925,7 @@ parParser := {:
     @"{:"
     pex = %parChoicePex
     @":}"
-    { @parser{value: pex} }
+    { @parser{pex} }
 :};
 
 ## Parses a parenthesized parsing expression.
@@ -1025,12 +1025,12 @@ def parParserTerm = {:
 
 ## Parses a repeat (or not) parsing expression.
 def parRepeatPex = {:
-    term = parParserTerm
+    pex = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_type(repeat)))(term) }
+        { @(get(PEX_TYPES, get_type(repeat))){pex} }
     |
-        { term }
+        { pex }
     )
 :};
 
@@ -1040,7 +1040,7 @@ def parLookaheadPex = {:
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { @(get(PEX_TYPES, get_type(lookahead)))(pex) }
+        { @(get(PEX_TYPES, get_type(lookahead))){pex} }
     )
 |
     parRepeatPex
@@ -1061,15 +1061,15 @@ def parNamePex = {:
 ## Parses a sequence parsing expression. This includes sequences of length
 ## one, but it does *not* parse empty (zero-length) sequences.
 def parSequencePex = {:
-    items = parNamePex+
-    { @sequence(items) }
+    pexes = parNamePex+
+    { @sequence{pexes} }
 :};
 
 ## Parses a choice parsing expression. This includes a single choice.
 parChoicePex := {:
     one = parSequencePex
     rest = (@"|" parSequencePex)*
-    { @choice[one, rest*] }
+    { @choice{pexes: [one, rest*]} }
 :};
 
 

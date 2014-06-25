@@ -38,7 +38,7 @@ fn convertPexInList(nodes) {
 
 ## Converts a pex to a function call on its converted inner pex.
 fn makeCallPex(function, node, formals, moreArgs*) {
-    return makeCall(function, convertPex(dataOf(node), formals), moreArgs*)
+    return makeCall(function, convertPex(get_pex(node), formals), moreArgs*)
 };
 
 ## Makes a node with additional / replacement bindings from the original.
@@ -64,7 +64,7 @@ fn @@any.convertPex(formals) {
 
 ## Converts a `choice` pex node.
 fn @@choice.convertPex(formals) {
-    def pexes = dataOf(this);
+    def pexes = get_pexes(this);
     def convertedPexes = filterAll(pexes)
         { pex -> convertPex(pex, formals) };
     return makeCall(REFS::Peg_makeChoice, convertedPexes*)
@@ -109,7 +109,7 @@ fn @@plus.convertPex(formals) {
 
 ## Converts a `sequence` pex node.
 fn @@sequence.convertPex(formals) {
-    def pexes = dataOf(this);
+    def pexes = get_pexes(this);
 
     ## Extract the formals out of any `varDef` nodes.
     def newFormals = filterAll(pexes) { pex ->
@@ -266,7 +266,7 @@ fn @@noYield.convertPexIn() {
 fn @@parser.convertPexIn() {
     ## `@x(...)` is done here to convert this node from an expression node
     ## form (with map payload) into a parser node form (with pex payload).
-    return makeCallPex(REFS::Peg_makeMainSequence, @x(get_nodeValue(this)), [])
+    return makeCallPex(REFS::Peg_makeMainSequence, this, [])
 };
 
 ## Does parser conversion of a `varBind` node.
