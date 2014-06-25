@@ -311,7 +311,7 @@ export fn makeMainSequence(rules*) {
 
 ## Documented in spec.
 export fn makeOpt(rule) {
-    return @PegRepeat{rule, minSize: 0, maxSize: 1}
+    return makeRepeat(rule, 0, 1)
 };
 
 ## Documented in spec.
@@ -321,7 +321,14 @@ export fn makeParserThunk(function) {
 
 ## Documented in spec.
 export fn makePlus(rule) {
-    return @PegRepeat{rule, minSize: 1}
+    return makeRepeat(rule, 1)
+};
+
+## Documented in spec.
+export fn makeRepeat(rule, minSize?, maxSize?) {
+    def minMap = ifValue { minSize* } { sz -> {minSize: sz} } { {} };
+    def maxMap = ifValue { maxSize* } { sz -> {maxSize: sz} } { {} };
+    return @PegRepeat{maxMap*, minMap*, rule}
 };
 
 ## Documented in spec.
@@ -340,7 +347,7 @@ export fn makeSequence(rules*) {
 
 ## Documented in spec.
 export fn makeStar(rule) {
-    return @PegRepeat{rule}
+    return makeRepeat(rule)
 };
 
 ## Documented in spec.

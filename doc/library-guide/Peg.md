@@ -275,14 +275,7 @@ This is equivalent to the syntactic form `{: rule1 rule2 etc :}`.
 
 #### `makeOpt(rule) -> rule`
 
-Makes and returns a parser rule which optionally matches a given rule.
-When called, the given other rule is matched whenever possible. This
-rule always succeeds. If the other rule succeeds, this rule yields a
-single-element list of the successful yield of the other rule, and it
-returns updated state to reflect the successful parse. If the other
-rule fails, this one yields an empty list and does not consume any input.
-
-This is equivalent to the syntactic form `{: rule? :}`.
+Convenient shorthand for `makeRepeat(rule, 0, 1)`.
 
 #### `makeParserThunk(function) -> rule`
 
@@ -300,13 +293,21 @@ This is equivalent to the syntactic form `{: %term :}`.
 
 #### `makePlus(rule) -> rule`
 
-Makes and returns a parser rule which matches a given rule repeatedly.
-When called, the given other rule is matched as many times as possible.
-It yields a list of all the matched results (in order), and it returns
-updated state that reflects all the input consumed by these matches.
-This rule will succeed only if the given rule is matched at least once.
+Convenient shorthand for `makeRepeat(rule, 1)`.
 
-This is equivalent to the syntactic form `{: rule+ :}`.
+#### `makeRepeat(rule, minSize?, maxSize?) -> rule`
+
+Makes and returns a parser rule which matches another `rule` multiple
+times, yielding a list of resulting matches. If `minSize` is specified,
+then this rule fails unless the size of the yielded list is at least
+`minSize`. If `maxSize` is specified, then this rule will only ever match at
+most `maxSize` repetitions.
+
+These syntactic equivalences hold:
+
+* `makeRepeat(rule)` is equivalent to `{: rule* :}`.
+* `makeRepeat(rule, 1)` is equivalent to `{: rule+ :}`.
+* `makeRepeat(rule, 0, 1)` is equivalent to `{: rule? :}`.
 
 #### `makeResult(value) -> rule`
 
@@ -331,14 +332,7 @@ This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
 
 #### `makeStar(rule) -> rule`
 
-Makes and returns a parser rule which matches a given rule repeatedly.
-When called, the given other rule is matched as many times as possible.
-It yields a list of all the matched results (in order), and it returns
-updated state that reflects all the input consumed by these matches.
-This rule always succeeds, including if the given rule is never matched,
-in which case this rule yields the empty list.
-
-This is equivalent to the syntactic form `{: rule* :}`.
+Convenient shorthand for `makeRepeat(rule)`.
 
 #### `makeString(string) -> rule`
 
