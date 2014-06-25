@@ -73,12 +73,20 @@ fn @@choice.convertPex(formals) {
 ## Converts a `code` pex node.
 fn @@code.convertPex(formals) {
     ## Use the lexical `formals` context to make a regular closure node,
-    ## and just convert that.
+    ## and just convert that. As a special case, notice if the closure is
+    ## just a yield of a literal, and convert that with `makeResult`.
 
     def closurePayload = {(dataOf(this))*, formals};
-    def convertedClosure = convertPexIn(makeFullClosure(closurePayload));
+    def fullClosure = makeFullClosure(closurePayload);
 
-    return makeCall(REFS::Peg_makeCode, convertedClosure)
+    return ifValues(
+        [
+            { eq(get_statements(fullClosure), []) },
+            { . -> hasType(get_yieldNode(fullClosure), @@literal) }
+        ],
+        { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) },
+        { makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure)) }
+    )
 };
 
 ## Converts an `empty` pex node.
