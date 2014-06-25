@@ -81,7 +81,7 @@ def parName =  makeMainSequence(
 ## Documented in spec.
 def parNameList = makeMainSequence(
     parName,
-    makeStar(makeSequence(makeToken(@@","), parName)),
+    makeRepeat(makeSequence(makeToken(@@","), parName)),
     makeCode { first, rest -> [first, rest*] });
 
 ## Documented in spec.
@@ -135,7 +135,7 @@ def parKey = makeMainChoice(
 
 ## Documented in spec.
 def parMapping = makeMainSequence(
-    makeStar(parKey),
+    makeRepeat(parKey),
     parExpression,
     makeCode { keys, value ->
         ifIs { eq(keys, []) }
@@ -164,7 +164,7 @@ def parMap = makeMainSequence(
     makeChoice(
         makeSequence(
             parMapping,
-            makeStar(
+            makeRepeat(
                 makeSequence(makeToken(@@","), parMapping)),
             makeCode { ., one, rest ->
                 ifIs { eq(rest, []) }
@@ -189,7 +189,7 @@ def parListItem = makeMainChoice(
 def parUnadornedList = makeMainChoice(
     makeSequence(
         parListItem,
-        makeStar(
+        makeRepeat(
             makeSequence(makeToken(@@","), parListItem)),
         makeCode { one, rest -> [one, rest*] }),
     makeResult([]));
@@ -225,7 +225,7 @@ def parDeriv = makeMainSequence(
                 makeLiteral(@@(get_nodeValue(name)))
             }),
         parParenExpression),
-    makeOpt(makeChoice(parParenExpression, parMap, parList)),
+    makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
     makeCode { ., type, value ->
         makeCall(REFS::makeValue, type, value*)
     });
@@ -284,11 +284,11 @@ def parActualsList = makeMainChoice(
         makeToken(@@"("),
         parUnadornedList,
         makeToken(@@")"),
-        makeStar(parFullClosure),
+        makeRepeat(parFullClosure),
         makeCode { ., normalActuals, ., closureActuals ->
             [closureActuals*, normalActuals*]
         }),
-    makePlus(parFullClosure));
+    makeRepeat(parFullClosure, 1));
 
 ## Documented in spec.
 def parPostfixOperator = makeMainChoice(
@@ -316,7 +316,7 @@ def parUnaryExpression = makeMainSequence(
             makeCode { base -> {base, prefixes: []} }),
         ## This is a stub representing the layer 2 part of the rule.
         fail),
-    makeStar(parPostfixOperator),
+    makeRepeat(parPostfixOperator),
     makeCode { basePrefixes, postfixes ->
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
@@ -340,7 +340,7 @@ parAssignExpression := makeMainSequence(
 ## Documented in spec.
 def parYieldOrNonlocal = makeMainSequence(
     makeTokenSet(@@break, @@continue, @@return, @@yield),
-    makeOpt(makeToken(@@"?")),
+    makeRepeat(makeToken(@@"?"), 0, 1),
     makeChoice(
         makeSequence(
             makeCode { op, . -> hasType(op, @@yield) },
@@ -367,7 +367,7 @@ def parYieldOrNonlocal = makeMainSequence(
 def parVarDef = makeMainSequence(
     makeToken(@@def),
     parName,
-    makeOpt(makeSequence(makeToken(@@"="), parExpression)),
+    makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDef(name, optExpr*)
     });
@@ -376,7 +376,7 @@ def parVarDef = makeMainSequence(
 def parVarDefMutable = makeMainSequence(
     makeToken(@@var),
     parName,
-    makeOpt(makeSequence(makeToken(@@"="), parExpression)),
+    makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDefMutable(name, optExpr*)
     });
@@ -414,7 +414,7 @@ def parFormal = makeMainSequence(
 def parFormalsList = makeMainChoice(
     makeSequence(
         parFormal,
-        makeStar(makeSequence(makeToken(@@","), parFormal)),
+        makeRepeat(makeSequence(makeToken(@@","), parFormal)),
         makeCode { one, rest -> [one, rest*] }),
     makeResult([]));
 
@@ -481,7 +481,7 @@ def parGenericBind = makeMainSequence(
 ## Documented in spec.
 def parGenericDef = makeMainSequence(
     makeToken(@@fn),
-    makeOpt(makeToken(@@"*")),
+    makeRepeat(makeToken(@@"*"), 0, 1),
     makeToken(@@"."),
     parName,
     makeToken(@@"("),
@@ -528,23 +528,24 @@ def parImportSource = makeMainChoice(
         makeToken(@@"."),
         makeToken(@@"/"),
         parName,
-        makeStar(
+        makeRepeat(
             makeSequence(
                 makeToken(@@"/"),
                 parName,
                 makeCode { ., ., ., ., n -> cat("/", n) })),
-        makeOpt(
+        makeRepeat(
             makeSequence(
                 makeToken(@@"."),
                 parName,
-                makeCode { ., ., ., ., ., n -> cat(".", n) })),
+                makeCode { ., ., ., ., ., n -> cat(".", n) }),
+            0, 1),
         makeCode { ., ., first, rest, optSuffix ->
             def name = cat(first, rest*, optSuffix*);
             @internal(name)
         }),
     makeSequence(
         parName,
-        makeStar(
+        makeRepeat(
             makeSequence(
                 makeToken(@@"."),
                 parName,
@@ -569,7 +570,7 @@ def parImportSelect = makeMainChoice(
 
 ## Documented in spec.
 def parImportStatement = makeMainSequence(
-    makeOpt(makeToken(@@export)),
+    makeRepeat(makeToken(@@export), 0, 1),
     makeToken(@@import),
     parImportName,
     parImportFormat,
@@ -605,11 +606,11 @@ def parProgramStatement = makeMainChoice(
 
 ## Documented in spec.
 def parClosureBody = makeMainSequence(
-    makeStar(makeToken(@@";")),
-    makeStar(
+    makeRepeat(makeToken(@@";")),
+    makeRepeat(
         makeMainSequence(
             parStatement,
-            makePlus(makeToken(@@";")),
+            makeRepeat(makeToken(@@";"), 1),
             makeCode { s, . -> s })),
     makeChoice(
         makeMainSequence(
@@ -619,7 +620,7 @@ def parClosureBody = makeMainSequence(
             parYieldOrNonlocal,
             makeCode { y -> {statements: [], yield: y} }),
         makeResult({statements: []})),
-    makeStar(makeToken(@@";")),
+    makeRepeat(makeToken(@@";")),
     makeCode { ., most, last, . ->
         {last*, statements: [most*, last::statements*]}
     });
@@ -636,11 +637,11 @@ parRawClosure := makeMainSequence(
 def parProgram = makeMainSequence(
     makeChoice(
         makeSequence(
-            makeStar(makeToken(@@";")),
+            makeRepeat(makeToken(@@";")),
             parImportStatement,
-            makeStar(
+            makeRepeat(
                 makeSequence(
-                    makePlus(makeToken(@@";")),
+                    makeRepeat(makeToken(@@";"), 1),
                     parImportStatement)),
             makeCode { ., first, rest -> [first, rest*] }),
         makeResult([])),
@@ -649,16 +650,16 @@ def parProgram = makeMainSequence(
             makeChoice(
                 makeSequence(
                     makeCode { imports -> ne(imports, []) },
-                    makePlus(makeToken(@@";"))),
-                makeStar(makeToken(@@";"))),
+                    makeRepeat(makeToken(@@";"), 1)),
+                makeRepeat(makeToken(@@";"))),
             parProgramStatement,
-            makeStar(
+            makeRepeat(
                 makeSequence(
-                    makePlus(makeToken(@@";")),
+                    makeRepeat(makeToken(@@";"), 1),
                     parProgramStatement)),
             makeCode { ., ., first, rest -> [first, rest*] }),
         makeResult([])),
-    makeStar(makeToken(@@";")),
+    makeRepeat(makeToken(@@";")),
     makeCode { imports, body, . ->
         def closure = makeFullClosure({
             statements: [imports*, body*],
@@ -670,19 +671,21 @@ def parProgram = makeMainSequence(
 ## Documented in spec.
 def parExpressionOrError = makeMainSequence(
     parExpression,
-    makeOpt(
+    makeRepeat(
         makeMainSequence(
-            makePlus(any),
-            makeCode { pending -> reportError(pending) })),
+            makeRepeat(any, 1),
+            makeCode { pending -> reportError(pending) }),
+        0, 1),
     makeCode { ex, . -> ex });
 
 ## Documented in spec.
 def parProgramOrError = makeMainSequence(
     parProgram,
-    makeOpt(
+    makeRepeat(
         makeMainSequence(
-            makePlus(any),
-            makeCode { pending -> reportError(pending) })),
+            makeRepeat(any, 1),
+            makeCode { pending -> reportError(pending) }),
+        0, 1),
     makeCode { prog, . -> prog });
 
 
@@ -755,12 +758,12 @@ def parParserSet = makeMainSequence(
         makeResult(@@tokenSet)),
     makeChoice(
         makeMainSequence(
-            makePlus(parParserSetString),
+            makeRepeat(parParserSetString, 1),
             makeCode { strings ->
                 collect(cat(strings*), { ch -> @@(ch) })
             }),
         makeMainSequence(
-            makePlus(parParserToken),
+            makeRepeat(parParserToken, 1),
             makeCode { tokens -> collect(tokens, dataOf) }),
         makeResult([])),
     makeToken(@@"]"),
@@ -829,13 +832,13 @@ def parNamePex = makeMainChoice(
 
 ## Documented in spec.
 def parSequencePex = makeMainSequence(
-    makePlus(parNamePex),
+    makeRepeat(parNamePex, 1),
     makeCode { items -> @sequence(items) });
 
 ## Documented in spec.
 parChoicePex := makeMainSequence(
     parSequencePex,
-    makeStar(
+    makeRepeat(
         makeSequence(
             makeToken(@@"|"),
             parSequencePex)),

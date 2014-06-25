@@ -23,7 +23,7 @@ export fn .parse(box, input, items*);
 export def any = @PegAny;
 
 ## Documented in spec.
-export def empty = @PegResult(null);
+export def empty = @PegResult{value: null};
 
 ## Documented in spec.
 export def eof = @PegEof;
@@ -38,7 +38,7 @@ fn @@PegAny.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegChoice.parse(box, input, items*) {
-    filterPump(dataOf(this)) { rule ->
+    filterPump(this::rules) { rule ->
         ifValue { parse(rule, box, input, items*) }
             { newInput -> return newInput }
     };
@@ -49,7 +49,7 @@ fn @@PegChoice.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegCode.parse(box, input, items*) {
-    return? ifValue { dataOf(this)(items*) }
+    return? ifValue { this::function(items*) }
         { result ->
             store(box, result);
             input
@@ -72,7 +72,7 @@ fn @@PegFail.parse(box, input, .*) {
 
 ## Documented in spec.
 fn @@PegLookaheadFailure.parse(box, input, items*) {
-    return? ifNot { parse(dataOf(this), nullBox, input, items*) }
+    return? ifNot { parse(this::rule, nullBox, input, items*) }
         {
             store(box, null);
             input
@@ -81,63 +81,63 @@ fn @@PegLookaheadFailure.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegLookaheadSuccess.parse(box, input, items*) {
-    return? ifIs { parse(dataOf(this), box, input, items*) }
+    return? ifIs { parse(this::rule, box, input, items*) }
         { input }
 };
 
 ## Documented in spec.
 fn @@PegMain.parse(box, input, .*) {
     ## The point of this implementation is to drop the `items` context.
-    return? parse(dataOf(this), box, input)
-};
-
-## Documented in spec.
-fn @@PegOpt.parse(box, input, items*) {
-    def innerBox = makePromise();
-    return? ifValue { parse(dataOf(this), innerBox, input, items*) }
-        { newInput ->
-            store(box, [fetch(innerBox)]);
-            newInput
-        }
-        {
-            store(box, []);
-            input
-        }
+    return? parse(this::rule, box, input)
 };
 
 ## Documented in spec.
 fn @@PegRepeat.parse(box, input, items*) {
-    def rule = this::rule;
-    def innerBox = makeCell();
     var remainingInput = input;
     var results = [];  ## Values that have been parsed by the inner rule.
 
-    loop {
-        ifValue { parse(rule, innerBox, remainingInput, items*) }
-            { newInput ->
-                ## Successfully parsed the inner rule.
-                remainingInput := newInput;
-                results := [results*, fetch(innerBox)]
+    fn doLoop() { /out ->
+        def rule = this::rule;
+        def innerBox = makeCell();
+
+        def maxCheck = ifValue { this::maxSize }
+            { maxSize ->
+                { ->
+                    ifIs { eq(get_size(results), maxSize) }
+                        { yield /out }
+                }
             }
-            {
-                ## Failed to parse the inner rule.
-                ifValue { this::minSize }
-                    { minSize ->
-                        ifIs { lt(get_size(results), minSize) }
-                            {
-                                ## Did not parse minimum required count.
-                                return
-                            }
-                    };
-                store(box, results);
-                return remainingInput
-            }
-    }
+            { {->} };
+
+        loop {
+            ifValue { parse(rule, innerBox, remainingInput, items*) }
+                { newInput ->
+                    ## Successfully parsed the inner rule.
+                    remainingInput := newInput;
+                    results := [results*, fetch(innerBox)];
+                    maxCheck()
+                }
+                {
+                    ## Failed to parse the inner rule.
+                    yield /out
+                }
+        }
+    };
+
+    doLoop();
+
+    ## Check for minimum match count. Store result and return success if
+    ## appropriate.
+    return? ifIs { ge(get_size(results), this::minSize) }
+        {
+            store(box, results);
+            remainingInput
+        }
 };
 
 ## Documented in spec.
 fn @@PegResult.parse(box, input, .*) {
-    store(box, dataOf(this));
+    store(box, this::value);
     return input
 };
 
@@ -151,8 +151,8 @@ fn @@PegSequence.parse(box, input, items*) {
     var results = items;  ## Includes intial items and each parsed value.
     var lastResult = null;
 
-    ## This is akin to `for (rule in dataOf(this)) { ... }`.
-    filterPump(dataOf(this)) { rule ->
+    ## This is akin to `for (rule in this::rules) { ... }`.
+    filterPump(this::rules) { rule ->
         ifValue { parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
@@ -171,7 +171,7 @@ fn @@PegSequence.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegThunk.parse(box, input, items*) {
-    return? ifValue { dataOf(this)(items*) }
+    return? ifValue { this::function(items*) }
         { thunkResult -> parse(thunkResult, box, input, items*) }
 };
 
@@ -179,36 +179,30 @@ fn @@PegThunk.parse(box, input, items*) {
 fn @@PegTokenSet.parse(box, input, items*) {
     def innerBox = makePromise();
 
-    ifValue { nextValue(input, innerBox) }
+    return? ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifIs { get(this, get_type(item)) }
+            ifIs { get(this::types, get_type(item)) }
                 {
                     store(box, item);
-                    return newInput
+                    newInput
                 }
-        };
-
-    ## Either EOF or no match.
-    return
+        }
 };
 
 ## Documented in spec.
 fn @@PegTokenSetComplement.parse(box, input, items*) {
     def innerBox = makePromise();
 
-    ifValue { nextValue(input, innerBox) }
+    return? ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
-            ifNot { get(this, get_type(item)) }
+            ifNot { get(this::types, get_type(item)) }
                 {
                     store(box, item);
-                    return newInput
+                    newInput
                 }
-        };
-
-    ## Either EOF or no match.
-    return
+        }
 };
 
 
@@ -234,13 +228,8 @@ fn genericMakeTokenSet(sense, types) {
         };
 
     return ifIs { eq(sense, true) }
-        { @PegTokenSet(set) }
-        { @PegTokenSetComplement(set) }
-};
-
-## Documented in spec.
-export fn makeResult(value) {
-    return @PegResult(value)
+        { @PegTokenSet{types: set} }
+        { @PegTokenSetComplement{types: set} }
 };
 
 ## Documented in spec.
@@ -267,12 +256,12 @@ export fn makeChoice(rules*) {
         { return rules* };
 
     ## The general case.
-    return @PegChoice(rules)
+    return @PegChoice{rules}
 };
 
 ## Documented in spec.
 export fn makeCode(function) {
-    return @PegCode(function)
+    return @PegCode{function}
 };
 
 ## Documented in spec.
@@ -286,37 +275,39 @@ export fn makeLookaheadFailure(rule) {
         { return @PegFail };
 
     ## The general case.
-    return @PegLookaheadFailure(rule)
+    return @PegLookaheadFailure{rule}
 };
 
 ## Documented in spec.
 export fn makeLookaheadSuccess(rule) {
-    return @PegLookaheadSuccess(rule)
+    return @PegLookaheadSuccess{rule}
 };
 
 ## Documented in spec.
 export fn makeMainChoice(rules*) {
-    return @PegMain(makeChoice(rules*))
+    return @PegMain{rule: makeChoice(rules*)}
 };
 
 ## Documented in spec.
 export fn makeMainSequence(rules*) {
-    return @PegMain(makeSequence(rules*))
-};
-
-## Documented in spec.
-export fn makeOpt(rule) {
-    return @PegOpt(rule)
+    return @PegMain{rule: makeSequence(rules*)}
 };
 
 ## Documented in spec.
 export fn makeParserThunk(function) {
-    return @PegThunk(function)
+    return @PegThunk{function}
 };
 
 ## Documented in spec.
-export fn makePlus(rule) {
-    return @PegRepeat{rule, minSize: 1}
+export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
+    def minSize = ifValueOr { optMinSize* } { 0 };
+    def maxMap = ifValue { optMaxSize* } { sz -> {maxSize: sz} } { {} };
+    return @PegRepeat{maxMap*, minSize, rule}
+};
+
+## Documented in spec.
+export fn makeResult(value) {
+    return @PegResult{value}
 };
 
 ## Documented in spec.
@@ -330,19 +321,14 @@ export fn makeSequence(rules*) {
         { return rules* };
 
     ## The general case.
-    return @PegSequence(rules)
-};
-
-## Documented in spec.
-export fn makeStar(rule) {
-    return @PegRepeat{rule}
+    return @PegSequence{rules}
 };
 
 ## Documented in spec.
 export fn makeString(string) {
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }
-        { return @PegResult(@"") };
+        { return makeResult(@"") };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { eq(get_size(string), 1) }
@@ -355,7 +341,7 @@ export fn makeString(string) {
     def types = typeListFromString(string);
     def chars = collect(types, makeToken);
 
-    return @PegSequence[chars*, @PegResult(@(@@(string)))]
+    return makeSequence(chars*, makeResult(@(@@(string))))
 };
 
 ## Documented in spec.
@@ -363,7 +349,7 @@ export fn makeToken(type) {
     ## This is just uses a single-item token set. The performance difference
     ## between that and doing a more special-case single item type check is
     ## probably negligible.
-    return @PegTokenSet{(type): null}
+    return makeTokenSet(type)
 };
 
 ## Documented in spec.

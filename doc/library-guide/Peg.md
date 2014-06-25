@@ -65,13 +65,13 @@ data payload they use and what it means to call `parse` on them.
 
 Consumes and yields a single token if available.
 
-#### `@PegChoice[rules*].parse(...)`
+#### `@PegChoice{rules:[.*]}.parse(...)`
 
 Tries to parse the input using each of the given `rules` in order.
 Yields a value and returns replacement input based on the first one
 that succeeds. Fails if none of the rules succeeds.
 
-#### `@PegCode(function).parse(...)`
+#### `@PegCode{function}.parse(...)`
 
 Calls the given `function`, passing it the current sequential input
 context. Yields whatever value it returns. Upon success (non-void
@@ -91,48 +91,42 @@ void and returns void).
 
 Always yields void and returns void.
 
-#### `@PegLookaheadFailure(rule).parse(...)`
+#### `@PegLookaheadFailure{rule}.parse(...)`
 
 Tries to parse the input using `rule`. If it succeeds, then this rule
 fails. If it fails, then this rule succeeds, consuming no input and
 yielding `null`.
 
-#### `@PegLookaheadSuccess(rule).parse(...)`
+#### `@PegLookaheadSuccess{rule}.parse(...)`
 
 Tries to parse the input using `rule`. If it succeeds, then this rule
 also succeeds, yielding the same result but consuming no input. If it fails,
 then this rule also fails.
 
-#### `@PegMain(rule).parse(...)`
+#### `@PegMain{rule}.parse(...)`
 
 Parses the given `rule` but does not hand it any `items*` that this rule
 might have been passed. That is, this rule provides a new "main context"
 for parsing. The yield and result of this rule is the same as that of
 the embedded `rule`.
 
-#### `@PegOpt(rule).parse(...)`
-
-Tries to parse the input using `rule`. If it succeeds, then this rule
-also succeeds, yielding a single-element list of the result.
-If it fails, then this rule succeeds, consuming no input and yielding
-`[]`.
-
-#### `@PegRepeat{rule: rule, (minSize: n)?}.parse(...)`
+#### `@PegRepeat{rule: rule, maxSize?: n, minSize: n}.parse(...)`
 
 Tries to parse the input using `rule`, iterating until `rule` is no longer
 able to be parsed. Yields a list of all the parsed results, and returns
 the final input state. If `rule` was never found to apply, this yields
-`[]` and returns the original input. If `minSize` is specified, then
-this rule fails unless the size of the yielded list is at least `n`.
+`[]` and returns the original input. If the size of the matched list is
+less than `minSize`, then this rule fails. If `maxSize` is specified, then
+this rule will only ever match at most `n` repetitions.
 
-**Note:** This is used as the type underlying both `expr*` and `expr+`
-expressions.
+**Note:** This is used as the type underlying all `expr?`, `expr*`, and
+`expr+` expressions.
 
-#### `@PegResult(value).parse(...)`
+#### `@PegResult{value}.parse(...)`
 
 Always yields the given `value`, consuming no input.
 
-#### `@PegSequence[rules*].parse(...)`
+#### `@PegSequence{rules:[.*]}.parse(...)`
 
 Tries to parse the given rules one after the other. Succeeds if all of
 the rules were successfully applied, yielding the result of the *final*
@@ -146,20 +140,20 @@ receives the results of all the previous sub-rules as additional `items*`.
 As an edge case, if `rules` is empty, then this equivalent to `@PegEmpty`,
 succeeding, consuming no input, and yielding `null`.
 
-#### `@PegThunk(function).parse(...)`
+#### `@PegThunk{function}.parse(...)`
 
 Calls the given function, which is expected to return a parser. Then
 calls the so-returned parser, passing it the remaining arguments to
 this call, returing whatever that call returns (including void).
 
-#### `@PegTokenSet{types*: null}.parse(...)`
+#### `@PegTokenSet{types: {.*: null}}.parse(...)`
 
 If there is any input available, checks the type of the first input
 token against the given set of types (map where only the keys matter).
 If the type is found in the set, then yields and consumes the token.
 Otherwise fails, yielding and returning void.
 
-#### `@PegTokenSetComplement{types*: null}.parse(...)`
+#### `@PegTokenSetComplement{types: {.*: null}}.parse(...)`
 
 If there is any input available, checks the type of the first input
 token against the given set of types (map where only the keys matter).
@@ -278,17 +272,6 @@ it provides a fresh (empty) parsed item scope.
 
 This is equivalent to the syntactic form `{: rule1 rule2 etc :}`.
 
-#### `makeOpt(rule) -> rule`
-
-Makes and returns a parser rule which optionally matches a given rule.
-When called, the given other rule is matched whenever possible. This
-rule always succeeds. If the other rule succeeds, this rule yields a
-single-element list of the successful yield of the other rule, and it
-returns updated state to reflect the successful parse. If the other
-rule fails, this one yields an empty list and does not consume any input.
-
-This is equivalent to the syntactic form `{: rule? :}`.
-
 #### `makeParserThunk(function) -> rule`
 
 Makes and returns a parser rule which runs the given function to produce
@@ -303,15 +286,19 @@ failed.
 
 This is equivalent to the syntactic form `{: %term :}`.
 
-#### `makePlus(rule) -> rule`
+#### `makeRepeat(rule, optMinSize?, optMaxSize?) -> rule`
 
-Makes and returns a parser rule which matches a given rule repeatedly.
-When called, the given other rule is matched as many times as possible.
-It yields a list of all the matched results (in order), and it returns
-updated state that reflects all the input consumed by these matches.
-This rule will succeed only if the given rule is matched at least once.
+Makes and returns a parser rule which matches another `rule` multiple
+times, yielding a list of resulting matches. If `optMinSize*` is specified,
+then this rule fails unless the size of the yielded list is at least as
+given. If `optMaxSize*` is specified, then this rule will only ever match at
+most that many repetitions.
 
-This is equivalent to the syntactic form `{: rule+ :}`.
+These syntactic equivalences hold:
+
+* `makeRepeat(rule)` is equivalent to `{: rule* :}`.
+* `makeRepeat(rule, 1)` is equivalent to `{: rule+ :}`.
+* `makeRepeat(rule, 0, 1)` is equivalent to `{: rule? :}`.
 
 #### `makeResult(value) -> rule`
 
@@ -333,17 +320,6 @@ Each rule is passed a list of in-scope parsing results, starting with the
 first result from the "closest" enclosing main sequence.
 
 This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
-
-#### `makeStar(rule) -> rule`
-
-Makes and returns a parser rule which matches a given rule repeatedly.
-When called, the given other rule is matched as many times as possible.
-It yields a list of all the matched results (in order), and it returns
-updated state that reflects all the input consumed by these matches.
-This rule always succeeds, including if the given rule is never matched,
-in which case this rule yields the empty list.
-
-This is equivalent to the syntactic form `{: rule* :}`.
 
 #### `makeString(string) -> rule`
 

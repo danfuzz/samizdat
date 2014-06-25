@@ -35,13 +35,14 @@ def KEYWORDS = $Generator::collectAsMap(
 ## Documented in spec.
 def tokWhitespace = makeMainSequence(
     makeLookaheadSuccess(makeCharSet("# \n")),
-    makePlus(
+    makeRepeat(
         makeChoice(
-            makePlus(makeCharSet(" \n")),
+            makeRepeat(makeCharSet(" \n"), 1),
             makeSequence(
                 makeString("#"),
                 makeCharSet("#!="),
-                makeStar(makeCharSetComplement("\n"))))));
+                makeRepeat(makeCharSetComplement("\n")))),
+        1));
 
 ## Documented in spec.
 def tokPunctuation = makeMainSequence(
@@ -63,17 +64,17 @@ def tokDecDigit = makeMainSequence(
 
 ## Documented in spec.
 def tokInt = makeMainSequence(
-    makePlus(tokDecDigit),
+    makeRepeat(tokDecDigit, 1),
     makeCode { digits -> @int(intFromDigits(10, digits)) });
 
 ## Documented in spec.
 def tokStringPart = makeMainChoice(
     makeSequence(
-        makePlus(makeCharSetComplement("\\\"\n")),
+        makeRepeat(makeCharSetComplement("\\\"\n"), 1),
         makeCode(stringFromTokenList)),
     makeSequence(
         makeString("\n"),
-        makeStar(makeString(" ")),
+        makeRepeat(makeString(" ")),
         makeResult("\n")),
     makeSequence(
         makeString("\\"),
@@ -88,7 +89,7 @@ def tokStringPart = makeMainChoice(
 ## Documented in spec.
 def tokString = makeMainSequence(
     makeString("\""),
-    makeStar(tokStringPart),
+    makeRepeat(tokStringPart),
     makeChoice(
         makeSequence(
             makeString("\""),
@@ -105,7 +106,7 @@ def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
 ## Documented in spec.
 def tokIdentifier = makeMainSequence(
     makeCharSet(IDENTIFIER_START_CHARS),
-    makeStar(makeCharSet(IDENTIFIER_CHARS)),
+    makeRepeat(makeCharSet(IDENTIFIER_CHARS)),
     makeCode { one, rest ->
         def string = stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
@@ -121,7 +122,7 @@ def tokQuotedIdentifier = makeMainSequence(
 ## Documented in spec.
 def tokError = makeMainSequence(
     any,
-    makeStar(makeCharSetComplement("\n")),
+    makeRepeat(makeCharSetComplement("\n")),
     makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
         @error(msg)
@@ -138,11 +139,11 @@ def tokToken = makeMainChoice(
 
 ## Documented in spec.
 def tokFile = makeMainSequence(
-    makeStar(
+    makeRepeat(
         makeSequence(
-            makeOpt(tokWhitespace),
+            makeRepeat(tokWhitespace, 0, 1),
             tokToken)),
-    makeOpt(tokWhitespace),
+    makeRepeat(tokWhitespace, 0, 1),
     makeCode { tokens, . -> tokens });
 
 
