@@ -13,10 +13,10 @@
 
 #= language core.Lang0
 
-import core.Generator;
+import core.Generator :: filterAll;
 import core.Lang0Node :: *;
-import core.Range;
-import core.Sequence;
+import core.Range :: makeOpenRange;
+import core.Sequence :: sliceExclusive;
 
 
 ##
@@ -33,7 +33,7 @@ fn .convertPexIn();
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
-    return $Generator::filterAll(nodes) { node -> convertPexIn(node) }
+    return filterAll(nodes) { node -> convertPexIn(node) }
 };
 
 ## Converts a pex to a function call on its converted inner pex.
@@ -65,7 +65,7 @@ fn @@any.convertPex(formals) {
 ## Converts a `choice` pex node.
 fn @@choice.convertPex(formals) {
     def pexes = dataOf(this);
-    def convertedPexes = $Generator::filterAll(pexes)
+    def convertedPexes = filterAll(pexes)
         { pex -> convertPex(pex, formals) };
     return makeCall(REFS::Peg_makeChoice, convertedPexes*)
 };
@@ -112,7 +112,7 @@ fn @@sequence.convertPex(formals) {
     def pexes = dataOf(this);
 
     ## Extract the formals out of any `varDef` nodes.
-    def newFormals = $Generator::filterAll(pexes) { pex ->
+    def newFormals = filterAll(pexes) { pex ->
         ifIs { hasType(pex, @@varDef) }
             { {name: pex::name} }
             { {} }
@@ -121,13 +121,13 @@ fn @@sequence.convertPex(formals) {
     ## Convert all the pexes, passing in appropriately-extended formals
     ## lists to each conversion.
     def convertedPexes =
-        $Generator::filterAll($Range::makeOpenRange(0), pexes)
+        filterAll(makeOpenRange(0), pexes)
             { n, pex ->
                 def subPex = ifIs { hasType(pex, @@varDef) }
                     { pex::value }
                     { pex };
                 convertPex(subPex,
-                    [formals*, $Sequence::sliceExclusive(newFormals, 0, n)*])
+                    [formals*, sliceExclusive(newFormals, 0, n)*])
             };
 
     return makeCall(REFS::Peg_makeSequence, convertedPexes*)
