@@ -721,7 +721,8 @@ def parParenPex = makeMainSequence(
 
 ## Documented in spec.
 def parParserString = makeMainSequence(
-    makeToken(@@string));
+    makeToken(@@string),
+    makeCode { s -> @string{value: dataOf(s)} });
 
 ## Documented in spec.
 def parParserToken = makeMainSequence(
@@ -779,7 +780,7 @@ def parParserCode = makeMainSequence(
 def parParserThunk = makeMainSequence(
     makeToken(@@"%"),
     parTerm,
-    makeCode { ., term -> @thunk(term) });
+    makeCode { ., value -> @thunk{value} });
 
 ## Documented in spec.
 def parParserTerm = makeMainChoice(

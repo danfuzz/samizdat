@@ -52,14 +52,14 @@ Representation of the "empty" ("always succeed" / no-op) rule.
 
 This corresponds to the syntax `()`.
 
-#### `@string(string)`
+#### `@string{value: string}`
 
 Representation of a multi-character sequence match. `string` must be a
 string.
 
 This corresponds to the syntax `"string"`.
 
-#### `@thunk(expression)`
+#### `@thunk{value: expression}`
 
 Representation of a parser thunk.
 

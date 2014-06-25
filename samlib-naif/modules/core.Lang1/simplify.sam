@@ -140,7 +140,7 @@ fn @@star.convertPex(formals) {
 
 ## Converts a `string` pex node.
 fn @@string.convertPex(formals) {
-    return makeCallLiterals(REFS::Peg_makeString, dataOf(this))
+    return makeCallLiterals(REFS::Peg_makeString, get_nodeValue(this))
 };
 
 ## Converts a `thunk` pex node.
@@ -150,7 +150,7 @@ fn @@thunk.convertPex(formals) {
 
     def closure = makeFullClosure({
         formals,
-        yield: makeMaybe(dataOf(this))
+        yield: makeMaybe(get_nodeValue(this))
     });
     def convertedClosure = convertPexIn(closure);
 

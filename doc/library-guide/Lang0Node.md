@@ -140,13 +140,13 @@ nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is
-applicable to nodes of type `literal`, `maybe`, `noYield`, `parser`,
-`varBind`, `varDef`, and `varDefMutable`.
+applicable to nodes of type `literal`, `maybe`, `noYield`, `string` (pex type),
+`thunk` (pex type), `varBind`, `varDef`, and `varDefMutable`.
 
 #### `get_pex(node) -> pex`
 
 Gets the inner parser node of the given node. This is applicable to
-nodes of type `lookaheadFailure`, `lookaheadSuccess`, `opt`, `plus`, `star`
+nodes of type `lookaheadFailure`, `lookaheadSuccess`, `opt`, `plus`, `star`,
 and `parser`.
 
 #### `get_pexes(node) -> [pex*]`

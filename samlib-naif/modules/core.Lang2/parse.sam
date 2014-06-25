@@ -938,7 +938,8 @@ def parParenPex = {:
 
 ## Parses a string literal parsing expression.
 def parParserString = {:
-    @string
+    s = @string
+    { @string{value: dataOf(s)} }
 :};
 
 ## Parses a token literal parsing expression.
@@ -1006,8 +1007,8 @@ def parParserCode = {:
 ## Parses a thunk parsing expression.
 def parParserThunk = {:
     @"%"
-    term = parTerm
-    { @thunk(term) }
+    value = parTerm
+    { @thunk{value} }
 :};
 
 ## Parses a parsing expression term.
