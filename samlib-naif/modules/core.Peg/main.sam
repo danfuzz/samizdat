@@ -156,7 +156,7 @@ fn @@PegSequence.parse(box, input, items*) {
     var results = items;  ## Includes intial items and each parsed value.
     var lastResult = null;
 
-    ## This is akin to `for (rule in dataOf(this)) { ... }`.
+    ## This is akin to `for (rule in this::rules) { ... }`.
     filterPump(this::rules) { rule ->
         ifValue { parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
