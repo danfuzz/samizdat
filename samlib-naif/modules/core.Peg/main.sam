@@ -184,36 +184,30 @@ fn @@PegThunk.parse(box, input, items*) {
 fn @@PegTokenSet.parse(box, input, items*) {
     def innerBox = makePromise();
 
-    ifValue { nextValue(input, innerBox) }
+    return? ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
             ifIs { get(this::types, get_type(item)) }
                 {
                     store(box, item);
-                    return newInput
+                    newInput
                 }
-        };
-
-    ## Either EOF or no match.
-    return
+        }
 };
 
 ## Documented in spec.
 fn @@PegTokenSetComplement.parse(box, input, items*) {
     def innerBox = makePromise();
 
-    ifValue { nextValue(input, innerBox) }
+    return? ifValue { nextValue(input, innerBox) }
         { newInput ->
             def item = fetch(innerBox);
             ifNot { get(this::types, get_type(item)) }
                 {
                     store(box, item);
-                    return newInput
+                    newInput
                 }
-        };
-
-    ## Either EOF or no match.
-    return
+        }
 };
 
 
