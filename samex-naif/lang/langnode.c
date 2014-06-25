@@ -12,7 +12,7 @@
 #include "util.h"
 
 #include "helpers.h"
-#include "lang0node.h"
+#include "langnode.h"
 #include "impl.h"
 
 

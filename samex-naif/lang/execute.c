@@ -18,7 +18,7 @@
 #include "util.h"
 
 #include "impl.h"
-#include "lang0node.h"
+#include "langnode.h"
 
 
 //

@@ -8,8 +8,8 @@
 // `core.LangNode`.
 //
 
-#ifndef _LANG0NODE_H_
-#define _LANG0NODE_H_
+#ifndef _LANGNODE_H_
+#define _LANGNODE_H_
 
 #include "type/Value.h"
 
