@@ -233,11 +233,6 @@ fn genericMakeTokenSet(sense, types) {
 };
 
 ## Documented in spec.
-export fn makeResult(value) {
-    return @PegResult{value}
-};
-
-## Documented in spec.
 export fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
@@ -311,6 +306,11 @@ export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
 };
 
 ## Documented in spec.
+export fn makeResult(value) {
+    return @PegResult{value}
+};
+
+## Documented in spec.
 export fn makeSequence(rules*) {
     ## Trivial case: No rules. Return the empty rule.
     ifIs { eq(rules, []) }
@@ -328,7 +328,7 @@ export fn makeSequence(rules*) {
 export fn makeString(string) {
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }
-        { return @PegResult{value: @""} };
+        { return makeResult(@"") };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { eq(get_size(string), 1) }
@@ -341,7 +341,7 @@ export fn makeString(string) {
     def types = typeListFromString(string);
     def chars = collect(types, makeToken);
 
-    return @PegSequence{rules: [chars*, @PegResult{value: @(@@(string))}]}
+    return makeSequence(chars*, makeResult(@(@@(string))))
 };
 
 ## Documented in spec.
