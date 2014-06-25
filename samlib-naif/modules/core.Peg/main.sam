@@ -346,11 +346,6 @@ export fn makeSequence(rules*) {
 };
 
 ## Documented in spec.
-export fn makeStar(rule) {
-    return makeRepeat(rule)
-};
-
-## Documented in spec.
 export fn makeString(string) {
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }

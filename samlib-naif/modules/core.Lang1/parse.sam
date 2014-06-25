@@ -81,7 +81,7 @@ def parName =  makeMainSequence(
 ## Documented in spec.
 def parNameList = makeMainSequence(
     parName,
-    makeStar(makeSequence(makeToken(@@","), parName)),
+    makeRepeat(makeSequence(makeToken(@@","), parName)),
     makeCode { first, rest -> [first, rest*] });
 
 ## Documented in spec.
@@ -135,7 +135,7 @@ def parKey = makeMainChoice(
 
 ## Documented in spec.
 def parMapping = makeMainSequence(
-    makeStar(parKey),
+    makeRepeat(parKey),
     parExpression,
     makeCode { keys, value ->
         ifIs { eq(keys, []) }
@@ -164,7 +164,7 @@ def parMap = makeMainSequence(
     makeChoice(
         makeSequence(
             parMapping,
-            makeStar(
+            makeRepeat(
                 makeSequence(makeToken(@@","), parMapping)),
             makeCode { ., one, rest ->
                 ifIs { eq(rest, []) }
@@ -189,7 +189,7 @@ def parListItem = makeMainChoice(
 def parUnadornedList = makeMainChoice(
     makeSequence(
         parListItem,
-        makeStar(
+        makeRepeat(
             makeSequence(makeToken(@@","), parListItem)),
         makeCode { one, rest -> [one, rest*] }),
     makeResult([]));
@@ -284,7 +284,7 @@ def parActualsList = makeMainChoice(
         makeToken(@@"("),
         parUnadornedList,
         makeToken(@@")"),
-        makeStar(parFullClosure),
+        makeRepeat(parFullClosure),
         makeCode { ., normalActuals, ., closureActuals ->
             [closureActuals*, normalActuals*]
         }),
@@ -316,7 +316,7 @@ def parUnaryExpression = makeMainSequence(
             makeCode { base -> {base, prefixes: []} }),
         ## This is a stub representing the layer 2 part of the rule.
         fail),
-    makeStar(parPostfixOperator),
+    makeRepeat(parPostfixOperator),
     makeCode { basePrefixes, postfixes ->
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
@@ -414,7 +414,7 @@ def parFormal = makeMainSequence(
 def parFormalsList = makeMainChoice(
     makeSequence(
         parFormal,
-        makeStar(makeSequence(makeToken(@@","), parFormal)),
+        makeRepeat(makeSequence(makeToken(@@","), parFormal)),
         makeCode { one, rest -> [one, rest*] }),
     makeResult([]));
 
@@ -528,7 +528,7 @@ def parImportSource = makeMainChoice(
         makeToken(@@"."),
         makeToken(@@"/"),
         parName,
-        makeStar(
+        makeRepeat(
             makeSequence(
                 makeToken(@@"/"),
                 parName,
@@ -544,7 +544,7 @@ def parImportSource = makeMainChoice(
         }),
     makeSequence(
         parName,
-        makeStar(
+        makeRepeat(
             makeSequence(
                 makeToken(@@"."),
                 parName,
@@ -605,8 +605,8 @@ def parProgramStatement = makeMainChoice(
 
 ## Documented in spec.
 def parClosureBody = makeMainSequence(
-    makeStar(makeToken(@@";")),
-    makeStar(
+    makeRepeat(makeToken(@@";")),
+    makeRepeat(
         makeMainSequence(
             parStatement,
             makePlus(makeToken(@@";")),
@@ -619,7 +619,7 @@ def parClosureBody = makeMainSequence(
             parYieldOrNonlocal,
             makeCode { y -> {statements: [], yield: y} }),
         makeResult({statements: []})),
-    makeStar(makeToken(@@";")),
+    makeRepeat(makeToken(@@";")),
     makeCode { ., most, last, . ->
         {last*, statements: [most*, last::statements*]}
     });
@@ -636,9 +636,9 @@ parRawClosure := makeMainSequence(
 def parProgram = makeMainSequence(
     makeChoice(
         makeSequence(
-            makeStar(makeToken(@@";")),
+            makeRepeat(makeToken(@@";")),
             parImportStatement,
-            makeStar(
+            makeRepeat(
                 makeSequence(
                     makePlus(makeToken(@@";")),
                     parImportStatement)),
@@ -650,15 +650,15 @@ def parProgram = makeMainSequence(
                 makeSequence(
                     makeCode { imports -> ne(imports, []) },
                     makePlus(makeToken(@@";"))),
-                makeStar(makeToken(@@";"))),
+                makeRepeat(makeToken(@@";"))),
             parProgramStatement,
-            makeStar(
+            makeRepeat(
                 makeSequence(
                     makePlus(makeToken(@@";")),
                     parProgramStatement)),
             makeCode { ., ., first, rest -> [first, rest*] }),
         makeResult([])),
-    makeStar(makeToken(@@";")),
+    makeRepeat(makeToken(@@";")),
     makeCode { imports, body, . ->
         def closure = makeFullClosure({
             statements: [imports*, body*],
@@ -835,7 +835,7 @@ def parSequencePex = makeMainSequence(
 ## Documented in spec.
 parChoicePex := makeMainSequence(
     parSequencePex,
-    makeStar(
+    makeRepeat(
         makeSequence(
             makeToken(@@"|"),
             parSequencePex)),

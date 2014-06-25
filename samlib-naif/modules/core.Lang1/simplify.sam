@@ -135,7 +135,7 @@ fn @@sequence.convertPex(formals) {
 
 ## Converts a `star` pex node.
 fn @@star.convertPex(formals) {
-    return makeCallPex(REFS::Peg_makeStar, this, formals)
+    return makeCallPex(REFS::Peg_makeRepeat, this, formals)
 };
 
 ## Converts a `string` pex node.

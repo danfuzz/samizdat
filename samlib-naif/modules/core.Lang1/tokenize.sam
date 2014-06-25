@@ -41,7 +41,7 @@ def tokWhitespace = makeMainSequence(
             makeSequence(
                 makeString("#"),
                 makeCharSet("#!="),
-                makeStar(makeCharSetComplement("\n"))))));
+                makeRepeat(makeCharSetComplement("\n"))))));
 
 ## Documented in spec.
 def tokPunctuation = makeMainSequence(
@@ -73,7 +73,7 @@ def tokStringPart = makeMainChoice(
         makeCode(stringFromTokenList)),
     makeSequence(
         makeString("\n"),
-        makeStar(makeString(" ")),
+        makeRepeat(makeString(" ")),
         makeResult("\n")),
     makeSequence(
         makeString("\\"),
@@ -88,7 +88,7 @@ def tokStringPart = makeMainChoice(
 ## Documented in spec.
 def tokString = makeMainSequence(
     makeString("\""),
-    makeStar(tokStringPart),
+    makeRepeat(tokStringPart),
     makeChoice(
         makeSequence(
             makeString("\""),
@@ -105,7 +105,7 @@ def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
 ## Documented in spec.
 def tokIdentifier = makeMainSequence(
     makeCharSet(IDENTIFIER_START_CHARS),
-    makeStar(makeCharSet(IDENTIFIER_CHARS)),
+    makeRepeat(makeCharSet(IDENTIFIER_CHARS)),
     makeCode { one, rest ->
         def string = stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
@@ -121,7 +121,7 @@ def tokQuotedIdentifier = makeMainSequence(
 ## Documented in spec.
 def tokError = makeMainSequence(
     any,
-    makeStar(makeCharSetComplement("\n")),
+    makeRepeat(makeCharSetComplement("\n")),
     makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
         @error(msg)
@@ -138,7 +138,7 @@ def tokToken = makeMainChoice(
 
 ## Documented in spec.
 def tokFile = makeMainSequence(
-    makeStar(
+    makeRepeat(
         makeSequence(
             makeOpt(tokWhitespace),
             tokToken)),

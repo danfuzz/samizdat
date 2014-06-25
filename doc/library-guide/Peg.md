@@ -330,10 +330,6 @@ first result from the "closest" enclosing main sequence.
 
 This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
 
-#### `makeStar(rule) -> rule`
-
-Convenient shorthand for `makeRepeat(rule)`.
-
 #### `makeString(string) -> rule`
 
 Makes and returns a parser rule which matches a sequence of characters
