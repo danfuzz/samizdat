@@ -159,7 +159,7 @@ fn @@thunk.convertPex(formals) {
 
 ## Converts a `token` pex node.
 fn @@token.convertPex(formals) {
-    return makeCallLiterals(REFS::Peg_makeToken, dataOf(this))
+    return makeCallLiterals(REFS::Peg_makeToken, get_nodeValue(this))
 };
 
 ## Converts a `tokenSet` pex node.

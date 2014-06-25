@@ -728,7 +728,7 @@ def parParserString = makeMainSequence(
 def parParserToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierString,
-    makeCode { ., type -> @token(@@(get_nodeValue(type))) });
+    makeCode { ., type -> @token{value: @@(get_nodeValue(type))} });
 
 ## Documented in spec.
 def parParserSetString = makeMainSequence(
@@ -765,7 +765,7 @@ def parParserSet = makeMainSequence(
             }),
         makeMainSequence(
             makeRepeat(parParserToken, 1),
-            makeCode { tokens -> collect(tokens, dataOf) }),
+            makeCode { tokens -> collect(tokens, get_nodeValue) }),
         makeResult([])),
     makeToken(@@"]"),
     makeCode { ., type, terminals, . -> @(type)(terminals) });
