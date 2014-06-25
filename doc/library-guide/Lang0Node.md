@@ -143,6 +143,17 @@ Gets the value (literal or node) used by the given node, if any. This is
 applicable to nodes of type `literal`, `maybe`, `noYield`, `parser`,
 `varBind`, `varDef`, and `varDefMutable`.
 
+#### `get_pex(node) -> pex`
+
+Gets the inner parser node of the given node. This is applicable to
+nodes of type `lookaheadFailure`, `lookaheadSuccess`, `opt`, `plus`, `star`
+and `parser`.
+
+#### `get_pexes(node) -> [pex*]`
+
+Gets the inner parser node list of the given node. This is applicable to
+nodes of type `choice` and `sequence`.
+
 #### `get_prefix(node) -> string`
 
 Gets the name of an `importModuleSelection` node.

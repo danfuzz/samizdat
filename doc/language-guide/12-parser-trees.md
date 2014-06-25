@@ -10,9 +10,9 @@ types and functions used to implement parsing.
 
 ### Normal (non-parsing) expression nodes
 
-#### `@parser{value: pex}`
+#### `@parser{pex}`
 
-Representation of an anonymous parsing function. `value` must be a parsing
+Representation of an anonymous parsing function. `pex` must be a parsing
 expression node, that is, any of the node types defined here other than
 this one.
 
@@ -108,49 +108,49 @@ reference).
 
 ### Non-terminal parsing expression nodes
 
-#### `@choice[pex*]`
+#### `@choice{pexes: [pex*]}`
 
 Representation of an ordered choice of items to match. Each element
 of the list must be a parsing expression node.
 
 This corresponds to the syntax `pex1 | pex2 | etc`.
 
-#### `@lookaheadSuccess(pex)`
+#### `@lookaheadSuccess{pex}`
 
 Representation of a lookahead-success expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `&pex`.
 
-#### `@lookaheadFailure(pex)`
+#### `@lookaheadFailure{pex}`
 
 Representation of a lookahead-failure expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `!pex`.
 
-#### `@opt(pex)`
+#### `@opt{pex}`
 
 Representation of an optional (zero-or-one) expression. `pex` must be a
 parsing expression node.
 
 This corresponds to the syntax `pex?`.
 
-#### `@plus(pex)`
+#### `@plus{pex}`
 
 Representation of a plus (one-or-more) expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `pex+`.
 
-#### `@sequence[pexOrVarDef*]`
+#### `@sequence{pexes: [pexOrVarDef*]}`
 
 Representation of a sequence of items to match, in order. Each element
 of the list must be a parsing expression node or a `varDef` node.
 
 This corresponds to the syntax `pex1 pex2 etc`.
 
-#### `@star(pex)`
+#### `@star{pex}`
 
 Representation of a star (zero-or-more) expression. `pex` must be a parsing
 expression node.
