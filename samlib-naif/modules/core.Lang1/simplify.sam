@@ -38,8 +38,8 @@ fn convertPexInList(nodes) {
 };
 
 ## Converts a pex to a function call on its converted inner pex.
-fn makeCallPex(function, node, formals) {
-    return makeCall(function, convertPex(dataOf(node), formals))
+fn makeCallPex(function, node, formals, moreArgs*) {
+    return makeCall(function, convertPex(dataOf(node), formals), moreArgs*)
 };
 
 ## Makes a node with additional / replacement bindings from the original.
@@ -99,7 +99,8 @@ fn @@lookaheadSuccess.convertPex(formals) {
 
 ## Converts an `opt` pex node.
 fn @@opt.convertPex(formals) {
-    return makeCallPex(REFS::Peg_makeOpt, this, formals)
+    return makeCallPex(REFS::Peg_makeRepeat, this, formals,
+        makeLiteral(0), makeLiteral(1))
 };
 
 ## Converts a `plus` pex node.

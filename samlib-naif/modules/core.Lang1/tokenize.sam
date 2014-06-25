@@ -140,9 +140,9 @@ def tokToken = makeMainChoice(
 def tokFile = makeMainSequence(
     makeRepeat(
         makeSequence(
-            makeOpt(tokWhitespace),
+            makeRepeat(tokWhitespace, 0, 1),
             tokToken)),
-    makeOpt(tokWhitespace),
+    makeRepeat(tokWhitespace, 0, 1),
     makeCode { tokens, . -> tokens });
 
 

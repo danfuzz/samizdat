@@ -87,7 +87,6 @@ def MOD_NAMES = [
     {mod: "Peg",        name: "makeLookaheadFailure"},
     {mod: "Peg",        name: "makeLookaheadSuccess"},
     {mod: "Peg",        name: "makeMainSequence"},
-    {mod: "Peg",        name: "makeOpt"},
     {mod: "Peg",        name: "makeParserThunk"},
     {mod: "Peg",        name: "makePlus"},
     {mod: "Peg",        name: "makeRepeat"},

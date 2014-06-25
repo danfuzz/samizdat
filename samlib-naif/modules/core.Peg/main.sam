@@ -310,11 +310,6 @@ export fn makeMainSequence(rules*) {
 };
 
 ## Documented in spec.
-export fn makeOpt(rule) {
-    return makeRepeat(rule, 0, 1)
-};
-
-## Documented in spec.
 export fn makeParserThunk(function) {
     return @PegThunk{function}
 };

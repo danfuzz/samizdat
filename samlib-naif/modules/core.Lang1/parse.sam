@@ -225,7 +225,7 @@ def parDeriv = makeMainSequence(
                 makeLiteral(@@(get_nodeValue(name)))
             }),
         parParenExpression),
-    makeOpt(makeChoice(parParenExpression, parMap, parList)),
+    makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
     makeCode { ., type, value ->
         makeCall(REFS::makeValue, type, value*)
     });
@@ -340,7 +340,7 @@ parAssignExpression := makeMainSequence(
 ## Documented in spec.
 def parYieldOrNonlocal = makeMainSequence(
     makeTokenSet(@@break, @@continue, @@return, @@yield),
-    makeOpt(makeToken(@@"?")),
+    makeRepeat(makeToken(@@"?"), 0, 1),
     makeChoice(
         makeSequence(
             makeCode { op, . -> hasType(op, @@yield) },
@@ -367,7 +367,7 @@ def parYieldOrNonlocal = makeMainSequence(
 def parVarDef = makeMainSequence(
     makeToken(@@def),
     parName,
-    makeOpt(makeSequence(makeToken(@@"="), parExpression)),
+    makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDef(name, optExpr*)
     });
@@ -376,7 +376,7 @@ def parVarDef = makeMainSequence(
 def parVarDefMutable = makeMainSequence(
     makeToken(@@var),
     parName,
-    makeOpt(makeSequence(makeToken(@@"="), parExpression)),
+    makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDefMutable(name, optExpr*)
     });
@@ -481,7 +481,7 @@ def parGenericBind = makeMainSequence(
 ## Documented in spec.
 def parGenericDef = makeMainSequence(
     makeToken(@@fn),
-    makeOpt(makeToken(@@"*")),
+    makeRepeat(makeToken(@@"*"), 0, 1),
     makeToken(@@"."),
     parName,
     makeToken(@@"("),
@@ -533,11 +533,12 @@ def parImportSource = makeMainChoice(
                 makeToken(@@"/"),
                 parName,
                 makeCode { ., ., ., ., n -> cat("/", n) })),
-        makeOpt(
+        makeRepeat(
             makeSequence(
                 makeToken(@@"."),
                 parName,
-                makeCode { ., ., ., ., ., n -> cat(".", n) })),
+                makeCode { ., ., ., ., ., n -> cat(".", n) }),
+            0, 1),
         makeCode { ., ., first, rest, optSuffix ->
             def name = cat(first, rest*, optSuffix*);
             @internal(name)
@@ -569,7 +570,7 @@ def parImportSelect = makeMainChoice(
 
 ## Documented in spec.
 def parImportStatement = makeMainSequence(
-    makeOpt(makeToken(@@export)),
+    makeRepeat(makeToken(@@export), 0, 1),
     makeToken(@@import),
     parImportName,
     parImportFormat,
@@ -670,19 +671,21 @@ def parProgram = makeMainSequence(
 ## Documented in spec.
 def parExpressionOrError = makeMainSequence(
     parExpression,
-    makeOpt(
+    makeRepeat(
         makeMainSequence(
             makePlus(any),
-            makeCode { pending -> reportError(pending) })),
+            makeCode { pending -> reportError(pending) }),
+        0, 1),
     makeCode { ex, . -> ex });
 
 ## Documented in spec.
 def parProgramOrError = makeMainSequence(
     parProgram,
-    makeOpt(
+    makeRepeat(
         makeMainSequence(
             makePlus(any),
-            makeCode { pending -> reportError(pending) })),
+            makeCode { pending -> reportError(pending) }),
+        0, 1),
     makeCode { prog, . -> prog });
 
 

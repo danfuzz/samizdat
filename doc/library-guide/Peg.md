@@ -273,10 +273,6 @@ it provides a fresh (empty) parsed item scope.
 
 This is equivalent to the syntactic form `{: rule1 rule2 etc :}`.
 
-#### `makeOpt(rule) -> rule`
-
-Convenient shorthand for `makeRepeat(rule, 0, 1)`.
-
 #### `makeParserThunk(function) -> rule`
 
 Makes and returns a parser rule which runs the given function to produce
