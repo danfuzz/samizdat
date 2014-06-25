@@ -315,11 +315,6 @@ export fn makeParserThunk(function) {
 };
 
 ## Documented in spec.
-export fn makePlus(rule) {
-    return makeRepeat(rule, 1)
-};
-
-## Documented in spec.
 export fn makeRepeat(rule, minSize?, maxSize?) {
     def minMap = ifValue { minSize* } { sz -> {minSize: sz} } { {} };
     def maxMap = ifValue { maxSize* } { sz -> {maxSize: sz} } { {} };

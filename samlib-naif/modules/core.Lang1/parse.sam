@@ -288,7 +288,7 @@ def parActualsList = makeMainChoice(
         makeCode { ., normalActuals, ., closureActuals ->
             [closureActuals*, normalActuals*]
         }),
-    makePlus(parFullClosure));
+    makeRepeat(parFullClosure, 1));
 
 ## Documented in spec.
 def parPostfixOperator = makeMainChoice(
@@ -610,7 +610,7 @@ def parClosureBody = makeMainSequence(
     makeRepeat(
         makeMainSequence(
             parStatement,
-            makePlus(makeToken(@@";")),
+            makeRepeat(makeToken(@@";"), 1),
             makeCode { s, . -> s })),
     makeChoice(
         makeMainSequence(
@@ -641,7 +641,7 @@ def parProgram = makeMainSequence(
             parImportStatement,
             makeRepeat(
                 makeSequence(
-                    makePlus(makeToken(@@";")),
+                    makeRepeat(makeToken(@@";"), 1),
                     parImportStatement)),
             makeCode { ., first, rest -> [first, rest*] }),
         makeResult([])),
@@ -650,12 +650,12 @@ def parProgram = makeMainSequence(
             makeChoice(
                 makeSequence(
                     makeCode { imports -> ne(imports, []) },
-                    makePlus(makeToken(@@";"))),
+                    makeRepeat(makeToken(@@";"), 1)),
                 makeRepeat(makeToken(@@";"))),
             parProgramStatement,
             makeRepeat(
                 makeSequence(
-                    makePlus(makeToken(@@";")),
+                    makeRepeat(makeToken(@@";"), 1),
                     parProgramStatement)),
             makeCode { ., ., first, rest -> [first, rest*] }),
         makeResult([])),
@@ -673,7 +673,7 @@ def parExpressionOrError = makeMainSequence(
     parExpression,
     makeRepeat(
         makeMainSequence(
-            makePlus(any),
+            makeRepeat(any, 1),
             makeCode { pending -> reportError(pending) }),
         0, 1),
     makeCode { ex, . -> ex });
@@ -683,7 +683,7 @@ def parProgramOrError = makeMainSequence(
     parProgram,
     makeRepeat(
         makeMainSequence(
-            makePlus(any),
+            makeRepeat(any, 1),
             makeCode { pending -> reportError(pending) }),
         0, 1),
     makeCode { prog, . -> prog });
@@ -758,12 +758,12 @@ def parParserSet = makeMainSequence(
         makeResult(@@tokenSet)),
     makeChoice(
         makeMainSequence(
-            makePlus(parParserSetString),
+            makeRepeat(parParserSetString, 1),
             makeCode { strings ->
                 collect(cat(strings*), { ch -> @@(ch) })
             }),
         makeMainSequence(
-            makePlus(parParserToken),
+            makeRepeat(parParserToken, 1),
             makeCode { tokens -> collect(tokens, dataOf) }),
         makeResult([])),
     makeToken(@@"]"),
@@ -832,7 +832,7 @@ def parNamePex = makeMainChoice(
 
 ## Documented in spec.
 def parSequencePex = makeMainSequence(
-    makePlus(parNamePex),
+    makeRepeat(parNamePex, 1),
     makeCode { items -> @sequence(items) });
 
 ## Documented in spec.

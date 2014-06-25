@@ -35,13 +35,14 @@ def KEYWORDS = $Generator::collectAsMap(
 ## Documented in spec.
 def tokWhitespace = makeMainSequence(
     makeLookaheadSuccess(makeCharSet("# \n")),
-    makePlus(
+    makeRepeat(
         makeChoice(
-            makePlus(makeCharSet(" \n")),
+            makeRepeat(makeCharSet(" \n"), 1),
             makeSequence(
                 makeString("#"),
                 makeCharSet("#!="),
-                makeRepeat(makeCharSetComplement("\n"))))));
+                makeRepeat(makeCharSetComplement("\n")))),
+        1));
 
 ## Documented in spec.
 def tokPunctuation = makeMainSequence(
@@ -63,13 +64,13 @@ def tokDecDigit = makeMainSequence(
 
 ## Documented in spec.
 def tokInt = makeMainSequence(
-    makePlus(tokDecDigit),
+    makeRepeat(tokDecDigit, 1),
     makeCode { digits -> @int(intFromDigits(10, digits)) });
 
 ## Documented in spec.
 def tokStringPart = makeMainChoice(
     makeSequence(
-        makePlus(makeCharSetComplement("\\\"\n")),
+        makeRepeat(makeCharSetComplement("\\\"\n"), 1),
         makeCode(stringFromTokenList)),
     makeSequence(
         makeString("\n"),

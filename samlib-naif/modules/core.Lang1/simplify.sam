@@ -19,7 +19,6 @@ import core.Range;
 import core.Sequence;
 
 
-
 ##
 ## Private Definitions
 ##
@@ -105,7 +104,7 @@ fn @@opt.convertPex(formals) {
 
 ## Converts a `plus` pex node.
 fn @@plus.convertPex(formals) {
-    return makeCallPex(REFS::Peg_makePlus, this, formals)
+    return makeCallPex(REFS::Peg_makeRepeat, this, formals, makeLiteral(1))
 };
 
 ## Converts a `sequence` pex node.

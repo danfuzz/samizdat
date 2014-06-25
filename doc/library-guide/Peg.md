@@ -287,10 +287,6 @@ failed.
 
 This is equivalent to the syntactic form `{: %term :}`.
 
-#### `makePlus(rule) -> rule`
-
-Convenient shorthand for `makeRepeat(rule, 1)`.
-
 #### `makeRepeat(rule, minSize?, maxSize?) -> rule`
 
 Makes and returns a parser rule which matches another `rule` multiple
