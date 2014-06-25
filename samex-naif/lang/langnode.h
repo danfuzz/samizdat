@@ -21,6 +21,9 @@
 #define GET(name, node) (get((node), STR_##name))
 
 // Documented in spec.
+bool canYieldVoid(zvalue node);
+
+// Documented in spec.
 zvalue formalsMaxArgs(zvalue formals);
 
 // Documented in spec.

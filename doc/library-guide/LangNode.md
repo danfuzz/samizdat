@@ -37,6 +37,11 @@ development.)
 <br><br>
 ### Function Definitions
 
+#### `canYieldVoid(node) -> node | void`
+
+Indicates whether `node` might possibly yield void when evalutated.
+Returns `node` to indicate logic-true.
+
 #### `formalsMaxArgs([formal*]) -> int`
 
 Gets the maximum number of arguments that a given list of `formal`
@@ -297,9 +302,11 @@ to `@void` unless all of the following are true of `nodeOrMap`:
 * It has a binding for `statements`, with length of at least 1.
 * The final element of `statements` is a non-statement expression node.
 
-If all of those are true, then in the result, the final element of
-`statements` is removed and gets wrapped in a `@maybe`. That `@maybe`
-becomes the binding for `yield` in the result.
+If all of those are true, then in the result, the final node of
+`statements` is removed and becomes the basis for the `yield` in the
+result. If the node cannot possibly yield void, then it is directly used as
+the `yield`. If it might yield void, then it is wrapped in a `@maybe`, and
+the `@maybe` is used as the binding for `yield` in the result.
 
 #### `makeGet(collArg, keyArg) -> node`
 

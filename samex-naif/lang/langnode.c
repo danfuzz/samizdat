@@ -116,6 +116,19 @@ static zvalue expandYield(zvalue map) {
 //
 
 // Documented in spec.
+bool canYieldVoid(zvalue node) {
+    switch (get_evalType(node)) {
+        case EVAL_apply: return true;
+        case EVAL_call:  return true;
+        case EVAL_maybe: return true;
+        case EVAL_void:  return true;
+        default: {
+            return false;
+        }
+    }
+}
+
+// Documented in spec.
 zvalue formalsMaxArgs(zvalue formals) {
     zint maxArgs = 0;
     zint sz = get_size(formals);
@@ -374,8 +387,10 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
           && (get(map, STR_yieldDef) == NULL)) {
         zvalue lastStat = nth(statements, statSz - 1);
         if (isExpression(lastStat)) {
-            yieldNode = makeMaybe(lastStat);
             statements = GFN_CALL(sliceExclusive, statements, intFromZint(0));
+            yieldNode = canYieldVoid(lastStat)
+                ? makeMaybe(lastStat)
+                : lastStat;
         }
     }
 
