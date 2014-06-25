@@ -68,29 +68,29 @@ Representation of a parser thunk.
 
 This corresponds to the syntax `%expression`.
 
-#### `@token(type)`
+#### `@token{value: type}`
 
 Representation of a token-match terminal. This is also used for
-single-character matches in tokenizers. `type` must be a type (per se),
+single-character matches in tokenizers. `value` must be a type (per se),
 and is typically a derived data type (e.g., `@@stuff`). This
 indicates that a token of the given type is to be matched.
 
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
 a single character).
 
-#### `@tokenSet(tokenSet)`
+#### `@tokenSet{values: [type*]}`
 
 Representation of a token set rule. This is also used for matching
-character sets in tokenizers. `tokenSet` must be a list of types (type values
+character sets in tokenizers. `values` must be a list of types (type values
 per se; same as the payload of `@token` nodes), which is taken to be an
 unordered set of token types to match.
 
 This corresponds to the syntax `[@token1 @token2 @etc]` or `["charsToMatch"]`.
 
-#### `@tokenSetComplement(tokenSet)`
+#### `@tokenSetComplement{values: [type*]}`
 
 Representation of a token set complement rule. This is also used for matching
-character set complements in tokenizers. `tokenSet` must be a list of types
+character set complements in tokenizers. `values` must be a list of types
 (type values per se; same as the payload of `@token` nodes), which is taken
 to be an unordered set of token types to not-match.
 

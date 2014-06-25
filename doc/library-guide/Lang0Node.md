@@ -47,11 +47,6 @@ arguments could possibly accept. If there is no limit, this returns `-1`.
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
 
-#### `get_values(node) -> node | [node*]`
-
-Gets the values of a node. This is a list of nodes for `call` nodes, and it is
-a simple node for `apply` nodes.
-
 #### `get_baseName(taggedName) -> string`
 
 Gets the "base" name from a tagged name value. Operates on `@external`
@@ -141,7 +136,8 @@ nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 
 Gets the value (literal or node) used by the given node, if any. This is
 applicable to nodes of type `literal`, `maybe`, `noYield`, `string` (pex type),
-`thunk` (pex type), `varBind`, `varDef`, and `varDefMutable`.
+`thunk` (pex type), `token` (pex type), `varBind`, `varDef`, and
+`varDefMutable`.
 
 #### `get_pex(node) -> pex`
 
@@ -171,6 +167,12 @@ Gets the source of an import. This is applicable to nodes of type
 #### `get_statements(node) -> [node*]`
 
 Gets the statement list of a `closure` node.
+
+#### `get_values(node) -> node | [node*]`
+
+Gets the values of a node. This is a list of nodes for `call`, `tokenSet`
+(pex type), and `tokenSetComplement` (pex type) nodes. It is a simple node
+for `apply` nodes.
 
 #### `get_yieldNode(node) -> node | void`
 
