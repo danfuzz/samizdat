@@ -5,7 +5,7 @@
 //
 // Node constructors and related helpers. These functions are
 // (near-)transliterations of the same-named functions in the module
-// `core.Lang0Node`.
+// `core.LangNode`.
 //
 
 #ifndef _LANG0NODE_H_

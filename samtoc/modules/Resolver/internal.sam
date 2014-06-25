@@ -12,7 +12,7 @@
 ##
 
 import core.Io0;
-import core.Lang0Node;
+import core.LangNode;
 
 import Reader;
 
@@ -41,7 +41,7 @@ fn directResolve(self, source) {
         ## We found a source file. Read it and resolve!
         fn resolveFn(source) { return self.resolve(source) };
         def tree = $Reader::readProgram(sourcePath, resolveFn);
-        def info = $Lang0Node::makeInfoMap(tree);
+        def info = $LangNode::makeInfoMap(tree);
         @module{info}
     }
 };

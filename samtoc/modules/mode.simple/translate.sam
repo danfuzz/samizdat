@@ -6,7 +6,7 @@
 ## Translate execution trees into corresponding C code.
 ##
 
-import core.Lang0Node :: *;
+import core.LangNode :: *;
 
 import CodeGen :: *;
 import VarCalc :: get_varRefs;

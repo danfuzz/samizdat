@@ -6,7 +6,7 @@
 
 import core.Format;
 import core.Generator;
-import core.Lang0Node :: *;
+import core.LangNode :: *;
 import core.Sequence;
 import proto.Number;
 

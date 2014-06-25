@@ -76,10 +76,10 @@ list of evaluated `values` as the arguments to the call.
 
 The `interpolate` binding is *not* used during execution, rather it is only
 ever used when programatically constructing trees. For example, it is used
-by the function `$Lang0Node::makeCallOrApply` to know that a "call
+by the function `$LangNode::makeCallOrApply` to know that a "call
 to the function `interpolate`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
-produced by the function `$Lang0Node::makeInterpolate`.
+produced by the function `$LangNode::makeInterpolate`.
 
 #### `closure` &mdash; `formals: [formal+], info?: map, name?: name,` `statements: [statement*], yield: expression, yieldDef?: name}`
 
@@ -236,7 +236,7 @@ This is a representation of a nonlocal exit call.
 
 Nodes of this type are not ever executed. Instead, they are allowed to
 appear in intermediate trees as the `yield` binding of a `closure` node.
-The function `Lang0Node::makeFullClosure()` converts these into other
+The function `LangNode::makeFullClosure()` converts these into other
 forms. See the docs of that function for more details.
 
 #### `void` &mdash; `@void`
@@ -282,7 +282,7 @@ behavior varies depending on if `value` is supplied in this node:
 
 The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
-`Lang0Node::withoutTops` for more details.
+`LangNode::withoutTops` for more details.
 
 **Note:** Though there are no restrictions on the `name` in general, if
 a node of this type represents a variable being exported from a module,
@@ -334,7 +334,7 @@ These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `LangN::simplify` and
-`Lang0Node::withModuleDefs` for more details.
+`LangNode::withModuleDefs` for more details.
 
 #### `exportSelection` &mdash; `@exportSelection{select: [name+]}`
 
@@ -349,7 +349,7 @@ These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `LangN::simplify` and
-`Lang0Node::withModuleDefs` for more details.
+`LangNode::withModuleDefs` for more details.
 
 #### `importModule` &mdash; `@importModule{name: name, source: source}`
 

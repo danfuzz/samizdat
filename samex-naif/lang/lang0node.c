@@ -72,12 +72,12 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
         formats = EMPTY_LIST;
     }
 
-    // Unlike the `Lang0Node` version, this one doesn't de-duplicate formats.
+    // Unlike the `LangNode` version, this one doesn't de-duplicate formats.
     formats = listAppend(formats, format);
     return collPut(map, source, formats);
 }
 
-// Documented in `Lang0Node` source.
+// Documented in `LangNode` source.
 static zvalue expandYield(zvalue map) {
     zvalue yieldNode = get(map, STR_yield);
 
@@ -245,7 +245,7 @@ zvalue makeCall(zvalue function, zvalue values) {
 // Documented in spec.
 zvalue makeCallOrApply(zvalue function, zvalue values) {
     // This is a fairly direct (but not exact) transliteration
-    // of the corresponding code in `Lang0Node`.
+    // of the corresponding code in `LangNode`.
 
     zint sz = (values == NULL) ? 0 : get_size(values);
     zvalue pending[sz];
@@ -396,7 +396,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
 // Documented in spec.
 zvalue makeImport(zvalue baseData) {
     // Note: This is a near-transliteration of the equivalent code in
-    // `Lang0Node`.
+    // `LangNode`.
     zvalue data = baseData;  // Modified in some cases below.
 
     zvalue select = get(data, STR_select);

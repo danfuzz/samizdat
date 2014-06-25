@@ -14,7 +14,7 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import core.Lang0Node :: *;
+import core.LangNode :: *;
 import core.Range :: makeOpenRange;
 import core.Sequence :: sliceExclusive;
 

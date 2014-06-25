@@ -1,11 +1,11 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Lang0Node
+core.LangNode
 --------------
 
-These are a set of accessor and constructor functions for the various execution
-tree node types.
+These are a set of accessor and constructor functions for the various
+tree node types specified by the system.
 
 A few functions in this module take an argument named `resolveFn`. Such an
 argument is expected to be a function which behaves similarly to

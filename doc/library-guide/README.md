@@ -103,7 +103,7 @@ will be returned, or one of:
   * [core.Globals](Globals.md)
   * [core.Io0](Io0.md)
   * [core.Lang*](LangN.md)
-  * [core.Lang0Node](Lang0Node.md)
+  * [core.LangNode](LangNode.md)
   * [core.ModuleSystem](ModuleSystem.md)
   * [core.Peg (parsing)](Peg.md)
   * [core.Range](Range.md)

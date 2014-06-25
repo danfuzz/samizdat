@@ -15,7 +15,7 @@ result as tokens of type `error`.
 
 ```
 import core.Generator;
-import core.Lang0Node :: intFromDigits;
+import core.LangNode :: intFromDigits;
 import core.Peg;
 
 

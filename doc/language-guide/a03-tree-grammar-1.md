@@ -17,7 +17,7 @@ can be used.
 import core.Format;
 import core.Generator :: filterPump;
 import core.Lang0;
-import core.Lang0Node :: *;
+import core.LangNode :: *;
 import core.Peg;
 import core.Range :: makeInclusiveRange;
 import core.Sequence;
