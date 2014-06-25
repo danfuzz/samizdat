@@ -8,10 +8,10 @@
 
 #= language core.Lang0
 
-import core.Generator;
-import core.Range;
-import core.Sequence;
-import proto.Number;
+import core.Generator :: filterAll, filterPump, makeFilterGenerator;
+import core.Range :: makeInclusiveRange;
+import core.Sequence :: sliceInclusive;
+import proto.Number :: div, mod, neg, sign;
 
 
 ##
@@ -34,22 +34,22 @@ fn intBody(value, base) {
         ifIs { perEq(v, 0) }
             { return text };
 
-        def digit = nth(DIGIT_CHARS, $Number::mod(v, base));
+        def digit = nth(DIGIT_CHARS, mod(v, base));
         text := cat(digit, text);
-        v := $Number::div(v, base)
+        v := div(v, base)
     }
 };
 
 ## Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = {
-    -1: { int, base -> cat("-", intBody($Number::neg(int), base)) },
+    -1: { int, base -> cat("-", intBody(neg(int), base)) },
     0:  { int, base -> "0" },
     1:  { int, base -> intBody(int, base) }
 };
 
 ## Stringifies an int using the given base.
 fn intWithBase(int, base) {
-    return get(INT_SIGNS, $Number::sign(int))(int, base)
+    return get(INT_SIGNS, sign(int))(int, base)
 };
 
 
@@ -76,8 +76,8 @@ fn collectionBody(elems) {
     ifIs { totalEq(elems, []) }
         { return "" };
 
-    def one = $Sequence::sliceInclusive(get(elems, 0), 2);
-    return cat(one, $Sequence::sliceInclusive(elems, 1)*)
+    def one = sliceInclusive(get(elems, 0), 2);
+    return cat(one, sliceInclusive(elems, 1)*)
 };
 
 ## These are all the characters which are allowed to start an identifier.
@@ -119,7 +119,7 @@ fn isIdentifier(string) {
     ifNot { get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
-    $Generator::filterPump(string) { ch ->
+    filterPump(string) { ch ->
         ifNot { get(IDENTIFIER_CHARS, ch) }
             { return }
     };
@@ -150,8 +150,8 @@ def CHAR_UNICODE_END = toString(1114111);  ## U+10FFFF
 ## Map of special-case characters to either their stringified forms or
 ## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
-    ($Range::makeInclusiveRange(toString(1), toString(31)))*: "x",
-    ($Range::makeInclusiveRange(toString(127), toString(159)))*: "x",
+    (makeInclusiveRange(toString(1), toString(31)))*: "x",
+    (makeInclusiveRange(toString(127), toString(159)))*: "x",
     (toString(65534)): "x",
     (toString(65535)): "x",
     "\0": "\\0",
@@ -198,7 +198,7 @@ fn Int.sourceGeneral(adorn) {
 
 ## Stringifies a list.
 fn List.sourceGeneral(adorn) {
-    def listElems = $Generator::filterAll(this)
+    def listElems = filterAll(this)
         { elem -> cat(", ", sourceGeneral(elem, true)) };
 
     return adornIf(adorn, "[", collectionBody(listElems), "]")
@@ -206,7 +206,7 @@ fn List.sourceGeneral(adorn) {
 
 ## Stringifies a map.
 fn Map.sourceGeneral(adorn) {
-    def mapElems = $Generator::filterAll(this)
+    def mapElems = filterAll(this)
         { mapping ->
             def key = keyString(get_key(mapping));
             def value = sourceGeneral(get_value(mapping), true);
@@ -218,7 +218,7 @@ fn Map.sourceGeneral(adorn) {
 
 ## Stringifies a string.
 fn String.sourceGeneral(adorn) {
-    def bodyChars = $Generator::makeFilterGenerator(this)
+    def bodyChars = makeFilterGenerator(this)
         { ch -> stringChar(ch) };
     return adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
@@ -296,7 +296,7 @@ fn .humanString();
 ## Human-stringifies a list, which recursively flattens it using
 ## `humanString`.
 fn List.humanString() {
-    def elems = $Generator::makeFilterGenerator(humanString, this);
+    def elems = makeFilterGenerator(humanString, this);
     return cat("", elems*)
 };
 
