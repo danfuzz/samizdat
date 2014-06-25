@@ -36,16 +36,16 @@ zvalue get_definedNames(zvalue node);
 bool isExpression(zvalue node);
 
 // Documented in spec.
-zvalue makeApply(zvalue function, zvalue actuals);
+zvalue makeApply(zvalue function, zvalue values);
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue map);
 
 // Documented in spec.
-zvalue makeCall(zvalue function, zvalue actuals);
+zvalue makeCall(zvalue function, zvalue values);
 
 // Documented in spec.
-zvalue makeCallOrApply(zvalue function, zvalue actuals);
+zvalue makeCallOrApply(zvalue function, zvalue values);
 
 // Documented in spec.
 zvalue makeDynamicImport(zvalue node);

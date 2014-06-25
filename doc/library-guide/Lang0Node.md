@@ -47,10 +47,10 @@ arguments could possibly accept. If there is no limit, this returns `-1`.
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
 
-#### `get_actuals(node) -> node | [node*]`
+#### `get_values(node) -> node | [node*]`
 
-Gets the actual arguments of an `apply` node (resulting in an expression node)
-or `call` node (resulting in a list of expression nodes).
+Gets the values of a node. This is a list of nodes for `call` nodes, and it is
+a simple node for `apply` nodes.
 
 #### `get_baseName(taggedName) -> string`
 
@@ -196,10 +196,10 @@ Indicates whether `node` is a full expression node type (as opposed to,
 notably, a restricted expression node type or a statement node type).
 Returns `node` to indicate logic-true.
 
-#### `makeApply(function, optActuals?) -> node`
+#### `makeApply(function, optValues?) -> node`
 
 Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `actuals` (an expression node). If `optActuals`
+being applied to the given `values` (an expression node). If `optValues`
 is not passed, it defaults to `@void`.
 
 #### `makeBasicClosure(map) -> node`
@@ -214,37 +214,37 @@ No default is provided for `yield`, as it is not always possible to
 figure out a default for it at the points where `closure` nodes need to
 be produced de novo. See `makeFullClosure()` for more detail.
 
-#### `makeCall(function, actuals*) -> node`
+#### `makeCall(function, values*) -> node`
 
 Makes a `call` node, where `function` (an expression node) is called
-with each of the `actuals` (each an expression node) as arguments, in
+with each of the `values` (each an expression node) as arguments, in
 order.
 
-#### `makeCallLiterals(function, actuals*) -> node`
+#### `makeCallLiterals(function, values*) -> node`
 
-Like `makeCall`, except that each of the `actuals` is made to be a literal
+Like `makeCall`, except that each of the `values` is made to be a literal
 value.
 
-#### `makeCallOrApply(function, actuals*) -> node`
+#### `makeCallOrApply(function, values*) -> node`
 
 Returns a function call node, where `function` (an expression node) is called
-with each of the `actuals` (each an expression node) as arguments, in
+with each of the `values` (each an expression node) as arguments, in
 order.
 
-If any of the `actuals` is an `interpolate` node, this converts the
+If any of the `values` is an `interpolate` node, this converts the
 call into a form where the interpolated nodes have their usual
 surface-language effect. The end result is an `apply` node.
 
 If there are no arguments at all, the end result is a straightforward
 `apply` node with `@void` for the arguments.
 
-If there are no `interpolate` nodes in `actuals`, the end result is a
+If there are no `interpolate` nodes in `values`, the end result is a
 straightforward `call` node, the same as calling `makeCall` on the same
 arguments.
 
-#### `makeCallThunks(function, actuals*) -> node`
+#### `makeCallThunks(function, values*) -> node`
 
-Like `makeCall`, except that each of the `actuals` is wrapped in
+Like `makeCall`, except that each of the `values` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
 #### `makeDynamicImport(node) -> [node+]`

@@ -74,7 +74,6 @@ TYP(varDefMutable,         "varDefMutable");
 TYP(varRef,                "varRef");
 
 STR(absent,                "absent");
-STR(actuals,               "actuals");
 STR(bind,                  "bind");
 STR(cat,                   "cat");
 STR(collect,               "collect");
@@ -117,4 +116,5 @@ STR(this,                  "this");
 STR(top,                   "top");
 STR(type,                  "type");
 STR(value,                 "value");
+STR(values,                "values");
 STR(yieldDef,              "yieldDef");

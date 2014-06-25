@@ -44,29 +44,29 @@ export fn .translate(varsBox);
 
 fn @@apply.translate(varsBox) {
     def function = translate(this.function, varsBox);
-    def actuals = this.actuals;
+    def values = this.values;
 
-    return if (hasType(actuals, @@maybe)) {
-        def acTrans = translate(actuals.nodeValue, varsBox);
+    return if (hasType(values, @@maybe)) {
+        def acTrans = translate(values.nodeValue, varsBox);
         genCall("funApply", function, acTrans)
-    } else if (hasType(actuals, @@void)) {
-        ## A void `actuals` binding just devolves into a no-argument (but
+    } else if (hasType(values, @@void)) {
+        ## A void `values` binding just devolves into a no-argument (but
         ## otherwise regular) function call.
         genCall("FUN_CALL", function)
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        def acTrans = translate(actuals, varsBox);
+        def acTrans = translate(values, varsBox);
         genCall("funApply", function, genCall("datNonVoid", acTrans))
     }
 };
 
 fn @@call.translate(varsBox) {
-    def actuals = (a in this.actuals ->
+    def values = (a in this.values ->
         genCall("datNonVoid", translate(a, varsBox))
     );
 
-    return genCall("FUN_CALL", translate(this.function, varsBox), actuals*)
+    return genCall("FUN_CALL", translate(this.function, varsBox), values*)
 };
 
 fn @@closure.translate(varsBox) {

@@ -17,15 +17,15 @@ fn .bodies(bodiesBox);
 
 fn @@apply.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
-    def actuals = bodies(this.actuals, bodiesBox);
+    def values = bodies(this.values, bodiesBox);
 
-    return @apply{actuals, function}
+    return @apply{values, function}
 };
 
 fn @@call.bodies(bodiesBox) {
     def function = bodies(this.function, bodiesBox);
-    def actuals = [ a in this.actuals -> bodies(a, bodiesBox) ];
-    return @call{function, actuals}
+    def values = [ a in this.values -> bodies(a, bodiesBox) ];
+    return @call{function, values}
 };
 
 fn @@closure.bodies(bodiesBox) {

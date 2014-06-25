@@ -18,15 +18,15 @@ fn .lits(interner);
 
 fn @@apply.lits(interner) {
     def function = lits(this.function, interner);
-    def actuals = lits(this.actuals, interner);
+    def values = lits(this.values, interner);
 
-    return @apply{actuals, function}
+    return @apply{values, function}
 };
 
 fn @@call.lits(interner) {
     return @call{
         function: lits(this.function, interner),
-        actuals: [ a in this.actuals -> lits(a, interner) ]
+        values: [ a in this.values -> lits(a, interner) ]
     }
 };
 

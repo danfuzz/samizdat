@@ -60,23 +60,23 @@ fn expandYield(map) {
 ##
 
 ## Documented in spec.
-export fn makeCallOrApply(function, actuals*) {
-    ifIs { perEq(actuals, []) }
+export fn makeCallOrApply(function, values*) {
+    ifIs { perEq(values, []) }
         {
-            ## No actuals. Easy out.
+            ## No values. Easy out.
             return makeApply(function)
         };
 
-    ## Convert the actuals as if interpolation needs to be handled. If in the
-    ## end it doesn't, then the original actuals are used as-is. This converts
-    ## runs of non-interpolated actuals to `makeList(ac, ac, ...)`, which
+    ## Convert the values as if interpolation needs to be handled. If in the
+    ## end it doesn't, then the original values are used as-is. This converts
+    ## runs of non-interpolated values to `makeList(ac, ac, ...)`, which
     ## converts cleanly at runtime as part of the ultimate call to `cat`.
 
-    var pending = [];        ## Non-interpolated actuals, to be `makeList`ed.
-    var cookedActuals = [];  ## Fully-processed actuals (of either type).
+    var pending = [];       ## Non-interpolated values, to be `makeList`ed.
+    var cookedValues = [];  ## Fully-processed values (of either type).
 
     fn addToCooked(actual) {
-        cookedActuals := [cookedActuals*, actual];
+        cookedValues := [cookedValues*, actual];
     };
 
     fn addPendingToCooked() {
@@ -87,7 +87,7 @@ export fn makeCallOrApply(function, actuals*) {
             }
     };
 
-    $Generator::filterPump(actuals) { actual ->
+    $Generator::filterPump(values) { actual ->
         ifValue { get_interpolate(actual) }
             { node ->
                 addPendingToCooked();
@@ -96,31 +96,31 @@ export fn makeCallOrApply(function, actuals*) {
             { pending := [pending*, actual] }
     };
 
-    ifIs { perEq(cookedActuals, []) }
+    ifIs { perEq(cookedValues, []) }
         {
             ## There were no interpolated arguments.
-            return makeCall(function, actuals*)
+            return makeCall(function, values*)
         };
 
     ## There is at least one interpolated argument.
 
     addPendingToCooked();
 
-    return ifIs { nth(cookedActuals, 1) }
+    return ifIs { nth(cookedValues, 1) }
         {
             ## More than one actual. Use `cat`.
             makeApply(function,
-                makeCall(REFS::cat, cookedActuals*))
+                makeCall(REFS::cat, cookedValues*))
         }
         {
-            ## Only one. Use it directly as the actuals for the `apply` node.
-            makeApply(function, cookedActuals*)
+            ## Only one. Use it directly as the values for the `apply` node.
+            makeApply(function, cookedValues*)
         }
 };
 
 ## Documented in spec.
-export fn makeCallThunks(function, actuals*) {
-    def thunks = $Generator::filterAll(actuals) { one -> makeThunk(one) };
+export fn makeCallThunks(function, values*) {
+    def thunks = $Generator::filterAll(values) { one -> makeThunk(one) };
     return makeCall(function, thunks*)
 };
 
@@ -315,7 +315,7 @@ export fn makeInfoMap(node) {
 export fn makeInterpolate(node) {
     return @call{
         function: REFS::interpolate,
-        actuals: [node],
+        values: [node],
         interpolate: node
     }
 };
