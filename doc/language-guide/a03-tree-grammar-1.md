@@ -20,7 +20,7 @@ import core.Lang0;
 import core.LangNode :: *;
 import core.Peg;
 import core.Range :: makeInclusiveRange;
-import core.Sequence;
+import core.Sequence :: reverse;
 import proto.Number :: neg;
 
 
@@ -407,7 +407,7 @@ def parUnaryExpression = {:
         base = parTerm
         ## Reverse the `prefixes` list, so that prefixes are applied
         ## in outward order from the base term.
-        { {base, prefixes: $Sequence::reverse(prefixes)} }
+        { {base, prefixes: reverse(prefixes)} }
     )
 
     postfixes = parPostfixOperator*

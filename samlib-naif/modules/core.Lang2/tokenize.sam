@@ -13,7 +13,7 @@ import core.Generator;
 import core.LangNode :: intFromDigits;
 import core.Peg;  ## Used implicitly.
 import core.Peg :: apply, stringFromTokenList;
-import core.Sequence;
+import core.Sequence :: nthFromEnd, sliceExclusive;
 
 
 ##
@@ -267,13 +267,13 @@ fn processStringParts(parts) {
 
         ifIs { hasType(part, String) }
             {
-                def lastElem = $Sequence::nthFromEnd(elems, 0);
+                def lastElem = nthFromEnd(elems, 0);
                 ifIs { hasType(lastElem, String) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
                         elems := [
-                            $Sequence::sliceExclusive(elems, 0)*,
+                            sliceExclusive(elems, 0)*,
                             cat(lastElem, part)
                         ];
                         yield /next
