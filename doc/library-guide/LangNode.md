@@ -37,6 +37,11 @@ development.)
 <br><br>
 ### Function Definitions
 
+#### `canYieldVoid(node) -> node | void`
+
+Indicates whether `node` might possibly yield void when evalutated.
+Returns `node` to indicate logic-true.
+
 #### `formalsMaxArgs([formal*]) -> int`
 
 Gets the maximum number of arguments that a given list of `formal`

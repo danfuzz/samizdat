@@ -10,7 +10,7 @@ import core.Sequence :: nthFromEnd, sliceExclusive;
 
 import ./constructors1 :: *;
 import ./getters :: *;
-import ./misc :: isExpression;
+import ./misc :: canYieldVoid, isExpression;
 import ./refs :: REFS;
 
 
@@ -187,7 +187,9 @@ export fn makeFullClosure(nodeOrMap) {
             ifIs { isExpression(lastStat) }
                 {
                     statements := sliceExclusive(statements, 0);
-                    makeMaybe(lastStat)
+                    ifIs { canYieldVoid(lastStat) }
+                        { makeMaybe(lastStat) }
+                        { lastStat }
                 }
         }
         { @void };
