@@ -5,7 +5,7 @@ Module Metainformation
 ----------------------
 
 This section describes the metainformation format used by `saminfo` files
-and returned by `Lang0Node::makeInfoMap`. This is used to describe the
+and returned by `LangNode::makeInfoMap`. This is used to describe the
 high-level properties of a module.
 
 ### Top level

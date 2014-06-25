@@ -12,7 +12,7 @@
 #include "util.h"
 
 #include "helpers.h"
-#include "lang0node.h"
+#include "langnode.h"
 #include "impl.h"
 
 
@@ -72,12 +72,12 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
         formats = EMPTY_LIST;
     }
 
-    // Unlike the `Lang0Node` version, this one doesn't de-duplicate formats.
+    // Unlike the `LangNode` version, this one doesn't de-duplicate formats.
     formats = listAppend(formats, format);
     return collPut(map, source, formats);
 }
 
-// Documented in `Lang0Node` source.
+// Documented in `LangNode` source.
 static zvalue expandYield(zvalue map) {
     zvalue yieldNode = get(map, STR_yield);
 
@@ -214,12 +214,12 @@ bool isExpression(zvalue node) {
 }
 
 // Documented in spec.
-zvalue makeApply(zvalue function, zvalue actuals) {
-    if (actuals == NULL) {
-        actuals = TOK_void;
+zvalue makeApply(zvalue function, zvalue values) {
+    if (values == NULL) {
+        values = TOK_void;
     }
 
-    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
+    zvalue value = mapFrom2(STR_function, function, STR_values, values);
     return makeValue(TYPE_apply, value, NULL);
 }
 
@@ -233,23 +233,23 @@ zvalue makeBasicClosure(zvalue map) {
 }
 
 // Documented in spec.
-zvalue makeCall(zvalue function, zvalue actuals) {
-    if (actuals == NULL) {
-        actuals = EMPTY_LIST;
+zvalue makeCall(zvalue function, zvalue values) {
+    if (values == NULL) {
+        values = EMPTY_LIST;
     }
 
-    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
+    zvalue value = mapFrom2(STR_function, function, STR_values, values);
     return makeValue(TYPE_call, value, NULL);
 }
 
 // Documented in spec.
-zvalue makeCallOrApply(zvalue function, zvalue actuals) {
+zvalue makeCallOrApply(zvalue function, zvalue values) {
     // This is a fairly direct (but not exact) transliteration
-    // of the corresponding code in `Lang0Node`.
+    // of the corresponding code in `LangNode`.
 
-    zint sz = (actuals == NULL) ? 0 : get_size(actuals);
+    zint sz = (values == NULL) ? 0 : get_size(values);
     zvalue pending[sz];
-    zvalue cookedActuals[sz];
+    zvalue cookedValues[sz];
     zint pendAt = 0;
     zint cookAt = 0;
 
@@ -258,7 +258,7 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     }
 
     #define addToCooked(actual) do { \
-        cookedActuals[cookAt] = (actual); \
+        cookedValues[cookAt] = (actual); \
         cookAt++; \
     } while (0)
 
@@ -271,7 +271,7 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
     } while (0)
 
     for (zint i = 0; i < sz; i++) {
-        zvalue one = nth(actuals, i);
+        zvalue one = nth(values, i);
         zvalue node = get(one, STR_interpolate);
         if (node != NULL) {
             addPendingToCooked();
@@ -284,16 +284,16 @@ zvalue makeCallOrApply(zvalue function, zvalue actuals) {
 
     if (cookAt == 0) {
         // There were no interpolated arguments.
-        return makeCall(function, actuals);
+        return makeCall(function, values);
     }
 
     addPendingToCooked();
 
     if (cookAt > 1) {
         return makeApply(function,
-            makeCall(REFS(cat), listFromArray(cookAt, cookedActuals)));
+            makeCall(REFS(cat), listFromArray(cookAt, cookedValues)));
     } else {
-        return makeApply(function, cookedActuals[0]);
+        return makeApply(function, cookedValues[0]);
     }
 
     #undef addToCooked
@@ -396,7 +396,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
 // Documented in spec.
 zvalue makeImport(zvalue baseData) {
     // Note: This is a near-transliteration of the equivalent code in
-    // `Lang0Node`.
+    // `LangNode`.
     zvalue data = baseData;  // Modified in some cases below.
 
     zvalue select = get(data, STR_select);
@@ -509,7 +509,7 @@ zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_call,
         mapFrom3(
             STR_function,    REFS(interpolate),
-            STR_actuals,     listFrom1(node),
+            STR_values,      listFrom1(node),
             STR_interpolate, node),
         NULL);
 }

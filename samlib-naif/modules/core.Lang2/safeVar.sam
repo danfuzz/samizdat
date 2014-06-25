@@ -6,7 +6,7 @@
 
 import core.Format;
 import core.Generator;
-import core.Lang0Node :: *;
+import core.LangNode :: *;
 import core.Sequence;
 import proto.Number;
 
@@ -81,13 +81,13 @@ fn safeIndexForNodes(base, nodes*) {
 fn @@apply.safeIndex(base) {
     return safeIndexForNodes(base,
         get_function(this),
-        get_actuals(this));
+        get_values(this));
 };
 
 fn @@call.safeIndex(base) {
     return safeIndexForNodes(base,
         get_function(this),
-        get_actuals(this)*);
+        get_values(this)*);
 };
 
 fn @@closure.safeIndex(base) {

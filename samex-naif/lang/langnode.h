@@ -5,11 +5,11 @@
 //
 // Node constructors and related helpers. These functions are
 // (near-)transliterations of the same-named functions in the module
-// `core.Lang0Node`.
+// `core.LangNode`.
 //
 
-#ifndef _LANG0NODE_H_
-#define _LANG0NODE_H_
+#ifndef _LANGNODE_H_
+#define _LANGNODE_H_
 
 #include "type/Value.h"
 
@@ -36,16 +36,16 @@ zvalue get_definedNames(zvalue node);
 bool isExpression(zvalue node);
 
 // Documented in spec.
-zvalue makeApply(zvalue function, zvalue actuals);
+zvalue makeApply(zvalue function, zvalue values);
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue map);
 
 // Documented in spec.
-zvalue makeCall(zvalue function, zvalue actuals);
+zvalue makeCall(zvalue function, zvalue values);
 
 // Documented in spec.
-zvalue makeCallOrApply(zvalue function, zvalue actuals);
+zvalue makeCallOrApply(zvalue function, zvalue values);
 
 // Documented in spec.
 zvalue makeDynamicImport(zvalue node);

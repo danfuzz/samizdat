@@ -10,7 +10,7 @@
 
 import core.EntityMap :: ENTITY_MAP;
 import core.Generator;
-import core.Lang0Node :: intFromDigits;
+import core.LangNode :: intFromDigits;
 import core.Peg;  ## Used implicitly.
 import core.Peg :: apply, stringFromTokenList;
 import core.Sequence;

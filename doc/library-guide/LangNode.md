@@ -1,11 +1,11 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Lang0Node
+core.LangNode
 --------------
 
-These are a set of accessor and constructor functions for the various execution
-tree node types.
+These are a set of accessor and constructor functions for the various
+tree node types specified by the system.
 
 A few functions in this module take an argument named `resolveFn`. Such an
 argument is expected to be a function which behaves similarly to
@@ -46,11 +46,6 @@ arguments could possibly accept. If there is no limit, this returns `-1`.
 
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
-
-#### `get_actuals(node) -> node | [node*]`
-
-Gets the actual arguments of an `apply` node (resulting in an expression node)
-or `call` node (resulting in a list of expression nodes).
 
 #### `get_baseName(taggedName) -> string`
 
@@ -140,8 +135,20 @@ nodes of type `closure`, `importModule`, `importResource`, `varBind`,
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is
-applicable to nodes of type `literal`, `maybe`, `noYield`, `parser`,
-`varBind`, `varDef`, and `varDefMutable`.
+applicable to nodes of type `literal`, `maybe`, `noYield`, `string` (pex type),
+`thunk` (pex type), `token` (pex type), `varBind`, `varDef`, and
+`varDefMutable`.
+
+#### `get_pex(node) -> pex`
+
+Gets the inner parser node of the given node. This is applicable to
+nodes of type `lookaheadFailure`, `lookaheadSuccess`, `opt`, `plus`, `star`,
+and `parser`.
+
+#### `get_pexes(node) -> [pex*]`
+
+Gets the inner parser node list of the given node. This is applicable to
+nodes of type `choice` and `sequence`.
 
 #### `get_prefix(node) -> string`
 
@@ -160,6 +167,12 @@ Gets the source of an import. This is applicable to nodes of type
 #### `get_statements(node) -> [node*]`
 
 Gets the statement list of a `closure` node.
+
+#### `get_values(node) -> node | [node*]`
+
+Gets the values of a node. This is a list of nodes for `call`, `tokenSet`
+(pex type), and `tokenSetComplement` (pex type) nodes. It is a simple node
+for `apply` nodes.
 
 #### `get_yieldNode(node) -> node | void`
 
@@ -185,10 +198,10 @@ Indicates whether `node` is a full expression node type (as opposed to,
 notably, a restricted expression node type or a statement node type).
 Returns `node` to indicate logic-true.
 
-#### `makeApply(function, optActuals?) -> node`
+#### `makeApply(function, optValues?) -> node`
 
 Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `actuals` (an expression node). If `optActuals`
+being applied to the given `values` (an expression node). If `optValues`
 is not passed, it defaults to `@void`.
 
 #### `makeBasicClosure(map) -> node`
@@ -203,37 +216,37 @@ No default is provided for `yield`, as it is not always possible to
 figure out a default for it at the points where `closure` nodes need to
 be produced de novo. See `makeFullClosure()` for more detail.
 
-#### `makeCall(function, actuals*) -> node`
+#### `makeCall(function, values*) -> node`
 
 Makes a `call` node, where `function` (an expression node) is called
-with each of the `actuals` (each an expression node) as arguments, in
+with each of the `values` (each an expression node) as arguments, in
 order.
 
-#### `makeCallLiterals(function, actuals*) -> node`
+#### `makeCallLiterals(function, values*) -> node`
 
-Like `makeCall`, except that each of the `actuals` is made to be a literal
+Like `makeCall`, except that each of the `values` is made to be a literal
 value.
 
-#### `makeCallOrApply(function, actuals*) -> node`
+#### `makeCallOrApply(function, values*) -> node`
 
 Returns a function call node, where `function` (an expression node) is called
-with each of the `actuals` (each an expression node) as arguments, in
+with each of the `values` (each an expression node) as arguments, in
 order.
 
-If any of the `actuals` is an `interpolate` node, this converts the
+If any of the `values` is an `interpolate` node, this converts the
 call into a form where the interpolated nodes have their usual
 surface-language effect. The end result is an `apply` node.
 
 If there are no arguments at all, the end result is a straightforward
 `apply` node with `@void` for the arguments.
 
-If there are no `interpolate` nodes in `actuals`, the end result is a
+If there are no `interpolate` nodes in `values`, the end result is a
 straightforward `call` node, the same as calling `makeCall` on the same
 arguments.
 
-#### `makeCallThunks(function, actuals*) -> node`
+#### `makeCallThunks(function, values*) -> node`
 
-Like `makeCall`, except that each of the `actuals` is wrapped in
+Like `makeCall`, except that each of the `values` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
 #### `makeDynamicImport(node) -> [node+]`

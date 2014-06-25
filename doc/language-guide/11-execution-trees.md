@@ -23,20 +23,20 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `apply` &mdash; `@apply{function: expression, actuals: expression}`
+#### `apply` &mdash; `@apply{function: expression, values: expression}`
 
 * `function: expression` &mdash; An expression node that must
   evaluate to a function.
 
-* `actuals: expression` &mdash; An expression node that must
+* `values: expression` &mdash; An expression node that must
   evaluate to a list.
 
 This represents a function call.
 
-When run, first `function` and then `actuals` is evaluated. If `function`
+When run, first `function` and then `values` is evaluated. If `function`
 evaluates to something other than a function, the call fails (terminating
-the runtime). If `actuals` evaluates to anything but void or a list, the
-call fails (terminating the runtime). `actuals` is allowed to evaluate to
+the runtime). If `values` evaluates to anything but void or a list, the
+call fails (terminating the runtime). `values` is allowed to evaluate to
 void *only* if it is a `@maybe` or `@void` node; any other void evaluation
 is a fatal error.
 
@@ -45,20 +45,20 @@ function requires at least three arguments, but only two are passed),
 then the call fails (terminating the runtime).
 
 With all the above prerequisites passed, the function is applied to
-the evaluated actuals as its arguments (applied with no arguments if
-`actuals` evaluated to void), and the result of evaluation
+the evaluated actual values as its arguments (applied with no arguments if
+`values` evaluated to void), and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
 **Note:** The main difference between this and `call` is that the latter
-takes its `actuals` as a list in the node itself.
+takes its `values` as a list in the node itself.
 
-#### `call` &mdash; `@call{function: expression, actuals: [expression*], interpolate?: expression}`
+#### `call` &mdash; `@call{function: expression, values: [expression*], interpolate?: expression}`
 
 * `function: expression` &mdash; An expression node that must
   evaluate to a function.
 
-* `actuals: [expression*]` &mdash; A list of arbitrary
+* `values: [expression*]` &mdash; A list of arbitrary
   expression nodes, each of which must evaluate to a non-void value.
 
 * `interpolate: expression` (optional) &mdash; Expression to use when treating
@@ -66,20 +66,20 @@ takes its `actuals` as a list in the node itself.
 
 This represents a function call.
 
-When run, first `function` and then the elements of `actuals` (in
+When run, first `function` and then the elements of `values` (in
 order) are evaluated. If `function` evaluates to something other than
 a function, the call fails (terminating the runtime). If any of the
-`actuals` evaluates to void, the call fails (terminating the runtime).
+`values` evaluates to void, the call fails (terminating the runtime).
 
 After that, this proceeds in the same manner as `apply`, using the
-list of evaluated `actuals` as the arguments to the call.
+list of evaluated `values` as the arguments to the call.
 
 The `interpolate` binding is *not* used during execution, rather it is only
 ever used when programatically constructing trees. For example, it is used
-by the function `$Lang0Node::makeCallOrApply` to know that a "call
+by the function `$LangNode::makeCallOrApply` to know that a "call
 to the function `interpolate`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
-produced by the function `$Lang0Node::makeInterpolate`.
+produced by the function `$LangNode::makeInterpolate`.
 
 #### `closure` &mdash; `formals: [formal+], info?: map, name?: name,` `statements: [statement*], yield: expression, yieldDef?: name}`
 
@@ -236,7 +236,7 @@ This is a representation of a nonlocal exit call.
 
 Nodes of this type are not ever executed. Instead, they are allowed to
 appear in intermediate trees as the `yield` binding of a `closure` node.
-The function `Lang0Node::makeFullClosure()` converts these into other
+The function `LangNode::makeFullClosure()` converts these into other
 forms. See the docs of that function for more details.
 
 #### `void` &mdash; `@void`
@@ -282,7 +282,7 @@ behavior varies depending on if `value` is supplied in this node:
 
 The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
-`Lang0Node::withoutTops` for more details.
+`LangNode::withoutTops` for more details.
 
 **Note:** Though there are no restrictions on the `name` in general, if
 a node of this type represents a variable being exported from a module,
@@ -334,7 +334,7 @@ These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `LangN::simplify` and
-`Lang0Node::withModuleDefs` for more details.
+`LangNode::withModuleDefs` for more details.
 
 #### `exportSelection` &mdash; `@exportSelection{select: [name+]}`
 
@@ -349,7 +349,7 @@ These nodes are not directly executable. Instead, these are intended to be
 used as part of a pre-execution or pre-compliation transformation, used to
 produce a modified `closure` (with an altered `statements` list, and so on)
 that incorporates the implied declaration(s). See `LangN::simplify` and
-`Lang0Node::withModuleDefs` for more details.
+`LangNode::withModuleDefs` for more details.
 
 #### `importModule` &mdash; `@importModule{name: name, source: source}`
 

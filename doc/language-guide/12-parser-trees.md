@@ -10,9 +10,9 @@ types and functions used to implement parsing.
 
 ### Normal (non-parsing) expression nodes
 
-#### `@parser{value: pex}`
+#### `@parser{pex}`
 
-Representation of an anonymous parsing function. `value` must be a parsing
+Representation of an anonymous parsing function. `pex` must be a parsing
 expression node, that is, any of the node types defined here other than
 this one.
 
@@ -52,14 +52,14 @@ Representation of the "empty" ("always succeed" / no-op) rule.
 
 This corresponds to the syntax `()`.
 
-#### `@string(string)`
+#### `@string{value: string}`
 
 Representation of a multi-character sequence match. `string` must be a
 string.
 
 This corresponds to the syntax `"string"`.
 
-#### `@thunk(expression)`
+#### `@thunk{value: expression}`
 
 Representation of a parser thunk.
 
@@ -68,29 +68,29 @@ Representation of a parser thunk.
 
 This corresponds to the syntax `%expression`.
 
-#### `@token(type)`
+#### `@token{value: type}`
 
 Representation of a token-match terminal. This is also used for
-single-character matches in tokenizers. `type` must be a type (per se),
+single-character matches in tokenizers. `value` must be a type (per se),
 and is typically a derived data type (e.g., `@@stuff`). This
 indicates that a token of the given type is to be matched.
 
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
 a single character).
 
-#### `@tokenSet(tokenSet)`
+#### `@tokenSet{values: [type*]}`
 
 Representation of a token set rule. This is also used for matching
-character sets in tokenizers. `tokenSet` must be a list of types (type values
+character sets in tokenizers. `values` must be a list of types (type values
 per se; same as the payload of `@token` nodes), which is taken to be an
 unordered set of token types to match.
 
 This corresponds to the syntax `[@token1 @token2 @etc]` or `["charsToMatch"]`.
 
-#### `@tokenSetComplement(tokenSet)`
+#### `@tokenSetComplement{values: [type*]}`
 
 Representation of a token set complement rule. This is also used for matching
-character set complements in tokenizers. `tokenSet` must be a list of types
+character set complements in tokenizers. `values` must be a list of types
 (type values per se; same as the payload of `@token` nodes), which is taken
 to be an unordered set of token types to not-match.
 
@@ -108,49 +108,49 @@ reference).
 
 ### Non-terminal parsing expression nodes
 
-#### `@choice[pex*]`
+#### `@choice{pexes: [pex*]}`
 
 Representation of an ordered choice of items to match. Each element
 of the list must be a parsing expression node.
 
 This corresponds to the syntax `pex1 | pex2 | etc`.
 
-#### `@lookaheadSuccess(pex)`
+#### `@lookaheadSuccess{pex}`
 
 Representation of a lookahead-success expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `&pex`.
 
-#### `@lookaheadFailure(pex)`
+#### `@lookaheadFailure{pex}`
 
 Representation of a lookahead-failure expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `!pex`.
 
-#### `@opt(pex)`
+#### `@opt{pex}`
 
 Representation of an optional (zero-or-one) expression. `pex` must be a
 parsing expression node.
 
 This corresponds to the syntax `pex?`.
 
-#### `@plus(pex)`
+#### `@plus{pex}`
 
 Representation of a plus (one-or-more) expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `pex+`.
 
-#### `@sequence[pexOrVarDef*]`
+#### `@sequence{pexes: [pexOrVarDef*]}`
 
 Representation of a sequence of items to match, in order. Each element
 of the list must be a parsing expression node or a `varDef` node.
 
 This corresponds to the syntax `pex1 pex2 etc`.
 
-#### `@star(pex)`
+#### `@star{pex}`
 
 Representation of a star (zero-or-more) expression. `pex` must be a parsing
 expression node.

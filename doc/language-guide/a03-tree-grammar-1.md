@@ -17,7 +17,7 @@ can be used.
 import core.Format;
 import core.Generator :: filterPump;
 import core.Lang0;
-import core.Lang0Node :: *;
+import core.LangNode :: *;
 import core.Peg;
 import core.Range :: makeInclusiveRange;
 import core.Sequence;
@@ -929,7 +929,7 @@ parParser := {:
     @"{:"
     pex = %parChoicePex
     @":}"
-    { @parser{value: pex} }
+    { @parser{pex} }
 :};
 
 ## Parses a parenthesized parsing expression.
@@ -942,14 +942,15 @@ def parParenPex = {:
 
 ## Parses a string literal parsing expression.
 def parParserString = {:
-    @string
+    s = @string
+    { @string{value: dataOf(s)} }
 :};
 
 ## Parses a token literal parsing expression.
 def parParserToken = {:
     @"@"
     type = parIdentifierString
-    { @token(@@(get_nodeValue(type))) }
+    { @token{value: @@(get_nodeValue(type))} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -969,7 +970,7 @@ def parParserSetString = {:
             ifIs { ne(1, get_size(startChar)) } { yield /out };
             ifIs { ne(1, get_size(endChar)) } { yield /out };
 
-            yield cat($Range::makeInclusiveRange(startChar, endChar)*)
+            yield cat(makeInclusiveRange(startChar, endChar)*)
         }
     |
         { dataOf(s) }
@@ -991,14 +992,14 @@ def parParserSet = {:
         { collect(cat(strings*), { ch -> @@(ch) }) }
     |
         tokens = parParserToken+
-        { collect(tokens, dataOf) }
+        { collect(tokens, get_nodeValue) }
     |
         { [] }
     )
 
     @"]"
 
-    { @(type)(terminals) }
+    { @(type){values: terminals} }
 :};
 
 ## Parses a code block parsing expression.
@@ -1010,8 +1011,8 @@ def parParserCode = {:
 ## Parses a thunk parsing expression.
 def parParserThunk = {:
     @"%"
-    term = parTerm
-    { @thunk(term) }
+    value = parTerm
+    { @thunk{value} }
 :};
 
 ## Parses a parsing expression term.
@@ -1029,12 +1030,12 @@ def parParserTerm = {:
 
 ## Parses a repeat (or not) parsing expression.
 def parRepeatPex = {:
-    term = parParserTerm
+    pex = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_type(repeat)))(term) }
+        { @(get(PEX_TYPES, get_type(repeat))){pex} }
     |
-        { term }
+        { pex }
     )
 :};
 
@@ -1044,7 +1045,7 @@ def parLookaheadPex = {:
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { @(get(PEX_TYPES, get_type(lookahead)))(pex) }
+        { @(get(PEX_TYPES, get_type(lookahead))){pex} }
     )
 |
     parRepeatPex
@@ -1065,15 +1066,15 @@ def parNamePex = {:
 ## Parses a sequence parsing expression. This includes sequences of length
 ## one, but it does *not* parse empty (zero-length) sequences.
 def parSequencePex = {:
-    items = parNamePex+
-    { @sequence(items) }
+    pexes = parNamePex+
+    { @sequence{pexes} }
 :};
 
 ## Parses a choice parsing expression. This includes a single choice.
 parChoicePex := {:
     one = parSequencePex
     rest = (@"|" parSequencePex)*
-    { @choice[one, rest*] }
+    { @choice{pexes: [one, rest*]} }
 :};
 
 

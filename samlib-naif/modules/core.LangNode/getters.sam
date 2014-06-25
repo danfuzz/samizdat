@@ -45,11 +45,6 @@ fn splitAtChar(s, ch) {
 ##
 
 ## Documented in spec.
-export fn get_actuals(node) {
-    return node::actuals
-};
-
-## Documented in spec.
 export fn .get_baseName();
 
 ## Documented in spec.
@@ -165,6 +160,16 @@ export fn get_nodeValue(node) {
 };
 
 ## Documented in spec.
+export fn get_pex(node) {
+    return node::pex
+};
+
+## Documented in spec.
+export fn get_pexes(node) {
+    return node::pexes
+};
+
+## Documented in spec.
 export fn get_prefix(node) {
     return node::prefix
 };
@@ -182,6 +187,11 @@ export fn get_source(node) {
 ## Documented in spec.
 export fn get_statements(node) {
     return node::statements
+};
+
+## Documented in spec.
+export fn get_values(node) {
+    return node::values
 };
 
 ## Documented in spec.

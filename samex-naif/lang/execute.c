@@ -18,7 +18,7 @@
 #include "util.h"
 
 #include "impl.h"
-#include "lang0node.h"
+#include "langnode.h"
 
 
 //
@@ -34,16 +34,16 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e);
  */
 static zvalue execApply(Frame *frame, zvalue apply) {
     zvalue functionExpr = get(apply, STR_function);
-    zvalue actualsExpr = get(apply, STR_actuals);
+    zvalue valuesExpr = get(apply, STR_values);
     zvalue function = execExpression(frame, functionExpr);
-    zvalue actuals = execExpressionOrMaybe(frame, actualsExpr);
+    zvalue values = execExpressionOrMaybe(frame, valuesExpr);
 
-    if (actuals == NULL) {
-        // If `actuals` isn't present or evaluated to void, then evaluation
+    if (values == NULL) {
+        // If `values` isn't present or evaluated to void, then evaluation
         // becomes a simple no-argument function call.
         return funCall(function, 0, NULL);
     } else {
-        return funApply(function, actuals);
+        return funApply(function, values);
     }
 }
 
@@ -52,12 +52,12 @@ static zvalue execApply(Frame *frame, zvalue apply) {
  */
 static zvalue execCall(Frame *frame, zvalue call) {
     zvalue functionExpr = get(call, STR_function);
-    zvalue actualsExprs = get(call, STR_actuals);
+    zvalue valuesExprs = get(call, STR_values);
     zvalue function = execExpression(frame, functionExpr);
 
-    zint argCount = get_size(actualsExprs);
+    zint argCount = get_size(valuesExprs);
     zvalue args[argCount];
-    arrayFromList(args, actualsExprs);
+    arrayFromList(args, valuesExprs);
 
     // Replace each actual with its evaluation.
     for (zint i = 0; i < argCount; i++) {

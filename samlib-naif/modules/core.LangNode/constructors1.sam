@@ -13,9 +13,9 @@ import core.Generator;
 ##
 
 ## Documented in spec.
-export fn makeApply(function, optActuals?) {
-    def actuals = ifValueOr { optActuals* } { @void };
-    return @apply{function, actuals}
+export fn makeApply(function, optValues?) {
+    def values = ifValueOr { optValues* } { @void };
+    return @apply{function, values}
 };
 
 ## Documented in spec.
@@ -28,13 +28,13 @@ export fn makeBasicClosure(map) {
 };
 
 ## Documented in spec.
-export fn makeCall(function, actuals*) {
-    return @call{function, actuals}
+export fn makeCall(function, values*) {
+    return @call{function, values}
 };
 
 ## Documented in spec.
-export fn makeCallLiterals(function, actuals*) {
-    def literals = $Generator::filterAll(actuals) { one -> makeLiteral(one) };
+export fn makeCallLiterals(function, values*) {
+    def literals = $Generator::filterAll(values) { one -> makeLiteral(one) };
     return makeCall(function, literals*)
 };
 

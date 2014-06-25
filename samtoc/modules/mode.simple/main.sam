@@ -8,7 +8,7 @@
 ##
 
 import core.Io0;
-import core.Lang0Node :: *;
+import core.LangNode :: *;
 
 import CodeGen :: *;
 import DataCode;
