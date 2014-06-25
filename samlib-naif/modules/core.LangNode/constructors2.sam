@@ -4,8 +4,8 @@
 
 #= language core.Lang0
 
-import core.Collection;
-import core.Generator;
+import core.Collection :: del, keyList;
+import core.Generator :: filterAll, filterPump;
 import core.Sequence :: nthFromEnd, sliceExclusive;
 
 import ./constructors1 :: *;
@@ -87,7 +87,7 @@ export fn makeCallOrApply(function, values*) {
             }
     };
 
-    $Generator::filterPump(values) { actual ->
+    filterPump(values) { actual ->
         ifValue { get_interpolate(actual) }
             { node ->
                 addPendingToCooked();
@@ -120,7 +120,7 @@ export fn makeCallOrApply(function, values*) {
 
 ## Documented in spec.
 export fn makeCallThunks(function, values*) {
-    def thunks = $Generator::filterAll(values) { one -> makeThunk(one) };
+    def thunks = filterAll(values) { one -> makeThunk(one) };
     return makeCall(function, thunks*)
 };
 
@@ -150,7 +150,7 @@ fn @@importModuleSelection.makeDynamicImport() {
     def select = get_select(this);
     def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
-    return $Generator::filterAll(names, select) { name, sel ->
+    return filterAll(names, select) { name, sel ->
         makeVarDef(name, makeCall(REFS::get, loadCall, makeLiteral(sel)))
     };
 };
@@ -229,7 +229,7 @@ export fn makeImport(baseData) {
             ifIs { hasType(select, @@"*") }
                 {
                     ## It's a wildcard import.
-                    data := $Collection::del(data, "select");
+                    data := del(data, "select");
                 };
 
             return @importModuleSelection(data)
@@ -279,7 +279,7 @@ export fn makeInfoMap(node) {
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
         def orig = ifValueOr { get(resources, source) } { [] };
-        def revised = $Collection::keyList({orig*: null, (format): null});
+        def revised = keyList({orig*: null, (format): null});
         resources := {resources*, (source): revised};
     };
 
@@ -299,7 +299,7 @@ export fn makeInfoMap(node) {
 
     ## The filter is just being used as a for-each loop. The direct
     ## result is ignored.
-    $Generator::filterAll(statements) { s ->
+    filterAll(statements) { s ->
         ifIs { hasType(s, @@exportSelection) }
             { addToExports(get_select(s)) };
         ifIs { hasType(s, @@export) }
@@ -345,7 +345,7 @@ export fn withDynamicImports(node) {
             return node
         };
 
-    def converted = $Generator::filterAll(rawStatements) { s /out ->
+    def converted = filterAll(rawStatements) { s /out ->
         ifValueOr
             { hasType(s, @@importModule) }
             { hasType(s, @@importModuleSelection) }
@@ -377,7 +377,7 @@ export fn withModuleDefs(node) {
 
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
-    def statements = $Generator::filterAll(rawStatements) { s /out ->
+    def statements = filterAll(rawStatements) { s /out ->
         ifIs { hasType(s, @@exportSelection) }
             { yield /out };
 
@@ -388,7 +388,7 @@ export fn withModuleDefs(node) {
 
     ## This is a list of lists of mappings which, when combined, is a map
     ## of all exports.
-    def exportValues = $Generator::filterAll(info::exports) { mapping ->
+    def exportValues = filterAll(info::exports) { mapping ->
         def name = get_key(mapping);
         makeCall(REFS::makeValueMap, makeLiteral(name), makeVarRef(name))
     };
@@ -416,7 +416,7 @@ export fn withoutTops(node) {
     def rawStatements = get_statements(node);
 
     ## This is a collation of all the forward declarations.
-    def tops = $Generator::filterAll(rawStatements) { s ->
+    def tops = filterAll(rawStatements) { s ->
         def defNode = ifIs { hasType(s, @@export) }
             { get_nodeValue(s) }
             { s };
@@ -426,7 +426,7 @@ export fn withoutTops(node) {
     };
 
     ## These are the one-for-one replacements for the original `statements`.
-    def mains = $Generator::filterAll(rawStatements) { s ->
+    def mains = filterAll(rawStatements) { s ->
         def defNode = ifIs { hasType(s, @@export) }
             { get_nodeValue(s) }
             { s };
@@ -437,7 +437,7 @@ export fn withoutTops(node) {
     };
 
     ## This lists all the exported variables that were transformed above.
-    def exports = $Generator::filterAll(rawStatements) { s /out ->
+    def exports = filterAll(rawStatements) { s /out ->
         ifNot { hasType(s, @@export) }
             { yield /out };
 

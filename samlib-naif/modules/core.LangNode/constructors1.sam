@@ -4,8 +4,8 @@
 
 #= language core.Lang0
 
-import core.Collection;
-import core.Generator;
+import core.Collection :: del;
+import core.Generator :: filterAll;
 
 
 ##
@@ -34,7 +34,7 @@ export fn makeCall(function, values*) {
 
 ## Documented in spec.
 export fn makeCallLiterals(function, values*) {
-    def literals = $Generator::filterAll(values) { one -> makeLiteral(one) };
+    def literals = filterAll(values) { one -> makeLiteral(one) };
     return makeCall(function, literals*)
 };
 
@@ -134,13 +134,13 @@ export fn withYieldDefIfAbsent(node, name) {
 
 ## Documented in spec.
 export fn withoutInterpolate(node) {
-    return @(get_type(node))($Collection::del(dataOf(node), "interpolate"))
+    return @(get_type(node))(del(dataOf(node), "interpolate"))
 };
 
 ## Documented in spec.
 export fn withoutIntermediates(node) {
-    def data = $Collection::del(
-        $Collection::del(dataOf(node), "lvalue"),
+    def data = del(
+        del(dataOf(node), "lvalue"),
         "interpolate");
 
     return @(get_type(node))(data)

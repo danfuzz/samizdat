@@ -13,7 +13,7 @@ import core.Generator :: filterAll, filterPump;
 import core.LangNode :: *;
 import core.Peg;
 import core.Range :: makeInclusiveRange, makeOpenRange;
-import core.Sequence;
+import core.Sequence :: reverse, sliceExclusive;
 import proto.Number :: add, neg;
 
 import ./safeVar;
@@ -403,7 +403,7 @@ def parUnaryExpression = {:
         base = parTerm
         ## Reverse the `prefixes` list, so that prefixes are applied
         ## in outward order from the base term.
-        { {base, prefixes: $Sequence::reverse(prefixes)} }
+        { {base, prefixes: reverse(prefixes)} }
     )
 
     postfixes = parPostfixOperator*
@@ -1780,7 +1780,7 @@ def parLogicAndExpression = {:
                 filterAll(most, makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
-                            $Sequence::sliceExclusive(formals, 0, index))
+                            sliceExclusive(formals, 0, index))
                     };
 
             ## Construct the overall `ifValues` call.
@@ -1879,7 +1879,7 @@ def parMultiTest = {:
                 filterAll(clauses, makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
-                            $Sequence::sliceExclusive(formals, 0, index))
+                            sliceExclusive(formals, 0, index))
                     };
 
             ## Result function which constructs the overall `ifValues` call.
@@ -1959,7 +1959,7 @@ def parIfExpression = {:
 
     {
         ## This builds the full expression from back to front (inner to outer).
-        def clauses = $Sequence::reverse(
+        def clauses = reverse(
             [{maker: firstCondition, then: firstThen}, elseIfThens*]);
 
         ## To keep things simple, partial results are always thunks wrapped
