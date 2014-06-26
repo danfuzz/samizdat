@@ -76,15 +76,6 @@ METH_IMPL(Jump, call) {
 }
 
 // Documented in header.
-METH_IMPL(Jump, canCall) {
-    zvalue jump = args[0];
-    zvalue value = args[1];
-
-    // A nonlocal jump accepts any first argument.
-    return value;
-}
-
-// Documented in header.
 METH_IMPL(Jump, debugString) {
     zvalue jump = args[0];
     JumpInfo *info = getInfo(jump);
@@ -112,7 +103,6 @@ MOD_INIT(Jump) {
     // Note: The `typeSystem` module initializes `TYPE_Jump`.
 
     METH_BIND(Jump, call);
-    METH_BIND(Jump, canCall);
     METH_BIND(Jump, debugString);
     METH_BIND(Jump, gcMark);
 }

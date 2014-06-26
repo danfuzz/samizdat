@@ -58,7 +58,6 @@ PRIM_DEF(store,                   GFN_store);
 
 // Generic functions: `Function` protocol.
 PRIM_DEF(call,                    GFN_call);
-PRIM_DEF(canCall,                 GFN_canCall);
 
 // Generic functions: `Collection` protocol, intended for modularization.
 PRIM_DEF(Collection_del,          GFN_del);

@@ -352,14 +352,6 @@ METH_IMPL(Closure, call) {
 }
 
 // Documented in header.
-METH_IMPL(Closure, canCall) {
-    zvalue closure = args[0];
-    zvalue value = args[1];
-
-    return (getInfo(closure)->formalsSize == 0) ? NULL : value;
-}
-
-// Documented in header.
 METH_IMPL(Closure, debugName) {
     zvalue closure = args[0];
     return get(getInfo(closure)->defMap, STR_name);
@@ -385,7 +377,6 @@ MOD_INIT(Closure) {
         stringFromUtf8(-1, "Closure"), TYPE_Value, true);
 
     METH_BIND(Closure, call);
-    METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugName);
     METH_BIND(Closure, gcMark);
 
