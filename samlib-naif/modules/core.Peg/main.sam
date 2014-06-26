@@ -207,16 +207,16 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
 
 
 ##
-## Exported Definitions
+## Private Definitions
 ##
 
-## Private helper for `makeCharSet*`, which takes a string and produces a
+## Helper for `makeCharSet*`, which takes a string and produces a
 ## list of token types for the characters.
 fn typeListFromString(string) {
     return collect(string, { ch -> @@(ch) })
 };
 
-## Private helper for `make*Set*`, which takes a `sense` argument and
+## Helper for `make*Set*`, which takes a `sense` argument and
 ## produces the desired rule.
 fn genericMakeTokenSet(sense, types) {
     def set = {types*: true};  ## A set-like map of all the token types.
@@ -230,6 +230,26 @@ fn genericMakeTokenSet(sense, types) {
     return ifIs { eq(sense, true) }
         { @PegTokenSet{types: set} }
         { @PegTokenSetComplement{types: set} }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn apply(rule, input) {
+    def box = makePromise();
+    def generator = ifIs { hasType(input, String) }
+        {
+            ## This converts generated characters into tokens with the
+            ## characters as the type.
+            makeFilterGenerator(input) { ch -> @(@@(ch)) }
+        }
+        { input };
+
+    return? ifIs { parse(rule, box, generator) }
+        { fetch(box) }
 };
 
 ## Documented in spec.
@@ -249,7 +269,7 @@ export fn makeCharSetComplement(strings*) {
 export fn makeChoice(rules*) {
     ## Trivial case: No rules. Return the failure rule.
     ifIs { eq(rules, []) }
-        { return @PegFail };
+        { return fail };
 
     ## Trivial case: One rule. Return that rule directly.
     ifIs { eq(get_size(rules), 1) }
@@ -267,12 +287,12 @@ export fn makeCode(function) {
 ## Documented in spec.
 export fn makeLookaheadFailure(rule) {
     ## Optimiziation: Representation of `!.`.
-    ifIs { eq(rule, @PegAny) }
-        { return @PegEof };
+    ifIs { eq(rule, any) }
+        { return eof };
 
     ## Optimization: Representation of `!()`.
     ifIs { eq(rule, empty) }
-        { return @PegFail };
+        { return fail };
 
     ## The general case.
     return @PegLookaheadFailure{rule}
@@ -360,26 +380,6 @@ export fn makeTokenSet(tokens*) {
 ## Documented in spec.
 export fn makeTokenSetComplement(tokens*) {
     return genericMakeTokenSet(false, tokens)
-};
-
-
-##
-## Miscellaneous functions
-##
-
-## Documented in spec.
-export fn apply(rule, input) {
-    def box = makePromise();
-    def generator = ifIs { hasType(input, String) }
-        {
-            ## This converts generated characters into tokens with the
-            ## characters as the type.
-            makeFilterGenerator(input) { ch -> @(@@(ch)) }
-        }
-        { input };
-
-    return? ifIs { parse(rule, box, generator) }
-        { fetch(box) }
 };
 
 ## Documented in spec.
