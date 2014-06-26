@@ -41,9 +41,6 @@ typedef zvalue (*zfunction)(
  */
 extern zvalue GFN_call;
 
-/** Generic `canCall(function, value)`: Documented in spec. */
-extern zvalue GFN_canCall;
-
 /**
  * Calls a function with the given list of arguments. `function` must be
  * a function (regular or generic), and `args` must be a list or `NULL`

@@ -128,15 +128,6 @@ METH_IMPL(Builtin, call) {
 }
 
 // Documented in header.
-METH_IMPL(Builtin, canCall) {
-    zvalue builtin = args[0];
-    zvalue value = args[1];
-    BuiltinInfo *info = getInfo(builtin);
-
-    return (info->maxArgs >= 1) ? value : NULL;
-}
-
-// Documented in header.
 METH_IMPL(Builtin, debugName) {
     zvalue builtin = args[0];
     BuiltinInfo *info = getInfo(builtin);
@@ -167,7 +158,6 @@ MOD_INIT(Builtin) {
     // Note: The `typeSystem` module initializes `TYPE_Builtin`.
 
     METH_BIND(Builtin, call);
-    METH_BIND(Builtin, canCall);
     METH_BIND(Builtin, debugName);
     METH_BIND(Builtin, gcMark);
 }

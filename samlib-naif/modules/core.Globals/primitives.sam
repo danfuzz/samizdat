@@ -25,7 +25,6 @@ export
     Uniqlet,
     Value,
     call,
-    canCall,
     canStore,
     cat,
     collect,

@@ -215,15 +215,6 @@ METH_IMPL(Generic, call) {
 }
 
 // Documented in header.
-METH_IMPL(Generic, canCall) {
-    zvalue generic = args[0];
-    zvalue value = args[1];
-    GenericInfo *info = getInfo(generic);
-
-    return (findByType(generic, get_type(value), NULL) != NULL) ? value : NULL;
-}
-
-// Documented in header.
 METH_IMPL(Generic, debugName) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
@@ -252,7 +243,6 @@ MOD_INIT(Generic) {
     // Note: The `typeSystem` module initializes `TYPE_Generic`.
 
     METH_BIND(Generic, call);
-    METH_BIND(Generic, canCall);
     METH_BIND(Generic, debugName);
     METH_BIND(Generic, gcMark);
 }

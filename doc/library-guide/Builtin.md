@@ -43,12 +43,6 @@ symmetric &mdash; but arbitrary &mdash; total order.
 Calls the given builtin with the given arguments.
 
 
-#### `canCall(builtin, value) -> logic`
-
-Checks if the given builtin accepts at least one argument. Returns the
-`value` argument if so.
-
-
 <br><br>
 ### Primitive Definitions
 
