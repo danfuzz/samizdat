@@ -9,6 +9,5 @@
 #= language core.Lang0
 
 export
-    canStore,
     fetch,
     store;

@@ -66,7 +66,7 @@ static zvalue doStore(zvalue box, zvalue value) {
     BoxInfo *info = getInfo(box);
 
     if (!info->canStore) {
-        die("Attempt to re-store to promise.");
+        die("Attempt to store to fixed box.");
     }
 
     if (info->setOnce) {
@@ -139,19 +139,10 @@ zvalue makeResult(zvalue value) {
 zvalue TYPE_Box = NULL;
 
 // Documented in header.
-zvalue GFN_canStore;
-
-// Documented in header.
 zvalue GFN_fetch;
 
 // Documented in header.
 zvalue GFN_store;
-
-// Documented in header.
-METH_IMPL(Box, canStore) {
-    zvalue box = args[0];
-    return getInfo(box)->canStore ? box : NULL;
-}
 
 // Documented in header.
 METH_IMPL(Box, collect) {
@@ -207,9 +198,6 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Value);
 
-    GFN_canStore = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "canStore"));
-    datImmortalize(GFN_canStore);
-
     GFN_fetch = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "fetch"));
     datImmortalize(GFN_fetch);
 
@@ -218,7 +206,6 @@ MOD_INIT(Box) {
 
     TYPE_Box = makeCoreType(stringFromUtf8(-1, "Box"), TYPE_Value, true);
 
-    METH_BIND(Box, canStore);
     METH_BIND(Box, collect);
     METH_BIND(Box, fetch);
     METH_BIND(Box, gcMark);

@@ -14,12 +14,6 @@
 ##
 
 ## Documented in spec.
-fn @@NullBox.canStore() {
-    ## Always succeeds.
-    return this
-};
-
-## Documented in spec.
 fn @@NullBox.fetch() {
     ## Return void.
 };
