@@ -118,10 +118,11 @@ static zvalue expandYield(zvalue map) {
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
     switch (get_evalType(node)) {
-        case EVAL_apply: return true;
-        case EVAL_call:  return true;
-        case EVAL_maybe: return true;
-        case EVAL_void:  return true;
+        case EVAL_apply:  return true;
+        case EVAL_call:   return true;
+        case EVAL_maybe:  return true;
+        case EVAL_varRef: return true;
+        case EVAL_void:   return true;
         default: {
             return false;
         }
