@@ -93,9 +93,9 @@ static void execNoYield(Frame *frame, zvalue noYield) {
 }
 
 // Documented in header.
-static zvalue execVarBind(Frame *frame, zvalue varBind) {
-    zvalue name = get(varBind, STR_name);
-    zvalue valueExpression = get(varBind, STR_value);
+static zvalue execVarBind(Frame *frame, zvalue varStore) {
+    zvalue name = get(varStore, STR_name);
+    zvalue valueExpression = get(varStore, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
     return frameStore(frame, name, value);
@@ -157,13 +157,13 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (get_evalType(e)) {
-        case EVAL_apply:   return execApply(frame, e);
-        case EVAL_call:    return execCall(frame, e);
-        case EVAL_closure: return execClosure(frame, e);
-        case EVAL_literal: return get(e, STR_value);
-        case EVAL_noYield: execNoYield(frame, e);
-        case EVAL_varBind: return execVarBind(frame, e);
-        case EVAL_varRef:  return execVarRef(frame, e);
+        case EVAL_apply:    return execApply(frame, e);
+        case EVAL_call:     return execCall(frame, e);
+        case EVAL_closure:  return execClosure(frame, e);
+        case EVAL_literal:  return get(e, STR_value);
+        case EVAL_noYield:  execNoYield(frame, e);
+        case EVAL_varRef:   return execVarRef(frame, e);
+        case EVAL_varStore: return execVarBind(frame, e);
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }

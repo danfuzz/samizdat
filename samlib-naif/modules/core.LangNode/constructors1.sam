@@ -71,7 +71,7 @@ export fn makeNonlocalExit(function, optValue?) {
 
 ## Documented in spec.
 export fn makeVarBind(name, value) {
-    return @varBind{name, value}
+    return @varStore{name, value}
 };
 
 ## Documented in spec.

@@ -93,13 +93,6 @@ fn @@noYield.lits(interner) {
     return @noYield{value}
 };
 
-fn @@varBind.lits(interner) {
-    return @varBind{
-        name: this.name,
-        value: lits(this.nodeValue, interner)
-    }
-};
-
 fn @@varDef.lits(interner) {
     def value = ifValue { this.nodeValue }
         { value -> {value: lits(value, interner)} }
@@ -116,6 +109,13 @@ fn @@varDefMutable.lits(interner) {
 
 fn @@varRef.lits(interner) {
     return this
+};
+
+fn @@varStore.lits(interner) {
+    return @varStore{
+        name: this.name,
+        value: lits(this.nodeValue, interner)
+    }
 };
 
 fn @@void.lits(interner) {

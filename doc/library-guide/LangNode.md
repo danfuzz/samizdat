@@ -134,15 +134,15 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 #### `get_name(node) -> . | void`
 
 Gets the name defined or used by the given node. This is applicable to
-nodes of type `closure`, `importModule`, `importResource`, `varBind`,
-`varDef`, `varDefMutable`, and `varRef`.
+nodes of type `closure`, `importModule`, `importResource`, `varDef`,
+`varDefMutable`, `varRef`, and `varStore`.
 
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is
 applicable to nodes of type `literal`, `maybe`, `noYield`, `string` (pex type),
-`thunk` (pex type), `token` (pex type), `varBind`, `varDef`, and
-`varDefMutable`.
+`thunk` (pex type), `token` (pex type), `varDef`, `varDefMutable`, and
+`varStore`.
 
 #### `get_pex(node) -> pex`
 
@@ -398,7 +398,7 @@ result contains the given `node` as the `yield`, directly.
 
 #### `makeVarBind(name, value) -> node`
 
-Makes a `varBind` node.
+Makes a `varStore` node.
 
 #### `makeVarDef(name, optValue?) -> node`
 
@@ -417,7 +417,7 @@ additional bindings.
 
 Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
-`varBind` node representing an assignment of the variable.
+`varStore` node representing an assignment of the variable.
 
 #### `resolveImport(node, resolveFn) -> node`
 
@@ -528,6 +528,6 @@ with no `top` decalarations in the `statements` list.
 
 More specifically, for each variable defined to be `top`, a forward-declaring
 `varDef` is added at the top of the `statements` list. The original `varDef`
-is replaced with an equivalent `varBind`. If any so-transformed variables
+is replaced with an equivalent `varStore`. If any so-transformed variables
 were `export`ed, then an `exportSelection` node is added to the end of the
 `statements` list referencing all such variables.

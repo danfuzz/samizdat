@@ -27,10 +27,10 @@ typedef enum {
     EVAL_literal,
     EVAL_maybe,
     EVAL_noYield,
-    EVAL_varBind,
     EVAL_varDef,
     EVAL_varDefMutable,
     EVAL_varRef,
+    EVAL_varStore,
     EVAL_void
 } zevalType;
 

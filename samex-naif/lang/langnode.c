@@ -214,13 +214,13 @@ zvalue get_definedNames(zvalue node) {
 // Documented in spec.
 bool isExpression(zvalue node) {
     switch (get_evalType(node)) {
-        case EVAL_apply:   return true;
-        case EVAL_call:    return true;
-        case EVAL_closure: return true;
-        case EVAL_literal: return true;
-        case EVAL_noYield: return true;
-        case EVAL_varBind: return true;
-        case EVAL_varRef:  return true;
+        case EVAL_apply:    return true;
+        case EVAL_call:     return true;
+        case EVAL_closure:  return true;
+        case EVAL_literal:  return true;
+        case EVAL_noYield:  return true;
+        case EVAL_varStore: return true;
+        case EVAL_varRef:   return true;
         default: {
             return false;
         }
@@ -569,7 +569,7 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarBind(zvalue name, zvalue value) {
-    return makeValue(TYPE_varBind,
+    return makeValue(TYPE_varStore,
         mapFrom2(STR_name, name, STR_value, value),
         NULL);
 }
