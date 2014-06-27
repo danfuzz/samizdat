@@ -76,24 +76,6 @@ zvalue frameGet(Frame *frame, zvalue name) {
 }
 
 // Documented in header.
-zvalue frameStore(Frame *frame, zvalue name, zvalue value) {
-    zvalue box = frameGet(frame, name);
-    return GFN_CALL(store, box, value);
-}
-
-// Documented in header.
-zvalue frameFetch(Frame *frame, zvalue name) {
-    zvalue box = frameGet(frame, name);
-    zvalue result = GFN_CALL(fetch, box);
-
-    if (result == NULL) {
-        die("Variable defined but unbound: %s", valDebugString(name));
-    }
-
-    return result;
-}
-
-// Documented in header.
 void frameSnap(Frame *target, Frame *source) {
     assertValidOrNull(source->parentClosure);
     assertValid(source->vars);

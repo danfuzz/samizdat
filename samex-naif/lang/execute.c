@@ -133,7 +133,7 @@ static zvalue execVarBox(Frame *frame, zvalue varRef) {
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
     zvalue name = get(varRef, STR_name);
-    return frameFetch(frame, name);
+    return GFN_CALL(fetch, frameGet(frame, name));
 }
 
 /**
@@ -144,7 +144,7 @@ static zvalue execVarStore(Frame *frame, zvalue varStore) {
     zvalue valueExpression = get(varStore, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
-    return frameStore(frame, name, value);
+    return GFN_CALL(store, frameGet(frame, name), value);
 }
 
 /**
