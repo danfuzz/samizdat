@@ -396,10 +396,6 @@ any regular expression node, the result has a `maybe` node for the `yield`.
 For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
 result contains the given `node` as the `yield`, directly.
 
-#### `makeVarBind(name, value) -> node`
-
-Makes a `varStore` node.
-
 #### `makeVarDef(name, optValue?) -> node`
 
 Makes a `varDef` statement node.
@@ -418,6 +414,10 @@ additional bindings.
 Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varStore` node representing an assignment of the variable.
+
+#### `makeVarStore(name, value) -> node`
+
+Makes a `varStore` node.
 
 #### `resolveImport(node, resolveFn) -> node`
 

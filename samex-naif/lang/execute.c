@@ -92,15 +92,6 @@ static void execNoYield(Frame *frame, zvalue noYield) {
     mustNotYield(execExpression(frame, valueExpression));
 }
 
-// Documented in header.
-static zvalue execVarBind(Frame *frame, zvalue varStore) {
-    zvalue name = get(varStore, STR_name);
-    zvalue valueExpression = get(varStore, STR_value);
-    zvalue value = execExpression(frame, valueExpression);
-
-    return frameStore(frame, name, value);
-}
-
 /**
  * Executes a `varDef` form, by updating the given execution frame
  * as appropriate.
@@ -138,6 +129,17 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 }
 
 /**
+ * Executes a `varStore` form.
+ */
+static zvalue execVarStore(Frame *frame, zvalue varStore) {
+    zvalue name = get(varStore, STR_name);
+    zvalue valueExpression = get(varStore, STR_value);
+    zvalue value = execExpression(frame, valueExpression);
+
+    return frameStore(frame, name, value);
+}
+
+/**
  * Executes an `expression` form, with the result never allowed to be
  * `void`.
  */
@@ -163,7 +165,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_literal:  return get(e, STR_value);
         case EVAL_noYield:  execNoYield(frame, e);
         case EVAL_varRef:   return execVarRef(frame, e);
-        case EVAL_varStore: return execVarBind(frame, e);
+        case EVAL_varStore: return execVarStore(frame, e);
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }

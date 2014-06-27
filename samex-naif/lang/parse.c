@@ -653,7 +653,7 @@ DEF_PARSE(assignExpression) {
     zvalue ex = PARSE_OR_REJECT(expression);
     zvalue name = GET(name, base);
 
-    return makeVarBind(name, ex);
+    return makeVarStore(name, ex);
 }
 
 /**

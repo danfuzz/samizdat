@@ -568,13 +568,6 @@ zvalue makeThunk(zvalue expression) {
 }
 
 // Documented in spec.
-zvalue makeVarBind(zvalue name, zvalue value) {
-    return makeValue(TYPE_varStore,
-        mapFrom2(STR_name, name, STR_value, value),
-        NULL);
-}
-
-// Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
     return makeValue(TYPE_varDef,
         mapFrom2(STR_name, name, STR_value, value),
@@ -591,6 +584,13 @@ zvalue makeVarDefMutable(zvalue name, zvalue value) {
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
     return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
+}
+
+// Documented in spec.
+zvalue makeVarStore(zvalue name, zvalue value) {
+    return makeValue(TYPE_varStore,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 // Documented in spec.
@@ -838,7 +838,7 @@ zvalue withoutTops(zvalue node) {
 
         if (get(defNode, STR_top) != NULL) {
             mains = listAppend(mains,
-                makeVarBind(get(defNode, STR_name), get(defNode, STR_value)));
+                makeVarStore(get(defNode, STR_name), get(defNode, STR_value)));
         } else {
             mains = listAppend(mains, s);
         }

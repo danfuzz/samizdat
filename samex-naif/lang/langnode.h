@@ -90,9 +90,6 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 zvalue makeThunk(zvalue expression);
 
 // Documented in spec.
-zvalue makeVarBind(zvalue name, zvalue value);
-
-// Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value);
 
 // Documented in spec.
@@ -100,6 +97,9 @@ zvalue makeVarDefMutable(zvalue name, zvalue value);
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name);
+
+// Documented in spec.
+zvalue makeVarStore(zvalue name, zvalue value);
 
 // Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn);
