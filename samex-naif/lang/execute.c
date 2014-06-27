@@ -98,8 +98,7 @@ static zvalue execVarBind(Frame *frame, zvalue varBind) {
     zvalue valueExpression = get(varBind, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
-    frameBind(frame, name, value);
-    return value;
+    return frameBind(frame, name, value);
 }
 
 /**

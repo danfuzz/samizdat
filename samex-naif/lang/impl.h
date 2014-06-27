@@ -101,9 +101,10 @@ void frameMark(Frame *frame);
 void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value);
 
 /**
- * Binds the given variable in the given frame.
+ * Binds the given variable in the given frame. This returns whatever the
+ * underlying `store` call returns.
  */
-void frameBind(Frame *frame, zvalue name, zvalue value);
+zvalue frameBind(Frame *frame, zvalue name, zvalue value);
 
 /**
  * Gets a variable's value out of the given frame.
