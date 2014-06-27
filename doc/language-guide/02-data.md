@@ -125,10 +125,10 @@ Lists are written as an initial `[`, followed by zero or
 more value representations, followed by a final `]`. Values
 are separated with commas (`,`).
 
-The contents of generators and collections (lists, maps, strings) can be
-"interpolated" into a list (that is, have their elements become elements
-of the result) by placing a `*` after the value or expression to
-interpolate.
+The contents of generators and collections (e.g. boxes, lists, maps, and
+strings) can be "interpolated" into a list (that is, have their elements
+become elements of the result) by placing a `*` after the value or expression
+to interpolate.
 
 ```
 []                            ## the empty list
@@ -233,6 +233,10 @@ In addition to the box constructor functions, the two functions that
 deal with boxes are `fetch` to get the contents of a box (or void if
 the box value has yet to be set) and `store` to set the contents of
 a box.
+
+All boxes are generators, which when called upon as such will generate
+their stored value. A box without a stored value is effectively a
+voided generator (which will never generate any value).
 
 There are four predefined box variants:
 
