@@ -174,7 +174,7 @@ the runtime).
 * `value: expression` &mdash; Expression node representing the
   value that the variable should take on when defined.
 
-This represents a variable binding (assignment) statement as part of a
+This represents a variable store (assignment) statement as part of a
 closure body.
 
 When run, the `value` expression is evaluated. If it evaluates to void,
@@ -184,8 +184,9 @@ is looked up and resolved to a variable reference. It is an error
 variable is found and it is not available for binding (or rebinding).
 Otherwise, the evaluated value is bound to the variable.
 
-The result of evaluating this form is the same as the result of evaluating
-`value`.
+The result of evaluating this form is the same as what is returned by
+executing the store operation on the underlying cell. This is typically
+the same as the result of evaluating `value`.
 
 #### `varRef` &mdash; `@varRef{name: name}`
 
