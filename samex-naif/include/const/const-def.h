@@ -68,6 +68,7 @@ TYP(module,                "module");
 TYP(noYield,               "noYield");
 TYP(nonlocalExit,          "nonlocalExit");
 TYP(string,                "string");
+TYP(varBox,                "varBox");
 TYP(varDef,                "varDef");
 TYP(varDefMutable,         "varDefMutable");
 TYP(varRef,                "varRef");
