@@ -101,9 +101,9 @@ void frameMark(Frame *frame);
 void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value);
 
 /**
- * Gets a variable's value out of the given frame.
+ * Fetches a variable's value out of the given frame.
  */
-zvalue frameGet(Frame *frame, zvalue name);
+zvalue frameFetch(Frame *frame, zvalue name);
 
 /**
  * Stores the given value into the given variable defined in the given frame.

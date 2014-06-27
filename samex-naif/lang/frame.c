@@ -90,7 +90,7 @@ zvalue frameStore(Frame *frame, zvalue name, zvalue value) {
 }
 
 // Documented in header.
-zvalue frameGet(Frame *frame, zvalue name) {
+zvalue frameFetch(Frame *frame, zvalue name) {
     zvalue box = findBox(frame, name);
     zvalue result = boxFetch(box);
 

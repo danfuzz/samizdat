@@ -134,7 +134,7 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
     zvalue name = get(varRef, STR_name);
-    return frameGet(frame, name);
+    return frameFetch(frame, name);
 }
 
 /**
