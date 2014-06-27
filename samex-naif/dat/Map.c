@@ -425,7 +425,7 @@ METH_IMPL(Map, nextValue) {
         // `map` is empty.
         return NULL;
     } else {
-        boxStore(box, first);
+        GFN_CALL(store, box, first);
         return makeValue(
             TYPE_MapGenerator,
             mapFromArgs(

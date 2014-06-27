@@ -83,18 +83,6 @@ static zvalue doStore(zvalue box, zvalue value) {
 //
 
 // Documented in header.
-zvalue boxFetch(zvalue box) {
-    assertHasType(box, TYPE_Box);
-    return doFetch(box);
-}
-
-// Documented in header.
-zvalue boxStore(zvalue box, zvalue value) {
-    assertHasType(box, TYPE_Box);
-    return doStore(box, value);
-}
-
-// Documented in header.
 zvalue makeCell(zvalue value) {
     zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
@@ -179,7 +167,7 @@ METH_IMPL(Box, nextValue) {
     zvalue value = doFetch(box);
 
     if (value != NULL) {
-        boxStore(outBox, value);
+        GFN_CALL(store, outBox, value);
         return EMPTY_LIST;
     } else {
         return NULL;

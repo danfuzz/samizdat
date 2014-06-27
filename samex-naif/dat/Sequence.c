@@ -194,7 +194,7 @@ METH_IMPL(Sequence, nextValue) {
         // `seq` is empty.
         return NULL;
     } else {
-        boxStore(box, first);
+        GFN_CALL(store, box, first);
         return makeValue(
             TYPE_SequenceGenerator,
             mapFromArgs(
