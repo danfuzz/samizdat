@@ -218,7 +218,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     ## The loaded map maps paths to `"loading"` for a load-in-progress,
     ## `"notFound"` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
-    ifValue { get(fetch(loadedBox), source) }
+    ifValue { get(loadedBox*, source) }
         { found ->
             ifIs { hasType(found, @@module) }
                 { return found };
@@ -268,7 +268,7 @@ fn treeFromText(loader, text) {
 ## Updates a map-containing box to have the given additional / replacement
 ## binding.
 fn updateMapBox(box, key, value) {
-    def newMap = { fetch(box)*, (key): value };
+    def newMap = { (box*)*, (key): value };
     store(box, newMap)
 };
 
