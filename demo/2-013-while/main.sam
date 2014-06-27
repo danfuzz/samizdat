@@ -11,63 +11,63 @@
 ## Main Tests
 ##
 
-def box = $Box::makeCell(0);
+var v = 0;
 
-while (fetch(box) < 5) {
-    store(box, fetch(box) + 1);
-    note("Value A is \%q(fetch(box)).")
+while (v < 5) {
+    v := v + 1;
+    note("Value A is \%q(v).")
 };
 
-while (fetch(box) < 15) {
-    store(box, fetch(box) + 1);
-    if (fetch(box) < 10) {
+while (v < 15) {
+    v := v + 1;
+    if (v < 10) {
         continue
     };
-    note("Value B is \%q(fetch(box)).")
+    note("Value B is \%q(v).")
 };
 
-while (fetch(box) < 30) { /next ->
-    store(box, fetch(box) + 1);
-    if (fetch(box) < 25) {
+while (v < 30) { /next ->
+    v := v + 1;
+    if (v < 25) {
         yield /next
     };
-    note("Value C is \%q(fetch(box)).")
+    note("Value C is \%q(v).")
 };
 
-def result1 = while (fetch(box) < 40) {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 35) {
+def result1 = while (v < 40) {
+    v := v + 1;
+    if (v == 35) {
         break "blort"
     };
-    note("Value D is \%q(fetch(box)).")
+    note("Value D is \%q(v).")
 };
 
 note("Result 1 is \%q(result1).");
 
-def result2 = while /out (fetch(box) < 40) {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 38) {
+def result2 = while /out (v < 40) {
+    v := v + 1;
+    if (v == 38) {
         yield /out "fizmo"
     };
-    note("Value E is \%q(fetch(box)).")
+    note("Value E is \%q(v).")
 };
 
 note("Result 2 is \%q(result2).");
 
-while (def value = (45 > fetch(box))) {
+while (def value = (45 > v)) {
     def nextVal = value + 1;
-    store(box, nextVal);
+    v := nextVal;
     note("Value F is \%q(nextVal).")
 };
 
 ## First test will be the one that fails.
-while (def value1 = (50 > fetch(box)), def value2 = value1 + 100) {
-    store(box, value1 + 1);
-    note("Value G is \%q(fetch(box)); \%q(value1) \%q(value2)");
+while (def value1 = (50 > v), def value2 = value1 + 100) {
+    v := value1 + 1;
+    note("Value G is \%q(v); \%q(value1) \%q(value2)");
 };
 
 ## Second test will be the one that fails.
-while (def value1 = fetch(box), def value2 = (55 > value1)) {
-    store(box, value1 + 1);
-    note("Value H is \%q(fetch(box)); \%q(value1) \%q(value2)");
+while (def value1 = v, def value2 = (55 > value1)) {
+    v := value1 + 1;
+    note("Value H is \%q(v); \%q(value1) \%q(value2)");
 };
