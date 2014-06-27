@@ -42,7 +42,7 @@ fn @@closure.bodies(bodiesBox) {
         ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
     });
 
-    def bodies = fetch(bodiesBox);
+    def bodies = bodiesBox*;
     if (def already = bodies[newNode]) {
         return already
     };
@@ -126,14 +126,14 @@ fn @@void.bodies(bodiesBox) {
 export fn collectClosures(node) {
     def bodiesBox = $Box::makeCell({});
     def newNode = bodies(node, bodiesBox);
-    def bodiesMap = fetch(bodiesBox);
+    def bodiesMap = bodiesBox*;
 
     def bodiesBoxList = [ for #bodiesMap -> $Box::makePromise() ];
     for (body in bodiesMap) {
         def index = get_value(body)::id;
         store(bodiesBoxList[index], get_key(body))
     };
-    def closures = [ box in bodiesBoxList -> fetch(box) ];
+    def closures = [ box in bodiesBoxList -> box* ];
 
     return { closures, node: newNode }
 };

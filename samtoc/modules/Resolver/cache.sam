@@ -19,10 +19,10 @@ export fn makeCache() {
 };
 
 export fn cacheGet(cache, source) {
-    return? fetch(cache::box)[source]
+    return? (cache::box*)[source]
 };
 
 export fn cachePut(cache, source, resolved) {
-    def newMap = {fetch(cache::box)*, (source): resolved};
+    def newMap = {(cache::box*)*, (source): resolved};
     store(cache::box, newMap)
 };

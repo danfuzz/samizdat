@@ -25,7 +25,7 @@ export fn genWrapper(tree) {
 fn @@Wrapper.flatten() {
     def flatBox = this::flatBox;
 
-    return fetch(flatBox)
+    return flatBox*
         | store(flatBox, this::tree.flatten())
 };
 

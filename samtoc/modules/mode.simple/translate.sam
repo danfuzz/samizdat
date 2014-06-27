@@ -20,7 +20,7 @@ import ./vars :: localVarDecl, localVarName;
 
 ## Common translation code for variable definition.
 fn varDefCommon(name, value, varsBox) {
-    def vars = fetch(varsBox);
+    def vars = varsBox*;
 
     if ((def found = vars[name]) & (found::kind != "free")) {
         die("Cannot redefine local variable: \%q(name).")
@@ -76,7 +76,7 @@ fn @@closure.translate(varsBox) {
 fn @@closureRef.translate(varsBox) {
     ## This passes each of the `varRefs` as an argument to the
     ## closure maker.
-    def vars = fetch(varsBox);
+    def vars = varsBox*;
     return genCall("makeClosure_\(this.id)",
         ( name in this.varRefs ->
             vars[name]::name
@@ -149,7 +149,7 @@ fn @@varDefMutable.translate(varsBox) {
 
 fn @@varRef.translate(varsBox) {
     def name = this.name;
-    def vars = fetch(varsBox);
+    def vars = varsBox*;
     def binding = vars[name]
         | die("Reference of undefined variable: \%q(this.name)");
     return genCall("boxFetch", binding::name)
@@ -158,7 +158,7 @@ fn @@varRef.translate(varsBox) {
 fn @@varStore.translate(varsBox) {
     def name = this.name;
     def value = translate(this.nodeValue, varsBox);
-    def vars = fetch(varsBox);
+    def vars = varsBox*;
     def binding = vars[name]
         | die("Bind of undefined variable: \%q(this.name)");
 

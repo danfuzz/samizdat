@@ -13,7 +13,7 @@ export fn makeInterner() {
 
 export fn intern(this, value) {
     def box = this::values;
-    def values = fetch(box);
+    def values = box*;
 
     if (def already = values[value]) {
         return already;
@@ -26,7 +26,7 @@ export fn intern(this, value) {
 };
 
 export fn get_interns(this) {
-    def map = fetch(this::values);
+    def map = this::values*;
     def boxList = [ n in (0..#map) -> $Box::makePromise() ];
 
     for (mapping in map) {
@@ -34,5 +34,5 @@ export fn get_interns(this) {
         store(boxList[id], get_key(mapping))
     };
 
-    return [ box in boxList -> fetch(box) ]
+    return [ box in boxList -> box* ]
 };
