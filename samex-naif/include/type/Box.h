@@ -10,16 +10,11 @@
 #define _TYPE_BOX_H_
 
 #include "dat.h"
+#include "type/Generator.h"
 
 
 /** Type value for in-model type `Box`. */
 extern zvalue TYPE_Box;
-
-/**
- * Generic `canStore(box)`: Returns `box` if it can be stored to. Documented
- * in spec.
- */
-extern zvalue GFN_canStore;
 
 /**
  * Generic `fetch(box)`: Fetches the value from a box. Documented in spec.

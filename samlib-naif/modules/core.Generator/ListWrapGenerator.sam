@@ -33,7 +33,7 @@ fn @@ListWrapGenerator.nextValue(box) {
 
     return? ifValue { nextValue(dataOf(this), innerBox) }
         { nextGenerator ->
-            store(box, [fetch(innerBox)]);
+            store(box, [innerBox*]);
             @ListWrapGenerator(nextGenerator)
         }
 };

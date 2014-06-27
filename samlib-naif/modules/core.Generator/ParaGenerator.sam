@@ -51,7 +51,7 @@ fn @@ParaGenerator.nextValue(box) {
         subGens,
         { gen ->
             ifValue { nextValue(gen, innerBox) }
-                { nextGenerator -> [fetch(innerBox), nextGenerator] }
+                { nextGenerator -> [innerBox*, nextGenerator] }
                 {
                     ## One of the sub-generators became voided.
                     return

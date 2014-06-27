@@ -52,7 +52,6 @@ PRIM_DEF(Bitwise_shl,             GFN_shl);
 PRIM_DEF(Bitwise_xor,             GFN_xor);
 
 // Generic functions: `Box` protocol.
-PRIM_DEF(canStore,                GFN_canStore);
 PRIM_DEF(fetch,                   GFN_fetch);
 PRIM_DEF(store,                   GFN_store);
 

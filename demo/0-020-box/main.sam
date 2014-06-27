@@ -15,15 +15,20 @@
 
 ## Prints box info.
 fn msg(box) {
-    def storeStr = ifIs { canStore(box) }
-        { "can-store : " }
-        { "no-store  : " };
-
-    def fetchStr = ifValue { fetch(box) }
+    def str = ifValue { fetch(box) }
         { value -> $Format::source(value) }
         { "(void)" };
 
-    note(storeStr, fetchStr)
+    note("Fetched: ", str)
+};
+
+## Prints box info using interpolation.
+fn msgInterp(box) {
+    def str = ifValue { box* }
+        { value -> $Format::source(value) }
+        { "(void)" };
+
+    note("Interpolated: ", str)
 };
 
 
@@ -75,3 +80,9 @@ note("\nnullBox");
 msg($Box::nullBox);
 store($Box::nullBox, "stuff");
 msg($Box::nullBox);
+
+note("\nInterpolation");
+
+msgInterp($Box::nullBox);
+msgInterp($Box::makeCell());
+msgInterp($Box::makeCell("blort"));

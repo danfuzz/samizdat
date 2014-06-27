@@ -114,7 +114,7 @@ fn @@PegRepeat.parse(box, input, items*) {
                 { newInput ->
                     ## Successfully parsed the inner rule.
                     remainingInput := newInput;
-                    results := [results*, fetch(innerBox)];
+                    results := [results*, innerBox*];
                     maxCheck()
                 }
                 {
@@ -156,7 +156,7 @@ fn @@PegSequence.parse(box, input, items*) {
         ifValue { parse(rule, innerBox, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
-                lastResult := fetch(innerBox);
+                lastResult := innerBox*;
                 results := [results*, lastResult]
             }
             {
@@ -181,7 +181,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
 
     return? ifValue { nextValue(input, innerBox) }
         { newInput ->
-            def item = fetch(innerBox);
+            def item = innerBox*;
             ifIs { get(this::types, get_type(item)) }
                 {
                     store(box, item);
@@ -196,7 +196,7 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
 
     return? ifValue { nextValue(input, innerBox) }
         { newInput ->
-            def item = fetch(innerBox);
+            def item = innerBox*;
             ifNot { get(this::types, get_type(item)) }
                 {
                     store(box, item);
@@ -249,7 +249,7 @@ export fn apply(rule, input) {
         { input };
 
     return? ifIs { parse(rule, box, generator) }
-        { fetch(box) }
+        { box* }
 };
 
 ## Documented in spec.

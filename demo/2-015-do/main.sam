@@ -11,34 +11,34 @@
 ## Main Tests
 ##
 
-def box = $Box::makeCell(0);
+var v = 0;
 
 do {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 5) {
+    v := v + 1;
+    if (v == 5) {
         break
     };
-    note("Value is \%q(fetch(box)).")
+    note("Value is \%q(v).")
 };
 
 do { /next ->
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 10) {
+    v := v + 1;
+    if (v == 10) {
         continue
-    } else if (fetch(box) == 12) {
+    } else if (v == 12) {
         yield /next
-    } else if (fetch(box) == 15) {
+    } else if (v == 15) {
         break
     };
-    note("Value is \%q(fetch(box)).")
+    note("Value is \%q(v).")
 };
 
 def result = do /out {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 20) {
+    v := v + 1;
+    if (v == 20) {
         yield /out "igram"
     };
-    note("Value is \%q(fetch(box)).")
+    note("Value is \%q(v).")
 };
 
 note("Result is \%q(result).");

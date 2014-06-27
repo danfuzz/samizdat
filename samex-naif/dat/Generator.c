@@ -85,7 +85,7 @@ METH_IMPL(Generator, stdCollect) {
 
 /** Initializes the module. */
 MOD_INIT(Generator) {
-    MOD_USE(Box);
+    MOD_USE_NEXT(Box);
     MOD_USE_NEXT(List);
 
     GFN_collect = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "collect"));

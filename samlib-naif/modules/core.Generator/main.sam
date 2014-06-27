@@ -70,7 +70,7 @@ export fn filterPump(filterFunction, generators*) {
             loop {
                 ifValue { nextValue(gen, box) }
                     { nextGen ->
-                        ifValue { filterFunction(fetch(box)) }
+                        ifValue { filterFunction(box*) }
                             { value -> result := [value] };
                         gen := nextGen
                     }
@@ -86,7 +86,7 @@ export fn filterPump(filterFunction, generators*) {
             loop {
                 ifValue { nextValue(gen, box) }
                     { nextGen ->
-                        ifValue { filterFunction(fetch(box)*) }
+                        ifValue { filterFunction((box*)*) }
                             { value -> result := [value] };
                         gen := nextGen
                     }
@@ -105,6 +105,6 @@ export fn generatorPump(generator) {
 
     loop {
         gen := ifValueOr { nextValue(gen, box) }
-            { return? fetch(box) }
+            { return? box* }
     }
 };
