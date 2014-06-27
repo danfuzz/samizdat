@@ -15,15 +15,11 @@
 
 ## Prints box info.
 fn msg(box) {
-    def storeStr = ifIs { canStore(box) }
-        { "can-store : " }
-        { "no-store  : " };
-
     def fetchStr = ifValue { fetch(box) }
         { value -> $Format::source(value) }
         { "(void)" };
 
-    note(storeStr, fetchStr)
+    note("Box: ", fetchStr)
 };
 
 
