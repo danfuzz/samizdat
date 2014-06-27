@@ -8,6 +8,7 @@
 
 #include "type/Box.h"
 #include "type/Generic.h"
+#include "type/List.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -153,6 +154,19 @@ METH_IMPL(Box, canStore) {
 }
 
 // Documented in header.
+METH_IMPL(Box, collect) {
+    zvalue box = args[0];
+    zvalue function = (argCount > 1) ? args[1] : NULL;
+    zvalue value = doFetch(box);
+
+    if ((value != NULL) && (function != NULL)) {
+        value = FUN_CALL(function, value);
+    }
+
+    return (value == NULL) ? EMPTY_LIST : listFromArray(1, &value);
+}
+
+// Documented in header.
 METH_IMPL(Box, fetch) {
     zvalue box = args[0];
     return doFetch(box);
@@ -168,6 +182,20 @@ METH_IMPL(Box, gcMark) {
 }
 
 // Documented in header.
+METH_IMPL(Box, nextValue) {
+    zvalue box = args[0];
+    zvalue outBox = args[1];
+    zvalue value = doFetch(box);
+
+    if (value != NULL) {
+        boxStore(outBox, value);
+        return EMPTY_LIST;
+    } else {
+        return NULL;
+    }
+}
+
+// Documented in header.
 METH_IMPL(Box, store) {
     zvalue box = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
@@ -176,6 +204,7 @@ METH_IMPL(Box, store) {
 
 /** Initializes the module. */
 MOD_INIT(Box) {
+    MOD_USE(Generator);
     MOD_USE(Value);
 
     GFN_canStore = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "canStore"));
@@ -190,7 +219,9 @@ MOD_INIT(Box) {
     TYPE_Box = makeCoreType(stringFromUtf8(-1, "Box"), TYPE_Value, true);
 
     METH_BIND(Box, canStore);
+    METH_BIND(Box, collect);
     METH_BIND(Box, fetch);
     METH_BIND(Box, gcMark);
+    METH_BIND(Box, nextValue);
     METH_BIND(Box, store);
 }

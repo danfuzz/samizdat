@@ -10,6 +10,7 @@
 #define _TYPE_BOX_H_
 
 #include "dat.h"
+#include "type/Generator.h"
 
 
 /** Type value for in-model type `Box`. */
