@@ -33,10 +33,6 @@ Refinement of the `Generator` protocol. This is equivalent to getting the
 contents of the box as a list (of zero or one element), and calling
 `collect` on that list with the same arguments.
 
-#### `canStore(box) -> logic`
-
-Returns `box` if the `box` can be stored to. Otherwise returns void.
-
 #### `fetch(box) -> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has

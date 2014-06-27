@@ -229,11 +229,10 @@ See the language guide section on generic functions for more details.
 A `Box` is a holder for some other value. (In other systems, boxes are
 sometimes called "cells" or "handles.")
 
-In addition to the box constructor functions, the three functions that
+In addition to the box constructor functions, the two functions that
 deal with boxes are `fetch` to get the contents of a box (or void if
-the box value has yet to be set), `store` to set the contents of
-a box, and `canStore` to indicate whether it is okay to call
-`store` (which is not the same as `fetch` returning void).
+the box value has yet to be set) and `store` to set the contents of
+a box.
 
 There are four predefined box variants:
 
