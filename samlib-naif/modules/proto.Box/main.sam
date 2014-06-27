@@ -9,5 +9,7 @@
 #= language core.Lang0
 
 export
+    collect,
     fetch,
+    nextValue,
     store;
