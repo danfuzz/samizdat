@@ -45,7 +45,7 @@ fn @@FilterGenerator.nextValue(box) {
     loop {
         ifValue { nextValue(innerGen, innerBox) }
             { nextGen ->
-                ifValue { filterFunction(fetch(innerBox)*) }
+                ifValue { filterFunction((innerBox*)*) }
                     { value ->
                         store(box, value);
                         return @FilterGenerator{

@@ -37,7 +37,7 @@ fn @@OptGenerator.nextValue(box) {
 
     return ifValue { nextValue(subGen, innerBox) }
         { nextGen ->
-            store(box, [fetch(innerBox)]);
+            store(box, [innerBox*]);
             @OptGenerator(nextGen)
         }
         { nextValue(makeValueGenerator([]), box) }
