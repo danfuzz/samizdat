@@ -84,7 +84,7 @@ void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
 }
 
 // Documented in header.
-zvalue frameBind(Frame *frame, zvalue name, zvalue value) {
+zvalue frameStore(Frame *frame, zvalue name, zvalue value) {
     zvalue box = findBox(frame, name);
     return boxStore(box, value);
 }
