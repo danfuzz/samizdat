@@ -15,27 +15,6 @@
 
 
 //
-// Private Definitions
-//
-
-/**
- * Finds the variable with the given name, returning the box it is bound
- * to if found, or failing (terminating) if not found.
- */
-static zvalue findBox(Frame *frame, zvalue name) {
-    for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
-        zvalue result = get(frame->vars, name);
-
-        if (result != NULL) {
-            return result;
-        }
-    }
-
-    die("Variable not defined: %s", valDebugString(name));
-}
-
-
-//
 // Module Definitions
 //
 
@@ -84,14 +63,27 @@ void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
 }
 
 // Documented in header.
+zvalue frameGet(Frame *frame, zvalue name) {
+    for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
+        zvalue result = get(frame->vars, name);
+
+        if (result != NULL) {
+            return result;
+        }
+    }
+
+    die("Variable not defined: %s", valDebugString(name));
+}
+
+// Documented in header.
 zvalue frameStore(Frame *frame, zvalue name, zvalue value) {
-    zvalue box = findBox(frame, name);
+    zvalue box = frameGet(frame, name);
     return GFN_CALL(store, box, value);
 }
 
 // Documented in header.
 zvalue frameFetch(Frame *frame, zvalue name) {
-    zvalue box = findBox(frame, name);
+    zvalue box = frameGet(frame, name);
     zvalue result = GFN_CALL(fetch, box);
 
     if (result == NULL) {

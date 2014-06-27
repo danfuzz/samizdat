@@ -121,6 +121,14 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
 }
 
 /**
+ * Executes a `varBox` form.
+ */
+static zvalue execVarBox(Frame *frame, zvalue varRef) {
+    zvalue name = get(varRef, STR_name);
+    return frameGet(frame, name);
+}
+
+/**
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
