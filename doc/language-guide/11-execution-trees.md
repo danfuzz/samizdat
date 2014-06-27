@@ -193,10 +193,13 @@ The result of evaluating this form is the same as the result of evaluating
 
 This represents a by-name variable reference.
 
-When run, this causes the `name` to be looked up in the current
-execution environment. If a binding is found for it, then the bound value
-is the result of evaluation. If a binding is not found for it, then
-evaluation fails (terminating the runtime).
+When run, this causes the `name` to be resolved in the current
+execution environment. If a variable reference is found for it, then the
+result of evaluation is the bound value of the reference. If the `name`
+cannot be resolved, then evaluation fails (terminating the runtime).
+
+**Note:** It is possible for a node of this type to yield void. This happens
+when a variable is defined but not (or not yet) bound to a value.
 
 <br><br>
 ### Limited Context Expression Nodes
