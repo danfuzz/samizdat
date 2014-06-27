@@ -86,13 +86,13 @@ void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
 // Documented in header.
 zvalue frameStore(Frame *frame, zvalue name, zvalue value) {
     zvalue box = findBox(frame, name);
-    return boxStore(box, value);
+    return GFN_CALL(store, box, value);
 }
 
 // Documented in header.
 zvalue frameFetch(Frame *frame, zvalue name) {
     zvalue box = findBox(frame, name);
-    zvalue result = boxFetch(box);
+    zvalue result = GFN_CALL(fetch, box);
 
     if (result == NULL) {
         die("Variable defined but unbound: %s", valDebugString(name));

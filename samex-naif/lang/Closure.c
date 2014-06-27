@@ -197,7 +197,7 @@ static zvalue getCachedClosure(zvalue node) {
     if (result == NULL) {
         result = buildCachedClosure(dataOf(node));
         nodeCache = collPut(nodeCache, node, result);
-        boxStore(nodeCacheBox, nodeCache);
+        GFN_CALL(store, nodeCacheBox, nodeCache);
     }
 
     return result;

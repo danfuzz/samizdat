@@ -152,7 +152,7 @@ fn @@varRef.translate(varsBox) {
     def vars = varsBox*;
     def binding = vars[name]
         | die("Reference of undefined variable: \%q(this.name)");
-    return genCall("boxFetch", binding::name)
+    return genCall("GFN_CALL", "fetch", binding::name)
 };
 
 fn @@varStore.translate(varsBox) {
@@ -162,7 +162,7 @@ fn @@varStore.translate(varsBox) {
     def binding = vars[name]
         | die("Bind of undefined variable: \%q(this.name)");
 
-    return genCall("boxStore", binding::name, value)
+    return genCall("GFN_CALL", "store", binding::name, value)
 };
 
 fn @@void.translate(varsBox) {
