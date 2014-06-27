@@ -118,10 +118,11 @@ static zvalue expandYield(zvalue map) {
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
     switch (get_evalType(node)) {
-        case EVAL_apply: return true;
-        case EVAL_call:  return true;
-        case EVAL_maybe: return true;
-        case EVAL_void:  return true;
+        case EVAL_apply:  return true;
+        case EVAL_call:   return true;
+        case EVAL_maybe:  return true;
+        case EVAL_varRef: return true;
+        case EVAL_void:   return true;
         default: {
             return false;
         }
@@ -213,13 +214,13 @@ zvalue get_definedNames(zvalue node) {
 // Documented in spec.
 bool isExpression(zvalue node) {
     switch (get_evalType(node)) {
-        case EVAL_apply:   return true;
-        case EVAL_call:    return true;
-        case EVAL_closure: return true;
-        case EVAL_literal: return true;
-        case EVAL_noYield: return true;
-        case EVAL_varBind: return true;
-        case EVAL_varRef:  return true;
+        case EVAL_apply:    return true;
+        case EVAL_call:     return true;
+        case EVAL_closure:  return true;
+        case EVAL_literal:  return true;
+        case EVAL_noYield:  return true;
+        case EVAL_varStore: return true;
+        case EVAL_varRef:   return true;
         default: {
             return false;
         }
@@ -567,13 +568,6 @@ zvalue makeThunk(zvalue expression) {
 }
 
 // Documented in spec.
-zvalue makeVarBind(zvalue name, zvalue value) {
-    return makeValue(TYPE_varBind,
-        mapFrom2(STR_name, name, STR_value, value),
-        NULL);
-}
-
-// Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
     return makeValue(TYPE_varDef,
         mapFrom2(STR_name, name, STR_value, value),
@@ -590,6 +584,13 @@ zvalue makeVarDefMutable(zvalue name, zvalue value) {
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
     return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
+}
+
+// Documented in spec.
+zvalue makeVarStore(zvalue name, zvalue value) {
+    return makeValue(TYPE_varStore,
+        mapFrom2(STR_name, name, STR_value, value),
+        NULL);
 }
 
 // Documented in spec.
@@ -837,7 +838,7 @@ zvalue withoutTops(zvalue node) {
 
         if (get(defNode, STR_top) != NULL) {
             mains = listAppend(mains,
-                makeVarBind(get(defNode, STR_name), get(defNode, STR_value)));
+                makeVarStore(get(defNode, STR_name), get(defNode, STR_value)));
         } else {
             mains = listAppend(mains, s);
         }

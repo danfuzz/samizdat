@@ -277,11 +277,6 @@ fn @@parser.convertPexIn() {
     return makeCallPex(REFS::Peg_makeMainSequence, this, [])
 };
 
-## Does parser conversion of a `varBind` node.
-fn @@varBind.convertPexIn() {
-    return convertValuePayload(this)
-};
-
 ## Does parser conversion of a `varDef` node.
 fn @@varDef.convertPexIn() {
     return convertValuePayload(this)
@@ -295,6 +290,11 @@ fn @@varDefMutable.convertPexIn() {
 ## Does parser conversion of a `varRef` node.
 fn @@varRef.convertPexIn() {
     return withoutIntermediates(this)
+};
+
+## Does parser conversion of a `varStore` node.
+fn @@varStore.convertPexIn() {
+    return convertValuePayload(this)
 };
 
 ## Does parser conversion of a `void` node.

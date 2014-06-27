@@ -80,10 +80,6 @@ fn @@noYield.get_varDefs() {
     return []
 };
 
-fn @@varBind.get_varDefs() {
-    return []
-};
-
 fn @@varDef.get_varDefs() {
     return [this.name]
 };
@@ -93,6 +89,10 @@ fn @@varDefMutable.get_varDefs() {
 };
 
 fn @@varRef.get_varDefs() {
+    return []
+};
+
+fn @@varStore.get_varDefs() {
     return []
 };
 

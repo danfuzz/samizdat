@@ -70,11 +70,6 @@ export fn makeNonlocalExit(function, optValue?) {
 };
 
 ## Documented in spec.
-export fn makeVarBind(name, value) {
-    return @varBind{name, value}
-};
-
-## Documented in spec.
 export fn makeVarDef(name, optValue?) {
     return ifValue { optValue* }
         { value -> @varDef{name, value} }
@@ -97,8 +92,13 @@ export fn makeVarRef(name) {
 export fn makeVarRefLvalue(name) {
     return @varRef{
         name,
-        lvalue: { node -> makeVarBind(name, node) }
+        lvalue: { node -> makeVarStore(name, node) }
     }
+};
+
+## Documented in spec.
+export fn makeVarStore(name, value) {
+    return @varStore{name, value}
 };
 
 ## Documented in spec.

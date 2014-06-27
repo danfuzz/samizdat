@@ -87,11 +87,6 @@ fn @@noYield.bodies(bodiesBox) {
     return @noYield{value}
 };
 
-fn @@varBind.bodies(bodiesBox) {
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @varBind{name: this.name, value}
-};
-
 fn @@varDef.bodies(bodiesBox) {
     def value = ifValue { this.nodeValue }
         { value -> {value: bodies(value, bodiesBox)} }
@@ -108,6 +103,11 @@ fn @@varDefMutable.bodies(bodiesBox) {
 
 fn @@varRef.bodies(bodiesBox) {
     return @varRef{name: this.name}
+};
+
+fn @@varStore.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    return @varStore{name: this.name, value}
 };
 
 fn @@void.bodies(bodiesBox) {

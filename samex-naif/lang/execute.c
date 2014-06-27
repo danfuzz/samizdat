@@ -92,16 +92,6 @@ static void execNoYield(Frame *frame, zvalue noYield) {
     mustNotYield(execExpression(frame, valueExpression));
 }
 
-// Documented in header.
-static zvalue execVarBind(Frame *frame, zvalue varBind) {
-    zvalue name = get(varBind, STR_name);
-    zvalue valueExpression = get(varBind, STR_value);
-    zvalue value = execExpression(frame, valueExpression);
-
-    frameBind(frame, name, value);
-    return value;
-}
-
 /**
  * Executes a `varDef` form, by updating the given execution frame
  * as appropriate.
@@ -135,7 +125,18 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
     zvalue name = get(varRef, STR_name);
-    return frameGet(frame, name);
+    return frameFetch(frame, name);
+}
+
+/**
+ * Executes a `varStore` form.
+ */
+static zvalue execVarStore(Frame *frame, zvalue varStore) {
+    zvalue name = get(varStore, STR_name);
+    zvalue valueExpression = get(varStore, STR_value);
+    zvalue value = execExpression(frame, valueExpression);
+
+    return frameStore(frame, name, value);
 }
 
 /**
@@ -158,13 +159,13 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (get_evalType(e)) {
-        case EVAL_apply:   return execApply(frame, e);
-        case EVAL_call:    return execCall(frame, e);
-        case EVAL_closure: return execClosure(frame, e);
-        case EVAL_literal: return get(e, STR_value);
-        case EVAL_noYield: execNoYield(frame, e);
-        case EVAL_varBind: return execVarBind(frame, e);
-        case EVAL_varRef:  return execVarRef(frame, e);
+        case EVAL_apply:    return execApply(frame, e);
+        case EVAL_call:     return execCall(frame, e);
+        case EVAL_closure:  return execClosure(frame, e);
+        case EVAL_literal:  return get(e, STR_value);
+        case EVAL_noYield:  execNoYield(frame, e);
+        case EVAL_varRef:   return execVarRef(frame, e);
+        case EVAL_varStore: return execVarStore(frame, e);
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }

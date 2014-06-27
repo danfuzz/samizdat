@@ -649,11 +649,11 @@ DEF_PARSE(assignExpression) {
     // This code isn't parallel to the in-language code but has the
     // same effect, given that the only valid lvalues are variable references.
     // In this case, we ensured (above) that we've got a `varRef` and
-    // recombine it here into a `varBind`.
+    // recombine it here into a `varStore`.
     zvalue ex = PARSE_OR_REJECT(expression);
     zvalue name = GET(name, base);
 
-    return makeVarBind(name, ex);
+    return makeVarStore(name, ex);
 }
 
 /**

@@ -84,13 +84,13 @@ void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
 }
 
 // Documented in header.
-void frameBind(Frame *frame, zvalue name, zvalue value) {
+zvalue frameStore(Frame *frame, zvalue name, zvalue value) {
     zvalue box = findBox(frame, name);
-    boxStore(box, value);
+    return boxStore(box, value);
 }
 
 // Documented in header.
-zvalue frameGet(Frame *frame, zvalue name) {
+zvalue frameFetch(Frame *frame, zvalue name) {
     zvalue box = findBox(frame, name);
     zvalue result = boxFetch(box);
 

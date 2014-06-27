@@ -68,10 +68,10 @@ TYP(module,                "module");
 TYP(noYield,               "noYield");
 TYP(nonlocalExit,          "nonlocalExit");
 TYP(string,                "string");
-TYP(varBind,               "varBind");
 TYP(varDef,                "varDef");
 TYP(varDefMutable,         "varDefMutable");
 TYP(varRef,                "varRef");
+TYP(varStore,              "varStore");
 
 STR(absent,                "absent");
 STR(bind,                  "bind");

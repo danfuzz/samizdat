@@ -432,7 +432,7 @@ export fn withoutTops(node) {
             { s };
 
         ifIs { defNode::top }
-            { makeVarBind(get_name(defNode), get_nodeValue(defNode)) }
+            { makeVarStore(get_name(defNode), get_nodeValue(defNode)) }
             { s }
     };
 

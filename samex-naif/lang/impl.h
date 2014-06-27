@@ -27,10 +27,10 @@ typedef enum {
     EVAL_literal,
     EVAL_maybe,
     EVAL_noYield,
-    EVAL_varBind,
     EVAL_varDef,
     EVAL_varDefMutable,
     EVAL_varRef,
+    EVAL_varStore,
     EVAL_void
 } zevalType;
 
@@ -101,14 +101,15 @@ void frameMark(Frame *frame);
 void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value);
 
 /**
- * Binds the given variable in the given frame.
+ * Fetches a variable's value out of the given frame.
  */
-void frameBind(Frame *frame, zvalue name, zvalue value);
+zvalue frameFetch(Frame *frame, zvalue name);
 
 /**
- * Gets a variable's value out of the given frame.
+ * Stores the given value into the given variable defined in the given frame.
+ * This returns whatever the underlying `store` call returns.
  */
-zvalue frameGet(Frame *frame, zvalue name);
+zvalue frameStore(Frame *frame, zvalue name, zvalue value);
 
 /**
  * Snapshots the given frame into the given target. The `target` is assumed
