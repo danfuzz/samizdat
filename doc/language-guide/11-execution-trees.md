@@ -169,7 +169,7 @@ the runtime).
 
 #### `varBind` &mdash; `@varBind{name: name, value: expression}`
 
-* `name: name` &mdash; Variable name to bind (typically a string).
+* `name: name` &mdash; Name of variable name to store to (typically a string).
 
 * `value: expression` &mdash; Expression node representing the
   value that the variable should take on when defined.
@@ -181,8 +181,8 @@ When run, the `value` expression is evaluated. If it evaluates to void,
 then evaluation fails (terminating the runtime). Otherwise, the `name`
 is looked up and resolved to a variable reference. It is an error
 (terminating the runtime) if no such variable is found, or if such a
-variable is found and it is not available for binding (or rebinding).
-Otherwise, the evaluated value is bound to the variable.
+variable is found and it is not valid to store to it. Otherwise, the
+evaluated value is stored to the variable.
 
 The result of evaluating this form is the same as what is returned by
 executing the store operation on the underlying cell. This is typically
@@ -276,9 +276,9 @@ behavior varies depending on if `value` is supplied in this node:
 
 * Without a supplied `value`, this serves as a forward declaration. The
   variable is defined, but it is unbound (i.e. bound to void). It is then
-  valid to bind the variable to a value *exactly once* by use of a
-  `varBind` node. Before such binding, it is invalid (terminating the runtime)
-  to refer to the variable.
+  valid to store into the variable a value *exactly once* by use of a
+  `varBind` node. Before such storage, it is valid to refer to the variable
+  in an expression node though it will evaluate to void.
 
 * With `value` supplied, said `value` is evaluated. If it evaluates to void,
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
@@ -309,8 +309,8 @@ The behavior varies depending on if `value` is supplied in this node:
 
 * Without a supplied `value`, this serves as a forward declaration. The
   variable is defined, but it is unbound (i.e. bound to void). After
-  definition and before binding (via `varBind`), it is invalid (terminating
-  the runtime) to refer to the variable.
+  definition and before storage (via `varBind`), it is valid to refer to the
+  variable in an expression node though it will evaluate to void.
 
 * With `value` supplied, said `value` is evaluated. If it evaluates to void,
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
