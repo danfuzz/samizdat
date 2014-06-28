@@ -80,6 +80,10 @@ fn @@noYield.get_varDefs() {
     return []
 };
 
+fn @@varBox.get_varDefs() {
+    return []
+};
+
 fn @@varDef.get_varDefs() {
     return [this.name]
 };

@@ -568,6 +568,11 @@ zvalue makeThunk(zvalue expression) {
 }
 
 // Documented in spec.
+zvalue makeVarBox(zvalue name) {
+    return makeValue(TYPE_varBox, mapFrom1(STR_name, name), NULL);
+}
+
+// Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
     return makeValue(TYPE_varDef,
         mapFrom2(STR_name, name, STR_value, value),

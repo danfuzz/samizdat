@@ -299,6 +299,15 @@ DEF_PARSE(varRef) {
 }
 
 // Documented in spec.
+DEF_PARSE(varBox) {
+    MARK();
+
+    MATCH_OR_REJECT(var);
+    zvalue name = PARSE_OR_REJECT(name);
+    return makeVarBox(name);
+}
+
+// Documented in spec.
 DEF_PARSE(int) {
     MARK();
 
@@ -557,6 +566,7 @@ DEF_PARSE(term) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varRef);          }
+    if (result == NULL) { result = PARSE(varBox);          }
     if (result == NULL) { result = PARSE(int);             }
     if (result == NULL) { result = PARSE(string);          }
     if (result == NULL) { result = PARSE(map);             }

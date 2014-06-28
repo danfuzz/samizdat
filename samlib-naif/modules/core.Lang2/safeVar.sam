@@ -138,6 +138,10 @@ fn @@noYield.safeIndex(base) {
     return safeIndexForNodes(base, get_nodeValue(this))
 };
 
+fn @@varBox.safeIndex(base) {
+    return safeIndexForNames(base, get_name(this))
+};
+
 fn @@varDef.safeIndex(base) {
     def nameIndex =
         safeIndexForNames(base, get_name(this));

@@ -121,11 +121,19 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
 }
 
 /**
+ * Executes a `varBox` form.
+ */
+static zvalue execVarBox(Frame *frame, zvalue varRef) {
+    zvalue name = get(varRef, STR_name);
+    return frameGet(frame, name);
+}
+
+/**
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
     zvalue name = get(varRef, STR_name);
-    return frameFetch(frame, name);
+    return GFN_CALL(fetch, frameGet(frame, name));
 }
 
 /**
@@ -136,7 +144,7 @@ static zvalue execVarStore(Frame *frame, zvalue varStore) {
     zvalue valueExpression = get(varStore, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
-    return frameStore(frame, name, value);
+    return GFN_CALL(store, frameGet(frame, name), value);
 }
 
 /**
@@ -164,6 +172,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_closure:  return execClosure(frame, e);
         case EVAL_literal:  return get(e, STR_value);
         case EVAL_noYield:  execNoYield(frame, e);
+        case EVAL_varBox:   return execVarBox(frame, e);
         case EVAL_varRef:   return execVarRef(frame, e);
         case EVAL_varStore: return execVarStore(frame, e);
         default: {

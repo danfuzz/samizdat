@@ -9,7 +9,6 @@
 
 #= language core.Lang0
 
-import core.Box :: makePromise;
 import core.Sequence :: sliceInclusive;
 
 import ./NullGenerator :: nullGenerator;

@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import core.Box :: makeCell, nullBox;
+import core.Box :: nullBox;
 
 export import ./FilterGenerator :: *;
 export import ./ListWrapGenerator :: *;
@@ -59,8 +59,8 @@ export fn filterAll(filterFunction, generators*) {
 
 ## Documented in spec.
 export fn filterPump(filterFunction, generators*) {
-    def box = makeCell();
     var result = [];
+    var innerResult;
 
     ifIs { eq(get_size(generators), 1) }
         {
@@ -68,9 +68,9 @@ export fn filterPump(filterFunction, generators*) {
             ## unnecessary wrapping / unwrapping.
             var gen = generators*;
             loop {
-                ifValue { nextValue(gen, box) }
+                ifValue { nextValue(gen, var innerResult) }
                     { nextGen ->
-                        ifValue { filterFunction(box*) }
+                        ifValue { filterFunction(innerResult) }
                             { value -> result := [value] };
                         gen := nextGen
                     }
@@ -84,9 +84,9 @@ export fn filterPump(filterFunction, generators*) {
             ## General case of multiple (or zero) generators.
             var gen = makeParaGenerator(generators*);
             loop {
-                ifValue { nextValue(gen, box) }
+                ifValue { nextValue(gen, var innerResult) }
                     { nextGen ->
-                        ifValue { filterFunction((box*)*) }
+                        ifValue { filterFunction(innerResult*) }
                             { value -> result := [value] };
                         gen := nextGen
                     }
@@ -100,11 +100,11 @@ export fn filterPump(filterFunction, generators*) {
 
 ## Documented in spec.
 export fn generatorPump(generator) {
-    def box = makeCell();
     var gen = generator;
+    var result;
 
     loop {
-        gen := ifValueOr { nextValue(gen, box) }
-            { return? box* }
+        gen := ifValueOr { nextValue(gen, var result) }
+            { return? result }
     }
 };

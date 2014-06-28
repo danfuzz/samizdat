@@ -9,8 +9,6 @@
 
 #= language core.Lang0
 
-import core.Box :: makePromise;
-
 
 ##
 ## Exported Definitions
@@ -29,11 +27,11 @@ fn @@ListWrapGenerator.collect(optFilterFunction?) {
 
 ## Documented in spec.
 fn @@ListWrapGenerator.nextValue(box) {
-    def innerBox = makePromise();
+    def result;
 
-    return? ifValue { nextValue(dataOf(this), innerBox) }
+    return? ifValue { nextValue(dataOf(this), var result) }
         { nextGenerator ->
-            store(box, [innerBox*]);
+            store(box, [result]);
             @ListWrapGenerator(nextGenerator)
         }
 };

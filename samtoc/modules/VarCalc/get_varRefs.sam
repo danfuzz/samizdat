@@ -112,6 +112,10 @@ fn @@noYield.get_varRefs() {
     return this.nodeValue.varRefs
 };
 
+fn @@varBox.get_varRefs() {
+    return [this.name]
+};
+
 fn @@varDef.get_varRefs() {
     return (def v = this.nodeValue) & v.varRefs | []
 };

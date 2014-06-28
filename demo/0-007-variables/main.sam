@@ -56,6 +56,18 @@ fn igram(foo) {
     note("    ", fizmo);
 };
 
+## Demo of box-of-variable access.
+fn fizmo() {
+    var x = "blort";
+    def box = var x;
+
+    note("fizmo:");
+    note("    ", x);
+    note("    ", fetch(box));
+    store(box, "igram");
+    note("    ", x);
+};
+
 
 ##
 ## Main Tests
@@ -73,3 +85,4 @@ def x$ = 1;
 frotz("fizmo");
 zorch("blort");
 igram("fizmo");
+fizmo();

@@ -167,6 +167,17 @@ When run, `value` is evaluated. Should control ever return directly
 (to the `noYield` evaluator), it will result in a fatal error (terminating
 the runtime).
 
+#### `varBox` &mdash; `@varBox{name: name}`
+
+* `name: name` &mdash; Name of a variable (typically a string).
+
+This is a reference to the *box* to which a variable is bound.
+
+When run, this causes the `name` to be resolved in the current
+execution environment. If a variable reference is found for it, then the
+result of evaluation is the box to which the name is bound. If `name`
+cannot be resolved, then evaluation fails (terminating the runtime).
+
 #### `varRef` &mdash; `@varRef{name: name}`
 
 * `name: name` &mdash; Name of a variable (typically a string).

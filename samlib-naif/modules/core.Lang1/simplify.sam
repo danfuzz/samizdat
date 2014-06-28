@@ -287,6 +287,11 @@ fn @@varDefMutable.convertPexIn() {
     return convertValuePayload(this)
 };
 
+## Does parser conversion of a `varBox` node.
+fn @@varBox.convertPexIn() {
+    return this
+};
+
 ## Does parser conversion of a `varRef` node.
 fn @@varRef.convertPexIn() {
     return withoutIntermediates(this)

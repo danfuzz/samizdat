@@ -119,6 +119,13 @@ def parVarRef = {:
     { makeVarRefLvalue(name) }
 :};
 
+## Parses a variable box reference.
+def parVarBox = {:
+    @var
+    name = parName
+    { makeVarBox(name) }
+:};
+
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,
 ## so that simple negative constants aren't turned into complicated function
 ## calls.
@@ -342,7 +349,7 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarRef | parInt | parString | parMap | parList |
+    parVarRef | parVarBox | parInt | parString | parMap | parList |
     parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
