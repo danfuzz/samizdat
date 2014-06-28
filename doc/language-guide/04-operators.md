@@ -25,11 +25,12 @@ to access a variable's box directly.
 
 To do this, prefix the name of the variable with `var`.
 
-For example, the following pairs are equivalent to each other:
+For example, in each of the following pairs, the two statements are
+equivalent to each other:
 
 ```
-note(x)
-note((var x)*)
+note(x);
+note((var x)*);
 
 x := 10;
 store(var x, 10);
