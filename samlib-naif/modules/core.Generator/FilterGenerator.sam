@@ -10,8 +10,6 @@
 
 #= language core.Lang0
 
-import core.Box :: makeCell;
-
 import ./ParaGenerator :: makeParaGenerator;
 
 
@@ -37,15 +35,15 @@ fn @@FilterGenerator.collect(optFilterFunction?) {
 fn @@FilterGenerator.nextValue(box) {
     var innerGen = this::generator;
     def filterFunction = this::filterFunction;
-    def innerBox = makeCell();
+    var result;
 
     ## This loop handles the fact that the filter function is
     ## allowed to yield void to indicate a generated value is to
     ## be discarded.
     loop {
-        ifValue { nextValue(innerGen, innerBox) }
+        ifValue { nextValue(innerGen, var result) }
             { nextGen ->
-                ifValue { filterFunction((innerBox*)*) }
+                ifValue { filterFunction(result*) }
                     { value ->
                         store(box, value);
                         return @FilterGenerator{

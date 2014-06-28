@@ -9,8 +9,6 @@
 
 #= language core.Lang0
 
-import core.Box :: makePromise;
-
 import ./ValueGenerator :: makeValueGenerator;
 import ./unboundedCollect :: unboundedCollect;
 
@@ -33,11 +31,11 @@ fn @@OptGenerator.collect(optFilterFunction?) {
 ## Documented in spec.
 fn @@OptGenerator.nextValue(box) {
     def subGen = dataOf(this);
-    def innerBox = makePromise();
+    def result;
 
-    return ifValue { nextValue(subGen, innerBox) }
+    return ifValue { nextValue(subGen, var result) }
         { nextGen ->
-            store(box, [innerBox*]);
+            store(box, [result]);
             @OptGenerator(nextGen)
         }
         { nextValue(makeValueGenerator([]), box) }

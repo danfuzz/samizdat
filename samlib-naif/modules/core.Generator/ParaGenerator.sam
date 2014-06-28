@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import core.Box :: makeCell, nullBox;
+import core.Box :: nullBox;
 
 import ./ListWrapGenerator :: makeListWrapGenerator;
 import ./NullGenerator :: nullGenerator;
@@ -46,12 +46,12 @@ fn @@ParaGenerator.nextValue(box) {
     ifIs { eq(subGens, []) }
         { return };
 
-    def innerBox = makeCell();
+    var result;
     def generatorCalls = collect(
         subGens,
         { gen ->
-            ifValue { nextValue(gen, innerBox) }
-                { nextGenerator -> [innerBox*, nextGenerator] }
+            ifValue { nextValue(gen, var result) }
+                { nextGenerator -> [result, nextGenerator] }
                 {
                     ## One of the sub-generators became voided.
                     return
