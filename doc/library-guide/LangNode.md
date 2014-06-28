@@ -396,6 +396,10 @@ any regular expression node, the result has a `maybe` node for the `yield`.
 For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
 result contains the given `node` as the `yield`, directly.
 
+#### `makeVarRef(name) -> node`
+
+Makes a `varBox` node.
+
 #### `makeVarDef(name, optValue?) -> node`
 
 Makes a `varDef` statement node.
