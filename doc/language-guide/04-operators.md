@@ -45,6 +45,8 @@ if (generator.nextValue(var result)) {
 }
 ```
 
+This form is similar in meaning to the address-of operator in C (`&name`).
+
 ### Postfix Operators
 
 Postfix operators have nearly the highest precedence in the language, binding

@@ -130,6 +130,14 @@ fn @@noYield.translate(varsBox) {
     return genCall("mustNotYield", value)
 };
 
+fn @@varBox.translate(varsBox) {
+    def name = this.name;
+    def vars = varsBox*;
+    def binding = vars[name]
+        | die("Reference of undefined variable: \%q(this.name)");
+    return binding::name
+};
+
 fn @@varDef.translate(varsBox) {
     def value = (def v = this.nodeValue)
         & genCall("makeResult", translate(v, varsBox))

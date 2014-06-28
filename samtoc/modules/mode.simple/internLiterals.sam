@@ -93,6 +93,10 @@ fn @@noYield.lits(interner) {
     return @noYield{value}
 };
 
+fn @@varBox.lits(interner) {
+    return this
+};
+
 fn @@varDef.lits(interner) {
     def value = ifValue { this.nodeValue }
         { value -> {value: lits(value, interner)} }

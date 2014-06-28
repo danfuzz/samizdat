@@ -87,6 +87,10 @@ fn @@noYield.bodies(bodiesBox) {
     return @noYield{value}
 };
 
+fn @@varBox.bodies(bodiesBox) {
+    return this
+};
+
 fn @@varDef.bodies(bodiesBox) {
     def value = ifValue { this.nodeValue }
         { value -> {value: bodies(value, bodiesBox)} }
