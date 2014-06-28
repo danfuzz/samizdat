@@ -12,11 +12,43 @@ The one exception is the assignment operator `:=`.
 The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
+### Tight Prefix Modifiers (Precedence 9, highest / tightest)
 
-### Postfix Operators (Precedence 8, highest / tightest)
+One special prefix form binds tighter than any other form.
 
-Postfix operators have the highest precedence in the language, binding
-more tightly than any other operators, including prefix operators.
+#### Variable box reference &mdash; `var name`
+
+Semantically speaking, every variable is represented as a "box" which can
+be fetched from and (in some cases) stored to. Normally, the box
+representation is kept "behind the scenes," but sometimes it is useful
+to access a variable's box directly.
+
+To do this, prefix the name of the variable with `var`.
+
+For example, the following pairs are equivalent to each other:
+
+```
+note(x)
+note((var x)*)
+
+x := 10;
+store(var x, 10);
+```
+
+This form is most useful when using protocols that explicitly want to take
+boxes, such as notably the generator and parser protocols.
+
+```
+def result;
+if (generator.nextValue(var result)) {
+    [...]
+}
+```
+
+### Postfix Operators
+
+Postfix operators have nearly the highest precedence in the language, binding
+more tightly than any other regular operators, including prefix operators.
 
 #### Apply function &mdash; `expression(arg, arg, ...) { block } { block } ...`
 
