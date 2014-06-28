@@ -172,6 +172,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_closure:  return execClosure(frame, e);
         case EVAL_literal:  return get(e, STR_value);
         case EVAL_noYield:  execNoYield(frame, e);
+        case EVAL_varBox:   return execVarBox(frame, e);
         case EVAL_varRef:   return execVarRef(frame, e);
         case EVAL_varStore: return execVarStore(frame, e);
         default: {
