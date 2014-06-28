@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import core.Box :: makeCell, makePromise, nullBox;
+import core.Box :: makeCell, nullBox;
 import core.Generator :: filterPump, makeFilterGenerator;
 
 
@@ -177,14 +177,13 @@ fn @@PegThunk.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegTokenSet.parse(box, input, items*) {
-    def innerBox = makePromise();
+    def result;
 
-    return? ifValue { nextValue(input, innerBox) }
+    return? ifValue { nextValue(input, var result) }
         { newInput ->
-            def item = innerBox*;
-            ifIs { get(this::types, get_type(item)) }
+            ifIs { get(this::types, get_type(result)) }
                 {
-                    store(box, item);
+                    store(box, result);
                     newInput
                 }
         }
@@ -192,14 +191,13 @@ fn @@PegTokenSet.parse(box, input, items*) {
 
 ## Documented in spec.
 fn @@PegTokenSetComplement.parse(box, input, items*) {
-    def innerBox = makePromise();
+    def result;
 
-    return? ifValue { nextValue(input, innerBox) }
+    return? ifValue { nextValue(input, var result) }
         { newInput ->
-            def item = innerBox*;
-            ifNot { get(this::types, get_type(item)) }
+            ifNot { get(this::types, get_type(result)) }
                 {
-                    store(box, item);
+                    store(box, result);
                     newInput
                 }
         }
@@ -239,7 +237,7 @@ fn genericMakeTokenSet(sense, types) {
 
 ## Documented in spec.
 export fn apply(rule, input) {
-    def box = makePromise();
+    def result;
     def generator = ifIs { hasType(input, String) }
         {
             ## This converts generated characters into tokens with the
@@ -248,8 +246,8 @@ export fn apply(rule, input) {
         }
         { input };
 
-    return? ifIs { parse(rule, box, generator) }
-        { box* }
+    return? ifIs { parse(rule, var result, generator) }
+        { result }
 };
 
 ## Documented in spec.
