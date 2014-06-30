@@ -267,6 +267,30 @@ METH_IMPL(String, cat) {
 }
 
 // Documented in header.
+METH_IMPL(String, collect) {
+    zvalue string = args[0];
+    zvalue function = (argCount > 1) ? args[1] : NULL;
+
+    StringInfo *info = getInfo(string);
+    zchar *elems = info->elems;
+    zint size = info->size;
+    zvalue result[size];
+    zint at = 0;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue elem = stringFromZchar(elems[i]);
+        zvalue one = (function == NULL) ? elem : FUN_CALL(function, elem);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return listFromArray(at, result);
+}
+
+// Documented in header.
 METH_IMPL(String, del) {
     zvalue string = args[0];
     zvalue n = args[1];
@@ -502,6 +526,7 @@ MOD_INIT(String) {
     // Note: The `typeSystem` module initializes `TYPE_String`.
 
     METH_BIND(String, cat);
+    METH_BIND(String, collect);
     METH_BIND(String, debugString);
     METH_BIND(String, del);
     METH_BIND(String, fetch);

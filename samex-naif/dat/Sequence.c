@@ -108,9 +108,6 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 // methods are bound on many types.
 //
 
-/** Builtin for `Sequence.collect`. */
-static zvalue BI_Sequence_collect = NULL;
-
 /** Builtin for `Sequence.get`. */
 static zvalue BI_Sequence_get = NULL;
 
@@ -218,7 +215,6 @@ METH_IMPL(Sequence, nthMapping) {
 
 // Documented in header.
 void seqBind(zvalue type) {
-    genericBind(GFN_collect,    type, BI_Sequence_collect);
     genericBind(GFN_get,        type, BI_Sequence_get);
     genericBind(GFN_keyList,    type, BI_Sequence_keyList);
     genericBind(GFN_nextValue,  type, BI_Sequence_nextValue);
@@ -240,10 +236,6 @@ MOD_INIT(Sequence) {
     GFN_sliceInclusive = makeGeneric(2, 3, GFN_NONE,
         stringFromUtf8(-1, "sliceInclusive"));
     datImmortalize(GFN_sliceInclusive);
-
-    BI_Sequence_collect = makeBuiltin(1, 2, METH_NAME(Sequence, collect), 0,
-        stringFromUtf8(-1, "Sequence.collect"));
-    datImmortalize(BI_Sequence_collect);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));
