@@ -14,6 +14,7 @@ Because they are so commonly used, the following definitions are
 exported to the standard global variable environment:
 
 * `collect`
+* `fetch`
 * `interpolate`
 * `maybeValue`
 * `nextValue`
@@ -40,6 +41,12 @@ results.
 
 **Note:** The function `filterAll` is a multi-generator generalization
 of this function.
+
+#### `fetch(generator) -> . | void`
+
+Returns the sole generated value of the generator, or void if given
+a voided generator. It is a fatal error (terminating the runtime) if
+`generator` is capable of generating more than one value.
 
 #### `nextValue(generator, box) -> generator | void`
 
