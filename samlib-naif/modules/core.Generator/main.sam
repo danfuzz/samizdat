@@ -28,7 +28,6 @@ export import ./unbounded :: *;
 ## Re-exported from globals (and proto module). Documented in spec.
 export
     collect,
-    interpolate,
     maybeValue,
     nextValue;
 

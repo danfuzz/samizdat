@@ -15,7 +15,6 @@ exported to the standard global variable environment:
 
 * `collect`
 * `fetch`
-* `interpolate`
 * `maybeValue`
 * `nextValue`
 
@@ -62,30 +61,6 @@ returns void.
 
 <br><br>
 ### Primitive Definitions
-
-#### `interpolate(generator) -> . | void`
-
-Interpolation helper. This takes a generator, `collect`s it, and then does
-the following based on the size of the collected result:
-
-* If the result is empty (the empty list), then this function returns void.
-* If the result has exactly one element, then this function returns
-  that element.
-* In all other cases, this terminates the runtime with an error.
-
-This function could be implemented as something like:
-
-```
-fn interpolate(generator) {
-    def list = [generator*];
-    if (list[1]) {
-        ## Die with error.
-    } else {
-        return list[0]
-    }
-}
-```
-
 
 #### `maybeValue(function) -> list`
 
