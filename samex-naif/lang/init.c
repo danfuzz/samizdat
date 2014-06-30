@@ -37,6 +37,7 @@ MOD_INIT(lang) {
     langTypeMap[typeIndex(TYPE_apply)]                 = EVAL_apply;
     langTypeMap[typeIndex(TYPE_call)]                  = EVAL_call;
     langTypeMap[typeIndex(TYPE_closure)]               = EVAL_closure;
+    langTypeMap[typeIndex(TYPE_fetch)]                 = EVAL_fetch;
     langTypeMap[typeIndex(TYPE_importModule)]          = EVAL_importModule;
     langTypeMap[typeIndex(TYPE_importModuleSelection)] = EVAL_importModuleSelection;
     langTypeMap[typeIndex(TYPE_importResource)]        = EVAL_importResource;
