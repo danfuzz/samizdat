@@ -104,8 +104,8 @@ if any. This is only defined on closure nodes which have been processed by
 
 #### `get_interpolate(node) -> node | void`
 
-Gets the interpolated node, if any, of a `call` node. This is non-void
-when a `call` node was created by virtue of a call to `makeInterpolate`
+Gets the interpolated node, if any, of a `call` or `fetch` node. This is
+non-void when a node was created by virtue of a call to `makeInterpolate`
 and is in turn used by `makeCallOrApply` to detect when to translate
 a call into an interpolated form.
 
@@ -140,9 +140,9 @@ nodes of type `closure`, `importModule`, `importResource`, `varBox`, `varDef`,
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is
-applicable to nodes of type `literal`, `maybe`, `noYield`, `string` (pex type),
-`thunk` (pex type), `token` (pex type), `varDef`, `varDefMutable`, and
-`varStore`.
+applicable to nodes of type `fetch`, `literal`, `maybe`, `noYield`, `string`
+(pex type), `thunk` (pex type), `token` (pex type), `varDef`, `varDefMutable`,
+and `varStore`.
 
 #### `get_pex(node) -> pex`
 
