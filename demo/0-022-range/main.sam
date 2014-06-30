@@ -39,10 +39,10 @@ fn msgTen(header, origGen) {
             ifIs { lt(count, 0) }
                 { yield /done };
 
-            def box = $Box::makePromise();
-            ifValue { nextValue(gen, box) }
+            def result;
+            ifValue { nextValue(gen, var result) }
                 { nextGen ->
-                    msg(box*);
+                    msg(result);
                     gen := nextGen
                 }
                 { yield /done }
