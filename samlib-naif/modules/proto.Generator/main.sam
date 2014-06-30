@@ -11,4 +11,5 @@
 
 export
     collect,
+    fetch,
     nextValue;
