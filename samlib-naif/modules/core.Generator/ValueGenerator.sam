@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import ./unboundedCollect :: unboundedCollect;
+import ./unbounded :: unboundedCollect, unboundedFetch;
 
 
 ##
@@ -24,6 +24,12 @@ export fn makeValueGenerator(value) {
 fn @@ValueGenerator.collect(optFilterFunction?) {
     ## It is an "unbounded collect" error to call this.
     unboundedCollect(this)
+};
+
+## Documented in spec.
+fn @@ValueGenerator.fetch() {
+    ## It is an "unbounded fetch" error to call this.
+    unboundedFetch(this)
 };
 
 ## Documented in spec.
