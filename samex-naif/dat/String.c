@@ -4,6 +4,7 @@
 
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/List.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
@@ -459,6 +460,22 @@ METH_IMPL(String, totalOrder) {
     return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
+// Documented in header.
+METH_IMPL(String, valueList) {
+    zvalue string = args[0];
+
+    StringInfo *info = getInfo(string);
+    zint size = info->size;
+    zchar *elems = info->elems;
+    zvalue result[size];
+
+    for (zint i = 0; i < size; i++) {
+        result[i] = stringFromZchar(elems[i]);
+    }
+
+    return listFromArray(size, result);
+}
+
 /** Initializes the module. */
 MOD_INIT(String) {
     MOD_USE(Sequence);
@@ -480,6 +497,7 @@ MOD_INIT(String) {
     METH_BIND(String, toString);
     METH_BIND(String, totalEq);
     METH_BIND(String, totalOrder);
+    METH_BIND(String, valueList);
     seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);

@@ -329,6 +329,13 @@ METH_IMPL(List, totalOrder) {
     return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
+// Documented in header.
+METH_IMPL(List, valueList) {
+    zvalue list = args[0];
+
+    return list;
+}
+
 /** Initializes the module. */
 MOD_INIT(List) {
     MOD_USE(Sequence);
@@ -347,6 +354,7 @@ MOD_INIT(List) {
     METH_BIND(List, sliceInclusive);
     METH_BIND(List, totalEq);
     METH_BIND(List, totalOrder);
+    METH_BIND(List, valueList);
     seqBind(TYPE_List);
 
     EMPTY_LIST = allocList(0);
