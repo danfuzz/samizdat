@@ -232,6 +232,12 @@ fn @@export.convertPexIn() {
     return withBindings(this, {value})
 };
 
+## Does parser conversion of a `fetch` node.
+fn @@fetch.convertPexIn() {
+    def value = convertPexIn(get_nodeValue(this));
+    return withBindings(this, {value})
+};
+
 ## Does parser conversion of an `exportSelection` node.
 fn @@exportSelection.convertPexIn() {
     return this

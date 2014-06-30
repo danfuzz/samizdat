@@ -109,6 +109,10 @@ fn @@exportSelection.safeIndex(base) {
     return safeIndexForNames(base, get_select(this)*)
 };
 
+fn @@fetch.safeIndex(base) {
+    return safeIndex(get_nodeValue(this), base)
+};
+
 fn @@importModule.safeIndex(base) {
     return safeIndexForNames(base, get_name(this));
 };
