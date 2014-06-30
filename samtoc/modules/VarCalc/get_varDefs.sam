@@ -51,6 +51,10 @@ fn @@exportSelection.get_varDefs() {
     return []
 };
 
+fn @@fetch.get_varDefs() {
+    return []
+};
+
 fn @@importModule.get_varDefs() {
     return [this.name]
 };

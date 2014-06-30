@@ -96,6 +96,11 @@ fn @@exportSelection.translate(varsBox) {
     die("Cannot translate `@exportSelection`.")
 };
 
+fn @@fetch.translate(varsBox) {
+    def value = translate(this.nodeValue, varsBox);
+    return genCall("GFN_CALL", "fetch", value)
+};
+
 fn @@importModule.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.

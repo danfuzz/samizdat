@@ -61,6 +61,11 @@ fn @@exportSelection.bodies(bodiesBox) {
     return this
 };
 
+fn @@fetch.bodies(bodiesBox) {
+    def value = bodies(this.nodeValue, bodiesBox);
+    return @fetch{value}
+};
+
 fn @@importModule.bodies(bodiesBox) {
     return this
 };
