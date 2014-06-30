@@ -104,8 +104,8 @@ if any. This is only defined on closure nodes which have been processed by
 
 #### `get_interpolate(node) -> node | void`
 
-Gets the interpolated node, if any, of a `call` node. This is non-void
-when a `call` node was created by virtue of a call to `makeInterpolate`
+Gets the interpolated node, if any, of a node. This is non-void when a node
+was created by virtue of a call to `makeInterpolate` (or equivalent)
 and is in turn used by `makeCallOrApply` to detect when to translate
 a call into an interpolated form.
 
@@ -114,7 +114,7 @@ a call into an interpolated form.
 #### `get_lvalue(node) -> function | void`
 
 Gets the `lvalue` binding for a node, if any. This is non-void for
-`varRef` nodes created with `makeVarRefLvalue` or for any node in general
+`varFetch` nodes created with `makeVarFetchLvalue` or for any node in general
 to which an `lvalue` has been attached.
 
 The expected use of an `lvalue` is that it is a function (a real one, not
@@ -135,14 +135,14 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `importModule`, `importResource`, `varBox`, `varDef`,
-`varDefMutable`, `varRef`, and `varStore`.
+`varDefMutable`, `varFetch`, and `varStore`.
 
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is
-applicable to nodes of type `literal`, `maybe`, `noYield`, `string` (pex type),
-`thunk` (pex type), `token` (pex type), `varDef`, `varDefMutable`, and
-`varStore`.
+applicable to nodes of type `fetch`, `literal`, `maybe`, `noYield`, `string`
+(pex type), `thunk` (pex type), `token` (pex type), `varDef`, `varDefMutable`,
+and `varStore`.
 
 #### `get_pex(node) -> pex`
 
@@ -353,8 +353,8 @@ just returns that.
 #### `makeInterpolate(expr) -> node`
 
 Makes an interpolation of the given expression node. The result is a
-`call` to the function `interpolate`, but with an additional `interpolate`
-binding in the data payload. See `makeCallOrApply` for more details.
+`fetch` node that refers to the given `expr` as both the main `value` and
+as an `interpolate` binding. See `makeCallOrApply` for more details.
 
 #### `makeLiteral(value) -> node`
 
@@ -396,7 +396,7 @@ any regular expression node, the result has a `maybe` node for the `yield`.
 For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
 result contains the given `node` as the `yield`, directly.
 
-#### `makeVarRef(name) -> node`
+#### `makeVarFetch(name) -> node`
 
 Makes a `varBox` node.
 
@@ -408,14 +408,14 @@ Makes a `varDef` statement node.
 
 Makes a `varDefMutable` statement node.
 
-#### `makeVarRef(name) -> node`
+#### `makeVarFetch(name) -> node`
 
-Makes a `varRef` node. The result is a direct `varRef` node, with no
+Makes a `varFetch` node. The result is a direct `varFetch` node, with no
 additional bindings.
 
-#### `makeVarRefLvalue(name) -> node`
+#### `makeVarFetchLvalue(name) -> node`
 
-Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
+Makes a `varFetch` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varStore` node representing an assignment of the variable.
 

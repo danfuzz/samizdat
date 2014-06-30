@@ -23,6 +23,12 @@ fn @@SequenceGenerator.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@SequenceGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
 fn @@SequenceGenerator.nextValue(box) {
     def index = this::index;
     def seq = this::seq;

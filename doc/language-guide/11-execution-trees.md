@@ -77,7 +77,7 @@ list of evaluated `values` as the arguments to the call.
 The `interpolate` binding is *not* used during execution, rather it is only
 ever used when programatically constructing trees. For example, it is used
 by the function `$LangNode::makeCallOrApply` to know that a "call
-to the function `interpolate`" should actually be treated like an in-line
+to the function `fetch`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$LangNode::makeInterpolate`.
 
@@ -139,6 +139,28 @@ along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
 facility is an implementation of downward-passed / upward-called
 continuations.
 
+#### `fetch` &mdash; `@fetch{value: expression, interpolate?: expression}`
+
+* `values: expression` &mdash; expression node which must evaluate to a
+  generator.
+
+* `interpolate: expression` (optional) &mdash; Expression to use when treating
+  this as a function call argument interpolation. (See below.)
+
+This represents a call to the generic `fetch`.
+
+When run, `value` is evaluated. If it evaluates to void, then it is a fatal
+error (terminating the runtime). Otherwise, `fetch` is called on `value`,
+and the result of evaluation is the same as the result of evaluation of
+that call, including possibly void.
+
+The `interpolate` binding is *not* used during execution, rather it is only
+ever used when programatically constructing trees. For example, it is used
+by the function `$LangNode::makeCallOrApply` to know that a node of this
+type should actually be treated like an in-line argument interpolation.
+Relatedly, `fetch` nodes with `interpolate` bindings are produced by the
+function `$LangNode::makeInterpolate`.
+
 #### `literal` &mdash; `@literal{value: value}`
 
 * `value: value` &mdash; Arbitrary data value.
@@ -178,11 +200,11 @@ execution environment. If a variable reference is found for it, then the
 result of evaluation is the box to which the name is bound. If `name`
 cannot be resolved, then evaluation fails (terminating the runtime).
 
-#### `varRef` &mdash; `@varRef{name: name}`
+#### `varFetch` &mdash; `@varFetch{name: name}`
 
 * `name: name` &mdash; Name of a variable (typically a string).
 
-This represents a by-name variable reference.
+This represents a by-name variable reference and fetch.
 
 When run, this causes the `name` to be resolved in the current
 execution environment. If a variable reference is found for it, then the
@@ -199,8 +221,7 @@ when a variable is defined but not (or not yet) bound to a value.
 * `value: expression` &mdash; Expression node representing the
   value that the variable should take on when defined.
 
-This represents a variable store (assignment) statement as part of a
-closure body.
+This represents a variable reference and store (assignment).
 
 When run, the `value` expression is evaluated. If it evaluates to void,
 then evaluation fails (terminating the runtime). Otherwise, the `name`

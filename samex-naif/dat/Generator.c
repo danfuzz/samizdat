@@ -83,6 +83,29 @@ METH_IMPL(Generator, stdCollect) {
     return result;
 }
 
+/** "Standard" `fetch` implementation. Documented in spec. */
+METH_IMPL(Generator, stdFetch) {
+    zvalue generator = args[0];
+    zvalue result;
+
+    zvalue box = makeCell(NULL);
+    zvalue nextGen = GFN_CALL(nextValue, generator, box);
+
+    if (nextGen == NULL) {
+        // We were given a voided generator.
+        result = NULL;
+    } else {
+        // We got a value out of the generator. Now need to make sure it's
+        // voided.
+        result = GFN_CALL(fetch, box);
+        if (GFN_CALL(nextValue, nextGen, box) != NULL) {
+            die("Generator produced second item in `fetch`.");
+        }
+    }
+
+    return result;
+}
+
 /** Initializes the module. */
 MOD_INIT(Generator) {
     MOD_USE_NEXT(Box);
@@ -90,6 +113,9 @@ MOD_INIT(Generator) {
 
     GFN_collect = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "collect"));
     datImmortalize(GFN_collect);
+
+    GFN_fetch = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "fetch"));
+    datImmortalize(GFN_fetch);
 
     GFN_nextValue = makeGeneric(2, 2, GFN_NONE,
         stringFromUtf8(-1, "nextValue"));
@@ -99,13 +125,24 @@ MOD_INIT(Generator) {
         METH_NAME(Generator, stdCollect), 0,
         stringFromUtf8(-1, "Generator.stdCollect"));
     datImmortalize(FUN_Generator_stdCollect);
+
+    FUN_Generator_stdFetch = makeBuiltin(1, 1,
+        METH_NAME(Generator, stdFetch), 0,
+        stringFromUtf8(-1, "Generator.stdFetch"));
+    datImmortalize(FUN_Generator_stdFetch);
 }
 
 // Documented in header.
 zvalue GFN_collect = NULL;
 
 // Documented in header.
+zvalue GFN_fetch = NULL;
+
+// Documented in header.
 zvalue GFN_nextValue = NULL;
 
 // Documented in header.
 zvalue FUN_Generator_stdCollect = NULL;
+
+// Documented in header.
+zvalue FUN_Generator_stdFetch = NULL;

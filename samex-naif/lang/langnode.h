@@ -15,7 +15,7 @@
 
 
 /** Equivalent to `REFS::<name>` in the spec. */
-#define REFS(name) (makeVarRef(STR_##name))
+#define REFS(name) (makeVarFetch(STR_##name))
 
 /** Equivalent to `get_<name>(node)` in the spec. */
 #define GET(name, node) (get((node), STR_##name))
@@ -99,7 +99,10 @@ zvalue makeVarDef(zvalue name, zvalue value);
 zvalue makeVarDefMutable(zvalue name, zvalue value);
 
 // Documented in spec.
-zvalue makeVarRef(zvalue name);
+zvalue makeVarFetch(zvalue name);
+
+// Documented in spec.
+zvalue makeVarFetchLvalue(zvalue name);
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value);

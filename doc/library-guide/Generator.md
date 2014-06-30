@@ -14,7 +14,7 @@ Because they are so commonly used, the following definitions are
 exported to the standard global variable environment:
 
 * `collect`
-* `interpolate`
+* `fetch`
 * `maybeValue`
 * `nextValue`
 
@@ -41,6 +41,15 @@ results.
 **Note:** The function `filterAll` is a multi-generator generalization
 of this function.
 
+#### `fetch(generator) -> . | void`
+
+Returns the sole generated value of the generator, or void if given
+a voided generator. It is a fatal error (terminating the runtime) if
+`generator` is capable of generating more than one value.
+
+**Syntax Note:** Used in the translation of `expression*` forms when they
+are *not* collection constructor or function call arguments.
+
 #### `nextValue(generator, box) -> generator | void`
 
 Generates the next item in `generator`, if any. If there is a generated
@@ -52,33 +61,6 @@ returns void.
 
 <br><br>
 ### Primitive Definitions
-
-#### `interpolate(generator) -> . | void`
-
-Interpolation helper. This takes a generator, `collect`s it, and then does
-the following based on the size of the collected result:
-
-* If the result is empty (the empty list), then this function returns void.
-* If the result has exactly one element, then this function returns
-  that element.
-* In all other cases, this terminates the runtime with an error.
-
-This function could be implemented as something like:
-
-```
-fn interpolate(generator) {
-    def list = [generator*];
-    if (list[1]) {
-        ## Die with error.
-    } else {
-        return list[0]
-    }
-}
-```
-
-**Syntax Note:** Used in the translation of `expression*` forms when they
-are *not* collection constructor or function call arguments.
-
 
 #### `maybeValue(function) -> list`
 
@@ -110,15 +92,29 @@ fn maybeValue(function) {
 #### `stdCollect(generator, optFilterFunction?) -> list`
 
 "Standard" implementation of `collect`, in terms of `nextValue`. This
-function is provided as a convenient thing to bind to `collect` for
+function is provided as a convenient function to bind `collect` to, for
+types that don't have anything fancier to do.
+
+#### `stdFetch(generator) -> . | void`
+
+"Standard" implementation of `fetch`, in terms of `nextValue`. This
+function is provided as a convenient function to bind `fetch` to, for
 types that don't have anything fancier to do.
 
 #### `unboundedCollect(generator, optFilterFunction?) ->  n/a  ## Terminates the runtime.`
 
 Handy implementation of `collect` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
-This function is provided as a convenient thing to bind to `collect` for
+This function is provided as a convenient thing to bind `collect` to, for
 appropriate types.
+
+#### `unboundedFetch(generator) ->  n/a  ## Terminates the runtime.`
+
+Handy implementation of `fetch` which simply dies with a message indicating
+that the given generator is unbounded (that is, has infinite elements).
+This function is provided as a convenient thing to bind `fetch` to, for
+appropriate types.
+
 
 <br><br>
 ### In-Language Definitions

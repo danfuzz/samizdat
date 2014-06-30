@@ -111,6 +111,9 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 /** Builtin for `Sequence.collect`. */
 static zvalue BI_Sequence_collect = NULL;
 
+/** Builtin for `Sequence.fetch`. */
+static zvalue BI_Sequence_fetch = NULL;
+
 /** Builtin for `Sequence.get`. */
 static zvalue BI_Sequence_get = NULL;
 
@@ -128,21 +131,21 @@ static zvalue BI_Sequence_valueList = NULL;
 
 // Documented in header.
 METH_IMPL(Sequence, collect) {
-    zvalue coll = args[0];
+    zvalue seq = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
 
-    if ((function == NULL) && hasType(coll, TYPE_List)) {
+    if ((function == NULL) && hasType(seq, TYPE_List)) {
         // Special case: Collecting a list (without filtering) results in
         // that same list.
-        return coll;
+        return seq;
     }
 
-    zint size = get_size(coll);
+    zint size = get_size(seq);
     zvalue result[size];
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = nth(coll, i);
+        zvalue elem = nth(seq, i);
         zvalue one = (function == NULL)
             ? elem
             : FUN_CALL(function, elem);
@@ -154,6 +157,24 @@ METH_IMPL(Sequence, collect) {
     }
 
     return listFromArray(at, result);
+}
+
+// Documented in header.
+METH_IMPL(Sequence, fetch) {
+    zvalue seq = args[0];
+    zint size = get_size(seq);
+
+    switch (size) {
+        case 0: {
+            return NULL;
+        }
+        case 1: {
+            return nth(seq, 0);
+        }
+        default: {
+            die("Invalid to call `fetch` on sequence with size > 1.");
+        }
+    }
 }
 
 // Documented in header.
@@ -240,6 +261,7 @@ METH_IMPL(Sequence, valueList) {
 // Documented in header.
 void seqBind(zvalue type) {
     genericBind(GFN_collect,    type, BI_Sequence_collect);
+    genericBind(GFN_fetch,      type, BI_Sequence_fetch);
     genericBind(GFN_get,        type, BI_Sequence_get);
     genericBind(GFN_keyList,    type, BI_Sequence_keyList);
     genericBind(GFN_nextValue,  type, BI_Sequence_nextValue);
@@ -266,6 +288,10 @@ MOD_INIT(Sequence) {
     BI_Sequence_collect = makeBuiltin(1, 2, METH_NAME(Sequence, collect), 0,
         stringFromUtf8(-1, "Sequence.collect"));
     datImmortalize(BI_Sequence_collect);
+
+    BI_Sequence_fetch = makeBuiltin(1, 1, METH_NAME(Sequence, fetch), 0,
+        stringFromUtf8(-1, "Sequence.fetch"));
+    datImmortalize(BI_Sequence_fetch);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));

@@ -32,6 +32,12 @@ fn @@FilterGenerator.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@FilterGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
 fn @@FilterGenerator.nextValue(box) {
     var innerGen = this::generator;
     def filterFunction = this::filterFunction;

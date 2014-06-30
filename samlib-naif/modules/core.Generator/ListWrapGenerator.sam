@@ -26,6 +26,12 @@ fn @@ListWrapGenerator.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@ListWrapGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
 fn @@ListWrapGenerator.nextValue(box) {
     def result;
 

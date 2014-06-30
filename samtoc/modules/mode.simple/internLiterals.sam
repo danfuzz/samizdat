@@ -58,6 +58,11 @@ fn @@external.lits(interner) {
     return @external(interner.intern(dataOf(this)))
 };
 
+fn @@fetch.lits(interner) {
+    def value = lits(this.nodeValue, interner);
+    return @fetch{value}
+};
+
 fn @@importModule.lits(interner) {
     def source = lits(this.source, interner);
     return @importModule{dataOf(this)*, source}
@@ -111,7 +116,7 @@ fn @@varDefMutable.lits(interner) {
     return @varDefMutable{name: this.name, value*}
 };
 
-fn @@varRef.lits(interner) {
+fn @@varFetch.lits(interner) {
     return this
 };
 

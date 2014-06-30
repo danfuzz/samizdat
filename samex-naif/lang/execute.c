@@ -68,6 +68,16 @@ static zvalue execCall(Frame *frame, zvalue call) {
 }
 
 /**
+ * Executes a `fetch` form.
+ */
+static zvalue execFetch(Frame *frame, zvalue fetch) {
+    zvalue valueExpr = get(fetch, STR_value);
+    zvalue value = execExpression(frame, valueExpr);
+
+    return GFN_CALL(fetch, value);
+}
+
+/**
  * Executes an `import*` form.
  */
 static void execImport(Frame *frame, zvalue import) {
@@ -123,16 +133,16 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
 /**
  * Executes a `varBox` form.
  */
-static zvalue execVarBox(Frame *frame, zvalue varRef) {
-    zvalue name = get(varRef, STR_name);
+static zvalue execVarBox(Frame *frame, zvalue varBox) {
+    zvalue name = get(varBox, STR_name);
     return frameGet(frame, name);
 }
 
 /**
- * Executes a `varRef` form.
+ * Executes a `varFetch` form.
  */
-static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = get(varRef, STR_name);
+static zvalue execVarFetch(Frame *frame, zvalue varFetch) {
+    zvalue name = get(varFetch, STR_name);
     return GFN_CALL(fetch, frameGet(frame, name));
 }
 
@@ -170,10 +180,11 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_apply:    return execApply(frame, e);
         case EVAL_call:     return execCall(frame, e);
         case EVAL_closure:  return execClosure(frame, e);
+        case EVAL_fetch:    return execFetch(frame, e);
         case EVAL_literal:  return get(e, STR_value);
         case EVAL_noYield:  execNoYield(frame, e);
         case EVAL_varBox:   return execVarBox(frame, e);
-        case EVAL_varRef:   return execVarRef(frame, e);
+        case EVAL_varFetch: return execVarFetch(frame, e);
         case EVAL_varStore: return execVarStore(frame, e);
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));

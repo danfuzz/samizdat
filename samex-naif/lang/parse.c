@@ -295,7 +295,7 @@ DEF_PARSE(varRef) {
     MARK();
 
     zvalue name = PARSE_OR_REJECT(name);
-    return makeVarRef(name);
+    return makeVarFetchLvalue(name);
 }
 
 // Documented in spec.
@@ -401,7 +401,7 @@ DEF_PARSE(mapping) {
         zvalue interp = GET(interpolate, value);
         if (interp != NULL) {
             return interp;
-        } else if (hasType(value, TYPE_varRef)) {
+        } else if (hasType(value, TYPE_varFetch)) {
             return makeCall(REFS(makeValueMap),
                 listFrom2(makeLiteral(GET(name, value)), value));
         }
@@ -652,13 +652,13 @@ DEF_PARSE(assignExpression) {
 
     zvalue base = PARSE_OR_REJECT(opExpression);
 
-    if (!(hasType(base, TYPE_varRef) && MATCH(CH_COLONEQUAL))) {
+    if (!(hasType(base, TYPE_varFetch) && MATCH(CH_COLONEQUAL))) {
         return base;
     }
 
     // This code isn't parallel to the in-language code but has the
     // same effect, given that the only valid lvalues are variable references.
-    // In this case, we ensured (above) that we've got a `varRef` and
+    // In this case, we ensured (above) that we've got a `varFetch` and
     // recombine it here into a `varStore`.
     zvalue ex = PARSE_OR_REJECT(expression);
     zvalue name = GET(name, base);
@@ -709,7 +709,7 @@ DEF_PARSE(yieldOrNonlocal) {
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
-        name = makeVarRef(typeName(get_type(op)));
+        name = makeVarFetch(typeName(get_type(op)));
     }
 
     zvalue value = PARSE(expression);   // It's okay for this to be `NULL`.
@@ -916,7 +916,7 @@ DEF_PARSE(genericBind) {
             listFrom1(mapFrom1(STR_name, STR_this)),
             formals));
     return makeCall(REFS(genericBind),
-        listFrom3(makeVarRef(name), bind, fullClosure));
+        listFrom3(makeVarFetch(name), bind, fullClosure));
 }
 
 // Documented in spec.

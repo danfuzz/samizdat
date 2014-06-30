@@ -81,6 +81,10 @@ fn @@closureRef.get_varRefs() {
     return this::varRefs
 };
 
+fn @@fetch.get_varRefs() {
+    return this.nodeValue.varRefs
+};
+
 fn @@importModule.get_varRefs() {
     def statements = makeDynamicImport(this);
     return catVarRefs(statements*)
@@ -124,7 +128,7 @@ fn @@varDefMutable.get_varRefs() {
     return (def v = this.nodeValue) & v.varRefs | []
 };
 
-fn @@varRef.get_varRefs() {
+fn @@varFetch.get_varRefs() {
     return [this.name]
 };
 

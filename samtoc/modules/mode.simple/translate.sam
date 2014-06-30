@@ -96,6 +96,11 @@ fn @@exportSelection.translate(varsBox) {
     die("Cannot translate `@exportSelection`.")
 };
 
+fn @@fetch.translate(varsBox) {
+    def value = translate(this.nodeValue, varsBox);
+    return genCall("GFN_CALL", "fetch", value)
+};
+
 fn @@importModule.translate(varsBox) {
     ## This is only needed once we move to a non-dynamic translation of
     ## imports.
@@ -155,7 +160,7 @@ fn @@varDefMutable.translate(varsBox) {
         this.name, genCall("makeCell", value), varsBox)
 };
 
-fn @@varRef.translate(varsBox) {
+fn @@varFetch.translate(varsBox) {
     def name = this.name;
     def vars = varsBox*;
     def binding = vars[name]
@@ -196,7 +201,7 @@ fn @@literalRef.translateStatement(varsBox) {
     ## Return void.
 };
 
-fn @@varRef.translateStatement(varsBox) {
+fn @@varFetch.translateStatement(varsBox) {
     ## Return void.
 };
 

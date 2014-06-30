@@ -19,9 +19,9 @@ are also exported to the global variable environment. This is because
 they are so commonly used (sometimes overtly, and sometimes "behind the
 scenes").
 
-As a protocol, `Box` also implements the `Generator` protocol. As a
-generator, a box will generate either its sole stored value, or void if it
-has no stored value.
+As a protocol, `Box` consists of the `Generator` protocol with one additional
+function. As a generator, a box will generate either its sole stored value,
+or void if it has no stored value.
 
 
 <br><br>
@@ -35,8 +35,10 @@ contents of the box as a list (of zero or one element), and calling
 
 #### `fetch(box) -> . | void`
 
-Gets the value inside a box, if any. If the box either is unset or has
-been set to void, this returns void.
+Refinement of the `Generator` protocol. Gets the value inside a box, if any.
+If the box either is unset or has been set to void, this returns void.
+Unlike the general `Generator` protocol, it is never a fatal error to call
+this function.
 
 #### `nextValue(box, outBox) -> [] | void`
 

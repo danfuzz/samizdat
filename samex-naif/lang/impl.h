@@ -21,6 +21,7 @@ typedef enum {
     EVAL_apply = 1,  // 1, so that it won't be a "sneaky default."
     EVAL_call,
     EVAL_closure,
+    EVAL_fetch,
     EVAL_importModule,
     EVAL_importModuleSelection,
     EVAL_importResource,
@@ -30,7 +31,7 @@ typedef enum {
     EVAL_varBox,
     EVAL_varDef,
     EVAL_varDefMutable,
-    EVAL_varRef,
+    EVAL_varFetch,
     EVAL_varStore,
     EVAL_void
 } zevalType;

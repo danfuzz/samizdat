@@ -37,6 +37,7 @@ MOD_INIT(lang) {
     langTypeMap[typeIndex(TYPE_apply)]                 = EVAL_apply;
     langTypeMap[typeIndex(TYPE_call)]                  = EVAL_call;
     langTypeMap[typeIndex(TYPE_closure)]               = EVAL_closure;
+    langTypeMap[typeIndex(TYPE_fetch)]                 = EVAL_fetch;
     langTypeMap[typeIndex(TYPE_importModule)]          = EVAL_importModule;
     langTypeMap[typeIndex(TYPE_importModuleSelection)] = EVAL_importModuleSelection;
     langTypeMap[typeIndex(TYPE_importResource)]        = EVAL_importResource;
@@ -46,7 +47,7 @@ MOD_INIT(lang) {
     langTypeMap[typeIndex(TYPE_varBox)]                = EVAL_varBox;
     langTypeMap[typeIndex(TYPE_varDef)]                = EVAL_varDef;
     langTypeMap[typeIndex(TYPE_varDefMutable)]         = EVAL_varDefMutable;
-    langTypeMap[typeIndex(TYPE_varRef)]                = EVAL_varRef;
+    langTypeMap[typeIndex(TYPE_varFetch)]              = EVAL_varFetch;
     langTypeMap[typeIndex(TYPE_varStore)]              = EVAL_varStore;
     langTypeMap[typeIndex(TYPE_void)]                  = EVAL_void;
 }

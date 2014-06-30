@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: unboundedCollect;
+import core.Generator :: unboundedCollect, unboundedFetch;
 
 import ./rangeAdd :: *;
 
@@ -29,6 +29,12 @@ export fn makeOpenRange(firstValue, optIncrement?) {
 fn @@OpenRange.collect(optFilterFunction?) {
     ## It is an "unbounded collect" error to call this.
     unboundedCollect(this)
+};
+
+## Documented in spec.
+fn @@OpenRange.fetch() {
+    ## It is an "unbounded fetch" error to call this.
+    unboundedFetch(this)
 };
 
 ## Documented in spec.

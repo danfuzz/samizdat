@@ -40,6 +40,12 @@ fn @@ParaGenerator.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@ParaGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
 fn @@ParaGenerator.nextValue(box) {
     def subGens = dataOf(this);
 

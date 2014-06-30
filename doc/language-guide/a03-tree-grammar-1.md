@@ -116,7 +116,7 @@ def parNameList = {:
 ## Parses a variable reference.
 def parVarRef = {:
     name = parName
-    { makeVarRefLvalue(name) }
+    { makeVarFetchLvalue(name) }
 :};
 
 ## Parses a variable box reference.
@@ -188,7 +188,7 @@ def parMapping = {:
                 ## binding.
                 ifValue { get_interpolate(value) }
                     { interp -> yield /out interp };
-                ifIs { hasType(value, @@varRef) }
+                ifIs { hasType(value, @@varFetch) }
                     {
                         yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
@@ -471,7 +471,7 @@ def parYieldOrNonlocal = {:
             { @yield }
         )
     |
-        { makeVarRef(get_typeName(op)) }
+        { makeVarFetch(get_typeName(op)) }
     )
 
     ## A value expression is mandatory if there is a `?` after the
@@ -637,7 +637,7 @@ def parGenericBind = {:
         def formals = get_formals(closure);
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::genericBind, makeVarRef(name), bind, fullClosure)
+        makeCall(REFS::genericBind, makeVarFetch(name), bind, fullClosure)
     }
 :};
 

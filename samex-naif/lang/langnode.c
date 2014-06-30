@@ -90,7 +90,7 @@ static zvalue expandYield(zvalue map) {
     zvalue value = get(yieldNode, STR_value);
     zvalue yieldDef = get(map, STR_yieldDef);
 
-    if (     hasType(function, TYPE_varRef)
+    if (     hasType(function, TYPE_varFetch)
           && (yieldDef != NULL)
           && valEq(get(function, STR_name), yieldDef)) {
         return value;
@@ -118,11 +118,12 @@ static zvalue expandYield(zvalue map) {
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
     switch (get_evalType(node)) {
-        case EVAL_apply:  return true;
-        case EVAL_call:   return true;
-        case EVAL_maybe:  return true;
-        case EVAL_varRef: return true;
-        case EVAL_void:   return true;
+        case EVAL_apply:    return true;
+        case EVAL_call:     return true;
+        case EVAL_fetch:    return true;
+        case EVAL_maybe:    return true;
+        case EVAL_varFetch: return true;
+        case EVAL_void:     return true;
         default: {
             return false;
         }
@@ -217,10 +218,12 @@ bool isExpression(zvalue node) {
         case EVAL_apply:    return true;
         case EVAL_call:     return true;
         case EVAL_closure:  return true;
+        case EVAL_fetch:    return true;
         case EVAL_literal:  return true;
         case EVAL_noYield:  return true;
+        case EVAL_varBox:   return true;
+        case EVAL_varFetch: return true;
         case EVAL_varStore: return true;
-        case EVAL_varRef:   return true;
         default: {
             return false;
         }
@@ -522,10 +525,9 @@ zvalue makeInfoMap(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return makeValue(TYPE_call,
-        mapFrom3(
-            STR_function,    REFS(interpolate),
-            STR_values,      listFrom1(node),
+    return makeValue(TYPE_fetch,
+        mapFrom2(
+            STR_value,       node,
             STR_interpolate, node),
         NULL);
 }
@@ -587,8 +589,14 @@ zvalue makeVarDefMutable(zvalue name, zvalue value) {
 }
 
 // Documented in spec.
-zvalue makeVarRef(zvalue name) {
-    return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
+zvalue makeVarFetch(zvalue name) {
+    return makeValue(TYPE_varFetch, mapFrom1(STR_name, name), NULL);
+}
+
+// Documented in spec.
+zvalue makeVarFetchLvalue(zvalue name) {
+    // See discussion in `parse.c`.
+    return makeVarFetch(name);
 }
 
 // Documented in spec.
@@ -698,7 +706,7 @@ zvalue withModuleDefs(zvalue node) {
         zvalue name = mappings[i].key;
         exportValues = listAppend(exportValues,
             makeCall(REFS(makeValueMap),
-                listFrom2(makeLiteral(name), makeVarRef(name))));
+                listFrom2(makeLiteral(name), makeVarFetch(name))));
     }
 
     zvalue yieldExports = (exSize == 0)
@@ -795,7 +803,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
     zvalue newBindings;
 
     if (yieldDef != NULL) {
-        zvalue defStat = makeVarDef(name, makeVarRef(yieldDef));
+        zvalue defStat = makeVarDef(name, makeVarFetch(yieldDef));
         newBindings = mapFrom1(
             STR_statements, listPrepend(defStat, get(node, STR_statements)));
     } else {

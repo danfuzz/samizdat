@@ -341,6 +341,26 @@ METH_IMPL(Map, del) {
 }
 
 // Documented in header.
+METH_IMPL(Map, fetch) {
+    zvalue map = args[0];
+    MapInfo *info = getInfo(map);
+    zint size = info->size;
+
+    switch (size) {
+        case 0: {
+            return NULL;
+        }
+        case 1: {
+            zmapping *firstElem = &info->elems[0];
+            return makeMapping(firstElem->key, firstElem->value);
+        }
+        default: {
+            die("Invalid to call `fetch` on map with size > 1.");
+        }
+    }
+}
+
+// Documented in header.
 METH_IMPL(Map, gcMark) {
     zvalue map = args[0];
     MapInfo *info = getInfo(map);
@@ -594,6 +614,7 @@ MOD_INIT(Map) {
     METH_BIND(Map, cat);
     METH_BIND(Map, collect);
     METH_BIND(Map, del);
+    METH_BIND(Map, fetch);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, get_key);

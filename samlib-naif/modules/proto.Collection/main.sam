@@ -12,8 +12,11 @@
 
 export
     cat,
+    collect,
+    fetch,
     get,
-    get_size;
+    get_size,
+    nextValue;
 
 export def del        = Collection_del;
 export def keyList    = Collection_keyList;

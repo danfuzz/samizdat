@@ -17,11 +17,6 @@
 extern zvalue TYPE_Box;
 
 /**
- * Generic `fetch(box)`: Fetches the value from a box. Documented in spec.
- */
-extern zvalue GFN_fetch;
-
-/**
  * Generic `store(box, value?)`: Stores a value (or void) into a box.
  * Documented in spec.
  */
