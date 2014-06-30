@@ -104,8 +104,8 @@ if any. This is only defined on closure nodes which have been processed by
 
 #### `get_interpolate(node) -> node | void`
 
-Gets the interpolated node, if any, of a `call` or `fetch` node. This is
-non-void when a node was created by virtue of a call to `makeInterpolate`
+Gets the interpolated node, if any, of a node. This is non-void when a node
+was created by virtue of a call to `makeInterpolate` (or equivalent)
 and is in turn used by `makeCallOrApply` to detect when to translate
 a call into an interpolated form.
 
@@ -353,8 +353,8 @@ just returns that.
 #### `makeInterpolate(expr) -> node`
 
 Makes an interpolation of the given expression node. The result is a
-`call` to the function `interpolate`, but with an additional `interpolate`
-binding in the data payload. See `makeCallOrApply` for more details.
+`fetch` node that refers to the given `expr` as both the main `value` and
+as an `interpolate` binding. See `makeCallOrApply` for more details.
 
 #### `makeLiteral(value) -> node`
 
