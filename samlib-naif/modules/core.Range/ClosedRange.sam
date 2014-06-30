@@ -26,6 +26,12 @@ fn @@ClosedRange.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@ClosedRange.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
 fn @@ClosedRange.nextValue(box) {
     return? ifValue { ge(this::size, 0) }
         { size ->

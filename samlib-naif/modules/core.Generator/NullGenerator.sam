@@ -19,6 +19,11 @@ fn @@NullGenerator.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@NullGenerator.fetch() {
+    ## Do nothing. Return void.
+};
+
+## Documented in spec.
 fn @@NullGenerator.nextValue(box) {
     ## Do nothing. Return void.
 };

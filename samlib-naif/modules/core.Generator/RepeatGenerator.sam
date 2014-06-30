@@ -39,6 +39,12 @@ fn @@RepeatGenerator.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@RepeatGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
 fn @@RepeatGenerator.nextValue(box) {
     def size = this::size;
 

@@ -39,6 +39,12 @@ fn @@SerialGenerator.collect(optFilterFunction?) {
 };
 
 ## Documented in spec.
+fn @@SerialGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
 fn @@SerialGenerator.nextValue(box) {
     def subGens = dataOf(this);
 

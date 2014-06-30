@@ -23,6 +23,12 @@ fn @@MapGenerator.collect(optFilterFunction?) {
     return Generator_stdCollect(this, optFilterFunction*)
 };
 
+## Documented in spec.
+fn @@MapGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
 ## Generator used when iterating over maps.
 fn @@MapGenerator.nextValue(box) {
     def index = this::index;
