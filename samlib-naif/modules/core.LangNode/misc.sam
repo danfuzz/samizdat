@@ -15,7 +15,7 @@ import proto.Number :: add, mul;
 ## The set of expression-per-se node types.
 def EXPRESSION_TYPES = {
     [
-        @@apply, @@call, @@closure, @@literal, @@noYield,
+        @@apply, @@call, @@closure, @@fetch, @@literal, @@noYield,
         @@varRef, @@varStore
     ]*: true
 };
