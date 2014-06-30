@@ -221,6 +221,7 @@ bool isExpression(zvalue node) {
         case EVAL_fetch:    return true;
         case EVAL_literal:  return true;
         case EVAL_noYield:  return true;
+        case EVAL_varBox:   return true;
         case EVAL_varStore: return true;
         case EVAL_varRef:   return true;
         default: {
