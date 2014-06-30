@@ -81,6 +81,7 @@ STR(collect,               "collect");
 STR(directory,             "directory");
 STR(exports,               "exports");
 STR(file,                  "file");
+STR(fetch,                 "fetch");
 STR(formals,               "formals");
 STR(format,                "format");
 STR(function,              "function");

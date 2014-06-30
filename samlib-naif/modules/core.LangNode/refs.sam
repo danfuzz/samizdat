@@ -19,6 +19,7 @@ def NAMES = [
     "collect",
     "continue",
     "eq",
+    "fetch",
     "ge",
     "genericBind",
     "get",

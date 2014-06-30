@@ -316,7 +316,7 @@ export fn makeInfoMap(node) {
 ## Documented in spec.
 export fn makeInterpolate(node) {
     return @call{
-        function: REFS::interpolate,
+        function: REFS::fetch,
         values: [node],
         interpolate: node
     }

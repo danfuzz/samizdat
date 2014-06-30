@@ -48,6 +48,9 @@ Returns the sole generated value of the generator, or void if given
 a voided generator. It is a fatal error (terminating the runtime) if
 `generator` is capable of generating more than one value.
 
+**Syntax Note:** Used in the translation of `expression*` forms when they
+are *not* collection constructor or function call arguments.
+
 #### `nextValue(generator, box) -> generator | void`
 
 Generates the next item in `generator`, if any. If there is a generated
@@ -82,9 +85,6 @@ fn interpolate(generator) {
     }
 }
 ```
-
-**Syntax Note:** Used in the translation of `expression*` forms when they
-are *not* collection constructor or function call arguments.
 
 
 #### `maybeValue(function) -> list`
