@@ -68,6 +68,16 @@ static zvalue execCall(Frame *frame, zvalue call) {
 }
 
 /**
+ * Executes a `fetch` form.
+ */
+static zvalue execFetch(Frame *frame, zvalue fetch) {
+    zvalue valueExpr = get(fetch, STR_value);
+    zvalue value = execExpression(frame, valueExpr);
+
+    return GFN_CALL(fetch, value);
+}
+
+/**
  * Executes an `import*` form.
  */
 static void execImport(Frame *frame, zvalue import) {
@@ -170,6 +180,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_apply:    return execApply(frame, e);
         case EVAL_call:     return execCall(frame, e);
         case EVAL_closure:  return execClosure(frame, e);
+        case EVAL_fetch:    return execFetch(frame, e);
         case EVAL_literal:  return get(e, STR_value);
         case EVAL_noYield:  execNoYield(frame, e);
         case EVAL_varBox:   return execVarBox(frame, e);
