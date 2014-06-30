@@ -17,3 +17,8 @@
 export fn unboundedCollect(this, optFilterFunction?) {
     die("Cannot `collect` unbounded generator.");
 };
+
+## Documented in spec.
+export fn unboundedFetch(this) {
+    die("Cannot `fetch` unbounded generator.");
+};

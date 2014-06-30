@@ -130,8 +130,16 @@ types that don't have anything fancier to do.
 
 Handy implementation of `collect` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
-This function is provided as a convenient thing to bind to `collect` for
+This function is provided as a convenient thing to bind `collect` to, for
 appropriate types.
+
+#### `unboundedFetch(generator) ->  n/a  ## Terminates the runtime.`
+
+Handy implementation of `fetch` which simply dies with a message indicating
+that the given generator is unbounded (that is, has infinite elements).
+This function is provided as a convenient thing to bind `fetch` to, for
+appropriate types.
+
 
 <br><br>
 ### In-Language Definitions
