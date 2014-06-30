@@ -124,15 +124,6 @@ zvalue makeResult(zvalue value) {
 //
 
 // Documented in header.
-zvalue TYPE_Box = NULL;
-
-// Documented in header.
-zvalue GFN_fetch;
-
-// Documented in header.
-zvalue GFN_store;
-
-// Documented in header.
 METH_IMPL(Box, collect) {
     zvalue box = args[0];
     zvalue function = (argCount > 1) ? args[1] : NULL;
@@ -186,9 +177,6 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Value);
 
-    GFN_fetch = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "fetch"));
-    datImmortalize(GFN_fetch);
-
     GFN_store = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "store"));
     datImmortalize(GFN_store);
 
@@ -200,3 +188,9 @@ MOD_INIT(Box) {
     METH_BIND(Box, nextValue);
     METH_BIND(Box, store);
 }
+
+// Documented in header.
+zvalue TYPE_Box = NULL;
+
+// Documented in header.
+zvalue GFN_store = NULL;

@@ -52,7 +52,6 @@ PRIM_DEF(Bitwise_shl,             GFN_shl);
 PRIM_DEF(Bitwise_xor,             GFN_xor);
 
 // Generic functions: `Box` protocol.
-PRIM_DEF(fetch,                   GFN_fetch);
 PRIM_DEF(store,                   GFN_store);
 
 // Generic functions: `Function` protocol.
@@ -73,6 +72,7 @@ PRIM_DEF(Sequence_sliceInclusive, GFN_sliceInclusive);
 // Generic functions: `Generator` protocol, intended for modularization but
 // also exported to the global environment.
 PRIM_DEF(collect,                 GFN_collect);
+PRIM_DEF(fetch,                   GFN_fetch);
 PRIM_DEF(nextValue,               GFN_nextValue);
 
 // Generic functions: `Number` protocol, intended for modularization.

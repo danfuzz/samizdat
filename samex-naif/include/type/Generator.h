@@ -19,13 +19,13 @@
 /** Generic `collect(generator)`: Documenetd in spec. */
 extern zvalue GFN_collect;
 
+/** Generic `fetch(box)`: Documented in spec. */
+extern zvalue GFN_fetch;
+
 /** Generic `nextValue(generator, box)`: Documenetd in spec. */
 extern zvalue GFN_nextValue;
 
-/**
- * "Standard" implementation of `collect`, in terms of `nextValue`.
- * Documented in spec.
- */
+/** `core.Generator::stdCollect`: Documented in spec. */
 extern zvalue FUN_Generator_stdCollect;
 
 
