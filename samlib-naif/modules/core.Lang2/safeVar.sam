@@ -162,7 +162,7 @@ fn @@varDefMutable.safeIndex(base) {
     return maxOf(nameIndex, valueIndex)
 };
 
-fn @@varRef.safeIndex(base) {
+fn @@varFetch.safeIndex(base) {
     return safeIndexForNames(base, get_name(this))
 };
 

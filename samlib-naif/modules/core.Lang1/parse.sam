@@ -87,7 +87,7 @@ def parNameList = makeMainSequence(
 ## Documented in spec.
 def parVarRef = makeMainSequence(
     parName,
-    makeCode { name -> makeVarRefLvalue(name) });
+    makeCode { name -> makeVarFetchLvalue(name) });
 
 ## Documented in spec.
 def parVarBox = makeMainSequence(
@@ -151,7 +151,7 @@ def parMapping = makeMainSequence(
                 ## binding.
                 ifValue { get_interpolate(value) }
                     { interp -> yield /out interp };
-                ifIs { hasType(value, @@varRef) }
+                ifIs { hasType(value, @@varFetch) }
                     {
                         yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
@@ -353,7 +353,7 @@ def parYieldOrNonlocal = makeMainSequence(
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarRef),
                 makeResult(@yield))),
-        makeCode { op, . -> makeVarRef(get_typeName(op)) }),
+        makeCode { op, . -> makeVarFetch(get_typeName(op)) }),
     makeChoice(
         makeSequence(
             parExpression,
@@ -481,7 +481,7 @@ def parGenericBind = makeMainSequence(
         def formals = get_formals(closure);
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::genericBind, makeVarRef(name), bind, fullClosure)
+        makeCall(REFS::genericBind, makeVarFetch(name), bind, fullClosure)
     });
 
 ## Documented in spec.

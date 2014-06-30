@@ -110,8 +110,8 @@ fn @@varDefMutable.bodies(bodiesBox) {
     return @varDefMutable{name: this.name, value*}
 };
 
-fn @@varRef.bodies(bodiesBox) {
-    return @varRef{name: this.name}
+fn @@varFetch.bodies(bodiesBox) {
+    return @varFetch{name: this.name}
 };
 
 fn @@varStore.bodies(bodiesBox) {

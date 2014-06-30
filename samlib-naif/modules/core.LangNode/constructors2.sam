@@ -34,7 +34,7 @@ fn expandYield(map) {
     ## yield name, then skip the expansion and just return the exit's `value`.
     ifValues(
         [
-            { -> hasType(function, @@varRef) },
+            { -> hasType(function, @@varFetch) },
             { . -> map::yieldDef },
             { ., yieldDef -> eq(get_name(function), yieldDef) }
         ],
@@ -389,7 +389,7 @@ export fn withModuleDefs(node) {
     ## of all exports.
     def exportValues = filterAll(info::exports) { mapping ->
         def name = get_key(mapping);
-        makeCall(REFS::makeValueMap, makeLiteral(name), makeVarRef(name))
+        makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
     };
 
     def yieldExports = ifIs { eq(exportValues, []) }

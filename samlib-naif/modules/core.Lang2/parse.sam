@@ -112,7 +112,7 @@ def parNameList = {:
 ## Parses a variable reference.
 def parVarRef = {:
     name = parName
-    { makeVarRefLvalue(name) }
+    { makeVarFetchLvalue(name) }
 :};
 
 ## Parses a variable box reference.
@@ -184,7 +184,7 @@ def parMapping = {:
                 ## binding.
                 ifValue { get_interpolate(value) }
                     { interp -> yield /out interp };
-                ifIs { hasType(value, @@varRef) }
+                ifIs { hasType(value, @@varFetch) }
                     {
                         yield /out makeCall(REFS::makeValueMap,
                             makeLiteral(get_name(value)), value)
@@ -467,7 +467,7 @@ def parYieldOrNonlocal = {:
             { @yield }
         )
     |
-        { makeVarRef(get_typeName(op)) }
+        { makeVarFetch(get_typeName(op)) }
     )
 
     ## A value expression is mandatory if there is a `?` after the
@@ -633,7 +633,7 @@ def parGenericBind = {:
         def formals = get_formals(closure);
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::genericBind, makeVarRef(name), bind, fullClosure)
+        makeCall(REFS::genericBind, makeVarFetch(name), bind, fullClosure)
     }
 :};
 
@@ -1194,7 +1194,7 @@ fn makeCompareCalls(firstEx, opExList) {
             { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
             {
                 def rightName = nextName();
-                def rightRef = makeVarRef(rightName);
+                def rightRef = makeVarFetch(rightName);
                 makeFullClosure({
                     statements: [makeVarDef(rightName, opEx::expr)],
                     yield: makeMaybe(
@@ -1206,7 +1206,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     def firstName = nextName();
-    def closure = transform(makeVarRef(firstName), opExList*);
+    def closure = transform(makeVarFetch(firstName), opExList*);
 
     return makeCall(
         makeFullClosure({
@@ -1606,19 +1606,19 @@ parPostfixOperator2 := {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            def funcRef = makeVarRef(name);
+            def funcRef = makeVarFetch(name);
             { node -> makeCallOrApply(funcRef, node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
         {
-            def getterRef = makeVarRef(cat("get_", name));
+            def getterRef = makeVarFetch(cat("get_", name));
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(get_type(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
-                        def setterRef = makeVarRef(cat("set_", name));
+                        def setterRef = makeVarFetch(cat("set_", name));
                         makeCall(setterRef, node, expr)
                     }
                 }

@@ -72,7 +72,7 @@ TYP(string,                "string");
 TYP(varBox,                "varBox");
 TYP(varDef,                "varDef");
 TYP(varDefMutable,         "varDefMutable");
-TYP(varRef,                "varRef");
+TYP(varFetch,              "varFetch");
 TYP(varStore,              "varStore");
 
 STR(absent,                "absent");

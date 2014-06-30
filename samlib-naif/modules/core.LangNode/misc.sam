@@ -16,13 +16,13 @@ import proto.Number :: add, mul;
 def EXPRESSION_TYPES = {
     [
         @@apply, @@call, @@closure, @@fetch, @@literal, @@noYield,
-        @@varBox, @@varRef, @@varStore
+        @@varBox, @@varFetch, @@varStore
     ]*: true
 };
 
 ## The set of node types that are allowed to evaluate to void.
 def VOIDING_TYPES = {
-    [@@apply, @@call, @@fetch, @@maybe, @@varRef, @@void]*: true
+    [@@apply, @@call, @@fetch, @@maybe, @@varFetch, @@void]*: true
 };
 
 ## These are all the int digits, as a map from strings to digit values. This

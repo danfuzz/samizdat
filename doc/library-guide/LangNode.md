@@ -114,7 +114,7 @@ a call into an interpolated form.
 #### `get_lvalue(node) -> function | void`
 
 Gets the `lvalue` binding for a node, if any. This is non-void for
-`varRef` nodes created with `makeVarRefLvalue` or for any node in general
+`varFetch` nodes created with `makeVarFetchLvalue` or for any node in general
 to which an `lvalue` has been attached.
 
 The expected use of an `lvalue` is that it is a function (a real one, not
@@ -135,7 +135,7 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `importModule`, `importResource`, `varBox`, `varDef`,
-`varDefMutable`, `varRef`, and `varStore`.
+`varDefMutable`, `varFetch`, and `varStore`.
 
 #### `get_nodeValue(node) -> . | void`
 
@@ -396,7 +396,7 @@ any regular expression node, the result has a `maybe` node for the `yield`.
 For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
 result contains the given `node` as the `yield`, directly.
 
-#### `makeVarRef(name) -> node`
+#### `makeVarFetch(name) -> node`
 
 Makes a `varBox` node.
 
@@ -408,14 +408,14 @@ Makes a `varDef` statement node.
 
 Makes a `varDefMutable` statement node.
 
-#### `makeVarRef(name) -> node`
+#### `makeVarFetch(name) -> node`
 
-Makes a `varRef` node. The result is a direct `varRef` node, with no
+Makes a `varFetch` node. The result is a direct `varFetch` node, with no
 additional bindings.
 
-#### `makeVarRefLvalue(name) -> node`
+#### `makeVarFetchLvalue(name) -> node`
 
-Makes a `varRef` node, with an `lvalue` binding. In the result, `lvalue`
+Makes a `varFetch` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varStore` node representing an assignment of the variable.
 

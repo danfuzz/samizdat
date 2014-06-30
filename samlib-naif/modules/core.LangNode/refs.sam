@@ -5,7 +5,7 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 :: makeCall, makeLiteral, makeVarRef;
+import ./constructors1 :: makeCall, makeLiteral, makeVarFetch;
 
 
 ##
@@ -102,7 +102,7 @@ def MOD_NAMES = [
 ];
 
 ## Used in `MOD_NAMES` processing.
-def REF_get = makeVarRef("get");
+def REF_get = makeVarFetch("get");
 
 
 ##
@@ -111,11 +111,11 @@ def REF_get = makeVarRef("get");
 
 ## Documented in spec.
 export def REFS = cat(
-    (filterAll(NAMES) { name -> {(name): makeVarRef(name)} })*,
+    (filterAll(NAMES) { name -> {(name): makeVarFetch(name)} })*,
     (filterAll(MOD_NAMES) { modName ->
         def mod = modName::mod;
         def name = modName::name;
-        def modVar = makeVarRef(cat("$", mod));
+        def modVar = makeVarFetch(cat("$", mod));
         def refKey = cat(mod, "_", name);
         {(refKey): makeCall(REF_get, modVar, makeLiteral(name))}
     })*

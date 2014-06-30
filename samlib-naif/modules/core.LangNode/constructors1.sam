@@ -89,13 +89,13 @@ export fn makeVarDefMutable(name, optValue?) {
 };
 
 ## Documented in spec.
-export fn makeVarRef(name) {
-    return @varRef{name}
+export fn makeVarFetch(name) {
+    return @varFetch{name}
 };
 
 ## Documented in spec.
-export fn makeVarRefLvalue(name) {
-    return @varRef{
+export fn makeVarFetchLvalue(name) {
+    return @varFetch{
         name,
         lvalue: { node -> makeVarStore(name, node) }
     }
@@ -123,7 +123,7 @@ export fn withYieldDef(node, name) {
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
-            {statements: [makeVarDef(name, makeVarRef(origName))]}
+            {statements: [makeVarDef(name, makeVarFetch(origName))]}
         }
         { {yieldDef: name} };
 

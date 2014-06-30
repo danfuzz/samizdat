@@ -200,11 +200,11 @@ execution environment. If a variable reference is found for it, then the
 result of evaluation is the box to which the name is bound. If `name`
 cannot be resolved, then evaluation fails (terminating the runtime).
 
-#### `varRef` &mdash; `@varRef{name: name}`
+#### `varFetch` &mdash; `@varFetch{name: name}`
 
 * `name: name` &mdash; Name of a variable (typically a string).
 
-This represents a by-name variable reference.
+This represents a by-name variable reference and fetch.
 
 When run, this causes the `name` to be resolved in the current
 execution environment. If a variable reference is found for it, then the
@@ -221,8 +221,7 @@ when a variable is defined but not (or not yet) bound to a value.
 * `value: expression` &mdash; Expression node representing the
   value that the variable should take on when defined.
 
-This represents a variable store (assignment) statement as part of a
-closure body.
+This represents a variable reference and store (assignment).
 
 When run, the `value` expression is evaluated. If it evaluates to void,
 then evaluation fails (terminating the runtime). Otherwise, the `name`
