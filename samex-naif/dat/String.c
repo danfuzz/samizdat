@@ -297,6 +297,24 @@ METH_IMPL(String, debugString) {
 }
 
 // Documented in header.
+METH_IMPL(String, fetch) {
+    zvalue string = args[0];
+    StringInfo *info = getInfo(string);
+
+    switch (info->size) {
+        case 0: {
+            return NULL;
+        }
+        case 1: {
+            return stringFromZchar(info->elems[0]);
+        }
+        default: {
+            die("Invalid to call `fetch` on string with size > 1.");
+        }
+    }
+}
+
+// Documented in header.
 METH_IMPL(String, get_size) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
@@ -486,6 +504,7 @@ MOD_INIT(String) {
     METH_BIND(String, cat);
     METH_BIND(String, debugString);
     METH_BIND(String, del);
+    METH_BIND(String, fetch);
     METH_BIND(String, get_size);
     METH_BIND(String, nth);
     METH_BIND(String, put);

@@ -183,6 +183,24 @@ METH_IMPL(List, del) {
 }
 
 // Documented in header.
+METH_IMPL(List, fetch) {
+    zvalue list = args[0];
+    ListInfo *info = getInfo(list);
+
+    switch (info->size) {
+        case 0: {
+            return NULL;
+        }
+        case 1: {
+            return info->elems[0];
+        }
+        default: {
+            die("Invalid to call `fetch` on list with size > 1.");
+        }
+    }
+}
+
+// Documented in header.
 METH_IMPL(List, gcMark) {
     zvalue list = args[0];
     ListInfo *info = getInfo(list);
@@ -345,6 +363,7 @@ MOD_INIT(List) {
 
     METH_BIND(List, cat);
     METH_BIND(List, del);
+    METH_BIND(List, fetch);
     METH_BIND(List, gcMark);
     METH_BIND(List, get_size);
     METH_BIND(List, nth);
