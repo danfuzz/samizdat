@@ -35,6 +35,9 @@ export
 ## Re-exported from builtins. Documented in spec.
 export def stdCollect = Generator_stdCollect;
 
+## Re-exported from builtins. Documented in spec.
+export def stdFetch = Generator_stdFetch;
+
 ## Documented in spec.
 export fn collectAsMap(generator) {
     ## Avoid pointless map->generator->map conversion.

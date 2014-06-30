@@ -117,7 +117,13 @@ fn maybeValue(function) {
 #### `stdCollect(generator, optFilterFunction?) -> list`
 
 "Standard" implementation of `collect`, in terms of `nextValue`. This
-function is provided as a convenient thing to bind to `collect` for
+function is provided as a convenient function to bind `collect` to, for
+types that don't have anything fancier to do.
+
+#### `stdFetch(generator) -> . | void`
+
+"Standard" implementation of `fetch`, in terms of `nextValue`. This
+function is provided as a convenient function to bind `fetch` to, for
 types that don't have anything fancier to do.
 
 #### `unboundedCollect(generator, optFilterFunction?) ->  n/a  ## Terminates the runtime.`

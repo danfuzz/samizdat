@@ -117,6 +117,7 @@ PRIM_FUNC(typeParent,             1, 1);
 
 // Primitive functions: intended for modularization
 PRIM_DEF(Generator_stdCollect,    FUN_Generator_stdCollect);
+PRIM_DEF(Generator_stdFetch,      FUN_Generator_stdFetch);
 PRIM_FUNC(Box_makeCell,           0, 1);
 PRIM_FUNC(Box_makePromise,        0, 0);
 PRIM_FUNC(Box_makeResult,         0, 1);

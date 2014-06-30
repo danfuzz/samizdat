@@ -28,5 +28,7 @@ extern zvalue GFN_nextValue;
 /** `core.Generator::stdCollect`: Documented in spec. */
 extern zvalue FUN_Generator_stdCollect;
 
+/** `core.Generator::stdFetch`: Documented in spec. */
+extern zvalue FUN_Generator_stdFetch;
 
 #endif
