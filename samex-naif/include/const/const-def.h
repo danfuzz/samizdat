@@ -114,6 +114,7 @@ STR(seq,                   "seq");
 STR(source,                "source");
 STR(statements,            "statements");
 STR(symlink,               "symlink");
+STR(target,                "target");
 STR(this,                  "this");
 STR(top,                   "top");
 STR(type,                  "type");

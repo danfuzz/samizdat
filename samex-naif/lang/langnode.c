@@ -527,7 +527,7 @@ zvalue makeInfoMap(zvalue node) {
 zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_fetch,
         mapFrom2(
-            STR_value,       node,
+            STR_target,      node,
             STR_interpolate, node),
         NULL);
 }

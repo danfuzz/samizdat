@@ -71,7 +71,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `fetch` form.
  */
 static zvalue execFetch(Frame *frame, zvalue fetch) {
-    zvalue valueExpr = get(fetch, STR_value);
+    zvalue valueExpr = get(fetch, STR_target);
     zvalue value = execExpression(frame, valueExpr);
 
     return GFN_CALL(fetch, value);

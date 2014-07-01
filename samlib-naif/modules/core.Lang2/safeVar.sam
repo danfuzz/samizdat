@@ -110,7 +110,7 @@ fn @@exportSelection.safeIndex(base) {
 };
 
 fn @@fetch.safeIndex(base) {
-    return safeIndex(get_nodeValue(this), base)
+    return safeIndex(get_target(this), base)
 };
 
 fn @@importModule.safeIndex(base) {
