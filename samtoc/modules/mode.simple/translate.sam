@@ -142,7 +142,7 @@ fn @@store.translate(varsBox) {
     return if (hasType(value, @@maybe)) {
         def vTrans = translate(value.nodeValue, varsBox);
         genCall("boxStoreNullOk", target, vTrans)
-    } else if (hasType(values, @@void)) {
+    } else if (hasType(value, @@void)) {
         genCall("GFN_CALL", "store", target)
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
