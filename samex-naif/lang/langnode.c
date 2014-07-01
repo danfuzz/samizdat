@@ -552,9 +552,10 @@ zvalue makeInfoMap(zvalue node) {
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_fetch,
-        mapFrom2(
+        mapFrom3(
             STR_target,      node,
-            STR_interpolate, node),
+            STR_interpolate, node,
+            STR_lvalue,      EMPTY_LIST),
         NULL);
 }
 
