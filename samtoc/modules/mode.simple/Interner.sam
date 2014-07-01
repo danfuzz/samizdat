@@ -8,7 +8,8 @@
 ##
 
 export fn makeInterner() {
-    return @Interner{values: $Box::makeCell({})}
+    var values = {};
+    return @Interner{values: (var values)}
 };
 
 export fn intern(this, value) {
@@ -27,7 +28,7 @@ export fn intern(this, value) {
 
 export fn get_interns(this) {
     def map = this::values*;
-    def boxList = [ n in (0..#map) -> $Box::makePromise() ];
+    def boxList = [ n in (0..#map) -> def result; (var result) ];
 
     for (mapping in map) {
         def id = get_value(mapping);

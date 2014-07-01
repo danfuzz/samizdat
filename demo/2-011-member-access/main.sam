@@ -33,7 +33,8 @@ def get_size = get_size;
 msg([1, 2, 3].size);
 
 def get_foo = fetch;
-def cell = $Box::makeCell(100);
+var blort = 100;
+def cell = (var blort);
 msg(cell.foo);
 
 note("\nSetter syntax");

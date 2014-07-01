@@ -8,6 +8,8 @@
 
 #= language core.Lang0
 
+import core.Box;
+
 
 ##
 ## Private Definitions
@@ -77,12 +79,12 @@ msg(box5);
 
 note("\nnullBox");
 
-msg($Box::nullBox);
-store($Box::nullBox, "stuff");
-msg($Box::nullBox);
+msg(nullBox);
+store(nullBox, "stuff");
+msg(nullBox);
 
 note("\nInterpolation");
 
-msgInterp($Box::nullBox);
+msgInterp(nullBox);
 msgInterp($Box::makeCell());
 msgInterp($Box::makeCell("blort"));

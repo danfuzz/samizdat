@@ -19,7 +19,8 @@ import ./protocol :: *;
 ##
 
 export fn genWrapper(tree) {
-    return @Wrapper{tree, flatBox: $Box::makeCell()}
+    def flat;
+    return @Wrapper{tree, flatBox: (var flat)}
 };
 
 fn @@Wrapper.flatten() {

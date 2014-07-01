@@ -46,10 +46,9 @@ export fn fullEnvironment() {
     ## This is just loaded to set up generic function bindings.
     loadModule(@external("core.Boolean"));
 
+    ## Exported as full modules.
     def $Bitwise     = loadModule(@external("core.Bitwise"));
-    def $Box         = loadModule(@external("core.Box"));
     def $Collection  = loadModule(@external("core.Collection"));
-    def $CommandLine = loadModule(@external("core.CommandLine"));
     def $Format      = loadModule(@external("core.Format"));
     def $Generator   = loadModule(@external("core.Generator"));
     def $Number      = loadModule(@external("proto.Number"));
@@ -57,12 +56,15 @@ export fn fullEnvironment() {
     def $Range       = loadModule(@external("core.Range"));
     def $Sequence    = loadModule(@external("core.Sequence"));
 
+    ## Selected bindings exported.
+    def $Box         = loadModule(@external("core.Box"));
+    def $CommandLine = loadModule(@external("core.CommandLine"));
+
     return {
         EARLY_GLOBALS*,
 
         ## Globally-exported modules.
         $Bitwise,
-        $Box,
         $Collection,
         $Format,
         $Generator,
@@ -70,6 +72,11 @@ export fn fullEnvironment() {
         $Peg,
         $Range,
         $Sequence,
+
+        ## Special value. As of this writing, this *could* have been defined
+        ## in the early set as just `@NullBox`, but the intention is that
+        ## this become more complicated / opaque.
+        nullBox: $Box::nullBox,
 
         ## The one higher-layer function that gets exported to the environment.
         runCommandLine: $CommandLine::runCommandLine

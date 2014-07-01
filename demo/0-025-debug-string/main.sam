@@ -29,7 +29,9 @@ msg([1, 2, 3]);
 msg({a: 1, b: 2});
 msg(@blort);
 msg(@blort("zorch"));
-msg($Box::makeCell(10));
+
+var foo = 10;
+msg(var foo);       ## a box
 msg(makeUniqlet());
 
 msg(Value);         ## a core type

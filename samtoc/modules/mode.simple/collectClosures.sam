@@ -136,7 +136,7 @@ export fn collectClosures(node) {
     var bodiesMap = {};
     def newNode = bodies(node, var bodiesMap);
 
-    def bodiesBoxList = [ for #bodiesMap -> $Box::makePromise() ];
+    def bodiesBoxList = [ for #bodiesMap -> def result; (var result) ];
     for (body in bodiesMap) {
         def index = get_value(body)::id;
         store(bodiesBoxList[index], get_key(body))
