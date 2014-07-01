@@ -15,7 +15,8 @@
 ##
 
 export fn makeCache() {
-    return @ResolveCache{box: $Box::makeCell({})}
+    var cache = {};
+    return @ResolveCache{box: (var cache)}
 };
 
 export fn cacheGet(cache, source) {
