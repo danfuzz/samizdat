@@ -111,9 +111,7 @@ static zvalue execStore(Frame *frame, zvalue store) {
     zvalue target = execExpression(frame, targetExpr);
     zvalue value = execExpressionOrMaybe(frame, valueExpr);
 
-    return (value == NULL)
-        ? GFN_CALL(store, target)
-        : GFN_CALL(store, target, value);
+    return boxStoreNullOk(target, value);
 }
 
 /**
