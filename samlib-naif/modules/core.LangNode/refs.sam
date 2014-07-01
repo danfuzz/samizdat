@@ -51,6 +51,7 @@ def NAMES = [
     "perLt",
     "perNe",
     "return",
+    "store",
     "totalNe"
 ];
 

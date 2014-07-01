@@ -64,7 +64,8 @@ fn fizmo() {
     note("fizmo:");
     note("    ", x);
     note("    ", fetch(box));
-    store(box, "igram");
+
+    box* := "igram";
     note("    ", x);
 };
 
