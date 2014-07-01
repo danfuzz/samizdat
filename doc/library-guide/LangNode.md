@@ -213,6 +213,12 @@ Makes an `apply` node, with the given `function` (an expression node)
 being applied to the given `values` (an expression node). If `optValues`
 is not passed, it defaults to `@void`.
 
+#### `makeAssignmentIfPossible(target, value) -> node | .`
+
+Makes an assignment node of some form, if possible. Given a `lvalue`-bearing
+`target`, this calls `lvalue(value)` to produce a result. Otherwise, this
+returns void.
+
 #### `makeBasicClosure(map) -> node`
 
 Makes a `closure` node, using the bindings of `map` as a basis, and adding

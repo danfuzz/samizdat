@@ -243,6 +243,30 @@ zvalue makeApply(zvalue function, zvalue values) {
 }
 
 // Documented in spec.
+zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
+    // This code isn't parallel to the in-language code but has the same
+    // effect. The difference stems from the fact that C isn't a great direct
+    // host for closures, whereas in-language `lvalue` is very naturally a
+    // closure. In this case, the mere presence of `lvalue` is taken as the
+    // significant thing, and its value is ignored; instead, per-type
+    // assignment conversion is implemented directly below.
+
+    if (get(target, STR_lvalue) == NULL) {
+        return NULL;
+    } else if (hasType(target, TYPE_varFetch)) {
+        zvalue name = get(target, STR_name);
+        return makeVarStore(name, value);
+    } else if (hasType(target, TYPE_fetch)) {
+        zvalue innerTarget = get(target, STR_target);
+        return makeValue(TYPE_store,
+            mapFrom2(STR_target, innerTarget, STR_value, value),
+            NULL);
+    } else {
+        die("Improper `lvalue` binding.");
+    }
+}
+
+// Documented in spec.
 zvalue makeBasicClosure(zvalue map) {
     return makeValue(TYPE_closure,
         GFN_CALL(cat,
@@ -597,8 +621,10 @@ zvalue makeVarFetch(zvalue name) {
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
-    // See discussion in `parse.c`.
-    return makeVarFetch(name);
+    // See discussion in `makeAssignmentIfPossible` for details about `lvalue`.
+    return makeValue(TYPE_varFetch,
+        mapFrom2(STR_lvalue, EMPTY_STRING, STR_name, name),
+        NULL);
 }
 
 // Documented in spec.

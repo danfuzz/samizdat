@@ -42,6 +42,9 @@ bool isExpression(zvalue node);
 zvalue makeApply(zvalue function, zvalue values);
 
 // Documented in spec.
+zvalue makeAssignmentIfPossible(zvalue target, zvalue value);
+
+// Documented in spec.
 zvalue makeBasicClosure(zvalue map);
 
 // Documented in spec.

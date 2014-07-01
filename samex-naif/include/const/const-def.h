@@ -95,6 +95,7 @@ STR(interpolate,           "interpolate");
 STR(language,              "language");
 STR(loadModule,            "loadModule");
 STR(loadResource,          "loadResource");
+STR(lvalue,                "lvalue");
 STR(main,                  "main");
 STR(makeDerivedDataType,   "makeDerivedDataType");
 STR(makeList,              "makeList");

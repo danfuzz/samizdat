@@ -60,6 +60,12 @@ fn expandYield(map) {
 ##
 
 ## Documented in spec.
+export fn makeAssignmentIfPossible(target, value) {
+    return? ifValue { get_lvalue(target) }
+        { lvalue -> lvalue(value) }
+};
+
+## Documented in spec.
 export fn makeCallOrApply(function, values*) {
     ifIs { perEq(values, []) }
         {
