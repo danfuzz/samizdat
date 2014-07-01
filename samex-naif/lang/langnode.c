@@ -621,9 +621,10 @@ zvalue makeVarFetch(zvalue name) {
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
-    // See discussion in `makeAssignmentIfPossible` for details about `lvalue`.
+    // See discussion in `makeAssignmentIfPossible` above, for details about
+    // `lvalue`.
     return makeValue(TYPE_varFetch,
-        mapFrom2(STR_lvalue, EMPTY_STRING, STR_name, name),
+        mapFrom2(STR_lvalue, EMPTY_LIST, STR_name, name),
         NULL);
 }
 
