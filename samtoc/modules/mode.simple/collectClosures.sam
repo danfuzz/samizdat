@@ -62,8 +62,8 @@ fn @@exportSelection.bodies(bodiesBox) {
 };
 
 fn @@fetch.bodies(bodiesBox) {
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @fetch{value}
+    def target = bodies(this.target, bodiesBox);
+    return @fetch{target}
 };
 
 fn @@importModule.bodies(bodiesBox) {

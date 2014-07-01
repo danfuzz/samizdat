@@ -59,8 +59,8 @@ fn @@external.lits(interner) {
 };
 
 fn @@fetch.lits(interner) {
-    def value = lits(this.nodeValue, interner);
-    return @fetch{value}
+    def target = lits(this.target, interner);
+    return @fetch{target}
 };
 
 fn @@importModule.lits(interner) {

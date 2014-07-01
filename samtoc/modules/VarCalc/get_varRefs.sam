@@ -82,7 +82,7 @@ fn @@closureRef.get_varRefs() {
 };
 
 fn @@fetch.get_varRefs() {
-    return this.nodeValue.varRefs
+    return this.target.varRefs
 };
 
 fn @@importModule.get_varRefs() {

@@ -97,8 +97,8 @@ fn @@exportSelection.translate(varsBox) {
 };
 
 fn @@fetch.translate(varsBox) {
-    def value = translate(this.nodeValue, varsBox);
-    return genCall("GFN_CALL", "fetch", value)
+    def target = translate(this.target, varsBox);
+    return genCall("GFN_CALL", "fetch", target)
 };
 
 fn @@importModule.translate(varsBox) {
