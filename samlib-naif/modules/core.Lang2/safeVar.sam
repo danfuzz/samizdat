@@ -102,7 +102,7 @@ fn @@closure.safeIndex(base) {
 };
 
 fn @@export.safeIndex(base) {
-    return safeIndex(get_nodeValue(this), base)
+    return safeIndexForNodes(base, get_nodeValue(this))
 };
 
 fn @@exportSelection.safeIndex(base) {
@@ -110,7 +110,7 @@ fn @@exportSelection.safeIndex(base) {
 };
 
 fn @@fetch.safeIndex(base) {
-    return safeIndex(get_target(this), base)
+    return safeIndexForNodes(base, get_target(this))
 };
 
 fn @@importModule.safeIndex(base) {
@@ -140,6 +140,10 @@ fn @@maybe.safeIndex(base) {
 
 fn @@noYield.safeIndex(base) {
     return safeIndexForNodes(base, get_nodeValue(this))
+};
+
+fn @@store.safeIndex(base) {
+    return safeIndexForNodes(base, get_target(this), get_nodeValue(this))
 };
 
 fn @@varBox.safeIndex(base) {

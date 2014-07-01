@@ -283,6 +283,13 @@ fn @@parser.convertPexIn() {
     return makeCallPex(REFS::Peg_makeMainSequence, this, [])
 };
 
+## Does parser conversion of a `store` node.
+fn @@store.convertPexIn() {
+    def target = convertPexIn(get_target(this));
+    def value = convertPexIn(get_nodeValue(this));
+    return withFinalBindings(this, {target, value})
+};
+
 ## Does parser conversion of a `varDef` node.
 fn @@varDef.convertPexIn() {
     return convertValuePayload(this)
