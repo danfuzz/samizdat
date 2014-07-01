@@ -139,9 +139,9 @@ along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
 facility is an implementation of downward-passed / upward-called
 continuations.
 
-#### `fetch` &mdash; `@fetch{value: expression, interpolate?: expression}`
+#### `fetch` &mdash; `@fetch{target: expression, interpolate?: expression}`
 
-* `values: expression` &mdash; expression node which must evaluate to a
+* `target: expression` &mdash; Expression node. Must evaluate to a
   generator.
 
 * `interpolate: expression` (optional) &mdash; Expression to use when treating
@@ -149,8 +149,8 @@ continuations.
 
 This represents a call to the generic `fetch`.
 
-When run, `value` is evaluated. If it evaluates to void, then it is a fatal
-error (terminating the runtime). Otherwise, `fetch` is called on `value`,
+When run, `target` is evaluated. If it evaluates to void, then it is a fatal
+error (terminating the runtime). Otherwise, `fetch` is called on `target`,
 and the result of evaluation is the same as the result of evaluation of
 that call, including possibly void.
 
@@ -188,6 +188,25 @@ wrap the calls that represent nonlocal exits.
 When run, `value` is evaluated. Should control ever return directly
 (to the `noYield` evaluator), it will result in a fatal error (terminating
 the runtime).
+
+#### `store` &mdash; `@store{target: expression, value: expression}`
+
+* `target: expression` &mdash; Target to store to; must evaluate to something
+  the implements the `Box` protocol.
+
+* `value: expression` &mdash; Expression node representing the
+  value that the target should take on.
+
+This represents a box store (assignment).
+
+When run, the `target` and `value` expressions are evaluated, in that order.
+If either evaluates to void, then evaluation fails (terminating the runtime).
+Otherwise, the generic function `store` is called, with the `target` and
+`value` results as arguments (in that order).
+
+The result of evaluating this form is the same as the result returned from
+the `store` call. This is typically the same as the result of evaluating
+`value`.
 
 #### `varBox` &mdash; `@varBox{name: name}`
 
