@@ -195,18 +195,20 @@ the runtime).
   the implements the `Box` protocol.
 
 * `value: expression` &mdash; Expression node representing the
-  value that the target should take on.
+  value that the target should take on. Allowed to be a `maybe` or `void`
+  node.
 
 This represents a box store (assignment).
 
 When run, the `target` and `value` expressions are evaluated, in that order.
-If either evaluates to void, then evaluation fails (terminating the runtime).
+If `target` evaluates to void, or `value` is neither a `maybe` or `void` node
+and evaluates to void, then evaluation fails (terminating the runtime).
 Otherwise, the generic function `store` is called, with the `target` and
 `value` results as arguments (in that order).
 
 The result of evaluating this form is the same as the result returned from
 the `store` call. This is typically the same as the result of evaluating
-`value`.
+`value`. To be clear, nodes of this type *can* evaluate to void.
 
 #### `varBox` &mdash; `@varBox{name: name}`
 
@@ -272,6 +274,7 @@ Nodes of this type are only allowed to appear in the following contexts:
 
 * As the `value` binding of an `apply` node.
 * As the `value` binding of a `nonlocalExit` node.
+* As the `value` binding of a `store` node.
 * As the `yield` binding of a `closure` node, but only during intermediate
   processing.
 * As the node passed as an argument to `$Code::eval`.
