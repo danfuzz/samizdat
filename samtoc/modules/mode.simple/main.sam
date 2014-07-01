@@ -106,26 +106,25 @@ fn makeYieldStatements(yieldValue, cleanups) {
 fn closureBody(cloIdx, clo, literals) {
     ## Set up the initial variable bindings.
     def varInfo = $vars::processVars(clo);
-    def vars = varInfo::vars;
+    var vars = varInfo::vars;
     def varNames = varInfo::names;
 
     ## Translate the statements and the yield. Note that the `mainStats`
     ## definition is a list constructor (not a generator), as its body has
     ## to run before `yield` is calculated (in order to have the correct
-    ## set of vars defined in `varsBox`).
+    ## set of vars defined in `vars`).
 
-    def varsBox = $Box::makeCell(vars);
-    def mainStats = [ s in clo.statements -> translateStatement(s, varsBox) ];
+    def mainStats = [ s in clo.statements -> translateStatement(s, var vars) ];
 
     def rawYield = clo.yieldNode;
     def yieldNode = if (hasType(rawYield, @@maybe)) {
-        translate(rawYield.nodeValue, varsBox);
+        translate(rawYield.nodeValue, var vars);
     } else if (hasType(rawYield, @@void)) {
         "NULL"
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        genCall("datNonVoid", translate(rawYield, varsBox))
+        genCall("datNonVoid", translate(rawYield, var vars))
     };
     def yieldStats = makeYieldStatements(yieldNode, varInfo::cleanups);
 

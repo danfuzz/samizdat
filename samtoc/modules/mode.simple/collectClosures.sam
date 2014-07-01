@@ -133,9 +133,8 @@ fn @@void.bodies(bodiesBox) {
 ## closures and `node` is a replacement for the original argument, in which
 ## `closure` nodes have been replaced by indexed closure references.
 export fn collectClosures(node) {
-    def bodiesBox = $Box::makeCell({});
-    def newNode = bodies(node, bodiesBox);
-    def bodiesMap = bodiesBox*;
+    var bodiesMap = {};
+    def newNode = bodies(node, var bodiesMap);
 
     def bodiesBoxList = [ for #bodiesMap -> $Box::makePromise() ];
     for (body in bodiesMap) {
