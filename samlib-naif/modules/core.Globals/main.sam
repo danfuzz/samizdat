@@ -71,6 +71,11 @@ export fn fullEnvironment() {
         $Range,
         $Sequence,
 
+        ## Special value. As of this writing, this *could* have been defined
+        ## in the early set as just `@NullBox`, but the intention is that
+        ## this become more complicated / opaque.
+        nullBox: $Box::nullBox,
+
         ## The one higher-layer function that gets exported to the environment.
         runCommandLine: $CommandLine::runCommandLine
     }
