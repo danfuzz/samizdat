@@ -60,7 +60,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
 ## Returns a full `makeClosure_*` definition, as as string.
 fn closureMaker(cloIdx, clo, literals) {
     def name = (def n = clo.name)
-        & translate(n, $Box::nullBox).flatten()
+        & translate(n, nullBox).flatten()
         | "NULL";
 
     def varRefs = clo.varRefs;
