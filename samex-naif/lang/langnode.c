@@ -122,6 +122,7 @@ bool canYieldVoid(zvalue node) {
         case EVAL_call:     return true;
         case EVAL_fetch:    return true;
         case EVAL_maybe:    return true;
+        case EVAL_store:    return true;
         case EVAL_varFetch: return true;
         case EVAL_void:     return true;
         default: {
@@ -221,6 +222,7 @@ bool isExpression(zvalue node) {
         case EVAL_fetch:    return true;
         case EVAL_literal:  return true;
         case EVAL_noYield:  return true;
+        case EVAL_store:    return true;
         case EVAL_varBox:   return true;
         case EVAL_varFetch: return true;
         case EVAL_varStore: return true;
