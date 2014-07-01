@@ -47,8 +47,8 @@ fn @@apply.translate(varsBox) {
     def values = this.values;
 
     return if (hasType(values, @@maybe)) {
-        def acTrans = translate(values.nodeValue, varsBox);
-        genCall("funApply", function, acTrans)
+        def vTrans = translate(values.nodeValue, varsBox);
+        genCall("funApply", function, vTrans)
     } else if (hasType(values, @@void)) {
         ## A void `values` binding just devolves into a no-argument (but
         ## otherwise regular) function call.
@@ -56,8 +56,8 @@ fn @@apply.translate(varsBox) {
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        def acTrans = translate(values, varsBox);
-        genCall("funApply", function, genCall("datNonVoid", acTrans))
+        def vTrans = genCall("datNonVoid", translate(values, varsBox));
+        genCall("funApply", function, vTrans)
     }
 };
 
@@ -137,8 +137,19 @@ fn @@noYield.translate(varsBox) {
 
 fn @@store.translate(varsBox) {
     def target = translate(this.target, varsBox);
-    def value = translate(this.value, varsBox);
-    return genCall("boxStoreNullOk", target, value)
+    def value = this.value;
+
+    return if (hasType(value, @@maybe)) {
+        def vTrans = translate(rawValue.nodeValue, varsBox);
+        genCall("boxStoreNullOk", target, vTrans)
+    } else if (hasType(values, @@void)) {
+        genCall("GFN_CALL", "store", target)
+    } else {
+        ## If it's not wrapped in a `@maybe`, we need to guarantee
+        ## non-void.
+        def vTrans = genCall("datNonVoid", translate(values, varsBox));
+        genCall("GFN_CALL", "store", target, vTrans)
+    }
 };
 
 fn @@varBox.translate(varsBox) {
