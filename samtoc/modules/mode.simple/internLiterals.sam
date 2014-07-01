@@ -98,6 +98,12 @@ fn @@noYield.lits(interner) {
     return @noYield{value}
 };
 
+fn @@store.lits(interner) {
+    def target = lits(this.target, interner);
+    def value = lits(this.value, interner);
+    return @store{target, value}
+};
+
 fn @@varBox.lits(interner) {
     return this
 };

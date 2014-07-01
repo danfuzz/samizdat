@@ -92,6 +92,12 @@ fn @@noYield.bodies(bodiesBox) {
     return @noYield{value}
 };
 
+fn @@store.bodies(bodiesBox) {
+    def target = bodies(this.target, bodiesBox);
+    def value = bodies(this.nodeValue, bodiesBox);
+    return @store{target, value}
+};
+
 fn @@varBox.bodies(bodiesBox) {
     return this
 };

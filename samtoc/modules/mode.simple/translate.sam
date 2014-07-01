@@ -135,6 +135,12 @@ fn @@noYield.translate(varsBox) {
     return genCall("mustNotYield", value)
 };
 
+fn @@store.translate(varsBox) {
+    def target = translate(this.target, varsBox);
+    def value = translate(this.value, varsBox);
+    return genCall("boxStoreNullOk", target, value)
+};
+
 fn @@varBox.translate(varsBox) {
     def name = this.name;
     def vars = varsBox*;
