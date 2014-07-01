@@ -117,7 +117,7 @@ fn @@noYield.get_varRefs() {
 };
 
 fn @@store.get_varRefs() {
-    return catVarRefs(this.target, this.value)
+    return catVarRefs(this.target, this.nodeValue)
 };
 
 fn @@varBox.get_varRefs() {

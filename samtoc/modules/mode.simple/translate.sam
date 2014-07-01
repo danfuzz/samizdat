@@ -137,7 +137,7 @@ fn @@noYield.translate(varsBox) {
 
 fn @@store.translate(varsBox) {
     def target = translate(this.target, varsBox);
-    def value = this.value;
+    def value = this.nodeValue;
 
     return if (hasType(value, @@maybe)) {
         def vTrans = translate(rawValue.nodeValue, varsBox);

@@ -100,7 +100,7 @@ fn @@noYield.lits(interner) {
 
 fn @@store.lits(interner) {
     def target = lits(this.target, interner);
-    def value = lits(this.value, interner);
+    def value = lits(this.nodeValue, interner);
     return @store{target, value}
 };
 
