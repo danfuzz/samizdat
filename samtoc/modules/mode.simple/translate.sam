@@ -34,6 +34,11 @@ fn varDefCommon(name, value, varsBox) {
     return genComment("\%q(name)", genAssign(decl, value));
 };
 
+## Wrap the given expression in a "non-void" guarantee call.
+fn nonVoid(value) {
+    return genCall("datNonVoid", value)
+};
+
 
 ##
 ## Exported Definitions: `translate`
@@ -56,16 +61,13 @@ fn @@apply.translate(varsBox) {
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        def vTrans = genCall("datNonVoid", translate(values, varsBox));
+        def vTrans = nonVoid(translate(values, varsBox));
         genCall("funApply", function, vTrans)
     }
 };
 
 fn @@call.translate(varsBox) {
-    def values = (a in this.values ->
-        genCall("datNonVoid", translate(a, varsBox))
-    );
-
+    def values = ( a in this.values -> nonVoid(translate(a, varsBox)) );
     return genCall("FUN_CALL", translate(this.function, varsBox), values*)
 };
 
@@ -147,7 +149,7 @@ fn @@store.translate(varsBox) {
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        def vTrans = genCall("datNonVoid", translate(value, varsBox));
+        def vTrans = nonVoid(translate(value, varsBox));
         genCall("GFN_CALL", "store", target, vTrans)
     }
 };
