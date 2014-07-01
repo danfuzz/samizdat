@@ -51,7 +51,7 @@ fn @@RepeatGenerator.nextValue(box) {
     return? ifIs { perGt(size, 0) }
         {
             def value = this::value;
-            store(box, value);
+            box* := value;
             makeRepeatGenerator(sub(size, 1), value)
         }
 };

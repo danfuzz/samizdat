@@ -69,6 +69,6 @@ fn @@ParaGenerator.nextValue(box) {
     def nexts = collect(generatorCalls,
         { one -> nth(one, 1) });
 
-    store(box, yields);
+    box* := yields;
     return @ParaGenerator(nexts)
 };

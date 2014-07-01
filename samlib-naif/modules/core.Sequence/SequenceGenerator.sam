@@ -35,7 +35,7 @@ fn @@SequenceGenerator.nextValue(box) {
 
     return? ifValue { nth(seq, index) }
         { value ->
-            store(box, value);
+            box* := value;
             @SequenceGenerator{index: add(index, 1), seq}
         }
 };

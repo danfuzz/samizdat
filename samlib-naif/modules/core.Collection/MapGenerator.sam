@@ -36,7 +36,7 @@ fn @@MapGenerator.nextValue(box) {
 
     return? ifValue { nthMapping(map, index) }
         { value ->
-            store(box, value);
+            box* := value;
             @MapGenerator{index: add(index, 1), map}
         }
 };
