@@ -93,7 +93,7 @@ def parVarRef = makeMainSequence(
 def parVarBox = makeMainSequence(
     makeToken(@@var),
     parName,
-    makeCode { name -> makeVarBox(name) });
+    makeCode { ., name -> makeVarBox(name) });
 
 ## Documented in spec.
 def parInt = makeMainChoice(
