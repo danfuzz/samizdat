@@ -99,7 +99,7 @@ fn @@exportSelection.translate(varsBox) {
 };
 
 fn @@fetch.translate(varsBox) {
-    def target = translate(this.target, varsBox);
+    def target = nonVoid(translate(this.target, varsBox));
     return genCall("GFN_CALL", "fetch", target)
 };
 
@@ -164,7 +164,7 @@ fn @@varBox.translate(varsBox) {
 
 fn @@varDef.translate(varsBox) {
     def value = (def v = this.nodeValue)
-        & genCall("makeResult", translate(v, varsBox))
+        & genCall("makeResult", nonVoid(translate(v, varsBox)))
         | genCall("makePromise");
 
     return varDefCommon(this.name, value, varsBox)
@@ -176,7 +176,7 @@ fn @@varDefMutable.translate(varsBox) {
         | "NULL";
 
     return varDefCommon(
-        this.name, genCall("makeCell", value), varsBox)
+        this.name, nonVoid(genCall("makeCell", value)), varsBox)
 };
 
 fn @@varFetch.translate(varsBox) {
