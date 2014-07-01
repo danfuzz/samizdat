@@ -4,6 +4,7 @@
 
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/List.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
@@ -266,6 +267,30 @@ METH_IMPL(String, cat) {
 }
 
 // Documented in header.
+METH_IMPL(String, collect) {
+    zvalue string = args[0];
+    zvalue function = (argCount > 1) ? args[1] : NULL;
+
+    StringInfo *info = getInfo(string);
+    zchar *elems = info->elems;
+    zint size = info->size;
+    zvalue result[size];
+    zint at = 0;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue elem = stringFromZchar(elems[i]);
+        zvalue one = (function == NULL) ? elem : FUN_CALL(function, elem);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return listFromArray(at, result);
+}
+
+// Documented in header.
 METH_IMPL(String, del) {
     zvalue string = args[0];
     zvalue n = args[1];
@@ -293,6 +318,24 @@ METH_IMPL(String, debugString) {
     zvalue quote = stringFromUtf8(1, "\"");
 
     return GFN_CALL(cat, quote, string, quote);
+}
+
+// Documented in header.
+METH_IMPL(String, fetch) {
+    zvalue string = args[0];
+    StringInfo *info = getInfo(string);
+
+    switch (info->size) {
+        case 0: {
+            return NULL;
+        }
+        case 1: {
+            return stringFromZchar(info->elems[0]);
+        }
+        default: {
+            die("Invalid to call `fetch` on string with size > 1.");
+        }
+    }
 }
 
 // Documented in header.
@@ -459,6 +502,22 @@ METH_IMPL(String, totalOrder) {
     return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
+// Documented in header.
+METH_IMPL(String, valueList) {
+    zvalue string = args[0];
+
+    StringInfo *info = getInfo(string);
+    zint size = info->size;
+    zchar *elems = info->elems;
+    zvalue result[size];
+
+    for (zint i = 0; i < size; i++) {
+        result[i] = stringFromZchar(elems[i]);
+    }
+
+    return listFromArray(size, result);
+}
+
 /** Initializes the module. */
 MOD_INIT(String) {
     MOD_USE(Sequence);
@@ -467,8 +526,10 @@ MOD_INIT(String) {
     // Note: The `typeSystem` module initializes `TYPE_String`.
 
     METH_BIND(String, cat);
+    METH_BIND(String, collect);
     METH_BIND(String, debugString);
     METH_BIND(String, del);
+    METH_BIND(String, fetch);
     METH_BIND(String, get_size);
     METH_BIND(String, nth);
     METH_BIND(String, put);
@@ -480,6 +541,7 @@ MOD_INIT(String) {
     METH_BIND(String, toString);
     METH_BIND(String, totalEq);
     METH_BIND(String, totalOrder);
+    METH_BIND(String, valueList);
     seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);

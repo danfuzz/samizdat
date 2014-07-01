@@ -55,6 +55,7 @@ export fn main(selfPath, name?, rest*) {
     process($Collection::keyList("abcde"));
     process($Collection::keyList({a: "apple", b: "butter"}));
     process($Collection::valueList({a: "apple", b: "butter"}));
+    process($Collection::valueList(["blort", "fizmo", "igram"]));
     process($Collection::valueList("blort"));
     process(makeUniqlet());
     process(blort);

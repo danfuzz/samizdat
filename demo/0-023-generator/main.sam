@@ -27,10 +27,10 @@ fn msgAll(header, origGen) {
     var gen = origGen;
     { /done ->
         loop {
-            def box = $Box::makePromise();
-            ifValue { nextValue(gen, box) }
+            def result;
+            ifValue { nextValue(gen, var result) }
                 { nextGen ->
-                    msg(box*);
+                    msg(result);
                     gen := nextGen
                 }
                 { yield /done }

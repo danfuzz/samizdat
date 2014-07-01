@@ -108,12 +108,6 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 // methods are bound on many types.
 //
 
-/** Builtin for `Sequence.collect`. */
-static zvalue BI_Sequence_collect = NULL;
-
-/** Builtin for `Sequence.fetch`. */
-static zvalue BI_Sequence_fetch = NULL;
-
 /** Builtin for `Sequence.get`. */
 static zvalue BI_Sequence_get = NULL;
 
@@ -125,9 +119,6 @@ static zvalue BI_Sequence_nextValue = NULL;
 
 /** Builtin for `Sequence.nthMapping`. */
 static zvalue BI_Sequence_nthMapping = NULL;
-
-/** Builtin for `Sequence.valueList`. */
-static zvalue BI_Sequence_valueList = NULL;
 
 // Documented in header.
 METH_IMPL(Sequence, collect) {
@@ -157,24 +148,6 @@ METH_IMPL(Sequence, collect) {
     }
 
     return listFromArray(at, result);
-}
-
-// Documented in header.
-METH_IMPL(Sequence, fetch) {
-    zvalue seq = args[0];
-    zint size = get_size(seq);
-
-    switch (size) {
-        case 0: {
-            return NULL;
-        }
-        case 1: {
-            return nth(seq, 0);
-        }
-        default: {
-            die("Invalid to call `fetch` on sequence with size > 1.");
-        }
-    }
 }
 
 // Documented in header.
@@ -241,32 +214,11 @@ METH_IMPL(Sequence, nthMapping) {
 }
 
 // Documented in header.
-METH_IMPL(Sequence, valueList) {
-    zvalue seq = args[0];
-
-    if (hasType(seq, TYPE_List)) {
-        return seq;
-    }
-
-    zint size = get_size(seq);
-    zvalue elems[size];
-
-    for (zint i = 0; i < size; i++) {
-        elems[i] = nth(seq, i);
-    }
-
-    return listFromArray(size, elems);
-}
-
-// Documented in header.
 void seqBind(zvalue type) {
-    genericBind(GFN_collect,    type, BI_Sequence_collect);
-    genericBind(GFN_fetch,      type, BI_Sequence_fetch);
     genericBind(GFN_get,        type, BI_Sequence_get);
     genericBind(GFN_keyList,    type, BI_Sequence_keyList);
     genericBind(GFN_nextValue,  type, BI_Sequence_nextValue);
     genericBind(GFN_nthMapping, type, BI_Sequence_nthMapping);
-    genericBind(GFN_valueList,  type, BI_Sequence_valueList);
 }
 
 /** Initializes the module. */
@@ -285,14 +237,6 @@ MOD_INIT(Sequence) {
         stringFromUtf8(-1, "sliceInclusive"));
     datImmortalize(GFN_sliceInclusive);
 
-    BI_Sequence_collect = makeBuiltin(1, 2, METH_NAME(Sequence, collect), 0,
-        stringFromUtf8(-1, "Sequence.collect"));
-    datImmortalize(BI_Sequence_collect);
-
-    BI_Sequence_fetch = makeBuiltin(1, 1, METH_NAME(Sequence, fetch), 0,
-        stringFromUtf8(-1, "Sequence.fetch"));
-    datImmortalize(BI_Sequence_fetch);
-
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));
     datImmortalize(BI_Sequence_get);
@@ -308,10 +252,6 @@ MOD_INIT(Sequence) {
     BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
         0, stringFromUtf8(-1, "Sequence.nthMapping"));
     datImmortalize(BI_Sequence_nthMapping);
-
-    BI_Sequence_valueList = makeBuiltin(1, 1, METH_NAME(Sequence, valueList),
-        0, stringFromUtf8(-1, "Sequence.valueList"));
-    datImmortalize(BI_Sequence_valueList);
 }
 
 // Documented in header.

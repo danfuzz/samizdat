@@ -166,6 +166,34 @@ METH_IMPL(List, cat) {
 }
 
 // Documented in header.
+METH_IMPL(List, collect) {
+    zvalue list = args[0];
+    zvalue function = (argCount > 1) ? args[1] : NULL;
+
+    if (function == NULL) {
+        // Collecting a list (without filtering) results in that same list.
+        return list;
+    }
+
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
+    zvalue result[size];
+    zint at = 0;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = FUN_CALL(function, elems[i]);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return listFromArray(at, result);
+}
+
+// Documented in header.
 METH_IMPL(List, del) {
     zvalue list = args[0];
     zvalue n = args[1];
@@ -180,6 +208,24 @@ METH_IMPL(List, del) {
     }
 
     return listFrom(index, elems, NULL, size - index - 1, &elems[index + 1]);
+}
+
+// Documented in header.
+METH_IMPL(List, fetch) {
+    zvalue list = args[0];
+    ListInfo *info = getInfo(list);
+
+    switch (info->size) {
+        case 0: {
+            return NULL;
+        }
+        case 1: {
+            return info->elems[0];
+        }
+        default: {
+            die("Invalid to call `fetch` on list with size > 1.");
+        }
+    }
 }
 
 // Documented in header.
@@ -329,6 +375,13 @@ METH_IMPL(List, totalOrder) {
     return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
+// Documented in header.
+METH_IMPL(List, valueList) {
+    zvalue list = args[0];
+
+    return list;
+}
+
 /** Initializes the module. */
 MOD_INIT(List) {
     MOD_USE(Sequence);
@@ -337,7 +390,9 @@ MOD_INIT(List) {
     TYPE_List = makeCoreType(stringFromUtf8(-1, "List"), TYPE_Data, false);
 
     METH_BIND(List, cat);
+    METH_BIND(List, collect);
     METH_BIND(List, del);
+    METH_BIND(List, fetch);
     METH_BIND(List, gcMark);
     METH_BIND(List, get_size);
     METH_BIND(List, nth);
@@ -347,6 +402,7 @@ MOD_INIT(List) {
     METH_BIND(List, sliceInclusive);
     METH_BIND(List, totalEq);
     METH_BIND(List, totalOrder);
+    METH_BIND(List, valueList);
     seqBind(TYPE_List);
 
     EMPTY_LIST = allocList(0);
