@@ -597,7 +597,7 @@ zvalue makeThunk(zvalue expression) {
 }
 
 // Documented in spec.
-zvalue makeVarBox(zvalue name) {
+zvalue makeVarRef(zvalue name) {
     return makeValue(TYPE_varBox, mapFrom1(STR_name, name), NULL);
 }
 

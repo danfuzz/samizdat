@@ -70,11 +70,6 @@ export fn makeNonlocalExit(function, optValue?) {
 };
 
 ## Documented in spec.
-export fn makeVarBox(name) {
-    return @varBox{name}
-};
-
-## Documented in spec.
 export fn makeVarDef(name, optValue?) {
     return ifValue { optValue* }
         { value -> @varDef{name, value} }
@@ -99,6 +94,11 @@ export fn makeVarFetchLvalue(name) {
         name,
         lvalue: { node -> makeVarStore(name, node) }
     }
+};
+
+## Documented in spec.
+export fn makeVarRef(name) {
+    return @varBox{name}
 };
 
 ## Documented in spec.

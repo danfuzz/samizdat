@@ -124,7 +124,7 @@ def parVarLvalue = {:
 def parVarRef = {:
     @var
     name = parName
-    { makeVarBox(name) }
+    { makeVarRef(name) }
 :};
 
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,

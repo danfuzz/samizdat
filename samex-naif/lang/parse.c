@@ -307,7 +307,7 @@ DEF_PARSE(varRef) {
 
     MATCH_OR_REJECT(var);
     zvalue name = PARSE_OR_REJECT(name);
-    return makeVarBox(name);
+    return makeVarRef(name);
 }
 
 // Documented in spec.
