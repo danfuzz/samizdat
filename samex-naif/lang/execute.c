@@ -121,11 +121,11 @@ static zvalue execStore(Frame *frame, zvalue store) {
 static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue name = get(varDef, STR_name);
     zvalue valueExpression = get(varDef, STR_value);
-    zvalue value = valueExpression
-        ? execExpression(frame, valueExpression)
-        : NULL;
+    zvalue box = valueExpression
+        ? makeResult(execExpression(frame, valueExpression))
+        : makePromise();
 
-    frameDef(frame, false, name, value);
+    frameDef(frame, name, box);
 }
 
 /**
@@ -139,7 +139,7 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
         ? execExpression(frame, valueExpression)
         : NULL;
 
-    frameDef(frame, true, name, value);
+    frameDef(frame, name, makeCell(value));
 }
 
 /**

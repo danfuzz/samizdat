@@ -41,17 +41,7 @@ void frameMark(Frame *frame) {
 }
 
 // Documented in header.
-void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value) {
-    zvalue box;
-
-    if (mutab) {
-        box = makeCell(value);
-    } else if (value == NULL) {
-        box = makePromise();
-    } else {
-        box = makeResult(value);
-    }
-
+void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue vars = frame->vars;
     zvalue newVars = collPut(vars, name, box);
 

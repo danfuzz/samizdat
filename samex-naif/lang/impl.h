@@ -92,11 +92,9 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
 void frameMark(Frame *frame);
 
 /**
- * Defines a new variable to the given frame, optionally binding it to a value
- * (that is, if `value` is `NULL` then the variable is created but not bound),
- * and making it either mutable or immutable as specified.
+ * Defines a new variable to the given frame, binding it to the given box.
  */
-void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value);
+void frameDef(Frame *frame, zvalue name, zvalue box);
 
 /**
  * Fetches the box associated with a variable, out of the given frame. Fails
