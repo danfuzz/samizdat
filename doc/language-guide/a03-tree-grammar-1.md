@@ -938,6 +938,12 @@ def parParenPex = {:
     { pex }
 :};
 
+## Parses a variable reference parsing expression.
+def parParserVarRef = {:
+    name = parName
+    { makeVarRef(name) }
+:};
+
 ## Parses a string literal parsing expression.
 def parParserString = {:
     s = @string
@@ -1022,7 +1028,7 @@ def parParserTerm = {:
     @")"
     { @empty }
 |
-    parVarLvalue | parParserString | parParserToken | parParserSet |
+    parParserVarRef | parParserString | parParserToken | parParserSet |
     parParserCode | parParserThunk | parParenPex
 :};
 

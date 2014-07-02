@@ -719,6 +719,11 @@ def parParenPex = makeMainSequence(
     makeToken(@@")"),
     makeCode { ., pex, . -> pex });
 
+## Parses a variable reference parsing expression.
+def parParserVarRef = makeMainSequence(
+    parName,
+    makeCode { name -> makeVarRef(name) });
+
 ## Documented in spec.
 def parParserString = makeMainSequence(
     makeToken(@@string),
@@ -791,7 +796,7 @@ def parParserTerm = makeMainChoice(
         makeToken(@@"("),
         makeToken(@@")"),
         makeResult(@empty)),
-    parVarLvalue,
+    parParserVarRef,
     parParserString,
     parParserToken,
     parParserSet,

@@ -97,7 +97,7 @@ to be an unordered set of token types to not-match.
 This corresponds to the syntax `[! @token1 @token2 @etc]` or
 `[! "charsToNotMatch"]`.
 
-#### `@varFetch{name: name}`
+#### `@varRef{name: name}`
 
 Representation of a call out to a named parsing function. `name` is
 an arbitrary value, but typically a string.
