@@ -58,7 +58,7 @@ zint markFrameStack(void) {
 extern zstackPointer datFrameStart(void);
 
 // Documented in header.
-extern void datFrameAdd(zvalue value);
+extern zvalue datFrameAdd(zvalue value);
 
 // Documented in header.
 extern void datFrameReset(zstackPointer savedStack, zvalue stackedValue);
