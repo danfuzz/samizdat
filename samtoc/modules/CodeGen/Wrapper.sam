@@ -27,7 +27,7 @@ fn @@Wrapper.flatten() {
     def flatBox = this::flatBox;
 
     return flatBox*
-        | store(flatBox, this::tree.flatten())
+        | (flatBox* := this::tree.flatten())
 };
 
 fn @@Wrapper.indent(level, maxColumns) {

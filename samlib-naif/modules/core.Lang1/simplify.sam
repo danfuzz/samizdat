@@ -234,8 +234,8 @@ fn @@export.convertPexIn() {
 
 ## Does parser conversion of a `fetch` node.
 fn @@fetch.convertPexIn() {
-    def value = convertPexIn(get_nodeValue(this));
-    return withFinalBindings(this, {value})
+    def target = convertPexIn(get_target(this));
+    return withFinalBindings(this, {target})
 };
 
 ## Does parser conversion of an `exportSelection` node.
@@ -281,6 +281,13 @@ fn @@parser.convertPexIn() {
     ## `@x(...)` is done here to convert this node from an expression node
     ## form (with map payload) into a parser node form (with pex payload).
     return makeCallPex(REFS::Peg_makeMainSequence, this, [])
+};
+
+## Does parser conversion of a `store` node.
+fn @@store.convertPexIn() {
+    def target = convertPexIn(get_target(this));
+    def value = convertPexIn(get_nodeValue(this));
+    return withFinalBindings(this, {target, value})
 };
 
 ## Does parser conversion of a `varDef` node.

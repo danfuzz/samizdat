@@ -457,5 +457,12 @@ are right-associative.
 Beyond that, the specific meaning of an assignment expression depends on
 what sort of reference `lvalue` is; see those for more details.
 
-**Note:** Currently, the only valid kind of lvalue is a getter/setter
-expression (see which).
+Lvalues include:
+
+* Simple named variable references, e.g. `blort`. In this case, the variable
+  in question must be settable (e.g. a mutable variable).
+* An interpolation reference, that is, an arbitrary expression suffixed
+  with `*`. In this case, the expression must evaluate to a value which
+  supports the `Box` protocol.
+* A getter/setter expression, that is, an arbitrary expression followed
+  by `.memberName` and *without* method application parentheses after that.

@@ -82,7 +82,7 @@ fn @@closureRef.get_varRefs() {
 };
 
 fn @@fetch.get_varRefs() {
-    return this.nodeValue.varRefs
+    return this.target.varRefs
 };
 
 fn @@importModule.get_varRefs() {
@@ -114,6 +114,10 @@ fn @@maybe.get_varRefs() {
 
 fn @@noYield.get_varRefs() {
     return this.nodeValue.varRefs
+};
+
+fn @@store.get_varRefs() {
+    return catVarRefs(this.target, this.nodeValue)
 };
 
 fn @@varBox.get_varRefs() {

@@ -48,7 +48,7 @@ fn @@closure.bodies(bodiesBox) {
     };
 
     def result = @closureRef{id: #bodies, varRefs};
-    store(bodiesBox, {bodies*, (newNode): result});
+    bodiesBox* := {bodies*, (newNode): result};
     return result
 };
 
@@ -62,8 +62,8 @@ fn @@exportSelection.bodies(bodiesBox) {
 };
 
 fn @@fetch.bodies(bodiesBox) {
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @fetch{value}
+    def target = bodies(this.target, bodiesBox);
+    return @fetch{target}
 };
 
 fn @@importModule.bodies(bodiesBox) {
@@ -90,6 +90,12 @@ fn @@maybe.bodies(bodiesBox) {
 fn @@noYield.bodies(bodiesBox) {
     def value = bodies(this.nodeValue, bodiesBox);
     return @noYield{value}
+};
+
+fn @@store.bodies(bodiesBox) {
+    def target = bodies(this.target, bodiesBox);
+    def value = bodies(this.nodeValue, bodiesBox);
+    return @store{target, value}
 };
 
 fn @@varBox.bodies(bodiesBox) {
@@ -139,7 +145,7 @@ export fn collectClosures(node) {
     def bodiesBoxList = [ for #bodiesMap -> def result; (var result) ];
     for (body in bodiesMap) {
         def index = get_value(body)::id;
-        store(bodiesBoxList[index], get_key(body))
+        bodiesBoxList[index]* := get_key(body)
     };
     def closures = [ box in bodiesBoxList -> box* ];
 

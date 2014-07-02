@@ -93,7 +93,7 @@ def parVarRef = makeMainSequence(
 def parVarBox = makeMainSequence(
     makeToken(@@var),
     parName,
-    makeCode { name -> makeVarBox(name) });
+    makeCode { ., name -> makeVarBox(name) });
 
 ## Documented in spec.
 def parInt = makeMainChoice(
@@ -338,10 +338,11 @@ parAssignExpression := makeMainSequence(
     makeChoice(
         makeSequence(
             makeToken(@@":="),
-            makeCode { base, . -> get_lvalue(base) },
             parExpression,
-            makeCode { base, ., lvalue, ex -> lvalue(ex) }),
-        makeCode { base -> base }));
+            makeCode { target, ., value ->
+                makeAssignmentIfPossible(target, value)
+            }),
+        makeCode { target -> target }));
 
 ## Documented in spec.
 def parYieldOrNonlocal = makeMainSequence(

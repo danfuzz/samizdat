@@ -51,7 +51,7 @@ fn @@PegChoice.parse(box, input, items*) {
 fn @@PegCode.parse(box, input, items*) {
     return? ifValue { this::function(items*) }
         { result ->
-            store(box, result);
+            box* := result;
             input
         }
 };
@@ -60,7 +60,7 @@ fn @@PegCode.parse(box, input, items*) {
 fn @@PegEof.parse(box, input, .*) {
     return? ifNot { nextValue(input, nullBox) }
         {
-            store(box, null);
+            box* := null;
             input
         }
 };
@@ -74,7 +74,7 @@ fn @@PegFail.parse(box, input, .*) {
 fn @@PegLookaheadFailure.parse(box, input, items*) {
     return? ifNot { parse(this::rule, nullBox, input, items*) }
         {
-            store(box, null);
+            box* := null;
             input
         }
 };
@@ -130,14 +130,14 @@ fn @@PegRepeat.parse(box, input, items*) {
     ## appropriate.
     return? ifIs { ge(get_size(results), this::minSize) }
         {
-            store(box, results);
+            box* := results;
             remainingInput
         }
 };
 
 ## Documented in spec.
 fn @@PegResult.parse(box, input, .*) {
-    store(box, this::value);
+    box* := this::value;
     return input
 };
 
@@ -163,7 +163,7 @@ fn @@PegSequence.parse(box, input, items*) {
             }
     };
 
-    store(box, result);
+    box* := result;
     return remainingInput
 };
 
@@ -181,7 +181,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
         { newInput ->
             ifIs { get(this::types, get_type(result)) }
                 {
-                    store(box, result);
+                    box* := result;
                     newInput
                 }
         }
@@ -195,7 +195,7 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
         { newInput ->
             ifNot { get(this::types, get_type(result)) }
                 {
-                    store(box, result);
+                    box* := result;
                     newInput
                 }
         }

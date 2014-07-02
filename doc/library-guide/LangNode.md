@@ -140,7 +140,7 @@ nodes of type `closure`, `importModule`, `importResource`, `varBox`, `varDef`,
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is
-applicable to nodes of type `fetch`, `literal`, `maybe`, `noYield`, `string`
+applicable to nodes of type `literal`, `maybe`, `noYield`, `string`
 (pex type), `thunk` (pex type), `token` (pex type), `varDef`, `varDefMutable`,
 and `varStore`.
 
@@ -172,6 +172,10 @@ Gets the source of an import. This is applicable to nodes of type
 #### `get_statements(node) -> [node*]`
 
 Gets the statement list of a `closure` node.
+
+#### `get_target(node) -> node`
+
+Gets the target of a `fetch` or `store` node.
 
 #### `get_values(node) -> node | [node*]`
 
@@ -208,6 +212,12 @@ Returns `node` to indicate logic-true.
 Makes an `apply` node, with the given `function` (an expression node)
 being applied to the given `values` (an expression node). If `optValues`
 is not passed, it defaults to `@void`.
+
+#### `makeAssignmentIfPossible(target, value) -> node | .`
+
+Makes an assignment node of some form, if possible. Given a `lvalue`-bearing
+`target`, this calls `lvalue(value)` to produce a result. Otherwise, this
+returns void.
 
 #### `makeBasicClosure(map) -> node`
 

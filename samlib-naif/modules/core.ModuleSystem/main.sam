@@ -268,8 +268,7 @@ fn treeFromText(loader, text) {
 ## Updates a map-containing box to have the given additional / replacement
 ## binding.
 fn updateMapBox(box, key, value) {
-    def newMap = { (box*)*, (key): value };
-    store(box, newMap)
+    box* := { (box*)*, (key): value }
 };
 
 

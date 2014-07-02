@@ -83,6 +83,13 @@ static zvalue doStore(zvalue box, zvalue value) {
 //
 
 // Documented in header.
+zvalue boxStoreNullOk(zvalue box, zvalue value) {
+    return (value == NULL)
+        ? GFN_CALL(store, box)
+        : GFN_CALL(store, box, value);
+}
+
+// Documented in header.
 zvalue makeCell(zvalue value) {
     zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);

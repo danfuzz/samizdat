@@ -37,7 +37,7 @@ fn @@ClosedRange.nextValue(box) {
         { size ->
             def firstValue = this::firstValue;
             def increment = this::increment;
-            store(box, firstValue);
+            box* := firstValue;
             makeClosedRange(
                 rangeAdd(firstValue, increment),
                 sub(size, 1),

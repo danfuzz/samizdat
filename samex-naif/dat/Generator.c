@@ -48,7 +48,7 @@ METH_IMPL(Generator, stdCollect) {
         // Ideally, we wouldn't reuse the box (we'd use N yield boxes), but
         // for the sake of efficiency, we use the same box but reset it for
         // each iteration.
-        GFN_CALL(store, box, NULL);
+        GFN_CALL(store, box);
 
         if (function != NULL) {
             one = FUN_CALL(function, one);

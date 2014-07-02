@@ -59,8 +59,8 @@ fn @@external.lits(interner) {
 };
 
 fn @@fetch.lits(interner) {
-    def value = lits(this.nodeValue, interner);
-    return @fetch{value}
+    def target = lits(this.target, interner);
+    return @fetch{target}
 };
 
 fn @@importModule.lits(interner) {
@@ -96,6 +96,12 @@ fn @@maybe.lits(interner) {
 fn @@noYield.lits(interner) {
     def value = lits(this.nodeValue, interner);
     return @noYield{value}
+};
+
+fn @@store.lits(interner) {
+    def target = lits(this.target, interner);
+    def value = lits(this.nodeValue, interner);
+    return @store{target, value}
 };
 
 fn @@varBox.lits(interner) {

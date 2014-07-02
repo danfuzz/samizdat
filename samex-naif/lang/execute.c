@@ -71,10 +71,10 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `fetch` form.
  */
 static zvalue execFetch(Frame *frame, zvalue fetch) {
-    zvalue valueExpr = get(fetch, STR_value);
-    zvalue value = execExpression(frame, valueExpr);
+    zvalue targetExpr = get(fetch, STR_target);
+    zvalue target = execExpression(frame, targetExpr);
 
-    return GFN_CALL(fetch, value);
+    return GFN_CALL(fetch, target);
 }
 
 /**
@@ -100,6 +100,18 @@ static void execNoYield(Frame *frame, zvalue noYield)
 static void execNoYield(Frame *frame, zvalue noYield) {
     zvalue valueExpression = get(noYield, STR_value);
     mustNotYield(execExpression(frame, valueExpression));
+}
+
+/**
+ * Executes a `store` form.
+ */
+static zvalue execStore(Frame *frame, zvalue store) {
+    zvalue targetExpr = get(store, STR_target);
+    zvalue valueExpr = get(store, STR_value);
+    zvalue target = execExpression(frame, targetExpr);
+    zvalue value = execExpressionOrMaybe(frame, valueExpr);
+
+    return boxStoreNullOk(target, value);
 }
 
 /**
@@ -183,6 +195,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_fetch:    return execFetch(frame, e);
         case EVAL_literal:  return get(e, STR_value);
         case EVAL_noYield:  execNoYield(frame, e);
+        case EVAL_store:    return execStore(frame, e);
         case EVAL_varBox:   return execVarBox(frame, e);
         case EVAL_varFetch: return execVarFetch(frame, e);
         case EVAL_varStore: return execVarStore(frame, e);

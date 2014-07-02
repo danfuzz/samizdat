@@ -70,7 +70,7 @@ all in Layer 0. This is implemented in Layer 1.
 The only operators recognized in Layer 0 are:
 
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
-* `name := expr` &mdash; Variable binding.
+* `name := expr` &mdash; Assignment.
 * `expr::name` &mdash; Collection-style indexing by name.
 * `expr*` &mdash; Interpolation.
 * `expr?` &mdash; Optional-value-to-list conversion.

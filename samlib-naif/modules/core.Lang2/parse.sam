@@ -427,19 +427,18 @@ def parUnaryExpression = {:
 
 ## Parses an assignment expression, or passes through to parse a regular
 ## `opExpression`. An lvalue is parsed here by first parsing an arbitrary
-## `opExpression` and then extracting the `lvalue` constructor out of it.
-## This fails (gracefully) if there is no `lvalue` to extract from a given
-## expression.
+## `opExpression` and then ensuring it's valid via a call to
+## `makeAssignmentIfPossible`. This fails (gracefully) if the would-be lvalue
+## isn't actually one.
 parAssignExpression := {:
-    base = %parOpExpression
+    target = %parOpExpression
 
     (
         @":="
-        lvalue = { get_lvalue(base) }
-        ex = parExpression
-        { lvalue(ex) }
+        value = parExpression
+        { makeAssignmentIfPossible(target, value) }
     |
-        { base }
+        { target }
     )
 :};
 

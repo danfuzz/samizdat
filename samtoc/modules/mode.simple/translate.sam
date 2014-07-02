@@ -30,8 +30,13 @@ fn varDefCommon(name, value, varsBox) {
     def decl = localVarDecl(name, index);
     def binding = {name: localVarName(name, index), kind: "local"};
 
-    store(varsBox, {vars*, (name): binding});
+    varsBox* := {vars*, (name): binding};
     return genComment("\%q(name)", genAssign(decl, value));
+};
+
+## Wrap the given expression in a "non-void" guarantee call.
+fn nonVoid(value) {
+    return genCall("datNonVoid", value)
 };
 
 
@@ -47,8 +52,8 @@ fn @@apply.translate(varsBox) {
     def values = this.values;
 
     return if (hasType(values, @@maybe)) {
-        def acTrans = translate(values.nodeValue, varsBox);
-        genCall("funApply", function, acTrans)
+        def vTrans = translate(values.nodeValue, varsBox);
+        genCall("funApply", function, vTrans)
     } else if (hasType(values, @@void)) {
         ## A void `values` binding just devolves into a no-argument (but
         ## otherwise regular) function call.
@@ -56,16 +61,13 @@ fn @@apply.translate(varsBox) {
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        def acTrans = translate(values, varsBox);
-        genCall("funApply", function, genCall("datNonVoid", acTrans))
+        def vTrans = nonVoid(translate(values, varsBox));
+        genCall("funApply", function, vTrans)
     }
 };
 
 fn @@call.translate(varsBox) {
-    def values = (a in this.values ->
-        genCall("datNonVoid", translate(a, varsBox))
-    );
-
+    def values = ( a in this.values -> nonVoid(translate(a, varsBox)) );
     return genCall("FUN_CALL", translate(this.function, varsBox), values*)
 };
 
@@ -97,8 +99,8 @@ fn @@exportSelection.translate(varsBox) {
 };
 
 fn @@fetch.translate(varsBox) {
-    def value = translate(this.nodeValue, varsBox);
-    return genCall("GFN_CALL", "fetch", value)
+    def target = nonVoid(translate(this.target, varsBox));
+    return genCall("GFN_CALL", "fetch", target)
 };
 
 fn @@importModule.translate(varsBox) {
@@ -135,6 +137,23 @@ fn @@noYield.translate(varsBox) {
     return genCall("mustNotYield", value)
 };
 
+fn @@store.translate(varsBox) {
+    def target = translate(this.target, varsBox);
+    def value = this.nodeValue;
+
+    return if (hasType(value, @@maybe)) {
+        def vTrans = translate(value.nodeValue, varsBox);
+        genCall("boxStoreNullOk", target, vTrans)
+    } else if (hasType(value, @@void)) {
+        genCall("GFN_CALL", "store", target)
+    } else {
+        ## If it's not wrapped in a `@maybe`, we need to guarantee
+        ## non-void.
+        def vTrans = nonVoid(translate(value, varsBox));
+        genCall("GFN_CALL", "store", target, vTrans)
+    }
+};
+
 fn @@varBox.translate(varsBox) {
     def name = this.name;
     def vars = varsBox*;
@@ -145,7 +164,7 @@ fn @@varBox.translate(varsBox) {
 
 fn @@varDef.translate(varsBox) {
     def value = (def v = this.nodeValue)
-        & genCall("makeResult", translate(v, varsBox))
+        & genCall("makeResult", nonVoid(translate(v, varsBox)))
         | genCall("makePromise");
 
     return varDefCommon(this.name, value, varsBox)
@@ -157,7 +176,7 @@ fn @@varDefMutable.translate(varsBox) {
         | "NULL";
 
     return varDefCommon(
-        this.name, genCall("makeCell", value), varsBox)
+        this.name, nonVoid(genCall("makeCell", value)), varsBox)
 };
 
 fn @@varFetch.translate(varsBox) {

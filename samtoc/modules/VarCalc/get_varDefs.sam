@@ -84,6 +84,10 @@ fn @@noYield.get_varDefs() {
     return []
 };
 
+fn @@store.get_varDefs() {
+    return []
+};
+
 fn @@varBox.get_varDefs() {
     return []
 };

@@ -37,7 +37,7 @@ fn @@ListWrapGenerator.nextValue(box) {
 
     return? ifValue { nextValue(dataOf(this), var result) }
         { nextGenerator ->
-            store(box, [result]);
+            box* := [result];
             @ListWrapGenerator(nextGenerator)
         }
 };

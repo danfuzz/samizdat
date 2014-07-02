@@ -122,6 +122,7 @@ bool canYieldVoid(zvalue node) {
         case EVAL_call:     return true;
         case EVAL_fetch:    return true;
         case EVAL_maybe:    return true;
+        case EVAL_store:    return true;
         case EVAL_varFetch: return true;
         case EVAL_void:     return true;
         default: {
@@ -221,6 +222,7 @@ bool isExpression(zvalue node) {
         case EVAL_fetch:    return true;
         case EVAL_literal:  return true;
         case EVAL_noYield:  return true;
+        case EVAL_store:    return true;
         case EVAL_varBox:   return true;
         case EVAL_varFetch: return true;
         case EVAL_varStore: return true;
@@ -238,6 +240,30 @@ zvalue makeApply(zvalue function, zvalue values) {
 
     zvalue value = mapFrom2(STR_function, function, STR_values, values);
     return makeValue(TYPE_apply, value, NULL);
+}
+
+// Documented in spec.
+zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
+    // This code isn't parallel to the in-language code but has the same
+    // effect. The difference stems from the fact that C isn't a great direct
+    // host for closures, whereas in-language `lvalue` is very naturally a
+    // closure. In this case, the mere presence of `lvalue` is taken as the
+    // significant thing, and its value is ignored; instead, per-type
+    // assignment conversion is implemented directly below.
+
+    if (get(target, STR_lvalue) == NULL) {
+        return NULL;
+    } else if (hasType(target, TYPE_varFetch)) {
+        zvalue name = get(target, STR_name);
+        return makeVarStore(name, value);
+    } else if (hasType(target, TYPE_fetch)) {
+        zvalue innerTarget = get(target, STR_target);
+        return makeValue(TYPE_store,
+            mapFrom2(STR_target, innerTarget, STR_value, value),
+            NULL);
+    } else {
+        die("Improper `lvalue` binding.");
+    }
 }
 
 // Documented in spec.
@@ -526,9 +552,10 @@ zvalue makeInfoMap(zvalue node) {
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
     return makeValue(TYPE_fetch,
-        mapFrom2(
-            STR_value,       node,
-            STR_interpolate, node),
+        mapFrom3(
+            STR_target,      node,
+            STR_interpolate, node,
+            STR_lvalue,      EMPTY_LIST),
         NULL);
 }
 
@@ -595,8 +622,11 @@ zvalue makeVarFetch(zvalue name) {
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
-    // See discussion in `parse.c`.
-    return makeVarFetch(name);
+    // See discussion in `makeAssignmentIfPossible` above, for details about
+    // `lvalue`.
+    return makeValue(TYPE_varFetch,
+        mapFrom2(STR_lvalue, EMPTY_LIST, STR_name, name),
+        NULL);
 }
 
 // Documented in spec.

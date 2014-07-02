@@ -42,6 +42,6 @@ fn @@OpenRange.nextValue(box) {
     def firstValue = this::firstValue;
     def increment = this::increment;
 
-    store(box, firstValue);
+    box* := firstValue;
     return makeOpenRange(rangeAdd(firstValue, increment), increment)
 };

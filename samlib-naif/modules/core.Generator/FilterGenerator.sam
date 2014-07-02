@@ -51,7 +51,7 @@ fn @@FilterGenerator.nextValue(box) {
             { nextGen ->
                 ifValue { filterFunction(result*) }
                     { value ->
-                        store(box, value);
+                        box* := value;
                         return @FilterGenerator{
                             filterFunction,
                             generator: nextGen}
