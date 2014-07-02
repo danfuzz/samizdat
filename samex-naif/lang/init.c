@@ -45,7 +45,7 @@ MOD_INIT(lang) {
     langTypeMap[typeIndex(TYPE_maybe)]                 = EVAL_maybe;
     langTypeMap[typeIndex(TYPE_noYield)]               = EVAL_noYield;
     langTypeMap[typeIndex(TYPE_store)]                 = EVAL_store;
-    langTypeMap[typeIndex(TYPE_varBox)]                = EVAL_varBox;
+    langTypeMap[typeIndex(TYPE_varRef)]                = EVAL_varRef;
     langTypeMap[typeIndex(TYPE_varDef)]                = EVAL_varDef;
     langTypeMap[typeIndex(TYPE_varDefMutable)]         = EVAL_varDefMutable;
     langTypeMap[typeIndex(TYPE_varFetch)]              = EVAL_varFetch;

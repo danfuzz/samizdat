@@ -16,7 +16,7 @@ import proto.Number :: add, mul;
 def EXPRESSION_TYPES = {
     [
         @@apply, @@call, @@closure, @@fetch, @@literal, @@noYield, @@store,
-        @@varBox, @@varFetch, @@varStore
+        @@varFetch, @@varRef, @@varStore
     ]*: true
 };
 

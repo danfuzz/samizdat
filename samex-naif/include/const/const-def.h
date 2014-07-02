@@ -70,10 +70,10 @@ TYP(noYield,               "noYield");
 TYP(nonlocalExit,          "nonlocalExit");
 TYP(store,                 "store");
 TYP(string,                "string");
-TYP(varBox,                "varBox");
 TYP(varDef,                "varDef");
 TYP(varDefMutable,         "varDefMutable");
 TYP(varFetch,              "varFetch");
+TYP(varRef,                "varRef");
 TYP(varStore,              "varStore");
 
 STR(absent,                "absent");

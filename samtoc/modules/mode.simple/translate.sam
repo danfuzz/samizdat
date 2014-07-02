@@ -154,14 +154,6 @@ fn @@store.translate(varsBox) {
     }
 };
 
-fn @@varBox.translate(varsBox) {
-    def name = this.name;
-    def vars = varsBox*;
-    def binding = vars[name]
-        | die("Reference of undefined variable: \%q(this.name)");
-    return binding::name
-};
-
 fn @@varDef.translate(varsBox) {
     def value = (def v = this.nodeValue)
         & genCall("makeResult", nonVoid(translate(v, varsBox)))
@@ -185,6 +177,14 @@ fn @@varFetch.translate(varsBox) {
     def binding = vars[name]
         | die("Reference of undefined variable: \%q(this.name)");
     return genCall("GFN_CALL", "fetch", binding::name)
+};
+
+fn @@varRef.translate(varsBox) {
+    def name = this.name;
+    def vars = varsBox*;
+    def binding = vars[name]
+        | die("Reference of undefined variable: \%q(this.name)");
+    return binding::name
 };
 
 fn @@varStore.translate(varsBox) {

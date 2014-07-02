@@ -98,10 +98,6 @@ fn @@store.bodies(bodiesBox) {
     return @store{target, value}
 };
 
-fn @@varBox.bodies(bodiesBox) {
-    return this
-};
-
 fn @@varDef.bodies(bodiesBox) {
     def value = ifValue { this.nodeValue }
         { value -> {value: bodies(value, bodiesBox)} }
@@ -118,6 +114,10 @@ fn @@varDefMutable.bodies(bodiesBox) {
 
 fn @@varFetch.bodies(bodiesBox) {
     return @varFetch{name: this.name}
+};
+
+fn @@varRef.bodies(bodiesBox) {
+    return this
 };
 
 fn @@varStore.bodies(bodiesBox) {

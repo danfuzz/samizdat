@@ -29,7 +29,7 @@ typedef enum {
     EVAL_maybe,
     EVAL_noYield,
     EVAL_store,
-    EVAL_varBox,
+    EVAL_varRef,
     EVAL_varDef,
     EVAL_varDefMutable,
     EVAL_varFetch,

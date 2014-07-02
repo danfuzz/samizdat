@@ -134,8 +134,8 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 #### `get_name(node) -> . | void`
 
 Gets the name defined or used by the given node. This is applicable to
-nodes of type `closure`, `importModule`, `importResource`, `varBox`, `varDef`,
-`varDefMutable`, `varFetch`, and `varStore`.
+nodes of type `closure`, `importModule`, `importResource`, `varDef`,
+`varDefMutable`, `varFetch`, `varRef`, and `varStore`.
 
 #### `get_nodeValue(node) -> . | void`
 
@@ -427,7 +427,7 @@ is bound to a one-argument function which takes a node and produces a
 
 #### `makeVarRef(name) -> node`
 
-Makes a `varBox` node.
+Makes a `varRef` node.
 
 #### `makeVarStore(name, value) -> node`
 

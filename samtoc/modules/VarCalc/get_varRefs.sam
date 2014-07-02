@@ -120,10 +120,6 @@ fn @@store.get_varRefs() {
     return catVarRefs(this.target, this.nodeValue)
 };
 
-fn @@varBox.get_varRefs() {
-    return [this.name]
-};
-
 fn @@varDef.get_varRefs() {
     return (def v = this.nodeValue) & v.varRefs | []
 };
@@ -133,6 +129,10 @@ fn @@varDefMutable.get_varRefs() {
 };
 
 fn @@varFetch.get_varRefs() {
+    return [this.name]
+};
+
+fn @@varRef.get_varRefs() {
     return [this.name]
 };
 

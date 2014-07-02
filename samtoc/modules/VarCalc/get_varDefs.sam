@@ -88,10 +88,6 @@ fn @@store.get_varDefs() {
     return []
 };
 
-fn @@varBox.get_varDefs() {
-    return []
-};
-
 fn @@varDef.get_varDefs() {
     return [this.name]
 };
@@ -101,6 +97,10 @@ fn @@varDefMutable.get_varDefs() {
 };
 
 fn @@varFetch.get_varDefs() {
+    return []
+};
+
+fn @@varRef.get_varDefs() {
     return []
 };
 
