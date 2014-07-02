@@ -43,11 +43,13 @@ static DerivedDataInfo *getInfo(zvalue value) {
 zvalue valDataOf(zvalue value, zvalue secret) {
     zvalue type = get_type(value);
 
-    if (typeIsDerived(type) && typeHasSecret(type, secret)) {
-        return getInfo(value)->data;
-    } else {
+    if (!(typeIsDerived(type) && typeHasSecret(type, secret))) {
         return NULL;
     }
+
+    zvalue result = getInfo(value)->data;
+    datFrameAdd(result);  // Because `value` might immediately become garbage.
+    return result;
 }
 
 // Documented in header.
