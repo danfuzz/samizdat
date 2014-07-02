@@ -205,6 +205,20 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     }
 }
 
+/**
+ * Executes a single `statement` form. Works for `expression` forms too.
+ */
+static void execStatement(Frame *frame, zvalue statement) {
+    switch (get_evalType(statement)) {
+        case EVAL_importModule:          execImport(frame, statement);           break;
+        case EVAL_importModuleSelection: execImport(frame, statement);           break;
+        case EVAL_importResource:        execImport(frame, statement);           break;
+        case EVAL_varDef:                execVarDef(frame, statement);           break;
+        case EVAL_varDefMutable:         execVarDefMutable(frame, statement);    break;
+        default:                         execExpressionVoidOk(frame, statement); break;
+    }
+}
+
 
 //
 // Module Definitions
@@ -216,18 +230,6 @@ zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
         case EVAL_maybe: return execMaybe(frame, e);
         case EVAL_void:  return NULL;
         default:         return execExpression(frame, e);
-    }
-}
-
-// Documented in header.
-void execStatement(Frame *frame, zvalue statement) {
-    switch (get_evalType(statement)) {
-        case EVAL_importModule:          execImport(frame, statement);           break;
-        case EVAL_importModuleSelection: execImport(frame, statement);           break;
-        case EVAL_importResource:        execImport(frame, statement);           break;
-        case EVAL_varDef:                execVarDef(frame, statement);           break;
-        case EVAL_varDefMutable:         execVarDefMutable(frame, statement);    break;
-        default:                         execExpressionVoidOk(frame, statement); break;
     }
 }
 

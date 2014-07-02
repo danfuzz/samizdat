@@ -75,11 +75,6 @@ zvalue execClosure(Frame *frame, zvalue closureNode);
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
 
 /**
- * Executes a `statement` form.
- */
-void execStatement(Frame *frame, zvalue statement);
-
-/**
  * Executes a list of `statement` forms.
  */
 void execStatements(Frame *frame, zvalue statements);
