@@ -177,29 +177,20 @@ def parKey = {:
 
 ## Parses a mapping (element of a map).
 def parMapping = {:
-    keys = parKey*
+    keys = parKey+
     value = parExpression
 
-    {
-        ifIs { eq(keys, []) }
-            { /out ->
-                ## No keys were specified, so the value must be either a
-                ## whole-map interpolation or a variable-name-to-its-value
-                ## binding.
-                ifValue { get_interpolate(value) }
-                    { interp -> yield /out interp };
-                ifIs { hasType(value, @@varFetch) }
-                    {
-                        yield /out makeCall(REFS::makeValueMap,
-                            makeLiteral(get_name(value)), value)
-                    }
-            }
-            {
-                ## One or more keys.
-                makeCallOrApply(REFS::makeValueMap,
-                    keys*, withoutInterpolate(value))
-            }
-    }
+    { makeCallOrApply(REFS::makeValueMap, keys*, withoutInterpolate(value)) }
+|
+    ## An expression is valid only if it's an interpolation, in which case we
+    ## take the interpolation variant of the node.
+    value = parExpression
+    { get_interpolate(value) }
+|
+    ## Otherwise, it's got to be a raw name, representing a binding of that
+    ## name to its value as a variable.
+    name = parName
+    { makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name)) }
 :};
 
 ## Parses a map literal.

@@ -140,29 +140,22 @@ def parKey = makeMainChoice(
         makeCode { key, . -> key }));
 
 ## Documented in spec.
-def parMapping = makeMainSequence(
-    makeRepeat(parKey),
-    parExpression,
-    makeCode { keys, value ->
-        ifIs { eq(keys, []) }
-            { /out ->
-                ## No keys were specified, so the value must be either a
-                ## whole-map interpolation or a variable-name-to-its-value
-                ## binding.
-                ifValue { get_interpolate(value) }
-                    { interp -> yield /out interp };
-                ifIs { hasType(value, @@varFetch) }
-                    {
-                        yield /out makeCall(REFS::makeValueMap,
-                            makeLiteral(get_name(value)), value)
-                    }
-            }
-            {
-                ## One or more keys.
-                makeCallOrApply(REFS::makeValueMap,
-                    keys*, withoutInterpolate(value))
-            }
-    });
+def parMapping = makeMainChoice(
+    makeSequence(
+        makeRepeat(parKey, 1),
+        parExpression,
+        makeCode { keys, value ->
+            makeCallOrApply(REFS::makeValueMap,
+                keys*, withoutInterpolate(value))
+        }),
+    makeSequence(
+        parExpression,
+        makeCode { value -> get_interpolate(value) }),
+    makeSequence(
+        parName,
+        makeCode { name ->
+            makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
+        }));
 
 ## Documented in spec.
 def parMap = makeMainSequence(

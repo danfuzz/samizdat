@@ -150,6 +150,9 @@ static void dumpState(ParseState *state) {
 #define PARSE_OR_REJECT(name) \
     tempResult = PARSE(name); \
     REJECT_IF(tempResult == NULL)
+#define PARSE_PLUS_OR_REJECT(name) \
+    tempResult = PARSE_PLUS(name); \
+    REJECT_IF(tempResult == NULL)
 
 /** Function prototype for all parser functions. */
 typedef zvalue (*parserFunction)(ParseState *);
@@ -387,31 +390,54 @@ DEF_PARSE(key) {
     return result;
 }
 
-// Documented in spec.
-DEF_PARSE(mapping) {
+/**
+ * Helper for `mapping`: Parses the first alternate.
+ */
+DEF_PARSE(mapping1) {
     MARK();
 
-    zvalue keys = PARSE_STAR(key);
+    zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    if (get_size(keys) == 0) {
-        // No keys were specified, so the value must be either a
-        // whole-map interpolation or a variable-name-to-its-value
-        // binding.
-        zvalue interp = GET(interpolate, value);
-        if (interp != NULL) {
-            return interp;
-        } else if (hasType(value, TYPE_varFetch)) {
-            return makeCall(REFS(makeValueMap),
-                listFrom2(makeLiteral(GET(name, value)), value));
-        }
-
-        REJECT();
-    }
-
-    // One or more keys.
     return makeCallOrApply(REFS(makeValueMap),
         listAppend(keys, withoutInterpolate(value)));
+}
+
+/**
+ * Helper for `mapping`: Parses the second alternate.
+ */
+DEF_PARSE(mapping2) {
+    MARK();
+
+    zvalue value = PARSE_OR_REJECT(expression);
+
+    zvalue result = GET(interpolate, value);
+    REJECT_IF(result == NULL);
+
+    return result;
+}
+
+/**
+ * Helper for `mapping`: Parses the third alternate.
+ */
+DEF_PARSE(mapping3) {
+    MARK();
+
+    zvalue name = PARSE_OR_REJECT(name);
+
+    return makeCall(REFS(makeValueMap),
+        listFrom2(makeLiteral(name), makeVarFetch(name)));
+}
+
+// Documented in spec.
+DEF_PARSE(mapping) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(mapping1); }
+    if (result == NULL) { result = PARSE(mapping2); }
+    if (result == NULL) { result = PARSE(mapping3); }
+
+    return result;
 }
 
 // Documented in spec.
