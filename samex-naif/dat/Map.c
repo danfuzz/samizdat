@@ -382,7 +382,7 @@ METH_IMPL(Map, get) {
     zvalue key = args[1];
 
     zint index = mapFind(map, key);
-    return (index < 0) ? NULL : getInfo(map)->elems[index].value;
+    return (index < 0) ? NULL : datFrameAdd(getInfo(map)->elems[index].value);
 }
 
 // Documented in header.
@@ -395,7 +395,7 @@ METH_IMPL(Map, get_key) {
         die("Not a size 1 map.");
     }
 
-    return info->elems[0].key;
+    return datFrameAdd(info->elems[0].key);
 }
 
 // Documented in header.
@@ -414,7 +414,7 @@ METH_IMPL(Map, get_value) {
         die("Not a size 1 map.");
     }
 
-    return info->elems[0].value;
+    return datFrameAdd(info->elems[0].value);
 }
 
 // Documented in header.
