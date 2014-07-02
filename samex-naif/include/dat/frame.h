@@ -32,17 +32,18 @@ void datFrameError(const char *message);
 //
 
 /**
- * Adds an item to the current frame. This is only necessary to call when
- * a reference gets "detached" from a live structure (via mutation), which
- * is to say, rarely.
+ * Adds an item to the current frame and returns it. This is only necessary to
+ * call when a reference gets "detached" from a live structure (e.g. returning
+ * an element out of a collection).
  */
-inline void datFrameAdd(zvalue value) {
+inline zvalue datFrameAdd(zvalue value) {
     if (frameStackTop == frameStackLimit) {
         datFrameError("Value stack overflow.");
     }
 
     *frameStackTop = value;
     frameStackTop++;
+    return value;
 }
 
 /**
