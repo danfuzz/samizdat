@@ -85,7 +85,7 @@ def parNameList = makeMainSequence(
     makeCode { first, rest -> [first, rest*] });
 
 ## Documented in spec.
-def parVarRef = makeMainSequence(
+def parVarLvalue = makeMainSequence(
     parName,
     makeCode { name -> makeVarFetchLvalue(name) });
 
@@ -269,7 +269,7 @@ def parBasicNullaryClosure = makeMainSequence(
 
 ## Documented in spec.
 def parTerm = makeMainChoice(
-    parVarRef, parVarBox, parInt, parString, parMap, parList,
+    parVarLvalue, parVarBox, parInt, parString, parMap, parList,
     parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
@@ -345,7 +345,7 @@ def parYieldOrNonlocal = makeMainSequence(
         makeSequence(
             makeCode { op, . -> hasType(op, @@yield) },
             makeChoice(
-                makeSequence(makeToken(@@"/"), parVarRef),
+                makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield))),
         makeCode { op, . -> makeVarFetch(get_typeName(op)) }),
     makeChoice(
@@ -468,7 +468,7 @@ def parFunctionDef = makeMainSequence(
 ## Documented in spec.
 def parGenericBind = makeMainSequence(
     makeToken(@@fn),
-    makeChoice(parVarRef, parType),
+    makeChoice(parVarLvalue, parType),
     makeToken(@@"."),
     parFunctionCommon,
     makeCode { ., bind, ., closure ->
@@ -791,7 +791,7 @@ def parParserTerm = makeMainChoice(
         makeToken(@@"("),
         makeToken(@@")"),
         makeResult(@empty)),
-    parVarRef,
+    parVarLvalue,
     parParserString,
     parParserToken,
     parParserSet,

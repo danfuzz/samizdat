@@ -113,8 +113,9 @@ def parNameList = {:
     { [first, rest*] }
 :};
 
-## Parses a variable reference.
-def parVarRef = {:
+## Parses a variable reference. Returns a variable "fetch" with an `lvalue`
+## binding for constructing a "store" as appropriate.
+def parVarLvalue = {:
     name = parName
     { makeVarFetchLvalue(name) }
 :};
@@ -340,7 +341,7 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarRef | parVarBox | parInt | parString | parMap | parList |
+    parVarLvalue | parVarBox | parInt | parString | parMap | parList |
     parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
@@ -455,7 +456,7 @@ def parYieldOrNonlocal = {:
         { hasType(op, @@yield) }
         (
             @"/"
-            parVarRef
+            parVarLvalue
         |
             ## Indicate that this is a regular (local) yield. Checked below.
             { @yield }
@@ -619,7 +620,7 @@ def parFunctionDef = {:
 ## formal argument.
 def parGenericBind = {:
     @fn
-    bind = (parVarRef | parType)
+    bind = (parVarLvalue | parType)
     @"."
     closure = parFunctionCommon
 
@@ -1021,7 +1022,7 @@ def parParserTerm = {:
     @")"
     { @empty }
 |
-    parVarRef | parParserString | parParserToken | parParserSet |
+    parVarLvalue | parParserString | parParserToken | parParserSet |
     parParserCode | parParserThunk | parParenPex
 :};
 

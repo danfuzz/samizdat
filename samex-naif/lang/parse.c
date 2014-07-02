@@ -294,7 +294,7 @@ DEF_PARSE(nameList) {
 }
 
 // Documented in spec.
-DEF_PARSE(varRef) {
+DEF_PARSE(varLvalue) {
     MARK();
 
     zvalue name = PARSE_OR_REJECT(name);
@@ -591,7 +591,7 @@ DEF_PARSE(basicNullaryClosure) {
 DEF_PARSE(term) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(varRef);          }
+    if (result == NULL) { result = PARSE(varLvalue);       }
     if (result == NULL) { result = PARSE(varBox);          }
     if (result == NULL) { result = PARSE(int);             }
     if (result == NULL) { result = PARSE(string);          }
@@ -723,7 +723,7 @@ DEF_PARSE(yieldOrNonlocal2) {
     MARK();
 
     if (MATCH(CH_SLASH)) {
-        zvalue result = PARSE(varRef);
+        zvalue result = PARSE(varLvalue);
         if (result != NULL) {
             return result;
         }
@@ -937,8 +937,8 @@ DEF_PARSE(genericBind) {
 
     MATCH_OR_REJECT(fn);
 
-    // `bind = (parVarRef | parType)`
-    zvalue bind = PARSE(varRef);
+    // `bind = (parVarLvalue | parType)`
+    zvalue bind = PARSE(varLvalue);
     if (bind == NULL) { bind = PARSE_OR_REJECT(type); }
 
     MATCH_OR_REJECT(CH_DOT);
