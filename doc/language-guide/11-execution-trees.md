@@ -204,7 +204,8 @@ When run, the `target` and `value` expressions are evaluated, in that order.
 If `target` evaluates to void, or `value` is neither a `maybe` or `void` node
 and evaluates to void, then evaluation fails (terminating the runtime).
 Otherwise, the generic function `store` is called, with the `target` and
-`value` results as arguments (in that order).
+`value` results as arguments (in that order), or just with `target` if
+`value` (legitimately) evaluated to void.
 
 The result of evaluating this form is the same as the result returned from
 the `store` call. This is typically the same as the result of evaluating
