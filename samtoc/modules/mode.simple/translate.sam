@@ -30,7 +30,7 @@ fn varDefCommon(name, value, varsBox) {
     def decl = localVarDecl(name, index);
     def binding = {name: localVarName(name, index), kind: "local"};
 
-    store(varsBox, {vars*, (name): binding});
+    varsBox* := {vars*, (name): binding};
     return genComment("\%q(name)", genAssign(decl, value));
 };
 

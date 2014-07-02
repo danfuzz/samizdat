@@ -25,5 +25,5 @@ export fn cacheGet(cache, source) {
 
 export fn cachePut(cache, source, resolved) {
     def newMap = {(cache::box*)*, (source): resolved};
-    store(cache::box, newMap)
+    cache::box* := newMap
 };
