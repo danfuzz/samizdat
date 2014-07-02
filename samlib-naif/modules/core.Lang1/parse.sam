@@ -90,7 +90,7 @@ def parVarLvalue = makeMainSequence(
     makeCode { name -> makeVarFetchLvalue(name) });
 
 ## Documented in spec.
-def parVarBox = makeMainSequence(
+def parVarRef = makeMainSequence(
     makeToken(@@var),
     parName,
     makeCode { ., name -> makeVarBox(name) });
@@ -269,7 +269,7 @@ def parBasicNullaryClosure = makeMainSequence(
 
 ## Documented in spec.
 def parTerm = makeMainChoice(
-    parVarLvalue, parVarBox, parInt, parString, parMap, parList,
+    parVarLvalue, parVarRef, parInt, parString, parMap, parList,
     parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.

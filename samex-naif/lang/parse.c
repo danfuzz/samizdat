@@ -302,7 +302,7 @@ DEF_PARSE(varLvalue) {
 }
 
 // Documented in spec.
-DEF_PARSE(varBox) {
+DEF_PARSE(varRef) {
     MARK();
 
     MATCH_OR_REJECT(var);
@@ -592,7 +592,7 @@ DEF_PARSE(term) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varLvalue);       }
-    if (result == NULL) { result = PARSE(varBox);          }
+    if (result == NULL) { result = PARSE(varRef);          }
     if (result == NULL) { result = PARSE(int);             }
     if (result == NULL) { result = PARSE(string);          }
     if (result == NULL) { result = PARSE(map);             }
