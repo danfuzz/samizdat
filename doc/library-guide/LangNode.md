@@ -416,14 +416,13 @@ Makes a `varDefMutable` statement node.
 
 #### `makeVarFetch(name) -> node`
 
-Makes a `varFetch` node. The result is a direct `varFetch` node, with no
-additional bindings.
+Makes a `fetch` node with a `varBox` payload, and no additional bindings.
 
 #### `makeVarFetchLvalue(name) -> node`
 
-Makes a `varFetch` node, with an `lvalue` binding. In the result, `lvalue`
-is bound to a one-argument function which takes a node and produces a
-`varStore` node representing an assignment of the variable.
+Makes a `fetch` node with a `varBox` payload. The resulting `fetch` node
+has an `lvalue` binding to a one-argument function which takes a node and
+calls `makeVarStore()` to produce an assignment node.
 
 #### `makeVarRef(name) -> node`
 
@@ -431,7 +430,8 @@ Makes a `varRef` node.
 
 #### `makeVarStore(name, value) -> node`
 
-Makes a `varStore` node.
+Makes a `store` node with a `varBox` node for the target and the indicated
+`value` binding.
 
 #### `resolveImport(node, resolveFn) -> node`
 

@@ -617,22 +617,24 @@ zvalue makeVarDefMutable(zvalue name, zvalue value) {
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return makeValue(TYPE_varFetch, mapFrom1(STR_name, name), NULL);
+    return makeValue(TYPE_fetch,
+        mapFrom1(STR_target, makeVarRef(name)),
+        NULL);
 }
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return makeValue(TYPE_varFetch,
-        mapFrom2(STR_lvalue, EMPTY_LIST, STR_name, name),
+    return makeValue(TYPE_fetch,
+        mapFrom2(STR_target, makeVarRef(name), STR_lvalue, EMPTY_LIST),
         NULL);
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return makeValue(TYPE_varStore,
-        mapFrom2(STR_name, name, STR_value, value),
+    return makeValue(TYPE_store,
+        mapFrom2(STR_target, makeVarRef(name), STR_value, value),
         NULL);
 }
 

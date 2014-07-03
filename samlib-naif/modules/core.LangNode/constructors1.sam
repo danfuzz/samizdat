@@ -85,13 +85,13 @@ export fn makeVarDefMutable(name, optValue?) {
 
 ## Documented in spec.
 export fn makeVarFetch(name) {
-    return @varFetch{name}
+    return @fetch{target: makeVarRef(name)}
 };
 
 ## Documented in spec.
 export fn makeVarFetchLvalue(name) {
-    return @varFetch{
-        name,
+    return @fetch{
+        target: makeVarRef(name),
         lvalue: { node -> makeVarStore(name, node) }
     }
 };
@@ -103,7 +103,7 @@ export fn makeVarRef(name) {
 
 ## Documented in spec.
 export fn makeVarStore(name, value) {
-    return @varStore{name, value}
+    return @store{target: makeVarRef(name), value}
 };
 
 ## Documented in spec.
