@@ -146,10 +146,6 @@ fn @@store.safeIndex(base) {
     return safeIndexForNodes(base, get_target(this), get_nodeValue(this))
 };
 
-fn @@varBox.safeIndex(base) {
-    return safeIndexForNames(base, get_name(this))
-};
-
 fn @@varDef.safeIndex(base) {
     def nameIndex =
         safeIndexForNames(base, get_name(this));
@@ -167,6 +163,10 @@ fn @@varDefMutable.safeIndex(base) {
 };
 
 fn @@varFetch.safeIndex(base) {
+    return safeIndexForNames(base, get_name(this))
+};
+
+fn @@varRef.safeIndex(base) {
     return safeIndexForNames(base, get_name(this))
 };
 

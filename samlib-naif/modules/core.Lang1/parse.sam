@@ -85,15 +85,15 @@ def parNameList = makeMainSequence(
     makeCode { first, rest -> [first, rest*] });
 
 ## Documented in spec.
-def parVarRef = makeMainSequence(
+def parVarLvalue = makeMainSequence(
     parName,
     makeCode { name -> makeVarFetchLvalue(name) });
 
 ## Documented in spec.
-def parVarBox = makeMainSequence(
+def parVarRef = makeMainSequence(
     makeToken(@@var),
     parName,
-    makeCode { ., name -> makeVarBox(name) });
+    makeCode { ., name -> makeVarRef(name) });
 
 ## Documented in spec.
 def parInt = makeMainChoice(
@@ -140,29 +140,22 @@ def parKey = makeMainChoice(
         makeCode { key, . -> key }));
 
 ## Documented in spec.
-def parMapping = makeMainSequence(
-    makeRepeat(parKey),
-    parExpression,
-    makeCode { keys, value ->
-        ifIs { eq(keys, []) }
-            { /out ->
-                ## No keys were specified, so the value must be either a
-                ## whole-map interpolation or a variable-name-to-its-value
-                ## binding.
-                ifValue { get_interpolate(value) }
-                    { interp -> yield /out interp };
-                ifIs { hasType(value, @@varFetch) }
-                    {
-                        yield /out makeCall(REFS::makeValueMap,
-                            makeLiteral(get_name(value)), value)
-                    }
-            }
-            {
-                ## One or more keys.
-                makeCallOrApply(REFS::makeValueMap,
-                    keys*, withoutInterpolate(value))
-            }
-    });
+def parMapping = makeMainChoice(
+    makeSequence(
+        makeRepeat(parKey, 1),
+        parExpression,
+        makeCode { keys, value ->
+            makeCallOrApply(REFS::makeValueMap,
+                keys*, withoutInterpolate(value))
+        }),
+    makeSequence(
+        parExpression,
+        makeCode { value -> get_interpolate(value) }),
+    makeSequence(
+        parName,
+        makeCode { name ->
+            makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
+        }));
 
 ## Documented in spec.
 def parMap = makeMainSequence(
@@ -276,7 +269,7 @@ def parBasicNullaryClosure = makeMainSequence(
 
 ## Documented in spec.
 def parTerm = makeMainChoice(
-    parVarRef, parVarBox, parInt, parString, parMap, parList,
+    parVarLvalue, parVarRef, parInt, parString, parMap, parList,
     parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
@@ -352,7 +345,7 @@ def parYieldOrNonlocal = makeMainSequence(
         makeSequence(
             makeCode { op, . -> hasType(op, @@yield) },
             makeChoice(
-                makeSequence(makeToken(@@"/"), parVarRef),
+                makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield))),
         makeCode { op, . -> makeVarFetch(get_typeName(op)) }),
     makeChoice(
@@ -475,7 +468,7 @@ def parFunctionDef = makeMainSequence(
 ## Documented in spec.
 def parGenericBind = makeMainSequence(
     makeToken(@@fn),
-    makeChoice(parVarRef, parType),
+    makeChoice(parVarLvalue, parType),
     makeToken(@@"."),
     parFunctionCommon,
     makeCode { ., bind, ., closure ->
@@ -726,6 +719,11 @@ def parParenPex = makeMainSequence(
     makeToken(@@")"),
     makeCode { ., pex, . -> pex });
 
+## Parses a variable reference parsing expression.
+def parParserVarRef = makeMainSequence(
+    parName,
+    makeCode { name -> makeVarRef(name) });
+
 ## Documented in spec.
 def parParserString = makeMainSequence(
     makeToken(@@string),
@@ -798,7 +796,7 @@ def parParserTerm = makeMainChoice(
         makeToken(@@"("),
         makeToken(@@")"),
         makeResult(@empty)),
-    parVarRef,
+    parParserVarRef,
     parParserString,
     parParserToken,
     parParserSet,

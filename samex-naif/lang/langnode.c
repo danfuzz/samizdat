@@ -223,8 +223,8 @@ bool isExpression(zvalue node) {
         case EVAL_literal:  return true;
         case EVAL_noYield:  return true;
         case EVAL_store:    return true;
-        case EVAL_varBox:   return true;
         case EVAL_varFetch: return true;
+        case EVAL_varRef:   return true;
         case EVAL_varStore: return true;
         default: {
             return false;
@@ -597,8 +597,8 @@ zvalue makeThunk(zvalue expression) {
 }
 
 // Documented in spec.
-zvalue makeVarBox(zvalue name) {
-    return makeValue(TYPE_varBox, mapFrom1(STR_name, name), NULL);
+zvalue makeVarRef(zvalue name) {
+    return makeValue(TYPE_varRef, mapFrom1(STR_name, name), NULL);
 }
 
 // Documented in spec.

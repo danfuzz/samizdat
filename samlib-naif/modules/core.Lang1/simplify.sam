@@ -182,11 +182,11 @@ fn @@tokenSetComplement.convertPex(formals) {
     return makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*);
 };
 
-## Converts a `varFetch` pex node.
-fn @@varFetch.convertPex(formals) {
-    ## `varFetch` in the context of a pex just translates to the same
-    ## `varFetch` in the context of an expression / statement.
-    return convertPexIn(this)
+## Converts a `varRef` pex node.
+fn @@varRef.convertPex(formals) {
+    ## `varRef` in the context of a pex just translates to a variable
+    ## fetch of the same name in the context of an expression / statement.
+    return makeVarFetch(get_name(this))
 };
 
 
@@ -300,14 +300,14 @@ fn @@varDefMutable.convertPexIn() {
     return convertValuePayload(this)
 };
 
-## Does parser conversion of a `varBox` node.
-fn @@varBox.convertPexIn() {
-    return this
-};
-
 ## Does parser conversion of a `varFetch` node.
 fn @@varFetch.convertPexIn() {
     return withoutIntermediates(this)
+};
+
+## Does parser conversion of a `varRef` node.
+fn @@varRef.convertPexIn() {
+    return this
 };
 
 ## Does parser conversion of a `varStore` node.

@@ -211,17 +211,6 @@ The result of evaluating this form is the same as the result returned from
 the `store` call. This is typically the same as the result of evaluating
 `value`. To be clear, nodes of this type *can* evaluate to void.
 
-#### `varBox` &mdash; `@varBox{name: name}`
-
-* `name: name` &mdash; Name of a variable (typically a string).
-
-This is a reference to the *box* to which a variable is bound.
-
-When run, this causes the `name` to be resolved in the current
-execution environment. If a variable reference is found for it, then the
-result of evaluation is the box to which the name is bound. If `name`
-cannot be resolved, then evaluation fails (terminating the runtime).
-
 #### `varFetch` &mdash; `@varFetch{name: name}`
 
 * `name: name` &mdash; Name of a variable (typically a string).
@@ -235,6 +224,17 @@ cannot be resolved, then evaluation fails (terminating the runtime).
 
 **Note:** It is possible for a node of this type to yield void. This happens
 when a variable is defined but not (or not yet) bound to a value.
+
+#### `varRef` &mdash; `@varRef{name: name}`
+
+* `name: name` &mdash; Name of a variable (typically a string).
+
+This is a reference to the *box* to which a variable is bound.
+
+When run, this causes the `name` to be resolved in the current
+execution environment. If a variable reference is found for it, then the
+result of evaluation is the box to which the name is bound. If `name`
+cannot be resolved, then evaluation fails (terminating the runtime).
 
 #### `varStore` &mdash; `@varStore{name: name, value: expression}`
 

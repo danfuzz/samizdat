@@ -134,8 +134,8 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 #### `get_name(node) -> . | void`
 
 Gets the name defined or used by the given node. This is applicable to
-nodes of type `closure`, `importModule`, `importResource`, `varBox`, `varDef`,
-`varDefMutable`, `varFetch`, and `varStore`.
+nodes of type `closure`, `importModule`, `importResource`, `varDef`,
+`varDefMutable`, `varFetch`, `varRef`, and `varStore`.
 
 #### `get_nodeValue(node) -> . | void`
 
@@ -406,10 +406,6 @@ any regular expression node, the result has a `maybe` node for the `yield`.
 For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
 result contains the given `node` as the `yield`, directly.
 
-#### `makeVarFetch(name) -> node`
-
-Makes a `varBox` node.
-
 #### `makeVarDef(name, optValue?) -> node`
 
 Makes a `varDef` statement node.
@@ -428,6 +424,10 @@ additional bindings.
 Makes a `varFetch` node, with an `lvalue` binding. In the result, `lvalue`
 is bound to a one-argument function which takes a node and produces a
 `varStore` node representing an assignment of the variable.
+
+#### `makeVarRef(name) -> node`
+
+Makes a `varRef` node.
 
 #### `makeVarStore(name, value) -> node`
 

@@ -29,7 +29,7 @@ typedef enum {
     EVAL_maybe,
     EVAL_noYield,
     EVAL_store,
-    EVAL_varBox,
+    EVAL_varRef,
     EVAL_varDef,
     EVAL_varDefMutable,
     EVAL_varFetch,
@@ -75,11 +75,6 @@ zvalue execClosure(Frame *frame, zvalue closureNode);
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
 
 /**
- * Executes a `statement` form.
- */
-void execStatement(Frame *frame, zvalue statement);
-
-/**
  * Executes a list of `statement` forms.
  */
 void execStatements(Frame *frame, zvalue statements);
@@ -97,11 +92,9 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
 void frameMark(Frame *frame);
 
 /**
- * Defines a new variable to the given frame, optionally binding it to a value
- * (that is, if `value` is `NULL` then the variable is created but not bound),
- * and making it either mutable or immutable as specified.
+ * Defines a new variable to the given frame, binding it to the given box.
  */
-void frameDef(Frame *frame, bool mutab, zvalue name, zvalue value);
+void frameDef(Frame *frame, zvalue name, zvalue box);
 
 /**
  * Fetches the box associated with a variable, out of the given frame. Fails

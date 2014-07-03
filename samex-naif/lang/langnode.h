@@ -93,9 +93,6 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 zvalue makeThunk(zvalue expression);
 
 // Documented in spec.
-zvalue makeVarBox(zvalue name);
-
-// Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value);
 
 // Documented in spec.
@@ -106,6 +103,9 @@ zvalue makeVarFetch(zvalue name);
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name);
+
+// Documented in spec.
+zvalue makeVarRef(zvalue name);
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value);

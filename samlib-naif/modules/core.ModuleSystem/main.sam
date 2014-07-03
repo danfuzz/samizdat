@@ -333,9 +333,9 @@ fn doExternalResolve(loader, source) {
         {
             note("    ", sourceString(source));
 
-            def loader =
+            def innerLoader =
                 makeInternalLoader(modulePath, loader::globals, loader);
-            def result = resolveMain(loader);
+            def result = resolveMain(innerLoader);
 
             note("        Done.");
             result

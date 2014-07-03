@@ -113,17 +113,18 @@ def parNameList = {:
     { [first, rest*] }
 :};
 
-## Parses a variable reference.
-def parVarRef = {:
+## Parses a variable reference. Returns a variable "fetch" with an `lvalue`
+## binding for constructing a "store" as appropriate.
+def parVarLvalue = {:
     name = parName
     { makeVarFetchLvalue(name) }
 :};
 
 ## Parses a variable box reference.
-def parVarBox = {:
+def parVarRef = {:
     @var
     name = parName
-    { makeVarBox(name) }
+    { makeVarRef(name) }
 :};
 
 ## Parses an integer literal. Note: This includes parsing a `-` prefix,
@@ -177,29 +178,20 @@ def parKey = {:
 
 ## Parses a mapping (element of a map).
 def parMapping = {:
-    keys = parKey*
+    keys = parKey+
     value = parExpression
 
-    {
-        ifIs { eq(keys, []) }
-            { /out ->
-                ## No keys were specified, so the value must be either a
-                ## whole-map interpolation or a variable-name-to-its-value
-                ## binding.
-                ifValue { get_interpolate(value) }
-                    { interp -> yield /out interp };
-                ifIs { hasType(value, @@varFetch) }
-                    {
-                        yield /out makeCall(REFS::makeValueMap,
-                            makeLiteral(get_name(value)), value)
-                    }
-            }
-            {
-                ## One or more keys.
-                makeCallOrApply(REFS::makeValueMap,
-                    keys*, withoutInterpolate(value))
-            }
-    }
+    { makeCallOrApply(REFS::makeValueMap, keys*, withoutInterpolate(value)) }
+|
+    ## An expression is valid only if it's an interpolation, in which case we
+    ## take the interpolation variant of the node.
+    value = parExpression
+    { get_interpolate(value) }
+|
+    ## Otherwise, it's got to be a raw name, representing a binding of that
+    ## name to its value as a variable.
+    name = parName
+    { makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name)) }
 :};
 
 ## Parses a map literal.
@@ -349,7 +341,7 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarRef | parVarBox | parInt | parString | parMap | parList |
+    parVarLvalue | parVarRef | parInt | parString | parMap | parList |
     parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
@@ -464,7 +456,7 @@ def parYieldOrNonlocal = {:
         { hasType(op, @@yield) }
         (
             @"/"
-            parVarRef
+            parVarLvalue
         |
             ## Indicate that this is a regular (local) yield. Checked below.
             { @yield }
@@ -628,7 +620,7 @@ def parFunctionDef = {:
 ## formal argument.
 def parGenericBind = {:
     @fn
-    bind = (parVarRef | parType)
+    bind = (parVarLvalue | parType)
     @"."
     closure = parFunctionCommon
 
@@ -946,6 +938,12 @@ def parParenPex = {:
     { pex }
 :};
 
+## Parses a variable reference parsing expression.
+def parParserVarRef = {:
+    name = parName
+    { makeVarRef(name) }
+:};
+
 ## Parses a string literal parsing expression.
 def parParserString = {:
     s = @string
@@ -1030,7 +1028,7 @@ def parParserTerm = {:
     @")"
     { @empty }
 |
-    parVarRef | parParserString | parParserToken | parParserSet |
+    parParserVarRef | parParserString | parParserToken | parParserSet |
     parParserCode | parParserThunk | parParenPex
 :};
 

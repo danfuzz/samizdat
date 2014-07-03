@@ -104,10 +104,6 @@ fn @@store.lits(interner) {
     return @store{target, value}
 };
 
-fn @@varBox.lits(interner) {
-    return this
-};
-
 fn @@varDef.lits(interner) {
     def value = ifValue { this.nodeValue }
         { value -> {value: lits(value, interner)} }
@@ -123,6 +119,10 @@ fn @@varDefMutable.lits(interner) {
 };
 
 fn @@varFetch.lits(interner) {
+    return this
+};
+
+fn @@varRef.lits(interner) {
     return this
 };
 
