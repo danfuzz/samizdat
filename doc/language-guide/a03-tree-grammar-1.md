@@ -931,7 +931,7 @@ parParser := {:
 :};
 
 ## Parses a parenthesized parsing expression.
-def parParenPex = {:
+def parPexParenExpression = {:
     @"("
     pex = %parChoicePex
     @")"
@@ -939,19 +939,19 @@ def parParenPex = {:
 :};
 
 ## Parses a variable reference parsing expression.
-def parParserVarRef = {:
+def parPexVarRef = {:
     name = parName
     { makeVarRef(name) }
 :};
 
 ## Parses a string literal parsing expression.
-def parParserString = {:
+def parPexString = {:
     s = @string
     { @string{value: dataOf(s)} }
 :};
 
 ## Parses a token literal parsing expression.
-def parParserToken = {:
+def parPexToken = {:
     @"@"
     type = parIdentifierString
     { @token{value: @@(get_nodeValue(type))} }
@@ -959,7 +959,7 @@ def parParserToken = {:
 
 ## Parses a string or character range parsing expression, used when defining
 ## sets. Yields a string per se (not a token).
-def parParserSetString = {:
+def parPexSetString = {:
     s = @string
 
     (
@@ -982,7 +982,7 @@ def parParserSetString = {:
 :};
 
 ## Parses a set (or set complement) parsing expression.
-def parParserSet = {:
+def parPexSet = {:
     @"["
 
     type = (
@@ -992,10 +992,10 @@ def parParserSet = {:
     )
 
     terminals = (
-        strings = parParserSetString+
+        strings = parPexSetString+
         { collect(cat(strings*), { ch -> @@(ch) }) }
     |
-        tokens = parParserToken+
+        tokens = parPexToken+
         { collect(tokens, get_nodeValue) }
     |
         { [] }
@@ -1007,20 +1007,20 @@ def parParserSet = {:
 :};
 
 ## Parses a code block parsing expression.
-def parParserCode = {:
+def parPexCode = {:
     closure = parNullaryClosure
     { @code(dataOf(closure)) }
 :};
 
 ## Parses a thunk parsing expression.
-def parParserThunk = {:
+def parPexThunk = {:
     @"%"
     value = parTerm
     { @thunk{value} }
 :};
 
 ## Parses a parsing expression term.
-def parParserTerm = {:
+def parPexTerm = {:
     @"."
     { @any }
 |
@@ -1028,13 +1028,13 @@ def parParserTerm = {:
     @")"
     { @empty }
 |
-    parParserVarRef | parParserString | parParserToken | parParserSet |
-    parParserCode | parParserThunk | parParenPex
+    parPexVarRef | parPexString | parPexToken | parPexSet |
+    parPexCode | parPexThunk | parPexParenExpression
 :};
 
 ## Parses a repeat (or not) parsing expression.
 def parRepeatPex = {:
-    pex = parParserTerm
+    pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
         { @(get(PEX_TYPES, get_type(repeat))){pex} }
