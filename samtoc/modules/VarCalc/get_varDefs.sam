@@ -104,10 +104,6 @@ fn @@varRef.get_varDefs() {
     return []
 };
 
-fn @@varStore.get_varDefs() {
-    return []
-};
-
 fn @@void.get_varDefs() {
     return []
 };

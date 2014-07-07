@@ -310,11 +310,6 @@ fn @@varRef.convertPexIn() {
     return this
 };
 
-## Does parser conversion of a `varStore` node.
-fn @@varStore.convertPexIn() {
-    return convertValuePayload(this)
-};
-
 ## Does parser conversion of a `void` node.
 fn @@void.convertPexIn() {
     return this

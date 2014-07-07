@@ -135,14 +135,14 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `importModule`, `importResource`, `varDef`,
-`varDefMutable`, `varFetch`, `varRef`, and `varStore`.
+`varDefMutable`, `varFetch`, and `varRef`.
 
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is
 applicable to nodes of type `literal`, `maybe`, `noYield`, `string`
-(pex type), `thunk` (pex type), `token` (pex type), `varDef`, `varDefMutable`,
-and `varStore`.
+(pex type), `thunk` (pex type), `token` (pex type), `varDef`,
+and `varDefMutable`.
 
 #### `get_pex(node) -> pex`
 
@@ -416,11 +416,11 @@ Makes a `varDefMutable` statement node.
 
 #### `makeVarFetch(name) -> node`
 
-Makes a `fetch` node with a `varBox` payload, and no additional bindings.
+Makes a `fetch` node with a `varRef` payload, and no additional bindings.
 
 #### `makeVarFetchLvalue(name) -> node`
 
-Makes a `fetch` node with a `varBox` payload. The resulting `fetch` node
+Makes a `fetch` node with a `varRef` payload. The resulting `fetch` node
 has an `lvalue` binding to a one-argument function which takes a node and
 calls `makeVarStore()` to produce an assignment node.
 
@@ -430,7 +430,7 @@ Makes a `varRef` node.
 
 #### `makeVarStore(name, value) -> node`
 
-Makes a `store` node with a `varBox` node for the target and the indicated
+Makes a `store` node with a `varRef` node for the target and the indicated
 `value` binding.
 
 #### `resolveImport(node, resolveFn) -> node`
@@ -542,6 +542,6 @@ with no `top` decalarations in the `statements` list.
 
 More specifically, for each variable defined to be `top`, a forward-declaring
 `varDef` is added at the top of the `statements` list. The original `varDef`
-is replaced with an equivalent `varStore`. If any so-transformed variables
-were `export`ed, then an `exportSelection` node is added to the end of the
-`statements` list referencing all such variables.
+is replaced with an equivalent `store(varRef(...), ...)` node. If any
+so-transformed variables were `export`ed, then an `exportSelection` node is
+added to the end of the `statements` list referencing all such variables.

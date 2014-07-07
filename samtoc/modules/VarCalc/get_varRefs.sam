@@ -136,10 +136,6 @@ fn @@varRef.get_varRefs() {
     return [this.name]
 };
 
-fn @@varStore.get_varRefs() {
-    return [this.name, this.nodeValue.varRefs*]
-};
-
 fn @@void.get_varRefs() {
     return []
 };

@@ -159,17 +159,6 @@ static zvalue execVarFetch(Frame *frame, zvalue varFetch) {
 }
 
 /**
- * Executes a `varStore` form.
- */
-static zvalue execVarStore(Frame *frame, zvalue varStore) {
-    zvalue name = get(varStore, STR_name);
-    zvalue valueExpression = get(varStore, STR_value);
-    zvalue value = execExpression(frame, valueExpression);
-
-    return GFN_CALL(store, frameGet(frame, name), value);
-}
-
-/**
  * Executes an `expression` form, with the result never allowed to be
  * `void`.
  */
@@ -198,7 +187,6 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_store:    return execStore(frame, e);
         case EVAL_varRef:   return execVarRef(frame, e);
         case EVAL_varFetch: return execVarFetch(frame, e);
-        case EVAL_varStore: return execVarStore(frame, e);
         default: {
             die("Invalid expression type: %s", valDebugString(get_type(e)));
         }

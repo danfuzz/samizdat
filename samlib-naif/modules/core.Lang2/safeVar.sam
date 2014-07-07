@@ -170,14 +170,6 @@ fn @@varRef.safeIndex(base) {
     return safeIndexForNames(base, get_name(this))
 };
 
-fn @@varStore.safeIndex(base) {
-    def nameIndex =
-        safeIndexForNames(base, get_name(this));
-    def valueIndex =
-        safeIndexForNodes(base, get_nodeValue(this));
-    return maxOf(nameIndex, valueIndex)
-};
-
 fn @@void.safeIndex(base) {
     return -1
 };

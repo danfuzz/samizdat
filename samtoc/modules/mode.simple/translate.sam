@@ -187,16 +187,6 @@ fn @@varRef.translate(varsBox) {
     return binding::name
 };
 
-fn @@varStore.translate(varsBox) {
-    def name = this.name;
-    def value = translate(this.nodeValue, varsBox);
-    def vars = varsBox*;
-    def binding = vars[name]
-        | die("Bind of undefined variable: \%q(this.name)");
-
-    return genCall("GFN_CALL", "store", binding::name, value)
-};
-
 fn @@void.translate(varsBox) {
     ## We should never encounter one of these. See `@maybe`, above.
     die("Invalid use of `@void`.")
