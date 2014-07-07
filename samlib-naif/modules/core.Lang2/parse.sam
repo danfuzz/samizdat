@@ -903,7 +903,7 @@ def parProgramOrError = {:
 ## above and beyond the preceding section.
 ##
 ## **Note:** The grammar uses the label "pex" to denote various
-## "Parser EXpression" types.
+## "Parser EXpression" types and rules.
 ##
 
 ## Forward declaration.
