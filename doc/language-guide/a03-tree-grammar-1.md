@@ -63,7 +63,7 @@ def parPrefixOperator2;
 def parTerm2;
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser;
+def parPexBlock;
 
 ## Forward declarations.
 def parAssignExpression;
@@ -346,7 +346,7 @@ def parTerm = {:
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
-    &@"{:" %parParser
+    &@"{:" %parPexBlock
 |
     ## Defined by Samizdat Layer 2.
     &[@interpolatedString @"(" @"["] %parTerm2
@@ -923,7 +923,7 @@ def PEX_TYPES = {
 };
 
 ## Parses a parser function.
-parParser := {:
+parPexBlock := {:
     @"{:"
     pex = %parPexChoice
     @":}"

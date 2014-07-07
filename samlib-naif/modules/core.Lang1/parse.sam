@@ -51,7 +51,7 @@ def LOWER_ALPHA = {
 ##
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser;
+def parPexBlock;
 
 ## Forward declarations.
 def parAssignExpression;
@@ -275,7 +275,7 @@ def parTerm = makeMainChoice(
     ## it clear what is required to "jump into" Layer 1 parsing.
     makeSequence(
         makeLookaheadSuccess(makeToken(@@"{:")),
-        makeParserThunk { . -> parParser }));
+        makeParserThunk { . -> parPexBlock }));
 
 ## Documented in spec.
 def parActualsList = makeMainChoice(
@@ -706,7 +706,7 @@ def PEX_TYPES = {
 };
 
 ## Documented in spec.
-parParser := makeMainSequence(
+parPexBlock := makeMainSequence(
     makeToken(@@"{:"),
     makeParserThunk { . -> parPexChoice },
     makeToken(@@":}"),
