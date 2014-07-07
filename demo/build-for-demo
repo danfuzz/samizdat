@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# General setup
+#
+
+# Set `progName` to the program name, `progDir` to its directory, and `baseDir`
+# to `progDir`'s directory. Follows symlinks.
+function init-prog {
+    local newp p="$0"
+
+    while newp="$(readlink "$p")"; do
+        [[ ${newp} =~ ^/ ]] && p="${newp}" || p="$(dirname "$p")/${newp}"
+    done
+
+    progName="${p##*/}"
+    progDir="$(cd "$(dirname "$p")"; /bin/pwd -P)"
+    baseDir="$(cd "${progDir}/.."; /bin/pwd -P)"
+}
+
+init-prog
+
+
+#
+# Argument parsing
+#
+
+# Build options to pass to `samex`.
+buildOpts=()
+
+# Whether to build the compiler.
+buildCompiler=0
+
+# We just pass options through as-is, except that we treat `--compiler=*`
+# as indicating that the compiler should also be built.
+for opt in "$@"; do
+    if [[ ${opt} =~ ^--compiler=(.*) ]]; then
+        buildCompiler=1
+    else
+        buildOpts+=("${opt}")
+    fi
+done
+unset opt
+
+
+#
+# Main script
+#
+
+echo '########## PRE-RUN BUILDS'
+echo '#'
+echo '# Building samex (wrappers)...'
+echo '#'
+echo ''
+
+"${baseDir}/blur/blur" --in-dir="${baseDir}/samex" \
+    || exit 1
+
+echo ''
+echo '#'
+echo '# Building samex-* (runtime)...'
+echo '#'
+echo ''
+
+"${baseDir}/out/final/bin/samex" --just-build "${buildOpts[@]}" \
+    || exit 1
+
+if (( buildCompiler )); then
+    echo ''
+    echo '#'
+    echo '# Building samtoc...'
+    echo '#'
+    echo ''
+    "${baseDir}/blur/blur" --in-dir="${baseDir}/samtoc" \
+        || exit 1
+fi
+
+echo ''
+echo '#'
+echo '########## DONE WITH PRE-RUN BUILDS'
+echo ''
