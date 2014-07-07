@@ -189,42 +189,16 @@ else
     fi
 fi
 
-# Build `samex` (helper / wrapper scripts) and `samtoc` if necessary /
-# requested.
+# Build the various products, if requested.
 
 if [[ ${#buildOpts[@]} != 0 ]]; then
-    echo '########## PRE-RUN BUILDS'
-    echo '#'
-    echo '# Building samex (wrappers)...'
-    echo '#'
-    echo ''
-
-    "${baseDir}/blur/blur" --in-dir="${baseDir}/samex" \
-        || exit 1
-
-    echo ''
-    echo '#'
-    echo '# Building samex-* (runtime)...'
-    echo '#'
-    echo ''
-
-    "${binDir}/samex" --just-build "${buildOpts[@]}" "${samexOpts[@]}" \
-        || exit 1
-
+    buildOpts+=("${samexOpts[@]}")
     if [[ ${compilerMode} != '' ]]; then
-        echo ''
-        echo '#'
-        echo '# Building samtoc...'
-        echo '#'
-        echo ''
-        "${baseDir}/blur/blur" --in-dir="${baseDir}/samtoc" \
-            || exit 1
+        buildOpts+=("--compiler=${compilerMode}")
     fi
 
-    echo ''
-    echo '#'
-    echo '########## DONE WITH PRE-RUN BUILDS'
-    echo ''
+    "${progDir}/build-for-demo" "${buildOpts[@]}" \
+        || exit 1
 fi
 
 # If we need to copy the demo, do so now. This creates a temporary directory

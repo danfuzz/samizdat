@@ -77,23 +77,33 @@ if (( timeRun )); then
     startTime="$(date '+%s')"
 fi
 
+# Build the various products, if requested.
+
+if [[ ${#buildOpts[@]} != 0 ]]; then
+    buildOpts+=("${runtimeOpts[@]}")
+    if [[ ${compilerMode} != '' ]]; then
+        buildOpts+=("--compiler=${compilerMode}")
+    fi
+
+    "${progDir}/build-for-demo" "${buildOpts[@]}" \
+        || exit 1
+fi
+
 # Find all the demo directories.
 
 allNames=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
 
-# Run each demo. For the first, pass it the appropriate build option(s) if
-# so requested.
+# Run each demo.
 
 errorNames=()
 for name in "${allNames[@]}"; do
     echo ''
-    "${progDir}/run" "${buildOpts[@]}" "${runtimeOpts[@]}" "${name}"
+    "${progDir}/run" "${runtimeOpts[@]}" "${name}"
     error="$?"
     if [[ ${error} != 0 ]]; then
         echo "Exited with error code: ${error}"
         errorNames+=("${name}")
     fi
-    buildOpts=()
 done
 
 # Produce the final report.
