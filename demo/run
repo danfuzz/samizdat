@@ -189,8 +189,7 @@ else
     fi
 fi
 
-# Build `samex` (helper / wrapper scripts) and `samtoc` if necessary /
-# requested.
+# Build the various products, if requested.
 
 if [[ ${#buildOpts[@]} != 0 ]]; then
     buildOpts+=("${samexOpts[@]}")
