@@ -89,10 +89,12 @@ static zvalue expandYield(zvalue map) {
     zvalue function = get(yieldNode, STR_function);
     zvalue value = get(yieldNode, STR_value);
     zvalue yieldDef = get(map, STR_yieldDef);
+    zvalue functionTarget = get(function, STR_target);
 
-    if (     hasType(function, TYPE_varFetch)
+    if (     hasType(function, TYPE_fetch)
+          && hasType(functionTarget, TYPE_varRef)
           && (yieldDef != NULL)
-          && valEq(get(function, STR_name), yieldDef)) {
+          && valEq(get(functionTarget, STR_name), yieldDef)) {
         return value;
     }
 
