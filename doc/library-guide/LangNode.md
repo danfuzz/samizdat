@@ -114,7 +114,7 @@ a call into an interpolated form.
 #### `get_lvalue(node) -> function | void`
 
 Gets the `lvalue` binding for a node, if any. This is non-void for
-`varFetch` nodes created with `makeVarFetchLvalue` or for any node in general
+`fetch` nodes created with `makeVarFetchLvalue` or for any node in general
 to which an `lvalue` has been attached.
 
 The expected use of an `lvalue` is that it is a function (a real one, not
@@ -135,7 +135,7 @@ Convenient shorthand for `formalsMinArgs(get_formals(node))`.
 
 Gets the name defined or used by the given node. This is applicable to
 nodes of type `closure`, `importModule`, `importResource`, `varDef`,
-`varDefMutable`, `varFetch`, and `varRef`.
+`varDefMutable`, and `varRef`.
 
 #### `get_nodeValue(node) -> . | void`
 

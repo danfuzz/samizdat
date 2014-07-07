@@ -96,10 +96,6 @@ fn @@varDefMutable.get_varDefs() {
     return [this.name]
 };
 
-fn @@varFetch.get_varDefs() {
-    return []
-};
-
 fn @@varRef.get_varDefs() {
     return []
 };

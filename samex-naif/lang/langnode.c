@@ -125,7 +125,6 @@ bool canYieldVoid(zvalue node) {
         case EVAL_fetch:    return true;
         case EVAL_maybe:    return true;
         case EVAL_store:    return true;
-        case EVAL_varFetch: return true;
         case EVAL_void:     return true;
         default: {
             return false;
@@ -225,7 +224,6 @@ bool isExpression(zvalue node) {
         case EVAL_literal:  return true;
         case EVAL_noYield:  return true;
         case EVAL_store:    return true;
-        case EVAL_varFetch: return true;
         case EVAL_varRef:   return true;
         default: {
             return false;
@@ -254,9 +252,6 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
     if (get(target, STR_lvalue) == NULL) {
         return NULL;
-    } else if (hasType(target, TYPE_varFetch)) {
-        zvalue name = get(target, STR_name);
-        return makeVarStore(name, value);
     } else if (hasType(target, TYPE_fetch)) {
         zvalue innerTarget = get(target, STR_target);
         return makeValue(TYPE_store,

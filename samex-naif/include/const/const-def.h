@@ -72,7 +72,6 @@ TYP(store,                 "store");
 TYP(string,                "string");
 TYP(varDef,                "varDef");
 TYP(varDefMutable,         "varDefMutable");
-TYP(varFetch,              "varFetch");
 TYP(varRef,                "varRef");
 
 STR(absent,                "absent");

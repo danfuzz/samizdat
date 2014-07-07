@@ -118,10 +118,6 @@ fn @@varDefMutable.lits(interner) {
     return @varDefMutable{name: this.name, value*}
 };
 
-fn @@varFetch.lits(interner) {
-    return this
-};
-
 fn @@varRef.lits(interner) {
     return this
 };
