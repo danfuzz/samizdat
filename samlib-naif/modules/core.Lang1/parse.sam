@@ -51,7 +51,7 @@ def LOWER_ALPHA = {
 ##
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser;
+def parPexBlock;
 
 ## Forward declarations.
 def parAssignExpression;
@@ -275,7 +275,7 @@ def parTerm = makeMainChoice(
     ## it clear what is required to "jump into" Layer 1 parsing.
     makeSequence(
         makeLookaheadSuccess(makeToken(@@"{:")),
-        makeParserThunk { . -> parParser }));
+        makeParserThunk { . -> parPexBlock }));
 
 ## Documented in spec.
 def parActualsList = makeMainChoice(
@@ -694,7 +694,7 @@ def parProgramOrError = makeMainSequence(
 ##
 
 ## `choicePex` is the top-level parsing expression node type.
-def parChoicePex;
+def parPexChoice;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
@@ -706,37 +706,37 @@ def PEX_TYPES = {
 };
 
 ## Documented in spec.
-parParser := makeMainSequence(
+parPexBlock := makeMainSequence(
     makeToken(@@"{:"),
-    makeParserThunk { . -> parChoicePex },
+    makeParserThunk { . -> parPexChoice },
     makeToken(@@":}"),
     makeCode { ., pex, . -> @parser{pex} });
 
 ## Documented in spec.
-def parParenPex = makeMainSequence(
+def parPexParenExpression = makeMainSequence(
     makeToken(@@"("),
-    makeParserThunk { . -> parChoicePex },
+    makeParserThunk { . -> parPexChoice },
     makeToken(@@")"),
     makeCode { ., pex, . -> pex });
 
 ## Parses a variable reference parsing expression.
-def parParserVarRef = makeMainSequence(
+def parPexVarRef = makeMainSequence(
     parName,
     makeCode { name -> makeVarRef(name) });
 
 ## Documented in spec.
-def parParserString = makeMainSequence(
+def parPexString = makeMainSequence(
     makeToken(@@string),
     makeCode { s -> @string{value: dataOf(s)} });
 
 ## Documented in spec.
-def parParserToken = makeMainSequence(
+def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierString,
     makeCode { ., type -> @token{value: @@(get_nodeValue(type))} });
 
 ## Documented in spec.
-def parParserSetString = makeMainSequence(
+def parPexSetString = makeMainSequence(
     makeToken(@@string),
     makeChoice(
         makeSequence(
@@ -755,7 +755,7 @@ def parParserSetString = makeMainSequence(
         makeCode { s -> dataOf(s) }));
 
 ## Documented in spec.
-def parParserSet = makeMainSequence(
+def parPexSet = makeMainSequence(
     makeToken(@@"["),
     makeChoice(
         makeSequence(
@@ -764,31 +764,31 @@ def parParserSet = makeMainSequence(
         makeResult(@@tokenSet)),
     makeChoice(
         makeMainSequence(
-            makeRepeat(parParserSetString, 1),
+            makeRepeat(parPexSetString, 1),
             makeCode { strings ->
                 collect(cat(strings*), { ch -> @@(ch) })
             }),
         makeMainSequence(
-            makeRepeat(parParserToken, 1),
+            makeRepeat(parPexToken, 1),
             makeCode { tokens -> collect(tokens, get_nodeValue) }),
         makeResult([])),
     makeToken(@@"]"),
     makeCode { ., type, terminals, . -> @(type){values: terminals} });
 
 ## Documented in spec.
-def parParserCode = makeMainSequence(
+def parPexCode = makeMainSequence(
     parNullaryClosure,
     makeCode { closure -> @code(dataOf(closure)) });
 
 
 ## Documented in spec.
-def parParserThunk = makeMainSequence(
+def parPexThunk = makeMainSequence(
     makeToken(@@"%"),
     parTerm,
     makeCode { ., value -> @thunk{value} });
 
 ## Documented in spec.
-def parParserTerm = makeMainChoice(
+def parPexTerm = makeMainChoice(
     makeSequence(
         makeToken(@@"."),
         makeResult(@any)),
@@ -796,17 +796,17 @@ def parParserTerm = makeMainChoice(
         makeToken(@@"("),
         makeToken(@@")"),
         makeResult(@empty)),
-    parParserVarRef,
-    parParserString,
-    parParserToken,
-    parParserSet,
-    parParserCode,
-    parParserThunk,
-    parParenPex);
+    parPexVarRef,
+    parPexString,
+    parPexToken,
+    parPexSet,
+    parPexCode,
+    parPexThunk,
+    parPexParenExpression);
 
 ## Documented in spec.
-def parRepeatPex = makeMainSequence(
-    parParserTerm,
+def parPexRepeat = makeMainSequence(
+    parPexTerm,
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
@@ -816,38 +816,38 @@ def parRepeatPex = makeMainSequence(
         makeCode { pex -> pex }));
 
 ## Documented in spec.
-def parLookaheadPex = makeMainChoice(
+def parPexLookahead = makeMainChoice(
     makeSequence(
         makeTokenSet(@@"&", @@"!"),
-        parRepeatPex,
+        parPexRepeat,
         makeCode { lookahead, pex ->
             @(get(PEX_TYPES, get_type(lookahead))){pex}
         }),
-    parRepeatPex);
+    parPexRepeat);
 
 ## Documented in spec.
-def parNamePex = makeMainChoice(
+def parPexName = makeMainChoice(
     makeSequence(
         parName,
         makeToken(@@"="),
-        parLookaheadPex,
+        parPexLookahead,
         makeCode { name, ., pex ->
             @varDef{name, value: pex}
         }),
-    parLookaheadPex);
+    parPexLookahead);
 
 ## Documented in spec.
-def parSequencePex = makeMainSequence(
-    makeRepeat(parNamePex, 1),
+def parPexSequence = makeMainSequence(
+    makeRepeat(parPexName, 1),
     makeCode { pexes -> @sequence{pexes} });
 
 ## Documented in spec.
-parChoicePex := makeMainSequence(
-    parSequencePex,
+parPexChoice := makeMainSequence(
+    parPexSequence,
     makeRepeat(
         makeSequence(
             makeToken(@@"|"),
-            parSequencePex)),
+            parPexSequence)),
     makeCode { one, rest -> @choice{pexes: [one, rest*]} });
 
 

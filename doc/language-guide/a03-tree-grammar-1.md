@@ -63,7 +63,7 @@ def parPrefixOperator2;
 def parTerm2;
 
 ## Forward declaration required for integrating layer 1 definitions.
-def parParser;
+def parPexBlock;
 
 ## Forward declarations.
 def parAssignExpression;
@@ -346,7 +346,7 @@ def parTerm = {:
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
-    &@"{:" %parParser
+    &@"{:" %parPexBlock
 |
     ## Defined by Samizdat Layer 2.
     &[@interpolatedString @"(" @"["] %parTerm2
@@ -907,11 +907,11 @@ def parProgramOrError = {:
 ## above and beyond the preceding section.
 ##
 ## **Note:** The grammar uses the label "pex" to denote various
-## "Parser EXpression" types.
+## "Parser EXpression" types and rules.
 ##
 
 ## Forward declaration.
-def parChoicePex;
+def parPexChoice;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
@@ -923,35 +923,35 @@ def PEX_TYPES = {
 };
 
 ## Parses a parser function.
-parParser := {:
+parPexBlock := {:
     @"{:"
-    pex = %parChoicePex
+    pex = %parPexChoice
     @":}"
     { @parser{pex} }
 :};
 
 ## Parses a parenthesized parsing expression.
-def parParenPex = {:
+def parPexParenExpression = {:
     @"("
-    pex = %parChoicePex
+    pex = %parPexChoice
     @")"
     { pex }
 :};
 
 ## Parses a variable reference parsing expression.
-def parParserVarRef = {:
+def parPexVarRef = {:
     name = parName
     { makeVarRef(name) }
 :};
 
 ## Parses a string literal parsing expression.
-def parParserString = {:
+def parPexString = {:
     s = @string
     { @string{value: dataOf(s)} }
 :};
 
 ## Parses a token literal parsing expression.
-def parParserToken = {:
+def parPexToken = {:
     @"@"
     type = parIdentifierString
     { @token{value: @@(get_nodeValue(type))} }
@@ -959,7 +959,7 @@ def parParserToken = {:
 
 ## Parses a string or character range parsing expression, used when defining
 ## sets. Yields a string per se (not a token).
-def parParserSetString = {:
+def parPexSetString = {:
     s = @string
 
     (
@@ -982,7 +982,7 @@ def parParserSetString = {:
 :};
 
 ## Parses a set (or set complement) parsing expression.
-def parParserSet = {:
+def parPexSet = {:
     @"["
 
     type = (
@@ -992,10 +992,10 @@ def parParserSet = {:
     )
 
     terminals = (
-        strings = parParserSetString+
+        strings = parPexSetString+
         { collect(cat(strings*), { ch -> @@(ch) }) }
     |
-        tokens = parParserToken+
+        tokens = parPexToken+
         { collect(tokens, get_nodeValue) }
     |
         { [] }
@@ -1007,20 +1007,20 @@ def parParserSet = {:
 :};
 
 ## Parses a code block parsing expression.
-def parParserCode = {:
+def parPexCode = {:
     closure = parNullaryClosure
     { @code(dataOf(closure)) }
 :};
 
 ## Parses a thunk parsing expression.
-def parParserThunk = {:
+def parPexThunk = {:
     @"%"
     value = parTerm
     { @thunk{value} }
 :};
 
 ## Parses a parsing expression term.
-def parParserTerm = {:
+def parPexTerm = {:
     @"."
     { @any }
 |
@@ -1028,13 +1028,13 @@ def parParserTerm = {:
     @")"
     { @empty }
 |
-    parParserVarRef | parParserString | parParserToken | parParserSet |
-    parParserCode | parParserThunk | parParenPex
+    parPexVarRef | parPexString | parPexToken | parPexSet |
+    parPexCode | parPexThunk | parPexParenExpression
 :};
 
 ## Parses a repeat (or not) parsing expression.
-def parRepeatPex = {:
-    pex = parParserTerm
+def parPexRepeat = {:
+    pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
         { @(get(PEX_TYPES, get_type(repeat))){pex} }
@@ -1045,39 +1045,39 @@ def parRepeatPex = {:
 
 ## Parses a lookahead (or not) parsing expression. This covers both lookahead
 ## success and lookahead failure.
-def parLookaheadPex = {:
+def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
-        pex = parRepeatPex
+        pex = parPexRepeat
         { @(get(PEX_TYPES, get_type(lookahead))){pex} }
     )
 |
-    parRepeatPex
+    parPexRepeat
 :};
 
 ## Parses a name (or not) parsing expression.
-def parNamePex = {:
+def parPexName = {:
     (
         name = parName
         @"="
-        pex = parLookaheadPex
+        pex = parPexLookahead
         { @varDef{name, value: pex} }
     )
 |
-    parLookaheadPex
+    parPexLookahead
 :};
 
 ## Parses a sequence parsing expression. This includes sequences of length
 ## one, but it does *not* parse empty (zero-length) sequences.
-def parSequencePex = {:
-    pexes = parNamePex+
+def parPexSequence = {:
+    pexes = parPexName+
     { @sequence{pexes} }
 :};
 
 ## Parses a choice parsing expression. This includes a single choice.
-parChoicePex := {:
-    one = parSequencePex
-    rest = (@"|" parSequencePex)*
+parPexChoice := {:
+    one = parPexSequence
+    rest = (@"|" parPexSequence)*
     { @choice{pexes: [one, rest*]} }
 :};
 
