@@ -911,7 +911,7 @@ def parProgramOrError = {:
 ##
 
 ## Forward declaration.
-def parChoicePex;
+def parPexChoice;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
@@ -925,7 +925,7 @@ def PEX_TYPES = {
 ## Parses a parser function.
 parParser := {:
     @"{:"
-    pex = %parChoicePex
+    pex = %parPexChoice
     @":}"
     { @parser{pex} }
 :};
@@ -933,7 +933,7 @@ parParser := {:
 ## Parses a parenthesized parsing expression.
 def parPexParenExpression = {:
     @"("
-    pex = %parChoicePex
+    pex = %parPexChoice
     @")"
     { pex }
 :};
@@ -1033,7 +1033,7 @@ def parPexTerm = {:
 :};
 
 ## Parses a repeat (or not) parsing expression.
-def parRepeatPex = {:
+def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
@@ -1045,39 +1045,39 @@ def parRepeatPex = {:
 
 ## Parses a lookahead (or not) parsing expression. This covers both lookahead
 ## success and lookahead failure.
-def parLookaheadPex = {:
+def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
-        pex = parRepeatPex
+        pex = parPexRepeat
         { @(get(PEX_TYPES, get_type(lookahead))){pex} }
     )
 |
-    parRepeatPex
+    parPexRepeat
 :};
 
 ## Parses a name (or not) parsing expression.
-def parNamePex = {:
+def parPexName = {:
     (
         name = parName
         @"="
-        pex = parLookaheadPex
+        pex = parPexLookahead
         { @varDef{name, value: pex} }
     )
 |
-    parLookaheadPex
+    parPexLookahead
 :};
 
 ## Parses a sequence parsing expression. This includes sequences of length
 ## one, but it does *not* parse empty (zero-length) sequences.
-def parSequencePex = {:
-    pexes = parNamePex+
+def parPexSequence = {:
+    pexes = parPexName+
     { @sequence{pexes} }
 :};
 
 ## Parses a choice parsing expression. This includes a single choice.
-parChoicePex := {:
-    one = parSequencePex
-    rest = (@"|" parSequencePex)*
+parPexChoice := {:
+    one = parPexSequence
+    rest = (@"|" parPexSequence)*
     { @choice{pexes: [one, rest*]} }
 :};
 

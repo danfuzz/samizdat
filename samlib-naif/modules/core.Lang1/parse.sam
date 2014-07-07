@@ -694,7 +694,7 @@ def parProgramOrError = makeMainSequence(
 ##
 
 ## `choicePex` is the top-level parsing expression node type.
-def parChoicePex;
+def parPexChoice;
 
 ## Map from parser token types to derived value types for pexes.
 def PEX_TYPES = {
@@ -708,14 +708,14 @@ def PEX_TYPES = {
 ## Documented in spec.
 parParser := makeMainSequence(
     makeToken(@@"{:"),
-    makeParserThunk { . -> parChoicePex },
+    makeParserThunk { . -> parPexChoice },
     makeToken(@@":}"),
     makeCode { ., pex, . -> @parser{pex} });
 
 ## Documented in spec.
 def parPexParenExpression = makeMainSequence(
     makeToken(@@"("),
-    makeParserThunk { . -> parChoicePex },
+    makeParserThunk { . -> parPexChoice },
     makeToken(@@")"),
     makeCode { ., pex, . -> pex });
 
@@ -805,7 +805,7 @@ def parPexTerm = makeMainChoice(
     parPexParenExpression);
 
 ## Documented in spec.
-def parRepeatPex = makeMainSequence(
+def parPexRepeat = makeMainSequence(
     parPexTerm,
     makeChoice(
         makeSequence(
@@ -816,38 +816,38 @@ def parRepeatPex = makeMainSequence(
         makeCode { pex -> pex }));
 
 ## Documented in spec.
-def parLookaheadPex = makeMainChoice(
+def parPexLookahead = makeMainChoice(
     makeSequence(
         makeTokenSet(@@"&", @@"!"),
-        parRepeatPex,
+        parPexRepeat,
         makeCode { lookahead, pex ->
             @(get(PEX_TYPES, get_type(lookahead))){pex}
         }),
-    parRepeatPex);
+    parPexRepeat);
 
 ## Documented in spec.
-def parNamePex = makeMainChoice(
+def parPexName = makeMainChoice(
     makeSequence(
         parName,
         makeToken(@@"="),
-        parLookaheadPex,
+        parPexLookahead,
         makeCode { name, ., pex ->
             @varDef{name, value: pex}
         }),
-    parLookaheadPex);
+    parPexLookahead);
 
 ## Documented in spec.
-def parSequencePex = makeMainSequence(
-    makeRepeat(parNamePex, 1),
+def parPexSequence = makeMainSequence(
+    makeRepeat(parPexName, 1),
     makeCode { pexes -> @sequence{pexes} });
 
 ## Documented in spec.
-parChoicePex := makeMainSequence(
-    parSequencePex,
+parPexChoice := makeMainSequence(
+    parPexSequence,
     makeRepeat(
         makeSequence(
             makeToken(@@"|"),
-            parSequencePex)),
+            parPexSequence)),
     makeCode { one, rest -> @choice{pexes: [one, rest*]} });
 
 
