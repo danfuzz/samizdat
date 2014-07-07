@@ -211,20 +211,6 @@ The result of evaluating this form is the same as the result returned from
 the `store` call. This is typically the same as the result of evaluating
 `value`. To be clear, nodes of this type *can* evaluate to void.
 
-#### `varFetch` &mdash; `@varFetch{name: name}`
-
-* `name: name` &mdash; Name of a variable (typically a string).
-
-This represents a by-name variable reference and fetch.
-
-When run, this causes the `name` to be resolved in the current
-execution environment. If a variable reference is found for it, then the
-result of evaluation is the bound value of the reference. If the `name`
-cannot be resolved, then evaluation fails (terminating the runtime).
-
-**Note:** It is possible for a node of this type to yield void. This happens
-when a variable is defined but not (or not yet) bound to a value.
-
 #### `varRef` &mdash; `@varRef{name: name}`
 
 * `name: name` &mdash; Name of a variable (typically a string).
@@ -235,26 +221,6 @@ When run, this causes the `name` to be resolved in the current
 execution environment. If a variable reference is found for it, then the
 result of evaluation is the box to which the name is bound. If `name`
 cannot be resolved, then evaluation fails (terminating the runtime).
-
-#### `varStore` &mdash; `@varStore{name: name, value: expression}`
-
-* `name: name` &mdash; Name of variable name to store to (typically a string).
-
-* `value: expression` &mdash; Expression node representing the
-  value that the variable should take on when defined.
-
-This represents a variable reference and store (assignment).
-
-When run, the `value` expression is evaluated. If it evaluates to void,
-then evaluation fails (terminating the runtime). Otherwise, the `name`
-is looked up and resolved to a variable reference. It is an error
-(terminating the runtime) if no such variable is found, or if such a
-variable is found and it is not valid to store to it. Otherwise, the
-evaluated value is stored to the variable.
-
-The result of evaluating this form is the same as what is returned by
-executing the store operation on the underlying cell. This is typically
-the same as the result of evaluating `value`.
 
 
 <br><br>
@@ -333,8 +299,8 @@ behavior varies depending on if `value` is supplied in this node:
 * Without a supplied `value`, this serves as a forward declaration. The
   variable is defined, but it is unbound (i.e. bound to void). It is then
   valid to store into the variable a value *exactly once* by use of a
-  `varStore` node. Before such storage, it is valid to refer to the variable
-  in an expression node though it will evaluate to void.
+  `store(varRef(...), ...)` node. Before such storage, it is valid to refer
+  to the variable in an expression node though it will evaluate to void.
 
 * With `value` supplied, said `value` is evaluated. If it evaluates to void,
   then evaluation fails (terminating the runtime). Otherwise, the evaluated
@@ -360,12 +326,12 @@ body.
 
 When run successfully, nodes of this type cause `name` to be bound in the
 current (topmost) execution environment, to a mutable variable. That is, the
-variable can be stored to multiple times, by using `varStore` nodes.
+variable can be stored to multiple times, by using `store` nodes.
 The behavior varies depending on if `value` is supplied in this node:
 
 * Without a supplied `value`, this serves as a forward declaration. The
   variable is defined, but it is unbound (i.e. bound to void). After
-  definition and before storage (via `varStore`), it is valid to refer to the
+  definition and before storage (via `store`), it is valid to refer to the
   variable in an expression node though it will evaluate to void.
 
 * With `value` supplied, said `value` is evaluated. If it evaluates to void,

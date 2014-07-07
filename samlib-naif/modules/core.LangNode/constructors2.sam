@@ -30,15 +30,17 @@ fn expandYield(map) {
     def function = get_function(yieldNode);
     def value = get_nodeValue(yieldNode);
 
-    ## If the exit's `function` is a ref to the same variable as this node's
-    ## yield name, then skip the expansion and just return the exit's `value`.
+    ## If the exit's `function` is a variable fetch of the same variable as
+    ## this node's yield name, then skip the expansion and just return the
+    ## exit's `value` directly.
     ifValues(
         [
-            { -> hasType(function, @@varFetch) },
-            { . -> map::yieldDef },
-            { ., yieldDef -> eq(get_name(function), yieldDef) }
+            { -> hasType(function, @@fetch) },
+            { . -> hasType(get_target(function), @@varRef) },
+            { ., . -> map::yieldDef },
+            { ., target, yieldDef -> eq(get_name(target), yieldDef) }
         ],
-        { ., ., . -> return value });
+        { ., ., ., . -> return value });
 
     def exitCall = ifValueOr
         { ifIs { hasType(value, @@void) } { makeCall(function) } }

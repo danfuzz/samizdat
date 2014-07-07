@@ -89,10 +89,12 @@ static zvalue expandYield(zvalue map) {
     zvalue function = get(yieldNode, STR_function);
     zvalue value = get(yieldNode, STR_value);
     zvalue yieldDef = get(map, STR_yieldDef);
+    zvalue functionTarget = get(function, STR_target);
 
-    if (     hasType(function, TYPE_varFetch)
+    if (     hasType(function, TYPE_fetch)
+          && hasType(functionTarget, TYPE_varRef)
           && (yieldDef != NULL)
-          && valEq(get(function, STR_name), yieldDef)) {
+          && valEq(get(functionTarget, STR_name), yieldDef)) {
         return value;
     }
 
@@ -123,7 +125,6 @@ bool canYieldVoid(zvalue node) {
         case EVAL_fetch:    return true;
         case EVAL_maybe:    return true;
         case EVAL_store:    return true;
-        case EVAL_varFetch: return true;
         case EVAL_void:     return true;
         default: {
             return false;
@@ -223,9 +224,7 @@ bool isExpression(zvalue node) {
         case EVAL_literal:  return true;
         case EVAL_noYield:  return true;
         case EVAL_store:    return true;
-        case EVAL_varFetch: return true;
         case EVAL_varRef:   return true;
-        case EVAL_varStore: return true;
         default: {
             return false;
         }
@@ -253,9 +252,6 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
     if (get(target, STR_lvalue) == NULL) {
         return NULL;
-    } else if (hasType(target, TYPE_varFetch)) {
-        zvalue name = get(target, STR_name);
-        return makeVarStore(name, value);
     } else if (hasType(target, TYPE_fetch)) {
         zvalue innerTarget = get(target, STR_target);
         return makeValue(TYPE_store,
@@ -617,22 +613,24 @@ zvalue makeVarDefMutable(zvalue name, zvalue value) {
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return makeValue(TYPE_varFetch, mapFrom1(STR_name, name), NULL);
+    return makeValue(TYPE_fetch,
+        mapFrom1(STR_target, makeVarRef(name)),
+        NULL);
 }
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return makeValue(TYPE_varFetch,
-        mapFrom2(STR_lvalue, EMPTY_LIST, STR_name, name),
+    return makeValue(TYPE_fetch,
+        mapFrom2(STR_target, makeVarRef(name), STR_lvalue, EMPTY_LIST),
         NULL);
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return makeValue(TYPE_varStore,
-        mapFrom2(STR_name, name, STR_value, value),
+    return makeValue(TYPE_store,
+        mapFrom2(STR_target, makeVarRef(name), STR_value, value),
         NULL);
 }
 

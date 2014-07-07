@@ -300,19 +300,9 @@ fn @@varDefMutable.convertPexIn() {
     return convertValuePayload(this)
 };
 
-## Does parser conversion of a `varFetch` node.
-fn @@varFetch.convertPexIn() {
-    return withoutIntermediates(this)
-};
-
 ## Does parser conversion of a `varRef` node.
 fn @@varRef.convertPexIn() {
     return this
-};
-
-## Does parser conversion of a `varStore` node.
-fn @@varStore.convertPexIn() {
-    return convertValuePayload(this)
 };
 
 ## Does parser conversion of a `void` node.

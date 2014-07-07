@@ -171,30 +171,12 @@ fn @@varDefMutable.translate(varsBox) {
         this.name, nonVoid(genCall("makeCell", value)), varsBox)
 };
 
-fn @@varFetch.translate(varsBox) {
-    def name = this.name;
-    def vars = varsBox*;
-    def binding = vars[name]
-        | die("Reference of undefined variable: \%q(this.name)");
-    return genCall("GFN_CALL", "fetch", binding::name)
-};
-
 fn @@varRef.translate(varsBox) {
     def name = this.name;
     def vars = varsBox*;
     def binding = vars[name]
         | die("Reference of undefined variable: \%q(this.name)");
     return binding::name
-};
-
-fn @@varStore.translate(varsBox) {
-    def name = this.name;
-    def value = translate(this.nodeValue, varsBox);
-    def vars = varsBox*;
-    def binding = vars[name]
-        | die("Bind of undefined variable: \%q(this.name)");
-
-    return genCall("GFN_CALL", "store", binding::name, value)
 };
 
 fn @@void.translate(varsBox) {
@@ -217,10 +199,6 @@ fn @@closureRef.translateStatement(varsBox) {
 };
 
 fn @@literalRef.translateStatement(varsBox) {
-    ## Return void.
-};
-
-fn @@varFetch.translateStatement(varsBox) {
     ## Return void.
 };
 

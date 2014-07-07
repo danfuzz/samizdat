@@ -132,12 +132,15 @@ zvalue ioReadLink(zvalue path) {
 
 // Documented in header.
 void ioWriteFileUtf8(zvalue path, zvalue text) {
+    // Note: We need to ask the size, so as not to be fooled by any
+    // embedded null characters.
     zint utfSize = utf8SizeFromString(text);
-    char utf[utfSize + 1];
-    utf8FromString(utfSize + 1, utf, text);
+    char *utf = utf8DupFromString(text);
 
     FILE *out = openFile(path, "w");
     zint amt = fwrite(utf, 1, utfSize, out);
+
+    utilFree(utf);
 
     if (amt != utfSize) {
         die("Trouble writing file: %s", strerror(errno));

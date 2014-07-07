@@ -32,8 +32,6 @@ typedef enum {
     EVAL_varRef,
     EVAL_varDef,
     EVAL_varDefMutable,
-    EVAL_varFetch,
-    EVAL_varStore,
     EVAL_void
 } zevalType;
 

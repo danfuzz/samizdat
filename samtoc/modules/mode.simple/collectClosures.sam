@@ -112,17 +112,8 @@ fn @@varDefMutable.bodies(bodiesBox) {
     return @varDefMutable{name: this.name, value*}
 };
 
-fn @@varFetch.bodies(bodiesBox) {
-    return @varFetch{name: this.name}
-};
-
 fn @@varRef.bodies(bodiesBox) {
     return this
-};
-
-fn @@varStore.bodies(bodiesBox) {
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @varStore{name: this.name, value}
 };
 
 fn @@void.bodies(bodiesBox) {

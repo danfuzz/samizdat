@@ -128,16 +128,8 @@ fn @@varDefMutable.get_varRefs() {
     return (def v = this.nodeValue) & v.varRefs | []
 };
 
-fn @@varFetch.get_varRefs() {
-    return [this.name]
-};
-
 fn @@varRef.get_varRefs() {
     return [this.name]
-};
-
-fn @@varStore.get_varRefs() {
-    return [this.name, this.nodeValue.varRefs*]
 };
 
 fn @@void.get_varRefs() {
