@@ -1469,47 +1469,54 @@ parPrefixOperator2 := {:
 ## Parses an index expression (inside a collection indexing postfix form).
 def parIndexExpression = {:
     @"^"
-    expr = parUnaryExpression
-    { @fromEnd(expr) }
+    value = parUnaryExpression
+    { {origin: @@fromEnd, value} }
 |
-    expr = parExpression
-    { @fromStart(expr) }
+    value = parExpression
+    { {origin: @@fromStart, value} }
 :};
+
+## Constant representing the sequence index `0`.
+def INDEX_AT_START_0 = {origin: @@fromStart, value: makeLiteral(0)};
+
+## Constant representing the sequence index `^0` (that is, zero from end).
+def INDEX_AT_END_0 = {origin: @@fromEnd, value: makeLiteral(0)};
 
 ## Parses an indexing postfix.
 def parIndexPostfix = {:
     optStart = parIndexExpression?
-    optOp = [@".." @"..!"]?
-    end = (
-        { optOp* }  ## End can only be parsed if there was a slice op.
-        parIndexExpression
-    |
-        { @endIndex }
-    )
 
     (
         ## It's a slice expression of some sort.
-        op = { optOp* }
-        start = ({ optStart* } | { @fromStart(makeLiteral(0)) })
+        op = [@".." @"..!"]
+        end = (parIndexExpression | { INDEX_AT_END_0 })
+        start = ({ optStart* } | { INDEX_AT_START_0 })
 
         (
             ## It's a non-size-dependant slice.
-            !{ hasType(start, @@fromEnd) }
-            !{ hasType(end, @@fromEnd) }
+            { eq(start::origin, @@fromStart) }
+
+            ## ...which means that the end had either be an "index from start"
+            ## or "the end of the sequence, whatever index it may be."
+            optEndNode = (
+                { eq(end::origin, @@fromStart) }
+                { [end::value] }
+            |
+                { eq(end, INDEX_AT_END_0) }
+                { [] }
+            )
 
             {
                 def funcRef = ifIs { eq(op, @"..") }
                     { REFS::Sequence_sliceInclusive }
                     { REFS::Sequence_sliceExclusive };
+                def startNode = start::value;
 
-                { node ->
-                    makeCall(funcRef,
-                        node, dataOf(start), dataOf(end)?*)
-                }
+                { node -> makeCall(funcRef, node, startNode, optEndNode*) }
             }
         |
             ## At least one of start or end is `fromEnd`, so we have to
-            ## use an intermediate function call.
+            ## use `sliceGeneral`.
             {
                 def style = ifIs { eq(op, @"..") }
                     { makeLiteral(@inclusive) }
@@ -1517,15 +1524,19 @@ def parIndexPostfix = {:
 
                 def startNode =
                     makeCall(REFS::makeValue,
-                        makeLiteral(get_type(start)),
-                        dataOf(start));
+                        makeLiteral(start::origin),
+                        makeCall(REFS::makeValueMap,
+                            makeLiteral("value"), start::value));
 
-                def optEndNode = (ifValue { dataOf(end) }
-                    { endData ->
-                        makeCall(REFS::makeValue,
-                            makeLiteral(get_type(end)),
-                            endData)
-                    })?;
+                def optEndNode = (
+                    ifNot { eq(end, INDEX_AT_END_0) }
+                        {
+                            makeCall(REFS::makeValue,
+                                makeLiteral(end::origin),
+                                makeCall(REFS::makeValueMap,
+                                    makeLiteral("value"), end::value))
+                        }
+                )?;
 
                 { node ->
                     makeCall(REFS::Sequence_sliceGeneral,
@@ -1544,11 +1555,11 @@ def parIndexPostfix = {:
         index = { optStart* }
 
         {
-            def funcRef = ifIs { hasType(index, @@fromStart) }
+            def funcRef = ifIs { eq(index::origin, @@fromStart) }
                 { REFS::get }
                 { REFS::Sequence_nthFromEnd };
 
-            { node -> makeCall(funcRef, node, dataOf(index)) }
+            { node -> makeCall(funcRef, node, index::value) }
         }
     )
 :};
