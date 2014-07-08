@@ -95,8 +95,8 @@ index through the `end` index.
 The `start` is always an inclusive index. `style` indicates whether the
 end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
 
-Each of `start` and `end` must be a derived data value of type
-`@fromStart` or `@fromEnd` with an int payload. The type indicates which
+Each of `start` and `end` must be a derived data value of type `@fromStart`
+or `@fromEnd` with a `{value: int}` as the payload. The type indicates which
 end of the sequence is to be counted from.
 
 This function in turn calls one of `sliceExclusive` or `sliceInclusive` to
