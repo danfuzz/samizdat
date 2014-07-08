@@ -139,7 +139,8 @@ This loads the `main` of the module at the given `path`, finds its
 This is a convenient wrapper which is equivalent to:
 
 ```
-def globals = loadModule(loader, @external("core.Globals"))::fullEnvironment();
+def source = @external{name: "core.Globals"};
+def globals = loadModule(loader, source)::fullEnvironment();
 def mainLoader = makeInternalLoader(path, globals, loader);
 def mainModule = resolveMain(mainLoader)::exports;
 return mainModule::main(args*)

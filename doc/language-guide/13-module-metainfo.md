@@ -49,8 +49,8 @@ module as a whole is to be imported.
 ```
 {
     imports: {
-        @external("core.Lang0"): {@module: Value},
-        @internal("helpers"): {helpFunc: Value, otherFunc: Value},
+        @external{name: "core.Lang0"}: {@module: Value},
+        @internal{name: "helpers"}: {helpFunc: Value, otherFunc: Value},
         ...
     },
     ...
@@ -69,7 +69,7 @@ syntax.
 ```
 {
     resources: {
-        @internal("etc/template.txt"): "utf8",
+        @internal{name: "etc/template.txt"}: "utf8",
         ...
     },
     ...
@@ -77,7 +77,7 @@ syntax.
 
 ### Path references
 
-A path reference is an `@external(...)` or `@internal(...)` value, as
+A path reference is an `@external{...}` or `@internal{...}` value, as
 described in the "Execution Trees" section.
 
 ### Types
