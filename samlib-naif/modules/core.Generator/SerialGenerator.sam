@@ -5,7 +5,7 @@
 ##
 ## `SerialGenerator` Type
 ##
-## Payload is `[subGens*]`, a list of sub-generators.
+## Payload is `{generators: [gens*]}`, a list of sub-generators.
 
 #= language core.Lang0
 
@@ -29,7 +29,7 @@ export fn makeSerialGenerator(generators*) {
     ifIs { eq(get_size(generators), 1) }
         { return generators* };
 
-    return @SerialGenerator(generators)
+    return @SerialGenerator{generators}
 };
 
 ## Documented in spec.
@@ -46,7 +46,7 @@ fn @@SerialGenerator.fetch() {
 
 ## Documented in spec.
 fn @@SerialGenerator.nextValue(box) {
-    def subGens = dataOf(this);
+    def subGens = this::generators;
 
     return? ifValue { get(subGens, 0) }
         { firstGen ->
@@ -54,7 +54,7 @@ fn @@SerialGenerator.nextValue(box) {
 
             ifValue { nextValue(firstGen, box) }
                 { nextGenerator ->
-                    @SerialGenerator[nextGenerator, moreGens*]
+                    @SerialGenerator{generators: [nextGenerator, moreGens*]}
                 }
                 {
                     ## First generator was voided.

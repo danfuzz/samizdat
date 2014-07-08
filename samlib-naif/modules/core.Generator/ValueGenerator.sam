@@ -5,6 +5,7 @@
 ##
 ## `ValueGenerator` Type
 ##
+## Payload is `{value}`, the value.
 
 #= language core.Lang0
 
@@ -17,7 +18,7 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 
 ## Documented in spec.
 export fn makeValueGenerator(value) {
-    return @ValueGenerator(value)
+    return @ValueGenerator{value}
 };
 
 ## Documented in spec.
@@ -34,6 +35,6 @@ fn @@ValueGenerator.fetch() {
 
 ## Documented in spec.
 fn @@ValueGenerator.nextValue(box) {
-    box* := dataOf(this);
+    box* := this::value;
     return this
 };

@@ -5,7 +5,7 @@
 ##
 ## `OptGenerator` Type
 ##
-## Payload is `subGen`, the sub-generator.
+## Payload is `{generator}`, the sub-generator.
 
 #= language core.Lang0
 
@@ -19,7 +19,7 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 
 ## Documented in spec.
 export fn makeOptGenerator(generator) {
-    return @OptGenerator(generator)
+    return @OptGenerator{generator}
 };
 
 ## Documented in spec.
@@ -36,13 +36,12 @@ fn @@OptGenerator.fetch() {
 
 ## Documented in spec.
 fn @@OptGenerator.nextValue(box) {
-    def subGen = dataOf(this);
     def result;
 
-    return ifValue { nextValue(subGen, var result) }
-        { nextGen ->
+    return ifValue { nextValue(this::generator, var result) }
+        { nextGenerator ->
             box* := [result];
-            @OptGenerator(nextGen)
+            @OptGenerator{generator: nextGenerator}
         }
         { nextValue(makeValueGenerator([]), box) }
 };
