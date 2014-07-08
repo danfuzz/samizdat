@@ -361,8 +361,8 @@ and payload (if present) must each be surrounded by parentheses
 @Null                         ## same as above
 @(@@(null))                   ## a type-only value with type `null`
 
-@Boolean(0)                   ## the value usually just written as `false`
-@Boolean(1)                   ## the value usually just written as `true`
+@Boolean{value: 0}            ## the value usually just written as `false`
+@Boolean{value: 1}            ## the value usually just written as `true`
 ```
 
 **Note:** As a convenience, the `get` function works on derived data
@@ -375,8 +375,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-def false = @Boolean(0);
-def true = @Boolean(1);
+def false = @Boolean{value: 0};
+def true = @Boolean{value: 1};
 ```
 
 These values are most useful when placed into variables and passed
