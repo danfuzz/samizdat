@@ -5,7 +5,7 @@
 ##
 ## `ParaGenerator` Type
 ##
-## Payload is `[subGens*]`, a list of sub-generators.
+## Payload is `{generators: [gens*]}`, a list of sub-generators.
 
 #= language core.Lang0
 
@@ -30,7 +30,7 @@ export fn makeParaGenerator(generators*) {
     ifIs { eq(get_size(generators), 1) }
         { return makeListWrapGenerator(generators*) };
 
-    return @ParaGenerator(generators)
+    return @ParaGenerator{generators}
 };
 
 ## Documented in spec.
@@ -47,7 +47,7 @@ fn @@ParaGenerator.fetch() {
 
 ## Documented in spec.
 fn @@ParaGenerator.nextValue(box) {
-    def subGens = dataOf(this);
+    def subGens = this::generators;
 
     ifIs { eq(subGens, []) }
         { return };
@@ -70,5 +70,5 @@ fn @@ParaGenerator.nextValue(box) {
         { one -> nth(one, 1) });
 
     box* := yields;
-    return @ParaGenerator(nexts)
+    return @ParaGenerator{generators: nexts}
 };
