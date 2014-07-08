@@ -5,7 +5,7 @@
 ##
 ## `ListWrapGenerator` Type
 ##
-## Payload is `subGen`, the sub-generator.
+## Payload is `{generator}`, the sub-generator.
 
 #= language core.Lang0
 
@@ -16,7 +16,7 @@
 
 ## Documented in spec.
 export fn makeListWrapGenerator(generator) {
-    return @ListWrapGenerator(generator)
+    return @ListWrapGenerator{generator}
 };
 
 ## Documented in spec.
@@ -35,9 +35,9 @@ fn @@ListWrapGenerator.fetch() {
 fn @@ListWrapGenerator.nextValue(box) {
     def result;
 
-    return? ifValue { nextValue(dataOf(this), var result) }
+    return? ifValue { nextValue(this::generator, var result) }
         { nextGenerator ->
             box* := [result];
-            @ListWrapGenerator(nextGenerator)
+            @ListWrapGenerator{generator: nextGenerator}
         }
 };
