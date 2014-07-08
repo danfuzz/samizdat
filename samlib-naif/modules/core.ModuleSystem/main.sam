@@ -413,8 +413,8 @@ fn doInternalResolve(loader, source) {
     note("        ", sourceString(source));
 
     def pathPrefix = cat(loader::basePath, source::name);
-    def binPath = cat(pathPrefix, ".samb");
 
+    def binPath = cat(pathPrefix, ".samb");
     ifIs { eq($Io0::fileType(binPath), "file") }
         {
             def func = $Code::evalBinary(loader::globals, binPath);
@@ -586,23 +586,25 @@ fn runBinaryFile(path, loader, args) {
 ## Documented in spec.
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
-    def loader = makeInternalLoader(libraryPath, primitiveGlobals, null);
-    def mainModule = resolveMain(loader)::exports;
-    def mainFunction = mainModule::main;
-    return mainModule::main(libraryPath, primitiveGlobals)
+    def mainLoader = makeInternalLoader(libraryPath, primitiveGlobals, null);
+    def mainModule = ifValueOr { resolveMain(mainLoader) }
+        { die("No core library `main` module found.") };
+    def mainFunction = ifValueOr { mainModule::exports::main }
+        { die("No `main` export from core library's `main`.") };
+
+    return mainFunction(libraryPath, primitiveGlobals)
 };
 
 ## Documented in spec.
 export fn run(path, loader, args*) {
     def globals = loadGlobals(loader);
     def mainLoader = makeInternalLoader(path, globals, loader);
-    def mainModule = resolveMain(mainLoader)::exports;
-    def optMain = mainModule::main?;
-
-    ifIs { eq(optMain, []) }
+    def mainModule = ifValueOr { resolveMain(mainLoader) }
+        { die("No `main` module found on path: ", path) };
+    def mainFunction = ifValueOr { mainModule::exports::main }
         { die("No `main` export from module's `main`.") };
 
-    return? (optMain*)(args*)
+    return? mainFunction(args*)
 };
 
 ## Documented in spec.
