@@ -62,11 +62,11 @@ final path component, minus the extension (if any).
 For example:
 
 ```
-get_baseName(@external("Blort"))                    =>  "Blort"
-get_baseName(@external("core.Fizmo"))               =>  "Fizmo"
-get_baseName(@internal("frotz"))                    =>  "frotz"
-get_baseName(@internal("frotz.txt"))                =>  "frotz"
-get_baseName(@internal("frobozz/magic/frotz.txt"))  =>  "frotz"
+get_baseName(@external{name: "Blort"})                    =>  "Blort"
+get_baseName(@external{name: "core.Fizmo"})               =>  "Fizmo"
+get_baseName(@internal{name: "frotz"})                    =>  "frotz"
+get_baseName(@internal{name: "frotz.txt"})                =>  "frotz"
+get_baseName(@internal{name: "frobozz/magic/frotz.txt"})  =>  "frotz"
 ```
 
 #### `get_definedNames(node) -> [name*]`

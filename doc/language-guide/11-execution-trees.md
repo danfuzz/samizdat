@@ -423,7 +423,7 @@ data of the resource is to be interpreted.
 
 These are values that appear within the data payloads of various nodes.
 
-#### `external` &mdash; `@external(name)`
+#### `external` &mdash; `@external{name: string}`
 
 * `name` &mdash; String that represents an external module name. External
   names must take the form of a dot-delimited list of identifiers.
@@ -435,9 +435,9 @@ module name.
 Examples:
 
 ```
-@external("Blort")
-@external("core.Blort")
-@external("core.potions.Blort")
+@external{name: "Blort"}
+@external{name: "core.Blort"}
+@external{name: "core.potions.Blort"}
 ```
 
 #### `formal` &mdash; `{name?: name, repeat?: repeat}`
@@ -472,7 +472,7 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `internal` &mdash; `@internal(name)`
+#### `internal` &mdash; `@internal{name: string}`
 
 * `name` &mdash; String that represents an internal module name. Internal
   names must take the form of a slash-delimited list of identifiers,
@@ -485,9 +485,9 @@ path.
 Examples:
 
 ```
-@internal("blort")
-@internal("blort.txt")
-@internal("potion/blort")
-@internal("potion/blort.txt")
-@internal("frobozz/potion/blort.txt")
+@internal{name: "blort"}
+@internal{name: "blort.txt"}
+@internal{name: "potion/blort"}
+@internal{name: "potion/blort.txt"}
+@internal{name: "frobozz/potion/blort.txt"}
 ```

@@ -44,21 +44,21 @@ export fn fullEnvironment() {
     ## successfully loaded before most of the module system is ready.
 
     ## This is just loaded to set up generic function bindings.
-    loadModule(@external("core.Boolean"));
+    loadModule(@external{name: "core.Boolean"});
 
     ## Exported as full modules.
-    def $Bitwise     = loadModule(@external("core.Bitwise"));
-    def $Collection  = loadModule(@external("core.Collection"));
-    def $Format      = loadModule(@external("core.Format"));
-    def $Generator   = loadModule(@external("core.Generator"));
-    def $Number      = loadModule(@external("proto.Number"));
-    def $Peg         = loadModule(@external("core.Peg"));
-    def $Range       = loadModule(@external("core.Range"));
-    def $Sequence    = loadModule(@external("core.Sequence"));
+    def $Bitwise     = loadModule(@external{name: "core.Bitwise"});
+    def $Collection  = loadModule(@external{name: "core.Collection"});
+    def $Format      = loadModule(@external{name: "core.Format"});
+    def $Generator   = loadModule(@external{name: "core.Generator"});
+    def $Number      = loadModule(@external{name: "proto.Number"});
+    def $Peg         = loadModule(@external{name: "core.Peg"});
+    def $Range       = loadModule(@external{name: "core.Range"});
+    def $Sequence    = loadModule(@external{name: "core.Sequence"});
 
     ## Selected bindings exported.
-    def $Box         = loadModule(@external("core.Box"));
-    def $CommandLine = loadModule(@external("core.CommandLine"));
+    def $Box         = loadModule(@external{name: "core.Box"});
+    def $CommandLine = loadModule(@external{name: "core.CommandLine"});
 
     return {
         EARLY_GLOBALS*,

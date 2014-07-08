@@ -171,11 +171,10 @@ zvalue formalsMinArgs(zvalue formals) {
 // Documented in spec.
 zvalue get_baseName(zvalue source) {
     if (hasType(source, TYPE_external)) {
-        zvalue path = dataOf(source);
-        zvalue components = splitAtChar(dataOf(source), STR_CH_DOT);
+        zvalue components = splitAtChar(get(source, STR_name), STR_CH_DOT);
         return nth(components, get_size(components) - 1);
     } else if (hasType(source, TYPE_internal)) {
-        zvalue components = splitAtChar(dataOf(source), STR_CH_SLASH);
+        zvalue components = splitAtChar(get(source, STR_name), STR_CH_SLASH);
         zvalue last = nth(components, get_size(components) - 1);
         zvalue parts = splitAtChar(last, STR_CH_DOT);
         return nth(parts, 0);

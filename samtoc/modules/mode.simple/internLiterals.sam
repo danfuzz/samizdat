@@ -55,7 +55,7 @@ fn @@exportSelection.lits(interner) {
 
 ## Used as the `source` in `import*` nodes.
 fn @@external.lits(interner) {
-    return @external(interner.intern(dataOf(this)))
+    return @external{name: interner.intern(this::name)}
 };
 
 fn @@fetch.lits(interner) {
@@ -81,7 +81,7 @@ fn @@importResource.lits(interner) {
 
 ## Used as the `source` in `import*` nodes.
 fn @@internal.lits(interner) {
-    return @internal(interner.intern(dataOf(this)))
+    return @internal{name: interner.intern(this::name)}
 };
 
 fn @@literal.lits(interner) {

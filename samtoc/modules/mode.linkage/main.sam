@@ -42,7 +42,7 @@ export fn compileModule(resolver, sourcePath, targetPath) {
         $Resolver::makeExternalResolver("\(sourcePath)/modules", resolver);
     def internalResolver =
         $Resolver::makeInternalResolver(sourcePath, captiveResolver);
-    def result = $Resolver::resolve(internalResolver, @internal("main"))
+    def result = $Resolver::resolve(internalResolver, @internal{name: "main"})
         | die("Unable to resolve `main`: \(sourcePath)");
 
     def infoMap = result::info;
