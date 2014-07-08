@@ -14,10 +14,10 @@
 ##
 
 ## Documented in the spec.
-export def false = @Boolean(0);
+export def false = @Boolean{value: 0};
 
 ## Documented in the spec.
-export def true = @Boolean(1);
+export def true = @Boolean{value: 1};
 
 ## Documented in the spec.
 export def null = @Null;

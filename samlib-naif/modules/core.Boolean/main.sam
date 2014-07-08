@@ -17,12 +17,12 @@ import core.Bitwise :: *;
 
 ## Documented in spec.
 fn @@Boolean.and(other) {
-    return @Boolean(and(dataOf(this), dataOf(other)))
+    return @Boolean{value: and(this::value, other::value)}
 };
 
 ## Documented in spec.
 fn @@Boolean.bit(n) {
-    return bit(dataOf(this), n)
+    return bit(this::value, n)
 };
 
 ## Documented in spec.
@@ -32,17 +32,17 @@ fn @@Boolean.bitSize() {
 
 ## Documented in spec.
 fn @@Boolean.not() {
-    return @Boolean(xor(dataOf(this), 1))
+    return @Boolean{value: xor(this::value, 1)}
 };
 
 ## Documented in spec.
 fn @@Boolean.or(other) {
-    return @Boolean(or(dataOf(this), dataOf(other)))
+    return @Boolean{value: or(this::value, other::value)}
 };
 
 ## Documented in spec.
 fn @@Boolean.shl(n) {
-    def newValue = shl(dataOf(this), n);
+    def newValue = shl(this::value, n);
 
     return ifValueOr { get({0: false, 1: true}, newValue) }
         { die("Undefined boolean shift result.") }
@@ -50,15 +50,15 @@ fn @@Boolean.shl(n) {
 
 ## Documented in spec.
 fn @@Boolean.toInt() {
-    return dataOf(this)
+    return this::value
 };
 
 ## Documented in spec.
 fn @@Boolean.toNumber() {
-    return dataOf(this)
+    return this::value
 };
 
 ## Documented in spec.
 fn @@Boolean.xor(other) {
-    return @Boolean(xor(dataOf(this), dataOf(other)))
+    return @Boolean{value: xor(this::value, other::value)}
 };
