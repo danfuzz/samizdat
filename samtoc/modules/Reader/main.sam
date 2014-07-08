@@ -38,7 +38,7 @@ export fn readEvalExpression0(path) {
 export fn readProgram(path, optResolveFn?) {
     def text = $Io0::readFileUtf8(path);
     def languageName = $Lang0::languageOf(text) | DEFAULT_LANGUAGE;
-    def lang = loadModule(@external(languageName));
+    def lang = loadModule(@external{name: languageName});
     def tree = lang::parseProgram(text);
 
     return (def resolveFn = optResolveFn*)

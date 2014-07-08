@@ -230,7 +230,7 @@ export fn main(selfPath, rawArgs*) {
             note("Unknown compilation mode: \%q(args::options::mode)");
             return 1
         }();
-    def modeModule = loadModule(@external("mode.\(modeName)"));
+    def modeModule = loadModule(@external{name: "mode.\(modeName)"});
 
     def topResolver = (def coreDir = args::options::"core-dir")
         & $Resolver::makeExternalResolver("\(coreDir)/modules", null)
