@@ -33,9 +33,9 @@ fn resolveAndCheck(resolveFn, source) {
 ## in `core.ModuleSystem`.
 fn sourceString(source) {
     ifIs { hasType(source, @@internal) }
-        { return cat("internal ./", dataOf(source)) };
+        { return cat("internal ./", source::name) };
     ifIs { hasType(source, @@external) }
-        { return cat("external ", dataOf(source)) };
+        { return cat("external ", source::name) };
 
     return cat("weird source ", $Format::source(source))
 };

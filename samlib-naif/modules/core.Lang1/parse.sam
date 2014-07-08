@@ -541,7 +541,7 @@ def parImportSource = makeMainChoice(
             0, 1),
         makeCode { ., ., first, rest, optSuffix ->
             def name = cat(first, rest*, optSuffix*);
-            @internal(name)
+            @internal{name}
         }),
     makeSequence(
         parName,
@@ -552,7 +552,7 @@ def parImportSource = makeMainChoice(
                 makeCode { ., ., n -> cat(".", n) })),
         makeCode { first, rest ->
             def name = cat(first, rest*);
-            @external(name)
+            @external{name}
         }));
 
 ## Documented in spec.

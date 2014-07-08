@@ -28,7 +28,7 @@ import ./protocol :: resolve;
 ## `source` is known to be `internal` and so *might* be found directly
 ## in or under this resolver's directory.
 fn directResolve(self, source) {
-    def subPath = dataOf(source);
+    def subPath = source::name;
     def basePath = "\(self::path)/\(subPath)";
     def infoPath = "\(basePath).saminfo";
     def sourcePath = "\(basePath).sam";

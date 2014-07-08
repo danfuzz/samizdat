@@ -28,7 +28,7 @@ import ./protocol :: resolve;
 ## `source` is known to be `external` and so *might* be found directly
 ## in this resolver's directory of modules.
 fn directResolve(self, source) {
-    def name = dataOf(source);
+    def name = source::name;
     def dirPath = "\(self::path)/\(name)";
     def infoPath = "\(dirPath).saminfo";
 
@@ -40,7 +40,7 @@ fn directResolve(self, source) {
         ## We found a source directory for a module. Make an internal resolver
         ## for it, and use that to resolve its `main`.
         def subResolver = makeInternalResolver(dirPath, self);
-        subResolver.resolve(@internal("main"))
+        subResolver.resolve(@internal{name: "main"})
     }
 };
 

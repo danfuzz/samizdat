@@ -49,13 +49,13 @@ export fn .get_baseName();
 
 ## Documented in spec.
 fn @@external.get_baseName() {
-    def components = splitAtChar(dataOf(this), ".");
+    def components = splitAtChar(this::name, ".");
     return $Sequence::nthFromEnd(components, 0)
 };
 
 ## Documented in spec.
 fn @@internal.get_baseName() {
-    def components = splitAtChar(dataOf(this), "/");
+    def components = splitAtChar(this::name, "/");
     def last = $Sequence::nthFromEnd(components, 0);
     def parts = splitAtChar(last, ".");
 

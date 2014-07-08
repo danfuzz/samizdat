@@ -719,7 +719,7 @@ def parImportSource = {:
 
     {
         def name = cat(first, rest*, optSuffix*);
-        @internal(name)
+        @internal{name}
     }
 |
     first = parName
@@ -731,7 +731,7 @@ def parImportSource = {:
 
     {
         def name = cat(first, rest*);
-        @external(name)
+        @external{name}
     }
 :};
 

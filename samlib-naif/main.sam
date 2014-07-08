@@ -31,7 +31,7 @@ export fn main(libraryPath, primitiveGlobals) {
         cat(libraryPath, "/modules"), earlyGlobals, @Null);
 
     def innerGlobals =
-        $ModuleSystem::loadModule(loader, @external("core.Globals"));
+        $ModuleSystem::loadModule(loader, @external{name: "core.Globals"});
     def result = innerGlobals::fullEnvironment();
 
     note("    [fin]\n");
