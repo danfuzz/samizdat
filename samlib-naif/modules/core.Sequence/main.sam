@@ -35,13 +35,13 @@ export fn sliceGeneral(seq, style, start, optEnd?) {
         { sliceExclusive }
         { sliceInclusive };
     def startIndex = ifIs { hasType(start, @@fromStart) }
-        { dataOf(start) }
-        { sub(limit, dataOf(start)) };
+        { start::value }
+        { sub(limit, start::value) };
     def optEndIndex = (ifValue { optEnd* }
         { end ->
             ifIs { hasType(end, @@fromStart) }
-                { dataOf(end) }
-                { sub(limit, dataOf(end)) }
+                { end::value }
+                { sub(limit, end::value) }
         })?;
 
     return? func(seq, startIndex, optEndIndex*)
