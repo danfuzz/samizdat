@@ -87,6 +87,10 @@ METH_IMPL(DerivedData, get) {
     zvalue value = args[0];
     zvalue key = args[1];
 
+    if (!typeHasSecret(get_type(value), NULL)) {
+        return NULL;
+    }
+
     zvalue data = getInfo(value)->data;
     return (data == NULL) ? NULL : get(data, key);
 }
