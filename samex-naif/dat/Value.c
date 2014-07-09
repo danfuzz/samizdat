@@ -115,10 +115,15 @@ zvalue valOrder(zvalue value, zvalue other) {
         die("Shouldn't happen: NULL argument passed to `valOrder`.");
     } else if (value == other) {
         return INT_0;
-    } else if (haveSameType(value, other)) {
+    }
+
+    zvalue valueType = get_type(value);
+    zvalue otherType = get_type(other);
+
+    if (valueType == otherType) {
         return GFN_CALL(totalOrder, value, other);
     } else {
-        return GFN_CALL(totalOrder, get_type(value), get_type(other));
+        return GFN_CALL(totalOrder, valueType, otherType);
     }
 }
 
