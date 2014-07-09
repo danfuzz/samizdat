@@ -41,14 +41,7 @@ static DerivedDataInfo *getInfo(zvalue value) {
 
 // Documented in header.
 zvalue dataOf(zvalue value) {
-    return valDataOf(value, NULL);
-}
-
-// Documented in header.
-zvalue valDataOf(zvalue value, zvalue secret) {
-    zvalue type = get_type(value);
-
-    if (!(typeIsDerived(type) && typeHasSecret(type, secret))) {
+    if (!typeIsDerived(get_type(value))) {
         return NULL;
     }
 
@@ -77,6 +70,13 @@ zvalue makeData(zvalue type, zvalue data, zvalue secret) {
 // Type Definition
 //
 
+/** Function (not method) `dataOf`. Documented in spec. */
+METH_IMPL(DerivedData, dataOf) {
+    zvalue value = args[0];
+
+    return dataOf(value);
+}
+
 // Documented in header.
 METH_IMPL(DerivedData, gcMark) {
     zvalue value = args[0];
@@ -95,6 +95,14 @@ METH_IMPL(DerivedData, get) {
 
     zvalue data = getInfo(value)->data;
     return (data == NULL) ? NULL : get(data, key);
+}
+
+/** Function (not method) `makeData`. Documented in spec. */
+METH_IMPL(DerivedData, makeData) {
+    zvalue type = args[0];
+    zvalue value = (argCount == 2) ? args[1] : NULL;
+
+    return makeData(type, value, NULL);
 }
 
 // Documented in header.
@@ -124,7 +132,23 @@ MOD_INIT(DerivedData) {
     METH_BIND(DerivedData, get);
     METH_BIND(DerivedData, totalEq);
     METH_BIND(DerivedData, totalOrder);
+
+    FUN_DerivedData_dataOf = makeBuiltin(1, 1,
+        METH_NAME(DerivedData, dataOf), 0,
+        stringFromUtf8(-1, "DerivedData.dataOf"));
+    datImmortalize(FUN_DerivedData_dataOf);
+
+    FUN_DerivedData_makeData = makeBuiltin(1, 2,
+        METH_NAME(DerivedData, makeData), 0,
+        stringFromUtf8(-1, "DerivedData.makeData"));
+    datImmortalize(FUN_DerivedData_makeData);
 }
 
 // Documented in header.
 zvalue TYPE_DerivedData = NULL;
+
+// Documented in header.
+zvalue FUN_DerivedData_dataOf = NULL;
+
+// Documented in header.
+zvalue FUN_DerivedData_makeData = NULL;

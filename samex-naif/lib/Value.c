@@ -2,7 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/Type.h"
 
@@ -12,14 +11,6 @@
 //
 // Exported Definitions
 //
-
-// Documented in spec.
-FUN_IMPL_DECL(dataOf) {
-    zvalue value = args[0];
-    zvalue secret = (argCount == 2) ? args[1] : NULL;
-
-    return valDataOf(value, secret);
-}
 
 // Documented in spec.
 FUN_IMPL_DECL(eq) {
@@ -40,14 +31,6 @@ FUN_IMPL_DECL(hasType) {
     zvalue type = args[1];
 
     return hasType(value, type) ? value : NULL;
-}
-
-// Documented in spec.
-FUN_IMPL_DECL(makeData) {
-    zvalue type = args[0];
-    zvalue value = (argCount == 2) ? args[1] : NULL;
-
-    return makeData(type, value, NULL);
 }
 
 // Documented in spec.

@@ -88,7 +88,8 @@ PRIM_DEF(Number_sign,             GFN_sign);
 PRIM_DEF(Number_sub,              GFN_sub);
 
 // Primitive functions: directly exported.
-PRIM_FUNC(dataOf,                 1, 2);
+PRIM_DEF(dataOf,                  FUN_DerivedData_dataOf);
+PRIM_DEF(makeData,                FUN_DerivedData_makeData);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(genericBind,            3, 3);
@@ -101,7 +102,6 @@ PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueOr,              1, -1);
 PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
-PRIM_FUNC(makeData,               1, 2);
 PRIM_FUNC(makeDerivedDataType,    1, 1);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeRegularGeneric,     2, 3);
