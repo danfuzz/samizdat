@@ -42,7 +42,7 @@ static DerivedDataInfo *getInfo(zvalue value) {
 // Documented in header.
 zvalue dataOf(zvalue value) {
     if (!typeIsDerived(get_type(value))) {
-        return NULL;
+        die("Attempt to call `dataOf` on an improper value.");
     }
 
     // The `datFrameAdd()` call is because `value` might immediately become

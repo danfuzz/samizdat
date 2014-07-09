@@ -120,11 +120,11 @@ of all cross-type ordering functions.
 
 #### `dataOf(value) -> .`
 
-Returns the data payload of the value, if any. If the value has no data
-payload, this returns void.
+Returns the data payload of the given derived data value, if any. If the value
+has no data payload, this returns void.
 
-The only values that have data payloads accessible via this function are
-derived data values that were constructed with a payload.
+It is an error (terminating the runtime) to call this function on something
+other than a derived data value.
 
 #### `eq(value, other) -> logic`
 
@@ -163,6 +163,9 @@ for Samizdat source code:
 @(type)         is equivalent to  makeData(type)
 @(type)(value)  is equivalent to  makeData(type, value)
 ```
+
+It is a fatal error (terminating the runtime) to pass for `type` something
+other than a derived data type.
 
 **Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
 

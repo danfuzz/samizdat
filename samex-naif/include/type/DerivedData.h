@@ -29,9 +29,9 @@ extern zvalue FUN_DerivedData_makeData;
 zvalue makeData(zvalue type, zvalue data);
 
 /**
- * Gets the data payload of the given value, if it is a value-bearing
- * derived data value. This returns `NULL` if `value` is either not a derived
- * data value or does not have a payload.
+ * Gets the data payload of the given derived data value. This returns `NULL`
+ * if `value` doesn't have a payload. This dies with an error if `value` is
+ * not a derived data value.
  */
 zvalue dataOf(zvalue value);
 
