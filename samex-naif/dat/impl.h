@@ -75,9 +75,6 @@ typedef struct {
     /** Access secret of the type. Optional, and arbitrary if present. */
     zvalue secret;
 
-    /** Whether the type is derived. `false` indicates a core type. */
-    bool derived : 1;
-
     /**
      * Whether the type is "selfish." `true` indicates that `valSelfIdOf` will
      * work on values of the type.

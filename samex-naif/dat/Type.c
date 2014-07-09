@@ -63,7 +63,6 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, bool selfish) {
     info->name = name;
     info->secret = derived ? NULL : coreSecret;
     info->typeId = theNextTypeId;
-    info->derived = derived;
     info->selfish = selfish;
 
     theTypes[theNextTypeId] = type;
@@ -268,8 +267,7 @@ zint typeIndex(zvalue type) {
 
 // Documented in header.
 bool typeIsDerived(zvalue type) {
-    assertHasTypeType(type);
-    return getInfo(type)->derived;
+    return typeParent(type) == TYPE_DerivedData;
 }
 
 // Documented in header.
