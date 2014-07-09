@@ -63,7 +63,7 @@ METH_IMPL(Generator, stdCollect) {
             if (arr == stackArr) {
                 maxSize = DAT_MAX_GENERATOR_ITEMS_HARD;
                 arr = utilAlloc(maxSize * sizeof(zvalue));
-                memcpy(arr, stackArr, at * sizeof(zvalue));
+                utilCpy(zvalue, arr, stackArr, at);
             } else {
                 die("Generator produced way too many items.");
             }
