@@ -9,7 +9,6 @@
 #ifndef _TYPE_BOX_H_
 #define _TYPE_BOX_H_
 
-#include "dat.h"
 #include "type/Generator.h"
 
 

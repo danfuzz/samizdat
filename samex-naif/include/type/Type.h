@@ -11,7 +11,7 @@
 
 #include <stdbool.h>
 
-#include "dat.h"
+#include "type/Value.h"
 
 
 /** Type value for in-model type `Type`. */

@@ -9,7 +9,6 @@
 #ifndef _TYPE_BUILTIN_H_
 #define _TYPE_BUILTIN_H_
 
-#include "dat.h"
 #include "type/Function.h"
 
 

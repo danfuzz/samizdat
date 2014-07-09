@@ -9,7 +9,7 @@
 #ifndef _TYPE_DERIVED_DATA_H_
 #define _TYPE_DERIVED_DATA_H_
 
-#include "dat.h"
+#include "type/Data.h"
 
 
 /** Type value for in-model type `DerivedData`. */

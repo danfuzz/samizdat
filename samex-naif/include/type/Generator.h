@@ -13,7 +13,7 @@
 #ifndef _TYPE_GENERATOR_H_
 #define _TYPE_GENERATOR_H_
 
-#include "dat.h"
+#include "type/Value.h"
 
 
 /** Generic `collect(generator)`: Documenetd in spec. */

@@ -9,7 +9,7 @@
 #ifndef _TYPE_UNIQLET_H_
 #define _TYPE_UNIQLET_H_
 
-#include "dat.h"
+#include "type/Value.h"
 
 
 /** Type value for in-model type `Uniqlet`. */
