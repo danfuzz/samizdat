@@ -45,9 +45,9 @@ zvalue dataOf(zvalue value) {
         return NULL;
     }
 
-    zvalue result = getInfo(value)->data;
-    datFrameAdd(result);  // Because `value` might immediately become garbage.
-    return result;
+    // The `datFrameAdd()` call is because `value` might immediately become
+    // garbage.
+    return datFrameAdd(getInfo(value)->data);
 }
 
 // Documented in header.
