@@ -34,11 +34,7 @@ fn expectDifferent(v1, v2) {
 fn expectCore(v) {
     ifIs { hasType(v, DerivedData) }
         { die("Derived: ", $Format::source(v)) }
-        {
-            ifValue { dataOf(v) }
-                { data -> die("Bad data: ", $Format::source(data)) }
-                { note("Yes.") }
-        }
+        { note("Yes.") }
 };
 
 ## Expects the value to be a derived data value.

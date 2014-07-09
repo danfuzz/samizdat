@@ -45,11 +45,6 @@ METH_IMPL(Generator, stdCollect) {
         zvalue one = GFN_CALL(fetch, box);
         generator = nextGen;
 
-        // Ideally, we wouldn't reuse the box (we'd use N yield boxes), but
-        // for the sake of efficiency, we use the same box but reset it for
-        // each iteration.
-        GFN_CALL(store, box);
-
         if (function != NULL) {
             one = FUN_CALL(function, one);
             if (one == NULL) {
@@ -63,7 +58,7 @@ METH_IMPL(Generator, stdCollect) {
             if (arr == stackArr) {
                 maxSize = DAT_MAX_GENERATOR_ITEMS_HARD;
                 arr = utilAlloc(maxSize * sizeof(zvalue));
-                memcpy(arr, stackArr, at * sizeof(zvalue));
+                utilCpy(zvalue, arr, stackArr, at);
             } else {
                 die("Generator produced way too many items.");
             }

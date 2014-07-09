@@ -118,18 +118,13 @@ of all cross-type ordering functions.
 <br><br>
 ### Primitive Definitions
 
-#### `dataOf(value, secret?) -> .`
+#### `dataOf(value) -> .`
 
-Returns the data payload of the given arbitrary value, if any.
-For a type-only value, this returns void.
+Returns the data payload of the given derived data value, if any. If the value
+has no data payload, this returns void.
 
-For derived data values, if `secret` is passed, then this function
-returns void.
-
-For opaque values (including most core values), the given `secret` must match
-the value's associated secret (associated with the type). If the secret
-does not match (including if it was not passed at all), then this function
-returns void.
+It is an error (terminating the runtime) to call this function on something
+other than a derived data value.
 
 #### `eq(value, other) -> logic`
 
@@ -156,21 +151,23 @@ Returns `value` if it has type `type`. Otherwise returns void.
 In order to "have the type," `value` must either be an instance of type
 `type` per se, or be an instance of a subtype of `type`.
 
-#### `makeValue(type, value?) -> .`
+#### `makeData(type, value?) -> .`
 
-Returns a derived value with the given type (a value of type `Type`)
-and optional data payload value (an arbitrary value). These
-equivalences hold for Samizdat source code:
+Returns a derived data value with the given type (a value of type `Type`)
+and optional data payload value (an arbitrary value). These equivalences hold
+for Samizdat source code:
 
 ```
-@type           is equivalent to  makeValue(@@type)
-@type(value)    is equivalent to  makeValue(@@type, value)
-@(type)         is equivalent to  makeValue(type)
-@(type)(value)  is equivalent to  makeValue(type, value)
+@type           is equivalent to  makeData(@@type)
+@type(value)    is equivalent to  makeData(@@type, value)
+@(type)         is equivalent to  makeData(type)
+@(type)(value)  is equivalent to  makeData(type, value)
 ```
 
-**Syntax Note:** Used in the translation of `@(type)(value)`
-(and related) forms.
+It is a fatal error (terminating the runtime) to pass for `type` something
+other than a derived data type.
+
+**Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
 
 #### `order(value, other) -> int`
 

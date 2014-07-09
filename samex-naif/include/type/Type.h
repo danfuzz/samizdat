@@ -11,7 +11,7 @@
 
 #include <stdbool.h>
 
-#include "dat.h"
+#include "type/Value.h"
 
 
 /** Type value for in-model type `Type`. */
@@ -55,12 +55,6 @@ zvalue makeCoreType(zvalue name, zvalue parent, bool selfish);
  * Returns the type value for the derived data type with the given name.
  */
 zvalue makeDerivedDataType(zvalue name);
-
-/**
- * Returns `true` if the given `type` has the indicated `secret`. `secret`
- * may be passed as `NULL`.
- */
-bool typeHasSecret(zvalue type, zvalue secret);
 
 /**
  * Returns the unique index for the given type.

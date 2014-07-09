@@ -4,7 +4,6 @@
 
 #include "type/Int.h"
 #include "type/Type.h"
-#include "type/Value.h"
 
 #include "impl.h"
 
@@ -12,14 +11,6 @@
 //
 // Exported Definitions
 //
-
-// Documented in spec.
-FUN_IMPL_DECL(dataOf) {
-    zvalue value = args[0];
-    zvalue secret = (argCount == 2) ? args[1] : NULL;
-
-    return valDataOf(value, secret);
-}
 
 // Documented in spec.
 FUN_IMPL_DECL(eq) {
@@ -40,14 +31,6 @@ FUN_IMPL_DECL(hasType) {
     zvalue type = args[1];
 
     return hasType(value, type) ? value : NULL;
-}
-
-// Documented in spec.
-FUN_IMPL_DECL(makeValue) {
-    zvalue type = args[0];
-    zvalue value = (argCount == 2) ? args[1] : NULL;
-
-    return makeValue(type, value, NULL);
 }
 
 // Documented in spec.

@@ -9,7 +9,7 @@
 #ifndef _TYPE_DATA_H_
 #define _TYPE_DATA_H_
 
-#include "dat.h"
+#include "type/Value.h"
 
 
 /** Type value for in-model type `Data`. */

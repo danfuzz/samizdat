@@ -75,9 +75,6 @@ typedef struct {
     /** Access secret of the type. Optional, and arbitrary if present. */
     zvalue secret;
 
-    /** Whether the type is derived. `false` indicates a core type. */
-    bool derived : 1;
-
     /**
      * Whether the type is "selfish." `true` indicates that `valSelfIdOf` will
      * work on values of the type.
@@ -155,12 +152,6 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
  * references marked.
  */
 zint markFrameStack(void);
-
-/**
- * Checks whether the given value matches the secret of the given type.
- * `secret` may be passed as `NULL`.
- */
-bool typeHasSecret(zvalue type, zvalue secret);
 
 
 #endif

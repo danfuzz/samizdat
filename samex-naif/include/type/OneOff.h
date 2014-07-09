@@ -9,7 +9,7 @@
 #ifndef _TYPE_ONE_OFF_H_
 #define _TYPE_ONE_OFF_H_
 
-#include "dat.h"
+#include "type/Value.h"
 
 
 /** Generic `cat(value, more*)`: Documented in spec. */

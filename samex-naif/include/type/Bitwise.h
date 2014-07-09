@@ -9,7 +9,7 @@
 #ifndef _TYPE_BITWISE_H_
 #define _TYPE_BITWISE_H_
 
-#include "dat.h"
+#include "type/Value.h"
 
 
 /** Generic `and(bitwise, bitwise)`: Documented in spec. */

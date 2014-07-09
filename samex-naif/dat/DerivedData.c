@@ -40,25 +40,22 @@ static DerivedDataInfo *getInfo(zvalue value) {
 //
 
 // Documented in header.
-zvalue valDataOf(zvalue value, zvalue secret) {
-    zvalue type = get_type(value);
-
-    if (!(typeIsDerived(type) && typeHasSecret(type, secret))) {
-        return NULL;
+zvalue dataOf(zvalue value) {
+    if (!typeIsDerived(get_type(value))) {
+        die("Attempt to call `dataOf` on an improper value.");
     }
 
-    zvalue result = getInfo(value)->data;
-    datFrameAdd(result);  // Because `value` might immediately become garbage.
-    return result;
+    // The `datFrameAdd()` call is because `value` might immediately become
+    // garbage.
+    return datFrameAdd(getInfo(value)->data);
 }
 
 // Documented in header.
-zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
+zvalue makeData(zvalue type, zvalue data) {
     assertValidOrNull(data);
-    assertValidOrNull(secret);
 
-    if (!typeHasSecret(type, secret)) {
-        die("Attempt to create derived value with incorrect secret.");
+    if (!typeIsDerived(type)) {
+        die("Attempt to call `makeData` on an improper type.");
     }
 
     zvalue result = datAllocValue(type, sizeof(DerivedDataInfo));
@@ -71,9 +68,13 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
 //
 // Type Definition
 //
-// **Note:** This isn't the usual form of type definition, since these
-// methods are bound on many types.
-//
+
+/** Function (not method) `dataOf`. Documented in spec. */
+METH_IMPL(DerivedData, dataOf) {
+    zvalue value = args[0];
+
+    return dataOf(value);
+}
 
 // Documented in header.
 METH_IMPL(DerivedData, gcMark) {
@@ -87,12 +88,16 @@ METH_IMPL(DerivedData, get) {
     zvalue value = args[0];
     zvalue key = args[1];
 
-    if (!typeHasSecret(get_type(value), NULL)) {
-        return NULL;
-    }
-
     zvalue data = getInfo(value)->data;
     return (data == NULL) ? NULL : get(data, key);
+}
+
+/** Function (not method) `makeData`. Documented in spec. */
+METH_IMPL(DerivedData, makeData) {
+    zvalue type = args[0];
+    zvalue value = (argCount == 2) ? args[1] : NULL;
+
+    return makeData(type, value);
 }
 
 // Documented in header.
@@ -122,7 +127,23 @@ MOD_INIT(DerivedData) {
     METH_BIND(DerivedData, get);
     METH_BIND(DerivedData, totalEq);
     METH_BIND(DerivedData, totalOrder);
+
+    FUN_DerivedData_dataOf = makeBuiltin(1, 1,
+        METH_NAME(DerivedData, dataOf), 0,
+        stringFromUtf8(-1, "DerivedData.dataOf"));
+    datImmortalize(FUN_DerivedData_dataOf);
+
+    FUN_DerivedData_makeData = makeBuiltin(1, 2,
+        METH_NAME(DerivedData, makeData), 0,
+        stringFromUtf8(-1, "DerivedData.makeData"));
+    datImmortalize(FUN_DerivedData_makeData);
 }
 
 // Documented in header.
 zvalue TYPE_DerivedData = NULL;
+
+// Documented in header.
+zvalue FUN_DerivedData_dataOf = NULL;
+
+// Documented in header.
+zvalue FUN_DerivedData_makeData = NULL;

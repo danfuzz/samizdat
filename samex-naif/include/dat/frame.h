@@ -37,7 +37,9 @@ void datFrameError(const char *message);
  * an element out of a collection).
  */
 inline zvalue datFrameAdd(zvalue value) {
-    if (frameStackTop == frameStackLimit) {
+    if (value == NULL) {
+        return NULL;
+    } else if (frameStackTop == frameStackLimit) {
         datFrameError("Value stack overflow.");
     }
 
@@ -68,10 +70,7 @@ inline void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     }
 
     frameStackTop = savedStack;
-
-    if (returnValue) {
-        datFrameAdd(returnValue);
-    }
+    datFrameAdd(returnValue);
 }
 
 /**

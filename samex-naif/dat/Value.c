@@ -57,11 +57,6 @@ void datNonVoidError(void) {
 extern void *datPayload(zvalue value);
 
 // Documented in header.
-zvalue dataOf(zvalue value) {
-    return valDataOf(value, NULL);
-}
-
-// Documented in header.
 zvalue get_type(zvalue value) {
     return value->type;
 }
@@ -120,16 +115,15 @@ zvalue valOrder(zvalue value, zvalue other) {
         die("Shouldn't happen: NULL argument passed to `valOrder`.");
     } else if (value == other) {
         return INT_0;
-    } else if (haveSameType(value, other)) {
-        // `totalOrder` can get quite recursive, and without a frame around the
-        // call, it is easy for accumulated calls to blow past the limit on
-        // local references.
-        zstackPointer save = datFrameStart();
-        zvalue result = GFN_CALL(totalOrder, value, other);
-        datFrameReturn(save, result);
-        return result;
+    }
+
+    zvalue valueType = get_type(value);
+    zvalue otherType = get_type(other);
+
+    if (valueType == otherType) {
+        return GFN_CALL(totalOrder, value, other);
     } else {
-        return GFN_CALL(totalOrder, get_type(value), get_type(other));
+        return GFN_CALL(totalOrder, valueType, otherType);
     }
 }
 

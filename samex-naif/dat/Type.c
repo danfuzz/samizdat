@@ -44,11 +44,10 @@ static TypeInfo *getInfo(zvalue type) {
 }
 
 /**
- * Initializes a type value. The type is marked derived *unless* the given
- * secret is `coreSecret`.
+ * Initializes a type value. The type is marked core, except if its parent is
+ * `DerivedData` in which case it is marked as derived.
  */
-static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
-        bool selfish) {
+static void typeInit(zvalue type, zvalue parent, zvalue name, bool selfish) {
     if (theNextTypeId == DAT_MAX_TYPES) {
         die("Too many types!");
     }
@@ -58,12 +57,12 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
     }
 
     TypeInfo *info = getInfo(type);
+    bool derived = (parent == TYPE_DerivedData) && (TYPE_DerivedData != NULL);
 
     info->parent = parent;
     info->name = name;
-    info->secret = secret;
+    info->secret = derived ? NULL : coreSecret;
     info->typeId = theNextTypeId;
-    info->derived = (secret != coreSecret);
     info->selfish = selfish;
 
     theTypes[theNextTypeId] = type;
@@ -80,13 +79,13 @@ static zvalue allocType(void) {
 }
 
 /**
- * Creates and returns a new type with the given name and secret. The type
- * is marked derived *unless* the given secret is `coreSecret`.
+ * Creates and returns a new type with the given name. The type is marked
+ * core, except if its parent is `DerivedData` in which case it is marked as
+ * derived.
  */
-static zvalue makeType(zvalue name, zvalue parent, zvalue secret,
-        bool selfish) {
+static zvalue makeType(zvalue name, zvalue parent, bool selfish) {
     zvalue result = allocType();
-    typeInit(result, parent, name, secret, selfish);
+    typeInit(result, parent, name, selfish);
     return result;
 }
 
@@ -202,12 +201,6 @@ static bool typeEq(zvalue type1, zvalue type2) {
 // Documented in header.
 extern inline zint typeIndexUnchecked(zvalue type);
 
-// Documented in header.
-bool typeHasSecret(zvalue type, zvalue secret) {
-    assertHasTypeType(type);
-    return valEqNullOk(getInfo(type)->secret, secret);
-}
-
 
 //
 // Exported Definitions
@@ -252,7 +245,7 @@ zvalue makeCoreType(zvalue name, zvalue parent, bool selfish) {
         die("Core type already created.");
     }
 
-    return makeType(name, parent, coreSecret, selfish);
+    return makeType(name, parent, selfish);
 }
 
 // Documented in header.
@@ -260,7 +253,7 @@ zvalue makeDerivedDataType(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = makeType(name, TYPE_DerivedData, NULL, false);
+        result = makeType(name, TYPE_DerivedData, false);
     }
 
     return result;
@@ -274,8 +267,7 @@ zint typeIndex(zvalue type) {
 
 // Documented in header.
 bool typeIsDerived(zvalue type) {
-    assertHasTypeType(type);
-    return getInfo(type)->derived;
+    return typeParent(type) == TYPE_DerivedData;
 }
 
 // Documented in header.
@@ -370,16 +362,16 @@ MOD_INIT(typeSystem) {
     coreSecret = makeUniqlet();
     datImmortalize(coreSecret);
 
-    typeInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"),        coreSecret, false);
-    typeInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"),       coreSecret, false);
-    typeInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"),        coreSecret, false);
-    typeInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"), coreSecret, false);
+    typeInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"),        false);
+    typeInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"),       false);
+    typeInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"),        false);
+    typeInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"), false);
 
-    typeInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"),     coreSecret, true);
-    typeInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"),     coreSecret, true);
-    typeInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"),        coreSecret, true);
-    typeInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"),      coreSecret, false);
-    typeInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"),     coreSecret, true);
+    typeInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"),     true);
+    typeInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"),     true);
+    typeInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"),        true);
+    typeInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"),      false);
+    typeInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"),     true);
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.

@@ -3,12 +3,12 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
+#include "type/DerivedData.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Number.h"
 #include "type/String.h"
 #include "type/Type.h"
-#include "type/Value.h"
 #include "util.h"
 
 #include "helpers.h"
@@ -528,7 +528,7 @@ DEF_PARSE(deriv) {
 
     zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
 
-    return makeCall(REFS(makeValue), args);
+    return makeCall(REFS(makeData), args);
 }
 
 // Documented in spec.
@@ -1050,7 +1050,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = GFN_APPLY(cat,
         GFN_CALL(cat, listFrom1(first), rest, optSuffix));
-    return makeValue(TYPE_internal, mapFrom1(STR_name, name), NULL);
+    return makeData(TYPE_internal, mapFrom1(STR_name, name));
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1061,7 +1061,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = GFN_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
-    return makeValue(TYPE_external, mapFrom1(STR_name, name), NULL);
+    return makeData(TYPE_external, mapFrom1(STR_name, name));
 }
 
 // Documented in spec.

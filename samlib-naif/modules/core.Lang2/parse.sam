@@ -275,7 +275,7 @@ def parDeriv = {:
 
     value = (parParenExpression | parMap | parList)?
 
-    { makeCall(REFS::makeValue, type, value*) }
+    { makeCall(REFS::makeData, type, value*) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.
@@ -1523,7 +1523,7 @@ def parIndexPostfix = {:
                     { makeLiteral(@exclusive) };
 
                 def startNode =
-                    makeCall(REFS::makeValue,
+                    makeCall(REFS::makeData,
                         makeLiteral(start::origin),
                         makeCall(REFS::makeValueMap,
                             makeLiteral("value"), start::value));
@@ -1531,7 +1531,7 @@ def parIndexPostfix = {:
                 def optEndNode = (
                     ifNot { eq(end, INDEX_AT_END_0) }
                         {
-                            makeCall(REFS::makeValue,
+                            makeCall(REFS::makeData,
                                 makeLiteral(end::origin),
                                 makeCall(REFS::makeValueMap,
                                     makeLiteral("value"), end::value))

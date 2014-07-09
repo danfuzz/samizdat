@@ -4,9 +4,9 @@
 
 #include <stddef.h>
 
+#include "type/DerivedData.h"
 #include "type/String.h"
 #include "type/Type.h"
-#include "type/Value.h"
 #include "zlimits.h"
 
 
@@ -52,7 +52,7 @@ MOD_INIT(const) {
 
     #define TOK(name, str) \
         TYP(name, str); \
-        TOK_##name = makeValue(TYPE_##name, NULL, NULL); \
+        TOK_##name = makeData(TYPE_##name, NULL); \
         datImmortalize(TOK_##name)
 
     #include "const/const-def.h"

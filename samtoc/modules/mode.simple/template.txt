@@ -8,13 +8,13 @@
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Collection.h"
+#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
 #include "type/Type.h"
-#include "type/Value.h"
 #include "util.h"
 
 /** Global environment originally passed into `eval`. */
