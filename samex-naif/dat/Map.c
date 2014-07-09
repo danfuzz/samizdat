@@ -451,8 +451,7 @@ METH_IMPL(Map, nextValue) {
             mapFromArgs(
                 STR_map,   map,
                 STR_index, intFromZint(1),
-                NULL),
-            NULL);
+                NULL));
     }
 }
 

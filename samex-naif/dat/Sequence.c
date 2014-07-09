@@ -194,8 +194,7 @@ METH_IMPL(Sequence, nextValue) {
             mapFromArgs(
                 STR_seq,   seq,
                 STR_index, intFromZint(1),
-                NULL),
-            NULL);
+                NULL));
     }
 }
 

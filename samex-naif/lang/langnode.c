@@ -238,7 +238,7 @@ zvalue makeApply(zvalue function, zvalue values) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_values, values);
-    return makeData(TYPE_apply, value, NULL);
+    return makeData(TYPE_apply, value);
 }
 
 // Documented in spec.
@@ -255,8 +255,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
     } else if (hasType(target, TYPE_fetch)) {
         zvalue innerTarget = get(target, STR_target);
         return makeData(TYPE_store,
-            mapFrom2(STR_target, innerTarget, STR_value, value),
-            NULL);
+            mapFrom2(STR_target, innerTarget, STR_value, value));
     } else {
         die("Improper `lvalue` binding.");
     }
@@ -267,8 +266,7 @@ zvalue makeBasicClosure(zvalue map) {
     return makeData(TYPE_closure,
         GFN_CALL(cat,
             mapFrom2(STR_formals, EMPTY_LIST, STR_statements, EMPTY_LIST),
-            map),
-        NULL);
+            map));
 }
 
 // Documented in spec.
@@ -278,7 +276,7 @@ zvalue makeCall(zvalue function, zvalue values) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_values, values);
-    return makeData(TYPE_call, value, NULL);
+    return makeData(TYPE_call, value);
 }
 
 // Documented in spec.
@@ -380,16 +378,12 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return makeData(TYPE_export,
-        mapFrom1(STR_value, node),
-        NULL);
+    return makeData(TYPE_export, mapFrom1(STR_value, node));
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return makeData(TYPE_exportSelection,
-        mapFrom1(STR_select, names),
-        NULL);
+    return makeData(TYPE_exportSelection, mapFrom1(STR_select, names));
 }
 
 // Documented in spec.
@@ -430,8 +424,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
             mapFrom3(
                 STR_formals,    formals,
                 STR_statements, statements,
-                STR_yield,      yieldNode)),
-        NULL);
+                STR_yield,      yieldNode)));
 }
 
 // Documented in spec.
@@ -460,7 +453,7 @@ zvalue makeImport(zvalue baseData) {
             data = collDel(data, STR_select);
         }
 
-        return makeData(TYPE_importModuleSelection, data, NULL);
+        return makeData(TYPE_importModuleSelection, data);
     }
 
     if (get(data, STR_name) == NULL) {
@@ -476,11 +469,11 @@ zvalue makeImport(zvalue baseData) {
         if (hasType(get(data, STR_source), TYPE_external)) {
             die("Cannot import external resource.");
         }
-        return makeData(TYPE_importResource, data, NULL);
+        return makeData(TYPE_importResource, data);
     }
 
     // It's a whole-module import.
-    return makeData(TYPE_importModule, data, NULL);
+    return makeData(TYPE_importModule, data);
 }
 
 // Documented in spec.
@@ -551,18 +544,17 @@ zvalue makeInterpolate(zvalue node) {
         mapFrom3(
             STR_target,      node,
             STR_interpolate, node,
-            STR_lvalue,      EMPTY_LIST),
-        NULL);
+            STR_lvalue,      EMPTY_LIST));
 }
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return makeData(TYPE_literal, mapFrom1(STR_value, value), NULL);
+    return makeData(TYPE_literal, mapFrom1(STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return makeData(TYPE_maybe, mapFrom1(STR_value, value), NULL);
+    return makeData(TYPE_maybe, mapFrom1(STR_value, value));
 }
 
 // Documented in spec.
@@ -572,15 +564,14 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return makeData(TYPE_noYield, mapFrom1(STR_value, value), NULL);
+    return makeData(TYPE_noYield, mapFrom1(STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
     return makeData(TYPE_nonlocalExit,
-        mapFrom2(STR_function, function, STR_value, value),
-        NULL);
+        mapFrom2(STR_function, function, STR_value, value));
 }
 
 // Documented in spec.
@@ -594,28 +585,24 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return makeData(TYPE_varRef, mapFrom1(STR_name, name), NULL);
+    return makeData(TYPE_varRef, mapFrom1(STR_name, name));
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
     return makeData(TYPE_varDef,
-        mapFrom2(STR_name, name, STR_value, value),
-        NULL);
+        mapFrom2(STR_name, name, STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
     return makeData(TYPE_varDefMutable,
-        mapFrom2(STR_name, name, STR_value, value),
-        NULL);
+        mapFrom2(STR_name, name, STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return makeData(TYPE_fetch,
-        mapFrom1(STR_target, makeVarRef(name)),
-        NULL);
+    return makeData(TYPE_fetch, mapFrom1(STR_target, makeVarRef(name)));
 }
 
 // Documented in spec.
@@ -623,15 +610,13 @@ zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
     return makeData(TYPE_fetch,
-        mapFrom2(STR_target, makeVarRef(name), STR_lvalue, EMPTY_LIST),
-        NULL);
+        mapFrom2(STR_target, makeVarRef(name), STR_lvalue, EMPTY_LIST));
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
     return makeData(TYPE_store,
-        mapFrom2(STR_target, makeVarRef(name), STR_value, value),
-        NULL);
+        mapFrom2(STR_target, makeVarRef(name), STR_value, value));
 }
 
 // Documented in spec.
@@ -686,8 +671,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             select = GFN_CALL(keyList, exports);
             return makeData(
                 TYPE_importModuleSelection,
-                collPut(dataOf(node), STR_select, select),
-                NULL);
+                collPut(dataOf(node), STR_select, select));
         }
     } else {
         die("Bad node type for `resolveImport`.");
@@ -698,8 +682,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeData(
         get_type(node),
-        collPut(dataOf(node), STR_formals, formals),
-        NULL);
+        collPut(dataOf(node), STR_formals, formals));
 }
 
 // Documented in spec.
@@ -758,16 +741,14 @@ zvalue withModuleDefs(zvalue node) {
             mapFrom3(
                 STR_info,       info,
                 STR_statements, statements,
-                STR_yield,      yieldNode)),
-        NULL);
+                STR_yield,      yieldNode)));
 }
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
     return makeData(
         get_type(node),
-        collPut(dataOf(node), STR_name, name),
-        NULL);
+        collPut(dataOf(node), STR_name, name));
 }
 
 // Documented in spec.
@@ -808,8 +789,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         get_type(node),
         GFN_CALL(cat,
             dataOf(node),
-            mapFrom1(STR_statements, converted)),
-        NULL);
+            mapFrom1(STR_statements, converted)));
 }
 
 // Documented in spec.
@@ -819,8 +799,7 @@ zvalue withTop(zvalue node) {
     // here in a straightforward way.
     return makeData(
         get_type(node),
-        collPut(dataOf(node), STR_top, EMPTY_LIST),
-        NULL);
+        collPut(dataOf(node), STR_top, EMPTY_LIST));
 }
 
 
@@ -840,16 +819,14 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
     return makeData(
         get_type(node),
-        GFN_CALL(cat, map, newBindings),
-        NULL);
+        GFN_CALL(cat, map, newBindings));
 };
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
     return makeData(
         get_type(node),
-        collDel(dataOf(node), STR_interpolate),
-        NULL);
+        collDel(dataOf(node), STR_interpolate));
 }
 
 // Documented in spec.
@@ -910,6 +887,5 @@ zvalue withoutTops(zvalue node) {
         GFN_CALL(cat,
             dataOf(node),
             mapFrom1(
-                STR_statements, GFN_CALL(cat, tops, mains, optSelection))),
-        NULL);
+                STR_statements, GFN_CALL(cat, tops, mains, optSelection))));
 }

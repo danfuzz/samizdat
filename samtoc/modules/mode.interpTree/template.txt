@@ -28,7 +28,7 @@ static zvalue externalSource(const char *name) {
     zvalue data = mapFromArgs(
         stringFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);
-    return makeData(type, data, NULL);
+    return makeData(type, data);
 }
 
 zvalue eval(zvalue context) {

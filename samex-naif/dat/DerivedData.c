@@ -51,12 +51,11 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeData(zvalue type, zvalue data, zvalue secret) {
+zvalue makeData(zvalue type, zvalue data) {
     assertValidOrNull(data);
-    assertValidOrNull(secret);
 
-    if (!typeHasSecret(type, secret)) {
-        die("Attempt to create derived value with incorrect secret.");
+    if (!typeIsDerived(type)) {
+        die("Attempt to call `makeData` on an improper type.");
     }
 
     zvalue result = datAllocValue(type, sizeof(DerivedDataInfo));
@@ -98,7 +97,7 @@ METH_IMPL(DerivedData, makeData) {
     zvalue type = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
 
-    return makeData(type, value, NULL);
+    return makeData(type, value);
 }
 
 // Documented in header.

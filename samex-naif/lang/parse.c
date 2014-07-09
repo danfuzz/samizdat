@@ -1050,7 +1050,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = GFN_APPLY(cat,
         GFN_CALL(cat, listFrom1(first), rest, optSuffix));
-    return makeData(TYPE_internal, mapFrom1(STR_name, name), NULL);
+    return makeData(TYPE_internal, mapFrom1(STR_name, name));
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1061,7 +1061,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = GFN_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
-    return makeData(TYPE_external, mapFrom1(STR_name, name), NULL);
+    return makeData(TYPE_external, mapFrom1(STR_name, name));
 }
 
 // Documented in spec.

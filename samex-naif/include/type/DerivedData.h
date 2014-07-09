@@ -22,14 +22,11 @@ extern zvalue FUN_DerivedData_dataOf;
 extern zvalue FUN_DerivedData_makeData;
 
 /**
- * Returns a derived value with the given type tag, and with the given
+ * Returns a derived data value with the given type tag and with the given
  * optional data payload (`NULL` indicating a type-only value). `type` must
- * be a value of type `Type`, and the result is a value of the indicated type.
- * If `type` represents an opaque type, then `secret` must match the secret
- * known by `type`. If `type` is a derived data type, then `secret` must be
- * `NULL`.
+ * be a derived data type. The result is a value of the indicated `type`.
  */
-zvalue makeData(zvalue type, zvalue data, zvalue secret);
+zvalue makeData(zvalue type, zvalue data);
 
 /**
  * Gets the data payload of the given value, if it is a value-bearing
