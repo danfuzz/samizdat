@@ -189,7 +189,7 @@ METH_IMPL(Sequence, nextValue) {
         return NULL;
     } else {
         GFN_CALL(store, box, first);
-        return makeValue(
+        return makeData(
             TYPE_SequenceGenerator,
             mapFromArgs(
                 STR_seq,   seq,

@@ -53,7 +53,7 @@ zvalue valDataOf(zvalue value, zvalue secret) {
 }
 
 // Documented in header.
-zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
+zvalue makeData(zvalue type, zvalue data, zvalue secret) {
     assertValidOrNull(data);
     assertValidOrNull(secret);
 

@@ -446,7 +446,7 @@ METH_IMPL(Map, nextValue) {
         return NULL;
     } else {
         GFN_CALL(store, box, first);
-        return makeValue(
+        return makeData(
             TYPE_MapGenerator,
             mapFromArgs(
                 STR_map,   map,

@@ -52,7 +52,7 @@ MOD_INIT(const) {
 
     #define TOK(name, str) \
         TYP(name, str); \
-        TOK_##name = makeValue(TYPE_##name, NULL, NULL); \
+        TOK_##name = makeData(TYPE_##name, NULL, NULL); \
         datImmortalize(TOK_##name)
 
     #include "const/const-def.h"

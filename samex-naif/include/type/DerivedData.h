@@ -23,7 +23,7 @@ extern zvalue TYPE_DerivedData;
  * known by `type`. If `type` is a derived data type, then `secret` must be
  * `NULL`.
  */
-zvalue makeValue(zvalue type, zvalue data, zvalue secret);
+zvalue makeData(zvalue type, zvalue data, zvalue secret);
 
 
 #endif

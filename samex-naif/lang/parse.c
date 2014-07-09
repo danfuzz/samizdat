@@ -528,7 +528,7 @@ DEF_PARSE(deriv) {
 
     zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
 
-    return makeCall(REFS(makeValue), args);
+    return makeCall(REFS(makeData), args);
 }
 
 // Documented in spec.
@@ -1050,7 +1050,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = GFN_APPLY(cat,
         GFN_CALL(cat, listFrom1(first), rest, optSuffix));
-    return makeValue(TYPE_internal, mapFrom1(STR_name, name), NULL);
+    return makeData(TYPE_internal, mapFrom1(STR_name, name), NULL);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1061,7 +1061,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = GFN_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
-    return makeValue(TYPE_external, mapFrom1(STR_name, name), NULL);
+    return makeData(TYPE_external, mapFrom1(STR_name, name), NULL);
 }
 
 // Documented in spec.

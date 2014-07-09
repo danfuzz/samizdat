@@ -151,21 +151,20 @@ Returns `value` if it has type `type`. Otherwise returns void.
 In order to "have the type," `value` must either be an instance of type
 `type` per se, or be an instance of a subtype of `type`.
 
-#### `makeValue(type, value?) -> .`
+#### `makeData(type, value?) -> .`
 
-Returns a derived value with the given type (a value of type `Type`)
-and optional data payload value (an arbitrary value). These
-equivalences hold for Samizdat source code:
+Returns a derived data value with the given type (a value of type `Type`)
+and optional data payload value (an arbitrary value). These equivalences hold
+for Samizdat source code:
 
 ```
-@type           is equivalent to  makeValue(@@type)
-@type(value)    is equivalent to  makeValue(@@type, value)
-@(type)         is equivalent to  makeValue(type)
-@(type)(value)  is equivalent to  makeValue(type, value)
+@type           is equivalent to  makeData(@@type)
+@type(value)    is equivalent to  makeData(@@type, value)
+@(type)         is equivalent to  makeData(type)
+@(type)(value)  is equivalent to  makeData(type, value)
 ```
 
-**Syntax Note:** Used in the translation of `@(type)(value)`
-(and related) forms.
+**Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
 
 #### `order(value, other) -> int`
 

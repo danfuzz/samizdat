@@ -43,11 +43,11 @@ FUN_IMPL_DECL(hasType) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(makeValue) {
+FUN_IMPL_DECL(makeData) {
     zvalue type = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
 
-    return makeValue(type, value, NULL);
+    return makeData(type, value, NULL);
 }
 
 // Documented in spec.

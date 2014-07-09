@@ -153,7 +153,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeValue(TYPE_int, intval, NULL);
+    return makeData(TYPE_int, intval, NULL);
 }
 
 /**
@@ -199,7 +199,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'y': { if (valEq(string, STR_yield))    return TOK_yield;    }
     }
 
-    return makeValue(TYPE_identifier, string, NULL);
+    return makeData(TYPE_identifier, string, NULL);
 }
 
 /**
@@ -249,7 +249,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZchars(size, chars);
-    return makeValue(TYPE_string, string, NULL);
+    return makeData(TYPE_string, string, NULL);
 }
 
 /**
@@ -265,7 +265,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue string = dataOf(result);
-    return makeValue(TYPE_identifier, string, NULL);
+    return makeData(TYPE_identifier, string, NULL);
 }
 
 /**
@@ -347,7 +347,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     }
 
     zvalue value = stringFromZchars(size, chars);
-    return makeValue(TYPE_directive,
+    return makeData(TYPE_directive,
         mapFrom2(STR_name, dataOf(name), STR_value, value),
         NULL);
 }
