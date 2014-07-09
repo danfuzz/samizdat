@@ -116,13 +116,7 @@ zvalue valOrder(zvalue value, zvalue other) {
     } else if (value == other) {
         return INT_0;
     } else if (haveSameType(value, other)) {
-        // `totalOrder` can get quite recursive, and without a frame around the
-        // call, it is easy for accumulated calls to blow past the limit on
-        // local references.
-        zstackPointer save = datFrameStart();
-        zvalue result = GFN_CALL(totalOrder, value, other);
-        datFrameReturn(save, result);
-        return result;
+        return GFN_CALL(totalOrder, value, other);
     } else {
         return GFN_CALL(totalOrder, get_type(value), get_type(other));
     }
