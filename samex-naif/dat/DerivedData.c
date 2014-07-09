@@ -40,6 +40,11 @@ static DerivedDataInfo *getInfo(zvalue value) {
 //
 
 // Documented in header.
+zvalue dataOf(zvalue value) {
+    return valDataOf(value, NULL);
+}
+
+// Documented in header.
 zvalue valDataOf(zvalue value, zvalue secret) {
     zvalue type = get_type(value);
 

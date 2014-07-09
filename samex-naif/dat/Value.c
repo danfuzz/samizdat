@@ -57,11 +57,6 @@ void datNonVoidError(void) {
 extern void *datPayload(zvalue value);
 
 // Documented in header.
-zvalue dataOf(zvalue value) {
-    return valDataOf(value, NULL);
-}
-
-// Documented in header.
 zvalue get_type(zvalue value) {
     return value->type;
 }
