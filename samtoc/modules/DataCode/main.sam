@@ -173,5 +173,5 @@ fn Value.convert() {
         die("Cannot convert opaque non-data value: \%q(this)")
     };
 
-    return genCall("makeData", convert(type), data, "NULL")
+    return genCall("makeData", convert(type), data)
 };
