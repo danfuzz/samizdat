@@ -202,12 +202,6 @@ static bool typeEq(zvalue type1, zvalue type2) {
 // Documented in header.
 extern inline zint typeIndexUnchecked(zvalue type);
 
-// Documented in header.
-bool typeHasSecret(zvalue type, zvalue secret) {
-    assertHasTypeType(type);
-    return valEqNullOk(getInfo(type)->secret, secret);
-}
-
 
 //
 // Exported Definitions

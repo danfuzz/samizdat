@@ -156,11 +156,5 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
  */
 zint markFrameStack(void);
 
-/**
- * Checks whether the given value matches the secret of the given type.
- * `secret` may be passed as `NULL`.
- */
-bool typeHasSecret(zvalue type, zvalue secret);
-
 
 #endif
