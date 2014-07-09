@@ -4,10 +4,10 @@
 
 #include "const.h"
 #include "util.h"
+#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/String.h"
-#include "type/Value.h"
 #include "zlimits.h"
 
 #include "helpers.h"

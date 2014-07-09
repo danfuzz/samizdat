@@ -3,12 +3,12 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
+#include "type/DerivedData.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Number.h"
 #include "type/String.h"
 #include "type/Type.h"
-#include "type/Value.h"
 #include "util.h"
 
 #include "helpers.h"

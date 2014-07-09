@@ -9,15 +9,15 @@
 #include "const.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
-#include "type/Sequence.h"
+#include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/Sequence.h"
 #include "type/String.h"
 #include "type/Type.h"
-#include "type/Value.h"
 
 #include "impl.h"
 

@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
+#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
