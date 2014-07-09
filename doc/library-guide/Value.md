@@ -118,18 +118,13 @@ of all cross-type ordering functions.
 <br><br>
 ### Primitive Definitions
 
-#### `dataOf(value, secret?) -> .`
+#### `dataOf(value) -> .`
 
-Returns the data payload of the given arbitrary value, if any.
-For a type-only value, this returns void.
+Returns the data payload of the value, if any. If the value has no data
+payload, this returns void.
 
-For derived data values, if `secret` is passed, then this function
-returns void.
-
-For opaque values (including most core values), the given `secret` must match
-the value's associated secret (associated with the type). If the secret
-does not match (including if it was not passed at all), then this function
-returns void.
+The only values that have data payloads accessible via this function are
+derived data values that were constructed with a payload.
 
 #### `eq(value, other) -> logic`
 
