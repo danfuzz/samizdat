@@ -121,36 +121,6 @@ static zvalue BI_Sequence_nextValue = NULL;
 static zvalue BI_Sequence_nthMapping = NULL;
 
 // Documented in header.
-METH_IMPL(Sequence, collect) {
-    zvalue seq = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
-
-    if ((function == NULL) && hasType(seq, TYPE_List)) {
-        // Special case: Collecting a list (without filtering) results in
-        // that same list.
-        return seq;
-    }
-
-    zint size = get_size(seq);
-    zvalue result[size];
-    zint at = 0;
-
-    for (zint i = 0; i < size; i++) {
-        zvalue elem = nth(seq, i);
-        zvalue one = (function == NULL)
-            ? elem
-            : FUN_CALL(function, elem);
-
-        if (one != NULL) {
-            result[at] = one;
-            at++;
-        }
-    }
-
-    return listFromArray(at, result);
-}
-
-// Documented in header.
 METH_IMPL(Sequence, get) {
     zvalue seq = args[0];
     zvalue key = args[1];
