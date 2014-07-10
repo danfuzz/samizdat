@@ -41,13 +41,7 @@ static DerivedDataInfo *getInfo(zvalue value) {
 
 // Documented in header.
 zvalue dataOf(zvalue value) {
-    if (!typeIsDerived(get_type(value))) {
-        die("Attempt to call `dataOf` on an improper value.");
-    }
-
-    // The `datFrameAdd()` call is because `value` might immediately become
-    // garbage.
-    return datFrameAdd(getInfo(value)->data);
+    return GFN_CALL(dataOf, value);
 }
 
 // Documented in header.
@@ -69,11 +63,13 @@ zvalue makeData(zvalue type, zvalue data) {
 // Type Definition
 //
 
-/** Function (not method) `dataOf`. Documented in spec. */
+// Documented in header.
 METH_IMPL(DerivedData, dataOf) {
     zvalue value = args[0];
 
-    return dataOf(value);
+    // The `datFrameAdd()` call is because `value` might immediately become
+    // garbage.
+    return datFrameAdd(getInfo(value)->data);
 }
 
 // Documented in header.
@@ -123,15 +119,14 @@ MOD_INIT(DerivedData) {
 
     // Note: The `typeSystem` module initializes `TYPE_DerivedData`.
 
+    GFN_dataOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "dataOf"));
+    datImmortalize(GFN_dataOf);
+
+    METH_BIND(DerivedData, dataOf);
     METH_BIND(DerivedData, gcMark);
     METH_BIND(DerivedData, get);
     METH_BIND(DerivedData, totalEq);
     METH_BIND(DerivedData, totalOrder);
-
-    FUN_DerivedData_dataOf = makeBuiltin(1, 1,
-        METH_NAME(DerivedData, dataOf), 0,
-        stringFromUtf8(-1, "DerivedData.dataOf"));
-    datImmortalize(FUN_DerivedData_dataOf);
 
     FUN_DerivedData_makeData = makeBuiltin(1, 2,
         METH_NAME(DerivedData, makeData), 0,
@@ -143,7 +138,7 @@ MOD_INIT(DerivedData) {
 zvalue TYPE_DerivedData = NULL;
 
 // Documented in header.
-zvalue FUN_DerivedData_dataOf = NULL;
+zvalue GFN_dataOf = NULL;
 
 // Documented in header.
 zvalue FUN_DerivedData_makeData = NULL;

@@ -15,8 +15,8 @@
 /** Type value for in-model type `DerivedData`. */
 extern zvalue TYPE_DerivedData;
 
-/** Global function `dataOf`: Documented in spec. */
-extern zvalue FUN_DerivedData_dataOf;
+/** Generic `dataOf(derivedData)`: Documented in spec. */
+extern zvalue GFN_dataOf;
 
 /** Global function `makeData`: Documented in spec. */
 extern zvalue FUN_DerivedData_makeData;
@@ -29,9 +29,7 @@ extern zvalue FUN_DerivedData_makeData;
 zvalue makeData(zvalue type, zvalue data);
 
 /**
- * Gets the data payload of the given derived data value. This returns `NULL`
- * if `value` doesn't have a payload. This dies with an error if `value` is
- * not a derived data value.
+ * Calls generic `dataOf()`.
  */
 zvalue dataOf(zvalue value);
 

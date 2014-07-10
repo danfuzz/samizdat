@@ -88,7 +88,7 @@ PRIM_DEF(Number_sign,             GFN_sign);
 PRIM_DEF(Number_sub,              GFN_sub);
 
 // Primitive functions: directly exported.
-PRIM_DEF(dataOf,                  FUN_DerivedData_dataOf);
+PRIM_DEF(dataOf,                  GFN_dataOf);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
