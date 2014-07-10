@@ -55,13 +55,6 @@ extern zvalue GFN_totalOrder;
 zvalue get_type(zvalue value);
 
 /**
- * Gets a unique identity number associated with this value. Only works
- * on values of an opaque type, and only if the type is marked as
- * `selfish`.
- */
-zint valSelfIdOf(zvalue value);
-
-/**
  * Gets the "debug string" of the given value, as a `char *`. The caller
  * is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
@@ -98,9 +91,11 @@ zvalue valOrder(zvalue value, zvalue other);
 zvalue valOrderNullOk(zvalue value, zvalue other);
 
 /**
- * Like `valOrder`, except that the return value is of type `zorder`. This
- * means the constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking at
- * results.
+ * Like `valOrder`, except that the return value is of type `zorder` and this
+ * reports a fatal error if given incomparable values.
+ *
+ * **Note:** The constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking
+ * at results.
  */
 zorder valZorder(zvalue value, zvalue other);
 

@@ -52,12 +52,6 @@ typedef struct DatHeader {
     /** Data type. This is always a `Type` instance. */
     zvalue type;
 
-    /**
-     * Unique identity number. Only set if requested, and only usable by
-     * opaque types that are marked as `selfish`.
-     */
-    zint selfId;
-
     /** Type-specific data goes here. */
     uint8_t payload[/*flexible*/];
 } DatHeader;
@@ -74,12 +68,6 @@ typedef struct {
 
     /** Access secret of the type. Optional, and arbitrary if present. */
     zvalue secret;
-
-    /**
-     * Whether the type is "selfish." `true` indicates that `valSelfIdOf` will
-     * work on values of the type.
-     */
-    bool selfish : 1;
 
     /**
      * Type identifier / index. Assigned upon initialization, in sequential

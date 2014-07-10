@@ -383,7 +383,7 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    TYPE_List = makeCoreType(stringFromUtf8(-1, "List"), TYPE_Data, false);
+    TYPE_List = makeCoreType(stringFromUtf8(-1, "List"), TYPE_Data);
 
     METH_BIND(List, cat);
     METH_BIND(List, collect);

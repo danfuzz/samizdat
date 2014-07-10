@@ -9,11 +9,11 @@ Type
 
 #### `perEq(type, other) -> type | void`
 
-Calls `totalEq`.
+Default implementation.
 
 #### `perOrder(type, other) -> int`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(type1, type2) -> map | void`
 

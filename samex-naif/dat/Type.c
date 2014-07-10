@@ -47,7 +47,7 @@ static TypeInfo *getInfo(zvalue type) {
  * Initializes a type value. The type is marked core, except if its parent is
  * `DerivedData` in which case it is marked as derived.
  */
-static void typeInit(zvalue type, zvalue parent, zvalue name, bool selfish) {
+static void typeInit(zvalue type, zvalue parent, zvalue name) {
     if (theNextTypeId == DAT_MAX_TYPES) {
         die("Too many types!");
     }
@@ -63,7 +63,6 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, bool selfish) {
     info->name = name;
     info->secret = derived ? NULL : coreSecret;
     info->typeId = theNextTypeId;
-    info->selfish = selfish;
 
     theTypes[theNextTypeId] = type;
     theNeedSort = true;
@@ -83,9 +82,9 @@ static zvalue allocType(void) {
  * core, except if its parent is `DerivedData` in which case it is marked as
  * derived.
  */
-static zvalue makeType(zvalue name, zvalue parent, bool selfish) {
+static zvalue makeType(zvalue name, zvalue parent) {
     zvalue result = allocType();
-    typeInit(result, parent, name, selfish);
+    typeInit(result, parent, name);
     return result;
 }
 
@@ -187,7 +186,7 @@ static void assertHasTypeType(zvalue value) {
 
 /**
  * Compares two types (per se) for equality. This is just `==` since
- * types are all "selfish."
+ * types are all unique and effectively "selfish."
  */
 static bool typeEq(zvalue type1, zvalue type2) {
     return (type1 == type2);
@@ -240,12 +239,12 @@ bool haveSameType(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-zvalue makeCoreType(zvalue name, zvalue parent, bool selfish) {
+zvalue makeCoreType(zvalue name, zvalue parent) {
     if (findType(name, coreSecret) != NULL) {
         die("Core type already created.");
     }
 
-    return makeType(name, parent, selfish);
+    return makeType(name, parent);
 }
 
 // Documented in header.
@@ -253,7 +252,7 @@ zvalue makeDerivedDataType(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = makeType(name, TYPE_DerivedData, false);
+        result = makeType(name, TYPE_DerivedData);
     }
 
     return result;
@@ -268,12 +267,6 @@ zint typeIndex(zvalue type) {
 // Documented in header.
 bool typeIsDerived(zvalue type) {
     return typeParent(type) == TYPE_DerivedData;
-}
-
-// Documented in header.
-bool typeIsSelfish(zvalue type) {
-    assertHasTypeType(type);
-    return getInfo(type)->selfish;
 }
 
 // Documented in header.
@@ -362,16 +355,16 @@ MOD_INIT(typeSystem) {
     coreSecret = makeUniqlet();
     datImmortalize(coreSecret);
 
-    typeInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"),        false);
-    typeInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"),       false);
-    typeInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"),        false);
-    typeInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"), false);
+    typeInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"));
+    typeInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"));
+    typeInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"));
+    typeInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"));
 
-    typeInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"),     true);
-    typeInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"),     true);
-    typeInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"),        true);
-    typeInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"),      false);
-    typeInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"),     true);
+    typeInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"));
+    typeInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"));
+    typeInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"));
+    typeInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"));
+    typeInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"));
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.

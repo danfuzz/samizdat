@@ -25,6 +25,27 @@ or void if it has no stored value.
 
 
 <br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(box, other) -> box | void`
+
+Default implementation.
+
+#### `perOrder(box, other) -> int | void`
+
+Default implementation.
+
+#### `totalEq(box1, box2) -> box | void`
+
+Performs an identity comparison. No two boxes are alike.
+
+#### `totalOrder(box1, box2) -> int | void`
+
+Performs an identity comparison. No two boxes are alike, and two
+different boxes have no defined order.
+
+
+<br><br>
 ### Generic Function Definitions: `Box` protocol
 
 #### `collect(box, optFilterFunction?) -> list`

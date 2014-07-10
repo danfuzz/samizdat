@@ -369,14 +369,16 @@ evaluated once.
 result from a chained comparison is the second-from-last value. E.g.,
 `x < y <= z` will either yield `y` or void.
 
-#### Same-type comparison &mdash; `== != < > <= >=`
+#### Per-type comparison &mdash; `== != < > <= >=`
 
 These are the per-type comparison operators. Every type can define arbitrary
 comparison functions, and these operators are how to invoke those
 functions. The general contract is that evaluating these operators results
-in the right-hand value if the ordering is satisfied (true), or void if not.
+in the left-hand value if the ordering is satisfied (true), or void if not.
 If the left-hand and right-hand sides are not comparable, then the contract
-is to cause a terminal error (rather than returning void).
+is to cause a terminal error (rather than returning void). If the left-hand
+and right-hand sides *are* comparable but yet unordered, the contract is
+to return void.
 
 Unlike the total order, the comparisons defined by these functions are not
 required to be consistent; for example, a type corresponding to IEEE754
@@ -392,13 +394,13 @@ with the usual correspondence between the operators and those names.
 Of these functions, `perEq` is a generic, and the rest are defined as
 regular functions in terms of `perEq` and another generic, `perOrder`.
 The default implementations of those generics is to call through to
-the generics `totalEq` and `totalOrder`.
+the functions `eq` and `order` (respectively).
 
 #### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
 
-These are total-order comparison operators. There is a total ordering of
-values within Samizdat, and these operators' results are based on that
-ordering.
+These are total-order comparison operators. There is a defined total order of
+data values within Samizdat, and these operators' results are based on that
+order.
 
 These expressions correspond to calls to the library functions
 `eq` `ne` `lt` `gt` `le` and `ge` (with the obvious mapping of operator
