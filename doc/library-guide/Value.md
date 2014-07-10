@@ -111,9 +111,8 @@ details. Derived data types all order their values by performing ordering
 on the respective payload values, with a lack of payload counting as
 "before" any non-void payload.
 
-The default implementation of this method checks directly for trivial sameness
-and uses `eq()`. It returns `0` if either of those indicates sameness and
-returns void if not.
+The default implementation of this method uses `eq()` to check for sameness.
+It returns `0` if it sameness and returns void if not.
 
 **Note:** This is the generic function which underlies the implementation
 of all cross-type ordering functions.
