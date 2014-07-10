@@ -98,9 +98,11 @@ zvalue valOrder(zvalue value, zvalue other);
 zvalue valOrderNullOk(zvalue value, zvalue other);
 
 /**
- * Like `valOrder`, except that the return value is of type `zorder`. This
- * means the constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking at
- * results.
+ * Like `valOrder`, except that the return value is of type `zorder` and this
+ * reports a fatal error if given incomparable values.
+ *
+ * **Note:** The constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking
+ * at results.
  */
 zorder valZorder(zvalue value, zvalue other);
 

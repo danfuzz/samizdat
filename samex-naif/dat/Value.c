@@ -145,9 +145,15 @@ zorder valZorder(zvalue value, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack. See note on `valOrder` for more color.
     zstackPointer save = datFrameStart();
-    zorder result = zintFromInt(valOrder(value, other));
+    zvalue result = valOrder(value, other);
+
+    if (result == NULL) {
+        die("Attempt to order unordered values.");
+    }
+
+    zorder order = zintFromInt(result);
     datFrameReturn(save, NULL);
-    return result;
+    return order;
 }
 
 
@@ -197,12 +203,18 @@ METH_IMPL(Value, gcMark) {
 
 // Documented in header.
 METH_IMPL(Value, perEq) {
-    return funCall(GFN_totalEq, argCount, args);
+    zvalue value = args[0];
+    zvalue other = args[1];
+
+    return valEq(value, other);
 }
 
 // Documented in header.
 METH_IMPL(Value, perOrder) {
-    return funCall(GFN_totalOrder, argCount, args);
+    zvalue value = args[0];
+    zvalue other = args[1];
+
+    return valOrder(value, other);
 }
 
 // Documented in header.
@@ -210,12 +222,7 @@ METH_IMPL(Value, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];
 
-    if (value == other) {
-        return other;
-    }
-
-    zvalue result = GFN_CALL(totalOrder, value, other);
-    return (valEq(result, INT_0) != NULL) ? value : NULL;
+    return (value == other) ? value : NULL;
 }
 
 // Documented in header.
@@ -223,20 +230,7 @@ METH_IMPL(Value, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
 
-    if (value == other) {
-        return INT_0;
-    }
-
-    zint id1 = valSelfIdOf(value);
-    zint id2 = valSelfIdOf(other);
-
-    if (id1 < id2) {
-        return INT_NEG1;
-    } else if (id1 > id2) {
-        return INT_1;
-    } else {
-        return INT_0;
-    }
+    return valEq(value, other) ? INT_0 : NULL;
 }
 
 /** Initializes the module. */
