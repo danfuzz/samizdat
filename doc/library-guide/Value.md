@@ -41,14 +41,14 @@ considered "equal," return void if the two values are to be considered
 
 Each type can specify its own per-type equality check, and the two arguments
 are notably *not* required to be of the same type. The default implementation
-calls through to `totalEq` (see which).
+calls through to the global function `eq` (see which).
 
 **Note:** This is the generic function which underlies the implementation
 of all per-type equality comparison functions.
 
 **Syntax Note:** Used in the translation of `expression == expression` forms.
 
-#### `perOrder(value, other) -> int`
+#### `perOrder(value, other) -> int | void`
 
 Performs an order comparison of the two given values, using the per-type
 order. Return values are the same as with `totalOrder` (see which). As
@@ -57,7 +57,8 @@ should two arguments be considered "incomparable" this function should
 terminate the runtime with an error.
 
 Each type can specify its own per-type ordering comparison.
-The default implementation calls through to `totalOrder` (see which).
+The default implementation calls through to the global function `order`
+(see which).
 
 **Note:** This is the generic function which underlies the implementation
 of all per-type ordering functions.
@@ -87,15 +88,15 @@ equality much quicker than determining order.
 **Note:** This is the generic function which underlies the implementation
 of all cross-type equality comparison functions.
 
-#### `totalOrder(value, other) -> int`
+#### `totalOrder(value, other) -> int | void`
 
 Returns the type-specific order of the two given values, using the "total
 value ordering" order. When called, the two values are guaranteed to be the
 same type. If a client calls with different-typed values, it is a fatal error
 (terminating the runtime).
 
-The return value is one of `-1 0 1` indicating how the two values sort with
-each other, using the reasonably standard meaning of those values:
+The return value is one of `-1`, `0`, or `1` indicating how the two values
+sort with each other, using the reasonably standard meaning of those values:
 
 * `-1` &mdash; The first value orders before the second value.
 
@@ -103,13 +104,16 @@ each other, using the reasonably standard meaning of those values:
 
 * `1` &mdash; The first value orders after the second value.
 
+If two values have no defined order, this returns void.
+
 Each type specifies its own total-order ordering. See specific types for
 details. Derived data types all order their values by performing ordering
 on the respective payload values, with a lack of payload counting as
-"before" any non-void payload. In addition, a default implementation
-checks directly for trivial sameness and compares identity ordering
-for anything nontrivial; this latter check will fail if the type of
-the values is not a "selfish" one.
+"before" any non-void payload.
+
+The default implementation of this method checks directly for trivial sameness
+and uses `eq()`. It returns `0` if either of those indicates sameness and
+returns void if not.
 
 **Note:** This is the generic function which underlies the implementation
 of all cross-type ordering functions.

@@ -141,9 +141,11 @@ to interpolate.
 #### Map
 
 A `Map` is a sequence of zero or more mappings (also called bindings)
-from arbitrary keys to arbitrary values. Keys and values are both
-allowed to be any type of value. Notably, keys are *not* restricted to
-only being strings (or string-like things).
+from nearly-arbitrary keys to arbitrary values. Values are allowed to be any
+type of value. Keys are allowed to be any value that can be ordered, using
+the defined total ordering of values, with respect to all other keys in the
+map. Notably, keys are *not* restricted to only being strings (or string-like
+things).
 
 Maps are written as an initial `{`, followed by zero or
 more mappings, followed by a final `}`. Mappings are written as

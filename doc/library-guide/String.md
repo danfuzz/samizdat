@@ -9,11 +9,11 @@ String
 
 #### `perEq(string, other) -> string | void`
 
-Calls `totalEq`.
+Default implementation.
 
 #### `perOrder(string, other) -> int`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(string1, string2) -> string | void`
 
@@ -25,6 +25,7 @@ identical orders.
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
+
 
 <br><br>
 ### Generic Function Definitions: One-Offs

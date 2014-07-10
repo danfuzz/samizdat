@@ -14,11 +14,11 @@ an arbitrary value, which is typically (but not necessarily) a string.
 
 #### `perEq(generic, other) -> generic | void`
 
-Calls `totalEq`.
+Default implementation.
 
 #### `perOrder(generic, other) -> int`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(generic1, generic2) -> generic | void`
 
@@ -28,8 +28,8 @@ refer to the same generic.
 
 #### `totalOrder(generic1, generic2) -> int`
 
-Performs an identity comparison. Generics have a consistent, transitive, and
-symmetric &mdash; but arbitrary &mdash; total order.
+Performs an identity comparison. Generics do not have a defined total
+order.
 
 
 <br><br>

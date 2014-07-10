@@ -11,11 +11,11 @@ A `List` is a kind of `Sequence`.
 
 #### `perEq(list, other) -> list | void`
 
-Calls `totalEq`.
+Default implementation.
 
 #### `perOrder(list, other) -> int`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(list1, list2) -> list | void`
 

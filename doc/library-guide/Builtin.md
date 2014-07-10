@@ -18,21 +18,21 @@ an arbitrary value, which is typically (but not necessarily) a string.
 
 #### `perEq(builtin, other) -> builtin | void`
 
-Calls `totalEq`.
+Default implementation.
 
-#### `perOrder(builtin, other) -> int`
+#### `perOrder(builtin, other) -> int | void`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(builtin1, builtin2) -> builtin | void`
 
 Performs an identity comparison. Two builtins are only equal if they
 refer to the exact same functionality.
 
-#### `totalOrder(builtin1, builtin2) -> int`
+#### `totalOrder(builtin1, builtin2) -> int | void`
 
-Performs an identity comparison. Builtins have a consistent, transitive, and
-symmetric &mdash; but arbitrary &mdash; total order.
+Performs an identity comparison. Builtins do not have a defined total
+order.
 
 
 <br><br>

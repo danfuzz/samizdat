@@ -9,11 +9,11 @@ Int
 
 #### `perEq(int, other) -> int | void`
 
-Calls `totalEq`.
+Default implementation.
 
 #### `perOrder(int, other) -> int`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(int1, int2) -> int | void`
 

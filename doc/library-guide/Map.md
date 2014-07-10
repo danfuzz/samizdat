@@ -4,16 +4,20 @@ Samizdat Layer 0: Core Library
 Map
 ---
 
+A `Map` is a kind of `Collection`. It represents a set of mappings from
+keys to values, where the keys are ordered by the total order of values
+as defined by the global function `order()`.
+
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
 #### `perEq(map, other) -> map | void`
 
-Calls `totalEq`.
+Default implementation.
 
 #### `perOrder(map, other) -> int`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(map1, map2) -> map | void`
 

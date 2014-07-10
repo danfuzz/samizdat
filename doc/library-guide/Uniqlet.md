@@ -9,21 +9,20 @@ Uniqlet
 
 #### `perEq(uniqlet, other) -> uniqlet | void`
 
-Calls `totalEq`.
+Default implementation.
 
 #### `perOrder(uniqlet, other) -> int`
 
-Calls `totalOrder`.
+Default implementation.
 
 #### `totalEq(uniqlet1, uniqlet2) -> uniqlet | void`
 
-Performs an identity comparison. Two uniqlets are only equal if they are
-truly the same box.
+Performs an identity comparison. No two uniqlets are alike.
 
 #### `totalOrder(uniqlet1, uniqlet2) -> int`
 
-Performs an identity comparison. Uniqlets have a consistent, transitive, and
-symmetric &mdash; but arbitrary &mdash; total order.
+Performs an identity comparison. No two uniqlets are alike, and two
+different uniqlets have no defined order.
 
 
 <br><br>
