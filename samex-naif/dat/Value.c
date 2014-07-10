@@ -15,33 +15,6 @@
 
 
 //
-// Private Definitions
-//
-
-/**
- * The next identity value to return. This starts at `1`, because `0` is
- * taken to mean "uninitialized."
- */
-static zint theNextSelfId = 1;
-
-/**
- * Gets a unique "self-identity" value to use when comparing
- * otherwise-incomparable values of the same type, for use in defining the
- * total order of values.
- */
-static zint nextSelfId(void) {
-    if (theNextSelfId < 0) {
-        // At one new identity per nanosecond: (1<<63) nsec ~== 292 years.
-        die("Too many selfish values!");
-    }
-
-    zint result = theNextSelfId;
-    theNextSelfId++;
-    return result;
-}
-
-
-//
 // Exported Definitions
 //
 
