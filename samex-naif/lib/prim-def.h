@@ -54,6 +54,9 @@ PRIM_DEF(Bitwise_xor,             GFN_xor);
 // Generic functions: `Box` protocol.
 PRIM_DEF(store,                   GFN_store);
 
+// Generic functions: `DerivedData` type.
+PRIM_DEF(dataOf,                  GFN_dataOf);
+
 // Generic functions: `Function` protocol.
 PRIM_DEF(call,                    GFN_call);
 
@@ -88,7 +91,6 @@ PRIM_DEF(Number_sign,             GFN_sign);
 PRIM_DEF(Number_sub,              GFN_sub);
 
 // Primitive functions: directly exported.
-PRIM_DEF(dataOf,                  GFN_dataOf);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
