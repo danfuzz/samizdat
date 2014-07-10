@@ -204,7 +204,7 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    TYPE_Int = makeCoreType(stringFromUtf8(-1, "Int"), TYPE_Data, false);
+    TYPE_Int = makeCoreType(stringFromUtf8(-1, "Int"), TYPE_Data);
 
     METH_BIND(Int, abs);
     METH_BIND(Int, add);

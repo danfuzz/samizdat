@@ -43,13 +43,10 @@ bool haveSameType(zvalue value, zvalue other);
 
 /**
  * Makes a new core type. `name` is the type's name. `parent` is its
- * super-type. `selfish` indicates whether the type should  be considered
- * "selfish." Values of a selfish type have unique identity values which
- * can be retrieved using `valSelfIdOf`. These values are automatically
- * used when comparing values of the same type. It is a fatal error to call
- * this function more than once with any given name.
+ * super-type. It is a fatal error to call this function more than once with
+ * any given name.
  */
-zvalue makeCoreType(zvalue name, zvalue parent, bool selfish);
+zvalue makeCoreType(zvalue name, zvalue parent);
 
 /**
  * Returns the type value for the derived data type with the given name.
@@ -65,13 +62,6 @@ zint typeIndex(zvalue type);
  * Returns true iff the given type is derived (whether pure data or not).
  */
 bool typeIsDerived(zvalue type);
-
-/**
- * Returns true iff the given type is "selfish." That is, this returns
- * true if values of the type can be fruitfully used as the argument
- * to `valSelfIdOf`.
- */
-bool typeIsSelfish(zvalue type);
 
 /**
  * Gets the name of the given type.

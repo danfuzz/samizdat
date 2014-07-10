@@ -62,21 +62,6 @@ zvalue get_type(zvalue value) {
 }
 
 // Documented in header.
-zint valSelfIdOf(zvalue value) {
-    if (!typeIsSelfish(get_type(value))) {
-        die("Attempt to use `valSelfIdOf` on non-selfish value.");
-    }
-
-    zint result = value->selfId;
-
-    if (result == 0) {
-        result = value->selfId = nextSelfId();
-    }
-
-    return result;
-}
-
-// Documented in header.
 char *valDebugString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");
