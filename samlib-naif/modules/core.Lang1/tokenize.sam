@@ -94,7 +94,7 @@ def tokString = makeMainSequence(
         makeSequence(
             makeString("\""),
             makeCode { ., parts, . -> @string{value: cat("", parts*)} }),
-        makeCode { ., . -> @error("Unterminated string literal.") }));
+        makeCode { ., . -> @error{value: "Unterminated string literal."} }));
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -125,7 +125,7 @@ def tokError = makeMainSequence(
     makeRepeat(makeCharSetComplement("\n")),
     makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        @error(msg)
+        @error{value: msg}
     });
 
 ## Documented in spec.

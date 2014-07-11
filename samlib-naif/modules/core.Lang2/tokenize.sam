@@ -103,7 +103,7 @@ def tokPunctuation = {:
         ## where we're parsing other punctuation. This is clean but a little
         ## non-obvious, hence this comment.
         "#:" .*
-        { @error("Unterminated comment.") }
+        { @error{value: "Unterminated comment."} }
     |
         ## Single-character punctuation / operator.
         .
@@ -164,7 +164,7 @@ def tokString = {:
         "\""
         { processStringParts(parts) }
     |
-        { @error("Unterminated string literal.") }
+        { @error{value: "Unterminated string literal."} }
     )
 :};
 
@@ -196,7 +196,7 @@ def tokError = {:
 
     {
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        @error(msg)
+        @error{value: msg}
     }
 :};
 
@@ -408,7 +408,7 @@ tokStringPart2 := {:
             ";"
             { cat(one, rest*) }
         |
-            { @error("Invalid hexadecimal character literal.") }
+            { @error{value: "Invalid hexadecimal character literal."} }
         )
     |
         "&"
@@ -418,7 +418,7 @@ tokStringPart2 := {:
             ";"
             { cat(one, rest*) }
         |
-            { @error("Invalid named character literal.") }
+            { @error{value: "Invalid named character literal."} }
         )
     |
         format = (
@@ -435,10 +435,10 @@ tokStringPart2 := {:
             tokens = tokStringInterpolation
             { {format*, tokens} }
         |
-            { @error("Unbalanced string interpolation.") }
+            { @error{value: "Unbalanced string interpolation."} }
         )
     |
-        { @error("Invalid character literal escape sequence.") }
+        { @error{value: "Invalid character literal escape sequence."} }
     )
 :};
 

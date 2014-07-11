@@ -146,7 +146,7 @@ def tokString = {:
         "\""
         { @string{value: cat("", parts*)} }
     |
-        { @error("Unterminated string literal.") }
+        { @error{value: "Unterminated string literal."} }
     )
 :};
 
@@ -178,7 +178,7 @@ def tokError = {:
 
     {
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        @error(msg)
+        @error{value: msg}
     }
 :};
 
