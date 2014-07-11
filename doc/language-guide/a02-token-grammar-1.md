@@ -104,7 +104,7 @@ def tokInt = {:
     %tokInt2
 |
     digits = tokDecDigit+
-    { @int(intFromDigits(10, digits)) }
+    { @int{value: intFromDigits(10, digits)} }
 :};
 
 ## Parses a run of regular characters or an escape / special sequence,

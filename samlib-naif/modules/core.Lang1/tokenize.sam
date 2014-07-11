@@ -65,7 +65,7 @@ def tokDecDigit = makeMainSequence(
 ## Documented in spec.
 def tokInt = makeMainSequence(
     makeRepeat(tokDecDigit, 1),
-    makeCode { digits -> @int(intFromDigits(10, digits)) });
+    makeCode { digits -> @int{value: intFromDigits(10, digits)} });
 
 ## Documented in spec.
 def tokStringPart = makeMainChoice(

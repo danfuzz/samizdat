@@ -100,10 +100,10 @@ def parInt = makeMainChoice(
     makeSequence(
         makeToken(@@"-"),
         makeToken(@@int),
-        makeCode { ., i -> makeLiteral(neg(dataOf(i))) }),
+        makeCode { ., i -> makeLiteral(neg(i::value)) }),
     makeSequence(
         makeToken(@@int),
-        makeCode { i -> makeLiteral(dataOf(i)) }));
+        makeCode { i -> makeLiteral(i::value) }));
 
 ## Documented in spec.
 def parString = makeMainSequence(

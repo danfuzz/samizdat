@@ -315,9 +315,9 @@ DEF_PARSE(int) {
     MARK();
 
     zvalue neg = MATCH(CH_MINUS);
-    zvalue intToken = MATCH_OR_REJECT(int);
+    zvalue i = MATCH_OR_REJECT(int);
 
-    zvalue value = dataOf(intToken);
+    zvalue value = GET(value, i);
     if (neg != NULL) {
         value = GFN_CALL(neg, value);
     }

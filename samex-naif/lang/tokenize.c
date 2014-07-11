@@ -153,7 +153,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeData(TYPE_int, intval);
+    return makeData(TYPE_int, mapFrom1(STR_value, intval));
 }
 
 /**

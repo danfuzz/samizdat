@@ -133,10 +133,10 @@ def parVarRef = {:
 def parInt = {:
     @"-"
     i = @int
-    { makeLiteral(neg(dataOf(i))) }
+    { makeLiteral(neg(i::value)) }
 |
     i = @int
-    { makeLiteral(dataOf(i)) }
+    { makeLiteral(i::value) }
 :};
 
 ## Parses a string literal.
