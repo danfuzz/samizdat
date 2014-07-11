@@ -76,7 +76,7 @@ def parParenExpression = makeMainSequence(
 ## Documented in spec.
 def parName =  makeMainSequence(
     makeToken(@@identifier),
-    makeCode { nameIdent -> dataOf(nameIdent) });
+    makeCode { nameIdent -> nameIdent::value });
 
 ## Documented in spec.
 def parNameList = makeMainSequence(

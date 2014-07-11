@@ -280,7 +280,7 @@ DEF_PARSE(name) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
-    return dataOf(nameIdent);
+    return GET(value, nameIdent);
 }
 
 // Documented in spec.

@@ -110,14 +110,14 @@ def tokIdentifier = makeMainSequence(
     makeCode { one, rest ->
         def string = stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
-            { @identifier(string) }
+            { @identifier{value: string} }
     });
 
 ## Documented in spec.
 def tokQuotedIdentifier = makeMainSequence(
     makeString("\\"),
     tokString,
-    makeCode { ., s -> @identifier(s::value) });
+    makeCode { ., s -> @identifier{value: s::value} });
 
 ## Documented in spec.
 def tokError = makeMainSequence(

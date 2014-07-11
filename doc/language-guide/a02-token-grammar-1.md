@@ -158,7 +158,7 @@ def tokIdentifier = {:
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
-            { @identifier(string) }
+            { @identifier{value: string} }
     }
 :};
 
@@ -167,7 +167,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier(s::value) }
+    { @identifier{value: s::value} }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further

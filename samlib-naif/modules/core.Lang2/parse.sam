@@ -95,10 +95,10 @@ def parParenExpression = {:
 :};
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
-## result being the string payload (not wrapped in `@identifier(...)`).
+## result being the string payload (not wrapped in `@identifier{...}`).
 def parName = {:
     nameIdent = @identifier
-    { dataOf(nameIdent) }
+    { nameIdent::value }
 :};
 
 ## Parses a non-empty comma-separated list of "names." A "name" is as per
