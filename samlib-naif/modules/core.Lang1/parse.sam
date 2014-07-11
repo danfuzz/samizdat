@@ -108,7 +108,7 @@ def parInt = makeMainChoice(
 ## Documented in spec.
 def parString = makeMainSequence(
     makeToken(@@string),
-    makeCode { s -> makeLiteral(dataOf(s)) });
+    makeCode { s -> makeLiteral(s::value) });
 
 ## Documented in spec.
 def parIdentifierString = makeMainChoice(
@@ -725,9 +725,7 @@ def parPexVarRef = makeMainSequence(
     makeCode { name -> makeVarRef(name) });
 
 ## Documented in spec.
-def parPexString = makeMainSequence(
-    makeToken(@@string),
-    makeCode { s -> @string{value: dataOf(s)} });
+def parPexString = makeMainSequence(makeToken(@@string));
 
 ## Documented in spec.
 def parPexToken = makeMainSequence(
@@ -743,8 +741,8 @@ def parPexSetString = makeMainSequence(
             makeToken(@@".."),
             makeToken(@@string),
             makeCode { s, ., end /out ->
-                def startChar = dataOf(s);
-                def endChar = dataOf(end);
+                def startChar = s::value;
+                def endChar = end::value;
 
                 ## Reject non-single-character strings.
                 ifIs { ne(1, get_size(startChar)) } { yield /out };
@@ -752,7 +750,7 @@ def parPexSetString = makeMainSequence(
 
                 yield cat(makeInclusiveRange(startChar, endChar)*)
             }),
-        makeCode { s -> dataOf(s) }));
+        makeCode { s -> s::value }));
 
 ## Documented in spec.
 def parPexSet = makeMainSequence(

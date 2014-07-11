@@ -144,7 +144,7 @@ def tokString = {:
 
     (
         "\""
-        { @string(cat("", parts*)) }
+        { @string{value: cat("", parts*)} }
     |
         { @error("Unterminated string literal.") }
     )
@@ -167,7 +167,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier(dataOf(s)) }
+    { @identifier(s::value) }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further

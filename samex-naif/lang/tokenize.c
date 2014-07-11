@@ -249,7 +249,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZchars(size, chars);
-    return makeData(TYPE_string, string);
+    return makeData(TYPE_string, mapFrom1(STR_value, string));
 }
 
 /**
@@ -264,7 +264,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = dataOf(result);
+    zvalue string = get(result, STR_value);
     return makeData(TYPE_identifier, string);
 }
 

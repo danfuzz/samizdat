@@ -185,7 +185,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier(dataOf(s)) }
+    { @identifier(s::value) }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further
@@ -245,7 +245,7 @@ def OPEN_CLOSE_MAP = {
 fn processStringParts(parts) {
     ## Handle the empty string as a special case.
     ifIs { eq(parts, []) }
-        { return @string("") };
+        { return @string{value: ""} };
 
     ## Coalesce adjacent literal strings in `parts`. The result is an
     ## `elems` list consisting of alternating multi-character strings and
@@ -290,12 +290,12 @@ fn processStringParts(parts) {
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.
-                    return @string(elem)
+                    return @string{value: elem}
                 }
         };
 
     ## At this point, we have a valid interpolation.
-    return @interpolatedString(elems)
+    return @interpolatedString{value: elems}
 };
 
 ## Parses a `#: ... :#` comment, with nesting.

@@ -93,7 +93,7 @@ def tokString = makeMainSequence(
     makeChoice(
         makeSequence(
             makeString("\""),
-            makeCode { ., parts, . -> @string(cat("", parts*)) }),
+            makeCode { ., parts, . -> @string{value: cat("", parts*)} }),
         makeCode { ., . -> @error("Unterminated string literal.") }));
 
 ## These are all the characters which are allowed to start an identifier.
@@ -117,7 +117,7 @@ def tokIdentifier = makeMainSequence(
 def tokQuotedIdentifier = makeMainSequence(
     makeString("\\"),
     tokString,
-    makeCode { ., s -> @identifier(dataOf(s)) });
+    makeCode { ., s -> @identifier(s::value) });
 
 ## Documented in spec.
 def tokError = makeMainSequence(

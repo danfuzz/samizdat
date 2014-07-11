@@ -142,7 +142,7 @@ def parInt = {:
 ## Parses a string literal.
 def parString = {:
     s = @string
-    { makeLiteral(dataOf(s)) }
+    { makeLiteral(s::value) }
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,
@@ -946,8 +946,7 @@ def parPexVarRef = {:
 
 ## Parses a string literal parsing expression.
 def parPexString = {:
-    s = @string
-    { @string{value: dataOf(s)} }
+    @string
 :};
 
 ## Parses a token literal parsing expression.
@@ -967,8 +966,8 @@ def parPexSetString = {:
         end = @string
 
         { /out ->
-            def startChar = dataOf(s);
-            def endChar = dataOf(end);
+            def startChar = s::value;
+            def endChar = end::value;
 
             ## Reject non-single-character strings.
             ifIs { ne(1, get_size(startChar)) } { yield /out };
@@ -977,7 +976,7 @@ def parPexSetString = {:
             yield cat(makeInclusiveRange(startChar, endChar)*)
         }
     |
-        { dataOf(s) }
+        { s::value }
     )
 :};
 

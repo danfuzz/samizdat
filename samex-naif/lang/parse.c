@@ -331,7 +331,7 @@ DEF_PARSE(string) {
 
     zvalue string = MATCH_OR_REJECT(string);
 
-    return makeLiteral(dataOf(string));
+    return makeLiteral(GET(value, string));
 }
 
 // Documented in spec.
