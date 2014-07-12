@@ -99,10 +99,10 @@ def parParenExpression = {:
 :};
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
-## result being the string payload (not wrapped in `@identifier(...)`).
+## result being the string payload (not wrapped in `@identifier{...}`).
 def parName = {:
     nameIdent = @identifier
-    { dataOf(nameIdent) }
+    { nameIdent::value }
 :};
 
 ## Parses a non-empty comma-separated list of "names." A "name" is as per
@@ -133,16 +133,16 @@ def parVarRef = {:
 def parInt = {:
     @"-"
     i = @int
-    { makeLiteral(neg(dataOf(i))) }
+    { makeLiteral(neg(i::value)) }
 |
     i = @int
-    { makeLiteral(dataOf(i)) }
+    { makeLiteral(i::value) }
 :};
 
 ## Parses a string literal.
 def parString = {:
     s = @string
-    { makeLiteral(dataOf(s)) }
+    { makeLiteral(s::value) }
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,
@@ -946,8 +946,7 @@ def parPexVarRef = {:
 
 ## Parses a string literal parsing expression.
 def parPexString = {:
-    s = @string
-    { @string{value: dataOf(s)} }
+    @string
 :};
 
 ## Parses a token literal parsing expression.
@@ -967,8 +966,8 @@ def parPexSetString = {:
         end = @string
 
         { /out ->
-            def startChar = dataOf(s);
-            def endChar = dataOf(end);
+            def startChar = s::value;
+            def endChar = end::value;
 
             ## Reject non-single-character strings.
             ifIs { ne(1, get_size(startChar)) } { yield /out };
@@ -977,7 +976,7 @@ def parPexSetString = {:
             yield cat(makeInclusiveRange(startChar, endChar)*)
         }
     |
-        { dataOf(s) }
+        { s::value }
     )
 :};
 

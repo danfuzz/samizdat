@@ -103,7 +103,7 @@ def tokPunctuation = {:
         ## where we're parsing other punctuation. This is clean but a little
         ## non-obvious, hence this comment.
         "#:" .*
-        { @error("Unterminated comment.") }
+        { @error{value: "Unterminated comment."} }
     |
         ## Single-character punctuation / operator.
         .
@@ -122,7 +122,7 @@ def tokInt = {:
     %tokInt2
 |
     digits = tokDecDigit+
-    { @int(intFromDigits(10, digits)) }
+    { @int{value: intFromDigits(10, digits)} }
 :};
 
 ## Parses a run of regular characters or an escape / special sequence,
@@ -164,7 +164,7 @@ def tokString = {:
         "\""
         { processStringParts(parts) }
     |
-        { @error("Unterminated string literal.") }
+        { @error{value: "Unterminated string literal."} }
     )
 :};
 
@@ -176,7 +176,7 @@ def tokIdentifier = {:
     {
         def string = stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
-            { @identifier(string) }
+            { @identifier{value: string} }
     }
 :};
 
@@ -185,7 +185,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier(dataOf(s)) }
+    { @identifier{value: s::value} }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further
@@ -196,7 +196,7 @@ def tokError = {:
 
     {
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        @error(msg)
+        @error{value: msg}
     }
 :};
 
@@ -245,7 +245,7 @@ def OPEN_CLOSE_MAP = {
 fn processStringParts(parts) {
     ## Handle the empty string as a special case.
     ifIs { eq(parts, []) }
-        { return @string("") };
+        { return @string{value: ""} };
 
     ## Coalesce adjacent literal strings in `parts`. The result is an
     ## `elems` list consisting of alternating multi-character strings and
@@ -290,12 +290,12 @@ fn processStringParts(parts) {
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.
-                    return @string(elem)
+                    return @string{value: elem}
                 }
         };
 
     ## At this point, we have a valid interpolation.
-    return @interpolatedString(elems)
+    return @interpolatedString{value: elems}
 };
 
 ## Parses a `#: ... :#` comment, with nesting.
@@ -327,11 +327,11 @@ def tokHexDigit = {:
 tokInt2 := {:
     "0x"
     digits = tokHexDigit+
-    { @int(intFromDigits(16, digits)) }
+    { @int{value: intFromDigits(16, digits)} }
 |
     "0b"
     digits = tokBinDigit+
-    { @int(intFromDigits(2, digits)) }
+    { @int{value: intFromDigits(2, digits)} }
 :};
 
 ## Parses a single hexadecimal character. This is called during `\x...;`
@@ -408,7 +408,7 @@ tokStringPart2 := {:
             ";"
             { cat(one, rest*) }
         |
-            { @error("Invalid hexadecimal character literal.") }
+            { @error{value: "Invalid hexadecimal character literal."} }
         )
     |
         "&"
@@ -418,7 +418,7 @@ tokStringPart2 := {:
             ";"
             { cat(one, rest*) }
         |
-            { @error("Invalid named character literal.") }
+            { @error{value: "Invalid named character literal."} }
         )
     |
         format = (
@@ -435,10 +435,10 @@ tokStringPart2 := {:
             tokens = tokStringInterpolation
             { {format*, tokens} }
         |
-            { @error("Unbalanced string interpolation.") }
+            { @error{value: "Unbalanced string interpolation."} }
         )
     |
-        { @error("Invalid character literal escape sequence.") }
+        { @error{value: "Invalid character literal escape sequence."} }
     )
 :};
 

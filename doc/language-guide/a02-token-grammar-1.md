@@ -104,7 +104,7 @@ def tokInt = {:
     %tokInt2
 |
     digits = tokDecDigit+
-    { @int(intFromDigits(10, digits)) }
+    { @int{value: intFromDigits(10, digits)} }
 :};
 
 ## Parses a run of regular characters or an escape / special sequence,
@@ -144,9 +144,9 @@ def tokString = {:
 
     (
         "\""
-        { @string(cat("", parts*)) }
+        { @string{value: cat("", parts*)} }
     |
-        { @error("Unterminated string literal.") }
+        { @error{value: "Unterminated string literal."} }
     )
 :};
 
@@ -158,7 +158,7 @@ def tokIdentifier = {:
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
-            { @identifier(string) }
+            { @identifier{value: string} }
     }
 :};
 
@@ -167,7 +167,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier(dataOf(s)) }
+    { @identifier{value: s::value} }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further
@@ -178,7 +178,7 @@ def tokError = {:
 
     {
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        @error(msg)
+        @error{value: msg}
     }
 :};
 

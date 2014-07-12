@@ -65,7 +65,7 @@ def tokDecDigit = makeMainSequence(
 ## Documented in spec.
 def tokInt = makeMainSequence(
     makeRepeat(tokDecDigit, 1),
-    makeCode { digits -> @int(intFromDigits(10, digits)) });
+    makeCode { digits -> @int{value: intFromDigits(10, digits)} });
 
 ## Documented in spec.
 def tokStringPart = makeMainChoice(
@@ -93,8 +93,8 @@ def tokString = makeMainSequence(
     makeChoice(
         makeSequence(
             makeString("\""),
-            makeCode { ., parts, . -> @string(cat("", parts*)) }),
-        makeCode { ., . -> @error("Unterminated string literal.") }));
+            makeCode { ., parts, . -> @string{value: cat("", parts*)} }),
+        makeCode { ., . -> @error{value: "Unterminated string literal."} }));
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -110,14 +110,14 @@ def tokIdentifier = makeMainSequence(
     makeCode { one, rest ->
         def string = stringFromTokenList([one, rest*]);
         ifValueOr { get(KEYWORDS, string) }
-            { @identifier(string) }
+            { @identifier{value: string} }
     });
 
 ## Documented in spec.
 def tokQuotedIdentifier = makeMainSequence(
     makeString("\\"),
     tokString,
-    makeCode { ., s -> @identifier(dataOf(s)) });
+    makeCode { ., s -> @identifier{value: s::value} });
 
 ## Documented in spec.
 def tokError = makeMainSequence(
@@ -125,7 +125,7 @@ def tokError = makeMainSequence(
     makeRepeat(makeCharSetComplement("\n")),
     makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", get_typeName(badCh));
-        @error(msg)
+        @error{value: msg}
     });
 
 ## Documented in spec.

@@ -280,7 +280,7 @@ DEF_PARSE(name) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
-    return dataOf(nameIdent);
+    return GET(value, nameIdent);
 }
 
 // Documented in spec.
@@ -315,9 +315,9 @@ DEF_PARSE(int) {
     MARK();
 
     zvalue neg = MATCH(CH_MINUS);
-    zvalue intToken = MATCH_OR_REJECT(int);
+    zvalue i = MATCH_OR_REJECT(int);
 
-    zvalue value = dataOf(intToken);
+    zvalue value = GET(value, i);
     if (neg != NULL) {
         value = GFN_CALL(neg, value);
     }
@@ -331,7 +331,7 @@ DEF_PARSE(string) {
 
     zvalue string = MATCH_OR_REJECT(string);
 
-    return makeLiteral(dataOf(string));
+    return makeLiteral(GET(value, string));
 }
 
 // Documented in spec.
