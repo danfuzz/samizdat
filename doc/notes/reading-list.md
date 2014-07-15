@@ -114,7 +114,9 @@ Topics
     <http://pu.inf.uni-tuebingen.de/users/crestani/publications/2008-sws-ffi.pdf>
   * GC FAQ &mdash; <http://www.iecc.com/gclist/GC-faq.html>
 
-* Parsing
+* Parsing and Pattern Matching
+  * Compiling Pattern Matching to good Decision Trees &mdash;
+    <http://www.cs.tufts.edu/~nr/cs257/archive/luc-maranget/jun08.pdf>
   * Packrat parsing: Simple, Powerful, Lazy, Linear Time &mdash;
     <http://pdos.csail.mit.edu/~baford/packrat/icfp02/>
   * Shunting-yard algorithm (operator-precedence parsing) &mdash;
