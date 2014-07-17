@@ -23,10 +23,6 @@ import core.Sequence :: sliceExclusive;
 ## Private Definitions
 ##
 
-## `node.convertPexIn()`, used to convert a layer 1 expression or statement
-## node into an equivalent layer 0 node.
-fn .convertPexIn();
-
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
     return filterAll(nodes) { node -> convertPexIn(node) }
@@ -172,125 +168,110 @@ fn convertPex(node, formals) {
     return get(CONVERT_PEX_HANDLERS, get_type(node))(node, formals)
 };
 
-
-##
-## `convertPexIn` bindings
-##
-
-## Does parser conversion of a node whose payload is a map with an optional
-## `value` binding to an arbitrary expression. Does not perform lvalue removal.
+## Does parser conversion of an expression node whose payload is a map with
+## an optional `value` binding to an arbitrary expression. Does not perform
+## lvalue removal.
 fn convertValuePayload(node) {
     return ifValue { get_nodeValue(node) }
         { value -> withBindings(node, {value: convertPexIn(value)}) }
         { node };
 };
 
-## Does parser conversion of an `apply` node.
-fn @@apply.convertPexIn() {
-    def function = convertPexIn(get_function(this));
-    def values = convertPexIn(get_values(this));
+## Map from types to handlers for `convertPexIn()`.
+def CONVERT_PEX_IN_HANDLERS = {
+    @@apply: { node ->
+        def function = convertPexIn(get_function(node));
+        def values = convertPexIn(get_values(node));
 
-    return withFinalBindings(this, {values, function});
+        withFinalBindings(node, {values, function});
+    },
+
+    @@call: { node ->
+        def function = convertPexIn(get_function(node));
+        def values = convertPexInList(get_values(node));
+
+        withFinalBindings(node, {function, values});
+    },
+
+    @@closure: { node ->
+        def statements = convertPexInList(get_statements(node));
+        def yieldNode = convertPexIn(get_yieldNode(node));
+
+        withBindings(node, {statements, yield: yieldNode})
+    },
+
+    @@export: { node ->
+        def value = convertPexIn(get_nodeValue(node));
+        withBindings(node, {value})
+    },
+
+    @@fetch: { node ->
+        def target = convertPexIn(get_target(node));
+        withFinalBindings(node, {target})
+    },
+
+    @@exportSelection: { node ->
+        node
+    },
+
+    @@importModule: { node ->
+        node
+    },
+
+    @@importModuleSelection: { node ->
+        node
+    },
+
+    @@importResource: { node ->
+        node
+    },
+
+    @@literal: { node ->
+        node
+    },
+
+    @@maybe: { node ->
+        def value = convertPexIn(get_nodeValue(node));
+        withBindings(node, {value})
+    },
+
+    @@noYield: { node ->
+        def value = convertPexIn(get_nodeValue(node));
+        withBindings(node, {value})
+    },
+
+    @@parser: { node ->
+        ## node is where the juicy stuff happens!
+        makeCallPex(REFS::Peg_makeMainSequence, node, [])
+    },
+
+    @@store: { node ->
+        def target = convertPexIn(get_target(node));
+        def value = convertPexIn(get_nodeValue(node));
+        withFinalBindings(node, {target, value})
+    },
+
+    @@varDef: { node ->
+        convertValuePayload(node)
+    },
+
+    @@varDefMutable: { node ->
+        convertValuePayload(node)
+    },
+
+    @@varRef: { node ->
+        node
+    },
+
+    @@void: { node ->
+        node
+    }
 };
 
-## Does parser conversion of a `call` node.
-fn @@call.convertPexIn() {
-    def function = convertPexIn(get_function(this));
-    def values = convertPexInList(get_values(this));
-
-    return withFinalBindings(this, {function, values});
-};
-
-## Does parser conversion of a `closure` node.
-fn @@closure.convertPexIn() {
-    def statements = convertPexInList(get_statements(this));
-    def yieldNode = convertPexIn(get_yieldNode(this));
-
-    return withBindings(this, {statements, yield: yieldNode})
-};
-
-## Does parser conversion of an `export` node.
-fn @@export.convertPexIn() {
-    def value = convertPexIn(get_nodeValue(this));
-    return withBindings(this, {value})
-};
-
-## Does parser conversion of a `fetch` node.
-fn @@fetch.convertPexIn() {
-    def target = convertPexIn(get_target(this));
-    return withFinalBindings(this, {target})
-};
-
-## Does parser conversion of an `exportSelection` node.
-fn @@exportSelection.convertPexIn() {
-    return this
-};
-
-## Does parser conversion of an `importModule` node.
-fn @@importModule.convertPexIn() {
-    return this
-};
-
-## Does parser conversion of an `importModuleSelection` node.
-fn @@importModuleSelection.convertPexIn() {
-    return this
-};
-
-## Does parser conversion of an `importResource` node.
-fn @@importResource.convertPexIn() {
-    return this
-};
-
-## Does parser conversion of a `literal` node.
-fn @@literal.convertPexIn() {
-    return this
-};
-
-## Does parser conversion of a `maybe` node.
-fn @@maybe.convertPexIn() {
-    def value = convertPexIn(get_nodeValue(this));
-    return withBindings(this, {value})
-};
-
-## Does parser conversion of a `noYield` node.
-fn @@noYield.convertPexIn() {
-    def value = convertPexIn(get_nodeValue(this));
-    return withBindings(this, {value})
-};
-
-## Does parser conversion of a `parser` node. This is where the juicy stuff
-## happens!
-fn @@parser.convertPexIn() {
-    ## `@x(...)` is done here to convert this node from an expression node
-    ## form (with map payload) into a parser node form (with pex payload).
-    return makeCallPex(REFS::Peg_makeMainSequence, this, [])
-};
-
-## Does parser conversion of a `store` node.
-fn @@store.convertPexIn() {
-    def target = convertPexIn(get_target(this));
-    def value = convertPexIn(get_nodeValue(this));
-    return withFinalBindings(this, {target, value})
-};
-
-## Does parser conversion of a `varDef` node.
-fn @@varDef.convertPexIn() {
-    return convertValuePayload(this)
-};
-
-## Does parser conversion of a `varDefMutable` node.
-fn @@varDefMutable.convertPexIn() {
-    return convertValuePayload(this)
-};
-
-## Does parser conversion of a `varRef` node.
-fn @@varRef.convertPexIn() {
-    return this
-};
-
-## Does parser conversion of a `void` node.
-fn @@void.convertPexIn() {
-    return this
+## Converts a layer 1 expression or statement node into an equivalent layer
+## 0 node.
+fn convertPexIn(node) {
+    return get(CONVERT_PEX_IN_HANDLERS, get_type(node))(node)
 };
 
 
