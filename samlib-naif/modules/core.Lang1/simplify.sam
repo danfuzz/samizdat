@@ -176,101 +176,100 @@ fn convertValuePayload(node) {
         { node };
 };
 
-## Map from types to handlers for `convertPexIn()`.
-def CONVERT_PEX_IN_HANDLERS = {
-    @@apply: { node ->
-        def function = convertPexIn(get_function(node));
-        def values = convertPexIn(get_values(node));
-
-        withFinalBindings(node, {values, function});
-    },
-
-    @@call: { node ->
-        def function = convertPexIn(get_function(node));
-        def values = convertPexInList(get_values(node));
-
-        withFinalBindings(node, {function, values});
-    },
-
-    @@closure: { node ->
-        def statements = convertPexInList(get_statements(node));
-        def yieldNode = convertPexIn(get_yieldNode(node));
-
-        withBindings(node, {statements, yield: yieldNode})
-    },
-
-    @@export: { node ->
-        def value = convertPexIn(get_nodeValue(node));
-        withBindings(node, {value})
-    },
-
-    @@fetch: { node ->
-        def target = convertPexIn(get_target(node));
-        withFinalBindings(node, {target})
-    },
-
-    @@exportSelection: { node ->
-        node
-    },
-
-    @@importModule: { node ->
-        node
-    },
-
-    @@importModuleSelection: { node ->
-        node
-    },
-
-    @@importResource: { node ->
-        node
-    },
-
-    @@literal: { node ->
-        node
-    },
-
-    @@maybe: { node ->
-        def value = convertPexIn(get_nodeValue(node));
-        withBindings(node, {value})
-    },
-
-    @@noYield: { node ->
-        def value = convertPexIn(get_nodeValue(node));
-        withBindings(node, {value})
-    },
-
-    @@parser: { node ->
-        ## node is where the juicy stuff happens!
-        makeCallPex(REFS::Peg_makeMainSequence, node, [])
-    },
-
-    @@store: { node ->
-        def target = convertPexIn(get_target(node));
-        def value = convertPexIn(get_nodeValue(node));
-        withFinalBindings(node, {target, value})
-    },
-
-    @@varDef: { node ->
-        convertValuePayload(node)
-    },
-
-    @@varDefMutable: { node ->
-        convertValuePayload(node)
-    },
-
-    @@varRef: { node ->
-        node
-    },
-
-    @@void: { node ->
-        node
-    }
-};
-
 ## Converts a layer 1 expression or statement node into an equivalent layer
 ## 0 node.
 fn convertPexIn(node) {
-    return get(CONVERT_PEX_IN_HANDLERS, get_type(node))(node)
+    return ifSwitch(
+        { get_type(node) },
+        {
+            @@apply: { . ->
+                def function = convertPexIn(get_function(node));
+                def values = convertPexIn(get_values(node));
+
+                withFinalBindings(node, {values, function});
+            },
+
+            @@call: { . ->
+                def function = convertPexIn(get_function(node));
+                def values = convertPexInList(get_values(node));
+
+                withFinalBindings(node, {function, values});
+            },
+
+            @@closure: { . ->
+                def statements = convertPexInList(get_statements(node));
+                def yieldNode = convertPexIn(get_yieldNode(node));
+
+                withBindings(node, {statements, yield: yieldNode})
+            },
+
+            @@export: { . ->
+                def value = convertPexIn(get_nodeValue(node));
+                withBindings(node, {value})
+            },
+
+            @@fetch: { . ->
+                def target = convertPexIn(get_target(node));
+                withFinalBindings(node, {target})
+            },
+
+            @@exportSelection: { . ->
+                node
+            },
+
+            @@importModule: { . ->
+                node
+            },
+
+            @@importModuleSelection: { . ->
+                node
+            },
+
+            @@importResource: { . ->
+                node
+            },
+
+            @@literal: { . ->
+                node
+            },
+
+            @@maybe: { . ->
+                def value = convertPexIn(get_nodeValue(node));
+                withBindings(node, {value})
+            },
+
+            @@noYield: { . ->
+                def value = convertPexIn(get_nodeValue(node));
+                withBindings(node, {value})
+            },
+
+            @@parser: { . ->
+                ## node is where the juicy stuff happens!
+                makeCallPex(REFS::Peg_makeMainSequence, node, [])
+            },
+
+            @@store: { . ->
+                def target = convertPexIn(get_target(node));
+                def value = convertPexIn(get_nodeValue(node));
+                withFinalBindings(node, {target, value})
+            },
+
+            @@varDef: { . ->
+                convertValuePayload(node)
+            },
+
+            @@varDefMutable: { . ->
+                convertValuePayload(node)
+            },
+
+            @@varRef: { . ->
+                node
+            },
+
+            @@void: { . ->
+                node
+            }
+        })
 };
 
 
