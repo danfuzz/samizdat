@@ -44,128 +44,127 @@ fn withFinalBindings(orig, more) {
     return withBindings(withoutIntermediates(orig), more)
 };
 
-## Map from types to handlers for `convertPex()`.
-def CONVERT_PEX_HANDLERS = {
-    @@any: { node, formals ->
-        REFS::Peg_any
-    },
-
-    @@choice: { node, formals ->
-        def pexes = get_pexes(node);
-        def convertedPexes = filterAll(pexes)
-            { pex -> convertPex(pex, formals) };
-        makeCall(REFS::Peg_makeChoice, convertedPexes*)
-    },
-
-    @@code: { node, formals ->
-        ## Use the lexical `formals` context to make a regular closure node,
-        ## and just convert that. As a special case, notice if the closure is
-        ## just a yield of a literal, and convert that with `makeResult`.
-
-        def closurePayload = {(dataOf(node))*, formals};
-        def fullClosure = makeFullClosure(closurePayload);
-
-        ifValues(
-            [
-                { eq(get_statements(fullClosure), []) },
-                { . -> hasType(get_yieldNode(fullClosure), @@literal) }
-            ],
-            { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) },
-            { makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure)) }
-        )
-    },
-
-    @@empty: { node, formals ->
-        REFS::Peg_empty
-    },
-
-    @@lookaheadFailure: { node, formals ->
-        makeCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
-    },
-
-    @@lookaheadSuccess: { node, formals ->
-        makeCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
-    },
-
-    @@opt: { node, formals ->
-        makeCallPex(REFS::Peg_makeRepeat, node, formals,
-            makeLiteral(0), makeLiteral(1))
-    },
-
-    @@plus: { node, formals ->
-        makeCallPex(REFS::Peg_makeRepeat, node, formals, makeLiteral(1))
-    },
-
-    @@sequence: { node, formals ->
-        def pexes = get_pexes(node);
-
-        ## Extract the formals out of any `varDef` nodes.
-        def newFormals = filterAll(pexes) { pex ->
-            ifIs { hasType(pex, @@varDef) }
-                { {name: pex::name} }
-                { {} }
-        };
-
-        ## Convert all the pexes, passing in appropriately-extended formals
-        ## lists to each conversion.
-        def convertedPexes =
-            filterAll(makeOpenRange(0), pexes)
-                { n, pex ->
-                    def subPex = ifIs { hasType(pex, @@varDef) }
-                        { pex::value }
-                        { pex };
-                    convertPex(subPex,
-                        [formals*, sliceExclusive(newFormals, 0, n)*])
-                };
-
-        makeCall(REFS::Peg_makeSequence, convertedPexes*)
-    },
-
-    @@star: { node, formals ->
-        makeCallPex(REFS::Peg_makeRepeat, node, formals)
-    },
-
-    @@string: { node, formals ->
-        makeCallLiterals(REFS::Peg_makeString, get_nodeValue(node))
-    },
-
-    @@thunk: { node, formals ->
-        ## Use the lexical `formals` context to make a regular closure node,
-        ## and just convert that.
-
-        def closure = makeFullClosure({
-            formals,
-            yield: makeMaybe(get_nodeValue(node))
-        });
-        def convertedClosure = convertPexIn(closure);
-
-        makeCall(REFS::Peg_makeParserThunk, convertedClosure)
-    },
-
-    @@token: { node, formals ->
-        makeCallLiterals(REFS::Peg_makeToken, get_nodeValue(node))
-    },
-
-    @@tokenSet: { node, formals ->
-        def types = get_values(node);
-        makeCallLiterals(REFS::Peg_makeTokenSet, types*)
-    },
-
-    @@tokenSetComplement: { node, formals ->
-        def types = get_values(node);
-        makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*)
-    },
-
-    @@varRef: { node, formals ->
-        ## `varRef` in the context of a pex just translates to a variable
-        ## fetch of the same name in the context of an expression / statement.
-        makeVarFetch(get_name(node))
-    }
-};
-
 ## Expands the given pex node into an expression node.
 fn convertPex(node, formals) {
-    return get(CONVERT_PEX_HANDLERS, get_type(node))(node, formals)
+    return ifSwitch(
+        { get_type(node) },
+        {
+            @@any: { . ->
+                REFS::Peg_any
+            },
+
+            @@choice: { . ->
+                def pexes = get_pexes(node);
+                def convertedPexes = filterAll(pexes)
+                    { pex -> convertPex(pex, formals) };
+                makeCall(REFS::Peg_makeChoice, convertedPexes*)
+            },
+
+            @@code: { . ->
+                ## Use the lexical `formals` context to make a regular closure node,
+                ## and just convert that. As a special case, notice if the closure is
+                ## just a yield of a literal, and convert that with `makeResult`.
+
+                def closurePayload = {(dataOf(node))*, formals};
+                def fullClosure = makeFullClosure(closurePayload);
+
+                ifValues(
+                    [
+                        { eq(get_statements(fullClosure), []) },
+                        { . -> hasType(get_yieldNode(fullClosure), @@literal) }
+                    ],
+                    { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) },
+                    { makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure)) }
+                )
+            },
+
+            @@empty: { . ->
+                REFS::Peg_empty
+            },
+
+            @@lookaheadFailure: { . ->
+                makeCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
+            },
+
+            @@lookaheadSuccess: { . ->
+                makeCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
+            },
+
+            @@opt: { . ->
+                makeCallPex(REFS::Peg_makeRepeat, node, formals,
+                    makeLiteral(0), makeLiteral(1))
+            },
+
+            @@plus: { . ->
+                makeCallPex(REFS::Peg_makeRepeat, node, formals, makeLiteral(1))
+            },
+
+            @@sequence: { . ->
+                def pexes = get_pexes(node);
+
+                ## Extract the formals out of any `varDef` nodes.
+                def newFormals = filterAll(pexes) { pex ->
+                    ifIs { hasType(pex, @@varDef) }
+                        { {name: pex::name} }
+                        { {} }
+                };
+
+                ## Convert all the pexes, passing in appropriately-extended formals
+                ## lists to each conversion.
+                def convertedPexes =
+                    filterAll(makeOpenRange(0), pexes)
+                        { n, pex ->
+                            def subPex = ifIs { hasType(pex, @@varDef) }
+                                { pex::value }
+                                { pex };
+                            convertPex(subPex,
+                                [formals*, sliceExclusive(newFormals, 0, n)*])
+                        };
+
+                makeCall(REFS::Peg_makeSequence, convertedPexes*)
+            },
+
+            @@star: { . ->
+                makeCallPex(REFS::Peg_makeRepeat, node, formals)
+            },
+
+            @@string: { . ->
+                makeCallLiterals(REFS::Peg_makeString, get_nodeValue(node))
+            },
+
+            @@thunk: { . ->
+                ## Use the lexical `formals` context to make a regular closure node,
+                ## and just convert that.
+
+                def closure = makeFullClosure({
+                    formals,
+                    yield: makeMaybe(get_nodeValue(node))
+                });
+                def convertedClosure = convertPexIn(closure);
+
+                makeCall(REFS::Peg_makeParserThunk, convertedClosure)
+            },
+
+            @@token: { . ->
+                makeCallLiterals(REFS::Peg_makeToken, get_nodeValue(node))
+            },
+
+            @@tokenSet: { . ->
+                def types = get_values(node);
+                makeCallLiterals(REFS::Peg_makeTokenSet, types*)
+            },
+
+            @@tokenSetComplement: { . ->
+                def types = get_values(node);
+                makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*)
+            },
+
+            @@varRef: { . ->
+                ## `varRef` in the context of a pex just translates to a variable
+                ## fetch of the same name in the context of an expression / statement.
+                makeVarFetch(get_name(node))
+            }
+        })
 };
 
 ## Does parser conversion of an expression node whose payload is a map with
