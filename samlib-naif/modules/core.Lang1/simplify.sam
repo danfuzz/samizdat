@@ -187,7 +187,7 @@ fn convertPexIn(node) {
                 def function = convertPexIn(get_function(node));
                 def values = convertPexIn(get_values(node));
 
-                withFinalBindings(node, {values, function});
+                withFinalBindings(node, {function, values});
             },
 
             @@call: { . ->
@@ -204,44 +204,9 @@ fn convertPexIn(node) {
                 withBindings(node, {statements, yield: yieldNode})
             },
 
-            @@export: { . ->
-                def value = convertPexIn(get_nodeValue(node));
-                withBindings(node, {value})
-            },
-
             @@fetch: { . ->
                 def target = convertPexIn(get_target(node));
                 withFinalBindings(node, {target})
-            },
-
-            @@exportSelection: { . ->
-                node
-            },
-
-            @@importModule: { . ->
-                node
-            },
-
-            @@importModuleSelection: { . ->
-                node
-            },
-
-            @@importResource: { . ->
-                node
-            },
-
-            @@literal: { . ->
-                node
-            },
-
-            @@maybe: { . ->
-                def value = convertPexIn(get_nodeValue(node));
-                withBindings(node, {value})
-            },
-
-            @@noYield: { . ->
-                def value = convertPexIn(get_nodeValue(node));
-                withBindings(node, {value})
             },
 
             @@parser: { . ->
@@ -255,18 +220,24 @@ fn convertPexIn(node) {
                 withFinalBindings(node, {target, value})
             },
 
-            @@varDef: { . ->
-                convertValuePayload(node)
-            },
-
+            @@varDef:
             @@varDefMutable: { . ->
                 convertValuePayload(node)
             },
 
-            @@varRef: { . ->
-                node
+            @@export:
+            @@maybe:
+            @@noYield: { . ->
+                def value = convertPexIn(get_nodeValue(node));
+                withBindings(node, {value})
             },
 
+            @@exportSelection:
+            @@importModule:
+            @@importModuleSelection:
+            @@importResource:
+            @@literal:
+            @@varRef:
             @@void: { . ->
                 node
             }
