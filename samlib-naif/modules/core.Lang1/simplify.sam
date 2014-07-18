@@ -168,15 +168,6 @@ fn convertPex(node, formals) {
         })
 };
 
-## Does parser conversion of an expression node whose payload is a map with
-## an optional `value` binding to an arbitrary expression. Does not perform
-## lvalue removal.
-fn convertValuePayload(node) {
-    return ifValue { get_nodeValue(node) }
-        { value -> withBindings(node, {value: convertPexIn(value)}) }
-        { node };
-};
-
 ## Converts a layer 1 expression or statement node into an equivalent layer
 ## 0 node.
 fn convertPexIn(node) {
@@ -210,7 +201,7 @@ fn convertPexIn(node) {
             },
 
             @@parser: { . ->
-                ## node is where the juicy stuff happens!
+                ## This is where the juicy stuff happens!
                 makeCallPex(REFS::Peg_makeMainSequence, node, [])
             },
 
@@ -222,7 +213,11 @@ fn convertPexIn(node) {
 
             @@varDef:
             @@varDefMutable: { . ->
-                convertValuePayload(node)
+                ifValue { get_nodeValue(node) }
+                    { value ->
+                        withBindings(node, {value: convertPexIn(value)})
+                    }
+                    { node }
             },
 
             @@export:
