@@ -61,10 +61,10 @@ fn convertPex(node, formals) {
             },
 
             @@code: { . ->
-                ## Use the lexical `formals` context to make a regular closure node,
-                ## and just convert that. As a special case, notice if the closure is
-                ## just a yield of a literal, and convert that with `makeResult`.
-
+                ## Use the lexical `formals` context to make a regular closure
+                ## node, and just convert that. As a special case, notice if
+                ## the closure is just a yield of a literal, and convert that
+                ## with `makeResult`.
                 def closurePayload = {(dataOf(node))*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
@@ -91,12 +91,13 @@ fn convertPex(node, formals) {
             },
 
             @@opt: { . ->
-                makeCallPex(REFS::Peg_makeRepeat, node, formals,
-                    makeLiteral(0), makeLiteral(1))
+                makeCallPex(REFS::Peg_makeRepeat,
+                    node, formals, makeLiteral(0), makeLiteral(1))
             },
 
             @@plus: { . ->
-                makeCallPex(REFS::Peg_makeRepeat, node, formals, makeLiteral(1))
+                makeCallPex(REFS::Peg_makeRepeat,
+                    node, formals, makeLiteral(1))
             },
 
             @@sequence: { . ->
@@ -109,8 +110,8 @@ fn convertPex(node, formals) {
                         { {} }
                 };
 
-                ## Convert all the pexes, passing in appropriately-extended formals
-                ## lists to each conversion.
+                ## Convert all the pexes, passing in appropriately-extended
+                ## formals lists to each conversion.
                 def convertedPexes =
                     filterAll(makeOpenRange(0), pexes)
                         { n, pex ->
@@ -133,9 +134,8 @@ fn convertPex(node, formals) {
             },
 
             @@thunk: { . ->
-                ## Use the lexical `formals` context to make a regular closure node,
-                ## and just convert that.
-
+                ## Use the lexical `formals` context to make a regular closure
+                ## node, and just convert that.
                 def closure = makeFullClosure({
                     formals,
                     yield: makeMaybe(get_nodeValue(node))
@@ -160,8 +160,9 @@ fn convertPex(node, formals) {
             },
 
             @@varRef: { . ->
-                ## `varRef` in the context of a pex just translates to a variable
-                ## fetch of the same name in the context of an expression / statement.
+                ## `varRef` in the context of a pex just translates to a
+                ## variable fetch of the same name in the context of an
+                ## expression / statement.
                 makeVarFetch(get_name(node))
             }
         })
