@@ -103,20 +103,12 @@ fn safeIndex(node, base) {
                 maxOf(namesIndex, nodesIndex)
             },
 
-            @@export: { . ->
-                safeIndexForNodes(base, get_nodeValue(node))
-            },
-
             @@exportSelection: { . ->
                 safeIndexForNames(base, get_select(node)*)
             },
 
             @@fetch: { . ->
                 safeIndexForNodes(base, get_target(node))
-            },
-
-            @@importModule: { . ->
-                safeIndexForNames(base, get_name(node));
             },
 
             @@importModuleSelection: { . ->
@@ -128,34 +120,16 @@ fn safeIndex(node, base) {
                 die("Cannot perform `safeIndex` on `importModuleSelection` node.")
             },
 
-            @@importResource: { . ->
-                safeIndexForNames(base, get_name(node));
-            },
-
-            @@literal: { . ->
-                -1
-            },
-
-            @@maybe: { . ->
-                safeIndexForNodes(base, get_nodeValue(node))
-            },
-
-            @@noYield: { . ->
-                safeIndexForNodes(base, get_nodeValue(node))
-            },
-
             @@store: { . ->
                 safeIndexForNodes(base, get_target(node), get_nodeValue(node))
             },
 
-            @@varDef: { . ->
-                def nameIndex =
-                    safeIndexForNames(base, get_name(node));
-                def valueIndex =
-                    safeIndexForNodes(base, get_nodeValue(node)?*);
-                maxOf(nameIndex, valueIndex)
+            @@literal:
+            @@void: { . ->
+                -1
             },
 
+            @@varDef:
             @@varDefMutable: { . ->
                 def nameIndex =
                     safeIndexForNames(base, get_name(node));
@@ -164,12 +138,16 @@ fn safeIndex(node, base) {
                 maxOf(nameIndex, valueIndex)
             },
 
-            @@varRef: { . ->
-                safeIndexForNames(base, get_name(node))
+            @@export:
+            @@maybe:
+            @@noYield: { . ->
+                safeIndexForNodes(base, get_nodeValue(node))
             },
 
-            @@void: { . ->
-                -1
+            @@importModule:
+            @@importResource:
+            @@varRef: { . ->
+                safeIndexForNames(base, get_name(node));
             }
         })
 };
