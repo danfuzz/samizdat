@@ -192,17 +192,15 @@ fn @@void.translate(varsBox) {
 ## Translates the given node as a statement. This differs from plain
 ## `translate` in that nodes that can't possibly have a side effect are
 ## dropped (returning void).
-export fn .translateStatement(varsBox);
+export fn translateStatement(node, varsBox) {
+    return? switch (get_type(node)) {
+        @@closureRef:
+        @@literalRef: {
+            ## Return void.
+        };
 
-fn @@closureRef.translateStatement(varsBox) {
-    ## Return void.
-};
-
-fn @@literalRef.translateStatement(varsBox) {
-    ## Return void.
-};
-
-fn Value.translateStatement(varsBox) {
-    ## Use the regular `translate` for everything else.
-    return this.translate(varsBox)
+        default: {
+            node.translate(varsBox)
+        }
+    }
 };
