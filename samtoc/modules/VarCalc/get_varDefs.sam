@@ -9,15 +9,6 @@ import core.LangNode ::
 
 
 ##
-## Exported Generics
-##
-
-## `node.get_varDefs()`: Generic that returns list of variable names
-## newly-defined by `node`. Result may have duplicates.
-export fn .get_varDefs();
-
-
-##
 ## Private Definitions
 ##
 
@@ -31,75 +22,42 @@ fn catVarDefs(nodes*) {
 ## Exported Definitions
 ##
 
-fn @@apply.get_varDefs() {
-    return []
+## Returns list of variable names newly-defined by `node`. Result may have
+## duplicates.
+export fn get_varDefs(node) {
+    return ifSwitch(
+        { get_type(node) },
+        {
+            @@export: { . ->
+                node.nodeValue.varDefs
+            },
+
+            @@importModuleSelection: { . ->
+                def statements = makeDynamicImport(node);
+                catVarDefs(statements*)
+            },
+
+            @@importModule:
+            @@importResource:
+            @@varDef:
+            @@varDefMutable: { . ->
+                [node.name]
+            },
+
+            @@apply:
+            @@call:
+            @@closure:
+            @@exportSelection:
+            @@fetch:
+            @@literal:
+            @@literalRef:
+            @@maybe:
+            @@noYield:
+            @@store:
+            @@varRef:
+            @@void: { . ->
+                []
+            }
+        })
 };
 
-fn @@call.get_varDefs() {
-    return []
-};
-
-fn @@closure.get_varDefs() {
-    return []
-};
-
-fn @@export.get_varDefs() {
-    return this.nodeValue.varDefs
-};
-
-fn @@exportSelection.get_varDefs() {
-    return []
-};
-
-fn @@fetch.get_varDefs() {
-    return []
-};
-
-fn @@importModule.get_varDefs() {
-    return [this.name]
-};
-
-fn @@importModuleSelection.get_varDefs() {
-    def statements = makeDynamicImport(this);
-    return catVarDefs(statements*)
-};
-
-fn @@importResource.get_varDefs() {
-    return [this.name]
-};
-
-fn @@literal.get_varDefs() {
-    return []
-};
-
-fn @@literalRef.get_varDefs() {
-    return []
-};
-
-fn @@maybe.get_varDefs() {
-    return []
-};
-
-fn @@noYield.get_varDefs() {
-    return []
-};
-
-fn @@store.get_varDefs() {
-    return []
-};
-
-fn @@varDef.get_varDefs() {
-    return [this.name]
-};
-
-fn @@varDefMutable.get_varDefs() {
-    return [this.name]
-};
-
-fn @@varRef.get_varDefs() {
-    return []
-};
-
-fn @@void.get_varDefs() {
-    return []
-};
