@@ -133,50 +133,52 @@ export fn makeCallThunks(function, values*) {
 };
 
 ## Documented in spec.
-export fn .makeDynamicImport();
+export fn makeDynamicImport(node) {
+    return ifSwitch(
+        { get_type(node) },
+        {
+            @@importModule: { . ->
+                ## The translation is approximately
+                ## `def name = loadModule(source)`.
 
-## Documented in spec.
-fn @@importModule.makeDynamicImport() {
-    ## The translation is approximately `def name = loadModule(source)`.
+                def name = get_name(node);
+                def source = get_source(node);
 
-    def name = get_name(this);
-    def source = get_source(this);
+                [makeVarDef(name,
+                    makeCall(REFS::loadModule, makeLiteral(source)))]
+            },
 
-    return [makeVarDef(name,
-            makeCall(REFS::loadModule, makeLiteral(source)))]
-};
+            @@importModuleSelection: { . ->
+                ## The translation is along the same lines as for
+                ## `importModule` translations, except as a list of
+                ## statements, one per binding being imported, each one
+                ## wrapped in a `get` call, e.g.
+                ## `def name = get(load(source), "name")`.
 
-## Documented in spec.
-fn @@importModuleSelection.makeDynamicImport() {
-    ## The translation is along the same lines as for `importModule`
-    ## translations, except as a list of statements, one per binding being
-    ## imported, each one wrapped in a `get` call, e.g. `def name =
-    ## get(load(source), "name")`.
+                def source = get_source(node);
+                def names = get_definedNames(node);
+                def select = get_select(node);
+                def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
-    def source = get_source(this);
-    def names = get_definedNames(this);
-    def select = get_select(this);
-    def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
+                filterAll(names, select) { name, sel ->
+                    makeVarDef(name,
+                        makeCall(REFS::get, loadCall, makeLiteral(sel)))
+                }
+            },
 
-    return filterAll(names, select) { name, sel ->
-        makeVarDef(name, makeCall(REFS::get, loadCall, makeLiteral(sel)))
-    };
-};
+            @@importResource: { . ->
+                ## The translation is approximately
+                ## `def name = loadResource(source, format)`.
 
-## Documented in spec.
-fn @@importResource.makeDynamicImport() {
-    ## The translation is approximately
-    ## `def name = loadResource(source, format)`.
+                def name = get_name(node);
+                def format = get_format(node);
+                def source = get_source(node);
 
-    def name = get_name(this);
-    def format = get_format(this);
-    def source = get_source(this);
-
-    return [
-        makeVarDef(name,
-            makeCall(REFS::loadResource,
-                makeLiteral(source), makeLiteral(format)))
-    ]
+                [makeVarDef(name,
+                    makeCall(REFS::loadResource,
+                        makeLiteral(source), makeLiteral(format)))]
+            }
+        })
 };
 
 ## Documented in spec.
