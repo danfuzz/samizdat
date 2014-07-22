@@ -11,13 +11,12 @@ import proto.Number :: add;
 ## Exported Definitions
 ##
 
-## `value.rangeAdd(amount)` generic, used to increment ints and chars.
-export fn .rangeAdd(amount);
-
-fn Int.rangeAdd(amount) {
-    return add(this, amount)
-};
-
-fn String.rangeAdd(amount) {
-    return toString(add(toInt(this), amount))
+## Increments an int or char by a given int amount.
+export fn rangeAdd(base, amount) {
+    return ifSwitch(
+        { get_type(base) },
+        {
+            (Int):    { . -> add(base, amount) },
+            (String): { . -> toString(add(toInt(base), amount)) }
+        })
 };
