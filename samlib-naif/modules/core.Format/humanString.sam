@@ -14,22 +14,20 @@ import ./sourceGeneral :: sourceGeneral;
 
 
 ## Generic for producing a human-oriented string of the argument.
-export fn .humanString();
+export fn humanString(value) {
+    return ifSwitch(
+        { get_type(value) },
+        {
+            (List): { . ->
+                def elems = makeFilterGenerator(value)
+                    { elem -> humanString(elem) };
+                cat("", elems*)
+            },
 
-## Human-stringifies a list, which recursively flattens it using
-## `humanString`.
-fn List.humanString() {
-    def elems = makeFilterGenerator(humanString, this);
-    return cat("", elems*)
-};
-
-## Human-stringifies a string, which just returns the string as-is.
-fn String.humanString() {
-    return this
-};
-
-## Default human-stringifier, which just calls through to
-## `sourceGeneral`.
-fn Value.humanString() {
-    return sourceGeneral(this, true)
+            (String): { . ->
+                value
+            }
+        },
+        { . -> sourceGeneral(value, true) }
+    )
 };
