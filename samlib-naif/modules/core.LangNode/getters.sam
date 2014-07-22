@@ -5,7 +5,7 @@
 #= language core.Lang0
 
 import core.Generator;
-import core.Sequence;
+import core.Sequence :: nthFromEnd;
 import proto.Number;
 
 import ./misc ::
@@ -45,21 +45,22 @@ fn splitAtChar(s, ch) {
 ##
 
 ## Documented in spec.
-export fn .get_baseName();
+export fn get_baseName(source) {
+    return ifSwitch(
+        { get_type(source) },
+        {
+            @@external: { . ->
+                def components = splitAtChar(source::name, ".");
+                nthFromEnd(components, 0)
+            },
 
-## Documented in spec.
-fn @@external.get_baseName() {
-    def components = splitAtChar(this::name, ".");
-    return $Sequence::nthFromEnd(components, 0)
-};
-
-## Documented in spec.
-fn @@internal.get_baseName() {
-    def components = splitAtChar(this::name, "/");
-    def last = $Sequence::nthFromEnd(components, 0);
-    def parts = splitAtChar(last, ".");
-
-    return get(parts, 0)
+            @@internal: { . ->
+                def components = splitAtChar(source::name, "/");
+                def last = nthFromEnd(components, 0);
+                def parts = splitAtChar(last, ".");
+                get(parts, 0)
+            }
+        })
 };
 
 ## Documented in spec.
