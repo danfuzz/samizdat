@@ -109,34 +109,31 @@ fn stringChar(ch) {
 
 
 ##
-## Exported: `convert` generic
+## Exported definitions
 ##
 
-## `value.convert()`: Generic function to perform the conversion.
-export fn .convert();
-
 ## Converts an int.
-fn Int.convert() {
-    return genCall("intFromZint", "\(this)")
+fn Int_convert(value) {
+    return genCall("intFromZint", "\(value)")
 };
 
 ## Converts a list.
-fn List.convert() {
-    if (this == []) {
+fn List_convert(value) {
+    if (value == []) {
         return "EMPTY_LIST"
     };
 
-    def listElems = [ elem in this -> convert(elem) ];
+    def listElems = [ elem in value -> convert(elem) ];
     return genCall("listFromArgs", listElems*, "NULL")
 };
 
 ## Converts a map.
-fn Map.convert() {
-    if (this == {}) {
+fn Map_convert(value) {
+    if (value == {}) {
         return "EMPTY_MAP"
     };
 
-    def mapPairs = [ mapping in this ->
+    def mapPairs = [ mapping in value ->
         [convert(get_key(mapping)), convert(get_value(mapping))]
     ];
 
@@ -144,34 +141,46 @@ fn Map.convert() {
 };
 
 ## Converts a string.
-fn String.convert() {
-    if (this == "") {
+fn String_convert(value) {
+    if (value == "") {
         return "EMPTY_STRING"
     };
 
     ## Each `stringChar()` call returns a list (each list element representing
     ## one byte), and we have to interpolate+concatenate them all together in
     ## order to find the encoded length.
-    def bodyChars = cat((ch in this -> stringChar(ch))*);
+    def bodyChars = cat((ch in value -> stringChar(ch))*);
 
     return genCall("stringFromUtf8",
         "\(#bodyChars)", "\"\(bodyChars)\"")
 };
 
 ## Converts a type. Only works on derived data types.
-fn Type.convert() {
-    return genCall("makeDerivedDataType", convert(typeName(this)))
+fn Type_convert(value) {
+    return genCall("makeDerivedDataType", convert(typeName(value)))
 };
 
-## Converts a derived value or an opaque core value, yielding a tree
-## that can be stringified with `indent`.
-fn Value.convert() {
-    def data = (def dval = dataOf(this)) & convert(dval) | "NULL";
-    def type = get_type(this);
+## Converts a derived value or an opaque core value.
+fn Value_convert(value) {
+    def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
+    def type = get_type(value);
 
-    if (!hasType(this, DerivedData)) {
-        die("Cannot convert opaque non-data value: \%q(this)")
+    if (!hasType(value, DerivedData)) {
+        die("Cannot convert opaque non-data value: \%q(value)")
     };
 
     return genCall("makeData", convert(type), data)
+};
+
+## Converts a value into C code to construct that value. This function
+## returns a tree that can be stringified with `indent()`.
+export fn convert(value) {
+    return switch (get_type(value)) {
+        (Int):    { Int_convert(value) };
+        (List):   { List_convert(value) };
+        (Map):    { Map_convert(value) };
+        (String): { String_convert(value) };
+        (Type):   { Type_convert(value) };
+        default:  { Value_convert(value) }
+    }
 };
