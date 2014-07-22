@@ -73,10 +73,6 @@ export fn translate(node, varsBox) {
             genCall("FUN_CALL", translate(node.function, varsBox), values*)
         };
 
-        @@closure: {
-            die("Cannot translate raw `closure` node.")
-        };
-
         @@closureRef: {
             ## This passes each of the `varRefs` as an argument to the
             ## closure maker.
@@ -88,50 +84,13 @@ export fn translate(node, varsBox) {
                 )*)
         };
 
-        @@export: {
-            ## This is only needed once we move to a non-dynamic translation of
-            ## imports.
-            die("Cannot translate `@export`.")
-        };
-
-        @@exportSelection: {
-            ## This is only needed once we move to a non-dynamic translation of
-            ## imports.
-            die("Cannot translate `@exportSelection`.")
-        };
-
         @@fetch: {
             def target = nonVoid(translate(node.target, varsBox));
             genCall("GFN_CALL", "fetch", target)
         };
 
-        @@importModule: {
-            ## This is only needed once we move to a non-dynamic translation of
-            ## imports.
-            die("Cannot translate `@importModule`.")
-        };
-
-        @@importModuleSelection: {
-            ## This is only needed once we move to a non-dynamic translation of
-            ## imports.
-            die("Cannot translate `@importModuleSelection`.")
-        };
-
-        @@importResource: {
-            ## This is only needed once we move to a non-dynamic translation of
-            ## imports.
-            die("Cannot translate `@importResource`.")
-        };
-
         @@literalRef: {
             "LIT_\(node.id)"
-        };
-
-        @@maybe: {
-            ## We should never encounter one of these. They should all end up
-            ## getting handled as special cases on the node types where a
-            ## `@maybe` is valid.
-            die("Invalid use of `@maybe`.")
         };
 
         @@noYield: {
@@ -181,9 +140,21 @@ export fn translate(node, varsBox) {
             binding::name
         };
 
+        ## Various untranslatable nodes. Details:
+        ## * `@closure` --  Should have been replaced by a `closureRef`.
+        ## * `@export*`, `@import*` -- Only needed once we move to a
+        ##   non-dynamic translation of imports.
+        ## * `@maybe`, `@void` -- Should have been handled as special cases
+        ##   within the node types where they're explicitly valid.
+        @@closure:
+        @@export:
+        @@exportSelection:
+        @@importModule:
+        @@importModuleSelection:
+        @@importResource:
+        @@maybe:
         @@void: {
-            ## We should never encounter one of these. See `@maybe`, above.
-            die("Invalid use of `@void`.")
+            die("Cannot translate \(@(type)).")
         }
     }
 };
