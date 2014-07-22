@@ -1,0 +1,35 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `humanString`
+##
+
+#= language core.Lang0
+
+import core.Generator :: makeFilterGenerator;
+
+import ./sourceGeneral :: sourceGeneral;
+
+
+## Generic for producing a human-oriented string of the argument.
+export fn .humanString();
+
+## Human-stringifies a list, which recursively flattens it using
+## `humanString`.
+fn List.humanString() {
+    def elems = makeFilterGenerator(humanString, this);
+    return cat("", elems*)
+};
+
+## Human-stringifies a string, which just returns the string as-is.
+fn String.humanString() {
+    return this
+};
+
+## Default human-stringifier, which just calls through to
+## `sourceGeneral`.
+fn Value.humanString() {
+    return sourceGeneral(this, true)
+};
