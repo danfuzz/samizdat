@@ -16,10 +16,6 @@ import ./int :: intWithBase;
 import ./string :: stringChar;
 
 
-## Common generic for the two `source*` variants, which takes an
-## `adorn` flag.
-export fn .sourceGeneral(adorn);
-
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
     return ifIs { totalEq(adorn, true) }
@@ -67,45 +63,45 @@ fn keyString(key) {
 };
 
 ## Stringifies an int.
-fn Int.sourceGeneral(adorn) {
-    return intWithBase(this, 10)
+fn Int_sourceGeneral(value, adorn) {
+    return intWithBase(value, 10)
 };
 
 ## Stringifies a list.
-fn List.sourceGeneral(adorn) {
-    def listElems = filterAll(this)
+fn List_sourceGeneral(value, adorn) {
+    def listElems = filterAll(value)
         { elem -> cat(", ", sourceGeneral(elem, true)) };
 
     return adornIf(adorn, "[", collectionBody(listElems), "]")
 };
 
 ## Stringifies a map.
-fn Map.sourceGeneral(adorn) {
-    def mapElems = filterAll(this)
+fn Map_sourceGeneral(value, adorn) {
+    def mapElems = filterAll(value)
         { mapping ->
-            def key = keyString(get_key(mapping));
-            def value = sourceGeneral(get_value(mapping), true);
-            cat(", ", key, ": ", value)
+            def k = keyString(get_key(mapping));
+            def v = sourceGeneral(get_value(mapping), true);
+            cat(", ", k, ": ", v)
         };
 
     return adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
 
 ## Stringifies a string.
-fn String.sourceGeneral(adorn) {
-    def bodyChars = makeFilterGenerator(this)
+fn String_sourceGeneral(value, adorn) {
+    def bodyChars = makeFilterGenerator(value)
         { ch -> stringChar(ch) };
     return adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 
 ## Stringifies a type.
-fn Type.sourceGeneral(adorn) {
-    ifValue { get(SPECIAL_VALUES, this) }
+fn Type_sourceGeneral(value, adorn) {
+    ifValue { get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def name = typeName(this);
+    def name = typeName(value);
 
-    ifNot { eq(typeParent(this), DerivedData) }
+    ifNot { eq(typeParent(value), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
     def body = ifIs { hasType(name, String) }
@@ -116,11 +112,11 @@ fn Type.sourceGeneral(adorn) {
 };
 
 ## Stringifies a derived value or an opaque core value.
-fn Value.sourceGeneral(adorn) {
-    ifValue { get(SPECIAL_VALUES, this) }
+fn Value_sourceGeneral(value, adorn) {
+    ifValue { get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def type = get_type(this);
+    def type = get_type(value);
     def name = typeName(type);
     def typeStr = ifIs { hasType(name, String) }
         {
@@ -136,14 +132,14 @@ fn Value.sourceGeneral(adorn) {
     ifNot { eq(typeParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifValue { debugName(this) }
+            def body = ifValue { debugName(value) }
                 { name -> keyString(name) }
                 { "..." };
 
             return cat(prefix, "<", body, ">")
         };
 
-    return ifValue { dataOf(this) }
+    return ifValue { dataOf(value) }
         { data ->
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
@@ -158,4 +154,20 @@ fn Value.sourceGeneral(adorn) {
             ## Type-only transparent derived value.
             prefix
         };
+};
+
+## Common code for the two `source*` variants, which takes an
+## `adorn` flag.
+export fn sourceGeneral(value, adorn) {
+    return ifSwitch(
+        { get_type(value) },
+        {
+            (Int):    { . -> Int_sourceGeneral(value, adorn) },
+            (List):   { . -> List_sourceGeneral(value, adorn) },
+            (Map):    { . -> Map_sourceGeneral(value, adorn) },
+            (String): { . -> String_sourceGeneral(value, adorn) },
+            (Type):   { . -> Type_sourceGeneral(value, adorn) }
+        },
+        { . -> Value_sourceGeneral(value, adorn) }
+    )
 };
