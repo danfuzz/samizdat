@@ -1,0 +1,43 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Identifier utilities
+##
+
+#= language core.Lang0
+
+import core.Generator :: filterPump;
+
+
+## These are all the characters which are allowed to start an identifier.
+def IDENTIFIER_STARTS = {
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"*: true
+};
+
+## These are all the characters which are allowed to be in an identifier.
+def IDENTIFIER_CHARS = {
+    IDENTIFIER_STARTS*,
+    "0123456789"*: true
+};
+
+## Checks to see if the given value is a string with the form of an
+## in-language identifier. Returns the given `string` if so.
+export fn isIdentifier(string) {
+    ifNot { hasType(string, String) }
+        { return };
+
+    ifIs { eq(string, "") }
+        { return };
+
+    ifNot { get(IDENTIFIER_STARTS, nth(string, 0)) }
+        { return };
+
+    filterPump(string) { ch ->
+        ifNot { get(IDENTIFIER_CHARS, ch) }
+            { return }
+    };
+
+    return string
+};

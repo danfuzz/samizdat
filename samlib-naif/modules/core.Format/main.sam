@@ -8,50 +8,17 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll, filterPump, makeFilterGenerator;
+import core.Generator :: filterAll, makeFilterGenerator;
 import core.Range :: makeInclusiveRange;
 import core.Sequence :: sliceInclusive;
-import proto.Number :: div, mod, neg, sign;
+
+import ./identifier :: isIdentifier;
+import ./int :: intWithBase;
 
 
 ##
 ## Private Definitions
 ##
-
-##
-## Int formatting
-##
-
-## This is int digits for bases up to 36, in order.
-def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
-
-## Helper for stringifying ints, which does most of the conversion.
-fn intBody(value, base) {
-    var text = "";
-    var v = value;
-
-    loop {
-        ifIs { perEq(v, 0) }
-            { return text };
-
-        def digit = nth(DIGIT_CHARS, mod(v, base));
-        text := cat(digit, text);
-        v := div(v, base)
-    }
-};
-
-## Map from int sign values to the appropriate stringifier for each.
-def INT_SIGNS = {
-    -1: { int, base -> cat("-", intBody(neg(int), base)) },
-    0:  { int, base -> "0" },
-    1:  { int, base -> intBody(int, base) }
-};
-
-## Stringifies an int using the given base.
-fn intWithBase(int, base) {
-    return get(INT_SIGNS, sign(int))(int, base)
-};
-
 
 ##
 ## `sourceGeneral` and helpers
@@ -80,17 +47,6 @@ fn collectionBody(elems) {
     return cat(one, sliceInclusive(elems, 1)*)
 };
 
-## These are all the characters which are allowed to start an identifier.
-def IDENTIFIER_STARTS = {
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"*: true
-};
-
-## These are all the characters which are allowed to be in an identifier.
-def IDENTIFIER_CHARS = {
-    IDENTIFIER_STARTS*,
-    "0123456789"*: true
-};
-
 ## Values with special conversions.
 def SPECIAL_VALUES = {
     (Data):        "Data",
@@ -105,26 +61,6 @@ def SPECIAL_VALUES = {
     (false):       "false",
     (null):        "null",
     (true):        "true"
-};
-
-## Checks to see if the given value is a string with the form of an
-## in-language identifier. Returns the given `string` if so.
-fn isIdentifier(string) {
-    ifNot { hasType(string, String) }
-        { return };
-
-    ifIs { eq(string, "") }
-        { return };
-
-    ifNot { get(IDENTIFIER_STARTS, nth(string, 0)) }
-        { return };
-
-    filterPump(string) { ch ->
-        ifNot { get(IDENTIFIER_CHARS, ch) }
-            { return }
-    };
-
-    return string
 };
 
 ## Stringifies a key (or derived value name).
