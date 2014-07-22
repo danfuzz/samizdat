@@ -4,7 +4,7 @@
 
 #= language core.Lang0
 
-import core.Generator;
+import core.Generator :: filterAll;
 import core.Sequence :: nthFromEnd;
 import proto.Number;
 
@@ -64,45 +64,31 @@ export fn get_baseName(source) {
 };
 
 ## Documented in spec.
-export fn .get_definedNames();
+export fn get_definedNames(node) {
+    return ifSwitch(
+        { get_type(node) },
+        {
+            @@export: { . ->
+                get_definedNames(get_nodeValue(node))
+            },
 
-## Documented in spec.
-fn @@export.get_definedNames() {
-    return get_definedNames(get_nodeValue(this))
-};
+            @@importModuleSelection: { . ->
+                def prefix = get_prefix(node);
+                def select = ifValueOr { get_select(node) }
+                    { die("Cannot call `get_definedNames` on unresolved import.") };
 
-## Documented in spec.
-fn @@importModule.get_definedNames() {
-    return [get_name(this)]
-};
+                filterAll(select) { name -> cat(prefix, name) }
+            },
 
-## Documented in spec.
-fn @@importModuleSelection.get_definedNames() {
-    def prefix = get_prefix(this);
-    def select = ifValueOr { get_select(this) }
-        { die("Cannot call `get_definedNames` on unresolved import.") };
-
-    return $Generator::filterAll(select) { name -> cat(prefix, name) }
-};
-
-## Documented in spec.
-fn @@importResource.get_definedNames() {
-    return [get_name(this)]
-};
-
-## Documented in spec.
-fn @@varDef.get_definedNames() {
-    return [get_name(this)]
-};
-
-## Documented in spec.
-fn @@varDefMutable.get_definedNames() {
-    return [get_name(this)]
-};
-
-## Documented in spec.
-fn Value.get_definedNames() {
-    return []
+            @@importModule:
+            @@importResource:
+            @@varDef:
+            @@varDefMutable: { . ->
+                [get_name(node)]
+            }
+        },
+        { . -> [] }
+    )
 };
 
 ## Documented in spec.
