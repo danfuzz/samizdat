@@ -4,8 +4,8 @@
 
 #= language core.Lang0
 
-import core.Generator;
-import core.Sequence;
+import core.Generator :: filterAll;
+import core.Sequence :: nthFromEnd;
 import proto.Number;
 
 import ./misc ::
@@ -45,63 +45,50 @@ fn splitAtChar(s, ch) {
 ##
 
 ## Documented in spec.
-export fn .get_baseName();
+export fn get_baseName(source) {
+    return ifSwitch(
+        { get_type(source) },
+        {
+            @@external: { . ->
+                def components = splitAtChar(source::name, ".");
+                nthFromEnd(components, 0)
+            },
 
-## Documented in spec.
-fn @@external.get_baseName() {
-    def components = splitAtChar(this::name, ".");
-    return $Sequence::nthFromEnd(components, 0)
+            @@internal: { . ->
+                def components = splitAtChar(source::name, "/");
+                def last = nthFromEnd(components, 0);
+                def parts = splitAtChar(last, ".");
+                get(parts, 0)
+            }
+        })
 };
 
 ## Documented in spec.
-fn @@internal.get_baseName() {
-    def components = splitAtChar(this::name, "/");
-    def last = $Sequence::nthFromEnd(components, 0);
-    def parts = splitAtChar(last, ".");
+export fn get_definedNames(node) {
+    return ifSwitch(
+        { get_type(node) },
+        {
+            @@export: { . ->
+                get_definedNames(get_nodeValue(node))
+            },
 
-    return get(parts, 0)
-};
+            @@importModuleSelection: { . ->
+                def prefix = get_prefix(node);
+                def select = ifValueOr { get_select(node) }
+                    { die("Cannot call `get_definedNames` on unresolved import.") };
 
-## Documented in spec.
-export fn .get_definedNames();
+                filterAll(select) { name -> cat(prefix, name) }
+            },
 
-## Documented in spec.
-fn @@export.get_definedNames() {
-    return get_definedNames(get_nodeValue(this))
-};
-
-## Documented in spec.
-fn @@importModule.get_definedNames() {
-    return [get_name(this)]
-};
-
-## Documented in spec.
-fn @@importModuleSelection.get_definedNames() {
-    def prefix = get_prefix(this);
-    def select = ifValueOr { get_select(this) }
-        { die("Cannot call `get_definedNames` on unresolved import.") };
-
-    return $Generator::filterAll(select) { name -> cat(prefix, name) }
-};
-
-## Documented in spec.
-fn @@importResource.get_definedNames() {
-    return [get_name(this)]
-};
-
-## Documented in spec.
-fn @@varDef.get_definedNames() {
-    return [get_name(this)]
-};
-
-## Documented in spec.
-fn @@varDefMutable.get_definedNames() {
-    return [get_name(this)]
-};
-
-## Documented in spec.
-fn Value.get_definedNames() {
-    return []
+            @@importModule:
+            @@importResource:
+            @@varDef:
+            @@varDefMutable: { . ->
+                [get_name(node)]
+            }
+        },
+        { . -> [] }
+    )
 };
 
 ## Documented in spec.

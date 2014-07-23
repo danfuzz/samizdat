@@ -1,0 +1,33 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `humanString`
+##
+
+#= language core.Lang0
+
+import core.Generator :: makeFilterGenerator;
+
+import ./sourceGeneral :: sourceGeneral;
+
+
+## Generic for producing a human-oriented string of the argument.
+export fn humanString(value) {
+    return ifSwitch(
+        { get_type(value) },
+        {
+            (List): { . ->
+                def elems = makeFilterGenerator(value)
+                    { elem -> humanString(elem) };
+                cat("", elems*)
+            },
+
+            (String): { . ->
+                value
+            }
+        },
+        { . -> sourceGeneral(value, true) }
+    )
+};

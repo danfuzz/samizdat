@@ -1,0 +1,42 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Int formatting
+##
+
+#= language core.Lang0
+
+import proto.Number :: div, mod, neg, sign;
+
+
+## This is int digits for bases up to 36, in order.
+def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+## Helper for stringifying ints, which does most of the conversion.
+fn intBody(value, base) {
+    var text = "";
+    var v = value;
+
+    loop {
+        ifIs { perEq(v, 0) }
+            { return text };
+
+        def digit = nth(DIGIT_CHARS, mod(v, base));
+        text := cat(digit, text);
+        v := div(v, base)
+    }
+};
+
+## Map from int sign values to the appropriate stringifier for each.
+def INT_SIGNS = {
+    -1: { int, base -> cat("-", intBody(neg(int), base)) },
+    0:  { int, base -> "0" },
+    1:  { int, base -> intBody(int, base) }
+};
+
+## Stringifies an int using the given base.
+export fn intWithBase(int, base) {
+    return get(INT_SIGNS, sign(int))(int, base)
+};

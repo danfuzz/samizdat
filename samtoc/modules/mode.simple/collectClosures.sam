@@ -12,112 +12,82 @@ import VarCalc :: get_varRefs;
 ## Private Definitions
 ##
 
-## `node.bodies(bodiesBox)`, implements one layer of body collection.
-fn .bodies(bodiesBox);
+## Does one layer of body collection.
+fn bodies(node, bodiesBox) {
+    return switch (def type = get_type(node)) {
+        @@apply: {
+            def function = bodies(node.function, bodiesBox);
+            def values = bodies(node.values, bodiesBox);
 
-fn @@apply.bodies(bodiesBox) {
-    def function = bodies(this.function, bodiesBox);
-    def values = bodies(this.values, bodiesBox);
+            @apply{values, function}
+        };
 
-    return @apply{values, function}
-};
+        @@call: {
+            def function = bodies(node.function, bodiesBox);
+            def values = [ a in node.values -> bodies(a, bodiesBox) ];
+            @call{function, values}
+        };
 
-fn @@call.bodies(bodiesBox) {
-    def function = bodies(this.function, bodiesBox);
-    def values = [ a in this.values -> bodies(a, bodiesBox) ];
-    return @call{function, values}
-};
+        @@closure: {
+            def statements = [ s in node.statements -> bodies(s, bodiesBox) ];
+            def yieldNode = bodies(node.yieldNode, bodiesBox);
+            def varRefs = node.varRefs;
 
-fn @@closure.bodies(bodiesBox) {
-    def statements = [ s in this.statements -> bodies(s, bodiesBox) ];
-    def yieldNode = bodies(this.yieldNode, bodiesBox);
-    def varRefs = this.varRefs;
+            def newNode = makeFullClosure({
+                formals: node.formals,
+                ((def name = node.name) & {name} | {})*,
+                statements,
+                varRefs,
+                yield: yieldNode,
+                ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
+            });
 
-    def newNode = makeFullClosure({
-        formals: this.formals,
-        ((def name = this.name) & {name} | {})*,
-        statements,
-        varRefs,
-        yield: yieldNode,
-        ((def yieldDef = this.yieldDef) & {yieldDef} | {})*
-    });
+            def bodies = bodiesBox*;
+            if (def already = bodies[newNode]) {
+                return already
+            };
 
-    def bodies = bodiesBox*;
-    if (def already = bodies[newNode]) {
-        return already
-    };
+            def result = @closureRef{id: #bodies, varRefs};
+            bodiesBox* := {bodies*, (newNode): result};
+            result
+        };
 
-    def result = @closureRef{id: #bodies, varRefs};
-    bodiesBox* := {bodies*, (newNode): result};
-    return result
-};
+        @@fetch: {
+            def target = bodies(node.target, bodiesBox);
+            @fetch{target}
+        };
 
-fn @@export.bodies(bodiesBox) {
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @export{value}
-};
+        @@store: {
+            def target = bodies(node.target, bodiesBox);
+            def value = bodies(node.nodeValue, bodiesBox);
+            @store{target, value}
+        };
 
-fn @@exportSelection.bodies(bodiesBox) {
-    return this
-};
+        @@varDef:
+        @@varDefMutable: {
+            def value = ifValue { node.nodeValue }
+                { value -> {value: bodies(value, bodiesBox)} }
+                { {} };
+            @(type){name: node.name, value*}
+        };
 
-fn @@fetch.bodies(bodiesBox) {
-    def target = bodies(this.target, bodiesBox);
-    return @fetch{target}
-};
+        @@export:
+        @@maybe:
+        @@noYield: {
+            def value = bodies(node.nodeValue, bodiesBox);
+            @(type){value}
+        };
 
-fn @@importModule.bodies(bodiesBox) {
-    return this
-};
-
-fn @@importModuleSelection.bodies(bodiesBox) {
-    return this
-};
-
-fn @@importResource.bodies(bodiesBox) {
-    return this
-};
-
-fn @@literalRef.bodies(bodiesBox) {
-    return this
-};
-
-fn @@maybe.bodies(bodiesBox) {
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @maybe{value}
-};
-
-fn @@noYield.bodies(bodiesBox) {
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @noYield{value}
-};
-
-fn @@store.bodies(bodiesBox) {
-    def target = bodies(this.target, bodiesBox);
-    def value = bodies(this.nodeValue, bodiesBox);
-    return @store{target, value}
-};
-
-fn @@varDef.bodies(bodiesBox) {
-    def value = ifValue { this.nodeValue }
-        { value -> {value: bodies(value, bodiesBox)} }
-        { {} };
-    return @varDef{name: this.name, value*}
-};
-
-fn @@varDefMutable.bodies(bodiesBox) {
-    def value = ifValue { this.nodeValue }
-        { value -> {value: bodies(value, bodiesBox)} }
-        { {} };
-    return @varDefMutable{name: this.name, value*}
-};
-
-fn @@varRef.bodies(bodiesBox) {
-    return this
-};
-
-fn @@void.bodies(bodiesBox) {
-    return this
+        @@exportSelection:
+        @@importModule:
+        @@importModuleSelection:
+        @@importResource:
+        @@literalRef:
+        @@varRef:
+        @@void: {
+            node
+        }
+    }
 };
 
 

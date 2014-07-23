@@ -46,54 +46,55 @@ fn sourceString(source) {
 ##
 
 ## Documented in spec.
-export fn .resolveImport(resolveFn);
-
-## Documented in spec.
-fn @@importModule.resolveImport(resolveFn) {
-    ## No need to modify, just validate.
-    def source = get_source(this);
-    resolveAndCheck(resolveFn, source);
-
-    return this
-};
-
-## Documented in spec.
-fn @@importModuleSelection.resolveImport(resolveFn) {
-    ## We need to inspect the resolved innards, so keep the resolved value
-    ## (unlike the other related functions).
-    def source = get_source(this);
-    def resolved = resolveAndCheck(resolveFn, source);
-
-    ## Get the `info::exports` out of the resolved result. Default to `{}`
-    ## if not present.
-    def info = ifValueOr { resolved::info } { {} };
-    def exports = ifValueOr { info::exports } { {} };
-
-    return ifValue { get_select(this) }
-        { select ->
-            ## Explicit selection, so no need to return a modified result.
-            ## Just validate that all selected names are available for import.
-            filterAll(select) { one ->
-                ifNot { get(exports, one) }
-                    {
-                        die("Could not resolve import: ",
-                            sourceString(source), " :: ", one)
-                    }
-            };
-            this
-        }
+export fn resolveImport(node, resolveFn) {
+    return ifSwitch(
+        { get_type(node) },
         {
-            ## It's a wildcard import, so return a modified node that lists
-            ## all the exported names.
-            def select = keyList(exports);
-            @importModuleSelection{dataOf(this)*, select}
-        }
-};
+            @@importModule: { . ->
+                ## No need to modify, just validate.
+                def source = get_source(node);
+                resolveAndCheck(resolveFn, source);
 
-## Documented in spec.
-fn @@importResource.resolveImport(resolveFn) {
-    ## No need to modify, just validate. TODO: Validate.
-    return this
+                node
+            },
+
+            @@importModuleSelection: { . ->
+                ## We need to inspect the resolved innards, so keep the resolved value
+                ## (unlike the other related functions).
+                def source = get_source(node);
+                def resolved = resolveAndCheck(resolveFn, source);
+
+                ## Get the `info::exports` out of the resolved result. Default to `{}`
+                ## if not present.
+                def info = ifValueOr { resolved::info } { {} };
+                def exports = ifValueOr { info::exports } { {} };
+
+                ifValue { get_select(node) }
+                    { select ->
+                        ## Explicit selection, so no need to return a modified result.
+                        ## Just validate that all selected names are available for import.
+                        filterAll(select) { one ->
+                            ifNot { get(exports, one) }
+                                {
+                                    die("Could not resolve import: ",
+                                        sourceString(source), " :: ", one)
+                                }
+                        };
+                        node
+                    }
+                    {
+                        ## It's a wildcard import, so return a modified node that lists
+                        ## all the exported names.
+                        def select = keyList(exports);
+                        @importModuleSelection{dataOf(node)*, select}
+                    }
+            },
+
+            @@importResource: { . ->
+                ## No need to modify, just validate. TODO: Validate.
+                node
+            }
+        })
 };
 
 ## Documented in spec.

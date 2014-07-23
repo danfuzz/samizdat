@@ -41,168 +41,137 @@ fn nonVoid(value) {
 
 
 ##
-## Exported Definitions: `translate`
+## Exported Definitions
 ##
 
-## `node.translate(varsBox)`: Generic function to perform the translation.
-export fn .translate(varsBox);
+## Translates a node, using and updating `varsBox` as appropriate.
+export fn translate(node, varsBox) {
+    return switch (get_type(node)) {
+        @@apply: {
+            def function = translate(node.function, varsBox);
+            def values = node.values;
 
-fn @@apply.translate(varsBox) {
-    def function = translate(this.function, varsBox);
-    def values = this.values;
+            if (hasType(values, @@maybe)) {
+                def vTrans = translate(values.nodeValue, varsBox);
+                genCall("funApply", function, vTrans)
+            } else if (hasType(values, @@void)) {
+                ## A void `values` binding just devolves into a no-argument
+                ## (but otherwise regular) function call.
+                genCall("FUN_CALL", function)
+            } else {
+                ## If it's not wrapped in a `@maybe`, we need to guarantee
+                ## non-void.
+                def vTrans = nonVoid(translate(values, varsBox));
+                genCall("funApply", function, vTrans)
+            }
+        };
 
-    return if (hasType(values, @@maybe)) {
-        def vTrans = translate(values.nodeValue, varsBox);
-        genCall("funApply", function, vTrans)
-    } else if (hasType(values, @@void)) {
-        ## A void `values` binding just devolves into a no-argument (but
-        ## otherwise regular) function call.
-        genCall("FUN_CALL", function)
-    } else {
-        ## If it's not wrapped in a `@maybe`, we need to guarantee
-        ## non-void.
-        def vTrans = nonVoid(translate(values, varsBox));
-        genCall("funApply", function, vTrans)
+        @@call: {
+            def values = ( a in node.values ->
+                nonVoid(translate(a, varsBox))
+            );
+            genCall("FUN_CALL", translate(node.function, varsBox), values*)
+        };
+
+        @@closureRef: {
+            ## This passes each of the `varRefs` as an argument to the
+            ## closure maker.
+            def vars = varsBox*;
+            genCall("makeClosure_\(node.id)",
+                ( name in node.varRefs ->
+                    vars[name]::name
+                        | die("Capture of undefined variable: \%q(name)");
+                )*)
+        };
+
+        @@fetch: {
+            def target = nonVoid(translate(node.target, varsBox));
+            genCall("GFN_CALL", "fetch", target)
+        };
+
+        @@literalRef: {
+            "LIT_\(node.id)"
+        };
+
+        @@noYield: {
+            def value = translate(node.nodeValue, varsBox);
+            genCall("mustNotYield", value)
+        };
+
+        @@store: {
+            def target = translate(node.target, varsBox);
+            def value = node.nodeValue;
+
+            if (hasType(value, @@maybe)) {
+                def vTrans = translate(value.nodeValue, varsBox);
+                genCall("boxStoreNullOk", target, vTrans)
+            } else if (hasType(value, @@void)) {
+                genCall("GFN_CALL", "store", target)
+            } else {
+                ## If it's not wrapped in a `@maybe`, we need to guarantee
+                ## non-void.
+                def vTrans = nonVoid(translate(value, varsBox));
+                genCall("GFN_CALL", "store", target, vTrans)
+            }
+        };
+
+        @@varDef: {
+            def value = (def v = node.nodeValue)
+                & genCall("makeResult", nonVoid(translate(v, varsBox)))
+                | genCall("makePromise");
+
+            varDefCommon(node.name, value, varsBox)
+        };
+
+        @@varDefMutable: {
+            def value = (def v = node.nodeValue)
+                & translate(v, varsBox)
+                | "NULL";
+
+            varDefCommon(
+                node.name, nonVoid(genCall("makeCell", value)), varsBox)
+        };
+
+        @@varRef: {
+            def name = node.name;
+            def vars = varsBox*;
+            def binding = vars[name]
+                | die("Reference of undefined variable: \%q(node.name)");
+            binding::name
+        };
+
+        ## Various untranslatable nodes. Details:
+        ## * `@closure` --  Should have been replaced by a `closureRef`.
+        ## * `@export*`, `@import*` -- Only needed once we move to a
+        ##   non-dynamic translation of imports.
+        ## * `@maybe`, `@void` -- Should have been handled as special cases
+        ##   within the node types where they're explicitly valid.
+        @@closure:
+        @@export:
+        @@exportSelection:
+        @@importModule:
+        @@importModuleSelection:
+        @@importResource:
+        @@maybe:
+        @@void: {
+            die("Cannot translate \(@(type)).")
+        }
     }
 };
 
-fn @@call.translate(varsBox) {
-    def values = ( a in this.values -> nonVoid(translate(a, varsBox)) );
-    return genCall("FUN_CALL", translate(this.function, varsBox), values*)
-};
-
-fn @@closure.translate(varsBox) {
-    die("Cannot translate raw `closure` node.")
-};
-
-fn @@closureRef.translate(varsBox) {
-    ## This passes each of the `varRefs` as an argument to the
-    ## closure maker.
-    def vars = varsBox*;
-    return genCall("makeClosure_\(this.id)",
-        ( name in this.varRefs ->
-            vars[name]::name
-                | die("Capture of undefined variable: \%q(name)");
-        )*)
-};
-
-fn @@export.translate(varsBox) {
-    ## This is only needed once we move to a non-dynamic translation of
-    ## imports.
-    die("Cannot translate `@export`.")
-};
-
-fn @@exportSelection.translate(varsBox) {
-    ## This is only needed once we move to a non-dynamic translation of
-    ## imports.
-    die("Cannot translate `@exportSelection`.")
-};
-
-fn @@fetch.translate(varsBox) {
-    def target = nonVoid(translate(this.target, varsBox));
-    return genCall("GFN_CALL", "fetch", target)
-};
-
-fn @@importModule.translate(varsBox) {
-    ## This is only needed once we move to a non-dynamic translation of
-    ## imports.
-    die("Cannot translate `@importModule`.")
-};
-
-fn @@importModuleSelection.translate(varsBox) {
-    ## This is only needed once we move to a non-dynamic translation of
-    ## imports.
-    die("Cannot translate `@importModuleSelection`.")
-};
-
-fn @@importResource.translate(varsBox) {
-    ## This is only needed once we move to a non-dynamic translation of
-    ## imports.
-    die("Cannot translate `@importResource`.")
-};
-
-fn @@literalRef.translate(varsBox) {
-    return "LIT_\(this.id)"
-};
-
-fn @@maybe.translate(varsBox) {
-    ## We should never encounter one of these. They should all end up
-    ## getting handled as special cases on the node types where a `@maybe`
-    ## is valid.
-    die("Invalid use of `@maybe`.")
-};
-
-fn @@noYield.translate(varsBox) {
-    def value = translate(this.nodeValue, varsBox);
-    return genCall("mustNotYield", value)
-};
-
-fn @@store.translate(varsBox) {
-    def target = translate(this.target, varsBox);
-    def value = this.nodeValue;
-
-    return if (hasType(value, @@maybe)) {
-        def vTrans = translate(value.nodeValue, varsBox);
-        genCall("boxStoreNullOk", target, vTrans)
-    } else if (hasType(value, @@void)) {
-        genCall("GFN_CALL", "store", target)
-    } else {
-        ## If it's not wrapped in a `@maybe`, we need to guarantee
-        ## non-void.
-        def vTrans = nonVoid(translate(value, varsBox));
-        genCall("GFN_CALL", "store", target, vTrans)
-    }
-};
-
-fn @@varDef.translate(varsBox) {
-    def value = (def v = this.nodeValue)
-        & genCall("makeResult", nonVoid(translate(v, varsBox)))
-        | genCall("makePromise");
-
-    return varDefCommon(this.name, value, varsBox)
-};
-
-fn @@varDefMutable.translate(varsBox) {
-    def value = (def v = this.nodeValue)
-        & translate(v, varsBox)
-        | "NULL";
-
-    return varDefCommon(
-        this.name, nonVoid(genCall("makeCell", value)), varsBox)
-};
-
-fn @@varRef.translate(varsBox) {
-    def name = this.name;
-    def vars = varsBox*;
-    def binding = vars[name]
-        | die("Reference of undefined variable: \%q(this.name)");
-    return binding::name
-};
-
-fn @@void.translate(varsBox) {
-    ## We should never encounter one of these. See `@maybe`, above.
-    die("Invalid use of `@void`.")
-};
-
-
-##
-## Exported Definitions: `translateStatement`
-##
 
 ## Translates the given node as a statement. This differs from plain
 ## `translate` in that nodes that can't possibly have a side effect are
 ## dropped (returning void).
-export fn .translateStatement(varsBox);
+export fn translateStatement(node, varsBox) {
+    return? switch (get_type(node)) {
+        @@closureRef:
+        @@literalRef: {
+            ## Return void.
+        };
 
-fn @@closureRef.translateStatement(varsBox) {
-    ## Return void.
-};
-
-fn @@literalRef.translateStatement(varsBox) {
-    ## Return void.
-};
-
-fn Value.translateStatement(varsBox) {
-    ## Use the regular `translate` for everything else.
-    return this.translate(varsBox)
+        default: {
+            node.translate(varsBox)
+        }
+    }
 };

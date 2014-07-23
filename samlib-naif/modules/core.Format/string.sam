@@ -1,0 +1,67 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## String utilities
+##
+
+#= language core.Lang0
+
+import core.Range :: makeInclusiveRange;
+
+import ./int :: intWithBase;
+
+
+## The first Unicode surrogate code point.
+def CHAR_SURROGATE_START = toString(55296);  ## U+D800
+
+## The last Unicode surrogate code point.
+def CHAR_SURROGATE_END = toString(57343);  ## U+DFFF
+
+## The last Unicode code point.
+def CHAR_UNICODE_END = toString(1114111);  ## U+10FFFF
+
+## Map of special-case characters to either their stringified forms or
+## to `"x"` to indicate a need to convert as hex.
+def SPECIAL_CHARS = {
+    (makeInclusiveRange(toString(1), toString(31)))*: "x",
+    (makeInclusiveRange(toString(127), toString(159)))*: "x",
+    (toString(65534)): "x",
+    (toString(65535)): "x",
+    "\0": "\\0",
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
+    "\"": "\\\"",
+    "\\": "\\\\"
+};
+
+## Does hex character conversion.
+fn hexStringChar(ch) {
+    return cat(
+        "\\x",
+        intWithBase(toInt(ch), 16),
+        ";")
+};
+
+## Helper for stringifying strings: Returns the converted form of the
+## given character.
+export fn stringChar(ch) {
+    ifValue { get(SPECIAL_CHARS, ch) }
+        { special ->
+            ifIs { eq(special, "x") }
+                { return hexStringChar(ch) }
+                { return special }
+        };
+
+    ifIs { lt(ch, CHAR_SURROGATE_START) }
+        { return ch };
+
+    ifIs { le(ch, CHAR_SURROGATE_END) }
+        { return hexStringChar(ch) };
+
+    return ifIs { le(ch, CHAR_UNICODE_END) }
+        { ch }
+        { hexStringChar(ch) }
+};

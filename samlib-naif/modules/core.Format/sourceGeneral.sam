@@ -1,0 +1,173 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `sourceGeneral` and helpers
+##
+
+#= language core.Lang0
+
+import core.Generator :: filterAll, makeFilterGenerator;
+import core.Sequence :: sliceInclusive;
+
+import ./identifier :: isIdentifier;
+import ./int :: intWithBase;
+import ./string :: stringChar;
+
+
+## Helper for optionally adorning results.
+fn adornIf(adorn, before, value, after) {
+    return ifIs { totalEq(adorn, true) }
+        { cat(before, value, after) }
+        { value }
+};
+
+## Helper which concatenates a list of list or map element stringifications.
+## It assumes that every element is a string that starts with `", "`, and it
+## removes that prefix from the first element. As a special case, this returns
+## `""` if given `[]` for `elems`.
+fn collectionBody(elems) {
+    ifIs { totalEq(elems, []) }
+        { return "" };
+
+    def one = sliceInclusive(get(elems, 0), 2);
+    return cat(one, sliceInclusive(elems, 1)*)
+};
+
+## Values with special conversions.
+def SPECIAL_VALUES = {
+    (Data):        "Data",
+    (DerivedData): "DerivedData",
+    (Int):         "Int",
+    (List):        "List",
+    (Map):         "Map",
+    (String):      "String",
+    (Type):        "Type",
+    (Uniqlet):     "Uniqlet",
+    (Value):       "Value",
+    (false):       "false",
+    (null):        "null",
+    (true):        "true"
+};
+
+## Stringifies a key (or derived value name).
+fn keyString(key) {
+    ifIs { isIdentifier(key) }
+        { return key };
+
+    ifValue { get(SPECIAL_VALUES, key) }
+        { string -> return cat("(", string, ")") };
+
+    return sourceGeneral(key, true)
+};
+
+## Stringifies an int.
+fn Int_sourceGeneral(value, adorn) {
+    return intWithBase(value, 10)
+};
+
+## Stringifies a list.
+fn List_sourceGeneral(value, adorn) {
+    def listElems = filterAll(value)
+        { elem -> cat(", ", sourceGeneral(elem, true)) };
+
+    return adornIf(adorn, "[", collectionBody(listElems), "]")
+};
+
+## Stringifies a map.
+fn Map_sourceGeneral(value, adorn) {
+    def mapElems = filterAll(value)
+        { mapping ->
+            def k = keyString(get_key(mapping));
+            def v = sourceGeneral(get_value(mapping), true);
+            cat(", ", k, ": ", v)
+        };
+
+    return adornIf(adorn, "{", collectionBody(mapElems), "}");
+};
+
+## Stringifies a string.
+fn String_sourceGeneral(value, adorn) {
+    def bodyChars = makeFilterGenerator(value)
+        { ch -> stringChar(ch) };
+    return adornIf(adorn, "\"", cat("", bodyChars*), "\"")
+};
+
+## Stringifies a type.
+fn Type_sourceGeneral(value, adorn) {
+    ifValue { get(SPECIAL_VALUES, value) }
+        { string -> return string };
+
+    def name = typeName(value);
+
+    ifNot { eq(typeParent(value), DerivedData) }
+        { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
+
+    def body = ifIs { hasType(name, String) }
+        { ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) } }
+        { cat("(", sourceGeneral(name, true), ")") };
+
+    return adornIf(adorn, "@@", body, "")
+};
+
+## Stringifies a derived value or an opaque core value.
+fn Value_sourceGeneral(value, adorn) {
+    ifValue { get(SPECIAL_VALUES, value) }
+        { string -> return string };
+
+    def type = get_type(value);
+    def name = typeName(type);
+    def typeStr = ifIs { hasType(name, String) }
+        {
+            ## The type is a string.
+            ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) }
+        }
+        {
+            ## General case for type.
+            cat("(", sourceGeneral(type, true), ")")
+        };
+    def prefix = cat("@", typeStr);
+
+    ifNot { eq(typeParent(type), DerivedData) }
+        {
+            ## Opaque value, possibly named.
+            def body = ifValue { debugName(value) }
+                { name -> keyString(name) }
+                { "..." };
+
+            return cat(prefix, "<", body, ">")
+        };
+
+    return ifValue { dataOf(value) }
+        { data ->
+            ## Derived data value with payload. List and map payloads don't
+            ## need parens around them.
+            def dataStr = sourceGeneral(data, true);
+            ifIs { hasType(data, List) }
+                { return cat(prefix, dataStr) };
+            ifIs { hasType(data, Map) }
+                { return cat(prefix, dataStr) };
+            cat(prefix, "(", dataStr, ")")
+        }
+        {
+            ## Type-only transparent derived value.
+            prefix
+        };
+};
+
+## Common code for the two `source*` variants, which takes an
+## `adorn` flag.
+export fn sourceGeneral(value, adorn) {
+    return ifSwitch(
+        { get_type(value) },
+        {
+            (Int):    { . -> Int_sourceGeneral(value, adorn) },
+            (List):   { . -> List_sourceGeneral(value, adorn) },
+            (Map):    { . -> Map_sourceGeneral(value, adorn) },
+            (String): { . -> String_sourceGeneral(value, adorn) },
+            (Type):   { . -> Type_sourceGeneral(value, adorn) }
+        },
+        { . -> Value_sourceGeneral(value, adorn) }
+    )
+};

@@ -67,10 +67,6 @@ fn safeIndexForNames(base, names*) {
         { $Number::add(maxOf(indexes*), 1) }
 };
 
-## Generic `node.safeIndex(base)`, returns a safe (unused) index for the
-## given `base` variable name, with regard to the contents of `node`.
-fn .safeIndex(base);
-
 ## Maps / reduces `safeIndex` over the given nodes.
 fn safeIndexForNodes(base, nodes*) {
     def indexes = $Generator::filterAll(nodes)
@@ -78,96 +74,82 @@ fn safeIndexForNodes(base, nodes*) {
     return maxOf(indexes*)
 };
 
-fn @@apply.safeIndex(base) {
-    return safeIndexForNodes(base,
-        get_function(this),
-        get_values(this));
-};
+## Returns a safe (unused) index for the given `base` variable name, with
+## regard to the contents of `node`.
+fn safeIndex(node, base) {
+    return ifSwitch(
+        { get_type(node) },
+        {
+            @@apply: { . ->
+                safeIndexForNodes(base,
+                    get_function(node),
+                    get_values(node));
+            },
 
-fn @@call.safeIndex(base) {
-    return safeIndexForNodes(base,
-        get_function(this),
-        get_values(this)*);
-};
+            @@call: { . ->
+                safeIndexForNodes(base,
+                    get_function(node),
+                    get_values(node)*);
+            },
 
-fn @@closure.safeIndex(base) {
-    def namesIndex = safeIndexForNames(base,
-        get_name(this)?*,
-        get_yieldDef(this)?*);
-    def nodesIndex = safeIndexForNodes(base,
-        get_statements(this)*,
-        get_yieldNode(this));
+            @@closure: { . ->
+                def namesIndex = safeIndexForNames(base,
+                    get_name(node)?*,
+                    get_yieldDef(node)?*);
+                def nodesIndex = safeIndexForNodes(base,
+                    get_statements(node)*,
+                    get_yieldNode(node));
 
-    return maxOf(namesIndex, nodesIndex)
-};
+                maxOf(namesIndex, nodesIndex)
+            },
 
-fn @@export.safeIndex(base) {
-    return safeIndexForNodes(base, get_nodeValue(this))
-};
+            @@exportSelection: { . ->
+                safeIndexForNames(base, get_select(node)*)
+            },
 
-fn @@exportSelection.safeIndex(base) {
-    return safeIndexForNames(base, get_select(this)*)
-};
+            @@fetch: { . ->
+                safeIndexForNodes(base, get_target(node))
+            },
 
-fn @@fetch.safeIndex(base) {
-    return safeIndexForNodes(base, get_target(this))
-};
+            @@importModuleSelection: { . ->
+                ## I don't think this can come up in practice (nor the other
+                ## `import*` variants, really). So, just fail hard. Note: The
+                ## only situation this can't actually be made to work is on
+                ## wildcard imports (since when this is called, we don't
+                ## necessarily know the full set of exports from a module).
+                die("Cannot perform `safeIndex` on `importModuleSelection` node.")
+            },
 
-fn @@importModule.safeIndex(base) {
-    return safeIndexForNames(base, get_name(this));
-};
+            @@store: { . ->
+                safeIndexForNodes(base, get_target(node), get_nodeValue(node))
+            },
 
-fn @@importModuleSelection.safeIndex(base) {
-    ## I don't think this can come up in practice (nor the other `import*`
-    ## variants, really). So, just fail hard. Note: The only situation this
-    ## can't actually be made to work is on wildcard imports (since when this
-    ## is called, we don't necessarily know the full set of exports from a
-    ## module).
-    die("Cannot perform `safeIndex` on `importModuleSelection` node.")
-};
+            @@literal:
+            @@void: { . ->
+                -1
+            },
 
-fn @@importResource.safeIndex(base) {
-    return safeIndexForNames(base, get_name(this));
-};
+            @@varDef:
+            @@varDefMutable: { . ->
+                def nameIndex =
+                    safeIndexForNames(base, get_name(node));
+                def valueIndex =
+                    safeIndexForNodes(base, get_nodeValue(node)?*);
+                maxOf(nameIndex, valueIndex)
+            },
 
-fn @@literal.safeIndex(base) {
-    return -1
-};
+            @@export:
+            @@maybe:
+            @@noYield: { . ->
+                safeIndexForNodes(base, get_nodeValue(node))
+            },
 
-fn @@maybe.safeIndex(base) {
-    return safeIndexForNodes(base, get_nodeValue(this))
-};
-
-fn @@noYield.safeIndex(base) {
-    return safeIndexForNodes(base, get_nodeValue(this))
-};
-
-fn @@store.safeIndex(base) {
-    return safeIndexForNodes(base, get_target(this), get_nodeValue(this))
-};
-
-fn @@varDef.safeIndex(base) {
-    def nameIndex =
-        safeIndexForNames(base, get_name(this));
-    def valueIndex =
-        safeIndexForNodes(base, get_nodeValue(this)?*);
-    return maxOf(nameIndex, valueIndex)
-};
-
-fn @@varDefMutable.safeIndex(base) {
-    def nameIndex =
-        safeIndexForNames(base, get_name(this));
-    def valueIndex =
-        safeIndexForNodes(base, get_nodeValue(this)?*);
-    return maxOf(nameIndex, valueIndex)
-};
-
-fn @@varRef.safeIndex(base) {
-    return safeIndexForNames(base, get_name(this))
-};
-
-fn @@void.safeIndex(base) {
-    return -1
+            @@importModule:
+            @@importResource:
+            @@varRef: { . ->
+                safeIndexForNames(base, get_name(node));
+            }
+        })
 };
 
 
@@ -193,7 +175,6 @@ export fn safeVarName(base, node) {
 ## variable name. Returns `-1` if `base` itself is unused. Any index at or
 ## after the return value is safe to use.
 export fn safeVarIndex(base, node) {
-    ## In addition to having the opposite argument order, this keeps the
-    ## generic function `safeIndex` private to this file.
+    ## NB: This call has the opposite argument order to the exported function.
     return safeIndex(node, base)
 };
