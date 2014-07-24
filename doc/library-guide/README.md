@@ -69,6 +69,7 @@ will be returned, or one of:
 * Types and Protocols
   * [Boolean](Boolean.md)
   * [Builtin](Builtin.md)
+  * [Class](Class.md)
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
   * [Generic](Generic.md)
@@ -77,7 +78,6 @@ will be returned, or one of:
   * [Map](Map.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
   * [String](String.md)
-  * [Type](Type.md)
   * [Uniqlet](Uniqlet.md)
   * [Value (the base type)](Value.md)
   * [One-Off Generics](OneOff.md)
