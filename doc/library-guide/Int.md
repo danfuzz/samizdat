@@ -103,14 +103,14 @@ Straightforward protocol implementation.
 Straightforward protocol implementation, using truncated division.
 
 It is an error (terminating the runtime) if the second argument
-is `0`, as there is no "infinity" representation in the type.
+is `0`, as there is no "infinity" representation in the class.
 
 #### `divEu(int1, int2) -> int`
 
 Straightforward protocol implementation, using truncated Euclidean division.
 
 It is an error (terminating the runtime) if the second argument
-is `0`, as there is no "infinity" representation in the type.
+is `0`, as there is no "infinity" representation in the class.
 
 #### `mod(int1, int2) -> int`
 
@@ -118,7 +118,7 @@ Straightforward protocol implementation. The truncated modulo operation
 `x % y` can be defined in terms of truncated division as `x - (x / y) * y`.
 
 It is an error (terminating the runtime) if the second argument
-is `0`, as there is no "infinity" representation in the type.
+is `0`, as there is no "infinity" representation in the class.
 
 #### `modEu(int1, int2) -> int`
 
@@ -127,7 +127,7 @@ operation `x %% y` can be defined in terms of truncated Euclidean division
 as `x - (x // y) * y`.
 
 It is an error (terminating the runtime) if the second argument
-is `0`, as there is no "infinity" representation in the type.
+is `0`, as there is no "infinity" representation in the class.
 
 #### `mul(int1, int2) -> int`
 

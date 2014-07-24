@@ -288,10 +288,10 @@ few details, which are discussed in this section.
 The implementation of module loading actually much simpler than the
 description might have you believe.
 
-There are two types which interplay to cause module loading to happen.
-Both types bind a generic function `resolve`.
+There are two classes which interplay to cause module loading to happen.
+Both classes bind a generic function `resolve`.
 
-One type is `ExternalLoader`, which gets instantiated with two main
+One class is `ExternalLoader`, which gets instantiated with two main
 pieces of information, (a) a filesystem path to a directory containing
 module definitions, and (b) a reference to the "next" `ExternalLoader` to
 use. `ExternalLoader` defines a `resolve` method, which is the thing that
@@ -299,7 +299,7 @@ looks for a module in its designated directory, and then calls on the
 "next" loader if that fails. The recursion bottoms out in a definition of
 `resolve` on `null`, which always fails.
 
-The other type is `InternalLoader`, which gets instantiated with two pieces
+The other class is `InternalLoader`, which gets instantiated with two pieces
 of information, (a) a filesystem path to a directory containing the definition
 of *one* module, and (b) a reference to the "next" loader to use (said next
 loader typically being an `ExternalLoader`). When instantiated,
@@ -316,7 +316,7 @@ In the case of an application module, its "next" loader is the core library.
 
 As a final note, though the default module system is implemented in terms
 of the filesystem, all of the behavior of the system is based on generic
-functions. These functions can be bound to other types, in order to
+functions. These functions can be bound to other classes, in order to
 provide other interesting and useful arrangements. For example, it is
 possible (and might eventually be desirable) to construct a loader which
 depends only upon immutable data as input.

@@ -93,27 +93,27 @@ fn maybeValue(function) {
 
 "Standard" implementation of `collect`, in terms of `nextValue`. This
 function is provided as a convenient function to bind `collect` to, for
-types that don't have anything fancier to do.
+classes that don't have anything fancier to do.
 
 #### `stdFetch(generator) -> . | void`
 
 "Standard" implementation of `fetch`, in terms of `nextValue`. This
 function is provided as a convenient function to bind `fetch` to, for
-types that don't have anything fancier to do.
+classes that don't have anything fancier to do.
 
 #### `unboundedCollect(generator, optFilterFunction?) ->  n/a  ## Terminates the runtime.`
 
 Handy implementation of `collect` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
 This function is provided as a convenient thing to bind `collect` to, for
-appropriate types.
+appropriate classes.
 
 #### `unboundedFetch(generator) ->  n/a  ## Terminates the runtime.`
 
 Handy implementation of `fetch` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
 This function is provided as a convenient thing to bind `fetch` to, for
-appropriate types.
+appropriate classes.
 
 
 <br><br>
@@ -122,7 +122,7 @@ appropriate types.
 #### Constant: `nullGenerator`
 
 A generator which is perennially voided. It is defined as `@NullGenerator`,
-along with generator method bindings for that type.
+along with generator method bindings for that class.
 
 #### `collectAsMap(generator) -> map`
 
@@ -189,9 +189,9 @@ the outer generator. If the filter function yields void, then the
 value-in-progress is discarded, and the inner generator is retried, with
 the same void-or-value behavior.
 
-**Note:** This function makes a value of type `"FilterGenerator"`
+**Note:** This function makes a value of class `"FilterGenerator"`
 with `filterFunction` and either a `ParaGenerator` or `ListWrapGenerator`
-as the payload. That type has appropriate `Generator` method bindings.
+as the payload. That class has appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of comprehension forms.
 
@@ -206,8 +206,8 @@ Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
 generators is voided.
 
-**Note:** This function makes a value of type `"ListWrapGenerator"`
-with `generator` as the payload. That type has appropriate `Generator`
+**Note:** This function makes a value of class `"ListWrapGenerator"`
+with `generator` as the payload. That class has appropriate `Generator`
 method bindings.
 
 #### `makeOptGenerator(generator) -> generator`
@@ -219,8 +219,8 @@ returned generator yields a single-element list of that value. Once the
 underlying generator is voided, the returned generator yields the empty
 list, and will continue doing so ad infinitum.
 
-**Note:** This function makes a value of the type `"OptGenerator"` with
-the given `generator` as the payload. That type has
+**Note:** This function makes a value of the class `"OptGenerator"` with
+the given `generator` as the payload. That class has
 appropriate `Generator` method bindings.
 
 #### `makeParaGenerator(generators*) -> generator`
@@ -238,8 +238,8 @@ Special cases:
 
 * If passed one argument, this returns a result from `makeListWrapGenerator`.
 
-**Note:** Special cases aside, this function makes a value of type
-`"ParaGenerator"` with `[generators*]` as the payload. That type has
+**Note:** Special cases aside, this function makes a value of class
+`"ParaGenerator"` with `[generators*]` as the payload. That class has
 appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of `for` forms.
@@ -254,8 +254,8 @@ Special cases:
 
 * If passed `0` for `size`, this returns `nullGenerator`.
 
-**Note:** Special cases aside, this function makes a value of type
-`"RepeatGenerator"` with `{size, value}` as the payload. That type has
+**Note:** Special cases aside, this function makes a value of class
+`"RepeatGenerator"` with `{size, value}` as the payload. That class has
 appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of `for` and comprehension forms.
@@ -276,8 +276,8 @@ Special cases:
 
 * If passed one argument, this returns that argument directly.
 
-**Note:** Special cases aside, this function makes a value of type
-`"SerialGenerator"` with `[generators*]` as the payload. That type has
+**Note:** Special cases aside, this function makes a value of class
+`"SerialGenerator"` with `[generators*]` as the payload. That class has
 appropriate `Generator` method bindings.
 
 #### `makeValueGenerator(value) -> generator`
@@ -285,5 +285,5 @@ appropriate `Generator` method bindings.
 Creates an unnbounded generator (one with infinite elements) which always
 yields the given `value` upon `nextValue()` call.
 
-**Note:** This function makes a value of type `"ValueGenerator"` with `value`
-as the payload. That type has appropriate `Generator` method bindings.
+**Note:** This function makes a value of class `"ValueGenerator"` with `value`
+as the payload. That class has appropriate `Generator` method bindings.

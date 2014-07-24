@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Value (the base type)
----------------------
+Value (the base class)
+----------------------
 
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)
@@ -11,9 +11,9 @@ Value (the base type)
 
 Some values have an associated name, or an optional associated name.
 This generic provides access to that name. There is no restriction
-on the composition (type, etc.) of a name.
+on the composition (class, etc.) of a name.
 
-The type `Value` binds this to a function which always returns void.
+The class `Value` binds this to a function which always returns void.
 
 **Note:** In general, it is a bad idea to use this function for any
 purpose other than temporary debugging code.
@@ -24,9 +24,9 @@ Returns a string representation of `value` meant to aid in debugging.
 This is in contrast to the functions in `core.Format` which are meant to
 help format values for more useful consumption.
 
-The type `Value` binds this to a function which returns a string consisting
-of the type name, name (result of call to `debugName()`), and low-level
-identifier (e.g. a memory address) of the value. Various of the core types
+The class `Value` binds this to a function which returns a string consisting
+of the class name, name (result of call to `debugName()`), and low-level
+identifier (e.g. a memory address) of the value. Various of the core classes
 override this to provide more useful information.
 
 **Note:** In general, it is a bad idea to use this function for any
@@ -34,48 +34,48 @@ purpose other than temporary debugging code.
 
 #### `perEq(value, other) -> . | void`
 
-Performs a per-type equality comparison of the two given values, using the
-per-type order. This should return `value` if the two values are to be
+Performs a per-class equality comparison of the two given values, using the
+per-class order. This should return `value` if the two values are to be
 considered "equal," return void if the two values are to be considered
 "unequal," or fail terminally if the two values are considered "incomparable."
 
-Each type can specify its own per-type equality check, and the two arguments
-are notably *not* required to be of the same type. The default implementation
+Each class can specify its own per-class equality check, and the two arguments
+are notably *not* required to be of the same class. The default implementation
 calls through to the global function `eq` (see which).
 
 **Note:** This is the generic function which underlies the implementation
-of all per-type equality comparison functions.
+of all per-class equality comparison functions.
 
 **Syntax Note:** Used in the translation of `expression == expression` forms.
 
 #### `perOrder(value, other) -> int | void`
 
-Performs an order comparison of the two given values, using the per-type
+Performs an order comparison of the two given values, using the per-class
 order. Return values are the same as with `totalOrder` (see which). As
-with `perEq`, the two values are not required to be of the same type, and
+with `perEq`, the two values are not required to be of the same class, and
 should two arguments be considered "incomparable" this function should
 terminate the runtime with an error.
 
-Each type can specify its own per-type ordering comparison.
+Each class can specify its own per-class ordering comparison.
 The default implementation calls through to the global function `order`
 (see which).
 
 **Note:** This is the generic function which underlies the implementation
-of all per-type ordering functions.
+of all per-class ordering functions.
 
 #### `totalEq(value, other) -> . | void`
 
-Performs a type-specific equality comparison of the two given
+Performs a class-specific equality comparison of the two given
 values, using the "total value ordering" order. When called, the two values
-are guaranteed to be the same type. If a client calls with different-typed
+are guaranteed to be the same class. If a client calls with different-class
 values, it is a fatal error (terminating the runtime).
 
 The return value is either `value` (or `other` really) if the two values
 are in fact identical, or `void` if they are not.
 
-Each type specifies its own total-order equality check. See specific types for
-details. Derived data types all compare their values for equality by comparing
-the payload value (if any). In addition, a default implementation checks
+Each class specifies its own total-order equality check. See specific classes
+for details. Derived data classes all compare their values for equality by
+comparing the payload value (if any). In addition, a default implementation checks
 directly for trivial sameness and calls through to `totalOrder` for anything
 nontrivial.
 
@@ -86,13 +86,13 @@ values, `totalEq` must indicate equality if and only if `totalOrder` would retur
 equality much quicker than determining order.
 
 **Note:** This is the generic function which underlies the implementation
-of all cross-type equality comparison functions.
+of all cross-class equality comparison functions.
 
 #### `totalOrder(value, other) -> int | void`
 
-Returns the type-specific order of the two given values, using the "total
+Returns the class-specific order of the two given values, using the "total
 value ordering" order. When called, the two values are guaranteed to be the
-same type. If a client calls with different-typed values, it is a fatal error
+same class. If a client calls with different-class values, it is a fatal error
 (terminating the runtime).
 
 The return value is one of `-1`, `0`, or `1` indicating how the two values
@@ -106,8 +106,8 @@ sort with each other, using the reasonably standard meaning of those values:
 
 If two values have no defined order, this returns void.
 
-Each type specifies its own total-order ordering. See specific types for
-details. Derived data types all order their values by performing ordering
+Each class specifies its own total-order ordering. See specific classes for
+details. Derived data classes all order their values by performing ordering
 on the respective payload values, with a lack of payload counting as
 "before" any non-void payload.
 
@@ -115,7 +115,7 @@ The default implementation of this method uses `eq()` to check for sameness.
 It returns `0` if it sameness and returns void if not.
 
 **Note:** This is the generic function which underlies the implementation
-of all cross-type ordering functions.
+of all cross-class ordering functions.
 
 
 <br><br>
@@ -134,7 +134,7 @@ other than a derived data value.
 Checks for equality, using the total order of values. Returns `value` if the
 two given values are identical. Otherwise returns void.
 
-This works by first checking the types of the two values. If they are
+This works by first checking the classes of the two values. If they are
 different, this returns void immediately. Otherwise, this calls `totalEq` on
 the two arguments. In the latter case, this function doesn't "trust" a
 non-void return value of `totalEq` and always returns the given `value`
@@ -142,21 +142,21 @@ argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
 
-#### `get_class(value) -> type`
+#### `get_class(value) -> class`
 
-Returns the type of the given arbitrary `value`. The return value is always
-of type `Type`.
+Returns the class of the given arbitrary `value`. The return value is always
+of class `Class`.
 
-#### `hasClass(value, type) -> logic`
+#### `hasClass(value, cls) -> logic`
 
-Returns `value` if it has type `type`. Otherwise returns void.
+Returns `value` if it has class `cls`. Otherwise returns void.
 
-In order to "have the type," `value` must either be an instance of type
-`type` per se, or be an instance of a subtype of `type`.
+In order to "have the class," `value` must either be an instance of class
+`cls` per se, or be an instance of a subclass of `cls`.
 
-#### `makeData(type, value?) -> .`
+#### `makeData(cls, value?) -> .`
 
-Returns a derived data value with the given type (a value of type `Type`)
+Returns a derived data value with the given class (a value of class `Class`)
 and optional data payload value (an arbitrary value). These equivalences hold
 for Samizdat source code:
 
@@ -167,8 +167,8 @@ for Samizdat source code:
 @(type)(value)  is equivalent to  makeData(type, value)
 ```
 
-It is a fatal error (terminating the runtime) to pass for `type` something
-other than a derived data type.
+It is a fatal error (terminating the runtime) to pass for `cls` something
+other than a derived data class.
 
 **Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
 
@@ -179,12 +179,12 @@ Returns the order of the two given values, using the total order of values.
 The return value is one of `-1 0 1` indicating how the two values sort with
 each other, just like `perOrder` and `totalOrder`.
 
-This function works by calling `totalOrder` on the types of the two arguments
+This function works by calling `totalOrder` on the classes of the two arguments
 if they are different, or by calling `totalOrder` on the arguments themselves
-if they both have the same type.
+if they both have the same class.
 
 **Note:** This is the function which underlies the implementation
-of all cross-type ordering functions.
+of all cross-class ordering functions.
 
 
 <br><br>
@@ -200,7 +200,7 @@ identical to it. Otherwise returns void.
 
 #### `get_className(value) -> .`
 
-Returns the name of the given `value`'s type. This function is the equivalent
+Returns the name of the given `value`'s class. This function is the equivalent
 to `className(get_class(value))`.
 
 #### `gt(value, other) -> logic`
@@ -236,7 +236,7 @@ the two given values are not identical. Otherwise returns void.
 
 #### `perGe(value, other) -> logic`
 
-Per-type comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `perOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than or equal
 to `other`.
 
@@ -244,14 +244,14 @@ to `other`.
 
 #### `perGt(value, other) -> logic`
 
-Per-type comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `perOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than `other`.
 
 **Syntax Note:** Used in the translation of `expression > expression` forms.
 
 #### `perLe(value, other) -> logic`
 
-Per-type comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `perOrder(value, other)` to
 determine result. Returns `value` if it is considered less than or equal
 to `other`.
 
@@ -259,14 +259,14 @@ to `other`.
 
 #### `perLt(value, other) -> logic`
 
-Per-type comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `perOrder(value, other)` to
 determine result. Returns `value` if it is considered less than `other`.
 
 **Syntax Note:** Used in the translation of `expression < expression` forms.
 
 #### `perNe(value, other) -> logic`
 
-Per-type comparison, which calls `perEq(value, other)` to
+Per-class comparison, which calls `perEq(value, other)` to
 determine result. Returns `value` if it is *not* considered equal to `other`.
 
 **Syntax Note:** Used in the translation of `expression != expression` forms.
@@ -276,35 +276,35 @@ determine result. Returns `value` if it is *not* considered equal to `other`.
 Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
-arguments are of different types.
+arguments are of different classes.
 
 #### `totalGt(value, other) -> logic`
 
 Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
-different types.
+different classes.
 
 #### `totalLe(value, other) -> logic`
 
 Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered less than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
-arguments are of different types.
+arguments are of different classes.
 
 #### `totalLt(value, other) -> logic`
 
 Type-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered less than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
-different types.
+different classes.
 
 #### `totalNe(value, other) -> logic`
 
 Type-specific total-order comparison, which calls `totalEq(value, other)` to
 determine result. Returns `value` if it is *not* considered equal to `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
-different types.
+different classes.
 
 **Syntax Note:** Used in the translation of `expr**` forms. This is used
 instead of `ne`, because the latter wouldn't result in an error when not

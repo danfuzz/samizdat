@@ -187,12 +187,12 @@ For example:
 
 Tokens are the basic terminals in the context of tree parsing. When
 performing tree parsing, tokens are represented as derived data values,
-with the derived value type indicating the parsed type of the token, and the
+with the derived value class indicating the parsed class of the token, and the
 payload optionall used to hold the token's value.
 
 To match a single token, name the token in one of the shorthand
 token forms `@type` or `@"type"`. This will succeed in matching any
-token whose type tag is as given, yielding that token directly
+token whose class tag is as given, yielding that token directly
 (including any payload data) as the result.
 
 For example, the parser `{: @foo :}` will match the token list
@@ -208,7 +208,7 @@ strings.
 To match a single literal character, write the character as a regular
 string literal. To match a sequence of two or more characters, write the
 character list as a multi-character string literal. In both cases, a
-successful match will result in a *single* token whose type
+successful match will result in a *single* token whose class
 tag is the matched string.
 
 For example:

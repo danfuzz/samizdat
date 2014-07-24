@@ -68,31 +68,31 @@ Representation of a parser thunk.
 
 This corresponds to the syntax `%expression`.
 
-#### `@token{value: type}`
+#### `@token{value: class}`
 
 Representation of a token-match terminal. This is also used for
-single-character matches in tokenizers. `value` must be a type (per se),
-and is typically a derived data type (e.g., `@@stuff`). This
-indicates that a token of the given type is to be matched.
+single-character matches in tokenizers. `value` must be a class (per se),
+and is typically a derived data class (e.g., `@@stuff`). This
+indicates that a token of the given class is to be matched.
 
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
 a single character).
 
-#### `@tokenSet{values: [type*]}`
+#### `@tokenSet{values: [class*]}`
 
 Representation of a token set rule. This is also used for matching
-character sets in tokenizers. `values` must be a list of types (type values
+character sets in tokenizers. `values` must be a list of classes (class values
 per se; same as the payload of `@token` nodes), which is taken to be an
-unordered set of token types to match.
+unordered set of token classes to match.
 
 This corresponds to the syntax `[@token1 @token2 @etc]` or `["charsToMatch"]`.
 
-#### `@tokenSetComplement{values: [type*]}`
+#### `@tokenSetComplement{values: [class*]}`
 
 Representation of a token set complement rule. This is also used for matching
-character set complements in tokenizers. `values` must be a list of types
-(type values per se; same as the payload of `@token` nodes), which is taken
-to be an unordered set of token types to not-match.
+character set complements in tokenizers. `values` must be a list of classes
+(class values per se; same as the payload of `@token` nodes), which is taken
+to be an unordered set of token classes to not-match.
 
 This corresponds to the syntax `[! @token1 @token2 @etc]` or
 `[! "charsToNotMatch"]`.
