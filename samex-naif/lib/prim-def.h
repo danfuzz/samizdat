@@ -13,15 +13,15 @@
 //
 
 // Classes.
-PRIM_DEF(Class,                   TYPE_Class);
-PRIM_DEF(Data,                    TYPE_Data);
-PRIM_DEF(DerivedData,             TYPE_DerivedData);
-PRIM_DEF(Int,                     TYPE_Int);
-PRIM_DEF(List,                    TYPE_List);
-PRIM_DEF(Map,                     TYPE_Map);
-PRIM_DEF(String,                  TYPE_String);
-PRIM_DEF(Uniqlet,                 TYPE_Uniqlet);
-PRIM_DEF(Value,                   TYPE_Value);
+PRIM_DEF(Class,                   CLS_Class);
+PRIM_DEF(Data,                    CLS_Data);
+PRIM_DEF(DerivedData,             CLS_DerivedData);
+PRIM_DEF(Int,                     CLS_Int);
+PRIM_DEF(List,                    CLS_List);
+PRIM_DEF(Map,                     CLS_Map);
+PRIM_DEF(String,                  CLS_String);
+PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
+PRIM_DEF(Value,                   CLS_Value);
 
 // Generic functions for all values.
 PRIM_DEF(debugName,               GFN_debugName);

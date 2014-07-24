@@ -56,7 +56,7 @@ zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
 
 // Documented in header.
 zvalue makeJump(void) {
-    zvalue result = datAllocValue(TYPE_Jump, sizeof(JumpInfo));
+    zvalue result = datAllocValue(CLS_Jump, sizeof(JumpInfo));
     JumpInfo *info = getInfo(result);
 
     info->valid = false;
@@ -100,7 +100,7 @@ METH_IMPL(Jump, gcMark) {
 MOD_INIT(Jump) {
     MOD_USE(Function);
 
-    // Note: The `objectModel` module initializes `TYPE_Jump`.
+    // Note: The `objectModel` module initializes `CLS_Jump`.
 
     METH_BIND(Jump, call);
     METH_BIND(Jump, debugString);
@@ -108,4 +108,4 @@ MOD_INIT(Jump) {
 }
 
 // Documented in header.
-zvalue TYPE_Jump = NULL;
+zvalue CLS_Jump = NULL;

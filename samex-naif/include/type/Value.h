@@ -19,7 +19,7 @@
 
 
 /** Class value for in-model class `Value`. */
-extern zvalue TYPE_Value;
+extern zvalue CLS_Value;
 
 /** Generic `debugName(value)`: Documented in spec. */
 extern zvalue GFN_debugName;

@@ -129,7 +129,7 @@ static void dumpState(ParseState *state) {
 
 // Definitions to help avoid boilerplate in the parser functions.
 #define RULE(name) parse_##name
-#define TOKEN(type) TYPE_##type
+#define TOKEN(type) CLS_##type
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
 #define PARSE(name) RULE(name)(state)
 #define PARSE_OPT(name) parseOpt(RULE(name), state)
@@ -500,7 +500,7 @@ DEF_PARSE(type) {
         name = PARSE_OR_REJECT(parenExpression);
     }
 
-    if (hasClass(name, TYPE_literal)) {
+    if (hasClass(name, CLS_literal)) {
         return makeLiteral(makeDerivedDataClass(GET(value, name)));
     } else {
         return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
@@ -651,13 +651,13 @@ DEF_PARSE(unaryExpression) {
     zint size = get_size(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(postfixes, i);
-        if (hasClass(one, TYPE_List)) {
+        if (hasClass(one, CLS_List)) {
             result = makeCallOrApply(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeMaybeValue(result);
-        } else if (hasClass(one, TYPE_literal)) {
+        } else if (hasClass(one, CLS_literal)) {
             result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
@@ -740,7 +740,7 @@ DEF_PARSE(yieldOrNonlocal) {
     zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
     zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue name = hasClass(op, TYPE_yield)
+    zvalue name = hasClass(op, CLS_yield)
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
@@ -1050,7 +1050,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = GFN_APPLY(cat,
         GFN_CALL(cat, listFrom1(first), rest, optSuffix));
-    return makeData(TYPE_internal, mapFrom1(STR_name, name));
+    return makeData(CLS_internal, mapFrom1(STR_name, name));
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1061,7 +1061,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = GFN_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
-    return makeData(TYPE_external, mapFrom1(STR_name, name));
+    return makeData(CLS_external, mapFrom1(STR_name, name));
 }
 
 // Documented in spec.
@@ -1271,7 +1271,7 @@ DEF_PARSE(program) {
 zvalue langParseExpression0(zvalue expression) {
     zvalue tokens;
 
-    if (hasClass(expression, TYPE_String)) {
+    if (hasClass(expression, CLS_String)) {
         tokens = langTokenize0(expression);
     } else {
         tokens = expression;
@@ -1292,7 +1292,7 @@ zvalue langParseExpression0(zvalue expression) {
 zvalue langParseProgram0(zvalue program) {
     zvalue tokens;
 
-    if (hasClass(program, TYPE_String)) {
+    if (hasClass(program, CLS_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;
@@ -1311,7 +1311,7 @@ zvalue langParseProgram0(zvalue program) {
 
 // Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
-    if (hasClass(node, TYPE_closure)) {
+    if (hasClass(node, CLS_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);
     }

@@ -47,7 +47,7 @@ static zint zintValue(zvalue intval) {
  */
 zvalue intFrom(zint value) {
     zint size = zintBitSize(value);
-    zvalue result = datAllocValue(TYPE_Int, sizeof(IntInfo));
+    zvalue result = datAllocValue(CLS_Int, sizeof(IntInfo));
 
     ((IntInfo *) datPayload(result))->value = value;
     return result;
@@ -69,7 +69,7 @@ zvalue intFromZint(zint value) {
 
 // Documented in header.
 zint zintFromInt(zvalue intval) {
-    assertHasClass(intval, TYPE_Int);
+    assertHasClass(intval, CLS_Int);
     return zintValue(intval);
 }
 
@@ -204,7 +204,7 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    TYPE_Int = makeCoreClass(stringFromUtf8(-1, "Int"), TYPE_Data);
+    CLS_Int = makeCoreClass(stringFromUtf8(-1, "Int"), CLS_Data);
 
     METH_BIND(Int, abs);
     METH_BIND(Int, add);
@@ -240,4 +240,4 @@ MOD_INIT(Int) {
 }
 
 // Documented in header.
-zvalue TYPE_Int = NULL;
+zvalue CLS_Int = NULL;

@@ -13,7 +13,7 @@
 
 
 /** Class value for in-model class `DerivedData`. */
-extern zvalue TYPE_DerivedData;
+extern zvalue CLS_DerivedData;
 
 /** Generic `dataOf(derivedData)`: Documented in spec. */
 extern zvalue GFN_dataOf;

@@ -14,7 +14,7 @@
 
 
 /** Class value for in-model class `String`. */
-extern zvalue TYPE_String;
+extern zvalue CLS_String;
 
 /** The standard value `""`. */
 extern zvalue EMPTY_STRING;

@@ -13,6 +13,6 @@
 
 
 /** Class value for in-model class `Data`. */
-extern zvalue TYPE_Data;
+extern zvalue CLS_Data;
 
 #endif

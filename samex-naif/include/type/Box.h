@@ -13,7 +13,7 @@
 
 
 /** Class value for in-model class `Box`. */
-extern zvalue TYPE_Box;
+extern zvalue CLS_Box;
 
 /**
  * Generic `store(box, value?)`: Stores a value (or void) into a box.

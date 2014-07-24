@@ -87,7 +87,7 @@ zvalue boxStoreNullOk(zvalue box, zvalue value) {
 
 // Documented in header.
 zvalue makeCell(zvalue value) {
-    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = value;
@@ -99,7 +99,7 @@ zvalue makeCell(zvalue value) {
 
 // Documented in header.
 zvalue makePromise(void) {
-    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = NULL;
@@ -111,7 +111,7 @@ zvalue makePromise(void) {
 
 // Documented in header.
 zvalue makeResult(zvalue value) {
-    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = value;
@@ -183,7 +183,7 @@ MOD_INIT(Box) {
     GFN_store = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "store"));
     datImmortalize(GFN_store);
 
-    TYPE_Box = makeCoreClass(stringFromUtf8(-1, "Box"), TYPE_Value);
+    CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value);
 
     METH_BIND(Box, collect);
     METH_BIND(Box, fetch);
@@ -193,7 +193,7 @@ MOD_INIT(Box) {
 }
 
 // Documented in header.
-zvalue TYPE_Box = NULL;
+zvalue CLS_Box = NULL;
 
 // Documented in header.
 zvalue GFN_store = NULL;

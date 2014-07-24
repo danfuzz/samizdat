@@ -13,7 +13,7 @@
 
 
 /** Class value for in-model class `Builtin`. */
-extern zvalue TYPE_Builtin;
+extern zvalue CLS_Builtin;
 
 /** Return value from `builtinGetState` (see which). */
 typedef struct {

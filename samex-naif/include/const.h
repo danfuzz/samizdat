@@ -19,7 +19,7 @@
 
 #define TYP(name, str) \
     STR(name, str); \
-    extern zvalue TYPE_##name
+    extern zvalue CLS_##name
 
 #define TOK(name, str) \
     TYP(name, str); \

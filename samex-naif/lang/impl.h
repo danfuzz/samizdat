@@ -58,7 +58,7 @@ typedef struct Frame {
 } Frame;
 
 /** Type for closure functions. */
-extern zvalue TYPE_Closure;
+extern zvalue CLS_Closure;
 
 /**
  * Executes a `closure` form.

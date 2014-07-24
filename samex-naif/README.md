@@ -76,9 +76,9 @@ In addition to the other sections mentioned in the general conventions
 document, this implementation has some sections labeled "Class Definition."
 
 These sections are for code which defines an in-model class. There will
-usually be a corresponding declaration of `TYPE_Name` in *some* header
+usually be a corresponding declaration of `CLS_Name` in *some* header
 (which one, depending on how far the class is exported); rarely, a class is
-totally private to the file, in which case its `TYPE_Name` is declared as
+totally private to the file, in which case its `CLS_Name` is declared as
 `static`. Method implementation functions in this section are most typically
 listed in alphabetical order, with an overall binding / initialization
 function toward the bottom.
@@ -87,7 +87,7 @@ function toward the bottom.
 
 Beyond the general conventions, the following are used:
 
-* `TYPE_ClassName` &mdash; Identifies a value of class `Class`.
+* `CLS_ClassName` &mdash; Identifies a value of class `Class`.
 
 * `GFN_methodName` &mdash; Identifies a generic function (value of class
   `Generic`).
@@ -99,7 +99,7 @@ Beyond the general conventions, the following are used:
   variable names of the form `STR_CH_CHARNAMES`.
 
 * `TOK_tokenName` &mdash; Identifies a payload-free derived data
-  value whose class is `TYPE_tokenName`, where the class's name is
+  value whose class is `CLS_tokenName`, where the class's name is
   `"tokenName"`.
 
 * `get_fieldName` &mdash; Identifies a function which acts as a getter.

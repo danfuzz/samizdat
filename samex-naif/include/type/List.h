@@ -14,7 +14,7 @@
 
 
 /** Class value for in-model class `List`. */
-extern zvalue TYPE_List;
+extern zvalue CLS_List;
 
 /** The standard value `[]`. */
 extern zvalue EMPTY_LIST;

@@ -146,7 +146,7 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
 
 // Documented in header.
 void genericBind(zvalue generic, zvalue cls, zvalue function) {
-    assertHasClass(generic, TYPE_Generic);
+    assertHasClass(generic, CLS_Generic);
 
     GenericInfo *info = getInfo(generic);
     zint index = classIndex(cls);
@@ -164,7 +164,7 @@ void genericBind(zvalue generic, zvalue cls, zvalue function) {
 // Documented in header.
 void genericBindPrim(zvalue generic, zvalue cls, zfunction function,
         const char *builtinName) {
-    assertHasClass(generic, TYPE_Generic);
+    assertHasClass(generic, CLS_Generic);
 
     GenericInfo *info = getInfo(generic);
     zvalue name = (builtinName != NULL)
@@ -178,7 +178,7 @@ void genericBindPrim(zvalue generic, zvalue cls, zfunction function,
 
 // Documented in header.
 void genericSeal(zvalue generic) {
-    assertHasClass(generic, TYPE_Generic);
+    assertHasClass(generic, CLS_Generic);
     getInfo(generic)->sealed = true;
 }
 
@@ -190,7 +190,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = datAllocValue(TYPE_Generic, sizeof(GenericInfo));
+    zvalue result = datAllocValue(CLS_Generic, sizeof(GenericInfo));
     GenericInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
@@ -240,7 +240,7 @@ MOD_INIT(Generic) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    // Note: The `objectModel` module initializes `TYPE_Generic`.
+    // Note: The `objectModel` module initializes `CLS_Generic`.
 
     METH_BIND(Generic, call);
     METH_BIND(Generic, debugName);
@@ -248,4 +248,4 @@ MOD_INIT(Generic) {
 }
 
 // Documented in header.
-zvalue TYPE_Generic = NULL;
+zvalue CLS_Generic = NULL;

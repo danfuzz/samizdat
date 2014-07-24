@@ -115,7 +115,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     // Build out most of the result.
 
-    zvalue result = datAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    zvalue result = datAllocValue(CLS_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
 
     info->defMap = defMap;
@@ -284,7 +284,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
  */
 static zvalue buildClosure(zvalue node) {
     zvalue cachedClosure = getCachedClosure(node);
-    zvalue result = datAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    zvalue result = datAllocValue(CLS_Closure, sizeof(ClosureInfo));
 
     utilCpy(ClosureInfo, getInfo(result), getInfo(cachedClosure), 1);
     return result;
@@ -373,7 +373,7 @@ MOD_INIT(Closure) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    TYPE_Closure = makeCoreClass(stringFromUtf8(-1, "Closure"), TYPE_Value);
+    CLS_Closure = makeCoreClass(stringFromUtf8(-1, "Closure"), CLS_Value);
 
     METH_BIND(Closure, call);
     METH_BIND(Closure, debugName);
@@ -385,4 +385,4 @@ MOD_INIT(Closure) {
 }
 
 // Documented in header.
-zvalue TYPE_Closure = NULL;
+zvalue CLS_Closure = NULL;

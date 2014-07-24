@@ -52,12 +52,12 @@ static void classInit(zvalue cls, zvalue parent, zvalue name) {
         die("Too many classes!");
     }
 
-    if ((parent == NULL) && (cls != TYPE_Value)) {
+    if ((parent == NULL) && (cls != CLS_Value)) {
         die("Every class but `Value` needs a parent.");
     }
 
     ClassInfo *info = getInfo(cls);
-    bool derived = (parent == TYPE_DerivedData) && (TYPE_DerivedData != NULL);
+    bool derived = (parent == CLS_DerivedData) && (CLS_DerivedData != NULL);
 
     info->parent = parent;
     info->name = name;
@@ -74,7 +74,7 @@ static void classInit(zvalue cls, zvalue parent, zvalue name) {
  * Allocates a class value.
  */
 static zvalue allocClass(void) {
-    return datAllocValue(TYPE_Class, sizeof(ClassInfo));
+    return datAllocValue(CLS_Class, sizeof(ClassInfo));
 }
 
 /**
@@ -172,7 +172,7 @@ static bool isClass(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
-    return (get_class(value) == TYPE_Class);
+    return (get_class(value) == CLS_Class);
 }
 
 /**
@@ -221,7 +221,7 @@ zint classIndex(zvalue cls) {
 
 // Documented in header.
 bool classIsDerived(zvalue cls) {
-    return classParent(cls) == TYPE_DerivedData;
+    return classParent(cls) == CLS_DerivedData;
 }
 
 // Documented in header.
@@ -275,7 +275,7 @@ zvalue makeDerivedDataClass(zvalue name) {
     zvalue result = findClass(name, NULL);
 
     if (result == NULL) {
-        result = makeClass(name, TYPE_DerivedData);
+        result = makeClass(name, CLS_DerivedData);
     }
 
     return result;
@@ -296,7 +296,7 @@ METH_IMPL(Class, debugString) {
         return info->name;
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (classParent(cls) == TYPE_DerivedData) {
+    } else if (classParent(cls) == CLS_DerivedData) {
         extraString = EMPTY_STRING;
     } else {
         die("Shouldn't happen: opaque class without secret.");
@@ -338,45 +338,45 @@ METH_IMPL(Class, totalOrder) {
  * Define `objectModel` as a module, as separate from the `Class` class.
  */
 MOD_INIT(objectModel) {
-    TYPE_Class = allocClass();
-    TYPE_Class->cls = TYPE_Class;
+    CLS_Class = allocClass();
+    CLS_Class->cls = CLS_Class;
 
-    TYPE_Value       = allocClass();
-    TYPE_Data        = allocClass();
-    TYPE_DerivedData = allocClass();
+    CLS_Value       = allocClass();
+    CLS_Data        = allocClass();
+    CLS_DerivedData = allocClass();
 
     // The rest are in alphabetical order.
-    TYPE_Builtin     = allocClass();
-    TYPE_Generic     = allocClass();
-    TYPE_Jump        = allocClass();
-    TYPE_String      = allocClass();
-    TYPE_Uniqlet     = allocClass();
+    CLS_Builtin     = allocClass();
+    CLS_Generic     = allocClass();
+    CLS_Jump        = allocClass();
+    CLS_String      = allocClass();
+    CLS_Uniqlet     = allocClass();
 
     theCoreSecret = makeUniqlet();
     datImmortalize(theCoreSecret);
 
-    classInit(TYPE_Class,       TYPE_Value, stringFromUtf8(-1, "Class"));
-    classInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"));
-    classInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"));
-    classInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"));
+    classInit(CLS_Class,       CLS_Value, stringFromUtf8(-1, "Class"));
+    classInit(CLS_Value,       NULL,      stringFromUtf8(-1, "Value"));
+    classInit(CLS_Data,        CLS_Value, stringFromUtf8(-1, "Data"));
+    classInit(CLS_DerivedData, CLS_Data,  stringFromUtf8(-1, "DerivedData"));
 
-    classInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"));
-    classInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"));
-    classInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"));
-    classInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"));
-    classInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"));
+    classInit(CLS_Builtin,     CLS_Value, stringFromUtf8(-1, "Builtin"));
+    classInit(CLS_Generic,     CLS_Value, stringFromUtf8(-1, "Generic"));
+    classInit(CLS_Jump,        CLS_Value, stringFromUtf8(-1, "Jump"));
+    classInit(CLS_String,      CLS_Data,  stringFromUtf8(-1, "String"));
+    classInit(CLS_Uniqlet,     CLS_Value, stringFromUtf8(-1, "Uniqlet"));
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (classIndex(TYPE_Builtin) != DAT_INDEX_BUILTIN) {
+    if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
         die("Mismatched index for `Builtin`: should be %lld",
-            classIndex(TYPE_Builtin));
-    } else if (classIndex(TYPE_Generic) != DAT_INDEX_GENERIC) {
+            classIndex(CLS_Builtin));
+    } else if (classIndex(CLS_Generic) != DAT_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
-            classIndex(TYPE_Generic));
-    } else if (classIndex(TYPE_Jump) != DAT_INDEX_JUMP) {
+            classIndex(CLS_Generic));
+    } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
-            classIndex(TYPE_Jump));
+            classIndex(CLS_Jump));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
@@ -389,7 +389,7 @@ MOD_INIT(objectModel) {
 MOD_INIT(Class) {
     MOD_USE(OneOff);
 
-    // Note: The `objectModel` module (directly above) initializes `TYPE_Class`.
+    // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
 
     METH_BIND(Class, debugString);
     METH_BIND(Class, gcMark);
@@ -397,4 +397,4 @@ MOD_INIT(Class) {
 }
 
 // Documented in header.
-zvalue TYPE_Class = NULL;
+zvalue CLS_Class = NULL;

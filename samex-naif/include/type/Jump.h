@@ -16,7 +16,7 @@
 
 
 /** Class value for in-model class `Jump`. */
-extern zvalue TYPE_Jump;
+extern zvalue CLS_Jump;
 
 /**
  * Constructs and returns a nonlocal jump, which is initially invalid for

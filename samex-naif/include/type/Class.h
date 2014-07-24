@@ -15,7 +15,7 @@
 
 
 /** Class value for in-model class `Class`. */
-extern zvalue TYPE_Class;
+extern zvalue CLS_Class;
 
 /**
  * Asserts that the given value has the given class. If not, this aborts

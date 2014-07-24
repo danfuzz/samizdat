@@ -25,7 +25,7 @@ typedef struct {
 } zmapping;
 
 /** Class value for in-model class `Map`. */
-extern zvalue TYPE_Map;
+extern zvalue CLS_Map;
 
 /** The standard value `{}`. */
 extern zvalue EMPTY_MAP;

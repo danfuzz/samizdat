@@ -67,7 +67,7 @@ void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
 
 // Documented in header.
 zint seqNthIndexLenient(zvalue key) {
-    if (hasClass(key, TYPE_Int)) {
+    if (hasClass(key, CLS_Int)) {
         zint index = zintFromInt(key);
         return (index >= 0) ? index : -1;
     } else {
@@ -77,7 +77,7 @@ zint seqNthIndexLenient(zvalue key) {
 
 // Documented in header.
 zint seqNthIndexStrict(zint size, zvalue n) {
-    if (hasClass(n, TYPE_Int)) {
+    if (hasClass(n, CLS_Int)) {
         zint index = zintFromInt(n);
         return ((index >= 0) && (index < size)) ? index : -1;
     } else {
@@ -87,7 +87,7 @@ zint seqNthIndexStrict(zint size, zvalue n) {
 
 // Documented in header.
 zint seqPutIndexStrict(zint size, zvalue n) {
-    if (hasClass(n, TYPE_Int)) {
+    if (hasClass(n, CLS_Int)) {
         zint index = zintFromInt(n);
         if (index < 0) {
             die("Invalid index for `put` (negative).");
@@ -160,7 +160,7 @@ METH_IMPL(Sequence, nextValue) {
     } else {
         GFN_CALL(store, box, first);
         return makeData(
-            TYPE_SequenceGenerator,
+            CLS_SequenceGenerator,
             mapFromArgs(
                 STR_seq,   seq,
                 STR_index, intFromZint(1),

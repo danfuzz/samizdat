@@ -13,7 +13,7 @@
 
 
 /** Class value for in-model class `Uniqlet`. */
-extern zvalue TYPE_Uniqlet;
+extern zvalue CLS_Uniqlet;
 
 /**
  * Makes and returns a new uniqlet. Each call to this function is guaranteed

@@ -13,7 +13,7 @@
 
 
 /** Class value for in-model class `Int`. */
-extern zvalue TYPE_Int;
+extern zvalue CLS_Int;
 
 /** The standard value `0`. */
 extern zvalue INT_0;

@@ -133,7 +133,7 @@ METH_IMPL(Value, debugString) {
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!hasClass(name, TYPE_String)) {
+    } else if (!hasClass(name, CLS_String)) {
         // Suppress a non-string name.
         name = stringFromUtf8(-1, "(non-string name)");
     } else {
@@ -208,7 +208,7 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(DerivedData);
 
-    // Note: The `objectModel` module initializes `TYPE_Value`.
+    // Note: The `objectModel` module initializes `CLS_Value`.
 
     GFN_debugName = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugName"));
     datImmortalize(GFN_debugName);
@@ -244,7 +244,7 @@ MOD_INIT(Value) {
 }
 
 // Documented in header.
-zvalue TYPE_Value = NULL;
+zvalue CLS_Value = NULL;
 
 // Documented in header.
 zvalue GFN_debugName = NULL;

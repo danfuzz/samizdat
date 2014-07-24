@@ -33,12 +33,12 @@ typedef enum {
 /** Performs binding of the indicated method. */
 #define METH_BIND(cls, name) \
     do { \
-        genericBindPrim(GFN_##name, TYPE_##cls, METH_NAME(cls, name), \
+        genericBindPrim(GFN_##name, CLS_##cls, METH_NAME(cls, name), \
             #cls ":" #name); \
     } while(0)
 
 /** Class value for in-model class `Generic`. */
-extern zvalue TYPE_Generic;
+extern zvalue CLS_Generic;
 
 /**
  * Adds a class-to-function binding to the given generic. `generic` must be
