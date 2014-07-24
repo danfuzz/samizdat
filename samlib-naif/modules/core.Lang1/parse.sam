@@ -209,7 +209,7 @@ def parType = makeMainSequence(
     makeToken(@@"@@"),
     makeChoice(parIdentifierString, parParenExpression),
     makeCode { ., name ->
-        ifIs { hasType(name, @@literal) }
+        ifIs { hasClass(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
             { makeCall(REFS::makeDerivedDataType, name) }
     });
@@ -343,7 +343,7 @@ def parYieldOrNonlocal = makeMainSequence(
     makeRepeat(makeToken(@@"?"), 0, 1),
     makeChoice(
         makeSequence(
-            makeCode { op, . -> hasType(op, @@yield) },
+            makeCode { op, . -> hasClass(op, @@yield) },
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield))),
@@ -863,7 +863,7 @@ parOpExpression := parUnaryExpression;
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { hasType(expression, String) }
+    def tokens = ifIs { hasClass(expression, String) }
         { tokenize(expression) }
         { expression };
 
@@ -872,7 +872,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { hasType(program, String) }
+    def tokens = ifIs { hasClass(program, String) }
         { tokenize(program) }
         { program };
 

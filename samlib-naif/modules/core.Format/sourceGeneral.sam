@@ -104,7 +104,7 @@ fn Type_sourceGeneral(value, adorn) {
     ifNot { eq(typeParent(value), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
-    def body = ifIs { hasType(name, String) }
+    def body = ifIs { hasClass(name, String) }
         { ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) } }
         { cat("(", sourceGeneral(name, true), ")") };
 
@@ -118,7 +118,7 @@ fn Value_sourceGeneral(value, adorn) {
 
     def type = get_type(value);
     def name = typeName(type);
-    def typeStr = ifIs { hasType(name, String) }
+    def typeStr = ifIs { hasClass(name, String) }
         {
             ## The type is a string.
             ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) }
@@ -144,9 +144,9 @@ fn Value_sourceGeneral(value, adorn) {
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
             def dataStr = sourceGeneral(data, true);
-            ifIs { hasType(data, List) }
+            ifIs { hasClass(data, List) }
                 { return cat(prefix, dataStr) };
-            ifIs { hasType(data, Map) }
+            ifIs { hasClass(data, Map) }
                 { return cat(prefix, dataStr) };
             cat(prefix, "(", dataStr, ")")
         }

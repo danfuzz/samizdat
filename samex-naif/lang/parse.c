@@ -63,7 +63,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
 
     zvalue result = nth(state->tokens, state->at);
 
-    if (!hasType(result, type)) {
+    if (!hasClass(result, type)) {
         return NULL;
     }
 
@@ -500,7 +500,7 @@ DEF_PARSE(type) {
         name = PARSE_OR_REJECT(parenExpression);
     }
 
-    if (hasType(name, TYPE_literal)) {
+    if (hasClass(name, TYPE_literal)) {
         return makeLiteral(makeDerivedDataType(GET(value, name)));
     } else {
         return makeCall(REFS(makeDerivedDataType), listFrom1(name));
@@ -651,13 +651,13 @@ DEF_PARSE(unaryExpression) {
     zint size = get_size(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(postfixes, i);
-        if (hasType(one, TYPE_List)) {
+        if (hasClass(one, TYPE_List)) {
             result = makeCallOrApply(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeMaybeValue(result);
-        } else if (hasType(one, TYPE_literal)) {
+        } else if (hasClass(one, TYPE_literal)) {
             result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
@@ -740,7 +740,7 @@ DEF_PARSE(yieldOrNonlocal) {
     zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
     zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue name = hasType(op, TYPE_yield)
+    zvalue name = hasClass(op, TYPE_yield)
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
@@ -1271,7 +1271,7 @@ DEF_PARSE(program) {
 zvalue langParseExpression0(zvalue expression) {
     zvalue tokens;
 
-    if (hasType(expression, TYPE_String)) {
+    if (hasClass(expression, TYPE_String)) {
         tokens = langTokenize0(expression);
     } else {
         tokens = expression;
@@ -1292,7 +1292,7 @@ zvalue langParseExpression0(zvalue expression) {
 zvalue langParseProgram0(zvalue program) {
     zvalue tokens;
 
-    if (hasType(program, TYPE_String)) {
+    if (hasClass(program, TYPE_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;
@@ -1311,7 +1311,7 @@ zvalue langParseProgram0(zvalue program) {
 
 // Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
-    if (hasType(node, TYPE_closure)) {
+    if (hasClass(node, TYPE_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);
     }

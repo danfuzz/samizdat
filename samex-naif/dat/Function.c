@@ -27,7 +27,7 @@
  * Returns `value` if it is a string; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
-    if (hasType(value, TYPE_String)) {
+    if (hasClass(value, TYPE_String)) {
         return value;
     }
 

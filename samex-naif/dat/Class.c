@@ -178,7 +178,7 @@ static bool isType(zvalue value) {
 /**
  * Asserts `isType(value)`.
  */
-static void assertHasTypeType(zvalue value) {
+static void assertHasClassType(zvalue value) {
     if (!isType(value)) {
         die("Expected type Type; got %s.", valDebugString(value));
     }
@@ -206,8 +206,8 @@ extern inline zint typeIndexUnchecked(zvalue type);
 //
 
 // Documented in header.
-void assertHasType(zvalue value, zvalue type) {
-    if (!hasType(value, type)) {
+void assertHasClass(zvalue value, zvalue type) {
+    if (!hasClass(value, type)) {
         die("Expected type %s; got %s.",
             valDebugString(type), valDebugString(value));
     }
@@ -219,8 +219,8 @@ zint get_typeIndex(zvalue value) {
 }
 
 // Documented in header.
-bool hasType(zvalue value, zvalue type) {
-    assertHasTypeType(type);
+bool hasClass(zvalue value, zvalue type) {
+    assertHasClassType(type);
 
     for (zvalue valueType = get_type(value);
             valueType != NULL;
@@ -234,7 +234,7 @@ bool hasType(zvalue value, zvalue type) {
 }
 
 // Documented in header.
-bool haveSameType(zvalue value, zvalue other) {
+bool haveSameClass(zvalue value, zvalue other) {
     return typeEq(get_type(value), get_type(other));
 }
 
@@ -260,7 +260,7 @@ zvalue makeDerivedDataType(zvalue name) {
 
 // Documented in header.
 zint typeIndex(zvalue type) {
-    assertHasTypeType(type);
+    assertHasClassType(type);
     return typeIndexUnchecked(type);
 }
 
@@ -271,13 +271,13 @@ bool typeIsDerived(zvalue type) {
 
 // Documented in header.
 zvalue typeName(zvalue type) {
-    assertHasTypeType(type);
+    assertHasClassType(type);
     return getInfo(type)->name;
 }
 
 // Documented in header.
 zvalue typeParent(zvalue type) {
-    assertHasTypeType(type);
+    assertHasClassType(type);
     return getInfo(type)->parent;
 }
 

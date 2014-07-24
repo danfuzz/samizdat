@@ -25,7 +25,7 @@ import ./refs :: REFS;
 fn expandYield(map) {
     def yieldNode = ifValueOr { map::yield } { return };
 
-    ifNot { hasType(yieldNode, @@nonlocalExit) } { return yieldNode };
+    ifNot { hasClass(yieldNode, @@nonlocalExit) } { return yieldNode };
 
     def function = get_function(yieldNode);
     def value = get_nodeValue(yieldNode);
@@ -35,17 +35,17 @@ fn expandYield(map) {
     ## exit's `value` directly.
     ifValues(
         [
-            { -> hasType(function, @@fetch) },
-            { . -> hasType(get_target(function), @@varRef) },
+            { -> hasClass(function, @@fetch) },
+            { . -> hasClass(get_target(function), @@varRef) },
             { ., . -> map::yieldDef },
             { ., target, yieldDef -> eq(get_name(target), yieldDef) }
         ],
         { ., ., ., . -> return value });
 
     def exitCall = ifValueOr
-        { ifIs { hasType(value, @@void) } { makeCall(function) } }
+        { ifIs { hasClass(value, @@void) } { makeCall(function) } }
         {
-            ifIs { hasType(value, @@maybe) }
+            ifIs { hasClass(value, @@maybe) }
                 {
                     makeCallOrApply(function,
                         makeInterpolate(makeMaybeValue(get_nodeValue(value))))
@@ -183,7 +183,7 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(nodeOrMap) {
-    def map = ifValueOr { hasType(nodeOrMap, Map) } { dataOf(nodeOrMap) };
+    def map = ifValueOr { hasClass(nodeOrMap, Map) } { dataOf(nodeOrMap) };
     def formals = ifValueOr { map::formals } { [] };
     var statements = ifValueOr { map::statements } { [] };
     def statSz = get_size(statements);
@@ -236,7 +236,7 @@ export fn makeImport(baseData) {
                 data := {data*, prefix: ""}
             };
 
-            ifIs { hasType(select, @@"*") }
+            ifIs { hasClass(select, @@"*") }
                 {
                     ## It's a wildcard import.
                     data := del(data, "select");
@@ -254,7 +254,7 @@ export fn makeImport(baseData) {
     ifIs { data::format }
         {
             ## It's a resource.
-            ifIs { hasType(data::source, @@external) }
+            ifIs { hasClass(data::source, @@external) }
                 { die("Cannot import external resource.") };
             return @importResource(data)
         };
@@ -295,24 +295,24 @@ export fn makeInfoMap(node) {
 
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
-        ifIs { hasType(s, @@importModule) }
+        ifIs { hasClass(s, @@importModule) }
             { addToImports(get_source(s), [@module]) };
-        ifIs { hasType(s, @@importModuleSelection) }
+        ifIs { hasClass(s, @@importModuleSelection) }
             {
                 def names = ifValueOr { get_select(s) }
                     { die("Cannot call `makeInfoMap` on unresolved import.") };
                 addToImports(get_source(s), names)
             };
-        ifIs { hasType(s, @@importResource) }
+        ifIs { hasClass(s, @@importResource) }
             { addToResources(get_source(s), get_format(s)) };
     };
 
     ## The filter is just being used as a for-each loop. The direct
     ## result is ignored.
     filterAll(statements) { s ->
-        ifIs { hasType(s, @@exportSelection) }
+        ifIs { hasClass(s, @@exportSelection) }
             { addToExports(get_select(s)) };
-        ifIs { hasType(s, @@export) }
+        ifIs { hasClass(s, @@export) }
             {
                 addToExports(get_definedNames(s));
                 handleImport(get_nodeValue(s))
@@ -357,9 +357,9 @@ export fn withDynamicImports(node) {
 
     def converted = filterAll(rawStatements) { s /out ->
         ifValueOr
-            { hasType(s, @@importModule) }
-            { hasType(s, @@importModuleSelection) }
-            { hasType(s, @@importResource) }
+            { hasClass(s, @@importModule) }
+            { hasClass(s, @@importModuleSelection) }
+            { hasClass(s, @@importResource) }
             {
                 ## Not an `import*`.
                 yield /out [s]
@@ -388,10 +388,10 @@ export fn withModuleDefs(node) {
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
     def statements = filterAll(rawStatements) { s /out ->
-        ifIs { hasType(s, @@exportSelection) }
+        ifIs { hasClass(s, @@exportSelection) }
             { yield /out };
 
-        yield ifIs { hasType(s, @@export) }
+        yield ifIs { hasClass(s, @@export) }
             { get_nodeValue(s) }
             { s }
     };
@@ -427,7 +427,7 @@ export fn withoutTops(node) {
 
     ## This is a collation of all the forward declarations.
     def tops = filterAll(rawStatements) { s ->
-        def defNode = ifIs { hasType(s, @@export) }
+        def defNode = ifIs { hasClass(s, @@export) }
             { get_nodeValue(s) }
             { s };
 
@@ -437,7 +437,7 @@ export fn withoutTops(node) {
 
     ## These are the one-for-one replacements for the original `statements`.
     def mains = filterAll(rawStatements) { s ->
-        def defNode = ifIs { hasType(s, @@export) }
+        def defNode = ifIs { hasClass(s, @@export) }
             { get_nodeValue(s) }
             { s };
 
@@ -448,7 +448,7 @@ export fn withoutTops(node) {
 
     ## This lists all the exported variables that were transformed above.
     def exports = filterAll(rawStatements) { s /out ->
-        ifNot { hasType(s, @@export) }
+        ifNot { hasClass(s, @@export) }
             { yield /out };
 
         def defNode = get_nodeValue(s);

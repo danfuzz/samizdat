@@ -22,7 +22,7 @@ extern zvalue TYPE_Type;
  * the process with a diagnostic message. **Note:** This does not do a
  * validity check on the given arguments.
  */
-void assertHasType(zvalue value, zvalue type);
+void assertHasClass(zvalue value, zvalue type);
 
 /**
  * Returns the unique index for the type of the given value.
@@ -33,13 +33,13 @@ zint get_typeIndex(zvalue value);
  * Returns true iff the type of the given value (that is, `get_type(value)`)
  * is either the given type or is a subtype of the given type.
  */
-bool hasType(zvalue value, zvalue type);
+bool hasClass(zvalue value, zvalue type);
 
 /**
  * Returns true iff the types of the given values (that is, `get_type()` on
  * each) are the same.
  */
-bool haveSameType(zvalue value, zvalue other);
+bool haveSameClass(zvalue value, zvalue other);
 
 /**
  * Makes a new core type. `name` is the type's name. `parent` is its

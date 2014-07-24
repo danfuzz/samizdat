@@ -49,7 +49,7 @@ zvalue valEq(zvalue value, zvalue other) {
         die("Shouldn't happen: NULL argument passed to `valEq`.");
     } else if (value == other) {
         return value;
-    } else if (haveSameType(value, other)) {
+    } else if (haveSameClass(value, other)) {
         return (GFN_CALL(totalEq, value, other) != NULL) ? value : NULL;
     } else {
         return NULL;
@@ -133,7 +133,7 @@ METH_IMPL(Value, debugString) {
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!hasType(name, TYPE_String)) {
+    } else if (!hasClass(name, TYPE_String)) {
         // Suppress a non-string name.
         name = stringFromUtf8(-1, "(non-string name)");
     } else {

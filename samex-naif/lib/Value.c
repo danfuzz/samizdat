@@ -26,11 +26,11 @@ FUN_IMPL_DECL(get_type) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(hasType) {
+FUN_IMPL_DECL(hasClass) {
     zvalue value = args[0];
     zvalue type = args[1];
 
-    return hasType(value, type) ? value : NULL;
+    return hasClass(value, type) ? value : NULL;
 }
 
 // Documented in spec.

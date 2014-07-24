@@ -126,13 +126,13 @@ fn checkExternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@external` but is improperly-formed, this dies
 ## with an error.
 fn checkExternalSource(source) {
-    ifNot { hasType(source, @@external) }
+    ifNot { hasClass(source, @@external) }
         { return };
 
     def name = ifValueOr { source::name }
         { die("Invalid external source: no `name`") };
 
-    ifNot { hasType(name, String) }
+    ifNot { hasClass(name, String) }
         { die("Invalid external source: `name` not a string") };
     ifIs { eq(name, "") }
         { die("Invalid external source: empty `name`") };
@@ -179,13 +179,13 @@ fn checkInternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@internal` but is improperly-formed, this dies
 ## with an error.
 fn checkInternalSource(source) {
-    ifNot { hasType(source, @@internal) }
+    ifNot { hasClass(source, @@internal) }
         { return };
 
     def name = ifValueOr { source::name }
         { die("Invalid internal source: no `name`") };
 
-    ifNot { hasType(name, String) }
+    ifNot { hasClass(name, String) }
         { die("Invalid internal source: `name` not a string") };
     ifIs { eq(name, "") }
         { die("Invalid internal source: empty `name`") };
@@ -208,7 +208,7 @@ fn checkInternalSource(source) {
 fn checkAbsolutePath(path) {
     ifIs { eq(path, "") }
         { die("Invalid file path: empty string") };
-    ifNot { hasType(path, String) }
+    ifNot { hasClass(path, String) }
         { die("Invalid file path: not a string") };
     ifNot { eq(get(path, 0), "/") }
         { die("Invalid file path: not absolute") }
@@ -222,7 +222,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     ## a successfully-loaded result.
     ifValue { get(loadedBox*, source) }
         { found ->
-            ifIs { hasType(found, @@module) }
+            ifIs { hasClass(found, @@module) }
                 { return found };
             ifIs { eq(found, "notFound") }
                 { return };
@@ -240,9 +240,9 @@ fn resolveHelper(loadedBox, source, resolveFn) {
 
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
-    ifIs { hasType(source, @@internal) }
+    ifIs { hasClass(source, @@internal) }
         { return cat("./", source::name) };
-    ifIs { hasType(source, @@external) }
+    ifIs { hasClass(source, @@external) }
         { return source::name };
 
     die("Bad module / resource `source`.")
@@ -551,7 +551,7 @@ fn runProgram(programFunc, args) {
 
     def result = optResult*;
 
-    ifIs { hasType(result, @@module) }
+    ifIs { hasClass(result, @@module) }
         {
             ifValue { result::exports::main }
                 { main -> return? main(args*) }

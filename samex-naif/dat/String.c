@@ -62,7 +62,7 @@ static zvalue allocString(zint size) {
  * with a diagnostic message.
  */
 static void assertString(zvalue value) {
-    assertHasType(value, TYPE_String);
+    assertHasClass(value, TYPE_String);
 }
 
 /**

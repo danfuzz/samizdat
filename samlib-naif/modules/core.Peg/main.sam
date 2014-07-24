@@ -236,7 +236,7 @@ fn genericMakeTokenSet(sense, types) {
 ## Documented in spec.
 export fn apply(rule, input) {
     def result;
-    def generator = ifIs { hasType(input, String) }
+    def generator = ifIs { hasClass(input, String) }
         {
             ## This converts generated characters into tokens with the
             ## characters as the type.

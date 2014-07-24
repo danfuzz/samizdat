@@ -39,7 +39,7 @@ export
     get_size,
     get_type,
     get_value,
-    hasType,
+    hasClass,
     ifIs,
     ifNot,
     ifSwitch,

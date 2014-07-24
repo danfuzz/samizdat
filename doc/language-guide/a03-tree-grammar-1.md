@@ -260,7 +260,7 @@ def parType = {:
     name = (parIdentifierString | parParenExpression)
 
     {
-        ifIs { hasType(name, @@literal) }
+        ifIs { hasClass(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
             { makeCall(REFS::makeDerivedDataType, name) }
     }
@@ -453,7 +453,7 @@ def parYieldOrNonlocal = {:
     optQuest = @"?"?
 
     name = (
-        { hasType(op, @@yield) }
+        { hasClass(op, @@yield) }
         (
             @"/"
             parVarLvalue

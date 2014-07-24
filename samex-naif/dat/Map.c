@@ -165,7 +165,7 @@ static int mappingOrder(const void *m1, const void *m2) {
 
 // Documented in header.
 void arrayFromMap(zmapping *result, zvalue map) {
-    assertHasType(map, TYPE_Map);
+    assertHasClass(map, TYPE_Map);
 
     MapInfo *info = getInfo(map);
     utilCpy(zmapping, result, info->elems, info->size);

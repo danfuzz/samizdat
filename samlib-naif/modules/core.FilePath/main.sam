@@ -18,7 +18,7 @@ import proto.Number;
 
 ## Does a type / content check on `path`.
 fn checkPath(path) {
-    ifNot { hasType(path, String) }
+    ifNot { hasClass(path, String) }
         { die("Invalid non-string path.") };
     ifIs { eq(path, "") }
         { die("Invalid empty path.") };

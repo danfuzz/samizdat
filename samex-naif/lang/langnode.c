@@ -83,7 +83,7 @@ static zvalue expandYield(zvalue map) {
     zvalue yieldNode = get(map, STR_yield);
 
     if (     (yieldNode == NULL)
-          || !hasType(yieldNode, TYPE_nonlocalExit)) {
+          || !hasClass(yieldNode, TYPE_nonlocalExit)) {
         return yieldNode;
     }
 
@@ -92,8 +92,8 @@ static zvalue expandYield(zvalue map) {
     zvalue yieldDef = get(map, STR_yieldDef);
     zvalue functionTarget = get(function, STR_target);
 
-    if (     hasType(function, TYPE_fetch)
-          && hasType(functionTarget, TYPE_varRef)
+    if (     hasClass(function, TYPE_fetch)
+          && hasClass(functionTarget, TYPE_varRef)
           && (yieldDef != NULL)
           && valEq(get(functionTarget, STR_name), yieldDef)) {
         return value;
@@ -101,9 +101,9 @@ static zvalue expandYield(zvalue map) {
 
     zvalue exitCall;
 
-    if (hasType(value, TYPE_void)) {
+    if (hasClass(value, TYPE_void)) {
         exitCall = makeCall(function, NULL);
-    } else if (hasType(value, TYPE_maybe)) {
+    } else if (hasClass(value, TYPE_maybe)) {
         zvalue arg = makeInterpolate(makeMaybeValue(get(value, STR_value)));
         exitCall = makeCallOrApply(function, listFrom1(arg));
     } else {
@@ -171,10 +171,10 @@ zvalue formalsMinArgs(zvalue formals) {
 
 // Documented in spec.
 zvalue get_baseName(zvalue source) {
-    if (hasType(source, TYPE_external)) {
+    if (hasClass(source, TYPE_external)) {
         zvalue components = splitAtChar(get(source, STR_name), STR_CH_DOT);
         return nth(components, get_size(components) - 1);
-    } else if (hasType(source, TYPE_internal)) {
+    } else if (hasClass(source, TYPE_internal)) {
         zvalue components = splitAtChar(get(source, STR_name), STR_CH_SLASH);
         zvalue last = nth(components, get_size(components) - 1);
         zvalue parts = splitAtChar(last, STR_CH_DOT);
@@ -186,14 +186,14 @@ zvalue get_baseName(zvalue source) {
 
 // Documented in spec.
 zvalue get_definedNames(zvalue node) {
-    if (hasType(node, TYPE_export)) {
+    if (hasClass(node, TYPE_export)) {
         return get_definedNames(get(node, STR_value));
-    } else if (   hasType(node, TYPE_importModule)
-               || hasType(node, TYPE_importResource)
-               || hasType(node, TYPE_varDef)
-               || hasType(node, TYPE_varDefMutable)) {
+    } else if (   hasClass(node, TYPE_importModule)
+               || hasClass(node, TYPE_importResource)
+               || hasClass(node, TYPE_varDef)
+               || hasClass(node, TYPE_varDefMutable)) {
         return listFrom1(get(node, STR_name));
-    } else if (hasType(node, TYPE_importModuleSelection)) {
+    } else if (hasClass(node, TYPE_importModuleSelection)) {
         zvalue prefix = get(node, STR_prefix);
         zvalue select = get(node, STR_select);
         if (select == NULL) {
@@ -252,7 +252,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
     if (get(target, STR_lvalue) == NULL) {
         return NULL;
-    } else if (hasType(target, TYPE_fetch)) {
+    } else if (hasClass(target, TYPE_fetch)) {
         zvalue innerTarget = get(target, STR_target);
         return makeData(TYPE_store,
             mapFrom2(STR_target, innerTarget, STR_value, value));
@@ -344,12 +344,12 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue select = get(node, STR_select);
     zvalue source = get(node, STR_source);
 
-    if (hasType(node, TYPE_importModule)) {
+    if (hasClass(node, TYPE_importModule)) {
         zvalue stat = makeVarDef(name,
             makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
 
         return listFrom1(stat);
-    } else if (hasType(node, TYPE_importModuleSelection)) {
+    } else if (hasClass(node, TYPE_importModuleSelection)) {
         zvalue names = get_definedNames(node);
         zint size = get_size(names);
         zvalue loadCall = makeCall(REFS(loadModule),
@@ -364,7 +364,7 @@ zvalue makeDynamicImport(zvalue node) {
         }
 
         return listFromArray(size, stats);
-    } else if (hasType(node, TYPE_importResource)) {
+    } else if (hasClass(node, TYPE_importResource)) {
         zvalue stat = makeVarDef(
             name,
             makeCall(REFS(loadResource),
@@ -388,7 +388,7 @@ zvalue makeExportSelection(zvalue names) {
 
 // Documented in spec.
 zvalue makeFullClosure(zvalue nodeOrMap) {
-    zvalue map = hasType(nodeOrMap, TYPE_Map) ? nodeOrMap : dataOf(nodeOrMap);
+    zvalue map = hasClass(nodeOrMap, TYPE_Map) ? nodeOrMap : dataOf(nodeOrMap);
     zvalue formals = get(map, STR_formals);
     zvalue statements = get(map, STR_statements);
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
@@ -448,7 +448,7 @@ zvalue makeImport(zvalue baseData) {
             data = collPut(data, STR_prefix, EMPTY_STRING);
         }
 
-        if (hasType(select, TYPE_CH_STAR)) {
+        if (hasClass(select, TYPE_CH_STAR)) {
             // It's a wildcard import.
             data = collDel(data, STR_select);
         }
@@ -466,7 +466,7 @@ zvalue makeImport(zvalue baseData) {
 
     if (get(data, STR_format) != NULL) {
         // It's a resource.
-        if (hasType(get(data, STR_source), TYPE_external)) {
+        if (hasClass(get(data, STR_source), TYPE_external)) {
             die("Cannot import external resource.");
         }
         return makeData(TYPE_importResource, data);
@@ -493,14 +493,14 @@ zvalue makeInfoMap(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(statements, i);
 
-        if (hasType(s, TYPE_exportSelection)) {
+        if (hasClass(s, TYPE_exportSelection)) {
             zvalue select = get(s, STR_select);
             zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
                 zvalue name = nth(select, j);
                 exports = addTypeBinding(exports, name);
             }
-        } else if (hasType(s, TYPE_export)) {
+        } else if (hasClass(s, TYPE_export)) {
             zvalue names = get_definedNames(s);
             zint sz = get_size(names);
             for (zint j = 0; j < sz; j++) {
@@ -512,10 +512,10 @@ zvalue makeInfoMap(zvalue node) {
         }
 
         // *Not* `else if` (see above).
-        if (hasType(s, TYPE_importModule)) {
+        if (hasClass(s, TYPE_importModule)) {
             imports =
                 addImportBinding(imports, get(s, STR_source), TYPE_module);
-        } else if (hasType(s, TYPE_importModuleSelection)) {
+        } else if (hasClass(s, TYPE_importModuleSelection)) {
             zvalue source = get(s, STR_source);
             zvalue select = get(s, STR_select);
             if (select == NULL) {
@@ -526,7 +526,7 @@ zvalue makeInfoMap(zvalue node) {
                 zvalue name = nth(select, j);
                 imports = addImportBinding(imports, source, name);
             }
-        } else if (hasType(s, TYPE_importResource)) {
+        } else if (hasClass(s, TYPE_importResource)) {
             resources = addResourceBinding(resources,
                 get(s, STR_source), get(s, STR_format));
         }
@@ -621,7 +621,7 @@ zvalue makeVarStore(zvalue name, zvalue value) {
 
 // Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
-    if (hasType(node, TYPE_importResource)) {
+    if (hasClass(node, TYPE_importResource)) {
         // No conversion, just validation. TODO: Validate.
         //
         // **Note:** This clause is at the top so as to avoid the call to
@@ -635,15 +635,15 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
             die("Could not resolve import.");
-        } else if (!hasType(resolved, TYPE_module)) {
+        } else if (!hasClass(resolved, TYPE_module)) {
             die("Invalid resolution result (not a `@module`)");
         }
     }
 
-    if (hasType(node, TYPE_importModule)) {
+    if (hasClass(node, TYPE_importModule)) {
         // No conversion, just validation (done above).
         return node;
-    } else if (hasType(node, TYPE_importModuleSelection)) {
+    } else if (hasClass(node, TYPE_importModuleSelection)) {
         // Get the exports. When given a `NULL` `resolveFn`, this acts as if
         // all sources resolve to an empty export map, and hence this node
         // won't bind anything.
@@ -699,9 +699,9 @@ zvalue withModuleDefs(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
 
-        if (hasType(s, TYPE_exportSelection)) {
+        if (hasClass(s, TYPE_exportSelection)) {
             continue;
-        } else if (hasType(s, TYPE_export)) {
+        } else if (hasClass(s, TYPE_export)) {
             s = get(s, STR_value);
         }
 
@@ -763,14 +763,14 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         bool exported = false;
         zvalue defNode = s;
 
-        if (hasType(s, TYPE_export)) {
+        if (hasClass(s, TYPE_export)) {
             exported = true;
             defNode = get(s, STR_value);
         }
 
-        if (!(   hasType(defNode, TYPE_importModule)
-              || hasType(defNode, TYPE_importModuleSelection)
-              || hasType(defNode, TYPE_importResource))) {
+        if (!(   hasClass(defNode, TYPE_importModule)
+              || hasClass(defNode, TYPE_importModuleSelection)
+              || hasClass(defNode, TYPE_importResource))) {
             continue;
         }
 
@@ -837,7 +837,7 @@ zvalue withoutTops(zvalue node) {
     zvalue tops = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
-        zvalue defNode = hasType(s, TYPE_export)
+        zvalue defNode = hasClass(s, TYPE_export)
             ? get(s, STR_value)
             : s;
 
@@ -850,7 +850,7 @@ zvalue withoutTops(zvalue node) {
     zvalue mains = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
-        zvalue defNode = hasType(s, TYPE_export)
+        zvalue defNode = hasClass(s, TYPE_export)
             ? get(s, STR_value)
             : s;
 
@@ -866,7 +866,7 @@ zvalue withoutTops(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
 
-        if (!hasType(s, TYPE_export)) {
+        if (!hasClass(s, TYPE_export)) {
             continue;
         }
 

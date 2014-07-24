@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     zvalue runFunc = get(env, STR_runCommandLine);
     zvalue result = funApply(runFunc, argsList);
 
-    if ((result != NULL) && (hasType(result, TYPE_Int))) {
+    if ((result != NULL) && (hasClass(result, TYPE_Int))) {
         exit((int) zintFromInt(result));
     }
 

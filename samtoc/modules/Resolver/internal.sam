@@ -60,7 +60,7 @@ fn @@InternalResolver.resolve(source) {
     ## The result is always a list, so that we can cache a not-found result
     ## as the empty list.
     def result = (
-        hasType(source, @@internal)
+        hasClass(source, @@internal)
             & this.directResolve(source)
             | (this::nextResolver).resolve(source)
     )?;

@@ -69,7 +69,7 @@ zvalue intFromZint(zint value) {
 
 // Documented in header.
 zint zintFromInt(zvalue intval) {
-    assertHasType(intval, TYPE_Int);
+    assertHasClass(intval, TYPE_Int);
     return zintValue(intval);
 }
 

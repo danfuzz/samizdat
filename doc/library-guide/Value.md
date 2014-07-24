@@ -147,7 +147,7 @@ argument, per se, to represent logical-true.
 Returns the type of the given arbitrary `value`. The return value is always
 of type `Type`.
 
-#### `hasType(value, type) -> logic`
+#### `hasClass(value, type) -> logic`
 
 Returns `value` if it has type `type`. Otherwise returns void.
 

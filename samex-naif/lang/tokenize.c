@@ -413,7 +413,7 @@ zvalue langLanguageOf0(zvalue string) {
     zvalue result = tokenizeAnyToken(&state);
 
     if ((result != NULL)
-        && hasType(result, TYPE_directive)
+        && hasClass(result, TYPE_directive)
         && valEq(get(result, STR_name), STR_language)) {
         return get(result, STR_value);
     }
@@ -440,7 +440,7 @@ zvalue langTokenize0(zvalue string) {
         zvalue one = tokenizeAnyToken(&state);
         if (one == NULL) {
             break;
-        } else if (!hasType(one, TYPE_directive)) {
+        } else if (!hasClass(one, TYPE_directive)) {
             result[out] = one;
             out++;
         }

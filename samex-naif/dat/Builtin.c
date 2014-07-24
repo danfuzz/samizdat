@@ -101,7 +101,7 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
 
 // Documented in header.
 BuiltinState builtinGetState(zvalue builtin) {
-    assertHasType(builtin, TYPE_Builtin);
+    assertHasClass(builtin, TYPE_Builtin);
 
     BuiltinInfo *info = getInfo(builtin);
     zint size = info->stateSize;

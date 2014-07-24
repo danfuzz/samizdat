@@ -256,7 +256,7 @@ def parType = {:
     name = (parIdentifierString | parParenExpression)
 
     {
-        ifIs { hasType(name, @@literal) }
+        ifIs { hasClass(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
             { makeCall(REFS::makeDerivedDataType, name) }
     }
@@ -449,7 +449,7 @@ def parYieldOrNonlocal = {:
     optQuest = @"?"?
 
     name = (
-        { hasType(op, @@yield) }
+        { hasClass(op, @@yield) }
         (
             @"/"
             parVarLvalue
@@ -1259,7 +1259,7 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = filterAll(token::value) { elem ->
-            ifIs { hasType(elem, String) }
+            ifIs { hasClass(elem, String) }
                 { makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
@@ -2125,7 +2125,7 @@ def parSwitchExpression = {:
         def caseClauses = filterAll(cases) { case ->
             def keys = case::keys;
             def code = finishCode(case);
-            ifIs { hasType(keys, List) }
+            ifIs { hasClass(keys, List) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, code) }
         };
         def caseMap = makeCallOrApply(REFS::cat,
@@ -2325,7 +2325,7 @@ parExpression2 := {:
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { hasType(expression, String) }
+    def tokens = ifIs { hasClass(expression, String) }
         { tokenize(expression) }
         { expression };
 
@@ -2334,7 +2334,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { hasType(program, String) }
+    def tokens = ifIs { hasClass(program, String) }
         { tokenize(program) }
         { program };
 

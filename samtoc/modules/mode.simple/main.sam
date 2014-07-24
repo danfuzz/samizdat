@@ -117,9 +117,9 @@ fn closureBody(cloIdx, clo, literals) {
     def mainStats = [ s in clo.statements -> translateStatement(s, var vars) ];
 
     def rawYield = clo.yieldNode;
-    def yieldNode = if (hasType(rawYield, @@maybe)) {
+    def yieldNode = if (hasClass(rawYield, @@maybe)) {
         translate(rawYield.nodeValue, var vars);
-    } else if (hasType(rawYield, @@void)) {
+    } else if (hasClass(rawYield, @@void)) {
         "NULL"
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee

@@ -121,7 +121,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
 
     if (info->flags & GFN_SAME_TYPE) {
         for (zint i = 1; i < argCount; i++) {
-            if (!hasType(args[i], firstType)) {
+            if (!hasClass(args[i], firstType)) {
                 die("Type mismatch on argument #%lld of: %s(%s, ...)",
                     i, valDebugString(generic), valDebugString(args[0]));
             }
@@ -146,7 +146,7 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
 
 // Documented in header.
 void genericBind(zvalue generic, zvalue type, zvalue function) {
-    assertHasType(generic, TYPE_Generic);
+    assertHasClass(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
     zint index = typeIndex(type);
@@ -164,7 +164,7 @@ void genericBind(zvalue generic, zvalue type, zvalue function) {
 // Documented in header.
 void genericBindPrim(zvalue generic, zvalue type, zfunction function,
         const char *builtinName) {
-    assertHasType(generic, TYPE_Generic);
+    assertHasClass(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
     zvalue name = (builtinName != NULL)
@@ -178,7 +178,7 @@ void genericBindPrim(zvalue generic, zvalue type, zfunction function,
 
 // Documented in header.
 void genericSeal(zvalue generic) {
-    assertHasType(generic, TYPE_Generic);
+    assertHasClass(generic, TYPE_Generic);
     getInfo(generic)->sealed = true;
 }
 

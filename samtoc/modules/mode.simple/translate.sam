@@ -51,10 +51,10 @@ export fn translate(node, varsBox) {
             def function = translate(node.function, varsBox);
             def values = node.values;
 
-            if (hasType(values, @@maybe)) {
+            if (hasClass(values, @@maybe)) {
                 def vTrans = translate(values.nodeValue, varsBox);
                 genCall("funApply", function, vTrans)
-            } else if (hasType(values, @@void)) {
+            } else if (hasClass(values, @@void)) {
                 ## A void `values` binding just devolves into a no-argument
                 ## (but otherwise regular) function call.
                 genCall("FUN_CALL", function)
@@ -102,10 +102,10 @@ export fn translate(node, varsBox) {
             def target = translate(node.target, varsBox);
             def value = node.nodeValue;
 
-            if (hasType(value, @@maybe)) {
+            if (hasClass(value, @@maybe)) {
                 def vTrans = translate(value.nodeValue, varsBox);
                 genCall("boxStoreNullOk", target, vTrans)
-            } else if (hasType(value, @@void)) {
+            } else if (hasClass(value, @@void)) {
                 genCall("GFN_CALL", "store", target)
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
