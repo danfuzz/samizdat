@@ -349,11 +349,11 @@ DEF_PARSE(identifierString) {
     result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
     REJECT_IF(dataOf(result) != NULL);
 
-    zvalue type = className(get_class(result));
-    zchar firstCh = zcharFromString(nth(type, 0));
+    zvalue name = className(get_class(result));
+    zchar firstCh = zcharFromString(nth(name, 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
-    return makeLiteral(type);
+    return makeLiteral(name);
 }
 
 /**

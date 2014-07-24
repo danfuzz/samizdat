@@ -157,10 +157,10 @@ def parIdentifierString = {:
     {
         ifNot { dataOf(token) }
             {
-                def type = get_className(token);
-                def firstCh = nth(type, 0);
+                def name = get_className(token);
+                def firstCh = nth(name, 0);
                 ifIs { get(LOWER_ALPHA, firstCh) }
-                    { makeLiteral(type) }
+                    { makeLiteral(name) }
             }
     }
 :};
