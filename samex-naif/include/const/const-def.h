@@ -117,7 +117,6 @@ STR(symlink,               "symlink");
 STR(target,                "target");
 STR(this,                  "this");
 STR(top,                   "top");
-STR(type,                  "type");
 STR(value,                 "value");
 STR(values,                "values");
 STR(yieldDef,              "yieldDef");
