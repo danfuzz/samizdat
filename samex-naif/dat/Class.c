@@ -39,7 +39,7 @@ static zvalue theCoreSecret = NULL;
 /**
  * Gets a pointer to the value's info.
  */
-static TypeInfo *getInfo(zvalue type) {
+static ClassInfo *getInfo(zvalue type) {
     return datPayload(type);
 }
 
@@ -56,13 +56,13 @@ static void classInit(zvalue type, zvalue parent, zvalue name) {
         die("Every type but `Value` needs a parent.");
     }
 
-    TypeInfo *info = getInfo(type);
+    ClassInfo *info = getInfo(type);
     bool derived = (parent == TYPE_DerivedData) && (TYPE_DerivedData != NULL);
 
     info->parent = parent;
     info->name = name;
     info->secret = derived ? NULL : theCoreSecret;
-    info->typeId = theNextClassId;
+    info->classId = theNextClassId;
 
     theClasses[theNextClassId] = type;
     theNeedSort = true;
@@ -74,7 +74,7 @@ static void classInit(zvalue type, zvalue parent, zvalue name) {
  * Allocates a type value.
  */
 static zvalue allocClass(void) {
-    return datAllocValue(TYPE_Type, sizeof(TypeInfo));
+    return datAllocValue(TYPE_Type, sizeof(ClassInfo));
 }
 
 /**
@@ -93,7 +93,7 @@ static zvalue makeClass(zvalue name, zvalue parent) {
  * for searching, sorting, and ordering.
  */
 static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
-    TypeInfo *info2 = getInfo(v2);
+    ClassInfo *info2 = getInfo(v2);
     zvalue name2 = info2->name;
     zvalue secret2 = info2->secret;
     bool derived1 = (secret1 != theCoreSecret);
@@ -127,7 +127,7 @@ static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
 static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v1 = *(zvalue *) vptr1;
     zvalue v2 = *(zvalue *) vptr2;
-    TypeInfo *info1 = getInfo(v1);
+    ClassInfo *info1 = getInfo(v1);
 
     return classCompare(info1->name, info1->secret, v2);
 }
@@ -289,7 +289,7 @@ zvalue makeDerivedDataClass(zvalue name) {
 // Documented in header.
 METH_IMPL(Type, debugString) {
     zvalue type = args[0];
-    TypeInfo *info = getInfo(type);
+    ClassInfo *info = getInfo(type);
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
@@ -312,7 +312,7 @@ METH_IMPL(Type, debugString) {
 // Documented in header.
 METH_IMPL(Type, gcMark) {
     zvalue type = args[0];
-    TypeInfo *info = getInfo(type);
+    ClassInfo *info = getInfo(type);
 
     datMark(info->name);
     datMark(info->secret);
@@ -330,7 +330,7 @@ METH_IMPL(Type, totalOrder) {
         return INT_0;
     }
 
-    TypeInfo *info = getInfo(value);
+    ClassInfo *info = getInfo(value);
     return intFromZint(classCompare(info->name, info->secret, other));
 }
 

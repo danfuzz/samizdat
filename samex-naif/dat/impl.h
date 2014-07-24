@@ -20,13 +20,13 @@ enum {
     /** Required byte alignment for values. */
     DAT_VALUE_ALIGNMENT = 8,
 
-    /** The type index for type `Builtin`. */
+    /** The class index for class `Builtin`. */
     DAT_INDEX_BUILTIN = 4,
 
-    /** The type index for type `Generic`. */
+    /** The class index for class `Generic`. */
     DAT_INDEX_GENERIC = 5,
 
-    /** The type index for type `Jump`. */
+    /** The class index for class `Jump`. */
     DAT_INDEX_JUMP = 6
 };
 
@@ -49,32 +49,32 @@ typedef struct DatHeader {
     /** Mark bit (used during GC). */
     bool marked : 1;
 
-    /** Data type. This is always a `Type` instance. */
+    /** Class of the value. This is always a `Class` instance. */
     zvalue type;
 
-    /** Type-specific data goes here. */
+    /** Class-specific data goes here. */
     uint8_t payload[/*flexible*/];
 } DatHeader;
 
 /**
- * Payload struct for type `Type`.
+ * Payload struct for class `Class`.
  */
 typedef struct {
-    /** Parent type. Only allowed to be `NULL` for `Value`. */
+    /** Parent class. Only allowed to be `NULL` for `Value`. */
     zvalue parent;
 
-    /** Name of the type. Arbitrary value. */
+    /** Name of the class. Arbitrary value. */
     zvalue name;
 
-    /** Access secret of the type. Optional, and arbitrary if present. */
+    /** Access secret of the class. Optional, and arbitrary if present. */
     zvalue secret;
 
     /**
-     * Type identifier / index. Assigned upon initialization, in sequential
+     * Class identifier / index. Assigned upon initialization, in sequential
      * order.
      */
-    zint typeId;
-} TypeInfo;
+    zint classId;
+} ClassInfo;
 
 /**
  * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
@@ -97,35 +97,35 @@ typedef struct {
 
 /**
  * Actual implementation of builtin function calling. This is where
- * short-circuited generic function dispatch of `call` on type `Builtin`
+ * short-circuited generic function dispatch of `call` on class `Builtin`
  * lands.
  */
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Gets the index for a given type value. The given value *must* be a
- * `Type` per se; this is *not* checked.
+ * Gets the index for a given class value. The given value *must* be a
+ * `Class` per se; this is *not* checked.
  */
-inline zint classIndexUnchecked(zvalue type) {
-    return ((TypeInfo *) datPayload(type))->typeId;
+inline zint classIndexUnchecked(zvalue cls) {
+    return ((ClassInfo *) datPayload(cls))->classId;
 }
 
 /**
  * Actual implementation of generic function calling. This is where
- * short-circuited generic function dispatch of `call` on type `Generic`
+ * short-circuited generic function dispatch of `call` on class `Generic`
  * lands.
  */
 zvalue genericCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Gets the function bound to the given generic for the given type index,
+ * Gets the function bound to the given generic for the given class index,
  * if any. Returns `NULL` if there is no binding.
  */
 zvalue genericFindByIndex(zvalue generic, zint index);
 
 /**
  * Actual implementation of nonlocal jump calling. This is where
- * short-circuited generic function dispatch of `call` on type `Jump`
+ * short-circuited generic function dispatch of `call` on class `Jump`
  * lands.
  */
 zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
