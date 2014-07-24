@@ -9,6 +9,7 @@
 #include "const.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
+#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
@@ -17,7 +18,6 @@
 #include "type/Map.h"
 #include "type/Sequence.h"
 #include "type/String.h"
-#include "type/Class.h"
 
 #include "impl.h"
 

@@ -2,12 +2,12 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Class.h"
 #include "type/Value.h"
 #include "zlimits.h"
 

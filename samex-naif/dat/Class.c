@@ -5,13 +5,13 @@
 #include <stdlib.h>
 
 #include "type/Builtin.h"
+#include "type/Class.h"
+#include "type/Data.h"
 #include "type/DerivedData.h"
 #include "type/Generic.h"
-#include "type/Data.h"
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/String.h"
-#include "type/Class.h"
 #include "type/Uniqlet.h"
 #include "type/Value.h"
 #include "zlimits.h"

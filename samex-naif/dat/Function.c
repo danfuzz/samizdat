@@ -9,11 +9,11 @@
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
 
+#include "type/Class.h"
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/String.h"
-#include "type/Class.h"
 #include "type/Value.h"
 
 #include "impl.h"

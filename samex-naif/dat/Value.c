@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
-#include "type/Class.h"
 #include "type/Value.h"
 
 #include "impl.h"

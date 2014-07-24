@@ -7,6 +7,7 @@
 
 #include "const.h"
 #include "type/Box.h"
+#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
@@ -15,7 +16,6 @@
 #include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Class.h"
 #include "zlimits.h"
 
 #include "impl.h"

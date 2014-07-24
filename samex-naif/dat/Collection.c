@@ -6,9 +6,9 @@
 // Collection values
 //
 
+#include "type/Class.h"
 #include "type/Collection.h"
 #include "type/String.h"
-#include "type/Class.h"
 
 #include "impl.h"
 
