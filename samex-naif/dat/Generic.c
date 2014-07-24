@@ -42,7 +42,7 @@ typedef struct {
     /** The generic's name, if any. Used when producing stack traces. */
     zvalue name;
 
-    /** Bindings from type to function, keyed off of type sequence number. */
+    /** Bindings from class to function, keyed off of class id number. */
     zvalue functions[DAT_MAX_CLASSES];
 } GenericInfo;
 
@@ -59,29 +59,29 @@ static GenericInfo *getInfo(zvalue generic) {
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    zvalue type = state;
-    char *typeString = valDebugString(type);
+    zvalue cls = state;
+    char *clsString = valDebugString(cls);
     char *result;
 
-    asprintf(&result, "type %s", typeString);
-    free(typeString);
+    asprintf(&result, "class %s", clsString);
+    free(clsString);
 
     return result;
 }
 
 /**
- * Finds the function binding for a given type, including walking up the
- * parent type chain. Returns `NULL` if there is no binding. On success, also
- * stores the bound type through `boundType` if passed as non-`NULL`.
+ * Finds the function binding for a given class, including walking up the
+ * parent class chain. Returns `NULL` if there is no binding. On success, also
+ * stores the bound class through `boundCls` if passed as non-`NULL`.
  */
-static zvalue findByType(zvalue generic, zvalue type, zvalue *boundType) {
+static zvalue findByClass(zvalue generic, zvalue cls, zvalue *boundCls) {
     zvalue *functions = getInfo(generic)->functions;
 
-    for (/*type*/; type != NULL; type = classParent(type)) {
-        zvalue result = functions[classIndexUnchecked(type)];
+    for (/*cls*/; cls != NULL; cls = classParent(cls)) {
+        zvalue result = functions[classIndexUnchecked(cls)];
         if (result != NULL) {
-            if (boundType != NULL) {
-                *boundType = type;
+            if (boundCls != NULL) {
+                *boundCls = cls;
             }
             return result;
         }
@@ -109,10 +109,10 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    // Note: The replacement `firstType` returned by `findByType` is used
-    // both for "same type" generics and for stack trace reporting.
-    zvalue firstType = get_class(args[0]);
-    zvalue function = findByType(generic, firstType, &firstType);
+    // Note: The replacement `firstCls` returned by `findByClass` is used
+    // both for "same class" generics and for stack trace reporting.
+    zvalue firstCls = get_class(args[0]);
+    zvalue function = findByClass(generic, firstCls, &firstCls);
 
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
@@ -121,14 +121,14 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
 
     if (info->flags & GFN_SAME_TYPE) {
         for (zint i = 1; i < argCount; i++) {
-            if (!hasClass(args[i], firstType)) {
-                die("Type mismatch on argument #%lld of: %s(%s, ...)",
+            if (!hasClass(args[i], firstCls)) {
+                die("Class mismatch on argument #%lld of: %s(%s, ...)",
                     i, valDebugString(generic), valDebugString(args[0]));
             }
         }
     }
 
-    UTIL_TRACE_START(callReporter, firstType);
+    UTIL_TRACE_START(callReporter, firstCls);
     zvalue result = funCall(function, argCount, args);
     UTIL_TRACE_END();
     return result;
@@ -145,24 +145,24 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
 //
 
 // Documented in header.
-void genericBind(zvalue generic, zvalue type, zvalue function) {
+void genericBind(zvalue generic, zvalue cls, zvalue function) {
     assertHasClass(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zint index = classIndex(type);
+    zint index = classIndex(cls);
 
     if (info->sealed) {
         die("Sealed generic.");
     } else if (info->functions[index] != NULL) {
         die("Duplicate binding in generic: %s(%s, ...)",
-            valDebugString(generic), valDebugString(type));
+            valDebugString(generic), valDebugString(cls));
     }
 
     info->functions[index] = function;
 }
 
 // Documented in header.
-void genericBindPrim(zvalue generic, zvalue type, zfunction function,
+void genericBindPrim(zvalue generic, zvalue cls, zfunction function,
         const char *builtinName) {
     assertHasClass(generic, TYPE_Generic);
 
@@ -173,7 +173,7 @@ void genericBindPrim(zvalue generic, zvalue type, zfunction function,
     zvalue builtin =
         makeBuiltin(info->minArgs, info->maxArgs, function, 0, name);
 
-    genericBind(generic, type, builtin);
+    genericBind(generic, cls, builtin);
 }
 
 // Documented in header.

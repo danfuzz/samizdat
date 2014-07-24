@@ -46,11 +46,11 @@ static char *callReporter(void *state) {
         return utf8DupFromString(ensureString(name));
     }
 
-    char *typeString = valDebugString(get_class(value));
+    char *clsString = valDebugString(get_class(value));
     char *result;
 
-    asprintf(&result, "anonymous %s", typeString);
-    free(typeString);
+    asprintf(&result, "anonymous %s", clsString);
+    free(clsString);
 
     return result;
 }

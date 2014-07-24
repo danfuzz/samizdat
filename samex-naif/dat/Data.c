@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Data` data type
+// `Data` class
 //
 
 #include "type/Data.h"

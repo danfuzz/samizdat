@@ -7,11 +7,11 @@
 // have the usual guard macros.
 //
 // `STR(name, "string")` defines a string constant.
-// `TYP(name, "string")` defines a string and a derived data type.
-// `TOK(name, "string")` defines a string, a type, and a token constant.
+// `TYP(name, "string")` defines a string and a derived data class.
+// `TOK(name, "string")` defines a string, a class, and a token constant.
 //
-// Token constants are type-only transparent derived values, whose types are
-// the indicated strings.
+// Token constants are class-only transparent derived values, whose classes
+// are the indicated strings.
 //
 
 TOK(CH_AT,                 "@");

@@ -28,9 +28,9 @@ FUN_IMPL_DECL(get_class) {
 // Documented in spec.
 FUN_IMPL_DECL(hasClass) {
     zvalue value = args[0];
-    zvalue type = args[1];
+    zvalue cls = args[1];
 
-    return hasClass(value, type) ? value : NULL;
+    return hasClass(value, cls) ? value : NULL;
 }
 
 // Documented in spec.

@@ -90,10 +90,10 @@ METH_IMPL(DerivedData, get) {
 
 /** Function (not method) `makeData`. Documented in spec. */
 METH_IMPL(DerivedData, makeData) {
-    zvalue type = args[0];
+    zvalue cls = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
 
-    return makeData(type, value);
+    return makeData(cls, value);
 }
 
 // Documented in header.

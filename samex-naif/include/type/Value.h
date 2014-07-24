@@ -6,7 +6,7 @@
 // `Value` base class
 //
 // **Note:** As a slight concession to conciseness, the name prefix used for
-// this type is `val` and not `value`.
+// this class is `val` and not `value`.
 //
 
 #ifndef _TYPE_VALUE_H_

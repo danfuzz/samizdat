@@ -81,7 +81,7 @@ zint seqNthIndexStrict(zint size, zvalue n) {
         zint index = zintFromInt(n);
         return ((index >= 0) && (index < size)) ? index : -1;
     } else {
-        die("Invalid type for `nth` (non-int).");
+        die("Invalid class for `nth` (non-int).");
     }
 }
 
@@ -96,16 +96,16 @@ zint seqPutIndexStrict(zint size, zvalue n) {
         }
         return index;
     } else {
-        die("Invalid type for `put` (non-int).");
+        die("Invalid class for `put` (non-int).");
     }
 }
 
 
 //
-// Class Definition: `Sequence`
+// Class(ish) Definition: `Sequence`
 //
-// **Note:** This isn't the usual form of type definition, since these
-// methods are bound on many types.
+// **Note:** This isn't the usual form of class definition, since these
+// methods are bound on many classes.
 //
 
 /** Builtin for `Sequence.get`. */
@@ -183,11 +183,11 @@ METH_IMPL(Sequence, nthMapping) {
 }
 
 // Documented in header.
-void seqBind(zvalue type) {
-    genericBind(GFN_get,        type, BI_Sequence_get);
-    genericBind(GFN_keyList,    type, BI_Sequence_keyList);
-    genericBind(GFN_nextValue,  type, BI_Sequence_nextValue);
-    genericBind(GFN_nthMapping, type, BI_Sequence_nthMapping);
+void seqBind(zvalue cls) {
+    genericBind(GFN_get,        cls, BI_Sequence_get);
+    genericBind(GFN_keyList,    cls, BI_Sequence_keyList);
+    genericBind(GFN_nextValue,  cls, BI_Sequence_nextValue);
+    genericBind(GFN_nthMapping, cls, BI_Sequence_nthMapping);
 }
 
 /** Initializes the module. */

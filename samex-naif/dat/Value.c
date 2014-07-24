@@ -75,13 +75,13 @@ zvalue valOrder(zvalue value, zvalue other) {
         return INT_0;
     }
 
-    zvalue valueType = get_class(value);
-    zvalue otherType = get_class(other);
+    zvalue valueCls = get_class(value);
+    zvalue otherCls = get_class(other);
 
-    if (valueType == otherType) {
+    if (valueCls == otherCls) {
         return GFN_CALL(totalOrder, value, other);
     } else {
-        return GFN_CALL(totalOrder, valueType, otherType);
+        return GFN_CALL(totalOrder, valueCls, otherCls);
     }
 }
 
@@ -127,7 +127,7 @@ METH_IMPL(Value, debugName) {
 // Documented in header.
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
-    zvalue type = get_class(value);
+    zvalue cls = get_class(value);
     zvalue name = GFN_CALL(debugName, value);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 
@@ -146,7 +146,7 @@ METH_IMPL(Value, debugString) {
 
     return GFN_CALL(cat,
         stringFromUtf8(-1, "@("),
-        GFN_CALL(debugString, type),
+        GFN_CALL(debugString, cls),
         name,
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),
@@ -195,7 +195,7 @@ METH_IMPL(Value, totalOrder) {
 MOD_INIT(Value) {
     MOD_USE(objectModel);
 
-    // Initializing `Value` also initializes the rest of the core types.
+    // Initializing `Value` also initializes the rest of the core classes.
     // This also gets all the protocols indirectly via their implementors.
     MOD_USE_NEXT(Data);
     MOD_USE_NEXT(Class);

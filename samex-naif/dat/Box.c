@@ -43,7 +43,7 @@ static BoxInfo *getInfo(zvalue box) {
 }
 
 /**
- * Does the main action of fetching, without checking the argument type.
+ * Does the main action of fetching, without checking the argument class.
  */
 static zvalue doFetch(zvalue box) {
     zvalue result = getInfo(box)->value;
@@ -56,7 +56,7 @@ static zvalue doFetch(zvalue box) {
 }
 
 /**
- * Does the main action of storing, without checking the argument type.
+ * Does the main action of storing, without checking the argument class.
  */
 static zvalue doStore(zvalue box, zvalue value) {
     BoxInfo *info = getInfo(box);
