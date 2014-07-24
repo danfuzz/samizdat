@@ -7,10 +7,10 @@
 //
 
 #include "type/Box.h"
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 #include "util.h"
 
@@ -43,7 +43,7 @@ static BoxInfo *getInfo(zvalue box) {
 }
 
 /**
- * Does the main action of fetching, without checking the argument type.
+ * Does the main action of fetching, without checking the argument class.
  */
 static zvalue doFetch(zvalue box) {
     zvalue result = getInfo(box)->value;
@@ -56,7 +56,7 @@ static zvalue doFetch(zvalue box) {
 }
 
 /**
- * Does the main action of storing, without checking the argument type.
+ * Does the main action of storing, without checking the argument class.
  */
 static zvalue doStore(zvalue box, zvalue value) {
     BoxInfo *info = getInfo(box);
@@ -87,7 +87,7 @@ zvalue boxStoreNullOk(zvalue box, zvalue value) {
 
 // Documented in header.
 zvalue makeCell(zvalue value) {
-    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = value;
@@ -99,7 +99,7 @@ zvalue makeCell(zvalue value) {
 
 // Documented in header.
 zvalue makePromise(void) {
-    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = NULL;
@@ -111,7 +111,7 @@ zvalue makePromise(void) {
 
 // Documented in header.
 zvalue makeResult(zvalue value) {
-    zvalue result = datAllocValue(TYPE_Box, sizeof(BoxInfo));
+    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
     info->value = value;
@@ -123,7 +123,7 @@ zvalue makeResult(zvalue value) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -183,7 +183,7 @@ MOD_INIT(Box) {
     GFN_store = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "store"));
     datImmortalize(GFN_store);
 
-    TYPE_Box = makeCoreType(stringFromUtf8(-1, "Box"), TYPE_Value);
+    CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value);
 
     METH_BIND(Box, collect);
     METH_BIND(Box, fetch);
@@ -193,7 +193,7 @@ MOD_INIT(Box) {
 }
 
 // Documented in header.
-zvalue TYPE_Box = NULL;
+zvalue CLS_Box = NULL;
 
 // Documented in header.
 zvalue GFN_store = NULL;

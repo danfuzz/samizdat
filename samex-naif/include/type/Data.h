@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Data` data type
+// `Data` class
 //
 
 #ifndef _TYPE_DATA_H_
@@ -12,7 +12,7 @@
 #include "type/Value.h"
 
 
-/** Type value for in-model type `Data`. */
-extern zvalue TYPE_Data;
+/** Class value for in-model class `Data`. */
+extern zvalue CLS_Data;
 
 #endif

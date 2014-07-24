@@ -40,7 +40,7 @@ export def stdFetch = Generator_stdFetch;
 ## Documented in spec.
 export fn collectAsMap(generator) {
     ## Avoid pointless map->generator->map conversion.
-    return ifIs { hasType(generator, Map) }
+    return ifIs { hasClass(generator, Map) }
         { generator }
         { cat({}, generator*) }
 };

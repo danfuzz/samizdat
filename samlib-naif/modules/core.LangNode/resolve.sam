@@ -21,7 +21,7 @@ import ./getters :: *;
 fn resolveAndCheck(resolveFn, source) {
     return ifValue { resolveFn(source) }
         { result ->
-            ifNot { hasType(result, @@module) }
+            ifNot { hasClass(result, @@module) }
                 { die("Invalid resolution result (not a `@module`)") };
             result
         }
@@ -32,9 +32,9 @@ fn resolveAndCheck(resolveFn, source) {
 ## intentionally more verbose than the equivalent (internal) function
 ## in `core.ModuleSystem`.
 fn sourceString(source) {
-    ifIs { hasType(source, @@internal) }
+    ifIs { hasClass(source, @@internal) }
         { return cat("internal ./", source::name) };
-    ifIs { hasType(source, @@external) }
+    ifIs { hasClass(source, @@external) }
         { return cat("external ", source::name) };
 
     return cat("weird source ", $Format::source(source))
@@ -48,7 +48,7 @@ fn sourceString(source) {
 ## Documented in spec.
 export fn resolveImport(node, resolveFn) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@importModule: { . ->
                 ## No need to modify, just validate.
@@ -104,16 +104,16 @@ export fn withResolvedImports(node, resolveFn) {
     def converted = filterAll(rawStatements) { s /out ->
         var exported = false;
         var defNode = s;
-        ifIs { hasType(s, @@export) }
+        ifIs { hasClass(s, @@export) }
             {
                 exported := true;
                 defNode := get_nodeValue(s)
             };
 
         ifValueOr
-            { hasType(defNode, @@importModule) }
-            { hasType(defNode, @@importModuleSelection) }
-            { hasType(defNode, @@importResource) }
+            { hasClass(defNode, @@importModule) }
+            { hasClass(defNode, @@importModuleSelection) }
+            { hasClass(defNode, @@importResource) }
             {
                 ## Not an `import*` node.
                 yield /out s
@@ -126,5 +126,5 @@ export fn withResolvedImports(node, resolveFn) {
             { resolved }
     };
 
-    return @(get_type(node)){dataOf(node)*, statements: [converted*]}
+    return @(get_class(node)){dataOf(node)*, statements: [converted*]}
 };

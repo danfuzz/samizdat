@@ -10,9 +10,9 @@
 #include <stdlib.h>  // For `free`.
 
 #include "type/Builtin.h"
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -42,8 +42,8 @@ typedef struct {
     /** The generic's name, if any. Used when producing stack traces. */
     zvalue name;
 
-    /** Bindings from type to function, keyed off of type sequence number. */
-    zvalue functions[DAT_MAX_TYPES];
+    /** Bindings from class to function, keyed off of class id number. */
+    zvalue functions[DAT_MAX_CLASSES];
 } GenericInfo;
 
 /**
@@ -59,29 +59,29 @@ static GenericInfo *getInfo(zvalue generic) {
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    zvalue type = state;
-    char *typeString = valDebugString(type);
+    zvalue cls = state;
+    char *clsString = valDebugString(cls);
     char *result;
 
-    asprintf(&result, "type %s", typeString);
-    free(typeString);
+    asprintf(&result, "class %s", clsString);
+    free(clsString);
 
     return result;
 }
 
 /**
- * Finds the function binding for a given type, including walking up the
- * parent type chain. Returns `NULL` if there is no binding. On success, also
- * stores the bound type through `boundType` if passed as non-`NULL`.
+ * Finds the function binding for a given class, including walking up the
+ * parent class chain. Returns `NULL` if there is no binding. On success, also
+ * stores the bound class through `boundCls` if passed as non-`NULL`.
  */
-static zvalue findByType(zvalue generic, zvalue type, zvalue *boundType) {
+static zvalue findByClass(zvalue generic, zvalue cls, zvalue *boundCls) {
     zvalue *functions = getInfo(generic)->functions;
 
-    for (/*type*/; type != NULL; type = typeParent(type)) {
-        zvalue result = functions[typeIndexUnchecked(type)];
+    for (/*cls*/; cls != NULL; cls = classParent(cls)) {
+        zvalue result = functions[classIndexUnchecked(cls)];
         if (result != NULL) {
-            if (boundType != NULL) {
-                *boundType = type;
+            if (boundCls != NULL) {
+                *boundCls = cls;
             }
             return result;
         }
@@ -109,26 +109,26 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    // Note: The replacement `firstType` returned by `findByType` is used
-    // both for "same type" generics and for stack trace reporting.
-    zvalue firstType = get_type(args[0]);
-    zvalue function = findByType(generic, firstType, &firstType);
+    // Note: The replacement `firstCls` returned by `findByClass` is used
+    // both for "same class" generics and for stack trace reporting.
+    zvalue firstCls = get_class(args[0]);
+    zvalue function = findByClass(generic, firstCls, &firstCls);
 
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
             valDebugString(generic), valDebugString(args[0]));
     }
 
-    if (info->flags & GFN_SAME_TYPE) {
+    if (info->flags & GFN_SAME_CLASS) {
         for (zint i = 1; i < argCount; i++) {
-            if (!hasType(args[i], firstType)) {
-                die("Type mismatch on argument #%lld of: %s(%s, ...)",
+            if (!hasClass(args[i], firstCls)) {
+                die("Class mismatch on argument #%lld of: %s(%s, ...)",
                     i, valDebugString(generic), valDebugString(args[0]));
             }
         }
     }
 
-    UTIL_TRACE_START(callReporter, firstType);
+    UTIL_TRACE_START(callReporter, firstCls);
     zvalue result = funCall(function, argCount, args);
     UTIL_TRACE_END();
     return result;
@@ -145,26 +145,26 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
 //
 
 // Documented in header.
-void genericBind(zvalue generic, zvalue type, zvalue function) {
-    assertHasType(generic, TYPE_Generic);
+void genericBind(zvalue generic, zvalue cls, zvalue function) {
+    assertHasClass(generic, CLS_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zint index = typeIndex(type);
+    zint index = classIndex(cls);
 
     if (info->sealed) {
         die("Sealed generic.");
     } else if (info->functions[index] != NULL) {
         die("Duplicate binding in generic: %s(%s, ...)",
-            valDebugString(generic), valDebugString(type));
+            valDebugString(generic), valDebugString(cls));
     }
 
     info->functions[index] = function;
 }
 
 // Documented in header.
-void genericBindPrim(zvalue generic, zvalue type, zfunction function,
+void genericBindPrim(zvalue generic, zvalue cls, zfunction function,
         const char *builtinName) {
-    assertHasType(generic, TYPE_Generic);
+    assertHasClass(generic, CLS_Generic);
 
     GenericInfo *info = getInfo(generic);
     zvalue name = (builtinName != NULL)
@@ -173,12 +173,12 @@ void genericBindPrim(zvalue generic, zvalue type, zfunction function,
     zvalue builtin =
         makeBuiltin(info->minArgs, info->maxArgs, function, 0, name);
 
-    genericBind(generic, type, builtin);
+    genericBind(generic, cls, builtin);
 }
 
 // Documented in header.
 void genericSeal(zvalue generic) {
-    assertHasType(generic, TYPE_Generic);
+    assertHasClass(generic, CLS_Generic);
     getInfo(generic)->sealed = true;
 }
 
@@ -190,7 +190,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = datAllocValue(TYPE_Generic, sizeof(GenericInfo));
+    zvalue result = datAllocValue(CLS_Generic, sizeof(GenericInfo));
     GenericInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
@@ -204,7 +204,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -228,7 +228,7 @@ METH_IMPL(Generic, gcMark) {
     GenericInfo *info = getInfo(generic);
 
     datMark(info->name);
-    for (zint i = 0; i < DAT_MAX_TYPES; i++) {
+    for (zint i = 0; i < DAT_MAX_CLASSES; i++) {
         datMark(info->functions[i]);
     }
 
@@ -240,7 +240,7 @@ MOD_INIT(Generic) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_Generic`.
+    // Note: The `objectModel` module initializes `CLS_Generic`.
 
     METH_BIND(Generic, call);
     METH_BIND(Generic, debugName);
@@ -248,4 +248,4 @@ MOD_INIT(Generic) {
 }
 
 // Documented in header.
-zvalue TYPE_Generic = NULL;
+zvalue CLS_Generic = NULL;

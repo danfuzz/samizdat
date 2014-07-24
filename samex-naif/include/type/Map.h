@@ -3,14 +3,14 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Map` data type
+// `Map` class
 //
 
 #ifndef _TYPE_MAP_H_
 #define _TYPE_MAP_H_
 
-#include "type/Data.h"
 #include "type/Collection.h"
+#include "type/Data.h"
 
 
 /**
@@ -24,8 +24,8 @@ typedef struct {
     zvalue value;
 } zmapping;
 
-/** Type value for in-model type `Map`. */
-extern zvalue TYPE_Map;
+/** Class value for in-model class `Map`. */
+extern zvalue CLS_Map;
 
 /** The standard value `{}`. */
 extern zvalue EMPTY_MAP;

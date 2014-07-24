@@ -4,16 +4,16 @@ Samizdat Language Guide
 Data Types
 ----------
 
-Samizdat has a small handful of core data types, including a few atomic
-types and a few compound data types. Samizdat also predefines a few
-derived types, and it allows for any number of user-specified types.
+Samizdat has a small handful of core classes, including a few atomic
+data types and a few compound data types. Samizdat also predefines a few
+derived classes, and it allows for any number of user-specified classes.
 Finally, Samizdat defines a number of special named constant values.
 
 The examples in this section all use literal value syntax for all parts of
 values, but it is worth noting that the language syntax allows arbitrary
 expressions anywhere where a literal value occurs in these examples.
 
-### Core types
+### Core classes
 
 #### Int
 
@@ -219,7 +219,7 @@ lowest layer of the system. It is a kind of `Function` (see which).
 #### Generic
 
 A `Generic` is a generic function. That is, it is an encapsulated mapping
-from types to functions, in this case based on the type of the first
+from classes to functions, in this case based on the class of the first
 argument passed to the generic function when called. It is a kind of
 `Function` (see which).
 
@@ -245,7 +245,7 @@ There are four predefined box variants:
 * A "cell" is a fully mutable box, which can be stored to any number of
   times.
 
-* A "promise" is a box which can be stored to at most once. This type
+* A "promise" is a box which can be stored to at most once. This kind
   of box is often used as something along the lines of a "reified
   return value."
 
@@ -276,64 +276,64 @@ makeUniqlet()
 ```
 
 
-#### Type
+#### Class
 
-A `Type` value represents the type of a value. Every type has a name which
+A `Class` value represents the class of a value. Every class has a name which
 is typically, but not necessarily, a string. There are three major categories
-of type:
+of class:
 
-* All core values (described above, and values of type `type` as described
-  here) have a "core type" as their type. The name of each core type is a
-  string of the "human" name of the type. By convention, core type names
-  are capitalized. Many core value types are exported as variables in the
+* All core values (described above, and values of class `Class` as described
+  here) have a "core class" as their class. The name of each core class is a
+  string of the "human" name of the class. By convention, core class names
+  are capitalized. Core classes are exported as variables in the
   standard global environment, each with a variable name that matches its
-  type name. For example, the global reference `String` refers to the core
-  value type named `String`.
+  name. For example, the global reference `String` refers to the core
+  class named `String`.
 
-* Arbitrary data is allowed to be tagged with a an arbitrary type name,
-  using the syntax `@...` described under "DerivedData," below. The type of
-  this tagged data is a "derived data type." There is a one-to-one
-  correspondence between a value and a derived data type with that value as
+* Arbitrary data is allowed to be tagged with a an arbitrary class name,
+  using the syntax `@...` described under "DerivedData," below. The class of
+  this tagged data is a "derived data class." There is a one-to-one
+  correspondence between a value and a derived data class with that value as
   its name.
 
-  A derived data type can be specified in code by indicating its name
+  A derived data class can be specified in code by indicating its name
   in parentheses, preceded by `@@`. If the name is a literal string, then
   the parentheses can be omitted. Furthermore, if the name is a literal
   string which abides by the syntax for identifiers in the language, then
   the double quotes can be omitted. For example, all of `@@("blort")`,
-  `@@"blort"`, and `@@blort` refer to the same type.
+  `@@"blort"`, and `@@blort` refer to the same class.
 
-* TODO: The third kind of type is an "derived opaque" type. These have a
+* TODO: The third kind of class is an "derived opaque" class. These have a
   name and secret. The secret is used to prevent creation of values of the
-  type beyond the scope of the type's trusted implementation.
+  class beyond the scope of the class's trusted implementation.
 
 
 #### Value
 
-This is the supertype of all other types in the language. It is mostly
-useful as the type to use in order to bind a default method to a generic
-function.
+This is the ultimate superclass (parent of the parent of…) of all other classes
+in the language. It is mostly useful as the class to use in order to bind a
+default method to a generic function.
 
 
 #### Data
 
-This is the supertype of all "pure data" types in the language.
+This is the parent of all "pure data" classes in the language.
 
 
 ### DerivedData (derived data values)
 
 A derived data value is one that is constructed with an explicit derived
-data type and optional data payload.
+data class and optional data payload.
 
 Derived data values are introduced with an at-sign (`@`). This is
-followed by a required type and then an optional data payload. The type
+followed by a required class and then an optional data payload. The class
 and payload (if present) must each be surrounded by parentheses
 (separately), with the following exceptions:
 
-* If the type name is a literal string in general (`"..."`), then it can be
+* If the class name is a literal string in general (`"..."`), then it can be
   represented directly after the `@`, with no parentheses required.
 
-* If the type name is a literal string and in addition abides by the syntax
+* If the class name is a literal string and in addition abides by the syntax
   for identifiers in the language, then it can be represented directly after
   the `@`, with no parentheses or quoting required.
 
@@ -344,7 +344,7 @@ and payload (if present) must each be surrounded by parentheses
   without parentheses.
 
 ```
-@(@@lozenge)                  ## a payload-free value of type `"lozenge"`
+@(@@lozenge)                  ## a payload-free value of class `"lozenge"`
 @"lozenge"                    ## shorthand for same
 @lozenge                      ## shorthand for same
 
@@ -361,7 +361,7 @@ and payload (if present) must each be surrounded by parentheses
 @(@@"Null")                   ## the value usually just written as `null`
 @(@@Null)                     ## same as above
 @Null                         ## same as above
-@(@@(null))                   ## a type-only value with type `null`
+@(@@(null))                   ## a class-only value with class `null`
 
 @Boolean{value: 0}            ## the value usually just written as `false`
 @Boolean{value: 1}            ## the value usually just written as `true`

@@ -16,7 +16,7 @@ import ./sourceGeneral :: sourceGeneral;
 ## Generic for producing a human-oriented string of the argument.
 export fn humanString(value) {
     return ifSwitch(
-        { get_type(value) },
+        { get_class(value) },
         {
             (List): { . ->
                 def elems = makeFilterGenerator(value)

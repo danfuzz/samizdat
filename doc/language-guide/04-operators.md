@@ -78,7 +78,7 @@ required to unambiguously indicate that function application is to be
 performed. That is, `foo()` and `foo { block }` are both function calls,
 but plain `foo` is just a variable reference.
 
-As with list literal syntax, an argument whose type is a generator or
+As with list literal syntax, an argument whose class is a generator or
 a collection (list, map, or string) can have its contents "interpolated"
 into a function call argument list by following the argument with a star.
 For example, `foo(bar, [1, 2]*)` means the same thing as `foo(bar, 1, 2)`.
@@ -369,9 +369,9 @@ evaluated once.
 result from a chained comparison is the second-from-last value. E.g.,
 `x < y <= z` will either yield `y` or void.
 
-#### Per-type comparison &mdash; `== != < > <= >=`
+#### Per-class comparison &mdash; `== != < > <= >=`
 
-These are the per-type comparison operators. Every type can define arbitrary
+These are the per-class comparison operators. Every class can define arbitrary
 comparison functions, and these operators are how to invoke those
 functions. The general contract is that evaluating these operators results
 in the left-hand value if the ordering is satisfied (true), or void if not.
@@ -381,10 +381,10 @@ and right-hand sides *are* comparable but yet unordered, the contract is
 to return void.
 
 Unlike the total order, the comparisons defined by these functions are not
-required to be consistent; for example, a type corresponding to IEEE754
+required to be consistent; for example, a class corresponding to IEEE754
 floating point values would define both `1.0 < NaN` and `NaN < 1.0` to
 be false. Also, unlike the analogous total order functions, these functions
-are allowed to accept arguments of differing types.
+are allowed to accept arguments of differing classes.
 
 These expressions correspond to making functions calls to one of the
 functions `perEq` `perGe` `perGt` `perLe` `perLt` or `perNe`, with the

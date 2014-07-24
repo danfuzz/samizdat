@@ -37,7 +37,7 @@ def parItem = {:
         { "\\" }
     |
         ch = .
-        { die("Invalid escape sequence: \%q["\\", get_typeName(ch)]") }
+        { die("Invalid escape sequence: \%q["\\", get_className(ch)]") }
     )
 |
     chars = [! "\\"]+
@@ -57,7 +57,7 @@ export fn apply(templateString, defs) {
     def items = $Peg::apply(parTemplate, templateString);
 
     def texts = [ item in items ->
-        hasType(item, String) |
+        hasClass(item, String) |
             $Format::formatterFor(item::format)(
                 defs[item::name] | "<MISSING \%q(item::name)>")
     ];

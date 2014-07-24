@@ -2,8 +2,8 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "type/Int.h"
 #include "type/Generic.h"
+#include "type/Int.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 
@@ -37,14 +37,14 @@ zint nthChar(zvalue value, zint index) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
-    GFN_cat = makeGeneric(1, -1, GFN_SAME_TYPE, stringFromUtf8(-1, "cat"));
+    GFN_cat = makeGeneric(1, -1, GFN_SAME_CLASS, stringFromUtf8(-1, "cat"));
     datImmortalize(GFN_cat);
 
     GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));

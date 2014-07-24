@@ -5,13 +5,13 @@
 // This code *might* be derived from a copyrighted source. Proceed with
 // caution!
 
+#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "util.h"
 
 static zvalue programTree(void) {
@@ -24,11 +24,11 @@ static zvalue lookup(zvalue context, const char *name) {
 }
 
 static zvalue externalSource(const char *name) {
-    zvalue type = makeDerivedDataType(stringFromUtf8(-1, "external"));
+    zvalue cls = makeDerivedDataClass(stringFromUtf8(-1, "external"));
     zvalue data = mapFromArgs(
         stringFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);
-    return makeData(type, data);
+    return makeData(cls, data);
 }
 
 zvalue eval(zvalue context) {

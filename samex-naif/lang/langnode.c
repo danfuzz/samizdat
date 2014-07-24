@@ -3,13 +3,13 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
+#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "util.h"
 
 #include "helpers.h"
@@ -48,7 +48,7 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
  * Adds a `{(name): Value}` binding to the given map.
  */
 static zvalue addTypeBinding(zvalue map, zvalue name) {
-    return collPut(map, name, TYPE_Value);
+    return collPut(map, name, CLS_Value);
 }
 
 /**
@@ -83,7 +83,7 @@ static zvalue expandYield(zvalue map) {
     zvalue yieldNode = get(map, STR_yield);
 
     if (     (yieldNode == NULL)
-          || !hasType(yieldNode, TYPE_nonlocalExit)) {
+          || !hasClass(yieldNode, CLS_nonlocalExit)) {
         return yieldNode;
     }
 
@@ -92,8 +92,8 @@ static zvalue expandYield(zvalue map) {
     zvalue yieldDef = get(map, STR_yieldDef);
     zvalue functionTarget = get(function, STR_target);
 
-    if (     hasType(function, TYPE_fetch)
-          && hasType(functionTarget, TYPE_varRef)
+    if (     hasClass(function, CLS_fetch)
+          && hasClass(functionTarget, CLS_varRef)
           && (yieldDef != NULL)
           && valEq(get(functionTarget, STR_name), yieldDef)) {
         return value;
@@ -101,9 +101,9 @@ static zvalue expandYield(zvalue map) {
 
     zvalue exitCall;
 
-    if (hasType(value, TYPE_void)) {
+    if (hasClass(value, CLS_void)) {
         exitCall = makeCall(function, NULL);
-    } else if (hasType(value, TYPE_maybe)) {
+    } else if (hasClass(value, CLS_maybe)) {
         zvalue arg = makeInterpolate(makeMaybeValue(get(value, STR_value)));
         exitCall = makeCallOrApply(function, listFrom1(arg));
     } else {
@@ -171,10 +171,10 @@ zvalue formalsMinArgs(zvalue formals) {
 
 // Documented in spec.
 zvalue get_baseName(zvalue source) {
-    if (hasType(source, TYPE_external)) {
+    if (hasClass(source, CLS_external)) {
         zvalue components = splitAtChar(get(source, STR_name), STR_CH_DOT);
         return nth(components, get_size(components) - 1);
-    } else if (hasType(source, TYPE_internal)) {
+    } else if (hasClass(source, CLS_internal)) {
         zvalue components = splitAtChar(get(source, STR_name), STR_CH_SLASH);
         zvalue last = nth(components, get_size(components) - 1);
         zvalue parts = splitAtChar(last, STR_CH_DOT);
@@ -186,14 +186,14 @@ zvalue get_baseName(zvalue source) {
 
 // Documented in spec.
 zvalue get_definedNames(zvalue node) {
-    if (hasType(node, TYPE_export)) {
+    if (hasClass(node, CLS_export)) {
         return get_definedNames(get(node, STR_value));
-    } else if (   hasType(node, TYPE_importModule)
-               || hasType(node, TYPE_importResource)
-               || hasType(node, TYPE_varDef)
-               || hasType(node, TYPE_varDefMutable)) {
+    } else if (   hasClass(node, CLS_importModule)
+               || hasClass(node, CLS_importResource)
+               || hasClass(node, CLS_varDef)
+               || hasClass(node, CLS_varDefMutable)) {
         return listFrom1(get(node, STR_name));
-    } else if (hasType(node, TYPE_importModuleSelection)) {
+    } else if (hasClass(node, CLS_importModuleSelection)) {
         zvalue prefix = get(node, STR_prefix);
         zvalue select = get(node, STR_select);
         if (select == NULL) {
@@ -238,7 +238,7 @@ zvalue makeApply(zvalue function, zvalue values) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_values, values);
-    return makeData(TYPE_apply, value);
+    return makeData(CLS_apply, value);
 }
 
 // Documented in spec.
@@ -252,9 +252,9 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
     if (get(target, STR_lvalue) == NULL) {
         return NULL;
-    } else if (hasType(target, TYPE_fetch)) {
+    } else if (hasClass(target, CLS_fetch)) {
         zvalue innerTarget = get(target, STR_target);
-        return makeData(TYPE_store,
+        return makeData(CLS_store,
             mapFrom2(STR_target, innerTarget, STR_value, value));
     } else {
         die("Improper `lvalue` binding.");
@@ -263,7 +263,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue map) {
-    return makeData(TYPE_closure,
+    return makeData(CLS_closure,
         GFN_CALL(cat,
             mapFrom2(STR_formals, EMPTY_LIST, STR_statements, EMPTY_LIST),
             map));
@@ -276,7 +276,7 @@ zvalue makeCall(zvalue function, zvalue values) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_values, values);
-    return makeData(TYPE_call, value);
+    return makeData(CLS_call, value);
 }
 
 // Documented in spec.
@@ -344,12 +344,12 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue select = get(node, STR_select);
     zvalue source = get(node, STR_source);
 
-    if (hasType(node, TYPE_importModule)) {
+    if (hasClass(node, CLS_importModule)) {
         zvalue stat = makeVarDef(name,
             makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
 
         return listFrom1(stat);
-    } else if (hasType(node, TYPE_importModuleSelection)) {
+    } else if (hasClass(node, CLS_importModuleSelection)) {
         zvalue names = get_definedNames(node);
         zint size = get_size(names);
         zvalue loadCall = makeCall(REFS(loadModule),
@@ -364,7 +364,7 @@ zvalue makeDynamicImport(zvalue node) {
         }
 
         return listFromArray(size, stats);
-    } else if (hasType(node, TYPE_importResource)) {
+    } else if (hasClass(node, CLS_importResource)) {
         zvalue stat = makeVarDef(
             name,
             makeCall(REFS(loadResource),
@@ -378,17 +378,17 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return makeData(TYPE_export, mapFrom1(STR_value, node));
+    return makeData(CLS_export, mapFrom1(STR_value, node));
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return makeData(TYPE_exportSelection, mapFrom1(STR_select, names));
+    return makeData(CLS_exportSelection, mapFrom1(STR_select, names));
 }
 
 // Documented in spec.
 zvalue makeFullClosure(zvalue nodeOrMap) {
-    zvalue map = hasType(nodeOrMap, TYPE_Map) ? nodeOrMap : dataOf(nodeOrMap);
+    zvalue map = hasClass(nodeOrMap, CLS_Map) ? nodeOrMap : dataOf(nodeOrMap);
     zvalue formals = get(map, STR_formals);
     zvalue statements = get(map, STR_statements);
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
@@ -418,7 +418,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
         yieldNode = TOK_void;
     }
 
-    return makeData(TYPE_closure,
+    return makeData(CLS_closure,
         GFN_CALL(cat,
             map,
             mapFrom3(
@@ -448,12 +448,12 @@ zvalue makeImport(zvalue baseData) {
             data = collPut(data, STR_prefix, EMPTY_STRING);
         }
 
-        if (hasType(select, TYPE_CH_STAR)) {
+        if (hasClass(select, CLS_CH_STAR)) {
             // It's a wildcard import.
             data = collDel(data, STR_select);
         }
 
-        return makeData(TYPE_importModuleSelection, data);
+        return makeData(CLS_importModuleSelection, data);
     }
 
     if (get(data, STR_name) == NULL) {
@@ -466,14 +466,14 @@ zvalue makeImport(zvalue baseData) {
 
     if (get(data, STR_format) != NULL) {
         // It's a resource.
-        if (hasType(get(data, STR_source), TYPE_external)) {
+        if (hasClass(get(data, STR_source), CLS_external)) {
             die("Cannot import external resource.");
         }
-        return makeData(TYPE_importResource, data);
+        return makeData(CLS_importResource, data);
     }
 
     // It's a whole-module import.
-    return makeData(TYPE_importModule, data);
+    return makeData(CLS_importModule, data);
 }
 
 // Documented in spec.
@@ -493,14 +493,14 @@ zvalue makeInfoMap(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(statements, i);
 
-        if (hasType(s, TYPE_exportSelection)) {
+        if (hasClass(s, CLS_exportSelection)) {
             zvalue select = get(s, STR_select);
             zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
                 zvalue name = nth(select, j);
                 exports = addTypeBinding(exports, name);
             }
-        } else if (hasType(s, TYPE_export)) {
+        } else if (hasClass(s, CLS_export)) {
             zvalue names = get_definedNames(s);
             zint sz = get_size(names);
             for (zint j = 0; j < sz; j++) {
@@ -512,10 +512,10 @@ zvalue makeInfoMap(zvalue node) {
         }
 
         // *Not* `else if` (see above).
-        if (hasType(s, TYPE_importModule)) {
+        if (hasClass(s, CLS_importModule)) {
             imports =
-                addImportBinding(imports, get(s, STR_source), TYPE_module);
-        } else if (hasType(s, TYPE_importModuleSelection)) {
+                addImportBinding(imports, get(s, STR_source), CLS_module);
+        } else if (hasClass(s, CLS_importModuleSelection)) {
             zvalue source = get(s, STR_source);
             zvalue select = get(s, STR_select);
             if (select == NULL) {
@@ -526,7 +526,7 @@ zvalue makeInfoMap(zvalue node) {
                 zvalue name = nth(select, j);
                 imports = addImportBinding(imports, source, name);
             }
-        } else if (hasType(s, TYPE_importResource)) {
+        } else if (hasClass(s, CLS_importResource)) {
             resources = addResourceBinding(resources,
                 get(s, STR_source), get(s, STR_format));
         }
@@ -540,7 +540,7 @@ zvalue makeInfoMap(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return makeData(TYPE_fetch,
+    return makeData(CLS_fetch,
         mapFrom3(
             STR_target,      node,
             STR_interpolate, node,
@@ -549,12 +549,12 @@ zvalue makeInterpolate(zvalue node) {
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return makeData(TYPE_literal, mapFrom1(STR_value, value));
+    return makeData(CLS_literal, mapFrom1(STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return makeData(TYPE_maybe, mapFrom1(STR_value, value));
+    return makeData(CLS_maybe, mapFrom1(STR_value, value));
 }
 
 // Documented in spec.
@@ -564,13 +564,13 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return makeData(TYPE_noYield, mapFrom1(STR_value, value));
+    return makeData(CLS_noYield, mapFrom1(STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return makeData(TYPE_nonlocalExit,
+    return makeData(CLS_nonlocalExit,
         mapFrom2(STR_function, function, STR_value, value));
 }
 
@@ -585,43 +585,43 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return makeData(TYPE_varRef, mapFrom1(STR_name, name));
+    return makeData(CLS_varRef, mapFrom1(STR_name, name));
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
-    return makeData(TYPE_varDef,
+    return makeData(CLS_varDef,
         mapFrom2(STR_name, name, STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return makeData(TYPE_varDefMutable,
+    return makeData(CLS_varDefMutable,
         mapFrom2(STR_name, name, STR_value, value));
 }
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return makeData(TYPE_fetch, mapFrom1(STR_target, makeVarRef(name)));
+    return makeData(CLS_fetch, mapFrom1(STR_target, makeVarRef(name)));
 }
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return makeData(TYPE_fetch,
+    return makeData(CLS_fetch,
         mapFrom2(STR_target, makeVarRef(name), STR_lvalue, EMPTY_LIST));
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return makeData(TYPE_store,
+    return makeData(CLS_store,
         mapFrom2(STR_target, makeVarRef(name), STR_value, value));
 }
 
 // Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
-    if (hasType(node, TYPE_importResource)) {
+    if (hasClass(node, CLS_importResource)) {
         // No conversion, just validation. TODO: Validate.
         //
         // **Note:** This clause is at the top so as to avoid the call to
@@ -635,15 +635,15 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
             die("Could not resolve import.");
-        } else if (!hasType(resolved, TYPE_module)) {
+        } else if (!hasClass(resolved, CLS_module)) {
             die("Invalid resolution result (not a `@module`)");
         }
     }
 
-    if (hasType(node, TYPE_importModule)) {
+    if (hasClass(node, CLS_importModule)) {
         // No conversion, just validation (done above).
         return node;
-    } else if (hasType(node, TYPE_importModuleSelection)) {
+    } else if (hasClass(node, CLS_importModuleSelection)) {
         // Get the exports. When given a `NULL` `resolveFn`, this acts as if
         // all sources resolve to an empty export map, and hence this node
         // won't bind anything.
@@ -670,7 +670,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             // It's a wildcard select.
             select = GFN_CALL(keyList, exports);
             return makeData(
-                TYPE_importModuleSelection,
+                CLS_importModuleSelection,
                 collPut(dataOf(node), STR_select, select));
         }
     } else {
@@ -681,7 +681,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeData(
-        get_type(node),
+        get_class(node),
         collPut(dataOf(node), STR_formals, formals));
 }
 
@@ -699,9 +699,9 @@ zvalue withModuleDefs(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
 
-        if (hasType(s, TYPE_exportSelection)) {
+        if (hasClass(s, CLS_exportSelection)) {
             continue;
-        } else if (hasType(s, TYPE_export)) {
+        } else if (hasClass(s, CLS_export)) {
             s = get(s, STR_value);
         }
 
@@ -726,7 +726,7 @@ zvalue withModuleDefs(zvalue node) {
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
-            makeLiteral(TYPE_module),
+            makeLiteral(CLS_module),
             makeCall(REFS(cat),
                 listFrom2(
                     makeCall(REFS(makeValueMap),
@@ -735,7 +735,7 @@ zvalue withModuleDefs(zvalue node) {
                         listFrom2(makeLiteral(STR_info), yieldInfo))))));
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat,
             dataOf(node),
             mapFrom3(
@@ -747,7 +747,7 @@ zvalue withModuleDefs(zvalue node) {
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
     return makeData(
-        get_type(node),
+        get_class(node),
         collPut(dataOf(node), STR_name, name));
 }
 
@@ -763,14 +763,14 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         bool exported = false;
         zvalue defNode = s;
 
-        if (hasType(s, TYPE_export)) {
+        if (hasClass(s, CLS_export)) {
             exported = true;
             defNode = get(s, STR_value);
         }
 
-        if (!(   hasType(defNode, TYPE_importModule)
-              || hasType(defNode, TYPE_importModuleSelection)
-              || hasType(defNode, TYPE_importResource))) {
+        if (!(   hasClass(defNode, CLS_importModule)
+              || hasClass(defNode, CLS_importModuleSelection)
+              || hasClass(defNode, CLS_importResource))) {
             continue;
         }
 
@@ -786,7 +786,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue converted = listFromArray(size, arr);
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat,
             dataOf(node),
             mapFrom1(STR_statements, converted)));
@@ -798,7 +798,7 @@ zvalue withTop(zvalue node) {
     // (a) the actual value doesn't matter, and (b) `true` isn't available
     // here in a straightforward way.
     return makeData(
-        get_type(node),
+        get_class(node),
         collPut(dataOf(node), STR_top, EMPTY_LIST));
 }
 
@@ -818,14 +818,14 @@ zvalue withYieldDef(zvalue node, zvalue name) {
     }
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat, map, newBindings));
 };
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
     return makeData(
-        get_type(node),
+        get_class(node),
         collDel(dataOf(node), STR_interpolate));
 }
 
@@ -837,7 +837,7 @@ zvalue withoutTops(zvalue node) {
     zvalue tops = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
-        zvalue defNode = hasType(s, TYPE_export)
+        zvalue defNode = hasClass(s, CLS_export)
             ? get(s, STR_value)
             : s;
 
@@ -850,7 +850,7 @@ zvalue withoutTops(zvalue node) {
     zvalue mains = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
-        zvalue defNode = hasType(s, TYPE_export)
+        zvalue defNode = hasClass(s, CLS_export)
             ? get(s, STR_value)
             : s;
 
@@ -866,7 +866,7 @@ zvalue withoutTops(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
 
-        if (!hasType(s, TYPE_export)) {
+        if (!hasClass(s, CLS_export)) {
             continue;
         }
 
@@ -883,7 +883,7 @@ zvalue withoutTops(zvalue node) {
         : listFrom1(makeExportSelection(exports));
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat,
             dataOf(node),
             mapFrom1(

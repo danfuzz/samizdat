@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `DerivedData` data type
+// `DerivedData` class
 //
 
 #ifndef _TYPE_DERIVED_DATA_H_
@@ -12,8 +12,8 @@
 #include "type/Data.h"
 
 
-/** Type value for in-model type `DerivedData`. */
-extern zvalue TYPE_DerivedData;
+/** Class value for in-model class `DerivedData`. */
+extern zvalue CLS_DerivedData;
 
 /** Generic `dataOf(derivedData)`: Documented in spec. */
 extern zvalue GFN_dataOf;
@@ -22,11 +22,11 @@ extern zvalue GFN_dataOf;
 extern zvalue FUN_DerivedData_makeData;
 
 /**
- * Returns a derived data value with the given type tag and with the given
- * optional data payload (`NULL` indicating a type-only value). `type` must
- * be a derived data type. The result is a value of the indicated `type`.
+ * Returns a derived data value with the given class tag and with the given
+ * optional data payload (`NULL` indicating a class-only value). `cls` must
+ * be a derived data class. The result is a value of the indicated `cls`.
  */
-zvalue makeData(zvalue type, zvalue data);
+zvalue makeData(zvalue cls, zvalue data);
 
 /**
  * Calls generic `dataOf()`.

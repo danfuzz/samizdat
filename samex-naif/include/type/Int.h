@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Int` data type
+// `Int` class
 //
 
 #ifndef _TYPE_INT_H_
@@ -12,8 +12,8 @@
 #include "type/Data.h"
 
 
-/** Type value for in-model type `Int`. */
-extern zvalue TYPE_Int;
+/** Class value for in-model class `Int`. */
+extern zvalue CLS_Int;
 
 /** The standard value `0`. */
 extern zvalue INT_0;

@@ -13,12 +13,12 @@ is implemented in-language in terms of the primitive functions and the
 language syntax.
 
 Each section covers definitions for one conceptual area, either
-concerning a data type or some more nebulous concept.
+concerning a class, data type, or some more nebulous concept.
 
 Each section is divided into subsections: generic functions (one section
 per protocol), primitive definitions, and one for in-language definitions.
 The first sections are where generic functions are specified as a general
-definition, as well as where particular types indicate which generics they
+definition, as well as where particular classes indicate which generics they
 bind and with what specific meaning. From the perspective of "client"
 code written in the language, there is no distinction between the final
 two sections, but from the perspective of implementation, there is.
@@ -52,8 +52,8 @@ functionName(argument, argument?, argument*) -> returnValue
 * `returnValue` &mdash; The possible kind(s) of return value.
 
 In an actual function specification, `argument`s are replaced with names
-that indicate the type of value expected. Similarly, `returnValue`
-is replaced with either the type returned, a more specific value that
+that indicate the class/type of value expected. Similarly, `returnValue`
+is replaced with either the class/type returned, a more specific value that
 will be returned, or one of:
 
 * `.` &mdash; Returns an arbitrary value.
@@ -66,9 +66,10 @@ will be returned, or one of:
 
 ### Contents
 
-* Types and Protocols
+* Classes and Protocols
   * [Boolean](Boolean.md)
   * [Builtin](Builtin.md)
+  * [Class](Class.md)
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
   * [Generic](Generic.md)
@@ -77,9 +78,8 @@ will be returned, or one of:
   * [Map](Map.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
   * [String](String.md)
-  * [Type](Type.md)
   * [Uniqlet](Uniqlet.md)
-  * [Value (the base type)](Value.md)
+  * [Value (the base class/type)](Value.md)
   * [One-Off Generics](OneOff.md)
 
 * Protocol Modules

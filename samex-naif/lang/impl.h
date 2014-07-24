@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 #include "lang.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "zlimits.h"
 
 
@@ -36,7 +36,7 @@ typedef enum {
 } zevalType;
 
 /** Mapping from `Type` index to corresponding `zevalType`. */
-extern zevalType langTypeMap[DAT_MAX_TYPES];
+extern zevalType langTypeMap[DAT_MAX_CLASSES];
 
 /**
  * Active execution frame. These are passed around during evaluation
@@ -58,7 +58,7 @@ typedef struct Frame {
 } Frame;
 
 /** Type for closure functions. */
-extern zvalue TYPE_Closure;
+extern zvalue CLS_Closure;
 
 /**
  * Executes a `closure` form.
@@ -110,7 +110,7 @@ void frameSnap(Frame *target, Frame *source);
  * Gets the evaluation type (enumerated value) of the given node.
  */
 inline zevalType get_evalType(zvalue node) {
-    return langTypeMap[get_typeIndex(node)];
+    return langTypeMap[get_classIndex(node)];
 }
 
 #endif

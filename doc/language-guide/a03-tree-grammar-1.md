@@ -157,10 +157,10 @@ def parIdentifierString = {:
     {
         ifNot { dataOf(token) }
             {
-                def type = get_typeName(token);
-                def firstCh = nth(type, 0);
+                def name = get_className(token);
+                def firstCh = nth(name, 0);
                 ifIs { get(LOWER_ALPHA, firstCh) }
-                    { makeLiteral(type) }
+                    { makeLiteral(name) }
             }
     }
 :};
@@ -254,15 +254,15 @@ def parList = {:
 ## Parses a type literal form, yielding an expression node that produces a
 ## type value. If the name is a blatant literal, then the result of this rule
 ## is also a literal. If not, the result of this rule is a call to
-## `makeDerivedDataType`.
+## `makeDerivedDataClass`.
 def parType = {:
     @"@@"
     name = (parIdentifierString | parParenExpression)
 
     {
-        ifIs { hasType(name, @@literal) }
+        ifIs { hasClass(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
-            { makeCall(REFS::makeDerivedDataType, name) }
+            { makeCall(REFS::makeDerivedDataClass, name) }
     }
 :};
 
@@ -270,7 +270,7 @@ def parType = {:
 def parDeriv = {:
     @"@"
 
-    type = (
+    cls = (
         name = parIdentifierString
         { makeLiteral(@@(get_nodeValue(name))) }
     |
@@ -279,7 +279,7 @@ def parDeriv = {:
 
     value = (parParenExpression | parMap | parList)?
 
-    { makeCall(REFS::makeData, type, value*) }
+    { makeCall(REFS::makeData, cls, value*) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.
@@ -453,7 +453,7 @@ def parYieldOrNonlocal = {:
     optQuest = @"?"?
 
     name = (
-        { hasType(op, @@yield) }
+        { hasClass(op, @@yield) }
         (
             @"/"
             parVarLvalue
@@ -462,7 +462,7 @@ def parYieldOrNonlocal = {:
             { @yield }
         )
     |
-        { makeVarFetch(get_typeName(op)) }
+        { makeVarFetch(get_className(op)) }
     )
 
     ## A value expression is mandatory if there is a `?` after the
@@ -526,7 +526,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_typeName(r)} }
+        { {repeat: get_className(r)} }
     |
         { {} }
     )
@@ -1036,7 +1036,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_type(repeat))){pex} }
+        { @(get(PEX_TYPES, get_class(repeat))){pex} }
     |
         { pex }
     )
@@ -1048,7 +1048,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(get(PEX_TYPES, get_type(lookahead))){pex} }
+        { @(get(PEX_TYPES, get_class(lookahead))){pex} }
     )
 |
     parPexRepeat

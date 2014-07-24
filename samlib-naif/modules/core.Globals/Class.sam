@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Type functions
+## Class functions
 ##
 
 #= language core.Lang0
@@ -14,6 +14,6 @@
 ##
 
 ## Documented in spec.
-export fn get_typeName(value) {
-    return typeName(get_type(value))
+export fn get_className(value) {
+    return className(get_class(value))
 };

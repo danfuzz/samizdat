@@ -54,11 +54,11 @@ zvalue datEvalBinary(zvalue env, zvalue path);
 //
 
 /**
- * Allocates a value, assigning it the given type, and sizing the memory
+ * Allocates a value, assigning it the given class, and sizing the memory
  * to include the given amount of extra bytes as raw payload data.
  * The resulting value is added to the live reference stack.
  */
-zvalue datAllocValue(zvalue type, zint extraBytes);
+zvalue datAllocValue(zvalue cls, zint extraBytes);
 
 /**
  * Forces a gc.
@@ -72,7 +72,7 @@ void datGc(void);
 void datImmortalize(zvalue value);
 
 /**
- * Marks a value during garbage collection. This in turn calls a type-specific
+ * Marks a value during garbage collection. This in turn calls a class-specific
  * mark function when appropriate and may recurse arbitrarily. It is valid
  * to pass `NULL` to this, but no other non-values are acceptable.
  */

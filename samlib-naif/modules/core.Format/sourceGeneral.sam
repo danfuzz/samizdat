@@ -37,13 +37,13 @@ fn collectionBody(elems) {
 
 ## Values with special conversions.
 def SPECIAL_VALUES = {
+    (Class):       "Class",
     (Data):        "Data",
     (DerivedData): "DerivedData",
     (Int):         "Int",
     (List):        "List",
     (Map):         "Map",
     (String):      "String",
-    (Type):        "Type",
     (Uniqlet):     "Uniqlet",
     (Value):       "Value",
     (false):       "false",
@@ -60,6 +60,23 @@ fn keyString(key) {
         { string -> return cat("(", string, ")") };
 
     return sourceGeneral(key, true)
+};
+
+## Stringifies a class.
+fn Class_sourceGeneral(value, adorn) {
+    ifValue { get(SPECIAL_VALUES, value) }
+        { string -> return string };
+
+    def name = className(value);
+
+    ifNot { eq(classParent(value), DerivedData) }
+        { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
+
+    def body = ifIs { hasClass(name, String) }
+        { ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) } }
+        { cat("(", sourceGeneral(name, true), ")") };
+
+    return adornIf(adorn, "@@", body, "")
 };
 
 ## Stringifies an int.
@@ -94,42 +111,25 @@ fn String_sourceGeneral(value, adorn) {
     return adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 
-## Stringifies a type.
-fn Type_sourceGeneral(value, adorn) {
-    ifValue { get(SPECIAL_VALUES, value) }
-        { string -> return string };
-
-    def name = typeName(value);
-
-    ifNot { eq(typeParent(value), DerivedData) }
-        { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
-
-    def body = ifIs { hasType(name, String) }
-        { ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) } }
-        { cat("(", sourceGeneral(name, true), ")") };
-
-    return adornIf(adorn, "@@", body, "")
-};
-
 ## Stringifies a derived value or an opaque core value.
 fn Value_sourceGeneral(value, adorn) {
     ifValue { get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def type = get_type(value);
-    def name = typeName(type);
-    def typeStr = ifIs { hasType(name, String) }
+    def cls = get_class(value);
+    def name = className(cls);
+    def clsStr = ifIs { hasClass(name, String) }
         {
-            ## The type is a string.
+            ## The class is a string.
             ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) }
         }
         {
-            ## General case for type.
-            cat("(", sourceGeneral(type, true), ")")
+            ## General case for class.
+            cat("(", sourceGeneral(cls, true), ")")
         };
-    def prefix = cat("@", typeStr);
+    def prefix = cat("@", clsStr);
 
-    ifNot { eq(typeParent(type), DerivedData) }
+    ifNot { eq(classParent(cls), DerivedData) }
         {
             ## Opaque value, possibly named.
             def body = ifValue { debugName(value) }
@@ -144,14 +144,14 @@ fn Value_sourceGeneral(value, adorn) {
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
             def dataStr = sourceGeneral(data, true);
-            ifIs { hasType(data, List) }
+            ifIs { hasClass(data, List) }
                 { return cat(prefix, dataStr) };
-            ifIs { hasType(data, Map) }
+            ifIs { hasClass(data, Map) }
                 { return cat(prefix, dataStr) };
             cat(prefix, "(", dataStr, ")")
         }
         {
-            ## Type-only transparent derived value.
+            ## Class-only transparent derived value.
             prefix
         };
 };
@@ -160,13 +160,13 @@ fn Value_sourceGeneral(value, adorn) {
 ## `adorn` flag.
 export fn sourceGeneral(value, adorn) {
     return ifSwitch(
-        { get_type(value) },
+        { get_class(value) },
         {
+            (Class):  { . -> Class_sourceGeneral(value, adorn) },
             (Int):    { . -> Int_sourceGeneral(value, adorn) },
             (List):   { . -> List_sourceGeneral(value, adorn) },
             (Map):    { . -> Map_sourceGeneral(value, adorn) },
-            (String): { . -> String_sourceGeneral(value, adorn) },
-            (Type):   { . -> Type_sourceGeneral(value, adorn) }
+            (String): { . -> String_sourceGeneral(value, adorn) }
         },
         { . -> Value_sourceGeneral(value, adorn) }
     )

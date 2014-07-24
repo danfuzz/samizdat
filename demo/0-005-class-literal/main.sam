@@ -3,8 +3,10 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Type literal demo, Layer 2 specific
+## Class literal demo
 ##
+
+#= language core.Lang0
 
 
 ##
@@ -20,17 +22,15 @@ fn msg(string) {
 ## Main Tests
 ##
 
-note("Layer 0...");
-
-## These all refer to the same type.
+## These all refer to the same class.
 msg(@@("Null"));
 msg(@@"Null");
 msg(@@Null);
 
-## This is not the same as the above, as the type is `null`, not `"Null"`.
+## This is not the same as the above, as the class is `null`, not `"Null"`.
 msg(@@(null));
 
-## These all refer to the same type.
+## These all refer to the same class.
 msg(@@potion);
 msg(@@"potion");
 msg(@@("potion"));
@@ -45,7 +45,3 @@ msg(@@fn);
 
 ## Expressions can be used as names.
 msg(@@(cat("blo", "rt")));
-
-note("\nLayer 2...");
-
-msg(@@"\&mu;sec");

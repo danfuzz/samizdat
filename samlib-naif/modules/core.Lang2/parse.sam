@@ -153,10 +153,10 @@ def parIdentifierString = {:
     {
         ifNot { dataOf(token) }
             {
-                def type = get_typeName(token);
-                def firstCh = nth(type, 0);
+                def name = get_className(token);
+                def firstCh = nth(name, 0);
                 ifIs { get(LOWER_ALPHA, firstCh) }
-                    { makeLiteral(type) }
+                    { makeLiteral(name) }
             }
     }
 :};
@@ -250,15 +250,15 @@ def parList = {:
 ## Parses a type literal form, yielding an expression node that produces a
 ## type value. If the name is a blatant literal, then the result of this rule
 ## is also a literal. If not, the result of this rule is a call to
-## `makeDerivedDataType`.
+## `makeDerivedDataClass`.
 def parType = {:
     @"@@"
     name = (parIdentifierString | parParenExpression)
 
     {
-        ifIs { hasType(name, @@literal) }
+        ifIs { hasClass(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
-            { makeCall(REFS::makeDerivedDataType, name) }
+            { makeCall(REFS::makeDerivedDataClass, name) }
     }
 :};
 
@@ -266,7 +266,7 @@ def parType = {:
 def parDeriv = {:
     @"@"
 
-    type = (
+    cls = (
         name = parIdentifierString
         { makeLiteral(@@(get_nodeValue(name))) }
     |
@@ -275,7 +275,7 @@ def parDeriv = {:
 
     value = (parParenExpression | parMap | parList)?
 
-    { makeCall(REFS::makeData, type, value*) }
+    { makeCall(REFS::makeData, cls, value*) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.
@@ -449,7 +449,7 @@ def parYieldOrNonlocal = {:
     optQuest = @"?"?
 
     name = (
-        { hasType(op, @@yield) }
+        { hasClass(op, @@yield) }
         (
             @"/"
             parVarLvalue
@@ -458,7 +458,7 @@ def parYieldOrNonlocal = {:
             { @yield }
         )
     |
-        { makeVarFetch(get_typeName(op)) }
+        { makeVarFetch(get_className(op)) }
     )
 
     ## A value expression is mandatory if there is a `?` after the
@@ -522,7 +522,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_typeName(r)} }
+        { {repeat: get_className(r)} }
     |
         { {} }
     )
@@ -1032,7 +1032,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_type(repeat))){pex} }
+        { @(get(PEX_TYPES, get_class(repeat))){pex} }
     |
         { pex }
     )
@@ -1044,7 +1044,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(get(PEX_TYPES, get_type(lookahead))){pex} }
+        { @(get(PEX_TYPES, get_class(lookahead))){pex} }
     )
 |
     parPexRepeat
@@ -1125,7 +1125,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     filterPump(opExList) { opEx ->
-        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_class(opEx::op));
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
@@ -1184,7 +1184,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     fn transform(leftRef, opEx, rest*) {
-        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_class(opEx::op));
 
         return ifIs { eq(rest, []) }
             { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
@@ -1259,7 +1259,7 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = filterAll(token::value) { elem ->
-            ifIs { hasType(elem, String) }
+            ifIs { hasClass(elem, String) }
                 { makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
@@ -1455,7 +1455,7 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = get(UNARY_OPERATORS, get_type(operator));
+        def name = get(UNARY_OPERATORS, get_class(operator));
         { node -> makeCall(name, node) }
     }
 |
@@ -1622,7 +1622,7 @@ parPostfixOperator2 := {:
             def getterRef = makeVarFetch(cat("get_", name));
             { node ->
                 def getterCall = makeCall(getterRef, node);
-                @(get_type(getterCall)){
+                @(get_class(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarFetch(cat("set_", name));
@@ -2125,7 +2125,7 @@ def parSwitchExpression = {:
         def caseClauses = filterAll(cases) { case ->
             def keys = case::keys;
             def code = finishCode(case);
-            ifIs { hasType(keys, List) }
+            ifIs { hasClass(keys, List) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, code) }
         };
         def caseMap = makeCallOrApply(REFS::cat,
@@ -2325,7 +2325,7 @@ parExpression2 := {:
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { hasType(expression, String) }
+    def tokens = ifIs { hasClass(expression, String) }
         { tokenize(expression) }
         { expression };
 
@@ -2334,7 +2334,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { hasType(program, String) }
+    def tokens = ifIs { hasClass(program, String) }
         { tokenize(program) }
         { program };
 

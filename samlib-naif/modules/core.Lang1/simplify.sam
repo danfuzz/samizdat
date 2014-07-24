@@ -35,7 +35,7 @@ fn makeCallPex(function, node, formals, moreArgs*) {
 
 ## Makes a node with additional / replacement bindings from the original.
 fn withBindings(orig, more) {
-    return @(get_type(orig))({dataOf(orig)*, more*})
+    return @(get_class(orig))({dataOf(orig)*, more*})
 };
 
 ## Makes a node with additional / replacement bindings from the original,
@@ -47,7 +47,7 @@ fn withFinalBindings(orig, more) {
 ## Expands the given pex node into an expression node.
 fn convertPex(node, formals) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@any: { . ->
                 REFS::Peg_any
@@ -71,7 +71,7 @@ fn convertPex(node, formals) {
                 ifValues(
                     [
                         { eq(get_statements(fullClosure), []) },
-                        { . -> hasType(get_yieldNode(fullClosure), @@literal) }
+                        { . -> hasClass(get_yieldNode(fullClosure), @@literal) }
                     ],
                     { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) },
                     { makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure)) }
@@ -105,7 +105,7 @@ fn convertPex(node, formals) {
 
                 ## Extract the formals out of any `varDef` nodes.
                 def newFormals = filterAll(pexes) { pex ->
-                    ifIs { hasType(pex, @@varDef) }
+                    ifIs { hasClass(pex, @@varDef) }
                         { {name: pex::name} }
                         { {} }
                 };
@@ -115,7 +115,7 @@ fn convertPex(node, formals) {
                 def convertedPexes =
                     filterAll(makeOpenRange(0), pexes)
                         { n, pex ->
-                            def subPex = ifIs { hasType(pex, @@varDef) }
+                            def subPex = ifIs { hasClass(pex, @@varDef) }
                                 { pex::value }
                                 { pex };
                             convertPex(subPex,
@@ -150,13 +150,13 @@ fn convertPex(node, formals) {
             },
 
             @@tokenSet: { . ->
-                def types = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSet, types*)
+                def clses = get_values(node);
+                makeCallLiterals(REFS::Peg_makeTokenSet, clses*)
             },
 
             @@tokenSetComplement: { . ->
-                def types = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*)
+                def clses = get_values(node);
+                makeCallLiterals(REFS::Peg_makeTokenSetComplement, clses*)
             },
 
             @@varRef: { . ->
@@ -172,7 +172,7 @@ fn convertPex(node, formals) {
 ## 0 node.
 fn convertPexIn(node) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@apply: { . ->
                 def function = convertPexIn(get_function(node));
@@ -248,7 +248,7 @@ fn convertPexIn(node) {
 export fn simplify(expressionNode, resolveFn) {
     def converted = convertPexIn(expressionNode);
 
-    return ifIs { hasType(converted, @@closure) }
+    return ifIs { hasClass(converted, @@closure) }
         { withModuleDefs(withResolvedImports(converted, resolveFn)) }
         { converted }
 };

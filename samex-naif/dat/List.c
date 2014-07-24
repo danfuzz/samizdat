@@ -4,13 +4,13 @@
 
 #include <stdarg.h>
 
+#include "type/Class.h"
 #include "type/Data.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 
 #include "impl.h"
@@ -43,7 +43,7 @@ static ListInfo *getInfo(zvalue list) {
  */
 static zvalue allocList(zint size) {
     zvalue result =
-        datAllocValue(TYPE_List, sizeof(ListInfo) + size * sizeof(zvalue));
+        datAllocValue(CLS_List, sizeof(ListInfo) + size * sizeof(zvalue));
 
     getInfo(result)->size = size;
     return result;
@@ -89,7 +89,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
 
 // Documented in header.
 void arrayFromList(zvalue *result, zvalue list) {
-    assertHasType(list, TYPE_List);
+    assertHasClass(list, CLS_List);
 
     ListInfo *info = getInfo(list);
 
@@ -137,7 +137,7 @@ zvalue listFromArray(zint size, const zvalue *values) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -383,7 +383,7 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    TYPE_List = makeCoreType(stringFromUtf8(-1, "List"), TYPE_Data);
+    CLS_List = makeCoreClass(stringFromUtf8(-1, "List"), CLS_Data);
 
     METH_BIND(List, cat);
     METH_BIND(List, collect);
@@ -399,11 +399,11 @@ MOD_INIT(List) {
     METH_BIND(List, totalEq);
     METH_BIND(List, totalOrder);
     METH_BIND(List, valueList);
-    seqBind(TYPE_List);
+    seqBind(CLS_List);
 
     EMPTY_LIST = allocList(0);
     datImmortalize(EMPTY_LIST);
 }
 
 // Documented in header.
-zvalue TYPE_List = NULL;
+zvalue CLS_List = NULL;

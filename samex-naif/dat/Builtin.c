@@ -7,9 +7,9 @@
 //
 
 #include "type/Builtin.h"
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 
 #include "impl.h"
@@ -86,7 +86,7 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
         die("Invalid `stateSize`: %lld", stateSize);
     }
 
-    zvalue result = datAllocValue(TYPE_Builtin,
+    zvalue result = datAllocValue(CLS_Builtin,
         sizeof(BuiltinInfo) + stateSize * sizeof(zvalue));
     BuiltinInfo *info = getInfo(result);
 
@@ -101,7 +101,7 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
 
 // Documented in header.
 BuiltinState builtinGetState(zvalue builtin) {
-    assertHasType(builtin, TYPE_Builtin);
+    assertHasClass(builtin, CLS_Builtin);
 
     BuiltinInfo *info = getInfo(builtin);
     zint size = info->stateSize;
@@ -117,7 +117,7 @@ BuiltinState builtinGetState(zvalue builtin) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -155,7 +155,7 @@ MOD_INIT(Builtin) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_Builtin`.
+    // Note: The `objectModel` module initializes `CLS_Builtin`.
 
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, debugName);
@@ -163,4 +163,4 @@ MOD_INIT(Builtin) {
 }
 
 // Documented in header.
-zvalue TYPE_Builtin = NULL;
+zvalue CLS_Builtin = NULL;

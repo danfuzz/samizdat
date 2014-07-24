@@ -6,10 +6,10 @@
 // Nonlocal jump (exit / yield) functions
 //
 
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/Jump.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 
 #include "impl.h"
@@ -56,7 +56,7 @@ zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
 
 // Documented in header.
 zvalue makeJump(void) {
-    zvalue result = datAllocValue(TYPE_Jump, sizeof(JumpInfo));
+    zvalue result = datAllocValue(CLS_Jump, sizeof(JumpInfo));
     JumpInfo *info = getInfo(result);
 
     info->valid = false;
@@ -65,7 +65,7 @@ zvalue makeJump(void) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -100,7 +100,7 @@ METH_IMPL(Jump, gcMark) {
 MOD_INIT(Jump) {
     MOD_USE(Function);
 
-    // Note: The `typeSystem` module initializes `TYPE_Jump`.
+    // Note: The `objectModel` module initializes `CLS_Jump`.
 
     METH_BIND(Jump, call);
     METH_BIND(Jump, debugString);
@@ -108,4 +108,4 @@ MOD_INIT(Jump) {
 }
 
 // Documented in header.
-zvalue TYPE_Jump = NULL;
+zvalue CLS_Jump = NULL;

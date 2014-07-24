@@ -2,8 +2,8 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include "type/Class.h"
 #include "type/Int.h"
-#include "type/Type.h"
 
 #include "impl.h"
 
@@ -21,16 +21,16 @@ FUN_IMPL_DECL(eq) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(get_type) {
-    return get_type(args[0]);
+FUN_IMPL_DECL(get_class) {
+    return get_class(args[0]);
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(hasType) {
+FUN_IMPL_DECL(hasClass) {
     zvalue value = args[0];
-    zvalue type = args[1];
+    zvalue cls = args[1];
 
-    return hasType(value, type) ? value : NULL;
+    return hasClass(value, cls) ? value : NULL;
 }
 
 // Documented in spec.

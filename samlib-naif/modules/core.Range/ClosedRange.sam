@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `ClosedRange` Type
+## `ClosedRange` Class
 ##
 ## Payload: `{start: intOrChar, increment: int, size: int}`
 
@@ -49,7 +49,7 @@ fn @@ClosedRange.nextValue(box) {
 export fn makeClosedRange(firstValue, size, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    ifNot { hasType(size, Int) }
+    ifNot { hasClass(size, Int) }
         { die("`size` must be an int.") };
 
     return ifIs { gt(size, 0) }
@@ -59,7 +59,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
 
 ## Documented in spec.
 export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
-    ## `totalEq` ensures that `firstValue` and `limit` have the same type.
+    ## `totalEq` ensures that `firstValue` and `limit` have the same class.
     def isEmpty = totalEq(firstValue, limit)?;
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
@@ -94,7 +94,7 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
 export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    ## This ensures that `firstValue` and `limit` have the same type.
+    ## This ensures that `firstValue` and `limit` have the same class.
     totalEq(firstValue, limit);
 
     ## `totalEq` ensures that `increment` is an int.

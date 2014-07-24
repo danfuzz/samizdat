@@ -10,14 +10,14 @@
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */
 MOD_INIT(Bitwise) {
     MOD_USE(Value);
 
-    GFN_and = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "and"));
+    GFN_and = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "and"));
     datImmortalize(GFN_and);
 
     GFN_bit = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "bit"));
@@ -29,13 +29,13 @@ MOD_INIT(Bitwise) {
     GFN_not = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "not"));
     datImmortalize(GFN_not);
 
-    GFN_or = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "or"));
+    GFN_or = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "or"));
     datImmortalize(GFN_or);
 
     GFN_shl = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "shl"));
     datImmortalize(GFN_shl);
 
-    GFN_xor = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "xor"));
+    GFN_xor = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "xor"));
     datImmortalize(GFN_xor);
 }
 

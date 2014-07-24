@@ -8,12 +8,12 @@
 
 #include "const.h"
 #include "type/Box.h"
+#include "type/Class.h"
 #include "type/Function.h"
 #include "type/Generator.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 #include "util.h"
 
@@ -179,7 +179,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_store:    return execStore(frame, e);
         case EVAL_varRef:   return execVarRef(frame, e);
         default: {
-            die("Invalid expression type: %s", valDebugString(get_type(e)));
+            die("Invalid expression type: %s", valDebugString(get_class(e)));
         }
     }
 }

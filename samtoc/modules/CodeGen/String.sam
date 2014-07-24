@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Protocol bindings for type String.
+## Protocol bindings for class String.
 ##
 
 import ./indentation :: *;

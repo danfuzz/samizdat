@@ -60,7 +60,7 @@ msgHex(0xff00 >>> 0x8);
 ## Ordering. The ones expected to be "falsey" are surrounded by `??` to
 ## make them easily printable.
 
-note("\nPer-type Order 1");
+note("\nPer-class Order 1");
 msg(1 == 1);
 msg(2 != 3);
 msg(3 < 4);
@@ -71,7 +71,7 @@ msg("a" == "a");
 msg("b" != "a");
 msg("c" < "d");
 
-note("\nPer-type Order 2");
+note("\nPer-class Order 2");
 msg((1 != 1)??);
 msg((1 == 2)??);
 msg((1 >= 2)??);
@@ -82,7 +82,7 @@ msg(([1] > [1])??);
 msg(([1] <= [0])??);
 msg(([1] >= [2])??);
 
-note("\nPer-type Order 3");
+note("\nPer-class Order 3");
 msg(1 < 20 < 200);
 msg(21 == 21 > 20);
 msg(23 >= 22 < 23);  ## This will (properly) fail if a right-hand is returned.

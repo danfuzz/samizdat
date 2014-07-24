@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 
 #include "impl.h"
@@ -30,8 +30,8 @@ void datNonVoidError(void) {
 extern void *datPayload(zvalue value);
 
 // Documented in header.
-zvalue get_type(zvalue value) {
-    return value->type;
+zvalue get_class(zvalue value) {
+    return value->cls;
 }
 
 // Documented in header.
@@ -49,7 +49,7 @@ zvalue valEq(zvalue value, zvalue other) {
         die("Shouldn't happen: NULL argument passed to `valEq`.");
     } else if (value == other) {
         return value;
-    } else if (haveSameType(value, other)) {
+    } else if (haveSameClass(value, other)) {
         return (GFN_CALL(totalEq, value, other) != NULL) ? value : NULL;
     } else {
         return NULL;
@@ -75,13 +75,13 @@ zvalue valOrder(zvalue value, zvalue other) {
         return INT_0;
     }
 
-    zvalue valueType = get_type(value);
-    zvalue otherType = get_type(other);
+    zvalue valueCls = get_class(value);
+    zvalue otherCls = get_class(other);
 
-    if (valueType == otherType) {
+    if (valueCls == otherCls) {
         return GFN_CALL(totalOrder, value, other);
     } else {
-        return GFN_CALL(totalOrder, valueType, otherType);
+        return GFN_CALL(totalOrder, valueCls, otherCls);
     }
 }
 
@@ -116,7 +116,7 @@ zorder valZorder(zvalue value, zvalue other) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -127,13 +127,13 @@ METH_IMPL(Value, debugName) {
 // Documented in header.
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
-    zvalue type = get_type(value);
+    zvalue cls = get_class(value);
     zvalue name = GFN_CALL(debugName, value);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!hasType(name, TYPE_String)) {
+    } else if (!hasClass(name, CLS_String)) {
         // Suppress a non-string name.
         name = stringFromUtf8(-1, "(non-string name)");
     } else {
@@ -146,7 +146,7 @@ METH_IMPL(Value, debugString) {
 
     return GFN_CALL(cat,
         stringFromUtf8(-1, "@("),
-        GFN_CALL(debugString, type),
+        GFN_CALL(debugString, cls),
         name,
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),
@@ -193,12 +193,12 @@ METH_IMPL(Value, totalOrder) {
 
 /** Initializes the module. */
 MOD_INIT(Value) {
-    MOD_USE(typeSystem);
+    MOD_USE(objectModel);
 
-    // Initializing `Value` also initializes the rest of the core types.
+    // Initializing `Value` also initializes the rest of the core classes.
     // This also gets all the protocols indirectly via their implementors.
     MOD_USE_NEXT(Data);
-    MOD_USE_NEXT(Type);
+    MOD_USE_NEXT(Class);
     MOD_USE_NEXT(String);
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Generic);
@@ -208,7 +208,7 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(DerivedData);
 
-    // Note: The `typeSystem` module initializes `TYPE_Value`.
+    // Note: The `objectModel` module initializes `CLS_Value`.
 
     GFN_debugName = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugName"));
     datImmortalize(GFN_debugName);
@@ -227,11 +227,11 @@ MOD_INIT(Value) {
     datImmortalize(GFN_perOrder);
 
     GFN_totalEq =
-        makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalEq"));
+        makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "totalEq"));
     datImmortalize(GFN_totalEq);
 
     GFN_totalOrder =
-        makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalOrder"));
+        makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "totalOrder"));
     datImmortalize(GFN_totalOrder);
 
     METH_BIND(Value, debugName);
@@ -244,7 +244,7 @@ MOD_INIT(Value) {
 }
 
 // Documented in header.
-zvalue TYPE_Value = NULL;
+zvalue CLS_Value = NULL;
 
 // Documented in header.
 zvalue GFN_debugName = NULL;

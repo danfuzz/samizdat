@@ -6,7 +6,7 @@
 
 #include "type/List.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "io.h"
 #include "util.h"
 
@@ -19,7 +19,7 @@
  * Common code for checking paths.
  */
 void checkPath0(zvalue path, bool isAbsolute) {
-    if (!hasType(path, TYPE_String)) {
+    if (!hasClass(path, CLS_String)) {
         die("Invalid path: not a string");
     }
 

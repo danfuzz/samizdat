@@ -153,7 +153,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeData(TYPE_int, mapFrom1(STR_value, intval));
+    return makeData(CLS_int, mapFrom1(STR_value, intval));
 }
 
 /**
@@ -199,7 +199,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'y': { if (valEq(string, STR_yield))    return TOK_yield;    }
     }
 
-    return makeData(TYPE_identifier, mapFrom1(STR_value, string));
+    return makeData(CLS_identifier, mapFrom1(STR_value, string));
 }
 
 /**
@@ -249,7 +249,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZchars(size, chars);
-    return makeData(TYPE_string, mapFrom1(STR_value, string));
+    return makeData(CLS_string, mapFrom1(STR_value, string));
 }
 
 /**
@@ -265,7 +265,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue string = get(result, STR_value);
-    return makeData(TYPE_identifier, mapFrom1(STR_value, string));
+    return makeData(CLS_identifier, mapFrom1(STR_value, string));
 }
 
 /**
@@ -347,7 +347,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     }
 
     zvalue value = stringFromZchars(size, chars);
-    return makeData(TYPE_directive,
+    return makeData(CLS_directive,
         mapFrom2(STR_name, get(name, STR_value), STR_value, value));
 }
 
@@ -413,7 +413,7 @@ zvalue langLanguageOf0(zvalue string) {
     zvalue result = tokenizeAnyToken(&state);
 
     if ((result != NULL)
-        && hasType(result, TYPE_directive)
+        && hasClass(result, CLS_directive)
         && valEq(get(result, STR_name), STR_language)) {
         return get(result, STR_value);
     }
@@ -440,7 +440,7 @@ zvalue langTokenize0(zvalue string) {
         zvalue one = tokenizeAnyToken(&state);
         if (one == NULL) {
             break;
-        } else if (!hasType(one, TYPE_directive)) {
+        } else if (!hasClass(one, CLS_directive)) {
             result[out] = one;
             out++;
         }

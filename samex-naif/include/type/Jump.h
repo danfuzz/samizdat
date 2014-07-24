@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Jump` data type
+// `Jump` class
 //
 
 #ifndef _TYPE_JUMP_H_
@@ -15,8 +15,8 @@
 #include "type/Function.h"
 
 
-/** Type value for in-model type `Jump`. */
-extern zvalue TYPE_Jump;
+/** Class value for in-model class `Jump`. */
+extern zvalue CLS_Jump;
 
 /**
  * Constructs and returns a nonlocal jump, which is initially invalid for

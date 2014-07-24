@@ -6,7 +6,7 @@
 
 #include "type/DerivedData.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "zlimits.h"
 
 
@@ -18,7 +18,7 @@
 
 #define TYP(name, str) \
     STR(name, str); \
-    zvalue TYPE_##name = NULL
+    zvalue CLS_##name = NULL
 
 #define TOK(name, str) \
     TYP(name, str); \
@@ -47,12 +47,12 @@ MOD_INIT(const) {
 
     #define TYP(name, str) \
         STR(name, str); \
-        TYPE_##name = makeDerivedDataType(STR_##name); \
-        datImmortalize(TYPE_##name)
+        CLS_##name = makeDerivedDataClass(STR_##name); \
+        datImmortalize(CLS_##name)
 
     #define TOK(name, str) \
         TYP(name, str); \
-        TOK_##name = makeData(TYPE_##name, NULL); \
+        TOK_##name = makeData(CLS_##name, NULL); \
         datImmortalize(TOK_##name)
 
     #include "const/const-def.h"

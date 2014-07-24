@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "const.h"
-#include "type/Type.h"
+#include "type/Class.h"
 
 #include "impl.h"
 
@@ -20,7 +20,7 @@
 //
 
 // Documented in header.
-zevalType langTypeMap[DAT_MAX_TYPES];
+zevalType langTypeMap[DAT_MAX_CLASSES];
 
 // This provides the non-inline version of this function.
 extern zevalType get_evalType(zvalue node);
@@ -34,19 +34,19 @@ MOD_INIT(lang) {
     MOD_USE(Map);
 
     memset(langTypeMap, 0, sizeof(langTypeMap));
-    langTypeMap[typeIndex(TYPE_apply)]                 = EVAL_apply;
-    langTypeMap[typeIndex(TYPE_call)]                  = EVAL_call;
-    langTypeMap[typeIndex(TYPE_closure)]               = EVAL_closure;
-    langTypeMap[typeIndex(TYPE_fetch)]                 = EVAL_fetch;
-    langTypeMap[typeIndex(TYPE_importModule)]          = EVAL_importModule;
-    langTypeMap[typeIndex(TYPE_importModuleSelection)] = EVAL_importModuleSelection;
-    langTypeMap[typeIndex(TYPE_importResource)]        = EVAL_importResource;
-    langTypeMap[typeIndex(TYPE_literal)]               = EVAL_literal;
-    langTypeMap[typeIndex(TYPE_maybe)]                 = EVAL_maybe;
-    langTypeMap[typeIndex(TYPE_noYield)]               = EVAL_noYield;
-    langTypeMap[typeIndex(TYPE_store)]                 = EVAL_store;
-    langTypeMap[typeIndex(TYPE_varRef)]                = EVAL_varRef;
-    langTypeMap[typeIndex(TYPE_varDef)]                = EVAL_varDef;
-    langTypeMap[typeIndex(TYPE_varDefMutable)]         = EVAL_varDefMutable;
-    langTypeMap[typeIndex(TYPE_void)]                  = EVAL_void;
+    langTypeMap[classIndex(CLS_apply)]                 = EVAL_apply;
+    langTypeMap[classIndex(CLS_call)]                  = EVAL_call;
+    langTypeMap[classIndex(CLS_closure)]               = EVAL_closure;
+    langTypeMap[classIndex(CLS_fetch)]                 = EVAL_fetch;
+    langTypeMap[classIndex(CLS_importModule)]          = EVAL_importModule;
+    langTypeMap[classIndex(CLS_importModuleSelection)] = EVAL_importModuleSelection;
+    langTypeMap[classIndex(CLS_importResource)]        = EVAL_importResource;
+    langTypeMap[classIndex(CLS_literal)]               = EVAL_literal;
+    langTypeMap[classIndex(CLS_maybe)]                 = EVAL_maybe;
+    langTypeMap[classIndex(CLS_noYield)]               = EVAL_noYield;
+    langTypeMap[classIndex(CLS_store)]                 = EVAL_store;
+    langTypeMap[classIndex(CLS_varRef)]                = EVAL_varRef;
+    langTypeMap[classIndex(CLS_varDef)]                = EVAL_varDef;
+    langTypeMap[classIndex(CLS_varDefMutable)]         = EVAL_varDefMutable;
+    langTypeMap[classIndex(CLS_void)]                  = EVAL_void;
 }

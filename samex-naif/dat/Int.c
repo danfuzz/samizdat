@@ -3,11 +3,11 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Bitwise.h"
+#include "type/Class.h"
 #include "type/Data.h"
 #include "type/Int.h"
 #include "type/Number.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -47,7 +47,7 @@ static zint zintValue(zvalue intval) {
  */
 zvalue intFrom(zint value) {
     zint size = zintBitSize(value);
-    zvalue result = datAllocValue(TYPE_Int, sizeof(IntInfo));
+    zvalue result = datAllocValue(CLS_Int, sizeof(IntInfo));
 
     ((IntInfo *) datPayload(result))->value = value;
     return result;
@@ -69,13 +69,13 @@ zvalue intFromZint(zint value) {
 
 // Documented in header.
 zint zintFromInt(zvalue intval) {
-    assertHasType(intval, TYPE_Int);
+    assertHasClass(intval, CLS_Int);
     return zintValue(intval);
 }
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -204,7 +204,7 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    TYPE_Int = makeCoreType(stringFromUtf8(-1, "Int"), TYPE_Data);
+    CLS_Int = makeCoreClass(stringFromUtf8(-1, "Int"), CLS_Data);
 
     METH_BIND(Int, abs);
     METH_BIND(Int, add);
@@ -240,4 +240,4 @@ MOD_INIT(Int) {
 }
 
 // Documented in header.
-zvalue TYPE_Int = NULL;
+zvalue CLS_Int = NULL;

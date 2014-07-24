@@ -19,41 +19,41 @@ elsewhere in the library documentation.
 <br><br>
 ### Primitive Definitions
 
+#### `Class`
+
+The reified class of a value.
+
 #### `Data`
 
-The common supertype of all pure data values.
+The common superclass of all pure data values.
 
 #### `DerivedData`
 
-The common supertype of all derived data values.
+The common superclass of all derived data values.
 
 #### `Int`
 
-The type of int values.
+The class of int values.
 
 #### `List`
 
-The type of list values.
+The class of list values.
 
 #### `Map`
 
-The type of map values.
+The class of map values.
 
 #### `String`
 
-The type of string values.
-
-#### `Type`
-
-The reified type of a value.
+The class of string values.
 
 #### `Uniqlet`
 
-The type of uniqlet values.
+The class of uniqlet values.
 
 #### `Value`
 
-The common supertype of all values.
+The common superclass of all values.
 
 
 <br><br>
@@ -62,8 +62,8 @@ The common supertype of all values.
 #### `null`
 
 A value used when no other value is suitable, but when a value is
-nonetheless required. It is defined as `@Null`, that is, a type-only
-value with type tag `"Null"`.
+nonetheless required. It is defined as `@Null`, that is, a class-only
+value with class tag `"Null"`.
 
 #### `ENTITY_MAP`
 

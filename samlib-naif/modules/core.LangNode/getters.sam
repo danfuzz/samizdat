@@ -47,7 +47,7 @@ fn splitAtChar(s, ch) {
 ## Documented in spec.
 export fn get_baseName(source) {
     return ifSwitch(
-        { get_type(source) },
+        { get_class(source) },
         {
             @@external: { . ->
                 def components = splitAtChar(source::name, ".");
@@ -66,7 +66,7 @@ export fn get_baseName(source) {
 ## Documented in spec.
 export fn get_definedNames(node) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@export: { . ->
                 get_definedNames(get_nodeValue(node))

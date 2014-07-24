@@ -7,6 +7,7 @@
 
 #include "const.h"
 #include "type/Box.h"
+#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
@@ -15,7 +16,6 @@
 #include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "zlimits.h"
 
 #include "impl.h"
@@ -48,7 +48,7 @@ static MapInfo *getInfo(zvalue list) {
  */
 static zvalue allocMap(zint size) {
     zvalue result =
-        datAllocValue(TYPE_Map, sizeof(MapInfo) + size * sizeof(zmapping));
+        datAllocValue(CLS_Map, sizeof(MapInfo) + size * sizeof(zmapping));
 
     getInfo(result)->size = size;
     return result;
@@ -165,7 +165,7 @@ static int mappingOrder(const void *m1, const void *m2) {
 
 // Documented in header.
 void arrayFromMap(zmapping *result, zvalue map) {
-    assertHasType(map, TYPE_Map);
+    assertHasClass(map, CLS_Map);
 
     MapInfo *info = getInfo(map);
     utilCpy(zmapping, result, info->elems, info->size);
@@ -258,7 +258,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -447,7 +447,7 @@ METH_IMPL(Map, nextValue) {
     } else {
         GFN_CALL(store, box, first);
         return makeData(
-            TYPE_MapGenerator,
+            CLS_MapGenerator,
             mapFromArgs(
                 STR_map,   map,
                 STR_index, intFromZint(1),
@@ -608,7 +608,7 @@ MOD_INIT(Map) {
     MOD_USE(MapCache);
     MOD_USE(OneOff);
 
-    TYPE_Map = makeCoreType(stringFromUtf8(-1, "Map"), TYPE_Data);
+    CLS_Map = makeCoreClass(stringFromUtf8(-1, "Map"), CLS_Data);
 
     METH_BIND(Map, cat);
     METH_BIND(Map, collect);
@@ -632,4 +632,4 @@ MOD_INIT(Map) {
 }
 
 // Documented in header.
-zvalue TYPE_Map = NULL;
+zvalue CLS_Map = NULL;

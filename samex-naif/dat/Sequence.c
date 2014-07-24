@@ -9,6 +9,7 @@
 #include "const.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
+#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
@@ -17,7 +18,6 @@
 #include "type/Map.h"
 #include "type/Sequence.h"
 #include "type/String.h"
-#include "type/Type.h"
 
 #include "impl.h"
 
@@ -67,7 +67,7 @@ void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
 
 // Documented in header.
 zint seqNthIndexLenient(zvalue key) {
-    if (hasType(key, TYPE_Int)) {
+    if (hasClass(key, CLS_Int)) {
         zint index = zintFromInt(key);
         return (index >= 0) ? index : -1;
     } else {
@@ -77,17 +77,17 @@ zint seqNthIndexLenient(zvalue key) {
 
 // Documented in header.
 zint seqNthIndexStrict(zint size, zvalue n) {
-    if (hasType(n, TYPE_Int)) {
+    if (hasClass(n, CLS_Int)) {
         zint index = zintFromInt(n);
         return ((index >= 0) && (index < size)) ? index : -1;
     } else {
-        die("Invalid type for `nth` (non-int).");
+        die("Invalid class for `nth` (non-int).");
     }
 }
 
 // Documented in header.
 zint seqPutIndexStrict(zint size, zvalue n) {
-    if (hasType(n, TYPE_Int)) {
+    if (hasClass(n, CLS_Int)) {
         zint index = zintFromInt(n);
         if (index < 0) {
             die("Invalid index for `put` (negative).");
@@ -96,16 +96,16 @@ zint seqPutIndexStrict(zint size, zvalue n) {
         }
         return index;
     } else {
-        die("Invalid type for `put` (non-int).");
+        die("Invalid class for `put` (non-int).");
     }
 }
 
 
 //
-// Type Definition: `Sequence`
+// Class(ish) Definition: `Sequence`
 //
-// **Note:** This isn't the usual form of type definition, since these
-// methods are bound on many types.
+// **Note:** This isn't the usual form of class definition, since these
+// methods are bound on many classes.
 //
 
 /** Builtin for `Sequence.get`. */
@@ -160,7 +160,7 @@ METH_IMPL(Sequence, nextValue) {
     } else {
         GFN_CALL(store, box, first);
         return makeData(
-            TYPE_SequenceGenerator,
+            CLS_SequenceGenerator,
             mapFromArgs(
                 STR_seq,   seq,
                 STR_index, intFromZint(1),
@@ -183,11 +183,11 @@ METH_IMPL(Sequence, nthMapping) {
 }
 
 // Documented in header.
-void seqBind(zvalue type) {
-    genericBind(GFN_get,        type, BI_Sequence_get);
-    genericBind(GFN_keyList,    type, BI_Sequence_keyList);
-    genericBind(GFN_nextValue,  type, BI_Sequence_nextValue);
-    genericBind(GFN_nthMapping, type, BI_Sequence_nthMapping);
+void seqBind(zvalue cls) {
+    genericBind(GFN_get,        cls, BI_Sequence_get);
+    genericBind(GFN_keyList,    cls, BI_Sequence_keyList);
+    genericBind(GFN_nextValue,  cls, BI_Sequence_nextValue);
+    genericBind(GFN_nthMapping, cls, BI_Sequence_nthMapping);
 }
 
 /** Initializes the module. */

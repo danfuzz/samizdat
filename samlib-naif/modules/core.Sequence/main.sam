@@ -34,12 +34,12 @@ export fn sliceGeneral(seq, style, start, optEnd?) {
     def func = ifIs { eq(style, @exclusive) }
         { sliceExclusive }
         { sliceInclusive };
-    def startIndex = ifIs { hasType(start, @@fromStart) }
+    def startIndex = ifIs { hasClass(start, @@fromStart) }
         { start::value }
         { sub(limit, start::value) };
     def optEndIndex = (ifValue { optEnd* }
         { end ->
-            ifIs { hasType(end, @@fromStart) }
+            ifIs { hasClass(end, @@fromStart) }
                 { end::value }
                 { sub(limit, end::value) }
         })?;

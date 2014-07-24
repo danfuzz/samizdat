@@ -5,7 +5,7 @@
 ##
 ## Module file resolver
 ##
-## This defines two types, that mirror the equivalent in the module system,
+## This defines two classes that mirror the equivalents in the module system,
 ## one which does "internal" resolution and one which does "external"
 ## resolution.
 ##

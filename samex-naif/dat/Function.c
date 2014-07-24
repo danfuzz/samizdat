@@ -9,11 +9,11 @@
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
 
+#include "type/Class.h"
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 
 #include "impl.h"
@@ -27,7 +27,7 @@
  * Returns `value` if it is a string; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
-    if (hasType(value, TYPE_String)) {
+    if (hasClass(value, CLS_String)) {
         return value;
     }
 
@@ -46,11 +46,11 @@ static char *callReporter(void *state) {
         return utf8DupFromString(ensureString(name));
     }
 
-    char *typeString = valDebugString(get_type(value));
+    char *clsString = valDebugString(get_class(value));
     char *result;
 
-    asprintf(&result, "anonymous %s", typeString);
-    free(typeString);
+    asprintf(&result, "anonymous %s", clsString);
+    free(clsString);
 
     return result;
 }
@@ -60,7 +60,7 @@ static char *callReporter(void *state) {
  * nor debug and local frame setup/teardown.
  */
 static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
-    zint index = get_typeIndex(function);
+    zint index = get_classIndex(function);
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Function`, `Generic`, or
@@ -196,7 +196,7 @@ zvalue mustNotYield(zvalue value) {
 }
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */

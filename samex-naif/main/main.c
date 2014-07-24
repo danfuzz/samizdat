@@ -10,7 +10,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "util.h"
 
 #include "impl.h"
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     zvalue runFunc = get(env, STR_runCommandLine);
     zvalue result = funApply(runFunc, argsList);
 
-    if ((result != NULL) && (hasType(result, TYPE_Int))) {
+    if ((result != NULL) && (hasClass(result, CLS_Int))) {
         exit((int) zintFromInt(result));
     }
 

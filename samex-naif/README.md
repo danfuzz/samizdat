@@ -27,9 +27,9 @@ Some modules have additional headers under a directory named
 `include/module`. These typically get included by `include/module.h` and
 are not intended for direct consumption by other modules.
 
-Several modules define in-language types. Instead of listed with the
-module header, each type is declared in its own header, under the
-directory `include/type`. For example, the `List` type is declared
+Several modules define in-language types / classes / protocols. Instead of
+being listed with the module header, each type is declared in its own header,
+under the directory `include/type`. For example, the `List` class is declared
 in `include/type/List.h`.
 
 Here's a run-down of the defined modules, in dependency order (with
@@ -73,12 +73,12 @@ later-named modules depending only on earlier-named ones):
 #### Intra-File Arrangement
 
 In addition to the other sections mentioned in the general conventions
-document, this implementation has some sections labeled "Type Definition."
+document, this implementation has some sections labeled "Class Definition."
 
-These sections are for code which defines an in-model type. There will
-usually be a corresponding declaration of `TYPE_Name` in *some* header
-(which one, depending on how far the type is exported); rarely, a type is
-totally private to the file, in which case its `TYPE_Name` is declared as
+These sections are for code which defines an in-model class. There will
+usually be a corresponding declaration of `CLS_Name` in *some* header
+(which one, depending on how far the class is exported); rarely, a class is
+totally private to the file, in which case its `CLS_Name` is declared as
 `static`. Method implementation functions in this section are most typically
 listed in alphabetical order, with an overall binding / initialization
 function toward the bottom.
@@ -87,19 +87,19 @@ function toward the bottom.
 
 Beyond the general conventions, the following are used:
 
-* `TYPE_TypeName` &mdash; Identifies a value of type `Type`.
+* `CLS_ClassName` &mdash; Identifies a value of class `Class`.
 
-* `GFN_methodName` &mdash; Identifies a generic function (value of type
+* `GFN_methodName` &mdash; Identifies a generic function (value of class
   `Generic`).
 
-* `STR_stringValue` &mdash; Identifies a value of type `String` with content
+* `STR_stringValue` &mdash; Identifies a value of class `String` with content
   `"stringValue"`. For strings with contents not directly representable in
   identifiers, the name is designed to be suggestive of the content. In
   particular, short sequences of nonalphabetic characters usually have
   variable names of the form `STR_CH_CHARNAMES`.
 
 * `TOK_tokenName` &mdash; Identifies a payload-free derived data
-  value whose type is `TYPE_tokenName`, where the type's name is
+  value whose class is `CLS_tokenName`, where the class's name is
   `"tokenName"`.
 
 * `get_fieldName` &mdash; Identifies a function which acts as a getter.

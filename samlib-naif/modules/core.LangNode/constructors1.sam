@@ -108,12 +108,12 @@ export fn makeVarStore(name, value) {
 
 ## Documented in spec.
 export fn withFormals(node, formals) {
-    return @(get_type(node)){dataOf(node)*, formals}
+    return @(get_class(node)){dataOf(node)*, formals}
 };
 
 ## Documented in spec.
 export fn withName(node, name) {
-    return @(get_type(node)){dataOf(node)*, name}
+    return @(get_class(node)){dataOf(node)*, name}
 };
 
 ## Documented in spec.
@@ -127,7 +127,7 @@ export fn withYieldDef(node, name) {
         }
         { {yieldDef: name} };
 
-    return @(get_type(node)){map*, newBindings*}
+    return @(get_class(node)){map*, newBindings*}
 };
 
 ## Documented in spec.
@@ -139,7 +139,7 @@ export fn withYieldDefIfAbsent(node, name) {
 
 ## Documented in spec.
 export fn withoutInterpolate(node) {
-    return @(get_type(node))(del(dataOf(node), "interpolate"))
+    return @(get_class(node))(del(dataOf(node), "interpolate"))
 };
 
 ## Documented in spec.
@@ -148,5 +148,5 @@ export fn withoutIntermediates(node) {
         del(dataOf(node), "lvalue"),
         "interpolate");
 
-    return @(get_type(node))(data)
+    return @(get_class(node))(data)
 };

@@ -5,9 +5,9 @@ proto.Number
 ------------
 
 `Number` is a protocol for values that can be treated numerically.
-All the generics in this protocol are defined to return the same type
+All the generics in this protocol are defined to return the same class
 as they operate on. The multiple-argument generics in this protocol are
-defined to only take arguments of the same type.
+defined to only take arguments of the same class.
 
 In cases where the implied computation isn't defined or isn't definable,
 methods in this protocol must terminate with an error rather than

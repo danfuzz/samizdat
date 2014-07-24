@@ -49,7 +49,7 @@ End-exclusive range generator for int or single-character strings.
 This is a convenient wrapper for `makeClosedRange`.
 
 Takes an initial value, which must either be an int or a single-character
-string, a limit of the same type as the initial value, and an optional
+string, a limit of the same class as the initial value, and an optional
 numeric (always numeric) increment which defaults to `1`. The first `nextValue`
 call to the resulting generator yields the `firstValue`, and each subsequent
 call yields the previous value plus the given increment (converted to a
@@ -73,7 +73,7 @@ End-inclusive range generator for int or single-character strings.
 This is a convenient wrapper for `makeClosedRange`.
 
 Takes an initial value, which must either be an int or a single-character
-string, a limit of the same type as the initial value, and an optional
+string, a limit of the same class as the initial value, and an optional
 numeric (always numeric) increment which defaults to `1`. The first `nextValue`
 call to the resulting generator yields the `firstValue`, and each subsequent
 call yields the previous value plus the given increment (converted to a

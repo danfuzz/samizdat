@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `ParaGenerator` Type
+## `ParaGenerator` Class
 ##
 ## Payload is `{generators: [gens*]}`, a list of sub-generators.
 

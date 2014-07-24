@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Type definition: InternalResolver
+## Class definition: InternalResolver
 ##
 ## Payload:
 ## * cache -- cache of resolved results
@@ -60,7 +60,7 @@ fn @@InternalResolver.resolve(source) {
     ## The result is always a list, so that we can cache a not-found result
     ## as the empty list.
     def result = (
-        hasType(source, @@internal)
+        hasClass(source, @@internal)
             & this.directResolve(source)
             | (this::nextResolver).resolve(source)
     )?;

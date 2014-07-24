@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Builtin` data type
+// `Builtin` class
 //
 
 #ifndef _TYPE_BUILTIN_H_
@@ -12,8 +12,8 @@
 #include "type/Function.h"
 
 
-/** Type value for in-model type `Builtin`. */
-extern zvalue TYPE_Builtin;
+/** Class value for in-model class `Builtin`. */
+extern zvalue CLS_Builtin;
 
 /** Return value from `builtinGetState` (see which). */
 typedef struct {

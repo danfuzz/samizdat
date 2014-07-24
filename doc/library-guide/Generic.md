@@ -7,7 +7,7 @@ Generic
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `debugName(type) -> . | void`
+#### `debugName(generic) -> . | void`
 
 Returns the name of the generic, if it has one. This is can be
 an arbitrary value, which is typically (but not necessarily) a string.
@@ -45,10 +45,10 @@ figure out which bound function to dispatch to.
 <br><br>
 ### Primitive Definitions
 
-#### `genericBind(generic, type, function) -> void`
+#### `genericBind(generic, cls, function) -> void`
 
-Binds the given `type` to the given `function` on the given `generic`.
-It is an error (terminating the runtime) if `type` has already been bound.
+Binds the given `cls` to the given `function` on the given `generic`.
+It is an error (terminating the runtime) if `cls` has already been bound.
 
 #### `makeRegularGeneric(name, minArgs, maxArgs?) -> generic`
 
@@ -66,16 +66,16 @@ function definition syntax.
 #### `makeUnitypeGeneric(name, minArgs, maxArgs?) -> generic`
 
 Like `makeRegularGeneric` except that the resulting generic requires
-that all arguments passed to it in any given call must all have the type
-(that is, be the type or a subtype) of the type to which the found function
+that all arguments passed to it in any given call must all have the class
+(that is, be the class or a subclass) of the class to which the found function
 is bound. A non-conforming call is an error (terminating the runtime).
 
 For example, let's say a generic function `foo()` of two arguments has a
-binding for type `DerivedData`. Calling it as `foo(@x, @y)` is valid and
+binding for class `DerivedData`. Calling it as `foo(@x, @y)` is valid and
 will find that binding. Calling it as `foo(@x, 5)` will fail, though, because
 the `DerivedData` binding will be found (based on the first argument, which
 is always the one used for the lookup), but `5` will not pass the test
-`hasType(5, DerivedData)`.
+`hasClass(5, DerivedData)`.
 
 **Note:** This is the kind of generic used for functions such as `totalEq`
 and `cat`.

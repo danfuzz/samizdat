@@ -3,12 +3,12 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
+#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Number.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "util.h"
 
 #include "helpers.h"
@@ -54,16 +54,16 @@ static zvalue read(ParseState *state) {
 }
 
 /**
- * Reads the next token if its type matches the given type.
+ * Reads the next token if its class matches the given class.
  */
-static zvalue readMatch(ParseState *state, zvalue type) {
+static zvalue readMatch(ParseState *state, zvalue cls) {
     if (isEof(state)) {
         return NULL;
     }
 
     zvalue result = nth(state->tokens, state->at);
 
-    if (!hasType(result, type)) {
+    if (!hasClass(result, cls)) {
         return NULL;
     }
 
@@ -90,11 +90,11 @@ static void reset(ParseState *state, zint mark) {
 }
 
 /**
- * Peeks at the next token, checking against the given type.
+ * Peeks at the next token, checking against the given class.
  */
-static zvalue peekMatch(ParseState *state, zvalue type) {
+static zvalue peekMatch(ParseState *state, zvalue cls) {
     zint mark = cursor(state);
-    zvalue result = readMatch(state, type);
+    zvalue result = readMatch(state, cls);
 
     if (result == NULL) {
         return NULL;
@@ -129,7 +129,7 @@ static void dumpState(ParseState *state) {
 
 // Definitions to help avoid boilerplate in the parser functions.
 #define RULE(name) parse_##name
-#define TOKEN(type) TYPE_##type
+#define TOKEN(cls) CLS_##cls
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
 #define PARSE(name) RULE(name)(state)
 #define PARSE_OPT(name) parseOpt(RULE(name), state)
@@ -137,15 +137,15 @@ static void dumpState(ParseState *state) {
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define PARSE_DELIMITED_SEQ(name, type) \
     parseDelimitedSequence(RULE(name), TOKEN(type), state)
-#define MATCH(type) readMatch(state, (TOKEN(type)))
-#define PEEK(type) peekMatch(state, (TOKEN(type)))
+#define MATCH(cls) readMatch(state, (TOKEN(cls)))
+#define PEEK(cls) peekMatch(state, (TOKEN(cls)))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
 #define REJECT() do { RESET(); return NULL; } while (0)
 #define REJECT_IF(condition) \
     do { if ((condition)) REJECT(); } while (0)
-#define MATCH_OR_REJECT(type) \
-    tempResult = MATCH(type); \
+#define MATCH_OR_REJECT(cls) \
+    tempResult = MATCH(cls); \
     REJECT_IF(tempResult == NULL)
 #define PARSE_OR_REJECT(name) \
     tempResult = PARSE(name); \
@@ -349,11 +349,11 @@ DEF_PARSE(identifierString) {
     result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
     REJECT_IF(dataOf(result) != NULL);
 
-    zvalue type = typeName(get_type(result));
-    zchar firstCh = zcharFromString(nth(type, 0));
+    zvalue name = className(get_class(result));
+    zchar firstCh = zcharFromString(nth(name, 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
-    return makeLiteral(type);
+    return makeLiteral(name);
 }
 
 /**
@@ -500,10 +500,10 @@ DEF_PARSE(type) {
         name = PARSE_OR_REJECT(parenExpression);
     }
 
-    if (hasType(name, TYPE_literal)) {
-        return makeLiteral(makeDerivedDataType(GET(value, name)));
+    if (hasClass(name, CLS_literal)) {
+        return makeLiteral(makeDerivedDataClass(GET(value, name)));
     } else {
-        return makeCall(REFS(makeDerivedDataType), listFrom1(name));
+        return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
     }
 }
 
@@ -513,12 +513,12 @@ DEF_PARSE(deriv) {
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue type;
+    zvalue cls;
     zvalue name = PARSE(identifierString);
     if (name != NULL) {
-        type = makeLiteral(makeDerivedDataType(GET(value, name)));
+        cls = makeLiteral(makeDerivedDataClass(GET(value, name)));
     } else {
-        type = PARSE_OR_REJECT(parenExpression);
+        cls = PARSE_OR_REJECT(parenExpression);
     }
 
     // Value is optional; these are allowed to all fail.
@@ -526,7 +526,7 @@ DEF_PARSE(deriv) {
     if (value == NULL) value = PARSE(map);
     if (value == NULL) value = PARSE(list);
 
-    zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
+    zvalue args = (value == NULL) ? listFrom1(cls) : listFrom2(cls, value);
 
     return makeCall(REFS(makeData), args);
 }
@@ -651,13 +651,13 @@ DEF_PARSE(unaryExpression) {
     zint size = get_size(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(postfixes, i);
-        if (hasType(one, TYPE_List)) {
+        if (hasClass(one, CLS_List)) {
             result = makeCallOrApply(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeMaybeValue(result);
-        } else if (hasType(one, TYPE_literal)) {
+        } else if (hasClass(one, CLS_literal)) {
             result = makeCallOrApply(REFS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
@@ -740,11 +740,11 @@ DEF_PARSE(yieldOrNonlocal) {
     zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
     zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue name = hasType(op, TYPE_yield)
+    zvalue name = hasClass(op, CLS_yield)
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
-        name = makeVarFetch(typeName(get_type(op)));
+        name = makeVarFetch(className(get_class(op)));
     }
 
     zvalue value = PARSE(expression);   // It's okay for this to be `NULL`.
@@ -838,7 +838,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1);  // Okay for it to be `NULL`.
     if (repeat != NULL) {
-        repeat = typeName(get_type(repeat));
+        repeat = className(get_class(repeat));
     }
 
     return mapFrom2(STR_name, name, STR_repeat, repeat);
@@ -1050,7 +1050,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = GFN_APPLY(cat,
         GFN_CALL(cat, listFrom1(first), rest, optSuffix));
-    return makeData(TYPE_internal, mapFrom1(STR_name, name));
+    return makeData(CLS_internal, mapFrom1(STR_name, name));
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1061,7 +1061,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = GFN_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
-    return makeData(TYPE_external, mapFrom1(STR_name, name));
+    return makeData(CLS_external, mapFrom1(STR_name, name));
 }
 
 // Documented in spec.
@@ -1271,7 +1271,7 @@ DEF_PARSE(program) {
 zvalue langParseExpression0(zvalue expression) {
     zvalue tokens;
 
-    if (hasType(expression, TYPE_String)) {
+    if (hasClass(expression, CLS_String)) {
         tokens = langTokenize0(expression);
     } else {
         tokens = expression;
@@ -1292,7 +1292,7 @@ zvalue langParseExpression0(zvalue expression) {
 zvalue langParseProgram0(zvalue program) {
     zvalue tokens;
 
-    if (hasType(program, TYPE_String)) {
+    if (hasClass(program, CLS_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;
@@ -1311,7 +1311,7 @@ zvalue langParseProgram0(zvalue program) {
 
 // Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
-    if (hasType(node, TYPE_closure)) {
+    if (hasClass(node, CLS_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);
     }

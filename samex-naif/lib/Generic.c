@@ -40,10 +40,10 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
 // Documented in spec.
 FUN_IMPL_DECL(genericBind) {
     zvalue generic = args[0];
-    zvalue type = args[1];
+    zvalue cls = args[1];
     zvalue function = args[2];
 
-    genericBind(generic, type, function);
+    genericBind(generic, cls, function);
     return NULL;
 }
 
@@ -54,5 +54,5 @@ FUN_IMPL_DECL(makeRegularGeneric) {
 
 // Documented in spec.
 FUN_IMPL_DECL(makeUnitypeGeneric) {
-    return doMakeGeneric(GFN_SAME_TYPE, argCount, args);
+    return doMakeGeneric(GFN_SAME_CLASS, argCount, args);
 }

@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Data` data type
+// `Data` class
 //
 
 #include "type/Data.h"
@@ -12,16 +12,16 @@
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */
 MOD_INIT(Data) {
     MOD_USE(Value);
 
-    // Note: The `typeSystem` module initializes `TYPE_Data`.
+    // Note: The `objectModel` module initializes `CLS_Data`.
     // So, there's nothing to do here, at least for now.
 }
 
 // Documented in header.
-zvalue TYPE_Data = NULL;
+zvalue CLS_Data = NULL;

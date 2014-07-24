@@ -15,17 +15,17 @@ higher-level tokens with either simply a tree-like rule invocation or
 to produce tree structures per se).
 
 When building tokenizers, the input elements are taken to be in the form
-of character-as-token items. Each element is a token whose type tag is
+of character-as-token items. Each element is a token whose class tag is
 a single-string character (and whose value if any is irrelevant for the
 parsing mechanism). There are helper functions which take strings and
 automatically convert them into this form.
 
 When building tree parsers, the input elements are expected to be
-tokens per se, that is, tokens whose type tag is taken to indicate a
-token type.
+tokens per se, that is, tokens whose class tag is taken to indicate a
+token class.
 
 The output of the functions named `$Peg::make*` are all parsing rules. These
-are all derived data values with a type that binds the `parse`
+are all derived data values with a class that binds the `parse`
 generic. A `parse` method accepts at least two arguments, and will also
 accept additional arguments depending on context:
 
@@ -56,9 +56,9 @@ In the following descriptions, code shorthands use the Samizdat parsing
 syntax for explanatory purposes.
 
 <br><br>
-### Types
+### Classes
 
-The following is a summary of the parser types used here, including what
+The following is a summary of the parser classes used here, including what
 data payload they use and what it means to call `parse` on them.
 
 #### `@PegAny.parse(...)`
@@ -119,7 +119,7 @@ the final input state. If `rule` was never found to apply, this yields
 less than `minSize`, then this rule fails. If `maxSize` is specified, then
 this rule will only ever match at most `n` repetitions.
 
-**Note:** This is used as the type underlying all `expr?`, `expr*`, and
+**Note:** This is used as the class underlying all `expr?`, `expr*`, and
 `expr+` expressions.
 
 #### `@PegResult{value}.parse(...)`
@@ -146,18 +146,18 @@ Calls the given function, which is expected to return a parser. Then
 calls the so-returned parser, passing it the remaining arguments to
 this call, returing whatever that call returns (including void).
 
-#### `@PegTokenSet{types: {.*: null}}.parse(...)`
+#### `@PegTokenSet{set: {.*: null}}.parse(...)`
 
-If there is any input available, checks the type of the first input
-token against the given set of types (map where only the keys matter).
-If the type is found in the set, then yields and consumes the token.
+If there is any input available, checks the class of the first input
+token against the given set of classes (map where only the keys matter).
+If the class is found in the set, then yields and consumes the token.
 Otherwise fails, yielding and returning void.
 
-#### `@PegTokenSetComplement{types: {.*: null}}.parse(...)`
+#### `@PegTokenSetComplement{set: {.*: null}}.parse(...)`
 
-If there is any input available, checks the type of the first input
-token against the given set of types (map where only the keys matter).
-If the type is *not* found in the set, then yields and consumes the token.
+If there is any input available, checks the class of the first input
+token against the given set of classes (map where only the keys matter).
+If the class is *not* found in the set, then yields and consumes the token.
 Otherwise fails, yielding and returning void.
 
 
@@ -326,15 +326,15 @@ This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
 Makes and returns a parser rule which matches a sequence of characters
 exactly, consuming them from the input upon success. `string` must be a
 string. The result of successful parsing is a valueless token with
-`string` as its type tag.
+`string` as its class tag.
 
 This is equivalent to the syntactic form `{: "string" :}`.
 
-#### `makeToken(type) -> rule`
+#### `makeToken(cls) -> rule`
 
 Makes and returns a parser rule which matches any token with the same
-type as given. `type` is an arbitrary type, which is typically (but not
-necessarily) a derived data type with a string as its name. Upon success,
+class as given. `cls` is an arbitrary class, which is typically (but not
+necessarily) a derived data class with a string as its name. Upon success,
 the rule consumes and yields the matched token.
 
 This is also used to match single characters in tokenizers.
@@ -342,22 +342,22 @@ This is also used to match single characters in tokenizers.
 This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 (where `ch` represents a single character).
 
-#### `makeTokenSet(types*) -> rule`
+#### `makeTokenSet(clses*) -> rule`
 
-Makes and returns a parser rule which matches a token whose type
-matches that of any of the given types, consuming it upon success.
-Each argument is taken to be a token type, which is typically
-(but not necessarily) a derived data type with a string as its
+Makes and returns a parser rule which matches a token whose class
+matches that of any of the given classes, consuming it upon success.
+Each argument is taken to be a token class, which is typically
+(but not necessarily) a derived data class with a string as its
 name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 
-#### `makeTokenSetComplement(types*) -> rule`
+#### `makeTokenSetComplement(clses*) -> rule`
 
-Makes and returns a parser rule which matches a token whose type
+Makes and returns a parser rule which matches a token whose class
 matches none of any of the given tokens, consuming it upon success.
-Each argument is taken to be a token type, which is typically
-(but not necessarily) a derived data type with a string as its
+Each argument is taken to be a token class, which is typically
+(but not necessarily) a derived data class with a string as its
 name. The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
@@ -365,7 +365,7 @@ This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 #### `stringFromTokenList(tokens) -> string`
 
 Takes a list of tokenizer-style character tokens (that is, derived data
-values whose type names are each a single-character string), returning the
+values whose class names are each a single-character string), returning the
 result of concatenating all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.

@@ -8,9 +8,9 @@ core.Bitwise / proto.Bitwise
 lists of bits.
 
 Almost all of the generics in this protocol are defined to return the same
-type that they operate on (as a first argument). Some of the multiple-argument
+class that they operate on (as a first argument). Some of the multiple-argument
 generics in this protocol are defined to take arguments only of the same
-types, but a couple take a second argument specifically of type `Int`
+classes, but a couple take a second argument specifically of class `Int`
 (as noted).
 
 

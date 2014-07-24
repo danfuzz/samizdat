@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Type definition: ExternalResolver
+## Class definition: ExternalResolver
 ##
 ## Payload:
 ## * cache -- cache of resolved results
@@ -58,7 +58,7 @@ fn @@ExternalResolver.resolve(source) {
     ## The result is always a list, so that we can cache a not-found result
     ## as the empty list.
     def result = (
-        hasType(source, @@external)
+        hasClass(source, @@external)
             & this.directResolve(source)
             | (this::nextResolver).resolve(source)
     )?;

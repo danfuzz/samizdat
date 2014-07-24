@@ -2,12 +2,12 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include "type/Class.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -50,7 +50,7 @@ static StringInfo *getInfo(zvalue list) {
  */
 static zvalue allocString(zint size) {
     zvalue result =
-        datAllocValue(TYPE_String, sizeof(StringInfo) + size * sizeof(zchar));
+        datAllocValue(CLS_String, sizeof(StringInfo) + size * sizeof(zchar));
 
     getInfo(result)->size = size;
     return result;
@@ -62,7 +62,7 @@ static zvalue allocString(zint size) {
  * with a diagnostic message.
  */
 static void assertString(zvalue value) {
-    assertHasType(value, TYPE_String);
+    assertHasClass(value, CLS_String);
 }
 
 /**
@@ -236,7 +236,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -523,7 +523,7 @@ MOD_INIT(String) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_String`.
+    // Note: The `objectModel` module initializes `CLS_String`.
 
     METH_BIND(String, cat);
     METH_BIND(String, collect);
@@ -542,11 +542,11 @@ MOD_INIT(String) {
     METH_BIND(String, totalEq);
     METH_BIND(String, totalOrder);
     METH_BIND(String, valueList);
-    seqBind(TYPE_String);
+    seqBind(CLS_String);
 
     EMPTY_STRING = allocString(0);
     datImmortalize(EMPTY_STRING);
 }
 
 // Documented in header.
-zvalue TYPE_String = NULL;
+zvalue CLS_String = NULL;

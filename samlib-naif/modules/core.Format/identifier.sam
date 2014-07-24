@@ -25,7 +25,7 @@ def IDENTIFIER_CHARS = {
 ## Checks to see if the given value is a string with the form of an
 ## in-language identifier. Returns the given `string` if so.
 export fn isIdentifier(string) {
-    ifNot { hasType(string, String) }
+    ifNot { hasClass(string, String) }
         { return };
 
     ifIs { eq(string, "") }

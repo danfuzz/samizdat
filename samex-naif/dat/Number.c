@@ -2,15 +2,15 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "type/Number.h"
 #include "type/Generic.h"
+#include "type/Number.h"
 #include "type/String.h"
 
 #include "impl.h"
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */
@@ -20,22 +20,22 @@ MOD_INIT(Number) {
     GFN_abs = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "abs"));
     datImmortalize(GFN_abs);
 
-    GFN_add = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "add"));
+    GFN_add = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "add"));
     datImmortalize(GFN_add);
 
-    GFN_div = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "div"));
+    GFN_div = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "div"));
     datImmortalize(GFN_div);
 
-    GFN_divEu = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "divEu"));
+    GFN_divEu = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "divEu"));
     datImmortalize(GFN_divEu);
 
-    GFN_mod = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "mod"));
+    GFN_mod = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "mod"));
     datImmortalize(GFN_mod);
 
-    GFN_modEu = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "modEu"));
+    GFN_modEu = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "modEu"));
     datImmortalize(GFN_modEu);
 
-    GFN_mul = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "mul"));
+    GFN_mul = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "mul"));
     datImmortalize(GFN_mul);
 
     GFN_neg = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "neg"));
@@ -44,7 +44,7 @@ MOD_INIT(Number) {
     GFN_sign = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sign"));
     datImmortalize(GFN_sign);
 
-    GFN_sub = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "sub"));
+    GFN_sub = makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "sub"));
     datImmortalize(GFN_sub);
 }
 

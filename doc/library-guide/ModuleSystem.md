@@ -11,7 +11,7 @@ tightly with module loading.
 Several of the functions in this module take a parameter called `source`.
 A "source" identifies the name of an external module, a relative path
 to an internal module, or a relative path to a resource. Sources must
-be derived values of type `@external` or `@internal` with a string payload,
+be `@external` or `@internal` values with a string payload,
 as described in the "Execution Trees" section of the language guide.
 
 **Note:** The constant `null` can be treated as a module loader. When used

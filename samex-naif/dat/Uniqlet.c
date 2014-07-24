@@ -13,23 +13,23 @@
 
 // Documented in header.
 zvalue makeUniqlet(void) {
-    return datAllocValue(TYPE_Uniqlet, 0);
+    return datAllocValue(CLS_Uniqlet, 0);
 }
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */
 MOD_INIT(Uniqlet) {
     MOD_USE(Value);
 
-    // Note: The `typeSystem` module initializes `TYPE_Uniqlet`.
+    // Note: The `objectModel` module initializes `CLS_Uniqlet`.
 
     // This function is just left here as a positive indication that there
     // is nothing to do.
 }
 
 // Documented in header.
-zvalue TYPE_Uniqlet = NULL;
+zvalue CLS_Uniqlet = NULL;

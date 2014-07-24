@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `SequenceGenerator` Type
+## `SequenceGenerator` Class
 ##
 ## Payload is `{seq: seq, index: int}`.
 

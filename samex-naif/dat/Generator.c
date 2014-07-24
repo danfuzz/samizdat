@@ -8,11 +8,11 @@
 
 #include "type/Box.h"
 #include "type/Builtin.h"
+#include "type/Class.h"
 #include "type/Generator.h"
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -20,7 +20,7 @@
 
 
 //
-// Type Definition: `Generator`
+// Class Definition: `Generator`
 //
 
 /** "Standard" `collect` implementation. Documented in spec. */

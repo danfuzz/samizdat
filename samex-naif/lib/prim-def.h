@@ -12,16 +12,16 @@
 // have the usual guard macros.
 //
 
-// Types.
-PRIM_DEF(Data,                    TYPE_Data);
-PRIM_DEF(DerivedData,             TYPE_DerivedData);
-PRIM_DEF(Int,                     TYPE_Int);
-PRIM_DEF(List,                    TYPE_List);
-PRIM_DEF(Map,                     TYPE_Map);
-PRIM_DEF(String,                  TYPE_String);
-PRIM_DEF(Type,                    TYPE_Type);
-PRIM_DEF(Uniqlet,                 TYPE_Uniqlet);
-PRIM_DEF(Value,                   TYPE_Value);
+// Classes.
+PRIM_DEF(Class,                   CLS_Class);
+PRIM_DEF(Data,                    CLS_Data);
+PRIM_DEF(DerivedData,             CLS_DerivedData);
+PRIM_DEF(Int,                     CLS_Int);
+PRIM_DEF(List,                    CLS_List);
+PRIM_DEF(Map,                     CLS_Map);
+PRIM_DEF(String,                  CLS_String);
+PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
+PRIM_DEF(Value,                   CLS_Value);
 
 // Generic functions for all values.
 PRIM_DEF(debugName,               GFN_debugName);
@@ -54,7 +54,7 @@ PRIM_DEF(Bitwise_xor,             GFN_xor);
 // Generic functions: `Box` protocol.
 PRIM_DEF(store,                   GFN_store);
 
-// Generic functions: `DerivedData` type.
+// Generic functions: `DerivedData` class.
 PRIM_DEF(dataOf,                  GFN_dataOf);
 
 // Generic functions: `Function` protocol.
@@ -92,11 +92,13 @@ PRIM_DEF(Number_sub,              GFN_sub);
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
+PRIM_FUNC(className,              1, 1);
+PRIM_FUNC(classParent,            1, 1);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(genericBind,            3, 3);
-PRIM_FUNC(get_type,               1, 1);
-PRIM_FUNC(hasType,                2, 2);
+PRIM_FUNC(get_class,              1, 1);
+PRIM_FUNC(hasClass,               2, 2);
 PRIM_FUNC(ifIs,                   2, 3);
 PRIM_FUNC(ifNot,                  2, 2);
 PRIM_FUNC(ifSwitch,               2, 4);
@@ -104,7 +106,7 @@ PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueOr,              1, -1);
 PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
-PRIM_FUNC(makeDerivedDataType,    1, 1);
+PRIM_FUNC(makeDerivedDataClass,   1, 1);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeRegularGeneric,     2, 3);
 PRIM_FUNC(makeUniqlet,            0, 0);
@@ -113,8 +115,6 @@ PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(maybeValue,             1, 1);
 PRIM_FUNC(note,                   0, -1);
 PRIM_FUNC(order,                  2, 2);
-PRIM_FUNC(typeName,               1, 1);
-PRIM_FUNC(typeParent,             1, 1);
 
 // Primitive functions: intended for modularization
 PRIM_DEF(Generator_stdCollect,    FUN_Generator_stdCollect);

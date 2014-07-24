@@ -3,12 +3,12 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Builtin.h"
+#include "type/Class.h"
 #include "type/Collection.h"
 #include "type/DerivedData.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
-#include "type/Type.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -45,14 +45,14 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeData(zvalue type, zvalue data) {
+zvalue makeData(zvalue cls, zvalue data) {
     assertValidOrNull(data);
 
-    if (!typeIsDerived(type)) {
-        die("Attempt to call `makeData` on an improper type.");
+    if (!classIsDerived(cls)) {
+        die("Attempt to call `makeData` on an improper class.");
     }
 
-    zvalue result = datAllocValue(type, sizeof(DerivedDataInfo));
+    zvalue result = datAllocValue(cls, sizeof(DerivedDataInfo));
     ((DerivedDataInfo *) datPayload(result))->data = data;
 
     return result;
@@ -60,7 +60,7 @@ zvalue makeData(zvalue type, zvalue data) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
@@ -90,10 +90,10 @@ METH_IMPL(DerivedData, get) {
 
 /** Function (not method) `makeData`. Documented in spec. */
 METH_IMPL(DerivedData, makeData) {
-    zvalue type = args[0];
+    zvalue cls = args[0];
     zvalue value = (argCount == 2) ? args[1] : NULL;
 
-    return makeData(type, value);
+    return makeData(cls, value);
 }
 
 // Documented in header.
@@ -117,7 +117,7 @@ METH_IMPL(DerivedData, totalOrder) {
 MOD_INIT(DerivedData) {
     MOD_USE(Data);
 
-    // Note: The `typeSystem` module initializes `TYPE_DerivedData`.
+    // Note: The `objectModel` module initializes `CLS_DerivedData`.
 
     GFN_dataOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "dataOf"));
     datImmortalize(GFN_dataOf);
@@ -135,7 +135,7 @@ MOD_INIT(DerivedData) {
 }
 
 // Documented in header.
-zvalue TYPE_DerivedData = NULL;
+zvalue CLS_DerivedData = NULL;
 
 // Documented in header.
 zvalue GFN_dataOf = NULL;

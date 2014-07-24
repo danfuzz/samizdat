@@ -47,7 +47,7 @@ syntactic form (prefix `^` operator).
 
 #### `sliceExclusive(sequence, start, end?) -> sequence | void`
 
-Returns a sequence of the same type as `sequence`, consisting of an
+Returns a sequence of the same class as `sequence`, consisting of an
 index-based "slice" of elements taken from `sequence`, from the `start`
 index (inclusive) through the `end` index (exclusive). `start` and `end`
 must both be ints. `end` defaults to `#sequence - 1` if omitted.
@@ -63,7 +63,7 @@ In all other cases (as long as the type restrictions hold), this returns void.
 
 #### `sliceInclusive(sequence, start, end?) -> sequence | void`
 
-Returns a sequence of the same type as `sequence`, consisting of an
+Returns a sequence of the same class as `sequence`, consisting of an
 index-based "slice" of elements taken from `sequence`, from the `start`
 index (inclusive) through the `end` index (inclusive). `start` and `end`
 must both be ints. `end` defaults to `#sequence - 1` if omitted.
@@ -88,15 +88,15 @@ It is an error (terminating the runtime) if `n` is not an `Int`.
 
 #### `sliceGeneral(sequence, style, start, end?) -> sequence | void`
 
-Returns a sequence of the same type as `sequence`, consisting of an
+Returns a sequence of the same class as `sequence`, consisting of an
 index-based "slice" of elements taken from `sequence`, from the `start`
 index through the `end` index.
 
 The `start` is always an inclusive index. `style` indicates whether the
 end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
 
-Each of `start` and `end` must be a derived data value of type `@fromStart`
-or `@fromEnd` with a `{value: int}` as the payload. The type indicates which
+Each of `start` and `end` must be a derived data value of class `@fromStart`
+or `@fromEnd` with a `{value: int}` as the payload. The class indicates which
 end of the sequence is to be counted from.
 
 This function in turn calls one of `sliceExclusive` or `sliceInclusive` to

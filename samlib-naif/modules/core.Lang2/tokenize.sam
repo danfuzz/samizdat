@@ -195,7 +195,7 @@ def tokError = {:
     [! "\n"]*
 
     {
-        def msg = cat("Unrecognized character: ", get_typeName(badCh));
+        def msg = cat("Unrecognized character: ", get_className(badCh));
         @error{value: msg}
     }
 :};
@@ -254,7 +254,7 @@ fn processStringParts(parts) {
     $Generator::filterPump(parts) { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
-        ifIs { hasType(part, @@error) }
+        ifIs { hasClass(part, @@error) }
             { return part };
 
         ifIs { eq(elems, []) }
@@ -265,10 +265,10 @@ fn processStringParts(parts) {
                 yield /next
             };
 
-        ifIs { hasType(part, String) }
+        ifIs { hasClass(part, String) }
             {
                 def lastElem = nthFromEnd(elems, 0);
-                ifIs { hasType(lastElem, String) }
+                ifIs { hasClass(lastElem, String) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
@@ -286,7 +286,7 @@ fn processStringParts(parts) {
     ## Check for a simple result.
     ifIs { eq(get_size(elems), 1) }
         {
-            ifValue { hasType(elems*, String) }
+            ifValue { hasClass(elems*, String) }
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.
@@ -366,7 +366,7 @@ def tokStringInterpolation;
 tokStringInterpolation := {:
     &["({["]
     open = tokToken
-    expectClose = { get(OPEN_CLOSE_MAP, get_type(open)) }
+    expectClose = { get(OPEN_CLOSE_MAP, get_class(open)) }
 
     tokens = (
         tokWhitespace?
@@ -384,7 +384,7 @@ tokStringInterpolation := {:
     close = tokToken
 
     {
-        ifIs { hasType(close, expectClose) }
+        ifIs { hasClass(close, expectClose) }
             { [open, cat([], tokens*)*, close] }
     }
 :};

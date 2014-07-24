@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Generic` data type
+// `Generic` class
 //
 
 #ifndef _TYPE_GENERIC_H_
@@ -17,45 +17,45 @@ typedef enum {
     GFN_NONE = 0,
 
     /**
-     * Indicates that all arguments to the function must be of the same type.
+     * Indicates that all arguments to the function must be of the same class.
      */
-    GFN_SAME_TYPE = 1
+    GFN_SAME_CLASS = 1
 } zgenericFlags;
 
-/** C function name for a method on the given type with the given name. */
-#define METH_NAME(type, name) type##_##name
+/** C function name for a method on the given class with the given name. */
+#define METH_NAME(cls, name) cls##_##name
 
-/** Declaration for a method on the given type with the given name. */
-#define METH_IMPL(type, name) \
-    static zvalue METH_NAME(type, name)( \
+/** Declaration for a method on the given class with the given name. */
+#define METH_IMPL(cls, name) \
+    static zvalue METH_NAME(cls, name)( \
         zvalue thisFunction, zint argCount, const zvalue *args)
 
 /** Performs binding of the indicated method. */
-#define METH_BIND(type, name) \
+#define METH_BIND(cls, name) \
     do { \
-        genericBindPrim(GFN_##name, TYPE_##type, METH_NAME(type, name), \
-            #type ":" #name); \
+        genericBindPrim(GFN_##name, CLS_##cls, METH_NAME(cls, name), \
+            #cls ":" #name); \
     } while(0)
 
-/** Type value for in-model type `Generic`. */
-extern zvalue TYPE_Generic;
+/** Class value for in-model class `Generic`. */
+extern zvalue CLS_Generic;
 
 /**
- * Adds a type-to-function binding to the given generic. `generic` must be
- * a generic function, `type` must be a type, and `function` must be a valid
- * `Callable`. The type must not have already been bound in the given generic,
+ * Adds a class-to-function binding to the given generic. `generic` must be
+ * a generic function, `cls` must be a class, and `function` must be a valid
+ * `Function`. The class must not have already been bound in the given generic,
  * and the generic must not be sealed.
  */
-void genericBind(zvalue generic, zvalue type, zvalue function);
+void genericBind(zvalue generic, zvalue cls, zvalue function);
 
 /**
- * Adds a type-to-C-function binding to the given generic. `generic` must
- * be a generic function, `type` must be a type, and `function` must be a
- * valid `zfunction`. The type must not have already been bound in the given
+ * Adds a class-to-C-function binding to the given generic. `generic` must
+ * be a generic function, `cls` must be a class, and `function` must be a
+ * valid `zfunction`. The class must not have already been bound in the given
  * generic, and the generic must not be sealed. An optional `builtinName`
  * becomes the name of the bound builtin.
  */
-void genericBindPrim(zvalue generic, zvalue type, zfunction function,
+void genericBindPrim(zvalue generic, zvalue cls, zfunction function,
     const char *builtinName);
 
 /**
