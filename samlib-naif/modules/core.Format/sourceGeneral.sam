@@ -116,7 +116,7 @@ fn Value_sourceGeneral(value, adorn) {
     ifValue { get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def type = get_type(value);
+    def type = get_class(value);
     def name = className(type);
     def typeStr = ifIs { hasClass(name, String) }
         {
@@ -160,7 +160,7 @@ fn Value_sourceGeneral(value, adorn) {
 ## `adorn` flag.
 export fn sourceGeneral(value, adorn) {
     return ifSwitch(
-        { get_type(value) },
+        { get_class(value) },
         {
             (Int):    { . -> Int_sourceGeneral(value, adorn) },
             (List):   { . -> List_sourceGeneral(value, adorn) },

@@ -172,7 +172,7 @@ static bool isClass(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
-    return (get_type(value) == TYPE_Type);
+    return (get_class(value) == TYPE_Type);
 }
 
 /**
@@ -238,14 +238,14 @@ zvalue classParent(zvalue cls) {
 
 // Documented in header.
 zint get_classIndex(zvalue value) {
-    return classIndexUnchecked(get_type(value));
+    return classIndexUnchecked(get_class(value));
 }
 
 // Documented in header.
 bool hasClass(zvalue value, zvalue cls) {
     assertHasClassClass(cls);
 
-    for (zvalue valueCls = get_type(value);
+    for (zvalue valueCls = get_class(value);
             valueCls != NULL;
             valueCls = getInfo(valueCls)->parent) {
         if (classEq(valueCls, cls)) {
@@ -258,7 +258,7 @@ bool hasClass(zvalue value, zvalue cls) {
 
 // Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
-    return classEq(get_type(value), get_type(other));
+    return classEq(get_class(value), get_class(other));
 }
 
 // Documented in header.

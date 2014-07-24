@@ -1032,7 +1032,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_type(repeat))){pex} }
+        { @(get(PEX_TYPES, get_class(repeat))){pex} }
     |
         { pex }
     )
@@ -1044,7 +1044,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(get(PEX_TYPES, get_type(lookahead))){pex} }
+        { @(get(PEX_TYPES, get_class(lookahead))){pex} }
     )
 |
     parPexRepeat
@@ -1125,7 +1125,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     filterPump(opExList) { opEx ->
-        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_class(opEx::op));
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
@@ -1184,7 +1184,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     fn transform(leftRef, opEx, rest*) {
-        def resolvedOp = get(BINARY_OPERATORS, get_type(opEx::op));
+        def resolvedOp = get(BINARY_OPERATORS, get_class(opEx::op));
 
         return ifIs { eq(rest, []) }
             { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
@@ -1455,7 +1455,7 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = get(UNARY_OPERATORS, get_type(operator));
+        def name = get(UNARY_OPERATORS, get_class(operator));
         { node -> makeCall(name, node) }
     }
 |
@@ -1622,7 +1622,7 @@ parPostfixOperator2 := {:
             def getterRef = makeVarFetch(cat("get_", name));
             { node ->
                 def getterCall = makeCall(getterRef, node);
-                @(get_type(getterCall)){
+                @(get_class(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
                         def setterRef = makeVarFetch(cat("set_", name));

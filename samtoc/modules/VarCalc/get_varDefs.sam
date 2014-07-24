@@ -25,7 +25,7 @@ fn catVarDefs(nodes*) {
 ## Returns list of variable names newly-defined by `node`. Result may have
 ## duplicates.
 export fn get_varDefs(node) {
-    return switch (get_type(node)) {
+    return switch (get_class(node)) {
         @@export: {
             node.nodeValue.varDefs
         };

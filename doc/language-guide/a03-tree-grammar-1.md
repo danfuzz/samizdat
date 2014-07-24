@@ -1036,7 +1036,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_type(repeat))){pex} }
+        { @(get(PEX_TYPES, get_class(repeat))){pex} }
     |
         { pex }
     )
@@ -1048,7 +1048,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(get(PEX_TYPES, get_type(lookahead))){pex} }
+        { @(get(PEX_TYPES, get_class(lookahead))){pex} }
     )
 |
     parPexRepeat

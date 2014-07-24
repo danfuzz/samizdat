@@ -14,7 +14,7 @@ import proto.Number :: add;
 ## Increments an int or char by a given int amount.
 export fn rangeAdd(base, amount) {
     return ifSwitch(
-        { get_type(base) },
+        { get_class(base) },
         {
             (Int):    { . -> add(base, amount) },
             (String): { . -> toString(add(toInt(base), amount)) }

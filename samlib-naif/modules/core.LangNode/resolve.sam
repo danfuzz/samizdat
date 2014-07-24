@@ -48,7 +48,7 @@ fn sourceString(source) {
 ## Documented in spec.
 export fn resolveImport(node, resolveFn) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@importModule: { . ->
                 ## No need to modify, just validate.
@@ -126,5 +126,5 @@ export fn withResolvedImports(node, resolveFn) {
             { resolved }
     };
 
-    return @(get_type(node)){dataOf(node)*, statements: [converted*]}
+    return @(get_class(node)){dataOf(node)*, statements: [converted*]}
 };

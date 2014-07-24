@@ -35,7 +35,7 @@ fn makeCallPex(function, node, formals, moreArgs*) {
 
 ## Makes a node with additional / replacement bindings from the original.
 fn withBindings(orig, more) {
-    return @(get_type(orig))({dataOf(orig)*, more*})
+    return @(get_class(orig))({dataOf(orig)*, more*})
 };
 
 ## Makes a node with additional / replacement bindings from the original,
@@ -47,7 +47,7 @@ fn withFinalBindings(orig, more) {
 ## Expands the given pex node into an expression node.
 fn convertPex(node, formals) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@any: { . ->
                 REFS::Peg_any
@@ -172,7 +172,7 @@ fn convertPex(node, formals) {
 ## 0 node.
 fn convertPexIn(node) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@apply: { . ->
                 def function = convertPexIn(get_function(node));

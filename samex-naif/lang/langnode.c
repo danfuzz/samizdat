@@ -681,7 +681,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeData(
-        get_type(node),
+        get_class(node),
         collPut(dataOf(node), STR_formals, formals));
 }
 
@@ -735,7 +735,7 @@ zvalue withModuleDefs(zvalue node) {
                         listFrom2(makeLiteral(STR_info), yieldInfo))))));
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat,
             dataOf(node),
             mapFrom3(
@@ -747,7 +747,7 @@ zvalue withModuleDefs(zvalue node) {
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
     return makeData(
-        get_type(node),
+        get_class(node),
         collPut(dataOf(node), STR_name, name));
 }
 
@@ -786,7 +786,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue converted = listFromArray(size, arr);
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat,
             dataOf(node),
             mapFrom1(STR_statements, converted)));
@@ -798,7 +798,7 @@ zvalue withTop(zvalue node) {
     // (a) the actual value doesn't matter, and (b) `true` isn't available
     // here in a straightforward way.
     return makeData(
-        get_type(node),
+        get_class(node),
         collPut(dataOf(node), STR_top, EMPTY_LIST));
 }
 
@@ -818,14 +818,14 @@ zvalue withYieldDef(zvalue node, zvalue name) {
     }
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat, map, newBindings));
 };
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
     return makeData(
-        get_type(node),
+        get_class(node),
         collDel(dataOf(node), STR_interpolate));
 }
 
@@ -883,7 +883,7 @@ zvalue withoutTops(zvalue node) {
         : listFrom1(makeExportSelection(exports));
 
     return makeData(
-        get_type(node),
+        get_class(node),
         GFN_CALL(cat,
             dataOf(node),
             mapFrom1(

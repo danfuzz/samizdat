@@ -163,7 +163,7 @@ fn Type_convert(value) {
 ## Converts a derived value or an opaque core value.
 fn Value_convert(value) {
     def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
-    def type = get_type(value);
+    def type = get_class(value);
 
     if (!hasClass(value, DerivedData)) {
         die("Cannot convert opaque non-data value: \%q(value)")
@@ -175,7 +175,7 @@ fn Value_convert(value) {
 ## Converts a value into C code to construct that value. This function
 ## returns a tree that can be stringified with `indent()`.
 export fn convert(value) {
-    return switch (get_type(value)) {
+    return switch (get_class(value)) {
         (Int):    { Int_convert(value) };
         (List):   { List_convert(value) };
         (Map):    { Map_convert(value) };

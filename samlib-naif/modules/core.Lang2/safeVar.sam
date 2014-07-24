@@ -78,7 +78,7 @@ fn safeIndexForNodes(base, nodes*) {
 ## regard to the contents of `node`.
 fn safeIndex(node, base) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@apply: { . ->
                 safeIndexForNodes(base,

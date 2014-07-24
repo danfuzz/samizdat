@@ -142,7 +142,7 @@ argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
 
-#### `get_type(value) -> type`
+#### `get_class(value) -> type`
 
 Returns the type of the given arbitrary `value`. The return value is always
 of type `Type`.
@@ -201,7 +201,7 @@ identical to it. Otherwise returns void.
 #### `get_className(value) -> .`
 
 Returns the name of the given `value`'s type. This function is the equivalent
-to `className(get_type(value))`.
+to `className(get_class(value))`.
 
 #### `gt(value, other) -> logic`
 

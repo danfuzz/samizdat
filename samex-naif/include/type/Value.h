@@ -52,7 +52,7 @@ extern zvalue GFN_totalOrder;
  * Gets the type of the given value. `value` must be a valid value (in
  * particular, non-`NULL`). The return value is of type `Type`.
  */
-zvalue get_type(zvalue value);
+zvalue get_class(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller

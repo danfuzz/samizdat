@@ -30,7 +30,7 @@ void datNonVoidError(void) {
 extern void *datPayload(zvalue value);
 
 // Documented in header.
-zvalue get_type(zvalue value) {
+zvalue get_class(zvalue value) {
     return value->cls;
 }
 
@@ -75,8 +75,8 @@ zvalue valOrder(zvalue value, zvalue other) {
         return INT_0;
     }
 
-    zvalue valueType = get_type(value);
-    zvalue otherType = get_type(other);
+    zvalue valueType = get_class(value);
+    zvalue otherType = get_class(other);
 
     if (valueType == otherType) {
         return GFN_CALL(totalOrder, value, other);
@@ -127,7 +127,7 @@ METH_IMPL(Value, debugName) {
 // Documented in header.
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
-    zvalue type = get_type(value);
+    zvalue type = get_class(value);
     zvalue name = GFN_CALL(debugName, value);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 

@@ -179,7 +179,7 @@ fn @@PegTokenSet.parse(box, input, items*) {
 
     return? ifValue { nextValue(input, var result) }
         { newInput ->
-            ifIs { get(this::types, get_type(result)) }
+            ifIs { get(this::types, get_class(result)) }
                 {
                     box* := result;
                     newInput
@@ -193,7 +193,7 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
 
     return? ifValue { nextValue(input, var result) }
         { newInput ->
-            ifNot { get(this::types, get_type(result)) }
+            ifNot { get(this::types, get_class(result)) }
                 {
                     box* := result;
                     newInput

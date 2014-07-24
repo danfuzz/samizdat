@@ -26,6 +26,8 @@ export
     Value,
     call,
     cat,
+    className,
+    classParent,
     collect,
     dataOf,
     debugName,
@@ -35,9 +37,9 @@ export
     fetch,
     genericBind,
     get,
+    get_class,
     get_key,
     get_size,
-    get_type,
     get_value,
     hasClass,
     ifIs,
@@ -66,6 +68,4 @@ export
     toNumber,
     toString,
     totalEq,
-    totalOrder,
-    className,
-    classParent;
+    totalOrder;

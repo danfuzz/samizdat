@@ -14,7 +14,7 @@ import VarCalc :: get_varRefs;
 
 ## Does one layer of body collection.
 fn bodies(node, bodiesBox) {
-    return switch (def type = get_type(node)) {
+    return switch (def type = get_class(node)) {
         @@apply: {
             def function = bodies(node.function, bodiesBox);
             def values = bodies(node.values, bodiesBox);

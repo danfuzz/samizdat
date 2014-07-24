@@ -50,13 +50,13 @@ zvalue classParent(zvalue cls);
 zint get_classIndex(zvalue value);
 
 /**
- * Returns true iff the type of the given value (that is, `get_type(value)`)
+ * Returns true iff the type of the given value (that is, `get_class(value)`)
  * is either the given type or is a subtype of the given type.
  */
 bool hasClass(zvalue value, zvalue cls);
 
 /**
- * Returns true iff the types of the given values (that is, `get_type()` on
+ * Returns true iff the types of the given values (that is, `get_class()` on
  * each) are the same.
  */
 bool haveSameClass(zvalue value, zvalue other);

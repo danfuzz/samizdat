@@ -46,7 +46,7 @@ fn nonVoid(value) {
 
 ## Translates a node, using and updating `varsBox` as appropriate.
 export fn translate(node, varsBox) {
-    return switch (get_type(node)) {
+    return switch (get_class(node)) {
         @@apply: {
             def function = translate(node.function, varsBox);
             def values = node.values;
@@ -164,7 +164,7 @@ export fn translate(node, varsBox) {
 ## `translate` in that nodes that can't possibly have a side effect are
 ## dropped (returning void).
 export fn translateStatement(node, varsBox) {
-    return? switch (get_type(node)) {
+    return? switch (get_class(node)) {
         @@closureRef:
         @@literalRef: {
             ## Return void.

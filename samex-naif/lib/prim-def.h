@@ -97,7 +97,7 @@ PRIM_FUNC(classParent,            1, 1);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(genericBind,            3, 3);
-PRIM_FUNC(get_type,               1, 1);
+PRIM_FUNC(get_class,              1, 1);
 PRIM_FUNC(hasClass,               2, 2);
 PRIM_FUNC(ifIs,                   2, 3);
 PRIM_FUNC(ifNot,                  2, 2);

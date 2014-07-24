@@ -135,7 +135,7 @@ export fn makeCallThunks(function, values*) {
 ## Documented in spec.
 export fn makeDynamicImport(node) {
     return ifSwitch(
-        { get_type(node) },
+        { get_class(node) },
         {
             @@importModule: { . ->
                 ## The translation is approximately
@@ -369,7 +369,7 @@ export fn withDynamicImports(node) {
     };
 
     def statements = cat(converted*);
-    return @(get_type(node)){dataOf(node)*, statements}
+    return @(get_class(node)){dataOf(node)*, statements}
 };
 
 ## Documented in spec.
@@ -413,7 +413,7 @@ export fn withModuleDefs(node) {
             makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
             makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 
-    return @(get_type(node)){
+    return @(get_class(node)){
         dataOf(node)*,
         info,
         yield: yieldNode,
@@ -462,7 +462,7 @@ export fn withoutTops(node) {
         { [] }
         { [makeExportSelection(exports*)] };
 
-    return @(get_type(node)){
+    return @(get_class(node)){
         dataOf(node)*,
         statements: [tops*, mains*, optSelection*]
     }
@@ -470,5 +470,5 @@ export fn withoutTops(node) {
 
 ## Documented in spec.
 export fn withTop(node) {
-    return @(get_type(node)){dataOf(node)*, top: true}
+    return @(get_class(node)){dataOf(node)*, top: true}
 };

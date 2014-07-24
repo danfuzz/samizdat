@@ -15,7 +15,7 @@ import ./Interner :: intern;
 
 ## Does one layer of literal interning.
 fn lits(node, interner) {
-    return switch (def type = get_type(node)) {
+    return switch (def type = get_class(node)) {
         @@apply: {
             def function = lits(node.function, interner);
             def values = lits(node.values, interner);

@@ -21,8 +21,8 @@ FUN_IMPL_DECL(eq) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(get_type) {
-    return get_type(args[0]);
+FUN_IMPL_DECL(get_class) {
+    return get_class(args[0]);
 }
 
 // Documented in spec.

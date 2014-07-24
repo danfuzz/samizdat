@@ -51,7 +51,7 @@ fn intFromDigitToken(ch) {
 
 ## Documented in spec.
 export fn canYieldVoid(node) {
-    return? ifIs { get(VOIDING_TYPES, get_type(node)) }
+    return? ifIs { get(VOIDING_TYPES, get_class(node)) }
         { node }
 };
 
@@ -103,6 +103,6 @@ export fn intFromDigits(base, digits) {
 
 ## Documented in spec.
 export fn isExpression(node) {
-    return? ifIs { get(EXPRESSION_TYPES, get_type(node)) }
+    return? ifIs { get(EXPRESSION_TYPES, get_class(node)) }
         { node }
 };

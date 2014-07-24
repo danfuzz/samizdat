@@ -111,7 +111,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
 
     // Note: The replacement `firstType` returned by `findByType` is used
     // both for "same type" generics and for stack trace reporting.
-    zvalue firstType = get_type(args[0]);
+    zvalue firstType = get_class(args[0]);
     zvalue function = findByType(generic, firstType, &firstType);
 
     if (function == NULL) {

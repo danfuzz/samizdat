@@ -809,7 +809,7 @@ def parPexRepeat = makeMainSequence(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
             makeCode { pex, repeat ->
-                @(get(PEX_TYPES, get_type(repeat))){pex}
+                @(get(PEX_TYPES, get_class(repeat))){pex}
             }),
         makeCode { pex -> pex }));
 
@@ -819,7 +819,7 @@ def parPexLookahead = makeMainChoice(
         makeTokenSet(@@"&", @@"!"),
         parPexRepeat,
         makeCode { lookahead, pex ->
-            @(get(PEX_TYPES, get_type(lookahead))){pex}
+            @(get(PEX_TYPES, get_class(lookahead))){pex}
         }),
     parPexRepeat);
 
