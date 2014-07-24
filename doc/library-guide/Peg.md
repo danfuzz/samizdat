@@ -146,14 +146,14 @@ Calls the given function, which is expected to return a parser. Then
 calls the so-returned parser, passing it the remaining arguments to
 this call, returing whatever that call returns (including void).
 
-#### `@PegTokenSet{types: {.*: null}}.parse(...)`
+#### `@PegTokenSet{set: {.*: null}}.parse(...)`
 
 If there is any input available, checks the class of the first input
 token against the given set of classes (map where only the keys matter).
 If the class is found in the set, then yields and consumes the token.
 Otherwise fails, yielding and returning void.
 
-#### `@PegTokenSetComplement{types: {.*: null}}.parse(...)`
+#### `@PegTokenSetComplement{set: {.*: null}}.parse(...)`
 
 If there is any input available, checks the class of the first input
 token against the given set of classes (map where only the keys matter).
