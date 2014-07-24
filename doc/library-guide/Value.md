@@ -273,35 +273,35 @@ determine result. Returns `value` if it is *not* considered equal to `other`.
 
 #### `totalGe(value, other) -> logic`
 
-Type-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different classes.
 
 #### `totalGt(value, other) -> logic`
 
-Type-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered greater than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different classes.
 
 #### `totalLe(value, other) -> logic`
 
-Type-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered less than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different classes.
 
 #### `totalLt(value, other) -> logic`
 
-Type-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `totalOrder(value, other)` to
 determine result. Returns `value` if it is considered less than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different classes.
 
 #### `totalNe(value, other) -> logic`
 
-Type-specific total-order comparison, which calls `totalEq(value, other)` to
+Class-specific total-order comparison, which calls `totalEq(value, other)` to
 determine result. Returns `value` if it is *not* considered equal to `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different classes.

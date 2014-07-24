@@ -56,7 +56,7 @@ In the following descriptions, code shorthands use the Samizdat parsing
 syntax for explanatory purposes.
 
 <br><br>
-### Types
+### Classes
 
 The following is a summary of the parser classes used here, including what
 data payload they use and what it means to call `parse` on them.

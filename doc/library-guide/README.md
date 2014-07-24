@@ -66,7 +66,7 @@ will be returned, or one of:
 
 ### Contents
 
-* Types and Protocols
+* Classes and Protocols
   * [Boolean](Boolean.md)
   * [Builtin](Builtin.md)
   * [Class](Class.md)
