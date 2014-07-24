@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `String` data type
+// `String` class
 //
 
 #ifndef _TYPE_STRING_H_
@@ -13,7 +13,7 @@
 #include "type/Sequence.h"
 
 
-/** Type value for in-model type `String`. */
+/** Class value for in-model class `String`. */
 extern zvalue TYPE_String;
 
 /** The standard value `""`. */

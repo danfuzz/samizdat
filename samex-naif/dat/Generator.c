@@ -20,7 +20,7 @@
 
 
 //
-// Type Definition: `Generator`
+// Class Definition: `Generator`
 //
 
 /** "Standard" `collect` implementation. Documented in spec. */

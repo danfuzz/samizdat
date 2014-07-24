@@ -12,7 +12,7 @@
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */

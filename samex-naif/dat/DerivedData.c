@@ -45,14 +45,14 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeData(zvalue type, zvalue data) {
+zvalue makeData(zvalue cls, zvalue data) {
     assertValidOrNull(data);
 
-    if (!classIsDerived(type)) {
-        die("Attempt to call `makeData` on an improper type.");
+    if (!classIsDerived(cls)) {
+        die("Attempt to call `makeData` on an improper class.");
     }
 
-    zvalue result = datAllocValue(type, sizeof(DerivedDataInfo));
+    zvalue result = datAllocValue(cls, sizeof(DerivedDataInfo));
     ((DerivedDataInfo *) datPayload(result))->data = data;
 
     return result;
@@ -60,7 +60,7 @@ zvalue makeData(zvalue type, zvalue data) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

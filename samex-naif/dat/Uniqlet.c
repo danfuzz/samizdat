@@ -18,7 +18,7 @@ zvalue makeUniqlet(void) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */

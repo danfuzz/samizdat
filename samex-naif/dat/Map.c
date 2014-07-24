@@ -258,7 +258,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

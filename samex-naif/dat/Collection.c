@@ -29,7 +29,7 @@ zvalue collPut(zvalue coll, zvalue key, zvalue value) {
 
 
 //
-// Type Definition: `Collection`
+// Class Definition: `Collection`
 //
 
 /** Initializes the module. */

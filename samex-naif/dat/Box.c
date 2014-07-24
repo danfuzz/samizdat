@@ -123,7 +123,7 @@ zvalue makeResult(zvalue value) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

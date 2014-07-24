@@ -283,7 +283,7 @@ zvalue makeDerivedDataClass(zvalue name) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

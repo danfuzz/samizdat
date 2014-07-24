@@ -117,7 +117,7 @@ BuiltinState builtinGetState(zvalue builtin) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

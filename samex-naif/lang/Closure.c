@@ -327,7 +327,7 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

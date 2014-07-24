@@ -196,7 +196,7 @@ zvalue mustNotYield(zvalue value) {
 }
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */

@@ -236,7 +236,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

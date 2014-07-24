@@ -37,7 +37,7 @@ zint nthChar(zvalue value, zint index) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 /** Initializes the module. */

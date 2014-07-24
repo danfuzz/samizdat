@@ -65,7 +65,7 @@ zvalue makeJump(void) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

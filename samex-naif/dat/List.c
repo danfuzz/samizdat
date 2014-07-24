@@ -137,7 +137,7 @@ zvalue listFromArray(zint size, const zvalue *values) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

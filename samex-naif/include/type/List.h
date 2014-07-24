@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `List` data type
+// `List` class
 //
 
 #ifndef _TYPE_LIST_H_
@@ -13,7 +13,7 @@
 #include "type/Sequence.h"
 
 
-/** Type value for in-model type `List`. */
+/** Class value for in-model class `List`. */
 extern zvalue TYPE_List;
 
 /** The standard value `[]`. */

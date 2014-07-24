@@ -75,7 +75,7 @@ zint zintFromInt(zvalue intval) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Type` data type
+// `Class` class
 //
 
 #ifndef _TYPE_TYPE_H_
@@ -14,62 +14,62 @@
 #include "type/Value.h"
 
 
-/** Type value for in-model type `Type`. */
+/** Class value for in-model class `Class`. */
 extern zvalue TYPE_Class;
 
 /**
- * Asserts that the given value has the given type. If not, this aborts
+ * Asserts that the given value has the given class. If not, this aborts
  * the process with a diagnostic message. **Note:** This does not do a
  * validity check on the given arguments.
  */
 void assertHasClass(zvalue value, zvalue cls);
 
 /**
- * Returns the unique index for the given type.
+ * Returns the unique index for the given class.
  */
 zint classIndex(zvalue cls);
 
 /**
- * Returns true iff the given type is derived (whether pure data or not).
+ * Returns true iff the given class is derived (whether pure data or not).
  */
 bool classIsDerived(zvalue cls);
 
 /**
- * Gets the name of the given type.
+ * Gets the name of the given class.
  */
 zvalue className(zvalue cls);
 
 /**
- * Gets the parent type of the given type.
+ * Gets the parent class of the given class.
  */
 zvalue classParent(zvalue cls);
 
 /**
- * Returns the unique index for the type of the given value.
+ * Returns the unique index for the class of the given value.
  */
 zint get_classIndex(zvalue value);
 
 /**
- * Returns true iff the type of the given value (that is, `get_class(value)`)
- * is either the given type or is a subtype of the given type.
+ * Returns true iff the class of the given value (that is, `get_class(value)`)
+ * is either the given class or is a subclass of the given class.
  */
 bool hasClass(zvalue value, zvalue cls);
 
 /**
- * Returns true iff the types of the given values (that is, `get_class()` on
+ * Returns true iff the classes of the given values (that is, `get_class()` on
  * each) are the same.
  */
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
- * Makes a new core type. `name` is the type's name. `parent` is its
- * super-type. It is a fatal error to call this function more than once with
+ * Makes a new core class. `name` is the class's name. `parent` is its
+ * superclass. It is a fatal error to call this function more than once with
  * any given name.
  */
 zvalue makeCoreClass(zvalue name, zvalue parent);
 
 /**
- * Returns the type value for the derived data type with the given name.
+ * Returns the class value for the derived data class with the given name.
  */
 zvalue makeDerivedDataClass(zvalue name);
 

@@ -59,7 +59,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

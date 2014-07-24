@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Box` data type.
+// `Box` class
 //
 
 #ifndef _TYPE_BOX_H_
@@ -12,7 +12,7 @@
 #include "type/Generator.h"
 
 
-/** Type value for in-model type `Box`. */
+/** Class value for in-model class `Box`. */
 extern zvalue TYPE_Box;
 
 /**

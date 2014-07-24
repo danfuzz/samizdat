@@ -102,7 +102,7 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 
 
 //
-// Type Definition: `Sequence`
+// Class Definition: `Sequence`
 //
 // **Note:** This isn't the usual form of type definition, since these
 // methods are bound on many types.

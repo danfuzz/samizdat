@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Uniqlet` data type
+// `Uniqlet` class
 //
 
 #ifndef _TYPE_UNIQLET_H_
@@ -12,7 +12,7 @@
 #include "type/Value.h"
 
 
-/** Type value for in-model type `Uniqlet`. */
+/** Class value for in-model class `Uniqlet`. */
 extern zvalue TYPE_Uniqlet;
 
 /**

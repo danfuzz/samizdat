@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Value` data type
+// `Value` base class
 //
 // **Note:** As a slight concession to conciseness, the name prefix used for
 // this type is `val` and not `value`.
@@ -18,7 +18,7 @@
 #include "dat.h"
 
 
-/** Type value for in-model type `Value`. */
+/** Class value for in-model class `Value`. */
 extern zvalue TYPE_Value;
 
 /** Generic `debugName(value)`: Documented in spec. */
@@ -49,8 +49,8 @@ extern zvalue GFN_totalEq;
 extern zvalue GFN_totalOrder;
 
 /**
- * Gets the type of the given value. `value` must be a valid value (in
- * particular, non-`NULL`). The return value is of type `Type`.
+ * Gets the class of the given value. `value` must be a valid value (in
+ * particular, non-`NULL`). The return value is of class `Class`.
  */
 zvalue get_class(zvalue value);
 
@@ -64,7 +64,7 @@ char *valDebugString(zvalue value);
 /**
  * Compares two values for equality, returning the first argument to
  * represent logical-true or `NULL` for logical-false. This calls through
- * to `totalEq` given values of the same type. **Note:** It is invalid to
+ * to `totalEq` given values of the same class. **Note:** It is invalid to
  * pass `NULL` to this function.
  */
 zvalue valEq(zvalue value, zvalue other);
@@ -79,7 +79,7 @@ bool valEqNullOk(zvalue value, zvalue other);
 /**
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ -1, 0, 1 }`, with the usual comparison result meaning.
- * This calls through to `totalOrder` given values of the same type. **Note:**
+ * This calls through to `totalOrder` given values of the same class. **Note:**
  * It is invalid to pass `NULL` to this function.
  */
 zvalue valOrder(zvalue value, zvalue other);

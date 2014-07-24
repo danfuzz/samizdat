@@ -204,7 +204,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.

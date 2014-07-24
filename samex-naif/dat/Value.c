@@ -116,7 +116,7 @@ zorder valZorder(zvalue value, zvalue other) {
 
 
 //
-// Type Definition
+// Class Definition
 //
 
 // Documented in header.
