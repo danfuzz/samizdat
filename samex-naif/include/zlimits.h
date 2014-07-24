@@ -49,7 +49,7 @@ enum {
     DAT_MAX_STRING_SOFT = 10000,
 
     /** Maximum number of types allowed. */
-    DAT_MAX_TYPES = 2500,
+    DAT_MAX_CLASSES = 2500,
 
     /** Maximum (highest value) small int constant to keep. */
     DAT_SMALL_INT_MAX = 700,

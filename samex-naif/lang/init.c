@@ -20,7 +20,7 @@
 //
 
 // Documented in header.
-zevalType langTypeMap[DAT_MAX_TYPES];
+zevalType langTypeMap[DAT_MAX_CLASSES];
 
 // This provides the non-inline version of this function.
 extern zevalType get_evalType(zvalue node);

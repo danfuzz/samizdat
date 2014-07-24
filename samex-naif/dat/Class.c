@@ -24,16 +24,16 @@
 //
 
 /** Next type sequence number to assign. */
-static zint theNextTypeId = 0;
+static zint theNextClassId = 0;
 
-/** Array of all existing types, in sort order (possibly stale). */
-static zvalue theTypes[DAT_MAX_TYPES];
+/** Array of all existing classes, in sort order (possibly stale). */
+static zvalue theClasses[DAT_MAX_CLASSES];
 
-/** Whether `theTypes` needs a sort. */
+/** Whether `theClasses` needs a sort. */
 static bool theNeedSort = true;
 
-/** The `secret` value used for all core types. */
-static zvalue coreSecret = NULL;
+/** The `secret` value used for all core classes. */
+static zvalue theCoreSecret = NULL;
 
 
 /**
@@ -47,8 +47,8 @@ static TypeInfo *getInfo(zvalue type) {
  * Initializes a type value. The type is marked core, except if its parent is
  * `DerivedData` in which case it is marked as derived.
  */
-static void typeInit(zvalue type, zvalue parent, zvalue name) {
-    if (theNextTypeId == DAT_MAX_TYPES) {
+static void classInit(zvalue type, zvalue parent, zvalue name) {
+    if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many types!");
     }
 
@@ -61,19 +61,19 @@ static void typeInit(zvalue type, zvalue parent, zvalue name) {
 
     info->parent = parent;
     info->name = name;
-    info->secret = derived ? NULL : coreSecret;
-    info->typeId = theNextTypeId;
+    info->secret = derived ? NULL : theCoreSecret;
+    info->typeId = theNextClassId;
 
-    theTypes[theNextTypeId] = type;
+    theClasses[theNextClassId] = type;
     theNeedSort = true;
-    theNextTypeId++;
+    theNextClassId++;
     datImmortalize(type);
 }
 
 /**
  * Allocates a type value.
  */
-static zvalue allocType(void) {
+static zvalue allocClass(void) {
     return datAllocValue(TYPE_Type, sizeof(TypeInfo));
 }
 
@@ -82,9 +82,9 @@ static zvalue allocType(void) {
  * core, except if its parent is `DerivedData` in which case it is marked as
  * derived.
  */
-static zvalue makeType(zvalue name, zvalue parent) {
-    zvalue result = allocType();
-    typeInit(result, parent, name);
+static zvalue makeClass(zvalue name, zvalue parent) {
+    zvalue result = allocClass();
+    classInit(result, parent, name);
     return result;
 }
 
@@ -92,12 +92,12 @@ static zvalue makeType(zvalue name, zvalue parent) {
  * Compares an explicit name and secret with a type. Common function used
  * for searching, sorting, and ordering.
  */
-static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
+static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
     TypeInfo *info2 = getInfo(v2);
     zvalue name2 = info2->name;
     zvalue secret2 = info2->secret;
-    bool derived1 = (secret1 != coreSecret);
-    bool derived2 = (secret2 != coreSecret);
+    bool derived1 = (secret1 != theCoreSecret);
+    bool derived2 = (secret2 != theCoreSecret);
 
     if (derived1 != derived2) {
         return derived2 ? ZLESS : ZMORE;
@@ -129,7 +129,7 @@ static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v2 = *(zvalue *) vptr2;
     TypeInfo *info1 = getInfo(v1);
 
-    return typeCompare(info1->name, info1->secret, v2);
+    return classCompare(info1->name, info1->secret, v2);
 }
 
 /**
@@ -140,13 +140,13 @@ static int searchOrder(const void *key, const void *vptr) {
     zvalue name = searchFor[0];
     zvalue secret = searchFor[1];
 
-    return typeCompare(name, secret, *(zvalue *) vptr);
+    return classCompare(name, secret, *(zvalue *) vptr);
 }
 
 /**
  * Finds an existing type with the given name and secret, if any.
  */
-static zvalue findType(zvalue name, zvalue secret) {
+static zvalue findClass(zvalue name, zvalue secret) {
     if (theNeedSort) {
         if (INT_1 == NULL) {
             // The system isn't yet booted enough to have ints. Therefore,
@@ -154,13 +154,13 @@ static zvalue findType(zvalue name, zvalue secret) {
             // know we'll only be getting new types anyway.
             return NULL;
         }
-        mergesort(theTypes, theNextTypeId, sizeof(zvalue), sortOrder);
+        mergesort(theClasses, theNextClassId, sizeof(zvalue), sortOrder);
         theNeedSort = false;
     }
 
     zvalue searchFor[2] = { name, secret };
     zvalue *found = (zvalue *) bsearch(
-        searchFor, theTypes, theNextTypeId, sizeof(zvalue), searchOrder);
+        searchFor, theClasses, theNextClassId, sizeof(zvalue), searchOrder);
 
     return (found == NULL) ? NULL : *found;
 }
@@ -168,7 +168,7 @@ static zvalue findType(zvalue name, zvalue secret) {
 /**
  * Returns `true` iff the value is a `Type`.
  */
-static bool isType(zvalue value) {
+static bool isClass(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
@@ -176,10 +176,10 @@ static bool isType(zvalue value) {
 }
 
 /**
- * Asserts `isType(value)`.
+ * Asserts `isClass(value)`.
  */
 static void assertHasClassType(zvalue value) {
-    if (!isType(value)) {
+    if (!isClass(value)) {
         die("Expected type Type; got %s.", valDebugString(value));
     }
 }
@@ -188,7 +188,7 @@ static void assertHasClassType(zvalue value) {
  * Compares two types (per se) for equality. This is just `==` since
  * types are all unique and effectively "selfish."
  */
-static bool typeEq(zvalue type1, zvalue type2) {
+static bool classEq(zvalue type1, zvalue type2) {
     return (type1 == type2);
 }
 
@@ -248,7 +248,7 @@ bool hasClass(zvalue value, zvalue type) {
     for (zvalue valueType = get_type(value);
             valueType != NULL;
             valueType = getInfo(valueType)->parent) {
-        if (typeEq(valueType, type)) {
+        if (classEq(valueType, type)) {
             return true;
         }
     }
@@ -258,24 +258,24 @@ bool hasClass(zvalue value, zvalue type) {
 
 // Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
-    return typeEq(get_type(value), get_type(other));
+    return classEq(get_type(value), get_type(other));
 }
 
 // Documented in header.
 zvalue makeCoreClass(zvalue name, zvalue parent) {
-    if (findType(name, coreSecret) != NULL) {
+    if (findClass(name, theCoreSecret) != NULL) {
         die("Core type already created.");
     }
 
-    return makeType(name, parent);
+    return makeClass(name, parent);
 }
 
 // Documented in header.
 zvalue makeDerivedDataClass(zvalue name) {
-    zvalue result = findType(name, NULL);
+    zvalue result = findClass(name, NULL);
 
     if (result == NULL) {
-        result = makeType(name, TYPE_DerivedData);
+        result = makeClass(name, TYPE_DerivedData);
     }
 
     return result;
@@ -292,7 +292,7 @@ METH_IMPL(Type, debugString) {
     TypeInfo *info = getInfo(type);
     zvalue extraString;
 
-    if (info->secret == coreSecret) {
+    if (info->secret == theCoreSecret) {
         return info->name;
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
@@ -331,40 +331,40 @@ METH_IMPL(Type, totalOrder) {
     }
 
     TypeInfo *info = getInfo(value);
-    return intFromZint(typeCompare(info->name, info->secret, other));
+    return intFromZint(classCompare(info->name, info->secret, other));
 }
 
 /**
  * Define `typeSystem` as a module, as separate from the `Type` type.
  */
 MOD_INIT(typeSystem) {
-    TYPE_Type = allocType();
+    TYPE_Type = allocClass();
     TYPE_Type->type = TYPE_Type;
 
-    TYPE_Value       = allocType();
-    TYPE_Data        = allocType();
-    TYPE_DerivedData = allocType();
+    TYPE_Value       = allocClass();
+    TYPE_Data        = allocClass();
+    TYPE_DerivedData = allocClass();
 
     // The rest are in alphabetical order.
-    TYPE_Builtin     = allocType();
-    TYPE_Generic     = allocType();
-    TYPE_Jump        = allocType();
-    TYPE_String      = allocType();
-    TYPE_Uniqlet     = allocType();
+    TYPE_Builtin     = allocClass();
+    TYPE_Generic     = allocClass();
+    TYPE_Jump        = allocClass();
+    TYPE_String      = allocClass();
+    TYPE_Uniqlet     = allocClass();
 
-    coreSecret = makeUniqlet();
-    datImmortalize(coreSecret);
+    theCoreSecret = makeUniqlet();
+    datImmortalize(theCoreSecret);
 
-    typeInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"));
-    typeInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"));
-    typeInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"));
-    typeInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"));
+    classInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"));
+    classInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"));
+    classInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"));
+    classInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"));
 
-    typeInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"));
-    typeInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"));
-    typeInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"));
-    typeInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"));
-    typeInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"));
+    classInit(TYPE_Builtin,     TYPE_Value, stringFromUtf8(-1, "Builtin"));
+    classInit(TYPE_Generic,     TYPE_Value, stringFromUtf8(-1, "Generic"));
+    classInit(TYPE_Jump,        TYPE_Value, stringFromUtf8(-1, "Jump"));
+    classInit(TYPE_String,      TYPE_Data,  stringFromUtf8(-1, "String"));
+    classInit(TYPE_Uniqlet,     TYPE_Value, stringFromUtf8(-1, "Uniqlet"));
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.

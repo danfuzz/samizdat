@@ -36,7 +36,7 @@ typedef enum {
 } zevalType;
 
 /** Mapping from `Type` index to corresponding `zevalType`. */
-extern zevalType langTypeMap[DAT_MAX_TYPES];
+extern zevalType langTypeMap[DAT_MAX_CLASSES];
 
 /**
  * Active execution frame. These are passed around during evaluation
