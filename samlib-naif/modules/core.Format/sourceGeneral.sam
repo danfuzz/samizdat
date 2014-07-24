@@ -118,7 +118,7 @@ fn Value_sourceGeneral(value, adorn) {
 
     def cls = get_class(value);
     def name = className(cls);
-    def typeStr = ifIs { hasClass(name, String) }
+    def clsStr = ifIs { hasClass(name, String) }
         {
             ## The class is a string.
             ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) }
@@ -127,7 +127,7 @@ fn Value_sourceGeneral(value, adorn) {
             ## General case for class.
             cat("(", sourceGeneral(cls, true), ")")
         };
-    def prefix = cat("@", typeStr);
+    def prefix = cat("@", clsStr);
 
     ifNot { eq(classParent(cls), DerivedData) }
         {

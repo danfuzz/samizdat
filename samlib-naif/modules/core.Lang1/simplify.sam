@@ -150,13 +150,13 @@ fn convertPex(node, formals) {
             },
 
             @@tokenSet: { . ->
-                def types = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSet, types*)
+                def clses = get_values(node);
+                makeCallLiterals(REFS::Peg_makeTokenSet, clses*)
             },
 
             @@tokenSetComplement: { . ->
-                def types = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSetComplement, types*)
+                def clses = get_values(node);
+                makeCallLiterals(REFS::Peg_makeTokenSetComplement, clses*)
             },
 
             @@varRef: { . ->
