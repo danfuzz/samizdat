@@ -220,6 +220,11 @@ zint classIndex(zvalue type) {
 }
 
 // Documented in header.
+bool classIsDerived(zvalue type) {
+    return classParent(type) == TYPE_DerivedData;
+}
+
+// Documented in header.
 zvalue className(zvalue type) {
     assertHasClassType(type);
     return getInfo(type)->name;
@@ -274,11 +279,6 @@ zvalue makeDerivedDataClass(zvalue name) {
     }
 
     return result;
-}
-
-// Documented in header.
-bool typeIsDerived(zvalue type) {
-    return classParent(type) == TYPE_DerivedData;
 }
 
 

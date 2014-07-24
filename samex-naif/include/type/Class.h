@@ -30,6 +30,11 @@ void assertHasClass(zvalue value, zvalue type);
 zint classIndex(zvalue type);
 
 /**
+ * Returns true iff the given type is derived (whether pure data or not).
+ */
+bool classIsDerived(zvalue type);
+
+/**
  * Gets the name of the given type.
  */
 zvalue className(zvalue type);
@@ -67,10 +72,5 @@ zvalue makeCoreClass(zvalue name, zvalue parent);
  * Returns the type value for the derived data type with the given name.
  */
 zvalue makeDerivedDataClass(zvalue name);
-
-/**
- * Returns true iff the given type is derived (whether pure data or not).
- */
-bool typeIsDerived(zvalue type);
 
 #endif

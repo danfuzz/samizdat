@@ -48,7 +48,7 @@ zvalue dataOf(zvalue value) {
 zvalue makeData(zvalue type, zvalue data) {
     assertValidOrNull(data);
 
-    if (!typeIsDerived(type)) {
+    if (!classIsDerived(type)) {
         die("Attempt to call `makeData` on an improper type.");
     }
 
