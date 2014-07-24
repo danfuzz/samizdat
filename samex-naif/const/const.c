@@ -47,7 +47,7 @@ MOD_INIT(const) {
 
     #define TYP(name, str) \
         STR(name, str); \
-        TYPE_##name = makeDerivedDataType(STR_##name); \
+        TYPE_##name = makeDerivedDataClass(STR_##name); \
         datImmortalize(TYPE_##name)
 
     #define TOK(name, str) \

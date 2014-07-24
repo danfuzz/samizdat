@@ -51,12 +51,12 @@ bool haveSameClass(zvalue value, zvalue other);
  * super-type. It is a fatal error to call this function more than once with
  * any given name.
  */
-zvalue makeCoreType(zvalue name, zvalue parent);
+zvalue makeCoreClass(zvalue name, zvalue parent);
 
 /**
  * Returns the type value for the derived data type with the given name.
  */
-zvalue makeDerivedDataType(zvalue name);
+zvalue makeDerivedDataClass(zvalue name);
 
 /**
  * Returns true iff the given type is derived (whether pure data or not).

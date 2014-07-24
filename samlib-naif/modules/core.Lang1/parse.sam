@@ -211,7 +211,7 @@ def parType = makeMainSequence(
     makeCode { ., name ->
         ifIs { hasClass(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
-            { makeCall(REFS::makeDerivedDataType, name) }
+            { makeCall(REFS::makeDerivedDataClass, name) }
     });
 
 ## Documented in spec.

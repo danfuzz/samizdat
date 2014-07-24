@@ -183,7 +183,7 @@ MOD_INIT(Box) {
     GFN_store = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "store"));
     datImmortalize(GFN_store);
 
-    TYPE_Box = makeCoreType(stringFromUtf8(-1, "Box"), TYPE_Value);
+    TYPE_Box = makeCoreClass(stringFromUtf8(-1, "Box"), TYPE_Value);
 
     METH_BIND(Box, collect);
     METH_BIND(Box, fetch);

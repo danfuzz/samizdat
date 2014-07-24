@@ -104,7 +104,7 @@ PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueOr,              1, -1);
 PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
-PRIM_FUNC(makeDerivedDataType,    1, 1);
+PRIM_FUNC(makeDerivedDataClass,   1, 1);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeRegularGeneric,     2, 3);
 PRIM_FUNC(makeUniqlet,            0, 0);

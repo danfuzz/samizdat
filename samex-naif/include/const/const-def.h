@@ -96,7 +96,7 @@ STR(loadResource,          "loadResource");
 STR(lvalue,                "lvalue");
 STR(main,                  "main");
 STR(makeData,              "makeData");
-STR(makeDerivedDataType,   "makeDerivedDataType");
+STR(makeDerivedDataClass,  "makeDerivedDataClass");
 STR(makeList,              "makeList");
 STR(makeRegularGeneric,    "makeRegularGeneric");
 STR(makeUnitypeGeneric,    "makeUnitypeGeneric");

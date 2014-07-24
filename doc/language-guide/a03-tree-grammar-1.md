@@ -254,7 +254,7 @@ def parList = {:
 ## Parses a type literal form, yielding an expression node that produces a
 ## type value. If the name is a blatant literal, then the result of this rule
 ## is also a literal. If not, the result of this rule is a call to
-## `makeDerivedDataType`.
+## `makeDerivedDataClass`.
 def parType = {:
     @"@@"
     name = (parIdentifierString | parParenExpression)
@@ -262,7 +262,7 @@ def parType = {:
     {
         ifIs { hasClass(name, @@literal) }
             { makeLiteral(@@(get_nodeValue(name))) }
-            { makeCall(REFS::makeDerivedDataType, name) }
+            { makeCall(REFS::makeDerivedDataClass, name) }
     }
 :};
 

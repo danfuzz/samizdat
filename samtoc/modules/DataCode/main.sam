@@ -157,7 +157,7 @@ fn String_convert(value) {
 
 ## Converts a type. Only works on derived data types.
 fn Type_convert(value) {
-    return genCall("makeDerivedDataType", convert(typeName(value)))
+    return genCall("makeDerivedDataClass", convert(typeName(value)))
 };
 
 ## Converts a derived value or an opaque core value.

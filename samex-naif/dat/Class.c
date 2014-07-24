@@ -245,7 +245,7 @@ bool haveSameClass(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-zvalue makeCoreType(zvalue name, zvalue parent) {
+zvalue makeCoreClass(zvalue name, zvalue parent) {
     if (findType(name, coreSecret) != NULL) {
         die("Core type already created.");
     }
@@ -254,7 +254,7 @@ zvalue makeCoreType(zvalue name, zvalue parent) {
 }
 
 // Documented in header.
-zvalue makeDerivedDataType(zvalue name) {
+zvalue makeDerivedDataClass(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {

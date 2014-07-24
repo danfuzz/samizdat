@@ -35,7 +35,7 @@ types), the order is arbitrary but consistent.
 <br><br>
 ### Primitive Definitions
 
-#### `makeDerivedDataType(name) -> type`
+#### `makeDerivedDataClass(name) -> type`
 
 Returns a `Type` instance which represents a derived data type
 with the given `name`. `name` can be an arbitrary value but is most
@@ -43,8 +43,8 @@ typically a string. The following equivalences hold for Samizdat
 source code:
 
 ```
-@@name    is equivalent to  makeDerivedDataType("name")
-@@(name)  is equivalent to  makeDerivedDataType(name)
+@@name    is equivalent to  makeDerivedDataClass("name")
+@@(name)  is equivalent to  makeDerivedDataClass(name)
 ```
 
 **Note:** This is used in the translation of `@@name` and `@@(name)`forms.

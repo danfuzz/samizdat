@@ -501,9 +501,9 @@ DEF_PARSE(type) {
     }
 
     if (hasClass(name, TYPE_literal)) {
-        return makeLiteral(makeDerivedDataType(GET(value, name)));
+        return makeLiteral(makeDerivedDataClass(GET(value, name)));
     } else {
-        return makeCall(REFS(makeDerivedDataType), listFrom1(name));
+        return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
     }
 }
 
@@ -516,7 +516,7 @@ DEF_PARSE(deriv) {
     zvalue type;
     zvalue name = PARSE(identifierString);
     if (name != NULL) {
-        type = makeLiteral(makeDerivedDataType(GET(value, name)));
+        type = makeLiteral(makeDerivedDataClass(GET(value, name)));
     } else {
         type = PARSE_OR_REJECT(parenExpression);
     }

@@ -373,7 +373,7 @@ MOD_INIT(Closure) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    TYPE_Closure = makeCoreType(stringFromUtf8(-1, "Closure"), TYPE_Value);
+    TYPE_Closure = makeCoreClass(stringFromUtf8(-1, "Closure"), TYPE_Value);
 
     METH_BIND(Closure, call);
     METH_BIND(Closure, debugName);

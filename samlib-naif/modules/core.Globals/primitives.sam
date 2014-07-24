@@ -48,7 +48,7 @@ export
     ifValues,
     loop,
     makeData,
-    makeDerivedDataType,
+    makeDerivedDataClass,
     makeList,
     makeRegularGeneric,
     makeUniqlet,
