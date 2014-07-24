@@ -24,11 +24,11 @@ static zvalue lookup(zvalue context, const char *name) {
 }
 
 static zvalue externalSource(const char *name) {
-    zvalue type = makeDerivedDataClass(stringFromUtf8(-1, "external"));
+    zvalue cls = makeDerivedDataClass(stringFromUtf8(-1, "external"));
     zvalue data = mapFromArgs(
         stringFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);
-    return makeData(type, data);
+    return makeData(cls, data);
 }
 
 zvalue eval(zvalue context) {
