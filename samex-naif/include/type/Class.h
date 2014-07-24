@@ -15,7 +15,7 @@
 
 
 /** Type value for in-model type `Type`. */
-extern zvalue TYPE_Type;
+extern zvalue TYPE_Class;
 
 /**
  * Asserts that the given value has the given type. If not, this aborts

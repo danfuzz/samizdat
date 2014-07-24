@@ -87,7 +87,7 @@ function toward the bottom.
 
 Beyond the general conventions, the following are used:
 
-* `TYPE_TypeName` &mdash; Identifies a value of type `Type`.
+* `TYPE_ClassName` &mdash; Identifies a value of type `Type`.
 
 * `GFN_methodName` &mdash; Identifies a generic function (value of type
   `Generic`).

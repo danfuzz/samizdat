@@ -74,7 +74,7 @@ static void classInit(zvalue cls, zvalue parent, zvalue name) {
  * Allocates a class value.
  */
 static zvalue allocClass(void) {
-    return datAllocValue(TYPE_Type, sizeof(ClassInfo));
+    return datAllocValue(TYPE_Class, sizeof(ClassInfo));
 }
 
 /**
@@ -172,7 +172,7 @@ static bool isClass(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
-    return (get_class(value) == TYPE_Type);
+    return (get_class(value) == TYPE_Class);
 }
 
 /**
@@ -287,7 +287,7 @@ zvalue makeDerivedDataClass(zvalue name) {
 //
 
 // Documented in header.
-METH_IMPL(Type, debugString) {
+METH_IMPL(Class, debugString) {
     zvalue cls = args[0];
     ClassInfo *info = getInfo(cls);
     zvalue extraString;
@@ -310,7 +310,7 @@ METH_IMPL(Type, debugString) {
 }
 
 // Documented in header.
-METH_IMPL(Type, gcMark) {
+METH_IMPL(Class, gcMark) {
     zvalue cls = args[0];
     ClassInfo *info = getInfo(cls);
 
@@ -321,7 +321,7 @@ METH_IMPL(Type, gcMark) {
 }
 
 // Documented in header.
-METH_IMPL(Type, totalOrder) {
+METH_IMPL(Class, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];
 
@@ -338,8 +338,8 @@ METH_IMPL(Type, totalOrder) {
  * Define `typeSystem` as a module, as separate from the `Class` class.
  */
 MOD_INIT(typeSystem) {
-    TYPE_Type = allocClass();
-    TYPE_Type->cls = TYPE_Type;
+    TYPE_Class = allocClass();
+    TYPE_Class->cls = TYPE_Class;
 
     TYPE_Value       = allocClass();
     TYPE_Data        = allocClass();
@@ -355,7 +355,7 @@ MOD_INIT(typeSystem) {
     theCoreSecret = makeUniqlet();
     datImmortalize(theCoreSecret);
 
-    classInit(TYPE_Type,        TYPE_Value, stringFromUtf8(-1, "Type"));
+    classInit(TYPE_Class,       TYPE_Value, stringFromUtf8(-1, "Class"));
     classInit(TYPE_Value,       NULL,       stringFromUtf8(-1, "Value"));
     classInit(TYPE_Data,        TYPE_Value, stringFromUtf8(-1, "Data"));
     classInit(TYPE_DerivedData, TYPE_Data,  stringFromUtf8(-1, "DerivedData"));
@@ -386,15 +386,15 @@ MOD_INIT(typeSystem) {
 }
 
 /** Initializes the module. */
-MOD_INIT(Type) {
+MOD_INIT(Class) {
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module (directly above) initializes `TYPE_Type`.
+    // Note: The `typeSystem` module (directly above) initializes `TYPE_Class`.
 
-    METH_BIND(Type, debugString);
-    METH_BIND(Type, gcMark);
-    METH_BIND(Type, totalOrder);
+    METH_BIND(Class, debugString);
+    METH_BIND(Class, gcMark);
+    METH_BIND(Class, totalOrder);
 }
 
 // Documented in header.
-zvalue TYPE_Type = NULL;
+zvalue TYPE_Class = NULL;
