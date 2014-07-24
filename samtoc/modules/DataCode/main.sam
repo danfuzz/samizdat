@@ -112,6 +112,11 @@ fn stringChar(ch) {
 ## Exported definitions
 ##
 
+## Converts a class. Only works on derived data classes.
+fn Class_convert(value) {
+    return genCall("makeDerivedDataClass", convert(className(value)))
+};
+
 ## Converts an int.
 fn Int_convert(value) {
     return genCall("intFromZint", "\(value)")
@@ -155,32 +160,27 @@ fn String_convert(value) {
         "\(#bodyChars)", "\"\(bodyChars)\"")
 };
 
-## Converts a type. Only works on derived data types.
-fn Type_convert(value) {
-    return genCall("makeDerivedDataClass", convert(className(value)))
-};
-
 ## Converts a derived value or an opaque core value.
 fn Value_convert(value) {
     def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
-    def type = get_class(value);
+    def cls = get_class(value);
 
     if (!hasClass(value, DerivedData)) {
         die("Cannot convert opaque non-data value: \%q(value)")
     };
 
-    return genCall("makeData", convert(type), data)
+    return genCall("makeData", convert(cls), data)
 };
 
 ## Converts a value into C code to construct that value. This function
 ## returns a tree that can be stringified with `indent()`.
 export fn convert(value) {
     return switch (get_class(value)) {
+        (Class):  { Class_convert(value) };
         (Int):    { Int_convert(value) };
         (List):   { List_convert(value) };
         (Map):    { Map_convert(value) };
         (String): { String_convert(value) };
-        (Type):   { Type_convert(value) };
         default:  { Value_convert(value) }
     }
 };

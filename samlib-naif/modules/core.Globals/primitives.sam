@@ -15,13 +15,13 @@
 
 ## Documented in spec.
 export
+    Class,
     Data,
     DerivedData,
     Int,
     List,
     Map,
     String,
-    Type,
     Uniqlet,
     Value,
     call,
