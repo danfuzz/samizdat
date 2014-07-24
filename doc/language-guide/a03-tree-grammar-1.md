@@ -270,7 +270,7 @@ def parType = {:
 def parDeriv = {:
     @"@"
 
-    type = (
+    cls = (
         name = parIdentifierString
         { makeLiteral(@@(get_nodeValue(name))) }
     |
@@ -279,7 +279,7 @@ def parDeriv = {:
 
     value = (parParenExpression | parMap | parList)?
 
-    { makeCall(REFS::makeData, type, value*) }
+    { makeCall(REFS::makeData, cls, value*) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.

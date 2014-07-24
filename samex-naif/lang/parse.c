@@ -513,12 +513,12 @@ DEF_PARSE(deriv) {
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue type;
+    zvalue cls;
     zvalue name = PARSE(identifierString);
     if (name != NULL) {
-        type = makeLiteral(makeDerivedDataClass(GET(value, name)));
+        cls = makeLiteral(makeDerivedDataClass(GET(value, name)));
     } else {
-        type = PARSE_OR_REJECT(parenExpression);
+        cls = PARSE_OR_REJECT(parenExpression);
     }
 
     // Value is optional; these are allowed to all fail.
@@ -526,7 +526,7 @@ DEF_PARSE(deriv) {
     if (value == NULL) value = PARSE(map);
     if (value == NULL) value = PARSE(list);
 
-    zvalue args = (value == NULL) ? listFrom1(type) : listFrom2(type, value);
+    zvalue args = (value == NULL) ? listFrom1(cls) : listFrom2(cls, value);
 
     return makeCall(REFS(makeData), args);
 }
