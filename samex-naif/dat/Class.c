@@ -23,7 +23,7 @@
 // Private Definitions
 //
 
-/** Next type sequence number to assign. */
+/** Next class sequence number to assign. */
 static zint theNextClassId = 0;
 
 /** Array of all existing classes, in sort order (possibly stale). */
@@ -39,24 +39,24 @@ static zvalue theCoreSecret = NULL;
 /**
  * Gets a pointer to the value's info.
  */
-static ClassInfo *getInfo(zvalue type) {
-    return datPayload(type);
+static ClassInfo *getInfo(zvalue cls) {
+    return datPayload(cls);
 }
 
 /**
- * Initializes a type value. The type is marked core, except if its parent is
- * `DerivedData` in which case it is marked as derived.
+ * Initializes a class value. The class is marked core, except if its parent
+ * is `DerivedData` in which case it is marked as derived.
  */
-static void classInit(zvalue type, zvalue parent, zvalue name) {
+static void classInit(zvalue cls, zvalue parent, zvalue name) {
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many types!");
     }
 
-    if ((parent == NULL) && (type != TYPE_Value)) {
-        die("Every type but `Value` needs a parent.");
+    if ((parent == NULL) && (cls != TYPE_Value)) {
+        die("Every class but `Value` needs a parent.");
     }
 
-    ClassInfo *info = getInfo(type);
+    ClassInfo *info = getInfo(cls);
     bool derived = (parent == TYPE_DerivedData) && (TYPE_DerivedData != NULL);
 
     info->parent = parent;
@@ -64,21 +64,21 @@ static void classInit(zvalue type, zvalue parent, zvalue name) {
     info->secret = derived ? NULL : theCoreSecret;
     info->classId = theNextClassId;
 
-    theClasses[theNextClassId] = type;
+    theClasses[theNextClassId] = cls;
     theNeedSort = true;
     theNextClassId++;
-    datImmortalize(type);
+    datImmortalize(cls);
 }
 
 /**
- * Allocates a type value.
+ * Allocates a class value.
  */
 static zvalue allocClass(void) {
     return datAllocValue(TYPE_Type, sizeof(ClassInfo));
 }
 
 /**
- * Creates and returns a new type with the given name. The type is marked
+ * Creates and returns a new class with the given name. The class is marked
  * core, except if its parent is `DerivedData` in which case it is marked as
  * derived.
  */
@@ -89,7 +89,7 @@ static zvalue makeClass(zvalue name, zvalue parent) {
 }
 
 /**
- * Compares an explicit name and secret with a type. Common function used
+ * Compares an explicit name and secret with a class. Common function used
  * for searching, sorting, and ordering.
  */
 static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
@@ -116,13 +116,13 @@ static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
         return nameOrder;
     }
 
-    // This is the case of two different opaque derived types with the
+    // This is the case of two different opaque derived classes with the
     // same name.
     return valZorder(secret1, secret2);
 }
 
 /**
- * Compares two types. Used for sorting.
+ * Compares two classes. Used for sorting.
  */
 static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v1 = *(zvalue *) vptr1;
@@ -133,7 +133,7 @@ static int sortOrder(const void *vptr1, const void *vptr2) {
 }
 
 /**
- * Compares a name/secret pair with a type. Used for searching.
+ * Compares a name/secret pair with a class. Used for searching.
  */
 static int searchOrder(const void *key, const void *vptr) {
     zvalue *searchFor = (zvalue *) key;
@@ -144,14 +144,14 @@ static int searchOrder(const void *key, const void *vptr) {
 }
 
 /**
- * Finds an existing type with the given name and secret, if any.
+ * Finds an existing class with the given name and secret, if any.
  */
 static zvalue findClass(zvalue name, zvalue secret) {
     if (theNeedSort) {
         if (INT_1 == NULL) {
             // The system isn't yet booted enough to have ints. Therefore,
             // sorting and searching won't work, but more to the point, we
-            // know we'll only be getting new types anyway.
+            // know we'll only be getting new classes anyway.
             return NULL;
         }
         mergesort(theClasses, theNextClassId, sizeof(zvalue), sortOrder);
@@ -166,7 +166,7 @@ static zvalue findClass(zvalue name, zvalue secret) {
 }
 
 /**
- * Returns `true` iff the value is a `Type`.
+ * Returns `true` iff the value is a `Class`.
  */
 static bool isClass(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
@@ -178,18 +178,18 @@ static bool isClass(zvalue value) {
 /**
  * Asserts `isClass(value)`.
  */
-static void assertHasClassType(zvalue value) {
+static void assertHasClassClass(zvalue value) {
     if (!isClass(value)) {
-        die("Expected type Type; got %s.", valDebugString(value));
+        die("Expected class Class; got %s.", valDebugString(value));
     }
 }
 
 /**
- * Compares two types (per se) for equality. This is just `==` since
- * types are all unique and effectively "selfish."
+ * Compares two classes (per se) for equality. This is just `==` since
+ * classes are all unique and effectively "selfish."
  */
-static bool classEq(zvalue type1, zvalue type2) {
-    return (type1 == type2);
+static bool classEq(zvalue cls1, zvalue cls2) {
+    return (cls1 == cls2);
 }
 
 
@@ -198,7 +198,7 @@ static bool classEq(zvalue type1, zvalue type2) {
 //
 
 // Documented in header.
-extern inline zint classIndexUnchecked(zvalue type);
+extern inline zint classIndexUnchecked(zvalue cls);
 
 
 //
@@ -206,34 +206,34 @@ extern inline zint classIndexUnchecked(zvalue type);
 //
 
 // Documented in header.
-void assertHasClass(zvalue value, zvalue type) {
-    if (!hasClass(value, type)) {
-        die("Expected type %s; got %s.",
-            valDebugString(type), valDebugString(value));
+void assertHasClass(zvalue value, zvalue cls) {
+    if (!hasClass(value, cls)) {
+        die("Expected class %s; got %s.",
+            valDebugString(cls), valDebugString(value));
     }
 }
 
 // Documented in header.
-zint classIndex(zvalue type) {
-    assertHasClassType(type);
-    return classIndexUnchecked(type);
+zint classIndex(zvalue cls) {
+    assertHasClassClass(cls);
+    return classIndexUnchecked(cls);
 }
 
 // Documented in header.
-bool classIsDerived(zvalue type) {
-    return classParent(type) == TYPE_DerivedData;
+bool classIsDerived(zvalue cls) {
+    return classParent(cls) == TYPE_DerivedData;
 }
 
 // Documented in header.
-zvalue className(zvalue type) {
-    assertHasClassType(type);
-    return getInfo(type)->name;
+zvalue className(zvalue cls) {
+    assertHasClassClass(cls);
+    return getInfo(cls)->name;
 }
 
 // Documented in header.
-zvalue classParent(zvalue type) {
-    assertHasClassType(type);
-    return getInfo(type)->parent;
+zvalue classParent(zvalue cls) {
+    assertHasClassClass(cls);
+    return getInfo(cls)->parent;
 }
 
 // Documented in header.
@@ -242,13 +242,13 @@ zint get_classIndex(zvalue value) {
 }
 
 // Documented in header.
-bool hasClass(zvalue value, zvalue type) {
-    assertHasClassType(type);
+bool hasClass(zvalue value, zvalue cls) {
+    assertHasClassClass(cls);
 
-    for (zvalue valueType = get_type(value);
-            valueType != NULL;
-            valueType = getInfo(valueType)->parent) {
-        if (classEq(valueType, type)) {
+    for (zvalue valueCls = get_type(value);
+            valueCls != NULL;
+            valueCls = getInfo(valueCls)->parent) {
+        if (classEq(valueCls, cls)) {
             return true;
         }
     }
@@ -264,7 +264,7 @@ bool haveSameClass(zvalue value, zvalue other) {
 // Documented in header.
 zvalue makeCoreClass(zvalue name, zvalue parent) {
     if (findClass(name, theCoreSecret) != NULL) {
-        die("Core type already created.");
+        die("Core class already created.");
     }
 
     return makeClass(name, parent);
@@ -288,18 +288,18 @@ zvalue makeDerivedDataClass(zvalue name) {
 
 // Documented in header.
 METH_IMPL(Type, debugString) {
-    zvalue type = args[0];
-    ClassInfo *info = getInfo(type);
+    zvalue cls = args[0];
+    ClassInfo *info = getInfo(cls);
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
         return info->name;
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (classParent(type) == TYPE_DerivedData) {
+    } else if (classParent(cls) == TYPE_DerivedData) {
         extraString = EMPTY_STRING;
     } else {
-        die("Shouldn't happen: opaque type without secret.");
+        die("Shouldn't happen: opaque class without secret.");
     }
 
     return GFN_CALL(cat,
@@ -311,8 +311,8 @@ METH_IMPL(Type, debugString) {
 
 // Documented in header.
 METH_IMPL(Type, gcMark) {
-    zvalue type = args[0];
-    ClassInfo *info = getInfo(type);
+    zvalue cls = args[0];
+    ClassInfo *info = getInfo(cls);
 
     datMark(info->name);
     datMark(info->secret);
@@ -335,7 +335,7 @@ METH_IMPL(Type, totalOrder) {
 }
 
 /**
- * Define `typeSystem` as a module, as separate from the `Type` type.
+ * Define `typeSystem` as a module, as separate from the `Class` class.
  */
 MOD_INIT(typeSystem) {
     TYPE_Type = allocClass();

@@ -22,27 +22,27 @@ extern zvalue TYPE_Type;
  * the process with a diagnostic message. **Note:** This does not do a
  * validity check on the given arguments.
  */
-void assertHasClass(zvalue value, zvalue type);
+void assertHasClass(zvalue value, zvalue cls);
 
 /**
  * Returns the unique index for the given type.
  */
-zint classIndex(zvalue type);
+zint classIndex(zvalue cls);
 
 /**
  * Returns true iff the given type is derived (whether pure data or not).
  */
-bool classIsDerived(zvalue type);
+bool classIsDerived(zvalue cls);
 
 /**
  * Gets the name of the given type.
  */
-zvalue className(zvalue type);
+zvalue className(zvalue cls);
 
 /**
  * Gets the parent type of the given type.
  */
-zvalue classParent(zvalue type);
+zvalue classParent(zvalue cls);
 
 /**
  * Returns the unique index for the type of the given value.
@@ -53,7 +53,7 @@ zint get_classIndex(zvalue value);
  * Returns true iff the type of the given value (that is, `get_type(value)`)
  * is either the given type or is a subtype of the given type.
  */
-bool hasClass(zvalue value, zvalue type);
+bool hasClass(zvalue value, zvalue cls);
 
 /**
  * Returns true iff the types of the given values (that is, `get_type()` on
