@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `ClosedRange` Type
+## `ClosedRange` Class
 ##
 ## Payload: `{start: intOrChar, increment: int, size: int}`
 

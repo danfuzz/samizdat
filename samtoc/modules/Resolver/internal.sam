@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Type definition: InternalResolver
+## Class definition: InternalResolver
 ##
 ## Payload:
 ## * cache -- cache of resolved results

@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `FilterGenerator` Type
+## `FilterGenerator` Class
 ##
 ## Payload is a map `{filterFunction: function, generator: subGen}`.
 ## `subGen` is expected to produce lists of arguments to apply.

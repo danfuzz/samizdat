@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Type definition: ResolveCache
+## Class definition: ResolveCache
 ##
 ## Payload:
 ## * box -- box for map of source->info bindings

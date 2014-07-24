@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Type definition: `null` as a Resolver
+## Class definition: `null` as a Resolver
 ##
 
 import ./protocol :: resolve;

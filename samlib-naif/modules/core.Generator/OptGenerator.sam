@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `OptGenerator` Type
+## `OptGenerator` Class
 ##
 ## Payload is `{generator}`, the sub-generator.
 

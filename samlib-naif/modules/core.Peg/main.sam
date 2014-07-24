@@ -13,7 +13,7 @@ import core.Generator :: filterPump, makeFilterGenerator;
 
 
 ##
-## Type Definitions
+## Class Definitions
 ##
 
 ## Documented in spec.
