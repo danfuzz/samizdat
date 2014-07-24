@@ -6,7 +6,7 @@
 
 #include "type/List.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "io.h"
 #include "util.h"
 

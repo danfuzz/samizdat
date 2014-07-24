@@ -7,7 +7,7 @@
 #include "type/List.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "type/Value.h"
 #include "zlimits.h"
 

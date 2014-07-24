@@ -15,7 +15,7 @@
 #include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "zlimits.h"
 
 #include "impl.h"

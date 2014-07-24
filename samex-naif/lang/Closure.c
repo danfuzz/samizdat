@@ -14,7 +14,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "util.h"
 #include "zlimits.h"
 

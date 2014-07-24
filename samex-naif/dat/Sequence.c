@@ -17,7 +17,7 @@
 #include "type/Map.h"
 #include "type/Sequence.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 
 #include "impl.h"
 

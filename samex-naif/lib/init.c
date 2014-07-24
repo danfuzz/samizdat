@@ -21,7 +21,7 @@
 #include "type/Number.h"
 #include "type/OneOff.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "type/Uniqlet.h"
 #include "type/Value.h"
 #include "util.h"

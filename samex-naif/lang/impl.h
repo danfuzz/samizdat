@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 #include "lang.h"
-#include "type/Type.h"
+#include "type/Class.h"
 #include "zlimits.h"
 
 

@@ -8,7 +8,7 @@
 
 #include "type/Collection.h"
 #include "type/String.h"
-#include "type/Type.h"
+#include "type/Class.h"
 
 #include "impl.h"
 

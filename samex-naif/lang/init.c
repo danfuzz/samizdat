@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "const.h"
-#include "type/Type.h"
+#include "type/Class.h"
 
 #include "impl.h"
 
