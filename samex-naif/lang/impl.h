@@ -110,7 +110,7 @@ void frameSnap(Frame *target, Frame *source);
  * Gets the evaluation type (enumerated value) of the given node.
  */
 inline zevalType get_evalType(zvalue node) {
-    return langTypeMap[get_typeIndex(node)];
+    return langTypeMap[get_classIndex(node)];
 }
 
 #endif

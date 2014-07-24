@@ -25,9 +25,14 @@ extern zvalue TYPE_Type;
 void assertHasClass(zvalue value, zvalue type);
 
 /**
+ * Returns the unique index for the given type.
+ */
+zint classIndex(zvalue type);
+
+/**
  * Returns the unique index for the type of the given value.
  */
-zint get_typeIndex(zvalue value);
+zint get_classIndex(zvalue value);
 
 /**
  * Returns true iff the type of the given value (that is, `get_type(value)`)
@@ -52,11 +57,6 @@ zvalue makeCoreType(zvalue name, zvalue parent);
  * Returns the type value for the derived data type with the given name.
  */
 zvalue makeDerivedDataType(zvalue name);
-
-/**
- * Returns the unique index for the given type.
- */
-zint typeIndex(zvalue type);
 
 /**
  * Returns true iff the given type is derived (whether pure data or not).

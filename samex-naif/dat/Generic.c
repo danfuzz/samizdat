@@ -78,7 +78,7 @@ static zvalue findByType(zvalue generic, zvalue type, zvalue *boundType) {
     zvalue *functions = getInfo(generic)->functions;
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
-        zvalue result = functions[typeIndexUnchecked(type)];
+        zvalue result = functions[classIndexUnchecked(type)];
         if (result != NULL) {
             if (boundType != NULL) {
                 *boundType = type;
@@ -149,7 +149,7 @@ void genericBind(zvalue generic, zvalue type, zvalue function) {
     assertHasClass(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zint index = typeIndex(type);
+    zint index = classIndex(type);
 
     if (info->sealed) {
         die("Sealed generic.");

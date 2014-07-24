@@ -103,6 +103,14 @@ typedef struct {
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
+ * Gets the index for a given type value. The given value *must* be a
+ * `Type` per se; this is *not* checked.
+ */
+inline zint classIndexUnchecked(zvalue type) {
+    return ((TypeInfo *) datPayload(type))->typeId;
+}
+
+/**
  * Actual implementation of generic function calling. This is where
  * short-circuited generic function dispatch of `call` on type `Generic`
  * lands.
@@ -114,14 +122,6 @@ zvalue genericCall(zvalue function, zint argCount, const zvalue *args);
  * if any. Returns `NULL` if there is no binding.
  */
 zvalue genericFindByIndex(zvalue generic, zint index);
-
-/**
- * Gets the index for a given type value. The given value *must* be a
- * `Type` per se; this is *not* checked.
- */
-inline zint typeIndexUnchecked(zvalue type) {
-    return ((TypeInfo *) datPayload(type))->typeId;
-}
 
 /**
  * Actual implementation of nonlocal jump calling. This is where
