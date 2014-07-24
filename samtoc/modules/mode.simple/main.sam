@@ -175,8 +175,8 @@ export fn compile(resolver, sourcePath, targetPath) {
         return resolver.resolve(source)
     };
 
-    ## Note: The node resulting from a call to `readProgram` is always of
-    ## type `closure`.
+    ## Note: The node resulting from a call to `readProgram` is always a
+    ## `@closure`.
     def sourceTree = $Reader::readProgram(sourcePath, resolveFn);
     def mainNode = withDynamicImports(sourceTree);
 

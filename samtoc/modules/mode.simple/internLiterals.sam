@@ -15,7 +15,7 @@ import ./Interner :: intern;
 
 ## Does one layer of literal interning.
 fn lits(node, interner) {
-    return switch (def type = get_class(node)) {
+    return switch (def cls = get_class(node)) {
         @@apply: {
             def function = lits(node.function, interner);
             def values = lits(node.values, interner);
@@ -68,13 +68,13 @@ fn lits(node, interner) {
         ## Used as the `source` in `import*` nodes.
         @@external:
         @@internal: {
-            @(type){name: interner.intern(node::name)}
+            @(cls){name: interner.intern(node::name)}
         };
 
         @@importModule:
         @@importModuleSelection: {
             def source = lits(node.source, interner);
-            @(type){dataOf(node)*, source}
+            @(cls){dataOf(node)*, source}
         };
 
         @@varDef:
@@ -82,14 +82,14 @@ fn lits(node, interner) {
             def value = ifValue { node.nodeValue }
                 { value -> {value: lits(value, interner)} }
                 { {} };
-            @(type){name: node.name, value*}
+            @(cls){name: node.name, value*}
         };
 
         @@export:
         @@maybe:
         @@noYield: {
             def value = lits(node.nodeValue, interner);
-            @(type){value}
+            @(cls){value}
         };
 
         @@exportSelection:

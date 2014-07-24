@@ -14,7 +14,7 @@ import VarCalc :: get_varRefs;
 
 ## Does one layer of body collection.
 fn bodies(node, bodiesBox) {
-    return switch (def type = get_class(node)) {
+    return switch (def cls = get_class(node)) {
         @@apply: {
             def function = bodies(node.function, bodiesBox);
             def values = bodies(node.values, bodiesBox);
@@ -68,14 +68,14 @@ fn bodies(node, bodiesBox) {
             def value = ifValue { node.nodeValue }
                 { value -> {value: bodies(value, bodiesBox)} }
                 { {} };
-            @(type){name: node.name, value*}
+            @(cls){name: node.name, value*}
         };
 
         @@export:
         @@maybe:
         @@noYield: {
             def value = bodies(node.nodeValue, bodiesBox);
-            @(type){value}
+            @(cls){value}
         };
 
         @@exportSelection:

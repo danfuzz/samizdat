@@ -46,7 +46,7 @@ fn nonVoid(value) {
 
 ## Translates a node, using and updating `varsBox` as appropriate.
 export fn translate(node, varsBox) {
-    return switch (get_class(node)) {
+    return switch (def cls = get_class(node)) {
         @@apply: {
             def function = translate(node.function, varsBox);
             def values = node.values;
@@ -154,7 +154,7 @@ export fn translate(node, varsBox) {
         @@importResource:
         @@maybe:
         @@void: {
-            die("Cannot translate \(@(type)).")
+            die("Cannot translate \(@(cls)).")
         }
     }
 };
