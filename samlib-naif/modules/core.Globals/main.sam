@@ -17,14 +17,14 @@
 
 import ./constants;
 import ./primitives;
+import ./Class;
 import ./Value;
-import ./Type;
 
 def EARLY_GLOBALS = {
     $constants*,
     $primitives*,
-    $Value*,
-    $Type*
+    $Class*,
+    $Value*
 };
 
 
