@@ -31,7 +31,7 @@ extern void *datPayload(zvalue value);
 
 // Documented in header.
 zvalue get_type(zvalue value) {
-    return value->type;
+    return value->cls;
 }
 
 // Documented in header.

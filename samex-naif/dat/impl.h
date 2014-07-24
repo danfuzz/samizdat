@@ -50,7 +50,7 @@ typedef struct DatHeader {
     bool marked : 1;
 
     /** Class of the value. This is always a `Class` instance. */
-    zvalue type;
+    zvalue cls;
 
     /** Class-specific data goes here. */
     uint8_t payload[/*flexible*/];

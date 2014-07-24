@@ -49,7 +49,7 @@ static ClassInfo *getInfo(zvalue cls) {
  */
 static void classInit(zvalue cls, zvalue parent, zvalue name) {
     if (theNextClassId == DAT_MAX_CLASSES) {
-        die("Too many types!");
+        die("Too many classes!");
     }
 
     if ((parent == NULL) && (cls != TYPE_Value)) {
@@ -339,7 +339,7 @@ METH_IMPL(Type, totalOrder) {
  */
 MOD_INIT(typeSystem) {
     TYPE_Type = allocClass();
-    TYPE_Type->type = TYPE_Type;
+    TYPE_Type->cls = TYPE_Type;
 
     TYPE_Value       = allocClass();
     TYPE_Data        = allocClass();

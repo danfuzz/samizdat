@@ -35,7 +35,7 @@ static DatHeader liveHead = {
     .prev = &liveHead,
     .magic = 0,
     .marked = false,
-    .type = NULL
+    .cls = NULL
 };
 
 /**
@@ -46,7 +46,7 @@ static DatHeader doomedHead = {
     .prev = &doomedHead,
     .magic = 0,
     .marked = false,
-    .type = NULL
+    .cls = NULL
 };
 
 /** Number of allocations since the last garbage collection. */
@@ -196,7 +196,7 @@ static void doGc(void) {
         item->next = item->prev = NULL;
         item->marked = 999;
         item->magic = 999;
-        item->type = NULL;
+        item->cls = NULL;
 
         utilFree(item);
         item = next;
@@ -234,7 +234,7 @@ static void doGc(void) {
 //
 
 // Documented in header.
-zvalue datAllocValue(zvalue type, zint extraBytes) {
+zvalue datAllocValue(zvalue cls, zint extraBytes) {
     if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
         datGc();
     } else {
@@ -243,7 +243,7 @@ zvalue datAllocValue(zvalue type, zint extraBytes) {
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
     result->magic = DAT_VALUE_MAGIC;
-    result->type = type;
+    result->cls = cls;
 
     allocationCount++;
     enlist(&liveHead, result);
@@ -263,8 +263,8 @@ void assertValid(zvalue value) {
         die("Invalid value (incorrect magic): %p", value);
     }
 
-    if (value->type == NULL) {
-        die("Invalid value (null type): %p", value);
+    if (value->cls == NULL) {
+        die("Invalid value (null class): %p", value);
     }
 }
 
@@ -315,8 +315,8 @@ void datMark(zvalue value) {
 
     GFN_CALL(gcMark, value);
 
-    // As of this writing, types are all immortal, but that may change. This
+    // As of this writing, classes are all immortal, but that may change. This
     // `datMark` call has negligible cost and safeguards against that possible
     // change.
-    datMark(value->type);
+    datMark(value->cls);
 }
