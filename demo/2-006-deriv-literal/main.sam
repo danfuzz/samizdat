@@ -29,7 +29,7 @@ msg(@"Null");
 msg(@Null);
 msg(null);
 
-## This is not the same as the above, as the type name is `null`, not `"Null"`.
+## This is not the same as the above, as the class name is `null`, not `"Null"`.
 msg(@(@@(null)));
 
 ## These all refer to the same value.

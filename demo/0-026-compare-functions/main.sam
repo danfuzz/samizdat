@@ -41,7 +41,7 @@ test(perOrder, 10, 20);
 test(perOrder, 20, 10);
 
 ## Note: The `total*` generics are unitype (that is, both arguments must match
-## the dispatch type). It's the non-generic `eq` and `order` which can deal
+## the dispatch class). It's the non-generic `eq` and `order` which can deal
 ## with two different-typed arguments.
 test(totalEq, 10, 10);
 test(totalEq, 10, 20);

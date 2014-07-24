@@ -34,8 +34,8 @@ var foo = 10;
 msg(var foo);       ## a box
 msg(makeUniqlet());
 
-msg(Value);         ## a core type
-msg(@@blort);       ## a derived value type
+msg(Value);         ## a core class
+msg(@@blort);       ## a derived value class
 msg(eq);            ## a builtin function
 msg(debugString);   ## a generic function
 msg(msg);           ## a named in-language function
