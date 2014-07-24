@@ -335,9 +335,9 @@ METH_IMPL(Class, totalOrder) {
 }
 
 /**
- * Define `typeSystem` as a module, as separate from the `Class` class.
+ * Define `objectModel` as a module, as separate from the `Class` class.
  */
-MOD_INIT(typeSystem) {
+MOD_INIT(objectModel) {
     TYPE_Class = allocClass();
     TYPE_Class->cls = TYPE_Class;
 
@@ -389,7 +389,7 @@ MOD_INIT(typeSystem) {
 MOD_INIT(Class) {
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module (directly above) initializes `TYPE_Class`.
+    // Note: The `objectModel` module (directly above) initializes `TYPE_Class`.
 
     METH_BIND(Class, debugString);
     METH_BIND(Class, gcMark);

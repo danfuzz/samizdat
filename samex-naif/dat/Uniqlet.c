@@ -25,7 +25,7 @@ zvalue makeUniqlet(void) {
 MOD_INIT(Uniqlet) {
     MOD_USE(Value);
 
-    // Note: The `typeSystem` module initializes `TYPE_Uniqlet`.
+    // Note: The `objectModel` module initializes `TYPE_Uniqlet`.
 
     // This function is just left here as a positive indication that there
     // is nothing to do.

@@ -155,7 +155,7 @@ MOD_INIT(Builtin) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_Builtin`.
+    // Note: The `objectModel` module initializes `TYPE_Builtin`.
 
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, debugName);

@@ -523,7 +523,7 @@ MOD_INIT(String) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_String`.
+    // Note: The `objectModel` module initializes `TYPE_String`.
 
     METH_BIND(String, cat);
     METH_BIND(String, collect);

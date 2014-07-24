@@ -100,7 +100,7 @@ METH_IMPL(Jump, gcMark) {
 MOD_INIT(Jump) {
     MOD_USE(Function);
 
-    // Note: The `typeSystem` module initializes `TYPE_Jump`.
+    // Note: The `objectModel` module initializes `TYPE_Jump`.
 
     METH_BIND(Jump, call);
     METH_BIND(Jump, debugString);

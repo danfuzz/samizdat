@@ -193,7 +193,7 @@ METH_IMPL(Value, totalOrder) {
 
 /** Initializes the module. */
 MOD_INIT(Value) {
-    MOD_USE(typeSystem);
+    MOD_USE(objectModel);
 
     // Initializing `Value` also initializes the rest of the core types.
     // This also gets all the protocols indirectly via their implementors.
@@ -208,7 +208,7 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(DerivedData);
 
-    // Note: The `typeSystem` module initializes `TYPE_Value`.
+    // Note: The `objectModel` module initializes `TYPE_Value`.
 
     GFN_debugName = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugName"));
     datImmortalize(GFN_debugName);

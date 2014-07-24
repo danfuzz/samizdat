@@ -19,7 +19,7 @@
 MOD_INIT(Data) {
     MOD_USE(Value);
 
-    // Note: The `typeSystem` module initializes `TYPE_Data`.
+    // Note: The `objectModel` module initializes `TYPE_Data`.
     // So, there's nothing to do here, at least for now.
 }
 

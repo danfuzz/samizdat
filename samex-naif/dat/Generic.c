@@ -240,7 +240,7 @@ MOD_INIT(Generic) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    // Note: The `typeSystem` module initializes `TYPE_Generic`.
+    // Note: The `objectModel` module initializes `TYPE_Generic`.
 
     METH_BIND(Generic, call);
     METH_BIND(Generic, debugName);

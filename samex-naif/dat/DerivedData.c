@@ -117,7 +117,7 @@ METH_IMPL(DerivedData, totalOrder) {
 MOD_INIT(DerivedData) {
     MOD_USE(Data);
 
-    // Note: The `typeSystem` module initializes `TYPE_DerivedData`.
+    // Note: The `objectModel` module initializes `TYPE_DerivedData`.
 
     GFN_dataOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "dataOf"));
     datImmortalize(GFN_dataOf);
