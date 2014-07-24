@@ -195,7 +195,7 @@ def tokError = {:
     [! "\n"]*
 
     {
-        def msg = cat("Unrecognized character: ", get_typeName(badCh));
+        def msg = cat("Unrecognized character: ", get_className(badCh));
         @error{value: msg}
     }
 :};

@@ -157,7 +157,7 @@ def parIdentifierString = {:
     {
         ifNot { dataOf(token) }
             {
-                def type = get_typeName(token);
+                def type = get_className(token);
                 def firstCh = nth(type, 0);
                 ifIs { get(LOWER_ALPHA, firstCh) }
                     { makeLiteral(type) }
@@ -462,7 +462,7 @@ def parYieldOrNonlocal = {:
             { @yield }
         )
     |
-        { makeVarFetch(get_typeName(op)) }
+        { makeVarFetch(get_className(op)) }
     )
 
     ## A value expression is mandatory if there is a `?` after the
@@ -526,7 +526,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_typeName(r)} }
+        { {repeat: get_className(r)} }
     |
         { {} }
     )

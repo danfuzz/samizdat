@@ -349,7 +349,7 @@ DEF_PARSE(identifierString) {
     result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
     REJECT_IF(dataOf(result) != NULL);
 
-    zvalue type = typeName(get_type(result));
+    zvalue type = className(get_type(result));
     zchar firstCh = zcharFromString(nth(type, 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
@@ -744,7 +744,7 @@ DEF_PARSE(yieldOrNonlocal) {
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
-        name = makeVarFetch(typeName(get_type(op)));
+        name = makeVarFetch(className(get_type(op)));
     }
 
     zvalue value = PARSE(expression);   // It's okay for this to be `NULL`.
@@ -838,7 +838,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1);  // Okay for it to be `NULL`.
     if (repeat != NULL) {
-        repeat = typeName(get_type(repeat));
+        repeat = className(get_type(repeat));
     }
 
     return mapFrom2(STR_name, name, STR_repeat, repeat);

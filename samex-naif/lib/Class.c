@@ -17,11 +17,11 @@ FUN_IMPL_DECL(makeDerivedDataClass) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(typeName) {
-    return typeName(args[0]);
+FUN_IMPL_DECL(className) {
+    return className(args[0]);
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(typeParent) {
-    return typeParent(args[0]);
+FUN_IMPL_DECL(classParent) {
+    return classParent(args[0]);
 }

@@ -121,7 +121,7 @@ def parIdentifierString = makeMainChoice(
         makeCode { token ->
             ifNot { dataOf(token) }
                 {
-                    def type = get_typeName(token);
+                    def type = get_className(token);
                     def firstCh = nth(type, 0);
                     ifIs { get(LOWER_ALPHA, firstCh) }
                         { makeLiteral(type) }
@@ -347,7 +347,7 @@ def parYieldOrNonlocal = makeMainSequence(
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield))),
-        makeCode { op, . -> makeVarFetch(get_typeName(op)) }),
+        makeCode { op, . -> makeVarFetch(get_className(op)) }),
     makeChoice(
         makeSequence(
             parExpression,
@@ -406,7 +406,7 @@ def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
-            makeCode { ., r -> {repeat: get_typeName(r)} }),
+            makeCode { ., r -> {repeat: get_className(r)} }),
         makeResult({})),
     makeCode { name, repeat -> {name*, repeat*} });
 

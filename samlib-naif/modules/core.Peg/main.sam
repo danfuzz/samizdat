@@ -380,5 +380,5 @@ export fn makeTokenSetComplement(tokens*) {
 
 ## Documented in spec.
 export fn stringFromTokenList(tokens) {
-    return cat("", collect(tokens, get_typeName)*)
+    return cat("", collect(tokens, get_className)*)
 };

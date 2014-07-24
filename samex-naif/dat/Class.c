@@ -220,6 +220,18 @@ zint classIndex(zvalue type) {
 }
 
 // Documented in header.
+zvalue className(zvalue type) {
+    assertHasClassType(type);
+    return getInfo(type)->name;
+}
+
+// Documented in header.
+zvalue classParent(zvalue type) {
+    assertHasClassType(type);
+    return getInfo(type)->parent;
+}
+
+// Documented in header.
 zint get_classIndex(zvalue value) {
     return classIndexUnchecked(get_type(value));
 }
@@ -266,19 +278,7 @@ zvalue makeDerivedDataClass(zvalue name) {
 
 // Documented in header.
 bool typeIsDerived(zvalue type) {
-    return typeParent(type) == TYPE_DerivedData;
-}
-
-// Documented in header.
-zvalue typeName(zvalue type) {
-    assertHasClassType(type);
-    return getInfo(type)->name;
-}
-
-// Documented in header.
-zvalue typeParent(zvalue type) {
-    assertHasClassType(type);
-    return getInfo(type)->parent;
+    return classParent(type) == TYPE_DerivedData;
 }
 
 
@@ -296,7 +296,7 @@ METH_IMPL(Type, debugString) {
         return info->name;
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (typeParent(type) == TYPE_DerivedData) {
+    } else if (classParent(type) == TYPE_DerivedData) {
         extraString = EMPTY_STRING;
     } else {
         die("Shouldn't happen: opaque type without secret.");

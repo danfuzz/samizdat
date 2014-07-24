@@ -99,9 +99,9 @@ fn Type_sourceGeneral(value, adorn) {
     ifValue { get(SPECIAL_VALUES, value) }
         { string -> return string };
 
-    def name = typeName(value);
+    def name = className(value);
 
-    ifNot { eq(typeParent(value), DerivedData) }
+    ifNot { eq(classParent(value), DerivedData) }
         { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
 
     def body = ifIs { hasClass(name, String) }
@@ -117,7 +117,7 @@ fn Value_sourceGeneral(value, adorn) {
         { string -> return string };
 
     def type = get_type(value);
-    def name = typeName(type);
+    def name = className(type);
     def typeStr = ifIs { hasClass(name, String) }
         {
             ## The type is a string.
@@ -129,7 +129,7 @@ fn Value_sourceGeneral(value, adorn) {
         };
     def prefix = cat("@", typeStr);
 
-    ifNot { eq(typeParent(type), DerivedData) }
+    ifNot { eq(classParent(type), DerivedData) }
         {
             ## Opaque value, possibly named.
             def body = ifValue { debugName(value) }

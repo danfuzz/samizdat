@@ -35,6 +35,16 @@ types), the order is arbitrary but consistent.
 <br><br>
 ### Primitive Definitions
 
+#### `className(type) -> . | void`
+
+Returns the name of the type. This is an arbitrary value associated with
+a type, which is typically (but not necessarily) a string.
+
+#### `classParent(type) -> type | void`
+
+Returns the parent type (that is, the supertype) of the given type. This
+returns a type for all types except `Value`.
+
 #### `makeDerivedDataClass(name) -> type`
 
 Returns a `Type` instance which represents a derived data type
@@ -48,16 +58,6 @@ source code:
 ```
 
 **Note:** This is used in the translation of `@@name` and `@@(name)`forms.
-
-#### `typeName(type) -> . | void`
-
-Returns the name of the type. This is an arbitrary value associated with
-a type, which is typically (but not necessarily) a string.
-
-#### `typeParent(type) -> type | void`
-
-Returns the parent type (that is, the supertype) of the given type. This
-returns a type for all types except `Value`.
 
 
 <br><br>

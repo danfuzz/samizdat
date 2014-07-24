@@ -198,10 +198,10 @@ identical to it. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \>= expression` forms.
 
-#### `get_typeName(value) -> .`
+#### `get_className(value) -> .`
 
 Returns the name of the given `value`'s type. This function is the equivalent
-to `typeName(get_type(value))`.
+to `className(get_type(value))`.
 
 #### `gt(value, other) -> logic`
 

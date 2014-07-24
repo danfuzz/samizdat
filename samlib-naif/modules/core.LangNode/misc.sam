@@ -41,7 +41,7 @@ def INT_CHARS = {
 
 ## Given a digit token, returns the digit value as an int.
 fn intFromDigitToken(ch) {
-    return get(INT_CHARS, get_typeName(ch))
+    return get(INT_CHARS, get_className(ch))
 };
 
 

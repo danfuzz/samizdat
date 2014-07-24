@@ -67,5 +67,5 @@ export
     toString,
     totalEq,
     totalOrder,
-    typeName,
-    typeParent;
+    className,
+    classParent;

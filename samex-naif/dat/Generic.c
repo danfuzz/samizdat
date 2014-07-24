@@ -77,7 +77,7 @@ static char *callReporter(void *state) {
 static zvalue findByType(zvalue generic, zvalue type, zvalue *boundType) {
     zvalue *functions = getInfo(generic)->functions;
 
-    for (/*type*/; type != NULL; type = typeParent(type)) {
+    for (/*type*/; type != NULL; type = classParent(type)) {
         zvalue result = functions[classIndexUnchecked(type)];
         if (result != NULL) {
             if (boundType != NULL) {
