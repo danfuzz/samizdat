@@ -7,47 +7,48 @@ Class
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(type, other) -> type | void`
+#### `perEq(cls, other) -> class | void`
 
 Default implementation.
 
-#### `perOrder(type, other) -> int`
+#### `perOrder(cls, other) -> int`
 
 Default implementation.
 
-#### `totalEq(type1, type2) -> map | void`
+#### `totalEq(cls1, cls2) -> map | void`
 
-Compares two types. Two types are equal if they are the actual same type.
+Compares two classes. Two different classes are never equal.
 
 #### `totalOrder(map1, map2) -> int`
 
-Compares two types for order, as follows:
+Compares two classes for order, as follows:
 
-* Core (primitive) types order earlier than all other types.
-* Derived data types order earlier than everything but core types.
-* Opaque derived types order after all other types.
+* Core (primitive) classes order earlier than all other classes.
+* Derived data classes order earlier than everything but core classes.
+* Opaque derived classes order after all other classes.
 
-Within each category, types are ordered by name. For two different types
+Within each category, classes are ordered by name. For two different classes
 with the same category and name (which can happen only with opaque derived
-types), the order is arbitrary but consistent.
+classes), the order is arbitrary but consistent.
 
 
 <br><br>
 ### Primitive Definitions
 
-#### `className(type) -> . | void`
+#### `className(cls) -> . | void`
 
-Returns the name of the type. This is an arbitrary value associated with
-a type, which is typically (but not necessarily) a string.
+Returns the name of the class. This is an arbitrary value associated with
+a class, which is typically (but not necessarily) a string.
 
-#### `classParent(type) -> type | void`
+#### `classParent(cls) -> class | void`
 
-Returns the parent type (that is, the supertype) of the given type. This
-returns a type for all types except `Value`.
+Returns the parent class (that is, the superclass) of the given class. This
+returns a class for all classes except `Value`. For `Value`, this returns
+void.
 
-#### `makeDerivedDataClass(name) -> type`
+#### `makeDerivedDataClass(name) -> class`
 
-Returns a `Type` instance which represents a derived data type
+Returns a `Class` instance which represents a derived data class
 with the given `name`. `name` can be an arbitrary value but is most
 typically a string. The following equivalences hold for Samizdat
 source code:
