@@ -19,7 +19,7 @@ typedef enum {
     /**
      * Indicates that all arguments to the function must be of the same class.
      */
-    GFN_SAME_TYPE = 1
+    GFN_SAME_CLASS = 1
 } zgenericFlags;
 
 /** C function name for a method on the given class with the given name. */

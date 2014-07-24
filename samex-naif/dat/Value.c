@@ -227,11 +227,11 @@ MOD_INIT(Value) {
     datImmortalize(GFN_perOrder);
 
     GFN_totalEq =
-        makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalEq"));
+        makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "totalEq"));
     datImmortalize(GFN_totalEq);
 
     GFN_totalOrder =
-        makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totalOrder"));
+        makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "totalOrder"));
     datImmortalize(GFN_totalOrder);
 
     METH_BIND(Value, debugName);

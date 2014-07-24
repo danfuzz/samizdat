@@ -119,7 +119,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
             valDebugString(generic), valDebugString(args[0]));
     }
 
-    if (info->flags & GFN_SAME_TYPE) {
+    if (info->flags & GFN_SAME_CLASS) {
         for (zint i = 1; i < argCount; i++) {
             if (!hasClass(args[i], firstCls)) {
                 die("Class mismatch on argument #%lld of: %s(%s, ...)",

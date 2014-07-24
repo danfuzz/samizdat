@@ -54,5 +54,5 @@ FUN_IMPL_DECL(makeRegularGeneric) {
 
 // Documented in spec.
 FUN_IMPL_DECL(makeUnitypeGeneric) {
-    return doMakeGeneric(GFN_SAME_TYPE, argCount, args);
+    return doMakeGeneric(GFN_SAME_CLASS, argCount, args);
 }
