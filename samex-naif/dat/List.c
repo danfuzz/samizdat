@@ -79,6 +79,12 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
         utilCpy(zvalue, resultElems + size1 + insertCount, elems2, size2);
     }
 
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        for (zint i = 0; i < size; i++) {
+            assertValid(resultElems[i]);
+        }
+    }
+
     return result;
 }
 
