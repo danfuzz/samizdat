@@ -117,7 +117,7 @@ METH_IMPL(Bool, shl) {
     if (amt == 0) {
         return value;
     } else if (amt < 0) {
-        return INT_0;
+        return BOOL_FALSE;
     } else {
         die("Undefined `bool` shift result.");
     }
