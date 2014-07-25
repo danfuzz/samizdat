@@ -13,6 +13,7 @@
 //
 
 // Classes.
+PRIM_DEF(Bool,                    CLS_Bool);
 PRIM_DEF(Class,                   CLS_Class);
 PRIM_DEF(Data,                    CLS_Data);
 PRIM_DEF(DerivedData,             CLS_DerivedData);
@@ -22,6 +23,10 @@ PRIM_DEF(Map,                     CLS_Map);
 PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
+
+// Special values.
+PRIM_DEF(false,                   BOOL_FALSE);
+PRIM_DEF(true,                    BOOL_TRUE);
 
 // Generic functions for all values.
 PRIM_DEF(debugName,               GFN_debugName);
