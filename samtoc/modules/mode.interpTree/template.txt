@@ -5,6 +5,7 @@
 // This code *might* be derived from a copyrighted source. Proceed with
 // caution!
 
+#include "type/Bool.h"
 #include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Int.h"
