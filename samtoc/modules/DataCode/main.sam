@@ -114,7 +114,7 @@ fn stringChar(ch) {
 
 ## Converts a bool.
 fn Bool_convert(value) {
-    return value** & "true" | "false"
+    return value** & "BOOL_TRUE" | "BOOL_FALSE"
 };
 
 ## Converts a class. Only works on derived data classes.
