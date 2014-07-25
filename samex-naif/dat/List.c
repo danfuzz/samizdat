@@ -53,7 +53,7 @@ static zvalue allocList(zint size) {
  * Combines up to two element arrays and an additional element into a
  * single new list. This can also be used for a single array by
  * passing `size2` as `0`. If `insert` is non-`NULL`, that element is
- * placed in between the two lists of array contents in the result
+ * placed in between the two lists of array contents in the result.
  */
 static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
                        zint size2, const zvalue *elems2) {
