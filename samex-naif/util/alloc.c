@@ -19,7 +19,7 @@ enum {
      * Whether to be paranoid about corruption checks. If false,
      * `utilIsHeapAllocated` turns into a `NULL` check.
      */
-    THEYRE_OUT_TO_GET_ME = false
+    MEMORY_PARANOIA = false
 };
 
 /**
@@ -142,7 +142,7 @@ void *utilAlloc(zint size) {
         die("Failed to allocate: size %#llx", size);
     }
 
-    if (THEYRE_OUT_TO_GET_ME) {
+    if (MEMORY_PARANOIA) {
         addPages(result, ((char *) result) + size);
     }
 
@@ -156,7 +156,7 @@ void utilFree(void *memory) {
 
 // Documented in header.
 bool utilIsHeapAllocated(void *memory) {
-    if (!THEYRE_OUT_TO_GET_ME) {
+    if (!MEMORY_PARANOIA) {
         return memory != NULL;
     }
 
