@@ -6,10 +6,11 @@
 // Lowest level type definitions
 //
 
-#ifndef _ZCLS_H_
-#define _ZCLS_H_
+#ifndef _ZTYPE_H_
+#define _ZTYPE_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * 64-bit integer. This is the type used for all lowest-level integer
@@ -23,6 +24,12 @@ typedef int64_t zint;
  * points).
  */
 typedef uint32_t zchar;
+
+/**
+ * 1-bit boolean. This is the type used as the underlying representation
+ * of in-model boolean values.
+ */
+typedef bool zbool;
 
 enum {
     /** Number of bits in type `zchar`. */
