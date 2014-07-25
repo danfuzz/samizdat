@@ -29,6 +29,8 @@ fn expect(name, result, func, args*) {
 ##
 
 note("Booleans");
+note($Format::source(false));
+note($Format::source(true));
 
 expect("and", false, $Bitwise::and, false, false);
 expect("and", false, $Bitwise::and, false, true);
