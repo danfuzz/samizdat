@@ -51,9 +51,19 @@ fn expectDerived(v) {
 ## Expect everything to be a "yes."
 ##
 
+## Bool
+
+note("Bool");
+
+expectDifferent(false, true);
+
+expectCore(false);
+expectCore(true);
+
+
 ## Int
 
-note("Int");
+note("\nInt");
 
 expectSame(0, 0);
 expectSame(100, 100);
@@ -177,8 +187,6 @@ expectSame(@boo, @(@@"boo"));
 expectSame(null, @Null);
 expectSame(null, @"Null");
 expectSame(null, @(@@Null));
-expectSame(false, @Boolean{value: 0});
-expectSame(true, @Boolean{value: 1});
 expectSame(@eek(10), @(@@eek)(10));
 expectSame(@eek(10), @eek($Number::add(5, 5)));
 expectSame(@eek(10), @(@@(cat("ee", "k")))(10));
@@ -195,5 +203,3 @@ expectDifferent(@false(1), @(@@(false))(1));
 expectDerived(@blort);
 expectDerived(@fizmo("igram"));
 expectDerived(null);
-expectDerived(false);
-expectDerived(true);
