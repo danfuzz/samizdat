@@ -58,16 +58,16 @@ Straightforward protocol implementation.
 <br><br>
 ### Primitive Definitions
 
-(none)
+#### Constant: `false`
+
+The boolean value false.
+
+#### Constant: `true`
+
+The boolean value true.
 
 
 <br><br>
 ### In-Language Definitions
 
-#### Constant: `false`
-
-The boolean value false. It is defined as `@Boolean{value: 0}`.
-
-#### Constant: `true`
-
-The boolean value true. It is defined as `@Boolean{value: 1}`.
+(none)
