@@ -14,10 +14,4 @@
 ##
 
 ## Documented in the spec.
-export def false = @Boolean{value: 0};
-
-## Documented in the spec.
-export def true = @Boolean{value: 1};
-
-## Documented in the spec.
 export def null = @Null;

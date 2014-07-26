@@ -28,6 +28,7 @@ extern zevalType get_evalType(zvalue node);
 /** Initializes the module. */
 MOD_INIT(lang) {
     MOD_USE(const);
+    MOD_USE(Bool);
     MOD_USE(Box);
     MOD_USE(Closure);
     MOD_USE(Generator);

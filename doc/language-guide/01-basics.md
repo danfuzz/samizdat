@@ -230,6 +230,7 @@ While this is a bit of a departure from the object-safe languages in the
 C family (such as Java and JavaScript), it is actually close to how C
 itself operates, in that void in Samizdat is very close in meaning to
 `NULL` in C. Samizdat departs from C in that void and `false` are
-not equivalent. Somewhat confusingly &mdash; but necessary to avoid certain
-ambiguities &mdash; the boolean value `false` counts as true, as
-far as logical expressions are concerned.
+not equivalent, and in that `void` is not ever allowed to be stored in
+a variable or passed as an argument. Somewhat confusingly &mdash; but
+necessary to avoid certain ambiguities &mdash; the boolean value `false`
+counts as true, as far as logical expressions are concerned.

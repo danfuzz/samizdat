@@ -46,7 +46,9 @@ zvalue dataOf(zvalue value) {
 
 // Documented in header.
 zvalue makeData(zvalue cls, zvalue data) {
-    assertValidOrNull(data);
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        assertValidOrNull(data);
+    }
 
     if (!classIsDerived(cls)) {
         die("Attempt to call `makeData` on an improper class.");

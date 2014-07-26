@@ -5,6 +5,7 @@
 // This code *might* be derived from a copyrighted source. Proceed with
 // caution!
 
+#include "type/Bool.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Class.h"

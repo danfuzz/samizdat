@@ -37,9 +37,6 @@ msg(@potion("blort"));
 msg(@"potion"("blort"));
 msg(@(@@potion)("blort"));
 
-msg(false);
-msg(true);
-
 msg(@blort);
 msg(@"%fizmo%");
 msg(@(@@(123)));

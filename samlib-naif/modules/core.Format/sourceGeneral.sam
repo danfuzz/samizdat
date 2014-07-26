@@ -37,6 +37,7 @@ fn collectionBody(elems) {
 
 ## Values with special conversions.
 def SPECIAL_VALUES = {
+    (Bool) :       "Bool",
     (Class):       "Class",
     (Data):        "Data",
     (DerivedData): "DerivedData",

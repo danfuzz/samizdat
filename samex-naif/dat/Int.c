@@ -45,8 +45,7 @@ static zint zintValue(zvalue intval) {
 /**
  * Constructs and returns an int.
  */
-zvalue intFrom(zint value) {
-    zint size = zintBitSize(value);
+static zvalue intFrom(zint value) {
     zvalue result = datAllocValue(CLS_Int, sizeof(IntInfo));
 
     ((IntInfo *) datPayload(result))->value = value;

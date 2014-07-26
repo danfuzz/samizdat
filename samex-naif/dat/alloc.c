@@ -15,14 +15,6 @@
 // Private Definitions
 //
 
-enum {
-    /** Whether to spew to the console during gc. */
-    CHATTY_GC = false,
-
-    /** Whether to be paranoid about corruption checks. */
-    THEYRE_OUT_TO_GET_ME = false
-};
-
 /** Array of all immortal values. */
 static zvalue immortals[DAT_MAX_IMMORTALS];
 
@@ -102,7 +94,7 @@ static void sanityCheckList(DatHeader *head) {
  * Sanity check the links and tables.
  */
 static void sanityCheck(bool force) {
-    if (!(force || THEYRE_OUT_TO_GET_ME)) {
+    if (!(force || DAT_MEMORY_PARANOIA)) {
         return;
     }
 
@@ -169,13 +161,13 @@ static void doGc(void) {
         datMark(immortals[i]);
     }
 
-    if (CHATTY_GC) {
+    if (DAT_CHATTY_GC) {
         note("GC: Marked %lld immortals.", immortalsSize);
     }
 
     zint count = markFrameStack();
 
-    if (CHATTY_GC) {
+    if (DAT_CHATTY_GC) {
         note("GC: Marked %lld stack values.", count);
     }
 
@@ -206,7 +198,7 @@ static void doGc(void) {
     doomedHead.next = &doomedHead;
     doomedHead.prev = &doomedHead;
 
-    if (CHATTY_GC) {
+    if (DAT_CHATTY_GC) {
         note("GC: Freed %lld dead values.", counter);
     }
 
@@ -221,7 +213,7 @@ static void doGc(void) {
         counter++;
     }
 
-    if (CHATTY_GC) {
+    if (DAT_CHATTY_GC) {
         note("GC: %lld live values remain.", counter);
     }
 
@@ -279,7 +271,7 @@ void assertValidOrNull(zvalue value) {
 void datGc(void) {
     allocationCount = 0;
 
-    if (CHATTY_GC) {
+    if (DAT_CHATTY_GC) {
         static double totalSec = 0;
         clock_t startTime = clock();
         doGc();

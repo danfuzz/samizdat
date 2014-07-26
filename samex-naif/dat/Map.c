@@ -209,6 +209,13 @@ zvalue mapFromArgs(zvalue first, ...) {
 
 // Documented in header.
 zvalue mapFromArray(zint size, zmapping *mappings) {
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        for (zint i = 0; i < size; i++) {
+            assertValid(mappings[i].key);
+            assertValid(mappings[i].value);
+        }
+    }
+
     // Handle special cases that are particularly easy.
     switch (size) {
         case 0: {
@@ -484,6 +491,11 @@ METH_IMPL(Map, put) {
     MapInfo *info = getInfo(map);
     zmapping *elems = info->elems;
     zint size = info->size;
+
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        assertValid(key);
+        assertValid(value);
+    }
 
     switch (size) {
         case 0: {

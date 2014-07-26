@@ -14,11 +14,11 @@
 
 
 enum {
-    /** "Magic number" for value validation. */
-    DAT_VALUE_MAGIC = 0x600f1e57,
+    /** Whether to spew to the console during gc. */
+    DAT_CHATTY_GC = false,
 
-    /** Required byte alignment for values. */
-    DAT_VALUE_ALIGNMENT = 8,
+    /** Whether to be paranoid about values in collections / derived values. */
+    DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */
     DAT_INDEX_BUILTIN = 4,
@@ -27,7 +27,16 @@ enum {
     DAT_INDEX_GENERIC = 5,
 
     /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 6
+    DAT_INDEX_JUMP = 6,
+
+    /** Whether to be paranoid about corruption checks. */
+    DAT_MEMORY_PARANOIA = false,
+
+    /** "Magic number" for value validation. */
+    DAT_VALUE_MAGIC = 0x600f1e57,
+
+    /** Required byte alignment for values. */
+    DAT_VALUE_ALIGNMENT = sizeof(zint)
 };
 
 /**

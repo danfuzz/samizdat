@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
+#include "type/Bool.h"
 #include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Int.h"
@@ -794,12 +795,9 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
-    // Contrary to the spec, we bind to `EMPTY_LIST` and not `true`, because
-    // (a) the actual value doesn't matter, and (b) `true` isn't available
-    // here in a straightforward way.
     return makeData(
         get_class(node),
-        collPut(dataOf(node), STR_top, EMPTY_LIST));
+        collPut(dataOf(node), STR_top, BOOL_TRUE));
 }
 
 

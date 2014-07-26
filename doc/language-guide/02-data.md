@@ -15,6 +15,21 @@ expressions anywhere where a literal value occurs in these examples.
 
 ### Core classes
 
+#### Bool
+
+A `Bool` is a boolean truth value. The two possible values of this class are
+`true` and `false`, with their usual interpretations.
+
+These values are most useful when placed into variables and passed
+as parameters to indicate flags, and they can also be used in bitwise
+expressions.
+
+Unlike in many languages, boolean values are *not* the base type of value
+used for conditional expression, though the `**` and `??` operators can
+bridge the divide. See the section on "Logic" in the "Basics" section
+for details.
+
+
 #### Int
 
 An `Int` is a signed arbitrary-precision integer value, sometimes
@@ -362,29 +377,11 @@ and payload (if present) must each be surrounded by parentheses
 @(@@Null)                     ## same as above
 @Null                         ## same as above
 @(@@(null))                   ## a class-only value with class `null`
-
-@Boolean{value: 0}            ## the value usually just written as `false`
-@Boolean{value: 1}            ## the value usually just written as `true`
 ```
 
 **Note:** As a convenience, the `get` function works on derived data
 values by calling through to `get` on the derived data's payload value,
 if any. And it will always return void for payload-free derived data values.
-
-#### Boolean
-
-The two boolean values `true` and `false` represent truth values.
-The language defines these as named constants, which can be defined as:
-
-```
-def false = @Boolean{value: 0};
-def true = @Boolean{value: 1};
-```
-
-These values are most useful when placed into variables and passed
-as parameters to indicate flags. They are not particularly useful
-for combination into logical expressions. See the section on "Logic" below
-for details.
 
 #### Null
 

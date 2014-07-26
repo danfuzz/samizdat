@@ -7,6 +7,7 @@
 #include "io.h"
 #include "lang.h"
 #include "type/Bitwise.h"
+#include "type/Bool.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Class.h"
@@ -118,6 +119,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 // Documented in header.
 zvalue libNewEnvironment(const char *libraryPath) {
     MOD_USE(const);
+    MOD_USE(Bool);
     MOD_USE(Box);
     MOD_USE(Generator);
     MOD_USE(Map);
