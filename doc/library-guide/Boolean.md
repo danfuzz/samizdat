@@ -1,19 +1,40 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Boolean
--------
+Bool
+----
 
-A `Boolean` is both a truth value and a single-bit `Bitwise` value.
+A `Bool` is both a truth value and a single-bit `Bitwise` value.
+
+<br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(bool, other) -> bool | void`
+
+Default implementation.
+
+#### `perOrder(bool, other) -> int`
+
+Default implementation.
+
+#### `totalEq(bool1, bool2) -> bool | void`
+
+Compares two boolean values. This is only logical-true if the two given
+values are the same.
+
+#### `totalOrder(bool1, bool2) -> int`
+
+Compares the given boolean values, ordering `false` before `true`.
+
 
 <br><br>
 ### Generic Function Definitions: One-Offs
 
-#### `toInt(boolean) -> int`
+#### `toInt(bool) -> int`
 
 Returns `0` given `false`, or `1` given `true`.
 
-#### `toNumber(boolean) -> int`
+#### `toNumber(bool) -> int`
 
 Same as `toInt`.
 
@@ -21,28 +42,28 @@ Same as `toInt`.
 <br><br>
 ### Generic Function Definitions: `Bitwise` protocol
 
-#### `and(boolean1, boolean2) -> boolean`
+#### `and(bool1, bool2) -> bool`
 
 Straightforward protocol implementation.
 
-#### `bit(boolean, int) -> int`
+#### `bit(bool, int) -> int`
 
 Returns `1` if called as `bit(true, 0)`. Returns `0` for any other
 valid pair of arguments.
 
-#### `bitSize(boolean) -> int`
+#### `bitSize(bool) -> int`
 
 Returns `1`, always.
 
-#### `not(boolean) -> boolean`
+#### `not(bool) -> bool`
 
 Straightforward protocol implementation.
 
-#### `or(boolean1, boolean2) -> boolean`
+#### `or(bool1, bool2) -> bool`
 
 Straightforward protocol implementation.
 
-#### `shl(boolean, int) -> boolean`
+#### `shl(bool, int) -> bool`
 
 Returns the given argument if shifted by `0`, or if `false` is shifted
 by any amount. Returns `false` if `true` is right-shifted by any
@@ -50,7 +71,7 @@ amount.
 
 It is a terminal error to try to shift `true` left by any amount.
 
-#### `xor(boolean1, boolean2) -> boolean`
+#### `xor(bool1, bool2) -> bool`
 
 Straightforward protocol implementation.
 
