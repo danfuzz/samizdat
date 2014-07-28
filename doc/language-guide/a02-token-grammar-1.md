@@ -15,24 +15,8 @@ result as tokens of type `error`.
 
 ```
 import core.Generator;
-import core.LangNode :: intFromDigits;
+import core.LangNode :: KEYWORDS, intFromDigits;
 import core.Peg;
-
-
-##
-## Private Definitions
-##
-
-## Map of all the keywords, from their string name to valueless tokens. These
-## are (to a first approximation) operators whose spellings match the
-## tokenization syntax of identifiers.
-def KEYWORDS = $Generator::collectAsMap(
-    $Generator::makeFilterGenerator([
-        "break", "continue", "def", "export", "fn", "import", "return",
-        "var", "yield",
-        ## Layer 2 defines additional keywords here.
-        []*])
-        { name -> {(name): @(@@(name))} });
 
 
 ##

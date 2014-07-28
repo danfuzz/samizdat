@@ -123,28 +123,34 @@ def parVarRef = {:
     { makeVarRef(name) }
 :};
 
-## Parses an integer literal. Note: This includes parsing a `-` prefix,
-## so that simple negative constants aren't turned into complicated function
-## calls.
-def parInt = {:
+## Parses a simple data literal, including literal booleans, ints, and
+## strings.
+##
+## **Note:** This includes parsing a `-` prefix on ints, to allow for
+## negative int literals in layer 0.
+def parLiteral = {:
     @"-"
     i = @int
     { makeLiteral(neg(i::value)) }
 |
     i = @int
     { makeLiteral(i::value) }
-:};
-
-## Parses a string literal.
-def parString = {:
+|
     s = @string
     { makeLiteral(s::value) }
+|
+    @false
+    { makeLiteral(false) }
+|
+    @true
+    { makeLiteral(true) }
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,
 ## returning a string literal in all cases.
 def parIdentifierString = {:
-    parString
+    s = @string
+    { makeLiteral(s::value) }
 |
     name = parName
     { makeLiteral(name) }
@@ -337,7 +343,7 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarLvalue | parVarRef | parInt | parString | parMap | parList |
+    parVarLvalue | parVarRef | parLiteral | parMap | parList |
     parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
