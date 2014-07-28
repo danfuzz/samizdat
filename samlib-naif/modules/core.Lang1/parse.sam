@@ -96,23 +96,29 @@ def parVarRef = makeMainSequence(
     makeCode { ., name -> makeVarRef(name) });
 
 ## Documented in spec.
-def parInt = makeMainChoice(
+def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"-"),
         makeToken(@@int),
         makeCode { ., i -> makeLiteral(neg(i::value)) }),
     makeSequence(
         makeToken(@@int),
-        makeCode { i -> makeLiteral(i::value) }));
-
-## Documented in spec.
-def parString = makeMainSequence(
-    makeToken(@@string),
-    makeCode { s -> makeLiteral(s::value) });
+        makeCode { i -> makeLiteral(i::value) }),
+    makeSequence(
+        makeToken(@@string),
+        makeCode { s -> makeLiteral(s::value) }),
+    makeSequence(
+        makeToken(@@false),
+        makeResult(makeLiteral(false))),
+    makeSequence(
+        makeToken(@@true),
+        makeResult(makeLiteral(true))));
 
 ## Documented in spec.
 def parIdentifierString = makeMainChoice(
-    parString,
+    makeSequence(
+        makeToken(@@string),
+        makeCode { s -> makeLiteral(s::value) }),
     makeSequence(
         parName,
         makeCode { name -> makeLiteral(name) }),
@@ -269,7 +275,7 @@ def parBasicNullaryClosure = makeMainSequence(
 
 ## Documented in spec.
 def parTerm = makeMainChoice(
-    parVarLvalue, parVarRef, parInt, parString, parMap, parList,
+    parVarLvalue, parVarRef, parLiteral, parMap, parList,
     parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.

@@ -24,10 +24,6 @@ PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
-// Special values.
-PRIM_DEF(false,                   BOOL_FALSE);
-PRIM_DEF(true,                    BOOL_TRUE);
-
 // Generic functions for all values.
 PRIM_DEF(debugName,               GFN_debugName);
 PRIM_DEF(debugString,             GFN_debugString);

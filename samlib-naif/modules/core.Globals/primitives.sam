@@ -35,7 +35,6 @@ export
     debugString,
     die,
     eq,
-    false,
     fetch,
     genericBind,
     get,
@@ -70,5 +69,4 @@ export
     toNumber,
     toString,
     totalEq,
-    totalOrder,
-    true;
+    totalOrder;

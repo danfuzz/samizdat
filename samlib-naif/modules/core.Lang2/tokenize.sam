@@ -5,38 +5,19 @@
 ##
 ## Samizdat Layer 2 Tokenizer
 ##
+## This code is meant to mirror the code in the spec for tokenization as
+## closely as possible, comments and all. The spec is a self-description of
+## Layer 1 parsing, and the comments should be taken in light of that.
+
 
 #= language core.Lang1
 
 import core.EntityMap :: ENTITY_MAP;
 import core.Generator;
-import core.LangNode :: intFromDigits;
+import core.LangNode :: KEYWORDS, intFromDigits;
 import core.Peg;  ## Used implicitly.
 import core.Peg :: apply, stringFromTokenList;
 import core.Sequence :: nthFromEnd, sliceExclusive;
-
-
-##
-## This section is meant to mirror the code in the spec for tokenization as
-## closely as possible, comments and all. The spec is a self-description of
-## Layer 1 parsing, and the comments should be taken in light of that.
-##
-
-##
-## Private Definitions
-##
-
-## Map of all the keywords, from their string name to valueless tokens. These
-## are (to a first approximation) operators whose spellings match the
-## tokenization syntax of identifiers.
-def KEYWORDS = $Generator::collectAsMap(
-    $Generator::makeFilterGenerator([
-        "break", "continue", "def", "export", "fn", "import", "return",
-        "var", "yield",
-        ## Layer 2 defines additional keywords here.
-        "by", "default", "do", "else", "for", "if", "in", "module", "switch",
-        "while"])
-        { name -> {(name): @(@@(name))} });
 
 
 ##

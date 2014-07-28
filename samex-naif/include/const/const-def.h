@@ -47,6 +47,8 @@ TOK(return,                "return");
 TOK(var,                   "var");
 TOK(void,                  "void");
 TOK(yield,                 "yield");
+TOK(zfalse,                "false");  // `z` avoids clash with C `false`.
+TOK(ztrue,                 "true");   // `z` avoids clash with C `true`.
 
 TYP(MapGenerator,          "MapGenerator");
 TYP(SequenceGenerator,     "SequenceGenerator");

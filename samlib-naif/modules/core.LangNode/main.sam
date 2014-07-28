@@ -13,6 +13,7 @@
 export import ./constructors1 :: *;
 export import ./constructors2 :: *;
 export import ./getters :: *;
+export import ./keywords :: *;
 export import ./misc :: *;
 export import ./refs :: *;
 export import ./resolve :: *;

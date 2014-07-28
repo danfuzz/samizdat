@@ -5,7 +5,8 @@ core.LangNode
 --------------
 
 These are a set of accessor and constructor functions for the various
-tree node types specified by the system.
+tree node types specified by the system. This module also contains other
+miscellaneous utilities to help parse the language.
 
 A few functions in this module take an argument named `resolveFn`. Such an
 argument is expected to be a function which behaves similarly to
@@ -16,6 +17,13 @@ as when used here it is only the resolved metainformation that gets used.
 
 <br><br>
 ### Constnants
+
+#### `KEYWORDS`
+
+This is a map from string names of keywords in the language to the result
+of tokenizing those keywords. The result of tokenizing a keyword is always
+a payload-free token (derived data value).
+
 
 #### `REFS`
 
