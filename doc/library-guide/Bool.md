@@ -4,7 +4,10 @@ Samizdat Layer 0: Core Library
 Bool
 ----
 
-A `Bool` is both a truth value and a single-bit `Bitwise` value.
+A `Bool` is both a truth value and a single-bit `Bitwise` value. The
+keywords `true` and `false` refer to the only two values of this class.
+
+
 
 <br><br>
 ### Generic Function Definitions: `Value` protocol
@@ -79,13 +82,7 @@ Straightforward protocol implementation.
 <br><br>
 ### Primitive Definitions
 
-#### Constant: `false`
-
-The boolean value false.
-
-#### Constant: `true`
-
-The boolean value true.
+(none)
 
 
 <br><br>
