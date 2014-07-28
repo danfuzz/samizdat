@@ -1,0 +1,43 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#= language core.Lang0
+
+import core.Generator :: collectAsMap, makeFilterGenerator;
+import ./constructors1 :: makeLiteral;
+
+
+##
+## Private Definitions
+##
+
+## List of the string names of all of the regular (non-literal) keywords.
+def REGULAR_KEYWORD_NAMES = [
+    ## Layer 0.
+    "break", "continue", "def", "export", "fn", "import", "return",
+    "var", "yield",
+
+    ## Layer 2.
+    "by", "default", "do", "else", "for", "if", "in", "module", "switch",
+    "while"
+];
+
+## Map from regular keyword names to corresponding tokens.
+def REGULAR_KEYWORDS = collectAsMap(
+    makeFilterGenerator(REGULAR_KEYWORD_NAMES)
+    { name -> {(name): @(@@(name))} });
+
+## Map from literal keyword names to corresponding literal values.
+def LITERAL_KEYWORDS = {
+    false: makeLiteral(false),
+    true:  makeLiteral(true)
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export def KEYWORDS = {REGULAR_KEYWORDS*, LITERAL_KEYWORDS*};
