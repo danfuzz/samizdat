@@ -21,9 +21,8 @@ as when used here it is only the resolved metainformation that gets used.
 #### `KEYWORDS`
 
 This is a map from string names of keywords in the language to the result
-of tokenizing those keywords. This includes both "regular" keywords that
-map to a payload-free token (derived data value) and "literal" keywords
-that map to a literal value node.
+of tokenizing those keywords. The result of tokenizing a keyword is always
+a payload-free token (derived data value).
 
 
 #### `REFS`
