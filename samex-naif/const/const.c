@@ -14,21 +14,21 @@
 // Define globals for all of the constants.
 //
 
-#define STR(name, str) zvalue STR_##name = NULL
+#define DEF_STRING(name, str) zvalue STR_##name = NULL
 
-#define TYP(name, str) \
-    STR(name, str); \
+#define DEF_DATA(name, str) \
+    DEF_STRING(name, str); \
     zvalue CLS_##name = NULL
 
-#define TOK(name, str) \
-    TYP(name, str); \
+#define DEF_TOKEN(name, str) \
+    DEF_DATA(name, str); \
     zvalue TOK_##name = NULL
 
 #include "const/const-def.h"
 
-#undef STR
-#undef TOK
-#undef TYP
+#undef DEF_STRING
+#undef DEF_DATA
+#undef DEF_TOKEN
 
 
 //
@@ -41,17 +41,17 @@ MOD_INIT(const) {
 
     MOD_USE(Value);
 
-    #define STR(name, str) \
+    #define DEF_STRING(name, str) \
         STR_##name = stringFromUtf8(-1, str); \
         datImmortalize(STR_##name)
 
-    #define TYP(name, str) \
-        STR(name, str); \
+    #define DEF_DATA(name, str) \
+        DEF_STRING(name, str); \
         CLS_##name = makeDerivedDataClass(STR_##name); \
         datImmortalize(CLS_##name)
 
-    #define TOK(name, str) \
-        TYP(name, str); \
+    #define DEF_TOKEN(name, str) \
+        DEF_DATA(name, str); \
         TOK_##name = makeData(CLS_##name, NULL); \
         datImmortalize(TOK_##name)
 
