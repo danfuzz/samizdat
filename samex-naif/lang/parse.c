@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
+#include "type/Bool.h"
 #include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/List.h"
@@ -311,27 +312,25 @@ DEF_PARSE(varRef) {
 }
 
 // Documented in spec.
-DEF_PARSE(int) {
+DEF_PARSE(literal) {
     MARK();
 
-    zvalue neg = MATCH(CH_MINUS);
-    zvalue i = MATCH_OR_REJECT(int);
+    zvalue token;
 
-    zvalue value = GET(value, i);
-    if (neg != NULL) {
-        value = GFN_CALL(neg, value);
+    if (MATCH(CH_MINUS)) {
+        token = MATCH_OR_REJECT(int);
+        return makeLiteral(GFN_CALL(neg, GET(value, token)));
+    } else if ((token = MATCH(int))) {
+        return makeLiteral(GET(value, token));
+    } else if ((token = MATCH(string))) {
+        return makeLiteral(GET(value, token));
+    } else if (MATCH(zfalse)) {
+        return makeLiteral(BOOL_FALSE);
+    } else if (MATCH(ztrue)) {
+        return makeLiteral(BOOL_TRUE);
     }
 
-    return makeLiteral(value);
-}
-
-// Documented in spec.
-DEF_PARSE(string) {
-    MARK();
-
-    zvalue string = MATCH_OR_REJECT(string);
-
-    return makeLiteral(GET(value, string));
+    return NULL;
 }
 
 // Documented in spec.
@@ -340,8 +339,8 @@ DEF_PARSE(identifierString) {
 
     zvalue result;
 
-    result = PARSE(string);
-    if (result != NULL) { return result; }
+    result = MATCH(string);
+    if (result != NULL) { return makeLiteral(GET(value, result)); }
 
     result = PARSE(name);
     if (result != NULL) { return makeLiteral(result); }
@@ -593,8 +592,7 @@ DEF_PARSE(term) {
 
     if (result == NULL) { result = PARSE(varLvalue);       }
     if (result == NULL) { result = PARSE(varRef);          }
-    if (result == NULL) { result = PARSE(int);             }
-    if (result == NULL) { result = PARSE(string);          }
+    if (result == NULL) { result = PARSE(literal);         }
     if (result == NULL) { result = PARSE(map);             }
     if (result == NULL) { result = PARSE(list);            }
     if (result == NULL) { result = PARSE(deriv);           }

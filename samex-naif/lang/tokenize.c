@@ -188,15 +188,19 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue string = stringFromZchars(size, chars);
 
     switch (chars[0]) {
-        case 'b': { if (valEq(string, STR_break))    return TOK_break;    }
-        case 'c': { if (valEq(string, STR_continue)) return TOK_continue; }
-        case 'd': { if (valEq(string, STR_def))      return TOK_def;      }
-        case 'e': { if (valEq(string, STR_export))   return TOK_export;   }
-        case 'f': { if (valEq(string, STR_fn))       return TOK_fn;       }
-        case 'i': { if (valEq(string, STR_import))   return TOK_import;   }
-        case 'r': { if (valEq(string, STR_return))   return TOK_return;   }
-        case 'v': { if (valEq(string, STR_var))      return TOK_var;      }
-        case 'y': { if (valEq(string, STR_yield))    return TOK_yield;    }
+        case 'b': if (valEq(string, STR_break))    return TOK_break;
+        case 'c': if (valEq(string, STR_continue)) return TOK_continue;
+        case 'd': if (valEq(string, STR_def))      return TOK_def;
+        case 'e': if (valEq(string, STR_export))   return TOK_export;
+        case 'i': if (valEq(string, STR_import))   return TOK_import;
+        case 'r': if (valEq(string, STR_return))   return TOK_return;
+        case 't': if (valEq(string, STR_ztrue))    return TOK_ztrue;
+        case 'v': if (valEq(string, STR_var))      return TOK_var;
+        case 'y': if (valEq(string, STR_yield))    return TOK_yield;
+        case 'f': {
+                  if (valEq(string, STR_zfalse))   return TOK_zfalse;
+                  if (valEq(string, STR_fn))       return TOK_fn;
+        }
     }
 
     return makeData(CLS_identifier, mapFrom1(STR_value, string));
