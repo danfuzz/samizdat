@@ -47,6 +47,8 @@ TOK(return,                "return");
 TOK(var,                   "var");
 TOK(void,                  "void");
 TOK(yield,                 "yield");
+TOK(zfalse,                "false");  // `z` avoids clash with C `false`.
+TOK(ztrue,                 "true");   // `z` avoids clash with C `true`.
 
 TYP(MapGenerator,          "MapGenerator");
 TYP(SequenceGenerator,     "SequenceGenerator");
@@ -80,7 +82,6 @@ STR(cat,                   "cat");
 STR(collect,               "collect");
 STR(directory,             "directory");
 STR(exports,               "exports");
-STR(false,                 "false");
 STR(file,                  "file");
 STR(formals,               "formals");
 STR(format,                "format");
@@ -118,7 +119,6 @@ STR(symlink,               "symlink");
 STR(target,                "target");
 STR(this,                  "this");
 STR(top,                   "top");
-STR(true,                  "true");
 STR(value,                 "value");
 STR(values,                "values");
 STR(yieldDef,              "yieldDef");
