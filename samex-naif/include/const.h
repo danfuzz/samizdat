@@ -15,21 +15,21 @@
 // Declare globals for all of the constants.
 //
 
-#define STR(name, str) extern zvalue STR_##name
+#define DEF_STRING(name, str) extern zvalue STR_##name
 
-#define TYP(name, str) \
-    STR(name, str); \
+#define DEF_DATA(name, str) \
+    DEF_STRING(name, str); \
     extern zvalue CLS_##name
 
-#define TOK(name, str) \
-    TYP(name, str); \
+#define DEF_TOKEN(name, str) \
+    DEF_DATA(name, str); \
     extern zvalue TOK_##name
 
 #include "const/const-def.h"
 
-#undef STR
-#undef TYP
-#undef TOK
+#undef DEF_STRING
+#undef DEF_DATA
+#undef DEF_TOKEN
 
 
 #endif
