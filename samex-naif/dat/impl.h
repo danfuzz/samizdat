@@ -36,7 +36,14 @@ enum {
     DAT_VALUE_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    DAT_VALUE_ALIGNMENT = sizeof(zint)
+    DAT_VALUE_ALIGNMENT = sizeof(zint),
+
+    /**
+     * Whether to enable the method map code. This flag is meant to be used
+     * as a temporary guard around the new method definition and dispatch
+     * code. TODO: Remove this flag when the new code is reasonably baked.
+     */
+    USE_METHOD_MAP = false
 };
 
 /**
@@ -83,6 +90,13 @@ typedef struct {
      * order.
      */
     zint classId;
+
+    #if USE_METHOD_MAP
+    /**
+     * Map from method names (arbitrary values) to method implementations.
+     */
+    zvalue methods;
+    #endif
 } ClassInfo;
 
 /**
