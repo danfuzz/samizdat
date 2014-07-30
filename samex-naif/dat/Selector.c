@@ -1,0 +1,187 @@
+// Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+// Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+// Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#include <stdlib.h>
+
+#include "type/Class.h"
+#include "type/Selector.h"
+#include "type/String.h"
+#include "type/Uniqlet.h"
+#include "zlimits.h"
+
+#include "impl.h"
+
+
+//
+// Private Definitions
+//
+
+/** Next selector index to assign. */
+static zint theNextIndex = 0;
+
+/** Array of all existing selectors, in sort order (possibly stale). */
+static zvalue theSelectors[DAT_MAX_SELECTORS];
+
+/** Whether `theSelectors` needs a sort. */
+static bool theNeedSort = false;
+
+/**
+ * Selector structure.
+ */
+typedef struct {
+    /** Name of the method. */
+    zvalue methodName;
+
+    /** Index of the selector. No two selectors have the same index. */
+    zint index;
+} SelectorInfo;
+
+/**
+ * Gets a pointer to the value's info.
+ */
+static SelectorInfo *getInfo(zvalue selector) {
+    return datPayload(selector);
+}
+
+/**
+ * Creates and returns a new selector with the given name. Does no checking
+ * other than that there aren't already too many selectors.
+ */
+static zvalue makeSelector(zvalue methodName) {
+    if (theNextIndex >= DAT_MAX_SELECTORS) {
+        die("Too many method selectors!");
+    }
+
+    zvalue result = datAllocValue(CLS_Selector, sizeof(SelectorInfo));
+    SelectorInfo *info = getInfo(result);
+
+    info->methodName = methodName;
+    info->index = theNextIndex;
+
+    theSelectors[theNextIndex] = result;
+    theNextIndex++;
+    theNeedSort = true;
+
+    datImmortalize(result);
+    return result;
+}
+
+/**
+ * Compares a method name with a selector. Common function used for searching,
+ * sorting, and ordering.
+ */
+static int compareNameAndSelector(zvalue methodName, zvalue selector) {
+    SelectorInfo *info = getInfo(selector);
+    zvalue methodName2 = info->methodName;
+
+    return valZorder(methodName, methodName2);
+}
+
+/**
+ * Compares two selectors. Used for sorting.
+ */
+static int sortOrder(const void *vptr1, const void *vptr2) {
+    zvalue v1 = *(zvalue *) vptr1;
+    zvalue v2 = *(zvalue *) vptr2;
+    SelectorInfo *info1 = getInfo(v1);
+
+    return compareNameAndSelector(info1->methodName, v2);
+}
+
+/**
+ * Compares a method name with a selector. Used for searching.
+ */
+static int searchOrder(const void *key, const void *vptr) {
+    zvalue methodName = (zvalue) key;
+    zvalue selector = *(zvalue *) vptr;
+
+    return compareNameAndSelector(methodName, selector);
+}
+
+/**
+ * Finds an existing selector with the given name, if any.
+ */
+static zvalue findSelector(zvalue methodName) {
+    if (theNeedSort) {
+        mergesort(theSelectors, theNextIndex, sizeof(zvalue), sortOrder);
+        theNeedSort = false;
+    }
+
+    zvalue *found = (zvalue *) bsearch(
+        methodName, theSelectors, theNextIndex, sizeof(zvalue), searchOrder);
+
+    return (found == NULL) ? NULL : *found;
+}
+
+
+//
+// Exported Definitions
+//
+
+// Documented in header.
+zvalue selectorFromExistingName(zvalue methodName) {
+    zvalue result = findSelector(methodName);
+
+    if (result == NULL) {
+        die("Missing selector: %s", valDebugString(methodName));
+    }
+
+    return result;
+}
+
+// Documented in header.
+zvalue selectorFromName(zvalue methodName) {
+    zvalue result = findSelector(methodName);
+
+    if (result == NULL) {
+        if (!(     hasClass(methodName, CLS_String)
+                || hasClass(methodName, CLS_Uniqlet))) {
+            die("Improper method name: %s", valDebugString(methodName));
+        }
+        result = makeSelector(methodName);
+    }
+
+    return result;
+}
+
+// Documented in header.
+zint selectorIndex(zvalue selector) {
+    assertHasClass(selector, CLS_Selector);
+    return getInfo(selector)->index;
+}
+
+
+//
+// Class Definition
+//
+
+// Documented in header.
+METH_IMPL(Selector, debugName) {
+    zvalue selector = args[0];
+    SelectorInfo *info = getInfo(selector);
+
+    return info->methodName;
+}
+
+// Documented in header.
+METH_IMPL(Selector, gcMark) {
+    zvalue selector = args[0];
+    SelectorInfo *info = getInfo(selector);
+
+    datMark(info->methodName);
+    return NULL;
+}
+
+/** Initializes the module. */
+MOD_INIT(Selector) {
+    MOD_USE(Value);
+
+    CLS_Selector = makeCoreClass(stringFromUtf8(-1, "Selector"), CLS_Value);
+
+    METH_BIND(Selector, debugName);
+    METH_BIND(Selector, gcMark);
+}
+
+// Documented in header.
+zvalue CLS_Selector = NULL;

@@ -13,6 +13,7 @@
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Map.h"
+#include "type/Selector.h"
 #include "type/String.h"
 #include "type/Uniqlet.h"
 #include "type/Value.h"
@@ -356,6 +357,7 @@ MOD_INIT(objectModel) {
     CLS_Class->cls = CLS_Class;
 
     CLS_Value       = allocClass();
+    CLS_Selector    = allocClass();
     CLS_Data        = allocClass();
     CLS_DerivedData = allocClass();
 
@@ -371,6 +373,7 @@ MOD_INIT(objectModel) {
 
     classInit(CLS_Class,       CLS_Value, stringFromUtf8(-1, "Class"));
     classInit(CLS_Value,       NULL,      stringFromUtf8(-1, "Value"));
+    classInit(CLS_Selector,    CLS_Value, stringFromUtf8(-1, "Selector"));
     classInit(CLS_Data,        CLS_Value, stringFromUtf8(-1, "Data"));
     classInit(CLS_DerivedData, CLS_Data,  stringFromUtf8(-1, "DerivedData"));
 
