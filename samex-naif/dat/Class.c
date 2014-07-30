@@ -6,11 +6,13 @@
 
 #include "type/Builtin.h"
 #include "type/Class.h"
+#include "type/Collection.h"
 #include "type/Data.h"
 #include "type/DerivedData.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/Jump.h"
+#include "type/Map.h"
 #include "type/String.h"
 #include "type/Uniqlet.h"
 #include "type/Value.h"
@@ -63,6 +65,9 @@ static void classInit(zvalue cls, zvalue parent, zvalue name) {
     info->name = name;
     info->secret = derived ? NULL : theCoreSecret;
     info->classId = theNextClassId;
+    #if USE_METHOD_MAP
+    info->methods = NULL;
+    #endif
 
     theClasses[theNextClassId] = cls;
     theNeedSort = true;
@@ -211,6 +216,15 @@ void assertHasClass(zvalue value, zvalue cls) {
         die("Expected class %s; got %s.",
             valDebugString(cls), valDebugString(value));
     }
+}
+
+// Documented in header.
+void classAddMethod(zvalue cls, zvalue methodName, zvalue function) {
+    #if !USE_METHOD_MAP
+    die("Requires USE_METHOD_MAP");
+    #endif
+
+    die("TODO");
 }
 
 // Documented in header.

@@ -25,6 +25,12 @@ extern zvalue CLS_Class;
 void assertHasClass(zvalue value, zvalue cls);
 
 /**
+ * Adds a new method to a class. TODO: This function should get removed once
+ * the system can cleanly construct classes with their methods in one go.
+ */
+void classAddMethod(zvalue cls, zvalue methodName, zvalue function);
+
+/**
  * Returns the unique index for the given class.
  */
 zint classIndex(zvalue cls);

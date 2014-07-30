@@ -159,6 +159,10 @@ void genericBind(zvalue generic, zvalue cls, zvalue function) {
     }
 
     info->functions[index] = function;
+
+    #if USE_METHOD_MAP
+    classAddMethod(cls, info->name, function);
+    #endif
 }
 
 // Documented in header.

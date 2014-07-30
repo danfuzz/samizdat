@@ -94,6 +94,7 @@ typedef struct {
     #if USE_METHOD_MAP
     /**
      * Map from method names (arbitrary values) to method implementations.
+     * It is allowed to be `NULL`.
      */
     zvalue methods;
     #endif
