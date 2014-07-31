@@ -66,7 +66,7 @@ zbool zboolFromBool(zvalue boolval) {
 // Documented in header.
 METH_IMPL(Bool, and) {
     zbool bool1 = zboolValue(args[0]);
-    zbool bool2 = zboolValue(args[1]);
+    zbool bool2 = zboolFromBool(args[1]);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 & bool2);
 }
 
@@ -92,7 +92,7 @@ METH_IMPL(Bool, bitSize) {
 // Documented in header.
 METH_IMPL(Bool, or) {
     zbool bool1 = zboolValue(args[0]);
-    zbool bool2 = zboolValue(args[1]);
+    zbool bool2 = zboolFromBool(args[1]);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 | bool2);
 }
 
@@ -161,7 +161,7 @@ METH_IMPL(Bool, totalOrder) {
 // Documented in header.
 METH_IMPL(Bool, xor) {
     zbool bool1 = zboolValue(args[0]);
-    zbool bool2 = zboolValue(args[1]);
+    zbool bool2 = zboolFromBool(args[1]);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 ^ bool2);
 }
 
