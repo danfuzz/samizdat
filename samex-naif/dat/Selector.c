@@ -185,9 +185,9 @@ METH_IMPL(Selector, debugString) {
     SelectorInfo *info = getInfo(selector);
 
     if (info->anonymous) {
-        return GFN_CALL(cat, stringFromUtf8(-1, ".anon-"), info->methodName);
+        return METH_CALL(cat, stringFromUtf8(-1, ".anon-"), info->methodName);
     } else {
-        return GFN_CALL(cat, stringFromUtf8(-1, "."), info->methodName);
+        return METH_CALL(cat, stringFromUtf8(-1, "."), info->methodName);
     }
 }
 

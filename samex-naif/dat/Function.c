@@ -31,7 +31,7 @@ static zvalue ensureString(zvalue value) {
         return value;
     }
 
-    return GFN_CALL(debugString, value);
+    return METH_CALL(debugString, value);
 }
 
 /**
@@ -40,7 +40,7 @@ static zvalue ensureString(zvalue value) {
  */
 static char *callReporter(void *state) {
     zvalue value = state;
-    zvalue name = GFN_CALL(debugName, value);
+    zvalue name = METH_CALL(debugName, value);
 
     if (name != NULL) {
         return utf8DupFromString(ensureString(name));

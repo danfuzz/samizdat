@@ -86,7 +86,7 @@ export fn translate(node, varsBox) {
 
         @@fetch: {
             def target = nonVoid(translate(node.target, varsBox));
-            genCall("GFN_CALL", "fetch", target)
+            genCall("METH_CALL", "fetch", target)
         };
 
         @@literalRef: {
@@ -106,12 +106,12 @@ export fn translate(node, varsBox) {
                 def vTrans = translate(value.nodeValue, varsBox);
                 genCall("boxStoreNullOk", target, vTrans)
             } else if (hasClass(value, @@void)) {
-                genCall("GFN_CALL", "store", target)
+                genCall("METH_CALL", "store", target)
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
                 ## non-void.
                 def vTrans = nonVoid(translate(value, varsBox));
-                genCall("GFN_CALL", "store", target, vTrans)
+                genCall("METH_CALL", "store", target, vTrans)
             }
         };
 

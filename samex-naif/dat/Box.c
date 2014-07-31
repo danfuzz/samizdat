@@ -81,8 +81,8 @@ static zvalue doStore(zvalue box, zvalue value) {
 // Documented in header.
 zvalue boxStoreNullOk(zvalue box, zvalue value) {
     return (value == NULL)
-        ? GFN_CALL(store, box)
-        : GFN_CALL(store, box, value);
+        ? METH_CALL(store, box)
+        : METH_CALL(store, box, value);
 }
 
 // Documented in header.
@@ -161,7 +161,7 @@ METH_IMPL(Box, nextValue) {
     zvalue value = doFetch(box);
 
     if (value != NULL) {
-        GFN_CALL(store, outBox, value);
+        METH_CALL(store, outBox, value);
         return EMPTY_LIST;
     } else {
         return NULL;

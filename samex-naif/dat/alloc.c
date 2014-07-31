@@ -305,7 +305,7 @@ void datMark(zvalue value) {
     value->marked = true;
     enlist(&liveHead, value);
 
-    GFN_CALL(gcMark, value);
+    METH_CALL(gcMark, value);
 
     // As of this writing, classes are all immortal, but that may change. This
     // `datMark` call has negligible cost and safeguards against that possible

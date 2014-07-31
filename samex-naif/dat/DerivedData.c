@@ -41,7 +41,7 @@ static DerivedDataInfo *getInfo(zvalue value) {
 
 // Documented in header.
 zvalue dataOf(zvalue value) {
-    return GFN_CALL(dataOf, value);
+    return METH_CALL(dataOf, value);
 }
 
 // Documented in header.

@@ -206,7 +206,7 @@ zvalue get_definedNames(zvalue node) {
         arrayFromList(arr, select);
 
         for (zint i = 0; i < size; i++) {
-            arr[i] = GFN_CALL(cat, prefix, arr[i]);
+            arr[i] = METH_CALL(cat, prefix, arr[i]);
         }
 
         return listFromArray(size, arr);
@@ -265,7 +265,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 // Documented in spec.
 zvalue makeBasicClosure(zvalue map) {
     return makeData(CLS_closure,
-        GFN_CALL(cat,
+        METH_CALL(cat,
             mapFrom2(STR_formals, EMPTY_LIST, STR_statements, EMPTY_LIST),
             map));
 }
@@ -408,7 +408,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
           && (get(map, STR_yieldDef) == NULL)) {
         zvalue lastStat = nth(statements, statSz - 1);
         if (isExpression(lastStat)) {
-            statements = GFN_CALL(sliceExclusive, statements, intFromZint(0));
+            statements = METH_CALL(sliceExclusive, statements, intFromZint(0));
             yieldNode = canYieldVoid(lastStat)
                 ? makeMaybe(lastStat)
                 : lastStat;
@@ -420,7 +420,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
     }
 
     return makeData(CLS_closure,
-        GFN_CALL(cat,
+        METH_CALL(cat,
             map,
             mapFrom3(
                 STR_formals,    formals,
@@ -459,7 +459,7 @@ zvalue makeImport(zvalue baseData) {
 
     if (get(data, STR_name) == NULL) {
         // No `name` provided, so figure out a default one.
-        zvalue name = GFN_CALL(cat,
+        zvalue name = METH_CALL(cat,
             STR_CH_DOLLAR,
             get_baseName(get(baseData, STR_source)));
         data = collPut(data, STR_name, name);
@@ -669,7 +669,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             return node;
         } else {
             // It's a wildcard select.
-            select = GFN_CALL(keyList, exports);
+            select = METH_CALL(keyList, exports);
             return makeData(
                 CLS_importModuleSelection,
                 collPut(dataOf(node), STR_select, select));
@@ -737,7 +737,7 @@ zvalue withModuleDefs(zvalue node) {
 
     return makeData(
         get_class(node),
-        GFN_CALL(cat,
+        METH_CALL(cat,
             dataOf(node),
             mapFrom3(
                 STR_info,       info,
@@ -788,7 +788,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     return makeData(
         get_class(node),
-        GFN_CALL(cat,
+        METH_CALL(cat,
             dataOf(node),
             mapFrom1(STR_statements, converted)));
 }
@@ -817,7 +817,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
     return makeData(
         get_class(node),
-        GFN_CALL(cat, map, newBindings));
+        METH_CALL(cat, map, newBindings));
 };
 
 // Documented in spec.
@@ -882,8 +882,8 @@ zvalue withoutTops(zvalue node) {
 
     return makeData(
         get_class(node),
-        GFN_CALL(cat,
+        METH_CALL(cat,
             dataOf(node),
             mapFrom1(
-                STR_statements, GFN_CALL(cat, tops, mains, optSelection))));
+                STR_statements, METH_CALL(cat, tops, mains, optSelection))));
 }

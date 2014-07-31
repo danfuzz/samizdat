@@ -325,9 +325,9 @@ METH_IMPL(Class, debugString) {
         die("Shouldn't happen: opaque class without secret.");
     }
 
-    return GFN_CALL(cat,
+    return METH_CALL(cat,
         stringFromUtf8(-1, "@@("),
-        GFN_CALL(debugString, info->name),
+        METH_CALL(debugString, info->name),
         extraString,
         stringFromUtf8(-1, ")"));
 }

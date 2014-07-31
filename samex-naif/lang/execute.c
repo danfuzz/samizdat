@@ -74,7 +74,7 @@ static zvalue execFetch(Frame *frame, zvalue fetch) {
     zvalue targetExpr = get(fetch, STR_target);
     zvalue target = execExpression(frame, targetExpr);
 
-    return GFN_CALL(fetch, target);
+    return METH_CALL(fetch, target);
 }
 
 /**

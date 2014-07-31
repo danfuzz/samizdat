@@ -16,17 +16,17 @@
 
 // Documented in header.
 zvalue get(zvalue value, zvalue key) {
-    return GFN_CALL(get, value, key);
+    return METH_CALL(get, value, key);
 }
 
 // Documented in header.
 zint get_size(zvalue value) {
-    return zintFromInt(GFN_CALL(get_size, value));
+    return zintFromInt(METH_CALL(get_size, value));
 }
 
 // Documented in header.
 zvalue nth(zvalue value, zint index) {
-    return GFN_CALL(nth, value, intFromZint(index));
+    return METH_CALL(nth, value, intFromZint(index));
 }
 
 // Documented in header.
