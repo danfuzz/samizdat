@@ -11,17 +11,6 @@
 
 #include "type/Function.h"
 
-/** Flags passed to `makeGeneric`. */
-typedef enum {
-    /** No flags. */
-    GFN_NONE = 0,
-
-    /**
-     * Indicates that all arguments to the function must be of the same class.
-     */
-    GFN_SAME_CLASS = 1
-} zgenericFlags;
-
 /** C function name for a method on the given class with the given name. */
 #define METH_NAME(cls, name) cls##_##name
 
@@ -71,7 +60,6 @@ void genericSeal(zvalue generic);
  * must be at least `1`, and `maxArgs` must be either greater than `minArgs`
  * or `-1` to indicate that there is no limit.
  */
-zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
-        zvalue name);
+zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name);
 
 #endif

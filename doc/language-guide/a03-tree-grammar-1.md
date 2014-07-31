@@ -647,14 +647,12 @@ def parGenericBind = {:
 ## ```
 ## def name;  ## At top of closure
 ## ...
-## name := makeRegularGeneric("name", 2, 2);
+## name := makeGeneric("name", 2, 2);
 ## ```
 ##
-## with different numbers depending on the shape of the arguments, and with
-## the function `makeUnitypeGeneric` if a `*` precedes the `.name`.
+## with different numbers depending on the shape of the arguments.
 def parGenericDef = {:
     @fn
-    optStar = @"*"?
     @"."
     name = parName
     @"("
@@ -663,11 +661,8 @@ def parGenericDef = {:
 
     {
         def fullFormals = [{}, formals*];  ## First one is `this`.
-        def func = ifIs { eq(optStar, []) }
-            { REFS::makeRegularGeneric }
-            { REFS::makeUnitypeGeneric };
         def call = makeCall(
-            func,
+            REFS::makeGeneric,
             makeLiteral(name),
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals)));

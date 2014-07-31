@@ -304,18 +304,8 @@ Generic functions are functions which know how to "dispatch" to particular
 other functions, based on the arguments given to the generic function.
 
 Samizdat includes generic functions which dispatch based on the class of
-the first argument, and which optionally require all arguments to be
-of similar class.
-
-A "regular" generic places no restrictions on arguments, other than minimum
-and (optional) maximum counts.
-
-A "unitype" generic places an additional restriction, that the classes of all
-the arguments must be the same as, or a subclass of, the class which was
-dispatched to. For example, if a generic function is bound on `Data`,
-and the first argument passed is an `Int` (which is a subclass of `Data`),
-then all the rest of the arguments to the call must also be of class `Data`
-(including subclasses).
+the first argument. A generic places no restrictions on arguments, other than
+minimum and (optional) maximum counts.
 
 #### Generic function definition statements
 
@@ -324,11 +314,6 @@ of a regular function.
 
 A generic function definition is introduced with the `fn` keyword, and
 continues as follows:
-
-* An optional "unitype" mark, `*`. If present, this indicates that all
-  of the arguments to the function must have the class that was dispatched
-  to (or a subclass thereof). This is not necessarily the same as the direct
-  class of the first arguemnt.
 
 * A dot, `.`.
 
@@ -348,18 +333,14 @@ in which it is defined.
 Examples:
 
 ```
-## A regular generic which takes no arguments other than the target.
+## A generic which takes no arguments other than the target.
 fn .blort();
 
-## A regular generic which takes three to five arguments.
+## A generic which takes three to five arguments.
 fn .fizmo(a, b, x?, y?);
 
-## A unitype generic which takes any number of arguments in addition to
-## the target.
-fn *.igram(.*);
-
 ## The same as the previous, exported from its module.
-export fn *.igram(.*);
+export fn .fizmo(a, b, x?, y?);
 ```
 
 #### Binding generic functions

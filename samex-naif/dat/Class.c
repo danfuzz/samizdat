@@ -380,13 +380,14 @@ METH_IMPL(Class, gcMark) {
 // Documented in header.
 METH_IMPL(Class, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Class`.
 
     if (value == other) {
         // Easy case to avoid decomposition and detailed tests.
         return INT_0;
     }
 
+    assertHasClassClass(other);
     ClassInfo *info = getInfo(value);
     return intFromZint(classCompare(info->name, info->secret, other));
 }
