@@ -32,8 +32,11 @@ static bool theNeedSort = false;
  * Selector structure.
  */
 typedef struct {
-    /** Name of the method. */
+    /** Name of the method. Always a string. */
     zvalue methodName;
+
+    /** Whether this is an anonymous selector. */
+    bool anonymous;
 
     /** Index of the selector. No two selectors have the same index. */
     zint index;
@@ -59,6 +62,7 @@ static zvalue makeSelector(zvalue methodName, bool anonymous) {
     SelectorInfo *info = getInfo(result);
 
     info->methodName = methodName;
+    info->anonymous = anonymous;
     info->index = theNextIndex;
     theNextIndex++;
 
@@ -176,6 +180,18 @@ METH_IMPL(Selector, debugName) {
 }
 
 // Documented in header.
+METH_IMPL(Selector, debugString) {
+    zvalue selector = args[0];
+    SelectorInfo *info = getInfo(selector);
+
+    if (info->anonymous) {
+        return GFN_CALL(cat, stringFromUtf8(-1, ".anon-"), info->methodName);
+    } else {
+        return GFN_CALL(cat, stringFromUtf8(-1, "."), info->methodName);
+    }
+}
+
+// Documented in header.
 METH_IMPL(Selector, gcMark) {
     zvalue selector = args[0];
     SelectorInfo *info = getInfo(selector);
@@ -191,6 +207,7 @@ MOD_INIT(Selector) {
     CLS_Selector = makeCoreClass(stringFromUtf8(-1, "Selector"), CLS_Value);
 
     METH_BIND(Selector, debugName);
+    METH_BIND(Selector, debugString);
     METH_BIND(Selector, gcMark);
 }
 
