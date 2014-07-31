@@ -129,7 +129,7 @@ MOD_INIT(DerivedData) {
 
     // Note: The `objectModel` module initializes `CLS_DerivedData`.
 
-    GFN_dataOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "dataOf"));
+    GFN_dataOf = makeGeneric(1, 1, stringFromUtf8(-1, "dataOf"));
     datImmortalize(GFN_dataOf);
 
     METH_BIND(DerivedData, dataOf);

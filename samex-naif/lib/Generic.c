@@ -11,29 +11,6 @@
 
 
 //
-// Private Definitions
-//
-
-/**
- * Does most of the work of generic construction.
- */
-static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
-        const zvalue *args) {
-    zvalue name = args[0];
-    zvalue minArgsVal = args[1];
-    zvalue maxArgsVal = (argCount == 3) ? args[2] : NULL;
-
-    if (valEq(name, EMPTY_STRING)) {
-        name = NULL;
-    }
-
-    zint minArgs = zintFromInt(minArgsVal);
-    zint maxArgs = (maxArgsVal == NULL) ? -1 : zintFromInt(maxArgsVal);
-
-    return makeGeneric(minArgs, maxArgs, flags, name);
-}
-
-//
 // Exported Definitions
 //
 
@@ -49,5 +26,16 @@ FUN_IMPL_DECL(genericBind) {
 
 // Documented in spec.
 FUN_IMPL_DECL(makeGeneric) {
-    return doMakeGeneric(GFN_NONE, argCount, args);
+    zvalue name = args[0];
+    zvalue minArgsVal = args[1];
+    zvalue maxArgsVal = (argCount == 3) ? args[2] : NULL;
+
+    if (valEq(name, EMPTY_STRING)) {
+        name = NULL;
+    }
+
+    zint minArgs = zintFromInt(minArgsVal);
+    zint maxArgs = (maxArgsVal == NULL) ? -1 : zintFromInt(maxArgsVal);
+
+    return makeGeneric(minArgs, maxArgs, name);
 }
