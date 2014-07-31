@@ -66,8 +66,10 @@ of all per-class ordering functions.
 #### `totalEq(value, other) -> . | void`
 
 Performs a class-specific equality comparison of the two given
-values, using the "total value ordering" order. When called, the two values
-are guaranteed to be the same class. If a client calls with different-class
+values, using the "total value ordering" order. When called by the system,
+the two values are guaranteed to have the same class; however, it is possible
+to call this function directly, so implementations must check to see if
+`other` has the same class as `value`. If a client calls with different-class
 values, it is a fatal error (terminating the runtime).
 
 The return value is either `value` (or `other` really) if the two values
@@ -91,8 +93,10 @@ of all cross-class equality comparison functions.
 #### `totalOrder(value, other) -> int | void`
 
 Returns the class-specific order of the two given values, using the "total
-value ordering" order. When called, the two values are guaranteed to be the
-same class. If a client calls with different-class values, it is a fatal error
+value ordering" order. When called by the system, the two values are
+guaranteed to have the same class; however, it is possible to call this function
+directly, so implementations must check to see if `other` has the same class
+as `value`. If a client calls with different-class values, it is a fatal error
 (terminating the runtime).
 
 The return value is one of `-1`, `0`, or `1` indicating how the two values

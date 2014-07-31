@@ -101,7 +101,11 @@ METH_IMPL(DerivedData, makeData) {
 // Documented in header.
 METH_IMPL(DerivedData, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be of same class.
+
+    if (!haveSameClass(value, other)) {
+        die("`totalEq` called with incompatible arguments.");
+    }
 
     return valEqNullOk(getInfo(value)->data, getInfo(other)->data)
         ? value : NULL;
@@ -110,7 +114,11 @@ METH_IMPL(DerivedData, totalEq) {
 // Documented in header.
 METH_IMPL(DerivedData, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be of same class.
+
+    if (!haveSameClass(value, other)) {
+        die("`totalOrder` called with incompatible arguments.");
+    }
 
     return valOrderNullOk(getInfo(value)->data, getInfo(other)->data);
 }
@@ -121,7 +129,7 @@ MOD_INIT(DerivedData) {
 
     // Note: The `objectModel` module initializes `CLS_DerivedData`.
 
-    GFN_dataOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "dataOf"));
+    GFN_dataOf = makeGeneric(1, 1, stringFromUtf8(-1, "dataOf"));
     datImmortalize(GFN_dataOf);
 
     METH_BIND(DerivedData, dataOf);

@@ -44,32 +44,31 @@ zint nthChar(zvalue value, zint index) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
-    GFN_cat = makeGeneric(1, -1, GFN_SAME_CLASS, stringFromUtf8(-1, "cat"));
+    GFN_cat = makeGeneric(1, -1, stringFromUtf8(-1, "cat"));
     datImmortalize(GFN_cat);
 
-    GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
+    GFN_get = makeGeneric(2, 2, stringFromUtf8(-1, "get"));
     datImmortalize(GFN_get);
 
-    GFN_get_key = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_key"));
+    GFN_get_key = makeGeneric(1, 1, stringFromUtf8(-1, "get_key"));
     datImmortalize(GFN_get_key);
 
-    GFN_get_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_size"));
+    GFN_get_size = makeGeneric(1, 1, stringFromUtf8(-1, "get_size"));
     datImmortalize(GFN_get_size);
 
-    GFN_get_value =
-        makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "get_value"));
+    GFN_get_value = makeGeneric(1, 1, stringFromUtf8(-1, "get_value"));
     datImmortalize(GFN_get_value);
 
-    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
+    GFN_nth = makeGeneric(2, 2, stringFromUtf8(-1, "nth"));
     datImmortalize(GFN_nth);
 
-    GFN_toInt = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toInt"));
+    GFN_toInt = makeGeneric(1, 1, stringFromUtf8(-1, "toInt"));
     datImmortalize(GFN_toInt);
 
-    GFN_toNumber = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toNumber"));
+    GFN_toNumber = makeGeneric(1, 1, stringFromUtf8(-1, "toNumber"));
     datImmortalize(GFN_toNumber);
 
-    GFN_toString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toString"));
+    GFN_toString = makeGeneric(1, 1, stringFromUtf8(-1, "toString"));
     datImmortalize(GFN_toString);
 }
 

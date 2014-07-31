@@ -251,7 +251,9 @@ METH_IMPL(String, cat) {
     zint size = 0;
 
     for (zint i = 0; i < argCount; i++) {
-        size += getInfo(args[i])->size;
+        zvalue one = args[i];
+        assertHasClass(one, CLS_String);
+        size += getInfo(one)->size;
     }
 
     zchar *chars = allocArray(size);
@@ -450,7 +452,9 @@ METH_IMPL(String, toString) {
 // Documented in header.
 METH_IMPL(String, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `String`.
+
+    assertHasClass(other, CLS_String);
     StringInfo *info1 = getInfo(value);
     StringInfo *info2 = getInfo(other);
     zint size1 = info1->size;
@@ -475,7 +479,9 @@ METH_IMPL(String, totalEq) {
 // Documented in header.
 METH_IMPL(String, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `String`.
+
+    assertHasClass(other, CLS_String);
     StringInfo *info1 = getInfo(value);
     StringInfo *info2 = getInfo(other);
     zchar *e1 = info1->elems;

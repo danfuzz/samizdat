@@ -19,11 +19,12 @@ Note that some of these are also used as part of larger protocols, e.g.
 
 #### `cat(value, more*) -> value`
 
-Returns the concatenation of all of the given values. The values
-must all be of the same class, and the result is expected to be of the same
-class as the given values. It is an error (terminating the runtime) if one of
-the arguments is of a different class. This function is intended for
-"collection-like" values which have constituent parts of some sort.
+Returns the concatenation of all of the given values. The `more*` values
+must be "compatible" with `value` (as defined by the class of `value`),
+and the result is expected to be of the same class as `value`. It is an
+error (terminating the runtime) if one of the arguments is incompatible.
+This function is intended for "collection-like" values which have constituent
+parts of some sort.
 
 To the extent that a value is unconstrained in terms of its constituent
 elements and their arrangement, the result of concatenation consists
@@ -38,9 +39,6 @@ be different. See individual implementation docs for details.
 concatenate (e.g. when handling a list of arguments generically), include
 a first argument of the empty value of the desired class, e.g.
 `""` to ensure string concatenation.
-
-**Note:** The argument compatibility restriction is enforced by the generic
-function itself, which is a "unitype" generic.
 
 #### `get(value, key) -> . | void`
 

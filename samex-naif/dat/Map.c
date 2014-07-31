@@ -280,7 +280,9 @@ METH_IMPL(Map, cat) {
     zint size = 0;
 
     for (zint i = 0; i < argCount; i++) {
-        size += getInfo(args[i])->size;
+        zvalue one = args[i];
+        assertHasClass(one, CLS_Map);
+        size += getInfo(one)->size;
     }
 
     zmapping elems[size];
@@ -536,7 +538,9 @@ METH_IMPL(Map, put) {
 // Documented in header.
 METH_IMPL(Map, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Map`.
+
+    assertHasClass(other, CLS_Map);
     MapInfo *info1 = getInfo(value);
     MapInfo *info2 = getInfo(other);
     zint size1 = info1->size;
@@ -563,7 +567,9 @@ METH_IMPL(Map, totalEq) {
 // Documented in header.
 METH_IMPL(Map, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Map`.
+
+    assertHasClass(other, CLS_Map);
     MapInfo *info1 = getInfo(value);
     MapInfo *info2 = getInfo(other);
     zmapping *e1 = info1->elems;
