@@ -55,7 +55,6 @@ export
     makeList,
     makeRegularGeneric,
     makeUniqlet,
-    makeUnitypeGeneric,
     makeValueMap,
     maybeValue,
     nextValue,

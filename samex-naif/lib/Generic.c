@@ -51,8 +51,3 @@ FUN_IMPL_DECL(genericBind) {
 FUN_IMPL_DECL(makeRegularGeneric) {
     return doMakeGeneric(GFN_NONE, argCount, args);
 }
-
-// Documented in spec.
-FUN_IMPL_DECL(makeUnitypeGeneric) {
-    return doMakeGeneric(GFN_SAME_CLASS, argCount, args);
-}

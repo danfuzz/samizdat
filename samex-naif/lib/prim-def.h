@@ -111,7 +111,6 @@ PRIM_FUNC(makeDerivedDataClass,   1, 1);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeRegularGeneric,     2, 3);
 PRIM_FUNC(makeUniqlet,            0, 0);
-PRIM_FUNC(makeUnitypeGeneric,     2, 3);
 PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(maybeValue,             1, 1);
 PRIM_FUNC(note,                   0, -1);
