@@ -251,7 +251,9 @@ METH_IMPL(String, cat) {
     zint size = 0;
 
     for (zint i = 0; i < argCount; i++) {
-        size += getInfo(args[i])->size;
+        zvalue one = args[i];
+        assertHasClass(one, CLS_String);
+        size += getInfo(one)->size;
     }
 
     zchar *chars = allocArray(size);

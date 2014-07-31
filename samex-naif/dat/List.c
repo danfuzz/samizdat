@@ -158,7 +158,9 @@ METH_IMPL(List, cat) {
     zint size = 0;
 
     for (zint i = 0; i < argCount; i++) {
-        size += getInfo(args[i])->size;
+        zvalue one = args[i];
+        assertHasClass(one, CLS_List);
+        size += getInfo(one)->size;
     }
 
     zvalue elems[size];

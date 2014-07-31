@@ -44,7 +44,7 @@ zint nthChar(zvalue value, zint index) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
-    GFN_cat = makeGeneric(1, -1, GFN_SAME_CLASS, stringFromUtf8(-1, "cat"));
+    GFN_cat = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "cat"));
     datImmortalize(GFN_cat);
 
     GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
