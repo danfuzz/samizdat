@@ -3,13 +3,10 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Builtin.h"
-#include "type/Class.h"
 #include "type/Collection.h"
 #include "type/DerivedData.h"
-#include "type/Generic.h"
 #include "type/Int.h"
-#include "type/String.h"
-#include "type/Value.h"
+#include "type/define.h"
 #include "zlimits.h"
 
 #include "impl.h"

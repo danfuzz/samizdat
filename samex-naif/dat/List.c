@@ -4,14 +4,11 @@
 
 #include <stdarg.h>
 
-#include "type/Class.h"
 #include "type/Data.h"
-#include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/OneOff.h"
-#include "type/String.h"
-#include "type/Value.h"
+#include "type/define.h"
 
 #include "impl.h"
 

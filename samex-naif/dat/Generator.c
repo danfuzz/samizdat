@@ -8,12 +8,9 @@
 
 #include "type/Box.h"
 #include "type/Builtin.h"
-#include "type/Class.h"
 #include "type/Generator.h"
-#include "type/Generic.h"
 #include "type/List.h"
-#include "type/String.h"
-#include "type/Value.h"
+#include "type/define.h"
 #include "zlimits.h"
 
 #include "impl.h"

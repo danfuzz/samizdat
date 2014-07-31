@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Uniqlet.h"
+#include "type/define.h"
 
 #include "impl.h"
 

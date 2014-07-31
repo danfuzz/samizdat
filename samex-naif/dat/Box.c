@@ -7,11 +7,9 @@
 //
 
 #include "type/Box.h"
-#include "type/Class.h"
-#include "type/Generic.h"
 #include "type/List.h"
-#include "type/String.h"
 #include "type/Value.h"
+#include "type/define.h"
 #include "util.h"
 
 #include "impl.h"
