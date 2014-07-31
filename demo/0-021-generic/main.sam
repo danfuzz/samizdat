@@ -18,7 +18,7 @@ fn String.whatIs() {
     note("I am a string.")
 };
 
-fn @@Boolean.whatIs() {
+fn Bool.whatIs() {
     note("I am a boolean.")
 };
 
