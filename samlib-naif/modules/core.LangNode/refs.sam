@@ -39,7 +39,6 @@ def NAMES = [
     "makeDerivedDataClass",
     "makeList",
     "makeRegularGeneric",
-    "makeUnitypeGeneric",
     "makeValueMap",
     "maybeValue",
     "ne",

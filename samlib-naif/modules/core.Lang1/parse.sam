@@ -487,19 +487,15 @@ def parGenericBind = makeMainSequence(
 ## Documented in spec.
 def parGenericDef = makeMainSequence(
     makeToken(@@fn),
-    makeRepeat(makeToken(@@"*"), 0, 1),
     makeToken(@@"."),
     parName,
     makeToken(@@"("),
     parFormalsList,
     makeToken(@@")"),
-    makeCode { ., optStar, ., name, ., formals, . ->
+    makeCode { ., ., name, ., formals, . ->
         def fullFormals = [{}, formals*];  ## First one is `this`.
-        def func = ifIs { eq(optStar, []) }
-            { REFS::makeRegularGeneric }
-            { REFS::makeUnitypeGeneric };
         def call = makeCall(
-            func,
+            REFS::makeRegularGeneric,
             makeLiteral(name),
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals)));
