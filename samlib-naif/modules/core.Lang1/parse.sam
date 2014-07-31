@@ -495,7 +495,7 @@ def parGenericDef = makeMainSequence(
     makeCode { ., ., name, ., formals, . ->
         def fullFormals = [{}, formals*];  ## First one is `this`.
         def call = makeCall(
-            REFS::makeRegularGeneric,
+            REFS::makeGeneric,
             makeLiteral(name),
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals)));

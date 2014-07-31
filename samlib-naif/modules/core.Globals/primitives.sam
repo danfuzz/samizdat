@@ -53,7 +53,7 @@ export
     makeData,
     makeDerivedDataClass,
     makeList,
-    makeRegularGeneric,
+    makeGeneric,
     makeUniqlet,
     makeValueMap,
     maybeValue,

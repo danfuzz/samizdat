@@ -965,7 +965,7 @@ DEF_PARSE(genericDef) {
 
     zvalue fullFormals = GFN_CALL(cat, listFrom1(EMPTY_MAP), formals);
     zvalue call = makeCall(
-        REFS(makeRegularGeneric),
+        REFS(makeGeneric),
         listFrom3(
             makeLiteral(name),
             makeLiteral(formalsMinArgs(fullFormals)),

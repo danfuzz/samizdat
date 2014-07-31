@@ -647,7 +647,7 @@ def parGenericBind = {:
 ## ```
 ## def name;  ## At top of closure
 ## ...
-## name := makeRegularGeneric("name", 2, 2);
+## name := makeGeneric("name", 2, 2);
 ## ```
 ##
 ## with different numbers depending on the shape of the arguments.
@@ -662,7 +662,7 @@ def parGenericDef = {:
     {
         def fullFormals = [{}, formals*];  ## First one is `this`.
         def call = makeCall(
-            REFS::makeRegularGeneric,
+            REFS::makeGeneric,
             makeLiteral(name),
             makeLiteral(formalsMinArgs(fullFormals)),
             makeLiteral(formalsMaxArgs(fullFormals)));

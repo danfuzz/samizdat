@@ -48,6 +48,6 @@ FUN_IMPL_DECL(genericBind) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(makeRegularGeneric) {
+FUN_IMPL_DECL(makeGeneric) {
     return doMakeGeneric(GFN_NONE, argCount, args);
 }
