@@ -22,6 +22,22 @@
     do { \
         genericBindPrim(GFN_##name, CLS_##cls, METH_NAME(cls, name), \
             #cls ":" #name); \
-    } while(0)
+    } while (0)
+
+/** Variable definition for a method selector. */
+#define SEL_DEF(name) \
+    zvalue SEL_NAME(name) = NULL
+
+/**
+ * Performs initialization of the indicated method selector. TODO: Remove
+ * `minArgs` and `maxArgs` arguments once these are actually selectors and
+ * not generic functions.
+ */
+#define SEL_INIT(minArgs, maxArgs, name) \
+    do { \
+        SEL_NAME(name) = \
+            makeGeneric(minArgs, maxArgs, stringFromUtf8(-1, #name)); \
+        datImmortalize(SEL_NAME(name)); \
+    } while (0)
 
 #endif

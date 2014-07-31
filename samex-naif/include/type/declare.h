@@ -35,4 +35,11 @@
     static zvalue METH_NAME(cls, name)( \
         zvalue thisFunction, zint argCount, const zvalue *args)
 
+/** Variable name for a method selector. */
+#define SEL_NAME(name) GFN_##name
+
+/** Declaration for a method selector. */
+#define SEL_DECL(name) \
+    extern zvalue SEL_NAME(name)
+
 #endif
