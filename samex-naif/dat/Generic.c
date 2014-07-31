@@ -123,6 +123,14 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     zvalue firstCls = get_class(args[0]);
     zvalue function = findByClass(generic, firstCls, &firstCls);
 
+    #if USE_METHOD_TABLE
+    // Verify that the same method is picked by the class's method table.
+    zvalue classBinding = classFindMethod(args[0], info->selector);
+    if (classBinding != function) {
+        die("Eek! Method binding mismatch!");
+    }
+    #endif
+
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
             valDebugString(generic), valDebugString(args[0]));
