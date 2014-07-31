@@ -201,6 +201,40 @@ static bool classEq(zvalue cls1, zvalue cls2) {
 //
 
 // Documented in header.
+zvalue classFindMethod(zvalue cls, zvalue selector) {
+    #if !USE_METHOD_TABLE
+    die("Requires USE_METHOD_TABLE");
+    #else
+
+    // TODO: Remove the heritage lookup once subclass tables get populated
+    // with their superclasses' methods.
+
+    assertHasClassClass(cls);
+    zint index = selectorIndex(selector);
+    zvalue result = NULL;
+    zvalue superChecked = false;
+
+    zvalue checkCls = cls;
+    while (checkCls != NULL) {
+        zvalue *methods = getInfo(checkCls)->methods;
+        result = methods[index];
+        if (result != NULL) {
+            break;
+        }
+        superChecked = true;
+        checkCls = classParent(checkCls);
+    }
+
+    if (superChecked && (result != NULL)) {
+        getInfo(cls)->methods[index] = result;
+    }
+
+    return result;
+
+    #endif
+}
+
+// Documented in header.
 extern inline zint classIndexUnchecked(zvalue cls);
 
 

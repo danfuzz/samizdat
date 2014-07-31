@@ -127,6 +127,12 @@ typedef struct {
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
+ * Finds a method on a class, if bound. Returns the bound function if found
+ * or `NULL` if not.
+ */
+zvalue classFindMethod(zvalue cls, zvalue selector);
+
+/**
  * Gets the index for a given class value. The given value *must* be a
  * `Class` per se; this is *not* checked.
  */
@@ -153,6 +159,15 @@ zvalue genericFindByIndex(zvalue generic, zint index);
  * lands.
  */
 zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
+
+/**
+ * Actual implementation of selector calling. This is where
+ * short-circuited method dispatch of `call` on class `Selector`
+ * lands. This calls the method bound to the given selector, with the given
+ * arguments. The method is looked up on `args[0]`. As such, `argCount` must
+ * be at least `1`.
+ */
+zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args);
 
 /**
  * Gets the `CacheEntry` for the given map/key pair.

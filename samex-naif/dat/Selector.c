@@ -136,6 +136,24 @@ zvalue makeAnonymousSelector(zvalue methodName) {
 }
 
 // Documented in header.
+zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
+    if (argCount < 1) {
+        die("Too few arguments for selector call.");
+    }
+
+    zint index = getInfo(selector)->index;
+    zvalue cls = get_class(args[0]);
+    zvalue function = classFindMethod(cls, selector);
+
+    if (function == NULL) {
+        die("Unbound method: %s%s",
+            valDebugString(cls), valDebugString(selector));
+    }
+
+    return funCall(function, argCount, args);
+}
+
+// Documented in header.
 zvalue selectorFromExistingName(zvalue methodName) {
     zvalue result = findSelector(methodName);
 
@@ -170,6 +188,13 @@ zint selectorIndex(zvalue selector) {
 //
 // Class Definition
 //
+
+// Documented in header.
+METH_IMPL(Selector, call) {
+    // The first argument is the selector, and the rest are the
+    // arguments to call it with.
+    return selectorCall(args[0], argCount - 1, &args[1]);
+}
 
 // Documented in header.
 METH_IMPL(Selector, debugName) {
