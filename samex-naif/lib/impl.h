@@ -10,7 +10,7 @@
 #define _IMPL_H_
 
 #include "lib.h"
-#include "type/Function.h"
+#include "type/define.h"
 
 
 // Declarations for all the primitive functions.

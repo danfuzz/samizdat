@@ -24,7 +24,7 @@
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Uniqlet.h"
-#include "type/Value.h"
+#include "type/define.h"
 #include "util.h"
 
 

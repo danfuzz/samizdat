@@ -15,6 +15,20 @@
 #include "type/Selector.h"
 #include "type/String.h"
 
+/**
+ * C source name for a `zfunction` implementation with the given name.
+ * The result is a prefixed version of the given name.
+ */
+#define FUN_IMPL_NAME(name) FUN_IMPL_##name
+
+/**
+ * Declaration for a `zfunction` implementation with the given name. Can be
+ * used as either a prototype or a top-of-implementation declaration.
+ */
+#define FUN_IMPL_DECL(name) \
+    zvalue FUN_IMPL_NAME(name)( \
+        zvalue thisFunction, zint argCount, const zvalue *args)
+
 /** C function name for a method on the given class with the given name. */
 #define METH_NAME(cls, name) cls##_##name
 

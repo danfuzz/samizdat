@@ -22,20 +22,6 @@ typedef zvalue (*zfunction)(
     zvalue thisFunction, zint argCount, const zvalue *args);
 
 /**
- * Actual name for a `zfunction` implementation with the given name.
- * The result is a prefixed version of the given name.
- */
-#define FUN_IMPL_NAME(name) FUN_IMPL_##name
-
-/**
- * Declaration for a `zfunction` implementation with the given name. Can be
- * used as either a prototype or a top-of-implementation declaration.
- */
-#define FUN_IMPL_DECL(name) \
-    zvalue FUN_IMPL_NAME(name)( \
-        zvalue thisFunction, zint argCount, const zvalue *args)
-
-/**
  * Generic `call(function, args*)`: Generic for dispatching to a function
  * calling mechanism (how meta). Documented in spec.
  */
