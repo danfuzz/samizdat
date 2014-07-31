@@ -26,25 +26,7 @@ fn Value.whatIs() {
     note("I am unknown.")
 };
 
-fn *.whatAre(.*);
-
-fn List.whatAre(.*) {
-    note("We are lists.")
-};
-
-fn Map.whatAre(.*) {
-    note("We are maps.")
-};
-
-fn Value.whatAre(.*) {
-    note("We are unknown.")
-};
-
 whatIs(10);
 whatIs("stuff");
 whatIs(true);
 whatIs([]);
-
-whatAre([1], [2]);
-whatAre({a: 10}, {b: 20}, {});
-whatAre(9, 8, 7, 6, 5, 4);
