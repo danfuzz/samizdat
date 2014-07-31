@@ -7,7 +7,6 @@
 #include "type/Class.h"
 #include "type/Selector.h"
 #include "type/String.h"
-#include "type/Uniqlet.h"
 #include "zlimits.h"
 
 #include "impl.h"
@@ -20,10 +19,13 @@
 /** Next selector index to assign. */
 static zint theNextIndex = 0;
 
-/** Array of all existing selectors, in sort order (possibly stale). */
-static zvalue theSelectors[DAT_MAX_SELECTORS];
+/** Array of all named selectors, in sort order (possibly stale). */
+static zvalue theNamedSelectors[DAT_MAX_SELECTORS];
 
-/** Whether `theSelectors` needs a sort. */
+/** The number of named selectors. */
+static zint theNamedSelectorCount = 0;
+
+/** Whether `theNamedSelectors` needs a sort. */
 static bool theNeedSort = false;
 
 /**
@@ -48,7 +50,7 @@ static SelectorInfo *getInfo(zvalue selector) {
  * Creates and returns a new selector with the given name. Does no checking
  * other than that there aren't already too many selectors.
  */
-static zvalue makeSelector(zvalue methodName) {
+static zvalue makeSelector(zvalue methodName, bool anonymous) {
     if (theNextIndex >= DAT_MAX_SELECTORS) {
         die("Too many method selectors!");
     }
@@ -58,10 +60,13 @@ static zvalue makeSelector(zvalue methodName) {
 
     info->methodName = methodName;
     info->index = theNextIndex;
-
-    theSelectors[theNextIndex] = result;
     theNextIndex++;
-    theNeedSort = true;
+
+    if (!anonymous) {
+        theNamedSelectors[theNamedSelectorCount] = result;
+        theNamedSelectorCount++;
+        theNeedSort = true;
+    }
 
     datImmortalize(result);
     return result;
@@ -104,12 +109,14 @@ static int searchOrder(const void *key, const void *vptr) {
  */
 static zvalue findSelector(zvalue methodName) {
     if (theNeedSort) {
-        mergesort(theSelectors, theNextIndex, sizeof(zvalue), sortOrder);
+        mergesort(theNamedSelectors, theNamedSelectorCount, sizeof(zvalue),
+            sortOrder);
         theNeedSort = false;
     }
 
     zvalue *found = (zvalue *) bsearch(
-        methodName, theSelectors, theNextIndex, sizeof(zvalue), searchOrder);
+        methodName, theNamedSelectors, theNamedSelectorCount, sizeof(zvalue),
+        searchOrder);
 
     return (found == NULL) ? NULL : *found;
 }
@@ -118,6 +125,11 @@ static zvalue findSelector(zvalue methodName) {
 //
 // Exported Definitions
 //
+
+// Documented in header.
+zvalue makeAnonymousSelector(zvalue methodName) {
+    return makeSelector(methodName, true);
+}
 
 // Documented in header.
 zvalue selectorFromExistingName(zvalue methodName) {
@@ -135,11 +147,10 @@ zvalue selectorFromName(zvalue methodName) {
     zvalue result = findSelector(methodName);
 
     if (result == NULL) {
-        if (!(     hasClass(methodName, CLS_String)
-                || hasClass(methodName, CLS_Uniqlet))) {
+        if (!hasClass(methodName, CLS_String)) {
             die("Improper method name: %s", valDebugString(methodName));
         }
-        result = makeSelector(methodName);
+        result = makeSelector(methodName, false);
     }
 
     return result;

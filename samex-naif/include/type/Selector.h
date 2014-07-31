@@ -16,6 +16,12 @@
 extern zvalue CLS_Selector;
 
 /**
+ * Makes an anonymous selector. The `methodName` is used as the "debugging"
+ * name but does not have any effect on lookup.
+ */
+zvalue makeAnonymousSelector(zvalue methodName);
+
+/**
  * Gets the selector that corresponds to the given method name, but only if
  * it already exists. Returns `NULL` if there is no existing selector that
  * corresponds to `methodName`.
@@ -24,8 +30,7 @@ zvalue selectorFromExistingName(zvalue methodName);
 
 /**
  * Gets the selector that corresponds to the given method name, creating it
- * if it doesn't already exist. `methodName` is allowed to be a `String` or
- * a `Uniqlet` but no other type.
+ * if it doesn't already exist. `methodName` must be a `String`.
  */
 zvalue selectorFromName(zvalue methodName);
 
