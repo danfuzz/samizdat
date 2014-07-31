@@ -250,22 +250,22 @@ MOD_INIT(Value) {
 zvalue CLS_Value = NULL;
 
 // Documented in header.
-zvalue GFN_debugName = NULL;
+SEL_DEF(debugName);
 
 // Documented in header.
-zvalue GFN_debugString = NULL;
+SEL_DEF(debugString);
 
 // Documented in header.
-zvalue GFN_gcMark = NULL;
+SEL_DEF(gcMark);
 
 // Documented in header.
-zvalue GFN_perEq = NULL;
+SEL_DEF(perEq);
 
 // Documented in header.
-zvalue GFN_perOrder = NULL;
+SEL_DEF(perOrder);
 
 // Documented in header.
-zvalue GFN_totalEq = NULL;
+SEL_DEF(totalEq);
 
 // Documented in header.
-zvalue GFN_totalOrder = NULL;
+SEL_DEF(totalOrder);

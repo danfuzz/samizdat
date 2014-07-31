@@ -48,31 +48,31 @@ MOD_INIT(Number) {
 }
 
 // Documented in header.
-zvalue GFN_abs = NULL;
+SEL_DEF(abs);
 
 // Documented in header.
-zvalue GFN_add = NULL;
+SEL_DEF(add);
 
 // Documented in header.
-zvalue GFN_div = NULL;
+SEL_DEF(div);
 
 // Documented in header.
-zvalue GFN_divEu = NULL;
+SEL_DEF(divEu);
 
 // Documented in header.
-zvalue GFN_mod = NULL;
+SEL_DEF(mod);
 
 // Documented in header.
-zvalue GFN_modEu = NULL;
+SEL_DEF(modEu);
 
 // Documented in header.
-zvalue GFN_mul = NULL;
+SEL_DEF(mul);
 
 // Documented in header.
-zvalue GFN_neg = NULL;
+SEL_DEF(neg);
 
 // Documented in header.
-zvalue GFN_sign = NULL;
+SEL_DEF(sign);
 
 // Documented in header.
-zvalue GFN_sub = NULL;
+SEL_DEF(sub);

@@ -124,13 +124,13 @@ MOD_INIT(Generator) {
 }
 
 // Documented in header.
-zvalue GFN_collect = NULL;
+SEL_DEF(collect);
 
 // Documented in header.
-zvalue GFN_fetch = NULL;
+SEL_DEF(fetch);
 
 // Documented in header.
-zvalue GFN_nextValue = NULL;
+SEL_DEF(nextValue);
 
 // Documented in header.
 zvalue FUN_Generator_stdCollect = NULL;

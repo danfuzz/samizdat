@@ -39,22 +39,22 @@ MOD_INIT(Bitwise) {
 }
 
 // Documented in header.
-zvalue GFN_and = NULL;
+SEL_DEF(and);
 
 // Documented in header.
-zvalue GFN_bit = NULL;
+SEL_DEF(bit);
 
 // Documented in header.
-zvalue GFN_bitSize = NULL;
+SEL_DEF(bitSize);
 
 // Documented in header.
-zvalue GFN_not = NULL;
+SEL_DEF(not);
 
 // Documented in header.
-zvalue GFN_or = NULL;
+SEL_DEF(or);
 
 // Documented in header.
-zvalue GFN_shl = NULL;
+SEL_DEF(shl);
 
 // Documented in header.
-zvalue GFN_xor = NULL;
+SEL_DEF(xor);

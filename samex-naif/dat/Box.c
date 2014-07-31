@@ -194,4 +194,4 @@ MOD_INIT(Box) {
 zvalue CLS_Box = NULL;
 
 // Documented in header.
-zvalue GFN_store = NULL;
+SEL_DEF(store);

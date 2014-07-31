@@ -72,28 +72,28 @@ MOD_INIT(OneOff) {
 }
 
 // Documented in header.
-zvalue GFN_cat = NULL;
+SEL_DEF(cat);
 
 // Documented in header.
-zvalue GFN_get = NULL;
+SEL_DEF(get);
 
 // Documented in header.
-zvalue GFN_get_key = NULL;
+SEL_DEF(get_key);
 
 // Documented in header.
-zvalue GFN_get_size = NULL;
+SEL_DEF(get_size);
 
 // Documented in header.
-zvalue GFN_get_value = NULL;
+SEL_DEF(get_value);
 
 // Documented in header.
-zvalue GFN_nth = NULL;
+SEL_DEF(nth);
 
 // Documented in header.
-zvalue GFN_toInt = NULL;
+SEL_DEF(toInt);
 
 // Documented in header.
-zvalue GFN_toNumber = NULL;
+SEL_DEF(toNumber);
 
 // Documented in header.
-zvalue GFN_toString = NULL;
+SEL_DEF(toString);

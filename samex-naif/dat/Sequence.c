@@ -220,10 +220,10 @@ MOD_INIT(Sequence) {
 }
 
 // Documented in header.
-zvalue GFN_reverse = NULL;
+SEL_DEF(reverse);
 
 // Documented in header.
-zvalue GFN_sliceExclusive = NULL;
+SEL_DEF(sliceExclusive);
 
 // Documented in header.
-zvalue GFN_sliceInclusive = NULL;
+SEL_DEF(sliceInclusive);

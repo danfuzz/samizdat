@@ -205,4 +205,4 @@ MOD_INIT(Function) {
 }
 
 // Documented in header.
-zvalue GFN_call = NULL;
+SEL_DEF(call);

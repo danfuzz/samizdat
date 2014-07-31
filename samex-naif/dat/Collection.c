@@ -52,16 +52,16 @@ MOD_INIT(Collection) {
 }
 
 // Documented in header.
-zvalue GFN_del = NULL;
+SEL_DEF(del);
 
 // Documented in header.
-zvalue GFN_keyList = NULL;
+SEL_DEF(keyList);
 
 // Documented in header.
-zvalue GFN_nthMapping = NULL;
+SEL_DEF(nthMapping);
 
 // Documented in header.
-zvalue GFN_put = NULL;
+SEL_DEF(put);
 
 // Documented in header.
-zvalue GFN_valueList = NULL;
+SEL_DEF(valueList);

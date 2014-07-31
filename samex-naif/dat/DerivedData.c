@@ -145,7 +145,7 @@ MOD_INIT(DerivedData) {
 zvalue CLS_DerivedData = NULL;
 
 // Documented in header.
-zvalue GFN_dataOf = NULL;
+SEL_DEF(dataOf);
 
 // Documented in header.
 zvalue FUN_DerivedData_makeData = NULL;
