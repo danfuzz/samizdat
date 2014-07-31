@@ -101,7 +101,6 @@ DEF_STRING(makeData,             "makeData");
 DEF_STRING(makeDerivedDataClass, "makeDerivedDataClass");
 DEF_STRING(makeList,             "makeList");
 DEF_STRING(makeRegularGeneric,   "makeRegularGeneric");
-DEF_STRING(makeUnitypeGeneric,   "makeUnitypeGeneric");
 DEF_STRING(makeValueMap,         "makeValueMap");
 DEF_STRING(map,                  "map");
 DEF_STRING(maybeValue,           "maybeValue");

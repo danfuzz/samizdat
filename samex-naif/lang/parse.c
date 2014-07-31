@@ -957,7 +957,6 @@ DEF_PARSE(genericDef) {
     MARK();
 
     MATCH_OR_REJECT(fn);
-    zvalue optStar = MATCH(CH_STAR);      // Okay if this fails.
     MATCH_OR_REJECT(CH_DOT);
     zvalue name = PARSE_OR_REJECT(name);
     MATCH_OR_REJECT(CH_OPAREN);
@@ -965,11 +964,8 @@ DEF_PARSE(genericDef) {
     MATCH_OR_REJECT(CH_CPAREN);
 
     zvalue fullFormals = GFN_CALL(cat, listFrom1(EMPTY_MAP), formals);
-    zvalue func = (optStar == NULL)
-        ? REFS(makeRegularGeneric)
-        : REFS(makeUnitypeGeneric);
     zvalue call = makeCall(
-        func,
+        REFS(makeRegularGeneric),
         listFrom3(
             makeLiteral(name),
             makeLiteral(formalsMinArgs(fullFormals)),
