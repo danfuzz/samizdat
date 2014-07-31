@@ -1042,7 +1042,7 @@ DEF_PARSE(importSource1) {
     zvalue rest = PARSE_STAR(importSourceSlashName);
     zvalue optSuffix = PARSE_OPT(importSourceDotName);
 
-    zvalue name = GFN_APPLY(cat,
+    zvalue name = METH_APPLY(cat,
         GFN_CALL(cat, listFrom1(first), rest, optSuffix));
     return makeData(CLS_internal, mapFrom1(STR_name, name));
 }
@@ -1054,7 +1054,7 @@ DEF_PARSE(importSource2) {
     zvalue first = PARSE_OR_REJECT(name);
     zvalue rest = PARSE_STAR(importSourceDotName);
 
-    zvalue name = GFN_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
+    zvalue name = METH_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
     return makeData(CLS_external, mapFrom1(STR_name, name));
 }
 
