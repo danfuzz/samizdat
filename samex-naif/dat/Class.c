@@ -436,6 +436,9 @@ MOD_INIT(objectModel) {
     } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
             classIndex(CLS_Jump));
+    } else if (classIndex(CLS_Selector) != DAT_INDEX_SELECTOR) {
+        die("Mismatched index for `Selector`: should be %lld",
+            classIndex(CLS_Selector));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.

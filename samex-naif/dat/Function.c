@@ -75,10 +75,13 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
         case DAT_INDEX_JUMP: {
             return jumpCall(function, argCount, args);
         }
+        case DAT_INDEX_SELECTOR: {
+            return selectorCall(function, argCount, args);
+        }
         default: {
             // The original `function` is some kind of higher layer function.
-            // Use generic dispatch to get to it: Prepend `function` as a new
-            // first argument, and call the generic `call` via a recursive
+            // Use method dispatch to get to it: Prepend `function` as a new
+            // first argument, and call the method `call` via a recursive
             // call to `funCall0` to avoid the stack/frame setup.
             zvalue callImpl = genericFindByIndex(GFN_call, index);
             if (callImpl == NULL) {

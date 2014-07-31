@@ -29,6 +29,9 @@ enum {
     /** The class index for class `Jump`. */
     DAT_INDEX_JUMP = 7,
 
+    /** The class index for class `Selector`. */
+    DAT_INDEX_SELECTOR = 2,
+
     /** Whether to be paranoid about corruption checks. */
     DAT_MEMORY_PARANOIA = false,
 
