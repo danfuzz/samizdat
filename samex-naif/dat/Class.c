@@ -66,9 +66,6 @@ static void classInit(zvalue cls, zvalue parent, zvalue name) {
     info->name = name;
     info->secret = derived ? NULL : theCoreSecret;
     info->classId = theNextClassId;
-    #if USE_METHOD_MAP
-    info->methods = NULL;
-    #endif
 
     theClasses[theNextClassId] = cls;
     theNeedSort = true;
@@ -220,12 +217,23 @@ void assertHasClass(zvalue value, zvalue cls) {
 }
 
 // Documented in header.
-void classAddMethod(zvalue cls, zvalue methodName, zvalue function) {
-    #if !USE_METHOD_MAP
-    die("Requires USE_METHOD_MAP");
-    #endif
+void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
+    #if !USE_METHOD_TABLE
+    die("Requires USE_METHOD_TABLE");
+    #else
 
-    die("TODO");
+    assertHasClassClass(cls);
+    zint index = selectorIndex(selector);
+    zvalue *methods = getInfo(cls)->methods;
+
+    if (info->methods[index] != NULL) {
+        die("Cannot rebind method: %s%s",
+            valDebugString(cls), valDebugString(selector));
+    }
+
+    info->methods[index] = function;
+
+    #endif
 }
 
 // Documented in header.

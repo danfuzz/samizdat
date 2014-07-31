@@ -12,6 +12,7 @@
 #include "type/Builtin.h"
 #include "type/Class.h"
 #include "type/Generic.h"
+#include "type/Selector.h"
 #include "type/String.h"
 #include "type/Value.h"
 #include "zlimits.h"
@@ -160,8 +161,8 @@ void genericBind(zvalue generic, zvalue cls, zvalue function) {
 
     info->functions[index] = function;
 
-    #if USE_METHOD_MAP
-    classAddMethod(cls, info->name, function);
+    #if USE_METHOD_TABLE
+    classAddMethod(cls, selectorFromName(info->name), function);
     #endif
 }
 

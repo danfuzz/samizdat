@@ -43,7 +43,7 @@ enum {
      * as a temporary guard around the new method definition and dispatch
      * code. TODO: Remove this flag when the new code is reasonably baked.
      */
-    USE_METHOD_MAP = false
+    USE_METHOD_TABLE = false
 };
 
 /**
@@ -91,12 +91,12 @@ typedef struct {
      */
     zint classId;
 
-    #if USE_METHOD_MAP
+    #if USE_METHOD_TABLE
     /**
-     * Map from method names (arbitrary values) to method implementations.
-     * It is allowed to be `NULL`.
+     * Bindings from method selectors to functions, keyed off of selector
+     * index number.
      */
-    zvalue methods;
+    zvalue methods[DAT_MAX_SELECTORS];
     #endif
 } ClassInfo;
 
