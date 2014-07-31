@@ -319,7 +319,7 @@ DEF_PARSE(literal) {
 
     if (MATCH(CH_MINUS)) {
         token = MATCH_OR_REJECT(int);
-        return makeLiteral(GFN_CALL(neg, GET(value, token)));
+        return makeLiteral(METH_CALL(neg, GET(value, token)));
     } else if ((token = MATCH(int))) {
         return makeLiteral(GET(value, token));
     } else if ((token = MATCH(string))) {
@@ -611,7 +611,7 @@ DEF_PARSE(actualsList) {
         zvalue normalActuals = PARSE(unadornedList);  // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
         zvalue closureActuals = PARSE_STAR(fullClosure);
-        return GFN_CALL(cat, closureActuals, normalActuals);
+        return METH_CALL(cat, closureActuals, normalActuals);
     }
 
     return PARSE_PLUS(fullClosure);
@@ -867,7 +867,7 @@ DEF_PARSE(closureDeclarations2) {
     if (MATCH(CH_OPAREN) != NULL) {
         zvalue formals = PARSE(formalsList);    // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        return GFN_CALL(cat, name, mapFrom1(STR_formals, formals));
+        return METH_CALL(cat, name, mapFrom1(STR_formals, formals));
     } else {
         RESET();
         zvalue formals = PARSE(formalsList);    // This never fails.
@@ -887,7 +887,7 @@ DEF_PARSE(closureDeclarations3) {
 
     MATCH_OR_REJECT(CH_RARROW);
 
-    return GFN_CALL(cat, most, yieldDef);
+    return METH_CALL(cat, most, yieldDef);
 }
 
 // Documented in spec.
@@ -945,7 +945,7 @@ DEF_PARSE(genericBind) {
     zvalue formals = GET(formals, closure);
     zvalue name = GET(name, closure);
     zvalue fullClosure = withFormals(closure,
-        GFN_CALL(cat,
+        METH_CALL(cat,
             listFrom1(mapFrom1(STR_name, STR_this)),
             formals));
     return makeCall(REFS(genericBind),
@@ -963,7 +963,7 @@ DEF_PARSE(genericDef) {
     zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
 
-    zvalue fullFormals = GFN_CALL(cat, listFrom1(EMPTY_MAP), formals);
+    zvalue fullFormals = METH_CALL(cat, listFrom1(EMPTY_MAP), formals);
     zvalue call = makeCall(
         REFS(makeGeneric),
         listFrom3(
@@ -1016,7 +1016,7 @@ DEF_PARSE(importSourceDotName) {
     MATCH_OR_REJECT(CH_DOT);
     zvalue name = PARSE_OR_REJECT(name);
 
-    return GFN_CALL(cat, STR_CH_DOT, name);
+    return METH_CALL(cat, STR_CH_DOT, name);
 }
 
 /**
@@ -1029,7 +1029,7 @@ DEF_PARSE(importSourceSlashName) {
     MATCH_OR_REJECT(CH_SLASH);
     zvalue name = PARSE_OR_REJECT(name);
 
-    return GFN_CALL(cat, STR_CH_SLASH, name);
+    return METH_CALL(cat, STR_CH_SLASH, name);
 }
 
 /** Helper for `importSource`: Parses the first alternate. */
@@ -1043,7 +1043,7 @@ DEF_PARSE(importSource1) {
     zvalue optSuffix = PARSE_OPT(importSourceDotName);
 
     zvalue name = METH_APPLY(cat,
-        GFN_CALL(cat, listFrom1(first), rest, optSuffix));
+        METH_CALL(cat, listFrom1(first), rest, optSuffix));
     return makeData(CLS_internal, mapFrom1(STR_name, name));
 }
 
@@ -1054,7 +1054,7 @@ DEF_PARSE(importSource2) {
     zvalue first = PARSE_OR_REJECT(name);
     zvalue rest = PARSE_STAR(importSourceDotName);
 
-    zvalue name = METH_APPLY(cat, GFN_CALL(cat, listFrom1(first), rest));
+    zvalue name = METH_APPLY(cat, METH_CALL(cat, listFrom1(first), rest));
     return makeData(CLS_external, mapFrom1(STR_name, name));
 }
 
@@ -1109,7 +1109,7 @@ DEF_PARSE(importStatement) {
     zvalue source = PARSE_OR_REJECT(importSource);
     zvalue select = PARSE(importSelect);      // Never fails.
 
-    zvalue data = GFN_CALL(cat,
+    zvalue data = METH_CALL(cat,
         nameOrPrefix,
         format,
         select,
@@ -1211,7 +1211,7 @@ DEF_PARSE(rawClosure) {
 
     MATCH_OR_REJECT(CH_CCURLY);
 
-    return GFN_CALL(cat, decls, body);
+    return METH_CALL(cat, decls, body);
 }
 
 // Documented in spec.

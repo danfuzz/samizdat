@@ -126,7 +126,7 @@ METH_IMPL(Sequence, get) {
     zvalue key = args[1];
 
     if (seqNthIndexLenient(key) >= 0) {
-        return GFN_CALL(nth, seq, key);
+        return METH_CALL(nth, seq, key);
     } else {
         return NULL;
     }
@@ -158,7 +158,7 @@ METH_IMPL(Sequence, nextValue) {
         // `seq` is empty.
         return NULL;
     } else {
-        GFN_CALL(store, box, first);
+        METH_CALL(store, box, first);
         return makeData(
             CLS_SequenceGenerator,
             mapFromArgs(
@@ -172,7 +172,7 @@ METH_IMPL(Sequence, nextValue) {
 METH_IMPL(Sequence, nthMapping) {
     zvalue seq = args[0];
     zvalue n = args[1];
-    zvalue value = GFN_CALL(nth, seq, n);
+    zvalue value = METH_CALL(nth, seq, n);
 
     if (value == NULL) {
         return NULL;

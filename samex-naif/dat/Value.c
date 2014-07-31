@@ -40,7 +40,7 @@ char *valDebugString(zvalue value) {
         return utilStrdup("(null)");
     }
 
-    return utf8DupFromString(GFN_CALL(debugString, value));
+    return utf8DupFromString(METH_CALL(debugString, value));
 }
 
 // Documented in header.
@@ -50,7 +50,7 @@ zvalue valEq(zvalue value, zvalue other) {
     } else if (value == other) {
         return value;
     } else if (haveSameClass(value, other)) {
-        return (GFN_CALL(totalEq, value, other) != NULL) ? value : NULL;
+        return (METH_CALL(totalEq, value, other) != NULL) ? value : NULL;
     } else {
         return NULL;
     }
@@ -79,9 +79,9 @@ zvalue valOrder(zvalue value, zvalue other) {
     zvalue otherCls = get_class(other);
 
     if (valueCls == otherCls) {
-        return GFN_CALL(totalOrder, value, other);
+        return METH_CALL(totalOrder, value, other);
     } else {
-        return GFN_CALL(totalOrder, valueCls, otherCls);
+        return METH_CALL(totalOrder, valueCls, otherCls);
     }
 }
 
@@ -128,7 +128,7 @@ METH_IMPL(Value, debugName) {
 METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue cls = get_class(value);
-    zvalue name = GFN_CALL(debugName, value);
+    zvalue name = METH_CALL(debugName, value);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
@@ -137,16 +137,16 @@ METH_IMPL(Value, debugString) {
         // Suppress a non-string name.
         name = stringFromUtf8(-1, "(non-string name)");
     } else {
-        name = GFN_CALL(cat,
+        name = METH_CALL(cat,
             stringFromUtf8(-1, " "),
-            GFN_CALL(debugString, name));
+            METH_CALL(debugString, name));
     }
 
     sprintf(addrBuf, "%p", value);
 
-    return GFN_CALL(cat,
+    return METH_CALL(cat,
         stringFromUtf8(-1, "@("),
-        GFN_CALL(debugString, cls),
+        METH_CALL(debugString, cls),
         name,
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),

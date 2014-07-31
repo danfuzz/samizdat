@@ -36,13 +36,13 @@ METH_IMPL(Generator, stdCollect) {
     zvalue box = makeCell(NULL);
 
     for (;;) {
-        zvalue nextGen = GFN_CALL(nextValue, generator, box);
+        zvalue nextGen = METH_CALL(nextValue, generator, box);
 
         if (nextGen == NULL) {
             break;
         }
 
-        zvalue one = GFN_CALL(fetch, box);
+        zvalue one = METH_CALL(fetch, box);
         generator = nextGen;
 
         if (function != NULL) {
@@ -84,7 +84,7 @@ METH_IMPL(Generator, stdFetch) {
     zvalue result;
 
     zvalue box = makeCell(NULL);
-    zvalue nextGen = GFN_CALL(nextValue, generator, box);
+    zvalue nextGen = METH_CALL(nextValue, generator, box);
 
     if (nextGen == NULL) {
         // We were given a voided generator.
@@ -92,8 +92,8 @@ METH_IMPL(Generator, stdFetch) {
     } else {
         // We got a value out of the generator. Now need to make sure it's
         // voided.
-        result = GFN_CALL(fetch, box);
-        if (GFN_CALL(nextValue, nextGen, box) != NULL) {
+        result = METH_CALL(fetch, box);
+        if (METH_CALL(nextValue, nextGen, box) != NULL) {
             die("Generator produced second item in `fetch`.");
         }
     }

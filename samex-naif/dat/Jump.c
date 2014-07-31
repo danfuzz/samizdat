@@ -81,7 +81,7 @@ METH_IMPL(Jump, debugString) {
     JumpInfo *info = getInfo(jump);
     zvalue validStr = info->valid ? EMPTY_STRING : stringFromUtf8(-1, "in");
 
-    return GFN_CALL(cat,
+    return METH_CALL(cat,
         stringFromUtf8(-1, "@(Jump "),
         validStr,
         stringFromUtf8(-1, "valid)"));
