@@ -61,10 +61,10 @@ zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
 
 // Documented in header.
 zvalue listAppend(zvalue list, zvalue elem) {
-    return GFN_CALL(cat, list, listFrom1(elem));
+    return METH_CALL(cat, list, listFrom1(elem));
 }
 
 // Documented in header.
 zvalue listPrepend(zvalue elem, zvalue list) {
-    return GFN_CALL(cat, listFrom1(elem), list);
+    return METH_CALL(cat, listFrom1(elem), list);
 }

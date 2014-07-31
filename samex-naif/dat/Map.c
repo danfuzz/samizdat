@@ -448,13 +448,13 @@ METH_IMPL(Map, nextValue) {
     // `SequenceGenerator` value to represent the rest.
     zvalue map = args[0];
     zvalue box = args[1];
-    zvalue first = GFN_CALL(nthMapping, map, intFromZint(0));
+    zvalue first = METH_CALL(nthMapping, map, intFromZint(0));
 
     if (first == NULL) {
         // `map` is empty.
         return NULL;
     } else {
-        GFN_CALL(store, box, first);
+        METH_CALL(store, box, first);
         return makeData(
             CLS_MapGenerator,
             mapFromArgs(

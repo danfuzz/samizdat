@@ -319,7 +319,7 @@ METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
 
-    return GFN_CALL(cat, quote, string, quote);
+    return METH_CALL(cat, quote, string, quote);
 }
 
 // Documented in header.
@@ -376,7 +376,7 @@ METH_IMPL(String, put) {
 
     if (index == size) {
         // This is an append operation.
-        return GFN_CALL(cat, string, value);
+        return METH_CALL(cat, string, value);
     }
 
     zchar *chars = allocArray(size);
