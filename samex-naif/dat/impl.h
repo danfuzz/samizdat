@@ -43,7 +43,7 @@ enum {
      * as a temporary guard around the new method definition and dispatch
      * code. TODO: Remove this flag when the new code is reasonably baked.
      */
-    USE_METHOD_TABLE = false
+    USE_METHOD_TABLE = true
 };
 
 /**
