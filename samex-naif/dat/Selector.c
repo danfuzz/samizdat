@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "type/Class.h"
 #include "type/Selector.h"
@@ -125,6 +126,21 @@ static zvalue findSelector(zvalue methodName) {
     return (found == NULL) ? NULL : *found;
 }
 
+/**
+ * This is the function that handles emitting a context string for a call,
+ * when dumping the stack.
+ */
+static char *callReporter(void *state) {
+    zvalue cls = state;
+    char *clsString = valDebugString(cls);
+    char *result;
+
+    asprintf(&result, "class %s", clsString);
+    free(clsString);
+
+    return result;
+}
+
 
 //
 // Exported Definitions
@@ -150,7 +166,10 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
             valDebugString(cls), valDebugString(selector));
     }
 
-    return funCall(function, argCount, args);
+    UTIL_TRACE_START(callReporter, cls);
+    zvalue result = funCall(function, argCount, args);
+    UTIL_TRACE_END();
+    return result;
 }
 
 // Documented in header.
