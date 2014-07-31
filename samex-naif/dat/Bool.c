@@ -138,16 +138,16 @@ METH_IMPL(Bool, toNumber) {
 // Documented in header.
 METH_IMPL(Bool, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];
-    return (zboolValue(value) == zboolValue(other)) ? value : NULL;
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Bool`.
+    return (zboolValue(value) == zboolFromBool(other)) ? value : NULL;
 }
 
 // Documented in header.
 METH_IMPL(Bool, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Bool`.
     bool bool1 = zboolValue(value);
-    bool bool2 = zboolValue(other);
+    bool bool2 = zboolFromBool(other);
 
     if (bool1 == bool2) {
         return INT_0;

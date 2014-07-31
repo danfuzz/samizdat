@@ -169,16 +169,16 @@ METH_IMPL(Int, toString) {
 // Documented in header.
 METH_IMPL(Int, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];
-    return (zintValue(value) == zintValue(other)) ? value : NULL;
+    zvalue other = args[1];  // Note: Not guaranteed to be an `Int`.
+    return (zintValue(value) == zintFromInt(other)) ? value : NULL;
 }
 
 // Documented in header.
 METH_IMPL(Int, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be an `Int`.
     zint int1 = zintValue(value);
-    zint int2 = zintValue(other);
+    zint int2 = zintFromInt(other);
 
     if (int1 < int2) {
         return INT_NEG1;

@@ -178,7 +178,11 @@ METH_IMPL(Value, perOrder) {
 // Documented in header.
 METH_IMPL(Value, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to have the same class.
+
+    if (!haveSameClass(value, other)) {
+        die("`totalEq` called with incompatible arguments.");
+    }
 
     return (value == other) ? value : NULL;
 }
@@ -186,7 +190,11 @@ METH_IMPL(Value, totalEq) {
 // Documented in header.
 METH_IMPL(Value, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to have the same class.
+
+    if (!haveSameClass(value, other)) {
+        die("`totalOrder` called with incompatible arguments.");
+    }
 
     return valEq(value, other) ? INT_0 : NULL;
 }
@@ -226,12 +234,10 @@ MOD_INIT(Value) {
     GFN_perOrder = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "perOrder"));
     datImmortalize(GFN_perOrder);
 
-    GFN_totalEq =
-        makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "totalEq"));
+    GFN_totalEq = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "totalEq"));
     datImmortalize(GFN_totalEq);
 
-    GFN_totalOrder =
-        makeGeneric(2, 2, GFN_SAME_CLASS, stringFromUtf8(-1, "totalOrder"));
+    GFN_totalOrder = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "totalOrder"));
     datImmortalize(GFN_totalOrder);
 
     METH_BIND(Value, debugName);

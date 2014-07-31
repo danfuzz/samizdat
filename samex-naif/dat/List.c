@@ -331,7 +331,9 @@ METH_IMPL(List, sliceInclusive) {
 // Documented in header.
 METH_IMPL(List, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `List`.
+
+    assertHasClass(other, CLS_List);
     ListInfo *info1 = getInfo(value);
     ListInfo *info2 = getInfo(other);
     zint size1 = info1->size;
@@ -356,7 +358,9 @@ METH_IMPL(List, totalEq) {
 // Documented in header.
 METH_IMPL(List, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `List`.
+
+    assertHasClass(other, CLS_List);
     ListInfo *info1 = getInfo(value);
     ListInfo *info2 = getInfo(other);
     zvalue *e1 = info1->elems;
