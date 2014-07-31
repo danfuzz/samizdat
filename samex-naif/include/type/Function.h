@@ -13,14 +13,6 @@
 
 #include "type/Value.h"
 
-
-/**
- * Prototype for an underlying C function corresponding to an in-model
- * function (value of type `Function`).
- */
-typedef zvalue (*zfunction)(
-    zvalue thisFunction, zint argCount, const zvalue *args);
-
 /**
  * Generic `call(function, args*)`: Generic for dispatching to a function
  * calling mechanism (how meta). Documented in spec.

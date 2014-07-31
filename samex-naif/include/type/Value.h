@@ -15,7 +15,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "dat.h"
+#include "type/declare.h"
 
 
 /** Class value for in-model class `Value`. */
