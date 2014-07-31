@@ -40,8 +40,16 @@ typedef struct {
     /** Whether the generic is sealed (unwilling to add bindings). */
     bool sealed;
 
-    /** The generic's name, if any. Used when producing stack traces. */
+    /**
+     * The generic's name. Used when producing stack traces and to find the
+     * corresponding selector.
+     */
     zvalue name;
+
+    #if USE_METHOD_TABLE
+    /** The corresponding selector. */
+    zvalue selector;
+    #endif
 
     /** Bindings from class to function, keyed off of class id number. */
     zvalue functions[DAT_MAX_CLASSES];
@@ -162,7 +170,7 @@ void genericBind(zvalue generic, zvalue cls, zvalue function) {
     info->functions[index] = function;
 
     #if USE_METHOD_TABLE
-    classAddMethod(cls, selectorFromName(info->name), function);
+    classAddMethod(cls, info->selector, function);
     #endif
 }
 
@@ -190,6 +198,7 @@ void genericSeal(zvalue generic) {
 // Documented in header.
 zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
         zvalue name) {
+    assertHasClass(name, CLS_String);
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
@@ -203,6 +212,9 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
     info->flags = flags;
     info->sealed = false;
     info->name = name;
+    #if USE_METHOD_TABLE
+    info->selector = selectorFromName(name);
+    #endif
 
     return result;
 }

@@ -66,10 +66,10 @@ void genericSeal(zvalue generic);
 
 /**
  * Constructs and returns a generic function with the given argument
- * restrictions and optional name (used when producing stack traces). It is
- * initially unsealed and without any bindings. `minArgs` must be at least
- * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
- * that there is no limit.
+ * restrictions and name (used for mapping to a selector and when producing
+ * stack traces). It is initially unsealed and without any bindings. `minArgs`
+ * must be at least `1`, and `maxArgs` must be either greater than `minArgs`
+ * or `-1` to indicate that there is no limit.
  */
 zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
         zvalue name);
