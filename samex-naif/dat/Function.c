@@ -76,7 +76,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             return selectorCall(function, argCount, args);
         }
         default: {
-            #if DAT_USE_METHOD_TABLE
+            #if DAT_USE_METHOD_TABLE_FIXME_NOT_YET
 
             // The original `function` is some kind of higher layer function.
             // Use method dispatch to get to it: Prepend `function` as a new
