@@ -49,7 +49,7 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
         assertValidOrNull(data);
     }
 
-    if (classEq(classParent(cls), CLS_Object)) {
+    if (!classEq(classParent(cls), CLS_Object)) {
         die("Attempt to call `makeObject` on an improper class.");
     }
 
