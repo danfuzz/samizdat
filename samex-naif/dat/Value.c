@@ -38,6 +38,10 @@ char *valDebugString(zvalue value) {
         return utilStrdup("(null)");
     }
 
+    if (SEL_NAME(debugString) == NULL) {
+        die("Too early to call `debugString`.");
+    }
+
     return utf8DupFromString(METH_CALL(debugString, value));
 }
 
