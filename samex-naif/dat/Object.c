@@ -65,6 +65,10 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
     return result;
 }
 
+// Documented in header.
+zvalue makeObjectClass(zvalue name, zvalue secret) {
+    return makeClass(name, CLS_Object, secret);
+}
 
 //
 // Class Definition
@@ -108,6 +112,14 @@ METH_IMPL(Object, makeObject) {
     return makeObject(cls, secret, data);
 }
 
+/** Function (not method) `makeObjectClass`. Documented in spec. */
+METH_IMPL(Object, makeObjectClass) {
+    zvalue name = args[0];
+    zvalue secret = args[1];
+
+    return makeObjectClass(name, secret);
+}
+
 /** Initializes the module. */
 MOD_INIT(Object) {
     MOD_USE(Value);
@@ -123,6 +135,11 @@ MOD_INIT(Object) {
         METH_NAME(Object, makeObject), 0,
         stringFromUtf8(-1, "Object.makeObject"));
     datImmortalize(FUN_Object_makeObject);
+
+    FUN_Object_makeObjectClass = makeBuiltin(2, 3,
+        METH_NAME(Object, makeObjectClass), 0,
+        stringFromUtf8(-1, "Object.makeObjectClass"));
+    datImmortalize(FUN_Object_makeObjectClass);
 }
 
 // Documented in header.
@@ -133,3 +150,6 @@ SEL_DEF(objectDataOf);
 
 // Documented in header.
 zvalue FUN_Object_makeObject = NULL;
+
+// Documented in header.
+zvalue FUN_Object_makeObjectClass = NULL;

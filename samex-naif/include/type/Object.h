@@ -21,6 +21,9 @@ SEL_DECL(2, 2, objectDataOf);
 /** Global function `makeObject`: Documented in spec. */
 extern zvalue FUN_Object_makeObject;
 
+/** Global function `makeObjectClass`: Documented in spec. */
+extern zvalue FUN_Object_makeObjectClass;
+
 /**
  * Returns an object value with the given class and with the given
  * optional data payload (`NULL` indicating a class-only value). `cls` must
