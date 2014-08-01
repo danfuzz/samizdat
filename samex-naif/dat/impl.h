@@ -36,14 +36,7 @@ enum {
     DAT_VALUE_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    DAT_VALUE_ALIGNMENT = sizeof(zint),
-
-    /**
-     * Whether to enable the method map code. This flag is meant to be used
-     * as a temporary guard around the new method definition and dispatch
-     * code. TODO: Remove this flag when the new code is reasonably baked.
-     */
-    USE_METHOD_TABLE = false
+    DAT_VALUE_ALIGNMENT = sizeof(zint)
 };
 
 /**
