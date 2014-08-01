@@ -104,6 +104,11 @@ static zvalue findByClass(zvalue generic, zvalue cls, zvalue *boundCls) {
 zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     GenericInfo *info = getInfo(generic);
 
+    #if USE_METHOD_TABLE
+    // Just grab the selector, and use it for the call.
+    return selectorCall(info->selector, argCount, args);
+    #else
+
     if (argCount < info->minArgs) {
         die("Too few arguments for generic call: %lld, min %lld",
             argCount, info->minArgs);
@@ -117,14 +122,6 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     zvalue firstCls = get_class(args[0]);
     zvalue function = findByClass(generic, firstCls, &firstCls);
 
-    #if USE_METHOD_TABLE
-    // Verify that the same method is picked by the class's method table.
-    zvalue classBinding = classFindMethod(args[0], info->selector);
-    if (classBinding != function) {
-        die("Eek! Method binding mismatch!");
-    }
-    #endif
-
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
             valDebugString(generic), valDebugString(args[0]));
@@ -134,6 +131,8 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     zvalue result = funCall(function, argCount, args);
     UTIL_TRACE_END();
     return result;
+
+    #endif
 }
 
 // Documented in header.
