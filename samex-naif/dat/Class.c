@@ -265,6 +265,14 @@ void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
 }
 
 // Documented in header.
+void classAddPrimitiveMethod(zvalue cls, zvalue selector, zint minArgs,
+        zint maxArgs, zfunction function, const char *functionName) {
+    zvalue name = stringFromUtf8(-1, functionName);
+    zvalue builtin = makeBuiltin(minArgs, maxArgs, function, 0, name);
+    classAddMethod(cls, selector, builtin);
+}
+
+// Documented in header.
 zint classIndex(zvalue cls) {
     assertHasClassClass(cls);
     return classIndexUnchecked(cls);
