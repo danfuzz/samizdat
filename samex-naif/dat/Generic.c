@@ -104,7 +104,7 @@ static zvalue findByClass(zvalue generic, zvalue cls, zvalue *boundCls) {
 zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     GenericInfo *info = getInfo(generic);
 
-    #if DAT_USE_METHOD_TABLE
+    #if DAT_USE_METHOD_TABLE_FIXME_NOT_YET
     // Just grab the selector, and use it for the call.
     return selectorCall(info->selector, argCount, args);
     #else
