@@ -217,7 +217,7 @@ zvalue mustNotYield(zvalue value) {
 MOD_INIT(Function) {
     MOD_USE(Value);
 
-    SEL_INIT(1, -1, call);
+    SEL_INIT(call);
 }
 
 // Documented in header.

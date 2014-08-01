@@ -13,24 +13,24 @@
 
 
 /** Generic `and(bitwise, bitwise)`: Documented in spec. */
-SEL_DECL(and);
+SEL_DECL(2, 2, and);
 
 /** Generic `bit(bitwise, int)`: Documented in spec. */
-SEL_DECL(bit);
+SEL_DECL(2, 2, bit);
 
 /** Generic `bitSize(bitwise)`: Documented in spec. */
-SEL_DECL(bitSize);
+SEL_DECL(1, 1, bitSize);
 
 /** Generic `not(bitwise)`: Documented in spec. */
-SEL_DECL(not);
+SEL_DECL(1, 1, not);
 
 /** Generic `or(bitwise, bitwise)`: Documented in spec. */
-SEL_DECL(or);
+SEL_DECL(2, 2, or);
 
 /** Generic `shl(bitwise, int)`: Documented in spec. */
-SEL_DECL(shl);
+SEL_DECL(2, 2, shl);
 
 /** Generic `xor(bitwise, bitwise)`: Documented in spec. */
-SEL_DECL(xor);
+SEL_DECL(2, 2, xor);
 
 #endif

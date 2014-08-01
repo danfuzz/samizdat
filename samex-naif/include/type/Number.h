@@ -13,33 +13,33 @@
 
 
 /** Generic `abs(number)`: Documented in spec. */
-SEL_DECL(abs);
+SEL_DECL(1, 1, abs);
 
 /** Generic `add(number, number)`: Documented in spec. */
-SEL_DECL(add);
+SEL_DECL(2, 2, add);
 
 /** Generic `div(number, number)`: Documented in spec. */
-SEL_DECL(div);
+SEL_DECL(2, 2, div);
 
 /** Generic `divEu(number, number)`: Documented in spec. */
-SEL_DECL(divEu);
+SEL_DECL(2, 2, divEu);
 
 /** Generic `mod(number, number)`: Documented in spec. */
-SEL_DECL(mod);
+SEL_DECL(2, 2, mod);
 
 /** Generic `modEu(number, number)`: Documented in spec. */
-SEL_DECL(modEu);
+SEL_DECL(2, 2, modEu);
 
 /** Generic `mul(number, number)`: Documented in spec. */
-SEL_DECL(mul);
+SEL_DECL(2, 2, mul);
 
 /** Generic `neg(number)`: Documented in spec. */
-SEL_DECL(neg);
+SEL_DECL(1, 1, neg);
 
 /** Generic `sign(number)`: Documented in spec. */
-SEL_DECL(sign);
+SEL_DECL(1, 1, sign);
 
 /** Generic `sub(number, number)`: Documented in spec. */
-SEL_DECL(sub);
+SEL_DECL(2, 2, sub);
 
 #endif

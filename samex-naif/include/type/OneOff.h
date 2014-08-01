@@ -13,31 +13,31 @@
 
 
 /** Generic `cat(value, more*)`: Documented in spec. */
-SEL_DECL(cat);
+SEL_DECL(1, -1, cat);
 
 /** Generic `get(value, key)`: Documented in spec. */
-SEL_DECL(get);
+SEL_DECL(2, 2, get);
 
 /** Generic `get_key(value)`: Documented in spec. */
-SEL_DECL(get_key);
+SEL_DECL(1, 1, get_key);
 
 /** Generic `get_size(collection)`: Documented in spec. */
-SEL_DECL(get_size);
+SEL_DECL(1, 1, get_size);
 
 /** Generic `get_value(value)`: Documented in spec. */
-SEL_DECL(get_value);
+SEL_DECL(1, 1, get_value);
 
 /** Generic `nth(sequence, n)`: Documented in spec. */
-SEL_DECL(nth);
+SEL_DECL(2, 2, nth);
 
 /** Generic `toInt(value)`: Documented in spec. */
-SEL_DECL(toInt);
+SEL_DECL(1, 1, toInt);
 
 /** Generic `toNumber(value)`: Documented in spec. */
-SEL_DECL(toNumber);
+SEL_DECL(1, 1, toNumber);
 
 /** Generic `toString(value)`: Documented in spec. */
-SEL_DECL(toString);
+SEL_DECL(1, 1, toString);
 
 /**
  * Calls the `get` generic.

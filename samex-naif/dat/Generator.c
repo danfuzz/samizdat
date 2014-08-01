@@ -103,11 +103,9 @@ MOD_INIT(Generator) {
     MOD_USE_NEXT(Box);
     MOD_USE_NEXT(List);
 
-    SEL_INIT(1, 2, collect);
-
-    SEL_INIT(1, 1, fetch);
-
-    SEL_INIT(2, 2, nextValue);
+    SEL_INIT(collect);
+    SEL_INIT(fetch);
+    SEL_INIT(nextValue);
 
     FUN_Generator_stdCollect = makeBuiltin(1, 2,
         METH_NAME(Generator, stdCollect), 0,
