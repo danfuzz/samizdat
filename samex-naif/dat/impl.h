@@ -131,9 +131,10 @@ zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
  * Finds a method on a class, if bound. Returns the bound function if found
- * or `NULL` if not.
+ * or `NULL` if not. Does not check to see if `index` is in the valid range
+ * for a selector index.
  */
-zvalue classFindMethod(zvalue cls, zvalue selector);
+zvalue classFindMethodBySelectorIndex(zvalue cls, zint index);
 
 /**
  * Gets the index for a given class value. The given value *must* be a

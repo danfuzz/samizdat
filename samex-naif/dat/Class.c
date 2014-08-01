@@ -196,7 +196,7 @@ static bool classEq(zvalue cls1, zvalue cls2) {
 //
 
 // Documented in header.
-zvalue classFindMethod(zvalue cls, zvalue selector) {
+zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
     #if !USE_METHOD_TABLE
     die("Requires USE_METHOD_TABLE");
     #else
@@ -205,7 +205,6 @@ zvalue classFindMethod(zvalue cls, zvalue selector) {
     // with their superclasses' methods.
 
     assertHasClassClass(cls);
-    zint index = selectorIndex(selector);
     zvalue result = NULL;
     zvalue superChecked = false;
 
