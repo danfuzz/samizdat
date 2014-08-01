@@ -16,26 +16,19 @@
 MOD_INIT(Bitwise) {
     MOD_USE(Value);
 
-    GFN_and = makeGeneric(2, 2, stringFromUtf8(-1, "and"));
-    datImmortalize(GFN_and);
+    SEL_INIT(2, 2, and);
 
-    GFN_bit = makeGeneric(2, 2, stringFromUtf8(-1, "bit"));
-    datImmortalize(GFN_bit);
+    SEL_INIT(2, 2, bit);
 
-    GFN_bitSize = makeGeneric(1, 1, stringFromUtf8(-1, "bitSize"));
-    datImmortalize(GFN_bitSize);
+    SEL_INIT(1, 1, bitSize);
 
-    GFN_not = makeGeneric(1, 1, stringFromUtf8(-1, "not"));
-    datImmortalize(GFN_not);
+    SEL_INIT(1, 1, not);
 
-    GFN_or = makeGeneric(2, 2, stringFromUtf8(-1, "or"));
-    datImmortalize(GFN_or);
+    SEL_INIT(2, 2, or);
 
-    GFN_shl = makeGeneric(2, 2, stringFromUtf8(-1, "shl"));
-    datImmortalize(GFN_shl);
+    SEL_INIT(2, 2, shl);
 
-    GFN_xor = makeGeneric(2, 2, stringFromUtf8(-1, "xor"));
-    datImmortalize(GFN_xor);
+    SEL_INIT(2, 2, xor);
 }
 
 // Documented in header.

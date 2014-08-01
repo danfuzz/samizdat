@@ -16,35 +16,25 @@
 MOD_INIT(Number) {
     MOD_USE(Value);
 
-    GFN_abs = makeGeneric(1, 1, stringFromUtf8(-1, "abs"));
-    datImmortalize(GFN_abs);
+    SEL_INIT(1, 1, abs);
 
-    GFN_add = makeGeneric(2, 2, stringFromUtf8(-1, "add"));
-    datImmortalize(GFN_add);
+    SEL_INIT(2, 2, add);
 
-    GFN_div = makeGeneric(2, 2, stringFromUtf8(-1, "div"));
-    datImmortalize(GFN_div);
+    SEL_INIT(2, 2, div);
 
-    GFN_divEu = makeGeneric(2, 2, stringFromUtf8(-1, "divEu"));
-    datImmortalize(GFN_divEu);
+    SEL_INIT(2, 2, divEu);
 
-    GFN_mod = makeGeneric(2, 2, stringFromUtf8(-1, "mod"));
-    datImmortalize(GFN_mod);
+    SEL_INIT(2, 2, mod);
 
-    GFN_modEu = makeGeneric(2, 2, stringFromUtf8(-1, "modEu"));
-    datImmortalize(GFN_modEu);
+    SEL_INIT(2, 2, modEu);
 
-    GFN_mul = makeGeneric(2, 2, stringFromUtf8(-1, "mul"));
-    datImmortalize(GFN_mul);
+    SEL_INIT(2, 2, mul);
 
-    GFN_neg = makeGeneric(1, 1, stringFromUtf8(-1, "neg"));
-    datImmortalize(GFN_neg);
+    SEL_INIT(1, 1, neg);
 
-    GFN_sign = makeGeneric(1, 1, stringFromUtf8(-1, "sign"));
-    datImmortalize(GFN_sign);
+    SEL_INIT(1, 1, sign);
 
-    GFN_sub = makeGeneric(2, 2, stringFromUtf8(-1, "sub"));
-    datImmortalize(GFN_sub);
+    SEL_INIT(2, 2, sub);
 }
 
 // Documented in header.

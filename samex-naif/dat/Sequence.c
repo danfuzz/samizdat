@@ -193,14 +193,11 @@ MOD_INIT(Sequence) {
     MOD_USE(Collection);
     MOD_USE_NEXT(Generator);
 
-    GFN_reverse = makeGeneric(1, 1, stringFromUtf8(-1, "reverse"));
-    datImmortalize(GFN_reverse);
+    SEL_INIT(1, 1, reverse);
 
-    GFN_sliceExclusive = makeGeneric(2, 3, stringFromUtf8(-1, "sliceExclusive"));
-    datImmortalize(GFN_sliceExclusive);
+    SEL_INIT(2, 3, sliceExclusive);
 
-    GFN_sliceInclusive = makeGeneric(2, 3, stringFromUtf8(-1, "sliceInclusive"));
-    datImmortalize(GFN_sliceInclusive);
+    SEL_INIT(2, 3, sliceInclusive);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));

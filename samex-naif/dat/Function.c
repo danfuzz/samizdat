@@ -200,8 +200,7 @@ zvalue mustNotYield(zvalue value) {
 MOD_INIT(Function) {
     MOD_USE(Value);
 
-    GFN_call = makeGeneric(1, -1, stringFromUtf8(-1, "call"));
-    datImmortalize(GFN_call);
+    SEL_INIT(1, -1, call);
 }
 
 // Documented in header.

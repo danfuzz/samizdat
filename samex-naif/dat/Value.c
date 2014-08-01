@@ -216,26 +216,19 @@ MOD_INIT(Value) {
 
     // Note: The `objectModel` module initializes `CLS_Value`.
 
-    GFN_debugName = makeGeneric(1, 1, stringFromUtf8(-1, "debugName"));
-    datImmortalize(GFN_debugName);
+    SEL_INIT(1, 1, debugName);
 
-    GFN_debugString = makeGeneric(1, 1, stringFromUtf8(-1, "debugString"));
-    datImmortalize(GFN_debugString);
+    SEL_INIT(1, 1, debugString);
 
-    GFN_gcMark = makeGeneric(1, 1, stringFromUtf8(-1, "gcMark"));
-    datImmortalize(GFN_gcMark);
+    SEL_INIT(1, 1, gcMark);
 
-    GFN_perEq = makeGeneric(2, 2, stringFromUtf8(-1, "perEq"));
-    datImmortalize(GFN_perEq);
+    SEL_INIT(2, 2, perEq);
 
-    GFN_perOrder = makeGeneric(2, 2, stringFromUtf8(-1, "perOrder"));
-    datImmortalize(GFN_perOrder);
+    SEL_INIT(2, 2, perOrder);
 
-    GFN_totalEq = makeGeneric(2, 2, stringFromUtf8(-1, "totalEq"));
-    datImmortalize(GFN_totalEq);
+    SEL_INIT(2, 2, totalEq);
 
-    GFN_totalOrder = makeGeneric(2, 2, stringFromUtf8(-1, "totalOrder"));
-    datImmortalize(GFN_totalOrder);
+    SEL_INIT(2, 2, totalOrder);
 
     METH_BIND(Value, debugName);
     METH_BIND(Value, debugString);

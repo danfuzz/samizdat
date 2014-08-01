@@ -35,20 +35,15 @@ zvalue collPut(zvalue coll, zvalue key, zvalue value) {
 MOD_INIT(Collection) {
     MOD_USE(OneOff);
 
-    GFN_del = makeGeneric(2, 2, stringFromUtf8(-1, "del"));
-    datImmortalize(GFN_del);
+    SEL_INIT(2, 2, del);
 
-    GFN_keyList = makeGeneric(1, 1, stringFromUtf8(-1, "keyList"));
-    datImmortalize(GFN_keyList);
+    SEL_INIT(1, 1, keyList);
 
-    GFN_nthMapping = makeGeneric(2, 2, stringFromUtf8(-1, "nthMapping"));
-    datImmortalize(GFN_nthMapping);
+    SEL_INIT(2, 2, nthMapping);
 
-    GFN_put = makeGeneric(3, 3, stringFromUtf8(-1, "put"));
-    datImmortalize(GFN_put);
+    SEL_INIT(3, 3, put);
 
-    GFN_valueList = makeGeneric(1, 1, stringFromUtf8(-1, "valueList"));
-    datImmortalize(GFN_valueList);
+    SEL_INIT(1, 1, valueList);
 }
 
 // Documented in header.

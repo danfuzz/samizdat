@@ -178,8 +178,7 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Value);
 
-    GFN_store = makeGeneric(1, 2, stringFromUtf8(-1, "store"));
-    datImmortalize(GFN_store);
+    SEL_INIT(1, 2, store);
 
     CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value);
 

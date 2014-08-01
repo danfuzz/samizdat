@@ -43,32 +43,23 @@ zint nthChar(zvalue value, zint index) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
-    GFN_cat = makeGeneric(1, -1, stringFromUtf8(-1, "cat"));
-    datImmortalize(GFN_cat);
+    SEL_INIT(1, -1, cat);
 
-    GFN_get = makeGeneric(2, 2, stringFromUtf8(-1, "get"));
-    datImmortalize(GFN_get);
+    SEL_INIT(2, 2, get);
 
-    GFN_get_key = makeGeneric(1, 1, stringFromUtf8(-1, "get_key"));
-    datImmortalize(GFN_get_key);
+    SEL_INIT(1, 1, get_key);
 
-    GFN_get_size = makeGeneric(1, 1, stringFromUtf8(-1, "get_size"));
-    datImmortalize(GFN_get_size);
+    SEL_INIT(1, 1, get_size);
 
-    GFN_get_value = makeGeneric(1, 1, stringFromUtf8(-1, "get_value"));
-    datImmortalize(GFN_get_value);
+    SEL_INIT(1, 1, get_value);
 
-    GFN_nth = makeGeneric(2, 2, stringFromUtf8(-1, "nth"));
-    datImmortalize(GFN_nth);
+    SEL_INIT(2, 2, nth);
 
-    GFN_toInt = makeGeneric(1, 1, stringFromUtf8(-1, "toInt"));
-    datImmortalize(GFN_toInt);
+    SEL_INIT(1, 1, toInt);
 
-    GFN_toNumber = makeGeneric(1, 1, stringFromUtf8(-1, "toNumber"));
-    datImmortalize(GFN_toNumber);
+    SEL_INIT(1, 1, toNumber);
 
-    GFN_toString = makeGeneric(1, 1, stringFromUtf8(-1, "toString"));
-    datImmortalize(GFN_toString);
+    SEL_INIT(1, 1, toString);
 }
 
 // Documented in header.
