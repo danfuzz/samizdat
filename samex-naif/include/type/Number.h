@@ -13,33 +13,33 @@
 
 
 /** Generic `abs(number)`: Documented in spec. */
-extern zvalue GFN_abs;
+SEL_DECL(abs);
 
 /** Generic `add(number, number)`: Documented in spec. */
-extern zvalue GFN_add;
+SEL_DECL(add);
 
 /** Generic `div(number, number)`: Documented in spec. */
-extern zvalue GFN_div;
+SEL_DECL(div);
 
 /** Generic `divEu(number, number)`: Documented in spec. */
-extern zvalue GFN_divEu;
+SEL_DECL(divEu);
 
 /** Generic `mod(number, number)`: Documented in spec. */
-extern zvalue GFN_mod;
+SEL_DECL(mod);
 
 /** Generic `modEu(number, number)`: Documented in spec. */
-extern zvalue GFN_modEu;
+SEL_DECL(modEu);
 
 /** Generic `mul(number, number)`: Documented in spec. */
-extern zvalue GFN_mul;
+SEL_DECL(mul);
 
 /** Generic `neg(number)`: Documented in spec. */
-extern zvalue GFN_neg;
+SEL_DECL(neg);
 
 /** Generic `sign(number)`: Documented in spec. */
-extern zvalue GFN_sign;
+SEL_DECL(sign);
 
 /** Generic `sub(number, number)`: Documented in spec. */
-extern zvalue GFN_sub;
+SEL_DECL(sub);
 
 #endif

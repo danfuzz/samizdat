@@ -7,6 +7,7 @@
 //
 
 #include "type/Data.h"
+#include "type/define.h"
 
 #include "impl.h"
 

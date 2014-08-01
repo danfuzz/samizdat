@@ -9,15 +9,13 @@
 #include "const.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
-#include "type/Class.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"
-#include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Sequence.h"
-#include "type/String.h"
+#include "type/define.h"
 
 #include "impl.h"
 
@@ -184,10 +182,10 @@ METH_IMPL(Sequence, nthMapping) {
 
 // Documented in header.
 void seqBind(zvalue cls) {
-    genericBind(GFN_get,        cls, BI_Sequence_get);
-    genericBind(GFN_keyList,    cls, BI_Sequence_keyList);
-    genericBind(GFN_nextValue,  cls, BI_Sequence_nextValue);
-    genericBind(GFN_nthMapping, cls, BI_Sequence_nthMapping);
+    genericBind(SEL_NAME(get),        cls, BI_Sequence_get);
+    genericBind(SEL_NAME(keyList),    cls, BI_Sequence_keyList);
+    genericBind(SEL_NAME(nextValue),  cls, BI_Sequence_nextValue);
+    genericBind(SEL_NAME(nthMapping), cls, BI_Sequence_nthMapping);
 }
 
 /** Initializes the module. */
@@ -195,14 +193,11 @@ MOD_INIT(Sequence) {
     MOD_USE(Collection);
     MOD_USE_NEXT(Generator);
 
-    GFN_reverse = makeGeneric(1, 1, stringFromUtf8(-1, "reverse"));
-    datImmortalize(GFN_reverse);
+    SEL_INIT(1, 1, reverse);
 
-    GFN_sliceExclusive = makeGeneric(2, 3, stringFromUtf8(-1, "sliceExclusive"));
-    datImmortalize(GFN_sliceExclusive);
+    SEL_INIT(2, 3, sliceExclusive);
 
-    GFN_sliceInclusive = makeGeneric(2, 3, stringFromUtf8(-1, "sliceInclusive"));
-    datImmortalize(GFN_sliceInclusive);
+    SEL_INIT(2, 3, sliceInclusive);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));
@@ -222,10 +217,10 @@ MOD_INIT(Sequence) {
 }
 
 // Documented in header.
-zvalue GFN_reverse = NULL;
+SEL_DEF(reverse);
 
 // Documented in header.
-zvalue GFN_sliceExclusive = NULL;
+SEL_DEF(sliceExclusive);
 
 // Documented in header.
-zvalue GFN_sliceInclusive = NULL;
+SEL_DEF(sliceInclusive);

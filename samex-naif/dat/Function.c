@@ -9,12 +9,9 @@
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
 
-#include "type/Class.h"
 #include "type/Function.h"
-#include "type/Generic.h"
 #include "type/List.h"
-#include "type/String.h"
-#include "type/Value.h"
+#include "type/define.h"
 
 #include "impl.h"
 
@@ -80,7 +77,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             // Use generic dispatch to get to it: Prepend `function` as a new
             // first argument, and call the generic `call` via a recursive
             // call to `funCall0` to avoid the stack/frame setup.
-            zvalue callImpl = genericFindByIndex(GFN_call, index);
+            zvalue callImpl = genericFindByIndex(SEL_NAME(call), index);
             if (callImpl == NULL) {
                 die("Cannot call non-function: %s", valDebugString(function));
             } else {
@@ -203,9 +200,8 @@ zvalue mustNotYield(zvalue value) {
 MOD_INIT(Function) {
     MOD_USE(Value);
 
-    GFN_call = makeGeneric(1, -1, stringFromUtf8(-1, "call"));
-    datImmortalize(GFN_call);
+    SEL_INIT(1, -1, call);
 }
 
 // Documented in header.
-zvalue GFN_call = NULL;
+SEL_DEF(call);

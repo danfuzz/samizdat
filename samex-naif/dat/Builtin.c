@@ -7,10 +7,8 @@
 //
 
 #include "type/Builtin.h"
-#include "type/Class.h"
-#include "type/Generic.h"
-#include "type/String.h"
 #include "type/Value.h"
+#include "type/define.h"
 
 #include "impl.h"
 

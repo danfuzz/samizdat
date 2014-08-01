@@ -3,8 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Bitwise.h"
-#include "type/Generic.h"
-#include "type/String.h"
+#include "type/define.h"
 
 #include "impl.h"
 
@@ -17,45 +16,38 @@
 MOD_INIT(Bitwise) {
     MOD_USE(Value);
 
-    GFN_and = makeGeneric(2, 2, stringFromUtf8(-1, "and"));
-    datImmortalize(GFN_and);
+    SEL_INIT(2, 2, and);
 
-    GFN_bit = makeGeneric(2, 2, stringFromUtf8(-1, "bit"));
-    datImmortalize(GFN_bit);
+    SEL_INIT(2, 2, bit);
 
-    GFN_bitSize = makeGeneric(1, 1, stringFromUtf8(-1, "bitSize"));
-    datImmortalize(GFN_bitSize);
+    SEL_INIT(1, 1, bitSize);
 
-    GFN_not = makeGeneric(1, 1, stringFromUtf8(-1, "not"));
-    datImmortalize(GFN_not);
+    SEL_INIT(1, 1, not);
 
-    GFN_or = makeGeneric(2, 2, stringFromUtf8(-1, "or"));
-    datImmortalize(GFN_or);
+    SEL_INIT(2, 2, or);
 
-    GFN_shl = makeGeneric(2, 2, stringFromUtf8(-1, "shl"));
-    datImmortalize(GFN_shl);
+    SEL_INIT(2, 2, shl);
 
-    GFN_xor = makeGeneric(2, 2, stringFromUtf8(-1, "xor"));
-    datImmortalize(GFN_xor);
+    SEL_INIT(2, 2, xor);
 }
 
 // Documented in header.
-zvalue GFN_and = NULL;
+SEL_DEF(and);
 
 // Documented in header.
-zvalue GFN_bit = NULL;
+SEL_DEF(bit);
 
 // Documented in header.
-zvalue GFN_bitSize = NULL;
+SEL_DEF(bitSize);
 
 // Documented in header.
-zvalue GFN_not = NULL;
+SEL_DEF(not);
 
 // Documented in header.
-zvalue GFN_or = NULL;
+SEL_DEF(or);
 
 // Documented in header.
-zvalue GFN_shl = NULL;
+SEL_DEF(shl);
 
 // Documented in header.
-zvalue GFN_xor = NULL;
+SEL_DEF(xor);

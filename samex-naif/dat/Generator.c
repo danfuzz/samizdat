@@ -8,12 +8,9 @@
 
 #include "type/Box.h"
 #include "type/Builtin.h"
-#include "type/Class.h"
 #include "type/Generator.h"
-#include "type/Generic.h"
 #include "type/List.h"
-#include "type/String.h"
-#include "type/Value.h"
+#include "type/define.h"
 #include "zlimits.h"
 
 #include "impl.h"
@@ -106,14 +103,11 @@ MOD_INIT(Generator) {
     MOD_USE_NEXT(Box);
     MOD_USE_NEXT(List);
 
-    GFN_collect = makeGeneric(1, 2, stringFromUtf8(-1, "collect"));
-    datImmortalize(GFN_collect);
+    SEL_INIT(1, 2, collect);
 
-    GFN_fetch = makeGeneric(1, 1, stringFromUtf8(-1, "fetch"));
-    datImmortalize(GFN_fetch);
+    SEL_INIT(1, 1, fetch);
 
-    GFN_nextValue = makeGeneric(2, 2, stringFromUtf8(-1, "nextValue"));
-    datImmortalize(GFN_nextValue);
+    SEL_INIT(2, 2, nextValue);
 
     FUN_Generator_stdCollect = makeBuiltin(1, 2,
         METH_NAME(Generator, stdCollect), 0,
@@ -127,13 +121,13 @@ MOD_INIT(Generator) {
 }
 
 // Documented in header.
-zvalue GFN_collect = NULL;
+SEL_DEF(collect);
 
 // Documented in header.
-zvalue GFN_fetch = NULL;
+SEL_DEF(fetch);
 
 // Documented in header.
-zvalue GFN_nextValue = NULL;
+SEL_DEF(nextValue);
 
 // Documented in header.
 zvalue FUN_Generator_stdCollect = NULL;

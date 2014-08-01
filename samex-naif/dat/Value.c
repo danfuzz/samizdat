@@ -5,11 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "type/Class.h"
-#include "type/Generic.h"
 #include "type/Int.h"
-#include "type/String.h"
 #include "type/Value.h"
+#include "type/define.h"
 
 #include "impl.h"
 
@@ -218,26 +216,19 @@ MOD_INIT(Value) {
 
     // Note: The `objectModel` module initializes `CLS_Value`.
 
-    GFN_debugName = makeGeneric(1, 1, stringFromUtf8(-1, "debugName"));
-    datImmortalize(GFN_debugName);
+    SEL_INIT(1, 1, debugName);
 
-    GFN_debugString = makeGeneric(1, 1, stringFromUtf8(-1, "debugString"));
-    datImmortalize(GFN_debugString);
+    SEL_INIT(1, 1, debugString);
 
-    GFN_gcMark = makeGeneric(1, 1, stringFromUtf8(-1, "gcMark"));
-    datImmortalize(GFN_gcMark);
+    SEL_INIT(1, 1, gcMark);
 
-    GFN_perEq = makeGeneric(2, 2, stringFromUtf8(-1, "perEq"));
-    datImmortalize(GFN_perEq);
+    SEL_INIT(2, 2, perEq);
 
-    GFN_perOrder = makeGeneric(2, 2, stringFromUtf8(-1, "perOrder"));
-    datImmortalize(GFN_perOrder);
+    SEL_INIT(2, 2, perOrder);
 
-    GFN_totalEq = makeGeneric(2, 2, stringFromUtf8(-1, "totalEq"));
-    datImmortalize(GFN_totalEq);
+    SEL_INIT(2, 2, totalEq);
 
-    GFN_totalOrder = makeGeneric(2, 2, stringFromUtf8(-1, "totalOrder"));
-    datImmortalize(GFN_totalOrder);
+    SEL_INIT(2, 2, totalOrder);
 
     METH_BIND(Value, debugName);
     METH_BIND(Value, debugString);
@@ -252,22 +243,22 @@ MOD_INIT(Value) {
 zvalue CLS_Value = NULL;
 
 // Documented in header.
-zvalue GFN_debugName = NULL;
+SEL_DEF(debugName);
 
 // Documented in header.
-zvalue GFN_debugString = NULL;
+SEL_DEF(debugString);
 
 // Documented in header.
-zvalue GFN_gcMark = NULL;
+SEL_DEF(gcMark);
 
 // Documented in header.
-zvalue GFN_perEq = NULL;
+SEL_DEF(perEq);
 
 // Documented in header.
-zvalue GFN_perOrder = NULL;
+SEL_DEF(perOrder);
 
 // Documented in header.
-zvalue GFN_totalEq = NULL;
+SEL_DEF(totalEq);
 
 // Documented in header.
-zvalue GFN_totalOrder = NULL;
+SEL_DEF(totalOrder);

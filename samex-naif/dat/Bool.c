@@ -4,10 +4,9 @@
 
 #include "type/Bitwise.h"
 #include "type/Bool.h"
-#include "type/Class.h"
 #include "type/Data.h"
 #include "type/Int.h"
-#include "type/String.h"
+#include "type/define.h"
 
 #include "impl.h"
 

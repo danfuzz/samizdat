@@ -17,13 +17,13 @@
 
 
 /** Generic `collect(generator)`: Documenetd in spec. */
-extern zvalue GFN_collect;
+SEL_DECL(collect);
 
 /** Generic `fetch(box)`: Documented in spec. */
-extern zvalue GFN_fetch;
+SEL_DECL(fetch);
 
 /** Generic `nextValue(generator, box)`: Documenetd in spec. */
-extern zvalue GFN_nextValue;
+SEL_DECL(nextValue);
 
 /** `core.Generator::stdCollect`: Documented in spec. */
 extern zvalue FUN_Generator_stdCollect;

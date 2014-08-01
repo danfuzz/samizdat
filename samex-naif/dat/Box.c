@@ -7,11 +7,9 @@
 //
 
 #include "type/Box.h"
-#include "type/Class.h"
-#include "type/Generic.h"
 #include "type/List.h"
-#include "type/String.h"
 #include "type/Value.h"
+#include "type/define.h"
 #include "util.h"
 
 #include "impl.h"
@@ -180,8 +178,7 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Value);
 
-    GFN_store = makeGeneric(1, 2, stringFromUtf8(-1, "store"));
-    datImmortalize(GFN_store);
+    SEL_INIT(1, 2, store);
 
     CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value);
 
@@ -196,4 +193,4 @@ MOD_INIT(Box) {
 zvalue CLS_Box = NULL;
 
 // Documented in header.
-zvalue GFN_store = NULL;
+SEL_DEF(store);
