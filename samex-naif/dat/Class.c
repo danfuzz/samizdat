@@ -10,6 +10,7 @@
 #include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/Jump.h"
+#include "type/Object.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
 #include "zlimits.h"
@@ -363,6 +364,7 @@ MOD_INIT(objectModel) {
     CLS_Value       = allocClass();
     CLS_Data        = allocClass();
     CLS_DerivedData = allocClass();
+    CLS_Object      = allocClass();
 
     // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
@@ -378,6 +380,7 @@ MOD_INIT(objectModel) {
     classInit(CLS_Value,       NULL,      stringFromUtf8(-1, "Value"));
     classInit(CLS_Data,        CLS_Value, stringFromUtf8(-1, "Data"));
     classInit(CLS_DerivedData, CLS_Data,  stringFromUtf8(-1, "DerivedData"));
+    classInit(CLS_Object,      CLS_Value, stringFromUtf8(-1, "Object"));
 
     classInit(CLS_Builtin,     CLS_Value, stringFromUtf8(-1, "Builtin"));
     classInit(CLS_Generic,     CLS_Value, stringFromUtf8(-1, "Generic"));

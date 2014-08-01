@@ -21,13 +21,13 @@ enum {
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */
-    DAT_INDEX_BUILTIN = 4,
+    DAT_INDEX_BUILTIN = 5,
 
     /** The class index for class `Generic`. */
-    DAT_INDEX_GENERIC = 5,
+    DAT_INDEX_GENERIC = 6,
 
     /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 6,
+    DAT_INDEX_JUMP = 7,
 
     /** Whether to be paranoid about corruption checks. */
     DAT_MEMORY_PARANOIA = false,
