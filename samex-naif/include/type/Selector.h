@@ -11,6 +11,8 @@
 
 #include "type/Value.h"
 
+#if DAT_USE_METHOD_TABLE
+
 /** Class value for in-model class `Selector`. */
 extern zvalue CLS_Selector;
 
@@ -37,5 +39,7 @@ zvalue selectorFromName(zvalue methodName);
  * Gets the integer index of the given selector.
  */
 zint selectorIndex(zvalue selector);
+
+#endif
 
 #endif
