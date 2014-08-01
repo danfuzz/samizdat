@@ -292,6 +292,16 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret) {
     assertHasClass(name, CLS_String);
     assertHasClassClass(parent);
 
+    zvalue result = findClass(name, secret);
+
+    if (result != NULL) {
+        // A matching class already exists. Check the heritage.
+        if (!classEqUnchecked(parent, classParent(result))) {
+            die("Mismatched `parent` for pre-existing class.");
+        }
+        return result;
+    }
+
     return makeClass0(name, parent, secret);
 }
 
