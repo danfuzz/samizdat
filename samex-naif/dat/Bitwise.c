@@ -16,19 +16,13 @@
 MOD_INIT(Bitwise) {
     MOD_USE(Value);
 
-    SEL_INIT(2, 2, and);
-
-    SEL_INIT(2, 2, bit);
-
-    SEL_INIT(1, 1, bitSize);
-
-    SEL_INIT(1, 1, not);
-
-    SEL_INIT(2, 2, or);
-
-    SEL_INIT(2, 2, shl);
-
-    SEL_INIT(2, 2, xor);
+    SEL_INIT(and);
+    SEL_INIT(bit);
+    SEL_INIT(bitSize);
+    SEL_INIT(not);
+    SEL_INIT(or);
+    SEL_INIT(shl);
+    SEL_INIT(xor);
 }
 
 // Documented in header.

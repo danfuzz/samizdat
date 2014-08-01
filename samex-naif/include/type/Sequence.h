@@ -20,13 +20,13 @@
 
 
 /** Generic `reverse(sequence)`: Documented in spec. */
-SEL_DECL(reverse);
+SEL_DECL(1, 1, reverse);
 
 /** Generic `sliceExclusive(collection, start, end?)`: Documented in spec. */
-SEL_DECL(sliceExclusive);
+SEL_DECL(2, 3, sliceExclusive);
 
 /** Generic `sliceInclusive(collection, start, end?)`: Documented in spec. */
-SEL_DECL(sliceInclusive);
+SEL_DECL(2, 3, sliceInclusive);
 
 /**
  * Validates and converts the `start` and optional `end` arguments to

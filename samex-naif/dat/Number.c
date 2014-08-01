@@ -16,25 +16,16 @@
 MOD_INIT(Number) {
     MOD_USE(Value);
 
-    SEL_INIT(1, 1, abs);
-
-    SEL_INIT(2, 2, add);
-
-    SEL_INIT(2, 2, div);
-
-    SEL_INIT(2, 2, divEu);
-
-    SEL_INIT(2, 2, mod);
-
-    SEL_INIT(2, 2, modEu);
-
-    SEL_INIT(2, 2, mul);
-
-    SEL_INIT(1, 1, neg);
-
-    SEL_INIT(1, 1, sign);
-
-    SEL_INIT(2, 2, sub);
+    SEL_INIT(abs);
+    SEL_INIT(add);
+    SEL_INIT(div);
+    SEL_INIT(divEu);
+    SEL_INIT(mod);
+    SEL_INIT(modEu);
+    SEL_INIT(mul);
+    SEL_INIT(neg);
+    SEL_INIT(sign);
+    SEL_INIT(sub);
 }
 
 // Documented in header.

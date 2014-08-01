@@ -193,11 +193,9 @@ MOD_INIT(Sequence) {
     MOD_USE(Collection);
     MOD_USE_NEXT(Generator);
 
-    SEL_INIT(1, 1, reverse);
-
-    SEL_INIT(2, 3, sliceExclusive);
-
-    SEL_INIT(2, 3, sliceInclusive);
+    SEL_INIT(reverse);
+    SEL_INIT(sliceExclusive);
+    SEL_INIT(sliceInclusive);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));

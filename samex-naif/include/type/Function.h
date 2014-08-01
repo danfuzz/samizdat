@@ -17,7 +17,7 @@
  * Generic `call(function, args*)`: Generic for dispatching to a function
  * calling mechanism (how meta). Documented in spec.
  */
-SEL_DECL(call);
+SEL_DECL(1, -1, call);
 
 /**
  * Calls a function with the given list of arguments. `function` must be

@@ -178,7 +178,7 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Value);
 
-    SEL_INIT(1, 2, store);
+    SEL_INIT(store);
 
     CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value);
 

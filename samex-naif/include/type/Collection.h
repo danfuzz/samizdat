@@ -22,19 +22,19 @@
 
 
 /** Generic `del(collection, key)`: Documented in spec. */
-SEL_DECL(del);
-
-/** Generic `nthMapping(collection, n)`: Documented in spec. */
-SEL_DECL(nthMapping);
+SEL_DECL(2, 2, del);
 
 /** Generic `keyList(collection)`: Documented in spec. */
-SEL_DECL(keyList);
+SEL_DECL(1, 1, keyList);
+
+/** Generic `nthMapping(collection, n)`: Documented in spec. */
+SEL_DECL(2, 2, nthMapping);
 
 /** Generic `put(collection, key, value)`: Documented in spec. */
-SEL_DECL(put);
+SEL_DECL(3, 3, put);
 
 /** Generic `valueList(collection)`: Documented in spec. */
-SEL_DECL(valueList);
+SEL_DECL(1, 1, valueList);
 
 /**
  * Calls the `del` generic.

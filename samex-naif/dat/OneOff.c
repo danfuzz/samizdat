@@ -43,23 +43,15 @@ zint nthChar(zvalue value, zint index) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
-    SEL_INIT(1, -1, cat);
-
-    SEL_INIT(2, 2, get);
-
-    SEL_INIT(1, 1, get_key);
-
-    SEL_INIT(1, 1, get_size);
-
-    SEL_INIT(1, 1, get_value);
-
-    SEL_INIT(2, 2, nth);
-
-    SEL_INIT(1, 1, toInt);
-
-    SEL_INIT(1, 1, toNumber);
-
-    SEL_INIT(1, 1, toString);
+    SEL_INIT(cat);
+    SEL_INIT(get);
+    SEL_INIT(get_key);
+    SEL_INIT(get_size);
+    SEL_INIT(get_value);
+    SEL_INIT(nth);
+    SEL_INIT(toInt);
+    SEL_INIT(toNumber);
+    SEL_INIT(toString);
 }
 
 // Documented in header.
