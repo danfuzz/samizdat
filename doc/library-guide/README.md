@@ -76,6 +76,7 @@ will be returned, or one of:
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)
+  * [Object](Object.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
   * [String](String.md)
   * [Uniqlet](Uniqlet.md)
