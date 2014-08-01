@@ -28,6 +28,10 @@ def Blort = makeObjectClass("Blort", blortSecret);
 msg("Blort class", Blort);
 msg("Parent", classParent(Blort));
 
+def SameBlort = makeObjectClass("Blort", blortSecret);
+ifNot { eq(Blort, SameBlort) }
+    { die("Different classes!") };
+
 def fizmoSecret = "fizmo";
 def Fizmo = makeObjectClass("Fizmo", fizmoSecret);
 msg("Fizmo class", Fizmo);
