@@ -46,7 +46,7 @@ static ClassInfo *getInfo(zvalue cls) {
  * Initializes a class value. The class is marked core, except if its parent
  * is `DerivedData` in which case it is marked as derived.
  */
-static void classInit(zvalue cls, zvalue parent, zvalue name) {
+static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
     }
@@ -60,13 +60,20 @@ static void classInit(zvalue cls, zvalue parent, zvalue name) {
 
     info->parent = parent;
     info->name = name;
-    info->secret = derived ? NULL : theCoreSecret;
+    info->secret = secret;
     info->classId = theNextClassId;
 
     theClasses[theNextClassId] = cls;
     theNeedSort = true;
     theNextClassId++;
     datImmortalize(cls);
+}
+
+/**
+ * Helper for initializing the classes built directly in this file.
+ */
+static void classInitHere(zvalue cls, zvalue parent, const char *name) {
+    classInit(cls, stringFromUtf8(-1, name), parent, theCoreSecret);
 }
 
 /**
@@ -77,13 +84,13 @@ static zvalue allocClass(void) {
 }
 
 /**
- * Creates and returns a new class with the given name. The class is marked
- * core, except if its parent is `DerivedData` in which case it is marked as
- * derived.
+ * Common class creation code. This creates and returns a new class with the
+ * given info. The class is marked core, except if its parent is `DerivedData`
+ * in which case it is marked as derived.
  */
-static zvalue makeClass(zvalue name, zvalue parent) {
+static zvalue makeClass0(zvalue name, zvalue parent, zvalue secret) {
     zvalue result = allocClass();
-    classInit(result, parent, name);
+    classInit(result, name, parent, secret);
     return result;
 }
 
@@ -281,12 +288,20 @@ bool haveSameClass(zvalue value, zvalue other) {
 }
 
 // Documented in header.
+zvalue makeClass(zvalue name, zvalue parent, zvalue secret) {
+    assertHasClass(name, CLS_String);
+    assertHasClassClass(parent);
+
+    return makeClass0(name, parent, secret);
+}
+
+// Documented in header.
 zvalue makeCoreClass(zvalue name, zvalue parent) {
     if (findClass(name, theCoreSecret) != NULL) {
         die("Core class already created.");
     }
 
-    return makeClass(name, parent);
+    return makeClass0(name, parent, theCoreSecret);
 }
 
 // Documented in header.
@@ -294,7 +309,7 @@ zvalue makeDerivedDataClass(zvalue name) {
     zvalue result = findClass(name, NULL);
 
     if (result == NULL) {
-        result = makeClass(name, CLS_DerivedData);
+        result = makeClass0(name, CLS_DerivedData, NULL);
     }
 
     return result;
@@ -376,17 +391,17 @@ MOD_INIT(objectModel) {
     theCoreSecret = makeUniqlet();
     datImmortalize(theCoreSecret);
 
-    classInit(CLS_Class,       CLS_Value, stringFromUtf8(-1, "Class"));
-    classInit(CLS_Value,       NULL,      stringFromUtf8(-1, "Value"));
-    classInit(CLS_Data,        CLS_Value, stringFromUtf8(-1, "Data"));
-    classInit(CLS_DerivedData, CLS_Data,  stringFromUtf8(-1, "DerivedData"));
-    classInit(CLS_Object,      CLS_Value, stringFromUtf8(-1, "Object"));
+    classInitHere(CLS_Class,       CLS_Value, "Class");
+    classInitHere(CLS_Value,       NULL,      "Value");
+    classInitHere(CLS_Data,        CLS_Value, "Data");
+    classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
+    classInitHere(CLS_Object,      CLS_Value, "Object");
 
-    classInit(CLS_Builtin,     CLS_Value, stringFromUtf8(-1, "Builtin"));
-    classInit(CLS_Generic,     CLS_Value, stringFromUtf8(-1, "Generic"));
-    classInit(CLS_Jump,        CLS_Value, stringFromUtf8(-1, "Jump"));
-    classInit(CLS_String,      CLS_Data,  stringFromUtf8(-1, "String"));
-    classInit(CLS_Uniqlet,     CLS_Value, stringFromUtf8(-1, "Uniqlet"));
+    classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
+    classInitHere(CLS_Generic,     CLS_Value, "Generic");
+    classInitHere(CLS_Jump,        CLS_Value, "Jump");
+    classInitHere(CLS_String,      CLS_Data,  "String");
+    classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.

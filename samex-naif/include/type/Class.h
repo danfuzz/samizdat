@@ -72,6 +72,12 @@ bool hasClass(zvalue value, zvalue cls);
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
+ * Makes a new class. `name` is the class's name. `parent` is its
+ * superclass. `secret` is the construction and access secret.
+ */
+zvalue makeClass(zvalue name, zvalue parent, zvalue secret);
+
+/**
  * Makes a new core class. `name` is the class's name. `parent` is its
  * superclass. It is a fatal error to call this function more than once with
  * any given name.
