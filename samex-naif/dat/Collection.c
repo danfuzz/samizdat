@@ -35,15 +35,11 @@ zvalue collPut(zvalue coll, zvalue key, zvalue value) {
 MOD_INIT(Collection) {
     MOD_USE(OneOff);
 
-    SEL_INIT(2, 2, del);
-
-    SEL_INIT(1, 1, keyList);
-
-    SEL_INIT(2, 2, nthMapping);
-
-    SEL_INIT(3, 3, put);
-
-    SEL_INIT(1, 1, valueList);
+    SEL_INIT(del);
+    SEL_INIT(keyList);
+    SEL_INIT(nthMapping);
+    SEL_INIT(put);
+    SEL_INIT(valueList);
 }
 
 // Documented in header.

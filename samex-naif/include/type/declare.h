@@ -39,7 +39,11 @@
 #define SEL_NAME(name) GFN_##name
 
 /** Declaration for a method selector. */
-#define SEL_DECL(name) \
-    extern zvalue SEL_NAME(name)
+#define SEL_DECL(minArgs, maxArgs, name) \
+    extern zvalue SEL_NAME(name); \
+    enum { \
+        SEL_MIN_ARGS_##name = (minArgs), \
+        SEL_MAX_ARGS_##name = (maxArgs), \
+    }  // No semicolon here, so that use sites require it.
 
 #endif

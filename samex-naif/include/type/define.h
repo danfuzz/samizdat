@@ -29,14 +29,13 @@
     zvalue SEL_NAME(name) = NULL
 
 /**
- * Performs initialization of the indicated method selector. TODO: Remove
- * `minArgs` and `maxArgs` arguments once these are actually selectors and
- * not generic functions.
+ * Performs initialization of the indicated method selector.
  */
-#define SEL_INIT(minArgs, maxArgs, name) \
+#define SEL_INIT(name) \
     do { \
-        SEL_NAME(name) = \
-            makeGeneric(minArgs, maxArgs, stringFromUtf8(-1, #name)); \
+        SEL_NAME(name) = makeGeneric( \
+            SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
+            stringFromUtf8(-1, #name)); \
         datImmortalize(SEL_NAME(name)); \
     } while (0)
 

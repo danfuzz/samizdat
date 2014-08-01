@@ -19,7 +19,7 @@ extern zvalue CLS_Box;
  * Generic `store(box, value?)`: Stores a value (or void) into a box.
  * Documented in spec.
  */
-SEL_DECL(store);
+SEL_DECL(1, 2, store);
 
 /**
  * Calls the generic `store`, with either one or two arguments, one if

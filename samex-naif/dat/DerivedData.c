@@ -126,7 +126,7 @@ MOD_INIT(DerivedData) {
 
     // Note: The `objectModel` module initializes `CLS_DerivedData`.
 
-    SEL_INIT(1, 1, dataOf);
+    SEL_INIT(dataOf);
 
     METH_BIND(DerivedData, dataOf);
     METH_BIND(DerivedData, gcMark);

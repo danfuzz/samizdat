@@ -216,19 +216,13 @@ MOD_INIT(Value) {
 
     // Note: The `objectModel` module initializes `CLS_Value`.
 
-    SEL_INIT(1, 1, debugName);
-
-    SEL_INIT(1, 1, debugString);
-
-    SEL_INIT(1, 1, gcMark);
-
-    SEL_INIT(2, 2, perEq);
-
-    SEL_INIT(2, 2, perOrder);
-
-    SEL_INIT(2, 2, totalEq);
-
-    SEL_INIT(2, 2, totalOrder);
+    SEL_INIT(debugName);
+    SEL_INIT(debugString);
+    SEL_INIT(gcMark);
+    SEL_INIT(perEq);
+    SEL_INIT(perOrder);
+    SEL_INIT(totalEq);
+    SEL_INIT(totalOrder);
 
     METH_BIND(Value, debugName);
     METH_BIND(Value, debugString);
