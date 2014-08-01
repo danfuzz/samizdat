@@ -93,6 +93,8 @@ PRIM_DEF(Number_sub,              SEL_NAME(sub));
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
+PRIM_DEF(makeObject,              FUN_Object_makeObject);
+PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_FUNC(className,              1, 1);
 PRIM_FUNC(classParent,            1, 1);
 PRIM_FUNC(die,                    0, -1);
