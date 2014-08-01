@@ -84,7 +84,7 @@ static int compareNameAndSelector(zvalue methodName, zvalue selector) {
     SelectorInfo *info = getInfo(selector);
     zvalue methodName2 = info->methodName;
 
-    return valZorder(methodName, methodName2);
+    return stringZorder(methodName, methodName2);
 }
 
 /**
