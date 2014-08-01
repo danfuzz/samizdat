@@ -22,14 +22,12 @@
 // Semantics Switch
 //
 
-enum {
-    /**
-     * Whether to enable the method map code. This flag is meant to be used
-     * as a temporary guard around the new method definition and dispatch
-     * code. TODO: Remove this flag when the new code is reasonably baked.
-     */
-    DAT_USE_METHOD_TABLE = false
-};
+/**
+ * Whether to enable the method map code. This flag is meant to be used
+ * as a temporary guard around the new method definition and dispatch
+ * code. TODO: Remove this flag when the new code is reasonably baked.
+ */
+#define DAT_USE_METHOD_TABLE 0
 
 
 //
