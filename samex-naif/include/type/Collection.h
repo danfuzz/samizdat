@@ -22,19 +22,19 @@
 
 
 /** Generic `del(collection, key)`: Documented in spec. */
-extern zvalue GFN_del;
+SEL_DECL(del);
 
 /** Generic `nthMapping(collection, n)`: Documented in spec. */
-extern zvalue GFN_nthMapping;
+SEL_DECL(nthMapping);
 
 /** Generic `keyList(collection)`: Documented in spec. */
-extern zvalue GFN_keyList;
+SEL_DECL(keyList);
 
 /** Generic `put(collection, key, value)`: Documented in spec. */
-extern zvalue GFN_put;
+SEL_DECL(put);
 
 /** Generic `valueList(collection)`: Documented in spec. */
-extern zvalue GFN_valueList;
+SEL_DECL(valueList);
 
 /**
  * Calls the `del` generic.

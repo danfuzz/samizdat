@@ -5,9 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "type/Class.h"
 #include "type/Selector.h"
-#include "type/String.h"
+#include "type/define.h"
 #include "zlimits.h"
 
 #include "impl.h"

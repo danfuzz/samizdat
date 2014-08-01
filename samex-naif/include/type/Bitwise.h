@@ -13,24 +13,24 @@
 
 
 /** Generic `and(bitwise, bitwise)`: Documented in spec. */
-extern zvalue GFN_and;
+SEL_DECL(and);
 
 /** Generic `bit(bitwise, int)`: Documented in spec. */
-extern zvalue GFN_bit;
+SEL_DECL(bit);
 
 /** Generic `bitSize(bitwise)`: Documented in spec. */
-extern zvalue GFN_bitSize;
+SEL_DECL(bitSize);
 
 /** Generic `not(bitwise)`: Documented in spec. */
-extern zvalue GFN_not;
+SEL_DECL(not);
 
 /** Generic `or(bitwise, bitwise)`: Documented in spec. */
-extern zvalue GFN_or;
+SEL_DECL(or);
 
 /** Generic `shl(bitwise, int)`: Documented in spec. */
-extern zvalue GFN_shl;
+SEL_DECL(shl);
 
 /** Generic `xor(bitwise, bitwise)`: Documented in spec. */
-extern zvalue GFN_xor;
+SEL_DECL(xor);
 
 #endif

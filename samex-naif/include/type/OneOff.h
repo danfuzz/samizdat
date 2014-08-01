@@ -13,31 +13,31 @@
 
 
 /** Generic `cat(value, more*)`: Documented in spec. */
-extern zvalue GFN_cat;
+SEL_DECL(cat);
 
 /** Generic `get(value, key)`: Documented in spec. */
-extern zvalue GFN_get;
+SEL_DECL(get);
 
 /** Generic `get_key(value)`: Documented in spec. */
-extern zvalue GFN_get_key;
+SEL_DECL(get_key);
 
 /** Generic `get_size(collection)`: Documented in spec. */
-extern zvalue GFN_get_size;
+SEL_DECL(get_size);
 
 /** Generic `get_value(value)`: Documented in spec. */
-extern zvalue GFN_get_value;
+SEL_DECL(get_value);
 
 /** Generic `nth(sequence, n)`: Documented in spec. */
-extern zvalue GFN_nth;
+SEL_DECL(nth);
 
 /** Generic `toInt(value)`: Documented in spec. */
-extern zvalue GFN_toInt;
+SEL_DECL(toInt);
 
 /** Generic `toNumber(value)`: Documented in spec. */
-extern zvalue GFN_toNumber;
+SEL_DECL(toNumber);
 
 /** Generic `toString(value)`: Documented in spec. */
-extern zvalue GFN_toString;
+SEL_DECL(toString);
 
 /**
  * Calls the `get` generic.

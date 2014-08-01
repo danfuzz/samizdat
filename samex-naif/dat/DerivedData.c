@@ -3,13 +3,10 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Builtin.h"
-#include "type/Class.h"
 #include "type/Collection.h"
 #include "type/DerivedData.h"
-#include "type/Generic.h"
 #include "type/Int.h"
-#include "type/String.h"
-#include "type/Value.h"
+#include "type/define.h"
 #include "zlimits.h"
 
 #include "impl.h"
@@ -129,8 +126,7 @@ MOD_INIT(DerivedData) {
 
     // Note: The `objectModel` module initializes `CLS_DerivedData`.
 
-    GFN_dataOf = makeGeneric(1, 1, stringFromUtf8(-1, "dataOf"));
-    datImmortalize(GFN_dataOf);
+    SEL_INIT(1, 1, dataOf);
 
     METH_BIND(DerivedData, dataOf);
     METH_BIND(DerivedData, gcMark);
@@ -148,7 +144,7 @@ MOD_INIT(DerivedData) {
 zvalue CLS_DerivedData = NULL;
 
 // Documented in header.
-zvalue GFN_dataOf = NULL;
+SEL_DEF(dataOf);
 
 // Documented in header.
 zvalue FUN_DerivedData_makeData = NULL;

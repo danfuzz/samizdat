@@ -10,7 +10,7 @@
 #define _IMPL_H_
 
 #include "lib.h"
-#include "type/Function.h"
+#include "type/declare.h"
 
 
 // Declarations for all the primitive functions.
@@ -19,6 +19,5 @@
 #include "prim-def.h"
 #undef PRIM_DEF
 #undef PRIM_FUNC
-
 
 #endif

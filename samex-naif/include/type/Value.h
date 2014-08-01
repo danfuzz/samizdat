@@ -15,38 +15,38 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "dat.h"
+#include "type/declare.h"
 
 
 /** Class value for in-model class `Value`. */
 extern zvalue CLS_Value;
 
 /** Generic `debugName(value)`: Documented in spec. */
-extern zvalue GFN_debugName;
+SEL_DECL(debugName);
 
 /** Generic `debugString(value)`: Documented in spec. */
-extern zvalue GFN_debugString;
+SEL_DECL(debugString);
 
 /** Generic `gcMark(value)`: Does GC marking for the given value. */
-extern zvalue GFN_gcMark;
+SEL_DECL(gcMark);
 
 /** Generic `perEq(value, other)`: Documented in spec. */
-extern zvalue GFN_perEq;
+SEL_DECL(perEq);
 
 /** Generic `perOrder(value, other)`: Documented in spec. */
-extern zvalue GFN_perOrder;
+SEL_DECL(perOrder);
 
 /**
  * Generic `totalEq(value, value)`: Compares two values for equality /
  * sameness. Documented in spec.
  */
-extern zvalue GFN_totalEq;
+SEL_DECL(totalEq);
 
 /**
  * Generic `totalOrder(value, value)`: Compares two values with respect to the
  * total order of values. Documented in spec.
  */
-extern zvalue GFN_totalOrder;
+SEL_DECL(totalOrder);
 
 /**
  * Gets the class of the given value. `value` must be a valid value (in

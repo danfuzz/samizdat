@@ -20,13 +20,13 @@
 
 
 /** Generic `reverse(sequence)`: Documented in spec. */
-extern zvalue GFN_reverse;
+SEL_DECL(reverse);
 
 /** Generic `sliceExclusive(collection, start, end?)`: Documented in spec. */
-extern zvalue GFN_sliceExclusive;
+SEL_DECL(sliceExclusive);
 
 /** Generic `sliceInclusive(collection, start, end?)`: Documented in spec. */
-extern zvalue GFN_sliceInclusive;
+SEL_DECL(sliceInclusive);
 
 /**
  * Validates and converts the `start` and optional `end` arguments to

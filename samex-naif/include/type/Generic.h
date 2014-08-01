@@ -11,21 +11,6 @@
 
 #include "type/Function.h"
 
-/** C function name for a method on the given class with the given name. */
-#define METH_NAME(cls, name) cls##_##name
-
-/** Declaration for a method on the given class with the given name. */
-#define METH_IMPL(cls, name) \
-    static zvalue METH_NAME(cls, name)( \
-        zvalue thisFunction, zint argCount, const zvalue *args)
-
-/** Performs binding of the indicated method. */
-#define METH_BIND(cls, name) \
-    do { \
-        genericBindPrim(GFN_##name, CLS_##cls, METH_NAME(cls, name), \
-            #cls ":" #name); \
-    } while(0)
-
 /** Class value for in-model class `Generic`. */
 extern zvalue CLS_Generic;
 

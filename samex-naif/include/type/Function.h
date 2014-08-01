@@ -13,33 +13,11 @@
 
 #include "type/Value.h"
 
-
-/**
- * Prototype for an underlying C function corresponding to an in-model
- * function (value of type `Function`).
- */
-typedef zvalue (*zfunction)(
-    zvalue thisFunction, zint argCount, const zvalue *args);
-
-/**
- * Actual name for a `zfunction` implementation with the given name.
- * The result is a prefixed version of the given name.
- */
-#define FUN_IMPL_NAME(name) FUN_IMPL_##name
-
-/**
- * Declaration for a `zfunction` implementation with the given name. Can be
- * used as either a prototype or a top-of-implementation declaration.
- */
-#define FUN_IMPL_DECL(name) \
-    zvalue FUN_IMPL_NAME(name)( \
-        zvalue thisFunction, zint argCount, const zvalue *args)
-
 /**
  * Generic `call(function, args*)`: Generic for dispatching to a function
  * calling mechanism (how meta). Documented in spec.
  */
-extern zvalue GFN_call;
+SEL_DECL(call);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
@@ -105,13 +83,13 @@ zvalue mustNotYield(zvalue value)
  * `METH_APPLY(name, args)`: Calls a generic function by (unadorned) name,
  * with a variable number of arguments passed as a list.
  */
-#define METH_APPLY(name, args) funApply(GFN_##name, args)
+#define METH_APPLY(name, args) funApply(SEL_NAME(name), args)
 
 /**
  * `METH_CALL(name, arg, ...)`: Calls a generic function by (unadorned) name,
  * with a variable number of arguments passed in the usual C style.
  */
-#define METH_CALL(name, ...) FUN_CALL(GFN_##name, __VA_ARGS__)
+#define METH_CALL(name, ...) FUN_CALL(SEL_NAME(name), __VA_ARGS__)
 
 
 //
