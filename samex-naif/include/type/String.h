@@ -20,6 +20,14 @@ extern zvalue CLS_String;
 extern zvalue EMPTY_STRING;
 
 /**
+ * Compares two strings for equality. This is the same as calling
+ * `valEq()` on the strings, except that it terminates with an error if
+ * either argument is *not* a string, and it doesn't require a fully running
+ * system. In particular, it avoids method dispatch.
+ */
+bool stringEq(zvalue string1, zvalue string2);
+
+/**
  * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
@@ -36,6 +44,14 @@ zvalue stringFromZchar(zchar value);
  * the given size.
  */
 zvalue stringFromZchars(zint size, const zchar *chars);
+
+/**
+ * Compares two strings for equality. This is the same as calling
+ * `valZorder()` on the strings, except that it terminates with an error if
+ * either argument is *not* a string, and it doesn't require a fully
+ * running system. In particular, it avoids method dispatch.
+ */
+zorder stringZorder(zvalue string1, zvalue string2);
 
 /**
  * Like `utf8FromString`, except this returns an allocated buffer containing

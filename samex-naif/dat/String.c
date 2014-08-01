@@ -98,10 +98,72 @@ static void freeArray(zchar *array) {
     }
 }
 
+/**
+ * Shared implementation of `eq`, given valid string values.
+ */
+static bool uncheckedEq(zvalue string1, zvalue string2) {
+    StringInfo *info1 = getInfo(string1);
+    StringInfo *info2 = getInfo(string2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+
+    if (size1 != size2) {
+        return false;
+    }
+
+    zchar *e1 = info1->elems;
+    zchar *e2 = info2->elems;
+
+    for (zint i = 0; i < size1; i++) {
+        if (e1[i] != e2[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Shared implementation of `order`, given valid string values.
+ */
+static zorder uncheckedZorder(zvalue string1, zvalue string2) {
+    StringInfo *info1 = getInfo(string1);
+    StringInfo *info2 = getInfo(string2);
+    zchar *e1 = info1->elems;
+    zchar *e2 = info2->elems;
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+    zint size = (size1 < size2) ? size1 : size2;
+
+    for (zint i = 0; i < size; i++) {
+        zchar c1 = e1[i];
+        zchar c2 = e2[i];
+
+        if (c1 < c2) {
+            return ZLESS;
+        } else if (c1 > c2) {
+            return ZMORE;
+        }
+    }
+
+    if (size1 == size2) {
+        return ZSAME;
+    }
+
+    return (size1 < size2) ? ZLESS : ZMORE;
+}
+
 
 //
 // Exported Definitions
 //
+
+// Documented in header.
+bool stringEq(zvalue string1, zvalue string2) {
+    assertString(string1);
+    assertString(string2);
+    return uncheckedEq(string1, string2);
+}
 
 // Documented in header.
 zvalue stringFromUtf8(zint stringBytes, const char *string) {
@@ -163,6 +225,13 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 
     utilCpy(zchar, getInfo(result)->elems, chars, size);
     return result;
+}
+
+// Documented in header.
+zorder stringZorder(zvalue string1, zvalue string2) {
+    assertString(string1);
+    assertString(string2);
+    return uncheckedZorder(string1, string2);
 }
 
 // Documented in header.
@@ -250,7 +319,7 @@ METH_IMPL(String, cat) {
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = args[i];
-        assertHasClass(one, CLS_String);
+        assertString(one);
         size += getInfo(one)->size;
     }
 
@@ -452,26 +521,8 @@ METH_IMPL(String, totalEq) {
     zvalue value = args[0];
     zvalue other = args[1];  // Note: Not guaranteed to be a `String`.
 
-    assertHasClass(other, CLS_String);
-    StringInfo *info1 = getInfo(value);
-    StringInfo *info2 = getInfo(other);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-
-    if (size1 != size2) {
-        return NULL;
-    }
-
-    zchar *e1 = info1->elems;
-    zchar *e2 = info2->elems;
-
-    for (zint i = 0; i < size1; i++) {
-        if (e1[i] != e2[i]) {
-            return NULL;
-        }
-    }
-
-    return value;
+    assertString(other);
+    return uncheckedEq(value, other) ? value : NULL;
 }
 
 // Documented in header.
@@ -479,31 +530,12 @@ METH_IMPL(String, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];  // Note: Not guaranteed to be a `String`.
 
-    assertHasClass(other, CLS_String);
-    StringInfo *info1 = getInfo(value);
-    StringInfo *info2 = getInfo(other);
-    zchar *e1 = info1->elems;
-    zchar *e2 = info2->elems;
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-    zint size = (size1 < size2) ? size1 : size2;
-
-    for (zint i = 0; i < size; i++) {
-        zchar c1 = e1[i];
-        zchar c2 = e2[i];
-
-        if (c1 < c2) {
-            return INT_NEG1;
-        } else if (c1 > c2) {
-            return INT_1;
-        }
+    assertString(other);
+    switch (uncheckedZorder(value, other)) {
+        case ZLESS: return INT_NEG1;
+        case ZSAME: return INT_0;
+        case ZMORE: return INT_1;
     }
-
-    if (size1 == size2) {
-        return INT_0;
-    }
-
-    return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
 // Documented in header.
