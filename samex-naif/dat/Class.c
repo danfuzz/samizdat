@@ -212,6 +212,18 @@ void assertHasClass(zvalue value, zvalue cls) {
 }
 
 // Documented in header.
+bool classHasSecret(zvalue cls, zvalue secret) {
+    assertHasClassClass(cls);
+
+    ClassInfo *info = getInfo(cls);
+
+    // Note: It's important to pass `info->secret` first, so that it's the
+    // one whose `totalEq` method is used. The given `secret` can't be
+    // trusted to behave.
+    return valEq(info->secret, secret);
+}
+
+// Documented in header.
 zint classIndex(zvalue cls) {
     assertHasClassClass(cls);
     return classIndexUnchecked(cls);

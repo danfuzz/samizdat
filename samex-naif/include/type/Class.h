@@ -25,6 +25,11 @@ extern zvalue CLS_Class;
 void assertHasClass(zvalue value, zvalue cls);
 
 /**
+ * Returns `true` iff the given class has the given secret.
+ */
+bool classHasSecret(zvalue cls, zvalue secret);
+
+/**
  * Returns the unique index for the given class.
  */
 zint classIndex(zvalue cls);
