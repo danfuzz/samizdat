@@ -182,10 +182,10 @@ METH_IMPL(Sequence, nthMapping) {
 
 // Documented in header.
 void seqBind(zvalue cls) {
-    genericBind(GFN_get,        cls, BI_Sequence_get);
-    genericBind(GFN_keyList,    cls, BI_Sequence_keyList);
-    genericBind(GFN_nextValue,  cls, BI_Sequence_nextValue);
-    genericBind(GFN_nthMapping, cls, BI_Sequence_nthMapping);
+    genericBind(SEL_NAME(get),        cls, BI_Sequence_get);
+    genericBind(SEL_NAME(keyList),    cls, BI_Sequence_keyList);
+    genericBind(SEL_NAME(nextValue),  cls, BI_Sequence_nextValue);
+    genericBind(SEL_NAME(nthMapping), cls, BI_Sequence_nthMapping);
 }
 
 /** Initializes the module. */

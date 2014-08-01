@@ -89,9 +89,6 @@ Beyond the general conventions, the following are used:
 
 * `CLS_ClassName` &mdash; Identifies a value of class `Class`.
 
-* `GFN_methodName` &mdash; Identifies a generic function (value of class
-  `Generic`).
-
 * `STR_stringValue` &mdash; Identifies a value of class `String` with content
   `"stringValue"`. For strings with contents not directly representable in
   identifiers, the name is designed to be suggestive of the content. In

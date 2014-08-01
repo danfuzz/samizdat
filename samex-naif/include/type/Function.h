@@ -83,13 +83,13 @@ zvalue mustNotYield(zvalue value)
  * `METH_APPLY(name, args)`: Calls a generic function by (unadorned) name,
  * with a variable number of arguments passed as a list.
  */
-#define METH_APPLY(name, args) funApply(GFN_##name, args)
+#define METH_APPLY(name, args) funApply(SEL_NAME(name), args)
 
 /**
  * `METH_CALL(name, arg, ...)`: Calls a generic function by (unadorned) name,
  * with a variable number of arguments passed in the usual C style.
  */
-#define METH_CALL(name, ...) FUN_CALL(GFN_##name, __VA_ARGS__)
+#define METH_CALL(name, ...) FUN_CALL(SEL_NAME(name), __VA_ARGS__)
 
 
 //
