@@ -13,16 +13,29 @@
 
 #include "type/Class.h"
 #include "type/Function.h"
-#include "type/Generic.h"
+#if DAT_USE_METHOD_TABLE
 #include "type/Selector.h"
+#else
+#include "type/Generic.h"
+#endif
 #include "type/String.h"
 
 /** Performs binding of the indicated method. */
+#if DAT_USE_METHOD_TABLE_FIXME_NOT_YET
 #define METH_BIND(cls, name) \
     do { \
-        genericBindPrim(GFN_##name, CLS_##cls, METH_NAME(cls, name), \
+        classAddPrimitiveMethod( \
+            CLS_##cls, SEL_NAME(name), \
+            SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
+            METH_NAME(cls, name), #cls "." #name); \
+    } while (0)
+#else
+#define METH_BIND(cls, name) \
+    do { \
+        genericBindPrim(SEL_NAME(name), CLS_##cls, METH_NAME(cls, name), \
             #cls ":" #name); \
     } while (0)
+#endif
 
 /** Variable definition for a method selector. */
 #define SEL_DEF(name) \
@@ -33,11 +46,18 @@
  * `minArgs` and `maxArgs` arguments once these are actually selectors and
  * not generic functions.
  */
+#if DAT_USE_METHOD_TABLE_FIXME_NOT_YET
+#define SEL_INIT(minArgs, maxArgs, name) \
+    do { \
+        SEL_NAME(name) = selectorFromName(stringFromUtf8(-1, #name)); \
+    } while (0)
+#else
 #define SEL_INIT(minArgs, maxArgs, name) \
     do { \
         SEL_NAME(name) = \
             makeGeneric(minArgs, maxArgs, stringFromUtf8(-1, #name)); \
         datImmortalize(SEL_NAME(name)); \
     } while (0)
+#endif
 
 #endif

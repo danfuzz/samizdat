@@ -36,7 +36,11 @@
         zvalue thisFunction, zint argCount, const zvalue *args)
 
 /** Variable name for a method selector. */
+#if DAT_USE_METHOD_TABLE
+#define SEL_NAME(name) SEL_##name
+#else
 #define SEL_NAME(name) GFN_##name
+#endif
 
 /** Declaration for a method selector. */
 #define SEL_DECL(name) \
