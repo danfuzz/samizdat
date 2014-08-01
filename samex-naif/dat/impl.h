@@ -11,6 +11,9 @@
 
 #include "dat.h"
 #include "util.h"
+#if DAT_USE_METHOD_TABLE
+#include "zlimits.h"
+#endif
 
 
 enum {
@@ -87,7 +90,7 @@ typedef struct {
      */
     zint classId;
 
-    #if USE_METHOD_TABLE
+    #if DAT_USE_METHOD_TABLE
     /**
      * Bindings from method selectors to functions, keyed off of selector
      * index number.

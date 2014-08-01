@@ -197,8 +197,8 @@ static bool classEq(zvalue cls1, zvalue cls2) {
 
 // Documented in header.
 zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
-    #if !USE_METHOD_TABLE
-    die("Requires USE_METHOD_TABLE");
+    #if !DAT_USE_METHOD_TABLE
+    die("Requires DAT_USE_METHOD_TABLE");
     #else
 
     // TODO: Remove the heritage lookup once subclass tables get populated
@@ -206,7 +206,7 @@ zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
 
     assertHasClassClass(cls);
     zvalue result = NULL;
-    zvalue superChecked = false;
+    bool superChecked = false;
 
     zvalue checkCls = cls;
     while (checkCls != NULL) {
@@ -246,20 +246,20 @@ void assertHasClass(zvalue value, zvalue cls) {
 
 // Documented in header.
 void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
-    #if !USE_METHOD_TABLE
-    die("Requires USE_METHOD_TABLE");
+    #if !DAT_USE_METHOD_TABLE
+    die("Requires DAT_USE_METHOD_TABLE");
     #else
 
     assertHasClassClass(cls);
     zint index = selectorIndex(selector);
     zvalue *methods = getInfo(cls)->methods;
 
-    if (info->methods[index] != NULL) {
+    if (methods[index] != NULL) {
         die("Cannot rebind method: %s%s",
             valDebugString(cls), valDebugString(selector));
     }
 
-    info->methods[index] = function;
+    methods[index] = function;
 
     #endif
 }

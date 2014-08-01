@@ -40,7 +40,7 @@ typedef struct {
      */
     zvalue name;
 
-    #if USE_METHOD_TABLE
+    #if DAT_USE_METHOD_TABLE
     /** The corresponding selector. */
     zvalue selector;
     #endif
@@ -104,7 +104,7 @@ static zvalue findByClass(zvalue generic, zvalue cls, zvalue *boundCls) {
 zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     GenericInfo *info = getInfo(generic);
 
-    #if USE_METHOD_TABLE
+    #if DAT_USE_METHOD_TABLE
     // Just grab the selector, and use it for the call.
     return selectorCall(info->selector, argCount, args);
     #else
@@ -161,7 +161,7 @@ void genericBind(zvalue generic, zvalue cls, zvalue function) {
 
     info->functions[index] = function;
 
-    #if USE_METHOD_TABLE
+    #if DAT_USE_METHOD_TABLE
     classAddMethod(cls, info->selector, function);
     #endif
 }
@@ -202,7 +202,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name) {
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->sealed = false;
     info->name = name;
-    #if USE_METHOD_TABLE
+    #if DAT_USE_METHOD_TABLE
     info->selector = selectorFromName(name);
     #endif
 

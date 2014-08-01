@@ -205,7 +205,7 @@ MOD_INIT(Value) {
     // This also gets all the protocols indirectly via their implementors.
     MOD_USE_NEXT(Data);
     MOD_USE_NEXT(Class);
-    #if USE_METHOD_TABLE
+    #if DAT_USE_METHOD_TABLE
     MOD_USE_NEXT(Selector);
     #endif
     MOD_USE_NEXT(String);
