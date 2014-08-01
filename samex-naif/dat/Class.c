@@ -183,10 +183,11 @@ static void assertHasClassClass(zvalue value) {
 }
 
 /**
- * Compares two classes (per se) for equality. This is just `==` since
- * classes are all unique and effectively "selfish."
+ * Like `classEq()` but without checking up-front that the two given values
+ * are actually classes. Note that this is just a `==` check, since classes
+ * are all unique and effectively "selfish."
  */
-static bool classEq(zvalue cls1, zvalue cls2) {
+static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
     return (cls1 == cls2);
 }
 
@@ -209,6 +210,13 @@ void assertHasClass(zvalue value, zvalue cls) {
         die("Expected class %s; got %s.",
             valDebugString(cls), valDebugString(value));
     }
+}
+
+// Documented in header.
+bool classEq(zvalue cls1, zvalue cls2) {
+    assertHasClassClass(cls1);
+    assertHasClassClass(cls1);
+    return classEqUnchecked(cls1, cls2);
 }
 
 // Documented in header.
@@ -258,7 +266,7 @@ bool hasClass(zvalue value, zvalue cls) {
     for (zvalue valueCls = get_class(value);
             valueCls != NULL;
             valueCls = getInfo(valueCls)->parent) {
-        if (classEq(valueCls, cls)) {
+        if (classEqUnchecked(valueCls, cls)) {
             return true;
         }
     }
@@ -268,7 +276,7 @@ bool hasClass(zvalue value, zvalue cls) {
 
 // Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
-    return classEq(get_class(value), get_class(other));
+    return classEqUnchecked(get_class(value), get_class(other));
 }
 
 // Documented in header.

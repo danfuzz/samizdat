@@ -25,6 +25,11 @@ extern zvalue CLS_Class;
 void assertHasClass(zvalue value, zvalue cls);
 
 /**
+ * Compares two classes for equality. It is an error to pass a non-class.
+ */
+bool classEq(zvalue cls1, zvalue cls2);
+
+/**
  * Returns `true` iff the given class has the given secret.
  */
 bool classHasSecret(zvalue cls, zvalue secret);
