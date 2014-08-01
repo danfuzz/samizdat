@@ -247,7 +247,7 @@ METH_IMPL(Selector, gcMark) {
 MOD_INIT(Selector) {
     MOD_USE(Value);
 
-    CLS_Selector = makeCoreClass(stringFromUtf8(-1, "Selector"), CLS_Value);
+    // Note: The `objectModel` module initializes `CLS_Selector`.
 
     METH_BIND(Selector, debugName);
     METH_BIND(Selector, debugString);
