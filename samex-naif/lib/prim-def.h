@@ -55,6 +55,9 @@ PRIM_DEF(Bitwise_xor,             SEL_NAME(xor));
 // Generic functions: `Box` protocol.
 PRIM_DEF(store,                   SEL_NAME(store));
 
+// Generic functions: `Object` class.
+PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
+
 // Generic functions: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
