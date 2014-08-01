@@ -136,7 +136,7 @@ MOD_INIT(Object) {
         stringFromUtf8(-1, "Object.makeObject"));
     datImmortalize(FUN_Object_makeObject);
 
-    FUN_Object_makeObjectClass = makeBuiltin(2, 3,
+    FUN_Object_makeObjectClass = makeBuiltin(2, 2,
         METH_NAME(Object, makeObjectClass), 0,
         stringFromUtf8(-1, "Object.makeObjectClass"));
     datImmortalize(FUN_Object_makeObjectClass);
