@@ -21,6 +21,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Number.h"
+#include "type/Object.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Uniqlet.h"
@@ -123,6 +124,7 @@ zvalue libNewEnvironment(const char *libraryPath) {
     MOD_USE(Box);
     MOD_USE(Generator);
     MOD_USE(Map);
+    MOD_USE(Object);
     MOD_USE(lang);
 
     makePrimitiveEnvironment();

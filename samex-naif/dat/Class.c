@@ -10,6 +10,7 @@
 #include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/Jump.h"
+#include "type/Object.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
 #include "zlimits.h"
@@ -45,7 +46,7 @@ static ClassInfo *getInfo(zvalue cls) {
  * Initializes a class value. The class is marked core, except if its parent
  * is `DerivedData` in which case it is marked as derived.
  */
-static void classInit(zvalue cls, zvalue parent, zvalue name) {
+static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
     }
@@ -59,13 +60,20 @@ static void classInit(zvalue cls, zvalue parent, zvalue name) {
 
     info->parent = parent;
     info->name = name;
-    info->secret = derived ? NULL : theCoreSecret;
+    info->secret = secret;
     info->classId = theNextClassId;
 
     theClasses[theNextClassId] = cls;
     theNeedSort = true;
     theNextClassId++;
     datImmortalize(cls);
+}
+
+/**
+ * Helper for initializing the classes built directly in this file.
+ */
+static void classInitHere(zvalue cls, zvalue parent, const char *name) {
+    classInit(cls, stringFromUtf8(-1, name), parent, theCoreSecret);
 }
 
 /**
@@ -76,13 +84,13 @@ static zvalue allocClass(void) {
 }
 
 /**
- * Creates and returns a new class with the given name. The class is marked
- * core, except if its parent is `DerivedData` in which case it is marked as
- * derived.
+ * Common class creation code. This creates and returns a new class with the
+ * given info. The class is marked core, except if its parent is `DerivedData`
+ * in which case it is marked as derived.
  */
-static zvalue makeClass(zvalue name, zvalue parent) {
+static zvalue makeClass0(zvalue name, zvalue parent, zvalue secret) {
     zvalue result = allocClass();
-    classInit(result, parent, name);
+    classInit(result, name, parent, secret);
     return result;
 }
 
@@ -183,10 +191,11 @@ static void assertHasClassClass(zvalue value) {
 }
 
 /**
- * Compares two classes (per se) for equality. This is just `==` since
- * classes are all unique and effectively "selfish."
+ * Like `classEq()` but without checking up-front that the two given values
+ * are actually classes. Note that this is just a `==` check, since classes
+ * are all unique and effectively "selfish."
  */
-static bool classEq(zvalue cls1, zvalue cls2) {
+static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
     return (cls1 == cls2);
 }
 
@@ -209,6 +218,25 @@ void assertHasClass(zvalue value, zvalue cls) {
         die("Expected class %s; got %s.",
             valDebugString(cls), valDebugString(value));
     }
+}
+
+// Documented in header.
+bool classEq(zvalue cls1, zvalue cls2) {
+    assertHasClassClass(cls1);
+    assertHasClassClass(cls1);
+    return classEqUnchecked(cls1, cls2);
+}
+
+// Documented in header.
+bool classHasSecret(zvalue cls, zvalue secret) {
+    assertHasClassClass(cls);
+
+    ClassInfo *info = getInfo(cls);
+
+    // Note: It's important to pass `info->secret` first, so that it's the
+    // one whose `totalEq` method is used. The given `secret` can't be
+    // trusted to behave.
+    return valEq(info->secret, secret);
 }
 
 // Documented in header.
@@ -246,7 +274,7 @@ bool hasClass(zvalue value, zvalue cls) {
     for (zvalue valueCls = get_class(value);
             valueCls != NULL;
             valueCls = getInfo(valueCls)->parent) {
-        if (classEq(valueCls, cls)) {
+        if (classEqUnchecked(valueCls, cls)) {
             return true;
         }
     }
@@ -256,7 +284,25 @@ bool hasClass(zvalue value, zvalue cls) {
 
 // Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
-    return classEq(get_class(value), get_class(other));
+    return classEqUnchecked(get_class(value), get_class(other));
+}
+
+// Documented in header.
+zvalue makeClass(zvalue name, zvalue parent, zvalue secret) {
+    assertHasClass(name, CLS_String);
+    assertHasClassClass(parent);
+
+    zvalue result = findClass(name, secret);
+
+    if (result != NULL) {
+        // A matching class already exists. Check the heritage.
+        if (!classEqUnchecked(parent, classParent(result))) {
+            die("Mismatched `parent` for pre-existing class.");
+        }
+        return result;
+    }
+
+    return makeClass0(name, parent, secret);
 }
 
 // Documented in header.
@@ -265,7 +311,7 @@ zvalue makeCoreClass(zvalue name, zvalue parent) {
         die("Core class already created.");
     }
 
-    return makeClass(name, parent);
+    return makeClass0(name, parent, theCoreSecret);
 }
 
 // Documented in header.
@@ -273,7 +319,7 @@ zvalue makeDerivedDataClass(zvalue name) {
     zvalue result = findClass(name, NULL);
 
     if (result == NULL) {
-        result = makeClass(name, CLS_DerivedData);
+        result = makeClass0(name, CLS_DerivedData, NULL);
     }
 
     return result;
@@ -343,6 +389,7 @@ MOD_INIT(objectModel) {
     CLS_Value       = allocClass();
     CLS_Data        = allocClass();
     CLS_DerivedData = allocClass();
+    CLS_Object      = allocClass();
 
     // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
@@ -354,16 +401,17 @@ MOD_INIT(objectModel) {
     theCoreSecret = makeUniqlet();
     datImmortalize(theCoreSecret);
 
-    classInit(CLS_Class,       CLS_Value, stringFromUtf8(-1, "Class"));
-    classInit(CLS_Value,       NULL,      stringFromUtf8(-1, "Value"));
-    classInit(CLS_Data,        CLS_Value, stringFromUtf8(-1, "Data"));
-    classInit(CLS_DerivedData, CLS_Data,  stringFromUtf8(-1, "DerivedData"));
+    classInitHere(CLS_Class,       CLS_Value, "Class");
+    classInitHere(CLS_Value,       NULL,      "Value");
+    classInitHere(CLS_Data,        CLS_Value, "Data");
+    classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
+    classInitHere(CLS_Object,      CLS_Value, "Object");
 
-    classInit(CLS_Builtin,     CLS_Value, stringFromUtf8(-1, "Builtin"));
-    classInit(CLS_Generic,     CLS_Value, stringFromUtf8(-1, "Generic"));
-    classInit(CLS_Jump,        CLS_Value, stringFromUtf8(-1, "Jump"));
-    classInit(CLS_String,      CLS_Data,  stringFromUtf8(-1, "String"));
-    classInit(CLS_Uniqlet,     CLS_Value, stringFromUtf8(-1, "Uniqlet"));
+    classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
+    classInitHere(CLS_Generic,     CLS_Value, "Generic");
+    classInitHere(CLS_Jump,        CLS_Value, "Jump");
+    classInitHere(CLS_String,      CLS_Data,  "String");
+    classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
