@@ -15,6 +15,22 @@ expressions anywhere where a literal value occurs in these examples.
 
 ### Core classes
 
+#### Value
+
+This is the ultimate superclass (parent of the parent of…) of all other classes
+in the language.
+
+#### Data
+
+This is the parent of all "pure data" classes in the language.
+
+#### Object
+
+This is the parent of all non-core classes, other than "derived data" classes.
+Every object class has an associated "secret" which is the key used to
+allow construction of objects of that class as well as access the inner
+data of such objects.
+
 #### Bool
 
 A `Bool` is a boolean truth value. The two possible values of this class are
@@ -321,18 +337,6 @@ of class:
 * TODO: The third kind of class is an "derived opaque" class. These have a
   name and secret. The secret is used to prevent creation of values of the
   class beyond the scope of the class's trusted implementation.
-
-
-#### Value
-
-This is the ultimate superclass (parent of the parent of…) of all other classes
-in the language. It is mostly useful as the class to use in order to bind a
-default method to a generic function.
-
-
-#### Data
-
-This is the parent of all "pure data" classes in the language.
 
 
 ### DerivedData (derived data values)

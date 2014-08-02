@@ -55,6 +55,9 @@ PRIM_DEF(Bitwise_xor,             SEL_NAME(xor));
 // Generic functions: `Box` protocol.
 PRIM_DEF(store,                   SEL_NAME(store));
 
+// Generic functions: `Object` class.
+PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
+
 // Generic functions: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
@@ -93,6 +96,8 @@ PRIM_DEF(Number_sub,              SEL_NAME(sub));
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
+PRIM_DEF(makeObject,              FUN_Object_makeObject);
+PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_FUNC(className,              1, 1);
 PRIM_FUNC(classParent,            1, 1);
 PRIM_FUNC(die,                    0, -1);

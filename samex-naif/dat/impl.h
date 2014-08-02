@@ -24,13 +24,13 @@ enum {
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */
-    DAT_INDEX_BUILTIN = 5,
+    DAT_INDEX_BUILTIN = 6,
 
     /** The class index for class `Generic`. */
-    DAT_INDEX_GENERIC = 6,
+    DAT_INDEX_GENERIC = 7,
 
     /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 7,
+    DAT_INDEX_JUMP = 8,
 
     /** The class index for class `Selector`. */
     DAT_INDEX_SELECTOR = 2,

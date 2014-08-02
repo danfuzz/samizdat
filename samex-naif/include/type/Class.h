@@ -39,6 +39,16 @@ void classAddPrimitiveMethod(zvalue cls, zvalue selector, zint minArgs,
         zint maxArgs, zfunction function, const char *functionName);
 
 /**
+ * Compares two classes for equality. It is an error to pass a non-class.
+ */
+bool classEq(zvalue cls1, zvalue cls2);
+
+/**
+ * Returns `true` iff the given class has the given secret.
+ */
+bool classHasSecret(zvalue cls, zvalue secret);
+
+/**
  * Returns the unique index for the given class.
  */
 zint classIndex(zvalue cls);
@@ -74,6 +84,15 @@ bool hasClass(zvalue value, zvalue cls);
  * each) are the same.
  */
 bool haveSameClass(zvalue value, zvalue other);
+
+/**
+ * Makes a new class or finds a pre-existing one. `name` is the class's name.
+ * `parent` is its superclass. `secret` is the construction and access secret.
+ * If a class has already been created with the same name and secret, then
+ * this returns that one; in this case, it is a fatal error to pass a `parent`
+ * that doesn't match the pre-existing one.
+ */
+zvalue makeClass(zvalue name, zvalue parent, zvalue secret);
 
 /**
  * Makes a new core class. `name` is the class's name. `parent` is its
