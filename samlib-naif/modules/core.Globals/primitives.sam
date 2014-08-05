@@ -66,6 +66,8 @@ export
     order,
     perEq,
     perOrder,
+    readResource,
+    resolve,
     store,
     toInt,
     toNumber,
