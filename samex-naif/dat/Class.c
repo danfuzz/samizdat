@@ -215,7 +215,6 @@ bool haveSameClass(zvalue value, zvalue other) {
 
 // Documented in header.
 zvalue makeClass(zvalue name, zvalue parent, zvalue secret) {
-    assertHasClass(name, CLS_String);
     assertHasClassClass(parent);
 
     zvalue result = allocClass();
