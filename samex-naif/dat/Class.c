@@ -314,17 +314,6 @@ zvalue makeCoreClass(zvalue name, zvalue parent) {
     return makeClass0(name, parent, theCoreSecret);
 }
 
-// Documented in header.
-zvalue makeDerivedDataClass(zvalue name) {
-    zvalue result = findClass(name, NULL);
-
-    if (result == NULL) {
-        result = makeClass0(name, CLS_DerivedData, NULL);
-    }
-
-    return result;
-}
-
 
 //
 // Class Definition
