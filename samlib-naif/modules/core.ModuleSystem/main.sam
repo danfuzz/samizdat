@@ -304,15 +304,28 @@ export fn loadResource(loader, source, format) {
 ## Class Definition: `null` as a `Loader`
 ##
 
+def NullLoader = makeObjectClass("NullLoader", SECRET);
+
+## The one instance of the class.
+def nullLoader = makeObject(NullLoader, SECRET);
+
 ## Documented in spec.
-fn @@Null.readResource(source, format) {
+fn NullLoader.readResource(source, format) {
     ## Returns void, always.
 };
 
 ## Documented in spec.
-fn @@Null.resolve(source) {
+fn NullLoader.resolve(source) {
     return? ifIs { checkExternalSource(source) }
         { get(BOOTSTRAP_MODULES, source) }
+};
+
+## Helper to "massage" `null` into `nullLoader` and pass everything
+## else through as-is.
+fn fixNullLoader(loader) {
+    return ifIs { eq(loader, null) }
+        { nullLoader }
+        { loader }
 };
 
 
@@ -381,7 +394,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
     ifIs { eq(pathType, "absent") }
         {
             ## No such file or directory.
-            return nextLoader
+            return fixNullLoader(nextLoader)
         };
     ifNot { eq(pathType, "directory") }
         { die("Module loader path exists but is not a directory: ", path) };
@@ -392,11 +405,10 @@ export fn makeExternalLoader(path, globals, nextLoader) {
         {
             basePath: cat(path, "/"),
             globals,
-            nextLoader,
-            loadedBox: Box_makeCell({})
+            loadedBox: Box_makeCell({}),
+            nextLoader: fixNullLoader(nextLoader)
         })
 };
-
 
 ##
 ## Class Definition: `InternalLoader`
@@ -501,7 +513,8 @@ export fn makeInternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
     def basePath = cat(path, "/");
     def modulesDir = cat(basePath, "modules");
-    def externLoader = makeExternalLoader(modulesDir, globals, nextLoader);
+    def externLoader =
+        makeExternalLoader(modulesDir, globals, fixNullLoader(nextLoader));
 
     ## Forward declaration, for recursive references in the `module_*`
     ## functions immediately below.
