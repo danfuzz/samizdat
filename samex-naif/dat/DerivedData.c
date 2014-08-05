@@ -2,6 +2,8 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include <stdlib.h>
+
 #include "type/Builtin.h"
 #include "type/Collection.h"
 #include "type/DerivedData.h"
@@ -16,6 +18,16 @@
 // Private Definitions
 //
 
+/** Array of all derived data classes, in sort order (possibly stale). */
+static zvalue theClasses[DAT_MAX_CLASSES];
+
+/** Count of derived data classes. */
+static zint theClassCount = 0;
+
+/** Whether `theClasses` needs a sort. */
+static bool theNeedSort = true;
+
+
 /**
  * Payload data for all derived values.
  */
@@ -29,6 +41,41 @@ typedef struct {
  */
 static DerivedDataInfo *getInfo(zvalue value) {
     return (DerivedDataInfo *) datPayload(value);
+}
+
+/**
+ * Compares two classes by name. Used for sorting.
+ */
+static int sortOrder(const void *vptr1, const void *vptr2) {
+    zvalue cls1 = *(zvalue *) vptr1;
+    zvalue cls2 = *(zvalue *) vptr2;
+
+    return valZorder(className(cls1), className(cls2));
+}
+
+/**
+ * Compares a name with a class. Used for searching.
+ */
+static int searchOrder(const void *key, const void *vptr) {
+    zvalue name1 = (zvalue) key;
+    zvalue cls2 = *(zvalue *) vptr;
+
+    return valZorder(name1, className(cls2));
+}
+
+/**
+ * Finds an existing class with the given name, if any.
+ */
+static zvalue findClass(zvalue name) {
+    if (theNeedSort) {
+        mergesort(theClasses, theClassCount, sizeof(zvalue), sortOrder);
+        theNeedSort = false;
+    }
+
+    zvalue *found = (zvalue *) bsearch(
+        name, theClasses, theClassCount, sizeof(zvalue), searchOrder);
+
+    return (found == NULL) ? NULL : *found;
 }
 
 
@@ -53,6 +100,26 @@ zvalue makeData(zvalue cls, zvalue data) {
 
     zvalue result = datAllocValue(cls, sizeof(DerivedDataInfo));
     ((DerivedDataInfo *) datPayload(result))->data = data;
+
+    return result;
+}
+
+// Documented in header.
+zvalue makeDerivedDataClass(zvalue name) {
+    zvalue result = findClass(name);
+
+    if (result != NULL) {
+        return result;
+    }
+
+    if (theClassCount == DAT_MAX_CLASSES) {
+        die("Too many derived data classes!");
+    }
+
+    result = makeClass(name, CLS_DerivedData, NULL);
+    theClasses[theClassCount] = result;
+    theClassCount++;
+    theNeedSort = true;
 
     return result;
 }
@@ -93,6 +160,11 @@ METH_IMPL(DerivedData, makeData) {
     zvalue value = (argCount == 2) ? args[1] : NULL;
 
     return makeData(cls, value);
+}
+
+/** Function (not method) `makeDerivedDataClass`. Documented in spec. */
+METH_IMPL(DerivedData, makeDerivedDataClass) {
+    return makeDerivedDataClass(args[0]);
 }
 
 // Documented in header.
@@ -138,6 +210,11 @@ MOD_INIT(DerivedData) {
         METH_NAME(DerivedData, makeData), 0,
         stringFromUtf8(-1, "DerivedData.makeData"));
     datImmortalize(FUN_DerivedData_makeData);
+
+    FUN_DerivedData_makeDerivedDataClass = makeBuiltin(1, 1,
+        METH_NAME(DerivedData, makeDerivedDataClass), 0,
+        stringFromUtf8(-1, "DerivedData.makeDerivedDataClass"));
+    datImmortalize(FUN_DerivedData_makeDerivedDataClass);
 }
 
 // Documented in header.
@@ -148,3 +225,6 @@ SEL_DEF(dataOf);
 
 // Documented in header.
 zvalue FUN_DerivedData_makeData = NULL;
+
+// Documented in header.
+zvalue FUN_DerivedData_makeDerivedDataClass = NULL;

@@ -1,0 +1,39 @@
+Samizdat Layer 0: Core Library
+==============================
+
+DerivedData
+-----------
+
+<br><br>
+### Primitive Definitions
+
+#### `dataOf(value) -> . | void`
+
+Returns the data payload of the given derived data value, if any. If the value
+has no data payload, this returns void.
+
+It is an error (terminating the runtime) to call this function on something
+other than a derived data value.
+
+#### `makeDerivedDataClass(name) -> class`
+
+Returns a `Class` instance which represents a derived data class
+with the given `name`. `name` can be an arbitrary value but is most
+typically a string. The following equivalences hold for Samizdat
+source code:
+
+```
+@@name    is equivalent to  makeDerivedDataClass("name")
+@@(name)  is equivalent to  makeDerivedDataClass(name)
+```
+
+Two different calls to this function are guaranteed to return the same exact
+class when given identical `name` arguments.
+
+**Note:** This is used in the translation of `@@name` and `@@(name)`forms.
+
+
+<br><br>
+### In-Language Definitions
+
+(none)

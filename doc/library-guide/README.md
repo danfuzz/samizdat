@@ -70,6 +70,7 @@ will be returned, or one of:
   * [Bool](Bool.md)
   * [Builtin](Builtin.md)
   * [Class](Class.md)
+  * [DerivedData](DerivedData.md)
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
   * [Generic](Generic.md)

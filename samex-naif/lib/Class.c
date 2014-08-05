@@ -12,11 +12,6 @@
 //
 
 // Documented in spec.
-FUN_IMPL_DECL(makeDerivedDataClass) {
-    return makeDerivedDataClass(args[0]);
-}
-
-// Documented in spec.
 FUN_IMPL_DECL(className) {
     return className(args[0]);
 }

@@ -334,7 +334,7 @@ of class:
   the double quotes can be omitted. For example, all of `@@("blort")`,
   `@@"blort"`, and `@@blort` refer to the same class.
 
-* TODO: The third kind of class is an "derived opaque" class. These have a
+* The third kind of class is an "derived opaque" class. These have a
   name and secret. The secret is used to prevent creation of values of the
   class beyond the scope of the class's trusted implementation.
 

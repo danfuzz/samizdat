@@ -87,9 +87,4 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret);
  */
 zvalue makeCoreClass(zvalue name, zvalue parent);
 
-/**
- * Returns the class value for the derived data class with the given name.
- */
-zvalue makeDerivedDataClass(zvalue name);
-
 #endif

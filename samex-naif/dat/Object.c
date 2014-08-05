@@ -67,6 +67,7 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 
 // Documented in header.
 zvalue makeObjectClass(zvalue name, zvalue secret) {
+    assertHasClass(name, CLS_String);
     return makeClass(name, CLS_Object, secret);
 }
 
