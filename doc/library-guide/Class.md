@@ -19,17 +19,12 @@ Default implementation.
 
 Compares two classes. Two different classes are never equal.
 
-#### `totalOrder(map1, map2) -> int`
+#### `totalOrder(cls1, cls2) -> int`
 
-Compares two classes for order, as follows:
-
-* Core (primitive) classes order earlier than all other classes.
-* Derived data classes order earlier than everything but core classes.
-* Opaque derived classes order after all other classes.
-
-Within each category, classes are ordered by name. For two different classes
-with the same category and name (which can happen only with opaque derived
-classes), the order is arbitrary but consistent.
+Compares two classes for order, by name. No other aspects of the classes
+are considered. This means, for example, you can have one class as a key
+in a map, and it will be found if you search for a different class that
+happens to have the same name.
 
 
 <br><br>
