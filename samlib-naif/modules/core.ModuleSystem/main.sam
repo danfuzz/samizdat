@@ -284,10 +284,7 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-export fn .resolve(source);
-
-## Documented in spec.
-export fn .readResource(source, format);
+export resolve, readResource;
 
 ## Documented in spec.
 export fn loadModule(loader, source) {
