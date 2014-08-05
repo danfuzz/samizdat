@@ -25,12 +25,6 @@
 /** Next class sequence number to assign. */
 static zint theNextClassId = 0;
 
-/** Array of all existing classes, in sort order (possibly stale). */
-static zvalue theClasses[DAT_MAX_CLASSES];
-
-/** Whether `theClasses` needs a sort. */
-static bool theNeedSort = true;
-
 /** The `secret` value used for all core classes. */
 static zvalue theCoreSecret = NULL;
 
@@ -63,8 +57,6 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->secret = secret;
     info->classId = theNextClassId;
 
-    theClasses[theNextClassId] = cls;
-    theNeedSort = true;
     theNextClassId++;
     datImmortalize(cls);
 }
@@ -84,19 +76,7 @@ static zvalue allocClass(void) {
 }
 
 /**
- * Common class creation code. This creates and returns a new class with the
- * given info. The class is marked core, except if its parent is `DerivedData`
- * in which case it is marked as derived.
- */
-static zvalue makeClass0(zvalue name, zvalue parent, zvalue secret) {
-    zvalue result = allocClass();
-    classInit(result, name, parent, secret);
-    return result;
-}
-
-/**
- * Compares an explicit name and secret with a class. Common function used
- * for searching, sorting, and ordering.
+ * Compares an explicit name and secret with a class.
  */
 static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
     ClassInfo *info2 = getInfo(v2);
@@ -125,50 +105,6 @@ static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
     // This is the case of two different opaque derived classes with the
     // same name.
     return valZorder(secret1, secret2);
-}
-
-/**
- * Compares two classes. Used for sorting.
- */
-static int sortOrder(const void *vptr1, const void *vptr2) {
-    zvalue v1 = *(zvalue *) vptr1;
-    zvalue v2 = *(zvalue *) vptr2;
-    ClassInfo *info1 = getInfo(v1);
-
-    return classCompare(info1->name, info1->secret, v2);
-}
-
-/**
- * Compares a name/secret pair with a class. Used for searching.
- */
-static int searchOrder(const void *key, const void *vptr) {
-    zvalue *searchFor = (zvalue *) key;
-    zvalue name = searchFor[0];
-    zvalue secret = searchFor[1];
-
-    return classCompare(name, secret, *(zvalue *) vptr);
-}
-
-/**
- * Finds an existing class with the given name and secret, if any.
- */
-static zvalue findClass(zvalue name, zvalue secret) {
-    if (theNeedSort) {
-        if (INT_1 == NULL) {
-            // The system isn't yet booted enough to have ints. Therefore,
-            // sorting and searching won't work, but more to the point, we
-            // know we'll only be getting new classes anyway.
-            return NULL;
-        }
-        mergesort(theClasses, theNextClassId, sizeof(zvalue), sortOrder);
-        theNeedSort = false;
-    }
-
-    zvalue searchFor[2] = { name, secret };
-    zvalue *found = (zvalue *) bsearch(
-        searchFor, theClasses, theNextClassId, sizeof(zvalue), searchOrder);
-
-    return (found == NULL) ? NULL : *found;
 }
 
 /**
@@ -292,26 +228,18 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret) {
     assertHasClass(name, CLS_String);
     assertHasClassClass(parent);
 
-    zvalue result = findClass(name, secret);
-
-    if (result != NULL) {
-        // A matching class already exists. Check the heritage.
-        if (!classEqUnchecked(parent, classParent(result))) {
-            die("Mismatched `parent` for pre-existing class.");
-        }
-        return result;
-    }
-
-    return makeClass0(name, parent, secret);
+    zvalue result = allocClass();
+    classInit(result, name, parent, secret);
+    return result;
 }
 
 // Documented in header.
 zvalue makeCoreClass(zvalue name, zvalue parent) {
-    if (findClass(name, theCoreSecret) != NULL) {
-        die("Core class already created.");
-    }
+    assertHasClassClass(parent);
 
-    return makeClass0(name, parent, theCoreSecret);
+    zvalue result = allocClass();
+    classInit(result, name, parent, theCoreSecret);
+    return result;
 }
 
 
