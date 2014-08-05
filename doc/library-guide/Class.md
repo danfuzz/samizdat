@@ -58,6 +58,9 @@ source code:
 @@(name)  is equivalent to  makeDerivedDataClass(name)
 ```
 
+Two different calls to this function are guaranteed to return the same exact
+class when given identical `name` arguments.
+
 **Note:** This is used in the translation of `@@name` and `@@(name)`forms.
 
 
