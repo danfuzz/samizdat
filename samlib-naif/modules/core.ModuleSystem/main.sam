@@ -418,9 +418,8 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 ## * `basePath` -- absolute path prefix for all loading, with trailing `/`.
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
-##
-## TODO: This should be an opaque class.
-##
+
+def InternalLoader = makeObjectClass("InternalLoader", SECRET);
 
 ## Convenient helper which just resolves a top-level `main` file.
 fn resolveMain(loader) {
@@ -431,12 +430,13 @@ fn resolveMain(loader) {
 fn doInternalResolve(loader, source) {
     note("        ", sourceString(source));
 
-    def pathPrefix = cat(loader::basePath, source::name);
-
+    def data = objectDataOf(loader, SECRET);
+    def pathPrefix = cat(data::basePath, source::name);
     def binPath = cat(pathPrefix, ".samb");
+
     ifIs { eq($Io0::fileType(binPath), "file") }
         {
-            def func = $Code::evalBinary(loader::globals, binPath);
+            def func = $Code::evalBinary(data::globals, binPath);
             return ifValueOr { func() }
                 { die("No result from binary module: ", sourcePath) }
         };
@@ -446,7 +446,7 @@ fn doInternalResolve(loader, source) {
         {
             def text = $Io0::readFileUtf8(sourcePath);
             def tree = treeFromText(loader, text);
-            def func = $Code::eval(loader::globals, tree);
+            def func = $Code::eval(data::globals, tree);
 
             return ifValueOr { func() }
                 { die("No result from module: ", sourcePath) }
@@ -476,14 +476,16 @@ def INTERNAL_READERS = {
 };
 
 ## Documented in spec.
-fn @@InternalLoader.readResource(source, format) {
+fn InternalLoader.readResource(source, format) {
+    def data = objectDataOf(this, SECRET);
+
     ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
-            return? readResource(this::nextLoader, source, format)
+            return? readResource(data::nextLoader, source, format)
         };
 
-    def fullPath = cat(this::basePath, source::name);
+    def fullPath = cat(data::basePath, source::name);
 
     return ifValue { get(INTERNAL_READERS, format) }
         { reader -> reader(fullPath) }
@@ -491,11 +493,13 @@ fn @@InternalLoader.readResource(source, format) {
 };
 
 ## Documented in spec.
-fn @@InternalLoader.resolve(source) {
+fn InternalLoader.resolve(source) {
+    def data = objectDataOf(this, SECRET);
+
     ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
-            return? resolve(this::nextLoader, source)
+            return? resolve(data::nextLoader, source)
         };
 
     ## Unlike with `ExternalLoader`, we don't walk up the parent chain if
@@ -505,7 +509,7 @@ fn @@InternalLoader.resolve(source) {
         return? doInternalResolve(this, source)
     };
 
-    return? resolveHelper(this::loadedBox, source, internalResolve)
+    return? resolveHelper(data::loadedBox, source, internalResolve)
 };
 
 ## Documented in spec.
@@ -531,12 +535,15 @@ export fn makeInternalLoader(path, globals, nextLoader) {
         thisLoader:   glo_thisLoader
     };
 
-    loader := @InternalLoader{
-        basePath,
-        nextLoader: externLoader,
-        globals:    fullGlobals,
-        loadedBox:  Box_makeCell({})
-    };
+    loader := makeObject(
+        InternalLoader,
+        SECRET,
+        {
+            basePath,
+            globals:    fullGlobals,
+            loadedBox:  Box_makeCell({}),
+            nextLoader: externLoader
+        });
 
     return loader
 };
