@@ -48,6 +48,8 @@ MOD_INIT(OneOff) {
     SEL_INIT(get_key);
     SEL_INIT(get_size);
     SEL_INIT(get_value);
+    SEL_INIT(readResource);
+    SEL_INIT(resolve);
     SEL_INIT(nth);
     SEL_INIT(toInt);
     SEL_INIT(toNumber);
@@ -71,6 +73,12 @@ SEL_DEF(get_value);
 
 // Documented in header.
 SEL_DEF(nth);
+
+// Documented in header.
+SEL_DEF(readResource);
+
+// Documented in header.
+SEL_DEF(resolve);
 
 // Documented in header.
 SEL_DEF(toInt);
