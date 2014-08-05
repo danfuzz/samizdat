@@ -19,7 +19,7 @@ Default implementation.
 
 Compares two classes. Two different classes are never equal.
 
-#### `totalOrder(map1, map2) -> int`
+#### `totalOrder(cls1, cls2) -> int | void`
 
 Compares two classes for order, as follows:
 
@@ -27,9 +27,15 @@ Compares two classes for order, as follows:
 * Derived data classes order earlier than everything but core classes.
 * Opaque derived classes order after all other classes.
 
-Within each category, classes are ordered by name. For two different classes
-with the same category and name (which can happen only with opaque derived
-classes), the order is arbitrary but consistent.
+Within each category, classes are ordered by name. Given two different
+opaque classes with the same name (which can happen only with opaque
+derived classes), the result is void (that is, the order undefined).
+
+This last bit means it is okay to use any mix of core, derived data, and
+opaque derived classes as the keys in a map, *except* that it is invalid
+to use two different opaque derived classes that have the same name. This
+restriction is in place because there is no consistent and stable way
+to sort such classes.
 
 
 <br><br>
@@ -45,20 +51,6 @@ a class, which is typically (but not necessarily) a string.
 Returns the parent class (that is, the superclass) of the given class. This
 returns a class for all classes except `Value`. For `Value`, this returns
 void.
-
-#### `makeDerivedDataClass(name) -> class`
-
-Returns a `Class` instance which represents a derived data class
-with the given `name`. `name` can be an arbitrary value but is most
-typically a string. The following equivalences hold for Samizdat
-source code:
-
-```
-@@name    is equivalent to  makeDerivedDataClass("name")
-@@(name)  is equivalent to  makeDerivedDataClass(name)
-```
-
-**Note:** This is used in the translation of `@@name` and `@@(name)`forms.
 
 
 <br><br>

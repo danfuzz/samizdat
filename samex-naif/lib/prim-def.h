@@ -96,6 +96,7 @@ PRIM_DEF(Number_sub,              SEL_NAME(sub));
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
+PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_FUNC(className,              1, 1);
@@ -112,7 +113,6 @@ PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueOr,              1, -1);
 PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
-PRIM_FUNC(makeDerivedDataClass,   1, 1);
 PRIM_FUNC(makeGeneric,            2, 3);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeUniqlet,            0, 0);
