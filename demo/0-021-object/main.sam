@@ -28,9 +28,9 @@ def Blort = makeObjectClass("Blort", blortSecret);
 msg("Blort class", Blort);
 msg("Parent", classParent(Blort));
 
-def SameBlort = makeObjectClass("Blort", blortSecret);
-ifNot { eq(Blort, SameBlort) }
-    { die("Different classes!") };
+def AnotherBlort = makeObjectClass("Blort", blortSecret);
+ifIs { eq(Blort, AnotherBlort) }
+    { die("Should be different classes!") };
 
 def fizmoSecret = "fizmo";
 def Fizmo = makeObjectClass("Fizmo", fizmoSecret);
