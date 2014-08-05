@@ -46,23 +46,6 @@ Returns the parent class (that is, the superclass) of the given class. This
 returns a class for all classes except `Value`. For `Value`, this returns
 void.
 
-#### `makeDerivedDataClass(name) -> class`
-
-Returns a `Class` instance which represents a derived data class
-with the given `name`. `name` can be an arbitrary value but is most
-typically a string. The following equivalences hold for Samizdat
-source code:
-
-```
-@@name    is equivalent to  makeDerivedDataClass("name")
-@@(name)  is equivalent to  makeDerivedDataClass(name)
-```
-
-Two different calls to this function are guaranteed to return the same exact
-class when given identical `name` arguments.
-
-**Note:** This is used in the translation of `@@name` and `@@(name)`forms.
-
 
 <br><br>
 ### In-Language Definitions

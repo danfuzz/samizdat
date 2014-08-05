@@ -125,14 +125,6 @@ of all cross-class ordering functions.
 <br><br>
 ### Primitive Definitions
 
-#### `dataOf(value) -> .`
-
-Returns the data payload of the given derived data value, if any. If the value
-has no data payload, this returns void.
-
-It is an error (terminating the runtime) to call this function on something
-other than a derived data value.
-
 #### `eq(value, other) -> logic`
 
 Checks for equality, using the total order of values. Returns `value` if the
