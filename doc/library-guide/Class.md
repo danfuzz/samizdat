@@ -19,12 +19,23 @@ Default implementation.
 
 Compares two classes. Two different classes are never equal.
 
-#### `totalOrder(cls1, cls2) -> int`
+#### `totalOrder(cls1, cls2) -> int | void`
 
-Compares two classes for order, by name. No other aspects of the classes
-are considered. This means, for example, you can have one class as a key
-in a map, and it will be found if you search for a different class that
-happens to have the same name.
+Compares two classes for order, as follows:
+
+* Core (primitive) classes order earlier than all other classes.
+* Derived data classes order earlier than everything but core classes.
+* Opaque derived classes order after all other classes.
+
+Within each category, classes are ordered by name. Given two different
+opaque classes with the same name (which can happen only with opaque
+derived classes), the result is void (that is, the order undefined).
+
+This last bit means it is okay to use any mix of core, derived data, and
+opaque derived classes as the keys in a map, *except* that it is invalid
+to use two different opaque derived classes that have the same name. This
+restriction is in place because there is no consistent and stable way
+to sort such classes.
 
 
 <br><br>
