@@ -22,6 +22,13 @@
 // Private Definitions
 //
 
+/** Constants identifying class category, used when sorting classes. */
+typedef enum {
+    CORE_CLASS = 0,
+    DERIVED_DATA_CLASS,
+    OPAQUE_CLASS
+} ClassCategory;
+
 /** Next class sequence number to assign. */
 static zint theNextClassId = 0;
 
@@ -76,35 +83,18 @@ static zvalue allocClass(void) {
 }
 
 /**
- * Compares an explicit name and secret with a class.
+ * Gets the category of a class (given its info), for sorting.
  */
-static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
-    ClassInfo *info2 = getInfo(v2);
-    zvalue name2 = info2->name;
-    zvalue secret2 = info2->secret;
-    bool derived1 = (secret1 != theCoreSecret);
-    bool derived2 = (secret2 != theCoreSecret);
+static ClassCategory categoryOf(ClassInfo *info) {
+    zvalue secret = info->secret;
 
-    if (derived1 != derived2) {
-        return derived2 ? ZLESS : ZMORE;
+    if (secret == theCoreSecret) {
+        return CORE_CLASS;
+    } else if (secret == NULL) {
+        return DERIVED_DATA_CLASS;
+    } else {
+        return OPAQUE_CLASS;
     }
-
-    bool hasSecret1 = (secret1 != NULL);
-    bool hasSecret2 = (secret2 != NULL);
-
-    if (hasSecret1 != hasSecret2) {
-        return hasSecret2 ? ZLESS : ZMORE;
-    }
-
-    zorder nameOrder = valZorder(name1, name2);
-
-    if ((nameOrder != ZSAME) || !hasSecret1) {
-        return nameOrder;
-    }
-
-    // This is the case of two different opaque derived classes with the
-    // same name.
-    return valZorder(secret1, secret2);
 }
 
 /**
@@ -292,8 +282,32 @@ METH_IMPL(Class, totalOrder) {
     }
 
     assertHasClassClass(other);
-    ClassInfo *info = getInfo(value);
-    return intFromZint(classCompare(info->name, info->secret, other));
+    ClassInfo *info1 = getInfo(value);
+    ClassInfo *info2 = getInfo(other);
+    zvalue name1 = info1->name;
+    zvalue name2 = info2->name;
+    ClassCategory cat1 = categoryOf(info1);
+    ClassCategory cat2 = categoryOf(info2);
+
+    // Compare categories for major order.
+
+    if (cat1 < cat2) {
+        return INT_NEG1;
+    } else if (cat1 > cat2) {
+        return INT_1;
+    }
+
+    // Compare names for minor order.
+
+    zorder nameOrder = valZorder(name1, name2);
+    if (nameOrder != ZSAME) {
+        return intFromZint(nameOrder);
+    }
+
+    // Names are the same. The order is not defined given two different
+    // opaque classes.
+
+    return (cat1 == OPAQUE_CLASS) ? NULL : INT_0;
 }
 
 /**
