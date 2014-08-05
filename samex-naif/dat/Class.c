@@ -22,14 +22,15 @@
 // Private Definitions
 //
 
+/** Constants identifying class category, used when sorting classes. */
+typedef enum {
+    CORE_CLASS = 0,
+    DERIVED_DATA_CLASS,
+    OPAQUE_CLASS
+} ClassCategory;
+
 /** Next class sequence number to assign. */
 static zint theNextClassId = 0;
-
-/** Array of all existing classes, in sort order (possibly stale). */
-static zvalue theClasses[DAT_MAX_CLASSES];
-
-/** Whether `theClasses` needs a sort. */
-static bool theNeedSort = true;
 
 /** The `secret` value used for all core classes. */
 static zvalue theCoreSecret = NULL;
@@ -63,8 +64,6 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->secret = secret;
     info->classId = theNextClassId;
 
-    theClasses[theNextClassId] = cls;
-    theNeedSort = true;
     theNextClassId++;
     datImmortalize(cls);
 }
@@ -84,91 +83,18 @@ static zvalue allocClass(void) {
 }
 
 /**
- * Common class creation code. This creates and returns a new class with the
- * given info. The class is marked core, except if its parent is `DerivedData`
- * in which case it is marked as derived.
+ * Gets the category of a class (given its info), for sorting.
  */
-static zvalue makeClass0(zvalue name, zvalue parent, zvalue secret) {
-    zvalue result = allocClass();
-    classInit(result, name, parent, secret);
-    return result;
-}
+static ClassCategory categoryOf(ClassInfo *info) {
+    zvalue secret = info->secret;
 
-/**
- * Compares an explicit name and secret with a class. Common function used
- * for searching, sorting, and ordering.
- */
-static int classCompare(zvalue name1, zvalue secret1, zvalue v2) {
-    ClassInfo *info2 = getInfo(v2);
-    zvalue name2 = info2->name;
-    zvalue secret2 = info2->secret;
-    bool derived1 = (secret1 != theCoreSecret);
-    bool derived2 = (secret2 != theCoreSecret);
-
-    if (derived1 != derived2) {
-        return derived2 ? ZLESS : ZMORE;
+    if (secret == theCoreSecret) {
+        return CORE_CLASS;
+    } else if (secret == NULL) {
+        return DERIVED_DATA_CLASS;
+    } else {
+        return OPAQUE_CLASS;
     }
-
-    bool hasSecret1 = (secret1 != NULL);
-    bool hasSecret2 = (secret2 != NULL);
-
-    if (hasSecret1 != hasSecret2) {
-        return hasSecret2 ? ZLESS : ZMORE;
-    }
-
-    zorder nameOrder = valZorder(name1, name2);
-
-    if ((nameOrder != ZSAME) || !hasSecret1) {
-        return nameOrder;
-    }
-
-    // This is the case of two different opaque derived classes with the
-    // same name.
-    return valZorder(secret1, secret2);
-}
-
-/**
- * Compares two classes. Used for sorting.
- */
-static int sortOrder(const void *vptr1, const void *vptr2) {
-    zvalue v1 = *(zvalue *) vptr1;
-    zvalue v2 = *(zvalue *) vptr2;
-    ClassInfo *info1 = getInfo(v1);
-
-    return classCompare(info1->name, info1->secret, v2);
-}
-
-/**
- * Compares a name/secret pair with a class. Used for searching.
- */
-static int searchOrder(const void *key, const void *vptr) {
-    zvalue *searchFor = (zvalue *) key;
-    zvalue name = searchFor[0];
-    zvalue secret = searchFor[1];
-
-    return classCompare(name, secret, *(zvalue *) vptr);
-}
-
-/**
- * Finds an existing class with the given name and secret, if any.
- */
-static zvalue findClass(zvalue name, zvalue secret) {
-    if (theNeedSort) {
-        if (INT_1 == NULL) {
-            // The system isn't yet booted enough to have ints. Therefore,
-            // sorting and searching won't work, but more to the point, we
-            // know we'll only be getting new classes anyway.
-            return NULL;
-        }
-        mergesort(theClasses, theNextClassId, sizeof(zvalue), sortOrder);
-        theNeedSort = false;
-    }
-
-    zvalue searchFor[2] = { name, secret };
-    zvalue *found = (zvalue *) bsearch(
-        searchFor, theClasses, theNextClassId, sizeof(zvalue), searchOrder);
-
-    return (found == NULL) ? NULL : *found;
 }
 
 /**
@@ -350,39 +276,19 @@ bool haveSameClass(zvalue value, zvalue other) {
 
 // Documented in header.
 zvalue makeClass(zvalue name, zvalue parent, zvalue secret) {
-    assertHasClass(name, CLS_String);
     assertHasClassClass(parent);
 
-    zvalue result = findClass(name, secret);
-
-    if (result != NULL) {
-        // A matching class already exists. Check the heritage.
-        if (!classEqUnchecked(parent, classParent(result))) {
-            die("Mismatched `parent` for pre-existing class.");
-        }
-        return result;
-    }
-
-    return makeClass0(name, parent, secret);
+    zvalue result = allocClass();
+    classInit(result, name, parent, secret);
+    return result;
 }
 
 // Documented in header.
 zvalue makeCoreClass(zvalue name, zvalue parent) {
-    if (findClass(name, theCoreSecret) != NULL) {
-        die("Core class already created.");
-    }
+    assertHasClassClass(parent);
 
-    return makeClass0(name, parent, theCoreSecret);
-}
-
-// Documented in header.
-zvalue makeDerivedDataClass(zvalue name) {
-    zvalue result = findClass(name, NULL);
-
-    if (result == NULL) {
-        result = makeClass0(name, CLS_DerivedData, NULL);
-    }
-
+    zvalue result = allocClass();
+    classInit(result, name, parent, theCoreSecret);
     return result;
 }
 
@@ -436,8 +342,32 @@ METH_IMPL(Class, totalOrder) {
     }
 
     assertHasClassClass(other);
-    ClassInfo *info = getInfo(value);
-    return intFromZint(classCompare(info->name, info->secret, other));
+    ClassInfo *info1 = getInfo(value);
+    ClassInfo *info2 = getInfo(other);
+    zvalue name1 = info1->name;
+    zvalue name2 = info2->name;
+    ClassCategory cat1 = categoryOf(info1);
+    ClassCategory cat2 = categoryOf(info2);
+
+    // Compare categories for major order.
+
+    if (cat1 < cat2) {
+        return INT_NEG1;
+    } else if (cat1 > cat2) {
+        return INT_1;
+    }
+
+    // Compare names for minor order.
+
+    zorder nameOrder = valZorder(name1, name2);
+    if (nameOrder != ZSAME) {
+        return intFromZint(nameOrder);
+    }
+
+    // Names are the same. The order is not defined given two different
+    // opaque classes.
+
+    return (cat1 == OPAQUE_CLASS) ? NULL : INT_0;
 }
 
 /**

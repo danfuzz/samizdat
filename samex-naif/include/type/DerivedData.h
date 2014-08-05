@@ -21,6 +21,9 @@ SEL_DECL(1, 1, dataOf);
 /** Global function `makeData`: Documented in spec. */
 extern zvalue FUN_DerivedData_makeData;
 
+/** Global function `makeDerivedDataClass`: Documented in spec. */
+extern zvalue FUN_DerivedData_makeDerivedDataClass;
+
 /**
  * Returns a derived data value with the given class tag and with the given
  * optional data payload (`NULL` indicating a class-only value). `cls` must
@@ -32,5 +35,10 @@ zvalue makeData(zvalue cls, zvalue data);
  * Calls generic `dataOf()`.
  */
 zvalue dataOf(zvalue value);
+
+/**
+ * Returns the class value for the derived data class with the given name.
+ */
+zvalue makeDerivedDataClass(zvalue name);
 
 #endif

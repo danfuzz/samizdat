@@ -30,6 +30,23 @@ SEL_DECL(1, 1, get_value);
 /** Generic `nth(sequence, n)`: Documented in spec. */
 SEL_DECL(2, 2, nth);
 
+/**
+ * Generic `readResource(loader, source, type)`: Documented in spec.
+ *
+ * **Note:** Actually part of the `Loader` protocol, but as the nature of
+ * protocols is in flux, it's more convenient to just drop it here rather
+ * than cons up a whole new file which will probably get removed again fairly
+ * quickly.
+ */
+SEL_DECL(3, 3, readResource);
+
+/**
+ * Generic `resolve(loader, source)`: Documented in spec.
+ *
+ * **Note:** Same situation as `readResource` above.
+ */
+SEL_DECL(2, 2, resolve);
+
 /** Generic `toInt(value)`: Documented in spec. */
 SEL_DECL(1, 1, toInt);
 

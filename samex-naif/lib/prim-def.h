@@ -39,6 +39,8 @@ PRIM_DEF(get_key,                 SEL_NAME(get_key));
 PRIM_DEF(get_size,                SEL_NAME(get_size));
 PRIM_DEF(get_value,               SEL_NAME(get_value));
 PRIM_DEF(nth,                     SEL_NAME(nth));
+PRIM_DEF(readResource,            SEL_NAME(readResource));
+PRIM_DEF(resolve,                 SEL_NAME(resolve));
 PRIM_DEF(toInt,                   SEL_NAME(toInt));
 PRIM_DEF(toNumber,                SEL_NAME(toNumber));
 PRIM_DEF(toString,                SEL_NAME(toString));
@@ -96,6 +98,7 @@ PRIM_DEF(Number_sub,              SEL_NAME(sub));
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
+PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_FUNC(className,              1, 1);
@@ -112,7 +115,6 @@ PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueOr,              1, -1);
 PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
-PRIM_FUNC(makeDerivedDataClass,   1, 1);
 PRIM_FUNC(makeGeneric,            2, 3);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeUniqlet,            0, 0);
