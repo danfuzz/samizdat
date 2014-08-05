@@ -67,6 +67,10 @@ def BOOTSTRAP_MODULES = {
 ## Private Definitions
 ##
 
+## Secret used to control access to module system objects. TODO: Should
+## probably be an anonymous selector.
+def SECRET = makeUniqlet();
+
 ## See header comment.
 def null = @Null;
 
@@ -324,20 +328,20 @@ fn @@Null.resolve(source) {
 ##   Direct subdirectory names correspond to modules.
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
-##
-## TODO: This should be an opaque class.
-##
+
+def ExternalLoader = makeObjectClass("ExternalLoader", SECRET);
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
-    def modulePath = cat(loader::basePath, source::name);
+    def data = objectDataOf(loader, SECRET);
+    def modulePath = cat(data::basePath, source::name);
 
     return? ifIs { eq($Io0::fileType(modulePath), "directory") }
         {
             note("    ", sourceString(source));
 
             def innerLoader =
-                makeInternalLoader(modulePath, loader::globals, loader);
+                makeInternalLoader(modulePath, data::globals, loader);
             def result = resolveMain(innerLoader);
 
             note("        Done.");
@@ -346,26 +350,29 @@ fn doExternalResolve(loader, source) {
 };
 
 ## Documented in spec.
-fn @@ExternalLoader.readResource(source, format) {
+fn ExternalLoader.readResource(source, format) {
     ## Always just defer to the next loader.
-    return? readResource(this::nextLoader, source, format)
+    def data = objectDataOf(this, SECRET);
+    return? readResource(data::nextLoader, source, format)
 };
 
 ## Documented in spec.
-fn @@ExternalLoader.resolve(source) {
+fn ExternalLoader.resolve(source) {
+    def data = objectDataOf(this, SECRET);
+
     ifNot { checkExternalSource(source) }
         {
             ## Not an external source, so punt to the next loader.
-            return? resolve(this::nextLoader, source)
+            return? resolve(data::nextLoader, source)
         };
 
     fn externalResolve() {
         return? ifValueOr
             { doExternalResolve(this, source) }
-            { resolve(this::nextLoader, source) }
+            { resolve(data::nextLoader, source) }
     };
 
-    return? resolveHelper(this::loadedBox, source, externalResolve)
+    return? resolveHelper(data::loadedBox, source, externalResolve)
 };
 
 ## Documented in spec.
@@ -382,12 +389,15 @@ export fn makeExternalLoader(path, globals, nextLoader) {
     ifNot { eq(pathType, "directory") }
         { die("Module loader path exists but is not a directory: ", path) };
 
-    return @ExternalLoader{
-        basePath: cat(path, "/"),
-        globals,
-        nextLoader,
-        loadedBox: Box_makeCell({})
-    }
+    return makeObject(
+        ExternalLoader,
+        SECRET,
+        {
+            basePath: cat(path, "/"),
+            globals,
+            nextLoader,
+            loadedBox: Box_makeCell({})
+        })
 };
 
 
