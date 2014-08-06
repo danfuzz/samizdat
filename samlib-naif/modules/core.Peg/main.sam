@@ -20,5 +20,7 @@ export import ./PegRepeat :: *;
 export import ./PegResult :: *;
 export import ./PegSequence :: *;
 export import ./PegThunk :: *;
+export import ./PegTokenSet :: *;
+export import ./PegTokenSetComplement :: *;
 export import ./misc :: *;
 export import ./protocol :: *;

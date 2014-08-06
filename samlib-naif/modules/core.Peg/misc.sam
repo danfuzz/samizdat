@@ -10,44 +10,11 @@
 
 import core.Generator :: makeFilterGenerator;
 
-import ./PegAny :: any;
-import ./PegFail :: fail;
 import ./PegResult :: makeResult;
 import ./PegSequence :: makeSequence;
+import ./PegTokenSet :: makeToken, makeTokenSet;
+import ./PegTokenSetComplement :: makeTokenSetComplement;
 import ./protocol :: parse;
-
-
-##
-## Class Definitions
-##
-
-## Documented in spec.
-fn @@PegTokenSet.parse(box, input, items*) {
-    def result;
-
-    return? ifValue { nextValue(input, var result) }
-        { newInput ->
-            ifIs { get(this::set, get_class(result)) }
-                {
-                    box* := result;
-                    newInput
-                }
-        }
-};
-
-## Documented in spec.
-fn @@PegTokenSetComplement.parse(box, input, items*) {
-    def result;
-
-    return? ifValue { nextValue(input, var result) }
-        { newInput ->
-            ifNot { get(this::set, get_class(result)) }
-                {
-                    box* := result;
-                    newInput
-                }
-        }
-};
 
 
 ##
@@ -58,22 +25,6 @@ fn @@PegTokenSetComplement.parse(box, input, items*) {
 ## list of token classes for the characters.
 fn classListFromString(string) {
     return collect(string, { ch -> @@(ch) })
-};
-
-## Helper for `make*Set*`, which takes a `sense` argument and
-## produces the desired rule.
-fn genericMakeTokenSet(sense, clses) {
-    def set = {clses*: true};  ## A set-like map of all the token classes.
-
-    ifIs { eq(set, {}) }
-        {
-            ## Trivial case: Empty set. Return an appropriate absolute rule.
-            return ifIs { eq(sense, true) } { fail } { any }
-        };
-
-    return ifIs { eq(sense, true) }
-        { @PegTokenSet{set} }
-        { @PegTokenSetComplement{set} }
 };
 
 
@@ -100,13 +51,13 @@ export fn apply(rule, input) {
 export fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
-    return genericMakeTokenSet(true, classListFromString(cat("", strings*)))
+    return makeTokenSet(classListFromString(cat("", strings*))*)
 };
 
 ## Documented in spec.
 export fn makeCharSetComplement(strings*) {
     ## See comment in `makeCharSet`.
-    return genericMakeTokenSet(false, classListFromString(cat("", strings*)))
+    return makeTokenSetComplement(classListFromString(cat("", strings*))*)
 };
 
 ## Documented in spec.
@@ -127,24 +78,6 @@ export fn makeString(string) {
     def chars = collect(clses, makeToken);
 
     return makeSequence(chars*, makeResult(@(@@(string))))
-};
-
-## Documented in spec.
-export fn makeToken(cls) {
-    ## This is just uses a single-item token set. The performance difference
-    ## between that and doing a more special-case single item class check is
-    ## probably negligible.
-    return makeTokenSet(cls)
-};
-
-## Documented in spec.
-export fn makeTokenSet(clses*) {
-    return genericMakeTokenSet(true, clses)
-};
-
-## Documented in spec.
-export fn makeTokenSetComplement(clses*) {
-    return genericMakeTokenSet(false, clses)
 };
 
 ## Documented in spec.
