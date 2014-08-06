@@ -1,0 +1,44 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `PegCode` class
+##
+
+#= language core.Lang0
+
+import ./protocol :: parse;
+
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def PegCode = makeObjectClass("PegCode", SECRET);
+
+## Documented in spec.
+fn PegCode.parse(box, input, items*) {
+    def data = objectDataOf(this, SECRET);
+    return? ifValue { data::function(items*) }
+        { result ->
+            box* := result;
+            input
+        }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeCode(function) {
+    return makeObject(PegCode, SECRET, {function})
+};
+

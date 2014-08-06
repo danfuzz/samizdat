@@ -1,0 +1,80 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `PegRepeat` class
+##
+
+#= language core.Lang0
+
+import ./protocol :: parse;
+
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def PegRepeat = makeObjectClass("PegRepeat", SECRET);
+
+## Documented in spec.
+fn PegRepeat.parse(box, input, items*) {
+    def data = objectDataOf(this, SECRET);
+    var remainingInput = input;
+    var results = [];  ## Values that have been parsed by the inner rule.
+
+    fn doLoop() { /out ->
+        def rule = data::rule;
+        var result;
+
+        def maxCheck = ifValue { data::maxSize }
+            { maxSize ->
+                { ->
+                    ifIs { eq(get_size(results), maxSize) }
+                        { yield /out }
+                }
+            }
+            { {->} };
+
+        loop {
+            ifValue { parse(rule, var result, remainingInput, items*) }
+                { newInput ->
+                    ## Successfully parsed the inner rule.
+                    remainingInput := newInput;
+                    results := [results*, result];
+                    maxCheck()
+                }
+                {
+                    ## Failed to parse the inner rule.
+                    yield /out
+                }
+        }
+    };
+
+    doLoop();
+
+    ## Check for minimum match count. Store result and return success if
+    ## appropriate.
+    return? ifIs { ge(get_size(results), data::minSize) }
+        {
+            box* := results;
+            remainingInput
+        }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
+    def minSize = ifValueOr { optMinSize* } { 0 };
+    def maxMap = ifValue { optMaxSize* } { sz -> {maxSize: sz} } { {} };
+    return makeObject(PegRepeat, SECRET, {maxMap*, minSize, rule})
+};
