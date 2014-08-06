@@ -206,4 +206,3 @@ expectDifferent(@false(1), @(@@(false))(1));
 
 expectDerived(@blort);
 expectDerived(@fizmo("igram"));
-expectDerived(null);
