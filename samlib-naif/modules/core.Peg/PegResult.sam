@@ -14,6 +14,7 @@ import ./protocol :: parse;
 ##
 ## Class Definition
 ##
+## Payload: {value: .}
 
 ## Secret used to control access to this class. TODO: Should probably be an
 ## anonymous selector.
