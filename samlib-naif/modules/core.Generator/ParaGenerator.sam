@@ -16,38 +16,32 @@ import ./NullGenerator :: nullGenerator;
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
-## Documented in spec.
-export fn makeParaGenerator(generators*) {
-    ## Return the `nullGenerator` if we weren't passed any arguments.
-    ifIs { eq(generators, []) }
-        { return nullGenerator };
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
 
-    ## Return a `ListWrapGenerator` if we were only passed one argument.
-    ## This saves some overhead.
-    ifIs { eq(get_size(generators), 1) }
-        { return makeListWrapGenerator(generators*) };
-
-    return @ParaGenerator{generators}
-};
+## Class being defined here.
+def ParaGenerator = makeObjectClass("ParaGenerator", SECRET);
 
 ## Documented in spec.
-fn @@ParaGenerator.collect(optFilterFunction?) {
+fn ParaGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
     return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
-fn @@ParaGenerator.fetch() {
+fn ParaGenerator.fetch() {
     ## Just use the standard implementation.
     return Generator_stdFetch(this)
 };
 
 ## Documented in spec.
-fn @@ParaGenerator.nextValue(box) {
-    def subGens = this::generators;
+fn ParaGenerator.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
+    def subGens = data::generators;
 
     ifIs { eq(subGens, []) }
         { return };
@@ -70,5 +64,24 @@ fn @@ParaGenerator.nextValue(box) {
         { one -> nth(one, 1) });
 
     box* := yields;
-    return @ParaGenerator{generators: nexts}
+    return makeObject(ParaGenerator, SECRET, {generators: nexts})
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeParaGenerator(generators*) {
+    ## Return the `nullGenerator` if we weren't passed any arguments.
+    ifIs { eq(generators, []) }
+        { return nullGenerator };
+
+    ## Return a `ListWrapGenerator` if we were only passed one argument.
+    ## This saves some overhead.
+    ifIs { eq(get_size(generators), 1) }
+        { return makeListWrapGenerator(generators*) };
+
+    return makeObject(ParaGenerator, SECRET, {generators})
 };
