@@ -22,6 +22,7 @@ export
     Int,
     List,
     Map,
+    Null,
     String,
     Uniqlet,
     Value,
