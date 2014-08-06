@@ -14,33 +14,33 @@ import ./ParaGenerator :: makeParaGenerator;
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
-## Documented in spec.
-export fn makeFilterGenerator(filterFunction, generators*) {
-    return @FilterGenerator{
-        filterFunction,
-        generator: makeParaGenerator(generators*)
-    }
-};
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def FilterGenerator = makeObjectClass("FilterGenerator", SECRET);
 
 ## Documented in spec.
-fn @@FilterGenerator.collect(optFilterFunction?) {
+fn FilterGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
     return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
-fn @@FilterGenerator.fetch() {
+fn FilterGenerator.fetch() {
     ## Just use the standard implementation.
     return Generator_stdFetch(this)
 };
 
 ## Documented in spec.
-fn @@FilterGenerator.nextValue(box) {
-    var innerGen = this::generator;
-    def filterFunction = this::filterFunction;
+fn FilterGenerator.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
+    var innerGen = data::generator;
+    def filterFunction = data::filterFunction;
     var result;
 
     ## This loop handles the fact that the filter function is
@@ -52,9 +52,8 @@ fn @@FilterGenerator.nextValue(box) {
                 ifValue { filterFunction(result*) }
                     { value ->
                         box* := value;
-                        return @FilterGenerator{
-                            filterFunction,
-                            generator: nextGen}
+                        return makeObject(FilterGenerator, SECRET,
+                            {filterFunction, generator: nextGen})
                     }
                     {
                         ## The filter discarded the value. As this doesn't
@@ -68,4 +67,18 @@ fn @@FilterGenerator.nextValue(box) {
                 return
             }
     }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeFilterGenerator(filterFunction, generators*) {
+    return makeObject(FilterGenerator, SECRET,
+        {
+            filterFunction,
+            generator: makeParaGenerator(generators*)
+        })
 };

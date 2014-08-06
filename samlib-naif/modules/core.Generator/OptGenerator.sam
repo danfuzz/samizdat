@@ -14,34 +14,47 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
-## Documented in spec.
-export fn makeOptGenerator(generator) {
-    return @OptGenerator{generator}
-};
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def OptGenerator = makeObjectClass("OptGenerator", SECRET);
 
 ## Documented in spec.
-fn @@OptGenerator.collect(optFilterFunction?) {
+fn OptGenerator.collect(optFilterFunction?) {
     ## It is an "unbounded collect" error to call this.
     unboundedCollect(this)
 };
 
 ## Documented in spec.
-fn @@OptGenerator.fetch() {
+fn OptGenerator.fetch() {
     ## It is an "unbounded fetch" error to call this.
     unboundedFetch(this)
 };
 
 ## Documented in spec.
-fn @@OptGenerator.nextValue(box) {
+fn OptGenerator.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
     def result;
 
-    return ifValue { nextValue(this::generator, var result) }
+    return ifValue { nextValue(data::generator, var result) }
         { nextGenerator ->
             box* := [result];
-            @OptGenerator{generator: nextGenerator}
+            makeOptGenerator(nextGenerator)
         }
         { nextValue(makeValueGenerator([]), box) }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeOptGenerator(generator) {
+    return makeObject(OptGenerator, SECRET, {generator})
 };
