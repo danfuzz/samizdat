@@ -23,7 +23,7 @@ import ./rangeAdd :: *;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def OpenRange = makeObjectClass("ClosedRange", SECRET);
+def OpenRange = makeObjectClass("OpenRange", SECRET);
 
 ## Documented in spec.
 fn OpenRange.collect(optFilterFunction?) {
