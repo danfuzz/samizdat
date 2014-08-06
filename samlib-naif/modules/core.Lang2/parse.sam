@@ -144,6 +144,9 @@ def parLiteral = {:
 |
     @true
     { makeLiteral(true) }
+|
+    @null
+    { makeLiteral(null) }
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,

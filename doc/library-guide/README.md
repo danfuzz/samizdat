@@ -77,6 +77,7 @@ will be returned, or one of:
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)
+  * [Null](Null.md)
   * [Object](Object.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
   * [String](String.md)

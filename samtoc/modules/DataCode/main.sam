@@ -150,6 +150,11 @@ fn Map_convert(value) {
     return genCall("mapFromArgs", cat(mapPairs*)*, "NULL")
 };
 
+## Converts `null`.
+fn Null_convert(value) {
+    return "THE_NULL"
+};
+
 ## Converts a string.
 fn String_convert(value) {
     if (value == "") {
@@ -186,6 +191,7 @@ export fn convert(value) {
         (Int):    { Int_convert(value) };
         (List):   { List_convert(value) };
         (Map):    { Map_convert(value) };
+        (Null):   { Null_convert(value) };
         (String): { String_convert(value) };
         default:  { Value_convert(value) }
     }

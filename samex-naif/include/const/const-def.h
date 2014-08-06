@@ -43,6 +43,7 @@ DEF_TOKEN(def,                   "def");
 DEF_TOKEN(export,                "export");
 DEF_TOKEN(fn,                    "fn");
 DEF_TOKEN(import,                "import");
+DEF_TOKEN(null,                  "null");
 DEF_TOKEN(return,                "return");
 DEF_TOKEN(var,                   "var");
 DEF_TOKEN(void,                  "void");

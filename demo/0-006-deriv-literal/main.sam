@@ -23,16 +23,6 @@ fn msg(string) {
 ##
 
 ## These all refer to the same value.
-msg(@(@@("Null")));
-msg(@(@@"Null"));
-msg(@"Null");
-msg(@Null);
-msg(null);
-
-## This is not the same as the above, as the class name is `null`, not `"Null"`.
-msg(@(@@(null)));
-
-## These all refer to the same value.
 msg(@potion("blort"));
 msg(@"potion"("blort"));
 msg(@(@@potion)("blort"));

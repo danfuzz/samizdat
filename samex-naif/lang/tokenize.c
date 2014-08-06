@@ -193,6 +193,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'd': if (valEq(string, STR_def))      return TOK_def;
         case 'e': if (valEq(string, STR_export))   return TOK_export;
         case 'i': if (valEq(string, STR_import))   return TOK_import;
+        case 'n': if (valEq(string, STR_null))     return TOK_null;
         case 'r': if (valEq(string, STR_return))   return TOK_return;
         case 't': if (valEq(string, STR_ztrue))    return TOK_ztrue;
         case 'v': if (valEq(string, STR_var))      return TOK_var;
