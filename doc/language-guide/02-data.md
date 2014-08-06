@@ -31,6 +31,12 @@ Every object class has an associated "secret" which is the key used to
 allow construction of objects of that class as well as access the inner
 data of such objects.
 
+#### Null
+
+The value `null` is used when a value is needed for some reason or other
+but no particular value is otherwise suitable. The language keyword
+`null` refers to this value.
+
 #### Bool
 
 A `Bool` is a boolean truth value. The two possible values of this class are
@@ -376,27 +382,11 @@ and payload (if present) must each be surrounded by parentheses
 
 @utensils(["fork", "knife", "spoon"])                   ## a list payload
 @utensils["fork", "knife", "spoon"]                     ## shorthand for same
-
-@(@@"Null")                   ## the value usually just written as `null`
-@(@@Null)                     ## same as above
-@Null                         ## same as above
-@(@@(null))                   ## a class-only value with class `null`
 ```
 
 **Note:** As a convenience, the `get` function works on derived data
 values by calling through to `get` on the derived data's payload value,
 if any. And it will always return void for payload-free derived data values.
-
-#### Null
-
-The value `null` is used when a value is needed for some reason or other
-but no particular value is otherwise suitable. The language defines
-a named constant `null` to refer to this value. This constant can be
-defined as:
-
-```
-def null = @Null;
-```
 
 
 ### Protocols
