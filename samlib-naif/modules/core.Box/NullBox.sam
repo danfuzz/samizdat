@@ -3,36 +3,48 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## NullBox type.
+## NullBox class.
 ##
 
 #= language core.Lang0
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def NullBox = makeObjectClass("NullBox", SECRET);
+
 ## Documented in spec.
-fn @@NullBox.collect(optFilterFunction?) {
+fn NullBox.collect(optFilterFunction?) {
     return []
 };
 
 ## Documented in spec.
-fn @@NullBox.fetch() {
+fn NullBox.fetch() {
     ## Return void.
 };
 
 ## Documented in spec.
-fn @@NullBox.nextValue(outBox) {
+fn NullBox.nextValue(outBox) {
     ## Return void.
 };
 
 ## Documented in spec.
-fn @@NullBox.store(value?) {
+fn NullBox.store(value?) {
     ## Return `value` but otherwise do nothing.
     return? value*
 };
 
-## Documented in spec.
-export def nullBox = @NullBox;
+
+##
+## Exported Definitions
+##
+
+## The one instance of the class.
+export def nullBox = makeObject(NullBox, SECRET);
