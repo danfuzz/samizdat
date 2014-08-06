@@ -206,14 +206,15 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Class);
     MOD_USE_NEXT(Object);
     MOD_USE_NEXT(Data);
-    MOD_USE_NEXT(String);
+    MOD_USE_NEXT(DerivedData);
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Generic);
-    MOD_USE_NEXT(Jump);
     MOD_USE_NEXT(Int);
-    MOD_USE_NEXT(Uniqlet);
+    MOD_USE_NEXT(Jump);
     MOD_USE_NEXT(List);
-    MOD_USE_NEXT(DerivedData);
+    MOD_USE_NEXT(Null);
+    MOD_USE_NEXT(String);
+    MOD_USE_NEXT(Uniqlet);
 
     // Note: The `objectModel` module initializes `CLS_Value`.
 
