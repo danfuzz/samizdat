@@ -6,10 +6,7 @@
 ## Module loading mechanism
 ##
 ## **Note:** When running fully interpreted, this file is loaded three times.
-## The first time is before any other in-language definitions are made;
-## Notably, `null` isn't yet defined, so we manually define it early in the
-## file.
-##
+## The first time is before any other in-language definitions are made.
 
 ## This directive only has an effect when the module system loads *itself*
 ## in a chained loader. The primordial / bootstrap module system gets loaded
@@ -70,9 +67,6 @@ def BOOTSTRAP_MODULES = {
 ## Secret used to control access to module system objects. TODO: Should
 ## probably be an anonymous selector.
 def SECRET = makeUniqlet();
-
-## See header comment.
-def null = @Null;
 
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = "core.Lang2";
@@ -301,7 +295,7 @@ export fn loadResource(loader, source, format) {
 
 
 ##
-## Class Definition: `null` as a `Loader`
+## Class Definition: null `Loader`
 ##
 
 def NullLoader = makeObjectClass("NullLoader", SECRET);

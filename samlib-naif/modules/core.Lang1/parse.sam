@@ -112,7 +112,10 @@ def parLiteral = makeMainChoice(
         makeResult(makeLiteral(false))),
     makeSequence(
         makeToken(@@true),
-        makeResult(makeLiteral(true))));
+        makeResult(makeLiteral(true))),
+    makeSequence(
+        makeToken(@@null),
+        makeResult(makeLiteral(null))));
 
 ## Documented in spec.
 def parIdentifierString = makeMainChoice(

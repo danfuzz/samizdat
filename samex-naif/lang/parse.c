@@ -8,6 +8,7 @@
 #include "type/DerivedData.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/Null.h"
 #include "type/Number.h"
 #include "type/String.h"
 #include "util.h"
@@ -328,6 +329,8 @@ DEF_PARSE(literal) {
         return makeLiteral(BOOL_FALSE);
     } else if (MATCH(ztrue)) {
         return makeLiteral(BOOL_TRUE);
+    } else if (MATCH(null)) {
+        return makeLiteral(THE_NULL);
     }
 
     return NULL;
