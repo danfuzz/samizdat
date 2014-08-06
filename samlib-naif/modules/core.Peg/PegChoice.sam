@@ -1,0 +1,58 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `PegChoice` class
+##
+
+#= language core.Lang0
+
+import core.Generator :: filterPump;
+
+import ./PegFail :: fail;
+import ./protocol :: parse;
+
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def PegChoice = makeObjectClass("PegChoice", SECRET);
+
+## Documented in spec.
+fn PegChoice.parse(box, input, items*) {
+    def data = objectDataOf(this, SECRET);
+    filterPump(data::rules) { rule ->
+        ifValue { parse(rule, box, input, items*) }
+            { newInput -> return newInput }
+    };
+
+    ## No rule succeeded.
+    return
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeChoice(rules*) {
+    ## Trivial case: No rules. Return the failure rule.
+    ifIs { eq(rules, []) }
+        { return fail };
+
+    ## Trivial case: One rule. Return that rule directly.
+    ifIs { eq(get_size(rules), 1) }
+        { return rules* };
+
+    ## The general case.
+    return makeObject(PegChoice, SECRET, {rules})
+};
+

@@ -1,0 +1,47 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `PegMain` class
+##
+
+#= language core.Lang0
+
+import ./PegChoice :: makeChoice;
+import ./PegSequence :: makeSequence;
+import ./protocol :: parse;
+
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def PegMain = makeObjectClass("PegMain", SECRET);
+
+## Documented in spec.
+fn PegMain.parse(box, input, .*) {
+    ## The point of this implementation is to drop the `items` context.
+    def data = objectDataOf(this, SECRET);
+    return? parse(data::rule, box, input)
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeMainChoice(rules*) {
+    return makeObject(PegMain, SECRET, {rule: makeChoice(rules*)})
+};
+
+## Documented in spec.
+export fn makeMainSequence(rules*) {
+    return makeObject(PegMain, SECRET, {rule: makeSequence(rules*)})
+};

@@ -9,13 +9,16 @@
 #= language core.Lang0
 
 export import ./PegAny :: *;
+export import ./PegChoice :: *;
 export import ./PegCode :: *;
 export import ./PegEof :: *;
 export import ./PegFail :: *;
 export import ./PegLookaheadSuccess :: *;
 export import ./PegLookaheadFailure :: *;
+export import ./PegMain :: *;
 export import ./PegRepeat :: *;
 export import ./PegResult :: *;
+export import ./PegSequence :: *;
 export import ./PegThunk :: *;
 export import ./misc :: *;
 export import ./protocol :: *;
