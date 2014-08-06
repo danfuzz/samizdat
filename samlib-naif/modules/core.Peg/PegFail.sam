@@ -1,0 +1,40 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `PegFail` class
+##
+
+#= language core.Lang0
+
+import ./protocol :: parse;
+
+
+##
+## Class Definition
+##
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def PegFail = makeObjectClass("PegFail", SECRET);
+
+## Documented in spec.
+fn PegFail.parse(box, input, .*) {
+    ## Do nothing, and return void.
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export def fail = makeObject(PegFail, SECRET);

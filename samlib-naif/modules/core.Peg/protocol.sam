@@ -3,14 +3,15 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## PEG (Parsing Expression Grammar) support
+## `parse` protocol
 ##
 
 #= language core.Lang0
 
-export import ./PegAny :: *;
-export import ./PegEof :: *;
-export import ./PegFail :: *;
-export import ./PegResult :: *;
-export import ./misc :: *;
-export import ./protocol :: *;
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn .parse(box, input, items*);
