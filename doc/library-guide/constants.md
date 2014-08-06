@@ -19,6 +19,10 @@ elsewhere in the library documentation.
 <br><br>
 ### Primitive Definitions
 
+#### `Bool`
+
+The class of boolean values.
+
 #### `Class`
 
 The reified class of a value.
@@ -43,6 +47,10 @@ The class of list values.
 
 The class of map values.
 
+#### `Null`
+
+The class of `null`.
+
 #### `String`
 
 The class of string values.
@@ -58,12 +66,6 @@ The common superclass of all values.
 
 <br><br>
 ### In-Language Definitions
-
-#### `null`
-
-A value used when no other value is suitable, but when a value is
-nonetheless required. It is defined as `@Null`, that is, a class-only
-value with class tag `"Null"`.
 
 #### `ENTITY_MAP`
 

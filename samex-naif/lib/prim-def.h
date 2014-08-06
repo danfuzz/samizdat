@@ -20,6 +20,7 @@ PRIM_DEF(DerivedData,             CLS_DerivedData);
 PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);
+PRIM_DEF(Null,                    CLS_Null);
 PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
