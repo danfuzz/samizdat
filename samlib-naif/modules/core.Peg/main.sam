@@ -11,6 +11,8 @@
 export import ./PegAny :: *;
 export import ./PegEof :: *;
 export import ./PegFail :: *;
+export import ./PegLookaheadSuccess :: *;
+export import ./PegLookaheadFailure :: *;
 export import ./PegResult :: *;
 export import ./misc :: *;
 export import ./protocol :: *;

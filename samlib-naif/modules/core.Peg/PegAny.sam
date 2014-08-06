@@ -15,10 +15,6 @@ import ./protocol :: parse;
 ## Class Definition
 ##
 
-##
-## Class Definition
-##
-
 ## Secret used to control access to this class. TODO: Should probably be an
 ## anonymous selector.
 def SECRET = makeUniqlet();

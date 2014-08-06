@@ -8,11 +8,9 @@
 
 #= language core.Lang0
 
-import core.Box :: nullBox;
 import core.Generator :: filterPump, makeFilterGenerator;
 
 import ./PegAny :: any;
-import ./PegEof :: eof;
 import ./PegFail :: fail;
 import ./PegResult :: empty, makeResult;
 import ./protocol :: parse;
@@ -40,21 +38,6 @@ fn @@PegCode.parse(box, input, items*) {
             box* := result;
             input
         }
-};
-
-## Documented in spec.
-fn @@PegLookaheadFailure.parse(box, input, items*) {
-    return? ifNot { parse(this::rule, nullBox, input, items*) }
-        {
-            box* := null;
-            input
-        }
-};
-
-## Documented in spec.
-fn @@PegLookaheadSuccess.parse(box, input, items*) {
-    return? ifIs { parse(this::rule, box, input, items*) }
-        { input }
 };
 
 ## Documented in spec.
@@ -244,25 +227,6 @@ export fn makeChoice(rules*) {
 ## Documented in spec.
 export fn makeCode(function) {
     return @PegCode{function}
-};
-
-## Documented in spec.
-export fn makeLookaheadFailure(rule) {
-    ## Optimiziation: Representation of `!.`.
-    ifIs { eq(rule, any) }
-        { return eof };
-
-    ## Optimization: Representation of `!()`.
-    ifIs { eq(rule, empty) }
-        { return fail };
-
-    ## The general case.
-    return @PegLookaheadFailure{rule}
-};
-
-## Documented in spec.
-export fn makeLookaheadSuccess(rule) {
-    return @PegLookaheadSuccess{rule}
 };
 
 ## Documented in spec.

@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `PegResult` class
+## `PegLookaheadSuccess` class
 ##
 
 #= language core.Lang0
@@ -20,13 +20,13 @@ import ./protocol :: parse;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegResult = makeObjectClass("PegResult", SECRET);
+def PegLookaheadSuccess = makeObjectClass("PegLookaheadSuccess", SECRET);
 
 ## Documented in spec.
-fn PegResult.parse(box, input, .*) {
+fn PegLookaheadSuccess.parse(box, input, items*) {
     def data = objectDataOf(this, SECRET);
-    box* := data::value;
-    return input
+    return? ifIs { parse(data::rule, box, input, items*) }
+        { input }
 };
 
 
@@ -35,9 +35,6 @@ fn PegResult.parse(box, input, .*) {
 ##
 
 ## Documented in spec.
-export fn makeResult(value) {
-    return makeObject(PegResult, SECRET, {value})
+export fn makeLookaheadSuccess(rule) {
+    return makeObject(PegLookaheadSuccess, SECRET, {rule})
 };
-
-## Documented in spec.
-export def empty = makeResult(null);
