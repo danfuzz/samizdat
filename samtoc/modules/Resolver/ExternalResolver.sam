@@ -15,21 +15,29 @@ import core.Io0;
 
 import Reader;
 
+import ./InternalResolver :: makeInternalResolver;
 import ./cache;
-import ./internal :: makeInternalResolver;
 import ./protocol :: resolve;
 
 
 ##
-## Private Definitions
+## Class definition
 ##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def ExternalResolver = makeObjectClass("ExternalResolver", SECRET);
 
 ## Does direct resolution on the given `source`. Only ever called when
 ## `source` is known to be `external` and so *might* be found directly
 ## in this resolver's directory of modules.
 fn directResolve(self, source) {
+    def data = objectDataOf(self, SECRET);
     def name = source::name;
-    def dirPath = "\(self::path)/\(name)";
+    def dirPath = "\(data::path)/\(name)";
     def infoPath = "\(dirPath).saminfo";
 
     return? if ($Io0::fileType(infoPath) == "file") {
@@ -44,13 +52,10 @@ fn directResolve(self, source) {
     }
 };
 
+fn ExternalResolver.resolve(source) {
+    def data = objectDataOf(this, SECRET);
 
-##
-## Exported Definitions
-##
-
-fn @@ExternalResolver.resolve(source) {
-    if (def found = $cache::cacheGet(this::cache, source)) {
+    if (def found = $cache::cacheGet(data::cache, source)) {
         ## `found` is always a list. See comment below.
         return? found*
     };
@@ -60,14 +65,19 @@ fn @@ExternalResolver.resolve(source) {
     def result = (
         hasClass(source, @@external)
             & this.directResolve(source)
-            | (this::nextResolver).resolve(source)
+            | (data::nextResolver).resolve(source)
     )?;
 
     ## Cache the result, so we don't bother with a search the next time.
-    $cache::cachePut(this::cache, source, result);
+    $cache::cachePut(data::cache, source, result);
 
     return? result*
 };
+
+
+##
+## Exported Definitions
+##
 
 ## Makes an external resolver. As a handy convenience, if the `path`
 ## isn't an existing directory, this just returns the given `nextResolver`.
@@ -78,9 +88,10 @@ export fn makeExternalResolver(path, nextResolver) {
         return nextResolver
     };
 
-    return @ExternalResolver{
-        cache: $cache::makeCache(),
-        nextResolver,
-        path
-    }
+    return makeObject(ExternalResolver, SECRET,
+        {
+            cache: $cache::makeCache(),
+            nextResolver,
+            path
+        })
 };

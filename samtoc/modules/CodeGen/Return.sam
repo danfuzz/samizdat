@@ -6,9 +6,42 @@
 ## Return tree.
 ##
 
+import ./CodeString :: fix;
 import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
+
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def Return = makeObjectClass("Return", SECRET);
+
+fn Return.flatten() {
+    def data = objectDataOf(this, SECRET);
+    return "return \(data::tree.flatten())"
+};
+
+fn Return.indent(level, maxColumns) {
+    def data = objectDataOf(this, SECRET);
+    def prefix = indentation(level);
+
+    return "\
+        \(prefix)return
+        \(data::tree.indent(level + 1, maxColumns))"
+};
+
+fn Return.prefersFlat() {
+    def data = objectDataOf(this, SECRET);
+    return? data::tree.prefersFlat()
+        & this
+};
 
 
 ##
@@ -16,22 +49,5 @@ import ./protocol :: *;
 ##
 
 export fn genReturn(tree) {
-    return genWrapper(@Return{tree})
-};
-
-fn @@Return.flatten() {
-    return "return \(this::tree.flatten())"
-};
-
-fn @@Return.indent(level, maxColumns) {
-    def prefix = indentation(level);
-
-    return "\
-        \(prefix)return
-        \(this::tree.indent(level + 1, maxColumns))"
-};
-
-fn @@Return.prefersFlat() {
-    return? this::tree.prefersFlat()
-        & this
+    return genWrapper(makeObject(Return, SECRET, {tree: fix(tree)}))
 };

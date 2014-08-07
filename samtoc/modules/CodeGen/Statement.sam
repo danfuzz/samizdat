@@ -6,9 +6,38 @@
 ## Statement tree.
 ##
 
+import ./CodeString :: fix;
 import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
+
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def Statement = makeObjectClass("Statement", SECRET);
+
+fn Statement.flatten() {
+    def data = objectDataOf(this, SECRET);
+    return "\(data::tree.flatten());"
+};
+
+fn Statement.indent(level, maxColumns) {
+    def data = objectDataOf(this, SECRET);
+    return "\(data::tree.indent(level, maxColumns));\n"
+};
+
+fn Statement.prefersFlat() {
+    def data = objectDataOf(this, SECRET);
+    return? data::tree.prefersFlat()
+        & this
+};
 
 
 ##
@@ -16,18 +45,5 @@ import ./protocol :: *;
 ##
 
 export fn genStatement(tree) {
-    return genWrapper(@Statement{tree})
-};
-
-fn @@Statement.flatten() {
-    return "\(this::tree.flatten());"
-};
-
-fn @@Statement.indent(level, maxColumns) {
-    return "\(this::tree.indent(level, maxColumns));\n"
-};
-
-fn @@Statement.prefersFlat() {
-    return? this::tree.prefersFlat()
-        & this
+    return genWrapper(makeObject(Statement, SECRET, {tree: fix(tree)}))
 };
