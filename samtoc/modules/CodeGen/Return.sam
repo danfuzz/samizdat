@@ -12,26 +12,41 @@ import ./protocol :: *;
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
-export fn genReturn(tree) {
-    return genWrapper(@Return{tree})
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def Return = makeObjectClass("Return", SECRET);
+
+fn Return.flatten() {
+    def data = objectDataOf(this, SECRET);
+    return "return \(data::tree.flatten())"
 };
 
-fn @@Return.flatten() {
-    return "return \(this::tree.flatten())"
-};
-
-fn @@Return.indent(level, maxColumns) {
+fn Return.indent(level, maxColumns) {
+    def data = objectDataOf(this, SECRET);
     def prefix = indentation(level);
 
     return "\
         \(prefix)return
-        \(this::tree.indent(level + 1, maxColumns))"
+        \(data::tree.indent(level + 1, maxColumns))"
 };
 
-fn @@Return.prefersFlat() {
-    return? this::tree.prefersFlat()
+fn Return.prefersFlat() {
+    def data = objectDataOf(this, SECRET);
+    return? data::tree.prefersFlat()
         & this
+};
+
+
+##
+## Exported Definitions
+##
+
+export fn genReturn(tree) {
+    return genWrapper(makeObject(Return, SECRET, {tree}))
 };
