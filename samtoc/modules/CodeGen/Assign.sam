@@ -12,27 +12,42 @@ import ./protocol :: *;
 
 
 ##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def Assign = makeObjectClass("Assign", SECRET);
+
+fn Assign.flatten() {
+    def data = objectDataOf(this, SECRET);
+    return "\(data::target.flatten()) = \(data::value.flatten())"
+};
+
+fn Assign.indent(level, maxColumns) {
+    def data = objectDataOf(this, SECRET);
+    return cat(
+        data::target.indent(level, maxColumns),
+        " =\n",
+        data::value.indent(level + 1, maxColumns)
+    )
+};
+
+fn Assign.prefersFlat() {
+    def data = objectDataOf(this, SECRET);
+    return? data::target.prefersFlat()
+        & data::value.prefersFlat()
+        & this
+};
+
+
+##
 ## Exported Definitions
 ##
 
 export fn genAssign(target, value) {
-    return genWrapper(@Assign{target, value})
-};
-
-fn @@Assign.flatten() {
-    return "\(this::target.flatten()) = \(this::value.flatten())"
-};
-
-fn @@Assign.indent(level, maxColumns) {
-    return cat(
-        this::target.indent(level, maxColumns),
-        " =\n",
-        this::value.indent(level + 1, maxColumns)
-    )
-};
-
-fn @@Assign.prefersFlat() {
-    return? this::target.prefersFlat()
-        & this::value.prefersFlat()
-        & this
+    return genWrapper(makeObject(Assign, SECRET, {target, value}))
 };

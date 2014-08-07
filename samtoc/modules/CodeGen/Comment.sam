@@ -12,42 +12,57 @@ import ./protocol :: *;
 
 
 ##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def Comment = makeObjectClass("Comment", SECRET);
+
+fn Comment.flatten() {
+    def data = objectDataOf(this, SECRET);
+    def text = data::text;
+
+    return (def payload = data::payload)
+        & "/* \(text) */ \(payload.flatten())"
+        | "/* \(text) */"
+};
+
+fn Comment.indent(level, maxColumns) {
+    def data = objectDataOf(this, SECRET);
+    def prefix = indentation(level);
+
+    return if (def p = data::payload) {
+        cat(
+            prefix, "// ", data::text, "\n",
+            p.indent(level, maxColumns)
+        )
+    } else {
+        "\(prefix)/* \(data::text) */"
+    }
+};
+
+fn Comment.prefersFlat() {
+    def data = objectDataOf(this, SECRET);
+    return? (#data::text < 30)
+        & (((def payload = data::payload)
+            & payload.prefersFlat()?
+            | true?)*)
+        & this
+};
+
+
+##
 ## Exported Definitions
 ##
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        genWrapper(@Comment{payload, text})
+        genWrapper(makeObject(Comment, SECRET, {payload, text}))
     } else {
-        genWrapper(@Comment{text})
+        genWrapper(makeObject(Comment, SECRET, {text}))
     }
-};
-
-fn @@Comment.flatten() {
-    def text = this::text;
-
-    return (def payload = this::payload)
-        & "/* \(text) */ \(payload.flatten())"
-        | "/* \(text) */"
-};
-
-fn @@Comment.indent(level, maxColumns) {
-    def prefix = indentation(level);
-
-    return if (def p = this::payload) {
-        cat(
-            prefix, "// ", this::text, "\n",
-            p.indent(level, maxColumns)
-        )
-    } else {
-        "\(prefix)/* \(this::text) */"
-    }
-};
-
-fn @@Comment.prefersFlat() {
-    return? (#this::text < 30)
-        & (((def payload = this::payload)
-            & payload.prefersFlat()?
-            | true?)*)
-        & this
 };
