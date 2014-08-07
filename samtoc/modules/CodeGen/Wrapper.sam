@@ -15,23 +15,27 @@ import ./protocol :: *;
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
-export fn genWrapper(tree) {
-    def flat;
-    return @Wrapper{tree, flatBox: (var flat)}
-};
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
 
-fn @@Wrapper.flatten() {
-    def flatBox = this::flatBox;
+## Class being defined here.
+def Wrapper = makeObjectClass("Wrapper", SECRET);
+
+fn Wrapper.flatten() {
+    def data = objectDataOf(this, SECRET);
+    def flatBox = data::flatBox;
 
     return flatBox*
-        | (flatBox* := this::tree.flatten())
+        | (flatBox* := data::tree.flatten())
 };
 
-fn @@Wrapper.indent(level, maxColumns) {
-    def tree = this::tree;
+fn Wrapper.indent(level, maxColumns) {
+    def data = objectDataOf(this, SECRET);
+    def tree = data::tree;
 
     if (tree.prefersFlat()) {
         def flat = this.flatten();
@@ -44,6 +48,17 @@ fn @@Wrapper.indent(level, maxColumns) {
     return tree.indent(level, maxColumns)
 };
 
-fn @@Wrapper.prefersFlat() {
-    return? this::tree.prefersFlat()
+fn Wrapper.prefersFlat() {
+    def data = objectDataOf(this, SECRET);
+    return? data::tree.prefersFlat() & this;
+};
+
+
+##
+## Exported Definitions
+##
+
+export fn genWrapper(tree) {
+    def flat;
+    return makeObject(Wrapper, SECRET, {tree, flatBox: (var flat)})
 };

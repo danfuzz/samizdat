@@ -90,7 +90,7 @@ export fn translate(node, varsBox) {
         };
 
         @@literalRef: {
-            "LIT_\(node.id)"
+            genCodeString("LIT_\(node.id)")
         };
 
         @@noYield: {

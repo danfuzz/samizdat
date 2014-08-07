@@ -10,11 +10,9 @@
 ## resolution.
 ##
 
-## This just causes method bindings to be made.
-import ./nullResolver;
-
-export import ./external :: makeExternalResolver;
-export import ./internal :: makeInternalResolver;
+export import ./ExternalResolver :: makeExternalResolver;
+export import ./InternalResolver :: makeInternalResolver;
+export import ./NullResolver :: nullResolver;
 export import ./protocol :: resolve;
 
 

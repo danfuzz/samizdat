@@ -6,7 +6,7 @@ import core.CommandLine;
 import core.FilePath;
 import core.Io0;
 
-import Resolver;
+import Resolver :: *;
 
 
 ##
@@ -131,8 +131,7 @@ fn doDirectory(args, sourcePath) {
         ## First handle a "captive" `modules` directory (if any), then
         ## handle the main implementation files.
         def captiveDir = "\(sourcePath)/modules";
-        def captiveResolver =
-            $Resolver::makeExternalResolver(captiveDir, resolver);
+        def captiveResolver = makeExternalResolver(captiveDir, resolver);
 
         if (resolver != captiveResolver) {
             ## There's a captive `modules` directory. Iterate over its
@@ -148,7 +147,7 @@ fn doDirectory(args, sourcePath) {
         };
 
         def internalResolver =
-            $Resolver::makeInternalResolver(sourcePath, captiveResolver);
+            makeInternalResolver(sourcePath, captiveResolver);
         def internalArgs = {args*, resolver: internalResolver};
 
         ## Helper to process an internal directory (including the top-level
@@ -173,8 +172,7 @@ fn doDirectory(args, sourcePath) {
         ## No `main.sam`. Treat it as a `modules` directory. Make an external
         ## resolver for the given directory, and recursively process all
         ## subdirectories.
-        def externalResolver =
-            $Resolver::makeExternalResolver(sourcePath, resolver);
+        def externalResolver = makeExternalResolver(sourcePath, resolver);
         def subArgs = {args*, resolver: externalResolver};
         def files = $Io0::readDirectory(sourcePath);
         for (one in files) {
@@ -233,13 +231,13 @@ export fn main(selfPath, rawArgs*) {
     def modeModule = loadModule(@external{name: "mode.\(modeName)"});
 
     def topResolver = (def coreDir = args::options::"core-dir")
-        & $Resolver::makeExternalResolver("\(coreDir)/modules", null)
-        | null;
+        & makeExternalResolver("\(coreDir)/modules", nullResolver)
+        | nullResolver;
     def externalResolver = (def dirs = args::options::"external-dirs")
-        & $Resolver::makeResolverChain(dirs, topResolver)
+        & makeResolverChain(dirs, topResolver)
         | topResolver;
     def resolver = (def dir = args::options::"internal-dir")
-        & $Resolver::makeInternalResolver(dir, externalResolver)
+        & makeInternalResolver(dir, externalResolver)
         | externalResolver;
 
     if (#args::args == 0) {

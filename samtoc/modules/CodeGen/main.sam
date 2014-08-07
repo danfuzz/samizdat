@@ -6,11 +6,9 @@
 ## Convert data into C code that constructs that data.
 ##
 
-## This just binds generics.
-import ./String;
-
 export import ./Assign :: *;
 export import ./Call :: *;
+export import ./CodeString :: genCodeString;
 export import ./Comment :: *;
 export import ./Return :: *;
 export import ./Statement :: *;

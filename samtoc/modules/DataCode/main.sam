@@ -9,12 +9,34 @@
 import CodeGen ::
     flatten,
     indent,
-    genCall;
+    genCall,
+    genCodeString;
 
 
 ##
 ## Private Definitions
 ##
+
+## Representation of a C `NULL`.
+def CODE_C_NULL = genCodeString("NULL");
+
+## Conversion of `[]`.
+def CODE_EMPTY_LIST = genCodeString("EMPTY_LIST");
+
+## Conversion of `{}`.
+def CODE_EMPTY_MAP = genCodeString("EMPTY_MAP");
+
+## Conversion of `""`.
+def CODE_EMPTY_STRING = genCodeString("EMPTY_STRING");
+
+## Conversion of `false`.
+def CODE_FALSE = genCodeString("BOOL_FALSE");
+
+## Conversion of `null`.
+def CODE_NULL = genCodeString("THE_NULL");
+
+## Conversion of `true`.
+def CODE_TRUE = genCodeString("BOOL_TRUE");
 
 ## Encode the given values as a list of C-style `\xNN` escapes.
 fn hexEscape(values*) {
@@ -114,7 +136,7 @@ fn stringChar(ch) {
 
 ## Converts a bool.
 fn Bool_convert(value) {
-    return value** & "BOOL_TRUE" | "BOOL_FALSE"
+    return value** & CODE_TRUE | CODE_FALSE;
 };
 
 ## Converts a class. Only works on derived data classes.
@@ -130,35 +152,35 @@ fn Int_convert(value) {
 ## Converts a list.
 fn List_convert(value) {
     if (value == []) {
-        return "EMPTY_LIST"
+        return CODE_EMPTY_LIST
     };
 
     def listElems = [ elem in value -> convert(elem) ];
-    return genCall("listFromArgs", listElems*, "NULL")
+    return genCall("listFromArgs", listElems*, CODE_C_NULL)
 };
 
 ## Converts a map.
 fn Map_convert(value) {
     if (value == {}) {
-        return "EMPTY_MAP"
+        return CODE_EMPTY_MAP
     };
 
     def mapPairs = [ mapping in value ->
         [convert(get_key(mapping)), convert(get_value(mapping))]
     ];
 
-    return genCall("mapFromArgs", cat(mapPairs*)*, "NULL")
+    return genCall("mapFromArgs", cat(mapPairs*)*, CODE_C_NULL)
 };
 
 ## Converts `null`.
 fn Null_convert(value) {
-    return "THE_NULL"
+    return CODE_NULL
 };
 
 ## Converts a string.
 fn String_convert(value) {
     if (value == "") {
-        return "EMPTY_STRING"
+        return CODE_EMPTY_STRING
     };
 
     ## Each `stringChar()` call returns a list (each list element representing
@@ -172,7 +194,7 @@ fn String_convert(value) {
 
 ## Converts a derived value or an opaque core value.
 fn Value_convert(value) {
-    def data = (def dval = dataOf(value)) & convert(dval) | "NULL";
+    def data = (def dval = dataOf(value)) & convert(dval) | CODE_C_NULL;
     def cls = get_class(value);
 
     if (!hasClass(value, DerivedData)) {

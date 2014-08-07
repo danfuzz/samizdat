@@ -8,8 +8,6 @@
 
 import core.Io0;
 
-import CodeGen;
-import DataCode;
 import Resolver;
 import Template;
 
