@@ -6,6 +6,7 @@
 ## Statement tree.
 ##
 
+import ./CodeString :: fix;
 import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
@@ -44,5 +45,5 @@ fn Statement.prefersFlat() {
 ##
 
 export fn genStatement(tree) {
-    return genWrapper(makeObject(Statement, SECRET, {tree}))
+    return genWrapper(makeObject(Statement, SECRET, {tree: fix(tree)}))
 };

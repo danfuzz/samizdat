@@ -1,0 +1,53 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Protocol bindings for class String.
+##
+
+import ./indentation :: *;
+import ./protocol :: *;
+
+
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def CodeString = makeObjectClass("CodeString", SECRET);
+
+fn CodeString.flatten() {
+    def data = objectDataOf(this, SECRET);
+    return data::text
+};
+
+fn CodeString.indent(level, maxColumns) {
+    def data = objectDataOf(this, SECRET);
+    return cat(indentation(level), data::text)
+};
+
+fn CodeString.prefersFlat() {
+    return this
+};
+
+
+##
+## Exported Definitions
+##
+
+export fn genCodeString(text) {
+    return makeObject(CodeString, SECRET, {text});
+};
+
+## Fixes a tree constructor argument, so that strings (per se) are
+## transformed into `CodeString`s.
+export fn fix(treeOrString) {
+    return hasClass(treeOrString, String)
+        & genCodeString(treeOrString)
+        | treeOrString
+};

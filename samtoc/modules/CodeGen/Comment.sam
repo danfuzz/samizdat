@@ -6,6 +6,7 @@
 ## Comment tree.
 ##
 
+import ./CodeString :: fix;
 import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
@@ -61,7 +62,7 @@ fn Comment.prefersFlat() {
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        genWrapper(makeObject(Comment, SECRET, {payload, text}))
+        genWrapper(makeObject(Comment, SECRET, {payload: fix(payload), text}))
     } else {
         genWrapper(makeObject(Comment, SECRET, {text}))
     }

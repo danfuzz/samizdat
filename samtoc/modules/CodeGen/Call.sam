@@ -6,6 +6,7 @@
 ## Function call tree.
 ##
 
+import ./CodeString :: fix;
 import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
@@ -63,10 +64,13 @@ fn Call.prefersFlat() {
 ##
 
 export fn genCall(function, args*) {
+    def fixFunction = fix(function);
+    def fixArgs = [ a in args -> fix(a) ];
     var flatOk = false;
-    if ((#args < 5) & function.prefersFlat()) {
+
+    if ((#args < 5) & fixFunction.prefersFlat()) {
         flatOk := true;
-        for (a in args) {
+        for (a in fixArgs) {
             if (!a.prefersFlat()) {
                 flatOk := false;
                 break
@@ -74,5 +78,11 @@ export fn genCall(function, args*) {
         }
     };
 
-    return genWrapper(makeObject(Call, SECRET, {function, args, flatOk}))
+    return genWrapper(
+        makeObject(Call, SECRET,
+            {
+                function: fixFunction,
+                args: fixArgs,
+                flatOk
+            }))
 };

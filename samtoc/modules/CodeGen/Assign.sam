@@ -6,6 +6,7 @@
 ## Variable assignment tree.
 ##
 
+import ./CodeString :: fix;
 import ./Wrapper :: *;
 import ./indentation :: *;
 import ./protocol :: *;
@@ -49,5 +50,6 @@ fn Assign.prefersFlat() {
 ##
 
 export fn genAssign(target, value) {
-    return genWrapper(makeObject(Assign, SECRET, {target, value}))
+    return genWrapper(
+        makeObject(Assign, SECRET, {target: fix(target), value: fix(value)}))
 };
