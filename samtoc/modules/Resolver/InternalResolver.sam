@@ -82,9 +82,10 @@ fn InternalResolver.resolve(source) {
 ##
 
 export fn makeInternalResolver(path, nextResolver) {
-    return @InternalResolver{
-        cache: $cache::makeCache(),
-        nextResolver,
-        path
-    }
+    return makeObject(InternalResolver, SECRET,
+        {
+            cache: $cache::makeCache(),
+            nextResolver,
+            path
+        })
 };
