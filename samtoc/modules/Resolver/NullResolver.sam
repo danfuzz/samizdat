@@ -10,7 +10,7 @@ import ./protocol :: resolve;
 
 
 ##
-## Exported Definitions
+## Class definition
 ##
 
 fn @@Null.resolve(source) {
@@ -20,3 +20,11 @@ fn @@Null.resolve(source) {
     ## back up as an error.
     return
 };
+
+
+##
+## Exported Definitions
+##
+
+## TODO: Make it a real instance.
+export def nullResolver = null;
