@@ -3,42 +3,31 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## NullBox class.
+## `PegResult` class
 ##
 
 #= language core.Lang0
+
+import ./protocol :: parse;
 
 
 ##
 ## Class Definition
 ##
+## Payload: {value: .}
 
 ## Secret used to control access to this class. TODO: Should probably be an
 ## anonymous selector.
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def NullBox = makeObjectClass("NullBox", SECRET);
+def PegResult = makeObjectClass("PegResult", SECRET);
 
 ## Documented in spec.
-fn NullBox.collect(optFilterFunction?) {
-    return []
-};
-
-## Documented in spec.
-fn NullBox.fetch() {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.nextValue(outBox) {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.store(value?) {
-    ## Return `value` but otherwise do nothing.
-    return? value*
+fn PegResult.parse(box, input, .*) {
+    def data = objectDataOf(this, SECRET);
+    box* := data::value;
+    return input
 };
 
 
@@ -46,5 +35,10 @@ fn NullBox.store(value?) {
 ## Exported Definitions
 ##
 
-## The one instance of the class.
-export def nullBox = makeObject(NullBox, SECRET);
+## Documented in spec.
+export fn makeResult(value) {
+    return makeObject(PegResult, SECRET, {value})
+};
+
+## Documented in spec.
+export def empty = makeResult(null);

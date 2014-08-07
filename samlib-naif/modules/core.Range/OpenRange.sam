@@ -15,6 +15,40 @@ import ./rangeAdd :: *;
 
 
 ##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def OpenRange = makeObjectClass("OpenRange", SECRET);
+
+## Documented in spec.
+fn OpenRange.collect(optFilterFunction?) {
+    ## It is an "unbounded collect" error to call this.
+    unboundedCollect(this)
+};
+
+## Documented in spec.
+fn OpenRange.fetch() {
+    ## It is an "unbounded fetch" error to call this.
+    unboundedFetch(this)
+};
+
+## Documented in spec.
+fn OpenRange.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
+    def firstValue = data::firstValue;
+    def increment = data::increment;
+
+    box* := firstValue;
+    return makeOpenRange(rangeAdd(firstValue, increment), increment)
+};
+
+
+##
 ## Exported Definitions
 ##
 
@@ -22,26 +56,5 @@ import ./rangeAdd :: *;
 export fn makeOpenRange(firstValue, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    return @OpenRange{firstValue, increment}
-};
-
-## Documented in spec.
-fn @@OpenRange.collect(optFilterFunction?) {
-    ## It is an "unbounded collect" error to call this.
-    unboundedCollect(this)
-};
-
-## Documented in spec.
-fn @@OpenRange.fetch() {
-    ## It is an "unbounded fetch" error to call this.
-    unboundedFetch(this)
-};
-
-## Documented in spec.
-fn @@OpenRange.nextValue(box) {
-    def firstValue = this::firstValue;
-    def increment = this::increment;
-
-    box* := firstValue;
-    return makeOpenRange(rangeAdd(firstValue, increment), increment)
+    return makeObject(OpenRange, SECRET, {firstValue, increment})
 };

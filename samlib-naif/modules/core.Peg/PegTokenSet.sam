@@ -1,0 +1,66 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `PegTokenSet` class
+##
+
+#= language core.Lang0
+
+import ./PegFail :: fail;
+import ./protocol :: parse;
+
+
+##
+## Class Definition
+##
+## Payload: {set: {class*: null}}
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def PegTokenSet = makeObjectClass("PegTokenSet", SECRET);
+
+## Documented in spec.
+fn PegTokenSet.parse(box, input, items*) {
+    def data = objectDataOf(this, SECRET);
+    def result;
+
+    return? ifValue { nextValue(input, var result) }
+        { newInput ->
+            ifIs { get(data::set, get_class(result)) }
+                {
+                    box* := result;
+                    newInput
+                }
+        }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeToken(cls) {
+    ## This is just uses a single-item token set. The performance difference
+    ## between that and doing a more special-case single item class check is
+    ## probably negligible.
+    return makeTokenSet(cls)
+};
+
+## Documented in spec.
+export fn makeTokenSet(clses*) {
+    ifIs { eq(clses, []) }
+        {
+            ## Trivial case: Empty set, so it can never succeed.
+            return fail
+        };
+
+    def set = {clses*: true};  ## A set-like map of all the token classes.
+
+    return makeObject(PegTokenSet, SECRET, {set})
+};

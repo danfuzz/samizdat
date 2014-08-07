@@ -11,33 +11,46 @@
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
-## Documented in spec.
-export fn makeListWrapGenerator(generator) {
-    return @ListWrapGenerator{generator}
-};
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def ListWrapGenerator = makeObjectClass("ListWrapGenerator", SECRET);
 
 ## Documented in spec.
-fn @@ListWrapGenerator.collect(optFilterFunction?) {
+fn ListWrapGenerator.collect(optFilterFunction?) {
     ## Just use the standard implementation.
     return Generator_stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
-fn @@ListWrapGenerator.fetch() {
+fn ListWrapGenerator.fetch() {
     ## Just use the standard implementation.
     return Generator_stdFetch(this)
 };
 
 ## Documented in spec.
-fn @@ListWrapGenerator.nextValue(box) {
+fn ListWrapGenerator.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
     def result;
 
-    return? ifValue { nextValue(this::generator, var result) }
+    return? ifValue { nextValue(data::generator, var result) }
         { nextGenerator ->
             box* := [result];
-            @ListWrapGenerator{generator: nextGenerator}
+            makeListWrapGenerator(nextGenerator)
         }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeListWrapGenerator(generator) {
+    return makeObject(ListWrapGenerator, SECRET, {generator})
 };

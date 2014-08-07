@@ -10,23 +10,35 @@
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def NullGenerator = makeObjectClass("NullGenerator", SECRET);
+
 ## Documented in spec.
-fn @@NullGenerator.collect(optFilterFunction?) {
+fn NullGenerator.collect(optFilterFunction?) {
     return []
 };
 
 ## Documented in spec.
-fn @@NullGenerator.fetch() {
+fn NullGenerator.fetch() {
     ## Do nothing. Return void.
 };
 
 ## Documented in spec.
-fn @@NullGenerator.nextValue(box) {
+fn NullGenerator.nextValue(box) {
     ## Do nothing. Return void.
 };
 
+
+##
+## Exported Definitions
+##
+
 ## Documented in spec.
-export def nullGenerator = @NullGenerator;
+export def nullGenerator = makeObject(NullGenerator, SECRET);
