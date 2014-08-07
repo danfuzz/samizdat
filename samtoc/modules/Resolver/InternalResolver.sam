@@ -21,15 +21,23 @@ import ./protocol :: resolve;
 
 
 ##
-## Private Definitions
+## Class Definition
 ##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def InternalResolver = makeObjectClass("InternalResolver", SECRET);
 
 ## Does direct resolution on the given `source`. Only ever called when
 ## `source` is known to be `internal` and so *might* be found directly
 ## in or under this resolver's directory.
 fn directResolve(self, source) {
+    def data = objectDataOf(self, SECRET);
     def subPath = source::name;
-    def basePath = "\(self::path)/\(subPath)";
+    def basePath = "\(data::path)/\(subPath)";
     def infoPath = "\(basePath).saminfo";
     def sourcePath = "\(basePath).sam";
 
@@ -46,13 +54,10 @@ fn directResolve(self, source) {
     }
 };
 
+fn InternalResolver.resolve(source) {
+    def data = objectDataOf(this, SECRET);
 
-##
-## Exported Definitions
-##
-
-fn @@InternalResolver.resolve(source) {
-    if (def found = $cache::cacheGet(this::cache, source)) {
+    if (def found = $cache::cacheGet(data::cache, source)) {
         ## `found` is always a list. See comment below.
         return? found*
     };
@@ -62,14 +67,19 @@ fn @@InternalResolver.resolve(source) {
     def result = (
         hasClass(source, @@internal)
             & this.directResolve(source)
-            | (this::nextResolver).resolve(source)
+            | (data::nextResolver).resolve(source)
     )?;
 
     ## Cache the result, so we don't bother with a search the next time.
-    $cache::cachePut(this::cache, source, result);
+    $cache::cachePut(data::cache, source, result);
 
     return? result*
 };
+
+
+##
+## Exported Definitions
+##
 
 export fn makeInternalResolver(path, nextResolver) {
     return @InternalResolver{
