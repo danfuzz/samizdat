@@ -14,6 +14,42 @@ import proto.Number :: sub;
 import ./NullGenerator :: nullGenerator;
 
 
+##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def RepeatGenerator = makeObjectClass("RepeatGenerator", SECRET);
+
+## Documented in spec.
+fn RepeatGenerator.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    return Generator_stdCollect(this, optFilterFunction*)
+};
+
+## Documented in spec.
+fn RepeatGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
+fn RepeatGenerator.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
+    def size = data::size;
+
+    return? ifIs { perGt(size, 0) }
+        {
+            def value = data::value;
+            box* := value;
+            makeRepeatGenerator(sub(size, 1), value)
+        }
+};
+
 
 ##
 ## Exported Definitions
@@ -29,29 +65,5 @@ export fn makeRepeatGenerator(size, optValue?) {
         };
 
     def value = ifValueOr { optValue* } { null };
-    return @RepeatGenerator{size, value}
-};
-
-## Documented in spec.
-fn @@RepeatGenerator.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return Generator_stdCollect(this, optFilterFunction*)
-};
-
-## Documented in spec.
-fn @@RepeatGenerator.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
-
-## Documented in spec.
-fn @@RepeatGenerator.nextValue(box) {
-    def size = this::size;
-
-    return? ifIs { perGt(size, 0) }
-        {
-            def value = this::value;
-            box* := value;
-            makeRepeatGenerator(sub(size, 1), value)
-        }
+    return makeObject(RepeatGenerator, SECRET, {size, value})
 };

@@ -3,42 +3,31 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## NullBox class.
+## `PegThunk` class
 ##
 
 #= language core.Lang0
+
+import ./protocol :: parse;
 
 
 ##
 ## Class Definition
 ##
+## Payload: {function: func}
 
 ## Secret used to control access to this class. TODO: Should probably be an
 ## anonymous selector.
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def NullBox = makeObjectClass("NullBox", SECRET);
+def PegThunk = makeObjectClass("PegThunk", SECRET);
 
 ## Documented in spec.
-fn NullBox.collect(optFilterFunction?) {
-    return []
-};
-
-## Documented in spec.
-fn NullBox.fetch() {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.nextValue(outBox) {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.store(value?) {
-    ## Return `value` but otherwise do nothing.
-    return? value*
+fn PegThunk.parse(box, input, items*) {
+    def data = objectDataOf(this, SECRET);
+    return? ifValue { data::function(items*) }
+        { thunkResult -> parse(thunkResult, box, input, items*) }
 };
 
 
@@ -46,5 +35,9 @@ fn NullBox.store(value?) {
 ## Exported Definitions
 ##
 
-## The one instance of the class.
-export def nullBox = makeObject(NullBox, SECRET);
+## Documented in spec.
+export fn makeParserThunk(function) {
+    return makeObject(PegThunk, SECRET, {function})
+};
+
+

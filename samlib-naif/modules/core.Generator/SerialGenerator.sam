@@ -15,6 +15,51 @@ import ./NullGenerator :: nullGenerator;
 
 
 ##
+## Class Definition
+##
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def SerialGenerator = makeObjectClass("SerialGenerator", SECRET);
+
+## Documented in spec.
+fn SerialGenerator.collect(optFilterFunction?) {
+    ## Just use the standard implementation.
+    return Generator_stdCollect(this, optFilterFunction*)
+};
+
+## Documented in spec.
+fn SerialGenerator.fetch() {
+    ## Just use the standard implementation.
+    return Generator_stdFetch(this)
+};
+
+## Documented in spec.
+fn SerialGenerator.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
+    def subGens = data::generators;
+
+    return? ifValue { get(subGens, 0) }
+        { firstGen ->
+            def moreGens = sliceInclusive(subGens, 1);
+
+            ifValue { nextValue(firstGen, box) }
+                { nextGenerator ->
+                    makeObject(SerialGenerator, SECRET,
+                        {generators: [nextGenerator, moreGens*]})
+                }
+                {
+                    ## First generator was voided.
+                    nextValue(makeSerialGenerator(moreGens*), box)
+                }
+        }
+};
+
+
+##
 ## Exported Definitions
 ##
 
@@ -29,36 +74,5 @@ export fn makeSerialGenerator(generators*) {
     ifIs { eq(get_size(generators), 1) }
         { return generators* };
 
-    return @SerialGenerator{generators}
-};
-
-## Documented in spec.
-fn @@SerialGenerator.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return Generator_stdCollect(this, optFilterFunction*)
-};
-
-## Documented in spec.
-fn @@SerialGenerator.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
-
-## Documented in spec.
-fn @@SerialGenerator.nextValue(box) {
-    def subGens = this::generators;
-
-    return? ifValue { get(subGens, 0) }
-        { firstGen ->
-            def moreGens = sliceInclusive(subGens, 1);
-
-            ifValue { nextValue(firstGen, box) }
-                { nextGenerator ->
-                    @SerialGenerator{generators: [nextGenerator, moreGens*]}
-                }
-                {
-                    ## First generator was voided.
-                    nextValue(makeSerialGenerator(moreGens*), box)
-                }
-        }
+    return makeObject(SerialGenerator, SECRET, {generators})
 };

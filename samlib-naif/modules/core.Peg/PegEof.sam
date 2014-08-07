@@ -3,10 +3,14 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## NullBox class.
+## `PegEof` class
 ##
 
 #= language core.Lang0
+
+import core.Box :: nullBox;
+
+import ./protocol :: parse;
 
 
 ##
@@ -18,27 +22,15 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def NullBox = makeObjectClass("NullBox", SECRET);
+def PegEof = makeObjectClass("PegEof", SECRET);
 
 ## Documented in spec.
-fn NullBox.collect(optFilterFunction?) {
-    return []
-};
-
-## Documented in spec.
-fn NullBox.fetch() {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.nextValue(outBox) {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.store(value?) {
-    ## Return `value` but otherwise do nothing.
-    return? value*
+fn PegEof.parse(box, input, .*) {
+    return? ifNot { nextValue(input, nullBox) }
+        {
+            box* := null;
+            input
+        }
 };
 
 
@@ -46,5 +38,5 @@ fn NullBox.store(value?) {
 ## Exported Definitions
 ##
 
-## The one instance of the class.
-export def nullBox = makeObject(NullBox, SECRET);
+## Documented in spec.
+export def eof = makeObject(PegEof, SECRET);

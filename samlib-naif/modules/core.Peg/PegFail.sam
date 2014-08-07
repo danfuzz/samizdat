@@ -3,10 +3,12 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## NullBox class.
+## `PegFail` class
 ##
 
 #= language core.Lang0
+
+import ./protocol :: parse;
 
 
 ##
@@ -18,27 +20,11 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def NullBox = makeObjectClass("NullBox", SECRET);
+def PegFail = makeObjectClass("PegFail", SECRET);
 
 ## Documented in spec.
-fn NullBox.collect(optFilterFunction?) {
-    return []
-};
-
-## Documented in spec.
-fn NullBox.fetch() {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.nextValue(outBox) {
-    ## Return void.
-};
-
-## Documented in spec.
-fn NullBox.store(value?) {
-    ## Return `value` but otherwise do nothing.
-    return? value*
+fn PegFail.parse(box, input, .*) {
+    ## Do nothing, and return void.
 };
 
 
@@ -46,5 +32,5 @@ fn NullBox.store(value?) {
 ## Exported Definitions
 ##
 
-## The one instance of the class.
-export def nullBox = makeObject(NullBox, SECRET);
+## Documented in spec.
+export def fail = makeObject(PegFail, SECRET);

@@ -1,0 +1,60 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `PegLookaheadFailure` class
+##
+
+#= language core.Lang0
+
+import core.Box :: nullBox;
+
+import ./PegAny :: any;
+import ./PegEof :: eof;
+import ./PegFail :: fail;
+import ./PegResult :: empty;
+import ./protocol :: parse;
+
+
+##
+## Class Definition
+##
+## Payload: {rule: rule}
+
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def PegLookaheadFailure = makeObjectClass("PegLookaheadFailure", SECRET);
+
+## Documented in spec.
+fn PegLookaheadFailure.parse(box, input, items*) {
+    def data = objectDataOf(this, SECRET);
+    return? ifNot { parse(data::rule, nullBox, input, items*) }
+        {
+            box* := null;
+            input
+        }
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export fn makeLookaheadFailure(rule) {
+    ## Optimiziation: Representation of `!.`.
+    ifIs { eq(rule, any) }
+        { return eof };
+
+    ## Optimization: Representation of `!()`.
+    ifIs { eq(rule, empty) }
+        { return fail };
+
+    ## The general case.
+    return makeObject(PegLookaheadFailure, SECRET, {rule})
+};
+

@@ -16,27 +16,36 @@ import ./rangeAdd :: *;
 
 
 ##
-## Exported Definitions
+## Class Definition
 ##
 
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def ClosedRange = makeObjectClass("ClosedRange", SECRET);
+
 ## Documented in spec.
-fn @@ClosedRange.collect(optFilterFunction?) {
+fn ClosedRange.collect(optFilterFunction?) {
     ## Just use the standard implementation.
     return stdCollect(this, optFilterFunction*)
 };
 
 ## Documented in spec.
-fn @@ClosedRange.fetch() {
+fn ClosedRange.fetch() {
     ## Just use the standard implementation.
     return Generator_stdFetch(this)
 };
 
 ## Documented in spec.
-fn @@ClosedRange.nextValue(box) {
-    return? ifValue { ge(this::size, 0) }
+fn ClosedRange.nextValue(box) {
+    def data = objectDataOf(this, SECRET);
+
+    return? ifValue { ge(data::size, 0) }
         { size ->
-            def firstValue = this::firstValue;
-            def increment = this::increment;
+            def firstValue = data::firstValue;
+            def increment = data::increment;
             box* := firstValue;
             makeClosedRange(
                 rangeAdd(firstValue, increment),
@@ -44,6 +53,11 @@ fn @@ClosedRange.nextValue(box) {
                 increment)
         }
 };
+
+
+##
+## Exported Definitions
+##
 
 ## Documented in spec.
 export fn makeClosedRange(firstValue, size, optIncrement?) {
@@ -53,7 +67,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
         { die("`size` must be an int.") };
 
     return ifIs { gt(size, 0) }
-        { @ClosedRange{firstValue, increment, size} }
+        { makeObject(ClosedRange, SECRET, {firstValue, increment, size}) }
         { nullGenerator }
 };
 
