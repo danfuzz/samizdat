@@ -13,7 +13,14 @@ import ./protocol :: resolve;
 ## Class definition
 ##
 
-fn @@Null.resolve(source) {
+## Secret used to control access to this class. TODO: Should probably be an
+## anonymous selector.
+def SECRET = makeUniqlet();
+
+## Class being defined here.
+def NullResolver = makeObjectClass("NullResolver", SECRET);
+
+fn NullResolver.resolve(source) {
     ## Return `void`, that is, fail to resolve. If we hit this point, then
     ## there is probably something actually wrong (e.g. insufficient entries
     ## on the `externals` link path), and it will probably end up percolating
@@ -26,5 +33,4 @@ fn @@Null.resolve(source) {
 ## Exported Definitions
 ##
 
-## TODO: Make it a real instance.
-export def nullResolver = null;
+export def nullResolver = makeObject(NullResolver, SECRET);
