@@ -53,6 +53,18 @@ static zvalue allocMap(zint size) {
 }
 
 /**
+ * Constructs and returns a map with the given mappings, without doing
+ * any processing (checking or sorting) on the mappings.
+ */
+static zvalue mapFromArrayUnchecked(zint size, zmapping *mappings) {
+    zvalue result = allocMap(size);
+    MapInfo *info = getInfo(result);
+
+    utilCpy(zmapping, info->elems, mappings, size);
+    return result;
+}
+
+/**
  * Constructs and returns a single-mapping map.
  */
 static zvalue makeMapping(zvalue key, zvalue value) {
@@ -253,12 +265,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
     }
 
     // Allocate, populate, and return the result.
-
-    zvalue result = allocMap(at);
-    MapInfo *info = getInfo(result);
-
-    utilCpy(zmapping, info->elems, mappings, at);
-    return result;
+    return mapFromArrayUnchecked(at, mappings);
 }
 
 
@@ -442,23 +449,29 @@ METH_IMPL(Map, keyList) {
 
 // Documented in header.
 METH_IMPL(Map, nextValue) {
-    // This yields the first element directly (if any), and returns a
-    // `SequenceGenerator` value to represent the rest.
     zvalue map = args[0];
     zvalue box = args[1];
-    zvalue first = METH_CALL(nthMapping, map, intFromZint(0));
+    MapInfo *info = getInfo(map);
+    zint size = info->size;
 
-    if (first == NULL) {
-        // `map` is empty.
-        return NULL;
-    } else {
-        METH_CALL(store, box, first);
-        return makeData(
-            CLS_MapGenerator,
-            mapFromArgs(
-                STR_map,   map,
-                STR_index, intFromZint(1),
-                NULL));
+    switch (size) {
+        case 0: {
+            // `map` is empty.
+            return NULL;
+        }
+        case 1: {
+            // `map` is a single element, so we can yield it directly.
+            METH_CALL(store, box, map);
+            return EMPTY_MAP;
+        }
+        default: {
+            // Make a mapping for the first element, yield it, and return
+            // a map of the remainder.
+            zmapping *elems = info->elems;
+            zvalue mapping = makeMapping(elems[0].key, elems[0].value);
+            METH_CALL(store, box, mapping);
+            return mapFromArrayUnchecked(size - 1, &elems[1]);
+        }
     }
 }
 

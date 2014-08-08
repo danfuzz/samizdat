@@ -4,6 +4,7 @@
 
 #include <stdarg.h>
 
+#include "type/Box.h"
 #include "type/Data.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -254,6 +255,25 @@ METH_IMPL(List, get_size) {
 }
 
 // Documented in header.
+METH_IMPL(List, nextValue) {
+    zvalue list = args[0];
+    zvalue box = args[1];
+    ListInfo *info = getInfo(list);
+    zint size = info->size;
+
+    if (size == 0) {
+        // `list` is empty.
+        return NULL;
+    }
+
+    // Yield the first element via the box, and return a list of the
+    // remainder. `listFrom` handles returning `EMPTY_LIST` when appropriate.
+
+    METH_CALL(store, box, info->elems[0]);
+    return listFrom(size - 1, &info->elems[1], NULL, 0, NULL);
+}
+
+// Documented in header.
 METH_IMPL(List, nth) {
     zvalue list = args[0];
     zvalue n = args[1];
@@ -400,6 +420,7 @@ MOD_INIT(List) {
     METH_BIND(List, fetch);
     METH_BIND(List, gcMark);
     METH_BIND(List, get_size);
+    METH_BIND(List, nextValue);
     METH_BIND(List, nth);
     METH_BIND(List, put);
     METH_BIND(List, reverse);

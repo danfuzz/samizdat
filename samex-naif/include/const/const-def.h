@@ -51,8 +51,6 @@ DEF_TOKEN(yield,                 "yield");
 DEF_TOKEN(zfalse,                "false");  // `z` avoids clash with C `false`.
 DEF_TOKEN(ztrue,                 "true");   // `z` avoids clash with C `true`.
 
-DEF_DATA(MapGenerator,           "MapGenerator");
-DEF_DATA(SequenceGenerator,      "SequenceGenerator");
 DEF_DATA(apply,                  "apply");
 DEF_DATA(call,                   "call");
 DEF_DATA(closure,                "closure");
