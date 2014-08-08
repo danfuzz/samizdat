@@ -2,12 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "const.h"
 #include "type/Box.h"
-#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/List.h"
-#include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/String.h"
 #include "type/define.h"
@@ -419,24 +416,21 @@ METH_IMPL(String, get_size) {
 
 // Documented in header.
 METH_IMPL(String, nextValue) {
-    // This yields the first element directly (if any), and returns a
-    // `SequenceGenerator` value to represent the rest.
-    zvalue seq = args[0];
+    zvalue string = args[0];
     zvalue box = args[1];
-    zvalue first = nth(seq, 0);
+    StringInfo *info = getInfo(string);
+    zint size = info->size;
 
-    if (first == NULL) {
-        // `seq` is empty.
+    if (size == 0) {
+        // `string` is empty.
         return NULL;
-    } else {
-        METH_CALL(store, box, first);
-        return makeData(
-            CLS_SequenceGenerator,
-            mapFromArgs(
-                STR_seq,   seq,
-                STR_index, intFromZint(1),
-                NULL));
     }
+
+    // Yield the first character via the box, and return a string of the
+    // remainder.
+
+    METH_CALL(store, box, stringFromZchar(info->elems[0]));
+    return stringFromZchars(size - 1, &info->elems[1]);
 }
 
 // Documented in header.
