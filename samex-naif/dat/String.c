@@ -149,6 +149,11 @@ static void freeArray(zchar *array) {
  * Shared implementation of `eq`, given valid string values.
  */
 static bool uncheckedEq(zvalue string1, zvalue string2) {
+    if (string1 == string2) {
+        // Easy out.
+        return true;
+    }
+
     StringInfo *info1 = getInfo(string1);
     StringInfo *info2 = getInfo(string2);
     zint size1 = info1->size;
@@ -174,6 +179,11 @@ static bool uncheckedEq(zvalue string1, zvalue string2) {
  * Shared implementation of `order`, given valid string values.
  */
 static zorder uncheckedZorder(zvalue string1, zvalue string2) {
+    if (string1 == string2) {
+        // Easy out.
+        return ZSAME;
+    }
+
     StringInfo *info1 = getInfo(string1);
     StringInfo *info2 = getInfo(string2);
     zchar *e1 = getElems(info1);
