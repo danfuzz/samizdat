@@ -4,9 +4,9 @@
 
 #= language core.Lang0
 
-import core.Collection :: del, keyList;
 import core.Generator :: filterAll, filterPump;
 import core.Sequence :: nthFromEnd, sliceExclusive;
+import proto.Collection :: del, keyList;
 
 import ./constructors1 :: *;
 import ./getters :: *;

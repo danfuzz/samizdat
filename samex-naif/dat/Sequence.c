@@ -7,7 +7,6 @@
 //
 
 #include "const.h"
-#include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"
@@ -112,9 +111,6 @@ static zvalue BI_Sequence_get = NULL;
 /** Builtin for `Sequence.keyList`. */
 static zvalue BI_Sequence_keyList = NULL;
 
-/** Builtin for `Sequence.nextValue`. */
-static zvalue BI_Sequence_nextValue = NULL;
-
 /** Builtin for `Sequence.nthMapping`. */
 static zvalue BI_Sequence_nthMapping = NULL;
 
@@ -145,28 +141,6 @@ METH_IMPL(Sequence, keyList) {
 }
 
 // Documented in header.
-METH_IMPL(Sequence, nextValue) {
-    // This yields the first element directly (if any), and returns a
-    // `SequenceGenerator` value to represent the rest.
-    zvalue seq = args[0];
-    zvalue box = args[1];
-    zvalue first = nth(seq, 0);
-
-    if (first == NULL) {
-        // `seq` is empty.
-        return NULL;
-    } else {
-        METH_CALL(store, box, first);
-        return makeData(
-            CLS_SequenceGenerator,
-            mapFromArgs(
-                STR_seq,   seq,
-                STR_index, intFromZint(1),
-                NULL));
-    }
-}
-
-// Documented in header.
 METH_IMPL(Sequence, nthMapping) {
     zvalue seq = args[0];
     zvalue n = args[1];
@@ -184,7 +158,6 @@ METH_IMPL(Sequence, nthMapping) {
 void seqBind(zvalue cls) {
     genericBind(SEL_NAME(get),        cls, BI_Sequence_get);
     genericBind(SEL_NAME(keyList),    cls, BI_Sequence_keyList);
-    genericBind(SEL_NAME(nextValue),  cls, BI_Sequence_nextValue);
     genericBind(SEL_NAME(nthMapping), cls, BI_Sequence_nthMapping);
 }
 
@@ -204,10 +177,6 @@ MOD_INIT(Sequence) {
     BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList), 0,
         stringFromUtf8(-1, "Sequence.keyList"));
     datImmortalize(BI_Sequence_keyList);
-
-    BI_Sequence_nextValue = makeBuiltin(2, 2, METH_NAME(Sequence, nextValue),
-        0, stringFromUtf8(-1, "Sequence.nextValue"));
-    datImmortalize(BI_Sequence_nextValue);
 
     BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
         0, stringFromUtf8(-1, "Sequence.nthMapping"));

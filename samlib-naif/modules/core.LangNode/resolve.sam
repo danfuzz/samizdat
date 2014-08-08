@@ -4,9 +4,9 @@
 
 #= language core.Lang0
 
-import core.Collection :: keyList;
 import core.Format;
 import core.Generator :: filterAll;
+import proto.Collection :: keyList;
 
 import ./constructors1 :: makeExport;
 import ./getters :: *;

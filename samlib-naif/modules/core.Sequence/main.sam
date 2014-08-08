@@ -10,9 +10,6 @@
 
 import proto.Number :: add, sub;
 
-## This just binds generics without adding exports.
-import ./SequenceGenerator;
-
 ## Re-export. Documented in spec.
 export import proto.Sequence :: *;
 

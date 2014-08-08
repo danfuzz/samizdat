@@ -2,6 +2,7 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include "type/Box.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/OneOff.h"
@@ -32,25 +33,71 @@ typedef struct {
     /** Number of characters. */
     zint size;
 
-    /** Characters of the string, in index order. */
+    /**
+     * Another string which contains the actual content, or `NULL` if the
+     * content is in `elems` (below).
+     */
+    zvalue contentString;
+
+    /** Offset into `contentString` where this string's content is. */
+    zint contentOffset;
+
+    /**
+     * Characters of the string, in index order, if `contentString` is
+     * `NULL`.
+     */
     zchar elems[/*size*/];
 } StringInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static StringInfo *getInfo(zvalue list) {
-    return datPayload(list);
+static StringInfo *getInfo(zvalue string) {
+    return datPayload(string);
 }
 
 /**
- * Allocates a string of the given size.
+ * Gets a pointer to the actual characters, given an info pointer.
+ */
+static zchar *getElems(StringInfo *info) {
+    if (info->contentString != NULL) {
+        return &getInfo(info->contentString)->elems[info->contentOffset];
+    }
+
+    return info->elems;
+}
+
+/**
+ * Allocates a string with the given size allocated with the value.
  */
 static zvalue allocString(zint size) {
     zvalue result =
         datAllocValue(CLS_String, sizeof(StringInfo) + size * sizeof(zchar));
 
     getInfo(result)->size = size;
+    return result;
+}
+
+/**
+ * Makes a string that refers to a content string. Does not do any type or
+ * bounds checking. It *does* shunt from an already-indirect string to the
+ * ultimate bearer of content.
+ */
+static zvalue makeIndirectString(zvalue string, zint offset, zint size) {
+    StringInfo *info = getInfo(string);
+
+    if (info->contentString != NULL) {
+        string = info->contentString;
+        offset += info->contentOffset;
+    }
+
+    zvalue result = datAllocValue(CLS_String, sizeof(StringInfo));
+    info = getInfo(result);
+
+    info->size = size;
+    info->contentString = string;
+    info->contentOffset = offset;
+
     return result;
 }
 
@@ -102,6 +149,11 @@ static void freeArray(zchar *array) {
  * Shared implementation of `eq`, given valid string values.
  */
 static bool uncheckedEq(zvalue string1, zvalue string2) {
+    if (string1 == string2) {
+        // Easy out.
+        return true;
+    }
+
     StringInfo *info1 = getInfo(string1);
     StringInfo *info2 = getInfo(string2);
     zint size1 = info1->size;
@@ -111,8 +163,8 @@ static bool uncheckedEq(zvalue string1, zvalue string2) {
         return false;
     }
 
-    zchar *e1 = info1->elems;
-    zchar *e2 = info2->elems;
+    zchar *e1 = getElems(info1);
+    zchar *e2 = getElems(info2);
 
     for (zint i = 0; i < size1; i++) {
         if (e1[i] != e2[i]) {
@@ -127,10 +179,15 @@ static bool uncheckedEq(zvalue string1, zvalue string2) {
  * Shared implementation of `order`, given valid string values.
  */
 static zorder uncheckedZorder(zvalue string1, zvalue string2) {
+    if (string1 == string2) {
+        // Easy out.
+        return ZSAME;
+    }
+
     StringInfo *info1 = getInfo(string1);
     StringInfo *info2 = getInfo(string2);
-    zchar *e1 = info1->elems;
-    zchar *e2 = info2->elems;
+    zchar *e1 = getElems(info1);
+    zchar *e2 = getElems(info2);
     zint size1 = info1->size;
     zint size2 = info2->size;
     zint size = (size1 < size2) ? size1 : size2;
@@ -249,7 +306,7 @@ zint utf8FromString(zint resultSize, char *result, zvalue string) {
 
     StringInfo *info = getInfo(string);
     zint size = info->size;
-    zchar *elems = info->elems;
+    zchar *elems = getElems(info);
     char *out = result;
 
     for (zint i = 0; i < size; i++) {
@@ -274,7 +331,7 @@ zint utf8SizeFromString(zvalue string) {
 
     StringInfo *info = getInfo(string);
     zint size = info->size;
-    zchar *elems = info->elems;
+    zchar *elems = getElems(info);
     zint result = 0;
 
     for (zint i = 0; i < size; i++) {
@@ -289,7 +346,7 @@ zchar zcharFromString(zvalue string) {
     assertStringSize1(string);
 
     StringInfo *info = getInfo(string);
-    return info->elems[0];
+    return getElems(info)[0];
 }
 
 // Documented in header.
@@ -298,7 +355,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 
     StringInfo *info = getInfo(string);
 
-    utilCpy(zchar, result, info->elems, info->size);
+    utilCpy(zchar, result, getElems(info), info->size);
 }
 
 
@@ -341,7 +398,7 @@ METH_IMPL(String, collect) {
     zvalue function = (argCount > 1) ? args[1] : NULL;
 
     StringInfo *info = getInfo(string);
-    zchar *elems = info->elems;
+    zchar *elems = getElems(info);
     zint size = info->size;
     zvalue result[size];
     zint at = 0;
@@ -365,7 +422,7 @@ METH_IMPL(String, del) {
     zvalue n = args[1];
 
     StringInfo *info = getInfo(string);
-    zchar *elems = info->elems;
+    zchar *elems = getElems(info);
     zint size = info->size;
     zint index = seqNthIndexLenient(n);
 
@@ -399,7 +456,7 @@ METH_IMPL(String, fetch) {
             return NULL;
         }
         case 1: {
-            return stringFromZchar(info->elems[0]);
+            return stringFromZchar(getElems(info)[0]);
         }
         default: {
             die("Invalid to call `fetch` on string with size > 1.");
@@ -408,9 +465,46 @@ METH_IMPL(String, fetch) {
 }
 
 // Documented in header.
+METH_IMPL(String, gcMark) {
+    zvalue string = args[0];
+    StringInfo *info = getInfo(string);
+
+    datMark(info->contentString);
+    return NULL;
+}
+
+// Documented in header.
 METH_IMPL(String, get_size) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
+}
+
+// Documented in header.
+METH_IMPL(String, nextValue) {
+    zvalue string = args[0];
+    zvalue box = args[1];
+    StringInfo *info = getInfo(string);
+    zint size = info->size;
+
+    switch (size) {
+        case 0: {
+            // `string` is empty.
+            return NULL;
+        }
+        case 1: {
+            // `string` is a single character, so it can be yielded directly.
+            METH_CALL(store, box, string);
+            return EMPTY_STRING;
+        }
+        default: {
+            // The hard case. Make a single-character string for the yield.
+            // Make an indirect string for the return value, to avoid the
+            // churn of copying and re-re-...-copying the content.
+            zchar *elems = getElems(info);
+            METH_CALL(store, box, stringFromZchar(elems[0]));
+            return makeIndirectString(string, 1, size - 1);
+        }
+    }
 }
 
 // Documented in header.
@@ -425,7 +519,7 @@ METH_IMPL(String, nth) {
         return NULL;
     }
 
-    return stringFromZchar(info->elems[index]);
+    return stringFromZchar(getElems(info)[index]);
 }
 
 // Documented in header.
@@ -437,7 +531,7 @@ METH_IMPL(String, put) {
     assertStringSize1(value);
 
     StringInfo *info = getInfo(string);
-    zchar *elems = info->elems;
+    zchar *elems = getElems(info);
     zint size = info->size;
     zint index = seqPutIndexStrict(size, n);
 
@@ -460,7 +554,7 @@ METH_IMPL(String, reverse) {
 
     StringInfo *info = getInfo(string);
     zint size = info->size;
-    zchar *elems = info->elems;
+    zchar *elems = getElems(info);
     zchar *arr = allocArray(size);
 
     for (zint i = 0, j = size - 1; i < size; i++, j--) {
@@ -483,8 +577,15 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
 
     if (start == -1) {
         return NULL;
+    }
+
+    zint size = end - start;
+
+    if (size > 16) {
+        // Share storage for large results.
+        return makeIndirectString(string, start, size);
     } else {
-        return stringFromZchars(end - start, &info->elems[start]);
+        return stringFromZchars(size, &getElems(info)[start]);
     }
 }
 
@@ -544,7 +645,7 @@ METH_IMPL(String, valueList) {
 
     StringInfo *info = getInfo(string);
     zint size = info->size;
-    zchar *elems = info->elems;
+    zchar *elems = getElems(info);
     zvalue result[size];
 
     for (zint i = 0; i < size; i++) {
@@ -566,7 +667,9 @@ MOD_INIT(String) {
     METH_BIND(String, debugString);
     METH_BIND(String, del);
     METH_BIND(String, fetch);
+    METH_BIND(String, gcMark);
     METH_BIND(String, get_size);
+    METH_BIND(String, nextValue);
     METH_BIND(String, nth);
     METH_BIND(String, put);
     METH_BIND(String, reverse);

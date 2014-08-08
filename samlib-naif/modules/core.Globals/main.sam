@@ -43,7 +43,7 @@ export fn fullEnvironment() {
 
     ## Exported as full modules.
     def $Bitwise     = loadModule(@external{name: "core.Bitwise"});
-    def $Collection  = loadModule(@external{name: "core.Collection"});
+    def $Collection  = loadModule(@external{name: "proto.Collection"});
     def $Format      = loadModule(@external{name: "core.Format"});
     def $Generator   = loadModule(@external{name: "core.Generator"});
     def $Number      = loadModule(@external{name: "proto.Number"});
@@ -68,9 +68,7 @@ export fn fullEnvironment() {
         $Range,
         $Sequence,
 
-        ## Special value. As of this writing, this *could* have been defined
-        ## in the early set as just `@NullBox`, but the intention is that
-        ## this become more complicated / opaque.
+        ## Special value.
         nullBox: $Box::nullBox,
 
         ## The one higher-layer function that gets exported to the environment.
