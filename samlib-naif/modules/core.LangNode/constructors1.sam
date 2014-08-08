@@ -4,8 +4,8 @@
 
 #= language core.Lang0
 
-import core.Collection :: del;
 import core.Generator :: filterAll;
+import proto.Collection :: del;
 
 
 ##
