@@ -567,8 +567,15 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
 
     if (start == -1) {
         return NULL;
+    }
+
+    zint size = end - start;
+
+    if (size > 16) {
+        // Share storage for large results.
+        return makeIndirectString(string, start, size);
     } else {
-        return stringFromZchars(end - start, &getElems(info)[start]);
+        return stringFromZchars(size, &getElems(info)[start]);
     }
 }
 
