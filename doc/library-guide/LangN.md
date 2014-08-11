@@ -9,7 +9,7 @@ of Samizdat language parsing and evaluation. There are modules for
 layers 0, 1, and 2.
 
 <br><br>
-### Generic Function Definitions
+### Method Definitions
 
 (none)
 

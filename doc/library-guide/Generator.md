@@ -20,7 +20,7 @@ exported to the standard global variable environment:
 
 
 <br><br>
-### Generic Function Definitions: `Generator` protocol.
+### Method Definitions: `Generator` protocol.
 
 #### `collect(generator, optFilterFunction?) -> list`
 

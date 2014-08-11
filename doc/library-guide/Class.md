@@ -5,7 +5,7 @@ Class
 -----
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(cls, other) -> class | void`
 
@@ -40,6 +40,16 @@ to sort such classes.
 
 <br><br>
 ### Primitive Definitions
+
+#### `classAddMethod(cls, selector, function) -> .`
+
+Adds a new method to the given class, binding `selector` to `function`.
+
+**Note:** This function is temporary scaffolding for use while transitioning
+from generic functions to selectors. Ultimately, a class definition should
+be made such that all its methods come in one fell atomic swoop rather than
+being added one at a time with a function such as this one (which also, FWIW,
+doesn't bother with the class's secret either).
 
 #### `className(cls) -> . | void`
 

@@ -131,6 +131,33 @@ static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
 //
 
 // Documented in header.
+zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
+    // TODO: Remove the heritage lookup once subclass tables get populated
+    // with their superclasses' methods.
+
+    assertHasClassClass(cls);
+    zvalue result = NULL;
+    bool superChecked = false;
+
+    zvalue checkCls = cls;
+    while (checkCls != NULL) {
+        zvalue *methods = getInfo(checkCls)->methods;
+        result = methods[index];
+        if (result != NULL) {
+            break;
+        }
+        superChecked = true;
+        checkCls = classParent(checkCls);
+    }
+
+    if (superChecked && (result != NULL)) {
+        getInfo(cls)->methods[index] = result;
+    }
+
+    return result;
+}
+
+// Documented in header.
 extern inline zint classIndexUnchecked(zvalue cls);
 
 
@@ -144,6 +171,28 @@ void assertHasClass(zvalue value, zvalue cls) {
         die("Expected class %s; got %s.",
             valDebugString(cls), valDebugString(value));
     }
+}
+
+// Documented in header.
+void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
+    assertHasClassClass(cls);
+    zint index = selectorIndex(selector);
+    zvalue *methods = getInfo(cls)->methods;
+
+    if (methods[index] != NULL) {
+        die("Cannot rebind method: %s%s",
+            valDebugString(cls), valDebugString(selector));
+    }
+
+    methods[index] = function;
+}
+
+// Documented in header.
+void classAddPrimitiveMethod(zvalue cls, zvalue selector, zint minArgs,
+        zint maxArgs, zfunction function, const char *functionName) {
+    zvalue name = stringFromUtf8(-1, functionName);
+    zvalue builtin = makeBuiltin(minArgs, maxArgs, function, 0, name);
+    classAddMethod(cls, selector, builtin);
 }
 
 // Documented in header.
@@ -267,6 +316,10 @@ METH_IMPL(Class, gcMark) {
     datMark(info->name);
     datMark(info->secret);
 
+    for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+        datMark(info->methods[i]);
+    }
+
     return NULL;
 }
 
@@ -317,13 +370,13 @@ MOD_INIT(objectModel) {
     CLS_Class->cls = CLS_Class;
 
     CLS_Value       = allocClass();
+    CLS_Selector    = allocClass();
     CLS_Data        = allocClass();
     CLS_DerivedData = allocClass();
     CLS_Object      = allocClass();
 
     // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
-    CLS_Generic     = allocClass();
     CLS_Jump        = allocClass();
     CLS_String      = allocClass();
     CLS_Uniqlet     = allocClass();
@@ -333,12 +386,12 @@ MOD_INIT(objectModel) {
 
     classInitHere(CLS_Class,       CLS_Value, "Class");
     classInitHere(CLS_Value,       NULL,      "Value");
+    classInitHere(CLS_Selector,    CLS_Value, "Selector");
     classInitHere(CLS_Data,        CLS_Value, "Data");
     classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
     classInitHere(CLS_Object,      CLS_Value, "Object");
 
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
-    classInitHere(CLS_Generic,     CLS_Value, "Generic");
     classInitHere(CLS_Jump,        CLS_Value, "Jump");
     classInitHere(CLS_String,      CLS_Data,  "String");
     classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
@@ -348,12 +401,12 @@ MOD_INIT(objectModel) {
     if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
         die("Mismatched index for `Builtin`: should be %lld",
             classIndex(CLS_Builtin));
-    } else if (classIndex(CLS_Generic) != DAT_INDEX_GENERIC) {
-        die("Mismatched index for `Generic`: should be %lld",
-            classIndex(CLS_Generic));
     } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
             classIndex(CLS_Jump));
+    } else if (classIndex(CLS_Selector) != DAT_INDEX_SELECTOR) {
+        die("Mismatched index for `Selector`: should be %lld",
+            classIndex(CLS_Selector));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.

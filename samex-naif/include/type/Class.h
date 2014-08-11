@@ -25,6 +25,20 @@ extern zvalue CLS_Class;
 void assertHasClass(zvalue value, zvalue cls);
 
 /**
+ * Adds a new method to a class. TODO: This function should get removed once
+ * the system can cleanly construct classes with their methods in one go.
+ */
+void classAddMethod(zvalue cls, zvalue selector, zvalue function);
+
+/**
+ * Adds a new primitive method to a class. TODO: This function should get
+ * removed once the system can cleanly construct classes with their methods
+ * in one go.
+ */
+void classAddPrimitiveMethod(zvalue cls, zvalue selector, zint minArgs,
+        zint maxArgs, zfunction function, const char *functionName);
+
+/**
  * Compares two classes for equality. It is an error to pass a non-class.
  */
 bool classEq(zvalue cls1, zvalue cls2);

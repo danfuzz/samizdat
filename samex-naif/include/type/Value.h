@@ -21,29 +21,29 @@
 /** Class value for in-model class `Value`. */
 extern zvalue CLS_Value;
 
-/** Generic `debugName(value)`: Documented in spec. */
+/** Method `debugName(value)`: Documented in spec. */
 SEL_DECL(1, 1, debugName);
 
-/** Generic `debugString(value)`: Documented in spec. */
+/** Method `debugString(value)`: Documented in spec. */
 SEL_DECL(1, 1, debugString);
 
-/** Generic `gcMark(value)`: Does GC marking for the given value. */
+/** Method `gcMark(value)`: Does GC marking for the given value. */
 SEL_DECL(1, 1, gcMark);
 
-/** Generic `perEq(value, other)`: Documented in spec. */
+/** Method `perEq(value, other)`: Documented in spec. */
 SEL_DECL(2, 2, perEq);
 
-/** Generic `perOrder(value, other)`: Documented in spec. */
+/** Method `perOrder(value, other)`: Documented in spec. */
 SEL_DECL(2, 2, perOrder);
 
 /**
- * Generic `totalEq(value, value)`: Compares two values for equality /
+ * Method `totalEq(value, value)`: Compares two values for equality /
  * sameness. Documented in spec.
  */
 SEL_DECL(2, 2, totalEq);
 
 /**
- * Generic `totalOrder(value, value)`: Compares two values with respect to the
+ * Method `totalOrder(value, value)`: Compares two values with respect to the
  * total order of values. Documented in spec.
  */
 SEL_DECL(2, 2, totalOrder);

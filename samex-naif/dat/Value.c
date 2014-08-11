@@ -38,6 +38,10 @@ char *valDebugString(zvalue value) {
         return utilStrdup("(null)");
     }
 
+    if (SEL_NAME(debugString) == NULL) {
+        die("Too early to call `debugString`.");
+    }
+
     return utf8DupFromString(METH_CALL(debugString, value));
 }
 
@@ -204,11 +208,11 @@ MOD_INIT(Value) {
     // Initializing `Value` also initializes the rest of the core classes.
     // This also gets all the protocols indirectly via their implementors.
     MOD_USE_NEXT(Class);
+    MOD_USE_NEXT(Selector);
     MOD_USE_NEXT(Object);
     MOD_USE_NEXT(Data);
     MOD_USE_NEXT(DerivedData);
     MOD_USE_NEXT(Builtin);
-    MOD_USE_NEXT(Generic);
     MOD_USE_NEXT(Int);
     MOD_USE_NEXT(Jump);
     MOD_USE_NEXT(List);

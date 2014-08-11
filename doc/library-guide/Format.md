@@ -9,7 +9,7 @@ and formatting them into strings. Many of the functions are used
 implicitly by the string interpolation system.
 
 <br><br>
-### Generic Function Definitions
+### Method Definitions
 
 (none)
 

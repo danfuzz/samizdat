@@ -9,7 +9,7 @@ of the system.
 
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `debugName(type) -> . | void`
 
@@ -36,7 +36,7 @@ order.
 
 
 <br><br>
-### Generic Function Definitions: `Function` protocol
+### Method Definitions: `Function` protocol
 
 #### `call(builtin, args*) -> . | void`
 

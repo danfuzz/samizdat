@@ -60,32 +60,26 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     zint index = get_classIndex(function);
 
     // The first three cases are how we bottom out the recursion, instead of
-    // calling `funCall0` on the `call` methods for `Function`, `Generic`, or
-    // `Jump`.
+    // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or
+    // `Selector`.
     switch (index) {
         case DAT_INDEX_BUILTIN: {
             return builtinCall(function, argCount, args);
         }
-        case DAT_INDEX_GENERIC: {
-            return genericCall(function, argCount, args);
-        }
         case DAT_INDEX_JUMP: {
             return jumpCall(function, argCount, args);
         }
+        case DAT_INDEX_SELECTOR: {
+            return selectorCall(function, argCount, args);
+        }
         default: {
             // The original `function` is some kind of higher layer function.
-            // Use generic dispatch to get to it: Prepend `function` as a new
-            // first argument, and call the generic `call` via a recursive
-            // call to `funCall0` to avoid the stack/frame setup.
-            zvalue callImpl = genericFindByIndex(SEL_NAME(call), index);
-            if (callImpl == NULL) {
-                die("Cannot call non-function: %s", valDebugString(function));
-            } else {
-                zvalue newArgs[argCount + 1];
-                newArgs[0] = function;
-                utilCpy(zvalue, &newArgs[1], args, argCount);
-                return funCall0(callImpl, argCount + 1, newArgs);
-            }
+            // Use method dispatch to get to it: Prepend `function` as a new
+            // first argument, and call the method `call` via its selector.
+            zvalue newArgs[argCount + 1];
+            newArgs[0] = function;
+            utilCpy(zvalue, &newArgs[1], args, argCount);
+            return selectorCall(SEL_NAME(call), argCount + 1, newArgs);
         }
     }
 }

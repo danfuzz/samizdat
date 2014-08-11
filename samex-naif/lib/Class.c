@@ -12,6 +12,12 @@
 //
 
 // Documented in spec.
+FUN_IMPL_DECL(classAddMethod) {
+    classAddMethod(args[0], args[1], args[2]);
+    return NULL;
+}
+
+// Documented in spec.
 FUN_IMPL_DECL(className) {
     return className(args[0]);
 }

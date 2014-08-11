@@ -11,23 +11,21 @@
 
 #include "type/Value.h"
 
-#if DAT_USE_METHOD_TABLE
-
 /** Class value for in-model class `Selector`. */
 extern zvalue CLS_Selector;
+
+/** Global function `makeAnonymousSelector`: Documented in spec. */
+extern zvalue FUN_Selector_makeAnonymousSelector;
+
+/** Global function `selectorFromName`: Documented in spec. */
+extern zvalue FUN_Selector_selectorFromName;
+
 
 /**
  * Makes an anonymous selector. The `methodName` is used as the "debugging"
  * name but does not have any effect on lookup.
  */
 zvalue makeAnonymousSelector(zvalue methodName);
-
-/**
- * Gets the selector that corresponds to the given method name, but only if
- * it already exists. Returns `NULL` if there is no existing selector that
- * corresponds to `methodName`.
- */
-zvalue selectorFromExistingName(zvalue methodName);
 
 /**
  * Gets the selector that corresponds to the given method name, creating it
@@ -39,7 +37,5 @@ zvalue selectorFromName(zvalue methodName);
  * Gets the integer index of the given selector.
  */
 zint selectorIndex(zvalue selector);
-
-#endif
 
 #endif

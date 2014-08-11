@@ -8,7 +8,7 @@ The `Sequence` protocol is for collections keyed by zero-based int index.
 All `Sequence`s are also `Collection`s.
 
 
-### Generic Function Definitions: `Sequence` protocol
+### Method Definitions: `Sequence` protocol
 
 #### `get(sequence, key) -> . | void`
 
@@ -33,7 +33,7 @@ given `n`.
 
 #### `nth(sequence, n) -> . | void`
 
-(Implementation of `OneOff` generic function.)
+(Implementation of `OneOff` method.)
 
 Returns the nth (zero-based) element of the sequence.
 

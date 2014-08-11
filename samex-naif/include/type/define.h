@@ -13,15 +13,16 @@
 
 #include "type/Class.h"
 #include "type/Function.h"
-#include "type/Generic.h"
 #include "type/Selector.h"
 #include "type/String.h"
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(cls, name) \
     do { \
-        genericBindPrim(GFN_##name, CLS_##cls, METH_NAME(cls, name), \
-            #cls ":" #name); \
+        classAddPrimitiveMethod( \
+            CLS_##cls, SEL_NAME(name), \
+            SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
+            METH_NAME(cls, name), #cls "." #name); \
     } while (0)
 
 /** Variable definition for a method selector. */
@@ -33,10 +34,7 @@
  */
 #define SEL_INIT(name) \
     do { \
-        SEL_NAME(name) = makeGeneric( \
-            SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
-            stringFromUtf8(-1, #name)); \
-        datImmortalize(SEL_NAME(name)); \
+        SEL_NAME(name) = selectorFromName(stringFromUtf8(-1, #name)); \
     } while (0)
 
 #endif

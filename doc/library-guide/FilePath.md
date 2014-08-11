@@ -20,7 +20,7 @@ I/O.
 
 
 <br><br>
-### Generic Function Definitions
+### Method Definitions
 
 (none)
 

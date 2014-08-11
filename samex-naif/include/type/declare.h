@@ -36,7 +36,7 @@
         zvalue thisFunction, zint argCount, const zvalue *args)
 
 /** Variable name for a method selector. */
-#define SEL_NAME(name) GFN_##name
+#define SEL_NAME(name) SEL_##name
 
 /** Declaration for a method selector. */
 #define SEL_DECL(minArgs, maxArgs, name) \

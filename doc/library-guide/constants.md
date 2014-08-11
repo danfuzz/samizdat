@@ -11,7 +11,7 @@ functions.
 elsewhere in the library documentation.
 
 <br><br>
-### Generic Function Definitions
+### Method Definitions
 
 (none)
 

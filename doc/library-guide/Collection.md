@@ -12,11 +12,11 @@ The `Collection` protocol is defined in a `proto.` module as one
 would expect.
 
 <br><br>
-### Generic Function Definitions: `Collection` protocol
+### Method Definitions: `Collection` protocol
 
 #### `cat(collection, more*) -> collection`
 
-(Implementation of `OneOff` generic function.)
+(Implementation of `OneOff` method.)
 
 Concatenates the given collections.
 
@@ -32,13 +32,13 @@ collection.
 
 #### `get(collection, key) -> . | void`
 
-(Implementation of `OneOff` generic function.)
+(Implementation of `OneOff` method.)
 
 Gets the value in `collection` associated with the given `key`.
 
 #### `get_size(collection) -> int`
 
-(Implementation of `OneOff` generic function.)
+(Implementation of `OneOff` method.)
 
 Gets the size (element count) of the `collection`.
 

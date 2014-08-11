@@ -4,6 +4,7 @@
 
 #include <time.h>  // Used for "chatty gc."
 
+#include "type/Class.h"
 #include "type/Function.h"
 #include "type/Value.h"
 #include "zlimits.h"
@@ -227,6 +228,12 @@ static void doGc(void) {
 
 // Documented in header.
 zvalue datAllocValue(zvalue cls, zint extraBytes) {
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        if (CLS_Class != NULL) {
+            assertValid(cls);
+        }
+    }
+
     if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
         datGc();
     } else {

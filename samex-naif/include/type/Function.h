@@ -14,15 +14,15 @@
 #include "type/Value.h"
 
 /**
- * Generic `call(function, args*)`: Generic for dispatching to a function
+ * Method `call(function, args*)`: Method for dispatching to a function
  * calling mechanism (how meta). Documented in spec.
  */
 SEL_DECL(1, -1, call);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a function (regular or generic), and `args` must be a list or `NULL`
- * (the latter treated like an empty list).
+ * a function, and `args` must be a list or `NULL` (the latter treated like
+ * an empty list).
  */
 zvalue funApply(zvalue function, zvalue args);
 
@@ -80,13 +80,13 @@ zvalue mustNotYield(zvalue value)
     DAT_CONCAT(funCallWith, argCount)(__VA_ARGS__)
 
 /**
- * `METH_APPLY(name, args)`: Calls a generic function by (unadorned) name,
+ * `METH_APPLY(name, args)`: Calls a metho by (unadorned) name,
  * with a variable number of arguments passed as a list.
  */
 #define METH_APPLY(name, args) funApply(SEL_NAME(name), args)
 
 /**
- * `METH_CALL(name, arg, ...)`: Calls a generic function by (unadorned) name,
+ * `METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed in the usual C style.
  */
 #define METH_CALL(name, ...) FUN_CALL(SEL_NAME(name), __VA_ARGS__)

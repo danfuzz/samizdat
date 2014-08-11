@@ -11,6 +11,7 @@
 
 #include "dat.h"
 #include "util.h"
+#include "zlimits.h"
 
 
 enum {
@@ -21,13 +22,13 @@ enum {
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */
-    DAT_INDEX_BUILTIN = 5,
-
-    /** The class index for class `Generic`. */
-    DAT_INDEX_GENERIC = 6,
+    DAT_INDEX_BUILTIN = 6,
 
     /** The class index for class `Jump`. */
     DAT_INDEX_JUMP = 7,
+
+    /** The class index for class `Selector`. */
+    DAT_INDEX_SELECTOR = 2,
 
     /** Whether to be paranoid about corruption checks. */
     DAT_MEMORY_PARANOIA = false,
@@ -83,6 +84,12 @@ typedef struct {
      * order.
      */
     zint classId;
+
+    /**
+     * Bindings from method selectors to functions, keyed off of selector
+     * index number.
+     */
+    zvalue methods[DAT_MAX_SELECTORS];
 } ClassInfo;
 
 /**
@@ -106,10 +113,17 @@ typedef struct {
 
 /**
  * Actual implementation of builtin function calling. This is where
- * short-circuited generic function dispatch of `call` on class `Builtin`
+ * short-circuited method dispatch of `call` on class `Builtin`
  * lands.
  */
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
+ * Finds a method on a class, if bound. Returns the bound function if found
+ * or `NULL` if not. Does not check to see if `index` is in the valid range
+ * for a selector index.
+ */
+zvalue classFindMethodBySelectorIndex(zvalue cls, zint index);
 
 /**
  * Gets the index for a given class value. The given value *must* be a
@@ -120,24 +134,19 @@ inline zint classIndexUnchecked(zvalue cls) {
 }
 
 /**
- * Actual implementation of generic function calling. This is where
- * short-circuited generic function dispatch of `call` on class `Generic`
- * lands.
- */
-zvalue genericCall(zvalue function, zint argCount, const zvalue *args);
-
-/**
- * Gets the function bound to the given generic for the given class index,
- * if any. Returns `NULL` if there is no binding.
- */
-zvalue genericFindByIndex(zvalue generic, zint index);
-
-/**
  * Actual implementation of nonlocal jump calling. This is where
- * short-circuited generic function dispatch of `call` on class `Jump`
- * lands.
+ * short-circuited method dispatch of `call` on class `Jump` lands.
  */
 zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
+
+/**
+ * Actual implementation of selector calling. This is where
+ * short-circuited method dispatch of `call` on class `Selector`
+ * lands. This calls the method bound to the given selector, with the given
+ * arguments. The method is looked up on `args[0]`. As such, `argCount` must
+ * be at least `1`.
+ */
+zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args);
 
 /**
  * Gets the `CacheEntry` for the given map/key pair.

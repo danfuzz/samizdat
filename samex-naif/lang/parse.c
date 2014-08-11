@@ -6,6 +6,7 @@
 #include "type/Bool.h"
 #include "type/Class.h"
 #include "type/DerivedData.h"
+#include "type/Function.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
@@ -951,8 +952,8 @@ DEF_PARSE(genericBind) {
         METH_CALL(cat,
             listFrom1(mapFrom1(STR_name, STR_this)),
             formals));
-    return makeCall(REFS(genericBind),
-        listFrom3(makeVarFetch(name), bind, fullClosure));
+    return makeCall(REFS(classAddMethod),
+        listFrom3(bind, makeVarFetch(name), fullClosure));
 }
 
 // Documented in spec.
@@ -963,16 +964,10 @@ DEF_PARSE(genericDef) {
     MATCH_OR_REJECT(CH_DOT);
     zvalue name = PARSE_OR_REJECT(name);
     MATCH_OR_REJECT(CH_OPAREN);
-    zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
 
-    zvalue fullFormals = METH_CALL(cat, listFrom1(EMPTY_MAP), formals);
-    zvalue call = makeCall(
-        REFS(makeGeneric),
-        listFrom3(
-            makeLiteral(name),
-            makeLiteral(formalsMinArgs(fullFormals)),
-            makeLiteral(formalsMaxArgs(fullFormals))));
+    zvalue call = makeCall(REFS(selectorFromName),
+        listFrom1(makeLiteral(name)));
 
     return withTop(makeVarDef(name, call));
 }

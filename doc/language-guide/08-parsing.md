@@ -10,7 +10,7 @@ Since parsing is something so many programs have to do, Samizdat
 offers language-level facilities for building parsers.
 
 The foundation of parsing is a parser value. A parer value is
-a value which binds the `parse` generic function, with specific requirements
+a value which binds the `parse` method, with specific requirements
 for formal arguments and behavior. See the `Peg` section in the library
 specification for more details.
 

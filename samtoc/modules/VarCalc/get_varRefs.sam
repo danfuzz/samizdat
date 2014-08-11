@@ -20,7 +20,7 @@ fn catVarRefs(nodes*) {
 ## Exported Definitions
 ##
 
-## `node.get_varRefs()`: Generic that returns free variable references of
+## `node.get_varRefs()`: Method that returns free variable references of
 ## `node`, as list of names.
 export fn get_varRefs(node) {
     return switch (get_class(node)) {

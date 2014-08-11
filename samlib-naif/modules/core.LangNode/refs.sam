@@ -16,11 +16,11 @@ import ./constructors1 :: makeCall, makeLiteral, makeVarFetch;
 def NAMES = [
     "break",
     "cat",
+    "classAddMethod",
     "collect",
     "continue",
     "eq",
     "ge",
-    "genericBind",
     "get",
     "get_size",
     "gt",
@@ -37,7 +37,6 @@ def NAMES = [
     "lt",
     "makeData",
     "makeDerivedDataClass",
-    "makeGeneric",
     "makeList",
     "makeValueMap",
     "maybeValue",
@@ -49,6 +48,7 @@ def NAMES = [
     "perLt",
     "perNe",
     "return",
+    "selectorFromName",
     "totalNe"
 ];
 

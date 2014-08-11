@@ -21,7 +21,7 @@ be their own dependencies.
 
 
 <br><br>
-### Generic Function Definitions: `Loader` protocol
+### Method Definitions: `Loader` protocol
 
 #### `readResource(loader, source, format) -> . | void`
 
@@ -64,8 +64,7 @@ It is an error (terminating the runtime) if `source` does not correspond to
 a module known to `loader`. It is also an error (terminating the runtime)
 if `source` is not a valid source specifier.
 
-**Note:** This function is implemented in terms of the `resolve()` generic
-function.
+**Note:** This function is implemented in terms of the `resolve()` method.
 
 #### `loadResource(loader, source, format) -> .`
 
@@ -81,7 +80,7 @@ See "Resource Import" in the language guide for more details on the
 available `format`s.
 
 **Note:** This function is implemented in terms of the `readResource()`
-generic function.
+method.
 
 #### `makeInternalLoader(path, globals, nextLoader) -> InternalLoader`
 

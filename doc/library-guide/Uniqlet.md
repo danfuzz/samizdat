@@ -5,7 +5,7 @@ Uniqlet
 -------
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(uniqlet, other) -> uniqlet | void`
 

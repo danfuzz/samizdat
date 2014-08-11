@@ -15,7 +15,7 @@
 /** Class value for in-model class `DerivedData`. */
 extern zvalue CLS_DerivedData;
 
-/** Generic `dataOf(derivedData)`: Documented in spec. */
+/** Method `dataOf(derivedData)`: Documented in spec. */
 SEL_DECL(1, 1, dataOf);
 
 /** Global function `makeData`: Documented in spec. */
@@ -32,7 +32,7 @@ extern zvalue FUN_DerivedData_makeDerivedDataClass;
 zvalue makeData(zvalue cls, zvalue data);
 
 /**
- * Calls generic `dataOf()`.
+ * Calls the method `dataOf()`.
  */
 zvalue dataOf(zvalue value);
 

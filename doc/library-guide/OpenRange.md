@@ -9,7 +9,7 @@ either numeric or character values.
 
 
 <br><br>
-### Generic Function Definitions: `Generator` protocol.
+### Method Definitions: `Generator` protocol.
 
 #### `collect(range) -> list`
 

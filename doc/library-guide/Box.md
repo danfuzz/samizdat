@@ -10,11 +10,11 @@ and not by "happenstance content." That is, two boxes should only be
 considered "equal" if they are indistinguishable, even in the face of
 calling mutating operations.
 
-The `Box` module provides the generic functions of the `Box` protocol,
+The `Box` module provides the methods of the `Box` protocol,
 as well as related constructors and constants.
 
 The `Box` protocol is defined in a `proto.` module as one
-would expect. However, as a special case, the `Box` generics and the
+would expect. However, as a special case, the `Box` methods and the
 special value `nullBox` are also exported to the global variable environment.
 This is because they are so commonly used (sometimes overtly, and sometimes
 "behind the scenes").
@@ -25,7 +25,7 @@ or void if it has no stored value.
 
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(box, other) -> box | void`
 
@@ -46,7 +46,7 @@ different boxes have no defined order.
 
 
 <br><br>
-### Generic Function Definitions: `Box` protocol
+### Method Definitions: `Box` protocol
 
 #### `collect(box, optFilterFunction?) -> list`
 

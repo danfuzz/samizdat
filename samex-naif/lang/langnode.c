@@ -6,6 +6,7 @@
 #include "type/Bool.h"
 #include "type/Class.h"
 #include "type/DerivedData.h"
+#include "type/Function.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"

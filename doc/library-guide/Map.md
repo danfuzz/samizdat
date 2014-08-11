@@ -9,7 +9,7 @@ keys to values, where the keys are ordered by the total order of values
 as defined by the global function `order()`.
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(map, other) -> map | void`
 
@@ -31,7 +31,7 @@ key lists, ordering is by comparing corresponding lists of values, in
 key order.
 
 <br><br>
-### Generic Function Definitions: One-Offs
+### Method Definitions: One-Offs
 
 #### `get_key(map) -> .`
 
@@ -45,7 +45,7 @@ It is a terminal error if `map` does not contain exactly one mapping.
 
 
 <br><br>
-### Generic Function Definitions: `Collection` protocol
+### Method Definitions: `Collection` protocol
 
 #### `cat(map, more*) -> map`
 
@@ -96,7 +96,7 @@ sorted keys.
 
 
 <br><br>
-### Generic Function Definitions: `Generator` protocol.
+### Method Definitions: `Generator` protocol.
 
 #### `collect(map, optFilterFunction?) -> list`
 

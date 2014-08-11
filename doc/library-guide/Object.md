@@ -6,7 +6,7 @@ Object
 
 
 <br><br>
-### Generic Function Definitions: `Object` protocol
+### Method Definitions: `Object` protocol
 
 #### `objectDataOf(obj, secret) -> . | void`
 

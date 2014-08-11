@@ -9,7 +9,7 @@ character values, with a finite size.
 
 
 <br><br>
-### Generic Function Definitions: `Generator` protocol.
+### Method Definitions: `Generator` protocol.
 
 #### `collect(range) -> list`
 

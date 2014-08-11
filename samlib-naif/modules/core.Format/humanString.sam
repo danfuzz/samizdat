@@ -13,7 +13,7 @@ import core.Generator :: makeFilterGenerator;
 import ./sourceGeneral :: sourceGeneral;
 
 
-## Generic for producing a human-oriented string of the argument.
+## Function for producing a human-oriented string of the argument.
 export fn humanString(value) {
     return ifSwitch(
         { get_class(value) },

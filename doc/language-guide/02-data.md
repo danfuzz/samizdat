@@ -253,14 +253,12 @@ A `Builtin` is an encapsulated potential computation, defined at the
 lowest layer of the system. It is a kind of `Function` (see which).
 
 
-#### Generic
+#### Selector
 
-A `Generic` is a generic function. That is, it is an encapsulated mapping
-from classes to functions, in this case based on the class of the first
-argument passed to the generic function when called. It is a kind of
-`Function` (see which).
-
-See the language guide section on generic functions for more details.
+A `Selector` is an identifier used to name methods. Selectors are the
+keys bound to functions in a class's table of methods, and selectors
+themselves can be invoked as functions to perform method dispatch on
+the first argument of the function call.
 
 
 #### Box
@@ -392,8 +390,7 @@ if any. And it will always return void for payload-free derived data values.
 ### Protocols
 
 There are a number of type-like things in Samizdat, which are effectively
-defined as types (per se) which have implemented a particular set of methods
-(that is, added bindings to a particular set of generics).
+defined as types (per se) which have implemented a particular set of methods.
 
 Protocols are not first-class within Samizdat but they have significance
 nonetheless. The following are the protocols currently defined.
@@ -429,7 +426,7 @@ method bindings (preferably pure functions) and a particular contract.
 
 The contract is as follows:
 
-* The generic function `nextValue` always accepts exactly two arguments,
+* The method `nextValue` always accepts exactly two arguments,
   a generator and a promise (or equivalent). (Promises are described
   more completely in the section on boxes.)
 
@@ -454,7 +451,7 @@ from `nextValue` to determine whether the generator has been voided, rather
 than on what gets done (or not) to the promise passed in as the first
 argument.
 
-Generators also bind a couple other generic functions. See the library
+Generators also bind a couple other methods. See the library
 specification for `Generator` for more details.
 
 As a convenience, the global `nullGenerator` is a voided generator.

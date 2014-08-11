@@ -7,15 +7,15 @@ core.Bitwise / proto.Bitwise
 `Bitwise` is a protocol for values that can be treated as fixed-width
 lists of bits.
 
-Almost all of the generics in this protocol are defined to return the same
+Almost all of the methods in this protocol are defined to return the same
 class that they operate on (as a first argument). Some of the multiple-argument
-generics in this protocol are defined to take arguments only of the same
+methods in this protocol are defined to take arguments only of the same
 classes, but a couple take a second argument specifically of class `Int`
 (as noted).
 
 
 <br><br>
-### Generic Function Definitions: `Bitwise` protocol
+### Method Definitions: `Bitwise` protocol
 
 #### `and(bitwise1, bitwise2) -> bitwise`
 
