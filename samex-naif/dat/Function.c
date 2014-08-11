@@ -66,9 +66,6 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
         case DAT_INDEX_BUILTIN: {
             return builtinCall(function, argCount, args);
         }
-        case DAT_INDEX_GENERIC: {
-            die("No more generics.");
-        }
         case DAT_INDEX_JUMP: {
             return jumpCall(function, argCount, args);
         }

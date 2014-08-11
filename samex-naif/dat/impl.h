@@ -24,11 +24,8 @@ enum {
     /** The class index for class `Builtin`. */
     DAT_INDEX_BUILTIN = 6,
 
-    /** The class index for class `Generic`. */
-    DAT_INDEX_GENERIC = 7,
-
     /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 8,
+    DAT_INDEX_JUMP = 7,
 
     /** The class index for class `Selector`. */
     DAT_INDEX_SELECTOR = 2,

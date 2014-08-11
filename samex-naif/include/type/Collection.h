@@ -17,7 +17,6 @@
 #define _TYPE_COLLECTION_H_
 
 #include "type/Generator.h"  // Because all collections are generators.
-#include "type/Generic.h"
 #include "type/OneOff.h"
 
 

@@ -377,7 +377,6 @@ MOD_INIT(objectModel) {
 
     // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
-    CLS_Generic     = allocClass();
     CLS_Jump        = allocClass();
     CLS_String      = allocClass();
     CLS_Uniqlet     = allocClass();
@@ -393,7 +392,6 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Object,      CLS_Value, "Object");
 
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
-    classInitHere(CLS_Generic,     CLS_Value, "Generic");
     classInitHere(CLS_Jump,        CLS_Value, "Jump");
     classInitHere(CLS_String,      CLS_Data,  "String");
     classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
@@ -403,9 +401,6 @@ MOD_INIT(objectModel) {
     if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
         die("Mismatched index for `Builtin`: should be %lld",
             classIndex(CLS_Builtin));
-    } else if (classIndex(CLS_Generic) != DAT_INDEX_GENERIC) {
-        die("Mismatched index for `Generic`: should be %lld",
-            classIndex(CLS_Generic));
     } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
             classIndex(CLS_Jump));
