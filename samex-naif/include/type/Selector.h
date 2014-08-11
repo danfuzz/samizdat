@@ -14,6 +14,13 @@
 /** Class value for in-model class `Selector`. */
 extern zvalue CLS_Selector;
 
+/** Global function `makeAnonymousSelector`: Documented in spec. */
+extern zvalue FUN_Selector_makeAnonymousSelector;
+
+/** Global function `selectorFromName`: Documented in spec. */
+extern zvalue FUN_Selector_selectorFromName;
+
+
 /**
  * Makes an anonymous selector. The `methodName` is used as the "debugging"
  * name but does not have any effect on lookup.

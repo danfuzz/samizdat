@@ -49,7 +49,18 @@ dispatch on `args[0]`.
 <br><br>
 ### Primitive Definitions
 
-(none)
+#### `makeAnonymousSelector(name) -> selector`
+
+Creates and returns a new anonymous selector. Even though anonymous,
+it must have a name (which must be a string). The anonymity comes from
+the fact that the selector returned from this function will never be
+found by doing a name lookup, as with `selectorFromName`.
+
+#### `selectorFromName(name) -> selector`
+
+Finds and returns the (non-anonymous) selector with the given `name` (which
+must be a string). If the so-named selector has not been created yet, this
+function creates it.
 
 
 <br><br>

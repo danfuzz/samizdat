@@ -98,10 +98,12 @@ PRIM_DEF(Number_sign,             SEL_NAME(sign));
 PRIM_DEF(Number_sub,              SEL_NAME(sub));
 
 // Primitive functions: directly exported.
+PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
 PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
+PRIM_DEF(selectorFromName,        FUN_Selector_selectorFromName);
 PRIM_FUNC(classAddMethod,         3, 3);
 PRIM_FUNC(className,              1, 1);
 PRIM_FUNC(classParent,            1, 1);

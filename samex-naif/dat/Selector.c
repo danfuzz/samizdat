@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "type/Builtin.h"
 #include "type/Selector.h"
 #include "type/define.h"
 #include "zlimits.h"
@@ -243,6 +244,16 @@ METH_IMPL(Selector, gcMark) {
     return NULL;
 }
 
+/** Function (not method) `makeAnonymousSelector`. Documented in spec. */
+METH_IMPL(Selector, makeAnonymousSelector) {
+    return makeAnonymousSelector(args[0]);
+}
+
+/** Function (not method) `selectorFromName`. Documented in spec. */
+METH_IMPL(Selector, selectorFromName) {
+    return selectorFromName(args[0]);
+}
+
 /** Initializes the module. */
 MOD_INIT(Selector) {
     MOD_USE(Function);
@@ -253,7 +264,23 @@ MOD_INIT(Selector) {
     METH_BIND(Selector, debugName);
     METH_BIND(Selector, debugString);
     METH_BIND(Selector, gcMark);
+
+    FUN_Selector_makeAnonymousSelector = makeBuiltin(1, 1,
+        METH_NAME(Selector, makeAnonymousSelector), 0,
+        stringFromUtf8(-1, "Selector.makeAnonymousSelector"));
+    datImmortalize(FUN_Selector_makeAnonymousSelector);
+
+    FUN_Selector_selectorFromName = makeBuiltin(1, 1,
+        METH_NAME(Selector, selectorFromName), 0,
+        stringFromUtf8(-1, "Selector.selectorFromName"));
+    datImmortalize(FUN_Selector_selectorFromName);
 }
 
 // Documented in header.
 zvalue CLS_Selector = NULL;
+
+// Documented in header.
+zvalue FUN_Selector_makeAnonymousSelector = NULL;
+
+// Documented in header.
+zvalue FUN_Selector_selectorFromName = NULL;
