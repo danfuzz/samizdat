@@ -484,7 +484,7 @@ def parGenericBind = makeMainSequence(
         def formals = get_formals(closure);
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::genericBind, makeVarFetch(name), bind, fullClosure)
+        makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
     });
 
 ## Documented in spec.

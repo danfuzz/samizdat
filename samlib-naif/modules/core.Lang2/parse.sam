@@ -619,8 +619,7 @@ def parFunctionDef = {:
     { withTop(makeVarDef(get_name(closure), closure)) }
 :};
 
-
-## Parses a generic function binding. This wraps a `@closure` result of
+## Parses a method binding. This wraps a `@closure` result of
 ## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
 ## formal argument.
 def parGenericBind = {:
@@ -633,7 +632,7 @@ def parGenericBind = {:
         def formals = get_formals(closure);
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::genericBind, makeVarFetch(name), bind, fullClosure)
+        makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
     }
 :};
 

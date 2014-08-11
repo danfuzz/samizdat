@@ -952,8 +952,8 @@ DEF_PARSE(genericBind) {
         METH_CALL(cat,
             listFrom1(mapFrom1(STR_name, STR_this)),
             formals));
-    return makeCall(REFS(genericBind),
-        listFrom3(makeVarFetch(name), bind, fullClosure));
+    return makeCall(REFS(classAddMethod),
+        listFrom3(bind, makeVarFetch(name), fullClosure));
 }
 
 // Documented in spec.
