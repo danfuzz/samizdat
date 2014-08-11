@@ -156,15 +156,9 @@ METH_IMPL(Sequence, nthMapping) {
 
 // Documented in header.
 void seqBind(zvalue cls) {
-    #if DAT_USE_METHOD_TABLE
     classAddMethod(cls, SEL_NAME(get),        BI_Sequence_get);
     classAddMethod(cls, SEL_NAME(keyList),    BI_Sequence_keyList);
     classAddMethod(cls, SEL_NAME(nthMapping), BI_Sequence_nthMapping);
-    #else
-    genericBind(SEL_NAME(get),        cls, BI_Sequence_get);
-    genericBind(SEL_NAME(keyList),    cls, BI_Sequence_keyList);
-    genericBind(SEL_NAME(nthMapping), cls, BI_Sequence_nthMapping);
-    #endif
 }
 
 /** Initializes the module. */

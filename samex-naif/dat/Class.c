@@ -132,10 +132,6 @@ static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
 
 // Documented in header.
 zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
-    #if !DAT_USE_METHOD_TABLE
-    die("Requires DAT_USE_METHOD_TABLE");
-    #else
-
     // TODO: Remove the heritage lookup once subclass tables get populated
     // with their superclasses' methods.
 
@@ -159,8 +155,6 @@ zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
     }
 
     return result;
-
-    #endif
 }
 
 // Documented in header.
@@ -181,10 +175,6 @@ void assertHasClass(zvalue value, zvalue cls) {
 
 // Documented in header.
 void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
-    #if !DAT_USE_METHOD_TABLE
-    die("Requires DAT_USE_METHOD_TABLE");
-    #else
-
     assertHasClassClass(cls);
     zint index = selectorIndex(selector);
     zvalue *methods = getInfo(cls)->methods;
@@ -195,8 +185,6 @@ void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
     }
 
     methods[index] = function;
-
-    #endif
 }
 
 // Documented in header.
@@ -328,11 +316,9 @@ METH_IMPL(Class, gcMark) {
     datMark(info->name);
     datMark(info->secret);
 
-    #if DAT_USE_METHOD_TABLE
     for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
         datMark(info->methods[i]);
     }
-    #endif
 
     return NULL;
 }

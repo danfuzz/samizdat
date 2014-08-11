@@ -40,11 +40,6 @@ typedef struct {
      */
     zvalue name;
 
-    #if DAT_USE_METHOD_TABLE
-    /** The corresponding selector. */
-    zvalue selector;
-    #endif
-
     /** Bindings from class to function, keyed off of class id number. */
     zvalue functions[DAT_MAX_CLASSES];
 } GenericInfo;
@@ -102,33 +97,7 @@ static zvalue findByClass(zvalue generic, zvalue cls, zvalue *boundCls) {
  * Actual implementation of generic function dispatch.
  */
 zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
-    #if DAT_USE_METHOD_TABLE
     die("No more generics!");
-    #else
-    if (argCount < info->minArgs) {
-        die("Too few arguments for generic call: %lld, min %lld",
-            argCount, info->minArgs);
-    } else if (argCount > info->maxArgs) {
-        die("Too many arguments for generic call: %lld, max %lld",
-            argCount, info->maxArgs);
-    }
-
-    // Note: The replacement `firstCls` returned by `findByClass` is used
-    // both for "same class" generics and for stack trace reporting.
-    zvalue firstCls = get_class(args[0]);
-    zvalue function = findByClass(generic, firstCls, &firstCls);
-
-    if (function == NULL) {
-        die("No binding found: %s(%s, ...)",
-            valDebugString(generic), valDebugString(args[0]));
-    }
-
-    UTIL_TRACE_START(callReporter, firstCls);
-    zvalue result = funCall(function, argCount, args);
-    UTIL_TRACE_END();
-    return result;
-
-    #endif
 }
 
 // Documented in header.
@@ -143,38 +112,13 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
 
 // Documented in header.
 void genericBind(zvalue generic, zvalue cls, zvalue function) {
-    assertHasClass(generic, CLS_Generic);
-
-    GenericInfo *info = getInfo(generic);
-    zint index = classIndex(cls);
-
-    if (info->sealed) {
-        die("Sealed generic.");
-    } else if (info->functions[index] != NULL) {
-        die("Duplicate binding in generic: %s(%s, ...)",
-            valDebugString(generic), valDebugString(cls));
-    }
-
-    info->functions[index] = function;
-
-    #if DAT_USE_METHOD_TABLE
-    classAddMethod(cls, info->selector, function);
-    #endif
+    die("No more generics!");
 }
 
 // Documented in header.
 void genericBindPrim(zvalue generic, zvalue cls, zfunction function,
         const char *builtinName) {
-    assertHasClass(generic, CLS_Generic);
-
-    GenericInfo *info = getInfo(generic);
-    zvalue name = (builtinName != NULL)
-        ? stringFromUtf8(-1, builtinName)
-        : info->name;
-    zvalue builtin =
-        makeBuiltin(info->minArgs, info->maxArgs, function, 0, name);
-
-    genericBind(generic, cls, builtin);
+    die("No more generics!");
 }
 
 // Documented in header.
@@ -185,24 +129,7 @@ void genericSeal(zvalue generic) {
 
 // Documented in header.
 zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name) {
-    assertHasClass(name, CLS_String);
-    if ((minArgs < 1) ||
-        ((maxArgs != -1) && (maxArgs < minArgs))) {
-        die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
-    }
-
-    zvalue result = datAllocValue(CLS_Generic, sizeof(GenericInfo));
-    GenericInfo *info = getInfo(result);
-
-    info->minArgs = minArgs;
-    info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
-    info->sealed = false;
-    info->name = name;
-    #if DAT_USE_METHOD_TABLE
-    info->selector = selectorFromName(name);
-    #endif
-
-    return result;
+    die("No more generics!");
 }
 
 

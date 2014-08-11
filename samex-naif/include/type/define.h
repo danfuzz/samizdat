@@ -13,15 +13,10 @@
 
 #include "type/Class.h"
 #include "type/Function.h"
-#if DAT_USE_METHOD_TABLE
 #include "type/Selector.h"
-#else
-#include "type/Generic.h"
-#endif
 #include "type/String.h"
 
 /** Performs binding of the indicated method. */
-#if DAT_USE_METHOD_TABLE
 #define METH_BIND(cls, name) \
     do { \
         classAddPrimitiveMethod( \
@@ -29,13 +24,6 @@
             SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
             METH_NAME(cls, name), #cls "." #name); \
     } while (0)
-#else
-#define METH_BIND(cls, name) \
-    do { \
-        genericBindPrim(SEL_NAME(name), CLS_##cls, METH_NAME(cls, name), \
-            #cls ":" #name); \
-    } while (0)
-#endif
 
 /** Variable definition for a method selector. */
 #define SEL_DEF(name) \
@@ -44,19 +32,9 @@
 /**
  * Performs initialization of the indicated method selector.
  */
-#if DAT_USE_METHOD_TABLE
 #define SEL_INIT(name) \
     do { \
         SEL_NAME(name) = selectorFromName(stringFromUtf8(-1, #name)); \
     } while (0)
-#else
-#define SEL_INIT(name) \
-    do { \
-        SEL_NAME(name) = makeGeneric( \
-            SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
-            stringFromUtf8(-1, #name)); \
-        datImmortalize(SEL_NAME(name)); \
-    } while (0)
-#endif
 
 #endif

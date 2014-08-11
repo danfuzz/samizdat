@@ -67,11 +67,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             return builtinCall(function, argCount, args);
         }
         case DAT_INDEX_GENERIC: {
-            #if DAT_USE_METHOD_TABLE
             die("No more generics.");
-            #else
-            return genericCall(function, argCount, args);
-            #endif
         }
         case DAT_INDEX_JUMP: {
             return jumpCall(function, argCount, args);
@@ -80,8 +76,6 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             return selectorCall(function, argCount, args);
         }
         default: {
-            #if DAT_USE_METHOD_TABLE
-
             // The original `function` is some kind of higher layer function.
             // Use method dispatch to get to it: Prepend `function` as a new
             // first argument, and call the method `call` via its selector.
@@ -89,24 +83,6 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             newArgs[0] = function;
             utilCpy(zvalue, &newArgs[1], args, argCount);
             return selectorCall(SEL_NAME(call), argCount + 1, newArgs);
-
-            #else
-
-            // The original `function` is some kind of higher layer function.
-            // Use method dispatch to get to it: Prepend `function` as a new
-            // first argument, and call the method `call` via a recursive
-            // call to `funCall0` to avoid the stack/frame setup.
-            zvalue callImpl = genericFindByIndex(SEL_NAME(call), index);
-            if (callImpl == NULL) {
-                die("Cannot call non-function: %s", valDebugString(function));
-            } else {
-                zvalue newArgs[argCount + 1];
-                newArgs[0] = function;
-                utilCpy(zvalue, &newArgs[1], args, argCount);
-                return funCall0(callImpl, argCount + 1, newArgs);
-            }
-
-            #endif
         }
     }
 }
