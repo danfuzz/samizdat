@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// One-Off generics
+// One-Off methods
 //
 
 #ifndef _TYPE_ONE_OFF_H_
@@ -12,26 +12,26 @@
 #include "type/Value.h"
 
 
-/** Generic `cat(value, more*)`: Documented in spec. */
+/** Method `cat(value, more*)`: Documented in spec. */
 SEL_DECL(1, -1, cat);
 
-/** Generic `get(value, key)`: Documented in spec. */
+/** Method `get(value, key)`: Documented in spec. */
 SEL_DECL(2, 2, get);
 
-/** Generic `get_key(value)`: Documented in spec. */
+/** Method `get_key(value)`: Documented in spec. */
 SEL_DECL(1, 1, get_key);
 
-/** Generic `get_size(collection)`: Documented in spec. */
+/** Method `get_size(collection)`: Documented in spec. */
 SEL_DECL(1, 1, get_size);
 
-/** Generic `get_value(value)`: Documented in spec. */
+/** Method `get_value(value)`: Documented in spec. */
 SEL_DECL(1, 1, get_value);
 
-/** Generic `nth(sequence, n)`: Documented in spec. */
+/** Method `nth(sequence, n)`: Documented in spec. */
 SEL_DECL(2, 2, nth);
 
 /**
- * Generic `readResource(loader, source, type)`: Documented in spec.
+ * Method `readResource(loader, source, type)`: Documented in spec.
  *
  * **Note:** Actually part of the `Loader` protocol, but as the nature of
  * protocols is in flux, it's more convenient to just drop it here rather
@@ -41,23 +41,23 @@ SEL_DECL(2, 2, nth);
 SEL_DECL(3, 3, readResource);
 
 /**
- * Generic `resolve(loader, source)`: Documented in spec.
+ * Method `resolve(loader, source)`: Documented in spec.
  *
  * **Note:** Same situation as `readResource` above.
  */
 SEL_DECL(2, 2, resolve);
 
-/** Generic `toInt(value)`: Documented in spec. */
+/** Method `toInt(value)`: Documented in spec. */
 SEL_DECL(1, 1, toInt);
 
-/** Generic `toNumber(value)`: Documented in spec. */
+/** Method `toNumber(value)`: Documented in spec. */
 SEL_DECL(1, 1, toNumber);
 
-/** Generic `toString(value)`: Documented in spec. */
+/** Method `toString(value)`: Documented in spec. */
 SEL_DECL(1, 1, toString);
 
 /**
- * Calls the `get` generic.
+ * Calls the `get` method.
  */
 zvalue get(zvalue coll, zvalue key);
 

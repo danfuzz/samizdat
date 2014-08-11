@@ -20,28 +20,28 @@
 #include "type/OneOff.h"
 
 
-/** Generic `del(collection, key)`: Documented in spec. */
+/** Method `del(collection, key)`: Documented in spec. */
 SEL_DECL(2, 2, del);
 
-/** Generic `keyList(collection)`: Documented in spec. */
+/** Method `keyList(collection)`: Documented in spec. */
 SEL_DECL(1, 1, keyList);
 
-/** Generic `nthMapping(collection, n)`: Documented in spec. */
+/** Method `nthMapping(collection, n)`: Documented in spec. */
 SEL_DECL(2, 2, nthMapping);
 
-/** Generic `put(collection, key, value)`: Documented in spec. */
+/** Method `put(collection, key, value)`: Documented in spec. */
 SEL_DECL(3, 3, put);
 
-/** Generic `valueList(collection)`: Documented in spec. */
+/** Method `valueList(collection)`: Documented in spec. */
 SEL_DECL(1, 1, valueList);
 
 /**
- * Calls the `del` generic.
+ * Calls the `del` method.
  */
 zvalue collDel(zvalue coll, zvalue key);
 
 /**
- * Calls the `put` generic.
+ * Calls the `put` method.
  */
 zvalue collPut(zvalue coll, zvalue key, zvalue value);
 

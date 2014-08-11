@@ -26,7 +26,7 @@ PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
-// Generic functions for all values.
+// Methods for all values.
 PRIM_DEF(debugName,               SEL_NAME(debugName));
 PRIM_DEF(debugString,             SEL_NAME(debugString));
 PRIM_DEF(perEq,                   SEL_NAME(perEq));
@@ -34,7 +34,7 @@ PRIM_DEF(perOrder,                SEL_NAME(perOrder));
 PRIM_DEF(totalEq,                 SEL_NAME(totalEq));
 PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 
-// Generic functions: One-Offs, exported to the global environment.
+// Methods: One-Offs, exported to the global environment.
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 PRIM_DEF(get_key,                 SEL_NAME(get_key));
@@ -47,7 +47,7 @@ PRIM_DEF(toInt,                   SEL_NAME(toInt));
 PRIM_DEF(toNumber,                SEL_NAME(toNumber));
 PRIM_DEF(toString,                SEL_NAME(toString));
 
-// Generic functions: `Bitwise` protocol, intended for modularization.
+// Methods: `Bitwise` protocol, intended for modularization.
 PRIM_DEF(Bitwise_and,             SEL_NAME(and));
 PRIM_DEF(Bitwise_bit,             SEL_NAME(bit));
 PRIM_DEF(Bitwise_bitSize,         SEL_NAME(bitSize));
@@ -56,37 +56,37 @@ PRIM_DEF(Bitwise_or,              SEL_NAME(or));
 PRIM_DEF(Bitwise_shl,             SEL_NAME(shl));
 PRIM_DEF(Bitwise_xor,             SEL_NAME(xor));
 
-// Generic functions: `Box` protocol.
+// Methods: `Box` protocol.
 PRIM_DEF(store,                   SEL_NAME(store));
 
-// Generic functions: `Object` class.
+// Methods: `Object` class.
 PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
 
-// Generic functions: `DerivedData` class.
+// Methods: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
-// Generic functions: `Function` protocol.
+// Methods: `Function` protocol.
 PRIM_DEF(call,                    SEL_NAME(call));
 
-// Generic functions: `Collection` protocol, intended for modularization.
+// Methods: `Collection` protocol, intended for modularization.
 PRIM_DEF(Collection_del,          SEL_NAME(del));
 PRIM_DEF(Collection_keyList,      SEL_NAME(keyList));
 PRIM_DEF(Collection_nthMapping,   SEL_NAME(nthMapping));
 PRIM_DEF(Collection_put,          SEL_NAME(put));
 PRIM_DEF(Collection_valueList,    SEL_NAME(valueList));
 
-// Generic functions: `Sequence` protocol, intended for modularization.
+// Methods: `Sequence` protocol, intended for modularization.
 PRIM_DEF(Sequence_reverse,        SEL_NAME(reverse));
 PRIM_DEF(Sequence_sliceExclusive, SEL_NAME(sliceExclusive));
 PRIM_DEF(Sequence_sliceInclusive, SEL_NAME(sliceInclusive));
 
-// Generic functions: `Generator` protocol, intended for modularization but
+// Methods: `Generator` protocol, intended for modularization but
 // also exported to the global environment.
 PRIM_DEF(collect,                 SEL_NAME(collect));
 PRIM_DEF(fetch,                   SEL_NAME(fetch));
 PRIM_DEF(nextValue,               SEL_NAME(nextValue));
 
-// Generic functions: `Number` protocol, intended for modularization.
+// Methods: `Number` protocol, intended for modularization.
 PRIM_DEF(Number_abs,              SEL_NAME(abs));
 PRIM_DEF(Number_add,              SEL_NAME(add));
 PRIM_DEF(Number_div,              SEL_NAME(div));

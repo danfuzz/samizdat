@@ -15,7 +15,7 @@
 /** Class value for in-model class `Object`. */
 extern zvalue CLS_Object;
 
-/** Generic `objectDataOf(obj, secret)`: Documented in spec. */
+/** Method `objectDataOf(obj, secret)`: Documented in spec. */
 SEL_DECL(2, 2, objectDataOf);
 
 /** Global function `makeObject`: Documented in spec. */
@@ -38,7 +38,7 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data);
 zvalue makeObjectClass(zvalue name, zvalue secret);
 
 /**
- * Calls generic `objectDataOf()`.
+ * Calls the method `objectDataOf()`.
  */
 zvalue objectDataOf(zvalue obj, zvalue secret);
 

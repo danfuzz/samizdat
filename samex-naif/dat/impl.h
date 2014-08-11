@@ -113,7 +113,7 @@ typedef struct {
 
 /**
  * Actual implementation of builtin function calling. This is where
- * short-circuited generic function dispatch of `call` on class `Builtin`
+ * short-circuited method dispatch of `call` on class `Builtin`
  * lands.
  */
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
@@ -134,22 +134,8 @@ inline zint classIndexUnchecked(zvalue cls) {
 }
 
 /**
- * Actual implementation of generic function calling. This is where
- * short-circuited generic function dispatch of `call` on class `Generic`
- * lands.
- */
-zvalue genericCall(zvalue function, zint argCount, const zvalue *args);
-
-/**
- * Gets the function bound to the given generic for the given class index,
- * if any. Returns `NULL` if there is no binding.
- */
-zvalue genericFindByIndex(zvalue generic, zint index);
-
-/**
  * Actual implementation of nonlocal jump calling. This is where
- * short-circuited generic function dispatch of `call` on class `Jump`
- * lands.
+ * short-circuited method dispatch of `call` on class `Jump` lands.
  */
 zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
 

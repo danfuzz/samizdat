@@ -16,13 +16,13 @@
 extern zvalue CLS_Box;
 
 /**
- * Generic `store(box, value?)`: Stores a value (or void) into a box.
+ * Method `store(box, value?)`: Stores a value (or void) into a box.
  * Documented in spec.
  */
 SEL_DECL(1, 2, store);
 
 /**
- * Calls the generic `store`, with either one or two arguments, one if
+ * Calls the method `store`, with either one or two arguments, one if
  * `value` is `NULL`, two if not. `box` is *not* allowed to be `NULL`.
  */
 zvalue boxStoreNullOk(zvalue box, zvalue value);

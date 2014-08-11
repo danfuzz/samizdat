@@ -7,7 +7,7 @@
 //
 // **Note:** There is no in-model value `Generator`. That said, there is
 // effectively a `Generator` interface or protocol, in that things that
-// implement the `next` and `collect` generics are generators.
+// implement the `next` and `collect` methods are generators.
 //
 
 #ifndef _TYPE_GENERATOR_H_
@@ -16,13 +16,13 @@
 #include "type/Value.h"
 
 
-/** Generic `collect(generator)`: Documenetd in spec. */
+/** Method `collect(generator)`: Documenetd in spec. */
 SEL_DECL(1, 2, collect);
 
-/** Generic `fetch(box)`: Documented in spec. */
+/** Method `fetch(box)`: Documented in spec. */
 SEL_DECL(1, 1, fetch);
 
-/** Generic `nextValue(generator, box)`: Documenetd in spec. */
+/** Method `nextValue(generator, box)`: Documenetd in spec. */
 SEL_DECL(2, 2, nextValue);
 
 /** `core.Generator::stdCollect`: Documented in spec. */

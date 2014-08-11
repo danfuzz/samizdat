@@ -60,8 +60,8 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     zint index = get_classIndex(function);
 
     // The first three cases are how we bottom out the recursion, instead of
-    // calling `funCall0` on the `call` methods for `Function`, `Generic`,
-    // `Selector`, or `Jump`.
+    // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or
+    // `Selector`.
     switch (index) {
         case DAT_INDEX_BUILTIN: {
             return builtinCall(function, argCount, args);

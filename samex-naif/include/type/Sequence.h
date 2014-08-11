@@ -19,13 +19,13 @@
 #include "type/Collection.h"  // Because all sequences are collections.
 
 
-/** Generic `reverse(sequence)`: Documented in spec. */
+/** Method `reverse(sequence)`: Documented in spec. */
 SEL_DECL(1, 1, reverse);
 
-/** Generic `sliceExclusive(collection, start, end?)`: Documented in spec. */
+/** Method `sliceExclusive(collection, start, end?)`: Documented in spec. */
 SEL_DECL(2, 3, sliceExclusive);
 
-/** Generic `sliceInclusive(collection, start, end?)`: Documented in spec. */
+/** Method `sliceInclusive(collection, start, end?)`: Documented in spec. */
 SEL_DECL(2, 3, sliceInclusive);
 
 /**

@@ -5,7 +5,7 @@
 ##
 ## Sequence protocol. This is just a re-export from the primitive core library.
 ##
-## **Note:** `nth` is a re-exported one-off generic.
+## **Note:** `nth` is a re-exported one-off method.
 
 #= language core.Lang0
 

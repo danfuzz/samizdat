@@ -10,5 +10,5 @@
 ## Exported Definitions
 ##
 
-## Generic function which resolves the indicated `source`.
+## Method which resolves the indicated `source`.
 export fn .resolve();
