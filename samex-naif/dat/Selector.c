@@ -245,10 +245,11 @@ METH_IMPL(Selector, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(Selector) {
-    MOD_USE(Value);
+    MOD_USE(Function);
 
     // Note: The `objectModel` module initializes `CLS_Selector`.
 
+    METH_BIND(Selector, call);
     METH_BIND(Selector, debugName);
     METH_BIND(Selector, debugString);
     METH_BIND(Selector, gcMark);
