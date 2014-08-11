@@ -173,17 +173,6 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-zvalue selectorFromExistingName(zvalue methodName) {
-    zvalue result = findSelector(methodName);
-
-    if (result == NULL) {
-        die("Missing selector: %s", valDebugString(methodName));
-    }
-
-    return result;
-}
-
-// Documented in header.
 zvalue selectorFromName(zvalue methodName) {
     zvalue result = findSelector(methodName);
 

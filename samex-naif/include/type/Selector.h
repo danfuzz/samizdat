@@ -28,13 +28,6 @@ extern zvalue FUN_Selector_selectorFromName;
 zvalue makeAnonymousSelector(zvalue methodName);
 
 /**
- * Gets the selector that corresponds to the given method name, but only if
- * it already exists. Returns `NULL` if there is no existing selector that
- * corresponds to `methodName`.
- */
-zvalue selectorFromExistingName(zvalue methodName);
-
-/**
  * Gets the selector that corresponds to the given method name, creating it
  * if it doesn't already exist. `methodName` must be a `String`.
  */
