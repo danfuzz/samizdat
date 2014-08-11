@@ -73,7 +73,6 @@ will be returned, or one of:
   * [DerivedData](DerivedData.md)
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
-  * [Generic](Generic.md)
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)
