@@ -44,7 +44,7 @@ obvious, the file header is also optional.
 not much point in providing the heavy-weight visual anchors.
 
 Standard sections include "Private Definitions," "Exported Definitions,"
-and "Exported Generics." Other sections can be used as make sense.
+and "Class Definitions." Other sections can be used as make sense.
 
 ### Import order
 

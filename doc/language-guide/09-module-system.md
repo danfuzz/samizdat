@@ -194,8 +194,8 @@ of the variables named `varName1`, `varName2`, and so on, to be exported from
 the module, bound to the key `"varName"`.
 
 As a conveniend short-hand, `export` can be used as a prefix on immutable
-variable definitions, function definitions (both regular and generic
-functions), and `import` statements, to export the variables so-defined.
+variable definitions, function definitions, and `import` statements, to
+export the variables so-defined.
 
 **Note:** The thing that is exported is the value of a variable, and not
 the "cell" containing a variable. So, it is generally a bad idea to export
@@ -218,9 +218,6 @@ export def blort = ...;
 
 ## Define and export a regular function, together.
 export fn blort() { ... };
-
-## Define and export a generic function, together.
-export fn .blort() { ... };
 
 ## Export a whole imported module. It is exported as `$submodule`.
 export import ./submodule;
@@ -289,7 +286,7 @@ The implementation of module loading actually much simpler than the
 description might have you believe.
 
 There are two classes which interplay to cause module loading to happen.
-Both classes bind a generic function `resolve`.
+Both classes bind a method `resolve`.
 
 One class is `ExternalLoader`, which gets instantiated with two main
 pieces of information, (a) a filesystem path to a directory containing
@@ -315,8 +312,8 @@ The core library is loaded as an `InternalLoader`, as are application modules.
 In the case of an application module, its "next" loader is the core library.
 
 As a final note, though the default module system is implemented in terms
-of the filesystem, all of the behavior of the system is based on generic
-functions. These functions can be bound to other classes, in order to
+of the filesystem, all of the behavior of the system is based on method
+bindings. These methods can be bound to other classes, in order to
 provide other interesting and useful arrangements. For example, it is
 possible (and might eventually be desirable) to construct a loader which
 depends only upon immutable data as input.

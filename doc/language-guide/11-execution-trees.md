@@ -147,7 +147,7 @@ continuations.
 * `interpolate: expression` (optional) &mdash; Expression to use when treating
   this as a function call argument interpolation. (See below.)
 
-This represents a call to the generic `fetch`.
+This represents a call to the method `fetch`.
 
 When run, `target` is evaluated. If it evaluates to void, then it is a fatal
 error (terminating the runtime). Otherwise, `fetch` is called on `target`,
@@ -203,7 +203,7 @@ This represents a box store (assignment).
 When run, the `target` and `value` expressions are evaluated, in that order.
 If `target` evaluates to void, or `value` is neither a `maybe` or `void` node
 and evaluates to void, then evaluation fails (terminating the runtime).
-Otherwise, the generic function `store` is called, with the `target` and
+Otherwise, the method `store` is called, with the `target` and
 `value` results as arguments (in that order), or just with `target` if
 `value` (legitimately) evaluated to void.
 

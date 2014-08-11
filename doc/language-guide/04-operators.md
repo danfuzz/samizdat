@@ -391,9 +391,9 @@ functions `perEq` `perGe` `perGt` `perLe` `perLt` or `perNe`, with the
 left-hand and right-hand sides as arguments, in that order,
 with the usual correspondence between the operators and those names.
 
-Of these functions, `perEq` is a generic, and the rest are defined as
-regular functions in terms of `perEq` and another generic, `perOrder`.
-The default implementations of those generics is to call through to
+Of these functions, `perEq` is a selector, and the rest are defined as
+regular functions in terms of `perEq` and another selector, `perOrder`.
+The default implementations of those methods is to call through to
 the functions `eq` and `order` (respectively).
 
 #### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
@@ -404,7 +404,7 @@ order.
 
 These expressions correspond to calls to the library functions
 `eq` `ne` `lt` `gt` `le` and `ge` (with the obvious mapping of operator
-to function), which bottom out in calls to the generic functions `totalEq`
+to function), which bottom out in calls to the methods `totalEq`
 or `totalOrder`. See the definition of those functions for more details.
 
 **Note:** This can sometimes have surprising results, e.g. when comparing

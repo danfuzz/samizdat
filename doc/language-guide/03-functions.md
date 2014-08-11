@@ -298,61 +298,34 @@ any number of arguments (including none).
 See the introductory section "Logic operations" for more details.
 
 
-### Generic functions
+### Selectors and methods
 
-Generic functions are functions which know how to "dispatch" to particular
-other functions, based on the arguments given to the generic function.
+Classes in Samizdat bind selectors (method identifiers) to functions,
+for later invocation.
 
-Samizdat includes generic functions which dispatch based on the class of
-the first argument. A generic places no restrictions on arguments, other than
-minimum and (optional) maximum counts.
+#### Referring to selectors
 
-#### Generic function definition statements
+TODO: This section reflects Samizdat syntax in transition.
 
-The syntax to define a new generic function is similar to the declaration
-of a regular function.
-
-A generic function definition is introduced with the `fn` keyword, and
-continues as follows:
-
-* A dot, `.`.
-
-* The name. This provides a name for the function, which serves the same
-  purposes as with regular function definitions.
-
-* The formal arguments. This is identical in form to the formal arguments
-  of a regular function. Note, though, that the names of the arguments
-  don't matter for generic functions, as it is not possible to refer to
-  them. What matters are the minimum and maximum number of arguments
-  allowed by the formals.
-
-As with regular function definitions, a generic function definition can
-be preceded by `export` in order to cause it to be exported from the module
-in which it is defined.
-
-Examples:
+To refer to a selector, it must be bound as a variable, as follows:
 
 ```
-## A generic which takes no arguments other than the target.
-fn .blort();
-
-## A generic which takes three to five arguments.
-fn .fizmo(a, b, x?, y?);
-
-## The same as the previous, exported from its module.
-export fn .fizmo(a, b, x?, y?);
+fn .selectorName();
 ```
 
-#### Binding generic functions
+To bind a method on a class, use t
 
-Generic functions are bound using a syntax similar to the regular function
+#### Binding methods
+
+TODO: This section reflects Samizdat syntax in transition.
+
+Methods are bound to classes using a syntax similar to the regular function
 statement syntax (as described above). The difference is that instead of
 just a simple function name, the name consists of a class reference,
-followed by a dot (`.`), followed by the generic function name. For example:
+followed by a dot (`.`), followed by the selector name. For example:
 
 ```
-fn Int.blort() { ... }      ## Bind to `Int`.
-fn @@Fizmo.blort() { ... }  ## Bind to (the derived value class) `@@Fizmo`.
+fn Fizmo.blort(arg) { ... }  ## Bind to the class `Fizmo`.
 ```
 
 Within the body of such a function, the local variable `this` refers to
@@ -361,8 +334,8 @@ name of the first formal parameter to the function. Any additional parameters
 are as specified within the parentheses. For example:
 
 ```
-fn Int.blort(igram) {
-    this;   ## refers to the Int target of the function.
+fn Fizmo.blort(igram) {
+    this;   ## refers to the Fizmo target of the function.
     igram;  ## refers to the second parameter to the function.
 }
 ```
