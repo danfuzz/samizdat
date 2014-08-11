@@ -14,4 +14,4 @@
 ##
 
 ## Documented in spec.
-export fn .parse(box, input, items*);
+export fn .parse();

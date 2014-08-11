@@ -638,16 +638,16 @@ def parGenericBind = {:
     }
 :};
 
-## Parses a generic function definition. The translation is along these lines:
+## Parses a selector definition. The translation is along these lines:
 ##
 ## ```
-## fn .name(arg1, arg2);
+## fn .name();
 ## ```
 ## =>
 ## ```
 ## def name;  ## At top of closure
 ## ...
-## name := makeGeneric("name", 2, 2);
+## name := selectorFromName("name");
 ## ```
 ##
 ## with different numbers depending on the shape of the arguments.
@@ -656,17 +656,10 @@ def parGenericDef = {:
     @"."
     name = parName
     @"("
-    formals = parFormalsList
     @")"
 
     {
-        def fullFormals = [{}, formals*];  ## First one is `this`.
-        def call = makeCall(
-            REFS::makeGeneric,
-            makeLiteral(name),
-            makeLiteral(formalsMinArgs(fullFormals)),
-            makeLiteral(formalsMaxArgs(fullFormals)));
-
+        def call = makeCall(REFS::selectorFromName, makeLiteral(name));
         withTop(makeVarDef(name, call))
     }
 :};

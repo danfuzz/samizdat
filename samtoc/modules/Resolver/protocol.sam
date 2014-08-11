@@ -11,4 +11,4 @@
 ##
 
 ## Generic function which resolves the indicated `source`.
-export fn .resolve(source);
+export fn .resolve();

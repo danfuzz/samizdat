@@ -37,7 +37,6 @@ def NAMES = [
     "lt",
     "makeData",
     "makeDerivedDataClass",
-    "makeGeneric",
     "makeList",
     "makeValueMap",
     "maybeValue",
@@ -49,6 +48,7 @@ def NAMES = [
     "perLt",
     "perNe",
     "return",
+    "selectorFromName",
     "totalNe"
 ];
 

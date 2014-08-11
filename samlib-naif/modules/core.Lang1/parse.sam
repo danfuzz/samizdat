@@ -493,16 +493,9 @@ def parGenericDef = makeMainSequence(
     makeToken(@@"."),
     parName,
     makeToken(@@"("),
-    parFormalsList,
     makeToken(@@")"),
-    makeCode { ., ., name, ., formals, . ->
-        def fullFormals = [{}, formals*];  ## First one is `this`.
-        def call = makeCall(
-            REFS::makeGeneric,
-            makeLiteral(name),
-            makeLiteral(formalsMinArgs(fullFormals)),
-            makeLiteral(formalsMaxArgs(fullFormals)));
-
+    makeCode { ., ., name, ., . ->
+        def call = makeCall(REFS::selectorFromName, makeLiteral(name));
         withTop(makeVarDef(name, call))
     });
 

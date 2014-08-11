@@ -964,16 +964,10 @@ DEF_PARSE(genericDef) {
     MATCH_OR_REJECT(CH_DOT);
     zvalue name = PARSE_OR_REJECT(name);
     MATCH_OR_REJECT(CH_OPAREN);
-    zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
 
-    zvalue fullFormals = METH_CALL(cat, listFrom1(EMPTY_MAP), formals);
-    zvalue call = makeCall(
-        REFS(makeGeneric),
-        listFrom3(
-            makeLiteral(name),
-            makeLiteral(formalsMinArgs(fullFormals)),
-            makeLiteral(formalsMaxArgs(fullFormals))));
+    zvalue call = makeCall(REFS(selectorFromName),
+        listFrom1(makeLiteral(name)));
 
     return withTop(makeVarDef(name, call));
 }
