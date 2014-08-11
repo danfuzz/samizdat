@@ -15,10 +15,10 @@ language syntax.
 Each section covers definitions for one conceptual area, either
 concerning a class, data type, or some more nebulous concept.
 
-Each section is divided into subsections: generic functions (one section
+Each section is divided into subsections: methods (one section
 per protocol), primitive definitions, and one for in-language definitions.
-The first sections are where generic functions are specified as a general
-definition, as well as where particular classes indicate which generics they
+The first sections are where methods are specified as a general
+definition, as well as where particular classes indicate which methods they
 bind and with what specific meaning. From the perspective of "client"
 code written in the language, there is no distinction between the final
 two sections, but from the perspective of implementation, there is.
@@ -82,7 +82,7 @@ will be returned, or one of:
   * [String](String.md)
   * [Uniqlet](Uniqlet.md)
   * [Value (the base class/type)](Value.md)
-  * [One-Off Generics](OneOff.md)
+  * [One-Off Methods](OneOff.md)
 
 * Protocol Modules
   * [proto.Bitwise](Bitwise.md)

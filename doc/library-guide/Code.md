@@ -8,7 +8,7 @@ This module defines the most basic code execution facilities of
 Samizdat.
 
 <br><br>
-### Generic Function Definitions
+### Method Definitions
 
 (none)
 

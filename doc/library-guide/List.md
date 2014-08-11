@@ -7,7 +7,7 @@ List
 A `List` is a kind of `Sequence`.
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(list, other) -> list | void`
 
@@ -29,7 +29,7 @@ comparison, with a strict prefix always ordering before its longer brethren.
 
 
 <br><br>
-### Generic Function Definitions: `Collection` and `Sequence` protocols
+### Method Definitions: `Collection` and `Sequence` protocols
 
 #### `cat(list, more*) -> int`
 
@@ -88,7 +88,7 @@ returns the given `list`, directly.
 
 
 <br><br>
-### Generic Function Definitions: `Generator` protocol.
+### Method Definitions: `Generator` protocol.
 
 #### `collect(list, optFilterFunction?) -> list`
 

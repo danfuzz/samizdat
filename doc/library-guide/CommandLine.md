@@ -9,7 +9,7 @@ functionality. For convenience, it exports `runCommandLine` to the default
 global variable environment.
 
 <br><br>
-### Generic Function Definitions
+### Method Definitions
 
 (none)
 

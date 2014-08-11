@@ -5,7 +5,7 @@ Int
 ---
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(int, other) -> int | void`
 
@@ -26,7 +26,7 @@ manner.
 
 
 <br><br>
-### Generic Function Definitions: One-Offs
+### Method Definitions: One-Offs
 
 #### `toInt(int) -> int`
 
@@ -44,7 +44,7 @@ unsigned integer, this terminates the runtime with an error.
 
 
 <br><br>
-### Generic Function Definitions: `Bitwise` protocol
+### Method Definitions: `Bitwise` protocol
 
 #### `and(int1, int2) -> int`
 
@@ -88,7 +88,7 @@ Straightforward protocol implementation.
 
 
 <br><br>
-### Generic Function Definitions: `Number` protocol
+### Method Definitions: `Number` protocol
 
 #### `abs(int) -> int`
 

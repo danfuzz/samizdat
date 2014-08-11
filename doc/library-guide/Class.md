@@ -5,7 +5,7 @@ Class
 -----
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(cls, other) -> class | void`
 

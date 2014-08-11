@@ -1,21 +1,21 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-One-Off Generics
-----------------
+One-Off Methods
+---------------
 
-Some generic functions are effectivly protocols in and of themselves,
+Some methods are effectivly protocols in and of themselves,
 in that binding to them doesn't particularly imply that a value binds
-to any others. This section describes those generics.
+to any others. This section describes those methods.
 
-All of these generics are available in the standard global environment.
+All of these methods are available in the standard global environment.
 
 Note that some of these are also used as part of larger protocols, e.g.
 `get`. These are noted in the documentation for those protocols.
 
 
 <br><br>
-### Generic Function Definitions: One-Offs
+### Method Definitions: One-Offs
 
 #### `cat(value, more*) -> value`
 
@@ -53,7 +53,7 @@ parts of some sort.
 #### `get_key(value) -> .`
 
 Some values have an associated "key" or "key-like" value.
-This generic provides access to that key. This generic often goes
+This method provides access to that key. This method often goes
 hand-in-hand with `get_value`.
 
 It is discouraged to bind this to a function that sometimes returns void;
@@ -79,35 +79,35 @@ strongly-ordered constituent parts of some sort.
 #### `toInt(value) -> int`
 
 Some values have an obvious correspondence to an integer quantity. If
-so, then this generic can be used to access it.
+so, then this method can be used to access it.
 
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error.
 
-It is also discouraged to use this generic for lossy conversion.
+It is also discouraged to use this method for lossy conversion.
 
 #### `toNumber(value) -> number`
 
 Some values have an obvious correspondence to a numeric quantity. If
-so, then this generic can be used to access it. It is discouraged to
+so, then this method can be used to access it. It is discouraged to
 bind this to a function that sometimes returns void; it is preferable
 to cause an error.
 
 #### `toString(value) -> string`
 
 Some values have an obvious correspondence to a string value. If
-so, then this generic can be used to access it.
+so, then this method can be used to access it.
 
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error.
 
-It is discouraged to use this generic for textual conversion of a value
+It is discouraged to use this method for textual conversion of a value
 to a string (e.g. turning the int value 242 into the string `"242"`).
 
 #### `get_value(value) -> .`
 
 Some values have an associated "sub-value" or "inner value."
-This generic provides access to that value. This generic often goes
+This method provides access to that value. This method often goes
 hand-in-hand with `get_key`.
 
 It is discouraged to bind this to a function that sometimes returns void;

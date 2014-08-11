@@ -5,7 +5,7 @@ String
 ------
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(string, other) -> string | void`
 
@@ -28,7 +28,7 @@ before its longer brethren.
 
 
 <br><br>
-### Generic Function Definitions: One-Offs
+### Method Definitions: One-Offs
 
 #### `toInt(string) -> int`
 
@@ -46,7 +46,7 @@ Returns the argument.
 
 
 <br><br>
-### Generic Function Definitions: `Collection` and `Sequence` protocols
+### Method Definitions: `Collection` and `Sequence` protocols
 
 #### `cat(string, more*) -> string`
 
@@ -104,7 +104,7 @@ Defined as per the `Sequence` protocol.
 
 
 <br><br>
-### Generic Function Definitions: `Generator` protocol.
+### Method Definitions: `Generator` protocol.
 
 #### `collect(string, filterFunction) -> list`
 

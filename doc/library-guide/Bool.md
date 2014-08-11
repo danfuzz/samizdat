@@ -10,7 +10,7 @@ keywords `true` and `false` refer to the only two values of this class.
 
 
 <br><br>
-### Generic Function Definitions: `Value` protocol
+### Method Definitions: `Value` protocol
 
 #### `perEq(bool, other) -> bool | void`
 
@@ -31,7 +31,7 @@ Compares the given boolean values, ordering `false` before `true`.
 
 
 <br><br>
-### Generic Function Definitions: One-Offs
+### Method Definitions: One-Offs
 
 #### `toInt(bool) -> int`
 
@@ -43,7 +43,7 @@ Same as `toInt`.
 
 
 <br><br>
-### Generic Function Definitions: `Bitwise` protocol
+### Method Definitions: `Bitwise` protocol
 
 #### `and(bool1, bool2) -> bool`
 

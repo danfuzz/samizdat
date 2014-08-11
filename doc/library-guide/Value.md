@@ -5,12 +5,12 @@ Value (the base class)
 ----------------------
 
 <br><br>
-### Generic Function Definitions: `Value` protocol (applies to all values)
+### Method Definitions: `Value` protocol (applies to all values)
 
 #### `debugName(value) -> . | void`
 
 Some values have an associated name, or an optional associated name.
-This generic provides access to that name. There is no restriction
+This method provides access to that name. There is no restriction
 on the composition (class, etc.) of a name.
 
 The class `Value` binds this to a function which always returns void.
@@ -43,7 +43,7 @@ Each class can specify its own per-class equality check, and the two arguments
 are notably *not* required to be of the same class. The default implementation
 calls through to the global function `eq` (see which).
 
-**Note:** This is the generic function which underlies the implementation
+**Note:** This is the method which underlies the implementation
 of all per-class equality comparison functions.
 
 **Syntax Note:** Used in the translation of `expression == expression` forms.
@@ -60,7 +60,7 @@ Each class can specify its own per-class ordering comparison.
 The default implementation calls through to the global function `order`
 (see which).
 
-**Note:** This is the generic function which underlies the implementation
+**Note:** This is the method which underlies the implementation
 of all per-class ordering functions.
 
 #### `totalEq(value, other) -> . | void`
@@ -87,7 +87,7 @@ values, `totalEq` must indicate equality if and only if `totalOrder` would retur
 `0`. `totalEq` exists at all because it is often possible to determine
 equality much quicker than determining order.
 
-**Note:** This is the generic function which underlies the implementation
+**Note:** This is the method which underlies the implementation
 of all cross-class equality comparison functions.
 
 #### `totalOrder(value, other) -> int | void`
@@ -118,7 +118,7 @@ on the respective payload values, with a lack of payload counting as
 The default implementation of this method uses `eq()` to check for sameness.
 It returns `0` if it sameness and returns void if not.
 
-**Note:** This is the generic function which underlies the implementation
+**Note:** This is the method which underlies the implementation
 of all cross-class ordering functions.
 
 

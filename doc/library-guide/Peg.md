@@ -26,7 +26,7 @@ token class.
 
 The output of the functions named `$Peg::make*` are all parsing rules. These
 are all derived data values with a class that binds the `parse`
-generic. A `parse` method accepts at least two arguments, and will also
+method. A `parse` method accepts at least two arguments, and will also
 accept additional arguments depending on context:
 
 * `box` &mdash; The first argument is a `box` into which a successful
@@ -57,7 +57,7 @@ syntax for explanatory purposes.
 
 
 <br><br>
-### Generic Function Definitions: `Parser` protocol
+### Method Definitions: `Parser` protocol
 
 #### `parse(box, input, items*) -> newInput`
 

@@ -9,7 +9,7 @@ There is only one value of class `Null`. It's refered to by the keyword
 
 
 <br><br>
-### Generic Function Definitions: `Null` protocol
+### Method Definitions: `Null` protocol
 
 #### `perEq(null, other) -> bool | void`
 

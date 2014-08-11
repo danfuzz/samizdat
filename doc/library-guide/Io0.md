@@ -8,7 +8,7 @@ This module defines primitive filesystem I/O operations.
 
 
 <br><br>
-### Generic Function Definitions
+### Method Definitions
 
 (none)
 
