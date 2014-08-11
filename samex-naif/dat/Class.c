@@ -328,6 +328,12 @@ METH_IMPL(Class, gcMark) {
     datMark(info->name);
     datMark(info->secret);
 
+    #if DAT_USE_METHOD_TABLE
+    for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+        datMark(info->methods[i]);
+    }
+    #endif
+
     return NULL;
 }
 
