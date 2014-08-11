@@ -21,7 +21,7 @@
 #include "type/String.h"
 
 /** Performs binding of the indicated method. */
-#if DAT_USE_METHOD_TABLE_FIXME_NOT_YET
+#if DAT_USE_METHOD_TABLE
 #define METH_BIND(cls, name) \
     do { \
         classAddPrimitiveMethod( \
@@ -44,7 +44,7 @@
 /**
  * Performs initialization of the indicated method selector.
  */
-#if DAT_USE_METHOD_TABLE_FIXME_NOT_YET
+#if DAT_USE_METHOD_TABLE
 #define SEL_INIT(name) \
     do { \
         SEL_NAME(name) = selectorFromName(stringFromUtf8(-1, #name)); \

@@ -102,13 +102,9 @@ static zvalue findByClass(zvalue generic, zvalue cls, zvalue *boundCls) {
  * Actual implementation of generic function dispatch.
  */
 zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
-    GenericInfo *info = getInfo(generic);
-
     #if DAT_USE_METHOD_TABLE
-    // Just grab the selector, and use it for the call.
-    return selectorCall(info->selector, argCount, args);
+    die("No more generics!");
     #else
-
     if (argCount < info->minArgs) {
         die("Too few arguments for generic call: %lld, min %lld",
             argCount, info->minArgs);

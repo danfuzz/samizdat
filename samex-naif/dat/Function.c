@@ -67,7 +67,11 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             return builtinCall(function, argCount, args);
         }
         case DAT_INDEX_GENERIC: {
+            #if DAT_USE_METHOD_TABLE
+            die("No more generics.");
+            #else
             return genericCall(function, argCount, args);
+            #endif
         }
         case DAT_INDEX_JUMP: {
             return jumpCall(function, argCount, args);
@@ -76,7 +80,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             return selectorCall(function, argCount, args);
         }
         default: {
-            #if DAT_USE_METHOD_TABLE_FIXME_NOT_YET
+            #if DAT_USE_METHOD_TABLE
 
             // The original `function` is some kind of higher layer function.
             // Use method dispatch to get to it: Prepend `function` as a new
