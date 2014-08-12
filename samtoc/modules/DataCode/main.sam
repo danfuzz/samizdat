@@ -225,7 +225,7 @@ export fn convert(value) {
         (List):     { List_convert(value) };
         (Map):      { Map_convert(value) };
         (Null):     { Null_convert(value) };
-        (Selector): { String_convert(value) };
+        (Selector): { Selector_convert(value) };
         (String):   { String_convert(value) };
         default:    { Value_convert(value) }
     }
