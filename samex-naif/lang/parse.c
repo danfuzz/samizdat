@@ -11,6 +11,7 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/Number.h"
+#include "type/Selector.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -314,30 +315,6 @@ DEF_PARSE(varRef) {
 }
 
 // Documented in spec.
-DEF_PARSE(literal) {
-    MARK();
-
-    zvalue token;
-
-    if (MATCH(CH_MINUS)) {
-        token = MATCH_OR_REJECT(int);
-        return makeLiteral(METH_CALL(neg, GET(value, token)));
-    } else if ((token = MATCH(int))) {
-        return makeLiteral(GET(value, token));
-    } else if ((token = MATCH(string))) {
-        return makeLiteral(GET(value, token));
-    } else if (MATCH(zfalse)) {
-        return makeLiteral(BOOL_FALSE);
-    } else if (MATCH(ztrue)) {
-        return makeLiteral(BOOL_TRUE);
-    } else if (MATCH(null)) {
-        return makeLiteral(THE_NULL);
-    }
-
-    return NULL;
-}
-
-// Documented in spec.
 DEF_PARSE(identifierString) {
     MARK();
 
@@ -357,6 +334,34 @@ DEF_PARSE(identifierString) {
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
     return makeLiteral(name);
+}
+
+// Documented in spec.
+DEF_PARSE(literal) {
+    MARK();
+
+    zvalue token;
+
+    if (MATCH(CH_MINUS)) {
+        token = MATCH_OR_REJECT(int);
+        return makeLiteral(METH_CALL(neg, GET(value, token)));
+    } else if ((token = MATCH(int))) {
+        return makeLiteral(GET(value, token));
+    } else if ((token = MATCH(string))) {
+        return makeLiteral(GET(value, token));
+    } else if (MATCH(zfalse)) {
+        return makeLiteral(BOOL_FALSE);
+    } else if (MATCH(ztrue)) {
+        return makeLiteral(BOOL_TRUE);
+    } else if (MATCH(null)) {
+        return makeLiteral(THE_NULL);
+    } else if (MATCH(CH_AT)) {
+        MATCH_OR_REJECT(CH_DOT);
+        zvalue name = PARSE_OR_REJECT(identifierString);
+        return makeLiteral(selectorFromName(GET(value, name)));
+    }
+
+    return NULL;
 }
 
 /**
@@ -956,22 +961,6 @@ DEF_PARSE(genericBind) {
         listFrom3(bind, makeVarFetch(name), fullClosure));
 }
 
-// Documented in spec.
-DEF_PARSE(genericDef) {
-    MARK();
-
-    MATCH_OR_REJECT(fn);
-    MATCH_OR_REJECT(CH_DOT);
-    zvalue name = PARSE_OR_REJECT(name);
-    MATCH_OR_REJECT(CH_OPAREN);
-    MATCH_OR_REJECT(CH_CPAREN);
-
-    zvalue call = makeCall(REFS(selectorFromName),
-        listFrom1(makeLiteral(name)));
-
-    return withTop(makeVarDef(name, call));
-}
-
 /** Helper for `importName`: Parses the first alternate. */
 DEF_PARSE(importName1) {
     MARK();
@@ -1123,7 +1112,6 @@ DEF_PARSE(exportableStatement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(functionDef); }
-    if (result == NULL) { result = PARSE(genericDef);  }
     if (result == NULL) { result = PARSE(varDef);      }
 
     return result;

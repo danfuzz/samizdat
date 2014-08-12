@@ -3,15 +3,25 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `parse` protocol
+## String literal demo
 ##
 
 #= language core.Lang0
 
 
 ##
-## Exported Definitions
+## Private Definitions
 ##
 
-## Documented in spec.
-export def parse = @.parse;
+fn msg(string) {
+    note("Got: ", $Format::source(string))
+};
+
+
+##
+## Main Tests
+##
+
+note("Bools");
+msg(false);
+msg(true);

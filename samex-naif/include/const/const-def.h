@@ -109,7 +109,6 @@ DEF_STRING(repeat,               "repeat");
 DEF_STRING(resources,            "resources");
 DEF_STRING(runCommandLine,       "runCommandLine");
 DEF_STRING(select,               "select");
-DEF_STRING(selectorFromName,     "selectorFromName");
 DEF_STRING(seq,                  "seq");
 DEF_STRING(source,               "source");
 DEF_STRING(statements,           "statements");

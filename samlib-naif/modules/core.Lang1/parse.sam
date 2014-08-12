@@ -96,6 +96,26 @@ def parVarRef = makeMainSequence(
     makeCode { ., name -> makeVarRef(name) });
 
 ## Documented in spec.
+def parIdentifierString = makeMainChoice(
+    makeSequence(
+        makeToken(@@string),
+        makeCode { s -> makeLiteral(s::value) }),
+    makeSequence(
+        parName,
+        makeCode { name -> makeLiteral(name) }),
+    makeSequence(
+        any,
+        makeCode { token ->
+            ifNot { dataOf(token) }
+                {
+                    def name = get_className(token);
+                    def firstCh = nth(name, 0);
+                    ifIs { get(LOWER_ALPHA, firstCh) }
+                        { makeLiteral(name) }
+                }
+            }));
+
+## Documented in spec.
 def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"-"),
@@ -115,27 +135,14 @@ def parLiteral = makeMainChoice(
         makeResult(makeLiteral(true))),
     makeSequence(
         makeToken(@@null),
-        makeResult(makeLiteral(null))));
-
-## Documented in spec.
-def parIdentifierString = makeMainChoice(
+        makeResult(makeLiteral(null))),
     makeSequence(
-        makeToken(@@string),
-        makeCode { s -> makeLiteral(s::value) }),
-    makeSequence(
-        parName,
-        makeCode { name -> makeLiteral(name) }),
-    makeSequence(
-        any,
-        makeCode { token ->
-            ifNot { dataOf(token) }
-                {
-                    def name = get_className(token);
-                    def firstCh = nth(name, 0);
-                    ifIs { get(LOWER_ALPHA, firstCh) }
-                        { makeLiteral(name) }
-                }
-            }));
+        makeToken(@@"@"),
+        makeToken(@@"."),
+        parIdentifierString,
+        makeCode { ., ., name ->
+            makeLiteral(selectorFromName(get_nodeValue(name)))
+        }));
 
 ## Documented in spec.
 def parKey = makeMainChoice(
@@ -488,18 +495,6 @@ def parGenericBind = makeMainSequence(
     });
 
 ## Documented in spec.
-def parGenericDef = makeMainSequence(
-    makeToken(@@fn),
-    makeToken(@@"."),
-    parName,
-    makeToken(@@"("),
-    makeToken(@@")"),
-    makeCode { ., ., name, ., . ->
-        def call = makeCall(REFS::selectorFromName, makeLiteral(name));
-        withTop(makeVarDef(name, call))
-    });
-
-## Documented in spec.
 def parImportName = makeMainChoice(
     makeSequence(
         parName,
@@ -583,7 +578,7 @@ def parImportStatement = makeMainSequence(
 
 ## Documented in spec.
 def parExportableStatement = makeMainChoice(
-    parFunctionDef, parGenericDef, parVarDef);
+    parFunctionDef, parVarDef);
 
 ## Documented in spec.
 def parStatement = makeMainChoice(

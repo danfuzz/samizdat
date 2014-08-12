@@ -28,14 +28,16 @@ Default implementation.
 
 Default implementation.
 
-#### `totalEq(builtin1, builtin2) -> builtin | void`
+#### `totalEq(selector1, selector2) -> builtin | void`
 
 Default implementation.
 
-#### `totalOrder(builtin1, builtin2) -> int | void`
+#### `totalOrder(selector1, selector2) -> int | void`
 
-Default implementation.
-
+Orders selectors by internedness (primary) and name (secondary), with
+interned selectors getting ordered *before* anonymous selectors. Two
+different anonymous selectors with the same name are considered unordered
+(not equal).
 
 <br><br>
 ### Method Definitions: `Function` protocol
@@ -62,6 +64,14 @@ Finds and returns the (non-anonymous) selector with the given `name` (which
 must be a string). If the so-named selector has not been created yet, this
 function creates it.
 
+#### `selectorIsInterned(selector) -> selector | void`
+
+Returns `selector` if it is interned (that is, non-anonymous). Returns void
+otherwise.
+
+#### `selectorName(selector) -> string`
+
+Returns the name of `selector`.
 
 <br><br>
 ### In-Language Definitions

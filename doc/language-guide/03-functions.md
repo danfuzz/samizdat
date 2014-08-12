@@ -301,19 +301,8 @@ See the introductory section "Logic operations" for more details.
 ### Selectors and methods
 
 Classes in Samizdat bind selectors (method identifiers) to functions,
-for later invocation.
-
-#### Referring to selectors
-
-TODO: This section reflects Samizdat syntax in transition.
-
-To refer to a selector, it must be bound as a variable, as follows:
-
-```
-fn .selectorName();
-```
-
-To bind a method on a class, use t
+for later invocation. See the "Selector" subsection under "Data" for
+information about selector syntax and semantics.
 
 #### Binding methods
 

@@ -6,7 +6,9 @@
 #include <stdio.h>
 
 #include "type/Builtin.h"
+#include "type/Int.h"
 #include "type/Selector.h"
+#include "type/String.h"
 #include "type/define.h"
 #include "zlimits.h"
 
@@ -20,13 +22,13 @@
 /** Next selector index to assign. */
 static zint theNextIndex = 0;
 
-/** Array of all named selectors, in sort order (possibly stale). */
-static zvalue theNamedSelectors[DAT_MAX_SELECTORS];
+/** Array of all interned selectors, in sort order (possibly stale). */
+static zvalue theInternedSelectors[DAT_MAX_SELECTORS];
 
-/** The number of named selectors. */
-static zint theNamedSelectorCount = 0;
+/** The number of interned selectors. */
+static zint theInternedSelectorCount = 0;
 
-/** Whether `theNamedSelectors` needs a sort. */
+/** Whether `theInternedSelectors` needs a sort. */
 static bool theNeedSort = false;
 
 /**
@@ -36,8 +38,8 @@ typedef struct {
     /** Name of the method. Always a string. */
     zvalue methodName;
 
-    /** Whether this is an anonymous selector. */
-    bool anonymous;
+    /** Whether this instance is interned. */
+    bool interned;
 
     /** Index of the selector. No two selectors have the same index. */
     zint index;
@@ -54,7 +56,7 @@ static SelectorInfo *getInfo(zvalue selector) {
  * Creates and returns a new selector with the given name. Does no checking
  * other than that there aren't already too many selectors.
  */
-static zvalue makeSelector(zvalue methodName, bool anonymous) {
+static zvalue makeSelector(zvalue methodName, bool interned) {
     if (theNextIndex >= DAT_MAX_SELECTORS) {
         die("Too many method selectors!");
     }
@@ -63,13 +65,13 @@ static zvalue makeSelector(zvalue methodName, bool anonymous) {
     SelectorInfo *info = getInfo(result);
 
     info->methodName = methodName;
-    info->anonymous = anonymous;
+    info->interned = interned;
     info->index = theNextIndex;
     theNextIndex++;
 
-    if (!anonymous) {
-        theNamedSelectors[theNamedSelectorCount] = result;
-        theNamedSelectorCount++;
+    if (interned) {
+        theInternedSelectors[theInternedSelectorCount] = result;
+        theInternedSelectorCount++;
         theNeedSort = true;
     }
 
@@ -110,18 +112,19 @@ static int searchOrder(const void *key, const void *vptr) {
 }
 
 /**
- * Finds an existing selector with the given name, if any.
+ * Finds an existing interned selector with the given name, if any.
  */
-static zvalue findSelector(zvalue methodName) {
+static zvalue findInternedSelector(zvalue methodName) {
     if (theNeedSort) {
-        mergesort(theNamedSelectors, theNamedSelectorCount, sizeof(zvalue),
-            sortOrder);
+        mergesort(
+            theInternedSelectors, theInternedSelectorCount,
+            sizeof(zvalue), sortOrder);
         theNeedSort = false;
     }
 
     zvalue *found = (zvalue *) bsearch(
-        methodName, theNamedSelectors, theNamedSelectorCount, sizeof(zvalue),
-        searchOrder);
+        methodName, theInternedSelectors, theInternedSelectorCount,
+        sizeof(zvalue), searchOrder);
 
     return (found == NULL) ? NULL : *found;
 }
@@ -148,7 +151,7 @@ static char *callReporter(void *state) {
 
 // Documented in header.
 zvalue makeAnonymousSelector(zvalue methodName) {
-    return makeSelector(methodName, true);
+    return makeSelector(methodName, false);
 }
 
 // Documented in header.
@@ -174,13 +177,13 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
 
 // Documented in header.
 zvalue selectorFromName(zvalue methodName) {
-    zvalue result = findSelector(methodName);
+    zvalue result = findInternedSelector(methodName);
 
     if (result == NULL) {
         if (!hasClass(methodName, CLS_String)) {
             die("Improper method name: %s", valDebugString(methodName));
         }
-        result = makeSelector(methodName, false);
+        result = makeSelector(methodName, true);
     }
 
     return result;
@@ -216,12 +219,9 @@ METH_IMPL(Selector, debugName) {
 METH_IMPL(Selector, debugString) {
     zvalue selector = args[0];
     SelectorInfo *info = getInfo(selector);
+    const char *prefix = info->interned ? "@." : "@?";
 
-    if (info->anonymous) {
-        return METH_CALL(cat, stringFromUtf8(-1, ".anon-"), info->methodName);
-    } else {
-        return METH_CALL(cat, stringFromUtf8(-1, "."), info->methodName);
-    }
+    return METH_CALL(cat, stringFromUtf8(-1, prefix), info->methodName);
 }
 
 // Documented in header.
@@ -238,9 +238,63 @@ METH_IMPL(Selector, makeAnonymousSelector) {
     return makeAnonymousSelector(args[0]);
 }
 
+/** Function (not method) `selectorIsInterned`. Documented in spec. */
+METH_IMPL(Selector, selectorIsInterned) {
+    // TODO: Should be an instance method.
+    zvalue selector = args[0];
+    assertHasClass(selector, CLS_Selector);
+
+    SelectorInfo *info = getInfo(selector);
+    return (info->interned) ? selector : NULL;
+}
+
+/** Function (not method) `selectorName`. Documented in spec. */
+METH_IMPL(Selector, selectorName) {
+    // TODO: Should be an instance method.
+    zvalue selector = args[0];
+    assertHasClass(selector, CLS_Selector);
+
+    SelectorInfo *info = getInfo(selector);
+    return info->methodName;
+}
+
 /** Function (not method) `selectorFromName`. Documented in spec. */
 METH_IMPL(Selector, selectorFromName) {
     return selectorFromName(args[0]);
+}
+
+// Documented in header.
+METH_IMPL(Selector, totalOrder) {
+    zvalue value = args[0];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Selector`.
+
+    assertHasClass(other, CLS_Selector);
+
+    if (value == other) {
+        // Note: This check is necessary to keep the `ZSAME` case below from
+        // incorrectly claiming an anonymous selector is unordered with
+        // respect to itself.
+        return INT_0;
+    }
+
+    SelectorInfo *info1 = getInfo(value);
+    SelectorInfo *info2 = getInfo(other);
+    bool interned = info1->interned;
+
+    if (interned != info2->interned) {
+        return interned ? INT_NEG1 : INT_1;
+    }
+
+    zorder order = stringZorder(info1->methodName, info2->methodName);
+    switch (order) {
+        case ZLESS: return INT_NEG1;
+        case ZMORE: return INT_1;
+        case ZSAME: {
+            // Per spec, two different anonymous selectors with the same name
+            // are unordered with respect to each other.
+            return interned ? INT_0 : NULL;
+        }
+    }
 }
 
 /** Initializes the module. */
@@ -253,6 +307,7 @@ MOD_INIT(Selector) {
     METH_BIND(Selector, debugName);
     METH_BIND(Selector, debugString);
     METH_BIND(Selector, gcMark);
+    METH_BIND(Selector, totalOrder);
 
     FUN_Selector_makeAnonymousSelector = makeBuiltin(1, 1,
         METH_NAME(Selector, makeAnonymousSelector), 0,
@@ -263,6 +318,16 @@ MOD_INIT(Selector) {
         METH_NAME(Selector, selectorFromName), 0,
         stringFromUtf8(-1, "Selector.selectorFromName"));
     datImmortalize(FUN_Selector_selectorFromName);
+
+    FUN_Selector_selectorIsInterned = makeBuiltin(1, 1,
+        METH_NAME(Selector, selectorIsInterned), 0,
+        stringFromUtf8(-1, "Selector.selectorIsInterned"));
+    datImmortalize(FUN_Selector_selectorIsInterned);
+
+    FUN_Selector_selectorName = makeBuiltin(1, 1,
+        METH_NAME(Selector, selectorName), 0,
+        stringFromUtf8(-1, "Selector.selectorName"));
+    datImmortalize(FUN_Selector_selectorName);
 }
 
 // Documented in header.
@@ -273,3 +338,9 @@ zvalue FUN_Selector_makeAnonymousSelector = NULL;
 
 // Documented in header.
 zvalue FUN_Selector_selectorFromName = NULL;
+
+// Documented in header.
+zvalue FUN_Selector_selectorIsInterned = NULL;
+
+// Documented in header.
+zvalue FUN_Selector_selectorName = NULL;

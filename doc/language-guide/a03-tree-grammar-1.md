@@ -127,6 +127,27 @@ def parVarRef = {:
     { makeVarRef(name) }
 :};
 
+## Parses an identifier, identifier-like keyword, or string literal,
+## returning a string literal in all cases.
+def parIdentifierString = {:
+    s = @string
+    { makeLiteral(s::value) }
+|
+    name = parName
+    { makeLiteral(name) }
+|
+    token = .
+    {
+        ifNot { dataOf(token) }
+            {
+                def name = get_className(token);
+                def firstCh = nth(name, 0);
+                ifIs { get(LOWER_ALPHA, firstCh) }
+                    { makeLiteral(name) }
+            }
+    }
+:};
+
 ## Parses a simple data literal, including literal booleans, ints, and
 ## strings.
 ##
@@ -148,27 +169,14 @@ def parLiteral = {:
 |
     @true
     { makeLiteral(true) }
-:};
-
-## Parses an identifier, identifier-like keyword, or string literal,
-## returning a string literal in all cases.
-def parIdentifierString = {:
-    s = @string
-    { makeLiteral(s::value) }
 |
-    name = parName
-    { makeLiteral(name) }
+    @null
+    { makeLiteral(null) }
 |
-    token = .
-    {
-        ifNot { dataOf(token) }
-            {
-                def name = get_className(token);
-                def firstCh = nth(name, 0);
-                ifIs { get(LOWER_ALPHA, firstCh) }
-                    { makeLiteral(name) }
-            }
-    }
+    @"@"
+    @"."
+    name = parIdentifierString
+    { makeLiteral(selectorFromName(get_nodeValue(name))) }
 :};
 
 ## Parses a map key.
@@ -637,32 +645,6 @@ def parGenericBind = {:
     }
 :};
 
-## Parses a selector definition. The translation is along these lines:
-##
-## ```
-## fn .name();
-## ```
-## =>
-## ```
-## def name;  ## At top of closure
-## ...
-## name := selectorFromName("name");
-## ```
-##
-## with different numbers depending on the shape of the arguments.
-def parGenericDef = {:
-    @fn
-    @"."
-    name = parName
-    @"("
-    @")"
-
-    {
-        def call = makeCall(REFS::selectorFromName, makeLiteral(name));
-        withTop(makeVarDef(name, call))
-    }
-:};
-
 ## Parses an optional binding name or name prefix for an `import` statement.
 ## This rule never fails. The result is always a map, empty if there was no
 ## name / prefix, or binding one of `name` or `prefix`.
@@ -765,7 +747,7 @@ def parImportStatement = {:
 ## Parses an executable statement form that is `export`able. This does *not*
 ## include `import` statements.
 def parExportableStatement = {:
-    parFunctionDef | parGenericDef | parVarDef
+    parFunctionDef | parVarDef
 :};
 
 ## Parses an executable statement form (direct closure / program element).

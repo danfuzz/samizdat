@@ -105,6 +105,8 @@ PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_DEF(selectorFromName,        FUN_Selector_selectorFromName);
+PRIM_DEF(selectorIsInterned,      FUN_Selector_selectorIsInterned);
+PRIM_DEF(selectorName,            FUN_Selector_selectorName);
 PRIM_FUNC(classAddMethod,         3, 3);
 PRIM_FUNC(className,              1, 1);
 PRIM_FUNC(classParent,            1, 1);

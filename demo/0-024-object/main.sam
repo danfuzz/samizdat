@@ -23,8 +23,14 @@ fn msg(label, value) {
 ## Main demos
 ##
 
+def whatIs = @.whatIs;
+
 def blortSecret = "blort";
 def Blort = makeObjectClass("Blort", blortSecret);
+fn Blort.whatIs() {
+    note("I am a Blort.");
+};
+
 msg("Blort class", Blort);
 msg("Parent", classParent(Blort));
 
@@ -34,17 +40,25 @@ ifIs { eq(Blort, AnotherBlort) }
 
 def fizmoSecret = "fizmo";
 def Fizmo = makeObjectClass("Fizmo", fizmoSecret);
+fn Fizmo.whatIs() {
+    note("I am a Fizmo.");
+};
+
 msg("Fizmo class", Fizmo);
 msg("Parent", classParent(Fizmo));
 
 def blortNoData = makeObject(Blort, blortSecret);
 def blortWithData = makeObject(Blort, blortSecret, {x: 10});
 msg("Blort #1", blortNoData);
+whatIs(blortNoData);
 msg("Blort #2", blortWithData);
+whatIs(blortWithData);
 msg("Blort data", objectDataOf(blortWithData, blortSecret));
 
 def fizmoNoData = makeObject(Fizmo, fizmoSecret);
 def fizmoWithData = makeObject(Fizmo, fizmoSecret, {x: 10, y: 20});
 msg("Fizmo #1", fizmoNoData);
+whatIs(fizmoNoData);
 msg("Fizmo #2", fizmoWithData);
+whatIs(fizmoWithData);
 msg("Fizmo data", objectDataOf(fizmoWithData, fizmoSecret));

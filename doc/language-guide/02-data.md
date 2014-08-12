@@ -31,13 +31,13 @@ Every object class has an associated "secret" which is the key used to
 allow construction of objects of that class as well as access the inner
 data of such objects.
 
-#### Null
+#### Null (data)
 
 The value `null` is used when a value is needed for some reason or other
 but no particular value is otherwise suitable. The language keyword
 `null` refers to this value.
 
-#### Bool
+#### Bool (data)
 
 A `Bool` is a boolean truth value. The two possible values of this class are
 `true` and `false`, with their usual interpretations.
@@ -51,8 +51,7 @@ used for conditional expression, though the `**` and `??` operators can
 bridge the divide. See the section on "Logic" in the "Basics" section
 for details.
 
-
-#### Int
+#### Int (data)
 
 An `Int` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
@@ -81,7 +80,7 @@ and not necessarily part of an int constant.
 0b1011_0111_1110_1111
 ```
 
-#### String
+#### String (data)
 
 A `String` is a sequence of zero or more Unicode code points.
 
@@ -154,7 +153,7 @@ syntax is covered in the section on string formatting.
 "
 ```
 
-#### List
+#### List (data)
 
 A `List` is a sequence of zero or more other values.
 
@@ -175,7 +174,7 @@ to interpolate.
 [[1, 2]*, (3..5)*, {f: 6}*]   ## the same as [1, 2, 3, 4, 5, {f: 6}]
 ```
 
-#### Map
+#### Map (data)
 
 A `Map` is a sequence of zero or more mappings (also called bindings)
 from nearly-arbitrary keys to arbitrary values. Values are allowed to be any
@@ -252,14 +251,34 @@ def zorch = "Z";
 A `Builtin` is an encapsulated potential computation, defined at the
 lowest layer of the system. It is a kind of `Function` (see which).
 
-
 #### Selector
 
 A `Selector` is an identifier used to name methods. Selectors are the
 keys bound to functions in a class's table of methods, and selectors
 themselves can be invoked as functions to perform method dispatch on
-the first argument of the function call.
+the first argument of the function call. Every selector has a string
+name.
 
+There are two "flavors" of selector, interned and anonymous. An interned
+selector is one that can be identified uniquely by its name. That is, there
+is a one-to-one correspondence between names and interned selectors.
+An anonymous selector has a name, but it is only possible to refer to it
+by identity; that is, one can create new anonymous selectors and pass them
+around, but &mdash; unlike interned selectors &mdash; one cannot get a
+reference to a pre-existing anonymous selector other than being passed it
+(e.g. as an argument to a call).
+
+While selectors are often used implicitly, there is also explicit syntax
+for referring to them. To refer to an interned selector, start with an
+at-sign and a dot, and follow it with a quoted literal string. If the
+string happens to match the syntax of an identifier in the language, then
+the quotes are optional.
+
+```
+@.foo
+@."foo"          ## Same meaning as above.
+@."++ weird ++"  ## Non-identifier names need to be quoted.
+```
 
 #### Box
 
@@ -290,7 +309,6 @@ There are four predefined box variants:
 * The special value `nullBox` is a box that is permanently empty (succeeds
   but does nothing when `store` is called on it).
 
-
 #### Uniqlet
 
 A `Uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
@@ -309,7 +327,6 @@ the result.
 ```
 makeUniqlet()
 ```
-
 
 #### Class
 
