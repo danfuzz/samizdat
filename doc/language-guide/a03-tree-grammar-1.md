@@ -127,6 +127,27 @@ def parVarRef = {:
     { makeVarRef(name) }
 :};
 
+## Parses an identifier, identifier-like keyword, or string literal,
+## returning a string literal in all cases.
+def parIdentifierString = {:
+    s = @string
+    { makeLiteral(s::value) }
+|
+    name = parName
+    { makeLiteral(name) }
+|
+    token = .
+    {
+        ifNot { dataOf(token) }
+            {
+                def name = get_className(token);
+                def firstCh = nth(name, 0);
+                ifIs { get(LOWER_ALPHA, firstCh) }
+                    { makeLiteral(name) }
+            }
+    }
+:};
+
 ## Parses a simple data literal, including literal booleans, ints, and
 ## strings.
 ##
@@ -148,27 +169,14 @@ def parLiteral = {:
 |
     @true
     { makeLiteral(true) }
-:};
-
-## Parses an identifier, identifier-like keyword, or string literal,
-## returning a string literal in all cases.
-def parIdentifierString = {:
-    s = @string
-    { makeLiteral(s::value) }
 |
-    name = parName
-    { makeLiteral(name) }
+    @null
+    { makeLiteral(null) }
 |
-    token = .
-    {
-        ifNot { dataOf(token) }
-            {
-                def name = get_className(token);
-                def firstCh = nth(name, 0);
-                ifIs { get(LOWER_ALPHA, firstCh) }
-                    { makeLiteral(name) }
-            }
-    }
+    @"@"
+    @"."
+    name = parIdentifierString
+    { makeLiteral(selectorFromName(get_nodeValue(name))) }
 :};
 
 ## Parses a map key.
