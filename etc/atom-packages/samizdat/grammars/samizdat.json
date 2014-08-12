@@ -445,7 +445,7 @@
           "name" : "constant.type.samizdat"
         },
         {
-          "match" : "@[_$a-zA-Z][_$a-zA-Z0-9]*",
+          "match" : "@\\.?[_$a-zA-Z][_$a-zA-Z0-9]*",
           "name" : "constant.other.samizdat"
         },
         {
@@ -460,7 +460,7 @@
         },
         {
           "end" : "\"",
-          "begin" : "@\"",
+          "begin" : "@\\.?\"",
           "patterns" : [
             {
               "include" : "#recursive-string-content"
