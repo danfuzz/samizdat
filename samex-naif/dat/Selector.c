@@ -6,7 +6,9 @@
 #include <stdio.h>
 
 #include "type/Builtin.h"
+#include "type/Int.h"
 #include "type/Selector.h"
+#include "type/String.h"
 #include "type/define.h"
 #include "zlimits.h"
 
@@ -261,6 +263,40 @@ METH_IMPL(Selector, selectorFromName) {
     return selectorFromName(args[0]);
 }
 
+// Documented in header.
+METH_IMPL(Selector, totalOrder) {
+    zvalue value = args[0];
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Selector`.
+
+    assertHasClass(other, CLS_Selector);
+
+    if (value == other) {
+        // Note: This check is necessary to keep the `ZSAME` case below from
+        // incorrectly claiming an anonymous selector is unordered with
+        // respect to itself.
+        return INT_0;
+    }
+
+    SelectorInfo *info1 = getInfo(value);
+    SelectorInfo *info2 = getInfo(other);
+    bool interned = info1->interned;
+
+    if (interned != info2->interned) {
+        return interned ? INT_NEG1 : INT_1;
+    }
+
+    zorder order = stringZorder(info1->methodName, info2->methodName);
+    switch (order) {
+        case ZLESS: return INT_NEG1;
+        case ZMORE: return INT_1;
+        case ZSAME: {
+            // Per spec, two different anonymous selectors with the same name
+            // are unordered with respect to each other.
+            return interned ? INT_0 : NULL;
+        }
+    }
+}
+
 /** Initializes the module. */
 MOD_INIT(Selector) {
     MOD_USE(Function);
@@ -271,6 +307,7 @@ MOD_INIT(Selector) {
     METH_BIND(Selector, debugName);
     METH_BIND(Selector, debugString);
     METH_BIND(Selector, gcMark);
+    METH_BIND(Selector, totalOrder);
 
     FUN_Selector_makeAnonymousSelector = makeBuiltin(1, 1,
         METH_NAME(Selector, makeAnonymousSelector), 0,

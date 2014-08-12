@@ -28,14 +28,16 @@ Default implementation.
 
 Default implementation.
 
-#### `totalEq(builtin1, builtin2) -> builtin | void`
+#### `totalEq(selector1, selector2) -> builtin | void`
 
 Default implementation.
 
-#### `totalOrder(builtin1, builtin2) -> int | void`
+#### `totalOrder(selector1, selector2) -> int | void`
 
-Default implementation.
-
+Orders selectors by internedness (primary) and name (secondary), with
+interned selectors getting ordered *before* anonymous selectors. Two
+different anonymous selectors with the same name are considered unordered
+(not equal).
 
 <br><br>
 ### Method Definitions: `Function` protocol
