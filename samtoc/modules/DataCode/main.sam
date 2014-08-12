@@ -179,7 +179,13 @@ fn Null_convert(value) {
 
 ## Converts a selector.
 fn Selector_convert(value) {
-    die("TODO");
+    def name = selectorName(value);
+
+    if (!selectorIsInterned(value)) {
+        die("Cannot convert anonymous selector: \%q(value)")
+    };
+
+    return genCall("selectorFromName", convert(name))
 };
 
 ## Converts a string.
