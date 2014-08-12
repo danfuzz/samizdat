@@ -11,4 +11,4 @@
 ##
 
 ## Method which resolves the indicated `source`.
-export fn .resolve();
+export def resolve = @.resolve;

@@ -495,18 +495,6 @@ def parGenericBind = makeMainSequence(
     });
 
 ## Documented in spec.
-def parGenericDef = makeMainSequence(
-    makeToken(@@fn),
-    makeToken(@@"."),
-    parName,
-    makeToken(@@"("),
-    makeToken(@@")"),
-    makeCode { ., ., name, ., . ->
-        def call = makeCall(REFS::selectorFromName, makeLiteral(name));
-        withTop(makeVarDef(name, call))
-    });
-
-## Documented in spec.
 def parImportName = makeMainChoice(
     makeSequence(
         parName,
@@ -590,7 +578,7 @@ def parImportStatement = makeMainSequence(
 
 ## Documented in spec.
 def parExportableStatement = makeMainChoice(
-    parFunctionDef, parGenericDef, parVarDef);
+    parFunctionDef, parVarDef);
 
 ## Documented in spec.
 def parStatement = makeMainChoice(

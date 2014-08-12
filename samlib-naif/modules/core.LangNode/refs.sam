@@ -48,7 +48,6 @@ def NAMES = [
     "perLt",
     "perNe",
     "return",
-    "selectorFromName",
     "totalNe"
 ];
 

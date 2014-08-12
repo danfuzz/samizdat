@@ -961,22 +961,6 @@ DEF_PARSE(genericBind) {
         listFrom3(bind, makeVarFetch(name), fullClosure));
 }
 
-// Documented in spec.
-DEF_PARSE(genericDef) {
-    MARK();
-
-    MATCH_OR_REJECT(fn);
-    MATCH_OR_REJECT(CH_DOT);
-    zvalue name = PARSE_OR_REJECT(name);
-    MATCH_OR_REJECT(CH_OPAREN);
-    MATCH_OR_REJECT(CH_CPAREN);
-
-    zvalue call = makeCall(REFS(selectorFromName),
-        listFrom1(makeLiteral(name)));
-
-    return withTop(makeVarDef(name, call));
-}
-
 /** Helper for `importName`: Parses the first alternate. */
 DEF_PARSE(importName1) {
     MARK();
@@ -1128,7 +1112,6 @@ DEF_PARSE(exportableStatement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(functionDef); }
-    if (result == NULL) { result = PARSE(genericDef);  }
     if (result == NULL) { result = PARSE(varDef);      }
 
     return result;

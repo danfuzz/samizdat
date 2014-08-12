@@ -645,32 +645,6 @@ def parGenericBind = {:
     }
 :};
 
-## Parses a selector definition. The translation is along these lines:
-##
-## ```
-## fn .name();
-## ```
-## =>
-## ```
-## def name;  ## At top of closure
-## ...
-## name := selectorFromName("name");
-## ```
-##
-## with different numbers depending on the shape of the arguments.
-def parGenericDef = {:
-    @fn
-    @"."
-    name = parName
-    @"("
-    @")"
-
-    {
-        def call = makeCall(REFS::selectorFromName, makeLiteral(name));
-        withTop(makeVarDef(name, call))
-    }
-:};
-
 ## Parses an optional binding name or name prefix for an `import` statement.
 ## This rule never fails. The result is always a map, empty if there was no
 ## name / prefix, or binding one of `name` or `prefix`.
@@ -773,7 +747,7 @@ def parImportStatement = {:
 ## Parses an executable statement form that is `export`able. This does *not*
 ## include `import` statements.
 def parExportableStatement = {:
-    parFunctionDef | parGenericDef | parVarDef
+    parFunctionDef | parVarDef
 :};
 
 ## Parses an executable statement form (direct closure / program element).
