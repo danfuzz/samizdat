@@ -217,12 +217,9 @@ METH_IMPL(Selector, debugName) {
 METH_IMPL(Selector, debugString) {
     zvalue selector = args[0];
     SelectorInfo *info = getInfo(selector);
+    const char *prefix = info->interned ? "@." : "@?";
 
-    if (info->interned) {
-        return METH_CALL(cat, stringFromUtf8(-1, "."), info->methodName);
-    } else {
-        return METH_CALL(cat, stringFromUtf8(-1, ".anon-"), info->methodName);
-    }
+    return METH_CALL(cat, stringFromUtf8(-1, prefix), info->methodName);
 }
 
 // Documented in header.
