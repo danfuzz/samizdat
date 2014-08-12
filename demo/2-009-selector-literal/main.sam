@@ -1,0 +1,29 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## String literal demo
+##
+
+
+##
+## Private Definitions
+##
+
+fn msg(string) {
+    note("Got: ", $Format::source(string))
+};
+
+
+##
+## Main Tests
+##
+
+note("Selectors");
+msg(@.foo);
+msg(@."foo");
+msg(@."++ blort ++");
+
+ifNot { eq(@.foo, @."foo") }
+    { die("Expected same!") };
