@@ -238,6 +238,26 @@ METH_IMPL(Selector, makeAnonymousSelector) {
     return makeAnonymousSelector(args[0]);
 }
 
+/** Function (not method) `selectorIsInterned`. Documented in spec. */
+METH_IMPL(Selector, selectorIsInterned) {
+    // TODO: Should be an instance method.
+    zvalue selector = args[0];
+    assertHasClass(selector, CLS_Selector);
+
+    SelectorInfo *info = getInfo(selector);
+    return (info->anonymous) ? NULL : selector;
+}
+
+/** Function (not method) `selectorName`. Documented in spec. */
+METH_IMPL(Selector, selectorName) {
+    // TODO: Should be an instance method.
+    zvalue selector = args[0];
+    assertHasClass(selector, CLS_Selector);
+
+    SelectorInfo *info = getInfo(selector);
+    return info->methodName;
+}
+
 /** Function (not method) `selectorFromName`. Documented in spec. */
 METH_IMPL(Selector, selectorFromName) {
     return selectorFromName(args[0]);
@@ -263,6 +283,16 @@ MOD_INIT(Selector) {
         METH_NAME(Selector, selectorFromName), 0,
         stringFromUtf8(-1, "Selector.selectorFromName"));
     datImmortalize(FUN_Selector_selectorFromName);
+
+    FUN_Selector_selectorIsInterned = makeBuiltin(1, 1,
+        METH_NAME(Selector, selectorIsInterned), 0,
+        stringFromUtf8(-1, "Selector.selectorIsInterned"));
+    datImmortalize(FUN_Selector_selectorIsInterned);
+
+    FUN_Selector_selectorName = makeBuiltin(1, 1,
+        METH_NAME(Selector, selectorName), 0,
+        stringFromUtf8(-1, "Selector.selectorName"));
+    datImmortalize(FUN_Selector_selectorName);
 }
 
 // Documented in header.
@@ -273,3 +303,9 @@ zvalue FUN_Selector_makeAnonymousSelector = NULL;
 
 // Documented in header.
 zvalue FUN_Selector_selectorFromName = NULL;
+
+// Documented in header.
+zvalue FUN_Selector_selectorIsInterned = NULL;
+
+// Documented in header.
+zvalue FUN_Selector_selectorName = NULL;

@@ -20,6 +20,12 @@ extern zvalue FUN_Selector_makeAnonymousSelector;
 /** Global function `selectorFromName`: Documented in spec. */
 extern zvalue FUN_Selector_selectorFromName;
 
+/** Global function `selectorIsInterned`: Documented in spec. */
+extern zvalue FUN_Selector_selectorIsInterned;
+
+/** Global function `selectorName`: Documented in spec. */
+extern zvalue FUN_Selector_selectorName;
+
 
 /**
  * Makes an anonymous selector. The `methodName` is used as the "debugging"
