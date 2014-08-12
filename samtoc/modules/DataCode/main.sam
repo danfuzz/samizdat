@@ -177,6 +177,11 @@ fn Null_convert(value) {
     return CODE_NULL
 };
 
+## Converts a selector.
+fn Selector_convert(value) {
+    die("TODO");
+};
+
 ## Converts a string.
 fn String_convert(value) {
     if (value == "") {
@@ -208,13 +213,14 @@ fn Value_convert(value) {
 ## returns a tree that can be stringified with `indent()`.
 export fn convert(value) {
     return switch (get_class(value)) {
-        (Bool):   { Bool_convert(value) };
-        (Class):  { Class_convert(value) };
-        (Int):    { Int_convert(value) };
-        (List):   { List_convert(value) };
-        (Map):    { Map_convert(value) };
-        (Null):   { Null_convert(value) };
-        (String): { String_convert(value) };
-        default:  { Value_convert(value) }
+        (Bool):     { Bool_convert(value) };
+        (Class):    { Class_convert(value) };
+        (Int):      { Int_convert(value) };
+        (List):     { List_convert(value) };
+        (Map):      { Map_convert(value) };
+        (Null):     { Null_convert(value) };
+        (Selector): { String_convert(value) };
+        (String):   { String_convert(value) };
+        default:    { Value_convert(value) }
     }
 };
