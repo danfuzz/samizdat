@@ -45,6 +45,7 @@ def SPECIAL_VALUES = {
     (List):        "List",
     (Map):         "Map",
     (Null):        "Null",
+    (Selector):    "Selector",
     (String):      "String",
     (Uniqlet):     "Uniqlet",
     (Value):       "Value",
@@ -106,6 +107,21 @@ fn Map_sourceGeneral(value, adorn) {
     return adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
 
+## Stringifies a selector.
+fn Selector_sourceGeneral(value, adorn) {
+    def name = selectorName(value);
+
+    ifIs { totalEq(adorn, false) }
+        { return sourceGeneral(name, false) };
+
+    def prefix = ifIs { selectorIsInterned(value) } { "@." } { "@?" };
+    def body = ifIs { isIdentifier(name) }
+        { name }
+        { sourceGeneral(name, true) };
+
+    return cat(prefix, body);
+};
+
 ## Stringifies a string.
 fn String_sourceGeneral(value, adorn) {
     def bodyChars = makeFilterGenerator(value)
@@ -164,11 +180,12 @@ export fn sourceGeneral(value, adorn) {
     return ifSwitch(
         { get_class(value) },
         {
-            (Class):  { . -> Class_sourceGeneral(value, adorn) },
-            (Int):    { . -> Int_sourceGeneral(value, adorn) },
-            (List):   { . -> List_sourceGeneral(value, adorn) },
-            (Map):    { . -> Map_sourceGeneral(value, adorn) },
-            (String): { . -> String_sourceGeneral(value, adorn) }
+            (Class):    { . -> Class_sourceGeneral(value, adorn) },
+            (Int):      { . -> Int_sourceGeneral(value, adorn) },
+            (List):     { . -> List_sourceGeneral(value, adorn) },
+            (Map):      { . -> Map_sourceGeneral(value, adorn) },
+            (Selector): { . -> Selector_sourceGeneral(value, adorn) },
+            (String):   { . -> String_sourceGeneral(value, adorn) }
         },
         { . -> Value_sourceGeneral(value, adorn) }
     )
