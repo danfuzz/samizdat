@@ -256,7 +256,29 @@ lowest layer of the system. It is a kind of `Function` (see which).
 A `Selector` is an identifier used to name methods. Selectors are the
 keys bound to functions in a class's table of methods, and selectors
 themselves can be invoked as functions to perform method dispatch on
-the first argument of the function call.
+the first argument of the function call. Every selector has a string
+name.
+
+There are two "flavors" of selector, interned and anonymous. An interned
+selector is one that can be identified uniquely by its name. That is, there
+is a one-to-one correspondence between names and interned selectors.
+An anonymous selector has a name, but it is only possible to refer to it
+by identity; that is, one can create new anonymous selectors and pass them
+around, but &mdash; unlike interned selectors &mdash; one cannot get a
+reference to a pre-existing anonymous selector other than being passed it
+(e.g. as an argument to a call).
+
+While selectors are often used implicitly, there is also explicit syntax
+for referring to them. To refer to an interned selector, start with an
+at-sign and a dot, and follow it with a quoted literal string. If the
+string happens to match the syntax of an identifier in the language, then
+the quotes are optional.
+
+```
+@.foo
+@."foo"          ## Same meaning as above.
+@."++ weird ++"  ## Non-identifier names need to be quoted.
+```
 
 #### Box
 
