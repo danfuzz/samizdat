@@ -70,6 +70,8 @@ export
     readResource,
     resolve,
     selectorFromName,
+    selectorIsInterned,
+    selectorName,
     store,
     toInt,
     toNumber,
