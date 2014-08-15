@@ -96,6 +96,10 @@ Languages
 * Subtext
   * Subtext language &mdash; <http://www.subtext-lang.org/>
 
+* Wyvern
+  * Wyvern language rationale &mdash;
+    <https://www.cs.cmu.edu/~aldrich/wyvern/spec-rationale.html>
+
 Topics
 ------
 
