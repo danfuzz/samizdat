@@ -11,6 +11,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/Selector.h"
 #include "type/String.h"
 #include "util.h"
 
