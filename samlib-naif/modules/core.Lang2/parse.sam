@@ -1563,19 +1563,19 @@ parPostfixOperator2 := {:
     ## ```
     ## target.ident(arg, ...)
     ## =>
-    ## ident(target, arg, ...)
+    ## @.ident(target, arg, ...)
     ## ```
     ##
     ## ```
     ## target.ident
     ## =>
-    ## get_ident(target)
+    ## @.get_ident(target)
     ## ```
     ##
     ## ```
     ## target.ident := expression
     ## =>
-    ## set_ident(target, expression)
+    ## @.set_ident(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -1588,19 +1588,18 @@ parPostfixOperator2 := {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            def funcRef = makeVarFetch(name);
-            { node -> makeCallOrApply(funcRef, node, actuals*) }
+            { node -> makeCallOrApply(makeSelector(name), node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
         {
-            def getterRef = makeVarFetch(cat("get_", name));
+            def getterRef = makeSelector(cat("get_", name));
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(get_class(getterCall)){
                     dataOf(getterCall)*,
                     lvalue: { expr ->
-                        def setterRef = makeVarFetch(cat("set_", name));
+                        def setterRef = makeSelector(cat("set_", name));
                         makeCall(setterRef, node, expr)
                     }
                 }
