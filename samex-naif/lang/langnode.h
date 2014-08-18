@@ -90,6 +90,9 @@ zvalue makeNoYield(zvalue value);
 zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 
 // Documented in spec.
+zvalue makeSelector(zvalue name);
+
+// Documented in spec.
 zvalue makeThunk(zvalue expression);
 
 // Documented in spec.

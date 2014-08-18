@@ -577,6 +577,11 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
 }
 
 // Documented in spec.
+zvalue makeSelector(zvalue name) {
+    return makeLiteral(selectorFromName(name));
+}
+
+// Documented in spec.
 zvalue makeThunk(zvalue expression) {
     zvalue yieldNode = isExpression(expression)
         ? makeMaybe(expression)
