@@ -140,9 +140,7 @@ def parLiteral = makeMainChoice(
         makeToken(@@"@"),
         makeToken(@@"."),
         parIdentifierString,
-        makeCode { ., ., name ->
-            makeLiteral(selectorFromName(get_nodeValue(name)))
-        }));
+        makeCode { ., ., name -> makeSelector(get_nodeValue(name)) }));
 
 ## Documented in spec.
 def parKey = makeMainChoice(

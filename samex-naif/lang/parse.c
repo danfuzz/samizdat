@@ -11,7 +11,6 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/Number.h"
-#include "type/Selector.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -358,7 +357,7 @@ DEF_PARSE(literal) {
     } else if (MATCH(CH_AT)) {
         MATCH_OR_REJECT(CH_DOT);
         zvalue name = PARSE_OR_REJECT(identifierString);
-        return makeLiteral(selectorFromName(GET(value, name)));
+        return makeSelector(GET(value, name));
     }
 
     return NULL;

@@ -176,7 +176,7 @@ def parLiteral = {:
     @"@"
     @"."
     name = parIdentifierString
-    { makeLiteral(selectorFromName(get_nodeValue(name))) }
+    { makeSelector(get_nodeValue(name)) }
 :};
 
 ## Parses a map key.
