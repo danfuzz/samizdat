@@ -37,7 +37,7 @@ fn lits(node, interner) {
 
             makeFullClosure({
                 name*,
-                formals: node.formals,
+                formals: node::formals,
                 statements: [ s in node.statements -> lits(s, interner) ],
                 yield: lits(node.yieldNode, interner),
                 ((def yieldDef = node.yieldDef) & {yieldDef} | {})*

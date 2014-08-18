@@ -2,7 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-import core.LangNode :: get_formals, get_yieldDef;
+import core.LangNode :: get_yieldDef;
 
 import CodeGen;
 import VarCalc :: get_varRefs;
@@ -47,7 +47,7 @@ def FORMAL_PARSERS = {
 ## Helper for `processFormals*` which produces the helpful commentary about
 ## unnamed formals.
 fn unnamedFormals(clo) {
-    return [ idx in (0..), f in clo.formals ->
+    return [ idx in (0..), f in clo::formals ->
         (!f::name) & $CodeGen::genComment("Unnamed formal \(idx)")
     ];
 };
@@ -55,7 +55,7 @@ fn unnamedFormals(clo) {
 ## Helper for `processFormals` which does the more complicated processing
 ## required for handling repeat specifiers.
 fn processFormalsWithRepeat(clo, names) {
-    def varList = [ idx in (0..), f in clo.formals ->
+    def varList = [ idx in (0..), f in clo::formals ->
         def parse = FORMAL_PARSERS[f::repeat | "."];
 
         if (def origName = f::name) {
@@ -94,9 +94,9 @@ fn processFormalsWithRepeat(clo, names) {
 ## Returns `{names, vars, preInits}` for the formal arguments to the
 ## given closure, if any.
 fn processFormals(clo) {
-    def names = [ f in clo.formals -> f::name ];
+    def names = [ f in clo::formals -> f::name ];
 
-    def vars = ( idx in (0..), f in clo.formals ->
+    def vars = ( idx in (0..), f in clo::formals ->
         if (f::repeat) {
             ## At least one argument has a repeat specifier. Do the requisite
             ## processing.

@@ -333,8 +333,7 @@ def parNullaryClosure = {:
     c = parFullClosure
 
     {
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -346,8 +345,7 @@ def parBasicNullaryClosure = {:
     c = parBasicClosure
 
     {
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -638,7 +636,7 @@ def parGenericBind = {:
     closure = parFunctionCommon
 
     {
-        def formals = get_formals(closure);
+        def formals = closure::formals;
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)

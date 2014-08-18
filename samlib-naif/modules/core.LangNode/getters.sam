@@ -92,11 +92,6 @@ export fn get_definedNames(node) {
 };
 
 ## Documented in spec.
-export fn get_formals(node) {
-    return node::formals
-};
-
-## Documented in spec.
 export fn get_format(node) {
     return node::format
 };

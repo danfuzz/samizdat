@@ -34,7 +34,7 @@ fn bodies(node, bodiesBox) {
             def varRefs = node.varRefs;
 
             def newNode = makeFullClosure({
-                formals: node.formals,
+                formals: node::formals,
                 ((def name = node.name) & {name} | {})*,
                 statements,
                 varRefs,

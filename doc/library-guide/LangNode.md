@@ -85,10 +85,6 @@ If `node` defines no names, this returns `[]` (the empty list).
 It is a fatal error to call this on an *unresolved* wildcard
 `importModuleSelection` node.
 
-#### `get_formals(node) -> [formal*]`
-
-Gets the formal arguments of a `closure` node.
-
 #### `get_format(node) -> string`
 
 Gets the format of an `importResource` node.

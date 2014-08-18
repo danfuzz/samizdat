@@ -43,7 +43,7 @@ export fn get_varRefs(node) {
             ## yield def (if any).
             def baseLocals = [
                 node.yieldDef?*,
-                ( f in node.formals -> f::name )*];
+                ( f in node::formals -> f::name )*];
 
             ## The extra element at the end is to represent the closure
             ## yield.

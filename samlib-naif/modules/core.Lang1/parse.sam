@@ -267,8 +267,7 @@ def parBasicClosure = makeMainSequence(
 def parNullaryClosure = makeMainSequence(
     parFullClosure,
     makeCode { c ->
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -277,8 +276,7 @@ def parNullaryClosure = makeMainSequence(
 def parBasicNullaryClosure = makeMainSequence(
     parBasicClosure,
     makeCode { c ->
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -488,7 +486,7 @@ def parGenericBind = makeMainSequence(
     makeToken(@@"."),
     parFunctionCommon,
     makeCode { ., bind, ., closure ->
-        def formals = get_formals(closure);
+        def formals = closure::formals;
         def name = get_name(closure);
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
