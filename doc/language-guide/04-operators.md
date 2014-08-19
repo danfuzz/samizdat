@@ -87,39 +87,38 @@ expression evaluates to an appropriate value.
 
 The expression to apply (before the open parenthesis) must be non-void.
 
-#### Getter/setter function application &mdash; `targetExpr.identifier` `targetExpr.identifier := expression`
+#### Getter/setter method application &mdash; `targetExpr.identifier` `targetExpr.identifier := expression`
 
 Dot infix syntax as an expression (without explicit function application) is
-used to call a "getter" or "setter" style function. As a getter invocation,
-the function is passed `targetExpr` as its sole argument. As a setter, the
-function is passed `targetExpr` and `expression` (in that order).
+used to call a "getter" or "setter" method. As a getter invocation, the method
+is passed `targetExpr` as its sole argument. As a setter, the method is passed
+`targetExpr` and `expression` (in that order).
 
-Getter and setter functions are constructed from the indicated `identifier`
-by prepending `"get_"` or `"set_"`.
+Getter and setter method names are constructed from the indicated `identifier`
+by prepending `"get_"` or `"set_"` respectively.
 
 For example, the two lines in each pair here are equivalent to each other:
 
 ```
 someCall(onSomething).zorch
-get_zorch(someCall(onSomething))
+someCall(onSomething).get_zorch()
 
 blort.spaz := foo + 10
-set_spaz(blort, foo + 10)
+blort.set_spaz(foo + 10)
 ```
 
 **Note:** The `:=` operator in the setter syntax is the assignment operator,
 described below.
 
-**Note:** See immediately below for the method-like function application
-syntax.
+**Note:** See immediately below for the general method application syntax.
 
-#### Method-like function application &mdash; `targetExpr.identifier(arg, arg, ...)`
+#### Method application &mdash; `targetExpr.identifier(arg, arg, ...)`
 
 This is a variant of the function calling syntax, and is equivalent to
-`identifier(targetExpr, arg, arg, ...)`.
+`@.identifier(targetExpr, arg, arg, ...)` (that is, treating a literal
+selector as a function to apply).
 
-This is the preferred syntax to use for applying a method or method-like
-function to a target.
+This is the preferred syntax to use for calling a method on a target.
 
 #### Access collection with literal string key &mdash; `expression::name`
 
