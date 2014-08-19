@@ -30,7 +30,7 @@ fn bodies(node, bodiesBox) {
 
         @@closure: {
             def statements = [ s in node::statements -> bodies(s, bodiesBox) ];
-            def yieldNode = bodies(node::yieldNode, bodiesBox);
+            def yieldNode = bodies(node::yield, bodiesBox);
             def varRefs = get_varRefs(node);
 
             def newNode = makeFullClosure({
