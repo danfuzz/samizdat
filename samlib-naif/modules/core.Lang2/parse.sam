@@ -1410,7 +1410,7 @@ def parRangeExpression = {:
     @"]"
 
     ## The test here is to prevent open ranges from being allowed.
-    { ne(get_function(body), REFS::Range_makeOpenRange) }
+    { ne(body::function, REFS::Range_makeOpenRange) }
     { makeCallOrApply(REFS::makeList, makeInterpolate(body)) }
 :};
 

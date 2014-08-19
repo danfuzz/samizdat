@@ -81,15 +81,11 @@ fn safeIndex(node, base) {
         { get_class(node) },
         {
             @@apply: { . ->
-                safeIndexForNodes(base,
-                    get_function(node),
-                    get_values(node));
+                safeIndexForNodes(base, node::function, node::values);
             },
 
             @@call: { . ->
-                safeIndexForNodes(base,
-                    get_function(node),
-                    get_values(node)*);
+                safeIndexForNodes(base, node::function, node::values*);
             },
 
             @@closure: { . ->

@@ -147,13 +147,12 @@ fn convertPex(node, formals) {
             },
 
             @@tokenSet: { . ->
-                def clses = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSet, clses*)
+                makeCallLiterals(REFS::Peg_makeTokenSet, node::values*)
             },
 
             @@tokenSetComplement: { . ->
-                def clses = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSetComplement, clses*)
+                makeCallLiterals(REFS::Peg_makeTokenSetComplement,
+                    node::values*)
             },
 
             @@varRef: { . ->
@@ -172,15 +171,15 @@ fn convertPexIn(node) {
         { get_class(node) },
         {
             @@apply: { . ->
-                def function = convertPexIn(get_function(node));
-                def values = convertPexIn(get_values(node));
+                def function = convertPexIn(node::function);
+                def values = convertPexIn(node::values);
 
                 withFinalBindings(node, {function, values});
             },
 
             @@call: { . ->
-                def function = convertPexIn(get_function(node));
-                def values = convertPexInList(get_values(node));
+                def function = convertPexIn(node::function);
+                def values = convertPexInList(node::values);
 
                 withFinalBindings(node, {function, values});
             },

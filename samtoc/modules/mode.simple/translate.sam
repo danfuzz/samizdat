@@ -48,8 +48,8 @@ fn nonVoid(value) {
 export fn translate(node, varsBox) {
     return switch (def cls = get_class(node)) {
         @@apply: {
-            def function = translate(node.function, varsBox);
-            def values = node.values;
+            def function = translate(node::function, varsBox);
+            def values = node::values;
 
             if (hasClass(values, @@maybe)) {
                 def vTrans = translate(values::value, varsBox);
@@ -67,10 +67,10 @@ export fn translate(node, varsBox) {
         };
 
         @@call: {
-            def values = ( a in node.values ->
+            def values = ( a in node::values ->
                 nonVoid(translate(a, varsBox))
             );
-            genCall("FUN_CALL", translate(node.function, varsBox), values*)
+            genCall("FUN_CALL", translate(node::function, varsBox), values*)
         };
 
         @@closureRef: {

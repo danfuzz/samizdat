@@ -17,16 +17,16 @@ import ./Interner :: intern;
 fn lits(node, interner) {
     return switch (def cls = get_class(node)) {
         @@apply: {
-            def function = lits(node.function, interner);
-            def values = lits(node.values, interner);
+            def function = lits(node::function, interner);
+            def values = lits(node::values, interner);
 
             @apply{values, function}
         };
 
         @@call: {
             @call{
-                function: lits(node.function, interner),
-                values: [ a in node.values -> lits(a, interner) ]
+                function: lits(node::function, interner),
+                values: [ a in node::values -> lits(a, interner) ]
             }
         };
 

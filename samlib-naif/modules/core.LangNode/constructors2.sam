@@ -27,7 +27,7 @@ fn expandYield(map) {
 
     ifNot { hasClass(yieldNode, @@nonlocalExit) } { return yieldNode };
 
-    def function = get_function(yieldNode);
+    def function = yieldNode::function;
     def value = yieldNode::value;
 
     ## If the exit's `function` is a variable fetch of the same variable as

@@ -85,10 +85,6 @@ If `node` defines no names, this returns `[]` (the empty list).
 It is a fatal error to call this on an *unresolved* wildcard
 `importModuleSelection` node.
 
-#### `get_function(node) -> node`
-
-Gets the function of an `apply`, or `call` node.
-
 #### `get_id(node) -> int`
 
 Gets the identifier of a reference node.
@@ -116,12 +112,6 @@ node.
 #### `get_statements(node) -> [node*]`
 
 Gets the statement list of a `closure` node.
-
-#### `get_values(node) -> node | [node*]`
-
-Gets the values of a node. This is a list of nodes for `call`, `tokenSet`
-(pex type), and `tokenSetComplement` (pex type) nodes. It is a simple node
-for `apply` nodes.
 
 #### `get_yieldNode(node) -> node | void`
 
