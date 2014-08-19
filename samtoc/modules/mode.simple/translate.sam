@@ -171,7 +171,7 @@ export fn translateStatement(node, varsBox) {
         };
 
         default: {
-            node.translate(varsBox)
+            translate(node, varsBox)
         }
     }
 };

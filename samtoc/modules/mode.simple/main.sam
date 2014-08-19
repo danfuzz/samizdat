@@ -153,7 +153,7 @@ fn closureBody(cloIdx, clo, literals) {
 ## the global environment and not from local or captured variables.
 fn mainClosureMaker(node, interner) {
     def varRefs = node.varRefs;
-    def ids = [ name in varRefs -> interner.intern(name) ];
+    def ids = [ name in varRefs -> intern(interner, name) ];
 
     def stat = genStatement(
         genReturn(
@@ -185,7 +185,7 @@ export fn compile(resolver, sourcePath, targetPath) {
 
     def interner = makeInterner();
     def litsNode = internLiterals(mainNode, interner);
-    def partialLits = interner.interns;  ## Needed for closure declarations.
+    def partialLits = get_interns(interner);  ## For closure declarations.
 
     def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;
@@ -205,7 +205,7 @@ export fn compile(resolver, sourcePath, targetPath) {
         )*);
     def mainClosure = mainClosureMaker(closuresNode::node, interner);
 
-    def literals = interner.interns;
+    def literals = get_interns(interner);
     def literalDeclarations = cat(
         ( index in (0..!#literals) ->
             "static zvalue LIT_\(index) = NULL;\n"
