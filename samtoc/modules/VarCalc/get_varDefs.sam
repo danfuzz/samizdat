@@ -11,7 +11,7 @@ import core.LangNode :: makeDynamicImport;
 
 ## Extracts and combines the `varDefs` of all the arguments.
 fn catVarDefs(nodes*) {
-    return [].cat(( n in nodes -> get_varDefs(n) )*)
+    return cat([], ( n in nodes -> get_varDefs(n) )*)
 };
 
 

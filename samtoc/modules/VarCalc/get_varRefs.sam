@@ -12,7 +12,7 @@ import ./get_varDefs :: get_varDefs;
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
-    return [].cat(( n in nodes -> get_varRefs(n) )*)
+    return cat([], ( n in nodes -> get_varRefs(n) )*)
 };
 
 
@@ -63,7 +63,7 @@ export fn get_varRefs(node) {
             def statementRefs = (
                     s in [node::statements*, node::yield],
                     idx in (0..) ->
-                def defs = baseLocals.cat(statementDefs[..!idx]*);
+                def defs = cat(baseLocals, statementDefs[..!idx]*);
                 var refs = {get_varRefs(s)*: null};
                 for (d in defs) {
                    refs := $Collection::del(refs, d)
@@ -74,7 +74,7 @@ export fn get_varRefs(node) {
             ## The result of concatenating all the `statementRefs` is a
             ## map. The final result is the list of refs, that is, a list
             ## of all the keys.
-            $Collection::keyList({}.cat(statementRefs*));
+            $Collection::keyList(cat({}, statementRefs*));
         };
 
         @@closureRef: {
