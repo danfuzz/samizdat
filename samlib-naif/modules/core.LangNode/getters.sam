@@ -107,11 +107,6 @@ export fn get_id(node) {
 };
 
 ## Documented in spec.
-export fn get_interpolate(node) {
-    return? node::interpolate
-};
-
-## Documented in spec.
 export fn get_lvalue(node) {
     return? node::lvalue
 };

@@ -100,15 +100,6 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
-#### `get_interpolate(node) -> node | void`
-
-Gets the interpolated node, if any, of a node. This is non-void when a node
-was created by virtue of a call to `makeInterpolate` (or equivalent)
-and is in turn used by `makeCallOrApply` to detect when to translate
-a call into an interpolated form.
-
-**Note**: `interpolate` bindings aren't used during execution.
-
 #### `get_lvalue(node) -> function | void`
 
 Gets the `lvalue` binding for a node, if any. This is non-void for

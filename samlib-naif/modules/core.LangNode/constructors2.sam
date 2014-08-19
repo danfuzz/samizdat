@@ -96,7 +96,7 @@ export fn makeCallOrApply(function, values*) {
     };
 
     filterPump(values) { actual ->
-        ifValue { get_interpolate(actual) }
+        ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
                 addToCooked(makeCall(REFS::collect, node))

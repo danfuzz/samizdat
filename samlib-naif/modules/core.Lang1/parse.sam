@@ -166,7 +166,7 @@ def parMapping = makeMainChoice(
         }),
     makeSequence(
         parExpression,
-        makeCode { value -> get_interpolate(value) }),
+        makeCode { value -> value::interpolate }),
     makeSequence(
         parName,
         makeCode { name ->

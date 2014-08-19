@@ -196,7 +196,7 @@ def parMapping = {:
     ## An expression is valid only if it's an interpolation, in which case we
     ## take the interpolation variant of the node.
     value = parExpression
-    { get_interpolate(value) }
+    { value::interpolate }
 |
     ## Otherwise, it's got to be a raw name, representing a binding of that
     ## name to its value as a variable.
