@@ -27,6 +27,7 @@ msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
 
+note("\nGetter / setter syntax");
 def get_foo = @.get_foo;
 def set_foo = @.set_foo;
 def theSecret = "fizmo";
