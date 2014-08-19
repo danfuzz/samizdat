@@ -165,8 +165,8 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
     zvalue function = classFindMethodBySelectorIndex(cls, index);
 
     if (function == NULL) {
-        die("Unbound method: %s%s",
-            valDebugString(cls), valDebugString(selector));
+        die("Unbound method: %s.%s",
+            valDebugString(cls), valDebugName(selector));
     }
 
     UTIL_TRACE_START(callReporter, cls);
