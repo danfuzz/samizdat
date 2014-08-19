@@ -117,11 +117,6 @@ export fn get_statements(node) {
 };
 
 ## Documented in spec.
-export fn get_target(node) {
-    return node::target
-};
-
-## Documented in spec.
 export fn get_values(node) {
     return node::values
 };

@@ -45,7 +45,7 @@ fn lits(node, interner) {
         };
 
         @@fetch: {
-            def target = lits(node.target, interner);
+            def target = lits(node::target, interner);
             @fetch{target}
         };
 
@@ -60,7 +60,7 @@ fn lits(node, interner) {
         };
 
         @@store: {
-            def target = lits(node.target, interner);
+            def target = lits(node::target, interner);
             def value = lits(node::value, interner);
             @store{target, value}
         };

@@ -85,7 +85,7 @@ export fn translate(node, varsBox) {
         };
 
         @@fetch: {
-            def target = nonVoid(translate(node.target, varsBox));
+            def target = nonVoid(translate(node::target, varsBox));
             genCall("METH_CALL", "fetch", target)
         };
 
@@ -99,7 +99,7 @@ export fn translate(node, varsBox) {
         };
 
         @@store: {
-            def target = translate(node.target, varsBox);
+            def target = translate(node::target, varsBox);
             def value = node::value;
 
             if (hasClass(value, @@maybe)) {

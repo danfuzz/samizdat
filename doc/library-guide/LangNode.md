@@ -117,10 +117,6 @@ node.
 
 Gets the statement list of a `closure` node.
 
-#### `get_target(node) -> node`
-
-Gets the target of a `fetch` or `store` node.
-
 #### `get_values(node) -> node | [node*]`
 
 Gets the values of a node. This is a list of nodes for `call`, `tokenSet`

@@ -36,7 +36,7 @@ fn expandYield(map) {
     ifValues(
         [
             { -> hasClass(function, @@fetch) },
-            { . -> hasClass(get_target(function), @@varRef) },
+            { . -> hasClass(function::target, @@varRef) },
             { ., . -> map::yieldDef },
             { ., target, yieldDef -> eq(target::name, yieldDef) }
         ],

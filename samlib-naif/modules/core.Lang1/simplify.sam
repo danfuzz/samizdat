@@ -193,7 +193,7 @@ fn convertPexIn(node) {
             },
 
             @@fetch: { . ->
-                def target = convertPexIn(get_target(node));
+                def target = convertPexIn(node::target);
                 withFinalBindings(node, {target})
             },
 
@@ -203,7 +203,7 @@ fn convertPexIn(node) {
             },
 
             @@store: { . ->
-                def target = convertPexIn(get_target(node));
+                def target = convertPexIn(node::target);
                 def value = convertPexIn(node::value);
                 withFinalBindings(node, {target, value})
             },

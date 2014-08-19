@@ -82,11 +82,11 @@ export fn get_varRefs(node) {
         };
 
         @@fetch: {
-            node.target.varRefs
+            node::target.varRefs
         };
 
         @@store: {
-            catVarRefs(node.target, node::value)
+            catVarRefs(node::target, node::value)
         };
 
         @@varRef: {

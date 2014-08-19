@@ -108,7 +108,7 @@ fn safeIndex(node, base) {
             },
 
             @@fetch: { . ->
-                safeIndexForNodes(base, get_target(node))
+                safeIndexForNodes(base, node::target)
             },
 
             @@importModuleSelection: { . ->
@@ -121,7 +121,7 @@ fn safeIndex(node, base) {
             },
 
             @@store: { . ->
-                safeIndexForNodes(base, get_target(node), node::value)
+                safeIndexForNodes(base, node::target, node::value)
             },
 
             @@literal:
@@ -131,10 +131,8 @@ fn safeIndex(node, base) {
 
             @@varDef:
             @@varDefMutable: { . ->
-                def nameIndex =
-                    safeIndexForNames(base, node::name);
-                def valueIndex =
-                    safeIndexForNodes(base, node::value?*);
+                def nameIndex = safeIndexForNames(base, node::name);
+                def valueIndex = safeIndexForNodes(base, node::value?*);
                 maxOf(nameIndex, valueIndex)
             },
 

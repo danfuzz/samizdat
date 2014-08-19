@@ -53,12 +53,12 @@ fn bodies(node, bodiesBox) {
         };
 
         @@fetch: {
-            def target = bodies(node.target, bodiesBox);
+            def target = bodies(node::target, bodiesBox);
             @fetch{target}
         };
 
         @@store: {
-            def target = bodies(node.target, bodiesBox);
+            def target = bodies(node::target, bodiesBox);
             def value = bodies(node::value, bodiesBox);
             @store{target, value}
         };
