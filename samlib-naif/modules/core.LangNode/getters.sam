@@ -84,7 +84,7 @@ export fn get_definedNames(node) {
             @@importResource:
             @@varDef:
             @@varDefMutable: { . ->
-                [get_name(node)]
+                [node::name]
             }
         },
         { . -> [] }
@@ -104,11 +104,6 @@ export fn get_id(node) {
 ## Documented in spec.
 export fn get_lvalue(node) {
     return? node::lvalue
-};
-
-## Documented in spec.
-export fn get_name(node) {
-    return? node::name
 };
 
 ## Documented in spec.

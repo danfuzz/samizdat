@@ -38,7 +38,7 @@ fn expandYield(map) {
             { -> hasClass(function, @@fetch) },
             { . -> hasClass(get_target(function), @@varRef) },
             { ., . -> map::yieldDef },
-            { ., target, yieldDef -> eq(get_name(target), yieldDef) }
+            { ., target, yieldDef -> eq(target::name, yieldDef) }
         ],
         { ., ., ., . -> return value });
 
@@ -423,7 +423,7 @@ export fn withoutTops(node) {
             { s };
 
         ifIs { defNode::top }
-            { makeVarDef(get_name(defNode)) }
+            { makeVarDef(defNode::name) }
     };
 
     ## These are the one-for-one replacements for the original `statements`.
@@ -433,7 +433,7 @@ export fn withoutTops(node) {
             { s };
 
         ifIs { defNode::top }
-            { makeVarStore(get_name(defNode), get_nodeValue(defNode)) }
+            { makeVarStore(defNode::name, get_nodeValue(defNode)) }
             { s }
     };
 
@@ -446,7 +446,7 @@ export fn withoutTops(node) {
         ifNot { defNode::top }
             { yield /out };
 
-        yield get_name(defNode)
+        yield defNode::name
     };
 
     def optSelection = ifIs { eq(exports, []) }

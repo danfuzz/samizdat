@@ -94,7 +94,7 @@ fn safeIndex(node, base) {
 
             @@closure: { . ->
                 def namesIndex = safeIndexForNames(base,
-                    get_name(node)?*,
+                    node::name?*,
                     get_yieldDef(node)?*);
                 def nodesIndex = safeIndexForNodes(base,
                     get_statements(node)*,
@@ -132,7 +132,7 @@ fn safeIndex(node, base) {
             @@varDef:
             @@varDefMutable: { . ->
                 def nameIndex =
-                    safeIndexForNames(base, get_name(node));
+                    safeIndexForNames(base, node::name);
                 def valueIndex =
                     safeIndexForNodes(base, get_nodeValue(node)?*);
                 maxOf(nameIndex, valueIndex)
@@ -147,7 +147,7 @@ fn safeIndex(node, base) {
             @@importModule:
             @@importResource:
             @@varRef: { . ->
-                safeIndexForNames(base, get_name(node));
+                safeIndexForNames(base, node::name);
             }
         })
 };

@@ -35,7 +35,7 @@ fn bodies(node, bodiesBox) {
 
             def newNode = makeFullClosure({
                 formals: node::formals,
-                ((def name = node.name) & {name} | {})*,
+                ((def name = node::name) & {name} | {})*,
                 statements,
                 varRefs,
                 yield: yieldNode,
@@ -68,7 +68,7 @@ fn bodies(node, bodiesBox) {
             def value = ifValue { node.nodeValue }
                 { value -> {value: bodies(value, bodiesBox)} }
                 { {} };
-            @(cls){name: node.name, value*}
+            @(cls){name: node::name, value*}
         };
 
         @@export:

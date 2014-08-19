@@ -31,7 +31,7 @@ fn lits(node, interner) {
         };
 
         @@closure: {
-            def name = (def value = node.name)
+            def name = (def value = node::name)
                 & {name: lits(@literal{value}, interner)}
                 | {};
 
@@ -82,7 +82,7 @@ fn lits(node, interner) {
             def value = ifValue { node.nodeValue }
                 { value -> {value: lits(value, interner)} }
                 { {} };
-            @(cls){name: node.name, value*}
+            @(cls){name: node::name, value*}
         };
 
         @@export:

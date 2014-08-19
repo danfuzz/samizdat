@@ -50,7 +50,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
                 $vars::freeVarDecl(name, idx))
         )*);
 
-    return if (def ref = clo.name) {
+    return if (def ref = clo::name) {
         genComment("\%q(literals[ref.id])", decl)
     } else {
         decl
@@ -59,7 +59,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
 
 ## Returns a full `makeClosure_*` definition, as as string.
 fn closureMaker(cloIdx, clo, literals) {
-    def name = (def n = clo.name)
+    def name = (def n = clo::name)
         & translate(n, nullBox).flatten()
         | "NULL";
 
@@ -136,7 +136,7 @@ fn closureBody(cloIdx, clo, literals) {
         genStatement(s).usualIndent(1)
     ];
 
-    def nameLine = (def ref = clo.name)
+    def nameLine = (def ref = clo::name)
         & "/* \%q(literals[ref.id]) */\n"
         | "";
 

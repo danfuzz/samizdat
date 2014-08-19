@@ -120,7 +120,7 @@ export fn translate(node, varsBox) {
                 & genCall("makeResult", nonVoid(translate(v, varsBox)))
                 | genCall("makePromise");
 
-            varDefCommon(node.name, value, varsBox)
+            varDefCommon(node::name, value, varsBox)
         };
 
         @@varDefMutable: {
@@ -129,14 +129,14 @@ export fn translate(node, varsBox) {
                 | "NULL";
 
             varDefCommon(
-                node.name, nonVoid(genCall("makeCell", value)), varsBox)
+                node::name, nonVoid(genCall("makeCell", value)), varsBox)
         };
 
         @@varRef: {
-            def name = node.name;
+            def name = node::name;
             def vars = varsBox*;
             def binding = vars[name]
-                | die("Reference of undefined variable: \%q(node.name)");
+                | die("Reference of undefined variable: \%q(node::name)");
             binding::name
         };
 

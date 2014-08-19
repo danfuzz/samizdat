@@ -623,7 +623,7 @@ def parFunctionDef = {:
     @fn
     closure = parFunctionCommon
 
-    { withTop(makeVarDef(get_name(closure), closure)) }
+    { withTop(makeVarDef(closure::name, closure)) }
 :};
 
 ## Parses a method binding. This wraps a `@closure` result of
@@ -637,7 +637,7 @@ def parGenericBind = {:
 
     {
         def formals = closure::formals;
-        def name = get_name(closure);
+        def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
     }

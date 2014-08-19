@@ -108,12 +108,6 @@ representing an assignment of the lvalue-bearing node to the given node.
 
 **Note**: `lvalue` bindings aren't used during execution.
 
-#### `get_name(node) -> . | void`
-
-Gets the name defined or used by the given node. This is applicable to
-nodes of type `closure`, `importModule`, `importResource`, `varDef`,
-`varDefMutable`, and `varRef`.
-
 #### `get_nodeValue(node) -> . | void`
 
 Gets the value (literal or node) used by the given node, if any. This is

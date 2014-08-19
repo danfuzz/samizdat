@@ -3,7 +3,6 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 import core.LangNode ::
-    get_name,
     get_nodeValue,
     makeDynamicImport;
 
@@ -39,7 +38,7 @@ export fn get_varDefs(node) {
         @@importResource:
         @@varDef:
         @@varDefMutable: {
-            [node.name]
+            [node::name]
         };
 
         @@apply:
