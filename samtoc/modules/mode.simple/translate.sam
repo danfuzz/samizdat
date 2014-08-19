@@ -78,7 +78,7 @@ export fn translate(node, varsBox) {
             ## closure maker.
             def vars = varsBox*;
             genCall("makeClosure_\(node::id)",
-                ( name in node.varRefs ->
+                ( name in get_varRefs(node) ->
                     vars[name]::name
                         | die("Capture of undefined variable: \%q(name)");
                 )*)

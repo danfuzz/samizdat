@@ -41,7 +41,7 @@ fn usualIndent(tree, depth) {
 
 ## Returns a `makeClosure_*` declaration, as a code tree.
 fn closureDeclaration(cloIdx, clo, literals) {
-    def varRefs = clo.varRefs;
+    def varRefs = get_varRefs(clo);
     def decl = genCall(
         "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
@@ -63,7 +63,7 @@ fn closureMaker(cloIdx, clo, literals) {
         & translate(n, nullBox).flatten()
         | "NULL";
 
-    def varRefs = clo.varRefs;
+    def varRefs = get_varRefs(clo);
     def decl = closureDeclaration(cloIdx, clo, literals);
     def stateAssigns = [ idx in (0..), name in varRefs ->
         def varName = $vars::freeVarName(name, idx);
@@ -152,7 +152,7 @@ fn closureBody(cloIdx, clo, literals) {
 ## `@closureRef` node, except that the closure state is initialized from
 ## the global environment and not from local or captured variables.
 fn mainClosureMaker(node, interner) {
-    def varRefs = node.varRefs;
+    def varRefs = get_varRefs(node);
     def ids = [ name in varRefs -> intern(interner, name) ];
 
     def stat = genStatement(

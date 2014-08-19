@@ -12,7 +12,7 @@ import ./get_varDefs :: get_varDefs;
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
-    return [].cat(( n in nodes -> n.varRefs )*)
+    return [].cat(( n in nodes -> get_varRefs(n) )*)
 };
 
 
@@ -48,7 +48,7 @@ export fn get_varRefs(node) {
             ## The extra element at the end is to represent the closure
             ## yield.
             def statementDefs =
-                [( s in node::statements -> s.varDefs )*, []];
+                [( s in node::statements -> get_varDefs(s) )*, []];
 
             ## What's happening here is that for each statement (and the
             ## yield at the end), we get its variable references and
@@ -64,7 +64,7 @@ export fn get_varRefs(node) {
                     s in [node::statements*, node::yield],
                     idx in (0..) ->
                 def defs = baseLocals.cat(statementDefs[..!idx]*);
-                var refs = {s.varRefs*: null};
+                var refs = {get_varRefs(s)*: null};
                 for (d in defs) {
                    refs := $Collection::del(refs, d)
                 };
@@ -82,7 +82,7 @@ export fn get_varRefs(node) {
         };
 
         @@fetch: {
-            node::target.varRefs
+            get_varRefs(node::target)
         };
 
         @@store: {
@@ -95,12 +95,12 @@ export fn get_varRefs(node) {
 
         @@maybe:
         @@noYield: {
-            node::value.varRefs
+            get_varRefs(node::value)
         };
 
         @@varDef:
         @@varDefMutable: {
-            (def v = node::value) & v.varRefs | []
+            (def v = node::value) & get_varRefs(v) | []
         };
 
         @@importModule:

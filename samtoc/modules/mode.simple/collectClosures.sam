@@ -31,7 +31,7 @@ fn bodies(node, bodiesBox) {
         @@closure: {
             def statements = [ s in node::statements -> bodies(s, bodiesBox) ];
             def yieldNode = bodies(node::yieldNode, bodiesBox);
-            def varRefs = node.varRefs;
+            def varRefs = get_varRefs(node);
 
             def newNode = makeFullClosure({
                 formals: node::formals,

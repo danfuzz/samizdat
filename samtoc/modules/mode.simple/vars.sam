@@ -139,7 +139,7 @@ fn processYieldDef(clo) {
 ## Returns `{names, vars, preInits}` for the free variables of the given
 ## closure, if any.
 fn processFreeVars(clo) {
-    def names = clo.varRefs;
+    def names = get_varRefs(clo);
     def vars = ( idx in (0..), name in names ->
         {(name): {
             origName: name,
