@@ -56,12 +56,12 @@ fn lits(node, interner) {
         };
 
         @@literal: {
-            @literalRef{id: interner.intern(node.nodeValue)}
+            @literalRef{id: interner.intern(node::value)}
         };
 
         @@store: {
             def target = lits(node.target, interner);
-            def value = lits(node.nodeValue, interner);
+            def value = lits(node::value, interner);
             @store{target, value}
         };
 
@@ -79,7 +79,7 @@ fn lits(node, interner) {
 
         @@varDef:
         @@varDefMutable: {
-            def value = ifValue { node.nodeValue }
+            def value = ifValue { node::value }
                 { value -> {value: lits(value, interner)} }
                 { {} };
             @(cls){name: node::name, value*}
@@ -88,7 +88,7 @@ fn lits(node, interner) {
         @@export:
         @@maybe:
         @@noYield: {
-            def value = lits(node.nodeValue, interner);
+            def value = lits(node::value, interner);
             @(cls){value}
         };
 

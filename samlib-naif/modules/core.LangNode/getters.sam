@@ -69,7 +69,7 @@ export fn get_definedNames(node) {
         { get_class(node) },
         {
             @@export: { . ->
-                get_definedNames(get_nodeValue(node))
+                get_definedNames(node::value)
             },
 
             @@importModuleSelection: { . ->
@@ -104,11 +104,6 @@ export fn get_id(node) {
 ## Documented in spec.
 export fn get_lvalue(node) {
     return? node::lvalue
-};
-
-## Documented in spec.
-export fn get_nodeValue(node) {
-    return? node::value
 };
 
 ## Documented in spec.

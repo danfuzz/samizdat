@@ -127,7 +127,7 @@ fn convertPex(node, formals) {
             },
 
             @@string: { . ->
-                makeCallLiterals(REFS::Peg_makeString, get_nodeValue(node))
+                makeCallLiterals(REFS::Peg_makeString, node::value)
             },
 
             @@thunk: { . ->
@@ -135,7 +135,7 @@ fn convertPex(node, formals) {
                 ## node, and just convert that.
                 def closure = makeFullClosure({
                     formals,
-                    yield: makeMaybe(get_nodeValue(node))
+                    yield: makeMaybe(node::value)
                 });
                 def convertedClosure = convertPexIn(closure);
 
@@ -143,7 +143,7 @@ fn convertPex(node, formals) {
             },
 
             @@token: { . ->
-                makeCallLiterals(REFS::Peg_makeToken, get_nodeValue(node))
+                makeCallLiterals(REFS::Peg_makeToken, node::value)
             },
 
             @@tokenSet: { . ->
@@ -204,13 +204,13 @@ fn convertPexIn(node) {
 
             @@store: { . ->
                 def target = convertPexIn(get_target(node));
-                def value = convertPexIn(get_nodeValue(node));
+                def value = convertPexIn(node::value);
                 withFinalBindings(node, {target, value})
             },
 
             @@varDef:
             @@varDefMutable: { . ->
-                ifValue { get_nodeValue(node) }
+                ifValue { node::value }
                     { value ->
                         withBindings(node, {value: convertPexIn(value)})
                     }
@@ -220,7 +220,7 @@ fn convertPexIn(node) {
             @@export:
             @@maybe:
             @@noYield: { . ->
-                def value = convertPexIn(get_nodeValue(node));
+                def value = convertPexIn(node::value);
                 withBindings(node, {value})
             },
 

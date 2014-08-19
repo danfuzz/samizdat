@@ -176,7 +176,7 @@ def parLiteral = {:
     @"@"
     @"."
     name = parIdentifierString
-    { makeLiteral(selectorFromName(get_nodeValue(name))) }
+    { makeLiteral(selectorFromName(name::value)) }
 :};
 
 ## Parses a map key.
@@ -275,7 +275,7 @@ def parType = {:
 
     {
         ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(get_nodeValue(name))) }
+            { makeLiteral(@@(name::value)) }
             { makeCall(REFS::makeDerivedDataClass, name) }
     }
 :};
@@ -286,7 +286,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierString
-        { makeLiteral(@@(get_nodeValue(name))) }
+        { makeLiteral(@@(name::value)) }
     |
         parParenExpression
     )
@@ -667,7 +667,7 @@ def parImportName = {:
 def parImportFormat = {:
     @"@"
     f = parIdentifierString
-    { {format: get_nodeValue(f)} }
+    { {format: f::value} }
 |
     { {} }
 :};
@@ -926,7 +926,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(get_nodeValue(type))} }
+    { @token{value: @@(type::value)} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -968,7 +968,7 @@ def parPexSet = {:
         { collect(cat(strings*), { ch -> @@(ch) }) }
     |
         tokens = parPexToken+
-        { collect(tokens, get_nodeValue) }
+        { collect(tokens, { n -> n::value }) }
     |
         { [] }
     )

@@ -59,13 +59,13 @@ fn bodies(node, bodiesBox) {
 
         @@store: {
             def target = bodies(node.target, bodiesBox);
-            def value = bodies(node.nodeValue, bodiesBox);
+            def value = bodies(node::value, bodiesBox);
             @store{target, value}
         };
 
         @@varDef:
         @@varDefMutable: {
-            def value = ifValue { node.nodeValue }
+            def value = ifValue { node::value }
                 { value -> {value: bodies(value, bodiesBox)} }
                 { {} };
             @(cls){name: node::name, value*}
@@ -74,7 +74,7 @@ fn bodies(node, bodiesBox) {
         @@export:
         @@maybe:
         @@noYield: {
-            def value = bodies(node.nodeValue, bodiesBox);
+            def value = bodies(node::value, bodiesBox);
             @(cls){value}
         };
 

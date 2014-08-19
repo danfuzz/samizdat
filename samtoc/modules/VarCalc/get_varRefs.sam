@@ -86,7 +86,7 @@ export fn get_varRefs(node) {
         };
 
         @@store: {
-            catVarRefs(node.target, node.nodeValue)
+            catVarRefs(node.target, node::value)
         };
 
         @@varRef: {
@@ -95,12 +95,12 @@ export fn get_varRefs(node) {
 
         @@maybe:
         @@noYield: {
-            node.nodeValue.varRefs
+            node::value.varRefs
         };
 
         @@varDef:
         @@varDefMutable: {
-            (def v = node.nodeValue) & v.varRefs | []
+            (def v = node::value) & v.varRefs | []
         };
 
         @@importModule:

@@ -108,13 +108,6 @@ representing an assignment of the lvalue-bearing node to the given node.
 
 **Note**: `lvalue` bindings aren't used during execution.
 
-#### `get_nodeValue(node) -> . | void`
-
-Gets the value (literal or node) used by the given node, if any. This is
-applicable to nodes of type `literal`, `maybe`, `noYield`, `string`
-(pex type), `thunk` (pex type), `token` (pex type), `varDef`,
-and `varDefMutable`.
-
 #### `get_select(node) -> [name*] | void`
 
 Gets the binding selection of an `importModuleSelection` or `exportSelection`

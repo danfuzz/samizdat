@@ -28,7 +28,7 @@ fn expandYield(map) {
     ifNot { hasClass(yieldNode, @@nonlocalExit) } { return yieldNode };
 
     def function = get_function(yieldNode);
-    def value = get_nodeValue(yieldNode);
+    def value = yieldNode::value;
 
     ## If the exit's `function` is a variable fetch of the same variable as
     ## this node's yield name, then skip the expansion and just return the
@@ -48,7 +48,7 @@ fn expandYield(map) {
             ifIs { hasClass(value, @@maybe) }
                 {
                     makeCallOrApply(function,
-                        makeInterpolate(makeMaybeValue(get_nodeValue(value))))
+                        makeInterpolate(makeMaybeValue(value::value)))
                 }
         }
         { makeCall(function, value) };
@@ -306,7 +306,7 @@ export fn makeInfoMap(node) {
         ifIs { hasClass(s, @@export) }
             {
                 addToExports(get_definedNames(s));
-                handleImport(get_nodeValue(s))
+                handleImport(s::value)
             };
         handleImport(s)
     };
@@ -383,7 +383,7 @@ export fn withModuleDefs(node) {
             { yield /out };
 
         yield ifIs { hasClass(s, @@export) }
-            { get_nodeValue(s) }
+            { s::value }
             { s }
     };
 
@@ -419,7 +419,7 @@ export fn withoutTops(node) {
     ## This is a collation of all the forward declarations.
     def tops = filterAll(rawStatements) { s ->
         def defNode = ifIs { hasClass(s, @@export) }
-            { get_nodeValue(s) }
+            { s::value }
             { s };
 
         ifIs { defNode::top }
@@ -429,11 +429,11 @@ export fn withoutTops(node) {
     ## These are the one-for-one replacements for the original `statements`.
     def mains = filterAll(rawStatements) { s ->
         def defNode = ifIs { hasClass(s, @@export) }
-            { get_nodeValue(s) }
+            { s::value }
             { s };
 
         ifIs { defNode::top }
-            { makeVarStore(defNode::name, get_nodeValue(defNode)) }
+            { makeVarStore(defNode::name, defNode::value) }
             { s }
     };
 
@@ -442,7 +442,7 @@ export fn withoutTops(node) {
         ifNot { hasClass(s, @@export) }
             { yield /out };
 
-        def defNode = get_nodeValue(s);
+        def defNode = s::value;
         ifNot { defNode::top }
             { yield /out };
 

@@ -121,7 +121,7 @@ fn safeIndex(node, base) {
             },
 
             @@store: { . ->
-                safeIndexForNodes(base, get_target(node), get_nodeValue(node))
+                safeIndexForNodes(base, get_target(node), node::value)
             },
 
             @@literal:
@@ -134,14 +134,14 @@ fn safeIndex(node, base) {
                 def nameIndex =
                     safeIndexForNames(base, node::name);
                 def valueIndex =
-                    safeIndexForNodes(base, get_nodeValue(node)?*);
+                    safeIndexForNodes(base, node::value?*);
                 maxOf(nameIndex, valueIndex)
             },
 
             @@export:
             @@maybe:
             @@noYield: { . ->
-                safeIndexForNodes(base, get_nodeValue(node))
+                safeIndexForNodes(base, node::value)
             },
 
             @@importModule:
