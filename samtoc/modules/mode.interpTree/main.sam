@@ -12,7 +12,6 @@ import core.Io0;
 
 import DataCode;
 import Reader;
-import Resolver :: resolve;
 import Template;
 
 import @utf8 ./template.txt;

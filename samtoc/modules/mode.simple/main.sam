@@ -13,7 +13,6 @@ import core.LangNode :: *;
 import CodeGen :: *;
 import DataCode;
 import Reader;
-import Resolver :: resolve;
 import Template;
 import VarCalc :: get_varRefs;
 
