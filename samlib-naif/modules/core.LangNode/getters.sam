@@ -69,12 +69,12 @@ export fn get_definedNames(node) {
         { get_class(node) },
         {
             @@export: { . ->
-                get_definedNames(get_nodeValue(node))
+                get_definedNames(node::value)
             },
 
             @@importModuleSelection: { . ->
-                def prefix = get_prefix(node);
-                def select = ifValueOr { get_select(node) }
+                def prefix = node::prefix;
+                def select = ifValueOr { node::select }
                     { die("Cannot call `get_definedNames` on unresolved import.") };
 
                 filterAll(select) { name -> cat(prefix, name) }
@@ -84,114 +84,9 @@ export fn get_definedNames(node) {
             @@importResource:
             @@varDef:
             @@varDefMutable: { . ->
-                [get_name(node)]
+                [node::name]
             }
         },
         { . -> [] }
     )
-};
-
-## Documented in spec.
-export fn get_formals(node) {
-    return node::formals
-};
-
-## Documented in spec.
-export fn get_format(node) {
-    return node::format
-};
-
-## Documented in spec.
-export fn get_function(node) {
-    return node::function
-};
-
-## Documented in spec.
-export fn get_id(node) {
-    return node::id
-};
-
-## Documented in spec.
-export fn get_info(node) {
-    return? node::info
-};
-
-## Documented in spec.
-export fn get_interpolate(node) {
-    return? node::interpolate
-};
-
-## Documented in spec.
-export fn get_lvalue(node) {
-    return? node::lvalue
-};
-
-## Documented in spec.
-export fn get_maxArgs(node) {
-    return formalsMaxArgs(get_formals(node))
-};
-
-## Documented in spec.
-export fn get_minArgs(node) {
-    return formalsMinArgs(get_formals(node))
-};
-
-## Documented in spec.
-export fn get_name(node) {
-    return? node::name
-};
-
-## Documented in spec.
-export fn get_nodeValue(node) {
-    return? node::value
-};
-
-## Documented in spec.
-export fn get_pex(node) {
-    return node::pex
-};
-
-## Documented in spec.
-export fn get_pexes(node) {
-    return node::pexes
-};
-
-## Documented in spec.
-export fn get_prefix(node) {
-    return node::prefix
-};
-
-## Documented in spec.
-export fn get_select(node) {
-    return? node::select
-};
-
-## Documented in spec.
-export fn get_source(node) {
-    return node::source
-};
-
-## Documented in spec.
-export fn get_statements(node) {
-    return node::statements
-};
-
-## Documented in spec.
-export fn get_target(node) {
-    return node::target
-};
-
-## Documented in spec.
-export fn get_values(node) {
-    return node::values
-};
-
-## Documented in spec.
-export fn get_yieldNode(node) {
-    return? node::yield
-};
-
-## Documented in spec.
-export fn get_yieldDef(node) {
-    return? node::yieldDef
 };

@@ -16,30 +16,30 @@ import VarCalc :: get_varRefs;
 fn bodies(node, bodiesBox) {
     return switch (def cls = get_class(node)) {
         @@apply: {
-            def function = bodies(node.function, bodiesBox);
-            def values = bodies(node.values, bodiesBox);
+            def function = bodies(node::function, bodiesBox);
+            def values = bodies(node::values, bodiesBox);
 
             @apply{values, function}
         };
 
         @@call: {
-            def function = bodies(node.function, bodiesBox);
-            def values = [ a in node.values -> bodies(a, bodiesBox) ];
+            def function = bodies(node::function, bodiesBox);
+            def values = [ a in node::values -> bodies(a, bodiesBox) ];
             @call{function, values}
         };
 
         @@closure: {
-            def statements = [ s in node.statements -> bodies(s, bodiesBox) ];
-            def yieldNode = bodies(node.yieldNode, bodiesBox);
-            def varRefs = node.varRefs;
+            def statements = [ s in node::statements -> bodies(s, bodiesBox) ];
+            def yieldNode = bodies(node::yield, bodiesBox);
+            def varRefs = get_varRefs(node);
 
             def newNode = makeFullClosure({
-                formals: node.formals,
-                ((def name = node.name) & {name} | {})*,
+                formals: node::formals,
+                ((def name = node::name) & {name} | {})*,
                 statements,
                 varRefs,
                 yield: yieldNode,
-                ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
+                ((def yieldDef = node::yieldDef) & {yieldDef} | {})*
             });
 
             def bodies = bodiesBox*;
@@ -53,28 +53,28 @@ fn bodies(node, bodiesBox) {
         };
 
         @@fetch: {
-            def target = bodies(node.target, bodiesBox);
+            def target = bodies(node::target, bodiesBox);
             @fetch{target}
         };
 
         @@store: {
-            def target = bodies(node.target, bodiesBox);
-            def value = bodies(node.nodeValue, bodiesBox);
+            def target = bodies(node::target, bodiesBox);
+            def value = bodies(node::value, bodiesBox);
             @store{target, value}
         };
 
         @@varDef:
         @@varDefMutable: {
-            def value = ifValue { node.nodeValue }
+            def value = ifValue { node::value }
                 { value -> {value: bodies(value, bodiesBox)} }
                 { {} };
-            @(cls){name: node.name, value*}
+            @(cls){name: node::name, value*}
         };
 
         @@export:
         @@maybe:
         @@noYield: {
-            def value = bodies(node.nodeValue, bodiesBox);
+            def value = bodies(node::value, bodiesBox);
             @(cls){value}
         };
 

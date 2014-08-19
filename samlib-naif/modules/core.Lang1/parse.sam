@@ -141,7 +141,7 @@ def parLiteral = makeMainChoice(
         makeToken(@@"."),
         parIdentifierString,
         makeCode { ., ., name ->
-            makeLiteral(selectorFromName(get_nodeValue(name)))
+            makeLiteral(selectorFromName(name::value))
         }));
 
 ## Documented in spec.
@@ -166,7 +166,7 @@ def parMapping = makeMainChoice(
         }),
     makeSequence(
         parExpression,
-        makeCode { value -> get_interpolate(value) }),
+        makeCode { value -> value::interpolate }),
     makeSequence(
         parName,
         makeCode { name ->
@@ -226,7 +226,7 @@ def parType = makeMainSequence(
     makeChoice(parIdentifierString, parParenExpression),
     makeCode { ., name ->
         ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(get_nodeValue(name))) }
+            { makeLiteral(@@(name::value)) }
             { makeCall(REFS::makeDerivedDataClass, name) }
     });
 
@@ -237,7 +237,7 @@ def parDeriv = makeMainSequence(
         makeSequence(
             parIdentifierString,
             makeCode { ., name ->
-                makeLiteral(@@(get_nodeValue(name)))
+                makeLiteral(@@(name::value))
             }),
         parParenExpression),
     makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
@@ -267,8 +267,7 @@ def parBasicClosure = makeMainSequence(
 def parNullaryClosure = makeMainSequence(
     parFullClosure,
     makeCode { c ->
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -277,8 +276,7 @@ def parNullaryClosure = makeMainSequence(
 def parBasicNullaryClosure = makeMainSequence(
     parBasicClosure,
     makeCode { c ->
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -478,7 +476,7 @@ def parFunctionDef = makeMainSequence(
     makeToken(@@fn),
     parFunctionCommon,
     makeCode { ., closure ->
-        withTop(makeVarDef(get_name(closure), closure))
+        withTop(makeVarDef(closure::name, closure))
     });
 
 ## Documented in spec.
@@ -488,8 +486,8 @@ def parGenericBind = makeMainSequence(
     makeToken(@@"."),
     parFunctionCommon,
     makeCode { ., bind, ., closure ->
-        def formals = get_formals(closure);
-        def name = get_name(closure);
+        def formals = closure::formals;
+        def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
     });
@@ -512,7 +510,7 @@ def parImportFormat = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
         parIdentifierString,
-        makeCode { ., f -> {format: get_nodeValue(f)} }),
+        makeCode { ., f -> {format: f::value} }),
     makeResult({}));
 
 ## Documented in spec.
@@ -724,7 +722,7 @@ def parPexString = makeMainSequence(makeToken(@@string));
 def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierString,
-    makeCode { ., type -> @token{value: @@(get_nodeValue(type))} });
+    makeCode { ., type -> @token{value: @@(type::value)} });
 
 ## Documented in spec.
 def parPexSetString = makeMainSequence(
@@ -761,7 +759,7 @@ def parPexSet = makeMainSequence(
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),
-            makeCode { tokens -> collect(tokens, get_nodeValue) }),
+            makeCode { tokens -> collect(tokens, { n -> n::value }) }),
         makeResult([])),
     makeToken(@@"]"),
     makeCode { ., type, terminals, . -> @(type){values: terminals} });

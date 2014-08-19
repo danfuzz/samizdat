@@ -176,7 +176,7 @@ def parLiteral = {:
     @"@"
     @"."
     name = parIdentifierString
-    { makeLiteral(selectorFromName(get_nodeValue(name))) }
+    { makeLiteral(selectorFromName(name::value)) }
 :};
 
 ## Parses a map key.
@@ -200,7 +200,7 @@ def parMapping = {:
     ## An expression is valid only if it's an interpolation, in which case we
     ## take the interpolation variant of the node.
     value = parExpression
-    { get_interpolate(value) }
+    { value::interpolate }
 |
     ## Otherwise, it's got to be a raw name, representing a binding of that
     ## name to its value as a variable.
@@ -275,7 +275,7 @@ def parType = {:
 
     {
         ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(get_nodeValue(name))) }
+            { makeLiteral(@@(name::value)) }
             { makeCall(REFS::makeDerivedDataClass, name) }
     }
 :};
@@ -286,7 +286,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierString
-        { makeLiteral(@@(get_nodeValue(name))) }
+        { makeLiteral(@@(name::value)) }
     |
         parParenExpression
     )
@@ -333,8 +333,7 @@ def parNullaryClosure = {:
     c = parFullClosure
 
     {
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -346,8 +345,7 @@ def parBasicNullaryClosure = {:
     c = parBasicClosure
 
     {
-        def formals = get_formals(c);
-        ifIs { ne(formals, []) }
+        ifIs { ne(c::formals, []) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -625,7 +623,7 @@ def parFunctionDef = {:
     @fn
     closure = parFunctionCommon
 
-    { withTop(makeVarDef(get_name(closure), closure)) }
+    { withTop(makeVarDef(closure::name, closure)) }
 :};
 
 ## Parses a method binding. This wraps a `@closure` result of
@@ -638,8 +636,8 @@ def parGenericBind = {:
     closure = parFunctionCommon
 
     {
-        def formals = get_formals(closure);
-        def name = get_name(closure);
+        def formals = closure::formals;
+        def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
     }
@@ -669,7 +667,7 @@ def parImportName = {:
 def parImportFormat = {:
     @"@"
     f = parIdentifierString
-    { {format: get_nodeValue(f)} }
+    { {format: f::value} }
 |
     { {} }
 :};
@@ -928,7 +926,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(get_nodeValue(type))} }
+    { @token{value: @@(type::value)} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -970,7 +968,7 @@ def parPexSet = {:
         { collect(cat(strings*), { ch -> @@(ch) }) }
     |
         tokens = parPexToken+
-        { collect(tokens, get_nodeValue) }
+        { collect(tokens, { n -> n::value }) }
     |
         { [] }
     )

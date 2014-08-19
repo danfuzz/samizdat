@@ -12,7 +12,7 @@ import ./get_varDefs :: get_varDefs;
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
-    return [].cat(( n in nodes -> n.varRefs )*)
+    return cat([], ( n in nodes -> get_varRefs(n) )*)
 };
 
 
@@ -25,11 +25,11 @@ fn catVarRefs(nodes*) {
 export fn get_varRefs(node) {
     return switch (get_class(node)) {
         @@apply: {
-            catVarRefs(node.function, node.values)
+            catVarRefs(node::function, node::values)
         };
 
         @@call: {
-            catVarRefs(node.function, node.values*)
+            catVarRefs(node::function, node::values*)
         };
 
         @@closure: {
@@ -42,13 +42,13 @@ export fn get_varRefs(node) {
             ## the top of the closure, including formal arguments and a
             ## yield def (if any).
             def baseLocals = [
-                node.yieldDef?*,
-                ( f in node.formals -> f::name )*];
+                node::yieldDef?*,
+                ( f in node::formals -> f::name )*];
 
             ## The extra element at the end is to represent the closure
             ## yield.
             def statementDefs =
-                [( s in node.statements -> s.varDefs )*, []];
+                [( s in node::statements -> get_varDefs(s) )*, []];
 
             ## What's happening here is that for each statement (and the
             ## yield at the end), we get its variable references and
@@ -61,10 +61,10 @@ export fn get_varRefs(node) {
             ## doing key deletion. The resulting `statmentRefs` is a list
             ## of these maps.
             def statementRefs = (
-                    s in [node.statements*, node.yieldNode],
+                    s in [node::statements*, node::yield],
                     idx in (0..) ->
-                def defs = baseLocals.cat(statementDefs[..!idx]*);
-                var refs = {s.varRefs*: null};
+                def defs = cat(baseLocals, statementDefs[..!idx]*);
+                var refs = {get_varRefs(s)*: null};
                 for (d in defs) {
                    refs := $Collection::del(refs, d)
                 };
@@ -74,7 +74,7 @@ export fn get_varRefs(node) {
             ## The result of concatenating all the `statementRefs` is a
             ## map. The final result is the list of refs, that is, a list
             ## of all the keys.
-            $Collection::keyList({}.cat(statementRefs*));
+            $Collection::keyList(cat({}, statementRefs*));
         };
 
         @@closureRef: {
@@ -82,25 +82,25 @@ export fn get_varRefs(node) {
         };
 
         @@fetch: {
-            node.target.varRefs
+            get_varRefs(node::target)
         };
 
         @@store: {
-            catVarRefs(node.target, node.nodeValue)
+            catVarRefs(node::target, node::value)
         };
 
         @@varRef: {
-            [node.name]
+            [node::name]
         };
 
         @@maybe:
         @@noYield: {
-            node.nodeValue.varRefs
+            get_varRefs(node::value)
         };
 
         @@varDef:
         @@varDefMutable: {
-            (def v = node.nodeValue) & v.varRefs | []
+            (def v = node::value) & get_varRefs(v) | []
         };
 
         @@importModule:

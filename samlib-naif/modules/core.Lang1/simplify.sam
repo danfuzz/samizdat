@@ -30,7 +30,7 @@ fn convertPexInList(nodes) {
 
 ## Converts a pex to a function call on its converted inner pex.
 fn makeCallPex(function, node, formals, moreArgs*) {
-    return makeCall(function, convertPex(get_pex(node), formals), moreArgs*)
+    return makeCall(function, convertPex(node::pex, formals), moreArgs*)
 };
 
 ## Makes a node with additional / replacement bindings from the original.
@@ -54,8 +54,7 @@ fn convertPex(node, formals) {
             },
 
             @@choice: { . ->
-                def pexes = get_pexes(node);
-                def convertedPexes = filterAll(pexes)
+                def convertedPexes = filterAll(node::pexes)
                     { pex -> convertPex(pex, formals) };
                 makeCall(REFS::Peg_makeChoice, convertedPexes*)
             },
@@ -70,8 +69,8 @@ fn convertPex(node, formals) {
 
                 ifValues(
                     [
-                        { eq(get_statements(fullClosure), []) },
-                        { . -> hasClass(get_yieldNode(fullClosure), @@literal) }
+                        { eq(fullClosure::statements, []) },
+                        { . -> hasClass(fullClosure::yield, @@literal) }
                     ],
                     { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) },
                     { makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure)) }
@@ -101,10 +100,8 @@ fn convertPex(node, formals) {
             },
 
             @@sequence: { . ->
-                def pexes = get_pexes(node);
-
                 ## Extract the formals out of any `varDef` nodes.
-                def newFormals = filterAll(pexes) { pex ->
+                def newFormals = filterAll(node::pexes) { pex ->
                     ifIs { hasClass(pex, @@varDef) }
                         { {name: pex::name} }
                         { {} }
@@ -113,7 +110,7 @@ fn convertPex(node, formals) {
                 ## Convert all the pexes, passing in appropriately-extended
                 ## formals lists to each conversion.
                 def convertedPexes =
-                    filterAll(makeOpenRange(0), pexes)
+                    filterAll(makeOpenRange(0), node::pexes)
                         { n, pex ->
                             def subPex = ifIs { hasClass(pex, @@varDef) }
                                 { pex::value }
@@ -130,7 +127,7 @@ fn convertPex(node, formals) {
             },
 
             @@string: { . ->
-                makeCallLiterals(REFS::Peg_makeString, get_nodeValue(node))
+                makeCallLiterals(REFS::Peg_makeString, node::value)
             },
 
             @@thunk: { . ->
@@ -138,7 +135,7 @@ fn convertPex(node, formals) {
                 ## node, and just convert that.
                 def closure = makeFullClosure({
                     formals,
-                    yield: makeMaybe(get_nodeValue(node))
+                    yield: makeMaybe(node::value)
                 });
                 def convertedClosure = convertPexIn(closure);
 
@@ -146,24 +143,23 @@ fn convertPex(node, formals) {
             },
 
             @@token: { . ->
-                makeCallLiterals(REFS::Peg_makeToken, get_nodeValue(node))
+                makeCallLiterals(REFS::Peg_makeToken, node::value)
             },
 
             @@tokenSet: { . ->
-                def clses = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSet, clses*)
+                makeCallLiterals(REFS::Peg_makeTokenSet, node::values*)
             },
 
             @@tokenSetComplement: { . ->
-                def clses = get_values(node);
-                makeCallLiterals(REFS::Peg_makeTokenSetComplement, clses*)
+                makeCallLiterals(REFS::Peg_makeTokenSetComplement,
+                    node::values*)
             },
 
             @@varRef: { . ->
                 ## `varRef` in the context of a pex just translates to a
                 ## variable fetch of the same name in the context of an
                 ## expression / statement.
-                makeVarFetch(get_name(node))
+                makeVarFetch(node::name)
             }
         })
 };
@@ -175,28 +171,28 @@ fn convertPexIn(node) {
         { get_class(node) },
         {
             @@apply: { . ->
-                def function = convertPexIn(get_function(node));
-                def values = convertPexIn(get_values(node));
+                def function = convertPexIn(node::function);
+                def values = convertPexIn(node::values);
 
                 withFinalBindings(node, {function, values});
             },
 
             @@call: { . ->
-                def function = convertPexIn(get_function(node));
-                def values = convertPexInList(get_values(node));
+                def function = convertPexIn(node::function);
+                def values = convertPexInList(node::values);
 
                 withFinalBindings(node, {function, values});
             },
 
             @@closure: { . ->
-                def statements = convertPexInList(get_statements(node));
-                def yieldNode = convertPexIn(get_yieldNode(node));
+                def statements = convertPexInList(node::statements);
+                def yieldNode = convertPexIn(node::yield);
 
                 withBindings(node, {statements, yield: yieldNode})
             },
 
             @@fetch: { . ->
-                def target = convertPexIn(get_target(node));
+                def target = convertPexIn(node::target);
                 withFinalBindings(node, {target})
             },
 
@@ -206,14 +202,14 @@ fn convertPexIn(node) {
             },
 
             @@store: { . ->
-                def target = convertPexIn(get_target(node));
-                def value = convertPexIn(get_nodeValue(node));
+                def target = convertPexIn(node::target);
+                def value = convertPexIn(node::value);
                 withFinalBindings(node, {target, value})
             },
 
             @@varDef:
             @@varDefMutable: { . ->
-                ifValue { get_nodeValue(node) }
+                ifValue { node::value }
                     { value ->
                         withBindings(node, {value: convertPexIn(value)})
                     }
@@ -223,7 +219,7 @@ fn convertPexIn(node) {
             @@export:
             @@maybe:
             @@noYield: { . ->
-                def value = convertPexIn(get_nodeValue(node));
+                def value = convertPexIn(node::value);
                 withBindings(node, {value})
             },
 

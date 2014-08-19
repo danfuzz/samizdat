@@ -17,78 +17,78 @@ import ./Interner :: intern;
 fn lits(node, interner) {
     return switch (def cls = get_class(node)) {
         @@apply: {
-            def function = lits(node.function, interner);
-            def values = lits(node.values, interner);
+            def function = lits(node::function, interner);
+            def values = lits(node::values, interner);
 
             @apply{values, function}
         };
 
         @@call: {
             @call{
-                function: lits(node.function, interner),
-                values: [ a in node.values -> lits(a, interner) ]
+                function: lits(node::function, interner),
+                values: [ a in node::values -> lits(a, interner) ]
             }
         };
 
         @@closure: {
-            def name = (def value = node.name)
+            def name = (def value = node::name)
                 & {name: lits(@literal{value}, interner)}
                 | {};
 
             makeFullClosure({
                 name*,
-                formals: node.formals,
-                statements: [ s in node.statements -> lits(s, interner) ],
-                yield: lits(node.yieldNode, interner),
-                ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
+                formals: node::formals,
+                statements: [ s in node::statements -> lits(s, interner) ],
+                yield: lits(node::yield, interner),
+                ((def yieldDef = node::yieldDef) & {yieldDef} | {})*
             })
         };
 
         @@fetch: {
-            def target = lits(node.target, interner);
+            def target = lits(node::target, interner);
             @fetch{target}
         };
 
         @@importResource: {
-            def source = lits(node.source, interner);
-            def format = interner.intern(node.format);
+            def source = lits(node::source, interner);
+            def format = intern(interner, node::format);
             @importResource{dataOf(node)*, source, format}
         };
 
         @@literal: {
-            @literalRef{id: interner.intern(node.nodeValue)}
+            @literalRef{id: intern(interner, node::value)}
         };
 
         @@store: {
-            def target = lits(node.target, interner);
-            def value = lits(node.nodeValue, interner);
+            def target = lits(node::target, interner);
+            def value = lits(node::value, interner);
             @store{target, value}
         };
 
         ## Used as the `source` in `import*` nodes.
         @@external:
         @@internal: {
-            @(cls){name: interner.intern(node::name)}
+            @(cls){name: intern(interner, node::name)}
         };
 
         @@importModule:
         @@importModuleSelection: {
-            def source = lits(node.source, interner);
+            def source = lits(node::source, interner);
             @(cls){dataOf(node)*, source}
         };
 
         @@varDef:
         @@varDefMutable: {
-            def value = ifValue { node.nodeValue }
+            def value = ifValue { node::value }
                 { value -> {value: lits(value, interner)} }
                 { {} };
-            @(cls){name: node.name, value*}
+            @(cls){name: node::name, value*}
         };
 
         @@export:
         @@maybe:
         @@noYield: {
-            def value = lits(node.nodeValue, interner);
+            def value = lits(node::value, interner);
             @(cls){value}
         };
 
