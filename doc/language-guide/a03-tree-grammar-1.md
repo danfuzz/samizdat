@@ -398,6 +398,55 @@ def parPostfixOperator = {:
     @"?"
     { { node -> makeMaybeValue(node) } }
 |
+    ## This translates as follows:
+    ##
+    ## ```
+    ## target.memberName(arg, ...)
+    ## =>
+    ## @.memberName(target, arg, ...)
+    ## ```
+    ##
+    ## ```
+    ## target.memberName
+    ## =>
+    ## @.get_memberName(target)
+    ## ```
+    ##
+    ## ```
+    ## target.memberName := expression
+    ## =>
+    ## @.set_memberName(target, expression)
+    ## ```
+    ##
+    ## The setter variant works via an `lvalue` binding added to a parsed
+    ## getter expression.
+    ##
+    @"."
+    name = parName
+
+    (
+        ## `target.memberName(arg, ...)`
+        actuals = parActualsList
+        {
+            { node -> makeCallOrApply(makeSelector(name), node, actuals*) }
+        }
+    |
+        ## `target.memberName` (includes parsing of both getters and setters)
+        {
+            def getterRef = makeSelector(cat("get_", name));
+            { node ->
+                def getterCall = makeCall(getterRef, node);
+                @(get_class(getterCall)){
+                    dataOf(getterCall)*,
+                    lvalue: { expr ->
+                        def setterRef = makeSelector(cat("set_", name));
+                        makeCall(setterRef, node, expr)
+                    }
+                }
+            }
+        }
+    )
+|
     ## Note: Layer 2 adds additional rules here.
     %parPostfixOperator2
 :};

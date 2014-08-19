@@ -627,9 +627,9 @@ DEF_PARSE(actualsList) {
 
 // Documented in spec.
 DEF_PARSE(postfixOperator) {
-    // We differ from the spec here, returning a payload or single token
-    // (`*` or `?`) directly. The corresponding `unaryExpression` code
-    // decodes these as appropriate.
+    // We differ from the spec here, returning payloads that are directly
+    // inspected by the `unaryExpression` code, instead of just being
+    // functions to apply.
 
     MARK();
 
@@ -643,6 +643,13 @@ DEF_PARSE(postfixOperator) {
 
     if (result == NULL) { result = MATCH(CH_STAR); }
     if (result == NULL) { result = MATCH(CH_QMARK); }
+
+    if (result == NULL) {
+        MATCH_OR_REJECT(CH_DOT);
+        zvalue name = PARSE_OR_REJECT(name);
+        zvalue actuals = PARSE_OR_REJECT(actualsList);
+        result = makeCall(makeSelector(name), actuals);
+    }
 
     return result;
 }
@@ -658,7 +665,13 @@ DEF_PARSE(unaryExpression) {
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(postfixes, i);
         if (hasClass(one, CLS_List)) {
+            // Regular function call.
             result = makeCallOrApply(result, one);
+        } else if (hasClass(one, CLS_call)) {
+            // Method call.
+            zvalue function = get(one, STR_function);
+            zvalue values = get(one, STR_values);
+            result = makeCallOrApply(function, listPrepend(result, values));
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
