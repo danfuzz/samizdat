@@ -30,7 +30,7 @@ fn convertPexInList(nodes) {
 
 ## Converts a pex to a function call on its converted inner pex.
 fn makeCallPex(function, node, formals, moreArgs*) {
-    return makeCall(function, convertPex(get_pex(node), formals), moreArgs*)
+    return makeCall(function, convertPex(node::pex, formals), moreArgs*)
 };
 
 ## Makes a node with additional / replacement bindings from the original.
@@ -54,8 +54,7 @@ fn convertPex(node, formals) {
             },
 
             @@choice: { . ->
-                def pexes = get_pexes(node);
-                def convertedPexes = filterAll(pexes)
+                def convertedPexes = filterAll(node::pexes)
                     { pex -> convertPex(pex, formals) };
                 makeCall(REFS::Peg_makeChoice, convertedPexes*)
             },
@@ -101,10 +100,8 @@ fn convertPex(node, formals) {
             },
 
             @@sequence: { . ->
-                def pexes = get_pexes(node);
-
                 ## Extract the formals out of any `varDef` nodes.
-                def newFormals = filterAll(pexes) { pex ->
+                def newFormals = filterAll(node::pexes) { pex ->
                     ifIs { hasClass(pex, @@varDef) }
                         { {name: pex::name} }
                         { {} }
@@ -113,7 +110,7 @@ fn convertPex(node, formals) {
                 ## Convert all the pexes, passing in appropriately-extended
                 ## formals lists to each conversion.
                 def convertedPexes =
-                    filterAll(makeOpenRange(0), pexes)
+                    filterAll(makeOpenRange(0), node::pexes)
                         { n, pex ->
                             def subPex = ifIs { hasClass(pex, @@varDef) }
                                 { pex::value }
