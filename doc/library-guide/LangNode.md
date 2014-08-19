@@ -127,14 +127,6 @@ representing an assignment of the lvalue-bearing node to the given node.
 
 **Note**: `lvalue` bindings aren't used during execution.
 
-#### `get_maxArgs(node) -> int`
-
-Convenient shorthand for `formalsMaxArgs(get_formals(node))`.
-
-#### `get_minArgs(node) -> int`
-
-Convenient shorthand for `formalsMinArgs(get_formals(node))`.
-
 #### `get_name(node) -> . | void`
 
 Gets the name defined or used by the given node. This is applicable to

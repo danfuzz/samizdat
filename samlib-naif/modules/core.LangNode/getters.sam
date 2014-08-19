@@ -122,16 +122,6 @@ export fn get_lvalue(node) {
 };
 
 ## Documented in spec.
-export fn get_maxArgs(node) {
-    return formalsMaxArgs(get_formals(node))
-};
-
-## Documented in spec.
-export fn get_minArgs(node) {
-    return formalsMinArgs(get_formals(node))
-};
-
-## Documented in spec.
 export fn get_name(node) {
     return? node::name
 };

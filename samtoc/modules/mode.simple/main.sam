@@ -71,10 +71,12 @@ fn closureMaker(cloIdx, clo, literals) {
             genAssign("state[\(idx)]", varName));
         stat.usualIndent(1)
     ];
+    def maxArgs = formalsMaxArgs(clo::formals);
+    def minArgs = formalsMinArgs(clo::formals);
     def resultAssign = genAssign(
         "zvalue result",
         genCall(
-            "makeBuiltin", "\(clo.minArgs)", "\(clo.maxArgs)",
+            "makeBuiltin", "\(minArgs)", "\(maxArgs)",
             "FUN_IMPL_NAME(\(cloIdx))", "\(#varRefs)", name));
 
     return "\
