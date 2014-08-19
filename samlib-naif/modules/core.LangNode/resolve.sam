@@ -52,24 +52,21 @@ export fn resolveImport(node, resolveFn) {
         {
             @@importModule: { . ->
                 ## No need to modify, just validate.
-                def source = get_source(node);
-                resolveAndCheck(resolveFn, source);
-
+                resolveAndCheck(resolveFn, node::source);
                 node
             },
 
             @@importModuleSelection: { . ->
                 ## We need to inspect the resolved innards, so keep the resolved value
                 ## (unlike the other related functions).
-                def source = get_source(node);
-                def resolved = resolveAndCheck(resolveFn, source);
+                def resolved = resolveAndCheck(resolveFn, node::source);
 
                 ## Get the `info::exports` out of the resolved result. Default to `{}`
                 ## if not present.
                 def info = ifValueOr { resolved::info } { {} };
                 def exports = ifValueOr { info::exports } { {} };
 
-                ifValue { get_select(node) }
+                ifValue { node::select }
                     { select ->
                         ## Explicit selection, so no need to return a modified result.
                         ## Just validate that all selected names are available for import.
@@ -77,7 +74,8 @@ export fn resolveImport(node, resolveFn) {
                             ifNot { get(exports, one) }
                                 {
                                     die("Could not resolve import: ",
-                                        sourceString(source), " :: ", one)
+                                        sourceString(node::source), " :: ",
+                                        one)
                                 }
                         };
                         node
@@ -99,15 +97,13 @@ export fn resolveImport(node, resolveFn) {
 
 ## Documented in spec.
 export fn withResolvedImports(node, resolveFn) {
-    def rawStatements = get_statements(node);
-
-    def converted = filterAll(rawStatements) { s /out ->
+    def converted = filterAll(node::statements) { s /out ->
         var exported = false;
         var defNode = s;
         ifIs { hasClass(s, @@export) }
             {
                 exported := true;
-                defNode := get_nodeValue(s)
+                defNode := s::value
             };
 
         ifValueOr

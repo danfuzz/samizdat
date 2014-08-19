@@ -80,7 +80,7 @@ def parArguments = {:
     "--\0"?
     args = parWord*
     {
-        def options = {}.cat(optionList*);
+        def options = cat({}, optionList*);
         if (options::error) {
             die("Invalid option(s).")
         };

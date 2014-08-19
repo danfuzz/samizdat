@@ -2,8 +2,6 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-import core.LangNode :: get_formals, get_yieldDef;
-
 import CodeGen;
 import VarCalc :: get_varRefs;
 
@@ -47,7 +45,7 @@ def FORMAL_PARSERS = {
 ## Helper for `processFormals*` which produces the helpful commentary about
 ## unnamed formals.
 fn unnamedFormals(clo) {
-    return [ idx in (0..), f in clo.formals ->
+    return [ idx in (0..), f in clo::formals ->
         (!f::name) & $CodeGen::genComment("Unnamed formal \(idx)")
     ];
 };
@@ -55,7 +53,7 @@ fn unnamedFormals(clo) {
 ## Helper for `processFormals` which does the more complicated processing
 ## required for handling repeat specifiers.
 fn processFormalsWithRepeat(clo, names) {
-    def varList = [ idx in (0..), f in clo.formals ->
+    def varList = [ idx in (0..), f in clo::formals ->
         def parse = FORMAL_PARSERS[f::repeat | "."];
 
         if (def origName = f::name) {
@@ -88,15 +86,15 @@ fn processFormalsWithRepeat(clo, names) {
             & {(origName): $Collection::del(v, "preInit")}
     );
 
-    return {names, preInits, cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits, cleanups: [], vars: cat({}, vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the formal arguments to the
 ## given closure, if any.
 fn processFormals(clo) {
-    def names = [ f in clo.formals -> f::name ];
+    def names = [ f in clo::formals -> f::name ];
 
-    def vars = ( idx in (0..), f in clo.formals ->
+    def vars = ( idx in (0..), f in clo::formals ->
         if (f::repeat) {
             ## At least one argument has a repeat specifier. Do the requisite
             ## processing.
@@ -112,13 +110,13 @@ fn processFormals(clo) {
             }}
     );
 
-    return {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits: [], cleanups: [], vars: cat({}, vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the yield definition of the given
 ## closure, if any.
 fn processYieldDef(clo) {
-    return if (def name = clo.yieldDef) {
+    return if (def name = clo::yieldDef) {
         {
             names: [name],
             preInits: [
@@ -141,7 +139,7 @@ fn processYieldDef(clo) {
 ## Returns `{names, vars, preInits}` for the free variables of the given
 ## closure, if any.
 fn processFreeVars(clo) {
-    def names = clo.varRefs;
+    def names = get_varRefs(clo);
     def vars = ( idx in (0..), name in names ->
         {(name): {
             origName: name,
@@ -151,7 +149,7 @@ fn processFreeVars(clo) {
         }}
     );
 
-    return {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits: [], cleanups: [], vars: cat({}, vars*)}
 };
 
 ## Makes a "safe" (syntactically correct C) variable name, given a `prefix`

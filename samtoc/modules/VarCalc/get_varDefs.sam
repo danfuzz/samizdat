@@ -2,10 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-import core.LangNode ::
-    get_name,
-    get_nodeValue,
-    makeDynamicImport;
+import core.LangNode :: makeDynamicImport;
 
 
 ##
@@ -14,7 +11,7 @@ import core.LangNode ::
 
 ## Extracts and combines the `varDefs` of all the arguments.
 fn catVarDefs(nodes*) {
-    return [].cat(( n in nodes -> n.varDefs )*)
+    return cat([], ( n in nodes -> get_varDefs(n) )*)
 };
 
 
@@ -27,7 +24,7 @@ fn catVarDefs(nodes*) {
 export fn get_varDefs(node) {
     return switch (get_class(node)) {
         @@export: {
-            node.nodeValue.varDefs
+            get_varDefs(node::value)
         };
 
         @@importModuleSelection: {
@@ -39,7 +36,7 @@ export fn get_varDefs(node) {
         @@importResource:
         @@varDef:
         @@varDefMutable: {
-            [node.name]
+            [node::name]
         };
 
         @@apply:

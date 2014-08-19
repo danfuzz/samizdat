@@ -27,8 +27,8 @@ fn expandYield(map) {
 
     ifNot { hasClass(yieldNode, @@nonlocalExit) } { return yieldNode };
 
-    def function = get_function(yieldNode);
-    def value = get_nodeValue(yieldNode);
+    def function = yieldNode::function;
+    def value = yieldNode::value;
 
     ## If the exit's `function` is a variable fetch of the same variable as
     ## this node's yield name, then skip the expansion and just return the
@@ -36,9 +36,9 @@ fn expandYield(map) {
     ifValues(
         [
             { -> hasClass(function, @@fetch) },
-            { . -> hasClass(get_target(function), @@varRef) },
+            { . -> hasClass(function::target, @@varRef) },
             { ., . -> map::yieldDef },
-            { ., target, yieldDef -> eq(get_name(target), yieldDef) }
+            { ., target, yieldDef -> eq(target::name, yieldDef) }
         ],
         { ., ., ., . -> return value });
 
@@ -48,7 +48,7 @@ fn expandYield(map) {
             ifIs { hasClass(value, @@maybe) }
                 {
                     makeCallOrApply(function,
-                        makeInterpolate(makeMaybeValue(get_nodeValue(value))))
+                        makeInterpolate(makeMaybeValue(value::value)))
                 }
         }
         { makeCall(function, value) };
@@ -63,7 +63,7 @@ fn expandYield(map) {
 
 ## Documented in spec.
 export fn makeAssignmentIfPossible(target, value) {
-    return? ifValue { get_lvalue(target) }
+    return? ifValue { target::lvalue }
         { lvalue -> lvalue(value) }
 };
 
@@ -96,7 +96,7 @@ export fn makeCallOrApply(function, values*) {
     };
 
     filterPump(values) { actual ->
-        ifValue { get_interpolate(actual) }
+        ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
                 addToCooked(makeCall(REFS::collect, node))
@@ -140,12 +140,8 @@ export fn makeDynamicImport(node) {
             @@importModule: { . ->
                 ## The translation is approximately
                 ## `def name = loadModule(source)`.
-
-                def name = get_name(node);
-                def source = get_source(node);
-
-                [makeVarDef(name,
-                    makeCall(REFS::loadModule, makeLiteral(source)))]
+                [makeVarDef(node::name,
+                    makeCall(REFS::loadModule, makeLiteral(node::source)))]
             },
 
             @@importModuleSelection: { . ->
@@ -155,12 +151,11 @@ export fn makeDynamicImport(node) {
                 ## wrapped in a `get` call, e.g.
                 ## `def name = get(load(source), "name")`.
 
-                def source = get_source(node);
+                def source = node::source;
                 def names = get_definedNames(node);
-                def select = get_select(node);
                 def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
-                filterAll(names, select) { name, sel ->
+                filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
                         makeCall(REFS::get, loadCall, makeLiteral(sel)))
                 }
@@ -169,14 +164,9 @@ export fn makeDynamicImport(node) {
             @@importResource: { . ->
                 ## The translation is approximately
                 ## `def name = loadResource(source, format)`.
-
-                def name = get_name(node);
-                def format = get_format(node);
-                def source = get_source(node);
-
-                [makeVarDef(name,
+                [makeVarDef(node::name,
                     makeCall(REFS::loadResource,
-                        makeLiteral(source), makeLiteral(format)))]
+                        makeLiteral(node::source), makeLiteral(node::format)))]
             }
         })
 };
@@ -265,10 +255,10 @@ export fn makeImport(baseData) {
 
 ## Documented in spec.
 export fn makeInfoMap(node) {
-    ifValue { get_info(node) }
+    ifValue { node::info }
         { info -> return info };
 
-    def statements = get_statements(node);
+    def statements = node::statements;
     var exports = {};
     var imports = {};
     var resources = {};
@@ -296,26 +286,26 @@ export fn makeInfoMap(node) {
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
         ifIs { hasClass(s, @@importModule) }
-            { addToImports(get_source(s), [@module]) };
+            { addToImports(s::source, [@module]) };
         ifIs { hasClass(s, @@importModuleSelection) }
             {
-                def names = ifValueOr { get_select(s) }
+                def names = ifValueOr { s::select }
                     { die("Cannot call `makeInfoMap` on unresolved import.") };
-                addToImports(get_source(s), names)
+                addToImports(s::source, names)
             };
         ifIs { hasClass(s, @@importResource) }
-            { addToResources(get_source(s), get_format(s)) };
+            { addToResources(s::source, s::format) };
     };
 
     ## The filter is just being used as a for-each loop. The direct
     ## result is ignored.
     filterAll(statements) { s ->
         ifIs { hasClass(s, @@exportSelection) }
-            { addToExports(get_select(s)) };
+            { addToExports(s::select) };
         ifIs { hasClass(s, @@export) }
             {
                 addToExports(get_definedNames(s));
-                handleImport(get_nodeValue(s))
+                handleImport(s::value)
             };
         handleImport(s)
     };
@@ -347,7 +337,7 @@ export fn makeThunk(expression) {
 
 ## Documented in spec.
 export fn withDynamicImports(node) {
-    def rawStatements = get_statements(node);
+    def rawStatements = node::statements;
 
     ifIs { eq(rawStatements, []) }
         {
@@ -374,7 +364,7 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifNot { eq(get_yieldNode(node), @void) }
+    ifNot { eq(node::yield, @void) }
         { die("Invalid node for `withModuleDefs` (has non-void `yield`).") };
 
     ## This is the metainformation of the module. In addition to being
@@ -383,7 +373,7 @@ export fn withModuleDefs(node) {
     ## map.
     def info = makeInfoMap(node);
 
-    def rawStatements = get_statements(node);
+    def rawStatements = node::statements;
 
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
@@ -392,7 +382,7 @@ export fn withModuleDefs(node) {
             { yield /out };
 
         yield ifIs { hasClass(s, @@export) }
-            { get_nodeValue(s) }
+            { s::value }
             { s }
     };
 
@@ -423,26 +413,26 @@ export fn withModuleDefs(node) {
 
 ## Documented in spec.
 export fn withoutTops(node) {
-    def rawStatements = get_statements(node);
+    def rawStatements = node::statements;
 
     ## This is a collation of all the forward declarations.
     def tops = filterAll(rawStatements) { s ->
         def defNode = ifIs { hasClass(s, @@export) }
-            { get_nodeValue(s) }
+            { s::value }
             { s };
 
         ifIs { defNode::top }
-            { makeVarDef(get_name(defNode)) }
+            { makeVarDef(defNode::name) }
     };
 
     ## These are the one-for-one replacements for the original `statements`.
     def mains = filterAll(rawStatements) { s ->
         def defNode = ifIs { hasClass(s, @@export) }
-            { get_nodeValue(s) }
+            { s::value }
             { s };
 
         ifIs { defNode::top }
-            { makeVarStore(get_name(defNode), get_nodeValue(defNode)) }
+            { makeVarStore(defNode::name, defNode::value) }
             { s }
     };
 
@@ -451,11 +441,11 @@ export fn withoutTops(node) {
         ifNot { hasClass(s, @@export) }
             { yield /out };
 
-        def defNode = get_nodeValue(s);
+        def defNode = s::value;
         ifNot { defNode::top }
             { yield /out };
 
-        yield get_name(defNode)
+        yield defNode::name
     };
 
     def optSelection = ifIs { eq(exports, []) }

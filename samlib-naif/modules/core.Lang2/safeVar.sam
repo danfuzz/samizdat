@@ -81,34 +81,28 @@ fn safeIndex(node, base) {
         { get_class(node) },
         {
             @@apply: { . ->
-                safeIndexForNodes(base,
-                    get_function(node),
-                    get_values(node));
+                safeIndexForNodes(base, node::function, node::values);
             },
 
             @@call: { . ->
-                safeIndexForNodes(base,
-                    get_function(node),
-                    get_values(node)*);
+                safeIndexForNodes(base, node::function, node::values*);
             },
 
             @@closure: { . ->
-                def namesIndex = safeIndexForNames(base,
-                    get_name(node)?*,
-                    get_yieldDef(node)?*);
-                def nodesIndex = safeIndexForNodes(base,
-                    get_statements(node)*,
-                    get_yieldNode(node));
+                def namesIndex =
+                    safeIndexForNames(base, node::name?*, node::yieldDef?*);
+                def nodesIndex =
+                    safeIndexForNodes(base, node::statements*, node::yield);
 
                 maxOf(namesIndex, nodesIndex)
             },
 
             @@exportSelection: { . ->
-                safeIndexForNames(base, get_select(node)*)
+                safeIndexForNames(base, node::select*)
             },
 
             @@fetch: { . ->
-                safeIndexForNodes(base, get_target(node))
+                safeIndexForNodes(base, node::target)
             },
 
             @@importModuleSelection: { . ->
@@ -121,7 +115,7 @@ fn safeIndex(node, base) {
             },
 
             @@store: { . ->
-                safeIndexForNodes(base, get_target(node), get_nodeValue(node))
+                safeIndexForNodes(base, node::target, node::value)
             },
 
             @@literal:
@@ -131,23 +125,21 @@ fn safeIndex(node, base) {
 
             @@varDef:
             @@varDefMutable: { . ->
-                def nameIndex =
-                    safeIndexForNames(base, get_name(node));
-                def valueIndex =
-                    safeIndexForNodes(base, get_nodeValue(node)?*);
+                def nameIndex = safeIndexForNames(base, node::name);
+                def valueIndex = safeIndexForNodes(base, node::value?*);
                 maxOf(nameIndex, valueIndex)
             },
 
             @@export:
             @@maybe:
             @@noYield: { . ->
-                safeIndexForNodes(base, get_nodeValue(node))
+                safeIndexForNodes(base, node::value)
             },
 
             @@importModule:
             @@importResource:
             @@varRef: { . ->
-                safeIndexForNames(base, get_name(node));
+                safeIndexForNames(base, node::name);
             }
         })
 };
