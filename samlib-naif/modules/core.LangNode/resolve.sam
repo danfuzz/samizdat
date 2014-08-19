@@ -97,9 +97,7 @@ export fn resolveImport(node, resolveFn) {
 
 ## Documented in spec.
 export fn withResolvedImports(node, resolveFn) {
-    def rawStatements = get_statements(node);
-
-    def converted = filterAll(rawStatements) { s /out ->
+    def converted = filterAll(node::statements) { s /out ->
         var exported = false;
         var defNode = s;
         ifIs { hasClass(s, @@export) }

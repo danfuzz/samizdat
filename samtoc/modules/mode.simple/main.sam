@@ -116,9 +116,10 @@ fn closureBody(cloIdx, clo, literals) {
     ## to run before `yield` is calculated (in order to have the correct
     ## set of vars defined in `vars`).
 
-    def mainStats = [ s in clo.statements -> translateStatement(s, var vars) ];
+    def mainStats =
+        [ s in clo::statements -> translateStatement(s, var vars) ];
 
-    def rawYield = clo.yieldNode;
+    def rawYield = clo::yield;
     def yieldNode = if (hasClass(rawYield, @@maybe)) {
         translate(rawYield::value, var vars);
     } else if (hasClass(rawYield, @@void)) {

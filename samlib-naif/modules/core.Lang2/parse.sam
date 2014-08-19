@@ -1969,7 +1969,7 @@ def parIfExpression = {:
         ## has a yield def or not. Note that the `yield` in a thunk is always
         ## a `maybe`, which also needs to be unwrapped.
         ifIs { eq(yieldDef, {}) }
-            { get_yieldNode(mainThunk)::value }
+            { mainThunk::yield::value }
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.

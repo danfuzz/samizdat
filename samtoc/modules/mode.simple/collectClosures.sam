@@ -29,8 +29,8 @@ fn bodies(node, bodiesBox) {
         };
 
         @@closure: {
-            def statements = [ s in node.statements -> bodies(s, bodiesBox) ];
-            def yieldNode = bodies(node.yieldNode, bodiesBox);
+            def statements = [ s in node::statements -> bodies(s, bodiesBox) ];
+            def yieldNode = bodies(node::yieldNode, bodiesBox);
             def varRefs = node.varRefs;
 
             def newNode = makeFullClosure({
@@ -39,7 +39,7 @@ fn bodies(node, bodiesBox) {
                 statements,
                 varRefs,
                 yield: yieldNode,
-                ((def yieldDef = node.yieldDef) & {yieldDef} | {})*
+                ((def yieldDef = node::yieldDef) & {yieldDef} | {})*
             });
 
             def bodies = bodiesBox*;

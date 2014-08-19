@@ -258,7 +258,7 @@ export fn makeInfoMap(node) {
     ifValue { node::info }
         { info -> return info };
 
-    def statements = get_statements(node);
+    def statements = node::statements;
     var exports = {};
     var imports = {};
     var resources = {};
@@ -337,7 +337,7 @@ export fn makeThunk(expression) {
 
 ## Documented in spec.
 export fn withDynamicImports(node) {
-    def rawStatements = get_statements(node);
+    def rawStatements = node::statements;
 
     ifIs { eq(rawStatements, []) }
         {
@@ -364,7 +364,7 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifNot { eq(get_yieldNode(node), @void) }
+    ifNot { eq(node::yield, @void) }
         { die("Invalid node for `withModuleDefs` (has non-void `yield`).") };
 
     ## This is the metainformation of the module. In addition to being
@@ -373,7 +373,7 @@ export fn withModuleDefs(node) {
     ## map.
     def info = makeInfoMap(node);
 
-    def rawStatements = get_statements(node);
+    def rawStatements = node::statements;
 
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
@@ -413,7 +413,7 @@ export fn withModuleDefs(node) {
 
 ## Documented in spec.
 export fn withoutTops(node) {
-    def rawStatements = get_statements(node);
+    def rawStatements = node::statements;
 
     ## This is a collation of all the forward declarations.
     def tops = filterAll(rawStatements) { s ->

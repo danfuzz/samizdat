@@ -89,12 +89,10 @@ fn safeIndex(node, base) {
             },
 
             @@closure: { . ->
-                def namesIndex = safeIndexForNames(base,
-                    node::name?*,
-                    get_yieldDef(node)?*);
-                def nodesIndex = safeIndexForNodes(base,
-                    get_statements(node)*,
-                    get_yieldNode(node));
+                def namesIndex =
+                    safeIndexForNames(base, node::name?*, node::yieldDef?*);
+                def nodesIndex =
+                    safeIndexForNodes(base, node::statements*, node::yield);
 
                 maxOf(namesIndex, nodesIndex)
             },

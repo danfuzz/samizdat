@@ -92,22 +92,6 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
-#### `get_statements(node) -> [node*]`
-
-Gets the statement list of a `closure` node.
-
-#### `get_yieldNode(node) -> node | void`
-
-Gets the yield of a `closure` node, if any. Full closures are required to
-have a yield node, but basic closures are not.
-
-**Note:** This is named `yieldNode` and not just `yield` to avoid conflict
-with the token of the latter name.
-
-#### `get_yieldDef(node) -> . | void`
-
-Gets the yield definition name of a `closure` node, if any.
-
 #### `intFromDigits(base, digits) -> int`
 
 Converts a list of digit character tokens into an int, given the base.

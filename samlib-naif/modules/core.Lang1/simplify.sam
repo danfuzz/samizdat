@@ -69,8 +69,8 @@ fn convertPex(node, formals) {
 
                 ifValues(
                     [
-                        { eq(get_statements(fullClosure), []) },
-                        { . -> hasClass(get_yieldNode(fullClosure), @@literal) }
+                        { eq(fullClosure::statements, []) },
+                        { . -> hasClass(fullClosure::yield, @@literal) }
                     ],
                     { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) },
                     { makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure)) }
@@ -185,8 +185,8 @@ fn convertPexIn(node) {
             },
 
             @@closure: { . ->
-                def statements = convertPexInList(get_statements(node));
-                def yieldNode = convertPexIn(get_yieldNode(node));
+                def statements = convertPexInList(node::statements);
+                def yieldNode = convertPexIn(node::yield);
 
                 withBindings(node, {statements, yield: yieldNode})
             },

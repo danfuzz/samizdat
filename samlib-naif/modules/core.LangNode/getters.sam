@@ -95,18 +95,3 @@ export fn get_definedNames(node) {
 export fn get_id(node) {
     return node::id
 };
-
-## Documented in spec.
-export fn get_statements(node) {
-    return node::statements
-};
-
-## Documented in spec.
-export fn get_yieldNode(node) {
-    return? node::yield
-};
-
-## Documented in spec.
-export fn get_yieldDef(node) {
-    return? node::yieldDef
-};
