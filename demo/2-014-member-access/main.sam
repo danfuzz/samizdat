@@ -26,19 +26,17 @@ msg([1, 2].get_size());
 msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
-msg("".cat("Awesome", "tastic!"));
 
-note("\nGetter syntax");
-def get_size = get_size;
-msg([1, 2, 3].size);
-
-def get_foo = fetch;
-var blort = 100;
-def cell = (var blort);
-msg(cell.foo);
-
-note("\nSetter syntax");
-def set_foo = store;
-msg(cell.foo := 987);
-cell.foo := 654;
-msg(cell.foo);
+def get_foo = @.get_foo;
+def set_foo = @.set_foo;
+def theSecret = "fizmo";
+def Igram = makeObjectClass("Igram", theSecret);
+fn Igram.get_foo() {
+    return "a foo"
+};
+fn Igram.set_foo(foo) {
+    note("Set to: \%q(foo)");
+};
+def obj = makeObject(Igram, theSecret);
+note(obj.foo);
+obj.foo := "whatevs";
