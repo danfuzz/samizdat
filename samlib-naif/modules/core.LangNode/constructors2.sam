@@ -265,7 +265,7 @@ export fn makeImport(baseData) {
 
 ## Documented in spec.
 export fn makeInfoMap(node) {
-    ifValue { get_info(node) }
+    ifValue { node::info }
         { info -> return info };
 
     def statements = get_statements(node);

@@ -100,12 +100,6 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
-#### `get_info(node) -> map | void`
-
-Gets the metainformation map for the given node (presumably a closure),
-if any. This is only defined on closure nodes which have been processed by
-`withModuleDefs()` or equivalent.
-
 #### `get_interpolate(node) -> node | void`
 
 Gets the interpolated node, if any, of a node. This is non-void when a node
