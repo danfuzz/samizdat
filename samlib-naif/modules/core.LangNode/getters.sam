@@ -92,11 +92,6 @@ export fn get_definedNames(node) {
 };
 
 ## Documented in spec.
-export fn get_format(node) {
-    return node::format
-};
-
-## Documented in spec.
 export fn get_function(node) {
     return node::function
 };
@@ -124,11 +119,6 @@ export fn get_nodeValue(node) {
 ## Documented in spec.
 export fn get_select(node) {
     return? node::select
-};
-
-## Documented in spec.
-export fn get_source(node) {
-    return node::source
 };
 
 ## Documented in spec.

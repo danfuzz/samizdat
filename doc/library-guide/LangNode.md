@@ -85,10 +85,6 @@ If `node` defines no names, this returns `[]` (the empty list).
 It is a fatal error to call this on an *unresolved* wildcard
 `importModuleSelection` node.
 
-#### `get_format(node) -> string`
-
-Gets the format of an `importResource` node.
-
 #### `get_function(node) -> node`
 
 Gets the function of an `apply`, or `call` node.
@@ -129,11 +125,6 @@ and `varDefMutable`.
 
 Gets the binding selection of an `importModuleSelection` or `exportSelection`
 node.
-
-#### `get_source(node) -> source`
-
-Gets the source of an import. This is applicable to nodes of type
-`importModule`, `importModuleSelection`, and `importResource`.
 
 #### `get_statements(node) -> [node*]`
 

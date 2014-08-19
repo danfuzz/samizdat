@@ -140,12 +140,8 @@ export fn makeDynamicImport(node) {
             @@importModule: { . ->
                 ## The translation is approximately
                 ## `def name = loadModule(source)`.
-
-                def name = get_name(node);
-                def source = get_source(node);
-
-                [makeVarDef(name,
-                    makeCall(REFS::loadModule, makeLiteral(source)))]
+                [makeVarDef(node::name,
+                    makeCall(REFS::loadModule, makeLiteral(node::source)))]
             },
 
             @@importModuleSelection: { . ->
@@ -155,7 +151,7 @@ export fn makeDynamicImport(node) {
                 ## wrapped in a `get` call, e.g.
                 ## `def name = get(load(source), "name")`.
 
-                def source = get_source(node);
+                def source = node::source;
                 def names = get_definedNames(node);
                 def select = get_select(node);
                 def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
@@ -169,14 +165,9 @@ export fn makeDynamicImport(node) {
             @@importResource: { . ->
                 ## The translation is approximately
                 ## `def name = loadResource(source, format)`.
-
-                def name = get_name(node);
-                def format = get_format(node);
-                def source = get_source(node);
-
-                [makeVarDef(name,
+                [makeVarDef(node::name,
                     makeCall(REFS::loadResource,
-                        makeLiteral(source), makeLiteral(format)))]
+                        makeLiteral(node::source), makeLiteral(node::format)))]
             }
         })
 };
@@ -296,15 +287,15 @@ export fn makeInfoMap(node) {
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
         ifIs { hasClass(s, @@importModule) }
-            { addToImports(get_source(s), [@module]) };
+            { addToImports(s::source, [@module]) };
         ifIs { hasClass(s, @@importModuleSelection) }
             {
                 def names = ifValueOr { get_select(s) }
                     { die("Cannot call `makeInfoMap` on unresolved import.") };
-                addToImports(get_source(s), names)
+                addToImports(s::source, names)
             };
         ifIs { hasClass(s, @@importResource) }
-            { addToResources(get_source(s), get_format(s)) };
+            { addToResources(s::source, s::format) };
     };
 
     ## The filter is just being used as a for-each loop. The direct
