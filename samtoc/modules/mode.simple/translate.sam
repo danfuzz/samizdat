@@ -77,7 +77,7 @@ export fn translate(node, varsBox) {
             ## This passes each of the `varRefs` as an argument to the
             ## closure maker.
             def vars = varsBox*;
-            genCall("makeClosure_\(node.id)",
+            genCall("makeClosure_\(node::id)",
                 ( name in node.varRefs ->
                     vars[name]::name
                         | die("Capture of undefined variable: \%q(name)");
@@ -90,7 +90,7 @@ export fn translate(node, varsBox) {
         };
 
         @@literalRef: {
-            genCodeString("LIT_\(node.id)")
+            genCodeString("LIT_\(node::id)")
         };
 
         @@noYield: {

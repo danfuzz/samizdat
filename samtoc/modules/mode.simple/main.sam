@@ -51,7 +51,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
         )*);
 
     return if (def ref = clo::name) {
-        genComment("\%q(literals[ref.id])", decl)
+        genComment("\%q(literals[ref::id])", decl)
     } else {
         decl
     }
@@ -138,7 +138,7 @@ fn closureBody(cloIdx, clo, literals) {
     ];
 
     def nameLine = (def ref = clo::name)
-        & "/* \%q(literals[ref.id]) */\n"
+        & "/* \%q(literals[ref::id]) */\n"
         | "";
 
     return "\
@@ -157,7 +157,7 @@ fn mainClosureMaker(node, interner) {
 
     def stat = genStatement(
         genReturn(
-            genCall("makeClosure_\(node.id)",
+            genCall("makeClosure_\(node::id)",
                 ( name in varRefs, id in ids ->
                     genComment("\%q(name)",
                         genCall("makeResult",

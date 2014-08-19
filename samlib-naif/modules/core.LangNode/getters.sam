@@ -90,8 +90,3 @@ export fn get_definedNames(node) {
         { . -> [] }
     )
 };
-
-## Documented in spec.
-export fn get_id(node) {
-    return node::id
-};

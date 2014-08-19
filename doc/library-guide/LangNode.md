@@ -85,13 +85,6 @@ If `node` defines no names, this returns `[]` (the empty list).
 It is a fatal error to call this on an *unresolved* wildcard
 `importModuleSelection` node.
 
-#### `get_id(node) -> int`
-
-Gets the identifier of a reference node.
-
-This function is defined here as a convenience for "reference" node types
-used as intermediates during compilation. No layer 0 types use this.
-
 #### `intFromDigits(base, digits) -> int`
 
 Converts a list of digit character tokens into an int, given the base.
