@@ -11,7 +11,6 @@
 import core.Generator :: filterPump;
 
 import ./PegFail :: fail;
-import ./protocol :: parse;
 
 
 ##
@@ -30,7 +29,7 @@ def PegChoice = makeObjectClass("PegChoice", SECRET);
 fn PegChoice.parse(box, input, items*) {
     def data = objectDataOf(this, SECRET);
     filterPump(data::rules) { rule ->
-        ifValue { parse(rule, box, input, items*) }
+        ifValue { rule.parse(box, input, items*) }
             { newInput -> return newInput }
     };
 

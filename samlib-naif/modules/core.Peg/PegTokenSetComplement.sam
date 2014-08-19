@@ -9,7 +9,6 @@
 #= language core.Lang0
 
 import ./PegAny :: any;
-import ./protocol :: parse;
 
 
 ##

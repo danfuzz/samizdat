@@ -10,8 +10,6 @@
 
 import core.Box :: nullBox;
 
-import ./protocol :: parse;
-
 
 ##
 ## Class Definition

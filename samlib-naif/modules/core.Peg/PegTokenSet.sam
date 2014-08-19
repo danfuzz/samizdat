@@ -9,7 +9,6 @@
 #= language core.Lang0
 
 import ./PegFail :: fail;
-import ./protocol :: parse;
 
 
 ##

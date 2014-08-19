@@ -14,7 +14,6 @@ import ./PegResult :: makeResult;
 import ./PegSequence :: makeSequence;
 import ./PegTokenSet :: makeToken, makeTokenSet;
 import ./PegTokenSetComplement :: makeTokenSetComplement;
-import ./protocol :: parse;
 
 
 ##
@@ -43,7 +42,7 @@ export fn apply(rule, input) {
         }
         { input };
 
-    return? ifIs { parse(rule, var result, generator) }
+    return? ifIs { rule.parse(var result, generator) }
         { result }
 };
 
