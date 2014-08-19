@@ -125,10 +125,6 @@ applicable to nodes of type `literal`, `maybe`, `noYield`, `string`
 (pex type), `thunk` (pex type), `token` (pex type), `varDef`,
 and `varDefMutable`.
 
-#### `get_prefix(node) -> string`
-
-Gets the name of an `importModuleSelection` node.
-
 #### `get_select(node) -> [name*] | void`
 
 Gets the binding selection of an `importModuleSelection` or `exportSelection`

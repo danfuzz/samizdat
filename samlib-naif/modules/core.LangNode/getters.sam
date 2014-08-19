@@ -73,7 +73,7 @@ export fn get_definedNames(node) {
             },
 
             @@importModuleSelection: { . ->
-                def prefix = get_prefix(node);
+                def prefix = node::prefix;
                 def select = ifValueOr { get_select(node) }
                     { die("Cannot call `get_definedNames` on unresolved import.") };
 
@@ -119,11 +119,6 @@ export fn get_name(node) {
 ## Documented in spec.
 export fn get_nodeValue(node) {
     return? node::value
-};
-
-## Documented in spec.
-export fn get_prefix(node) {
-    return node::prefix
 };
 
 ## Documented in spec.
