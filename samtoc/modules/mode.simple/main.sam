@@ -36,7 +36,7 @@ import @utf8 ./template.txt;
 
 ## Indent with the usual width column limit.
 fn usualIndent(tree, depth) {
-    return indent(tree, depth, 78)
+    return tree.indent(depth, 78)
 };
 
 ## Returns a `makeClosure_*` declaration, as a code tree.

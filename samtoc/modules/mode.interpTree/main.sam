@@ -10,7 +10,6 @@
 
 import core.Io0;
 
-import CodeGen;
 import DataCode;
 import Reader;
 import Resolver :: resolve;
@@ -30,7 +29,7 @@ export fn compile(resolver, sourcePath, targetPath) {
     };
 
     def tree = $Reader::readProgram(sourcePath, resolveFn);
-    def source = $CodeGen::indent($DataCode::convert(tree), 2, 78);
+    def source = $DataCode::convert(tree).indent(2, 78);
     def outputText = $Template::apply($template, {source});
 
     $Io0::writeFileUtf8(targetPath, outputText)

@@ -12,5 +12,3 @@ export import ./CodeString :: genCodeString;
 export import ./Comment :: *;
 export import ./Return :: *;
 export import ./Statement :: *;
-export import ./protocol :: *;
-
