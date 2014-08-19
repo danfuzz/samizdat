@@ -64,7 +64,7 @@ fn ExternalResolver.resolve(source) {
     ## as the empty list.
     def result = (
         hasClass(source, @@external)
-            & this.directResolve(source)
+            & directResolve(this, source)
             | (data::nextResolver).resolve(source)
     )?;
 

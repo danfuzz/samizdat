@@ -69,7 +69,7 @@ fn closureMaker(cloIdx, clo, literals) {
         def varName = $vars::freeVarName(name, idx);
         def stat = genStatement(
             genAssign("state[\(idx)]", varName));
-        stat.usualIndent(1)
+        usualIndent(stat, 1)
     ];
     def maxArgs = formalsMaxArgs(clo::formals);
     def minArgs = formalsMinArgs(clo::formals);
@@ -80,8 +80,8 @@ fn closureMaker(cloIdx, clo, literals) {
             "FUN_IMPL_NAME(\(cloIdx))", "\(#varRefs)", name));
 
     return "\
-    \/\(decl.usualIndent(0)) {
-    \/\(resultAssign.usualIndent(1));
+    \/\(usualIndent(decl, 0)) {
+    \/\(usualIndent(resultAssign, 1));
     \/  zvalue *state = builtinGetState(result).arr;
     \/\(stateAssigns)
     \/  return result;
@@ -134,7 +134,7 @@ fn closureBody(cloIdx, clo, literals) {
     ## Process all the statements, producing source code.
 
     def allStats = [ s in [varInfo::inits*, mainStats*, yieldStats*] ->
-        genStatement(s).usualIndent(1)
+        usualIndent(genStatement(s), 1)
     ];
 
     def nameLine = (def ref = clo::name)
@@ -164,7 +164,7 @@ fn mainClosureMaker(node, interner) {
                             genCall("get", "GLOBALS", "LIT_\(id)")))
                 )*)));
 
-    return stat.usualIndent(1)
+    return usualIndent(stat, 1)
 };
 
 
@@ -193,7 +193,7 @@ export fn compile(resolver, sourcePath, targetPath) {
         ( idx in (0..), clo in closures ->
             def stat = genStatement(
                 closureDeclaration(idx, clo, partialLits));
-            "\(stat.usualIndent(0))\n"
+            "\(usualIndent(stat, 0))\n"
         )*);
     def closureMakers = cat(
         ( idx in (0..), clo in closures ->
@@ -215,7 +215,7 @@ export fn compile(resolver, sourcePath, targetPath) {
             def init = genStatement(
                 genCall("datImmortalize",
                     genAssign("LIT_\(index)", $DataCode::convert(lit))));
-            init.usualIndent(2)
+            usualIndent(init, 2)
         )*);
 
     def replacements = {
