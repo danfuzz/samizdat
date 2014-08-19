@@ -938,15 +938,11 @@ DEF_PARSE(functionDef) {
 }
 
 // Documented in spec.
-DEF_PARSE(genericBind) {
+DEF_PARSE(methodBind) {
     MARK();
 
     MATCH_OR_REJECT(fn);
-
-    // `bind = (parVarLvalue | parType)`
-    zvalue bind = PARSE(varLvalue);
-    if (bind == NULL) { bind = PARSE_OR_REJECT(type); }
-
+    zvalue bind = PARSE_OR_REJECT(varLvalue);
     MATCH_OR_REJECT(CH_DOT);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
@@ -957,7 +953,7 @@ DEF_PARSE(genericBind) {
             listFrom1(mapFrom1(STR_name, STR_this)),
             formals));
     return makeCall(REFS(classAddMethod),
-        listFrom3(bind, makeVarFetch(name), fullClosure));
+        listFrom3(bind, makeSelector(name), fullClosure));
 }
 
 /** Helper for `importName`: Parses the first alternate. */
@@ -1122,7 +1118,7 @@ DEF_PARSE(statement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(exportableStatement); }
-    if (result == NULL) { result = PARSE(genericBind);         }
+    if (result == NULL) { result = PARSE(methodBind);          }
     if (result == NULL) { result = PARSE(varDefMutable);       }
     if (result == NULL) { result = PARSE(expression);          }
 

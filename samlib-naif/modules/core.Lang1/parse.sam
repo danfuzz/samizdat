@@ -478,16 +478,16 @@ def parFunctionDef = makeMainSequence(
     });
 
 ## Documented in spec.
-def parGenericBind = makeMainSequence(
+def parMethodBind = makeMainSequence(
     makeToken(@@fn),
-    makeChoice(parVarLvalue, parType),
+    parVarLvalue,
     makeToken(@@"."),
     parFunctionCommon,
     makeCode { ., bind, ., closure ->
         def formals = closure::formals;
         def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
+        makeCall(REFS::classAddMethod, bind, makeSelector(name), fullClosure)
     });
 
 ## Documented in spec.
@@ -578,7 +578,7 @@ def parExportableStatement = makeMainChoice(
 
 ## Documented in spec.
 def parStatement = makeMainChoice(
-    parExportableStatement, parGenericBind, parVarDefMutable, parExpression);
+    parExportableStatement, parMethodBind, parVarDefMutable, parExpression);
 
 ## Documented in spec.
 def parProgramStatement = makeMainChoice(
