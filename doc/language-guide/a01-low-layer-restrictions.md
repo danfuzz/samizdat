@@ -70,13 +70,16 @@ all in Layer 0. This is implemented in Layer 1.
 The only operators recognized in Layer 0 are:
 
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
+* `expr.name(expr, ...) { block } ...` &mdash; Method calls.
 * `name := expr` &mdash; Assignment.
 * `expr::name` &mdash; Collection-style indexing by name.
 * `expr*` &mdash; Interpolation.
 * `expr?` &mdash; Optional-value-to-list conversion.
 
-Parsing expression operator syntax is implemented in Layer 1.
-Full expression operator syntax is implemented in Layer 2.
+In addition, Layer 1 recognizes:
+
+* `expr.name` &mdash; Getter method call.
+* `expr.name := expr` &mdash; Setter method call.
 
 **Note:** All yield statements (`yield`, `yield /name`, `break`, `continue`,
 and `return`) are available at all layers, though `break` and `continue`
