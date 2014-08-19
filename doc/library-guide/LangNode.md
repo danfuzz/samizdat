@@ -92,23 +92,6 @@ Gets the identifier of a reference node.
 This function is defined here as a convenience for "reference" node types
 used as intermediates during compilation. No layer 0 types use this.
 
-#### `get_lvalue(node) -> function | void`
-
-Gets the `lvalue` binding for a node, if any. This is non-void for
-`fetch` nodes created with `makeVarFetchLvalue` or for any node in general
-to which an `lvalue` has been attached.
-
-The expected use of an `lvalue` is that it is a function (a real one, not
-a tree of one) of one node argument, which can be called to produce a tree
-representing an assignment of the lvalue-bearing node to the given node.
-
-**Note**: `lvalue` bindings aren't used during execution.
-
-#### `get_select(node) -> [name*] | void`
-
-Gets the binding selection of an `importModuleSelection` or `exportSelection`
-node.
-
 #### `get_statements(node) -> [node*]`
 
 Gets the statement list of a `closure` node.

@@ -100,7 +100,7 @@ fn safeIndex(node, base) {
             },
 
             @@exportSelection: { . ->
-                safeIndexForNames(base, get_select(node)*)
+                safeIndexForNames(base, node::select*)
             },
 
             @@fetch: { . ->

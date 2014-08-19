@@ -63,7 +63,7 @@ fn expandYield(map) {
 
 ## Documented in spec.
 export fn makeAssignmentIfPossible(target, value) {
-    return? ifValue { get_lvalue(target) }
+    return? ifValue { target::lvalue }
         { lvalue -> lvalue(value) }
 };
 
@@ -153,10 +153,9 @@ export fn makeDynamicImport(node) {
 
                 def source = node::source;
                 def names = get_definedNames(node);
-                def select = get_select(node);
                 def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
 
-                filterAll(names, select) { name, sel ->
+                filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
                         makeCall(REFS::get, loadCall, makeLiteral(sel)))
                 }
@@ -290,7 +289,7 @@ export fn makeInfoMap(node) {
             { addToImports(s::source, [@module]) };
         ifIs { hasClass(s, @@importModuleSelection) }
             {
-                def names = ifValueOr { get_select(s) }
+                def names = ifValueOr { s::select }
                     { die("Cannot call `makeInfoMap` on unresolved import.") };
                 addToImports(s::source, names)
             };
@@ -302,7 +301,7 @@ export fn makeInfoMap(node) {
     ## result is ignored.
     filterAll(statements) { s ->
         ifIs { hasClass(s, @@exportSelection) }
-            { addToExports(get_select(s)) };
+            { addToExports(s::select) };
         ifIs { hasClass(s, @@export) }
             {
                 addToExports(get_definedNames(s));
