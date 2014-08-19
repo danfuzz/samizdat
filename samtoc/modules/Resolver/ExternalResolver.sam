@@ -17,7 +17,6 @@ import Reader;
 
 import ./InternalResolver :: makeInternalResolver;
 import ./cache;
-import ./protocol :: resolve;
 
 
 ##

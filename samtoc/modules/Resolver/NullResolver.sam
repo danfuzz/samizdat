@@ -6,8 +6,6 @@
 ## Class definition: `null` as a Resolver
 ##
 
-import ./protocol :: resolve;
-
 
 ##
 ## Class definition

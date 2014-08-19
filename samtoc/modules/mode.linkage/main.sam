@@ -25,7 +25,7 @@ export fn compile(resolver, sourcePath, targetPath) {
     ## may never be needed, this is just stubbed out here.
 
     def source = die("TODO: Transform `sourcePath` to `source`.");
-    def result = $Resolver::resolve(resolver, source);
+    def result = resolver.resolve(source);
 
     def infoMap = result::info;
     def info = "\%q(infoMap)";
@@ -40,7 +40,7 @@ export fn compileModule(resolver, sourcePath, targetPath) {
         $Resolver::makeExternalResolver("\(sourcePath)/modules", resolver);
     def internalResolver =
         $Resolver::makeInternalResolver(sourcePath, captiveResolver);
-    def result = $Resolver::resolve(internalResolver, @internal{name: "main"})
+    def result = internalResolver.resolve(@internal{name: "main"})
         | die("Unable to resolve `main`: \(sourcePath)");
 
     def infoMap = result::info;
