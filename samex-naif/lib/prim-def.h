@@ -56,9 +56,6 @@ PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
 // Methods: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
-// Methods: `Function` protocol.
-PRIM_DEF(call,                    SEL_NAME(call));
-
 // Methods: `Collection` protocol, intended for modularization.
 PRIM_DEF(Collection_del,          SEL_NAME(del));
 PRIM_DEF(Collection_keyList,      SEL_NAME(keyList));
