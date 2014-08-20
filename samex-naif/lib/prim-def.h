@@ -45,11 +45,6 @@ PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
 // Methods: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
-// Methods: `Sequence` protocol, intended for modularization.
-PRIM_DEF(Sequence_reverse,        SEL_NAME(reverse));
-PRIM_DEF(Sequence_sliceExclusive, SEL_NAME(sliceExclusive));
-PRIM_DEF(Sequence_sliceInclusive, SEL_NAME(sliceInclusive));
-
 // Methods: `Generator` protocol, intended for modularization but
 // also exported to the global environment.
 PRIM_DEF(collect,                 SEL_NAME(collect));
