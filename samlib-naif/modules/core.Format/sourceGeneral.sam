@@ -150,7 +150,7 @@ fn Value_sourceGeneral(value, adorn) {
     ifNot { eq(classParent(cls), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifValue { debugName(value) }
+            def body = ifValue { value.debugName() }
                 { name -> keyString(name) }
                 { "..." };
 

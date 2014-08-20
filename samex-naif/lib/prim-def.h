@@ -27,8 +27,6 @@ PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
 // Methods for all values.
-PRIM_DEF(debugName,               SEL_NAME(debugName));
-PRIM_DEF(debugString,             SEL_NAME(debugString));
 PRIM_DEF(perEq,                   SEL_NAME(perEq));
 PRIM_DEF(perOrder,                SEL_NAME(perOrder));
 PRIM_DEF(totalEq,                 SEL_NAME(totalEq));

@@ -34,8 +34,6 @@ export
     classParent,
     collect,
     dataOf,
-    debugName,
-    debugString,
     die,
     eq,
     fetch,

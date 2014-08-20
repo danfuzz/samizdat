@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Comparison functions / generics demo
+## Comparison functions / methods demo
 ##
 
 #= language core.Lang0
@@ -20,7 +20,7 @@ fn test(func, v1, v2) {
         { "(void)" };
 
     note(
-        debugName(func),
+        func.debugName(),
         "(",
         $Format::source(v1),
         ", ",
@@ -40,8 +40,8 @@ test(perOrder, 10, 10);
 test(perOrder, 10, 20);
 test(perOrder, 20, 10);
 
-## Note: The `total*` generics are unitype (that is, both arguments must match
-## the dispatch class). It's the non-generic `eq` and `order` which can deal
+## Note: The `total*` methods are unitype (that is, both arguments must match
+## the dispatch class). It's the non-method `eq` and `order` which can deal
 ## with two different-typed arguments.
 test(totalEq, 10, 10);
 test(totalEq, 10, 20);
