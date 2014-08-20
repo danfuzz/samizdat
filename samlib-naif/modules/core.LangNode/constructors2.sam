@@ -5,7 +5,7 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll, filterPump;
-import core.Sequence :: reverseNth, sliceExclusive;
+import core.Sequence :: reverseNth;
 
 import ./constructors1 :: *;
 import ./getters :: *;
@@ -185,7 +185,7 @@ export fn makeFullClosure(nodeOrMap) {
             def lastStat = reverseNth(statements, 0);
             ifIs { isExpression(lastStat) }
                 {
-                    statements := sliceExclusive(statements, 0);
+                    statements := statements.sliceExclusive(0);
                     ifIs { canYieldVoid(lastStat) }
                         { makeMaybe(lastStat) }
                         { lastStat }

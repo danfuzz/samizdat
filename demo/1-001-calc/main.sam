@@ -49,12 +49,10 @@ fn applyShuntingYard(initialValue, opValues) {
     fn applyTop(ops, values) {
         def valuesSizeM2 = values.get_size().sub(2);
         def function = $Sequence::reverseNth(ops, 0)::function;
-        def newValue =
-            function($Sequence::sliceInclusive(values, valuesSizeM2)*);
+        def newValue = function(values.sliceInclusive(valuesSizeM2)*);
         return {
-            ops: $Sequence::sliceExclusive(ops, 0),
-            values:
-                [$Sequence::sliceExclusive(values, 0, valuesSizeM2)*, newValue]
+            ops:    ops.sliceExclusive(0),
+            values: [values.sliceExclusive(0, valuesSizeM2)*, newValue]
         }
     };
 
@@ -141,7 +139,7 @@ def unaryOp = {:
 def unaryExpression = {:
     ops = unaryOp*
     ex = term
-    { applyAll(ex, $Sequence::reverse(ops)) }
+    { applyAll(ex, ops.reverse()) }
 :};
 
 ## Parses a binary operation, yielding a map of precedence and function.

@@ -66,11 +66,17 @@ def NAMES = [
     "perLt",
     "perNe",
     "return",
+    "reverse",
+    "sliceExclusive",
+    "sliceInclusive",
     "totalNe"
 ];
 
 ## Module-scoped names.
 def MOD_NAMES = [
+    {mod: "Sequence",   name: "reverse"},
+    {mod: "Sequence",   name: "sliceInclusive"},
+    {mod: "Sequence",   name: "sliceExclusive"},
     {mod: "Format",     name: "formatterFor"},
     {mod: "Format",     name: "usual"},
     {mod: "Generator",  name: "filterAll"},
@@ -95,11 +101,8 @@ def MOD_NAMES = [
     {mod: "Range",      name: "makeExclusiveRange"},
     {mod: "Range",      name: "makeInclusiveRange"},
     {mod: "Range",      name: "makeOpenRange"},
-    {mod: "Sequence",   name: "reverse"},
     {mod: "Sequence",   name: "reverseNth"},
-    {mod: "Sequence",   name: "sliceGeneral"},
-    {mod: "Sequence",   name: "sliceExclusive"},
-    {mod: "Sequence",   name: "sliceInclusive"}
+    {mod: "Sequence",   name: "sliceGeneral"}
 ];
 
 ## Used in `MOD_NAMES` processing.

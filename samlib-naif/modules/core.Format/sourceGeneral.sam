@@ -9,7 +9,6 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll, makeFilterGenerator;
-import core.Sequence :: sliceInclusive;
 
 import ./identifier :: isIdentifier;
 import ./int :: intWithBase;
@@ -31,8 +30,8 @@ fn collectionBody(elems) {
     ifIs { totalEq(elems, []) }
         { return "" };
 
-    def one = sliceInclusive(get(elems, 0), 2);
-    return cat(one, sliceInclusive(elems, 1)*)
+    def one = elems.nth(0).sliceInclusive(2);
+    return one.cat(elems.sliceInclusive(1)*)
 };
 
 ## Values with special conversions.

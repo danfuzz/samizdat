@@ -9,8 +9,6 @@
 
 #= language core.Lang0
 
-import core.Sequence :: sliceInclusive;
-
 import ./NullGenerator :: nullGenerator;
 
 
@@ -44,7 +42,7 @@ fn SerialGenerator.nextValue(box) {
 
     return? ifValue { get(subGens, 0) }
         { firstGen ->
-            def moreGens = sliceInclusive(subGens, 1);
+            def moreGens = subGens.sliceInclusive(1);
 
             ifValue { nextValue(firstGen, box) }
                 { nextGenerator ->

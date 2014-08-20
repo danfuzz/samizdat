@@ -27,8 +27,8 @@ export fn reverseNth(seq, n) {
 export fn sliceGeneral(seq, style, start, optEnd?) {
     def limit = seq.get_size().sub(1);
     def func = ifIs { eq(style, @exclusive) }
-        { sliceExclusive }
-        { sliceInclusive };
+        { @.sliceExclusive }
+        { @.sliceInclusive };
     def startIndex = ifIs { hasClass(start, @@fromStart) }
         { start::value }
         { limit.sub(start::value) };
