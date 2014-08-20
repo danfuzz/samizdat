@@ -99,7 +99,7 @@ def parFile = {:
         }
     )?
 
-    { "".cat(lines*) }
+    { {}.cat(lines*) }
 :};
 
 export fn main(selfPath, .*) {
@@ -118,7 +118,7 @@ export fn main(selfPath, .*) {
         ",\n    \%q(mapping.key): \%q(mapping.value)"
     );
 
-    def resultText = cat(resultLines*)[2..];
+    def resultText = "".cat(resultLines*)[2..];
 
     def outText = "\
         ## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
