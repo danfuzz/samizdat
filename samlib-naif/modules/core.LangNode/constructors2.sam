@@ -6,7 +6,6 @@
 
 import core.Generator :: filterAll, filterPump;
 import core.Sequence :: nthFromEnd, sliceExclusive;
-import proto.Collection :: del, keyList;
 
 import ./constructors1 :: *;
 import ./getters :: *;
@@ -229,7 +228,7 @@ export fn makeImport(baseData) {
             ifIs { hasClass(select, @@"*") }
                 {
                     ## It's a wildcard import.
-                    data := del(data, "select");
+                    data := data.del("select");
                 };
 
             return @importModuleSelection(data)
@@ -279,7 +278,7 @@ export fn makeInfoMap(node) {
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
         def orig = ifValueOr { get(resources, source) } { [] };
-        def revised = keyList({orig*: null, (format): null});
+        def revised = {orig*: null, (format): null}.keyList();
         resources := {resources*, (source): revised};
     };
 

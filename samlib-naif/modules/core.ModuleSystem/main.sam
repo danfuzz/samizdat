@@ -46,7 +46,7 @@ fn makeBootstrapEntry(exports) {
     return @module{
         exports,
         info: {
-            exports:   {Collection_keyList(exports)*: Value},
+            exports:   {exports.keyList()*: Value},
             imports:   {},
             resources: {}
         }

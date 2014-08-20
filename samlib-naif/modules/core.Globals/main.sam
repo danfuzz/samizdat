@@ -42,7 +42,6 @@ export fn fullEnvironment() {
     ## successfully loaded before most of the module system is ready.
 
     ## Exported as full modules.
-    def $Collection  = loadModule(@external{name: "proto.Collection"});
     def $Format      = loadModule(@external{name: "core.Format"});
     def $Generator   = loadModule(@external{name: "core.Generator"});
     def $Number      = loadModule(@external{name: "proto.Number"});
@@ -58,7 +57,6 @@ export fn fullEnvironment() {
         EARLY_GLOBALS*,
 
         ## Globally-exported modules.
-        $Collection,
         $Format,
         $Generator,
         $Number,

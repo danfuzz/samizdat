@@ -53,8 +53,6 @@ separated by dots (`.`). There are a couple of conventions for these names:
   components (with details as follows).
 * All regular implementation modules in the core library have two components,
   with first being `core`. For example, `core.Format`.
-* All protocol modules in the core library have two components, with the
-  first being `proto`. For example, `proto.Collection`.
 * All modules that are part of a published library should have a first
   component that names the library in a manner that is intended to be concise
   but unambiguous. If the library has no interesting structure, then it should
