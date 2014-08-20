@@ -80,10 +80,10 @@ expect("shr", true,  $Bitwise::shr, true, 0);
 expect("shr", false, $Bitwise::shr, true, 1);
 expect("shr", false, $Bitwise::shr, true, 2);
 
-expect("toInt", 0, toInt, false);
-expect("toInt", 1, toInt, true);
+expect("toInt", 0, @.toInt, false);
+expect("toInt", 1, @.toInt, true);
 
-expect("toNumber", 0, toNumber, false);
-expect("toNumber", 1, toNumber, true);
+expect("toNumber", 0, @.toNumber, false);
+expect("toNumber", 1, @.toNumber, true);
 
 note("All good.");
