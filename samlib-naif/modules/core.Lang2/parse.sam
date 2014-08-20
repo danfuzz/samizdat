@@ -1109,7 +1109,7 @@ def UNARY_OPERATORS = {
     @@"-":   REFS::Number_neg,
     @@"#":   REFS::SEL_get_size,
     @@"^":   REFS::Sequence_reverse,
-    @@"!!!": REFS::Bitwise_not
+    @@"!!!": REFS::SEL_not
 };
 
 ## For binary operators, map of token types to function name variable
@@ -1128,10 +1128,10 @@ def BINARY_OPERATORS = {
     @@">":    REFS::perGt,
     @@"<=":   REFS::perLe,
     @@">=":   REFS::perGe,
-    @@"&&&":  REFS::Bitwise_and,
-    @@"|||":  REFS::Bitwise_or,
-    @@"^^^":  REFS::Bitwise_xor,
-    @@"<<<":  REFS::Bitwise_shl,
+    @@"&&&":  REFS::SEL_and,
+    @@"|||":  REFS::SEL_or,
+    @@"^^^":  REFS::SEL_xor,
+    @@"<<<":  REFS::SEL_shl,
     @@">>>":  REFS::SEL_shr,
     @@"\\==": REFS::eq,
     @@"\\!=": REFS::ne,

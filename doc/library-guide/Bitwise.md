@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Bitwise / proto.Bitwise
-----------------------------
+Bitwise Protocol
+----------------
 
 `Bitwise` is a protocol for values that can be treated as fixed-width
 lists of bits.

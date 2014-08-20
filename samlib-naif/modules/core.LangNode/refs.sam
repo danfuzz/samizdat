@@ -14,8 +14,13 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 
 ## Literal selectors.
 def SELECTORS = [
+    "and",
     "get_size",
-    "shr"
+    "not",
+    "or",
+    "shl",
+    "shr",
+    "xor"
 ];
 
 ## Global variable names / regular variable references.
@@ -58,12 +63,6 @@ def NAMES = [
 
 ## Module-scoped names.
 def MOD_NAMES = [
-    {mod: "Bitwise",    name: "and"},
-    {mod: "Bitwise",    name: "not"},
-    {mod: "Bitwise",    name: "or"},
-    {mod: "Bitwise",    name: "shl"},
-    {mod: "Bitwise",    name: "shr"},
-    {mod: "Bitwise",    name: "xor"},
     {mod: "Format",     name: "formatterFor"},
     {mod: "Format",     name: "usual"},
     {mod: "Generator",  name: "filterAll"},

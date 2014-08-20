@@ -36,15 +36,6 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 
-// Methods: `Bitwise` protocol, intended for modularization.
-PRIM_DEF(Bitwise_and,             SEL_NAME(and));
-PRIM_DEF(Bitwise_bit,             SEL_NAME(bit));
-PRIM_DEF(Bitwise_bitSize,         SEL_NAME(bitSize));
-PRIM_DEF(Bitwise_not,             SEL_NAME(not));
-PRIM_DEF(Bitwise_or,              SEL_NAME(or));
-PRIM_DEF(Bitwise_shl,             SEL_NAME(shl));
-PRIM_DEF(Bitwise_xor,             SEL_NAME(xor));
-
 // Methods: `Box` protocol.
 PRIM_DEF(store,                   SEL_NAME(store));
 

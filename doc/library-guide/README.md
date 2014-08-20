@@ -85,8 +85,8 @@ will be returned, or one of:
   * [Value (the base class/type)](Value.md)
   * [One-Off Methods](OneOff.md)
 
-* Protocol Modules
-  * [proto.Bitwise](Bitwise.md)
+* Protocols
+  * [Bitwise](Bitwise.md)
   * [proto.Box](Box.md)
   * [proto.Collection](Collection.md)
   * [proto.Generator](Generator.md)
@@ -94,7 +94,6 @@ will be returned, or one of:
   * [proto.Sequence](Sequence.md)
 
 * Implementation Modules
-  * [core.Bitwise](Bitwise.md)
   * [core.Box](Box.md)
   * [core.Code](Code.md)
   * [core.CommandLine](CommandLine.md)
