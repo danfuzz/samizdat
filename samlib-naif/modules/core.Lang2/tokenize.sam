@@ -17,7 +17,7 @@ import core.Generator;
 import core.LangNode :: KEYWORDS, intFromDigits;
 import core.Peg;  ## Used implicitly.
 import core.Peg :: apply, stringFromTokenList;
-import core.Sequence :: reverseNth, sliceExclusive;
+import core.Sequence :: reverseNth;
 
 
 ##
@@ -254,7 +254,7 @@ fn processStringParts(parts) {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
                         elems := [
-                            sliceExclusive(elems, 0)*,
+                            elems.sliceExclusive(0)*,
                             cat(lastElem, part)
                         ];
                         yield /next
