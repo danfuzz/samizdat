@@ -11,7 +11,6 @@
 import core.Generator :: filterPump;
 
 import ./PegResult :: empty;
-import ./protocol :: parse;
 
 
 ##
@@ -38,7 +37,7 @@ fn PegSequence.parse(box, input, items*) {
 
     ## This is akin to `for (rule in data::rules) { ... }`.
     filterPump(data::rules) { rule ->
-        ifValue { parse(rule, var result, remainingInput, results*) }
+        ifValue { rule.parse(var result, remainingInput, results*) }
             { newInput ->
                 remainingInput := newInput;
                 results := [results*, result]

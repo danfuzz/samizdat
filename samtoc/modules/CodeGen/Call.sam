@@ -9,7 +9,6 @@
 import ./CodeString :: fix;
 import ./Wrapper :: *;
 import ./indentation :: *;
-import ./protocol :: *;
 
 
 ##

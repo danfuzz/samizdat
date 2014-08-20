@@ -6,11 +6,7 @@
 ## Convert data into C code that constructs that data.
 ##
 
-import CodeGen ::
-    flatten,
-    indent,
-    genCall,
-    genCodeString;
+import CodeGen :: genCall, genCodeString;
 
 
 ##

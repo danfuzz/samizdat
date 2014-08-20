@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import ./protocol :: parse;
-
 
 ##
 ## Class Definition
@@ -27,7 +25,7 @@ def PegThunk = makeObjectClass("PegThunk", SECRET);
 fn PegThunk.parse(box, input, items*) {
     def data = objectDataOf(this, SECRET);
     return? ifValue { data::function(items*) }
-        { thunkResult -> parse(thunkResult, box, input, items*) }
+        { thunkResult -> thunkResult.parse(box, input, items*) }
 };
 
 

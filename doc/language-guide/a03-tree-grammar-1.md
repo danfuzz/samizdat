@@ -176,7 +176,7 @@ def parLiteral = {:
     @"@"
     @"."
     name = parIdentifierString
-    { makeLiteral(selectorFromName(name::value)) }
+    { makeSelector(name::value) }
 :};
 
 ## Parses a map key.
@@ -397,6 +397,55 @@ def parPostfixOperator = {:
 |
     @"?"
     { { node -> makeMaybeValue(node) } }
+|
+    ## This translates as follows:
+    ##
+    ## ```
+    ## target.memberName(arg, ...)
+    ## =>
+    ## @.memberName(target, arg, ...)
+    ## ```
+    ##
+    ## ```
+    ## target.memberName
+    ## =>
+    ## @.get_memberName(target)
+    ## ```
+    ##
+    ## ```
+    ## target.memberName := expression
+    ## =>
+    ## @.set_memberName(target, expression)
+    ## ```
+    ##
+    ## The setter variant works via an `lvalue` binding added to a parsed
+    ## getter expression.
+    ##
+    @"."
+    name = parName
+
+    (
+        ## `target.memberName(arg, ...)`
+        actuals = parActualsList
+        {
+            { node -> makeCallOrApply(makeSelector(name), node, actuals*) }
+        }
+    |
+        ## `target.memberName` (includes parsing of both getters and setters)
+        {
+            def getterRef = makeSelector(cat("get_", name));
+            { node ->
+                def getterCall = makeCall(getterRef, node);
+                @(get_class(getterCall)){
+                    dataOf(getterCall)*,
+                    lvalue: { expr ->
+                        def setterRef = makeSelector(cat("set_", name));
+                        makeCall(setterRef, node, expr)
+                    }
+                }
+            }
+        }
+    )
 |
     ## Note: Layer 2 adds additional rules here.
     %parPostfixOperator2
@@ -629,9 +678,9 @@ def parFunctionDef = {:
 ## Parses a method binding. This wraps a `@closure` result of
 ## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
 ## formal argument.
-def parGenericBind = {:
+def parMethodBind = {:
     @fn
-    bind = (parVarLvalue | parType)
+    bind = parVarLvalue
     @"."
     closure = parFunctionCommon
 
@@ -639,7 +688,7 @@ def parGenericBind = {:
         def formals = closure::formals;
         def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::classAddMethod, bind, makeVarFetch(name), fullClosure)
+        makeCall(REFS::classAddMethod, bind, makeSelector(name), fullClosure)
     }
 :};
 
@@ -751,7 +800,7 @@ def parExportableStatement = {:
 ## Parses an executable statement form (direct closure / program element).
 ## This includes all the `export`able statements and a few additional forms.
 def parStatement = {:
-    parExportableStatement | parGenericBind | parVarDefMutable | parExpression
+    parExportableStatement | parMethodBind | parVarDefMutable | parExpression
 :};
 
 ## Parses a program body statement form, including both regular executable

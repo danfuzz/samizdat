@@ -288,6 +288,11 @@ treated as if it were specified as `@void`.
 This produces a `nonlocalExit` node per se, which must eventually be
 processed via `makeFullClosure()` or similar.
 
+#### `makeSelector(name) -> node`
+
+Makes a literal node that represents the selector with the given `name`.
+`name` must be a string.
+
 #### `makeThunk(node) -> node`
 
 Makes a thunk (no-argument function) that evaluates the given node, allowing

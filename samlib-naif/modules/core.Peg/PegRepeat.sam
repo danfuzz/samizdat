@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import ./protocol :: parse;
-
 
 ##
 ## Class Definition
@@ -43,7 +41,7 @@ fn PegRepeat.parse(box, input, items*) {
             { {->} };
 
         loop {
-            ifValue { parse(rule, var result, remainingInput, items*) }
+            ifValue { rule.parse(var result, remainingInput, items*) }
                 { newInput ->
                     ## Successfully parsed the inner rule.
                     remainingInput := newInput;

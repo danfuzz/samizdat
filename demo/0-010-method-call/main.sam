@@ -1,0 +1,29 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Method call demo
+##
+
+
+##
+## Private Definitions
+##
+
+## Prints out the given value.
+fn msg(value) {
+    note($Format::source(value));
+};
+
+
+##
+## Main Tests
+##
+
+note("Layer 0:\n");
+
+msg([1, 2].get_size());
+msg(["zero", "one", "two"].get(0));
+msg(["zero", "one", "two"].nth(1));
+msg((100).perEq(100));

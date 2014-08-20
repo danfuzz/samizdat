@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import ./protocol :: parse;
-
 
 ##
 ## Class Definition
@@ -26,7 +24,7 @@ def PegLookaheadSuccess = makeObjectClass("PegLookaheadSuccess", SECRET);
 ## Documented in spec.
 fn PegLookaheadSuccess.parse(box, input, items*) {
     def data = objectDataOf(this, SECRET);
-    return? ifIs { parse(data::rule, box, input, items*) }
+    return? ifIs { data::rule.parse(box, input, items*) }
         { input }
 };
 

@@ -10,7 +10,6 @@
 
 import ./PegChoice :: makeChoice;
 import ./PegSequence :: makeSequence;
-import ./protocol :: parse;
 
 
 ##
@@ -29,7 +28,7 @@ def PegMain = makeObjectClass("PegMain", SECRET);
 fn PegMain.parse(box, input, .*) {
     ## The point of this implementation is to drop the `items` context.
     def data = objectDataOf(this, SECRET);
-    return? parse(data::rule, box, input)
+    return? data::rule.parse(box, input)
 };
 
 

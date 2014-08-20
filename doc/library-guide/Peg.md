@@ -59,7 +59,7 @@ syntax for explanatory purposes.
 <br><br>
 ### Method Definitions: `Parser` protocol
 
-#### `parse(box, input, items*) -> newInput`
+#### `.parse(box, input, items*) -> newInput`
 
 Performs a parse of `input` (a generator) with the trailing sequence
 context of `[items*]`. If parsing is successful, stores into `box` the

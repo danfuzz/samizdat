@@ -17,7 +17,6 @@ import core.LangNode;
 import Reader;
 
 import ./cache;
-import ./protocol :: resolve;
 
 
 ##

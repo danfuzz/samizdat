@@ -55,6 +55,13 @@ SEL_DECL(2, 2, totalOrder);
 zvalue get_class(zvalue value);
 
 /**
+ * Gets the "debug name" of the given value, as a `char *`. The caller
+ * is responsible for `free()`ing the result. As a convenience, this
+ * converts `NULL` into `"(null)"`.
+ */
+char *valDebugName(zvalue value);
+
+/**
  * Gets the "debug string" of the given value, as a `char *`. The caller
  * is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.

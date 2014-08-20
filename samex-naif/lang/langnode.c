@@ -11,6 +11,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/Selector.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -574,6 +575,11 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
     return makeData(CLS_nonlocalExit,
         mapFrom2(STR_function, function, STR_value, value));
+}
+
+// Documented in spec.
+zvalue makeSelector(zvalue name) {
+    return makeLiteral(selectorFromName(name));
 }
 
 // Documented in spec.

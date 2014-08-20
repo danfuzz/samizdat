@@ -33,6 +33,19 @@ zvalue get_class(zvalue value) {
 }
 
 // Documented in header.
+char *valDebugName(zvalue value) {
+    if (value == NULL) {
+        return utilStrdup("(null)");
+    }
+
+    if (SEL_NAME(debugName) == NULL) {
+        die("Too early to call `debugName`.");
+    }
+
+    return utf8DupFromString(METH_CALL(debugName, value));
+}
+
+// Documented in header.
 char *valDebugString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");
