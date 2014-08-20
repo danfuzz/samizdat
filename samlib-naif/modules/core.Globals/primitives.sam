@@ -56,7 +56,6 @@ export
     maybeValue,
     nextValue,
     note,
-    nth,
     objectDataOf,
     order,
     perEq,

@@ -59,9 +59,9 @@ fn ParaGenerator.nextValue(box) {
         });
 
     def yields = collect(generatorCalls,
-        { one -> nth(one, 0) });
+        { one -> one.nth(0) });
     def nexts = collect(generatorCalls,
-        { one -> nth(one, 1) });
+        { one -> one.nth(1) });
 
     box* := yields;
     return makeObject(ParaGenerator, SECRET, {generators: nexts})

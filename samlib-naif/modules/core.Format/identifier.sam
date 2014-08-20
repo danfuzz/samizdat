@@ -31,7 +31,7 @@ export fn isIdentifier(string) {
     ifIs { eq(string, "") }
         { return };
 
-    ifNot { get(IDENTIFIER_STARTS, nth(string, 0)) }
+    ifNot { get(IDENTIFIER_STARTS, string.nth(0)) }
         { return };
 
     filterPump(string) { ch ->

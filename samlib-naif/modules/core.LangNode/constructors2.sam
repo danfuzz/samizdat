@@ -114,7 +114,7 @@ export fn makeCallOrApply(function, values*) {
 
     addPendingToCooked();
 
-    return ifIs { nth(cookedValues, 1) }
+    return ifIs { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
             makeApply(function,

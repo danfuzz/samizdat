@@ -22,7 +22,7 @@ export import proto.Sequence :: *;
 ## Documented in spec.
 export fn nthFromEnd(seq, n) {
     def index = sub(seq.get_size(), add(n, 1));
-    return? nth(seq, index)
+    return? seq.nth(index)
 };
 
 ## Documented in spec.

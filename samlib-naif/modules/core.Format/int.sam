@@ -23,7 +23,7 @@ fn intBody(value, base) {
         ifIs { perEq(v, 0) }
             { return text };
 
-        def digit = nth(DIGIT_CHARS, mod(v, base));
+        def digit = DIGIT_CHARS.nth(mod(v, base));
         text := cat(digit, text);
         v := div(v, base)
     }

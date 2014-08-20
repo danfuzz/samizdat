@@ -5,11 +5,8 @@
 ##
 ## Sequence protocol. This is just a re-export from the primitive core library.
 ##
-## **Note:** `nth` is a re-exported one-off method.
 
 #= language core.Lang0
-
-export nth;
 
 export def reverse        = Sequence_reverse;
 export def sliceExclusive = Sequence_sliceExclusive;

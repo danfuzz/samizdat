@@ -35,7 +35,6 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 // Methods: One-Offs, exported to the global environment.
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
-PRIM_DEF(nth,                     SEL_NAME(nth));
 
 // Methods: `Bitwise` protocol, intended for modularization.
 PRIM_DEF(Bitwise_and,             SEL_NAME(and));
