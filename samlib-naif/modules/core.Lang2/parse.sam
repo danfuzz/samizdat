@@ -1577,7 +1577,7 @@ def parIndexPostfix = {:
         {
             def funcRef = ifIs { eq(index::origin, @@fromStart) }
                 { REFS::get }
-                { REFS::Sequence_nthFromEnd };
+                { REFS::Sequence_reverseNth };
 
             { node -> makeCall(funcRef, node, index::value) }
         }

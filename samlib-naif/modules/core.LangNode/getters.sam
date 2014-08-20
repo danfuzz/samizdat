@@ -5,7 +5,7 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import core.Sequence :: nthFromEnd;
+import core.Sequence :: reverseNth;
 
 import ./misc ::
     formalsMaxArgs,
@@ -50,12 +50,12 @@ export fn get_baseName(source) {
         {
             @@external: { . ->
                 def components = splitAtChar(source::name, ".");
-                nthFromEnd(components, 0)
+                reverseNth(components, 0)
             },
 
             @@internal: { . ->
                 def components = splitAtChar(source::name, "/");
-                def last = nthFromEnd(components, 0);
+                def last = reverseNth(components, 0);
                 def parts = splitAtChar(last, ".");
                 get(parts, 0)
             }

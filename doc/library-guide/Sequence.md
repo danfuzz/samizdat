@@ -80,11 +80,14 @@ Returns the elements of `sequence`, always as a list per se.
 <br><br>
 ### In-Language Definitions
 
-#### `nthFromEnd(sequence, n) -> . | void`
+#### `reverseNth(sequence, n) -> . | void`
 
 Returns the nth (zero-based) element of the sequence, but counting backward
 from the end of the sequence. Returns void if `n < 0` or `n >= #sequence`.
 It is an error (terminating the runtime) if `n` is not an `Int`.
+
+In general, the result of this call should be the same as saying
+`sequence.reverse.nth(n)`.
 
 #### `sliceGeneral(sequence, style, start, end?) -> sequence | void`
 
