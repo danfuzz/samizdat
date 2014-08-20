@@ -260,7 +260,7 @@ fn treeFromText(loader, text) {
     def lang = loadModule(loader, @external{name: languageName});
 
     fn resolver(source) {
-        return resolve(loader, source)
+        return loader.resolve(source)
     };
 
     return lang::simplify(lang::parseProgram(text), resolver);
@@ -278,18 +278,15 @@ fn updateMapBox(box, key, value) {
 ##
 
 ## Documented in spec.
-export resolve, readResource;
-
-## Documented in spec.
 export fn loadModule(loader, source) {
-    return ifValue { resolve(loader, source) }
+    return ifValue { loader.resolve(source) }
         { resolved -> resolved::exports }
         { die("Module not found: ", sourceString(source)) }
 };
 
 ## Documented in spec.
 export fn loadResource(loader, source, format) {
-    return ifValueOr { readResource(loader, source, format) }
+    return ifValueOr { loader.readResource(source, format) }
         { die("Resource not found: ", sourceString(source)) }
 };
 
@@ -357,7 +354,7 @@ fn doExternalResolve(loader, source) {
 fn ExternalLoader.readResource(source, format) {
     ## Always just defer to the next loader.
     def data = objectDataOf(this, SECRET);
-    return? readResource(data::nextLoader, source, format)
+    return? data::nextLoader.readResource(source, format)
 };
 
 ## Documented in spec.
@@ -367,13 +364,13 @@ fn ExternalLoader.resolve(source) {
     ifNot { checkExternalSource(source) }
         {
             ## Not an external source, so punt to the next loader.
-            return? resolve(data::nextLoader, source)
+            return? data::nextLoader.resolve(source)
         };
 
     fn externalResolve() {
         return? ifValueOr
             { doExternalResolve(this, source) }
-            { resolve(data::nextLoader, source) }
+            { data::nextLoader.resolve(source) }
     };
 
     return? resolveHelper(data::loadedBox, source, externalResolve)
@@ -417,7 +414,7 @@ def InternalLoader = makeObjectClass("InternalLoader", SECRET);
 
 ## Convenient helper which just resolves a top-level `main` file.
 fn resolveMain(loader) {
-    return? resolve(loader, @internal{name: "main"})
+    return? loader.resolve(@internal{name: "main"})
 };
 
 ## Helper for `resolve` which does the actual resolution / loading.
@@ -476,7 +473,7 @@ fn InternalLoader.readResource(source, format) {
     ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
-            return? readResource(data::nextLoader, source, format)
+            return? data::nextLoader.readResource(source, format)
         };
 
     def fullPath = cat(data::basePath, source::name);
@@ -493,7 +490,7 @@ fn InternalLoader.resolve(source) {
     ifNot { checkInternalSource(source) }
         {
             ## Not an internal source, so punt to the next loader.
-            return? resolve(data::nextLoader, source)
+            return? data::nextLoader.resolve(source)
         };
 
     ## Unlike with `ExternalLoader`, we don't walk up the parent chain if
