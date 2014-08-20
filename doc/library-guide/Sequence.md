@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-proto.Sequence
---------------
+Sequence Protocol
+-----------------
 
 The `Sequence` protocol is for collections keyed by zero-based int index.
 All `Sequence`s are also `Collection`s.
@@ -10,7 +10,7 @@ All `Sequence`s are also `Collection`s.
 
 ### Method Definitions: `Sequence` protocol
 
-#### `get(sequence, key) -> . | void`
+#### `.get(key) -> . | void`
 
 (Refinement of `Collection` protocol.)
 
@@ -18,63 +18,63 @@ For sequences, `get` behaves the same as `nth`, except that it returns
 void for `key` values that are either non-ints or negative (instead of
 reporting a terminal error).
 
-#### `keyList(sequence) -> list`
+#### `.keyList() -> list`
 
 (Refinement of `Collection` protocol.)
 
-Returns the list `[0..!#sequence]`.
+Returns the list `[0..!#this]`.
 
-#### `nthMapping(sequence, n) -> . | void`
+#### `.nthMapping(n) -> . | void`
 
 (Refinement of `Collection` protocol.)
 
 When the return value is non-void, the key of the returned mapping is the
 given `n`.
 
-#### `nth(sequence, n) -> . | void`
+#### `.nth(n) -> . | void`
 
 (Implementation of `OneOff` method.)
 
 Returns the nth (zero-based) element of the sequence.
 
-#### `reverse(sequence) -> sequence`
+#### `.reverse() -> sequence`
 
 Returns a sequence just like the given one, except with elements in
 the opposite order.
 
-**Syntax Note:** This is the function that underlies the `^sequence`
+**Syntax Note:** This is the function that underlies the `^this`
 syntactic form (prefix `^` operator).
 
-#### `sliceExclusive(sequence, start, end?) -> sequence | void`
+#### `.sliceExclusive(start, end?) -> sequence | void`
 
-Returns a sequence of the same class as `sequence`, consisting of an
-index-based "slice" of elements taken from `sequence`, from the `start`
+Returns a sequence of the same class as `this`, consisting of an
+index-based "slice" of elements taken from `this`, from the `start`
 index (inclusive) through the `end` index (exclusive). `start` and `end`
-must both be ints. `end` defaults to `#sequence - 1` if omitted.
+must both be ints. `end` defaults to `#this - 1` if omitted.
 
-In the usual case, `start < end`, `start < #sequence`, and `end > start`.
+In the usual case, `start < end`, `start < #this`, and `end > start`.
 In this case, the result is the expected slice. If `start < 0`, then it is
-treated as if it were passed as `0`. If `end > #sequence`, then it is
-treated as if it were passed as `#sequence`.
+treated as if it were passed as `0`. If `end > #this`, then it is
+treated as if it were passed as `#this`.
 
 If `start == end`, this returns an empty sequence.
 
 In all other cases (as long as the type restrictions hold), this returns void.
 
-#### `sliceInclusive(sequence, start, end?) -> sequence | void`
+#### `.sliceInclusive(start, end?) -> sequence | void`
 
-Returns a sequence of the same class as `sequence`, consisting of an
-index-based "slice" of elements taken from `sequence`, from the `start`
+Returns a sequence of the same class as `this`, consisting of an
+index-based "slice" of elements taken from `this`, from the `start`
 index (inclusive) through the `end` index (inclusive). `start` and `end`
-must both be ints. `end` defaults to `#sequence - 1` if omitted.
+must both be ints. `end` defaults to `#this - 1` if omitted.
 
-This is equivalent to calling `sliceExclusive(sequence, start, end + 1)`.
+This is equivalent to calling `this.sliceExclusive(start, end + 1)`.
 
-#### `valueList(sequence) -> list`
+#### `.valueList() -> list`
 
 (Refinement of `Collection` protocol.)
 
-Returns the elements of `sequence`, always as a list per se.
+Returns the elements of `this`, always as a list per se.
 
 
 <br><br>

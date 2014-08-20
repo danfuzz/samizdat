@@ -91,7 +91,7 @@ will be returned, or one of:
   * [Collection](Collection.md)
   * [proto.Generator](Generator.md)
   * [Number](Number.md)
-  * [proto.Sequence](Sequence.md)
+  * [Sequence](Sequence.md)
 
 * Implementation Modules
   * [core.Box](Box.md)

@@ -259,7 +259,7 @@ of that expression.
 #### Sequence reverse &mdash; `^expression`
 
 Placing a caret in front of an expression is equivalent to calling
-`$Sequence::reverse` on the evaluated result of that expression.
+`expr.reverse()` on the evaluated result of that expression.
 
 #### Logical not &mdash; `!expression`
 
