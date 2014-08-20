@@ -11,11 +11,11 @@ either numeric or character values.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `collect(range) -> list`
+#### `.collect(optFilterFunction?) -> list`
 
 Reports a fatal error, as `OpenRange` values are unbounded generators.
 
-#### `nextValue(range, box) -> range | void`
+#### `.nextValue(box) -> range | void`
 
 Yields the first element of the range, and returns a range representing
 the remaining elements.

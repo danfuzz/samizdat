@@ -11,19 +11,19 @@ as defined by the global function `order()`.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `perEq(map, other) -> map | void`
+#### `.perEq(other) -> map | void`
 
 Default implementation.
 
-#### `perOrder(map, other) -> int`
+#### `.perOrder(other) -> int`
 
 Default implementation.
 
-#### `totalEq(map1, map2) -> map | void`
+#### `.totalEq(other) -> map | void`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
-#### `totalOrder(map1, map2) -> int`
+#### `.totalOrder(other) -> int`
 
 Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal
@@ -33,21 +33,21 @@ key order.
 <br><br>
 ### Method Definitions: One-Offs
 
-#### `get_key(map) -> .`
+#### `.get_key() -> .`
 
 Returns the sole key of the given map, which must be a single-mapping map.
-It is a terminal error if `map` does not contain exactly one mapping.
+It is a terminal error if `this` does not contain exactly one mapping.
 
-#### `get_value(map) -> .`
+#### `.get_value() -> .`
 
 Returns the sole value of the given map, which must be a single-mapping map.
-It is a terminal error if `map` does not contain exactly one mapping.
+It is a terminal error if `this` does not contain exactly one mapping.
 
 
 <br><br>
 ### Method Definitions: `Collection` protocol
 
-#### `cat(map, more*) -> map`
+#### `.cat(more*) -> map`
 
 Returns a map consisting of the combination of the mappings of the
 argument maps. For any keys in common between the maps,
@@ -59,37 +59,37 @@ and uniqueness constraints.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `del(map, key) -> map`
+#### `.del(key) -> map`
 
 Returns a map just like the one given as an argument, except that
 the result does not have a mapping for the given `key`. If `map` does
 not bind `key`, then this returns `map`.
 
-#### `get(map, key) -> . | void`
+#### `.get(key) -> . | void`
 
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this returns void.
 
-#### `get_size(map) -> int`
+#### `.get_size() -> int`
 
 Returns the number of mappings in the map.
 
-#### `keyList(map) -> list`
+#### `.keyList() -> list`
 
 Returns a list of all the keys mapped by the given `map`, in sorted order.
 
-#### `nthMapping(map, n) -> map | void`
+#### `.nthMapping(n) -> map | void`
 
 Gets the nth mapping of the given map.
 
-#### `put(map, key, value) -> map`
+#### `.put(key, value) -> map`
 
 Returns a map just like the given one, except with a new mapping
 for `key` to `value`. The result has a replacement for the existing
 mapping for `key` in `map` if such a one existed, or has an
 additional mapping in cases where `map` didn't already bind `key`.
 
-#### `valueList(map) -> list`
+#### `.valueList() -> list`
 
 Returns a list of all the values mapped by the given `map`, in order of the
 sorted keys.
@@ -98,13 +98,13 @@ sorted keys.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `collect(map, optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> list`
 
-Collects or filters the mappings of `map`.
+Collects or filters the mappings of `this`.
 
-#### `nextValue(map, box) -> generator | void`
+#### `.nextValue(box) -> generator | void`
 
-On a non-empty map, calls `store(box, mapping)` where `mapping` is
+On a non-empty map, calls `box.store(mapping)` where `mapping` is
 the first mapping in the map in its iteration order, and returns
 a map of the remaining mappings. On an empty map, this just returns void.
 
