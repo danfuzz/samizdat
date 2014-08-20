@@ -11,7 +11,7 @@ character values, with a finite size.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(filterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> list`
 
 Returns all the elements of the range as a list.
 

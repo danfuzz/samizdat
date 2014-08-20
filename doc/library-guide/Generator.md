@@ -10,19 +10,11 @@ utility functions for making and using various generators.
 Note that all collections are also generators (which generate their
 elements in sequence).
 
-Because they are so commonly used, the following definitions are
-exported to the standard global variable environment:
-
-* `collect`
-* `fetch`
-* `maybeValue`
-* `nextValue`
-
 
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `collect(generator, optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> list`
 
 Collects all the elements yielded by the generator into a list. Returns
 the list. If a filter function is given, calls it with each element (as
@@ -41,18 +33,18 @@ results.
 **Note:** The function `filterAll` is a multi-generator generalization
 of this function.
 
-#### `fetch(generator) -> . | void`
+#### `.fetch() -> . | void`
 
 Returns the sole generated value of the generator, or void if given
 a voided generator. It is a fatal error (terminating the runtime) if
-`generator` is capable of generating more than one value.
+`this` is capable of generating more than one value.
 
 **Syntax Note:** Used in the translation of `expression*` forms when they
 are *not* collection constructor or function call arguments.
 
-#### `nextValue(generator, box) -> generator | void`
+#### `.nextValue(box) -> generator | void`
 
-Generates the next item in `generator`, if any. If there is a generated
+Generates the next item in `this`, if any. If there is a generated
 element, calls `store(box, elem)` and returns a generator which can
 generate the remainder of the elements. If there is no generated element,
 does nothing (in particular, does not make a `store` call on `box`), and

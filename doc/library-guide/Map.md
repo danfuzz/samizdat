@@ -106,8 +106,7 @@ Collects or filters the mappings of `map`.
 
 On a non-empty map, calls `store(box, mapping)` where `mapping` is
 the first mapping in the map in its iteration order, and returns
-a map of the remaining mappings. On an empty map, calls `store(box)` and
-returns void.
+a map of the remaining mappings. On an empty map, this just returns void.
 
 
 <br><br>

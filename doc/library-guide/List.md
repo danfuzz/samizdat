@@ -9,20 +9,20 @@ A `List` is a kind of `Sequence`.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `perEq(list, other) -> list | void`
+#### `.perEq(other) -> list | void`
 
 Default implementation.
 
-#### `perOrder(list, other) -> int`
+#### `.perOrder(other) -> int`
 
 Default implementation.
 
-#### `totalEq(list1, list2) -> list | void`
+#### `.totalEq(other) -> list | void`
 
 Compares two lists. Two lists are equal if they have equal elements in
 identical orders.
 
-#### `totalOrder(list1, list2) -> int`
+#### `.totalOrder(other) -> int`
 
 Compares two lists for order. Lists order by pairwise corresponding-element
 comparison, with a strict prefix always ordering before its longer brethren.
@@ -31,74 +31,74 @@ comparison, with a strict prefix always ordering before its longer brethren.
 <br><br>
 ### Method Definitions: `Collection` and `Sequence` protocols
 
-#### `cat(list, more*) -> int`
+#### `.cat(more*) -> int`
 
 Returns a list consisting of the concatenation of the elements
 of all the argument lists, in argument order.
 
-#### `del(list, n) -> list`
+#### `.del(n) -> list`
 
 Returns a list like the given one, but without the `n`th element.
 
-#### `get(list, key) -> . | void`
+#### `.get(key) -> . | void`
 
 Defined as per the `Sequence` protocol.
 
-#### `get_size(list) -> int`
+#### `.get_size() -> int`
 
 Returns the number of elements in the list.
 
-#### `keyList(list) -> list`
+#### `.keyList() -> list`
 
 Defined as per the `Sequence` protocol.
 
-#### `nth(list, n) -> . | void`
+#### `.nth(n) -> . | void`
 
 Gets the nth element of the string.
 
-#### `nthMapping(list, n) -> map | void`
+#### `.nthMapping(n) -> map | void`
 
 Gets the nth mapping of the list.
 
-#### `put(list, n, value) -> list`
+#### `.put(n, value) -> list`
 
 Returns a list like the given one, but with the `n`th element replaced
 with the given `value`, or added if `n == get_size(list)`.
 
-#### `reverse(list) -> list`
+#### `.reverse() -> list`
 
 Returns a list like the one given, except with elements in the opposite
 order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
 
-#### `sliceExclusive(list, start, end?) -> list`
+#### `.sliceExclusive(start, end?) -> list`
 
 Returns an end-exclusive slice of the given list.
 
-#### `sliceInclusive(list, start, end?) -> list`
+#### `.sliceInclusive(start, end?) -> list`
 
 Returns an end-inclusive slice of the given list.
 
-#### `valueList(list) -> list`
+#### `.valueList() -> list`
 
 Defined as per the `Sequence` protocol. In this case, this function always
-returns the given `list`, directly.
+returns `this`, directly.
 
 
 
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `collect(list, optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> list`
 
-Filters the elements of `list` using the given filter function if supplied,
-or just returns `list` if there is no filter function.
+Filters the elements of `this` using the given filter function if supplied,
+or just returns `this` if there is no filter function.
 
-#### `nextValue(list, box) -> generator | void`
+#### `.nextValue(box) -> generator | void`
 
-On a non-empty list, calls `store(box, list[0])` and returns
-`list[1..]`. On an empty list, calls `store(box)` and returns void.
+On a non-empty list, calls `box.store(this[0])` and returns
+`this[1..]`. On an empty list, this just returns void.
 
 
 <br><br>

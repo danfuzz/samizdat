@@ -113,7 +113,7 @@ Collects or filters the characters of `string`.
 #### `.nextValue(box) -> generator | void`
 
 On a non-empty string, calls `box.store(string[0])` and returns
-`string[1..]`. On an empty string, calls `box.store()` and returns void.
+`string[1..]`. On an empty string, this returns void.
 
 
 <br><br>
