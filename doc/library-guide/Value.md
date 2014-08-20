@@ -7,7 +7,7 @@ Value (the base class)
 <br><br>
 ### Method Definitions: `Value` protocol (applies to all values)
 
-#### `debugName(value) -> . | void`
+#### `.debugName() -> . | void`
 
 Some values have an associated name, or an optional associated name.
 This method provides access to that name. There is no restriction
@@ -18,9 +18,9 @@ The class `Value` binds this to a function which always returns void.
 **Note:** In general, it is a bad idea to use this function for any
 purpose other than temporary debugging code.
 
-#### `debugString(value) -> string`
+#### `.debugString() -> string`
 
-Returns a string representation of `value` meant to aid in debugging.
+Returns a string representation of the given value, meant to aid in debugging.
 This is in contrast to the functions in `core.Format` which are meant to
 help format values for more useful consumption.
 
@@ -32,10 +32,10 @@ override this to provide more useful information.
 **Note:** In general, it is a bad idea to use this function for any
 purpose other than temporary debugging code.
 
-#### `perEq(value, other) -> . | void`
+#### `.perEq(other) -> . | void`
 
 Performs a per-class equality comparison of the two given values, using the
-per-class order. This should return `value` if the two values are to be
+per-class order. This should return `this` if the two values are to be
 considered "equal," return void if the two values are to be considered
 "unequal," or fail terminally if the two values are considered "incomparable."
 
@@ -48,7 +48,7 @@ of all per-class equality comparison functions.
 
 **Syntax Note:** Used in the translation of `expression == expression` forms.
 
-#### `perOrder(value, other) -> int | void`
+#### `.perOrder(other) -> int | void`
 
 Performs an order comparison of the two given values, using the per-class
 order. Return values are the same as with `totalOrder` (see which). As
@@ -63,16 +63,16 @@ The default implementation calls through to the global function `order`
 **Note:** This is the method which underlies the implementation
 of all per-class ordering functions.
 
-#### `totalEq(value, other) -> . | void`
+#### `.totalEq(other) -> . | void`
 
 Performs a class-specific equality comparison of the two given
 values, using the "total value ordering" order. When called by the system,
 the two values are guaranteed to have the same class; however, it is possible
 to call this function directly, so implementations must check to see if
-`other` has the same class as `value`. If a client calls with different-class
+`other` has the same class as `this`. If a client calls with different-class
 values, it is a fatal error (terminating the runtime).
 
-The return value is either `value` (or `other` really) if the two values
+The return value is either `this` (or `other` really) if the two values
 are in fact identical, or `void` if they are not.
 
 Each class specifies its own total-order equality check. See specific classes
@@ -90,13 +90,13 @@ equality much quicker than determining order.
 **Note:** This is the method which underlies the implementation
 of all cross-class equality comparison functions.
 
-#### `totalOrder(value, other) -> int | void`
+#### `.totalOrder(other) -> int | void`
 
 Returns the class-specific order of the two given values, using the "total
 value ordering" order. When called by the system, the two values are
 guaranteed to have the same class; however, it is possible to call this function
 directly, so implementations must check to see if `other` has the same class
-as `value`. If a client calls with different-class values, it is a fatal error
+as `this`. If a client calls with different-class values, it is a fatal error
 (terminating the runtime).
 
 The return value is one of `-1`, `0`, or `1` indicating how the two values

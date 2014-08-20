@@ -10,29 +10,29 @@ A `Selector` is an identifier used when referring to methods.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `debugName(selector) -> string`
+#### `.debugName() -> string`
 
 Returns the name of the selector, as a string.
 
-#### `debugString(selector) -> string`
+#### `.debugString() -> string`
 
 Returns a string representation of the selector. This includes a suggestive
 prefix `.`. It also includes `anon-` before the name if this is an anonymous
 selector.
 
-#### `perEq(selector, other) -> selector | void`
+#### `.perEq(other) -> selector | void`
 
 Default implementation.
 
-#### `perOrder(selector, other) -> int | void`
+#### `.perOrder(other) -> int | void`
 
 Default implementation.
 
-#### `totalEq(selector1, selector2) -> builtin | void`
+#### `.totalEq(other) -> builtin | void`
 
 Default implementation.
 
-#### `totalOrder(selector1, selector2) -> int | void`
+#### `.totalOrder(other) -> int | void`
 
 Orders selectors by internedness (primary) and name (secondary), with
 interned selectors getting ordered *before* anonymous selectors. Two
@@ -42,7 +42,7 @@ different anonymous selectors with the same name are considered unordered
 <br><br>
 ### Method Definitions: `Function` protocol
 
-#### `call(selector, args+) -> . | void`
+#### `.call(args+) -> . | void`
 
 Calls the given selector with the given arguments. This performs method
 dispatch on `args[0]`.
