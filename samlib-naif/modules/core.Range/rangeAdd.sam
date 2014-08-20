@@ -17,6 +17,6 @@ export fn rangeAdd(base, amount) {
         { get_class(base) },
         {
             (Int):    { . -> add(base, amount) },
-            (String): { . -> toString(add(toInt(base), amount)) }
+            (String): { . -> add(base.toInt(), amount).toString() }
         })
 };

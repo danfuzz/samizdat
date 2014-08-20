@@ -102,7 +102,7 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { $Number::sub(toInt(get_className(ch)), toInt("0")) }
+    { $Number::sub(get_className(ch).toInt(), "0".toInt()) }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.

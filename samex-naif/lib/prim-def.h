@@ -41,9 +41,6 @@ PRIM_DEF(get_value,               SEL_NAME(get_value));
 PRIM_DEF(nth,                     SEL_NAME(nth));
 PRIM_DEF(readResource,            SEL_NAME(readResource));
 PRIM_DEF(resolve,                 SEL_NAME(resolve));
-PRIM_DEF(toInt,                   SEL_NAME(toInt));
-PRIM_DEF(toNumber,                SEL_NAME(toNumber));
-PRIM_DEF(toString,                SEL_NAME(toString));
 
 // Methods: `Bitwise` protocol, intended for modularization.
 PRIM_DEF(Bitwise_and,             SEL_NAME(and));

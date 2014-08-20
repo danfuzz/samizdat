@@ -16,7 +16,7 @@ import proto.Number;
 ##
 
 ## Int value of Unicode code point `0`.
-def CHAR_0 = toInt("0");
+def CHAR_0 = "0".toInt();
 
 ## Parses and returns a base-10 unsigned int, or returns void if the string
 ## doesn't represent such a number.
@@ -26,7 +26,7 @@ fn intOrVoid(string) {
     $Generator::filterPump(string) { ch ->
         ifIs { perLt(ch, "0") } { return };
         ifIs { perGt(ch, "9") } { return };
-        def digit = $Number::sub(toInt(ch), CHAR_0);
+        def digit = $Number::sub(ch.toInt(), CHAR_0);
         value := $Number::add($Number::mul(value, 10), digit);
     };
 
