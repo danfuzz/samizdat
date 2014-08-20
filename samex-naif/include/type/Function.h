@@ -13,10 +13,7 @@
 
 #include "type/Value.h"
 
-/**
- * Method `call(function, args*)`: Method for dispatching to a function
- * calling mechanism (how meta). Documented in spec.
- */
+/** Method `.call(args*)`: Documented in spec. */
 SEL_DECL(1, -1, call);
 
 /**

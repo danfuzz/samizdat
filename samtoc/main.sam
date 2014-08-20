@@ -139,8 +139,8 @@ fn doDirectory(args, sourcePath) {
             def captiveArgs = {args*, resolver: captiveResolver};
             def files = $Io0::readDirectory(captiveDir);
             for (one in files) {
-                if (get_value(one) == "directory") {
-                    def path = "\(captiveDir)/\(get_key(one))";
+                if (one.value == "directory") {
+                    def path = "\(captiveDir)/\(one.key)";
                     doDirectory(captiveArgs, path)
                 }
             }
@@ -155,8 +155,8 @@ fn doDirectory(args, sourcePath) {
         fn doInternalDir(dir) {
             def files = $Io0::readDirectory(dir);
             for (one in files) {
-                def path = "\(dir)/\(get_key(one))";
-                if (get_value(one) == "directory") {
+                def path = "\(dir)/\(one.key)";
+                if (one.value == "directory") {
                     if (path != captiveDir) {
                         doInternalDir(path)
                     }
@@ -176,8 +176,8 @@ fn doDirectory(args, sourcePath) {
         def subArgs = {args*, resolver: externalResolver};
         def files = $Io0::readDirectory(sourcePath);
         for (one in files) {
-            if (get_value(one) == "directory") {
-                def path = "\(sourcePath)/\(get_key(one))";
+            if (one.value == "directory") {
+                def path = "\(sourcePath)/\(one.key)";
                 doDirectory(subArgs, path)
             }
         }

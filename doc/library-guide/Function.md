@@ -12,12 +12,12 @@ that binds that method is a `Function`.
 <br><br>
 ### Method Definitions
 
-#### `call(function, args*) -> . | void`
+#### `.call(args*) -> . | void`
 
-Calls the given `function` with the given arguments. This function isn't
-normally that useful, in that `call(x, y)` is the same as saying `x(y)`.
-However, this function is in fact a method, and it is possible
-to use various other functions to reflect on it.
+Calls the given function with the given arguments. This function isn't
+normally that useful, in that `x.call(y)` is the same as saying `x(y)` when
+`x` is a function of some sort. However, this is in fact a method, and it is
+possible to use various other facilities to reflect on it.
 
 
 <br><br>

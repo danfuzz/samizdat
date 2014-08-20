@@ -99,8 +99,8 @@ fn List_sourceGeneral(value, adorn) {
 fn Map_sourceGeneral(value, adorn) {
     def mapElems = filterAll(value)
         { mapping ->
-            def k = keyString(get_key(mapping));
-            def v = sourceGeneral(get_value(mapping), true);
+            def k = keyString(mapping.get_key());
+            def v = sourceGeneral(mapping.get_value(), true);
             cat(", ", k, ": ", v)
         };
 
@@ -150,7 +150,7 @@ fn Value_sourceGeneral(value, adorn) {
     ifNot { eq(classParent(cls), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifValue { debugName(value) }
+            def body = ifValue { value.debugName() }
                 { name -> keyString(name) }
                 { "..." };
 

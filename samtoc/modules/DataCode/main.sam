@@ -46,7 +46,7 @@ fn hexEscape(values*) {
 ## UTF-8 encode the given character, returning a representation as a list of
 ## C-style `\xNN` escapes.
 fn utf8Char(ch) {
-    def value = toInt(ch);
+    def value = ch.toInt();
 
     return if (value < 0) {
         die("Out of range for UTF-8 encoding: 0x\%x(value)");
@@ -116,7 +116,7 @@ fn stringChar(ch) {
         return utf8Char(ch)
     } else if (def special = SPECIAL_CHARS[ch]) {
         if (special == "x") {
-            return hexEscape(toInt(ch))
+            return hexEscape(ch.toInt())
         } else {
             return [special]
         }
@@ -162,7 +162,7 @@ fn Map_convert(value) {
     };
 
     def mapPairs = [ mapping in value ->
-        [convert(get_key(mapping)), convert(get_value(mapping))]
+        [convert(mapping.key), convert(mapping.value)]
     ];
 
     return genCall("mapFromArgs", cat(mapPairs*)*, CODE_C_NULL)

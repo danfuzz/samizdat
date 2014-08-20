@@ -31,8 +31,8 @@ export fn get_interns(this) {
     def boxList = [ n in (0..#map) -> def result; (var result) ];
 
     for (mapping in map) {
-        def id = get_value(mapping);
-        boxList[id]* := get_key(mapping)
+        def id = mapping.value;
+        boxList[id]* := mapping.key
     };
 
     return [ box in boxList -> box* ]

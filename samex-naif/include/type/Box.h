@@ -15,10 +15,7 @@
 /** Class value for in-model class `Box`. */
 extern zvalue CLS_Box;
 
-/**
- * Method `store(box, value?)`: Stores a value (or void) into a box.
- * Documented in spec.
- */
+/** Method `.store(value?)`: Documented in spec. */
 SEL_DECL(1, 2, store);
 
 /**

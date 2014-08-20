@@ -27,8 +27,6 @@ PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
 // Methods for all values.
-PRIM_DEF(debugName,               SEL_NAME(debugName));
-PRIM_DEF(debugString,             SEL_NAME(debugString));
 PRIM_DEF(perEq,                   SEL_NAME(perEq));
 PRIM_DEF(perOrder,                SEL_NAME(perOrder));
 PRIM_DEF(totalEq,                 SEL_NAME(totalEq));
@@ -37,15 +35,8 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 // Methods: One-Offs, exported to the global environment.
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
-PRIM_DEF(get_key,                 SEL_NAME(get_key));
 PRIM_DEF(get_size,                SEL_NAME(get_size));
-PRIM_DEF(get_value,               SEL_NAME(get_value));
 PRIM_DEF(nth,                     SEL_NAME(nth));
-PRIM_DEF(readResource,            SEL_NAME(readResource));
-PRIM_DEF(resolve,                 SEL_NAME(resolve));
-PRIM_DEF(toInt,                   SEL_NAME(toInt));
-PRIM_DEF(toNumber,                SEL_NAME(toNumber));
-PRIM_DEF(toString,                SEL_NAME(toString));
 
 // Methods: `Bitwise` protocol, intended for modularization.
 PRIM_DEF(Bitwise_and,             SEL_NAME(and));

@@ -105,8 +105,8 @@ export fn collectClosures(node) {
 
     def bodiesBoxList = [ for #bodiesMap -> def result; (var result) ];
     for (body in bodiesMap) {
-        def index = get_value(body)::id;
-        bodiesBoxList[index]* := get_key(body)
+        def index = body.value::id;
+        bodiesBoxList[index]* := body.key
     };
     def closures = [ box in bodiesBoxList -> box* ];
 

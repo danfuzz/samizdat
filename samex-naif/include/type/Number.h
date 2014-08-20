@@ -12,34 +12,34 @@
 #include "type/Value.h"
 
 
-/** Method `abs(number)`: Documented in spec. */
+/** Method `.abs()`: Documented in spec. */
 SEL_DECL(1, 1, abs);
 
-/** Method `add(number, number)`: Documented in spec. */
+/** Method `.add(number)`: Documented in spec. */
 SEL_DECL(2, 2, add);
 
-/** Method `div(number, number)`: Documented in spec. */
+/** Method `.div(number)`: Documented in spec. */
 SEL_DECL(2, 2, div);
 
-/** Method `divEu(number, number)`: Documented in spec. */
+/** Method `.divEu(number)`: Documented in spec. */
 SEL_DECL(2, 2, divEu);
 
-/** Method `mod(number, number)`: Documented in spec. */
+/** Method `.mod(number)`: Documented in spec. */
 SEL_DECL(2, 2, mod);
 
-/** Method `modEu(number, number)`: Documented in spec. */
+/** Method `.modEu(number)`: Documented in spec. */
 SEL_DECL(2, 2, modEu);
 
-/** Method `mul(number, number)`: Documented in spec. */
+/** Method `.mul(number)`: Documented in spec. */
 SEL_DECL(2, 2, mul);
 
-/** Method `neg(number)`: Documented in spec. */
+/** Method `.neg()`: Documented in spec. */
 SEL_DECL(1, 1, neg);
 
-/** Method `sign(number)`: Documented in spec. */
+/** Method `.sign()`: Documented in spec. */
 SEL_DECL(1, 1, sign);
 
-/** Method `sub(number, number)`: Documented in spec. */
+/** Method `.sub(number)`: Documented in spec. */
 SEL_DECL(2, 2, sub);
 
 #endif

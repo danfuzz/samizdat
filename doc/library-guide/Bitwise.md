@@ -17,32 +17,32 @@ classes, but a couple take a second argument specifically of class `Int`
 <br><br>
 ### Method Definitions: `Bitwise` protocol
 
-#### `and(bitwise1, bitwise2) -> bitwise`
+#### `.and(other) -> bitwise`
 
 Returns the binary-and (intersection of all one-bits) of the given values.
 
-#### `bit(bitwise, int) -> int`
+#### `.bit(int) -> int`
 
 Returns as an int (`0` or `1`) the bit value in the first
 argument at the bit position (zero-based) indicated by the second
 argument. It is an error (terminating the runtime) if the second
 argument is negative.
 
-#### `bitSize(bitwise) -> int`
+#### `.bitSize() -> int`
 
 Returns the number of significant bits (not bytes) in
 the value when represented in twos-complement form, including a
 high-order sign bit.
 
-#### `not(bitwise) -> bitwise`
+#### `.not() -> bitwise`
 
 Returns the binary complement (all bits opposite) of the given value.
 
-#### `or(bitwise1, bitwise2) -> bitwise`
+#### `.or(other) -> bitwise`
 
 Returns the binary-or (union of all one-bits) of the given values.
 
-#### `shl(bitwise, int) -> bitwise`
+#### `.shl(int) -> bitwise`
 
 Returns the first argument (a bitwise) bit-shifted an amount indicated
 by the second argument (an int). If `shift` is positive, this
@@ -53,7 +53,7 @@ argument unchanged.
 **Note:** The `shift` argument is not limited in any particular way (not
 masked, etc.).
 
-#### `xor(bitwise1, bitwise2) -> bitwise`
+#### `.xor(other) -> bitwise`
 
 Returns the binary-xor (bitwise not-equal) of the given values.
 
@@ -71,4 +71,4 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 
 Returns the first argument bit-shifted by an amount indicated by the
 second argument, with the opposite sense of shift direction compared
-to `shl`. This is just a convenient way to say `shl(bitwise, -int)`.
+to `shl`. This is just a convenient way to say `bitwise.shl(-int)`.

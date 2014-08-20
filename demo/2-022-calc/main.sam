@@ -94,7 +94,7 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { toInt(get_className(ch)) - toInt("0") }
+    { get_className(ch).toInt() - "0".toInt() }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.

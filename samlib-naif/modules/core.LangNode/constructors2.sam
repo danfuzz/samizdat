@@ -389,7 +389,7 @@ export fn withModuleDefs(node) {
     ## This is a list of lists of mappings which, when combined, is a map
     ## of all exports.
     def exportValues = filterAll(info::exports) { mapping ->
-        def name = get_key(mapping);
+        def name = mapping.get_key();
         makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
     };
 

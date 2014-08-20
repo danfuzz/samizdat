@@ -12,25 +12,25 @@
 #include "type/Value.h"
 
 
-/** Method `and(bitwise, bitwise)`: Documented in spec. */
+/** Method `.and(bitwise)`: Documented in spec. */
 SEL_DECL(2, 2, and);
 
-/** Method `bit(bitwise, int)`: Documented in spec. */
+/** Method `.bit(int)`: Documented in spec. */
 SEL_DECL(2, 2, bit);
 
-/** Method `bitSize(bitwise)`: Documented in spec. */
+/** Method `.bitSize()`: Documented in spec. */
 SEL_DECL(1, 1, bitSize);
 
-/** Method `not(bitwise)`: Documented in spec. */
+/** Method `.not()`: Documented in spec. */
 SEL_DECL(1, 1, not);
 
-/** Method `or(bitwise, bitwise)`: Documented in spec. */
+/** Method `.or(bitwise)`: Documented in spec. */
 SEL_DECL(2, 2, or);
 
-/** Method `shl(bitwise, int)`: Documented in spec. */
+/** Method `.shl(int)`: Documented in spec. */
 SEL_DECL(2, 2, shl);
 
-/** Method `xor(bitwise, bitwise)`: Documented in spec. */
+/** Method `.xor(bitwise)`: Documented in spec. */
 SEL_DECL(2, 2, xor);
 
 #endif

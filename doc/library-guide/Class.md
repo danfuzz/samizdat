@@ -7,19 +7,19 @@ Class
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `perEq(cls, other) -> class | void`
+#### `.perEq(other) -> class | void`
 
 Default implementation.
 
-#### `perOrder(cls, other) -> int`
+#### `.perOrder(other) -> int`
 
 Default implementation.
 
-#### `totalEq(cls1, cls2) -> map | void`
+#### `.totalEq(other) -> class | void`
 
 Compares two classes. Two different classes are never equal.
 
-#### `totalOrder(cls1, cls2) -> int | void`
+#### `.totalOrder(other) -> int | void`
 
 Compares two classes for order, as follows:
 

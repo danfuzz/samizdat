@@ -16,13 +16,13 @@
 #include "type/Value.h"
 
 
-/** Method `collect(generator)`: Documenetd in spec. */
+/** Method `.collect()`: Documenetd in spec. */
 SEL_DECL(1, 2, collect);
 
-/** Method `fetch(box)`: Documented in spec. */
+/** Method `.fetch()`: Documented in spec. */
 SEL_DECL(1, 1, fetch);
 
-/** Method `nextValue(generator, box)`: Documenetd in spec. */
+/** Method `.nextValue(box)`: Documenetd in spec. */
 SEL_DECL(2, 2, nextValue);
 
 /** `core.Generator::stdCollect`: Documented in spec. */

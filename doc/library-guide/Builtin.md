@@ -11,25 +11,25 @@ of the system.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `debugName(type) -> . | void`
+#### `.debugName() -> . | void`
 
 Returns the name of the builtin, if it has one. This is can be
 an arbitrary value, which is typically (but not necessarily) a string.
 
-#### `perEq(builtin, other) -> builtin | void`
+#### `.perEq(other) -> builtin | void`
 
 Default implementation.
 
-#### `perOrder(builtin, other) -> int | void`
+#### `.perOrder(other) -> int | void`
 
 Default implementation.
 
-#### `totalEq(builtin1, builtin2) -> builtin | void`
+#### `.totalEq(other) -> builtin | void`
 
 Performs an identity comparison. Two builtins are only equal if they
 refer to the exact same functionality.
 
-#### `totalOrder(builtin1, builtin2) -> int | void`
+#### `.totalOrder(other) -> int | void`
 
 Performs an identity comparison. Builtins do not have a defined total
 order.
@@ -38,7 +38,7 @@ order.
 <br><br>
 ### Method Definitions: `Function` protocol
 
-#### `call(builtin, args*) -> . | void`
+#### `.call(args*) -> . | void`
 
 Calls the given builtin with the given arguments.
 

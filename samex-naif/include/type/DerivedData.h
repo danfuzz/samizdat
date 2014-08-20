@@ -15,7 +15,7 @@
 /** Class value for in-model class `DerivedData`. */
 extern zvalue CLS_DerivedData;
 
-/** Method `dataOf(derivedData)`: Documented in spec. */
+/** Method `.dataOf()`: Documented in spec. */
 SEL_DECL(1, 1, dataOf);
 
 /** Global function `makeData`: Documented in spec. */

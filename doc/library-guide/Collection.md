@@ -14,62 +14,62 @@ would expect.
 <br><br>
 ### Method Definitions: `Collection` protocol
 
-#### `cat(collection, more*) -> collection`
+#### `.cat(more*) -> collection`
 
 (Implementation of `OneOff` method.)
 
 Concatenates the given collections.
 
-#### `del(collection, key) -> collection`
+#### `.del(key) -> collection`
 
-Returns a collection just like the given `collection`, except that
-the mapping for the given `key` is removed. If the `collection`
-does not have a particular given key, then this returns `collection`.
+Returns a collection just like the given one, except that
+the mapping for the given `key` is removed. If `this`
+does not have a particular given key, then this returns `this`.
 
 **Note:** On sequence-like collections, this shifts elements after the
 deleted element down in index, such that there is no gap in the resulting
 collection.
 
-#### `get(collection, key) -> . | void`
+#### `.get(key) -> . | void`
 
 (Implementation of `OneOff` method.)
 
-Gets the value in `collection` associated with the given `key`.
+Gets the value in `this` associated with the given `key`.
 
-#### `get_size(collection) -> int`
+#### `.get_size() -> int`
 
 (Implementation of `OneOff` method.)
 
-Gets the size (element count) of the `collection`.
+Gets the size (element count) of `this`.
 
-#### `keyList(collection) -> list`
+#### `.keyList() -> list`
 
 Returns the list of keys mapped by the collection.
 
-#### `nthMapping(collection, n) -> map | void`
+#### `.nthMapping(n) -> map | void`
 
 Returns the nth (zero-based) mapping of the collection, in its predefined
 iteration order. The result is a one-element map of the key and corresponding
-value. Returns void if `n < 0` or `n >= #collection`. It is an error
+value. Returns void if `n < 0` or `n >= #this`. It is an error
 (terminating the runtime) if `n` is not an `Int`.
 
-#### `put(collection, key, value) -> collection`
+#### `.put(key, value) -> collection`
 
-Returns a collection just like the given `collection`, except that
+Returns a collection just like the given one, except that
 the mapping for the given `key` is to the given `value`. This will
 replace an existing mapping for the `key`, or add a new one.
 
 It is an error (terminating the runtime) if the `key` or `value` is
-invalid for `collection`.
+invalid for `this`.
 
 **Note:** On sequence-like collections, the only valid keys are ints
-in the range `0..#collection` (inclusive of the size).
+in the range `0..#this` (inclusive of the size).
 
 **Note:** To differentiate between adding a new mapping versus replacing
 a mapping, either check the sizes of the original and result, or
 check for the existence of `key` in the original.
 
-#### `valueList(collection) -> list`
+#### `.valueList() -> list`
 
 Returns the list of values mapped by the collection.
 

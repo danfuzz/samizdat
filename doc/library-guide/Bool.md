@@ -12,20 +12,20 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `perEq(bool, other) -> bool | void`
+#### `.perEq(other) -> bool | void`
 
 Default implementation.
 
-#### `perOrder(bool, other) -> int`
+#### `.perOrder(other) -> int`
 
 Default implementation.
 
-#### `totalEq(bool1, bool2) -> bool | void`
+#### `.totalEq(other) -> bool | void`
 
 Compares two boolean values. This is only logical-true if the two given
 values are the same.
 
-#### `totalOrder(bool1, bool2) -> int`
+#### `.totalOrder(other) -> int`
 
 Compares the given boolean values, ordering `false` before `true`.
 
@@ -33,40 +33,40 @@ Compares the given boolean values, ordering `false` before `true`.
 <br><br>
 ### Method Definitions: One-Offs
 
-#### `toInt(bool) -> int`
+#### `.toInt() -> int`
 
 Returns `0` given `false`, or `1` given `true`.
 
-#### `toNumber(bool) -> int`
+#### `.toNumber() -> int`
 
-Same as `toInt`.
+Same as `.toInt()`.
 
 
 <br><br>
 ### Method Definitions: `Bitwise` protocol
 
-#### `and(bool1, bool2) -> bool`
+#### `.and(other) -> bool`
 
 Straightforward protocol implementation.
 
-#### `bit(bool, int) -> int`
+#### `.bit(int) -> int`
 
 Returns `1` if called as `bit(true, 0)`. Returns `0` for any other
 valid pair of arguments.
 
-#### `bitSize(bool) -> int`
+#### `.bitSize() -> int`
 
 Returns `1`, always.
 
-#### `not(bool) -> bool`
+#### `.not() -> bool`
 
 Straightforward protocol implementation.
 
-#### `or(bool1, bool2) -> bool`
+#### `.or(other) -> bool`
 
 Straightforward protocol implementation.
 
-#### `shl(bool, int) -> bool`
+#### `.shl(int) -> bool`
 
 Returns the given argument if shifted by `0`, or if `false` is shifted
 by any amount. Returns `false` if `true` is right-shifted by any
@@ -74,7 +74,7 @@ amount.
 
 It is a terminal error to try to shift `true` left by any amount.
 
-#### `xor(bool1, bool2) -> bool`
+#### `.xor(other) -> bool`
 
 Straightforward protocol implementation.
 
