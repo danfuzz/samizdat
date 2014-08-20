@@ -6,7 +6,6 @@
 
 import core.Generator :: filterAll;
 import core.Sequence :: nthFromEnd;
-import proto.Number;
 
 import ./misc ::
     formalsMaxArgs,

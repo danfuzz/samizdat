@@ -9,8 +9,6 @@
 
 #= language core.Lang0
 
-import proto.Number :: sub;
-
 import ./NullGenerator :: nullGenerator;
 
 
@@ -46,7 +44,7 @@ fn RepeatGenerator.nextValue(box) {
         {
             def value = data::value;
             box* := value;
-            makeRepeatGenerator(sub(size, 1), value)
+            makeRepeatGenerator(size.sub(1), value)
         }
 };
 

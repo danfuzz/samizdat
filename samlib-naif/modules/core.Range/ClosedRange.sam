@@ -10,7 +10,6 @@
 #= language core.Lang0
 
 import core.Generator :: nullGenerator, stdCollect;
-import proto.Number :: *;
 
 import ./rangeAdd :: *;
 
@@ -49,7 +48,7 @@ fn ClosedRange.nextValue(box) {
             box* := firstValue;
             makeClosedRange(
                 rangeAdd(firstValue, increment),
-                sub(size, 1),
+                size.sub(1),
                 increment)
         }
 };
@@ -87,16 +86,11 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
                 { makeClosedRange(firstValue, 1, 0) }
         };
 
-    ## `sign(increment)` is either `-1` or `+1`, which when subtracted from
+    ## `increment.sign()` is either `-1` or `+1`, which when subtracted from
     ## limit "pushes" the limit in the right direction to make the truncated
     ## division produce the correct result size.
     def size =
-        add(1,
-            div(
-                sub(
-                    sub(limitInt, firstInt),
-                    sign(increment)),
-                increment));
+        limitInt.sub(firstInt).sub(increment.sign()).div(increment).add(1);
 
     ifIs { le(size, 0) }
         { return nullGenerator };
@@ -117,7 +111,7 @@ export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
 
     def firstInt = firstValue.toInt();
     def limitInt = limit.toInt();
-    def size = add(1, div(sub(limitInt, firstInt), increment));
+    def size = limitInt.sub(firstInt).div(increment).add(1);
 
     ifIs { le(size, 0) }
         { return nullGenerator };

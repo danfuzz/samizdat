@@ -44,7 +44,6 @@ export fn fullEnvironment() {
     ## Exported as full modules.
     def $Format      = loadModule(@external{name: "core.Format"});
     def $Generator   = loadModule(@external{name: "core.Generator"});
-    def $Number      = loadModule(@external{name: "proto.Number"});
     def $Peg         = loadModule(@external{name: "core.Peg"});
     def $Range       = loadModule(@external{name: "core.Range"});
     def $Sequence    = loadModule(@external{name: "core.Sequence"});
@@ -59,7 +58,6 @@ export fn fullEnvironment() {
         ## Globally-exported modules.
         $Format,
         $Generator,
-        $Number,
         $Peg,
         $Range,
         $Sequence,

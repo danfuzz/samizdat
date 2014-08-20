@@ -14,7 +14,6 @@ import core.LangNode :: *;
 import core.Peg;
 import core.Range :: makeInclusiveRange, makeOpenRange;
 import core.Sequence :: reverse, sliceExclusive;
-import proto.Number :: add, neg;
 
 import ./safeVar;
 import ./tokenize :: tokenize;
@@ -152,7 +151,7 @@ def parIdentifierString = {:
 def parLiteral = {:
     @"-"
     i = @int
-    { makeLiteral(neg(i::value)) }
+    { makeLiteral(i::value.neg()) }
 |
     i = @int
     { makeLiteral(i::value) }
@@ -1106,7 +1105,7 @@ parPexChoice := {:
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
-    @@"-":   REFS::Number_neg,
+    @@"-":   REFS::SEL_neg,
     @@"#":   REFS::SEL_get_size,
     @@"^":   REFS::Sequence_reverse,
     @@"!!!": REFS::SEL_not
@@ -1115,13 +1114,13 @@ def UNARY_OPERATORS = {
 ## For binary operators, map of token types to function name variable
 ## references.
 def BINARY_OPERATORS = {
-    @@"+":    REFS::Number_add,
-    @@"-":    REFS::Number_sub,
-    @@"*":    REFS::Number_mul,
-    @@"/":    REFS::Number_div,
-    @@"%":    REFS::Number_mod,
-    @@"//":   REFS::Number_divEu,
-    @@"%%":   REFS::Number_modEu,
+    @@"+":    REFS::SEL_add,
+    @@"-":    REFS::SEL_sub,
+    @@"*":    REFS::SEL_mul,
+    @@"/":    REFS::SEL_div,
+    @@"%":    REFS::SEL_mod,
+    @@"//":   REFS::SEL_divEu,
+    @@"%%":   REFS::SEL_modEu,
     @@"==":   REFS::perEq,
     @@"!=":   REFS::perNe,
     @@"<":    REFS::perLt,
@@ -1201,7 +1200,7 @@ fn makeCompareCalls(firstEx, opExList) {
     var varIndex = $safeVar::safeVarIndex("compareValue", baseResult);
     fn nextName() {
         def result = $safeVar::makeVarName("compareValue", varIndex);
-        varIndex := add(varIndex, 1);
+        varIndex := varIndex.add(1);
         return result
     };
 

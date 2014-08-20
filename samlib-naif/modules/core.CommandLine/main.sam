@@ -14,7 +14,6 @@ import core.ModuleSystem :: run, runFile;
 import core.Peg;        ## Implicitly used.
 import core.Range;      ## Implicitly used.
 import core.Sequence;   ## Implicitly used.
-import proto.Number;    ## Implicitly used.
 
 
 ##

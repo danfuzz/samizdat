@@ -56,18 +56,6 @@ PRIM_DEF(collect,                 SEL_NAME(collect));
 PRIM_DEF(fetch,                   SEL_NAME(fetch));
 PRIM_DEF(nextValue,               SEL_NAME(nextValue));
 
-// Methods: `Number` protocol, intended for modularization.
-PRIM_DEF(Number_abs,              SEL_NAME(abs));
-PRIM_DEF(Number_add,              SEL_NAME(add));
-PRIM_DEF(Number_div,              SEL_NAME(div));
-PRIM_DEF(Number_divEu,            SEL_NAME(divEu));
-PRIM_DEF(Number_mod,              SEL_NAME(mod));
-PRIM_DEF(Number_modEu,            SEL_NAME(modEu));
-PRIM_DEF(Number_mul,              SEL_NAME(mul));
-PRIM_DEF(Number_neg,              SEL_NAME(neg));
-PRIM_DEF(Number_sign,             SEL_NAME(sign));
-PRIM_DEF(Number_sub,              SEL_NAME(sub));
-
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);

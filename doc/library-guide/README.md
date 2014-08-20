@@ -90,7 +90,7 @@ will be returned, or one of:
   * [proto.Box](Box.md)
   * [Collection](Collection.md)
   * [proto.Generator](Generator.md)
-  * [proto.Number](Number.md)
+  * [Number](Number.md)
   * [proto.Sequence](Sequence.md)
 
 * Implementation Modules

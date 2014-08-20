@@ -14,12 +14,20 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 
 ## Literal selectors.
 def SELECTORS = [
+    "add",
     "and",
+    "div",
+    "divEu",
     "get_size",
+    "mod",
+    "modEu",
+    "mul",
+    "neg",
     "not",
     "or",
     "shl",
     "shr",
+    "sub",
     "xor"
 ];
 
@@ -69,14 +77,6 @@ def MOD_NAMES = [
     {mod: "Generator",  name: "filterPump"},
     {mod: "Generator",  name: "makeRepeatGenerator"},
     {mod: "Generator",  name: "makeFilterGenerator"},
-    {mod: "Number",     name: "add"},
-    {mod: "Number",     name: "div"},
-    {mod: "Number",     name: "divEu"},
-    {mod: "Number",     name: "mod"},
-    {mod: "Number",     name: "modEu"},
-    {mod: "Number",     name: "mul"},
-    {mod: "Number",     name: "neg"},
-    {mod: "Number",     name: "sub"},
     {mod: "Peg",        name: "any"},
     {mod: "Peg",        name: "empty"},
     {mod: "Peg",        name: "makeChoice"},

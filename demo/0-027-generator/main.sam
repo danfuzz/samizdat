@@ -85,8 +85,8 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
 msgAll("FilterGenerator (square even numbers)",
     $Generator::makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
-            ifIs { eq($Number::mod(value, 2), 0) }
-                { $Number::mul(value, value) }
+            ifIs { eq(value.mod(2), 0) }
+                { value.mul(value) }
         });
 
 note("generatorPump on FilterGenerator");
@@ -95,7 +95,7 @@ var pumped = $Generator::generatorPump(
         { value ->
             note("    Yay ", $Format::source(value));
             ifIs { eq(value, 3) }
-                { $Number::add(value, 100) }
+                { value.add(100) }
         });
 note("Got: ", $Format::source(pumped), "\n");
 
@@ -104,7 +104,7 @@ pumped := $Generator::filterPump([1, 2, 3, 4])
     { value ->
         note("    Yay ", $Format::source(value));
         ifIs { le(value, 3) }
-            { $Number::add(value, 100) }
+            { value.add(100) }
     };
 note("Got: ", $Format::source(pumped), "\n");
 
@@ -113,7 +113,7 @@ pumped := $Generator::filterPump("abcdefg", [1, 2, 3, 4])
     { ch, value ->
         note("    Yay ", ch, " ", $Format::source(value));
         ifIs { eq(value, 3) }
-            { $Number::add(value, 100) }
+            { value.add(100) }
     };
 note("Got: ", $Format::source(pumped), "\n");
 
@@ -144,7 +144,7 @@ note("collectAsMap on a FilterGenerator");
 def outMap = $Generator::collectAsMap(
     $Generator::makeFilterGenerator($Range::makeInclusiveRange(0, 4, 2))
         { value ->
-            {(value): value, ($Number::add(value, 1)): value, blort: value}
+            {(value): value, (value.add(1)): value, blort: value}
         });
 note("    ", $Format::source(outMap));
 note();

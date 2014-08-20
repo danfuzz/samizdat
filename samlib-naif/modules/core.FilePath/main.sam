@@ -9,7 +9,6 @@
 #= language core.Lang0
 
 import core.Sequence;
-import proto.Number;
 
 
 ##
@@ -49,7 +48,7 @@ export fn get_directory(path) {
     ## then that means the path was all slashes, making the result be `"/"`.
     { /out ->
         loop {
-            at := $Number::sub(at, 1);
+            at := at.sub(1);
 
             def ch = get(path, at);
             ifIs { ne(ch, "/") } { yield /out };
@@ -63,7 +62,7 @@ export fn get_directory(path) {
     ## `"/"`.
     loop {
         ifIs { eq(at, 0) } { return "." };
-        at := $Number::sub(at, 1);
+        at := at.sub(1);
 
         def ch = get(path, at);
         ifIs { eq(ch, "/") }
@@ -84,7 +83,7 @@ export fn get_file(path) {
     ## then that means the path was all slashes, making the result be `"/"`.
     { /out ->
         loop {
-            at := $Number::sub(at, 1);
+            at := at.sub(1);
 
             def ch = get(path, at);
             ifIs { ne(ch, "/") } { yield /out };
@@ -101,12 +100,12 @@ export fn get_file(path) {
         ifIs { eq(at, 0) }
             { return $Sequence::sliceInclusive(path, 0, endAt) };
 
-        at := $Number::sub(at, 1);
+        at := at.sub(1);
 
         def ch = get(path, at);
         ifIs { eq(ch, "/") }
             {
-                at := $Number::add(at, 1);
+                at := at.add(1);
                 return $Sequence::sliceInclusive(path, at, endAt)
             };
     }
