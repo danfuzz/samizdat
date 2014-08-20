@@ -17,11 +17,11 @@ Note that some of these are also used as part of larger protocols, e.g.
 <br><br>
 ### Method Definitions: One-Offs
 
-#### `cat(value, more*) -> value`
+#### `.cat(more*) -> value`
 
 Returns the concatenation of all of the given values. The `more*` values
-must be "compatible" with `value` (as defined by the class of `value`),
-and the result is expected to be of the same class as `value`. It is an
+must be "compatible" with `this` (as defined by the class of `this`),
+and the result is expected to be of the same class as `this`. It is an
 error (terminating the runtime) if one of the arguments is incompatible.
 This function is intended for "collection-like" values which have constituent
 parts of some sort.
@@ -40,17 +40,17 @@ concatenate (e.g. when handling a list of arguments generically), include
 a first argument of the empty value of the desired class, e.g.
 `""` to ensure string concatenation.
 
-#### `get(value, key) -> . | void`
+#### `.get(key) -> . | void`
 
 Returns the constituent element of the value that corresponds to the given
 `key`. `key` is an arbitrary value. Returns void if there is no unique
 corresponding value for the given `key` (including if `key` is not
-bound in `value` at all).
+bound in `this` at all).
 
 This function is intended for "collection-like" values which have constituent
 parts of some sort.
 
-#### `get_key(value) -> .`
+#### `.get_key() -> .`
 
 Some values have an associated "key" or "key-like" value.
 This method provides access to that key. This method often goes
@@ -59,7 +59,7 @@ hand-in-hand with `get_value`.
 It is discouraged to bind this to a function that sometimes returns void;
 it is preferable to cause an error if it is bound but inapplicable.
 
-#### `get_size(value) -> int`
+#### `.get_size() -> int`
 
 Returns the number of elements in the given value. This function is intended
 for "collection-like" values which have constituent parts of some sort.
@@ -67,7 +67,16 @@ for "collection-like" values which have constituent parts of some sort.
 **Syntax Note:** This is the function underlying the `#value` syntactic
 form (prefix `#` operator).
 
-#### `nth(value, n) -> . | void`
+#### `.get_value() -> .`
+
+Some values have an associated "sub-value" or "inner value."
+This method provides access to that value. This method often goes
+hand-in-hand with `get_key`.
+
+It is discouraged to bind this to a function that sometimes returns void;
+it is preferable to cause an error if it is bound but inapplicable.
+
+#### `.nth(n) -> . | void`
 
 Returns the nth (zero-based) element of the given value.
 Returns void if `n < 0` or `n >= #value`. It is an error
@@ -76,7 +85,7 @@ Returns void if `n < 0` or `n >= #value`. It is an error
 This function is intended for "sequence-like" values which have
 strongly-ordered constituent parts of some sort.
 
-#### `toInt(value) -> int`
+#### `.toInt() -> int`
 
 Some values have an obvious correspondence to an integer quantity. If
 so, then this method can be used to access it.
@@ -86,14 +95,14 @@ it is preferable to cause an error.
 
 It is also discouraged to use this method for lossy conversion.
 
-#### `toNumber(value) -> number`
+#### `.toNumber() -> number`
 
 Some values have an obvious correspondence to a numeric quantity. If
 so, then this method can be used to access it. It is discouraged to
 bind this to a function that sometimes returns void; it is preferable
 to cause an error.
 
-#### `toString(value) -> string`
+#### `.toString() -> string`
 
 Some values have an obvious correspondence to a string value. If
 so, then this method can be used to access it.
@@ -103,12 +112,3 @@ it is preferable to cause an error.
 
 It is discouraged to use this method for textual conversion of a value
 to a string (e.g. turning the int value 242 into the string `"242"`).
-
-#### `get_value(value) -> .`
-
-Some values have an associated "sub-value" or "inner value."
-This method provides access to that value. This method often goes
-hand-in-hand with `get_key`.
-
-It is discouraged to bind this to a function that sometimes returns void;
-it is preferable to cause an error if it is bound but inapplicable.

@@ -7,20 +7,20 @@ String
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `perEq(string, other) -> string | void`
+#### `.perEq(other) -> string | void`
 
 Default implementation.
 
-#### `perOrder(string, other) -> int`
+#### `.perOrder(other) -> int`
 
 Default implementation.
 
-#### `totalEq(string1, string2) -> string | void`
+#### `.totalEq(other) -> string | void`
 
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
 
-#### `totalOrder(string1, string2) -> int`
+#### `.totalOrder(other) -> int`
 
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
@@ -30,17 +30,17 @@ before its longer brethren.
 <br><br>
 ### Method Definitions: One-Offs
 
-#### `toInt(string) -> int`
+#### `.toInt() -> int`
 
 Given a single-character string, returns the character code
 of its sole character, as an int. It is an error (terminating
 the runtime) if `string` is not a string of size 1.
 
-#### `toNumber(string) -> int`
+#### `.toNumber() -> int`
 
-Same as `toInt(string)`.
+Same as `.toInt()`.
 
-#### `toString(string) -> string`
+#### `.toString() -> string`
 
 Returns the argument.
 
@@ -48,57 +48,57 @@ Returns the argument.
 <br><br>
 ### Method Definitions: `Collection` and `Sequence` protocols
 
-#### `cat(string, more*) -> string`
+#### `.cat(more*) -> string`
 
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
 
-#### `del(string, n) -> string`
+#### `.del(n) -> string`
 
 Returns a string like the given one, but without the `n`th character.
 
-#### `get(string, key) -> . | void`
+#### `.get(key) -> . | void`
 
 Defined as per the `Sequence` protocol.
 
-#### `get_size(string) -> int`
+#### `.get_size() -> int`
 
 Returns the number of characters in the string.
 
-#### `keyList(string) -> list`
+#### `.keyList() -> list`
 
 Defined as per the `Sequence` protocol.
 
-#### `nth(string, n) -> . | void`
+#### `.nth(n) -> . | void`
 
 Gets the nth character of the string, as a single-element string.
 
-#### `nthMapping(string, n) -> map | void`
+#### `.nthMapping(n) -> map | void`
 
 Gets the nth mapping of the string.
 
-#### `put(string, n, char) -> string`
+#### `.put(n, char) -> string`
 
 Returns a string like the given one, but with the `n`th character replaced
 with the given `char`, or added if `n == #string`. It is an error
 if `char` is not a string of size `1`.
 
-#### `reverse(string) -> string`
+#### `.reverse() -> string`
 
 Returns a string like the one given, except with characters in the opposite
 order.
 
-#### `sliceExclusive(string, start, end?) -> string`
+#### `.sliceExclusive(start, end?) -> string`
 
 Returns an end-exclusive slice of the given string.
 
-#### `sliceInclusive(string, start, end?) -> string`
+#### `.sliceInclusive(start, end?) -> string`
 
 Returns an end-inclusive slice of the given string.
 
-#### `valueList(list, n) -> list`
+#### `.valueList(n) -> list`
 
 Defined as per the `Sequence` protocol.
 
@@ -106,14 +106,14 @@ Defined as per the `Sequence` protocol.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `collect(string, filterFunction) -> list`
+#### `.collect(filterFunction) -> list`
 
 Collects or filters the characters of `string`.
 
-#### `nextValue(string, box) -> generator | void`
+#### `.nextValue(box) -> generator | void`
 
-On a non-empty string, calls `store(box, string[0])` and returns
-`string[1..]`. On an empty string, calls `store(box)` and returns void.
+On a non-empty string, calls `box.store(string[0])` and returns
+`string[1..]`. On an empty string, calls `box.store()` and returns void.
 
 
 <br><br>
