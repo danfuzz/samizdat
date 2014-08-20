@@ -21,31 +21,30 @@
 /** Class value for in-model class `Value`. */
 extern zvalue CLS_Value;
 
-/** Method `debugName(value)`: Documented in spec. */
+/** Method `.debugName()`: Documented in spec. */
 SEL_DECL(1, 1, debugName);
 
-/** Method `debugString(value)`: Documented in spec. */
+/** Method `.debugString()`: Documented in spec. */
 SEL_DECL(1, 1, debugString);
 
-/** Method `gcMark(value)`: Does GC marking for the given value. */
+/**
+ * Method `.gcMark()`: Does GC marking for the given value.
+ *
+ * TODO: This should be defined as an anonymous selector and *not* exported
+ * in any way to the higher layer environment.
+ */
 SEL_DECL(1, 1, gcMark);
 
-/** Method `perEq(value, other)`: Documented in spec. */
+/** Method `.perEq(other)`: Documented in spec. */
 SEL_DECL(2, 2, perEq);
 
-/** Method `perOrder(value, other)`: Documented in spec. */
+/** Method `.perOrder(other)`: Documented in spec. */
 SEL_DECL(2, 2, perOrder);
 
-/**
- * Method `totalEq(value, value)`: Compares two values for equality /
- * sameness. Documented in spec.
- */
+/** Method `.totalEq(other)`: Documented in spec. */
 SEL_DECL(2, 2, totalEq);
 
-/**
- * Method `totalOrder(value, value)`: Compares two values with respect to the
- * total order of values. Documented in spec.
- */
+/** Method `.totalOrder(other)`: Documented in spec. */
 SEL_DECL(2, 2, totalOrder);
 
 /**

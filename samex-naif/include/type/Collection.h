@@ -20,19 +20,19 @@
 #include "type/OneOff.h"
 
 
-/** Method `del(collection, key)`: Documented in spec. */
+/** Method `.del(key)`: Documented in spec. */
 SEL_DECL(2, 2, del);
 
-/** Method `keyList(collection)`: Documented in spec. */
+/** Method `.keyList()`: Documented in spec. */
 SEL_DECL(1, 1, keyList);
 
-/** Method `nthMapping(collection, n)`: Documented in spec. */
+/** Method `.nthMapping(n)`: Documented in spec. */
 SEL_DECL(2, 2, nthMapping);
 
-/** Method `put(collection, key, value)`: Documented in spec. */
+/** Method `.put(key, value)`: Documented in spec. */
 SEL_DECL(3, 3, put);
 
-/** Method `valueList(collection)`: Documented in spec. */
+/** Method `.valueList()`: Documented in spec. */
 SEL_DECL(1, 1, valueList);
 
 /**

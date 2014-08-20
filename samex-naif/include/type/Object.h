@@ -15,7 +15,7 @@
 /** Class value for in-model class `Object`. */
 extern zvalue CLS_Object;
 
-/** Method `objectDataOf(obj, secret)`: Documented in spec. */
+/** Method `.objectDataOf(secret)`: Documented in spec. */
 SEL_DECL(2, 2, objectDataOf);
 
 /** Global function `makeObject`: Documented in spec. */

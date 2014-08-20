@@ -12,26 +12,26 @@
 #include "type/Value.h"
 
 
-/** Method `cat(value, more*)`: Documented in spec. */
+/** Method `.cat(more*)`: Documented in spec. */
 SEL_DECL(1, -1, cat);
 
-/** Method `get(value, key)`: Documented in spec. */
+/** Method `.get(key)`: Documented in spec. */
 SEL_DECL(2, 2, get);
 
-/** Method `get_key(value)`: Documented in spec. */
+/** Method `.get_key()`: Documented in spec. */
 SEL_DECL(1, 1, get_key);
 
-/** Method `get_size(collection)`: Documented in spec. */
+/** Method `.get_size()`: Documented in spec. */
 SEL_DECL(1, 1, get_size);
 
-/** Method `get_value(value)`: Documented in spec. */
+/** Method `.get_value()`: Documented in spec. */
 SEL_DECL(1, 1, get_value);
 
-/** Method `nth(sequence, n)`: Documented in spec. */
+/** Method `.nth(int)`: Documented in spec. */
 SEL_DECL(2, 2, nth);
 
 /**
- * Method `readResource(loader, source, type)`: Documented in spec.
+ * Method `.readResource(source, type)`: Documented in spec.
  *
  * **Note:** Actually part of the `Loader` protocol, but as the nature of
  * protocols is in flux, it's more convenient to just drop it here rather
@@ -41,19 +41,19 @@ SEL_DECL(2, 2, nth);
 SEL_DECL(3, 3, readResource);
 
 /**
- * Method `resolve(loader, source)`: Documented in spec.
+ * Method `.resolve(source)`: Documented in spec.
  *
  * **Note:** Same situation as `readResource` above.
  */
 SEL_DECL(2, 2, resolve);
 
-/** Method `toInt(value)`: Documented in spec. */
+/** Method `.toInt()`: Documented in spec. */
 SEL_DECL(1, 1, toInt);
 
-/** Method `toNumber(value)`: Documented in spec. */
+/** Method `.toNumber()`: Documented in spec. */
 SEL_DECL(1, 1, toNumber);
 
-/** Method `toString(value)`: Documented in spec. */
+/** Method `.toString()`: Documented in spec. */
 SEL_DECL(1, 1, toString);
 
 /**
