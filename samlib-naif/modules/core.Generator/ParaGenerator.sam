@@ -80,7 +80,7 @@ export fn makeParaGenerator(generators*) {
 
     ## Return a `ListWrapGenerator` if we were only passed one argument.
     ## This saves some overhead.
-    ifIs { eq(get_size(generators), 1) }
+    ifIs { eq(generators.get_size(), 1) }
         { return makeListWrapGenerator(generators*) };
 
     return makeObject(ParaGenerator, SECRET, {generators})

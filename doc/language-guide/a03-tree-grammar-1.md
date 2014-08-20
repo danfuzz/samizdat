@@ -992,8 +992,8 @@ def parPexSetString = {:
             def endChar = end::value;
 
             ## Reject non-single-character strings.
-            ifIs { ne(1, get_size(startChar)) } { yield /out };
-            ifIs { ne(1, get_size(endChar)) } { yield /out };
+            ifIs { ne(1, startChar.get_size()) } { yield /out };
+            ifIs { ne(1, endChar.get_size()) } { yield /out };
 
             yield cat(makeInclusiveRange(startChar, endChar)*)
         }

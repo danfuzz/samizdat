@@ -5,12 +5,17 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 :: makeCall, makeLiteral, makeVarFetch;
+import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 
 
 ##
 ## Private Definitions
 ##
+
+## Literal selectors.
+def SELECTORS = [
+    "get_size"
+];
 
 ## Global variable names / regular variable references.
 def NAMES = [
@@ -22,7 +27,6 @@ def NAMES = [
     "eq",
     "ge",
     "get",
-    "get_size",
     "gt",
     "ifIs",
     "ifNot",
@@ -108,7 +112,14 @@ def REF_get = makeVarFetch("get");
 
 ## Documented in spec.
 export def REFS = cat(
-    (filterAll(NAMES) { name -> {(name): makeVarFetch(name)} })*,
+    (filterAll(SELECTORS) { name ->
+        {cat("SEL_", name): makeSelector(name)}
+    })*,
+
+    (filterAll(NAMES) { name ->
+        {(name): makeVarFetch(name)}
+    })*,
+
     (filterAll(MOD_NAMES) { modName ->
         def mod = modName::mod;
         def name = modName::name;

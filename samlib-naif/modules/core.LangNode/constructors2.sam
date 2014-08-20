@@ -176,7 +176,7 @@ export fn makeFullClosure(nodeOrMap) {
     def map = ifValueOr { hasClass(nodeOrMap, Map) } { dataOf(nodeOrMap) };
     def formals = ifValueOr { map::formals } { [] };
     var statements = ifValueOr { map::statements } { [] };
-    def statSz = get_size(statements);
+    def statSz = statements.get_size();
 
     def yieldNode = ifValueOr
         { expandYield(map) }

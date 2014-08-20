@@ -34,7 +34,7 @@ fn PegRepeat.parse(box, input, items*) {
         def maxCheck = ifValue { data::maxSize }
             { maxSize ->
                 { ->
-                    ifIs { eq(get_size(results), maxSize) }
+                    ifIs { eq(results.get_size(), maxSize) }
                         { yield /out }
                 }
             }
@@ -59,7 +59,7 @@ fn PegRepeat.parse(box, input, items*) {
 
     ## Check for minimum match count. Store result and return success if
     ## appropriate.
-    return? ifIs { ge(get_size(results), data::minSize) }
+    return? ifIs { ge(results.get_size(), data::minSize) }
         {
             box* := results;
             remainingInput

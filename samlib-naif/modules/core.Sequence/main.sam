@@ -21,13 +21,13 @@ export import proto.Sequence :: *;
 
 ## Documented in spec.
 export fn nthFromEnd(seq, n) {
-    def index = sub(get_size(seq), add(n, 1));
+    def index = sub(seq.get_size(), add(n, 1));
     return? nth(seq, index)
 };
 
 ## Documented in spec.
 export fn sliceGeneral(seq, style, start, optEnd?) {
-    def limit = sub(get_size(seq), 1);
+    def limit = sub(seq.get_size(), 1);
     def func = ifIs { eq(style, @exclusive) }
         { sliceExclusive }
         { sliceInclusive };

@@ -64,7 +64,7 @@ export fn makeSequence(rules*) {
         { return empty };
 
     ## Trivial case: One rule. Return that rule directly.
-    ifIs { eq(get_size(rules), 1) }
+    ifIs { eq(rules.get_size(), 1) }
         { return rules* };
 
     ## The general case.

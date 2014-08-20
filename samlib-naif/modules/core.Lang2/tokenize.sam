@@ -265,7 +265,7 @@ fn processStringParts(parts) {
     };
 
     ## Check for a simple result.
-    ifIs { eq(get_size(elems), 1) }
+    ifIs { eq(elems.get_size(), 1) }
         {
             ifValue { hasClass(elems*, String) }
                 { elem ->

@@ -43,7 +43,7 @@ export fn fixPath(path, basePaths*) {
 export fn get_directory(path) {
     checkPath(path);
 
-    var at = get_size(path);
+    var at = path.get_size();
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
@@ -78,7 +78,7 @@ export fn get_directory(path) {
 export fn get_file(path) {
     checkPath(path);
 
-    var at = get_size(path);
+    var at = path.get_size();
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.

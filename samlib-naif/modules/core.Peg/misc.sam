@@ -66,7 +66,7 @@ export fn makeString(string) {
         { return makeResult(@"") };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
-    ifIs { eq(get_size(string), 1) }
+    ifIs { eq(string.get_size(), 1) }
         { return makeToken(@@(string)) };
 
     ## This is implemented as, in effect, `(@"1" @"2" ... { string })`,

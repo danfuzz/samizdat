@@ -49,7 +49,7 @@ export fn makeChoice(rules*) {
         { return fail };
 
     ## Trivial case: One rule. Return that rule directly.
-    ifIs { eq(get_size(rules), 1) }
+    ifIs { eq(rules.get_size(), 1) }
         { return rules* };
 
     ## The general case.

@@ -71,7 +71,7 @@ export fn makeSerialGenerator(generators*) {
 
     ## Return the argument directly if we were only passed one.
     ## This saves some gratuitous call wrapping / double yields.
-    ifIs { eq(get_size(generators), 1) }
+    ifIs { eq(generators.get_size(), 1) }
         { return generators* };
 
     return makeObject(SerialGenerator, SECRET, {generators})

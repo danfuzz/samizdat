@@ -988,8 +988,8 @@ def parPexSetString = {:
             def endChar = end::value;
 
             ## Reject non-single-character strings.
-            ifIs { ne(1, get_size(startChar)) } { yield /out };
-            ifIs { ne(1, get_size(endChar)) } { yield /out };
+            ifIs { ne(1, startChar.get_size()) } { yield /out };
+            ifIs { ne(1, endChar.get_size()) } { yield /out };
 
             yield cat(makeInclusiveRange(startChar, endChar)*)
         }
@@ -1107,7 +1107,7 @@ parPexChoice := {:
 ## references.
 def UNARY_OPERATORS = {
     @@"-":   REFS::Number_neg,
-    @@"#":   REFS::get_size,
+    @@"#":   REFS::SEL_get_size,
     @@"^":   REFS::Sequence_reverse,
     @@"!!!": REFS::Bitwise_not
 };
@@ -1186,7 +1186,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
 
-    ifIs { le(get_size(opExList), 1) }
+    ifIs { le(opExList.get_size(), 1) }
         {
             ## Trivial case of zero or one operator. Just use the result of
             ## the call to `makeBinaryCalls`.
@@ -1741,7 +1741,7 @@ def parLogicAndExpression = {:
         { last }
     |
         ## Non-compound `&` expression.
-        { eq(get_size(most), 1) }
+        { eq(most.get_size(), 1) }
         {
             def clause = most*;
             def formal = clause::formal;
@@ -1836,7 +1836,7 @@ def parMultiTest = {:
 
     (
         ## Single test. Will translate as either `ifValue` or `ifIs`.
-        { eq(get_size(clauses), 1) }
+        { eq(clauses.get_size(), 1) }
         {
             def clause = clauses*;
             def formal = clause::formal;
@@ -2084,10 +2084,10 @@ def parSwitchExpression = {:
                 optDefault := [finishCode({code: makeBasicClosure({})})]
             });
 
-        ifIs { gt(get_size(optDefault), 1) }
+        ifIs { gt(optDefault.get_size(), 1) }
             { die("Multiple default cases in switch.") };
 
-        ifIs { gt(get_size(optElse), 1) }
+        ifIs { gt(optElse.get_size(), 1) }
             { die("Multiple else cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to

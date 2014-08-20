@@ -38,7 +38,6 @@ export
     fetch,
     get,
     get_class,
-    get_size,
     hasClass,
     ifIs,
     ifNot,

@@ -6,7 +6,6 @@
 ## Collection protocol. This is just a re-export from the primitive core
 ## library.
 ##
-## **Note:** `cat`, `get`, and `get_size` are re-exported one-off generics.
 
 #= language core.Lang0
 
@@ -15,7 +14,6 @@ export
     collect,
     fetch,
     get,
-    get_size,
     nextValue;
 
 export def del        = Collection_del;
