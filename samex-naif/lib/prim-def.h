@@ -35,9 +35,7 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 // Methods: One-Offs, exported to the global environment.
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
-PRIM_DEF(get_key,                 SEL_NAME(get_key));
 PRIM_DEF(get_size,                SEL_NAME(get_size));
-PRIM_DEF(get_value,               SEL_NAME(get_value));
 PRIM_DEF(nth,                     SEL_NAME(nth));
 PRIM_DEF(readResource,            SEL_NAME(readResource));
 PRIM_DEF(resolve,                 SEL_NAME(resolve));

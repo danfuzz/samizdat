@@ -99,8 +99,8 @@ fn List_sourceGeneral(value, adorn) {
 fn Map_sourceGeneral(value, adorn) {
     def mapElems = filterAll(value)
         { mapping ->
-            def k = keyString(get_key(mapping));
-            def v = sourceGeneral(get_value(mapping), true);
+            def k = keyString(mapping.get_key());
+            def v = sourceGeneral(mapping.get_value(), true);
             cat(", ", k, ": ", v)
         };
 

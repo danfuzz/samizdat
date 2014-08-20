@@ -50,14 +50,14 @@ def parCodePoint = {:
         $Generator::filterPump(digits) { digit ->
             value := value * 16 + digit
         };
-        toString(value);
+        value.toString();
     }
 :};
 
 ## Parses a list of code points, yielding a converted string of them.
 def parCodePoints = {:
     codes = parCodePoint+
-    { cat(codes*) }
+    { "".cat(codes*) }
 :};
 
 ## Parses an entry description.
@@ -99,7 +99,7 @@ def parFile = {:
         }
     )?
 
-    { cat(lines*) }
+    { "".cat(lines*) }
 :};
 
 export fn main(selfPath, .*) {
@@ -115,7 +115,7 @@ export fn main(selfPath, .*) {
     ## trim the first two characters off the beginning, yielding a valid comma-
     ## separated list of mappings.
     def resultLines = (mapping in result ->
-        ",\n    \%q(get_key(mapping)): \%q(get_value(mapping))"
+        ",\n    \%q(mapping.key): \%q(mapping.value)"
     );
 
     def resultText = cat(resultLines*)[2..];

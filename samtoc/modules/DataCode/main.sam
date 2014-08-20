@@ -162,7 +162,7 @@ fn Map_convert(value) {
     };
 
     def mapPairs = [ mapping in value ->
-        [convert(get_key(mapping)), convert(get_value(mapping))]
+        [convert(mapping.key), convert(mapping.value)]
     ];
 
     return genCall("mapFromArgs", cat(mapPairs*)*, CODE_C_NULL)
