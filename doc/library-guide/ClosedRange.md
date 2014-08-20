@@ -11,11 +11,11 @@ character values, with a finite size.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `collect(range) -> list`
+#### `.collect(filterFunction?) -> list`
 
 Returns all the elements of the range as a list.
 
-#### `nextValue(range, box) -> range | void`
+#### `.nextValue(box) -> range | void`
 
 Yields the first element of the range, and returns either a range representing
 the remaining elements (if there are any) or `nullGenerator` if there are

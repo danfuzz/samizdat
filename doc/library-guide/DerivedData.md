@@ -5,15 +5,17 @@ DerivedData
 -----------
 
 <br><br>
-### Primitive Definitions
+### Method Definitions
 
-#### `dataOf(value) -> . | void`
+#### `.dataOf() -> . | void`
 
 Returns the data payload of the given derived data value, if any. If the value
 has no data payload, this returns void.
 
 It is an error (terminating the runtime) to call this function on something
 other than a derived data value.
+
+### Primitive Definitions
 
 #### `makeDerivedDataClass(name) -> class`
 

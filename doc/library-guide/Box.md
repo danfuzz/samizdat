@@ -27,19 +27,19 @@ or void if it has no stored value.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `perEq(box, other) -> box | void`
+#### `.perEq(other) -> box | void`
 
 Default implementation.
 
-#### `perOrder(box, other) -> int | void`
+#### `.perOrder(other) -> int | void`
 
 Default implementation.
 
-#### `totalEq(box1, box2) -> box | void`
+#### `.totalEq(other) -> box | void`
 
 Performs an identity comparison. No two boxes are alike.
 
-#### `totalOrder(box1, box2) -> int | void`
+#### `.totalOrder(other) -> int | void`
 
 Performs an identity comparison. No two boxes are alike, and two
 different boxes have no defined order.
@@ -48,32 +48,32 @@ different boxes have no defined order.
 <br><br>
 ### Method Definitions: `Box` protocol
 
-#### `collect(box, optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> list`
 
 Refinement of the `Generator` protocol. This is equivalent to getting the
 contents of the box as a list (of zero or one element), and calling
 `collect` on that list with the same arguments.
 
-#### `fetch(box) -> . | void`
+#### `.fetch() -> . | void`
 
 Refinement of the `Generator` protocol. Gets the value inside a box, if any.
 If the box either is unset or has been set to void, this returns void.
 Unlike the general `Generator` protocol, it is never a fatal error to call
 this function.
 
-#### `nextValue(box, outBox) -> [] | void`
+#### `.nextValue(outBox) -> [] | void`
 
 Refinement of the `Generator` protocol. If the box has a stored value, this
 stores it to the given `outBox` and returns `[]` (the empty list). If the
 box has no stored value, this performs no action and returns void.
 
-#### `store(box, value?) -> . | void`
+#### `.store(value?) -> . | void`
 
 Sets the value of a box to the given value, or to void if `value` is
 not supplied. This function always returns `value` (or void if `value` is
 not supplied).
 
-It is an error (terminating the runtime) for `box` to be a yield box on
+It is an error (terminating the runtime) for `this` to be a yield box on
 which `store` has already been called.
 
 
