@@ -22,6 +22,7 @@ MOD_INIT(Bitwise) {
     SEL_INIT(not);
     SEL_INIT(or);
     SEL_INIT(shl);
+    SEL_INIT(shr);
     SEL_INIT(xor);
 }
 
@@ -42,6 +43,9 @@ SEL_DEF(or);
 
 // Documented in header.
 SEL_DEF(shl);
+
+// Documented in header.
+SEL_DEF(shr);
 
 // Documented in header.
 SEL_DEF(xor);

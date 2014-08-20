@@ -14,7 +14,8 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 
 ## Literal selectors.
 def SELECTORS = [
-    "get_size"
+    "get_size",
+    "shr"
 ];
 
 ## Global variable names / regular variable references.

@@ -30,6 +30,9 @@ SEL_DECL(2, 2, or);
 /** Method `.shl(int)`: Documented in spec. */
 SEL_DECL(2, 2, shl);
 
+/** Method `.shr(int)`: Documented in spec. */
+SEL_DECL(2, 2, shr);
+
 /** Method `.xor(bitwise)`: Documented in spec. */
 SEL_DECL(2, 2, xor);
 

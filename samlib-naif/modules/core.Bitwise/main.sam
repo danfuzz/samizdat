@@ -11,14 +11,10 @@
 ## Re-export. Documented in spec.
 export import proto.Bitwise :: *;
 
-import proto.Number :: neg;
-
 
 ##
 ## Exported Definitions
 ##
 
 ## Documented in spec.
-export fn shr(bitwise, n) {
-    return shl(bitwise, neg(n))
-}
+export def shr = @.shr;

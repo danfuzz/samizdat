@@ -70,15 +70,15 @@ expect("shl", true,  $Bitwise::shl, true, 0);
 expect("shl", false, $Bitwise::shl, true, -1);
 expect("shl", false, $Bitwise::shl, true, -2);
 
-expect("shr", false, $Bitwise::shr, false, 0);
-expect("shr", false, $Bitwise::shr, false, -1);
-expect("shr", false, $Bitwise::shr, false, -2);
-expect("shr", false, $Bitwise::shr, false, 1);
-expect("shr", false, $Bitwise::shr, false, 2);
+expect("shr", false, @.shr, false, 0);
+expect("shr", false, @.shr, false, -1);
+expect("shr", false, @.shr, false, -2);
+expect("shr", false, @.shr, false, 1);
+expect("shr", false, @.shr, false, 2);
 
-expect("shr", true,  $Bitwise::shr, true, 0);
-expect("shr", false, $Bitwise::shr, true, 1);
-expect("shr", false, $Bitwise::shr, true, 2);
+expect("shr", true,  @.shr, true, 0);
+expect("shr", false, @.shr, true, 1);
+expect("shr", false, @.shr, true, 2);
 
 expect("toInt", 0, @.toInt, false);
 expect("toInt", 1, @.toInt, true);

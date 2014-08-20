@@ -1132,7 +1132,7 @@ def BINARY_OPERATORS = {
     @@"|||":  REFS::Bitwise_or,
     @@"^^^":  REFS::Bitwise_xor,
     @@"<<<":  REFS::Bitwise_shl,
-    @@">>>":  REFS::Bitwise_shr,
+    @@">>>":  REFS::SEL_shr,
     @@"\\==": REFS::eq,
     @@"\\!=": REFS::ne,
     @@"\\<":  REFS::lt,
