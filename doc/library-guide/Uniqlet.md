@@ -7,19 +7,19 @@ Uniqlet
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `perEq(uniqlet, other) -> uniqlet | void`
+#### `.perEq(other) -> uniqlet | void`
 
 Default implementation.
 
-#### `perOrder(uniqlet, other) -> int`
+#### `.perOrder(other) -> int`
 
 Default implementation.
 
-#### `totalEq(uniqlet1, uniqlet2) -> uniqlet | void`
+#### `.totalEq(other) -> uniqlet | void`
 
 Performs an identity comparison. No two uniqlets are alike.
 
-#### `totalOrder(uniqlet1, uniqlet2) -> int`
+#### `.totalOrder(other) -> int`
 
 Performs an identity comparison. No two uniqlets are alike, and two
 different uniqlets have no defined order.
