@@ -13,7 +13,6 @@ import core.Generator :: filterAll, filterPump;
 import core.LangNode :: *;
 import core.Peg;
 import core.Range :: makeInclusiveRange, makeOpenRange;
-import core.Sequence :: reverse, sliceExclusive;
 
 import ./safeVar;
 import ./tokenize :: tokenize;
@@ -462,7 +461,7 @@ def parUnaryExpression = {:
         base = parTerm
         ## Reverse the `prefixes` list, so that prefixes are applied
         ## in outward order from the base term.
-        { {base, prefixes: reverse(prefixes)} }
+        { {base, prefixes: prefixes.reverse()} }
     )
 
     postfixes = parPostfixOperator*
@@ -1107,7 +1106,7 @@ parPexChoice := {:
 def UNARY_OPERATORS = {
     @@"-":   REFS::SEL_neg,
     @@"#":   REFS::SEL_get_size,
-    @@"^":   REFS::Sequence_reverse,
+    @@"^":   REFS::SEL_reverse,
     @@"!!!": REFS::SEL_not
 };
 
@@ -1528,8 +1527,8 @@ def parIndexPostfix = {:
 
             {
                 def funcRef = ifIs { eq(op, @"..") }
-                    { REFS::Sequence_sliceInclusive }
-                    { REFS::Sequence_sliceExclusive };
+                    { REFS::SEL_sliceInclusive }
+                    { REFS::SEL_sliceExclusive };
                 def startNode = start::value;
 
                 { node -> makeCall(funcRef, node, startNode, optEndNode*) }
@@ -1765,7 +1764,7 @@ def parLogicAndExpression = {:
                 filterAll(most, makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
-                            sliceExclusive(formals, 0, index))
+                            formals.sliceExclusive(0, index))
                     };
 
             ## Construct the overall `ifValues` call.
@@ -1864,7 +1863,7 @@ def parMultiTest = {:
                 filterAll(clauses, makeOpenRange(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
-                            sliceExclusive(formals, 0, index))
+                            formals.sliceExclusive(0, index))
                     };
 
             ## Result function which constructs the overall `ifValues` call.
@@ -1944,8 +1943,8 @@ def parIfExpression = {:
 
     {
         ## This builds the full expression from back to front (inner to outer).
-        def clauses = reverse(
-            [{maker: firstCondition, then: firstThen}, elseIfThens*]);
+        def clauses =
+            [{maker: firstCondition, then: firstThen}, elseIfThens*].reverse();
 
         ## To keep things simple, partial results are always thunks wrapped
         ## in a single-element list, so that they can be slotted directly into
@@ -2102,7 +2101,7 @@ def parSwitchExpression = {:
         def caseMap = makeCallOrApply(REFS::cat,
             makeLiteral({}),
             makeInterpolate(
-                makeCall(REFS::Sequence_reverse,
+                makeCall(REFS::SEL_reverse,
                     makeCallOrApply(REFS::makeList, caseClauses*))));
 
         def ifCall = makeCall(REFS::ifSwitch,
