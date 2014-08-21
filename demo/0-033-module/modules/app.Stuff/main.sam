@@ -26,9 +26,9 @@ def SUBSTUFF = $substuff::SUBSTUFF;
 export STUFF, SUBSTUFF;
 
 export fn stuffFunc1() {
-    return cat("Funky stuff 1: ", MORE_STUFF1, " ", MORE_STUFF2)
+    return "Funky stuff 1: ".cat(MORE_STUFF1, " ", MORE_STUFF2)
 };
 
 export fn stuffFunc2() {
-    return cat("Funky stuff 2: ", stu_MORE_STUFF1, " ", stu_MORE_STUFF2)
+    return "Funky stuff 2: ".cat(stu_MORE_STUFF1, " ", stu_MORE_STUFF2)
 };

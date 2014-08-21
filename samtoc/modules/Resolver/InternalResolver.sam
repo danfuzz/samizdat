@@ -34,7 +34,7 @@ def InternalResolver = makeObjectClass("InternalResolver", SECRET);
 ## `source` is known to be `internal` and so *might* be found directly
 ## in or under this resolver's directory.
 fn directResolve(self, source) {
-    def data = objectDataOf(self, SECRET);
+    def data = self.objectDataOf(SECRET);
     def subPath = source::name;
     def basePath = "\(data::path)/\(subPath)";
     def infoPath = "\(basePath).saminfo";
@@ -54,7 +54,7 @@ fn directResolve(self, source) {
 };
 
 fn InternalResolver.resolve(source) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     if (def found = $cache::cacheGet(data::cache, source)) {
         ## `found` is always a list. See comment below.

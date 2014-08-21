@@ -50,13 +50,13 @@ export fn apply(rule, input) {
 export fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
-    return makeTokenSet(classListFromString(cat("", strings*))*)
+    return makeTokenSet(classListFromString("".cat(strings*))*)
 };
 
 ## Documented in spec.
 export fn makeCharSetComplement(strings*) {
     ## See comment in `makeCharSet`.
-    return makeTokenSetComplement(classListFromString(cat("", strings*))*)
+    return makeTokenSetComplement(classListFromString("".cat(strings*))*)
 };
 
 ## Documented in spec.

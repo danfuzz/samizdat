@@ -131,7 +131,7 @@ def term = {:
 ## function.
 def unaryOp = {:
     op = ["+-"]
-    { get(UNARY_OPS, get_className(op)) }
+    { UNARY_OPS.get(get_className(op)) }
 :};
 
 ## Parses a unary expression, that is, a series of unary operators followed
@@ -145,7 +145,7 @@ def unaryExpression = {:
 ## Parses a binary operation, yielding a map of precedence and function.
 def binaryOp = {:
     op = ["+-*/%"]
-    { get(BINARY_OPS, get_className(op)) }
+    { BINARY_OPS.get(get_className(op)) }
 :};
 
 ## Parses a chained sequence of unary expressions separated by binary
@@ -182,7 +182,7 @@ def evalExpressions = {:
 export fn main(selfPath, origArgs*) {
     def args = ifValueOr { ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
     def argFilter = $Generator::makeFilterGenerator(args)
-        { arg -> cat(arg, "\n") };
-    def exprString = cat(argFilter*);
+        { arg -> arg.cat("\n") };
+    def exprString = "".cat(argFilter*);
     $Peg::apply(evalExpressions, exprString);
 };

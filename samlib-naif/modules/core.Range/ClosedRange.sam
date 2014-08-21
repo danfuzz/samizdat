@@ -39,7 +39,7 @@ fn ClosedRange.fetch() {
 
 ## Documented in spec.
 fn ClosedRange.nextValue(box) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     return? ifValue { ge(data::size, 0) }
         { size ->

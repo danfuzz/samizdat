@@ -25,12 +25,12 @@ def PegTokenSet = makeObjectClass("PegTokenSet", SECRET);
 
 ## Documented in spec.
 fn PegTokenSet.parse(box, input, items*) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def result;
 
     return? ifValue { input.nextValue(var result) }
         { newInput ->
-            ifIs { get(data::set, get_class(result)) }
+            ifIs { data::set.get(get_class(result)) }
                 {
                     box* := result;
                     newInput

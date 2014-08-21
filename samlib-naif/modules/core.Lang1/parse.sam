@@ -105,11 +105,11 @@ def parIdentifierString = makeMainChoice(
     makeSequence(
         any,
         makeCode { token ->
-            ifNot { dataOf(token) }
+            ifNot { token.dataOf() }
                 {
                     def name = get_className(token);
                     def firstCh = name.nth(0);
-                    ifIs { get(LOWER_ALPHA, firstCh) }
+                    ifIs { LOWER_ALPHA.get(firstCh) }
                         { makeLiteral(name) }
                 }
             }));
@@ -329,13 +329,13 @@ def parPostfixOperator = makeMainChoice(
                     }
                 }),
             makeCode { ., name ->
-                def getterRef = makeSelector(cat("get_", name));
+                def getterRef = makeSelector("get_".cat(name));
                 { node ->
                     def getterCall = makeCall(getterRef, node);
                     @(get_class(getterCall)){
-                        dataOf(getterCall)*,
+                        getterCall.dataOf()*,
                         lvalue: { expr ->
-                            def setterRef = makeSelector(cat("set_", name));
+                            def setterRef = makeSelector("set_".cat(name));
                             makeCall(setterRef, node, expr)
                         }
                     }
@@ -544,15 +544,15 @@ def parImportSource = makeMainChoice(
             makeSequence(
                 makeToken(@@"/"),
                 parName,
-                makeCode { ., ., ., ., n -> cat("/", n) })),
+                makeCode { ., ., ., ., n -> "/".cat(n) })),
         makeRepeat(
             makeSequence(
                 makeToken(@@"."),
                 parName,
-                makeCode { ., ., ., ., ., n -> cat(".", n) }),
+                makeCode { ., ., ., ., ., n -> ".".cat(n) }),
             0, 1),
         makeCode { ., ., first, rest, optSuffix ->
-            def name = cat(first, rest*, optSuffix*);
+            def name = first.cat(rest*, optSuffix*);
             @internal{name}
         }),
     makeSequence(
@@ -561,9 +561,9 @@ def parImportSource = makeMainChoice(
             makeSequence(
                 makeToken(@@"."),
                 parName,
-                makeCode { ., ., n -> cat(".", n) })),
+                makeCode { ., ., n -> ".".cat(n) })),
         makeCode { first, rest ->
-            def name = cat(first, rest*);
+            def name = first.cat(rest*);
             @external{name}
         }));
 
@@ -760,7 +760,7 @@ def parPexSetString = makeMainSequence(
                 ifIs { ne(1, startChar.get_size()) } { yield /out };
                 ifIs { ne(1, endChar.get_size()) } { yield /out };
 
-                yield cat(makeInclusiveRange(startChar, endChar)*)
+                yield "".cat(makeInclusiveRange(startChar, endChar)*)
             }),
         makeCode { s -> s::value }));
 
@@ -776,7 +776,7 @@ def parPexSet = makeMainSequence(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
-                cat(strings*).collect({ ch -> @@(ch) })
+                "".cat(strings*).collect({ ch -> @@(ch) })
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),
@@ -788,7 +788,7 @@ def parPexSet = makeMainSequence(
 ## Documented in spec.
 def parPexCode = makeMainSequence(
     parNullaryClosure,
-    makeCode { closure -> @code(dataOf(closure)) });
+    makeCode { closure -> @code(closure.dataOf()) });
 
 
 ## Documented in spec.
@@ -821,7 +821,7 @@ def parPexRepeat = makeMainSequence(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
             makeCode { pex, repeat ->
-                @(get(PEX_TYPES, get_class(repeat))){pex}
+                @(PEX_TYPES.get(get_class(repeat))){pex}
             }),
         makeCode { pex -> pex }));
 
@@ -831,7 +831,7 @@ def parPexLookahead = makeMainChoice(
         makeTokenSet(@@"&", @@"!"),
         parPexRepeat,
         makeCode { lookahead, pex ->
-            @(get(PEX_TYPES, get_class(lookahead))){pex}
+            @(PEX_TYPES.get(get_class(lookahead))){pex}
         }),
     parPexRepeat);
 

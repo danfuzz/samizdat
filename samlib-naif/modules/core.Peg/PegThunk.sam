@@ -23,7 +23,7 @@ def PegThunk = makeObjectClass("PegThunk", SECRET);
 
 ## Documented in spec.
 fn PegThunk.parse(box, input, items*) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? ifValue { data::function(items*) }
         { thunkResult -> thunkResult.parse(box, input, items*) }
 };

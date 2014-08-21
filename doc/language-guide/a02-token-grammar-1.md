@@ -128,7 +128,7 @@ def tokString = {:
 
     (
         "\""
-        { @string{value: cat("", parts*)} }
+        { @string{value: "".cat(parts*)} }
     |
         { @error{value: "Unterminated string literal."} }
     )
@@ -141,7 +141,7 @@ def tokIdentifier = {:
 
     {
         def string = $Peg::stringFromTokenList([one, rest*]);
-        ifValueOr { get(KEYWORDS, string) }
+        ifValueOr { KEYWORDS.get(string) }
             { @identifier{value: string} }
     }
 :};
@@ -161,7 +161,7 @@ def tokError = {:
     [! "\n"]*
 
     {
-        def msg = cat("Unrecognized character: ", get_className(badCh));
+        def msg = "Unrecognized character: ".cat(get_className(badCh));
         @error{value: msg}
     }
 :};

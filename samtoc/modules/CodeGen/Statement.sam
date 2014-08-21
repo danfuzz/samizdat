@@ -23,17 +23,17 @@ def SECRET = makeUniqlet();
 def Statement = makeObjectClass("Statement", SECRET);
 
 fn Statement.flatten() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return "\(data::tree.flatten());"
 };
 
 fn Statement.indent(level, maxColumns) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return "\(data::tree.indent(level, maxColumns));\n"
 };
 
 fn Statement.prefersFlat() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? data::tree.prefersFlat()
         & this
 };

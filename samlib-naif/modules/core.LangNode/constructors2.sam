@@ -148,7 +148,7 @@ export fn makeDynamicImport(node) {
                 ## `importModule` translations, except as a list of
                 ## statements, one per binding being imported, each one
                 ## wrapped in a `get` call, e.g.
-                ## `def name = get(load(source), "name")`.
+                ## `def name = load(source).get("name")`.
 
                 def source = node::source;
                 def names = get_definedNames(node);
@@ -156,7 +156,7 @@ export fn makeDynamicImport(node) {
 
                 filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
-                        makeCall(REFS::get, loadCall, makeLiteral(sel)))
+                        makeCall(REFS::SEL_get, loadCall, makeLiteral(sel)))
                 }
             },
 
@@ -172,7 +172,7 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(nodeOrMap) {
-    def map = ifValueOr { hasClass(nodeOrMap, Map) } { dataOf(nodeOrMap) };
+    def map = ifValueOr { hasClass(nodeOrMap, Map) } { nodeOrMap.dataOf() };
     def formals = ifValueOr { map::formals } { [] };
     var statements = ifValueOr { map::statements } { [] };
     def statSz = statements.get_size();
@@ -203,7 +203,7 @@ export fn makeFullClosure(nodeOrMap) {
 
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
-    return makeCall(REFS::get, collArg, keyArg)
+    return makeCall(REFS::SEL_get, collArg, keyArg)
 };
 
 ## Documented in spec.
@@ -237,7 +237,7 @@ export fn makeImport(baseData) {
     ifNot { data::name }
         {
             ## No `name` provided, so figure out a default one.
-            data := {data*, name: cat("$", get_baseName(data::source))}
+            data := {data*, name: "$".cat(get_baseName(data::source))}
         };
 
     ifIs { data::format }
@@ -269,7 +269,7 @@ export fn makeInfoMap(node) {
 
     ## Adds or revises an element in the `imports` map.
     fn addToImports(source, names) {
-        def orig = ifValueOr { get(imports, source) } { {} };
+        def orig = ifValueOr { imports.get(source) } { {} };
         def revised = {orig*, names*: Value};
         imports := {imports*, (source): revised};
     };
@@ -277,7 +277,7 @@ export fn makeInfoMap(node) {
     ## Adds or revises an element in the `resources` map.
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
-        def orig = ifValueOr { get(resources, source) } { [] };
+        def orig = ifValueOr { resources.get(source) } { [] };
         def revised = {orig*: null, (format): null}.keyList();
         resources := {resources*, (source): revised};
     };
@@ -357,8 +357,8 @@ export fn withDynamicImports(node) {
         yield /out makeDynamicImport(s)
     };
 
-    def statements = cat(converted*);
-    return @(get_class(node)){dataOf(node)*, statements}
+    def statements = [].cat(converted*);
+    return @(get_class(node)){node.dataOf()*, statements}
 };
 
 ## Documented in spec.
@@ -403,7 +403,7 @@ export fn withModuleDefs(node) {
             makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 
     return @(get_class(node)){
-        dataOf(node)*,
+        node.dataOf()*,
         info,
         yield: yieldNode,
         statements
@@ -452,12 +452,12 @@ export fn withoutTops(node) {
         { [makeExportSelection(exports*)] };
 
     return @(get_class(node)){
-        dataOf(node)*,
+        node.dataOf()*,
         statements: [tops*, mains*, optSelection*]
     }
 };
 
 ## Documented in spec.
 export fn withTop(node) {
-    return @(get_class(node)){dataOf(node)*, top: true}
+    return @(get_class(node)){node.dataOf()*, top: true}
 };

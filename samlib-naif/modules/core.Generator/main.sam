@@ -36,7 +36,7 @@ export fn collectAsMap(generator) {
     ## Avoid pointless map->generator->map conversion.
     return ifIs { hasClass(generator, Map) }
         { generator }
-        { cat({}, generator*) }
+        { {}.cat(generator*) }
 };
 
 ## Documented in spec.

@@ -21,7 +21,7 @@ export fn humanString(value) {
             (List): { . ->
                 def elems = makeFilterGenerator(value)
                     { elem -> humanString(elem) };
-                cat("", elems*)
+                "".cat(elems*)
             },
 
             (String): { . ->

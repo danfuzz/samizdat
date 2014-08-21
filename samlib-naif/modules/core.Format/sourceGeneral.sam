@@ -18,7 +18,7 @@ import ./string :: stringChar;
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
     return ifIs { totalEq(adorn, true) }
-        { cat(before, value, after) }
+        { before.cat(value, after) }
         { value }
 };
 
@@ -58,25 +58,25 @@ fn keyString(key) {
     ifIs { isIdentifier(key) }
         { return key };
 
-    ifValue { get(SPECIAL_VALUES, key) }
-        { string -> return cat("(", string, ")") };
+    ifValue { SPECIAL_VALUES.get(key) }
+        { string -> return "(".cat(string, ")") };
 
     return sourceGeneral(key, true)
 };
 
 ## Stringifies a class.
 fn Class_sourceGeneral(value, adorn) {
-    ifValue { get(SPECIAL_VALUES, value) }
+    ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
 
     def name = className(value);
 
     ifNot { eq(classParent(value), DerivedData) }
-        { return cat("@@(opaque ", sourceGeneral(name, true), ")") };
+        { return "@@(opaque ".cat(sourceGeneral(name, true), ")") };
 
     def body = ifIs { hasClass(name, String) }
         { ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) } }
-        { cat("(", sourceGeneral(name, true), ")") };
+        { "(".cat(sourceGeneral(name, true), ")") };
 
     return adornIf(adorn, "@@", body, "")
 };
@@ -89,7 +89,7 @@ fn Int_sourceGeneral(value, adorn) {
 ## Stringifies a list.
 fn List_sourceGeneral(value, adorn) {
     def listElems = filterAll(value)
-        { elem -> cat(", ", sourceGeneral(elem, true)) };
+        { elem -> ", ".cat(sourceGeneral(elem, true)) };
 
     return adornIf(adorn, "[", collectionBody(listElems), "]")
 };
@@ -100,7 +100,7 @@ fn Map_sourceGeneral(value, adorn) {
         { mapping ->
             def k = keyString(mapping.get_key());
             def v = sourceGeneral(mapping.get_value(), true);
-            cat(", ", k, ": ", v)
+            ", ".cat(k, ": ", v)
         };
 
     return adornIf(adorn, "{", collectionBody(mapElems), "}");
@@ -118,19 +118,19 @@ fn Selector_sourceGeneral(value, adorn) {
         { name }
         { sourceGeneral(name, true) };
 
-    return cat(prefix, body);
+    return prefix.cat(body);
 };
 
 ## Stringifies a string.
 fn String_sourceGeneral(value, adorn) {
     def bodyChars = makeFilterGenerator(value)
         { ch -> stringChar(ch) };
-    return adornIf(adorn, "\"", cat("", bodyChars*), "\"")
+    return adornIf(adorn, "\"", "".cat(bodyChars*), "\"")
 };
 
 ## Stringifies a derived value or an opaque core value.
 fn Value_sourceGeneral(value, adorn) {
-    ifValue { get(SPECIAL_VALUES, value) }
+    ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
 
     def cls = get_class(value);
@@ -142,9 +142,9 @@ fn Value_sourceGeneral(value, adorn) {
         }
         {
             ## General case for class.
-            cat("(", sourceGeneral(cls, true), ")")
+            "(".cat(sourceGeneral(cls, true), ")")
         };
-    def prefix = cat("@", clsStr);
+    def prefix = "@".cat(clsStr);
 
     ifNot { eq(classParent(cls), DerivedData) }
         {
@@ -153,19 +153,19 @@ fn Value_sourceGeneral(value, adorn) {
                 { name -> keyString(name) }
                 { "..." };
 
-            return cat(prefix, "<", body, ">")
+            return prefix.cat("<", body, ">")
         };
 
-    return ifValue { dataOf(value) }
+    return ifValue { value.dataOf() }
         { data ->
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.
             def dataStr = sourceGeneral(data, true);
             ifIs { hasClass(data, List) }
-                { return cat(prefix, dataStr) };
+                { return prefix.cat(dataStr) };
             ifIs { hasClass(data, Map) }
-                { return cat(prefix, dataStr) };
-            cat(prefix, "(", dataStr, ")")
+                { return prefix.cat(dataStr) };
+            prefix.cat("(", dataStr, ")")
         }
         {
             ## Class-only transparent derived value.

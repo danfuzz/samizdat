@@ -97,7 +97,7 @@ fn fileNameSuffix(path) {
                             gotDot := 1;
                             result := "";
                         }
-                        { result := cat(result, ch) }
+                        { result := result.cat(ch) }
                 }
         });
 
@@ -115,7 +115,7 @@ fn checkExternalSourcePair(lastCh, ch) {
             return
         };
 
-    ifNot { get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { VALID_COMPONENT_CHARS.get(ch) }
         { die("Invalid external source: bad character \"", ch, "\"") }
 };
 
@@ -168,7 +168,7 @@ fn checkInternalSourcePair(lastCh, ch) {
             return
         };
 
-    ifNot { get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { VALID_COMPONENT_CHARS.get(ch) }
         { die("Invalid internal source: bad character \"", ch, "\"") }
 };
 
@@ -208,7 +208,7 @@ fn checkAbsolutePath(path) {
         { die("Invalid file path: empty string") };
     ifNot { hasClass(path, String) }
         { die("Invalid file path: not a string") };
-    ifNot { eq(get(path, 0), "/") }
+    ifNot { eq(path.get(0), "/") }
         { die("Invalid file path: not absolute") }
 };
 
@@ -218,7 +218,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     ## The loaded map maps paths to `"loading"` for a load-in-progress,
     ## `"notFound"` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
-    ifValue { get(loadedBox*, source) }
+    ifValue { (loadedBox*).get(source) }
         { found ->
             ifIs { hasClass(found, @@module) }
                 { return found };
@@ -239,7 +239,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
     ifIs { hasClass(source, @@internal) }
-        { return cat("./", source::name) };
+        { return "./".cat(source::name) };
     ifIs { hasClass(source, @@external) }
         { return source::name };
 
@@ -308,7 +308,7 @@ fn NullLoader.readResource(source, format) {
 ## Documented in spec.
 fn NullLoader.resolve(source) {
     return? ifIs { checkExternalSource(source) }
-        { get(BOOTSTRAP_MODULES, source) }
+        { BOOTSTRAP_MODULES.get(source) }
 };
 
 ## Helper to "massage" `null` into `nullLoader` and pass everything
@@ -334,8 +334,8 @@ def ExternalLoader = makeObjectClass("ExternalLoader", SECRET);
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
-    def data = objectDataOf(loader, SECRET);
-    def modulePath = cat(data::basePath, source::name);
+    def data = loader.objectDataOf(SECRET);
+    def modulePath = data::basePath.cat(source::name);
 
     return? ifIs { eq($Io0::fileType(modulePath), "directory") }
         {
@@ -353,13 +353,13 @@ fn doExternalResolve(loader, source) {
 ## Documented in spec.
 fn ExternalLoader.readResource(source, format) {
     ## Always just defer to the next loader.
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? data::nextLoader.readResource(source, format)
 };
 
 ## Documented in spec.
 fn ExternalLoader.resolve(source) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     ifNot { checkExternalSource(source) }
         {
@@ -394,7 +394,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
         ExternalLoader,
         SECRET,
         {
-            basePath: cat(path, "/"),
+            basePath: path.cat("/"),
             globals,
             loadedBox: Box_makeCell({}),
             nextLoader: fixNullLoader(nextLoader)
@@ -421,9 +421,9 @@ fn resolveMain(loader) {
 fn doInternalResolve(loader, source) {
     note("        ", sourceString(source));
 
-    def data = objectDataOf(loader, SECRET);
-    def pathPrefix = cat(data::basePath, source::name);
-    def binPath = cat(pathPrefix, ".samb");
+    def data = loader.objectDataOf(SECRET);
+    def pathPrefix = data::basePath.cat(source::name);
+    def binPath = pathPrefix.cat(".samb");
 
     ifIs { eq($Io0::fileType(binPath), "file") }
         {
@@ -432,7 +432,7 @@ fn doInternalResolve(loader, source) {
                 { die("No result from binary module: ", sourcePath) }
         };
 
-    def sourcePath = cat(pathPrefix, ".sam");
+    def sourcePath = pathPrefix.cat(".sam");
     ifIs { eq($Io0::fileType(sourcePath), "file") }
         {
             def text = $Io0::readFileUtf8(sourcePath);
@@ -468,7 +468,7 @@ def INTERNAL_READERS = {
 
 ## Documented in spec.
 fn InternalLoader.readResource(source, format) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     ifNot { checkInternalSource(source) }
         {
@@ -476,16 +476,16 @@ fn InternalLoader.readResource(source, format) {
             return? data::nextLoader.readResource(source, format)
         };
 
-    def fullPath = cat(data::basePath, source::name);
+    def fullPath = data::basePath.cat(source::name);
 
-    return ifValue { get(INTERNAL_READERS, format) }
+    return ifValue { INTERNAL_READERS.get(format) }
         { reader -> reader(fullPath) }
         { die("Unsupported resource format: ", format) }
 };
 
 ## Documented in spec.
 fn InternalLoader.resolve(source) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     ifNot { checkInternalSource(source) }
         {
@@ -506,8 +506,8 @@ fn InternalLoader.resolve(source) {
 ## Documented in spec.
 export fn makeInternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
-    def basePath = cat(path, "/");
-    def modulesDir = cat(basePath, "modules");
+    def basePath = path.cat("/");
+    def modulesDir = basePath.cat("modules");
     def externLoader =
         makeExternalLoader(modulesDir, globals, fixNullLoader(nextLoader));
 

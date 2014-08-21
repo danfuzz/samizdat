@@ -12,7 +12,7 @@ import ./get_varDefs :: get_varDefs;
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
-    return cat([], ( n in nodes -> get_varRefs(n) )*)
+    return [].cat(( n in nodes -> get_varRefs(n) )*)
 };
 
 
@@ -63,7 +63,7 @@ export fn get_varRefs(node) {
             def statementRefs = (
                     s in [node::statements*, node::yield],
                     idx in (0..) ->
-                def defs = cat(baseLocals, statementDefs[..!idx]*);
+                def defs = baseLocals.cat(statementDefs[..!idx]*);
                 var refs = {get_varRefs(s)*: null};
                 for (d in defs) {
                    refs := refs.del(d)

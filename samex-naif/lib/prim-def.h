@@ -32,16 +32,6 @@ PRIM_DEF(perOrder,                SEL_NAME(perOrder));
 PRIM_DEF(totalEq,                 SEL_NAME(totalEq));
 PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 
-// Methods: One-Offs, exported to the global environment.
-PRIM_DEF(cat,                     SEL_NAME(cat));
-PRIM_DEF(get,                     SEL_NAME(get));
-
-// Methods: `Object` class.
-PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
-
-// Methods: `DerivedData` class.
-PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
-
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);

@@ -40,7 +40,7 @@ fn ParaGenerator.fetch() {
 
 ## Documented in spec.
 fn ParaGenerator.nextValue(box) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def subGens = data::generators;
 
     ifIs { eq(subGens, []) }

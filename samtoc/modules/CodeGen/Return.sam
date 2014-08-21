@@ -23,12 +23,12 @@ def SECRET = makeUniqlet();
 def Return = makeObjectClass("Return", SECRET);
 
 fn Return.flatten() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return "return \(data::tree.flatten())"
 };
 
 fn Return.indent(level, maxColumns) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def prefix = indentation(level);
 
     return "\
@@ -37,7 +37,7 @@ fn Return.indent(level, maxColumns) {
 };
 
 fn Return.prefersFlat() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? data::tree.prefersFlat()
         & this
 };

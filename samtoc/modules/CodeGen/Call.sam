@@ -23,37 +23,37 @@ def SECRET = makeUniqlet();
 def Call = makeObjectClass("Call", SECRET);
 
 fn Call.flatten() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def args = data::args;
 
-    return cat(
+    return "".cat(
         data::function.flatten(),
         "(",
         ( a in args, i in (#args.. by -1) ->
-            cat(a.flatten(), (i == 1) & "" | ", ")
+            "".cat(a.flatten(), (i == 1) & "" | ", ")
         )*,
         ")"
     )
 };
 
 fn Call.indent(level, maxColumns) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def prefix = indentation(level);
     def args = data::args;
     def nextLevel = level + 1;
 
-    return cat(
+    return "".cat(
         prefix, data::function.flatten(),
         "(\n",
         ( a in args, i in (#args.. by -1) ->
-            cat(a.indent(nextLevel, maxColumns), (i == 1) & "" | ",\n")
+            "".cat(a.indent(nextLevel, maxColumns), (i == 1) & "" | ",\n")
         )*,
         ")"
     )
 };
 
 fn Call.prefersFlat() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? data::flatOk** & this;
 };
 

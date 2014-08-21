@@ -78,7 +78,7 @@ fn processFormalsWithRepeat(clo, names) {
 
     def preInits = [
         "zint argAt = 0",
-        cat(( v in varList -> v::preInit )*)*
+        [].cat(( v in varList -> v::preInit )*)*
     ];
 
     def vars = ( v in varList ->
@@ -86,7 +86,7 @@ fn processFormalsWithRepeat(clo, names) {
             & {(origName): v.del("preInit")}
     );
 
-    return {names, preInits, cleanups: [], vars: cat({}, vars*)}
+    return {names, preInits, cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the formal arguments to the
@@ -110,7 +110,7 @@ fn processFormals(clo) {
             }}
     );
 
-    return {names, preInits: [], cleanups: [], vars: cat({}, vars*)}
+    return {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Returns `{names, vars, preInits}` for the yield definition of the given
@@ -149,7 +149,7 @@ fn processFreeVars(clo) {
         }}
     );
 
-    return {names, preInits: [], cleanups: [], vars: cat({}, vars*)}
+    return {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
 };
 
 ## Makes a "safe" (syntactically correct C) variable name, given a `prefix`

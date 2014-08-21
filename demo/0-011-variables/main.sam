@@ -18,7 +18,7 @@ fn frotz(foo) {
     def ignatz;
 
     note("frotz:");
-    ignatz := cat("    ", foo);
+    ignatz := "    ".cat(foo);
     note(ignatz)
 };
 
@@ -28,10 +28,10 @@ fn zorch(foo) {
     var fizmo = foo;
 
     note("zorch:");
-    ignatz := cat("    ", fizmo);
+    ignatz := "    ".cat(fizmo);
     note(ignatz);
-    ignatz := cat(ignatz, " and ");
-    fizmo := cat(ignatz, "trolb");
+    ignatz := ignatz.cat(" and ");
+    fizmo := ignatz.cat("trolb");
     note(fizmo)
 };
 

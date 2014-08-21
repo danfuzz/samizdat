@@ -32,11 +32,11 @@ fn resolveAndCheck(resolveFn, source) {
 ## in `core.ModuleSystem`.
 fn sourceString(source) {
     ifIs { hasClass(source, @@internal) }
-        { return cat("internal ./", source::name) };
+        { return "internal ./".cat(source::name) };
     ifIs { hasClass(source, @@external) }
-        { return cat("external ", source::name) };
+        { return "external ".cat(source::name) };
 
-    return cat("weird source ", $Format::source(source))
+    return "weird source ".cat($Format::source(source))
 };
 
 
@@ -70,7 +70,7 @@ export fn resolveImport(node, resolveFn) {
                         ## Explicit selection, so no need to return a modified result.
                         ## Just validate that all selected names are available for import.
                         filterAll(select) { one ->
-                            ifNot { get(exports, one) }
+                            ifNot { exports.get(one) }
                                 {
                                     die("Could not resolve import: ",
                                         sourceString(node::source), " :: ",
@@ -83,7 +83,7 @@ export fn resolveImport(node, resolveFn) {
                         ## It's a wildcard import, so return a modified node that lists
                         ## all the exported names.
                         def select = exports.keyList();
-                        @importModuleSelection{dataOf(node)*, select}
+                        @importModuleSelection{node.dataOf()*, select}
                     }
             },
 
@@ -121,5 +121,5 @@ export fn withResolvedImports(node, resolveFn) {
             { resolved }
     };
 
-    return @(get_class(node)){dataOf(node)*, statements: [converted*]}
+    return @(get_class(node)){node.dataOf()*, statements: [converted*]}
 };

@@ -17,8 +17,8 @@
 /** Equivalent to `REFS::<name>` in the spec. */
 #define REFS(name) (makeVarFetch(STR_##name))
 
-/** Equivalent to `get_<name>(node)` in the spec. */
-#define GET(name, node) (get((node), STR_##name))
+/** Equivalent to `REFS::SEL_<name>` in the spec. */
+#define SEL(name) (makeSelector(STR_##name))
 
 // Documented in spec.
 bool canYieldVoid(zvalue node);

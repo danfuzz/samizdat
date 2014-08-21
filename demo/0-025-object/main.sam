@@ -51,7 +51,7 @@ msg("Blort #1", blortNoData);
 blortNoData.whatIs();
 msg("Blort #2", blortWithData);
 blortWithData.whatIs();
-msg("Blort data", objectDataOf(blortWithData, blortSecret));
+msg("Blort data", blortWithData.objectDataOf(blortSecret));
 
 def fizmoNoData = makeObject(Fizmo, fizmoSecret);
 def fizmoWithData = makeObject(Fizmo, fizmoSecret, {x: 10, y: 20});
@@ -59,4 +59,4 @@ msg("Fizmo #1", fizmoNoData);
 fizmoNoData.whatIs();
 msg("Fizmo #2", fizmoWithData);
 fizmoWithData.whatIs();
-msg("Fizmo data", objectDataOf(fizmoWithData, fizmoSecret));
+msg("Fizmo data", fizmoWithData.objectDataOf(fizmoSecret));
