@@ -17,7 +17,7 @@ import core.Box;
 
 ## Prints box info.
 fn msg(box) {
-    def str = ifValue { fetch(box) }
+    def str = ifValue { box.fetch() }
         { value -> $Format::source(value) }
         { "(void)" };
 

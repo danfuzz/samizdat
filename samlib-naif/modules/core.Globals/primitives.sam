@@ -35,7 +35,6 @@ export
     dataOf,
     die,
     eq,
-    fetch,
     get,
     get_class,
     hasClass,

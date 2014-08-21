@@ -44,7 +44,6 @@ PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
 // Methods: `Generator` protocol, exported to the global environment.
 PRIM_DEF(collect,                 SEL_NAME(collect));
-PRIM_DEF(fetch,                   SEL_NAME(fetch));
 PRIM_DEF(nextValue,               SEL_NAME(nextValue));
 
 // Primitive functions: directly exported.
