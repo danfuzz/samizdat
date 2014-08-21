@@ -88,7 +88,7 @@ will be returned, or one of:
   * [Box](Box.md)
   * [Collection](Collection.md)
   * [Function](Function.md)
-  * [proto.Generator](Generator.md)
+  * [Generator](Generator.md)
   * [Number](Number.md)
   * [Sequence](Sequence.md)
   * [One-Off Methods](OneOff.md)

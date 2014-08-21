@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Generator / proto.Generator
---------------------------------
+core.Generator / Generator Protocol
+-----------------------------------
 
 The `Generator` module exports a `Generator` protocol and a set of
 utility functions for making and using various generators.

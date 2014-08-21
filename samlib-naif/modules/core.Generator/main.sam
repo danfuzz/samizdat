@@ -25,12 +25,6 @@ export import ./unbounded :: *;
 ## Exported Definitions
 ##
 
-## Re-exported from globals (and proto module). Documented in spec.
-export
-    collect,
-    maybeValue,
-    nextValue;
-
 ## Re-exported from builtins. Documented in spec.
 export def stdCollect = Generator_stdCollect;
 
