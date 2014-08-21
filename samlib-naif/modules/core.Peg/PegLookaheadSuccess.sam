@@ -23,7 +23,7 @@ def PegLookaheadSuccess = makeObjectClass("PegLookaheadSuccess", SECRET);
 
 ## Documented in spec.
 fn PegLookaheadSuccess.parse(box, input, items*) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? ifIs { data::rule.parse(box, input, items*) }
         { input }
 };

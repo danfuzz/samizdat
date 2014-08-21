@@ -23,12 +23,12 @@ def SECRET = makeUniqlet();
 def Assign = makeObjectClass("Assign", SECRET);
 
 fn Assign.flatten() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return "\(data::target.flatten()) = \(data::value.flatten())"
 };
 
 fn Assign.indent(level, maxColumns) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return cat(
         data::target.indent(level, maxColumns),
         " =\n",
@@ -37,7 +37,7 @@ fn Assign.indent(level, maxColumns) {
 };
 
 fn Assign.prefersFlat() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? data::target.prefersFlat()
         & data::value.prefersFlat()
         & this

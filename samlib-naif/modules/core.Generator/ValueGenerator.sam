@@ -37,7 +37,7 @@ fn ValueGenerator.fetch() {
 
 ## Documented in spec.
 fn ValueGenerator.nextValue(box) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     box* := data::value;
     return this
 };

@@ -23,7 +23,7 @@ def PegRepeat = makeObjectClass("PegRepeat", SECRET);
 
 ## Documented in spec.
 fn PegRepeat.parse(box, input, items*) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     var remainingInput = input;
     var results = [];  ## Values that have been parsed by the inner rule.
 

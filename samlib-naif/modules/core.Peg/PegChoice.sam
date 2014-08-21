@@ -27,7 +27,7 @@ def PegChoice = makeObjectClass("PegChoice", SECRET);
 
 ## Documented in spec.
 fn PegChoice.parse(box, input, items*) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     filterPump(data::rules) { rule ->
         ifValue { rule.parse(box, input, items*) }
             { newInput -> return newInput }

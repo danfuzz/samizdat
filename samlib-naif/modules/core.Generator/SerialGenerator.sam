@@ -37,7 +37,7 @@ fn SerialGenerator.fetch() {
 
 ## Documented in spec.
 fn SerialGenerator.nextValue(box) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def subGens = data::generators;
 
     return? ifValue { get(subGens, 0) }

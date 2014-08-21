@@ -334,7 +334,7 @@ def ExternalLoader = makeObjectClass("ExternalLoader", SECRET);
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
-    def data = objectDataOf(loader, SECRET);
+    def data = loader.objectDataOf(SECRET);
     def modulePath = cat(data::basePath, source::name);
 
     return? ifIs { eq($Io0::fileType(modulePath), "directory") }
@@ -353,13 +353,13 @@ fn doExternalResolve(loader, source) {
 ## Documented in spec.
 fn ExternalLoader.readResource(source, format) {
     ## Always just defer to the next loader.
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? data::nextLoader.readResource(source, format)
 };
 
 ## Documented in spec.
 fn ExternalLoader.resolve(source) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     ifNot { checkExternalSource(source) }
         {
@@ -421,7 +421,7 @@ fn resolveMain(loader) {
 fn doInternalResolve(loader, source) {
     note("        ", sourceString(source));
 
-    def data = objectDataOf(loader, SECRET);
+    def data = loader.objectDataOf(SECRET);
     def pathPrefix = cat(data::basePath, source::name);
     def binPath = cat(pathPrefix, ".samb");
 
@@ -468,7 +468,7 @@ def INTERNAL_READERS = {
 
 ## Documented in spec.
 fn InternalLoader.readResource(source, format) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     ifNot { checkInternalSource(source) }
         {
@@ -485,7 +485,7 @@ fn InternalLoader.readResource(source, format) {
 
 ## Documented in spec.
 fn InternalLoader.resolve(source) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
 
     ifNot { checkInternalSource(source) }
         {

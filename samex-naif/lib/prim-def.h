@@ -36,9 +36,6 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 
-// Methods: `Object` class.
-PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
-
 // Methods: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 

@@ -38,7 +38,7 @@ fn OptGenerator.fetch() {
 
 ## Documented in spec.
 fn OptGenerator.nextValue(box) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def result;
 
     return ifValue { data::generator.nextValue(var result) }

@@ -25,7 +25,7 @@ def SECRET = makeUniqlet();
 def Wrapper = makeObjectClass("Wrapper", SECRET);
 
 fn Wrapper.flatten() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def flatBox = data::flatBox;
 
     return flatBox*
@@ -33,7 +33,7 @@ fn Wrapper.flatten() {
 };
 
 fn Wrapper.indent(level, maxColumns) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def tree = data::tree;
 
     if (tree.prefersFlat()) {
@@ -48,7 +48,7 @@ fn Wrapper.indent(level, maxColumns) {
 };
 
 fn Wrapper.prefersFlat() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? data::tree.prefersFlat() & this;
 };
 

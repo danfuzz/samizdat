@@ -21,12 +21,12 @@ def SECRET = makeUniqlet();
 def CodeString = makeObjectClass("CodeString", SECRET);
 
 fn CodeString.flatten() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return data::text
 };
 
 fn CodeString.indent(level, maxColumns) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return cat(indentation(level), data::text)
 };
 

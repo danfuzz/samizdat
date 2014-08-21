@@ -23,7 +23,7 @@ def SECRET = makeUniqlet();
 def Comment = makeObjectClass("Comment", SECRET);
 
 fn Comment.flatten() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def text = data::text;
 
     return (def payload = data::payload)
@@ -32,7 +32,7 @@ fn Comment.flatten() {
 };
 
 fn Comment.indent(level, maxColumns) {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     def prefix = indentation(level);
 
     return if (def p = data::payload) {
@@ -46,7 +46,7 @@ fn Comment.indent(level, maxColumns) {
 };
 
 fn Comment.prefersFlat() {
-    def data = objectDataOf(this, SECRET);
+    def data = this.objectDataOf(SECRET);
     return? (#data::text < 30)
         & (((def payload = data::payload)
             & payload.prefersFlat()?
