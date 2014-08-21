@@ -44,7 +44,7 @@ msg(@def);
 msg(@fn(100));
 
 ## Expressions can be used as names.
-msg(@(@@(cat("blo", "rt"))));
+msg(@(@@("blo".cat("rt"))));
 
 ## Accessing data via `get` calls, explicitly and implicitly.
 msg(get(@foo("abc"), 0));

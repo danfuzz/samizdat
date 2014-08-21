@@ -119,7 +119,7 @@ note($Format::source(v18));
 def v19 = ifValues(
     [
         { "1" },
-        { x -> cat(x, "2") }
+        { x -> x.cat("2") }
     ],
     { args* -> $Format::source(args) },
     { die("No.") });
@@ -137,9 +137,9 @@ note(v20);
 def v21 = ifValues(
     [
         { "1" },
-        { x -> cat(x, "2") },
-        { x, y -> cat(x, y, "3") },
-        { x, y, z -> cat(x, y, z, "4") }
+        { x -> x.cat("2") },
+        { x, y -> x.cat(y, "3") },
+        { x, y, z -> x.cat(y, z, "4") }
     ],
     { args* -> $Format::source(args) },
     { die("No.") });
@@ -159,7 +159,7 @@ def v23 = ifSwitch(
     {
         x: { . -> die("No.") }
     },
-    { v -> cat("Yes: ", v) },
+    { v -> "Yes: ".cat(v) },
     { die("No.") });
 note(v23);
 
@@ -177,7 +177,7 @@ def v25 = ifSwitch(
     { -> "Yes" },
     {
         x: { . -> die("No.") },
-        Yes: { v -> cat(v, ": v25") }
+        Yes: { v -> v.cat(": v25") }
     },
     { . -> die("No.") },
     { die("No.") });

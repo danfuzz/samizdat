@@ -36,4 +36,4 @@ msg(@@def);
 msg(@@fn);
 
 ## Expressions can be used as names.
-msg(@@(cat("blo", "rt")));
+msg(@@("blo".cat("rt")));

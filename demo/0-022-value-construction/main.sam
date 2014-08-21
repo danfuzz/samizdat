@@ -98,7 +98,7 @@ expectSame([[]], [[]]);
 expectSame([0, 0, 0], [0, 0, 0]);
 expectSame([[]*, 1], [1]);
 expectSame([1, 2, [3, 4]*], [1, [2, 3]*, 4]);
-expectSame(cat([9, 8, 7], [6, 5, 4]), [9, 8, 7, 6, 5, 4]);
+expectSame([9, 8, 7].cat([6, 5, 4]), [9, 8, 7, 6, 5, 4]);
 expectSame([1].sliceInclusive(1), []);
 
 expectDifferent([], [[]]);
@@ -120,7 +120,7 @@ expectSame({{}: {}}, {{}: {}});
 expectSame({x: 5, y: 7}, {y: 7, x: 5});
 expectSame({["x", "y", "z"]*: "blort"}, {x: "blort", y: "blort", z: "blort"});
 expectSame({{a: 1}*, b: 2}, {a: 1, b: 2});
-expectSame(cat({10: 1}, {30: 3}, {20: 2}), {10: 1, 20: 2, 30: 3});
+expectSame({10: 1}.cat({30: 3}, {20: 2}), {10: 1, 20: 2, 30: 3});
 expectSame({a: 10, b: 20}.nthMapping(0), {a: 10});
 
 expectDifferent({["x"]: "blort"}, {"x": "blort"});
@@ -142,7 +142,7 @@ note("\nString");
 expectSame("", "");
 expectSame("x", "x");
 expectSame("blort", "blort");
-expectSame("blort".cat("-fizmo", "-igram"), "blort-fizmo-igram");
+expectSame("blort"."-fizmo".cat("-igram"), "blort-fizmo-igram");
 expectSame("frotz".nth(4), "z");
 
 expectDifferent("blort", "Blort");
@@ -193,7 +193,7 @@ expectSame(@boo, @"boo");
 expectSame(@boo, @(@@"boo"));
 expectSame(@eek(10), @(@@eek)(10));
 expectSame(@eek(10), @eek((5).add(5)));
-expectSame(@eek(10), @(@@(cat("ee", "k")))(10));
+expectSame(@eek(10), @(@@("ee".cat("k")))(10));
 
 expectDifferent(@x, @x(1));
 expectDifferent(@x(1), @x(2));
