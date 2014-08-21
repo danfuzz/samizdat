@@ -111,9 +111,9 @@ def REF_get = makeVarFetch("get");
 ##
 
 ## Documented in spec.
-export def REFS = cat(
+export def REFS = {}.cat(
     (filterAll(SELECTORS) { name ->
-        {cat("SEL_", name): makeSelector(name)}
+        {"SEL_".cat(name): makeSelector(name)}
     })*,
 
     (filterAll(NAMES) { name ->
@@ -123,8 +123,8 @@ export def REFS = cat(
     (filterAll(MOD_NAMES) { modName ->
         def mod = modName::mod;
         def name = modName::name;
-        def modVar = makeVarFetch(cat("$", mod));
-        def refKey = cat(mod, "_", name);
+        def modVar = makeVarFetch("$".cat(mod));
+        def refKey = mod.cat("_", name);
         {(refKey): makeCall(REF_get, modVar, makeLiteral(name))}
     })*
 );

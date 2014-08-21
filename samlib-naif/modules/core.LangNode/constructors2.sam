@@ -237,7 +237,7 @@ export fn makeImport(baseData) {
     ifNot { data::name }
         {
             ## No `name` provided, so figure out a default one.
-            data := {data*, name: cat("$", get_baseName(data::source))}
+            data := {data*, name: "$".cat(get_baseName(data::source))}
         };
 
     ifIs { data::format }
@@ -357,7 +357,7 @@ export fn withDynamicImports(node) {
         yield /out makeDynamicImport(s)
     };
 
-    def statements = cat(converted*);
+    def statements = [].cat(converted*);
     return @(get_class(node)){node.dataOf()*, statements}
 };
 

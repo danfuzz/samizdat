@@ -31,7 +31,7 @@ fn splitAtChar(s, ch) {
     s.collect({ one ->
         ifIs { eq(one, ch) }
             { addCurrentToResult() }
-            { current := cat(current, one) }
+            { current := current.cat(one) }
     });
 
     addCurrentToResult();
@@ -76,7 +76,7 @@ export fn get_definedNames(node) {
                 def select = ifValueOr { node::select }
                     { die("Cannot call `get_definedNames` on unresolved import.") };
 
-                filterAll(select) { name -> cat(prefix, name) }
+                filterAll(select) { name -> prefix.cat(name) }
             },
 
             @@importModule:

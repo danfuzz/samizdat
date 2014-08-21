@@ -32,11 +32,11 @@ fn resolveAndCheck(resolveFn, source) {
 ## in `core.ModuleSystem`.
 fn sourceString(source) {
     ifIs { hasClass(source, @@internal) }
-        { return cat("internal ./", source::name) };
+        { return "internal ./".cat(source::name) };
     ifIs { hasClass(source, @@external) }
-        { return cat("external ", source::name) };
+        { return "external ".cat(source::name) };
 
-    return cat("weird source ", $Format::source(source))
+    return "weird source ".cat($Format::source(source))
 };
 
 
