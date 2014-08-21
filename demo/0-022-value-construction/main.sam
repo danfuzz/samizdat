@@ -142,7 +142,7 @@ note("\nString");
 expectSame("", "");
 expectSame("x", "x");
 expectSame("blort", "blort");
-expectSame("blort"."-fizmo".cat("-igram"), "blort-fizmo-igram");
+expectSame("blort".cat("-fizmo", "-igram"), "blort-fizmo-igram");
 expectSame("frotz".nth(4), "z");
 
 expectDifferent("blort", "Blort");
