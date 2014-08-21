@@ -637,12 +637,6 @@
 					<string>([_$a-zA-Z./][^:@"{}()\[\]]*) *(-&gt;)</string>
 				</dict>
 				<dict>
-					<key>name</key>
-					<string>variable.other.dot-access.samizdat</string>
-					<key>match</key>
-					<string>\.[_$a-zA-Z][_$a-zA-Z0-9]*</string>
-				</dict>
-				<dict>
 					<key>captures</key>
 					<dict>
 						<key>0</key>
@@ -759,7 +753,13 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([._$a-zA-Z][._$a-zA-Z0-9:]*)\b(?= *[\({])</string>
+					<string>\.?([_$a-zA-Z][_$a-zA-Z0-9:]*)\b(?= *[\({])</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>variable.other.dot-access.samizdat</string>
+					<key>match</key>
+					<string>\.[_$a-zA-Z][_$a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>name</key>
