@@ -32,7 +32,6 @@ export
     classParent,
     die,
     eq,
-    get,
     get_class,
     hasClass,
     ifIs,
