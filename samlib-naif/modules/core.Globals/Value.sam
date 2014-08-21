@@ -99,6 +99,6 @@ export fn totalLt(value, other) {
 
 ## Documented in spec.
 export fn totalNe(value, other) {
-    return? ifNot { totalEq(value, other) }
+    return? ifNot { value.totalEq(other) }
         { value }
 };
