@@ -36,7 +36,7 @@ fn Comment.indent(level, maxColumns) {
     def prefix = indentation(level);
 
     return if (def p = data::payload) {
-        cat(
+        "".cat(
             prefix, "// ", data::text, "\n",
             p.indent(level, maxColumns)
         )

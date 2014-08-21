@@ -29,7 +29,7 @@ fn Assign.flatten() {
 
 fn Assign.indent(level, maxColumns) {
     def data = this.objectDataOf(SECRET);
-    return cat(
+    return "".cat(
         data::target.indent(level, maxColumns),
         " =\n",
         data::value.indent(level + 1, maxColumns)

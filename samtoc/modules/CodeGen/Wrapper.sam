@@ -40,7 +40,7 @@ fn Wrapper.indent(level, maxColumns) {
         def flat = this.flatten();
         def prefix = indentation(level);
         if ((#flat + #prefix) <= maxColumns) {
-            return cat(prefix, flat)
+            return prefix.cat(flat)
         }
     };
 

@@ -27,7 +27,7 @@ fn CodeString.flatten() {
 
 fn CodeString.indent(level, maxColumns) {
     def data = this.objectDataOf(SECRET);
-    return cat(indentation(level), data::text)
+    return indentation(level).cat(data::text)
 };
 
 fn CodeString.prefersFlat() {
