@@ -77,14 +77,14 @@ are in fact identical, or `void` if they are not.
 
 Each class specifies its own total-order equality check. See specific classes
 for details. Derived data classes all compare their values for equality by
-comparing the payload value (if any). In addition, a default implementation checks
-directly for trivial sameness and calls through to `totalOrder` for anything
-nontrivial.
+comparing the payload value (if any). In addition, a default implementation
+checks directly for trivial sameness and calls through to `totalOrder` for
+anything nontrivial.
 
 **Note:** In order for the system to operate consistently, `totalEq` must
 always behave consistently with `totalOrder`, in that for a given pair of
-values, `totalEq` must indicate equality if and only if `totalOrder` would return
-`0`. `totalEq` exists at all because it is often possible to determine
+values, `totalEq` must indicate equality if and only if `totalOrder` would
+return `0`. `totalEq` exists at all because it is often possible to determine
 equality much quicker than determining order.
 
 **Note:** This is the method which underlies the implementation
@@ -94,10 +94,10 @@ of all cross-class equality comparison functions.
 
 Returns the class-specific order of the two given values, using the "total
 value ordering" order. When called by the system, the two values are
-guaranteed to have the same class; however, it is possible to call this function
-directly, so implementations must check to see if `other` has the same class
-as `this`. If a client calls with different-class values, it is a fatal error
-(terminating the runtime).
+guaranteed to have the same class; however, it is possible to call this
+function directly, so implementations must check to see if `other` has the
+same class as `this`. If a client calls with different-class values, it is a
+fatal error (terminating the runtime).
 
 The return value is one of `-1`, `0`, or `1` indicating how the two values
 sort with each other, using the reasonably standard meaning of those values:
@@ -232,7 +232,7 @@ the two given values are not identical. Otherwise returns void.
 
 #### `perGe(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered greater than or equal
 to `other`.
 
@@ -240,14 +240,14 @@ to `other`.
 
 #### `perGt(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered greater than `other`.
 
 **Syntax Note:** Used in the translation of `expression > expression` forms.
 
 #### `perLe(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered less than or equal
 to `other`.
 
@@ -255,49 +255,49 @@ to `other`.
 
 #### `perLt(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered less than `other`.
 
 **Syntax Note:** Used in the translation of `expression < expression` forms.
 
 #### `perNe(value, other) -> logic`
 
-Per-class comparison, which calls `perEq(value, other)` to
+Per-class comparison, which calls `value.perEq(other)` to
 determine result. Returns `value` if it is *not* considered equal to `other`.
 
 **Syntax Note:** Used in the translation of `expression != expression` forms.
 
 #### `totalGe(value, other) -> logic`
 
-Class-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `value.totalOrder(other)` to
 determine result. Returns `value` if it is considered greater than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different classes.
 
 #### `totalGt(value, other) -> logic`
 
-Class-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `value.totalOrder(other)` to
 determine result. Returns `value` if it is considered greater than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different classes.
 
 #### `totalLe(value, other) -> logic`
 
-Class-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `value.totalOrder(other)` to
 determine result. Returns `value` if it is considered less than or equal
 to `other`. It is a fatal error (terminating the runtime) if the two
 arguments are of different classes.
 
 #### `totalLt(value, other) -> logic`
 
-Class-specific total-order comparison, which calls `totalOrder(value, other)` to
+Class-specific total-order comparison, which calls `value.totalOrder(other)` to
 determine result. Returns `value` if it is considered less than `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different classes.
 
 #### `totalNe(value, other) -> logic`
 
-Class-specific total-order comparison, which calls `totalEq(value, other)` to
+Class-specific total-order comparison, which calls `value.totalEq(other)` to
 determine result. Returns `value` if it is *not* considered equal to `other`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different classes.

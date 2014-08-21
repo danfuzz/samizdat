@@ -73,13 +73,13 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
 ## Documented in spec.
 export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     ## `totalEq` ensures that `firstValue` and `limit` have the same class.
-    def isEmpty = totalEq(firstValue, limit)?;
+    def isEmpty = firstValue.totalEq(limit)?;
     def firstInt = firstValue.toInt();
     def limitInt = limit.toInt();
     def increment = ifValueOr { optIncrement* } { 1 };
 
     ## `totalEq` ensures that `increment` is an int.
-    ifIs { totalEq(increment, 0) }
+    ifIs { increment.totalEq(0) }
         {
             return ifIs { isEmpty* }
                 { nullGenerator }
@@ -102,11 +102,11 @@ export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
 export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    ## This ensures that `firstValue` and `limit` have the same class.
-    totalEq(firstValue, limit);
+    ## This just ensures that `firstValue` and `limit` have the same class.
+    firstValue.totalEq(limit);
 
     ## `totalEq` ensures that `increment` is an int.
-    ifIs { totalEq(increment, 0) }
+    ifIs { increment.totalEq(0) }
         { return makeClosedRange(firstValue, 1, 0) };
 
     def firstInt = firstValue.toInt();

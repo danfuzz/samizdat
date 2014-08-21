@@ -1120,7 +1120,7 @@ def BINARY_OPERATORS = {
     @@"%":    REFS::SEL_mod,
     @@"//":   REFS::SEL_divEu,
     @@"%%":   REFS::SEL_modEu,
-    @@"==":   REFS::perEq,
+    @@"==":   REFS::SEL_perEq,
     @@"!=":   REFS::perNe,
     @@"<":    REFS::perLt,
     @@">":    REFS::perGt,
