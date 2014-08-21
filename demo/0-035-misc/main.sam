@@ -59,7 +59,7 @@ export fn main(selfPath, name?, rest*) {
     process("blort".valueList());
     process(makeUniqlet());
     process(blort);
-    process(cat);
+    process(ifIs);
     process(ne);
     process(String);
     process($Format::int(71, 2));
