@@ -156,7 +156,7 @@ fn Value_sourceGeneral(value, adorn) {
             return cat(prefix, "<", body, ">")
         };
 
-    return ifValue { dataOf(value) }
+    return ifValue { value.dataOf() }
         { data ->
             ## Derived data value with payload. List and map payloads don't
             ## need parens around them.

@@ -172,7 +172,7 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(nodeOrMap) {
-    def map = ifValueOr { hasClass(nodeOrMap, Map) } { dataOf(nodeOrMap) };
+    def map = ifValueOr { hasClass(nodeOrMap, Map) } { nodeOrMap.dataOf() };
     def formals = ifValueOr { map::formals } { [] };
     var statements = ifValueOr { map::statements } { [] };
     def statSz = statements.get_size();
@@ -358,7 +358,7 @@ export fn withDynamicImports(node) {
     };
 
     def statements = cat(converted*);
-    return @(get_class(node)){dataOf(node)*, statements}
+    return @(get_class(node)){node.dataOf()*, statements}
 };
 
 ## Documented in spec.
@@ -403,7 +403,7 @@ export fn withModuleDefs(node) {
             makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 
     return @(get_class(node)){
-        dataOf(node)*,
+        node.dataOf()*,
         info,
         yield: yieldNode,
         statements
@@ -452,12 +452,12 @@ export fn withoutTops(node) {
         { [makeExportSelection(exports*)] };
 
     return @(get_class(node)){
-        dataOf(node)*,
+        node.dataOf()*,
         statements: [tops*, mains*, optSelection*]
     }
 };
 
 ## Documented in spec.
 export fn withTop(node) {
-    return @(get_class(node)){dataOf(node)*, top: true}
+    return @(get_class(node)){node.dataOf()*, top: true}
 };

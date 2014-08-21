@@ -201,7 +201,7 @@ fn String_convert(value) {
 
 ## Converts a derived value or an opaque core value.
 fn Value_convert(value) {
-    def data = (def dval = dataOf(value)) & convert(dval) | CODE_C_NULL;
+    def data = (def dval = value.dataOf()) & convert(dval) | CODE_C_NULL;
     def cls = get_class(value);
 
     if (!hasClass(value, DerivedData)) {

@@ -137,7 +137,7 @@ def parIdentifierString = {:
 |
     token = .
     {
-        ifNot { dataOf(token) }
+        ifNot { token.dataOf() }
             {
                 def name = get_className(token);
                 def firstCh = name.nth(0);
@@ -436,7 +436,7 @@ def parPostfixOperator = {:
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(get_class(getterCall)){
-                    dataOf(getterCall)*,
+                    getterCall.dataOf()*,
                     lvalue: { expr ->
                         def setterRef = makeSelector(cat("set_", name));
                         makeCall(setterRef, node, expr)
@@ -1029,7 +1029,7 @@ def parPexSet = {:
 ## Parses a code block parsing expression.
 def parPexCode = {:
     closure = parNullaryClosure
-    { @code(dataOf(closure)) }
+    { @code(closure.dataOf()) }
 :};
 
 ## Parses a thunk parsing expression.

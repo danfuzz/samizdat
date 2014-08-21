@@ -52,7 +52,7 @@ fn lits(node, interner) {
         @@importResource: {
             def source = lits(node::source, interner);
             def format = intern(interner, node::format);
-            @importResource{dataOf(node)*, source, format}
+            @importResource{node.dataOf()*, source, format}
         };
 
         @@literal: {
@@ -74,7 +74,7 @@ fn lits(node, interner) {
         @@importModule:
         @@importModuleSelection: {
             def source = lits(node::source, interner);
-            @(cls){dataOf(node)*, source}
+            @(cls){node.dataOf()*, source}
         };
 
         @@varDef:

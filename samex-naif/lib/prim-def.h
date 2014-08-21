@@ -36,9 +36,6 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 
-// Methods: `DerivedData` class.
-PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
-
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);

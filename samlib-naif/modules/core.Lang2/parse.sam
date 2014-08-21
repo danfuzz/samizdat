@@ -132,7 +132,7 @@ def parIdentifierString = {:
 |
     token = .
     {
-        ifNot { dataOf(token) }
+        ifNot { token.dataOf() }
             {
                 def name = get_className(token);
                 def firstCh = name.nth(0);
@@ -431,7 +431,7 @@ def parPostfixOperator = {:
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(get_class(getterCall)){
-                    dataOf(getterCall)*,
+                    getterCall.dataOf()*,
                     lvalue: { expr ->
                         def setterRef = makeSelector(cat("set_", name));
                         makeCall(setterRef, node, expr)
@@ -1024,7 +1024,7 @@ def parPexSet = {:
 ## Parses a code block parsing expression.
 def parPexCode = {:
     closure = parNullaryClosure
-    { @code(dataOf(closure)) }
+    { @code(closure.dataOf()) }
 :};
 
 ## Parses a thunk parsing expression.
@@ -1938,7 +1938,7 @@ def parIfExpression = {:
         ## We include the `yieldDef` (if any) here and in the `filterPump`
         ## below, so that we get the proper application of the implicit
         ## yield rule.
-        { makeFullClosure({yieldDef*, dataOf(clause)*}) }
+        { makeFullClosure({yieldDef*, clause.dataOf()*}) }
     )?
 
     {
@@ -1954,7 +1954,7 @@ def parIfExpression = {:
         var reduction = optElse;
         filterPump(clauses) { clause ->
             ## See above about `yieldDef`.
-            def closure = makeFullClosure({yieldDef*, dataOf(clause::then)*});
+            def closure = makeFullClosure({yieldDef*, clause::then.dataOf()*});
             reduction := [makeThunk(clause::maker(closure, reduction*))]
         };
 
@@ -1970,7 +1970,7 @@ def parIfExpression = {:
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                makeCall(makeFullClosure({dataOf(mainThunk)*, yieldDef*}))
+                makeCall(makeFullClosure({mainThunk.dataOf()*, yieldDef*}))
             }
     }
 :};
