@@ -33,7 +33,6 @@ PRIM_DEF(totalEq,                 SEL_NAME(totalEq));
 PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 
 // Methods: One-Offs, exported to the global environment.
-PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 
 // Primitive functions: directly exported.

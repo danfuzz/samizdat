@@ -331,7 +331,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
     if (cookAt > 1) {
         return makeApply(function,
-            makeCall(REFS(cat), listFromArray(cookAt, cookedValues)));
+            makeCall(makeSelector(STR_cat), listFromArray(cookAt, cookedValues)));
     } else {
         return makeApply(function, cookedValues[0]);
     }
@@ -730,12 +730,12 @@ zvalue withModuleDefs(zvalue node) {
 
     zvalue yieldExports = (exSize == 0)
         ? makeLiteral(EMPTY_MAP)
-        : makeCall(REFS(cat), exportValues);
+        : makeCall(makeSelector(STR_cat), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
             makeLiteral(CLS_module),
-            makeCall(REFS(cat),
+            makeCall(makeSelector(STR_cat),
                 listFrom2(
                     makeCall(REFS(makeValueMap),
                         listFrom2(makeLiteral(STR_exports), yieldExports)),

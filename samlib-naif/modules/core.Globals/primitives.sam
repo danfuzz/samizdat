@@ -27,7 +27,6 @@ export
     String,
     Uniqlet,
     Value,
-    cat,
     classAddMethod,
     className,
     classParent,
