@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Function
---------
+Function Protocol
+-----------------
 
 There is no `Function` type per se. There is, however, effectively a
 `Function` protocol, consisting of the single method `call`. Any value

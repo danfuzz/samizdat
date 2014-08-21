@@ -8,8 +8,6 @@ Some methods are effectivly protocols in and of themselves,
 in that binding to them doesn't particularly imply that a value binds
 to any others. This section describes those methods.
 
-All of these methods are available in the standard global environment.
-
 Note that some of these are also used as part of larger protocols, e.g.
 `get`. These are noted in the documentation for those protocols.
 
