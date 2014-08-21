@@ -40,7 +40,7 @@ fn SerialGenerator.nextValue(box) {
     def data = this.objectDataOf(SECRET);
     def subGens = data::generators;
 
-    return? ifValue { get(subGens, 0) }
+    return? ifValue { subGens.nth(0) }
         { firstGen ->
             def moreGens = subGens.sliceInclusive(1);
 

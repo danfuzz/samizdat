@@ -30,7 +30,7 @@ fn PegTokenSet.parse(box, input, items*) {
 
     return? ifValue { input.nextValue(var result) }
         { newInput ->
-            ifIs { get(data::set, get_class(result)) }
+            ifIs { data::set.get(get_class(result)) }
                 {
                     box* := result;
                     newInput

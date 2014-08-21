@@ -36,5 +36,5 @@ def INT_SIGNS = {
 
 ## Stringifies an int using the given base.
 export fn intWithBase(int, base) {
-    return get(INT_SIGNS, int.sign())(int, base)
+    return INT_SIGNS.get(int.sign())(int, base)
 };

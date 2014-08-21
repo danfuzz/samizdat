@@ -131,7 +131,7 @@ def term = {:
 ## function.
 def unaryOp = {:
     op = ["+-"]
-    { get(UNARY_OPS, get_className(op)) }
+    { UNARY_OPS.get(get_className(op)) }
 :};
 
 ## Parses a unary expression, that is, a series of unary operators followed
@@ -145,7 +145,7 @@ def unaryExpression = {:
 ## Parses a binary operation, yielding a map of precedence and function.
 def binaryOp = {:
     op = ["+-*/%"]
-    { get(BINARY_OPS, get_className(op)) }
+    { BINARY_OPS.get(get_className(op)) }
 :};
 
 ## Parses a chained sequence of unary expressions separated by binary

@@ -30,7 +30,7 @@ fn PegTokenSetComplement.parse(box, input, items*) {
 
     return? ifValue { input.nextValue(var result) }
         { newInput ->
-            ifNot { get(data::set, get_class(result)) }
+            ifNot { data::set.get(get_class(result)) }
                 {
                     box* := result;
                     newInput

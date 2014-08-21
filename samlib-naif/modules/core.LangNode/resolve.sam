@@ -70,7 +70,7 @@ export fn resolveImport(node, resolveFn) {
                         ## Explicit selection, so no need to return a modified result.
                         ## Just validate that all selected names are available for import.
                         filterAll(select) { one ->
-                            ifNot { get(exports, one) }
+                            ifNot { exports.get(one) }
                                 {
                                     die("Could not resolve import: ",
                                         sourceString(node::source), " :: ",

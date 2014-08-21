@@ -57,7 +57,7 @@ export fn get_baseName(source) {
                 def components = splitAtChar(source::name, "/");
                 def last = reverseNth(components, 0);
                 def parts = splitAtChar(last, ".");
-                get(parts, 0)
+                parts.nth(0)
             }
         })
 };

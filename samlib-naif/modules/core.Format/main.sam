@@ -69,6 +69,6 @@ def FORMATTERS = {
 ## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 ## is defined in terms of other exported functions.
 export fn formatterFor(formatSpec) {
-    return ifValueOr { get(FORMATTERS, formatSpec) }
+    return ifValueOr { FORMATTERS.get(formatSpec) }
         { die("Unrecognized format spec: ", source(formatSpec)) }
 };

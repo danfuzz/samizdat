@@ -58,7 +58,7 @@ fn keyString(key) {
     ifIs { isIdentifier(key) }
         { return key };
 
-    ifValue { get(SPECIAL_VALUES, key) }
+    ifValue { SPECIAL_VALUES.get(key) }
         { string -> return "(".cat(string, ")") };
 
     return sourceGeneral(key, true)
@@ -66,7 +66,7 @@ fn keyString(key) {
 
 ## Stringifies a class.
 fn Class_sourceGeneral(value, adorn) {
-    ifValue { get(SPECIAL_VALUES, value) }
+    ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
 
     def name = className(value);
@@ -130,7 +130,7 @@ fn String_sourceGeneral(value, adorn) {
 
 ## Stringifies a derived value or an opaque core value.
 fn Value_sourceGeneral(value, adorn) {
-    ifValue { get(SPECIAL_VALUES, value) }
+    ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
 
     def cls = get_class(value);

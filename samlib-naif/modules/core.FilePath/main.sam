@@ -31,7 +31,7 @@ export fn fixPath(path, basePaths*) {
     checkPath(path);
 
     return ifValueOr
-        { ifIs { eq(get(path, 0), "/") } { path } }
+        { ifIs { eq(path.get(0), "/") } { path } }
         { ifIs { eq(basePaths, []) } { path } }
         { fixPath(basePaths*).cat("/", path) }
 };
@@ -48,7 +48,7 @@ export fn get_directory(path) {
         loop {
             at := at.sub(1);
 
-            def ch = get(path, at);
+            def ch = path.get(at);
             ifIs { ne(ch, "/") } { yield /out };
             ifIs { eq(at, 0) } { return "/" };
         }
@@ -62,7 +62,7 @@ export fn get_directory(path) {
         ifIs { eq(at, 0) } { return "." };
         at := at.sub(1);
 
-        def ch = get(path, at);
+        def ch = path.get(at);
         ifIs { eq(ch, "/") }
             {
                 ifIs { eq(at, 0) } { return "/" };
@@ -83,7 +83,7 @@ export fn get_file(path) {
         loop {
             at := at.sub(1);
 
-            def ch = get(path, at);
+            def ch = path.get(at);
             ifIs { ne(ch, "/") } { yield /out };
             ifIs { eq(at, 0) } { return "/" };
         }
@@ -100,7 +100,7 @@ export fn get_file(path) {
 
         at := at.sub(1);
 
-        def ch = get(path, at);
+        def ch = path.get(at);
         ifIs { eq(ch, "/") }
             {
                 at := at.add(1);

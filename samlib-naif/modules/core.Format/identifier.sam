@@ -31,11 +31,11 @@ export fn isIdentifier(string) {
     ifIs { eq(string, "") }
         { return };
 
-    ifNot { get(IDENTIFIER_STARTS, string.nth(0)) }
+    ifNot { IDENTIFIER_STARTS.get(string.nth(0)) }
         { return };
 
     filterPump(string) { ch ->
-        ifNot { get(IDENTIFIER_CHARS, ch) }
+        ifNot { IDENTIFIER_CHARS.get(ch) }
             { return }
     };
 

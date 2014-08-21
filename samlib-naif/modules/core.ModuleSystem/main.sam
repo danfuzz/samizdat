@@ -115,7 +115,7 @@ fn checkExternalSourcePair(lastCh, ch) {
             return
         };
 
-    ifNot { get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { VALID_COMPONENT_CHARS.get(ch) }
         { die("Invalid external source: bad character \"", ch, "\"") }
 };
 
@@ -168,7 +168,7 @@ fn checkInternalSourcePair(lastCh, ch) {
             return
         };
 
-    ifNot { get(VALID_COMPONENT_CHARS, ch) }
+    ifNot { VALID_COMPONENT_CHARS.get(ch) }
         { die("Invalid internal source: bad character \"", ch, "\"") }
 };
 
@@ -208,7 +208,7 @@ fn checkAbsolutePath(path) {
         { die("Invalid file path: empty string") };
     ifNot { hasClass(path, String) }
         { die("Invalid file path: not a string") };
-    ifNot { eq(get(path, 0), "/") }
+    ifNot { eq(path.get(0), "/") }
         { die("Invalid file path: not absolute") }
 };
 
@@ -218,7 +218,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     ## The loaded map maps paths to `"loading"` for a load-in-progress,
     ## `"notFound"` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
-    ifValue { get(loadedBox*, source) }
+    ifValue { (loadedBox*).get(source) }
         { found ->
             ifIs { hasClass(found, @@module) }
                 { return found };
@@ -308,7 +308,7 @@ fn NullLoader.readResource(source, format) {
 ## Documented in spec.
 fn NullLoader.resolve(source) {
     return? ifIs { checkExternalSource(source) }
-        { get(BOOTSTRAP_MODULES, source) }
+        { BOOTSTRAP_MODULES.get(source) }
 };
 
 ## Helper to "massage" `null` into `nullLoader` and pass everything
@@ -478,7 +478,7 @@ fn InternalLoader.readResource(source, format) {
 
     def fullPath = data::basePath.cat(source::name);
 
-    return ifValue { get(INTERNAL_READERS, format) }
+    return ifValue { INTERNAL_READERS.get(format) }
         { reader -> reader(fullPath) }
         { die("Unsupported resource format: ", format) }
 };
