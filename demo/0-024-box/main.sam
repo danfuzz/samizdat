@@ -42,29 +42,29 @@ note("Mutable Box");
 
 def box1 = $Box::makeCell();
 msg(box1);
-store(box1);
+box1.store();
 msg(box1);
-store(box1, "Hi");
+box1.store("Hi");
 msg(box1);
-store(box1, "there!");
+box1.store("there!");
 msg(box1);
-store(box1);
+box1.store();
 msg(box1);
 
 note("\nMutable Box, pre-set");
 
 def box2 = $Box::makeCell("blort");
 msg(box2);
-store(box2);
+box2.store();
 msg(box2);
-store(box2, "igram");
+box2.store("igram");
 msg(box2);
 
 note("\nYield Box");
 
 def box3 = $Box::makePromise();
 msg(box3);
-store(box3, "fizmo");
+box3.store("fizmo");
 msg(box3);
 
 note("\nResult Box, void");
@@ -80,7 +80,7 @@ msg(box5);
 note("\nnullBox");
 
 msg(nullBox);
-store(nullBox, "stuff");
+nullBox.store("stuff");
 msg(nullBox);
 
 note("\nInterpolation");

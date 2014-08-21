@@ -36,9 +36,6 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 
-// Methods: `Box` protocol.
-PRIM_DEF(store,                   SEL_NAME(store));
-
 // Methods: `Object` class.
 PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
 

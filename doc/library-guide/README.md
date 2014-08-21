@@ -87,7 +87,7 @@ will be returned, or one of:
 
 * Protocols
   * [Bitwise](Bitwise.md)
-  * [proto.Box](Box.md)
+  * [Box](Box.md)
   * [Collection](Collection.md)
   * [proto.Generator](Generator.md)
   * [Number](Number.md)

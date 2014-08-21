@@ -45,7 +45,7 @@ are *not* collection constructor or function call arguments.
 #### `.nextValue(box) -> generator | void`
 
 Generates the next item in `this`, if any. If there is a generated
-element, calls `store(box, elem)` and returns a generator which can
+element, calls `box.store(elem)` and returns a generator which can
 generate the remainder of the elements. If there is no generated element,
 does nothing (in particular, does not make a `store` call on `box`), and
 returns void.

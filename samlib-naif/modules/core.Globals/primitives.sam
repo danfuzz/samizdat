@@ -63,6 +63,5 @@ export
     selectorFromName,
     selectorIsInterned,
     selectorName,
-    store,
     totalEq,
     totalOrder;
