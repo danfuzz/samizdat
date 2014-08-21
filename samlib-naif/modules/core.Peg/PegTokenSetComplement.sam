@@ -28,7 +28,7 @@ fn PegTokenSetComplement.parse(box, input, items*) {
     def data = objectDataOf(this, SECRET);
     def result;
 
-    return? ifValue { nextValue(input, var result) }
+    return? ifValue { input.nextValue(var result) }
         { newInput ->
             ifNot { get(data::set, get_class(result)) }
                 {

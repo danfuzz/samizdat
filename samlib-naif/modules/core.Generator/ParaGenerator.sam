@@ -50,7 +50,7 @@ fn ParaGenerator.nextValue(box) {
     def generatorCalls = collect(
         subGens,
         { gen ->
-            ifValue { nextValue(gen, var result) }
+            ifValue { gen.nextValue(var result) }
                 { nextGenerator -> [result, nextGenerator] }
                 {
                     ## One of the sub-generators became voided.

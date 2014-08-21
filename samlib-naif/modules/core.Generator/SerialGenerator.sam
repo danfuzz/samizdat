@@ -44,14 +44,14 @@ fn SerialGenerator.nextValue(box) {
         { firstGen ->
             def moreGens = subGens.sliceInclusive(1);
 
-            ifValue { nextValue(firstGen, box) }
+            ifValue { firstGen.nextValue(box) }
                 { nextGenerator ->
                     makeObject(SerialGenerator, SECRET,
                         {generators: [nextGenerator, moreGens*]})
                 }
                 {
                     ## First generator was voided.
-                    nextValue(makeSerialGenerator(moreGens*), box)
+                    makeSerialGenerator(moreGens*).nextValue(box)
                 }
         }
 };

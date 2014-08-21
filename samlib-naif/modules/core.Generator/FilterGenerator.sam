@@ -47,7 +47,7 @@ fn FilterGenerator.nextValue(box) {
     ## allowed to yield void to indicate a generated value is to
     ## be discarded.
     loop {
-        ifValue { nextValue(innerGen, var result) }
+        ifValue { innerGen.nextValue(var result) }
             { nextGen ->
                 ifValue { filterFunction(result*) }
                     { value ->
