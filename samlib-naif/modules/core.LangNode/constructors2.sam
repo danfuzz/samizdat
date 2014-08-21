@@ -156,7 +156,7 @@ export fn makeDynamicImport(node) {
 
                 filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
-                        makeCall(REFS::get, loadCall, makeLiteral(sel)))
+                        makeCall(REFS::SEL_get, loadCall, makeLiteral(sel)))
                 }
             },
 
@@ -203,7 +203,7 @@ export fn makeFullClosure(nodeOrMap) {
 
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
-    return makeCall(REFS::get, collArg, keyArg)
+    return makeCall(REFS::SEL_get, collArg, keyArg)
 };
 
 ## Documented in spec.

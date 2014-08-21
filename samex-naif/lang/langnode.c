@@ -363,7 +363,7 @@ zvalue makeDynamicImport(zvalue node) {
             zvalue name = nth(names, i);
             zvalue sel = nth(select, i);
             stats[i] = makeVarDef(name,
-                makeCall(REFS(get), listFrom2(loadCall, makeLiteral(sel))));
+                makeCall(SEL(get), listFrom2(loadCall, makeLiteral(sel))));
         }
 
         return listFromArray(size, stats);
