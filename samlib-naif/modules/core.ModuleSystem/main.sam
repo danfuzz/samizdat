@@ -97,7 +97,7 @@ fn fileNameSuffix(path) {
                             gotDot := 1;
                             result := "";
                         }
-                        { result := cat(result, ch) }
+                        { result := result.cat(ch) }
                 }
         });
 
@@ -239,7 +239,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
     ifIs { hasClass(source, @@internal) }
-        { return cat("./", source::name) };
+        { return "./".cat(source::name) };
     ifIs { hasClass(source, @@external) }
         { return source::name };
 
@@ -335,7 +335,7 @@ def ExternalLoader = makeObjectClass("ExternalLoader", SECRET);
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
     def data = loader.objectDataOf(SECRET);
-    def modulePath = cat(data::basePath, source::name);
+    def modulePath = data::basePath.cat(source::name);
 
     return? ifIs { eq($Io0::fileType(modulePath), "directory") }
         {
@@ -394,7 +394,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
         ExternalLoader,
         SECRET,
         {
-            basePath: cat(path, "/"),
+            basePath: path.cat("/"),
             globals,
             loadedBox: Box_makeCell({}),
             nextLoader: fixNullLoader(nextLoader)
@@ -422,8 +422,8 @@ fn doInternalResolve(loader, source) {
     note("        ", sourceString(source));
 
     def data = loader.objectDataOf(SECRET);
-    def pathPrefix = cat(data::basePath, source::name);
-    def binPath = cat(pathPrefix, ".samb");
+    def pathPrefix = data::basePath.cat(source::name);
+    def binPath = pathPrefix.cat(".samb");
 
     ifIs { eq($Io0::fileType(binPath), "file") }
         {
@@ -432,7 +432,7 @@ fn doInternalResolve(loader, source) {
                 { die("No result from binary module: ", sourcePath) }
         };
 
-    def sourcePath = cat(pathPrefix, ".sam");
+    def sourcePath = pathPrefix.cat(".sam");
     ifIs { eq($Io0::fileType(sourcePath), "file") }
         {
             def text = $Io0::readFileUtf8(sourcePath);
@@ -476,7 +476,7 @@ fn InternalLoader.readResource(source, format) {
             return? data::nextLoader.readResource(source, format)
         };
 
-    def fullPath = cat(data::basePath, source::name);
+    def fullPath = data::basePath.cat(source::name);
 
     return ifValue { get(INTERNAL_READERS, format) }
         { reader -> reader(fullPath) }
@@ -506,8 +506,8 @@ fn InternalLoader.resolve(source) {
 ## Documented in spec.
 export fn makeInternalLoader(path, globals, nextLoader) {
     checkAbsolutePath(path);
-    def basePath = cat(path, "/");
-    def modulesDir = cat(basePath, "modules");
+    def basePath = path.cat("/");
+    def modulesDir = basePath.cat("modules");
     def externLoader =
         makeExternalLoader(modulesDir, globals, fixNullLoader(nextLoader));
 

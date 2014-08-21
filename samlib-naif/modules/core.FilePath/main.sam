@@ -33,7 +33,7 @@ export fn fixPath(path, basePaths*) {
     return ifValueOr
         { ifIs { eq(get(path, 0), "/") } { path } }
         { ifIs { eq(basePaths, []) } { path } }
-        { cat(fixPath(basePaths*), "/", path) }
+        { fixPath(basePaths*).cat("/", path) }
 };
 
 ## Documented in spec.

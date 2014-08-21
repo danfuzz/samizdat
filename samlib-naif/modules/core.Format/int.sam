@@ -22,14 +22,14 @@ fn intBody(value, base) {
             { return text };
 
         def digit = DIGIT_CHARS.nth(v.mod(base));
-        text := cat(digit, text);
+        text := digit.cat(text);
         v := v.div(base)
     }
 };
 
 ## Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = {
-    -1: { int, base -> cat("-", intBody(int.neg(), base)) },
+    -1: { int, base -> "-".cat(intBody(int.neg(), base)) },
     0:  { int, base -> "0" },
     1:  { int, base -> intBody(int, base) }
 };
