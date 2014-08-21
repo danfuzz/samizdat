@@ -152,7 +152,7 @@ fn safeIndex(node, base) {
 export fn makeVarName(base, index) {
     return ifIs { eq(index, -1) }
         { base }
-        { cat(base, $Format::int(index)) }
+        { base.cat($Format::int(index)) }
 };
 
 ## Returns an unused variable name within `node`, either the given `base` or

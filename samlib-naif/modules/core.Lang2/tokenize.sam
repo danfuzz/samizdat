@@ -176,7 +176,7 @@ def tokError = {:
     [! "\n"]*
 
     {
-        def msg = cat("Unrecognized character: ", get_className(badCh));
+        def msg = "Unrecognized character: ".cat(get_className(badCh));
         @error{value: msg}
     }
 :};
@@ -255,7 +255,7 @@ fn processStringParts(parts) {
                         ## are both strings. Combine them.
                         elems := [
                             elems.sliceExclusive(0)*,
-                            cat(lastElem, part)
+                            lastElem.cat(part)
                         ];
                         yield /next
                     }
@@ -366,7 +366,7 @@ tokStringInterpolation := {:
 
     {
         ifIs { hasClass(close, expectClose) }
-            { [open, cat([], tokens*)*, close] }
+            { [open, [].cat(tokens*)*, close] }
     }
 :};
 
@@ -387,7 +387,7 @@ tokStringPart2 := {:
             one = tokHexChar
             rest = ("," tokHexChar)*
             ";"
-            { cat(one, rest*) }
+            { one.cat(rest*) }
         |
             { @error{value: "Invalid hexadecimal character literal."} }
         )
@@ -397,7 +397,7 @@ tokStringPart2 := {:
             one = tokNamedChar
             rest = ("," tokNamedChar)*
             ";"
-            { cat(one, rest*) }
+            { one.cat(rest*) }
         |
             { @error{value: "Invalid named character literal."} }
         )

@@ -82,7 +82,7 @@ def tokString = makeMainSequence(
     makeChoice(
         makeSequence(
             makeString("\""),
-            makeCode { ., parts, . -> @string{value: cat("", parts*)} }),
+            makeCode { ., parts, . -> @string{value: "".cat(parts*)} }),
         makeCode { ., . -> @error{value: "Unterminated string literal."} }));
 
 ## These are all the characters which are allowed to start an identifier.
@@ -90,7 +90,7 @@ def IDENTIFIER_START_CHARS =
     "_$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 ## These are all the characters which are allowed to be in an identifier.
-def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
+def IDENTIFIER_CHARS = IDENTIFIER_START_CHARS.cat("0123456789");
 
 ## Documented in spec.
 def tokIdentifier = makeMainSequence(
@@ -113,7 +113,7 @@ def tokError = makeMainSequence(
     any,
     makeRepeat(makeCharSetComplement("\n")),
     makeCode { badCh, . ->
-        def msg = cat("Unrecognized character: ", get_className(badCh));
+        def msg = "Unrecognized character: ".cat(get_className(badCh));
         @error{value: msg}
     });
 

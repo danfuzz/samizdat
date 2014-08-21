@@ -432,13 +432,13 @@ def parPostfixOperator = {:
     |
         ## `target.memberName` (includes parsing of both getters and setters)
         {
-            def getterRef = makeSelector(cat("get_", name));
+            def getterRef = makeSelector("get_".cat(name));
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(get_class(getterCall)){
                     getterCall.dataOf()*,
                     lvalue: { expr ->
-                        def setterRef = makeSelector(cat("set_", name));
+                        def setterRef = makeSelector("set_".cat(name));
                         makeCall(setterRef, node, expr)
                     }
                 }
@@ -730,16 +730,16 @@ def parImportSource = {:
     rest = (
         @"/"
         n = parName
-        { cat("/", n) }
+        { "/".cat(n) }
     )*
     optSuffix = (
         @"."
         n = parName
-        { cat(".", n) }
+        { ".".cat(n) }
     )?
 
     {
-        def name = cat(first, rest*, optSuffix*);
+        def name = first.cat(rest*, optSuffix*);
         @internal{name}
     }
 |
@@ -747,11 +747,11 @@ def parImportSource = {:
     rest = (
         @"."
         n = parName
-        { cat(".", n) }
+        { ".".cat(n) }
     )*
 
     {
-        def name = cat(first, rest*);
+        def name = first.cat(rest*);
         @external{name}
     }
 :};
@@ -994,7 +994,7 @@ def parPexSetString = {:
             ifIs { ne(1, startChar.get_size()) } { yield /out };
             ifIs { ne(1, endChar.get_size()) } { yield /out };
 
-            yield cat(makeInclusiveRange(startChar, endChar)*)
+            yield "".cat(makeInclusiveRange(startChar, endChar)*)
         }
     |
         { s::value }
@@ -1013,7 +1013,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { cat(strings*).collect({ ch -> @@(ch) }) }
+        { "".cat(strings*).collect({ ch -> @@(ch) }) }
     |
         tokens = parPexToken+
         { tokens.collect({ n -> n::value }) }
