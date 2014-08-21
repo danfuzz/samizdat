@@ -283,7 +283,7 @@ DEF_PARSE(name) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
-    return GET(value, nameIdent);
+    return get(nameIdent, STR_value);
 }
 
 // Documented in spec.
@@ -320,7 +320,7 @@ DEF_PARSE(identifierString) {
     zvalue result;
 
     result = MATCH(string);
-    if (result != NULL) { return makeLiteral(GET(value, result)); }
+    if (result != NULL) { return makeLiteral(get(result, STR_value)); }
 
     result = PARSE(name);
     if (result != NULL) { return makeLiteral(result); }
@@ -343,11 +343,11 @@ DEF_PARSE(literal) {
 
     if (MATCH(CH_MINUS)) {
         token = MATCH_OR_REJECT(int);
-        return makeLiteral(METH_CALL(neg, GET(value, token)));
+        return makeLiteral(METH_CALL(neg, get(token, STR_value)));
     } else if ((token = MATCH(int))) {
-        return makeLiteral(GET(value, token));
+        return makeLiteral(get(token, STR_value));
     } else if ((token = MATCH(string))) {
-        return makeLiteral(GET(value, token));
+        return makeLiteral(get(token, STR_value));
     } else if (MATCH(zfalse)) {
         return makeLiteral(BOOL_FALSE);
     } else if (MATCH(ztrue)) {
@@ -357,7 +357,7 @@ DEF_PARSE(literal) {
     } else if (MATCH(CH_AT)) {
         MATCH_OR_REJECT(CH_DOT);
         zvalue name = PARSE_OR_REJECT(identifierString);
-        return makeSelector(GET(value, name));
+        return makeSelector(get(name, STR_value));
     }
 
     return NULL;
@@ -418,7 +418,7 @@ DEF_PARSE(mapping2) {
 
     zvalue value = PARSE_OR_REJECT(expression);
 
-    zvalue result = GET(interpolate, value);
+    zvalue result = get(value, STR_interpolate);
     REJECT_IF(result == NULL);
 
     return result;
@@ -508,7 +508,7 @@ DEF_PARSE(type) {
     }
 
     if (hasClass(name, CLS_literal)) {
-        return makeLiteral(makeDerivedDataClass(GET(value, name)));
+        return makeLiteral(makeDerivedDataClass(get(name, STR_value)));
     } else {
         return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
     }
@@ -523,7 +523,7 @@ DEF_PARSE(deriv) {
     zvalue cls;
     zvalue name = PARSE(identifierString);
     if (name != NULL) {
-        cls = makeLiteral(makeDerivedDataClass(GET(value, name)));
+        cls = makeLiteral(makeDerivedDataClass(get(name, STR_value)));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }
@@ -572,7 +572,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(fullClosure);
 
-    zvalue formals = GET(formals, c);
+    zvalue formals = get(c, STR_formals);
     if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
@@ -586,7 +586,7 @@ DEF_PARSE(basicNullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(basicClosure);
 
-    zvalue formals = GET(formals, c);
+    zvalue formals = get(c, STR_formals);
     if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
@@ -947,7 +947,7 @@ DEF_PARSE(functionDef) {
     MATCH_OR_REJECT(fn);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    return withTop(makeVarDef(GET(name, closure), closure));
+    return withTop(makeVarDef(get(closure, STR_name), closure));
 }
 
 // Documented in spec.
@@ -959,8 +959,8 @@ DEF_PARSE(methodBind) {
     MATCH_OR_REJECT(CH_DOT);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    zvalue formals = GET(formals, closure);
-    zvalue name = GET(name, closure);
+    zvalue formals = get(closure, STR_formals);
+    zvalue name = get(closure, STR_name);
     zvalue fullClosure = withFormals(closure,
         METH_CALL(cat,
             listFrom1(mapFrom1(STR_name, STR_this)),
@@ -992,7 +992,7 @@ DEF_PARSE(importFormat1) {
 
     MATCH_OR_REJECT(CH_AT);
     zvalue f = PARSE_OR_REJECT(identifierString);
-    return mapFrom1(STR_format, GET(value, f));
+    return mapFrom1(STR_format, get(f, STR_value));
 }
 
 // Documented in spec.
