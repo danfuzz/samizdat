@@ -193,7 +193,7 @@ fn String_convert(value) {
     ## Each `stringChar()` call returns a list (each list element representing
     ## one byte), and we have to interpolate+concatenate them all together in
     ## order to find the encoded length.
-    def bodyChars = "".cat((ch in value -> stringChar(ch))*);
+    def bodyChars = [].cat((ch in value -> stringChar(ch))*);
 
     return genCall("stringFromUtf8",
         "\(#bodyChars)", "\"\(bodyChars)\"")
