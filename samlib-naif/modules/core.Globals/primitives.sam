@@ -55,5 +55,4 @@ export
     perOrder,
     selectorFromName,
     selectorIsInterned,
-    selectorName,
-    totalOrder;
+    selectorName;

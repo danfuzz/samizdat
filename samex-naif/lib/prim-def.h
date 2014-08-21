@@ -29,7 +29,6 @@ PRIM_DEF(Value,                   CLS_Value);
 // Methods for all values.
 PRIM_DEF(perEq,                   SEL_NAME(perEq));
 PRIM_DEF(perOrder,                SEL_NAME(perOrder));
-PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
