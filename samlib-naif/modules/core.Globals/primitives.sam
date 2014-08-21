@@ -51,7 +51,6 @@ export
     maybeValue,
     note,
     order,
-    perOrder,
     selectorFromName,
     selectorIsInterned,
     selectorName;

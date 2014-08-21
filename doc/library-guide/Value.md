@@ -232,7 +232,7 @@ the two given values are not identical. Otherwise returns void.
 
 #### `perGe(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered greater than or equal
 to `other`.
 
@@ -240,14 +240,14 @@ to `other`.
 
 #### `perGt(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered greater than `other`.
 
 **Syntax Note:** Used in the translation of `expression > expression` forms.
 
 #### `perLe(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered less than or equal
 to `other`.
 
@@ -255,7 +255,7 @@ to `other`.
 
 #### `perLt(value, other) -> logic`
 
-Per-class comparison, which calls `perOrder(value, other)` to
+Per-class comparison, which calls `value.perOrder(other)` to
 determine result. Returns `value` if it is considered less than `other`.
 
 **Syntax Note:** Used in the translation of `expression < expression` forms.

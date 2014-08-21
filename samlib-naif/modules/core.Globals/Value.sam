@@ -45,25 +45,25 @@ export fn ne(value, other) {
 
 ## Documented in spec.
 export fn perGe(value, other) {
-    return? ifNot { eq(perOrder(value, other), -1) }
+    return? ifNot { eq(value.perOrder(other), -1) }
         { value }
 };
 
 ## Documented in spec.
 export fn perGt(value, other) {
-    return? ifIs { eq(perOrder(value, other), 1) }
+    return? ifIs { eq(value.perOrder(other), 1) }
         { value }
 };
 
 ## Documented in spec.
 export fn perLe(value, other) {
-    return? ifNot { eq(perOrder(value, other), 1) }
+    return? ifNot { eq(value.perOrder(other), 1) }
         { value }
 };
 
 ## Documented in spec.
 export fn perLt(value, other) {
-    return? ifIs { eq(perOrder(value, other), -1) }
+    return? ifIs { eq(value.perOrder(other), -1) }
         { value }
 };
 

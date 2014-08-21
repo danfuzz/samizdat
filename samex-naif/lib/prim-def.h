@@ -26,9 +26,6 @@ PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
-// Methods for all values.
-PRIM_DEF(perOrder,                SEL_NAME(perOrder));
-
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
