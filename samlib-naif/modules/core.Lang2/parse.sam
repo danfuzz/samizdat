@@ -212,7 +212,7 @@ def parMap = {:
         {
             ifIs { eq(rest, []) }
                 { one }
-                { makeCall(REFS::cat, one, rest*) }
+                { makeCall(REFS::SEL_cat, one, rest*) }
         }
     |
         { makeLiteral({}) }
@@ -1300,7 +1300,7 @@ def parInterpolatedString = {:
                 }
         };
 
-        makeCall(REFS::cat, elems*)
+        makeCall(REFS::SEL_cat, elems*)
     }
 :};
 
@@ -2098,7 +2098,7 @@ def parSwitchExpression = {:
             ifIs { hasClass(keys, List) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, code) }
         };
-        def caseMap = makeCallOrApply(REFS::cat,
+        def caseMap = makeCallOrApply(REFS::SEL_cat,
             makeLiteral({}),
             makeInterpolate(
                 makeCall(REFS::SEL_reverse,

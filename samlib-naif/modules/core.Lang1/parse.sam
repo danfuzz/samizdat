@@ -181,7 +181,7 @@ def parMap = makeMainSequence(
             makeCode { ., one, rest ->
                 ifIs { eq(rest, []) }
                     { one }
-                    { makeCall(REFS::cat, one, rest*) }
+                    { makeCall(REFS::SEL_cat, one, rest*) }
             }),
         makeCode { . -> makeLiteral({}) }),
     makeToken(@@"}"),

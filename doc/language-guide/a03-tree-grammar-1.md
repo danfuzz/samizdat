@@ -217,7 +217,7 @@ def parMap = {:
         {
             ifIs { eq(rest, []) }
                 { one }
-                { makeCall(REFS::cat, one, rest*) }
+                { makeCall(REFS::SEL_cat, one, rest*) }
         }
     |
         { makeLiteral({}) }
