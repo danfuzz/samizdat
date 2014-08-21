@@ -217,7 +217,7 @@ def parMap = {:
         {
             ifIs { eq(rest, []) }
                 { one }
-                { makeCall(REFS::cat, one, rest*) }
+                { makeCall(REFS::SEL_cat, one, rest*) }
         }
     |
         { makeLiteral({}) }
@@ -1013,10 +1013,10 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { collect(cat(strings*), { ch -> @@(ch) }) }
+        { cat(strings*).collect({ ch -> @@(ch) }) }
     |
         tokens = parPexToken+
-        { collect(tokens, { n -> n::value }) }
+        { tokens.collect({ n -> n::value }) }
     |
         { [] }
     )

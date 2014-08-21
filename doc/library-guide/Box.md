@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Box / proto.Box
---------------------
+core.Box / Box Protocol
+-----------------------
 
 A `Box` is a container for a single other value or for void.
 In terms of value comparison, all boxes should compare by identity,
@@ -122,8 +122,6 @@ respond to `fetch` with the given `optValue`. If `optValue` is not supplied,
 #### Constant: `nullBox`
 
 A value that represents a permanently empty (un-set, un-stored) box.
-`store(nullBox, value)` is effectively a no-op. This
-arrangement is done in order to make it easy to pass a box into functions
-that require one, but where the box value is never needed.
-
-It is defined as `@NullBox`.
+`nullBox.store(value)` is effectively a no-op. This arrangement is done in
+order to make it easy to pass a box into functions that require one, but where
+the box value is never needed.

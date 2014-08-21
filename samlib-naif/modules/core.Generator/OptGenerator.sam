@@ -41,12 +41,12 @@ fn OptGenerator.nextValue(box) {
     def data = objectDataOf(this, SECRET);
     def result;
 
-    return ifValue { nextValue(data::generator, var result) }
+    return ifValue { data::generator.nextValue(var result) }
         { nextGenerator ->
             box* := [result];
             makeOptGenerator(nextGenerator)
         }
-        { nextValue(makeValueGenerator([]), box) }
+        { makeValueGenerator([]).nextValue(box) }
 };
 
 

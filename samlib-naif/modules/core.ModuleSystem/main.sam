@@ -84,7 +84,7 @@ fn fileNameSuffix(path) {
     var result = "";
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(path,
+    path.collect(
         { ch ->
             ifIs { eq(ch, "/") }
                 {
@@ -138,7 +138,7 @@ fn checkExternalSource(source) {
     var lastCh = ".";  ## Init to `"."` to make the first check work out.
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(name,
+    name.collect(
         { ch ->
             checkExternalSourcePair(lastCh, ch);
             lastCh := ch
@@ -191,7 +191,7 @@ fn checkInternalSource(source) {
     var lastCh = "/";  ## Init to `"/"` to make the first check work out.
 
     ## `collect` is used here as a "for-each," ignoring the collected result.
-    collect(name,
+    name.collect(
         { ch ->
             checkInternalSourcePair(lastCh, ch);
             lastCh := ch;

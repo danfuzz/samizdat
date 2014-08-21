@@ -36,20 +36,11 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 
-// Methods: `Box` protocol.
-PRIM_DEF(store,                   SEL_NAME(store));
-
 // Methods: `Object` class.
 PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
 
 // Methods: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
-
-// Methods: `Generator` protocol, intended for modularization but
-// also exported to the global environment.
-PRIM_DEF(collect,                 SEL_NAME(collect));
-PRIM_DEF(fetch,                   SEL_NAME(fetch));
-PRIM_DEF(nextValue,               SEL_NAME(nextValue));
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);

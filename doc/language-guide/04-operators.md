@@ -33,7 +33,7 @@ note(x);
 note((var x)*);
 
 x := 10;
-store(var x, 10);
+(var x).store(10);
 ```
 
 This form is most useful when using protocols that explicitly want to take

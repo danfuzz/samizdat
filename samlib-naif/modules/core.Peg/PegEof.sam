@@ -24,7 +24,7 @@ def PegEof = makeObjectClass("PegEof", SECRET);
 
 ## Documented in spec.
 fn PegEof.parse(box, input, .*) {
-    return? ifNot { nextValue(input, nullBox) }
+    return? ifNot { input.nextValue(nullBox) }
         {
             box* := null;
             input

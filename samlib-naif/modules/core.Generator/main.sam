@@ -25,12 +25,6 @@ export import ./unbounded :: *;
 ## Exported Definitions
 ##
 
-## Re-exported from globals (and proto module). Documented in spec.
-export
-    collect,
-    maybeValue,
-    nextValue;
-
 ## Re-exported from builtins. Documented in spec.
 export def stdCollect = Generator_stdCollect;
 
@@ -51,11 +45,11 @@ export fn filterAll(filterFunction, generators*) {
         {
             ## We are filtering a single generator, so just use the
             ## special-case (and often more efficient) `collect`.
-            collect(generators*, filterFunction)
+            (generators*).collect(filterFunction)
         }
         {
             ## The general case.
-            collect(makeFilterGenerator(filterFunction, generators*))
+            makeFilterGenerator(filterFunction, generators*).collect()
         }
 };
 
@@ -70,7 +64,7 @@ export fn filterPump(filterFunction, generators*) {
             ## unnecessary wrapping / unwrapping.
             var gen = generators*;
             loop {
-                ifValue { nextValue(gen, var innerResult) }
+                ifValue { gen.nextValue(var innerResult) }
                     { nextGen ->
                         ifValue { filterFunction(innerResult) }
                             { value -> result := [value] };
@@ -86,7 +80,7 @@ export fn filterPump(filterFunction, generators*) {
             ## General case of multiple (or zero) generators.
             var gen = makeParaGenerator(generators*);
             loop {
-                ifValue { nextValue(gen, var innerResult) }
+                ifValue { gen.nextValue(var innerResult) }
                     { nextGen ->
                         ifValue { filterFunction(innerResult*) }
                             { value -> result := [value] };
@@ -106,7 +100,7 @@ export fn generatorPump(generator) {
     var result;
 
     loop {
-        gen := ifValueOr { nextValue(gen, var result) }
+        gen := ifValueOr { gen.nextValue(var result) }
             { return? result }
     }
 };

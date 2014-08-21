@@ -98,7 +98,7 @@ export fn makeCallOrApply(function, values*) {
         ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
-                addToCooked(makeCall(REFS::collect, node))
+                addToCooked(makeCall(REFS::SEL_collect, node))
             }
             { pending := [pending*, actual] }
     };
@@ -117,7 +117,7 @@ export fn makeCallOrApply(function, values*) {
         {
             ## More than one actual. Use `cat`.
             makeApply(function,
-                makeCall(REFS::cat, cookedValues*))
+                makeCall(REFS::SEL_cat, cookedValues*))
         }
         {
             ## Only one. Use it directly as the values for the `apply` node.
@@ -394,11 +394,11 @@ export fn withModuleDefs(node) {
 
     def yieldExports = ifIs { eq(exportValues, []) }
         { makeLiteral({}) }
-        { makeCall(REFS::cat, exportValues*) };
+        { makeCall(REFS::SEL_cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),
-        makeCall(REFS::cat,
+        makeCall(REFS::SEL_cat,
             makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
             makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 

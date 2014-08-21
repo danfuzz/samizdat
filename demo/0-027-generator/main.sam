@@ -28,7 +28,7 @@ fn msgAll(header, origGen) {
     { /done ->
         loop {
             def result;
-            ifValue { nextValue(gen, var result) }
+            ifValue { gen.nextValue(var result) }
                 { nextGen ->
                     msg(result);
                     gen := nextGen
@@ -38,7 +38,7 @@ fn msgAll(header, origGen) {
     }();
 
     note("  [all]");
-    msg(collect(origGen));
+    msg(origGen.collect());
     note()
 };
 

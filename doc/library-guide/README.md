@@ -66,12 +66,11 @@ will be returned, or one of:
 
 ### Contents
 
-* Classes and Protocols
+* Classes
   * [Bool](Bool.md)
   * [Builtin](Builtin.md)
   * [Class](Class.md)
   * [DerivedData](DerivedData.md)
-  * [Function](Function.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
   * [Int](Int.md)
   * [List](List.md)
@@ -83,15 +82,16 @@ will be returned, or one of:
   * [String](String.md)
   * [Uniqlet](Uniqlet.md)
   * [Value (the base class/type)](Value.md)
-  * [One-Off Methods](OneOff.md)
 
 * Protocols
   * [Bitwise](Bitwise.md)
-  * [proto.Box](Box.md)
+  * [Box](Box.md)
   * [Collection](Collection.md)
-  * [proto.Generator](Generator.md)
+  * [Function](Function.md)
+  * [Generator](Generator.md)
   * [Number](Number.md)
   * [Sequence](Sequence.md)
+  * [One-Off Methods](OneOff.md)
 
 * Implementation Modules
   * [core.Box](Box.md)

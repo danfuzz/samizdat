@@ -315,7 +315,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
         zvalue node = get(one, STR_interpolate);
         if (node != NULL) {
             addPendingToCooked();
-            addToCooked(makeCall(REFS(collect), listFrom1(node)));
+            addToCooked(makeCall(makeSelector(STR_collect), listFrom1(node)));
         } else {
             pending[pendAt] = one;
             pendAt++;

@@ -22,7 +22,7 @@ def PegAny = makeObjectClass("PegAny", SECRET);
 
 ## Documented in spec.
 fn PegAny.parse(box, input, .*) {
-    return? nextValue(input, box)
+    return? input.nextValue(box)
 };
 
 

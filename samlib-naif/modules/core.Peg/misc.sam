@@ -23,7 +23,7 @@ import ./PegTokenSetComplement :: makeTokenSetComplement;
 ## Helper for `makeCharSet*`, which takes a string and produces a
 ## list of token classes for the characters.
 fn classListFromString(string) {
-    return collect(string, { ch -> @@(ch) })
+    return string.collect({ ch -> @@(ch) })
 };
 
 
@@ -74,12 +74,12 @@ export fn makeString(string) {
 
     ## Make a list of rules per character.
     def clses = classListFromString(string);
-    def chars = collect(clses, makeToken);
+    def chars = clses.collect(makeToken);
 
     return makeSequence(chars*, makeResult(@(@@(string))))
 };
 
 ## Documented in spec.
 export fn stringFromTokenList(tokens) {
-    return cat("", collect(tokens, get_className)*)
+    return "".cat(tokens.collect(get_className)*)
 };

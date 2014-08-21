@@ -16,6 +16,8 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 def SELECTORS = [
     "add",
     "and",
+    "cat",
+    "collect",
     "div",
     "divEu",
     "get_size",
@@ -37,9 +39,7 @@ def SELECTORS = [
 ## Global variable names / regular variable references.
 def NAMES = [
     "break",
-    "cat",
     "classAddMethod",
-    "collect",
     "continue",
     "eq",
     "ge",
