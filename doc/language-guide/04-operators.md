@@ -151,9 +151,9 @@ collections in general.
 The expression to index into and the index must both be non-void.
 
 A collection access expression is identical to a function call of either
-`get` or `$Sequence::nthFromEnd` with the value to be accessed as the
+`get` or `$Sequence::reverseNth` with the value to be accessed as the
 argument. That is, `x[y]` means the same thing as `x.get(y)`, and
-`x[^y]` means the same thing as `x.nthFromEnd(y)`.
+`x[^y]` means the same thing as `x.reverseNth(y)`.
 
 #### Sequence slice &mdash; `expression[start..end]` `expression[start..!afterEnd]`
 
@@ -259,7 +259,7 @@ of that expression.
 #### Sequence reverse &mdash; `^expression`
 
 Placing a caret in front of an expression is equivalent to calling
-`$Sequence::reverse` on the evaluated result of that expression.
+`expr.reverse()` on the evaluated result of that expression.
 
 #### Logical not &mdash; `!expression`
 

@@ -13,7 +13,6 @@ import core.Generator :: filterPump;
 import core.LangNode :: *;
 import core.Peg :: *;
 import core.Range :: makeInclusiveRange;
-import proto.Number :: neg;
 
 import ./tokenize :: tokenize;
 
@@ -120,7 +119,7 @@ def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"-"),
         makeToken(@@int),
-        makeCode { ., i -> makeLiteral(neg(i::value)) }),
+        makeCode { ., i -> makeLiteral(i::value.neg()) }),
     makeSequence(
         makeToken(@@int),
         makeCode { i -> makeLiteral(i::value) }),

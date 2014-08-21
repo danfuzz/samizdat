@@ -32,10 +32,10 @@ refer to those variables and names, for all the references needed when
 parsing the language.
 
 Regular variable references are bound from their string name. For example,
-`"cat"` maps to a regular variable reference of the name `cat`.
+`"ifIs"` maps to a regular variable reference of the name `ifIs`.
 
 Module-scoped names are bound from a string of the form `Module_name`. For
-example, `"Number_add"` maps to a reference to `$Number::add`.
+example, `"Format_usual"` maps to a reference to `$Format::usual`.
 
 For specific details on which names are mapped, refer to the source. (As of
 this writing, the set of things mapped in `REFS` is still undergoing

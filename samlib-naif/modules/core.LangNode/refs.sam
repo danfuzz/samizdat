@@ -14,7 +14,24 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 
 ## Literal selectors.
 def SELECTORS = [
-    "get_size"
+    "add",
+    "and",
+    "div",
+    "divEu",
+    "get_size",
+    "mod",
+    "modEu",
+    "mul",
+    "neg",
+    "not",
+    "or",
+    "reverse",
+    "shl",
+    "sliceExclusive",
+    "sliceInclusive",
+    "shr",
+    "sub",
+    "xor"
 ];
 
 ## Global variable names / regular variable references.
@@ -57,26 +74,12 @@ def NAMES = [
 
 ## Module-scoped names.
 def MOD_NAMES = [
-    {mod: "Bitwise",    name: "and"},
-    {mod: "Bitwise",    name: "not"},
-    {mod: "Bitwise",    name: "or"},
-    {mod: "Bitwise",    name: "shl"},
-    {mod: "Bitwise",    name: "shr"},
-    {mod: "Bitwise",    name: "xor"},
     {mod: "Format",     name: "formatterFor"},
     {mod: "Format",     name: "usual"},
     {mod: "Generator",  name: "filterAll"},
     {mod: "Generator",  name: "filterPump"},
     {mod: "Generator",  name: "makeRepeatGenerator"},
     {mod: "Generator",  name: "makeFilterGenerator"},
-    {mod: "Number",     name: "add"},
-    {mod: "Number",     name: "div"},
-    {mod: "Number",     name: "divEu"},
-    {mod: "Number",     name: "mod"},
-    {mod: "Number",     name: "modEu"},
-    {mod: "Number",     name: "mul"},
-    {mod: "Number",     name: "neg"},
-    {mod: "Number",     name: "sub"},
     {mod: "Peg",        name: "any"},
     {mod: "Peg",        name: "empty"},
     {mod: "Peg",        name: "makeChoice"},
@@ -95,11 +98,8 @@ def MOD_NAMES = [
     {mod: "Range",      name: "makeExclusiveRange"},
     {mod: "Range",      name: "makeInclusiveRange"},
     {mod: "Range",      name: "makeOpenRange"},
-    {mod: "Sequence",   name: "nthFromEnd"},
-    {mod: "Sequence",   name: "reverse"},
-    {mod: "Sequence",   name: "sliceGeneral"},
-    {mod: "Sequence",   name: "sliceExclusive"},
-    {mod: "Sequence",   name: "sliceInclusive"}
+    {mod: "Sequence",   name: "reverseNth"},
+    {mod: "Sequence",   name: "sliceGeneral"}
 ];
 
 ## Used in `MOD_NAMES` processing.

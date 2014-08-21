@@ -21,7 +21,6 @@ import core.LangNode :: *;
 import core.Peg;
 import core.Range :: makeInclusiveRange;
 import core.Sequence :: reverse;
-import proto.Number :: neg;
 
 
 ##
@@ -156,7 +155,7 @@ def parIdentifierString = {:
 def parLiteral = {:
     @"-"
     i = @int
-    { makeLiteral(neg(i::value)) }
+    { makeLiteral(i::value.neg()) }
 |
     i = @int
     { makeLiteral(i::value) }

@@ -5,7 +5,6 @@
 #= language core.Lang0
 
 import core.Generator :: filterPump;
-import proto.Number :: add, mul;
 
 
 ##
@@ -65,7 +64,7 @@ export fn formalsMaxArgs(formals) {
                 ifIs { eq(rep, "*") } { return -1 };
                 ifIs { eq(rep, "+") } { return -1 };
             };
-        maxArgs := add(maxArgs, 1)
+        maxArgs := maxArgs.add(1)
     };
 
     return maxArgs
@@ -81,7 +80,7 @@ export fn formalsMinArgs(formals) {
                 ifIs { eq(rep, "?") } { yield /next };
                 ifIs { eq(rep, "*") } { yield /next };
             };
-        minArgs := add(minArgs, 1)
+        minArgs := minArgs.add(1)
     };
 
     return minArgs
@@ -95,7 +94,7 @@ export fn intFromDigits(base, digits) {
     filterPump(digits) { digit ->
         def value = intFromDigitToken(digit);
         ifIs { perNe(value, -1) }
-            { result := add(mul(result, base), value) }
+            { result := result.mul(base).add(value) }
     };
 
     return result

@@ -8,37 +8,31 @@
 
 #= language core.Lang0
 
-import proto.Number :: add, sub;
-
-## Re-export. Documented in spec.
-export import proto.Sequence :: *;
-
-
 
 ##
 ## Exported Definitions
 ##
 
 ## Documented in spec.
-export fn nthFromEnd(seq, n) {
-    def index = sub(seq.get_size(), add(n, 1));
+export fn reverseNth(seq, n) {
+    def index = seq.get_size().sub(n).sub(1);
     return? seq.nth(index)
 };
 
 ## Documented in spec.
 export fn sliceGeneral(seq, style, start, optEnd?) {
-    def limit = sub(seq.get_size(), 1);
+    def limit = seq.get_size().sub(1);
     def func = ifIs { eq(style, @exclusive) }
-        { sliceExclusive }
-        { sliceInclusive };
+        { @.sliceExclusive }
+        { @.sliceInclusive };
     def startIndex = ifIs { hasClass(start, @@fromStart) }
         { start::value }
-        { sub(limit, start::value) };
+        { limit.sub(start::value) };
     def optEndIndex = (ifValue { optEnd* }
         { end ->
             ifIs { hasClass(end, @@fromStart) }
                 { end::value }
-                { sub(limit, end::value) }
+                { limit.sub(end::value) }
         })?;
 
     return? func(seq, startIndex, optEndIndex*)

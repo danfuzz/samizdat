@@ -36,15 +36,6 @@ PRIM_DEF(totalOrder,              SEL_NAME(totalOrder));
 PRIM_DEF(cat,                     SEL_NAME(cat));
 PRIM_DEF(get,                     SEL_NAME(get));
 
-// Methods: `Bitwise` protocol, intended for modularization.
-PRIM_DEF(Bitwise_and,             SEL_NAME(and));
-PRIM_DEF(Bitwise_bit,             SEL_NAME(bit));
-PRIM_DEF(Bitwise_bitSize,         SEL_NAME(bitSize));
-PRIM_DEF(Bitwise_not,             SEL_NAME(not));
-PRIM_DEF(Bitwise_or,              SEL_NAME(or));
-PRIM_DEF(Bitwise_shl,             SEL_NAME(shl));
-PRIM_DEF(Bitwise_xor,             SEL_NAME(xor));
-
 // Methods: `Box` protocol.
 PRIM_DEF(store,                   SEL_NAME(store));
 
@@ -54,35 +45,11 @@ PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
 // Methods: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
-// Methods: `Collection` protocol, intended for modularization.
-PRIM_DEF(Collection_del,          SEL_NAME(del));
-PRIM_DEF(Collection_keyList,      SEL_NAME(keyList));
-PRIM_DEF(Collection_nthMapping,   SEL_NAME(nthMapping));
-PRIM_DEF(Collection_put,          SEL_NAME(put));
-PRIM_DEF(Collection_valueList,    SEL_NAME(valueList));
-
-// Methods: `Sequence` protocol, intended for modularization.
-PRIM_DEF(Sequence_reverse,        SEL_NAME(reverse));
-PRIM_DEF(Sequence_sliceExclusive, SEL_NAME(sliceExclusive));
-PRIM_DEF(Sequence_sliceInclusive, SEL_NAME(sliceInclusive));
-
 // Methods: `Generator` protocol, intended for modularization but
 // also exported to the global environment.
 PRIM_DEF(collect,                 SEL_NAME(collect));
 PRIM_DEF(fetch,                   SEL_NAME(fetch));
 PRIM_DEF(nextValue,               SEL_NAME(nextValue));
-
-// Methods: `Number` protocol, intended for modularization.
-PRIM_DEF(Number_abs,              SEL_NAME(abs));
-PRIM_DEF(Number_add,              SEL_NAME(add));
-PRIM_DEF(Number_div,              SEL_NAME(div));
-PRIM_DEF(Number_divEu,            SEL_NAME(divEu));
-PRIM_DEF(Number_mod,              SEL_NAME(mod));
-PRIM_DEF(Number_modEu,            SEL_NAME(modEu));
-PRIM_DEF(Number_mul,              SEL_NAME(mul));
-PRIM_DEF(Number_neg,              SEL_NAME(neg));
-PRIM_DEF(Number_sign,             SEL_NAME(sign));
-PRIM_DEF(Number_sub,              SEL_NAME(sub));
 
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);

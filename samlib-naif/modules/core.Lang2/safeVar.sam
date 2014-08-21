@@ -7,8 +7,6 @@
 import core.Format;
 import core.Generator;
 import core.LangNode :: *;
-import core.Sequence;
-import proto.Number;
 
 
 ##
@@ -26,8 +24,8 @@ fn intOrVoid(string) {
     $Generator::filterPump(string) { ch ->
         ifIs { perLt(ch, "0") } { return };
         ifIs { perGt(ch, "9") } { return };
-        def digit = $Number::sub(ch.toInt(), CHAR_0);
-        value := $Number::add($Number::mul(value, 10), digit);
+        def digit = ch.toInt().sub(CHAR_0);
+        value := value.mul(10).add(digit);
     };
 
     return value
@@ -58,13 +56,13 @@ fn safeIndexForNames(base, names*) {
                 yield /next
             };
         ifIs { perEq(base, name) } { yield /next -1 };
-        ifIs { perEq(base, $Sequence::sliceExclusive(name, 0, baseSz)) }
-            { yield? /next intOrVoid($Sequence::sliceInclusive(name, baseSz)) }
+        ifIs { perEq(base, name.sliceExclusive(0, baseSz)) }
+            { yield? /next intOrVoid(name.sliceInclusive(baseSz)) }
     };
 
     return ifIs { perEq(indexes, []) }
         { -1 }
-        { $Number::add(maxOf(indexes*), 1) }
+        { maxOf(indexes*).add(1) }
 };
 
 ## Maps / reduces `safeIndex` over the given nodes.

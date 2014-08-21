@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Bitwise / proto.Bitwise
-----------------------------
+Bitwise Protocol
+----------------
 
 `Bitwise` is a protocol for values that can be treated as fixed-width
 lists of bits.
@@ -53,6 +53,12 @@ argument unchanged.
 **Note:** The `shift` argument is not limited in any particular way (not
 masked, etc.).
 
+#### `shr(bitwise, int) -> bitwise`
+
+Returns the first argument bit-shifted by an amount indicated by the
+second argument, with the opposite sense of shift direction compared
+to `shl`. This must always be equivalent to saying `this.shl(-int)`.
+
 #### `.xor(other) -> bitwise`
 
 Returns the binary-xor (bitwise not-equal) of the given values.
@@ -65,10 +71,6 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 
 
 <br><br>
-### In-Language Definitions: `Bitwise` module
+### In-Language Definitions
 
-#### `shr(bitwise, int) -> bitwise`
-
-Returns the first argument bit-shifted by an amount indicated by the
-second argument, with the opposite sense of shift direction compared
-to `shl`. This is just a convenient way to say `bitwise.shl(-int)`.
+(none)

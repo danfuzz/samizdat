@@ -16,7 +16,6 @@
 import core.Generator :: filterAll;
 import core.LangNode :: *;
 import core.Range :: makeOpenRange;
-import core.Sequence :: sliceExclusive;
 
 
 ##
@@ -116,7 +115,7 @@ fn convertPex(node, formals) {
                                 { pex::value }
                                 { pex };
                             convertPex(subPex,
-                                [formals*, sliceExclusive(newFormals, 0, n)*])
+                                [formals*, newFormals.sliceExclusive(0, n)*])
                         };
 
                 makeCall(REFS::Peg_makeSequence, convertedPexes*)

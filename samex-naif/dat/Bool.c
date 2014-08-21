@@ -105,17 +105,36 @@ METH_IMPL(Bool, not) {
 METH_IMPL(Bool, shl) {
     zvalue value = args[0];
     zvalue n = args[1];
+    zint amt = zintFromInt(n);  // Includes a type check.
 
     if (!zboolValue(value)) {
         // `false` can be shifted howsoever and still be false.
         return value;
     }
 
-    zint amt = zintFromInt(n);
-
     if (amt == 0) {
         return value;
     } else if (amt < 0) {
+        return BOOL_FALSE;
+    } else {
+        die("Undefined `bool` shift result.");
+    }
+}
+
+// Documented in header.
+METH_IMPL(Bool, shr) {
+    zvalue value = args[0];
+    zvalue n = args[1];
+    zint amt = zintFromInt(n);  // Includes a type check.
+
+    if (!zboolValue(value)) {
+        // `false` can be shifted howsoever and still be false.
+        return value;
+    }
+
+    if (amt == 0) {
+        return value;
+    } else if (amt > 0) {
         return BOOL_FALSE;
     } else {
         die("Undefined `bool` shift result.");
@@ -178,6 +197,7 @@ MOD_INIT(Bool) {
     METH_BIND(Bool, not);
     METH_BIND(Bool, or);
     METH_BIND(Bool, shl);
+    METH_BIND(Bool, shr);
     METH_BIND(Bool, xor);
     METH_BIND(Bool, toInt);
     METH_BIND(Bool, toNumber);

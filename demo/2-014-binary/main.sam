@@ -168,8 +168,8 @@ msg(((1 == 2) & (2 == 2) & (3 == 3))??);
 msg(((1 == 1) & (2 == 2) & (3 == 4))??);
 
 msg((def x = 1) & -x);
-msg((def foo = 1) & (def bar = -foo) & $Number::add(-foo, bar));
-msg((def blort = "th") & (1 == 1) & (def fizmo = "ree") & cat(blort, fizmo));
+msg((def foo = 1) & (def bar = -foo) & (-foo).add(bar));
+msg((def blort = "th") & (1 == 1) & (def fizmo = "ree") & blort.cat(fizmo));
 msg(((def x = 1) & returnVoid())?);
 msg(((def x = []*) & 1)?);
 

@@ -8,9 +8,6 @@
 
 #= language core.Lang0
 
-import core.Sequence;
-import proto.Number;
-
 
 ##
 ## Private Definitions
@@ -49,7 +46,7 @@ export fn get_directory(path) {
     ## then that means the path was all slashes, making the result be `"/"`.
     { /out ->
         loop {
-            at := $Number::sub(at, 1);
+            at := at.sub(1);
 
             def ch = get(path, at);
             ifIs { ne(ch, "/") } { yield /out };
@@ -63,13 +60,13 @@ export fn get_directory(path) {
     ## `"/"`.
     loop {
         ifIs { eq(at, 0) } { return "." };
-        at := $Number::sub(at, 1);
+        at := at.sub(1);
 
         def ch = get(path, at);
         ifIs { eq(ch, "/") }
             {
                 ifIs { eq(at, 0) } { return "/" };
-                return $Sequence::sliceExclusive(path, 0, at)
+                return path.sliceExclusive(0, at)
             };
     }
 };
@@ -84,7 +81,7 @@ export fn get_file(path) {
     ## then that means the path was all slashes, making the result be `"/"`.
     { /out ->
         loop {
-            at := $Number::sub(at, 1);
+            at := at.sub(1);
 
             def ch = get(path, at);
             ifIs { ne(ch, "/") } { yield /out };
@@ -99,15 +96,15 @@ export fn get_file(path) {
     ## `path` minus any path-final slashes.
     loop {
         ifIs { eq(at, 0) }
-            { return $Sequence::sliceInclusive(path, 0, endAt) };
+            { return path.sliceInclusive(0, endAt) };
 
-        at := $Number::sub(at, 1);
+        at := at.sub(1);
 
         def ch = get(path, at);
         ifIs { eq(ch, "/") }
             {
-                at := $Number::add(at, 1);
-                return $Sequence::sliceInclusive(path, at, endAt)
+                at := at.add(1);
+                return path.sliceInclusive(at, endAt)
             };
     }
 };

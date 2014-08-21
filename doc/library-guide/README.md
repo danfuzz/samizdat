@@ -85,16 +85,15 @@ will be returned, or one of:
   * [Value (the base class/type)](Value.md)
   * [One-Off Methods](OneOff.md)
 
-* Protocol Modules
-  * [proto.Bitwise](Bitwise.md)
+* Protocols
+  * [Bitwise](Bitwise.md)
   * [proto.Box](Box.md)
-  * [proto.Collection](Collection.md)
+  * [Collection](Collection.md)
   * [proto.Generator](Generator.md)
-  * [proto.Number](Number.md)
-  * [proto.Sequence](Sequence.md)
+  * [Number](Number.md)
+  * [Sequence](Sequence.md)
 
 * Implementation Modules
-  * [core.Bitwise](Bitwise.md)
   * [core.Box](Box.md)
   * [core.Code](Code.md)
   * [core.CommandLine](CommandLine.md)

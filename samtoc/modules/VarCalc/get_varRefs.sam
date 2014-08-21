@@ -66,7 +66,7 @@ export fn get_varRefs(node) {
                 def defs = cat(baseLocals, statementDefs[..!idx]*);
                 var refs = {get_varRefs(s)*: null};
                 for (d in defs) {
-                   refs := $Collection::del(refs, d)
+                   refs := refs.del(d)
                 };
                 refs
             );
@@ -74,7 +74,7 @@ export fn get_varRefs(node) {
             ## The result of concatenating all the `statementRefs` is a
             ## map. The final result is the list of refs, that is, a list
             ## of all the keys.
-            $Collection::keyList(cat({}, statementRefs*));
+            {}.cat(statementRefs*).keyList();
         };
 
         @@closureRef: {

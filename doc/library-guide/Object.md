@@ -8,9 +8,9 @@ Object
 <br><br>
 ### Method Definitions: `Object` protocol
 
-#### `objectDataOf(obj, secret) -> . | void`
+#### `.objectDataOf(secret) -> . | void`
 
-Returns the data payload of the given object, if any, but only if `obj`'s
+Returns the data payload of the given object, if any, but only if `this`'s
 secret matches the given one. If the value has no data payload, this returns
 void.
 

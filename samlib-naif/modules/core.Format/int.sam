@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import proto.Number :: div, mod, neg, sign;
-
 
 ## This is int digits for bases up to 36, in order.
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -23,20 +21,20 @@ fn intBody(value, base) {
         ifIs { perEq(v, 0) }
             { return text };
 
-        def digit = DIGIT_CHARS.nth(mod(v, base));
+        def digit = DIGIT_CHARS.nth(v.mod(base));
         text := cat(digit, text);
-        v := div(v, base)
+        v := v.div(base)
     }
 };
 
 ## Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = {
-    -1: { int, base -> cat("-", intBody(neg(int), base)) },
+    -1: { int, base -> cat("-", intBody(int.neg(), base)) },
     0:  { int, base -> "0" },
     1:  { int, base -> intBody(int, base) }
 };
 
 ## Stringifies an int using the given base.
 export fn intWithBase(int, base) {
-    return get(INT_SIGNS, sign(int))(int, base)
+    return get(INT_SIGNS, int.sign())(int, base)
 };

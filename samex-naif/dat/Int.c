@@ -135,6 +135,7 @@ BINARY_IMPL(modEu, zintModEu);
 BINARY_IMPL(mul,   zintMul);
 BINARY_IMPL(or,    zintOr);
 BINARY_IMPL(shl,   zintShl);
+BINARY_IMPL(shr,   zintShr);
 BINARY_IMPL(sub,   zintSub);
 BINARY_IMPL(xor,   zintXor);
 
@@ -209,6 +210,7 @@ MOD_INIT(Int) {
     METH_BIND(Int, not);
     METH_BIND(Int, or);
     METH_BIND(Int, shl);
+    METH_BIND(Int, shr);
     METH_BIND(Int, sign);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);

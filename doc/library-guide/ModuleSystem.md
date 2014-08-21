@@ -23,7 +23,7 @@ be their own dependencies.
 <br><br>
 ### Method Definitions: `Loader` protocol
 
-#### `readResource(loader, source, format) -> . | void`
+#### `.readResource(source, format) -> . | void`
 
 This reads and/or processes a resource file, interpreting it as the given
 `format` (a string name). `source` is expected to be a source specifier,
@@ -38,7 +38,7 @@ indicate a valid way to process the source.
 See "Resource Import" in the language guide for more details on the
 available `format`s.
 
-#### `resolve(loader, source) -> . | void`
+#### `.resolve(source) -> . | void`
 
 This resolves and loads the module (either an internal or external module)
 named by `source`. `source` is expected to be a source specifier. This

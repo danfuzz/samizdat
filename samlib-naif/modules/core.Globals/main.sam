@@ -42,11 +42,8 @@ export fn fullEnvironment() {
     ## successfully loaded before most of the module system is ready.
 
     ## Exported as full modules.
-    def $Bitwise     = loadModule(@external{name: "core.Bitwise"});
-    def $Collection  = loadModule(@external{name: "proto.Collection"});
     def $Format      = loadModule(@external{name: "core.Format"});
     def $Generator   = loadModule(@external{name: "core.Generator"});
-    def $Number      = loadModule(@external{name: "proto.Number"});
     def $Peg         = loadModule(@external{name: "core.Peg"});
     def $Range       = loadModule(@external{name: "core.Range"});
     def $Sequence    = loadModule(@external{name: "core.Sequence"});
@@ -59,11 +56,8 @@ export fn fullEnvironment() {
         EARLY_GLOBALS*,
 
         ## Globally-exported modules.
-        $Bitwise,
-        $Collection,
         $Format,
         $Generator,
-        $Number,
         $Peg,
         $Range,
         $Sequence,

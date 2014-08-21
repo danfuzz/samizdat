@@ -5,7 +5,6 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import proto.Collection :: del;
 
 
 ##
@@ -144,14 +143,11 @@ export fn withYieldDefIfAbsent(node, name) {
 
 ## Documented in spec.
 export fn withoutInterpolate(node) {
-    return @(get_class(node))(del(dataOf(node), "interpolate"))
+    return @(get_class(node))(dataOf(node).del("interpolate"))
 };
 
 ## Documented in spec.
 export fn withoutIntermediates(node) {
-    def data = del(
-        del(dataOf(node), "lvalue"),
-        "interpolate");
-
+    def data = dataOf(node).del("lvalue").del("interpolate");
     return @(get_class(node))(data)
 };
