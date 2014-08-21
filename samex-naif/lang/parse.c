@@ -461,7 +461,7 @@ DEF_PARSE(map) {
     switch (get_size(mappings)) {
         case 0:  return makeLiteral(EMPTY_MAP);
         case 1:  return nth(mappings, 0);
-        default: return makeCall(makeSelector(STR_cat), mappings);
+        default: return makeCall(SEL(cat), mappings);
     }
 }
 

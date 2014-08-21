@@ -315,7 +315,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
         zvalue node = get(one, STR_interpolate);
         if (node != NULL) {
             addPendingToCooked();
-            addToCooked(makeCall(makeSelector(STR_collect), listFrom1(node)));
+            addToCooked(makeCall(SEL(collect), listFrom1(node)));
         } else {
             pending[pendAt] = one;
             pendAt++;
@@ -331,7 +331,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
     if (cookAt > 1) {
         return makeApply(function,
-            makeCall(makeSelector(STR_cat), listFromArray(cookAt, cookedValues)));
+            makeCall(SEL(cat), listFromArray(cookAt, cookedValues)));
     } else {
         return makeApply(function, cookedValues[0]);
     }
@@ -730,12 +730,12 @@ zvalue withModuleDefs(zvalue node) {
 
     zvalue yieldExports = (exSize == 0)
         ? makeLiteral(EMPTY_MAP)
-        : makeCall(makeSelector(STR_cat), exportValues);
+        : makeCall(SEL(cat), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
             makeLiteral(CLS_module),
-            makeCall(makeSelector(STR_cat),
+            makeCall(SEL(cat),
                 listFrom2(
                     makeCall(REFS(makeValueMap),
                         listFrom2(makeLiteral(STR_exports), yieldExports)),
