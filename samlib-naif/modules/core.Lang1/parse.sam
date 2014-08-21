@@ -776,11 +776,11 @@ def parPexSet = makeMainSequence(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
-                collect(cat(strings*), { ch -> @@(ch) })
+                cat(strings*).collect({ ch -> @@(ch) })
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),
-            makeCode { tokens -> collect(tokens, { n -> n::value }) }),
+            makeCode { tokens -> tokens.collect({ n -> n::value }) }),
         makeResult([])),
     makeToken(@@"]"),
     makeCode { ., type, terminals, . -> @(type){values: terminals} });

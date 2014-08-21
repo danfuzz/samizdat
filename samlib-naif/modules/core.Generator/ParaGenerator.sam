@@ -47,8 +47,7 @@ fn ParaGenerator.nextValue(box) {
         { return };
 
     var result;
-    def generatorCalls = collect(
-        subGens,
+    def generatorCalls = subGens.collect(
         { gen ->
             ifValue { gen.nextValue(var result) }
                 { nextGenerator -> [result, nextGenerator] }
@@ -58,10 +57,8 @@ fn ParaGenerator.nextValue(box) {
                 }
         });
 
-    def yields = collect(generatorCalls,
-        { one -> one.nth(0) });
-    def nexts = collect(generatorCalls,
-        { one -> one.nth(1) });
+    def yields = generatorCalls.collect({ one -> one.nth(0) });
+    def nexts = generatorCalls.collect({ one -> one.nth(1) });
 
     box* := yields;
     return makeObject(ParaGenerator, SECRET, {generators: nexts})

@@ -42,7 +42,7 @@ fn uCombinator(function) {
 ## `Y*`. That is, the Y combinator uses the U combinator in the same way
 ## that the Y* combinator uses this function.
 fn uStarCombinator(functions) {
-    return collect(functions, { function -> function(functions*) })
+    return functions.collect({ function -> function(functions*) })
 };
 
 ## Documented in associated README file.
@@ -65,8 +65,7 @@ fn yStarCombinator(functions*) {
     ## `uStarCombinator` function) where necessitated by the multiple-function
     ## nature of this variant.
 
-    def applicators = collect(
-        functions,
+    def applicators = functions.collect(
         { function ->
             { selfRefs* ->
                 { args* -> function(uStarCombinator(selfRefs)*)(args*) }

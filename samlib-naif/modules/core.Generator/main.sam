@@ -45,11 +45,11 @@ export fn filterAll(filterFunction, generators*) {
         {
             ## We are filtering a single generator, so just use the
             ## special-case (and often more efficient) `collect`.
-            collect(generators*, filterFunction)
+            (generators*).collect(filterFunction)
         }
         {
             ## The general case.
-            collect(makeFilterGenerator(filterFunction, generators*))
+            makeFilterGenerator(filterFunction, generators*).collect()
         }
 };
 

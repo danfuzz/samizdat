@@ -31,7 +31,6 @@ export
     classAddMethod,
     className,
     classParent,
-    collect,
     dataOf,
     die,
     eq,

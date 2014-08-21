@@ -42,9 +42,6 @@ PRIM_DEF(objectDataOf,            SEL_NAME(objectDataOf));
 // Methods: `DerivedData` class.
 PRIM_DEF(dataOf,                  SEL_NAME(dataOf));
 
-// Methods: `Generator` protocol, exported to the global environment.
-PRIM_DEF(collect,                 SEL_NAME(collect));
-
 // Primitive functions: directly exported.
 PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
