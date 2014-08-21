@@ -141,7 +141,7 @@ def parIdentifierString = {:
             {
                 def name = get_className(token);
                 def firstCh = name.nth(0);
-                ifIs { get(LOWER_ALPHA, firstCh) }
+                ifIs { LOWER_ALPHA.get(firstCh) }
                     { makeLiteral(name) }
             }
     }
@@ -1057,7 +1057,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_class(repeat))){pex} }
+        { @(PEX_TYPES.get(get_class(repeat))){pex} }
     |
         { pex }
     )
@@ -1069,7 +1069,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(get(PEX_TYPES, get_class(lookahead))){pex} }
+        { @(PEX_TYPES.get(get_class(lookahead))){pex} }
     )
 |
     parPexRepeat

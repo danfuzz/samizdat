@@ -136,7 +136,7 @@ def parIdentifierString = {:
             {
                 def name = get_className(token);
                 def firstCh = name.nth(0);
-                ifIs { get(LOWER_ALPHA, firstCh) }
+                ifIs { LOWER_ALPHA.get(firstCh) }
                     { makeLiteral(name) }
             }
     }
@@ -1052,7 +1052,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(get(PEX_TYPES, get_class(repeat))){pex} }
+        { @(PEX_TYPES.get(get_class(repeat))){pex} }
     |
         { pex }
     )
@@ -1064,7 +1064,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(get(PEX_TYPES, get_class(lookahead))){pex} }
+        { @(PEX_TYPES.get(get_class(lookahead))){pex} }
     )
 |
     parPexRepeat
@@ -1145,7 +1145,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     filterPump(opExList) { opEx ->
-        def resolvedOp = get(BINARY_OPERATORS, get_class(opEx::op));
+        def resolvedOp = BINARY_OPERATORS.get(get_class(opEx::op));
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
@@ -1204,7 +1204,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     fn transform(leftRef, opEx, rest*) {
-        def resolvedOp = get(BINARY_OPERATORS, get_class(opEx::op));
+        def resolvedOp = BINARY_OPERATORS.get(get_class(opEx::op));
 
         return ifIs { eq(rest, []) }
             { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
@@ -1475,7 +1475,7 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = get(UNARY_OPERATORS, get_class(operator));
+        def name = UNARY_OPERATORS.get(get_class(operator));
         { node -> makeCall(name, node) }
     }
 |

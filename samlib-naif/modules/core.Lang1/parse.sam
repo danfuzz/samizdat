@@ -109,7 +109,7 @@ def parIdentifierString = makeMainChoice(
                 {
                     def name = get_className(token);
                     def firstCh = name.nth(0);
-                    ifIs { get(LOWER_ALPHA, firstCh) }
+                    ifIs { LOWER_ALPHA.get(firstCh) }
                         { makeLiteral(name) }
                 }
             }));
@@ -821,7 +821,7 @@ def parPexRepeat = makeMainSequence(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
             makeCode { pex, repeat ->
-                @(get(PEX_TYPES, get_class(repeat))){pex}
+                @(PEX_TYPES.get(get_class(repeat))){pex}
             }),
         makeCode { pex -> pex }));
 
@@ -831,7 +831,7 @@ def parPexLookahead = makeMainChoice(
         makeTokenSet(@@"&", @@"!"),
         parPexRepeat,
         makeCode { lookahead, pex ->
-            @(get(PEX_TYPES, get_class(lookahead))){pex}
+            @(PEX_TYPES.get(get_class(lookahead))){pex}
         }),
     parPexRepeat);
 
