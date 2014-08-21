@@ -262,7 +262,7 @@ determine result. Returns `value` if it is considered less than `other`.
 
 #### `perNe(value, other) -> logic`
 
-Per-class comparison, which calls `perEq(value, other)` to
+Per-class comparison, which calls `value.perEq(other)` to
 determine result. Returns `value` if it is *not* considered equal to `other`.
 
 **Syntax Note:** Used in the translation of `expression != expression` forms.

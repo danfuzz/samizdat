@@ -69,7 +69,7 @@ export fn perLt(value, other) {
 
 ## Documented in spec.
 export fn perNe(value, other) {
-    return? ifNot { perEq(value, other) }
+    return? ifNot { value.perEq(other) }
         { value }
 };
 

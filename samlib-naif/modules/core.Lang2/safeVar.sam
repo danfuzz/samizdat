@@ -55,12 +55,12 @@ fn safeIndexForNames(base, names*) {
                 ## Can't possibly be a prefix, so no conflict.
                 yield /next
             };
-        ifIs { perEq(base, name) } { yield /next -1 };
-        ifIs { perEq(base, name.sliceExclusive(0, baseSz)) }
+        ifIs { eq(base, name) } { yield /next -1 };
+        ifIs { eq(base, name.sliceExclusive(0, baseSz)) }
             { yield? /next intOrVoid(name.sliceInclusive(baseSz)) }
     };
 
-    return ifIs { perEq(indexes, []) }
+    return ifIs { eq(indexes, []) }
         { -1 }
         { maxOf(indexes*).add(1) }
 };

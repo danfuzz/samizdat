@@ -68,7 +68,7 @@ export fn makeAssignmentIfPossible(target, value) {
 
 ## Documented in spec.
 export fn makeCallOrApply(function, values*) {
-    ifIs { perEq(values, []) }
+    ifIs { eq(values, []) }
         {
             ## No values. Easy out.
             return makeApply(function)
@@ -103,7 +103,7 @@ export fn makeCallOrApply(function, values*) {
             { pending := [pending*, actual] }
     };
 
-    ifIs { perEq(cookedValues, []) }
+    ifIs { eq(cookedValues, []) }
         {
             ## There were no interpolated arguments.
             return makeCall(function, values*)
@@ -116,8 +116,7 @@ export fn makeCallOrApply(function, values*) {
     return ifIs { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
-            makeApply(function,
-                makeCall(REFS::SEL_cat, cookedValues*))
+            makeApply(function, makeCall(REFS::SEL_cat, cookedValues*))
         }
         {
             ## Only one. Use it directly as the values for the `apply` node.
