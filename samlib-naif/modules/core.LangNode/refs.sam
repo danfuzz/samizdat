@@ -16,6 +16,7 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 def SELECTORS = [
     "add",
     "and",
+    "collect",
     "div",
     "divEu",
     "get_size",
@@ -39,7 +40,6 @@ def NAMES = [
     "break",
     "cat",
     "classAddMethod",
-    "collect",
     "continue",
     "eq",
     "ge",
