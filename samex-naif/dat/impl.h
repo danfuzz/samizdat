@@ -119,6 +119,14 @@ typedef struct {
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
+ * Binds all the methods of a class. This is only supposed to be called from
+ * the class initialization of classes that are partially built by the
+ * object model bootstrap code. Everywhere else should use `makeClass()` or
+ * `makeCoreClass()`.
+ */
+void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
+
+/**
  * Finds a method on a class, if bound. Returns the bound function if found
  * or `NULL` if not. Does not check to see if `index` is in the valid range
  * for a selector index.

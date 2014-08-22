@@ -65,12 +65,6 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->secret = secret;
     info->classId = theNextClassId;
 
-    if (parent != NULL) {
-        // Initialize the method table with whatever the parent defined.
-        utilCpy(zvalue, info->methods, getInfo(parent)->methods,
-            DAT_MAX_SELECTORS);
-    }
-
     theNextClassId++;
     datImmortalize(cls);
 }
@@ -136,6 +130,34 @@ static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
 //
 // Module Definitions
 //
+
+// Documented in header.
+void classBindMethods(zvalue cls, zvalue classMethods,
+        zvalue instanceMethods) {
+    ClassInfo *info = getInfo(cls);
+
+    if (info->parent != NULL) {
+        // Initialize the instance method table with whatever the parent
+        // defined.
+        utilCpy(zvalue, info->methods, getInfo(info->parent)->methods,
+            DAT_MAX_SELECTORS);
+    }
+
+    if (classMethods != NULL) {
+        die("No class methods allowed...yet.");
+    }
+
+    if (instanceMethods != NULL) {
+        zvalue methods[DAT_MAX_SELECTORS];
+        arrayFromSelectorTable(methods, instanceMethods);
+        for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+            zvalue one = methods[i];
+            if (one != NULL) {
+                info->methods[i] = one;
+            }
+        }
+    }
+}
 
 // Documented in header.
 zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
@@ -272,21 +294,7 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
     zvalue result = allocClass();
     ClassInfo *info = getInfo(result);
     classInit(result, name, parent, secret);
-
-    if (classMethods != NULL) {
-        die("No class methods allowed...yet.");
-    }
-
-    if (instanceMethods != NULL) {
-        zvalue methods[DAT_MAX_SELECTORS];
-        arrayFromSelectorTable(methods, instanceMethods);
-        for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
-            zvalue one = methods[i];
-            if (one != NULL) {
-                info->methods[i] = one;
-            }
-        }
-    }
+    classBindMethods(result, classMethods, instanceMethods);
 
     return result;
 }
