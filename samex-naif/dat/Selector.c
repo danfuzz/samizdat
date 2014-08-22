@@ -302,12 +302,15 @@ MOD_INIT(Selector) {
     MOD_USE(Function);
 
     // Note: The `objectModel` module initializes `CLS_Selector`.
-
-    METH_BIND(Selector, call);
-    METH_BIND(Selector, debugName);
-    METH_BIND(Selector, debugString);
-    METH_BIND(Selector, gcMark);
-    METH_BIND(Selector, totalOrder);
+    classBindMethods(CLS_Selector,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Selector, call),
+            SEL_METH(Selector, debugName),
+            SEL_METH(Selector, debugString),
+            SEL_METH(Selector, gcMark),
+            SEL_METH(Selector, totalOrder),
+            NULL));
 
     FUN_Selector_makeAnonymousSelector = makeBuiltin(1, 1,
         METH_NAME(Selector, makeAnonymousSelector), 0,

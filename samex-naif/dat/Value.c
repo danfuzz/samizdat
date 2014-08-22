@@ -234,8 +234,6 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(String);
     MOD_USE_NEXT(Uniqlet);
 
-    // Note: The `objectModel` module initializes `CLS_Value`.
-
     SEL_INIT(debugName);
     SEL_INIT(debugString);
     SEL_INIT(gcMark);
@@ -244,13 +242,18 @@ MOD_INIT(Value) {
     SEL_INIT(totalEq);
     SEL_INIT(totalOrder);
 
-    METH_BIND(Value, debugName);
-    METH_BIND(Value, debugString);
-    METH_BIND(Value, gcMark);
-    METH_BIND(Value, perEq);
-    METH_BIND(Value, perOrder);
-    METH_BIND(Value, totalEq);
-    METH_BIND(Value, totalOrder);
+    // Note: The `objectModel` module initializes `CLS_Value`.
+    classBindMethods(CLS_Value,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Value, debugName),
+            SEL_METH(Value, debugString),
+            SEL_METH(Value, gcMark),
+            SEL_METH(Value, perEq),
+            SEL_METH(Value, perOrder),
+            SEL_METH(Value, totalEq),
+            SEL_METH(Value, totalOrder),
+            NULL));
 }
 
 // Documented in header.
