@@ -446,10 +446,13 @@ MOD_INIT(Class) {
     MOD_USE(OneOff);
 
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
-
-    METH_BIND(Class, debugString);
-    METH_BIND(Class, gcMark);
-    METH_BIND(Class, totalOrder);
+    classBindMethods(CLS_Class,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Class, debugString),
+            SEL_METH(Class, gcMark),
+            SEL_METH(Class, totalOrder),
+            NULL));
 }
 
 // Documented in header.
