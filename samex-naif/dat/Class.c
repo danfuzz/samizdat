@@ -263,21 +263,29 @@ bool haveSameClass(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-zvalue makeClass(zvalue name, zvalue parent, zvalue secret) {
+zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
+        zvalue classMethods, zvalue instanceMethods) {
     assertHasClassClass(parent);
 
     zvalue result = allocClass();
     classInit(result, name, parent, secret);
+
+    if (classMethods != NULL) {
+        die("No class methods allowed...yet.");
+    }
+
+    if (instanceMethods != NULL) {
+        die("No instance methods allowed...yet.");
+    }
+
     return result;
 }
 
 // Documented in header.
-zvalue makeCoreClass(zvalue name, zvalue parent) {
-    assertHasClassClass(parent);
-
-    zvalue result = allocClass();
-    classInit(result, name, parent, theCoreSecret);
-    return result;
+zvalue makeCoreClass(zvalue name, zvalue parent,
+        zvalue classMethods, zvalue instanceMethods) {
+    return makeClass(name, parent, theCoreSecret,
+        classMethods, instanceMethods);
 }
 
 

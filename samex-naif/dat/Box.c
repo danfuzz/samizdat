@@ -180,7 +180,9 @@ MOD_INIT(Box) {
 
     SEL_INIT(store);
 
-    CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value);
+    CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value,
+        NULL,
+        NULL);
 
     METH_BIND(Box, collect);
     METH_BIND(Box, fetch);

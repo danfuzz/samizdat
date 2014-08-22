@@ -86,16 +86,18 @@ bool hasClass(zvalue value, zvalue cls);
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
- * Makes a new class. `name` is the class's name. `parent` is its superclass.
- * `secret` is the construction and access secret.
+ * Makes a new class. `name` is the class's name (a string). `parent` is its
+ * superclass. `secret` is the construction and access secret (an arbitrary
+ * value). The two method table arguments must be `SelectorTable`s or `NULL`.
  */
-zvalue makeClass(zvalue name, zvalue parent, zvalue secret);
+zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
+        zvalue classMethods, zvalue instanceMethods);
 
 /**
- * Makes a new core class. `name` is the class's name. `parent` is its
- * superclass. It is a fatal error to call this function more than once with
- * any given name.
+ * Makes a new core class. This is just like `makeClass`, except that the
+ * predefined core class secret is used.
  */
-zvalue makeCoreClass(zvalue name, zvalue parent);
+zvalue makeCoreClass(zvalue name, zvalue parent,
+        zvalue classMethods, zvalue instanceMethods);
 
 #endif

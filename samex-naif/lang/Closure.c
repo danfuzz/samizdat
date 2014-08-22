@@ -371,7 +371,9 @@ MOD_INIT(Closure) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    CLS_Closure = makeCoreClass(stringFromUtf8(-1, "Closure"), CLS_Value);
+    CLS_Closure = makeCoreClass(stringFromUtf8(-1, "Closure"), CLS_Value,
+        NULL,
+        NULL);
 
     METH_BIND(Closure, call);
     METH_BIND(Closure, debugName);

@@ -116,7 +116,7 @@ zvalue makeDerivedDataClass(zvalue name) {
         die("Too many derived data classes!");
     }
 
-    result = makeClass(name, CLS_DerivedData, NULL);
+    result = makeClass(name, CLS_DerivedData, NULL, NULL, NULL);
     theClasses[theClassCount] = result;
     theClassCount++;
     theNeedSort = true;
