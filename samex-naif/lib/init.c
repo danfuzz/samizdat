@@ -24,6 +24,7 @@
 #include "type/Object.h"
 #include "type/OneOff.h"
 #include "type/Selector.h"
+#include "type/SelectorTable.h"
 #include "type/String.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
