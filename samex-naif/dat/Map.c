@@ -37,8 +37,8 @@ typedef struct {
 /**
  * Gets a pointer to the value's info.
  */
-static MapInfo *getInfo(zvalue list) {
-    return datPayload(list);
+static MapInfo *getInfo(zvalue map) {
+    return datPayload(map);
 }
 
 /**
