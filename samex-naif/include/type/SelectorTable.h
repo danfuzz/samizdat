@@ -22,6 +22,13 @@ extern zvalue FUN_SelectorTable_makeSelectorTable;
 
 
 /**
+ * Copies all the values of the given selector table into the given result
+ * array, which must be sized large enough to hold all of them. The result
+ * is indexed by selector index.
+ */
+void arrayFromSelectorTable(zvalue *result, zvalue selectorTable);
+
+/**
  * Makes a selector table from a series of individual arguments (selector
  * then value), `NULL` terminated.
  */

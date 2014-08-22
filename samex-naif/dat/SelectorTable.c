@@ -7,6 +7,7 @@
 #include "type/Builtin.h"
 #include "type/SelectorTable.h"
 #include "type/define.h"
+#include "util.h"
 
 #include "impl.h"
 
@@ -45,6 +46,14 @@ static zvalue allocInstance(void) {
 //
 
 // Documented in header.
+void arrayFromSelectorTable(zvalue *result, zvalue selectorTable) {
+    assertHasClass(selectorTable, CLS_SelectorTable);
+    SelectorTableInfo *info = getInfo(selectorTable);
+
+    utilCpy(zvalue, result, info->table, DAT_MAX_SELECTORS);
+}
+
+// Documented in header.
 zvalue selectorTableFromArgs(zvalue first, ...) {
     if (first == NULL) {
         return EMPTY_SELECTOR_TABLE;
@@ -52,27 +61,26 @@ zvalue selectorTableFromArgs(zvalue first, ...) {
 
     zvalue result = allocInstance();
     SelectorTableInfo *info = getInfo(result);
-    zvalue sel = NULL;
+    bool any = false;
     va_list rest;
 
     va_start(rest, first);
     for (;;) {
-        zvalue arg = va_arg(rest, zvalue);
+        zvalue sel = any ? va_arg(rest, zvalue) : first;
 
-        if (arg == NULL) {
+        if (sel == NULL) {
             break;
-        } else if (sel == NULL) {
-            sel = arg;
-        } else {
-            info->table[selectorIndex(sel)] = arg;
-            sel = NULL;
         }
+
+        zvalue value = va_arg(rest, zvalue);
+        if (value == NULL) {
+            die("Odd argument count for selector table construction.");
+        }
+
+        info->table[selectorIndex(sel)] = value;
+        any = true;
     }
     va_end(rest);
-
-    if (sel != NULL) {
-        die("Odd argument count for selector table construction.");
-    }
 
     return result;
 }
