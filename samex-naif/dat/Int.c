@@ -194,7 +194,7 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    CLS_Int = makeCoreClass(stringFromUtf8(-1, "Int"), CLS_Data,
+    CLS_Int = makeCoreClass("Int", CLS_Data,
         NULL,
         NULL);
 

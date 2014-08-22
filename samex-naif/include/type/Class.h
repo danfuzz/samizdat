@@ -95,9 +95,9 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
 
 /**
  * Makes a new core class. This is just like `makeClass`, except that the
- * predefined core class secret is used.
+ * name is a C string and the predefined core class secret is used.
  */
-zvalue makeCoreClass(zvalue name, zvalue parent,
+zvalue makeCoreClass(const char *name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods);
 
 #endif

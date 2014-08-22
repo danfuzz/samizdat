@@ -151,7 +151,7 @@ MOD_INIT(SelectorTable) {
     MOD_USE(Selector);
     MOD_USE(OneOff);
 
-    CLS_SelectorTable = makeCoreClass(stringFromUtf8(-1, "SelectorTable"), CLS_Data,
+    CLS_SelectorTable = makeCoreClass("SelectorTable", CLS_Data,
         NULL,
         NULL);
 

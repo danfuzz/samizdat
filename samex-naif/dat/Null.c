@@ -41,7 +41,7 @@ METH_IMPL(Null, totalOrder) {
 MOD_INIT(Null) {
     MOD_USE(Int);
 
-    CLS_Null = makeCoreClass(stringFromUtf8(-1, "Null"), CLS_Data,
+    CLS_Null = makeCoreClass("Null", CLS_Data,
         NULL,
         NULL);
 

@@ -282,9 +282,9 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
 }
 
 // Documented in header.
-zvalue makeCoreClass(zvalue name, zvalue parent,
+zvalue makeCoreClass(const char *name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
-    return makeClass(name, parent, theCoreSecret,
+    return makeClass(stringFromUtf8(-1, name), parent, theCoreSecret,
         classMethods, instanceMethods);
 }
 

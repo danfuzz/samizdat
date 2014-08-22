@@ -189,7 +189,7 @@ MOD_INIT(Bool) {
     MOD_USE(Int);
     MOD_USE(OneOff);
 
-    CLS_Bool = makeCoreClass(stringFromUtf8(-1, "Bool"), CLS_Data,
+    CLS_Bool = makeCoreClass("Bool", CLS_Data,
         NULL,
         NULL);
 
