@@ -37,7 +37,7 @@ static SelectorTableInfo *getInfo(zvalue selectorTable) {
  * Allocates an instance.
  */
 static zvalue allocInstance(void) {
-    return datAllocValue(CLS_SelectorTable, 0);
+    return datAllocValue(CLS_SelectorTable, sizeof(SelectorTableInfo));
 }
 
 
