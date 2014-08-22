@@ -171,13 +171,14 @@ MOD_INIT(SelectorTable) {
     MOD_USE(Selector);
     MOD_USE(OneOff);
 
-    CLS_SelectorTable = makeCoreClass("SelectorTable", CLS_Data,
+    // Note: The `objectModel` module initializes `CLS_SelectorTable`.
+    classBindMethods(CLS_SelectorTable,
         NULL,
-        NULL);
-
-    METH_BIND(SelectorTable, gcMark);
-    METH_BIND(SelectorTable, get);
-    METH_BIND(SelectorTable, totalEq);
+        selectorTableFromArgs(
+            SEL_METH(SelectorTable, gcMark),
+            SEL_METH(SelectorTable, get),
+            SEL_METH(SelectorTable, totalEq),
+            NULL));
 
     FUN_SelectorTable_makeSelectorTable = makeBuiltin(0, -1,
         METH_NAME(SelectorTable, makeSelectorTable), 0,
