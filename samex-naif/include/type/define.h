@@ -11,10 +11,22 @@
 #ifndef _TYPE_DEFINE_H_
 #define _TYPE_DEFINE_H_
 
+#include "type/Builtin.h"
 #include "type/Class.h"
 #include "type/Function.h"
 #include "type/Selector.h"
+#include "type/SelectorTable.h"
 #include "type/String.h"
+
+/**
+ * Expands to a comma-separated pair of selector and builtin function,
+ * for the indicated method. This is for use in calls to
+ * `selectorTableFromArgs`.
+ */
+#define SEL_METH(cls, name) \
+    SEL_NAME(name), \
+    makeBuiltin(SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
+        METH_NAME(cls, name), 0, stringFromUtf8(-1, #cls "." #name)) \
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(cls, name) \

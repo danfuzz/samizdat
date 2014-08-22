@@ -13,6 +13,7 @@
 #include "type/Object.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
+#include "util.h"
 #include "zlimits.h"
 
 #include "impl.h"
@@ -63,6 +64,12 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->name = name;
     info->secret = secret;
     info->classId = theNextClassId;
+
+    if (parent != NULL) {
+        // Initialize the method table with whatever the parent defined.
+        utilCpy(zvalue, info->methods, getInfo(parent)->methods,
+            DAT_MAX_SELECTORS);
+    }
 
     theNextClassId++;
     datImmortalize(cls);
@@ -179,11 +186,6 @@ void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
     zint index = selectorIndex(selector);
     zvalue *methods = getInfo(cls)->methods;
 
-    if (methods[index] != NULL) {
-        die("Cannot rebind method: %s%s",
-            valDebugString(cls), valDebugString(selector));
-    }
-
     methods[index] = function;
 }
 
@@ -268,6 +270,7 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
     assertHasClassClass(parent);
 
     zvalue result = allocClass();
+    ClassInfo *info = getInfo(result);
     classInit(result, name, parent, secret);
 
     if (classMethods != NULL) {
@@ -275,7 +278,14 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
     }
 
     if (instanceMethods != NULL) {
-        die("No instance methods allowed...yet.");
+        zvalue methods[DAT_MAX_SELECTORS];
+        arrayFromSelectorTable(methods, instanceMethods);
+        for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+            zvalue one = methods[i];
+            if (one != NULL) {
+                info->methods[i] = one;
+            }
+        }
     }
 
     return result;
