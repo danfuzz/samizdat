@@ -86,11 +86,8 @@ bool hasClass(zvalue value, zvalue cls);
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
- * Makes a new class or finds a pre-existing one. `name` is the class's name.
- * `parent` is its superclass. `secret` is the construction and access secret.
- * If a class has already been created with the same name and secret, then
- * this returns that one; in this case, it is a fatal error to pass a `parent`
- * that doesn't match the pre-existing one.
+ * Makes a new class. `name` is the class's name. `parent` is its superclass.
+ * `secret` is the construction and access secret.
  */
 zvalue makeClass(zvalue name, zvalue parent, zvalue secret);
 
