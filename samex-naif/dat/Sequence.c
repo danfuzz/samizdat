@@ -102,17 +102,8 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 // Class(ish) Definition: `Sequence`
 //
 // **Note:** This isn't the usual form of class definition, since these
-// methods are bound on many classes.
+// methods are bound on a couple classes.
 //
-
-/** Builtin for `Sequence.get`. */
-static zvalue BI_Sequence_get = NULL;
-
-/** Builtin for `Sequence.keyList`. */
-static zvalue BI_Sequence_keyList = NULL;
-
-/** Builtin for `Sequence.nthMapping`. */
-static zvalue BI_Sequence_nthMapping = NULL;
 
 // Documented in header.
 METH_IMPL(Sequence, get) {
@@ -154,13 +145,6 @@ METH_IMPL(Sequence, nthMapping) {
     }
 }
 
-// Documented in header.
-void seqBind(zvalue cls) {
-    classAddMethod(cls, SEL_NAME(get),        BI_Sequence_get);
-    classAddMethod(cls, SEL_NAME(keyList),    BI_Sequence_keyList);
-    classAddMethod(cls, SEL_NAME(nthMapping), BI_Sequence_nthMapping);
-}
-
 /** Initializes the module. */
 MOD_INIT(Sequence) {
     MOD_USE(Collection);
@@ -170,17 +154,20 @@ MOD_INIT(Sequence) {
     SEL_INIT(sliceExclusive);
     SEL_INIT(sliceInclusive);
 
-    BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get), 0,
+    FUN_Sequence_get = makeBuiltin(2, 2,
+        METH_NAME(Sequence, get), 0,
         stringFromUtf8(-1, "Sequence.get"));
-    datImmortalize(BI_Sequence_get);
+    datImmortalize(FUN_Sequence_get);
 
-    BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList), 0,
+    FUN_Sequence_keyList = makeBuiltin(1, 1,
+        METH_NAME(Sequence, keyList), 0,
         stringFromUtf8(-1, "Sequence.keyList"));
-    datImmortalize(BI_Sequence_keyList);
+    datImmortalize(FUN_Sequence_keyList);
 
-    BI_Sequence_nthMapping = makeBuiltin(1, 1, METH_NAME(Sequence, nthMapping),
+    FUN_Sequence_nthMapping = makeBuiltin(1, 1,
+        METH_NAME(Sequence, nthMapping),
         0, stringFromUtf8(-1, "Sequence.nthMapping"));
-    datImmortalize(BI_Sequence_nthMapping);
+    datImmortalize(FUN_Sequence_nthMapping);
 }
 
 // Documented in header.
@@ -191,3 +178,12 @@ SEL_DEF(sliceExclusive);
 
 // Documented in header.
 SEL_DEF(sliceInclusive);
+
+// Documented in header.
+zvalue FUN_Sequence_get = NULL;
+
+// Documented in header.
+zvalue FUN_Sequence_keyList = NULL;
+
+// Documented in header.
+zvalue FUN_Sequence_nthMapping = NULL;

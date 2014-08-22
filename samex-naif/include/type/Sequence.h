@@ -28,6 +28,15 @@ SEL_DECL(2, 3, sliceExclusive);
 /** Method `.sliceInclusive(start, end?)`: Documented in spec. */
 SEL_DECL(2, 3, sliceInclusive);
 
+/** Standard implementation for `Sequence.get`. */
+extern zvalue FUN_Sequence_get;
+
+/** Standard implementation for `Sequence.keyList`. */
+extern zvalue FUN_Sequence_keyList;
+
+/** Standard implementation for `Sequence.nthMapping`. */
+extern zvalue FUN_Sequence_nthMapping;
+
 /**
  * Validates and converts the `start` and optional `end` arguments to
  * a `slice{Ex,In}clusive` call, based on having a collection of the given
@@ -62,12 +71,5 @@ zint seqNthIndexStrict(zint size, zvalue n);
  * termination.
  */
 zint seqPutIndexStrict(zint size, zvalue n);
-
-/**
- * Binds the standard methods for a `Sequence` class. That is, this
- * is for collections whose keys form a zero-based `Int` sequence.
- * In particular, this binds `get`, `keyList`, and `nthMapping`.
- */
-void seqBind(zvalue cls);
 
 #endif

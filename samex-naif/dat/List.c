@@ -430,9 +430,10 @@ MOD_INIT(List) {
             SEL_METH(List, totalEq),
             SEL_METH(List, totalOrder),
             SEL_METH(List, valueList),
+            SEL_NAME(get),        FUN_Sequence_get,
+            SEL_NAME(keyList),    FUN_Sequence_keyList,
+            SEL_NAME(nthMapping), FUN_Sequence_nthMapping,
             NULL));
-
-    seqBind(CLS_List);
 
     EMPTY_LIST = allocList(0);
     datImmortalize(EMPTY_LIST);

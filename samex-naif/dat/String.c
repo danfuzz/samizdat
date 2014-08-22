@@ -683,9 +683,10 @@ MOD_INIT(String) {
             SEL_METH(String, totalEq),
             SEL_METH(String, totalOrder),
             SEL_METH(String, valueList),
+            SEL_NAME(get),        FUN_Sequence_get,
+            SEL_NAME(keyList),    FUN_Sequence_keyList,
+            SEL_NAME(nthMapping), FUN_Sequence_nthMapping,
             NULL));
-
-    seqBind(CLS_String);
 
     EMPTY_STRING = allocString(0);
     datImmortalize(EMPTY_STRING);
