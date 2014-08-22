@@ -77,7 +77,7 @@ zvalue mustNotYield(zvalue value)
     DAT_CONCAT(funCallWith, argCount)(__VA_ARGS__)
 
 /**
- * `METH_APPLY(name, args)`: Calls a metho by (unadorned) name,
+ * `METH_APPLY(name, args)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed as a list.
  */
 #define METH_APPLY(name, args) funApply(SEL_NAME(name), args)
@@ -91,7 +91,7 @@ zvalue mustNotYield(zvalue value)
 
 //
 // Helpers for `FUN_CALL` and `METH_CALL`. Each of these calls a given
-// function with a  different number of (particular) arguments.
+// function with a different number of (particular) arguments.
 //
 
 inline zvalue funCallWith0(zvalue function) {
