@@ -43,10 +43,10 @@ MOD_INIT(Null) {
 
     CLS_Null = makeCoreClass("Null", CLS_Data,
         NULL,
-        NULL);
-
-    METH_BIND(Null, totalEq);
-    METH_BIND(Null, totalOrder);
+        selectorTableFromArgs(
+            SEL_METH(Null, totalEq),
+            SEL_METH(Null, totalOrder),
+            NULL));
 
     THE_NULL = datAllocValue(CLS_Null, 0);
     datImmortalize(THE_NULL);

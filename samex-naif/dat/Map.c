@@ -639,24 +639,24 @@ MOD_INIT(Map) {
 
     CLS_Map = makeCoreClass("Map", CLS_Data,
         NULL,
-        NULL);
-
-    METH_BIND(Map, cat);
-    METH_BIND(Map, collect);
-    METH_BIND(Map, del);
-    METH_BIND(Map, fetch);
-    METH_BIND(Map, gcMark);
-    METH_BIND(Map, get);
-    METH_BIND(Map, get_key);
-    METH_BIND(Map, get_size);
-    METH_BIND(Map, get_value);
-    METH_BIND(Map, keyList);
-    METH_BIND(Map, nextValue);
-    METH_BIND(Map, nthMapping);
-    METH_BIND(Map, put);
-    METH_BIND(Map, totalEq);
-    METH_BIND(Map, totalOrder);
-    METH_BIND(Map, valueList);
+        selectorTableFromArgs(
+            SEL_METH(Map, cat),
+            SEL_METH(Map, collect),
+            SEL_METH(Map, del),
+            SEL_METH(Map, fetch),
+            SEL_METH(Map, gcMark),
+            SEL_METH(Map, get),
+            SEL_METH(Map, get_key),
+            SEL_METH(Map, get_size),
+            SEL_METH(Map, get_value),
+            SEL_METH(Map, keyList),
+            SEL_METH(Map, nextValue),
+            SEL_METH(Map, nthMapping),
+            SEL_METH(Map, put),
+            SEL_METH(Map, totalEq),
+            SEL_METH(Map, totalOrder),
+            SEL_METH(Map, valueList),
+            NULL));
 
     EMPTY_MAP = allocMap(0);
     datImmortalize(EMPTY_MAP);

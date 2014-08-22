@@ -182,13 +182,13 @@ MOD_INIT(Box) {
 
     CLS_Box = makeCoreClass("Box", CLS_Value,
         NULL,
-        NULL);
-
-    METH_BIND(Box, collect);
-    METH_BIND(Box, fetch);
-    METH_BIND(Box, gcMark);
-    METH_BIND(Box, nextValue);
-    METH_BIND(Box, store);
+        selectorTableFromArgs(
+            SEL_METH(Box, collect),
+            SEL_METH(Box, fetch),
+            SEL_METH(Box, gcMark),
+            SEL_METH(Box, nextValue),
+            SEL_METH(Box, store),
+            NULL));
 }
 
 // Documented in header.

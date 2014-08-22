@@ -74,8 +74,9 @@ MOD_INIT(MapCache) {
     // which we use as a trigger to clear the map cache.
     zvalue CLS_MapCache = makeCoreClass("MapCache", CLS_Value,
         NULL,
-        NULL);
+        selectorTableFromArgs(
+            SEL_METH(MapCache, gcMark),
+            NULL));
 
-    METH_BIND(MapCache, gcMark);
     datImmortalize(datAllocValue(CLS_MapCache, 0));
 }
