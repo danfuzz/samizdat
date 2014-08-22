@@ -4,7 +4,8 @@ Samizdat Layer 0: Core Library
 Selector
 -------
 
-A `Selector` is an identifier used when referring to methods.
+A `Selector` is an identifier used when referring to methods and other
+language constructs.
 
 
 <br><br>

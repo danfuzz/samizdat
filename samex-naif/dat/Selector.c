@@ -35,8 +35,8 @@ static bool theNeedSort = false;
  * Selector structure.
  */
 typedef struct {
-    /** Name of the method. Always a string. */
-    zvalue methodName;
+    /** Name of the selector. Always a string. */
+    zvalue name;
 
     /** Whether this instance is interned. */
     bool interned;
@@ -56,15 +56,15 @@ static SelectorInfo *getInfo(zvalue selector) {
  * Creates and returns a new selector with the given name. Does no checking
  * other than that there aren't already too many selectors.
  */
-static zvalue makeSelector(zvalue methodName, bool interned) {
+static zvalue makeSelector(zvalue name, bool interned) {
     if (theNextIndex >= DAT_MAX_SELECTORS) {
-        die("Too many method selectors!");
+        die("Too many selectors!");
     }
 
     zvalue result = datAllocValue(CLS_Selector, sizeof(SelectorInfo));
     SelectorInfo *info = getInfo(result);
 
-    info->methodName = methodName;
+    info->name = name;
     info->interned = interned;
     info->index = theNextIndex;
     theNextIndex++;
@@ -80,14 +80,14 @@ static zvalue makeSelector(zvalue methodName, bool interned) {
 }
 
 /**
- * Compares a method name with a selector. Common function used for searching,
+ * Compares a name with a selector. Common function used for searching,
  * sorting, and ordering.
  */
-static int compareNameAndSelector(zvalue methodName, zvalue selector) {
+static int compareNameAndSelector(zvalue name, zvalue selector) {
     SelectorInfo *info = getInfo(selector);
-    zvalue methodName2 = info->methodName;
+    zvalue name2 = info->name;
 
-    return stringZorder(methodName, methodName2);
+    return stringZorder(name, name2);
 }
 
 /**
@@ -98,23 +98,23 @@ static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v2 = *(zvalue *) vptr2;
     SelectorInfo *info1 = getInfo(v1);
 
-    return compareNameAndSelector(info1->methodName, v2);
+    return compareNameAndSelector(info1->name, v2);
 }
 
 /**
- * Compares a method name with a selector. Used for searching.
+ * Compares a name with a selector. Used for searching.
  */
 static int searchOrder(const void *key, const void *vptr) {
-    zvalue methodName = (zvalue) key;
+    zvalue name = (zvalue) key;
     zvalue selector = *(zvalue *) vptr;
 
-    return compareNameAndSelector(methodName, selector);
+    return compareNameAndSelector(name, selector);
 }
 
 /**
  * Finds an existing interned selector with the given name, if any.
  */
-static zvalue findInternedSelector(zvalue methodName) {
+static zvalue findInternedSelector(zvalue name) {
     if (theNeedSort) {
         mergesort(
             theInternedSelectors, theInternedSelectorCount,
@@ -123,7 +123,7 @@ static zvalue findInternedSelector(zvalue methodName) {
     }
 
     zvalue *found = (zvalue *) bsearch(
-        methodName, theInternedSelectors, theInternedSelectorCount,
+        name, theInternedSelectors, theInternedSelectorCount,
         sizeof(zvalue), searchOrder);
 
     return (found == NULL) ? NULL : *found;
@@ -150,8 +150,8 @@ static char *callReporter(void *state) {
 //
 
 // Documented in header.
-zvalue makeAnonymousSelector(zvalue methodName) {
-    return makeSelector(methodName, false);
+zvalue makeAnonymousSelector(zvalue name) {
+    return makeSelector(name, false);
 }
 
 // Documented in header.
@@ -176,14 +176,14 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-zvalue selectorFromName(zvalue methodName) {
-    zvalue result = findInternedSelector(methodName);
+zvalue selectorFromName(zvalue name) {
+    zvalue result = findInternedSelector(name);
 
     if (result == NULL) {
-        if (!hasClass(methodName, CLS_String)) {
-            die("Improper method name: %s", valDebugString(methodName));
+        if (!hasClass(name, CLS_String)) {
+            die("Improper selector name: %s", valDebugString(name));
         }
-        result = makeSelector(methodName, true);
+        result = makeSelector(name, true);
     }
 
     return result;
@@ -212,7 +212,7 @@ METH_IMPL(Selector, debugName) {
     zvalue selector = args[0];
     SelectorInfo *info = getInfo(selector);
 
-    return info->methodName;
+    return info->name;
 }
 
 // Documented in header.
@@ -221,7 +221,7 @@ METH_IMPL(Selector, debugString) {
     SelectorInfo *info = getInfo(selector);
     const char *prefix = info->interned ? "@." : "@?";
 
-    return METH_CALL(cat, stringFromUtf8(-1, prefix), info->methodName);
+    return METH_CALL(cat, stringFromUtf8(-1, prefix), info->name);
 }
 
 // Documented in header.
@@ -229,7 +229,7 @@ METH_IMPL(Selector, gcMark) {
     zvalue selector = args[0];
     SelectorInfo *info = getInfo(selector);
 
-    datMark(info->methodName);
+    datMark(info->name);
     return NULL;
 }
 
@@ -255,7 +255,7 @@ METH_IMPL(Selector, selectorName) {
     assertHasClass(selector, CLS_Selector);
 
     SelectorInfo *info = getInfo(selector);
-    return info->methodName;
+    return info->name;
 }
 
 /** Function (not method) `selectorFromName`. Documented in spec. */
@@ -285,7 +285,7 @@ METH_IMPL(Selector, totalOrder) {
         return interned ? INT_NEG1 : INT_1;
     }
 
-    zorder order = stringZorder(info1->methodName, info2->methodName);
+    zorder order = stringZorder(info1->name, info2->name);
     switch (order) {
         case ZLESS: return INT_NEG1;
         case ZMORE: return INT_1;
