@@ -109,6 +109,18 @@ zvalue selectorTableFromArray(zint size, zmapping *mappings) {
 //
 
 // Documented in header.
+METH_IMPL(SelectorTable, gcMark) {
+    zvalue table = args[0];
+    SelectorTableInfo *info = getInfo(table);
+
+    for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+        datMark(info->table[i]);
+    }
+
+    return NULL;
+}
+
+// Documented in header.
 METH_IMPL(SelectorTable, get) {
     zvalue table = args[0];
     zvalue sel = args[1];
@@ -163,6 +175,7 @@ MOD_INIT(SelectorTable) {
         NULL,
         NULL);
 
+    METH_BIND(SelectorTable, gcMark);
     METH_BIND(SelectorTable, get);
     METH_BIND(SelectorTable, totalEq);
 
