@@ -154,10 +154,13 @@ MOD_INIT(Builtin) {
     MOD_USE(OneOff);
 
     // Note: The `objectModel` module initializes `CLS_Builtin`.
-
-    METH_BIND(Builtin, call);
-    METH_BIND(Builtin, debugName);
-    METH_BIND(Builtin, gcMark);
+    classBindMethods(CLS_Builtin,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Builtin, call),
+            SEL_METH(Builtin, debugName),
+            SEL_METH(Builtin, gcMark),
+            NULL));
 }
 
 // Documented in header.

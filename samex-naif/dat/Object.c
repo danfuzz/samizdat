@@ -125,12 +125,15 @@ METH_IMPL(Object, makeObjectClass) {
 MOD_INIT(Object) {
     MOD_USE(Value);
 
-    // Note: The `objectModel` module initializes `CLS_Object`.
-
     SEL_INIT(objectDataOf);
 
-    METH_BIND(Object, objectDataOf);
-    METH_BIND(Object, gcMark);
+    // Note: The `objectModel` module initializes `CLS_Object`.
+    classBindMethods(CLS_Object,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Object, objectDataOf),
+            SEL_METH(Object, gcMark),
+            NULL));
 
     FUN_Object_makeObject = makeBuiltin(2, 3,
         METH_NAME(Object, makeObject), 0,
