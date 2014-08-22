@@ -163,7 +163,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 // Documented in header.
 zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
     // TODO: Remove the heritage lookup once subclass tables get populated
-    // with their superclasses' methods.
+    // with their superclasses' methods and become thereafter immutable.
 
     assertHasClassClass(cls);
     zvalue result = NULL;
@@ -210,14 +210,6 @@ void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
     zvalue *methods = getInfo(cls)->methods;
 
     methods[index] = function;
-}
-
-// Documented in header.
-void classAddPrimitiveMethod(zvalue cls, zvalue selector, zint minArgs,
-        zint maxArgs, zfunction function, const char *functionName) {
-    zvalue name = stringFromUtf8(-1, functionName);
-    zvalue builtin = makeBuiltin(minArgs, maxArgs, function, 0, name);
-    classAddMethod(cls, selector, builtin);
 }
 
 // Documented in header.

@@ -28,15 +28,6 @@
     makeBuiltin(SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
         METH_NAME(cls, name), 0, stringFromUtf8(-1, #cls "." #name)) \
 
-/** Performs binding of the indicated method. */
-#define METH_BIND(cls, name) \
-    do { \
-        classAddPrimitiveMethod( \
-            CLS_##cls, SEL_NAME(name), \
-            SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
-            METH_NAME(cls, name), #cls "." #name); \
-    } while (0)
-
 /** Variable definition for a method selector. */
 #define SEL_DEF(name) \
     zvalue SEL_NAME(name) = NULL
