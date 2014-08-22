@@ -31,7 +31,7 @@ equal sets of mappings.
 #### `.totalOrder(other) -> int`
 
 Default implementation. Two non-identical selector tables are not considered
-comparable.
+ordered with respect to each other.
 
 
 <br><br>
