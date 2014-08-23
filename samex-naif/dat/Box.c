@@ -180,13 +180,15 @@ MOD_INIT(Box) {
 
     SEL_INIT(store);
 
-    CLS_Box = makeCoreClass(stringFromUtf8(-1, "Box"), CLS_Value);
-
-    METH_BIND(Box, collect);
-    METH_BIND(Box, fetch);
-    METH_BIND(Box, gcMark);
-    METH_BIND(Box, nextValue);
-    METH_BIND(Box, store);
+    CLS_Box = makeCoreClass("Box", CLS_Value,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Box, collect),
+            SEL_METH(Box, fetch),
+            SEL_METH(Box, gcMark),
+            SEL_METH(Box, nextValue),
+            SEL_METH(Box, store),
+            NULL));
 }
 
 // Documented in header.

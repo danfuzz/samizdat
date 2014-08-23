@@ -194,31 +194,33 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    CLS_Int = makeCoreClass(stringFromUtf8(-1, "Int"), CLS_Data);
-
-    METH_BIND(Int, abs);
-    METH_BIND(Int, add);
-    METH_BIND(Int, and);
-    METH_BIND(Int, bit);
-    METH_BIND(Int, bitSize);
-    METH_BIND(Int, div);
-    METH_BIND(Int, divEu);
-    METH_BIND(Int, mod);
-    METH_BIND(Int, modEu);
-    METH_BIND(Int, mul);
-    METH_BIND(Int, neg);
-    METH_BIND(Int, not);
-    METH_BIND(Int, or);
-    METH_BIND(Int, shl);
-    METH_BIND(Int, shr);
-    METH_BIND(Int, sign);
-    METH_BIND(Int, sub);
-    METH_BIND(Int, xor);
-    METH_BIND(Int, toInt);
-    METH_BIND(Int, toNumber);
-    METH_BIND(Int, toString);
-    METH_BIND(Int, totalEq);
-    METH_BIND(Int, totalOrder);
+    CLS_Int = makeCoreClass("Int", CLS_Data,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Int, abs),
+            SEL_METH(Int, add),
+            SEL_METH(Int, and),
+            SEL_METH(Int, bit),
+            SEL_METH(Int, bitSize),
+            SEL_METH(Int, div),
+            SEL_METH(Int, divEu),
+            SEL_METH(Int, mod),
+            SEL_METH(Int, modEu),
+            SEL_METH(Int, mul),
+            SEL_METH(Int, neg),
+            SEL_METH(Int, not),
+            SEL_METH(Int, or),
+            SEL_METH(Int, shl),
+            SEL_METH(Int, shr),
+            SEL_METH(Int, sign),
+            SEL_METH(Int, sub),
+            SEL_METH(Int, xor),
+            SEL_METH(Int, toInt),
+            SEL_METH(Int, toNumber),
+            SEL_METH(Int, toString),
+            SEL_METH(Int, totalEq),
+            SEL_METH(Int, totalOrder),
+            NULL));
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);

@@ -116,7 +116,7 @@ zvalue makeDerivedDataClass(zvalue name) {
         die("Too many derived data classes!");
     }
 
-    result = makeClass(name, CLS_DerivedData, NULL);
+    result = makeClass(name, CLS_DerivedData, NULL, NULL, NULL);
     theClasses[theClassCount] = result;
     theClassCount++;
     theNeedSort = true;
@@ -196,15 +196,18 @@ METH_IMPL(DerivedData, totalOrder) {
 MOD_INIT(DerivedData) {
     MOD_USE(Data);
 
-    // Note: The `objectModel` module initializes `CLS_DerivedData`.
-
     SEL_INIT(dataOf);
 
-    METH_BIND(DerivedData, dataOf);
-    METH_BIND(DerivedData, gcMark);
-    METH_BIND(DerivedData, get);
-    METH_BIND(DerivedData, totalEq);
-    METH_BIND(DerivedData, totalOrder);
+    // Note: The `objectModel` module initializes `CLS_DerivedData`.
+    classBindMethods(CLS_DerivedData,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(DerivedData, dataOf),
+            SEL_METH(DerivedData, gcMark),
+            SEL_METH(DerivedData, get),
+            SEL_METH(DerivedData, totalEq),
+            SEL_METH(DerivedData, totalOrder),
+            NULL));
 
     FUN_DerivedData_makeData = makeBuiltin(1, 2,
         METH_NAME(DerivedData, makeData), 0,

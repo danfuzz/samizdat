@@ -13,17 +13,6 @@
 #include "type/Data.h"
 
 
-/**
- * Arbitrary (key, value) mapping.
- */
-typedef struct {
-    /** The key. */
-    zvalue key;
-
-    /** The value. */
-    zvalue value;
-} zmapping;
-
 /** Class value for in-model class `Map`. */
 extern zvalue CLS_Map;
 

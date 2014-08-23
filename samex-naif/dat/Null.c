@@ -41,10 +41,12 @@ METH_IMPL(Null, totalOrder) {
 MOD_INIT(Null) {
     MOD_USE(Int);
 
-    CLS_Null = makeCoreClass(stringFromUtf8(-1, "Null"), CLS_Data);
-
-    METH_BIND(Null, totalEq);
-    METH_BIND(Null, totalOrder);
+    CLS_Null = makeCoreClass("Null", CLS_Data,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Null, totalEq),
+            SEL_METH(Null, totalOrder),
+            NULL));
 
     THE_NULL = datAllocValue(CLS_Null, 0);
     datImmortalize(THE_NULL);

@@ -72,8 +72,11 @@ MOD_INIT(MapCache) {
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `gcMark` method gets called during gc,
     // which we use as a trigger to clear the map cache.
-    zvalue CLS_MapCache =
-        makeCoreClass(stringFromUtf8(-1, "MapCache"), CLS_Value);
-    METH_BIND(MapCache, gcMark);
+    zvalue CLS_MapCache = makeCoreClass("MapCache", CLS_Value,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(MapCache, gcMark),
+            NULL));
+
     datImmortalize(datAllocValue(CLS_MapCache, 0));
 }

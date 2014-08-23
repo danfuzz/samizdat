@@ -22,10 +22,10 @@ enum {
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */
-    DAT_INDEX_BUILTIN = 6,
+    DAT_INDEX_BUILTIN = 7,
 
     /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 7,
+    DAT_INDEX_JUMP = 8,
 
     /** The class index for class `Selector`. */
     DAT_INDEX_SELECTOR = 2,
@@ -117,6 +117,14 @@ typedef struct {
  * lands.
  */
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
+ * Binds all the methods of a class. This is only supposed to be called from
+ * the class initialization of classes that are partially built by the
+ * object model bootstrap code. Everywhere else should use `makeClass()` or
+ * `makeCoreClass()`.
+ */
+void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 
 /**
  * Finds a method on a class, if bound. Returns the bound function if found

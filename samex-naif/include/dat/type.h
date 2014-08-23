@@ -22,6 +22,17 @@ typedef zvalue *zstackPointer;
 typedef zvalue (*zfunction)(
     zvalue thisFunction, zint argCount, const zvalue *args);
 
+/**
+ * Arbitrary (key, value) mapping.
+ */
+typedef struct {
+    /** The key. */
+    zvalue key;
+
+    /** The value. */
+    zvalue value;
+} zmapping;
+
 enum {
     /**
      * (Private) Size of the `DatHeader` struct; used so that `datPayload`

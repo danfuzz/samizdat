@@ -661,27 +661,32 @@ MOD_INIT(String) {
     MOD_USE(OneOff);
 
     // Note: The `objectModel` module initializes `CLS_String`.
-
-    METH_BIND(String, cat);
-    METH_BIND(String, collect);
-    METH_BIND(String, debugString);
-    METH_BIND(String, del);
-    METH_BIND(String, fetch);
-    METH_BIND(String, gcMark);
-    METH_BIND(String, get_size);
-    METH_BIND(String, nextValue);
-    METH_BIND(String, nth);
-    METH_BIND(String, put);
-    METH_BIND(String, reverse);
-    METH_BIND(String, sliceExclusive);
-    METH_BIND(String, sliceInclusive);
-    METH_BIND(String, toInt);
-    METH_BIND(String, toNumber);
-    METH_BIND(String, toString);
-    METH_BIND(String, totalEq);
-    METH_BIND(String, totalOrder);
-    METH_BIND(String, valueList);
-    seqBind(CLS_String);
+    classBindMethods(CLS_String,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(String, cat),
+            SEL_METH(String, collect),
+            SEL_METH(String, debugString),
+            SEL_METH(String, del),
+            SEL_METH(String, fetch),
+            SEL_METH(String, gcMark),
+            SEL_METH(String, get_size),
+            SEL_METH(String, nextValue),
+            SEL_METH(String, nth),
+            SEL_METH(String, put),
+            SEL_METH(String, reverse),
+            SEL_METH(String, sliceExclusive),
+            SEL_METH(String, sliceInclusive),
+            SEL_METH(String, toInt),
+            SEL_METH(String, toNumber),
+            SEL_METH(String, toString),
+            SEL_METH(String, totalEq),
+            SEL_METH(String, totalOrder),
+            SEL_METH(String, valueList),
+            SEL_NAME(get),        FUN_Sequence_get,
+            SEL_NAME(keyList),    FUN_Sequence_keyList,
+            SEL_NAME(nthMapping), FUN_Sequence_nthMapping,
+            NULL));
 
     EMPTY_STRING = allocString(0);
     datImmortalize(EMPTY_STRING);

@@ -98,10 +98,13 @@ MOD_INIT(Jump) {
     MOD_USE(Function);
 
     // Note: The `objectModel` module initializes `CLS_Jump`.
-
-    METH_BIND(Jump, call);
-    METH_BIND(Jump, debugString);
-    METH_BIND(Jump, gcMark);
+    classBindMethods(CLS_Jump,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Jump, call),
+            SEL_METH(Jump, debugString),
+            SEL_METH(Jump, gcMark),
+            NULL));
 }
 
 // Documented in header.

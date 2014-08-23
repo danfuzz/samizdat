@@ -28,16 +28,16 @@ extern zvalue FUN_Selector_selectorName;
 
 
 /**
- * Makes an anonymous selector. The `methodName` is used as the "debugging"
+ * Makes an anonymous selector. The `name` is used as the "debugging"
  * name but does not have any effect on lookup.
  */
-zvalue makeAnonymousSelector(zvalue methodName);
+zvalue makeAnonymousSelector(zvalue name);
 
 /**
  * Gets the selector that corresponds to the given method name, creating it
- * if it doesn't already exist. `methodName` must be a `String`.
+ * if it doesn't already exist. `name` must be a `String`.
  */
-zvalue selectorFromName(zvalue methodName);
+zvalue selectorFromName(zvalue name);
 
 /**
  * Gets the integer index of the given selector.

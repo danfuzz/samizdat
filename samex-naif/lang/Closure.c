@@ -371,11 +371,13 @@ MOD_INIT(Closure) {
     MOD_USE(Function);
     MOD_USE(OneOff);
 
-    CLS_Closure = makeCoreClass(stringFromUtf8(-1, "Closure"), CLS_Value);
-
-    METH_BIND(Closure, call);
-    METH_BIND(Closure, debugName);
-    METH_BIND(Closure, gcMark);
+    CLS_Closure = makeCoreClass("Closure", CLS_Value,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Closure, call),
+            SEL_METH(Closure, debugName),
+            SEL_METH(Closure, gcMark),
+            NULL));
 
     nodeCache = EMPTY_MAP;
     nodeCacheBox = makeCell(EMPTY_MAP);

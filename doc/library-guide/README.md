@@ -79,6 +79,7 @@ will be returned, or one of:
   * [Object](Object.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
   * [Selector](Selector.md)
+  * [SelectorTable](SelectorTable.md)
   * [String](String.md)
   * [Uniqlet](Uniqlet.md)
   * [Value (the base class/type)](Value.md)

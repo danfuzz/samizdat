@@ -412,24 +412,28 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    CLS_List = makeCoreClass(stringFromUtf8(-1, "List"), CLS_Data);
-
-    METH_BIND(List, cat);
-    METH_BIND(List, collect);
-    METH_BIND(List, del);
-    METH_BIND(List, fetch);
-    METH_BIND(List, gcMark);
-    METH_BIND(List, get_size);
-    METH_BIND(List, nextValue);
-    METH_BIND(List, nth);
-    METH_BIND(List, put);
-    METH_BIND(List, reverse);
-    METH_BIND(List, sliceExclusive);
-    METH_BIND(List, sliceInclusive);
-    METH_BIND(List, totalEq);
-    METH_BIND(List, totalOrder);
-    METH_BIND(List, valueList);
-    seqBind(CLS_List);
+    CLS_List = makeCoreClass("List", CLS_Data,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(List, cat),
+            SEL_METH(List, collect),
+            SEL_METH(List, del),
+            SEL_METH(List, fetch),
+            SEL_METH(List, gcMark),
+            SEL_METH(List, get_size),
+            SEL_METH(List, nextValue),
+            SEL_METH(List, nth),
+            SEL_METH(List, put),
+            SEL_METH(List, reverse),
+            SEL_METH(List, sliceExclusive),
+            SEL_METH(List, sliceInclusive),
+            SEL_METH(List, totalEq),
+            SEL_METH(List, totalOrder),
+            SEL_METH(List, valueList),
+            SEL_NAME(get),        FUN_Sequence_get,
+            SEL_NAME(keyList),    FUN_Sequence_keyList,
+            SEL_NAME(nthMapping), FUN_Sequence_nthMapping,
+            NULL));
 
     EMPTY_LIST = allocList(0);
     datImmortalize(EMPTY_LIST);

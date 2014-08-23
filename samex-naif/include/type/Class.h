@@ -31,14 +31,6 @@ void assertHasClass(zvalue value, zvalue cls);
 void classAddMethod(zvalue cls, zvalue selector, zvalue function);
 
 /**
- * Adds a new primitive method to a class. TODO: This function should get
- * removed once the system can cleanly construct classes with their methods
- * in one go.
- */
-void classAddPrimitiveMethod(zvalue cls, zvalue selector, zint minArgs,
-        zint maxArgs, zfunction function, const char *functionName);
-
-/**
  * Compares two classes for equality. It is an error to pass a non-class.
  */
 bool classEq(zvalue cls1, zvalue cls2);
@@ -86,19 +78,18 @@ bool hasClass(zvalue value, zvalue cls);
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
- * Makes a new class or finds a pre-existing one. `name` is the class's name.
- * `parent` is its superclass. `secret` is the construction and access secret.
- * If a class has already been created with the same name and secret, then
- * this returns that one; in this case, it is a fatal error to pass a `parent`
- * that doesn't match the pre-existing one.
+ * Makes a new class. `name` is the class's name (a string). `parent` is its
+ * superclass. `secret` is the construction and access secret (an arbitrary
+ * value). The two method table arguments must be `SelectorTable`s or `NULL`.
  */
-zvalue makeClass(zvalue name, zvalue parent, zvalue secret);
+zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
+        zvalue classMethods, zvalue instanceMethods);
 
 /**
- * Makes a new core class. `name` is the class's name. `parent` is its
- * superclass. It is a fatal error to call this function more than once with
- * any given name.
+ * Makes a new core class. This is just like `makeClass`, except that the
+ * name is a C string and the predefined core class secret is used.
  */
-zvalue makeCoreClass(zvalue name, zvalue parent);
+zvalue makeCoreClass(const char *name, zvalue parent,
+        zvalue classMethods, zvalue instanceMethods);
 
 #endif

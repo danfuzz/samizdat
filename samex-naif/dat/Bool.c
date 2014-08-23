@@ -189,20 +189,22 @@ MOD_INIT(Bool) {
     MOD_USE(Int);
     MOD_USE(OneOff);
 
-    CLS_Bool = makeCoreClass(stringFromUtf8(-1, "Bool"), CLS_Data);
-
-    METH_BIND(Bool, and);
-    METH_BIND(Bool, bit);
-    METH_BIND(Bool, bitSize);
-    METH_BIND(Bool, not);
-    METH_BIND(Bool, or);
-    METH_BIND(Bool, shl);
-    METH_BIND(Bool, shr);
-    METH_BIND(Bool, xor);
-    METH_BIND(Bool, toInt);
-    METH_BIND(Bool, toNumber);
-    METH_BIND(Bool, totalEq);
-    METH_BIND(Bool, totalOrder);
+    CLS_Bool = makeCoreClass("Bool", CLS_Data,
+        NULL,
+        selectorTableFromArgs(
+            SEL_METH(Bool, and),
+            SEL_METH(Bool, bit),
+            SEL_METH(Bool, bitSize),
+            SEL_METH(Bool, not),
+            SEL_METH(Bool, or),
+            SEL_METH(Bool, shl),
+            SEL_METH(Bool, shr),
+            SEL_METH(Bool, xor),
+            SEL_METH(Bool, toInt),
+            SEL_METH(Bool, toNumber),
+            SEL_METH(Bool, totalEq),
+            SEL_METH(Bool, totalOrder),
+            NULL));
 
     BOOL_FALSE = boolFrom(false);
     datImmortalize(BOOL_FALSE);
