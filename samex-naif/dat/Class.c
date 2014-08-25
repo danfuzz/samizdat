@@ -11,6 +11,7 @@
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Object.h"
+#include "type/Selector.h"
 #include "type/SelectorTable.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
@@ -81,7 +82,7 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
  * Helper for initializing the classes built directly in this file.
  */
 static void classInitHere(zvalue cls, zvalue parent, const char *name) {
-    classInit(cls, stringFromUtf8(-1, name), parent, theCoreSecret);
+    classInit(cls, selectorFromUtf8(-1, name), parent, theCoreSecret);
 }
 
 /**
@@ -308,7 +309,7 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
 // Documented in header.
 zvalue makeCoreClass(const char *name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
-    return makeClass(stringFromUtf8(-1, name), parent, theCoreSecret,
+    return makeClass(selectorFromUtf8(-1, name), parent, theCoreSecret,
         classMethods, instanceMethods);
 }
 
