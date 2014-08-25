@@ -195,6 +195,12 @@ zvalue selectorFromUtf8(zint stringBytes, const char *string) {
 }
 
 // Documented in header.
+zvalue selectorName(zvalue selector) {
+    assertHasClass(selector, CLS_Selector);
+    return getInfo(selector)->name;
+}
+
+// Documented in header.
 zint selectorIndex(zvalue selector) {
     assertHasClass(selector, CLS_Selector);
     return getInfo(selector)->index;

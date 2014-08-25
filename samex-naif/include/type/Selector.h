@@ -51,6 +51,11 @@ zvalue selectorFromUtf8(zint stringBytes, const char *string);
 zint selectorIndex(zvalue selector);
 
 /**
+ * Gets the name of the given selector. This returns a string.
+ */
+zvalue selectorName(zvalue selector);
+
+/**
  * Like `utf8FromSelector`, except this returns an allocated buffer containing
  * the result.
  */
