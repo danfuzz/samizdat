@@ -270,13 +270,14 @@ def parList = {:
 ## `makeDerivedDataClass`.
 def parType = {:
     @"@@"
-    name = (parIdentifierString | parParenExpression)
 
-    {
-        ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(makeInternedSelector(name::value))) }
-            { makeCall(REFS::makeDerivedDataClass, name) }
-    }
+    (
+        name = parIdentifierString
+        { makeLiteral(@@(makeInternedSelector(name::value))) }
+    |
+        name = parParenExpression
+        { makeCall(REFS::makeDerivedDataClass, name) }
+    )
 :};
 
 ## Parses a literal in derived value form.

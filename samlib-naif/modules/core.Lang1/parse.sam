@@ -220,12 +220,17 @@ def parList = makeMainSequence(
 ## Documented in spec.
 def parType = makeMainSequence(
     makeToken(@@"@@"),
-    makeChoice(parIdentifierString, parParenExpression),
-    makeCode { ., name ->
-        ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(makeInternedSelector(name::value))) }
-            { makeCall(REFS::makeDerivedDataClass, name) }
-    });
+    makeChoice(
+        makeSequence(
+            parIdentifierString,
+            makeCode { ., name ->
+                makeLiteral(@@(makeInternedSelector(name::value)))
+            }),
+        makeSequence(
+            parParenExpression,
+            makeCode { ., name ->
+                makeCall(REFS::makeDerivedDataClass, name)
+            })));
 
 ## Documented in spec.
 def parDeriv = makeMainSequence(

@@ -504,17 +504,14 @@ DEF_PARSE(type) {
     MATCH_OR_REJECT(CH_ATAT);
 
     zvalue name = PARSE(identifierString);
-    if (name == NULL) {
-        name = PARSE_OR_REJECT(parenExpression);
-    }
-
-    if (hasClass(name, CLS_literal)) {
+    if (name != NULL) {
         return makeLiteral(
             makeDerivedDataClass(
                 makeInternedSelector(get(name, STR_value))));
-    } else {
-        return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
     }
+
+    name = PARSE_OR_REJECT(parenExpression);
+    return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
 }
 
 // Documented in spec.
