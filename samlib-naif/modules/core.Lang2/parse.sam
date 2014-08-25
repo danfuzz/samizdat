@@ -17,7 +17,6 @@ import core.Range :: makeInclusiveRange, makeOpenRange;
 import ./safeVar;
 import ./tokenize :: tokenize;
 
-
 ##
 ## Private Definitions
 ##
@@ -970,7 +969,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(type::value)} }
+    { @token{value: @@(makeInternedSelector(type::value))} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining

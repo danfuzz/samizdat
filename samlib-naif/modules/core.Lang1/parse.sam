@@ -748,7 +748,9 @@ def parPexString = makeMainSequence(makeToken(@@string));
 def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierString,
-    makeCode { ., type -> @token{value: @@(type::value)} });
+    makeCode { ., type ->
+        @token{value: @@(makeInternedSelector(type::value))}
+    });
 
 ## Documented in spec.
 def parPexSetString = makeMainSequence(

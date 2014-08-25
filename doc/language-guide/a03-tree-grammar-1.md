@@ -975,7 +975,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(type::value)} }
+    { @token{value: @@(makeInternedSelector(type::value))} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
