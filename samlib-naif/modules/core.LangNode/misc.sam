@@ -40,7 +40,7 @@ def INT_CHARS = {
 
 ## Given a digit token, returns the digit value as an int.
 fn intFromDigitToken(ch) {
-    return INT_CHARS.get(get_className(ch))
+    return INT_CHARS.get(get_classNameString(ch))
 };
 
 

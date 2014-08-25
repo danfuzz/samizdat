@@ -107,7 +107,7 @@ def parIdentifierString = makeMainChoice(
         makeCode { token ->
             ifNot { token.dataOf() }
                 {
-                    def name = get_className(token);
+                    def name = get_classNameString(token);
                     def firstCh = name.nth(0);
                     ifIs { LOWER_ALPHA.get(firstCh) }
                         { makeLiteral(name) }
@@ -382,7 +382,7 @@ def parYieldOrNonlocal = makeMainSequence(
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield))),
-        makeCode { op, . -> makeVarFetch(get_className(op)) }),
+        makeCode { op, . -> makeVarFetch(get_classNameString(op)) }),
     makeChoice(
         makeSequence(
             parExpression,
@@ -441,7 +441,7 @@ def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
-            makeCode { ., r -> {repeat: get_className(r)} }),
+            makeCode { ., r -> {repeat: get_classNameString(r)} }),
         makeResult({})),
     makeCode { name, repeat -> {name*, repeat*} });
 

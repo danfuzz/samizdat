@@ -14,6 +14,6 @@
 ##
 
 ## Documented in spec.
-export fn get_className(value) {
-    return className(get_class(value))
+export fn get_classNameString(value) {
+    return classNameString(get_class(value))
 };

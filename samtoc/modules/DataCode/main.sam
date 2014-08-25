@@ -137,7 +137,7 @@ fn Bool_convert(value) {
 
 ## Converts a class. Only works on derived data classes.
 fn Class_convert(value) {
-    return genCall("makeDerivedDataClass", convert(className(value)))
+    return genCall("makeDerivedDataClass", convert(classNameString(value)))
 };
 
 ## Converts an int.

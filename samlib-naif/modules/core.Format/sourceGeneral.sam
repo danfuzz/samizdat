@@ -69,7 +69,7 @@ fn Class_sourceGeneral(value, adorn) {
     ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
 
-    def name = className(value);
+    def name = classNameString(value);
 
     ifNot { eq(classParent(value), DerivedData) }
         { return "@@(opaque ".cat(sourceGeneral(name, true), ")") };
@@ -134,7 +134,7 @@ fn Value_sourceGeneral(value, adorn) {
         { string -> return string };
 
     def cls = get_class(value);
-    def name = className(cls);
+    def name = classNameString(cls);
     def clsStr = ifIs { hasClass(name, String) }
         {
             ## The class is a string.

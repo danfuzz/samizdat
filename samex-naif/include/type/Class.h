@@ -53,7 +53,7 @@ bool classIsDerived(zvalue cls);
 /**
  * Gets the name of the given class.
  */
-zvalue className(zvalue cls);
+zvalue classNameString(zvalue cls);
 
 /**
  * Gets the parent class of the given class.

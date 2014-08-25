@@ -38,7 +38,7 @@ PRIM_DEF(makeSelectorTable,       FUN_SelectorTable_makeSelectorTable);
 PRIM_DEF(selectorIsInterned,      FUN_Selector_selectorIsInterned);
 PRIM_DEF(selectorName,            FUN_Selector_selectorName);
 PRIM_FUNC(classAddMethod,         3, 3);
-PRIM_FUNC(className,              1, 1);
+PRIM_FUNC(classNameString,        1, 1);
 PRIM_FUNC(classParent,            1, 1);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);

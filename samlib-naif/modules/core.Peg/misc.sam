@@ -81,5 +81,5 @@ export fn makeString(string) {
 
 ## Documented in spec.
 export fn stringFromTokenList(tokens) {
-    return "".cat(tokens.collect(get_className)*)
+    return "".cat(tokens.collect(get_classNameString)*)
 };

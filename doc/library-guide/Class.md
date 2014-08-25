@@ -51,10 +51,9 @@ be made such that all its methods come in one fell atomic swoop rather than
 being added one at a time with a function such as this one (which also, FWIW,
 doesn't bother with the class's secret either).
 
-#### `className(cls) -> . | void`
+#### `classNameString(cls) -> . | void`
 
-Returns the name of the class. This is an arbitrary value associated with
-a class, which is typically (but not necessarily) a string.
+Returns the name of the class as a string.
 
 #### `classParent(cls) -> class | void`
 

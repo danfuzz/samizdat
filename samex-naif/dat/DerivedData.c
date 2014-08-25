@@ -50,7 +50,7 @@ static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue cls1 = *(zvalue *) vptr1;
     zvalue cls2 = *(zvalue *) vptr2;
 
-    return valZorder(className(cls1), className(cls2));
+    return valZorder(classNameString(cls1), classNameString(cls2));
 }
 
 /**
@@ -60,7 +60,7 @@ static int searchOrder(const void *key, const void *vptr) {
     zvalue name1 = (zvalue) key;
     zvalue cls2 = *(zvalue *) vptr;
 
-    return valZorder(name1, className(cls2));
+    return valZorder(name1, classNameString(cls2));
 }
 
 /**

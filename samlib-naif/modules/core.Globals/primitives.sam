@@ -29,7 +29,7 @@ export
     Uniqlet,
     Value,
     classAddMethod,
-    className,
+    classNameString,
     classParent,
     die,
     eq,
