@@ -33,7 +33,7 @@ secret of the given `cls`.
 #### `makeObjectClass(name, secret) -> class`
 
 Makes a new object class with the given `name` and `secret`. `name` must
-be a string.
+be a selector.
 
 **Note:** If you call this function twice with identical arguments, the
 results will be two *different* classes with the same `name` and `secret`.

@@ -253,11 +253,11 @@ lowest layer of the system. It is a kind of `Function` (see which).
 
 #### Selector
 
-A `Selector` is an identifier used to name methods. Selectors are the
-keys bound to functions in a class's table of methods, and selectors
-themselves can be invoked as functions to perform method dispatch on
-the first argument of the function call. Every selector has a string
-name.
+A `Selector` is an identifier used to name language constructs, such as
+classes and methods. On the method front, selectors are the keys bound to
+functions in a class's table of methods, and selectors themselves can be
+invoked as functions to perform method dispatch on the first argument of
+the function call. Every selector has a string name.
 
 There are two "flavors" of selector, interned and anonymous. An interned
 selector is one that can be identified uniquely by its name. That is, there
@@ -330,9 +330,8 @@ makeUniqlet()
 
 #### Class
 
-A `Class` value represents the class of a value. Every class has a name which
-is typically, but not necessarily, a string. There are three major categories
-of class:
+A `Class` value represents the class of a value. Every class has a name, which
+is a selector. There are three major categories of class:
 
 * All core values (described above, and values of class `Class` as described
   here) have a "core class" as their class. The name of each core class is a
