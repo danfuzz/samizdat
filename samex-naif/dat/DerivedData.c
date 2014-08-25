@@ -65,13 +65,7 @@ zvalue makeData(zvalue cls, zvalue data) {
 
 // Documented in header.
 zvalue makeDerivedDataClass(zvalue name) {
-    // TODO: Make this just be an assert once names are always selectors.
-    if (hasClass(name, CLS_String)) {
-        name = makeInternedSelector(name);
-    } else {
-        assertHasClass(name, CLS_Selector);
-    }
-
+    // `selectorIndex` will bail if `name` isn't a selector.
     zint index = selectorIndex(name);
     zvalue result = theClasses[index];
 
