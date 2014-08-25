@@ -52,9 +52,7 @@ static ClassInfo *getInfo(zvalue cls) {
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
-    }
-
-    if ((parent == NULL) && (cls != CLS_Value)) {
+    } else if ((parent == NULL) && (cls != CLS_Value)) {
         die("Every class but `Value` needs a parent.");
     }
 
