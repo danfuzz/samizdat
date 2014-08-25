@@ -51,13 +51,7 @@ static ClassInfo *getInfo(zvalue cls) {
  * is `DerivedData` in which case it is marked as derived.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
-    // TODO: Make this just be an assert once names are always passed as
-    // selectors.
-    if (hasClass(name, CLS_String)) {
-        name = makeInternedSelector(name);
-    } else {
-        assertHasClass(name, CLS_Selector);
-    }
+    assertHasClass(name, CLS_Selector);
 
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
