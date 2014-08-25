@@ -181,7 +181,7 @@ fn Selector_convert(value) {
         die("Cannot convert anonymous selector: \%q(value)")
     };
 
-    return genCall("selectorFromName", convert(name))
+    return genCall("makeInternedSelector", convert(name))
 };
 
 ## Converts a string.

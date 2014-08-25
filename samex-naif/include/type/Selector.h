@@ -17,8 +17,8 @@ extern zvalue CLS_Selector;
 /** Global function `makeAnonymousSelector`: Documented in spec. */
 extern zvalue FUN_Selector_makeAnonymousSelector;
 
-/** Global function `selectorFromName`: Documented in spec. */
-extern zvalue FUN_Selector_selectorFromName;
+/** Global function `makeInternedSelector`: Documented in spec. */
+extern zvalue FUN_Selector_makeInternedSelector;
 
 /** Global function `selectorIsInterned`: Documented in spec. */
 extern zvalue FUN_Selector_selectorIsInterned;
@@ -37,7 +37,7 @@ zvalue makeAnonymousSelector(zvalue name);
  * Gets the selector that corresponds to the given method name, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */
-zvalue selectorFromName(zvalue name);
+zvalue makeInternedSelector(zvalue name);
 
 /**
  * Gets the integer index of the given selector.

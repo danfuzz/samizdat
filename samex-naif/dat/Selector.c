@@ -176,7 +176,7 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-zvalue selectorFromName(zvalue name) {
+zvalue makeInternedSelector(zvalue name) {
     zvalue result = findInternedSelector(name);
 
     if (result == NULL) {
@@ -258,9 +258,9 @@ METH_IMPL(Selector, selectorName) {
     return info->name;
 }
 
-/** Function (not method) `selectorFromName`. Documented in spec. */
-METH_IMPL(Selector, selectorFromName) {
-    return selectorFromName(args[0]);
+/** Function (not method) `makeInternedSelector`. Documented in spec. */
+METH_IMPL(Selector, makeInternedSelector) {
+    return makeInternedSelector(args[0]);
 }
 
 // Documented in header.
@@ -317,10 +317,10 @@ MOD_INIT(Selector) {
         stringFromUtf8(-1, "Selector.makeAnonymousSelector"));
     datImmortalize(FUN_Selector_makeAnonymousSelector);
 
-    FUN_Selector_selectorFromName = makeBuiltin(1, 1,
-        METH_NAME(Selector, selectorFromName), 0,
-        stringFromUtf8(-1, "Selector.selectorFromName"));
-    datImmortalize(FUN_Selector_selectorFromName);
+    FUN_Selector_makeInternedSelector = makeBuiltin(1, 1,
+        METH_NAME(Selector, makeInternedSelector), 0,
+        stringFromUtf8(-1, "Selector.makeInternedSelector"));
+    datImmortalize(FUN_Selector_makeInternedSelector);
 
     FUN_Selector_selectorIsInterned = makeBuiltin(1, 1,
         METH_NAME(Selector, selectorIsInterned), 0,
@@ -340,7 +340,7 @@ zvalue CLS_Selector = NULL;
 zvalue FUN_Selector_makeAnonymousSelector = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_selectorFromName = NULL;
+zvalue FUN_Selector_makeInternedSelector = NULL;
 
 // Documented in header.
 zvalue FUN_Selector_selectorIsInterned = NULL;

@@ -53,6 +53,6 @@ export
     maybeValue,
     note,
     order,
-    selectorFromName,
+    makeInternedSelector,
     selectorIsInterned,
     selectorName;
