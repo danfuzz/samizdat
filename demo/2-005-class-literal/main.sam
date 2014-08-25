@@ -25,18 +25,16 @@ note("Layer 0...");
 ## These all refer to the same class.
 msg(@@potion);
 msg(@@"potion");
-msg(@@("potion"));
+msg(@@(@.potion));
 
 msg(@@"** zorch **");
-msg(@@(123));
-msg(@@([123]));
 
 ## Keywords can be used as types.
 msg(@@def);
 msg(@@fn);
 
 ## Expressions can be used as names.
-msg(@@("blo".cat("rt")));
+msg(@@(makeInternedSelector("blort")));
 
 note("\nLayer 2...");
 
