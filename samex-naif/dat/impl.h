@@ -76,9 +76,6 @@ typedef struct {
     /** Name of the class, as a selector. */
     zvalue nameSelector;
 
-    /** Name of the class, as a string. */
-    zvalue nameString;
-
     /** Access secret of the class. Optional, and arbitrary if present. */
     zvalue secret;
 
