@@ -1014,7 +1014,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { "".cat(strings*).collect({ ch -> @@(ch) }) }
+        { "".cat(strings*).collect { ch -> @@(makeInternedSelector(ch)) } }
     |
         tokens = parPexToken+
         { tokens.collect({ n -> n::value }) }

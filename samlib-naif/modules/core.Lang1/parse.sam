@@ -783,7 +783,8 @@ def parPexSet = makeMainSequence(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
-                "".cat(strings*).collect({ ch -> @@(ch) })
+                "".cat(strings*).collect
+                    { ch -> @@(makeInternedSelector(ch)) }
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),
