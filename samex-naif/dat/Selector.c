@@ -190,9 +190,38 @@ zvalue makeInternedSelector(zvalue name) {
 }
 
 // Documented in header.
+zvalue selectorFromUtf8(zint stringBytes, const char *string) {
+    return makeInternedSelector(stringFromUtf8(stringBytes, string));
+}
+
+// Documented in header.
 zint selectorIndex(zvalue selector) {
     assertHasClass(selector, CLS_Selector);
     return getInfo(selector)->index;
+}
+
+// Documented in header.
+char *utf8DupFromSelector(zvalue selector) {
+    assertHasClass(selector, CLS_Selector);
+    SelectorInfo *info = getInfo(selector);
+
+    return utf8DupFromString(info->name);
+}
+
+// Documented in header.
+zint utf8FromSelector(zint resultSize, char *result, zvalue selector) {
+    assertHasClass(selector, CLS_Selector);
+    SelectorInfo *info = getInfo(selector);
+
+    return utf8FromSelector(resultSize, result, info->name);
+}
+
+// Documented in header.
+zint utf8SizeFromSelector(zvalue selector) {
+    assertHasClass(selector, CLS_Selector);
+    SelectorInfo *info = getInfo(selector);
+
+    return utf8SizeFromString(info->name);
 }
 
 
