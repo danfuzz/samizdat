@@ -51,7 +51,7 @@ be made such that all its methods come in one fell atomic swoop rather than
 being added one at a time with a function such as this one (which also, FWIW,
 doesn't bother with the class's secret either).
 
-#### `classNameSelector(cls) -> selector | void`
+#### `className(cls) -> selector | void`
 
 Returns the name of the class, as a selector.
 

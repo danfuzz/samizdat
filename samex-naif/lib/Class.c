@@ -18,8 +18,8 @@ FUN_IMPL_DECL(classAddMethod) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(classNameSelector) {
-    return classNameSelector(args[0]);
+FUN_IMPL_DECL(className) {
+    return className(args[0]);
 }
 
 // Documented in spec.

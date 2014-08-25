@@ -58,7 +58,7 @@ zvalue classNameString(zvalue cls);
 /**
  * Gets the name of the given class, as a selector.
  */
-zvalue classNameSelector(zvalue cls);
+zvalue className(zvalue cls);
 
 /**
  * Gets the parent class of the given class.

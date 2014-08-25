@@ -244,7 +244,7 @@ bool classIsDerived(zvalue cls) {
 }
 
 // Documented in header.
-zvalue classNameSelector(zvalue cls) {
+zvalue className(zvalue cls) {
     assertHasClassClass(cls);
     return getInfo(cls)->name;
 }
