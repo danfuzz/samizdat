@@ -11,6 +11,7 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/Number.h"
+#include "type/Selector.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -508,7 +509,9 @@ DEF_PARSE(type) {
     }
 
     if (hasClass(name, CLS_literal)) {
-        return makeLiteral(makeDerivedDataClass(get(name, STR_value)));
+        return makeLiteral(
+            makeDerivedDataClass(
+                makeInternedSelector(get(name, STR_value))));
     } else {
         return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
     }
@@ -523,7 +526,9 @@ DEF_PARSE(deriv) {
     zvalue cls;
     zvalue name = PARSE(identifierString);
     if (name != NULL) {
-        cls = makeLiteral(makeDerivedDataClass(get(name, STR_value)));
+        cls = makeLiteral(
+            makeDerivedDataClass(
+                makeInternedSelector(get(name, STR_value))));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }

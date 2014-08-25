@@ -274,7 +274,7 @@ def parType = {:
 
     {
         ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(name::value)) }
+            { makeLiteral(@@(makeInternedSelector(name::value))) }
             { makeCall(REFS::makeDerivedDataClass, name) }
     }
 :};
@@ -285,7 +285,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierString
-        { makeLiteral(@@(name::value)) }
+        { makeLiteral(@@(makeInternedSelector(name::value))) }
     |
         parParenExpression
     )
