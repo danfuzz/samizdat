@@ -21,7 +21,7 @@ import ./NullGenerator :: nullGenerator;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def RepeatGenerator = makeObjectClass("RepeatGenerator", SECRET);
+def RepeatGenerator = makeObjectClass(@.RepeatGenerator, SECRET);
 
 ## Documented in spec.
 fn RepeatGenerator.collect(optFilterFunction?) {

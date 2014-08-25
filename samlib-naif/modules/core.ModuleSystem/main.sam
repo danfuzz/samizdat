@@ -295,7 +295,7 @@ export fn loadResource(loader, source, format) {
 ## Class Definition: null `Loader`
 ##
 
-def NullLoader = makeObjectClass("NullLoader", SECRET);
+def NullLoader = makeObjectClass(@.NullLoader, SECRET);
 
 ## The one instance of the class.
 def nullLoader = makeObject(NullLoader, SECRET);
@@ -330,7 +330,7 @@ fn fixNullLoader(loader) {
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
 
-def ExternalLoader = makeObjectClass("ExternalLoader", SECRET);
+def ExternalLoader = makeObjectClass(@.ExternalLoader, SECRET);
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
@@ -410,7 +410,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
 
-def InternalLoader = makeObjectClass("InternalLoader", SECRET);
+def InternalLoader = makeObjectClass(@.InternalLoader, SECRET);
 
 ## Convenient helper which just resolves a top-level `main` file.
 fn resolveMain(loader) {

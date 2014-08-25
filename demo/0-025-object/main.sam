@@ -24,7 +24,7 @@ fn msg(label, value) {
 ##
 
 def blortSecret = "blort";
-def Blort = makeObjectClass("Blort", blortSecret);
+def Blort = makeObjectClass(@.Blort, blortSecret);
 fn Blort.whatIs() {
     note("I am a Blort.");
 };
@@ -32,12 +32,12 @@ fn Blort.whatIs() {
 msg("Blort class", Blort);
 msg("Parent", classParent(Blort));
 
-def AnotherBlort = makeObjectClass("Blort", blortSecret);
+def AnotherBlort = makeObjectClass(@.Blort, blortSecret);
 ifIs { eq(Blort, AnotherBlort) }
     { die("Should be different classes!") };
 
 def fizmoSecret = "fizmo";
-def Fizmo = makeObjectClass("Fizmo", fizmoSecret);
+def Fizmo = makeObjectClass(@.Fizmo, fizmoSecret);
 fn Fizmo.whatIs() {
     note("I am a Fizmo.");
 };

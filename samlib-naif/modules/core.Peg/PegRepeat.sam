@@ -19,7 +19,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegRepeat = makeObjectClass("PegRepeat", SECRET);
+def PegRepeat = makeObjectClass(@.PegRepeat, SECRET);
 
 ## Documented in spec.
 fn PegRepeat.parse(box, input, items*) {

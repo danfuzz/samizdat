@@ -18,7 +18,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegFail = makeObjectClass("PegFail", SECRET);
+def PegFail = makeObjectClass(@.PegFail, SECRET);
 
 ## Documented in spec.
 fn PegFail.parse(box, input, .*) {

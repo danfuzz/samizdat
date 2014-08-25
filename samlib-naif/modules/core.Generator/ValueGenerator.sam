@@ -21,7 +21,7 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def ValueGenerator = makeObjectClass("ValueGenerator", SECRET);
+def ValueGenerator = makeObjectClass(@.ValueGenerator, SECRET);
 
 ## Documented in spec.
 fn ValueGenerator.collect(optFilterFunction?) {

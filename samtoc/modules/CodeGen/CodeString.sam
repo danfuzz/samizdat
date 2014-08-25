@@ -18,7 +18,7 @@ import ./indentation :: *;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def CodeString = makeObjectClass("CodeString", SECRET);
+def CodeString = makeObjectClass(@.CodeString, SECRET);
 
 fn CodeString.flatten() {
     def data = this.objectDataOf(SECRET);

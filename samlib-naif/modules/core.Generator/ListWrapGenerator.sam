@@ -19,7 +19,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def ListWrapGenerator = makeObjectClass("ListWrapGenerator", SECRET);
+def ListWrapGenerator = makeObjectClass(@.ListWrapGenerator, SECRET);
 
 ## Documented in spec.
 fn ListWrapGenerator.collect(optFilterFunction?) {

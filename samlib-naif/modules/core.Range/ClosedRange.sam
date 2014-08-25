@@ -23,7 +23,7 @@ import ./rangeAdd :: *;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def ClosedRange = makeObjectClass("ClosedRange", SECRET);
+def ClosedRange = makeObjectClass(@.ClosedRange, SECRET);
 
 ## Documented in spec.
 fn ClosedRange.collect(optFilterFunction?) {

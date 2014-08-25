@@ -28,7 +28,7 @@ import ./cache;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def ExternalResolver = makeObjectClass("ExternalResolver", SECRET);
+def ExternalResolver = makeObjectClass(@.ExternalResolver, SECRET);
 
 ## Does direct resolution on the given `source`. Only ever called when
 ## `source` is known to be `external` and so *might* be found directly

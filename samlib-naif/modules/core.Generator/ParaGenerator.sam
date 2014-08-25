@@ -24,7 +24,7 @@ import ./NullGenerator :: nullGenerator;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def ParaGenerator = makeObjectClass("ParaGenerator", SECRET);
+def ParaGenerator = makeObjectClass(@.ParaGenerator, SECRET);
 
 ## Documented in spec.
 fn ParaGenerator.collect(optFilterFunction?) {

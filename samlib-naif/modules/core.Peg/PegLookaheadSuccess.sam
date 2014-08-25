@@ -19,7 +19,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegLookaheadSuccess = makeObjectClass("PegLookaheadSuccess", SECRET);
+def PegLookaheadSuccess = makeObjectClass(@.PegLookaheadSuccess, SECRET);
 
 ## Documented in spec.
 fn PegLookaheadSuccess.parse(box, input, items*) {

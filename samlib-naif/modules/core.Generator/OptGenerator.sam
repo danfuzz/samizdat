@@ -22,7 +22,7 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def OptGenerator = makeObjectClass("OptGenerator", SECRET);
+def OptGenerator = makeObjectClass(@.OptGenerator, SECRET);
 
 ## Documented in spec.
 fn OptGenerator.collect(optFilterFunction?) {
