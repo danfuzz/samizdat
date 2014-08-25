@@ -74,7 +74,7 @@ typedef struct {
     zvalue parent;
 
     /** Name of the class, as a selector. */
-    zvalue nameSelector;
+    zvalue name;
 
     /** Access secret of the class. Optional, and arbitrary if present. */
     zvalue secret;

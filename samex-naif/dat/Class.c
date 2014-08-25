@@ -63,7 +63,7 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     bool derived = (parent == CLS_DerivedData) && (CLS_DerivedData != NULL);
 
     info->parent = parent;
-    info->nameSelector = name;
+    info->name = name;
     info->secret = secret;
     info->classId = theNextClassId;
 
@@ -246,13 +246,13 @@ bool classIsDerived(zvalue cls) {
 // Documented in header.
 zvalue classNameSelector(zvalue cls) {
     assertHasClassClass(cls);
-    return getInfo(cls)->nameSelector;
+    return getInfo(cls)->name;
 }
 
 // Documented in header.
 zvalue classNameString(zvalue cls) {
     assertHasClassClass(cls);
-    return selectorName(getInfo(cls)->nameSelector);
+    return selectorName(getInfo(cls)->name);
 }
 
 // Documented in header.
@@ -318,7 +318,7 @@ METH_IMPL(Class, debugString) {
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
-        return selectorName(info->nameSelector);
+        return selectorName(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
     } else if (classParent(cls) == CLS_DerivedData) {
@@ -329,7 +329,7 @@ METH_IMPL(Class, debugString) {
 
     return METH_CALL(cat,
         stringFromUtf8(-1, "@@("),
-        METH_CALL(debugString, selectorName(info->nameSelector)),
+        METH_CALL(debugString, selectorName(info->name)),
         extraString,
         stringFromUtf8(-1, ")"));
 }
@@ -339,7 +339,7 @@ METH_IMPL(Class, gcMark) {
     zvalue cls = args[0];
     ClassInfo *info = getInfo(cls);
 
-    datMark(info->nameSelector);
+    datMark(info->name);
     datMark(info->secret);
 
     for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
@@ -362,8 +362,8 @@ METH_IMPL(Class, totalOrder) {
     assertHasClassClass(other);
     ClassInfo *info1 = getInfo(value);
     ClassInfo *info2 = getInfo(other);
-    zvalue name1 = info1->nameSelector;
-    zvalue name2 = info2->nameSelector;
+    zvalue name1 = info1->name;
+    zvalue name2 = info2->name;
     ClassCategory cat1 = categoryOf(info1);
     ClassCategory cat2 = categoryOf(info2);
 
