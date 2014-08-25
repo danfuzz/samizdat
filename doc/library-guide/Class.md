@@ -51,9 +51,13 @@ be made such that all its methods come in one fell atomic swoop rather than
 being added one at a time with a function such as this one (which also, FWIW,
 doesn't bother with the class's secret either).
 
-#### `classNameString(cls) -> . | void`
+#### `classNameSelector(cls) -> selector | void`
 
-Returns the name of the class as a string.
+Returns the name of the class, as a selector.
+
+#### `classNameString(cls) -> string | void`
+
+Returns the name of the class, as a string.
 
 #### `classParent(cls) -> class | void`
 

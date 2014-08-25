@@ -50,7 +50,13 @@ static ClassInfo *getInfo(zvalue cls) {
  * is `DerivedData` in which case it is marked as derived.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
-    assertHasClass(name, CLS_String);
+    // TODO: Make this just be an assert once names are always passed as
+    // selectors.
+    if (hasClass(name, CLS_String)) {
+        name = makeInternedSelector(name);
+    } else {
+        assertHasClass(name, CLS_Selector);
+    }
 
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
@@ -62,7 +68,8 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     bool derived = (parent == CLS_DerivedData) && (CLS_DerivedData != NULL);
 
     info->parent = parent;
-    info->nameString = name;
+    info->nameString = selectorName(name);
+    info->nameSelector = name;
     info->secret = secret;
     info->classId = theNextClassId;
 
@@ -240,6 +247,12 @@ zint classIndex(zvalue cls) {
 // Documented in header.
 bool classIsDerived(zvalue cls) {
     return classParent(cls) == CLS_DerivedData;
+}
+
+// Documented in header.
+zvalue classNameSelector(zvalue cls) {
+    assertHasClassClass(cls);
+    return getInfo(cls)->nameSelector;
 }
 
 // Documented in header.

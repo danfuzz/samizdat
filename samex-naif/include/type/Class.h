@@ -51,9 +51,14 @@ zint classIndex(zvalue cls);
 bool classIsDerived(zvalue cls);
 
 /**
- * Gets the name of the given class.
+ * Gets the name of the given class, as a string.
  */
 zvalue classNameString(zvalue cls);
+
+/**
+ * Gets the name of the given class, as a selector.
+ */
+zvalue classNameSelector(zvalue cls);
 
 /**
  * Gets the parent class of the given class.
@@ -78,9 +83,10 @@ bool hasClass(zvalue value, zvalue cls);
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
- * Makes a new class. `name` is the class's name (a string). `parent` is its
- * superclass. `secret` is the construction and access secret (an arbitrary
- * value). The two method table arguments must be `SelectorTable`s or `NULL`.
+ * Makes a new class. `name` is the class's name (a selector or a string).
+ * `parent` is its superclass. `secret` is the construction and access secret
+ * (an arbitrary value). The two method table arguments must be
+ * `SelectorTable`s or `NULL`.
  */
 zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
         zvalue classMethods, zvalue instanceMethods);

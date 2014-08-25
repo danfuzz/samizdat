@@ -73,6 +73,9 @@ typedef struct {
     /** Parent class. Only allowed to be `NULL` for `Value`. */
     zvalue parent;
 
+    /** Name of the class, as a selector. */
+    zvalue nameSelector;
+
     /** Name of the class, as a string. */
     zvalue nameString;
 
