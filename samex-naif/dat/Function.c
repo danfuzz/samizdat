@@ -61,7 +61,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or
-    // `Selector`.
+    // `Symbol`.
     switch (index) {
         case DAT_INDEX_BUILTIN: {
             return builtinCall(function, argCount, args);
@@ -70,7 +70,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             return jumpCall(function, argCount, args);
         }
         case DAT_INDEX_SYMBOL: {
-            return selectorCall(function, argCount, args);
+            return symbolCall(function, argCount, args);
         }
         default: {
             // The original `function` is some kind of higher layer function.
@@ -79,7 +79,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             zvalue newArgs[argCount + 1];
             newArgs[0] = function;
             utilCpy(zvalue, &newArgs[1], args, argCount);
-            return selectorCall(SEL_NAME(call), argCount + 1, newArgs);
+            return symbolCall(SEL_NAME(call), argCount + 1, newArgs);
         }
     }
 }

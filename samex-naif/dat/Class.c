@@ -162,7 +162,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 }
 
 // Documented in header.
-zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
+zvalue classFindMethodBySymbolIndex(zvalue cls, zint index) {
     // TODO: Remove the heritage lookup once subclass tables get populated
     // with their superclasses' methods and become thereafter immutable.
 
@@ -433,7 +433,7 @@ MOD_INIT(objectModel) {
         die("Mismatched index for `Jump`: should be %lld",
             classIndex(CLS_Jump));
     } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
-        die("Mismatched index for `Selector`: should be %lld",
+        die("Mismatched index for `Symbol`: should be %lld",
             classIndex(CLS_Symbol));
     }
 

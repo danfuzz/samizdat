@@ -27,7 +27,7 @@ enum {
     /** The class index for class `Jump`. */
     DAT_INDEX_JUMP = 8,
 
-    /** The class index for class `Selector`. */
+    /** The class index for class `Symbol`. */
     DAT_INDEX_SYMBOL = 2,
 
     /** Whether to be paranoid about corruption checks. */
@@ -131,7 +131,7 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
  * or `NULL` if not. Does not check to see if `index` is in the valid range
  * for a selector index.
  */
-zvalue classFindMethodBySelectorIndex(zvalue cls, zint index);
+zvalue classFindMethodBySymbolIndex(zvalue cls, zint index);
 
 /**
  * Gets the index for a given class value. The given value *must* be a
@@ -149,12 +149,12 @@ zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
 
 /**
  * Actual implementation of selector calling. This is where
- * short-circuited method dispatch of `call` on class `Selector`
+ * short-circuited method dispatch of `call` on class `Symbol`
  * lands. This calls the method bound to the given selector, with the given
  * arguments. The method is looked up on `args[0]`. As such, `argCount` must
  * be at least `1`.
  */
-zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args);
+zvalue symbolCall(zvalue selector, zint argCount, const zvalue *args);
 
 /**
  * Gets the `CacheEntry` for the given map/key pair.

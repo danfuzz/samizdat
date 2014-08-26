@@ -19,50 +19,50 @@
 // Private Definitions
 //
 
-/** Next selector index to assign. */
+/** Next symbol index to assign. */
 static zint theNextIndex = 0;
 
-/** Array of all interned selectors, in sort order (possibly stale). */
-static zvalue theInternedSelectors[DAT_MAX_SYMBOLS];
+/** Array of all interned symbols, in sort order (possibly stale). */
+static zvalue theInternedSymbols[DAT_MAX_SYMBOLS];
 
-/** The number of interned selectors. */
-static zint theInternedSelectorCount = 0;
+/** The number of interned symbols. */
+static zint theInternedSymbolCount = 0;
 
-/** Whether `theInternedSelectors` needs a sort. */
+/** Whether `theInternedSymbols` needs a sort. */
 static bool theNeedSort = false;
 
 /**
- * Selector structure.
+ * Symbol structure.
  */
 typedef struct {
-    /** Name of the selector. Always a string. */
+    /** Name of the symbol. Always a string. */
     zvalue name;
 
     /** Whether this instance is interned. */
     bool interned;
 
-    /** Index of the selector. No two selectors have the same index. */
+    /** Index of the symbol. No two symbols have the same index. */
     zint index;
-} SelectorInfo;
+} SymbolInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static SelectorInfo *getInfo(zvalue selector) {
-    return datPayload(selector);
+static SymbolInfo *getInfo(zvalue symbol) {
+    return datPayload(symbol);
 }
 
 /**
- * Creates and returns a new selector with the given name. Does no checking
- * other than that there aren't already too many selectors.
+ * Creates and returns a new symbol with the given name. Does no checking
+ * other than that there aren't already too many symbols.
  */
-static zvalue makeSelector(zvalue name, bool interned) {
+static zvalue makeSymbol(zvalue name, bool interned) {
     if (theNextIndex >= DAT_MAX_SYMBOLS) {
-        die("Too many selectors!");
+        die("Too many symbols!");
     }
 
-    zvalue result = datAllocValue(CLS_Symbol, sizeof(SelectorInfo));
-    SelectorInfo *info = getInfo(result);
+    zvalue result = datAllocValue(CLS_Symbol, sizeof(SymbolInfo));
+    SymbolInfo *info = getInfo(result);
 
     info->name = name;
     info->interned = interned;
@@ -70,8 +70,8 @@ static zvalue makeSelector(zvalue name, bool interned) {
     theNextIndex++;
 
     if (interned) {
-        theInternedSelectors[theInternedSelectorCount] = result;
-        theInternedSelectorCount++;
+        theInternedSymbols[theInternedSymbolCount] = result;
+        theInternedSymbolCount++;
         theNeedSort = true;
     }
 
@@ -80,50 +80,50 @@ static zvalue makeSelector(zvalue name, bool interned) {
 }
 
 /**
- * Compares a name with a selector. Common function used for searching,
+ * Compares a name with a symbol. Common function used for searching,
  * sorting, and ordering.
  */
-static int compareNameAndSelector(zvalue name, zvalue selector) {
-    SelectorInfo *info = getInfo(selector);
+static int compareNameAndSymbol(zvalue name, zvalue symbol) {
+    SymbolInfo *info = getInfo(symbol);
     zvalue name2 = info->name;
 
     return stringZorder(name, name2);
 }
 
 /**
- * Compares two selectors. Used for sorting.
+ * Compares two symbols. Used for sorting.
  */
 static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v1 = *(zvalue *) vptr1;
     zvalue v2 = *(zvalue *) vptr2;
-    SelectorInfo *info1 = getInfo(v1);
+    SymbolInfo *info1 = getInfo(v1);
 
-    return compareNameAndSelector(info1->name, v2);
+    return compareNameAndSymbol(info1->name, v2);
 }
 
 /**
- * Compares a name with a selector. Used for searching.
+ * Compares a name with a symbol. Used for searching.
  */
 static int searchOrder(const void *key, const void *vptr) {
     zvalue name = (zvalue) key;
-    zvalue selector = *(zvalue *) vptr;
+    zvalue symbol = *(zvalue *) vptr;
 
-    return compareNameAndSelector(name, selector);
+    return compareNameAndSymbol(name, symbol);
 }
 
 /**
- * Finds an existing interned selector with the given name, if any.
+ * Finds an existing interned symbol with the given name, if any.
  */
-static zvalue findInternedSelector(zvalue name) {
+static zvalue findInternedSymbol(zvalue name) {
     if (theNeedSort) {
         mergesort(
-            theInternedSelectors, theInternedSelectorCount,
+            theInternedSymbols, theInternedSymbolCount,
             sizeof(zvalue), sortOrder);
         theNeedSort = false;
     }
 
     zvalue *found = (zvalue *) bsearch(
-        name, theInternedSelectors, theInternedSelectorCount,
+        name, theInternedSymbols, theInternedSymbolCount,
         sizeof(zvalue), searchOrder);
 
     return (found == NULL) ? NULL : *found;
@@ -151,22 +151,22 @@ static char *callReporter(void *state) {
 
 // Documented in header.
 zvalue makeAnonymousSymbol(zvalue name) {
-    return makeSelector(name, false);
+    return makeSymbol(name, false);
 }
 
 // Documented in header.
-zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
+zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     if (argCount < 1) {
-        die("Too few arguments for selector call.");
+        die("Too few arguments for symbol call.");
     }
 
-    zint index = getInfo(selector)->index;
+    zint index = getInfo(symbol)->index;
     zvalue cls = get_class(args[0]);
-    zvalue function = classFindMethodBySelectorIndex(cls, index);
+    zvalue function = classFindMethodBySymbolIndex(cls, index);
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugName(selector));
+            valDebugString(cls), valDebugName(symbol));
     }
 
     UTIL_TRACE_START(callReporter, cls);
@@ -177,13 +177,13 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
 
 // Documented in header.
 zvalue makeInternedSymbol(zvalue name) {
-    zvalue result = findInternedSelector(name);
+    zvalue result = findInternedSymbol(name);
 
     if (result == NULL) {
         if (!hasClass(name, CLS_String)) {
-            die("Improper selector name: %s", valDebugString(name));
+            die("Improper symbol name: %s", valDebugString(name));
         }
-        result = makeSelector(name, true);
+        result = makeSymbol(name, true);
     }
 
     return result;
@@ -195,37 +195,37 @@ zvalue symbolFromUtf8(zint stringBytes, const char *string) {
 }
 
 // Documented in header.
-zvalue symbolName(zvalue selector) {
-    assertHasClass(selector, CLS_Symbol);
-    return getInfo(selector)->name;
+zvalue symbolName(zvalue symbol) {
+    assertHasClass(symbol, CLS_Symbol);
+    return getInfo(symbol)->name;
 }
 
 // Documented in header.
-zint symbolIndex(zvalue selector) {
-    assertHasClass(selector, CLS_Symbol);
-    return getInfo(selector)->index;
+zint symbolIndex(zvalue symbol) {
+    assertHasClass(symbol, CLS_Symbol);
+    return getInfo(symbol)->index;
 }
 
 // Documented in header.
-char *utf8DupFromSymbol(zvalue selector) {
-    assertHasClass(selector, CLS_Symbol);
-    SelectorInfo *info = getInfo(selector);
+char *utf8DupFromSymbol(zvalue symbol) {
+    assertHasClass(symbol, CLS_Symbol);
+    SymbolInfo *info = getInfo(symbol);
 
     return utf8DupFromString(info->name);
 }
 
 // Documented in header.
-zint utf8FromSymbol(zint resultSize, char *result, zvalue selector) {
-    assertHasClass(selector, CLS_Symbol);
-    SelectorInfo *info = getInfo(selector);
+zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol) {
+    assertHasClass(symbol, CLS_Symbol);
+    SymbolInfo *info = getInfo(symbol);
 
     return utf8FromSymbol(resultSize, result, info->name);
 }
 
 // Documented in header.
-zint utf8SizeFromSymbol(zvalue selector) {
-    assertHasClass(selector, CLS_Symbol);
-    SelectorInfo *info = getInfo(selector);
+zint utf8SizeFromSymbol(zvalue symbol) {
+    assertHasClass(symbol, CLS_Symbol);
+    SymbolInfo *info = getInfo(symbol);
 
     return utf8SizeFromString(info->name);
 }
@@ -236,84 +236,84 @@ zint utf8SizeFromSymbol(zvalue selector) {
 //
 
 // Documented in header.
-METH_IMPL(Selector, call) {
-    // The first argument is the selector, and the rest are the
+METH_IMPL(Symbol, call) {
+    // The first argument is the symbol, and the rest are the
     // arguments to call it with.
-    return selectorCall(args[0], argCount - 1, &args[1]);
+    return symbolCall(args[0], argCount - 1, &args[1]);
 }
 
 // Documented in header.
-METH_IMPL(Selector, debugName) {
-    zvalue selector = args[0];
-    SelectorInfo *info = getInfo(selector);
+METH_IMPL(Symbol, debugName) {
+    zvalue symbol = args[0];
+    SymbolInfo *info = getInfo(symbol);
 
     return info->name;
 }
 
 // Documented in header.
-METH_IMPL(Selector, debugString) {
-    zvalue selector = args[0];
-    SelectorInfo *info = getInfo(selector);
+METH_IMPL(Symbol, debugString) {
+    zvalue symbol = args[0];
+    SymbolInfo *info = getInfo(symbol);
     const char *prefix = info->interned ? "@." : "@?";
 
     return METH_CALL(cat, stringFromUtf8(-1, prefix), info->name);
 }
 
 // Documented in header.
-METH_IMPL(Selector, gcMark) {
-    zvalue selector = args[0];
-    SelectorInfo *info = getInfo(selector);
+METH_IMPL(Symbol, gcMark) {
+    zvalue symbol = args[0];
+    SymbolInfo *info = getInfo(symbol);
 
     datMark(info->name);
     return NULL;
 }
 
 /** Function (not method) `makeAnonymousSymbol`. Documented in spec. */
-METH_IMPL(Selector, makeAnonymousSymbol) {
+METH_IMPL(Symbol, makeAnonymousSymbol) {
     return makeAnonymousSymbol(args[0]);
 }
 
 /** Function (not method) `symbolIsInterned`. Documented in spec. */
-METH_IMPL(Selector, symbolIsInterned) {
+METH_IMPL(Symbol, symbolIsInterned) {
     // TODO: Should be an instance method.
-    zvalue selector = args[0];
-    assertHasClass(selector, CLS_Symbol);
+    zvalue symbol = args[0];
+    assertHasClass(symbol, CLS_Symbol);
 
-    SelectorInfo *info = getInfo(selector);
-    return (info->interned) ? selector : NULL;
+    SymbolInfo *info = getInfo(symbol);
+    return (info->interned) ? symbol : NULL;
 }
 
 /** Function (not method) `symbolName`. Documented in spec. */
-METH_IMPL(Selector, symbolName) {
+METH_IMPL(Symbol, symbolName) {
     // TODO: Should be an instance method.
-    zvalue selector = args[0];
-    assertHasClass(selector, CLS_Symbol);
+    zvalue symbol = args[0];
+    assertHasClass(symbol, CLS_Symbol);
 
-    SelectorInfo *info = getInfo(selector);
+    SymbolInfo *info = getInfo(symbol);
     return info->name;
 }
 
 /** Function (not method) `makeInternedSymbol`. Documented in spec. */
-METH_IMPL(Selector, makeInternedSymbol) {
+METH_IMPL(Symbol, makeInternedSymbol) {
     return makeInternedSymbol(args[0]);
 }
 
 // Documented in header.
-METH_IMPL(Selector, totalOrder) {
+METH_IMPL(Symbol, totalOrder) {
     zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `Selector`.
+    zvalue other = args[1];  // Note: Not guaranteed to be a `Symbol`.
 
     assertHasClass(other, CLS_Symbol);
 
     if (value == other) {
         // Note: This check is necessary to keep the `ZSAME` case below from
-        // incorrectly claiming an anonymous selector is unordered with
+        // incorrectly claiming an anonymous symbol is unordered with
         // respect to itself.
         return INT_0;
     }
 
-    SelectorInfo *info1 = getInfo(value);
-    SelectorInfo *info2 = getInfo(other);
+    SymbolInfo *info1 = getInfo(value);
+    SymbolInfo *info2 = getInfo(other);
     bool interned = info1->interned;
 
     if (interned != info2->interned) {
@@ -325,7 +325,7 @@ METH_IMPL(Selector, totalOrder) {
         case ZLESS: return INT_NEG1;
         case ZMORE: return INT_1;
         case ZSAME: {
-            // Per spec, two different anonymous selectors with the same name
+            // Per spec, two different anonymous symbols with the same name
             // are unordered with respect to each other.
             return interned ? INT_0 : NULL;
         }
@@ -333,38 +333,38 @@ METH_IMPL(Selector, totalOrder) {
 }
 
 /** Initializes the module. */
-MOD_INIT(Selector) {
+MOD_INIT(Symbol) {
     MOD_USE(Function);
 
     // Note: The `objectModel` module initializes `CLS_Symbol`.
     classBindMethods(CLS_Symbol,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Selector, call),
-            SEL_METH(Selector, debugName),
-            SEL_METH(Selector, debugString),
-            SEL_METH(Selector, gcMark),
-            SEL_METH(Selector, totalOrder),
+            SEL_METH(Symbol, call),
+            SEL_METH(Symbol, debugName),
+            SEL_METH(Symbol, debugString),
+            SEL_METH(Symbol, gcMark),
+            SEL_METH(Symbol, totalOrder),
             NULL));
 
     FUN_Symbol_makeAnonymousSymbol = makeBuiltin(1, 1,
-        METH_NAME(Selector, makeAnonymousSymbol), 0,
-        stringFromUtf8(-1, "Selector.makeAnonymousSymbol"));
+        METH_NAME(Symbol, makeAnonymousSymbol), 0,
+        stringFromUtf8(-1, "Symbol.makeAnonymousSymbol"));
     datImmortalize(FUN_Symbol_makeAnonymousSymbol);
 
     FUN_Symbol_makeInternedSymbol = makeBuiltin(1, 1,
-        METH_NAME(Selector, makeInternedSymbol), 0,
-        stringFromUtf8(-1, "Selector.makeInternedSymbol"));
+        METH_NAME(Symbol, makeInternedSymbol), 0,
+        stringFromUtf8(-1, "Symbol.makeInternedSymbol"));
     datImmortalize(FUN_Symbol_makeInternedSymbol);
 
     FUN_Symbol_symbolIsInterned = makeBuiltin(1, 1,
-        METH_NAME(Selector, symbolIsInterned), 0,
-        stringFromUtf8(-1, "Selector.symbolIsInterned"));
+        METH_NAME(Symbol, symbolIsInterned), 0,
+        stringFromUtf8(-1, "Symbol.symbolIsInterned"));
     datImmortalize(FUN_Symbol_symbolIsInterned);
 
     FUN_Symbol_symbolName = makeBuiltin(1, 1,
-        METH_NAME(Selector, symbolName), 0,
-        stringFromUtf8(-1, "Selector.symbolName"));
+        METH_NAME(Symbol, symbolName), 0,
+        stringFromUtf8(-1, "Symbol.symbolName"));
     datImmortalize(FUN_Symbol_symbolName);
 }
 
