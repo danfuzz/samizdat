@@ -268,6 +268,14 @@ METH_IMPL(Symbol, gcMark) {
     return NULL;
 }
 
+// Documented in header.
+METH_IMPL(Symbol, makeAnonymous) {
+    zvalue symbol = args[0];
+    SymbolInfo *info = getInfo(symbol);
+
+    return makeSymbol(info->name, false);
+}
+
 /** Function (not method) `makeAnonymousSymbol`. Documented in spec. */
 METH_IMPL(Symbol, makeAnonymousSymbol) {
     return makeAnonymousSymbol(args[0]);
@@ -336,6 +344,8 @@ METH_IMPL(Symbol, totalOrder) {
 MOD_INIT(Symbol) {
     MOD_USE(Function);
 
+    SYM_INIT(makeAnonymous);
+
     // Note: The `objectModel` module initializes `CLS_Symbol`.
     classBindMethods(CLS_Symbol,
         NULL,
@@ -344,6 +354,7 @@ MOD_INIT(Symbol) {
             SYM_METH(Symbol, debugName),
             SYM_METH(Symbol, debugString),
             SYM_METH(Symbol, gcMark),
+            SYM_METH(Symbol, makeAnonymous),
             SYM_METH(Symbol, totalOrder),
             NULL));
 
@@ -370,6 +381,9 @@ MOD_INIT(Symbol) {
 
 // Documented in header.
 zvalue CLS_Symbol = NULL;
+
+// Documented in header.
+SYM_DEF(makeAnonymous);
 
 // Documented in header.
 zvalue FUN_Symbol_makeAnonymousSymbol = NULL;

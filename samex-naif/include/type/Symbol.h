@@ -14,6 +14,9 @@
 /** Class value for in-model class `Symbol`. */
 extern zvalue CLS_Symbol;
 
+/** Method `.makeAnonymous()`: Documented in spec. */
+SYM_DECL(1, 1, makeAnonymous);
+
 /** Global function `makeAnonymousSymbol`: Documented in spec. */
 extern zvalue FUN_Symbol_makeAnonymousSymbol;
 

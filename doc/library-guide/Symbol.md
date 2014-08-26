@@ -9,6 +9,16 @@ language constructs.
 
 
 <br><br>
+### Method Definitions: `Symbol` protocol
+
+#### `.makeAnonymous() -> symbol`
+
+Returns a new anonymous symbol whose name is the same as `this`'s. This
+*always* returns a fresh symbol. (That is, if given an anonymous symbol,
+this method does *not* just return `this`.)
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.debugName() -> string`
