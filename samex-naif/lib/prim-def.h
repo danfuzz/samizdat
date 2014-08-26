@@ -28,10 +28,10 @@ PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
 // Primitive functions: directly exported.
-PRIM_DEF(makeAnonymousSelector,   FUN_Selector_makeAnonymousSelector);
+PRIM_DEF(makeAnonymousSymbol,     FUN_Selector_makeAnonymousSymbol);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
 PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
-PRIM_DEF(makeInternedSelector,    FUN_Selector_makeInternedSelector);
+PRIM_DEF(makeInternedSymbol,      FUN_Selector_makeInternedSymbol);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_DEF(makeSelectorTable,       FUN_SelectorTable_makeSelectorTable);

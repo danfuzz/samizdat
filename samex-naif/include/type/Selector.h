@@ -14,11 +14,11 @@
 /** Class value for in-model class `Selector`. */
 extern zvalue CLS_Selector;
 
-/** Global function `makeAnonymousSelector`: Documented in spec. */
-extern zvalue FUN_Selector_makeAnonymousSelector;
+/** Global function `makeAnonymousSymbol`: Documented in spec. */
+extern zvalue FUN_Selector_makeAnonymousSymbol;
 
-/** Global function `makeInternedSelector`: Documented in spec. */
-extern zvalue FUN_Selector_makeInternedSelector;
+/** Global function `makeInternedSymbol`: Documented in spec. */
+extern zvalue FUN_Selector_makeInternedSymbol;
 
 /** Global function `selectorIsInterned`: Documented in spec. */
 extern zvalue FUN_Selector_selectorIsInterned;
@@ -31,13 +31,13 @@ extern zvalue FUN_Selector_selectorName;
  * Makes an anonymous selector. The `name` is used as the "debugging"
  * name but does not have any effect on lookup.
  */
-zvalue makeAnonymousSelector(zvalue name);
+zvalue makeAnonymousSymbol(zvalue name);
 
 /**
  * Gets the selector that corresponds to the given method name, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */
-zvalue makeInternedSelector(zvalue name);
+zvalue makeInternedSymbol(zvalue name);
 
 /**
  * Makes an interned selector from a UTF-8 string. If `stringBytes`

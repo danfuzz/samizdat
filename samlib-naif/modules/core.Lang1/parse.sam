@@ -224,7 +224,7 @@ def parType = makeMainSequence(
         makeSequence(
             parIdentifierString,
             makeCode { ., name ->
-                makeLiteral(@@(makeInternedSelector(name::value)))
+                makeLiteral(@@(makeInternedSymbol(name::value)))
             }),
         makeSequence(
             parParenExpression,
@@ -239,7 +239,7 @@ def parDeriv = makeMainSequence(
         makeSequence(
             parIdentifierString,
             makeCode { ., name ->
-                makeLiteral(@@(makeInternedSelector(name::value)))
+                makeLiteral(@@(makeInternedSymbol(name::value)))
             }),
         parParenExpression),
     makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
@@ -749,7 +749,7 @@ def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierString,
     makeCode { ., type ->
-        @token{value: @@(makeInternedSelector(type::value))}
+        @token{value: @@(makeInternedSymbol(type::value))}
     });
 
 ## Documented in spec.
@@ -784,7 +784,7 @@ def parPexSet = makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
                 "".cat(strings*).collect
-                    { ch -> @@(makeInternedSelector(ch)) }
+                    { ch -> @@(makeInternedSymbol(ch)) }
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),

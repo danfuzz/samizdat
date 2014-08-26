@@ -34,7 +34,7 @@ msg(@@def);
 msg(@@fn);
 
 ## Expressions can be used as names.
-msg(@@(makeInternedSelector("blort")));
+msg(@@(makeInternedSymbol("blort")));
 
 note("\nLayer 2...");
 

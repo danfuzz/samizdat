@@ -70,7 +70,7 @@ export fn makeNonlocalExit(function, optValue?) {
 
 ## Documented in spec.
 export fn makeSelector(name) {
-    return makeLiteral(makeInternedSelector(name))
+    return makeLiteral(makeInternedSymbol(name))
 };
 
 ## Documented in spec.

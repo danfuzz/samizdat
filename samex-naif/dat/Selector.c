@@ -150,7 +150,7 @@ static char *callReporter(void *state) {
 //
 
 // Documented in header.
-zvalue makeAnonymousSelector(zvalue name) {
+zvalue makeAnonymousSymbol(zvalue name) {
     return makeSelector(name, false);
 }
 
@@ -176,7 +176,7 @@ zvalue selectorCall(zvalue selector, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-zvalue makeInternedSelector(zvalue name) {
+zvalue makeInternedSymbol(zvalue name) {
     zvalue result = findInternedSelector(name);
 
     if (result == NULL) {
@@ -191,7 +191,7 @@ zvalue makeInternedSelector(zvalue name) {
 
 // Documented in header.
 zvalue selectorFromUtf8(zint stringBytes, const char *string) {
-    return makeInternedSelector(stringFromUtf8(stringBytes, string));
+    return makeInternedSymbol(stringFromUtf8(stringBytes, string));
 }
 
 // Documented in header.
@@ -268,9 +268,9 @@ METH_IMPL(Selector, gcMark) {
     return NULL;
 }
 
-/** Function (not method) `makeAnonymousSelector`. Documented in spec. */
-METH_IMPL(Selector, makeAnonymousSelector) {
-    return makeAnonymousSelector(args[0]);
+/** Function (not method) `makeAnonymousSymbol`. Documented in spec. */
+METH_IMPL(Selector, makeAnonymousSymbol) {
+    return makeAnonymousSymbol(args[0]);
 }
 
 /** Function (not method) `selectorIsInterned`. Documented in spec. */
@@ -293,9 +293,9 @@ METH_IMPL(Selector, selectorName) {
     return info->name;
 }
 
-/** Function (not method) `makeInternedSelector`. Documented in spec. */
-METH_IMPL(Selector, makeInternedSelector) {
-    return makeInternedSelector(args[0]);
+/** Function (not method) `makeInternedSymbol`. Documented in spec. */
+METH_IMPL(Selector, makeInternedSymbol) {
+    return makeInternedSymbol(args[0]);
 }
 
 // Documented in header.
@@ -347,15 +347,15 @@ MOD_INIT(Selector) {
             SEL_METH(Selector, totalOrder),
             NULL));
 
-    FUN_Selector_makeAnonymousSelector = makeBuiltin(1, 1,
-        METH_NAME(Selector, makeAnonymousSelector), 0,
-        stringFromUtf8(-1, "Selector.makeAnonymousSelector"));
-    datImmortalize(FUN_Selector_makeAnonymousSelector);
+    FUN_Selector_makeAnonymousSymbol = makeBuiltin(1, 1,
+        METH_NAME(Selector, makeAnonymousSymbol), 0,
+        stringFromUtf8(-1, "Selector.makeAnonymousSymbol"));
+    datImmortalize(FUN_Selector_makeAnonymousSymbol);
 
-    FUN_Selector_makeInternedSelector = makeBuiltin(1, 1,
-        METH_NAME(Selector, makeInternedSelector), 0,
-        stringFromUtf8(-1, "Selector.makeInternedSelector"));
-    datImmortalize(FUN_Selector_makeInternedSelector);
+    FUN_Selector_makeInternedSymbol = makeBuiltin(1, 1,
+        METH_NAME(Selector, makeInternedSymbol), 0,
+        stringFromUtf8(-1, "Selector.makeInternedSymbol"));
+    datImmortalize(FUN_Selector_makeInternedSymbol);
 
     FUN_Selector_selectorIsInterned = makeBuiltin(1, 1,
         METH_NAME(Selector, selectorIsInterned), 0,
@@ -372,10 +372,10 @@ MOD_INIT(Selector) {
 zvalue CLS_Selector = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_makeAnonymousSelector = NULL;
+zvalue FUN_Selector_makeAnonymousSymbol = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_makeInternedSelector = NULL;
+zvalue FUN_Selector_makeInternedSymbol = NULL;
 
 // Documented in header.
 zvalue FUN_Selector_selectorIsInterned = NULL;
