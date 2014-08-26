@@ -401,7 +401,6 @@ MOD_INIT(objectModel) {
     CLS_Builtin     = allocClass();
     CLS_Jump        = allocClass();
     CLS_String      = allocClass();
-    CLS_Uniqlet     = allocClass();
 
     theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
     datImmortalize(theCoreSecret);
@@ -415,7 +414,6 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
     classInitHere(CLS_Jump,        CLS_Value, "Jump");
     classInitHere(CLS_String,      CLS_Data,  "String");
-    classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.

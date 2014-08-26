@@ -26,10 +26,9 @@ zvalue makeUniqlet(void) {
 MOD_INIT(Uniqlet) {
     MOD_USE(Value);
 
-    // Note: The `objectModel` module initializes `CLS_Uniqlet`.
-
-    // This function is just left here as a positive indication that there
-    // is nothing to do.
+    CLS_Uniqlet = makeCoreClass("Uniqlet", CLS_Value,
+        NULL,
+        NULL);
 }
 
 // Documented in header.
