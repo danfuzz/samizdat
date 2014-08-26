@@ -34,7 +34,7 @@ extern zvalue FUN_Symbol_symbolName;
 zvalue makeAnonymousSymbol(zvalue name);
 
 /**
- * Gets the symbol that corresponds to the given method name, creating it
+ * Gets the interned symbol that corresponds to the given `name`, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */
 zvalue makeInternedSymbol(zvalue name);
