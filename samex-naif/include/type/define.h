@@ -60,7 +60,7 @@
 
 //
 // Method implementation declarations. Each of these is identical except
-// for the argument requirements (not including a `this` argument). The
+// for the argument requirements (not including a `ths` argument). The
 // names are `...args` or `...minArgs_maxArgs` with `rest` used to indicate
 // an unbounded number of arguments.
 //
@@ -103,5 +103,12 @@
     } \
     static zvalue IMPL_##cls##_##name(zvalue ths, \
             zint aRest##Size, zvalue *aRest)
+
+#define METH_IMPL_0_1(cls, name, a0) \
+    static zvalue IMPL_##cls##_##name(zvalue, zvalue); \
+    METH_IMPL_MIN_MAX(cls, name, 1, 2) { \
+        return IMPL_##cls##_##name(args[0], (argCount > 1) ? args[1] : NULL); \
+    } \
+    static zvalue IMPL_##cls##_##name(zvalue ths, zvalue a0)
 
 #endif
