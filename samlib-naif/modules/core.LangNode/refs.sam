@@ -5,7 +5,7 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
+import ./constructors1 :: makeCall, makeLiteral, makeSymbolLiteral, makeVarFetch;
 
 
 ##
@@ -103,7 +103,7 @@ def MOD_NAMES = [
 ];
 
 ## Used in `MOD_NAMES` processing.
-def SYM_get = makeSelector("get");
+def SYM_get = makeSymbolLiteral("get");
 
 
 ##
@@ -113,7 +113,7 @@ def SYM_get = makeSelector("get");
 ## Documented in spec.
 export def REFS = {}.cat(
     (filterAll(SYMBOLS) { name ->
-        {"SYM_".cat(name): makeSelector(name)}
+        {"SYM_".cat(name): makeSymbolLiteral(name)}
     })*,
 
     (filterAll(NAMES) { name ->

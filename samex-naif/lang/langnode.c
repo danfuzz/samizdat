@@ -578,7 +578,7 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
 }
 
 // Documented in spec.
-zvalue makeSelector(zvalue name) {
+zvalue makeSymbolLiteral(zvalue name) {
     return makeLiteral(makeInternedSymbol(name));
 }
 

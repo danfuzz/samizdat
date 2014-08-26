@@ -288,7 +288,7 @@ treated as if it were specified as `@void`.
 This produces a `nonlocalExit` node per se, which must eventually be
 processed via `makeFullClosure()` or similar.
 
-#### `makeSelector(name) -> node`
+#### `makeSymbolLiteral(name) -> node`
 
 Makes a literal node that represents the symbol with the given `name`.
 `name` must be a string.

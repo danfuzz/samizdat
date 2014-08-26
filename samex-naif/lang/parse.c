@@ -358,7 +358,7 @@ DEF_PARSE(literal) {
     } else if (MATCH(CH_AT)) {
         MATCH_OR_REJECT(CH_DOT);
         zvalue name = PARSE_OR_REJECT(identifierString);
-        return makeSelector(get(name, STR_value));
+        return makeSymbolLiteral(get(name, STR_value));
     }
 
     return NULL;
@@ -650,7 +650,7 @@ DEF_PARSE(postfixOperator) {
         MATCH_OR_REJECT(CH_DOT);
         zvalue name = PARSE_OR_REJECT(name);
         zvalue actuals = PARSE_OR_REJECT(actualsList);
-        result = makeCall(makeSelector(name), actuals);
+        result = makeCall(makeSymbolLiteral(name), actuals);
     }
 
     return result;
@@ -968,7 +968,7 @@ DEF_PARSE(methodBind) {
             listFrom1(mapFrom1(STR_name, STR_this)),
             formals));
     return makeCall(REFS(classAddMethod),
-        listFrom3(bind, makeSelector(name), fullClosure));
+        listFrom3(bind, makeSymbolLiteral(name), fullClosure));
 }
 
 /** Helper for `importName`: Parses the first alternate. */

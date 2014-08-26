@@ -175,7 +175,7 @@ def parLiteral = {:
     @"@"
     @"."
     name = parIdentifierString
-    { makeSelector(name::value) }
+    { makeSymbolLiteral(name::value) }
 :};
 
 ## Parses a map key.
@@ -428,18 +428,18 @@ def parPostfixOperator = {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            { node -> makeCallOrApply(makeSelector(name), node, actuals*) }
+            { node -> makeCallOrApply(makeSymbolLiteral(name), node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
         {
-            def getterRef = makeSelector("get_".cat(name));
+            def getterRef = makeSymbolLiteral("get_".cat(name));
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(get_class(getterCall)){
                     getterCall.dataOf()*,
                     lvalue: { expr ->
-                        def setterRef = makeSelector("set_".cat(name));
+                        def setterRef = makeSymbolLiteral("set_".cat(name));
                         makeCall(setterRef, node, expr)
                     }
                 }
@@ -688,7 +688,7 @@ def parMethodBind = {:
         def formals = closure::formals;
         def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::classAddMethod, bind, makeSelector(name), fullClosure)
+        makeCall(REFS::classAddMethod, bind, makeSymbolLiteral(name), fullClosure)
     }
 :};
 

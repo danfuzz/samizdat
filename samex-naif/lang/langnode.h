@@ -18,7 +18,7 @@
 #define REFS(name) (makeVarFetch(STR_##name))
 
 /** Equivalent to `REFS::SYM_<name>` in the spec. */
-#define SYM(name) (makeSelector(STR_##name))
+#define SYM(name) (makeSymbolLiteral(STR_##name))
 
 // Documented in spec.
 bool canYieldVoid(zvalue node);
@@ -90,7 +90,7 @@ zvalue makeNoYield(zvalue value);
 zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 
 // Documented in spec.
-zvalue makeSelector(zvalue name);
+zvalue makeSymbolLiteral(zvalue name);
 
 // Documented in spec.
 zvalue makeThunk(zvalue expression);
