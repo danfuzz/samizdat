@@ -17,9 +17,6 @@ extern zvalue CLS_Symbol;
 /** Method `.makeAnonymous()`: Documented in spec. */
 SYM_DECL(1, 1, makeAnonymous);
 
-/** Global function `makeAnonymousSymbol`: Documented in spec. */
-extern zvalue FUN_Symbol_makeAnonymousSymbol;
-
 /** Global function `makeInternedSymbol`: Documented in spec. */
 extern zvalue FUN_Symbol_makeInternedSymbol;
 
@@ -29,12 +26,6 @@ extern zvalue FUN_Symbol_symbolIsInterned;
 /** Global function `symbolName`: Documented in spec. */
 extern zvalue FUN_Symbol_symbolName;
 
-
-/**
- * Makes an anonymous symbol. The `name` is used as the "debugging"
- * name but does not have any effect on lookup.
- */
-zvalue makeAnonymousSymbol(zvalue name);
 
 /**
  * Gets the interned symbol that corresponds to the given `name`, creating it

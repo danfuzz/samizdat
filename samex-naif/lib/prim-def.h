@@ -28,7 +28,6 @@ PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
 // Primitive functions: directly exported.
-PRIM_DEF(makeAnonymousSymbol,     FUN_Symbol_makeAnonymousSymbol);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
 PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
 PRIM_DEF(makeInternedSymbol,      FUN_Symbol_makeInternedSymbol);

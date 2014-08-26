@@ -150,11 +150,6 @@ static char *callReporter(void *state) {
 //
 
 // Documented in header.
-zvalue makeAnonymousSymbol(zvalue name) {
-    return makeSymbol(name, false);
-}
-
-// Documented in header.
 zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     if (argCount < 1) {
         die("Too few arguments for symbol call.");
@@ -276,11 +271,6 @@ METH_IMPL(Symbol, makeAnonymous) {
     return makeSymbol(info->name, false);
 }
 
-/** Function (not method) `makeAnonymousSymbol`. Documented in spec. */
-METH_IMPL(Symbol, makeAnonymousSymbol) {
-    return makeAnonymousSymbol(args[0]);
-}
-
 /** Function (not method) `symbolIsInterned`. Documented in spec. */
 METH_IMPL(Symbol, symbolIsInterned) {
     // TODO: Should be an instance method.
@@ -358,11 +348,6 @@ MOD_INIT(Symbol) {
             SYM_METH(Symbol, totalOrder),
             NULL));
 
-    FUN_Symbol_makeAnonymousSymbol = makeBuiltin(1, 1,
-        METH_NAME(Symbol, makeAnonymousSymbol), 0,
-        stringFromUtf8(-1, "Symbol.makeAnonymousSymbol"));
-    datImmortalize(FUN_Symbol_makeAnonymousSymbol);
-
     FUN_Symbol_makeInternedSymbol = makeBuiltin(1, 1,
         METH_NAME(Symbol, makeInternedSymbol), 0,
         stringFromUtf8(-1, "Symbol.makeInternedSymbol"));
@@ -384,9 +369,6 @@ zvalue CLS_Symbol = NULL;
 
 // Documented in header.
 SYM_DEF(makeAnonymous);
-
-// Documented in header.
-zvalue FUN_Symbol_makeAnonymousSymbol = NULL;
 
 // Documented in header.
 zvalue FUN_Symbol_makeInternedSymbol = NULL;

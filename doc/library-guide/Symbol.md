@@ -62,13 +62,6 @@ dispatch on `args[0]`.
 <br><br>
 ### Primitive Definitions
 
-#### `makeAnonymousSymbol(name) -> symbol`
-
-Creates and returns a new anonymous symbol. Even though anonymous,
-it must have a name (which must be a string). The anonymity comes from
-the fact that the symbol returned from this function will never be
-found by doing a name lookup, as with `makeInternedSymbol`.
-
 #### `makeInternedSymbol(name) -> symbol`
 
 Finds and returns the interned (non-anonymous) symbol with the given `name`
