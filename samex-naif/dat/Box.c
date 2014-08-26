@@ -182,7 +182,7 @@ MOD_INIT(Box) {
 
     CLS_Box = makeCoreClass("Box", CLS_Value,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Box, collect),
             SEL_METH(Box, fetch),
             SEL_METH(Box, gcMark),

@@ -43,7 +43,7 @@ MOD_INIT(Null) {
 
     CLS_Null = makeCoreClass("Null", CLS_Data,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Null, totalEq),
             SEL_METH(Null, totalOrder),
             NULL));

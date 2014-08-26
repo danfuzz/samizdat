@@ -191,7 +191,7 @@ MOD_INIT(Bool) {
 
     CLS_Bool = makeCoreClass("Bool", CLS_Data,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Bool, and),
             SEL_METH(Bool, bit),
             SEL_METH(Bool, bitSize),

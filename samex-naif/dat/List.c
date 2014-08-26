@@ -414,7 +414,7 @@ MOD_INIT(List) {
 
     CLS_List = makeCoreClass("List", CLS_Data,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(List, cat),
             SEL_METH(List, collect),
             SEL_METH(List, del),

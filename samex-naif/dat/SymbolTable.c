@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 #include "type/Builtin.h"
-#include "type/SelectorTable.h"
+#include "type/SymbolTable.h"
 #include "type/define.h"
 #include "util.h"
 
@@ -17,27 +17,27 @@
 //
 
 /**
- * SelectorTable structure.
+ * SymbolTable structure.
  */
 typedef struct {
     /**
      * Bindings from selectors to values, keyed off of selector index number.
      */
     zvalue table[DAT_MAX_SELECTORS];
-} SelectorTableInfo;
+} SymbolTableInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static SelectorTableInfo *getInfo(zvalue selectorTable) {
-    return datPayload(selectorTable);
+static SymbolTableInfo *getInfo(zvalue symbolTable) {
+    return datPayload(symbolTable);
 }
 
 /**
  * Allocates an instance.
  */
 static zvalue allocInstance(void) {
-    return datAllocValue(CLS_SelectorTable, sizeof(SelectorTableInfo));
+    return datAllocValue(CLS_SymbolTable, sizeof(SymbolTableInfo));
 }
 
 
@@ -46,21 +46,21 @@ static zvalue allocInstance(void) {
 //
 
 // Documented in header.
-void arrayFromSelectorTable(zvalue *result, zvalue selectorTable) {
-    assertHasClass(selectorTable, CLS_SelectorTable);
-    SelectorTableInfo *info = getInfo(selectorTable);
+void arrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
+    assertHasClass(symbolTable, CLS_SymbolTable);
+    SymbolTableInfo *info = getInfo(symbolTable);
 
     utilCpy(zvalue, result, info->table, DAT_MAX_SELECTORS);
 }
 
 // Documented in header.
-zvalue selectorTableFromArgs(zvalue first, ...) {
+zvalue symbolTableFromArgs(zvalue first, ...) {
     if (first == NULL) {
         return EMPTY_SELECTOR_TABLE;
     }
 
     zvalue result = allocInstance();
-    SelectorTableInfo *info = getInfo(result);
+    SymbolTableInfo *info = getInfo(result);
     bool any = false;
     va_list rest;
 
@@ -86,13 +86,13 @@ zvalue selectorTableFromArgs(zvalue first, ...) {
 }
 
 // Documented in header.
-zvalue selectorTableFromArray(zint size, zmapping *mappings) {
+zvalue symbolTableFromArray(zint size, zmapping *mappings) {
     if (size == 0) {
         return EMPTY_SELECTOR_TABLE;
     }
 
     zvalue result = allocInstance();
-    SelectorTableInfo *info = getInfo(result);
+    SymbolTableInfo *info = getInfo(result);
 
     for (zint i = 0; i < size; i++) {
         zvalue key = mappings[i].key;
@@ -109,9 +109,9 @@ zvalue selectorTableFromArray(zint size, zmapping *mappings) {
 //
 
 // Documented in header.
-METH_IMPL(SelectorTable, gcMark) {
+METH_IMPL(SymbolTable, gcMark) {
     zvalue table = args[0];
-    SelectorTableInfo *info = getInfo(table);
+    SymbolTableInfo *info = getInfo(table);
 
     for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
         datMark(info->table[i]);
@@ -121,7 +121,7 @@ METH_IMPL(SelectorTable, gcMark) {
 }
 
 // Documented in header.
-METH_IMPL(SelectorTable, get) {
+METH_IMPL(SymbolTable, get) {
     zvalue table = args[0];
     zvalue sel = args[1];
     zint index = selectorIndex(sel);
@@ -129,8 +129,8 @@ METH_IMPL(SelectorTable, get) {
     return getInfo(table)->table[index];
 }
 
-/** Function (not method) `makeSelectorTable`. Documented in spec. */
-METH_IMPL(SelectorTable, makeSelectorTable) {
+/** Function (not method) `makeSymbolTable`. Documented in spec. */
+METH_IMPL(SymbolTable, makeSymbolTable) {
     if ((argCount & 1) != 0) {
         die("Odd argument count for selector table construction.");
     }
@@ -143,17 +143,17 @@ METH_IMPL(SelectorTable, makeSelectorTable) {
         mappings[i].value = args[at + 1];
     }
 
-    return selectorTableFromArray(size, mappings);
+    return symbolTableFromArray(size, mappings);
 }
 
 // Documented in header.
-METH_IMPL(SelectorTable, totalEq) {
+METH_IMPL(SymbolTable, totalEq) {
     zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `SelectorTable`.
+    zvalue other = args[1];  // Note: Not guaranteed to be a `SymbolTable`.
 
-    assertHasClass(other, CLS_SelectorTable);
-    SelectorTableInfo *info1 = getInfo(value);
-    SelectorTableInfo *info2 = getInfo(other);
+    assertHasClass(other, CLS_SymbolTable);
+    SymbolTableInfo *info1 = getInfo(value);
+    SymbolTableInfo *info2 = getInfo(other);
 
     for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
         zvalue value1 = info1->table[i];
@@ -167,33 +167,33 @@ METH_IMPL(SelectorTable, totalEq) {
 }
 
 /** Initializes the module. */
-MOD_INIT(SelectorTable) {
+MOD_INIT(SymbolTable) {
     MOD_USE(Selector);
     MOD_USE(OneOff);
 
-    // Note: The `objectModel` module initializes `CLS_SelectorTable`.
-    classBindMethods(CLS_SelectorTable,
+    // Note: The `objectModel` module initializes `CLS_SymbolTable`.
+    classBindMethods(CLS_SymbolTable,
         NULL,
-        selectorTableFromArgs(
-            SEL_METH(SelectorTable, gcMark),
-            SEL_METH(SelectorTable, get),
-            SEL_METH(SelectorTable, totalEq),
+        symbolTableFromArgs(
+            SEL_METH(SymbolTable, gcMark),
+            SEL_METH(SymbolTable, get),
+            SEL_METH(SymbolTable, totalEq),
             NULL));
 
-    FUN_SelectorTable_makeSelectorTable = makeBuiltin(0, -1,
-        METH_NAME(SelectorTable, makeSelectorTable), 0,
-        stringFromUtf8(-1, "SelectorTable.makeSelectorTable"));
-    datImmortalize(FUN_SelectorTable_makeSelectorTable);
+    FUN_SymbolTable_makeSymbolTable = makeBuiltin(0, -1,
+        METH_NAME(SymbolTable, makeSymbolTable), 0,
+        stringFromUtf8(-1, "SymbolTable.makeSymbolTable"));
+    datImmortalize(FUN_SymbolTable_makeSymbolTable);
 
     EMPTY_SELECTOR_TABLE = allocInstance();
     datImmortalize(EMPTY_SELECTOR_TABLE);
 }
 
 // Documented in header.
-zvalue CLS_SelectorTable = NULL;
+zvalue CLS_SymbolTable = NULL;
 
 // Documented in header.
 zvalue EMPTY_SELECTOR_TABLE = NULL;
 
 // Documented in header.
-zvalue FUN_SelectorTable_makeSelectorTable;
+zvalue FUN_SymbolTable_makeSymbolTable;

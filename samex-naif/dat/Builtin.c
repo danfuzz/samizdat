@@ -156,7 +156,7 @@ MOD_INIT(Builtin) {
     // Note: The `objectModel` module initializes `CLS_Builtin`.
     classBindMethods(CLS_Builtin,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Builtin, call),
             SEL_METH(Builtin, debugName),
             SEL_METH(Builtin, gcMark),

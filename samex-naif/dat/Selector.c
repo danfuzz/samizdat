@@ -339,7 +339,7 @@ MOD_INIT(Selector) {
     // Note: The `objectModel` module initializes `CLS_Selector`.
     classBindMethods(CLS_Selector,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Selector, call),
             SEL_METH(Selector, debugName),
             SEL_METH(Selector, debugString),

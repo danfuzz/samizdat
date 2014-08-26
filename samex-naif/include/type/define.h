@@ -15,13 +15,13 @@
 #include "type/Class.h"
 #include "type/Function.h"
 #include "type/Selector.h"
-#include "type/SelectorTable.h"
+#include "type/SymbolTable.h"
 #include "type/String.h"
 
 /**
  * Expands to a comma-separated pair of selector and builtin function,
  * for the indicated method. This is for use in calls to
- * `selectorTableFromArgs`.
+ * `symbolTableFromArgs`.
  */
 #define SEL_METH(cls, name) \
     SEL_NAME(name), \

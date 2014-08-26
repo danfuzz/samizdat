@@ -100,7 +100,7 @@ MOD_INIT(Jump) {
     // Note: The `objectModel` module initializes `CLS_Jump`.
     classBindMethods(CLS_Jump,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Jump, call),
             SEL_METH(Jump, debugString),
             SEL_METH(Jump, gcMark),

@@ -130,7 +130,7 @@ MOD_INIT(Object) {
     // Note: The `objectModel` module initializes `CLS_Object`.
     classBindMethods(CLS_Object,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Object, objectDataOf),
             SEL_METH(Object, gcMark),
             NULL));

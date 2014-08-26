@@ -663,7 +663,7 @@ MOD_INIT(String) {
     // Note: The `objectModel` module initializes `CLS_String`.
     classBindMethods(CLS_String,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(String, cat),
             SEL_METH(String, collect),
             SEL_METH(String, debugString),

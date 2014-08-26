@@ -639,7 +639,7 @@ MOD_INIT(Map) {
 
     CLS_Map = makeCoreClass("Map", CLS_Data,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Map, cat),
             SEL_METH(Map, collect),
             SEL_METH(Map, del),

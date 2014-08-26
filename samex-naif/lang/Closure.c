@@ -373,7 +373,7 @@ MOD_INIT(Closure) {
 
     CLS_Closure = makeCoreClass("Closure", CLS_Value,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Closure, call),
             SEL_METH(Closure, debugName),
             SEL_METH(Closure, gcMark),

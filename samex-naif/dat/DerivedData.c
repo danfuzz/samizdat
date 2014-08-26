@@ -156,7 +156,7 @@ MOD_INIT(DerivedData) {
     // Note: The `objectModel` module initializes `CLS_DerivedData`.
     classBindMethods(CLS_DerivedData,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(DerivedData, dataOf),
             SEL_METH(DerivedData, gcMark),
             SEL_METH(DerivedData, get),

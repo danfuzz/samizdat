@@ -196,7 +196,7 @@ MOD_INIT(Int) {
 
     CLS_Int = makeCoreClass("Int", CLS_Data,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Int, abs),
             SEL_METH(Int, add),
             SEL_METH(Int, and),

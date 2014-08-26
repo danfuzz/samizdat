@@ -12,7 +12,7 @@
 #include "type/Jump.h"
 #include "type/Object.h"
 #include "type/Selector.h"
-#include "type/SelectorTable.h"
+#include "type/SymbolTable.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
 #include "util.h"
@@ -151,7 +151,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 
     if (instanceMethods != NULL) {
         zvalue methods[DAT_MAX_SELECTORS];
-        arrayFromSelectorTable(methods, instanceMethods);
+        arrayFromSymbolTable(methods, instanceMethods);
         for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
             zvalue one = methods[i];
             if (one != NULL) {
@@ -395,34 +395,34 @@ MOD_INIT(objectModel) {
     CLS_Class = allocClass();
     CLS_Class->cls = CLS_Class;
 
-    CLS_Value         = allocClass();
-    CLS_Selector      = allocClass();
-    CLS_SelectorTable = allocClass();
-    CLS_Data          = allocClass();
-    CLS_DerivedData   = allocClass();
-    CLS_Object        = allocClass();
+    CLS_Value       = allocClass();
+    CLS_Selector    = allocClass();
+    CLS_SymbolTable = allocClass();
+    CLS_Data        = allocClass();
+    CLS_DerivedData = allocClass();
+    CLS_Object      = allocClass();
 
     // The rest are in alphabetical order.
-    CLS_Builtin       = allocClass();
-    CLS_Jump          = allocClass();
-    CLS_String        = allocClass();
-    CLS_Uniqlet       = allocClass();
+    CLS_Builtin     = allocClass();
+    CLS_Jump        = allocClass();
+    CLS_String      = allocClass();
+    CLS_Uniqlet     = allocClass();
 
     theCoreSecret = makeUniqlet();
     datImmortalize(theCoreSecret);
 
-    classInitHere(CLS_Class,         CLS_Value, "Class");
-    classInitHere(CLS_Value,         NULL,      "Value");
-    classInitHere(CLS_Selector,      CLS_Value, "Selector");
-    classInitHere(CLS_SelectorTable, CLS_Value, "SelectorTable");
-    classInitHere(CLS_Data,          CLS_Value, "Data");
-    classInitHere(CLS_DerivedData,   CLS_Data,  "DerivedData");
-    classInitHere(CLS_Object,        CLS_Value, "Object");
+    classInitHere(CLS_Class,       CLS_Value, "Class");
+    classInitHere(CLS_Value,       NULL,      "Value");
+    classInitHere(CLS_Selector,    CLS_Value, "Selector");
+    classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
+    classInitHere(CLS_Data,        CLS_Value, "Data");
+    classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
+    classInitHere(CLS_Object,      CLS_Value, "Object");
 
-    classInitHere(CLS_Builtin,       CLS_Value, "Builtin");
-    classInitHere(CLS_Jump,          CLS_Value, "Jump");
-    classInitHere(CLS_String,        CLS_Data,  "String");
-    classInitHere(CLS_Uniqlet,       CLS_Value, "Uniqlet");
+    classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
+    classInitHere(CLS_Jump,        CLS_Value, "Jump");
+    classInitHere(CLS_String,      CLS_Data,  "String");
+    classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
@@ -450,7 +450,7 @@ MOD_INIT(Class) {
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
     classBindMethods(CLS_Class,
         NULL,
-        selectorTableFromArgs(
+        symbolTableFromArgs(
             SEL_METH(Class, debugString),
             SEL_METH(Class, gcMark),
             SEL_METH(Class, totalOrder),
