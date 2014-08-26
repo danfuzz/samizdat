@@ -30,7 +30,7 @@ SEL_DECL(1, 1, debugString);
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
  *
- * TODO: This should be defined as an anonymous selector and *not* exported
+ * TODO: This should be defined as an anonymous symbol and *not* exported
  * in any way to the higher layer environment.
  */
 SEL_DECL(1, 1, gcMark);

@@ -35,10 +35,10 @@
     static zvalue METH_NAME(cls, name)( \
         zvalue thisFunction, zint argCount, const zvalue *args)
 
-/** Variable name for a method selector. */
+/** Variable name for a method symbol. */
 #define SEL_NAME(name) SEL_##name
 
-/** Declaration for a method selector. */
+/** Declaration for a method symbol. */
 #define SEL_DECL(minArgs, maxArgs, name) \
     extern zvalue SEL_NAME(name); \
     enum { \

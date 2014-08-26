@@ -73,7 +73,7 @@ typedef struct {
     /** Parent class. Only allowed to be `NULL` for `Value`. */
     zvalue parent;
 
-    /** Name of the class, as a selector. */
+    /** Name of the class, as a symbol. */
     zvalue name;
 
     /** Access secret of the class. Optional, and arbitrary if present. */
@@ -86,7 +86,7 @@ typedef struct {
     zint classId;
 
     /**
-     * Bindings from method selectors to functions, keyed off of selector
+     * Bindings from method symbols to functions, keyed off of symbol
      * index number.
      */
     zvalue methods[DAT_MAX_SYMBOLS];
@@ -129,7 +129,7 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 /**
  * Finds a method on a class, if bound. Returns the bound function if found
  * or `NULL` if not. Does not check to see if `index` is in the valid range
- * for a selector index.
+ * for a symbol index.
  */
 zvalue classFindMethodBySymbolIndex(zvalue cls, zint index);
 
@@ -148,9 +148,9 @@ inline zint classIndexUnchecked(zvalue cls) {
 zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
 
 /**
- * Actual implementation of selector calling. This is where
+ * Actual implementation of symbol calling. This is where
  * short-circuited method dispatch of `call` on class `Symbol`
- * lands. This calls the method bound to the given selector, with the given
+ * lands. This calls the method bound to the given symbol, with the given
  * arguments. The method is looked up on `args[0]`. As such, `argCount` must
  * be at least `1`.
  */

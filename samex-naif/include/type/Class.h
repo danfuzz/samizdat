@@ -56,7 +56,7 @@ bool classIsDerived(zvalue cls);
 zvalue classNameString(zvalue cls);
 
 /**
- * Gets the name of the given class, as a selector.
+ * Gets the name of the given class, as a symbol.
  */
 zvalue className(zvalue cls);
 
@@ -83,7 +83,7 @@ bool hasClass(zvalue value, zvalue cls);
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
- * Makes a new class. `name` is the class's name (a selector or a string).
+ * Makes a new class. `name` is the class's name (a symbol or a string).
  * `parent` is its superclass. `secret` is the construction and access secret
  * (an arbitrary value). The two method table arguments must be
  * `SymbolTable`s or `NULL`.

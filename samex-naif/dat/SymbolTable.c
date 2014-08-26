@@ -21,7 +21,7 @@
  */
 typedef struct {
     /**
-     * Bindings from selectors to values, keyed off of selector index number.
+     * Bindings from symbols to values, keyed off of symbol index number.
      */
     zvalue table[DAT_MAX_SYMBOLS];
 } SymbolTableInfo;
@@ -74,7 +74,7 @@ zvalue symbolTableFromArgs(zvalue first, ...) {
 
         zvalue value = va_arg(rest, zvalue);
         if (value == NULL) {
-            die("Odd argument count for selector table construction.");
+            die("Odd argument count for symbol table construction.");
         }
 
         info->table[symbolIndex(sel)] = value;
@@ -132,7 +132,7 @@ METH_IMPL(SymbolTable, get) {
 /** Function (not method) `makeSymbolTable`. Documented in spec. */
 METH_IMPL(SymbolTable, makeSymbolTable) {
     if ((argCount & 1) != 0) {
-        die("Odd argument count for selector table construction.");
+        die("Odd argument count for symbol table construction.");
     }
 
     zint size = argCount >> 1;

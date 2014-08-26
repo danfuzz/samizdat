@@ -18,7 +18,7 @@
 // Private Definitions
 //
 
-/** Array mapping selector indices to derived data classes. */
+/** Array mapping symbol indices to derived data classes. */
 static zvalue theClasses[DAT_MAX_SYMBOLS];
 
 
@@ -65,7 +65,7 @@ zvalue makeData(zvalue cls, zvalue data) {
 
 // Documented in header.
 zvalue makeDerivedDataClass(zvalue name) {
-    // `symbolIndex` will bail if `name` isn't a selector.
+    // `symbolIndex` will bail if `name` isn't a symbol.
     zint index = symbolIndex(name);
     zvalue result = theClasses[index];
 

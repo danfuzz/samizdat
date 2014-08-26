@@ -75,7 +75,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
         default: {
             // The original `function` is some kind of higher layer function.
             // Use method dispatch to get to it: Prepend `function` as a new
-            // first argument, and call the method `call` via its selector.
+            // first argument, and call the method `call` via its symbol.
             zvalue newArgs[argCount + 1];
             newArgs[0] = function;
             utilCpy(zvalue, &newArgs[1], args, argCount);

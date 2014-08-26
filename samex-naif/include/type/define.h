@@ -19,7 +19,7 @@
 #include "type/String.h"
 
 /**
- * Expands to a comma-separated pair of selector and builtin function,
+ * Expands to a comma-separated pair of symbol and builtin function,
  * for the indicated method. This is for use in calls to
  * `symbolTableFromArgs`.
  */
@@ -28,12 +28,12 @@
     makeBuiltin(SEL_MIN_ARGS_##name, SEL_MAX_ARGS_##name, \
         METH_NAME(cls, name), 0, stringFromUtf8(-1, #cls "." #name)) \
 
-/** Variable definition for a method selector. */
+/** Variable definition for a method symbol. */
 #define SEL_DEF(name) \
     zvalue SEL_NAME(name) = NULL
 
 /**
- * Performs initialization of the indicated method selector.
+ * Performs initialization of the indicated method symbol.
  */
 #define SEL_INIT(name) \
     do { \
