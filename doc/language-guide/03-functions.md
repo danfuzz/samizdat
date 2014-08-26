@@ -298,11 +298,11 @@ any number of arguments (including none).
 See the introductory section "Logic operations" for more details.
 
 
-### Selectors and methods
+### Symbols and methods
 
-Classes in Samizdat bind selectors (method identifiers) to functions,
-for later invocation. See the "Selector" subsection under "Data" for
-information about selector syntax and semantics.
+Classes in Samizdat bind symbols (method identifiers) to functions,
+for later invocation. See the "Symbol" subsection under "Data" for
+information about symbol syntax and semantics.
 
 #### Binding methods
 
@@ -311,7 +311,7 @@ TODO: This section reflects Samizdat syntax in transition.
 Methods are bound to classes using a syntax similar to the regular function
 statement syntax (as described above). The difference is that instead of
 just a simple function name, the name consists of a class reference,
-followed by a dot (`.`), followed by the selector name. For example:
+followed by a dot (`.`), followed by the symbol name. For example:
 
 ```
 fn Fizmo.blort(arg) { ... }  ## Bind to the class `Fizmo`.

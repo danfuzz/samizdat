@@ -116,7 +116,7 @@ described below.
 
 This is a variant of the function calling syntax, and is equivalent to
 `@.identifier(targetExpr, arg, arg, ...)` (that is, treating a literal
-selector as a function to apply).
+symbol as a function to apply).
 
 This is the preferred syntax to use for calling a method on a target.
 
@@ -390,8 +390,8 @@ functions `perEq` `perGe` `perGt` `perLe` `perLt` or `perNe`, with the
 left-hand and right-hand sides as arguments, in that order,
 with the usual correspondence between the operators and those names.
 
-Of these functions, `perEq` is a selector, and the rest are defined as
-regular functions in terms of `perEq` and another selector, `perOrder`.
+Of these functions, `perEq` is a symbol, and the rest are defined as
+regular functions in terms of `perEq` and another symbol, `perOrder`.
 The default implementations of those methods is to call through to
 the functions `eq` and `order` (respectively).
 

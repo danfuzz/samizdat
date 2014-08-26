@@ -290,7 +290,7 @@ processed via `makeFullClosure()` or similar.
 
 #### `makeSelector(name) -> node`
 
-Makes a literal node that represents the selector with the given `name`.
+Makes a literal node that represents the symbol with the given `name`.
 `name` must be a string.
 
 #### `makeThunk(node) -> node`
