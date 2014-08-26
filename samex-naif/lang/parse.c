@@ -507,7 +507,7 @@ DEF_PARSE(type) {
     if (name != NULL) {
         return makeLiteral(
             makeDerivedDataClass(
-                makeInternedSymbol(get(name, STR_value))));
+                makeSymbol(get(name, STR_value))));
     }
 
     name = PARSE_OR_REJECT(parenExpression);
@@ -525,7 +525,7 @@ DEF_PARSE(deriv) {
     if (name != NULL) {
         cls = makeLiteral(
             makeDerivedDataClass(
-                makeInternedSymbol(get(name, STR_value))));
+                makeSymbol(get(name, STR_value))));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }

@@ -56,7 +56,7 @@ static SymbolInfo *getInfo(zvalue symbol) {
  * Creates and returns a new symbol with the given name. Does no checking
  * other than that there aren't already too many symbols.
  */
-static zvalue makeSymbol(zvalue name, bool interned) {
+static zvalue makeSymbol0(zvalue name, bool interned) {
     if (theNextIndex >= DAT_MAX_SYMBOLS) {
         die("Too many symbols!");
     }
@@ -171,14 +171,14 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-zvalue makeInternedSymbol(zvalue name) {
+zvalue makeSymbol(zvalue name) {
     zvalue result = findInternedSymbol(name);
 
     if (result == NULL) {
         if (!hasClass(name, CLS_String)) {
             die("Improper symbol name: %s", valDebugString(name));
         }
-        result = makeSymbol(name, true);
+        result = makeSymbol0(name, true);
     }
 
     return result;
@@ -186,7 +186,7 @@ zvalue makeInternedSymbol(zvalue name) {
 
 // Documented in header.
 zvalue symbolFromUtf8(zint stringBytes, const char *string) {
-    return makeInternedSymbol(stringFromUtf8(stringBytes, string));
+    return makeSymbol(stringFromUtf8(stringBytes, string));
 }
 
 // Documented in header.
@@ -268,7 +268,7 @@ METH_IMPL(Symbol, makeAnonymous) {
     zvalue symbol = args[0];
     SymbolInfo *info = getInfo(symbol);
 
-    return makeSymbol(info->name, false);
+    return makeSymbol0(info->name, false);
 }
 
 /** Function (not method) `symbolIsInterned`. Documented in spec. */
@@ -291,9 +291,9 @@ METH_IMPL(Symbol, symbolName) {
     return info->name;
 }
 
-/** Function (not method) `makeInternedSymbol`. Documented in spec. */
-METH_IMPL(Symbol, makeInternedSymbol) {
-    return makeInternedSymbol(args[0]);
+/** Function (not method) `makeSymbol`. Documented in spec. */
+METH_IMPL(Symbol, makeSymbol) {
+    return makeSymbol(args[0]);
 }
 
 // Documented in header.
@@ -348,10 +348,10 @@ MOD_INIT(Symbol) {
             SYM_METH(Symbol, totalOrder),
             NULL));
 
-    FUN_Symbol_makeInternedSymbol = makeBuiltin(1, 1,
-        METH_NAME(Symbol, makeInternedSymbol), 0,
-        stringFromUtf8(-1, "Symbol.makeInternedSymbol"));
-    datImmortalize(FUN_Symbol_makeInternedSymbol);
+    FUN_Symbol_makeSymbol = makeBuiltin(1, 1,
+        METH_NAME(Symbol, makeSymbol), 0,
+        stringFromUtf8(-1, "Symbol.makeSymbol"));
+    datImmortalize(FUN_Symbol_makeSymbol);
 
     FUN_Symbol_symbolIsInterned = makeBuiltin(1, 1,
         METH_NAME(Symbol, symbolIsInterned), 0,
@@ -371,7 +371,7 @@ zvalue CLS_Symbol = NULL;
 SYM_DEF(makeAnonymous);
 
 // Documented in header.
-zvalue FUN_Symbol_makeInternedSymbol = NULL;
+zvalue FUN_Symbol_makeSymbol = NULL;
 
 // Documented in header.
 zvalue FUN_Symbol_symbolIsInterned = NULL;

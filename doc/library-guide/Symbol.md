@@ -62,11 +62,15 @@ dispatch on `args[0]`.
 <br><br>
 ### Primitive Definitions
 
-#### `makeInternedSymbol(name) -> symbol`
+#### `makeSymbol(name) -> symbol`
 
 Finds and returns the interned (non-anonymous) symbol with the given `name`
 (which must be a string). If the so-named symbol has not been created yet,
 this function creates it.
+
+**Note:** If you want an anonymous symbol, call `.makeAnonymous()` on a
+symbol with the desired name, e.g. `makeSymbol(name).makeAnonymous()`
+or (if you know the name statically) `@.foo.makeAnonymous()`.
 
 #### `symbolIsInterned(symbol) -> symbol | void`
 
