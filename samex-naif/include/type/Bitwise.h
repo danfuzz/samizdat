@@ -13,27 +13,27 @@
 
 
 /** Method `.and(bitwise)`: Documented in spec. */
-SEL_DECL(2, 2, and);
+SYM_DECL(2, 2, and);
 
 /** Method `.bit(int)`: Documented in spec. */
-SEL_DECL(2, 2, bit);
+SYM_DECL(2, 2, bit);
 
 /** Method `.bitSize()`: Documented in spec. */
-SEL_DECL(1, 1, bitSize);
+SYM_DECL(1, 1, bitSize);
 
 /** Method `.not()`: Documented in spec. */
-SEL_DECL(1, 1, not);
+SYM_DECL(1, 1, not);
 
 /** Method `.or(bitwise)`: Documented in spec. */
-SEL_DECL(2, 2, or);
+SYM_DECL(2, 2, or);
 
 /** Method `.shl(int)`: Documented in spec. */
-SEL_DECL(2, 2, shl);
+SYM_DECL(2, 2, shl);
 
 /** Method `.shr(int)`: Documented in spec. */
-SEL_DECL(2, 2, shr);
+SYM_DECL(2, 2, shr);
 
 /** Method `.xor(bitwise)`: Documented in spec. */
-SEL_DECL(2, 2, xor);
+SYM_DECL(2, 2, xor);
 
 #endif

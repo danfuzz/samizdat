@@ -35,15 +35,15 @@
     static zvalue METH_NAME(cls, name)( \
         zvalue thisFunction, zint argCount, const zvalue *args)
 
-/** Variable name for a method selector. */
-#define SEL_NAME(name) SEL_##name
+/** Variable name for a method symbol. */
+#define SYM_NAME(name) SYM_##name
 
-/** Declaration for a method selector. */
-#define SEL_DECL(minArgs, maxArgs, name) \
-    extern zvalue SEL_NAME(name); \
+/** Declaration for a method symbol. */
+#define SYM_DECL(minArgs, maxArgs, name) \
+    extern zvalue SYM_NAME(name); \
     enum { \
-        SEL_MIN_ARGS_##name = (minArgs), \
-        SEL_MAX_ARGS_##name = (maxArgs), \
+        SYM_MIN_ARGS_##name = (minArgs), \
+        SYM_MAX_ARGS_##name = (maxArgs), \
     }  // No semicolon here, so that use sites require it.
 
 #endif

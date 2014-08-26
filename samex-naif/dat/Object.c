@@ -67,7 +67,7 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 
 // Documented in header.
 zvalue makeObjectClass(zvalue name, zvalue secret) {
-    assertHasClass(name, CLS_Selector);
+    assertHasClass(name, CLS_Symbol);
     return makeClass(name, CLS_Object, secret, NULL, NULL);
 }
 
@@ -125,14 +125,14 @@ METH_IMPL(Object, makeObjectClass) {
 MOD_INIT(Object) {
     MOD_USE(Value);
 
-    SEL_INIT(objectDataOf);
+    SYM_INIT(objectDataOf);
 
     // Note: The `objectModel` module initializes `CLS_Object`.
     classBindMethods(CLS_Object,
         NULL,
-        selectorTableFromArgs(
-            SEL_METH(Object, objectDataOf),
-            SEL_METH(Object, gcMark),
+        symbolTableFromArgs(
+            SYM_METH(Object, objectDataOf),
+            SYM_METH(Object, gcMark),
             NULL));
 
     FUN_Object_makeObject = makeBuiltin(2, 3,
@@ -150,7 +150,7 @@ MOD_INIT(Object) {
 zvalue CLS_Object = NULL;
 
 // Documented in header.
-SEL_DEF(objectDataOf);
+SYM_DEF(objectDataOf);
 
 // Documented in header.
 zvalue FUN_Object_makeObject = NULL;

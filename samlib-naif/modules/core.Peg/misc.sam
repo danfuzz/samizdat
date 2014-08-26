@@ -23,7 +23,7 @@ import ./PegTokenSetComplement :: makeTokenSetComplement;
 ## Helper for `makeCharSet*`, which takes a string and produces a
 ## list of token classes for the characters.
 fn classListFromString(string) {
-    return string.collect({ ch -> @@(makeInternedSelector(ch)) })
+    return string.collect({ ch -> @@(makeInternedSymbol(ch)) })
 };
 
 
@@ -38,7 +38,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the class name.
-            makeFilterGenerator(input) { ch -> @(@@(makeInternedSelector(ch))) }
+            makeFilterGenerator(input) { ch -> @(@@(makeInternedSymbol(ch))) }
         }
         { input };
 
@@ -61,7 +61,7 @@ export fn makeCharSetComplement(strings*) {
 
 ## Documented in spec.
 export fn makeString(string) {
-    def resultType = @@(makeInternedSelector(string));
+    def resultType = @@(makeInternedSymbol(string));
 
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }

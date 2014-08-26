@@ -13,7 +13,7 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 ##
 
 ## Literal selectors.
-def SELECTORS = [
+def SYMBOLS = [
     "add",
     "and",
     "cat",
@@ -103,7 +103,7 @@ def MOD_NAMES = [
 ];
 
 ## Used in `MOD_NAMES` processing.
-def SEL_get = makeSelector("get");
+def SYM_get = makeSelector("get");
 
 
 ##
@@ -112,8 +112,8 @@ def SEL_get = makeSelector("get");
 
 ## Documented in spec.
 export def REFS = {}.cat(
-    (filterAll(SELECTORS) { name ->
-        {"SEL_".cat(name): makeSelector(name)}
+    (filterAll(SYMBOLS) { name ->
+        {"SYM_".cat(name): makeSelector(name)}
     })*,
 
     (filterAll(NAMES) { name ->
@@ -125,6 +125,6 @@ export def REFS = {}.cat(
         def name = modName::name;
         def modVar = makeVarFetch("$".cat(mod));
         def refKey = mod.cat("_", name);
-        {(refKey): makeCall(SEL_get, modVar, makeLiteral(name))}
+        {(refKey): makeCall(SYM_get, modVar, makeLiteral(name))}
     })*
 );

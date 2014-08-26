@@ -217,7 +217,7 @@ def parMap = {:
         {
             ifIs { eq(rest, []) }
                 { one }
-                { makeCall(REFS::SEL_cat, one, rest*) }
+                { makeCall(REFS::SYM_cat, one, rest*) }
         }
     |
         { makeLiteral({}) }
@@ -273,7 +273,7 @@ def parType = {:
 
     (
         name = parIdentifierString
-        { makeLiteral(@@(makeInternedSelector(name::value))) }
+        { makeLiteral(@@(makeInternedSymbol(name::value))) }
     |
         name = parParenExpression
         { makeCall(REFS::makeDerivedDataClass, name) }
@@ -286,7 +286,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierString
-        { makeLiteral(@@(makeInternedSelector(name::value))) }
+        { makeLiteral(@@(makeInternedSymbol(name::value))) }
     |
         parParenExpression
     )
@@ -975,7 +975,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(makeInternedSelector(type::value))} }
+    { @token{value: @@(makeInternedSymbol(type::value))} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -1014,7 +1014,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { "".cat(strings*).collect { ch -> @@(makeInternedSelector(ch)) } }
+        { "".cat(strings*).collect { ch -> @@(makeInternedSymbol(ch)) } }
     |
         tokens = parPexToken+
         { tokens.collect({ n -> n::value }) }

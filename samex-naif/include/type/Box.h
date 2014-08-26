@@ -16,7 +16,7 @@
 extern zvalue CLS_Box;
 
 /** Method `.store(value?)`: Documented in spec. */
-SEL_DECL(1, 2, store);
+SYM_DECL(1, 2, store);
 
 /**
  * Calls the method `store`, with either one or two arguments, one if

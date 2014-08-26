@@ -11,8 +11,8 @@
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Object.h"
-#include "type/Selector.h"
-#include "type/SelectorTable.h"
+#include "type/Symbol.h"
+#include "type/SymbolTable.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
 #include "util.h"
@@ -51,7 +51,7 @@ static ClassInfo *getInfo(zvalue cls) {
  * is `DerivedData` in which case it is marked as derived.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
-    assertHasClass(name, CLS_Selector);
+    assertHasClass(name, CLS_Symbol);
 
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
@@ -75,7 +75,7 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
  * Helper for initializing the classes built directly in this file.
  */
 static void classInitHere(zvalue cls, zvalue parent, const char *name) {
-    classInit(cls, selectorFromUtf8(-1, name), parent, theCoreSecret);
+    classInit(cls, symbolFromUtf8(-1, name), parent, theCoreSecret);
 }
 
 /**
@@ -142,7 +142,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
         // Initialize the instance method table with whatever the parent
         // defined.
         utilCpy(zvalue, info->methods, getInfo(info->parent)->methods,
-            DAT_MAX_SELECTORS);
+            DAT_MAX_SYMBOLS);
     }
 
     if (classMethods != NULL) {
@@ -150,9 +150,9 @@ void classBindMethods(zvalue cls, zvalue classMethods,
     }
 
     if (instanceMethods != NULL) {
-        zvalue methods[DAT_MAX_SELECTORS];
-        arrayFromSelectorTable(methods, instanceMethods);
-        for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+        zvalue methods[DAT_MAX_SYMBOLS];
+        arrayFromSymbolTable(methods, instanceMethods);
+        for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
             zvalue one = methods[i];
             if (one != NULL) {
                 info->methods[i] = one;
@@ -162,7 +162,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 }
 
 // Documented in header.
-zvalue classFindMethodBySelectorIndex(zvalue cls, zint index) {
+zvalue classFindMethodBySymbolIndex(zvalue cls, zint index) {
     // TODO: Remove the heritage lookup once subclass tables get populated
     // with their superclasses' methods and become thereafter immutable.
 
@@ -205,9 +205,9 @@ void assertHasClass(zvalue value, zvalue cls) {
 }
 
 // Documented in header.
-void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
+void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
     assertHasClassClass(cls);
-    zint index = selectorIndex(selector);
+    zint index = symbolIndex(symbol);
     zvalue *methods = getInfo(cls)->methods;
 
     methods[index] = function;
@@ -252,7 +252,7 @@ zvalue className(zvalue cls) {
 // Documented in header.
 zvalue classNameString(zvalue cls) {
     assertHasClassClass(cls);
-    return selectorName(getInfo(cls)->name);
+    return symbolName(getInfo(cls)->name);
 }
 
 // Documented in header.
@@ -302,7 +302,7 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
 // Documented in header.
 zvalue makeCoreClass(const char *name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
-    return makeClass(selectorFromUtf8(-1, name), parent, theCoreSecret,
+    return makeClass(symbolFromUtf8(-1, name), parent, theCoreSecret,
         classMethods, instanceMethods);
 }
 
@@ -318,7 +318,7 @@ METH_IMPL(Class, debugString) {
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
-        return selectorName(info->name);
+        return symbolName(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
     } else if (classParent(cls) == CLS_DerivedData) {
@@ -329,7 +329,7 @@ METH_IMPL(Class, debugString) {
 
     return METH_CALL(cat,
         stringFromUtf8(-1, "@@("),
-        METH_CALL(debugString, selectorName(info->name)),
+        METH_CALL(debugString, symbolName(info->name)),
         extraString,
         stringFromUtf8(-1, ")"));
 }
@@ -342,7 +342,7 @@ METH_IMPL(Class, gcMark) {
     datMark(info->name);
     datMark(info->secret);
 
-    for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+    for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
         datMark(info->methods[i]);
     }
 
@@ -395,34 +395,34 @@ MOD_INIT(objectModel) {
     CLS_Class = allocClass();
     CLS_Class->cls = CLS_Class;
 
-    CLS_Value         = allocClass();
-    CLS_Selector      = allocClass();
-    CLS_SelectorTable = allocClass();
-    CLS_Data          = allocClass();
-    CLS_DerivedData   = allocClass();
-    CLS_Object        = allocClass();
+    CLS_Value       = allocClass();
+    CLS_Symbol      = allocClass();
+    CLS_SymbolTable = allocClass();
+    CLS_Data        = allocClass();
+    CLS_DerivedData = allocClass();
+    CLS_Object      = allocClass();
 
     // The rest are in alphabetical order.
-    CLS_Builtin       = allocClass();
-    CLS_Jump          = allocClass();
-    CLS_String        = allocClass();
-    CLS_Uniqlet       = allocClass();
+    CLS_Builtin     = allocClass();
+    CLS_Jump        = allocClass();
+    CLS_String      = allocClass();
+    CLS_Uniqlet     = allocClass();
 
     theCoreSecret = makeUniqlet();
     datImmortalize(theCoreSecret);
 
-    classInitHere(CLS_Class,         CLS_Value, "Class");
-    classInitHere(CLS_Value,         NULL,      "Value");
-    classInitHere(CLS_Selector,      CLS_Value, "Selector");
-    classInitHere(CLS_SelectorTable, CLS_Value, "SelectorTable");
-    classInitHere(CLS_Data,          CLS_Value, "Data");
-    classInitHere(CLS_DerivedData,   CLS_Data,  "DerivedData");
-    classInitHere(CLS_Object,        CLS_Value, "Object");
+    classInitHere(CLS_Class,       CLS_Value, "Class");
+    classInitHere(CLS_Value,       NULL,      "Value");
+    classInitHere(CLS_Symbol,      CLS_Value, "Symbol");
+    classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
+    classInitHere(CLS_Data,        CLS_Value, "Data");
+    classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
+    classInitHere(CLS_Object,      CLS_Value, "Object");
 
-    classInitHere(CLS_Builtin,       CLS_Value, "Builtin");
-    classInitHere(CLS_Jump,          CLS_Value, "Jump");
-    classInitHere(CLS_String,        CLS_Data,  "String");
-    classInitHere(CLS_Uniqlet,       CLS_Value, "Uniqlet");
+    classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
+    classInitHere(CLS_Jump,        CLS_Value, "Jump");
+    classInitHere(CLS_String,      CLS_Data,  "String");
+    classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
@@ -432,9 +432,9 @@ MOD_INIT(objectModel) {
     } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
             classIndex(CLS_Jump));
-    } else if (classIndex(CLS_Selector) != DAT_INDEX_SELECTOR) {
-        die("Mismatched index for `Selector`: should be %lld",
-            classIndex(CLS_Selector));
+    } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
+        die("Mismatched index for `Symbol`: should be %lld",
+            classIndex(CLS_Symbol));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
@@ -450,10 +450,10 @@ MOD_INIT(Class) {
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
     classBindMethods(CLS_Class,
         NULL,
-        selectorTableFromArgs(
-            SEL_METH(Class, debugString),
-            SEL_METH(Class, gcMark),
-            SEL_METH(Class, totalOrder),
+        symbolTableFromArgs(
+            SYM_METH(Class, debugString),
+            SYM_METH(Class, gcMark),
+            SYM_METH(Class, totalOrder),
             NULL));
 }
 

@@ -211,7 +211,7 @@ def parMap = {:
         {
             ifIs { eq(rest, []) }
                 { one }
-                { makeCall(REFS::SEL_cat, one, rest*) }
+                { makeCall(REFS::SYM_cat, one, rest*) }
         }
     |
         { makeLiteral({}) }
@@ -267,7 +267,7 @@ def parType = {:
 
     (
         name = parIdentifierString
-        { makeLiteral(@@(makeInternedSelector(name::value))) }
+        { makeLiteral(@@(makeInternedSymbol(name::value))) }
     |
         name = parParenExpression
         { makeCall(REFS::makeDerivedDataClass, name) }
@@ -280,7 +280,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierString
-        { makeLiteral(@@(makeInternedSelector(name::value))) }
+        { makeLiteral(@@(makeInternedSymbol(name::value))) }
     |
         parParenExpression
     )
@@ -969,7 +969,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(makeInternedSelector(type::value))} }
+    { @token{value: @@(makeInternedSymbol(type::value))} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -1008,7 +1008,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { "".cat(strings*).collect { ch -> @@(makeInternedSelector(ch)) } }
+        { "".cat(strings*).collect { ch -> @@(makeInternedSymbol(ch)) } }
     |
         tokens = parPexToken+
         { tokens.collect({ n -> n::value }) }
@@ -1104,33 +1104,33 @@ parPexChoice := {:
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
-    @@"-":   REFS::SEL_neg,
-    @@"#":   REFS::SEL_get_size,
-    @@"^":   REFS::SEL_reverse,
-    @@"!!!": REFS::SEL_not
+    @@"-":   REFS::SYM_neg,
+    @@"#":   REFS::SYM_get_size,
+    @@"^":   REFS::SYM_reverse,
+    @@"!!!": REFS::SYM_not
 };
 
 ## For binary operators, map of token types to function name variable
 ## references.
 def BINARY_OPERATORS = {
-    @@"+":    REFS::SEL_add,
-    @@"-":    REFS::SEL_sub,
-    @@"*":    REFS::SEL_mul,
-    @@"/":    REFS::SEL_div,
-    @@"%":    REFS::SEL_mod,
-    @@"//":   REFS::SEL_divEu,
-    @@"%%":   REFS::SEL_modEu,
-    @@"==":   REFS::SEL_perEq,
+    @@"+":    REFS::SYM_add,
+    @@"-":    REFS::SYM_sub,
+    @@"*":    REFS::SYM_mul,
+    @@"/":    REFS::SYM_div,
+    @@"%":    REFS::SYM_mod,
+    @@"//":   REFS::SYM_divEu,
+    @@"%%":   REFS::SYM_modEu,
+    @@"==":   REFS::SYM_perEq,
     @@"!=":   REFS::perNe,
     @@"<":    REFS::perLt,
     @@">":    REFS::perGt,
     @@"<=":   REFS::perLe,
     @@">=":   REFS::perGe,
-    @@"&&&":  REFS::SEL_and,
-    @@"|||":  REFS::SEL_or,
-    @@"^^^":  REFS::SEL_xor,
-    @@"<<<":  REFS::SEL_shl,
-    @@">>>":  REFS::SEL_shr,
+    @@"&&&":  REFS::SYM_and,
+    @@"|||":  REFS::SYM_or,
+    @@"^^^":  REFS::SYM_xor,
+    @@"<<<":  REFS::SYM_shl,
+    @@">>>":  REFS::SYM_shr,
     @@"\\==": REFS::eq,
     @@"\\!=": REFS::ne,
     @@"\\<":  REFS::lt,
@@ -1300,7 +1300,7 @@ def parInterpolatedString = {:
                 }
         };
 
-        makeCall(REFS::SEL_cat, elems*)
+        makeCall(REFS::SYM_cat, elems*)
     }
 :};
 
@@ -1527,8 +1527,8 @@ def parIndexPostfix = {:
 
             {
                 def funcRef = ifIs { eq(op, @"..") }
-                    { REFS::SEL_sliceInclusive }
-                    { REFS::SEL_sliceExclusive };
+                    { REFS::SYM_sliceInclusive }
+                    { REFS::SYM_sliceExclusive };
                 def startNode = start::value;
 
                 { node -> makeCall(funcRef, node, startNode, optEndNode*) }
@@ -1575,7 +1575,7 @@ def parIndexPostfix = {:
 
         {
             def funcRef = ifIs { eq(index::origin, @@fromStart) }
-                { REFS::SEL_get }
+                { REFS::SYM_get }
                 { REFS::Sequence_reverseNth };
 
             { node -> makeCall(funcRef, node, index::value) }
@@ -2098,10 +2098,10 @@ def parSwitchExpression = {:
             ifIs { hasClass(keys, List) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, code) }
         };
-        def caseMap = makeCallOrApply(REFS::SEL_cat,
+        def caseMap = makeCallOrApply(REFS::SYM_cat,
             makeLiteral({}),
             makeInterpolate(
-                makeCall(REFS::SEL_reverse,
+                makeCall(REFS::SYM_reverse,
                     makeCallOrApply(REFS::makeList, caseClauses*))));
 
         def ifCall = makeCall(REFS::ifSwitch,

@@ -191,19 +191,19 @@ MOD_INIT(Bool) {
 
     CLS_Bool = makeCoreClass("Bool", CLS_Data,
         NULL,
-        selectorTableFromArgs(
-            SEL_METH(Bool, and),
-            SEL_METH(Bool, bit),
-            SEL_METH(Bool, bitSize),
-            SEL_METH(Bool, not),
-            SEL_METH(Bool, or),
-            SEL_METH(Bool, shl),
-            SEL_METH(Bool, shr),
-            SEL_METH(Bool, xor),
-            SEL_METH(Bool, toInt),
-            SEL_METH(Bool, toNumber),
-            SEL_METH(Bool, totalEq),
-            SEL_METH(Bool, totalOrder),
+        symbolTableFromArgs(
+            SYM_METH(Bool, and),
+            SYM_METH(Bool, bit),
+            SYM_METH(Bool, bitSize),
+            SYM_METH(Bool, not),
+            SYM_METH(Bool, or),
+            SYM_METH(Bool, shl),
+            SYM_METH(Bool, shr),
+            SYM_METH(Bool, xor),
+            SYM_METH(Bool, toInt),
+            SYM_METH(Bool, toNumber),
+            SYM_METH(Bool, totalEq),
+            SYM_METH(Bool, totalOrder),
             NULL));
 
     BOOL_FALSE = boolFrom(false);

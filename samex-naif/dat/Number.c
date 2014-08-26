@@ -16,44 +16,44 @@
 MOD_INIT(Number) {
     MOD_USE(Value);
 
-    SEL_INIT(abs);
-    SEL_INIT(add);
-    SEL_INIT(div);
-    SEL_INIT(divEu);
-    SEL_INIT(mod);
-    SEL_INIT(modEu);
-    SEL_INIT(mul);
-    SEL_INIT(neg);
-    SEL_INIT(sign);
-    SEL_INIT(sub);
+    SYM_INIT(abs);
+    SYM_INIT(add);
+    SYM_INIT(div);
+    SYM_INIT(divEu);
+    SYM_INIT(mod);
+    SYM_INIT(modEu);
+    SYM_INIT(mul);
+    SYM_INIT(neg);
+    SYM_INIT(sign);
+    SYM_INIT(sub);
 }
 
 // Documented in header.
-SEL_DEF(abs);
+SYM_DEF(abs);
 
 // Documented in header.
-SEL_DEF(add);
+SYM_DEF(add);
 
 // Documented in header.
-SEL_DEF(div);
+SYM_DEF(div);
 
 // Documented in header.
-SEL_DEF(divEu);
+SYM_DEF(divEu);
 
 // Documented in header.
-SEL_DEF(mod);
+SYM_DEF(mod);
 
 // Documented in header.
-SEL_DEF(modEu);
+SYM_DEF(modEu);
 
 // Documented in header.
-SEL_DEF(mul);
+SYM_DEF(mul);
 
 // Documented in header.
-SEL_DEF(neg);
+SYM_DEF(neg);
 
 // Documented in header.
-SEL_DEF(sign);
+SYM_DEF(sign);
 
 // Documented in header.
-SEL_DEF(sub);
+SYM_DEF(sub);

@@ -20,7 +20,7 @@ other than a derived data value.
 #### `makeDerivedDataClass(name) -> class`
 
 Returns a `Class` instance which represents a derived data class
-with the given `name`. `name` is an arbitrary selector. The following
+with the given `name`. `name` is an arbitrary symbol. The following
 equivalences hold for Samizdat source code:
 
 ```

@@ -11,7 +11,7 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/Number.h"
-#include "type/Selector.h"
+#include "type/Symbol.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -462,7 +462,7 @@ DEF_PARSE(map) {
     switch (get_size(mappings)) {
         case 0:  return makeLiteral(EMPTY_MAP);
         case 1:  return nth(mappings, 0);
-        default: return makeCall(SEL(cat), mappings);
+        default: return makeCall(SYM(cat), mappings);
     }
 }
 
@@ -507,7 +507,7 @@ DEF_PARSE(type) {
     if (name != NULL) {
         return makeLiteral(
             makeDerivedDataClass(
-                makeInternedSelector(get(name, STR_value))));
+                makeInternedSymbol(get(name, STR_value))));
     }
 
     name = PARSE_OR_REJECT(parenExpression);
@@ -525,7 +525,7 @@ DEF_PARSE(deriv) {
     if (name != NULL) {
         cls = makeLiteral(
             makeDerivedDataClass(
-                makeInternedSelector(get(name, STR_value))));
+                makeInternedSymbol(get(name, STR_value))));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }
@@ -679,7 +679,7 @@ DEF_PARSE(unaryExpression) {
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeMaybeValue(result);
         } else if (hasClass(one, CLS_literal)) {
-            result = makeCallOrApply(SEL(get), listFrom2(result, one));
+            result = makeCallOrApply(SYM(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
         }

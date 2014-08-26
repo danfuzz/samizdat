@@ -251,25 +251,25 @@ def zorch = "Z";
 A `Builtin` is an encapsulated potential computation, defined at the
 lowest layer of the system. It is a kind of `Function` (see which).
 
-#### Selector
+#### Symbol
 
-A `Selector` is an identifier used to name language constructs, such as
-classes and methods. On the method front, selectors are the keys bound to
-functions in a class's table of methods, and selectors themselves can be
+A `Symbol` is an identifier used to name language constructs, such as
+classes and methods. On the method front, symbols are the keys bound to
+functions in a class's table of methods, and symbols themselves can be
 invoked as functions to perform method dispatch on the first argument of
-the function call. Every selector has a string name.
+the function call. Every symbol has a string name.
 
-There are two "flavors" of selector, interned and anonymous. An interned
-selector is one that can be identified uniquely by its name. That is, there
-is a one-to-one correspondence between names and interned selectors.
-An anonymous selector has a name, but it is only possible to refer to it
-by identity; that is, one can create new anonymous selectors and pass them
-around, but &mdash; unlike interned selectors &mdash; one cannot get a
-reference to a pre-existing anonymous selector other than being passed it
+There are two "flavors" of symbol, interned and anonymous. An interned
+symbol is one that can be identified uniquely by its name. That is, there
+is a one-to-one correspondence between names and interned symbols.
+An anonymous symbol has a name, but it is only possible to refer to it
+by identity; that is, one can create new anonymous symbols and pass them
+around, but &mdash; unlike interned symbols &mdash; one cannot get a
+reference to a pre-existing anonymous symbol other than being passed it
 (e.g. as an argument to a call).
 
-While selectors are often used implicitly, there is also explicit syntax
-for referring to them. To refer to an interned selector, start with an
+While symbols are often used implicitly, there is also explicit syntax
+for referring to them. To refer to an interned symbol, start with an
 at-sign and a dot, and follow it with a quoted literal string. If the
 string happens to match the syntax of an identifier in the language, then
 the quotes are optional.
@@ -331,7 +331,7 @@ makeUniqlet()
 #### Class
 
 A `Class` value represents the class of a value. Every class has a name, which
-is a selector. There are three major categories of class:
+is a symbol. There are three major categories of class:
 
 * All core values (described above, and values of class `Class` as described
   here) have a "core class" as their class. The name of each core class is a

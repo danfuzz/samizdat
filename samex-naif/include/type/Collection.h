@@ -21,19 +21,19 @@
 
 
 /** Method `.del(key)`: Documented in spec. */
-SEL_DECL(2, 2, del);
+SYM_DECL(2, 2, del);
 
 /** Method `.keyList()`: Documented in spec. */
-SEL_DECL(1, 1, keyList);
+SYM_DECL(1, 1, keyList);
 
 /** Method `.nthMapping(n)`: Documented in spec. */
-SEL_DECL(2, 2, nthMapping);
+SYM_DECL(2, 2, nthMapping);
 
 /** Method `.put(key, value)`: Documented in spec. */
-SEL_DECL(3, 3, put);
+SYM_DECL(3, 3, put);
 
 /** Method `.valueList()`: Documented in spec. */
-SEL_DECL(1, 1, valueList);
+SYM_DECL(1, 1, valueList);
 
 /**
  * Calls the `del` method.

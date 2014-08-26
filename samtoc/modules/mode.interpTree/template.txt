@@ -14,7 +14,7 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/OneOff.h"
-#include "type/Selector.h"
+#include "type/Symbol.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -28,7 +28,7 @@ static zvalue lookup(zvalue context, const char *name) {
 }
 
 static zvalue externalSource(const char *name) {
-    zvalue cls = makeDerivedDataClass(selectorFromUtf8(-1, "external"));
+    zvalue cls = makeDerivedDataClass(symbolFromUtf8(-1, "external"));
     zvalue data = mapFromArgs(
         stringFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);

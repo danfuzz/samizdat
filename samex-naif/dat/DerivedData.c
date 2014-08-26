@@ -18,8 +18,8 @@
 // Private Definitions
 //
 
-/** Array mapping selector indices to derived data classes. */
-static zvalue theClasses[DAT_MAX_SELECTORS];
+/** Array mapping symbol indices to derived data classes. */
+static zvalue theClasses[DAT_MAX_SYMBOLS];
 
 
 /**
@@ -65,8 +65,8 @@ zvalue makeData(zvalue cls, zvalue data) {
 
 // Documented in header.
 zvalue makeDerivedDataClass(zvalue name) {
-    // `selectorIndex` will bail if `name` isn't a selector.
-    zint index = selectorIndex(name);
+    // `symbolIndex` will bail if `name` isn't a symbol.
+    zint index = symbolIndex(name);
     zvalue result = theClasses[index];
 
     if (result != NULL) {
@@ -151,17 +151,17 @@ METH_IMPL(DerivedData, totalOrder) {
 MOD_INIT(DerivedData) {
     MOD_USE(Data);
 
-    SEL_INIT(dataOf);
+    SYM_INIT(dataOf);
 
     // Note: The `objectModel` module initializes `CLS_DerivedData`.
     classBindMethods(CLS_DerivedData,
         NULL,
-        selectorTableFromArgs(
-            SEL_METH(DerivedData, dataOf),
-            SEL_METH(DerivedData, gcMark),
-            SEL_METH(DerivedData, get),
-            SEL_METH(DerivedData, totalEq),
-            SEL_METH(DerivedData, totalOrder),
+        symbolTableFromArgs(
+            SYM_METH(DerivedData, dataOf),
+            SYM_METH(DerivedData, gcMark),
+            SYM_METH(DerivedData, get),
+            SYM_METH(DerivedData, totalEq),
+            SYM_METH(DerivedData, totalOrder),
             NULL));
 
     FUN_DerivedData_makeData = makeBuiltin(1, 2,
@@ -179,7 +179,7 @@ MOD_INIT(DerivedData) {
 zvalue CLS_DerivedData = NULL;
 
 // Documented in header.
-SEL_DEF(dataOf);
+SYM_DEF(dataOf);
 
 // Documented in header.
 zvalue FUN_DerivedData_makeData = NULL;

@@ -28,7 +28,7 @@ void assertHasClass(zvalue value, zvalue cls);
  * Adds a new method to a class. TODO: This function should get removed once
  * the system can cleanly construct classes with their methods in one go.
  */
-void classAddMethod(zvalue cls, zvalue selector, zvalue function);
+void classAddMethod(zvalue cls, zvalue symbol, zvalue function);
 
 /**
  * Compares two classes for equality. It is an error to pass a non-class.
@@ -56,7 +56,7 @@ bool classIsDerived(zvalue cls);
 zvalue classNameString(zvalue cls);
 
 /**
- * Gets the name of the given class, as a selector.
+ * Gets the name of the given class, as a symbol.
  */
 zvalue className(zvalue cls);
 
@@ -83,10 +83,10 @@ bool hasClass(zvalue value, zvalue cls);
 bool haveSameClass(zvalue value, zvalue other);
 
 /**
- * Makes a new class. `name` is the class's name (a selector or a string).
+ * Makes a new class. `name` is the class's name (a symbol or a string).
  * `parent` is its superclass. `secret` is the construction and access secret
  * (an arbitrary value). The two method table arguments must be
- * `SelectorTable`s or `NULL`.
+ * `SymbolTable`s or `NULL`.
  */
 zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
         zvalue classMethods, zvalue instanceMethods);

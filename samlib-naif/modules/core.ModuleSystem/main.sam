@@ -65,7 +65,7 @@ def BOOTSTRAP_MODULES = {
 ##
 
 ## Secret used to control access to module system objects. TODO: Should
-## probably be an anonymous selector.
+## probably be an anonymous symbol.
 def SECRET = makeUniqlet();
 
 ## Default language module to use, when language is unspecified.

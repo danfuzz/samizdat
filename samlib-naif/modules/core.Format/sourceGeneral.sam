@@ -44,8 +44,9 @@ def SPECIAL_VALUES = {
     (List):        "List",
     (Map):         "Map",
     (Null):        "Null",
-    (Selector):    "Selector",
     (String):      "String",
+    (Symbol):      "Symbol",
+    (SymbolTable): "SymbolTable",
     (Uniqlet):     "Uniqlet",
     (Value):       "Value",
     (false):       "false",
@@ -106,14 +107,14 @@ fn Map_sourceGeneral(value, adorn) {
     return adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
 
-## Stringifies a selector.
-fn Selector_sourceGeneral(value, adorn) {
-    def name = selectorName(value);
+## Stringifies a symbol.
+fn Symbol_sourceGeneral(value, adorn) {
+    def name = symbolName(value);
 
     ifIs { eq(adorn, false) }
         { return sourceGeneral(name, false) };
 
-    def prefix = ifIs { selectorIsInterned(value) } { "@." } { "@?" };
+    def prefix = ifIs { symbolIsInterned(value) } { "@." } { "@?" };
     def body = ifIs { isIdentifier(name) }
         { name }
         { sourceGeneral(name, true) };
@@ -179,12 +180,12 @@ export fn sourceGeneral(value, adorn) {
     return ifSwitch(
         { get_class(value) },
         {
-            (Class):    { . -> Class_sourceGeneral(value, adorn) },
-            (Int):      { . -> Int_sourceGeneral(value, adorn) },
-            (List):     { . -> List_sourceGeneral(value, adorn) },
-            (Map):      { . -> Map_sourceGeneral(value, adorn) },
-            (Selector): { . -> Selector_sourceGeneral(value, adorn) },
-            (String):   { . -> String_sourceGeneral(value, adorn) }
+            (Class):  { . -> Class_sourceGeneral(value, adorn) },
+            (Int):    { . -> Int_sourceGeneral(value, adorn) },
+            (List):   { . -> List_sourceGeneral(value, adorn) },
+            (Map):    { . -> Map_sourceGeneral(value, adorn) },
+            (String): { . -> String_sourceGeneral(value, adorn) },
+            (Symbol): { . -> Symbol_sourceGeneral(value, adorn) }
         },
         { . -> Value_sourceGeneral(value, adorn) }
     )

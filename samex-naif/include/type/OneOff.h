@@ -13,22 +13,22 @@
 
 
 /** Method `.cat(more*)`: Documented in spec. */
-SEL_DECL(1, -1, cat);
+SYM_DECL(1, -1, cat);
 
 /** Method `.get(key)`: Documented in spec. */
-SEL_DECL(2, 2, get);
+SYM_DECL(2, 2, get);
 
 /** Method `.get_key()`: Documented in spec. */
-SEL_DECL(1, 1, get_key);
+SYM_DECL(1, 1, get_key);
 
 /** Method `.get_size()`: Documented in spec. */
-SEL_DECL(1, 1, get_size);
+SYM_DECL(1, 1, get_size);
 
 /** Method `.get_value()`: Documented in spec. */
-SEL_DECL(1, 1, get_value);
+SYM_DECL(1, 1, get_value);
 
 /** Method `.nth(int)`: Documented in spec. */
-SEL_DECL(2, 2, nth);
+SYM_DECL(2, 2, nth);
 
 /**
  * Method `.readResource(source, type)`: Documented in spec.
@@ -38,23 +38,23 @@ SEL_DECL(2, 2, nth);
  * than cons up a whole new file which will probably get removed again fairly
  * quickly.
  */
-SEL_DECL(3, 3, readResource);
+SYM_DECL(3, 3, readResource);
 
 /**
  * Method `.resolve(source)`: Documented in spec.
  *
  * **Note:** Same situation as `readResource` above.
  */
-SEL_DECL(2, 2, resolve);
+SYM_DECL(2, 2, resolve);
 
 /** Method `.toInt()`: Documented in spec. */
-SEL_DECL(1, 1, toInt);
+SYM_DECL(1, 1, toInt);
 
 /** Method `.toNumber()`: Documented in spec. */
-SEL_DECL(1, 1, toNumber);
+SYM_DECL(1, 1, toNumber);
 
 /** Method `.toString()`: Documented in spec. */
-SEL_DECL(1, 1, toString);
+SYM_DECL(1, 1, toString);
 
 /**
  * Calls the `get` method.
