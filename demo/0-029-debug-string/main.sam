@@ -36,7 +36,7 @@ msg(makeUniqlet());
 
 msg(Value);         ## a core class
 msg(@@blort);       ## a derived value class
-msg(@.blort);       ## a selector
+msg(@.blort);       ## a symbol
 msg(eq);            ## a builtin function
 msg(msg);           ## a named in-language function
 msg({ -> });        ## an anonymous in-language function

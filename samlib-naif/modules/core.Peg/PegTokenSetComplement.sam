@@ -17,7 +17,7 @@ import ./PegAny :: any;
 ## Payload: {set: {class*: null}}
 
 ## Secret used to control access to this class. TODO: Should probably be an
-## anonymous selector.
+## anonymous symbol.
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
