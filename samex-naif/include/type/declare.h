@@ -30,11 +30,6 @@
 /** C function name for a method on the given class with the given name. */
 #define METH_NAME(cls, name) cls##_##name
 
-/** Declaration for a method on the given class with the given name. */
-#define METH_IMPL(cls, name) \
-    static zvalue METH_NAME(cls, name)( \
-        zvalue thisFunction, zint argCount, const zvalue *args)
-
 /** Variable name for a method symbol. */
 #define SYM_NAME(name) SYM_##name
 
