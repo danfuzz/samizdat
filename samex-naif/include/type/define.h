@@ -48,6 +48,79 @@
     static zvalue METH_NAME(cls, name)( \
         zvalue thisFunction, zint argCount, const zvalue *args)
 
+
+
+//
+// Function implementation declarations. Each of these is identical except
+// for the argument requirements. The names are of the form `...args` or
+// `...minArgs_maxArgs` with `rest` used to indicate an unbounded number of
+// arguments.
+//
+
+#define FUNC_IMPL_MIN_MAX(name, minArgs, maxArgs) \
+    static zvalue name(zvalue, zint, const zvalue *); \
+    static zvalue MAKE_##name(void) { \
+        return makeBuiltin(minArgs, maxArgs, name, 0, \
+            stringFromUtf8(-1, #name)); \
+    } \
+    static zvalue name(zvalue _function, zint _argsSize, const zvalue *_args)
+
+#define FUNC_IMPL_0(name) \
+    static zvalue IMPL_##name(void); \
+    FUNC_IMPL_MIN_MAX(name, 0, 0) { \
+        return IMPL_##name(); \
+    } \
+    static zvalue IMPL_##name(void)
+
+#define FUNC_IMPL_1(name, a0) \
+    static zvalue IMPL_##name(zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 1, 1) { \
+        return IMPL_##name(_args[0]); \
+    } \
+    static zvalue IMPL_##name(zvalue a0)
+
+#define FUNC_IMPL_2(name, a0, a1) \
+    static zvalue IMPL_##name(zvalue, zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 2, 2) { \
+        return IMPL_##name(_args[0], _args[1]); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zvalue a1)
+
+#define FUNC_IMPL_3(name, a0, a1, a2) \
+    static zvalue IMPL_##name(zvalue, zvalue, zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 3, 3) { \
+        return IMPL_##name(_args[0], _args[1], _args[2]); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2)
+
+#define FUNC_IMPL_rest(name, aRest) \
+    static zvalue IMPL_##name(zint, const zvalue *); \
+    FUNC_IMPL_MIN_MAX(name, 0, -1) { \
+        return IMPL_##name(_argsSize, _args); \
+    } \
+    static zvalue IMPL_##name(zint aRest##Size, const zvalue *aRest)
+
+#define FUNC_IMPL_1_2(name, a0, a1) \
+    static zvalue IMPL_##name(zvalue, zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 2, 2) { \
+        return IMPL_##name(_args[0], (_argsSize > 1) ? _args[1] : NULL); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zvalue a1)
+
+#define FUNC_IMPL_1_rest(name, a0, aRest) \
+    static zvalue IMPL_##name(zvalue, zint, const zvalue *); \
+    FUNC_IMPL_MIN_MAX(name, 1, -1) { \
+        return IMPL_##name(_args[0], _argsSize - 1, &_args[1]); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zint aRest##Size, const zvalue *aRest)
+
+
+//
+// Method implementation declarations and associated binder. Each of the
+// `METH_IMPL*` macros expands to a `FUNC_IMPL*` macro with one extra
+// argument, `ths`.
+//
+
 /**
  * Expands to a comma-separated pair of symbol and builtin function,
  * for the indicated method. This is for use in calls to
@@ -57,58 +130,11 @@
     symbolFromUtf8(-1, #name), \
     MAKE_##cls##_##name()
 
-
-//
-// Method implementation declarations. Each of these is identical except
-// for the argument requirements (not including a `ths` argument). The
-// names are `...args` or `...minArgs_maxArgs` with `rest` used to indicate
-// an unbounded number of arguments.
-//
-
-#define METH_IMPL_MIN_MAX(cls, name, minArgs, maxArgs) \
-    static zvalue METH_NAME(cls, name)(zvalue, zint, const zvalue *); \
-    static zvalue MAKE_##cls##_##name(void) { \
-        return makeBuiltin(minArgs, maxArgs, METH_NAME(cls, name), 0, \
-            stringFromUtf8(-1, #cls "." #name)); \
-    } \
-    static zvalue METH_NAME(cls, name)( \
-            zvalue _function, zint _argsSize, const zvalue *_args)
-
-#define METH_IMPL_0(cls, name) \
-    static zvalue IMPL_##cls##_##name(zvalue); \
-    METH_IMPL_MIN_MAX(cls, name, 1, 1) { \
-        return IMPL_##cls##_##name(_args[0]); \
-    } \
-    static zvalue IMPL_##cls##_##name(zvalue ths)
-
-#define METH_IMPL_1(cls, name, a0) \
-    static zvalue IMPL_##cls##_##name(zvalue, zvalue); \
-    METH_IMPL_MIN_MAX(cls, name, 2, 2) { \
-        return IMPL_##cls##_##name(_args[0], _args[1]); \
-    } \
-    static zvalue IMPL_##cls##_##name(zvalue ths, zvalue a0)
-
-#define METH_IMPL_2(cls, name, a0, a1) \
-    static zvalue IMPL_##cls##_##name(zvalue, zvalue, zvalue); \
-    METH_IMPL_MIN_MAX(cls, name, 3, 3) { \
-        return IMPL_##cls##_##name(_args[0], _args[1], _args[2]); \
-    } \
-    static zvalue IMPL_##cls##_##name(zvalue ths, zvalue a0, zvalue a1)
-
+#define METH_IMPL_0(cls, name)         FUNC_IMPL_1(cls##_##name, ths)
+#define METH_IMPL_1(cls, name, a0)     FUNC_IMPL_2(cls##_##name, ths, a0)
+#define METH_IMPL_2(cls, name, a0, a1) FUNC_IMPL_3(cls##_##name, ths, a0, a1)
 #define METH_IMPL_rest(cls, name, aRest) \
-    static zvalue IMPL_##cls##_##name(zvalue, zint, const zvalue *); \
-    METH_IMPL_MIN_MAX(cls, name, 0, -1) { \
-        return IMPL_##cls##_##name(_args[0], _argsSize - 1, &_args[1]); \
-    } \
-    static zvalue IMPL_##cls##_##name(zvalue ths, \
-            zint aRest##Size, const zvalue *aRest)
-
-#define METH_IMPL_0_1(cls, name, a0) \
-    static zvalue IMPL_##cls##_##name(zvalue, zvalue); \
-    METH_IMPL_MIN_MAX(cls, name, 1, 2) { \
-        return IMPL_##cls##_##name(_args[0], \
-            (_argsSize > 1) ? _args[1] : NULL); \
-    } \
-    static zvalue IMPL_##cls##_##name(zvalue ths, zvalue a0)
+    FUNC_IMPL_1_rest(cls##_##name, ths, aRest)
+#define METH_IMPL_0_1(cls, name, a0)   FUNC_IMPL_1_2(cls##_##name, ths, a0)
 
 #endif
