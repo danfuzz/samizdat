@@ -47,8 +47,7 @@ static ClassInfo *getInfo(zvalue cls) {
 }
 
 /**
- * Initializes a class value. The class is marked core, except if its parent
- * is `DerivedData` in which case it is marked as derived.
+ * Initializes a class value.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     assertHasClass(name, CLS_Symbol);
@@ -60,8 +59,6 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     }
 
     ClassInfo *info = getInfo(cls);
-    bool derived = (parent == CLS_DerivedData) && (CLS_DerivedData != NULL);
-
     info->parent = parent;
     info->name = name;
     info->secret = secret;
