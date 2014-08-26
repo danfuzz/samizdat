@@ -63,20 +63,19 @@ zbool zboolFromBool(zvalue boolval) {
 //
 
 // Documented in header.
-METH_IMPL(Bool, and) {
-    zbool bool1 = zboolValue(args[0]);
-    zbool bool2 = zboolFromBool(args[1]);  // Not guaranteed to be a `Bool`.
+METH_IMPL_1(Bool, and, other) {
+    zbool bool1 = zboolValue(ths);
+    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 & bool2);
 }
 
 // Documented in header.
-METH_IMPL(Bool, bit) {
-    zvalue boolval = args[0];
-    zint n = zintFromInt(args[1]);
+METH_IMPL_1(Bool, bit, n) {
+    zint ni = zintFromInt(n);
 
-    if (n == 0) {
-        return intFromZint(zboolValue(boolval));
-    } else if (n > 0) {
+    if (ni == 0) {
+        return intFromZint(zboolValue(ths));
+    } else if (ni > 0) {
         return INT_0;
     } else {
         return NULL;
@@ -84,37 +83,34 @@ METH_IMPL(Bool, bit) {
 }
 
 // Documented in header.
-METH_IMPL(Bool, bitSize) {
+METH_IMPL_0(Bool, bitSize) {
     return INT_1;
 }
 
 // Documented in header.
-METH_IMPL(Bool, or) {
-    zbool bool1 = zboolValue(args[0]);
-    zbool bool2 = zboolFromBool(args[1]);  // Not guaranteed to be a `Bool`.
+METH_IMPL_1(Bool, or, other) {
+    zbool bool1 = zboolValue(ths);
+    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 | bool2);
 }
 
 // Documented in header.
-METH_IMPL(Bool, not) {
-    zvalue boolval = args[0];
-    return boolFromZbool(!zboolValue(boolval));
+METH_IMPL_0(Bool, not) {
+    return boolFromZbool(!zboolValue(ths));
 }
 
 // Documented in header.
-METH_IMPL(Bool, shl) {
-    zvalue value = args[0];
-    zvalue n = args[1];
-    zint amt = zintFromInt(n);  // Includes a type check.
+METH_IMPL_1(Bool, shl, n) {
+    zint ni = zintFromInt(n);
 
-    if (!zboolValue(value)) {
+    if (!zboolValue(ths)) {
         // `false` can be shifted howsoever and still be false.
-        return value;
+        return ths;
     }
 
-    if (amt == 0) {
-        return value;
-    } else if (amt < 0) {
+    if (ni == 0) {
+        return ths;
+    } else if (ni < 0) {
         return BOOL_FALSE;
     } else {
         die("Undefined `bool` shift result.");
@@ -122,19 +118,17 @@ METH_IMPL(Bool, shl) {
 }
 
 // Documented in header.
-METH_IMPL(Bool, shr) {
-    zvalue value = args[0];
-    zvalue n = args[1];
-    zint amt = zintFromInt(n);  // Includes a type check.
+METH_IMPL_1(Bool, shr, n) {
+    zint ni = zintFromInt(n);
 
-    if (!zboolValue(value)) {
+    if (!zboolValue(ths)) {
         // `false` can be shifted howsoever and still be false.
-        return value;
+        return ths;
     }
 
-    if (amt == 0) {
-        return value;
-    } else if (amt > 0) {
+    if (ni == 0) {
+        return ths;
+    } else if (ni > 0) {
         return BOOL_FALSE;
     } else {
         die("Undefined `bool` shift result.");
@@ -142,30 +136,26 @@ METH_IMPL(Bool, shr) {
 }
 
 // Documented in header.
-METH_IMPL(Bool, toInt) {
-    zvalue boolval = args[0];
-    return intFromZint(zboolValue(boolval));
+METH_IMPL_0(Bool, toInt) {
+    return intFromZint(zboolValue(ths));
 }
 
 // Documented in header.
-METH_IMPL(Bool, toNumber) {
-    zvalue boolval = args[0];
-    return intFromZint(zboolValue(boolval));
+METH_IMPL_0(Bool, toNumber) {
+    return intFromZint(zboolValue(ths));
 }
 
 // Documented in header.
-METH_IMPL(Bool, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `Bool`.
-    return (zboolValue(value) == zboolFromBool(other)) ? value : NULL;
+METH_IMPL_1(Bool, totalEq, other) {
+    zbool bool1 = zboolValue(ths);
+    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
+    return (bool1 == bool2) ? ths : NULL;
 }
 
 // Documented in header.
-METH_IMPL(Bool, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `Bool`.
-    bool bool1 = zboolValue(value);
-    bool bool2 = zboolFromBool(other);
+METH_IMPL_1(Bool, totalOrder, other) {
+    zbool bool1 = zboolValue(ths);
+    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
 
     if (bool1 == bool2) {
         return INT_0;
@@ -177,9 +167,9 @@ METH_IMPL(Bool, totalOrder) {
 }
 
 // Documented in header.
-METH_IMPL(Bool, xor) {
-    zbool bool1 = zboolValue(args[0]);
-    zbool bool2 = zboolFromBool(args[1]);  // Not guaranteed to be a `Bool`.
+METH_IMPL_1(Bool, xor, other) {
+    zbool bool1 = zboolValue(ths);
+    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 ^ bool2);
 }
 
@@ -192,18 +182,18 @@ MOD_INIT(Bool) {
     CLS_Bool = makeCoreClass("Bool", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Bool, and),
-            SYM_METH(Bool, bit),
-            SYM_METH(Bool, bitSize),
-            SYM_METH(Bool, not),
-            SYM_METH(Bool, or),
-            SYM_METH(Bool, shl),
-            SYM_METH(Bool, shr),
-            SYM_METH(Bool, xor),
-            SYM_METH(Bool, toInt),
-            SYM_METH(Bool, toNumber),
-            SYM_METH(Bool, totalEq),
-            SYM_METH(Bool, totalOrder),
+            METH_BIND(Bool, and),
+            METH_BIND(Bool, bit),
+            METH_BIND(Bool, bitSize),
+            METH_BIND(Bool, not),
+            METH_BIND(Bool, or),
+            METH_BIND(Bool, shl),
+            METH_BIND(Bool, shr),
+            METH_BIND(Bool, xor),
+            METH_BIND(Bool, toInt),
+            METH_BIND(Bool, toNumber),
+            METH_BIND(Bool, totalEq),
+            METH_BIND(Bool, totalOrder),
             NULL));
 
     BOOL_FALSE = boolFrom(false);
