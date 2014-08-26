@@ -7,7 +7,7 @@
 
 #include "type/Builtin.h"
 #include "type/Int.h"
-#include "type/Selector.h"
+#include "type/Symbol.h"
 #include "type/String.h"
 #include "type/define.h"
 #include "zlimits.h"

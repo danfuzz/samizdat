@@ -11,7 +11,7 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/Number.h"
-#include "type/Selector.h"
+#include "type/Symbol.h"
 #include "type/String.h"
 #include "util.h"
 

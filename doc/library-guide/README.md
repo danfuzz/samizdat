@@ -78,7 +78,7 @@ will be returned, or one of:
   * [Null](Null.md)
   * [Object](Object.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
-  * [Selector](Selector.md)
+  * [Symbol](Symbol.md)
   * [SymbolTable](SymbolTable.md)
   * [String](String.md)
   * [Uniqlet](Uniqlet.md)

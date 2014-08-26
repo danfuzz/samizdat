@@ -23,7 +23,7 @@
 #include "type/Number.h"
 #include "type/Object.h"
 #include "type/OneOff.h"
-#include "type/Selector.h"
+#include "type/Symbol.h"
 #include "type/SymbolTable.h"
 #include "type/String.h"
 #include "type/Uniqlet.h"

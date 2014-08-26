@@ -14,7 +14,7 @@
 #include "type/Builtin.h"
 #include "type/Class.h"
 #include "type/Function.h"
-#include "type/Selector.h"
+#include "type/Symbol.h"
 #include "type/SymbolTable.h"
 #include "type/String.h"
 
