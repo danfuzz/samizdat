@@ -43,23 +43,23 @@ zvalue makeInternedSymbol(zvalue name);
  * Makes an interned symbol from a UTF-8 string. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
  */
-zvalue selectorFromUtf8(zint stringBytes, const char *string);
+zvalue symbolFromUtf8(zint stringBytes, const char *string);
 
 /**
  * Gets the integer index of the given symbol.
  */
-zint selectorIndex(zvalue selector);
+zint symbolIndex(zvalue symbol);
 
 /**
  * Gets the name of the given symbol. This returns a string.
  */
-zvalue symbolName(zvalue selector);
+zvalue symbolName(zvalue symbol);
 
 /**
- * Like `utf8FromSelector`, except this returns an allocated buffer containing
+ * Like `utf8FromSymbol`, except this returns an allocated buffer containing
  * the result.
  */
-char *utf8DupFromSelector(zvalue selector);
+char *utf8DupFromSymbol(zvalue symbol);
 
 /**
  * Encodes the name of the given symbol as UTF-8 into the given buffer of the
@@ -73,12 +73,12 @@ char *utf8DupFromSelector(zvalue selector);
  * then the only "safe" way to use the result is as an explicitly-sized
  * buffer. (For example, `strlen()` might "lie.")
  */
-zint utf8FromSelector(zint resultSize, char *result, zvalue selector);
+zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol);
 
 /**
  * Gets the number of bytes required to encode the name of the given symbol
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
-zint utf8SizeFromSelector(zvalue selector);
+zint utf8SizeFromSymbol(zvalue symbol);
 
 #endif

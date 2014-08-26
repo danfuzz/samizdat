@@ -37,7 +37,7 @@
  */
 #define SEL_INIT(name) \
     do { \
-        SEL_NAME(name) = selectorFromUtf8(-1, #name); \
+        SEL_NAME(name) = symbolFromUtf8(-1, #name); \
     } while (0)
 
 #endif

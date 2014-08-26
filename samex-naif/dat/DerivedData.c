@@ -65,8 +65,8 @@ zvalue makeData(zvalue cls, zvalue data) {
 
 // Documented in header.
 zvalue makeDerivedDataClass(zvalue name) {
-    // `selectorIndex` will bail if `name` isn't a selector.
-    zint index = selectorIndex(name);
+    // `symbolIndex` will bail if `name` isn't a selector.
+    zint index = symbolIndex(name);
     zvalue result = theClasses[index];
 
     if (result != NULL) {

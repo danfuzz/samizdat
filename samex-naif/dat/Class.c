@@ -75,7 +75,7 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
  * Helper for initializing the classes built directly in this file.
  */
 static void classInitHere(zvalue cls, zvalue parent, const char *name) {
-    classInit(cls, selectorFromUtf8(-1, name), parent, theCoreSecret);
+    classInit(cls, symbolFromUtf8(-1, name), parent, theCoreSecret);
 }
 
 /**
@@ -207,7 +207,7 @@ void assertHasClass(zvalue value, zvalue cls) {
 // Documented in header.
 void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
     assertHasClassClass(cls);
-    zint index = selectorIndex(selector);
+    zint index = symbolIndex(selector);
     zvalue *methods = getInfo(cls)->methods;
 
     methods[index] = function;
@@ -302,7 +302,7 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
 // Documented in header.
 zvalue makeCoreClass(const char *name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
-    return makeClass(selectorFromUtf8(-1, name), parent, theCoreSecret,
+    return makeClass(symbolFromUtf8(-1, name), parent, theCoreSecret,
         classMethods, instanceMethods);
 }
 

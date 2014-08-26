@@ -190,7 +190,7 @@ zvalue makeInternedSymbol(zvalue name) {
 }
 
 // Documented in header.
-zvalue selectorFromUtf8(zint stringBytes, const char *string) {
+zvalue symbolFromUtf8(zint stringBytes, const char *string) {
     return makeInternedSymbol(stringFromUtf8(stringBytes, string));
 }
 
@@ -201,13 +201,13 @@ zvalue symbolName(zvalue selector) {
 }
 
 // Documented in header.
-zint selectorIndex(zvalue selector) {
+zint symbolIndex(zvalue selector) {
     assertHasClass(selector, CLS_Symbol);
     return getInfo(selector)->index;
 }
 
 // Documented in header.
-char *utf8DupFromSelector(zvalue selector) {
+char *utf8DupFromSymbol(zvalue selector) {
     assertHasClass(selector, CLS_Symbol);
     SelectorInfo *info = getInfo(selector);
 
@@ -215,15 +215,15 @@ char *utf8DupFromSelector(zvalue selector) {
 }
 
 // Documented in header.
-zint utf8FromSelector(zint resultSize, char *result, zvalue selector) {
+zint utf8FromSymbol(zint resultSize, char *result, zvalue selector) {
     assertHasClass(selector, CLS_Symbol);
     SelectorInfo *info = getInfo(selector);
 
-    return utf8FromSelector(resultSize, result, info->name);
+    return utf8FromSymbol(resultSize, result, info->name);
 }
 
 // Documented in header.
-zint utf8SizeFromSelector(zvalue selector) {
+zint utf8SizeFromSymbol(zvalue selector) {
     assertHasClass(selector, CLS_Symbol);
     SelectorInfo *info = getInfo(selector);
 

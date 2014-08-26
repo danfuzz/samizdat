@@ -77,7 +77,7 @@ zvalue symbolTableFromArgs(zvalue first, ...) {
             die("Odd argument count for selector table construction.");
         }
 
-        info->table[selectorIndex(sel)] = value;
+        info->table[symbolIndex(sel)] = value;
         any = true;
     }
     va_end(rest);
@@ -97,7 +97,7 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
     for (zint i = 0; i < size; i++) {
         zvalue key = mappings[i].key;
         zvalue value = mappings[i].value;
-        info->table[selectorIndex(key)] = value;
+        info->table[symbolIndex(key)] = value;
     }
 
     return result;
@@ -124,7 +124,7 @@ METH_IMPL(SymbolTable, gcMark) {
 METH_IMPL(SymbolTable, get) {
     zvalue table = args[0];
     zvalue sel = args[1];
-    zint index = selectorIndex(sel);
+    zint index = symbolIndex(sel);
 
     return getInfo(table)->table[index];
 }
