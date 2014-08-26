@@ -28,6 +28,11 @@ extern zvalue FUN_Symbol_symbolName;
 
 
 /**
+ * Like `symbolFromUtf8`, except this makes an anonymous (uninterned) symbol.
+ */
+zvalue anonymousSymbolFromUtf8(zint stringBytes, const char *string);
+
+/**
  * Gets the interned symbol that corresponds to the given `name`, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */

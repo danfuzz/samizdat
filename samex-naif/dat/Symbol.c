@@ -150,6 +150,11 @@ static char *callReporter(void *state) {
 //
 
 // Documented in header.
+zvalue anonymousSymbolFromUtf8(zint stringBytes, const char *string) {
+    return makeSymbol0(stringFromUtf8(stringBytes, string), false);
+}
+
+// Documented in header.
 zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     if (argCount < 1) {
         die("Too few arguments for symbol call.");
