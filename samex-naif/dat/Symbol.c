@@ -56,7 +56,7 @@ static SymbolInfo *getInfo(zvalue symbol) {
  * Creates and returns a new symbol with the given name. Does no checking
  * other than that there aren't already too many symbols.
  */
-static zvalue makeSymbol(zvalue name, bool interned) {
+static zvalue makeSymbol0(zvalue name, bool interned) {
     if (theNextIndex >= DAT_MAX_SYMBOLS) {
         die("Too many symbols!");
     }
@@ -150,8 +150,22 @@ static char *callReporter(void *state) {
 //
 
 // Documented in header.
-zvalue makeAnonymousSymbol(zvalue name) {
-    return makeSymbol(name, false);
+zvalue anonymousSymbolFromUtf8(zint stringBytes, const char *string) {
+    return makeSymbol0(stringFromUtf8(stringBytes, string), false);
+}
+
+// Documented in header.
+zvalue makeSymbol(zvalue name) {
+    zvalue result = findInternedSymbol(name);
+
+    if (result == NULL) {
+        if (!hasClass(name, CLS_String)) {
+            die("Improper symbol name: %s", valDebugString(name));
+        }
+        result = makeSymbol0(name, true);
+    }
+
+    return result;
 }
 
 // Documented in header.
@@ -176,22 +190,8 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-zvalue makeInternedSymbol(zvalue name) {
-    zvalue result = findInternedSymbol(name);
-
-    if (result == NULL) {
-        if (!hasClass(name, CLS_String)) {
-            die("Improper symbol name: %s", valDebugString(name));
-        }
-        result = makeSymbol(name, true);
-    }
-
-    return result;
-}
-
-// Documented in header.
 zvalue symbolFromUtf8(zint stringBytes, const char *string) {
-    return makeInternedSymbol(stringFromUtf8(stringBytes, string));
+    return makeSymbol(stringFromUtf8(stringBytes, string));
 }
 
 // Documented in header.
@@ -268,9 +268,12 @@ METH_IMPL(Symbol, gcMark) {
     return NULL;
 }
 
-/** Function (not method) `makeAnonymousSymbol`. Documented in spec. */
-METH_IMPL(Symbol, makeAnonymousSymbol) {
-    return makeAnonymousSymbol(args[0]);
+// Documented in header.
+METH_IMPL(Symbol, makeAnonymous) {
+    zvalue symbol = args[0];
+    SymbolInfo *info = getInfo(symbol);
+
+    return makeSymbol0(info->name, false);
 }
 
 /** Function (not method) `symbolIsInterned`. Documented in spec. */
@@ -293,9 +296,9 @@ METH_IMPL(Symbol, symbolName) {
     return info->name;
 }
 
-/** Function (not method) `makeInternedSymbol`. Documented in spec. */
-METH_IMPL(Symbol, makeInternedSymbol) {
-    return makeInternedSymbol(args[0]);
+/** Function (not method) `makeSymbol`. Documented in spec. */
+METH_IMPL(Symbol, makeSymbol) {
+    return makeSymbol(args[0]);
 }
 
 // Documented in header.
@@ -336,6 +339,8 @@ METH_IMPL(Symbol, totalOrder) {
 MOD_INIT(Symbol) {
     MOD_USE(Function);
 
+    SYM_INIT(makeAnonymous);
+
     // Note: The `objectModel` module initializes `CLS_Symbol`.
     classBindMethods(CLS_Symbol,
         NULL,
@@ -344,18 +349,14 @@ MOD_INIT(Symbol) {
             SYM_METH(Symbol, debugName),
             SYM_METH(Symbol, debugString),
             SYM_METH(Symbol, gcMark),
+            SYM_METH(Symbol, makeAnonymous),
             SYM_METH(Symbol, totalOrder),
             NULL));
 
-    FUN_Symbol_makeAnonymousSymbol = makeBuiltin(1, 1,
-        METH_NAME(Symbol, makeAnonymousSymbol), 0,
-        stringFromUtf8(-1, "Symbol.makeAnonymousSymbol"));
-    datImmortalize(FUN_Symbol_makeAnonymousSymbol);
-
-    FUN_Symbol_makeInternedSymbol = makeBuiltin(1, 1,
-        METH_NAME(Symbol, makeInternedSymbol), 0,
-        stringFromUtf8(-1, "Symbol.makeInternedSymbol"));
-    datImmortalize(FUN_Symbol_makeInternedSymbol);
+    FUN_Symbol_makeSymbol = makeBuiltin(1, 1,
+        METH_NAME(Symbol, makeSymbol), 0,
+        stringFromUtf8(-1, "Symbol.makeSymbol"));
+    datImmortalize(FUN_Symbol_makeSymbol);
 
     FUN_Symbol_symbolIsInterned = makeBuiltin(1, 1,
         METH_NAME(Symbol, symbolIsInterned), 0,
@@ -372,10 +373,10 @@ MOD_INIT(Symbol) {
 zvalue CLS_Symbol = NULL;
 
 // Documented in header.
-zvalue FUN_Symbol_makeAnonymousSymbol = NULL;
+SYM_DEF(makeAnonymous);
 
 // Documented in header.
-zvalue FUN_Symbol_makeInternedSymbol = NULL;
+zvalue FUN_Symbol_makeSymbol = NULL;
 
 // Documented in header.
 zvalue FUN_Symbol_symbolIsInterned = NULL;

@@ -49,7 +49,7 @@ enum {
     DAT_MAX_STRING_SOFT = 10000,
 
     /** Maximum number of classes allowed. */
-    DAT_MAX_CLASSES = 2500,
+    DAT_MAX_CLASSES = 500,
 
     /** Maximum number of method symbols allowed. */
     DAT_MAX_SYMBOLS = 500,

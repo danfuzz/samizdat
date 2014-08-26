@@ -153,8 +153,7 @@ MOD_INIT(DerivedData) {
 
     SYM_INIT(dataOf);
 
-    // Note: The `objectModel` module initializes `CLS_DerivedData`.
-    classBindMethods(CLS_DerivedData,
+    CLS_DerivedData = makeCoreClass("DerivedData", CLS_Data,
         NULL,
         symbolTableFromArgs(
             SYM_METH(DerivedData, dataOf),

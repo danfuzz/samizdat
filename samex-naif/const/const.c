@@ -48,7 +48,7 @@ MOD_INIT(const) {
 
     #define DEF_DATA(name, str) \
         DEF_STRING(name, str); \
-        CLS_##name = makeDerivedDataClass(makeInternedSymbol(STR_##name)); \
+        CLS_##name = makeDerivedDataClass(makeSymbol(STR_##name)); \
         datImmortalize(CLS_##name)
 
     #define DEF_TOKEN(name, str) \

@@ -181,7 +181,7 @@ fn Symbol_convert(value) {
         die("Cannot convert anonymous symbol: \%q(value)")
     };
 
-    return genCall("makeInternedSymbol", convert(name))
+    return genCall("makeSymbol", convert(name))
 };
 
 ## Converts a string.

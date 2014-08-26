@@ -193,7 +193,7 @@ expectSame(@boo, @"boo");
 expectSame(@boo, @(@@"boo"));
 expectSame(@eek(10), @(@@eek)(10));
 expectSame(@eek(10), @eek((5).add(5)));
-expectSame(@eek(10), @(@@(makeInternedSymbol("eek")))(10));
+expectSame(@eek(10), @(@@(makeSymbol("eek")))(10));
 
 expectDifferent(@x, @x(1));
 expectDifferent(@x(1), @x(2));

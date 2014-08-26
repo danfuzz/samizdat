@@ -22,10 +22,10 @@ enum {
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */
-    DAT_INDEX_BUILTIN = 7,
+    DAT_INDEX_BUILTIN = 5,
 
     /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 8,
+    DAT_INDEX_JUMP = 6,
 
     /** The class index for class `Symbol`. */
     DAT_INDEX_SYMBOL = 2,

@@ -34,4 +34,4 @@ msg(@@def);
 msg(@@fn);
 
 ## Expressions can be used as names.
-msg(@@(makeInternedSymbol("blort")));
+msg(@@(makeSymbol("blort")));

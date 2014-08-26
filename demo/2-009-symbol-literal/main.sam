@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## String literal demo
+## Symbol literal demo
 ##
 
 
@@ -20,10 +20,17 @@ fn msg(string) {
 ## Main Tests
 ##
 
-note("Selectors");
+note("Symbols");
 msg(@.foo);
 msg(@."foo");
 msg(@."++ blort ++");
 
 ifNot { eq(@.foo, @."foo") }
     { die("Expected same!") };
+
+def anon = @.foo.makeAnonymous();
+ifIs { eq(@.foo, anon) }
+    { die("Expected interned and anonymous to be different!") };
+
+ifIs { eq(anon, anon.makeAnonymous()) }
+    { die("Expected anonymous and anonymous to be different!") };

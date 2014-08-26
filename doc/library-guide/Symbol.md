@@ -9,6 +9,16 @@ language constructs.
 
 
 <br><br>
+### Method Definitions: `Symbol` protocol
+
+#### `.makeAnonymous() -> symbol`
+
+Returns a new anonymous symbol whose name is the same as `this`'s. This
+*always* returns a fresh symbol. (That is, if given an anonymous symbol,
+this method does *not* just return `this`.)
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.debugName() -> string`
@@ -52,18 +62,15 @@ dispatch on `args[0]`.
 <br><br>
 ### Primitive Definitions
 
-#### `makeAnonymousSymbol(name) -> symbol`
-
-Creates and returns a new anonymous symbol. Even though anonymous,
-it must have a name (which must be a string). The anonymity comes from
-the fact that the symbol returned from this function will never be
-found by doing a name lookup, as with `makeInternedSymbol`.
-
-#### `makeInternedSymbol(name) -> symbol`
+#### `makeSymbol(name) -> symbol`
 
 Finds and returns the interned (non-anonymous) symbol with the given `name`
 (which must be a string). If the so-named symbol has not been created yet,
 this function creates it.
+
+**Note:** If you want an anonymous symbol, call `.makeAnonymous()` on a
+symbol with the desired name, e.g. `makeSymbol(name).makeAnonymous()`
+or (if you know the name statically) `@.foo.makeAnonymous()`.
 
 #### `symbolIsInterned(symbol) -> symbol | void`
 

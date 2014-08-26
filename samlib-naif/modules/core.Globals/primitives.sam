@@ -54,6 +54,6 @@ export
     maybeValue,
     note,
     order,
-    makeInternedSymbol,
+    makeSymbol,
     symbolIsInterned,
     symbolName;

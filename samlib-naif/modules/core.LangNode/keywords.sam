@@ -31,4 +31,4 @@ def KEYWORD_NAMES = [
 ## Documented in spec.
 export def KEYWORDS = collectAsMap(
     makeFilterGenerator(KEYWORD_NAMES)
-    { name -> {(name): @(@@(makeInternedSymbol(name)))} });
+    { name -> {(name): @(@@(makeSymbol(name)))} });

@@ -47,8 +47,7 @@ static ClassInfo *getInfo(zvalue cls) {
 }
 
 /**
- * Initializes a class value. The class is marked core, except if its parent
- * is `DerivedData` in which case it is marked as derived.
+ * Initializes a class value.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     assertHasClass(name, CLS_Symbol);
@@ -60,8 +59,6 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     }
 
     ClassInfo *info = getInfo(cls);
-    bool derived = (parent == CLS_DerivedData) && (CLS_DerivedData != NULL);
-
     info->parent = parent;
     info->name = name;
     info->secret = secret;
@@ -399,16 +396,13 @@ MOD_INIT(objectModel) {
     CLS_Symbol      = allocClass();
     CLS_SymbolTable = allocClass();
     CLS_Data        = allocClass();
-    CLS_DerivedData = allocClass();
-    CLS_Object      = allocClass();
 
     // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
     CLS_Jump        = allocClass();
     CLS_String      = allocClass();
-    CLS_Uniqlet     = allocClass();
 
-    theCoreSecret = makeUniqlet();
+    theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
     datImmortalize(theCoreSecret);
 
     classInitHere(CLS_Class,       CLS_Value, "Class");
@@ -416,13 +410,10 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Symbol,      CLS_Value, "Symbol");
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
     classInitHere(CLS_Data,        CLS_Value, "Data");
-    classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
-    classInitHere(CLS_Object,      CLS_Value, "Object");
 
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
     classInitHere(CLS_Jump,        CLS_Value, "Jump");
     classInitHere(CLS_String,      CLS_Data,  "String");
-    classInitHere(CLS_Uniqlet,     CLS_Value, "Uniqlet");
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
