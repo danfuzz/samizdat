@@ -127,8 +127,7 @@ MOD_INIT(Object) {
 
     SYM_INIT(objectDataOf);
 
-    // Note: The `objectModel` module initializes `CLS_Object`.
-    classBindMethods(CLS_Object,
+    CLS_Object = makeCoreClass("Object", CLS_Value,
         NULL,
         symbolTableFromArgs(
             SYM_METH(Object, objectDataOf),

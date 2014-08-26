@@ -397,7 +397,6 @@ MOD_INIT(objectModel) {
     CLS_SymbolTable = allocClass();
     CLS_Data        = allocClass();
     CLS_DerivedData = allocClass();
-    CLS_Object      = allocClass();
 
     // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
@@ -414,7 +413,6 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
     classInitHere(CLS_Data,        CLS_Value, "Data");
     classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
-    classInitHere(CLS_Object,      CLS_Value, "Object");
 
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
     classInitHere(CLS_Jump,        CLS_Value, "Jump");
