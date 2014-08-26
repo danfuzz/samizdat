@@ -37,9 +37,9 @@ ordered with respect to each other.
 <br><br>
 ### Method Definitions
 
-#### `.get(sel) -> . | void`
+#### `.get(symbol) -> . | void`
 
-Returns the value mapped to the given `sel` (a symbol) in the given
+Returns the value mapped to the given `symbol` (a symbol) in the given
 symbol table. If there is no such mapping, then this returns void.
 
 

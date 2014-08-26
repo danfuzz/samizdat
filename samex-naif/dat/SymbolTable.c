@@ -66,9 +66,9 @@ zvalue symbolTableFromArgs(zvalue first, ...) {
 
     va_start(rest, first);
     for (;;) {
-        zvalue sel = any ? va_arg(rest, zvalue) : first;
+        zvalue symbol = any ? va_arg(rest, zvalue) : first;
 
-        if (sel == NULL) {
+        if (symbol == NULL) {
             break;
         }
 
@@ -77,7 +77,7 @@ zvalue symbolTableFromArgs(zvalue first, ...) {
             die("Odd argument count for symbol table construction.");
         }
 
-        info->table[symbolIndex(sel)] = value;
+        info->table[symbolIndex(symbol)] = value;
         any = true;
     }
     va_end(rest);
@@ -123,8 +123,8 @@ METH_IMPL(SymbolTable, gcMark) {
 // Documented in header.
 METH_IMPL(SymbolTable, get) {
     zvalue table = args[0];
-    zvalue sel = args[1];
-    zint index = symbolIndex(sel);
+    zvalue symbol = args[1];
+    zint index = symbolIndex(symbol);
 
     return getInfo(table)->table[index];
 }
