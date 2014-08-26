@@ -69,7 +69,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
         case DAT_INDEX_JUMP: {
             return jumpCall(function, argCount, args);
         }
-        case DAT_INDEX_SELECTOR: {
+        case DAT_INDEX_SYMBOL: {
             return selectorCall(function, argCount, args);
         }
         default: {

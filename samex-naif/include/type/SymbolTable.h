@@ -6,8 +6,8 @@
 // `SymbolTable` class
 //
 
-#ifndef _TYPE_SELECTOR_TABLE_H_
-#define _TYPE_SELECTOR_TABLE_H_
+#ifndef _TYPE_SYMBOL_TABLE_H_
+#define _TYPE_SYMBOL_TABLE_H_
 
 #include "type/Value.h"
 

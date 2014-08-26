@@ -13,7 +13,7 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 ##
 
 ## Literal selectors.
-def SELECTORS = [
+def SYMBOLS = [
     "add",
     "and",
     "cat",
@@ -112,7 +112,7 @@ def SEL_get = makeSelector("get");
 
 ## Documented in spec.
 export def REFS = {}.cat(
-    (filterAll(SELECTORS) { name ->
+    (filterAll(SYMBOLS) { name ->
         {"SEL_".cat(name): makeSelector(name)}
     })*,
 

@@ -28,7 +28,7 @@ enum {
     DAT_INDEX_JUMP = 8,
 
     /** The class index for class `Selector`. */
-    DAT_INDEX_SELECTOR = 2,
+    DAT_INDEX_SYMBOL = 2,
 
     /** Whether to be paranoid about corruption checks. */
     DAT_MEMORY_PARANOIA = false,
@@ -89,7 +89,7 @@ typedef struct {
      * Bindings from method selectors to functions, keyed off of selector
      * index number.
      */
-    zvalue methods[DAT_MAX_SELECTORS];
+    zvalue methods[DAT_MAX_SYMBOLS];
 } ClassInfo;
 
 /**

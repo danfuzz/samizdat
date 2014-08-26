@@ -23,7 +23,7 @@
 static zint theNextIndex = 0;
 
 /** Array of all interned selectors, in sort order (possibly stale). */
-static zvalue theInternedSelectors[DAT_MAX_SELECTORS];
+static zvalue theInternedSelectors[DAT_MAX_SYMBOLS];
 
 /** The number of interned selectors. */
 static zint theInternedSelectorCount = 0;
@@ -57,7 +57,7 @@ static SelectorInfo *getInfo(zvalue selector) {
  * other than that there aren't already too many selectors.
  */
 static zvalue makeSelector(zvalue name, bool interned) {
-    if (theNextIndex >= DAT_MAX_SELECTORS) {
+    if (theNextIndex >= DAT_MAX_SYMBOLS) {
         die("Too many selectors!");
     }
 

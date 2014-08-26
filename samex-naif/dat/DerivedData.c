@@ -19,7 +19,7 @@
 //
 
 /** Array mapping selector indices to derived data classes. */
-static zvalue theClasses[DAT_MAX_SELECTORS];
+static zvalue theClasses[DAT_MAX_SYMBOLS];
 
 
 /**

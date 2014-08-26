@@ -23,7 +23,7 @@ typedef struct {
     /**
      * Bindings from selectors to values, keyed off of selector index number.
      */
-    zvalue table[DAT_MAX_SELECTORS];
+    zvalue table[DAT_MAX_SYMBOLS];
 } SymbolTableInfo;
 
 /**
@@ -50,7 +50,7 @@ void arrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
     assertHasClass(symbolTable, CLS_SymbolTable);
     SymbolTableInfo *info = getInfo(symbolTable);
 
-    utilCpy(zvalue, result, info->table, DAT_MAX_SELECTORS);
+    utilCpy(zvalue, result, info->table, DAT_MAX_SYMBOLS);
 }
 
 // Documented in header.
@@ -113,7 +113,7 @@ METH_IMPL(SymbolTable, gcMark) {
     zvalue table = args[0];
     SymbolTableInfo *info = getInfo(table);
 
-    for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+    for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
         datMark(info->table[i]);
     }
 
@@ -155,7 +155,7 @@ METH_IMPL(SymbolTable, totalEq) {
     SymbolTableInfo *info1 = getInfo(value);
     SymbolTableInfo *info2 = getInfo(other);
 
-    for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+    for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
         zvalue value1 = info1->table[i];
         zvalue value2 = info2->table[i];
         if (!valEqNullOk(value1, value2)) {

@@ -142,7 +142,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
         // Initialize the instance method table with whatever the parent
         // defined.
         utilCpy(zvalue, info->methods, getInfo(info->parent)->methods,
-            DAT_MAX_SELECTORS);
+            DAT_MAX_SYMBOLS);
     }
 
     if (classMethods != NULL) {
@@ -150,9 +150,9 @@ void classBindMethods(zvalue cls, zvalue classMethods,
     }
 
     if (instanceMethods != NULL) {
-        zvalue methods[DAT_MAX_SELECTORS];
+        zvalue methods[DAT_MAX_SYMBOLS];
         arrayFromSymbolTable(methods, instanceMethods);
-        for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+        for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
             zvalue one = methods[i];
             if (one != NULL) {
                 info->methods[i] = one;
@@ -342,7 +342,7 @@ METH_IMPL(Class, gcMark) {
     datMark(info->name);
     datMark(info->secret);
 
-    for (zint i = 0; i < DAT_MAX_SELECTORS; i++) {
+    for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
         datMark(info->methods[i]);
     }
 
@@ -432,7 +432,7 @@ MOD_INIT(objectModel) {
     } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
             classIndex(CLS_Jump));
-    } else if (classIndex(CLS_Selector) != DAT_INDEX_SELECTOR) {
+    } else if (classIndex(CLS_Selector) != DAT_INDEX_SYMBOL) {
         die("Mismatched index for `Selector`: should be %lld",
             classIndex(CLS_Selector));
     }
