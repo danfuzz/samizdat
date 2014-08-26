@@ -309,16 +309,15 @@ zvalue makeCoreClass(const char *name, zvalue parent,
 //
 
 // Documented in header.
-METH_IMPL(Class, debugString) {
-    zvalue cls = args[0];
-    ClassInfo *info = getInfo(cls);
+METH_IMPL_0(Class, debugString) {
+    ClassInfo *info = getInfo(ths);
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
         return symbolName(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (classParent(cls) == CLS_DerivedData) {
+    } else if (classParent(ths) == CLS_DerivedData) {
         extraString = EMPTY_STRING;
     } else {
         die("Shouldn't happen: opaque class without secret.");
@@ -332,9 +331,8 @@ METH_IMPL(Class, debugString) {
 }
 
 // Documented in header.
-METH_IMPL(Class, gcMark) {
-    zvalue cls = args[0];
-    ClassInfo *info = getInfo(cls);
+METH_IMPL_0(Class, gcMark) {
+    ClassInfo *info = getInfo(ths);
 
     datMark(info->name);
     datMark(info->secret);
@@ -347,17 +345,14 @@ METH_IMPL(Class, gcMark) {
 }
 
 // Documented in header.
-METH_IMPL(Class, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `Class`.
-
-    if (value == other) {
+METH_IMPL_1(Class, totalOrder, other) {
+    if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
         return INT_0;
     }
 
-    assertHasClassClass(other);
-    ClassInfo *info1 = getInfo(value);
+    assertHasClassClass(other);  // Note: Not guaranteed to be a `Class`.
+    ClassInfo *info1 = getInfo(ths);
     ClassInfo *info2 = getInfo(other);
     zvalue name1 = info1->name;
     zvalue name2 = info2->name;
@@ -442,9 +437,9 @@ MOD_INIT(Class) {
     classBindMethods(CLS_Class,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Class, debugString),
-            SYM_METH(Class, gcMark),
-            SYM_METH(Class, totalOrder),
+            METH_BIND(Class, debugString),
+            METH_BIND(Class, gcMark),
+            METH_BIND(Class, totalOrder),
             NULL));
 }
 
