@@ -340,11 +340,11 @@ MOD_INIT(Symbol) {
     classBindMethods(CLS_Symbol,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Symbol, call),
-            SEL_METH(Symbol, debugName),
-            SEL_METH(Symbol, debugString),
-            SEL_METH(Symbol, gcMark),
-            SEL_METH(Symbol, totalOrder),
+            SYM_METH(Symbol, call),
+            SYM_METH(Symbol, debugName),
+            SYM_METH(Symbol, debugString),
+            SYM_METH(Symbol, gcMark),
+            SYM_METH(Symbol, totalOrder),
             NULL));
 
     FUN_Symbol_makeAnonymousSymbol = makeBuiltin(1, 1,

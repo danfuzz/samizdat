@@ -103,9 +103,9 @@ MOD_INIT(Generator) {
     MOD_USE_NEXT(Box);
     MOD_USE_NEXT(List);
 
-    SEL_INIT(collect);
-    SEL_INIT(fetch);
-    SEL_INIT(nextValue);
+    SYM_INIT(collect);
+    SYM_INIT(fetch);
+    SYM_INIT(nextValue);
 
     FUN_Generator_stdCollect = makeBuiltin(1, 2,
         METH_NAME(Generator, stdCollect), 0,
@@ -119,13 +119,13 @@ MOD_INIT(Generator) {
 }
 
 // Documented in header.
-SEL_DEF(collect);
+SYM_DEF(collect);
 
 // Documented in header.
-SEL_DEF(fetch);
+SYM_DEF(fetch);
 
 // Documented in header.
-SEL_DEF(nextValue);
+SYM_DEF(nextValue);
 
 // Documented in header.
 zvalue FUN_Generator_stdCollect = NULL;

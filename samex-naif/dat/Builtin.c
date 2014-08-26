@@ -157,9 +157,9 @@ MOD_INIT(Builtin) {
     classBindMethods(CLS_Builtin,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Builtin, call),
-            SEL_METH(Builtin, debugName),
-            SEL_METH(Builtin, gcMark),
+            SYM_METH(Builtin, call),
+            SYM_METH(Builtin, debugName),
+            SYM_METH(Builtin, gcMark),
             NULL));
 }
 

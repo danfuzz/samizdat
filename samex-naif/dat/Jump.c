@@ -101,9 +101,9 @@ MOD_INIT(Jump) {
     classBindMethods(CLS_Jump,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Jump, call),
-            SEL_METH(Jump, debugString),
-            SEL_METH(Jump, gcMark),
+            SYM_METH(Jump, call),
+            SYM_METH(Jump, debugString),
+            SYM_METH(Jump, gcMark),
             NULL));
 }
 

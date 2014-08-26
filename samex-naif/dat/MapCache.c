@@ -75,7 +75,7 @@ MOD_INIT(MapCache) {
     zvalue CLS_MapCache = makeCoreClass("MapCache", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(MapCache, gcMark),
+            SYM_METH(MapCache, gcMark),
             NULL));
 
     datImmortalize(datAllocValue(CLS_MapCache, 0));

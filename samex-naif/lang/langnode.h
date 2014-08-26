@@ -17,7 +17,7 @@
 /** Equivalent to `REFS::<name>` in the spec. */
 #define REFS(name) (makeVarFetch(STR_##name))
 
-/** Equivalent to `REFS::SEL_<name>` in the spec. */
+/** Equivalent to `REFS::SYM_<name>` in the spec. */
 #define SEL(name) (makeSelector(STR_##name))
 
 // Documented in spec.

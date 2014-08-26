@@ -38,7 +38,7 @@ char *valDebugName(zvalue value) {
         return utilStrdup("(null)");
     }
 
-    if (SEL_NAME(debugName) == NULL) {
+    if (SYM_NAME(debugName) == NULL) {
         die("Too early to call `debugName`.");
     }
 
@@ -51,7 +51,7 @@ char *valDebugString(zvalue value) {
         return utilStrdup("(null)");
     }
 
-    if (SEL_NAME(debugString) == NULL) {
+    if (SYM_NAME(debugString) == NULL) {
         die("Too early to call `debugString`.");
     }
 
@@ -234,25 +234,25 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(String);
     MOD_USE_NEXT(Uniqlet);
 
-    SEL_INIT(debugName);
-    SEL_INIT(debugString);
-    SEL_INIT(gcMark);
-    SEL_INIT(perEq);
-    SEL_INIT(perOrder);
-    SEL_INIT(totalEq);
-    SEL_INIT(totalOrder);
+    SYM_INIT(debugName);
+    SYM_INIT(debugString);
+    SYM_INIT(gcMark);
+    SYM_INIT(perEq);
+    SYM_INIT(perOrder);
+    SYM_INIT(totalEq);
+    SYM_INIT(totalOrder);
 
     // Note: The `objectModel` module initializes `CLS_Value`.
     classBindMethods(CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Value, debugName),
-            SEL_METH(Value, debugString),
-            SEL_METH(Value, gcMark),
-            SEL_METH(Value, perEq),
-            SEL_METH(Value, perOrder),
-            SEL_METH(Value, totalEq),
-            SEL_METH(Value, totalOrder),
+            SYM_METH(Value, debugName),
+            SYM_METH(Value, debugString),
+            SYM_METH(Value, gcMark),
+            SYM_METH(Value, perEq),
+            SYM_METH(Value, perOrder),
+            SYM_METH(Value, totalEq),
+            SYM_METH(Value, totalOrder),
             NULL));
 }
 
@@ -260,22 +260,22 @@ MOD_INIT(Value) {
 zvalue CLS_Value = NULL;
 
 // Documented in header.
-SEL_DEF(debugName);
+SYM_DEF(debugName);
 
 // Documented in header.
-SEL_DEF(debugString);
+SYM_DEF(debugString);
 
 // Documented in header.
-SEL_DEF(gcMark);
+SYM_DEF(gcMark);
 
 // Documented in header.
-SEL_DEF(perEq);
+SYM_DEF(perEq);
 
 // Documented in header.
-SEL_DEF(perOrder);
+SYM_DEF(perOrder);
 
 // Documented in header.
-SEL_DEF(totalEq);
+SYM_DEF(totalEq);
 
 // Documented in header.
-SEL_DEF(totalOrder);
+SYM_DEF(totalOrder);

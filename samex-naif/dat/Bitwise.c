@@ -16,36 +16,36 @@
 MOD_INIT(Bitwise) {
     MOD_USE(Value);
 
-    SEL_INIT(and);
-    SEL_INIT(bit);
-    SEL_INIT(bitSize);
-    SEL_INIT(not);
-    SEL_INIT(or);
-    SEL_INIT(shl);
-    SEL_INIT(shr);
-    SEL_INIT(xor);
+    SYM_INIT(and);
+    SYM_INIT(bit);
+    SYM_INIT(bitSize);
+    SYM_INIT(not);
+    SYM_INIT(or);
+    SYM_INIT(shl);
+    SYM_INIT(shr);
+    SYM_INIT(xor);
 }
 
 // Documented in header.
-SEL_DEF(and);
+SYM_DEF(and);
 
 // Documented in header.
-SEL_DEF(bit);
+SYM_DEF(bit);
 
 // Documented in header.
-SEL_DEF(bitSize);
+SYM_DEF(bitSize);
 
 // Documented in header.
-SEL_DEF(not);
+SYM_DEF(not);
 
 // Documented in header.
-SEL_DEF(or);
+SYM_DEF(or);
 
 // Documented in header.
-SEL_DEF(shl);
+SYM_DEF(shl);
 
 // Documented in header.
-SEL_DEF(shr);
+SYM_DEF(shr);
 
 // Documented in header.
-SEL_DEF(xor);
+SYM_DEF(xor);

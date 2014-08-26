@@ -451,9 +451,9 @@ MOD_INIT(Class) {
     classBindMethods(CLS_Class,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Class, debugString),
-            SEL_METH(Class, gcMark),
-            SEL_METH(Class, totalOrder),
+            SYM_METH(Class, debugString),
+            SYM_METH(Class, gcMark),
+            SYM_METH(Class, totalOrder),
             NULL));
 }
 

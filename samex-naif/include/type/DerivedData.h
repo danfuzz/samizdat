@@ -16,7 +16,7 @@
 extern zvalue CLS_DerivedData;
 
 /** Method `.dataOf()`: Documented in spec. */
-SEL_DECL(1, 1, dataOf);
+SYM_DECL(1, 1, dataOf);
 
 /** Global function `makeData`: Documented in spec. */
 extern zvalue FUN_DerivedData_makeData;

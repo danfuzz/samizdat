@@ -178,16 +178,16 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Value);
 
-    SEL_INIT(store);
+    SYM_INIT(store);
 
     CLS_Box = makeCoreClass("Box", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Box, collect),
-            SEL_METH(Box, fetch),
-            SEL_METH(Box, gcMark),
-            SEL_METH(Box, nextValue),
-            SEL_METH(Box, store),
+            SYM_METH(Box, collect),
+            SYM_METH(Box, fetch),
+            SYM_METH(Box, gcMark),
+            SYM_METH(Box, nextValue),
+            SYM_METH(Box, store),
             NULL));
 }
 
@@ -195,4 +195,4 @@ MOD_INIT(Box) {
 zvalue CLS_Box = NULL;
 
 // Documented in header.
-SEL_DEF(store);
+SYM_DEF(store);

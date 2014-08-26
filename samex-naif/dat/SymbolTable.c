@@ -175,9 +175,9 @@ MOD_INIT(SymbolTable) {
     classBindMethods(CLS_SymbolTable,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(SymbolTable, gcMark),
-            SEL_METH(SymbolTable, get),
-            SEL_METH(SymbolTable, totalEq),
+            SYM_METH(SymbolTable, gcMark),
+            SYM_METH(SymbolTable, get),
+            SYM_METH(SymbolTable, totalEq),
             NULL));
 
     FUN_SymbolTable_makeSymbolTable = makeBuiltin(0, -1,

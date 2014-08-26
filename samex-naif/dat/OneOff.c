@@ -43,48 +43,48 @@ zint nthChar(zvalue value, zint index) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
-    SEL_INIT(cat);
-    SEL_INIT(get);
-    SEL_INIT(get_key);
-    SEL_INIT(get_size);
-    SEL_INIT(get_value);
-    SEL_INIT(readResource);
-    SEL_INIT(resolve);
-    SEL_INIT(nth);
-    SEL_INIT(toInt);
-    SEL_INIT(toNumber);
-    SEL_INIT(toString);
+    SYM_INIT(cat);
+    SYM_INIT(get);
+    SYM_INIT(get_key);
+    SYM_INIT(get_size);
+    SYM_INIT(get_value);
+    SYM_INIT(readResource);
+    SYM_INIT(resolve);
+    SYM_INIT(nth);
+    SYM_INIT(toInt);
+    SYM_INIT(toNumber);
+    SYM_INIT(toString);
 }
 
 // Documented in header.
-SEL_DEF(cat);
+SYM_DEF(cat);
 
 // Documented in header.
-SEL_DEF(get);
+SYM_DEF(get);
 
 // Documented in header.
-SEL_DEF(get_key);
+SYM_DEF(get_key);
 
 // Documented in header.
-SEL_DEF(get_size);
+SYM_DEF(get_size);
 
 // Documented in header.
-SEL_DEF(get_value);
+SYM_DEF(get_value);
 
 // Documented in header.
-SEL_DEF(nth);
+SYM_DEF(nth);
 
 // Documented in header.
-SEL_DEF(readResource);
+SYM_DEF(readResource);
 
 // Documented in header.
-SEL_DEF(resolve);
+SYM_DEF(resolve);
 
 // Documented in header.
-SEL_DEF(toInt);
+SYM_DEF(toInt);
 
 // Documented in header.
-SEL_DEF(toNumber);
+SYM_DEF(toNumber);
 
 // Documented in header.
-SEL_DEF(toString);
+SYM_DEF(toString);

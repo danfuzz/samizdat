@@ -150,9 +150,9 @@ MOD_INIT(Sequence) {
     MOD_USE(Collection);
     MOD_USE_NEXT(Generator);
 
-    SEL_INIT(reverse);
-    SEL_INIT(sliceExclusive);
-    SEL_INIT(sliceInclusive);
+    SYM_INIT(reverse);
+    SYM_INIT(sliceExclusive);
+    SYM_INIT(sliceInclusive);
 
     FUN_Sequence_get = makeBuiltin(2, 2,
         METH_NAME(Sequence, get), 0,
@@ -171,13 +171,13 @@ MOD_INIT(Sequence) {
 }
 
 // Documented in header.
-SEL_DEF(reverse);
+SYM_DEF(reverse);
 
 // Documented in header.
-SEL_DEF(sliceExclusive);
+SYM_DEF(sliceExclusive);
 
 // Documented in header.
-SEL_DEF(sliceInclusive);
+SYM_DEF(sliceInclusive);
 
 // Documented in header.
 zvalue FUN_Sequence_get = NULL;

@@ -79,7 +79,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             zvalue newArgs[argCount + 1];
             newArgs[0] = function;
             utilCpy(zvalue, &newArgs[1], args, argCount);
-            return symbolCall(SEL_NAME(call), argCount + 1, newArgs);
+            return symbolCall(SYM_NAME(call), argCount + 1, newArgs);
         }
     }
 }
@@ -194,8 +194,8 @@ zvalue mustNotYield(zvalue value) {
 MOD_INIT(Function) {
     MOD_USE(Value);
 
-    SEL_INIT(call);
+    SYM_INIT(call);
 }
 
 // Documented in header.
-SEL_DEF(call);
+SYM_DEF(call);

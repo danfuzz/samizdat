@@ -374,9 +374,9 @@ MOD_INIT(Closure) {
     CLS_Closure = makeCoreClass("Closure", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Closure, call),
-            SEL_METH(Closure, debugName),
-            SEL_METH(Closure, gcMark),
+            SYM_METH(Closure, call),
+            SYM_METH(Closure, debugName),
+            SYM_METH(Closure, gcMark),
             NULL));
 
     nodeCache = EMPTY_MAP;

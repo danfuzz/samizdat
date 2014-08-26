@@ -44,8 +44,8 @@ MOD_INIT(Null) {
     CLS_Null = makeCoreClass("Null", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SEL_METH(Null, totalEq),
-            SEL_METH(Null, totalOrder),
+            SYM_METH(Null, totalEq),
+            SYM_METH(Null, totalOrder),
             NULL));
 
     THE_NULL = datAllocValue(CLS_Null, 0);

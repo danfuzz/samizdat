@@ -98,7 +98,7 @@ export fn makeCallOrApply(function, values*) {
         ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
-                addToCooked(makeCall(REFS::SEL_collect, node))
+                addToCooked(makeCall(REFS::SYM_collect, node))
             }
             { pending := [pending*, actual] }
     };
@@ -116,7 +116,7 @@ export fn makeCallOrApply(function, values*) {
     return ifIs { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
-            makeApply(function, makeCall(REFS::SEL_cat, cookedValues*))
+            makeApply(function, makeCall(REFS::SYM_cat, cookedValues*))
         }
         {
             ## Only one. Use it directly as the values for the `apply` node.
@@ -155,7 +155,7 @@ export fn makeDynamicImport(node) {
 
                 filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
-                        makeCall(REFS::SEL_get, loadCall, makeLiteral(sel)))
+                        makeCall(REFS::SYM_get, loadCall, makeLiteral(sel)))
                 }
             },
 
@@ -202,7 +202,7 @@ export fn makeFullClosure(nodeOrMap) {
 
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
-    return makeCall(REFS::SEL_get, collArg, keyArg)
+    return makeCall(REFS::SYM_get, collArg, keyArg)
 };
 
 ## Documented in spec.
@@ -393,11 +393,11 @@ export fn withModuleDefs(node) {
 
     def yieldExports = ifIs { eq(exportValues, []) }
         { makeLiteral({}) }
-        { makeCall(REFS::SEL_cat, exportValues*) };
+        { makeCall(REFS::SYM_cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),
-        makeCall(REFS::SEL_cat,
+        makeCall(REFS::SYM_cat,
             makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
             makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
 
