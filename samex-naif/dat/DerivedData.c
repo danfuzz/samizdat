@@ -85,27 +85,21 @@ zvalue makeDerivedDataClass(zvalue name) {
 //
 
 // Documented in header.
-METH_IMPL(DerivedData, dataOf) {
-    zvalue value = args[0];
-
+METH_IMPL_0(DerivedData, dataOf) {
     // The `datFrameAdd()` call is because `value` might immediately become
     // garbage.
-    return datFrameAdd(getInfo(value)->data);
+    return datFrameAdd(getInfo(ths)->data);
 }
 
 // Documented in header.
-METH_IMPL(DerivedData, gcMark) {
-    zvalue value = args[0];
-    datMark(getInfo(value)->data);
+METH_IMPL_0(DerivedData, gcMark) {
+    datMark(getInfo(ths)->data);
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL(DerivedData, get) {
-    zvalue value = args[0];
-    zvalue key = args[1];
-
-    zvalue data = getInfo(value)->data;
+METH_IMPL_1(DerivedData, get, key) {
+    zvalue data = getInfo(ths)->data;
     return (data == NULL) ? NULL : get(data, key);
 }
 
@@ -123,28 +117,26 @@ METH_IMPL(DerivedData, makeDerivedDataClass) {
 }
 
 // Documented in header.
-METH_IMPL(DerivedData, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be of same class.
+METH_IMPL_1(DerivedData, totalEq, other) {
+    // Note: `other` not guaranteed to be of same class.
 
-    if (!haveSameClass(value, other)) {
+    if (!haveSameClass(ths, other)) {
         die("`totalEq` called with incompatible arguments.");
     }
 
-    return valEqNullOk(getInfo(value)->data, getInfo(other)->data)
-        ? value : NULL;
+    return valEqNullOk(getInfo(ths)->data, getInfo(other)->data)
+        ? ths : NULL;
 }
 
 // Documented in header.
-METH_IMPL(DerivedData, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be of same class.
+METH_IMPL_1(DerivedData, totalOrder, other) {
+    // Note: `other` not guaranteed to be of same class.
 
-    if (!haveSameClass(value, other)) {
+    if (!haveSameClass(ths, other)) {
         die("`totalOrder` called with incompatible arguments.");
     }
 
-    return valOrderNullOk(getInfo(value)->data, getInfo(other)->data);
+    return valOrderNullOk(getInfo(ths)->data, getInfo(other)->data);
 }
 
 /** Initializes the module. */
@@ -156,11 +148,11 @@ MOD_INIT(DerivedData) {
     CLS_DerivedData = makeCoreClass("DerivedData", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(DerivedData, dataOf),
-            SYM_METH(DerivedData, gcMark),
-            SYM_METH(DerivedData, get),
-            SYM_METH(DerivedData, totalEq),
-            SYM_METH(DerivedData, totalOrder),
+            METH_BIND(DerivedData, dataOf),
+            METH_BIND(DerivedData, gcMark),
+            METH_BIND(DerivedData, get),
+            METH_BIND(DerivedData, totalEq),
+            METH_BIND(DerivedData, totalOrder),
             NULL));
 
     FUN_DerivedData_makeData = makeBuiltin(1, 2,
