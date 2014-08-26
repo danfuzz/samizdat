@@ -61,7 +61,7 @@ static zvalue makeSelector(zvalue name, bool interned) {
         die("Too many selectors!");
     }
 
-    zvalue result = datAllocValue(CLS_Selector, sizeof(SelectorInfo));
+    zvalue result = datAllocValue(CLS_Symbol, sizeof(SelectorInfo));
     SelectorInfo *info = getInfo(result);
 
     info->name = name;
@@ -196,19 +196,19 @@ zvalue selectorFromUtf8(zint stringBytes, const char *string) {
 
 // Documented in header.
 zvalue symbolName(zvalue selector) {
-    assertHasClass(selector, CLS_Selector);
+    assertHasClass(selector, CLS_Symbol);
     return getInfo(selector)->name;
 }
 
 // Documented in header.
 zint selectorIndex(zvalue selector) {
-    assertHasClass(selector, CLS_Selector);
+    assertHasClass(selector, CLS_Symbol);
     return getInfo(selector)->index;
 }
 
 // Documented in header.
 char *utf8DupFromSelector(zvalue selector) {
-    assertHasClass(selector, CLS_Selector);
+    assertHasClass(selector, CLS_Symbol);
     SelectorInfo *info = getInfo(selector);
 
     return utf8DupFromString(info->name);
@@ -216,7 +216,7 @@ char *utf8DupFromSelector(zvalue selector) {
 
 // Documented in header.
 zint utf8FromSelector(zint resultSize, char *result, zvalue selector) {
-    assertHasClass(selector, CLS_Selector);
+    assertHasClass(selector, CLS_Symbol);
     SelectorInfo *info = getInfo(selector);
 
     return utf8FromSelector(resultSize, result, info->name);
@@ -224,7 +224,7 @@ zint utf8FromSelector(zint resultSize, char *result, zvalue selector) {
 
 // Documented in header.
 zint utf8SizeFromSelector(zvalue selector) {
-    assertHasClass(selector, CLS_Selector);
+    assertHasClass(selector, CLS_Symbol);
     SelectorInfo *info = getInfo(selector);
 
     return utf8SizeFromString(info->name);
@@ -277,7 +277,7 @@ METH_IMPL(Selector, makeAnonymousSymbol) {
 METH_IMPL(Selector, symbolIsInterned) {
     // TODO: Should be an instance method.
     zvalue selector = args[0];
-    assertHasClass(selector, CLS_Selector);
+    assertHasClass(selector, CLS_Symbol);
 
     SelectorInfo *info = getInfo(selector);
     return (info->interned) ? selector : NULL;
@@ -287,7 +287,7 @@ METH_IMPL(Selector, symbolIsInterned) {
 METH_IMPL(Selector, symbolName) {
     // TODO: Should be an instance method.
     zvalue selector = args[0];
-    assertHasClass(selector, CLS_Selector);
+    assertHasClass(selector, CLS_Symbol);
 
     SelectorInfo *info = getInfo(selector);
     return info->name;
@@ -303,7 +303,7 @@ METH_IMPL(Selector, totalOrder) {
     zvalue value = args[0];
     zvalue other = args[1];  // Note: Not guaranteed to be a `Selector`.
 
-    assertHasClass(other, CLS_Selector);
+    assertHasClass(other, CLS_Symbol);
 
     if (value == other) {
         // Note: This check is necessary to keep the `ZSAME` case below from
@@ -336,8 +336,8 @@ METH_IMPL(Selector, totalOrder) {
 MOD_INIT(Selector) {
     MOD_USE(Function);
 
-    // Note: The `objectModel` module initializes `CLS_Selector`.
-    classBindMethods(CLS_Selector,
+    // Note: The `objectModel` module initializes `CLS_Symbol`.
+    classBindMethods(CLS_Symbol,
         NULL,
         symbolTableFromArgs(
             SEL_METH(Selector, call),
@@ -347,38 +347,38 @@ MOD_INIT(Selector) {
             SEL_METH(Selector, totalOrder),
             NULL));
 
-    FUN_Selector_makeAnonymousSymbol = makeBuiltin(1, 1,
+    FUN_Symbol_makeAnonymousSymbol = makeBuiltin(1, 1,
         METH_NAME(Selector, makeAnonymousSymbol), 0,
         stringFromUtf8(-1, "Selector.makeAnonymousSymbol"));
-    datImmortalize(FUN_Selector_makeAnonymousSymbol);
+    datImmortalize(FUN_Symbol_makeAnonymousSymbol);
 
-    FUN_Selector_makeInternedSymbol = makeBuiltin(1, 1,
+    FUN_Symbol_makeInternedSymbol = makeBuiltin(1, 1,
         METH_NAME(Selector, makeInternedSymbol), 0,
         stringFromUtf8(-1, "Selector.makeInternedSymbol"));
-    datImmortalize(FUN_Selector_makeInternedSymbol);
+    datImmortalize(FUN_Symbol_makeInternedSymbol);
 
-    FUN_Selector_symbolIsInterned = makeBuiltin(1, 1,
+    FUN_Symbol_symbolIsInterned = makeBuiltin(1, 1,
         METH_NAME(Selector, symbolIsInterned), 0,
         stringFromUtf8(-1, "Selector.symbolIsInterned"));
-    datImmortalize(FUN_Selector_symbolIsInterned);
+    datImmortalize(FUN_Symbol_symbolIsInterned);
 
-    FUN_Selector_symbolName = makeBuiltin(1, 1,
+    FUN_Symbol_symbolName = makeBuiltin(1, 1,
         METH_NAME(Selector, symbolName), 0,
         stringFromUtf8(-1, "Selector.symbolName"));
-    datImmortalize(FUN_Selector_symbolName);
+    datImmortalize(FUN_Symbol_symbolName);
 }
 
 // Documented in header.
-zvalue CLS_Selector = NULL;
+zvalue CLS_Symbol = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_makeAnonymousSymbol = NULL;
+zvalue FUN_Symbol_makeAnonymousSymbol = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_makeInternedSymbol = NULL;
+zvalue FUN_Symbol_makeInternedSymbol = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_symbolIsInterned = NULL;
+zvalue FUN_Symbol_symbolIsInterned = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_symbolName = NULL;
+zvalue FUN_Symbol_symbolName = NULL;

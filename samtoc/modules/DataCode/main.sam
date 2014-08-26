@@ -174,7 +174,7 @@ fn Null_convert(value) {
 };
 
 ## Converts a selector.
-fn Selector_convert(value) {
+fn Symbol_convert(value) {
     def name = symbolName(value);
 
     if (!symbolIsInterned(value)) {
@@ -221,7 +221,7 @@ export fn convert(value) {
         (List):     { List_convert(value) };
         (Map):      { Map_convert(value) };
         (Null):     { Null_convert(value) };
-        (Selector): { Selector_convert(value) };
+        (Selector): { Symbol_convert(value) };
         (String):   { String_convert(value) };
         default:    { Value_convert(value) }
     }

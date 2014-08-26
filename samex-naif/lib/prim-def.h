@@ -21,22 +21,22 @@ PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);
 PRIM_DEF(Null,                    CLS_Null);
-PRIM_DEF(Selector,                CLS_Selector);
+PRIM_DEF(Selector,                CLS_Symbol);
 PRIM_DEF(SymbolTable,             CLS_SymbolTable);
 PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
 // Primitive functions: directly exported.
-PRIM_DEF(makeAnonymousSymbol,     FUN_Selector_makeAnonymousSymbol);
+PRIM_DEF(makeAnonymousSymbol,     FUN_Symbol_makeAnonymousSymbol);
 PRIM_DEF(makeData,                FUN_DerivedData_makeData);
 PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
-PRIM_DEF(makeInternedSymbol,      FUN_Selector_makeInternedSymbol);
+PRIM_DEF(makeInternedSymbol,      FUN_Symbol_makeInternedSymbol);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_DEF(makeSymbolTable,         FUN_SymbolTable_makeSymbolTable);
-PRIM_DEF(symbolIsInterned,        FUN_Selector_symbolIsInterned);
-PRIM_DEF(symbolName,              FUN_Selector_symbolName);
+PRIM_DEF(symbolIsInterned,        FUN_Symbol_symbolIsInterned);
+PRIM_DEF(symbolName,              FUN_Symbol_symbolName);
 PRIM_FUNC(classAddMethod,         3, 3);
 PRIM_FUNC(className,              1, 1);
 PRIM_FUNC(classNameString,        1, 1);

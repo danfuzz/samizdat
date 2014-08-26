@@ -51,7 +51,7 @@ static ClassInfo *getInfo(zvalue cls) {
  * is `DerivedData` in which case it is marked as derived.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
-    assertHasClass(name, CLS_Selector);
+    assertHasClass(name, CLS_Symbol);
 
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
@@ -396,7 +396,7 @@ MOD_INIT(objectModel) {
     CLS_Class->cls = CLS_Class;
 
     CLS_Value       = allocClass();
-    CLS_Selector    = allocClass();
+    CLS_Symbol      = allocClass();
     CLS_SymbolTable = allocClass();
     CLS_Data        = allocClass();
     CLS_DerivedData = allocClass();
@@ -413,7 +413,7 @@ MOD_INIT(objectModel) {
 
     classInitHere(CLS_Class,       CLS_Value, "Class");
     classInitHere(CLS_Value,       NULL,      "Value");
-    classInitHere(CLS_Selector,    CLS_Value, "Selector");
+    classInitHere(CLS_Symbol,      CLS_Value, "Selector");
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
     classInitHere(CLS_Data,        CLS_Value, "Data");
     classInitHere(CLS_DerivedData, CLS_Data,  "DerivedData");
@@ -432,9 +432,9 @@ MOD_INIT(objectModel) {
     } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
         die("Mismatched index for `Jump`: should be %lld",
             classIndex(CLS_Jump));
-    } else if (classIndex(CLS_Selector) != DAT_INDEX_SYMBOL) {
+    } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
         die("Mismatched index for `Selector`: should be %lld",
-            classIndex(CLS_Selector));
+            classIndex(CLS_Symbol));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.

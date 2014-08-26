@@ -107,7 +107,7 @@ fn Map_sourceGeneral(value, adorn) {
 };
 
 ## Stringifies a selector.
-fn Selector_sourceGeneral(value, adorn) {
+fn Symbol_sourceGeneral(value, adorn) {
     def name = symbolName(value);
 
     ifIs { eq(adorn, false) }
@@ -183,7 +183,7 @@ export fn sourceGeneral(value, adorn) {
             (Int):      { . -> Int_sourceGeneral(value, adorn) },
             (List):     { . -> List_sourceGeneral(value, adorn) },
             (Map):      { . -> Map_sourceGeneral(value, adorn) },
-            (Selector): { . -> Selector_sourceGeneral(value, adorn) },
+            (Selector): { . -> Symbol_sourceGeneral(value, adorn) },
             (String):   { . -> String_sourceGeneral(value, adorn) }
         },
         { . -> Value_sourceGeneral(value, adorn) }

@@ -12,19 +12,19 @@
 #include "type/Value.h"
 
 /** Class value for in-model class `Symbol`. */
-extern zvalue CLS_Selector;
+extern zvalue CLS_Symbol;
 
 /** Global function `makeAnonymousSymbol`: Documented in spec. */
-extern zvalue FUN_Selector_makeAnonymousSymbol;
+extern zvalue FUN_Symbol_makeAnonymousSymbol;
 
 /** Global function `makeInternedSymbol`: Documented in spec. */
-extern zvalue FUN_Selector_makeInternedSymbol;
+extern zvalue FUN_Symbol_makeInternedSymbol;
 
 /** Global function `symbolIsInterned`: Documented in spec. */
-extern zvalue FUN_Selector_symbolIsInterned;
+extern zvalue FUN_Symbol_symbolIsInterned;
 
 /** Global function `symbolName`: Documented in spec. */
-extern zvalue FUN_Selector_symbolName;
+extern zvalue FUN_Symbol_symbolName;
 
 
 /**
