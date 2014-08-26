@@ -125,10 +125,8 @@ zvalue makeResult(zvalue value) {
 //
 
 // Documented in header.
-METH_IMPL(Box, collect) {
-    zvalue box = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
-    zvalue value = doFetch(box);
+METH_IMPL_0_1(Box, collect, function) {
+    zvalue value = doFetch(ths);
 
     if ((value != NULL) && (function != NULL)) {
         value = FUN_CALL(function, value);
@@ -138,28 +136,24 @@ METH_IMPL(Box, collect) {
 }
 
 // Documented in header.
-METH_IMPL(Box, fetch) {
-    zvalue box = args[0];
-    return doFetch(box);
+METH_IMPL_0(Box, fetch) {
+    return doFetch(ths);
 }
 
 // Documented in header.
-METH_IMPL(Box, gcMark) {
-    zvalue box = args[0];
-    BoxInfo *info = getInfo(box);
+METH_IMPL_0(Box, gcMark) {
+    BoxInfo *info = getInfo(ths);
 
     datMark(info->value);
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL(Box, nextValue) {
-    zvalue box = args[0];
-    zvalue outBox = args[1];
-    zvalue value = doFetch(box);
+METH_IMPL_1(Box, nextValue, out) {
+    zvalue value = doFetch(ths);
 
     if (value != NULL) {
-        METH_CALL(store, outBox, value);
+        METH_CALL(store, out, value);
         return EMPTY_LIST;
     } else {
         return NULL;
@@ -167,10 +161,8 @@ METH_IMPL(Box, nextValue) {
 }
 
 // Documented in header.
-METH_IMPL(Box, store) {
-    zvalue box = args[0];
-    zvalue value = (argCount == 2) ? args[1] : NULL;
-    return doStore(box, value);
+METH_IMPL_0_1(Box, store, value) {
+    return doStore(ths, value);
 }
 
 /** Initializes the module. */
@@ -183,11 +175,11 @@ MOD_INIT(Box) {
     CLS_Box = makeCoreClass("Box", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Box, collect),
-            SYM_METH(Box, fetch),
-            SYM_METH(Box, gcMark),
-            SYM_METH(Box, nextValue),
-            SYM_METH(Box, store),
+            METH_BIND(Box, collect),
+            METH_BIND(Box, fetch),
+            METH_BIND(Box, gcMark),
+            METH_BIND(Box, nextValue),
+            METH_BIND(Box, store),
             NULL));
 }
 
