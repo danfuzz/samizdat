@@ -54,7 +54,7 @@
  * `symbolTableFromArgs`.
  */
 #define METH_BIND(cls, name) \
-    SYM_NAME(name), \
+    symbolFromUtf8(-1, #name), \
     MAKE_##cls##_##name()
 
 
