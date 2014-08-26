@@ -28,7 +28,7 @@ void assertHasClass(zvalue value, zvalue cls);
  * Adds a new method to a class. TODO: This function should get removed once
  * the system can cleanly construct classes with their methods in one go.
  */
-void classAddMethod(zvalue cls, zvalue selector, zvalue function);
+void classAddMethod(zvalue cls, zvalue symbol, zvalue function);
 
 /**
  * Compares two classes for equality. It is an error to pass a non-class.

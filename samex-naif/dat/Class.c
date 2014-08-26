@@ -205,9 +205,9 @@ void assertHasClass(zvalue value, zvalue cls) {
 }
 
 // Documented in header.
-void classAddMethod(zvalue cls, zvalue selector, zvalue function) {
+void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
     assertHasClassClass(cls);
-    zint index = symbolIndex(selector);
+    zint index = symbolIndex(symbol);
     zvalue *methods = getInfo(cls)->methods;
 
     methods[index] = function;

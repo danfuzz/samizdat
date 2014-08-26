@@ -154,7 +154,7 @@ zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
  * arguments. The method is looked up on `args[0]`. As such, `argCount` must
  * be at least `1`.
  */
-zvalue symbolCall(zvalue selector, zint argCount, const zvalue *args);
+zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args);
 
 /**
  * Gets the `CacheEntry` for the given map/key pair.
