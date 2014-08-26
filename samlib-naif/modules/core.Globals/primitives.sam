@@ -55,5 +55,5 @@ export
     note,
     order,
     makeInternedSymbol,
-    selectorIsInterned,
-    selectorName;
+    symbolIsInterned,
+    symbolName;

@@ -20,11 +20,11 @@ extern zvalue FUN_Selector_makeAnonymousSymbol;
 /** Global function `makeInternedSymbol`: Documented in spec. */
 extern zvalue FUN_Selector_makeInternedSymbol;
 
-/** Global function `selectorIsInterned`: Documented in spec. */
-extern zvalue FUN_Selector_selectorIsInterned;
+/** Global function `symbolIsInterned`: Documented in spec. */
+extern zvalue FUN_Selector_symbolIsInterned;
 
-/** Global function `selectorName`: Documented in spec. */
-extern zvalue FUN_Selector_selectorName;
+/** Global function `symbolName`: Documented in spec. */
+extern zvalue FUN_Selector_symbolName;
 
 
 /**
@@ -53,7 +53,7 @@ zint selectorIndex(zvalue selector);
 /**
  * Gets the name of the given selector. This returns a string.
  */
-zvalue selectorName(zvalue selector);
+zvalue symbolName(zvalue selector);
 
 /**
  * Like `utf8FromSelector`, except this returns an allocated buffer containing

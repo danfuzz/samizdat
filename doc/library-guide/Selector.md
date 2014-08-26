@@ -65,12 +65,12 @@ Finds and returns the interned (non-anonymous) selector with the given `name`
 (which must be a string). If the so-named selector has not been created yet,
 this function creates it.
 
-#### `selectorIsInterned(selector) -> selector | void`
+#### `symbolIsInterned(selector) -> selector | void`
 
 Returns `selector` if it is interned (that is, non-anonymous). Returns void
 otherwise.
 
-#### `selectorName(selector) -> string`
+#### `symbolName(selector) -> string`
 
 Returns the name of `selector`.
 

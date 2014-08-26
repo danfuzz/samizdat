@@ -195,7 +195,7 @@ zvalue selectorFromUtf8(zint stringBytes, const char *string) {
 }
 
 // Documented in header.
-zvalue selectorName(zvalue selector) {
+zvalue symbolName(zvalue selector) {
     assertHasClass(selector, CLS_Selector);
     return getInfo(selector)->name;
 }
@@ -273,8 +273,8 @@ METH_IMPL(Selector, makeAnonymousSymbol) {
     return makeAnonymousSymbol(args[0]);
 }
 
-/** Function (not method) `selectorIsInterned`. Documented in spec. */
-METH_IMPL(Selector, selectorIsInterned) {
+/** Function (not method) `symbolIsInterned`. Documented in spec. */
+METH_IMPL(Selector, symbolIsInterned) {
     // TODO: Should be an instance method.
     zvalue selector = args[0];
     assertHasClass(selector, CLS_Selector);
@@ -283,8 +283,8 @@ METH_IMPL(Selector, selectorIsInterned) {
     return (info->interned) ? selector : NULL;
 }
 
-/** Function (not method) `selectorName`. Documented in spec. */
-METH_IMPL(Selector, selectorName) {
+/** Function (not method) `symbolName`. Documented in spec. */
+METH_IMPL(Selector, symbolName) {
     // TODO: Should be an instance method.
     zvalue selector = args[0];
     assertHasClass(selector, CLS_Selector);
@@ -357,15 +357,15 @@ MOD_INIT(Selector) {
         stringFromUtf8(-1, "Selector.makeInternedSymbol"));
     datImmortalize(FUN_Selector_makeInternedSymbol);
 
-    FUN_Selector_selectorIsInterned = makeBuiltin(1, 1,
-        METH_NAME(Selector, selectorIsInterned), 0,
-        stringFromUtf8(-1, "Selector.selectorIsInterned"));
-    datImmortalize(FUN_Selector_selectorIsInterned);
+    FUN_Selector_symbolIsInterned = makeBuiltin(1, 1,
+        METH_NAME(Selector, symbolIsInterned), 0,
+        stringFromUtf8(-1, "Selector.symbolIsInterned"));
+    datImmortalize(FUN_Selector_symbolIsInterned);
 
-    FUN_Selector_selectorName = makeBuiltin(1, 1,
-        METH_NAME(Selector, selectorName), 0,
-        stringFromUtf8(-1, "Selector.selectorName"));
-    datImmortalize(FUN_Selector_selectorName);
+    FUN_Selector_symbolName = makeBuiltin(1, 1,
+        METH_NAME(Selector, symbolName), 0,
+        stringFromUtf8(-1, "Selector.symbolName"));
+    datImmortalize(FUN_Selector_symbolName);
 }
 
 // Documented in header.
@@ -378,7 +378,7 @@ zvalue FUN_Selector_makeAnonymousSymbol = NULL;
 zvalue FUN_Selector_makeInternedSymbol = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_selectorIsInterned = NULL;
+zvalue FUN_Selector_symbolIsInterned = NULL;
 
 // Documented in header.
-zvalue FUN_Selector_selectorName = NULL;
+zvalue FUN_Selector_symbolName = NULL;

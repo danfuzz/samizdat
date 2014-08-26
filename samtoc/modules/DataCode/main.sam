@@ -175,9 +175,9 @@ fn Null_convert(value) {
 
 ## Converts a selector.
 fn Selector_convert(value) {
-    def name = selectorName(value);
+    def name = symbolName(value);
 
-    if (!selectorIsInterned(value)) {
+    if (!symbolIsInterned(value)) {
         die("Cannot convert anonymous selector: \%q(value)")
     };
 
