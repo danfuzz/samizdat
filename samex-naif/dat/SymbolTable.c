@@ -56,7 +56,7 @@ void arrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
 // Documented in header.
 zvalue symbolTableFromArgs(zvalue first, ...) {
     if (first == NULL) {
-        return EMPTY_SELECTOR_TABLE;
+        return EMPTY_SYMBOL_TABLE;
     }
 
     zvalue result = allocInstance();
@@ -88,7 +88,7 @@ zvalue symbolTableFromArgs(zvalue first, ...) {
 // Documented in header.
 zvalue symbolTableFromArray(zint size, zmapping *mappings) {
     if (size == 0) {
-        return EMPTY_SELECTOR_TABLE;
+        return EMPTY_SYMBOL_TABLE;
     }
 
     zvalue result = allocInstance();
@@ -185,15 +185,15 @@ MOD_INIT(SymbolTable) {
         stringFromUtf8(-1, "SymbolTable.makeSymbolTable"));
     datImmortalize(FUN_SymbolTable_makeSymbolTable);
 
-    EMPTY_SELECTOR_TABLE = allocInstance();
-    datImmortalize(EMPTY_SELECTOR_TABLE);
+    EMPTY_SYMBOL_TABLE = allocInstance();
+    datImmortalize(EMPTY_SYMBOL_TABLE);
 }
 
 // Documented in header.
 zvalue CLS_SymbolTable = NULL;
 
 // Documented in header.
-zvalue EMPTY_SELECTOR_TABLE = NULL;
+zvalue EMPTY_SYMBOL_TABLE = NULL;
 
 // Documented in header.
 zvalue FUN_SymbolTable_makeSymbolTable;
