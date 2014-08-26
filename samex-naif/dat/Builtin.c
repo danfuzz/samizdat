@@ -119,24 +119,19 @@ BuiltinState builtinGetState(zvalue builtin) {
 //
 
 // Documented in header.
-METH_IMPL(Builtin, call) {
-    // The first argument is the builtin per se, and the rest are the
-    // arguments to call it with.
-    return builtinCall(args[0], argCount - 1, &args[1]);
+METH_IMPL_rest(Builtin, call, args) {
+    return builtinCall(ths, argsSize, args);
 }
 
 // Documented in header.
-METH_IMPL(Builtin, debugName) {
-    zvalue builtin = args[0];
-    BuiltinInfo *info = getInfo(builtin);
-
+METH_IMPL_0(Builtin, debugName) {
+    BuiltinInfo *info = getInfo(ths);
     return info->name;
 }
 
 // Documented in header.
-METH_IMPL(Builtin, gcMark) {
-    zvalue builtin = args[0];
-    BuiltinInfo *info = getInfo(builtin);
+METH_IMPL_0(Builtin, gcMark) {
+    BuiltinInfo *info = getInfo(ths);
     zvalue *state = info->state;
 
     datMark(info->name);
@@ -157,9 +152,9 @@ MOD_INIT(Builtin) {
     classBindMethods(CLS_Builtin,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Builtin, call),
-            SYM_METH(Builtin, debugName),
-            SYM_METH(Builtin, gcMark),
+            METH_BIND(Builtin, call),
+            METH_BIND(Builtin, debugName),
+            METH_BIND(Builtin, gcMark),
             NULL));
 }
 
