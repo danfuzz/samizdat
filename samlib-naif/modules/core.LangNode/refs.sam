@@ -12,7 +12,7 @@ import ./constructors1 :: makeCall, makeLiteral, makeSelector, makeVarFetch;
 ## Private Definitions
 ##
 
-## Literal selectors.
+## Literal symbols.
 def SYMBOLS = [
     "add",
     "and",
