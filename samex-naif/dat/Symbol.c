@@ -155,6 +155,20 @@ zvalue anonymousSymbolFromUtf8(zint stringBytes, const char *string) {
 }
 
 // Documented in header.
+zvalue makeSymbol(zvalue name) {
+    zvalue result = findInternedSymbol(name);
+
+    if (result == NULL) {
+        if (!hasClass(name, CLS_String)) {
+            die("Improper symbol name: %s", valDebugString(name));
+        }
+        result = makeSymbol0(name, true);
+    }
+
+    return result;
+}
+
+// Documented in header.
 zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     if (argCount < 1) {
         die("Too few arguments for symbol call.");
@@ -172,20 +186,6 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     UTIL_TRACE_START(callReporter, cls);
     zvalue result = funCall(function, argCount, args);
     UTIL_TRACE_END();
-    return result;
-}
-
-// Documented in header.
-zvalue makeSymbol(zvalue name) {
-    zvalue result = findInternedSymbol(name);
-
-    if (result == NULL) {
-        if (!hasClass(name, CLS_String)) {
-            die("Improper symbol name: %s", valDebugString(name));
-        }
-        result = makeSymbol0(name, true);
-    }
-
     return result;
 }
 
