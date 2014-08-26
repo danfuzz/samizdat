@@ -21,9 +21,9 @@ PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);
 PRIM_DEF(Null,                    CLS_Null);
-PRIM_DEF(Selector,                CLS_Symbol);
-PRIM_DEF(SymbolTable,             CLS_SymbolTable);
 PRIM_DEF(String,                  CLS_String);
+PRIM_DEF(Symbol,                  CLS_Symbol);
+PRIM_DEF(SymbolTable,             CLS_SymbolTable);
 PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
