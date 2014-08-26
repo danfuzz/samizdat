@@ -66,48 +66,48 @@
 //
 
 #define METH_IMPL_MIN_MAX(cls, name, minArgs, maxArgs) \
-    static zvalue METH_NAME(cls, name)( \
-            zvalue thisFunction, zint argCount, const zvalue *args); \
+    static zvalue METH_NAME(cls, name)(zvalue, zint, const zvalue *); \
     static zvalue MAKE_##cls##_##name(void) { \
         return makeBuiltin(minArgs, maxArgs, METH_NAME(cls, name), 0, \
             stringFromUtf8(-1, #cls "." #name)); \
     } \
     static zvalue METH_NAME(cls, name)( \
-            zvalue thisFunction, zint argCount, const zvalue *args)
+            zvalue _function, zint _argsSize, const zvalue *_args)
 
 #define METH_IMPL_0(cls, name) \
     static zvalue IMPL_##cls##_##name(zvalue); \
     METH_IMPL_MIN_MAX(cls, name, 1, 1) { \
-        return IMPL_##cls##_##name(args[0]); \
+        return IMPL_##cls##_##name(_args[0]); \
     } \
     static zvalue IMPL_##cls##_##name(zvalue ths)
 
 #define METH_IMPL_1(cls, name, a0) \
     static zvalue IMPL_##cls##_##name(zvalue, zvalue); \
     METH_IMPL_MIN_MAX(cls, name, 2, 2) { \
-        return IMPL_##cls##_##name(args[0], args[1]); \
+        return IMPL_##cls##_##name(_args[0], _args[1]); \
     } \
     static zvalue IMPL_##cls##_##name(zvalue ths, zvalue a0)
 
 #define METH_IMPL_2(cls, name, a0, a1) \
     static zvalue IMPL_##cls##_##name(zvalue, zvalue, zvalue); \
     METH_IMPL_MIN_MAX(cls, name, 3, 3) { \
-        return IMPL_##cls##_##name(args[0], args[1], args[2]); \
+        return IMPL_##cls##_##name(_args[0], _args[1], _args[2]); \
     } \
     static zvalue IMPL_##cls##_##name(zvalue ths, zvalue a0, zvalue a1)
 
 #define METH_IMPL_rest(cls, name, aRest) \
-    static zvalue IMPL_##cls##_##name(zvalue, zint, zvalue); \
+    static zvalue IMPL_##cls##_##name(zvalue, zint, const zvalue *); \
     METH_IMPL_MIN_MAX(cls, name, 0, -1) { \
-        return IMPL_##cls##_##name(args[0], argCount - 1, &args[1]); \
+        return IMPL_##cls##_##name(_args[0], _argsSize - 1, &_args[1]); \
     } \
     static zvalue IMPL_##cls##_##name(zvalue ths, \
-            zint aRest##Size, zvalue *aRest)
+            zint aRest##Size, const zvalue *aRest)
 
 #define METH_IMPL_0_1(cls, name, a0) \
     static zvalue IMPL_##cls##_##name(zvalue, zvalue); \
     METH_IMPL_MIN_MAX(cls, name, 1, 2) { \
-        return IMPL_##cls##_##name(args[0], (argCount > 1) ? args[1] : NULL); \
+        return IMPL_##cls##_##name(_args[0], \
+            (_argsSize > 1) ? _args[1] : NULL); \
     } \
     static zvalue IMPL_##cls##_##name(zvalue ths, zvalue a0)
 
