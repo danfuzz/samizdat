@@ -18,7 +18,7 @@
 #define REFS(name) (makeVarFetch(STR_##name))
 
 /** Equivalent to `REFS::SYM_<name>` in the spec. */
-#define SEL(name) (makeSelector(STR_##name))
+#define SYM(name) (makeSelector(STR_##name))
 
 // Documented in spec.
 bool canYieldVoid(zvalue node);

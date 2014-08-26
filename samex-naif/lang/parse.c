@@ -462,7 +462,7 @@ DEF_PARSE(map) {
     switch (get_size(mappings)) {
         case 0:  return makeLiteral(EMPTY_MAP);
         case 1:  return nth(mappings, 0);
-        default: return makeCall(SEL(cat), mappings);
+        default: return makeCall(SYM(cat), mappings);
     }
 }
 
@@ -679,7 +679,7 @@ DEF_PARSE(unaryExpression) {
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeMaybeValue(result);
         } else if (hasClass(one, CLS_literal)) {
-            result = makeCallOrApply(SEL(get), listFrom2(result, one));
+            result = makeCallOrApply(SYM(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
         }
