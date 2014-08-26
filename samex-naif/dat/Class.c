@@ -403,7 +403,7 @@ MOD_INIT(objectModel) {
     CLS_String      = allocClass();
     CLS_Uniqlet     = allocClass();
 
-    theCoreSecret = makeUniqlet();
+    theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
     datImmortalize(theCoreSecret);
 
     classInitHere(CLS_Class,       CLS_Value, "Class");
