@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## String literal demo
+## Symbol literal demo
 ##
 
 #= language core.Lang0
@@ -22,7 +22,7 @@ fn msg(string) {
 ## Main Tests
 ##
 
-note("Selectors");
+note("Symbols");
 msg(@.foo);
 msg(@."foo");
 msg(@."++ blort ++");
