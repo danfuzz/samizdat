@@ -19,7 +19,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegThunk = makeObjectClass("PegThunk", SECRET);
+def PegThunk = makeObjectClass(@.PegThunk, SECRET);
 
 ## Documented in spec.
 fn PegThunk.parse(box, input, items*) {

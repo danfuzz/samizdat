@@ -18,7 +18,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def NullGenerator = makeObjectClass("NullGenerator", SECRET);
+def NullGenerator = makeObjectClass(@.NullGenerator, SECRET);
 
 ## Documented in spec.
 fn NullGenerator.collect(optFilterFunction?) {

@@ -22,7 +22,7 @@ import ./PegSequence :: makeSequence;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegMain = makeObjectClass("PegMain", SECRET);
+def PegMain = makeObjectClass(@.PegMain, SECRET);
 
 ## Documented in spec.
 fn PegMain.parse(box, input, .*) {

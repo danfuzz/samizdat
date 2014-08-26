@@ -73,7 +73,7 @@ typedef struct {
     /** Parent class. Only allowed to be `NULL` for `Value`. */
     zvalue parent;
 
-    /** Name of the class. Arbitrary value. */
+    /** Name of the class, as a selector. */
     zvalue name;
 
     /** Access secret of the class. Optional, and arbitrary if present. */

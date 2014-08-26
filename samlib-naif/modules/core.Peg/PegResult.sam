@@ -19,7 +19,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegResult = makeObjectClass("PegResult", SECRET);
+def PegResult = makeObjectClass(@.PegResult, SECRET);
 
 ## Documented in spec.
 fn PegResult.parse(box, input, .*) {

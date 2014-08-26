@@ -139,7 +139,7 @@ def parIdentifierString = {:
     {
         ifNot { token.dataOf() }
             {
-                def name = get_className(token);
+                def name = get_classNameString(token);
                 def firstCh = name.nth(0);
                 ifIs { LOWER_ALPHA.get(firstCh) }
                     { makeLiteral(name) }
@@ -270,13 +270,14 @@ def parList = {:
 ## `makeDerivedDataClass`.
 def parType = {:
     @"@@"
-    name = (parIdentifierString | parParenExpression)
 
-    {
-        ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(name::value)) }
-            { makeCall(REFS::makeDerivedDataClass, name) }
-    }
+    (
+        name = parIdentifierString
+        { makeLiteral(@@(makeInternedSelector(name::value))) }
+    |
+        name = parParenExpression
+        { makeCall(REFS::makeDerivedDataClass, name) }
+    )
 :};
 
 ## Parses a literal in derived value form.
@@ -285,7 +286,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierString
-        { makeLiteral(@@(name::value)) }
+        { makeLiteral(@@(makeInternedSelector(name::value))) }
     |
         parParenExpression
     )
@@ -522,7 +523,7 @@ def parYieldOrNonlocal = {:
             { @yield }
         )
     |
-        { makeVarFetch(get_className(op)) }
+        { makeVarFetch(get_classNameString(op)) }
     )
 
     ## A value expression is mandatory if there is a `?` after the
@@ -586,7 +587,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_className(r)} }
+        { {repeat: get_classNameString(r)} }
     |
         { {} }
     )
@@ -974,7 +975,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(type::value)} }
+    { @token{value: @@(makeInternedSelector(type::value))} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -1013,7 +1014,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { "".cat(strings*).collect({ ch -> @@(ch) }) }
+        { "".cat(strings*).collect { ch -> @@(makeInternedSelector(ch)) } }
     |
         tokens = parPexToken+
         { tokens.collect({ n -> n::value }) }

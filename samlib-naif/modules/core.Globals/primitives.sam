@@ -30,6 +30,7 @@ export
     Value,
     classAddMethod,
     className,
+    classNameString,
     classParent,
     die,
     eq,
@@ -53,6 +54,6 @@ export
     maybeValue,
     note,
     order,
-    selectorFromName,
+    makeInternedSelector,
     selectorIsInterned,
     selectorName;

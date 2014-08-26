@@ -21,7 +21,7 @@ import ./NullGenerator :: nullGenerator;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def SerialGenerator = makeObjectClass("SerialGenerator", SECRET);
+def SerialGenerator = makeObjectClass(@.SerialGenerator, SECRET);
 
 ## Documented in spec.
 fn SerialGenerator.collect(optFilterFunction?) {

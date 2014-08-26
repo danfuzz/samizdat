@@ -20,7 +20,7 @@ import core.Box :: nullBox;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegEof = makeObjectClass("PegEof", SECRET);
+def PegEof = makeObjectClass(@.PegEof, SECRET);
 
 ## Documented in spec.
 fn PegEof.parse(box, input, .*) {

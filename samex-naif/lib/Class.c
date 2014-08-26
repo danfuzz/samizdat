@@ -23,6 +23,11 @@ FUN_IMPL_DECL(className) {
 }
 
 // Documented in spec.
+FUN_IMPL_DECL(classNameString) {
+    return classNameString(args[0]);
+}
+
+// Documented in spec.
 FUN_IMPL_DECL(classParent) {
     return classParent(args[0]);
 }

@@ -18,7 +18,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def NullBox = makeObjectClass("NullBox", SECRET);
+def NullBox = makeObjectClass(@.NullBox, SECRET);
 
 ## Documented in spec.
 fn NullBox.collect(optFilterFunction?) {

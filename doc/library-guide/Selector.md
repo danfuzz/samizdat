@@ -57,13 +57,13 @@ dispatch on `args[0]`.
 Creates and returns a new anonymous selector. Even though anonymous,
 it must have a name (which must be a string). The anonymity comes from
 the fact that the selector returned from this function will never be
-found by doing a name lookup, as with `selectorFromName`.
+found by doing a name lookup, as with `makeInternedSelector`.
 
-#### `selectorFromName(name) -> selector`
+#### `makeInternedSelector(name) -> selector`
 
-Finds and returns the (non-anonymous) selector with the given `name` (which
-must be a string). If the so-named selector has not been created yet, this
-function creates it.
+Finds and returns the interned (non-anonymous) selector with the given `name`
+(which must be a string). If the so-named selector has not been created yet,
+this function creates it.
 
 #### `selectorIsInterned(selector) -> selector | void`
 

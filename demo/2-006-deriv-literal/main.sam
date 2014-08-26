@@ -29,29 +29,22 @@ msg(@(@@potion)("blort"));
 
 msg(@blort);
 msg(@"%fizmo%");
-msg(@(@@(123)));
-msg(@(@@([123])));
 
 msg(@"^zorch^"("scorch"));
 msg(@fizmo([1, 2, 3]));
 msg(@fizmo[1, 2, 3]);
 msg(@fizmo({a: 1, b: 2, c: 3}));
 msg(@fizmo{a: 1, b: 2, c: 3});
-msg(@(@@(123))(456));
 
 ## Keywords can be used as types.
 msg(@def);
 msg(@fn(100));
-
-## Expressions can be used as names.
-msg(@(@@("blo".cat("rt"))));
 
 ## Accessing data via `get` calls, explicitly and implicitly.
 msg(@foo("abc").get(0));
 msg(@foo["zero", "one"].get(1));
 msg(@foo{a: 1, b: 2}.get("a"));
 msg(@foo{a: 1, b: 2}::b);
-
 
 note("\nLayer 2...");
 

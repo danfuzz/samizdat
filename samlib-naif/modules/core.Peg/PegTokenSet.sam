@@ -21,7 +21,7 @@ import ./PegFail :: fail;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegTokenSet = makeObjectClass("PegTokenSet", SECRET);
+def PegTokenSet = makeObjectClass(@.PegTokenSet, SECRET);
 
 ## Documented in spec.
 fn PegTokenSet.parse(box, input, items*) {

@@ -20,12 +20,11 @@ other than a derived data value.
 #### `makeDerivedDataClass(name) -> class`
 
 Returns a `Class` instance which represents a derived data class
-with the given `name`. `name` can be an arbitrary value but is most
-typically a string. The following equivalences hold for Samizdat
-source code:
+with the given `name`. `name` is an arbitrary selector. The following
+equivalences hold for Samizdat source code:
 
 ```
-@@name    is equivalent to  makeDerivedDataClass("name")
+@@name    is equivalent to  makeDerivedDataClass(@.name)
 @@(name)  is equivalent to  makeDerivedDataClass(name)
 ```
 

@@ -22,7 +22,7 @@ import ./ParaGenerator :: makeParaGenerator;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def FilterGenerator = makeObjectClass("FilterGenerator", SECRET);
+def FilterGenerator = makeObjectClass(@.FilterGenerator, SECRET);
 
 ## Documented in spec.
 fn FilterGenerator.collect(optFilterFunction?) {

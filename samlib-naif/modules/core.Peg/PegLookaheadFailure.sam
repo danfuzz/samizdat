@@ -26,7 +26,7 @@ import ./PegResult :: empty;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegLookaheadFailure = makeObjectClass("PegLookaheadFailure", SECRET);
+def PegLookaheadFailure = makeObjectClass(@.PegLookaheadFailure, SECRET);
 
 ## Documented in spec.
 fn PegLookaheadFailure.parse(box, input, items*) {

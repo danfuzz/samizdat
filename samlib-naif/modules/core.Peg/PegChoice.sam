@@ -23,7 +23,7 @@ import ./PegFail :: fail;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegChoice = makeObjectClass("PegChoice", SECRET);
+def PegChoice = makeObjectClass(@.PegChoice, SECRET);
 
 ## Documented in spec.
 fn PegChoice.parse(box, input, items*) {

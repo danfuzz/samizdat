@@ -17,8 +17,8 @@ extern zvalue CLS_Selector;
 /** Global function `makeAnonymousSelector`: Documented in spec. */
 extern zvalue FUN_Selector_makeAnonymousSelector;
 
-/** Global function `selectorFromName`: Documented in spec. */
-extern zvalue FUN_Selector_selectorFromName;
+/** Global function `makeInternedSelector`: Documented in spec. */
+extern zvalue FUN_Selector_makeInternedSelector;
 
 /** Global function `selectorIsInterned`: Documented in spec. */
 extern zvalue FUN_Selector_selectorIsInterned;
@@ -37,11 +37,48 @@ zvalue makeAnonymousSelector(zvalue name);
  * Gets the selector that corresponds to the given method name, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */
-zvalue selectorFromName(zvalue name);
+zvalue makeInternedSelector(zvalue name);
+
+/**
+ * Makes an interned selector from a UTF-8 string. If `stringBytes`
+ * is passed as `-1`, this uses `strlen()` to determine size.
+ */
+zvalue selectorFromUtf8(zint stringBytes, const char *string);
 
 /**
  * Gets the integer index of the given selector.
  */
 zint selectorIndex(zvalue selector);
+
+/**
+ * Gets the name of the given selector. This returns a string.
+ */
+zvalue selectorName(zvalue selector);
+
+/**
+ * Like `utf8FromSelector`, except this returns an allocated buffer containing
+ * the result.
+ */
+char *utf8DupFromSelector(zvalue selector);
+
+/**
+ * Encodes the name of the given selector as UTF-8 into the given buffer of the
+ * given size in bytes, returning the number of bytes written to. The buffer
+ * must be large enough to hold the entire encoded result plus a terminating
+ * `'\0'` byte; if not, this function will complain and exit the runtime.
+ * To be clear, the result *is* `'\0'`-terminated, and the `'\0'` is included
+ * in the result count.
+ *
+ * **Note:** If the given string possibly contains any `U+0` code points,
+ * then the only "safe" way to use the result is as an explicitly-sized
+ * buffer. (For example, `strlen()` might "lie.")
+ */
+zint utf8FromSelector(zint resultSize, char *result, zvalue selector);
+
+/**
+ * Gets the number of bytes required to encode the name of the given selector
+ * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
+ */
+zint utf8SizeFromSelector(zvalue selector);
 
 #endif

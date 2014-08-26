@@ -20,7 +20,7 @@ import ./indentation :: *;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def Statement = makeObjectClass("Statement", SECRET);
+def Statement = makeObjectClass(@.Statement, SECRET);
 
 fn Statement.flatten() {
     def data = this.objectDataOf(SECRET);

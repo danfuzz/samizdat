@@ -107,7 +107,7 @@ def parIdentifierString = makeMainChoice(
         makeCode { token ->
             ifNot { token.dataOf() }
                 {
-                    def name = get_className(token);
+                    def name = get_classNameString(token);
                     def firstCh = name.nth(0);
                     ifIs { LOWER_ALPHA.get(firstCh) }
                         { makeLiteral(name) }
@@ -220,12 +220,17 @@ def parList = makeMainSequence(
 ## Documented in spec.
 def parType = makeMainSequence(
     makeToken(@@"@@"),
-    makeChoice(parIdentifierString, parParenExpression),
-    makeCode { ., name ->
-        ifIs { hasClass(name, @@literal) }
-            { makeLiteral(@@(name::value)) }
-            { makeCall(REFS::makeDerivedDataClass, name) }
-    });
+    makeChoice(
+        makeSequence(
+            parIdentifierString,
+            makeCode { ., name ->
+                makeLiteral(@@(makeInternedSelector(name::value)))
+            }),
+        makeSequence(
+            parParenExpression,
+            makeCode { ., name ->
+                makeCall(REFS::makeDerivedDataClass, name)
+            })));
 
 ## Documented in spec.
 def parDeriv = makeMainSequence(
@@ -234,7 +239,7 @@ def parDeriv = makeMainSequence(
         makeSequence(
             parIdentifierString,
             makeCode { ., name ->
-                makeLiteral(@@(name::value))
+                makeLiteral(@@(makeInternedSelector(name::value)))
             }),
         parParenExpression),
     makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
@@ -382,7 +387,7 @@ def parYieldOrNonlocal = makeMainSequence(
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield))),
-        makeCode { op, . -> makeVarFetch(get_className(op)) }),
+        makeCode { op, . -> makeVarFetch(get_classNameString(op)) }),
     makeChoice(
         makeSequence(
             parExpression,
@@ -441,7 +446,7 @@ def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
-            makeCode { ., r -> {repeat: get_className(r)} }),
+            makeCode { ., r -> {repeat: get_classNameString(r)} }),
         makeResult({})),
     makeCode { name, repeat -> {name*, repeat*} });
 
@@ -743,7 +748,9 @@ def parPexString = makeMainSequence(makeToken(@@string));
 def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierString,
-    makeCode { ., type -> @token{value: @@(type::value)} });
+    makeCode { ., type ->
+        @token{value: @@(makeInternedSelector(type::value))}
+    });
 
 ## Documented in spec.
 def parPexSetString = makeMainSequence(
@@ -776,7 +783,8 @@ def parPexSet = makeMainSequence(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
-                "".cat(strings*).collect({ ch -> @@(ch) })
+                "".cat(strings*).collect
+                    { ch -> @@(makeInternedSelector(ch)) }
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),

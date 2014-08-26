@@ -11,6 +11,7 @@
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Object.h"
+#include "type/Selector.h"
 #include "type/SelectorTable.h"
 #include "type/Uniqlet.h"
 #include "type/define.h"
@@ -50,11 +51,11 @@ static ClassInfo *getInfo(zvalue cls) {
  * is `DerivedData` in which case it is marked as derived.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
+    assertHasClass(name, CLS_Selector);
+
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
-    }
-
-    if ((parent == NULL) && (cls != CLS_Value)) {
+    } else if ((parent == NULL) && (cls != CLS_Value)) {
         die("Every class but `Value` needs a parent.");
     }
 
@@ -74,7 +75,7 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
  * Helper for initializing the classes built directly in this file.
  */
 static void classInitHere(zvalue cls, zvalue parent, const char *name) {
-    classInit(cls, stringFromUtf8(-1, name), parent, theCoreSecret);
+    classInit(cls, selectorFromUtf8(-1, name), parent, theCoreSecret);
 }
 
 /**
@@ -249,6 +250,12 @@ zvalue className(zvalue cls) {
 }
 
 // Documented in header.
+zvalue classNameString(zvalue cls) {
+    assertHasClassClass(cls);
+    return selectorName(getInfo(cls)->name);
+}
+
+// Documented in header.
 zvalue classParent(zvalue cls) {
     assertHasClassClass(cls);
     return getInfo(cls)->parent;
@@ -295,7 +302,7 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
 // Documented in header.
 zvalue makeCoreClass(const char *name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
-    return makeClass(stringFromUtf8(-1, name), parent, theCoreSecret,
+    return makeClass(selectorFromUtf8(-1, name), parent, theCoreSecret,
         classMethods, instanceMethods);
 }
 
@@ -311,7 +318,7 @@ METH_IMPL(Class, debugString) {
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
-        return info->name;
+        return selectorName(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
     } else if (classParent(cls) == CLS_DerivedData) {
@@ -322,7 +329,7 @@ METH_IMPL(Class, debugString) {
 
     return METH_CALL(cat,
         stringFromUtf8(-1, "@@("),
-        METH_CALL(debugString, info->name),
+        METH_CALL(debugString, selectorName(info->name)),
         extraString,
         stringFromUtf8(-1, ")"));
 }

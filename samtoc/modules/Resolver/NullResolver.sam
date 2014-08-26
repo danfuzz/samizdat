@@ -16,7 +16,7 @@
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def NullResolver = makeObjectClass("NullResolver", SECRET);
+def NullResolver = makeObjectClass(@.NullResolver, SECRET);
 
 fn NullResolver.resolve(source) {
     ## Return `void`, that is, fail to resolve. If we hit this point, then

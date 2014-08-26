@@ -21,7 +21,7 @@ import ./PegAny :: any;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def PegTokenSetComplement = makeObjectClass("PegTokenSetComplement", SECRET);
+def PegTokenSetComplement = makeObjectClass(@.PegTokenSetComplement, SECRET);
 
 ## Documented in spec.
 fn PegTokenSetComplement.parse(box, input, items*) {

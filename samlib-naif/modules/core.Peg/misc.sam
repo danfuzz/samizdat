@@ -23,7 +23,7 @@ import ./PegTokenSetComplement :: makeTokenSetComplement;
 ## Helper for `makeCharSet*`, which takes a string and produces a
 ## list of token classes for the characters.
 fn classListFromString(string) {
-    return string.collect({ ch -> @@(ch) })
+    return string.collect({ ch -> @@(makeInternedSelector(ch)) })
 };
 
 
@@ -38,7 +38,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the class name.
-            makeFilterGenerator(input) { ch -> @(@@(ch)) }
+            makeFilterGenerator(input) { ch -> @(@@(makeInternedSelector(ch))) }
         }
         { input };
 
@@ -61,13 +61,15 @@ export fn makeCharSetComplement(strings*) {
 
 ## Documented in spec.
 export fn makeString(string) {
+    def resultType = @@(makeInternedSelector(string));
+
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }
         { return makeResult(@"") };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { eq(string.get_size(), 1) }
-        { return makeToken(@@(string)) };
+        { return makeToken(resultType) };
 
     ## This is implemented as, in effect, `(@"1" @"2" ... { string })`,
     ## which allows us to minimize code duplication.
@@ -76,10 +78,10 @@ export fn makeString(string) {
     def clses = classListFromString(string);
     def chars = clses.collect(makeToken);
 
-    return makeSequence(chars*, makeResult(@(@@(string))))
+    return makeSequence(chars*, makeResult(@(resultType)))
 };
 
 ## Documented in spec.
 export fn stringFromTokenList(tokens) {
-    return "".cat(tokens.collect(get_className)*)
+    return "".cat(tokens.collect(get_classNameString)*)
 };

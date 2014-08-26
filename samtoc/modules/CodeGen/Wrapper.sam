@@ -22,7 +22,7 @@ import ./indentation :: *;
 def SECRET = makeUniqlet();
 
 ## Class being defined here.
-def Wrapper = makeObjectClass("Wrapper", SECRET);
+def Wrapper = makeObjectClass(@.Wrapper, SECRET);
 
 fn Wrapper.flatten() {
     def data = this.objectDataOf(SECRET);
