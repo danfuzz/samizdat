@@ -20,13 +20,13 @@
 
 
 /** Method `.reverse()`: Documented in spec. */
-SYM_DECL(1, 1, reverse);
+SYM_DECL(reverse);
 
 /** Method `.sliceExclusive(start, end?)`: Documented in spec. */
-SYM_DECL(2, 3, sliceExclusive);
+SYM_DECL(sliceExclusive);
 
 /** Method `.sliceInclusive(start, end?)`: Documented in spec. */
-SYM_DECL(2, 3, sliceInclusive);
+SYM_DECL(sliceInclusive);
 
 /** Standard implementation for `Sequence.get`. */
 extern zvalue FUN_Sequence_get;
@@ -46,7 +46,7 @@ extern zvalue FUN_Sequence_nthMapping;
  * failure, terminates the runtime with an error.
  */
 void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
-        zint size, zint argCount, const zvalue *args);
+        zint size, zvalue startArg, zvalue endArg);
 
 /**
  * Validates the given `key` to use for a `get` style function on a sequence.

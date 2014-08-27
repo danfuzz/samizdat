@@ -17,13 +17,13 @@
 
 
 /** Method `.collect()`: Documenetd in spec. */
-SYM_DECL(1, 2, collect);
+SYM_DECL(collect);
 
 /** Method `.fetch()`: Documented in spec. */
-SYM_DECL(1, 1, fetch);
+SYM_DECL(fetch);
 
 /** Method `.nextValue(box)`: Documenetd in spec. */
-SYM_DECL(2, 2, nextValue);
+SYM_DECL(nextValue);
 
 /** `core.Generator::stdCollect`: Documented in spec. */
 extern zvalue FUN_Generator_stdCollect;

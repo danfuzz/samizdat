@@ -135,15 +135,14 @@ zorder valZorder(zvalue value, zvalue other) {
 //
 
 // Documented in header.
-METH_IMPL(Value, debugName) {
+METH_IMPL_0(Value, debugName) {
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL(Value, debugString) {
-    zvalue value = args[0];
-    zvalue cls = get_class(value);
-    zvalue name = METH_CALL(debugName, value);
+METH_IMPL_0(Value, debugString) {
+    zvalue cls = get_class(ths);
+    zvalue name = METH_CALL(debugName, ths);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
@@ -157,7 +156,7 @@ METH_IMPL(Value, debugString) {
             METH_CALL(debugString, name));
     }
 
-    sprintf(addrBuf, "%p", value);
+    sprintf(addrBuf, "%p", ths);
 
     return METH_CALL(cat,
         stringFromUtf8(-1, "@("),
@@ -169,49 +168,39 @@ METH_IMPL(Value, debugString) {
 }
 
 // Documented in header.
-METH_IMPL(Value, gcMark) {
+METH_IMPL_0(Value, gcMark) {
     // Nothing to do.
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL(Value, perEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];
-
-    return valEq(value, other);
+METH_IMPL_1(Value, perEq, other) {
+    return valEq(ths, other);
 }
 
 // Documented in header.
-METH_IMPL(Value, perOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];
-
-    return valOrder(value, other);
+METH_IMPL_1(Value, perOrder, other) {
+    return valOrder(ths, other);
 }
 
 // Documented in header.
-METH_IMPL(Value, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to have the same class.
-
-    if (!haveSameClass(value, other)) {
+METH_IMPL_1(Value, totalEq, other) {
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
         die("`totalEq` called with incompatible arguments.");
     }
 
-    return (value == other) ? value : NULL;
+    return (ths == other) ? ths : NULL;
 }
 
 // Documented in header.
-METH_IMPL(Value, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to have the same class.
-
-    if (!haveSameClass(value, other)) {
+METH_IMPL_1(Value, totalOrder, other) {
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
         die("`totalOrder` called with incompatible arguments.");
     }
 
-    return valEq(value, other) ? INT_0 : NULL;
+    return valEq(ths, other) ? INT_0 : NULL;
 }
 
 /** Initializes the module. */
@@ -246,13 +235,13 @@ MOD_INIT(Value) {
     classBindMethods(CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Value, debugName),
-            SYM_METH(Value, debugString),
-            SYM_METH(Value, gcMark),
-            SYM_METH(Value, perEq),
-            SYM_METH(Value, perOrder),
-            SYM_METH(Value, totalEq),
-            SYM_METH(Value, totalOrder),
+            METH_BIND(Value, debugName),
+            METH_BIND(Value, debugString),
+            METH_BIND(Value, gcMark),
+            METH_BIND(Value, perEq),
+            METH_BIND(Value, perOrder),
+            METH_BIND(Value, totalEq),
+            METH_BIND(Value, totalOrder),
             NULL));
 }
 

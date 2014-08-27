@@ -110,6 +110,11 @@ Defined as per the `Sequence` protocol.
 
 Collects or filters the characters of `string`.
 
+#### `.fetch() -> string | void`
+
+Returns void on an empty string. Returns `this` on a single-character string.
+Terminates with an error in all other cases.
+
 #### `.nextValue(box) -> generator | void`
 
 On a non-empty string, calls `box.store(string[0])` and returns

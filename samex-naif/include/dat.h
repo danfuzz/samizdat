@@ -67,9 +67,10 @@ void datGc(void);
 
 /**
  * Marks the given value as "immortal." It is considered a root and
- * will never get freed.
+ * will never get freed. Returns `value`, to aid in cascading calls (avoiding
+ * duplication).
  */
-void datImmortalize(zvalue value);
+zvalue datImmortalize(zvalue value);
 
 /**
  * Marks a value during garbage collection. This in turn calls a class-specific

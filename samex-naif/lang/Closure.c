@@ -329,36 +329,28 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 //
 
 // Documented in header.
-METH_IMPL(Closure, call) {
-    // The first argument is the closure itself. The rest are the arguments
-    // it is being called with, hence `argCount--` and `args++` below.
-    zvalue closure = args[0];
-    argCount--;
-    args++;
-
-    if (getInfo(closure)->yieldDef == NULL) {
-        return callClosureMain(closure, NULL, argCount, args);
+METH_IMPL_rest(Closure, call, args) {
+    if (getInfo(ths)->yieldDef == NULL) {
+        return callClosureMain(ths, NULL, argsSize, args);
     }
 
     zvalue jump = makeJump();
     jumpArm(jump);
 
-    zvalue result = callClosureMain(closure, jump, argCount, args);
+    zvalue result = callClosureMain(ths, jump, argsSize, args);
     jumpRetire(jump);
 
     return result;
 }
 
 // Documented in header.
-METH_IMPL(Closure, debugName) {
-    zvalue closure = args[0];
-    return get(getInfo(closure)->defMap, STR_name);
+METH_IMPL_0(Closure, debugName) {
+    return get(getInfo(ths)->defMap, STR_name);
 }
 
 // Documented in header.
-METH_IMPL(Closure, gcMark) {
-    zvalue closure = args[0];
-    ClosureInfo *info = getInfo(closure);
+METH_IMPL_0(Closure, gcMark) {
+    ClosureInfo *info = getInfo(ths);
 
     frameMark(&info->frame);
     datMark(info->defMap);  // All the other bits are derived from this.
@@ -374,14 +366,13 @@ MOD_INIT(Closure) {
     CLS_Closure = makeCoreClass("Closure", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Closure, call),
-            SYM_METH(Closure, debugName),
-            SYM_METH(Closure, gcMark),
+            METH_BIND(Closure, call),
+            METH_BIND(Closure, debugName),
+            METH_BIND(Closure, gcMark),
             NULL));
 
     nodeCache = EMPTY_MAP;
-    nodeCacheBox = makeCell(EMPTY_MAP);
-    datImmortalize(nodeCacheBox);
+    nodeCacheBox = datImmortalize(makeCell(EMPTY_MAP));
 }
 
 // Documented in header.

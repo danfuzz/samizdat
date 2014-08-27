@@ -14,7 +14,7 @@
 #include "type/Value.h"
 
 /** Method `.call(args*)`: Documented in spec. */
-SYM_DECL(1, -1, call);
+SYM_DECL(call);
 
 /**
  * Calls a function with the given list of arguments. `function` must be

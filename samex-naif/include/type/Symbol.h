@@ -15,7 +15,7 @@
 extern zvalue CLS_Symbol;
 
 /** Method `.makeAnonymous()`: Documented in spec. */
-SYM_DECL(1, 1, makeAnonymous);
+SYM_DECL(makeAnonymous);
 
 /** Global function `makeSymbol`: Documented in spec. */
 extern zvalue FUN_Symbol_makeSymbol;

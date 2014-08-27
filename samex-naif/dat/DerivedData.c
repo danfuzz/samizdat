@@ -85,66 +85,55 @@ zvalue makeDerivedDataClass(zvalue name) {
 //
 
 // Documented in header.
-METH_IMPL(DerivedData, dataOf) {
-    zvalue value = args[0];
-
-    // The `datFrameAdd()` call is because `value` might immediately become
-    // garbage.
-    return datFrameAdd(getInfo(value)->data);
+FUNC_IMPL_1_2(DerivedData_makeData, cls, value) {
+    return makeData(cls, value);
 }
 
 // Documented in header.
-METH_IMPL(DerivedData, gcMark) {
-    zvalue value = args[0];
-    datMark(getInfo(value)->data);
+FUNC_IMPL_1(DerivedData_makeDerivedDataClass, name) {
+    return makeDerivedDataClass(name);
+}
+
+// Documented in header.
+METH_IMPL_0(DerivedData, dataOf) {
+    // The `datFrameAdd()` call is because `value` might immediately become
+    // garbage.
+    return datFrameAdd(getInfo(ths)->data);
+}
+
+// Documented in header.
+METH_IMPL_0(DerivedData, gcMark) {
+    datMark(getInfo(ths)->data);
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL(DerivedData, get) {
-    zvalue value = args[0];
-    zvalue key = args[1];
-
-    zvalue data = getInfo(value)->data;
+METH_IMPL_1(DerivedData, get, key) {
+    zvalue data = getInfo(ths)->data;
     return (data == NULL) ? NULL : get(data, key);
 }
 
-/** Function (not method) `makeData`. Documented in spec. */
-METH_IMPL(DerivedData, makeData) {
-    zvalue cls = args[0];
-    zvalue value = (argCount == 2) ? args[1] : NULL;
-
-    return makeData(cls, value);
-}
-
-/** Function (not method) `makeDerivedDataClass`. Documented in spec. */
-METH_IMPL(DerivedData, makeDerivedDataClass) {
-    return makeDerivedDataClass(args[0]);
-}
-
 // Documented in header.
-METH_IMPL(DerivedData, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be of same class.
+METH_IMPL_1(DerivedData, totalEq, other) {
+    // Note: `other` not guaranteed to be of same class.
 
-    if (!haveSameClass(value, other)) {
+    if (!haveSameClass(ths, other)) {
         die("`totalEq` called with incompatible arguments.");
     }
 
-    return valEqNullOk(getInfo(value)->data, getInfo(other)->data)
-        ? value : NULL;
+    return valEqNullOk(getInfo(ths)->data, getInfo(other)->data)
+        ? ths : NULL;
 }
 
 // Documented in header.
-METH_IMPL(DerivedData, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be of same class.
+METH_IMPL_1(DerivedData, totalOrder, other) {
+    // Note: `other` not guaranteed to be of same class.
 
-    if (!haveSameClass(value, other)) {
+    if (!haveSameClass(ths, other)) {
         die("`totalOrder` called with incompatible arguments.");
     }
 
-    return valOrderNullOk(getInfo(value)->data, getInfo(other)->data);
+    return valOrderNullOk(getInfo(ths)->data, getInfo(other)->data);
 }
 
 /** Initializes the module. */
@@ -156,22 +145,18 @@ MOD_INIT(DerivedData) {
     CLS_DerivedData = makeCoreClass("DerivedData", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(DerivedData, dataOf),
-            SYM_METH(DerivedData, gcMark),
-            SYM_METH(DerivedData, get),
-            SYM_METH(DerivedData, totalEq),
-            SYM_METH(DerivedData, totalOrder),
+            METH_BIND(DerivedData, dataOf),
+            METH_BIND(DerivedData, gcMark),
+            METH_BIND(DerivedData, get),
+            METH_BIND(DerivedData, totalEq),
+            METH_BIND(DerivedData, totalOrder),
             NULL));
 
-    FUN_DerivedData_makeData = makeBuiltin(1, 2,
-        METH_NAME(DerivedData, makeData), 0,
-        stringFromUtf8(-1, "DerivedData.makeData"));
-    datImmortalize(FUN_DerivedData_makeData);
+    FUN_DerivedData_makeData =
+        datImmortalize(FUNC_VALUE(DerivedData_makeData));
 
-    FUN_DerivedData_makeDerivedDataClass = makeBuiltin(1, 1,
-        METH_NAME(DerivedData, makeDerivedDataClass), 0,
-        stringFromUtf8(-1, "DerivedData.makeDerivedDataClass"));
-    datImmortalize(FUN_DerivedData_makeDerivedDataClass);
+    FUN_DerivedData_makeDerivedDataClass =
+        datImmortalize(FUNC_VALUE(DerivedData_makeDerivedDataClass));
 }
 
 // Documented in header.

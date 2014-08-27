@@ -66,16 +66,13 @@ zvalue makeJump(void) {
 //
 
 // Documented in header.
-METH_IMPL(Jump, call) {
-    // The first argument is the jump per se, and the rest are the
-    // arguments to call it with.
-    return jumpCall(args[0], argCount - 1, &args[1]);
+METH_IMPL_rest(Jump, call, args) {
+    return jumpCall(ths, argsSize, args);
 }
 
 // Documented in header.
-METH_IMPL(Jump, debugString) {
-    zvalue jump = args[0];
-    JumpInfo *info = getInfo(jump);
+METH_IMPL_0(Jump, debugString) {
+    JumpInfo *info = getInfo(ths);
     zvalue validStr = info->valid ? EMPTY_STRING : stringFromUtf8(-1, "in");
 
     return METH_CALL(cat,
@@ -85,9 +82,8 @@ METH_IMPL(Jump, debugString) {
 }
 
 // Documented in header.
-METH_IMPL(Jump, gcMark) {
-    zvalue jump = args[0];
-    JumpInfo *info = getInfo(jump);
+METH_IMPL_0(Jump, gcMark) {
+    JumpInfo *info = getInfo(ths);
 
     datMark(info->result);
     return NULL;
@@ -101,9 +97,9 @@ MOD_INIT(Jump) {
     classBindMethods(CLS_Jump,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Jump, call),
-            SYM_METH(Jump, debugString),
-            SYM_METH(Jump, gcMark),
+            METH_BIND(Jump, call),
+            METH_BIND(Jump, debugString),
+            METH_BIND(Jump, gcMark),
             NULL));
 }
 

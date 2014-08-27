@@ -277,22 +277,24 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 zvalue EMPTY_MAP = NULL;
 
 // Documented in header.
-METH_IMPL(Map, cat) {
-    if (argCount == 1) {
-        return args[0];
+METH_IMPL_rest(Map, cat, args) {
+    if (argsSize == 0) {
+        return ths;
     }
 
-    zint size = 0;
+    zint thsSize = getInfo(ths)->size;
 
-    for (zint i = 0; i < argCount; i++) {
+    zint size = thsSize;
+    for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         assertHasClass(one, CLS_Map);
         size += getInfo(one)->size;
     }
 
     zmapping elems[size];
-
-    for (zint i = 0, at = 0; i < argCount; i++) {
+    zint at = thsSize;
+    arrayFromMap(elems, ths);
+    for (zint i = 0; i < argsSize; i++) {
         arrayFromMap(&elems[at], args[i]);
         at += getInfo(args[i])->size;
     }
@@ -301,19 +303,15 @@ METH_IMPL(Map, cat) {
 }
 
 // Documented in header.
-METH_IMPL(Map, collect) {
-    zvalue map = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
-
-    zint size = get_size(map);
+METH_IMPL_0_1(Map, collect, function) {
+    MapInfo *info = getInfo(ths);
+    zint size = info->size;
     zmapping mappings[size];
     zvalue result[size];
     zint at = 0;
 
-    arrayFromMap(mappings, map);
-
     for (zint i = 0; i < size; i++) {
-        zvalue elem = mapFromArray(1, &mappings[i]);
+        zvalue elem = mapFromArray(1, &info->elems[i]);
         zvalue one = (function == NULL)
             ? elem
             : FUN_CALL(function, elem);
@@ -328,17 +326,14 @@ METH_IMPL(Map, collect) {
 }
 
 // Documented in header.
-METH_IMPL(Map, del) {
-    zvalue map = args[0];
-    zvalue key = args[1];
-
-    zint index = mapFind(map, key);
+METH_IMPL_1(Map, del, key) {
+    zint index = mapFind(ths, key);
 
     if (index < 0) {
-        return map;
+        return ths;
     }
 
-    MapInfo *info = getInfo(map);
+    MapInfo *info = getInfo(ths);
     zint size = info->size;
 
     if (size == 1) {
@@ -355,9 +350,8 @@ METH_IMPL(Map, del) {
 }
 
 // Documented in header.
-METH_IMPL(Map, fetch) {
-    zvalue map = args[0];
-    MapInfo *info = getInfo(map);
+METH_IMPL_0(Map, fetch) {
+    MapInfo *info = getInfo(ths);
     zint size = info->size;
 
     switch (size) {
@@ -365,8 +359,7 @@ METH_IMPL(Map, fetch) {
             return NULL;
         }
         case 1: {
-            zmapping *firstElem = &info->elems[0];
-            return makeMapping(firstElem->key, firstElem->value);
+            return ths;
         }
         default: {
             die("Invalid to call `fetch` on map with size > 1.");
@@ -375,9 +368,8 @@ METH_IMPL(Map, fetch) {
 }
 
 // Documented in header.
-METH_IMPL(Map, gcMark) {
-    zvalue map = args[0];
-    MapInfo *info = getInfo(map);
+METH_IMPL_0(Map, gcMark) {
+    MapInfo *info = getInfo(ths);
     zint size = info->size;
     zmapping *elems = info->elems;
 
@@ -390,19 +382,14 @@ METH_IMPL(Map, gcMark) {
 }
 
 // Documented in header.
-METH_IMPL(Map, get) {
-    zvalue map = args[0];
-    zvalue key = args[1];
-
-    zint index = mapFind(map, key);
-    return (index < 0) ? NULL : datFrameAdd(getInfo(map)->elems[index].value);
+METH_IMPL_1(Map, get, key) {
+    zint index = mapFind(ths, key);
+    return (index < 0) ? NULL : datFrameAdd(getInfo(ths)->elems[index].value);
 }
 
 // Documented in header.
-METH_IMPL(Map, get_key) {
-    zvalue map = args[0];
-
-    MapInfo *info = getInfo(map);
+METH_IMPL_0(Map, get_key) {
+    MapInfo *info = getInfo(ths);
 
     if (info->size != 1) {
         die("Not a size 1 map.");
@@ -412,16 +399,13 @@ METH_IMPL(Map, get_key) {
 }
 
 // Documented in header.
-METH_IMPL(Map, get_size) {
-    zvalue map = args[0];
-    return intFromZint(getInfo(map)->size);
+METH_IMPL_0(Map, get_size) {
+    return intFromZint(getInfo(ths)->size);
 }
 
 // Documented in header.
-METH_IMPL(Map, get_value) {
-    zvalue map = args[0];
-
-    MapInfo *info = getInfo(map);
+METH_IMPL_0(Map, get_value) {
+    MapInfo *info = getInfo(ths);
 
     if (info->size != 1) {
         die("Not a size 1 map.");
@@ -431,13 +415,10 @@ METH_IMPL(Map, get_value) {
 }
 
 // Documented in header.
-METH_IMPL(Map, keyList) {
-    zvalue map = args[0];
-
-    MapInfo *info = getInfo(map);
+METH_IMPL_0(Map, keyList) {
+    MapInfo *info = getInfo(ths);
     zint size = info->size;
     zmapping *elems = info->elems;
-    zmapping mappings[size];
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
@@ -448,10 +429,8 @@ METH_IMPL(Map, keyList) {
 }
 
 // Documented in header.
-METH_IMPL(Map, nextValue) {
-    zvalue map = args[0];
-    zvalue box = args[1];
-    MapInfo *info = getInfo(map);
+METH_IMPL_1(Map, nextValue, box) {
+    MapInfo *info = getInfo(ths);
     zint size = info->size;
 
     switch (size) {
@@ -461,7 +440,7 @@ METH_IMPL(Map, nextValue) {
         }
         case 1: {
             // `map` is a single element, so we can yield it directly.
-            METH_CALL(store, box, map);
+            METH_CALL(store, box, ths);
             return EMPTY_MAP;
         }
         default: {
@@ -476,11 +455,8 @@ METH_IMPL(Map, nextValue) {
 }
 
 // Documented in header.
-METH_IMPL(Map, nthMapping) {
-    zvalue map = args[0];
-    zvalue n = args[1];
-
-    MapInfo *info = getInfo(map);
+METH_IMPL_1(Map, nthMapping, n) {
+    MapInfo *info = getInfo(ths);
     zint index = seqNthIndexStrict(info->size, n);
 
     if (index < 0) {
@@ -488,7 +464,7 @@ METH_IMPL(Map, nthMapping) {
     }
 
     if (info->size == 1) {
-        return map;
+        return ths;
     }
 
     zmapping *m = &info->elems[index];
@@ -496,12 +472,8 @@ METH_IMPL(Map, nthMapping) {
 }
 
 // Documented in header.
-METH_IMPL(Map, put) {
-    zvalue map = args[0];
-    zvalue key = args[1];
-    zvalue value = args[2];
-
-    MapInfo *info = getInfo(map);
+METH_IMPL_2(Map, put, key, value) {
+    MapInfo *info = getInfo(ths);
     zmapping *elems = info->elems;
     zint size = info->size;
 
@@ -520,7 +492,7 @@ METH_IMPL(Map, put) {
         }
     }
 
-    zint index = mapFind(map, key);
+    zint index = mapFind(ths, key);
     zvalue result;
 
     if (index >= 0) {
@@ -547,12 +519,9 @@ METH_IMPL(Map, put) {
 }
 
 // Documented in header.
-METH_IMPL(Map, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `Map`.
-
-    assertHasClass(other, CLS_Map);
-    MapInfo *info1 = getInfo(value);
+METH_IMPL_1(Map, totalEq, other) {
+    assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
+    MapInfo *info1 = getInfo(ths);
     MapInfo *info2 = getInfo(other);
     zint size1 = info1->size;
     zint size2 = info2->size;
@@ -572,16 +541,13 @@ METH_IMPL(Map, totalEq) {
         }
     }
 
-    return value;
+    return ths;
 }
 
 // Documented in header.
-METH_IMPL(Map, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `Map`.
-
-    assertHasClass(other, CLS_Map);
-    MapInfo *info1 = getInfo(value);
+METH_IMPL_1(Map, totalOrder, other) {
+    assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
+    MapInfo *info1 = getInfo(ths);
     MapInfo *info2 = getInfo(other);
     zmapping *e1 = info1->elems;
     zmapping *e2 = info2->elems;
@@ -613,13 +579,10 @@ METH_IMPL(Map, totalOrder) {
 }
 
 // Documented in header.
-METH_IMPL(Map, valueList) {
-    zvalue map = args[0];
-
-    MapInfo *info = getInfo(map);
+METH_IMPL_0(Map, valueList) {
+    MapInfo *info = getInfo(ths);
     zint size = info->size;
     zmapping *elems = info->elems;
-    zmapping mappings[size];
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
@@ -640,22 +603,22 @@ MOD_INIT(Map) {
     CLS_Map = makeCoreClass("Map", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Map, cat),
-            SYM_METH(Map, collect),
-            SYM_METH(Map, del),
-            SYM_METH(Map, fetch),
-            SYM_METH(Map, gcMark),
-            SYM_METH(Map, get),
-            SYM_METH(Map, get_key),
-            SYM_METH(Map, get_size),
-            SYM_METH(Map, get_value),
-            SYM_METH(Map, keyList),
-            SYM_METH(Map, nextValue),
-            SYM_METH(Map, nthMapping),
-            SYM_METH(Map, put),
-            SYM_METH(Map, totalEq),
-            SYM_METH(Map, totalOrder),
-            SYM_METH(Map, valueList),
+            METH_BIND(Map, cat),
+            METH_BIND(Map, collect),
+            METH_BIND(Map, del),
+            METH_BIND(Map, fetch),
+            METH_BIND(Map, gcMark),
+            METH_BIND(Map, get),
+            METH_BIND(Map, get_key),
+            METH_BIND(Map, get_size),
+            METH_BIND(Map, get_value),
+            METH_BIND(Map, keyList),
+            METH_BIND(Map, nextValue),
+            METH_BIND(Map, nthMapping),
+            METH_BIND(Map, put),
+            METH_BIND(Map, totalEq),
+            METH_BIND(Map, totalOrder),
+            METH_BIND(Map, valueList),
             NULL));
 
     EMPTY_MAP = allocMap(0);

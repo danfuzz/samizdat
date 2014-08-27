@@ -148,22 +148,24 @@ zvalue listFromArray(zint size, const zvalue *values) {
 zvalue EMPTY_LIST = NULL;
 
 // Documented in header.
-METH_IMPL(List, cat) {
-    if (argCount == 1) {
-        return args[0];
+METH_IMPL_rest(List, cat, args) {
+    if (argsSize == 0) {
+        return ths;
     }
 
-    zint size = 0;
+    zint thsSize = getInfo(ths)->size;
 
-    for (zint i = 0; i < argCount; i++) {
+    zint size = thsSize;
+    for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         assertHasClass(one, CLS_List);
         size += getInfo(one)->size;
     }
 
     zvalue elems[size];
-
-    for (zint i = 0, at = 0; i < argCount; i++) {
+    zint at = thsSize;
+    arrayFromList(elems, ths);
+    for (zint i = 0; i < argsSize; i++) {
         arrayFromList(&elems[at], args[i]);
         at += getInfo(args[i])->size;
     }
@@ -172,16 +174,13 @@ METH_IMPL(List, cat) {
 }
 
 // Documented in header.
-METH_IMPL(List, collect) {
-    zvalue list = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
-
+METH_IMPL_0_1(List, collect, function) {
     if (function == NULL) {
         // Collecting a list (without filtering) results in that same list.
-        return list;
+        return ths;
     }
 
-    ListInfo *info = getInfo(list);
+    ListInfo *info = getInfo(ths);
     zvalue *elems = info->elems;
     zint size = info->size;
     zvalue result[size];
@@ -200,26 +199,22 @@ METH_IMPL(List, collect) {
 }
 
 // Documented in header.
-METH_IMPL(List, del) {
-    zvalue list = args[0];
-    zvalue n = args[1];
-
-    ListInfo *info = getInfo(list);
+METH_IMPL_1(List, del, key) {
+    ListInfo *info = getInfo(ths);
     zvalue *elems = info->elems;
     zint size = info->size;
-    zint index = seqNthIndexLenient(n);
+    zint index = seqNthIndexLenient(key);
 
     if ((index < 0) || (index >= size)) {
-        return list;
+        return ths;
     }
 
     return listFrom(index, elems, NULL, size - index - 1, &elems[index + 1]);
 }
 
 // Documented in header.
-METH_IMPL(List, fetch) {
-    zvalue list = args[0];
-    ListInfo *info = getInfo(list);
+METH_IMPL_0(List, fetch) {
+    ListInfo *info = getInfo(ths);
 
     switch (info->size) {
         case 0: {
@@ -235,9 +230,8 @@ METH_IMPL(List, fetch) {
 }
 
 // Documented in header.
-METH_IMPL(List, gcMark) {
-    zvalue list = args[0];
-    ListInfo *info = getInfo(list);
+METH_IMPL_0(List, gcMark) {
+    ListInfo *info = getInfo(ths);
     zvalue *elems = info->elems;
     zint size = info->size;
 
@@ -249,16 +243,13 @@ METH_IMPL(List, gcMark) {
 }
 
 // Documented in header.
-METH_IMPL(List, get_size) {
-    zvalue list = args[0];
-    return intFromZint(getInfo(list)->size);
+METH_IMPL_0(List, get_size) {
+    return intFromZint(getInfo(ths)->size);
 }
 
 // Documented in header.
-METH_IMPL(List, nextValue) {
-    zvalue list = args[0];
-    zvalue box = args[1];
-    ListInfo *info = getInfo(list);
+METH_IMPL_1(List, nextValue, box) {
+    ListInfo *info = getInfo(ths);
     zint size = info->size;
 
     if (size == 0) {
@@ -274,26 +265,19 @@ METH_IMPL(List, nextValue) {
 }
 
 // Documented in header.
-METH_IMPL(List, nth) {
-    zvalue list = args[0];
-    zvalue n = args[1];
-
-    ListInfo *info = getInfo(list);
+METH_IMPL_1(List, nth, n) {
+    ListInfo *info = getInfo(ths);
     zint index = seqNthIndexStrict(info->size, n);
 
     return (index < 0) ? NULL : datFrameAdd(info->elems[index]);
 }
 
 // Documented in header.
-METH_IMPL(List, put) {
-    zvalue list = args[0];
-    zvalue n = args[1];
-    zvalue value = args[2];
-
-    ListInfo *info = getInfo(list);
+METH_IMPL_2(List, put, key, value) {
+    ListInfo *info = getInfo(ths);
     zvalue *elems = info->elems;
     zint size = info->size;
-    zint index = seqPutIndexStrict(size, n);
+    zint index = seqPutIndexStrict(size, key);
 
     if (index == size) {
         // This is an append operation.
@@ -304,10 +288,8 @@ METH_IMPL(List, put) {
 }
 
 // Documented in header.
-METH_IMPL(List, reverse) {
-    zvalue list = args[0];
-
-    ListInfo *info = getInfo(list);
+METH_IMPL_0(List, reverse) {
+    ListInfo *info = getInfo(ths);
     zint size = info->size;
     zvalue *elems = info->elems;
     zvalue arr[size];
@@ -320,13 +302,13 @@ METH_IMPL(List, reverse) {
 }
 
 // Documented in header.
-static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
-    zvalue list = args[0];
-    ListInfo *info = getInfo(list);
+static zvalue doSlice(zvalue ths, bool inclusive,
+        zvalue startArg, zvalue endArg) {
+    ListInfo *info = getInfo(ths);
     zint start;
     zint end;
 
-    seqConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
+    seqConvertSliceArgs(&start, &end, inclusive, info->size, startArg, endArg);
 
     if (start == -1) {
         return NULL;
@@ -336,22 +318,19 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-METH_IMPL(List, sliceExclusive) {
-    return doSlice(false, argCount, args);
+METH_IMPL_1_2(List, sliceExclusive, start, end) {
+    return doSlice(ths, false, start, end);
 }
 
 // Documented in header.
-METH_IMPL(List, sliceInclusive) {
-    return doSlice(true, argCount, args);
+METH_IMPL_1_2(List, sliceInclusive, start, end) {
+    return doSlice(ths, true, start, end);
 }
 
 // Documented in header.
-METH_IMPL(List, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `List`.
-
-    assertHasClass(other, CLS_List);
-    ListInfo *info1 = getInfo(value);
+METH_IMPL_1(List, totalEq, other) {
+    assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
+    ListInfo *info1 = getInfo(ths);
     ListInfo *info2 = getInfo(other);
     zint size1 = info1->size;
     zint size2 = info2->size;
@@ -369,16 +348,13 @@ METH_IMPL(List, totalEq) {
         }
     }
 
-    return value;
+    return ths;
 }
 
 // Documented in header.
-METH_IMPL(List, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `List`.
-
-    assertHasClass(other, CLS_List);
-    ListInfo *info1 = getInfo(value);
+METH_IMPL_1(List, totalOrder, other) {
+    assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
+    ListInfo *info1 = getInfo(ths);
     ListInfo *info2 = getInfo(other);
     zvalue *e1 = info1->elems;
     zvalue *e2 = info2->elems;
@@ -401,10 +377,8 @@ METH_IMPL(List, totalOrder) {
 }
 
 // Documented in header.
-METH_IMPL(List, valueList) {
-    zvalue list = args[0];
-
-    return list;
+METH_IMPL_0(List, valueList) {
+    return ths;
 }
 
 /** Initializes the module. */
@@ -415,21 +389,21 @@ MOD_INIT(List) {
     CLS_List = makeCoreClass("List", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(List, cat),
-            SYM_METH(List, collect),
-            SYM_METH(List, del),
-            SYM_METH(List, fetch),
-            SYM_METH(List, gcMark),
-            SYM_METH(List, get_size),
-            SYM_METH(List, nextValue),
-            SYM_METH(List, nth),
-            SYM_METH(List, put),
-            SYM_METH(List, reverse),
-            SYM_METH(List, sliceExclusive),
-            SYM_METH(List, sliceInclusive),
-            SYM_METH(List, totalEq),
-            SYM_METH(List, totalOrder),
-            SYM_METH(List, valueList),
+            METH_BIND(List, cat),
+            METH_BIND(List, collect),
+            METH_BIND(List, del),
+            METH_BIND(List, fetch),
+            METH_BIND(List, gcMark),
+            METH_BIND(List, get_size),
+            METH_BIND(List, nextValue),
+            METH_BIND(List, nth),
+            METH_BIND(List, put),
+            METH_BIND(List, reverse),
+            METH_BIND(List, sliceExclusive),
+            METH_BIND(List, sliceInclusive),
+            METH_BIND(List, totalEq),
+            METH_BIND(List, totalOrder),
+            METH_BIND(List, valueList),
             SYM_NAME(get),        FUN_Sequence_get,
             SYM_NAME(keyList),    FUN_Sequence_keyList,
             SYM_NAME(nthMapping), FUN_Sequence_nthMapping,

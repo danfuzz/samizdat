@@ -95,6 +95,11 @@ returns `this`, directly.
 Filters the elements of `this` using the given filter function if supplied,
 or just returns `this` if there is no filter function.
 
+#### `.fetch() -> . | void`
+
+Returns void on an empty list. Returns the sole element of a single-element
+list. Terminates with an error in all other cases.
+
 #### `.nextValue(box) -> generator | void`
 
 On a non-empty list, calls `box.store(this[0])` and returns

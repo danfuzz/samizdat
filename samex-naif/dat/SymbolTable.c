@@ -109,33 +109,12 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
 //
 
 // Documented in header.
-METH_IMPL(SymbolTable, gcMark) {
-    zvalue table = args[0];
-    SymbolTableInfo *info = getInfo(table);
-
-    for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
-        datMark(info->table[i]);
-    }
-
-    return NULL;
-}
-
-// Documented in header.
-METH_IMPL(SymbolTable, get) {
-    zvalue table = args[0];
-    zvalue symbol = args[1];
-    zint index = symbolIndex(symbol);
-
-    return getInfo(table)->table[index];
-}
-
-/** Function (not method) `makeSymbolTable`. Documented in spec. */
-METH_IMPL(SymbolTable, makeSymbolTable) {
-    if ((argCount & 1) != 0) {
+FUNC_IMPL_rest(SymbolTable_makeSymbolTable, args) {
+    if ((argsSize & 1) != 0) {
         die("Odd argument count for symbol table construction.");
     }
 
-    zint size = argCount >> 1;
+    zint size = argsSize >> 1;
     zmapping mappings[size];
 
     for (zint i = 0, at = 0; i < size; i++, at += 2) {
@@ -147,12 +126,27 @@ METH_IMPL(SymbolTable, makeSymbolTable) {
 }
 
 // Documented in header.
-METH_IMPL(SymbolTable, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `SymbolTable`.
+METH_IMPL_0(SymbolTable, gcMark) {
+    SymbolTableInfo *info = getInfo(ths);
 
+    for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
+        datMark(info->table[i]);
+    }
+
+    return NULL;
+}
+
+// Documented in header.
+METH_IMPL_1(SymbolTable, get, key) {
+    zint index = symbolIndex(key);
+    return getInfo(ths)->table[index];
+}
+
+// Documented in header.
+METH_IMPL_1(SymbolTable, totalEq, other) {
+    // Note: `other` not guaranteed to be a `SymbolTable`.
     assertHasClass(other, CLS_SymbolTable);
-    SymbolTableInfo *info1 = getInfo(value);
+    SymbolTableInfo *info1 = getInfo(ths);
     SymbolTableInfo *info2 = getInfo(other);
 
     for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
@@ -163,7 +157,7 @@ METH_IMPL(SymbolTable, totalEq) {
         }
     }
 
-    return value;
+    return ths;
 }
 
 /** Initializes the module. */
@@ -175,18 +169,15 @@ MOD_INIT(SymbolTable) {
     classBindMethods(CLS_SymbolTable,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(SymbolTable, gcMark),
-            SYM_METH(SymbolTable, get),
-            SYM_METH(SymbolTable, totalEq),
+            METH_BIND(SymbolTable, gcMark),
+            METH_BIND(SymbolTable, get),
+            METH_BIND(SymbolTable, totalEq),
             NULL));
 
-    FUN_SymbolTable_makeSymbolTable = makeBuiltin(0, -1,
-        METH_NAME(SymbolTable, makeSymbolTable), 0,
-        stringFromUtf8(-1, "SymbolTable.makeSymbolTable"));
-    datImmortalize(FUN_SymbolTable_makeSymbolTable);
+    FUN_SymbolTable_makeSymbolTable =
+        datImmortalize(FUNC_VALUE(SymbolTable_makeSymbolTable));
 
-    EMPTY_SYMBOL_TABLE = allocInstance();
-    datImmortalize(EMPTY_SYMBOL_TABLE);
+    EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance());
 }
 
 // Documented in header.

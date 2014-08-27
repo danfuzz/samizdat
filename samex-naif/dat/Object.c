@@ -76,11 +76,18 @@ zvalue makeObjectClass(zvalue name, zvalue secret) {
 //
 
 // Documented in header.
-METH_IMPL(Object, objectDataOf) {
-    zvalue obj = args[0];
-    zvalue secret = args[1];
+FUNC_IMPL_2_3(Object_makeObject, cls, secret, data) {
+    return makeObject(cls, secret, data);
+}
 
-    ObjectInfo *info = getInfo(obj);
+// Documented in header.
+FUNC_IMPL_2(Object_makeObjectClass, name, secret) {
+    return makeObjectClass(name, secret);
+}
+
+// Documented in header.
+METH_IMPL_1(Object, objectDataOf, secret) {
+    ObjectInfo *info = getInfo(ths);
 
     // Note: It's important to pass `info->secret` first, so that it's the
     // one whose `totalEq` method is used. The given `secret` can't be
@@ -95,30 +102,12 @@ METH_IMPL(Object, objectDataOf) {
 }
 
 // Documented in header.
-METH_IMPL(Object, gcMark) {
-    zvalue obj = args[0];
-    ObjectInfo *info = getInfo(obj);
+METH_IMPL_0(Object, gcMark) {
+    ObjectInfo *info = getInfo(ths);
 
     datMark(info->secret);
     datMark(info->data);
     return NULL;
-}
-
-/** Function (not method) `makeObject`. Documented in spec. */
-METH_IMPL(Object, makeObject) {
-    zvalue cls = args[0];
-    zvalue secret = args[1];
-    zvalue data = (argCount == 3) ? args[2] : NULL;
-
-    return makeObject(cls, secret, data);
-}
-
-/** Function (not method) `makeObjectClass`. Documented in spec. */
-METH_IMPL(Object, makeObjectClass) {
-    zvalue name = args[0];
-    zvalue secret = args[1];
-
-    return makeObjectClass(name, secret);
 }
 
 /** Initializes the module. */
@@ -130,19 +119,13 @@ MOD_INIT(Object) {
     CLS_Object = makeCoreClass("Object", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Object, objectDataOf),
-            SYM_METH(Object, gcMark),
+            METH_BIND(Object, objectDataOf),
+            METH_BIND(Object, gcMark),
             NULL));
 
-    FUN_Object_makeObject = makeBuiltin(2, 3,
-        METH_NAME(Object, makeObject), 0,
-        stringFromUtf8(-1, "Object.makeObject"));
-    datImmortalize(FUN_Object_makeObject);
-
-    FUN_Object_makeObjectClass = makeBuiltin(2, 2,
-        METH_NAME(Object, makeObjectClass), 0,
-        stringFromUtf8(-1, "Object.makeObjectClass"));
-    datImmortalize(FUN_Object_makeObjectClass);
+    FUN_Object_makeObject = datImmortalize(FUNC_VALUE(Object_makeObject));
+    FUN_Object_makeObjectClass =
+        datImmortalize(FUNC_VALUE(Object_makeObjectClass));
 }
 
 // Documented in header.

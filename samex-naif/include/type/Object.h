@@ -16,7 +16,7 @@
 extern zvalue CLS_Object;
 
 /** Method `.objectDataOf(secret)`: Documented in spec. */
-SYM_DECL(2, 2, objectDataOf);
+SYM_DECL(objectDataOf);
 
 /** Global function `makeObject`: Documented in spec. */
 extern zvalue FUN_Object_makeObject;
