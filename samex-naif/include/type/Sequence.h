@@ -46,7 +46,7 @@ extern zvalue FUN_Sequence_nthMapping;
  * failure, terminates the runtime with an error.
  */
 void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
-        zint size, zint argCount, const zvalue *args);
+        zint size, zvalue startArg, zvalue endArg);
 
 /**
  * Validates the given `key` to use for a `get` style function on a sequence.

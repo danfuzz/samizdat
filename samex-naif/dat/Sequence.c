@@ -25,15 +25,9 @@
 
 // Documented in header.
 void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
-        zint size, zint argCount, const zvalue *args) {
-    if (argCount < 2) {
-        die("Invalid `slice*` argument count: %lld", argCount);
-    }
-
-    zvalue startVal = args[1];
-    zvalue endVal = (argCount > 2) ? args[2] : NULL;
-    zint start = zintFromInt(startVal);
-    zint end = (endVal != NULL) ? zintFromInt(endVal) : (size - 1);
+        zint size, zvalue startArg, zvalue endArg) {
+    zint start = zintFromInt(startArg);
+    zint end = (endArg != NULL) ? zintFromInt(endArg) : (size - 1);
 
     if (inclusive) {
         end++;

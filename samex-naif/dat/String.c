@@ -567,13 +567,13 @@ METH_IMPL(String, reverse) {
 }
 
 // Documented in header.
-static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
-    zvalue string = args[0];
-    StringInfo *info = getInfo(string);
+static zvalue doSlice(zvalue ths, bool inclusive,
+        zvalue startArg, zvalue endArg) {
+    StringInfo *info = getInfo(ths);
     zint start;
     zint end;
 
-    seqConvertSliceArgs(&start, &end, inclusive, info->size, argCount, args);
+    seqConvertSliceArgs(&start, &end, inclusive, info->size, startArg, endArg);
 
     if (start == -1) {
         return NULL;
@@ -583,20 +583,20 @@ static zvalue doSlice(bool inclusive, zint argCount, const zvalue *args) {
 
     if (size > 16) {
         // Share storage for large results.
-        return makeIndirectString(string, start, size);
+        return makeIndirectString(ths, start, size);
     } else {
         return stringFromZchars(size, &getElems(info)[start]);
     }
 }
 
 // Documented in header.
-METH_IMPL(String, sliceExclusive) {
-    return doSlice(false, argCount, args);
+METH_IMPL_1_2(String, sliceExclusive, start, end) {
+    return doSlice(ths, false, start, end);
 }
 
 // Documented in header.
-METH_IMPL(String, sliceInclusive) {
-    return doSlice(true, argCount, args);
+METH_IMPL_1_2(String, sliceInclusive, start, end) {
+    return doSlice(ths, true, start, end);
 }
 
 // Documented in header.
@@ -675,8 +675,8 @@ MOD_INIT(String) {
             SYM_METH(String, nth),
             SYM_METH(String, put),
             SYM_METH(String, reverse),
-            SYM_METH(String, sliceExclusive),
-            SYM_METH(String, sliceInclusive),
+            METH_BIND(String, sliceExclusive),
+            METH_BIND(String, sliceInclusive),
             SYM_METH(String, toInt),
             SYM_METH(String, toNumber),
             SYM_METH(String, toString),
