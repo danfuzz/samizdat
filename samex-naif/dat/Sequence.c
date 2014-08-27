@@ -100,22 +100,17 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 //
 
 // Documented in header.
-METH_IMPL(Sequence, get) {
-    zvalue seq = args[0];
-    zvalue key = args[1];
-
+METH_IMPL_1(Sequence, get, key) {
     if (seqNthIndexLenient(key) >= 0) {
-        return METH_CALL(nth, seq, key);
+        return METH_CALL(nth, ths, key);
     } else {
         return NULL;
     }
 }
 
 // Documented in header.
-METH_IMPL(Sequence, keyList) {
-    zvalue seq = args[0];
-
-    zint size = get_size(seq);
+METH_IMPL_0(Sequence, keyList) {
+    zint size = get_size(ths);
     zvalue elems[size];
 
     for (zint i = 0; i < size; i++) {
@@ -126,10 +121,8 @@ METH_IMPL(Sequence, keyList) {
 }
 
 // Documented in header.
-METH_IMPL(Sequence, nthMapping) {
-    zvalue seq = args[0];
-    zvalue n = args[1];
-    zvalue value = METH_CALL(nth, seq, n);
+METH_IMPL_1(Sequence, nthMapping, n) {
+    zvalue value = METH_CALL(nth, ths, n);
 
     if (value == NULL) {
         return NULL;
@@ -148,20 +141,9 @@ MOD_INIT(Sequence) {
     SYM_INIT(sliceExclusive);
     SYM_INIT(sliceInclusive);
 
-    FUN_Sequence_get = makeBuiltin(2, 2,
-        METH_NAME(Sequence, get), 0,
-        stringFromUtf8(-1, "Sequence.get"));
-    datImmortalize(FUN_Sequence_get);
-
-    FUN_Sequence_keyList = makeBuiltin(1, 1,
-        METH_NAME(Sequence, keyList), 0,
-        stringFromUtf8(-1, "Sequence.keyList"));
-    datImmortalize(FUN_Sequence_keyList);
-
-    FUN_Sequence_nthMapping = makeBuiltin(1, 1,
-        METH_NAME(Sequence, nthMapping),
-        0, stringFromUtf8(-1, "Sequence.nthMapping"));
-    datImmortalize(FUN_Sequence_nthMapping);
+    FUN_Sequence_get        = datImmortalize(FUNC_VALUE(Sequence_get));
+    FUN_Sequence_keyList    = datImmortalize(FUNC_VALUE(Sequence_keyList));
+    FUN_Sequence_nthMapping = datImmortalize(FUNC_VALUE(Sequence_nthMapping));
 }
 
 // Documented in header.
