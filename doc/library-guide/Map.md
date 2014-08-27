@@ -102,6 +102,11 @@ sorted keys.
 
 Collects or filters the mappings of `this`.
 
+#### `.fetch() -> map | void`
+
+Returns void on an empty map. Returns `this` on a single-element map.
+Terminates with an error in all other cases.
+
 #### `.nextValue(box) -> generator | void`
 
 On a non-empty map, calls `box.store(mapping)` where `mapping` is
