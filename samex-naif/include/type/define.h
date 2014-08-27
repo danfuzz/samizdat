@@ -117,6 +117,16 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1)
 
+#define FUNC_IMPL_2_3(name, a0, a1, a2) \
+    static zvalue IMPL_##name(zvalue, zvalue, zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 2, 3) { \
+        return IMPL_##name( \
+            _args[0], \
+            (_argsSize > 1) ? _args[1] : NULL, \
+            (_argsSize > 2) ? _args[2] : NULL); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2)
+
 #define FUNC_IMPL_1_rest(name, a0, aRest) \
     static zvalue IMPL_##name(zvalue, zint, const zvalue *); \
     FUNC_IMPL_MIN_MAX(name, 1, -1) { \
@@ -146,5 +156,7 @@
 #define METH_IMPL_rest(cls, name, aRest) \
     FUNC_IMPL_1_rest(cls##_##name, ths, aRest)
 #define METH_IMPL_0_1(cls, name, a0)   FUNC_IMPL_1_2(cls##_##name, ths, a0)
+#define METH_IMPL_1_2(cls, name, a0, a1) \
+    FUNC_IMPL_2_3(cls##_##name, ths, a0, a1)
 
 #endif
