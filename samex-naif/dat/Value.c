@@ -134,7 +134,7 @@ METH_IMPL_0(Value, debugString) {
         // Suppress a non-string name.
         name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
-        name = METH_CALL(cat, stringFromUtf8(-1, " "), symbolName(name));
+        name = METH_CALL(cat, stringFromUtf8(-1, " "), symbolString(name));
     }
 
     sprintf(addrBuf, "%p", ths);

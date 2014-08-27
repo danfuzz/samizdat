@@ -56,4 +56,4 @@ export
     order,
     makeSymbol,
     symbolIsInterned,
-    symbolName;
+    symbolString;

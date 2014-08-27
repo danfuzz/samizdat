@@ -77,7 +77,7 @@ or (if you know the name statically) `@.foo.makeAnonymous()`.
 Returns `symbol` if it is interned (that is, non-anonymous). Returns void
 otherwise.
 
-#### `symbolName(symbol) -> string`
+#### `symbolString(symbol) -> string`
 
 Returns the name of `symbol`.
 

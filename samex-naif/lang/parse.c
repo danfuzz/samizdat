@@ -948,7 +948,7 @@ DEF_PARSE(functionDef) {
     MATCH_OR_REJECT(fn);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    return withTop(makeVarDef(symbolName(get(closure, STR_name)), closure));
+    return withTop(makeVarDef(symbolString(get(closure, STR_name)), closure));
 }
 
 // Documented in spec.

@@ -196,7 +196,7 @@ zvalue symbolFromUtf8(zint stringBytes, const char *string) {
 }
 
 // Documented in header.
-zvalue symbolName(zvalue symbol) {
+zvalue symbolString(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
     return getInfo(symbol)->name;
 }
@@ -282,8 +282,8 @@ METH_IMPL_0(Symbol, symbolIsInterned) {
     return (info->interned) ? ths : NULL;
 }
 
-/** Function (not method) `symbolName`. Documented in spec. */
-METH_IMPL_0(Symbol, symbolName) {
+/** Function (not method) `symbolString`. Documented in spec. */
+METH_IMPL_0(Symbol, symbolString) {
     // TODO: Should be an instance method.
     assertHasClass(ths, CLS_Symbol);
 
@@ -342,8 +342,8 @@ MOD_INIT(Symbol) {
     FUN_Symbol_makeSymbol = datImmortalize(FUNC_VALUE(Symbol_makeSymbol));
     FUN_Symbol_symbolIsInterned =
         datImmortalize(FUNC_VALUE(Symbol_symbolIsInterned));
-    FUN_Symbol_symbolName =
-        datImmortalize(FUNC_VALUE(Symbol_symbolName));
+    FUN_Symbol_symbolString =
+        datImmortalize(FUNC_VALUE(Symbol_symbolString));
 }
 
 // Documented in header.
@@ -359,4 +359,4 @@ zvalue FUN_Symbol_makeSymbol = NULL;
 zvalue FUN_Symbol_symbolIsInterned = NULL;
 
 // Documented in header.
-zvalue FUN_Symbol_symbolName = NULL;
+zvalue FUN_Symbol_symbolString = NULL;

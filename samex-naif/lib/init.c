@@ -52,7 +52,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = collPut(env, symbolName(nameSymbol), \
+            env = collPut(env, symbolString(nameSymbol), \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameSymbol)); \
         } while(0)

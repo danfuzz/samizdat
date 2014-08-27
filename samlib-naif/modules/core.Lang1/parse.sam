@@ -502,7 +502,7 @@ def parFunctionDef = makeMainSequence(
     makeToken(@@fn),
     parFunctionCommon,
     makeCode { ., closure ->
-        withTop(makeVarDef(symbolName(closure::name), closure))
+        withTop(makeVarDef(symbolString(closure::name), closure))
     });
 
 ## Documented in spec.

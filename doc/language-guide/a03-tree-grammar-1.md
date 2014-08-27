@@ -672,7 +672,7 @@ def parFunctionDef = {:
     @fn
     closure = parFunctionCommon
 
-    { withTop(makeVarDef(symbolName(closure::name), closure)) }
+    { withTop(makeVarDef(symbolString(closure::name), closure)) }
 :};
 
 ## Parses a method binding. This wraps a `@closure` result of

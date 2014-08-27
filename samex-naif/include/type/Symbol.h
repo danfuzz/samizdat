@@ -23,8 +23,8 @@ extern zvalue FUN_Symbol_makeSymbol;
 /** Global function `symbolIsInterned`: Documented in spec. */
 extern zvalue FUN_Symbol_symbolIsInterned;
 
-/** Global function `symbolName`: Documented in spec. */
-extern zvalue FUN_Symbol_symbolName;
+/** Global function `symbolString`: Documented in spec. */
+extern zvalue FUN_Symbol_symbolString;
 
 
 /**
@@ -52,7 +52,7 @@ zint symbolIndex(zvalue symbol);
 /**
  * Gets the name of the given symbol. This returns a string.
  */
-zvalue symbolName(zvalue symbol);
+zvalue symbolString(zvalue symbol);
 
 /**
  * Like `utf8FromSymbol`, except this returns an allocated buffer containing

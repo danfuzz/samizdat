@@ -24,14 +24,14 @@
 //
 
 /**
- * Returns `value` if it is a string. Returns `symbolName(value)` if it is
+ * Returns `value` if it is a string. Returns `symbolString(value)` if it is
  * a symbol; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
     if (hasClass(value, CLS_String)) {
         return value;
     } else if (hasClass(value, CLS_Symbol)) {
-        return symbolName(value);
+        return symbolString(value);
     } else {
         return METH_CALL(debugString, value);
     }
