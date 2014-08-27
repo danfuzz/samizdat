@@ -85,6 +85,16 @@ zvalue makeDerivedDataClass(zvalue name) {
 //
 
 // Documented in header.
+FUNC_IMPL_1_2(DerivedData_makeData, cls, value) {
+    return makeData(cls, value);
+}
+
+// Documented in header.
+FUNC_IMPL_1(DerivedData_makeDerivedDataClass, name) {
+    return makeDerivedDataClass(name);
+}
+
+// Documented in header.
 METH_IMPL_0(DerivedData, dataOf) {
     // The `datFrameAdd()` call is because `value` might immediately become
     // garbage.
@@ -101,19 +111,6 @@ METH_IMPL_0(DerivedData, gcMark) {
 METH_IMPL_1(DerivedData, get, key) {
     zvalue data = getInfo(ths)->data;
     return (data == NULL) ? NULL : get(data, key);
-}
-
-/** Function (not method) `makeData`. Documented in spec. */
-METH_IMPL(DerivedData, makeData) {
-    zvalue cls = args[0];
-    zvalue value = (argCount == 2) ? args[1] : NULL;
-
-    return makeData(cls, value);
-}
-
-/** Function (not method) `makeDerivedDataClass`. Documented in spec. */
-METH_IMPL(DerivedData, makeDerivedDataClass) {
-    return makeDerivedDataClass(args[0]);
 }
 
 // Documented in header.
@@ -155,15 +152,11 @@ MOD_INIT(DerivedData) {
             METH_BIND(DerivedData, totalOrder),
             NULL));
 
-    FUN_DerivedData_makeData = makeBuiltin(1, 2,
-        METH_NAME(DerivedData, makeData), 0,
-        stringFromUtf8(-1, "DerivedData.makeData"));
-    datImmortalize(FUN_DerivedData_makeData);
+    FUN_DerivedData_makeData =
+        datImmortalize(FUNC_VALUE(DerivedData_makeData));
 
-    FUN_DerivedData_makeDerivedDataClass = makeBuiltin(1, 1,
-        METH_NAME(DerivedData, makeDerivedDataClass), 0,
-        stringFromUtf8(-1, "DerivedData.makeDerivedDataClass"));
-    datImmortalize(FUN_DerivedData_makeDerivedDataClass);
+    FUN_DerivedData_makeDerivedDataClass =
+        datImmortalize(FUNC_VALUE(DerivedData_makeDerivedDataClass));
 }
 
 // Documented in header.
