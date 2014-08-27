@@ -102,7 +102,7 @@
 
 #define FUNC_IMPL_1_2(name, a0, a1) \
     static zvalue IMPL_##name(zvalue, zvalue); \
-    FUNC_IMPL_MIN_MAX(name, 2, 2) { \
+    FUNC_IMPL_MIN_MAX(name, 1, 2) { \
         return IMPL_##name(_args[0], (_argsSize > 1) ? _args[1] : NULL); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1)
