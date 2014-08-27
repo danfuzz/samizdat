@@ -492,7 +492,7 @@ def parFunctionCommon = makeMainSequence(
             withFormals(
                 withYieldDef(code, "return"),
                 formals),
-            name);
+            makeSymbol(name));
 
         makeFullClosure(basic)
     });
@@ -502,7 +502,7 @@ def parFunctionDef = makeMainSequence(
     makeToken(@@fn),
     parFunctionCommon,
     makeCode { ., closure ->
-        withTop(makeVarDef(closure::name, closure))
+        withTop(makeVarDef(symbolName(closure::name), closure))
     });
 
 ## Documented in spec.
@@ -515,7 +515,7 @@ def parMethodBind = makeMainSequence(
         def formals = closure::formals;
         def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::classAddMethod, bind, makeSymbolLiteral(name), fullClosure)
+        makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     });
 
 ## Documented in spec.

@@ -52,7 +52,7 @@ enum {
     DAT_MAX_CLASSES = 500,
 
     /** Maximum number of method symbols allowed. */
-    DAT_MAX_SYMBOLS = 500,
+    DAT_MAX_SYMBOLS = 1000,
 
     /** Maximum (highest value) small int constant to keep. */
     DAT_SMALL_INT_MAX = 700,

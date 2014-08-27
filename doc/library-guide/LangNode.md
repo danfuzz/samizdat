@@ -385,6 +385,8 @@ Makes a node just like the given one (presumably a `closure` node), except
 with the `name` binding as given. If the original `node` already had a
 `name` binding, this replaces it in the result.
 
+`name` must be a symbol.
+
 #### `withResolvedImports(node, resolveFn) -> node`
 
 Makes a node just like the given one (presumably a `closure` node), except
