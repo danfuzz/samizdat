@@ -292,7 +292,7 @@ void datGc(void) {
 }
 
 // Documented in header.
-void datImmortalize(zvalue value) {
+zvalue datImmortalize(zvalue value) {
     if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
@@ -301,6 +301,7 @@ void datImmortalize(zvalue value) {
 
     immortals[immortalsSize] = value;
     immortalsSize++;
+    return value;
 }
 
 // Documented in header.
