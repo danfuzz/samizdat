@@ -391,10 +391,7 @@ MOD_INIT(objectModel) {
     CLS_Symbol      = allocClass();
     CLS_SymbolTable = allocClass();
     CLS_Data        = allocClass();
-
-    // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
-    CLS_Jump        = allocClass();
     CLS_String      = allocClass();
 
     theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
@@ -405,9 +402,7 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Symbol,      CLS_Value, "Symbol");
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
     classInitHere(CLS_Data,        CLS_Value, "Data");
-
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
-    classInitHere(CLS_Jump,        CLS_Value, "Jump");
     classInitHere(CLS_String,      CLS_Data,  "String");
 
     // Make sure that the "fake" header is sized the same as the real one.

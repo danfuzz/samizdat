@@ -93,8 +93,7 @@ METH_IMPL_0(Jump, gcMark) {
 MOD_INIT(Jump) {
     MOD_USE(Value);
 
-    // Note: The `objectModel` module initializes `CLS_Jump`.
-    classBindMethods(CLS_Jump,
+    CLS_Jump = makeCoreClass("Jump", CLS_Value,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Jump, call),
