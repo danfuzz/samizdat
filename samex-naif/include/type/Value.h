@@ -21,6 +21,9 @@
 /** Class value for in-model class `Value`. */
 extern zvalue CLS_Value;
 
+/** Method `.call(args*)`: Documented in spec. */
+SYM_DECL(call);
+
 /** Method `.debugName()`: Documented in spec. */
 SYM_DECL(debugName);
 

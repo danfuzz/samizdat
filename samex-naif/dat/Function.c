@@ -193,9 +193,4 @@ zvalue mustNotYield(zvalue value) {
 /** Initializes the module. */
 MOD_INIT(Function) {
     MOD_USE(Value);
-
-    SYM_INIT(call);
 }
-
-// Documented in header.
-SYM_DEF(call);

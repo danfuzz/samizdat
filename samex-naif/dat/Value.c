@@ -223,6 +223,7 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(String);
     MOD_USE_NEXT(Uniqlet);
 
+    SYM_INIT(call);
     SYM_INIT(debugName);
     SYM_INIT(debugString);
     SYM_INIT(gcMark);
@@ -247,6 +248,9 @@ MOD_INIT(Value) {
 
 // Documented in header.
 zvalue CLS_Value = NULL;
+
+// Documented in header.
+SYM_DEF(call);
 
 // Documented in header.
 SYM_DEF(debugName);
