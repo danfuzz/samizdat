@@ -20,7 +20,7 @@ fn test(func, v1, v2) {
         { "(void)" };
 
     note(
-        func.debugSymbol(),
+        symbolString(func.debugSymbol()),
         "(",
         $Format::source(v1),
         ", ",
