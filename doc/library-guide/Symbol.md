@@ -21,15 +21,15 @@ this method does *not* just return `this`.)
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.debugName() -> symbol`
-
-Returns `this`.
-
 #### `.debugString() -> string`
 
 Returns a string representation of the symbol. This includes a suggestive
 prefix `.`. It also includes `anon-` before the name if this is an anonymous
 symbol.
+
+#### `.debugSymbol() -> symbol`
+
+Returns `this`.
 
 #### `.perEq(other) -> symbol | void`
 

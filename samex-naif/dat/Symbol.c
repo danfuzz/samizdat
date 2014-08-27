@@ -247,16 +247,16 @@ METH_IMPL_rest(Symbol, call, args) {
 }
 
 // Documented in header.
-METH_IMPL_0(Symbol, debugName) {
-    return ths;
-}
-
-// Documented in header.
 METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@." : "@?";
 
     return METH_CALL(cat, stringFromUtf8(-1, prefix), info->name);
+}
+
+// Documented in header.
+METH_IMPL_0(Symbol, debugSymbol) {
+    return ths;
 }
 
 // Documented in header.
@@ -332,8 +332,8 @@ MOD_INIT(Symbol) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(Symbol, call),
-            METH_BIND(Symbol, debugName),
             METH_BIND(Symbol, debugString),
+            METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, gcMark),
             METH_BIND(Symbol, makeAnonymous),
             METH_BIND(Symbol, totalOrder),

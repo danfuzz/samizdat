@@ -24,11 +24,11 @@ extern zvalue CLS_Value;
 /** Method `.call(args*)`: Documented in spec. */
 SYM_DECL(call);
 
-/** Method `.debugName()`: Documented in spec. */
-SYM_DECL(debugName);
-
 /** Method `.debugString()`: Documented in spec. */
 SYM_DECL(debugString);
+
+/** Method `.debugSymbol()`: Documented in spec. */
+SYM_DECL(debugSymbol);
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.

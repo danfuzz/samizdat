@@ -123,14 +123,9 @@ zorder valZorder(zvalue value, zvalue other) {
 //
 
 // Documented in header.
-METH_IMPL_0(Value, debugName) {
-    return NULL;
-}
-
-// Documented in header.
 METH_IMPL_0(Value, debugString) {
     zvalue cls = get_class(ths);
-    zvalue name = METH_CALL(debugName, ths);
+    zvalue name = METH_CALL(debugSymbol, ths);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
@@ -151,6 +146,11 @@ METH_IMPL_0(Value, debugString) {
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),
         stringFromUtf8(-1, ")"));
+}
+
+// Documented in header.
+METH_IMPL_0(Value, debugSymbol) {
+    return NULL;
 }
 
 // Documented in header.
@@ -211,8 +211,8 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Uniqlet);
 
     SYM_INIT(call);
-    SYM_INIT(debugName);
     SYM_INIT(debugString);
+    SYM_INIT(debugSymbol);
     SYM_INIT(gcMark);
     SYM_INIT(perEq);
     SYM_INIT(perOrder);
@@ -223,8 +223,8 @@ MOD_INIT(Value) {
     classBindMethods(CLS_Value,
         NULL,
         symbolTableFromArgs(
-            METH_BIND(Value, debugName),
             METH_BIND(Value, debugString),
+            METH_BIND(Value, debugSymbol),
             METH_BIND(Value, gcMark),
             METH_BIND(Value, perEq),
             METH_BIND(Value, perOrder),
@@ -240,10 +240,10 @@ zvalue CLS_Value = NULL;
 SYM_DEF(call);
 
 // Documented in header.
-SYM_DEF(debugName);
+SYM_DEF(debugString);
 
 // Documented in header.
-SYM_DEF(debugString);
+SYM_DEF(debugSymbol);
 
 // Documented in header.
 SYM_DEF(gcMark);

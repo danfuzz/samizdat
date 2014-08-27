@@ -43,7 +43,7 @@ static zvalue ensureString(zvalue value) {
  */
 static char *callReporter(void *state) {
     zvalue value = state;
-    zvalue name = METH_CALL(debugName, value);
+    zvalue name = METH_CALL(debugSymbol, value);
 
     if (name != NULL) {
         return utf8DupFromString(ensureString(name));

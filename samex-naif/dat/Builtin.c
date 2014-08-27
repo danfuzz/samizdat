@@ -135,7 +135,7 @@ METH_IMPL_rest(Builtin, call, args) {
 }
 
 // Documented in header.
-METH_IMPL_0(Builtin, debugName) {
+METH_IMPL_0(Builtin, debugSymbol) {
     BuiltinInfo *info = getInfo(ths);
     return info->name;
 }
@@ -163,7 +163,7 @@ MOD_INIT(Builtin) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(Builtin, call),
-            METH_BIND(Builtin, debugName),
+            METH_BIND(Builtin, debugSymbol),
             METH_BIND(Builtin, gcMark),
             NULL));
 }

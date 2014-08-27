@@ -345,7 +345,7 @@ METH_IMPL_rest(Closure, call, args) {
 }
 
 // Documented in header.
-METH_IMPL_0(Closure, debugName) {
+METH_IMPL_0(Closure, debugSymbol) {
     zvalue result = get(getInfo(ths)->defMap, STR_name);
 
     // TODO: Remove this transformation once it's consistently a symbol.
@@ -373,7 +373,7 @@ MOD_INIT(Closure) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(Closure, call),
-            METH_BIND(Closure, debugName),
+            METH_BIND(Closure, debugSymbol),
             METH_BIND(Closure, gcMark),
             NULL));
 
