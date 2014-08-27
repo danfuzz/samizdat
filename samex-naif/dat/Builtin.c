@@ -86,13 +86,7 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
     }
 
     if (name != NULL) {
-        // TODO: Make this just be an assert, once it's always passed as
-        // a symbol.
-        if (hasClass(name, CLS_String)) {
-            name = makeSymbol(name);
-        } else {
-            assertHasClass(name, CLS_Symbol);
-        }
+        assertHasClass(name, CLS_Symbol);
     }
 
     zvalue result = datAllocValue(CLS_Builtin,
