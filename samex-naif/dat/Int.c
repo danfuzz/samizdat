@@ -88,8 +88,8 @@ zvalue INT_NEG1 = NULL;
  * Helper for defining unary operations as methods.
  */
 #define UNARY_IMPL(name, op) \
-    METH_IMPL(Int, name) { \
-        zint x = zintValue(args[0]); \
+    METH_IMPL_0(Int, name) { \
+        zint x = zintValue(ths); \
         zint result; \
         if ((op)(&result, x)) { \
             return intFromZint(result); \
@@ -105,9 +105,9 @@ zvalue INT_NEG1 = NULL;
  * there's no guarantee that we're passed an `Int` per se.
  */
 #define BINARY_IMPL(name, op) \
-    METH_IMPL(Int, name) { \
-        zint x = zintValue(args[0]); \
-        zint y = zintFromInt(args[1]); \
+    METH_IMPL_1(Int, name, yVal) { \
+        zint x = zintValue(ths); \
+        zint y = zintFromInt(yVal); \
         zint result; \
         if ((op)(&result, x, y)) { \
             return intFromZint(result); \
@@ -140,22 +140,18 @@ BINARY_IMPL(sub,   zintSub);
 BINARY_IMPL(xor,   zintXor);
 
 // Documented in header.
-METH_IMPL(Int, toInt) {
-    zvalue intval = args[0];
-    return intval;
+METH_IMPL_0(Int, toInt) {
+    return ths;
 }
 
 // Documented in header.
-METH_IMPL(Int, toNumber) {
-    zvalue intval = args[0];
-    return intval;
+METH_IMPL_0(Int, toNumber) {
+    return ths;
 }
 
 // Documented in header.
-METH_IMPL(Int, toString) {
-    zvalue intval = args[0];
-
-    zint n = zintFromInt(intval);
+METH_IMPL_0(Int, toString) {
+    zint n = zintValue(ths);
     zchar result;
 
     if (!zcharFromZint(&result, n)) {
@@ -166,18 +162,15 @@ METH_IMPL(Int, toString) {
 }
 
 // Documented in header.
-METH_IMPL(Int, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be an `Int`.
-    return (zintValue(value) == zintFromInt(other)) ? value : NULL;
+METH_IMPL_1(Int, totalEq, other) {
+    // Note: `other` not guaranteed to be an `Int`.
+    return (zintValue(ths) == zintFromInt(other)) ? ths : NULL;
 }
 
 // Documented in header.
-METH_IMPL(Int, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be an `Int`.
-    zint int1 = zintValue(value);
-    zint int2 = zintFromInt(other);
+METH_IMPL_1(Int, totalOrder, other) {
+    zint int1 = zintValue(ths);
+    zint int2 = zintFromInt(other);  // Note: not guaranteed to be an `Int`.
 
     if (int1 < int2) {
         return INT_NEG1;
@@ -197,34 +190,33 @@ MOD_INIT(Int) {
     CLS_Int = makeCoreClass("Int", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Int, abs),
-            SYM_METH(Int, add),
-            SYM_METH(Int, and),
-            SYM_METH(Int, bit),
-            SYM_METH(Int, bitSize),
-            SYM_METH(Int, div),
-            SYM_METH(Int, divEu),
-            SYM_METH(Int, mod),
-            SYM_METH(Int, modEu),
-            SYM_METH(Int, mul),
-            SYM_METH(Int, neg),
-            SYM_METH(Int, not),
-            SYM_METH(Int, or),
-            SYM_METH(Int, shl),
-            SYM_METH(Int, shr),
-            SYM_METH(Int, sign),
-            SYM_METH(Int, sub),
-            SYM_METH(Int, xor),
-            SYM_METH(Int, toInt),
-            SYM_METH(Int, toNumber),
-            SYM_METH(Int, toString),
-            SYM_METH(Int, totalEq),
-            SYM_METH(Int, totalOrder),
+            METH_BIND(Int, abs),
+            METH_BIND(Int, add),
+            METH_BIND(Int, and),
+            METH_BIND(Int, bit),
+            METH_BIND(Int, bitSize),
+            METH_BIND(Int, div),
+            METH_BIND(Int, divEu),
+            METH_BIND(Int, mod),
+            METH_BIND(Int, modEu),
+            METH_BIND(Int, mul),
+            METH_BIND(Int, neg),
+            METH_BIND(Int, not),
+            METH_BIND(Int, or),
+            METH_BIND(Int, shl),
+            METH_BIND(Int, shr),
+            METH_BIND(Int, sign),
+            METH_BIND(Int, sub),
+            METH_BIND(Int, xor),
+            METH_BIND(Int, toInt),
+            METH_BIND(Int, toNumber),
+            METH_BIND(Int, toString),
+            METH_BIND(Int, totalEq),
+            METH_BIND(Int, totalOrder),
             NULL));
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
-        SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
-        datImmortalize(SMALL_INTS[i]);
+        SMALL_INTS[i] = datImmortalize(intFrom(i + DAT_SMALL_INT_MIN));
     }
 
     INT_0    = intFromZint(0);
