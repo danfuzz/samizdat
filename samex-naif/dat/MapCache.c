@@ -60,7 +60,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
 //
 
 // Documented in header.
-METH_IMPL(MapCache, gcMark) {
+METH_IMPL_0(MapCache, gcMark) {
     memset(mapCache, 0, sizeof(mapCache));
     return NULL;
 }
@@ -75,7 +75,7 @@ MOD_INIT(MapCache) {
     zvalue CLS_MapCache = makeCoreClass("MapCache", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(MapCache, gcMark),
+            METH_BIND(MapCache, gcMark),
             NULL));
 
     datImmortalize(datAllocValue(CLS_MapCache, 0));
