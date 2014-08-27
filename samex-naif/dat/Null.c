@@ -14,24 +14,20 @@
 //
 
 // Documented in header.
-METH_IMPL(Null, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be `null`.
-
-    if (value == other) {
-        return value;
+METH_IMPL_1(Null, totalEq, other) {
+    // Note: `other` not guaranteed to be `null`.
+    if (ths == other) {
+        return ths;
     } else {
         die("`totalEq` called with incompatible arguments.");
     }
 }
 
 // Documented in header.
-METH_IMPL(Null, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be `null`.
-
-    if (value == other) {
-        return INT_1;
+METH_IMPL_1(Null, totalOrder, other) {
+    // Note: `other` not guaranteed to be `null`.
+    if (ths == other) {
+        return INT_0;
     } else {
         die("`totalOrder` called with incompatible arguments.");
     }
@@ -44,8 +40,8 @@ MOD_INIT(Null) {
     CLS_Null = makeCoreClass("Null", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Null, totalEq),
-            SYM_METH(Null, totalOrder),
+            METH_BIND(Null, totalEq),
+            METH_BIND(Null, totalOrder),
             NULL));
 
     THE_NULL = datAllocValue(CLS_Null, 0);
