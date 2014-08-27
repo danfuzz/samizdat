@@ -21,9 +21,9 @@ this method does *not* just return `this`.)
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.debugName() -> string`
+#### `.debugName() -> symbol`
 
-Returns the name of the symbol, as a string.
+Returns `this`.
 
 #### `.debugString() -> string`
 

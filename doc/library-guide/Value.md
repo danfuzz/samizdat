@@ -7,15 +7,15 @@ Value (the base class)
 <br><br>
 ### Method Definitions: `Value` protocol (applies to all values)
 
-#### `.debugName() -> . | void`
+#### `.debugName() -> symbol | void`
 
 Some values have an associated name, or an optional associated name.
-This method provides access to that name. There is no restriction
-on the composition (class, etc.) of a name.
+This method provides access to that name. If present, a name is expected
+to be a symbol.
 
 The class `Value` binds this to a function which always returns void.
 
-**Note:** In general, it is a bad idea to use this function for any
+**Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
 
 #### `.debugString() -> string`
@@ -29,7 +29,7 @@ of the class name, name (result of call to `debugName()`), and low-level
 identifier (e.g. a memory address) of the value. Various of the core classes
 override this to provide more useful information.
 
-**Note:** In general, it is a bad idea to use this function for any
+**Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
 
 #### `.perEq(other) -> . | void`
