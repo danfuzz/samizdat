@@ -11,6 +11,7 @@
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Object.h"
+#include "type/String.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
 #include "type/Uniqlet.h"

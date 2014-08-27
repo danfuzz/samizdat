@@ -7,6 +7,7 @@
 //
 
 #include "type/Jump.h"
+#include "type/String.h"
 #include "type/define.h"
 
 #include "impl.h"

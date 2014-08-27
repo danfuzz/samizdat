@@ -12,6 +12,7 @@
 #include "type/Builtin.h"
 #include "type/Jump.h"
 #include "type/List.h"
+#include "type/String.h"
 #include "type/Symbol.h"
 #include "type/define.h"
 
@@ -23,14 +24,17 @@
 //
 
 /**
- * Returns `value` if it is a string; otherwise calls `debugString` on it.
+ * Returns `value` if it is a string. Returns `symbolName(value)` if it is
+ * a symbol; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
     if (hasClass(value, CLS_String)) {
         return value;
+    } else if (hasClass(value, CLS_Symbol)) {
+        return symbolName(value);
+    } else {
+        return METH_CALL(debugString, value);
     }
-
-    return METH_CALL(debugString, value);
 }
 
 /**

@@ -151,7 +151,7 @@ fn Value_sourceGeneral(value, adorn) {
         {
             ## Opaque value, possibly named.
             def body = ifValue { value.debugName() }
-                { name -> keyString(name) }
+                { name -> keyString(symbolName(name)) }
                 { "..." };
 
             return prefix.cat("<", body, ">")

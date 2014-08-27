@@ -174,13 +174,14 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
         die("Too few arguments for symbol call.");
     }
 
-    zint index = getInfo(symbol)->index;
+    SymbolInfo *info = getInfo(symbol);
+    zint index = info->index;
     zvalue cls = get_class(args[0]);
     zvalue function = classFindMethodBySymbolIndex(cls, index);
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugName(symbol));
+            valDebugString(cls), valDebugString(info->name));
     }
 
     UTIL_TRACE_START(callReporter, cls);
@@ -247,7 +248,7 @@ METH_IMPL_rest(Symbol, call, args) {
 
 // Documented in header.
 METH_IMPL_0(Symbol, debugName) {
-    return getInfo(ths)->name;
+    return ths;
 }
 
 // Documented in header.

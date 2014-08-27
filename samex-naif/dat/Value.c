@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "type/Int.h"
+#include "type/String.h"
 #include "type/Value.h"
 #include "type/define.h"
 
@@ -30,19 +31,6 @@ extern void *datPayload(zvalue value);
 // Documented in header.
 zvalue get_class(zvalue value) {
     return value->cls;
-}
-
-// Documented in header.
-char *valDebugName(zvalue value) {
-    if (value == NULL) {
-        return utilStrdup("(null)");
-    }
-
-    if (SYM_NAME(debugName) == NULL) {
-        die("Too early to call `debugName`.");
-    }
-
-    return utf8DupFromString(METH_CALL(debugName, value));
 }
 
 // Documented in header.
@@ -147,13 +135,11 @@ METH_IMPL_0(Value, debugString) {
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!hasClass(name, CLS_String)) {
+    } else if (!hasClass(name, CLS_Symbol)) {
         // Suppress a non-string name.
-        name = stringFromUtf8(-1, "(non-string name)");
+        name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
-        name = METH_CALL(cat,
-            stringFromUtf8(-1, " "),
-            METH_CALL(debugString, name));
+        name = METH_CALL(cat, stringFromUtf8(-1, " "), symbolName(name));
     }
 
     sprintf(addrBuf, "%p", ths);

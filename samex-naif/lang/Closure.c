@@ -12,6 +12,7 @@
 #include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/String.h"
 #include "type/define.h"
 #include "util.h"
 #include "zlimits.h"
@@ -345,7 +346,14 @@ METH_IMPL_rest(Closure, call, args) {
 
 // Documented in header.
 METH_IMPL_0(Closure, debugName) {
-    return get(getInfo(ths)->defMap, STR_name);
+    zvalue result = get(getInfo(ths)->defMap, STR_name);
+
+    // TODO: Remove this transformation once it's consistently a symbol.
+    if ((result != NULL) && hasClass(result, CLS_String)) {
+        result = makeSymbol(result);
+    }
+
+    return result;
 }
 
 // Documented in header.

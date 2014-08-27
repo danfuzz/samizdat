@@ -7,6 +7,7 @@
 //
 
 #include "type/Builtin.h"
+#include "type/String.h"
 #include "type/Value.h"
 #include "type/define.h"
 
@@ -82,6 +83,16 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
 
     if (stateSize < 0) {
         die("Invalid `stateSize`: %lld", stateSize);
+    }
+
+    if (name != NULL) {
+        // TODO: Make this just be an assert, once it's always passed as
+        // a symbol.
+        if (hasClass(name, CLS_String)) {
+            name = makeSymbol(name);
+        } else {
+            assertHasClass(name, CLS_Symbol);
+        }
     }
 
     zvalue result = datAllocValue(CLS_Builtin,
