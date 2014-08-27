@@ -57,6 +57,16 @@
 // arguments.
 //
 
+/**
+ * Calls the constructor for the indicated function, returning an in-model
+ * function value.
+ */
+#define FUNC_VALUE(name) (MAKE_##name())
+
+/**
+ * Generalized function implemenation declaration, used by the
+ * argument-specific ones.
+ */
 #define FUNC_IMPL_MIN_MAX(name, minArgs, maxArgs) \
     static zvalue name(zvalue, zint, const zvalue *); \
     static zvalue MAKE_##name(void) { \
@@ -128,7 +138,7 @@
  */
 #define METH_BIND(cls, name) \
     symbolFromUtf8(-1, #name), \
-    MAKE_##cls##_##name()
+    FUNC_VALUE(cls##_##name)
 
 #define METH_IMPL_0(cls, name)         FUNC_IMPL_1(cls##_##name, ths)
 #define METH_IMPL_1(cls, name, a0)     FUNC_IMPL_2(cls##_##name, ths, a0)
