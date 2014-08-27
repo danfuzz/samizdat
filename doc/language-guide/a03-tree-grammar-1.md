@@ -609,7 +609,7 @@ def parClosureDeclarations = {:
     most = (
         name = (
             n = parName
-            { {name: n} }
+            { {name: makeSymbol(n)} }
         |
             { {} }
         )

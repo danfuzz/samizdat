@@ -874,7 +874,7 @@ DEF_PARSE(formalsList) {
  */
 DEF_PARSE(closureDeclarations1) {
     zvalue n = PARSE(name);
-    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, n);
+    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, makeSymbol(n));
 }
 
 /**

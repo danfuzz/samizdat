@@ -466,7 +466,7 @@ def parClosureDeclarations = makeMainChoice(
                 makeChoice(
                     makeSequence(
                         parName,
-                        makeCode { n -> {name: n} }),
+                        makeCode { n -> {name: makeSymbol(n)} }),
                     makeResult({})),
                 makeToken(@@"("),
                 parFormalsList,
