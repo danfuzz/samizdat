@@ -236,86 +236,71 @@ zint utf8SizeFromSymbol(zvalue symbol) {
 //
 
 // Documented in header.
-METH_IMPL(Symbol, call) {
-    // The first argument is the symbol, and the rest are the
-    // arguments to call it with.
-    return symbolCall(args[0], argCount - 1, &args[1]);
+FUNC_IMPL_1(Symbol_makeSymbol, name) {
+    return makeSymbol(name);
 }
 
 // Documented in header.
-METH_IMPL(Symbol, debugName) {
-    zvalue symbol = args[0];
-    SymbolInfo *info = getInfo(symbol);
-
-    return info->name;
+METH_IMPL_rest(Symbol, call, args) {
+    return symbolCall(ths, argsSize, args);
 }
 
 // Documented in header.
-METH_IMPL(Symbol, debugString) {
-    zvalue symbol = args[0];
-    SymbolInfo *info = getInfo(symbol);
+METH_IMPL_0(Symbol, debugName) {
+    return getInfo(ths)->name;
+}
+
+// Documented in header.
+METH_IMPL_0(Symbol, debugString) {
+    SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@." : "@?";
 
     return METH_CALL(cat, stringFromUtf8(-1, prefix), info->name);
 }
 
 // Documented in header.
-METH_IMPL(Symbol, gcMark) {
-    zvalue symbol = args[0];
-    SymbolInfo *info = getInfo(symbol);
+METH_IMPL_0(Symbol, gcMark) {
+    SymbolInfo *info = getInfo(ths);
 
     datMark(info->name);
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL(Symbol, makeAnonymous) {
-    zvalue symbol = args[0];
-    SymbolInfo *info = getInfo(symbol);
-
+METH_IMPL_0(Symbol, makeAnonymous) {
+    SymbolInfo *info = getInfo(ths);
     return makeSymbol0(info->name, false);
 }
 
 /** Function (not method) `symbolIsInterned`. Documented in spec. */
-METH_IMPL(Symbol, symbolIsInterned) {
+METH_IMPL_0(Symbol, symbolIsInterned) {
     // TODO: Should be an instance method.
-    zvalue symbol = args[0];
-    assertHasClass(symbol, CLS_Symbol);
+    assertHasClass(ths, CLS_Symbol);
 
-    SymbolInfo *info = getInfo(symbol);
-    return (info->interned) ? symbol : NULL;
+    SymbolInfo *info = getInfo(ths);
+    return (info->interned) ? ths : NULL;
 }
 
 /** Function (not method) `symbolName`. Documented in spec. */
-METH_IMPL(Symbol, symbolName) {
+METH_IMPL_0(Symbol, symbolName) {
     // TODO: Should be an instance method.
-    zvalue symbol = args[0];
-    assertHasClass(symbol, CLS_Symbol);
+    assertHasClass(ths, CLS_Symbol);
 
-    SymbolInfo *info = getInfo(symbol);
-    return info->name;
-}
-
-/** Function (not method) `makeSymbol`. Documented in spec. */
-METH_IMPL(Symbol, makeSymbol) {
-    return makeSymbol(args[0]);
+    return getInfo(ths)->name;
 }
 
 // Documented in header.
-METH_IMPL(Symbol, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `Symbol`.
+METH_IMPL_1(Symbol, totalOrder, other) {
+    assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
 
-    assertHasClass(other, CLS_Symbol);
-
-    if (value == other) {
+    if (ths == other) {
         // Note: This check is necessary to keep the `ZSAME` case below from
         // incorrectly claiming an anonymous symbol is unordered with
         // respect to itself.
         return INT_0;
     }
 
-    SymbolInfo *info1 = getInfo(value);
+    SymbolInfo *info1 = getInfo(ths);
     SymbolInfo *info2 = getInfo(other);
     bool interned = info1->interned;
 
@@ -345,28 +330,19 @@ MOD_INIT(Symbol) {
     classBindMethods(CLS_Symbol,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(Symbol, call),
-            SYM_METH(Symbol, debugName),
-            SYM_METH(Symbol, debugString),
-            SYM_METH(Symbol, gcMark),
-            SYM_METH(Symbol, makeAnonymous),
-            SYM_METH(Symbol, totalOrder),
+            METH_BIND(Symbol, call),
+            METH_BIND(Symbol, debugName),
+            METH_BIND(Symbol, debugString),
+            METH_BIND(Symbol, gcMark),
+            METH_BIND(Symbol, makeAnonymous),
+            METH_BIND(Symbol, totalOrder),
             NULL));
 
-    FUN_Symbol_makeSymbol = makeBuiltin(1, 1,
-        METH_NAME(Symbol, makeSymbol), 0,
-        stringFromUtf8(-1, "Symbol.makeSymbol"));
-    datImmortalize(FUN_Symbol_makeSymbol);
-
-    FUN_Symbol_symbolIsInterned = makeBuiltin(1, 1,
-        METH_NAME(Symbol, symbolIsInterned), 0,
-        stringFromUtf8(-1, "Symbol.symbolIsInterned"));
-    datImmortalize(FUN_Symbol_symbolIsInterned);
-
-    FUN_Symbol_symbolName = makeBuiltin(1, 1,
-        METH_NAME(Symbol, symbolName), 0,
-        stringFromUtf8(-1, "Symbol.symbolName"));
-    datImmortalize(FUN_Symbol_symbolName);
+    FUN_Symbol_makeSymbol = datImmortalize(FUNC_VALUE(Symbol_makeSymbol));
+    FUN_Symbol_symbolIsInterned =
+        datImmortalize(FUNC_VALUE(Symbol_symbolIsInterned));
+    FUN_Symbol_symbolName =
+        datImmortalize(FUNC_VALUE(Symbol_symbolName));
 }
 
 // Documented in header.
