@@ -20,10 +20,8 @@
 // Class Definition: `Generator`
 //
 
-/** "Standard" `collect` implementation. Documented in spec. */
-METH_IMPL(Generator, stdCollect) {
-    zvalue generator = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
+// Documented in spec.
+FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
     zvalue stackArr[DAT_MAX_GENERATOR_ITEMS_SOFT];
     zvalue *arr = stackArr;
     zint maxSize = DAT_MAX_GENERATOR_ITEMS_SOFT;
@@ -75,9 +73,8 @@ METH_IMPL(Generator, stdCollect) {
     return result;
 }
 
-/** "Standard" `fetch` implementation. Documented in spec. */
-METH_IMPL(Generator, stdFetch) {
-    zvalue generator = args[0];
+// Documented in spec.
+FUNC_IMPL_1(Generator_stdFetch, generator) {
     zvalue result;
 
     zvalue box = makeCell(NULL);
@@ -107,15 +104,10 @@ MOD_INIT(Generator) {
     SYM_INIT(fetch);
     SYM_INIT(nextValue);
 
-    FUN_Generator_stdCollect = makeBuiltin(1, 2,
-        METH_NAME(Generator, stdCollect), 0,
-        stringFromUtf8(-1, "Generator.stdCollect"));
-    datImmortalize(FUN_Generator_stdCollect);
+    FUN_Generator_stdCollect =
+        datImmortalize(FUNC_VALUE(Generator_stdCollect));
 
-    FUN_Generator_stdFetch = makeBuiltin(1, 1,
-        METH_NAME(Generator, stdFetch), 0,
-        stringFromUtf8(-1, "Generator.stdFetch"));
-    datImmortalize(FUN_Generator_stdFetch);
+    FUN_Generator_stdFetch = datImmortalize(FUNC_VALUE(Generator_stdFetch));
 }
 
 // Documented in header.
