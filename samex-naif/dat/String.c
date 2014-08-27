@@ -367,22 +367,24 @@ void zcharsFromString(zchar *result, zvalue string) {
 zvalue EMPTY_STRING = NULL;
 
 // Documented in header.
-METH_IMPL(String, cat) {
-    if (argCount == 1) {
-        return args[0];
+METH_IMPL_rest(String, cat, args) {
+    if (argsSize == 0) {
+        return ths;
     }
 
-    zint size = 0;
+    zint thsSize = getInfo(ths)->size;
 
-    for (zint i = 0; i < argCount; i++) {
+    zint size = thsSize;
+    for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         assertString(one);
         size += getInfo(one)->size;
     }
 
     zchar *chars = allocArray(size);
-
-    for (zint i = 0, at = 0; i < argCount; i++) {
+    zint at = thsSize;
+    zcharsFromString(chars, ths);
+    for (zint i = 0; i < argsSize; i++) {
         zcharsFromString(&chars[at], args[i]);
         at += getInfo(args[i])->size;
     }
@@ -393,11 +395,8 @@ METH_IMPL(String, cat) {
 }
 
 // Documented in header.
-METH_IMPL(String, collect) {
-    zvalue string = args[0];
-    zvalue function = (argCount > 1) ? args[1] : NULL;
-
-    StringInfo *info = getInfo(string);
+METH_IMPL_0_1(String, collect, function) {
+    StringInfo *info = getInfo(ths);
     zchar *elems = getElems(info);
     zint size = info->size;
     zvalue result[size];
@@ -417,17 +416,14 @@ METH_IMPL(String, collect) {
 }
 
 // Documented in header.
-METH_IMPL(String, del) {
-    zvalue string = args[0];
-    zvalue n = args[1];
-
-    StringInfo *info = getInfo(string);
+METH_IMPL_1(String, del, key) {
+    StringInfo *info = getInfo(ths);
     zchar *elems = getElems(info);
     zint size = info->size;
-    zint index = seqNthIndexLenient(n);
+    zint index = seqNthIndexLenient(key);
 
     if ((index < 0) || (index >= size)) {
-        return string;
+        return ths;
     }
 
     zchar *chars = allocArray(size - 1);
@@ -439,24 +435,21 @@ METH_IMPL(String, del) {
 }
 
 // Documented in header.
-METH_IMPL(String, debugString) {
-    zvalue string = args[0];
+METH_IMPL_0(String, debugString) {
     zvalue quote = stringFromUtf8(1, "\"");
-
-    return METH_CALL(cat, quote, string, quote);
+    return METH_CALL(cat, quote, ths, quote);
 }
 
 // Documented in header.
-METH_IMPL(String, fetch) {
-    zvalue string = args[0];
-    StringInfo *info = getInfo(string);
+METH_IMPL_0(String, fetch) {
+    StringInfo *info = getInfo(ths);
 
     switch (info->size) {
         case 0: {
             return NULL;
         }
         case 1: {
-            return stringFromZchar(getElems(info)[0]);
+            return ths;
         }
         default: {
             die("Invalid to call `fetch` on string with size > 1.");
@@ -465,25 +458,21 @@ METH_IMPL(String, fetch) {
 }
 
 // Documented in header.
-METH_IMPL(String, gcMark) {
-    zvalue string = args[0];
-    StringInfo *info = getInfo(string);
+METH_IMPL_0(String, gcMark) {
+    StringInfo *info = getInfo(ths);
 
     datMark(info->contentString);
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL(String, get_size) {
-    zvalue string = args[0];
-    return intFromZint(getInfo(string)->size);
+METH_IMPL_0(String, get_size) {
+    return intFromZint(getInfo(ths)->size);
 }
 
 // Documented in header.
-METH_IMPL(String, nextValue) {
-    zvalue string = args[0];
-    zvalue box = args[1];
-    StringInfo *info = getInfo(string);
+METH_IMPL_1(String, nextValue, box) {
+    StringInfo *info = getInfo(ths);
     zint size = info->size;
 
     switch (size) {
@@ -493,7 +482,7 @@ METH_IMPL(String, nextValue) {
         }
         case 1: {
             // `string` is a single character, so it can be yielded directly.
-            METH_CALL(store, box, string);
+            METH_CALL(store, box, ths);
             return EMPTY_STRING;
         }
         default: {
@@ -502,17 +491,14 @@ METH_IMPL(String, nextValue) {
             // churn of copying and re-re-...-copying the content.
             zchar *elems = getElems(info);
             METH_CALL(store, box, stringFromZchar(elems[0]));
-            return makeIndirectString(string, 1, size - 1);
+            return makeIndirectString(ths, 1, size - 1);
         }
     }
 }
 
 // Documented in header.
-METH_IMPL(String, nth) {
-    zvalue string = args[0];
-    zvalue n = args[1];
-
-    StringInfo *info = getInfo(string);
+METH_IMPL_1(String, nth, n) {
+    StringInfo *info = getInfo(ths);
     zint index = seqNthIndexStrict(info->size, n);
 
     if (index < 0) {
@@ -523,25 +509,21 @@ METH_IMPL(String, nth) {
 }
 
 // Documented in header.
-METH_IMPL(String, put) {
-    zvalue string = args[0];
-    zvalue n = args[1];
-    zvalue value = args[2];
-
+METH_IMPL_2(String, put, key, value) {
     assertStringSize1(value);
 
-    StringInfo *info = getInfo(string);
+    StringInfo *info = getInfo(ths);
     zchar *elems = getElems(info);
     zint size = info->size;
-    zint index = seqPutIndexStrict(size, n);
+    zint index = seqPutIndexStrict(size, key);
 
     if (index == size) {
         // This is an append operation.
-        return METH_CALL(cat, string, value);
+        return METH_CALL(cat, ths, value);
     }
 
     zchar *chars = allocArray(size);
-    zcharsFromString(chars, string);
+    zcharsFromString(chars, ths);
     chars[index] = zcharFromString(value);
     zvalue result = stringFromZchars(size, chars);
     freeArray(chars);
@@ -549,10 +531,8 @@ METH_IMPL(String, put) {
 }
 
 // Documented in header.
-METH_IMPL(String, reverse) {
-    zvalue string = args[0];
-
-    StringInfo *info = getInfo(string);
+METH_IMPL_0(String, reverse) {
+    StringInfo *info = getInfo(ths);
     zint size = info->size;
     zchar *elems = getElems(info);
     zchar *arr = allocArray(size);
@@ -600,39 +580,30 @@ METH_IMPL_1_2(String, sliceInclusive, start, end) {
 }
 
 // Documented in header.
-METH_IMPL(String, toInt) {
-    zvalue string = args[0];
-    return intFromZint(zcharFromString(string));
+METH_IMPL_0(String, toInt) {
+    return intFromZint(zcharFromString(ths));
 }
 
 // Documented in header.
-METH_IMPL(String, toNumber) {
-    zvalue string = args[0];
-    return intFromZint(zcharFromString(string));
+METH_IMPL_0(String, toNumber) {
+    return intFromZint(zcharFromString(ths));
 }
 
 // Documented in header.
-METH_IMPL(String, toString) {
-    zvalue string = args[0];
-    return string;
+METH_IMPL_0(String, toString) {
+    return ths;
 }
 
 // Documented in header.
-METH_IMPL(String, totalEq) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `String`.
-
-    assertString(other);
-    return uncheckedEq(value, other) ? value : NULL;
+METH_IMPL_1(String, totalEq, other) {
+    assertString(other);  // Note: Not guaranteed to be a `String`.
+    return uncheckedEq(ths, other) ? ths : NULL;
 }
 
 // Documented in header.
-METH_IMPL(String, totalOrder) {
-    zvalue value = args[0];
-    zvalue other = args[1];  // Note: Not guaranteed to be a `String`.
-
-    assertString(other);
-    switch (uncheckedZorder(value, other)) {
+METH_IMPL_1(String, totalOrder, other) {
+    assertString(other);  // Note: Not guaranteed to be a `String`.
+    switch (uncheckedZorder(ths, other)) {
         case ZLESS: return INT_NEG1;
         case ZSAME: return INT_0;
         case ZMORE: return INT_1;
@@ -640,10 +611,8 @@ METH_IMPL(String, totalOrder) {
 }
 
 // Documented in header.
-METH_IMPL(String, valueList) {
-    zvalue string = args[0];
-
-    StringInfo *info = getInfo(string);
+METH_IMPL_0(String, valueList) {
+    StringInfo *info = getInfo(ths);
     zint size = info->size;
     zchar *elems = getElems(info);
     zvalue result[size];
@@ -664,25 +633,25 @@ MOD_INIT(String) {
     classBindMethods(CLS_String,
         NULL,
         symbolTableFromArgs(
-            SYM_METH(String, cat),
-            SYM_METH(String, collect),
-            SYM_METH(String, debugString),
-            SYM_METH(String, del),
-            SYM_METH(String, fetch),
-            SYM_METH(String, gcMark),
-            SYM_METH(String, get_size),
-            SYM_METH(String, nextValue),
-            SYM_METH(String, nth),
-            SYM_METH(String, put),
-            SYM_METH(String, reverse),
+            METH_BIND(String, cat),
+            METH_BIND(String, collect),
+            METH_BIND(String, debugString),
+            METH_BIND(String, del),
+            METH_BIND(String, fetch),
+            METH_BIND(String, gcMark),
+            METH_BIND(String, get_size),
+            METH_BIND(String, nextValue),
+            METH_BIND(String, nth),
+            METH_BIND(String, put),
+            METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),
-            SYM_METH(String, toInt),
-            SYM_METH(String, toNumber),
-            SYM_METH(String, toString),
-            SYM_METH(String, totalEq),
-            SYM_METH(String, totalOrder),
-            SYM_METH(String, valueList),
+            METH_BIND(String, toInt),
+            METH_BIND(String, toNumber),
+            METH_BIND(String, toString),
+            METH_BIND(String, totalEq),
+            METH_BIND(String, totalOrder),
+            METH_BIND(String, valueList),
             SYM_NAME(get),        FUN_Sequence_get,
             SYM_NAME(keyList),    FUN_Sequence_keyList,
             SYM_NAME(nthMapping), FUN_Sequence_nthMapping,
