@@ -27,18 +27,12 @@
     zvalue FUN_IMPL_NAME(name)( \
         zvalue thisFunction, zint argCount, const zvalue *args)
 
-/** C function name for a method on the given class with the given name. */
-#define METH_NAME(cls, name) cls##_##name
-
 /** Variable name for a method symbol. */
 #define SYM_NAME(name) SYM_##name
 
 /** Declaration for a method symbol. */
-#define SYM_DECL(minArgs, maxArgs, name) \
-    extern zvalue SYM_NAME(name); \
-    enum { \
-        SYM_MIN_ARGS_##name = (minArgs), \
-        SYM_MAX_ARGS_##name = (maxArgs), \
-    }  // No semicolon here, so that use sites require it.
+#define SYM_DECL(name) \
+    extern zvalue SYM_NAME(name) \
+    // No semicolon here, so that use sites require it.
 
 #endif

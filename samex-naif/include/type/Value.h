@@ -22,10 +22,10 @@
 extern zvalue CLS_Value;
 
 /** Method `.debugName()`: Documented in spec. */
-SYM_DECL(1, 1, debugName);
+SYM_DECL(debugName);
 
 /** Method `.debugString()`: Documented in spec. */
-SYM_DECL(1, 1, debugString);
+SYM_DECL(debugString);
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
@@ -33,19 +33,19 @@ SYM_DECL(1, 1, debugString);
  * TODO: This should be defined as an anonymous symbol and *not* exported
  * in any way to the higher layer environment.
  */
-SYM_DECL(1, 1, gcMark);
+SYM_DECL(gcMark);
 
 /** Method `.perEq(other)`: Documented in spec. */
-SYM_DECL(2, 2, perEq);
+SYM_DECL(perEq);
 
 /** Method `.perOrder(other)`: Documented in spec. */
-SYM_DECL(2, 2, perOrder);
+SYM_DECL(perOrder);
 
 /** Method `.totalEq(other)`: Documented in spec. */
-SYM_DECL(2, 2, totalEq);
+SYM_DECL(totalEq);
 
 /** Method `.totalOrder(other)`: Documented in spec. */
-SYM_DECL(2, 2, totalOrder);
+SYM_DECL(totalOrder);
 
 /**
  * Gets the class of the given value. `value` must be a valid value (in

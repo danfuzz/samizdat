@@ -13,33 +13,33 @@
 
 
 /** Method `.abs()`: Documented in spec. */
-SYM_DECL(1, 1, abs);
+SYM_DECL(abs);
 
 /** Method `.add(number)`: Documented in spec. */
-SYM_DECL(2, 2, add);
+SYM_DECL(add);
 
 /** Method `.div(number)`: Documented in spec. */
-SYM_DECL(2, 2, div);
+SYM_DECL(div);
 
 /** Method `.divEu(number)`: Documented in spec. */
-SYM_DECL(2, 2, divEu);
+SYM_DECL(divEu);
 
 /** Method `.mod(number)`: Documented in spec. */
-SYM_DECL(2, 2, mod);
+SYM_DECL(mod);
 
 /** Method `.modEu(number)`: Documented in spec. */
-SYM_DECL(2, 2, modEu);
+SYM_DECL(modEu);
 
 /** Method `.mul(number)`: Documented in spec. */
-SYM_DECL(2, 2, mul);
+SYM_DECL(mul);
 
 /** Method `.neg()`: Documented in spec. */
-SYM_DECL(1, 1, neg);
+SYM_DECL(neg);
 
 /** Method `.sign()`: Documented in spec. */
-SYM_DECL(1, 1, sign);
+SYM_DECL(sign);
 
 /** Method `.sub(number)`: Documented in spec. */
-SYM_DECL(2, 2, sub);
+SYM_DECL(sub);
 
 #endif

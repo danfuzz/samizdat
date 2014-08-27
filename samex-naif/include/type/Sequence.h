@@ -20,13 +20,13 @@
 
 
 /** Method `.reverse()`: Documented in spec. */
-SYM_DECL(1, 1, reverse);
+SYM_DECL(reverse);
 
 /** Method `.sliceExclusive(start, end?)`: Documented in spec. */
-SYM_DECL(2, 3, sliceExclusive);
+SYM_DECL(sliceExclusive);
 
 /** Method `.sliceInclusive(start, end?)`: Documented in spec. */
-SYM_DECL(2, 3, sliceInclusive);
+SYM_DECL(sliceInclusive);
 
 /** Standard implementation for `Sequence.get`. */
 extern zvalue FUN_Sequence_get;
