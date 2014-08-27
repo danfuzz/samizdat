@@ -410,19 +410,6 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Jump,        CLS_Value, "Jump");
     classInitHere(CLS_String,      CLS_Data,  "String");
 
-    // Make sure that the enum constants match up with what got assigned here.
-    // If not, `funCall` will break.
-    if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
-        die("Mismatched index for `Builtin`: should be %lld",
-            classIndex(CLS_Builtin));
-    } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
-        die("Mismatched index for `Jump`: should be %lld",
-            classIndex(CLS_Jump));
-    } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
-        die("Mismatched index for `Symbol`: should be %lld",
-            classIndex(CLS_Symbol));
-    }
-
     // Make sure that the "fake" header is sized the same as the real one.
     if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
         die("Mismatched value header size: should be %lu", sizeof(DatHeader));

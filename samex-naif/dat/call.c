@@ -9,7 +9,10 @@
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
 
+#include "type/Builtin.h"
+#include "type/Jump.h"
 #include "type/List.h"
+#include "type/Symbol.h"
 #include "type/define.h"
 
 #include "impl.h"
@@ -191,7 +194,20 @@ zvalue mustNotYield(zvalue value) {
 
 /** Initializes the module. */
 MOD_INIT(call) {
-    MOD_USE(Value);
+    MOD_USE(Builtin);
+    MOD_USE(Jump);
+    MOD_USE(Symbol);
 
-    // More to come...
+    // Make sure that the enum constants match up with what got assigned here.
+    // If not, `funCall` will break.
+    if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
+        die("Mismatched index for `Builtin`: should be %lld",
+            classIndex(CLS_Builtin));
+    } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
+        die("Mismatched index for `Jump`: should be %lld",
+            classIndex(CLS_Jump));
+    } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
+        die("Mismatched index for `Symbol`: should be %lld",
+            classIndex(CLS_Symbol));
+    }
 }
