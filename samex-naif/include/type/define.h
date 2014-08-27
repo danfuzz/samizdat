@@ -18,16 +18,6 @@
 #include "type/SymbolTable.h"
 #include "type/String.h"
 
-/**
- * Expands to a comma-separated pair of symbol and builtin function,
- * for the indicated method. This is for use in calls to
- * `symbolTableFromArgs`.
- */
-#define SYM_METH(cls, name) \
-    SYM_NAME(name), \
-    makeBuiltin(SYM_MIN_ARGS_##name, SYM_MAX_ARGS_##name, \
-        METH_NAME(cls, name), 0, stringFromUtf8(-1, #cls "." #name)) \
-
 /** Variable definition for a method symbol. */
 #define SYM_DEF(name) \
     zvalue SYM_NAME(name) = NULL
@@ -39,15 +29,6 @@
     do { \
         SYM_NAME(name) = symbolFromUtf8(-1, #name); \
     } while (0)
-
-/**
- * Implementation declaration for a method on the given class with the
- * given name.
- */
-#define METH_IMPL(cls, name) \
-    static zvalue METH_NAME(cls, name)( \
-        zvalue thisFunction, zint argCount, const zvalue *args)
-
 
 
 //
