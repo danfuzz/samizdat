@@ -3,15 +3,11 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Function` protocol
+// Function / method calling
 //
 
-#ifndef _TYPE_FUNCTION_H_
-#define _TYPE_FUNCTION_H_
-
-#include <stddef.h>
-
-#include "type/Value.h"
+#ifndef _DAT_CALL_H_
+#define _DAT_CALL_H_
 
 /**
  * Calls a function with the given list of arguments. `function` must be

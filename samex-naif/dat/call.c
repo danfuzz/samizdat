@@ -3,13 +3,12 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// Function values
+// Function / method calling
 //
 
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
 
-#include "type/Function.h"
 #include "type/List.h"
 #include "type/define.h"
 
@@ -191,6 +190,8 @@ zvalue mustNotYield(zvalue value) {
 //
 
 /** Initializes the module. */
-MOD_INIT(Function) {
+MOD_INIT(call) {
     MOD_USE(Value);
+
+    // More to come...
 }

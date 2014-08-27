@@ -145,8 +145,7 @@ METH_IMPL_0(Builtin, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(Builtin) {
-    MOD_USE(Function);
-    MOD_USE(OneOff);
+    MOD_USE(Value);
 
     // Note: The `objectModel` module initializes `CLS_Builtin`.
     classBindMethods(CLS_Builtin,

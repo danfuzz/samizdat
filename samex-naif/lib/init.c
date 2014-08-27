@@ -14,7 +14,6 @@
 #include "type/Collection.h"
 #include "type/Data.h"
 #include "type/DerivedData.h"
-#include "type/Function.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"

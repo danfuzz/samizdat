@@ -9,7 +9,7 @@
 #ifndef _TYPE_BUILTIN_H_
 #define _TYPE_BUILTIN_H_
 
-#include "type/Function.h"
+#include "type/Value.h"
 
 
 /** Class value for in-model class `Builtin`. */

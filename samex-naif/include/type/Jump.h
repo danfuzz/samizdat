@@ -12,7 +12,7 @@
 #include <setjmp.h>
 #include <stdbool.h>
 
-#include "type/Function.h"
+#include "type/Value.h"
 
 
 /** Class value for in-model class `Jump`. */

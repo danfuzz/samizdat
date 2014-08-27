@@ -5,7 +5,6 @@
 #include <time.h>  // Used for "chatty gc."
 
 #include "type/Class.h"
-#include "type/Function.h"
 #include "type/Value.h"
 #include "zlimits.h"
 

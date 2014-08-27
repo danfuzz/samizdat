@@ -91,7 +91,7 @@ METH_IMPL_0(Jump, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(Jump) {
-    MOD_USE(Function);
+    MOD_USE(Value);
 
     // Note: The `objectModel` module initializes `CLS_Jump`.
     classBindMethods(CLS_Jump,

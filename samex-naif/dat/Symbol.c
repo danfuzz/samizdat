@@ -322,7 +322,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Symbol) {
-    MOD_USE(Function);
+    MOD_USE(Value);
 
     SYM_INIT(makeAnonymous);
 

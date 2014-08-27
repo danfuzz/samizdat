@@ -206,6 +206,7 @@ METH_IMPL_1(Value, totalOrder, other) {
 /** Initializes the module. */
 MOD_INIT(Value) {
     MOD_USE(objectModel);
+    MOD_USE_NEXT(call);
 
     // Initializing `Value` also initializes the rest of the core classes.
     // This also gets all the protocols indirectly via their implementors.
