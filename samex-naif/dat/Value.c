@@ -208,7 +208,6 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(Null);
     MOD_USE_NEXT(String);
-    MOD_USE_NEXT(Uniqlet);
 
     SYM_INIT(call);
     SYM_INIT(debugString);

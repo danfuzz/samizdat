@@ -25,7 +25,6 @@
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
 #include "type/String.h"
-#include "type/Uniqlet.h"
 #include "type/define.h"
 #include "util.h"
 
