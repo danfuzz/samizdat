@@ -18,9 +18,8 @@ import ./rangeAdd :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class. TODO: Should probably be an
-## anonymous symbol.
-def SECRET = makeUniqlet();
+## Secret used to control access to this class.
+def SECRET = @.secret.makeAnonymous();
 
 ## Class being defined here.
 def ClosedRange = makeObjectClass(@.ClosedRange, SECRET);
