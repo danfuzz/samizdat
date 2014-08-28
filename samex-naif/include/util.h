@@ -13,7 +13,7 @@
 
 #include "ztype.h"
 
-#include "util/zint.h"    // Int-related declarations.
+#include "util/zint.h"     // Int-related declarations.
 
 
 //
@@ -123,14 +123,16 @@ char *utilStrdup(const char *string);
 
 /**
  * Gets the decoded size (the number of encoded Unicode code points)
- * of a UTF-8 encoded string of the given size in bytes.
+ * of a UTF-8 encoded string of the given size in bytes. If `stringBytes`
+ * is passed as `-1`, this relies on `string` being `\0`-terminated.
  */
 zint utf8DecodeStringSize(zint stringBytes, const char *string);
 
 /**
  * Decodes the given UTF-8 encoded string of the given size in bytes,
  * into the given buffer of `zchar`s. The buffer must be sufficiently
- * large to hold the result of decoding.
+ * large to hold the result of decoding. If `stringBytes` is passed as `-1`,
+ * this relies on `string` being `\0`-terminated.
  */
 void utf8DecodeCharsFromString(zchar *result,
         zint stringBytes, const char *string);
