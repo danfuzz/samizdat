@@ -224,12 +224,6 @@ bool stringEq(zvalue string1, zvalue string2) {
 
 // Documented in header.
 zvalue stringFromUtf8(zint utfBytes, const char *utf) {
-    if (utfBytes == -1) {
-        utfBytes = strlen(utf);
-    } else if (utfBytes < 0) {
-        die("Invalid string size: %lld", utfBytes);
-    }
-
     zint decodedSize = utf8DecodeStringSize(utfBytes, utf);
 
     switch (decodedSize) {
