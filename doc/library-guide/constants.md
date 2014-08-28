@@ -19,49 +19,11 @@ elsewhere in the library documentation.
 <br><br>
 ### Primitive Definitions
 
-#### `Bool`
+#### Classes
 
-The class of boolean values.
-
-#### `Class`
-
-The reified class of a value.
-
-#### `Data`
-
-The common superclass of all pure data values.
-
-#### `DerivedData`
-
-The common superclass of all derived data values.
-
-#### `Int`
-
-The class of int values.
-
-#### `List`
-
-The class of list values.
-
-#### `Map`
-
-The class of map values.
-
-#### `Null`
-
-The class of `null`.
-
-#### `String`
-
-The class of string values.
-
-#### `Uniqlet`
-
-The class of uniqlet values.
-
-#### `Value`
-
-The common superclass of all values.
+Most of the classes described in this guide have corresponding global
+variables with the same name. For example, `Bool` is bound to the class of
+all boolean values.
 
 
 <br><br>

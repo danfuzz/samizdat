@@ -64,9 +64,8 @@ def BOOTSTRAP_MODULES = {
 ## Private Definitions
 ##
 
-## Secret used to control access to module system objects. TODO: Should
-## probably be an anonymous symbol.
-def SECRET = makeUniqlet();
+## Secret used to control access to this class.
+def SECRET = @.secret.makeAnonymous();
 
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = "core.Lang2";
