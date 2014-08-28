@@ -24,7 +24,6 @@ PRIM_DEF(Null,                    CLS_Null);
 PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Symbol,                  CLS_Symbol);
 PRIM_DEF(SymbolTable,             CLS_SymbolTable);
-PRIM_DEF(Uniqlet,                 CLS_Uniqlet);
 PRIM_DEF(Value,                   CLS_Value);
 
 // Primitive functions: directly exported.
@@ -52,7 +51,6 @@ PRIM_FUNC(ifValueOr,              1, -1);
 PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(makeList,               0, -1);
-PRIM_FUNC(makeUniqlet,            0, 0);
 PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(maybeValue,             1, 1);
 PRIM_FUNC(note,                   0, -1);

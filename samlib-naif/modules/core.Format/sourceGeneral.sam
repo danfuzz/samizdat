@@ -47,7 +47,6 @@ def SPECIAL_VALUES = {
     (String):      "String",
     (Symbol):      "Symbol",
     (SymbolTable): "SymbolTable",
-    (Uniqlet):     "Uniqlet",
     (Value):       "Value",
     (false):       "false",
     (null):        "null",
