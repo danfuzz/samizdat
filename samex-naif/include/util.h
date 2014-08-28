@@ -14,6 +14,7 @@
 #include "ztype.h"
 
 #include "util/zint.h"     // Int-related declarations.
+#include "util/zstring.h"  // String-related declarations.
 
 
 //
