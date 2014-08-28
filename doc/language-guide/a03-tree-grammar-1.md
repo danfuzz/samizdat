@@ -609,7 +609,7 @@ def parClosureDeclarations = {:
     most = (
         name = (
             n = parName
-            { {name: n} }
+            { {name: makeSymbol(n)} }
         |
             { {} }
         )
@@ -660,7 +660,7 @@ def parFunctionCommon = {:
             withFormals(
                 withYieldDef(code, "return"),
                 formals),
-            name);
+            makeSymbol(name));
 
         makeFullClosure(basic)
     }
@@ -672,7 +672,7 @@ def parFunctionDef = {:
     @fn
     closure = parFunctionCommon
 
-    { withTop(makeVarDef(closure::name, closure)) }
+    { withTop(makeVarDef(symbolString(closure::name), closure)) }
 :};
 
 ## Parses a method binding. This wraps a `@closure` result of
@@ -688,7 +688,7 @@ def parMethodBind = {:
         def formals = closure::formals;
         def name = closure::name;
         def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
-        makeCall(REFS::classAddMethod, bind, makeSymbolLiteral(name), fullClosure)
+        makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     }
 :};
 

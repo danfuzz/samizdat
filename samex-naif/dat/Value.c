@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "type/Int.h"
+#include "type/String.h"
 #include "type/Value.h"
 #include "type/define.h"
 
@@ -30,19 +31,6 @@ extern void *datPayload(zvalue value);
 // Documented in header.
 zvalue get_class(zvalue value) {
     return value->cls;
-}
-
-// Documented in header.
-char *valDebugName(zvalue value) {
-    if (value == NULL) {
-        return utilStrdup("(null)");
-    }
-
-    if (SYM_NAME(debugName) == NULL) {
-        die("Too early to call `debugName`.");
-    }
-
-    return utf8DupFromString(METH_CALL(debugName, value));
 }
 
 // Documented in header.
@@ -135,25 +123,18 @@ zorder valZorder(zvalue value, zvalue other) {
 //
 
 // Documented in header.
-METH_IMPL_0(Value, debugName) {
-    return NULL;
-}
-
-// Documented in header.
 METH_IMPL_0(Value, debugString) {
     zvalue cls = get_class(ths);
-    zvalue name = METH_CALL(debugName, ths);
+    zvalue name = METH_CALL(debugSymbol, ths);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!hasClass(name, CLS_String)) {
+    } else if (!hasClass(name, CLS_Symbol)) {
         // Suppress a non-string name.
-        name = stringFromUtf8(-1, "(non-string name)");
+        name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
-        name = METH_CALL(cat,
-            stringFromUtf8(-1, " "),
-            METH_CALL(debugString, name));
+        name = METH_CALL(cat, stringFromUtf8(-1, " "), symbolString(name));
     }
 
     sprintf(addrBuf, "%p", ths);
@@ -165,6 +146,11 @@ METH_IMPL_0(Value, debugString) {
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),
         stringFromUtf8(-1, ")"));
+}
+
+// Documented in header.
+METH_IMPL_0(Value, debugSymbol) {
+    return NULL;
 }
 
 // Documented in header.
@@ -206,6 +192,7 @@ METH_IMPL_1(Value, totalOrder, other) {
 /** Initializes the module. */
 MOD_INIT(Value) {
     MOD_USE(objectModel);
+    MOD_USE_NEXT(call);
 
     // Initializing `Value` also initializes the rest of the core classes.
     // This also gets all the protocols indirectly via their implementors.
@@ -223,8 +210,9 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(String);
     MOD_USE_NEXT(Uniqlet);
 
-    SYM_INIT(debugName);
+    SYM_INIT(call);
     SYM_INIT(debugString);
+    SYM_INIT(debugSymbol);
     SYM_INIT(gcMark);
     SYM_INIT(perEq);
     SYM_INIT(perOrder);
@@ -235,8 +223,8 @@ MOD_INIT(Value) {
     classBindMethods(CLS_Value,
         NULL,
         symbolTableFromArgs(
-            METH_BIND(Value, debugName),
             METH_BIND(Value, debugString),
+            METH_BIND(Value, debugSymbol),
             METH_BIND(Value, gcMark),
             METH_BIND(Value, perEq),
             METH_BIND(Value, perOrder),
@@ -249,10 +237,13 @@ MOD_INIT(Value) {
 zvalue CLS_Value = NULL;
 
 // Documented in header.
-SYM_DEF(debugName);
+SYM_DEF(call);
 
 // Documented in header.
 SYM_DEF(debugString);
+
+// Documented in header.
+SYM_DEF(debugSymbol);
 
 // Documented in header.
 SYM_DEF(gcMark);

@@ -175,7 +175,7 @@ fn Null_convert(value) {
 
 ## Converts a symbol.
 fn Symbol_convert(value) {
-    def name = symbolName(value);
+    def name = symbolString(value);
 
     if (!symbolIsInterned(value)) {
         die("Cannot convert anonymous symbol: \%q(value)")

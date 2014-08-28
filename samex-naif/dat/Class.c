@@ -11,6 +11,7 @@
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Object.h"
+#include "type/String.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
 #include "type/Uniqlet.h"
@@ -249,7 +250,7 @@ zvalue className(zvalue cls) {
 // Documented in header.
 zvalue classNameString(zvalue cls) {
     assertHasClassClass(cls);
-    return symbolName(getInfo(cls)->name);
+    return symbolString(getInfo(cls)->name);
 }
 
 // Documented in header.
@@ -314,7 +315,7 @@ METH_IMPL_0(Class, debugString) {
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
-        return symbolName(info->name);
+        return symbolString(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
     } else if (classParent(ths) == CLS_DerivedData) {
@@ -325,7 +326,7 @@ METH_IMPL_0(Class, debugString) {
 
     return METH_CALL(cat,
         stringFromUtf8(-1, "@@("),
-        METH_CALL(debugString, symbolName(info->name)),
+        METH_CALL(debugString, symbolString(info->name)),
         extraString,
         stringFromUtf8(-1, ")"));
 }
@@ -391,10 +392,7 @@ MOD_INIT(objectModel) {
     CLS_Symbol      = allocClass();
     CLS_SymbolTable = allocClass();
     CLS_Data        = allocClass();
-
-    // The rest are in alphabetical order.
     CLS_Builtin     = allocClass();
-    CLS_Jump        = allocClass();
     CLS_String      = allocClass();
 
     theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
@@ -405,23 +403,8 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Symbol,      CLS_Value, "Symbol");
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
     classInitHere(CLS_Data,        CLS_Value, "Data");
-
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
-    classInitHere(CLS_Jump,        CLS_Value, "Jump");
     classInitHere(CLS_String,      CLS_Data,  "String");
-
-    // Make sure that the enum constants match up with what got assigned here.
-    // If not, `funCall` will break.
-    if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
-        die("Mismatched index for `Builtin`: should be %lld",
-            classIndex(CLS_Builtin));
-    } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
-        die("Mismatched index for `Jump`: should be %lld",
-            classIndex(CLS_Jump));
-    } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
-        die("Mismatched index for `Symbol`: should be %lld",
-            classIndex(CLS_Symbol));
-    }
 
     // Make sure that the "fake" header is sized the same as the real one.
     if (DAT_HEADER_SIZE != sizeof(DatHeader)) {

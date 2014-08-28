@@ -56,7 +56,7 @@ fn closureDeclaration(cloIdx, clo, literals) {
     }
 };
 
-## Returns a full `makeClosure_*` definition, as as string.
+## Returns a full `makeClosure_*` definition, as a string.
 fn closureMaker(cloIdx, clo, literals) {
     def name = (def n = clo::name)
         & translate(n, nullBox).flatten()

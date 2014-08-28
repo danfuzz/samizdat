@@ -6,7 +6,6 @@
 #include "type/Bool.h"
 #include "type/Class.h"
 #include "type/DerivedData.h"
-#include "type/Function.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
@@ -875,7 +874,7 @@ DEF_PARSE(formalsList) {
  */
 DEF_PARSE(closureDeclarations1) {
     zvalue n = PARSE(name);
-    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, n);
+    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, makeSymbol(n));
 }
 
 /**
@@ -937,7 +936,7 @@ DEF_PARSE(functionCommon) {
         withFormals(
             withYieldDef(code, STR_return),
             formals),
-        name);
+        makeSymbol(name));
 
     return makeFullClosure(basic);
 }
@@ -949,7 +948,7 @@ DEF_PARSE(functionDef) {
     MATCH_OR_REJECT(fn);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    return withTop(makeVarDef(get(closure, STR_name), closure));
+    return withTop(makeVarDef(symbolString(get(closure, STR_name)), closure));
 }
 
 // Documented in spec.
@@ -968,7 +967,7 @@ DEF_PARSE(methodBind) {
             listFrom1(mapFrom1(STR_name, STR_this)),
             formals));
     return makeCall(REFS(classAddMethod),
-        listFrom3(bind, makeSymbolLiteral(name), fullClosure));
+        listFrom3(bind, makeLiteral(name), fullClosure));
 }
 
 /** Helper for `importName`: Parses the first alternate. */

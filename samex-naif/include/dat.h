@@ -16,6 +16,7 @@
 
 #include "dat/type.h"   // Types (must be included before other `dat` stuff).
 #include "dat/frame.h"  // Frame (stack reference) management.
+#include "dat/call.h"   // Function / method calling.
 
 
 //

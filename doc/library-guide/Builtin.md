@@ -11,10 +11,9 @@ of the system.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.debugName() -> . | void`
+#### `.debugSymbol() -> symbol | void`
 
-Returns the name of the builtin, if it has one. This is can be
-an arbitrary value, which is typically (but not necessarily) a string.
+Returns the symbolic name of the builtin, if it has one.
 
 #### `.perEq(other) -> builtin | void`
 

@@ -7,6 +7,7 @@
 //
 
 #include "type/Jump.h"
+#include "type/String.h"
 #include "type/define.h"
 
 #include "impl.h"
@@ -91,10 +92,9 @@ METH_IMPL_0(Jump, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(Jump) {
-    MOD_USE(Function);
+    MOD_USE(Value);
 
-    // Note: The `objectModel` module initializes `CLS_Jump`.
-    classBindMethods(CLS_Jump,
+    CLS_Jump = makeCoreClass("Jump", CLS_Value,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Jump, call),

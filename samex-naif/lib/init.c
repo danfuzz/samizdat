@@ -14,7 +14,6 @@
 #include "type/Collection.h"
 #include "type/Data.h"
 #include "type/DerivedData.h"
-#include "type/Function.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -52,10 +51,10 @@ static void makePrimitiveEnvironment(void) {
 
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
-            zvalue nameStr = stringFromUtf8(-1, #name); \
-            env = collPut(env, nameStr, \
+            zvalue nameSymbol = symbolFromUtf8(-1, #name); \
+            env = collPut(env, symbolString(nameSymbol), \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
-                    nameStr)); \
+                    nameSymbol)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \

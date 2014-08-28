@@ -6,7 +6,6 @@
 
 #include "const.h"
 #include "lib.h"
-#include "type/Function.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"

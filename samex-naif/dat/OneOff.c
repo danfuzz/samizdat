@@ -4,6 +4,7 @@
 
 #include "type/Int.h"
 #include "type/OneOff.h"
+#include "type/String.h"
 #include "type/define.h"
 
 #include "impl.h"

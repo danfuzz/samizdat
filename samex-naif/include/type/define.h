@@ -13,10 +13,8 @@
 
 #include "type/Builtin.h"
 #include "type/Class.h"
-#include "type/Function.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
-#include "type/String.h"
 
 /** Variable definition for a method symbol. */
 #define SYM_DEF(name) \
@@ -52,7 +50,7 @@
     static zvalue name(zvalue, zint, const zvalue *); \
     static zvalue MAKE_##name(void) { \
         return makeBuiltin(minArgs, maxArgs, name, 0, \
-            stringFromUtf8(-1, #name)); \
+            symbolFromUtf8(-1, #name)); \
     } \
     static zvalue name(zvalue _function, zint _argsSize, const zvalue *_args)
 

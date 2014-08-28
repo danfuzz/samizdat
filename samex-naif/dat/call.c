@@ -3,14 +3,17 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// Function values
+// Function / method calling
 //
 
 #include <stdio.h>   // For `asprintf`.
 #include <stdlib.h>  // For `free`.
 
-#include "type/Function.h"
+#include "type/Builtin.h"
+#include "type/Jump.h"
 #include "type/List.h"
+#include "type/String.h"
+#include "type/Symbol.h"
 #include "type/define.h"
 
 #include "impl.h"
@@ -21,14 +24,17 @@
 //
 
 /**
- * Returns `value` if it is a string; otherwise calls `debugString` on it.
+ * Returns `value` if it is a string. Returns `symbolString(value)` if it is
+ * a symbol; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
     if (hasClass(value, CLS_String)) {
         return value;
+    } else if (hasClass(value, CLS_Symbol)) {
+        return symbolString(value);
+    } else {
+        return METH_CALL(debugString, value);
     }
-
-    return METH_CALL(debugString, value);
 }
 
 /**
@@ -37,7 +43,7 @@ static zvalue ensureString(zvalue value) {
  */
 static char *callReporter(void *state) {
     zvalue value = state;
-    zvalue name = METH_CALL(debugName, value);
+    zvalue name = METH_CALL(debugSymbol, value);
 
     if (name != NULL) {
         return utf8DupFromString(ensureString(name));
@@ -191,11 +197,21 @@ zvalue mustNotYield(zvalue value) {
 //
 
 /** Initializes the module. */
-MOD_INIT(Function) {
-    MOD_USE(Value);
+MOD_INIT(call) {
+    MOD_USE(Builtin);
+    MOD_USE(Jump);
+    MOD_USE(Symbol);
 
-    SYM_INIT(call);
+    // Make sure that the enum constants match up with what got assigned here.
+    // If not, `funCall` will break.
+    if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
+        die("Mismatched index for `Builtin`: should be %lld",
+            classIndex(CLS_Builtin));
+    } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
+        die("Mismatched index for `Jump`: should be %lld",
+            classIndex(CLS_Jump));
+    } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
+        die("Mismatched index for `Symbol`: should be %lld",
+            classIndex(CLS_Symbol));
+    }
 }
-
-// Documented in header.
-SYM_DEF(call);

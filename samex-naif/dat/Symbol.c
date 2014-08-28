@@ -174,13 +174,14 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
         die("Too few arguments for symbol call.");
     }
 
-    zint index = getInfo(symbol)->index;
+    SymbolInfo *info = getInfo(symbol);
+    zint index = info->index;
     zvalue cls = get_class(args[0]);
     zvalue function = classFindMethodBySymbolIndex(cls, index);
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugName(symbol));
+            valDebugString(cls), valDebugString(info->name));
     }
 
     UTIL_TRACE_START(callReporter, cls);
@@ -195,7 +196,7 @@ zvalue symbolFromUtf8(zint stringBytes, const char *string) {
 }
 
 // Documented in header.
-zvalue symbolName(zvalue symbol) {
+zvalue symbolString(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
     return getInfo(symbol)->name;
 }
@@ -246,16 +247,16 @@ METH_IMPL_rest(Symbol, call, args) {
 }
 
 // Documented in header.
-METH_IMPL_0(Symbol, debugName) {
-    return getInfo(ths)->name;
-}
-
-// Documented in header.
 METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@." : "@?";
 
     return METH_CALL(cat, stringFromUtf8(-1, prefix), info->name);
+}
+
+// Documented in header.
+METH_IMPL_0(Symbol, debugSymbol) {
+    return ths;
 }
 
 // Documented in header.
@@ -281,8 +282,8 @@ METH_IMPL_0(Symbol, symbolIsInterned) {
     return (info->interned) ? ths : NULL;
 }
 
-/** Function (not method) `symbolName`. Documented in spec. */
-METH_IMPL_0(Symbol, symbolName) {
+/** Function (not method) `symbolString`. Documented in spec. */
+METH_IMPL_0(Symbol, symbolString) {
     // TODO: Should be an instance method.
     assertHasClass(ths, CLS_Symbol);
 
@@ -322,7 +323,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Symbol) {
-    MOD_USE(Function);
+    MOD_USE(Value);
 
     SYM_INIT(makeAnonymous);
 
@@ -331,8 +332,8 @@ MOD_INIT(Symbol) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(Symbol, call),
-            METH_BIND(Symbol, debugName),
             METH_BIND(Symbol, debugString),
+            METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, gcMark),
             METH_BIND(Symbol, makeAnonymous),
             METH_BIND(Symbol, totalOrder),
@@ -341,8 +342,8 @@ MOD_INIT(Symbol) {
     FUN_Symbol_makeSymbol = datImmortalize(FUNC_VALUE(Symbol_makeSymbol));
     FUN_Symbol_symbolIsInterned =
         datImmortalize(FUNC_VALUE(Symbol_symbolIsInterned));
-    FUN_Symbol_symbolName =
-        datImmortalize(FUNC_VALUE(Symbol_symbolName));
+    FUN_Symbol_symbolString =
+        datImmortalize(FUNC_VALUE(Symbol_symbolString));
 }
 
 // Documented in header.
@@ -358,4 +359,4 @@ zvalue FUN_Symbol_makeSymbol = NULL;
 zvalue FUN_Symbol_symbolIsInterned = NULL;
 
 // Documented in header.
-zvalue FUN_Symbol_symbolName = NULL;
+zvalue FUN_Symbol_symbolString = NULL;

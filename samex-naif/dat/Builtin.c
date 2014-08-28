@@ -7,6 +7,7 @@
 //
 
 #include "type/Builtin.h"
+#include "type/String.h"
 #include "type/Value.h"
 #include "type/define.h"
 
@@ -84,6 +85,10 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
         die("Invalid `stateSize`: %lld", stateSize);
     }
 
+    if (name != NULL) {
+        assertHasClass(name, CLS_Symbol);
+    }
+
     zvalue result = datAllocValue(CLS_Builtin,
         sizeof(BuiltinInfo) + stateSize * sizeof(zvalue));
     BuiltinInfo *info = getInfo(result);
@@ -124,7 +129,7 @@ METH_IMPL_rest(Builtin, call, args) {
 }
 
 // Documented in header.
-METH_IMPL_0(Builtin, debugName) {
+METH_IMPL_0(Builtin, debugSymbol) {
     BuiltinInfo *info = getInfo(ths);
     return info->name;
 }
@@ -145,15 +150,14 @@ METH_IMPL_0(Builtin, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(Builtin) {
-    MOD_USE(Function);
-    MOD_USE(OneOff);
+    MOD_USE(Value);
 
     // Note: The `objectModel` module initializes `CLS_Builtin`.
     classBindMethods(CLS_Builtin,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Builtin, call),
-            METH_BIND(Builtin, debugName),
+            METH_BIND(Builtin, debugSymbol),
             METH_BIND(Builtin, gcMark),
             NULL));
 }

@@ -344,7 +344,7 @@ METH_IMPL_rest(Closure, call, args) {
 }
 
 // Documented in header.
-METH_IMPL_0(Closure, debugName) {
+METH_IMPL_0(Closure, debugSymbol) {
     return get(getInfo(ths)->defMap, STR_name);
 }
 
@@ -360,14 +360,12 @@ METH_IMPL_0(Closure, gcMark) {
 /** Initializes the module. */
 MOD_INIT(Closure) {
     MOD_USE(Box);
-    MOD_USE(Function);
-    MOD_USE(OneOff);
 
     CLS_Closure = makeCoreClass("Closure", CLS_Value,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Closure, call),
-            METH_BIND(Closure, debugName),
+            METH_BIND(Closure, debugSymbol),
             METH_BIND(Closure, gcMark),
             NULL));
 

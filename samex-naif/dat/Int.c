@@ -6,6 +6,7 @@
 #include "type/Data.h"
 #include "type/Int.h"
 #include "type/Number.h"
+#include "type/String.h"
 #include "type/define.h"
 #include "zlimits.h"
 

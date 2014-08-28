@@ -7,17 +7,6 @@ Value (the base class)
 <br><br>
 ### Method Definitions: `Value` protocol (applies to all values)
 
-#### `.debugName() -> . | void`
-
-Some values have an associated name, or an optional associated name.
-This method provides access to that name. There is no restriction
-on the composition (class, etc.) of a name.
-
-The class `Value` binds this to a function which always returns void.
-
-**Note:** In general, it is a bad idea to use this function for any
-purpose other than temporary debugging code.
-
 #### `.debugString() -> string`
 
 Returns a string representation of the given value, meant to aid in debugging.
@@ -25,11 +14,22 @@ This is in contrast to the functions in `core.Format` which are meant to
 help format values for more useful consumption.
 
 The class `Value` binds this to a function which returns a string consisting
-of the class name, name (result of call to `debugName()`), and low-level
-identifier (e.g. a memory address) of the value. Various of the core classes
-override this to provide more useful information.
+of the class name, value name (result of call to `.debugSymbol()`) if
+non-void, and low-level identifier (e.g. a memory address) of the value.
+Various of the core classes override this to provide more useful information.
 
-**Note:** In general, it is a bad idea to use this function for any
+**Note:** In general, it is a bad idea to call this function for any
+purpose other than temporary debugging code.
+
+#### `.debugSymbol() -> symbol | void`
+
+Some values have an associated symbolic name, or an optional associated name.
+This method provides access to that name. If non-void, the result of this
+call is expected to be a symbol.
+
+The class `Value` binds this to a function which always returns void.
+
+**Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
 
 #### `.perEq(other) -> . | void`

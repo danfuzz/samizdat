@@ -21,15 +21,15 @@ this method does *not* just return `this`.)
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.debugName() -> string`
-
-Returns the name of the symbol, as a string.
-
 #### `.debugString() -> string`
 
 Returns a string representation of the symbol. This includes a suggestive
 prefix `.`. It also includes `anon-` before the name if this is an anonymous
 symbol.
+
+#### `.debugSymbol() -> symbol`
+
+Returns `this`.
 
 #### `.perEq(other) -> symbol | void`
 
@@ -77,7 +77,7 @@ or (if you know the name statically) `@.foo.makeAnonymous()`.
 Returns `symbol` if it is interned (that is, non-anonymous). Returns void
 otherwise.
 
-#### `symbolName(symbol) -> string`
+#### `symbolString(symbol) -> string`
 
 Returns the name of `symbol`.
 

@@ -21,11 +21,14 @@
 /** Class value for in-model class `Value`. */
 extern zvalue CLS_Value;
 
-/** Method `.debugName()`: Documented in spec. */
-SYM_DECL(debugName);
+/** Method `.call(args*)`: Documented in spec. */
+SYM_DECL(call);
 
 /** Method `.debugString()`: Documented in spec. */
 SYM_DECL(debugString);
+
+/** Method `.debugSymbol()`: Documented in spec. */
+SYM_DECL(debugSymbol);
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
@@ -52,13 +55,6 @@ SYM_DECL(totalOrder);
  * particular, non-`NULL`). The return value is of class `Class`.
  */
 zvalue get_class(zvalue value);
-
-/**
- * Gets the "debug name" of the given value, as a `char *`. The caller
- * is responsible for `free()`ing the result. As a convenience, this
- * converts `NULL` into `"(null)"`.
- */
-char *valDebugName(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller

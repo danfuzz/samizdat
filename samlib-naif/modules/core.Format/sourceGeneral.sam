@@ -109,7 +109,7 @@ fn Map_sourceGeneral(value, adorn) {
 
 ## Stringifies a symbol.
 fn Symbol_sourceGeneral(value, adorn) {
-    def name = symbolName(value);
+    def name = symbolString(value);
 
     ifIs { eq(adorn, false) }
         { return sourceGeneral(name, false) };
@@ -150,8 +150,8 @@ fn Value_sourceGeneral(value, adorn) {
     ifNot { eq(classParent(cls), DerivedData) }
         {
             ## Opaque value, possibly named.
-            def body = ifValue { value.debugName() }
-                { name -> keyString(name) }
+            def body = ifValue { value.debugSymbol() }
+                { name -> keyString(symbolString(name)) }
                 { "..." };
 
             return prefix.cat("<", body, ">")

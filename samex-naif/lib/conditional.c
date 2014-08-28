@@ -3,7 +3,6 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "const.h"
-#include "type/Function.h"
 #include "type/List.h"
 #include "type/Map.h"
 
