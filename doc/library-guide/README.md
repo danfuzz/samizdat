@@ -81,7 +81,6 @@ will be returned, or one of:
   * [Symbol](Symbol.md)
   * [SymbolTable](SymbolTable.md)
   * [String](String.md)
-  * [Uniqlet](Uniqlet.md)
   * [Value (the base class/type)](Value.md)
 
 * Protocols
