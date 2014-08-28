@@ -154,21 +154,6 @@ expectCore("x");
 expectCore("muffins");
 
 
-## Uniqlet
-
-note("\nUniqlet");
-
-def uniq1 = makeUniqlet();
-def uniq2 = makeUniqlet();
-
-expectSame(uniq1, uniq1);
-expectSame(uniq2, uniq2);
-expectDifferent(uniq1, uniq2);
-expectDifferent(uniq2, uniq1);
-expectCore(uniq1);
-expectCore(uniq2);
-
-
 ## Function
 
 note("\nFunction");

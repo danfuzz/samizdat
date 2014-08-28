@@ -32,7 +32,6 @@ msg(@blort("zorch"));
 
 var foo = 10;
 msg(var foo);       ## a box
-msg(makeUniqlet());
 
 msg(Value);         ## a core class
 msg(@@blort);       ## a derived value class
