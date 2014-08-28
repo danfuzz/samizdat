@@ -32,7 +32,11 @@ static void assertValidCodePoint(zint value) {
  */
 static const char *getStringEnd(zint stringBytes, const char *string) {
     if (stringBytes < 0) {
-        die("Invalid string size: %lld", stringBytes);
+        if (stringBytes != -1) {
+            die("Invalid string size: %lld", stringBytes);
+        }
+
+        stringBytes = strlen(string);
     }
 
     const char *result = string + stringBytes;
