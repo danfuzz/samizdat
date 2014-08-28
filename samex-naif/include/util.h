@@ -123,10 +123,10 @@ char *utilStrdup(const char *string);
 
 /**
  * Gets the decoded size (the number of encoded Unicode code points)
- * of a UTF-8 encoded string of the given size in bytes. If `stringBytes`
- * is passed as `-1`, this relies on `string` being `\0`-terminated.
+ * of a UTF-8 encoded string of the given size in bytes. If `utfBytes`
+ * is passed as `-1`, this relies on `utf` being `\0`-terminated.
  */
-zint utf8DecodeStringSize(zint stringBytes, const char *string);
+zint utf8DecodeStringSize(zint utfBytes, const char *utf);
 
 /**
  * Decodes the given UTF-8 encoded string of the given size in bytes,
@@ -134,8 +134,7 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string);
  * large to hold the result of decoding. If `stringBytes` is passed as `-1`,
  * this relies on `string` being `\0`-terminated.
  */
-void utf8DecodeCharsFromString(zchar *result,
-        zint stringBytes, const char *string);
+void utf8DecodeCharsFromString(zchar *result, zint utfBytes, const char *utf);
 
 /**
  * Encodes a single Unicode code point as UTF-8, writing it to the
