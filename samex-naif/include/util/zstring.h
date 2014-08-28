@@ -67,6 +67,11 @@ zint zstringAllocSize(zint size);
 zint zstringAllocSizeFromUtf8(zint utfBytes, const char *utf);
 
 /**
+ * Like `zstringFromUtf8`, but allocates the result.
+ */
+zstring *zstringDupFromUtf8(zint utfBytes, const char *utf);
+
+/**
  * Compares two `zstring`s for equality.
  */
 bool zstringEq(const zstring *string1, const zstring *string2);

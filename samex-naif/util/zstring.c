@@ -6,6 +6,10 @@
 
 #include "util.h"
 
+//
+// Exported Definitions
+//
+
 // Documented in header.
 void arrayFromZstring(zchar *result, const zstring *string) {
     utilCpy(zchar, result, string->chars, string->size);
@@ -59,6 +63,15 @@ zint zstringAllocSize(zint size) {
 // Documented in header.
 zint zstringAllocSizeFromUtf8(zint utfBytes, const char *utf) {
     return zstringAllocSize(utf8DecodeStringSize(utfBytes, utf));
+}
+
+// Documented in header.
+zstring *zstringDupFromUtf8(zint utfBytes, const char *utf) {
+    zint size = utf8DecodeStringSize(utfBytes, utf);
+    zstring *result = utilAlloc(zstringAllocSize(size));
+
+    result->size = size;
+    utf8DecodeCharsFromString(result->chars, utfBytes, utf);
 }
 
 // Documented in header.
