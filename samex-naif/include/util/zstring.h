@@ -32,7 +32,7 @@ void arrayFromZstring(zchar *result, const zstring *string);
  * Like `utf8FromZstring`, except this returns an allocated buffer containing
  * the result.
  */
-char *utf8DupFromString(const zstring *string);
+char *utf8DupFromZstring(const zstring *string);
 
 /**
  * Encodes the given `zstring` as UTF-8 into the given buffer of the
