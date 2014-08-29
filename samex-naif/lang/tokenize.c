@@ -160,8 +160,8 @@ static zvalue tokenizeInt(ParseState *state) {
  * Parses an identifier token, updating the given input position.
  */
 static zvalue tokenizeIdentifier(ParseState *state) {
-    zint size = 0;
     zchar chars[LANG_MAX_STRING_CHARS];
+    zstring s = { 0, chars };
 
     for (;;) {
         zint ch = peek(state);
@@ -172,20 +172,20 @@ static zvalue tokenizeIdentifier(ParseState *state) {
               ((ch >= 'A') && (ch <= 'Z')) ||
               ((ch >= '0') && (ch <= '9')))) {
             break;
-        } else if (size == LANG_MAX_STRING_CHARS) {
+        } else if (s.size == LANG_MAX_STRING_CHARS) {
             die("Overlong identifier token.");
         }
 
-        chars[size] = ch;
-        size++;
+        chars[s.size] = ch;
+        s.size++;
         read(state);
     }
 
-    if (size == 0) {
+    if (s.size == 0) {
         return NULL;
     }
 
-    zvalue string = stringFromZchars(size, chars);
+    zvalue string = stringFromZstring(s);
 
     switch (chars[0]) {
         case 'b': if (valEq(string, STR_break))    return TOK_break;
@@ -214,8 +214,8 @@ static zvalue tokenizeString(ParseState *state) {
     // Skip the initial quote.
     read(state);
 
-    zint size = 0;
     zchar chars[LANG_MAX_STRING_CHARS];
+    zstring s = { 0, chars };
 
     for (;;) {
         zint ch = peek(state);
@@ -227,7 +227,7 @@ static zvalue tokenizeString(ParseState *state) {
         } else if (ch == '\"') {
             read(state);
             break;
-        } else if (size == LANG_MAX_STRING_CHARS) {
+        } else if (s.size == LANG_MAX_STRING_CHARS) {
             die("Overlong string token.");
         } else if (ch == '\\') {
             read(state);
@@ -248,12 +248,12 @@ static zvalue tokenizeString(ParseState *state) {
             }
         }
 
-        chars[size] = ch;
-        size++;
+        chars[s.size] = ch;
+        s.size++;
         read(state);
     }
 
-    zvalue string = stringFromZchars(size, chars);
+    zvalue string = stringFromZstring(s);
     return makeData(CLS_string, mapFrom1(STR_value, string));
 }
 
@@ -327,31 +327,31 @@ static zvalue tokenizeDirective(ParseState *state) {
         die("Invalid directive name.");
     }
 
-    zint size = 0;
     zchar chars[LANG_MAX_STRING_CHARS];
+    zstring s = { 0, chars };
 
     for (;;) {
         zint ch = read(state);
 
         if ((ch == -1) || (ch == '\n')) {
             break;
-        } else if (size == LANG_MAX_STRING_CHARS) {
+        } else if (s.size == LANG_MAX_STRING_CHARS) {
             die("Overlong directive token.");
-        } else if ((size == 0) && (ch == ' ')) {
+        } else if ((s.size == 0) && (ch == ' ')) {
             // Skip initial spaces.
             continue;
         }
 
-        chars[size] = ch;
-        size++;
+        chars[s.size] = ch;
+        s.size++;
     }
 
     // Trim spaces at EOL.
-    while ((size > 0) && (chars[size - 1] == ' ')) {
-        size--;
+    while ((s.size > 0) && (chars[s.size - 1] == ' ')) {
+        s.size--;
     }
 
-    zvalue value = stringFromZchars(size, chars);
+    zvalue value = stringFromZstring(s);
     return makeData(CLS_directive,
         mapFrom2(STR_name, get(name, STR_value), STR_value, value));
 }

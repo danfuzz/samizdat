@@ -38,7 +38,9 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
         while ((endAt < size) && chars[endAt] != ch) {
             endAt++;
         }
-        result[resultAt] = stringFromZchars(endAt - at, &chars[at]);
+
+        zstring s = { endAt - at, &chars[at] };
+        result[resultAt] = stringFromZstring(s);
         resultAt++;
         at = endAt + 1;
     }
