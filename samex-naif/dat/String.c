@@ -30,23 +30,18 @@ static zchar SHARED_ARRAY[DAT_MAX_STRING_SOFT];
  * String structure.
  */
 typedef struct {
-    /** Number of characters. */
-    zint size;
+    /** Size and pointer to characters. */
+    zstring s;
 
     /**
      * Another string which contains the actual content, or `NULL` if the
-     * content is in `elems` (below).
+     * content is in `content` (below). This is just used to keep the
+     * characters from getting gc'ed out from under this instance.
      */
     zvalue contentString;
 
-    /** Offset into `contentString` where this string's content is. */
-    zint contentOffset;
-
-    /**
-     * Characters of the string, in index order, if `contentString` is
-     * `NULL`.
-     */
-    zchar elems[/*size*/];
+    /** Characters of the string, if `contentString` is `NULL`. */
+    zchar content[/*s.size*/];
 } StringInfo;
 
 /**
@@ -57,24 +52,15 @@ static StringInfo *getInfo(zvalue string) {
 }
 
 /**
- * Gets a pointer to the actual characters, given an info pointer.
- */
-static zchar *getElems(StringInfo *info) {
-    if (info->contentString != NULL) {
-        return &getInfo(info->contentString)->elems[info->contentOffset];
-    }
-
-    return info->elems;
-}
-
-/**
  * Allocates a string with the given size allocated with the value.
  */
 static zvalue allocString(zint size) {
     zvalue result =
         datAllocValue(CLS_String, sizeof(StringInfo) + size * sizeof(zchar));
+    StringInfo *info = getInfo(result);
 
-    getInfo(result)->size = size;
+    info->s.size = size;
+    info->s.chars = info->content;
     return result;
 }
 
@@ -88,15 +74,14 @@ static zvalue makeIndirectString(zvalue string, zint offset, zint size) {
 
     if (info->contentString != NULL) {
         string = info->contentString;
-        offset += info->contentOffset;
     }
 
     zvalue result = datAllocValue(CLS_String, sizeof(StringInfo));
-    info = getInfo(result);
+    StringInfo *resultInfo = getInfo(result);
 
-    info->size = size;
-    info->contentString = string;
-    info->contentOffset = offset;
+    resultInfo->s.size = size;
+    resultInfo->s.chars = &info->s.chars[offset];
+    resultInfo->contentString = string;
 
     return result;
 }
@@ -117,7 +102,7 @@ static void assertString(zvalue value) {
  */
 static void assertStringSize1(zvalue value) {
     assertString(value);
-    if (getInfo(value)->size != 1) {
+    if (getInfo(value)->s.size != 1) {
         die("Not a size 1 string.");
     }
 }
@@ -156,15 +141,15 @@ static bool uncheckedEq(zvalue string1, zvalue string2) {
 
     StringInfo *info1 = getInfo(string1);
     StringInfo *info2 = getInfo(string2);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
+    zint size1 = info1->s.size;
+    zint size2 = info2->s.size;
 
     if (size1 != size2) {
         return false;
     }
 
-    zchar *e1 = getElems(info1);
-    zchar *e2 = getElems(info2);
+    const zchar *e1 = info1->s.chars;
+    const zchar *e2 = info2->s.chars;
 
     for (zint i = 0; i < size1; i++) {
         if (e1[i] != e2[i]) {
@@ -186,10 +171,10 @@ static zorder uncheckedZorder(zvalue string1, zvalue string2) {
 
     StringInfo *info1 = getInfo(string1);
     StringInfo *info2 = getInfo(string2);
-    zchar *e1 = getElems(info1);
-    zchar *e2 = getElems(info2);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
+    const zchar *e1 = info1->s.chars;
+    const zchar *e2 = info2->s.chars;
+    zint size1 = info1->s.size;
+    zint size2 = info2->s.size;
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
@@ -239,7 +224,7 @@ zvalue stringFromUtf8(zint utfBytes, const char *utf) {
 
     zvalue result = allocString(decodedSize);
 
-    utf8DecodeCharsFromString(getInfo(result)->elems, utfBytes, utf);
+    utf8DecodeCharsFromString(getInfo(result)->content, utfBytes, utf);
     return result;
 }
 
@@ -253,7 +238,7 @@ zvalue stringFromZchar(zchar value) {
     }
 
     zvalue result = allocString(1);
-    getInfo(result)->elems[0] = value;
+    getInfo(result)->content[0] = value;
 
     if (value <= DAT_MAX_CACHED_CHAR) {
         CACHED_CHARS[value] = result;
@@ -274,7 +259,7 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 
     zvalue result = allocString(size);
 
-    utilCpy(zchar, getInfo(result)->elems, chars, size);
+    utilCpy(zchar, getInfo(result)->content, chars, size);
     return result;
 }
 
@@ -299,12 +284,12 @@ zint utf8FromString(zint resultSize, char *result, zvalue string) {
     assertString(string);
 
     StringInfo *info = getInfo(string);
-    zint size = info->size;
-    zchar *elems = getElems(info);
+    zint size = info->s.size;
+    const zchar *chars = info->s.chars;
     char *out = result;
 
     for (zint i = 0; i < size; i++) {
-        out = utf8EncodeOne(out, elems[i]);
+        out = utf8EncodeOne(out, chars[i]);
     }
 
     *out = '\0';
@@ -324,12 +309,12 @@ zint utf8SizeFromString(zvalue string) {
     assertString(string);
 
     StringInfo *info = getInfo(string);
-    zint size = info->size;
-    zchar *elems = getElems(info);
+    zint size = info->s.size;
+    const zchar *chars = info->s.chars;
     zint result = 0;
 
     for (zint i = 0; i < size; i++) {
-        result += (utf8EncodeOne(NULL, elems[i]) - (char *) NULL);
+        result += (utf8EncodeOne(NULL, chars[i]) - (char *) NULL);
     }
 
     return result;
@@ -340,7 +325,7 @@ zchar zcharFromString(zvalue string) {
     assertStringSize1(string);
 
     StringInfo *info = getInfo(string);
-    return getElems(info)[0];
+    return info->s.chars[0];
 }
 
 // Documented in header.
@@ -349,7 +334,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 
     StringInfo *info = getInfo(string);
 
-    utilCpy(zchar, result, getElems(info), info->size);
+    utilCpy(zchar, result, info->s.chars, info->s.size);
 }
 
 
@@ -366,13 +351,13 @@ METH_IMPL_rest(String, cat, args) {
         return ths;
     }
 
-    zint thsSize = getInfo(ths)->size;
+    zint thsSize = getInfo(ths)->s.size;
 
     zint size = thsSize;
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         assertString(one);
-        size += getInfo(one)->size;
+        size += getInfo(one)->s.size;
     }
 
     zchar *chars = allocArray(size);
@@ -380,7 +365,7 @@ METH_IMPL_rest(String, cat, args) {
     zcharsFromString(chars, ths);
     for (zint i = 0; i < argsSize; i++) {
         zcharsFromString(&chars[at], args[i]);
-        at += getInfo(args[i])->size;
+        at += getInfo(args[i])->s.size;
     }
 
     zvalue result = stringFromZchars(size, chars);
@@ -391,13 +376,13 @@ METH_IMPL_rest(String, cat, args) {
 // Documented in header.
 METH_IMPL_0_1(String, collect, function) {
     StringInfo *info = getInfo(ths);
-    zchar *elems = getElems(info);
-    zint size = info->size;
+    const zchar *chars = info->s.chars;
+    zint size = info->s.size;
     zvalue result[size];
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = stringFromZchar(elems[i]);
+        zvalue elem = stringFromZchar(chars[i]);
         zvalue one = (function == NULL) ? elem : FUN_CALL(function, elem);
 
         if (one != NULL) {
@@ -412,19 +397,19 @@ METH_IMPL_0_1(String, collect, function) {
 // Documented in header.
 METH_IMPL_1(String, del, key) {
     StringInfo *info = getInfo(ths);
-    zchar *elems = getElems(info);
-    zint size = info->size;
+    const zchar *chars = info->s.chars;
+    zint size = info->s.size;
     zint index = seqNthIndexLenient(key);
 
     if ((index < 0) || (index >= size)) {
         return ths;
     }
 
-    zchar *chars = allocArray(size - 1);
-    utilCpy(zchar, chars, elems, index);
-    utilCpy(zchar, &chars[index], &elems[index + 1], (size - index - 1));
-    zvalue result = stringFromZchars(size - 1, chars);
-    freeArray(chars);
+    zchar *resultChars = allocArray(size - 1);
+    utilCpy(zchar, resultChars, chars, index);
+    utilCpy(zchar, &resultChars[index], &chars[index + 1], (size - index - 1));
+    zvalue result = stringFromZchars(size - 1, resultChars);
+    freeArray(resultChars);
     return result;
 }
 
@@ -438,7 +423,7 @@ METH_IMPL_0(String, debugString) {
 METH_IMPL_0(String, fetch) {
     StringInfo *info = getInfo(ths);
 
-    switch (info->size) {
+    switch (info->s.size) {
         case 0: {
             return NULL;
         }
@@ -461,13 +446,13 @@ METH_IMPL_0(String, gcMark) {
 
 // Documented in header.
 METH_IMPL_0(String, get_size) {
-    return intFromZint(getInfo(ths)->size);
+    return intFromZint(getInfo(ths)->s.size);
 }
 
 // Documented in header.
 METH_IMPL_1(String, nextValue, box) {
     StringInfo *info = getInfo(ths);
-    zint size = info->size;
+    zint size = info->s.size;
 
     switch (size) {
         case 0: {
@@ -483,8 +468,8 @@ METH_IMPL_1(String, nextValue, box) {
             // The hard case. Make a single-character string for the yield.
             // Make an indirect string for the return value, to avoid the
             // churn of copying and re-re-...-copying the content.
-            zchar *elems = getElems(info);
-            METH_CALL(store, box, stringFromZchar(elems[0]));
+            const zchar *chars = info->s.chars;
+            METH_CALL(store, box, stringFromZchar(chars[0]));
             return makeIndirectString(ths, 1, size - 1);
         }
     }
@@ -493,13 +478,13 @@ METH_IMPL_1(String, nextValue, box) {
 // Documented in header.
 METH_IMPL_1(String, nth, n) {
     StringInfo *info = getInfo(ths);
-    zint index = seqNthIndexStrict(info->size, n);
+    zint index = seqNthIndexStrict(info->s.size, n);
 
     if (index < 0) {
         return NULL;
     }
 
-    return stringFromZchar(getElems(info)[index]);
+    return stringFromZchar(info->s.chars[index]);
 }
 
 // Documented in header.
@@ -507,8 +492,7 @@ METH_IMPL_2(String, put, key, value) {
     assertStringSize1(value);
 
     StringInfo *info = getInfo(ths);
-    zchar *elems = getElems(info);
-    zint size = info->size;
+    zint size = info->s.size;
     zint index = seqPutIndexStrict(size, key);
 
     if (index == size) {
@@ -516,23 +500,23 @@ METH_IMPL_2(String, put, key, value) {
         return METH_CALL(cat, ths, value);
     }
 
-    zchar *chars = allocArray(size);
-    zcharsFromString(chars, ths);
-    chars[index] = zcharFromString(value);
-    zvalue result = stringFromZchars(size, chars);
-    freeArray(chars);
+    zchar *resultChars = allocArray(size);
+    zcharsFromString(resultChars, ths);
+    resultChars[index] = zcharFromString(value);
+    zvalue result = stringFromZchars(size, resultChars);
+    freeArray(resultChars);
     return result;
 }
 
 // Documented in header.
 METH_IMPL_0(String, reverse) {
     StringInfo *info = getInfo(ths);
-    zint size = info->size;
-    zchar *elems = getElems(info);
+    zint size = info->s.size;
+    const zchar *chars = info->s.chars;
     zchar *arr = allocArray(size);
 
     for (zint i = 0, j = size - 1; i < size; i++, j--) {
-        arr[i] = elems[j];
+        arr[i] = chars[j];
     }
 
     zvalue result = stringFromZchars(size, arr);
@@ -547,7 +531,8 @@ static zvalue doSlice(zvalue ths, bool inclusive,
     zint start;
     zint end;
 
-    seqConvertSliceArgs(&start, &end, inclusive, info->size, startArg, endArg);
+    seqConvertSliceArgs(&start, &end, inclusive, info->s.size,
+        startArg, endArg);
 
     if (start == -1) {
         return NULL;
@@ -559,7 +544,7 @@ static zvalue doSlice(zvalue ths, bool inclusive,
         // Share storage for large results.
         return makeIndirectString(ths, start, size);
     } else {
-        return stringFromZchars(size, &getElems(info)[start]);
+        return stringFromZchars(size, &info->s.chars[start]);
     }
 }
 
@@ -607,12 +592,12 @@ METH_IMPL_1(String, totalOrder, other) {
 // Documented in header.
 METH_IMPL_0(String, valueList) {
     StringInfo *info = getInfo(ths);
-    zint size = info->size;
-    zchar *elems = getElems(info);
+    zint size = info->s.size;
+    const zchar *chars = info->s.chars;
     zvalue result[size];
 
     for (zint i = 0; i < size; i++) {
-        result[i] = stringFromZchar(elems[i]);
+        result[i] = stringFromZchar(chars[i]);
     }
 
     return listFromArray(size, result);
