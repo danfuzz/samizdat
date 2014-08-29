@@ -26,21 +26,18 @@
 /** Splits a string into a list, separating at the given character. */
 static zvalue splitAtChar(zvalue string, zvalue chString) {
     zchar ch = zcharFromString(chString);
-    zint size = get_size(string);
-    zchar chars[size];
-    zvalue result[size + 1];
+    zstring s = zstringFromString(string);
+    zvalue result[s.size + 1];
     zint resultAt = 0;
 
-    zcharsFromString(chars, string);
-
-    for (zint at = 0; at <= size; /*at*/) {
+    for (zint at = 0; at <= s.size; /*at*/) {
         zint endAt = at;
-        while ((endAt < size) && chars[endAt] != ch) {
+        while ((endAt < s.size) && s.chars[endAt] != ch) {
             endAt++;
         }
 
-        zstring s = { endAt - at, &chars[at] };
-        result[resultAt] = stringFromZstring(s);
+        zstring one = { endAt - at, &s.chars[at] };
+        result[resultAt] = stringFromZstring(one);
         resultAt++;
         at = endAt + 1;
     }
