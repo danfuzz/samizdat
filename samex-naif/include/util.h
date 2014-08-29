@@ -139,8 +139,8 @@ void utf8DecodeCharsFromString(zchar *result, zint utfBytes, const char *utf);
 
 /**
  * Encodes a single Unicode code point as UTF-8, writing it to the
- * given string, which must be large enough to hold it. Returns a
- * pointer to the position just after what was encoded. If `string` is
+ * given `result` string, which must be large enough to hold it. Returns a
+ * pointer to the position just after what was encoded. If `result` is
  * passed as `NULL`, this doesn't encode but still returns the
  * would-be encoded size in pointer form (i.e. `(char *) NULL +
  * size`).
