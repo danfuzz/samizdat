@@ -11,6 +11,7 @@
 
 #include "type/Data.h"
 #include "type/Sequence.h"
+#include "util.h"
 
 
 /** Class value for in-model class `String`. */
@@ -44,6 +45,11 @@ zvalue stringFromZchar(zchar value);
  * the given size.
  */
 zvalue stringFromZchars(zint size, const zchar *chars);
+
+/**
+ * Gets the string built from the given `zstring`.
+ */
+zvalue stringFromZstring(zstring string);
 
 /**
  * Compares two strings for equality. This is the same as calling
@@ -90,5 +96,11 @@ zchar zcharFromString(zvalue string);
  * array, which must be sized large enough to hold all of them.
  */
 void zcharsFromString(zchar *result, zvalue string);
+
+/**
+ * Gets a `zstring` of the given string. The result `chars` shares storage
+ * with the `string`. As such, it is important to *not* modify the contents.
+ */
+zstring zstringFromString(zvalue string);
 
 #endif

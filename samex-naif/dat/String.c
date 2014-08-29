@@ -207,16 +207,22 @@ zvalue stringFromZchar(zchar value) {
 
 // Documented in header.
 zvalue stringFromZchars(zint size, const zchar *chars) {
+    zstring s = { size, chars };
+    return stringFromZstring(s);
+}
+
+// Documented in header.
+zvalue stringFromZstring(zstring string) {
     // Deal with special cases. This calls into `stringFromZchar` since that's
     // what handles caching of single-character strings.
-    switch (size) {
+    switch (string.size) {
         case 0: return EMPTY_STRING;
-        case 1: return stringFromZchar(chars[0]);
+        case 1: return stringFromZchar(string.chars[0]);
     }
 
-    zvalue result = allocString(size);
+    zvalue result = allocString(string.size);
 
-    utilCpy(zchar, getInfo(result)->content, chars, size);
+    utilCpy(zchar, getInfo(result)->content, string.chars, string.size);
     return result;
 }
 
@@ -255,6 +261,12 @@ zchar zcharFromString(zvalue string) {
 void zcharsFromString(zchar *result, zvalue string) {
     assertString(string);
     return arrayFromZstring(result, getInfo(string)->s);
+}
+
+// Documented in header.
+zstring zstringFromString(zvalue string) {
+    assertString(string);
+    return getInfo(string)->s;
 }
 
 
