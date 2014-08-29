@@ -233,69 +233,32 @@ zorder stringZorder(zvalue string1, zvalue string2) {
 
 // Documented in header.
 char *utf8DupFromString(zvalue string) {
-    zint size = utf8SizeFromString(string) + 1;  // `+1` for the final `\0`.
-    char *result = utilAlloc(size);
-
-    utf8FromString(size, result, string);
-    return result;
+    assertString(string);
+    return utf8DupFromZstring(getInfo(string)->s);
 }
 
 // Documented in header.
 zint utf8FromString(zint resultSize, char *result, zvalue string) {
     assertString(string);
-
-    StringInfo *info = getInfo(string);
-    zint size = info->s.size;
-    const zchar *chars = info->s.chars;
-    char *out = result;
-
-    for (zint i = 0; i < size; i++) {
-        out = utf8EncodeOne(out, chars[i]);
-    }
-
-    *out = '\0';
-    out++;
-
-    zint finalSize = out - result;
-
-    if (finalSize > resultSize) {
-        die("Buffer too small for utf8-encoded string.");
-    }
-
-    return finalSize;
+    return utf8FromZstring(resultSize, result, getInfo(string)->s);
 }
 
 // Documented in header.
 zint utf8SizeFromString(zvalue string) {
     assertString(string);
-
-    StringInfo *info = getInfo(string);
-    zint size = info->s.size;
-    const zchar *chars = info->s.chars;
-    zint result = 0;
-
-    for (zint i = 0; i < size; i++) {
-        result += (utf8EncodeOne(NULL, chars[i]) - (char *) NULL);
-    }
-
-    return result;
+    return utf8SizeFromZstring(getInfo(string)->s);
 }
 
 // Documented in header.
 zchar zcharFromString(zvalue string) {
     assertStringSize1(string);
-
-    StringInfo *info = getInfo(string);
-    return info->s.chars[0];
+    return getInfo(string)->s.chars[0];
 }
 
 // Documented in header.
 void zcharsFromString(zchar *result, zvalue string) {
     assertString(string);
-
-    StringInfo *info = getInfo(string);
-
-    utilCpy(zchar, result, info->s.chars, info->s.size);
+    return arrayFromZstring(result, getInfo(string)->s);
 }
 
 
