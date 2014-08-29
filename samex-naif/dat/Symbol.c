@@ -35,14 +35,14 @@ static bool theNeedSort = false;
  * Symbol structure.
  */
 typedef struct {
-    /** Name of the symbol. Always a string. */
-    zvalue name;
+    /** Index of the symbol. No two symbols have the same index. */
+    zint index;
 
     /** Whether this instance is interned. */
     bool interned;
 
-    /** Index of the symbol. No two symbols have the same index. */
-    zint index;
+    /** Name of the symbol. Always a string. */
+    zvalue name;
 } SymbolInfo;
 
 /**
@@ -64,9 +64,9 @@ static zvalue makeSymbol0(zvalue name, bool interned) {
     zvalue result = datAllocValue(CLS_Symbol, sizeof(SymbolInfo));
     SymbolInfo *info = getInfo(result);
 
-    info->name = name;
-    info->interned = interned;
     info->index = theNextIndex;
+    info->interned = interned;
+    info->name = name;
     theNextIndex++;
 
     if (interned) {
