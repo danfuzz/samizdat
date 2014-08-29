@@ -117,6 +117,8 @@ Topics
     &mdash;
     <http://pu.inf.uni-tuebingen.de/users/crestani/publications/2008-sws-ffi.pdf>
   * GC FAQ &mdash; <http://www.iecc.com/gclist/GC-faq.html>
+  * Precise Garbage Collection for C (by automated rewriting) &mdash;
+    <http://www.cs.utah.edu/~regehr/papers/ismm15-rafkind.pdf>
 
 * Parsing and Pattern Matching
   * Compiling Pattern Matching to good Decision Trees &mdash;
