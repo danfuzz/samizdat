@@ -135,12 +135,9 @@ static void freeArray(zchar *array) {
  */
 static bool uncheckedEq(zvalue string1, zvalue string2) {
     if (string1 == string2) {
-        // Easy out.
         return true;
     }
 
-    StringInfo *info1 = getInfo(string1);
-    StringInfo *info2 = getInfo(string2);
     return zstringEq(getInfo(string1)->s, getInfo(string2)->s);
 }
 
@@ -149,7 +146,6 @@ static bool uncheckedEq(zvalue string1, zvalue string2) {
  */
 static zorder uncheckedZorder(zvalue string1, zvalue string2) {
     if (string1 == string2) {
-        // Easy out.
         return ZSAME;
     }
 
