@@ -30,16 +30,20 @@ static void assertValidCodePoint(zint value) {
  * validity of same. This just validates this as an address range,
  * not as valid string contents.
  */
-static const char *getStringEnd(zint stringBytes, const char *string) {
-    if (stringBytes < 0) {
-        die("Invalid string size: %lld", stringBytes);
+static const char *getUtfEnd(zint utfBytes, const char *utf) {
+    if (utfBytes < 0) {
+        if (utfBytes != -1) {
+            die("Invalid UTF-8 size: %lld", utfBytes);
+        }
+
+        utfBytes = strlen(utf);
     }
 
-    const char *result = string + stringBytes;
+    const char *result = utf + utfBytes;
 
-    if (result < string) {
-        die("Invalid string size (pointer wraparound): %p + %lld",
-            string, stringBytes);
+    if (result < utf) {
+        die("Invalid UTF-8 size (pointer wraparound): %p + %lld",
+            utf, utfBytes);
     }
 
     return result;
@@ -48,19 +52,18 @@ static const char *getStringEnd(zint stringBytes, const char *string) {
 /**
  * Does the basic decoding step, with syntactic but not semantic validation.
  */
-static const char *justDecode(zchar *result,
-        zint stringBytes, const char *string) {
-    if (stringBytes <= 0) {
-        die("Invalid string size: %lld", stringBytes);
+static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
+    if (utfBytes <= 0) {
+        die("Invalid UTF-8 size: %lld", utfBytes);
     }
 
-    unsigned char ch = *string;
+    unsigned char ch = *utf;
     zint value;  // `zint` and not `zchar` is for saner overflow detection.
     int extraBytes;
     zint minValue;
 
-    string++;
-    stringBytes--;
+    utf++;
+    utfBytes--;
 
     switch (ch >> 4) {
         case 0x0: case 0x1: case 0x2: case 0x3:
@@ -136,13 +139,13 @@ static const char *justDecode(zchar *result,
         }
     }
 
-    if (extraBytes > stringBytes) {
+    if (extraBytes > utfBytes) {
         die("Incomplete UTF-8 sequence.");
     }
 
     while (extraBytes > 0) {
-        ch = *string;
-        string++;
+        ch = *utf;
+        utf++;
         extraBytes--;
 
         if ((ch & 0xc0) != 0x80) {
@@ -164,7 +167,7 @@ static const char *justDecode(zchar *result,
         *result = (zchar) value;
     }
 
-    return string;
+    return utf;
 }
 
 /**
@@ -172,11 +175,10 @@ static const char *justDecode(zchar *result,
  * given size in bytes, storing via the given `zchar *`. Returns
  * a pointer to the position just after the bytes that were decoded.
  */
-static const char *decodeValid(zchar *result,
-        zint stringBytes, const char *string) {
-    string = justDecode(result, stringBytes, string);
+static const char *decodeValid(zchar *result, zint utfBytes, const char *utf) {
+    utf = justDecode(result, utfBytes, utf);
     assertValidCodePoint(*result);
-    return string;
+    return utf;
 }
 
 
@@ -185,12 +187,12 @@ static const char *decodeValid(zchar *result,
 //
 
 // Documented in header.
-zint utf8DecodeStringSize(zint stringBytes, const char *string) {
-    const char *stringEnd = getStringEnd(stringBytes, string);
+zint utf8DecodeStringSize(zint utfBytes, const char *utf) {
+    const char *utfEnd = getUtfEnd(utfBytes, utf);
     zint result = 0;
 
-    while (string < stringEnd) {
-        string = justDecode(NULL, stringEnd - string, string);
+    while (utf < utfEnd) {
+        utf = justDecode(NULL, utfEnd - utf, utf);
         result++;
     }
 
@@ -198,12 +200,11 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string) {
 }
 
 // Documented in header.
-void utf8DecodeCharsFromString(zchar *result,
-        zint stringBytes, const char *string) {
-    const char *stringEnd = getStringEnd(stringBytes, string);
+void utf8DecodeCharsFromString(zchar *result, zint utfBytes, const char *utf) {
+    const char *utfEnd = getUtfEnd(utfBytes, utf);
 
-    while (string < stringEnd) {
-        string = decodeValid(result, stringEnd - string, string);
+    while (utf < utfEnd) {
+        utf = decodeValid(result, utfEnd - utf, utf);
         result++;
     }
 }

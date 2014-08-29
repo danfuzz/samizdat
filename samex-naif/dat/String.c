@@ -223,14 +223,8 @@ bool stringEq(zvalue string1, zvalue string2) {
 }
 
 // Documented in header.
-zvalue stringFromUtf8(zint stringBytes, const char *string) {
-    if (stringBytes == -1) {
-        stringBytes = strlen(string);
-    } else if (stringBytes < 0) {
-        die("Invalid string size: %lld", stringBytes);
-    }
-
-    zint decodedSize = utf8DecodeStringSize(stringBytes, string);
+zvalue stringFromUtf8(zint utfBytes, const char *utf) {
+    zint decodedSize = utf8DecodeStringSize(utfBytes, utf);
 
     switch (decodedSize) {
         case 0: return EMPTY_STRING;
@@ -238,14 +232,14 @@ zvalue stringFromUtf8(zint stringBytes, const char *string) {
             // Call into `stringFromChar` since that's what handles caching
             // of single-character strings.
             zchar ch;
-            utf8DecodeCharsFromString(&ch, stringBytes, string);
+            utf8DecodeCharsFromString(&ch, utfBytes, utf);
             return stringFromZchar(ch);
         }
     }
 
     zvalue result = allocString(decodedSize);
 
-    utf8DecodeCharsFromString(getInfo(result)->elems, stringBytes, string);
+    utf8DecodeCharsFromString(getInfo(result)->elems, utfBytes, utf);
     return result;
 }
 

@@ -29,10 +29,10 @@ bool stringEq(zvalue string1, zvalue string2);
 
 /**
  * Gets the string resulting from interpreting the given UTF-8
- * encoded string, whose size in bytes is as given. If `stringBytes`
- * is passed as `-1`, this uses `strlen()` to determine size.
+ * encoded string, whose size in bytes is as given. If `utfBytes`
+ * is passed as `-1`, this relies on `utf` being `\0`-terminated.
  */
-zvalue stringFromUtf8(zint stringBytes, const char *string);
+zvalue stringFromUtf8(zint utfBytes, const char *utf);
 
 /**
  * Converts a C `zchar` to an in-model single-character string.
