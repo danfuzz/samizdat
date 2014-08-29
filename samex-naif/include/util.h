@@ -163,6 +163,14 @@ char *utilCwd(void);
 //
 
 /**
+ * Like `memcmp`, except that the last argument indicates an element
+ * count (not a byte count), and a new first argument indicates the type
+ * of element (from which per-element size is derived).
+ */
+#define utilCmp(type, s1, s2, count) \
+    memcmp((s1), (s2), (count) * sizeof(type))
+
+/**
  * Like `memcpy`, except that the last argument indicates an element
  * count (not a byte count), and a new first argument indicates the type
  * of element (from which per-element size is derived).

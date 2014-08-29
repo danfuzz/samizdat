@@ -65,7 +65,7 @@ bool zstringEq(zstring string1, zstring string2) {
         return true;
     }
 
-    return memcmp(string1.chars, string2.chars, size * sizeof(zchar)) == 0;
+    return utilCmp(zchar, string1.chars, string2.chars, size) == 0;
 }
 
 // Documented in header.
