@@ -86,12 +86,6 @@ zint utf8SizeFromString(zvalue string);
 zchar zcharFromString(zvalue string);
 
 /**
- * Copies all the characters of the given string into the given result
- * array, which must be sized large enough to hold all of them.
- */
-void zcharsFromString(zchar *result, zvalue string);
-
-/**
  * Gets a `zstring` of the given string. The result `chars` shares storage
  * with the `string`. As such, it is important to *not* modify the contents.
  */

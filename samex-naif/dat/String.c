@@ -252,12 +252,6 @@ zchar zcharFromString(zvalue string) {
 }
 
 // Documented in header.
-void zcharsFromString(zchar *result, zvalue string) {
-    assertString(string);
-    return arrayFromZstring(result, getInfo(string)->s);
-}
-
-// Documented in header.
 zstring zstringFromString(zvalue string) {
     assertString(string);
     return getInfo(string)->s;
@@ -288,10 +282,11 @@ METH_IMPL_rest(String, cat, args) {
 
     zchar *chars = allocArray(size);
     zint at = thsSize;
-    zcharsFromString(chars, ths);
+    arrayFromZstring(chars, getInfo(ths)->s);
     for (zint i = 0; i < argsSize; i++) {
-        zcharsFromString(&chars[at], args[i]);
-        at += getInfo(args[i])->s.size;
+        zstring one = getInfo(args[i])->s;
+        arrayFromZstring(&chars[at], one);
+        at += one.size;
     }
 
     zstring s = { size, chars };
@@ -430,7 +425,7 @@ METH_IMPL_2(String, put, key, value) {
     }
 
     zchar *resultChars = allocArray(size);
-    zcharsFromString(resultChars, ths);
+    arrayFromZstring(resultChars, getInfo(ths)->s);
     resultChars[index] = zcharFromString(value);
 
     zstring s = { size, resultChars };
