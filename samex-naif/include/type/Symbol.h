@@ -10,6 +10,7 @@
 #define _TYPE_SYMBOL_H_
 
 #include "type/Value.h"
+#include "util.h"
 
 /** Class value for in-model class `Symbol`. */
 extern zvalue CLS_Symbol;
@@ -30,7 +31,7 @@ extern zvalue FUN_Symbol_symbolString;
 /**
  * Like `symbolFromUtf8`, except this makes an anonymous (uninterned) symbol.
  */
-zvalue anonymousSymbolFromUtf8(zint stringBytes, const char *string);
+zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf);
 
 /**
  * Gets the interned symbol that corresponds to the given `name`, creating it
@@ -39,10 +40,15 @@ zvalue anonymousSymbolFromUtf8(zint stringBytes, const char *string);
 zvalue makeSymbol(zvalue name);
 
 /**
- * Makes an interned symbol from a UTF-8 string. If `stringBytes`
- * is passed as `-1`, this uses `strlen()` to determine size.
+ * Makes an interned symbol from a UTF-8 string. If `utfBytes`
+ * is passed as `-1`, this relies on `utf` being `\0`-terminated.
  */
-zvalue symbolFromUtf8(zint stringBytes, const char *string);
+zvalue symbolFromUtf8(zint utfBytes, const char *utf);
+
+/**
+ * Makes an interned symbol from a `zstring`.
+ */
+zvalue symbolFromZstring(zstring name);
 
 /**
  * Gets the integer index of the given symbol.
