@@ -41,12 +41,6 @@ zvalue stringFromUtf8(zint utfBytes, const char *utf);
 zvalue stringFromZchar(zchar value);
 
 /**
- * Gets the string built from the given array of `zchar`s, of
- * the given size.
- */
-zvalue stringFromZchars(zint size, const zchar *chars);
-
-/**
  * Gets the string built from the given `zstring`.
  */
 zvalue stringFromZstring(zstring string);

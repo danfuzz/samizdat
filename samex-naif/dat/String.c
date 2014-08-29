@@ -206,12 +206,6 @@ zvalue stringFromZchar(zchar value) {
 }
 
 // Documented in header.
-zvalue stringFromZchars(zint size, const zchar *chars) {
-    zstring s = { size, chars };
-    return stringFromZstring(s);
-}
-
-// Documented in header.
 zvalue stringFromZstring(zstring string) {
     // Deal with special cases. This calls into `stringFromZchar` since that's
     // what handles caching of single-character strings.
@@ -300,7 +294,8 @@ METH_IMPL_rest(String, cat, args) {
         at += getInfo(args[i])->s.size;
     }
 
-    zvalue result = stringFromZchars(size, chars);
+    zstring s = { size, chars };
+    zvalue result = stringFromZstring(s);
     freeArray(chars);
     return result;
 }
@@ -340,7 +335,9 @@ METH_IMPL_1(String, del, key) {
     zchar *resultChars = allocArray(size - 1);
     utilCpy(zchar, resultChars, chars, index);
     utilCpy(zchar, &resultChars[index], &chars[index + 1], (size - index - 1));
-    zvalue result = stringFromZchars(size - 1, resultChars);
+
+    zstring s = { size - 1, resultChars };
+    zvalue result = stringFromZstring(s);
     freeArray(resultChars);
     return result;
 }
@@ -435,7 +432,9 @@ METH_IMPL_2(String, put, key, value) {
     zchar *resultChars = allocArray(size);
     zcharsFromString(resultChars, ths);
     resultChars[index] = zcharFromString(value);
-    zvalue result = stringFromZchars(size, resultChars);
+
+    zstring s = { size, resultChars };
+    zvalue result = stringFromZstring(s);
     freeArray(resultChars);
     return result;
 }
@@ -451,7 +450,8 @@ METH_IMPL_0(String, reverse) {
         arr[i] = chars[j];
     }
 
-    zvalue result = stringFromZchars(size, arr);
+    zstring s = { size, arr };
+    zvalue result = stringFromZstring(s);
     freeArray(arr);
     return result;
 }
@@ -476,7 +476,8 @@ static zvalue doSlice(zvalue ths, bool inclusive,
         // Share storage for large results.
         return makeIndirectString(ths, start, size);
     } else {
-        return stringFromZchars(size, &info->s.chars[start]);
+        zstring s = { size, &info->s.chars[start] };
+        return stringFromZstring(s);
     }
 }
 
