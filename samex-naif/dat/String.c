@@ -141,23 +141,7 @@ static bool uncheckedEq(zvalue string1, zvalue string2) {
 
     StringInfo *info1 = getInfo(string1);
     StringInfo *info2 = getInfo(string2);
-    zint size1 = info1->s.size;
-    zint size2 = info2->s.size;
-
-    if (size1 != size2) {
-        return false;
-    }
-
-    const zchar *e1 = info1->s.chars;
-    const zchar *e2 = info2->s.chars;
-
-    for (zint i = 0; i < size1; i++) {
-        if (e1[i] != e2[i]) {
-            return false;
-        }
-    }
-
-    return true;
+    return zstringEq(getInfo(string1)->s, getInfo(string2)->s);
 }
 
 /**
@@ -169,30 +153,7 @@ static zorder uncheckedZorder(zvalue string1, zvalue string2) {
         return ZSAME;
     }
 
-    StringInfo *info1 = getInfo(string1);
-    StringInfo *info2 = getInfo(string2);
-    const zchar *e1 = info1->s.chars;
-    const zchar *e2 = info2->s.chars;
-    zint size1 = info1->s.size;
-    zint size2 = info2->s.size;
-    zint size = (size1 < size2) ? size1 : size2;
-
-    for (zint i = 0; i < size; i++) {
-        zchar c1 = e1[i];
-        zchar c2 = e2[i];
-
-        if (c1 < c2) {
-            return ZLESS;
-        } else if (c1 > c2) {
-            return ZMORE;
-        }
-    }
-
-    if (size1 == size2) {
-        return ZSAME;
-    }
-
-    return (size1 < size2) ? ZLESS : ZMORE;
+    return zstringOrder(getInfo(string1)->s, getInfo(string2)->s);
 }
 
 
