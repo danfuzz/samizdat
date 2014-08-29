@@ -11,12 +11,12 @@
 //
 
 // Documented in header.
-void arrayFromZstring(zchar *result, const zstring *string) {
-    utilCpy(zchar, result, string->chars, string->size);
+void arrayFromZstring(zchar *result, const zstring string) {
+    utilCpy(zchar, result, string.chars, string.size);
 }
 
 // Documented in header.
-char *utf8DupFromZstring(const zstring *string) {
+char *utf8DupFromZstring(zstring string) {
     zint size = utf8SizeFromZstring(string) + 1;  // `+1` for the final `\0`.
     char *result = utilAlloc(size);
 
@@ -25,11 +25,11 @@ char *utf8DupFromZstring(const zstring *string) {
 }
 
 // Documented in header.
-zint utf8FromZstring(zint resultSize, char *result, const zstring *string) {
+zint utf8FromZstring(zint resultSize, char *result, zstring string) {
     char *out = result;
 
-    for (zint i = 0; i < string->size; i++) {
-        out = utf8EncodeOne(out, string->chars[i]);
+    for (zint i = 0; i < string.size; i++) {
+        out = utf8EncodeOne(out, string.chars[i]);
     }
 
     *out = '\0';
@@ -45,77 +45,45 @@ zint utf8FromZstring(zint resultSize, char *result, const zstring *string) {
 }
 
 // Documented in header.
-zint utf8SizeFromZstring(const zstring *string) {
+zint utf8SizeFromZstring(zstring string) {
     zint result = 0;
 
-    for (zint i = 0; i < string->size; i++) {
-        result += (utf8EncodeOne(NULL, string->chars[i]) - (char *) NULL);
+    for (zint i = 0; i < string.size; i++) {
+        result += (utf8EncodeOne(NULL, string.chars[i]) - (char *) NULL);
     }
 
     return result;
 }
 
 // Documented in header.
-zint zstringAllocSize(zint size) {
-    return sizeof(zstring) + (size * sizeof(zchar));
-}
+bool zstringEq(zstring string1, zstring string2) {
+    zint size = string1.size;
 
-// Documented in header.
-zint zstringAllocSizeFromUtf8(zint utfBytes, const char *utf) {
-    return zstringAllocSize(utf8DecodeStringSize(utfBytes, utf));
-}
-
-// Documented in header.
-zstring *zstringDupFromUtf8(zint utfBytes, const char *utf) {
-    zint size = utf8DecodeStringSize(utfBytes, utf);
-    zstring *result = utilAlloc(zstringAllocSize(size));
-
-    result->size = size;
-    utf8DecodeCharsFromString(result->chars, utfBytes, utf);
-}
-
-// Documented in header.
-bool zstringEq(const zstring *string1, const zstring *string2) {
-    if (string1 == string2) {
+    if (size != string2.size) {
+        return false;
+    } else if (string1.chars == string2.chars) {
         return true;
     }
 
-    zint size = string1->size;
-
-    if (size != string2->size) {
-        return false;
-    }
-
-    return memcmp(string1->chars, string2->chars, size * sizeof(zchar)) == 0;
+    return memcmp(string1.chars, string2.chars, size * sizeof(zchar)) == 0;
 }
 
 // Documented in header.
-void zstringFromArray(zstring *result, zint size, const zchar *chars) {
-    result->size = size;
-    utilCpy(zchar, result->chars, chars, size);
-}
+zorder zstringOrder(zstring string1, zstring string2) {
+    zint size1 = string1.size;
+    zint size2 = string2.size;
+    const zchar *chars1 = string1.chars;
+    const zchar *chars2 = string2.chars;
 
-// Documented in header.
-void zstringFromUtf8(zstring *result, zint utfBytes, const char *utf) {
-    zint size = utf8DecodeStringSize(utfBytes, utf);
-
-    result->size = size;
-    utf8DecodeCharsFromString(result->chars, utfBytes, utf);
-}
-
-// Documented in header.
-zorder zstringOrder(const zstring *string1, const zstring *string2) {
-    if (string1 == string2) {
+    if ((size1 == size2) && (chars1 == chars2)) {
         return ZSAME;
     }
 
-    zint size1 = string1->size;
-    zint size2 = string2->size;
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
-        zchar c1 = string1->chars[i];
-        zchar c2 = string2->chars[i];
+        zchar c1 = chars1[i];
+        zchar c2 = chars2[i];
 
         if (c1 < c2) {
             return ZLESS;

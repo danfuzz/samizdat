@@ -12,27 +12,28 @@
 #include "ztype.h"
 
 /**
- * Size-prefixed string of Unicode code points.
+ * Struct to hold a sized Unicode string. **Note:** This has a pointer to the
+ * characters, not the characters themselves.
  */
 typedef struct {
     /** Number of characters in the string. */
     zint size;
 
     /** The characters. */
-    zchar chars[/*size*/];
+    const zchar *chars;
 } zstring;
 
 /**
  * Copies all the characters of the given `zstring` into the given result
  * array, which must be sized large enough to hold all of them.
  */
-void arrayFromZstring(zchar *result, const zstring *string);
+void arrayFromZstring(zchar *result, zstring string);
 
 /**
  * Like `utf8FromZstring`, except this returns an allocated buffer containing
  * the result.
  */
-char *utf8DupFromZstring(const zstring *string);
+char *utf8DupFromZstring(zstring string);
 
 /**
  * Encodes the given `zstring` as UTF-8 into the given buffer of the
@@ -46,52 +47,22 @@ char *utf8DupFromZstring(const zstring *string);
  * then the only "safe" way to use the result is as an explicitly-sized
  * buffer. (For example, `strlen()` might "lie.")
  */
-zint utf8FromZstring(zint resultSize, char *result, const zstring *string);
+zint utf8FromZstring(zint resultSize, char *result, const zstring string);
 
 /**
  * Gets the number of bytes required to encode the given `zstring`
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
-zint utf8SizeFromZstring(const zstring *string);
-
-/**
- * Gets the allocation size required for a `zstring` of the given size.
- */
-zint zstringAllocSize(zint size);
-
-/**
- * Gets the allocation size required for a `zstring` meant to hold the
- * decoded contents of the given UTF-8 string. If `utfBytes` is passed as `-1`,
- * this relies on `utf` being `\0`-terminated.
- */
-zint zstringAllocSizeFromUtf8(zint utfBytes, const char *utf);
-
-/**
- * Like `zstringFromUtf8`, but allocates the result.
- */
-zstring *zstringDupFromUtf8(zint utfBytes, const char *utf);
+zint utf8SizeFromZstring(const zstring string);
 
 /**
  * Compares two `zstring`s for equality.
  */
-bool zstringEq(const zstring *string1, const zstring *string2);
-
-/**
- * Initializes a `zstring` from an array of characters. Assumes the result
- * has sufficient space.
- */
-void zstringFromArray(zstring *result, zint size, const zchar *chars);
-
-/**
- * Initializes a `zstring` from a UTF-8 string. Assumes the result
- * has sufficient space. If `utfBytes` is passed as `-1`, this relies on
- * `utf` being `\0`-terminated.
- */
-void zstringFromUtf8(zstring *result, zint utfBytes, const char *utf);
+bool zstringEq(zstring string1, zstring string2);
 
 /**
  * Compares two `zstring`s for order.
  */
-zorder zstringOrder(const zstring *string1, const zstring *string2);
+zorder zstringOrder(zstring string1, zstring string2);
 
 #endif
