@@ -21,10 +21,7 @@
 /** State of tokenization in-progress. */
 typedef struct {
     /** String being parsed. */
-    zchar str[LANG_MAX_TOKENS];
-
-    /** Size of string. */
-    zint size;
+    zstring str;
 
     /** Current read position. */
     zint at;
@@ -41,14 +38,14 @@ static zint cursor(ParseState *state) {
  * Is the parse state at EOF?
  */
 static bool isEof(ParseState *state) {
-    return (state->at >= state->size);
+    return (state->at >= state->str.size);
 }
 
 /**
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? (zint) -1 : state->str[state->at];
+    return isEof(state) ? (zint) -1 : state->str.chars[state->at];
 }
 
 /**
@@ -411,10 +408,7 @@ static zvalue tokenizeAnyToken(ParseState *state) {
 
 // Documented in header.
 zvalue langLanguageOf0(zvalue string) {
-    zint size = get_size(string);
-    ParseState state = { .size = size, .at = 0 };
-
-    zcharsFromString(state.str, string);
+    ParseState state = { .str = zstringFromString(string), .at = 0 };
     zvalue result = tokenizeAnyToken(&state);
 
     if ((result != NULL)
@@ -429,23 +423,20 @@ zvalue langLanguageOf0(zvalue string) {
 // Documented in header.
 zvalue langTokenize0(zvalue string) {
     zstackPointer save = datFrameStart();
-    zint size = get_size(string);
+    ParseState state = { .str = zstringFromString(string), .at = 0 };
 
-    if (size > LANG_MAX_TOKENS) {
-        die("Too many characters for tokenization: %lld", size);
-    }
-
-    zvalue result[size];
-    ParseState state = { .size = size, .at = 0 };
+    zvalue result[LANG_MAX_TOKENS];
     zint out = 0;
-
-    zcharsFromString(state.str, string);
 
     for (;;) {
         zvalue one = tokenizeAnyToken(&state);
         if (one == NULL) {
             break;
         } else if (!hasClass(one, CLS_directive)) {
+            if (out >= LANG_MAX_TOKENS) {
+                die("Too many tokens.");
+            }
+
             result[out] = one;
             out++;
         }
