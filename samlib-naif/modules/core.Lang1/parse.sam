@@ -224,7 +224,7 @@ def parType = makeMainSequence(
         makeSequence(
             parIdentifierString,
             makeCode { ., name ->
-                makeLiteral(@@(makeSymbol(name::value)))
+                makeLiteral(@@(name::value.toSymbol()))
             }),
         makeSequence(
             parParenExpression,
@@ -239,7 +239,7 @@ def parDeriv = makeMainSequence(
         makeSequence(
             parIdentifierString,
             makeCode { ., name ->
-                makeLiteral(@@(makeSymbol(name::value)))
+                makeLiteral(@@(name::value.toSymbol()))
             }),
         parParenExpression),
     makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
@@ -466,7 +466,7 @@ def parClosureDeclarations = makeMainChoice(
                 makeChoice(
                     makeSequence(
                         parName,
-                        makeCode { n -> {name: makeSymbol(n)} }),
+                        makeCode { n -> {name: n.toSymbol()} }),
                     makeResult({})),
                 makeToken(@@"("),
                 parFormalsList,
@@ -492,7 +492,7 @@ def parFunctionCommon = makeMainSequence(
             withFormals(
                 withYieldDef(code, "return"),
                 formals),
-            makeSymbol(name));
+            name.toSymbol());
 
         makeFullClosure(basic)
     });
@@ -749,7 +749,7 @@ def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierString,
     makeCode { ., type ->
-        @token{value: @@(makeSymbol(type::value))}
+        @token{value: @@(type::value.toSymbol())}
     });
 
 ## Documented in spec.
@@ -784,7 +784,7 @@ def parPexSet = makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
                 "".cat(strings*).collect
-                    { ch -> @@(makeSymbol(ch)) }
+                    { ch -> @@(ch.toSymbol()) }
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),
