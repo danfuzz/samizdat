@@ -206,17 +206,17 @@ zvalue stringFromZchar(zchar value) {
 }
 
 // Documented in header.
-zvalue stringFromZchars(zint size, const zchar *chars) {
+zvalue stringFromZstring(zstring string) {
     // Deal with special cases. This calls into `stringFromZchar` since that's
     // what handles caching of single-character strings.
-    switch (size) {
+    switch (string.size) {
         case 0: return EMPTY_STRING;
-        case 1: return stringFromZchar(chars[0]);
+        case 1: return stringFromZchar(string.chars[0]);
     }
 
-    zvalue result = allocString(size);
+    zvalue result = allocString(string.size);
 
-    utilCpy(zchar, getInfo(result)->content, chars, size);
+    utilCpy(zchar, getInfo(result)->content, string.chars, string.size);
     return result;
 }
 
@@ -252,9 +252,9 @@ zchar zcharFromString(zvalue string) {
 }
 
 // Documented in header.
-void zcharsFromString(zchar *result, zvalue string) {
+zstring zstringFromString(zvalue string) {
     assertString(string);
-    return arrayFromZstring(result, getInfo(string)->s);
+    return getInfo(string)->s;
 }
 
 
@@ -282,13 +282,15 @@ METH_IMPL_rest(String, cat, args) {
 
     zchar *chars = allocArray(size);
     zint at = thsSize;
-    zcharsFromString(chars, ths);
+    arrayFromZstring(chars, getInfo(ths)->s);
     for (zint i = 0; i < argsSize; i++) {
-        zcharsFromString(&chars[at], args[i]);
-        at += getInfo(args[i])->s.size;
+        zstring one = getInfo(args[i])->s;
+        arrayFromZstring(&chars[at], one);
+        at += one.size;
     }
 
-    zvalue result = stringFromZchars(size, chars);
+    zstring s = { size, chars };
+    zvalue result = stringFromZstring(s);
     freeArray(chars);
     return result;
 }
@@ -328,7 +330,9 @@ METH_IMPL_1(String, del, key) {
     zchar *resultChars = allocArray(size - 1);
     utilCpy(zchar, resultChars, chars, index);
     utilCpy(zchar, &resultChars[index], &chars[index + 1], (size - index - 1));
-    zvalue result = stringFromZchars(size - 1, resultChars);
+
+    zstring s = { size - 1, resultChars };
+    zvalue result = stringFromZstring(s);
     freeArray(resultChars);
     return result;
 }
@@ -421,9 +425,11 @@ METH_IMPL_2(String, put, key, value) {
     }
 
     zchar *resultChars = allocArray(size);
-    zcharsFromString(resultChars, ths);
+    arrayFromZstring(resultChars, getInfo(ths)->s);
     resultChars[index] = zcharFromString(value);
-    zvalue result = stringFromZchars(size, resultChars);
+
+    zstring s = { size, resultChars };
+    zvalue result = stringFromZstring(s);
     freeArray(resultChars);
     return result;
 }
@@ -439,7 +445,8 @@ METH_IMPL_0(String, reverse) {
         arr[i] = chars[j];
     }
 
-    zvalue result = stringFromZchars(size, arr);
+    zstring s = { size, arr };
+    zvalue result = stringFromZstring(s);
     freeArray(arr);
     return result;
 }
@@ -464,7 +471,8 @@ static zvalue doSlice(zvalue ths, bool inclusive,
         // Share storage for large results.
         return makeIndirectString(ths, start, size);
     } else {
-        return stringFromZchars(size, &info->s.chars[start]);
+        zstring s = { size, &info->s.chars[start] };
+        return stringFromZstring(s);
     }
 }
 

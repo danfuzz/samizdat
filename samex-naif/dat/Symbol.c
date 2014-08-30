@@ -35,14 +35,20 @@ static bool theNeedSort = false;
  * Symbol structure.
  */
 typedef struct {
-    /** Name of the symbol. Always a string. */
-    zvalue name;
+    /** Index of the symbol. No two symbols have the same index. */
+    zint index;
 
     /** Whether this instance is interned. */
     bool interned;
 
-    /** Index of the symbol. No two symbols have the same index. */
-    zint index;
+    /**
+     * Name of the symbol. `chars` points at the actual array built into
+     * this object.
+     */
+    zstring s;
+
+    /** Characters of the symbol's name. */
+    zchar chars[DAT_MAX_SYMBOL_SIZE];
 } SymbolInfo;
 
 /**
@@ -53,20 +59,25 @@ static SymbolInfo *getInfo(zvalue symbol) {
 }
 
 /**
- * Creates and returns a new symbol with the given name. Does no checking
- * other than that there aren't already too many symbols.
+ * Creates and returns a new symbol with the given name. Checks that the
+ * size of the name is acceptable and that there aren't already too many
+ * symbols. Does no other checking.
  */
-static zvalue makeSymbol0(zvalue name, bool interned) {
+static zvalue makeSymbol0(zstring name, bool interned) {
     if (theNextIndex >= DAT_MAX_SYMBOLS) {
         die("Too many symbols!");
+    } else if (name.size > DAT_MAX_SYMBOL_SIZE) {
+        die("Symbol name too long: \"%s\"", utf8DupFromZstring(name));
     }
 
     zvalue result = datAllocValue(CLS_Symbol, sizeof(SymbolInfo));
     SymbolInfo *info = getInfo(result);
 
-    info->name = name;
-    info->interned = interned;
     info->index = theNextIndex;
+    info->interned = interned;
+    info->s.size = name.size;
+    info->s.chars = info->chars;
+    utilCpy(zchar, info->chars, name.chars, name.size);
     theNextIndex++;
 
     if (interned) {
@@ -80,41 +91,28 @@ static zvalue makeSymbol0(zvalue name, bool interned) {
 }
 
 /**
- * Compares a name with a symbol. Common function used for searching,
- * sorting, and ordering.
- */
-static int compareNameAndSymbol(zvalue name, zvalue symbol) {
-    SymbolInfo *info = getInfo(symbol);
-    zvalue name2 = info->name;
-
-    return stringZorder(name, name2);
-}
-
-/**
  * Compares two symbols. Used for sorting.
  */
 static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v1 = *(zvalue *) vptr1;
     zvalue v2 = *(zvalue *) vptr2;
-    SymbolInfo *info1 = getInfo(v1);
-
-    return compareNameAndSymbol(info1->name, v2);
+    return zstringOrder(getInfo(v1)->s, getInfo(v2)->s);
 }
 
 /**
  * Compares a name with a symbol. Used for searching.
  */
 static int searchOrder(const void *key, const void *vptr) {
-    zvalue name = (zvalue) key;
+    const zstring *name = (const zstring *) key;
     zvalue symbol = *(zvalue *) vptr;
 
-    return compareNameAndSymbol(name, symbol);
+    return zstringOrder(*name, getInfo(symbol)->s);
 }
 
 /**
  * Finds an existing interned symbol with the given name, if any.
  */
-static zvalue findInternedSymbol(zvalue name) {
+static zvalue findInternedSymbol(zstring name) {
     if (theNeedSort) {
         mergesort(
             theInternedSymbols, theInternedSymbolCount,
@@ -123,7 +121,7 @@ static zvalue findInternedSymbol(zvalue name) {
     }
 
     zvalue *found = (zvalue *) bsearch(
-        name, theInternedSymbols, theInternedSymbolCount,
+        &name, theInternedSymbols, theInternedSymbolCount,
         sizeof(zvalue), searchOrder);
 
     return (found == NULL) ? NULL : *found;
@@ -144,28 +142,36 @@ static char *callReporter(void *state) {
     return result;
 }
 
+/**
+ * Helper for `symbolFromUtf8` and `anonymousSymbolFromUtf8`, which
+ * does all the real work.
+ */
+zvalue anySymbolFromUtf8(zint utfBytes, const char *utf, bool interned) {
+    zchar chars[DAT_MAX_SYMBOLS];
+    zstring name = { utf8DecodeStringSize(utfBytes, utf), chars };
+
+    utf8DecodeCharsFromString(chars, utfBytes, utf);
+
+    if (interned) {
+        return symbolFromZstring(name);
+    } else {
+        return makeSymbol0(name, false);
+    }
+}
+
 
 //
 // Exported Definitions
 //
 
 // Documented in header.
-zvalue anonymousSymbolFromUtf8(zint stringBytes, const char *string) {
-    return makeSymbol0(stringFromUtf8(stringBytes, string), false);
+zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
+    return anySymbolFromUtf8(utfBytes, utf, false);
 }
 
 // Documented in header.
 zvalue makeSymbol(zvalue name) {
-    zvalue result = findInternedSymbol(name);
-
-    if (result == NULL) {
-        if (!hasClass(name, CLS_String)) {
-            die("Improper symbol name: %s", valDebugString(name));
-        }
-        result = makeSymbol0(name, true);
-    }
-
-    return result;
+    return symbolFromZstring(zstringFromString(name));
 }
 
 // Documented in header.
@@ -181,7 +187,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugString(info->name));
+            valDebugString(cls), valDebugString(symbolString(symbol)));
     }
 
     UTIL_TRACE_START(callReporter, cls);
@@ -191,14 +197,22 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 }
 
 // Documented in header.
-zvalue symbolFromUtf8(zint stringBytes, const char *string) {
-    return makeSymbol(stringFromUtf8(stringBytes, string));
+zvalue symbolFromUtf8(zint utfBytes, const char *utf) {
+    return anySymbolFromUtf8(utfBytes, utf, true);
+}
+
+// Documented in header.
+zvalue symbolFromZstring(zstring name) {
+    zvalue result = findInternedSymbol(name);
+    return (result != NULL) ? result : makeSymbol0(name, true);
 }
 
 // Documented in header.
 zvalue symbolString(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
-    return getInfo(symbol)->name;
+    SymbolInfo *info = getInfo(symbol);
+
+    return stringFromZstring(getInfo(symbol)->s);
 }
 
 // Documented in header.
@@ -210,25 +224,19 @@ zint symbolIndex(zvalue symbol) {
 // Documented in header.
 char *utf8DupFromSymbol(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
-    SymbolInfo *info = getInfo(symbol);
-
-    return utf8DupFromString(info->name);
+    return utf8DupFromZstring(getInfo(symbol)->s);
 }
 
 // Documented in header.
 zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
-    SymbolInfo *info = getInfo(symbol);
-
-    return utf8FromSymbol(resultSize, result, info->name);
+    return utf8FromZstring(resultSize, result, getInfo(symbol)->s);
 }
 
 // Documented in header.
 zint utf8SizeFromSymbol(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
-    SymbolInfo *info = getInfo(symbol);
-
-    return utf8SizeFromString(info->name);
+    return utf8SizeFromZstring(getInfo(symbol)->s);
 }
 
 
@@ -251,7 +259,7 @@ METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@." : "@?";
 
-    return METH_CALL(cat, stringFromUtf8(-1, prefix), info->name);
+    return METH_CALL(cat, stringFromUtf8(-1, prefix), symbolString(ths));
 }
 
 // Documented in header.
@@ -260,17 +268,9 @@ METH_IMPL_0(Symbol, debugSymbol) {
 }
 
 // Documented in header.
-METH_IMPL_0(Symbol, gcMark) {
-    SymbolInfo *info = getInfo(ths);
-
-    datMark(info->name);
-    return NULL;
-}
-
-// Documented in header.
 METH_IMPL_0(Symbol, makeAnonymous) {
     SymbolInfo *info = getInfo(ths);
-    return makeSymbol0(info->name, false);
+    return makeSymbol0(info->s, false);
 }
 
 /** Function (not method) `symbolIsInterned`. Documented in spec. */
@@ -285,9 +285,7 @@ METH_IMPL_0(Symbol, symbolIsInterned) {
 /** Function (not method) `symbolString`. Documented in spec. */
 METH_IMPL_0(Symbol, symbolString) {
     // TODO: Should be an instance method.
-    assertHasClass(ths, CLS_Symbol);
-
-    return getInfo(ths)->name;
+    return symbolString(ths);
 }
 
 // Documented in header.
@@ -309,7 +307,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
         return interned ? INT_NEG1 : INT_1;
     }
 
-    zorder order = stringZorder(info1->name, info2->name);
+    zorder order = zstringOrder(info1->s, info2->s);
     switch (order) {
         case ZLESS: return INT_NEG1;
         case ZMORE: return INT_1;
@@ -334,7 +332,6 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, call),
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
-            METH_BIND(Symbol, gcMark),
             METH_BIND(Symbol, makeAnonymous),
             METH_BIND(Symbol, totalOrder),
             NULL));

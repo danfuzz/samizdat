@@ -11,6 +11,7 @@
 
 #include "type/Data.h"
 #include "type/Sequence.h"
+#include "util.h"
 
 
 /** Class value for in-model class `String`. */
@@ -40,10 +41,9 @@ zvalue stringFromUtf8(zint utfBytes, const char *utf);
 zvalue stringFromZchar(zchar value);
 
 /**
- * Gets the string built from the given array of `zchar`s, of
- * the given size.
+ * Gets the string built from the given `zstring`.
  */
-zvalue stringFromZchars(zint size, const zchar *chars);
+zvalue stringFromZstring(zstring string);
 
 /**
  * Compares two strings for equality. This is the same as calling
@@ -86,9 +86,9 @@ zint utf8SizeFromString(zvalue string);
 zchar zcharFromString(zvalue string);
 
 /**
- * Copies all the characters of the given string into the given result
- * array, which must be sized large enough to hold all of them.
+ * Gets a `zstring` of the given string. The result `chars` shares storage
+ * with the `string`. As such, it is important to *not* modify the contents.
  */
-void zcharsFromString(zchar *result, zvalue string);
+zstring zstringFromString(zvalue string);
 
 #endif

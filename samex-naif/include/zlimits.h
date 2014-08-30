@@ -48,6 +48,9 @@ enum {
      */
     DAT_MAX_STRING_SOFT = 10000,
 
+    /** Maximum size in characters of a symbol name. */
+    DAT_MAX_SYMBOL_SIZE = 40,
+
     /** Maximum number of classes allowed. */
     DAT_MAX_CLASSES = 500,
 
