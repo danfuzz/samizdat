@@ -245,11 +245,6 @@ zint utf8SizeFromSymbol(zvalue symbol) {
 //
 
 // Documented in header.
-FUNC_IMPL_1(Symbol_makeSymbol, name) {
-    return symbolFromString(name);
-}
-
-// Documented in header.
 METH_IMPL_rest(Symbol, call, args) {
     return symbolCall(ths, argsSize, args);
 }
@@ -336,7 +331,6 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, totalOrder),
             NULL));
 
-    FUN_Symbol_makeSymbol = datImmortalize(FUNC_VALUE(Symbol_makeSymbol));
     FUN_Symbol_symbolIsInterned =
         datImmortalize(FUNC_VALUE(Symbol_symbolIsInterned));
     FUN_Symbol_symbolString =
@@ -348,9 +342,6 @@ zvalue CLS_Symbol = NULL;
 
 // Documented in header.
 SYM_DEF(makeAnonymous);
-
-// Documented in header.
-zvalue FUN_Symbol_makeSymbol = NULL;
 
 // Documented in header.
 zvalue FUN_Symbol_symbolIsInterned = NULL;
