@@ -175,13 +175,15 @@ fn Null_convert(value) {
 
 ## Converts a symbol.
 fn Symbol_convert(value) {
-    def name = symbolString(value);
-
     if (!symbolIsInterned(value)) {
         die("Cannot convert anonymous symbol: \%q(value)")
     };
 
-    return genCall("makeSymbol", convert(name))
+    ## See comment in `String_convert`.
+    def name = symbolString(value);
+    def bodyChars = [].cat((ch in name -> stringChar(ch))*);
+
+    return genCall("symbolFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
 };
 
 ## Converts a string.
