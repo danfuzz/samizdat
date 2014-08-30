@@ -170,11 +170,6 @@ zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
 }
 
 // Documented in header.
-zvalue makeSymbol(zvalue name) {
-    return symbolFromZstring(zstringFromString(name));
-}
-
-// Documented in header.
 zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     if (argCount < 1) {
         die("Too few arguments for symbol call.");
@@ -194,6 +189,11 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     zvalue result = funCall(function, argCount, args);
     UTIL_TRACE_END();
     return result;
+}
+
+// Documented in header.
+zvalue symbolFromString(zvalue name) {
+    return symbolFromZstring(zstringFromString(name));
 }
 
 // Documented in header.
@@ -246,7 +246,7 @@ zint utf8SizeFromSymbol(zvalue symbol) {
 
 // Documented in header.
 FUNC_IMPL_1(Symbol_makeSymbol, name) {
-    return makeSymbol(name);
+    return symbolFromString(name);
 }
 
 // Documented in header.
