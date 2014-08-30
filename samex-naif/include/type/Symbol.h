@@ -18,9 +18,6 @@ extern zvalue CLS_Symbol;
 /** Method `.makeAnonymous()`: Documented in spec. */
 SYM_DECL(makeAnonymous);
 
-/** Global function `makeSymbol`: Documented in spec. */
-extern zvalue FUN_Symbol_makeSymbol;
-
 /** Global function `symbolIsInterned`: Documented in spec. */
 extern zvalue FUN_Symbol_symbolIsInterned;
 
@@ -37,7 +34,7 @@ zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf);
  * Gets the interned symbol that corresponds to the given `name`, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */
-zvalue makeSymbol(zvalue name);
+zvalue symbolFromString(zvalue name);
 
 /**
  * Makes an interned symbol from a UTF-8 string. If `utfBytes`

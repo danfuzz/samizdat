@@ -5,6 +5,18 @@ String
 ------
 
 <br><br>
+### Method Definitions: `String` protocol
+
+#### `.toSymbol() -> symbol`
+
+Returns an interned symbol whose name is `this`.
+
+**Note:** If you want an anonymous symbol, call `.makeAnonymous()` on a
+symbol with the desired name, e.g. `name.toSymbol().makeAnonymous()`
+or (if you know the name statically) `@.foo.makeAnonymous()`.
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.perEq(other) -> string | void`
@@ -42,7 +54,7 @@ Same as `.toInt()`.
 
 #### `.toString() -> string`
 
-Returns the argument.
+Returns `this`.
 
 
 <br><br>

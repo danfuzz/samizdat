@@ -506,7 +506,7 @@ DEF_PARSE(type) {
     if (name != NULL) {
         return makeLiteral(
             makeDerivedDataClass(
-                makeSymbol(get(name, STR_value))));
+                symbolFromString(get(name, STR_value))));
     }
 
     name = PARSE_OR_REJECT(parenExpression);
@@ -524,7 +524,7 @@ DEF_PARSE(deriv) {
     if (name != NULL) {
         cls = makeLiteral(
             makeDerivedDataClass(
-                makeSymbol(get(name, STR_value))));
+                symbolFromString(get(name, STR_value))));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }
@@ -874,7 +874,7 @@ DEF_PARSE(formalsList) {
  */
 DEF_PARSE(closureDeclarations1) {
     zvalue n = PARSE(name);
-    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, makeSymbol(n));
+    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, symbolFromString(n));
 }
 
 /**
@@ -936,7 +936,7 @@ DEF_PARSE(functionCommon) {
         withFormals(
             withYieldDef(code, STR_return),
             formals),
-        makeSymbol(name));
+        symbolFromString(name));
 
     return makeFullClosure(basic);
 }

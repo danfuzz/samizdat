@@ -502,6 +502,11 @@ METH_IMPL_0(String, toString) {
 }
 
 // Documented in header.
+METH_IMPL_0(String, toSymbol) {
+    return symbolFromZstring(getInfo(ths)->s);
+}
+
+// Documented in header.
 METH_IMPL_1(String, totalEq, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     return uncheckedEq(ths, other) ? ths : NULL;
@@ -536,6 +541,8 @@ MOD_INIT(String) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
+    SYM_INIT(toSymbol);
+
     // Note: The `objectModel` module initializes `CLS_String`.
     classBindMethods(CLS_String,
         NULL,
@@ -556,6 +563,7 @@ MOD_INIT(String) {
             METH_BIND(String, toInt),
             METH_BIND(String, toNumber),
             METH_BIND(String, toString),
+            METH_BIND(String, toSymbol),
             METH_BIND(String, totalEq),
             METH_BIND(String, totalOrder),
             METH_BIND(String, valueList),
@@ -570,3 +578,6 @@ MOD_INIT(String) {
 
 // Documented in header.
 zvalue CLS_String = NULL;
+
+// Documented in header.
+SYM_DEF(toSymbol);

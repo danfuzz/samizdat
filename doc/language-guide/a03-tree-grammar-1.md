@@ -273,7 +273,7 @@ def parType = {:
 
     (
         name = parIdentifierString
-        { makeLiteral(@@(makeSymbol(name::value))) }
+        { makeLiteral(@@(name::value.toSymbol())) }
     |
         name = parParenExpression
         { makeCall(REFS::makeDerivedDataClass, name) }
@@ -286,7 +286,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierString
-        { makeLiteral(@@(makeSymbol(name::value))) }
+        { makeLiteral(@@(name::value.toSymbol())) }
     |
         parParenExpression
     )
@@ -609,7 +609,7 @@ def parClosureDeclarations = {:
     most = (
         name = (
             n = parName
-            { {name: makeSymbol(n)} }
+            { {name: n.toSymbol()} }
         |
             { {} }
         )
@@ -660,7 +660,7 @@ def parFunctionCommon = {:
             withFormals(
                 withYieldDef(code, "return"),
                 formals),
-            makeSymbol(name));
+            name.toSymbol());
 
         makeFullClosure(basic)
     }
@@ -975,7 +975,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierString
-    { @token{value: @@(makeSymbol(type::value))} }
+    { @token{value: @@(type::value.toSymbol())} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining
@@ -1014,7 +1014,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { "".cat(strings*).collect { ch -> @@(makeSymbol(ch)) } }
+        { "".cat(strings*).collect { ch -> @@(ch.toSymbol()) } }
     |
         tokens = parPexToken+
         { tokens.collect({ n -> n::value }) }
