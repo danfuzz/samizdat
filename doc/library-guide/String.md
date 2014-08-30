@@ -5,6 +5,14 @@ String
 ------
 
 <br><br>
+### Method Definitions: `String` protocol
+
+#### `.toSymbol() -> symbol`
+
+Returns an interned symbol whose name is `this`.
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.perEq(other) -> string | void`
@@ -42,7 +50,7 @@ Same as `.toInt()`.
 
 #### `.toString() -> string`
 
-Returns the argument.
+Returns `this`.
 
 
 <br><br>
