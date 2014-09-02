@@ -320,10 +320,10 @@ DEF_PARSE(identifierSymbol) {
     zvalue result;
 
     result = MATCH(string);
-    if (result != NULL) { return makeLiteral(get(result, STR_value)); }
+    if (result != NULL) { return makeSymbolLiteral(get(result, STR_value)); }
 
     result = PARSE(name);
-    if (result != NULL) { return makeLiteral(result); }
+    if (result != NULL) { return makeSymbolLiteral(result); }
 
     result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
     REJECT_IF(dataOf(result) != NULL);
@@ -332,7 +332,7 @@ DEF_PARSE(identifierSymbol) {
     zchar firstCh = zcharFromString(nth(name, 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
-    return makeLiteral(name);
+    return makeSymbolLiteral(name);
 }
 
 // Documented in spec.
@@ -356,8 +356,7 @@ DEF_PARSE(literal) {
         return makeLiteral(THE_NULL);
     } else if (MATCH(CH_AT)) {
         MATCH_OR_REJECT(CH_DOT);
-        zvalue name = PARSE_OR_REJECT(identifierSymbol);
-        return makeSymbolLiteral(get(name, STR_value));
+        return PARSE_OR_REJECT(identifierSymbol);
     }
 
     return NULL;
@@ -372,7 +371,7 @@ DEF_PARSE(key1) {
     zvalue result = PARSE_OR_REJECT(identifierSymbol);
     MATCH_OR_REJECT(CH_COLON);
 
-    return result;
+    return makeLiteral(symbolString(get(result, STR_value)));
 }
 
 /**
@@ -504,9 +503,7 @@ DEF_PARSE(type) {
 
     zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
-        return makeLiteral(
-            makeDerivedDataClass(
-                symbolFromString(get(name, STR_value))));
+        return makeLiteral(makeDerivedDataClass(get(name, STR_value)));
     }
 
     name = PARSE_OR_REJECT(parenExpression);
@@ -522,9 +519,7 @@ DEF_PARSE(deriv) {
     zvalue cls;
     zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
-        cls = makeLiteral(
-            makeDerivedDataClass(
-                symbolFromString(get(name, STR_value))));
+        cls = makeLiteral(makeDerivedDataClass(get(name, STR_value)));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }
@@ -640,6 +635,7 @@ DEF_PARSE(postfixOperator) {
 
     if ((result == NULL) && (MATCH(CH_COLONCOLON) != NULL)) {
         result = PARSE_OR_REJECT(identifierSymbol);
+        result = makeLiteral(symbolString(get(result, STR_value)));
     }
 
     if (result == NULL) { result = MATCH(CH_STAR); }

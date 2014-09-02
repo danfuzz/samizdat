@@ -130,10 +130,10 @@ def parVarRef = {:
 ## returning a symbol literal in all cases.
 def parIdentifierSymbol = {:
     s = @string
-    { makeLiteral(s::value) }
+    { makeSymbolLiteral(s::value) }
 |
     name = parName
-    { makeLiteral(name) }
+    { makeSymbolLiteral(name) }
 |
     token = .
     {
@@ -142,7 +142,7 @@ def parIdentifierSymbol = {:
                 def name = get_classNameString(token);
                 def firstCh = name.nth(0);
                 ifIs { LOWER_ALPHA.get(firstCh) }
-                    { makeLiteral(name) }
+                    { makeSymbolLiteral(name) }
             }
     }
 :};
@@ -174,15 +174,14 @@ def parLiteral = {:
 |
     @"@"
     @"."
-    name = parIdentifierSymbol
-    { makeSymbolLiteral(name::value) }
+    parIdentifierSymbol
 :};
 
 ## Parses a map key.
 def parKey = {:
     key = parIdentifierSymbol
     @":"
-    { key }
+    { makeLiteral(symbolString(key::value)) }
 |
     key = parExpression
     @":"
@@ -273,7 +272,7 @@ def parType = {:
 
     (
         name = parIdentifierSymbol
-        { makeLiteral(@@(name::value.toSymbol())) }
+        { makeLiteral(@@(name::value)) }
     |
         name = parParenExpression
         { makeCall(REFS::makeDerivedDataClass, name) }
@@ -286,7 +285,7 @@ def parDeriv = {:
 
     cls = (
         name = parIdentifierSymbol
-        { makeLiteral(@@(name::value.toSymbol())) }
+        { makeLiteral(@@(name::value)) }
     |
         parParenExpression
     )
@@ -387,7 +386,7 @@ def parPostfixOperator = {:
     ## fits better here.
     @"::"
     key = parIdentifierSymbol
-    { { node -> makeGet(node, key) } }
+    { { node -> makeGet(node, makeLiteral(symbolString(key::value))) } }
 |
     ## The lookahead failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
@@ -975,7 +974,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierSymbol
-    { @token{value: @@(type::value.toSymbol())} }
+    { @token{value: @@(type::value)} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining

@@ -98,10 +98,10 @@ def parVarRef = makeMainSequence(
 def parIdentifierSymbol = makeMainChoice(
     makeSequence(
         makeToken(@@string),
-        makeCode { s -> makeLiteral(s::value) }),
+        makeCode { s -> makeSymbolLiteral(s::value) }),
     makeSequence(
         parName,
-        makeCode { name -> makeLiteral(name) }),
+        makeCode { name -> makeSymbolLiteral(name) }),
     makeSequence(
         any,
         makeCode { token ->
@@ -110,7 +110,7 @@ def parIdentifierSymbol = makeMainChoice(
                     def name = get_classNameString(token);
                     def firstCh = name.nth(0);
                     ifIs { LOWER_ALPHA.get(firstCh) }
-                        { makeLiteral(name) }
+                        { makeSymbolLiteral(name) }
                 }
             }));
 
@@ -138,15 +138,14 @@ def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
         makeToken(@@"."),
-        parIdentifierSymbol,
-        makeCode { ., ., name -> makeSymbolLiteral(name::value) }));
+        parIdentifierSymbol));
 
 ## Documented in spec.
 def parKey = makeMainChoice(
     makeSequence(
         parIdentifierSymbol,
         makeToken(@@":"),
-        makeCode { key, . -> key }),
+        makeCode { key, . -> makeLiteral(symbolString(key::value)) }),
     makeSequence(
         parExpression,
         makeToken(@@":"),
@@ -224,7 +223,7 @@ def parType = makeMainSequence(
         makeSequence(
             parIdentifierSymbol,
             makeCode { ., name ->
-                makeLiteral(@@(name::value.toSymbol()))
+                makeLiteral(@@(name::value))
             }),
         makeSequence(
             parParenExpression,
@@ -239,7 +238,7 @@ def parDeriv = makeMainSequence(
         makeSequence(
             parIdentifierSymbol,
             makeCode { ., name ->
-                makeLiteral(@@(name::value.toSymbol()))
+                makeLiteral(@@(name::value))
             }),
         parParenExpression),
     makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
@@ -315,7 +314,9 @@ def parPostfixOperator = makeMainChoice(
     makeSequence(
         makeToken(@@"::"),
         parIdentifierSymbol,
-        makeCode { ., key -> { node -> makeGet(node, key) } }),
+        makeCode { ., key ->
+            { node -> makeGet(node, makeLiteral(symbolString(key::value))) }
+        }),
     makeSequence(
         makeToken(@@"*"),
         makeCode { . -> { node -> makeInterpolate(node) } }),
@@ -749,7 +750,7 @@ def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierSymbol,
     makeCode { ., type ->
-        @token{value: @@(type::value.toSymbol())}
+        @token{value: @@(type::value)}
     });
 
 ## Documented in spec.
