@@ -187,13 +187,13 @@ fn doDirectory(args, sourcePath) {
 ## Processes a single file or directory.
 fn doOne(args, sourcePath) {
     switch (def type = $Io0::fileType(sourcePath)) {
-        absent: {
+        @.absent: {
             die("File not found: \%q(sourcePath)")
         };
-        file: {
+        @.file: {
             doFile(args, sourcePath)
         };
-        directory: {
+        @.directory: {
             doDirectory(args, sourcePath)
         };
         default: {
