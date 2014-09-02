@@ -25,7 +25,7 @@
     DEF_DATA(name, str); \
     extern zvalue TOK_##name
 
-#include "const/const-def.h"
+#include "const-def.h"
 
 #undef DEF_STRING
 #undef DEF_DATA

@@ -11,6 +11,7 @@
 
 #include <stdbool.h>
 
+#include "const.h"
 #include "lang.h"
 #include "type/Class.h"
 #include "zlimits.h"
