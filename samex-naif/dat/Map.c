@@ -5,7 +5,6 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#include "const.h"
 #include "type/Box.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"

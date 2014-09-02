@@ -23,16 +23,16 @@ string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `fileType(path) -> string`
+#### `fileType(path) -> symbol`
 
 Returns the type of the file whose `path` is as given. This function always
-returns a string, one of:
+returns a symbol, one of:
 
-* `"absent"` &mdash; Indicates a nonexistent path (including a nonexistent
+* `@.absent` &mdash; Indicates a nonexistent path (including a nonexistent
   non-final path component).
-* `"file"` &mdash; Indicates a regular file.
-* `"directory"` &mdash; Indicates a directory.
-* `"other"` &mdash; Any other existing file (e.g., a named pipe).
+* `@.file` &mdash; Indicates a regular file.
+* `@.directory` &mdash; Indicates a directory.
+* `@.other` &mdash; Any other existing file (e.g., a named pipe).
 
 #### `readDirectory(path) -> map | void`
 
@@ -40,7 +40,7 @@ Reads the contents of the indicated directory, using the underlying OS's
 functionality. Returns a map from names (strings) to types (also strings).
 Types are as with `fileType`, with the addition of:
 
-* `"symlink"` &mdash; Indicates a symbolic link.
+* `@.symlink` &mdash; Indicates a symbolic link.
 
 If `path` is not an existing directory (e.g. if it doesn't exist, period, or
 it exists but is not a directory), then this function returns void.

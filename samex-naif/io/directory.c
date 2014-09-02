@@ -6,7 +6,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include "const.h"
 #include "io.h"
 #include "type/Map.h"
 #include "type/String.h"
@@ -26,7 +25,7 @@ zvalue ioReadDirectory(zvalue path) {
     utf8FromString(sz + 1, str, path);
 
     zvalue type = ioFileType(path);
-    if (!valEq(type, STR_directory)) {
+    if (!valEq(type, SYM_directory)) {
         return NULL;
     }
 
@@ -58,10 +57,10 @@ zvalue ioReadDirectory(zvalue path) {
         zvalue type;
 
         switch (entry.d_type) {
-            case DT_REG: { type = STR_file;      break; }
-            case DT_DIR: { type = STR_directory; break; }
-            case DT_LNK: { type = STR_symlink;   break; }
-            default:     { type = STR_other;     break; }
+            case DT_REG: { type = SYM_file;      break; }
+            case DT_DIR: { type = SYM_directory; break; }
+            case DT_LNK: { type = SYM_symlink;   break; }
+            default:     { type = SYM_other;     break; }
         }
 
         result = collPut(result, name, type);

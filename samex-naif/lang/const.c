@@ -4,11 +4,7 @@
 
 #include <stddef.h>
 
-#include "type/DerivedData.h"
-#include "type/Symbol.h"
-#include "type/String.h"
-#include "type/Class.h"
-#include "zlimits.h"
+#include "type/define.h"
 
 
 //
@@ -25,7 +21,7 @@
     DEF_DATA(name, str); \
     zvalue TOK_##name = NULL
 
-#include "const/const-def.h"
+#include "const-def.h"
 
 #undef DEF_STRING
 #undef DEF_DATA
@@ -37,7 +33,7 @@
 //
 
 /** Initializes the module. */
-MOD_INIT(const) {
+MOD_INIT(lang_const) {
     zstackPointer save = datFrameStart();
 
     MOD_USE(Value);
@@ -56,7 +52,7 @@ MOD_INIT(const) {
         TOK_##name = makeData(CLS_##name, NULL); \
         datImmortalize(TOK_##name)
 
-    #include "const/const-def.h"
+    #include "const-def.h"
 
     datFrameReturn(save, NULL);
 

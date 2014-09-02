@@ -9,8 +9,16 @@
 #ifndef _LIB_H_
 #define _LIB_H_
 
-#include "dat.h"
+#include "type/declare.h"
 
+/** String needed for interaction with the library. */
+STRING_DECL(exports);
+
+/** String needed for interaction with the library. */
+STRING_DECL(main);
+
+/** String needed for interaction with the library. */
+STRING_DECL(runCommandLine);
 
 /**
  * Constructs and returns a fresh execution environment, containing bindings

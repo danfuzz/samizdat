@@ -115,10 +115,10 @@ export fn runCommandLine(rawArgs*) {
     ## TODO: These probably don't actually want to refer to `thisLoader`,
     ## as it includes the possibility of loading module-internal files.
     switch ($Io0::fileType(filePath)) {
-        absent: {
+        @.absent: {
             die("No such file or directory: \%q(filePath)")
         };
-        directory: {
+        @.directory: {
             return? run(filePath, thisLoader(), filePath, args*)
         };
         default: {
