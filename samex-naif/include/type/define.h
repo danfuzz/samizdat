@@ -30,8 +30,8 @@
  */
 #define DERIV_INIT(name) \
     do { \
-        DERIV_NAME(name) = makeDerivedDataClass(symbolFromUtf8(-1, #name)); \
-        datImmortalize(DERIV_NAME(name)); \
+        DERIV_NAME(name) = datImmortalize( \
+            makeDerivedDataClass(symbolFromUtf8(-1, #name))); \
     } while (0)
 
 
