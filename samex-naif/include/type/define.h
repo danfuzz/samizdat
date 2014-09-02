@@ -16,19 +16,6 @@
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
 
-/** Variable definition for a method symbol. */
-#define SYM_DEF(name) \
-    zvalue SYM_NAME(name) = NULL
-
-/**
- * Performs initialization of the indicated method symbol.
- */
-#define SYM_INIT(name) \
-    do { \
-        SYM_NAME(name) = symbolFromUtf8(-1, #name); \
-    } while (0)
-
-
 //
 // Function implementation declarations. Each of these is identical except
 // for the argument requirements. The names are of the form `...args` or
@@ -137,5 +124,23 @@
 #define METH_IMPL_0_1(cls, name, a0)   FUNC_IMPL_1_2(cls##_##name, ths, a0)
 #define METH_IMPL_1_2(cls, name, a0, a1) \
     FUNC_IMPL_2_3(cls##_##name, ths, a0, a1)
+
+
+//
+// Symbol definition
+//
+
+/** Variable definition for a method symbol. */
+#define SYM_DEF(name) \
+    zvalue SYM_NAME(name) = NULL
+
+/**
+ * Performs initialization of the indicated method symbol.
+ */
+#define SYM_INIT(name) \
+    do { \
+        SYM_NAME(name) = symbolFromUtf8(-1, #name); \
+    } while (0)
+
 
 #endif
