@@ -38,7 +38,7 @@ fn reportError(pending) {
 };
 
 ## Set-like map of all lowercase identifier characters. Used to figure
-## out if we're looking at a keyword in the `identifierString` rule.
+## out if we're looking at a keyword in the `identifierSymbol` rule.
 def LOWER_ALPHA = {
     makeInclusiveRange("a", "z")*: true
 };
@@ -127,8 +127,8 @@ def parVarRef = {:
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,
-## returning a string literal in all cases.
-def parIdentifierString = {:
+## returning a symbol literal in all cases.
+def parIdentifierSymbol = {:
     s = @string
     { makeLiteral(s::value) }
 |
@@ -174,13 +174,13 @@ def parLiteral = {:
 |
     @"@"
     @"."
-    name = parIdentifierString
+    name = parIdentifierSymbol
     { makeSymbolLiteral(name::value) }
 :};
 
 ## Parses a map key.
 def parKey = {:
-    key = parIdentifierString
+    key = parIdentifierSymbol
     @":"
     { key }
 |
@@ -235,7 +235,7 @@ def parMap = {:
 ##   effectively "reserved syntax" (for future expansion); rejecting this
 ##   here means that `x:y` won't be mistaken for other valid syntax.
 def parListItem = {:
-    parIdentifierString
+    parIdentifierSymbol
     @":"
     { die("Mapping syntax not valid as a list item or call argument.") }
 |
@@ -272,7 +272,7 @@ def parType = {:
     @"@@"
 
     (
-        name = parIdentifierString
+        name = parIdentifierSymbol
         { makeLiteral(@@(name::value.toSymbol())) }
     |
         name = parParenExpression
@@ -285,7 +285,7 @@ def parDeriv = {:
     @"@"
 
     cls = (
-        name = parIdentifierString
+        name = parIdentifierSymbol
         { makeLiteral(@@(name::value.toSymbol())) }
     |
         parParenExpression
@@ -386,7 +386,7 @@ def parPostfixOperator = {:
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
     @"::"
-    key = parIdentifierString
+    key = parIdentifierSymbol
     { { node -> makeGet(node, key) } }
 |
     ## The lookahead failure here is to make the grammar prefer `*` to be
@@ -715,7 +715,7 @@ def parImportName = {:
 ## binding `format`.
 def parImportFormat = {:
     @"@"
-    f = parIdentifierString
+    f = parIdentifierSymbol
     { {format: f::value} }
 |
     { {} }
@@ -974,7 +974,7 @@ def parPexString = {:
 ## Parses a token literal parsing expression.
 def parPexToken = {:
     @"@"
-    type = parIdentifierString
+    type = parIdentifierSymbol
     { @token{value: @@(type::value.toSymbol())} }
 :};
 

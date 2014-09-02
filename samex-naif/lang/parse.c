@@ -314,7 +314,7 @@ DEF_PARSE(varRef) {
 }
 
 // Documented in spec.
-DEF_PARSE(identifierString) {
+DEF_PARSE(identifierSymbol) {
     MARK();
 
     zvalue result;
@@ -356,7 +356,7 @@ DEF_PARSE(literal) {
         return makeLiteral(THE_NULL);
     } else if (MATCH(CH_AT)) {
         MATCH_OR_REJECT(CH_DOT);
-        zvalue name = PARSE_OR_REJECT(identifierString);
+        zvalue name = PARSE_OR_REJECT(identifierSymbol);
         return makeSymbolLiteral(get(name, STR_value));
     }
 
@@ -364,12 +364,12 @@ DEF_PARSE(literal) {
 }
 
 /**
- * Helper for `key`: Parses `identifierString @":"`.
+ * Helper for `key`: Parses `identifierSymbol @":"`.
  */
 DEF_PARSE(key1) {
     MARK();
 
-    zvalue result = PARSE_OR_REJECT(identifierString);
+    zvalue result = PARSE_OR_REJECT(identifierSymbol);
     MATCH_OR_REJECT(CH_COLON);
 
     return result;
@@ -469,7 +469,7 @@ DEF_PARSE(map) {
 DEF_PARSE(listItem) {
     MARK();
 
-    if (PARSE(identifierString) && MATCH(CH_COLON)) {
+    if (PARSE(identifierSymbol) && MATCH(CH_COLON)) {
         die("Mapping syntax not valid as a list item or call argument.");
     }
 
@@ -502,7 +502,7 @@ DEF_PARSE(type) {
 
     MATCH_OR_REJECT(CH_ATAT);
 
-    zvalue name = PARSE(identifierString);
+    zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
         return makeLiteral(
             makeDerivedDataClass(
@@ -520,7 +520,7 @@ DEF_PARSE(deriv) {
     MATCH_OR_REJECT(CH_AT);
 
     zvalue cls;
-    zvalue name = PARSE(identifierString);
+    zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
         cls = makeLiteral(
             makeDerivedDataClass(
@@ -639,7 +639,7 @@ DEF_PARSE(postfixOperator) {
     if (result == NULL) { result = PARSE(actualsList); }
 
     if ((result == NULL) && (MATCH(CH_COLONCOLON) != NULL)) {
-        result = PARSE_OR_REJECT(identifierString);
+        result = PARSE_OR_REJECT(identifierSymbol);
     }
 
     if (result == NULL) { result = MATCH(CH_STAR); }
@@ -992,7 +992,7 @@ DEF_PARSE(importFormat1) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
-    zvalue f = PARSE_OR_REJECT(identifierString);
+    zvalue f = PARSE_OR_REJECT(identifierSymbol);
     return mapFrom1(STR_format, get(f, STR_value));
 }
 

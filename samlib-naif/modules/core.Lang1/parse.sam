@@ -32,7 +32,7 @@ fn reportError(pending) {
 };
 
 ## Set-like map of all lowercase identifier characters. Used to figure
-## out if we're looking at a keyword in the `identifierString` rule.
+## out if we're looking at a keyword in the `identifierSymbol` rule.
 def LOWER_ALPHA = {
     makeInclusiveRange("a", "z")*: true
 };
@@ -95,7 +95,7 @@ def parVarRef = makeMainSequence(
     makeCode { ., name -> makeVarRef(name) });
 
 ## Documented in spec.
-def parIdentifierString = makeMainChoice(
+def parIdentifierSymbol = makeMainChoice(
     makeSequence(
         makeToken(@@string),
         makeCode { s -> makeLiteral(s::value) }),
@@ -138,13 +138,13 @@ def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
         makeToken(@@"."),
-        parIdentifierString,
+        parIdentifierSymbol,
         makeCode { ., ., name -> makeSymbolLiteral(name::value) }));
 
 ## Documented in spec.
 def parKey = makeMainChoice(
     makeSequence(
-        parIdentifierString,
+        parIdentifierSymbol,
         makeToken(@@":"),
         makeCode { key, . -> key }),
     makeSequence(
@@ -190,7 +190,7 @@ def parMap = makeMainSequence(
 ## Documented in spec.
 def parListItem = makeMainChoice(
     makeSequence(
-        parIdentifierString,
+        parIdentifierSymbol,
         makeToken(@@":"),
         makeCode { ., . ->
             die("Mapping syntax not valid as a list item or call argument.")
@@ -222,7 +222,7 @@ def parType = makeMainSequence(
     makeToken(@@"@@"),
     makeChoice(
         makeSequence(
-            parIdentifierString,
+            parIdentifierSymbol,
             makeCode { ., name ->
                 makeLiteral(@@(name::value.toSymbol()))
             }),
@@ -237,7 +237,7 @@ def parDeriv = makeMainSequence(
     makeToken(@@"@"),
     makeChoice(
         makeSequence(
-            parIdentifierString,
+            parIdentifierSymbol,
             makeCode { ., name ->
                 makeLiteral(@@(name::value.toSymbol()))
             }),
@@ -314,7 +314,7 @@ def parPostfixOperator = makeMainChoice(
         }),
     makeSequence(
         makeToken(@@"::"),
-        parIdentifierString,
+        parIdentifierSymbol,
         makeCode { ., key -> { node -> makeGet(node, key) } }),
     makeSequence(
         makeToken(@@"*"),
@@ -535,7 +535,7 @@ def parImportName = makeMainChoice(
 def parImportFormat = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
-        parIdentifierString,
+        parIdentifierSymbol,
         makeCode { ., f -> {format: f::value} }),
     makeResult({}));
 
@@ -747,7 +747,7 @@ def parPexString = makeMainSequence(makeToken(@@string));
 ## Documented in spec.
 def parPexToken = makeMainSequence(
     makeToken(@@"@"),
-    parIdentifierString,
+    parIdentifierSymbol,
     makeCode { ., type ->
         @token{value: @@(type::value.toSymbol())}
     });
