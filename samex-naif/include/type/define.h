@@ -173,17 +173,23 @@
 // Symbols
 //
 
-/** Variable definition for a method symbol. */
+/** Variable definition for a symbol. */
 #define SYM_DEF(name) \
     zvalue SYM_NAME(name) = NULL
 
 /**
- * Performs initialization of the indicated method symbol.
+ * Performs initialization of the indicated symbol, with the given string
+ * name.
  */
-#define SYM_INIT(name) \
+#define SYM_INIT_WITH(name, value) \
     do { \
-        SYM_NAME(name) = symbolFromUtf8(-1, #name); \
+        SYM_NAME(name) = symbolFromUtf8(-1, value); \
     } while (0)
 
+/**
+ * Performs initialization of the indicated symbol, with a name identical
+ * to the given variable name.
+ */
+#define SYM_INIT(name) SYM_INIT_WITH(name, #name)
 
 #endif
