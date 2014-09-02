@@ -46,6 +46,19 @@
 
 
 //
+// Strings
+//
+
+/** Variable name for a string. */
+#define STRING_NAME(name) STRING_##name
+
+/** Declaration for a string. */
+#define STRING_DECL(name) \
+    extern zvalue STRING_NAME(name) \
+    // No semicolon here, so that use sites require it.
+
+
+//
 // Symbols
 //
 

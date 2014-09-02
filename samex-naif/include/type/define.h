@@ -14,6 +14,7 @@
 #include "type/Builtin.h"
 #include "type/Class.h"
 #include "type/DerivedData.h"
+#include "type/String.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
 
@@ -143,6 +144,29 @@
 #define METH_IMPL_0_1(cls, name, a0)   FUNC_IMPL_1_2(cls##_##name, ths, a0)
 #define METH_IMPL_1_2(cls, name, a0, a1) \
     FUNC_IMPL_2_3(cls##_##name, ths, a0, a1)
+
+
+//
+// Strings
+//
+
+/** Variable definition for a string. */
+#define STRING_DEF(name) \
+    zvalue STRING_NAME(name) = NULL
+
+/**
+ * Performs initialization of the indicated string, with the given content.
+ */
+#define STRING_INIT_WITH(name, value) \
+    do { \
+        STRING_NAME(name) = datImmortalize(stringFromUtf8(-1, (value))); \
+    } while (0)
+
+/**
+ * Performs initialization of the indicated string, where the content is
+ * the same as the name.
+ */
+#define STRING_INIT(name) STRING_INIT_WITH(name, #name)
 
 
 //

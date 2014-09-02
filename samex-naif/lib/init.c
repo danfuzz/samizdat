@@ -2,7 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "const.h"
 #include "impl.h"
 #include "io.h"
 #include "lang.h"
@@ -109,7 +108,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 
     // Call `ModuleSystem::exports::main` to load and evaluate the
     // core library.
-    zvalue mainFn = get(get(moduleSystem, STR_exports), STR_main);
+    zvalue mainFn = get(get(moduleSystem, STRING_exports), STRING_main);
     return FUN_CALL(mainFn, libraryPath, PRIMITIVE_ENVIRONMENT);
 }
 
@@ -120,16 +119,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 
 // Documented in header.
 zvalue libNewEnvironment(const char *libraryPath) {
-    MOD_USE(const);
-    MOD_USE(Bool);
-    MOD_USE(Box);
-    MOD_USE(Generator);
-    MOD_USE(Map);
-    MOD_USE(Object);
-    MOD_USE(io);
-    MOD_USE(lang);
-
-    makePrimitiveEnvironment();
+    MOD_USE(lib);
 
     zstackPointer save = datFrameStart();
     zvalue result = getLibrary(stringFromUtf8(-1, libraryPath));
@@ -142,3 +132,30 @@ zvalue libNewEnvironment(const char *libraryPath) {
 
     return result;
 }
+
+/** Initializes the module. */
+MOD_INIT(lib) {
+    MOD_USE(const);
+    MOD_USE(Bool);
+    MOD_USE(Box);
+    MOD_USE(Generator);
+    MOD_USE(Map);
+    MOD_USE(Object);
+    MOD_USE(io);
+    MOD_USE(lang);
+
+    STRING_INIT(exports);
+    STRING_INIT(main);
+    STRING_INIT(runCommandLine);
+
+    makePrimitiveEnvironment();
+}
+
+// Documented in header.
+STRING_DEF(exports);
+
+// Documented in header.
+STRING_DEF(main);
+
+// Documented in header.
+STRING_DEF(runCommandLine);
