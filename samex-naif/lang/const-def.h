@@ -6,11 +6,12 @@
 // **Note:** This file gets `#include`d multiple times, and so does not
 // have the usual guard macros.
 //
-// `DEF_STRING(name, "string")` defines a string constant.
-// `DEF_DATA(name, "string")` defines a string and a derived data class.
-// `DEF_TOKEN(name, "string")` defines a string, a class, and a token constant.
+// `DEF_STRING(name, "string")` -- a string constant.
+// `DEF_SYMBOL(name, "string")` -- an interned symbol.
+// `DEF_DATA(name, "string")` -- a derived data class.
+// `DEF_TOKEN(name, "string")` -- a string, a derived data class and a token.
 //
-// Token constants are class-only transparent derived values, whose classes
+// Tokens are class-only transparent derived values, whose classes
 // are named with the indicated strings.
 //
 
@@ -74,6 +75,41 @@ DEF_DATA(string,                 "string");
 DEF_DATA(varDef,                 "varDef");
 DEF_DATA(varDefMutable,          "varDefMutable");
 DEF_DATA(varRef,                 "varRef");
+
+DEF_SYMBOL(bind,                 "bind");
+DEF_SYMBOL(classAddMethod,       "classAddMethod");
+DEF_SYMBOL(exports,              "exports");
+DEF_SYMBOL(formals,              "formals");
+DEF_SYMBOL(format,               "format");
+DEF_SYMBOL(function,             "function");
+DEF_SYMBOL(imports,              "imports");
+DEF_SYMBOL(index,                "index");
+DEF_SYMBOL(info,                 "info");
+DEF_SYMBOL(interpolate,          "interpolate");
+DEF_SYMBOL(language,             "language");
+DEF_SYMBOL(loadModule,           "loadModule");
+DEF_SYMBOL(loadResource,         "loadResource");
+DEF_SYMBOL(lvalue,               "lvalue");
+DEF_SYMBOL(makeData,             "makeData");
+DEF_SYMBOL(makeDerivedDataClass, "makeDerivedDataClass");
+DEF_SYMBOL(makeList,             "makeList");
+DEF_SYMBOL(makeValueMap,         "makeValueMap");
+DEF_SYMBOL(map,                  "map");
+DEF_SYMBOL(maybeValue,           "maybeValue");
+DEF_SYMBOL(name,                 "name");
+DEF_SYMBOL(prefix,               "prefix");
+DEF_SYMBOL(repeat,               "repeat");
+DEF_SYMBOL(resources,            "resources");
+DEF_SYMBOL(select,               "select");
+DEF_SYMBOL(seq,                  "seq");
+DEF_SYMBOL(source,               "source");
+DEF_SYMBOL(statements,           "statements");
+DEF_SYMBOL(target,               "target");
+DEF_SYMBOL(this,                 "this");
+DEF_SYMBOL(top,                  "top");
+DEF_SYMBOL(value,                "value");
+DEF_SYMBOL(values,               "values");
+DEF_SYMBOL(yieldDef,             "yieldDef");
 
 DEF_STRING(bind,                 "bind");
 DEF_STRING(cat,                  "cat");

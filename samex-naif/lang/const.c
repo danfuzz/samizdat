@@ -11,19 +11,24 @@
 // Define globals for all of the constants.
 //
 
-#define DEF_STRING(name, str) zvalue STR_##name = NULL
+#define DEF_STRING(name, str) \
+    zvalue STR_##name = NULL
+
+#define DEF_SYMBOL(name, str) \
+    SYM_DEF(name)
 
 #define DEF_DATA(name, str) \
-    DEF_STRING(name, str); \
     zvalue CLS_##name = NULL
 
 #define DEF_TOKEN(name, str) \
+    DEF_STRING(name, str); \
     DEF_DATA(name, str); \
     zvalue TOK_##name = NULL
 
 #include "const-def.h"
 
 #undef DEF_STRING
+#undef DEF_SYMBOL
 #undef DEF_DATA
 #undef DEF_TOKEN
 
@@ -39,18 +44,19 @@ MOD_INIT(lang_const) {
     MOD_USE(Value);
 
     #define DEF_STRING(name, str) \
-        STR_##name = stringFromUtf8(-1, str); \
-        datImmortalize(STR_##name)
+        STR_##name = datImmortalize(stringFromUtf8(-1, str))
+
+    #define DEF_SYMBOL(name, str) \
+        SYM_INIT_WITH(name, str)
 
     #define DEF_DATA(name, str) \
-        DEF_STRING(name, str); \
-        CLS_##name = makeDerivedDataClass(symbolFromString(STR_##name)); \
-        datImmortalize(CLS_##name)
+        CLS_##name = datImmortalize( \
+            makeDerivedDataClass(symbolFromUtf8(-1, str)));
 
     #define DEF_TOKEN(name, str) \
+        DEF_STRING(name, str); \
         DEF_DATA(name, str); \
-        TOK_##name = makeData(CLS_##name, NULL); \
-        datImmortalize(TOK_##name)
+        TOK_##name = datImmortalize(makeData(CLS_##name, NULL));
 
     #include "const-def.h"
 
