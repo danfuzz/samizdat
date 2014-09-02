@@ -13,6 +13,23 @@
 
 #include "dat.h"
 
+//
+// Derived data classes
+//
+
+/** Variable name for a derived data class. */
+#define DERIV_NAME(name) DERIV_##name
+
+/** Declaration for a derived data class. */
+#define DERIV_DECL(name) \
+    extern zvalue DERIV_NAME(name) \
+    // No semicolon here, so that use sites require it.
+
+
+//
+// Functions
+//
+
 /**
  * C source name for a `zfunction` implementation with the given name.
  * The result is a prefixed version of the given name.
@@ -26,6 +43,11 @@
 #define FUN_IMPL_DECL(name) \
     zvalue FUN_IMPL_NAME(name)( \
         zvalue thisFunction, zint argCount, const zvalue *args)
+
+
+//
+// Symbols
+//
 
 /** Variable name for a method symbol. */
 #define SYM_NAME(name) SYM_##name

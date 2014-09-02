@@ -13,8 +13,27 @@
 
 #include "type/Builtin.h"
 #include "type/Class.h"
+#include "type/DerivedData.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
+
+//
+// Derived data classes
+//
+
+/** Variable definition for a derived data class. */
+#define DERIV_DEF(name) \
+    zvalue DERIV_NAME(name) = NULL
+
+/**
+ * Performs initialization of the indicated derived data class.
+ */
+#define DERIV_INIT(name) \
+    do { \
+        DERIV_NAME(name) = makeDerivedDataClass(symbolFromUtf8(-1, #name)); \
+        datImmortalize(DERIV_NAME(name)); \
+    } while (0)
+
 
 //
 // Function implementation declarations. Each of these is identical except
@@ -127,7 +146,7 @@
 
 
 //
-// Symbol definition
+// Symbols
 //
 
 /** Variable definition for a method symbol. */
