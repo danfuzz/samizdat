@@ -37,7 +37,7 @@ enum {
     DAT_MAX_GENERATOR_ITEMS_SOFT = 1000,
 
     /** Maximum number of immortal values allowed. */
-    DAT_MAX_IMMORTALS = 4000,
+    DAT_MAX_IMMORTALS = 10000,
 
     /** Maximum number of references on the stack. */
     DAT_MAX_STACK = 100000,
@@ -55,7 +55,7 @@ enum {
     DAT_MAX_CLASSES = 500,
 
     /** Maximum number of method symbols allowed. */
-    DAT_MAX_SYMBOLS = 1000,
+    DAT_MAX_SYMBOLS = 6000,
 
     /** Maximum (highest value) small int constant to keep. */
     DAT_SMALL_INT_MAX = 700,
