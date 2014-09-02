@@ -26,7 +26,7 @@ be their own dependencies.
 #### `.readResource(source, format) -> . | void`
 
 This reads and/or processes a resource file, interpreting it as the given
-`format` (a string name). `source` is expected to be a source specifier,
+`format` (a symbol). `source` is expected to be a source specifier,
 identifying the location of the resource.
 
 It is an error (terminating the runtime) if the given `format` is not
@@ -69,7 +69,7 @@ if `source` is not a valid source specifier.
 #### `loadResource(loader, source, format) -> .`
 
 This reads and/or processes a resource file, interpreting it as the given
-`format` (a string name). `source` is expected to be a source specifier.
+`format` (a symbol). `source` is expected to be a source specifier.
 
 It is an error (terminating the runtime) if the given `format` is not
 recognized. It is also an error (terminating the runtime) if the indicated
