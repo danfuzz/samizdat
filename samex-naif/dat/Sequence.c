@@ -6,7 +6,6 @@
 // Sequence values
 //
 
-#include "const.h"
 #include "type/Builtin.h"
 #include "type/DerivedData.h"
 #include "type/Generator.h"
