@@ -44,19 +44,14 @@ later-named modules depending only on earlier-named ones):
   and function calling. Also provides related utilities, such as assertions.
   Depends on `util`.
 
-* `const` &mdash; Commonly-used in-model constants and related utilities.
-  This includes things like strings used during parsing, and the like.
-  Depends on `util` and `dat`.
-
 * `io` &mdash; I/O functions. This implements a minimal set of I/O
-  operations. Depends on `util`, `dat`, and `const`.
+  operations. Depends on `util` and `dat`.
 
 * `lang` &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any of the library itself. Depends on `util`, `dat`,
-  and `const`.
+  not implement any of the library itself. Depends on `util` and `dat`.
 
 * `lib` &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
