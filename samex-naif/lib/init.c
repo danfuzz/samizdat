@@ -78,12 +78,12 @@ static zvalue loadFile(zvalue path) {
     zvalue binPath = METH_CALL(cat, path, stringFromUtf8(-1, ".samb"));
     zvalue func;
 
-    if (valEq(ioFileType(binPath), STR_file)) {
+    if (valEq(ioFileType(binPath), SYM_file)) {
         // We found a binary file.
         func = datEvalBinary(PRIMITIVE_ENVIRONMENT, binPath);
     } else {
         zvalue srcPath = METH_CALL(cat, path, stringFromUtf8(-1, ".sam"));
-        if (valEq(ioFileType(srcPath), STR_file)) {
+        if (valEq(ioFileType(srcPath), SYM_file)) {
             // We found a source text file.
             zvalue text = ioReadFileUtf8(srcPath);
             zvalue tree = langSimplify0(langParseProgram0(text), NULL);
@@ -125,6 +125,7 @@ zvalue libNewEnvironment(const char *libraryPath) {
     MOD_USE(Generator);
     MOD_USE(Map);
     MOD_USE(Object);
+    MOD_USE(io);
     MOD_USE(lang);
 
     makePrimitiveEnvironment();
