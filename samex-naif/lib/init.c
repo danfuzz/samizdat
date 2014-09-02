@@ -107,7 +107,8 @@ static zvalue getLibrary(zvalue libraryPath) {
         METH_CALL(cat, libraryPath,
             stringFromUtf8(-1, "/modules/core.ModuleSystem/main")));
 
-    // Call `ModuleSystem::exportsmain` to load and evaluate the core library.
+    // Call `ModuleSystem::exports::main` to load and evaluate the
+    // core library.
     zvalue mainFn = get(get(moduleSystem, STR_exports), STR_main);
     return FUN_CALL(mainFn, libraryPath, PRIMITIVE_ENVIRONMENT);
 }
