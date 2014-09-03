@@ -1,0 +1,49 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## String demo
+##
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+## Checks an expected result.
+fn expect(name, result, got) {
+    ifNot { eq(got, result) }
+        {
+            note("Unexpected result: ", $Format::source(got));
+            die("For: ", name, " ", $Format::source(args));
+        }
+};
+
+
+##
+## Main demos
+##
+
+note("Strings");
+
+note($Format::source("This is a string.\n"));
+
+expect("cat 1", "blort", "blort".cat());
+expect("cat 2", "blort", "blort".cat(""));
+expect("cat 3", "blort", "blo".cat("rt"));
+expect("cat 4", "blort", "b".cat("lor", "t"));
+expect("cat 5", "blort", "b".cat("", "lor", "", "t", ""));
+expect("cat 6", "blort", "".cat("blort"));
+expect("cat 7", "blort", "".cat(@.blort));
+expect("cat 8", "blort", "b".cat(@.lort));
+expect("cat 9", "blort", "b".cat(@.lor, @.t));
+expect("cat 10", "blort", "b".cat(@.lor, "t"));
+
+expect("del", "muffins", "mufxfins".del(3));
+expect("keyList", [0, 1, 2, 3, 4], "blort".keyList());
+expect("valueList", ["b", "l", "o", "r", "t"], "blort".valueList());
+
+note("All good.");

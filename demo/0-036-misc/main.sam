@@ -45,7 +45,6 @@ export fn main(selfPath, name?, rest*) {
 
     process(selfPath);
     process(rest);
-    process("mufxfins".del(3));
     process(["pie", "fishburgers", "croissants"].del(1));
     process({one: 1, two: 2, three: 3}.del("two"));
     process("bizcuits".put(2, "s"));
@@ -56,7 +55,6 @@ export fn main(selfPath, name?, rest*) {
     process({a: "apple", b: "butter"}.keyList());
     process({a: "apple", b: "butter"}.valueList());
     process(["blort", "fizmo", "igram"].valueList());
-    process("blort".valueList());
     process(blort);
     process(ifIs);
     process(ne);
