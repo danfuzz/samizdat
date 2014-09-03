@@ -180,7 +180,7 @@ fn Symbol_convert(value) {
     };
 
     ## See comment in `String_convert`.
-    def name = symbolString(value);
+    def name = value.toString();
     def bodyChars = [].cat((ch in name -> stringChar(ch))*);
 
     return genCall("symbolFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
