@@ -279,7 +279,7 @@ DEF_PARSE(parenExpression) {
 }
 
 // Documented in spec.
-DEF_PARSE(name) {
+DEF_PARSE(nameString) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
@@ -287,10 +287,10 @@ DEF_PARSE(name) {
 }
 
 // Documented in spec.
-DEF_PARSE(nameList) {
+DEF_PARSE(nameStringList) {
     MARK();
 
-    zvalue result = PARSE_DELIMITED_SEQ(name, CH_COMMA);
+    zvalue result = PARSE_DELIMITED_SEQ(nameString, CH_COMMA);
     REJECT_IF(get_size(result) == 0);
 
     return result;
@@ -300,7 +300,7 @@ DEF_PARSE(nameList) {
 DEF_PARSE(varLvalue) {
     MARK();
 
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
     return makeVarFetchLvalue(name);
 }
 
@@ -309,7 +309,7 @@ DEF_PARSE(varRef) {
     MARK();
 
     MATCH_OR_REJECT(var);
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
     return makeVarRef(name);
 }
 
@@ -322,7 +322,7 @@ DEF_PARSE(identifierSymbol) {
     result = MATCH(string);
     if (result != NULL) { return makeSymbolLiteral(get(result, STR_value)); }
 
-    result = PARSE(name);
+    result = PARSE(nameString);
     if (result != NULL) { return makeSymbolLiteral(result); }
 
     result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
@@ -429,7 +429,7 @@ DEF_PARSE(mapping2) {
 DEF_PARSE(mapping3) {
     MARK();
 
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
 
     return makeCall(REFS(makeValueMap),
         listFrom2(makeLiteral(name), makeVarFetch(name)));
@@ -643,7 +643,7 @@ DEF_PARSE(postfixOperator) {
 
     if (result == NULL) {
         MATCH_OR_REJECT(CH_DOT);
-        zvalue name = PARSE_OR_REJECT(name);
+        zvalue name = PARSE_OR_REJECT(nameString);
         zvalue actuals = PARSE_OR_REJECT(actualsList);
         result = makeCall(makeSymbolLiteral(name), actuals);
     }
@@ -781,7 +781,7 @@ DEF_PARSE(varDef) {
     MARK();
 
     MATCH_OR_REJECT(def);
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
 
     zvalue expr;
     if (MATCH(CH_EQUAL)) {
@@ -798,7 +798,7 @@ DEF_PARSE(varDefMutable) {
     MARK();
 
     MATCH_OR_REJECT(var);
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
 
     zvalue expr;
     if (MATCH(CH_EQUAL)) {
@@ -815,7 +815,7 @@ DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_SLASH);
-    return PARSE_OR_REJECT(name);
+    return PARSE_OR_REJECT(nameString);
 }
 
 // Documented in spec.
@@ -842,7 +842,7 @@ DEF_PARSE(formal1) {
 DEF_PARSE(formal) {
     MARK();
 
-    zvalue name = PARSE(name);
+    zvalue name = PARSE(nameString);
 
     if (name == NULL) {
         // If there was no name, then the only valid form for a formal
@@ -867,7 +867,7 @@ DEF_PARSE(formalsList) {
  * Helper for `closureDeclarations`: Parses an optional name.
  */
 DEF_PARSE(closureDeclarations1) {
-    zvalue n = PARSE(name);
+    zvalue n = PARSE(nameString);
     return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, symbolFromString(n));
 }
 
@@ -920,7 +920,7 @@ DEF_PARSE(closureDeclarations) {
 DEF_PARSE(functionCommon) {
     MARK();
 
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
@@ -968,7 +968,7 @@ DEF_PARSE(methodBind) {
 DEF_PARSE(importName1) {
     MARK();
 
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
     zvalue key = MATCH(CH_STAR) ? STR_prefix : STR_name;
     MATCH_OR_REJECT(CH_EQUAL);
 
@@ -1004,7 +1004,7 @@ DEF_PARSE(importSourceDotName) {
     MARK();
 
     MATCH_OR_REJECT(CH_DOT);
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
 
     return METH_CALL(cat, STR_CH_DOT, name);
 }
@@ -1017,7 +1017,7 @@ DEF_PARSE(importSourceSlashName) {
     MARK();
 
     MATCH_OR_REJECT(CH_SLASH);
-    zvalue name = PARSE_OR_REJECT(name);
+    zvalue name = PARSE_OR_REJECT(nameString);
 
     return METH_CALL(cat, STR_CH_SLASH, name);
 }
@@ -1028,7 +1028,7 @@ DEF_PARSE(importSource1) {
 
     MATCH_OR_REJECT(CH_DOT);
     MATCH_OR_REJECT(CH_SLASH);
-    zvalue first = PARSE_OR_REJECT(name);
+    zvalue first = PARSE_OR_REJECT(nameString);
     zvalue rest = PARSE_STAR(importSourceSlashName);
     zvalue optSuffix = PARSE_OPT(importSourceDotName);
 
@@ -1041,7 +1041,7 @@ DEF_PARSE(importSource1) {
 DEF_PARSE(importSource2) {
     MARK();
 
-    zvalue first = PARSE_OR_REJECT(name);
+    zvalue first = PARSE_OR_REJECT(nameString);
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = METH_APPLY(cat, METH_CALL(cat, listFrom1(first), rest));
@@ -1073,7 +1073,7 @@ DEF_PARSE(importSelect2) {
     MARK();
 
     MATCH_OR_REJECT(CH_COLONCOLON);
-    zvalue select = PARSE_OR_REJECT(nameList);
+    zvalue select = PARSE_OR_REJECT(nameStringList);
 
     return mapFrom1(STR_select, select);
 }
@@ -1143,7 +1143,7 @@ DEF_PARSE(programStatement) {
 
     MATCH_OR_REJECT(export);
 
-    result = PARSE(nameList);
+    result = PARSE(nameStringList);
     if (result != NULL) { return makeExportSelection(result); }
 
     result = PARSE_OR_REJECT(exportableStatement);

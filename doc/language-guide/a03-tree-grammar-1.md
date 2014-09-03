@@ -99,30 +99,30 @@ def parParenExpression = {:
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
 ## result being the string payload (not wrapped in `@identifier{...}`).
-def parName = {:
+def parNameString = {:
     nameIdent = @identifier
     { nameIdent::value }
 :};
 
 ## Parses a non-empty comma-separated list of "names." A "name" is as per
-## `parName` above. The result is a list of strings (per se).
-def parNameList = {:
-    first = parName
-    rest = (@"," parName)*
+## `parNameString` above. The result is a list of strings (per se).
+def parNameStringList = {:
+    first = parNameString
+    rest = (@"," parNameString)*
     { [first, rest*] }
 :};
 
 ## Parses a variable reference. Returns a variable "fetch" with an `lvalue`
 ## binding for constructing a "store" as appropriate.
 def parVarLvalue = {:
-    name = parName
+    name = parNameString
     { makeVarFetchLvalue(name) }
 :};
 
 ## Parses a variable box reference.
 def parVarRef = {:
     @var
-    name = parName
+    name = parNameString
     { makeVarRef(name) }
 :};
 
@@ -132,7 +132,7 @@ def parIdentifierSymbol = {:
     s = @string
     { makeSymbolLiteral(s::value) }
 |
-    name = parName
+    name = parNameString
     { makeSymbolLiteral(name) }
 |
     token = .
@@ -202,7 +202,7 @@ def parMapping = {:
 |
     ## Otherwise, it's got to be a raw name, representing a binding of that
     ## name to its value as a variable.
-    name = parName
+    name = parNameString
     { makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name)) }
 :};
 
@@ -421,7 +421,7 @@ def parPostfixOperator = {:
     ## getter expression.
     ##
     @"."
-    name = parName
+    name = parNameString
 
     (
         ## `target.memberName(arg, ...)`
@@ -544,7 +544,7 @@ def parYieldOrNonlocal = {:
 ## Parses an immutable variable definition, or forward declaration of same.
 def parVarDef = {:
     @def
-    name = parName
+    name = parNameString
     optExpr = (@"=" parExpression)?
 
     { makeVarDef(name, optExpr*) }
@@ -553,7 +553,7 @@ def parVarDef = {:
 ## Parses a mutable variable definition, or forward declaration of same.
 def parVarDefMutable = {:
     @var
-    name = parName
+    name = parNameString
     optExpr = (@"=" parExpression)?
 
     { makeVarDefMutable(name, optExpr*) }
@@ -562,7 +562,7 @@ def parVarDefMutable = {:
 ## Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {:
     @"/"
-    parName
+    parNameString
 :};
 
 ## Parses an optional yield / nonlocal exit definition, always yielding
@@ -577,7 +577,7 @@ def parOptYieldDef = {:
 ## Parses a formal argument decalaration.
 def parFormal = {:
     name = (
-        n = parName
+        n = parNameString
         { {name: n} }
     |
         @"." { {} }
@@ -606,7 +606,7 @@ def parFormalsList = {:
 def parClosureDeclarations = {:
     most = (
         name = (
-            n = parName
+            n = parNameString
             { {name: n.toSymbol()} }
         |
             { {} }
@@ -647,7 +647,7 @@ def parClosureDeclarations = {:
 ## except without a yield def binding statement if an explicit yield def was
 ## not present.
 def parFunctionCommon = {:
-    name = parName
+    name = parNameString
     @"("
     formals = parFormalsList
     @")"
@@ -694,7 +694,7 @@ def parMethodBind = {:
 ## This rule never fails. The result is always a map, empty if there was no
 ## name / prefix, or binding one of `name` or `prefix`.
 def parImportName = {:
-    name = parName
+    name = parNameString
 
     key = (
         @"*" { "prefix" }
@@ -725,15 +725,15 @@ def parImportSource = {:
     @"."
     @"/"
 
-    first = parName
+    first = parNameString
     rest = (
         @"/"
-        n = parName
+        n = parNameString
         { "/".cat(n) }
     )*
     optSuffix = (
         @"."
-        n = parName
+        n = parNameString
         { ".".cat(n) }
     )?
 
@@ -742,10 +742,10 @@ def parImportSource = {:
         @internal{name}
     }
 |
-    first = parName
+    first = parNameString
     rest = (
         @"."
-        n = parName
+        n = parNameString
         { ".".cat(n) }
     )*
 
@@ -763,7 +763,7 @@ def parImportSelect = {:
         @"*"
         { {select: @"*"} }
     |
-        select = parNameList
+        select = parNameStringList
         { {select} }
     )
 |
@@ -808,7 +808,7 @@ def parProgramStatement = {:
 |
     @export
     (
-        select = parNameList
+        select = parNameStringList
         { makeExportSelection(select*) }
     |
         stat = parExportableStatement
@@ -960,7 +960,7 @@ def parPexParenExpression = {:
 
 ## Parses a variable reference parsing expression.
 def parPexVarRef = {:
-    name = parName
+    name = parNameString
     { makeVarRef(name) }
 :};
 
@@ -1077,7 +1077,7 @@ def parPexLookahead = {:
 ## Parses a name (or not) parsing expression.
 def parPexName = {:
     (
-        name = parName
+        name = parNameString
         @"="
         pex = parPexLookahead
         { @varDef{name, value: pex} }
