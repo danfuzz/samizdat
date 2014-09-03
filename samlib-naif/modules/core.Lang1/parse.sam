@@ -425,8 +425,7 @@ def parVarDefMutable = makeMainSequence(
 ## Documented in spec.
 def parYieldDef = makeMainSequence(
     makeToken(@@"/"),
-    parName,
-    makeCode { ., name -> name });
+    parName);
 
 ## Documented in spec.
 def parOptYieldDef = makeMainChoice(

@@ -562,8 +562,7 @@ def parVarDefMutable = {:
 ## Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {:
     @"/"
-    name = parName
-    { name }
+    parName
 :};
 
 ## Parses an optional yield / nonlocal exit definition, always yielding

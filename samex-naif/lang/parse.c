@@ -815,9 +815,7 @@ DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_SLASH);
-    zvalue name = PARSE_OR_REJECT(name);
-
-    return name;
+    return PARSE_OR_REJECT(name);
 }
 
 // Documented in spec.
