@@ -272,19 +272,27 @@ METH_IMPL_rest(String, cat, args) {
     }
 
     zint thsSize = getInfo(ths)->s.size;
+    zvalue strings[argsSize];
+    StringInfo *infos[argsSize];
 
     zint size = thsSize;
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        assertString(one);
-        size += getInfo(one)->s.size;
+        if (hasClass(one, CLS_Symbol)) {
+            one = symbolString(one);
+        } else {
+            assertString(one);
+        }
+        strings[i] = one;
+        infos[i] = getInfo(one);
+        size += infos[i]->s.size;
     }
 
     zchar *chars = allocArray(size);
     zint at = thsSize;
     arrayFromZstring(chars, getInfo(ths)->s);
     for (zint i = 0; i < argsSize; i++) {
-        zstring one = getInfo(args[i])->s;
+        zstring one = infos[i]->s;
         arrayFromZstring(&chars[at], one);
         at += one.size;
     }

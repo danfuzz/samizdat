@@ -63,7 +63,8 @@ Returns `this`.
 #### `.cat(more*) -> string`
 
 Returns a string consisting of the concatenation of the contents
-of all the argument strings, in argument order.
+of all the arguments, in argument order. Arguments are allowed to be
+either strings or symbols.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
 
