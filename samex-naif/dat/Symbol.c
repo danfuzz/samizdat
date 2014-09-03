@@ -210,8 +210,6 @@ zvalue symbolFromZstring(zstring name) {
 // Documented in header.
 zvalue symbolString(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
-    SymbolInfo *info = getInfo(symbol);
-
     return stringFromZstring(getInfo(symbol)->s);
 }
 
@@ -284,6 +282,11 @@ METH_IMPL_0(Symbol, symbolString) {
 }
 
 // Documented in header.
+METH_IMPL_0(Symbol, toString) {
+    return stringFromZstring(getInfo(ths)->s);
+}
+
+// Documented in header.
 METH_IMPL_1(Symbol, totalOrder, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
 
@@ -328,6 +331,7 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, makeAnonymous),
+            METH_BIND(Symbol, toString),
             METH_BIND(Symbol, totalOrder),
             NULL));
 
