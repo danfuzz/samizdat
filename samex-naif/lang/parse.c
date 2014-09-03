@@ -279,6 +279,14 @@ DEF_PARSE(parenExpression) {
 }
 
 // Documented in spec.
+DEF_PARSE(nameSymbol) {
+    MARK();
+
+    zvalue nameIdent = MATCH_OR_REJECT(identifier);
+    return symbolFromString(get(nameIdent, STR_value));
+}
+
+// Documented in spec.
 DEF_PARSE(nameString) {
     MARK();
 
@@ -322,8 +330,8 @@ DEF_PARSE(identifierSymbol) {
     result = MATCH(string);
     if (result != NULL) { return makeSymbolLiteral(get(result, STR_value)); }
 
-    result = PARSE(nameString);
-    if (result != NULL) { return makeSymbolLiteral(result); }
+    result = PARSE(nameSymbol);
+    if (result != NULL) { return makeLiteral(result); }
 
     result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
     REJECT_IF(dataOf(result) != NULL);
@@ -867,8 +875,8 @@ DEF_PARSE(formalsList) {
  * Helper for `closureDeclarations`: Parses an optional name.
  */
 DEF_PARSE(closureDeclarations1) {
-    zvalue n = PARSE(nameString);
-    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, symbolFromString(n));
+    zvalue n = PARSE(nameSymbol);
+    return (n == NULL) ? EMPTY_MAP : mapFrom1(STR_name, n);
 }
 
 /**
@@ -920,7 +928,7 @@ DEF_PARSE(closureDeclarations) {
 DEF_PARSE(functionCommon) {
     MARK();
 
-    zvalue name = PARSE_OR_REJECT(nameString);
+    zvalue name = PARSE_OR_REJECT(nameSymbol);
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue formals = PARSE(formalsList);  // This never fails.
     MATCH_OR_REJECT(CH_CPAREN);
@@ -930,7 +938,7 @@ DEF_PARSE(functionCommon) {
         withFormals(
             withYieldDef(code, STR_return),
             formals),
-        symbolFromString(name));
+        name);
 
     return makeFullClosure(basic);
 }

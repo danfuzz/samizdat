@@ -73,6 +73,11 @@ def parParenExpression = makeMainSequence(
     makeCode { ., ex, . -> withoutInterpolate(ex) });
 
 ## Documented in spec.
+def parNameSymbol = makeMainSequence(
+    makeToken(@@identifier),
+    makeCode { nameIdent -> nameIdent::value.toSymbol() });
+
+## Documented in spec.
 def parNameString = makeMainSequence(
     makeToken(@@identifier),
     makeCode { nameIdent -> nameIdent::value });
@@ -100,8 +105,8 @@ def parIdentifierSymbol = makeMainChoice(
         makeToken(@@string),
         makeCode { s -> makeSymbolLiteral(s::value) }),
     makeSequence(
-        parNameString,
-        makeCode { name -> makeSymbolLiteral(name) }),
+        parNameSymbol,
+        makeCode { name -> makeLiteral(name) }),
     makeSequence(
         any,
         makeCode { token ->
@@ -465,8 +470,8 @@ def parClosureDeclarations = makeMainChoice(
             makeSequence(
                 makeChoice(
                     makeSequence(
-                        parNameString,
-                        makeCode { n -> {name: n.toSymbol()} }),
+                        parNameSymbol,
+                        makeCode { n -> {name: n} }),
                     makeResult({})),
                 makeToken(@@"("),
                 parFormalsList,
@@ -482,7 +487,7 @@ def parClosureDeclarations = makeMainChoice(
 
 ## Documented in spec.
 def parFunctionCommon = makeMainSequence(
-    parNameString,
+    parNameSymbol,
     makeToken(@@"("),
     parFormalsList,
     makeToken(@@")"),
@@ -492,7 +497,7 @@ def parFunctionCommon = makeMainSequence(
             withFormals(
                 withYieldDef(code, "return"),
                 formals),
-            name.toSymbol());
+            name);
 
         makeFullClosure(basic)
     });

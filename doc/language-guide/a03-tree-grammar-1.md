@@ -98,6 +98,13 @@ def parParenExpression = {:
 :};
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
+## result being a raw symbol (e.g., not wrapped in `@identifier{...}`).
+def parNameSymbol = {:
+    nameIdent = @identifier
+    { nameIdent::value.toSymbol() }
+:};
+
+## Parses a "name" of some sort. This is just an identifier, but with the
 ## result being the string payload (not wrapped in `@identifier{...}`).
 def parNameString = {:
     nameIdent = @identifier
@@ -132,8 +139,8 @@ def parIdentifierSymbol = {:
     s = @string
     { makeSymbolLiteral(s::value) }
 |
-    name = parNameString
-    { makeSymbolLiteral(name) }
+    name = parNameSymbol
+    { makeLiteral(name) }
 |
     token = .
     {
@@ -606,8 +613,8 @@ def parFormalsList = {:
 def parClosureDeclarations = {:
     most = (
         name = (
-            n = parNameString
-            { {name: n.toSymbol()} }
+            n = parNameSymbol
+            { {name: n} }
         |
             { {} }
         )
@@ -647,7 +654,7 @@ def parClosureDeclarations = {:
 ## except without a yield def binding statement if an explicit yield def was
 ## not present.
 def parFunctionCommon = {:
-    name = parNameString
+    name = parNameSymbol
     @"("
     formals = parFormalsList
     @")"
@@ -658,7 +665,7 @@ def parFunctionCommon = {:
             withFormals(
                 withYieldDef(code, "return"),
                 formals),
-            name.toSymbol());
+            name);
 
         makeFullClosure(basic)
     }
