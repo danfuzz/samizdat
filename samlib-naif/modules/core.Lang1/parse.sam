@@ -32,7 +32,7 @@ fn reportError(pending) {
 };
 
 ## Set-like map of all lowercase identifier characters. Used to figure
-## out if we're looking at a keyword in the `identifierString` rule.
+## out if we're looking at a keyword in the `identifierSymbol` rule.
 def LOWER_ALPHA = {
     makeInclusiveRange("a", "z")*: true
 };
@@ -73,34 +73,39 @@ def parParenExpression = makeMainSequence(
     makeCode { ., ex, . -> withoutInterpolate(ex) });
 
 ## Documented in spec.
-def parName =  makeMainSequence(
+def parNameSymbol = makeMainSequence(
+    makeToken(@@identifier),
+    makeCode { nameIdent -> nameIdent::value.toSymbol() });
+
+## Documented in spec.
+def parNameString = makeMainSequence(
     makeToken(@@identifier),
     makeCode { nameIdent -> nameIdent::value });
 
 ## Documented in spec.
-def parNameList = makeMainSequence(
-    parName,
-    makeRepeat(makeSequence(makeToken(@@","), parName)),
+def parNameStringList = makeMainSequence(
+    parNameString,
+    makeRepeat(makeSequence(makeToken(@@","), parNameString)),
     makeCode { first, rest -> [first, rest*] });
 
 ## Documented in spec.
 def parVarLvalue = makeMainSequence(
-    parName,
+    parNameString,
     makeCode { name -> makeVarFetchLvalue(name) });
 
 ## Documented in spec.
 def parVarRef = makeMainSequence(
     makeToken(@@var),
-    parName,
+    parNameString,
     makeCode { ., name -> makeVarRef(name) });
 
 ## Documented in spec.
-def parIdentifierString = makeMainChoice(
+def parIdentifierSymbol = makeMainChoice(
     makeSequence(
         makeToken(@@string),
-        makeCode { s -> makeLiteral(s::value) }),
+        makeCode { s -> makeSymbolLiteral(s::value) }),
     makeSequence(
-        parName,
+        parNameSymbol,
         makeCode { name -> makeLiteral(name) }),
     makeSequence(
         any,
@@ -110,7 +115,7 @@ def parIdentifierString = makeMainChoice(
                     def name = get_classNameString(token);
                     def firstCh = name.nth(0);
                     ifIs { LOWER_ALPHA.get(firstCh) }
-                        { makeLiteral(name) }
+                        { makeSymbolLiteral(name) }
                 }
             }));
 
@@ -138,15 +143,14 @@ def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
         makeToken(@@"."),
-        parIdentifierString,
-        makeCode { ., ., name -> makeSymbolLiteral(name::value) }));
+        parIdentifierSymbol));
 
 ## Documented in spec.
 def parKey = makeMainChoice(
     makeSequence(
-        parIdentifierString,
+        parIdentifierSymbol,
         makeToken(@@":"),
-        makeCode { key, . -> key }),
+        makeCode { key, . -> makeLiteral(symbolString(key::value)) }),
     makeSequence(
         parExpression,
         makeToken(@@":"),
@@ -165,7 +169,7 @@ def parMapping = makeMainChoice(
         parExpression,
         makeCode { value -> value::interpolate }),
     makeSequence(
-        parName,
+        parNameString,
         makeCode { name ->
             makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
         }));
@@ -190,7 +194,7 @@ def parMap = makeMainSequence(
 ## Documented in spec.
 def parListItem = makeMainChoice(
     makeSequence(
-        parIdentifierString,
+        parIdentifierSymbol,
         makeToken(@@":"),
         makeCode { ., . ->
             die("Mapping syntax not valid as a list item or call argument.")
@@ -222,9 +226,9 @@ def parType = makeMainSequence(
     makeToken(@@"@@"),
     makeChoice(
         makeSequence(
-            parIdentifierString,
+            parIdentifierSymbol,
             makeCode { ., name ->
-                makeLiteral(@@(name::value.toSymbol()))
+                makeLiteral(@@(name::value))
             }),
         makeSequence(
             parParenExpression,
@@ -237,9 +241,9 @@ def parDeriv = makeMainSequence(
     makeToken(@@"@"),
     makeChoice(
         makeSequence(
-            parIdentifierString,
+            parIdentifierSymbol,
             makeCode { ., name ->
-                makeLiteral(@@(name::value.toSymbol()))
+                makeLiteral(@@(name::value))
             }),
         parParenExpression),
     makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
@@ -314,8 +318,10 @@ def parPostfixOperator = makeMainChoice(
         }),
     makeSequence(
         makeToken(@@"::"),
-        parIdentifierString,
-        makeCode { ., key -> { node -> makeGet(node, key) } }),
+        parIdentifierSymbol,
+        makeCode { ., key ->
+            { node -> makeGet(node, makeLiteral(symbolString(key::value))) }
+        }),
     makeSequence(
         makeToken(@@"*"),
         makeCode { . -> { node -> makeInterpolate(node) } }),
@@ -324,7 +330,7 @@ def parPostfixOperator = makeMainChoice(
         makeCode { . -> { node -> makeMaybeValue(node) } }),
     makeSequence(
         makeToken(@@"."),
-        parName,
+        parNameString,
         makeChoice(
             makeSequence(
                 parActualsList,
@@ -406,7 +412,7 @@ def parYieldOrNonlocal = makeMainSequence(
 ## Documented in spec.
 def parVarDef = makeMainSequence(
     makeToken(@@def),
-    parName,
+    parNameString,
     makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDef(name, optExpr*)
@@ -415,7 +421,7 @@ def parVarDef = makeMainSequence(
 ## Documented in spec.
 def parVarDefMutable = makeMainSequence(
     makeToken(@@var),
-    parName,
+    parNameString,
     makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDefMutable(name, optExpr*)
@@ -424,8 +430,7 @@ def parVarDefMutable = makeMainSequence(
 ## Documented in spec.
 def parYieldDef = makeMainSequence(
     makeToken(@@"/"),
-    parName,
-    makeCode { ., name -> name });
+    parNameString);
 
 ## Documented in spec.
 def parOptYieldDef = makeMainChoice(
@@ -438,7 +443,7 @@ def parOptYieldDef = makeMainChoice(
 def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
-            parName,
+            parNameString,
             makeCode { n -> {name: n} }),
         makeSequence(
             makeToken(@@"."),
@@ -465,8 +470,8 @@ def parClosureDeclarations = makeMainChoice(
             makeSequence(
                 makeChoice(
                     makeSequence(
-                        parName,
-                        makeCode { n -> {name: n.toSymbol()} }),
+                        parNameSymbol,
+                        makeCode { n -> {name: n} }),
                     makeResult({})),
                 makeToken(@@"("),
                 parFormalsList,
@@ -482,7 +487,7 @@ def parClosureDeclarations = makeMainChoice(
 
 ## Documented in spec.
 def parFunctionCommon = makeMainSequence(
-    parName,
+    parNameSymbol,
     makeToken(@@"("),
     parFormalsList,
     makeToken(@@")"),
@@ -492,7 +497,7 @@ def parFunctionCommon = makeMainSequence(
             withFormals(
                 withYieldDef(code, "return"),
                 formals),
-            name.toSymbol());
+            name);
 
         makeFullClosure(basic)
     });
@@ -521,7 +526,7 @@ def parMethodBind = makeMainSequence(
 ## Documented in spec.
 def parImportName = makeMainChoice(
     makeSequence(
-        parName,
+        parNameString,
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
@@ -535,7 +540,7 @@ def parImportName = makeMainChoice(
 def parImportFormat = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
-        parIdentifierString,
+        parIdentifierSymbol,
         makeCode { ., f -> {format: f::value} }),
     makeResult({}));
 
@@ -544,16 +549,16 @@ def parImportSource = makeMainChoice(
     makeSequence(
         makeToken(@@"."),
         makeToken(@@"/"),
-        parName,
+        parNameString,
         makeRepeat(
             makeSequence(
                 makeToken(@@"/"),
-                parName,
+                parNameString,
                 makeCode { ., ., ., ., n -> "/".cat(n) })),
         makeRepeat(
             makeSequence(
                 makeToken(@@"."),
-                parName,
+                parNameString,
                 makeCode { ., ., ., ., ., n -> ".".cat(n) }),
             0, 1),
         makeCode { ., ., first, rest, optSuffix ->
@@ -561,11 +566,11 @@ def parImportSource = makeMainChoice(
             @internal{name}
         }),
     makeSequence(
-        parName,
+        parNameString,
         makeRepeat(
             makeSequence(
                 makeToken(@@"."),
-                parName,
+                parNameString,
                 makeCode { ., ., n -> ".".cat(n) })),
         makeCode { first, rest ->
             def name = first.cat(rest*);
@@ -581,7 +586,7 @@ def parImportSelect = makeMainChoice(
                 makeToken(@@"*"),
                 makeResult({select: @"*"})),
             makeSequence(
-                parNameList,
+                parNameStringList,
                 makeCode { ., select -> {select} }))),
     makeResult({}));
 
@@ -615,7 +620,7 @@ def parProgramStatement = makeMainChoice(
         makeToken(@@export),
         makeChoice(
             makeSequence(
-                parNameList,
+                parNameStringList,
                 makeCode { ., select -> makeExportSelection(select*) }),
             makeSequence(
                 parExportableStatement,
@@ -738,7 +743,7 @@ def parPexParenExpression = makeMainSequence(
 
 ## Parses a variable reference parsing expression.
 def parPexVarRef = makeMainSequence(
-    parName,
+    parNameString,
     makeCode { name -> makeVarRef(name) });
 
 ## Documented in spec.
@@ -747,9 +752,9 @@ def parPexString = makeMainSequence(makeToken(@@string));
 ## Documented in spec.
 def parPexToken = makeMainSequence(
     makeToken(@@"@"),
-    parIdentifierString,
+    parIdentifierSymbol,
     makeCode { ., type ->
-        @token{value: @@(type::value.toSymbol())}
+        @token{value: @@(type::value)}
     });
 
 ## Documented in spec.
@@ -846,7 +851,7 @@ def parPexLookahead = makeMainChoice(
 ## Documented in spec.
 def parPexName = makeMainChoice(
     makeSequence(
-        parName,
+        parNameString,
         makeToken(@@"="),
         parPexLookahead,
         makeCode { name, ., pex ->

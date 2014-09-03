@@ -461,8 +461,8 @@ fn readResource_utf8(fullPath) {
 
 ## Map from format names to corresponding `readResource` implementations.
 def INTERNAL_READERS = {
-    type: readResource_type,
-    utf8: readResource_utf8
+    @.type: readResource_type,
+    @.utf8: readResource_utf8
 };
 
 ## Documented in spec.

@@ -165,7 +165,7 @@ the resource, minus any extension.
 
 The following formats are understood by the system:
 
-* `type` &mdash; Identify the file type of the resource. Return values are
+* `@type` &mdash; Identify the file type of the resource. Return values are
   the same as for `core.Io0::fileType` (see which for details).
 
 * `@utf8` &mdash; Interpret the resource file as UTF-8 encoded text.
