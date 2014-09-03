@@ -77,7 +77,7 @@ get_baseName(@internal{name: "frotz.txt"})                =>  "frotz"
 get_baseName(@internal{name: "frobozz/magic/frotz.txt"})  =>  "frotz"
 ```
 
-#### `get_definedNames(node) -> [name*]`
+#### `get_definedNames(node) -> [symbol*]`
 
 Gets a list of the names of all variables defined by the given `node`.
 If `node` defines no names, this returns `[]` (the empty list).
@@ -180,7 +180,7 @@ to) a `varDef` node.
 #### `makeExportSelection(names+) -> node`
 
 Makes an `exportSelection` node to export the variables with the given
-`names`.
+`names`. Each of the `names` must be a symbol.
 
 #### `makeFullClosure(nodeOrMap) -> node`
 
@@ -303,30 +303,32 @@ result contains the given `node` as the `yield`, directly.
 
 #### `makeVarDef(name, optValue?) -> node`
 
-Makes a `varDef` statement node.
+Makes a `varDef` statement node. `name` must be a symbol.
 
 #### `makeVarDefMutable(name, optValue?) -> node`
 
-Makes a `varDefMutable` statement node.
+Makes a `varDefMutable` statement node. `name` must be a symbol.
 
 #### `makeVarFetch(name) -> node`
 
 Makes a `fetch` node with a `varRef` payload, and no additional bindings.
+`name` must be a symbol.
 
 #### `makeVarFetchLvalue(name) -> node`
 
-Makes a `fetch` node with a `varRef` payload. The resulting `fetch` node
-has an `lvalue` binding to a one-argument function which takes a node and
-calls `makeVarStore()` to produce an assignment node.
+Makes a `fetch` node with a `varRef` payload. `name` must be a symbol.
+
+The resulting `fetch` node has an `lvalue` binding to a one-argument function
+which takes a node and calls `makeVarStore()` to produce an assignment node.
 
 #### `makeVarRef(name) -> node`
 
-Makes a `varRef` node.
+Makes a `varRef` node. `name` must be a symbol.
 
 #### `makeVarStore(name, value) -> node`
 
 Makes a `store` node with a `varRef` node for the target and the indicated
-`value` binding.
+`value` binding. `name` must be a symbol.
 
 #### `resolveImport(node, resolveFn) -> node`
 
@@ -402,6 +404,7 @@ with the addition of a `top: true` binding.
 
 Makes a node just like the given one (presumably a `closure` node), except
 with the addition of a yield definition binding for the given `name`.
+`name` must be a symbol.
 
 If the given `node` already has a yield definition, then this does not
 replace it. Instead, this adds an initial variable definition statement
@@ -414,6 +417,7 @@ Makes a node just like the given one (presumably a `closure` node), except
 with the addition of a yield definition binding for the given `name`, but
 only if `node` does not already have a yield definition. If `node` *does*
 have a yield definition, then this just returns `node`.
+`name` must be a symbol.
 
 This function is useful for propagating an outer yield definition into an
 inner closure, especially with regards to providing the expected behavior
