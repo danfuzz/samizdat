@@ -136,10 +136,10 @@ METH_IMPL_0(Value, debugString) {
     if (name == NULL) {
         name = EMPTY_STRING;
     } else if (!hasClass(name, CLS_Symbol)) {
-        // Suppress a non-string name.
+        // Suppress a non-symbol name.
         name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
-        name = METH_CALL(cat, stringFromUtf8(-1, " "), symbolString(name));
+        name = METH_CALL(cat, stringFromUtf8(-1, " "), valToString(name));
     }
 
     sprintf(addrBuf, "%p", ths);

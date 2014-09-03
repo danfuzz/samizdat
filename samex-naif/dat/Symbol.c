@@ -182,7 +182,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugString(symbolString(symbol)));
+            valDebugString(cls), valDebugString(valToString(symbol)));
     }
 
     UTIL_TRACE_START(callReporter, cls);
@@ -252,7 +252,7 @@ METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@." : "@?";
 
-    return METH_CALL(cat, stringFromUtf8(-1, prefix), symbolString(ths));
+    return METH_CALL(cat, stringFromUtf8(-1, prefix), valToString(ths));
 }
 
 // Documented in header.

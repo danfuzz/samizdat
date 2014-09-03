@@ -249,7 +249,7 @@ zvalue className(zvalue cls) {
 // Documented in header.
 zvalue classNameString(zvalue cls) {
     assertHasClassClass(cls);
-    return symbolString(getInfo(cls)->name);
+    return valToString(getInfo(cls)->name);
 }
 
 // Documented in header.
@@ -314,7 +314,7 @@ METH_IMPL_0(Class, debugString) {
     zvalue extraString;
 
     if (info->secret == theCoreSecret) {
-        return symbolString(info->name);
+        return valToString(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
     } else if (classParent(ths) == CLS_DerivedData) {
@@ -325,7 +325,7 @@ METH_IMPL_0(Class, debugString) {
 
     return METH_CALL(cat,
         stringFromUtf8(-1, "@@("),
-        METH_CALL(debugString, symbolString(info->name)),
+        METH_CALL(debugString, valToString(info->name)),
         extraString,
         stringFromUtf8(-1, ")"));
 }
