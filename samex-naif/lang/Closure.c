@@ -273,6 +273,14 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
         elemAt++;
     }
 
+    // TODO: Remove this scaffolding once env keys are symbols.
+    for (zint i = 0; i < elemAt; i++) {
+        zvalue key = elems[i].key;
+        if (hasClass(key, CLS_String)) {
+            elems[i].key = symbolFromString(key);
+        }
+    }
+
     return mapFromArray(elemAt, elems);
 }
 
