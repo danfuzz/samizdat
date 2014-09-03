@@ -70,10 +70,6 @@ dispatch on `args[0]`.
 Returns `symbol` if it is interned (that is, non-anonymous). Returns void
 otherwise.
 
-#### `symbolString(symbol) -> string`
-
-Returns the name of `symbol`.
-
 <br><br>
 ### In-Language Definitions
 

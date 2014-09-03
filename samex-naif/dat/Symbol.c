@@ -208,12 +208,6 @@ zvalue symbolFromZstring(zstring name) {
 }
 
 // Documented in header.
-zvalue symbolString(zvalue symbol) {
-    assertHasClass(symbol, CLS_Symbol);
-    return stringFromZstring(getInfo(symbol)->s);
-}
-
-// Documented in header.
 zint symbolIndex(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
     return getInfo(symbol)->index;
@@ -275,12 +269,6 @@ METH_IMPL_0(Symbol, symbolIsInterned) {
     return (info->interned) ? ths : NULL;
 }
 
-/** Function (not method) `symbolString`. Documented in spec. */
-METH_IMPL_0(Symbol, symbolString) {
-    // TODO: Should be an instance method.
-    return symbolString(ths);
-}
-
 // Documented in header.
 METH_IMPL_0(Symbol, toString) {
     return stringFromZstring(getInfo(ths)->s);
@@ -337,8 +325,6 @@ MOD_INIT(Symbol) {
 
     FUN_Symbol_symbolIsInterned =
         datImmortalize(FUNC_VALUE(Symbol_symbolIsInterned));
-    FUN_Symbol_symbolString =
-        datImmortalize(FUNC_VALUE(Symbol_symbolString));
 }
 
 // Documented in header.
@@ -349,6 +335,3 @@ SYM_DEF(makeAnonymous);
 
 // Documented in header.
 zvalue FUN_Symbol_symbolIsInterned = NULL;
-
-// Documented in header.
-zvalue FUN_Symbol_symbolString = NULL;
