@@ -96,6 +96,11 @@ zvalue valOrder(zvalue value, zvalue other);
 zvalue valOrderNullOk(zvalue value, zvalue other);
 
 /**
+ * Calls `.toString()` on the given value.
+ */
+zvalue valToString(zvalue value);
+
+/**
  * Like `valOrder`, except that the return value is of type `zorder` and this
  * reports a fatal error if given incomparable values.
  *

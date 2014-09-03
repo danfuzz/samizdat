@@ -102,6 +102,11 @@ zvalue valOrderNullOk(zvalue value, zvalue other) {
 }
 
 // Documented in header.
+zvalue valToString(zvalue value) {
+    return METH_CALL(toString, value);
+}
+
+// Documented in header.
 zorder valZorder(zvalue value, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack. See note on `valOrder` for more color.
