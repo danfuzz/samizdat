@@ -182,7 +182,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugString(symbolString(symbol)));
+            valDebugString(cls), valDebugString(valToString(symbol)));
     }
 
     UTIL_TRACE_START(callReporter, cls);
@@ -205,14 +205,6 @@ zvalue symbolFromUtf8(zint utfBytes, const char *utf) {
 zvalue symbolFromZstring(zstring name) {
     zvalue result = findInternedSymbol(name);
     return (result != NULL) ? result : makeSymbol0(name, true);
-}
-
-// Documented in header.
-zvalue symbolString(zvalue symbol) {
-    assertHasClass(symbol, CLS_Symbol);
-    SymbolInfo *info = getInfo(symbol);
-
-    return stringFromZstring(getInfo(symbol)->s);
 }
 
 // Documented in header.
@@ -254,7 +246,7 @@ METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@." : "@?";
 
-    return METH_CALL(cat, stringFromUtf8(-1, prefix), symbolString(ths));
+    return METH_CALL(cat, stringFromUtf8(-1, prefix), valToString(ths));
 }
 
 // Documented in header.
@@ -277,10 +269,9 @@ METH_IMPL_0(Symbol, symbolIsInterned) {
     return (info->interned) ? ths : NULL;
 }
 
-/** Function (not method) `symbolString`. Documented in spec. */
-METH_IMPL_0(Symbol, symbolString) {
-    // TODO: Should be an instance method.
-    return symbolString(ths);
+// Documented in header.
+METH_IMPL_0(Symbol, toString) {
+    return stringFromZstring(getInfo(ths)->s);
 }
 
 // Documented in header.
@@ -328,13 +319,12 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, makeAnonymous),
+            METH_BIND(Symbol, toString),
             METH_BIND(Symbol, totalOrder),
             NULL));
 
     FUN_Symbol_symbolIsInterned =
         datImmortalize(FUNC_VALUE(Symbol_symbolIsInterned));
-    FUN_Symbol_symbolString =
-        datImmortalize(FUNC_VALUE(Symbol_symbolString));
 }
 
 // Documented in header.
@@ -345,6 +335,3 @@ SYM_DEF(makeAnonymous);
 
 // Documented in header.
 zvalue FUN_Symbol_symbolIsInterned = NULL;
-
-// Documented in header.
-zvalue FUN_Symbol_symbolString = NULL;

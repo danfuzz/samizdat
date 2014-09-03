@@ -21,9 +21,6 @@ SYM_DECL(makeAnonymous);
 /** Global function `symbolIsInterned`: Documented in spec. */
 extern zvalue FUN_Symbol_symbolIsInterned;
 
-/** Global function `symbolString`: Documented in spec. */
-extern zvalue FUN_Symbol_symbolString;
-
 
 /**
  * Like `symbolFromUtf8`, except this makes an anonymous (uninterned) symbol.
@@ -51,11 +48,6 @@ zvalue symbolFromZstring(zstring name);
  * Gets the integer index of the given symbol.
  */
 zint symbolIndex(zvalue symbol);
-
-/**
- * Gets the name of the given symbol. This returns a string.
- */
-zvalue symbolString(zvalue symbol);
 
 /**
  * Like `utf8FromSymbol`, except this returns an allocated buffer containing

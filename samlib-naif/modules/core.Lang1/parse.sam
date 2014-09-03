@@ -150,7 +150,7 @@ def parKey = makeMainChoice(
     makeSequence(
         parIdentifierSymbol,
         makeToken(@@":"),
-        makeCode { key, . -> makeLiteral(symbolString(key::value)) }),
+        makeCode { key, . -> makeLiteral(key::value.toString()) }),
     makeSequence(
         parExpression,
         makeToken(@@":"),
@@ -320,7 +320,7 @@ def parPostfixOperator = makeMainChoice(
         makeToken(@@"::"),
         parIdentifierSymbol,
         makeCode { ., key ->
-            { node -> makeGet(node, makeLiteral(symbolString(key::value))) }
+            { node -> makeGet(node, makeLiteral(key::value.toString())) }
         }),
     makeSequence(
         makeToken(@@"*"),
@@ -507,7 +507,7 @@ def parFunctionDef = makeMainSequence(
     makeToken(@@fn),
     parFunctionCommon,
     makeCode { ., closure ->
-        withTop(makeVarDef(symbolString(closure::name), closure))
+        withTop(makeVarDef(closure::name.toString(), closure))
     });
 
 ## Documented in spec.

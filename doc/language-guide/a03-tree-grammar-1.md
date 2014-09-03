@@ -188,7 +188,7 @@ def parLiteral = {:
 def parKey = {:
     key = parIdentifierSymbol
     @":"
-    { makeLiteral(symbolString(key::value)) }
+    { makeLiteral(key::value.toString()) }
 |
     key = parExpression
     @":"
@@ -393,7 +393,7 @@ def parPostfixOperator = {:
     ## fits better here.
     @"::"
     key = parIdentifierSymbol
-    { { node -> makeGet(node, makeLiteral(symbolString(key::value))) } }
+    { { node -> makeGet(node, makeLiteral(key::value.toString())) } }
 |
     ## The lookahead failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
@@ -677,7 +677,7 @@ def parFunctionDef = {:
     @fn
     closure = parFunctionCommon
 
-    { withTop(makeVarDef(symbolString(closure::name), closure)) }
+    { withTop(makeVarDef(closure::name.toString(), closure)) }
 :};
 
 ## Parses a method binding. This wraps a `@closure` result of

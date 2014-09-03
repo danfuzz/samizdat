@@ -102,6 +102,11 @@ zvalue valOrderNullOk(zvalue value, zvalue other) {
 }
 
 // Documented in header.
+zvalue valToString(zvalue value) {
+    return METH_CALL(toString, value);
+}
+
+// Documented in header.
 zorder valZorder(zvalue value, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack. See note on `valOrder` for more color.
@@ -131,10 +136,10 @@ METH_IMPL_0(Value, debugString) {
     if (name == NULL) {
         name = EMPTY_STRING;
     } else if (!hasClass(name, CLS_Symbol)) {
-        // Suppress a non-string name.
+        // Suppress a non-symbol name.
         name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
-        name = METH_CALL(cat, stringFromUtf8(-1, " "), symbolString(name));
+        name = METH_CALL(cat, stringFromUtf8(-1, " "), valToString(name));
     }
 
     sprintf(addrBuf, "%p", ths);
@@ -215,6 +220,7 @@ MOD_INIT(Value) {
     SYM_INIT(gcMark);
     SYM_INIT(perEq);
     SYM_INIT(perOrder);
+    SYM_INIT(toString);
     SYM_INIT(totalEq);
     SYM_INIT(totalOrder);
 
@@ -252,6 +258,9 @@ SYM_DEF(perEq);
 
 // Documented in header.
 SYM_DEF(perOrder);
+
+// Documented in header.
+SYM_DEF(toString);
 
 // Documented in header.
 SYM_DEF(totalEq);

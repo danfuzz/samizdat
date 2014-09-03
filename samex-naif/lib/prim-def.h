@@ -33,7 +33,6 @@ PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_DEF(makeSymbolTable,         FUN_SymbolTable_makeSymbolTable);
 PRIM_DEF(symbolIsInterned,        FUN_Symbol_symbolIsInterned);
-PRIM_DEF(symbolString,            FUN_Symbol_symbolString);
 PRIM_FUNC(classAddMethod,         3, 3);
 PRIM_FUNC(className,              1, 1);
 PRIM_FUNC(classNameString,        1, 1);

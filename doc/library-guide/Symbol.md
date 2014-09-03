@@ -17,6 +17,9 @@ Returns a new anonymous symbol whose name is the same as `this`'s. This
 *always* returns a fresh symbol. (That is, if given an anonymous symbol,
 this method does *not* just return `this`.)
 
+#### `.toString() -> string`
+
+Returns the name of the symbol as a string.
 
 <br><br>
 ### Method Definitions: `Value` protocol
@@ -66,10 +69,6 @@ dispatch on `args[0]`.
 
 Returns `symbol` if it is interned (that is, non-anonymous). Returns void
 otherwise.
-
-#### `symbolString(symbol) -> string`
-
-Returns the name of `symbol`.
 
 <br><br>
 ### In-Language Definitions

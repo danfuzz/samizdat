@@ -379,7 +379,7 @@ DEF_PARSE(key1) {
     zvalue result = PARSE_OR_REJECT(identifierSymbol);
     MATCH_OR_REJECT(CH_COLON);
 
-    return makeLiteral(symbolString(get(result, STR_value)));
+    return makeLiteral(valToString(get(result, STR_value)));
 }
 
 /**
@@ -643,7 +643,7 @@ DEF_PARSE(postfixOperator) {
 
     if ((result == NULL) && (MATCH(CH_COLONCOLON) != NULL)) {
         result = PARSE_OR_REJECT(identifierSymbol);
-        result = makeLiteral(symbolString(get(result, STR_value)));
+        result = makeLiteral(valToString(get(result, STR_value)));
     }
 
     if (result == NULL) { result = MATCH(CH_STAR); }
@@ -950,7 +950,7 @@ DEF_PARSE(functionDef) {
     MATCH_OR_REJECT(fn);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    return withTop(makeVarDef(symbolString(get(closure, STR_name)), closure));
+    return withTop(makeVarDef(valToString(get(closure, STR_name)), closure));
 }
 
 // Documented in spec.

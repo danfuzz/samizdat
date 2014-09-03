@@ -52,5 +52,4 @@ export
     maybeValue,
     note,
     order,
-    symbolIsInterned,
-    symbolString;
+    symbolIsInterned;
