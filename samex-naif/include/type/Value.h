@@ -44,6 +44,9 @@ SYM_DECL(perEq);
 /** Method `.perOrder(other)`: Documented in spec. */
 SYM_DECL(perOrder);
 
+/** Method `.toString()`: Documented in spec. */
+SYM_DECL(toString);
+
 /** Method `.totalEq(other)`: Documented in spec. */
 SYM_DECL(totalEq);
 

@@ -215,6 +215,7 @@ MOD_INIT(Value) {
     SYM_INIT(gcMark);
     SYM_INIT(perEq);
     SYM_INIT(perOrder);
+    SYM_INIT(toString);
     SYM_INIT(totalEq);
     SYM_INIT(totalOrder);
 
@@ -252,6 +253,9 @@ SYM_DEF(perEq);
 
 // Documented in header.
 SYM_DEF(perOrder);
+
+// Documented in header.
+SYM_DEF(toString);
 
 // Documented in header.
 SYM_DEF(totalEq);

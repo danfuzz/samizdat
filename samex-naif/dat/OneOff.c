@@ -54,7 +54,6 @@ MOD_INIT(OneOff) {
     SYM_INIT(nth);
     SYM_INIT(toInt);
     SYM_INIT(toNumber);
-    SYM_INIT(toString);
 }
 
 // Documented in header.
@@ -86,6 +85,3 @@ SYM_DEF(toInt);
 
 // Documented in header.
 SYM_DEF(toNumber);
-
-// Documented in header.
-SYM_DEF(toString);

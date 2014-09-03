@@ -53,9 +53,6 @@ SYM_DECL(toInt);
 /** Method `.toNumber()`: Documented in spec. */
 SYM_DECL(toNumber);
 
-/** Method `.toString()`: Documented in spec. */
-SYM_DECL(toString);
-
 /**
  * Calls the `get` method.
  */
