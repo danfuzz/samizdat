@@ -15,96 +15,96 @@ import ./constructors1 ::
 
 ## Literal symbols.
 def SYMBOLS = [
-    "add",
-    "and",
-    "cat",
-    "collect",
-    "div",
-    "divEu",
-    "get",
-    "get_size",
-    "mod",
-    "modEu",
-    "mul",
-    "neg",
-    "not",
-    "or",
-    "perEq",
-    "reverse",
-    "shl",
-    "sliceExclusive",
-    "sliceInclusive",
-    "shr",
-    "sub",
-    "xor"
+    @.add,
+    @.and,
+    @.cat,
+    @.collect,
+    @.div,
+    @.divEu,
+    @.get,
+    @.get_size,
+    @.mod,
+    @.modEu,
+    @.mul,
+    @.neg,
+    @.not,
+    @.or,
+    @.perEq,
+    @.reverse,
+    @.shl,
+    @.sliceExclusive,
+    @.sliceInclusive,
+    @.shr,
+    @.sub,
+    @.xor
 ];
 
 ## Global variable names / regular variable references.
 def NAMES = [
-    "break",
-    "classAddMethod",
-    "continue",
-    "eq",
-    "ge",
-    "gt",
-    "ifIs",
-    "ifNot",
-    "ifSwitch",
-    "ifValue",
-    "ifValueOr",
-    "ifValues",
-    "le",
-    "loadModule",
-    "loadResource",
-    "loop",
-    "lt",
-    "makeData",
-    "makeDerivedDataClass",
-    "makeList",
-    "makeValueMap",
-    "maybeValue",
-    "ne",
-    "perGe",
-    "perGt",
-    "perLe",
-    "perLt",
-    "perNe",
-    "return",
-    "totalNe"
+    @.break,
+    @.classAddMethod,
+    @.continue,
+    @.eq,
+    @.ge,
+    @.gt,
+    @.ifIs,
+    @.ifNot,
+    @.ifSwitch,
+    @.ifValue,
+    @.ifValueOr,
+    @.ifValues,
+    @.le,
+    @.loadModule,
+    @.loadResource,
+    @.loop,
+    @.lt,
+    @.makeData,
+    @.makeDerivedDataClass,
+    @.makeList,
+    @.makeValueMap,
+    @.maybeValue,
+    @.ne,
+    @.perGe,
+    @.perGt,
+    @.perLe,
+    @.perLt,
+    @.perNe,
+    @.return,
+    @.totalNe
 ];
 
 ## Module-scoped names.
 def MOD_NAMES = [
-    {mod: "Format",     name: "formatterFor"},
-    {mod: "Format",     name: "usual"},
-    {mod: "Generator",  name: "filterAll"},
-    {mod: "Generator",  name: "filterPump"},
-    {mod: "Generator",  name: "makeRepeatGenerator"},
-    {mod: "Generator",  name: "makeFilterGenerator"},
-    {mod: "Peg",        name: "any"},
-    {mod: "Peg",        name: "empty"},
-    {mod: "Peg",        name: "makeChoice"},
-    {mod: "Peg",        name: "makeCode"},
-    {mod: "Peg",        name: "makeLookaheadFailure"},
-    {mod: "Peg",        name: "makeLookaheadSuccess"},
-    {mod: "Peg",        name: "makeMainSequence"},
-    {mod: "Peg",        name: "makeParserThunk"},
-    {mod: "Peg",        name: "makeRepeat"},
-    {mod: "Peg",        name: "makeResult"},
-    {mod: "Peg",        name: "makeSequence"},
-    {mod: "Peg",        name: "makeString"},
-    {mod: "Peg",        name: "makeToken"},
-    {mod: "Peg",        name: "makeTokenSet"},
-    {mod: "Peg",        name: "makeTokenSetComplement"},
-    {mod: "Range",      name: "makeExclusiveRange"},
-    {mod: "Range",      name: "makeInclusiveRange"},
-    {mod: "Range",      name: "makeOpenRange"},
-    {mod: "Sequence",   name: "reverseNth"},
-    {mod: "Sequence",   name: "sliceGeneral"}
+    {mod: @.Format,    name: @.formatterFor},
+    {mod: @.Format,    name: @.usual},
+    {mod: @.Generator, name: @.filterAll},
+    {mod: @.Generator, name: @.filterPump},
+    {mod: @.Generator, name: @.makeRepeatGenerator},
+    {mod: @.Generator, name: @.makeFilterGenerator},
+    {mod: @.Peg,       name: @.any},
+    {mod: @.Peg,       name: @.empty},
+    {mod: @.Peg,       name: @.makeChoice},
+    {mod: @.Peg,       name: @.makeCode},
+    {mod: @.Peg,       name: @.makeLookaheadFailure},
+    {mod: @.Peg,       name: @.makeLookaheadSuccess},
+    {mod: @.Peg,       name: @.makeMainSequence},
+    {mod: @.Peg,       name: @.makeParserThunk},
+    {mod: @.Peg,       name: @.makeRepeat},
+    {mod: @.Peg,       name: @.makeResult},
+    {mod: @.Peg,       name: @.makeSequence},
+    {mod: @.Peg,       name: @.makeString},
+    {mod: @.Peg,       name: @.makeToken},
+    {mod: @.Peg,       name: @.makeTokenSet},
+    {mod: @.Peg,       name: @.makeTokenSetComplement},
+    {mod: @.Range,     name: @.makeExclusiveRange},
+    {mod: @.Range,     name: @.makeInclusiveRange},
+    {mod: @.Range,     name: @.makeOpenRange},
+    {mod: @.Sequence,  name: @.reverseNth},
+    {mod: @.Sequence,  name: @.sliceGeneral}
 ];
 
 ## Used in `MOD_NAMES` processing.
-def SYM_get = makeSymbolLiteral("get");
+def SYM_get = makeLiteral(@.get);
 
 
 ##
@@ -114,7 +114,7 @@ def SYM_get = makeSymbolLiteral("get");
 ## Documented in spec.
 export def REFS = {}.cat(
     (filterAll(SYMBOLS) { name ->
-        {"SYM_".cat(name).toSymbol(): makeSymbolLiteral(name)}
+        {"SYM_".cat(name).toSymbol(): makeLiteral(name)}
     })*,
 
     (filterAll(NAMES) { name ->
@@ -124,8 +124,8 @@ export def REFS = {}.cat(
     (filterAll(MOD_NAMES) { modName ->
         def mod = modName::mod;
         def name = modName::name;
-        def modVar = makeVarFetch("$".cat(mod));
-        def refKey = mod.cat("_", name).toSymbol();
+        def modVar = makeVarFetch("$".cat(mod).toSymbol());
+        def refKey = "".cat(mod, "_", name).toSymbol();
         {(refKey): makeCall(SYM_get, modVar, makeLiteral(name))}
     })*
 );
