@@ -310,10 +310,6 @@ The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
 `LangNode::withoutTops` for more details.
 
-**Note:** Though there are no restrictions on the `name` in general, if
-a node of this type represents a variable being exported from a module,
-then it must be a string.
-
 #### `varDefMutable` &mdash; `@varDef{name: name, value?: expression}`
 
 * `name: name` &mdash; Variable name to define (must be a symbol).
