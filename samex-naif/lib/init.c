@@ -108,7 +108,17 @@ static zvalue getLibrary(zvalue libraryPath) {
 
     // Call `ModuleSystem::exports::main` to load and evaluate the
     // core library.
-    zvalue mainFn = get(get(moduleSystem, STRING_exports), STRING_main);
+
+    zvalue exports = get(moduleSystem, STRING_exports);
+    if (exports == NULL) {
+        die("Missing bootstrap `exports` binding.");
+    }
+
+    zvalue mainFn = get(exports, STRING_main);
+    if (mainFn == NULL) {
+        die("Missing bootstrap `main` binding");
+    }
+
     return FUN_CALL(mainFn, libraryPath, PRIMITIVE_ENVIRONMENT);
 }
 
