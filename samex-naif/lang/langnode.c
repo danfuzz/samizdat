@@ -206,7 +206,7 @@ zvalue get_definedNames(zvalue node) {
         arrayFromList(arr, select);
 
         for (zint i = 0; i < size; i++) {
-            arr[i] = METH_CALL(cat, prefix, arr[i]);
+            arr[i] = symbolFromString(METH_CALL(cat, prefix, arr[i]));
         }
 
         return listFromArray(size, arr);

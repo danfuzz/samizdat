@@ -76,7 +76,7 @@ export fn get_definedNames(node) {
                 def select = ifValueOr { node::select }
                     { die("Cannot call `get_definedNames` on unresolved import.") };
 
-                filterAll(select) { name -> prefix.cat(name) }
+                filterAll(select) { name -> prefix.cat(name).toSymbol() }
             },
 
             @@importModule:
