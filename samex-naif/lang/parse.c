@@ -651,9 +651,9 @@ DEF_PARSE(postfixOperator) {
 
     if (result == NULL) {
         MATCH_OR_REJECT(CH_DOT);
-        zvalue name = PARSE_OR_REJECT(nameString);
+        zvalue name = PARSE_OR_REJECT(nameSymbol);
         zvalue actuals = PARSE_OR_REJECT(actualsList);
-        result = makeCall(makeSymbolLiteral(name), actuals);
+        result = makeCall(makeLiteral(name), actuals);
     }
 
     return result;

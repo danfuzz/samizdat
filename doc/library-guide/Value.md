@@ -194,10 +194,15 @@ identical to it. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \>= expression` forms.
 
-#### `get_classNameString(value) -> .`
+#### `get_className(value) -> symbol | void`
 
 Returns the name of the given `value`'s class. This function is the equivalent
-to `classNameString(get_class(value))`.
+to `className(get_class(value))`.
+
+#### `get_classNameString(value) -> string | void`
+
+Returns the name of the given `value`'s class, as a string. This function is
+the equivalent to `classNameString(get_class(value))`.
 
 #### `gt(value, other) -> logic`
 
