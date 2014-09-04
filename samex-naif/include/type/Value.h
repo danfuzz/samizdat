@@ -31,12 +31,24 @@ SYM_DECL(debugString);
 SYM_DECL(debugSymbol);
 
 /**
+ * Symbol `exports`. Used when accessing modules. Not needed in `dat` per se,
+ * but defined here, because there isn't really a better place to put it.
+ */
+SYM_DECL(exports);
+
+/**
  * Method `.gcMark()`: Does GC marking for the given value.
  *
  * TODO: This should be defined as an anonymous symbol and *not* exported
  * in any way to the higher layer environment.
  */
 SYM_DECL(gcMark);
+
+/**
+ * Symbol `main`. Used when accessing modules. Same comment applies as with
+ * `exports`, above.
+ */
+SYM_DECL(main);
 
 /** Method `.perEq(other)`: Documented in spec. */
 SYM_DECL(perEq);
