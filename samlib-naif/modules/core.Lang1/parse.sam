@@ -330,13 +330,13 @@ def parPostfixOperator = makeMainChoice(
         makeCode { . -> { node -> makeMaybeValue(node) } }),
     makeSequence(
         makeToken(@@"."),
-        parNameString,
+        parNameSymbol,
         makeChoice(
             makeSequence(
                 parActualsList,
                 makeCode { ., name, actuals ->
                     { node ->
-                        makeCallOrApply(makeSymbolLiteral(name), node, actuals*)
+                        makeCallOrApply(makeLiteral(name), node, actuals*)
                     }
                 }),
             makeCode { ., name ->
