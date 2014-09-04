@@ -2,6 +2,8 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include <stdio.h>
+
 #include "type/Bitwise.h"
 #include "type/Data.h"
 #include "type/Int.h"
@@ -141,6 +143,14 @@ BINARY_IMPL(sub,   zintSub);
 BINARY_IMPL(xor,   zintXor);
 
 // Documented in header.
+METH_IMPL_0(Int, debugString) {
+    char arr[22];  // Big enough for the longest possible result.
+
+    snprintf(arr, sizeof(arr), "%lld", zintValue(ths));
+    return stringFromUtf8(-1, arr);
+}
+
+// Documented in header.
 METH_IMPL_0(Int, toInt) {
     return ths;
 }
@@ -196,6 +206,7 @@ MOD_INIT(Int) {
             METH_BIND(Int, and),
             METH_BIND(Int, bit),
             METH_BIND(Int, bitSize),
+            METH_BIND(Int, debugString),
             METH_BIND(Int, div),
             METH_BIND(Int, divEu),
             METH_BIND(Int, mod),
