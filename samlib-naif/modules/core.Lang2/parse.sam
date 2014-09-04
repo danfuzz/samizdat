@@ -422,13 +422,13 @@ def parPostfixOperator = {:
     ## getter expression.
     ##
     @"."
-    name = parNameString
+    name = parNameSymbol
 
     (
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            { node -> makeCallOrApply(makeSymbolLiteral(name), node, actuals*) }
+            { node -> makeCallOrApply(makeLiteral(name), node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
