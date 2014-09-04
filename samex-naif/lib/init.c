@@ -109,12 +109,12 @@ static zvalue getLibrary(zvalue libraryPath) {
     // Call `ModuleSystem::exports::main` to load and evaluate the
     // core library.
 
-    zvalue exports = get(moduleSystem, STRING_exports);
+    zvalue exports = get(moduleSystem, SYM_exports);
     if (exports == NULL) {
         die("Missing bootstrap `exports` binding.");
     }
 
-    zvalue mainFn = get(exports, STRING_main);
+    zvalue mainFn = get(exports, SYM_main);
     if (mainFn == NULL) {
         die("Missing bootstrap `main` binding");
     }
@@ -153,18 +153,10 @@ MOD_INIT(lib) {
     MOD_USE(io);
     MOD_USE(lang);
 
-    STRING_INIT(exports);
-    STRING_INIT(main);
     STRING_INIT(runCommandLine);
 
     makePrimitiveEnvironment();
 }
-
-// Documented in header.
-STRING_DEF(exports);
-
-// Documented in header.
-STRING_DEF(main);
 
 // Documented in header.
 STRING_DEF(runCommandLine);

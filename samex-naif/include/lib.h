@@ -12,12 +12,6 @@
 #include "type/declare.h"
 
 /** String needed for interaction with the library. */
-STRING_DECL(exports);
-
-/** String needed for interaction with the library. */
-STRING_DECL(main);
-
-/** String needed for interaction with the library. */
 STRING_DECL(runCommandLine);
 
 /**

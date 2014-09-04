@@ -83,20 +83,20 @@ def parNameString = makeMainSequence(
     makeCode { nameIdent -> nameIdent::value });
 
 ## Documented in spec.
-def parNameStringList = makeMainSequence(
-    parNameString,
-    makeRepeat(makeSequence(makeToken(@@","), parNameString)),
+def parNameSymbolList = makeMainSequence(
+    parNameSymbol,
+    makeRepeat(makeSequence(makeToken(@@","), parNameSymbol)),
     makeCode { first, rest -> [first, rest*] });
 
 ## Documented in spec.
 def parVarLvalue = makeMainSequence(
-    parNameString,
+    parNameSymbol,
     makeCode { name -> makeVarFetchLvalue(name) });
 
 ## Documented in spec.
 def parVarRef = makeMainSequence(
     makeToken(@@var),
-    parNameString,
+    parNameSymbol,
     makeCode { ., name -> makeVarRef(name) });
 
 ## Documented in spec.
@@ -150,7 +150,7 @@ def parKey = makeMainChoice(
     makeSequence(
         parIdentifierSymbol,
         makeToken(@@":"),
-        makeCode { key, . -> makeLiteral(key::value.toString()) }),
+        makeCode { key, . -> makeLiteral(key::value) }),
     makeSequence(
         parExpression,
         makeToken(@@":"),
@@ -169,7 +169,7 @@ def parMapping = makeMainChoice(
         parExpression,
         makeCode { value -> value::interpolate }),
     makeSequence(
-        parNameString,
+        parNameSymbol,
         makeCode { name ->
             makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
         }));
@@ -320,7 +320,7 @@ def parPostfixOperator = makeMainChoice(
         makeToken(@@"::"),
         parIdentifierSymbol,
         makeCode { ., key ->
-            { node -> makeGet(node, makeLiteral(key::value.toString())) }
+            { node -> makeGet(node, makeLiteral(key::value)) }
         }),
     makeSequence(
         makeToken(@@"*"),
@@ -393,7 +393,7 @@ def parYieldOrNonlocal = makeMainSequence(
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield))),
-        makeCode { op, . -> makeVarFetch(get_classNameString(op)) }),
+        makeCode { op, . -> makeVarFetch(get_className(op)) }),
     makeChoice(
         makeSequence(
             parExpression,
@@ -412,7 +412,7 @@ def parYieldOrNonlocal = makeMainSequence(
 ## Documented in spec.
 def parVarDef = makeMainSequence(
     makeToken(@@def),
-    parNameString,
+    parNameSymbol,
     makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDef(name, optExpr*)
@@ -421,7 +421,7 @@ def parVarDef = makeMainSequence(
 ## Documented in spec.
 def parVarDefMutable = makeMainSequence(
     makeToken(@@var),
-    parNameString,
+    parNameSymbol,
     makeRepeat(makeSequence(makeToken(@@"="), parExpression), 0, 1),
     makeCode { ., name, optExpr ->
         makeVarDefMutable(name, optExpr*)
@@ -430,7 +430,7 @@ def parVarDefMutable = makeMainSequence(
 ## Documented in spec.
 def parYieldDef = makeMainSequence(
     makeToken(@@"/"),
-    parNameString);
+    parNameSymbol);
 
 ## Documented in spec.
 def parOptYieldDef = makeMainChoice(
@@ -443,7 +443,7 @@ def parOptYieldDef = makeMainChoice(
 def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
-            parNameString,
+            parNameSymbol,
             makeCode { n -> {name: n} }),
         makeSequence(
             makeToken(@@"."),
@@ -507,7 +507,7 @@ def parFunctionDef = makeMainSequence(
     makeToken(@@fn),
     parFunctionCommon,
     makeCode { ., closure ->
-        withTop(makeVarDef(closure::name.toString(), closure))
+        withTop(makeVarDef(closure::name, closure))
     });
 
 ## Documented in spec.
@@ -526,7 +526,7 @@ def parMethodBind = makeMainSequence(
 ## Documented in spec.
 def parImportName = makeMainChoice(
     makeSequence(
-        parNameString,
+        parNameSymbol,
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
@@ -586,7 +586,7 @@ def parImportSelect = makeMainChoice(
                 makeToken(@@"*"),
                 makeResult({select: @"*"})),
             makeSequence(
-                parNameStringList,
+                parNameSymbolList,
                 makeCode { ., select -> {select} }))),
     makeResult({}));
 
@@ -620,7 +620,7 @@ def parProgramStatement = makeMainChoice(
         makeToken(@@export),
         makeChoice(
             makeSequence(
-                parNameStringList,
+                parNameSymbolList,
                 makeCode { ., select -> makeExportSelection(select*) }),
             makeSequence(
                 parExportableStatement,
@@ -743,7 +743,7 @@ def parPexParenExpression = makeMainSequence(
 
 ## Parses a variable reference parsing expression.
 def parPexVarRef = makeMainSequence(
-    parNameString,
+    parNameSymbol,
     makeCode { name -> makeVarRef(name) });
 
 ## Documented in spec.
@@ -851,7 +851,7 @@ def parPexLookahead = makeMainChoice(
 ## Documented in spec.
 def parPexName = makeMainChoice(
     makeSequence(
-        parNameString,
+        parNameSymbol,
         makeToken(@@"="),
         parPexLookahead,
         makeCode { name, ., pex ->
