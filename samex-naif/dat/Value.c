@@ -218,10 +218,12 @@ MOD_INIT(Value) {
     SYM_INIT(debugString);
     SYM_INIT(debugSymbol);
     SYM_INIT(exports);
+    SYM_INIT(imports);
     SYM_INIT(gcMark);
     SYM_INIT(main);
     SYM_INIT(perEq);
     SYM_INIT(perOrder);
+    SYM_INIT(resources);
     SYM_INIT(toString);
     SYM_INIT(totalEq);
     SYM_INIT(totalOrder);
@@ -256,6 +258,9 @@ SYM_DEF(debugSymbol);
 SYM_DEF(exports);
 
 // Documented in header.
+SYM_DEF(imports);
+
+// Documented in header.
 SYM_DEF(gcMark);
 
 // Documented in header.
@@ -266,6 +271,9 @@ SYM_DEF(perEq);
 
 // Documented in header.
 SYM_DEF(perOrder);
+
+// Documented in header.
+SYM_DEF(resources);
 
 // Documented in header.
 SYM_DEF(toString);

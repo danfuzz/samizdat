@@ -36,6 +36,9 @@ SYM_DECL(debugSymbol);
  */
 SYM_DECL(exports);
 
+/** Symbol `imports`. Same comment applies as with `exports`, above. */
+SYM_DECL(imports);
+
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
  *
@@ -44,10 +47,7 @@ SYM_DECL(exports);
  */
 SYM_DECL(gcMark);
 
-/**
- * Symbol `main`. Used when accessing modules. Same comment applies as with
- * `exports`, above.
- */
+/** Symbol `main`. Same comment applies as with `exports`, above. */
 SYM_DECL(main);
 
 /** Method `.perEq(other)`: Documented in spec. */
@@ -55,6 +55,9 @@ SYM_DECL(perEq);
 
 /** Method `.perOrder(other)`: Documented in spec. */
 SYM_DECL(perOrder);
+
+/** Symbol `resources`. Same comment applies as with `exports`, above. */
+SYM_DECL(resources);
 
 /** Method `.toString()`: Documented in spec. */
 SYM_DECL(toString);
