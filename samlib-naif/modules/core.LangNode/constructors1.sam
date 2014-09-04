@@ -143,11 +143,11 @@ export fn withYieldDefIfAbsent(node, name) {
 
 ## Documented in spec.
 export fn withoutInterpolate(node) {
-    return @(get_class(node))(node.dataOf().del("interpolate"))
+    return @(get_class(node))(node.dataOf().del(@.interpolate))
 };
 
 ## Documented in spec.
 export fn withoutIntermediates(node) {
-    def data = node.dataOf().del("lvalue").del("interpolate");
+    def data = node.dataOf().del("lvalue").del(@.interpolate);
     return @(get_class(node))(data)
 };
