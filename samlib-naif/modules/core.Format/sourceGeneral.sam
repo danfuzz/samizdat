@@ -53,10 +53,23 @@ def SPECIAL_VALUES = {
     (true):        "true"
 };
 
-## Stringifies a key (or derived value name).
+## Stringifies a name, which must be a symbol, possibly with a prefix. If
+## the prefix is empty and the symbol does not look like an identifier, then
+## the result is backslash-prefixed in addition to being quoted.
+fn nameString(prefix, name) {
+    def nameString = name.toString();
+
+    ifIs { isIdentifier(name) }
+        { return prefix.cat(nameString) };
+
+    def finalPrefix = ifValueOr { ne(prefix, "") } { "\\" };
+    return finalPrefix.cat(sourceGeneral(nameString, true))
+};
+
+## Stringifies a map key.
 fn keyString(key) {
-    ifIs { isIdentifier(key) }
-        { return key };
+    ifIs { hasClass(key, Symbol) }
+        { return nameString("", key) };
 
     ifValue { SPECIAL_VALUES.get(key) }
         { string -> return "(".cat(string, ")") };
@@ -69,16 +82,12 @@ fn Class_sourceGeneral(value, adorn) {
     ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
 
-    def name = classNameString(value);
+    def name = className(value);
 
     ifNot { eq(classParent(value), DerivedData) }
-        { return "@@(opaque ".cat(sourceGeneral(name, true), ")") };
+        { return "@@(opaque ".cat(keyString(name), ")") };
 
-    def body = ifIs { hasClass(name, String) }
-        { ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) } }
-        { "(".cat(sourceGeneral(name, true), ")") };
-
-    return adornIf(adorn, "@@", body, "")
+    return nameString("@@", name);
 };
 
 ## Stringifies an int.
@@ -108,17 +117,11 @@ fn Map_sourceGeneral(value, adorn) {
 
 ## Stringifies a symbol.
 fn Symbol_sourceGeneral(value, adorn) {
-    def name = value.toString();
-
     ifIs { eq(adorn, false) }
-        { return sourceGeneral(name, false) };
+        { return sourceGeneral(value.toString(), false) };
 
     def prefix = ifIs { symbolIsInterned(value) } { "@." } { "@?" };
-    def body = ifIs { isIdentifier(name) }
-        { name }
-        { sourceGeneral(name, true) };
-
-    return prefix.cat(body);
+    return nameString(prefix, value);
 };
 
 ## Stringifies a string.
@@ -134,23 +137,13 @@ fn Value_sourceGeneral(value, adorn) {
         { string -> return string };
 
     def cls = get_class(value);
-    def name = classNameString(cls);
-    def clsStr = ifIs { hasClass(name, String) }
-        {
-            ## The class is a string.
-            ifValueOr { isIdentifier(name) } { sourceGeneral(name, true) }
-        }
-        {
-            ## General case for class.
-            "(".cat(sourceGeneral(cls, true), ")")
-        };
-    def prefix = "@".cat(clsStr);
+    def prefix = nameString("@", className(cls));
 
     ifNot { eq(classParent(cls), DerivedData) }
         {
             ## Opaque value, possibly named.
             def body = ifValue { value.debugSymbol() }
-                { name -> keyString(name.toString()) }
+                { name -> keyString(name) }
                 { "..." };
 
             return prefix.cat("<", body, ">")

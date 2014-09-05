@@ -22,11 +22,13 @@ def IDENTIFIER_CHARS = {
     "0123456789"*: true
 };
 
-## Checks to see if the given value is a string with the form of an
-## in-language identifier. Returns the given `string` if so.
-export fn isIdentifier(string) {
-    ifNot { hasClass(string, String) }
+## Checks to see if the given value is a symbol with the form of an
+## in-language identifier. Returns the given `symbol` if so.
+export fn isIdentifier(symbol) {
+    ifNot { hasClass(symbol, Symbol) }
         { return };
+
+    def string = symbol.toString();
 
     ifIs { eq(string, "") }
         { return };
@@ -39,5 +41,5 @@ export fn isIdentifier(string) {
             { return }
     };
 
-    return string
+    return symbol
 };
