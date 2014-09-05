@@ -11,8 +11,8 @@
 
 #include "type/declare.h"
 
-/** String needed for interaction with the library. */
-STRING_DECL(runCommandLine);
+/** Symbol needed for interaction with the library. */
+SYM_DECL(runCommandLine);
 
 /**
  * Constructs and returns a fresh execution environment, containing bindings

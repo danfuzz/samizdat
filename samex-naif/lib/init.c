@@ -153,10 +153,10 @@ MOD_INIT(lib) {
     MOD_USE(io);
     MOD_USE(lang);
 
-    STRING_INIT(runCommandLine);
+    SYM_INIT(runCommandLine);
 
     makePrimitiveEnvironment();
 }
 
 // Documented in header.
-STRING_DEF(runCommandLine);
+SYM_DEF(runCommandLine);
