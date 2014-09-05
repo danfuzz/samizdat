@@ -120,6 +120,13 @@ def parIdentifierSymbol = makeMainChoice(
             }));
 
 ## Documented in spec.
+def parKeyLiteral = makeMainChoice(
+    makeSequence(
+        makeToken(@@string),
+        makeCode { s -> makeLiteral(s::value) }),
+    parIdentifierSymbol);
+
+## Documented in spec.
 def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"-"),
@@ -148,9 +155,9 @@ def parLiteral = makeMainChoice(
 ## Documented in spec.
 def parKey = makeMainChoice(
     makeSequence(
-        parIdentifierSymbol,
+        parKeyLiteral,
         makeToken(@@":"),
-        makeCode { key, . -> makeLiteral(key::value) }),
+        makeCode { key, . -> key }),
     makeSequence(
         parExpression,
         makeToken(@@":"),
@@ -318,10 +325,8 @@ def parPostfixOperator = makeMainChoice(
         }),
     makeSequence(
         makeToken(@@"::"),
-        parIdentifierSymbol,
-        makeCode { ., key ->
-            { node -> makeGet(node, makeLiteral(key::value)) }
-        }),
+        parKeyLiteral,
+        makeCode { ., key -> { node -> makeGet(node, key) } }),
     makeSequence(
         makeToken(@@"*"),
         makeCode { . -> { node -> makeInterpolate(node) } }),

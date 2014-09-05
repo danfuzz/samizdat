@@ -344,6 +344,18 @@ DEF_PARSE(identifierSymbol) {
 }
 
 // Documented in spec.
+DEF_PARSE(keyLiteral) {
+    MARK();
+
+    zvalue s = MATCH(string);
+    if (s != NULL) {
+        return makeLiteral(get(s, SYM_value));
+    }
+
+    return PARSE_OR_REJECT(identifierSymbol);
+}
+
+// Documented in spec.
 DEF_PARSE(literal) {
     MARK();
 
@@ -376,10 +388,10 @@ DEF_PARSE(literal) {
 DEF_PARSE(key1) {
     MARK();
 
-    zvalue result = PARSE_OR_REJECT(identifierSymbol);
+    zvalue result = PARSE_OR_REJECT(keyLiteral);
     MATCH_OR_REJECT(CH_COLON);
 
-    return makeLiteral(get(result, SYM_value));
+    return result;
 }
 
 /**
@@ -642,8 +654,7 @@ DEF_PARSE(postfixOperator) {
     if (result == NULL) { result = PARSE(actualsList); }
 
     if ((result == NULL) && (MATCH(CH_COLONCOLON) != NULL)) {
-        result = PARSE_OR_REJECT(identifierSymbol);
-        result = makeLiteral(get(result, SYM_value));
+        result = PARSE_OR_REJECT(keyLiteral);
     }
 
     if (result == NULL) { result = MATCH(CH_STAR); }

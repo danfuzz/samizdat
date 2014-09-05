@@ -154,6 +154,15 @@ def parIdentifierSymbol = {:
     }
 :};
 
+## Parses a key literal. This is similar to the `identifierSymbol` rule,
+## except that literal strings mean literal strings, not symbols.
+def parKeyLiteral = {:
+    s = @string
+    { makeLiteral(s::value) }
+|
+    parIdentifierSymbol
+:};
+
 ## Parses a simple data literal, including literal booleans, ints, and
 ## strings.
 ##
@@ -186,9 +195,9 @@ def parLiteral = {:
 
 ## Parses a map key.
 def parKey = {:
-    key = parIdentifierSymbol
+    key = parKeyLiteral
     @":"
-    { makeLiteral(key::value) }
+    { key }
 |
     key = parExpression
     @":"
@@ -392,8 +401,8 @@ def parPostfixOperator = {:
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
     @"::"
-    key = parIdentifierSymbol
-    { { node -> makeGet(node, makeLiteral(key::value)) } }
+    key = parKeyLiteral
+    { { node -> makeGet(node, key) } }
 |
     ## The lookahead failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
