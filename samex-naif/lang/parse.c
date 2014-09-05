@@ -768,7 +768,7 @@ DEF_PARSE(yieldOrNonlocal) {
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
-        name = makeVarFetch(classNameString(get_class(op)));
+        name = makeVarFetch(className(get_class(op)));
     }
 
     zvalue value = PARSE(expression);   // It's okay for this to be `NULL`.
