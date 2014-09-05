@@ -29,7 +29,7 @@ static zvalue lookup(zvalue context, const char *name) {
 static zvalue externalSource(const char *name) {
     zvalue cls = makeDerivedDataClass(symbolFromUtf8(-1, "external"));
     zvalue data = mapFromArgs(
-        stringFromUtf8(-1, "name"), stringFromUtf8(-1, name),
+        symbolFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);
     return makeData(cls, data);
 }
