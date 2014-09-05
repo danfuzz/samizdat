@@ -704,9 +704,9 @@ def parImportName = {:
     name = parNameSymbol
 
     key = (
-        @"*" { "prefix" }
+        @"*" { @.prefix }
     |
-        { "name" }
+        { @.name }
     )
 
     @"="

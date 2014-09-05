@@ -530,8 +530,8 @@ def parImportName = makeMainChoice(
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
-                makeResult("prefix")),
-            makeResult("name")),
+                makeResult(@.prefix)),
+            makeResult(@.name)),
         makeToken(@@"="),
         makeCode { name, key, . -> {(key): name} }),
     makeResult({}));
