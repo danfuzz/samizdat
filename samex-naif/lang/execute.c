@@ -236,12 +236,6 @@ zvalue langEval0(zvalue env, zvalue node) {
 
     arrayFromMap(mappings, env);
     for (zint i = 0; i < size; i++) {
-        // TODO: Remove this scaffolding once env keys are symbols.
-        zvalue key = mappings[i].key;
-        if (hasClass(key, CLS_String)) {
-            mappings[i].key = symbolFromString(key);
-        }
-
         mappings[i].value = makeResult(mappings[i].value);
     }
     env = mapFromArray(size, mappings);
