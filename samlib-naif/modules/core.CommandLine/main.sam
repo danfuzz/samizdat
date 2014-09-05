@@ -30,7 +30,7 @@ def parWord = {:
 ## Parses a key prefix of a word, not including the ending `=`.
 def parKey = {:
     chars = [! "=\0"]+
-    { $Peg::stringFromTokenList(chars) }
+    { $Peg::symbolFromTokenList(chars) }
 :};
 
 ## Parses a key-value option word. Yields a single-mapping map of
@@ -40,7 +40,7 @@ def parKeyValue = {:
     key = parKey
     "="
     value = parWord
-    { {(key.toSymbol()): value} }
+    { {(key): value} }
 :};
 
 ## Parses a non-value flag option word. Yields a single-mapping map of
@@ -50,7 +50,7 @@ def parFlag = {:
     flag = parWord
 
     ## The `!=` rejects plain `--`.
-    { (flag != "") & {(flag): true} }
+    { (flag != "") & {(flag.toSymbol()): true} }
 :};
 
 ## Parses a syntactically invalid option. This includes words that start with
