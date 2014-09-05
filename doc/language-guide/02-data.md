@@ -180,8 +180,8 @@ A `Map` is a sequence of zero or more mappings (also called bindings)
 from nearly-arbitrary keys to arbitrary values. Values are allowed to be any
 type of value. Keys are allowed to be any value that can be ordered, using
 the defined total ordering of values, with respect to all other keys in the
-map. Notably, keys are *not* restricted to only being strings (or string-like
-things).
+map. Notably, keys are *not* restricted to only being symbols, strings, or
+other string-like things.
 
 Maps are written as an initial `{`, followed by zero or
 more mappings, followed by a final `}`. Mappings are written as
@@ -189,7 +189,7 @@ the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
 Syntactically, keys are "terms," that is, simple values, collection literals,
-or parenthesized expressions. As a short-hand, a string key with the same
+or parenthesized expressions. As a short-hand, a symbols key with the same
 form as an identifier can be written without the quotes.
 
 A collection of values can be mapped as keys to a single value, using the
@@ -212,9 +212,9 @@ the common case of putting together a map of current variable definitions.
 ```
 {}                            ## the empty map
 {1: "number one"}
-{two: 2}                      ## the same as {"two": 2}
-{true: "yes"}                 ## the same as {"true": "yes"}
-{(true): "yes"}               ## key is (the boolean) `true`, not a string
+{two: 2}                      ## the same as {@.two: 2}
+{true: "yes"}                 ## the same as {@.true: "yes"}
+{(true): "yes"}               ## key is (the boolean) `true`, not a symbol
 {favorites: ["biscuits", "muffins"]}
 
 def blort = "B";
@@ -222,6 +222,7 @@ def zorch = "Z";
 {blort, zorch}                ## shorthand to reference active variables
 {blort: blort, zorch: zorch}  ## longhand of the above
 
+## The keys here are strings, not symbols.
 {
     "blort":  "potion; the ability to see in the dark",
     "borch":  "spell; insect soporific",
