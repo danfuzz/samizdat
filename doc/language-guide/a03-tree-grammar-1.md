@@ -663,7 +663,7 @@ def parFunctionCommon = {:
     {
         def basic = withName(
             withFormals(
-                withYieldDef(code, "return"),
+                withYieldDef(code, @.return),
                 formals),
             name);
 
@@ -692,7 +692,7 @@ def parMethodBind = {:
     {
         def formals = closure::formals;
         def name = closure::name;
-        def fullClosure = withFormals(closure, [{name: "this"}, formals*]);
+        def fullClosure = withFormals(closure, [{name: @.this}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     }
 :};
