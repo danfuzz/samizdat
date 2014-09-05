@@ -9,11 +9,32 @@
 // `DEF_STRING(name, "string")` -- a string constant.
 // `DEF_SYMBOL(name, "string")` -- an interned symbol.
 // `DEF_DATA(name, "string")` -- a derived data class.
-// `DEF_TOKEN(name, "string")` -- a string, a derived data class and a token.
+// `DEF_TOKEN(name, "string")` -- a derived data class and a token.
 //
 // Tokens are class-only transparent derived values, whose classes
 // are named with the indicated strings.
 //
+
+DEF_STRING(CH_DOLLAR,            "$");
+DEF_STRING(CH_DOT,               ".");
+DEF_STRING(CH_PLUS,              "+");
+DEF_STRING(CH_QMARK,             "?");
+DEF_STRING(CH_SLASH,             "/");
+DEF_STRING(CH_STAR,              "*");
+DEF_STRING(break,                "break");
+DEF_STRING(continue,             "continue");
+DEF_STRING(def,                  "def");
+DEF_STRING(export,               "export");
+DEF_STRING(fn,                   "fn");
+DEF_STRING(import,               "import");
+DEF_STRING(null,                 "null");
+DEF_STRING(return,               "return");
+DEF_STRING(var,                  "var");
+DEF_STRING(void,                 "void");
+DEF_STRING(yield,                "yield");
+DEF_STRING(zfalse,               "false");  // `z` avoids clash with C `false`.
+DEF_STRING(ztrue,                "true");   // `z` avoids clash with C `true`.
+DEF_STRING(language,             "language");
 
 DEF_TOKEN(CH_AT,                 "@");
 DEF_TOKEN(CH_ATAT,               "@@");
@@ -24,7 +45,7 @@ DEF_TOKEN(CH_COLON,              ":");
 DEF_TOKEN(CH_COLONCOLON,         "::");
 DEF_TOKEN(CH_COLONEQUAL,         ":=");
 DEF_TOKEN(CH_COMMA,              ",");
-DEF_TOKEN(CH_DOLLAR,             "$");
+//DEF_TOKEN(CH_DOLLAR,             "$");
 DEF_TOKEN(CH_DOT,                ".");
 DEF_TOKEN(CH_DOTDOT,             "..");
 DEF_TOKEN(CH_EQUAL,              "=");
@@ -84,7 +105,6 @@ DEF_SYMBOL(function,             "function");
 DEF_SYMBOL(index,                "index");
 DEF_SYMBOL(info,                 "info");
 DEF_SYMBOL(interpolate,          "interpolate");
-DEF_SYMBOL(language,             "language");
 DEF_SYMBOL(loadModule,           "loadModule");
 DEF_SYMBOL(loadResource,         "loadResource");
 DEF_SYMBOL(lvalue,               "lvalue");
@@ -109,38 +129,3 @@ DEF_SYMBOL(value,                "value");
 DEF_SYMBOL(values,               "values");
 DEF_SYMBOL(yield,                "yield");
 DEF_SYMBOL(yieldDef,             "yieldDef");
-
-DEF_STRING(bind,                 "bind");
-DEF_STRING(cat,                  "cat");
-DEF_STRING(classAddMethod,       "classAddMethod");
-DEF_STRING(collect,              "collect");
-DEF_STRING(formals,              "formals");
-DEF_STRING(format,               "format");
-DEF_STRING(function,             "function");
-DEF_STRING(get,                  "get");
-DEF_STRING(index,                "index");
-DEF_STRING(info,                 "info");
-DEF_STRING(interpolate,          "interpolate");
-DEF_STRING(language,             "language");
-DEF_STRING(loadModule,           "loadModule");
-DEF_STRING(loadResource,         "loadResource");
-DEF_STRING(lvalue,               "lvalue");
-DEF_STRING(makeData,             "makeData");
-DEF_STRING(makeDerivedDataClass, "makeDerivedDataClass");
-DEF_STRING(makeList,             "makeList");
-DEF_STRING(makeValueMap,         "makeValueMap");
-DEF_STRING(map,                  "map");
-DEF_STRING(maybeValue,           "maybeValue");
-DEF_STRING(name,                 "name");
-DEF_STRING(prefix,               "prefix");
-DEF_STRING(repeat,               "repeat");
-DEF_STRING(select,               "select");
-DEF_STRING(seq,                  "seq");
-DEF_STRING(source,               "source");
-DEF_STRING(statements,           "statements");
-DEF_STRING(target,               "target");
-DEF_STRING(this,                 "this");
-DEF_STRING(top,                  "top");
-DEF_STRING(value,                "value");
-DEF_STRING(values,               "values");
-DEF_STRING(yieldDef,             "yieldDef");

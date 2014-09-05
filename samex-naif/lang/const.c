@@ -21,7 +21,6 @@
     zvalue CLS_##name = NULL
 
 #define DEF_TOKEN(name, str) \
-    DEF_STRING(name, str); \
     DEF_DATA(name, str); \
     zvalue TOK_##name = NULL
 
@@ -54,7 +53,6 @@ MOD_INIT(lang_const) {
             makeDerivedDataClass(symbolFromUtf8(-1, str)));
 
     #define DEF_TOKEN(name, str) \
-        DEF_STRING(name, str); \
         DEF_DATA(name, str); \
         TOK_##name = datImmortalize(makeData(CLS_##name, NULL));
 

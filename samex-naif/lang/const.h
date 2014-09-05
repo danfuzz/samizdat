@@ -28,7 +28,6 @@
     // No semicolon here, so that use sites require it.
 
 #define DEF_TOKEN(name, str) \
-    DEF_STRING(name, str); \
     DEF_DATA(name, str); \
     extern zvalue TOK_##name \
     // No semicolon here, so that use sites require it.
