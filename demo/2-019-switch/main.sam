@@ -77,10 +77,10 @@ note(interpolator(11, [8..18]));
 note(interpolator(0, [0, 5]));
 
 note("\nElse...");
-note(elser("blort"));
-note(elser("fizmo"));
+note(elser(@.blort));
+note(elser(@.fizmo));
 note(elser());
-note($Format::source(elser("igram")?));  ## `?` because we expect void.
+note($Format::source(elser(@.igram)?));  ## `?` because we expect void.
 
 note("\nVoid yield...");
 ifNot
