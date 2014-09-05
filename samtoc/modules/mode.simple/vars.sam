@@ -23,20 +23,20 @@ def C_IDENT_CHARS = {
 ## has a repeat specifier. See `processFormalsWithRepeat` below.
 def FORMAL_PARSERS = {
     ## Non-repeat.
-    ".": {
+    ("."): {
         parse:  "(argAt >= argCount) ? EMPTY_LIST : args[argAt]",
         update: "if (argAt < argCount) { argAt++; }"
     },
     ## Zero-or-one.
-    "?": {
+    ("?"): {
         parse:
             "(argAt >= argCount) \
             ? EMPTY_LIST : listFromArray(1, &args[argAt])",
         update: "if (argAt < argCount) { argAt++; }"
     },
     ## Zero-or-more and one-or-more.
-    "*":
-    "+": {
+    ("*"):
+    ("+"): {
         parse:  "listFromArray(argCount - argAt, &args[argAt])",
         update: "argAt = argCount"
     }
