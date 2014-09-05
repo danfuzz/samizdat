@@ -24,7 +24,7 @@ def parSubstitution = {:
     ")"
 
     {
-        {format, name: $Peg::stringFromTokenList(name)}
+        {format, name: $Peg::symbolFromTokenList(name)}
     }
 :};
 
