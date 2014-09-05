@@ -40,7 +40,7 @@ def parKeyValue = {:
     key = parKey
     "="
     value = parWord
-    { {(key): value} }
+    { {(key.toSymbol()): value} }
 :};
 
 ## Parses a non-value flag option word. Yields a single-mapping map of
