@@ -16,7 +16,7 @@ def C_IDENT_CHARS = {
     ("0".."9")*: true,
     ("A".."Z")*: true,
     ("a".."z")*: true,
-    "_":         true
+    ("_"):       true
 };
 
 ## Snippets of code for parsing incoming arguments, when at least one formal
@@ -104,9 +104,9 @@ fn processFormals(clo) {
         (def name = f::name) &
             {(name): {
                 origName: name,
-                kind: "arg",
-                name: safeName("arg", name, idx),
-                init: $CodeGen::genCall("makeResult", "args[\(idx)]")
+                kind:     "arg",
+                name:     safeName("arg", name, idx),
+                init:     $CodeGen::genCall("makeResult", "args[\(idx)]")
             }}
     );
 
@@ -125,10 +125,10 @@ fn processYieldDef(clo) {
             ],
             cleanups: ["jumpRetire(jump)"],
             vars: {(name): {
-                    origName: "<\(name)>",
-                    kind: "yield",
-                    name: safeName("yield", name),
-                    init: "makeResult(jump)"
+                    origName: "<\(name)>".toSymbol(),
+                    kind:     "yield",
+                    name:     safeName("yield", name),
+                    init:     "makeResult(jump)"
                 }}
         }
     } else {
@@ -143,9 +143,9 @@ fn processFreeVars(clo) {
     def vars = ( idx in (0..), name in names ->
         {(name): {
             origName: name,
-            kind: "free",
-            name: freeVarName(name, idx),
-            init: "state[\(idx)]"
+            kind:     "free",
+            name:     freeVarName(name, idx),
+            init:     "state[\(idx)]"
         }}
     );
 
@@ -156,7 +156,7 @@ fn processFreeVars(clo) {
 ## (must be safe), an arbitrary original `name`, and an optional `optIndex`
 ## (an unsigned int).
 fn safeName(prefix, name, optIndex?) {
-    def nameStr = hasClass(name, String) | "\(name)";
+    def nameStr = hasClass(name, Symbol) & name.toString() | "\(name)";
     def chars = ( ch in nameStr -> C_IDENT_CHARS[ch] & ch | "_" );
     def index = (def i = optIndex*) & [i, "_"] | "";
 
@@ -206,7 +206,7 @@ export fn processVars(clo) {
     def varStats = ( name in names ->
         def binding = vars[name];
         $CodeGen::genComment(
-            "\%q(binding::origName)",
+            "\%q(binding::origName.toString())",
             $CodeGen::genAssign("zvalue \(binding::name)", binding::init));
     );
 
