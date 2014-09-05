@@ -50,22 +50,21 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = collPut(env, valToString(nameSymbol), \
+            env = collPut(env, nameSymbol, \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameSymbol)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
         do { \
-            zvalue nameStr = stringFromUtf8(-1, #name); \
-            env = collPut(env, nameStr, value); \
+            zvalue nameSymbol = symbolFromUtf8(-1, #name); \
+            env = collPut(env, nameSymbol, value); \
         } while(0)
 
     #include "prim-def.h"
 
     // Set the final value, and make it immortal.
-    PRIMITIVE_ENVIRONMENT = env;
-    datImmortalize(PRIMITIVE_ENVIRONMENT);
+    PRIMITIVE_ENVIRONMENT = datImmortalize(env);
 }
 
 /**
