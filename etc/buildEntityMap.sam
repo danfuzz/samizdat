@@ -114,8 +114,8 @@ export fn main(selfPath, .*) {
     ## This makes each result line *start* with `,\n`, to make it easy to just
     ## trim the first two characters off the beginning, yielding a valid comma-
     ## separated list of mappings.
-    def resultLines = (mapping in result ->
-        ",\n    \%q(mapping.key): \%q(mapping.value)"
+    def resultLines = ( mapping in result ->
+        ",\n    \\\%q(mapping.key): \%q(mapping.value)"
     );
 
     def resultText = "".cat(resultLines*)[2..];
