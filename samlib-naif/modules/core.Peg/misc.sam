@@ -83,5 +83,10 @@ export fn makeString(string) {
 
 ## Documented in spec.
 export fn stringFromTokenList(tokens) {
-    return "".cat(tokens.collect(get_classNameString)*)
+    return "".cat(tokens.collect(get_className)*)
+};
+
+## Documented in spec.
+export fn symbolFromTokenList(tokens) {
+    return stringFromTokenList(tokens).toSymbol()
 };
