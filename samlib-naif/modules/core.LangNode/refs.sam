@@ -21,9 +21,11 @@ def SYMBOLS = [
     @.collect,
     @.div,
     @.divEu,
+    @.exclusive,
     @.exports,
     @.get,
     @.get_size,
+    @.inclusive,
     @.info,
     @.mod,
     @.modEu,
@@ -38,6 +40,7 @@ def SYMBOLS = [
     @.sliceInclusive,
     @.shr,
     @.sub,
+    @.value,
     @.xor
 ];
 

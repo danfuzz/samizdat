@@ -96,7 +96,7 @@ index-based "slice" of elements taken from `sequence`, from the `start`
 index through the `end` index.
 
 The `start` is always an inclusive index. `style` indicates whether the
-end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
+end is inclusive (`@.inclusive`) or exclusive (`@.exclusive`).
 
 Each of `start` and `end` must be a derived data value of class `@fromStart`
 or `@fromEnd` with a `{value: int}` as the payload. The class indicates which

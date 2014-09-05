@@ -1544,14 +1544,14 @@ def parIndexPostfix = {:
             ## use `sliceGeneral`.
             {
                 def style = ifIs { eq(op, @"..") }
-                    { makeLiteral(@inclusive) }
-                    { makeLiteral(@exclusive) };
+                    { REFS::SYM_inclusive }
+                    { REFS::SYM_exclusive };
 
                 def startNode =
                     makeCall(REFS::makeData,
                         makeLiteral(start::origin),
                         makeCall(REFS::makeValueMap,
-                            makeLiteral("value"), start::value));
+                            REFS::SYM_value, start::value));
 
                 def optEndNode = (
                     ifNot { eq(end, INDEX_AT_END_0) }
@@ -1559,7 +1559,7 @@ def parIndexPostfix = {:
                             makeCall(REFS::makeData,
                                 makeLiteral(end::origin),
                                 makeCall(REFS::makeValueMap,
-                                    makeLiteral("value"), end::value))
+                                    REFS::SYM_value, end::value))
                         }
                 )?;
 
