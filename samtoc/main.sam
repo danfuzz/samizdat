@@ -21,9 +21,9 @@ def SOURCE_SUFFIX = ".sam";
 
 ## Map from `--mode` values to module names.
 def MODE_MAP = {
-    "interp-tree": "interpTree",
-    "linkage":     "linkage",
-    "simple":      "simple"
+    @."interp-tree": "interpTree",
+    @."linkage":     "linkage",
+    @."simple":      "simple"
 };
 
 ## Removes the `.*` suffix from `name`.
@@ -223,7 +223,8 @@ export fn main(selfPath, rawArgs*) {
     };
     note("");
 
-    def modeName = MODE_MAP[args::options::mode | DEFAULT_MODE] |
+    def modeSym = (args::options::mode | DEFAULT_MODE).toSymbol();
+    def modeName = MODE_MAP[modeSym] |
         {
             note("Unknown compilation mode: \%q(args::options::mode)");
             return 1
