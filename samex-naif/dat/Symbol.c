@@ -181,7 +181,6 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     zvalue function = classFindMethodBySymbolIndex(cls, index);
 
     if (function == NULL) {
-        note("=== %lld %s", argCount, valDebugString(args[0]));
         die("Unbound method: %s.%s",
             valDebugString(cls), valDebugString(valToString(symbol)));
     }

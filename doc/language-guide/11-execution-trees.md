@@ -383,11 +383,10 @@ that incorporates the implied declaration(s). See `LangN::simplify` and
 This represents the import of a module, binding it to a named variable in
 the program's top-level environment.
 
-#### `importModuleSelection` &mdash; `@importModuleSelection{prefix: name, select?: [name+], source: source}`
+#### `importModuleSelection` &mdash; `@importModuleSelection{prefix?: name, select?: [name+], source: source}`
 
-* `prefix: name` &mdash; Prefix for variable names to bind. Must be a string.
-  Allowed to be the empty string (`""`) to indicate no prefixing should be
-  done.
+* `prefix: name` (optional) &mdash; Prefix for variable names to bind. Must
+  be a symbol. Omitted to indicate no prefixing should be done.
 
 * `select: [name+]` (optional) &mdash; List of module-exported bindings
   to import. Elements must be symbols. When absent, indicates that *all* of

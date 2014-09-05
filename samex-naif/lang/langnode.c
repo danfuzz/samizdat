@@ -195,21 +195,26 @@ zvalue get_definedNames(zvalue node) {
                || hasClass(node, CLS_varDefMutable)) {
         return listFrom1(get(node, SYM_name));
     } else if (hasClass(node, CLS_importModuleSelection)) {
-        zvalue prefix = get(node, SYM_prefix);
         zvalue select = get(node, SYM_select);
         if (select == NULL) {
             die("Cannot call `get_definedNames` on unresolved import.");
         }
 
-        zint size = get_size(select);
-        zvalue arr[size];
-        arrayFromList(arr, select);
+        zvalue prefix = get(node, SYM_prefix);
+        if (prefix != NULL) {
+            zvalue prefixStr = valToString(prefix);
+            zint size = get_size(select);
+            zvalue arr[size];
+            arrayFromList(arr, select);
 
-        for (zint i = 0; i < size; i++) {
-            arr[i] = symbolFromString(METH_CALL(cat, prefix, arr[i]));
+            for (zint i = 0; i < size; i++) {
+                arr[i] = symbolFromString(METH_CALL(cat, prefixStr, arr[i]));
+            }
+
+            return listFromArray(size, arr);
+        } else {
+            return select;
         }
-
-        return listFromArray(size, arr);
     } else {
         return EMPTY_LIST;
     }
@@ -442,11 +447,6 @@ zvalue makeImport(zvalue baseData) {
             die("Import selection name must be a prefix.");
         } else if (get(data, SYM_format) != NULL) {
             die("Cannot import selection of resource.");
-        }
-
-        if (get(data, SYM_prefix) == NULL) {
-            // Default to empty string for `prefix`.
-            data = collPut(data, SYM_prefix, EMPTY_STRING);
         }
 
         if (hasClass(select, CLS_CH_STAR)) {

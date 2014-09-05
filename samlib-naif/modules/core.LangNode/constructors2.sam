@@ -218,12 +218,6 @@ export fn makeImport(baseData) {
             ifIs { data::format }
                 { die("Cannot import selection of resource.") };
 
-            ifNot { data::prefix }
-            {
-                ## Default to empty string for `prefix`.
-                data := {data*, prefix: ""}
-            };
-
             ifIs { hasClass(select, @@"*") }
                 {
                     ## It's a wildcard import.
