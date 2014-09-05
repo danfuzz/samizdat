@@ -29,12 +29,12 @@ def SPECIAL_CHARS = {
     (makeInclusiveRange((127).toString(), (159).toString()))*: "x",
     ((65534).toString()): "x",
     ((65535).toString()): "x",
-    "\0": "\\0",
-    "\n": "\\n",
-    "\r": "\\r",
-    "\t": "\\t",
-    "\"": "\\\"",
-    "\\": "\\\\"
+    ("\0"): "\\0",
+    ("\n"): "\\n",
+    ("\r"): "\\r",
+    ("\t"): "\\t",
+    ("\""): "\\\"",
+    ("\\"): "\\\\"
 };
 
 ## Does hex character conversion.
