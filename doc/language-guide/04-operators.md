@@ -123,9 +123,9 @@ This is the preferred syntax to use for calling a method on a target.
 #### Access collection with literal symbol or string key &mdash; `expression::name`
 
 A literal symbol key can be looked up in a collection by naming the
-collection and following it with a double-colon (`::`) and an identifier.
-A literal string key can be similarly looked up by using a quoted string
-instead of an identifier.
+collection and following it with a double-colon (`::`) and an identifier
+(either the simple or backslash-quoted form). A literal string key can be
+similarly looked up by using a quoted string instead of an identifier.
 
 These are equivalent to calling `get` on the collection, passing it the
 literal key as the argument. That is, `foo::bar` and `foo::\"bar"` are both

@@ -189,8 +189,9 @@ the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
 Syntactically, keys are "terms," that is, simple values, collection literals,
-or parenthesized expressions. As a short-hand, a symbols key with the same
-form as an identifier can be written without the quotes.
+or parenthesized expressions. As a short-hand, a symbol key with the same
+form as an identifier can be written without the quotes; the long form of
+an identifier (`\"name"`) also works.
 
 A collection of values can be mapped as keys to a single value, using the
 same postfix `*` interpolation syntax that is used with lists, e.g.
@@ -203,9 +204,10 @@ omitting the value after all but the last of the list, e.g.
 An entire other map can be interpolated into a new map by naming the
 map to interpolate followed by `*` (with no colon).
 
-As one final shorthand, to map a name to the contents of a defined variable,
-it is only necessary to name the variable (no colon, etc.). This is to handle
-the common case of putting together a map of current variable definitions.
+As one final shorthand, to map a symbol to the contents of a defined variable
+with the same name, it is only necessary to name the variable (no colon,
+etc.). This is to handle the common case of putting together a map of current
+variable definitions.
 
 `{}` denotes the empty map.
 
