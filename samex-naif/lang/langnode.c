@@ -462,7 +462,7 @@ zvalue makeImport(zvalue baseData) {
         zvalue name = METH_CALL(cat,
             STR_CH_DOLLAR,
             get_baseName(get(baseData, SYM_source)));
-        data = collPut(data, SYM_name, name);
+        data = collPut(data, SYM_name, symbolFromString(name));
     }
 
     if (get(data, SYM_format) != NULL) {
