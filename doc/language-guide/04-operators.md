@@ -120,16 +120,17 @@ symbol as a function to apply).
 
 This is the preferred syntax to use for calling a method on a target.
 
-#### Access collection with literal string key &mdash; `expression::name`
+#### Access collection with literal symbol or string key &mdash; `expression::name`
 
 A literal symbol key can be looked up in a collection by naming the
-collection and following it with a double-colon (`::`) and the quoted string
-name of the symbol. If the key fits the syntax of an in-language identifier,
-then it is valid to omit the quotes.
+collection and following it with a double-colon (`::`) and an identifier.
+A literal string key can be similarly looked up by using a quoted string
+instead of an identifier.
 
-This is equivalent to calling `get` on the collection, passing it the
-key as the argument. That is, `foo::bar` and `foo::"bar"` are both
-equivalent to `foo.get(@.bar)`.
+These are equivalent to calling `get` on the collection, passing it the
+literal key as the argument. That is, `foo::bar` and `foo::\"bar"` are both
+equivalent to `foo.get(@.bar)`; and `foo::"bar"` is equivalent to
+`foo.get("bar")`.
 
 #### Access collection &mdash; `expression[index]` `expression[^index]`
 
