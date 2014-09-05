@@ -43,9 +43,6 @@ void frameMark(Frame *frame) {
 
 // Documented in header.
 void frameDef(Frame *frame, zvalue name, zvalue box) {
-    // TODO: Remove this scaffolding once vars are consistently symbols.
-    if (hasClass(name, CLS_String)) { name = symbolFromString(name); }
-
     zvalue vars = frame->vars;
     zvalue newVars = collPut(vars, name, box);
 
@@ -58,9 +55,6 @@ void frameDef(Frame *frame, zvalue name, zvalue box) {
 
 // Documented in header.
 zvalue frameGet(Frame *frame, zvalue name) {
-    // TODO: Remove this scaffolding once vars are consistently symbols.
-    if (hasClass(name, CLS_String)) { name = symbolFromString(name); }
-
     for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
         zvalue result = get(frame->vars, name);
 
