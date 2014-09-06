@@ -97,16 +97,16 @@ def tokIdentifier = makeMainSequence(
     makeCharSet(IDENTIFIER_START_CHARS),
     makeRepeat(makeCharSet(IDENTIFIER_CHARS)),
     makeCode { one, rest ->
-        def string = stringFromTokenList([one, rest*]);
-        ifValueOr { KEYWORDS.get(string) }
-            { @identifier{value: string} }
+        def name = symbolFromTokenList([one, rest*]);
+        ifValueOr { KEYWORDS.get(name) }
+            { @identifier{value: name} }
     });
 
 ## Documented in spec.
 def tokQuotedIdentifier = makeMainSequence(
     makeString("\\"),
     tokString,
-    makeCode { ., s -> @identifier{value: s::value} });
+    makeCode { ., s -> @identifier{value: s::value.toSymbol()} });
 
 ## Documented in spec.
 def tokError = makeMainSequence(

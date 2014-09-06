@@ -75,12 +75,12 @@ def parParenExpression = makeMainSequence(
 ## Documented in spec.
 def parNameSymbol = makeMainSequence(
     makeToken(@@identifier),
-    makeCode { nameIdent -> nameIdent::value.toSymbol() });
+    makeCode { nameIdent -> nameIdent::value });
 
 ## Documented in spec.
 def parNameString = makeMainSequence(
     makeToken(@@identifier),
-    makeCode { nameIdent -> nameIdent::value });
+    makeCode { nameIdent -> nameIdent::value.toString() });
 
 ## Documented in spec.
 def parNameSymbolList = makeMainSequence(

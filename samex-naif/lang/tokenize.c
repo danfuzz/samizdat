@@ -8,6 +8,7 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/String.h"
+#include "type/Symbol.h"
 #include "zlimits.h"
 
 #include "helpers.h"
@@ -182,26 +183,26 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue string = stringFromZstring(s);
+    zvalue name = symbolFromZstring(s);
 
     switch (chars[0]) {
-        case 'b': if (valEq(string, STR_break))    return TOK_break;
-        case 'c': if (valEq(string, STR_continue)) return TOK_continue;
-        case 'd': if (valEq(string, STR_def))      return TOK_def;
-        case 'e': if (valEq(string, STR_export))   return TOK_export;
-        case 'i': if (valEq(string, STR_import))   return TOK_import;
-        case 'n': if (valEq(string, STR_null))     return TOK_null;
-        case 'r': if (valEq(string, STR_return))   return TOK_return;
-        case 't': if (valEq(string, STR_ztrue))    return TOK_ztrue;
-        case 'v': if (valEq(string, STR_var))      return TOK_var;
-        case 'y': if (valEq(string, STR_yield))    return TOK_yield;
+        case 'b': if (valEq(name, SYM_break))    return TOK_break;
+        case 'c': if (valEq(name, SYM_continue)) return TOK_continue;
+        case 'd': if (valEq(name, SYM_def))      return TOK_def;
+        case 'e': if (valEq(name, SYM_export))   return TOK_export;
+        case 'i': if (valEq(name, SYM_import))   return TOK_import;
+        case 'n': if (valEq(name, SYM_null))     return TOK_null;
+        case 'r': if (valEq(name, SYM_return))   return TOK_return;
+        case 't': if (valEq(name, SYM_ztrue))    return TOK_ztrue;
+        case 'v': if (valEq(name, SYM_var))      return TOK_var;
+        case 'y': if (valEq(name, SYM_yield))    return TOK_yield;
         case 'f': {
-                  if (valEq(string, STR_zfalse))   return TOK_zfalse;
-                  if (valEq(string, STR_fn))       return TOK_fn;
+                  if (valEq(name, SYM_zfalse))   return TOK_zfalse;
+                  if (valEq(name, SYM_fn))       return TOK_fn;
         }
     }
 
-    return makeData(CLS_identifier, mapFrom1(SYM_value, string));
+    return makeData(CLS_identifier, mapFrom1(SYM_value, name));
 }
 
 /**
@@ -266,8 +267,8 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = get(result, SYM_value);
-    return makeData(CLS_identifier, mapFrom1(SYM_value, string));
+    zvalue name = symbolFromString(get(result, SYM_value));
+    return makeData(CLS_identifier, mapFrom1(SYM_value, name));
 }
 
 /**
@@ -413,7 +414,7 @@ zvalue langLanguageOf0(zvalue string) {
 
     if ((result != NULL)
         && hasClass(result, CLS_directive)
-        && valEq(get(result, SYM_name), STR_language)) {
+        && valEq(get(result, SYM_name), SYM_language)) {
         return get(result, SYM_value);
     }
 

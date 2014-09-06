@@ -96,14 +96,14 @@ def parParenExpression = {:
 ## result being a raw symbol (e.g., not wrapped in `@identifier{...}`).
 def parNameSymbol = {:
     nameIdent = @identifier
-    { nameIdent::value.toSymbol() }
+    { nameIdent::value }
 :};
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
 ## result being the string payload (not wrapped in `@identifier{...}`).
 def parNameString = {:
     nameIdent = @identifier
-    { nameIdent::value }
+    { nameIdent::value.toString() }
 :};
 
 ## Parses a non-empty comma-separated list of "names." A "name" is as per

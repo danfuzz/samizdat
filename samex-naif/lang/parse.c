@@ -283,7 +283,7 @@ DEF_PARSE(nameSymbol) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
-    return symbolFromString(get(nameIdent, SYM_value));
+    return get(nameIdent, SYM_value);
 }
 
 // Documented in spec.
@@ -291,7 +291,7 @@ DEF_PARSE(nameString) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
-    return get(nameIdent, SYM_value);
+    return valToString(get(nameIdent, SYM_value));
 }
 
 // Documented in spec.
