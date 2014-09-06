@@ -104,13 +104,6 @@ def parNameSymbol = {:
     { nameIdent::value }
 :};
 
-## Parses a "name" of some sort. This is just an identifier, but with the
-## result being the string payload (not wrapped in `@identifier{...}`).
-def parNameString = {:
-    nameIdent = @identifier
-    { nameIdent::value.toString() }
-:};
-
 ## Parses a non-empty comma-separated list of "names." A "name" is as per
 ## `parNameSymbol` above. The result is a list of symbols (per se).
 def parNameSymbolList = {:
@@ -741,32 +734,32 @@ def parImportSource = {:
     @"."
     @"/"
 
-    first = parNameString
+    first = parNameSymbol
     rest = (
         @"/"
-        n = parNameString
+        n = parNameSymbol
         { "/".cat(n) }
     )*
     optSuffix = (
         @"."
-        n = parNameString
+        n = parNameSymbol
         { ".".cat(n) }
     )?
 
     {
-        def name = first.cat(rest*, optSuffix*);
+        def name = "".cat(first, rest*, optSuffix*);
         @internal{name}
     }
 |
-    first = parNameString
+    first = parNameSymbol
     rest = (
         @"."
-        n = parNameString
+        n = parNameSymbol
         { ".".cat(n) }
     )*
 
     {
-        def name = first.cat(rest*);
+        def name = "".cat(first, rest*);
         @external{name}
     }
 :};

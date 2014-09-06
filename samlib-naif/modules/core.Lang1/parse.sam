@@ -78,11 +78,6 @@ def parNameSymbol = makeMainSequence(
     makeCode { nameIdent -> nameIdent::value });
 
 ## Documented in spec.
-def parNameString = makeMainSequence(
-    makeToken(@@identifier),
-    makeCode { nameIdent -> nameIdent::value.toString() });
-
-## Documented in spec.
 def parNameSymbolList = makeMainSequence(
     parNameSymbol,
     makeRepeat(makeSequence(makeToken(@@","), parNameSymbol)),
@@ -554,31 +549,31 @@ def parImportSource = makeMainChoice(
     makeSequence(
         makeToken(@@"."),
         makeToken(@@"/"),
-        parNameString,
+        parNameSymbol,
         makeRepeat(
             makeSequence(
                 makeToken(@@"/"),
-                parNameString,
+                parNameSymbol,
                 makeCode { ., ., ., ., n -> "/".cat(n) })),
         makeRepeat(
             makeSequence(
                 makeToken(@@"."),
-                parNameString,
+                parNameSymbol,
                 makeCode { ., ., ., ., ., n -> ".".cat(n) }),
             0, 1),
         makeCode { ., ., first, rest, optSuffix ->
-            def name = first.cat(rest*, optSuffix*);
+            def name = "".cat(first, rest*, optSuffix*);
             @internal{name}
         }),
     makeSequence(
-        parNameString,
+        parNameSymbol,
         makeRepeat(
             makeSequence(
                 makeToken(@@"."),
-                parNameString,
+                parNameSymbol,
                 makeCode { ., ., n -> ".".cat(n) })),
         makeCode { first, rest ->
-            def name = first.cat(rest*);
+            def name = "".cat(first, rest*);
             @external{name}
         }));
 
