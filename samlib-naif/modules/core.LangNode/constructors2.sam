@@ -218,16 +218,10 @@ export fn makeImport(baseData) {
             ifIs { data::format }
                 { die("Cannot import selection of resource.") };
 
-            ifNot { data::prefix }
-            {
-                ## Default to empty string for `prefix`.
-                data := {data*, prefix: ""}
-            };
-
             ifIs { hasClass(select, @@"*") }
                 {
                     ## It's a wildcard import.
-                    data := data.del("select");
+                    data := data.del(@.select);
                 };
 
             return @importModuleSelection(data)
@@ -236,7 +230,10 @@ export fn makeImport(baseData) {
     ifNot { data::name }
         {
             ## No `name` provided, so figure out a default one.
-            data := {data*, name: "$".cat(get_baseName(data::source))}
+            data := {
+                data*,
+                name: "$".cat(get_baseName(data::source)).toSymbol()
+            }
         };
 
     ifIs { data::format }
@@ -398,8 +395,8 @@ export fn withModuleDefs(node) {
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),
         makeCall(REFS::SYM_cat,
-            makeCall(REFS::makeValueMap, makeLiteral("exports"), yieldExports),
-            makeCall(REFS::makeValueMap, makeLiteral("info"), yieldInfo)));
+            makeCall(REFS::makeValueMap, REFS::SYM_exports, yieldExports),
+            makeCall(REFS::makeValueMap, REFS::SYM_info, yieldInfo)));
 
     return @(get_class(node)){
         node.dataOf()*,

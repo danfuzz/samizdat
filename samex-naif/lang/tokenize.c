@@ -150,7 +150,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeData(CLS_int, mapFrom1(STR_value, intval));
+    return makeData(CLS_int, mapFrom1(SYM_value, intval));
 }
 
 /**
@@ -201,7 +201,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         }
     }
 
-    return makeData(CLS_identifier, mapFrom1(STR_value, string));
+    return makeData(CLS_identifier, mapFrom1(SYM_value, string));
 }
 
 /**
@@ -251,7 +251,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZstring(s);
-    return makeData(CLS_string, mapFrom1(STR_value, string));
+    return makeData(CLS_string, mapFrom1(SYM_value, string));
 }
 
 /**
@@ -266,8 +266,8 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = get(result, STR_value);
-    return makeData(CLS_identifier, mapFrom1(STR_value, string));
+    zvalue string = get(result, SYM_value);
+    return makeData(CLS_identifier, mapFrom1(SYM_value, string));
 }
 
 /**
@@ -350,7 +350,7 @@ static zvalue tokenizeDirective(ParseState *state) {
 
     zvalue value = stringFromZstring(s);
     return makeData(CLS_directive,
-        mapFrom2(STR_name, get(name, STR_value), STR_value, value));
+        mapFrom2(SYM_name, get(name, SYM_value), SYM_value, value));
 }
 
 /**
@@ -413,8 +413,8 @@ zvalue langLanguageOf0(zvalue string) {
 
     if ((result != NULL)
         && hasClass(result, CLS_directive)
-        && valEq(get(result, STR_name), STR_language)) {
-        return get(result, STR_value);
+        && valEq(get(result, SYM_name), STR_language)) {
+        return get(result, SYM_value);
     }
 
     return NULL;

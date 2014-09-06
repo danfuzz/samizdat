@@ -100,13 +100,13 @@ fn utf8Char(ch) {
 ## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
     ("\x1;".."\x1f;")*: "x",
-    "\x7f;":            "x",
-    "\0":               "\\0",
-    "\n":               "\\n",
-    "\r":               "\\r",
-    "\t":               "\\t",
-    "\"":               "\\\"",
-    "\\":               "\\\\"
+    ("\x7f;"):          "x",
+    ("\0"):             "\\0",
+    ("\n"):             "\\n",
+    ("\r"):             "\\r",
+    ("\t"):             "\\t",
+    ("\""):             "\\\"",
+    ("\\"):             "\\\\"
 };
 
 ## Helper for converting strings: Returns the converted form of the

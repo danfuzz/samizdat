@@ -9,25 +9,33 @@
 #ifndef _CONST_H_
 #define _CONST_H_
 
-#include "dat.h"
+#include "type/declare.h"
 
 //
 // Declare globals for all of the constants.
 //
 
-#define DEF_STRING(name, str) extern zvalue STR_##name
+#define DEF_STRING(name, str) \
+    extern zvalue STR_##name \
+    // No semicolon here, so that use sites require it.
+
+#define DEF_SYMBOL(name, str) \
+    SYM_DECL(name) \
+    // No semicolon here, so that use sites require it.
 
 #define DEF_DATA(name, str) \
-    DEF_STRING(name, str); \
-    extern zvalue CLS_##name
+    extern zvalue CLS_##name \
+    // No semicolon here, so that use sites require it.
 
 #define DEF_TOKEN(name, str) \
     DEF_DATA(name, str); \
-    extern zvalue TOK_##name
+    extern zvalue TOK_##name \
+    // No semicolon here, so that use sites require it.
 
 #include "const-def.h"
 
 #undef DEF_STRING
+#undef DEF_SYMBOL
 #undef DEF_DATA
 #undef DEF_TOKEN
 

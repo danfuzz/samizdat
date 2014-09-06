@@ -50,22 +50,21 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = collPut(env, valToString(nameSymbol), \
+            env = collPut(env, nameSymbol, \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameSymbol)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
         do { \
-            zvalue nameStr = stringFromUtf8(-1, #name); \
-            env = collPut(env, nameStr, value); \
+            zvalue nameSymbol = symbolFromUtf8(-1, #name); \
+            env = collPut(env, nameSymbol, value); \
         } while(0)
 
     #include "prim-def.h"
 
     // Set the final value, and make it immortal.
-    PRIMITIVE_ENVIRONMENT = env;
-    datImmortalize(PRIMITIVE_ENVIRONMENT);
+    PRIMITIVE_ENVIRONMENT = datImmortalize(env);
 }
 
 /**
@@ -108,7 +107,17 @@ static zvalue getLibrary(zvalue libraryPath) {
 
     // Call `ModuleSystem::exports::main` to load and evaluate the
     // core library.
-    zvalue mainFn = get(get(moduleSystem, STRING_exports), STRING_main);
+
+    zvalue exports = get(moduleSystem, SYM_exports);
+    if (exports == NULL) {
+        die("Missing bootstrap `exports` binding.");
+    }
+
+    zvalue mainFn = get(exports, SYM_main);
+    if (mainFn == NULL) {
+        die("Missing bootstrap `main` binding");
+    }
+
     return FUN_CALL(mainFn, libraryPath, PRIMITIVE_ENVIRONMENT);
 }
 
@@ -143,18 +152,10 @@ MOD_INIT(lib) {
     MOD_USE(io);
     MOD_USE(lang);
 
-    STRING_INIT(exports);
-    STRING_INIT(main);
-    STRING_INIT(runCommandLine);
+    SYM_INIT(runCommandLine);
 
     makePrimitiveEnvironment();
 }
 
 // Documented in header.
-STRING_DEF(exports);
-
-// Documented in header.
-STRING_DEF(main);
-
-// Documented in header.
-STRING_DEF(runCommandLine);
+SYM_DEF(runCommandLine);

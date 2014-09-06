@@ -103,7 +103,7 @@ produced by the function `$LangNode::makeInterpolate`.
   the (local) result value for a call. Allowed to be a `maybe` or `void`
   node. In intermediate forms, also allowed to be a `nonlocalExit` node.
 
-* `yieldDef: name` (optional) &mdash; A name (typically a string) to
+* `yieldDef: name` (optional) &mdash; A name (must be a symbol) to
   bind as the nonlocal-exit function.
 
 This represents a closure (anonymous function) definition.
@@ -213,7 +213,7 @@ the `store` call. This is typically the same as the result of evaluating
 
 #### `varRef` &mdash; `@varRef{name: name}`
 
-* `name: name` &mdash; Name of a variable (typically a string).
+* `name: name` &mdash; Name of a variable (must be a symbol).
 
 This is a reference to the *box* to which a variable is bound.
 
@@ -280,7 +280,7 @@ node.
 
 #### `varDef` &mdash; `@varDef{name: name, value?: expression, top?: true}`
 
-* `name: name` &mdash; Variable name to define (typically a string).
+* `name: name` &mdash; Variable name to define (must be a symbol).
 
 * `value: expression` (optional) &mdash; Expression node representing the
   value that the variable should take on when defined.
@@ -310,13 +310,9 @@ The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
 `LangNode::withoutTops` for more details.
 
-**Note:** Though there are no restrictions on the `name` in general, if
-a node of this type represents a variable being exported from a module,
-then it must be a string.
-
 #### `varDefMutable` &mdash; `@varDef{name: name, value?: expression}`
 
-* `name: name` &mdash; Variable name to define (typically a string).
+* `name: name` &mdash; Variable name to define (must be a symbol).
 
 * `value: expression` (optional) &mdash; Expression node representing the
   value that the variable should take on when defined.
@@ -365,7 +361,7 @@ that incorporates the implied declaration(s). See `LangN::simplify` and
 #### `exportSelection` &mdash; `@exportSelection{select: [name+]}`
 
 * `select: [name+]` &mdash; Selection of variable names to export, where
-  each element must be a string.
+  each element must be a symbol.
 
 This represents the export of a set of named bindings out of a module. Each
 of the `names` must have been defined earlier in the list of statements in
@@ -379,7 +375,7 @@ that incorporates the implied declaration(s). See `LangN::simplify` and
 
 #### `importModule` &mdash; `@importModule{name: name, source: source}`
 
-* `name: name` &mdash; Name of the variable to bind to. Must be a string.
+* `name: name` &mdash; Name of the variable to bind to. Must be a symbol.
 
 * `source: source` &mdash; Name of the module. Must be either an `@external`
   or `@internal` value (described below).
@@ -387,14 +383,13 @@ that incorporates the implied declaration(s). See `LangN::simplify` and
 This represents the import of a module, binding it to a named variable in
 the program's top-level environment.
 
-#### `importModuleSelection` &mdash; `@importModuleSelection{prefix: name, select?: [name+], source: source}`
+#### `importModuleSelection` &mdash; `@importModuleSelection{prefix?: name, select?: [name+], source: source}`
 
-* `prefix: name` &mdash; Prefix for variable names to bind. Must be a string.
-  Allowed to be the empty string (`""`) to indicate no prefixing should be
-  done.
+* `prefix: name` (optional) &mdash; Prefix for variable names to bind. Must
+  be a symbol. Omitted to indicate no prefixing should be done.
 
 * `select: [name+]` (optional) &mdash; List of module-exported bindings
-  to import. Elements must be strings. When absent, indicates that *all* of
+  to import. Elements must be symbols. When absent, indicates that *all* of
   the module's exports are to be imported.
 
 * `source: source` &mdash; Name of the module. Must be either an `@external`
@@ -405,13 +400,13 @@ variables in the program's top-level environment.
 
 #### `importResource` &mdash; `@importResource{name: name, source: source, format: format}`
 
-* `name: name` &mdash; Name of the variable to bind to. Must be a string.
+* `name: name` &mdash; Name of the variable to bind to. Must be a symbol.
 
 * `source: source` &mdash; Name of the module. Must be either an `@external`
   or `@internal` value (described below).
 
 * `format: format` &mdash; Format name which describes how to interpret the
-  resource contents (typically a string).
+  resource contents (must be a symbol).
 
 This represents the import of a resource file, binding it to a named variable
 in the program's top-level environment. The `format` indicates how the raw
@@ -442,7 +437,7 @@ Examples:
 
 #### `formal` &mdash; `{name?: name, repeat?: repeat}`
 
-* `name: name` (optional) &mdash; An arbitrary value (but typically a string),
+* `name: name` (optional) &mdash; An arbitrary value (must be a symbol),
   which indicates the name of the variable to be bound for this
   formal. If omitted, then this indicates an unused argument which is
   not bound to a variable in the environment of the closure body.

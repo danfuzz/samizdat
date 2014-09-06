@@ -108,7 +108,7 @@ static ClosureInfo *getInfo(zvalue closure) {
  * storage in the cache.
  */
 static zvalue buildCachedClosure(zvalue defMap) {
-    zvalue formals = get(defMap, STR_formals);
+    zvalue formals = get(defMap, SYM_formals);
     zint formalsSize = get_size(formals);
 
     // Build out most of the result.
@@ -118,9 +118,9 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     info->defMap = defMap;
     info->formalsSize = formalsSize;
-    info->statements = get(defMap, STR_statements);
-    info->yield = get(defMap, STR_yield);
-    info->yieldDef = get(defMap, STR_yieldDef);
+    info->statements = get(defMap, SYM_statements);
+    info->yield = get(defMap, SYM_yield);
+    info->yieldDef = get(defMap, SYM_yieldDef);
 
     // Validate and transform all the formals.
 
@@ -135,8 +135,8 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
-        zvalue name = get(formal, STR_name);
-        zvalue repeat = get(formal, STR_repeat);
+        zvalue name = get(formal, SYM_name);
+        zvalue repeat = get(formal, SYM_repeat);
         zrepeat rep;
 
         if (name != NULL) {
@@ -345,7 +345,7 @@ METH_IMPL_rest(Closure, call, args) {
 
 // Documented in header.
 METH_IMPL_0(Closure, debugSymbol) {
-    return get(getInfo(ths)->defMap, STR_name);
+    return get(getInfo(ths)->defMap, SYM_name);
 }
 
 // Documented in header.

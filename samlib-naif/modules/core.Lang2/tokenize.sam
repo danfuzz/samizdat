@@ -16,7 +16,7 @@ import core.EntityMap :: ENTITY_MAP;
 import core.Generator;
 import core.LangNode :: KEYWORDS, intFromDigits;
 import core.Peg;  ## Used implicitly.
-import core.Peg :: apply, stringFromTokenList;
+import core.Peg :: apply, stringFromTokenList, symbolFromTokenList;
 import core.Sequence :: reverseNth;
 
 
@@ -327,7 +327,7 @@ def tokHexChar = {:
 def tokNamedChar = {:
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
-        def name = stringFromTokenList(chars);
+        def name = symbolFromTokenList(chars);
         ENTITY_MAP.get(name)
     }
 |

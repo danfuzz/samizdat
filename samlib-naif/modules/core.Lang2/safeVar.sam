@@ -44,20 +44,21 @@ fn maxOf(values*) {
     return max
 };
 
-## Returns a safe index for the given `base` that is safe with respect
+## Returns a safe index for the given `baseStr` that is safe with respect
 ## to all the other given `names`.
-fn safeIndexForNames(base, names*) {
-    def baseSz = base.get_size();
+fn safeIndexForNames(baseStr, names*) {
+    def baseSz = baseStr.get_size();
 
     def indexes = $Generator::filterAll(names) { name /next ->
-        ifIs { perLt(name.get_size(), baseSz) }
+        def nameStr = name.toString();
+        ifIs { perLt(nameStr.get_size(), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
                 yield /next
             };
-        ifIs { eq(base, name) } { yield /next -1 };
-        ifIs { eq(base, name.sliceExclusive(0, baseSz)) }
-            { yield? /next intOrVoid(name.sliceInclusive(baseSz)) }
+        ifIs { eq(baseStr, nameStr) } { yield /next -1 };
+        ifIs { eq(baseStr, nameStr.sliceExclusive(0, baseSz)) }
+            { yield? /next intOrVoid(nameStr.sliceInclusive(baseSz)) }
     };
 
     return ifIs { eq(indexes, []) }
@@ -66,41 +67,41 @@ fn safeIndexForNames(base, names*) {
 };
 
 ## Maps / reduces `safeIndex` over the given nodes.
-fn safeIndexForNodes(base, nodes*) {
+fn safeIndexForNodes(baseStr, nodes*) {
     def indexes = $Generator::filterAll(nodes)
-        { node -> safeIndex(node, base) };
+        { node -> safeIndex(node, baseStr) };
     return maxOf(indexes*)
 };
 
-## Returns a safe (unused) index for the given `base` variable name, with
+## Returns a safe (unused) index for the given `baseStr` variable name, with
 ## regard to the contents of `node`.
-fn safeIndex(node, base) {
+fn safeIndex(node, baseStr) {
     return ifSwitch(
         { get_class(node) },
         {
             @@apply: { . ->
-                safeIndexForNodes(base, node::function, node::values);
+                safeIndexForNodes(baseStr, node::function, node::values);
             },
 
             @@call: { . ->
-                safeIndexForNodes(base, node::function, node::values*);
+                safeIndexForNodes(baseStr, node::function, node::values*);
             },
 
             @@closure: { . ->
                 def namesIndex =
-                    safeIndexForNames(base, node::name?*, node::yieldDef?*);
+                    safeIndexForNames(baseStr, node::name?*, node::yieldDef?*);
                 def nodesIndex =
-                    safeIndexForNodes(base, node::statements*, node::yield);
+                    safeIndexForNodes(baseStr, node::statements*, node::yield);
 
                 maxOf(namesIndex, nodesIndex)
             },
 
             @@exportSelection: { . ->
-                safeIndexForNames(base, node::select*)
+                safeIndexForNames(baseStr, node::select*)
             },
 
             @@fetch: { . ->
-                safeIndexForNodes(base, node::target)
+                safeIndexForNodes(baseStr, node::target)
             },
 
             @@importModuleSelection: { . ->
@@ -113,7 +114,7 @@ fn safeIndex(node, base) {
             },
 
             @@store: { . ->
-                safeIndexForNodes(base, node::target, node::value)
+                safeIndexForNodes(baseStr, node::target, node::value)
             },
 
             @@literal:
@@ -123,21 +124,21 @@ fn safeIndex(node, base) {
 
             @@varDef:
             @@varDefMutable: { . ->
-                def nameIndex = safeIndexForNames(base, node::name);
-                def valueIndex = safeIndexForNodes(base, node::value?*);
+                def nameIndex = safeIndexForNames(baseStr, node::name);
+                def valueIndex = safeIndexForNodes(baseStr, node::value?*);
                 maxOf(nameIndex, valueIndex)
             },
 
             @@export:
             @@maybe:
             @@noYield: { . ->
-                safeIndexForNodes(base, node::value)
+                safeIndexForNodes(baseStr, node::value)
             },
 
             @@importModule:
             @@importResource:
             @@varRef: { . ->
-                safeIndexForNames(base, node::name);
+                safeIndexForNames(baseStr, node::name);
             }
         })
 };
@@ -147,24 +148,24 @@ fn safeIndex(node, base) {
 ## Exported Definitions
 ##
 
-## Makes a variable name by combining `base` with `index`. Handles the case
+## Makes a variable name by combining `baseStr` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
-export fn makeVarName(base, index) {
+export fn makeVarName(baseStr, index) {
     return ifIs { eq(index, -1) }
-        { base }
-        { base.cat($Format::int(index)) }
+        { baseStr.toSymbol() }
+        { baseStr.cat($Format::int(index)).toSymbol() }
 };
 
-## Returns an unused variable name within `node`, either the given `base` or
-## `base` suffixed with an unsigned int.
-export fn safeVarName(base, node) {
-    return makeVarName(base, safeIndex(node, base))
+## Returns an unused variable name within `node`, either the given `baseStr` or
+## `baseStr` suffixed with an unsigned int.
+export fn safeVarName(baseStr, node) {
+    return makeVarName(baseStr, safeIndex(node, baseStr))
 };
 
-## Returns a safe index to be used within `node` to suffix the given `base`
-## variable name. Returns `-1` if `base` itself is unused. Any index at or
+## Returns a safe index to be used within `node` to suffix the given `baseStr`
+## variable name. Returns `-1` if `baseStr` itself is unused. Any index at or
 ## after the return value is safe to use.
-export fn safeVarIndex(base, node) {
+export fn safeVarIndex(baseStr, node) {
     ## NB: This call has the opposite argument order to the exported function.
-    return safeIndex(node, base)
+    return safeIndex(node, baseStr)
 };

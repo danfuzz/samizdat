@@ -265,6 +265,10 @@ result of concatenating all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.
 
+#### `symbolFromTokenList(tokens) -> symbol`
+
+Like `stringFromTokenList`, except returns an interned symbol.
+
 #### Rule: `any`
 
 Parser rule which matches any input item, consuming and yielding it. It

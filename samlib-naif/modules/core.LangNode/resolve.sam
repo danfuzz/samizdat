@@ -74,7 +74,7 @@ export fn resolveImport(node, resolveFn) {
                                 {
                                     die("Could not resolve import: ",
                                         sourceString(node::source), " :: ",
-                                        one)
+                                        one.toString())
                                 }
                         };
                         node

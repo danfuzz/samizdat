@@ -72,11 +72,15 @@ export fn get_definedNames(node) {
             },
 
             @@importModuleSelection: { . ->
-                def prefix = node::prefix;
                 def select = ifValueOr { node::select }
                     { die("Cannot call `get_definedNames` on unresolved import.") };
 
-                filterAll(select) { name -> prefix.cat(name) }
+                ifValue { node::prefix }
+                    { prefix ->
+                        filterAll(select)
+                            { name -> "".cat(prefix, name).toSymbol() }
+                    }
+                    { select }
             },
 
             @@importModule:

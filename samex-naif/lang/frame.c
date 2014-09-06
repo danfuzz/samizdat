@@ -8,7 +8,8 @@
 
 #include "type/Box.h"
 #include "type/Map.h"
-#include "type/Value.h"
+#include "type/String.h"
+#include "type/Symbol.h"
 #include "util.h"
 
 #include "impl.h"

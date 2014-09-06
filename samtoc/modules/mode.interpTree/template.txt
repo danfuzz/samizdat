@@ -23,13 +23,13 @@ static zvalue programTree(void) {
 }
 
 static zvalue lookup(zvalue context, const char *name) {
-    return get(context, stringFromUtf8(-1, name));
+    return get(context, symbolFromUtf8(-1, name));
 }
 
 static zvalue externalSource(const char *name) {
     zvalue cls = makeDerivedDataClass(symbolFromUtf8(-1, "external"));
     zvalue data = mapFromArgs(
-        stringFromUtf8(-1, "name"), stringFromUtf8(-1, name),
+        symbolFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);
     return makeData(cls, data);
 }
