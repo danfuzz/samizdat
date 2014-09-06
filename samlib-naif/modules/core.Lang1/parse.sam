@@ -75,11 +75,6 @@ def parParenExpression = makeMainSequence(
 ## Documented in spec.
 def parNameSymbol = makeMainSequence(
     makeToken(@@identifier),
-    makeCode { nameIdent -> nameIdent::value.toSymbol() });
-
-## Documented in spec.
-def parNameString = makeMainSequence(
-    makeToken(@@identifier),
     makeCode { nameIdent -> nameIdent::value });
 
 ## Documented in spec.
@@ -554,31 +549,31 @@ def parImportSource = makeMainChoice(
     makeSequence(
         makeToken(@@"."),
         makeToken(@@"/"),
-        parNameString,
+        parNameSymbol,
         makeRepeat(
             makeSequence(
                 makeToken(@@"/"),
-                parNameString,
+                parNameSymbol,
                 makeCode { ., ., ., ., n -> "/".cat(n) })),
         makeRepeat(
             makeSequence(
                 makeToken(@@"."),
-                parNameString,
+                parNameSymbol,
                 makeCode { ., ., ., ., ., n -> ".".cat(n) }),
             0, 1),
         makeCode { ., ., first, rest, optSuffix ->
-            def name = first.cat(rest*, optSuffix*);
+            def name = "".cat(first, rest*, optSuffix*);
             @internal{name}
         }),
     makeSequence(
-        parNameString,
+        parNameSymbol,
         makeRepeat(
             makeSequence(
                 makeToken(@@"."),
-                parNameString,
+                parNameSymbol,
                 makeCode { ., ., n -> ".".cat(n) })),
         makeCode { first, rest ->
-            def name = first.cat(rest*);
+            def name = "".cat(first, rest*);
             @external{name}
         }));
 

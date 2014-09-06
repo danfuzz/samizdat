@@ -283,14 +283,6 @@ DEF_PARSE(nameSymbol) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
-    return symbolFromString(get(nameIdent, SYM_value));
-}
-
-// Documented in spec.
-DEF_PARSE(nameString) {
-    MARK();
-
-    zvalue nameIdent = MATCH_OR_REJECT(identifier);
     return get(nameIdent, SYM_value);
 }
 
@@ -1023,7 +1015,7 @@ DEF_PARSE(importSourceDotName) {
     MARK();
 
     MATCH_OR_REJECT(CH_DOT);
-    zvalue name = PARSE_OR_REJECT(nameString);
+    zvalue name = PARSE_OR_REJECT(nameSymbol);
 
     return METH_CALL(cat, STR_CH_DOT, name);
 }
@@ -1036,7 +1028,7 @@ DEF_PARSE(importSourceSlashName) {
     MARK();
 
     MATCH_OR_REJECT(CH_SLASH);
-    zvalue name = PARSE_OR_REJECT(nameString);
+    zvalue name = PARSE_OR_REJECT(nameSymbol);
 
     return METH_CALL(cat, STR_CH_SLASH, name);
 }
@@ -1047,12 +1039,12 @@ DEF_PARSE(importSource1) {
 
     MATCH_OR_REJECT(CH_DOT);
     MATCH_OR_REJECT(CH_SLASH);
-    zvalue first = PARSE_OR_REJECT(nameString);
+    zvalue first = PARSE_OR_REJECT(nameSymbol);
     zvalue rest = PARSE_STAR(importSourceSlashName);
     zvalue optSuffix = PARSE_OPT(importSourceDotName);
 
     zvalue name = METH_APPLY(cat,
-        METH_CALL(cat, listFrom1(first), rest, optSuffix));
+        METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest, optSuffix));
     return makeData(CLS_internal, mapFrom1(SYM_name, name));
 }
 
@@ -1060,10 +1052,11 @@ DEF_PARSE(importSource1) {
 DEF_PARSE(importSource2) {
     MARK();
 
-    zvalue first = PARSE_OR_REJECT(nameString);
+    zvalue first = PARSE_OR_REJECT(nameSymbol);
     zvalue rest = PARSE_STAR(importSourceDotName);
 
-    zvalue name = METH_APPLY(cat, METH_CALL(cat, listFrom1(first), rest));
+    zvalue name = METH_APPLY(cat,
+        METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest));
     return makeData(CLS_external, mapFrom1(SYM_name, name));
 }
 

@@ -21,27 +21,20 @@ DEF_STRING(CH_PLUS,              "+");
 DEF_STRING(CH_QMARK,             "?");
 DEF_STRING(CH_SLASH,             "/");
 DEF_STRING(CH_STAR,              "*");
-DEF_STRING(break,                "break");
-DEF_STRING(continue,             "continue");
-DEF_STRING(def,                  "def");
-DEF_STRING(export,               "export");
-DEF_STRING(fn,                   "fn");
-DEF_STRING(import,               "import");
-DEF_STRING(language,             "language");
-DEF_STRING(null,                 "null");
-DEF_STRING(return,               "return");
-DEF_STRING(var,                  "var");
-DEF_STRING(void,                 "void");
-DEF_STRING(yield,                "yield");
-DEF_STRING(zfalse,               "false");  // `z` avoids clash with C `false`.
-DEF_STRING(ztrue,                "true");   // `z` avoids clash with C `true`.
 
+DEF_SYMBOL(break,                "break");
 DEF_SYMBOL(classAddMethod,       "classAddMethod");
+DEF_SYMBOL(continue,             "continue");
+DEF_SYMBOL(def,                  "def");
+DEF_SYMBOL(export,               "export");
+DEF_SYMBOL(fn,                   "fn");
 DEF_SYMBOL(formals,              "formals");
 DEF_SYMBOL(format,               "format");
 DEF_SYMBOL(function,             "function");
+DEF_SYMBOL(import,               "import");
 DEF_SYMBOL(info,                 "info");
 DEF_SYMBOL(interpolate,          "interpolate");
+DEF_SYMBOL(language,             "language");
 DEF_SYMBOL(loadModule,           "loadModule");
 DEF_SYMBOL(loadResource,         "loadResource");
 DEF_SYMBOL(lvalue,               "lvalue");
@@ -51,6 +44,7 @@ DEF_SYMBOL(makeList,             "makeList");
 DEF_SYMBOL(makeValueMap,         "makeValueMap");
 DEF_SYMBOL(maybeValue,           "maybeValue");
 DEF_SYMBOL(name,                 "name");
+DEF_SYMBOL(null,                 "null");
 DEF_SYMBOL(prefix,               "prefix");
 DEF_SYMBOL(repeat,               "repeat");
 DEF_SYMBOL(return,               "return");
@@ -62,8 +56,12 @@ DEF_SYMBOL(this,                 "this");
 DEF_SYMBOL(top,                  "top");
 DEF_SYMBOL(value,                "value");
 DEF_SYMBOL(values,               "values");
+DEF_SYMBOL(var,                  "var");
+DEF_SYMBOL(void,                 "void");
 DEF_SYMBOL(yield,                "yield");
 DEF_SYMBOL(yieldDef,             "yieldDef");
+DEF_SYMBOL(zfalse,               "false");  // `z` avoids clash with C `false`.
+DEF_SYMBOL(ztrue,                "true");   // `z` avoids clash with C `true`.
 
 DEF_TOKEN(CH_AT,                 "@");
 DEF_TOKEN(CH_ATAT,               "@@");
