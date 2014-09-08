@@ -382,7 +382,7 @@ def parYieldOrNonlocal = makeMainSequence(
             makeCode { op, . -> hasClass(op, @@yield) },
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
-                makeResult(@yield))),
+                makeResult(@yield{}))),
         makeCode { op, . -> makeVarFetch(get_className(op)) }),
     makeChoice(
         makeSequence(
@@ -391,10 +391,10 @@ def parYieldOrNonlocal = makeMainSequence(
                 ifIs { optQuest* } { makeMaybe(v) } { v }
             }),
         makeCode { ., optQuest, . ->
-            ifNot { optQuest* } { @void }
+            ifNot { optQuest* } { @void{} }
         }),
     makeCode { ., ., name, value ->
-        ifIs { eq(name, @yield) }
+        ifIs { eq(name, @yield{}) }
             { value }
             { makeNonlocalExit(name, value) }
     });
@@ -574,7 +574,7 @@ def parImportSelect = makeMainChoice(
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
-                makeResult({select: @"*"})),
+                makeResult({select: @"*"{}})),
             makeSequence(
                 parNameSymbolList,
                 makeCode { ., select -> {select} }))),
@@ -675,7 +675,7 @@ def parProgram = makeMainSequence(
     makeCode { imports, body, . ->
         def closure = makeFullClosure({
             statements: [imports*, body*],
-            yield:      @void
+            yield:      @void{}
         });
         withoutTops(closure)
     });
@@ -804,11 +804,11 @@ def parPexThunk = makeMainSequence(
 def parPexTerm = makeMainChoice(
     makeSequence(
         makeToken(@@"."),
-        makeResult(@any)),
+        makeResult(@any{})),
     makeSequence(
         makeToken(@@"("),
         makeToken(@@")"),
-        makeResult(@empty)),
+        makeResult(@empty{})),
     parPexVarRef,
     parPexString,
     parPexToken,

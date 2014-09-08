@@ -13,7 +13,7 @@ import core.Generator :: filterAll;
 
 ## Documented in spec.
 export fn makeApply(function, optValues?) {
-    def values = ifValueOr { optValues* } { @void };
+    def values = ifValueOr { optValues* } { @void{} };
     return @apply{function, values}
 };
 
@@ -64,7 +64,7 @@ export fn makeNoYield(value) {
 
 ## Documented in spec.
 export fn makeNonlocalExit(function, optValue?) {
-    def value = ifValueOr { optValue* } { @void };
+    def value = ifValueOr { optValue* } { @void{} };
     return @nonlocalExit{function, value}
 };
 
