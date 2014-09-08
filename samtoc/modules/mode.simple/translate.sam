@@ -154,7 +154,7 @@ export fn translate(node, varsBox) {
         @@importResource:
         @@maybe:
         @@void: {
-            die("Cannot translate \(@(cls)).")
+            die("Cannot translate: \%q(node).")
         }
     }
 };
