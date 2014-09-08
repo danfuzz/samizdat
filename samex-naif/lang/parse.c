@@ -317,22 +317,27 @@ DEF_PARSE(varRef) {
 DEF_PARSE(identifierSymbol) {
     MARK();
 
-    zvalue result;
+    zvalue s = MATCH(string);
+    if (s != NULL) { return makeSymbolLiteral(get(s, SYM_value)); }
 
-    result = MATCH(string);
-    if (result != NULL) { return makeSymbolLiteral(get(result, SYM_value)); }
+    zvalue name = PARSE(nameSymbol);
+    if (name != NULL) { return makeLiteral(name); }
 
-    result = PARSE(nameSymbol);
-    if (result != NULL) { return makeLiteral(result); }
+    // Equivalent to matching `.` in a pex.
+    zvalue token = MATCH_OR_REJECT(Value);
 
-    result = MATCH_OR_REJECT(Value);  // Equivalent to matching `.` in a pex.
-    REJECT_IF(dataOf(result) != NULL);
+    // We reject tokens that either/both have a `value` binding or have a
+    // non-alphabetic name, instead of looking up in `KEYWORDS`: `KEYWORDS`
+    // isn't defined in layer 0.
 
-    zvalue name = classNameString(get_class(result));
-    zchar firstCh = zcharFromString(nth(name, 0));
+    REJECT_IF(get(token, SYM_value) != NULL);
+
+    name = className(get_class(token));
+    zchar firstCh = zcharFromString(nth(valToString(name), 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
-    return makeSymbolLiteral(name);
+
+    return makeLiteral(name);
 }
 
 // Documented in spec.

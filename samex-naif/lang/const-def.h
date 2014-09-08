@@ -11,7 +11,7 @@
 // `DEF_DATA(name, "string")` -- a derived data class.
 // `DEF_TOKEN(name, "string")` -- a derived data class and a token.
 //
-// Tokens are class-only transparent derived values, whose classes
+// Tokens are empty-payload transparent derived values, whose classes
 // are named with the indicated strings.
 //
 

@@ -31,12 +31,6 @@ fn reportError(pending) {
     die("\nExtra tokens at end of program.")
 };
 
-## Set-like map of all lowercase identifier characters. Used to figure
-## out if we're looking at a keyword in the `identifierSymbol` rule.
-def LOWER_ALPHA = {
-    makeInclusiveRange("a", "z")*: true
-};
-
 
 ##
 ## Grammar rules
@@ -105,14 +99,10 @@ def parIdentifierSymbol = makeMainChoice(
     makeSequence(
         any,
         makeCode { token ->
-            ifNot { token.dataOf() }
-                {
-                    def name = get_classNameString(token);
-                    def firstCh = name.nth(0);
-                    ifIs { LOWER_ALPHA.get(firstCh) }
-                        { makeSymbolLiteral(name) }
-                }
-            }));
+            def name = get_className(token);
+            ifIs { KEYWORDS.get(name) }
+                { makeLiteral(name) }
+        }));
 
 ## Documented in spec.
 def parKeyLiteral = makeMainChoice(
