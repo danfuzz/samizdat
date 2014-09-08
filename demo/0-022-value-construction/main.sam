@@ -173,7 +173,7 @@ expectCore(fn2);
 
 ## Symbol
 
-note("\Symbols");
+note("\nSymbols");
 
 expectSame(@.boo, @.boo);
 expectSame(@.boo, @."boo");
