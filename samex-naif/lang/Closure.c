@@ -150,13 +150,10 @@ static zvalue buildCachedClosure(zvalue defMap) {
         if (repeat == NULL) {
             rep = REP_NONE;
         } else {
-            if (get_size(repeat) != 1) {
-                die("Invalid repeat modifier: %s", valDebugString(repeat));
-            }
-            switch (nthChar(repeat, 0)) {
-                case '*': rep = REP_STAR;  break;
-                case '+': rep = REP_PLUS;  break;
-                case '?': rep = REP_QMARK; break;
+            switch (symbolEvalType(repeat)) {
+                case EVAL_CH_STAR:  { rep = REP_STAR;  break; }
+                case EVAL_CH_PLUS:  { rep = REP_PLUS;  break; }
+                case EVAL_CH_QMARK: { rep = REP_QMARK; break; }
                 default: {
                     die("Invalid repeat modifier: %s", valDebugString(repeat));
                 }

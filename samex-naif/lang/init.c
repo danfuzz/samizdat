@@ -22,8 +22,14 @@
 // Documented in header.
 zevalType langTypeMap[DAT_MAX_CLASSES];
 
+// Documented in header.
+zevalType langSymbolMap[DAT_MAX_SYMBOLS];
+
 // This provides the non-inline version of this function.
 extern zevalType get_evalType(zvalue node);
+
+// This provides the non-inline version of this function.
+extern zevalType symbolEvalType(zvalue symbol);
 
 /** Initializes the module. */
 MOD_INIT(lang) {
@@ -50,4 +56,9 @@ MOD_INIT(lang) {
     langTypeMap[classIndex(CLS_varDef)]                = EVAL_varDef;
     langTypeMap[classIndex(CLS_varDefMutable)]         = EVAL_varDefMutable;
     langTypeMap[classIndex(CLS_void)]                  = EVAL_void;
+
+    memset(langSymbolMap, 0, sizeof(langSymbolMap));
+    langSymbolMap[symbolIndex(SYM_CH_PLUS)]  = EVAL_CH_PLUS;
+    langSymbolMap[symbolIndex(SYM_CH_QMARK)] = EVAL_CH_QMARK;
+    langSymbolMap[symbolIndex(SYM_CH_STAR)]  = EVAL_CH_STAR;
 }

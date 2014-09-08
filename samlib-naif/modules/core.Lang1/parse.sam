@@ -441,7 +441,7 @@ def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
-            makeCode { ., r -> {repeat: get_classNameString(r)} }),
+            makeCode { ., r -> {repeat: get_className(r)} }),
         makeResult({})),
     makeCode { name, repeat -> {name*, repeat*} });
 

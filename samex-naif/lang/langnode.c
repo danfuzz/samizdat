@@ -142,8 +142,8 @@ zvalue formalsMaxArgs(zvalue formals) {
     for (zint i = 0; i < sz; i++) {
         zvalue one = nth(formals, i);
         zvalue repeat = get(one, SYM_repeat);
-        if (valEqNullOk(repeat, STR_CH_STAR)
-            || valEqNullOk(repeat, STR_CH_PLUS)) {
+        if (valEqNullOk(repeat, SYM_CH_STAR)
+            || valEqNullOk(repeat, SYM_CH_PLUS)) {
             maxArgs = -1;
             break;
         }
@@ -161,8 +161,8 @@ zvalue formalsMinArgs(zvalue formals) {
     for (zint i = 0; i < sz; i++) {
         zvalue one = nth(formals, i);
         zvalue repeat = get(one, SYM_repeat);
-        if (!(valEqNullOk(repeat, STR_CH_QMARK)
-              || valEqNullOk(repeat, STR_CH_STAR))) {
+        if (!(valEqNullOk(repeat, SYM_CH_QMARK)
+              || valEqNullOk(repeat, SYM_CH_STAR))) {
             minArgs++;
         }
     }

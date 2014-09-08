@@ -866,7 +866,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1);  // Okay for it to be `NULL`.
     if (repeat != NULL) {
-        repeat = classNameString(get_class(repeat));
+        repeat = className(get_class(repeat));
     }
 
     return mapFrom2(SYM_name, name, SYM_repeat, repeat);

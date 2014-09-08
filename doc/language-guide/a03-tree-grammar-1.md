@@ -584,7 +584,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_classNameString(r)} }
+        { {repeat: get_className(r)} }
     |
         { {} }
     )
