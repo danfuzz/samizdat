@@ -62,7 +62,7 @@ msg((!true)?);
 msg((!false)?);  ## This one is the documented surprising result.
 msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
-msg((! ! !@fizmo)?);
+msg((! ! !@.fizmo)?);
 
 note("\nCollections -- size");
 msg(#"foo");
