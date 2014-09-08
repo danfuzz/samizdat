@@ -238,7 +238,7 @@ def parDeriv = makeMainSequence(
                 makeLiteral(@@(name::value))
             }),
         parParenExpression),
-    makeChoice(parParenExpression, parMap, parList),
+    makeChoice(parParenExpression, parMap),
     makeCode { ., cls, value ->
         makeCall(REFS::makeData, cls, value)
     });

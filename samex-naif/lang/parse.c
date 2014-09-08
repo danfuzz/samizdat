@@ -543,8 +543,7 @@ DEF_PARSE(deriv) {
 
     // Value is mandatory, so the last one is `PARSE_OR_REJECT`.
     zvalue value = PARSE(parenExpression);
-    if (value == NULL) value = PARSE(map);
-    if (value == NULL) value = PARSE_OR_REJECT(list);
+    if (value == NULL) value = PARSE_OR_REJECT(map);
 
     return makeCall(REFS(makeData), listFrom2(cls, value));
 }
