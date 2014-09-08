@@ -79,6 +79,19 @@ spacing style, with four spaces per indentation level.
 
 Here are a couple snippets to indicate areas of potential ambiguity:
 
+#### Table-Like Code
+
+Table-like code and other runs of similar lines are horizontally aligned:
+
+```c
+DEF(blort,  POTION, "see in the dark");
+DEF(borch,  SPELL,  "insect soporific");
+DEF(fizmo,  SPELL,  "unclogs pipes");
+DEF(ignatz, POTION, "unknown effect");
+```
+
+#### Function Prototypes
+
 Function prototype continuation lines are double-indented to keep the
 prototype and code visually separate:
 
@@ -91,7 +104,10 @@ void lotsOfParametersHere(zvalue arg1, zvalue arg2, zvalue arg3, zvalue arg4,
 }
 ```
 
-`switch` cases are indented a full level:
+#### Switch Statements
+
+`switch` cases are indented a full level, and case bodies are surrounded
+with braces.
 
 ```c
 switch (something) {
@@ -106,13 +122,19 @@ switch (something) {
 }
 ```
 
-Table-like code and other runs of similar lines are horizontally aligned:
+If a series of `case`s have a parallel structure and would fit on a single,
+line, then it is acceptable to format them in a "table-like" manner. Braces
+are still required.
 
 ```c
-DEF(blort,  POTION, "see in the dark");
-DEF(borch,  SPELL,  "insect soporific");
-DEF(fizmo,  SPELL,  "unclogs pipes");
-DEF(ignatz, POTION, "unknown effect");
+switch (something) {
+    case THING1:         { doOneThing();      break; }
+    case THING2:         { doAnotherThing();  break; }
+    case SEVERAL_THINGS: { doSeveralThings(); break; }
+    default: {
+      die("Unknown how to deal with this particular thing");
+    }
+}
 ```
 
 ### Variable and Function Naming
