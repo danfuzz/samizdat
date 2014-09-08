@@ -20,13 +20,13 @@
 //
 
 // Documented in header.
-zevalType langTypeMap[DAT_MAX_CLASSES];
+zevalType langClassMap[DAT_MAX_CLASSES];
 
 // Documented in header.
 zevalType langSymbolMap[DAT_MAX_SYMBOLS];
 
 // This provides the non-inline version of this function.
-extern zevalType get_evalType(zvalue node);
+extern zevalType classEvalType(zvalue node);
 
 // This provides the non-inline version of this function.
 extern zevalType symbolEvalType(zvalue symbol);
@@ -40,22 +40,22 @@ MOD_INIT(lang) {
     MOD_USE(Generator);
     MOD_USE(Map);
 
-    memset(langTypeMap, 0, sizeof(langTypeMap));
-    langTypeMap[classIndex(CLS_apply)]                 = EVAL_apply;
-    langTypeMap[classIndex(CLS_call)]                  = EVAL_call;
-    langTypeMap[classIndex(CLS_closure)]               = EVAL_closure;
-    langTypeMap[classIndex(CLS_fetch)]                 = EVAL_fetch;
-    langTypeMap[classIndex(CLS_importModule)]          = EVAL_importModule;
-    langTypeMap[classIndex(CLS_importModuleSelection)] = EVAL_importModuleSelection;
-    langTypeMap[classIndex(CLS_importResource)]        = EVAL_importResource;
-    langTypeMap[classIndex(CLS_literal)]               = EVAL_literal;
-    langTypeMap[classIndex(CLS_maybe)]                 = EVAL_maybe;
-    langTypeMap[classIndex(CLS_noYield)]               = EVAL_noYield;
-    langTypeMap[classIndex(CLS_store)]                 = EVAL_store;
-    langTypeMap[classIndex(CLS_varRef)]                = EVAL_varRef;
-    langTypeMap[classIndex(CLS_varDef)]                = EVAL_varDef;
-    langTypeMap[classIndex(CLS_varDefMutable)]         = EVAL_varDefMutable;
-    langTypeMap[classIndex(CLS_void)]                  = EVAL_void;
+    memset(langClassMap, 0, sizeof(langClassMap));
+    langClassMap[classIndex(CLS_apply)]                 = EVAL_apply;
+    langClassMap[classIndex(CLS_call)]                  = EVAL_call;
+    langClassMap[classIndex(CLS_closure)]               = EVAL_closure;
+    langClassMap[classIndex(CLS_fetch)]                 = EVAL_fetch;
+    langClassMap[classIndex(CLS_importModule)]          = EVAL_importModule;
+    langClassMap[classIndex(CLS_importModuleSelection)] = EVAL_importModuleSelection;
+    langClassMap[classIndex(CLS_importResource)]        = EVAL_importResource;
+    langClassMap[classIndex(CLS_literal)]               = EVAL_literal;
+    langClassMap[classIndex(CLS_maybe)]                 = EVAL_maybe;
+    langClassMap[classIndex(CLS_noYield)]               = EVAL_noYield;
+    langClassMap[classIndex(CLS_store)]                 = EVAL_store;
+    langClassMap[classIndex(CLS_varRef)]                = EVAL_varRef;
+    langClassMap[classIndex(CLS_varDef)]                = EVAL_varDef;
+    langClassMap[classIndex(CLS_varDefMutable)]         = EVAL_varDefMutable;
+    langClassMap[classIndex(CLS_void)]                  = EVAL_void;
 
     memset(langSymbolMap, 0, sizeof(langSymbolMap));
     langSymbolMap[symbolIndex(SYM_CH_PLUS)]  = EVAL_CH_PLUS;

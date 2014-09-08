@@ -41,7 +41,7 @@ typedef enum {
 } zevalType;
 
 /** Mapping from `Class` index to corresponding `zevalType`. */
-extern zevalType langTypeMap[DAT_MAX_CLASSES];
+extern zevalType langClassMap[DAT_MAX_CLASSES];
 
 /** Mapping from `Symbol` index to corresponding `zevalType`. */
 extern zevalType langSymbolMap[DAT_MAX_SYMBOLS];
@@ -117,8 +117,8 @@ void frameSnap(Frame *target, Frame *source);
 /**
  * Gets the evaluation type (enumerated value) of the given node.
  */
-inline zevalType get_evalType(zvalue node) {
-    return langTypeMap[get_classIndex(node)];
+inline zevalType classEvalType(zvalue node) {
+    return langClassMap[get_classIndex(node)];
 }
 
 /**

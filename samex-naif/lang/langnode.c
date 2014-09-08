@@ -121,7 +121,7 @@ static zvalue expandYield(zvalue map) {
 
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
-    switch (get_evalType(node)) {
+    switch (classEvalType(node)) {
         case EVAL_apply:    return true;
         case EVAL_call:     return true;
         case EVAL_fetch:    return true;
@@ -222,7 +222,7 @@ zvalue get_definedNames(zvalue node) {
 
 // Documented in spec.
 bool isExpression(zvalue node) {
-    switch (get_evalType(node)) {
+    switch (classEvalType(node)) {
         case EVAL_apply:    return true;
         case EVAL_call:     return true;
         case EVAL_closure:  return true;
