@@ -361,9 +361,6 @@ and payload must each be surrounded by parentheses
 * If the data payload is a map form (`{...}`), then it can be represented
   without parentheses.
 
-* If the data payload is a list form (`[...]`), then it can be represented
-  without parentheses.
-
 ```
 @(@@heartState)("pure")       ## a "heart state" value, with string payload
 @"heartState"("pure")         ## shorthand for same
@@ -371,9 +368,6 @@ and payload must each be surrounded by parentheses
 
 @spell({name: "frotz", purpose: "cause item to glow"})  ## a map payload
 @spell{name: "frotz", purpose: "cause item to glow"}    ## shorthand for same
-
-@utensils(["fork", "knife", "spoon"])                   ## a list payload
-@utensils["fork", "knife", "spoon"]                     ## shorthand for same
 ```
 
 **Note:** As a convenience, the `get` function works on derived data
