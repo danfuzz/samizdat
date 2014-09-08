@@ -169,20 +169,26 @@ expectCore(fn1);
 expectCore(fn2);
 
 
+## Symbol
+
+note("\Symbols");
+
+expectSame(@.boo, @.boo);
+expectSame(@.boo, @."boo");
+
+expectCore(@.boo);
+
+
 ## Derived values
 
 note("\nDerived values");
 
-expectSame(@boo, @boo);
-expectSame(@boo, @"boo");
-expectSame(@boo, @(@@"boo"));
 expectSame(@eek(10), @(@@eek)(10));
 expectSame(@eek(10), @eek((5).add(5)));
 expectSame(@eek(10), @(@@("eek".toSymbol()))(10));
 
-expectDifferent(@x, @x(1));
-expectDifferent(@x(1), @x(2));
-expectDifferent(@x(1), @y(1));
+expectDifferent(@x{}, @x{a: 1});
+expectDifferent(@x{a: 1}, @x{a: 2});
+expectDifferent(@x{a: 1}, @y{a: 1});
 
-expectDerived(@blort);
-expectDerived(@fizmo("igram"));
+expectDerived(@fizmo{});
