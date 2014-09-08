@@ -115,7 +115,7 @@ described below.
 #### Method application &mdash; `targetExpr.identifier(arg, arg, ...)`
 
 This is a variant of the function calling syntax, and is equivalent to
-`@.identifier(targetExpr, arg, arg, ...)` (that is, treating a literal
+`(@.identifier)(targetExpr, arg, arg, ...)` (that is, treating a literal
 symbol as a function to apply).
 
 This is the preferred syntax to use for calling a method on a target.
