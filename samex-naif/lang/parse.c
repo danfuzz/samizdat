@@ -475,9 +475,9 @@ DEF_PARSE(map) {
     MATCH_OR_REJECT(CH_CCURLY);
 
     switch (get_size(mappings)) {
-        case 0:  return makeLiteral(EMPTY_MAP);
-        case 1:  return nth(mappings, 0);
-        default: return makeCall(SYM(cat), mappings);
+        case 0:  { return makeLiteral(EMPTY_MAP);       }
+        case 1:  { return nth(mappings, 0);             }
+        default: { return makeCall(SYM(cat), mappings); }
     }
 }
 

@@ -122,6 +122,21 @@ switch (something) {
 }
 ```
 
+If multiple `case` labels apply to the same code, then it is okay to list
+them on the same line, wrapping to multiple lines if needed.
+
+```c
+switch (something) {
+    case '0': case '1': case '2': case '3': case '4':
+    case '5': case '6': case '7': case '8': case '9': {
+        iAmDecimal();
+    }
+    case 'a': case 'b': case 'c': case 'd': case 'e':  case 'f': {
+        iAmHex();
+    }
+}
+```
+
 If a series of `case`s have a parallel structure and would fit on a single,
 line, then it is acceptable to format them in a "table-like" manner. Braces
 are still required.

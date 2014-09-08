@@ -122,15 +122,13 @@ static zvalue expandYield(zvalue map) {
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
     switch (classEvalType(node)) {
-        case EVAL_apply:    return true;
-        case EVAL_call:     return true;
-        case EVAL_fetch:    return true;
-        case EVAL_maybe:    return true;
-        case EVAL_store:    return true;
-        case EVAL_void:     return true;
-        default: {
-            return false;
-        }
+        case EVAL_apply: { return true;  }
+        case EVAL_call:  { return true;  }
+        case EVAL_fetch: { return true;  }
+        case EVAL_maybe: { return true;  }
+        case EVAL_store: { return true;  }
+        case EVAL_void:  { return true;  }
+        default:         { return false; }
     }
 }
 
@@ -223,17 +221,15 @@ zvalue get_definedNames(zvalue node) {
 // Documented in spec.
 bool isExpression(zvalue node) {
     switch (classEvalType(node)) {
-        case EVAL_apply:    return true;
-        case EVAL_call:     return true;
-        case EVAL_closure:  return true;
-        case EVAL_fetch:    return true;
-        case EVAL_literal:  return true;
-        case EVAL_noYield:  return true;
-        case EVAL_store:    return true;
-        case EVAL_varRef:   return true;
-        default: {
-            return false;
-        }
+        case EVAL_apply:   { return true;  }
+        case EVAL_call:    { return true;  }
+        case EVAL_closure: { return true;  }
+        case EVAL_fetch:   { return true;  }
+        case EVAL_literal: { return true;  }
+        case EVAL_noYield: { return true;  }
+        case EVAL_store:   { return true;  }
+        case EVAL_varRef:  { return true;  }
+        default:           { return false; }
     }
 }
 

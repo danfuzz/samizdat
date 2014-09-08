@@ -295,8 +295,8 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 
     zorder order = zstringOrder(info1->s, info2->s);
     switch (order) {
-        case ZLESS: return INT_NEG1;
-        case ZMORE: return INT_1;
+        case ZLESS: { return INT_NEG1; }
+        case ZMORE: { return INT_1;    }
         case ZSAME: {
             // Per spec, two different anonymous symbols with the same name
             // are unordered with respect to each other.

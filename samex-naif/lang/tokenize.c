@@ -186,19 +186,20 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue name = symbolFromZstring(s);
 
     switch (chars[0]) {
-        case 'b': if (valEq(name, SYM_break))    return TOK_break;
-        case 'c': if (valEq(name, SYM_continue)) return TOK_continue;
-        case 'd': if (valEq(name, SYM_def))      return TOK_def;
-        case 'e': if (valEq(name, SYM_export))   return TOK_export;
-        case 'i': if (valEq(name, SYM_import))   return TOK_import;
-        case 'n': if (valEq(name, SYM_null))     return TOK_null;
-        case 'r': if (valEq(name, SYM_return))   return TOK_return;
-        case 't': if (valEq(name, SYM_ztrue))    return TOK_ztrue;
-        case 'v': if (valEq(name, SYM_var))      return TOK_var;
-        case 'y': if (valEq(name, SYM_yield))    return TOK_yield;
+        case 'b': { if (valEq(name, SYM_break))    return TOK_break;    break; }
+        case 'c': { if (valEq(name, SYM_continue)) return TOK_continue; break; }
+        case 'd': { if (valEq(name, SYM_def))      return TOK_def;      break; }
+        case 'e': { if (valEq(name, SYM_export))   return TOK_export;   break; }
+        case 'i': { if (valEq(name, SYM_import))   return TOK_import;   break; }
+        case 'n': { if (valEq(name, SYM_null))     return TOK_null;     break; }
+        case 'r': { if (valEq(name, SYM_return))   return TOK_return;   break; }
+        case 't': { if (valEq(name, SYM_ztrue))    return TOK_ztrue;    break; }
+        case 'v': { if (valEq(name, SYM_var))      return TOK_var;      break; }
+        case 'y': { if (valEq(name, SYM_yield))    return TOK_yield;    break; }
         case 'f': {
-                  if (valEq(name, SYM_zfalse))   return TOK_zfalse;
-                  if (valEq(name, SYM_fn))       return TOK_fn;
+                    if (valEq(name, SYM_zfalse))   return TOK_zfalse;
+                    if (valEq(name, SYM_fn))       return TOK_fn;
+                    break;
         }
     }
 
@@ -296,9 +297,9 @@ static zvalue tokenizeColon(ParseState *state) {
     read(state);  // Skip the `:`
 
     switch (peek(state)) {
-        case ':': read(state); return TOK_CH_COLONCOLON;
-        case '=': read(state); return TOK_CH_COLONEQUAL;
-        default:               return TOK_CH_COLON;
+        case ':': { read(state); return TOK_CH_COLONCOLON; }
+        case '=': { read(state); return TOK_CH_COLONEQUAL; }
+        default:  {              return TOK_CH_COLON;      }
     }
 }
 
@@ -364,33 +365,37 @@ static zvalue tokenizeAnyToken(ParseState *state) {
     zint ch = peek(state);
 
     switch (ch) {
-        case -1:                return NULL;
-        case '}':  read(state); return TOK_CH_CCURLY;
-        case ')':  read(state); return TOK_CH_CPAREN;
-        case ']':  read(state); return TOK_CH_CSQUARE;
-        case ',':  read(state); return TOK_CH_COMMA;
-        case '=':  read(state); return TOK_CH_EQUAL;
-        case '{':  read(state); return TOK_CH_OCURLY;
-        case '(':  read(state); return TOK_CH_OPAREN;
-        case '[':  read(state); return TOK_CH_OSQUARE;
-        case '?':  read(state); return TOK_CH_QMARK;
-        case '+':  read(state); return TOK_CH_PLUS;
-        case ';':  read(state); return TOK_CH_SEMICOLON;
-        case '/':  read(state); return TOK_CH_SLASH;
-        case '*':  read(state); return TOK_CH_STAR;
-        case '\"':              return tokenizeString(state);
-        case '\\':              return tokenizeQuotedIdentifier(state);
-        case ':':               return tokenizeColon(state);
-        case '#':               return tokenizeDirective(state);
-        case '-':
+        case -1:   {              return NULL;                            }
+        case '}':  { read(state); return TOK_CH_CCURLY;                   }
+        case ')':  { read(state); return TOK_CH_CPAREN;                   }
+        case ']':  { read(state); return TOK_CH_CSQUARE;                  }
+        case ',':  { read(state); return TOK_CH_COMMA;                    }
+        case '=':  { read(state); return TOK_CH_EQUAL;                    }
+        case '{':  { read(state); return TOK_CH_OCURLY;                   }
+        case '(':  { read(state); return TOK_CH_OPAREN;                   }
+        case '[':  { read(state); return TOK_CH_OSQUARE;                  }
+        case '?':  { read(state); return TOK_CH_QMARK;                    }
+        case '+':  { read(state); return TOK_CH_PLUS;                     }
+        case ';':  { read(state); return TOK_CH_SEMICOLON;                }
+        case '/':  { read(state); return TOK_CH_SLASH;                    }
+        case '*':  { read(state); return TOK_CH_STAR;                     }
+        case '\"': {              return tokenizeString(state);           }
+        case '\\': {              return tokenizeQuotedIdentifier(state); }
+        case ':':  {              return tokenizeColon(state);            }
+        case '#':  {              return tokenizeDirective(state);        }
+        case '-': {
             return tokenizeOneOrTwo(state, '>', TOK_CH_MINUS, TOK_CH_RARROW);
-        case '.':
+        }
+        case '.': {
             return tokenizeOneOrTwo(state, '.', TOK_CH_DOT,   TOK_CH_DOTDOT);
-        case '@':
+        }
+        case '@': {
             return tokenizeOneOrTwo(state, '@', TOK_CH_AT,    TOK_CH_ATAT);
+        }
         case '0': case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
+        case '5': case '6': case '7': case '8': case '9': {
             return tokenizeInt(state);
+        }
     }
 
     zvalue result = tokenizeIdentifier(state);
