@@ -541,10 +541,10 @@ DEF_PARSE(deriv) {
         cls = PARSE_OR_REJECT(parenExpression);
     }
 
-    // Value is optional; these are allowed to all fail.
+    // Value is mandatory, so the last one is `PARSE_OR_REJECT`.
     zvalue value = PARSE(parenExpression);
     if (value == NULL) value = PARSE(map);
-    if (value == NULL) value = PARSE(list);
+    if (value == NULL) value = PARSE_OR_REJECT(list);
 
     zvalue args = (value == NULL) ? listFrom1(cls) : listFrom2(cls, value);
 

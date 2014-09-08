@@ -289,9 +289,9 @@ def parDeriv = {:
         parParenExpression
     )
 
-    value = (parParenExpression | parMap | parList)?
+    value = (parParenExpression | parMap | parList)
 
-    { makeCall(REFS::makeData, cls, value*) }
+    { makeCall(REFS::makeData, cls, value) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.
