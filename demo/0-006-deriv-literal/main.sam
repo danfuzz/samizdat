@@ -27,9 +27,6 @@ msg(@potion("blort"));
 msg(@"potion"("blort"));
 msg(@(@@potion)("blort"));
 
-msg(@blort);
-msg(@"%fizmo%");
-
 msg(@"^zorch^"("scorch"));
 msg(@fizmo([1, 2, 3]));
 msg(@fizmo[1, 2, 3]);
@@ -37,7 +34,7 @@ msg(@fizmo({a: 1, b: 2, c: 3}));
 msg(@fizmo{a: 1, b: 2, c: 3});
 
 ## Keywords can be used as types.
-msg(@def);
+msg(@def{x: 10});
 msg(@fn(100));
 
 ## Accessing data via `get` calls, explicitly and implicitly.
