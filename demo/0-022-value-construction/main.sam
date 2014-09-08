@@ -55,6 +55,8 @@ fn expectDerived(v) {
 
 note("Null");
 
+expectSame(null, null);
+
 expectCore(null);
 
 
