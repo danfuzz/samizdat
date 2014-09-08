@@ -22,6 +22,7 @@ DEF_STRING(CH_QMARK,             "?");
 DEF_STRING(CH_SLASH,             "/");
 DEF_STRING(CH_STAR,              "*");
 
+DEF_SYMBOL(CH_STAR,              "*");
 DEF_SYMBOL(break,                "break");
 DEF_SYMBOL(classAddMethod,       "classAddMethod");
 DEF_SYMBOL(continue,             "continue");

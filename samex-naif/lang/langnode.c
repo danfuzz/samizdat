@@ -449,7 +449,7 @@ zvalue makeImport(zvalue baseData) {
             die("Cannot import selection of resource.");
         }
 
-        if (hasClass(select, CLS_CH_STAR)) {
+        if (valEq(select, SYM_CH_STAR)) {
             // It's a wildcard import.
             data = collDel(data, SYM_select);
         }

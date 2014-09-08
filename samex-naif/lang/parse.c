@@ -1080,7 +1080,7 @@ DEF_PARSE(importSelect1) {
     MATCH_OR_REJECT(CH_COLONCOLON);
     zvalue result = MATCH_OR_REJECT(CH_STAR);
 
-    return mapFrom1(SYM_select, result);
+    return mapFrom1(SYM_select, SYM_CH_STAR);
 }
 
 /** Helper for `importSelect`: Parses the second alternate. */
