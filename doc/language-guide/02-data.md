@@ -346,19 +346,17 @@ is a symbol. There are three major categories of class:
 ### DerivedData (derived data values)
 
 A derived data value is one that is constructed with an explicit derived
-data class and optional data payload.
+data class and data payload.
 
 Derived data values are introduced with an at-sign (`@`). This is
 followed by a required class and then an optional data payload. The class
-and payload (if present) must each be surrounded by parentheses
+and payload must each be surrounded by parentheses
 (separately), with the following exceptions:
 
-* If the class name is a literal string in general (`"..."`), then it can be
-  represented directly after the `@`, with no parentheses required.
-
-* If the class name is a literal string and in addition abides by the syntax
-  for identifiers in the language, then it can be represented directly after
-  the `@`, with no parentheses or quoting required.
+* If the class is literal, then it can be represented as its double-quoted
+  name, directly after the `@`, with no parentheses required. In addition,
+  if the name abides by the syntax for identifiers in the language, then the
+  quotes can be omitted.
 
 * If the data payload is a map form (`{...}`), then it can be represented
   without parentheses.
@@ -367,10 +365,6 @@ and payload (if present) must each be surrounded by parentheses
   without parentheses.
 
 ```
-@(@@lozenge)                  ## a payload-free value of class `"lozenge"`
-@"lozenge"                    ## shorthand for same
-@lozenge                      ## shorthand for same
-
 @(@@heartState)("pure")       ## a "heart state" value, with string payload
 @"heartState"("pure")         ## shorthand for same
 @heartState("pure")           ## shorthand for same
