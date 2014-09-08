@@ -465,7 +465,7 @@ def parUnaryExpression = {:
         base = parTerm
         ## Reverse the `prefixes` list, so that prefixes are applied
         ## in outward order from the base term.
-        { {base, prefixes: reverse(prefixes)} }
+        { {base, prefixes: prefixes.reverse()} }
     )
 
     postfixes = parPostfixOperator*
@@ -518,7 +518,7 @@ def parYieldOrNonlocal = {:
             parVarLvalue
         |
             ## Indicate that this is a regular (local) yield. Checked below.
-            { @yield }
+            { @yield{} }
         )
     |
         { makeVarFetch(get_className(op)) }
@@ -530,11 +530,11 @@ def parYieldOrNonlocal = {:
         v = parExpression
         { ifIs { optQuest* } { makeMaybe(v) } { v } }
     |
-        { ifNot { optQuest* } { @void } }
+        { ifNot { optQuest* } { @void{} } }
     )
 
     {
-        ifIs { eq(name, @yield) }
+        ifIs { eq(name, @yield{}) }
             { value }
             { makeNonlocalExit(name, value) }
     }
@@ -755,12 +755,12 @@ def parImportSource = {:
 :};
 
 ## Parses a list of binding names for an `import` statement. The result is
-## a list of strings, or `@"*"` to indicate a wildcard of all names.
+## a list of symbols, or `@"*"{}` to indicate a wildcard of all names.
 def parImportSelect = {:
     @"::"
     (
         @"*"
-        { {select: @"*"} }
+        { {select: @"*"{}} }
     |
         select = parNameSymbolList
         { {select} }
@@ -887,7 +887,7 @@ def parProgram = {:
     {
         def closure = makeFullClosure({
             statements: [imports*, body*],
-            yield:      @void
+            yield:      @void{}
         });
         withoutTops(closure)
     }
@@ -1040,11 +1040,11 @@ def parPexThunk = {:
 ## Parses a parsing expression term.
 def parPexTerm = {:
     @"."
-    { @any }
+    { @any{} }
 |
     @"("
     @")"
-    { @empty }
+    { @empty{} }
 |
     parPexVarRef | parPexString | parPexToken | parPexSet |
     parPexCode | parPexThunk | parPexParenExpression
