@@ -546,9 +546,7 @@ DEF_PARSE(deriv) {
     if (value == NULL) value = PARSE(map);
     if (value == NULL) value = PARSE_OR_REJECT(list);
 
-    zvalue args = (value == NULL) ? listFrom1(cls) : listFrom2(cls, value);
-
-    return makeCall(REFS(makeData), args);
+    return makeCall(REFS(makeData), listFrom2(cls, value));
 }
 
 // Documented in spec.
