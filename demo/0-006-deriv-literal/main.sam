@@ -29,7 +29,6 @@ msg(@(@@potion)("blort"));
 
 msg(@"^zorch^"("scorch"));
 msg(@fizmo([1, 2, 3]));
-msg(@fizmo[1, 2, 3]);
 msg(@fizmo({a: 1, b: 2, c: 3}));
 msg(@fizmo{a: 1, b: 2, c: 3});
 
@@ -39,6 +38,6 @@ msg(@fn(100));
 
 ## Accessing data via `get` calls, explicitly and implicitly.
 msg(@foo("abc").get(0));
-msg(@foo["zero", "one"].get(1));
+msg(@foo(["zero", "one"]).get(1));
 msg(@foo{a: 1, b: 2}.get(@.a));
 msg(@foo{a: 1, b: 2}::b);
