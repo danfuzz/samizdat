@@ -348,23 +348,22 @@ is a symbol. There are three major categories of class:
 A derived data value is one that is constructed with an explicit derived
 data class and data payload.
 
-Derived data values are introduced with an at-sign (`@`). This is
-followed by a required class and then an optional data payload. The class
-and payload must each be surrounded by parentheses
-(separately), with the following exceptions:
+Derived data values are introduced with an at-sign (`@`). This is followed by
+a required class and then a data payload, which must be a map. The class and
+payload must each be surrounded by parentheses (separately), with the
+following exceptions:
 
 * If the class is literal, then it can be represented as its double-quoted
   name, directly after the `@`, with no parentheses required. In addition,
   if the name abides by the syntax for identifiers in the language, then the
   quotes can be omitted.
 
-* If the data payload is a map form (`{...}`), then it can be represented
-  without parentheses.
+* If the data payload is a literal map form (`{...}`), then it can be
+  represented without parentheses.
 
 ```
-@(@@heartState)("pure")       ## a "heart state" value, with string payload
-@"heartState"("pure")         ## shorthand for same
-@heartState("pure")           ## shorthand for same
+@(@@heartState)({state: "pure"}   ## a "heart state" value, with map payload
+@heartState{state: "pure"}        ## usual shorthand for same
 
 @spell({name: "frotz", purpose: "cause item to glow"})  ## a map payload
 @spell{name: "frotz", purpose: "cause item to glow"}    ## shorthand for same

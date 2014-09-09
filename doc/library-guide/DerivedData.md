@@ -17,6 +17,23 @@ other than a derived data value.
 
 ### Primitive Definitions
 
+#### `makeData(cls, value?) -> .`
+
+Returns a derived data value with the given class (a value of class `Class`)
+and optional data payload value (which must be a map if present).
+These equivalences hold for Samizdat source code:
+
+```
+@type(value)    is equivalent to  makeData(@@type, value)
+@(type)(value)  is equivalent to  makeData(type, value)
+```
+
+It is a fatal error (terminating the runtime) to pass for `cls` something
+other than a derived data class or for `value` to be something other than
+a map.
+
+**Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
+
 #### `makeDerivedDataClass(name) -> class`
 
 Returns a `Class` instance which represents a derived data class
