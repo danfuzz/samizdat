@@ -281,7 +281,7 @@ export fn makeInfoMap(node) {
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
         ifIs { hasClass(s, @@importModule) }
-            { addToImports(s::source, [@module{}]) };
+            { addToImports(s::source, [@.module]) };
         ifIs { hasClass(s, @@importModuleSelection) }
             {
                 def names = ifValueOr { s::select }

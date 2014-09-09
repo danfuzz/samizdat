@@ -511,7 +511,7 @@ zvalue makeInfoMap(zvalue node) {
         // *Not* `else if` (see above).
         if (hasClass(s, CLS_importModule)) {
             imports =
-                addImportBinding(imports, get(s, SYM_source), CLS_module);
+                addImportBinding(imports, get(s, SYM_source), SYM_module);
         } else if (hasClass(s, CLS_importModuleSelection)) {
             zvalue source = get(s, SYM_source);
             zvalue select = get(s, SYM_select);

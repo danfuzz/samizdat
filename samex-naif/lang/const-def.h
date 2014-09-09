@@ -46,6 +46,7 @@ DEF_SYMBOL(makeDerivedDataClass, "makeDerivedDataClass");
 DEF_SYMBOL(makeList,             "makeList");
 DEF_SYMBOL(makeValueMap,         "makeValueMap");
 DEF_SYMBOL(maybeValue,           "maybeValue");
+DEF_SYMBOL(module,               "module");
 DEF_SYMBOL(name,                 "name");
 DEF_SYMBOL(null,                 "null");
 DEF_SYMBOL(prefix,               "prefix");
