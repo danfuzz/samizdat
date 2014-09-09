@@ -8,6 +8,7 @@
 #include "type/Collection.h"
 #include "type/DerivedData.h"
 #include "type/Int.h"
+#include "type/Map.h"
 #include "type/define.h"
 #include "zlimits.h"
 
@@ -49,12 +50,14 @@ zvalue dataOf(zvalue value) {
 
 // Documented in header.
 zvalue makeData(zvalue cls, zvalue data) {
-    if (DAT_CONSTRUCTION_PARANOIA) {
-        assertValidOrNull(data);
-    }
-
     if (!classIsDerived(cls)) {
         die("Attempt to call `makeData` on an improper class.");
+    }
+
+    if (data == NULL) {
+        data = EMPTY_MAP;
+    } else {
+        assertHasClass(data, CLS_Map);
     }
 
     zvalue result = datAllocValue(cls, sizeof(DerivedDataInfo));
