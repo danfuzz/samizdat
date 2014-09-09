@@ -268,9 +268,9 @@ def zorch = "Z";
 ## The first three here are equivalent. The last contains a variable reference
 ## to `the`.
 {[@these, @map, @to, @the]*: "same value"}
-{these: map: @."to": the: "same value"}
+{these: map: @"to": the: "same value"}
 {[@these, @map]*: to: the: "same value"}
-{these: map: @."to": (the): "same value"}
+{these: map: @"to": (the): "same value"}
 
 # These are all equivalent.
 {first: 1, second: 2, third: 3}
