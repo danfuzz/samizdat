@@ -176,7 +176,7 @@ expectCore(fn2);
 note("\nSymbols");
 
 expectSame(@boo, @boo);
-expectSame(@boo, @."boo");
+expectSame(@boo, @"boo");
 
 expectCore(@boo);
 

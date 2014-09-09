@@ -24,10 +24,10 @@ fn msg(string) {
 
 note("Symbols");
 msg(@foo);
-msg(@."foo");
-msg(@."++ blort ++");
+msg(@"foo");
+msg(@"++ blort ++");
 
-ifNot { eq(@foo, @."foo") }
+ifNot { eq(@foo, @"foo") }
     { die("Expected same!") };
 
 def anon = @foo.makeAnonymous();
