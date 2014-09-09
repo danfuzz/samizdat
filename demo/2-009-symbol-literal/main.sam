@@ -24,6 +24,7 @@ note("Symbols");
 msg(@foo);
 msg(@"foo");
 msg(@"++ blort ++");
+msg(@anon.makeAnonymous());
 
 ifNot { eq(@foo, @"foo") }
     { die("Expected same!") };

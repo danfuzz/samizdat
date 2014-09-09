@@ -23,6 +23,9 @@ fn msg(value) {
 ## Main Tests
 ##
 
+msg(null);
+msg(false);
+msg(true);
 msg("a String");
 msg(10);
 msg([1, 2, 3]);
@@ -32,12 +35,13 @@ msg(@blort{fizmo: "zorch"});
 var foo = 10;
 msg(var foo);  ## a box
 
-msg(Value);    ## a core class
-msg(@@blort);  ## a derived value class
-msg(@blort);   ## a symbol
-msg(eq);       ## a builtin function
-msg(msg);      ## a named in-language function
-msg({ -> });   ## an anonymous in-language function
+msg(Value);                   ## a core class
+msg(@@blort);                 ## a derived value class
+msg(@blort);                  ## an interned symbol
+msg(@blort.makeAnonymous());  ## an anonymous symbol
+msg(eq);                      ## a builtin function
+msg(msg);                     ## a named in-language function
+msg({ -> });                  ## an anonymous in-language function
 
 { /out ->
     msg(out);  ## a nonlocal exit function
