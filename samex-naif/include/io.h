@@ -36,7 +36,7 @@ zvalue ioCwd(void);
 
 /**
  * Returns the file type of the file at the given path if it exists, or
- * `@.absent` if the file doesn't exist (including if one of the named
+ * `@absent` if the file doesn't exist (including if one of the named
  * directories in the path doesn't exist). Types are the same as for
  * `core.Io0::fileType` (see which).
  */
@@ -46,7 +46,7 @@ zvalue ioFileType(zvalue path);
  * Gets the contents of the directory at the given path. If the path does not
  * name a directory, this returns `NULL`. A successful result is a map from
  * string names to file types (as strings). Types are as with `ioFileType`,
- * with the addition of `@.symlink` as a possibility.
+ * with the addition of `@symlink` as a possibility.
  */
 zvalue ioReadDirectory(zvalue path);
 
