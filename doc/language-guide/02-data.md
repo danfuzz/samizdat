@@ -243,8 +243,8 @@ variable definitions.
 ```
 {}                            ## the empty map
 {1: "number one"}
-{two: 2}                      ## the same as {@.two: 2}
-{true: "yes"}                 ## the same as {@.true: "yes"}
+{two: 2}                      ## the same as {@two: 2}
+{true: "yes"}                 ## the same as {@true: "yes"}
 {(true): "yes"}               ## key is (the boolean) `true`, not a symbol
 {favorites: ["biscuits", "muffins"]}
 
@@ -267,9 +267,9 @@ def zorch = "Z";
 
 ## The first three here are equivalent. The last contains a variable reference
 ## to `the`.
-{[@.these, @.map, @.to, @.the]*: "same value"}
+{[@these, @map, @to, @the]*: "same value"}
 {these: map: @."to": the: "same value"}
-{[@.these", @.map]*: to: the: "same value"}
+{[@these, @map]*: to: the: "same value"}
 {these: map: @."to": (the): "same value"}
 
 # These are all equivalent.

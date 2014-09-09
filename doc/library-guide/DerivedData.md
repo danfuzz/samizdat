@@ -42,7 +42,7 @@ with the given `name`. `name` is an arbitrary symbol. The following
 equivalences hold for Samizdat source code:
 
 ```
-@@name    is equivalent to  makeDerivedDataClass(@.name)
+@@name    is equivalent to  makeDerivedDataClass(@name)
 @@(name)  is equivalent to  makeDerivedDataClass(name)
 ```
 
