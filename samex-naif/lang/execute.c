@@ -168,15 +168,15 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    switch (get_evalType(e)) {
-        case EVAL_apply:    return execApply(frame, e);
-        case EVAL_call:     return execCall(frame, e);
-        case EVAL_closure:  return execClosure(frame, e);
-        case EVAL_fetch:    return execFetch(frame, e);
-        case EVAL_literal:  return get(e, SYM_value);
-        case EVAL_noYield:  execNoYield(frame, e);
-        case EVAL_store:    return execStore(frame, e);
-        case EVAL_varRef:   return execVarRef(frame, e);
+    switch (classEvalType(e)) {
+        case EVAL_apply:    { return execApply(frame, e);   }
+        case EVAL_call:     { return execCall(frame, e);    }
+        case EVAL_closure:  { return execClosure(frame, e); }
+        case EVAL_fetch:    { return execFetch(frame, e);   }
+        case EVAL_literal:  { return get(e, SYM_value);     }
+        case EVAL_noYield:  { execNoYield(frame, e);        }
+        case EVAL_store:    { return execStore(frame, e);   }
+        case EVAL_varRef:   { return execVarRef(frame, e);  }
         default: {
             die("Invalid expression type: %s", valDebugString(get_class(e)));
         }
@@ -187,13 +187,13 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
  * Executes a single `statement` form. Works for `expression` forms too.
  */
 static void execStatement(Frame *frame, zvalue statement) {
-    switch (get_evalType(statement)) {
-        case EVAL_importModule:          execImport(frame, statement);           break;
-        case EVAL_importModuleSelection: execImport(frame, statement);           break;
-        case EVAL_importResource:        execImport(frame, statement);           break;
-        case EVAL_varDef:                execVarDef(frame, statement);           break;
-        case EVAL_varDefMutable:         execVarDefMutable(frame, statement);    break;
-        default:                         execExpressionVoidOk(frame, statement); break;
+    switch (classEvalType(statement)) {
+        case EVAL_importModule:          { execImport(frame, statement);           break; }
+        case EVAL_importModuleSelection: { execImport(frame, statement);           break; }
+        case EVAL_importResource:        { execImport(frame, statement);           break; }
+        case EVAL_varDef:                { execVarDef(frame, statement);           break; }
+        case EVAL_varDefMutable:         { execVarDefMutable(frame, statement);    break; }
+        default:                         { execExpressionVoidOk(frame, statement); break; }
     }
 }
 
@@ -204,10 +204,10 @@ static void execStatement(Frame *frame, zvalue statement) {
 
 // Documented in header.
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
-    switch (get_evalType(e)) {
-        case EVAL_maybe: return execMaybe(frame, e);
-        case EVAL_void:  return NULL;
-        default:         return execExpression(frame, e);
+    switch (classEvalType(e)) {
+        case EVAL_maybe: { return execMaybe(frame, e);      }
+        case EVAL_void:  { return NULL;                     }
+        default:         { return execExpression(frame, e); }
     }
 }
 

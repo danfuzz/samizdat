@@ -50,7 +50,7 @@ export fn main(selfPath, name?, rest*) {
     process("bizcuits".put(2, "s"));
     process(["scones", "natto"].put(1, "ice cream"));
     process({one: 1, two: 2, three: 3}.put("four", 4));
-    process([@a, @b, @c].keyList());
+    process([@.a, @.b, @.c].keyList());
     process("abcde".keyList());
     process({a: "apple", b: "butter"}.keyList());
     process({a: "apple", b: "butter"}.valueList());

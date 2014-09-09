@@ -21,9 +21,9 @@ fn print(string) {
 
 print("\("Hello.")");
 print("\{ "Greetings." }");
-print("One \("1") two \(2) three \(@three).");
+print("One \("1") two \(2) three \(@three{x: 3}).");
 print("Handy: \($Format::source(["blort", "fizmo", "igram"]))");
-print("I like \([@muffins, @scones]).");
+print("I like \([@.muffins, @.scones]).");
 
 print("\
     I like \{

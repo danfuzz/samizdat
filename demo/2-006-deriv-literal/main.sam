@@ -23,29 +23,22 @@ fn msg(v) {
 note("Layer 0...");
 
 ## These all refer to the same value.
-msg(@potion("blort"));
-msg(@"potion"("blort"));
-msg(@(@@potion)("blort"));
+msg(@potion{});
+msg(@"potion"{});
+msg(@(@@potion){});
 
-msg(@blort);
-msg(@"%fizmo%");
-
-msg(@"^zorch^"("scorch"));
-msg(@fizmo([1, 2, 3]));
-msg(@fizmo[1, 2, 3]);
+msg(@"^zorch^"{blortch: "scorch"});
 msg(@fizmo({a: 1, b: 2, c: 3}));
 msg(@fizmo{a: 1, b: 2, c: 3});
 
 ## Keywords can be used as types.
-msg(@def);
-msg(@fn(100));
+msg(@def{x: 10});
+msg(@fn({z: 100}));
 
 ## Accessing data via `get` calls, explicitly and implicitly.
-msg(@foo("abc").get(0));
-msg(@foo["zero", "one"].get(1));
 msg(@foo{a: 1, b: 2}.get(@.a));
 msg(@foo{a: 1, b: 2}::b);
 
 note("\nLayer 2...");
 
-msg(@"\&mu;sec");
+msg(@"\&mu;sec"{x: 10});

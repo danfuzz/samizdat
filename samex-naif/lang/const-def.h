@@ -11,7 +11,7 @@
 // `DEF_DATA(name, "string")` -- a derived data class.
 // `DEF_TOKEN(name, "string")` -- a derived data class and a token.
 //
-// Tokens are class-only transparent derived values, whose classes
+// Tokens are empty-payload transparent derived values, whose classes
 // are named with the indicated strings.
 //
 
@@ -22,6 +22,9 @@ DEF_STRING(CH_QMARK,             "?");
 DEF_STRING(CH_SLASH,             "/");
 DEF_STRING(CH_STAR,              "*");
 
+DEF_SYMBOL(CH_PLUS,              "+");
+DEF_SYMBOL(CH_QMARK,             "?");
+DEF_SYMBOL(CH_STAR,              "*");
 DEF_SYMBOL(break,                "break");
 DEF_SYMBOL(classAddMethod,       "classAddMethod");
 DEF_SYMBOL(continue,             "continue");
@@ -43,6 +46,7 @@ DEF_SYMBOL(makeDerivedDataClass, "makeDerivedDataClass");
 DEF_SYMBOL(makeList,             "makeList");
 DEF_SYMBOL(makeValueMap,         "makeValueMap");
 DEF_SYMBOL(maybeValue,           "maybeValue");
+DEF_SYMBOL(module,               "module");
 DEF_SYMBOL(name,                 "name");
 DEF_SYMBOL(null,                 "null");
 DEF_SYMBOL(prefix,               "prefix");

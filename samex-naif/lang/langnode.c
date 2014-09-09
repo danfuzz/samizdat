@@ -121,16 +121,14 @@ static zvalue expandYield(zvalue map) {
 
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
-    switch (get_evalType(node)) {
-        case EVAL_apply:    return true;
-        case EVAL_call:     return true;
-        case EVAL_fetch:    return true;
-        case EVAL_maybe:    return true;
-        case EVAL_store:    return true;
-        case EVAL_void:     return true;
-        default: {
-            return false;
-        }
+    switch (classEvalType(node)) {
+        case EVAL_apply: { return true;  }
+        case EVAL_call:  { return true;  }
+        case EVAL_fetch: { return true;  }
+        case EVAL_maybe: { return true;  }
+        case EVAL_store: { return true;  }
+        case EVAL_void:  { return true;  }
+        default:         { return false; }
     }
 }
 
@@ -142,8 +140,8 @@ zvalue formalsMaxArgs(zvalue formals) {
     for (zint i = 0; i < sz; i++) {
         zvalue one = nth(formals, i);
         zvalue repeat = get(one, SYM_repeat);
-        if (valEqNullOk(repeat, STR_CH_STAR)
-            || valEqNullOk(repeat, STR_CH_PLUS)) {
+        if (valEqNullOk(repeat, SYM_CH_STAR)
+            || valEqNullOk(repeat, SYM_CH_PLUS)) {
             maxArgs = -1;
             break;
         }
@@ -161,8 +159,8 @@ zvalue formalsMinArgs(zvalue formals) {
     for (zint i = 0; i < sz; i++) {
         zvalue one = nth(formals, i);
         zvalue repeat = get(one, SYM_repeat);
-        if (!(valEqNullOk(repeat, STR_CH_QMARK)
-              || valEqNullOk(repeat, STR_CH_STAR))) {
+        if (!(valEqNullOk(repeat, SYM_CH_QMARK)
+              || valEqNullOk(repeat, SYM_CH_STAR))) {
             minArgs++;
         }
     }
@@ -222,18 +220,16 @@ zvalue get_definedNames(zvalue node) {
 
 // Documented in spec.
 bool isExpression(zvalue node) {
-    switch (get_evalType(node)) {
-        case EVAL_apply:    return true;
-        case EVAL_call:     return true;
-        case EVAL_closure:  return true;
-        case EVAL_fetch:    return true;
-        case EVAL_literal:  return true;
-        case EVAL_noYield:  return true;
-        case EVAL_store:    return true;
-        case EVAL_varRef:   return true;
-        default: {
-            return false;
-        }
+    switch (classEvalType(node)) {
+        case EVAL_apply:   { return true;  }
+        case EVAL_call:    { return true;  }
+        case EVAL_closure: { return true;  }
+        case EVAL_fetch:   { return true;  }
+        case EVAL_literal: { return true;  }
+        case EVAL_noYield: { return true;  }
+        case EVAL_store:   { return true;  }
+        case EVAL_varRef:  { return true;  }
+        default:           { return false; }
     }
 }
 
@@ -449,7 +445,7 @@ zvalue makeImport(zvalue baseData) {
             die("Cannot import selection of resource.");
         }
 
-        if (hasClass(select, CLS_CH_STAR)) {
+        if (valEq(select, SYM_CH_STAR)) {
             // It's a wildcard import.
             data = collDel(data, SYM_select);
         }
@@ -515,7 +511,7 @@ zvalue makeInfoMap(zvalue node) {
         // *Not* `else if` (see above).
         if (hasClass(s, CLS_importModule)) {
             imports =
-                addImportBinding(imports, get(s, SYM_source), CLS_module);
+                addImportBinding(imports, get(s, SYM_source), SYM_module);
         } else if (hasClass(s, CLS_importModuleSelection)) {
             zvalue source = get(s, SYM_source);
             zvalue select = get(s, SYM_select);

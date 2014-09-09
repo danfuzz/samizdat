@@ -178,8 +178,8 @@ export fn makeFullClosure(nodeOrMap) {
 
     def yieldNode = ifValueOr
         { expandYield(map) }
-        { ifIs { map::yieldDef } { @void } }
-        { ifIs { eq(statSz, 0) } { @void } }
+        { ifIs { map::yieldDef } { @void{} } }
+        { ifIs { eq(statSz, 0) } { @void{} } }
         {
             def lastStat = reverseNth(statements, 0);
             ifIs { isExpression(lastStat) }
@@ -190,7 +190,7 @@ export fn makeFullClosure(nodeOrMap) {
                         { lastStat }
                 }
         }
-        { @void };
+        { @void{} };
 
     return @closure{
         map*,
@@ -218,7 +218,7 @@ export fn makeImport(baseData) {
             ifIs { data::format }
                 { die("Cannot import selection of resource.") };
 
-            ifIs { hasClass(select, @@"*") }
+            ifIs { eq(select, @."*") }
                 {
                     ## It's a wildcard import.
                     data := data.del(@.select);
@@ -281,7 +281,7 @@ export fn makeInfoMap(node) {
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
         ifIs { hasClass(s, @@importModule) }
-            { addToImports(s::source, [@module]) };
+            { addToImports(s::source, [@.module]) };
         ifIs { hasClass(s, @@importModuleSelection) }
             {
                 def names = ifValueOr { s::select }
@@ -359,7 +359,7 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifNot { eq(node::yield, @void) }
+    ifNot { eq(node::yield, @void{}) }
         { die("Invalid node for `withModuleDefs` (has non-void `yield`).") };
 
     ## This is the metainformation of the module. In addition to being

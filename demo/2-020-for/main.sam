@@ -32,7 +32,7 @@ for (x in [1]) {
 };
 
 note("\nTwo element list.");
-for (x in [@blort, @fizmo]) {
+for (x in [@.blort, @.fizmo]) {
     print(x)
 };
 

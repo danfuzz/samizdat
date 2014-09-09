@@ -14,10 +14,11 @@
 #include "const.h"
 #include "lang.h"
 #include "type/Class.h"
+#include "type/Symbol.h"
 #include "zlimits.h"
 
 
-/** Simple enumeration for all the evaluable node types. */
+/** Simple enumeration for all the evaluable node classes and symbols. */
 typedef enum {
     EVAL_apply = 1,  // 1, so that it won't be a "sneaky default."
     EVAL_call,
@@ -33,11 +34,17 @@ typedef enum {
     EVAL_varRef,
     EVAL_varDef,
     EVAL_varDefMutable,
-    EVAL_void
+    EVAL_void,
+    EVAL_CH_PLUS,   // For formal argument repetition.
+    EVAL_CH_QMARK,  // For formal argument repetition.
+    EVAL_CH_STAR    // For formal argument repetition.
 } zevalType;
 
-/** Mapping from `Type` index to corresponding `zevalType`. */
-extern zevalType langTypeMap[DAT_MAX_CLASSES];
+/** Mapping from `Class` index to corresponding `zevalType`. */
+extern zevalType langClassMap[DAT_MAX_CLASSES];
+
+/** Mapping from `Symbol` index to corresponding `zevalType`. */
+extern zevalType langSymbolMap[DAT_MAX_SYMBOLS];
 
 /**
  * Active execution frame. These are passed around during evaluation
@@ -110,8 +117,15 @@ void frameSnap(Frame *target, Frame *source);
 /**
  * Gets the evaluation type (enumerated value) of the given node.
  */
-inline zevalType get_evalType(zvalue node) {
-    return langTypeMap[get_classIndex(node)];
+inline zevalType classEvalType(zvalue node) {
+    return langClassMap[get_classIndex(node)];
+}
+
+/**
+ * Gets the evaluation type (enumerated value) of the given symbol.
+ */
+inline zevalType symbolEvalType(zvalue symbol) {
+    return langSymbolMap[symbolIndex(symbol)];
 }
 
 #endif

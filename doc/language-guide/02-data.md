@@ -238,10 +238,10 @@ def zorch = "Z";
 
 ## The first three here are equivalent. The last contains a variable reference
 ## to `the`.
-{["these", "map", "to", "the"]*: "same value"}
-{these: map: "to": the: "same value"}
-{["these", "map"]*: to: the: "same value"}
-{these: map: "to": (the): "same value"}
+{[@.these, @.map, @.to, @.the]*: "same value"}
+{these: map: @."to": the: "same value"}
+{[@.these", @.map]*: to: the: "same value"}
+{these: map: @."to": (the): "same value"}
 
 # These are all equivalent.
 {first: 1, second: 2, third: 3}
@@ -346,40 +346,27 @@ is a symbol. There are three major categories of class:
 ### DerivedData (derived data values)
 
 A derived data value is one that is constructed with an explicit derived
-data class and optional data payload.
+data class and data payload.
 
-Derived data values are introduced with an at-sign (`@`). This is
-followed by a required class and then an optional data payload. The class
-and payload (if present) must each be surrounded by parentheses
-(separately), with the following exceptions:
+Derived data values are introduced with an at-sign (`@`). This is followed by
+a required class and then a data payload, which must be a map. The class and
+payload must each be surrounded by parentheses (separately), with the
+following exceptions:
 
-* If the class name is a literal string in general (`"..."`), then it can be
-  represented directly after the `@`, with no parentheses required.
+* If the class is literal, then it can be represented as its double-quoted
+  name, directly after the `@`, with no parentheses required. In addition,
+  if the name abides by the syntax for identifiers in the language, then the
+  quotes can be omitted.
 
-* If the class name is a literal string and in addition abides by the syntax
-  for identifiers in the language, then it can be represented directly after
-  the `@`, with no parentheses or quoting required.
-
-* If the data payload is a map form (`{...}`), then it can be represented
-  without parentheses.
-
-* If the data payload is a list form (`[...]`), then it can be represented
-  without parentheses.
+* If the data payload is a literal map form (`{...}`), then it can be
+  represented without parentheses.
 
 ```
-@(@@lozenge)                  ## a payload-free value of class `"lozenge"`
-@"lozenge"                    ## shorthand for same
-@lozenge                      ## shorthand for same
-
-@(@@heartState)("pure")       ## a "heart state" value, with string payload
-@"heartState"("pure")         ## shorthand for same
-@heartState("pure")           ## shorthand for same
+@(@@heartState)({state: "pure"}   ## a "heart state" value, with map payload
+@heartState{state: "pure"}        ## usual shorthand for same
 
 @spell({name: "frotz", purpose: "cause item to glow"})  ## a map payload
 @spell{name: "frotz", purpose: "cause item to glow"}    ## shorthand for same
-
-@utensils(["fork", "knife", "spoon"])                   ## a list payload
-@utensils["fork", "knife", "spoon"]                     ## shorthand for same
 ```
 
 **Note:** As a convenience, the `get` function works on derived data

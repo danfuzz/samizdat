@@ -38,7 +38,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the class name.
-            makeFilterGenerator(input) { ch -> @(@@(ch.toSymbol())) }
+            makeFilterGenerator(input) { ch -> @(@@(ch.toSymbol())){} }
         }
         { input };
 
@@ -65,7 +65,7 @@ export fn makeString(string) {
 
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }
-        { return makeResult(@"") };
+        { return makeResult(@""{}) };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { eq(string.get_size(), 1) }
@@ -78,7 +78,7 @@ export fn makeString(string) {
     def clses = classListFromString(string);
     def chars = clses.collect(makeToken);
 
-    return makeSequence(chars*, makeResult(@(resultType)))
+    return makeSequence(chars*, makeResult(@(resultType){}))
 };
 
 ## Documented in spec.

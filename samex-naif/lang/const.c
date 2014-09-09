@@ -4,6 +4,7 @@
 
 #include <stddef.h>
 
+#include "type/Map.h"
 #include "type/define.h"
 
 
@@ -54,7 +55,7 @@ MOD_INIT(lang_const) {
 
     #define DEF_TOKEN(name, str) \
         DEF_DATA(name, str); \
-        TOK_##name = datImmortalize(makeData(CLS_##name, NULL));
+        TOK_##name = datImmortalize(makeData(CLS_##name, EMPTY_MAP));
 
     #include "const-def.h"
 

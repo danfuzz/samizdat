@@ -222,7 +222,7 @@ See the tree grammar specification for most of the details on bindings.
 Beyond that:
 
 * To specify an `@importModuleSelection` node with a wildcard (import
-  everything) import, use the binding `select: @"*"` instead of omitting
+  everything) import, use the binding `select: @."*"` instead of omitting
   `select`.
 
 * If the `name` binding for a whole-module or resource import is omitted,

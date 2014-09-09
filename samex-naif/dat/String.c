@@ -169,7 +169,9 @@ zvalue stringFromUtf8(zint utfBytes, const char *utf) {
     zint decodedSize = utf8DecodeStringSize(utfBytes, utf);
 
     switch (decodedSize) {
-        case 0: return EMPTY_STRING;
+        case 0: {
+            return EMPTY_STRING;
+        }
         case 1: {
             // Call into `stringFromChar` since that's what handles caching
             // of single-character strings.
@@ -210,8 +212,8 @@ zvalue stringFromZstring(zstring string) {
     // Deal with special cases. This calls into `stringFromZchar` since that's
     // what handles caching of single-character strings.
     switch (string.size) {
-        case 0: return EMPTY_STRING;
-        case 1: return stringFromZchar(string.chars[0]);
+        case 0: { return EMPTY_STRING;                     }
+        case 1: { return stringFromZchar(string.chars[0]); }
     }
 
     zvalue result = allocString(string.size);
@@ -356,12 +358,8 @@ METH_IMPL_0(String, fetch) {
     StringInfo *info = getInfo(ths);
 
     switch (info->s.size) {
-        case 0: {
-            return NULL;
-        }
-        case 1: {
-            return ths;
-        }
+        case 0: { return NULL; }
+        case 1: { return ths;  }
         default: {
             die("Invalid to call `fetch` on string with size > 1.");
         }
@@ -524,9 +522,9 @@ METH_IMPL_1(String, totalEq, other) {
 METH_IMPL_1(String, totalOrder, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     switch (uncheckedZorder(ths, other)) {
-        case ZLESS: return INT_NEG1;
-        case ZSAME: return INT_0;
-        case ZMORE: return INT_1;
+        case ZLESS: { return INT_NEG1; }
+        case ZSAME: { return INT_0;    }
+        case ZMORE: { return INT_1;    }
     }
 }
 

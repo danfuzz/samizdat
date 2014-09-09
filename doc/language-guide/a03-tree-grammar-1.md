@@ -37,12 +37,6 @@ fn reportError(pending) {
     die("\nExtra tokens at end of program.")
 };
 
-## Set-like map of all lowercase identifier characters. Used to figure
-## out if we're looking at a keyword in the `identifierSymbol` rule.
-def LOWER_ALPHA = {
-    makeInclusiveRange("a", "z")*: true
-};
-
 
 ##
 ## Layer 0 Rules
@@ -137,13 +131,9 @@ def parIdentifierSymbol = {:
 |
     token = .
     {
-        ifNot { token.dataOf() }
-            {
-                def name = get_classNameString(token);
-                def firstCh = name.nth(0);
-                ifIs { LOWER_ALPHA.get(firstCh) }
-                    { makeSymbolLiteral(name) }
-            }
+        def name = get_className(token);
+        ifIs { KEYWORDS.get(name) }
+            { makeLiteral(name) }
     }
 :};
 
@@ -299,9 +289,9 @@ def parDeriv = {:
         parParenExpression
     )
 
-    value = (parParenExpression | parMap | parList)?
+    value = (parParenExpression | parMap)
 
-    { makeCall(REFS::makeData, cls, value*) }
+    { makeCall(REFS::makeData, cls, value) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.
@@ -411,19 +401,19 @@ def parPostfixOperator = {:
     ## ```
     ## target.memberName(arg, ...)
     ## =>
-    ## @.memberName(target, arg, ...)
+    ## (@.memberName)(target, arg, ...)
     ## ```
     ##
     ## ```
     ## target.memberName
     ## =>
-    ## @.get_memberName(target)
+    ## (@.get_memberName)(target)
     ## ```
     ##
     ## ```
     ## target.memberName := expression
     ## =>
-    ## @.set_memberName(target, expression)
+    ## (@.set_memberName)(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -475,7 +465,7 @@ def parUnaryExpression = {:
         base = parTerm
         ## Reverse the `prefixes` list, so that prefixes are applied
         ## in outward order from the base term.
-        { {base, prefixes: reverse(prefixes)} }
+        { {base, prefixes: prefixes.reverse()} }
     )
 
     postfixes = parPostfixOperator*
@@ -528,7 +518,7 @@ def parYieldOrNonlocal = {:
             parVarLvalue
         |
             ## Indicate that this is a regular (local) yield. Checked below.
-            { @yield }
+            { @yield{} }
         )
     |
         { makeVarFetch(get_className(op)) }
@@ -540,11 +530,11 @@ def parYieldOrNonlocal = {:
         v = parExpression
         { ifIs { optQuest* } { makeMaybe(v) } { v } }
     |
-        { ifNot { optQuest* } { @void } }
+        { ifNot { optQuest* } { @void{} } }
     )
 
     {
-        ifIs { eq(name, @yield) }
+        ifIs { eq(name, @yield{}) }
             { value }
             { makeNonlocalExit(name, value) }
     }
@@ -594,7 +584,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_classNameString(r)} }
+        { {repeat: get_className(r)} }
     |
         { {} }
     )
@@ -765,12 +755,12 @@ def parImportSource = {:
 :};
 
 ## Parses a list of binding names for an `import` statement. The result is
-## a list of strings, or `@"*"` to indicate a wildcard of all names.
+## a list of symbols, or `@."*"` to indicate a wildcard of all names.
 def parImportSelect = {:
     @"::"
     (
         @"*"
-        { {select: @"*"} }
+        { {select: @."*"} }
     |
         select = parNameSymbolList
         { {select} }
@@ -897,7 +887,7 @@ def parProgram = {:
     {
         def closure = makeFullClosure({
             statements: [imports*, body*],
-            yield:      @void
+            yield:      @void{}
         });
         withoutTops(closure)
     }
@@ -1050,11 +1040,11 @@ def parPexThunk = {:
 ## Parses a parsing expression term.
 def parPexTerm = {:
     @"."
-    { @any }
+    { @any{} }
 |
     @"("
     @")"
-    { @empty }
+    { @empty{} }
 |
     parPexVarRef | parPexString | parPexToken | parPexSet |
     parPexCode | parPexThunk | parPexParenExpression

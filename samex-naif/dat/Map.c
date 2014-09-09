@@ -116,12 +116,14 @@ static zint mapFind(zvalue map, zvalue key) {
 
     // Take care of a couple trivial cases.
     switch (info->size) {
-        case 0: return ~0;
+        case 0: {
+            return ~0;
+        }
         case 1: {
             switch (valZorder(key, elems[0].key)) {
-                case ZLESS: return ~0;
-                case ZMORE: return ~1;
-                default:    return 0;
+                case ZLESS: { return ~0; }
+                case ZMORE: { return ~1; }
+                default:    { return 0;  }
             }
         }
     }
@@ -141,8 +143,8 @@ static zint mapFind(zvalue map, zvalue key) {
     while (min <= max) {
         zint guess = (min + max) / 2;
         switch (valZorder(key, elems[guess].key)) {
-            case ZLESS: max = guess - 1; break;
-            case ZMORE: min = guess + 1; break;
+            case ZLESS: { max = guess - 1; break; }
+            case ZMORE: { min = guess + 1; break; }
             default: {
                 entry->index = guess;
                 return guess;

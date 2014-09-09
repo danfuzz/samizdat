@@ -150,24 +150,6 @@ Returns `value` if it has class `cls`. Otherwise returns void.
 In order to "have the class," `value` must either be an instance of class
 `cls` per se, or be an instance of a subclass of `cls`.
 
-#### `makeData(cls, value?) -> .`
-
-Returns a derived data value with the given class (a value of class `Class`)
-and optional data payload value (an arbitrary value). These equivalences hold
-for Samizdat source code:
-
-```
-@type           is equivalent to  makeData(@@type)
-@type(value)    is equivalent to  makeData(@@type, value)
-@(type)         is equivalent to  makeData(type)
-@(type)(value)  is equivalent to  makeData(type, value)
-```
-
-It is a fatal error (terminating the runtime) to pass for `cls` something
-other than a derived data class.
-
-**Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
-
 #### `order(value, other) -> int`
 
 Returns the order of the two given values, using the total order of values.

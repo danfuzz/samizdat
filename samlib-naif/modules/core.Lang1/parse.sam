@@ -31,12 +31,6 @@ fn reportError(pending) {
     die("\nExtra tokens at end of program.")
 };
 
-## Set-like map of all lowercase identifier characters. Used to figure
-## out if we're looking at a keyword in the `identifierSymbol` rule.
-def LOWER_ALPHA = {
-    makeInclusiveRange("a", "z")*: true
-};
-
 
 ##
 ## Grammar rules
@@ -105,14 +99,10 @@ def parIdentifierSymbol = makeMainChoice(
     makeSequence(
         any,
         makeCode { token ->
-            ifNot { token.dataOf() }
-                {
-                    def name = get_classNameString(token);
-                    def firstCh = name.nth(0);
-                    ifIs { LOWER_ALPHA.get(firstCh) }
-                        { makeSymbolLiteral(name) }
-                }
-            }));
+            def name = get_className(token);
+            ifIs { KEYWORDS.get(name) }
+                { makeLiteral(name) }
+        }));
 
 ## Documented in spec.
 def parKeyLiteral = makeMainChoice(
@@ -248,9 +238,9 @@ def parDeriv = makeMainSequence(
                 makeLiteral(@@(name::value))
             }),
         parParenExpression),
-    makeRepeat(makeChoice(parParenExpression, parMap, parList), 0, 1),
+    makeChoice(parParenExpression, parMap),
     makeCode { ., cls, value ->
-        makeCall(REFS::makeData, cls, value*)
+        makeCall(REFS::makeData, cls, value)
     });
 
 ## Documented in spec.
@@ -392,7 +382,7 @@ def parYieldOrNonlocal = makeMainSequence(
             makeCode { op, . -> hasClass(op, @@yield) },
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
-                makeResult(@yield))),
+                makeResult(@yield{}))),
         makeCode { op, . -> makeVarFetch(get_className(op)) }),
     makeChoice(
         makeSequence(
@@ -401,10 +391,10 @@ def parYieldOrNonlocal = makeMainSequence(
                 ifIs { optQuest* } { makeMaybe(v) } { v }
             }),
         makeCode { ., optQuest, . ->
-            ifNot { optQuest* } { @void }
+            ifNot { optQuest* } { @void{} }
         }),
     makeCode { ., ., name, value ->
-        ifIs { eq(name, @yield) }
+        ifIs { eq(name, @yield{}) }
             { value }
             { makeNonlocalExit(name, value) }
     });
@@ -451,7 +441,7 @@ def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
-            makeCode { ., r -> {repeat: get_classNameString(r)} }),
+            makeCode { ., r -> {repeat: get_className(r)} }),
         makeResult({})),
     makeCode { name, repeat -> {name*, repeat*} });
 
@@ -584,7 +574,7 @@ def parImportSelect = makeMainChoice(
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
-                makeResult({select: @"*"})),
+                makeResult({select: @."*"})),
             makeSequence(
                 parNameSymbolList,
                 makeCode { ., select -> {select} }))),
@@ -685,7 +675,7 @@ def parProgram = makeMainSequence(
     makeCode { imports, body, . ->
         def closure = makeFullClosure({
             statements: [imports*, body*],
-            yield:      @void
+            yield:      @void{}
         });
         withoutTops(closure)
     });
@@ -814,11 +804,11 @@ def parPexThunk = makeMainSequence(
 def parPexTerm = makeMainChoice(
     makeSequence(
         makeToken(@@"."),
-        makeResult(@any)),
+        makeResult(@any{})),
     makeSequence(
         makeToken(@@"("),
         makeToken(@@")"),
-        makeResult(@empty)),
+        makeResult(@empty{})),
     parPexVarRef,
     parPexString,
     parPexToken,

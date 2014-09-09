@@ -32,12 +32,6 @@ fn reportError(pending) {
     die("\nExtra tokens at end of program.")
 };
 
-## Set-like map of all lowercase identifier characters. Used to figure
-## out if we're looking at a keyword in the `identifierSymbol` rule.
-def LOWER_ALPHA = {
-    makeInclusiveRange("a", "z")*: true
-};
-
 
 ##
 ## Layer 0 Rules
@@ -132,13 +126,9 @@ def parIdentifierSymbol = {:
 |
     token = .
     {
-        ifNot { token.dataOf() }
-            {
-                def name = get_classNameString(token);
-                def firstCh = name.nth(0);
-                ifIs { LOWER_ALPHA.get(firstCh) }
-                    { makeSymbolLiteral(name) }
-            }
+        def name = get_className(token);
+        ifIs { KEYWORDS.get(name) }
+            { makeLiteral(name) }
     }
 :};
 
@@ -294,9 +284,9 @@ def parDeriv = {:
         parParenExpression
     )
 
-    value = (parParenExpression | parMap | parList)?
+    value = (parParenExpression | parMap)
 
-    { makeCall(REFS::makeData, cls, value*) }
+    { makeCall(REFS::makeData, cls, value) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.
@@ -406,19 +396,19 @@ def parPostfixOperator = {:
     ## ```
     ## target.memberName(arg, ...)
     ## =>
-    ## @.memberName(target, arg, ...)
+    ## (@.memberName)(target, arg, ...)
     ## ```
     ##
     ## ```
     ## target.memberName
     ## =>
-    ## @.get_memberName(target)
+    ## (@.get_memberName)(target)
     ## ```
     ##
     ## ```
     ## target.memberName := expression
     ## =>
-    ## @.set_memberName(target, expression)
+    ## (@.set_memberName)(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -523,7 +513,7 @@ def parYieldOrNonlocal = {:
             parVarLvalue
         |
             ## Indicate that this is a regular (local) yield. Checked below.
-            { @yield }
+            { @yield{} }
         )
     |
         { makeVarFetch(get_className(op)) }
@@ -535,11 +525,11 @@ def parYieldOrNonlocal = {:
         v = parExpression
         { ifIs { optQuest* } { makeMaybe(v) } { v } }
     |
-        { ifNot { optQuest* } { @void } }
+        { ifNot { optQuest* } { @void{} } }
     )
 
     {
-        ifIs { eq(name, @yield) }
+        ifIs { eq(name, @yield{}) }
             { value }
             { makeNonlocalExit(name, value) }
     }
@@ -589,7 +579,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_classNameString(r)} }
+        { {repeat: get_className(r)} }
     |
         { {} }
     )
@@ -760,12 +750,12 @@ def parImportSource = {:
 :};
 
 ## Parses a list of binding names for an `import` statement. The result is
-## a list of symbols, or `@"*"` to indicate a wildcard of all names.
+## a list of symbols, or `@."*"` to indicate a wildcard of all names.
 def parImportSelect = {:
     @"::"
     (
         @"*"
-        { {select: @"*"} }
+        { {select: @."*"} }
     |
         select = parNameSymbolList
         { {select} }
@@ -892,7 +882,7 @@ def parProgram = {:
     {
         def closure = makeFullClosure({
             statements: [imports*, body*],
-            yield:      @void
+            yield:      @void{}
         });
         withoutTops(closure)
     }
@@ -1045,11 +1035,11 @@ def parPexThunk = {:
 ## Parses a parsing expression term.
 def parPexTerm = {:
     @"."
-    { @any }
+    { @any{} }
 |
     @"("
     @")"
-    { @empty }
+    { @empty{} }
 |
     parPexVarRef | parPexString | parPexToken | parPexSet |
     parPexCode | parPexThunk | parPexParenExpression
@@ -1422,7 +1412,7 @@ def parRangeBody = {:
     |
         ## The limit is mandatory for exclusive ranges.
         {
-            ifIs { eq(op, @"..") }
+            ifIs { hasClass(op, @@"..") }
                 { [] }
         }
     )
@@ -1430,7 +1420,7 @@ def parRangeBody = {:
     optIncrement = (@by parExpression)?
 
     {
-        ifIs { eq(op, @"..!") }
+        ifIs { hasClass(op, @@"..!") }
             {
                 makeCall(
                     REFS::Range_makeExclusiveRange,
@@ -1534,7 +1524,7 @@ def parIndexPostfix = {:
             )
 
             {
-                def funcRef = ifIs { eq(op, @"..") }
+                def funcRef = ifIs { hasClass(op, @@"..") }
                     { REFS::SYM_sliceInclusive }
                     { REFS::SYM_sliceExclusive };
                 def startNode = start::value;
@@ -1545,7 +1535,7 @@ def parIndexPostfix = {:
             ## At least one of start or end is `fromEnd`, so we have to
             ## use `sliceGeneral`.
             {
-                def style = ifIs { eq(op, @"..") }
+                def style = ifIs { hasClass(op, @@"..") }
                     { REFS::SYM_inclusive }
                     { REFS::SYM_exclusive };
 
@@ -1990,7 +1980,7 @@ def parSwitchCase = {:
     keys = (
         special = [@default @else]
         @":"
-        { special }
+        { get_className(special) }
     |
         parKey+
     )
@@ -2072,11 +2062,11 @@ def parSwitchExpression = {:
         };
 
         def optElse = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @else) } { finishCode(case, true) }
+            ifIs { eq(case::keys, @.else) } { finishCode(case, true) }
         };
 
         var optDefault = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @default) } { finishCode(case) }
+            ifIs { eq(case::keys, @.default) } { finishCode(case) }
         };
 
         ## If there's an `else` but no `default`, we have to create a
