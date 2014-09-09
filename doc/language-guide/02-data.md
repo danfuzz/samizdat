@@ -37,16 +37,16 @@ around, but &mdash; unlike interned symbols &mdash; one cannot get a
 reference to a pre-existing anonymous symbol other than being passed it
 (e.g. as an argument to a call).
 
-While symbols are often used implicitly, there is also explicit syntax
-for referring to them. To refer to an interned symbol, start with an
-at-sign and a dot, and follow it with a quoted literal string. If the
-string happens to match the syntax of an identifier in the language, then
+While symbols are often used implicitly, there is also literal syntax
+for referring to them. Refer to an interned symbol with an at-sign (`@`),
+followed by the symbol's name in double quotes (`"name"`). If the
+name happens to match the syntax of an identifier in the language, then
 the quotes are optional.
 
 ```
-@.foo
-@."foo"          ## Same meaning as above.
-@."++ weird ++"  ## Non-identifier names need to be quoted.
+@foo
+@"foo"          ## Same meaning as above.
+@"++ weird ++"  ## Non-identifier names need to be quoted.
 ```
 
 #### Data
