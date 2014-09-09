@@ -11,6 +11,10 @@ There is only one value of class `Null`. It's refered to by the keyword
 <br><br>
 ### Method Definitions: `Null` protocol
 
+#### `.debugString() -> string`
+
+Returns `"null"`.
+
 #### `.perEq(other) -> bool | void`
 
 Default implementation.
