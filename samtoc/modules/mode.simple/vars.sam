@@ -83,7 +83,7 @@ fn processFormalsWithRepeat(clo, names) {
 
     def vars = ( v in varList ->
         (def origName = v::origName)
-            & {(origName): v.del(@.preInit)}
+            & {(origName): v.del(@preInit)}
     );
 
     return {names, preInits, cleanups: [], vars: {}.cat(vars*)}

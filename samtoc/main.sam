@@ -108,7 +108,7 @@ fn doDirectory(args, sourcePath) {
 
     note("Directory: \(sourcePath)");
 
-    if ($Io0::fileType("\(sourcePath)/main.sam") == @.file) {
+    if ($Io0::fileType("\(sourcePath)/main.sam") == @file) {
         ## There's a `main.sam` in the directory. Treat it as a module
         ## implementation.
 
@@ -139,7 +139,7 @@ fn doDirectory(args, sourcePath) {
             def captiveArgs = {args*, resolver: captiveResolver};
             def files = $Io0::readDirectory(captiveDir);
             for (one in files) {
-                if (one.value == @.directory) {
+                if (one.value == @directory) {
                     def path = "\(captiveDir)/\(one.key)";
                     doDirectory(captiveArgs, path)
                 }
@@ -156,7 +156,7 @@ fn doDirectory(args, sourcePath) {
             def files = $Io0::readDirectory(dir);
             for (one in files) {
                 def path = "\(dir)/\(one.key)";
-                if (one.value == @.directory) {
+                if (one.value == @directory) {
                     if (path != captiveDir) {
                         doInternalDir(path)
                     }
@@ -176,7 +176,7 @@ fn doDirectory(args, sourcePath) {
         def subArgs = {args*, resolver: externalResolver};
         def files = $Io0::readDirectory(sourcePath);
         for (one in files) {
-            if (one.value == @.directory) {
+            if (one.value == @directory) {
                 def path = "\(sourcePath)/\(one.key)";
                 doDirectory(subArgs, path)
             }
@@ -187,13 +187,13 @@ fn doDirectory(args, sourcePath) {
 ## Processes a single file or directory.
 fn doOne(args, sourcePath) {
     switch (def type = $Io0::fileType(sourcePath)) {
-        @.absent: {
+        @absent: {
             die("File not found: \%q(sourcePath)")
         };
-        @.file: {
+        @file: {
             doFile(args, sourcePath)
         };
-        @.directory: {
+        @directory: {
             doDirectory(args, sourcePath)
         };
         default: {

@@ -16,10 +16,10 @@ import ./indentation :: *;
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def Assign = makeObjectClass(@.Assign, SECRET);
+def Assign = makeObjectClass(@Assign, SECRET);
 
 fn Assign.flatten() {
     def data = this.objectDataOf(SECRET);
