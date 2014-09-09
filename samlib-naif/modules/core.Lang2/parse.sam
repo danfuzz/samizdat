@@ -1980,7 +1980,7 @@ def parSwitchCase = {:
     keys = (
         special = [@default @else]
         @":"
-        { special }
+        { get_className(special) }
     |
         parKey+
     )
@@ -2062,11 +2062,11 @@ def parSwitchExpression = {:
         };
 
         def optElse = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @else{}) } { finishCode(case, true) }
+            ifIs { eq(case::keys, @.else) } { finishCode(case, true) }
         };
 
         var optDefault = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @default{}) } { finishCode(case) }
+            ifIs { eq(case::keys, @.default) } { finishCode(case) }
         };
 
         ## If there's an `else` but no `default`, we have to create a
