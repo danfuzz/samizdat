@@ -172,7 +172,6 @@ def parLiteral = {:
     { makeLiteral(null) }
 |
     @"@"
-    @"."?
     symbol = parIdentifierSymbol
     ![@"(" @"{"]  ## Otherwise, derived values wouldn't be recognized.
     { symbol }

@@ -397,7 +397,6 @@ DEF_PARSE(literal) {
     } else if (MATCH(null)) {
         return makeLiteral(THE_NULL);
     } else if (MATCH(CH_AT)) {
-        MATCH(CH_DOT);
         zvalue symbol = PARSE_OR_REJECT(identifierSymbol);
         REJECT_IF(PARSE_LOOKAHEAD(literal1));
         return symbol;

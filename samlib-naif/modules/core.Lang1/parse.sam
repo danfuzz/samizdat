@@ -134,10 +134,9 @@ def parLiteral = makeMainChoice(
         makeResult(makeLiteral(null))),
     makeSequence(
         makeToken(@@"@"),
-        makeRepeat(makeToken(@@"."), 0, 1),
         parIdentifierSymbol,
         makeLookaheadFailure(makeTokenSet(@@"(", @@"{")),
-        makeCode { ., ., symbol, . -> symbol }));
+        makeCode { ., symbol, . -> symbol }));
 
 ## Documented in spec.
 def parKey = makeMainChoice(
