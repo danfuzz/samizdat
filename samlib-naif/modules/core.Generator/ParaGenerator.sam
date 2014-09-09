@@ -20,10 +20,10 @@ import ./NullGenerator :: nullGenerator;
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def ParaGenerator = makeObjectClass(@.ParaGenerator, SECRET);
+def ParaGenerator = makeObjectClass(@ParaGenerator, SECRET);
 
 ## Documented in spec.
 fn ParaGenerator.collect(optFilterFunction?) {

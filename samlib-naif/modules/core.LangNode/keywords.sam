@@ -15,12 +15,12 @@ import ./constructors1 :: makeLiteral;
 ## List of the names of all of the keywords, as symbols
 def KEYWORD_NAMES = [
     ## Layer 0.
-    @.break, @.continue, @.def, @.export, @.false, @.fn, @.import, @.null,
-    @.return, @.true, @.var, @.yield,
+    @break, @continue, @def, @export, @false, @fn, @import, @null,
+    @return, @true, @var, @yield,
 
     ## Layer 2.
-    @.by, @.default, @.do, @.else, @.for, @.if, @.in, @.module, @.switch,
-    @.while
+    @by, @default, @do, @else, @for, @if, @in, @module, @switch,
+    @while
 ];
 
 

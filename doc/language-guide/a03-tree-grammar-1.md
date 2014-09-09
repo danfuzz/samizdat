@@ -403,19 +403,19 @@ def parPostfixOperator = {:
     ## ```
     ## target.memberName(arg, ...)
     ## =>
-    ## (@.memberName)(target, arg, ...)
+    ## (@memberName)(target, arg, ...)
     ## ```
     ##
     ## ```
     ## target.memberName
     ## =>
-    ## (@.get_memberName)(target)
+    ## (@get_memberName)(target)
     ## ```
     ##
     ## ```
     ## target.memberName := expression
     ## =>
-    ## (@.set_memberName)(target, expression)
+    ## (@set_memberName)(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -657,7 +657,7 @@ def parFunctionCommon = {:
     {
         def basic = withName(
             withFormals(
-                withYieldDef(code, @.return),
+                withYieldDef(code, @return),
                 formals),
             name);
 
@@ -686,7 +686,7 @@ def parMethodBind = {:
     {
         def formals = closure::formals;
         def name = closure::name;
-        def fullClosure = withFormals(closure, [{name: @.this}, formals*]);
+        def fullClosure = withFormals(closure, [{name: @this}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     }
 :};
@@ -698,9 +698,9 @@ def parImportName = {:
     name = parNameSymbol
 
     key = (
-        @"*" { @.prefix }
+        @"*" { @prefix }
     |
-        { @.name }
+        { @name }
     )
 
     @"="

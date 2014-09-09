@@ -221,7 +221,7 @@ export fn makeImport(baseData) {
             ifIs { eq(select, @."*") }
                 {
                     ## It's a wildcard import.
-                    data := data.del(@.select);
+                    data := data.del(@select);
                 };
 
             return @importModuleSelection(data)
@@ -281,7 +281,7 @@ export fn makeInfoMap(node) {
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
         ifIs { hasClass(s, @@importModule) }
-            { addToImports(s::source, [@.module]) };
+            { addToImports(s::source, [@module]) };
         ifIs { hasClass(s, @@importModuleSelection) }
             {
                 def names = ifValueOr { s::select }

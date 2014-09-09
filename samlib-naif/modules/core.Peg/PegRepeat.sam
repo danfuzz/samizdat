@@ -15,10 +15,10 @@
 ## Payload: {rule: rule, maxSize?: int, minSize: int}
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def PegRepeat = makeObjectClass(@.PegRepeat, SECRET);
+def PegRepeat = makeObjectClass(@PegRepeat, SECRET);
 
 ## Documented in spec.
 fn PegRepeat.parse(box, input, items*) {

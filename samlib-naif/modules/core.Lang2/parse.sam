@@ -398,19 +398,19 @@ def parPostfixOperator = {:
     ## ```
     ## target.memberName(arg, ...)
     ## =>
-    ## (@.memberName)(target, arg, ...)
+    ## (@memberName)(target, arg, ...)
     ## ```
     ##
     ## ```
     ## target.memberName
     ## =>
-    ## (@.get_memberName)(target)
+    ## (@get_memberName)(target)
     ## ```
     ##
     ## ```
     ## target.memberName := expression
     ## =>
-    ## (@.set_memberName)(target, expression)
+    ## (@set_memberName)(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -652,7 +652,7 @@ def parFunctionCommon = {:
     {
         def basic = withName(
             withFormals(
-                withYieldDef(code, @.return),
+                withYieldDef(code, @return),
                 formals),
             name);
 
@@ -681,7 +681,7 @@ def parMethodBind = {:
     {
         def formals = closure::formals;
         def name = closure::name;
-        def fullClosure = withFormals(closure, [{name: @.this}, formals*]);
+        def fullClosure = withFormals(closure, [{name: @this}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     }
 :};
@@ -693,9 +693,9 @@ def parImportName = {:
     name = parNameSymbol
 
     key = (
-        @"*" { @.prefix }
+        @"*" { @prefix }
     |
-        { @.name }
+        { @name }
     )
 
     @"="
@@ -2064,11 +2064,11 @@ def parSwitchExpression = {:
         };
 
         def optElse = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @.else) } { finishCode(case, true) }
+            ifIs { eq(case::keys, @else) } { finishCode(case, true) }
         };
 
         var optDefault = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @.default) } { finishCode(case) }
+            ifIs { eq(case::keys, @default) } { finishCode(case) }
         };
 
         ## If there's an `else` but no `default`, we have to create a
@@ -2167,16 +2167,16 @@ def parWhileExpression = {:
     {
         ## The yield definition on `fullCode` is for proper implicit yield
         ## behavior. See discussion in the code for `if` for more info.
-        def fullCode = makeFullClosure(withYieldDefIfAbsent(code, @.continue));
+        def fullCode = makeFullClosure(withYieldDefIfAbsent(code, @continue));
         def loopClosure = makeFullClosure({
-            yieldDef: @.continue,
+            yieldDef: @continue,
             statements: [
                 testMaker(fullCode, makeThunk(makeNonlocalExit(REFS::break)))
             ]
         });
 
         def mainClosure = makeFullClosure({
-            yieldDef: @.break,
+            yieldDef: @break,
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
 
@@ -2217,13 +2217,13 @@ def parDoExpression = {:
     {
         ## The yield definition on `fullCode` is for proper implicit yield
         ## behavior. See discussion in the code for `if` for more info.
-        def fullCode = makeFullClosure(withYieldDefIfAbsent(code, @.continue));
+        def fullCode = makeFullClosure(withYieldDefIfAbsent(code, @continue));
         def loopClosure = makeFullClosure({
-            yieldDef: @.continue,
+            yieldDef: @continue,
             statements: [makeCall(fullCode), condition*]
         });
         def mainClosure = makeFullClosure({
-            yieldDef: @.break,
+            yieldDef: @break,
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
 
@@ -2263,10 +2263,10 @@ def parForExpression = {:
         def genInits = genList::inits;
 
         def loopClosure = makeFullClosure(
-            withYieldDef(withFormals(code, genFormals), @.continue));
+            withYieldDef(withFormals(code, genFormals), @continue));
 
         def mainClosure = makeFullClosure({
-            yieldDef: @.break,
+            yieldDef: @break,
             statements: [breakDef*],
             yield: makeMaybe(
                 makeCall(REFS::Generator_filterPump, loopClosure, genInits*))

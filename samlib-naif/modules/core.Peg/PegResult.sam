@@ -15,10 +15,10 @@
 ## Payload: {value: .}
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def PegResult = makeObjectClass(@.PegResult, SECRET);
+def PegResult = makeObjectClass(@PegResult, SECRET);
 
 ## Documented in spec.
 fn PegResult.parse(box, input, .*) {
