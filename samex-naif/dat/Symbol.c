@@ -244,7 +244,7 @@ METH_IMPL_rest(Symbol, call, args) {
 // Documented in header.
 METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
-    const char *prefix = info->interned ? "@." : "@?";
+    const char *prefix = info->interned ? "@" : "@+";
 
     return METH_CALL(cat, stringFromUtf8(-1, prefix), valToString(ths));
 }
