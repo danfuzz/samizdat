@@ -88,6 +88,11 @@ METH_IMPL_0(Bool, bitSize) {
 }
 
 // Documented in header.
+METH_IMPL_0(Bool, debugString) {
+    return stringFromUtf8(-1, zboolValue(ths) ? "true" : "false");
+}
+
+// Documented in header.
 METH_IMPL_1(Bool, or, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
@@ -185,6 +190,7 @@ MOD_INIT(Bool) {
             METH_BIND(Bool, and),
             METH_BIND(Bool, bit),
             METH_BIND(Bool, bitSize),
+            METH_BIND(Bool, debugString),
             METH_BIND(Bool, not),
             METH_BIND(Bool, or),
             METH_BIND(Bool, shl),
