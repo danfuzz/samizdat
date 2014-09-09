@@ -757,12 +757,12 @@ def parImportSource = {:
 :};
 
 ## Parses a list of binding names for an `import` statement. The result is
-## a list of symbols, or `@."*"` to indicate a wildcard of all names.
+## a list of symbols, or `@"*"` to indicate a wildcard of all names.
 def parImportSelect = {:
     @"::"
     (
         @"*"
-        { {select: @."*"} }
+        { {select: @"*"} }
     |
         select = parNameSymbolList
         { {select} }

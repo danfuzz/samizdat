@@ -576,7 +576,7 @@ def parImportSelect = makeMainChoice(
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
-                makeResult({select: @."*"})),
+                makeResult({select: @"*"})),
             makeSequence(
                 parNameSymbolList,
                 makeCode { ., select -> {select} }))),
