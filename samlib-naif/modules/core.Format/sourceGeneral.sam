@@ -149,21 +149,8 @@ fn Value_sourceGeneral(value, adorn) {
             return prefix.cat("<", body, ">")
         };
 
-    return ifValue { value.dataOf() }
-        { data ->
-            ## Derived data value with payload. List and map payloads don't
-            ## need parens around them.
-            def dataStr = sourceGeneral(data, true);
-            ifIs { hasClass(data, List) }
-                { return prefix.cat(dataStr) };
-            ifIs { hasClass(data, Map) }
-                { return prefix.cat(dataStr) };
-            prefix.cat("(", dataStr, ")")
-        }
-        {
-            ## Class-only transparent derived value.
-            prefix
-        };
+    ## Derived data value.
+    return prefix.cat(sourceGeneral(value.dataOf(), true));
 };
 
 ## Common code for the two `source*` variants, which takes an
