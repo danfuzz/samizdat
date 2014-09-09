@@ -172,8 +172,10 @@ def parLiteral = {:
     { makeLiteral(null) }
 |
     @"@"
-    @"."
-    parIdentifierSymbol
+    @"."?
+    symbol = parIdentifierSymbol
+    ![@"(" @"{"]  ## Otherwise, derived values wouldn't be recognized.
+    { symbol }
 :};
 
 ## Parses a map key.

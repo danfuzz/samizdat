@@ -140,6 +140,7 @@ static void dumpState(ParseState *state) {
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define PARSE_DELIMITED_SEQ(name, type) \
     parseDelimitedSequence(RULE(name), TOKEN(type), state)
+#define PARSE_LOOKAHEAD(name) parseLookahead(RULE(name), state)
 #define MATCH(cls) readMatch(state, (TOKEN(cls)))
 #define PEEK(cls) peekMatch(state, (TOKEN(cls)))
 #define MARK() zint mark = cursor(state); zvalue tempResult
@@ -233,6 +234,18 @@ static zvalue parseDelimitedSequence(parserFunction rule, zvalue tokenType,
 
         result = listAppend(result, item);
     }
+
+    return result;
+}
+
+/**
+ * Parses `&x` for an arbitrary rule `x`. Returns the parsed result or
+ * `NULL` if it failed.
+ */
+static zvalue parseLookahead(parserFunction rule, ParseState *state) {
+    MARK();
+    zvalue result = rule(state);
+    RESET();
 
     return result;
 }
@@ -352,6 +365,18 @@ DEF_PARSE(keyLiteral) {
     return PARSE_OR_REJECT(identifierSymbol);
 }
 
+/**
+ * Helper for `literal`: Parses `[@"(" @"{"]`.
+ */
+DEF_PARSE(literal1) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = MATCH(CH_OPAREN); }
+    if (result == NULL) { result = MATCH(CH_OCURLY); }
+
+    return result;
+}
+
 // Documented in spec.
 DEF_PARSE(literal) {
     MARK();
@@ -372,8 +397,10 @@ DEF_PARSE(literal) {
     } else if (MATCH(null)) {
         return makeLiteral(THE_NULL);
     } else if (MATCH(CH_AT)) {
-        MATCH_OR_REJECT(CH_DOT);
-        return PARSE_OR_REJECT(identifierSymbol);
+        MATCH(CH_DOT);
+        zvalue symbol = PARSE_OR_REJECT(identifierSymbol);
+        REJECT_IF(PARSE_LOOKAHEAD(literal1));
+        return symbol;
     }
 
     return NULL;
