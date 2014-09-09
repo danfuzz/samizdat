@@ -175,7 +175,7 @@
 				</dict>
 			</array>
 		</dict>
-		<key>identifier-string</key>
+		<key>identifier-symbol</key>
 		<dict>
 			<key>patterns</key>
 			<array>
@@ -217,7 +217,7 @@
 					<key>name</key>
 					<string>constant.other.samizdat</string>
 					<key>match</key>
-					<string>@[$a-zA-Z0-9]+</string>
+					<string>@[_$a-zA-Z0-9]+</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -252,6 +252,12 @@
 					<string>constant.numeric.samizdat</string>
 					<key>match</key>
 					<string>\b0x-?[0-9a-fA-F_]+\b</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>constant.language.samizdat</string>
+					<key>match</key>
+					<string>(?x)\[\] | \{\}</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -314,14 +320,6 @@
 				<dict>
 					<key>include</key>
 					<string>#simple-constants</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>constant.language.samizdat</string>
-					<key>match</key>
-					<string>(?x)
-						\[\] | \{\}
-					</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -680,7 +678,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>#identifier-string</string>
+							<string>#identifier-symbol</string>
 						</dict>
 					</array>
 				</dict>
@@ -753,19 +751,19 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>\.?([_$a-zA-Z][_$a-zA-Z0-9:]*)\b(?= *[\({])</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>variable.other.dot-access.samizdat</string>
-					<key>match</key>
-					<string>\.[_$a-zA-Z][_$a-zA-Z0-9]*</string>
+					<string>([._$a-zA-Z][._$a-zA-Z0-9:]*)\b(?= *[({])</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>variable.other.samizdat</string>
 					<key>match</key>
 					<string>[_$a-zA-Z][_$a-zA-Z0-9]*</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>variable.other.dot-access.samizdat</string>
+					<key>match</key>
+					<string>\.[_$a-zA-Z][_$a-zA-Z0-9]*</string>
 				</dict>
 				<dict>
 					<key>name</key>
