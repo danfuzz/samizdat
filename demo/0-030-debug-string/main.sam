@@ -30,15 +30,15 @@ msg({a: 1, b: 2});
 msg(@blort{fizmo: "zorch"});
 
 var foo = 10;
-msg(var foo);       ## a box
+msg(var foo);  ## a box
 
-msg(Value);         ## a core class
-msg(@@blort);       ## a derived value class
-msg(@.blort);       ## a symbol
-msg(eq);            ## a builtin function
-msg(msg);           ## a named in-language function
-msg({ -> });        ## an anonymous in-language function
+msg(Value);    ## a core class
+msg(@@blort);  ## a derived value class
+msg(@blort);   ## a symbol
+msg(eq);       ## a builtin function
+msg(msg);      ## a named in-language function
+msg({ -> });   ## an anonymous in-language function
 
 { /out ->
-    msg(out);       ## a nonlocal exit function
+    msg(out);  ## a nonlocal exit function
 }();

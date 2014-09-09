@@ -62,7 +62,7 @@ msg((!true)?);
 msg((!false)?);  ## This one is the documented surprising result.
 msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
-msg((! ! !@.fizmo)?);
+msg((! ! !@fizmo)?);
 
 note("\nCollections -- size");
 msg(#"foo");
@@ -80,8 +80,8 @@ msg(["blort", "fizmo", "igram"][3]?);
 msg(["blort", "fizmo", "igram"][-10]?);
 msg(["blort", "fizmo", "igram"]["x"]?);
 
-msg({a: "axolotl", c: "cuttlefish", n: "nutria"}[@.a]);
-msg({a: "axolotl", c: "cuttlefish", n: "nutria"}[@.n]);
+msg({a: "axolotl", c: "cuttlefish", n: "nutria"}[@a]);
+msg({a: "axolotl", c: "cuttlefish", n: "nutria"}[@n]);
 msg({a: "axolotl", c: "cuttlefish", n: "nutria"}::c);
 msg({a: "axolotl", c: "cuttlefish", n: "nutria"}::\"c");
 msg({"a": "axolotl", "c": "cuttlefish", "n": "nutria"}::"c");

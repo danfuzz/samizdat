@@ -36,7 +36,7 @@ msg(@def{x: 10});
 msg(@fn({z: 100}));
 
 ## Accessing data via `get` calls, explicitly and implicitly.
-msg(@foo{a: 1, b: 2}.get(@.a));
+msg(@foo{a: 1, b: 2}.get(@a));
 msg(@foo{a: 1, b: 2}::b);
 
 note("\nLayer 2...");

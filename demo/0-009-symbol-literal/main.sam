@@ -23,15 +23,15 @@ fn msg(string) {
 ##
 
 note("Symbols");
-msg(@.foo);
+msg(@foo);
 msg(@."foo");
 msg(@."++ blort ++");
 
-ifNot { eq(@.foo, @."foo") }
+ifNot { eq(@foo, @."foo") }
     { die("Expected same!") };
 
-def anon = @.foo.makeAnonymous();
-ifIs { eq(@.foo, anon) }
+def anon = @foo.makeAnonymous();
+ifIs { eq(@foo, anon) }
     { die("Expected interned and anonymous to be different!") };
 
 ifIs { eq(anon, anon.makeAnonymous()) }

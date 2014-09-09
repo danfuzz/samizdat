@@ -37,10 +37,10 @@ expect("cat 3", "blort", "blo".cat("rt"));
 expect("cat 4", "blort", "b".cat("lor", "t"));
 expect("cat 5", "blort", "b".cat("", "lor", "", "t", ""));
 expect("cat 6", "blort", "".cat("blort"));
-expect("cat 7", "blort", "".cat(@.blort));
-expect("cat 8", "blort", "b".cat(@.lort));
-expect("cat 9", "blort", "b".cat(@.lor, @.t));
-expect("cat 10", "blort", "b".cat(@.lor, "t"));
+expect("cat 7", "blort", "".cat(@blort));
+expect("cat 8", "blort", "b".cat(@lort));
+expect("cat 9", "blort", "b".cat(@lor, @t));
+expect("cat 10", "blort", "b".cat(@lor, "t"));
 
 expect("del", "muffins", "mufxfins".del(3));
 expect("keyList", [0, 1, 2, 3, 4], "blort".keyList());

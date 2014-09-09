@@ -164,7 +164,7 @@ def v23 = ifSwitch(
 note(v23);
 
 def v24 = ifSwitch(
-    { -> @.y },
+    { -> @y },
     {
         x: { . -> die("No.") },
         y: { . -> }
@@ -174,7 +174,7 @@ def v24 = ifSwitch(
 note($Format::source(v24));  ## Should be `[]`.
 
 def v25 = ifSwitch(
-    { -> @.Yes },
+    { -> @Yes },
     {
         x: { . -> die("No.") },
         Yes: { v -> "".cat(v, ": v25") }
