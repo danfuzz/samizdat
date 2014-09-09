@@ -20,10 +20,6 @@
           "include" : "#simple-constants"
         },
         {
-          "match" : "(?x)\n\t\t\t\t\t\t\\[\\] | \\{\\}\n\t\t\t\t\t",
-          "name" : "constant.language.samizdat"
-        },
-        {
           "end" : "\\)",
           "begin" : "@@(\\()",
           "beginCaptures" : {
@@ -252,7 +248,7 @@
           },
           "patterns" : [
             {
-              "include" : "#identifier-string"
+              "include" : "#identifier-symbol"
             }
           ]
         },
@@ -291,7 +287,7 @@
           "name" : "constant.language.samizdat"
         },
         {
-          "match" : "\\.?([_$a-zA-Z][_$a-zA-Z0-9:]*)\\b(?= *[\\({])",
+          "match" : "([._$a-zA-Z][._$a-zA-Z0-9:]*)\\b(?= *[({])",
           "captures" : {
             "1" : {
               "name" : "meta.function-call.samizdat"
@@ -299,12 +295,12 @@
           }
         },
         {
-          "match" : "\\.[_$a-zA-Z][_$a-zA-Z0-9]*",
-          "name" : "variable.other.dot-access.samizdat"
-        },
-        {
           "match" : "[_$a-zA-Z][_$a-zA-Z0-9]*",
           "name" : "variable.other.samizdat"
+        },
+        {
+          "match" : "\\.[_$a-zA-Z][_$a-zA-Z0-9]*",
+          "name" : "variable.other.dot-access.samizdat"
         },
         {
           "match" : "\\{:",
@@ -352,7 +348,7 @@
         }
       ]
     },
-    "identifier-string" : {
+    "identifier-symbol" : {
       "patterns" : [
         {
           "match" : "[_$a-zA-Z][_$a-zA-Z0-9]*",
@@ -378,7 +374,7 @@
           "name" : "string.unquoted.samizdat"
         },
         {
-          "match" : "@[$a-zA-Z0-9]+",
+          "match" : "@[_$a-zA-Z0-9]+",
           "name" : "constant.other.samizdat"
         },
         {
@@ -435,6 +431,10 @@
         {
           "match" : "\\b0x-?[0-9a-fA-F_]+\\b",
           "name" : "constant.numeric.samizdat"
+        },
+        {
+          "match" : "(?x)\\[\\] | \\{\\}",
+          "name" : "constant.language.samizdat"
         },
         {
           "match" : "\\b0b-?[01_]+\\b",
