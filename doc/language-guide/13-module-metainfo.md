@@ -43,13 +43,13 @@ The `imports` section describes the modules imported into the module.
 It is a map from path references to import maps.
 
 An import map is a map from string names to expected types. In addition to
-string names as keys, the special key `@.module` indicates that the
+string names as keys, the special key `@module` indicates that the
 module as a whole is to be imported.
 
 ```
 {
     imports: {
-        @external{name: "core.Lang0"}: {@.module: Value},
+        @external{name: "core.Lang0"}: {@module: Value},
         @internal{name: "helpers"}: {helpFunc: Value, otherFunc: Value},
         ...
     },

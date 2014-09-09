@@ -27,8 +27,8 @@ Returns the name of the symbol as a string.
 #### `.debugString() -> string`
 
 Returns a string representation of the symbol. This includes a suggestive
-prefix `.`. It also includes `anon-` before the name if this is an anonymous
-symbol.
+prefix before the name of `@` for interned symbols or `@+` for anonymous
+symbols.
 
 #### `.debugSymbol() -> symbol`
 

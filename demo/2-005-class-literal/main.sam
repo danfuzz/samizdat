@@ -25,7 +25,7 @@ note("Layer 0...");
 ## These all refer to the same class.
 msg(@@potion);
 msg(@@"potion");
-msg(@@(@.potion));
+msg(@@(@potion));
 
 msg(@@"** zorch **");
 

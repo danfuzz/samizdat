@@ -61,8 +61,8 @@ export fn formalsMaxArgs(formals) {
     filterPump(formals) { f ->
         ifValue { f::repeat }
             { rep ->
-                ifIs { eq(rep, @."*") } { return -1 };
-                ifIs { eq(rep, @."+") } { return -1 };
+                ifIs { eq(rep, @"*") } { return -1 };
+                ifIs { eq(rep, @"+") } { return -1 };
             };
         maxArgs := maxArgs.add(1)
     };
@@ -77,8 +77,8 @@ export fn formalsMinArgs(formals) {
     filterPump(formals) { f /next ->
         ifValue { f::repeat }
             { rep ->
-                ifIs { eq(rep, @."?") } { yield /next };
-                ifIs { eq(rep, @."*") } { yield /next };
+                ifIs { eq(rep, @"?") } { yield /next };
+                ifIs { eq(rep, @"*") } { yield /next };
             };
         minArgs := minArgs.add(1)
     };

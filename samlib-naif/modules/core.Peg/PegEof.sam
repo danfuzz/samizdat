@@ -16,10 +16,10 @@ import core.Box :: nullBox;
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def PegEof = makeObjectClass(@.PegEof, SECRET);
+def PegEof = makeObjectClass(@PegEof, SECRET);
 
 ## Documented in spec.
 fn PegEof.parse(box, input, .*) {

@@ -115,7 +115,7 @@ described below.
 #### Method application &mdash; `targetExpr.identifier(arg, arg, ...)`
 
 This is a variant of the function calling syntax, and is equivalent to
-`(@.identifier)(targetExpr, arg, arg, ...)` (that is, treating a literal
+`(@identifier)(targetExpr, arg, arg, ...)` (that is, treating a literal
 symbol as a function to apply).
 
 This is the preferred syntax to use for calling a method on a target.
@@ -129,7 +129,7 @@ similarly looked up by using a quoted string instead of an identifier.
 
 These are equivalent to calling `get` on the collection, passing it the
 literal key as the argument. That is, `foo::bar` and `foo::\"bar"` are both
-equivalent to `foo.get(@.bar)`; and `foo::"bar"` is equivalent to
+equivalent to `foo.get(@bar)`; and `foo::"bar"` is equivalent to
 `foo.get("bar")`.
 
 #### Access collection &mdash; `expression[index]` `expression[^index]`

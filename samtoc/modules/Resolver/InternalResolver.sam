@@ -24,10 +24,10 @@ import ./cache;
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def InternalResolver = makeObjectClass(@.InternalResolver, SECRET);
+def InternalResolver = makeObjectClass(@InternalResolver, SECRET);
 
 ## Does direct resolution on the given `source`. Only ever called when
 ## `source` is known to be `internal` and so *might* be found directly
@@ -39,11 +39,11 @@ fn directResolve(self, source) {
     def infoPath = "\(basePath).saminfo";
     def sourcePath = "\(basePath).sam";
 
-    return? if ($Io0::fileType(infoPath) == @.file) {
+    return? if ($Io0::fileType(infoPath) == @file) {
         ## We found a prefab info file. Read it!
         def info = $Reader::readEvalExpression0(infoPath);
         @module{info}
-    } else if ($Io0::fileType(sourcePath) == @.file) {
+    } else if ($Io0::fileType(sourcePath) == @file) {
         ## We found a source file. Read it and resolve!
         fn resolveFn(source) { return self.resolve(source) };
         def tree = $Reader::readProgram(sourcePath, resolveFn);

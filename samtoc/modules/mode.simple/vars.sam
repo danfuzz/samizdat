@@ -23,20 +23,20 @@ def C_IDENT_CHARS = {
 ## has a repeat specifier. See `processFormalsWithRepeat` below.
 def FORMAL_PARSERS = {
     ## Non-repeat.
-    @.".": {
+    @".": {
         parse:  "(argAt >= argCount) ? EMPTY_LIST : args[argAt]",
         update: "if (argAt < argCount) { argAt++; }"
     },
     ## Zero-or-one.
-    @."?": {
+    @"?": {
         parse:
             "(argAt >= argCount) \
             ? EMPTY_LIST : listFromArray(1, &args[argAt])",
         update: "if (argAt < argCount) { argAt++; }"
     },
     ## Zero-or-more and one-or-more.
-    @."*":
-    @."+": {
+    @"*":
+    @"+": {
         parse:  "listFromArray(argCount - argAt, &args[argAt])",
         update: "argAt = argCount"
     }
@@ -54,7 +54,7 @@ fn unnamedFormals(clo) {
 ## required for handling repeat specifiers.
 fn processFormalsWithRepeat(clo, names) {
     def varList = [ idx in (0..), f in clo::formals ->
-        def parse = FORMAL_PARSERS[f::repeat | @."."];
+        def parse = FORMAL_PARSERS[f::repeat | @"."];
 
         if (def origName = f::name) {
             def name = safeName("arg", origName, idx);
@@ -83,7 +83,7 @@ fn processFormalsWithRepeat(clo, names) {
 
     def vars = ( v in varList ->
         (def origName = v::origName)
-            & {(origName): v.del(@.preInit)}
+            & {(origName): v.del(@preInit)}
     );
 
     return {names, preInits, cleanups: [], vars: {}.cat(vars*)}

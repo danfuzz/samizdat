@@ -20,6 +20,35 @@ expressions anywhere where a literal value occurs in these examples.
 This is the ultimate superclass (parent of the parent of…) of all other classes
 in the language.
 
+#### Symbol
+
+A `Symbol` is an identifier used to name language constructs, such as
+classes and methods. On the method front, symbols are the keys bound to
+functions in a class's table of methods, and symbols themselves can be
+invoked as functions to perform method dispatch on the first argument of
+the function call. Every symbol has a string name.
+
+There are two "flavors" of symbol, interned and anonymous. An interned
+symbol is one that can be identified uniquely by its name. That is, there
+is a one-to-one correspondence between names and interned symbols.
+An anonymous symbol has a name, but it is only possible to refer to it
+by identity; that is, one can create new anonymous symbols and pass them
+around, but &mdash; unlike interned symbols &mdash; one cannot get a
+reference to a pre-existing anonymous symbol other than being passed it
+(e.g. as an argument to a call).
+
+While symbols are often used implicitly, there is also literal syntax
+for referring to them. Refer to an interned symbol with an at-sign (`@`),
+followed by the symbol's name in double quotes (`"name"`). If the
+name happens to match the syntax of an identifier in the language, then
+the quotes are optional.
+
+```
+@foo
+@"foo"          ## Same meaning as above.
+@"++ weird ++"  ## Non-identifier names need to be quoted.
+```
+
 #### Data
 
 This is the parent of all "pure data" classes in the language.
@@ -214,8 +243,8 @@ variable definitions.
 ```
 {}                            ## the empty map
 {1: "number one"}
-{two: 2}                      ## the same as {@.two: 2}
-{true: "yes"}                 ## the same as {@.true: "yes"}
+{two: 2}                      ## the same as {@two: 2}
+{true: "yes"}                 ## the same as {@true: "yes"}
 {(true): "yes"}               ## key is (the boolean) `true`, not a symbol
 {favorites: ["biscuits", "muffins"]}
 
@@ -238,10 +267,10 @@ def zorch = "Z";
 
 ## The first three here are equivalent. The last contains a variable reference
 ## to `the`.
-{[@.these, @.map, @.to, @.the]*: "same value"}
-{these: map: @."to": the: "same value"}
-{[@.these", @.map]*: to: the: "same value"}
-{these: map: @."to": (the): "same value"}
+{[@these, @map, @to, @the]*: "same value"}
+{these: map: @"to": the: "same value"}
+{[@these, @map]*: to: the: "same value"}
+{these: map: @"to": (the): "same value"}
 
 # These are all equivalent.
 {first: 1, second: 2, third: 3}
@@ -253,35 +282,6 @@ def zorch = "Z";
 
 A `Builtin` is an encapsulated potential computation, defined at the
 lowest layer of the system. It is a kind of `Function` (see which).
-
-#### Symbol
-
-A `Symbol` is an identifier used to name language constructs, such as
-classes and methods. On the method front, symbols are the keys bound to
-functions in a class's table of methods, and symbols themselves can be
-invoked as functions to perform method dispatch on the first argument of
-the function call. Every symbol has a string name.
-
-There are two "flavors" of symbol, interned and anonymous. An interned
-symbol is one that can be identified uniquely by its name. That is, there
-is a one-to-one correspondence between names and interned symbols.
-An anonymous symbol has a name, but it is only possible to refer to it
-by identity; that is, one can create new anonymous symbols and pass them
-around, but &mdash; unlike interned symbols &mdash; one cannot get a
-reference to a pre-existing anonymous symbol other than being passed it
-(e.g. as an argument to a call).
-
-While symbols are often used implicitly, there is also explicit syntax
-for referring to them. To refer to an interned symbol, start with an
-at-sign and a dot, and follow it with a quoted literal string. If the
-string happens to match the syntax of an identifier in the language, then
-the quotes are optional.
-
-```
-@.foo
-@."foo"          ## Same meaning as above.
-@."++ weird ++"  ## Non-identifier names need to be quoted.
-```
 
 #### Box
 

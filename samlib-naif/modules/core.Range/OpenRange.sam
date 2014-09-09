@@ -19,10 +19,10 @@ import ./rangeAdd :: *;
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def OpenRange = makeObjectClass(@.OpenRange, SECRET);
+def OpenRange = makeObjectClass(@OpenRange, SECRET);
 
 ## Documented in spec.
 fn OpenRange.collect(optFilterFunction?) {

@@ -134,8 +134,9 @@ def parLiteral = makeMainChoice(
         makeResult(makeLiteral(null))),
     makeSequence(
         makeToken(@@"@"),
-        makeToken(@@"."),
-        parIdentifierSymbol));
+        parIdentifierSymbol,
+        makeLookaheadFailure(makeTokenSet(@@"(", @@"{")),
+        makeCode { ., symbol, . -> symbol }));
 
 ## Documented in spec.
 def parKey = makeMainChoice(
@@ -485,7 +486,7 @@ def parFunctionCommon = makeMainSequence(
     makeCode { name, ., formals, ., code ->
         def basic = withName(
             withFormals(
-                withYieldDef(code, @.return),
+                withYieldDef(code, @return),
                 formals),
             name);
 
@@ -509,7 +510,7 @@ def parMethodBind = makeMainSequence(
     makeCode { ., bind, ., closure ->
         def formals = closure::formals;
         def name = closure::name;
-        def fullClosure = withFormals(closure, [{name: @.this}, formals*]);
+        def fullClosure = withFormals(closure, [{name: @this}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     });
 
@@ -520,8 +521,8 @@ def parImportName = makeMainChoice(
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
-                makeResult(@.prefix)),
-            makeResult(@.name)),
+                makeResult(@prefix)),
+            makeResult(@name)),
         makeToken(@@"="),
         makeCode { name, key, . -> {(key): name} }),
     makeResult({}));
@@ -574,7 +575,7 @@ def parImportSelect = makeMainChoice(
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
-                makeResult({select: @."*"})),
+                makeResult({select: @"*"})),
             makeSequence(
                 parNameSymbolList,
                 makeCode { ., select -> {select} }))),

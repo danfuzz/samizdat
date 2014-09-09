@@ -172,8 +172,9 @@ def parLiteral = {:
     { makeLiteral(null) }
 |
     @"@"
-    @"."
-    parIdentifierSymbol
+    symbol = parIdentifierSymbol
+    ![@"(" @"{"]  ## Otherwise, derived values wouldn't be recognized.
+    { symbol }
 :};
 
 ## Parses a map key.
@@ -401,19 +402,19 @@ def parPostfixOperator = {:
     ## ```
     ## target.memberName(arg, ...)
     ## =>
-    ## (@.memberName)(target, arg, ...)
+    ## (@memberName)(target, arg, ...)
     ## ```
     ##
     ## ```
     ## target.memberName
     ## =>
-    ## (@.get_memberName)(target)
+    ## (@get_memberName)(target)
     ## ```
     ##
     ## ```
     ## target.memberName := expression
     ## =>
-    ## (@.set_memberName)(target, expression)
+    ## (@set_memberName)(target, expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -655,7 +656,7 @@ def parFunctionCommon = {:
     {
         def basic = withName(
             withFormals(
-                withYieldDef(code, @.return),
+                withYieldDef(code, @return),
                 formals),
             name);
 
@@ -684,7 +685,7 @@ def parMethodBind = {:
     {
         def formals = closure::formals;
         def name = closure::name;
-        def fullClosure = withFormals(closure, [{name: @.this}, formals*]);
+        def fullClosure = withFormals(closure, [{name: @this}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     }
 :};
@@ -696,9 +697,9 @@ def parImportName = {:
     name = parNameSymbol
 
     key = (
-        @"*" { @.prefix }
+        @"*" { @prefix }
     |
-        { @.name }
+        { @name }
     )
 
     @"="
@@ -755,12 +756,12 @@ def parImportSource = {:
 :};
 
 ## Parses a list of binding names for an `import` statement. The result is
-## a list of symbols, or `@."*"` to indicate a wildcard of all names.
+## a list of symbols, or `@"*"` to indicate a wildcard of all names.
 def parImportSelect = {:
     @"::"
     (
         @"*"
-        { {select: @."*"} }
+        { {select: @"*"} }
     |
         select = parNameSymbolList
         { {select} }

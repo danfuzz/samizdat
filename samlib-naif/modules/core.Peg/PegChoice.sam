@@ -19,10 +19,10 @@ import ./PegFail :: fail;
 ## Payload: {rules: [rule*]}
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def PegChoice = makeObjectClass(@.PegChoice, SECRET);
+def PegChoice = makeObjectClass(@PegChoice, SECRET);
 
 ## Documented in spec.
 fn PegChoice.parse(box, input, items*) {

@@ -65,7 +65,7 @@ def BOOTSTRAP_MODULES = {
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = "core.Lang2";
@@ -294,7 +294,7 @@ export fn loadResource(loader, source, format) {
 ## Class Definition: null `Loader`
 ##
 
-def NullLoader = makeObjectClass(@.NullLoader, SECRET);
+def NullLoader = makeObjectClass(@NullLoader, SECRET);
 
 ## The one instance of the class.
 def nullLoader = makeObject(NullLoader, SECRET);
@@ -329,14 +329,14 @@ fn fixNullLoader(loader) {
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
 
-def ExternalLoader = makeObjectClass(@.ExternalLoader, SECRET);
+def ExternalLoader = makeObjectClass(@ExternalLoader, SECRET);
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
     def data = loader.objectDataOf(SECRET);
     def modulePath = data::basePath.cat(source::name);
 
-    return? ifIs { eq($Io0::fileType(modulePath), @.directory) }
+    return? ifIs { eq($Io0::fileType(modulePath), @directory) }
         {
             note("    ", sourceString(source));
 
@@ -381,12 +381,12 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 
     ## Check for existence and directoriness.
     def pathType = $Io0::fileType(path);
-    ifIs { eq(pathType, @.absent) }
+    ifIs { eq(pathType, @absent) }
         {
             ## No such file or directory.
             return fixNullLoader(nextLoader)
         };
-    ifNot { eq(pathType, @.directory) }
+    ifNot { eq(pathType, @directory) }
         { die("Module loader path exists but is not a directory: ", path) };
 
     return makeObject(
@@ -409,7 +409,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
 
-def InternalLoader = makeObjectClass(@.InternalLoader, SECRET);
+def InternalLoader = makeObjectClass(@InternalLoader, SECRET);
 
 ## Convenient helper which just resolves a top-level `main` file.
 fn resolveMain(loader) {
@@ -424,7 +424,7 @@ fn doInternalResolve(loader, source) {
     def pathPrefix = data::basePath.cat(source::name);
     def binPath = pathPrefix.cat(".samb");
 
-    ifIs { eq($Io0::fileType(binPath), @.file) }
+    ifIs { eq($Io0::fileType(binPath), @file) }
         {
             def func = $Code::evalBinary(data::globals, binPath);
             return ifValueOr { func() }
@@ -432,7 +432,7 @@ fn doInternalResolve(loader, source) {
         };
 
     def sourcePath = pathPrefix.cat(".sam");
-    ifIs { eq($Io0::fileType(sourcePath), @.file) }
+    ifIs { eq($Io0::fileType(sourcePath), @file) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
             def tree = treeFromText(loader, text);
@@ -453,7 +453,7 @@ fn readResource_type(fullPath) {
 
 ## `readResource` implementation for format `utf8`.
 fn readResource_utf8(fullPath) {
-    ifNot { eq($Io0::fileType(fullPath), @.file) }
+    ifNot { eq($Io0::fileType(fullPath), @file) }
         { die("Missing resource: ", fullPath) };
 
     return $Io0::readFileUtf8(fullPath)
@@ -461,8 +461,8 @@ fn readResource_utf8(fullPath) {
 
 ## Map from format names to corresponding `readResource` implementations.
 def INTERNAL_READERS = {
-    @.type: readResource_type,
-    @.utf8: readResource_utf8
+    @type: readResource_type,
+    @utf8: readResource_utf8
 };
 
 ## Documented in spec.

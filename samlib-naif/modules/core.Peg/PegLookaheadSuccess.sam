@@ -15,10 +15,10 @@
 ## Payload: {rule: rule}
 
 ## Secret used to control access to this class.
-def SECRET = @.secret.makeAnonymous();
+def SECRET = @secret.makeAnonymous();
 
 ## Class being defined here.
-def PegLookaheadSuccess = makeObjectClass(@.PegLookaheadSuccess, SECRET);
+def PegLookaheadSuccess = makeObjectClass(@PegLookaheadSuccess, SECRET);
 
 ## Documented in spec.
 fn PegLookaheadSuccess.parse(box, input, items*) {

@@ -12,6 +12,10 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Method Definitions: `Value` protocol
 
+#### `.debugString() -> string`
+
+Returns `"true"` or `"false'`, in the reasonably expected cases.
+
 #### `.perEq(other) -> bool | void`
 
 Default implementation.

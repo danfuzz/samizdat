@@ -4,6 +4,7 @@
 
 #include "type/Int.h"
 #include "type/Null.h"
+#include "type/String.h"
 #include "type/define.h"
 
 #include "impl.h"
@@ -12,6 +13,11 @@
 //
 // Class Definition
 //
+
+// Documented in header.
+METH_IMPL_0(Null, debugString) {
+    return stringFromUtf8(-1, "null");
+}
 
 // Documented in header.
 METH_IMPL_1(Null, totalEq, other) {
@@ -40,6 +46,7 @@ MOD_INIT(Null) {
     CLS_Null = makeCoreClass("Null", CLS_Data,
         NULL,
         symbolTableFromArgs(
+            METH_BIND(Null, debugString),
             METH_BIND(Null, totalEq),
             METH_BIND(Null, totalOrder),
             NULL));
