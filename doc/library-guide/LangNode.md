@@ -317,6 +317,16 @@ processed via `makeFullClosure()` or similar.
 Makes a literal node that represents the symbol with the given `name`.
 `name` must be a string.
 
+#### `makeSymbolTableExpression(mappings*) -> node`
+
+Makes an expression node that represents the construction of a symbol table
+consisting of the given `mappings`. Arguments that are `mapping`
+values are restructured into appropriate calls to `makeSymbolTable` or
+`makeValueSymbolTable`. Other arguments are taken to be interpolated
+arguments. In trivial cases, the result is a simple `call` node for a call to
+`makeSymbolTable` or `makeValueSymbolTable`. In other cases, the result is
+a call to `cat` with less trivial internal structure.
+
 #### `makeThunk(node) -> node`
 
 Makes a thunk (no-argument function) that evaluates the given node, allowing

@@ -56,6 +56,80 @@ fn expandYield(map) {
     return makeNoYield(exitCall)
 };
 
+## Helper for `makeMapExpression` and `makeSymbolTableExpression`, which
+## is parameterized on the "empty" value and the two required constructor
+## functions.
+export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
+        makeOneValue) {
+    ifIs { eq(mappings, []) }
+        {
+            ## No mappings. Easy out.
+            return emptyLiteral
+        };
+
+    ## Convert the mappings as if it has to be nontrivial. If in the end, it's
+    ## possible to use a single call to `makeMap`, then just do that.
+
+    var singleArgs = [];  ## Single-value mappings, to be `makeMap`ed.
+    var catArgs = [];     ## Arguments ready to be `cat`ed.
+
+    fn addToCat(arg) {
+        catArgs := [catArgs*, arg];
+    };
+
+    fn addSingleToCat() {
+        ifIs { perNe(singleArgs, []) }
+            {
+                addToCat(makeCall(makeMultiValue, singleArgs*));
+                singleArgs := []
+            }
+    };
+
+    filterPump(mappings) { one ->
+        ifIs { hasClass(one, @@mapping) }
+            {
+                def keys = one::keys;
+                def value = one::value;
+                var handled = false;
+
+                ifIs { eq(keys.get_size(), 1) }
+                    {
+                        def key = keys*;
+                        ifNot { key::interpolate }
+                            {
+                                singleArgs := [singleArgs*, key, value];
+                                handled := true
+                            }
+                    };
+
+                ifIs { eq(handled, false) }
+                    {
+                        addSingleToCat();
+                        addToCat(
+                            makeCallOrApply(makeOneValue, keys*, value))
+                    };
+            }
+            {
+                addSingleToCat();
+                addToCat(one)
+            }
+    };
+
+    ifIs { eq(catArgs, []) }
+        {
+            ## There were no "must be `cat`ed" mappings.
+            addSingleToCat();
+            return catArgs*
+        };
+
+    ## There is at least one mapping that requires special handling. Emit
+    ## a call to `cat`, with `{}` as the first argument so as to ensure a
+    ## map result.
+
+    addSingleToCat();
+    return makeCall(SYMS::cat, emptyLiteral, catArgs*)
+};
+
 
 ##
 ## Exported Definitions
@@ -320,78 +394,20 @@ export fn makeInterpolate(node) {
 
 ## Documented in spec.
 export fn makeMapExpression(mappings*) {
-    ifIs { eq(mappings, []) }
-        {
-            ## No mappings. Easy out.
-            return LITS::EMPTY_MAP
-        };
-
-    ## Convert the mappings as if it has to be nontrivial. If in the end, it's
-    ## possible to use a single call to `makeMap`, then just do that.
-
-    var singleArgs = [];  ## Single-value mappings, to be `makeMap`ed.
-    var catArgs = [];     ## Arguments ready to be `cat`ed.
-
-    fn addToCat(arg) {
-        catArgs := [catArgs*, arg];
-    };
-
-    fn addSingleToCat() {
-        ifIs { perNe(singleArgs, []) }
-            {
-                addToCat(makeCall(REFS::makeMap, singleArgs*));
-                singleArgs := []
-            }
-    };
-
-    filterPump(mappings) { one ->
-        ifIs { hasClass(one, @@mapping) }
-            {
-                def keys = one::keys;
-                def value = one::value;
-                var handled = false;
-
-                ifIs { eq(keys.get_size(), 1) }
-                    {
-                        def key = keys*;
-                        ifNot { key::interpolate }
-                            {
-                                singleArgs := [singleArgs*, key, value];
-                                handled := true
-                            }
-                    };
-
-                ifIs { eq(handled, false) }
-                    {
-                        addSingleToCat();
-                        addToCat(
-                            makeCallOrApply(REFS::makeValueMap, keys*, value))
-                    };
-            }
-            {
-                addSingleToCat();
-                addToCat(one)
-            }
-    };
-
-    ifIs { eq(catArgs, []) }
-        {
-            ## There were no "must be `cat`ed" mappings.
-            addSingleToCat();
-            return catArgs*
-        };
-
-    ## There is at least one mapping that requires special handling. Emit
-    ## a call to `cat`, with `{}` as the first argument so as to ensure a
-    ## map result.
-
-    addSingleToCat();
-    return makeCall(SYMS::cat, LITS::EMPTY_MAP, catArgs*)
+    return makeMapLikeExpression(
+        mappings, LITS::EMPTY_MAP, REFS::makeMap, REFS::makeValueMap)
 };
 
 ## Documented in spec.
 export fn makeMaybeValue(node) {
     return makeCall(REFS::maybeValue, makeThunk(node))
+};
+
+## Documented in spec.
+export fn makeSymbolTableExpression(mappings*) {
+    return makeMapLikeExpression(
+        mappings, LITS::EMPTY_SYMBOL_TABLE,
+        REFS::makeSymbolTable, REFS::makeValueSymbolTable)
 };
 
 ## Documented in spec.
