@@ -511,13 +511,13 @@ DEF_PARSE(map) {
 DEF_PARSE(listItem) {
     MARK();
 
-    if (PARSE(identifierSymbol) && MATCH(CH_COLON)) {
+    zvalue expr = PARSE(expression);
+
+    if (MATCH(CH_COLON)) {
         die("Mapping syntax not valid as a list item or call argument.");
     }
 
-    RESET();
-
-    return PARSE(expression);
+    return expr;
 }
 
 // Documented in spec.

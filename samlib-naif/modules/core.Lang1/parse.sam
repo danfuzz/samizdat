@@ -185,14 +185,16 @@ def parMap = makeMainSequence(
     makeCode { ., result, . -> result });
 
 ## Documented in spec.
-def parListItem = makeMainChoice(
-    makeSequence(
-        parIdentifierSymbol,
-        makeToken(@@":"),
-        makeCode { ., . ->
-            die("Mapping syntax not valid as a list item or call argument.")
-        }),
-    parExpression);
+def parListItem = makeMainSequence(
+    parExpression,
+    makeRepeat(
+        makeSequence(
+            makeToken(@@":"),
+            makeCode { ., . ->
+                die("Mapping syntax not valid as a list item or call argument.")
+            }),
+        0, 1),
+    makeCode { expr, . -> expr });
 
 ## Documented in spec.
 def parUnadornedList = makeMainChoice(
