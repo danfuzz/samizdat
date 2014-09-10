@@ -193,17 +193,19 @@ def parMapping = {:
     keys = parKey+
     value = parExpression
 
-    { makeCallOrApply(REFS::makeValueMap, keys*, withoutInterpolate(value)) }
+    ## `withoutInterpolate` here ensures that `value*` is treated as a
+    ## `fetch` and not interpolation into an underlying function call.
+    { @mapping{keys, value: withoutInterpolate(value)} }
 |
-    ## An expression is valid only if it's an interpolation, in which case we
-    ## take the interpolation variant of the node.
+    ## A plain expression is valid only if it's an interpolation, in which
+    ## case we take the interpolation variant of the node.
     value = parExpression
     { value::interpolate }
 |
     ## Otherwise, it's got to be a raw name, representing a binding of that
     ## name to its value as a variable.
     name = parNameSymbol
-    { makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name)) }
+    { @mapping{keys: [makeLiteral(name)], value: makeVarFetch(name)} }
 :};
 
 ## Parses a map literal.
@@ -213,11 +215,7 @@ def parMap = {:
     result = (
         one = parMapping
         rest = (@"," parMapping)*
-        {
-            ifIs { eq(rest, []) }
-                { one }
-                { makeCall(REFS::SYM_cat, one, rest*) }
-        }
+        { makeMapExpression(one, rest*) }
     |
         { makeLiteral({}) }
     )

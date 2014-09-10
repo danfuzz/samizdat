@@ -448,8 +448,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCallOrApply(REFS(makeValueMap),
-        listAppend(keys, withoutInterpolate(value)));
+    return makeData(CLS_mapping, mapFrom2(SYM_keys, keys, SYM_value, value));
 }
 
 /**
@@ -474,8 +473,10 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return makeCall(REFS(makeValueMap),
-        listFrom2(makeLiteral(name), makeVarFetch(name)));
+    return makeData(CLS_mapping,
+        mapFrom2(
+            SYM_keys,  listFrom1(makeLiteral(name)),
+            SYM_value, makeVarFetch(name)));
 }
 
 // Documented in spec.
@@ -500,11 +501,7 @@ DEF_PARSE(map) {
     zvalue mappings = PARSE_DELIMITED_SEQ(mapping, CH_COMMA);
     MATCH_OR_REJECT(CH_CCURLY);
 
-    switch (get_size(mappings)) {
-        case 0:  { return makeLiteral(EMPTY_MAP);       }
-        case 1:  { return nth(mappings, 0);             }
-        default: { return makeCall(SYM(cat), mappings); }
-    }
+    return makeMapExpression(mappings);
 }
 
 // Documented in spec.

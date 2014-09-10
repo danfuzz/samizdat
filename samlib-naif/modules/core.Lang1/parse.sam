@@ -155,8 +155,7 @@ def parMapping = makeMainChoice(
         makeRepeat(parKey, 1),
         parExpression,
         makeCode { keys, value ->
-            makeCallOrApply(REFS::makeValueMap,
-                keys*, withoutInterpolate(value))
+            @mapping{keys, value: withoutInterpolate(value)}
         }),
     makeSequence(
         parExpression,
@@ -164,7 +163,7 @@ def parMapping = makeMainChoice(
     makeSequence(
         parNameSymbol,
         makeCode { name ->
-            makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
+            @mapping{keys: [makeLiteral(name)], value: makeVarFetch(name)}
         }));
 
 ## Documented in spec.
@@ -173,13 +172,8 @@ def parMap = makeMainSequence(
     makeChoice(
         makeSequence(
             parMapping,
-            makeRepeat(
-                makeSequence(makeToken(@@","), parMapping)),
-            makeCode { ., one, rest ->
-                ifIs { eq(rest, []) }
-                    { one }
-                    { makeCall(REFS::SYM_cat, one, rest*) }
-            }),
+            makeRepeat(makeSequence(makeToken(@@","), parMapping)),
+            makeCode { ., one, rest -> makeMapExpression(one, rest*) }),
         makeCode { . -> makeLiteral({}) }),
     makeToken(@@"}"),
     makeCode { ., result, . -> result });
