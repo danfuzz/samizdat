@@ -493,4 +493,6 @@ Examples:
 * `value` &mdash; Value to bind to.
 
 Used as an argument to `makeMapExpression` (never directly executed).
-This represents one mapping inside a map expression.
+This represents one mapping inside a map expression. Elements of `keys`
+are treated with respect to interpolation just like arguments in a
+`call` node.
