@@ -1104,33 +1104,33 @@ parPexChoice := {:
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
-    @@"-":   REFS::SYM_neg,
-    @@"#":   REFS::SYM_get_size,
-    @@"^":   REFS::SYM_reverse,
-    @@"!!!": REFS::SYM_not
+    @@"-":   SYMS::neg,
+    @@"#":   SYMS::get_size,
+    @@"^":   SYMS::reverse,
+    @@"!!!": SYMS::not
 };
 
 ## For binary operators, map of token types to function name variable
 ## references.
 def BINARY_OPERATORS = {
-    @@"+":    REFS::SYM_add,
-    @@"-":    REFS::SYM_sub,
-    @@"*":    REFS::SYM_mul,
-    @@"/":    REFS::SYM_div,
-    @@"%":    REFS::SYM_mod,
-    @@"//":   REFS::SYM_divEu,
-    @@"%%":   REFS::SYM_modEu,
-    @@"==":   REFS::SYM_perEq,
+    @@"+":    SYMS::add,
+    @@"-":    SYMS::sub,
+    @@"*":    SYMS::mul,
+    @@"/":    SYMS::div,
+    @@"%":    SYMS::mod,
+    @@"//":   SYMS::divEu,
+    @@"%%":   SYMS::modEu,
+    @@"==":   SYMS::perEq,
     @@"!=":   REFS::perNe,
     @@"<":    REFS::perLt,
     @@">":    REFS::perGt,
     @@"<=":   REFS::perLe,
     @@">=":   REFS::perGe,
-    @@"&&&":  REFS::SYM_and,
-    @@"|||":  REFS::SYM_or,
-    @@"^^^":  REFS::SYM_xor,
-    @@"<<<":  REFS::SYM_shl,
-    @@">>>":  REFS::SYM_shr,
+    @@"&&&":  SYMS::and,
+    @@"|||":  SYMS::or,
+    @@"^^^":  SYMS::xor,
+    @@"<<<":  SYMS::shl,
+    @@">>>":  SYMS::shr,
     @@"\\==": REFS::eq,
     @@"\\!=": REFS::ne,
     @@"\\<":  REFS::lt,
@@ -1300,7 +1300,7 @@ def parInterpolatedString = {:
                 }
         };
 
-        makeCall(REFS::SYM_cat, elems*)
+        makeCall(SYMS::cat, elems*)
     }
 :};
 
@@ -1527,8 +1527,8 @@ def parIndexPostfix = {:
 
             {
                 def funcRef = ifIs { hasClass(op, @@"..") }
-                    { REFS::SYM_sliceInclusive }
-                    { REFS::SYM_sliceExclusive };
+                    { SYMS::sliceInclusive }
+                    { SYMS::sliceExclusive };
                 def startNode = start::value;
 
                 { node -> makeCall(funcRef, node, startNode, optEndNode*) }
@@ -1538,14 +1538,14 @@ def parIndexPostfix = {:
             ## use `sliceGeneral`.
             {
                 def style = ifIs { hasClass(op, @@"..") }
-                    { REFS::SYM_inclusive }
-                    { REFS::SYM_exclusive };
+                    { SYMS::inclusive }
+                    { SYMS::exclusive };
 
                 def startNode =
                     makeCall(REFS::makeData,
                         makeLiteral(start::origin),
                         makeCall(REFS::makeValueMap,
-                            REFS::SYM_value, start::value));
+                            SYMS::value, start::value));
 
                 def optEndNode = (
                     ifNot { eq(end, INDEX_AT_END_0) }
@@ -1553,7 +1553,7 @@ def parIndexPostfix = {:
                             makeCall(REFS::makeData,
                                 makeLiteral(end::origin),
                                 makeCall(REFS::makeValueMap,
-                                    REFS::SYM_value, end::value))
+                                    SYMS::value, end::value))
                         }
                 )?;
 
@@ -1575,7 +1575,7 @@ def parIndexPostfix = {:
 
         {
             def funcRef = ifIs { eq(index::origin, @@fromStart) }
-                { REFS::SYM_get }
+                { SYMS::get }
                 { REFS::Sequence_reverseNth };
 
             { node -> makeCall(funcRef, node, index::value) }
@@ -2098,10 +2098,10 @@ def parSwitchExpression = {:
             ifIs { hasClass(keys, List) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, code) }
         };
-        def caseMap = makeCallOrApply(REFS::SYM_cat,
+        def caseMap = makeCallOrApply(SYMS::cat,
             makeLiteral({}),
             makeInterpolate(
-                makeCall(REFS::SYM_reverse,
+                makeCall(SYMS::reverse,
                     makeCallOrApply(REFS::makeList, caseClauses*))));
 
         def ifCall = makeCall(REFS::ifSwitch,

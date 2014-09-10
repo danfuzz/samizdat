@@ -98,7 +98,7 @@ export fn makeCallOrApply(function, values*) {
         ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
-                addToCooked(makeCall(REFS::SYM_collect, node))
+                addToCooked(makeCall(SYMS::collect, node))
             }
             { pending := [pending*, actual] }
     };
@@ -116,7 +116,7 @@ export fn makeCallOrApply(function, values*) {
     return ifIs { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
-            makeApply(function, makeCall(REFS::SYM_cat, cookedValues*))
+            makeApply(function, makeCall(SYMS::cat, cookedValues*))
         }
         {
             ## Only one. Use it directly as the values for the `apply` node.
@@ -155,7 +155,7 @@ export fn makeDynamicImport(node) {
 
                 filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
-                        makeCall(REFS::SYM_get, loadCall, makeLiteral(sel)))
+                        makeCall(SYMS::get, loadCall, makeLiteral(sel)))
                 }
             },
 
@@ -202,7 +202,7 @@ export fn makeFullClosure(nodeOrMap) {
 
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
-    return makeCall(REFS::SYM_get, collArg, keyArg)
+    return makeCall(SYMS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
@@ -385,7 +385,7 @@ export fn makeMapExpression(mappings*) {
     ## map result.
 
     addSingleToCat();
-    return makeCall(REFS::SYM_cat, makeLiteral({}), catArgs*)
+    return makeCall(SYMS::cat, makeLiteral({}), catArgs*)
 };
 
 ## Documented in spec.
@@ -461,13 +461,13 @@ export fn withModuleDefs(node) {
 
     def yieldExports = ifIs { eq(exportValues, []) }
         { makeLiteral({}) }
-        { makeCall(REFS::SYM_cat, exportValues*) };
+        { makeCall(SYMS::cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),
-        makeCall(REFS::SYM_cat,
-            makeCall(REFS::makeValueMap, REFS::SYM_exports, yieldExports),
-            makeCall(REFS::makeValueMap, REFS::SYM_info, yieldInfo)));
+        makeCall(SYMS::cat,
+            makeCall(REFS::makeValueMap, SYMS::exports, yieldExports),
+            makeCall(REFS::makeValueMap, SYMS::info, yieldInfo)));
 
     return @(get_class(node)){
         node.dataOf()*,
