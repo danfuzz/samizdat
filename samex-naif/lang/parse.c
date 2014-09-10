@@ -491,14 +491,16 @@ DEF_PARSE(mapping) {
 }
 
 // Documented in spec.
+DEF_PARSE(mappings) {
+    return PARSE_DELIMITED_SEQ(mapping, CH_COMMA);
+}
+
+// Documented in spec.
 DEF_PARSE(map) {
     MARK();
 
-    // This one isn't just a transliteration of the reference code, but the
-    // effect is the same.
-
     MATCH_OR_REJECT(CH_OCURLY);
-    zvalue mappings = PARSE_DELIMITED_SEQ(mapping, CH_COMMA);
+    zvalue mappings = PARSE(mappings);
     MATCH_OR_REJECT(CH_CCURLY);
 
     return makeMapExpression(mappings);

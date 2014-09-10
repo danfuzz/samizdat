@@ -208,21 +208,24 @@ def parMapping = {:
     { @mapping{keys: [makeLiteral(name)], value: makeVarFetch(name)} }
 :};
 
+## Parses a comma-delimited sequence of zero or more mappings (that is, a
+## body of a map or map-like thing). Yields a list of mappings, including
+## possibly `@mapping` elements.
+def parMappings = {:
+    one = parMapping
+    rest = (@"," parMapping)*
+    { [one, rest*] }
+|
+    { [] }
+:};
+
 ## Parses a map literal.
 def parMap = {:
     @"{"
-
-    result = (
-        one = parMapping
-        rest = (@"," parMapping)*
-        { makeMapExpression(one, rest*) }
-    |
-        { LITS::EMPTY_MAP }
-    )
-
+    mappings = parMappings
     @"}"
 
-    { result }
+    { makeMapExpression(mappings*) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:

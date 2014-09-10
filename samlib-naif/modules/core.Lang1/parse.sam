@@ -167,16 +167,19 @@ def parMapping = makeMainChoice(
         }));
 
 ## Documented in spec.
+def parMappings = makeMainChoice(
+    makeSequence(
+        parMapping,
+        makeRepeat(makeSequence(makeToken(@@","), parMapping)),
+        makeCode { one, rest -> [one, rest*] }),
+    makeResult([]));
+
+## Documented in spec.
 def parMap = makeMainSequence(
     makeToken(@@"{"),
-    makeChoice(
-        makeSequence(
-            parMapping,
-            makeRepeat(makeSequence(makeToken(@@","), parMapping)),
-            makeCode { ., one, rest -> makeMapExpression(one, rest*) }),
-        makeResult(LITS::EMPTY_MAP)),
+    parMappings,
     makeToken(@@"}"),
-    makeCode { ., result, . -> result });
+    makeCode { ., mappings, . -> makeMapExpression(mappings*) });
 
 ## Documented in spec.
 def parListItem = makeMainSequence(
