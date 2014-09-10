@@ -45,6 +45,7 @@ export
     makeData,
     makeDerivedDataClass,
     makeList,
+    makeMap,
     makeObject,
     makeObjectClass,
     makeSymbolTable,
