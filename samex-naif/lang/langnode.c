@@ -550,6 +550,62 @@ zvalue makeLiteral(zvalue value) {
 }
 
 // Documented in spec.
+zvalue makeMapExpression(zvalue mappings) {
+    zint size = get_size(mappings);
+
+    if (size == 0) {
+        return makeLiteral(EMPTY_MAP);
+    }
+
+    zvalue singleArgs[size * 2];
+    zvalue catArgs[size];
+    zint singleAt = 0;
+    zint catAt = 0;
+
+    #define addToCat(arg) do { \
+        catArgs[catAt] = (arg); \
+        catAt++; \
+    } while (0)
+
+    #define addSingleToCat() do { \
+        if (singleAt != 0) { \
+            addToCat(makeCall(REFS(makeMap), \
+                listFromArray(singleAt, singleArgs))); \
+            singleAt = 0; \
+        } \
+    } while (0)
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = nth(mappings, i);
+        if (hasClass(one, CLS_mapping)) {
+            zvalue keys = get(one, SYM_keys);
+            zvalue value = get(one, SYM_value);
+            if (get_size(keys) == 1) {
+                singleArgs[singleAt] = nth(keys, 0);
+                singleArgs[singleAt + 1] = value;
+                singleAt += 2;
+            } else {
+                addSingleToCat();
+                addToCat(makeCall(REFS(makeValueMap),
+                    listAppend(keys, value)));
+            }
+        } else {
+            addSingleToCat();
+            addToCat(one);
+        }
+    }
+
+    if (catAt == 0) {
+        addSingleToCat();
+        return catArgs[0];
+    }
+
+    addSingleToCat();
+    return makeCall(SYM_cat,
+        listPrepend(makeLiteral(EMPTY_MAP), listFromArray(catAt, catArgs)));
+};
+
+// Documented in spec.
 zvalue makeMaybe(zvalue value) {
     return makeData(CLS_maybe, mapFrom1(SYM_value, value));
 }

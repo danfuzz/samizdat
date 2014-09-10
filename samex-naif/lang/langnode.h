@@ -78,6 +78,9 @@ zvalue makeInterpolate(zvalue node);
 zvalue makeLiteral(zvalue value);
 
 // Documented in spec.
+zvalue makeMapExpression(zvalue mappings);
+
+// Documented in spec.
 zvalue makeMaybe(zvalue value);
 
 // Documented in spec.
