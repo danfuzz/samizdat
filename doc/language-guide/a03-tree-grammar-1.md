@@ -163,13 +163,13 @@ def parLiteral = {:
     { makeLiteral(s::value) }
 |
     @false
-    { makeLiteral(false) }
+    { LITS::false }
 |
     @true
-    { makeLiteral(true) }
+    { LITS::true }
 |
     @null
-    { makeLiteral(null) }
+    { LITS::null }
 |
     @"@"
     symbol = parIdentifierSymbol

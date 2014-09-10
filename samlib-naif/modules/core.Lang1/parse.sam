@@ -125,13 +125,13 @@ def parLiteral = makeMainChoice(
         makeCode { s -> makeLiteral(s::value) }),
     makeSequence(
         makeToken(@@false),
-        makeResult(makeLiteral(false))),
+        makeResult(LITS::false)),
     makeSequence(
         makeToken(@@true),
-        makeResult(makeLiteral(true))),
+        makeResult(LITS::true)),
     makeSequence(
         makeToken(@@null),
-        makeResult(makeLiteral(null))),
+        makeResult(LITS::null)),
     makeSequence(
         makeToken(@@"@"),
         parIdentifierSymbol,
