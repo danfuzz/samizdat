@@ -126,6 +126,29 @@ FUNC_IMPL_rest(SymbolTable_makeSymbolTable, args) {
 }
 
 // Documented in header.
+FUNC_IMPL_1_rest(SymbolTable_makeValueSymbolTable, first, args) {
+    // Since the arguments are "stretchy" in the front instead of the
+    // usual rear, we do a bit of non-obvious rearranging here.
+
+    if (argsSize == 0) {
+        return EMPTY_SYMBOL_TABLE;
+    }
+
+    zvalue value = args[argsSize - 1];
+    zmapping mappings[argsSize];
+
+    mappings[0].key = first;
+    mappings[0].value = value;
+
+    for (zint i = 1; i < argsSize; i++) {
+        mappings[i].key = args[i - 1];
+        mappings[i].value = value;
+    }
+
+    return symbolTableFromArray(argsSize, mappings);
+}
+
+// Documented in header.
 METH_IMPL_0(SymbolTable, gcMark) {
     SymbolTableInfo *info = getInfo(ths);
 
@@ -177,6 +200,9 @@ MOD_INIT(SymbolTable) {
     FUN_SymbolTable_makeSymbolTable =
         datImmortalize(FUNC_VALUE(SymbolTable_makeSymbolTable));
 
+    FUN_SymbolTable_makeValueSymbolTable =
+        datImmortalize(FUNC_VALUE(SymbolTable_makeValueSymbolTable));
+
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance());
 }
 
@@ -188,3 +214,6 @@ zvalue EMPTY_SYMBOL_TABLE = NULL;
 
 // Documented in header.
 zvalue FUN_SymbolTable_makeSymbolTable;
+
+// Documented in header.
+zvalue FUN_SymbolTable_makeValueSymbolTable;

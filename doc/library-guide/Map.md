@@ -131,6 +131,9 @@ symbol-then-value arguments. For example:
 It is a fatal error (terminating the runtime) to pass an odd number of
 arguments to this function.
 
+**Syntax Note:** Used in the translation of `{key: value, ...}`
+and `switch` forms.
+
 #### `makeValueMap(keys*, value) -> map`
 
 This makes a map which maps any number of keys (including none)

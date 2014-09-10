@@ -50,6 +50,7 @@ export
     makeObjectClass,
     makeSymbolTable,
     makeValueMap,
+    makeValueSymbolTable,
     maybeValue,
     note,
     order,
