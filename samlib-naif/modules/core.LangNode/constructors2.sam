@@ -318,6 +318,67 @@ export fn makeInterpolate(node) {
 };
 
 ## Documented in spec.
+export fn makeMapExpression(mappings*) {
+    ifIs { eq(mappings, []) }
+        {
+            ## No mappings. Easy out.
+            return makeLiteral({})
+        };
+
+    ## mappings: @mapping{keys: [...], value} <other-to-interpolate>
+
+    ## Convert the mappings as if it has to be nontrivial. If in the end, it's
+    ## possible to use a single call to `makeMap`, then just do that.
+
+    var singleArgs = [];    ## Single-value mappings, to be `makeMap`ed.
+    var catArgs = [];       ## Arguments ready to be `cat`ed.
+
+    fn addToCat(arg) {
+        catArgs := [catArgs*, arg];
+    };
+
+    fn addSingleToCat() {
+        ifIs { perNe(singleArgs, []) }
+            {
+                addToCat(makeCall(REFS::makeMap, singleArgs*));
+                singleArgs := []
+            }
+    };
+
+    filterPump(mappings) { one ->
+        ifIs { hasClass(one, @@mapping) }
+            {
+                def keys = one::keys;
+                def value = one::value;
+                ifIs { eq(keys.get_size(), 1) }
+                    { singleArgs := [singleArgs*, keys*, value] }
+                    {
+                        addSingleToCat();
+                        addToCat(makeCall(REFS::makeValueMap, keys*, value))
+                    };
+            }
+            {
+                addSingleToCat();
+                addToCat(one)
+            }
+    };
+
+    ifIs { eq(catArgs, []) }
+        {
+            ## There were no "must be `cat`ed" mappings.
+            addSingleToCat();
+            return catArgs*
+        };
+
+    ## There is at least one mapping that requires special handling. Emit
+    ## a call to `cat`, with `{}` as the first argument so as to ensure a
+    ## map result.
+
+    addSingleToCooked();
+    return makeCall(REFS::SYM_cat, makeLiteral({}), catArgs*)
+};
+
+## Documented in spec.
 export fn makeMaybeValue(node) {
     return makeCall(REFS::maybeValue, makeThunk(node))
 };

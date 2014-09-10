@@ -66,6 +66,7 @@ def NAMES = [
     @makeData,
     @makeDerivedDataClass,
     @makeList,
+    @makeMap,
     @makeValueMap,
     @maybeValue,
     @ne,

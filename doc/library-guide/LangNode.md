@@ -260,6 +260,16 @@ as an `interpolate` binding. See `makeCallOrApply` for more details.
 
 Makes a `literal` node.
 
+#### `makeMapExpression(mappings*) -> node`
+
+Makes an expression node that represents the construction of a map
+consisting of the given `mappings`. Arguments that are `mapping`
+values are restructured into appropriate calls to `makeMap` or
+`makeValueMap`. Other arguments are taken to be interpolated arguments.
+In trivial cases, the result is a simple `call` node for a call to
+`makeMap` or `makeValueMap`. In other cases, the result is a call to
+`cat` with less trivial internal structure.
+
 #### `makeMaybe(value) -> node`
 
 Makes a raw `maybe` node. These are only valid to use in limited contexts.
