@@ -43,13 +43,22 @@ def SYMBOLS = [
     @xor
 ];
 
+## Other literals.
+def OTHERS = {
+    EMPTY_LIST: [],
+    EMPTY_MAP:  {},
+    false:      false,
+    null:       null,
+    true:       true
+};
+
 
 ##
 ## Exported Definitions
 ##
 
 ## Documented in spec.
-export def SYMS = {}.cat(
+export def SYMS = OTHERS.cat(
     (filterAll(SYMBOLS) { name ->
         {(name): makeLiteral(name)}
     })*
