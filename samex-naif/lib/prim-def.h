@@ -49,6 +49,7 @@ PRIM_FUNC(ifValueOr,              1, -1);
 PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(makeList,               0, -1);
+PRIM_FUNC(makeMap,                0, -1);
 PRIM_FUNC(makeValueMap,           1, -1);
 PRIM_FUNC(maybeValue,             1, 1);
 PRIM_FUNC(note,                   0, -1);
