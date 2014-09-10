@@ -328,8 +328,8 @@ export fn makeMapExpression(mappings*) {
     ## Convert the mappings as if it has to be nontrivial. If in the end, it's
     ## possible to use a single call to `makeMap`, then just do that.
 
-    var singleArgs = [];    ## Single-value mappings, to be `makeMap`ed.
-    var catArgs = [];       ## Arguments ready to be `cat`ed.
+    var singleArgs = [];  ## Single-value mappings, to be `makeMap`ed.
+    var catArgs = [];     ## Arguments ready to be `cat`ed.
 
     fn addToCat(arg) {
         catArgs := [catArgs*, arg];
