@@ -217,7 +217,7 @@ def parMap = {:
         rest = (@"," parMapping)*
         { makeMapExpression(one, rest*) }
     |
-        { makeLiteral({}) }
+        { LITS::EMPTY_MAP }
     )
 
     @"}"
@@ -259,7 +259,7 @@ def parList = {:
     @"]"
     {
         ifIs { eq(expressions, []) }
-            { makeLiteral([]) }
+            { LITS::EMPTY_LIST }
             { makeCallOrApply(REFS::makeList, expressions*) }
     }
 :};

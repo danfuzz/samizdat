@@ -9,7 +9,7 @@ import core.Sequence :: reverseNth;
 
 import ./constructors1 :: *;
 import ./getters :: *;
-import ./literals :: SYMS;
+import ./literals :: LITS, SYMS;
 import ./misc :: canYieldVoid, isExpression;
 import ./refs :: REFS;
 
@@ -323,7 +323,7 @@ export fn makeMapExpression(mappings*) {
     ifIs { eq(mappings, []) }
         {
             ## No mappings. Easy out.
-            return makeLiteral({})
+            return LITS::EMPTY_MAP
         };
 
     ## Convert the mappings as if it has to be nontrivial. If in the end, it's
@@ -386,7 +386,7 @@ export fn makeMapExpression(mappings*) {
     ## map result.
 
     addSingleToCat();
-    return makeCall(SYMS::cat, makeLiteral({}), catArgs*)
+    return makeCall(SYMS::cat, LITS::EMPTY_MAP, catArgs*)
 };
 
 ## Documented in spec.
@@ -461,7 +461,7 @@ export fn withModuleDefs(node) {
     };
 
     def yieldExports = ifIs { eq(exportValues, []) }
-        { makeLiteral({}) }
+        { LITS::EMPTY_MAP }
         { makeCall(SYMS::cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,

@@ -174,7 +174,7 @@ def parMap = makeMainSequence(
             parMapping,
             makeRepeat(makeSequence(makeToken(@@","), parMapping)),
             makeCode { ., one, rest -> makeMapExpression(one, rest*) }),
-        makeCode { . -> makeLiteral({}) }),
+        makeResult(LITS::EMPTY_MAP)),
     makeToken(@@"}"),
     makeCode { ., result, . -> result });
 
@@ -206,7 +206,7 @@ def parList = makeMainSequence(
     makeToken(@@"]"),
     makeCode { ., expressions, . ->
         ifIs { eq(expressions, []) }
-            { makeLiteral([]) }
+            { LITS::EMPTY_LIST }
             { makeCallOrApply(REFS::makeList, expressions*) }
     });
 
