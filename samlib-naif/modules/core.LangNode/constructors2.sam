@@ -9,6 +9,7 @@ import core.Sequence :: reverseNth;
 
 import ./constructors1 :: *;
 import ./getters :: *;
+import ./literals :: SYMS;
 import ./misc :: canYieldVoid, isExpression;
 import ./refs :: REFS;
 

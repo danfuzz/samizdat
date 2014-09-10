@@ -5,8 +5,7 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 ::
-    makeCall, makeLiteral, makeSymbolLiteral, makeVarFetch;
+import ./constructors1 :: makeLiteral;
 
 
 ##
@@ -52,6 +51,6 @@ def SYMBOLS = [
 ## Documented in spec.
 export def SYMS = {}.cat(
     (filterAll(SYMBOLS) { name ->
-        {name: makeLiteral(name)}
+        {(name): makeLiteral(name)}
     })*
 );
