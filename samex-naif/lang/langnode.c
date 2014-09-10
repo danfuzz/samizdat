@@ -314,7 +314,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
         zvalue node = get(one, SYM_interpolate);
         if (node != NULL) {
             addPendingToCooked();
-            addToCooked(makeCall(SYM(collect), listFrom1(node)));
+            addToCooked(makeCall(SYMS(collect), listFrom1(node)));
         } else {
             pending[pendAt] = one;
             pendAt++;
@@ -330,7 +330,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
     if (cookAt > 1) {
         return makeApply(function,
-            makeCall(SYM(cat), listFromArray(cookAt, cookedValues)));
+            makeCall(SYMS(cat), listFromArray(cookAt, cookedValues)));
     } else {
         return makeApply(function, cookedValues[0]);
     }
@@ -362,7 +362,7 @@ zvalue makeDynamicImport(zvalue node) {
             zvalue name = nth(names, i);
             zvalue sel = nth(select, i);
             stats[i] = makeVarDef(name,
-                makeCall(SYM(get), listFrom2(loadCall, makeLiteral(sel))));
+                makeCall(SYMS(get), listFrom2(loadCall, makeLiteral(sel))));
         }
 
         return listFromArray(size, stats);
@@ -607,7 +607,7 @@ zvalue makeMapExpression(zvalue mappings) {
     }
 
     addSingleToCat();
-    return makeCall(SYM(cat),
+    return makeCall(SYMS(cat),
         listPrepend(makeLiteral(EMPTY_MAP), listFromArray(catAt, catArgs)));
 };
 
@@ -786,12 +786,12 @@ zvalue withModuleDefs(zvalue node) {
 
     zvalue yieldExports = (exSize == 0)
         ? makeLiteral(EMPTY_MAP)
-        : makeCall(SYM(cat), exportValues);
+        : makeCall(SYMS(cat), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
             makeLiteral(CLS_module),
-            makeCall(SYM(cat),
+            makeCall(SYMS(cat),
                 listFrom2(
                     makeCall(REFS(makeValueMap),
                         listFrom2(makeLiteral(SYM_exports), yieldExports)),

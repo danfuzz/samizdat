@@ -17,8 +17,8 @@
 /** Equivalent to `REFS::<name>` in the spec. */
 #define REFS(name) (makeVarFetch(SYM_##name))
 
-/** Equivalent to `REFS::SYM_<name>` in the spec. */
-#define SYM(name) (makeLiteral(SYM_##name))
+/** Equivalent to `SYMS::<name>` in the spec. */
+#define SYMS(name) (makeLiteral(SYM_##name))
 
 // Documented in spec.
 bool canYieldVoid(zvalue node);
