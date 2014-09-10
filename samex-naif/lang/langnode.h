@@ -96,6 +96,9 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 zvalue makeSymbolLiteral(zvalue name);
 
 // Documented in spec.
+zvalue makeSymbolTableExpression(zvalue mappings);
+
+// Documented in spec.
 zvalue makeThunk(zvalue expression);
 
 // Documented in spec.
