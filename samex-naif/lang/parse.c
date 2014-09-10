@@ -507,6 +507,18 @@ DEF_PARSE(map) {
 }
 
 // Documented in spec.
+DEF_PARSE(symbolTable) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_AT);
+    MATCH_OR_REJECT(CH_OCURLY);
+    zvalue mappings = PARSE(mappings);
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    return makeSymbolTableExpression(mappings);
+}
+
+// Documented in spec.
 DEF_PARSE(listItem) {
     MARK();
 
@@ -636,6 +648,7 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(varLvalue);       }
     if (result == NULL) { result = PARSE(varRef);          }
     if (result == NULL) { result = PARSE(literal);         }
+    if (result == NULL) { result = PARSE(symbolTable);     }
     if (result == NULL) { result = PARSE(map);             }
     if (result == NULL) { result = PARSE(list);            }
     if (result == NULL) { result = PARSE(deriv);           }

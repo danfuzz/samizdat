@@ -182,6 +182,14 @@ def parMap = makeMainSequence(
     makeCode { ., mappings, . -> makeMapExpression(mappings*) });
 
 ## Documented in spec.
+def parSymbolTable = makeMainSequence(
+    makeToken(@@"@"),
+    makeToken(@@"{"),
+    parMappings,
+    makeToken(@@"}"),
+    makeCode { ., ., mappings, . -> makeSymbolTableExpression(mappings*) });
+
+## Documented in spec.
 def parListItem = makeMainSequence(
     parExpression,
     makeRepeat(
@@ -281,8 +289,8 @@ def parBasicNullaryClosure = makeMainSequence(
 
 ## Documented in spec.
 def parTerm = makeMainChoice(
-    parVarLvalue, parVarRef, parLiteral, parMap, parList,
-    parDeriv, parType, parFullClosure, parParenExpression,
+    parVarLvalue, parVarRef, parLiteral, parSymbolTable, parMap,
+    parList, parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     makeSequence(

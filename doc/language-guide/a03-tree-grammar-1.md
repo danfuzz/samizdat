@@ -228,6 +228,16 @@ def parMap = {:
     { makeMapExpression(mappings*) }
 :};
 
+## Parses a symbol table literal.
+def parSymbolTable = {:
+    @"@"
+    @"{"
+    mappings = parMappings
+    @"}"
+
+    { makeSymbolTableExpression(mappings*) }
+:};
+
 ## Parses a list item or function call argument. This handles all of:
 ##
 ## * accepting general expressions
@@ -356,8 +366,8 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarLvalue | parVarRef | parLiteral | parMap | parList |
-    parDeriv | parType | parFullClosure | parParenExpression
+    parVarLvalue | parVarRef | parLiteral | parSymbolTable | parMap |
+    parList | parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
