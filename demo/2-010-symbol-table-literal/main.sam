@@ -1,0 +1,33 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Symbol table demo
+##
+
+
+##
+## Private Definitions
+##
+
+fn msg(string) {
+    note("Got: ", $Format::source(string))
+};
+
+
+##
+## Main Tests
+##
+
+note("Symbol Tables");
+
+msg(@{});
+msg(@{a: 10});
+msg(@{a: 10, b:20});
+
+ifNot { eq(@{}, @{}) }
+    { die("Expected same emptiness!") };
+
+ifNot { eq(@{foo: "bar"}, @{foo: "bar"}) }
+    { die("Expected same!") };
