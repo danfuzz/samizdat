@@ -24,7 +24,6 @@ This is a map from symbol names of keywords in the language to the result
 of tokenizing those keywords. The result of tokenizing a keyword is always
 a payload-free token (derived data value).
 
-
 #### `REFS`
 
 This is a map from variable and module-scoped names to execution nodes that
@@ -40,6 +39,15 @@ example, `"Format_usual"` maps to a reference to `$Format::usual`.
 For specific details on which names are mapped, refer to the source. (As of
 this writing, the set of things mapped in `REFS` is still undergoing
 development.)
+
+#### `SYMS`
+
+This is a map from symbols to literal nodes that represent those
+symbols, for all the literal symbols needed directly when parsing the
+language.
+
+For specific details on which names are mapped, refer to the source. (See
+`REFS` for parenthetical discussion.)
 
 
 <br><br>
