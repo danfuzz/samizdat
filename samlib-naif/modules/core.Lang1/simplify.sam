@@ -90,12 +90,12 @@ fn convertPex(node, formals) {
 
             @@opt: { . ->
                 makeCallPex(REFS::Peg_makeRepeat,
-                    node, formals, makeLiteral(0), makeLiteral(1))
+                    node, formals, LITS::INT_0, LITS::INT_1)
             },
 
             @@plus: { . ->
                 makeCallPex(REFS::Peg_makeRepeat,
-                    node, formals, makeLiteral(1))
+                    node, formals, LITS::INT_1)
             },
 
             @@sequence: { . ->

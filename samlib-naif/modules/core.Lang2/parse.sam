@@ -1496,10 +1496,10 @@ def parIndexExpression = {:
 :};
 
 ## Constant representing the sequence index `0`.
-def INDEX_AT_START_0 = {origin: @@fromStart, value: makeLiteral(0)};
+def INDEX_AT_START_0 = {origin: @@fromStart, value: LITS::INT_0};
 
 ## Constant representing the sequence index `^0` (that is, zero from end).
-def INDEX_AT_END_0 = {origin: @@fromEnd, value: makeLiteral(0)};
+def INDEX_AT_END_0 = {origin: @@fromEnd, value: LITS::INT_0};
 
 ## Parses an indexing postfix.
 def parIndexPostfix = {:
