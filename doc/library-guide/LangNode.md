@@ -24,6 +24,15 @@ This is a map from symbol names of keywords in the language to the result
 of tokenizing those keywords. The result of tokenizing a keyword is always
 a payload-free token (derived data value).
 
+#### `LITS`
+
+This is a map from mnemonic names to literal nodes representing the
+implied values, for all such literals needed when parsing the language.
+For example, `LITS::false` is a literal node referring to the
+boolean value `false`.
+
+For specific details on which names are mapped, refer to the source.
+
 #### `REFS`
 
 This is a map from variable and module-scoped names to execution nodes that
@@ -36,9 +45,7 @@ Regular variable references are bound from their string name. For example,
 Module-scoped names are bound from a string of the form `Module_name`. For
 example, `"Format_usual"` maps to a reference to `$Format::usual`.
 
-For specific details on which names are mapped, refer to the source. (As of
-this writing, the set of things mapped in `REFS` is still undergoing
-development.)
+For specific details on which names are mapped, refer to the source.
 
 #### `SYMS`
 
@@ -46,8 +53,7 @@ This is a map from symbols to literal nodes that represent those
 symbols, for all the literal symbols needed directly when parsing the
 language.
 
-For specific details on which names are mapped, refer to the source. (See
-`REFS` for parenthetical discussion.)
+For specific details on which names are mapped, refer to the source.
 
 
 <br><br>
