@@ -580,13 +580,19 @@ zvalue makeMapExpression(zvalue mappings) {
         if (hasClass(one, CLS_mapping)) {
             zvalue keys = get(one, SYM_keys);
             zvalue value = get(one, SYM_value);
+            bool handled = false;
             if (get_size(keys) == 1) {
-                singleArgs[singleAt] = nth(keys, 0);
-                singleArgs[singleAt + 1] = value;
-                singleAt += 2;
-            } else {
+                zvalue key = nth(keys, 0);
+                if (get(key, SYM_interpolate) == NULL) {
+                    singleArgs[singleAt] = key;
+                    singleArgs[singleAt + 1] = value;
+                    singleAt += 2;
+                    handled = true;
+                }
+            }
+            if (!handled) {
                 addSingleToCat();
-                addToCat(makeCall(REFS(makeValueMap),
+                addToCat(makeCallOrApply(REFS(makeValueMap),
                     listAppend(keys, value)));
             }
         } else {
@@ -601,7 +607,7 @@ zvalue makeMapExpression(zvalue mappings) {
     }
 
     addSingleToCat();
-    return makeCall(SYM_cat,
+    return makeCall(SYM(cat),
         listPrepend(makeLiteral(EMPTY_MAP), listFromArray(catAt, catArgs)));
 };
 

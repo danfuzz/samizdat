@@ -348,11 +348,23 @@ export fn makeMapExpression(mappings*) {
             {
                 def keys = one::keys;
                 def value = one::value;
+                var handled = false;
+
                 ifIs { eq(keys.get_size(), 1) }
-                    { singleArgs := [singleArgs*, keys*, value] }
+                    {
+                        def key = keys*;
+                        ifNot { key::interpolate }
+                            {
+                                singleArgs := [singleArgs*, key, value];
+                                handled := true
+                            }
+                    };
+
+                ifIs { eq(handled, false) }
                     {
                         addSingleToCat();
-                        addToCat(makeCall(REFS::makeValueMap, keys*, value))
+                        addToCat(
+                            makeCallOrApply(REFS::makeValueMap, keys*, value))
                     };
             }
             {
