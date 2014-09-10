@@ -45,13 +45,14 @@ def SYMBOLS = [
 
 ## Literal values.
 export def VALUES = {
-    EMPTY_LIST: [],
-    EMPTY_MAP:  {},
-    INT_0:      0,
-    INT_1:      1,
-    false:      false,
-    null:       null,
-    true:       true
+    EMPTY_LIST:         [],
+    EMPTY_MAP:          {},
+    EMPTY_SYMBOL_TABLE: @{},
+    INT_0:              0,
+    INT_1:              1,
+    false:              false,
+    null:               null,
+    true:               true
 };
 
 
