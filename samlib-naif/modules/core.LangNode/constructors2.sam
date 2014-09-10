@@ -325,8 +325,6 @@ export fn makeMapExpression(mappings*) {
             return makeLiteral({})
         };
 
-    ## mappings: @mapping{keys: [...], value} <other-to-interpolate>
-
     ## Convert the mappings as if it has to be nontrivial. If in the end, it's
     ## possible to use a single call to `makeMap`, then just do that.
 
@@ -374,7 +372,7 @@ export fn makeMapExpression(mappings*) {
     ## a call to `cat`, with `{}` as the first argument so as to ensure a
     ## map result.
 
-    addSingleToCooked();
+    addSingleToCat();
     return makeCall(REFS::SYM_cat, makeLiteral({}), catArgs*)
 };
 
