@@ -294,11 +294,17 @@ METH_IMPL_rest(Map, cat, args) {
     }
 
     zint thsSize = getInfo(ths)->size;
+    zvalue maps[argsSize];
 
     zint size = thsSize;
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        assertHasClass(one, CLS_Map);
+        if (hasClass(one, CLS_SymbolTable)) {
+            one = mapFromSymbolTable(one);
+        } else {
+            assertHasClass(one, CLS_Map);
+        }
+        maps[i] = one;
         size += getInfo(one)->size;
     }
 
@@ -306,8 +312,8 @@ METH_IMPL_rest(Map, cat, args) {
     zint at = thsSize;
     arrayFromMap(elems, ths);
     for (zint i = 0; i < argsSize; i++) {
-        arrayFromMap(&elems[at], args[i]);
-        at += getInfo(args[i])->size;
+        arrayFromMap(&elems[at], maps[i]);
+        at += getInfo(maps[i])->size;
     }
 
     return mapFromArray(size, elems);
