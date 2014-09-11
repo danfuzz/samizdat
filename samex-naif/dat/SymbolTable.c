@@ -5,6 +5,7 @@
 #include <stdarg.h>
 
 #include "type/Builtin.h"
+#include "type/Int.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "util.h"
@@ -20,6 +21,9 @@
  * SymbolTable structure.
  */
 typedef struct {
+    /** Number of bindings in this table. */
+    zint size;
+
     /**
      * Bindings from symbols to values, keyed off of symbol index number.
      */
@@ -61,12 +65,12 @@ zvalue symbolTableFromArgs(zvalue first, ...) {
 
     zvalue result = allocInstance();
     SymbolTableInfo *info = getInfo(result);
-    bool any = false;
+    zint size = 0;
     va_list rest;
 
     va_start(rest, first);
     for (;;) {
-        zvalue symbol = any ? va_arg(rest, zvalue) : first;
+        zvalue symbol = (size == 0) ? first : va_arg(rest, zvalue);
 
         if (symbol == NULL) {
             break;
@@ -77,11 +81,17 @@ zvalue symbolTableFromArgs(zvalue first, ...) {
             die("Odd argument count for symbol table construction.");
         }
 
-        info->table[symbolIndex(symbol)] = value;
-        any = true;
+        zint index = symbolIndex(symbol);
+
+        if (info->table[index] == NULL) {
+            size++;
+        }
+
+        info->table[index] = value;
     }
     va_end(rest);
 
+    info->size = size;
     return result;
 }
 
@@ -93,13 +103,21 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
 
     zvalue result = allocInstance();
     SymbolTableInfo *info = getInfo(result);
+    zint finalSize = 0;
 
     for (zint i = 0; i < size; i++) {
         zvalue key = mappings[i].key;
         zvalue value = mappings[i].value;
-        info->table[symbolIndex(key)] = value;
+        zint index = symbolIndex(key);
+
+        if (info->table[index] == NULL) {
+            finalSize++;
+        }
+
+        info->table[index] = value;
     }
 
+    info->size = finalSize;
     return result;
 }
 
@@ -166,6 +184,11 @@ METH_IMPL_1(SymbolTable, get, key) {
 }
 
 // Documented in header.
+METH_IMPL_0(SymbolTable, get_size) {
+    return intFromZint(getInfo(ths)->size);
+}
+
+// Documented in header.
 METH_IMPL_1(SymbolTable, totalEq, other) {
     // Note: `other` not guaranteed to be a `SymbolTable`.
     assertHasClass(other, CLS_SymbolTable);
@@ -194,6 +217,7 @@ MOD_INIT(SymbolTable) {
         symbolTableFromArgs(
             METH_BIND(SymbolTable, gcMark),
             METH_BIND(SymbolTable, get),
+            METH_BIND(SymbolTable, get_size),
             METH_BIND(SymbolTable, totalEq),
             NULL));
 

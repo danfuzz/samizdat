@@ -40,6 +40,10 @@ ordered with respect to each other.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 symbol table. If there is no such mapping, then this returns void.
 
+#### `.get_size() -> int`
+
+Returns the number of mappings contained within `this`.
+
 
 <br><br>
 ### Primitive Definitions
