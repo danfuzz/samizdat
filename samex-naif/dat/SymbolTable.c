@@ -58,6 +58,22 @@ void xarrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
 }
 
 // Documented in header.
+void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
+    assertHasClass(symbolTable, CLS_SymbolTable);
+    SymbolTableInfo *info = getInfo(symbolTable);
+    zint size = info->size;
+
+    for (zint i = 0, at = 0; i < size; i++) {
+        zvalue one = info->table[i];
+        if (one != NULL) {
+            result[at].key = symbolFromIndex(i);
+            result[at].value = one;
+            at++;
+        }
+    }
+}
+
+// Documented in header.
 zvalue symbolTableFromArgs(zvalue first, ...) {
     if (first == NULL) {
         return EMPTY_SYMBOL_TABLE;
