@@ -209,7 +209,7 @@ fn SymbolTable_convert(value) {
     };
 
     ## TODO: Handle more than just the empty table.
-    die("Cannot convert non-empty symbol table")
+    die("Cannot convert non-empty symbol table.")
 };
 
 ## Converts a derived value or an opaque core value.
@@ -228,15 +228,15 @@ fn Value_convert(value) {
 ## returns a tree that can be stringified with `indent()`.
 export fn convert(value) {
     return switch (get_class(value)) {
-        (Bool):        { Bool_convert(value) };
-        (Class):       { Class_convert(value) };
-        (Int):         { Int_convert(value) };
-        (List):        { List_convert(value) };
-        (Map):         { Map_convert(value) };
-        (Null):        { Null_convert(value) };
-        (String):      { String_convert(value) };
-        (Symbol):      { Symbol_convert(value) };
-        (SymbolTable): { Symbol_convert(value) };
-        default:       { Value_convert(value) }
+        (Bool):        { Bool_convert(value)        };
+        (Class):       { Class_convert(value)       };
+        (Int):         { Int_convert(value)         };
+        (List):        { List_convert(value)        };
+        (Map):         { Map_convert(value)         };
+        (Null):        { Null_convert(value)        };
+        (String):      { String_convert(value)      };
+        (Symbol):      { Symbol_convert(value)      };
+        (SymbolTable): { SymbolTable_convert(value) };
+        default:       { Value_convert(value)       }
     }
 };
