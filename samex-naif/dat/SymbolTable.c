@@ -63,7 +63,7 @@ void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
     SymbolTableInfo *info = getInfo(symbolTable);
     zint size = info->size;
 
-    for (zint i = 0, at = 0; i < size; i++) {
+    for (zint i = 0, at = 0; i < DAT_MAX_SYMBOLS; i++) {
         zvalue one = info->table[i];
         if (one != NULL) {
             result[at].key = symbolFromIndex(i);
@@ -135,6 +135,12 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
 
     info->size = finalSize;
     return result;
+}
+
+// Documented in header.
+zint symbolTableSize(zvalue symbolTable) {
+    assertHasClass(symbolTable, CLS_SymbolTable);
+    return getInfo(symbolTable)->size;
 }
 
 

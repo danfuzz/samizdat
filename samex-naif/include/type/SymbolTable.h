@@ -50,4 +50,9 @@ zvalue symbolTableFromArgs(zvalue first, ...);
  */
 zvalue symbolTableFromArray(zint size, zmapping *mappings);
 
+/**
+ * Gets the size of a symbol table.
+ */
+zint symbolTableSize(zvalue symbolTable);
+
 #endif
