@@ -24,6 +24,14 @@ This is a map from symbol names of keywords in the language to the result
 of tokenizing those keywords. The result of tokenizing a keyword is always
 a payload-free token (derived data value).
 
+#### `LITS`
+
+This is a map from mnemonic names to literal nodes representing the
+implied values, for all such literals needed when parsing the language.
+For example, `LITS::false` is a literal node referring to the
+boolean value `false`.
+
+For specific details on which names are mapped, refer to the source.
 
 #### `REFS`
 
@@ -37,9 +45,15 @@ Regular variable references are bound from their string name. For example,
 Module-scoped names are bound from a string of the form `Module_name`. For
 example, `"Format_usual"` maps to a reference to `$Format::usual`.
 
-For specific details on which names are mapped, refer to the source. (As of
-this writing, the set of things mapped in `REFS` is still undergoing
-development.)
+For specific details on which names are mapped, refer to the source.
+
+#### `SYMS`
+
+This is a map from symbols to literal nodes that represent those
+symbols, for all the literal symbols needed directly when parsing the
+language.
+
+For specific details on which names are mapped, refer to the source.
 
 
 <br><br>
@@ -260,6 +274,16 @@ as an `interpolate` binding. See `makeCallOrApply` for more details.
 
 Makes a `literal` node.
 
+#### `makeMapExpression(mappings*) -> node`
+
+Makes an expression node that represents the construction of a map
+consisting of the given `mappings`. Arguments that are `mapping`
+values are restructured into appropriate calls to `makeMap` or
+`makeValueMap`. Other arguments are taken to be interpolated arguments.
+In trivial cases, the result is a simple `call` node for a call to
+`makeMap` or `makeValueMap`. In other cases, the result is a call to
+`cat` with less trivial internal structure.
+
 #### `makeMaybe(value) -> node`
 
 Makes a raw `maybe` node. These are only valid to use in limited contexts.
@@ -292,6 +316,16 @@ processed via `makeFullClosure()` or similar.
 
 Makes a literal node that represents the symbol with the given `name`.
 `name` must be a string.
+
+#### `makeSymbolTableExpression(mappings*) -> node`
+
+Makes an expression node that represents the construction of a symbol table
+consisting of the given `mappings`. Arguments that are `mapping`
+values are restructured into appropriate calls to `makeSymbolTable` or
+`makeValueSymbolTable`. Other arguments are taken to be interpolated
+arguments. In trivial cases, the result is a simple `call` node for a call to
+`makeSymbolTable` or `makeValueSymbolTable`. In other cases, the result is
+a call to `cat` with less trivial internal structure.
 
 #### `makeThunk(node) -> node`
 

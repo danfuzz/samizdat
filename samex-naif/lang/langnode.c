@@ -11,6 +11,7 @@
 #include "type/Map.h"
 #include "type/OneOff.h"
 #include "type/Symbol.h"
+#include "type/SymbolTable.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -112,6 +113,69 @@ static zvalue expandYield(zvalue map) {
     }
 
     return makeNoYield(exitCall);
+};
+
+// Documented in `LangNode` source.
+static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
+        zvalue makeMultiValue, zvalue makeOneValue) {
+    zint size = get_size(mappings);
+
+    if (size == 0) {
+        return emptyLiteral;
+    }
+
+    zvalue singleArgs[size * 2];
+    zvalue catArgs[size];
+    zint singleAt = 0;
+    zint catAt = 0;
+
+    #define addToCat(arg) do { \
+        catArgs[catAt] = (arg); \
+        catAt++; \
+    } while (0)
+
+    #define addSingleToCat() do { \
+        if (singleAt != 0) { \
+            addToCat(makeCall(makeMultiValue, \
+                listFromArray(singleAt, singleArgs))); \
+            singleAt = 0; \
+        } \
+    } while (0)
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = nth(mappings, i);
+        if (hasClass(one, CLS_mapping)) {
+            zvalue keys = get(one, SYM_keys);
+            zvalue value = get(one, SYM_value);
+            bool handled = false;
+            if (get_size(keys) == 1) {
+                zvalue key = nth(keys, 0);
+                if (get(key, SYM_interpolate) == NULL) {
+                    singleArgs[singleAt] = key;
+                    singleArgs[singleAt + 1] = value;
+                    singleAt += 2;
+                    handled = true;
+                }
+            }
+            if (!handled) {
+                addSingleToCat();
+                addToCat(makeCallOrApply(makeOneValue,
+                    listAppend(keys, value)));
+            }
+        } else {
+            addSingleToCat();
+            addToCat(one);
+        }
+    }
+
+    if (catAt == 0) {
+        addSingleToCat();
+        return catArgs[0];
+    }
+
+    addSingleToCat();
+    return makeCall(SYMS(cat),
+        listPrepend(emptyLiteral, listFromArray(catAt, catArgs)));
 };
 
 
@@ -314,7 +378,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
         zvalue node = get(one, SYM_interpolate);
         if (node != NULL) {
             addPendingToCooked();
-            addToCooked(makeCall(SYM(collect), listFrom1(node)));
+            addToCooked(makeCall(SYMS(collect), listFrom1(node)));
         } else {
             pending[pendAt] = one;
             pendAt++;
@@ -330,7 +394,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
     if (cookAt > 1) {
         return makeApply(function,
-            makeCall(SYM(cat), listFromArray(cookAt, cookedValues)));
+            makeCall(SYMS(cat), listFromArray(cookAt, cookedValues)));
     } else {
         return makeApply(function, cookedValues[0]);
     }
@@ -362,7 +426,7 @@ zvalue makeDynamicImport(zvalue node) {
             zvalue name = nth(names, i);
             zvalue sel = nth(select, i);
             stats[i] = makeVarDef(name,
-                makeCall(SYM(get), listFrom2(loadCall, makeLiteral(sel))));
+                makeCall(SYMS(get), listFrom2(loadCall, makeLiteral(sel))));
         }
 
         return listFromArray(size, stats);
@@ -550,6 +614,12 @@ zvalue makeLiteral(zvalue value) {
 }
 
 // Documented in spec.
+zvalue makeMapExpression(zvalue mappings) {
+    return makeMapLikeExpression(
+        mappings, makeLiteral(EMPTY_MAP), REFS(makeMap), REFS(makeValueMap));
+};
+
+// Documented in spec.
 zvalue makeMaybe(zvalue value) {
     return makeData(CLS_maybe, mapFrom1(SYM_value, value));
 }
@@ -575,6 +645,13 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
 zvalue makeSymbolLiteral(zvalue name) {
     return makeLiteral(symbolFromString(name));
 }
+
+// Documented in spec.
+zvalue makeSymbolTableExpression(zvalue mappings) {
+    return makeMapLikeExpression(
+        mappings, makeLiteral(EMPTY_SYMBOL_TABLE),
+        REFS(makeSymbolTable), REFS(makeValueSymbolTable));
+};
 
 // Documented in spec.
 zvalue makeThunk(zvalue expression) {
@@ -724,12 +801,12 @@ zvalue withModuleDefs(zvalue node) {
 
     zvalue yieldExports = (exSize == 0)
         ? makeLiteral(EMPTY_MAP)
-        : makeCall(SYM(cat), exportValues);
+        : makeCall(SYMS(cat), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
             makeLiteral(CLS_module),
-            makeCall(SYM(cat),
+            makeCall(SYMS(cat),
                 listFrom2(
                     makeCall(REFS(makeValueMap),
                         listFrom2(makeLiteral(SYM_exports), yieldExports)),

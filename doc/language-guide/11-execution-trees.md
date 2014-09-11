@@ -486,3 +486,13 @@ Examples:
 @internal{name: "potion/blort.txt"}
 @internal{name: "frobozz/potion/blort.txt"}
 ```
+
+#### `mapping` &mdash; `@mapping{keys: [key*], value}`
+
+* `keys` &mdash; List of keys to be bound.
+* `value` &mdash; Value to bind to.
+
+Used as an argument to `makeMapExpression` (never directly executed).
+This represents one mapping inside a map expression. Elements of `keys`
+are treated with respect to interpolation just like arguments in a
+`call` node.

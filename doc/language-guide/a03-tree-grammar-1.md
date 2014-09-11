@@ -163,13 +163,13 @@ def parLiteral = {:
     { makeLiteral(s::value) }
 |
     @false
-    { makeLiteral(false) }
+    { LITS::false }
 |
     @true
-    { makeLiteral(true) }
+    { LITS::true }
 |
     @null
-    { makeLiteral(null) }
+    { LITS::null }
 |
     @"@"
     symbol = parIdentifierSymbol
@@ -193,38 +193,49 @@ def parMapping = {:
     keys = parKey+
     value = parExpression
 
-    { makeCallOrApply(REFS::makeValueMap, keys*, withoutInterpolate(value)) }
+    ## `withoutInterpolate` here ensures that `value*` is treated as a
+    ## `fetch` and not interpolation into an underlying function call.
+    { @mapping{keys, value: withoutInterpolate(value)} }
 |
-    ## An expression is valid only if it's an interpolation, in which case we
-    ## take the interpolation variant of the node.
+    ## A plain expression is valid only if it's an interpolation, in which
+    ## case we take the interpolation variant of the node.
     value = parExpression
     { value::interpolate }
 |
     ## Otherwise, it's got to be a raw name, representing a binding of that
     ## name to its value as a variable.
     name = parNameSymbol
-    { makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name)) }
+    { @mapping{keys: [makeLiteral(name)], value: makeVarFetch(name)} }
+:};
+
+## Parses a comma-delimited sequence of zero or more mappings (that is, a
+## body of a map or map-like thing). Yields a list of mappings, including
+## possibly `@mapping` elements.
+def parMappings = {:
+    one = parMapping
+    rest = (@"," parMapping)*
+    { [one, rest*] }
+|
+    { [] }
 :};
 
 ## Parses a map literal.
 def parMap = {:
     @"{"
-
-    result = (
-        one = parMapping
-        rest = (@"," parMapping)*
-        {
-            ifIs { eq(rest, []) }
-                { one }
-                { makeCall(REFS::SYM_cat, one, rest*) }
-        }
-    |
-        { makeLiteral({}) }
-    )
-
+    mappings = parMappings
     @"}"
 
-    { result }
+    { makeMapExpression(mappings*) }
+:};
+
+## Parses a symbol table literal.
+def parSymbolTable = {:
+    @"@"
+    @"{"
+    mappings = parMappings
+    @"}"
+
+    { makeSymbolTableExpression(mappings*) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -261,7 +272,7 @@ def parList = {:
     @"]"
     {
         ifIs { eq(expressions, []) }
-            { makeLiteral([]) }
+            { LITS::EMPTY_LIST }
             { makeCallOrApply(REFS::makeList, expressions*) }
     }
 :};
@@ -355,8 +366,8 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarLvalue | parVarRef | parLiteral | parMap | parList |
-    parDeriv | parType | parFullClosure | parParenExpression
+    parVarLvalue | parVarRef | parLiteral | parSymbolTable | parMap |
+    parList | parDeriv | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.

@@ -14,6 +14,23 @@
 //
 
 // Documented in spec.
+FUN_IMPL_DECL(makeMap) {
+    if ((argCount & 1) != 0) {
+        die("Odd argument count for map construction.");
+    }
+
+    zint size = argCount >> 1;
+    zmapping mappings[size];
+
+    for (zint i = 0, at = 0; i < size; i++, at += 2) {
+        mappings[i].key = args[at];
+        mappings[i].value = args[at + 1];
+    }
+
+    return mapFromArray(size, mappings);
+}
+
+// Documented in spec.
 FUN_IMPL_DECL(makeValueMap) {
     zint size = argCount - 1;
     zvalue value = args[size];

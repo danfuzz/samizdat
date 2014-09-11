@@ -5,44 +5,13 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 ::
-    makeCall, makeLiteral, makeSymbolLiteral, makeVarFetch;
+import ./constructors1 :: makeCall, makeLiteral, makeVarFetch;
+import ./literals :: SYMS;
 
 
 ##
 ## Private Definitions
 ##
-
-## Literal symbols.
-def SYMBOLS = [
-    @add,
-    @and,
-    @cat,
-    @collect,
-    @div,
-    @divEu,
-    @exclusive,
-    @exports,
-    @get,
-    @get_size,
-    @inclusive,
-    @info,
-    @mod,
-    @modEu,
-    @mul,
-    @neg,
-    @not,
-    @or,
-    @perEq,
-    @reverse,
-    @shl,
-    @sliceExclusive,
-    @sliceInclusive,
-    @shr,
-    @sub,
-    @value,
-    @xor
-];
 
 ## Global variable names / regular variable references.
 def NAMES = [
@@ -66,7 +35,10 @@ def NAMES = [
     @makeData,
     @makeDerivedDataClass,
     @makeList,
+    @makeMap,
+    @makeSymbolTable,
     @makeValueMap,
+    @makeValueSymbolTable,
     @maybeValue,
     @ne,
     @perGe,
@@ -108,9 +80,6 @@ def MOD_NAMES = [
     {mod: @Sequence,  name: @sliceGeneral}
 ];
 
-## Used in `MOD_NAMES` processing.
-def SYM_get = makeLiteral(@get);
-
 
 ##
 ## Exported Definitions
@@ -118,10 +87,6 @@ def SYM_get = makeLiteral(@get);
 
 ## Documented in spec.
 export def REFS = {}.cat(
-    (filterAll(SYMBOLS) { name ->
-        {"SYM_".cat(name).toSymbol(): makeLiteral(name)}
-    })*,
-
     (filterAll(NAMES) { name ->
         {(name): makeVarFetch(name)}
     })*,
@@ -131,6 +96,6 @@ export def REFS = {}.cat(
         def name = modName::name;
         def modVar = makeVarFetch("$".cat(mod).toSymbol());
         def refKey = "".cat(mod, "_", name).toSymbol();
-        {(refKey): makeCall(SYM_get, modVar, makeLiteral(name))}
+        {(refKey): makeCall(SYMS::get, modVar, makeLiteral(name))}
     })*
 );

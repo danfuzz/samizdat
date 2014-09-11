@@ -127,7 +127,7 @@
         },
         {
           "end" : "\\}",
-          "begin" : "\\{",
+          "begin" : "@?\\{",
           "beginCaptures" : {
             "0" : {
               "name" : "punctuation.brace.open.samizdat"
@@ -433,7 +433,7 @@
           "name" : "constant.numeric.samizdat"
         },
         {
-          "match" : "(?x)\\[\\] | \\{\\}",
+          "match" : "(?x)\\[\\] | @?\\{\\}",
           "name" : "constant.language.samizdat"
         },
         {

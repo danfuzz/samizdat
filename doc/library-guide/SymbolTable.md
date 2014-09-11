@@ -5,11 +5,9 @@ SymbolTable
 -----------
 
 A `SymbolTable` is a mapping from symbols to arbitrary other objects.
-It is intentionally *not* a kind of `Collection`. In particular, it is not
-possible to iterate over the keys of an instance, merely to look up specific
-symbols. The point of this is so that it's possible to use `SymbolTable`s
-to hold what amounts to private mappings, by virtue of using anonymous
-symbols as keys.
+It is intentionally *not* a kind of `Collection`, as this class is intended
+to be relatively "low level." That said, the class provides *some* of the
+methods of `Collection`.
 
 
 <br><br>
@@ -42,9 +40,23 @@ ordered with respect to each other.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 symbol table. If there is no such mapping, then this returns void.
 
+#### `.get_size() -> int`
+
+Returns the number of mappings contained within `this`.
+
 
 <br><br>
 ### Primitive Definitions
+
+#### `makeValueSymbolTable(keys*, value) -> symbolTable`
+
+This makes a symbol table which maps any number of keys (including none)
+to the same value. If no keys are specified, then this function returns
+the empty symbol table. This function is meant to be exactly parallel to
+`makeValueMap` (see which).
+
+Note that the argument list is "stretchy" in front, which isn't really
+representable in Samizdat syntax as presented.
 
 #### `makeSymbolTable(mappings*) -> symbolTable`
 

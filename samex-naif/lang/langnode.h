@@ -17,8 +17,8 @@
 /** Equivalent to `REFS::<name>` in the spec. */
 #define REFS(name) (makeVarFetch(SYM_##name))
 
-/** Equivalent to `REFS::SYM_<name>` in the spec. */
-#define SYM(name) (makeLiteral(SYM_##name))
+/** Equivalent to `SYMS::<name>` in the spec. */
+#define SYMS(name) (makeLiteral(SYM_##name))
 
 // Documented in spec.
 bool canYieldVoid(zvalue node);
@@ -78,6 +78,9 @@ zvalue makeInterpolate(zvalue node);
 zvalue makeLiteral(zvalue value);
 
 // Documented in spec.
+zvalue makeMapExpression(zvalue mappings);
+
+// Documented in spec.
 zvalue makeMaybe(zvalue value);
 
 // Documented in spec.
@@ -91,6 +94,9 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue);
 
 // Documented in spec.
 zvalue makeSymbolLiteral(zvalue name);
+
+// Documented in spec.
+zvalue makeSymbolTableExpression(zvalue mappings);
 
 // Documented in spec.
 zvalue makeThunk(zvalue expression);

@@ -51,7 +51,7 @@ the quotes are optional.
 
 #### Data
 
-This is the parent of all "pure data" classes in the language.
+This is the parent of all "immutable data" classes in the language.
 
 #### Object
 
@@ -203,19 +203,21 @@ to interpolate.
 [[1, 2]*, (3..5)*, {f: 6}*]   ## the same as [1, 2, 3, 4, 5, {f: 6}]
 ```
 
-#### Map (data)
 
-A `Map` is a sequence of zero or more mappings (also called bindings)
-from nearly-arbitrary keys to arbitrary values. Values are allowed to be any
-type of value. Keys are allowed to be any value that can be ordered, using
-the defined total ordering of values, with respect to all other keys in the
-map. Notably, keys are *not* restricted to only being symbols, strings, or
-other string-like things.
+#### Map and SymbolTable (data)
+
+`Map`s and `SymbolTable`s are both sequences of zero or more mappings
+(also called bindings) from keys to arbitrary values. The two classes
+place different restrictions on keys: `Map` keys must all be ordered
+with respect to each other, using the defined "total order" of values.
+`SymbolTable` keys must all be symbols.
 
 Maps are written as an initial `{`, followed by zero or
-more mappings, followed by a final `}`. Mappings are written as
-the key representation, followed by an `:`, followed by the value
-representation. Mappings are separated with commas.
+more mappings, followed by a final `}`. Symbol tables are the same, except
+that the opener is `@{`.
+
+Mappings are written as the key representation, followed by an `:`, followed
+by the value representation. Mappings are separated with commas.
 
 Syntactically, keys are "terms," that is, simple values, collection literals,
 or parenthesized expressions. As a short-hand, a symbol key with the same
@@ -238,32 +240,25 @@ with the same name, it is only necessary to name the variable (no colon,
 etc.). This is to handle the common case of putting together a map of current
 variable definitions.
 
-`{}` denotes the empty map.
+`{}` denotes the empty map. `@{}` denotes the empty symbol table.
 
 ```
-{}                            ## the empty map
-{1: "number one"}
-{two: 2}                      ## the same as {@two: 2}
-{true: "yes"}                 ## the same as {@true: "yes"}
-{(true): "yes"}               ## key is (the boolean) `true`, not a symbol
-{favorites: ["biscuits", "muffins"]}
+{}        ## the empty map
+@{}       ## the empty symbol table
+{@x: 1}   ## map with one binding
+{x: 1}    ## usual shorthand for same
+@{@x: 1}  ## symbol table with same mapping
+@{x: 1}   ## usual shorthand for same
 
 def blort = "B";
 def zorch = "Z";
-{blort, zorch}                ## shorthand to reference active variables
-{blort: blort, zorch: zorch}  ## longhand of the above
+{blort, zorch}                  ## shorthand to reference variables
+{@blort: blort, @zorch: zorch}  ## longhand of the above
 
-## The keys here are strings, not symbols.
-{
-    "blort":  "potion; the ability to see in the dark",
-    "borch":  "spell; insect soporific",
-    "fizmo":  "spell; unclogs pipes",
-    "ignatz": "potion; unknown effect",
-    "igram":  "spell; make purple things invisible"
-}
-
-{["complex", "data", "as", "key"]: "Handy!"}
-{(0..9)*: "digits", 10: "not a digit"}
+# These are all equivalent.
+{first: 1, second: 2, third: 3}
+{first: 1, {second: 2, third: 3}*}
+{{first: 1}*, {second: 2, third: 3}*}
 
 ## The first three here are equivalent. The last contains a variable reference
 ## to `the`.
@@ -272,10 +267,22 @@ def zorch = "Z";
 {[@these, @map]*: to: the: "same value"}
 {these: map: @"to": (the): "same value"}
 
-# These are all equivalent.
-{first: 1, second: 2, third: 3}
-{first: 1, {second: 2, third: 3}*}
-{{first: 1}*, {second: 2, third: 3}*}
+## The rest of these maps have non-symbol keys, and so couldn't be made
+## as symbol tables.
+
+{1: "number one"}                ## int
+{(true): "yes"}                  ## the boolean `true`
+{["complex", "data"]: "Handy!"}  ## a list
+{(0..9)*: "digits", 10: "not"}   ## ints
+
+## The keys here are strings.
+{
+    "blort":  "potion; the ability to see in the dark",
+    "borch":  "spell; insect soporific",
+    "fizmo":  "spell; unclogs pipes",
+    "ignatz": "potion; unknown effect",
+    "igram":  "spell; make purple things invisible"
+}
 ```
 
 #### Builtin

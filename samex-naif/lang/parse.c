@@ -448,8 +448,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCallOrApply(REFS(makeValueMap),
-        listAppend(keys, withoutInterpolate(value)));
+    return makeData(CLS_mapping, mapFrom2(SYM_keys, keys, SYM_value, value));
 }
 
 /**
@@ -474,8 +473,10 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return makeCall(REFS(makeValueMap),
-        listFrom2(makeLiteral(name), makeVarFetch(name)));
+    return makeData(CLS_mapping,
+        mapFrom2(
+            SYM_keys,  listFrom1(makeLiteral(name)),
+            SYM_value, makeVarFetch(name)));
 }
 
 // Documented in spec.
@@ -490,21 +491,31 @@ DEF_PARSE(mapping) {
 }
 
 // Documented in spec.
+DEF_PARSE(mappings) {
+    return PARSE_DELIMITED_SEQ(mapping, CH_COMMA);
+}
+
+// Documented in spec.
 DEF_PARSE(map) {
     MARK();
 
-    // This one isn't just a transliteration of the reference code, but the
-    // effect is the same.
-
     MATCH_OR_REJECT(CH_OCURLY);
-    zvalue mappings = PARSE_DELIMITED_SEQ(mapping, CH_COMMA);
+    zvalue mappings = PARSE(mappings);
     MATCH_OR_REJECT(CH_CCURLY);
 
-    switch (get_size(mappings)) {
-        case 0:  { return makeLiteral(EMPTY_MAP);       }
-        case 1:  { return nth(mappings, 0);             }
-        default: { return makeCall(SYM(cat), mappings); }
-    }
+    return makeMapExpression(mappings);
+}
+
+// Documented in spec.
+DEF_PARSE(symbolTable) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_AT);
+    MATCH_OR_REJECT(CH_OCURLY);
+    zvalue mappings = PARSE(mappings);
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    return makeSymbolTableExpression(mappings);
 }
 
 // Documented in spec.
@@ -637,6 +648,7 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(varLvalue);       }
     if (result == NULL) { result = PARSE(varRef);          }
     if (result == NULL) { result = PARSE(literal);         }
+    if (result == NULL) { result = PARSE(symbolTable);     }
     if (result == NULL) { result = PARSE(map);             }
     if (result == NULL) { result = PARSE(list);            }
     if (result == NULL) { result = PARSE(deriv);           }
@@ -713,7 +725,7 @@ DEF_PARSE(unaryExpression) {
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeMaybeValue(result);
         } else if (hasClass(one, CLS_literal)) {
-            result = makeCallOrApply(SYM(get), listFrom2(result, one));
+            result = makeCallOrApply(SYMS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
         }

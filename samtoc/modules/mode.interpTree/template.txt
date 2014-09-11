@@ -13,8 +13,9 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/OneOff.h"
-#include "type/Symbol.h"
 #include "type/String.h"
+#include "type/Symbol.h"
+#include "type/SymbolTable.h"
 #include "util.h"
 
 static zvalue programTree(void) {

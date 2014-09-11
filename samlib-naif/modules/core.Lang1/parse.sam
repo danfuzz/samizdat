@@ -125,13 +125,13 @@ def parLiteral = makeMainChoice(
         makeCode { s -> makeLiteral(s::value) }),
     makeSequence(
         makeToken(@@false),
-        makeResult(makeLiteral(false))),
+        makeResult(LITS::false)),
     makeSequence(
         makeToken(@@true),
-        makeResult(makeLiteral(true))),
+        makeResult(LITS::true)),
     makeSequence(
         makeToken(@@null),
-        makeResult(makeLiteral(null))),
+        makeResult(LITS::null)),
     makeSequence(
         makeToken(@@"@"),
         parIdentifierSymbol,
@@ -155,8 +155,7 @@ def parMapping = makeMainChoice(
         makeRepeat(parKey, 1),
         parExpression,
         makeCode { keys, value ->
-            makeCallOrApply(REFS::makeValueMap,
-                keys*, withoutInterpolate(value))
+            @mapping{keys, value: withoutInterpolate(value)}
         }),
     makeSequence(
         parExpression,
@@ -164,25 +163,31 @@ def parMapping = makeMainChoice(
     makeSequence(
         parNameSymbol,
         makeCode { name ->
-            makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
+            @mapping{keys: [makeLiteral(name)], value: makeVarFetch(name)}
         }));
+
+## Documented in spec.
+def parMappings = makeMainChoice(
+    makeSequence(
+        parMapping,
+        makeRepeat(makeSequence(makeToken(@@","), parMapping)),
+        makeCode { one, rest -> [one, rest*] }),
+    makeResult([]));
 
 ## Documented in spec.
 def parMap = makeMainSequence(
     makeToken(@@"{"),
-    makeChoice(
-        makeSequence(
-            parMapping,
-            makeRepeat(
-                makeSequence(makeToken(@@","), parMapping)),
-            makeCode { ., one, rest ->
-                ifIs { eq(rest, []) }
-                    { one }
-                    { makeCall(REFS::SYM_cat, one, rest*) }
-            }),
-        makeCode { . -> makeLiteral({}) }),
+    parMappings,
     makeToken(@@"}"),
-    makeCode { ., result, . -> result });
+    makeCode { ., mappings, . -> makeMapExpression(mappings*) });
+
+## Documented in spec.
+def parSymbolTable = makeMainSequence(
+    makeToken(@@"@"),
+    makeToken(@@"{"),
+    parMappings,
+    makeToken(@@"}"),
+    makeCode { ., ., mappings, . -> makeSymbolTableExpression(mappings*) });
 
 ## Documented in spec.
 def parListItem = makeMainSequence(
@@ -212,7 +217,7 @@ def parList = makeMainSequence(
     makeToken(@@"]"),
     makeCode { ., expressions, . ->
         ifIs { eq(expressions, []) }
-            { makeLiteral([]) }
+            { LITS::EMPTY_LIST }
             { makeCallOrApply(REFS::makeList, expressions*) }
     });
 
@@ -284,8 +289,8 @@ def parBasicNullaryClosure = makeMainSequence(
 
 ## Documented in spec.
 def parTerm = makeMainChoice(
-    parVarLvalue, parVarRef, parLiteral, parMap, parList,
-    parDeriv, parType, parFullClosure, parParenExpression,
+    parVarLvalue, parVarRef, parLiteral, parSymbolTable, parMap,
+    parList, parDeriv, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     makeSequence(

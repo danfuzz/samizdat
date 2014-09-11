@@ -47,7 +47,7 @@ void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue newVars = collPut(vars, name, box);
 
     if (get_size(vars) == get_size(newVars)) {
-        die("Variable already defined: %s", valDebugString(name));
+        die("Variable already defined: %s", valDebugString(valToString(name)));
     }
 
     frame->vars = newVars;
@@ -63,7 +63,7 @@ zvalue frameGet(Frame *frame, zvalue name) {
         }
     }
 
-    die("Variable not defined: %s", valDebugString(name));
+    die("Variable not defined: %s", valDebugString(valToString(name)));
 }
 
 // Documented in header.

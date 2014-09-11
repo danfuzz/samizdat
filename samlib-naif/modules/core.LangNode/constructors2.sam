@@ -9,6 +9,7 @@ import core.Sequence :: reverseNth;
 
 import ./constructors1 :: *;
 import ./getters :: *;
+import ./literals :: LITS, SYMS;
 import ./misc :: canYieldVoid, isExpression;
 import ./refs :: REFS;
 
@@ -55,6 +56,80 @@ fn expandYield(map) {
     return makeNoYield(exitCall)
 };
 
+## Helper for `makeMapExpression` and `makeSymbolTableExpression`, which
+## is parameterized on the "empty" value and the two required constructor
+## functions.
+export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
+        makeOneValue) {
+    ifIs { eq(mappings, []) }
+        {
+            ## No mappings. Easy out.
+            return emptyLiteral
+        };
+
+    ## Convert the mappings as if it has to be nontrivial. If in the end, it's
+    ## possible to use a single call to `makeMap`, then just do that.
+
+    var singleArgs = [];  ## Single-value mappings, to be `makeMap`ed.
+    var catArgs = [];     ## Arguments ready to be `cat`ed.
+
+    fn addToCat(arg) {
+        catArgs := [catArgs*, arg];
+    };
+
+    fn addSingleToCat() {
+        ifIs { perNe(singleArgs, []) }
+            {
+                addToCat(makeCall(makeMultiValue, singleArgs*));
+                singleArgs := []
+            }
+    };
+
+    filterPump(mappings) { one ->
+        ifIs { hasClass(one, @@mapping) }
+            {
+                def keys = one::keys;
+                def value = one::value;
+                var handled = false;
+
+                ifIs { eq(keys.get_size(), 1) }
+                    {
+                        def key = keys*;
+                        ifNot { key::interpolate }
+                            {
+                                singleArgs := [singleArgs*, key, value];
+                                handled := true
+                            }
+                    };
+
+                ifIs { eq(handled, false) }
+                    {
+                        addSingleToCat();
+                        addToCat(
+                            makeCallOrApply(makeOneValue, keys*, value))
+                    };
+            }
+            {
+                addSingleToCat();
+                addToCat(one)
+            }
+    };
+
+    ifIs { eq(catArgs, []) }
+        {
+            ## There were no "must be `cat`ed" mappings.
+            addSingleToCat();
+            return catArgs*
+        };
+
+    ## There is at least one mapping that requires special handling. Emit
+    ## a call to `cat`, with `{}` as the first argument so as to ensure a
+    ## map result.
+
+    addSingleToCat();
+    return makeCall(SYMS::cat, emptyLiteral, catArgs*)
+};
+
 
 ##
 ## Exported Definitions
@@ -98,7 +173,7 @@ export fn makeCallOrApply(function, values*) {
         ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
-                addToCooked(makeCall(REFS::SYM_collect, node))
+                addToCooked(makeCall(SYMS::collect, node))
             }
             { pending := [pending*, actual] }
     };
@@ -116,7 +191,7 @@ export fn makeCallOrApply(function, values*) {
     return ifIs { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
-            makeApply(function, makeCall(REFS::SYM_cat, cookedValues*))
+            makeApply(function, makeCall(SYMS::cat, cookedValues*))
         }
         {
             ## Only one. Use it directly as the values for the `apply` node.
@@ -155,7 +230,7 @@ export fn makeDynamicImport(node) {
 
                 filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
-                        makeCall(REFS::SYM_get, loadCall, makeLiteral(sel)))
+                        makeCall(SYMS::get, loadCall, makeLiteral(sel)))
                 }
             },
 
@@ -202,7 +277,7 @@ export fn makeFullClosure(nodeOrMap) {
 
 ## Documented in spec.
 export fn makeGet(collArg, keyArg) {
-    return makeCall(REFS::SYM_get, collArg, keyArg)
+    return makeCall(SYMS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
@@ -318,8 +393,21 @@ export fn makeInterpolate(node) {
 };
 
 ## Documented in spec.
+export fn makeMapExpression(mappings*) {
+    return makeMapLikeExpression(
+        mappings, LITS::EMPTY_MAP, REFS::makeMap, REFS::makeValueMap)
+};
+
+## Documented in spec.
 export fn makeMaybeValue(node) {
     return makeCall(REFS::maybeValue, makeThunk(node))
+};
+
+## Documented in spec.
+export fn makeSymbolTableExpression(mappings*) {
+    return makeMapLikeExpression(
+        mappings, LITS::EMPTY_SYMBOL_TABLE,
+        REFS::makeSymbolTable, REFS::makeValueSymbolTable)
 };
 
 ## Documented in spec.
@@ -389,14 +477,14 @@ export fn withModuleDefs(node) {
     };
 
     def yieldExports = ifIs { eq(exportValues, []) }
-        { makeLiteral({}) }
-        { makeCall(REFS::SYM_cat, exportValues*) };
+        { LITS::EMPTY_MAP }
+        { makeCall(SYMS::cat, exportValues*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),
-        makeCall(REFS::SYM_cat,
-            makeCall(REFS::makeValueMap, REFS::SYM_exports, yieldExports),
-            makeCall(REFS::makeValueMap, REFS::SYM_info, yieldInfo)));
+        makeCall(SYMS::cat,
+            makeCall(REFS::makeValueMap, SYMS::exports, yieldExports),
+            makeCall(REFS::makeValueMap, SYMS::info, yieldInfo)));
 
     return @(get_class(node)){
         node.dataOf()*,

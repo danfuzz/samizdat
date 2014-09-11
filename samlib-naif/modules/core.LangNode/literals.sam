@@ -1,0 +1,75 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#= language core.Lang0
+
+import core.Generator :: filterAll;
+import ./constructors1 :: makeLiteral;
+
+
+##
+## Private Definitions
+##
+
+## Literal symbols.
+def SYMBOLS = [
+    @add,
+    @and,
+    @cat,
+    @collect,
+    @div,
+    @divEu,
+    @exclusive,
+    @exports,
+    @get,
+    @get_size,
+    @inclusive,
+    @info,
+    @mod,
+    @modEu,
+    @mul,
+    @neg,
+    @not,
+    @or,
+    @perEq,
+    @reverse,
+    @shl,
+    @sliceExclusive,
+    @sliceInclusive,
+    @shr,
+    @sub,
+    @value,
+    @xor
+];
+
+## Literal values.
+export def VALUES = {
+    EMPTY_LIST:         [],
+    EMPTY_MAP:          {},
+    EMPTY_SYMBOL_TABLE: @{},
+    INT_0:              0,
+    INT_1:              1,
+    false:              false,
+    null:               null,
+    true:               true
+};
+
+
+##
+## Exported Definitions
+##
+
+## Documented in spec.
+export def LITS = {}.cat(
+    (filterAll(VALUES) { one ->
+        {one.get_key(): makeLiteral(one.get_value())}
+    })*
+);
+
+## Documented in spec.
+export def SYMS = {}.cat(
+    (filterAll(SYMBOLS) { name ->
+        {(name): makeLiteral(name)}
+    })*
+);
