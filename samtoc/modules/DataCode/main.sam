@@ -25,6 +25,9 @@ def CODE_EMPTY_MAP = genCodeString("EMPTY_MAP");
 ## Conversion of `""`.
 def CODE_EMPTY_STRING = genCodeString("EMPTY_STRING");
 
+## Conversion of `@{}`.
+def CODE_EMPTY_SYMBOL_TABLE = genCodeString("EMPTY_SYMBOL_TABLE");
+
 ## Conversion of `false`.
 def CODE_FALSE = genCodeString("BOOL_FALSE");
 
@@ -205,7 +208,7 @@ fn Symbol_convert(value) {
 ## Converts a symbol table.
 fn SymbolTable_convert(value) {
     if (value == @{}) {
-        return genCall("EMPTY_SYMBOL_TABLE")
+        return CODE_EMPTY_SYMBOL_TABLE
     };
 
     ## TODO: Handle more than just the empty table.
