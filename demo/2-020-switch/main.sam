@@ -11,6 +11,12 @@
 ## Private Definitions
 ##
 
+fn noDefault(value) {
+    return? switch (value) {
+        1: { "blort" }
+    }
+};
+
 fn powerName(value) {
     return? switch /out (value) {
         1:           { yield "one" };
@@ -46,7 +52,13 @@ fn namer(value) {
 ## Main Tests
 ##
 
-note("Power...");
+note("No default...");
+note(noDefault(1));
+
+ifIs { noDefault(2) }
+    { die("Bad void.") };
+
+note("\nPower...");
 note(powerName(0));
 note(powerName(1));
 note(powerName(2));
