@@ -50,7 +50,7 @@ static zvalue allocInstance(void) {
 //
 
 // Documented in header.
-void arrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
+void xarrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
     assertHasClass(symbolTable, CLS_SymbolTable);
     SymbolTableInfo *info = getInfo(symbolTable);
 

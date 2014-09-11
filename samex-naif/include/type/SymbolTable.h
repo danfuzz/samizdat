@@ -29,7 +29,7 @@ extern zvalue FUN_SymbolTable_makeValueSymbolTable;
  * array, which must be sized large enough to hold all of them. The result
  * is indexed by symbol index.
  */
-void arrayFromSymbolTable(zvalue *result, zvalue symbolTable);
+void xarrayFromSymbolTable(zvalue *result, zvalue symbolTable);
 
 /**
  * Makes a symbol table from a series of individual arguments (symbol

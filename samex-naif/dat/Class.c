@@ -148,7 +148,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 
     if (instanceMethods != NULL) {
         zvalue methods[DAT_MAX_SYMBOLS];
-        arrayFromSymbolTable(methods, instanceMethods);
+        xarrayFromSymbolTable(methods, instanceMethods);
         for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
             zvalue one = methods[i];
             if (one != NULL) {
