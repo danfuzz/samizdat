@@ -14,6 +14,17 @@
 
 
 //
+// Private Definitions
+//
+
+/**
+ * Flag indicating that `valDebugString` is in progress, as it's bad news
+ * if the function is called recursively.
+ */
+static bool inValDebugString = false;
+
+
+//
 // Exported Definitions
 //
 
@@ -41,9 +52,15 @@ char *valDebugString(zvalue value) {
 
     if (SYM_NAME(debugString) == NULL) {
         die("Too early to call `debugString`.");
+    } else if (inValDebugString) {
+        die("`valDebugString` called recursively");
     }
 
-    return utf8DupFromString(METH_CALL(debugString, value));
+    inValDebugString = true;
+    char *result = utf8DupFromString(METH_CALL(debugString, value));
+    inValDebugString = false;
+
+    return result;
 }
 
 // Documented in header.

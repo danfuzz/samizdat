@@ -147,13 +147,13 @@ void classBindMethods(zvalue cls, zvalue classMethods,
     }
 
     if (instanceMethods != NULL) {
-        zvalue methods[DAT_MAX_SYMBOLS];
+        zint size = symbolTableSize(instanceMethods);
+        zmapping methods[size];
         arrayFromSymbolTable(methods, instanceMethods);
-        for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
-            zvalue one = methods[i];
-            if (one != NULL) {
-                info->methods[i] = one;
-            }
+        for (zint i = 0; i < size; i++) {
+            zvalue sym = methods[i].key;
+            zint index = symbolIndex(methods[i].key);
+            info->methods[index] = methods[i].value;
         }
     }
 }

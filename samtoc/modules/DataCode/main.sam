@@ -211,8 +211,15 @@ fn SymbolTable_convert(value) {
         return CODE_EMPTY_SYMBOL_TABLE
     };
 
-    ## TODO: Handle more than just the empty table.
-    die("Cannot convert non-empty symbol table.")
+    ## Convert to a map, and process the result similar to how map conversion
+    ## works.
+
+    def map = {}.cat(value);
+    def mapPairs = [ mapping in map ->
+        [convert(mapping.key), convert(mapping.value)]
+    ];
+
+    return genCall("symbolTableFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
 };
 
 ## Converts a derived value or an opaque core value.

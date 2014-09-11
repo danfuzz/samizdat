@@ -50,11 +50,19 @@ static zvalue allocInstance(void) {
 //
 
 // Documented in header.
-void arrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
+void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
     assertHasClass(symbolTable, CLS_SymbolTable);
     SymbolTableInfo *info = getInfo(symbolTable);
+    zint size = info->size;
 
-    utilCpy(zvalue, result, info->table, DAT_MAX_SYMBOLS);
+    for (zint i = 0, at = 0; i < DAT_MAX_SYMBOLS; i++) {
+        zvalue one = info->table[i];
+        if (one != NULL) {
+            result[at].key = symbolFromIndex(i);
+            result[at].value = one;
+            at++;
+        }
+    }
 }
 
 // Documented in header.
@@ -119,6 +127,12 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
 
     info->size = finalSize;
     return result;
+}
+
+// Documented in header.
+zint symbolTableSize(zvalue symbolTable) {
+    assertHasClass(symbolTable, CLS_SymbolTable);
+    return getInfo(symbolTable)->size;
 }
 
 

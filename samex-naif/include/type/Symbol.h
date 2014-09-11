@@ -28,6 +28,11 @@ extern zvalue FUN_Symbol_symbolIsInterned;
 zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf);
 
 /**
+ * Gets the pre-existing symbol with the given index.
+ */
+zvalue symbolFromIndex(zint index);
+
+/**
  * Gets the interned symbol that corresponds to the given `name`, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */

@@ -115,6 +115,13 @@ fn Map_sourceGeneral(value, adorn) {
     return adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
 
+## Stringifies a string.
+fn String_sourceGeneral(value, adorn) {
+    def bodyChars = makeFilterGenerator(value)
+        { ch -> stringChar(ch) };
+    return adornIf(adorn, "\"", "".cat(bodyChars*), "\"")
+};
+
 ## Stringifies a symbol.
 fn Symbol_sourceGeneral(value, adorn) {
     ifIs { eq(adorn, false) }
@@ -124,11 +131,12 @@ fn Symbol_sourceGeneral(value, adorn) {
     return nameString(prefix, value);
 };
 
-## Stringifies a string.
-fn String_sourceGeneral(value, adorn) {
-    def bodyChars = makeFilterGenerator(value)
-        { ch -> stringChar(ch) };
-    return adornIf(adorn, "\"", "".cat(bodyChars*), "\"")
+## Stringifies a symbol table.
+fn SymbolTable_sourceGeneral(value, adorn) {
+    ## Convert to a map, and stringify that, with the requisite `@` prefix
+    ## if requested.
+    def mapString = sourceGeneral({}.cat(value), adorn);
+    return adornIf(adorn, "@", mapString, "")
 };
 
 ## Stringifies a derived value or an opaque core value.
@@ -159,12 +167,13 @@ export fn sourceGeneral(value, adorn) {
     return ifSwitch(
         { get_class(value) },
         {
-            (Class):  { . -> Class_sourceGeneral(value, adorn) },
-            (Int):    { . -> Int_sourceGeneral(value, adorn) },
-            (List):   { . -> List_sourceGeneral(value, adorn) },
-            (Map):    { . -> Map_sourceGeneral(value, adorn) },
-            (String): { . -> String_sourceGeneral(value, adorn) },
-            (Symbol): { . -> Symbol_sourceGeneral(value, adorn) }
+            (Class):       { . -> Class_sourceGeneral(value, adorn)       },
+            (Int):         { . -> Int_sourceGeneral(value, adorn)         },
+            (List):        { . -> List_sourceGeneral(value, adorn)        },
+            (Map):         { . -> Map_sourceGeneral(value, adorn)         },
+            (String):      { . -> String_sourceGeneral(value, adorn)      },
+            (Symbol):      { . -> Symbol_sourceGeneral(value, adorn)      },
+            (SymbolTable): { . -> SymbolTable_sourceGeneral(value, adorn) }
         },
         { . -> Value_sourceGeneral(value, adorn) }
     )

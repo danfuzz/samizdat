@@ -27,9 +27,9 @@ extern zvalue FUN_SymbolTable_makeValueSymbolTable;
 /**
  * Copies all the values of the given symbol table into the given result
  * array, which must be sized large enough to hold all of them. The result
- * is indexed by symbol index.
+ * is ordered by symbol index.
  */
-void arrayFromSymbolTable(zvalue *result, zvalue symbolTable);
+void arrayFromSymbolTable(zmapping *result, zvalue symbolTable);
 
 /**
  * Makes a symbol table from a series of individual arguments (symbol
@@ -42,5 +42,10 @@ zvalue symbolTableFromArgs(zvalue first, ...);
  * symbols (of course).
  */
 zvalue symbolTableFromArray(zint size, zmapping *mappings);
+
+/**
+ * Gets the size of a symbol table.
+ */
+zint symbolTableSize(zvalue symbolTable);
 
 #endif

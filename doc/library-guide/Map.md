@@ -50,11 +50,12 @@ It is a terminal error if `this` does not contain exactly one mapping.
 #### `.cat(more*) -> map`
 
 Returns a map consisting of the combination of the mappings of the
-argument maps. For any keys in common between the maps,
-the lastmost argument's value is the one that ends up in the result.
-Despite the `cat` name, strictly speaking this isn't a linear concatenation,
-but it is as close as one can get to it given the class's key ordering
-and uniqueness constraints.
+arguments. Arguments are allowed to be maps or symbol tables.
+
+For any keys in common between the arguments, the lastmost argument's value
+is the one that ends up in the result. Despite the `cat` name, strictly
+speaking this isn't a linear concatenation, but it is as close as one can
+get to it given the class's key ordering and uniqueness constraints.
 
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
