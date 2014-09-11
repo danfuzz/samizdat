@@ -177,31 +177,24 @@ switch (dispatchExpression) {
     default: {
         defaultBlock
     };
-    else: {
-        elseBlock
-    }
 }
 ```
 
 There can be any number of test expressions (including none), and
-both the `default` and `else` blocks are optional. The `default`
-and `else` blocks can appear anywhere in the list of test cases.
-Each of the block bodies can contain any number of statements but
-must not have any argument declarations.
+the `default` block is optional. The `default` block can appear anywhere in
+the list of test cases. Each of the block bodies can contain any number of
+statements but must not have any argument declarations.
 
-This is evaluated by first evaluating the `dispatchExpression`. If
-that yields void, then the `elseBlock` (if any) is evaluated, and
-that result becomes the result of the overall expression. If the
-`dispatchExpression` yields a value (the usual expected case), then
-the test expressions are evaluated in order (note, they do not
+This is evaluated by first evaluating the `dispatchExpression`, which must
+yield a value. It is an error for it to yield void (terminating the runtime).
+Then, the test expressions are evaluated in order (note, they do not
 have to be constant expressions). If one of the test expressions results
 in a value that is equal to the dispatch expression's value, then its
 corresponding block is evaluted, and that becomes the overall expression
 result (and no further test expressions are evaluated). If none of
-the test expressions matched, then the `defaultBlock` (if any)
-is evaluated, and that result becomes the result of the overall expression.
-In case no consequent block is evaluated, the overall expression result
-is void.
+the test expressions matched, then the `defaultBlock` (if any) is evaluated,
+and that result becomes the result of the overall expression. In case no
+consequent block is evaluated, the overall expression result is void.
 
 If multiple different expressions should match a single consequent
 block, the same syntax is used to represent this as is used for

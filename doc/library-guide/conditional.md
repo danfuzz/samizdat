@@ -33,21 +33,18 @@ This is identical to `ifIs`, except that the `isFunction` argument is omitted.
 
 **Syntax Note:** Used in the translation of `do` and `!expression` forms.
 
-#### `ifSwitch(testFunction, valueFunctions, optDefaultFunction?, optVoidFunction?) -> . | void`
+#### `ifSwitch(testFunction, valueFunctions, optDefaultFunction?) -> . | void`
 
 Case-switched conditional. This calls the given `testFunction` with
-no arguments, taking note of its return value (hereafter, the "test result")
-or lack thereof.
+no arguments, taking note of its return value (hereafter, the "test result").
+`testFunction` must return a value; if not, it is a fatal error (terminating
+the runtime).
 
-If `testFunction()` returns a value, then the value is looked up as a key in
-the given `valueFunctions`, which must be a map which binds to functions as
-its values. If a binding is found, then that function is called, passing it
-the test result as the sole argument. If a binding is *not* found, then the
-`optDefaultFunction*` (if passed) is called, again with the test result as
-the sole argument.
-
-If `testFunction()` returns void, then the `optVoidFunction*` (if passed) is
-called, with no arguments.
+The test result is looked up as a key in the given `valueFunctions`, which
+must be a map which binds to functions as its values. If a binding is found,
+then that function is called, passing it the test result as the sole argument.
+If a binding is *not* found, then the `optDefaultFunction*` (if passed) is
+called, again with the test result as the sole argument.
 
 The return value of this function is the same as the result of whatever
 consequent function was called, if any. If no consequent function was called,
