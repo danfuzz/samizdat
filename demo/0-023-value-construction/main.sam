@@ -195,6 +195,9 @@ expectSame(@{blort: "splort"}, @{@blort: "splort"});
 expectDifferent(@{blort: "splort"}, @{blort: "zlort"});
 expectDifferent(@{blort: "splort"}, @{zlort: "splort"});
 
+expectSame(@{x: 10}, @{@{x: 10}*});
+expectSame(@{x: 10, y: 20}, @{y: 20, @{x: 10}*});
+
 expectCore(@{});
 expectCore(@{blort: "splort"});
 

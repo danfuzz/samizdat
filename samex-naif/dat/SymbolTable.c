@@ -181,6 +181,37 @@ FUNC_IMPL_1_rest(SymbolTable_makeValueSymbolTable, first, args) {
 }
 
 // Documented in header.
+METH_IMPL_rest(SymbolTable, cat, args) {
+    if (argsSize == 0) {
+        return ths;
+    }
+
+    zvalue result = allocInstance();
+    SymbolTableInfo *info = getInfo(result);
+    zvalue *resultTable = info->table;
+    zint size = 0;
+
+    for (zint i = -1; i < argsSize; i++) {
+        zvalue one = (i < 0) ? ths : args[i];
+        assertHasClass(one, CLS_SymbolTable);
+        zvalue *table = getInfo(one)->table;
+
+        for (zint j = 0; j < DAT_MAX_SYMBOLS; j++) {
+            zvalue value = table[j];
+            if (value != NULL) {
+                if (resultTable[j] == NULL) {
+                    size++;
+                }
+                resultTable[j] = value;
+            }
+        }
+    }
+
+    info->size = size;
+    return result;
+}
+
+// Documented in header.
 METH_IMPL_0(SymbolTable, gcMark) {
     SymbolTableInfo *info = getInfo(ths);
 
@@ -229,6 +260,7 @@ MOD_INIT(SymbolTable) {
     classBindMethods(CLS_SymbolTable,
         NULL,
         symbolTableFromArgs(
+            METH_BIND(SymbolTable, cat),
             METH_BIND(SymbolTable, gcMark),
             METH_BIND(SymbolTable, get),
             METH_BIND(SymbolTable, get_size),
