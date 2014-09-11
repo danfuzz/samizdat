@@ -1984,19 +1984,27 @@ def parIfExpression = {:
 :};
 
 ## Helper for switch expressions: Parse a single case, including
-## `default` cases. Returns a map that binds `keys` and `code`.
+## `default` cases. Returns a map that binds `keys` and `code`, and possibly
+## `default`.
 def parSwitchCase = {:
-    keys = (
-        @default
-        @":"
-        { @default }
-    |
-        parKey+
-    )
-
+    firstKeys = (!@default parKey)*
+    optDefault = (@default @":")?
+    lastKeys = (!@default parKey)*
     code = parBasicNullaryClosure
 
-    { {code, keys} }
+    ## Ensure that there's at least one key or a `default`.
+    {
+        def sz = firstKeys.get_size().add(optDefault.get_size())
+            .add(lastKeys.get_size());
+        ne(sz, 0)
+    }
+
+    {
+        def base = {code, keys: [firstKeys*, lastKeys*]};
+        ifIs { optDefault* }
+            { {base*, default: true} }
+            { base }
+    }
 :};
 
 ## Parses a switch expression. The translation is along these lines:
@@ -2067,7 +2075,7 @@ def parSwitchExpression = {:
         };
 
         def optDefault = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @default) } { finishCode(case) }
+            ifIs { case::default } { finishCode(case) }
         };
 
         ifIs { gt(optDefault.get_size(), 1) }
