@@ -50,14 +50,6 @@ static zvalue allocInstance(void) {
 //
 
 // Documented in header.
-void xarrayFromSymbolTable(zvalue *result, zvalue symbolTable) {
-    assertHasClass(symbolTable, CLS_SymbolTable);
-    SymbolTableInfo *info = getInfo(symbolTable);
-
-    utilCpy(zvalue, result, info->table, DAT_MAX_SYMBOLS);
-}
-
-// Documented in header.
 void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
     assertHasClass(symbolTable, CLS_SymbolTable);
     SymbolTableInfo *info = getInfo(symbolTable);
