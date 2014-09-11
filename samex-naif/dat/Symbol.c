@@ -19,6 +19,9 @@
 // Private Definitions
 //
 
+/** Array of all symbols, in index order. */
+static zvalue theSymbols[DAT_MAX_SYMBOLS];
+
 /** Next symbol index to assign. */
 static zint theNextIndex = 0;
 
@@ -78,6 +81,8 @@ static zvalue makeSymbol0(zstring name, bool interned) {
     info->s.size = name.size;
     info->s.chars = info->chars;
     utilCpy(zchar, info->chars, name.chars, name.size);
+
+    theSymbols[theNextIndex] = result;
     theNextIndex++;
 
     if (interned) {
@@ -161,13 +166,8 @@ zvalue anySymbolFromUtf8(zint utfBytes, const char *utf, bool interned) {
 
 
 //
-// Exported Definitions
+// Module Definitions
 //
-
-// Documented in header.
-zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
-    return anySymbolFromUtf8(utfBytes, utf, false);
-}
 
 // Documented in header.
 zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
@@ -189,6 +189,25 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     zvalue result = funCall(function, argCount, args);
     UTIL_TRACE_END();
     return result;
+}
+
+
+//
+// Exported Definitions
+//
+
+// Documented in header.
+zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
+    return anySymbolFromUtf8(utfBytes, utf, false);
+}
+
+// Documented in header.
+zvalue symbolFromIndex(zint index) {
+    if ((index < 0) || (index >= theNextIndex)) {
+        die("Bad index for symbol: %lld", index);
+    }
+
+    return theSymbols[index];
 }
 
 // Documented in header.
