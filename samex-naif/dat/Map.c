@@ -12,6 +12,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/SymbolTable.h"
 #include "type/define.h"
 #include "zlimits.h"
 
@@ -267,6 +268,15 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     // Allocate, populate, and return the result.
     return mapFromArrayUnchecked(at, mappings);
+}
+
+// Documented in header.
+zvalue mapFromSymbolTable(zvalue symbolTable) {
+    zint size = symbolTableSize(symbolTable);
+    zmapping mappings[size];
+
+    arrayFromSymbolTable(mappings, symbolTable);
+    return mapFromArray(size, mappings);
 }
 
 

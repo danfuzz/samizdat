@@ -44,4 +44,12 @@ zvalue mapFromArgs(zvalue first, ...);
  */
 zvalue mapFromArray(zint size, zmapping *mappings);
 
+/**
+ * Gets the map whose bindings are identical to the given symbol table's.
+ * This only works if the symbol table's bindings are fully ordered. Ordering
+ * is *not* possible if there are two different anonymous symbols in the
+ * table with the same name.
+ */
+zvalue mapFromSymbolTable(zvalue symbolTable);
+
 #endif
