@@ -257,7 +257,7 @@
 					<key>name</key>
 					<string>constant.language.samizdat</string>
 					<key>match</key>
-					<string>(?x)\[\] | \{\}</string>
+					<string>(?x)\[\] | @?\{\}</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -490,7 +490,7 @@
 					<key>name</key>
 					<string>meta.block.samizdat</string>
 					<key>begin</key>
-					<string>\{</string>
+					<string>@?\{</string>
 					<key>end</key>
 					<string>\}</string>
 					<key>beginCaptures</key>
