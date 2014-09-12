@@ -251,10 +251,18 @@ METH_IMPL_2(SymbolTable, put, key, value) {
 
 // Documented in header.
 METH_IMPL_1(SymbolTable, totalEq, other) {
+    if (ths == other) {
+        return ths;
+    }
+
     // Note: `other` not guaranteed to be a `SymbolTable`.
     assertHasClass(other, CLS_SymbolTable);
     SymbolTableInfo *info1 = getInfo(ths);
     SymbolTableInfo *info2 = getInfo(other);
+
+    if (info1->size != info2->size) {
+        return NULL;
+    }
 
     for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
         zvalue value1 = info1->table[i];
