@@ -11,6 +11,12 @@
 ## Private Definitions
 ##
 
+fn noDefault(value) {
+    return? switch (value) {
+        1: { "blort" }
+    }
+};
+
 fn powerName(value) {
     return? switch /out (value) {
         1:           { yield "one" };
@@ -33,14 +39,6 @@ fn interpolator(value, keys) {
     }
 };
 
-fn elser(item?) {
-    return? switch (item*) {
-        blort: { "See in the dark." };
-        fizmo: { "Unclog pipes." };
-        else:  { "Mysterious non-item." }
-    }
-};
-
 fn namer(value) {
     return switch (def x = value) {
         1: 2: 3: { x * 10   };
@@ -54,7 +52,13 @@ fn namer(value) {
 ## Main Tests
 ##
 
-note("Power...");
+note("No default...");
+note(noDefault(1));
+
+ifIs { noDefault(2) }
+    { die("Bad void.") };
+
+note("\nPower...");
 note(powerName(0));
 note(powerName(1));
 note(powerName(2));
@@ -75,21 +79,6 @@ note(interpolator(2, [4..6]));
 note(interpolator(10, [8..18]));
 note(interpolator(11, [8..18]));
 note(interpolator(0, [0, 5]));
-
-note("\nElse...");
-note(elser(@blort));
-note(elser(@fizmo));
-note(elser());
-note($Format::source(elser(@igram)?));  ## `?` because we expect void.
-
-note("\nVoid yield...");
-ifNot
-    {
-        switch (lt(2, 1)) {
-            default: { note("Huh?") }
-        }
-    }
-    { note("Yes, void.") };
 
 note("\nNames...");
 note($Format::source(namer(1)));

@@ -105,8 +105,7 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
                 ifIs { eq(handled, false) }
                     {
                         addSingleToCat();
-                        addToCat(
-                            makeCallOrApply(makeOneValue, keys*, value))
+                        addToCat(makeCallOrApply(makeOneValue, keys*, value))
                     };
             }
             {
@@ -123,8 +122,8 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
         };
 
     ## There is at least one mapping that requires special handling. Emit
-    ## a call to `cat`, with `{}` as the first argument so as to ensure a
-    ## map result.
+    ## a call to `cat`, with an appropriately-typed first argument, so as to
+    ## ensure a result of the proper type.
 
     addSingleToCat();
     return makeCall(SYMS::cat, emptyLiteral, catArgs*)

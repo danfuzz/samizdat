@@ -1984,20 +1984,27 @@ def parIfExpression = {:
 :};
 
 ## Helper for switch expressions: Parse a single case, including
-## `default` and `else` cases. Returns a map that binds `keys` and
-## `code`.
+## `default` cases. Returns a map that binds `keys` and `code`, and possibly
+## `default`.
 def parSwitchCase = {:
-    keys = (
-        special = [@default @else]
-        @":"
-        { get_className(special) }
-    |
-        parKey+
-    )
-
+    firstKeys = (!@default parKey)*
+    optDefault = (@default @":")?
+    lastKeys = (!@default parKey)*
     code = parBasicNullaryClosure
 
-    { {code, keys} }
+    ## Ensure that there's at least one key or a `default`.
+    {
+        def sz = firstKeys.get_size().add(optDefault.get_size())
+            .add(lastKeys.get_size());
+        ne(sz, 0)
+    }
+
+    {
+        def base = {code, keys: [firstKeys*, lastKeys*]};
+        ifIs { optDefault* }
+            { {base*, default: true} }
+            { base }
+    }
 :};
 
 ## Parses a switch expression. The translation is along these lines:
@@ -2007,7 +2014,6 @@ def parSwitchCase = {:
 ##     ex1: { s1a; s1b }
 ##     ex2: { s2a; s2b }
 ##     default: { statDefault }
-##     else: { statElse }
 ## }
 ## ```
 ## =>
@@ -2019,8 +2025,7 @@ def parSwitchCase = {:
 ##             (ex1): { name /out -> s1a; s1b },
 ##             (ex2): { name /out -> s2a; s2b }
 ##         },
-##         { name /out -> statDefault },
-##         { /out -> statElse })
+##         { name /out -> statDefault })
 ## }()
 ## ```
 ##
@@ -2030,9 +2035,7 @@ def parSwitchCase = {:
 ## * `.` instead of `name` argument definitions if there was no name binding
 ##   on the test expression.
 ## * overrides of map keys switched around so the *first* key wins.
-## * the `statDefault` block omitted if there is no `default` clause. If
-##   no `default` but there is an `else`, `{ -> }` is used.
-## * the `statElse` block omitted if there is no `else` clause.
+## * the `statDefault` block omitted if there is no `default` clause.
 def parSwitchExpression = {:
     @switch
     yieldDef = parOptYieldDef
@@ -2058,43 +2061,23 @@ def parSwitchExpression = {:
 
     {
         ## This function combines the given original code with the overall
-        ## yield def (if specified) and test formal (except not for an
-        ## `else`), yielding a full closure. The yield def binding here is
-        ## only done to get the right "implicit yield" behavior. See the
-        ## discussion in the `if` implementation for more info.
-        fn finishCode(case, isElse?) {
-            var fullCode = ifIs { isElse* }
-                { case::code }
-                { withFormals(case::code, [testClause::formal]) };
+        ## yield def (if specified) and test formal, yielding a full closure.
+        ## The yield def binding here is only done to get the right "implicit
+        ## yield" behavior. See the discussion in the `if` implementation for
+        ## more info.
+        fn finishCode(case) {
+            var fullCode = withFormals(case::code, [testClause::formal]);
             ifValue { yieldDef::yieldDef }
                 { y -> fullCode := withYieldDefIfAbsent(fullCode, y) };
             return makeFullClosure(fullCode)
         };
 
-        def optElse = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @else) } { finishCode(case, true) }
+        def optDefault = filterAll(cases) { case ->
+            ifIs { case::default } { finishCode(case) }
         };
-
-        var optDefault = filterAll(cases) { case ->
-            ifIs { eq(case::keys, @default) } { finishCode(case) }
-        };
-
-        ## If there's an `else` but no `default`, we have to create a
-        ## no-op default, so to be able to call `ifSwitch` properly.
-        ifValues(
-            [
-                { ne(optElse, []) },
-                { . -> eq(optDefault, []) }
-            ],
-            { ., . ->
-                optDefault := [finishCode({code: makeBasicClosure({})})]
-            });
 
         ifIs { gt(optDefault.get_size(), 1) }
             { die("Multiple default cases in switch.") };
-
-        ifIs { gt(optElse.get_size(), 1) }
-            { die("Multiple else cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to
         ## preserve the left-to-right evaluation order of the apparent text,
@@ -2115,8 +2098,7 @@ def parSwitchExpression = {:
         def ifCall = makeCall(REFS::ifSwitch,
             testClause::testThunk,
             caseMap,
-            optDefault*,
-            optElse*);
+            optDefault*);
 
         ## If there's a yield def, then wrap `ifCall` in a thunk-call.
         ## If not, then `ifCall` is the result.

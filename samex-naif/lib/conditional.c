@@ -4,6 +4,7 @@
 
 #include "type/List.h"
 #include "type/Map.h"
+#include "util.h"
 
 #include "impl.h"
 
@@ -37,14 +38,11 @@ FUN_IMPL_DECL(ifSwitch) {
     zvalue testFunction = args[0];
     zvalue valueFunctions = args[1];
     zvalue defaultFunction = (argCount >= 3) ? args[2] : NULL;
-    zvalue voidFunction = (argCount >= 4) ? args[3] : NULL;
 
     zvalue value = FUN_CALL(testFunction);
 
     if (value == NULL) {
-        return (voidFunction == NULL)
-            ? NULL
-            : FUN_CALL(voidFunction);
+        die("Void result from `ifSwitch` call to `testFunction`.");
     }
 
     zvalue consequentFunction = get(valueFunctions, value);
