@@ -197,6 +197,8 @@ expectDifferent(@{blort: "splort"}, @{zlort: "splort"});
 
 expectSame(@{x: 10}, @{@{x: 10}*});
 expectSame(@{x: 10, y: 20}, @{y: 20, @{x: 10}*});
+expectSame(@{x: 10, y: 20}, @{x: 10}.put(@y, 20));
+expectSame(@{x: 10, y: 20}, @{x: 10, y: 10}.put(@y, 20));
 
 expectCore(@{});
 expectCore(@{blort: "splort"});
