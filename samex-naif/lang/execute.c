@@ -9,6 +9,7 @@
 #include "const.h"
 #include "type/Box.h"
 #include "type/Class.h"
+#include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/List.h"
 #include "type/Map.h"
@@ -246,5 +247,15 @@ zvalue langEval0(zvalue env, zvalue node) {
 
     Frame frame;
     frameInit(&frame, NULL, NULL, env);
+
+    // Drop the `info` binding, if any. This is a hack to make sure that
+    // nodes are orderable, as that's required by the closure cache. `info`
+    // binds to a symbol table, and those aren't orderable.
+    if (get(node, SYM_info)) {
+        node = makeData(
+            get_class(node),
+            collDel(dataOf(node), SYM_info));
+    }
+
     return execExpressionOrMaybe(&frame, node);
 }

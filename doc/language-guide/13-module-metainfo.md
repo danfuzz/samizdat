@@ -5,13 +5,13 @@ Module Metainformation
 ----------------------
 
 This section describes the metainformation format used by `saminfo` files
-and returned by `LangNode::makeInfoMap`. This is used to describe the
+and returned by `LangNode::makeInfoTable`. This is used to describe the
 high-level properties of a module.
 
 ### Top level
 
-The top level is a map which binds any of `exports`, `imports`, and/or
-`resources`. Each of these bindings is optional.
+The top level is a symbol table which binds any of `exports`, `imports`,
+and/or `resources`. Each of these bindings is optional.
 
 ```
 {

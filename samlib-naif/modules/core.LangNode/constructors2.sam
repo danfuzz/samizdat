@@ -323,7 +323,7 @@ export fn makeImport(baseData) {
 };
 
 ## Documented in spec.
-export fn makeInfoMap(node) {
+export fn makeInfoTable(node) {
     ifValue { node::info }
         { info -> return info };
 
@@ -359,7 +359,7 @@ export fn makeInfoMap(node) {
         ifIs { hasClass(s, @@importModuleSelection) }
             {
                 def names = ifValueOr { s::select }
-                    { die("Cannot call `makeInfoMap` on unresolved import.") };
+                    { die("Cannot call `makeInfoTable` on unresolved import.") };
                 addToImports(s::source, names)
             };
         ifIs { hasClass(s, @@importResource) }
@@ -379,7 +379,7 @@ export fn makeInfoMap(node) {
         handleImport(s)
     };
 
-    return {exports, imports, resources}
+    return @{exports, imports, resources}
 };
 
 ## Documented in spec.
@@ -453,7 +453,7 @@ export fn withModuleDefs(node) {
     ## represented directly in the final `yield`, the (informational)
     ## `exports` in this is what's used to produce the top-level `exports`
     ## map.
-    def info = makeInfoMap(node);
+    def info = makeInfoTable(node);
 
     def rawStatements = node::statements;
 

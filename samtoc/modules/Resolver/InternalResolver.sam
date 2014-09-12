@@ -47,7 +47,7 @@ fn directResolve(self, source) {
         ## We found a source file. Read it and resolve!
         fn resolveFn(source) { return self.resolve(source) };
         def tree = $Reader::readProgram(sourcePath, resolveFn);
-        def info = $LangNode::makeInfoMap(tree);
+        def info = $LangNode::makeInfoTable(tree);
         @module{info}
     }
 };

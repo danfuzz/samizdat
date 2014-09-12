@@ -538,7 +538,7 @@ zvalue makeImport(zvalue baseData) {
 }
 
 // Documented in spec.
-zvalue makeInfoMap(zvalue node) {
+zvalue makeInfoTable(zvalue node) {
     zvalue info = get(node, SYM_info);
     if (info != NULL) {
         return info;
@@ -580,7 +580,7 @@ zvalue makeInfoMap(zvalue node) {
             zvalue source = get(s, SYM_source);
             zvalue select = get(s, SYM_select);
             if (select == NULL) {
-                die("Cannot call `makeInfoMap` on unresolved import.");
+                die("Cannot call `makeInfoTable` on unresolved import.");
             }
             zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
@@ -593,10 +593,11 @@ zvalue makeInfoMap(zvalue node) {
         }
     }
 
-    return mapFrom3(
+    return symbolTableFromArgs(
         SYM_exports,   exports,
         SYM_imports,   imports,
-        SYM_resources, resources);
+        SYM_resources, resources,
+        NULL);
 }
 
 // Documented in spec.
@@ -770,7 +771,7 @@ zvalue withModuleDefs(zvalue node) {
         die("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 
-    zvalue info = makeInfoMap(node);
+    zvalue info = makeInfoTable(node);
 
     zvalue rawStatements = get(node, SYM_statements);
     zint size = get_size(rawStatements);

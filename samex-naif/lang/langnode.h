@@ -69,7 +69,7 @@ zvalue makeFullClosure(zvalue nodeOrMap);
 zvalue makeImport(zvalue baseData);
 
 // Documented in spec.
-zvalue makeInfoMap(zvalue node);
+zvalue makeInfoTable(zvalue node);
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node);
