@@ -23,7 +23,7 @@ which is a parse tree as specified in this document, converted for
 execution by a call to `simplify()` or similar.
 
 Evaluation is performed in an execution environment that includes all of the
-variable bindings indicated by `env`, which must be a map.
+variable bindings indicated by `env`, which must be a symbol table.
 It is recommended (but not required) that the given `env` include
 bindings for all of the library functions specified by the library guide.
 

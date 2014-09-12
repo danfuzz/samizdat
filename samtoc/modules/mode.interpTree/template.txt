@@ -23,8 +23,8 @@ static zvalue programTree(void) {
 \(source);
 }
 
-static zvalue lookup(zvalue context, const char *name) {
-    return get(context, symbolFromUtf8(-1, name));
+static zvalue lookup(zvalue env, const char *name) {
+    return get(env, symbolFromUtf8(-1, name));
 }
 
 static zvalue externalSource(const char *name) {
@@ -35,11 +35,11 @@ static zvalue externalSource(const char *name) {
     return makeData(cls, data);
 }
 
-zvalue eval(zvalue context) {
-    zvalue evalFn = lookup(context, "Code_eval");
+zvalue eval(zvalue env) {
+    zvalue evalFn = lookup(env, "Code_eval");
 
     if (evalFn == NULL) {
-        zvalue loadModule = lookup(context, "loadModule");
+        zvalue loadModule = lookup(env, "loadModule");
         if (loadModule == NULL) {
             die("Binding missing: loadModule or Code_eval");
         }
@@ -51,5 +51,5 @@ zvalue eval(zvalue context) {
         }
     }
 
-    return FUN_CALL(evalFn, context, programTree());
+    return FUN_CALL(evalFn, env, programTree());
 }
