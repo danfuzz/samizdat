@@ -469,15 +469,15 @@ export fn withModuleDefs(node) {
     };
 
     ## This is a list of mapping argument pairs, to be combined with
-    ## `makeMap` to become the exports map.
+    ## `makeSymbolTable` to become the exports table.
     def exportValues = filterAll(info::exports) { mapping ->
         def name = mapping.get_key();
         [makeLiteral(name), makeVarFetch(name)]
     };
 
     def yieldExports = ifIs { eq(exportValues, []) }
-        { LITS::EMPTY_MAP }
-        { makeCall(REFS::makeMap, [].cat(exportValues*)*) };
+        { LITS::EMPTY_SYMBOL_TABLE }
+        { makeCall(REFS::makeSymbolTable, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),

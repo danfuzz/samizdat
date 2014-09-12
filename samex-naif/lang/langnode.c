@@ -799,8 +799,8 @@ zvalue withModuleDefs(zvalue node) {
     }
 
     zvalue yieldExports = (exSize == 0)
-        ? makeLiteral(EMPTY_MAP)
-        : makeCall(REFS(makeMap), exportValues);
+        ? makeLiteral(EMPTY_SYMBOL_TABLE)
+        : makeCall(REFS(makeSymbolTable), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
