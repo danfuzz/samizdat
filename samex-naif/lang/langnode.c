@@ -795,7 +795,7 @@ zvalue withModuleDefs(zvalue node) {
     for (zint i = 0; i < exSize; i++) {
         zvalue name = mappings[i].key;
         exportValues = listAppend(exportValues,
-            makeCall(REFS(makeValueMap),
+            makeCall(REFS(makeMap),
                 listFrom2(makeLiteral(name), makeVarFetch(name))));
     }
 
@@ -806,12 +806,10 @@ zvalue withModuleDefs(zvalue node) {
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
             makeLiteral(CLS_module),
-            makeCall(SYMS(cat),
-                listFrom2(
-                    makeCall(REFS(makeValueMap),
-                        listFrom2(makeLiteral(SYM_exports), yieldExports)),
-                    makeCall(REFS(makeValueMap),
-                        listFrom2(makeLiteral(SYM_info), yieldInfo))))));
+                makeCall(REFS(makeMap),
+                    listFrom4(
+                        makeLiteral(SYM_exports), yieldExports,
+                        makeLiteral(SYM_info),    yieldInfo))));
 
     return makeData(
         get_class(node),

@@ -472,7 +472,7 @@ export fn withModuleDefs(node) {
     ## of all exports.
     def exportValues = filterAll(info::exports) { mapping ->
         def name = mapping.get_key();
-        makeCall(REFS::makeValueMap, makeLiteral(name), makeVarFetch(name))
+        makeCall(REFS::makeMap, makeLiteral(name), makeVarFetch(name))
     };
 
     def yieldExports = ifIs { eq(exportValues, []) }
@@ -481,9 +481,9 @@ export fn withModuleDefs(node) {
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),
-        makeCall(SYMS::cat,
-            makeCall(REFS::makeValueMap, SYMS::exports, yieldExports),
-            makeCall(REFS::makeValueMap, SYMS::info, yieldInfo)));
+        makeCall(REFS::makeMap,
+            SYMS::exports, yieldExports,
+            SYMS::info,    yieldInfo));
 
     return @(get_class(node)){
         node.dataOf()*,
