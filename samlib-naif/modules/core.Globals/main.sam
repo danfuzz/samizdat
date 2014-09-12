@@ -19,7 +19,7 @@ import ./primitives;
 import ./Class;
 import ./Value;
 
-def EARLY_GLOBALS = {
+def EARLY_GLOBALS = @{
     $primitives*,
     $Class*,
     $Value*
@@ -52,7 +52,7 @@ export fn fullEnvironment() {
     def $Box         = loadModule(@external{name: "core.Box"});
     def $CommandLine = loadModule(@external{name: "core.CommandLine"});
 
-    return {
+    return @{
         EARLY_GLOBALS*,
 
         ## Globally-exported modules.
