@@ -32,7 +32,7 @@
 // Private Definitions
 //
 
-/** Globals map (environment) containing all the primitive definitions. */
+/** Environment (a symbol table) containing all the primitive definitions. */
 static zvalue PRIMITIVE_ENVIRONMENT = NULL;
 
 /**
@@ -43,7 +43,7 @@ static void makePrimitiveEnvironment(void) {
         return;
     }
 
-    zvalue env = EMPTY_MAP;
+    zvalue env = EMPTY_SYMBOL_TABLE;
 
     // Bind all the primitive functions.
 
