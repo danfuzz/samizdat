@@ -33,6 +33,18 @@ enum {
     /** Whether to be paranoid about corruption checks. */
     DAT_MEMORY_PARANOIA = false,
 
+    /**
+     * Maximum number of probes allowed before using a larger symbol
+     * table backing array.
+     */
+    DAT_SYMTAB_MAX_PROBES = 4,
+
+    /** Minimum size of a symbol table backing array. */
+    DAT_SYMTAB_MIN_SIZE = 10,
+
+    /** Scaling factor when growing a symbol table backing array. */
+    DAT_SYMTAB_SCALE_FACTOR = 2,
+
     /** "Magic number" for value validation. */
     DAT_VALUE_MAGIC = 0x600f1e57,
 

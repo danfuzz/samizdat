@@ -27,7 +27,7 @@ extern zvalue FUN_SymbolTable_makeValueSymbolTable;
 /**
  * Copies all the values of the given symbol table into the given result
  * array, which must be sized large enough to hold all of them. The result
- * is ordered by symbol index.
+ * has no particular ordering.
  */
 void arrayFromSymbolTable(zmapping *result, zvalue symbolTable);
 
