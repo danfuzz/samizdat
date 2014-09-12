@@ -468,16 +468,16 @@ export fn withModuleDefs(node) {
             { s }
     };
 
-    ## This is a list of lists of mappings which, when combined, is a map
-    ## of all exports.
+    ## This is a list of mapping argument pairs, to be combined with
+    ## `makeMap` to become the exports map.
     def exportValues = filterAll(info::exports) { mapping ->
         def name = mapping.get_key();
-        makeCall(REFS::makeMap, makeLiteral(name), makeVarFetch(name))
+        [makeLiteral(name), makeVarFetch(name)]
     };
 
     def yieldExports = ifIs { eq(exportValues, []) }
         { LITS::EMPTY_MAP }
-        { makeCall(SYMS::cat, exportValues*) };
+        { makeCall(REFS::makeMap, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeData,
         makeLiteral(@@module),

@@ -794,14 +794,13 @@ zvalue withModuleDefs(zvalue node) {
     arrayFromMap(mappings, exportInfo);
     for (zint i = 0; i < exSize; i++) {
         zvalue name = mappings[i].key;
-        exportValues = listAppend(exportValues,
-            makeCall(REFS(makeMap),
-                listFrom2(makeLiteral(name), makeVarFetch(name))));
+        exportValues = METH_CALL(cat, exportValues,
+            listFrom2(makeLiteral(name), makeVarFetch(name)));
     }
 
     zvalue yieldExports = (exSize == 0)
         ? makeLiteral(EMPTY_MAP)
-        : makeCall(SYMS(cat), exportValues);
+        : makeCall(REFS(makeMap), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
