@@ -146,39 +146,27 @@ def v21 = ifValues(
 note(v21);
 
 def v22 = ifSwitch(
-    { -> },
+    { -> "v22" },
     {
         x: { . -> die("No.") }
     },
-    { die("No.") },
-    { "Yes: v22" });
+    { v -> "Yes: ".cat(v) });
 note(v22);
 
 def v23 = ifSwitch(
-    { -> "v23" },
-    {
-        x: { . -> die("No.") }
-    },
-    { v -> "Yes: ".cat(v) },
-    { die("No.") });
-note(v23);
-
-def v24 = ifSwitch(
     { -> @y },
     {
         x: { . -> die("No.") },
         y: { . -> }
     },
-    { . -> die("No.") },
-    { die("No.") })?;
-note($Format::source(v24));  ## Should be `[]`.
+    { . -> die("No.") })?;
+note($Format::source(v23));  ## Should be `[]`.
 
-def v25 = ifSwitch(
+def v24 = ifSwitch(
     { -> @Yes },
     {
         x: { . -> die("No.") },
-        Yes: { v -> "".cat(v, ": v25") }
+        Yes: { v -> "".cat(v, ": v24") }
     },
-    { . -> die("No.") },
-    { die("No.") });
-note(v25);
+    { . -> die("No.") });
+note(v24);
