@@ -60,6 +60,12 @@ zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
 }
 
 // Documented in header.
+zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
+    zvalue elems[4] = { e1, e2, e3, e4 };
+    return listFromArray(4, elems);
+}
+
+// Documented in header.
 zvalue listAppend(zvalue list, zvalue elem) {
     return METH_CALL(cat, list, listFrom1(elem));
 }

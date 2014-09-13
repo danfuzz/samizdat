@@ -14,6 +14,7 @@
 #include "type/Map.h"
 #include "type/String.h"
 #include "type/Symbol.h"
+#include "type/SymbolTable.h"
 #include "util.h"
 
 #include "impl.h"
@@ -229,17 +230,17 @@ void execStatements(Frame *frame, zvalue statements) {
 
 // Documented in header.
 zvalue langEval0(zvalue env, zvalue node) {
-    Frame frame;
-
     zint size = get_size(env);
     zmapping mappings[size];
 
-    arrayFromMap(mappings, env);
+    arrayFromSymbolTable(mappings, env);
     for (zint i = 0; i < size; i++) {
         mappings[i].value = makeResult(mappings[i].value);
     }
-    env = mapFromArray(size, mappings);
+    env = symbolTableFromArray(size, mappings);
 
+    Frame frame;
     frameInit(&frame, NULL, NULL, env);
+
     return execExpressionOrMaybe(&frame, node);
 }

@@ -12,6 +12,7 @@
 #include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/SymbolTable.h"
 #include "type/define.h"
 #include "util.h"
 #include "zlimits.h"
@@ -270,7 +271,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
         elemAt++;
     }
 
-    return mapFromArray(elemAt, elems);
+    return symbolTableFromArray(elemAt, elems);
 }
 
 /**
@@ -297,8 +298,8 @@ static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    zvalue argMap = bindArguments(closure, exitFunction, argCount, args);
-    frameInit(&frame, &info->frame, closure, argMap);
+    zvalue argTable = bindArguments(closure, exitFunction, argCount, args);
+    frameInit(&frame, &info->frame, closure, argTable);
 
     // Evaluate the statements, updating the frame as needed.
     execStatements(&frame, info->statements);

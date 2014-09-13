@@ -518,7 +518,7 @@ export fn makeInternalLoader(path, globals, nextLoader) {
     fn glo_loadResource(src, fmt) { return loadResource(loader, src, fmt) };
     fn glo_thisLoader()           { return loader                         };
 
-    def fullGlobals = {
+    def fullGlobals = @{
         globals*,
         loadModule:   glo_loadModule,
         loadResource: glo_loadResource,
@@ -548,7 +548,7 @@ fn makeFileGlobals(loader) {
     fn glo_loadModule(source) { return loadModule(loader, source) };
     fn glo_thisLoader()       { return loader                     };
 
-    return {
+    return @{
         loadGlobals(loader)*,
         loadModule: glo_loadModule,
         thisLoader: glo_thisLoader

@@ -81,15 +81,15 @@ to the function `fetch`" should actually be treated like an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$LangNode::makeInterpolate`.
 
-#### `closure` &mdash; `formals: [formal+], info?: map, name?: symbol,` `statements: [statement*], yield: expression, yieldDef?: name}`
+#### `closure` &mdash; `formals: [formal+], info?: symbolTable, name?: symbol,` `statements: [statement*], yield: expression, yieldDef?: name}`
 
 * `formals: [formal+]` &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
 
-* `info: map` (optional) &mdash; The metainformation of the closure. Only
-  present in nodes which represent top-level module definitions that have
-  been fully resolved.
+* `info: symbolTable` (optional) &mdash; The metainformation of the closure.
+  Only present in nodes which represent top-level module definitions that
+  have been fully resolved.
 
 * `name: symbol` (optional) &mdash; The function name of the closure, as
   a symbol. Only used for producing debugging info (e.g. stack traces).

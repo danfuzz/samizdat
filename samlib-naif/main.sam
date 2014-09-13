@@ -19,7 +19,7 @@ import core.ModuleSystem;
 ## `primitiveGlobals` is the map of primitive-defined bindings (e.g., defined
 ## in C code).
 export fn main(libraryPath, primitiveGlobals) {
-    def earlyGlobals = {
+    def earlyGlobals = @{
         primitiveGlobals*,
         $Globals::earlyEnvironment()*
     };

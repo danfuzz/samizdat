@@ -538,7 +538,7 @@ zvalue makeImport(zvalue baseData) {
 }
 
 // Documented in spec.
-zvalue makeInfoMap(zvalue node) {
+zvalue makeInfoTable(zvalue node) {
     zvalue info = get(node, SYM_info);
     if (info != NULL) {
         return info;
@@ -580,7 +580,7 @@ zvalue makeInfoMap(zvalue node) {
             zvalue source = get(s, SYM_source);
             zvalue select = get(s, SYM_select);
             if (select == NULL) {
-                die("Cannot call `makeInfoMap` on unresolved import.");
+                die("Cannot call `makeInfoTable` on unresolved import.");
             }
             zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
@@ -593,10 +593,11 @@ zvalue makeInfoMap(zvalue node) {
         }
     }
 
-    return mapFrom3(
+    return symbolTableFromArgs(
         SYM_exports,   exports,
         SYM_imports,   imports,
-        SYM_resources, resources);
+        SYM_resources, resources,
+        NULL);
 }
 
 // Documented in spec.
@@ -770,7 +771,7 @@ zvalue withModuleDefs(zvalue node) {
         die("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 
-    zvalue info = makeInfoMap(node);
+    zvalue info = makeInfoTable(node);
 
     zvalue rawStatements = get(node, SYM_statements);
     zint size = get_size(rawStatements);
@@ -794,24 +795,21 @@ zvalue withModuleDefs(zvalue node) {
     arrayFromMap(mappings, exportInfo);
     for (zint i = 0; i < exSize; i++) {
         zvalue name = mappings[i].key;
-        exportValues = listAppend(exportValues,
-            makeCall(REFS(makeValueMap),
-                listFrom2(makeLiteral(name), makeVarFetch(name))));
+        exportValues = METH_CALL(cat, exportValues,
+            listFrom2(makeLiteral(name), makeVarFetch(name)));
     }
 
     zvalue yieldExports = (exSize == 0)
-        ? makeLiteral(EMPTY_MAP)
-        : makeCall(SYMS(cat), exportValues);
+        ? makeLiteral(EMPTY_SYMBOL_TABLE)
+        : makeCall(REFS(makeSymbolTable), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
             makeLiteral(CLS_module),
-            makeCall(SYMS(cat),
-                listFrom2(
-                    makeCall(REFS(makeValueMap),
-                        listFrom2(makeLiteral(SYM_exports), yieldExports)),
-                    makeCall(REFS(makeValueMap),
-                        listFrom2(makeLiteral(SYM_info), yieldInfo))))));
+            makeCall(REFS(makeMap),
+                listFrom4(
+                    makeLiteral(SYM_exports), yieldExports,
+                    makeLiteral(SYM_info),    yieldInfo))));
 
     return makeData(
         get_class(node),

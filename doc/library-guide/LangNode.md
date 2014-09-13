@@ -251,11 +251,11 @@ the rejection. This makes it safe to "optimistically" parse a generalized
 version of the `import` syntax, and use this function for a final
 validation.
 
-#### `makeInfoMap(node) -> {exports: {...}, imports: {...}, resources: {...}}`
+#### `makeInfoTable(node) -> @{exports: {...}, imports: {...}, resources: {...}}`
 
 Constructs the metainformation from a `closure` node that represents a
-top-level module. This returns a map that binds `exports`, `imports`, and
-`resources`.
+top-level module. This returns a symbol table that binds `exports`, `imports`,
+and `resources`.
 
 `node` must be resolved, e.g. the result of having called
 `withResolvedImports()`. It is a fatal error to call this on a node with

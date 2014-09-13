@@ -20,7 +20,7 @@
  * Evaluates the given expression node in the given variable
  * environment. Returns the evaluated value of the expression, which
  * will be `NULL` if the expression evaluated to void (only possible when
- * given a `@maybe` node).
+ * given a `@maybe` node). `env` must be a symbol table.
  *
  * See the spec for details on expression nodes.
  */
