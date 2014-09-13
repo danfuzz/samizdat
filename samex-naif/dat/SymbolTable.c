@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include "type/Builtin.h"
 #include "type/Int.h"
@@ -141,6 +142,26 @@ static void putInto(zvalue *result, SymbolTableInfo **info,
 
     *result = newResult;
     *info = newInfo;
+}
+
+/**
+ * Compare two mappings. This is used as the function passed to `qsort`.
+ * Note that `NULL` is made to sort *after* non-`NULL`, so that all keys
+ * end up at the start of a sorted result.
+ */
+static int compareMappings(const void *m1, const void *m2) {
+    zvalue key1 = ((zmapping *) m1)->key;
+    zvalue key2 = ((zmapping *) m2)->key;
+
+    if (key1 == key2) {
+        return 0;
+    } else if (key1 == NULL) {
+        return 1;
+    } else if (key2 == NULL) {
+        return -1;
+    } else {
+        return valZorder(key1, key2);
+    }
 }
 
 
@@ -358,6 +379,62 @@ METH_IMPL_1(SymbolTable, totalEq, other) {
     return ths;
 }
 
+// Documented in header.
+METH_IMPL_1(SymbolTable, totalOrder, other) {
+    if (ths == other) {
+        return INT_0;
+    }
+
+    // Note: `other` not guaranteed to be a `SymbolTable`.
+    assertHasClass(other, CLS_SymbolTable);
+    SymbolTableInfo *info1 = getInfo(ths);
+    SymbolTableInfo *info2 = getInfo(other);
+    zint size = info1->size;
+
+    // Major order: Size.
+
+    if (size < info2->size) {
+        return INT_NEG1;
+    } else if (size > info2->size) {
+        return INT_1;
+    }
+
+    // Next order: sorted key lists. In this case, we take both arrays of
+    // mappings and sort them. If the key lists are equal, we'll then
+    // reuse the array for comparing values.
+
+    zmapping array1[info1->arraySize];
+    zmapping array2[info2->arraySize];
+
+    utilCpy(zmapping, array1, info1->array, info1->arraySize);
+    utilCpy(zmapping, array2, info2->array, info2->arraySize);
+    qsort(array1, info1->arraySize, sizeof(zmapping), compareMappings);
+    qsort(array2, info2->arraySize, sizeof(zmapping), compareMappings);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue key1 = array1[i].key;
+        zvalue key2 = array2[i].key;
+        if (key1 != key2) {
+            return METH_CALL(totalOrder, key1, key2);
+        }
+    }
+
+    // Last order: corresponding values.
+
+    for (zint i = 0; i < size; i++) {
+        zvalue value1 = array1[i].value;
+        zvalue value2 = array2[i].value;
+        zorder order = valZorder(value1, value2);
+        if (order != ZSAME) {
+            return intFromZint(order);
+        }
+    }
+
+    // They're equal!
+
+    return INT_0;
+}
+
 /** Initializes the module. */
 MOD_INIT(SymbolTable) {
     MOD_USE(Symbol);
@@ -373,6 +450,7 @@ MOD_INIT(SymbolTable) {
             METH_BIND(SymbolTable, get_size),
             METH_BIND(SymbolTable, put),
             METH_BIND(SymbolTable, totalEq),
+            METH_BIND(SymbolTable, totalOrder),
             NULL));
 
     FUN_SymbolTable_makeSymbolTable =
