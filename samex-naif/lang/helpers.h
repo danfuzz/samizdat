@@ -13,6 +13,29 @@
 
 
 /**
+ * Makes a 0-1 mapping derived data value.
+ */
+zvalue derivFrom1(zvalue cls, zvalue k1, zvalue v1);
+
+/**
+ * Makes a 0-2 mapping derived data value.
+ */
+zvalue derivFrom2(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2);
+
+/**
+ * Makes a 0-3 mapping derived data value.
+ */
+zvalue derivFrom3(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3);
+
+/**
+ * Makes a 0-4 mapping derived data value. Values are allowed to be `NULL`, in
+ * which case the corresponding key isn't included in the result.
+ */
+zvalue derivFrom4(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3, zvalue k4, zvalue v4);
+
+/**
  * Makes a 0-1 mapping map.
  */
 zvalue mapFrom1(zvalue k1, zvalue v1);

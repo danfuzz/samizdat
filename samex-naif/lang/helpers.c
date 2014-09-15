@@ -2,6 +2,7 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include "type/DerivedData.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/SymbolTable.h"
@@ -12,6 +13,28 @@
 //
 // Module functions
 //
+
+// Documented in header.
+zvalue derivFrom1(zvalue cls, zvalue k1, zvalue v1) {
+    return derivFrom4(cls, k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+}
+
+// Documented in header.
+zvalue derivFrom2(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return derivFrom4(cls, k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+}
+
+// Documented in header.
+zvalue derivFrom3(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3) {
+    return derivFrom4(cls, k1, v1, k2, v2, k3, v3, NULL, NULL);
+}
+
+// Documented in header.
+zvalue derivFrom4(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
+    return makeData(cls, mapFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
+}
 
 // Documented in header.
 zvalue mapFrom1(zvalue k1, zvalue v1) {
