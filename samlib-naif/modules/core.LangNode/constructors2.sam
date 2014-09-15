@@ -245,7 +245,8 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(nodeOrMap) {
-    def map = ifValueOr { hasClass(nodeOrMap, Map) } { nodeOrMap.dataOf() };
+    def map = ifValueOr { hasClass(nodeOrMap, SymbolTable) }
+        { nodeOrMap.dataOf() };
     def formals = ifValueOr { map::formals } { [] };
     var statements = ifValueOr { map::statements } { [] };
     def statSz = statements.get_size();
@@ -414,7 +415,7 @@ export fn makeThunk(expression) {
     def yieldNode = ifIs { isExpression(expression) }
         { makeMaybe(expression) }
         { expression };
-    return makeFullClosure({yield: yieldNode})
+    return makeFullClosure(@{yield: yieldNode})
 };
 
 ## Documented in spec.

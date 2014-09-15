@@ -9,6 +9,7 @@
 #include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/Map.h"
+#include "type/SymbolTable.h"
 #include "type/define.h"
 #include "zlimits.h"
 
@@ -55,9 +56,14 @@ zvalue makeData(zvalue cls, zvalue data) {
     }
 
     if (data == NULL) {
-        data = EMPTY_MAP;
+        data = EMPTY_SYMBOL_TABLE;
     } else {
-        assertHasClass(data, CLS_Map);
+        if (hasClass(data, CLS_Map)) {
+            // TODO: Remove this once symbol tables are ubiquitously used.
+            data = symbolTableFromMap(data);
+        } else {
+            assertHasClass(data, CLS_SymbolTable);
+        }
     }
 
     zvalue result = datAllocValue(cls, sizeof(DerivedDataInfo));

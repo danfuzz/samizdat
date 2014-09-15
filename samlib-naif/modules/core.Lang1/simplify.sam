@@ -63,7 +63,7 @@ fn convertPex(node, formals) {
                 ## node, and just convert that. As a special case, notice if
                 ## the closure is just a yield of a literal, and convert that
                 ## with `makeResult`.
-                def closurePayload = {(node.dataOf())*, formals};
+                def closurePayload = @{(node.dataOf())*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
                 ifValues(
@@ -132,7 +132,7 @@ fn convertPex(node, formals) {
             @@thunk: { . ->
                 ## Use the lexical `formals` context to make a regular closure
                 ## node, and just convert that.
-                def closure = makeFullClosure({
+                def closure = makeFullClosure(@{
                     formals,
                     yield: makeMaybe(node::value)
                 });

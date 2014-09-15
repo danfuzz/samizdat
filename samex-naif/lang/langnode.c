@@ -330,7 +330,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 zvalue makeBasicClosure(zvalue map) {
     return makeData(CLS_closure,
         METH_CALL(cat,
-            mapFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
+            tableFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
             map));
 }
 
@@ -452,7 +452,8 @@ zvalue makeExportSelection(zvalue names) {
 
 // Documented in spec.
 zvalue makeFullClosure(zvalue nodeOrMap) {
-    zvalue map = hasClass(nodeOrMap, CLS_Map) ? nodeOrMap : dataOf(nodeOrMap);
+    zvalue map = hasClass(nodeOrMap, CLS_SymbolTable)
+        ? nodeOrMap : dataOf(nodeOrMap);
     zvalue formals = get(map, SYM_formals);
     zvalue statements = get(map, SYM_statements);
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
@@ -485,7 +486,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
     return makeData(CLS_closure,
         METH_CALL(cat,
             map,
-            mapFrom3(
+            tableFrom3(
                 SYM_formals,    formals,
                 SYM_statements, statements,
                 SYM_yield,      yieldNode)));
@@ -657,7 +658,7 @@ zvalue makeThunk(zvalue expression) {
         ? makeMaybe(expression)
         : expression;
 
-    return makeFullClosure(mapFrom1(SYM_yield, yieldNode));
+    return makeFullClosure(tableFrom1(SYM_yield, yieldNode));
 }
 
 // Documented in spec.
@@ -704,7 +705,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         return node;
     }
 
-    zvalue resolved = EMPTY_MAP;
+    zvalue resolved = EMPTY_SYMBOL_TABLE;
     if (resolveFn != NULL) {
         zvalue source = get(node, SYM_source);
         resolved = FUN_CALL(resolveFn, source);
@@ -810,7 +811,7 @@ zvalue withModuleDefs(zvalue node) {
         get_class(node),
         METH_CALL(cat,
             dataOf(node),
-            mapFrom3(
+            tableFrom3(
                 SYM_info,       info,
                 SYM_statements, statements,
                 SYM_yield,      yieldNode)));
@@ -861,7 +862,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         get_class(node),
         METH_CALL(cat,
             dataOf(node),
-            mapFrom1(SYM_statements, converted)));
+            tableFrom1(SYM_statements, converted)));
 }
 
 // Documented in spec.
@@ -880,10 +881,10 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
     if (yieldDef != NULL) {
         zvalue defStat = makeVarDef(name, makeVarFetch(yieldDef));
-        newBindings = mapFrom1(
+        newBindings = tableFrom1(
             SYM_statements, listPrepend(defStat, get(node, SYM_statements)));
     } else {
-        newBindings = mapFrom1(SYM_yieldDef, name);
+        newBindings = tableFrom1(SYM_yieldDef, name);
     }
 
     return makeData(
@@ -955,6 +956,6 @@ zvalue withoutTops(zvalue node) {
         get_class(node),
         METH_CALL(cat,
             dataOf(node),
-            mapFrom1(
+            tableFrom1(
                 SYM_statements, METH_CALL(cat, tops, mains, optSelection))));
 }

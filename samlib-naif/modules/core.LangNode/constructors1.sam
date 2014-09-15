@@ -127,9 +127,9 @@ export fn withYieldDef(node, name) {
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
-            {statements: [makeVarDef(name, makeVarFetch(origName))]}
+            @{statements: [makeVarDef(name, makeVarFetch(origName))]}
         }
-        { {yieldDef: name} };
+        { @{yieldDef: name} };
 
     return @(get_class(node)){map*, newBindings*}
 };

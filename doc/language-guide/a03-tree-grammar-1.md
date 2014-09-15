@@ -255,7 +255,7 @@ def parDeriv = {:
         @"{"
         mappings = parMappings
         @"}"
-        { makeMapExpression(mappings*) }
+        { makeSymbolTableExpression(mappings*) }
     )
 
     { makeCall(REFS::makeData, cls, value) }

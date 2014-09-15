@@ -33,7 +33,7 @@ zvalue derivFrom3(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
 // Documented in header.
 zvalue derivFrom4(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
-    return makeData(cls, mapFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
+    return makeData(cls, tableFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
 }
 
 // Documented in header.
