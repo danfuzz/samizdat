@@ -802,7 +802,7 @@ zvalue withModuleDefs(zvalue node) {
     zvalue yieldNode = makeCall(REFS(makeData),
         listFrom2(
             makeLiteral(CLS_module),
-            makeCall(REFS(makeMap),
+            makeCall(REFS(makeSymbolTable),
                 listFrom4(
                     makeLiteral(SYM_exports), yieldExports,
                     makeLiteral(SYM_info),    yieldInfo))));
