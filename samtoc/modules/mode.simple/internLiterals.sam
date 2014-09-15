@@ -35,7 +35,7 @@ fn lits(node, interner) {
                 & {name: lits(@literal{value}, interner)}
                 | {};
 
-            makeFullClosure({
+            makeFullClosure(@{
                 name*,
                 formals: node::formals,
                 statements: [ s in node::statements -> lits(s, interner) ],

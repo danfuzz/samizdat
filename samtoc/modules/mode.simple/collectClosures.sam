@@ -33,7 +33,7 @@ fn bodies(node, bodiesBox) {
             def yieldNode = bodies(node::yield, bodiesBox);
             def varRefs = get_varRefs(node);
 
-            def newNode = makeFullClosure({
+            def newNode = makeFullClosure(@{
                 formals: node::formals,
                 ((def name = node::name) & {name} | {})*,
                 statements,
