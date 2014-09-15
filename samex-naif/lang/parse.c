@@ -532,9 +532,14 @@ DEF_PARSE(deriv) {
         cls = PARSE_OR_REJECT(parenExpression);
     }
 
-    // Value is mandatory, so the last one is `PARSE_OR_REJECT`.
+    // Value is mandatory, so the last part is full of `*_OR_REJECT`.
     zvalue value = PARSE(parenExpression);
-    if (value == NULL) value = PARSE_OR_REJECT(map);
+    if (value == NULL) {
+        MATCH_OR_REJECT(CH_OCURLY);
+        zvalue mappings = PARSE_OR_REJECT(mappings);
+        MATCH_OR_REJECT(CH_CCURLY);
+        value = makeMapExpression(mappings);
+    }
 
     return makeCall(REFS(makeData), listFrom2(cls, value));
 }

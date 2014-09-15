@@ -249,7 +249,14 @@ def parDeriv = {:
         parParenExpression
     )
 
-    value = (parParenExpression | parMap)
+    value = (
+        parParenExpression
+    |
+        @"{"
+        mappings = parMappings
+        @"}"
+        { makeMapExpression(mappings*) }
+    )
 
     { makeCall(REFS::makeData, cls, value) }
 :};

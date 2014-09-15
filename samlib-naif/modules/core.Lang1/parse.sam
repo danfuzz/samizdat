@@ -190,6 +190,8 @@ def parSymbolTable = makeMainSequence(
     makeCode { ., ., mappings, . -> makeSymbolTableExpression(mappings*) });
 
 ## Documented in spec.
+
+## Documented in spec.
 def parDeriv = makeMainSequence(
     makeToken(@@"@"),
     makeChoice(
@@ -199,7 +201,15 @@ def parDeriv = makeMainSequence(
                 makeLiteral(@@(name::value))
             }),
         parParenExpression),
-    makeChoice(parParenExpression, parMap),
+    makeChoice(
+        parParenExpression,
+        makeSequence(
+            makeToken(@@"{"),
+            parMappings,
+            makeToken(@@"}"),
+            makeCode { ., ., ., mappings, . ->
+                makeMapExpression(mappings*)
+            })),
     makeCode { ., cls, value ->
         makeCall(REFS::makeData, cls, value)
     });
