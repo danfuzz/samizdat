@@ -279,6 +279,15 @@ zvalue mapFromSymbolTable(zvalue symbolTable) {
     return mapFromArray(size, mappings);
 }
 
+// Documented in header.
+zvalue symbolTableFromMap(zvalue map) {
+    zint size = get_size(map);
+    zmapping mappings[size];
+
+    arrayFromMap(mappings, map);
+    return symbolTableFromArray(size, mappings);
+}
+
 
 //
 // Class Definition
