@@ -303,8 +303,7 @@ zvalue makeApply(zvalue function, zvalue values) {
         values = TOK_void;
     }
 
-    zvalue value = mapFrom2(SYM_function, function, SYM_values, values);
-    return makeData(CLS_apply, value);
+    return derivFrom2(CLS_apply, SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -320,8 +319,8 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return NULL;
     } else if (hasClass(target, CLS_fetch)) {
         zvalue innerTarget = get(target, SYM_target);
-        return makeData(CLS_store,
-            mapFrom2(SYM_target, innerTarget, SYM_value, value));
+        return derivFrom2(CLS_store,
+            SYM_target, innerTarget, SYM_value, value);
     } else {
         die("Improper `lvalue` binding.");
     }
@@ -341,8 +340,7 @@ zvalue makeCall(zvalue function, zvalue values) {
         values = EMPTY_LIST;
     }
 
-    zvalue value = mapFrom2(SYM_function, function, SYM_values, values);
-    return makeData(CLS_call, value);
+    return derivFrom2(CLS_call, SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -444,12 +442,12 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return makeData(CLS_export, mapFrom1(SYM_value, node));
+    return derivFrom1(CLS_export, SYM_value, node);
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return makeData(CLS_exportSelection, mapFrom1(SYM_select, names));
+    return derivFrom1(CLS_exportSelection, SYM_select, names);
 }
 
 // Documented in spec.
@@ -602,16 +600,15 @@ zvalue makeInfoTable(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return makeData(CLS_fetch,
-        mapFrom3(
-            SYM_target,      node,
-            SYM_interpolate, node,
-            SYM_lvalue,      EMPTY_LIST));
+    return derivFrom3(CLS_fetch,
+        SYM_target,      node,
+        SYM_interpolate, node,
+        SYM_lvalue,      EMPTY_LIST);
 }
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return makeData(CLS_literal, mapFrom1(SYM_value, value));
+    return derivFrom1(CLS_literal, SYM_value, value);
 }
 
 // Documented in spec.
@@ -622,7 +619,7 @@ zvalue makeMapExpression(zvalue mappings) {
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return makeData(CLS_maybe, mapFrom1(SYM_value, value));
+    return derivFrom1(CLS_maybe, SYM_value, value);
 }
 
 // Documented in spec.
@@ -632,14 +629,14 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return makeData(CLS_noYield, mapFrom1(SYM_value, value));
+    return derivFrom1(CLS_noYield, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return makeData(CLS_nonlocalExit,
-        mapFrom2(SYM_function, function, SYM_value, value));
+    return derivFrom2(CLS_nonlocalExit,
+        SYM_function, function, SYM_value, value);
 }
 
 // Documented in spec.
@@ -665,38 +662,36 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return makeData(CLS_varRef, mapFrom1(SYM_name, name));
+    return derivFrom1(CLS_varRef, SYM_name, name);
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
-    return makeData(CLS_varDef,
-        mapFrom2(SYM_name, name, SYM_value, value));
+    return derivFrom2(CLS_varDef, SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return makeData(CLS_varDefMutable,
-        mapFrom2(SYM_name, name, SYM_value, value));
+    return derivFrom2(CLS_varDefMutable, SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return makeData(CLS_fetch, mapFrom1(SYM_target, makeVarRef(name)));
+    return derivFrom1(CLS_fetch, SYM_target, makeVarRef(name));
 }
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return makeData(CLS_fetch,
-        mapFrom2(SYM_target, makeVarRef(name), SYM_lvalue, EMPTY_LIST));
+    return derivFrom2(CLS_fetch,
+        SYM_target, makeVarRef(name), SYM_lvalue, EMPTY_LIST);
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return makeData(CLS_store,
-        mapFrom2(SYM_target, makeVarRef(name), SYM_value, value));
+    return derivFrom2(CLS_store,
+        SYM_target, makeVarRef(name), SYM_value, value);
 }
 
 // Documented in spec.
