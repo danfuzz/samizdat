@@ -305,7 +305,7 @@ export fn makeImport(baseData) {
     ifNot { data::name }
         {
             ## No `name` provided, so figure out a default one.
-            data := {
+            data := @{
                 data*,
                 name: "$".cat(get_baseName(data::source)).toSymbol()
             }
