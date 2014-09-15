@@ -4,6 +4,7 @@
 
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/SymbolTable.h"
 
 #include "helpers.h"
 
@@ -73,4 +74,34 @@ zvalue listAppend(zvalue list, zvalue elem) {
 // Documented in header.
 zvalue listPrepend(zvalue elem, zvalue list) {
     return METH_CALL(cat, listFrom1(elem), list);
+}
+
+// Documented in header.
+zvalue tableFrom1(zvalue k1, zvalue v1) {
+    return tableFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+}
+
+// Documented in header.
+zvalue tableFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return tableFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+}
+
+// Documented in header.
+zvalue tableFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3) {
+    return tableFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
+}
+
+// Documented in header.
+zvalue tableFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
+    zmapping elems[4];
+    zint at = 0;
+
+    if (v1 != NULL) { elems[at].key = k1; elems[at].value = v1; at++; }
+    if (v2 != NULL) { elems[at].key = k2; elems[at].value = v2; at++; }
+    if (v3 != NULL) { elems[at].key = k3; elems[at].value = v3; at++; }
+    if (v4 != NULL) { elems[at].key = k4; elems[at].value = v4; at++; }
+
+    return (at == 0) ? EMPTY_SYMBOL_TABLE : symbolTableFromArray(at, elems);
 }
