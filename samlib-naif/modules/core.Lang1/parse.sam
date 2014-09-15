@@ -190,6 +190,21 @@ def parSymbolTable = makeMainSequence(
     makeCode { ., ., mappings, . -> makeSymbolTableExpression(mappings*) });
 
 ## Documented in spec.
+def parDeriv = makeMainSequence(
+    makeToken(@@"@"),
+    makeChoice(
+        makeSequence(
+            parIdentifierSymbol,
+            makeCode { ., name ->
+                makeLiteral(@@(name::value))
+            }),
+        parParenExpression),
+    makeChoice(parParenExpression, parMap),
+    makeCode { ., cls, value ->
+        makeCall(REFS::makeData, cls, value)
+    });
+
+## Documented in spec.
 def parListItem = makeMainSequence(
     parExpression,
     makeRepeat(
@@ -235,21 +250,6 @@ def parType = makeMainSequence(
             makeCode { ., name ->
                 makeCall(REFS::makeDerivedDataClass, name)
             })));
-
-## Documented in spec.
-def parDeriv = makeMainSequence(
-    makeToken(@@"@"),
-    makeChoice(
-        makeSequence(
-            parIdentifierSymbol,
-            makeCode { ., name ->
-                makeLiteral(@@(name::value))
-            }),
-        parParenExpression),
-    makeChoice(parParenExpression, parMap),
-    makeCode { ., cls, value ->
-        makeCall(REFS::makeData, cls, value)
-    });
 
 ## Documented in spec.
 def parFullClosure = makeMainSequence(

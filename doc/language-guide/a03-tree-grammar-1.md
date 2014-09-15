@@ -238,6 +238,22 @@ def parSymbolTable = {:
     { makeSymbolTableExpression(mappings*) }
 :};
 
+## Parses a literal in derived value form.
+def parDeriv = {:
+    @"@"
+
+    cls = (
+        name = parIdentifierSymbol
+        { makeLiteral(@@(name::value)) }
+    |
+        parParenExpression
+    )
+
+    value = (parParenExpression | parMap)
+
+    { makeCall(REFS::makeData, cls, value) }
+:};
+
 ## Parses a list item or function call argument. This handles all of:
 ##
 ## * accepting general expressions
@@ -291,22 +307,6 @@ def parType = {:
         name = parParenExpression
         { makeCall(REFS::makeDerivedDataClass, name) }
     )
-:};
-
-## Parses a literal in derived value form.
-def parDeriv = {:
-    @"@"
-
-    cls = (
-        name = parIdentifierSymbol
-        { makeLiteral(@@(name::value)) }
-    |
-        parParenExpression
-    )
-
-    value = (parParenExpression | parMap)
-
-    { makeCall(REFS::makeData, cls, value) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.

@@ -519,6 +519,27 @@ DEF_PARSE(symbolTable) {
 }
 
 // Documented in spec.
+DEF_PARSE(deriv) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_AT);
+
+    zvalue cls;
+    zvalue name = PARSE(identifierSymbol);
+    if (name != NULL) {
+        cls = makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
+    } else {
+        cls = PARSE_OR_REJECT(parenExpression);
+    }
+
+    // Value is mandatory, so the last one is `PARSE_OR_REJECT`.
+    zvalue value = PARSE(parenExpression);
+    if (value == NULL) value = PARSE_OR_REJECT(map);
+
+    return makeCall(REFS(makeData), listFrom2(cls, value));
+}
+
+// Documented in spec.
 DEF_PARSE(listItem) {
     MARK();
 
@@ -562,27 +583,6 @@ DEF_PARSE(type) {
 
     name = PARSE_OR_REJECT(parenExpression);
     return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
-}
-
-// Documented in spec.
-DEF_PARSE(deriv) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_AT);
-
-    zvalue cls;
-    zvalue name = PARSE(identifierSymbol);
-    if (name != NULL) {
-        cls = makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
-    } else {
-        cls = PARSE_OR_REJECT(parenExpression);
-    }
-
-    // Value is mandatory, so the last one is `PARSE_OR_REJECT`.
-    zvalue value = PARSE(parenExpression);
-    if (value == NULL) value = PARSE_OR_REJECT(map);
-
-    return makeCall(REFS(makeData), listFrom2(cls, value));
 }
 
 // Documented in spec.
