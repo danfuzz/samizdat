@@ -301,15 +301,6 @@ METH_IMPL_rest(SymbolTable, cat, args) {
 
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        if (hasClass(one, CLS_Map)) {
-            // TODO: Remove this once all offenders have been fixed.
-            zint size = get_size(one);
-            zmapping mappings[size];
-            arrayFromMap(mappings, one);
-            for (zint i = 0; i < size; i++) {
-                note("=== %lld %s", i, valDebugString(mappings[i].key));
-            }
-        }
         assertHasClass(one, CLS_SymbolTable);
         SymbolTableInfo *oneInfo = getInfo(one);
         zint arraySize = oneInfo->arraySize;

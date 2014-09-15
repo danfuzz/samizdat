@@ -58,12 +58,7 @@ zvalue makeData(zvalue cls, zvalue data) {
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
     } else {
-        if (hasClass(data, CLS_Map)) {
-            // TODO: Remove this once symbol tables are ubiquitously used.
-            data = symbolTableFromMap(data);
-        } else {
-            assertHasClass(data, CLS_SymbolTable);
-        }
+        assertHasClass(data, CLS_SymbolTable);
     }
 
     zvalue result = datAllocValue(cls, sizeof(DerivedDataInfo));
