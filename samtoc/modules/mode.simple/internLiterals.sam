@@ -32,15 +32,15 @@ fn lits(node, interner) {
 
         @@closure: {
             def name = (def value = node::name)
-                & {name: lits(@literal{value}, interner)}
-                | {};
+                & @{name: lits(@literal{value}, interner)}
+                | @{};
 
             makeFullClosure(@{
                 name*,
                 formals: node::formals,
                 statements: [ s in node::statements -> lits(s, interner) ],
                 yield: lits(node::yield, interner),
-                ((def yieldDef = node::yieldDef) & {yieldDef} | {})*
+                ((def yieldDef = node::yieldDef) & @{yieldDef} | @{})*
             })
         };
 
@@ -80,8 +80,8 @@ fn lits(node, interner) {
         @@varDef:
         @@varDefMutable: {
             def value = ifValue { node::value }
-                { value -> {value: lits(value, interner)} }
-                { {} };
+                { value -> @{value: lits(value, interner)} }
+                { @{} };
             @(cls){name: node::name, value*}
         };
 
