@@ -33,7 +33,7 @@ def ExternalResolver = makeObjectClass(@ExternalResolver, SECRET);
 ## `source` is known to be `external` and so *might* be found directly
 ## in this resolver's directory of modules.
 fn directResolve(self, source) {
-    def data = self.objectDataOf(SECRET);
+    def data = SECRET(self);
     def name = source::name;
     def dirPath = "\(data::path)/\(name)";
     def infoPath = "\(dirPath).saminfo";
@@ -51,7 +51,7 @@ fn directResolve(self, source) {
 };
 
 fn ExternalResolver.resolve(source) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
 
     if (def found = $cache::cacheGet(data::cache, source)) {
         ## `found` is always a list. See comment below.

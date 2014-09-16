@@ -22,12 +22,12 @@ def SECRET = @secret.makeAnonymous();
 def Assign = makeObjectClass(@Assign, SECRET);
 
 fn Assign.flatten() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return "\(data::target.flatten()) = \(data::value.flatten())"
 };
 
 fn Assign.indent(level, maxColumns) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return "".cat(
         data::target.indent(level, maxColumns),
         " =\n",
@@ -36,7 +36,7 @@ fn Assign.indent(level, maxColumns) {
 };
 
 fn Assign.prefersFlat() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return? data::target.prefersFlat()
         & data::value.prefersFlat()
         & this

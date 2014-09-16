@@ -22,12 +22,12 @@ def SECRET = @secret.makeAnonymous();
 def Return = makeObjectClass(@Return, SECRET);
 
 fn Return.flatten() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return "return \(data::tree.flatten())"
 };
 
 fn Return.indent(level, maxColumns) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def prefix = indentation(level);
 
     return "\
@@ -36,7 +36,7 @@ fn Return.indent(level, maxColumns) {
 };
 
 fn Return.prefersFlat() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return? data::tree.prefersFlat()
         & this
 };

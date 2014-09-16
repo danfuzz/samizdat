@@ -20,12 +20,12 @@ def SECRET = @secret.makeAnonymous();
 def CodeString = makeObjectClass(@CodeString, SECRET);
 
 fn CodeString.flatten() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return data::text
 };
 
 fn CodeString.indent(level, maxColumns) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return indentation(level).cat(data::text)
 };
 

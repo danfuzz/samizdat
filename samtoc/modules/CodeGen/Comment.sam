@@ -22,7 +22,7 @@ def SECRET = @secret.makeAnonymous();
 def Comment = makeObjectClass(@Comment, SECRET);
 
 fn Comment.flatten() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def text = data::text;
 
     return (def payload = data::payload)
@@ -31,7 +31,7 @@ fn Comment.flatten() {
 };
 
 fn Comment.indent(level, maxColumns) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def prefix = indentation(level);
 
     return if (def p = data::payload) {
@@ -45,7 +45,7 @@ fn Comment.indent(level, maxColumns) {
 };
 
 fn Comment.prefersFlat() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return? (#data::text < 30)
         & (((def payload = data::payload)
             & payload.prefersFlat()?

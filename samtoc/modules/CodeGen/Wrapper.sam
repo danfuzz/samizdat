@@ -24,7 +24,7 @@ def SECRET = @secret.makeAnonymous();
 def Wrapper = makeObjectClass(@Wrapper, SECRET);
 
 fn Wrapper.flatten() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def flatBox = data::flatBox;
 
     return flatBox*
@@ -32,7 +32,7 @@ fn Wrapper.flatten() {
 };
 
 fn Wrapper.indent(level, maxColumns) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def tree = data::tree;
 
     if (tree.prefersFlat()) {
@@ -47,7 +47,7 @@ fn Wrapper.indent(level, maxColumns) {
 };
 
 fn Wrapper.prefersFlat() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return? data::tree.prefersFlat() & this;
 };
 
