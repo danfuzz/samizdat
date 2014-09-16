@@ -43,5 +43,5 @@ fn Statement.prefersFlat() {
 ##
 
 export fn genStatement(tree) {
-    return genWrapper(makeObject(Statement, SECRET, {tree: fix(tree)}))
+    return genWrapper(makeObject(Statement, SECRET, @{tree: fix(tree)}))
 };

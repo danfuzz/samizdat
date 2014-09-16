@@ -78,7 +78,7 @@ export fn genCall(function, args*) {
 
     return genWrapper(
         makeObject(Call, SECRET,
-            {
+            @{
                 function: fixFunction,
                 args: fixArgs,
                 flatOk
