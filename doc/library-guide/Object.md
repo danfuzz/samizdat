@@ -25,6 +25,7 @@ that doesn't match.
 
 Returns an object with the given class (a value of class `Class`)
 and optional data payload value (which must be a symbol table).
+If `value` is not specified, it defaults to `@{}` (the empty symbol table).
 
 It is a fatal error (terminating the runtime) to pass for `cls` something
 other than an object class, to pass a `secret` that doesn't match the
