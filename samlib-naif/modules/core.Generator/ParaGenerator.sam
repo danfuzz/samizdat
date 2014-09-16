@@ -60,7 +60,7 @@ fn ParaGenerator.nextValue(box) {
     def nexts = generatorCalls.collect({ one -> one.nth(1) });
 
     box* := yields;
-    return makeObject(ParaGenerator, SECRET, {generators: nexts})
+    return makeObject(ParaGenerator, SECRET, @{generators: nexts})
 };
 
 
@@ -79,5 +79,5 @@ export fn makeParaGenerator(generators*) {
     ifIs { eq(generators.get_size(), 1) }
         { return makeListWrapGenerator(generators*) };
 
-    return makeObject(ParaGenerator, SECRET, {generators})
+    return makeObject(ParaGenerator, SECRET, @{generators})
 };

@@ -52,7 +52,7 @@ fn FilterGenerator.nextValue(box) {
                     { value ->
                         box* := value;
                         return makeObject(FilterGenerator, SECRET,
-                            {filterFunction, generator: nextGen})
+                            @{filterFunction, generator: nextGen})
                     }
                     {
                         ## The filter discarded the value. As this doesn't
@@ -76,7 +76,7 @@ fn FilterGenerator.nextValue(box) {
 ## Documented in spec.
 export fn makeFilterGenerator(filterFunction, generators*) {
     return makeObject(FilterGenerator, SECRET,
-        {
+        @{
             filterFunction,
             generator: makeParaGenerator(generators*)
         })

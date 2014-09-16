@@ -73,6 +73,6 @@ fn PegRepeat.parse(box, input, items*) {
 ## Documented in spec.
 export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
     def minSize = ifValueOr { optMinSize* } { 0 };
-    def maxMap = ifValue { optMaxSize* } { sz -> {maxSize: sz} } { {} };
-    return makeObject(PegRepeat, SECRET, {maxMap*, minSize, rule})
+    def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
+    return makeObject(PegRepeat, SECRET, @{maxMap*, minSize, rule})
 };

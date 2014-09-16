@@ -34,5 +34,5 @@ fn PegLookaheadSuccess.parse(box, input, items*) {
 
 ## Documented in spec.
 export fn makeLookaheadSuccess(rule) {
-    return makeObject(PegLookaheadSuccess, SECRET, {rule})
+    return makeObject(PegLookaheadSuccess, SECRET, @{rule})
 };

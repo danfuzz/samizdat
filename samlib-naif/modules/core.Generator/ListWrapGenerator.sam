@@ -51,5 +51,5 @@ fn ListWrapGenerator.nextValue(box) {
 
 ## Documented in spec.
 export fn makeListWrapGenerator(generator) {
-    return makeObject(ListWrapGenerator, SECRET, {generator})
+    return makeObject(ListWrapGenerator, SECRET, @{generator})
 };

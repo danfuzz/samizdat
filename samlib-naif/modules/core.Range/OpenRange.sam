@@ -55,5 +55,5 @@ fn OpenRange.nextValue(box) {
 export fn makeOpenRange(firstValue, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    return makeObject(OpenRange, SECRET, {firstValue, increment})
+    return makeObject(OpenRange, SECRET, @{firstValue, increment})
 };

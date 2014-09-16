@@ -46,7 +46,7 @@ fn SerialGenerator.nextValue(box) {
             ifValue { firstGen.nextValue(box) }
                 { nextGenerator ->
                     makeObject(SerialGenerator, SECRET,
-                        {generators: [nextGenerator, moreGens*]})
+                        @{generators: [nextGenerator, moreGens*]})
                 }
                 {
                     ## First generator was voided.
@@ -71,5 +71,5 @@ export fn makeSerialGenerator(generators*) {
     ifIs { eq(generators.get_size(), 1) }
         { return generators* };
 
-    return makeObject(SerialGenerator, SECRET, {generators})
+    return makeObject(SerialGenerator, SECRET, @{generators})
 };
