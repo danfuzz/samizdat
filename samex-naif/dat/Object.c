@@ -4,6 +4,7 @@
 
 #include "type/Builtin.h"
 #include "type/Object.h"
+#include "type/SymbolTable.h"
 #include "type/define.h"
 #include "zlimits.h"
 
@@ -55,6 +56,12 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 
     if (!classHasSecret(cls, secret)) {
         die("Mismatched `secret` on call to `makeObject`.");
+    }
+
+    if (data == NULL) {
+        data = EMPTY_SYMBOL_TABLE;
+    } else {
+        assertHasClass(data, CLS_SymbolTable);
     }
 
     zvalue result = datAllocValue(cls, sizeof(ObjectInfo));

@@ -47,5 +47,5 @@ fn Return.prefersFlat() {
 ##
 
 export fn genReturn(tree) {
-    return genWrapper(makeObject(Return, SECRET, {tree: fix(tree)}))
+    return genWrapper(makeObject(Return, SECRET, @{tree: fix(tree)}))
 };

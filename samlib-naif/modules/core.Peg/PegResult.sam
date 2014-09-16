@@ -34,7 +34,7 @@ fn PegResult.parse(box, input, .*) {
 
 ## Documented in spec.
 export fn makeResult(value) {
-    return makeObject(PegResult, SECRET, {value})
+    return makeObject(PegResult, SECRET, @{value})
 };
 
 ## Documented in spec.

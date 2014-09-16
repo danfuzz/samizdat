@@ -34,7 +34,7 @@ fn PegThunk.parse(box, input, items*) {
 
 ## Documented in spec.
 export fn makeParserThunk(function) {
-    return makeObject(PegThunk, SECRET, {function})
+    return makeObject(PegThunk, SECRET, @{function})
 };
 
 

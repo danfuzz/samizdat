@@ -58,5 +58,5 @@ fn Wrapper.prefersFlat() {
 
 export fn genWrapper(tree) {
     def flat;
-    return makeObject(Wrapper, SECRET, {tree, flatBox: (var flat)})
+    return makeObject(Wrapper, SECRET, @{tree, flatBox: (var flat)})
 };

@@ -37,6 +37,6 @@ fn PegCode.parse(box, input, items*) {
 
 ## Documented in spec.
 export fn makeCode(function) {
-    return makeObject(PegCode, SECRET, {function})
+    return makeObject(PegCode, SECRET, @{function})
 };
 

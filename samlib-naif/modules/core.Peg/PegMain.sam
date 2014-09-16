@@ -37,10 +37,10 @@ fn PegMain.parse(box, input, .*) {
 
 ## Documented in spec.
 export fn makeMainChoice(rules*) {
-    return makeObject(PegMain, SECRET, {rule: makeChoice(rules*)})
+    return makeObject(PegMain, SECRET, @{rule: makeChoice(rules*)})
 };
 
 ## Documented in spec.
 export fn makeMainSequence(rules*) {
-    return makeObject(PegMain, SECRET, {rule: makeSequence(rules*)})
+    return makeObject(PegMain, SECRET, @{rule: makeSequence(rules*)})
 };

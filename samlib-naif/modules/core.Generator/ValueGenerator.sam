@@ -48,5 +48,5 @@ fn ValueGenerator.nextValue(box) {
 
 ## Documented in spec.
 export fn makeValueGenerator(value) {
-    return makeObject(ValueGenerator, SECRET, {value})
+    return makeObject(ValueGenerator, SECRET, @{value})
 };

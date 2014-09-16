@@ -62,5 +62,5 @@ export fn makeRepeatGenerator(size, optValue?) {
         };
 
     def value = ifValueOr { optValue* } { null };
-    return makeObject(RepeatGenerator, SECRET, {size, value})
+    return makeObject(RepeatGenerator, SECRET, @{size, value})
 };

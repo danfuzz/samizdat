@@ -39,7 +39,7 @@ fn CodeString.prefersFlat() {
 ##
 
 export fn genCodeString(text) {
-    return makeObject(CodeString, SECRET, {text});
+    return makeObject(CodeString, SECRET, @{text});
 };
 
 ## Fixes a tree constructor argument, so that strings (per se) are

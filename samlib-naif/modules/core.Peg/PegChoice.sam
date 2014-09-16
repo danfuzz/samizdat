@@ -52,6 +52,6 @@ export fn makeChoice(rules*) {
         { return rules* };
 
     ## The general case.
-    return makeObject(PegChoice, SECRET, {rules})
+    return makeObject(PegChoice, SECRET, @{rules})
 };
 
