@@ -20,13 +20,13 @@ as when used here it is only the resolved metainformation that gets used.
 
 #### `KEYWORDS`
 
-This is a map from symbol names of keywords in the language to the result
+This is a table from symbol names of keywords in the language to the result
 of tokenizing those keywords. The result of tokenizing a keyword is always
 a payload-free token (derived data value).
 
 #### `LITS`
 
-This is a map from mnemonic names to literal nodes representing the
+This is a table from mnemonic names to literal nodes representing the
 implied values, for all such literals needed when parsing the language.
 For example, `LITS::false` is a literal node referring to the
 boolean value `false`.
@@ -35,7 +35,7 @@ For specific details on which names are mapped, refer to the source.
 
 #### `REFS`
 
-This is a map from variable and module-scoped names to execution nodes that
+This is a table from variable and module-scoped names to execution nodes that
 refer to those variables and names, for all the references needed when
 parsing the language.
 
