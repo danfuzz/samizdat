@@ -32,6 +32,15 @@ static ObjectInfo *getInfo(zvalue obj) {
     return (ObjectInfo *) datPayload(obj);
 }
 
+/**
+ * Method to get the given object's data payload. This is the function
+ * that's bound as the instance method for the `secret` symbol. It's not
+ * bound directly on `Object` so as to provide data encapsulation.
+ */
+METH_IMPL_0(Object, privateDataOf) {
+    return getInfo(ths)->data;
+}
+
 
 //
 // Exported Definitions
@@ -73,9 +82,13 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 
 // Documented in header.
 zvalue makeObjectClass(zvalue name, zvalue secret) {
-    assertHasClass(name, CLS_Symbol);
-    return makeClass(name, CLS_Object, secret, NULL, NULL);
+    return makeClass(name, CLS_Object, secret,
+        NULL,
+        symbolTableFromArgs(
+            secret, FUNC_VALUE(Object_privateDataOf),
+            NULL));
 }
+
 
 //
 // Class Definition
