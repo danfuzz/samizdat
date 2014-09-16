@@ -34,7 +34,7 @@ fn ListWrapGenerator.fetch() {
 
 ## Documented in spec.
 fn ListWrapGenerator.nextValue(box) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def result;
 
     return? ifValue { data::generator.nextValue(var result) }

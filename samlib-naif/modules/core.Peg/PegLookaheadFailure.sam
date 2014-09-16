@@ -29,7 +29,7 @@ def PegLookaheadFailure = makeObjectClass(@PegLookaheadFailure, SECRET);
 
 ## Documented in spec.
 fn PegLookaheadFailure.parse(box, input, items*) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return? ifNot { data::rule.parse(nullBox, input, items*) }
         {
             box* := null;

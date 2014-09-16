@@ -26,7 +26,7 @@ def PegMain = makeObjectClass(@PegMain, SECRET);
 ## Documented in spec.
 fn PegMain.parse(box, input, .*) {
     ## The point of this implementation is to drop the `items` context.
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return? data::rule.parse(box, input)
 };
 

@@ -37,7 +37,7 @@ fn FilterGenerator.fetch() {
 
 ## Documented in spec.
 fn FilterGenerator.nextValue(box) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     var innerGen = data::generator;
     def filterFunction = data::filterFunction;
     var result;

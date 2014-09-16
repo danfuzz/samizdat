@@ -36,7 +36,7 @@ fn RepeatGenerator.fetch() {
 
 ## Documented in spec.
 fn RepeatGenerator.nextValue(box) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def size = data::size;
 
     return? ifIs { perGt(size, 0) }

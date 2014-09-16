@@ -22,7 +22,7 @@ def PegResult = makeObjectClass(@PegResult, SECRET);
 
 ## Documented in spec.
 fn PegResult.parse(box, input, .*) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     box* := data::value;
     return input
 };
