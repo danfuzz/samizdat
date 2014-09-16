@@ -47,11 +47,6 @@ METH_IMPL_0(Object, privateDataOf) {
 //
 
 // Documented in header.
-zvalue objectDataOf(zvalue obj, zvalue secret) {
-    return METH_CALL(objectDataOf, obj, secret);
-}
-
-// Documented in header.
 zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
     if (DAT_CONSTRUCTION_PARANOIA) {
         assertValid(secret);
@@ -105,22 +100,6 @@ FUNC_IMPL_2(Object_makeObjectClass, name, secret) {
 }
 
 // Documented in header.
-METH_IMPL_1(Object, objectDataOf, secret) {
-    ObjectInfo *info = getInfo(ths);
-
-    // Note: It's important to pass `info->secret` first, so that it's the
-    // one whose `totalEq` method is used. The given `secret` can't be
-    // trusted to behave.
-    if (!valEq(info->secret, secret)) {
-        die("Mismatched secret on call to `objectDataOf`.");
-    }
-
-    // The `datFrameAdd()` call is because `obj` might immediately become
-    // garbage.
-    return datFrameAdd(info->data);
-}
-
-// Documented in header.
 METH_IMPL_0(Object, gcMark) {
     ObjectInfo *info = getInfo(ths);
 
@@ -133,12 +112,9 @@ METH_IMPL_0(Object, gcMark) {
 MOD_INIT(Object) {
     MOD_USE(Value);
 
-    SYM_INIT(objectDataOf);
-
     CLS_Object = makeCoreClass("Object", CLS_Value,
         NULL,
         symbolTableFromArgs(
-            METH_BIND(Object, objectDataOf),
             METH_BIND(Object, gcMark),
             NULL));
 
@@ -149,9 +125,6 @@ MOD_INIT(Object) {
 
 // Documented in header.
 zvalue CLS_Object = NULL;
-
-// Documented in header.
-SYM_DEF(objectDataOf);
 
 // Documented in header.
 zvalue FUN_Object_makeObject = NULL;
