@@ -38,7 +38,7 @@ fn OpenRange.fetch() {
 
 ## Documented in spec.
 fn OpenRange.nextValue(box) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def firstValue = data::firstValue;
     def increment = data::increment;
 

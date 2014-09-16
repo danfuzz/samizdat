@@ -22,17 +22,17 @@ def SECRET = @secret.makeAnonymous();
 def Statement = makeObjectClass(@Statement, SECRET);
 
 fn Statement.flatten() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return "\(data::tree.flatten());"
 };
 
 fn Statement.indent(level, maxColumns) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return "\(data::tree.indent(level, maxColumns));\n"
 };
 
 fn Statement.prefersFlat() {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     return? data::tree.prefersFlat()
         & this
 };

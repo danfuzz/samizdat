@@ -24,7 +24,7 @@ def PegTokenSet = makeObjectClass(@PegTokenSet, SECRET);
 
 ## Documented in spec.
 fn PegTokenSet.parse(box, input, items*) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def result;
 
     return? ifValue { input.nextValue(var result) }

@@ -15,9 +15,6 @@
 /** Class value for in-model class `Object`. */
 extern zvalue CLS_Object;
 
-/** Method `.objectDataOf(secret)`: Documented in spec. */
-SYM_DECL(objectDataOf);
-
 /** Global function `makeObject`: Documented in spec. */
 extern zvalue FUN_Object_makeObject;
 
@@ -36,10 +33,5 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data);
  * Makes a new object class with the given name and secret.
  */
 zvalue makeObjectClass(zvalue name, zvalue secret);
-
-/**
- * Calls the method `objectDataOf()`.
- */
-zvalue objectDataOf(zvalue obj, zvalue secret);
 
 #endif

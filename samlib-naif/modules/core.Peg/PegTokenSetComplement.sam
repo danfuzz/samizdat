@@ -24,7 +24,7 @@ def PegTokenSetComplement = makeObjectClass(@PegTokenSetComplement, SECRET);
 
 ## Documented in spec.
 fn PegTokenSetComplement.parse(box, input, items*) {
-    def data = this.objectDataOf(SECRET);
+    def data = SECRET(this);
     def result;
 
     return? ifValue { input.nextValue(var result) }

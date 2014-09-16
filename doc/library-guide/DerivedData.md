@@ -7,13 +7,10 @@ DerivedData
 <br><br>
 ### Method Definitions
 
-#### `.dataOf() -> . | void`
+#### `.dataOf() -> symbolTable`
 
-Returns the data payload of the given derived data value, if any. If the value
-has no data payload, this returns void.
+Returns the data payload of the given derived data value.
 
-It is an error (terminating the runtime) to call this function on something
-other than a derived data value.
 
 ### Primitive Definitions
 
