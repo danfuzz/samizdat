@@ -123,9 +123,9 @@ Makes an assignment node of some form, if possible. Given a `lvalue`-bearing
 `target`, this calls `lvalue(value)` to produce a result. Otherwise, this
 returns void.
 
-#### `makeBasicClosure(map) -> node`
+#### `makeBasicClosure(table) -> node`
 
-Makes a `closure` node, using the bindings of `map` as a basis, and adding
+Makes a `closure` node, using the bindings of `table` as a basis, and adding
 in sensible defaults for `formals` and `statements` if missing:
 
 * `formals: []` &mdash; An empty formals list.
@@ -196,22 +196,23 @@ to) a `varDef` node.
 Makes an `exportSelection` node to export the variables with the given
 `names`. Each of the `names` must be a symbol.
 
-#### `makeFullClosure(nodeOrMap) -> node`
+#### `makeFullClosure(baseData) -> node`
 
-Makes a `closure` node, using the bindings of `nodeOrMap` as a basis, adding
+Makes a `closure` node, using the bindings of `baseData` as a basis, adding
 in defaults like `makeBasicClosure()` (see which), and also performing
-expansion and defaulting for the `yield` binding.
+expansion and defaulting for the `yield` binding. `baseData` must either be
+a `@closure` node (allowed to be incomplete) or a symbol table.
 
-If `map` binds `yield`, then that binding is reflected in the result. If
-the binding is to a `nonlocalExit` node, then that node is expanded
+If `baseData` binds `yield`, then that binding is reflected in the result.
+If the binding is to a `nonlocalExit` node, then that node is expanded
 into an appropriate function call. As a special case, if it binds a
-`nonlocalExit` which would call the `yieldDef` defined in `nodeOrMap`, then
+`nonlocalExit` which would call the `yieldDef` defined in `baseData`, then
 the function call is elided.
 
-If `nodeOrMap` does *not* bind `yield`, then in the result, `yield` is bound
-to `@void` unless all of the following are true of `nodeOrMap`:
+If `baseData` does *not* bind `yield`, then in the result, `yield` is bound
+to `@void` unless all of the following are true of `baseData`:
 
-* The map does *not* include a binding for `yieldDef`. That is, it does not
+* The table does *not* include a binding for `yieldDef`. That is, it does not
   have a named or implicit nonlocal exit.
 * It has a binding for `statements`, with length of at least 1.
 * The final element of `statements` is a non-statement expression node.
@@ -229,7 +230,7 @@ of two arguments (a collection node and a key node).
 
 #### `makeImport(baseData) -> node`
 
-Makes an `@import*` node, based on `baseData`, which must be a map which
+Makes an `@import*` node, based on `baseData`, which must be a table which
 includes a consistent set of bindings for one of the `@import` node types.
 
 See the tree grammar specification for most of the details on bindings.
@@ -399,7 +400,7 @@ binding for the metainformation. This includes the following transformations:
 
 * All `exportSelection` nodes are removed entirely.
 
-* A `yield` is added, of a `@module` value with a map payload that binds
+* A `yield` is added, of a `@module` value with a payload that binds
   `exports` and `info`.
 
   * If there are any `export` or `exportSelection` nodes, the `exports`

@@ -47,15 +47,15 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
 }
 
 /**
- * Adds a `{(name): Value}` binding to the given map.
+ * Adds a `{(name): Value}` binding to the given map or table.
  */
 static zvalue addTypeBinding(zvalue map, zvalue name) {
     return collPut(map, name, CLS_Value);
 }
 
 /**
- * Adds a type binding (per above) to a source binding for a given map. This
- * is used to build up metainformation about imports.
+ * Adds a type binding (per above) to a source binding for a given map or
+ * table. This is used to build up metainformation about imports.
  */
 static zvalue addImportBinding(zvalue map, zvalue source, zvalue name) {
     zvalue names = get(map, source);
@@ -65,7 +65,7 @@ static zvalue addImportBinding(zvalue map, zvalue source, zvalue name) {
 }
 
 /**
- * Adds a format to a list of same in a resource source map. This
+ * Adds a format to a list of same in a resource source map or table. This
  * is used to build up metainformation about resources.
  */
 static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
@@ -81,8 +81,8 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 }
 
 // Documented in `LangNode` source.
-static zvalue expandYield(zvalue map) {
-    zvalue yieldNode = get(map, SYM_yield);
+static zvalue expandYield(zvalue table) {
+    zvalue yieldNode = get(table, SYM_yield);
 
     if (     (yieldNode == NULL)
           || !hasClass(yieldNode, CLS_nonlocalExit)) {
@@ -91,7 +91,7 @@ static zvalue expandYield(zvalue map) {
 
     zvalue function = get(yieldNode, SYM_function);
     zvalue value = get(yieldNode, SYM_value);
-    zvalue yieldDef = get(map, SYM_yieldDef);
+    zvalue yieldDef = get(table, SYM_yieldDef);
     zvalue functionTarget = get(function, SYM_target);
 
     if (     hasClass(function, CLS_fetch)
@@ -327,11 +327,11 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 }
 
 // Documented in spec.
-zvalue makeBasicClosure(zvalue map) {
+zvalue makeBasicClosure(zvalue table) {
     return makeData(CLS_closure,
         METH_CALL(cat,
             tableFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
-            map));
+            table));
 }
 
 // Documented in spec.
@@ -451,13 +451,13 @@ zvalue makeExportSelection(zvalue names) {
 }
 
 // Documented in spec.
-zvalue makeFullClosure(zvalue nodeOrMap) {
-    zvalue map = hasClass(nodeOrMap, CLS_SymbolTable)
-        ? nodeOrMap : dataOf(nodeOrMap);
-    zvalue formals = get(map, SYM_formals);
-    zvalue statements = get(map, SYM_statements);
+zvalue makeFullClosure(zvalue baseData) {
+    zvalue table = hasClass(baseData, CLS_SymbolTable)
+        ? baseData : dataOf(baseData);
+    zvalue formals = get(table, SYM_formals);
+    zvalue statements = get(table, SYM_statements);
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
-    zvalue yieldNode = expandYield(map);
+    zvalue yieldNode = expandYield(table);
 
     if (formals == NULL) {
         formals = EMPTY_LIST;
@@ -469,7 +469,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
 
     if (     (yieldNode == NULL)
           && (statSz != 0)
-          && (get(map, SYM_yieldDef) == NULL)) {
+          && (get(table, SYM_yieldDef) == NULL)) {
         zvalue lastStat = nth(statements, statSz - 1);
         if (isExpression(lastStat)) {
             statements = METH_CALL(sliceExclusive, statements, intFromZint(0));
@@ -485,7 +485,7 @@ zvalue makeFullClosure(zvalue nodeOrMap) {
 
     return makeData(CLS_closure,
         METH_CALL(cat,
-            map,
+            table,
             tableFrom3(
                 SYM_formals,    formals,
                 SYM_statements, statements,
@@ -875,8 +875,8 @@ zvalue withTop(zvalue node) {
 
 // Documented in spec.
 zvalue withYieldDef(zvalue node, zvalue name) {
-    zvalue map = dataOf(node);
-    zvalue yieldDef = get(map, SYM_yieldDef);
+    zvalue table = dataOf(node);
+    zvalue yieldDef = get(table, SYM_yieldDef);
     zvalue newBindings;
 
     if (yieldDef != NULL) {
@@ -889,7 +889,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
     return makeData(
         get_class(node),
-        METH_CALL(cat, map, newBindings));
+        METH_CALL(cat, table, newBindings));
 };
 
 // Documented in spec.
