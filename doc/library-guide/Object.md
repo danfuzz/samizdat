@@ -4,19 +4,10 @@ Samizdat Layer 0: Core Library
 Object
 ------
 
-
-<br><br>
-### Method Definitions: `Object` protocol
-
-#### `.objectDataOf(secret) -> . | void`
-
-Returns the data payload of the given object, if any, but only if `this`'s
-secret matches the given one. If the value has no data payload, this returns
-void.
-
-It is an error (terminating the runtime) to call this function with a `secret`
-that doesn't match.
-
+The class `Object` provides data and behavior encapsulation. Encapsulation
+is achieved by using a secret symbol (generally an anonymous symbol), which
+is required as an argument to `makeObject()` and which becomes a bound
+as a method to access a given class's private data.
 
 <br><br>
 ### Primitive Definitions
