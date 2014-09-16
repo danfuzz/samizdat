@@ -24,11 +24,11 @@ that doesn't match.
 #### `makeObject(cls, secret, value?) -> object`
 
 Returns an object with the given class (a value of class `Class`)
-and optional data payload value (an arbitrary value).
+and optional data payload value (which must be a symbol table).
 
 It is a fatal error (terminating the runtime) to pass for `cls` something
-other than an object class, or to pass a `secret` that doesn't match the
-secret of the given `cls`.
+other than an object class, to pass a `secret` that doesn't match the
+secret of the given `cls`, or to pass a `value` that is not a symbol table.
 
 #### `makeObjectClass(name, secret) -> class`
 
