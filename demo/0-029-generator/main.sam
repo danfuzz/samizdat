@@ -139,12 +139,3 @@ msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
         $Generator::nullGenerator,
         ["def", "ghi"],
         []));
-
-note("collectAsMap on a FilterGenerator");
-def outMap = $Generator::collectAsMap(
-    $Generator::makeFilterGenerator($Range::makeInclusiveRange(0, 4, 2))
-        { value ->
-            {(value): value, (value.add(1)): value, blort: value}
-        });
-note("    ", $Format::source(outMap));
-note();

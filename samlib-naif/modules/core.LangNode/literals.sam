@@ -61,15 +61,15 @@ export def VALUES = {
 ##
 
 ## Documented in spec.
-export def LITS = {}.cat(
+export def LITS = @{}.cat(
     (filterAll(VALUES) { one ->
-        {one.get_key(): makeLiteral(one.get_value())}
+        @{one.get_key(): makeLiteral(one.get_value())}
     })*
 );
 
 ## Documented in spec.
-export def SYMS = {}.cat(
+export def SYMS = @{}.cat(
     (filterAll(SYMBOLS) { name ->
-        {(name): makeLiteral(name)}
+        @{(name): makeLiteral(name)}
     })*
 );

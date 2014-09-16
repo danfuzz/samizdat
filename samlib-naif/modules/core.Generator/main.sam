@@ -32,14 +32,6 @@ export def stdCollect = Generator_stdCollect;
 export def stdFetch = Generator_stdFetch;
 
 ## Documented in spec.
-export fn collectAsMap(generator) {
-    ## Avoid pointless map->generator->map conversion.
-    return ifIs { hasClass(generator, Map) }
-        { generator }
-        { {}.cat(generator*) }
-};
-
-## Documented in spec.
 export fn filterAll(filterFunction, generators*) {
     return ifIs { eq(generators.get_size(), 1) }
         {

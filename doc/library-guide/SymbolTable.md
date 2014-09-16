@@ -41,6 +41,12 @@ other.
 <br><br>
 ### Method Definitions
 
+#### `.del(symbol) -> symbolTable`
+
+Returns a symbol table just like the given one, except that
+the mapping for the given `symbol` is removed. If `this`
+does not have a particular given symbol, then this returns `this`.
+
 #### `.get(symbol) -> . | void`
 
 Returns the value mapped to the given `symbol` (a symbol) in the given

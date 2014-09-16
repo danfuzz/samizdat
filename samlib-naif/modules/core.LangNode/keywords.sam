@@ -4,7 +4,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: collectAsMap, makeFilterGenerator;
+import core.Generator :: filterAll;
 import ./constructors1 :: makeLiteral;
 
 
@@ -29,6 +29,8 @@ def KEYWORD_NAMES = [
 ##
 
 ## Documented in spec.
-export def KEYWORDS = collectAsMap(
-    makeFilterGenerator(KEYWORD_NAMES)
-    { name -> {(name): @(@@(name)){}} });
+export def KEYWORDS = @{}.cat(
+    (filterAll(KEYWORD_NAMES) { name ->
+        @{(name): @(@@(name)){}}
+    })*
+);

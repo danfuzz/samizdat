@@ -11,6 +11,7 @@
 #include "type/Null.h"
 #include "type/Number.h"
 #include "type/Symbol.h"
+#include "type/SymbolTable.h"
 #include "type/String.h"
 #include "util.h"
 
@@ -448,7 +449,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeData(CLS_mapping, mapFrom2(SYM_keys, keys, SYM_value, value));
+    return derivFrom2(CLS_mapping, SYM_keys, keys, SYM_value, value);
 }
 
 /**
@@ -473,10 +474,9 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return makeData(CLS_mapping,
-        mapFrom2(
-            SYM_keys,  listFrom1(makeLiteral(name)),
-            SYM_value, makeVarFetch(name)));
+    return derivFrom2(CLS_mapping,
+        SYM_keys,  listFrom1(makeLiteral(name)),
+        SYM_value, makeVarFetch(name));
 }
 
 // Documented in spec.
@@ -516,6 +516,32 @@ DEF_PARSE(symbolTable) {
     MATCH_OR_REJECT(CH_CCURLY);
 
     return makeSymbolTableExpression(mappings);
+}
+
+// Documented in spec.
+DEF_PARSE(deriv) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_AT);
+
+    zvalue cls;
+    zvalue name = PARSE(identifierSymbol);
+    if (name != NULL) {
+        cls = makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
+    } else {
+        cls = PARSE_OR_REJECT(parenExpression);
+    }
+
+    // Value is mandatory, so the last part is full of `*_OR_REJECT`.
+    zvalue value = PARSE(parenExpression);
+    if (value == NULL) {
+        MATCH_OR_REJECT(CH_OCURLY);
+        zvalue mappings = PARSE_OR_REJECT(mappings);
+        MATCH_OR_REJECT(CH_CCURLY);
+        value = makeSymbolTableExpression(mappings);
+    }
+
+    return makeCall(REFS(makeData), listFrom2(cls, value));
 }
 
 // Documented in spec.
@@ -562,27 +588,6 @@ DEF_PARSE(type) {
 
     name = PARSE_OR_REJECT(parenExpression);
     return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
-}
-
-// Documented in spec.
-DEF_PARSE(deriv) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_AT);
-
-    zvalue cls;
-    zvalue name = PARSE(identifierSymbol);
-    if (name != NULL) {
-        cls = makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
-    } else {
-        cls = PARSE_OR_REJECT(parenExpression);
-    }
-
-    // Value is mandatory, so the last one is `PARSE_OR_REJECT`.
-    zvalue value = PARSE(parenExpression);
-    if (value == NULL) value = PARSE_OR_REJECT(map);
-
-    return makeCall(REFS(makeData), listFrom2(cls, value));
 }
 
 // Documented in spec.
@@ -872,7 +877,8 @@ DEF_PARSE(yieldDef) {
 // Documented in spec.
 DEF_PARSE(optYieldDef) {
     zvalue result = PARSE(yieldDef);
-    return (result != NULL) ? mapFrom1(SYM_yieldDef, result) : EMPTY_MAP;
+    return (result != NULL)
+        ? tableFrom1(SYM_yieldDef, result) : EMPTY_SYMBOL_TABLE;
 }
 
 /**
@@ -906,7 +912,7 @@ DEF_PARSE(formal) {
         repeat = className(get_class(repeat));
     }
 
-    return mapFrom2(SYM_name, name, SYM_repeat, repeat);
+    return tableFrom2(SYM_name, name, SYM_repeat, repeat);
 }
 
 // Documented in spec.
@@ -919,7 +925,7 @@ DEF_PARSE(formalsList) {
  */
 DEF_PARSE(closureDeclarations1) {
     zvalue n = PARSE(nameSymbol);
-    return (n == NULL) ? EMPTY_MAP : mapFrom1(SYM_name, n);
+    return (n == NULL) ? EMPTY_SYMBOL_TABLE : tableFrom1(SYM_name, n);
 }
 
 /**
@@ -934,11 +940,11 @@ DEF_PARSE(closureDeclarations2) {
     if (MATCH(CH_OPAREN) != NULL) {
         zvalue formals = PARSE(formalsList);    // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        return METH_CALL(cat, name, mapFrom1(SYM_formals, formals));
+        return METH_CALL(cat, name, tableFrom1(SYM_formals, formals));
     } else {
         RESET();
         zvalue formals = PARSE(formalsList);    // This never fails.
-        return mapFrom1(SYM_formals, formals);
+        return tableFrom1(SYM_formals, formals);
     }
 }
 
@@ -962,7 +968,7 @@ DEF_PARSE(closureDeclarations) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(closureDeclarations3); }
-    if (result == NULL) { result = mapFrom1(SYM_formals, EMPTY_LIST); }
+    if (result == NULL) { result = tableFrom1(SYM_formals, EMPTY_LIST); }
 
     return result;
 }
@@ -1009,7 +1015,7 @@ DEF_PARSE(methodBind) {
     zvalue name = get(closure, SYM_name);
     zvalue fullClosure = withFormals(closure,
         METH_CALL(cat,
-            listFrom1(mapFrom1(SYM_name, SYM_this)),
+            listFrom1(tableFrom1(SYM_name, SYM_this)),
             formals));
     return makeCall(REFS(classAddMethod),
         listFrom3(bind, makeLiteral(name), fullClosure));
@@ -1023,13 +1029,13 @@ DEF_PARSE(importName1) {
     zvalue key = MATCH(CH_STAR) ? SYM_prefix : SYM_name;
     MATCH_OR_REJECT(CH_EQUAL);
 
-    return mapFrom1(key, name);
+    return tableFrom1(key, name);
 }
 
 // Documented in spec.
 DEF_PARSE(importName) {
     zvalue result = PARSE(importName1);
-    return (result == NULL) ? EMPTY_MAP : result;
+    return (result == NULL) ? EMPTY_SYMBOL_TABLE : result;
 }
 
 /** Helper for `importFormat`: Parses the first alternate. */
@@ -1038,13 +1044,13 @@ DEF_PARSE(importFormat1) {
 
     MATCH_OR_REJECT(CH_AT);
     zvalue f = PARSE_OR_REJECT(identifierSymbol);
-    return mapFrom1(SYM_format, get(f, SYM_value));
+    return tableFrom1(SYM_format, get(f, SYM_value));
 }
 
 // Documented in spec.
 DEF_PARSE(importFormat) {
     zvalue result = PARSE(importFormat1);
-    return (result == NULL) ? EMPTY_MAP : result;
+    return (result == NULL) ? EMPTY_SYMBOL_TABLE : result;
 }
 
 /**
@@ -1085,7 +1091,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest, optSuffix));
-    return makeData(CLS_internal, mapFrom1(SYM_name, name));
+    return derivFrom1(CLS_internal, SYM_name, name);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1097,7 +1103,7 @@ DEF_PARSE(importSource2) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest));
-    return makeData(CLS_external, mapFrom1(SYM_name, name));
+    return derivFrom1(CLS_external, SYM_name, name);
 }
 
 // Documented in spec.
@@ -1117,7 +1123,7 @@ DEF_PARSE(importSelect1) {
     MATCH_OR_REJECT(CH_COLONCOLON);
     zvalue result = MATCH_OR_REJECT(CH_STAR);
 
-    return mapFrom1(SYM_select, SYM_CH_STAR);
+    return tableFrom1(SYM_select, SYM_CH_STAR);
 }
 
 /** Helper for `importSelect`: Parses the second alternate. */
@@ -1127,7 +1133,7 @@ DEF_PARSE(importSelect2) {
     MATCH_OR_REJECT(CH_COLONCOLON);
     zvalue select = PARSE_OR_REJECT(nameSymbolList);
 
-    return mapFrom1(SYM_select, select);
+    return tableFrom1(SYM_select, select);
 }
 
 // Documented in spec.
@@ -1137,7 +1143,7 @@ DEF_PARSE(importSelect) {
     if (result == NULL) { result = PARSE(importSelect1); }
     if (result == NULL) { result = PARSE(importSelect2); }
 
-    return (result == NULL) ? EMPTY_MAP : result;
+    return (result == NULL) ? EMPTY_SYMBOL_TABLE : result;
 }
 
 // Documented in spec.
@@ -1155,7 +1161,7 @@ DEF_PARSE(importStatement) {
         nameOrPrefix,
         format,
         select,
-        mapFrom1(SYM_source, source));
+        tableFrom1(SYM_source, source));
 
     return (optExport != NULL)
         ? makeExport(makeImport(data))
@@ -1236,7 +1242,7 @@ DEF_PARSE(closureBody) {
 
     PARSE(optSemicolons);
 
-    return mapFrom2(
+    return tableFrom2(
         SYM_statements, statements,
         SYM_yield,      yieldNode);
 }
@@ -1294,7 +1300,7 @@ DEF_PARSE(program) {
     PARSE(optSemicolons);
 
     zvalue closure = makeFullClosure(
-        mapFrom2(SYM_statements, statements, SYM_yield, TOK_void));
+        tableFrom2(SYM_statements, statements, SYM_yield, TOK_void));
     return withoutTops(closure);
 }
 

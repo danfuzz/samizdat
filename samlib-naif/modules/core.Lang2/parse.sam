@@ -233,6 +233,29 @@ def parSymbolTable = {:
     { makeSymbolTableExpression(mappings*) }
 :};
 
+## Parses a literal in derived value form.
+def parDeriv = {:
+    @"@"
+
+    cls = (
+        name = parIdentifierSymbol
+        { makeLiteral(@@(name::value)) }
+    |
+        parParenExpression
+    )
+
+    value = (
+        parParenExpression
+    |
+        @"{"
+        mappings = parMappings
+        @"}"
+        { makeSymbolTableExpression(mappings*) }
+    )
+
+    { makeCall(REFS::makeData, cls, value) }
+:};
+
 ## Parses a list item or function call argument. This handles all of:
 ##
 ## * accepting general expressions
@@ -286,22 +309,6 @@ def parType = {:
         name = parParenExpression
         { makeCall(REFS::makeDerivedDataClass, name) }
     )
-:};
-
-## Parses a literal in derived value form.
-def parDeriv = {:
-    @"@"
-
-    cls = (
-        name = parIdentifierSymbol
-        { makeLiteral(@@(name::value)) }
-    |
-        parParenExpression
-    )
-
-    value = (parParenExpression | parMap)
-
-    { makeCall(REFS::makeData, cls, value) }
 :};
 
 ## Parses a closure, resulting in one that *always* has a `yield` binding.
@@ -578,28 +585,28 @@ def parYieldDef = {:
 ## a map (an empty map if no yield def was present).
 def parOptYieldDef = {:
     y = parYieldDef
-    { {yieldDef: y} }
+    { @{yieldDef: y} }
 |
-    { {} }
+    { @{} }
 :};
 
 ## Parses a formal argument decalaration.
 def parFormal = {:
     name = (
         n = parNameSymbol
-        { {name: n} }
+        { @{name: n} }
     |
-        @"." { {} }
+        @"." { @{} }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_className(r)} }
+        { @{repeat: get_className(r)} }
     |
-        { {} }
+        { @{} }
     )
 
-    { {name*, repeat*} }
+    { @{name*, repeat*} }
 :};
 
 ## Parses a list of formal arguments, with no surrounding parentheses.
@@ -616,26 +623,26 @@ def parClosureDeclarations = {:
     most = (
         name = (
             n = parNameSymbol
-            { {name: n} }
+            { @{name: n} }
         |
-            { {} }
+            { @{} }
         )
         @"("
         formals = parFormalsList
         @")"
-        { {name*, formals}}
+        { @{name*, formals}}
     |
         formals = parFormalsList
-        { {formals} }
+        { @{formals} }
     )
 
     yieldDef = parOptYieldDef
 
     @"->"
 
-    { {most*, yieldDef*} }
+    { @{most*, yieldDef*} }
 |
-    { {formals: []} }
+    { @{formals: []} }
 :};
 
 ## Parses the common part of function definition and generic function binding.
@@ -694,7 +701,7 @@ def parMethodBind = {:
     {
         def formals = closure::formals;
         def name = closure::name;
-        def fullClosure = withFormals(closure, [{name: @this}, formals*]);
+        def fullClosure = withFormals(closure, [@{name: @this}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     }
 :};
@@ -712,9 +719,9 @@ def parImportName = {:
     )
 
     @"="
-    { {(key): name} }
+    { @{(key): name} }
 |
-    { {} }
+    { @{} }
 :};
 
 ## Parses an optional format name for an `import` statement. This rule never
@@ -723,9 +730,9 @@ def parImportName = {:
 def parImportFormat = {:
     @"@"
     f = parIdentifierSymbol
-    { {format: f::value} }
+    { @{format: f::value} }
 |
-    { {} }
+    { @{} }
 :};
 
 ## Parses the source for an `import` statement. The result is either a name
@@ -770,13 +777,13 @@ def parImportSelect = {:
     @"::"
     (
         @"*"
-        { {select: @"*"} }
+        { @{select: @"*"} }
     |
         select = parNameSymbolList
-        { {select} }
+        { @{select} }
     )
 |
-    { {} }
+    { @{} }
 :};
 
 ## Parses an `import` statement. This works by first parsing a very general
@@ -791,7 +798,7 @@ def parImportStatement = {:
     select = parImportSelect
 
     {
-        def data = {nameOrPrefix*, format*, select*, source};
+        def data = @{nameOrPrefix*, format*, select*, source};
         ifIs { optExport* }
             { makeExport(makeImport(data)) }
             { makeImport(data) }
@@ -841,17 +848,17 @@ def parClosureBody = {:
 
     last = (
         s = parStatement
-        { {statements: [s]} }
+        { @{statements: [s]} }
     |
         y = parYieldOrNonlocal
-        { {statements: [], yield: y} }
+        { @{statements: [], yield: y} }
     |
-        { {statements: []} }
+        { @{statements: []} }
     )
 
     @";"*
 
-    { {last*, statements: [most*, last::statements*]} }
+    { @{last*, statements: [most*, last::statements*]} }
 :};
 
 ## Parses a closure (in-line anonymous function, with no extra bindings).
@@ -861,7 +868,7 @@ parRawClosure := {:
     decls = parClosureDeclarations
     body = parClosureBody
     @"}"
-    { {decls*, body*} }
+    { @{decls*, body*} }
 :};
 
 ## Parses a program (list of statements, including imports and exports).
@@ -895,7 +902,7 @@ def parProgram = {:
     @";"*
 
     {
-        def closure = makeFullClosure({
+        def closure = makeFullClosure(@{
             statements: [imports*, body*],
             yield:      @void{}
         });
@@ -1224,7 +1231,7 @@ fn makeCompareCalls(firstEx, opExList) {
             {
                 def rightName = nextName();
                 def rightRef = makeVarFetch(rightName);
-                makeFullClosure({
+                makeFullClosure(@{
                     statements: [makeVarDef(rightName, opEx::expr)],
                     yield: makeMaybe(
                         makeCall(REFS::ifIs,
@@ -1238,7 +1245,7 @@ fn makeCompareCalls(firstEx, opExList) {
     def closure = transform(makeVarFetch(firstName), opExList*);
 
     return makeCall(
-        makeFullClosure({
+        makeFullClosure(@{
             statements: [
                 makeVarDef(firstName, firstEx),
                 closure::statements*
@@ -1375,7 +1382,7 @@ def parComprehensionBody = {:
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        [makeFullClosure({filterBody*, formals: genFormals}), genInits*]
+        [makeFullClosure(@{filterBody*, formals: genFormals}), genInits*]
     }
 :};
 
@@ -1557,7 +1564,7 @@ def parIndexPostfix = {:
                 def startNode =
                     makeCall(REFS::makeData,
                         makeLiteral(start::origin),
-                        makeCall(REFS::makeValueMap,
+                        makeCall(REFS::makeSymbolTable,
                             SYMS::value, start::value));
 
                 def optEndNode = (
@@ -1565,7 +1572,7 @@ def parIndexPostfix = {:
                         {
                             makeCall(REFS::makeData,
                                 makeLiteral(end::origin),
-                                makeCall(REFS::makeValueMap,
+                                makeCall(REFS::makeSymbolTable,
                                     SYMS::value, end::value))
                         }
                 )?;
@@ -1946,7 +1953,7 @@ def parIfExpression = {:
         ## We include the `yieldDef` (if any) here and in the `filterPump`
         ## below, so that we get the proper application of the implicit
         ## yield rule.
-        { makeFullClosure({yieldDef*, clause.dataOf()*}) }
+        { makeFullClosure(@{yieldDef*, clause.dataOf()*}) }
     )?
 
     {
@@ -1962,7 +1969,8 @@ def parIfExpression = {:
         var reduction = optElse;
         filterPump(clauses) { clause ->
             ## See above about `yieldDef`.
-            def closure = makeFullClosure({yieldDef*, clause::then.dataOf()*});
+            def closure =
+                makeFullClosure(@{yieldDef*, clause::then.dataOf()*});
             reduction := [makeThunk(clause::maker(closure, reduction*))]
         };
 
@@ -1978,7 +1986,7 @@ def parIfExpression = {:
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                makeCall(makeFullClosure({mainThunk.dataOf()*, yieldDef*}))
+                makeCall(makeFullClosure(@{mainThunk.dataOf()*, yieldDef*}))
             }
     }
 :};
@@ -2105,7 +2113,7 @@ def parSwitchExpression = {:
         ifIs { eq(yieldDef, {}) }
             { ifCall }
             {
-                def outerClosure = makeFullClosure({
+                def outerClosure = makeFullClosure(@{
                     yield: makeMaybe(ifCall),
                     yieldDef*
                 });
@@ -2158,14 +2166,14 @@ def parWhileExpression = {:
         ## The yield definition on `fullCode` is for proper implicit yield
         ## behavior. See discussion in the code for `if` for more info.
         def fullCode = makeFullClosure(withYieldDefIfAbsent(code, @continue));
-        def loopClosure = makeFullClosure({
+        def loopClosure = makeFullClosure(@{
             yieldDef: @continue,
             statements: [
                 testMaker(fullCode, makeThunk(makeNonlocalExit(REFS::break)))
             ]
         });
 
-        def mainClosure = makeFullClosure({
+        def mainClosure = makeFullClosure(@{
             yieldDef: @break,
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
@@ -2208,11 +2216,11 @@ def parDoExpression = {:
         ## The yield definition on `fullCode` is for proper implicit yield
         ## behavior. See discussion in the code for `if` for more info.
         def fullCode = makeFullClosure(withYieldDefIfAbsent(code, @continue));
-        def loopClosure = makeFullClosure({
+        def loopClosure = makeFullClosure(@{
             yieldDef: @continue,
             statements: [makeCall(fullCode), condition*]
         });
-        def mainClosure = makeFullClosure({
+        def mainClosure = makeFullClosure(@{
             yieldDef: @break,
             statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
         });
@@ -2255,7 +2263,7 @@ def parForExpression = {:
         def loopClosure = makeFullClosure(
             withYieldDef(withFormals(code, genFormals), @continue));
 
-        def mainClosure = makeFullClosure({
+        def mainClosure = makeFullClosure(@{
             yieldDef: @break,
             statements: [breakDef*],
             yield: makeMaybe(

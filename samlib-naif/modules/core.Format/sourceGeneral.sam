@@ -158,7 +158,7 @@ fn Value_sourceGeneral(value, adorn) {
         };
 
     ## Derived data value.
-    return prefix.cat(sourceGeneral(value.dataOf(), true));
+    return prefix.cat("{", sourceGeneral(value.dataOf(), false), "}");
 };
 
 ## Common code for the two `source*` variants, which takes an

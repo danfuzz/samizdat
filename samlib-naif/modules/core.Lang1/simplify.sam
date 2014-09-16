@@ -34,7 +34,7 @@ fn makeCallPex(function, node, formals, moreArgs*) {
 
 ## Makes a node with additional / replacement bindings from the original.
 fn withBindings(orig, more) {
-    return @(get_class(orig))({orig.dataOf()*, more*})
+    return @(get_class(orig)){orig.dataOf()*, more*}
 };
 
 ## Makes a node with additional / replacement bindings from the original,
@@ -63,7 +63,7 @@ fn convertPex(node, formals) {
                 ## node, and just convert that. As a special case, notice if
                 ## the closure is just a yield of a literal, and convert that
                 ## with `makeResult`.
-                def closurePayload = {(node.dataOf())*, formals};
+                def closurePayload = @{(node.dataOf())*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
                 ifValues(
@@ -132,7 +132,7 @@ fn convertPex(node, formals) {
             @@thunk: { . ->
                 ## Use the lexical `formals` context to make a regular closure
                 ## node, and just convert that.
-                def closure = makeFullClosure({
+                def closure = makeFullClosure(@{
                     formals,
                     yield: makeMaybe(node::value)
                 });
@@ -173,26 +173,26 @@ fn convertPexIn(node) {
                 def function = convertPexIn(node::function);
                 def values = convertPexIn(node::values);
 
-                withFinalBindings(node, {function, values});
+                withFinalBindings(node, @{function, values});
             },
 
             @@call: { . ->
                 def function = convertPexIn(node::function);
                 def values = convertPexInList(node::values);
 
-                withFinalBindings(node, {function, values});
+                withFinalBindings(node, @{function, values});
             },
 
             @@closure: { . ->
                 def statements = convertPexInList(node::statements);
                 def yieldNode = convertPexIn(node::yield);
 
-                withBindings(node, {statements, yield: yieldNode})
+                withBindings(node, @{statements, yield: yieldNode})
             },
 
             @@fetch: { . ->
                 def target = convertPexIn(node::target);
-                withFinalBindings(node, {target})
+                withFinalBindings(node, @{target})
             },
 
             @@parser: { . ->
@@ -203,14 +203,14 @@ fn convertPexIn(node) {
             @@store: { . ->
                 def target = convertPexIn(node::target);
                 def value = convertPexIn(node::value);
-                withFinalBindings(node, {target, value})
+                withFinalBindings(node, @{target, value})
             },
 
             @@varDef:
             @@varDefMutable: { . ->
                 ifValue { node::value }
                     { value ->
-                        withBindings(node, {value: convertPexIn(value)})
+                        withBindings(node, @{value: convertPexIn(value)})
                     }
                     { node }
             },
@@ -219,7 +219,7 @@ fn convertPexIn(node) {
             @@maybe:
             @@noYield: { . ->
                 def value = convertPexIn(node::value);
-                withBindings(node, {value})
+                withBindings(node, @{value})
             },
 
             @@exportSelection:

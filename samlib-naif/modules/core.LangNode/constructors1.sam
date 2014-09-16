@@ -18,11 +18,11 @@ export fn makeApply(function, optValues?) {
 };
 
 ## Documented in spec.
-export fn makeBasicClosure(map) {
+export fn makeBasicClosure(table) {
     return @closure{
         formals:    [],
         statements: [],
-        map*
+        table*
     }
 };
 
@@ -122,16 +122,16 @@ export fn withName(node, name) {
 
 ## Documented in spec.
 export fn withYieldDef(node, name) {
-    def map = node.dataOf();
-    def newBindings = ifValue { map::yieldDef }
+    def table = node.dataOf();
+    def newBindings = ifValue { table::yieldDef }
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
-            {statements: [makeVarDef(name, makeVarFetch(origName))]}
+            @{statements: [makeVarDef(name, makeVarFetch(origName))]}
         }
-        { {yieldDef: name} };
+        { @{yieldDef: name} };
 
-    return @(get_class(node)){map*, newBindings*}
+    return @(get_class(node)){table*, newBindings*}
 };
 
 ## Documented in spec.

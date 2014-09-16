@@ -190,6 +190,31 @@ def parSymbolTable = makeMainSequence(
     makeCode { ., ., mappings, . -> makeSymbolTableExpression(mappings*) });
 
 ## Documented in spec.
+
+## Documented in spec.
+def parDeriv = makeMainSequence(
+    makeToken(@@"@"),
+    makeChoice(
+        makeSequence(
+            parIdentifierSymbol,
+            makeCode { ., name ->
+                makeLiteral(@@(name::value))
+            }),
+        parParenExpression),
+    makeChoice(
+        parParenExpression,
+        makeSequence(
+            makeToken(@@"{"),
+            parMappings,
+            makeToken(@@"}"),
+            makeCode { ., ., ., mappings, . ->
+                makeSymbolTableExpression(mappings*)
+            })),
+    makeCode { ., cls, value ->
+        makeCall(REFS::makeData, cls, value)
+    });
+
+## Documented in spec.
 def parListItem = makeMainSequence(
     parExpression,
     makeRepeat(
@@ -235,21 +260,6 @@ def parType = makeMainSequence(
             makeCode { ., name ->
                 makeCall(REFS::makeDerivedDataClass, name)
             })));
-
-## Documented in spec.
-def parDeriv = makeMainSequence(
-    makeToken(@@"@"),
-    makeChoice(
-        makeSequence(
-            parIdentifierSymbol,
-            makeCode { ., name ->
-                makeLiteral(@@(name::value))
-            }),
-        parParenExpression),
-    makeChoice(parParenExpression, parMap),
-    makeCode { ., cls, value ->
-        makeCall(REFS::makeData, cls, value)
-    });
 
 ## Documented in spec.
 def parFullClosure = makeMainSequence(
@@ -434,24 +444,24 @@ def parYieldDef = makeMainSequence(
 def parOptYieldDef = makeMainChoice(
     makeSequence(
         parYieldDef,
-        makeCode { y -> {yieldDef: y} }),
-    makeResult({}));
+        makeCode { y -> @{yieldDef: y} }),
+    makeResult(@{}));
 
 ## Documented in spec.
 def parFormal = makeMainSequence(
     makeChoice(
         makeSequence(
             parNameSymbol,
-            makeCode { n -> {name: n} }),
+            makeCode { n -> @{name: n} }),
         makeSequence(
             makeToken(@@"."),
-            makeResult({}))),
+            makeResult(@{}))),
     makeChoice(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
-            makeCode { ., r -> {repeat: get_className(r)} }),
-        makeResult({})),
-    makeCode { name, repeat -> {name*, repeat*} });
+            makeCode { ., r -> @{repeat: get_className(r)} }),
+        makeResult(@{})),
+    makeCode { name, repeat -> @{name*, repeat*} });
 
 ## Documented in spec.
 def parFormalsList = makeMainChoice(
@@ -469,19 +479,19 @@ def parClosureDeclarations = makeMainChoice(
                 makeChoice(
                     makeSequence(
                         parNameSymbol,
-                        makeCode { n -> {name: n} }),
-                    makeResult({})),
+                        makeCode { n -> @{name: n} }),
+                    makeResult(@{})),
                 makeToken(@@"("),
                 parFormalsList,
                 makeToken(@@")"),
-                makeCode { name, ., formals, . -> {name*, formals} }),
+                makeCode { name, ., formals, . -> @{name*, formals} }),
             makeSequence(
                 parFormalsList,
-                makeCode { formals -> {formals} })),
+                makeCode { formals -> @{formals} })),
         parOptYieldDef,
         makeToken(@@"->"),
-        makeCode { most, yieldDef, . -> {most*, yieldDef*} }),
-    makeResult({formals: []}));
+        makeCode { most, yieldDef, . -> @{most*, yieldDef*} }),
+    makeResult(@{formals: []}));
 
 ## Documented in spec.
 def parFunctionCommon = makeMainSequence(
@@ -517,7 +527,7 @@ def parMethodBind = makeMainSequence(
     makeCode { ., bind, ., closure ->
         def formals = closure::formals;
         def name = closure::name;
-        def fullClosure = withFormals(closure, [{name: @this}, formals*]);
+        def fullClosure = withFormals(closure, [@{name: @this}, formals*]);
         makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
     });
 
@@ -531,16 +541,16 @@ def parImportName = makeMainChoice(
                 makeResult(@prefix)),
             makeResult(@name)),
         makeToken(@@"="),
-        makeCode { name, key, . -> {(key): name} }),
-    makeResult({}));
+        makeCode { name, key, . -> @{(key): name} }),
+    makeResult(@{}));
 
 ## Documented in spec.
 def parImportFormat = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
         parIdentifierSymbol,
-        makeCode { ., f -> {format: f::value} }),
-    makeResult({}));
+        makeCode { ., f -> @{format: f::value} }),
+    makeResult(@{}));
 
 ## Documented in spec.
 def parImportSource = makeMainChoice(
@@ -582,11 +592,11 @@ def parImportSelect = makeMainChoice(
         makeChoice(
             makeSequence(
                 makeToken(@@"*"),
-                makeResult({select: @"*"})),
+                makeResult(@{select: @"*"})),
             makeSequence(
                 parNameSymbolList,
-                makeCode { ., select -> {select} }))),
-    makeResult({}));
+                makeCode { ., select -> @{select} }))),
+    makeResult(@{}));
 
 ## Documented in spec.
 def parImportStatement = makeMainSequence(
@@ -597,7 +607,7 @@ def parImportStatement = makeMainSequence(
     parImportSource,
     parImportSelect,
     makeCode { optExport, ., nameOrPrefix, format, source, select ->
-        def data = {nameOrPrefix*, format*, select*, source};
+        def data = @{nameOrPrefix*, format*, select*, source};
         ifIs { optExport* }
             { makeExport(makeImport(data)) }
             { makeImport(data) }
@@ -635,14 +645,14 @@ def parClosureBody = makeMainSequence(
     makeChoice(
         makeMainSequence(
             parStatement,
-            makeCode { s -> {statements: [s]} }),
+            makeCode { s -> @{statements: [s]} }),
         makeMainSequence(
             parYieldOrNonlocal,
-            makeCode { y -> {statements: [], yield: y} }),
-        makeResult({statements: []})),
+            makeCode { y -> @{statements: [], yield: y} }),
+        makeResult(@{statements: []})),
     makeRepeat(makeToken(@@";")),
     makeCode { ., most, last, . ->
-        {last*, statements: [most*, last::statements*]}
+        @{last*, statements: [most*, last::statements*]}
     });
 
 ## Documented in spec.
@@ -651,7 +661,7 @@ parRawClosure := makeMainSequence(
     parClosureDeclarations,
     parClosureBody,
     makeToken(@@"}"),
-    makeCode { ., decls, body, . -> {decls*, body*} });
+    makeCode { ., decls, body, . -> @{decls*, body*} });
 
 ## Documented in spec.
 def parProgram = makeMainSequence(
@@ -681,7 +691,7 @@ def parProgram = makeMainSequence(
         makeResult([])),
     makeRepeat(makeToken(@@";")),
     makeCode { imports, body, . ->
-        def closure = makeFullClosure({
+        def closure = makeFullClosure(@{
             statements: [imports*, body*],
             yield:      @void{}
         });

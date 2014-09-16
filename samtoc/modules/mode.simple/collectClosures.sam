@@ -33,13 +33,13 @@ fn bodies(node, bodiesBox) {
             def yieldNode = bodies(node::yield, bodiesBox);
             def varRefs = get_varRefs(node);
 
-            def newNode = makeFullClosure({
+            def newNode = makeFullClosure(@{
                 formals: node::formals,
-                ((def name = node::name) & {name} | {})*,
+                ((def name = node::name) & @{name} | @{})*,
                 statements,
                 varRefs,
                 yield: yieldNode,
-                ((def yieldDef = node::yieldDef) & {yieldDef} | {})*
+                ((def yieldDef = node::yieldDef) & @{yieldDef} | @{})*
             });
 
             def bodies = bodiesBox*;
@@ -66,8 +66,8 @@ fn bodies(node, bodiesBox) {
         @@varDef:
         @@varDefMutable: {
             def value = ifValue { node::value }
-                { value -> {value: bodies(value, bodiesBox)} }
-                { {} };
+                { value -> @{value: bodies(value, bodiesBox)} }
+                { @{} };
             @(cls){name: node::name, value*}
         };
 

@@ -13,26 +13,26 @@
 
 
 /**
- * Makes a 0-1 mapping map.
+ * Makes a 0-1 mapping derived data value.
  */
-zvalue mapFrom1(zvalue k1, zvalue v1);
+zvalue derivFrom1(zvalue cls, zvalue k1, zvalue v1);
 
 /**
- * Makes a 0-2 mapping map.
+ * Makes a 0-2 mapping derived data value.
  */
-zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2);
+zvalue derivFrom2(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2);
 
 /**
- * Makes a 0-3 mapping map.
+ * Makes a 0-3 mapping derived data value.
  */
-zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue derivFrom3(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3);
 
 /**
- * Makes a 0-4 mapping map. Values are allowed to be `NULL`, in
+ * Makes a 0-4 mapping derived data value. Values are allowed to be `NULL`, in
  * which case the corresponding key isn't included in the result.
  */
-zvalue mapFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue derivFrom4(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4);
 
 /**
@@ -64,5 +64,28 @@ zvalue listAppend(zvalue list, zvalue elem);
  * Prepends an element to a list.
  */
 zvalue listPrepend(zvalue elem, zvalue list);
+
+/**
+ * Makes a 0-1 mapping symbol table.
+ */
+zvalue tableFrom1(zvalue k1, zvalue v1);
+
+/**
+ * Makes a 0-2 mapping symbol table.
+ */
+zvalue tableFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2);
+
+/**
+ * Makes a 0-3 mapping symbol table.
+ */
+zvalue tableFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3);
+
+/**
+ * Makes a 0-4 mapping symbol table. Values are allowed to be `NULL`, in
+ * which case the corresponding key isn't included in the result.
+ */
+zvalue tableFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3, zvalue k4, zvalue v4);
 
 #endif

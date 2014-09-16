@@ -312,6 +312,29 @@ METH_IMPL_rest(SymbolTable, cat, args) {
 }
 
 // Documented in header.
+METH_IMPL_1(SymbolTable, del, key) {
+    SymbolTableInfo *info = getInfo(ths);
+    zint arraySize = info->arraySize;
+    zint size = info->size;
+    zint newSize = size - 1;
+    zmapping mappings[newSize];
+
+    for (zint i = 0, at = 0; i < arraySize; i++) {
+        zvalue oneKey = info->array[i].key;
+        if ((oneKey != NULL) && (oneKey != key)) {
+            if (at == newSize) {
+                // We failed to find the given key.
+                return ths;
+            }
+            mappings[at] = info->array[i];
+            at++;
+        }
+    }
+
+    return symbolTableFromArray(newSize, mappings);
+}
+
+// Documented in header.
 METH_IMPL_0(SymbolTable, gcMark) {
     SymbolTableInfo *info = getInfo(ths);
     zint arraySize = info->arraySize;
@@ -445,6 +468,7 @@ MOD_INIT(SymbolTable) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(SymbolTable, cat),
+            METH_BIND(SymbolTable, del),
             METH_BIND(SymbolTable, gcMark),
             METH_BIND(SymbolTable, get),
             METH_BIND(SymbolTable, get_size),
