@@ -58,7 +58,9 @@ This is the parent of all "immutable data" classes in the language.
 This is the parent of all non-core classes, other than "derived data" classes.
 Every object class has an associated "secret" which is the key used to
 allow construction of objects of that class as well as access the inner
-data of such objects.
+data payload (if any) of such objects.
+
+The data payload of an object, if present, must be a symbol table.
 
 #### Null (data)
 
