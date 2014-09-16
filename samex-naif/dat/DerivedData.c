@@ -8,7 +8,6 @@
 #include "type/Collection.h"
 #include "type/DerivedData.h"
 #include "type/Int.h"
-#include "type/Map.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "zlimits.h"
