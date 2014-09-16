@@ -49,7 +49,7 @@ For specific details on which names are mapped, refer to the source.
 
 #### `SYMS`
 
-This is a map from symbols to literal nodes that represent those
+This is a table from symbols to literal nodes that represent those
 symbols, for all the literal symbols needed directly when parsing the
 language.
 
