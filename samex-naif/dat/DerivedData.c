@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 
-#include "type/Builtin.h"
 #include "type/Collection.h"
 #include "type/DerivedData.h"
 #include "type/Int.h"

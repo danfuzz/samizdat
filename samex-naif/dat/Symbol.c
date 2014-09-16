@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "type/Builtin.h"
 #include "type/Int.h"
 #include "type/Symbol.h"
 #include "type/String.h"
