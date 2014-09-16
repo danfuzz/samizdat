@@ -24,8 +24,9 @@ secret of the given `cls`, or to pass a `value` that is not a symbol table.
 
 #### `makeObjectClass(name, secret) -> class`
 
-Makes a new object class with the given `name` and `secret`. `name` must
-be a symbol.
+Makes a new object class with the given `name` and `secret`. `name` and
+`secret` must both a symbols. `secret` should generally be an anonymous
+symbol, in order to have proper encapsulation.
 
 **Note:** If you call this function twice with identical arguments, the
 results will be two *different* classes with the same `name` and `secret`.
