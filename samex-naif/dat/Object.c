@@ -4,7 +4,6 @@
 
 #include "type/Builtin.h"
 #include "type/Object.h"
-#include "type/Map.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "zlimits.h"
@@ -61,12 +60,6 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
-    } else if (hasClass(data, CLS_Map)) {
-        // TODO: Remove this conversion once violators have been fixed.
-        zint size = get_size(data);
-        zmapping mappings[size];
-        arrayFromMap(mappings, data);
-        data = symbolTableFromArray(size, mappings);
     } else {
         assertHasClass(data, CLS_SymbolTable);
     }
