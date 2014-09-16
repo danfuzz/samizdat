@@ -18,9 +18,6 @@
  * Payload data for all object values.
  */
 typedef struct {
-    /** Class secret; copied from the class. */
-    zvalue secret;
-
     /** Data payload. */
     zvalue data;
 } ObjectInfo;
@@ -69,7 +66,6 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 
     zvalue result = datAllocValue(cls, sizeof(ObjectInfo));
     ObjectInfo *info = getInfo(result);
-    info->secret = secret;
     info->data = data;
 
     return result;
@@ -103,7 +99,6 @@ FUNC_IMPL_2(Object_makeObjectClass, name, secret) {
 METH_IMPL_0(Object, gcMark) {
     ObjectInfo *info = getInfo(ths);
 
-    datMark(info->secret);
     datMark(info->data);
     return NULL;
 }
