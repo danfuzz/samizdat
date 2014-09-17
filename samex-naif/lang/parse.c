@@ -5,11 +5,11 @@
 #include "const.h"
 #include "type/Bool.h"
 #include "type/Class.h"
-#include "type/DerivedData.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/Number.h"
+#include "type/Record.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
 #include "type/String.h"
@@ -449,7 +449,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return derivFrom2(CLS_mapping, SYM_keys, keys, SYM_value, value);
+    return recordFrom2(CLS_mapping, SYM_keys, keys, SYM_value, value);
 }
 
 /**
@@ -474,7 +474,7 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return derivFrom2(CLS_mapping,
+    return recordFrom2(CLS_mapping,
         SYM_keys,  listFrom1(makeLiteral(name)),
         SYM_value, makeVarFetch(name));
 }
@@ -519,7 +519,7 @@ DEF_PARSE(symbolTable) {
 }
 
 // Documented in spec.
-DEF_PARSE(deriv) {
+DEF_PARSE(record) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
@@ -527,7 +527,7 @@ DEF_PARSE(deriv) {
     zvalue cls;
     zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
-        cls = makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
+        cls = makeLiteral(makeRecordClass(get(name, SYM_value)));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }
@@ -541,7 +541,7 @@ DEF_PARSE(deriv) {
         value = makeSymbolTableExpression(mappings);
     }
 
-    return makeCall(REFS(makeData), listFrom2(cls, value));
+    return makeCall(REFS(makeRecord), listFrom2(cls, value));
 }
 
 // Documented in spec.
@@ -583,11 +583,11 @@ DEF_PARSE(type) {
 
     zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
-        return makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
+        return makeLiteral(makeRecordClass(get(name, SYM_value)));
     }
 
     name = PARSE_OR_REJECT(parenExpression);
-    return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
+    return makeCall(REFS(makeRecordClass), listFrom1(name));
 }
 
 // Documented in spec.
@@ -656,7 +656,7 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(symbolTable);     }
     if (result == NULL) { result = PARSE(map);             }
     if (result == NULL) { result = PARSE(list);            }
-    if (result == NULL) { result = PARSE(deriv);           }
+    if (result == NULL) { result = PARSE(record);          }
     if (result == NULL) { result = PARSE(type);            }
     if (result == NULL) { result = PARSE(fullClosure);     }
     if (result == NULL) { result = PARSE(parenExpression); }
@@ -1091,7 +1091,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest, optSuffix));
-    return derivFrom1(CLS_internal, SYM_name, name);
+    return recordFrom1(CLS_internal, SYM_name, name);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1103,7 +1103,7 @@ DEF_PARSE(importSource2) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest));
-    return derivFrom1(CLS_external, SYM_name, name);
+    return recordFrom1(CLS_external, SYM_name, name);
 }
 
 // Documented in spec.

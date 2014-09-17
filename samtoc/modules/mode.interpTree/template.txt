@@ -7,12 +7,12 @@
 
 #include "type/Bool.h"
 #include "type/Class.h"
-#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/OneOff.h"
+#include "type/Record.h"
 #include "type/String.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
@@ -28,11 +28,11 @@ static zvalue lookup(zvalue env, const char *name) {
 }
 
 static zvalue externalSource(const char *name) {
-    zvalue cls = makeDerivedDataClass(symbolFromUtf8(-1, "external"));
+    zvalue cls = makeRecordClass(symbolFromUtf8(-1, "external"));
     zvalue data = symbolTableFromArgs(
         symbolFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);
-    return makeData(cls, data);
+    return makeRecord(cls, data);
 }
 
 zvalue eval(zvalue env) {

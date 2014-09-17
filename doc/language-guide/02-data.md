@@ -5,9 +5,9 @@ Data Types
 ----------
 
 Samizdat has a small handful of core classes, including a few atomic
-data types and a few compound data types. Samizdat also predefines a few
-derived classes, and it allows for any number of user-specified classes.
-Finally, Samizdat defines a number of special named constant values.
+data types and a few compound data types. Samizdat also allows for any
+number of user-specified classes. Finally, Samizdat defines a number of
+special named constant values.
 
 The examples in this section all use literal value syntax for all parts of
 values, but it is worth noting that the language syntax allows arbitrary
@@ -55,7 +55,7 @@ This is the parent of all "immutable data" classes in the language.
 
 #### Object
 
-This is the parent of all non-core classes, other than "derived data" classes.
+This is the parent of all non-core classes, other than "record" classes.
 Every object class has an associated "secret" which is the key used to
 allow construction of objects of that class as well as access the inner
 data payload of such objects.
@@ -335,29 +335,29 @@ is a symbol. There are three major categories of class:
   class named `String`.
 
 * Arbitrary data is allowed to be tagged with a an arbitrary class name,
-  using the syntax `@...` described under "DerivedData," below. The class of
-  this tagged data is a "derived data class." There is a one-to-one
-  correspondence between a value and a derived data class with that value as
+  using the syntax `@...` described under "Record," below. The class of
+  this tagged data is a "record class." There is a one-to-one
+  correspondence between a value and a record class with that value as
   its name.
 
-  A derived data class can be specified in code by indicating its name
+  A record class can be specified in code by indicating its name
   in parentheses, preceded by `@@`. If the name is a literal string, then
   the parentheses can be omitted. Furthermore, if the name is a literal
   string which abides by the syntax for identifiers in the language, then
   the double quotes can be omitted. For example, all of `@@("blort")`,
   `@@"blort"`, and `@@blort` refer to the same class.
 
-* The third kind of class is an "derived opaque" class. These have a
+* The third kind of class is an "object" class. These have a
   name and secret. The secret is used to prevent creation of values of the
   class beyond the scope of the class's trusted implementation.
 
 
-### DerivedData (derived data values)
+### Record (data)
 
-A derived data value is one that is constructed with an explicit derived
-data class and data payload.
+A record is a value that is constructed with an explicit record class and
+data payload.
 
-Derived data values are introduced with an at-sign (`@`). This is followed by
+Record literals are introduced with an at-sign (`@`). This is followed by
 a required class and then a data payload, which must be a symbol table. The
 class and payload must each be surrounded by parentheses (separately), with
 the following exceptions:
@@ -378,9 +378,8 @@ the following exceptions:
 @spell{name: "frotz", purpose: "cause glow"}     ## shorthand for same
 ```
 
-**Note:** As a convenience, the `get` function works on derived data
-values by calling through to `get` on the derived data's payload value,
-if any. And it will always return void for payload-free derived data values.
+**Note:** As a convenience, the `get` function works on records
+by calling through to `get` on the records's payload value.
 
 
 ### Protocols

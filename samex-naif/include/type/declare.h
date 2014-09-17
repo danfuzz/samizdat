@@ -14,19 +14,6 @@
 #include "dat.h"
 
 //
-// Derived data classes
-//
-
-/** Variable name for a derived data class. */
-#define DERIV_NAME(name) DERIV_##name
-
-/** Declaration for a derived data class. */
-#define DERIV_DECL(name) \
-    extern zvalue DERIV_NAME(name) \
-    // No semicolon here, so that use sites require it.
-
-
-//
 // Functions
 //
 

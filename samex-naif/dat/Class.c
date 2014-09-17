@@ -7,10 +7,10 @@
 #include "type/Builtin.h"
 #include "type/Class.h"
 #include "type/Data.h"
-#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Object.h"
+#include "type/Record.h"
 #include "type/String.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
@@ -28,7 +28,7 @@
 /** Constants identifying class category, used when sorting classes. */
 typedef enum {
     CORE_CLASS = 0,
-    DERIVED_DATA_CLASS,
+    RECORD_CLASS,
     OPAQUE_CLASS
 } ClassCategory;
 
@@ -91,7 +91,7 @@ static ClassCategory categoryOf(ClassInfo *info) {
     if (secret == theCoreSecret) {
         return CORE_CLASS;
     } else if (secret == NULL) {
-        return DERIVED_DATA_CLASS;
+        return RECORD_CLASS;
     } else {
         return OPAQUE_CLASS;
     }
@@ -236,11 +236,6 @@ zint classIndex(zvalue cls) {
 }
 
 // Documented in header.
-bool classIsDerived(zvalue cls) {
-    return classParent(cls) == CLS_DerivedData;
-}
-
-// Documented in header.
 zvalue className(zvalue cls) {
     assertHasClassClass(cls);
     return getInfo(cls)->name;
@@ -317,7 +312,7 @@ METH_IMPL_0(Class, debugString) {
         return valToString(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (classParent(ths) == CLS_DerivedData) {
+    } else if (classParent(ths) == CLS_Record) {
         extraString = EMPTY_STRING;
     } else {
         die("Shouldn't happen: opaque class without secret.");

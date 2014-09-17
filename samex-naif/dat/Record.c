@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 #include "type/Collection.h"
-#include "type/DerivedData.h"
 #include "type/Int.h"
+#include "type/Record.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "zlimits.h"
@@ -18,23 +18,23 @@
 // Private Definitions
 //
 
-/** Array mapping symbol indices to derived data classes. */
+/** Array mapping symbol indices to record classes. */
 static zvalue theClasses[DAT_MAX_SYMBOLS];
 
 
 /**
- * Payload data for all derived values.
+ * Payload data for all records.
  */
 typedef struct {
     /** Data payload. */
     zvalue data;
-} DerivedDataInfo;
+} RecordInfo;
 
 /**
- * Gets the info of a derived value.
+ * Gets the info of a record.
  */
-static DerivedDataInfo *getInfo(zvalue value) {
-    return (DerivedDataInfo *) datPayload(value);
+static RecordInfo *getInfo(zvalue value) {
+    return (RecordInfo *) datPayload(value);
 }
 
 
@@ -48,9 +48,9 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeData(zvalue cls, zvalue data) {
-    if (!classIsDerived(cls)) {
-        die("Attempt to call `makeData` on an improper class.");
+zvalue makeRecord(zvalue cls, zvalue data) {
+    if (classParent(cls) != CLS_Record) {
+        die("Attempt to call `makeRecord` on an improper class.");
     }
 
     if (data == NULL) {
@@ -59,14 +59,14 @@ zvalue makeData(zvalue cls, zvalue data) {
         assertHasClass(data, CLS_SymbolTable);
     }
 
-    zvalue result = datAllocValue(cls, sizeof(DerivedDataInfo));
-    ((DerivedDataInfo *) datPayload(result))->data = data;
+    zvalue result = datAllocValue(cls, sizeof(RecordInfo));
+    ((RecordInfo *) datPayload(result))->data = data;
 
     return result;
 }
 
 // Documented in header.
-zvalue makeDerivedDataClass(zvalue name) {
+zvalue makeRecordClass(zvalue name) {
     // `symbolIndex` will bail if `name` isn't a symbol.
     zint index = symbolIndex(name);
     zvalue result = theClasses[index];
@@ -75,7 +75,7 @@ zvalue makeDerivedDataClass(zvalue name) {
         return result;
     }
 
-    result = makeClass(name, CLS_DerivedData, NULL, NULL, NULL);
+    result = makeClass(name, CLS_Record, NULL, NULL, NULL);
     theClasses[index] = result;
 
     return result;
@@ -87,36 +87,36 @@ zvalue makeDerivedDataClass(zvalue name) {
 //
 
 // Documented in header.
-FUNC_IMPL_1_2(DerivedData_makeData, cls, value) {
-    return makeData(cls, value);
+FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
+    return makeRecord(cls, value);
 }
 
 // Documented in header.
-FUNC_IMPL_1(DerivedData_makeDerivedDataClass, name) {
-    return makeDerivedDataClass(name);
+FUNC_IMPL_1(Record_makeRecordClass, name) {
+    return makeRecordClass(name);
 }
 
 // Documented in header.
-METH_IMPL_0(DerivedData, dataOf) {
+METH_IMPL_0(Record, dataOf) {
     // The `datFrameAdd()` call is because `value` might immediately become
     // garbage.
     return datFrameAdd(getInfo(ths)->data);
 }
 
 // Documented in header.
-METH_IMPL_0(DerivedData, gcMark) {
+METH_IMPL_0(Record, gcMark) {
     datMark(getInfo(ths)->data);
     return NULL;
 }
 
 // Documented in header.
-METH_IMPL_1(DerivedData, get, key) {
+METH_IMPL_1(Record, get, key) {
     zvalue data = getInfo(ths)->data;
     return (data == NULL) ? NULL : get(data, key);
 }
 
 // Documented in header.
-METH_IMPL_1(DerivedData, totalEq, other) {
+METH_IMPL_1(Record, totalEq, other) {
     // Note: `other` not guaranteed to be of same class.
 
     if (!haveSameClass(ths, other)) {
@@ -128,7 +128,7 @@ METH_IMPL_1(DerivedData, totalEq, other) {
 }
 
 // Documented in header.
-METH_IMPL_1(DerivedData, totalOrder, other) {
+METH_IMPL_1(Record, totalOrder, other) {
     // Note: `other` not guaranteed to be of same class.
 
     if (!haveSameClass(ths, other)) {
@@ -139,36 +139,36 @@ METH_IMPL_1(DerivedData, totalOrder, other) {
 }
 
 /** Initializes the module. */
-MOD_INIT(DerivedData) {
+MOD_INIT(Record) {
     MOD_USE(Data);
 
     SYM_INIT(dataOf);
 
-    CLS_DerivedData = makeCoreClass("DerivedData", CLS_Data,
+    CLS_Record = makeCoreClass("Record", CLS_Data,
         NULL,
         symbolTableFromArgs(
-            METH_BIND(DerivedData, dataOf),
-            METH_BIND(DerivedData, gcMark),
-            METH_BIND(DerivedData, get),
-            METH_BIND(DerivedData, totalEq),
-            METH_BIND(DerivedData, totalOrder),
+            METH_BIND(Record, dataOf),
+            METH_BIND(Record, gcMark),
+            METH_BIND(Record, get),
+            METH_BIND(Record, totalEq),
+            METH_BIND(Record, totalOrder),
             NULL));
 
-    FUN_DerivedData_makeData =
-        datImmortalize(FUNC_VALUE(DerivedData_makeData));
+    FUN_Record_makeRecord =
+        datImmortalize(FUNC_VALUE(Record_makeRecord));
 
-    FUN_DerivedData_makeDerivedDataClass =
-        datImmortalize(FUNC_VALUE(DerivedData_makeDerivedDataClass));
+    FUN_Record_makeRecordClass =
+        datImmortalize(FUNC_VALUE(Record_makeRecordClass));
 }
 
 // Documented in header.
-zvalue CLS_DerivedData = NULL;
+zvalue CLS_Record = NULL;
 
 // Documented in header.
 SYM_DEF(dataOf);
 
 // Documented in header.
-zvalue FUN_DerivedData_makeData = NULL;
+zvalue FUN_Record_makeRecord = NULL;
 
 // Documented in header.
-zvalue FUN_DerivedData_makeDerivedDataClass = NULL;
+zvalue FUN_Record_makeRecordClass = NULL;

@@ -173,7 +173,7 @@ def parLiteral = {:
 |
     @"@"
     symbol = parIdentifierSymbol
-    ![@"(" @"{"]  ## Otherwise, derived values wouldn't be recognized.
+    ![@"(" @"{"]  ## Otherwise, records wouldn't be recognized.
     { symbol }
 :};
 
@@ -238,8 +238,8 @@ def parSymbolTable = {:
     { makeSymbolTableExpression(mappings*) }
 :};
 
-## Parses a literal in derived value form.
-def parDeriv = {:
+## Parses a record literal.
+def parRecord = {:
     @"@"
 
     cls = (
@@ -258,7 +258,7 @@ def parDeriv = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(REFS::makeData, cls, value) }
+    { makeCall(REFS::makeRecord, cls, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -303,7 +303,7 @@ def parList = {:
 ## Parses a type literal form, yielding an expression node that produces a
 ## type value. If the name is a blatant literal, then the result of this rule
 ## is also a literal. If not, the result of this rule is a call to
-## `makeDerivedDataClass`.
+## `makeRecordClass`.
 def parType = {:
     @"@@"
 
@@ -312,7 +312,7 @@ def parType = {:
         { makeLiteral(@@(name::value)) }
     |
         name = parParenExpression
-        { makeCall(REFS::makeDerivedDataClass, name) }
+        { makeCall(REFS::makeRecordClass, name) }
     )
 :};
 
@@ -374,7 +374,7 @@ def parBasicNullaryClosure = {:
 ## Parses a term (basic expression unit).
 def parTerm = {:
     parVarLvalue | parVarRef | parLiteral | parSymbolTable | parMap |
-    parList | parDeriv | parType | parFullClosure | parParenExpression
+    parList | parRecord | parType | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
     ## that Layer 1 can only be "activated" with that one specific token.
@@ -954,7 +954,7 @@ def parProgramOrError = {:
 ## Forward declaration.
 def parPexChoice;
 
-## Map from parser token types to derived value types for pexes.
+## Map from parser token types to record classes for pexes.
 def PEX_TYPES = {
     @@"&": @@lookaheadSuccess,
     @@"!": @@lookaheadFailure,

@@ -32,14 +32,14 @@ fn expectDifferent(v1, v2) {
 
 ## Expects the value to be a core value.
 fn expectCore(v) {
-    ifIs { hasClass(v, DerivedData) }
-        { die("Derived: ", $Format::source(v)) }
+    ifIs { hasClass(v, Record) }
+        { die("Record: ", $Format::source(v)) }
         { note("Yes.") }
 };
 
-## Expects the value to be a derived data value.
-fn expectDerived(v) {
-    ifIs { hasClass(v, DerivedData) }
+## Expects the value to be a record.
+fn expectRecord(v) {
+    ifIs { hasClass(v, Record) }
         { note("Yes.") }
         { die("Opaque: ", $Format::source(v)) }
 };
@@ -207,9 +207,9 @@ expectCore(@{});
 expectCore(@{blort: "splort"});
 
 
-## Derived values
+## Record
 
-note("\nDerived values");
+note("\nRecord");
 
 expectSame(@eek{x: 10}, @(@@eek){x: 10});
 expectSame(@eek{x: 10}, @eek{x: (5).add(5)});
@@ -219,4 +219,4 @@ expectDifferent(@x{}, @x{a: 1});
 expectDifferent(@x{a: 1}, @x{a: 2});
 expectDifferent(@x{a: 1}, @y{a: 1});
 
-expectDerived(@fizmo{});
+expectRecord(@fizmo{});

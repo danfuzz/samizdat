@@ -3,24 +3,24 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## Derived value literal demo, Layer 2 specific
+## Record literal demo
 ##
+
+#= language core.Lang0
 
 
 ##
 ## Private Definitions
 ##
 
-fn msg(v) {
-    note("Got: \%q(v)")
+fn msg(string) {
+    note("Got: ", $Format::source(string))
 };
 
 
 ##
 ## Main Tests
 ##
-
-note("Layer 0...");
 
 ## These all refer to the same value.
 msg(@potion{});
@@ -38,7 +38,3 @@ msg(@fn(@{z: 100}));
 ## Accessing data via `get` calls, explicitly and implicitly.
 msg(@foo{a: 1, b: 2}.get(@a));
 msg(@foo{a: 1, b: 2}::b);
-
-note("\nLayer 2...");
-
-msg(@"\&mu;sec"{x: 10});

@@ -7,7 +7,6 @@
 //
 
 #include "type/Builtin.h"
-#include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"

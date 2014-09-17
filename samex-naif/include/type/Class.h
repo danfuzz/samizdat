@@ -46,11 +46,6 @@ bool classHasSecret(zvalue cls, zvalue secret);
 zint classIndex(zvalue cls);
 
 /**
- * Returns true iff the given class is derived (whether pure data or not).
- */
-bool classIsDerived(zvalue cls);
-
-/**
  * Gets the name of the given class, as a string.
  */
 zvalue classNameString(zvalue cls);

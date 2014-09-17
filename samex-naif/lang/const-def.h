@@ -8,11 +8,11 @@
 //
 // `DEF_STRING(name, "string")` -- a string constant.
 // `DEF_SYMBOL(name, "string")` -- an interned symbol.
-// `DEF_DATA(name, "string")` -- a derived data class.
-// `DEF_TOKEN(name, "string")` -- a derived data class and a token.
+// `DEF_RECORD(name, "string")` -- a record class.
+// `DEF_TOKEN(name, "string")` -- a record class and a token.
 //
-// Tokens are empty-payload transparent derived values, whose classes
-// are named with the indicated strings.
+// Tokens are empty-payload records, whose classes are named with the
+// indicated strings.
 //
 
 DEF_STRING(CH_DOLLAR,            "$");
@@ -42,10 +42,10 @@ DEF_SYMBOL(language,             "language");
 DEF_SYMBOL(loadModule,           "loadModule");
 DEF_SYMBOL(loadResource,         "loadResource");
 DEF_SYMBOL(lvalue,               "lvalue");
-DEF_SYMBOL(makeData,             "makeData");
-DEF_SYMBOL(makeDerivedDataClass, "makeDerivedDataClass");
 DEF_SYMBOL(makeList,             "makeList");
 DEF_SYMBOL(makeMap,              "makeMap");
+DEF_SYMBOL(makeRecord,           "makeRecord");
+DEF_SYMBOL(makeRecordClass,      "makeRecordClass");
 DEF_SYMBOL(makeSymbolTable,      "makeSymbolTable");
 DEF_SYMBOL(makeValueMap,         "makeValueMap");
 DEF_SYMBOL(makeValueSymbolTable, "makeValueSymbolTable");
@@ -70,6 +70,31 @@ DEF_SYMBOL(yield,                "yield");
 DEF_SYMBOL(yieldDef,             "yieldDef");
 DEF_SYMBOL(zfalse,               "false");  // `z` avoids clash with C `false`.
 DEF_SYMBOL(ztrue,                "true");   // `z` avoids clash with C `true`.
+
+DEF_RECORD(apply,                  "apply");
+DEF_RECORD(call,                   "call");
+DEF_RECORD(closure,                "closure");
+DEF_RECORD(directive,              "directive");
+DEF_RECORD(exportSelection,        "exportSelection");
+DEF_RECORD(external,               "external");
+DEF_RECORD(fetch,                  "fetch");
+DEF_RECORD(identifier,             "identifier");
+DEF_RECORD(importModule,           "importModule");
+DEF_RECORD(importModuleSelection,  "importModuleSelection");
+DEF_RECORD(importResource,         "importResource");
+DEF_RECORD(int,                    "int");
+DEF_RECORD(internal,               "internal");
+DEF_RECORD(literal,                "literal");
+DEF_RECORD(mapping,                "mapping");
+DEF_RECORD(maybe,                  "maybe");
+DEF_RECORD(module,                 "module");
+DEF_RECORD(noYield,                "noYield");
+DEF_RECORD(nonlocalExit,           "nonlocalExit");
+DEF_RECORD(store,                  "store");
+DEF_RECORD(string,                 "string");
+DEF_RECORD(varDef,                 "varDef");
+DEF_RECORD(varDefMutable,          "varDefMutable");
+DEF_RECORD(varRef,                 "varRef");
 
 DEF_TOKEN(CH_AT,                 "@");
 DEF_TOKEN(CH_ATAT,               "@@");
@@ -106,28 +131,3 @@ DEF_TOKEN(void,                  "void");
 DEF_TOKEN(yield,                 "yield");
 DEF_TOKEN(zfalse,                "false");  // `z` avoids clash with C `false`.
 DEF_TOKEN(ztrue,                 "true");   // `z` avoids clash with C `true`.
-
-DEF_DATA(apply,                  "apply");
-DEF_DATA(call,                   "call");
-DEF_DATA(closure,                "closure");
-DEF_DATA(directive,              "directive");
-DEF_DATA(exportSelection,        "exportSelection");
-DEF_DATA(external,               "external");
-DEF_DATA(fetch,                  "fetch");
-DEF_DATA(identifier,             "identifier");
-DEF_DATA(importModule,           "importModule");
-DEF_DATA(importModuleSelection,  "importModuleSelection");
-DEF_DATA(importResource,         "importResource");
-DEF_DATA(int,                    "int");
-DEF_DATA(internal,               "internal");
-DEF_DATA(literal,                "literal");
-DEF_DATA(mapping,                "mapping");
-DEF_DATA(maybe,                  "maybe");
-DEF_DATA(module,                 "module");
-DEF_DATA(noYield,                "noYield");
-DEF_DATA(nonlocalExit,           "nonlocalExit");
-DEF_DATA(store,                  "store");
-DEF_DATA(string,                 "string");
-DEF_DATA(varDef,                 "varDef");
-DEF_DATA(varDefMutable,          "varDefMutable");
-DEF_DATA(varRef,                 "varRef");

@@ -6,12 +6,12 @@
 #include <stdlib.h>
 
 #include "type/Box.h"
-#include "type/DerivedData.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/Record.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "zlimits.h"

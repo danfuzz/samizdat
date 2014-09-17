@@ -98,9 +98,9 @@ index through the `end` index.
 The `start` is always an inclusive index. `style` indicates whether the
 end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
 
-Each of `start` and `end` must be a derived data value of class `@fromStart`
-or `@fromEnd` with a `{value: int}` as the payload. The class indicates which
-end of the sequence is to be counted from.
+Each of `start` and `end` must be a `@fromStart` or `@fromEnd` record, with
+a `{value: int}` as the payload. The class indicates which end of the
+sequence is to be counted from.
 
 This function in turn calls one of `sliceExclusive` or `sliceInclusive` to
 perform the actual slicing.

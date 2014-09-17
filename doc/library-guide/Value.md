@@ -76,10 +76,8 @@ The return value is either `this` (or `other` really) if the two values
 are in fact identical, or `void` if they are not.
 
 Each class specifies its own total-order equality check. See specific classes
-for details. Derived data classes all compare their values for equality by
-comparing the payload value (if any). In addition, a default implementation
-checks directly for trivial sameness and calls through to `totalOrder` for
-anything nontrivial.
+for details. Records compare their values for equality by comparing payload
+values.
 
 **Note:** In order for the system to operate consistently, `totalEq` must
 always behave consistently with `totalOrder`, in that for a given pair of
@@ -111,9 +109,8 @@ sort with each other, using the reasonably standard meaning of those values:
 If two values have no defined order, this returns void.
 
 Each class specifies its own total-order ordering. See specific classes for
-details. Derived data classes all order their values by performing ordering
-on the respective payload values, with a lack of payload counting as
-"before" any non-void payload.
+details. Records all order their values by performing ordering
+on the respective payload values.
 
 The default implementation of this method uses `eq()` to check for sameness.
 It returns `0` if it sameness and returns void if not.

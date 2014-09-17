@@ -23,12 +23,12 @@
     SYM_DECL(name) \
     // No semicolon here, so that use sites require it.
 
-#define DEF_DATA(name, str) \
+#define DEF_RECORD(name, str) \
     extern zvalue CLS_##name \
     // No semicolon here, so that use sites require it.
 
 #define DEF_TOKEN(name, str) \
-    DEF_DATA(name, str); \
+    DEF_RECORD(name, str); \
     extern zvalue TOK_##name \
     // No semicolon here, so that use sites require it.
 
@@ -36,7 +36,7 @@
 
 #undef DEF_STRING
 #undef DEF_SYMBOL
-#undef DEF_DATA
+#undef DEF_RECORD
 #undef DEF_TOKEN
 
 

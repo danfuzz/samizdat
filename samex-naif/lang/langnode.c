@@ -5,11 +5,11 @@
 #include "const.h"
 #include "type/Bool.h"
 #include "type/Class.h"
-#include "type/DerivedData.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/OneOff.h"
+#include "type/Record.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
 #include "type/String.h"
@@ -303,7 +303,7 @@ zvalue makeApply(zvalue function, zvalue values) {
         values = TOK_void;
     }
 
-    return derivFrom2(CLS_apply, SYM_function, function, SYM_values, values);
+    return recordFrom2(CLS_apply, SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -319,7 +319,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return NULL;
     } else if (hasClass(target, CLS_fetch)) {
         zvalue innerTarget = get(target, SYM_target);
-        return derivFrom2(CLS_store,
+        return recordFrom2(CLS_store,
             SYM_target, innerTarget, SYM_value, value);
     } else {
         die("Improper `lvalue` binding.");
@@ -328,7 +328,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue table) {
-    return makeData(CLS_closure,
+    return makeRecord(CLS_closure,
         METH_CALL(cat,
             tableFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
             table));
@@ -340,7 +340,7 @@ zvalue makeCall(zvalue function, zvalue values) {
         values = EMPTY_LIST;
     }
 
-    return derivFrom2(CLS_call, SYM_function, function, SYM_values, values);
+    return recordFrom2(CLS_call, SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -442,12 +442,12 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return derivFrom1(CLS_export, SYM_value, node);
+    return recordFrom1(CLS_export, SYM_value, node);
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return derivFrom1(CLS_exportSelection, SYM_select, names);
+    return recordFrom1(CLS_exportSelection, SYM_select, names);
 }
 
 // Documented in spec.
@@ -483,7 +483,7 @@ zvalue makeFullClosure(zvalue baseData) {
         yieldNode = TOK_void;
     }
 
-    return makeData(CLS_closure,
+    return makeRecord(CLS_closure,
         METH_CALL(cat,
             table,
             tableFrom3(
@@ -513,7 +513,7 @@ zvalue makeImport(zvalue baseData) {
             data = collDel(data, SYM_select);
         }
 
-        return makeData(CLS_importModuleSelection, data);
+        return makeRecord(CLS_importModuleSelection, data);
     }
 
     if (get(data, SYM_name) == NULL) {
@@ -529,11 +529,11 @@ zvalue makeImport(zvalue baseData) {
         if (hasClass(get(data, SYM_source), CLS_external)) {
             die("Cannot import external resource.");
         }
-        return makeData(CLS_importResource, data);
+        return makeRecord(CLS_importResource, data);
     }
 
     // It's a whole-module import.
-    return makeData(CLS_importModule, data);
+    return makeRecord(CLS_importModule, data);
 }
 
 // Documented in spec.
@@ -601,7 +601,7 @@ zvalue makeInfoTable(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return derivFrom3(CLS_fetch,
+    return recordFrom3(CLS_fetch,
         SYM_target,      node,
         SYM_interpolate, node,
         SYM_lvalue,      EMPTY_LIST);
@@ -609,7 +609,7 @@ zvalue makeInterpolate(zvalue node) {
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return derivFrom1(CLS_literal, SYM_value, value);
+    return recordFrom1(CLS_literal, SYM_value, value);
 }
 
 // Documented in spec.
@@ -620,7 +620,7 @@ zvalue makeMapExpression(zvalue mappings) {
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return derivFrom1(CLS_maybe, SYM_value, value);
+    return recordFrom1(CLS_maybe, SYM_value, value);
 }
 
 // Documented in spec.
@@ -630,13 +630,13 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return derivFrom1(CLS_noYield, SYM_value, value);
+    return recordFrom1(CLS_noYield, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return derivFrom2(CLS_nonlocalExit,
+    return recordFrom2(CLS_nonlocalExit,
         SYM_function, function, SYM_value, value);
 }
 
@@ -663,35 +663,35 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return derivFrom1(CLS_varRef, SYM_name, name);
+    return recordFrom1(CLS_varRef, SYM_name, name);
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
-    return derivFrom2(CLS_varDef, SYM_name, name, SYM_value, value);
+    return recordFrom2(CLS_varDef, SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return derivFrom2(CLS_varDefMutable, SYM_name, name, SYM_value, value);
+    return recordFrom2(CLS_varDefMutable, SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return derivFrom1(CLS_fetch, SYM_target, makeVarRef(name));
+    return recordFrom1(CLS_fetch, SYM_target, makeVarRef(name));
 }
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return derivFrom2(CLS_fetch,
+    return recordFrom2(CLS_fetch,
         SYM_target, makeVarRef(name), SYM_lvalue, EMPTY_LIST);
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return derivFrom2(CLS_store,
+    return recordFrom2(CLS_store,
         SYM_target, makeVarRef(name), SYM_value, value);
 }
 
@@ -745,7 +745,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         } else {
             // It's a wildcard select.
             select = METH_CALL(keyList, exports);
-            return makeData(
+            return makeRecord(
                 CLS_importModuleSelection,
                 collPut(dataOf(node), SYM_select, select));
         }
@@ -756,7 +756,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collPut(dataOf(node), SYM_formals, formals));
 }
@@ -799,7 +799,7 @@ zvalue withModuleDefs(zvalue node) {
         ? makeLiteral(EMPTY_SYMBOL_TABLE)
         : makeCall(REFS(makeSymbolTable), exportValues);
     zvalue yieldInfo = makeLiteral(info);
-    zvalue yieldNode = makeCall(REFS(makeData),
+    zvalue yieldNode = makeCall(REFS(makeRecord),
         listFrom2(
             makeLiteral(CLS_module),
             makeCall(REFS(makeSymbolTable),
@@ -807,7 +807,7 @@ zvalue withModuleDefs(zvalue node) {
                     makeLiteral(SYM_exports), yieldExports,
                     makeLiteral(SYM_info),    yieldInfo))));
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat,
             dataOf(node),
@@ -819,7 +819,7 @@ zvalue withModuleDefs(zvalue node) {
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collPut(dataOf(node), SYM_name, name));
 }
@@ -858,7 +858,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     zvalue converted = listFromArray(size, arr);
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat,
             dataOf(node),
@@ -867,7 +867,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collPut(dataOf(node), SYM_top, BOOL_TRUE));
 }
@@ -887,14 +887,14 @@ zvalue withYieldDef(zvalue node, zvalue name) {
         newBindings = tableFrom1(SYM_yieldDef, name);
     }
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat, table, newBindings));
 };
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collDel(dataOf(node), SYM_interpolate));
 }
@@ -952,7 +952,7 @@ zvalue withoutTops(zvalue node) {
         ? EMPTY_LIST
         : listFrom1(makeExportSelection(exports));
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat,
             dataOf(node),

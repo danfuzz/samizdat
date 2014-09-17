@@ -480,7 +480,7 @@ export fn withModuleDefs(node) {
         { LITS::EMPTY_SYMBOL_TABLE }
         { makeCall(REFS::makeSymbolTable, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
-    def yieldNode = makeCall(REFS::makeData,
+    def yieldNode = makeCall(REFS::makeRecord,
         makeLiteral(@@module),
         makeCall(REFS::makeSymbolTable,
             SYMS::exports, yieldExports,
