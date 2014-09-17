@@ -227,7 +227,7 @@ fn Value_convert(value) {
     def data = (def dval = value.dataOf()) & convert(dval) | CODE_C_NULL;
     def cls = get_class(value);
 
-    if (!hasClass(value, DerivedData)) {
+    if (!hasClass(value, Record)) {
         die("Cannot convert opaque non-data value: \%q(value)")
     };
 

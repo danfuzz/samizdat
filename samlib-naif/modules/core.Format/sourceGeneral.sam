@@ -39,11 +39,11 @@ def SPECIAL_VALUES = {
     (Bool) :       "Bool",
     (Class):       "Class",
     (Data):        "Data",
-    (DerivedData): "DerivedData",
     (Int):         "Int",
     (List):        "List",
     (Map):         "Map",
     (Null):        "Null",
+    (Record):      "Record",
     (String):      "String",
     (Symbol):      "Symbol",
     (SymbolTable): "SymbolTable",
@@ -84,7 +84,7 @@ fn Class_sourceGeneral(value, adorn) {
 
     def name = className(value);
 
-    ifNot { eq(classParent(value), DerivedData) }
+    ifNot { eq(classParent(value), Record) }
         { return "@@(opaque ".cat(keyString(name), ")") };
 
     return nameString("@@", name);
@@ -147,7 +147,7 @@ fn Value_sourceGeneral(value, adorn) {
     def cls = get_class(value);
     def prefix = nameString("@", className(cls));
 
-    ifNot { eq(classParent(cls), DerivedData) }
+    ifNot { eq(classParent(cls), Record) }
         {
             ## Opaque value, possibly named.
             def body = ifValue { value.debugSymbol() }

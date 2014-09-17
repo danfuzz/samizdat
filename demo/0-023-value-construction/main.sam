@@ -32,14 +32,14 @@ fn expectDifferent(v1, v2) {
 
 ## Expects the value to be a core value.
 fn expectCore(v) {
-    ifIs { hasClass(v, DerivedData) }
+    ifIs { hasClass(v, Record) }
         { die("Derived: ", $Format::source(v)) }
         { note("Yes.") }
 };
 
 ## Expects the value to be a derived data value.
 fn expectDerived(v) {
-    ifIs { hasClass(v, DerivedData) }
+    ifIs { hasClass(v, Record) }
         { note("Yes.") }
         { die("Opaque: ", $Format::source(v)) }
 };

@@ -18,7 +18,7 @@ export
     Bool,
     Class,
     Data,
-    DerivedData,
+    Record,
     Int,
     List,
     Map,
