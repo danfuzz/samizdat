@@ -49,7 +49,7 @@ zvalue dataOf(zvalue value) {
 
 // Documented in header.
 zvalue makeRecord(zvalue cls, zvalue data) {
-    if (!classIsDerived(cls)) {
+    if (classParent(cls) != CLS_Record) {
         die("Attempt to call `makeRecord` on an improper class.");
     }
 

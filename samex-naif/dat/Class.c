@@ -28,7 +28,7 @@
 /** Constants identifying class category, used when sorting classes. */
 typedef enum {
     CORE_CLASS = 0,
-    DERIVED_DATA_CLASS,
+    RECORD_CLASS,
     OPAQUE_CLASS
 } ClassCategory;
 
@@ -91,7 +91,7 @@ static ClassCategory categoryOf(ClassInfo *info) {
     if (secret == theCoreSecret) {
         return CORE_CLASS;
     } else if (secret == NULL) {
-        return DERIVED_DATA_CLASS;
+        return RECORD_CLASS;
     } else {
         return OPAQUE_CLASS;
     }
@@ -233,11 +233,6 @@ bool classHasSecret(zvalue cls, zvalue secret) {
 zint classIndex(zvalue cls) {
     assertHasClassClass(cls);
     return classIndexUnchecked(cls);
-}
-
-// Documented in header.
-bool classIsDerived(zvalue cls) {
-    return classParent(cls) == CLS_Record;
 }
 
 // Documented in header.
