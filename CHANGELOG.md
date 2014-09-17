@@ -144,3 +144,57 @@ Version History
     `nonlocalExit`, and `void`) and removed one (`jump`). Tweaked the
     definitions of a couple more (`apply`, `call`, and `closure`) to
     use `void` nodes for bindings instead of having optional bindings.
+
+* 0.9.0 &mdash; 17-sep-2014  &mdash; "Class Struggle"
+
+  * **Milestone:** Replacement of method binding and dispatch with a new
+    Smalltalk-style class system.
+
+    * The type `Type` is now the class `Class`.
+
+    * Removed generic functions from the system.
+
+    * Removed the ability to define methods on derived data classes.
+
+    * Introduced new classes `Bool` and `Null`, as replacements for the
+      former derived data classes. This was needed, so that they could have
+      the right set of methods bound instead of just having what derived
+      data classes had, which would have been too little for `Bool` and too
+      much for `Null`.
+
+    * Added new class definition function to define a class along with its
+      methods atomically. **Note:** There isn't yet syntax to cover this
+      functionality, and incremental method binding is still possible in the
+      mean time. This will change in a future release.
+
+  * New "symbol" functionality:
+
+    * Introduced a `Symbol` class, akin to the same-named Lisp type and
+      similar to a selector in Smalltalk. The syntax `@name` is now used
+      for literal symbol references instead of payload-free derived data
+      values. Symbols are now used for almost every "name-ish" thing in
+      the language, e.g. variable names, method names, exports from
+      modules, and so on.
+
+    * Introduced a `SymbolTable` class, a map-like container where keys
+      are restricted to being symbols. Used for specifying method bindings
+      and as the payloads for derived data values and objects. The syntax
+      `@{...}` (like a map with a `@` prefix) is used to construct symbol
+      tables.
+
+  * Reworked single-value interpolation and imperative assignment:
+
+    * Single-value interpolation works is now based on calling `.fetch()`,
+      which `Box` already defined. Generators now define `.fetch()` too,
+      specified to be an error if a generator could generate more than one
+      value.
+
+    * Added imperative assignment variant `x* := y`, to be based on
+      calling `.store()`, making it work naturally when `x` is a box.
+
+    * New expression syntax `var name` to refer to the box holding a
+      variable. This is sort of like `&name` in C. `(var x)* := y` now
+      means the same thing as `x := y`, with the handy thing being that
+      you can, say, pass `var x` in as an argument to a function and
+      that function can then perform assignment on it in a reasonably
+      sane way.
