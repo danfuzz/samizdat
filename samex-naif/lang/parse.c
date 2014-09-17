@@ -527,7 +527,7 @@ DEF_PARSE(deriv) {
     zvalue cls;
     zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
-        cls = makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
+        cls = makeLiteral(makeRecordClass(get(name, SYM_value)));
     } else {
         cls = PARSE_OR_REJECT(parenExpression);
     }
@@ -583,11 +583,11 @@ DEF_PARSE(type) {
 
     zvalue name = PARSE(identifierSymbol);
     if (name != NULL) {
-        return makeLiteral(makeDerivedDataClass(get(name, SYM_value)));
+        return makeLiteral(makeRecordClass(get(name, SYM_value)));
     }
 
     name = PARSE_OR_REJECT(parenExpression);
-    return makeCall(REFS(makeDerivedDataClass), listFrom1(name));
+    return makeCall(REFS(makeRecordClass), listFrom1(name));
 }
 
 // Documented in spec.

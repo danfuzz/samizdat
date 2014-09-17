@@ -51,7 +51,7 @@ MOD_INIT(lang_const) {
 
     #define DEF_DATA(name, str) \
         CLS_##name = datImmortalize( \
-            makeDerivedDataClass(symbolFromUtf8(-1, str)));
+            makeRecordClass(symbolFromUtf8(-1, str)));
 
     #define DEF_TOKEN(name, str) \
         DEF_DATA(name, str); \

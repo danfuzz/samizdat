@@ -33,7 +33,7 @@ def NAMES = [
     @loop,
     @lt,
     @makeData,
-    @makeDerivedDataClass,
+    @makeRecordClass,
     @makeList,
     @makeMap,
     @makeSymbolTable,

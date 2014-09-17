@@ -32,7 +32,7 @@
 #define DERIV_INIT(name) \
     do { \
         DERIV_NAME(name) = datImmortalize( \
-            makeDerivedDataClass(symbolFromUtf8(-1, #name))); \
+            makeRecordClass(symbolFromUtf8(-1, #name))); \
     } while (0)
 
 

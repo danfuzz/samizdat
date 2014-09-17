@@ -258,7 +258,7 @@ def parType = makeMainSequence(
         makeSequence(
             parParenExpression,
             makeCode { ., name ->
-                makeCall(REFS::makeDerivedDataClass, name)
+                makeCall(REFS::makeRecordClass, name)
             })));
 
 ## Documented in spec.

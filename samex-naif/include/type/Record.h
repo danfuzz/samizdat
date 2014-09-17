@@ -21,8 +21,8 @@ SYM_DECL(dataOf);
 /** Global function `makeData`: Documented in spec. */
 extern zvalue FUN_Record_makeData;
 
-/** Global function `makeDerivedDataClass`: Documented in spec. */
-extern zvalue FUN_Record_makeDerivedDataClass;
+/** Global function `makeRecordClass`: Documented in spec. */
+extern zvalue FUN_Record_makeRecordClass;
 
 /**
  * Returns a derived data value with the given class tag and with the given
@@ -39,6 +39,6 @@ zvalue dataOf(zvalue value);
 /**
  * Returns the class value for the derived data class with the given name.
  */
-zvalue makeDerivedDataClass(zvalue name);
+zvalue makeRecordClass(zvalue name);
 
 #endif

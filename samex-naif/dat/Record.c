@@ -66,7 +66,7 @@ zvalue makeData(zvalue cls, zvalue data) {
 }
 
 // Documented in header.
-zvalue makeDerivedDataClass(zvalue name) {
+zvalue makeRecordClass(zvalue name) {
     // `symbolIndex` will bail if `name` isn't a symbol.
     zint index = symbolIndex(name);
     zvalue result = theClasses[index];
@@ -92,8 +92,8 @@ FUNC_IMPL_1_2(Record_makeData, cls, value) {
 }
 
 // Documented in header.
-FUNC_IMPL_1(Record_makeDerivedDataClass, name) {
-    return makeDerivedDataClass(name);
+FUNC_IMPL_1(Record_makeRecordClass, name) {
+    return makeRecordClass(name);
 }
 
 // Documented in header.
@@ -157,8 +157,8 @@ MOD_INIT(Record) {
     FUN_Record_makeData =
         datImmortalize(FUNC_VALUE(Record_makeData));
 
-    FUN_Record_makeDerivedDataClass =
-        datImmortalize(FUNC_VALUE(Record_makeDerivedDataClass));
+    FUN_Record_makeRecordClass =
+        datImmortalize(FUNC_VALUE(Record_makeRecordClass));
 }
 
 // Documented in header.
@@ -171,4 +171,4 @@ SYM_DEF(dataOf);
 zvalue FUN_Record_makeData = NULL;
 
 // Documented in header.
-zvalue FUN_Record_makeDerivedDataClass = NULL;
+zvalue FUN_Record_makeRecordClass = NULL;

@@ -43,7 +43,7 @@ DEF_SYMBOL(loadModule,           "loadModule");
 DEF_SYMBOL(loadResource,         "loadResource");
 DEF_SYMBOL(lvalue,               "lvalue");
 DEF_SYMBOL(makeData,             "makeData");
-DEF_SYMBOL(makeDerivedDataClass, "makeDerivedDataClass");
+DEF_SYMBOL(makeRecordClass, "makeRecordClass");
 DEF_SYMBOL(makeList,             "makeList");
 DEF_SYMBOL(makeMap,              "makeMap");
 DEF_SYMBOL(makeSymbolTable,      "makeSymbolTable");
