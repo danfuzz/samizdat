@@ -138,7 +138,7 @@ fn Bool_convert(value) {
     return value** & CODE_TRUE | CODE_FALSE;
 };
 
-## Converts a class. Only works on derived data classes.
+## Converts a class. Only works on record classes.
 fn Class_convert(value) {
     return genCall("makeRecordClass", convert(className(value)))
 };
@@ -222,7 +222,7 @@ fn SymbolTable_convert(value) {
     return genCall("symbolTableFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
 };
 
-## Converts a derived value or an opaque core value.
+## Converts a record or an opaque core value.
 fn Value_convert(value) {
     def data = (def dval = value.dataOf()) & convert(dval) | CODE_C_NULL;
     def cls = get_class(value);

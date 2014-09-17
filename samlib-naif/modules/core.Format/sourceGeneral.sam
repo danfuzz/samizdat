@@ -139,7 +139,7 @@ fn SymbolTable_sourceGeneral(value, adorn) {
     return adornIf(adorn, "@", mapString, "")
 };
 
-## Stringifies a derived value or an opaque core value.
+## Stringifies a record or an opaque core value.
 fn Value_sourceGeneral(value, adorn) {
     ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
@@ -157,7 +157,7 @@ fn Value_sourceGeneral(value, adorn) {
             return prefix.cat("<", body, ">")
         };
 
-    ## Derived data value.
+    ## Record.
     return prefix.cat("{", sourceGeneral(value.dataOf(), false), "}");
 };
 

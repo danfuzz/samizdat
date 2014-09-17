@@ -18,7 +18,7 @@ enum {
     /** Whether to spew to the console during gc. */
     DAT_CHATTY_GC = false,
 
-    /** Whether to be paranoid about values in collections / derived values. */
+    /** Whether to be paranoid about values in collections / records. */
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */

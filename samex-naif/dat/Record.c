@@ -18,12 +18,12 @@
 // Private Definitions
 //
 
-/** Array mapping symbol indices to derived data classes. */
+/** Array mapping symbol indices to record classes. */
 static zvalue theClasses[DAT_MAX_SYMBOLS];
 
 
 /**
- * Payload data for all derived values.
+ * Payload data for all records.
  */
 typedef struct {
     /** Data payload. */
@@ -31,7 +31,7 @@ typedef struct {
 } RecordInfo;
 
 /**
- * Gets the info of a derived value.
+ * Gets the info of a record.
  */
 static RecordInfo *getInfo(zvalue value) {
     return (RecordInfo *) datPayload(value);
