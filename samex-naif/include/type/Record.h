@@ -13,16 +13,16 @@
 
 
 /** Class value for in-model class `DerivedData`. */
-extern zvalue CLS_DerivedData;
+extern zvalue CLS_Record;
 
 /** Method `.dataOf()`: Documented in spec. */
 SYM_DECL(dataOf);
 
 /** Global function `makeData`: Documented in spec. */
-extern zvalue FUN_DerivedData_makeData;
+extern zvalue FUN_Record_makeData;
 
 /** Global function `makeDerivedDataClass`: Documented in spec. */
-extern zvalue FUN_DerivedData_makeDerivedDataClass;
+extern zvalue FUN_Record_makeDerivedDataClass;
 
 /**
  * Returns a derived data value with the given class tag and with the given

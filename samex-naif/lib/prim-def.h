@@ -16,19 +16,19 @@
 PRIM_DEF(Bool,                    CLS_Bool);
 PRIM_DEF(Class,                   CLS_Class);
 PRIM_DEF(Data,                    CLS_Data);
-PRIM_DEF(DerivedData,             CLS_DerivedData);
 PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);
 PRIM_DEF(Null,                    CLS_Null);
+PRIM_DEF(DerivedData,             CLS_Record);
 PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Symbol,                  CLS_Symbol);
 PRIM_DEF(SymbolTable,             CLS_SymbolTable);
 PRIM_DEF(Value,                   CLS_Value);
 
 // Primitive functions: directly exported.
-PRIM_DEF(makeData,                FUN_DerivedData_makeData);
-PRIM_DEF(makeDerivedDataClass,    FUN_DerivedData_makeDerivedDataClass);
+PRIM_DEF(makeData,                FUN_Record_makeData);
+PRIM_DEF(makeDerivedDataClass,    FUN_Record_makeDerivedDataClass);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_DEF(makeSymbolTable,         FUN_SymbolTable_makeSymbolTable);

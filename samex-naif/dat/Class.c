@@ -237,7 +237,7 @@ zint classIndex(zvalue cls) {
 
 // Documented in header.
 bool classIsDerived(zvalue cls) {
-    return classParent(cls) == CLS_DerivedData;
+    return classParent(cls) == CLS_Record;
 }
 
 // Documented in header.
@@ -317,7 +317,7 @@ METH_IMPL_0(Class, debugString) {
         return valToString(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (classParent(ths) == CLS_DerivedData) {
+    } else if (classParent(ths) == CLS_Record) {
         extraString = EMPTY_STRING;
     } else {
         die("Shouldn't happen: opaque class without secret.");
