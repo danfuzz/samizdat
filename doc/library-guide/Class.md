@@ -24,16 +24,16 @@ Compares two classes. Two different classes are never equal.
 Compares two classes for order, as follows:
 
 * Core (primitive) classes order earlier than all other classes.
-* Derived data classes order earlier than everything but core classes.
-* Opaque derived classes order after all other classes.
+* Record classes order earlier than everything but core classes.
+* Object classes order after all other classes.
 
 Within each category, classes are ordered by name. Given two different
-opaque classes with the same name (which can happen only with opaque
-derived classes), the result is void (that is, the order undefined).
+opaque classes with the same name (which can happen only with object
+classes), the result is void (that is, the order undefined).
 
-This last bit means it is okay to use any mix of core, derived data, and
-opaque derived classes as the keys in a map, *except* that it is invalid
-to use two different opaque derived classes that have the same name. This
+This last bit means it is okay to use any mix of core, record, and
+object classes as the keys in a map, *except* that it is invalid
+to use two different object classes that have the same name. This
 restriction is in place because there is no consistent and stable way
 to sort such classes.
 

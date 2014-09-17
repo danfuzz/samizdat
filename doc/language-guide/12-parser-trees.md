@@ -72,7 +72,7 @@ This corresponds to the syntax `%expression`.
 
 Representation of a token-match terminal. This is also used for
 single-character matches in tokenizers. `value` must be a class (per se),
-and is typically a derived data class (e.g., `@@stuff`). This
+and is typically a record class (e.g., `@@stuff`). This
 indicates that a token of the given class is to be matched.
 
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes

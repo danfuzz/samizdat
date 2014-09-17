@@ -157,7 +157,7 @@ an external resource, per se.)
 The syntax for importing resources is similar to that of importing internal
 modules, except that the format of file &mdash; that is, how to interpret the
 contents &mdash; must be specified before the resource name, in the form
-`@formatName` (similar to a payload-free derived value).
+`@formatName` (similar to a symbol).
 
 As with the other imports, an explicit variable name to bind is optional.
 If no name is supplied, then the default is the final component name of

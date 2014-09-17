@@ -25,9 +25,9 @@ tokens per se, that is, tokens whose class tag is taken to indicate a
 token class.
 
 The output of the functions named `$Peg::make*` are all parsing rules. These
-are all derived data values with a class that binds the `parse`
-method. A `parse` method accepts at least two arguments, and will also
-accept additional arguments depending on context:
+are all objects with a class that binds the `parse` method. A `parse` method
+accepts at least two arguments, and will also accept additional arguments
+depending on context:
 
 * `box` &mdash; The first argument is a `box` into which a successful
   result of parsing is to be `store`d.
@@ -229,8 +229,8 @@ This is equivalent to the syntactic form `{: "string" :}`.
 
 Makes and returns a parser rule which matches any token with the same
 class as given. `cls` is an arbitrary class, which is typically (but not
-necessarily) a derived data class with a string as its name. Upon success,
-the rule consumes and yields the matched token.
+necessarily) a record class. Upon success, the rule consumes and yields the
+matched token.
 
 This is also used to match single characters in tokenizers.
 
@@ -242,8 +242,8 @@ This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 Makes and returns a parser rule which matches a token whose class
 matches that of any of the given classes, consuming it upon success.
 Each argument is taken to be a token class, which is typically
-(but not necessarily) a derived data class with a string as its
-name. The result of successful parsing is whatever token was matched.
+(but not necessarily) a record class. The result of successful parsing is
+whatever token was matched.
 
 This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 
@@ -252,16 +252,16 @@ This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 Makes and returns a parser rule which matches a token whose class
 matches none of any of the given tokens, consuming it upon success.
 Each argument is taken to be a token class, which is typically
-(but not necessarily) a derived data class with a string as its
-name. The result of successful parsing is whatever token was matched.
+(but not necessarily) a record class. The result of successful parsing is
+whatever token was matched.
 
 This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
 #### `stringFromTokenList(tokens) -> string`
 
-Takes a list of tokenizer-style character tokens (that is, derived data
-values whose class names are each a single-character string), returning the
-result of concatenating all the characters together in order.
+Takes a list of tokenizer-style character tokens (that is, records whose class
+names are each a single character long), returning the result of concatenating
+all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.
 

@@ -22,7 +22,7 @@ as when used here it is only the resolved metainformation that gets used.
 
 This is a table from symbol names of keywords in the language to the result
 of tokenizing those keywords. The result of tokenizing a keyword is always
-a payload-free token (derived data value).
+an empty-payload token (record).
 
 #### `LITS`
 

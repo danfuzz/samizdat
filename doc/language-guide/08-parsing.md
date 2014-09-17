@@ -186,9 +186,9 @@ For example:
 #### Matching a single token (terminal)
 
 Tokens are the basic terminals in the context of tree parsing. When
-performing tree parsing, tokens are represented as derived data values,
-with the derived value class indicating the parsed class of the token, and the
-payload optionall used to hold the token's value.
+performing tree parsing, tokens are represented as records,
+with the class indicating the parsed class of the token, and the
+payload optionally used to hold the token's value.
 
 To match a single token, name the token in one of the shorthand
 token forms `@type` or `@"type"`. This will succeed in matching any
