@@ -25,10 +25,9 @@ extern zvalue FUN_Record_makeRecord;
 extern zvalue FUN_Record_makeRecordClass;
 
 /**
- * Returns a derived data value with the given class tag and with the given
- * optional data payload (`NULL` indicating a class-only value). `cls` must
- * be a derived data class. The result is a value of the indicated `cls`.
- */
+ * Returns a record with the given class and with the given optional data
+ * payload (`NULL` indicating an empty payload). `cls` must be a record class.
+ * The result is a value of the indicated `cls`. */
 zvalue makeRecord(zvalue cls, zvalue data);
 
 /**
@@ -37,7 +36,7 @@ zvalue makeRecord(zvalue cls, zvalue data);
 zvalue dataOf(zvalue value);
 
 /**
- * Returns the class value for the derived data class with the given name.
+ * Returns the class value for the record class with the given name.
  */
 zvalue makeRecordClass(zvalue name);
 

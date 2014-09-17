@@ -8,8 +8,8 @@
 //
 // `DEF_STRING(name, "string")` -- a string constant.
 // `DEF_SYMBOL(name, "string")` -- an interned symbol.
-// `DEF_DATA(name, "string")` -- a derived data class.
-// `DEF_TOKEN(name, "string")` -- a derived data class and a token.
+// `DEF_DATA(name, "string")` -- a record class.
+// `DEF_TOKEN(name, "string")` -- a record class and a token.
 //
 // Tokens are empty-payload transparent derived values, whose classes
 // are named with the indicated strings.

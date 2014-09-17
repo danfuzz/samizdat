@@ -14,13 +14,13 @@
 #include "dat.h"
 
 //
-// Derived data classes
+// Records
 //
 
-/** Variable name for a derived data class. */
+/** Variable name for a record class. */
 #define DERIV_NAME(name) DERIV_##name
 
-/** Declaration for a derived data class. */
+/** Declaration for a record class. */
 #define DERIV_DECL(name) \
     extern zvalue DERIV_NAME(name) \
     // No semicolon here, so that use sites require it.

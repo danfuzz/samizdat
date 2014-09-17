@@ -19,15 +19,15 @@
 #include "type/SymbolTable.h"
 
 //
-// Derived data classes
+// Record classes
 //
 
-/** Variable definition for a derived data class. */
+/** Variable definition for a record class. */
 #define DERIV_DEF(name) \
     zvalue DERIV_NAME(name) = NULL
 
 /**
- * Performs initialization of the indicated derived data class.
+ * Performs initialization of the indicated record class.
  */
 #define DERIV_INIT(name) \
     do { \
