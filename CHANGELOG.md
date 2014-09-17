@@ -184,7 +184,7 @@ Version History
 
   * Reworked single-value interpolation and imperative assignment:
 
-    * Single-value interpolation works is now based on calling `.fetch()`,
+    * Single-value interpolation is now based on calling `.fetch()`,
       which `Box` already defined. Generators now define `.fetch()` too,
       specified to be an error if a generator could generate more than one
       value.
