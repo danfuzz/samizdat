@@ -449,7 +449,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return derivFrom2(CLS_mapping, SYM_keys, keys, SYM_value, value);
+    return recordFrom2(CLS_mapping, SYM_keys, keys, SYM_value, value);
 }
 
 /**
@@ -474,7 +474,7 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return derivFrom2(CLS_mapping,
+    return recordFrom2(CLS_mapping,
         SYM_keys,  listFrom1(makeLiteral(name)),
         SYM_value, makeVarFetch(name));
 }
@@ -1091,7 +1091,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest, optSuffix));
-    return derivFrom1(CLS_internal, SYM_name, name);
+    return recordFrom1(CLS_internal, SYM_name, name);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1103,7 +1103,7 @@ DEF_PARSE(importSource2) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest));
-    return derivFrom1(CLS_external, SYM_name, name);
+    return recordFrom1(CLS_external, SYM_name, name);
 }
 
 // Documented in spec.

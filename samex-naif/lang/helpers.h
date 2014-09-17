@@ -13,29 +13,6 @@
 
 
 /**
- * Makes a 0-1 mapping record.
- */
-zvalue derivFrom1(zvalue cls, zvalue k1, zvalue v1);
-
-/**
- * Makes a 0-2 mapping record.
- */
-zvalue derivFrom2(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2);
-
-/**
- * Makes a 0-3 mapping record.
- */
-zvalue derivFrom3(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
-        zvalue k3, zvalue v3);
-
-/**
- * Makes a 0-4 mapping record. Values are allowed to be `NULL`, in
- * which case the corresponding key isn't included in the result.
- */
-zvalue derivFrom4(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
-        zvalue k3, zvalue v3, zvalue k4, zvalue v4);
-
-/**
  * Makes a 1 element list.
  */
 zvalue listFrom1(zvalue e1);
@@ -64,6 +41,29 @@ zvalue listAppend(zvalue list, zvalue elem);
  * Prepends an element to a list.
  */
 zvalue listPrepend(zvalue elem, zvalue list);
+
+/**
+ * Makes a 0-1 mapping record.
+ */
+zvalue recordFrom1(zvalue cls, zvalue k1, zvalue v1);
+
+/**
+ * Makes a 0-2 mapping record.
+ */
+zvalue recordFrom2(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2);
+
+/**
+ * Makes a 0-3 mapping record.
+ */
+zvalue recordFrom3(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3);
+
+/**
+ * Makes a 0-4 mapping record. Values are allowed to be `NULL`, in
+ * which case the corresponding key isn't included in the result.
+ */
+zvalue recordFrom4(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+        zvalue k3, zvalue v3, zvalue k4, zvalue v4);
 
 /**
  * Makes a 0-1 mapping symbol table.

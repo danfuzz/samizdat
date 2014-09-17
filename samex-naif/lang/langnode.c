@@ -303,7 +303,7 @@ zvalue makeApply(zvalue function, zvalue values) {
         values = TOK_void;
     }
 
-    return derivFrom2(CLS_apply, SYM_function, function, SYM_values, values);
+    return recordFrom2(CLS_apply, SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -319,7 +319,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return NULL;
     } else if (hasClass(target, CLS_fetch)) {
         zvalue innerTarget = get(target, SYM_target);
-        return derivFrom2(CLS_store,
+        return recordFrom2(CLS_store,
             SYM_target, innerTarget, SYM_value, value);
     } else {
         die("Improper `lvalue` binding.");
@@ -340,7 +340,7 @@ zvalue makeCall(zvalue function, zvalue values) {
         values = EMPTY_LIST;
     }
 
-    return derivFrom2(CLS_call, SYM_function, function, SYM_values, values);
+    return recordFrom2(CLS_call, SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -442,12 +442,12 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return derivFrom1(CLS_export, SYM_value, node);
+    return recordFrom1(CLS_export, SYM_value, node);
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return derivFrom1(CLS_exportSelection, SYM_select, names);
+    return recordFrom1(CLS_exportSelection, SYM_select, names);
 }
 
 // Documented in spec.
@@ -601,7 +601,7 @@ zvalue makeInfoTable(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return derivFrom3(CLS_fetch,
+    return recordFrom3(CLS_fetch,
         SYM_target,      node,
         SYM_interpolate, node,
         SYM_lvalue,      EMPTY_LIST);
@@ -609,7 +609,7 @@ zvalue makeInterpolate(zvalue node) {
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return derivFrom1(CLS_literal, SYM_value, value);
+    return recordFrom1(CLS_literal, SYM_value, value);
 }
 
 // Documented in spec.
@@ -620,7 +620,7 @@ zvalue makeMapExpression(zvalue mappings) {
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return derivFrom1(CLS_maybe, SYM_value, value);
+    return recordFrom1(CLS_maybe, SYM_value, value);
 }
 
 // Documented in spec.
@@ -630,13 +630,13 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return derivFrom1(CLS_noYield, SYM_value, value);
+    return recordFrom1(CLS_noYield, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return derivFrom2(CLS_nonlocalExit,
+    return recordFrom2(CLS_nonlocalExit,
         SYM_function, function, SYM_value, value);
 }
 
@@ -663,35 +663,35 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return derivFrom1(CLS_varRef, SYM_name, name);
+    return recordFrom1(CLS_varRef, SYM_name, name);
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
-    return derivFrom2(CLS_varDef, SYM_name, name, SYM_value, value);
+    return recordFrom2(CLS_varDef, SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return derivFrom2(CLS_varDefMutable, SYM_name, name, SYM_value, value);
+    return recordFrom2(CLS_varDefMutable, SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return derivFrom1(CLS_fetch, SYM_target, makeVarRef(name));
+    return recordFrom1(CLS_fetch, SYM_target, makeVarRef(name));
 }
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return derivFrom2(CLS_fetch,
+    return recordFrom2(CLS_fetch,
         SYM_target, makeVarRef(name), SYM_lvalue, EMPTY_LIST);
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return derivFrom2(CLS_store,
+    return recordFrom2(CLS_store,
         SYM_target, makeVarRef(name), SYM_value, value);
 }
 
