@@ -19,24 +19,6 @@
 #include "type/SymbolTable.h"
 
 //
-// Records
-//
-
-/** Variable definition for a record class. */
-#define DERIV_DEF(name) \
-    zvalue DERIV_NAME(name) = NULL
-
-/**
- * Performs initialization of the indicated record class.
- */
-#define DERIV_INIT(name) \
-    do { \
-        DERIV_NAME(name) = datImmortalize( \
-            makeRecordClass(symbolFromUtf8(-1, #name))); \
-    } while (0)
-
-
-//
 // Function implementation declarations. Each of these is identical except
 // for the argument requirements. The names are of the form `...args` or
 // `...minArgs_maxArgs` with `rest` used to indicate an unbounded number of

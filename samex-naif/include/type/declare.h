@@ -14,19 +14,6 @@
 #include "dat.h"
 
 //
-// Records
-//
-
-/** Variable name for a record class. */
-#define DERIV_NAME(name) DERIV_##name
-
-/** Declaration for a record class. */
-#define DERIV_DECL(name) \
-    extern zvalue DERIV_NAME(name) \
-    // No semicolon here, so that use sites require it.
-
-
-//
 // Functions
 //
 
