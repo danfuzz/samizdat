@@ -328,7 +328,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue table) {
-    return makeData(CLS_closure,
+    return makeRecord(CLS_closure,
         METH_CALL(cat,
             tableFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
             table));
@@ -483,7 +483,7 @@ zvalue makeFullClosure(zvalue baseData) {
         yieldNode = TOK_void;
     }
 
-    return makeData(CLS_closure,
+    return makeRecord(CLS_closure,
         METH_CALL(cat,
             table,
             tableFrom3(
@@ -513,7 +513,7 @@ zvalue makeImport(zvalue baseData) {
             data = collDel(data, SYM_select);
         }
 
-        return makeData(CLS_importModuleSelection, data);
+        return makeRecord(CLS_importModuleSelection, data);
     }
 
     if (get(data, SYM_name) == NULL) {
@@ -529,11 +529,11 @@ zvalue makeImport(zvalue baseData) {
         if (hasClass(get(data, SYM_source), CLS_external)) {
             die("Cannot import external resource.");
         }
-        return makeData(CLS_importResource, data);
+        return makeRecord(CLS_importResource, data);
     }
 
     // It's a whole-module import.
-    return makeData(CLS_importModule, data);
+    return makeRecord(CLS_importModule, data);
 }
 
 // Documented in spec.
@@ -745,7 +745,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         } else {
             // It's a wildcard select.
             select = METH_CALL(keyList, exports);
-            return makeData(
+            return makeRecord(
                 CLS_importModuleSelection,
                 collPut(dataOf(node), SYM_select, select));
         }
@@ -756,7 +756,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collPut(dataOf(node), SYM_formals, formals));
 }
@@ -799,7 +799,7 @@ zvalue withModuleDefs(zvalue node) {
         ? makeLiteral(EMPTY_SYMBOL_TABLE)
         : makeCall(REFS(makeSymbolTable), exportValues);
     zvalue yieldInfo = makeLiteral(info);
-    zvalue yieldNode = makeCall(REFS(makeData),
+    zvalue yieldNode = makeCall(REFS(makeRecord),
         listFrom2(
             makeLiteral(CLS_module),
             makeCall(REFS(makeSymbolTable),
@@ -807,7 +807,7 @@ zvalue withModuleDefs(zvalue node) {
                     makeLiteral(SYM_exports), yieldExports,
                     makeLiteral(SYM_info),    yieldInfo))));
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat,
             dataOf(node),
@@ -819,7 +819,7 @@ zvalue withModuleDefs(zvalue node) {
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collPut(dataOf(node), SYM_name, name));
 }
@@ -858,7 +858,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     zvalue converted = listFromArray(size, arr);
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat,
             dataOf(node),
@@ -867,7 +867,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collPut(dataOf(node), SYM_top, BOOL_TRUE));
 }
@@ -887,14 +887,14 @@ zvalue withYieldDef(zvalue node, zvalue name) {
         newBindings = tableFrom1(SYM_yieldDef, name);
     }
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat, table, newBindings));
 };
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
-    return makeData(
+    return makeRecord(
         get_class(node),
         collDel(dataOf(node), SYM_interpolate));
 }
@@ -952,7 +952,7 @@ zvalue withoutTops(zvalue node) {
         ? EMPTY_LIST
         : listFrom1(makeExportSelection(exports));
 
-    return makeData(
+    return makeRecord(
         get_class(node),
         METH_CALL(cat,
             dataOf(node),

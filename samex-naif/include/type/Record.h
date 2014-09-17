@@ -18,8 +18,8 @@ extern zvalue CLS_Record;
 /** Method `.dataOf()`: Documented in spec. */
 SYM_DECL(dataOf);
 
-/** Global function `makeData`: Documented in spec. */
-extern zvalue FUN_Record_makeData;
+/** Global function `makeRecord`: Documented in spec. */
+extern zvalue FUN_Record_makeRecord;
 
 /** Global function `makeRecordClass`: Documented in spec. */
 extern zvalue FUN_Record_makeRecordClass;
@@ -29,7 +29,7 @@ extern zvalue FUN_Record_makeRecordClass;
  * optional data payload (`NULL` indicating a class-only value). `cls` must
  * be a derived data class. The result is a value of the indicated `cls`.
  */
-zvalue makeData(zvalue cls, zvalue data);
+zvalue makeRecord(zvalue cls, zvalue data);
 
 /**
  * Calls the method `dataOf()`.

@@ -258,7 +258,7 @@ def parDeriv = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(REFS::makeData, cls, value) }
+    { makeCall(REFS::makeRecord, cls, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:

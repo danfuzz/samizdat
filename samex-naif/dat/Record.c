@@ -48,9 +48,9 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeData(zvalue cls, zvalue data) {
+zvalue makeRecord(zvalue cls, zvalue data) {
     if (!classIsDerived(cls)) {
-        die("Attempt to call `makeData` on an improper class.");
+        die("Attempt to call `makeRecord` on an improper class.");
     }
 
     if (data == NULL) {
@@ -87,8 +87,8 @@ zvalue makeRecordClass(zvalue name) {
 //
 
 // Documented in header.
-FUNC_IMPL_1_2(Record_makeData, cls, value) {
-    return makeData(cls, value);
+FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
+    return makeRecord(cls, value);
 }
 
 // Documented in header.
@@ -154,8 +154,8 @@ MOD_INIT(Record) {
             METH_BIND(Record, totalOrder),
             NULL));
 
-    FUN_Record_makeData =
-        datImmortalize(FUNC_VALUE(Record_makeData));
+    FUN_Record_makeRecord =
+        datImmortalize(FUNC_VALUE(Record_makeRecord));
 
     FUN_Record_makeRecordClass =
         datImmortalize(FUNC_VALUE(Record_makeRecordClass));
@@ -168,7 +168,7 @@ zvalue CLS_Record = NULL;
 SYM_DEF(dataOf);
 
 // Documented in header.
-zvalue FUN_Record_makeData = NULL;
+zvalue FUN_Record_makeRecord = NULL;
 
 // Documented in header.
 zvalue FUN_Record_makeRecordClass = NULL;

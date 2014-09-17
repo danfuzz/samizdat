@@ -14,7 +14,7 @@ Returns the data payload of the given record.
 
 ### Primitive Definitions
 
-#### `makeData(cls, value?) -> .`
+#### `makeRecord(cls, value?) -> .`
 
 Returns a record with the given class (a value of class `Class`)
 and optional data payload value (which must be a symbol table if present).
@@ -22,8 +22,8 @@ If `value` is not specified, it defaults to `@{}` (the empty symbol table).
 These equivalences hold for Samizdat source code:
 
 ```
-@type(value)    is equivalent to  makeData(@@type, value)
-@(type)(value)  is equivalent to  makeData(type, value)
+@type(value)    is equivalent to  makeRecord(@@type, value)
+@(type)(value)  is equivalent to  makeRecord(type, value)
 ```
 
 It is a fatal error (terminating the runtime) to pass for `cls` something

@@ -211,7 +211,7 @@ def parDeriv = makeMainSequence(
                 makeSymbolTableExpression(mappings*)
             })),
     makeCode { ., cls, value ->
-        makeCall(REFS::makeData, cls, value)
+        makeCall(REFS::makeRecord, cls, value)
     });
 
 ## Documented in spec.

@@ -541,7 +541,7 @@ DEF_PARSE(deriv) {
         value = makeSymbolTableExpression(mappings);
     }
 
-    return makeCall(REFS(makeData), listFrom2(cls, value));
+    return makeCall(REFS(makeRecord), listFrom2(cls, value));
 }
 
 // Documented in spec.

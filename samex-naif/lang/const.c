@@ -55,7 +55,7 @@ MOD_INIT(lang_const) {
 
     #define DEF_TOKEN(name, str) \
         DEF_DATA(name, str); \
-        TOK_##name = datImmortalize(makeData(CLS_##name, EMPTY_SYMBOL_TABLE));
+        TOK_##name = datImmortalize(makeRecord(CLS_##name, EMPTY_SYMBOL_TABLE));
 
     #include "const-def.h"
 

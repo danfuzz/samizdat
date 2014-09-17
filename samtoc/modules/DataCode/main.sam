@@ -231,7 +231,7 @@ fn Value_convert(value) {
         die("Cannot convert opaque non-data value: \%q(value)")
     };
 
-    return genCall("makeData", convert(cls), data)
+    return genCall("makeRecord", convert(cls), data)
 };
 
 ## Converts a value into C code to construct that value. This function
