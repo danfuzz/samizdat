@@ -192,7 +192,7 @@ def parSymbolTable = makeMainSequence(
 ## Documented in spec.
 
 ## Documented in spec.
-def parDeriv = makeMainSequence(
+def parRecord = makeMainSequence(
     makeToken(@@"@"),
     makeChoice(
         makeSequence(
@@ -300,7 +300,7 @@ def parBasicNullaryClosure = makeMainSequence(
 ## Documented in spec.
 def parTerm = makeMainChoice(
     parVarLvalue, parVarRef, parLiteral, parSymbolTable, parMap,
-    parList, parDeriv, parType, parFullClosure, parParenExpression,
+    parList, parRecord, parType, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     makeSequence(
@@ -726,7 +726,7 @@ def parProgramOrError = makeMainSequence(
 ## `choicePex` is the top-level parsing expression node type.
 def parPexChoice;
 
-## Map from parser token types to derived value types for pexes.
+## Map from parser token types to record classes for pexes.
 def PEX_TYPES = {
     @@"&": @@lookaheadSuccess,
     @@"!": @@lookaheadFailure,

@@ -519,7 +519,7 @@ DEF_PARSE(symbolTable) {
 }
 
 // Documented in spec.
-DEF_PARSE(deriv) {
+DEF_PARSE(record) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
@@ -656,7 +656,7 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(symbolTable);     }
     if (result == NULL) { result = PARSE(map);             }
     if (result == NULL) { result = PARSE(list);            }
-    if (result == NULL) { result = PARSE(deriv);           }
+    if (result == NULL) { result = PARSE(record);          }
     if (result == NULL) { result = PARSE(type);            }
     if (result == NULL) { result = PARSE(fullClosure);     }
     if (result == NULL) { result = PARSE(parenExpression); }
