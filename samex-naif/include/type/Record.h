@@ -3,16 +3,16 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `DerivedData` class
+// `Record` class
 //
 
-#ifndef _TYPE_DERIVED_DATA_H_
-#define _TYPE_DERIVED_DATA_H_
+#ifndef _TYPE_RECORD_H_
+#define _TYPE_RECORD_H_
 
 #include "type/Data.h"
 
 
-/** Class value for in-model class `DerivedData`. */
+/** Class value for in-model class `Record`. */
 extern zvalue CLS_Record;
 
 /** Method `.dataOf()`: Documented in spec. */
