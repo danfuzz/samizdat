@@ -13,7 +13,7 @@
 
 #include "type/Builtin.h"
 #include "type/Class.h"
-#include "type/DerivedData.h"
+#include "type/Record.h"
 #include "type/String.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"

@@ -8,7 +8,7 @@
 
 #include "const.h"
 #include "type/Box.h"
-#include "type/DerivedData.h"
+#include "type/Record.h"
 #include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"

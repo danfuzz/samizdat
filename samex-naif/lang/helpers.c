@@ -2,9 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "type/DerivedData.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/Record.h"
 #include "type/SymbolTable.h"
 
 #include "helpers.h"
