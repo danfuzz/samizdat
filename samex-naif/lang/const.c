@@ -18,18 +18,18 @@
 #define DEF_SYMBOL(name, str) \
     SYM_DEF(name)
 
-#define DEF_DATA(name, str) \
+#define DEF_RECORD(name, str) \
     zvalue CLS_##name = NULL
 
 #define DEF_TOKEN(name, str) \
-    DEF_DATA(name, str); \
+    DEF_RECORD(name, str); \
     zvalue TOK_##name = NULL
 
 #include "const-def.h"
 
 #undef DEF_STRING
 #undef DEF_SYMBOL
-#undef DEF_DATA
+#undef DEF_RECORD
 #undef DEF_TOKEN
 
 
@@ -49,12 +49,12 @@ MOD_INIT(lang_const) {
     #define DEF_SYMBOL(name, str) \
         SYM_INIT_WITH(name, str)
 
-    #define DEF_DATA(name, str) \
+    #define DEF_RECORD(name, str) \
         CLS_##name = datImmortalize( \
             makeRecordClass(symbolFromUtf8(-1, str)));
 
     #define DEF_TOKEN(name, str) \
-        DEF_DATA(name, str); \
+        DEF_RECORD(name, str); \
         TOK_##name = datImmortalize(makeRecord(CLS_##name, EMPTY_SYMBOL_TABLE));
 
     #include "const-def.h"

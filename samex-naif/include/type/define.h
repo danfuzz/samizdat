@@ -19,7 +19,7 @@
 #include "type/SymbolTable.h"
 
 //
-// Record classes
+// Records
 //
 
 /** Variable definition for a record class. */
