@@ -11,6 +11,11 @@ language constructs.
 <br><br>
 ### Method Definitions: `Symbol` protocol
 
+#### `isInterned(symbol) -> symbol | void`
+
+Returns `this` if it is interned (that is, non-anonymous). Returns void
+otherwise.
+
 #### `.makeAnonymous() -> symbol`
 
 Returns a new anonymous symbol whose name is the same as `this`'s. This
@@ -65,10 +70,7 @@ dispatch on `args[0]`.
 <br><br>
 ### Primitive Definitions
 
-#### `symbolIsInterned(symbol) -> symbol | void`
-
-Returns `symbol` if it is interned (that is, non-anonymous). Returns void
-otherwise.
+(none)
 
 <br><br>
 ### In-Language Definitions
