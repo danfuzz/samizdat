@@ -402,7 +402,7 @@ MOD_INIT(objectModel) {
 
 /** Initializes the module. */
 MOD_INIT(Class) {
-    MOD_USE(OneOff);
+    MOD_USE(Value);
 
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
     classBindMethods(CLS_Class,
