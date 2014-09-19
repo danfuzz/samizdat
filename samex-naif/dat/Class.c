@@ -47,6 +47,27 @@ static ClassInfo *getInfo(zvalue cls) {
 }
 
 /**
+ * Compare two classes for equality. Does *not* check to see if the two
+ * arguments are actually classes.
+ *
+ * **Note:** This is just a `==` check, as the system doesn't allow for
+ * two different underlying pointers to be references to the same class.
+ */
+static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
+    return (cls1 == cls2);
+}
+
+/**
+ * Asserts that `value` is an instance of `Class`, that is that
+ * `hasClass(value, CLS_Class)` is true.
+ */
+static void assertHasClassClass(zvalue value) {
+    if (!classEqUnchecked(get_class(value), CLS_Class)) {
+        die("Expected class Class; got %s.", valDebugString(value));
+    }
+}
+
+/**
  * Initializes a class value.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
@@ -54,7 +75,7 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
 
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
-    } else if ((parent == NULL) && (cls != CLS_Value)) {
+    } else if ((parent == NULL) && !classEqUnchecked(cls, CLS_Value)) {
         die("Every class but `Value` needs a parent.");
     }
 
@@ -95,34 +116,6 @@ static ClassCategory categoryOf(ClassInfo *info) {
     } else {
         return OPAQUE_CLASS;
     }
-}
-
-/**
- * Returns `true` iff the value is a `Class`.
- */
-static bool isClass(zvalue value) {
-    // This is a light-weight implementation, since (a) otherwise it consumes
-    // a significant amount of runtime with no real benefit, and (b) it
-    // avoids infinite recursion.
-    return (get_class(value) == CLS_Class);
-}
-
-/**
- * Asserts `isClass(value)`.
- */
-static void assertHasClassClass(zvalue value) {
-    if (!isClass(value)) {
-        die("Expected class Class; got %s.", valDebugString(value));
-    }
-}
-
-/**
- * Like `classEq()` but without checking up-front that the two given values
- * are actually classes. Note that this is just a `==` check, since classes
- * are all unique and effectively "selfish."
- */
-static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
-    return (cls1 == cls2);
 }
 
 
