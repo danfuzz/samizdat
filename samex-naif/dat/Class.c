@@ -243,18 +243,6 @@ zint classIndex(zvalue cls) {
 }
 
 // Documented in header.
-zvalue className(zvalue cls) {
-    assertHasClassClass(cls);
-    return getInfo(cls)->name;
-}
-
-// Documented in header.
-zvalue classParent(zvalue cls) {
-    assertHasClassClass(cls);
-    return getInfo(cls)->parent;
-}
-
-// Documented in header.
 zint get_classIndex(zvalue value) {
     return classIndexUnchecked(get_class(value));
 }

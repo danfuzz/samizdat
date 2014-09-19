@@ -58,16 +58,6 @@ bool classHasSecret(zvalue cls, zvalue secret);
 zint classIndex(zvalue cls);
 
 /**
- * Gets the name of the given class, as a symbol.
- */
-zvalue className(zvalue cls);
-
-/**
- * Gets the parent class of the given class.
- */
-zvalue classParent(zvalue cls);
-
-/**
  * Returns the unique index for the class of the given value.
  */
 zint get_classIndex(zvalue value);
