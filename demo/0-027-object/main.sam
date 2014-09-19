@@ -30,7 +30,7 @@ fn Blort.whatIs() {
 };
 
 msg("Blort class", Blort);
-msg("Parent", classParent(Blort));
+msg("Parent", Blort.get_parent());
 
 def AnotherBlort = makeObjectClass(@Blort, blortSecret);
 ifIs { eq(Blort, AnotherBlort) }
@@ -43,7 +43,7 @@ fn Fizmo.whatIs() {
 };
 
 msg("Fizmo class", Fizmo);
-msg("Parent", classParent(Fizmo));
+msg("Parent", Fizmo.get_parent());
 
 def blortNoData = makeObject(Blort, blortSecret);
 def blortWithData = makeObject(Blort, blortSecret, @{x: 10});
