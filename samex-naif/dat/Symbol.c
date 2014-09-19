@@ -283,15 +283,6 @@ METH_IMPL_0(Symbol, makeAnonymous) {
     return makeSymbol0(info->s, false);
 }
 
-/** Function (not method) `symbolIsInterned`. Documented in spec. */
-METH_IMPL_0(Symbol, symbolIsInterned) {
-    // TODO: Should be an instance method.
-    assertHasClass(ths, CLS_Symbol);
-
-    SymbolInfo *info = getInfo(ths);
-    return (info->interned) ? ths : NULL;
-}
-
 // Documented in header.
 METH_IMPL_0(Symbol, toString) {
     return stringFromZstring(getInfo(ths)->s);
@@ -347,9 +338,6 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, toString),
             METH_BIND(Symbol, totalOrder),
             NULL));
-
-    FUN_Symbol_symbolIsInterned =
-        datImmortalize(FUNC_VALUE(Symbol_symbolIsInterned));
 }
 
 // Documented in header.
@@ -360,6 +348,3 @@ SYM_DEF(makeAnonymous);
 
 // Documented in header.
 SYM_DEF(isInterned);
-
-// Documented in header.
-zvalue FUN_Symbol_symbolIsInterned = NULL;

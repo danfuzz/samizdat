@@ -21,9 +21,6 @@ SYM_DECL(makeAnonymous);
 /** Method `.isInterned()`: Documented in spec. */
 SYM_DECL(isInterned);
 
-/** Global function `symbolIsInterned`: Documented in spec. */
-extern zvalue FUN_Symbol_symbolIsInterned;
-
 
 /**
  * Like `symbolFromUtf8`, except this makes an anonymous (uninterned) symbol.

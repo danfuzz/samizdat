@@ -52,5 +52,4 @@ export
     makeValueSymbolTable,
     maybeValue,
     note,
-    order,
-    symbolIsInterned;
+    order;
