@@ -334,6 +334,16 @@ METH_IMPL_0(Class, gcMark) {
 }
 
 // Documented in header.
+METH_IMPL_0(Class, get_name) {
+    return getInfo(ths)->name;
+}
+
+// Documented in header.
+METH_IMPL_0(Class, get_parent) {
+    return getInfo(ths)->parent;
+}
+
+// Documented in header.
 METH_IMPL_1(Class, totalOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
@@ -404,15 +414,26 @@ MOD_INIT(objectModel) {
 MOD_INIT(Class) {
     MOD_USE(Value);
 
+    SYM_INIT(get_name);
+    SYM_INIT(get_parent);
+
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
     classBindMethods(CLS_Class,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Class, debugString),
             METH_BIND(Class, gcMark),
+            METH_BIND(Class, get_name),
+            METH_BIND(Class, get_parent),
             METH_BIND(Class, totalOrder),
             NULL));
 }
 
 // Documented in header.
 zvalue CLS_Class = NULL;
+
+// Documented in header.
+SYM_DEF(get_name);
+
+// Documented in header.
+SYM_DEF(get_parent);

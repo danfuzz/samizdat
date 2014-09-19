@@ -17,6 +17,12 @@
 /** Class value for in-model class `Class`. */
 extern zvalue CLS_Class;
 
+/** Method `.get_name()`: Documented in spec. */
+SYM_DECL(get_name);
+
+/** Method `.get_parent()`: Documented in spec. */
+SYM_DECL(get_parent);
+
 /**
  * Asserts that the given value has the given class. If not, this aborts
  * the process with a diagnostic message. **Note:** This does not do a
