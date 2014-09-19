@@ -42,6 +42,12 @@ void classAddMethod(zvalue cls, zvalue symbol, zvalue function);
 bool classEq(zvalue cls1, zvalue cls2);
 
 /**
+ * Returns `true` iff the given class has the given parent. This is for
+ * a direct parent check only, not for general ancestry.
+ */
+bool classHasParent(zvalue cls, zvalue parent);
+
+/**
  * Returns `true` iff the given class has the given secret.
  */
 bool classHasSecret(zvalue cls, zvalue secret);

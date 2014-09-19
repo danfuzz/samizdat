@@ -218,6 +218,13 @@ bool classEq(zvalue cls1, zvalue cls2) {
 }
 
 // Documented in header.
+bool classHasParent(zvalue cls, zvalue parent) {
+    assertHasClassClass(cls);
+    assertHasClassClass(parent);
+    return classEqUnchecked(getInfo(cls)->parent, parent);
+}
+
+// Documented in header.
 bool classHasSecret(zvalue cls, zvalue secret) {
     assertHasClassClass(cls);
 
