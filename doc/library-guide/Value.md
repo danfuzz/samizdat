@@ -178,11 +178,6 @@ identical to it. Otherwise returns void.
 Returns the name of the given `value`'s class. This function is the equivalent
 to `className(get_class(value))`.
 
-#### `get_classNameString(value) -> string | void`
-
-Returns the name of the given `value`'s class, as a string. This function is
-the equivalent to `classNameString(get_class(value))`.
-
 #### `gt(value, other) -> logic`
 
 Checks for a greater-than relationship, using the total order of values.
