@@ -37,11 +37,6 @@ void assertHasClass(zvalue value, zvalue cls);
 void classAddMethod(zvalue cls, zvalue symbol, zvalue function);
 
 /**
- * Compares two classes for equality. It is an error to pass a non-class.
- */
-bool classEq(zvalue cls1, zvalue cls2);
-
-/**
  * Returns `true` iff the given class has the given parent. This is for
  * a direct parent check only, not for general ancestry.
  */

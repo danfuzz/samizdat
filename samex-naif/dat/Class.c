@@ -204,13 +204,6 @@ void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
 }
 
 // Documented in header.
-bool classEq(zvalue cls1, zvalue cls2) {
-    assertHasClassClass(cls1);
-    assertHasClassClass(cls1);
-    return classEqUnchecked(cls1, cls2);
-}
-
-// Documented in header.
 bool classHasParent(zvalue cls, zvalue parent) {
     assertHasClassClass(cls);
     assertHasClassClass(parent);
