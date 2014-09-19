@@ -17,6 +17,12 @@
 /** Class value for in-model class `Class`. */
 extern zvalue CLS_Class;
 
+/** Method `.get_name()`: Documented in spec. */
+SYM_DECL(get_name);
+
+/** Method `.get_parent()`: Documented in spec. */
+SYM_DECL(get_parent);
+
 /**
  * Asserts that the given value has the given class. If not, this aborts
  * the process with a diagnostic message. **Note:** This does not do a
@@ -31,9 +37,10 @@ void assertHasClass(zvalue value, zvalue cls);
 void classAddMethod(zvalue cls, zvalue symbol, zvalue function);
 
 /**
- * Compares two classes for equality. It is an error to pass a non-class.
+ * Returns `true` iff the given class has the given parent. This is for
+ * a direct parent check only, not for general ancestry.
  */
-bool classEq(zvalue cls1, zvalue cls2);
+bool classHasParent(zvalue cls, zvalue parent);
 
 /**
  * Returns `true` iff the given class has the given secret.
@@ -44,21 +51,6 @@ bool classHasSecret(zvalue cls, zvalue secret);
  * Returns the unique index for the given class.
  */
 zint classIndex(zvalue cls);
-
-/**
- * Gets the name of the given class, as a string.
- */
-zvalue classNameString(zvalue cls);
-
-/**
- * Gets the name of the given class, as a symbol.
- */
-zvalue className(zvalue cls);
-
-/**
- * Gets the parent class of the given class.
- */
-zvalue classParent(zvalue cls);
 
 /**
  * Returns the unique index for the class of the given value.

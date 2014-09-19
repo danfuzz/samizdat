@@ -47,6 +47,27 @@ static ClassInfo *getInfo(zvalue cls) {
 }
 
 /**
+ * Compare two classes for equality. Does *not* check to see if the two
+ * arguments are actually classes.
+ *
+ * **Note:** This is just a `==` check, as the system doesn't allow for
+ * two different underlying pointers to be references to the same class.
+ */
+static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
+    return (cls1 == cls2);
+}
+
+/**
+ * Asserts that `value` is an instance of `Class`, that is that
+ * `hasClass(value, CLS_Class)` is true.
+ */
+static void assertHasClassClass(zvalue value) {
+    if (!classEqUnchecked(get_class(value), CLS_Class)) {
+        die("Expected class Class; got %s.", valDebugString(value));
+    }
+}
+
+/**
  * Initializes a class value.
  */
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
@@ -54,7 +75,7 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
 
     if (theNextClassId == DAT_MAX_CLASSES) {
         die("Too many classes!");
-    } else if ((parent == NULL) && (cls != CLS_Value)) {
+    } else if ((parent == NULL) && !classEqUnchecked(cls, CLS_Value)) {
         die("Every class but `Value` needs a parent.");
     }
 
@@ -95,34 +116,6 @@ static ClassCategory categoryOf(ClassInfo *info) {
     } else {
         return OPAQUE_CLASS;
     }
-}
-
-/**
- * Returns `true` iff the value is a `Class`.
- */
-static bool isClass(zvalue value) {
-    // This is a light-weight implementation, since (a) otherwise it consumes
-    // a significant amount of runtime with no real benefit, and (b) it
-    // avoids infinite recursion.
-    return (get_class(value) == CLS_Class);
-}
-
-/**
- * Asserts `isClass(value)`.
- */
-static void assertHasClassClass(zvalue value) {
-    if (!isClass(value)) {
-        die("Expected class Class; got %s.", valDebugString(value));
-    }
-}
-
-/**
- * Like `classEq()` but without checking up-front that the two given values
- * are actually classes. Note that this is just a `==` check, since classes
- * are all unique and effectively "selfish."
- */
-static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
-    return (cls1 == cls2);
 }
 
 
@@ -175,7 +168,7 @@ zvalue classFindMethodBySymbolIndex(zvalue cls, zint index) {
             break;
         }
         superChecked = true;
-        checkCls = classParent(checkCls);
+        checkCls = getInfo(checkCls)->parent;
     }
 
     if (superChecked && (result != NULL)) {
@@ -211,10 +204,10 @@ void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
 }
 
 // Documented in header.
-bool classEq(zvalue cls1, zvalue cls2) {
-    assertHasClassClass(cls1);
-    assertHasClassClass(cls1);
-    return classEqUnchecked(cls1, cls2);
+bool classHasParent(zvalue cls, zvalue parent) {
+    assertHasClassClass(cls);
+    assertHasClassClass(parent);
+    return classEqUnchecked(getInfo(cls)->parent, parent);
 }
 
 // Documented in header.
@@ -233,24 +226,6 @@ bool classHasSecret(zvalue cls, zvalue secret) {
 zint classIndex(zvalue cls) {
     assertHasClassClass(cls);
     return classIndexUnchecked(cls);
-}
-
-// Documented in header.
-zvalue className(zvalue cls) {
-    assertHasClassClass(cls);
-    return getInfo(cls)->name;
-}
-
-// Documented in header.
-zvalue classNameString(zvalue cls) {
-    assertHasClassClass(cls);
-    return valToString(getInfo(cls)->name);
-}
-
-// Documented in header.
-zvalue classParent(zvalue cls) {
-    assertHasClassClass(cls);
-    return getInfo(cls)->parent;
 }
 
 // Documented in header.
@@ -312,7 +287,7 @@ METH_IMPL_0(Class, debugString) {
         return valToString(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (classParent(ths) == CLS_Record) {
+    } else if (classEqUnchecked(info->parent, CLS_Record)) {
         extraString = EMPTY_STRING;
     } else {
         die("Shouldn't happen: opaque class without secret.");
@@ -337,6 +312,16 @@ METH_IMPL_0(Class, gcMark) {
     }
 
     return NULL;
+}
+
+// Documented in header.
+METH_IMPL_0(Class, get_name) {
+    return getInfo(ths)->name;
+}
+
+// Documented in header.
+METH_IMPL_0(Class, get_parent) {
+    return getInfo(ths)->parent;
 }
 
 // Documented in header.
@@ -408,7 +393,10 @@ MOD_INIT(objectModel) {
 
 /** Initializes the module. */
 MOD_INIT(Class) {
-    MOD_USE(OneOff);
+    MOD_USE(Value);
+
+    SYM_INIT(get_name);
+    SYM_INIT(get_parent);
 
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
     classBindMethods(CLS_Class,
@@ -416,9 +404,17 @@ MOD_INIT(Class) {
         symbolTableFromArgs(
             METH_BIND(Class, debugString),
             METH_BIND(Class, gcMark),
+            METH_BIND(Class, get_name),
+            METH_BIND(Class, get_parent),
             METH_BIND(Class, totalOrder),
             NULL));
 }
 
 // Documented in header.
 zvalue CLS_Class = NULL;
+
+// Documented in header.
+SYM_DEF(get_name);
+
+// Documented in header.
+SYM_DEF(get_parent);

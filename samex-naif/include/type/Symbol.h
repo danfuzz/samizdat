@@ -18,8 +18,8 @@ extern zvalue CLS_Symbol;
 /** Method `.makeAnonymous()`: Documented in spec. */
 SYM_DECL(makeAnonymous);
 
-/** Global function `symbolIsInterned`: Documented in spec. */
-extern zvalue FUN_Symbol_symbolIsInterned;
+/** Method `.isInterned()`: Documented in spec. */
+SYM_DECL(isInterned);
 
 
 /**

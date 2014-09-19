@@ -28,9 +28,6 @@ export
     SymbolTable,
     Value,
     classAddMethod,
-    className,
-    classNameString,
-    classParent,
     die,
     eq,
     get_class,
@@ -53,5 +50,4 @@ export
     makeValueSymbolTable,
     maybeValue,
     note,
-    order,
-    symbolIsInterned;
+    order;

@@ -140,7 +140,7 @@ fn Bool_convert(value) {
 
 ## Converts a class. Only works on record classes.
 fn Class_convert(value) {
-    return genCall("makeRecordClass", convert(className(value)))
+    return genCall("makeRecordClass", convert(value.get_name()))
 };
 
 ## Converts an int.
@@ -193,7 +193,7 @@ fn String_convert(value) {
 
 ## Converts a symbol.
 fn Symbol_convert(value) {
-    if (!symbolIsInterned(value)) {
+    if (!value.isInterned()) {
         die("Cannot convert anonymous symbol: \%q(value)")
     };
 
