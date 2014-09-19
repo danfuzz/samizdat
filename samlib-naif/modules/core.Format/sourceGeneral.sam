@@ -82,7 +82,7 @@ fn Class_sourceGeneral(value, adorn) {
     ifValue { SPECIAL_VALUES.get(value) }
         { string -> return string };
 
-    def name = className(value);
+    def name = value.get_name();
 
     ifNot { eq(classParent(value), Record) }
         { return "@@(opaque ".cat(keyString(name), ")") };
@@ -145,7 +145,7 @@ fn Value_sourceGeneral(value, adorn) {
         { string -> return string };
 
     def cls = get_class(value);
-    def prefix = nameString("@", className(cls));
+    def prefix = nameString("@", cls.get_name());
 
     ifNot { eq(classParent(cls), Record) }
         {

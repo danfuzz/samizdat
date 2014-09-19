@@ -15,5 +15,5 @@
 
 ## Documented in spec.
 export fn get_className(value) {
-    return className(get_class(value))
+    return get_class(value).get_name()
 };
