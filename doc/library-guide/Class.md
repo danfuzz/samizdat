@@ -5,6 +5,20 @@ Class
 -----
 
 <br><br>
+### Method Definitions: `Class` protocol
+
+#### `get_name() -> symbol`
+
+Returns the name of the class, as a symbol.
+
+#### `get_parent() -> class | void`
+
+Returns the parent class (that is, the superclass) of the given class. This
+returns a class for all classes except `Value`. For `Value`, this returns
+void.
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.perEq(other) -> class | void`
@@ -50,16 +64,6 @@ from generic functions to symbols. Ultimately, a class definition should
 be made such that all its methods come in one fell atomic swoop rather than
 being added one at a time with a function such as this one (which also, FWIW,
 doesn't bother with the class's secret either).
-
-#### `className(cls) -> symbol | void`
-
-Returns the name of the class, as a symbol.
-
-#### `classParent(cls) -> class | void`
-
-Returns the parent class (that is, the superclass) of the given class. This
-returns a class for all classes except `Value`. For `Value`, this returns
-void.
 
 
 <br><br>
