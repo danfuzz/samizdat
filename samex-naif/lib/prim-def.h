@@ -34,7 +34,6 @@ PRIM_DEF(makeRecordClass,         FUN_Record_makeRecordClass);
 PRIM_DEF(makeSymbolTable,         FUN_SymbolTable_makeSymbolTable);
 PRIM_DEF(makeValueSymbolTable,    FUN_SymbolTable_makeValueSymbolTable);
 PRIM_FUNC(classAddMethod,         3, 3);
-PRIM_FUNC(classParent,            1, 1);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(get_class,              1, 1);

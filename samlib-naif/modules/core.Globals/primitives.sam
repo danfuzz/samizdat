@@ -28,7 +28,6 @@ export
     SymbolTable,
     Value,
     classAddMethod,
-    classParent,
     die,
     eq,
     get_class,
