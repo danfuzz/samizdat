@@ -18,11 +18,6 @@ FUN_IMPL_DECL(classAddMethod) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(className) {
-    return className(args[0]);
-}
-
-// Documented in spec.
 FUN_IMPL_DECL(classParent) {
     return classParent(args[0]);
 }
