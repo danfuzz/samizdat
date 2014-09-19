@@ -176,7 +176,7 @@ identical to it. Otherwise returns void.
 #### `get_className(value) -> symbol | void`
 
 Returns the name of the given `value`'s class. This function is the equivalent
-to `className(get_class(value))`.
+to `get_class(value).get_name()`.
 
 #### `gt(value, other) -> logic`
 
