@@ -15,17 +15,17 @@
 
 ## Map from binary operation names to precedece/function maps.
 def BINARY_OPS = {
-    "+": {function: @add, precedence: 1},
-    "-": {function: @sub, precedence: 1},
-    "*": {function: @mul, precedence: 2},
-    "/": {function: @div, precedence: 2},
-    "%": {function: @mod, precedence: 2}
+    @"+": {function: @add, precedence: 1},
+    @"-": {function: @sub, precedence: 1},
+    @"*": {function: @mul, precedence: 2},
+    @"/": {function: @div, precedence: 2},
+    @"%": {function: @mod, precedence: 2}
 };
 
 ## Map from unary operation names to functions.
 def UNARY_OPS = {
-    "+": { x -> x },
-    "-": @neg
+    @"+": { x -> x },
+    @"-": @neg
 };
 
 ## Takes an initial value and a list of one-argument functions, and
@@ -100,7 +100,7 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { get_classNameString(ch).toInt().sub("0".toInt()) }
+    { get_className(ch).toString().toInt().sub("0".toInt()) }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.
@@ -131,7 +131,7 @@ def term = {:
 ## function.
 def unaryOp = {:
     op = ["+-"]
-    { UNARY_OPS.get(get_classNameString(op)) }
+    { UNARY_OPS.get(get_className(op)) }
 :};
 
 ## Parses a unary expression, that is, a series of unary operators followed
@@ -145,7 +145,7 @@ def unaryExpression = {:
 ## Parses a binary operation, yielding a map of precedence and function.
 def binaryOp = {:
     op = ["+-*/%"]
-    { BINARY_OPS.get(get_classNameString(op)) }
+    { BINARY_OPS.get(get_className(op)) }
 :};
 
 ## Parses a chained sequence of unary expressions separated by binary
