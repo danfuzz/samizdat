@@ -84,10 +84,9 @@ fn Class_sourceGeneral(value, adorn) {
 
     def name = value.get_name();
 
-    ifNot { eq(classParent(value), Record) }
-        { return "@@(opaque ".cat(keyString(name), ")") };
-
-    return nameString("@@", name);
+    return ifIs { eq(value.get_parent(), Record) }
+        { nameString("@@", name) }
+        { "@@(opaque ".cat(keyString(name), ")") };
 };
 
 ## Stringifies an int.
@@ -147,7 +146,11 @@ fn Value_sourceGeneral(value, adorn) {
     def cls = get_class(value);
     def prefix = nameString("@", cls.get_name());
 
-    ifNot { eq(classParent(cls), Record) }
+    return ifIs { eq(cls.get_parent(), Record) }
+        {
+            ## Record.
+            return prefix.cat("{", sourceGeneral(value.dataOf(), false), "}")
+        }
         {
             ## Opaque value, possibly named.
             def body = ifValue { value.debugSymbol() }
@@ -155,10 +158,7 @@ fn Value_sourceGeneral(value, adorn) {
                 { "..." };
 
             return prefix.cat("<", body, ">")
-        };
-
-    ## Record.
-    return prefix.cat("{", sourceGeneral(value.dataOf(), false), "}");
+        }
 };
 
 ## Common code for the two `source*` variants, which takes an
