@@ -11,7 +11,7 @@ language constructs.
 <br><br>
 ### Method Definitions: `Symbol` protocol
 
-#### `isInterned(symbol) -> symbol | void`
+#### `isInterned() -> symbol | void`
 
 Returns `this` if it is interned (that is, non-anonymous). Returns void
 otherwise.
