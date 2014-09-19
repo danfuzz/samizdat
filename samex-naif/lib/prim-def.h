@@ -36,7 +36,6 @@ PRIM_DEF(makeValueSymbolTable,    FUN_SymbolTable_makeValueSymbolTable);
 PRIM_DEF(symbolIsInterned,        FUN_Symbol_symbolIsInterned);
 PRIM_FUNC(classAddMethod,         3, 3);
 PRIM_FUNC(className,              1, 1);
-PRIM_FUNC(classNameString,        1, 1);
 PRIM_FUNC(classParent,            1, 1);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);

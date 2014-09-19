@@ -29,7 +29,6 @@ export
     Value,
     classAddMethod,
     className,
-    classNameString,
     classParent,
     die,
     eq,

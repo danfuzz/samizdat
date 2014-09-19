@@ -46,11 +46,6 @@ bool classHasSecret(zvalue cls, zvalue secret);
 zint classIndex(zvalue cls);
 
 /**
- * Gets the name of the given class, as a string.
- */
-zvalue classNameString(zvalue cls);
-
-/**
  * Gets the name of the given class, as a symbol.
  */
 zvalue className(zvalue cls);

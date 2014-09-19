@@ -242,12 +242,6 @@ zvalue className(zvalue cls) {
 }
 
 // Documented in header.
-zvalue classNameString(zvalue cls) {
-    assertHasClassClass(cls);
-    return valToString(getInfo(cls)->name);
-}
-
-// Documented in header.
 zvalue classParent(zvalue cls) {
     assertHasClassClass(cls);
     return getInfo(cls)->parent;

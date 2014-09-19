@@ -55,10 +55,6 @@ doesn't bother with the class's secret either).
 
 Returns the name of the class, as a symbol.
 
-#### `classNameString(cls) -> string | void`
-
-Returns the name of the class, as a string.
-
 #### `classParent(cls) -> class | void`
 
 Returns the parent class (that is, the superclass) of the given class. This
