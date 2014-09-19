@@ -173,7 +173,7 @@ identical to it. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \>= expression` forms.
 
-#### `get_className(value) -> symbol | void`
+#### `get_className(value) -> symbol`
 
 Returns the name of the given `value`'s class. This function is the equivalent
 to `get_class(value).get_name()`.
