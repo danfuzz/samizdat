@@ -273,6 +273,11 @@ METH_IMPL_0(Symbol, debugSymbol) {
 }
 
 // Documented in header.
+METH_IMPL_0(Symbol, isInterned) {
+    return (getInfo(ths)->interned) ? ths : NULL;
+}
+
+// Documented in header.
 METH_IMPL_0(Symbol, makeAnonymous) {
     SymbolInfo *info = getInfo(ths);
     return makeSymbol0(info->s, false);
@@ -327,6 +332,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 MOD_INIT(Symbol) {
     MOD_USE(Value);
 
+    SYM_INIT(isInterned);
     SYM_INIT(makeAnonymous);
 
     // Note: The `objectModel` module initializes `CLS_Symbol`.
@@ -336,6 +342,7 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, call),
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
+            METH_BIND(Symbol, isInterned),
             METH_BIND(Symbol, makeAnonymous),
             METH_BIND(Symbol, toString),
             METH_BIND(Symbol, totalOrder),
@@ -350,6 +357,9 @@ zvalue CLS_Symbol = NULL;
 
 // Documented in header.
 SYM_DEF(makeAnonymous);
+
+// Documented in header.
+SYM_DEF(isInterned);
 
 // Documented in header.
 zvalue FUN_Symbol_symbolIsInterned = NULL;
