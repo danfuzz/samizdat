@@ -7,11 +7,11 @@ Class
 <br><br>
 ### Method Definitions: `Class` protocol
 
-#### `get_name() -> symbol`
+#### `.get_name() -> symbol`
 
 Returns the name of the class, as a symbol.
 
-#### `get_parent() -> class | void`
+#### `.get_parent() -> class | void`
 
 Returns the parent class (that is, the superclass) of the given class. This
 returns a class for all classes except `Value`. For `Value`, this returns
