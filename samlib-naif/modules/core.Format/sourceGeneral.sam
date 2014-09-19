@@ -127,7 +127,7 @@ fn Symbol_sourceGeneral(value, adorn) {
     ifIs { eq(adorn, false) }
         { return sourceGeneral(value.toString(), false) };
 
-    def prefix = ifIs { symbolIsInterned(value) } { "@" } { "@+" };
+    def prefix = ifIs { value.isInterned() } { "@" } { "@+" };
     return nameString(prefix, value);
 };
 

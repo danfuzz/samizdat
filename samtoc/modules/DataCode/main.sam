@@ -193,7 +193,7 @@ fn String_convert(value) {
 
 ## Converts a symbol.
 fn Symbol_convert(value) {
-    if (!symbolIsInterned(value)) {
+    if (!value.isInterned()) {
         die("Cannot convert anonymous symbol: \%q(value)")
     };
 
