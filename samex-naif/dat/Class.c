@@ -175,7 +175,7 @@ zvalue classFindMethodBySymbolIndex(zvalue cls, zint index) {
             break;
         }
         superChecked = true;
-        checkCls = classParent(checkCls);
+        checkCls = getInfo(checkCls)->parent;
     }
 
     if (superChecked && (result != NULL)) {
@@ -313,7 +313,7 @@ METH_IMPL_0(Class, debugString) {
         return valToString(info->name);
     } else if (info->secret != NULL) {
         extraString = stringFromUtf8(-1, " : opaque");
-    } else if (classParent(ths) == CLS_Record) {
+    } else if (classEqUnchecked(info->parent, CLS_Record)) {
         extraString = EMPTY_STRING;
     } else {
         die("Shouldn't happen: opaque class without secret.");
