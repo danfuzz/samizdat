@@ -92,6 +92,9 @@ Languages
 * Smalltalk
   * Back to the future: the story of Squeak, a practical Smalltalk written in
     itself &mdash; <http://ftp.squeak.org/docs/OOPSLA.Squeak.html>
+  * Smalltalk-80: The Interactive Programming Environment (comprehensive
+    manual and reference) &mdash;
+    <http://stephane.ducasse.free.fr/FreeBooks/TheInteractiveProgrammingEnv/TheInteractiveProgrammingEnv.pdf>
 
 * Subtext
   * Subtext language &mdash; <http://www.subtext-lang.org/>
