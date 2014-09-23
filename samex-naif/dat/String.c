@@ -549,8 +549,7 @@ MOD_INIT(String) {
 
     SYM_INIT(toSymbol);
 
-    // Note: The `objectModel` module initializes `CLS_String`.
-    classBindMethods(CLS_String,
+    CLS_String = makeCoreClass("String", CLS_Data,
         NULL,
         symbolTableFromArgs(
             METH_BIND(String, cat),

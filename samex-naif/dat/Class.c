@@ -377,7 +377,6 @@ MOD_INIT(objectModel) {
     CLS_SymbolTable = allocClass();
     CLS_Data        = allocClass();
     CLS_Builtin     = allocClass();
-    CLS_String      = allocClass();
 
     theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
     datImmortalize(theCoreSecret);
@@ -388,7 +387,6 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
     classInitHere(CLS_Data,        CLS_Value, "Data");
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
-    classInitHere(CLS_String,      CLS_Data,  "String");
 }
 
 /** Initializes the module. */
