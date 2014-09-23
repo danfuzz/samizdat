@@ -364,6 +364,11 @@ METH_IMPL_1(Class, totalOrder, other) {
  * Define `objectModel` as a module, as separate from the `Class` class.
  */
 MOD_INIT(objectModel) {
+    // Make sure that the "fake" header is sized the same as the real one.
+    if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
+        die("Mismatched value header size: should be %lu", sizeof(DatHeader));
+    }
+
     CLS_Class = allocClass();
     CLS_Class->cls = CLS_Class;
 
@@ -384,11 +389,6 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Data,        CLS_Value, "Data");
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
     classInitHere(CLS_String,      CLS_Data,  "String");
-
-    // Make sure that the "fake" header is sized the same as the real one.
-    if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
-        die("Mismatched value header size: should be %lu", sizeof(DatHeader));
-    }
 }
 
 /** Initializes the module. */
