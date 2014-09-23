@@ -20,8 +20,7 @@
 MOD_INIT(Data) {
     MOD_USE(Value);
 
-    // Note: The `objectModel` module initializes `CLS_Data`.
-    // So, there's nothing to do here, at least for now.
+    CLS_Data = makeCoreClass("Data", CLS_Value, NULL, NULL);
 }
 
 // Documented in header.
