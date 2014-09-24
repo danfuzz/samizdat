@@ -153,14 +153,6 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 zvalue classFindMethodUnchecked(zvalue cls, zint index);
 
 /**
- * Gets the index for a given class value. The given value *must* be a
- * `Class` per se; this is *not* checked.
- */
-inline zint classIndexUnchecked(zvalue cls) {
-    return ((ClassInfo *) datPayload(cls))->classId;
-}
-
-/**
  * Actual implementation of nonlocal jump calling. This is where
  * short-circuited method dispatch of `call` on class `Jump` lands.
  */

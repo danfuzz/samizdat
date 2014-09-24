@@ -168,9 +168,6 @@ zvalue classFindMethodUnchecked(zvalue cls, zint index) {
     return getInfo(cls)->methods[index];
 }
 
-// Documented in header.
-extern inline zint classIndexUnchecked(zvalue cls);
-
 
 //
 // Exported Definitions
@@ -219,12 +216,12 @@ bool classHasSecret(zvalue cls, zvalue secret) {
 // Documented in header.
 zint classIndex(zvalue cls) {
     assertHasClassClass(cls);
-    return classIndexUnchecked(cls);
+    return getInfo(cls)->classId;
 }
 
 // Documented in header.
 zint get_classIndex(zvalue value) {
-    return classIndexUnchecked(get_class(value));
+    return getInfo(get_class(value))->classId;
 }
 
 // Documented in header.
