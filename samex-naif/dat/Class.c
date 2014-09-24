@@ -165,29 +165,8 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 
 // Documented in header.
 zvalue classFindMethodBySymbolIndex(zvalue cls, zint index) {
-    // TODO: Remove the heritage lookup once subclass tables get populated
-    // with their superclasses' methods and become thereafter immutable.
-
     assertHasClassClass(cls);
-    zvalue result = NULL;
-    bool superChecked = false;
-
-    zvalue checkCls = cls;
-    while (checkCls != NULL) {
-        zvalue *methods = getInfo(checkCls)->methods;
-        result = methods[index];
-        if (result != NULL) {
-            break;
-        }
-        superChecked = true;
-        checkCls = getInfo(checkCls)->parent;
-    }
-
-    if (superChecked && (result != NULL)) {
-        getInfo(cls)->methods[index] = result;
-    }
-
-    return result;
+    return getInfo(cls)->methods[index];
 }
 
 // Documented in header.
