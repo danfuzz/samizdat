@@ -84,9 +84,14 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->name = name;
     info->secret = secret;
     info->classId = theNextClassId;
+    info->hasSubclasses = false;
 
     theNextClassId++;
     datImmortalize(cls);
+
+    if (parent != NULL) {
+        getInfo(parent)->hasSubclasses = true;
+    }
 }
 
 /**
@@ -127,6 +132,13 @@ static ClassCategory categoryOf(ClassInfo *info) {
 void classBindMethods(zvalue cls, zvalue classMethods,
         zvalue instanceMethods) {
     ClassInfo *info = getInfo(cls);
+
+    if (info->hasSubclasses && (info->parent != NULL)) {
+        // `Value` (the only class without a parent) gets a pass on this
+        // sanity check, since during during bootstrap it gains subclasses
+        // before it's possible to define its methods.
+        die("Cannot modify method table of a class with subclasses.");
+    }
 
     if (info->parent != NULL) {
         // Initialize the instance method table with whatever the parent
@@ -197,10 +209,14 @@ void assertHasClass(zvalue value, zvalue cls) {
 // Documented in header.
 void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
     assertHasClassClass(cls);
+    ClassInfo *info = getInfo(cls);
     zint index = symbolIndex(symbol);
-    zvalue *methods = getInfo(cls)->methods;
 
-    methods[index] = function;
+    if (info->hasSubclasses) {
+        die("Cannot modify method table of a class with subclasses.");
+    }
+
+    info->methods[index] = function;
 }
 
 // Documented in header.
