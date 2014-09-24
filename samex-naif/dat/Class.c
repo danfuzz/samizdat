@@ -84,9 +84,14 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->name = name;
     info->secret = secret;
     info->classId = theNextClassId;
+    info->hasSubclasses = false;
 
     theNextClassId++;
     datImmortalize(cls);
+
+    if (parent != NULL) {
+        getInfo(parent)->hasSubclasses = true;
+    }
 }
 
 /**
@@ -128,6 +133,13 @@ void classBindMethods(zvalue cls, zvalue classMethods,
         zvalue instanceMethods) {
     ClassInfo *info = getInfo(cls);
 
+    if (info->hasSubclasses && (info->parent != NULL)) {
+        // `Value` (the only class without a parent) gets a pass on this
+        // sanity check, since during during bootstrap it gains subclasses
+        // before it's possible to define its methods.
+        die("Cannot modify method table of a class with subclasses.");
+    }
+
     if (info->parent != NULL) {
         // Initialize the instance method table with whatever the parent
         // defined.
@@ -152,34 +164,9 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 }
 
 // Documented in header.
-zvalue classFindMethodBySymbolIndex(zvalue cls, zint index) {
-    // TODO: Remove the heritage lookup once subclass tables get populated
-    // with their superclasses' methods and become thereafter immutable.
-
-    assertHasClassClass(cls);
-    zvalue result = NULL;
-    bool superChecked = false;
-
-    zvalue checkCls = cls;
-    while (checkCls != NULL) {
-        zvalue *methods = getInfo(checkCls)->methods;
-        result = methods[index];
-        if (result != NULL) {
-            break;
-        }
-        superChecked = true;
-        checkCls = getInfo(checkCls)->parent;
-    }
-
-    if (superChecked && (result != NULL)) {
-        getInfo(cls)->methods[index] = result;
-    }
-
-    return result;
+zvalue classFindMethodUnchecked(zvalue cls, zint index) {
+    return getInfo(cls)->methods[index];
 }
-
-// Documented in header.
-extern inline zint classIndexUnchecked(zvalue cls);
 
 
 //
@@ -197,10 +184,14 @@ void assertHasClass(zvalue value, zvalue cls) {
 // Documented in header.
 void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
     assertHasClassClass(cls);
+    ClassInfo *info = getInfo(cls);
     zint index = symbolIndex(symbol);
-    zvalue *methods = getInfo(cls)->methods;
 
-    methods[index] = function;
+    if (info->hasSubclasses) {
+        die("Cannot modify method table of a class with subclasses.");
+    }
+
+    info->methods[index] = function;
 }
 
 // Documented in header.
@@ -225,12 +216,12 @@ bool classHasSecret(zvalue cls, zvalue secret) {
 // Documented in header.
 zint classIndex(zvalue cls) {
     assertHasClassClass(cls);
-    return classIndexUnchecked(cls);
+    return getInfo(cls)->classId;
 }
 
 // Documented in header.
 zint get_classIndex(zvalue value) {
-    return classIndexUnchecked(get_class(value));
+    return getInfo(get_class(value))->classId;
 }
 
 // Documented in header.
@@ -364,15 +355,18 @@ METH_IMPL_1(Class, totalOrder, other) {
  * Define `objectModel` as a module, as separate from the `Class` class.
  */
 MOD_INIT(objectModel) {
+    // Make sure that the "fake" header is sized the same as the real one.
+    if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
+        die("Mismatched value header size: should be %lu", sizeof(DatHeader));
+    }
+
     CLS_Class = allocClass();
     CLS_Class->cls = CLS_Class;
 
     CLS_Value       = allocClass();
     CLS_Symbol      = allocClass();
     CLS_SymbolTable = allocClass();
-    CLS_Data        = allocClass();
     CLS_Builtin     = allocClass();
-    CLS_String      = allocClass();
 
     theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
     datImmortalize(theCoreSecret);
@@ -381,14 +375,7 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Value,       NULL,      "Value");
     classInitHere(CLS_Symbol,      CLS_Value, "Symbol");
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
-    classInitHere(CLS_Data,        CLS_Value, "Data");
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
-    classInitHere(CLS_String,      CLS_Data,  "String");
-
-    // Make sure that the "fake" header is sized the same as the real one.
-    if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
-        die("Mismatched value header size: should be %lu", sizeof(DatHeader));
-    }
 }
 
 /** Initializes the module. */

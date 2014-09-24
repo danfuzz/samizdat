@@ -177,7 +177,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
     SymbolInfo *info = getInfo(symbol);
     zint index = info->index;
     zvalue cls = get_class(args[0]);
-    zvalue function = classFindMethodBySymbolIndex(cls, index);
+    zvalue function = classFindMethodUnchecked(cls, index);
 
     if (function == NULL) {
         die("Unbound method: %s.%s",

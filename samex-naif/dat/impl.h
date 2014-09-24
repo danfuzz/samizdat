@@ -22,10 +22,10 @@ enum {
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /** The class index for class `Builtin`. */
-    DAT_INDEX_BUILTIN = 5,
+    DAT_INDEX_BUILTIN = 4,
 
     /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 7,
+    DAT_INDEX_JUMP = 5,
 
     /** The class index for class `Symbol`. */
     DAT_INDEX_SYMBOL = 2,
@@ -98,6 +98,13 @@ typedef struct {
     zint classId;
 
     /**
+     * Whether this class has any subclasses. If so, it's invalid to
+     * add any method bindings. TODO: Remove this once incremental method
+     * binding is no longer allowed at all.
+     */
+    bool hasSubclasses;
+
+    /**
      * Bindings from method symbols to functions, keyed off of symbol
      * index number.
      */
@@ -140,18 +147,10 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 
 /**
  * Finds a method on a class, if bound. Returns the bound function if found
- * or `NULL` if not. Does not check to see if `index` is in the valid range
- * for a symbol index.
+ * or `NULL` if not. Does not check to see if `cls` is actually a class,
+ * and does not check if `index` is in the valid range for a symbol index.
  */
-zvalue classFindMethodBySymbolIndex(zvalue cls, zint index);
-
-/**
- * Gets the index for a given class value. The given value *must* be a
- * `Class` per se; this is *not* checked.
- */
-inline zint classIndexUnchecked(zvalue cls) {
-    return ((ClassInfo *) datPayload(cls))->classId;
-}
+zvalue classFindMethodUnchecked(zvalue cls, zint index);
 
 /**
  * Actual implementation of nonlocal jump calling. This is where
