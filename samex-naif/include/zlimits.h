@@ -12,9 +12,6 @@
 #define _ZLIMITS_H_
 
 enum {
-    /** Maximum readable file size, in bytes. */
-    IO_MAX_FILE_SIZE = 100000,
-
     /** Maximum number of formal arguments to a function. */
     LANG_MAX_FORMALS = 10,
 
