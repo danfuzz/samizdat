@@ -11,12 +11,17 @@
 
 #include "dat.h"
 #include "util.h"
-#include "zlimits.h"
 
 
 enum {
+    /** Number of allocations between each forced gc. */
+    DAT_ALLOCATIONS_PER_GC = 500000,
+
     /** Whether to spew to the console during gc. */
     DAT_CHATTY_GC = false,
+
+    /** Whether to spew to the console about map cache hits. */
+    DAT_CHATTY_MAP_CACHE = false,
 
     /** Whether to be paranoid about values in collections / records. */
     DAT_CONSTRUCTION_PARANOIA = false,
@@ -30,8 +35,54 @@ enum {
     /** The class index for class `Symbol`. */
     DAT_INDEX_SYMBOL = 2,
 
+    /**
+     * Number of entries in the map lookup cache. Probably best for this
+     * to be a prime number (to get better distribution of cache elements).
+     * In practice it looks like the theoretical best case is probably about
+     * 99.6% (that is, nearly every lookup is for a map/key pair that have
+     * been observed before). The size of the map cache is chosen to hit the
+     * point of diminishing returns.
+     */
+    DAT_MAP_CACHE_SIZE = 6007,
+
+    /** Largest code point to keep a cached single-character string for. */
+    DAT_MAX_CACHED_CHAR = 127,
+
+    /**
+     * Maximum number of items that can be `collect`ed or `filter`ed out
+     * of a generator, period.
+     */
+    DAT_MAX_GENERATOR_ITEMS_HARD = 50000,
+
+    /**
+     * Maximum number of items that can be `collect`ed or `filter`ed out
+     * of a generator, without resorting to heavyweight memory operations.
+     */
+    DAT_MAX_GENERATOR_ITEMS_SOFT = 1000,
+
+    /** Maximum number of immortal values allowed. */
+    DAT_MAX_IMMORTALS = 10000,
+
+    /** Maximum number of references on the stack. */
+    DAT_MAX_STACK = 100000,
+
+    /**
+     * Maximum size in characters of a string that can be handled
+     * on the stack, without resorting to heavyweight memory operations.
+     */
+    DAT_MAX_STRING_SOFT = 10000,
+
+    /** Maximum size in characters of a symbol name. */
+    DAT_MAX_SYMBOL_SIZE = 80,
+
     /** Whether to be paranoid about corruption checks. */
     DAT_MEMORY_PARANOIA = false,
+
+    /** Maximum (highest value) small int constant to keep. */
+    DAT_SMALL_INT_MAX = 700,
+
+    /** Minumum (lowest value) small int constant to keep. */
+    DAT_SMALL_INT_MIN = -300,
 
     /**
      * Maximum number of probes allowed before using a larger symbol
@@ -112,11 +163,8 @@ typedef struct {
 } ClassInfo;
 
 /**
- * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
- * In practice it looks like the theoretical best case is probably about
- * 71.75% (that is, nearly 3 of 4 lookups are for a map/key pair that have
- * been observed before). The size of the map cache is chosen to hit the
- * point of diminishing returns.
+ * Entry in the map cache. The cache is used to speed up calls to `mapFind`
+ * (see which for details).
  */
 typedef struct {
     /** Map to look up a key in. */
@@ -125,7 +173,7 @@ typedef struct {
     /** Key to look up. */
     zvalue key;
 
-    /** Result from `mapFind` (see which for details). */
+    /** Result from `mapFind`. */
     zint index;
 } MapCacheEntry;
 

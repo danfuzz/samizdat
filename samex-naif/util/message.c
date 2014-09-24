@@ -8,7 +8,8 @@
 #include <stdlib.h>
 
 #include "util.h"
-#include "zlimits.h"
+
+#include "impl.h"
 
 
 //

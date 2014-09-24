@@ -15,7 +15,6 @@
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "util.h"
-#include "zlimits.h"
 
 #include "impl.h"
 

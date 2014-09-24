@@ -95,6 +95,9 @@ Languages
   * Smalltalk-80: The Interactive Programming Environment (comprehensive
     manual and reference) &mdash;
     <http://stephane.ducasse.free.fr/FreeBooks/TheInteractiveProgrammingEnv/TheInteractiveProgrammingEnv.pdf>
+  * Classes and metaclasses (book chapter); a clear explanation of the
+    Smalltalk MOP &mdash;
+    <http://pharo.gforge.inria.fr/PBE1/PBE1ch14.html>
 
 * Subtext
   * Subtext language &mdash; <http://www.subtext-lang.org/>

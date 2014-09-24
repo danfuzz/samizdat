@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "type/define.h"
-#include "zlimits.h"
 
 #include "impl.h"
 
@@ -13,11 +12,6 @@
 //
 // Private Definitions
 //
-
-enum {
-    /** Whether to spew to the console about map cache hits. */
-    CHATTY_CACHEY = false
-};
 
 /** The cache of `mapFind` lookups. */
 static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
@@ -38,14 +32,14 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     // cache behavior.
     MapCacheEntry *entry = &mapCache[hash % DAT_MAP_CACHE_SIZE];
 
-    if (CHATTY_CACHEY) {
+    if (DAT_CHATTY_MAP_CACHE) {
         static int hits = 0;
         static int total = 0;
         if ((entry->map == map) && (entry->key == key)) {
             hits++;
         }
         total++;
-        if ((total % 10000000) == 0) {
+        if ((total % 1000000) == 0) {
             note("Map Cache: Hit rate %d/%d == %5.2f%%", hits, total,
                 (100.0 * hits) / total);
         }
