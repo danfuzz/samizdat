@@ -18,6 +18,9 @@ enum {
     /** Whether to spew to the console during gc. */
     DAT_CHATTY_GC = false,
 
+    /** Whether to spew to the console about map cache hits. */
+    DAT_CHATTY_MAP_CACHE = false,
+
     /** Whether to be paranoid about values in collections / records. */
     DAT_CONSTRUCTION_PARANOIA = false,
 

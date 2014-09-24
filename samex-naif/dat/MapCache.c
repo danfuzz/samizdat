@@ -14,11 +14,6 @@
 // Private Definitions
 //
 
-enum {
-    /** Whether to spew to the console about map cache hits. */
-    CHATTY_CACHEY = false
-};
-
 /** The cache of `mapFind` lookups. */
 static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
 
@@ -38,7 +33,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     // cache behavior.
     MapCacheEntry *entry = &mapCache[hash % DAT_MAP_CACHE_SIZE];
 
-    if (CHATTY_CACHEY) {
+    if (DAT_CHATTY_MAP_CACHE) {
         static int hits = 0;
         static int total = 0;
         if ((entry->map == map) && (entry->key == key)) {
