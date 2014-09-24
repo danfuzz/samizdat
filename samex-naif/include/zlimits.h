@@ -15,12 +15,6 @@ enum {
     /** Number of allocations between each forced gc. */
     DAT_ALLOCATIONS_PER_GC = 500000,
 
-    /**
-     * Number of entries in the map lookup cache. Probably best for this
-     * to be a prime number (to get better distribution of cache elements).
-     */
-    DAT_MAP_CACHE_SIZE = 70001,
-
     /** Largest code point to keep a cached single-character string for. */
     DAT_MAX_CACHED_CHAR = 127,
 

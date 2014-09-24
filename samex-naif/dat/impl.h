@@ -30,6 +30,16 @@ enum {
     /** The class index for class `Symbol`. */
     DAT_INDEX_SYMBOL = 2,
 
+    /**
+     * Number of entries in the map lookup cache. Probably best for this
+     * to be a prime number (to get better distribution of cache elements).
+     * In practice it looks like the theoretical best case is probably about
+     * 99.6% (that is, nearly every lookup is for a map/key pair that have
+     * been observed before). The size of the map cache is chosen to hit the
+     * point of diminishing returns.
+     */
+    DAT_MAP_CACHE_SIZE = 6007,
+
     /** Whether to be paranoid about corruption checks. */
     DAT_MEMORY_PARANOIA = false,
 
@@ -112,11 +122,8 @@ typedef struct {
 } ClassInfo;
 
 /**
- * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
- * In practice it looks like the theoretical best case is probably about
- * 71.75% (that is, nearly 3 of 4 lookups are for a map/key pair that have
- * been observed before). The size of the map cache is chosen to hit the
- * point of diminishing returns.
+ * Entry in the map cache. The cache is used to speed up calls to `mapFind`
+ * (see which for details).
  */
 typedef struct {
     /** Map to look up a key in. */
@@ -125,7 +132,7 @@ typedef struct {
     /** Key to look up. */
     zvalue key;
 
-    /** Result from `mapFind` (see which for details). */
+    /** Result from `mapFind`. */
     zint index;
 } MapCacheEntry;
 

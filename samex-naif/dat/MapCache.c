@@ -45,7 +45,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
             hits++;
         }
         total++;
-        if ((total % 10000000) == 0) {
+        if ((total % 1000000) == 0) {
             note("Map Cache: Hit rate %d/%d == %5.2f%%", hits, total,
                 (100.0 * hits) / total);
         }
