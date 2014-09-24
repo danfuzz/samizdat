@@ -6,7 +6,6 @@
 
 #include "type/Class.h"
 #include "type/Value.h"
-#include "zlimits.h"
 
 #include "impl.h"
 

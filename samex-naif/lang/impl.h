@@ -15,7 +15,6 @@
 #include "lang.h"
 #include "type/Class.h"
 #include "type/Symbol.h"
-#include "zlimits.h"
 
 
 /** Simple enumeration for all the evaluable node classes and symbols. */

@@ -5,7 +5,6 @@
 #include "type/Object.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
-#include "zlimits.h"
 
 #include "impl.h"
 
