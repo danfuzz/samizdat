@@ -164,8 +164,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 }
 
 // Documented in header.
-zvalue classFindMethodBySymbolIndex(zvalue cls, zint index) {
-    assertHasClassClass(cls);
+zvalue classFindMethodUnchecked(zvalue cls, zint index) {
     return getInfo(cls)->methods[index];
 }
 

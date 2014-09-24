@@ -147,10 +147,10 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 
 /**
  * Finds a method on a class, if bound. Returns the bound function if found
- * or `NULL` if not. Does not check to see if `index` is in the valid range
- * for a symbol index.
+ * or `NULL` if not. Does not check to see if `cls` is actually a class,
+ * and does not check if `index` is in the valid range for a symbol index.
  */
-zvalue classFindMethodBySymbolIndex(zvalue cls, zint index);
+zvalue classFindMethodUnchecked(zvalue cls, zint index);
 
 /**
  * Gets the index for a given class value. The given value *must* be a
