@@ -17,6 +17,24 @@
 #include "type/Symbol.h"
 
 
+/** Implementation limits. */
+enum {
+    /** Maximum number of formal arguments to a function. */
+    LANG_MAX_FORMALS = 10,
+
+    /**
+     * Maximum number of tokens in a given parse (which is the maximum
+     * number of characters for a tokenizer).
+     */
+    LANG_MAX_TOKENS = 100000,
+
+    /**
+     * Maximum number of characters in a tokenized string constant,
+     * identifier, or directive.
+     */
+    LANG_MAX_STRING_CHARS = 200
+};
+
 /** Simple enumeration for all the evaluable node classes and symbols. */
 typedef enum {
     EVAL_apply = 1,  // 1, so that it won't be a "sneaky default."

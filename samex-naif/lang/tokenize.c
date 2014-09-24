@@ -8,7 +8,6 @@
 #include "type/List.h"
 #include "type/String.h"
 #include "type/Symbol.h"
-#include "zlimits.h"
 
 #include "helpers.h"
 #include "impl.h"
