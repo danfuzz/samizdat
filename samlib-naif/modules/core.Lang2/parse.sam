@@ -1123,39 +1123,39 @@ parPexChoice := {:
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
-    @@"-":   SYMS::neg,
-    @@"#":   SYMS::get_size,
-    @@"^":   SYMS::reverse,
-    @@"!!!": SYMS::not
+    @"-":   SYMS::neg,
+    @"#":   SYMS::get_size,
+    @"^":   SYMS::reverse,
+    @"!!!": SYMS::not
 };
 
 ## For binary operators, map of token types to function name variable
 ## references.
 def BINARY_OPERATORS = {
-    @@"+":    SYMS::add,
-    @@"-":    SYMS::sub,
-    @@"*":    SYMS::mul,
-    @@"/":    SYMS::div,
-    @@"%":    SYMS::mod,
-    @@"//":   SYMS::divEu,
-    @@"%%":   SYMS::modEu,
-    @@"==":   SYMS::perEq,
-    @@"!=":   REFS::perNe,
-    @@"<":    REFS::perLt,
-    @@">":    REFS::perGt,
-    @@"<=":   REFS::perLe,
-    @@">=":   REFS::perGe,
-    @@"&&&":  SYMS::and,
-    @@"|||":  SYMS::or,
-    @@"^^^":  SYMS::xor,
-    @@"<<<":  SYMS::shl,
-    @@">>>":  SYMS::shr,
-    @@"\\==": REFS::eq,
-    @@"\\!=": REFS::ne,
-    @@"\\<":  REFS::lt,
-    @@"\\>":  REFS::gt,
-    @@"\\<=": REFS::le,
-    @@"\\>=": REFS::ge
+    @"+":    SYMS::add,
+    @"-":    SYMS::sub,
+    @"*":    SYMS::mul,
+    @"/":    SYMS::div,
+    @"%":    SYMS::mod,
+    @"//":   SYMS::divEu,
+    @"%%":   SYMS::modEu,
+    @"==":   SYMS::perEq,
+    @"!=":   REFS::perNe,
+    @"<":    REFS::perLt,
+    @">":    REFS::perGt,
+    @"<=":   REFS::perLe,
+    @">=":   REFS::perGe,
+    @"&&&":  SYMS::and,
+    @"|||":  SYMS::or,
+    @"^^^":  SYMS::xor,
+    @"<<<":  SYMS::shl,
+    @">>>":  SYMS::shr,
+    @"\\==": REFS::eq,
+    @"\\!=": REFS::ne,
+    @"\\<":  REFS::lt,
+    @"\\>":  REFS::gt,
+    @"\\<=": REFS::le,
+    @"\\>=": REFS::ge
 };
 
 ## Helper for parsing binary operator expressions, which puts together
@@ -1164,7 +1164,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     filterPump(opExList) { opEx ->
-        def resolvedOp = BINARY_OPERATORS.get(get_class(opEx::op));
+        def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
@@ -1223,7 +1223,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     fn transform(leftRef, opEx, rest*) {
-        def resolvedOp = BINARY_OPERATORS.get(get_class(opEx::op));
+        def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
 
         return ifIs { eq(rest, []) }
             { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
@@ -1494,7 +1494,7 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = UNARY_OPERATORS.get(get_class(operator));
+        def name = UNARY_OPERATORS.get(operator.get_name());
         { node -> makeCall(name, node) }
     }
 |
