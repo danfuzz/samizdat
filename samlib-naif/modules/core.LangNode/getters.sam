@@ -46,14 +46,14 @@ fn splitAtChar(s, ch) {
 ## Documented in spec.
 export fn get_baseName(source) {
     return ifSwitch(
-        { get_class(source) },
+        { source.get_name() },
         {
-            @@external: { . ->
+            @external: { . ->
                 def components = splitAtChar(source::name, ".");
                 reverseNth(components, 0)
             },
 
-            @@internal: { . ->
+            @internal: { . ->
                 def components = splitAtChar(source::name, "/");
                 def last = reverseNth(components, 0);
                 def parts = splitAtChar(last, ".");
@@ -65,13 +65,13 @@ export fn get_baseName(source) {
 ## Documented in spec.
 export fn get_definedNames(node) {
     return ifSwitch(
-        { get_class(node) },
+        { node.get_name() },
         {
-            @@export: { . ->
+            @export: { . ->
                 get_definedNames(node::value)
             },
 
-            @@importModuleSelection: { . ->
+            @importModuleSelection: { . ->
                 def select = ifValueOr { node::select }
                     { die("Cannot call `get_definedNames` on unresolved import.") };
 
@@ -83,10 +83,10 @@ export fn get_definedNames(node) {
                     { select }
             },
 
-            @@importModule:
-            @@importResource:
-            @@varDef:
-            @@varDefMutable: { . ->
+            @importModule:
+            @importResource:
+            @varDef:
+            @varDefMutable: { . ->
                 [node::name]
             }
         },

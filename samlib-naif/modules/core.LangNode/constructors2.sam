@@ -207,16 +207,16 @@ export fn makeCallThunks(function, values*) {
 ## Documented in spec.
 export fn makeDynamicImport(node) {
     return ifSwitch(
-        { get_class(node) },
+        { node.get_name() },
         {
-            @@importModule: { . ->
+            @importModule: { . ->
                 ## The translation is approximately
                 ## `def name = loadModule(source)`.
                 [makeVarDef(node::name,
                     makeCall(REFS::loadModule, makeLiteral(node::source)))]
             },
 
-            @@importModuleSelection: { . ->
+            @importModuleSelection: { . ->
                 ## The translation is along the same lines as for
                 ## `importModule` translations, except as a list of
                 ## statements, one per binding being imported, each one
@@ -233,7 +233,7 @@ export fn makeDynamicImport(node) {
                 }
             },
 
-            @@importResource: { . ->
+            @importResource: { . ->
                 ## The translation is approximately
                 ## `def name = loadResource(source, format)`.
                 [makeVarDef(node::name,

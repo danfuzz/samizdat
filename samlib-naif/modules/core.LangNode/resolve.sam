@@ -47,15 +47,15 @@ fn sourceString(source) {
 ## Documented in spec.
 export fn resolveImport(node, resolveFn) {
     return ifSwitch(
-        { get_class(node) },
+        { node.get_name() },
         {
-            @@importModule: { . ->
+            @importModule: { . ->
                 ## No need to modify, just validate.
                 resolveAndCheck(resolveFn, node::source);
                 node
             },
 
-            @@importModuleSelection: { . ->
+            @importModuleSelection: { . ->
                 ## We need to inspect the resolved innards, so keep the
                 ## resolved value (unlike the other related functions).
                 def resolved = resolveAndCheck(resolveFn, node::source);
@@ -88,7 +88,7 @@ export fn resolveImport(node, resolveFn) {
                     }
             },
 
-            @@importResource: { . ->
+            @importResource: { . ->
                 ## No need to modify, just validate. TODO: Validate.
                 node
             }
