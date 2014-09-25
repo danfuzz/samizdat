@@ -20,7 +20,7 @@
 
 #define DEF_RECORD(name, str) \
     zvalue RECNAME_##name = NULL; \
-    zvalue CLS_##name = NULL
+    zvalue RECCLS_##name = NULL
 
 #define DEF_TOKEN(name, str) \
     DEF_RECORD(name, str); \
@@ -52,12 +52,12 @@ MOD_INIT(lang_const) {
 
     #define DEF_RECORD(name, str) \
         RECNAME_##name = symbolFromUtf8(-1, str); \
-        CLS_##name = datImmortalize(makeRecordClass(RECNAME_##name));
+        RECCLS_##name = datImmortalize(makeRecordClass(RECNAME_##name));
 
     #define DEF_TOKEN(name, str) \
         DEF_RECORD(name, str); \
         TOK_##name = datImmortalize( \
-            makeRecord(CLS_##name, EMPTY_SYMBOL_TABLE));
+            makeRecord(RECCLS_##name, EMPTY_SYMBOL_TABLE));
 
     #include "const-def.h"
 
