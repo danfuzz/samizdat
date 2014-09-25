@@ -720,7 +720,7 @@ DEF_PARSE(unaryExpression) {
         if (hasClass(one, CLS_List)) {
             // Regular function call.
             result = makeCallOrApply(result, one);
-        } else if (hasClass(one, RECCLS_call)) {
+        } else if (recordEvalTypeIs(one, EVAL_call)) {
             // Method call.
             zvalue function = get(one, SYM_function);
             zvalue values = get(one, SYM_values);
@@ -729,7 +729,7 @@ DEF_PARSE(unaryExpression) {
             result = makeInterpolate(result);
         } else if (valEq(one, TOK_CH_QMARK)) {
             result = makeMaybeValue(result);
-        } else if (hasClass(one, RECCLS_literal)) {
+        } else if (recordEvalTypeIs(one, EVAL_literal)) {
             result = makeCallOrApply(SYMS(get), listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
@@ -812,7 +812,7 @@ DEF_PARSE(yieldOrNonlocal) {
     zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
     zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue name = hasClass(op, RECCLS_yield)
+    zvalue name = recordEvalTypeIs(op, EVAL_yield)
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
@@ -1352,7 +1352,7 @@ zvalue langParseProgram0(zvalue program) {
 
 // Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
-    if (hasClass(node, RECCLS_closure)) {
+    if (recordEvalTypeIs(node, EVAL_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);
     }

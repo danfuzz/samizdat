@@ -417,7 +417,7 @@ zvalue langLanguageOf0(zvalue string) {
     zvalue result = tokenizeAnyToken(&state);
 
     if ((result != NULL)
-        && hasClass(result, RECCLS_directive)
+        && recordEvalTypeIs(result, EVAL_directive)
         && valEq(get(result, SYM_name), SYM_language)) {
         return get(result, SYM_value);
     }
@@ -437,7 +437,7 @@ zvalue langTokenize0(zvalue string) {
         zvalue one = tokenizeAnyToken(&state);
         if (one == NULL) {
             break;
-        } else if (!hasClass(one, RECCLS_directive)) {
+        } else if (!recordEvalTypeIs(one, EVAL_directive)) {
             if (out >= LANG_MAX_TOKENS) {
                 die("Too many tokens.");
             }

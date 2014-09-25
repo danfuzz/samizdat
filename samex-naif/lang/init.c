@@ -23,7 +23,10 @@
 zevalType langSymbolMap[DAT_MAX_SYMBOLS];
 
 // This provides the non-inline version of this function.
-extern zevalType recordEvalType(zvalue node);
+extern zevalType recordEvalType(zvalue record);
+
+// This provides the non-inline version of this function.
+extern bool recordEvalTypeIs(zvalue record, zevalType type);
 
 // This provides the non-inline version of this function.
 extern zevalType symbolEvalType(zvalue symbol);
@@ -47,6 +50,7 @@ MOD_INIT(lang) {
     REC_MAP(apply);
     REC_MAP(call);
     REC_MAP(closure);
+    REC_MAP(directive);
     REC_MAP(fetch);
     REC_MAP(importModule);
     REC_MAP(importModuleSelection);
@@ -59,6 +63,7 @@ MOD_INIT(lang) {
     REC_MAP(varDef);
     REC_MAP(varDefMutable);
     REC_MAP(void);
+    REC_MAP(yield);
 
     SYM_MAP(CH_PLUS);
     SYM_MAP(CH_QMARK);
