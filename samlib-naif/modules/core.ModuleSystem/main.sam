@@ -123,7 +123,7 @@ fn checkExternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@external` but is improperly-formed, this dies
 ## with an error.
 fn checkExternalSource(source) {
-    ifNot { hasClass(source, @@external) }
+    ifNot { source.hasName(@external) }
         { return };
 
     def name = ifValueOr { source::name }
@@ -176,7 +176,7 @@ fn checkInternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@internal` but is improperly-formed, this dies
 ## with an error.
 fn checkInternalSource(source) {
-    ifNot { hasClass(source, @@internal) }
+    ifNot { source.hasName(@internal) }
         { return };
 
     def name = ifValueOr { source::name }
@@ -219,7 +219,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     ## a successfully-loaded result.
     ifValue { (loadedBox*).get(source) }
         { found ->
-            ifIs { hasClass(found, @@module) }
+            ifIs { found.hasName(@module) }
                 { return found };
             ifIs { eq(found, "notFound") }
                 { return };
@@ -237,9 +237,9 @@ fn resolveHelper(loadedBox, source, resolveFn) {
 
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
-    ifIs { hasClass(source, @@internal) }
+    ifIs { source.hasName(@internal) }
         { return "./".cat(source::name) };
-    ifIs { hasClass(source, @@external) }
+    ifIs { source.hasName(@external) }
         { return source::name };
 
     die("Bad module / resource `source`.")
@@ -568,7 +568,7 @@ fn runProgram(programFunc, args) {
 
     def result = optResult*;
 
-    ifIs { hasClass(result, @@module) }
+    ifIs { result.hasName(@module) }
         {
             ifValue { result::exports::main }
                 { main -> return? main(args*) }
