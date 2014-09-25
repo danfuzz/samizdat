@@ -855,7 +855,7 @@ zvalue withModuleDefs(zvalue node) {
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeRecord),
         listFrom2(
-            makeLiteral(RECCLS_module),
+            makeLiteral(SYM_module),
             makeCall(REFS(makeSymbolTable),
                 listFrom4(
                     makeLiteral(SYM_exports), yieldExports,

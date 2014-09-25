@@ -31,6 +31,6 @@ def KEYWORD_NAMES = [
 ## Documented in spec.
 export def KEYWORDS = @{}.cat(
     (filterAll(KEYWORD_NAMES) { name ->
-        @{(name): @(@@(name)){}}
+        @{(name): @(name){}}
     })*
 );

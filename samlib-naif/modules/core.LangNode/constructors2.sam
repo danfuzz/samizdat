@@ -481,7 +481,7 @@ export fn withModuleDefs(node) {
         { makeCall(REFS::makeSymbolTable, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeRecord,
-        makeLiteral(@@module),
+        makeLiteral(@module),
         makeCall(REFS::makeSymbolTable,
             SYMS::exports, yieldExports,
             SYMS::info,    yieldInfo));
