@@ -138,6 +138,11 @@ METH_IMPL_0(Record, get_name) {
 }
 
 // Documented in header.
+METH_IMPL_1(Record, hasName, name) {
+    return valEq(getInfo(ths)->name, name) ? ths : NULL;
+}
+
+// Documented in header.
 METH_IMPL_1(Record, totalEq, other) {
     // Note: `other` not guaranteed to be of same class.
 
@@ -173,6 +178,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
             METH_BIND(Record, get_name),
+            METH_BIND(Record, hasName),
             METH_BIND(Record, totalEq),
             METH_BIND(Record, totalOrder),
             NULL));

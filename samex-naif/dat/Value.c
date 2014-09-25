@@ -235,6 +235,7 @@ MOD_INIT(Value) {
     SYM_INIT(exports);
     SYM_INIT(gcMark);
     SYM_INIT(get_name);
+    SYM_INIT(hasName);
     SYM_INIT(imports);
     SYM_INIT(main);
     SYM_INIT(perEq);
@@ -278,6 +279,9 @@ SYM_DEF(gcMark);
 
 // Documented in header.
 SYM_DEF(get_name);
+
+// Documented in header.
+SYM_DEF(hasName);
 
 // Documented in header.
 SYM_DEF(imports);

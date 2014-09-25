@@ -15,6 +15,10 @@ Returns the data payload of the given record.
 
 Returns the name (tag) of the given record.
 
+#### `.hasName(name) -> record`
+
+Returns `this` if its name is as given, or void if not.
+
 
 ### Primitive Definitions
 
