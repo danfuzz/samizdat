@@ -25,19 +25,24 @@ extern zvalue FUN_Record_makeRecord;
 extern zvalue FUN_Record_makeRecordClass;
 
 /**
+ * Calls the method `dataOf()`.
+ */
+zvalue dataOf(zvalue value);
+
+/**
  * Returns a record with the given class and with the given optional data
  * payload (`NULL` indicating an empty payload). `cls` must be a record class.
  * The result is a value of the indicated `cls`. */
 zvalue makeRecord(zvalue cls, zvalue data);
 
 /**
- * Calls the method `dataOf()`.
- */
-zvalue dataOf(zvalue value);
-
-/**
  * Returns the class value for the record class with the given name.
  */
 zvalue makeRecordClass(zvalue name);
+
+/**
+ * Get the symbol index of the given `record`'s name.
+ */
+zint recNameIndex(zvalue record);
 
 #endif

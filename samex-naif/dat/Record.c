@@ -28,6 +28,9 @@ typedef struct {
     /** Record name. */
     zvalue name;
 
+    /** Name's symbol index. */
+    zint nameIndex;
+
     /** Data payload. */
     zvalue data;
 } RecordInfo;
@@ -62,9 +65,10 @@ zvalue makeRecord(zvalue cls, zvalue data) {
     }
 
     zvalue result = datAllocValue(cls, sizeof(RecordInfo));
-    RecordInfo *info = datPayload(result);
+    RecordInfo *info = getInfo(result);
 
     info->name = METH_CALL(get_name, cls);
+    info->nameIndex = symbolIndex(info->name);
     info->data = data;
 
     return result;
@@ -84,6 +88,12 @@ zvalue makeRecordClass(zvalue name) {
     theClasses[index] = result;
 
     return result;
+}
+
+// Documented in header.
+zint recNameIndex(zvalue record) {
+    assertHasClass(record, CLS_Record);
+    return getInfo(record)->nameIndex;
 }
 
 
