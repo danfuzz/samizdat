@@ -758,41 +758,45 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         }
     }
 
-    if (recordEvalTypeIs(node, EVAL_importModule)) {
-        // No conversion, just validation (done above).
-        return node;
-    } else if (recordEvalTypeIs(node, EVAL_importModuleSelection)) {
-        // Get the exports. When given a `NULL` `resolveFn`, this acts as if
-        // all sources resolve to an empty export map, and hence this node
-        // won't bind anything.
-        zvalue exports = EMPTY_LIST;
-        zvalue info = get(resolved, SYM_info);
-        if (info != NULL) {
-            exports = get(info, SYM_exports);
-        }
-
-        zvalue select = get(node, SYM_select);
-        if (select != NULL) {
-            // The selection is specified. So no modification needs to be
-            // done to the node, just validation, including of the import in
-            // general (above) and the particular selection (here).
-            zint size = get_size(select);
-            for (zint i = 0; i < size; i++) {
-                zvalue one = nth(select, i);
-                if (get(exports, one) == NULL) {
-                    die("Could not resolve import selection.");
-                }
-            }
+    switch (recordEvalType(node)) {
+        case EVAL_importModule: {
+            // No conversion, just validation (done above).
             return node;
-        } else {
-            // It's a wildcard select.
-            select = METH_CALL(keyList, exports);
-            return makeRecord(
-                RECCLS_importModuleSelection,
-                collPut(dataOf(node), SYM_select, select));
         }
-    } else {
-        die("Bad node type for `resolveImport`.");
+        case EVAL_importModuleSelection: {
+            // Get the exports. When given a `NULL` `resolveFn`, this acts as if
+            // all sources resolve to an empty export map, and hence this node
+            // won't bind anything.
+            zvalue exports = EMPTY_LIST;
+            zvalue info = get(resolved, SYM_info);
+            if (info != NULL) {
+                exports = get(info, SYM_exports);
+            }
+
+            zvalue select = get(node, SYM_select);
+            if (select != NULL) {
+                // The selection is specified. So no modification needs to be
+                // done to the node, just validation, including of the import in
+                // general (above) and the particular selection (here).
+                zint size = get_size(select);
+                for (zint i = 0; i < size; i++) {
+                    zvalue one = nth(select, i);
+                    if (get(exports, one) == NULL) {
+                        die("Could not resolve import selection.");
+                    }
+                }
+                return node;
+            } else {
+                // It's a wildcard select.
+                select = METH_CALL(keyList, exports);
+                return makeRecord(
+                    RECCLS_importModuleSelection,
+                    collPut(dataOf(node), SYM_select, select));
+            }
+        }
+        default: {
+            die("Bad node type for `resolveImport`.");
+        }
     }
 }
 
@@ -817,10 +821,18 @@ zvalue withModuleDefs(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
 
-        if (recordEvalTypeIs(s, EVAL_exportSelection)) {
-            continue;
-        } else if (recordEvalTypeIs(s, EVAL_export)) {
-            s = get(s, SYM_value);
+        switch (recordEvalType(s)) {
+            case EVAL_exportSelection: {
+                continue;
+            }
+            case EVAL_export: {
+                s = get(s, SYM_value);
+                break;
+            }
+            default: {
+                // The rest of the types are intentionally left un-handled.
+                break;
+            }
         }
 
         statements = listAppend(statements, s);
@@ -883,19 +895,18 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
             defNode = get(s, SYM_value);
         }
 
-        if (!(   recordEvalTypeIs(defNode, EVAL_importModule)
-              || recordEvalTypeIs(defNode, EVAL_importModuleSelection)
-              || recordEvalTypeIs(defNode, EVAL_importResource))) {
-            continue;
+        switch (recordEvalType(defNode)) {
+            case EVAL_importModule:
+            case EVAL_importModuleSelection:
+            case EVAL_importResource: {
+                zvalue resolved = resolveImport(defNode, resolveFn);
+                arr[i] = exported ? makeExport(resolved) : resolved;
+            }
+            default: {
+                // The rest of the types are intentionally left un-handled.
+                break;
+            }
         }
-
-        zvalue resolved = resolveImport(defNode, resolveFn);
-
-        if (exported) {
-            resolved = makeExport(resolved);
-        }
-
-        arr[i] = resolved;
     }
 
     zvalue converted = listFromArray(size, arr);
