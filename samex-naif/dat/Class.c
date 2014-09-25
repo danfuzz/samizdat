@@ -298,7 +298,7 @@ METH_IMPL_0(Class, get_parent) {
 
 // Documented in header.
 METH_IMPL_1(Class, hasName, name) {
-    return valEq(getInfo(ths)->name, name) ? ths : NULL;
+    return symbolEq(getInfo(ths)->name, name) ? ths : NULL;
 }
 
 // Documented in header.

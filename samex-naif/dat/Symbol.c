@@ -200,6 +200,16 @@ zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
 }
 
 // Documented in header.
+bool symbolEq(zvalue symbol1, zvalue symbol2) {
+    assertHasClass(symbol1, CLS_Symbol);
+    assertHasClass(symbol2, CLS_Symbol);
+
+    // It's safe to use `==` since by definition two different symbol
+    // references must be different symbols
+    return symbol1 == symbol2;
+}
+
+// Documented in header.
 zvalue symbolFromIndex(zint index) {
     if ((index < 0) || (index >= theNextIndex)) {
         die("Bad index for symbol: %lld", index);

@@ -139,7 +139,7 @@ METH_IMPL_0(Record, get_name) {
 
 // Documented in header.
 METH_IMPL_1(Record, hasName, name) {
-    return valEq(getInfo(ths)->name, name) ? ths : NULL;
+    return symbolEq(getInfo(ths)->name, name) ? ths : NULL;
 }
 
 // Documented in header.
