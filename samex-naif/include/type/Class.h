@@ -17,9 +17,6 @@
 /** Class value for in-model class `Class`. */
 extern zvalue CLS_Class;
 
-/** Method `.get_name()`: Documented in spec. */
-SYM_DECL(get_name);
-
 /** Method `.get_parent()`: Documented in spec. */
 SYM_DECL(get_parent);
 
@@ -46,16 +43,6 @@ bool classHasParent(zvalue cls, zvalue parent);
  * Returns `true` iff the given class has the given secret.
  */
 bool classHasSecret(zvalue cls, zvalue secret);
-
-/**
- * Returns the unique index for the given class.
- */
-zint classIndex(zvalue cls);
-
-/**
- * Returns the unique index for the class of the given value.
- */
-zint get_classIndex(zvalue value);
 
 /**
  * Returns true iff the class of the given value (that is, `get_class(value)`)

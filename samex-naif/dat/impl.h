@@ -26,15 +26,6 @@ enum {
     /** Whether to be paranoid about values in collections / records. */
     DAT_CONSTRUCTION_PARANOIA = false,
 
-    /** The class index for class `Builtin`. */
-    DAT_INDEX_BUILTIN = 4,
-
-    /** The class index for class `Jump`. */
-    DAT_INDEX_JUMP = 5,
-
-    /** The class index for class `Symbol`. */
-    DAT_INDEX_SYMBOL = 2,
-
     /**
      * Number of entries in the map lookup cache. Probably best for this
      * to be a prime number (to get better distribution of cache elements).
@@ -105,6 +96,8 @@ enum {
 
 /**
  * Common fields across all values. Used as a header for other types.
+ *
+ * **Note:** This must match the definition of `DatPartialHeader` in `dat.h`.
  */
 typedef struct DatHeader {
     /**
@@ -141,12 +134,6 @@ typedef struct {
 
     /** Access secret of the class. Optional, and arbitrary if present. */
     zvalue secret;
-
-    /**
-     * Class identifier / index. Assigned upon initialization, in sequential
-     * order.
-     */
-    zint classId;
 
     /**
      * Whether this class has any subclasses. If so, it's invalid to

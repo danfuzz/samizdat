@@ -185,7 +185,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
 
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
-    switch (classEvalType(node)) {
+    switch (recordEvalType(node)) {
         case EVAL_apply: { return true;  }
         case EVAL_call:  { return true;  }
         case EVAL_fetch: { return true;  }
@@ -284,7 +284,7 @@ zvalue get_definedNames(zvalue node) {
 
 // Documented in spec.
 bool isExpression(zvalue node) {
-    switch (classEvalType(node)) {
+    switch (recordEvalType(node)) {
         case EVAL_apply:   { return true;  }
         case EVAL_call:    { return true;  }
         case EVAL_closure: { return true;  }

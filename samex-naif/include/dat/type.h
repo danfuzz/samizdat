@@ -33,12 +33,4 @@ typedef struct {
     zvalue value;
 } zmapping;
 
-enum {
-    /**
-     * (Private) Size of the `DatHeader` struct; used so that `datPayload`
-     * can be an inline function.
-     */
-    DAT_HEADER_SIZE = (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2)
-};
-
 #endif

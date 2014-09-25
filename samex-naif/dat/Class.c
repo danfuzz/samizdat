@@ -31,9 +31,6 @@ typedef enum {
     OPAQUE_CLASS
 } ClassCategory;
 
-/** Next class sequence number to assign. */
-static zint theNextClassId = 0;
-
 /** The `secret` value used for all core classes. */
 static zvalue theCoreSecret = NULL;
 
@@ -72,9 +69,7 @@ static void assertHasClassClass(zvalue value) {
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     assertHasClass(name, CLS_Symbol);
 
-    if (theNextClassId == DAT_MAX_CLASSES) {
-        die("Too many classes!");
-    } else if ((parent == NULL) && !classEqUnchecked(cls, CLS_Value)) {
+    if ((parent == NULL) && !classEqUnchecked(cls, CLS_Value)) {
         die("Every class but `Value` needs a parent.");
     }
 
@@ -82,10 +77,8 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->parent = parent;
     info->name = name;
     info->secret = secret;
-    info->classId = theNextClassId;
     info->hasSubclasses = false;
 
-    theNextClassId++;
     datImmortalize(cls);
 
     if (parent != NULL) {
@@ -210,17 +203,6 @@ bool classHasSecret(zvalue cls, zvalue secret) {
     // one whose `totalEq` method is used. The given `secret` can't be
     // trusted to behave.
     return valEq(info->secret, secret);
-}
-
-// Documented in header.
-zint classIndex(zvalue cls) {
-    assertHasClassClass(cls);
-    return getInfo(cls)->classId;
-}
-
-// Documented in header.
-zint get_classIndex(zvalue value) {
-    return getInfo(get_class(value))->classId;
 }
 
 // Documented in header.
@@ -354,9 +336,10 @@ METH_IMPL_1(Class, totalOrder, other) {
  * Define `objectModel` as a module, as separate from the `Class` class.
  */
 MOD_INIT(objectModel) {
-    // Make sure that the "fake" header is sized the same as the real one.
-    if (DAT_HEADER_SIZE != sizeof(DatHeader)) {
-        die("Mismatched value header size: should be %lu", sizeof(DatHeader));
+    // Make sure that the "exposed" header is sized the same as the real one.
+    if (sizeof(DatHeaderExposed) != sizeof(DatHeader)) {
+        die("Mismatched exposed header size: should be %lu",
+            sizeof(DatHeader));
     }
 
     CLS_Class = allocClass();
@@ -381,7 +364,6 @@ MOD_INIT(objectModel) {
 MOD_INIT(Class) {
     MOD_USE(Value);
 
-    SYM_INIT(get_name);
     SYM_INIT(get_parent);
 
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
@@ -398,9 +380,6 @@ MOD_INIT(Class) {
 
 // Documented in header.
 zvalue CLS_Class = NULL;
-
-// Documented in header.
-SYM_DEF(get_name);
 
 // Documented in header.
 SYM_DEF(get_parent);

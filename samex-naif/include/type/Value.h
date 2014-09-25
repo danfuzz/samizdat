@@ -39,6 +39,9 @@ SYM_DECL(exports);
 /** Symbol `imports`. Same comment applies as with `exports`, above. */
 SYM_DECL(imports);
 
+/** Method `.get_name()`: Documented in spec. */
+SYM_DECL(get_name);
+
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
  *
@@ -67,12 +70,6 @@ SYM_DECL(totalEq);
 
 /** Method `.totalOrder(other)`: Documented in spec. */
 SYM_DECL(totalOrder);
-
-/**
- * Gets the class of the given value. `value` must be a valid value (in
- * particular, non-`NULL`). The return value is of class `Class`.
- */
-zvalue get_class(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller

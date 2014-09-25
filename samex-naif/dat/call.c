@@ -63,30 +63,25 @@ static char *callReporter(void *state) {
  * nor debug and local frame setup/teardown.
  */
 static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
-    zint index = get_classIndex(function);
+    zvalue funCls = get_class(function);
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or
     // `Symbol`.
-    switch (index) {
-        case DAT_INDEX_BUILTIN: {
-            return builtinCall(function, argCount, args);
-        }
-        case DAT_INDEX_JUMP: {
-            return jumpCall(function, argCount, args);
-        }
-        case DAT_INDEX_SYMBOL: {
-            return symbolCall(function, argCount, args);
-        }
-        default: {
-            // The original `function` is some kind of higher layer function.
-            // Use method dispatch to get to it: Prepend `function` as a new
-            // first argument, and call the method `call` via its symbol.
-            zvalue newArgs[argCount + 1];
-            newArgs[0] = function;
-            utilCpy(zvalue, &newArgs[1], args, argCount);
-            return symbolCall(SYM_NAME(call), argCount + 1, newArgs);
-        }
+    if (funCls == CLS_Symbol) {
+        return symbolCall(function, argCount, args);
+    } else if (funCls == CLS_Builtin) {
+        return builtinCall(function, argCount, args);
+    } else if (funCls == CLS_Jump) {
+        return jumpCall(function, argCount, args);
+    } else {
+        // The original `function` is some kind of higher layer function.
+        // Use method dispatch to get to it: Prepend `function` as a new
+        // first argument, and call the method `call` via its symbol.
+        zvalue newArgs[argCount + 1];
+        newArgs[0] = function;
+        utilCpy(zvalue, &newArgs[1], args, argCount);
+        return symbolCall(SYM_NAME(call), argCount + 1, newArgs);
     }
 }
 
@@ -201,17 +196,4 @@ MOD_INIT(call) {
     MOD_USE(Builtin);
     MOD_USE(Jump);
     MOD_USE(Symbol);
-
-    // Make sure that the enum constants match up with what got assigned here.
-    // If not, `funCall` will break.
-    if (classIndex(CLS_Builtin) != DAT_INDEX_BUILTIN) {
-        die("Mismatched index for `Builtin`: should be %lld",
-            classIndex(CLS_Builtin));
-    } else if (classIndex(CLS_Jump) != DAT_INDEX_JUMP) {
-        die("Mismatched index for `Jump`: should be %lld",
-            classIndex(CLS_Jump));
-    } else if (classIndex(CLS_Symbol) != DAT_INDEX_SYMBOL) {
-        die("Mismatched index for `Symbol`: should be %lld",
-            classIndex(CLS_Symbol));
-    }
 }
