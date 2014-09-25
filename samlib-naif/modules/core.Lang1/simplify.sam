@@ -69,7 +69,7 @@ fn convertPex(node, formals) {
                 ifValues(
                     [
                         { eq(fullClosure::statements, []) },
-                        { . -> hasClass(fullClosure::yield, @@literal) }
+                        { . -> fullClosure::yield.hasName(@literal) }
                     ],
                     { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) },
                     { makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure)) }
@@ -101,7 +101,7 @@ fn convertPex(node, formals) {
             @@sequence: { . ->
                 ## Extract the formals out of any `varDef` nodes.
                 def newFormals = filterAll(node::pexes) { pex ->
-                    ifIs { hasClass(pex, @@varDef) }
+                    ifIs { pex.hasName(@varDef) }
                         { {name: pex::name} }
                         { {} }
                 };
@@ -111,7 +111,7 @@ fn convertPex(node, formals) {
                 def convertedPexes =
                     filterAll(makeOpenRange(0), node::pexes)
                         { n, pex ->
-                            def subPex = ifIs { hasClass(pex, @@varDef) }
+                            def subPex = ifIs { pex.hasName(@varDef) }
                                 { pex::value }
                                 { pex };
                             convertPex(subPex,
@@ -243,7 +243,7 @@ fn convertPexIn(node) {
 export fn simplify(expressionNode, resolveFn) {
     def converted = convertPexIn(expressionNode);
 
-    return ifIs { hasClass(converted, @@closure) }
+    return ifIs { converted.hasName(@closure) }
         { withModuleDefs(withResolvedImports(converted, resolveFn)) }
         { converted }
 };

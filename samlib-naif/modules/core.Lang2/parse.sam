@@ -1434,7 +1434,7 @@ def parRangeBody = {:
     |
         ## The limit is mandatory for exclusive ranges.
         {
-            ifIs { hasClass(op, @@"..") }
+            ifIs { op.hasName(@"..") }
                 { [] }
         }
     )
@@ -1442,7 +1442,7 @@ def parRangeBody = {:
     optIncrement = (@by parExpression)?
 
     {
-        ifIs { hasClass(op, @@"..!") }
+        ifIs { op.hasName(@"..!") }
             {
                 makeCall(
                     REFS::Range_makeExclusiveRange,
@@ -1546,7 +1546,7 @@ def parIndexPostfix = {:
             )
 
             {
-                def funcRef = ifIs { hasClass(op, @@"..") }
+                def funcRef = ifIs { op.hasName(@"..") }
                     { SYMS::sliceInclusive }
                     { SYMS::sliceExclusive };
                 def startNode = start::value;
@@ -1557,7 +1557,7 @@ def parIndexPostfix = {:
             ## At least one of start or end is `fromEnd`, so we have to
             ## use `sliceGeneral`.
             {
-                def style = ifIs { hasClass(op, @@"..") }
+                def style = ifIs { op.hasName(@"..") }
                     { SYMS::inclusive }
                     { SYMS::exclusive };
 

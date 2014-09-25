@@ -235,8 +235,11 @@ fn processStringParts(parts) {
     $Generator::filterPump(parts) { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
-        ifIs { hasClass(part, @@error) }
-            { return part };
+        ifIs { hasClass(part, Record) }
+            {
+                ifIs { part.hasName(@error) }
+                    { return part }
+            };
 
         ifIs { eq(elems, []) }
             {
