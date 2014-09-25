@@ -46,19 +46,19 @@ fn withFinalBindings(orig, more) {
 ## Expands the given pex node into an expression node.
 fn convertPex(node, formals) {
     return ifSwitch(
-        { get_class(node) },
+        { node.get_name() },
         {
-            @@any: { . ->
+            @any: { . ->
                 REFS::Peg_any
             },
 
-            @@choice: { . ->
+            @choice: { . ->
                 def convertedPexes = filterAll(node::pexes)
                     { pex -> convertPex(pex, formals) };
                 makeCall(REFS::Peg_makeChoice, convertedPexes*)
             },
 
-            @@code: { . ->
+            @code: { . ->
                 ## Use the lexical `formals` context to make a regular closure
                 ## node, and just convert that. As a special case, notice if
                 ## the closure is just a yield of a literal, and convert that
@@ -76,29 +76,29 @@ fn convertPex(node, formals) {
                 )
             },
 
-            @@empty: { . ->
+            @empty: { . ->
                 REFS::Peg_empty
             },
 
-            @@lookaheadFailure: { . ->
+            @lookaheadFailure: { . ->
                 makeCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
             },
 
-            @@lookaheadSuccess: { . ->
+            @lookaheadSuccess: { . ->
                 makeCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
             },
 
-            @@opt: { . ->
+            @opt: { . ->
                 makeCallPex(REFS::Peg_makeRepeat,
                     node, formals, LITS::INT_0, LITS::INT_1)
             },
 
-            @@plus: { . ->
+            @plus: { . ->
                 makeCallPex(REFS::Peg_makeRepeat,
                     node, formals, LITS::INT_1)
             },
 
-            @@sequence: { . ->
+            @sequence: { . ->
                 ## Extract the formals out of any `varDef` nodes.
                 def newFormals = filterAll(node::pexes) { pex ->
                     ifIs { pex.hasName(@varDef) }
@@ -121,15 +121,15 @@ fn convertPex(node, formals) {
                 makeCall(REFS::Peg_makeSequence, convertedPexes*)
             },
 
-            @@star: { . ->
+            @star: { . ->
                 makeCallPex(REFS::Peg_makeRepeat, node, formals)
             },
 
-            @@string: { . ->
+            @string: { . ->
                 makeCallLiterals(REFS::Peg_makeString, node::value)
             },
 
-            @@thunk: { . ->
+            @thunk: { . ->
                 ## Use the lexical `formals` context to make a regular closure
                 ## node, and just convert that.
                 def closure = makeFullClosure(@{
@@ -141,20 +141,20 @@ fn convertPex(node, formals) {
                 makeCall(REFS::Peg_makeParserThunk, convertedClosure)
             },
 
-            @@token: { . ->
+            @token: { . ->
                 makeCallLiterals(REFS::Peg_makeToken, node::value)
             },
 
-            @@tokenSet: { . ->
+            @tokenSet: { . ->
                 makeCallLiterals(REFS::Peg_makeTokenSet, node::values*)
             },
 
-            @@tokenSetComplement: { . ->
+            @tokenSetComplement: { . ->
                 makeCallLiterals(REFS::Peg_makeTokenSetComplement,
                     node::values*)
             },
 
-            @@varRef: { . ->
+            @varRef: { . ->
                 ## `varRef` in the context of a pex just translates to a
                 ## variable fetch of the same name in the context of an
                 ## expression / statement.
@@ -167,47 +167,47 @@ fn convertPex(node, formals) {
 ## 0 node.
 fn convertPexIn(node) {
     return ifSwitch(
-        { get_class(node) },
+        { node.get_name() },
         {
-            @@apply: { . ->
+            @apply: { . ->
                 def function = convertPexIn(node::function);
                 def values = convertPexIn(node::values);
 
                 withFinalBindings(node, @{function, values});
             },
 
-            @@call: { . ->
+            @call: { . ->
                 def function = convertPexIn(node::function);
                 def values = convertPexInList(node::values);
 
                 withFinalBindings(node, @{function, values});
             },
 
-            @@closure: { . ->
+            @closure: { . ->
                 def statements = convertPexInList(node::statements);
                 def yieldNode = convertPexIn(node::yield);
 
                 withBindings(node, @{statements, yield: yieldNode})
             },
 
-            @@fetch: { . ->
+            @fetch: { . ->
                 def target = convertPexIn(node::target);
                 withFinalBindings(node, @{target})
             },
 
-            @@parser: { . ->
+            @parser: { . ->
                 ## This is where the juicy stuff happens!
                 makeCallPex(REFS::Peg_makeMainSequence, node, [])
             },
 
-            @@store: { . ->
+            @store: { . ->
                 def target = convertPexIn(node::target);
                 def value = convertPexIn(node::value);
                 withFinalBindings(node, @{target, value})
             },
 
-            @@varDef:
-            @@varDefMutable: { . ->
+            @varDef:
+            @varDefMutable: { . ->
                 ifValue { node::value }
                     { value ->
                         withBindings(node, @{value: convertPexIn(value)})
@@ -215,20 +215,20 @@ fn convertPexIn(node) {
                     { node }
             },
 
-            @@export:
-            @@maybe:
-            @@noYield: { . ->
+            @export:
+            @maybe:
+            @noYield: { . ->
                 def value = convertPexIn(node::value);
                 withBindings(node, @{value})
             },
 
-            @@exportSelection:
-            @@importModule:
-            @@importModuleSelection:
-            @@importResource:
-            @@literal:
-            @@varRef:
-            @@void: { . ->
+            @exportSelection:
+            @importModule:
+            @importModuleSelection:
+            @importResource:
+            @literal:
+            @varRef:
+            @void: { . ->
                 node
             }
         })
