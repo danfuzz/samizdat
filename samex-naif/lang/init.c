@@ -23,7 +23,7 @@
 zevalType langSymbolMap[DAT_MAX_SYMBOLS];
 
 // This provides the non-inline version of this function.
-extern zevalType classEvalType(zvalue node);
+extern zevalType recordEvalType(zvalue node);
 
 // This provides the non-inline version of this function.
 extern zevalType symbolEvalType(zvalue symbol);

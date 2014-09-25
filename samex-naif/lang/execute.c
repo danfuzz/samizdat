@@ -169,7 +169,7 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    switch (classEvalType(e)) {
+    switch (recordEvalType(e)) {
         case EVAL_apply:    { return execApply(frame, e);   }
         case EVAL_call:     { return execCall(frame, e);    }
         case EVAL_closure:  { return execClosure(frame, e); }
@@ -188,7 +188,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
  * Executes a single `statement` form. Works for `expression` forms too.
  */
 static void execStatement(Frame *frame, zvalue statement) {
-    switch (classEvalType(statement)) {
+    switch (recordEvalType(statement)) {
         case EVAL_importModule:          { execImport(frame, statement);           break; }
         case EVAL_importModuleSelection: { execImport(frame, statement);           break; }
         case EVAL_importResource:        { execImport(frame, statement);           break; }
@@ -205,7 +205,7 @@ static void execStatement(Frame *frame, zvalue statement) {
 
 // Documented in header.
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
-    switch (classEvalType(e)) {
+    switch (recordEvalType(e)) {
         case EVAL_maybe: { return execMaybe(frame, e);      }
         case EVAL_void:  { return NULL;                     }
         default:         { return execExpression(frame, e); }
