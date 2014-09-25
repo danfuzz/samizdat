@@ -720,19 +720,30 @@ DEF_PARSE(unaryExpression) {
         if (hasClass(one, CLS_List)) {
             // Regular function call.
             result = makeCallOrApply(result, one);
-        } else if (recordEvalTypeIs(one, EVAL_call)) {
-            // Method call.
-            zvalue function = get(one, SYM_function);
-            zvalue values = get(one, SYM_values);
-            result = makeCallOrApply(function, listPrepend(result, values));
-        } else if (recordEvalTypeIs(one, EVAL_CH_STAR)) {
-            result = makeInterpolate(result);
-        } else if (recordEvalTypeIs(one, EVAL_CH_QMARK)) {
-            result = makeMaybeValue(result);
-        } else if (recordEvalTypeIs(one, EVAL_literal)) {
-            result = makeCallOrApply(SYMS(get), listFrom2(result, one));
-        } else {
-            die("Unexpected postfix.");
+        } else switch (recordEvalType(one)) {
+            case EVAL_call: {
+                // Method call.
+                zvalue function = get(one, SYM_function);
+                zvalue values = get(one, SYM_values);
+                result = makeCallOrApply(function,
+                    listPrepend(result, values));
+                break;
+            }
+            case EVAL_CH_STAR: {
+                result = makeInterpolate(result);
+                break;
+            }
+            case EVAL_CH_QMARK: {
+                result = makeMaybeValue(result);
+                break;
+            }
+            case EVAL_literal: {
+                result = makeCallOrApply(SYMS(get), listFrom2(result, one));
+                break;
+            }
+            default: {
+                die("Unexpected postfix.");
+            }
         }
     }
 
