@@ -725,9 +725,9 @@ DEF_PARSE(unaryExpression) {
             zvalue function = get(one, SYM_function);
             zvalue values = get(one, SYM_values);
             result = makeCallOrApply(function, listPrepend(result, values));
-        } else if (valEq(one, TOK_CH_STAR)) {
+        } else if (recordEvalTypeIs(one, EVAL_CH_STAR)) {
             result = makeInterpolate(result);
-        } else if (valEq(one, TOK_CH_QMARK)) {
+        } else if (recordEvalTypeIs(one, EVAL_CH_QMARK)) {
             result = makeMaybeValue(result);
         } else if (recordEvalTypeIs(one, EVAL_literal)) {
             result = makeCallOrApply(SYMS(get), listFrom2(result, one));
