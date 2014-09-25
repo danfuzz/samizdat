@@ -25,6 +25,9 @@ static zvalue theClasses[DAT_MAX_SYMBOLS];
  * Payload data for all records.
  */
 typedef struct {
+    /** Record name. */
+    zvalue name;
+
     /** Data payload. */
     zvalue data;
 } RecordInfo;
@@ -59,7 +62,10 @@ zvalue makeRecord(zvalue cls, zvalue data) {
     }
 
     zvalue result = datAllocValue(cls, sizeof(RecordInfo));
-    ((RecordInfo *) datPayload(result))->data = data;
+    RecordInfo *info = datPayload(result);
+
+    info->name = METH_CALL(get_name, cls);
+    info->data = data;
 
     return result;
 }
@@ -104,7 +110,10 @@ METH_IMPL_0(Record, dataOf) {
 
 // Documented in header.
 METH_IMPL_0(Record, gcMark) {
-    datMark(getInfo(ths)->data);
+    RecordInfo *info = getInfo(ths);
+
+    datMark(info->name);
+    datMark(info->data);
     return NULL;
 }
 
@@ -116,7 +125,7 @@ METH_IMPL_1(Record, get, key) {
 
 // Documented in header.
 METH_IMPL_0(Record, get_name) {
-    return METH_CALL(get_name, get_class(ths));
+    return getInfo(ths)->name;
 }
 
 // Documented in header.
