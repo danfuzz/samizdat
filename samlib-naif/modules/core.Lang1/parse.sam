@@ -397,7 +397,7 @@ def parYieldOrNonlocal = makeMainSequence(
     makeRepeat(makeToken(@@"?"), 0, 1),
     makeChoice(
         makeSequence(
-            makeCode { op, . -> hasClass(op, @@yield) },
+            makeCode { op, . -> op.hasName(@yield) },
             makeChoice(
                 makeSequence(makeToken(@@"/"), parVarLvalue),
                 makeResult(@yield{}))),

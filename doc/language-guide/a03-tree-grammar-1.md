@@ -534,7 +534,7 @@ def parYieldOrNonlocal = {:
     optQuest = @"?"?
 
     name = (
-        { hasClass(op, @@yield) }
+        { op.hasName(@yield) }
         (
             @"/"
             parVarLvalue
