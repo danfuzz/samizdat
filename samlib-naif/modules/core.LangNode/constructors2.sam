@@ -25,7 +25,7 @@ import ./refs :: REFS;
 fn expandYield(table) {
     def yieldNode = ifValueOr { table::yield } { return };
 
-    ifNot { hasClass(yieldNode, @@nonlocalExit) } { return yieldNode };
+    ifNot { yieldNode.hasName(@nonlocalExit) } { return yieldNode };
 
     def function = yieldNode::function;
     def value = yieldNode::value;
@@ -35,17 +35,17 @@ fn expandYield(table) {
     ## exit's `value` directly.
     ifValues(
         [
-            { -> hasClass(function, @@fetch) },
-            { . -> hasClass(function::target, @@varRef) },
+            { -> function.hasName(@fetch) },
+            { . -> function::target.hasName(@varRef) },
             { ., . -> table::yieldDef },
             { ., target, yieldDef -> eq(target::name, yieldDef) }
         ],
         { ., ., ., . -> return value });
 
     def exitCall = ifValueOr
-        { ifIs { hasClass(value, @@void) } { makeCall(function) } }
+        { ifIs { value.hasName(@void) } { makeCall(function) } }
         {
-            ifIs { hasClass(value, @@maybe) }
+            ifIs { value.hasName(@maybe) }
                 {
                     makeCallOrApply(function,
                         makeInterpolate(makeMaybeValue(value::value)))
@@ -86,7 +86,7 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
     };
 
     filterPump(mappings) { one ->
-        ifIs { hasClass(one, @@mapping) }
+        ifIs { one.hasName(@mapping) }
             {
                 def keys = one::keys;
                 def value = one::value;
@@ -314,7 +314,7 @@ export fn makeImport(baseData) {
     ifIs { data::format }
         {
             ## It's a resource.
-            ifIs { hasClass(data::source, @@external) }
+            ifIs { data::source.hasName(@external) }
                 { die("Cannot import external resource.") };
             return @importResource(data)
         };
@@ -355,24 +355,24 @@ export fn makeInfoTable(node) {
 
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
-        ifIs { hasClass(s, @@importModule) }
+        ifIs { s.hasName(@importModule) }
             { addToImports(s::source, [@module]) };
-        ifIs { hasClass(s, @@importModuleSelection) }
+        ifIs { s.hasName(@importModuleSelection) }
             {
                 def names = ifValueOr { s::select }
                     { die("Cannot call `makeInfoTable` on unresolved import.") };
                 addToImports(s::source, names)
             };
-        ifIs { hasClass(s, @@importResource) }
+        ifIs { s.hasName(@importResource) }
             { addToResources(s::source, s::format) };
     };
 
     ## The filter is just being used as a for-each loop. The direct
     ## result is ignored.
     filterAll(statements) { s ->
-        ifIs { hasClass(s, @@exportSelection) }
+        ifIs { s.hasName(@exportSelection) }
             { addToExports(s::select) };
-        ifIs { hasClass(s, @@export) }
+        ifIs { s.hasName(@export) }
             {
                 addToExports(get_definedNames(s));
                 handleImport(s::value)
@@ -430,9 +430,9 @@ export fn withDynamicImports(node) {
 
     def converted = filterAll(rawStatements) { s /out ->
         ifValueOr
-            { hasClass(s, @@importModule) }
-            { hasClass(s, @@importModuleSelection) }
-            { hasClass(s, @@importResource) }
+            { s.hasName(@importModule) }
+            { s.hasName(@importModuleSelection) }
+            { s.hasName(@importResource) }
             {
                 ## Not an `import*`.
                 yield /out [s]
@@ -461,10 +461,10 @@ export fn withModuleDefs(node) {
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
     def statements = filterAll(rawStatements) { s /out ->
-        ifIs { hasClass(s, @@exportSelection) }
+        ifIs { s.hasName(@exportSelection) }
             { yield /out };
 
-        yield ifIs { hasClass(s, @@export) }
+        yield ifIs { s.hasName(@export) }
             { s::value }
             { s }
     };
@@ -500,7 +500,7 @@ export fn withoutTops(node) {
 
     ## This is a collation of all the forward declarations.
     def tops = filterAll(rawStatements) { s ->
-        def defNode = ifIs { hasClass(s, @@export) }
+        def defNode = ifIs { s.hasName(@export) }
             { s::value }
             { s };
 
@@ -510,7 +510,7 @@ export fn withoutTops(node) {
 
     ## These are the one-for-one replacements for the original `statements`.
     def mains = filterAll(rawStatements) { s ->
-        def defNode = ifIs { hasClass(s, @@export) }
+        def defNode = ifIs { s.hasName(@export) }
             { s::value }
             { s };
 
@@ -521,7 +521,7 @@ export fn withoutTops(node) {
 
     ## This lists all the exported variables that were transformed above.
     def exports = filterAll(rawStatements) { s /out ->
-        ifNot { hasClass(s, @@export) }
+        ifNot { s.hasName(@export) }
             { yield /out };
 
         def defNode = s::value;

@@ -20,7 +20,7 @@ import ./getters :: *;
 fn resolveAndCheck(resolveFn, source) {
     return ifValue { resolveFn(source) }
         { result ->
-            ifNot { hasClass(result, @@module) }
+            ifNot { result.hasName(@module) }
                 { die("Invalid resolution result (not a `@module`)") };
             result
         }
@@ -31,9 +31,9 @@ fn resolveAndCheck(resolveFn, source) {
 ## intentionally more verbose than the equivalent (internal) function
 ## in `core.ModuleSystem`.
 fn sourceString(source) {
-    ifIs { hasClass(source, @@internal) }
+    ifIs { source.hasName(@internal) }
         { return "internal ./".cat(source::name) };
-    ifIs { hasClass(source, @@external) }
+    ifIs { source.hasName(@external) }
         { return "external ".cat(source::name) };
 
     return "weird source ".cat($Format::source(source))
@@ -56,19 +56,20 @@ export fn resolveImport(node, resolveFn) {
             },
 
             @@importModuleSelection: { . ->
-                ## We need to inspect the resolved innards, so keep the resolved value
-                ## (unlike the other related functions).
+                ## We need to inspect the resolved innards, so keep the
+                ## resolved value (unlike the other related functions).
                 def resolved = resolveAndCheck(resolveFn, node::source);
 
-                ## Get the `info::exports` out of the resolved result. Default to `{}`
-                ## if not present.
+                ## Get the `info::exports` out of the resolved result. Default
+                ## to `{}` if not present.
                 def info = ifValueOr { resolved::info } { {} };
                 def exports = ifValueOr { info::exports } { {} };
 
                 ifValue { node::select }
                     { select ->
-                        ## Explicit selection, so no need to return a modified result.
-                        ## Just validate that all selected names are available for import.
+                        ## Explicit selection, so no need to return a modified
+                        ## result. Just validate that all selected names are
+                        ## available for import.
                         filterAll(select) { one ->
                             ifNot { exports.get(one) }
                                 {
@@ -80,8 +81,8 @@ export fn resolveImport(node, resolveFn) {
                         node
                     }
                     {
-                        ## It's a wildcard import, so return a modified node that lists
-                        ## all the exported names.
+                        ## It's a wildcard import, so return a modified node
+                        ## that lists all the exported names.
                         def select = exports.keyList();
                         @importModuleSelection{node.dataOf()*, select}
                     }
@@ -99,16 +100,16 @@ export fn withResolvedImports(node, resolveFn) {
     def converted = filterAll(node::statements) { s /out ->
         var exported = false;
         var defNode = s;
-        ifIs { hasClass(s, @@export) }
+        ifIs { s.hasName(@export) }
             {
                 exported := true;
                 defNode := s::value
             };
 
         ifValueOr
-            { hasClass(defNode, @@importModule) }
-            { hasClass(defNode, @@importModuleSelection) }
-            { hasClass(defNode, @@importResource) }
+            { defNode.hasName(@importModule) }
+            { defNode.hasName(@importModuleSelection) }
+            { defNode.hasName(@importResource) }
             {
                 ## Not an `import*` node.
                 yield /out s
