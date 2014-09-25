@@ -1025,9 +1025,9 @@ def parPexSet = {:
     @"["
 
     type = (
-        @"!" { @@tokenSetComplement }
+        @"!" { @tokenSetComplement }
     |
-        { @@tokenSet }
+        { @tokenSet }
     )
 
     terminals = (

@@ -786,8 +786,8 @@ def parPexSet = makeMainSequence(
     makeChoice(
         makeSequence(
             makeToken(@@"!"),
-            makeResult(@@tokenSetComplement)),
-        makeResult(@@tokenSet)),
+            makeResult(@tokenSetComplement)),
+        makeResult(@tokenSet)),
     makeChoice(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
