@@ -724,11 +724,11 @@ def parPexChoice;
 
 ## Map from parser token types to record classes for pexes.
 def PEX_TYPES = {
-    @@"&": @@lookaheadSuccess,
-    @@"!": @@lookaheadFailure,
-    @@"?": @@opt,
-    @@"*": @@star,
-    @@"+": @@plus
+    @"&": @lookaheadSuccess,
+    @"!": @lookaheadFailure,
+    @"?": @opt,
+    @"*": @star,
+    @"+": @plus
 };
 
 ## Documented in spec.
@@ -838,7 +838,7 @@ def parPexRepeat = makeMainSequence(
         makeSequence(
             makeTokenSet(@@"?", @@"*", @@"+"),
             makeCode { pex, repeat ->
-                @(PEX_TYPES.get(get_class(repeat))){pex}
+                @(PEX_TYPES.get(repeat.get_name())){pex}
             }),
         makeCode { pex -> pex }));
 
@@ -848,7 +848,7 @@ def parPexLookahead = makeMainChoice(
         makeTokenSet(@@"&", @@"!"),
         parPexRepeat,
         makeCode { lookahead, pex ->
-            @(PEX_TYPES.get(get_class(lookahead))){pex}
+            @(PEX_TYPES.get(lookahead.get_name())){pex}
         }),
     parPexRepeat);
 
