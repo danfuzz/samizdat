@@ -30,10 +30,11 @@ extern zvalue FUN_Record_makeRecordClass;
 zvalue dataOf(zvalue value);
 
 /**
- * Returns a record with the given class and with the given optional data
- * payload (`NULL` indicating an empty payload). `cls` must be a record class.
- * The result is a value of the indicated `cls`. */
-zvalue makeRecord(zvalue cls, zvalue data);
+ * Returns a record with the given class or name, and with the given optional
+ * data payload (`NULL` indicating an empty payload). `cls` must be a record
+ * class or a symbol. The result is a record of the indicated / implied `cls`.
+ */
+zvalue makeRecord(zvalue clsOrName, zvalue data);
 
 /**
  * Returns the class value for the record class with the given name.

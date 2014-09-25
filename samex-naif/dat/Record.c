@@ -53,9 +53,19 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeRecord(zvalue cls, zvalue data) {
-    if (!classHasParent(cls, CLS_Record)) {
-        die("Attempt to call `makeRecord` on an improper class.");
+zvalue makeRecord(zvalue clsOrName, zvalue data) {
+    zvalue cls;
+    zvalue name;
+
+    if (hasClass(clsOrName, CLS_Symbol)) {
+        name = clsOrName;
+        cls = makeRecordClass(name);
+    } else {
+        if (!classHasParent(clsOrName, CLS_Record)) {
+            die("Attempt to call `makeRecord` on an improper class.");
+        }
+        cls = clsOrName;
+        name = METH_CALL(get_name, cls);
     }
 
     if (data == NULL) {
@@ -67,8 +77,8 @@ zvalue makeRecord(zvalue cls, zvalue data) {
     zvalue result = datAllocValue(cls, sizeof(RecordInfo));
     RecordInfo *info = getInfo(result);
 
-    info->name = METH_CALL(get_name, cls);
-    info->nameIndex = symbolIndex(info->name);
+    info->name = name;
+    info->nameIndex = symbolIndex(name);
     info->data = data;
 
     return result;
