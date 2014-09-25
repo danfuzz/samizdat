@@ -242,9 +242,8 @@ def parSymbolTable = {:
 def parRecord = {:
     @"@"
 
-    cls = (
-        name = parIdentifierSymbol
-        { makeLiteral(@@(name::value)) }
+    name = (
+        parIdentifierSymbol
     |
         parParenExpression
     )
@@ -258,7 +257,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(REFS::makeRecord, cls, value) }
+    { makeCall(REFS::makeRecord, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:

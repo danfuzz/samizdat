@@ -195,11 +195,7 @@ def parSymbolTable = makeMainSequence(
 def parRecord = makeMainSequence(
     makeToken(@@"@"),
     makeChoice(
-        makeSequence(
-            parIdentifierSymbol,
-            makeCode { ., name ->
-                makeLiteral(@@(name::value))
-            }),
+        parIdentifierSymbol,
         parParenExpression),
     makeChoice(
         parParenExpression,
@@ -210,8 +206,8 @@ def parRecord = makeMainSequence(
             makeCode { ., ., ., mappings, . ->
                 makeSymbolTableExpression(mappings*)
             })),
-    makeCode { ., cls, value ->
-        makeCall(REFS::makeRecord, cls, value)
+    makeCode { ., name, value ->
+        makeCall(REFS::makeRecord, name, value)
     });
 
 ## Documented in spec.

@@ -524,12 +524,9 @@ DEF_PARSE(record) {
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue cls;
     zvalue name = PARSE(identifierSymbol);
-    if (name != NULL) {
-        cls = makeLiteral(makeRecordClass(get(name, SYM_value)));
-    } else {
-        cls = PARSE_OR_REJECT(parenExpression);
+    if (name == NULL) {
+        name = PARSE_OR_REJECT(parenExpression);
     }
 
     // Value is mandatory, so the last part is full of `*_OR_REJECT`.
@@ -541,7 +538,7 @@ DEF_PARSE(record) {
         value = makeSymbolTableExpression(mappings);
     }
 
-    return makeCall(REFS(makeRecord), listFrom2(cls, value));
+    return makeCall(REFS(makeRecord), listFrom2(name, value));
 }
 
 // Documented in spec.
