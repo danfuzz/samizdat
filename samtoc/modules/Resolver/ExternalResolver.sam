@@ -61,7 +61,7 @@ fn ExternalResolver.resolve(source) {
     ## The result is always a list, so that we can cache a not-found result
     ## as the empty list.
     def result = (
-        hasClass(source, @@external)
+        source.hasName(@external)
             & directResolve(this, source)
             | (data::nextResolver).resolve(source)
     )?;
