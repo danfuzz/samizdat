@@ -115,6 +115,11 @@ METH_IMPL_1(Record, get, key) {
 }
 
 // Documented in header.
+METH_IMPL_0(Record, get_name) {
+    return METH_CALL(get_name, get_class(ths));
+}
+
+// Documented in header.
 METH_IMPL_1(Record, totalEq, other) {
     // Note: `other` not guaranteed to be of same class.
 
@@ -149,6 +154,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, dataOf),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
+            METH_BIND(Record, get_name),
             METH_BIND(Record, totalEq),
             METH_BIND(Record, totalOrder),
             NULL));

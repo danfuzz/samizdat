@@ -11,6 +11,10 @@ Record
 
 Returns the data payload of the given record.
 
+#### `.get_name() -> symbol`
+
+Returns the name (tag) of the given record.
+
 
 ### Primitive Definitions
 
