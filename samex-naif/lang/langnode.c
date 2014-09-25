@@ -103,13 +103,21 @@ static zvalue expandYield(zvalue table) {
 
     zvalue exitCall;
 
-    if (recordEvalTypeIs(value, EVAL_void)) {
-        exitCall = makeCall(function, NULL);
-    } else if (recordEvalTypeIs(value, EVAL_maybe)) {
-        zvalue arg = makeInterpolate(makeMaybeValue(get(value, SYM_value)));
-        exitCall = makeCallOrApply(function, listFrom1(arg));
-    } else {
-        exitCall = makeCall(function, listFrom1(value));
+    switch (recordEvalType(value)) {
+        case EVAL_void: {
+            exitCall = makeCall(function, NULL);
+            break;
+        }
+        case EVAL_maybe: {
+            zvalue arg = makeInterpolate(
+                makeMaybeValue(get(value, SYM_value)));
+            exitCall = makeCallOrApply(function, listFrom1(arg));
+            break;
+        }
+        default: {
+            exitCall = makeCall(function, listFrom1(value));
+            break;
+        }
     }
 
     return makeNoYield(exitCall);
@@ -234,51 +242,61 @@ zvalue formalsMinArgs(zvalue formals) {
 
 // Documented in spec.
 zvalue get_baseName(zvalue source) {
-    if (recordEvalTypeIs(source, EVAL_external)) {
-        zvalue components = splitAtChar(get(source, SYM_name), STR_CH_DOT);
-        return nth(components, get_size(components) - 1);
-    } else if (recordEvalTypeIs(source, EVAL_internal)) {
-        zvalue components = splitAtChar(get(source, SYM_name), STR_CH_SLASH);
-        zvalue last = nth(components, get_size(components) - 1);
-        zvalue parts = splitAtChar(last, STR_CH_DOT);
-        return nth(parts, 0);
-    } else {
-        die("Bad type for `get_baseName`.");
+    switch (recordEvalType(source)) {
+        case EVAL_external: {
+            zvalue components = splitAtChar(get(source, SYM_name), STR_CH_DOT);
+            return nth(components, get_size(components) - 1);
+        }
+        case EVAL_internal: {
+            zvalue components =
+                splitAtChar(get(source, SYM_name), STR_CH_SLASH);
+            zvalue last = nth(components, get_size(components) - 1);
+            zvalue parts = splitAtChar(last, STR_CH_DOT);
+            return nth(parts, 0);
+        }
+        default: {
+            die("Bad type for `get_baseName`.");
+        }
     }
 }
 
 // Documented in spec.
 zvalue get_definedNames(zvalue node) {
-    if (recordEvalTypeIs(node, EVAL_export)) {
-        return get_definedNames(get(node, SYM_value));
-    } else if (   recordEvalTypeIs(node, EVAL_importModule)
-               || recordEvalTypeIs(node, EVAL_importResource)
-               || recordEvalTypeIs(node, EVAL_varDef)
-               || recordEvalTypeIs(node, EVAL_varDefMutable)) {
-        return listFrom1(get(node, SYM_name));
-    } else if (recordEvalTypeIs(node, EVAL_importModuleSelection)) {
-        zvalue select = get(node, SYM_select);
-        if (select == NULL) {
-            die("Cannot call `get_definedNames` on unresolved import.");
+    switch (recordEvalType(node)) {
+        case EVAL_export: {
+            return get_definedNames(get(node, SYM_value));
         }
-
-        zvalue prefix = get(node, SYM_prefix);
-        if (prefix != NULL) {
-            zvalue prefixStr = valToString(prefix);
-            zint size = get_size(select);
-            zvalue arr[size];
-            arrayFromList(arr, select);
-
-            for (zint i = 0; i < size; i++) {
-                arr[i] = symbolFromString(METH_CALL(cat, prefixStr, arr[i]));
+        case EVAL_importModule:
+        case EVAL_importResource:
+        case EVAL_varDef:
+        case EVAL_varDefMutable: {
+            return listFrom1(get(node, SYM_name));
+        }
+        case EVAL_importModuleSelection: {
+            zvalue select = get(node, SYM_select);
+            if (select == NULL) {
+                die("Cannot call `get_definedNames` on unresolved import.");
             }
 
-            return listFromArray(size, arr);
-        } else {
-            return select;
+            zvalue prefix = get(node, SYM_prefix);
+            if (prefix != NULL) {
+                zvalue prefixStr = valToString(prefix);
+                zint size = get_size(select);
+                zvalue arr[size];
+                arrayFromList(arr, select);
+
+                for (zint i = 0; i < size; i++) {
+                    arr[i] = symbolFromString(METH_CALL(cat, prefixStr, arr[i]));
+                }
+
+                return listFromArray(size, arr);
+            } else {
+                return select;
+            }
         }
-    } else {
-        return EMPTY_LIST;
+        default: {
+            return EMPTY_LIST;
+        }
     }
 }
 
