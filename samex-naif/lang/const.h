@@ -24,6 +24,7 @@
     // No semicolon here, so that use sites require it.
 
 #define DEF_RECORD(name, str) \
+    extern zvalue RECNAME_##name; \
     extern zvalue CLS_##name \
     // No semicolon here, so that use sites require it.
 
