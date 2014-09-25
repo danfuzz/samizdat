@@ -24,9 +24,6 @@
 //
 
 enum {
-    /** Maximum number of classes allowed. */
-    DAT_MAX_CLASSES = 500,
-
     /** Maximum number of symbols allowed. */
     DAT_MAX_SYMBOLS = 6000
 };

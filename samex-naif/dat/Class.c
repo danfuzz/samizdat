@@ -31,9 +31,6 @@ typedef enum {
     OPAQUE_CLASS
 } ClassCategory;
 
-/** Next class sequence number to assign. */
-static zint theNextClassId = 0;
-
 /** The `secret` value used for all core classes. */
 static zvalue theCoreSecret = NULL;
 
@@ -72,9 +69,7 @@ static void assertHasClassClass(zvalue value) {
 static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     assertHasClass(name, CLS_Symbol);
 
-    if (theNextClassId == DAT_MAX_CLASSES) {
-        die("Too many classes!");
-    } else if ((parent == NULL) && !classEqUnchecked(cls, CLS_Value)) {
+    if ((parent == NULL) && !classEqUnchecked(cls, CLS_Value)) {
         die("Every class but `Value` needs a parent.");
     }
 
@@ -82,10 +77,8 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->parent = parent;
     info->name = name;
     info->secret = secret;
-    info->classId = theNextClassId;
     info->hasSubclasses = false;
 
-    theNextClassId++;
     datImmortalize(cls);
 
     if (parent != NULL) {

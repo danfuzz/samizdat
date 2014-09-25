@@ -136,12 +136,6 @@ typedef struct {
     zvalue secret;
 
     /**
-     * Class identifier / index. Assigned upon initialization, in sequential
-     * order.
-     */
-    zint classId;
-
-    /**
      * Whether this class has any subclasses. If so, it's invalid to
      * add any method bindings. TODO: Remove this once incremental method
      * binding is no longer allowed at all.
