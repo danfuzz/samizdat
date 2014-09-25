@@ -213,17 +213,6 @@ bool classHasSecret(zvalue cls, zvalue secret) {
 }
 
 // Documented in header.
-zint classIndex(zvalue cls) {
-    assertHasClassClass(cls);
-    return getInfo(cls)->classId;
-}
-
-// Documented in header.
-zint get_classIndex(zvalue value) {
-    return getInfo(get_class(value))->classId;
-}
-
-// Documented in header.
 bool hasClass(zvalue value, zvalue cls) {
     assertHasClassClass(cls);
 

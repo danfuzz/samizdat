@@ -45,16 +45,6 @@ bool classHasParent(zvalue cls, zvalue parent);
 bool classHasSecret(zvalue cls, zvalue secret);
 
 /**
- * Returns the unique index for the given class.
- */
-zint classIndex(zvalue cls);
-
-/**
- * Returns the unique index for the class of the given value.
- */
-zint get_classIndex(zvalue value);
-
-/**
  * Returns true iff the class of the given value (that is, `get_class(value)`)
  * is either the given class or is a subclass of the given class.
  */
