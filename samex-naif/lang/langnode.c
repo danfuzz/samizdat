@@ -426,35 +426,38 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue select = get(node, SYM_select);
     zvalue source = get(node, SYM_source);
 
-    if (recordEvalTypeIs(node, EVAL_importModule)) {
-        zvalue stat = makeVarDef(name,
-            makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
-
-        return listFrom1(stat);
-    } else if (recordEvalTypeIs(node, EVAL_importModuleSelection)) {
-        zvalue names = get_definedNames(node);
-        zint size = get_size(names);
-        zvalue loadCall = makeCall(REFS(loadModule),
-            listFrom1(makeLiteral(source)));
-
-        zvalue stats[size];
-        for (zint i = 0; i < size; i++) {
-            zvalue name = nth(names, i);
-            zvalue sel = nth(select, i);
-            stats[i] = makeVarDef(name,
-                makeCall(SYMS(get), listFrom2(loadCall, makeLiteral(sel))));
+    switch (recordEvalType(node)) {
+        case EVAL_importModule: {
+            zvalue stat = makeVarDef(name,
+                makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
+            return listFrom1(stat);
         }
+        case EVAL_importModuleSelection: {
+            zvalue names = get_definedNames(node);
+            zint size = get_size(names);
+            zvalue loadCall = makeCall(REFS(loadModule),
+                listFrom1(makeLiteral(source)));
 
-        return listFromArray(size, stats);
-    } else if (recordEvalTypeIs(node, EVAL_importResource)) {
-        zvalue stat = makeVarDef(
-            name,
-            makeCall(REFS(loadResource),
-                listFrom2(makeLiteral(source), makeLiteral(format))));
+            zvalue stats[size];
+            for (zint i = 0; i < size; i++) {
+                zvalue name = nth(names, i);
+                zvalue sel = nth(select, i);
+                stats[i] = makeVarDef(name,
+                    makeCall(SYMS(get), listFrom2(loadCall, makeLiteral(sel))));
+            }
 
-        return listFrom1(stat);
-    } else {
-        die("Bad node type for makeDynamicImport");
+            return listFromArray(size, stats);
+        }
+        case EVAL_importResource: {
+            zvalue stat = makeVarDef(
+                name,
+                makeCall(REFS(loadResource),
+                    listFrom2(makeLiteral(source), makeLiteral(format))));
+            return listFrom1(stat);
+        }
+        default: {
+            die("Bad node type for makeDynamicImport");
+        }
     }
 }
 
@@ -571,42 +574,63 @@ zvalue makeInfoTable(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(statements, i);
 
-        if (recordEvalTypeIs(s, EVAL_exportSelection)) {
-            zvalue select = get(s, SYM_select);
-            zint sz = get_size(select);
-            for (zint j = 0; j < sz; j++) {
-                zvalue name = nth(select, j);
-                exports = addTypeBinding(exports, name);
+        switch (recordEvalType(s)) {
+            case EVAL_exportSelection: {
+                zvalue select = get(s, SYM_select);
+                zint sz = get_size(select);
+                for (zint j = 0; j < sz; j++) {
+                    zvalue name = nth(select, j);
+                    exports = addTypeBinding(exports, name);
+                }
+                break;
             }
-        } else if (recordEvalTypeIs(s, EVAL_export)) {
-            zvalue names = get_definedNames(s);
-            zint sz = get_size(names);
-            for (zint j = 0; j < sz; j++) {
-                zvalue name = nth(names, j);
-                exports = addTypeBinding(exports, name);
+            case EVAL_export: {
+                zvalue names = get_definedNames(s);
+                zint sz = get_size(names);
+                for (zint j = 0; j < sz; j++) {
+                    zvalue name = nth(names, j);
+                    exports = addTypeBinding(exports, name);
+                }
+                // And fall through to the next `switch` statement, to handle
+                // an `import*` payload, if any.
+                s = get(s, SYM_value);
+                break;
             }
-            // And fall through to handle an `import*` payload, if any.
-            s = get(s, SYM_value);
+            default: {
+                // The rest of the types are intentionally left un-handled.
+                break;
+            }
         }
 
-        // *Not* `else if` (see above).
-        if (recordEvalTypeIs(s, EVAL_importModule)) {
-            imports =
-                addImportBinding(imports, get(s, SYM_source), SYM_module);
-        } else if (recordEvalTypeIs(s, EVAL_importModuleSelection)) {
-            zvalue source = get(s, SYM_source);
-            zvalue select = get(s, SYM_select);
-            if (select == NULL) {
-                die("Cannot call `makeInfoTable` on unresolved import.");
+        // Intentionally *not* part of the above `switch` (see comment above).
+        switch (recordEvalType(s)) {
+            case EVAL_importModule: {
+                imports =
+                    addImportBinding(imports, get(s, SYM_source), SYM_module);
+                break;
             }
-            zint sz = get_size(select);
-            for (zint j = 0; j < sz; j++) {
-                zvalue name = nth(select, j);
-                imports = addImportBinding(imports, source, name);
+            case EVAL_importModuleSelection: {
+                zvalue source = get(s, SYM_source);
+                zvalue select = get(s, SYM_select);
+                if (select == NULL) {
+                    die("Cannot call `makeInfoTable` on unresolved import.");
+                }
+                zint sz = get_size(select);
+                for (zint j = 0; j < sz; j++) {
+                    zvalue name = nth(select, j);
+                    imports = addImportBinding(imports, source, name);
+                }
+                break;
             }
-        } else if (recordEvalTypeIs(s, EVAL_importResource)) {
-            resources = addResourceBinding(resources,
-                get(s, SYM_source), get(s, SYM_format));
+            case EVAL_importResource: {
+                resources = addResourceBinding(resources,
+                    get(s, SYM_source), get(s, SYM_format));
+                break;
+            }
+            default: {
+                // The rest of the types are intentionally left un-handled.
+                break;
+            }
         }
     }
 
