@@ -20,7 +20,7 @@
 
 
 //
-// Salient Limits
+// Structures and constants
 //
 
 enum {
@@ -30,6 +30,23 @@ enum {
     /** Maximum number of symbols allowed. */
     DAT_MAX_SYMBOLS = 6000
 };
+
+/**
+ * Partial definition of `DatHeader`, so that `get_class` and `datPayload`
+ * can be defined as inlines.
+ *
+ * * **Note:** This must match the definition of `DatHeader` in `dat/impl.h`.
+ */
+typedef struct {
+    zvalue private1;
+    zvalue private2;
+    uint32_t private3;
+    bool private4 : 1;
+
+    // See `dat/impl.h`.
+    zvalue cls;
+    uint8_t payload[/*flexible*/];
+} DatHeaderExposed;
 
 
 //
@@ -120,7 +137,7 @@ inline zvalue datNonVoid(zvalue value) {
  * Gets a pointer to the data payload of a `zvalue`.
  */
 inline void *datPayload(zvalue value) {
-    return (void *) (((char *) value) + DAT_HEADER_SIZE);
+    return ((DatHeaderExposed *) (void *) value)->payload;
 }
 
 #endif

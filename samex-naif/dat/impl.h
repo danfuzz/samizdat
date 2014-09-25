@@ -105,6 +105,8 @@ enum {
 
 /**
  * Common fields across all values. Used as a header for other types.
+ *
+ * **Note:** This must match the definition of `DatPartialHeader` in `dat.h`.
  */
 typedef struct DatHeader {
     /**
