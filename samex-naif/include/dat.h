@@ -140,4 +140,12 @@ inline void *datPayload(zvalue value) {
     return ((DatHeaderExposed *) (void *) value)->payload;
 }
 
+/**
+ * Gets the class of the given value. `value` must be a valid value (in
+ * particular, non-`NULL`). The return value is of class `Class`.
+ */
+inline zvalue get_class(zvalue value) {
+    return ((DatHeaderExposed *) (void *) value)->cls;
+}
+
 #endif

@@ -28,7 +28,7 @@ static bool inValDebugString = false;
 // Exported Definitions
 //
 
-// Documented in header.
+// This provides the non-inline version of this function.
 extern zvalue datNonVoid(zvalue value);
 
 // Documented in header.
@@ -36,13 +36,11 @@ void datNonVoidError(void) {
     die("Attempt to use void in non-void context.");
 }
 
-// Documented in header.
+// This provides the non-inline version of this function.
 extern void *datPayload(zvalue value);
 
-// Documented in header.
-zvalue get_class(zvalue value) {
-    return value->cls;
-}
+// This provides the non-inline version of this function.
+extern zvalue get_class(zvalue value);
 
 // Documented in header.
 char *valDebugString(zvalue value) {

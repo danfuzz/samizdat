@@ -69,12 +69,6 @@ SYM_DECL(totalEq);
 SYM_DECL(totalOrder);
 
 /**
- * Gets the class of the given value. `value` must be a valid value (in
- * particular, non-`NULL`). The return value is of class `Class`.
- */
-zvalue get_class(zvalue value);
-
-/**
  * Gets the "debug string" of the given value, as a `char *`. The caller
  * is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
