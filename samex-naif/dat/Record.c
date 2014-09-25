@@ -119,8 +119,7 @@ METH_IMPL_0(Record, gcMark) {
 
 // Documented in header.
 METH_IMPL_1(Record, get, key) {
-    zvalue data = getInfo(ths)->data;
-    return (data == NULL) ? NULL : get(data, key);
+    return get(getInfo(ths)->data, key);
 }
 
 // Documented in header.
