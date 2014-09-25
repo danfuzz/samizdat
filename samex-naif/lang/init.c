@@ -41,21 +41,21 @@ MOD_INIT(lang) {
     MOD_USE(Map);
 
     memset(langClassMap, 0, sizeof(langClassMap));
-    langClassMap[classIndex(CLS_apply)]                 = EVAL_apply;
-    langClassMap[classIndex(CLS_call)]                  = EVAL_call;
-    langClassMap[classIndex(CLS_closure)]               = EVAL_closure;
-    langClassMap[classIndex(CLS_fetch)]                 = EVAL_fetch;
-    langClassMap[classIndex(CLS_importModule)]          = EVAL_importModule;
-    langClassMap[classIndex(CLS_importModuleSelection)] = EVAL_importModuleSelection;
-    langClassMap[classIndex(CLS_importResource)]        = EVAL_importResource;
-    langClassMap[classIndex(CLS_literal)]               = EVAL_literal;
-    langClassMap[classIndex(CLS_maybe)]                 = EVAL_maybe;
-    langClassMap[classIndex(CLS_noYield)]               = EVAL_noYield;
-    langClassMap[classIndex(CLS_store)]                 = EVAL_store;
-    langClassMap[classIndex(CLS_varRef)]                = EVAL_varRef;
-    langClassMap[classIndex(CLS_varDef)]                = EVAL_varDef;
-    langClassMap[classIndex(CLS_varDefMutable)]         = EVAL_varDefMutable;
-    langClassMap[classIndex(CLS_void)]                  = EVAL_void;
+    langClassMap[symbolIndex(RECNAME_apply)]                 = EVAL_apply;
+    langClassMap[symbolIndex(RECNAME_call)]                  = EVAL_call;
+    langClassMap[symbolIndex(RECNAME_closure)]               = EVAL_closure;
+    langClassMap[symbolIndex(RECNAME_fetch)]                 = EVAL_fetch;
+    langClassMap[symbolIndex(RECNAME_importModule)]          = EVAL_importModule;
+    langClassMap[symbolIndex(RECNAME_importModuleSelection)] = EVAL_importModuleSelection;
+    langClassMap[symbolIndex(RECNAME_importResource)]        = EVAL_importResource;
+    langClassMap[symbolIndex(RECNAME_literal)]               = EVAL_literal;
+    langClassMap[symbolIndex(RECNAME_maybe)]                 = EVAL_maybe;
+    langClassMap[symbolIndex(RECNAME_noYield)]               = EVAL_noYield;
+    langClassMap[symbolIndex(RECNAME_store)]                 = EVAL_store;
+    langClassMap[symbolIndex(RECNAME_varRef)]                = EVAL_varRef;
+    langClassMap[symbolIndex(RECNAME_varDef)]                = EVAL_varDef;
+    langClassMap[symbolIndex(RECNAME_varDefMutable)]         = EVAL_varDefMutable;
+    langClassMap[symbolIndex(RECNAME_void)]                  = EVAL_void;
 
     memset(langSymbolMap, 0, sizeof(langSymbolMap));
     langSymbolMap[symbolIndex(SYM_CH_PLUS)]  = EVAL_CH_PLUS;

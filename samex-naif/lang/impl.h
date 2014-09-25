@@ -14,6 +14,7 @@
 #include "const.h"
 #include "lang.h"
 #include "type/Class.h"
+#include "type/Record.h"
 #include "type/Symbol.h"
 
 
@@ -135,7 +136,7 @@ void frameSnap(Frame *target, Frame *source);
  * Gets the evaluation type (enumerated value) of the given node.
  */
 inline zevalType classEvalType(zvalue node) {
-    return langClassMap[get_classIndex(node)];
+    return langClassMap[recNameIndex(node)];
 }
 
 /**
