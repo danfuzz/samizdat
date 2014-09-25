@@ -58,9 +58,6 @@ typedef enum {
     EVAL_CH_STAR    // For formal argument repetition.
 } zevalType;
 
-/** Mapping from `Class` index to corresponding `zevalType`. */
-extern zevalType langClassMap[DAT_MAX_CLASSES];
-
 /** Mapping from `Symbol` index to corresponding `zevalType`. */
 extern zevalType langSymbolMap[DAT_MAX_SYMBOLS];
 
@@ -136,7 +133,7 @@ void frameSnap(Frame *target, Frame *source);
  * Gets the evaluation type (enumerated value) of the given node.
  */
 inline zevalType classEvalType(zvalue node) {
-    return langClassMap[recNameIndex(node)];
+    return langSymbolMap[recNameIndex(node)];
 }
 
 /**
