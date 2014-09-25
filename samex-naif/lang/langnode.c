@@ -547,7 +547,7 @@ zvalue makeImport(zvalue baseData) {
 
     if (get(data, SYM_format) != NULL) {
         // It's a resource.
-        if (hasClass(get(data, SYM_source), RECCLS_external)) {
+        if (recordEvalTypeIs(get(data, SYM_source), EVAL_external)) {
             die("Cannot import external resource.");
         }
         return makeRecord(RECCLS_importResource, data);
