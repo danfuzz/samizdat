@@ -85,7 +85,7 @@ static zvalue expandYield(zvalue table) {
     zvalue yieldNode = get(table, SYM_yield);
 
     if (     (yieldNode == NULL)
-          || !hasClass(yieldNode, RECCLS_nonlocalExit)) {
+          || !recordEvalTypeIs(yieldNode, EVAL_nonlocalExit)) {
         return yieldNode;
     }
 
@@ -94,8 +94,8 @@ static zvalue expandYield(zvalue table) {
     zvalue yieldDef = get(table, SYM_yieldDef);
     zvalue functionTarget = get(function, SYM_target);
 
-    if (     hasClass(function, RECCLS_fetch)
-          && hasClass(functionTarget, RECCLS_varRef)
+    if (     recordEvalTypeIs(function, EVAL_fetch)
+          && recordEvalTypeIs(functionTarget, EVAL_varRef)
           && (yieldDef != NULL)
           && valEq(get(functionTarget, SYM_name), yieldDef)) {
         return value;
@@ -103,9 +103,9 @@ static zvalue expandYield(zvalue table) {
 
     zvalue exitCall;
 
-    if (hasClass(value, RECCLS_void)) {
+    if (recordEvalTypeIs(value, EVAL_void)) {
         exitCall = makeCall(function, NULL);
-    } else if (hasClass(value, RECCLS_maybe)) {
+    } else if (recordEvalTypeIs(value, EVAL_maybe)) {
         zvalue arg = makeInterpolate(makeMaybeValue(get(value, SYM_value)));
         exitCall = makeCallOrApply(function, listFrom1(arg));
     } else {
@@ -144,7 +144,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
 
     for (zint i = 0; i < size; i++) {
         zvalue one = nth(mappings, i);
-        if (hasClass(one, RECCLS_mapping)) {
+        if (recordEvalTypeIs(one, EVAL_mapping)) {
             zvalue keys = get(one, SYM_keys);
             zvalue value = get(one, SYM_value);
             bool handled = false;
@@ -234,10 +234,10 @@ zvalue formalsMinArgs(zvalue formals) {
 
 // Documented in spec.
 zvalue get_baseName(zvalue source) {
-    if (hasClass(source, RECCLS_external)) {
+    if (recordEvalTypeIs(source, EVAL_external)) {
         zvalue components = splitAtChar(get(source, SYM_name), STR_CH_DOT);
         return nth(components, get_size(components) - 1);
-    } else if (hasClass(source, RECCLS_internal)) {
+    } else if (recordEvalTypeIs(source, EVAL_internal)) {
         zvalue components = splitAtChar(get(source, SYM_name), STR_CH_SLASH);
         zvalue last = nth(components, get_size(components) - 1);
         zvalue parts = splitAtChar(last, STR_CH_DOT);
@@ -249,14 +249,14 @@ zvalue get_baseName(zvalue source) {
 
 // Documented in spec.
 zvalue get_definedNames(zvalue node) {
-    if (hasClass(node, RECCLS_export)) {
+    if (recordEvalTypeIs(node, EVAL_export)) {
         return get_definedNames(get(node, SYM_value));
-    } else if (   hasClass(node, RECCLS_importModule)
-               || hasClass(node, RECCLS_importResource)
-               || hasClass(node, RECCLS_varDef)
-               || hasClass(node, RECCLS_varDefMutable)) {
+    } else if (   recordEvalTypeIs(node, EVAL_importModule)
+               || recordEvalTypeIs(node, EVAL_importResource)
+               || recordEvalTypeIs(node, EVAL_varDef)
+               || recordEvalTypeIs(node, EVAL_varDefMutable)) {
         return listFrom1(get(node, SYM_name));
-    } else if (hasClass(node, RECCLS_importModuleSelection)) {
+    } else if (recordEvalTypeIs(node, EVAL_importModuleSelection)) {
         zvalue select = get(node, SYM_select);
         if (select == NULL) {
             die("Cannot call `get_definedNames` on unresolved import.");
@@ -317,7 +317,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
     if (get(target, SYM_lvalue) == NULL) {
         return NULL;
-    } else if (hasClass(target, RECCLS_fetch)) {
+    } else if (recordEvalTypeIs(target, EVAL_fetch)) {
         zvalue innerTarget = get(target, SYM_target);
         return recordFrom2(RECCLS_store,
             SYM_target, innerTarget, SYM_value, value);
@@ -408,12 +408,12 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue select = get(node, SYM_select);
     zvalue source = get(node, SYM_source);
 
-    if (hasClass(node, RECCLS_importModule)) {
+    if (recordEvalTypeIs(node, EVAL_importModule)) {
         zvalue stat = makeVarDef(name,
             makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
 
         return listFrom1(stat);
-    } else if (hasClass(node, RECCLS_importModuleSelection)) {
+    } else if (recordEvalTypeIs(node, EVAL_importModuleSelection)) {
         zvalue names = get_definedNames(node);
         zint size = get_size(names);
         zvalue loadCall = makeCall(REFS(loadModule),
@@ -428,7 +428,7 @@ zvalue makeDynamicImport(zvalue node) {
         }
 
         return listFromArray(size, stats);
-    } else if (hasClass(node, RECCLS_importResource)) {
+    } else if (recordEvalTypeIs(node, EVAL_importResource)) {
         zvalue stat = makeVarDef(
             name,
             makeCall(REFS(loadResource),
@@ -553,14 +553,14 @@ zvalue makeInfoTable(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(statements, i);
 
-        if (hasClass(s, RECCLS_exportSelection)) {
+        if (recordEvalTypeIs(s, EVAL_exportSelection)) {
             zvalue select = get(s, SYM_select);
             zint sz = get_size(select);
             for (zint j = 0; j < sz; j++) {
                 zvalue name = nth(select, j);
                 exports = addTypeBinding(exports, name);
             }
-        } else if (hasClass(s, RECCLS_export)) {
+        } else if (recordEvalTypeIs(s, EVAL_export)) {
             zvalue names = get_definedNames(s);
             zint sz = get_size(names);
             for (zint j = 0; j < sz; j++) {
@@ -572,10 +572,10 @@ zvalue makeInfoTable(zvalue node) {
         }
 
         // *Not* `else if` (see above).
-        if (hasClass(s, RECCLS_importModule)) {
+        if (recordEvalTypeIs(s, EVAL_importModule)) {
             imports =
                 addImportBinding(imports, get(s, SYM_source), SYM_module);
-        } else if (hasClass(s, RECCLS_importModuleSelection)) {
+        } else if (recordEvalTypeIs(s, EVAL_importModuleSelection)) {
             zvalue source = get(s, SYM_source);
             zvalue select = get(s, SYM_select);
             if (select == NULL) {
@@ -586,7 +586,7 @@ zvalue makeInfoTable(zvalue node) {
                 zvalue name = nth(select, j);
                 imports = addImportBinding(imports, source, name);
             }
-        } else if (hasClass(s, RECCLS_importResource)) {
+        } else if (recordEvalTypeIs(s, EVAL_importResource)) {
             resources = addResourceBinding(resources,
                 get(s, SYM_source), get(s, SYM_format));
         }
@@ -697,7 +697,7 @@ zvalue makeVarStore(zvalue name, zvalue value) {
 
 // Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
-    if (hasClass(node, RECCLS_importResource)) {
+    if (recordEvalTypeIs(node, EVAL_importResource)) {
         // No conversion, just validation. TODO: Validate.
         //
         // **Note:** This clause is at the top so as to avoid the call to
@@ -711,15 +711,15 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
             die("Could not resolve import.");
-        } else if (!hasClass(resolved, RECCLS_module)) {
+        } else if (!recordEvalTypeIs(resolved, EVAL_module)) {
             die("Invalid resolution result (not a `@module`)");
         }
     }
 
-    if (hasClass(node, RECCLS_importModule)) {
+    if (recordEvalTypeIs(node, EVAL_importModule)) {
         // No conversion, just validation (done above).
         return node;
-    } else if (hasClass(node, RECCLS_importModuleSelection)) {
+    } else if (recordEvalTypeIs(node, EVAL_importModuleSelection)) {
         // Get the exports. When given a `NULL` `resolveFn`, this acts as if
         // all sources resolve to an empty export map, and hence this node
         // won't bind anything.
@@ -775,9 +775,9 @@ zvalue withModuleDefs(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
 
-        if (hasClass(s, RECCLS_exportSelection)) {
+        if (recordEvalTypeIs(s, EVAL_exportSelection)) {
             continue;
-        } else if (hasClass(s, RECCLS_export)) {
+        } else if (recordEvalTypeIs(s, EVAL_export)) {
             s = get(s, SYM_value);
         }
 
@@ -836,14 +836,14 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         bool exported = false;
         zvalue defNode = s;
 
-        if (hasClass(s, RECCLS_export)) {
+        if (recordEvalTypeIs(s, EVAL_export)) {
             exported = true;
             defNode = get(s, SYM_value);
         }
 
-        if (!(   hasClass(defNode, RECCLS_importModule)
-              || hasClass(defNode, RECCLS_importModuleSelection)
-              || hasClass(defNode, RECCLS_importResource))) {
+        if (!(   recordEvalTypeIs(defNode, EVAL_importModule)
+              || recordEvalTypeIs(defNode, EVAL_importModuleSelection)
+              || recordEvalTypeIs(defNode, EVAL_importResource))) {
             continue;
         }
 
@@ -907,7 +907,7 @@ zvalue withoutTops(zvalue node) {
     zvalue tops = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
-        zvalue defNode = hasClass(s, RECCLS_export)
+        zvalue defNode = recordEvalTypeIs(s, EVAL_export)
             ? get(s, SYM_value)
             : s;
 
@@ -920,7 +920,7 @@ zvalue withoutTops(zvalue node) {
     zvalue mains = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
-        zvalue defNode = hasClass(s, RECCLS_export)
+        zvalue defNode = recordEvalTypeIs(s, EVAL_export)
             ? get(s, SYM_value)
             : s;
 
@@ -936,7 +936,7 @@ zvalue withoutTops(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = nth(rawStatements, i);
 
-        if (!hasClass(s, RECCLS_export)) {
+        if (!recordEvalTypeIs(s, EVAL_export)) {
             continue;
         }
 
