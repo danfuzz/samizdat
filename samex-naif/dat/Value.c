@@ -233,8 +233,9 @@ MOD_INIT(Value) {
     SYM_INIT(debugString);
     SYM_INIT(debugSymbol);
     SYM_INIT(exports);
-    SYM_INIT(imports);
     SYM_INIT(gcMark);
+    SYM_INIT(get_name);
+    SYM_INIT(imports);
     SYM_INIT(main);
     SYM_INIT(perEq);
     SYM_INIT(perOrder);
@@ -273,10 +274,13 @@ SYM_DEF(debugSymbol);
 SYM_DEF(exports);
 
 // Documented in header.
-SYM_DEF(imports);
+SYM_DEF(gcMark);
 
 // Documented in header.
-SYM_DEF(gcMark);
+SYM_DEF(get_name);
+
+// Documented in header.
+SYM_DEF(imports);
 
 // Documented in header.
 SYM_DEF(main);

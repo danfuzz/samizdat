@@ -17,9 +17,6 @@
 /** Class value for in-model class `Class`. */
 extern zvalue CLS_Class;
 
-/** Method `.get_name()`: Documented in spec. */
-SYM_DECL(get_name);
-
 /** Method `.get_parent()`: Documented in spec. */
 SYM_DECL(get_parent);
 

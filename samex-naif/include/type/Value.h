@@ -39,6 +39,9 @@ SYM_DECL(exports);
 /** Symbol `imports`. Same comment applies as with `exports`, above. */
 SYM_DECL(imports);
 
+/** Method `.get_name()`: Documented in spec. */
+SYM_DECL(get_name);
+
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
  *

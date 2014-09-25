@@ -382,7 +382,6 @@ MOD_INIT(objectModel) {
 MOD_INIT(Class) {
     MOD_USE(Value);
 
-    SYM_INIT(get_name);
     SYM_INIT(get_parent);
 
     // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
@@ -399,9 +398,6 @@ MOD_INIT(Class) {
 
 // Documented in header.
 zvalue CLS_Class = NULL;
-
-// Documented in header.
-SYM_DEF(get_name);
 
 // Documented in header.
 SYM_DEF(get_parent);
