@@ -122,5 +122,5 @@ export fn withResolvedImports(node, resolveFn) {
             { resolved }
     };
 
-    return @(get_class(node)){node.dataOf()*, statements: [converted*]}
+    return @(node.get_name()){node.dataOf()*, statements: [converted*]}
 };

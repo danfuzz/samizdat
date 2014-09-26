@@ -442,7 +442,7 @@ export fn withDynamicImports(node) {
     };
 
     def statements = [].cat(converted*);
-    return @(get_class(node)){node.dataOf()*, statements}
+    return @(node.get_name()){node.dataOf()*, statements}
 };
 
 ## Documented in spec.
@@ -486,7 +486,7 @@ export fn withModuleDefs(node) {
             SYMS::exports, yieldExports,
             SYMS::info,    yieldInfo));
 
-    return @(get_class(node)){
+    return @(node.get_name()){
         node.dataOf()*,
         info,
         yield: yieldNode,
@@ -535,7 +535,7 @@ export fn withoutTops(node) {
         { [] }
         { [makeExportSelection(exports*)] };
 
-    return @(get_class(node)){
+    return @(node.get_name()){
         node.dataOf()*,
         statements: [tops*, mains*, optSelection*]
     }
@@ -543,5 +543,5 @@ export fn withoutTops(node) {
 
 ## Documented in spec.
 export fn withTop(node) {
-    return @(get_class(node)){node.dataOf()*, top: true}
+    return @(node.get_name()){node.dataOf()*, top: true}
 };
