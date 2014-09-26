@@ -101,6 +101,12 @@ zvalue makeRecordClass(zvalue name) {
 }
 
 // Documented in header.
+bool recHasName(zvalue record, zvalue name) {
+    assertHasClass(record, CLS_Record);
+    return symbolEq(getInfo(record)->name, name);
+}
+
+// Documented in header.
 zint recNameIndex(zvalue record) {
     assertHasClass(record, CLS_Record);
     return getInfo(record)->nameIndex;

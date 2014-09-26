@@ -25,7 +25,7 @@ zvalue ioReadDirectory(zvalue path) {
     utf8FromString(sz + 1, str, path);
 
     zvalue type = ioFileType(path);
-    if (!valEq(type, SYM_directory)) {
+    if (!valEq(type, SYM(directory))) {
         return NULL;
     }
 
@@ -57,10 +57,10 @@ zvalue ioReadDirectory(zvalue path) {
         zvalue type;
 
         switch (entry.d_type) {
-            case DT_REG: { type = SYM_file;      break; }
-            case DT_DIR: { type = SYM_directory; break; }
-            case DT_LNK: { type = SYM_symlink;   break; }
-            default:     { type = SYM_other;     break; }
+            case DT_REG: { type = SYM(file);      break; }
+            case DT_DIR: { type = SYM(directory); break; }
+            case DT_LNK: { type = SYM(symlink);   break; }
+            default:     { type = SYM(other);     break; }
         }
 
         result = collPut(result, name, type);

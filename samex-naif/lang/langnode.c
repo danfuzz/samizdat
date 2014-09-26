@@ -321,7 +321,7 @@ zvalue makeApply(zvalue function, zvalue values) {
         values = TOK_void;
     }
 
-    return recordFrom2(RECCLS_apply, SYM_function, function, SYM_values, values);
+    return recordFrom2(SYM(apply), SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -337,7 +337,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return NULL;
     } else if (recordEvalTypeIs(target, EVAL_fetch)) {
         zvalue innerTarget = get(target, SYM_target);
-        return recordFrom2(RECCLS_store,
+        return recordFrom2(SYM(store),
             SYM_target, innerTarget, SYM_value, value);
     } else {
         die("Improper `lvalue` binding.");
@@ -346,7 +346,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue table) {
-    return makeRecord(RECCLS_closure,
+    return makeRecord(SYM(closure),
         METH_CALL(cat,
             tableFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
             table));
@@ -358,7 +358,7 @@ zvalue makeCall(zvalue function, zvalue values) {
         values = EMPTY_LIST;
     }
 
-    return recordFrom2(RECCLS_call, SYM_function, function, SYM_values, values);
+    return recordFrom2(SYM(call), SYM_function, function, SYM_values, values);
 }
 
 // Documented in spec.
@@ -463,12 +463,12 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return recordFrom1(RECCLS_export, SYM_value, node);
+    return recordFrom1(SYM(export), SYM_value, node);
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return recordFrom1(RECCLS_exportSelection, SYM_select, names);
+    return recordFrom1(SYM(exportSelection), SYM_select, names);
 }
 
 // Documented in spec.
@@ -504,7 +504,7 @@ zvalue makeFullClosure(zvalue baseData) {
         yieldNode = TOK_void;
     }
 
-    return makeRecord(RECCLS_closure,
+    return makeRecord(SYM(closure),
         METH_CALL(cat,
             table,
             tableFrom3(
@@ -534,7 +534,7 @@ zvalue makeImport(zvalue baseData) {
             data = collDel(data, SYM_select);
         }
 
-        return makeRecord(RECCLS_importModuleSelection, data);
+        return makeRecord(SYM(importModuleSelection), data);
     }
 
     if (get(data, SYM_name) == NULL) {
@@ -550,11 +550,11 @@ zvalue makeImport(zvalue baseData) {
         if (recordEvalTypeIs(get(data, SYM_source), EVAL_external)) {
             die("Cannot import external resource.");
         }
-        return makeRecord(RECCLS_importResource, data);
+        return makeRecord(SYM(importResource), data);
     }
 
     // It's a whole-module import.
-    return makeRecord(RECCLS_importModule, data);
+    return makeRecord(SYM(importModule), data);
 }
 
 // Documented in spec.
@@ -643,7 +643,7 @@ zvalue makeInfoTable(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return recordFrom3(RECCLS_fetch,
+    return recordFrom3(SYM(fetch),
         SYM_target,      node,
         SYM_interpolate, node,
         SYM_lvalue,      EMPTY_LIST);
@@ -651,7 +651,7 @@ zvalue makeInterpolate(zvalue node) {
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return recordFrom1(RECCLS_literal, SYM_value, value);
+    return recordFrom1(SYM(literal), SYM_value, value);
 }
 
 // Documented in spec.
@@ -662,7 +662,7 @@ zvalue makeMapExpression(zvalue mappings) {
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return recordFrom1(RECCLS_maybe, SYM_value, value);
+    return recordFrom1(SYM(maybe), SYM_value, value);
 }
 
 // Documented in spec.
@@ -672,13 +672,13 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return recordFrom1(RECCLS_noYield, SYM_value, value);
+    return recordFrom1(SYM(noYield), SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return recordFrom2(RECCLS_nonlocalExit,
+    return recordFrom2(SYM(nonlocalExit),
         SYM_function, function, SYM_value, value);
 }
 
@@ -705,35 +705,35 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return recordFrom1(RECCLS_varRef, SYM_name, name);
+    return recordFrom1(SYM(varRef), SYM_name, name);
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
-    return recordFrom2(RECCLS_varDef, SYM_name, name, SYM_value, value);
+    return recordFrom2(SYM(varDef), SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return recordFrom2(RECCLS_varDefMutable, SYM_name, name, SYM_value, value);
+    return recordFrom2(SYM(varDefMutable), SYM_name, name, SYM_value, value);
 }
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return recordFrom1(RECCLS_fetch, SYM_target, makeVarRef(name));
+    return recordFrom1(SYM(fetch), SYM_target, makeVarRef(name));
 }
 
 // Documented in spec.
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return recordFrom2(RECCLS_fetch,
+    return recordFrom2(SYM(fetch),
         SYM_target, makeVarRef(name), SYM_lvalue, EMPTY_LIST);
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return recordFrom2(RECCLS_store,
+    return recordFrom2(SYM(store),
         SYM_target, makeVarRef(name), SYM_value, value);
 }
 
@@ -790,7 +790,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
                 // It's a wildcard select.
                 select = METH_CALL(keyList, exports);
                 return makeRecord(
-                    RECCLS_importModuleSelection,
+                    SYM(importModuleSelection),
                     collPut(dataOf(node), SYM_select, select));
             }
         }

@@ -404,9 +404,9 @@ MOD_INIT(List) {
             METH_BIND(List, totalEq),
             METH_BIND(List, totalOrder),
             METH_BIND(List, valueList),
-            SYM_NAME(get),        FUN_Sequence_get,
-            SYM_NAME(keyList),    FUN_Sequence_keyList,
-            SYM_NAME(nthMapping), FUN_Sequence_nthMapping,
+            SYM(get),        FUN_Sequence_get,
+            SYM(keyList),    FUN_Sequence_keyList,
+            SYM(nthMapping), FUN_Sequence_nthMapping,
             NULL));
 
     EMPTY_LIST = allocList(0);

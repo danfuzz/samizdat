@@ -157,7 +157,7 @@
 
 /** Variable definition for a symbol. */
 #define SYM_DEF(name) \
-    zvalue SYM_NAME(name) = NULL
+    zvalue SYM(name) = NULL
 
 /**
  * Performs initialization of the indicated symbol, with the given string
@@ -165,7 +165,7 @@
  */
 #define SYM_INIT_WITH(name, value) \
     do { \
-        SYM_NAME(name) = symbolFromUtf8(-1, value); \
+        SYM(name) = symbolFromUtf8(-1, value); \
     } while (0)
 
 /**

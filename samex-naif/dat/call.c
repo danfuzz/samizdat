@@ -81,7 +81,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
         zvalue newArgs[argCount + 1];
         newArgs[0] = function;
         utilCpy(zvalue, &newArgs[1], args, argCount);
-        return symbolCall(SYM_NAME(call), argCount + 1, newArgs);
+        return symbolCall(SYM(call), argCount + 1, newArgs);
     }
 }
 

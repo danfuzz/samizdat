@@ -48,7 +48,7 @@ char *valDebugString(zvalue value) {
         return utilStrdup("(null)");
     }
 
-    if (SYM_NAME(debugString) == NULL) {
+    if (SYM(debugString) == NULL) {
         die("Too early to call `debugString`.");
     } else if (inValDebugString) {
         die("`valDebugString` called recursively");

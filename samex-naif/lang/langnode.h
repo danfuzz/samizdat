@@ -15,10 +15,10 @@
 
 
 /** Equivalent to `REFS::<name>` in the spec. */
-#define REFS(name) (makeVarFetch(SYM_##name))
+#define REFS(name) (makeVarFetch(SYM(name)))
 
 /** Equivalent to `SYMS::<name>` in the spec. */
-#define SYMS(name) (makeLiteral(SYM_##name))
+#define SYMS(name) (makeLiteral(SYM(name)))
 
 // Documented in spec.
 bool canYieldVoid(zvalue node);
