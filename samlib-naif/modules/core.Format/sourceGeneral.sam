@@ -135,13 +135,14 @@ fn SymbolTable_source(value, adorn) {
 
 ## Stringifies a record or an opaque core value.
 fn Value_source(value, adorn) {
-    def cls = get_class(value);
-    def prefix = nameString("@", cls.get_name());
-
-    return ifIs { eq(cls.get_parent(), Record) }
+    return ifIs { hasClass(value, Record) }
         {
             ## Record.
-            return prefix.cat("{", sourceGeneral(value.dataOf(), false), "}")
+            return "".cat(
+                nameString("@", value.get_name()),
+                "{",
+                sourceGeneral(value.dataOf(), false),
+                "}")
         }
         {
             ## Opaque value, possibly named.
@@ -149,7 +150,12 @@ fn Value_source(value, adorn) {
                 { name -> keyString(name) }
                 { "..." };
 
-            return prefix.cat("<", body, ">")
+            return "".cat(
+                "@<",
+                nameString("", get_class(value).get_name()),
+                " ",
+                body,
+                ">")
         }
 };
 
