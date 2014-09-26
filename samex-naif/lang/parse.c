@@ -58,21 +58,21 @@ static zvalue read(ParseState *state) {
 }
 
 /**
- * Reads the next token if its class matches the given class.
+ * Reads the next token if its name matches the given one.
  */
-static zvalue readMatch(ParseState *state, zvalue cls) {
+static zvalue readMatch(ParseState *state, zvalue name) {
     if (isEof(state)) {
         return NULL;
     }
 
     zvalue result = nth(state->tokens, state->at);
 
-    if (!hasClass(result, cls)) {
+    if (recHasName(result, name)) {
+        state->at++;
+        return result;
+    } else {
         return NULL;
     }
-
-    state->at++;
-    return result;
 }
 
 /**
@@ -94,11 +94,11 @@ static void reset(ParseState *state, zint mark) {
 }
 
 /**
- * Peeks at the next token, checking against the given class.
+ * Peeks at the next token, checking against the given name.
  */
-static zvalue peekMatch(ParseState *state, zvalue cls) {
+static zvalue peekMatch(ParseState *state, zvalue name) {
     zint mark = cursor(state);
-    zvalue result = readMatch(state, cls);
+    zvalue result = readMatch(state, name);
 
     if (result == NULL) {
         return NULL;
@@ -133,7 +133,7 @@ static void dumpState(ParseState *state) {
 
 // Definitions to help avoid boilerplate in the parser functions.
 #define RULE(name) parse_##name
-#define TOKEN(cls) RECCLS_##cls
+#define TOKEN(name) RECNAME_##name
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
 #define PARSE(name) RULE(name)(state)
 #define PARSE_OPT(name) parseOpt(RULE(name), state)
@@ -142,16 +142,16 @@ static void dumpState(ParseState *state) {
 #define PARSE_DELIMITED_SEQ(name, type) \
     parseDelimitedSequence(RULE(name), TOKEN(type), state)
 #define PARSE_LOOKAHEAD(name) parseLookahead(RULE(name), state)
-#define MATCH(cls) readMatch(state, (TOKEN(cls)))
+#define MATCH(name) readMatch(state, (TOKEN(name)))
 #define MATCH_ANY() read(state)
-#define PEEK(cls) peekMatch(state, (TOKEN(cls)))
+#define PEEK(name) peekMatch(state, (TOKEN(name)))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
 #define REJECT() do { RESET(); return NULL; } while (0)
 #define REJECT_IF(condition) \
     do { if ((condition)) REJECT(); } while (0)
-#define MATCH_OR_REJECT(cls) \
-    tempResult = MATCH(cls); \
+#define MATCH_OR_REJECT(name) \
+    tempResult = MATCH(name); \
     REJECT_IF(tempResult == NULL)
 #define PARSE_OR_REJECT(name) \
     tempResult = PARSE(name); \
