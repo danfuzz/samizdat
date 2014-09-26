@@ -346,7 +346,7 @@ DEF_PARSE(identifierSymbol) {
 
     REJECT_IF(get(token, SYM_value) != NULL);
 
-    name = METH_CALL(get_name, get_class(token));
+    name = get_name(token);
     zchar firstCh = zcharFromString(nth(valToString(name), 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
@@ -808,7 +808,7 @@ DEF_PARSE(yieldOrNonlocal) {
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
-        name = makeVarFetch(METH_CALL(get_name, get_class(op)));
+        name = makeVarFetch(get_name(op));
     }
 
     zvalue value = PARSE(expression);   // It's okay for this to be `NULL`.
@@ -901,7 +901,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1);  // Okay for it to be `NULL`.
     if (repeat != NULL) {
-        repeat = METH_CALL(get_name, get_class(repeat));
+        repeat = get_name(repeat);
     }
 
     return tableFrom2(SYM_name, name, SYM_repeat, repeat);

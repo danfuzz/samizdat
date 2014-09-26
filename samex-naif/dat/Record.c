@@ -17,10 +17,6 @@
 // Private Definitions
 //
 
-/** Array mapping symbol indices to record classes. */
-static zvalue theClasses[DAT_MAX_SYMBOLS];
-
-
 /**
  * Payload data for all records.
  */
@@ -53,20 +49,8 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeRecord(zvalue clsOrName, zvalue data) {
-    zvalue cls;
-    zvalue name;
-
-    if (hasClass(clsOrName, CLS_Symbol)) {
-        name = clsOrName;
-        cls = makeRecordClass(name);
-    } else {
-        if (!classHasParent(clsOrName, CLS_Record)) {
-            die("Attempt to call `makeRecord` on an improper class.");
-        }
-        cls = clsOrName;
-        name = METH_CALL(get_name, cls);
-    }
+zvalue makeRecord(zvalue name, zvalue data) {
+    zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
 
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
@@ -74,28 +58,12 @@ zvalue makeRecord(zvalue clsOrName, zvalue data) {
         assertHasClass(data, CLS_SymbolTable);
     }
 
-    zvalue result = datAllocValue(cls, sizeof(RecordInfo));
+    zvalue result = datAllocValue(CLS_Record, sizeof(RecordInfo));
     RecordInfo *info = getInfo(result);
 
     info->name = name;
-    info->nameIndex = symbolIndex(name);
+    info->nameIndex = index;
     info->data = data;
-
-    return result;
-}
-
-// Documented in header.
-zvalue makeRecordClass(zvalue name) {
-    // `symbolIndex` will bail if `name` isn't a symbol.
-    zint index = symbolIndex(name);
-    zvalue result = theClasses[index];
-
-    if (result != NULL) {
-        return result;
-    }
-
-    result = makeClass(name, CLS_Record, NULL, NULL, NULL);
-    theClasses[index] = result;
 
     return result;
 }
@@ -120,11 +88,6 @@ zint recNameIndex(zvalue record) {
 // Documented in header.
 FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
     return makeRecord(cls, value);
-}
-
-// Documented in header.
-FUNC_IMPL_1(Record_makeRecordClass, name) {
-    return makeRecordClass(name);
 }
 
 // Documented in header.
@@ -160,25 +123,30 @@ METH_IMPL_1(Record, hasName, name) {
 
 // Documented in header.
 METH_IMPL_1(Record, totalEq, other) {
-    // Note: `other` not guaranteed to be of same class.
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 
-    if (!haveSameClass(ths, other)) {
-        die("`totalEq` called with incompatible arguments.");
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
+
+    if (info1->nameIndex != info2->nameIndex) {
+        return NULL;
+    } else {
+        return valEq(info1->data, info2->data);
     }
-
-    return valEqNullOk(getInfo(ths)->data, getInfo(other)->data)
-        ? ths : NULL;
 }
 
 // Documented in header.
 METH_IMPL_1(Record, totalOrder, other) {
-    // Note: `other` not guaranteed to be of same class.
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 
-    if (!haveSameClass(ths, other)) {
-        die("`totalOrder` called with incompatible arguments.");
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
+
+    if (info1->nameIndex != info2->nameIndex) {
+        return valOrder(info1->name, info2->name);
     }
 
-    return valOrderNullOk(getInfo(ths)->data, getInfo(other)->data);
+    return valOrder(info1->data, info2->data);
 }
 
 /** Initializes the module. */
@@ -201,9 +169,6 @@ MOD_INIT(Record) {
 
     FUN_Record_makeRecord =
         datImmortalize(FUNC_VALUE(Record_makeRecord));
-
-    FUN_Record_makeRecordClass =
-        datImmortalize(FUNC_VALUE(Record_makeRecordClass));
 }
 
 // Documented in header.
@@ -214,6 +179,3 @@ SYM_DEF(dataOf);
 
 // Documented in header.
 zvalue FUN_Record_makeRecord = NULL;
-
-// Documented in header.
-zvalue FUN_Record_makeRecordClass = NULL;

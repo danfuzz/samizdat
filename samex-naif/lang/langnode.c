@@ -803,7 +803,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeRecord(
-        get_class(node),
+        get_name(node),
         collPut(dataOf(node), SYM_formals, formals));
 }
 
@@ -862,7 +862,7 @@ zvalue withModuleDefs(zvalue node) {
                     makeLiteral(SYM_info),    yieldInfo))));
 
     return makeRecord(
-        get_class(node),
+        get_name(node),
         METH_CALL(cat,
             dataOf(node),
             tableFrom3(
@@ -874,7 +874,7 @@ zvalue withModuleDefs(zvalue node) {
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
     return makeRecord(
-        get_class(node),
+        get_name(node),
         collPut(dataOf(node), SYM_name, name));
 }
 
@@ -912,7 +912,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue converted = listFromArray(size, arr);
 
     return makeRecord(
-        get_class(node),
+        get_name(node),
         METH_CALL(cat,
             dataOf(node),
             tableFrom1(SYM_statements, converted)));
@@ -921,7 +921,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 // Documented in spec.
 zvalue withTop(zvalue node) {
     return makeRecord(
-        get_class(node),
+        get_name(node),
         collPut(dataOf(node), SYM_top, BOOL_TRUE));
 }
 
@@ -941,14 +941,14 @@ zvalue withYieldDef(zvalue node, zvalue name) {
     }
 
     return makeRecord(
-        get_class(node),
+        get_name(node),
         METH_CALL(cat, table, newBindings));
 };
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
     return makeRecord(
-        get_class(node),
+        get_name(node),
         collDel(dataOf(node), SYM_interpolate));
 }
 
@@ -1006,7 +1006,7 @@ zvalue withoutTops(zvalue node) {
         : listFrom1(makeExportSelection(exports));
 
     return makeRecord(
-        get_class(node),
+        get_name(node),
         METH_CALL(cat,
             dataOf(node),
             tableFrom1(

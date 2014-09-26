@@ -114,8 +114,7 @@ sort with each other, using the reasonably standard meaning of those values:
 If two values have no defined order, this returns void.
 
 Each class specifies its own total-order ordering. See specific classes for
-details. Records all order their values by performing ordering
-on the respective payload values.
+details.
 
 The default implementation of this method uses `eq()` to check for sameness.
 It returns `0` if it sameness and returns void if not.
@@ -177,11 +176,6 @@ values. Returns `value` if the first value orders after the second or is
 identical to it. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \>= expression` forms.
-
-#### `get_className(value) -> symbol`
-
-Returns the name of the given `value`'s class. This function is the equivalent
-to `get_class(value).get_name()`.
 
 #### `gt(value, other) -> logic`
 

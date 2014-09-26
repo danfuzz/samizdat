@@ -43,6 +43,11 @@ extern void *datPayload(zvalue value);
 extern zvalue get_class(zvalue value);
 
 // Documented in header.
+zvalue get_name(zvalue value) {
+    return METH_CALL(get_name, value);
+}
+
+// Documented in header.
 char *valDebugString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");
@@ -100,19 +105,6 @@ zvalue valOrder(zvalue value, zvalue other) {
         return METH_CALL(totalOrder, value, other);
     } else {
         return METH_CALL(totalOrder, valueCls, otherCls);
-    }
-}
-
-// Documented in header.
-zvalue valOrderNullOk(zvalue value, zvalue other) {
-    if (value == other) {
-        return INT_0;
-    } else if (value == NULL) {
-        return INT_NEG1;
-    } else if (other == NULL) {
-        return INT_1;
-    } else {
-        return valOrder(value, other);
     }
 }
 

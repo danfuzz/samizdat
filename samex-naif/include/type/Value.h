@@ -75,6 +75,11 @@ SYM_DECL(totalEq);
 SYM_DECL(totalOrder);
 
 /**
+ * Calls the method `value.get_name()`.
+ */
+zvalue get_name(zvalue value);
+
+/**
  * Gets the "debug string" of the given value, as a `char *`. The caller
  * is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
@@ -103,12 +108,6 @@ bool valEqNullOk(zvalue value, zvalue other);
  * It is invalid to pass `NULL` to this function.
  */
 zvalue valOrder(zvalue value, zvalue other);
-
-/**
- * Like `valOrder`, except that `NULL`s are accepted as arguments. `NULL` is
- * considered "less than" any other value.
- */
-zvalue valOrderNullOk(zvalue value, zvalue other);
 
 /**
  * Calls `.toString()` on the given value.

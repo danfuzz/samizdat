@@ -109,6 +109,15 @@ fn Map_source(value, adorn) {
     return adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
 
+## Stringifies a record.
+fn Record_source(value, adorn) {
+    return "".cat(
+        nameString("@", value.get_name()),
+        "{",
+        sourceGeneral(value.dataOf(), false),
+        "}")
+};
+
 ## Stringifies a string.
 fn String_source(value, adorn) {
     def bodyChars = makeFilterGenerator(value)
@@ -133,30 +142,17 @@ fn SymbolTable_source(value, adorn) {
     return adornIf(adorn, "@", mapString, "")
 };
 
-## Stringifies a record or an opaque core value.
+## Stringifies an opaque core value.
 fn Value_source(value, adorn) {
-    return ifIs { hasClass(value, Record) }
-        {
-            ## Record.
-            return "".cat(
-                nameString("@", value.get_name()),
-                "{",
-                sourceGeneral(value.dataOf(), false),
-                "}")
-        }
-        {
-            ## Opaque value, possibly named.
-            def body = ifValue { value.debugSymbol() }
-                { name -> keyString(name) }
-                { "..." };
+    def nameStr = ifValue { value.debugSymbol() }
+        { name -> " ".cat(keyString(name)) }
+        { "" };
 
-            return "".cat(
-                "@<",
-                nameString("", get_class(value).get_name()),
-                " ",
-                body,
-                ">")
-        }
+    return "".cat(
+        "@<",
+        nameString("", get_class(value).get_name()),
+        nameStr,
+        ">")
 };
 
 ## Common code for the two `source*` variants, which takes an
@@ -171,6 +167,7 @@ export fn sourceGeneral(value, adorn) {
                     (Int):         { . -> Int_source(value, adorn)         },
                     (List):        { . -> List_source(value, adorn)        },
                     (Map):         { . -> Map_source(value, adorn)         },
+                    (Record):      { . -> Record_source(value, adorn)      },
                     (String):      { . -> String_source(value, adorn)      },
                     (Symbol):      { . -> Symbol_source(value, adorn)      },
                     (SymbolTable): { . -> SymbolTable_source(value, adorn) }

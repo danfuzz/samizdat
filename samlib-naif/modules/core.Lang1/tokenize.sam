@@ -112,7 +112,7 @@ def tokError = makeMainSequence(
     any,
     makeRepeat(makeCharSetComplement("\n")),
     makeCode { badCh, . ->
-        def msg = "Unrecognized character: ".cat(get_className(badCh));
+        def msg = "Unrecognized character: ".cat(badCh.get_name());
         @error{value: msg}
     });
 

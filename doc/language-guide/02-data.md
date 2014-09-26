@@ -324,7 +324,7 @@ There are four predefined box variants:
 #### Class
 
 A `Class` value represents the class of a value. Every class has a name, which
-is a symbol. There are three major categories of class:
+is a symbol. There are two major categories of class:
 
 * All core values (described above, and values of class `Class` as described
   here) have a "core class" as their class. The name of each core class is a
@@ -334,14 +334,8 @@ is a symbol. There are three major categories of class:
   name. For example, the global reference `String` refers to the core
   class named `String`.
 
-* Arbitrary data is allowed to be tagged with a an arbitrary class name,
-  using the syntax `@...` described under "Record," below. The class of
-  this tagged data is a "record class." There is a one-to-one
-  correspondence between a value and a record class with that value as
-  its name.
-
-* The third kind of class is an "object" class. These have a
-  name and secret. The secret is used to prevent creation of values of the
+* All other classes are "object" classes. These have a name and secret. The
+  secret is used to prevent creation of and inner access to values of the
   class beyond the scope of the class's trusted implementation.
 
 
