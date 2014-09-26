@@ -49,10 +49,10 @@
 // Symbols
 //
 
-/** Variable name for a method symbol. */
+/** Variable name for a symbol. */
 #define SYM(name) SYM_##name
 
-/** Declaration for a method symbol. */
+/** Declaration for a symbol. */
 #define SYM_DECL(name) \
     extern zvalue SYM(name) \
     // No semicolon here, so that use sites require it.
