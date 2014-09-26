@@ -21,9 +21,6 @@ SYM_DECL(dataOf);
 /** Global function `makeRecord`: Documented in spec. */
 extern zvalue FUN_Record_makeRecord;
 
-/** Global function `makeRecordClass`: Documented in spec. */
-extern zvalue FUN_Record_makeRecordClass;
-
 /**
  * Calls the method `dataOf()`.
  */
@@ -35,11 +32,6 @@ zvalue dataOf(zvalue value);
  * class or a symbol. The result is a record of the indicated / implied `cls`.
  */
 zvalue makeRecord(zvalue clsOrName, zvalue data);
-
-/**
- * Returns the class value for the record class with the given name.
- */
-zvalue makeRecordClass(zvalue name);
 
 /**
  * Returns whether the given `record` has the given `name`.
