@@ -21,7 +21,6 @@
 
 #define DEF_TOKEN(name, str) \
     SYM_DECL(name); \
-    extern zvalue RECNAME_##name; \
     extern zvalue TOK_##name \
     // No semicolon here, so that use sites require it.
 

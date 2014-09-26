@@ -18,7 +18,6 @@
     zvalue STR_##name = NULL
 
 #define DEF_TOKEN(name, str) \
-    zvalue RECNAME_##name = NULL; \
     zvalue TOK_##name = NULL
 
 #define DEF_SYMBOL(name, str) \
@@ -46,7 +45,6 @@ MOD_INIT(lang_const) {
         STR_##name = datImmortalize(stringFromUtf8(-1, str))
 
     #define DEF_TOKEN(name, str) \
-        RECNAME_##name = SYM(name); \
         TOK_##name = datImmortalize( \
             makeRecord(SYM(name), EMPTY_SYMBOL_TABLE))
 
