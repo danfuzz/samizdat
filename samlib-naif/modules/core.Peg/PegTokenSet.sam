@@ -44,25 +44,22 @@ fn PegTokenSet.parse(box, input, items*) {
 
 ## Documented in spec.
 export fn makeToken(name) {
-    ## This is just uses a single-item token set. The performance difference
-    ## between that and doing a more special-case single item class check is
+    ## This just makes a single-item token set. The performance difference
+    ## between that and doing a more special-case single item name check is
     ## probably negligible.
-    ##
-    ## TODO: Remove the `ifIs` once names are always passed as symbols.
-    return ifIs { hasClass(name, Class) }
-        { makeTokenSet(name.get_name()) }
-        { makeTokenSet(name) }
+
+    return makeTokenSet(name)
 };
 
 ## Documented in spec.
 export fn makeTokenSet(names*) {
     ifIs { eq(names, []) }
         {
-            ## Trivial case: Empty set, so it can never succeed.
+            ## Trivial case: Empty set, so it can never succeed in matching.
             return fail
         };
 
-    def set = {names*: true};  ## A set-like map of all the token classes.
+    def set = {names*: true};  ## A set-like map of all the token names.
 
     return makeObject(PegTokenSet, SECRET, @{set})
 };

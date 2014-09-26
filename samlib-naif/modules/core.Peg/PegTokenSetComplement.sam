@@ -50,7 +50,7 @@ export fn makeTokenSetComplement(names*) {
             return any
         };
 
-    def set = {names*: true};  ## A set-like map of all the token classes.
+    def set = {names*: true};  ## A set-like map of all the token names.
 
     return makeObject(PegTokenSetComplement, SECRET, @{set})
 };
