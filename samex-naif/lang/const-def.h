@@ -8,8 +8,8 @@
 //
 // `DEF_STRING(name, "string")` -- a string constant.
 // `DEF_SYMBOL(name, "string")` -- an interned symbol.
-// `DEF_RECORD(name, "string")` -- a record class.
-// `DEF_TOKEN(name, "string")` -- a record class and a token.
+// `DEF_RECORD(name, "string")` -- a record symbol.
+// `DEF_TOKEN(name, "string")` -- a record symbol and a token.
 //
 // Tokens are empty-payload records, whose classes are named with the
 // indicated strings.
