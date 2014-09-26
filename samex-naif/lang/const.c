@@ -17,18 +17,18 @@
 #define DEF_STRING(name, str) \
     zvalue STR_##name = NULL
 
-#define DEF_RECORD(name, str) \
+#define DEF_TOKEN(name, str) \
     zvalue RECNAME_##name = NULL; \
     zvalue TOK_##name = NULL
 
 #define DEF_SYMBOL(name, str) \
     SYM_DEF(name); \
-    DEF_RECORD(name, str)
+    DEF_TOKEN(name, str)
 
 #include "const-def.h"
 
 #undef DEF_STRING
-#undef DEF_RECORD
+#undef DEF_TOKEN
 #undef DEF_SYMBOL
 
 
@@ -45,14 +45,14 @@ MOD_INIT(lang_const) {
     #define DEF_STRING(name, str) \
         STR_##name = datImmortalize(stringFromUtf8(-1, str))
 
-    #define DEF_RECORD(name, str) \
+    #define DEF_TOKEN(name, str) \
         RECNAME_##name = SYM(name); \
         TOK_##name = datImmortalize( \
             makeRecord(RECNAME_##name, EMPTY_SYMBOL_TABLE))
 
     #define DEF_SYMBOL(name, str) \
         SYM_INIT_WITH(name, str); \
-        DEF_RECORD(name, str)
+        DEF_TOKEN(name, str)
 
     #include "const-def.h"
 

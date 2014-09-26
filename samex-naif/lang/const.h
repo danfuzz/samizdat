@@ -19,20 +19,20 @@
     extern zvalue STR_##name \
     // No semicolon here, so that use sites require it.
 
-#define DEF_RECORD(name, str) \
+#define DEF_TOKEN(name, str) \
     SYM_DECL(name); \
     extern zvalue RECNAME_##name; \
     extern zvalue TOK_##name \
     // No semicolon here, so that use sites require it.
 
 #define DEF_SYMBOL(name, str) \
-    DEF_RECORD(name, str)
+    DEF_TOKEN(name, str)
     // No semicolon here, so that use sites require it.
 
 #include "const-def.h"
 
 #undef DEF_STRING
-#undef DEF_RECORD
+#undef DEF_TOKEN
 #undef DEF_SYMBOL
 
 

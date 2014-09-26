@@ -8,7 +8,7 @@
 //
 // `DEF_STRING(name, "string")` -- a string constant.
 // `DEF_SYMBOL(name, "string")` -- an interned symbol and token (empty record).
-// `DEF_RECORD(name, "string")` -- just a token; symbol assumed to exist.
+// `DEF_TOKEN(name, "string")` -- just a token; symbol assumed to exist.
 //
 
 DEF_STRING(CH_DOLLAR,            "$");
@@ -103,6 +103,6 @@ DEF_SYMBOL(yieldDef,              "yieldDef");
 DEF_SYMBOL(zfalse,                "false");  // `z` avoids clash with C.
 DEF_SYMBOL(ztrue,                 "true");   // `z` avoids clash with C.
 
-DEF_RECORD(call,                  "call");
-DEF_RECORD(fetch,                 "fetch");
-DEF_RECORD(store,                 "store");
+DEF_TOKEN(call,  "call");
+DEF_TOKEN(fetch, "fetch");
+DEF_TOKEN(store, "store");
