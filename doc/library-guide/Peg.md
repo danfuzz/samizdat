@@ -15,14 +15,14 @@ higher-level tokens with either simply a tree-like rule invocation or
 to produce tree structures per se).
 
 When building tokenizers, the input elements are taken to be in the form
-of character-as-token items. Each element is a token whose class tag is
+of character-as-token items. Each element is a token whose name (tag) is
 a single-string character (and whose value if any is irrelevant for the
 parsing mechanism). There are helper functions which take strings and
 automatically convert them into this form.
 
 When building tree parsers, the input elements are expected to be
-tokens per se, that is, tokens whose class tag is taken to indicate a
-token class.
+tokens per se, that is, records whose name tag is taken to indicate a
+token type.
 
 The output of the functions named `$Peg::make*` are all parsing rules. These
 are all objects with a class that binds the `parse` method. A `parse` method
