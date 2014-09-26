@@ -110,12 +110,6 @@ bool valEqNullOk(zvalue value, zvalue other);
 zvalue valOrder(zvalue value, zvalue other);
 
 /**
- * Like `valOrder`, except that `NULL`s are accepted as arguments. `NULL` is
- * considered "less than" any other value.
- */
-zvalue valOrderNullOk(zvalue value, zvalue other);
-
-/**
  * Calls `.toString()` on the given value.
  */
 zvalue valToString(zvalue value);

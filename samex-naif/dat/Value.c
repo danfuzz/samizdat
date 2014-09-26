@@ -109,19 +109,6 @@ zvalue valOrder(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-zvalue valOrderNullOk(zvalue value, zvalue other) {
-    if (value == other) {
-        return INT_0;
-    } else if (value == NULL) {
-        return INT_NEG1;
-    } else if (other == NULL) {
-        return INT_1;
-    } else {
-        return valOrder(value, other);
-    }
-}
-
-// Documented in header.
 zvalue valToString(zvalue value) {
     return METH_CALL(toString, value);
 }
