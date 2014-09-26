@@ -43,9 +43,9 @@ MOD_INIT(lang) {
     memset(langSymbolMap, 0, sizeof(langSymbolMap));
 
     #define REC_MAP(name) \
-        langSymbolMap[symbolIndex(RECNAME_##name)] = EVAL_##name;
+        langSymbolMap[symbolIndex(SYM(name))] = EVAL_##name;
     #define SYM_MAP(name) \
-        langSymbolMap[symbolIndex(SYM_##name)] = EVAL_##name;
+        langSymbolMap[symbolIndex(SYM(name))] = EVAL_##name;
 
     REC_MAP(apply);
     REC_MAP(call);

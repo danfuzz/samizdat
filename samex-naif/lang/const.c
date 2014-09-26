@@ -48,7 +48,7 @@ MOD_INIT(lang_const) {
     #define DEF_TOKEN(name, str) \
         RECNAME_##name = SYM(name); \
         TOK_##name = datImmortalize( \
-            makeRecord(RECNAME_##name, EMPTY_SYMBOL_TABLE))
+            makeRecord(SYM(name), EMPTY_SYMBOL_TABLE))
 
     #define DEF_SYMBOL(name, str) \
         SYM_INIT_WITH(name, str); \

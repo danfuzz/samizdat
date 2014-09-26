@@ -133,7 +133,7 @@ static void dumpState(ParseState *state) {
 
 // Definitions to help avoid boilerplate in the parser functions.
 #define RULE(name) parse_##name
-#define TOKEN(name) RECNAME_##name
+#define TOKEN(name) SYM(name)
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
 #define PARSE(name) RULE(name)(state)
 #define PARSE_OPT(name) parseOpt(RULE(name), state)
@@ -449,7 +449,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return recordFrom2(RECNAME_mapping, SYM_keys, keys, SYM_value, value);
+    return recordFrom2(SYM(mapping), SYM_keys, keys, SYM_value, value);
 }
 
 /**
@@ -474,7 +474,7 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return recordFrom2(RECNAME_mapping,
+    return recordFrom2(SYM(mapping),
         SYM_keys,  listFrom1(makeLiteral(name)),
         SYM_value, makeVarFetch(name));
 }
@@ -1099,7 +1099,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest, optSuffix));
-    return recordFrom1(RECNAME_internal, SYM_name, name);
+    return recordFrom1(SYM(internal), SYM_name, name);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1111,7 +1111,7 @@ DEF_PARSE(importSource2) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest));
-    return recordFrom1(RECNAME_external, SYM_name, name);
+    return recordFrom1(SYM(external), SYM_name, name);
 }
 
 // Documented in spec.
