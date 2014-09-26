@@ -131,7 +131,7 @@ def parIdentifierSymbol = {:
 |
     token = .
     {
-        def name = get_className(token);
+        def name = token.get_name();
         ifIs { KEYWORDS.get(name) }
             { makeLiteral(name) }
     }
@@ -526,7 +526,7 @@ def parYieldOrNonlocal = {:
             { @yield{} }
         )
     |
-        { makeVarFetch(get_className(op)) }
+        { makeVarFetch(op.get_name()) }
     )
 
     ## A value expression is mandatory if there is a `?` after the
@@ -589,7 +589,7 @@ def parFormal = {:
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { {repeat: get_className(r)} }
+        { {repeat: r.get_name()} }
     |
         { {} }
     )
