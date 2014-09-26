@@ -123,25 +123,27 @@ METH_IMPL_1(Record, hasName, name) {
 
 // Documented in header.
 METH_IMPL_1(Record, totalEq, other) {
-    // Note: `other` not guaranteed to be of same class.
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 
-    if (!haveSameClass(ths, other)) {
-        die("`totalEq` called with incompatible arguments.");
-    }
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
 
-    return valEqNullOk(getInfo(ths)->data, getInfo(other)->data)
-        ? ths : NULL;
+    return (info1->nameIndex == info2->nameIndex)
+        && valEq(info1->data, info2->data);
 }
 
 // Documented in header.
 METH_IMPL_1(Record, totalOrder, other) {
-    // Note: `other` not guaranteed to be of same class.
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 
-    if (!haveSameClass(ths, other)) {
-        die("`totalOrder` called with incompatible arguments.");
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
+
+    if (info1->nameIndex != info2->nameIndex) {
+        return valOrder(info1->name, info2->name);
     }
 
-    return valOrderNullOk(getInfo(ths)->data, getInfo(other)->data);
+    return valOrder(info1->data, info2->data);
 }
 
 /** Initializes the module. */
