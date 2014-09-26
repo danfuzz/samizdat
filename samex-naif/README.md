@@ -90,8 +90,8 @@ Beyond the general conventions, the following are used:
   particular, short sequences of nonalphabetic characters usually have
   variable names of the form `STR_CH_CHARNAMES`.
 
-* `TOK_tokenName` &mdash; Identifies a token value whose class is
-  `CLS_tokenName`, where the class's name is `"tokenName"`.
+* `TOK_tokenName` &mdash; Identifies a token value whose name (tag) is
+  `@tokenName`.
 
 * `get_fieldName` &mdash; Identifies a function which acts as a getter.
   This is meant to parallel Samizdat's getter function syntax.

@@ -77,17 +77,17 @@ fn safeIndexForNodes(baseStr, nodes*) {
 ## regard to the contents of `node`.
 fn safeIndex(node, baseStr) {
     return ifSwitch(
-        { get_class(node) },
+        { node.get_name() },
         {
-            @@apply: { . ->
+            @apply: { . ->
                 safeIndexForNodes(baseStr, node::function, node::values);
             },
 
-            @@call: { . ->
+            @call: { . ->
                 safeIndexForNodes(baseStr, node::function, node::values*);
             },
 
-            @@closure: { . ->
+            @closure: { . ->
                 def namesIndex =
                     safeIndexForNames(baseStr, node::name?*, node::yieldDef?*);
                 def nodesIndex =
@@ -96,15 +96,15 @@ fn safeIndex(node, baseStr) {
                 maxOf(namesIndex, nodesIndex)
             },
 
-            @@exportSelection: { . ->
+            @exportSelection: { . ->
                 safeIndexForNames(baseStr, node::select*)
             },
 
-            @@fetch: { . ->
+            @fetch: { . ->
                 safeIndexForNodes(baseStr, node::target)
             },
 
-            @@importModuleSelection: { . ->
+            @importModuleSelection: { . ->
                 ## I don't think this can come up in practice (nor the other
                 ## `import*` variants, really). So, just fail hard. Note: The
                 ## only situation this can't actually be made to work is on
@@ -113,31 +113,31 @@ fn safeIndex(node, baseStr) {
                 die("Cannot perform `safeIndex` on `importModuleSelection` node.")
             },
 
-            @@store: { . ->
+            @store: { . ->
                 safeIndexForNodes(baseStr, node::target, node::value)
             },
 
-            @@literal:
-            @@void: { . ->
+            @literal:
+            @void: { . ->
                 -1
             },
 
-            @@varDef:
-            @@varDefMutable: { . ->
+            @varDef:
+            @varDefMutable: { . ->
                 def nameIndex = safeIndexForNames(baseStr, node::name);
                 def valueIndex = safeIndexForNodes(baseStr, node::value?*);
                 maxOf(nameIndex, valueIndex)
             },
 
-            @@export:
-            @@maybe:
-            @@noYield: { . ->
+            @export:
+            @maybe:
+            @noYield: { . ->
                 safeIndexForNodes(baseStr, node::value)
             },
 
-            @@importModule:
-            @@importResource:
-            @@varRef: { . ->
+            @importModule:
+            @importResource:
+            @varRef: { . ->
                 safeIndexForNames(baseStr, node::name);
             }
         })

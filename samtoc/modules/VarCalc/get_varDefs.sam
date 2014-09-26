@@ -22,35 +22,35 @@ fn catVarDefs(nodes*) {
 ## Returns list of variable names newly-defined by `node`. Result may have
 ## duplicates.
 export fn get_varDefs(node) {
-    return switch (get_class(node)) {
-        @@export: {
+    return switch (node.name) {
+        @export: {
             get_varDefs(node::value)
         };
 
-        @@importModuleSelection: {
+        @importModuleSelection: {
             def statements = makeDynamicImport(node);
             catVarDefs(statements*)
         };
 
-        @@importModule:
-        @@importResource:
-        @@varDef:
-        @@varDefMutable: {
+        @importModule:
+        @importResource:
+        @varDef:
+        @varDefMutable: {
             [node::name]
         };
 
-        @@apply:
-        @@call:
-        @@closure:
-        @@exportSelection:
-        @@fetch:
-        @@literal:
-        @@literalRef:
-        @@maybe:
-        @@noYield:
-        @@store:
-        @@varRef:
-        @@void: {
+        @apply:
+        @call:
+        @closure:
+        @exportSelection:
+        @fetch:
+        @literal:
+        @literalRef:
+        @maybe:
+        @noYield:
+        @store:
+        @varRef:
+        @void: {
             []
         }
     }

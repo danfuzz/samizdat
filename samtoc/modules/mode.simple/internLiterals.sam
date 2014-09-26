@@ -15,22 +15,22 @@ import ./Interner :: intern;
 
 ## Does one layer of literal interning.
 fn lits(node, interner) {
-    return switch (def cls = get_class(node)) {
-        @@apply: {
+    return switch (def nodeName = node.name) {
+        @apply: {
             def function = lits(node::function, interner);
             def values = lits(node::values, interner);
 
             @apply{values, function}
         };
 
-        @@call: {
+        @call: {
             @call{
                 function: lits(node::function, interner),
                 values: [ a in node::values -> lits(a, interner) ]
             }
         };
 
-        @@closure: {
+        @closure: {
             def name = (def value = node::name)
                 & @{name: lits(@literal{value}, interner)}
                 | @{};
@@ -44,57 +44,57 @@ fn lits(node, interner) {
             })
         };
 
-        @@fetch: {
+        @fetch: {
             def target = lits(node::target, interner);
             @fetch{target}
         };
 
-        @@importResource: {
+        @importResource: {
             def source = lits(node::source, interner);
             def format = intern(interner, node::format);
             @importResource{node.dataOf()*, source, format}
         };
 
-        @@literal: {
+        @literal: {
             @literalRef{id: intern(interner, node::value)}
         };
 
-        @@store: {
+        @store: {
             def target = lits(node::target, interner);
             def value = lits(node::value, interner);
             @store{target, value}
         };
 
         ## Used as the `source` in `import*` nodes.
-        @@external:
-        @@internal: {
-            @(cls){name: intern(interner, node::name)}
+        @external:
+        @internal: {
+            @(nodeName){name: intern(interner, node::name)}
         };
 
-        @@importModule:
-        @@importModuleSelection: {
+        @importModule:
+        @importModuleSelection: {
             def source = lits(node::source, interner);
-            @(cls){node.dataOf()*, source}
+            @(nodeName){node.dataOf()*, source}
         };
 
-        @@varDef:
-        @@varDefMutable: {
+        @varDef:
+        @varDefMutable: {
             def value = ifValue { node::value }
                 { value -> @{value: lits(value, interner)} }
                 { @{} };
-            @(cls){name: node::name, value*}
+            @(nodeName){name: node::name, value*}
         };
 
-        @@export:
-        @@maybe:
-        @@noYield: {
+        @export:
+        @maybe:
+        @noYield: {
             def value = lits(node::value, interner);
-            @(cls){value}
+            @(nodeName){value}
         };
 
-        @@exportSelection:
-        @@varRef:
-        @@void: {
+        @exportSelection:
+        @varRef:
+        @void: {
             node
         };
     }

@@ -25,12 +25,12 @@ export fn sliceGeneral(seq, style, start, optEnd?) {
     def func = ifIs { eq(style, @exclusive) }
         { @sliceExclusive }
         { @sliceInclusive };
-    def startIndex = ifIs { hasClass(start, @@fromStart) }
+    def startIndex = ifIs { start.hasName(@fromStart) }
         { start::value }
         { limit.sub(start::value) };
     def optEndIndex = (ifValue { optEnd* }
         { end ->
-            ifIs { hasClass(end, @@fromStart) }
+            ifIs { end.hasName(@fromStart) }
                 { end::value }
                 { limit.sub(end::value) }
         })?;

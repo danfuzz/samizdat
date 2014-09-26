@@ -133,7 +133,7 @@ static void dumpState(ParseState *state) {
 
 // Definitions to help avoid boilerplate in the parser functions.
 #define RULE(name) parse_##name
-#define TOKEN(cls) CLS_##cls
+#define TOKEN(cls) RECCLS_##cls
 #define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
 #define PARSE(name) RULE(name)(state)
 #define PARSE_OPT(name) parseOpt(RULE(name), state)
@@ -143,6 +143,7 @@ static void dumpState(ParseState *state) {
     parseDelimitedSequence(RULE(name), TOKEN(type), state)
 #define PARSE_LOOKAHEAD(name) parseLookahead(RULE(name), state)
 #define MATCH(cls) readMatch(state, (TOKEN(cls)))
+#define MATCH_ANY() read(state)
 #define PEEK(cls) peekMatch(state, (TOKEN(cls)))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
@@ -337,8 +338,7 @@ DEF_PARSE(identifierSymbol) {
     zvalue name = PARSE(nameSymbol);
     if (name != NULL) { return makeLiteral(name); }
 
-    // Equivalent to matching `.` in a pex.
-    zvalue token = MATCH_OR_REJECT(Value);
+    zvalue token = MATCH_ANY();
 
     // We reject tokens that either/both have a `value` binding or have a
     // non-alphabetic name, instead of looking up in `KEYWORDS`: `KEYWORDS`
@@ -449,7 +449,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return recordFrom2(CLS_mapping, SYM_keys, keys, SYM_value, value);
+    return recordFrom2(RECCLS_mapping, SYM_keys, keys, SYM_value, value);
 }
 
 /**
@@ -474,7 +474,7 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return recordFrom2(CLS_mapping,
+    return recordFrom2(RECCLS_mapping,
         SYM_keys,  listFrom1(makeLiteral(name)),
         SYM_value, makeVarFetch(name));
 }
@@ -524,12 +524,9 @@ DEF_PARSE(record) {
 
     MATCH_OR_REJECT(CH_AT);
 
-    zvalue cls;
     zvalue name = PARSE(identifierSymbol);
-    if (name != NULL) {
-        cls = makeLiteral(makeRecordClass(get(name, SYM_value)));
-    } else {
-        cls = PARSE_OR_REJECT(parenExpression);
+    if (name == NULL) {
+        name = PARSE_OR_REJECT(parenExpression);
     }
 
     // Value is mandatory, so the last part is full of `*_OR_REJECT`.
@@ -541,7 +538,7 @@ DEF_PARSE(record) {
         value = makeSymbolTableExpression(mappings);
     }
 
-    return makeCall(REFS(makeRecord), listFrom2(cls, value));
+    return makeCall(REFS(makeRecord), listFrom2(name, value));
 }
 
 // Documented in spec.
@@ -720,19 +717,30 @@ DEF_PARSE(unaryExpression) {
         if (hasClass(one, CLS_List)) {
             // Regular function call.
             result = makeCallOrApply(result, one);
-        } else if (hasClass(one, CLS_call)) {
-            // Method call.
-            zvalue function = get(one, SYM_function);
-            zvalue values = get(one, SYM_values);
-            result = makeCallOrApply(function, listPrepend(result, values));
-        } else if (valEq(one, TOK_CH_STAR)) {
-            result = makeInterpolate(result);
-        } else if (valEq(one, TOK_CH_QMARK)) {
-            result = makeMaybeValue(result);
-        } else if (hasClass(one, CLS_literal)) {
-            result = makeCallOrApply(SYMS(get), listFrom2(result, one));
-        } else {
-            die("Unexpected postfix.");
+        } else switch (recordEvalType(one)) {
+            case EVAL_call: {
+                // Method call.
+                zvalue function = get(one, SYM_function);
+                zvalue values = get(one, SYM_values);
+                result = makeCallOrApply(function,
+                    listPrepend(result, values));
+                break;
+            }
+            case EVAL_CH_STAR: {
+                result = makeInterpolate(result);
+                break;
+            }
+            case EVAL_CH_QMARK: {
+                result = makeMaybeValue(result);
+                break;
+            }
+            case EVAL_literal: {
+                result = makeCallOrApply(SYMS(get), listFrom2(result, one));
+                break;
+            }
+            default: {
+                die("Unexpected postfix.");
+            }
         }
     }
 
@@ -812,7 +820,7 @@ DEF_PARSE(yieldOrNonlocal) {
     zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
     zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue name = hasClass(op, CLS_yield)
+    zvalue name = recordEvalTypeIs(op, EVAL_yield)
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
@@ -1091,7 +1099,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest, optSuffix));
-    return recordFrom1(CLS_internal, SYM_name, name);
+    return recordFrom1(RECCLS_internal, SYM_name, name);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1103,7 +1111,7 @@ DEF_PARSE(importSource2) {
 
     zvalue name = METH_APPLY(cat,
         METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest));
-    return recordFrom1(CLS_external, SYM_name, name);
+    return recordFrom1(RECCLS_external, SYM_name, name);
 }
 
 // Documented in spec.
@@ -1352,7 +1360,7 @@ zvalue langParseProgram0(zvalue program) {
 
 // Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
-    if (hasClass(node, CLS_closure)) {
+    if (recordEvalTypeIs(node, EVAL_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);
     }

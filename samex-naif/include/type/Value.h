@@ -39,9 +39,6 @@ SYM_DECL(exports);
 /** Symbol `imports`. Same comment applies as with `exports`, above. */
 SYM_DECL(imports);
 
-/** Method `.get_name()`: Documented in spec. */
-SYM_DECL(get_name);
-
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
  *
@@ -49,6 +46,12 @@ SYM_DECL(get_name);
  * in any way to the higher layer environment.
  */
 SYM_DECL(gcMark);
+
+/** Method `.get_name()`: Documented in spec. */
+SYM_DECL(get_name);
+
+/** Method `.hasName()`: Documented in spec. */
+SYM_DECL(hasName);
 
 /** Symbol `main`. Same comment applies as with `exports`, above. */
 SYM_DECL(main);

@@ -33,6 +33,12 @@ zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf);
 zvalue symbolFromIndex(zint index);
 
 /**
+ * Compares two symbols for equality. This will die with an error if one
+ * or the other argument is not actually a symbol.
+ */
+bool symbolEq(zvalue symbol1, zvalue symbol2);
+
+/**
  * Gets the interned symbol that corresponds to the given `name`, creating it
  * if it doesn't already exist. `name` must be a `String`.
  */

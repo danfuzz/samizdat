@@ -53,9 +53,19 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeRecord(zvalue cls, zvalue data) {
-    if (!classHasParent(cls, CLS_Record)) {
-        die("Attempt to call `makeRecord` on an improper class.");
+zvalue makeRecord(zvalue clsOrName, zvalue data) {
+    zvalue cls;
+    zvalue name;
+
+    if (hasClass(clsOrName, CLS_Symbol)) {
+        name = clsOrName;
+        cls = makeRecordClass(name);
+    } else {
+        if (!classHasParent(clsOrName, CLS_Record)) {
+            die("Attempt to call `makeRecord` on an improper class.");
+        }
+        cls = clsOrName;
+        name = METH_CALL(get_name, cls);
     }
 
     if (data == NULL) {
@@ -67,8 +77,8 @@ zvalue makeRecord(zvalue cls, zvalue data) {
     zvalue result = datAllocValue(cls, sizeof(RecordInfo));
     RecordInfo *info = getInfo(result);
 
-    info->name = METH_CALL(get_name, cls);
-    info->nameIndex = symbolIndex(info->name);
+    info->name = name;
+    info->nameIndex = symbolIndex(name);
     info->data = data;
 
     return result;
@@ -138,6 +148,11 @@ METH_IMPL_0(Record, get_name) {
 }
 
 // Documented in header.
+METH_IMPL_1(Record, hasName, name) {
+    return symbolEq(getInfo(ths)->name, name) ? ths : NULL;
+}
+
+// Documented in header.
 METH_IMPL_1(Record, totalEq, other) {
     // Note: `other` not guaranteed to be of same class.
 
@@ -173,6 +188,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
             METH_BIND(Record, get_name),
+            METH_BIND(Record, hasName),
             METH_BIND(Record, totalEq),
             METH_BIND(Record, totalOrder),
             NULL));

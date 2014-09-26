@@ -149,7 +149,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return recordFrom1(CLS_int, SYM_value, intval);
+    return recordFrom1(RECCLS_int, SYM_value, intval);
 }
 
 /**
@@ -201,7 +201,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         }
     }
 
-    return recordFrom1(CLS_identifier, SYM_value, name);
+    return recordFrom1(RECCLS_identifier, SYM_value, name);
 }
 
 /**
@@ -251,7 +251,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZstring(s);
-    return recordFrom1(CLS_string, SYM_value, string);
+    return recordFrom1(RECCLS_string, SYM_value, string);
 }
 
 /**
@@ -267,7 +267,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue name = symbolFromString(get(result, SYM_value));
-    return recordFrom1(CLS_identifier, SYM_value, name);
+    return recordFrom1(RECCLS_identifier, SYM_value, name);
 }
 
 /**
@@ -349,7 +349,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     }
 
     zvalue value = stringFromZstring(s);
-    return recordFrom2(CLS_directive,
+    return recordFrom2(RECCLS_directive,
         SYM_name, get(name, SYM_value),
         SYM_value, value);
 }
@@ -417,7 +417,7 @@ zvalue langLanguageOf0(zvalue string) {
     zvalue result = tokenizeAnyToken(&state);
 
     if ((result != NULL)
-        && hasClass(result, CLS_directive)
+        && recordEvalTypeIs(result, EVAL_directive)
         && valEq(get(result, SYM_name), SYM_language)) {
         return get(result, SYM_value);
     }
@@ -437,7 +437,7 @@ zvalue langTokenize0(zvalue string) {
         zvalue one = tokenizeAnyToken(&state);
         if (one == NULL) {
             break;
-        } else if (!hasClass(one, CLS_directive)) {
+        } else if (!recordEvalTypeIs(one, EVAL_directive)) {
             if (out >= LANG_MAX_TOKENS) {
                 die("Too many tokens.");
             }

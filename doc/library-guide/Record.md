@@ -15,24 +15,28 @@ Returns the data payload of the given record.
 
 Returns the name (tag) of the given record.
 
+#### `.hasName(name) -> record`
+
+Returns `this` if its name is as given, or void if not.
+
 
 ### Primitive Definitions
 
-#### `makeRecord(cls, value?) -> .`
+#### `makeRecord(clsOrName, value?) -> .`
 
-Returns a record with the given class (a value of class `Class`)
-and optional data payload value (which must be a symbol table if present).
-If `value` is not specified, it defaults to `@{}` (the empty symbol table).
-These equivalences hold for Samizdat source code:
+Returns a record with the given class (a value of class `Class`) or name
+(a symbol), and optional data payload value (which must be a symbol table if
+present). If `value` is not specified, it defaults to `@{}` (the empty symbol
+table). These equivalences hold for Samizdat source code:
 
 ```
-@type(value)    is equivalent to  makeRecord(@@type, value)
-@(type)(value)  is equivalent to  makeRecord(type, value)
+@x(value)    is equivalent to  makeRecord(@x, value)
+@(x)(value)  is equivalent to  makeRecord(x, value)
 ```
 
-It is a fatal error (terminating the runtime) to pass for `cls` something
-other than a record class or for `value` to be something other than
-a symbol table.
+It is a fatal error (terminating the runtime) to pass for `clsOrName`
+anything other than a record class or a symbol. It is also a fatal error
+to pass for `value` anything other than a symbol table.
 
 **Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
 

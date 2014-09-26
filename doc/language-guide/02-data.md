@@ -354,15 +354,15 @@ is a symbol. There are three major categories of class:
 
 ### Record (data)
 
-A record is a value that is constructed with an explicit record class and
-data payload.
+A record is a value that is constructed with an explicit record name and
+data payload. Record names can be either symbols or record classes.
 
 Record literals are introduced with an at-sign (`@`). This is followed by
-a required class and then a data payload, which must be a symbol table. The
-class and payload must each be surrounded by parentheses (separately), with
+a required name and then a data payload, which must be a symbol table.
+The name and payload must each be surrounded by parentheses (separately), with
 the following exceptions:
 
-* If the class is literal, then it can be represented as its double-quoted
+* If the name is literal, then it can be represented as its double-quoted
   name, directly after the `@`, with no parentheses required. In addition,
   if the name abides by the syntax for identifiers in the language, then the
   quotes can be omitted.
@@ -371,8 +371,8 @@ the following exceptions:
   be represented without parentheses or the `@` prefix.
 
 ```
-@(@@heartState)(@{state: "pure"}  ## "heart state" value, symbol table payload
-@heartState{state: "pure"}        ## usual shorthand for same
+@(@heartState)(@{state: "pure"}  ## "heart state" value, symbol table payload
+@heartState{state: "pure"}       ## usual shorthand for same
 
 @spell(@{name: "frotz", purpose: "cause glow"})  ## symbol table payload
 @spell{name: "frotz", purpose: "cause glow"}     ## shorthand for same

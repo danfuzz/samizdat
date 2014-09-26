@@ -215,10 +215,10 @@ def tokFile = {:
 ## Map from opening tokens to corresponding closers. Used when parsing
 ## string interpolations.
 def OPEN_CLOSE_MAP = {
-    @@"(":  @@")",
-    @@"[":  @@"]",
-    @@"{":  @@"}",
-    @@"{:": @@":}"
+    @"(":  @")",
+    @"[":  @"]",
+    @"{":  @"}",
+    @"{:": @":}"
 };
 
 ## Processes a list of `stringPart` elements, yielding a literal `string`
@@ -235,8 +235,11 @@ fn processStringParts(parts) {
     $Generator::filterPump(parts) { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
-        ifIs { hasClass(part, @@error) }
-            { return part };
+        ifIs { hasClass(part, Record) }
+            {
+                ifIs { part.hasName(@error) }
+                    { return part }
+            };
 
         ifIs { eq(elems, []) }
             {
@@ -347,7 +350,7 @@ def tokStringInterpolation;
 tokStringInterpolation := {:
     &["({["]
     open = tokToken
-    expectClose = { OPEN_CLOSE_MAP.get(get_class(open)) }
+    expectClose = { OPEN_CLOSE_MAP.get(open.get_name()) }
 
     tokens = (
         tokWhitespace?
@@ -365,7 +368,7 @@ tokStringInterpolation := {:
     close = tokToken
 
     {
-        ifIs { hasClass(close, expectClose) }
+        ifIs { close.hasName(expectClose) }
             { [open, [].cat(tokens*)*, close] }
     }
 :};

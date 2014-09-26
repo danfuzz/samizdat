@@ -41,18 +41,27 @@ typedef enum {
     EVAL_apply = 1,  // 1, so that it won't be a "sneaky default."
     EVAL_call,
     EVAL_closure,
+    EVAL_directive,
+    EVAL_export,
+    EVAL_exportSelection,
+    EVAL_external,
     EVAL_fetch,
     EVAL_importModule,
     EVAL_importModuleSelection,
     EVAL_importResource,
+    EVAL_internal,
     EVAL_literal,
+    EVAL_mapping,
     EVAL_maybe,
+    EVAL_module,
     EVAL_noYield,
+    EVAL_nonlocalExit,
     EVAL_store,
     EVAL_varRef,
     EVAL_varDef,
     EVAL_varDefMutable,
     EVAL_void,
+    EVAL_yield,
     EVAL_CH_PLUS,   // For formal argument repetition.
     EVAL_CH_QMARK,  // For formal argument repetition.
     EVAL_CH_STAR    // For formal argument repetition.
@@ -130,10 +139,17 @@ zvalue frameGet(Frame *frame, zvalue name);
 void frameSnap(Frame *target, Frame *source);
 
 /**
- * Gets the evaluation type (enumerated value) of the given node.
+ * Gets the evaluation type (enumerated value) of the given record.
  */
-inline zevalType recordEvalType(zvalue node) {
-    return langSymbolMap[recNameIndex(node)];
+inline zevalType recordEvalType(zvalue record) {
+    return langSymbolMap[recNameIndex(record)];
+}
+
+/**
+ * Returns whether the evaluation type of the given record is as given.
+ */
+inline bool recordEvalTypeIs(zvalue record, zevalType type) {
+    return recordEvalType(record) == type;
 }
 
 /**

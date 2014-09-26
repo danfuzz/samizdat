@@ -242,9 +242,8 @@ def parSymbolTable = {:
 def parRecord = {:
     @"@"
 
-    cls = (
-        name = parIdentifierSymbol
-        { makeLiteral(@@(name::value)) }
+    name = (
+        parIdentifierSymbol
     |
         parParenExpression
     )
@@ -258,7 +257,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(REFS::makeRecord, cls, value) }
+    { makeCall(REFS::makeRecord, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -534,7 +533,7 @@ def parYieldOrNonlocal = {:
     optQuest = @"?"?
 
     name = (
-        { hasClass(op, @@yield) }
+        { op.hasName(@yield) }
         (
             @"/"
             parVarLvalue
@@ -956,11 +955,11 @@ def parPexChoice;
 
 ## Map from parser token types to record classes for pexes.
 def PEX_TYPES = {
-    @@"&": @@lookaheadSuccess,
-    @@"!": @@lookaheadFailure,
-    @@"?": @@opt,
-    @@"*": @@star,
-    @@"+": @@plus
+    @"&": @lookaheadSuccess,
+    @"!": @lookaheadFailure,
+    @"?": @opt,
+    @"*": @star,
+    @"+": @plus
 };
 
 ## Parses a parser function.
@@ -1026,9 +1025,9 @@ def parPexSet = {:
     @"["
 
     type = (
-        @"!" { @@tokenSetComplement }
+        @"!" { @tokenSetComplement }
     |
-        { @@tokenSet }
+        { @tokenSet }
     )
 
     terminals = (
@@ -1077,7 +1076,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(PEX_TYPES.get(get_class(repeat))){pex} }
+        { @(PEX_TYPES.get(repeat.get_name())){pex} }
     |
         { pex }
     )
@@ -1089,7 +1088,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(PEX_TYPES.get(get_class(lookahead))){pex} }
+        { @(PEX_TYPES.get(lookahead.get_name())){pex} }
     )
 |
     parPexRepeat

@@ -14,21 +14,21 @@ import VarCalc :: get_varRefs;
 
 ## Does one layer of body collection.
 fn bodies(node, bodiesBox) {
-    return switch (def cls = get_class(node)) {
-        @@apply: {
+    return switch (def nodeName = node.name) {
+        @apply: {
             def function = bodies(node::function, bodiesBox);
             def values = bodies(node::values, bodiesBox);
 
             @apply{values, function}
         };
 
-        @@call: {
+        @call: {
             def function = bodies(node::function, bodiesBox);
             def values = [ a in node::values -> bodies(a, bodiesBox) ];
             @call{function, values}
         };
 
-        @@closure: {
+        @closure: {
             def statements = [ s in node::statements -> bodies(s, bodiesBox) ];
             def yieldNode = bodies(node::yield, bodiesBox);
             def varRefs = get_varRefs(node);
@@ -52,39 +52,39 @@ fn bodies(node, bodiesBox) {
             result
         };
 
-        @@fetch: {
+        @fetch: {
             def target = bodies(node::target, bodiesBox);
             @fetch{target}
         };
 
-        @@store: {
+        @store: {
             def target = bodies(node::target, bodiesBox);
             def value = bodies(node::value, bodiesBox);
             @store{target, value}
         };
 
-        @@varDef:
-        @@varDefMutable: {
+        @varDef:
+        @varDefMutable: {
             def value = ifValue { node::value }
                 { value -> @{value: bodies(value, bodiesBox)} }
                 { @{} };
-            @(cls){name: node::name, value*}
+            @(nodeName){name: node::name, value*}
         };
 
-        @@export:
-        @@maybe:
-        @@noYield: {
+        @export:
+        @maybe:
+        @noYield: {
             def value = bodies(node::value, bodiesBox);
-            @(cls){value}
+            @(nodeName){value}
         };
 
-        @@exportSelection:
-        @@importModule:
-        @@importModuleSelection:
-        @@importResource:
-        @@literalRef:
-        @@varRef:
-        @@void: {
+        @exportSelection:
+        @importModule:
+        @importModuleSelection:
+        @importResource:
+        @literalRef:
+        @varRef:
+        @void: {
             node
         }
     }

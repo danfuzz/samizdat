@@ -237,9 +237,8 @@ def parSymbolTable = {:
 def parRecord = {:
     @"@"
 
-    cls = (
-        name = parIdentifierSymbol
-        { makeLiteral(@@(name::value)) }
+    name = (
+        parIdentifierSymbol
     |
         parParenExpression
     )
@@ -253,7 +252,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(REFS::makeRecord, cls, value) }
+    { makeCall(REFS::makeRecord, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -529,7 +528,7 @@ def parYieldOrNonlocal = {:
     optQuest = @"?"?
 
     name = (
-        { hasClass(op, @@yield) }
+        { op.hasName(@yield) }
         (
             @"/"
             parVarLvalue
@@ -951,11 +950,11 @@ def parPexChoice;
 
 ## Map from parser token types to record classes for pexes.
 def PEX_TYPES = {
-    @@"&": @@lookaheadSuccess,
-    @@"!": @@lookaheadFailure,
-    @@"?": @@opt,
-    @@"*": @@star,
-    @@"+": @@plus
+    @"&": @lookaheadSuccess,
+    @"!": @lookaheadFailure,
+    @"?": @opt,
+    @"*": @star,
+    @"+": @plus
 };
 
 ## Parses a parser function.
@@ -1021,9 +1020,9 @@ def parPexSet = {:
     @"["
 
     type = (
-        @"!" { @@tokenSetComplement }
+        @"!" { @tokenSetComplement }
     |
-        { @@tokenSet }
+        { @tokenSet }
     )
 
     terminals = (
@@ -1072,7 +1071,7 @@ def parPexRepeat = {:
     pex = parPexTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { @(PEX_TYPES.get(get_class(repeat))){pex} }
+        { @(PEX_TYPES.get(repeat.get_name())){pex} }
     |
         { pex }
     )
@@ -1084,7 +1083,7 @@ def parPexLookahead = {:
     (
         lookahead = [@"&" @"!"]
         pex = parPexRepeat
-        { @(PEX_TYPES.get(get_class(lookahead))){pex} }
+        { @(PEX_TYPES.get(lookahead.get_name())){pex} }
     )
 |
     parPexRepeat
@@ -1124,39 +1123,39 @@ parPexChoice := {:
 ## For unary operators, map of token types to function name variable
 ## references.
 def UNARY_OPERATORS = {
-    @@"-":   SYMS::neg,
-    @@"#":   SYMS::get_size,
-    @@"^":   SYMS::reverse,
-    @@"!!!": SYMS::not
+    @"-":   SYMS::neg,
+    @"#":   SYMS::get_size,
+    @"^":   SYMS::reverse,
+    @"!!!": SYMS::not
 };
 
 ## For binary operators, map of token types to function name variable
 ## references.
 def BINARY_OPERATORS = {
-    @@"+":    SYMS::add,
-    @@"-":    SYMS::sub,
-    @@"*":    SYMS::mul,
-    @@"/":    SYMS::div,
-    @@"%":    SYMS::mod,
-    @@"//":   SYMS::divEu,
-    @@"%%":   SYMS::modEu,
-    @@"==":   SYMS::perEq,
-    @@"!=":   REFS::perNe,
-    @@"<":    REFS::perLt,
-    @@">":    REFS::perGt,
-    @@"<=":   REFS::perLe,
-    @@">=":   REFS::perGe,
-    @@"&&&":  SYMS::and,
-    @@"|||":  SYMS::or,
-    @@"^^^":  SYMS::xor,
-    @@"<<<":  SYMS::shl,
-    @@">>>":  SYMS::shr,
-    @@"\\==": REFS::eq,
-    @@"\\!=": REFS::ne,
-    @@"\\<":  REFS::lt,
-    @@"\\>":  REFS::gt,
-    @@"\\<=": REFS::le,
-    @@"\\>=": REFS::ge
+    @"+":    SYMS::add,
+    @"-":    SYMS::sub,
+    @"*":    SYMS::mul,
+    @"/":    SYMS::div,
+    @"%":    SYMS::mod,
+    @"//":   SYMS::divEu,
+    @"%%":   SYMS::modEu,
+    @"==":   SYMS::perEq,
+    @"!=":   REFS::perNe,
+    @"<":    REFS::perLt,
+    @">":    REFS::perGt,
+    @"<=":   REFS::perLe,
+    @">=":   REFS::perGe,
+    @"&&&":  SYMS::and,
+    @"|||":  SYMS::or,
+    @"^^^":  SYMS::xor,
+    @"<<<":  SYMS::shl,
+    @">>>":  SYMS::shr,
+    @"\\==": REFS::eq,
+    @"\\!=": REFS::ne,
+    @"\\<":  REFS::lt,
+    @"\\>":  REFS::gt,
+    @"\\<=": REFS::le,
+    @"\\>=": REFS::ge
 };
 
 ## Helper for parsing binary operator expressions, which puts together
@@ -1165,7 +1164,7 @@ fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
     filterPump(opExList) { opEx ->
-        def resolvedOp = BINARY_OPERATORS.get(get_class(opEx::op));
+        def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
         result := makeCall(resolvedOp, result, opEx::expr)
     };
 
@@ -1224,7 +1223,7 @@ fn makeCompareCalls(firstEx, opExList) {
     };
 
     fn transform(leftRef, opEx, rest*) {
-        def resolvedOp = BINARY_OPERATORS.get(get_class(opEx::op));
+        def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
 
         return ifIs { eq(rest, []) }
             { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
@@ -1434,7 +1433,7 @@ def parRangeBody = {:
     |
         ## The limit is mandatory for exclusive ranges.
         {
-            ifIs { hasClass(op, @@"..") }
+            ifIs { op.hasName(@"..") }
                 { [] }
         }
     )
@@ -1442,7 +1441,7 @@ def parRangeBody = {:
     optIncrement = (@by parExpression)?
 
     {
-        ifIs { hasClass(op, @@"..!") }
+        ifIs { op.hasName(@"..!") }
             {
                 makeCall(
                     REFS::Range_makeExclusiveRange,
@@ -1495,7 +1494,7 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = UNARY_OPERATORS.get(get_class(operator));
+        def name = UNARY_OPERATORS.get(operator.get_name());
         { node -> makeCall(name, node) }
     }
 |
@@ -1509,17 +1508,17 @@ parPrefixOperator2 := {:
 def parIndexExpression = {:
     @"^"
     value = parUnaryExpression
-    { {origin: @@fromEnd, value} }
+    { {origin: @fromEnd, value} }
 |
     value = parExpression
-    { {origin: @@fromStart, value} }
+    { {origin: @fromStart, value} }
 :};
 
 ## Constant representing the sequence index `0`.
-def INDEX_AT_START_0 = {origin: @@fromStart, value: LITS::INT_0};
+def INDEX_AT_START_0 = {origin: @fromStart, value: LITS::INT_0};
 
 ## Constant representing the sequence index `^0` (that is, zero from end).
-def INDEX_AT_END_0 = {origin: @@fromEnd, value: LITS::INT_0};
+def INDEX_AT_END_0 = {origin: @fromEnd, value: LITS::INT_0};
 
 ## Parses an indexing postfix.
 def parIndexPostfix = {:
@@ -1533,12 +1532,12 @@ def parIndexPostfix = {:
 
         (
             ## It's a non-size-dependant slice.
-            { eq(start::origin, @@fromStart) }
+            { eq(start::origin, @fromStart) }
 
             ## ...which means that the end had either be an "index from start"
             ## or "the end of the sequence, whatever index it may be."
             optEndNode = (
-                { eq(end::origin, @@fromStart) }
+                { eq(end::origin, @fromStart) }
                 { [end::value] }
             |
                 { eq(end, INDEX_AT_END_0) }
@@ -1546,7 +1545,7 @@ def parIndexPostfix = {:
             )
 
             {
-                def funcRef = ifIs { hasClass(op, @@"..") }
+                def funcRef = ifIs { op.hasName(@"..") }
                     { SYMS::sliceInclusive }
                     { SYMS::sliceExclusive };
                 def startNode = start::value;
@@ -1557,7 +1556,7 @@ def parIndexPostfix = {:
             ## At least one of start or end is `fromEnd`, so we have to
             ## use `sliceGeneral`.
             {
-                def style = ifIs { hasClass(op, @@"..") }
+                def style = ifIs { op.hasName(@"..") }
                     { SYMS::inclusive }
                     { SYMS::exclusive };
 
@@ -1594,7 +1593,7 @@ def parIndexPostfix = {:
         index = { optStart* }
 
         {
-            def funcRef = ifIs { eq(index::origin, @@fromStart) }
+            def funcRef = ifIs { eq(index::origin, @fromStart) }
                 { SYMS::get }
                 { REFS::Sequence_reverseNth };
 

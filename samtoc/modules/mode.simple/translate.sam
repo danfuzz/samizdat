@@ -46,15 +46,15 @@ fn nonVoid(value) {
 
 ## Translates a node, using and updating `varsBox` as appropriate.
 export fn translate(node, varsBox) {
-    return switch (def cls = get_class(node)) {
-        @@apply: {
+    return switch (node.name) {
+        @apply: {
             def function = translate(node::function, varsBox);
             def values = node::values;
 
-            if (hasClass(values, @@maybe)) {
+            if (values.hasName(@maybe)) {
                 def vTrans = translate(values::value, varsBox);
                 genCall("funApply", function, vTrans)
-            } else if (hasClass(values, @@void)) {
+            } else if (values.hasName(@void)) {
                 ## A void `values` binding just devolves into a no-argument
                 ## (but otherwise regular) function call.
                 genCall("FUN_CALL", function)
@@ -66,14 +66,14 @@ export fn translate(node, varsBox) {
             }
         };
 
-        @@call: {
+        @call: {
             def values = ( a in node::values ->
                 nonVoid(translate(a, varsBox))
             );
             genCall("FUN_CALL", translate(node::function, varsBox), values*)
         };
 
-        @@closureRef: {
+        @closureRef: {
             ## This passes each of the `varRefs` as an argument to the
             ## closure maker.
             def vars = varsBox*;
@@ -84,28 +84,28 @@ export fn translate(node, varsBox) {
                 )*)
         };
 
-        @@fetch: {
+        @fetch: {
             def target = nonVoid(translate(node::target, varsBox));
             genCall("METH_CALL", "fetch", target)
         };
 
-        @@literalRef: {
+        @literalRef: {
             genCodeString("LIT_\(node::id)")
         };
 
-        @@noYield: {
+        @noYield: {
             def value = translate(node::value, varsBox);
             genCall("mustNotYield", value)
         };
 
-        @@store: {
+        @store: {
             def target = translate(node::target, varsBox);
             def value = node::value;
 
-            if (hasClass(value, @@maybe)) {
+            if (value.hasName(@maybe)) {
                 def vTrans = translate(value::value, varsBox);
                 genCall("boxStoreNullOk", target, vTrans)
-            } else if (hasClass(value, @@void)) {
+            } else if (value.hasName(@void)) {
                 genCall("METH_CALL", "store", target)
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
@@ -115,7 +115,7 @@ export fn translate(node, varsBox) {
             }
         };
 
-        @@varDef: {
+        @varDef: {
             def value = (def v = node::value)
                 & genCall("makeResult", nonVoid(translate(v, varsBox)))
                 | genCall("makePromise");
@@ -123,7 +123,7 @@ export fn translate(node, varsBox) {
             varDefCommon(node::name, value, varsBox)
         };
 
-        @@varDefMutable: {
+        @varDefMutable: {
             def value = (def v = node::value)
                 & translate(v, varsBox)
                 | "NULL";
@@ -132,7 +132,7 @@ export fn translate(node, varsBox) {
                 node::name, nonVoid(genCall("makeCell", value)), varsBox)
         };
 
-        @@varRef: {
+        @varRef: {
             def name = node::name;
             def vars = varsBox*;
             def binding = vars[name]
@@ -146,14 +146,14 @@ export fn translate(node, varsBox) {
         ##   non-dynamic translation of imports.
         ## * `@maybe`, `@void` -- Should have been handled as special cases
         ##   within the node types where they're explicitly valid.
-        @@closure:
-        @@export:
-        @@exportSelection:
-        @@importModule:
-        @@importModuleSelection:
-        @@importResource:
-        @@maybe:
-        @@void: {
+        @closure:
+        @export:
+        @exportSelection:
+        @importModule:
+        @importModuleSelection:
+        @importResource:
+        @maybe:
+        @void: {
             die("Cannot translate: \%q(node).")
         }
     }
@@ -164,9 +164,9 @@ export fn translate(node, varsBox) {
 ## `translate` in that nodes that can't possibly have a side effect are
 ## dropped (returning void).
 export fn translateStatement(node, varsBox) {
-    return? switch (get_class(node)) {
-        @@closureRef:
-        @@literalRef: {
+    return? switch (node.name) {
+        @closureRef:
+        @literalRef: {
             ## Return void.
         };
 
