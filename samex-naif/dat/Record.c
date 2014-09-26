@@ -81,7 +81,7 @@ zvalue makeRecord(zvalue clsOrName, zvalue data) {
             die("Attempt to call `makeRecord` on an improper class.");
         }
         cls = clsOrName;
-        name = METH_CALL(get_name, cls);
+        name = get_name(cls);
     }
 
     if (data == NULL) {
