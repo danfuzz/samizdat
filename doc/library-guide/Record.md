@@ -5,7 +5,7 @@ Record
 ------
 
 <br><br>
-### Method Definitions
+### Method Definitions: `Record` protocol
 
 #### `.dataOf() -> symbolTable`
 
@@ -18,6 +18,28 @@ Returns the name (tag) of the given record.
 #### `.hasName(name) -> record`
 
 Returns `this` if its name is as given, or void if not.
+
+
+<br><br>
+### Method Definitions: `Value` protocol
+
+#### `.perEq(other) -> record | void`
+
+Default implementation.
+
+#### `.perOrder(other) -> int`
+
+Default implementation.
+
+#### `.totalEq(other) -> record | void`
+
+Compares two records. Two records are equal if they have equal names and
+equal data payloads.
+
+#### `.totalOrder(other) -> int`
+
+Compares two records for order. Records order by name as the major order
+and data payload as minor order.
 
 
 ### Primitive Definitions
