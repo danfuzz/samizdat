@@ -43,18 +43,13 @@ to pass for `value` anything other than a symbol table.
 #### `makeRecordClass(name) -> class`
 
 Returns a `Class` instance which represents a record class
-with the given `name`. `name` is an arbitrary symbol. The following
-equivalences hold for Samizdat source code:
-
-```
-@@name    is equivalent to  makeRecordClass(@name)
-@@(name)  is equivalent to  makeRecordClass(name)
-```
+with the given `name`. `name` is an arbitrary symbol.
 
 Two different calls to this function are guaranteed to return the same exact
 class when given identical `name` arguments.
 
-**Note:** This is used in the translation of `@@name` and `@@(name)`forms.
+**Note:** This function is vestigial and will be removed in an upcoming
+patch.
 
 
 <br><br>
