@@ -220,8 +220,8 @@ This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
 
 Makes and returns a parser rule which matches a sequence of characters
 exactly, consuming them from the input upon success. `string` must be a
-string. The result of successful parsing is a valueless token with
-`string` as its class tag.
+string. The result of successful parsing is an empty-payload token with
+`@string` as its name.
 
 This is equivalent to the syntactic form `{: "string" :}`.
 
@@ -256,15 +256,16 @@ This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
 #### `stringFromTokenList(tokens) -> string`
 
-Takes a list of tokenizer-style character tokens (that is, records whose class
-names are each a single character long), returning the result of concatenating
-all the characters together in order.
+Takes a list of tokenizer-style character tokens (that is, records whose
+names are each a single-character-long symbols), returning the result of
+concatenating all the characters together in order, as a string.
 
 This function is intended to aid in the building of tokenizers.
 
 #### `symbolFromTokenList(tokens) -> symbol`
 
-Like `stringFromTokenList`, except returns an interned symbol.
+Like `stringFromTokenList`, except returns an interned symbol instead of
+a string.
 
 #### Rule: `any`
 
