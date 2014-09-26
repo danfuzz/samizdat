@@ -42,7 +42,6 @@ def tokPunctuation = makeMainSequence(
         makeString(":="),
         makeString("::"),
         makeString(".."),
-        makeString("@@"),
         makeString("{:"),
         makeString(":}"),
         any));

@@ -77,9 +77,9 @@ METH_IMPL_0(Jump, debugString) {
     zvalue validStr = info->valid ? EMPTY_STRING : stringFromUtf8(-1, "in");
 
     return METH_CALL(cat,
-        stringFromUtf8(-1, "@(Jump "),
+        stringFromUtf8(-1, "@<Jump "),
         validStr,
-        stringFromUtf8(-1, "valid)"));
+        stringFromUtf8(-1, "valid>"));
 }
 
 // Documented in header.

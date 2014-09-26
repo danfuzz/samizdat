@@ -154,18 +154,18 @@ METH_IMPL_0(Value, debugString) {
         // Suppress a non-symbol name.
         name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
-        name = METH_CALL(cat, stringFromUtf8(-1, " "), valToString(name));
+        name = METH_CALL(cat, stringFromUtf8(-1, " "), name);
     }
 
     sprintf(addrBuf, "%p", ths);
 
     return METH_CALL(cat,
-        stringFromUtf8(-1, "@("),
+        stringFromUtf8(-1, "@<"),
         METH_CALL(debugString, cls),
         name,
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),
-        stringFromUtf8(-1, ")"));
+        stringFromUtf8(-1, ">"));
 }
 
 // Documented in header.

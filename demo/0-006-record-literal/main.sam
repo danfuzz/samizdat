@@ -25,7 +25,7 @@ fn msg(string) {
 ## These all refer to the same value.
 msg(@potion{});
 msg(@"potion"{});
-msg(@(@@potion){});
+msg(@(@potion){});
 
 msg(@"^zorch^"{blortch: "scorch"});
 msg(@fizmo(@{a: 1, b: 2, c: 3}));

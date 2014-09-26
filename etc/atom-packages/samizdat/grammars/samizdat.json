@@ -21,29 +21,6 @@
         },
         {
           "end" : "\\)",
-          "begin" : "@@(\\()",
-          "beginCaptures" : {
-            "0" : {
-              "name" : "constant.type.samizdat"
-            },
-            "1" : {
-              "name" : "punctuation.paren.open.samizdat"
-            }
-          },
-          "patterns" : [
-            {
-              "include" : "#block-body"
-            }
-          ],
-          "name" : "meta.parens.samizdat",
-          "endCaptures" : {
-            "0" : {
-              "name" : "constant.type.samizdat punctuation.paren.close.samizdat"
-            }
-          }
-        },
-        {
-          "end" : "\\)",
           "begin" : "@(\\()",
           "beginCaptures" : {
             "0" : {
@@ -441,22 +418,8 @@
           "name" : "constant.numeric.samizdat"
         },
         {
-          "match" : "@@[_$a-zA-Z][_$a-zA-Z0-9]*",
-          "name" : "constant.type.samizdat"
-        },
-        {
           "match" : "@\\.?[_$a-zA-Z][_$a-zA-Z0-9]*",
           "name" : "constant.other.samizdat"
-        },
-        {
-          "end" : "\"",
-          "begin" : "@@\"",
-          "patterns" : [
-            {
-              "include" : "#recursive-string-content"
-            }
-          ],
-          "name" : "constant.type.samizdat"
         },
         {
           "end" : "\"",

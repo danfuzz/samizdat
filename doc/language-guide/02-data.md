@@ -340,13 +340,6 @@ is a symbol. There are three major categories of class:
   correspondence between a value and a record class with that value as
   its name.
 
-  A record class can be specified in code by indicating its name
-  in parentheses, preceded by `@@`. If the name is a literal string, then
-  the parentheses can be omitted. Furthermore, if the name is a literal
-  string which abides by the syntax for identifiers in the language, then
-  the double quotes can be omitted. For example, all of `@@("blort")`,
-  `@@"blort"`, and `@@blort` refer to the same class.
-
 * The third kind of class is an "object" class. These have a
   name and secret. The secret is used to prevent creation of values of the
   class beyond the scope of the class's trusted implementation.

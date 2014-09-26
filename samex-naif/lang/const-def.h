@@ -16,7 +16,6 @@ DEF_STRING(CH_DOT,    ".");
 DEF_STRING(CH_SLASH,  "/");
 
 DEF_SYMBOL(CH_AT,                 "@");
-DEF_SYMBOL(CH_ATAT,               "@@");
 DEF_SYMBOL(CH_CCURLY,             "}");
 DEF_SYMBOL(CH_COLON,              ":");
 DEF_SYMBOL(CH_COLONCOLON,         "::");
@@ -69,7 +68,6 @@ DEF_SYMBOL(lvalue,                "lvalue");
 DEF_SYMBOL(makeList,              "makeList");
 DEF_SYMBOL(makeMap,               "makeMap");
 DEF_SYMBOL(makeRecord,            "makeRecord");
-DEF_SYMBOL(makeRecordClass,       "makeRecordClass");
 DEF_SYMBOL(makeSymbolTable,       "makeSymbolTable");
 DEF_SYMBOL(makeValueMap,          "makeValueMap");
 DEF_SYMBOL(makeValueSymbolTable,  "makeValueSymbolTable");

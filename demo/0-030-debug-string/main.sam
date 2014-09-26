@@ -36,7 +36,7 @@ var foo = 10;
 msg(var foo);  ## a box
 
 msg(Value);                   ## a core class
-msg(@@blort);                 ## a record class
+msg(get_class(@blort{}));     ## a record class
 msg(@blort);                  ## an interned symbol
 msg(@blort.makeAnonymous());  ## an anonymous symbol
 msg(eq);                      ## a builtin function

@@ -253,23 +253,24 @@ zvalue makeCoreClass(const char *name, zvalue parent,
 // Documented in header.
 METH_IMPL_0(Class, debugString) {
     ClassInfo *info = getInfo(ths);
-    zvalue extraString;
+    const char *label;
 
     if (info->secret == theCoreSecret) {
         return valToString(info->name);
     } else if (info->secret != NULL) {
-        extraString = stringFromUtf8(-1, " : opaque");
+        label = "object";
     } else if (classEqUnchecked(info->parent, CLS_Record)) {
-        extraString = EMPTY_STRING;
+        label = "record";
     } else {
         die("Shouldn't happen: opaque class without secret.");
     }
 
     return METH_CALL(cat,
-        stringFromUtf8(-1, "@@("),
+        stringFromUtf8(-1, "@<"),
+        stringFromUtf8(-1, label),
+        stringFromUtf8(-1, " class "),
         METH_CALL(debugString, valToString(info->name)),
-        extraString,
-        stringFromUtf8(-1, ")"));
+        stringFromUtf8(-1, ">"));
 }
 
 // Documented in header.
