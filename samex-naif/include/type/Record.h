@@ -18,7 +18,7 @@ extern zvalue CLS_Record;
 /** Method `.dataOf()`: Documented in spec. */
 SYM_DECL(dataOf);
 
-/** Global function `makeRecord`: Documented in spec. */
+/** Global function `makeRecord()`: Documented in spec. */
 extern zvalue FUN_Record_makeRecord;
 
 /**
@@ -27,11 +27,9 @@ extern zvalue FUN_Record_makeRecord;
 zvalue dataOf(zvalue value);
 
 /**
- * Returns a record with the given class or name, and with the given optional
- * data payload (`NULL` indicating an empty payload). `cls` must be a record
- * class or a symbol. The result is a record of the indicated / implied `cls`.
+ * C version of library function `makeRecord()`. Documented in spec.
  */
-zvalue makeRecord(zvalue clsOrName, zvalue data);
+zvalue makeRecord(zvalue name, zvalue data);
 
 /**
  * Returns whether the given `record` has the given `name`.

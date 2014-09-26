@@ -69,20 +69,9 @@ zvalue dataOf(zvalue value) {
 }
 
 // Documented in header.
-zvalue makeRecord(zvalue clsOrName, zvalue data) {
-    zvalue cls;
-    zvalue name;
-
-    if (hasClass(clsOrName, CLS_Symbol)) {
-        name = clsOrName;
-        cls = makeRecordClass(name);
-    } else {
-        if (!classHasParent(clsOrName, CLS_Record)) {
-            die("Attempt to call `makeRecord` on an improper class.");
-        }
-        cls = clsOrName;
-        name = get_name(cls);
-    }
+zvalue makeRecord(zvalue name, zvalue data) {
+    zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
+    zvalue cls = makeRecordClass(name);
 
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
@@ -94,7 +83,7 @@ zvalue makeRecord(zvalue clsOrName, zvalue data) {
     RecordInfo *info = getInfo(result);
 
     info->name = name;
-    info->nameIndex = symbolIndex(name);
+    info->nameIndex = index;
     info->data = data;
 
     return result;
