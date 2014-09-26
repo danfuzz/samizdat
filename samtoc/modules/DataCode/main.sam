@@ -16,29 +16,8 @@ import CodeGen :: genCall, genCodeString;
 ## Representation of a C `NULL`.
 def CODE_C_NULL = genCodeString("NULL");
 
-## Conversion of `[]`.
-def CODE_EMPTY_LIST = genCodeString("EMPTY_LIST");
-
-## Conversion of `{}`.
-def CODE_EMPTY_MAP = genCodeString("EMPTY_MAP");
-
-## Conversion of `""`.
-def CODE_EMPTY_STRING = genCodeString("EMPTY_STRING");
-
-## Conversion of `@{}`.
-def CODE_EMPTY_SYMBOL_TABLE = genCodeString("EMPTY_SYMBOL_TABLE");
-
-## Conversion of `false`.
-def CODE_FALSE = genCodeString("BOOL_FALSE");
-
-## Conversion of `null`.
-def CODE_NULL = genCodeString("THE_NULL");
-
-## Conversion of `true`.
-def CODE_TRUE = genCodeString("BOOL_TRUE");
-
-## Map of classes that can be converted, to their converted forms.
-def CLASS_MAP = {
+## Values with special conversions.
+def SPECIAL_VALUES = {
     (Bool) :       genCodeString("CLS_Bool"),
     (Class):       genCodeString("CLS_Class"),
     (Data):        genCodeString("CLS_Data"),
@@ -50,7 +29,17 @@ def CLASS_MAP = {
     (String):      genCodeString("CLS_String"),
     (Symbol):      genCodeString("CLS_Symbol"),
     (SymbolTable): genCodeString("CLS_SymbolTable"),
-    (Value):       genCodeString("CLS_Value")
+    (Value):       genCodeString("CLS_Value"),
+    (false):       genCodeString("BOOL_FALSE"),
+    (true):        genCodeString("BOOL_TRUE"),
+    (null):        genCodeString("THE_NULL"),
+    []:            genCodeString("EMPTY_LIST"),
+    {}:            genCodeString("EMPTY_MAP"),
+    @{}:           genCodeString("EMPTY_SYMBOL_TABLE"),
+    "":            genCodeString("EMPTY_STRING"),
+    0:             genCodeString("INT_0"),
+    1:             genCodeString("INT_1"),
+    -1:            genCodeString("INT_NEG1")
 };
 
 ## Encode the given values as a list of C-style `\xNN` escapes.
@@ -149,17 +138,6 @@ fn stringChar(ch) {
 ## Exported definitions
 ##
 
-## Converts a bool.
-fn Bool_convert(value) {
-    return value** & CODE_TRUE | CODE_FALSE;
-};
-
-## Converts a class. Fails for anything but certain known core classes.
-fn Class_convert(value) {
-    return CLASS_MAP[value]
-        | die("Cannot convert class: \%q(value)")
-};
-
 ## Converts an int.
 fn Int_convert(value) {
     return genCall("intFromZint", "\(value)")
@@ -167,20 +145,12 @@ fn Int_convert(value) {
 
 ## Converts a list.
 fn List_convert(value) {
-    if (value == []) {
-        return CODE_EMPTY_LIST
-    };
-
     def listElems = [ elem in value -> convert(elem) ];
     return genCall("listFromArgs", listElems*, CODE_C_NULL)
 };
 
 ## Converts a map.
 fn Map_convert(value) {
-    if (value == {}) {
-        return CODE_EMPTY_MAP
-    };
-
     def mapPairs = [ mapping in value ->
         [convert(mapping.key), convert(mapping.value)]
     ];
@@ -188,17 +158,8 @@ fn Map_convert(value) {
     return genCall("mapFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
 };
 
-## Converts `null`.
-fn Null_convert(value) {
-    return CODE_NULL
-};
-
 ## Converts a string.
 fn String_convert(value) {
-    if (value == "") {
-        return CODE_EMPTY_STRING
-    };
-
     ## Each `stringChar()` call returns a list (each list element representing
     ## one byte), and we have to interpolate+concatenate them all together in
     ## order to find the encoded length.
@@ -224,10 +185,6 @@ fn Symbol_convert(value) {
 
 ## Converts a symbol table.
 fn SymbolTable_convert(value) {
-    if (value == @{}) {
-        return CODE_EMPTY_SYMBOL_TABLE
-    };
-
     ## Convert to a map, and process the result similar to how map conversion
     ## works.
 
@@ -242,7 +199,7 @@ fn SymbolTable_convert(value) {
 ## Converts a record or an opaque core value.
 fn Value_convert(value) {
     if (!hasClass(value, Record)) {
-        die("Cannot convert opaque non-data value: \%q(value)")
+        die("Cannot convert value: \%q(value)")
     };
 
     return genCall("makeRecord", convert(value.name), convert(value.dataOf()))
@@ -251,16 +208,18 @@ fn Value_convert(value) {
 ## Converts a value into C code to construct that value. This function
 ## returns a tree that can be stringified with `indent()`.
 export fn convert(value) {
-    return switch (get_class(value)) {
-        (Bool):        { Bool_convert(value)        };
-        (Class):       { Class_convert(value)       };
-        (Int):         { Int_convert(value)         };
-        (List):        { List_convert(value)        };
-        (Map):         { Map_convert(value)         };
-        (Null):        { Null_convert(value)        };
-        (String):      { String_convert(value)      };
-        (Symbol):      { Symbol_convert(value)      };
-        (SymbolTable): { SymbolTable_convert(value) };
-        default:       { Value_convert(value)       }
+    return if (def special = SPECIAL_VALUES[value]) {
+        special
+    } else {
+        switch (get_class(value)) {
+            (Class):       { Class_convert(value)       };
+            (Int):         { Int_convert(value)         };
+            (List):        { List_convert(value)        };
+            (Map):         { Map_convert(value)         };
+            (String):      { String_convert(value)      };
+            (Symbol):      { Symbol_convert(value)      };
+            (SymbolTable): { SymbolTable_convert(value) };
+            default:       { Value_convert(value)       }
+        }
     }
 };
